@@ -1,5 +1,7 @@
-import New.OneLift.HeckeValues.AlgebraicPartIntegrality
-import New.OneLift.HeckeValues.TwistedRatio
+module
+
+public import New.OneLift.HeckeValues.AlgebraicPartIntegrality
+public import New.OneLift.HeckeValues.TwistedRatio
 
 /-!
 # Archimedean bounds and heights of squared norms of rank-one theta lifts
@@ -34,6 +36,8 @@ Notions from other files:
 Critical Hecke L-values of CM fields as squared norms of theta lifts from U(1). See
 `Lib.SiegelWeil.RallisInner.SharpData` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -150,15 +154,7 @@ lemma New.Data.CriticalPair.norm_map_integralAlgebraicPart_le {P : Parameters} {
     grw [φ.norm_map_inner_le φ, h_normSq, h_normSq, mul_self_sqrt (by positivity)]
   -- Every term of the logarithm is small against `x ^ 34`.
   have h_log : log (exp (D.x ^ 33) * (exp (D.x ^ 30) * (exp (D.x ^ 30) * C) ^ 2)) ≤ D.x ^ 34 := by
-    -- `scale_arith` does not split the nested `max` of the default proof, and the kernel cannot
-    -- check `grind` with the large numerals of `scale_inequalities'`: derive small ones for `grind`.
-    simpa [C, hp, log_mul, NeZero.ne] using D.le_of_hasLogBound (by
-      obtain ⟨⟨h64, -, -, -⟩, hc, hL, hX, hX₁, -⟩ := New.Data.scale_inequalities' D
-      have hcL : P.constantBound ≤ Real.log D.logB := by linarith
-      have hXB : D.logX ≤ D.logB := by linarith
-      clear hc hX hX₁
-      simp only [Bool.false_eq_true, ↓reduceIte, Nat.cast_ofNat]
-      grind)
+    simpa [C, hp, log_mul, NeZero.ne] using D.le_of_hasLogBound
   calc ‖σ (integralAlgebraicPart hp.2 .one)‖
       = D.chosenGroupOrder * p.denomBound ^ 2 * ‖σ (inner ℂ φ φ)‖ := by
         simp [integralAlgebraicPart, toAutChar_one_and_toTwist_one_and_Q_one, φ]

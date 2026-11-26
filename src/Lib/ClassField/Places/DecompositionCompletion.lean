@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.LocalFields
-import Lib.PadicHodge.PeriodRings.AxTheorem
+module
+
+public import Lib.ClassField.Places.LocalFields
+public import Lib.PadicHodge.PeriodRings.AxTheorem
 
 /-!
 # Decomposition groups of places above p as Galois groups of local fields in ℚ̄_p
@@ -45,6 +47,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -793,26 +797,6 @@ lemma ramification_in_tower (h : IsPlaceOver A v) (U : Subgroup Γ) [hU_open : F
   -- If `decompGroup Γ A ≤ U`, the index `e * f` is `1`, so `e = f = 1`.
   obtain ⟨h_e, h_f⟩ := mul_eq_one.mp (h_ef.trans (U.relIndex_eq_one.mpr hU))
   simp [h_q, h_ord_L, h_e, h_f]
-
-/-- Let `A` lie over `v` in `K` and over `w` in `L`, where `U`, open in `Γ`, is the Galois group of
-`Ω / L`. If `U` contains the inertia group of `A`, then `w` is unramified over `K`. -/
-lemma ramificationIdx_eq_one_of_inertiaGroup_le (h : IsPlaceOver A v) (U : Subgroup Γ)
-    [Fact U.IsOpen] {L : Type*} [Field L] [EmbeddedNumberField L] [IsProGalois U L Ω] [Algebra K L]
-    [IsScalarTower K L Ω] {w : FinPlace L} (hw : IsPlaceOver A w) (hI : inertiaGroup Γ A ≤ U) :
-    w.asIdeal.ramificationIdx (𝓞 K) = 1 := by
-  obtain ⟨-, h_unram, -⟩ := h.ramification_in_tower U hw
-  exact h_unram hI
-
-/-- Let `A` lie over `v` in `K` and over `w` in `L`, where `U`, open in `Γ`, is the Galois group of
-`Ω / L`. The index of `U ⊓ decompGroup Γ A` in `decompGroup Γ A` is the ramification index times
-the residue degree of `w` over `K`. -/
-lemma relIndex_decompGroup_eq (h : IsPlaceOver A v) (U : Subgroup Γ) [Fact U.IsOpen] {L : Type*}
-    [Field L] [EmbeddedNumberField L] [IsProGalois U L Ω] [Algebra K L] [IsScalarTower K L Ω]
-    {w : FinPlace L} (hw : IsPlaceOver A w) :
-    U.relIndex (decompGroup Γ A) =
-      w.asIdeal.ramificationIdx (𝓞 K) * w.asIdeal.inertiaDeg (𝓞 K) := by
-  obtain ⟨-, -, h_index⟩ := h.ramification_in_tower U hw
-  exact h_index
 
 /-- Let A lie over v. An open subgroup of `Γ` that contains the inertia group of `A` and a
 Frobenius element `φ` at `v` (`IsFrob A v.q φ`: `φ` stabilises `A` and acts as x ↦ x ^ v.q modulo

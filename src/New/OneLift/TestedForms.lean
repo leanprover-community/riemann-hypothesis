@@ -1,5 +1,7 @@
-import Lib.LocalGL.Green.LabelCharacters
-import New.UpperBound.Objects.AuxiliaryPair
+module
+
+public import Lib.LocalGL.Green.LabelCharacters
+public import New.UpperBound.Objects.AuxiliaryPair
 
 /-!
 # Point forms, Hecke adjoints and false lifts on the definite space of a descent pair
@@ -51,6 +53,8 @@ Notions from other files:
 See `New.OneLift.ComparisonOperator.GluingMaps` and `New.OneLift.LiftVolumeHeight` for related
 work.
 -/
+
+@[expose] public section
 
 /-!
 ## Point forms with prescribed finite datum: inner products and descent

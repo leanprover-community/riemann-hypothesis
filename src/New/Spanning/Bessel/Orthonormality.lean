@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Bessel.SchurBound
-import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
-import New.Spanning.Bessel.Basic
+module
+
+public import Lib.DiscreteSeries.Bessel.SchurBound
+public import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+public import New.Spanning.Bessel.Basic
 
 /-!
 # Normalisation of a Bessel function and of its cut
@@ -33,6 +35,8 @@ Notions from other files:
 
 See `New.Spanning.Bessel.CutTailBound` for related work.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory Complex Subgroup ComplexConjugate
 
@@ -213,5 +217,5 @@ theorem New.IsCutPair.lintegral_sq_inner_cut_le {𝔰 : Shape} {I : Type} [Finty
       _ = ∑ i, conj (v i) * v i * c := by simp [h_scalar]
       _ = ((c * ‖v‖ ^ 2 : ℝ) : ℂ) := by
           simp [conj_mul', PiLp.norm_sq_eq_of_L2, Finset.sum_mul, mul_comm (c : ℂ)]
-  grw [lintegral_enorm_sq (h_int.const_inner (𝕜 := ℂ) v) (h_memLp_top.const_inner (𝕜 := ℂ) v),
-    h_integral, hc_le, one_mul, ENNReal.ofReal_pow (norm_nonneg v), ofReal_norm]
+  grw [lintegral_enorm_sq (h_int.const_inner v) (h_memLp_top.const_inner v), h_integral, hc_le,
+    one_mul, ENNReal.ofReal_pow (norm_nonneg v), ofReal_norm]

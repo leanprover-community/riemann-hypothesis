@@ -1,4 +1,6 @@
-import Lib.Weil.Fock.Basic
+module
+
+public import Lib.Weil.Fock.Basic
 
 /-!
 # Moments on Fock space, approximation by polynomial vectors, bounds for functionals
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.Fock.OscillatorPair` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Moments, Schwartz vectors and polynomial approximation

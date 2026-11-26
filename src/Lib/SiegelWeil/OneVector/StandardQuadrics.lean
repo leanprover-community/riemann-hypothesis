@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bruhat.QuadricBlocks
-import Lib.SiegelWeil.OneVector.SemilocalDensityBounds
+module
+
+public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+public import Lib.SiegelWeil.OneVector.SemilocalDensityBounds
 
 /-!
 # The quadrics of the standard form at a finite place
@@ -25,6 +27,8 @@ Notions from other files:
 Known result: a local density bound for hermitian forms. See
 `Lib.SiegelWeil.OneVector.SiegelClassSum`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

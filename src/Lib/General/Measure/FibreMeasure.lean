@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Measures below a fibre measure
@@ -22,6 +24,8 @@ over a point and proves that it is kept by the usual operations on measures and 
 
 Fibre measures: Weil, Sur la formule de Siegel dans la théorie des groupes classiques, no. 6.
 -/
+
+@[expose] public section
 
 namespace New
 

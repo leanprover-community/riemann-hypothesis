@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Kisin.PeriodMatrixBasis
+module
+
+public import Lib.PadicHodge.Kisin.PeriodMatrixBasis
 
 /-!
 # The radius lemma: after Frobenius a frame is a constant basis times a unit over A
@@ -35,6 +37,8 @@ P. Scholze, Prismatic F-crystals and crystalline Galois representations (2023), 
 
 See also `Lib.PadicHodge.Kisin.PeriodMatrixFrame`.
 -/
+
+@[expose] public section
 
 namespace New.Lift.Chart
 

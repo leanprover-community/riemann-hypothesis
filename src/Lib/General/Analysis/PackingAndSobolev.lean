@@ -1,4 +1,6 @@
-import Lib.General.Measure.IntegralOperators
+module
+
+public import Lib.General.Measure.IntegralOperators
 
 /-!
 # Packing bounds for separated points and Sobolev trace inequalities
@@ -23,6 +25,8 @@ then at the corner of a cube.
   norms of the partial derivatives of `f i` are bounded by `Λ ∑ l, ‖f (l :: i)‖`, the sum over the
   letters `l`.
 -/
+
+@[expose] public section
 
 /-! ## Packing bounds and sums over separated points -/
 

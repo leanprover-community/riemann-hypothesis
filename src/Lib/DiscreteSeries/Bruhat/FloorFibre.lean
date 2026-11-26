@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bruhat.ComplexPlace
-import Lib.General.Measure.FibreMeasure
+module
+
+public import Lib.DiscreteSeries.Bruhat.ComplexPlace
+public import Lib.General.Measure.FibreMeasure
 
 /-!
 # Measures of a floor below fibre measures, at the place ℂ
@@ -42,6 +44,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Bruhat.ComplexPlace` for sources.
 -/
 
+@[expose] public section
+
 namespace New.Floors
 
 open Matrix MeasureTheory Measure RealPlace FloorGroups
@@ -77,7 +81,6 @@ lemma leFibreMeasure_coords {α β ι : Type} [Fintype α] [Fintype β] [Fintype
   have h_fibre (t : α → ℂ) (v : β → ℂ) : φ (t, v) ∘ f = t := by
     ext a
     simp [φ, inclMatrix, mulVec, dotProduct, Matrix.one_apply, hf.eq_iff, h_ne a]
-  show LeFibreMeasure volume volume (fun y : ι → ℂ ↦ y ∘ f) c (volume.map fun v ↦ φ (c, v))
   exact .of_measurePreserving h_vol (by fun_prop) h_fibre
     fun _ ↦ Continuous.continuousAt (by fun_prop)
 
@@ -332,9 +335,9 @@ lemma re_skewAdjoint_complex (β : skewAdjoint ℂ) : (β : ℂ).re = 0 := by
   exact self_eq_neg.1 h_re_neg
 
 /-- The integral against the image of `dμ dv` under `dualPoint a`, in the coordinates `(v, t, β)`
-with `μ = t / 2 + β - q v`, for a continuous shift `q`, `t` real and `β` skew. -/
+with `μ = t / 2 + β - q v`, for a shift `q`, `t` real and `β` skew. -/
 lemma lintegral_map_dualPoint (a : Fin 𝔰.ϱ)
-    {q : ({i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → ℂ) → ℂ} (_hq : Continuous q)
+    {q : ({i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} → ℂ) → ℂ}
     {K : (𝔰.BesselIndex → ℂ) → ENNReal} (hK : Measurable K) :
     ∫⁻ y : 𝔰.BesselIndex → ℂ, K y ∂volume.map (dualPoint a) =
       ∫⁻ v : { i : 𝔰.BesselIndex // a + 1 ≤ floorOf i } → ℂ,
@@ -401,7 +404,7 @@ lemma leFibreMeasure_heisenbergMeasure (a : Fin 𝔰.ϱ) :
           ∂((2 : ENNReal)⁻¹ • volume).prod complexPlace.skewMeasure := by
         simp (disch := first | fun_prop | finiteness) only [prod_smul_left,
           lintegral_const_mul', lintegral_prod, lintegral_smul_measure, smul_eq_mul]
-    _ = ∫⁻ y, K y ∂volume.map (dualPoint a) := (lintegral_map_dualPoint a hq hK).symm
+    _ = ∫⁻ y, K y ∂volume.map (dualPoint a) := (lintegral_map_dualPoint a hK).symm
 
 /-- The dual vector `e*_a` of floor `a`, of index `eStar a`. For the form `h` of matrix `J₁`, on the
 isotropic vectors `y` with `h(e_a, y) = 1` that are orthogonal to the basis vectors of lower floors

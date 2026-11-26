@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.DecompositionCyclotomic
-import Lib.General.NumberTheory.ImaginaryQuadraticField
+module
+
+public import Lib.ClassField.Places.DecompositionCyclotomic
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
 
 /-!
 # The parameters q₀ and d, the field E = K(ζ), its infinite places and its roots of unity
@@ -40,6 +42,8 @@ Notions from other files:
 * `New.CMType E` is a choice, for each infinite place of the CM field `E`, of an embedding in `ℂ`
   that induces it; `Φ v` is the embedding chosen at `v`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

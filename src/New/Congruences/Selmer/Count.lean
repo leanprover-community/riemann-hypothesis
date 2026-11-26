@@ -1,5 +1,7 @@
-import Lib.ClassField.GreenbergWiles.Relations
-import New.Congruences.Selmer.SelmerData
+module
+
+public import Lib.ClassField.GreenbergWiles.Relations
+public import New.Congruences.Selmer.SelmerData
 
 /-!
 # The dual of a tied Selmer group and the count
@@ -36,6 +38,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.Descent` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

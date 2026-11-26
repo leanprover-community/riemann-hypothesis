@@ -1,5 +1,7 @@
-import Lib.GaloisRep.Main.QuadraticStep
-import Lib.Shimura.HeckeTower.Model
+module
+
+public import Lib.GaloisRep.Main.QuadraticStep
+public import Lib.Shimura.HeckeTower.Model
 
 /-!
 # Existence of PEL data at levels good at all safe places, with the form ξ and a Lagrangian
@@ -26,6 +28,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.IntegralModel.TowerExistence` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

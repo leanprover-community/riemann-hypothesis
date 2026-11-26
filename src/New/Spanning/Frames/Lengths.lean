@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Bruhat.FloorGroups
+module
+
+public import Lib.DiscreteSeries.Bruhat.FloorGroups
 
 /-!
 # Sizes, lengths and balanced frames
@@ -88,6 +90,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.CM.Sigma.ThetaSections
+module
+
+public import Lib.CM.Sigma.ThetaSections
 
 /-!
 # CM lattices as multiples of fractional ideals, and good reduction of CM curves
@@ -44,6 +46,8 @@ annihilator of `u`. The file proves the case of the point `t`, whose annihilator
 number is the discriminant `a₁⁴ - 64`. Source: Kubert, Lang, Modular Units. Up to sign the numbers
 `s(u)` are the 24-th powers of Weber's functions. Source: Birch, Weber's class invariants, 1969.
 -/
+
+@[expose] public section
 
 noncomputable section
 

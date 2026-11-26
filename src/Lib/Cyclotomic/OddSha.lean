@@ -1,5 +1,7 @@
-import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
-import Lib.Cyclotomic.Kolyvagin.ReciprocityComponentBounds
+module
+
+public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
+public import Lib.Cyclotomic.Kolyvagin.ReciprocityComponentBounds
 
 /-!
 # Detecting unramified cocycles and a uniform bound for a model of the odd part of Ш
@@ -72,6 +74,8 @@ non-zero integer serves at all primes, 2 included; small primes are handled by a
 generators of the ray class group. Source: B. Mazur, A. Wiles, Class fields of abelian extensions of
 Q, Invent. Math. 76 (1984); C. Greither, Ann. Inst. Fourier 42 (1992), Thm 3.2.
 -/
+
+@[expose] public section
 
 /-! ## Few Galois elements detecting unramified cocycles -/
 

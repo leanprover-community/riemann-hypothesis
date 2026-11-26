@@ -1,7 +1,9 @@
-import Lib.DiscreteSeries.Bessel.SchurBound
-import New.Appendix.DiscreteSeries.PositionGroup
-import New.Spanning.Bessel.Average
-import New.Spanning.Bessel.Basic
+module
+
+public import Lib.DiscreteSeries.Bessel.SchurBound
+public import New.Appendix.DiscreteSeries.PositionGroup
+public import New.Spanning.Bessel.Average
+public import New.Spanning.Bessel.Basic
 
 /-!
 # Bessel systems of discrete series type and a Bessel function large at a point
@@ -41,6 +43,8 @@ Notions from other files:
 See `New.Appendix.DiscreteSeries.Periods` for related work. See
 `Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

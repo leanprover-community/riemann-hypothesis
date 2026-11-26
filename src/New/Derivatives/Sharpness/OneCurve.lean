@@ -1,4 +1,6 @@
-import New.Derivatives.FormalGroup.ThetaProducts
+module
+
+public import New.Derivatives.FormalGroup.ThetaProducts
 
 /-!
 # Derivatives of integral expansions
@@ -29,6 +31,8 @@ least valuations become greatest norms and sums become products.
 
 At inert primes the rate `γ_p` is that of Katz, Divisibilities, congruences, and Cartier duality.
 -/
+
+@[expose] public section
 
 section LargestCoefficient
 
@@ -118,9 +122,9 @@ lemma rpow_pow_le_norm_factorial_succ (n : ℕ) :
     ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ n ≤ ‖((n + 1)! : ℂ_[p])‖ := by
   have hp : (1 : ℝ) < p := mod_cast (Fact.out : p.Prime).one_lt
   have h_legendre : ((p : ℝ) - 1) * padicValNat p (n + 1)! ≤ n := by
-    rw [← Nat.cast_pred (Fact.out : p.Prime).pos, Nat.padicValNat_def]
+    rw [← Nat.cast_pred (Fact.out : p.Prime).pos, padicValNat_def]
     exact mod_cast Nat.le_of_lt_succ
-      (sub_one_mul_padicValNat_factorial_lt_of_ne_zero p n.succ_ne_zero)
+      (sub_one_mul_multiplicity_factorial_lt_of_ne_zero p n.succ_ne_zero)
   calc ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ n = (p : ℝ) ^ (-(n / (p - 1)) : ℝ) := by
         rw [← Real.rpow_mul_natCast (by positivity), neg_mul, one_div_mul_eq_div]
     _ ≤ (p : ℝ) ^ (-(padicValNat p (n + 1)! : ℝ)) := Real.rpow_le_rpow_of_exponent_le hp.le

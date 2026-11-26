@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.EllAdicCohomology
-import Lib.PadicComparison.Primitive.PeriodCoefficients
+module
+
+public import Lib.Cohomology.Etale.EllAdicCohomology
+public import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
 # The primitive comparison with period coefficients
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.PadicComparison.HodgeTate.PeriodMap` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

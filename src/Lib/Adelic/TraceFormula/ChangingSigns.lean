@@ -1,7 +1,9 @@
-import Lib.ClassField.Global.CMSplittingCharacters
-import Lib.General.LinearAlgebra.Eigenvalues
-import Lib.General.NumberTheory.CMFields
-import Lib.Shimura.HeckeTower.HeckeData
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
+public import Lib.General.LinearAlgebra.Eigenvalues
+public import Lib.General.NumberTheory.CMFields
+public import Lib.Shimura.HeckeTower.HeckeData
 
 /-!
 # Types of frames with a similitude, and the permutation of orbits that changes signs
@@ -27,6 +29,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.TraceFormula.TraceComparison` for sources.
 -/
+
+@[expose] public section
 
 open Equiv NumberField Matrix Polynomial ComplexOrder Algebra InfinitePlace MulAction AdjoinRoot
   Finset RingHom Lagrange IsAlgClosed Function

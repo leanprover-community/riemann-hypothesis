@@ -1,4 +1,6 @@
-import New.Spanning.Bessel.LargeFunction
+module
+
+public import New.Spanning.Bessel.LargeFunction
 
 /-!
 # Schur's bound for a Bessel function and its derivatives
@@ -33,6 +35,8 @@ Notions from other files:
 Known result: Smoothness and Schur's orthogonality relations for vectors of a discrete series
 representation (Harish-Chandra).
 -/
+
+@[expose] public section
 
 namespace New
 

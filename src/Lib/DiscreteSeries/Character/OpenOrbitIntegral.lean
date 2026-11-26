@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Character.WeylCharacterFormula
+module
+
+public import Lib.DiscreteSeries.Character.WeylCharacterFormula
 
 /-!
 # Orbital integrals of discrete series coefficients and Weyl characters of U(n)
@@ -42,6 +44,8 @@ Notions from other files:
 This is part of the known computation of the discrete series character on the compact Cartan
 subgroup by orbital integrals, see `Lib.DiscreteSeries.Character.FormalDegree`.
 -/
+
+@[expose] public section
 
 /-!
 ## Principal minors of conjugated diagonal matrices

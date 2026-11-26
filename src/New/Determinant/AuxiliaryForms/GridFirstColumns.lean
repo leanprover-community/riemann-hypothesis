@@ -1,7 +1,9 @@
-import New.Determinant.AuxiliaryForms.PathData
-import New.Determinant.Chain.Moduli
-import New.OneLift.ComparisonOperator.GluedLattices
-import New.UpperBound.Seesaw.LevelIdeles
+module
+
+public import New.Determinant.AuxiliaryForms.PathData
+public import New.Determinant.Chain.Moduli
+public import New.OneLift.ComparisonOperator.GluedLattices
+public import New.UpperBound.Seesaw.LevelIdeles
 
 /-!
 # Periods on the diagonal and path data on the first path
@@ -39,6 +41,8 @@ Notions from other files:
   characters of the edges at the determinants of such a family.
 * `New.GridPath.formMap`: the composite of the maps by the matrices of a tuple along a path.
 -/
+
+@[expose] public section
 
 noncomputable section
 

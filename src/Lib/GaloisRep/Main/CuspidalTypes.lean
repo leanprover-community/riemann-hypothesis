@@ -1,7 +1,9 @@
-import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
-import Lib.PadicHodge.Characters
-import Lib.PadicHodge.Limit.TraceLimit
-import Lib.Shimura.HeckeTower.HeckeData
+module
+
+public import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
+public import Lib.PadicHodge.Characters
+public import Lib.PadicHodge.Limit.TraceLimit
+public import Lib.Shimura.HeckeTower.HeckeData
 
 /-!
 # Cuspidal types, multiplicity-free sums and the Hodge–Tate cocharacter
@@ -52,6 +54,8 @@ Hodge-Tate, Astérisque 65 (1979), §1; Sen, Ann. of Math. 97 (1973).
 See also `Lib.GaloisRep.WeightCongruence`, `Lib.Adelic.Unitary.CongruenceLevels` and
 `Lib.GaloisRep.Main.OddRank`.
 -/
+
+@[expose] public section
 
 /-! ## Existence of a cuspidal type and of a principal level -/
 

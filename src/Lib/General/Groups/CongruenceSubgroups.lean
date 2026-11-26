@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Integral, congruence and unitary matrix groups over a ring, with their topology
@@ -19,6 +21,8 @@ The file also supplies the Polish and Borel instances on units, the measurable a
 structures on matrices, the Polish instance on unitary groups and the Borel instance on complex
 ones, local compactness of unitary groups, and the additive Haar measure on matrices.
 -/
+
+@[expose] public section
 
 noncomputable section
 

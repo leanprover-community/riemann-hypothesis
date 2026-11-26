@@ -1,4 +1,6 @@
-import New.Determinant.Exchange.MatchingPartners
+module
+
+public import New.Determinant.Exchange.MatchingPartners
 
 /-!
 # The finite square law for theta lifts: special data, matched functions and Fourier form
@@ -35,6 +37,8 @@ Notions from other files:
 
 See `New.Determinant.Exchange.OneSquare` and `New.Determinant.Chain.ChainNorms` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import Lib.GaloisRep.BaseChange.ShintaniLift
-import Lib.GaloisRep.LocalGlobal.IwahoriCompatibility
+module
+
+public import Lib.GaloisRep.BaseChange.ShintaniLift
+public import Lib.GaloisRep.LocalGlobal.IwahoriCompatibility
 
 /-!
 # Tame exponents of inertia and local-global compatibility for labelled forms
@@ -50,6 +52,8 @@ Taylor, Local-global compatibility for l = p, II (2014), Thm 1.1.
 
 See also `Lib.ClassField.Local.ArtinMap`.
 -/
+
+@[expose] public section
 
 /-! ## Tame exponents of inertial elements and inertia acting through labels -/
 

@@ -1,5 +1,7 @@
-import Lib.ClassField.Global.Chebotarev
-import Lib.ClassField.GreenbergWiles.SplitPrimeReciprocity
+module
+
+public import Lib.ClassField.Global.Chebotarev
+public import Lib.ClassField.GreenbergWiles.SplitPrimeReciprocity
 
 /-!
 # Relations at split primes and their number (Greenberg–Wiles)
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` for sources.
 -/
+
+@[expose] public section
 
 namespace New.selmerZ1
 

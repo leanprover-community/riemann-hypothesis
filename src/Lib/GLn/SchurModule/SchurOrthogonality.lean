@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
-import Lib.GLn.SchurModule.GramMatrix
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+public import Lib.GLn.SchurModule.GramMatrix
 
 /-!
 # Algebraic representations of GL(n) on unitary groups: Schur orthogonality
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.GLn.SchurModule.SchurNorm` and `Lib.GLn.SchurModule.MinorBasis` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

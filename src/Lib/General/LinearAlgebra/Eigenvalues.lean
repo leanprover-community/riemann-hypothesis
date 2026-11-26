@@ -1,4 +1,6 @@
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Eigenvalues: traces of powers, common eigenvectors, Amitsur's theorem, Sylvester's law
@@ -31,6 +33,8 @@ Linear and Multilinear Algebra 8 (1980), no. 3, 177-182; G. Chenevier, The p-adi
 pseudocharacters of a profinite group and pseudorepresentations over arbitrary rings, LMS Lecture
 Note Ser. 414 (2014), (1.5).
 -/
+
+@[expose] public section
 
 /-! ## Traces of powers as power sums of eigenvalues -/
 

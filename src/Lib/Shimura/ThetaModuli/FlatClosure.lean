@@ -1,6 +1,8 @@
-import Lib.General.Algebra.MultivariatePolynomials
-import Lib.General.Geometry.GeometricPoints
-import Lib.General.LinearAlgebra.MatrixPolynomials
+module
+
+public import Lib.General.Algebra.MultivariatePolynomials
+public import Lib.General.Geometry.GeometricPoints
+public import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Flat families of ideals cut out by points and the flat closure of theta points
@@ -43,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.ThetaModuli.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

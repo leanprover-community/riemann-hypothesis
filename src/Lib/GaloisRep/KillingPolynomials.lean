@@ -1,4 +1,6 @@
-import Lib.GaloisRep.Main.Defs
+module
+
+public import Lib.GaloisRep.Main.Defs
 
 /-!
 # Free cocharacter weights force rank n and identify killing polynomials
@@ -45,6 +47,8 @@ Fayad–Nekovář 2019; Harris–Taylor 2001, VII.1.8.
 
 See also `Lib.GaloisRep.Main.OddRank`.
 -/
+
+@[expose] public section
 
 namespace New
 

@@ -1,7 +1,9 @@
-import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
-import Lib.GLn.SchurModule.Basic
-import Lib.General.Algebra.MultivariatePolynomials
-import Lib.Weil.Fock.Basic
+module
+
+public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
+public import Lib.GLn.SchurModule.Basic
+public import Lib.General.Algebra.MultivariatePolynomials
+public import Lib.Weil.Fock.Basic
 
 /-!
 # Fock space oscillator actions, joint harmonics and Fischer decomposition
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.DiscreteSeries.Theta.LocalCorrespondence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

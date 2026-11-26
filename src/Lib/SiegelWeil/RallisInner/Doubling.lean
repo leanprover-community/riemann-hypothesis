@@ -1,5 +1,7 @@
-import Lib.SiegelWeil.Formula.WeilRange
-import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
+module
+
+public import Lib.SiegelWeil.Formula.WeilRange
+public import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
 
 /-!
 # Doubling: clean data, the doubling identity and the inner product formula
@@ -41,6 +43,8 @@ S. Rallis, L-functions and the oscillator representation, LNM 1245 (1987); J.-S.
 (1992); the unitary unfolding is written out in Y. Liu (2011) Prop 2.3 and
 Eischen–Harris–Li–Skinner 4.1.4.
 -/
+
+@[expose] public section
 
 noncomputable section
 

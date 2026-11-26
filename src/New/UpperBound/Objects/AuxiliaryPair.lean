@@ -1,8 +1,10 @@
-import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
-import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.GLn.Dual
-import Lib.General.Algebra.LevelModulus
-import Lib.Weil.Unramified.HeckeTransfer
+module
+
+public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.GLn.Dual
+public import Lib.General.Algebra.LevelModulus
+public import Lib.Weil.Unramified.HeckeTransfer
 
 /-!
 # Descent pairs: descent data for theta lifts to definite unitary groups
@@ -59,6 +61,8 @@ Notions from other files:
 
 See `Lib.Adelic.Unitary.CongruenceLevels` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

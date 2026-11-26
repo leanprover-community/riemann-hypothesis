@@ -1,4 +1,6 @@
-import Lib.Weil.DualPair.HolomorphicData
+module
+
+public import Lib.Weil.DualPair.HolomorphicData
 
 /-!
 # The peaks of a bounded holomorphic form lie away from the cusps
@@ -49,6 +51,8 @@ C. Poor, D. Yuen, Linear dependence among Siegel modular forms, Math. Ann. 318 (
 1.3; M. Eichler, Math. Ann. 213 (1975) 281-291; for the factorisation, Gill, Golub, Murray,
 Saunders, Math. Comp. 28 (1974) 505-535.
 -/
+
+@[expose] public section
 
 open NumberField Matrix Real Finset UpperHalfPlane Function Prod ComplexConjugate New Space G
   Norms.L2Operator

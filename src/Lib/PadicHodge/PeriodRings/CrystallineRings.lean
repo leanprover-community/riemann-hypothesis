@@ -1,4 +1,6 @@
-import Lib.PadicHodge.PeriodRings.Ainf
+module
+
+public import Lib.PadicHodge.PeriodRings.Ainf
 
 /-!
 # The period rings A, B⁺, B and B_dR⁺: θ, Frobenius, domains and contraction
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.PeriodRings.DeRhamPeriods` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -386,7 +390,7 @@ lemma exists_reduction_mod_p :
       ∃ F : Amax →+* R, (∀ c : Ainf, F c = algebraMap Ainf R c) ∧ F xiDivP = .X :=
     exists_lift (algebraMap Ainf R) .X h_xi
   have hF (P : Ainf[X]) : F (aeval xiDivP P) = P.map (mk (span {↑p, xi})) := by
-    simp [R, hF_alg, hF_X, aeval_def, eval₂, sum, Polynomial.map]
+    simp [R, hF_alg, hF_X, aeval_def, eval₂_eq_sum, sum, Polynomial.map]
   refine ⟨F, hF, fun y ↦ ⟨?_, fun hy ↦ ?_⟩⟩
   · rintro ⟨c, rfl⟩
     rw [map_mul, map_natCast, h_p_zero, zero_mul]

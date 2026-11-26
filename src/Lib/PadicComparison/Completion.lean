@@ -1,4 +1,6 @@
-import Lib.General.Algebra.CohomologyBaseChange
+module
+
+public import Lib.General.Algebra.CohomologyBaseChange
 
 /-!
 # Derived completeness, adic approximation of comparisons and completed base change
@@ -46,6 +48,8 @@ discrete valuation ring, with bounded torsion shown by hand. Source: Stacks Proj
 Contraadjusted modules, contramodules, and reduced cotorsion modules, arXiv 1605.03934.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 section Completion
@@ -66,9 +70,11 @@ variable {C C' : Type 1} [Category C] [Category C'] {S : Type} [CommRing S]
 variable (π X) in
 /-- `X` is derived π-complete: the map `(x j) ↦ (x j - π • x (j + 1))` on sequences in `X` is
 bijective. -/
+@[stacks 091S "for a module and a principal ideal, in the form of 091P (7)"]
 abbrev IsDerivedComplete : Prop := Bijective (shiftDiff X π)
 
 /-- A π-adically complete module is derived π-complete. -/
+@[stacks 091R "(1), for a principal ideal"]
 lemma IsDerivedComplete.of_isAdicComplete (h_complete : IsAdicComplete (span {π}) X) :
     IsDerivedComplete π X :=
   ⟨out, out⟩
@@ -254,6 +260,7 @@ def IsSMulDivisible {R : Type*} (M : Type*) [SMul R M] (c : R) : Prop :=
 
 /-- A submodule `K` of a derived π-complete module on which multiplication by `π` is onto is
 zero. -/
+@[stacks 09B9 "for a principal ideal, and for any divisible submodule"]
 lemma IsDerivedComplete.eq_zero_of_mem_of_isSMulDivisible (hX : IsDerivedComplete π X)
     {K : Submodule W X} (hK : IsSMulDivisible K π) {x : X} (hx : x ∈ K) : x = 0 := by
   -- approximation with `f = 0`: every `y` in `K` is `0 + π • z` with `z` in `K`

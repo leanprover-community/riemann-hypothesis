@@ -1,6 +1,8 @@
-import Lib.Adelic.Unitary.Defs
-import TauCeti.RepresentationTheory.CharacterTable.CentralCharacter
-import TauCeti.RepresentationTheory.CharacterTable.Completeness
+module
+
+public import Lib.Adelic.Unitary.Defs
+public import TauCeti.RepresentationTheory.CharacterTable.CentralCharacter
+public import TauCeti.RepresentationTheory.CharacterTable.Completeness
 
 /-!
 # Characters of finite groups: averages, virtual characters and central projections
@@ -34,6 +36,8 @@ This file sets up the character theory of a finite group `G` that is used for th
   projection in every unitary representation. Hence convolution with it does not increase `ℓ²`
   norms.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -629,15 +633,15 @@ lemma IsClassFunction.exists_eq_mul_groupAlgElem_mul (hf : IsClassFunction f) (a
     TauCeti.Representation.centralCharacter (TauCeti.blockRepresentation e i) z
   have hc (i : Fin n) : e (groupAlgElem f) i = algebraMap ℂ _ (c i) := by
     have h := TauCeti.Representation.asAlgebraHom_center (TauCeti.blockRepresentation e i) z
-    simpa [z, c, TauCeti.asAlgebraHom_blockRepresentation, TauCeti.blockAlgHom,
+    simpa [z, c, TauCeti.asAlgebraHom_blockRepresentation, TauCeti.blockAlgHom_apply,
       algebraMap_eq_smul_one] using congrArg Matrix.toLinAlgEquiv'.symm h
   refine ⟨e.symm (c⁻¹ • 1), e.injective (funext fun i ↦ ?_)⟩
   by_cases hi : c i = 0
   · -- `groupAlgElem f` acts as zero on the `i`-th block, so `a` does too
     have ha_zero : e a i = 0 := by
       have h := ha (.of (TauCeti.blockRepresentation e i)) (by
-        simp [TauCeti.asAlgebraHom_blockRepresentation, TauCeti.blockAlgHom, hc, hi])
-      simpa [TauCeti.asAlgebraHom_blockRepresentation, TauCeti.blockAlgHom] using
+        simp [TauCeti.asAlgebraHom_blockRepresentation, TauCeti.blockAlgHom_apply, hc, hi])
+      simpa [TauCeti.asAlgebraHom_blockRepresentation, TauCeti.blockAlgHom_apply] using
         congrArg Matrix.toLinAlgEquiv'.symm h
     simp [ha_zero]
   · simp [hc, hi, algebraMap_eq_smul_one]

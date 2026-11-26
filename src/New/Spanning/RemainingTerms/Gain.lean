@@ -1,4 +1,6 @@
-import New.Spanning.RemainingTerms.Cut
+module
+
+public import New.Spanning.RemainingTerms.Cut
 
 /-!
 # The gain: a discriminant bound for the common lattice of two terms over one block
@@ -36,6 +38,8 @@ Notions from other files:
 * `S.HasCellRank j γ`: `γ` has cell rank `j ≤ ϱ + 1`, the top one exactly if `S.termDisc γ ≠ 0`.
 * `S.levelGauge j c c' γ`: the gauge `𝗀*` of the term, a positive real bound for discriminants.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

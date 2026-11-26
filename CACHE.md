@@ -45,16 +45,19 @@ baseline. `python3 -I scripts/tests/test_ci_cache_baseline.py` tests the selecti
 ## CI
 
 Pull requests land through GitHub's merge queue. `.github/workflows/build.yml` has one job,
-`lake build`, the queue's required check. It builds every pull request to `main` on a
-GitHub-hosted runner, and every merge queue group (`merge_group`), push to `main` and manual run
-on the self-hosted runner described below, with the exact record if there is one and the
-baseline otherwise. It fails if `lake build` fails, if the build log contains "declaration uses
-'sorry'", or if `scripts/PrintAxioms.lean` reports any axiom other than `propext`,
+`lake build`, the queue's required check. It builds every pull request to `main` from a fork on
+a GitHub-hosted runner (or on the runner named by the repository variable `PR_RUNS_ON`, a JSON
+`runs-on` value such as `["self-hosted","rh-pr"]`; without it, `ubuntu-latest`), and every pull
+request from a branch of this repository, merge queue group (`merge_group`), push to `main` and
+manual run on the self-hosted runner described below, with the exact record if there is one and
+the baseline otherwise. It fails if `lake build` fails, if the build log contains `` declaration uses
+`sorry` ``, or if `scripts/PrintAxioms.lean` reports any axiom other than `propext`,
 `Classical.choice` and `Quot.sound` for the five theorems. It never publishes anything.
 
-On the self-hosted runner the job builds with `lake build -o`, then `scripts/ci-cache-stage.py`
-writes the map, the module manifest and the artifacts that the public cache does not have yet,
-and the job uploads them as the Actions artifact `cache-<commit>`. The push build of a commit
+On the self-hosted runner, except for pull requests, which upload nothing, the job builds with
+`lake build -o`, then `scripts/ci-cache-stage.py` writes the map, the module manifest and the
+artifacts that the public cache does not have yet, and the job uploads them as the Actions
+artifact `cache-<commit>`. The push build of a commit
 that the merge queue has already built stops after checking that (`scripts/ci-github.py
 queue-tested`).
 
@@ -83,7 +86,8 @@ publisher's builds before.
 ## Self-hosted merge queue runner
 
 The runner host holds no credential of the project, and builds only code that is queued to land
-on `main` or already on it. Its setup is in `scripts/runner/`:
+on `main` or already on it, or that someone with write access has pushed to a branch of this
+repository (a pull request from such a branch, or a manual run). Its setup is in `scripts/runner/`:
 
 - `setup-host.sh` (run as root, idempotent) creates the unprivileged user `ghrunner` (no sudo,
   no other groups), installs a pinned, checksummed copy of the GitHub Actions runner owned by
@@ -96,9 +100,13 @@ on `main` or already on it. Its setup is in `scripts/runner/`:
   privileges, and the same addresses denied to the unit's cgroup), and after the job kills
   whatever is left and deletes the home directory, workspace included.
 - `job-started.sh` is the runner's job-started hook. Pull requests can change the workflow they
-  run, so one could ask for this runner; the hook fails every job before it starts unless it is
-  `build.yml` of this repository for a `merge_group` on `main`'s queue, a push to `main`, or a
-  `workflow_dispatch` (which needs write access).
+  run, so one from a fork could ask for this runner; the hook fails every job before it starts
+  unless it is `build.yml` of this repository for a `merge_group` on `main`'s queue, a push to
+  `main`, a `workflow_dispatch` (which needs write access), or a `pull_request` whose
+  `pull_request.head.repo.full_name` in the event payload (`$GITHUB_EVENT_PATH`, written by
+  GitHub) is this repository. A pull request from a fork, or one whose payload has no head
+  repository, is refused. After a change to the hook, `setup-host.sh` must be run again to
+  install it.
 - `mint-jit.sh` runs every minute on a trusted workstation whose `gh` is logged in as a
   repository admin (a systemd user timer). It keeps four one-time runner configurations from
   `POST /repos/{owner}/{repo}/actions/runners/generate-jitconfig` (labels `self-hosted`, `linux`,
@@ -109,8 +117,9 @@ on `main` or already on it. Its setup is in `scripts/runner/`:
 
 ## Tau Ceti
 
-The project depends on [Tau Ceti](https://github.com/TauCetiProject/TauCeti), pinned at a
-toolchain tag in `lakefile.toml`. Tau Ceti publishes its oleans in its own public cache, the
+The project depends on [Tau Ceti](https://github.com/TauCetiProject/TauCeti), pinned in `lakefile.toml`
+at a toolchain tag or at a commit of its main branch for which Tau Ceti has published a cache
+(check `https://cache.taucetiproject.org/revisions/TauCetiProject/TauCeti/tc/<toolchain>/<rev>.jsonl`). Tau Ceti publishes its oleans in its own public cache, the
 service `tauceti-public` in `lakefile.toml`, which neither Mathlib's cache nor this project's
 covers. `scripts/tauceti-cache-get.py`, which `lake exe cache get` (and CI) runs after Mathlib's
 cache:
@@ -125,7 +134,7 @@ cache:
 
 After adding an import of a new Tau Ceti module, rerun `lake exe cache get`; otherwise Lake
 compiles that module and its Tau Ceti dependencies from source. The Tau Ceti and Mathlib pins move
-together: pick the Tau Ceti tag for the new Lean release, and check that its manifest pins the
+together: pick the Tau Ceti tag (or cached main commit) for the new Lean release, and check that its manifest pins the
 Mathlib commit chosen here. A change of either pin changes the build inputs of every module that
 imports Tau Ceti, directly or not.
 

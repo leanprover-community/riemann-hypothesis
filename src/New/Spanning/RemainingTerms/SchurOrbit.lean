@@ -1,7 +1,9 @@
-import New.Spanning.RemainingTerms.ColumnLattice
-import New.Spanning.RemainingTerms.FrameParts
-import New.Spanning.RemainingTerms.LinkLattice
-import New.Spanning.RemainingTerms.SchurTest
+module
+
+public import New.Spanning.RemainingTerms.ColumnLattice
+public import New.Spanning.RemainingTerms.FrameParts
+public import New.Spanning.RemainingTerms.LinkLattice
+public import New.Spanning.RemainingTerms.SchurTest
 
 /-!
 # Schur's test for one orbit
@@ -36,6 +38,8 @@ Notions from other files:
   `New.Filling.tsum_amplitudeMajorant_orbit_le`: the test, and its form as a bound by
   `New.Filling.orbitBound`.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 
@@ -791,7 +795,6 @@ lemma tsum_schurWeight_ratToInf_mul {i : ℕ} {u : S.G E} (hu : u ∈ S.classUni
   conv_lhs => rw [← h_image, tsum_image (S.schurWeight c' · _ _) (by simp)]
   simp [schurWeight, volumeRatio, frameVolume_mul_left, ratToInf_mem_besselU0 hu.2]
 
-set_option synthInstance.maxHeartbeats 200000 in
 /-- **From the lattice to an integral.** Let `γ` have cell rank `j ≥ 1` (`HasCellRank`) and lie in
 `termsOver c s c'`.
 

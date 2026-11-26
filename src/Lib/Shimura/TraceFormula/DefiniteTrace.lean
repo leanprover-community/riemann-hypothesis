@@ -1,6 +1,8 @@
-import Lib.Adelic.Reduction.FiniteVolume
-import Lib.Shimura.AbelianScheme.Basic
-import Lib.Shimura.Transfer.MarkedPairs
+module
+
+public import Lib.Adelic.Reduction.FiniteVolume
+public import Lib.Shimura.AbelianScheme.Basic
+public import Lib.Shimura.Transfer.MarkedPairs
 
 /-!
 # Trace formula for algebraic forms, finiteness of signed frame classes, the definite side
@@ -43,6 +45,8 @@ Notions from other files:
 Known; see `Lib.Shimura.TraceFormula.MarkedDefiniteSums` and
 `Lib.Shimura.Uniformisation.AppellHumbert` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

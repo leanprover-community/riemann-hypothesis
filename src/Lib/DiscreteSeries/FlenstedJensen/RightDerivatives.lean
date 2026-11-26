@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Haar.TotalMass
-import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
-import Lib.General.Analysis.HolomorphicIntegrals
+module
+
+public import Lib.DiscreteSeries.Haar.TotalMass
+public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
+public import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
 # Right derivatives and bump convolution for smooth functions on U(p,q)
@@ -39,6 +41,8 @@ discrete series (see `Lib.DiscreteSeries.FlenstedJensen.PsiKTypes`), and for two
 Schur orthogonality, and the fact that coefficients of integrable discrete series are cusp forms
 (see `Lib.DiscreteSeries.CuspKernel`).
 -/
+
+@[expose] public section
 
 noncomputable section
 

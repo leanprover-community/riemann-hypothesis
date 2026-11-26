@@ -1,4 +1,6 @@
-import Lib.Cohomology.PointClass.ProjectiveNonvanishing
+module
+
+public import Lib.Cohomology.PointClass.ProjectiveNonvanishing
 
 /-!
 # The Hodge–Tate map keeps classes of points on a projective variety linearly independent
@@ -45,6 +47,8 @@ by transfer along a finite linear projection. Source: Faltings, p-adic Hodge the
 (compatibility with traces and cycle classes); for transfer, Suslin–Voevodsky, Singular homology of
 abstract algebraic varieties, Invent. Math. 123 (1996), §§4–6.
 -/
+
+@[expose] public section
 
 open CategoryTheory Function CommAlgCat New.Variety CutsOutLocus IsCoordsWithUnit projSpace
   MvPolynomial Finset RingHom Fin CommAlg IsLocalization Away Field Submodule Algebra Ideal
@@ -296,6 +300,9 @@ lemma New.Variety.exists_etale_projection {k : Type} [Field k] [CharZero k] {R :
     .of_restrict_scalars_finitePresentation k ..
   have h_etaleAt : IsEtaleAt S (⊥ : Ideal c.coordRing) := by
     -- The localisation at `⊥` is the fraction field, which is separable over that of `S`.
+    have : Algebra.IsAlgebraic (FractionRing S) (FractionRing c.coordRing) :=
+      IsFractionRing.comap_isAlgebraic_iff.mp
+        ((IsFractionRing.isAlgebraic_iff' S c.coordRing (FractionRing c.coordRing)).mp h_alg)
     change Algebra.FormallyEtale S (Localization (⊥ : Ideal c.coordRing).primeCompl)
     rw [primeCompl_bot]
     exact .comp S (FractionRing S) (FractionRing c.coordRing)
@@ -544,9 +551,7 @@ lemma New.Variety.exists_map_separating_class {p : ℕ} {k : Type} [Field k] [Em
   -- `Γ` is the graph of the projection; its first projection `π` is injective.
   let Γ : Subfunctor (algPointsOf k R Y ⊗ projSpace k n) :=
     ⟨fun _ ↦ {x | ∃ v h, IsCoordsWithUnit L x.1 v ∧ x.2 = projSpace.mk (evalForms Λ v) h},
-      fun φ _ ⟨v, _, hv, e⟩ ↦ by
-        rw [Set.mem_setOf_eq]
-        exact ⟨φ ∘ v, evalForms_map Λ φ.hom' _ ▸ ⟨_, hv.comp φ, congrArg _ e⟩⟩⟩
+      fun φ _ ⟨v, _, hv, e⟩ ↦ ⟨φ ∘ v, evalForms_map Λ φ.hom' _ ▸ ⟨_, hv.comp φ, congrArg _ e⟩⟩⟩
   let π : Γ.toFunctor ⟶ algPointsOf k R Y := Γ.ι ≫ fst (algPointsOf k R Y) (projSpace k n)
   have h_mono : Mono π := mono_of_app_injective <| by
     rintro A ⟨⟨⟩, v, _, hv, ⟨⟩⟩ ⟨⟨⟩, v', _, hv', ⟨⟩⟩ ⟨⟩

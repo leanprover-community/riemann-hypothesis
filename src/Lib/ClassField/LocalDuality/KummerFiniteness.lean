@@ -1,5 +1,7 @@
-import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
-import Lib.ClassField.GaloisCohomology.TateIndexFormula
+module
+
+public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+public import Lib.ClassField.GaloisCohomology.TateIndexFormula
 
 /-!
 # Index of l-th powers in a local field and finiteness of Kummer 1-cocycles
@@ -31,6 +33,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.LocalDuality.CrystallineDuality` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The index of l-th powers in the multiplicative group

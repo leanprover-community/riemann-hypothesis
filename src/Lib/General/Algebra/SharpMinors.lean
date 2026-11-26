@@ -1,4 +1,6 @@
-import Lib.General.Algebra.FittingIdealsAndLengths
+module
+
+public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # Maximal minors and lengths
@@ -24,6 +26,8 @@ Notions from other files:
 Known result: Length of a matrix kernel modulo `a` over a discrete valuation ring via maximal
 minors. A consequence of the theorem on elementary divisors.
 -/
+
+@[expose] public section
 
 noncomputable section
 

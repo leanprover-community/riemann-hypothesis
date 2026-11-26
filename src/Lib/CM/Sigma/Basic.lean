@@ -1,5 +1,7 @@
-import Lib.General.NumberTheory.ImaginaryQuadraticField
-import Lib.Shimura.ComplexTheta.DimensionFormula
+module
+
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
+public import Lib.Shimura.ComplexTheta.DimensionFormula
 
 /-!
 # Sigma and Weierstrass functions, lattice invariants and lattices with complex multiplication
@@ -47,6 +49,8 @@ modular forms of negative weight. Source: J. Silverman, The Arithmetic of Ellipt
 Advanced Topics (1994), I.5; A. Weil, Elliptic Functions according to Eisenstein and Kronecker
 (1976); for uniformisation, A. Sutherland, 18.783 Lecture 15 (2023), Cor. 15.12.
 -/
+
+@[expose] public section
 
 noncomputable section
 

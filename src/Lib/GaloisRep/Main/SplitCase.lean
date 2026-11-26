@@ -1,6 +1,8 @@
-import Lib.GaloisRep.Main.AttachedRepresentations
-import Lib.GaloisRep.Main.SeedRepresentation
-import Lib.GaloisRep.WeightCongruence
+module
+
+public import Lib.GaloisRep.Main.AttachedRepresentations
+public import Lib.GaloisRep.Main.SeedRepresentation
+public import Lib.GaloisRep.WeightCongruence
 
 /-!
 # Attached Galois representations in odd rank: the split case
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Main.OddRank` for sources.
 -/
+
+@[expose] public section
 
 section OddRank
 

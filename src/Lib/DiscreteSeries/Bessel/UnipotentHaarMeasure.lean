@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bessel.Basic
-import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+module
+
+public import Lib.DiscreteSeries.Bessel.Basic
+public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
 
 /-!
 # Haar measures on the Bessel unipotent groups 𝖴⁰ ⊆ 𝖴 and σ-finiteness on G₁
@@ -43,6 +45,8 @@ unipotent radical and on its subgroup fixing the frame, balls and tubes for the 
 models for real unitary groups: the tempered case, Duke Math. J. 172 (2023) 995-1031; R.
 Beuzart-Plessis, Astérisque 418 (2020).
 -/
+
+@[expose] public section
 
 /-!
 ## Unimodular Haar measures on 𝖴 and 𝖴⁰, dilations and tubes

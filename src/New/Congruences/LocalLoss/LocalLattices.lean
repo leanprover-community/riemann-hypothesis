@@ -1,5 +1,7 @@
-import New.Congruences.GaloisRepresentations.SelmerHypotheses
-import New.Congruences.LocalLoss.CrystallineCocycles
+module
+
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+public import New.Congruences.LocalLoss.CrystallineCocycles
 
 /-!
 # Tame classes from roots of unity and lattices read at a place above ℓ
@@ -37,6 +39,8 @@ Notions from other files:
 
 See `New.Congruences.FirstOrder.RibetElement` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

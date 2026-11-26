@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.StrongApproximation
-import Lib.General.Groups.ProfiniteCharacters
-import Lib.General.Measure.HaarModulus
+module
+
+public import Lib.Adelic.Adeles.StrongApproximation
+public import Lib.General.Groups.ProfiniteCharacters
+public import Lib.General.Measure.HaarModulus
 
 /-!
 # Finite ideles, principal ideles and the class group; finite index of open subgroups
@@ -37,6 +39,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

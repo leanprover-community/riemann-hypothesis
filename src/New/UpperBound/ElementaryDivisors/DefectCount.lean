@@ -1,7 +1,9 @@
-import Lib.General.Measure.IntegralOperators
-import Lib.LocalGL.Green.CuspidalFunctions
-import New.UpperBound.ElementaryDivisors.PieriCone
-import New.UpperBound.ElementaryDivisors.RootLemma
+module
+
+public import Lib.General.Measure.IntegralOperators
+public import Lib.LocalGL.Green.CuspidalFunctions
+public import New.UpperBound.ElementaryDivisors.PieriCone
+public import New.UpperBound.ElementaryDivisors.RootLemma
 
 /-!
 # The dimension of the forms of bounded defect
@@ -58,6 +60,8 @@ Horn problem, 2021 (after Dixon, 1905; Anderson, 1991); Bombieri, Counting point
 finite fields, Sém. Bourbaki 430, 1973; Okounkov, Brunn–Minkowski inequality for multiplicities,
 1996.
 -/
+
+@[expose] public section
 
 /-!
 ## Forms of bounded defect: flags times the volume of a cone

@@ -1,4 +1,6 @@
-import New.UpperBound.Objects.Rows
+module
+
+public import New.UpperBound.Objects.Rows
 
 /-!
 # The chain of theta lifts ι_μ along the spaces Y_j: level, character and 𝖦-equivariance
@@ -28,6 +30,8 @@ Notions from other files:
 * `New.Data.pointDatumY`: the finite datum on Hom(Y_j, Y_{j+1}), the indicator of the inclusion
   modulo the level places and the vacuum elsewhere.
 -/
+
+@[expose] public section
 
 noncomputable section
 

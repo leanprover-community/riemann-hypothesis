@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Haar.TotalMass
-import Lib.General.Measure.FibreMeasure
+module
+
+public import Lib.DiscreteSeries.Haar.TotalMass
+public import Lib.General.Measure.FibreMeasure
 
 /-!
 # The fibre measure of the Gram map
@@ -32,6 +34,8 @@ Notions from other files:
 Known result: the invariant measure `dY / dT` on tuples of vectors with a given Gram matrix. Source:
 C. L. Siegel, Über die analytische Theorie der quadratischen Formen, Ann. of Math. 36 (1935).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -186,10 +190,7 @@ theorem leFibreMeasure_conjTranspose_mul_mul {E : Matrix ι n₁ ℂ} {R : Matri
   have h_proj (t : Matrix n₁ n ℂ) (x : Matrix n₂ n ℂ) : Eᴴ * J * (J * E * t + R * x) = t := by
     simp [Matrix.mul_add, ← Matrix.mul_assoc, h_orth, Matrix.mul_assoc _ J J,
       IsHermitianInvolution.mul_self, hE]
-  let φ (p : Matrix n₁ n ℂ × Matrix n₂ n ℂ) : Matrix ι n ℂ := J * E * p.1 + R * p.2
-  show LeFibreMeasure volume volume (fun y : Matrix ι n ℂ ↦ Eᴴ * J * y) M
-    (volume.map fun x ↦ φ (M, x))
-  exact .of_measurePreserving (φ := φ) (measurePreserving_mul_mul_add_mul hE hR h_orth h_card)
+  exact .of_measurePreserving (measurePreserving_mul_mul_add_mul hE hR h_orth h_card)
     (by fun_prop) h_proj fun _ ↦ Continuous.continuousAt (by fun_prop)
 
 /-- Choosing `g` with law `m` and completing `g E₁` by further columns with the Lebesgue measure, in
@@ -333,8 +334,7 @@ theorem leGramFibre_dirac [IsEmpty n] (E : Matrix ι n ℂ) : LeGramFibre J E (d
       by simp [volume_eq_dirac_of_isEmpty E, volume_eq_dirac_of_isEmpty (gramCoords J E)]⟩
   have h_fibre : LeFibreMeasure volume volume (gramCoords J) (gramCoords J E)
       ((dirac () : Measure Unit).map fun _ ↦ E) :=
-    .of_measurePreserving (φ := fun _ : Matrix n n ℝ × Unit ↦ E) (b := gramCoords J E) h_vol
-      (by fun_prop) (fun _ _ ↦ Subsingleton.elim _ _)
+    .of_measurePreserving h_vol (by fun_prop) (fun _ _ ↦ Subsingleton.elim _ _)
       fun _ ↦ continuousAt_const
   simpa [LeGramFibre] using h_fibre
 

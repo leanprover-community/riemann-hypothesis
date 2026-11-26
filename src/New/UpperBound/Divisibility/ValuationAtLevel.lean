@@ -1,6 +1,8 @@
-import New.UpperBound.Divisibility.ChainDatumExpansion
-import New.UpperBound.Divisibility.SetupAtLevel
-import New.UpperBound.Objects.CharactersAtLevel
+module
+
+public import New.UpperBound.Divisibility.ChainDatumExpansion
+public import New.UpperBound.Divisibility.SetupAtLevel
+public import New.UpperBound.Objects.CharactersAtLevel
 
 /-!
 # N-adic valuation of the lifts between the X_j at the level prime N
@@ -35,6 +37,8 @@ Denominators at the level prime N are traded for the operator `Up`. Related work
 Schwartz functions at p for theta lifts of Hida families, arXiv 2510.21644, 2025; S. Rallis,
 Langlands' functoriality and the Weil representation, 1982.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

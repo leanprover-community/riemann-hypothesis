@@ -1,4 +1,6 @@
-import Lib.GaloisRep.Hilbert90.TameActions
+module
+
+public import Lib.GaloisRep.Hilbert90.TameActions
 
 /-!
 # Hilbert 90 for unitary groups over profinite rings and for finite ideles
@@ -34,6 +36,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Hilbert90.TameActions` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Hilbert 90 for unitary groups over profinite rings

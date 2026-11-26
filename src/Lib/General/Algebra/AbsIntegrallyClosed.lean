@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Absolutely integrally closed rings and their stability properties; Frobenius powers
@@ -19,6 +21,8 @@ import Lib.Base
   to roots in `A`, so integral elements lie in the image.
 -/
 
+@[expose] public section
+
 open Polynomial IsLocalization
 
 namespace New.Variety
@@ -33,6 +37,7 @@ def frobPow {p : ℕ} {B : Type*} [Fact (Nat.Prime p)] [CommRing B] (h : (p : B)
 
 /-- `A` is absolutely integrally closed: every monic polynomial over `A` of positive degree has a
 root in `A`. -/
+@[stacks 0DCL "in the equivalent form of 0DCM (2)"]
 class IsAbsIntegrallyClosed (A : Type*) [CommRing A] : Prop where
   /-- Every monic polynomial over `A` of positive degree has a root in `A`. -/
   exists_root (P : A[X]) : Monic P → 0 < P.natDegree → ∃ x : A, P.IsRoot x
@@ -59,6 +64,7 @@ lemma exists_eval₂_eq_zero [hA : IsAbsIntegrallyClosed A] (f : B →+* A) {P :
 variable (A) in
 /-- If `A` is absolutely integrally closed and `B` is integrally closed in the `B`-algebra `A`
 (in particular `B → A` is injective), then `B` is absolutely integrally closed. -/
+@[stacks 0DCP "for any ring in which `B` is integrally closed, not only a localisation"]
 lemma of_isIntegrallyClosedIn [hA : IsAbsIntegrallyClosed A] [Algebra B A]
     [h_closed : IsIntegrallyClosedIn B A] : IsAbsIntegrallyClosed B := by
   refine ⟨fun P hP h_deg ↦ ?_⟩
@@ -99,12 +105,14 @@ lemma exists_pow_sub_mul_eq [hA : IsAbsIntegrallyClosed A] [Nontrivial A] (n : �
 
 /-- If `A` is absolutely integrally closed and `f : A →+* B` is a surjective ring map, then `B` is
 absolutely integrally closed. -/
+@[stacks 0DCN "first assertion"]
 lemma of_surjective [hA : IsAbsIntegrallyClosed A] {f : A →+* B} (hf : Function.Surjective f) :
     IsAbsIntegrallyClosed B :=
   ⟨fun _ ↦ hA.exists_root_of_coeffs_subset_range fun b _ ↦ hf b⟩
 
 /-- A localization `B` of an absolutely integrally closed ring `A` at a submonoid is absolutely
 integrally closed. -/
+@[stacks 0DCN "second assertion"]
 lemma of_isLocalization [hA : IsAbsIntegrallyClosed A] (S : Submonoid A) [Algebra A B]
     [IsLocalization S B] : IsAbsIntegrallyClosed B := by
   -- Scaling the roots of `P` by a common denominator `d` of its coefficients gives a monic

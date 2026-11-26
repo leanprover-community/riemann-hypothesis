@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Monotone paths through two square grids, and their turns
@@ -22,6 +24,8 @@ step left is recorded as a step down, and a step up as a step right.
 * `New.TwoGridPath.turn_induction`: induction backwards along turns, one at each `(i, j)` with
   `i, j < m`, from the last path to the first.
 -/
+
+@[expose] public section
 
 noncomputable section
 

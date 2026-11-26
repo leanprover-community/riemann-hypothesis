@@ -1,6 +1,8 @@
-import Lib.GaloisRep.TaylorWiles
-import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
-import New.OneLift.FalseLifts.BottomOfTower
+module
+
+public import Lib.GaloisRep.TaylorWiles
+public import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
+public import New.OneLift.FalseLifts.BottomOfTower
 
 /-!
 # Base data whose forms contain those with given labels in a lift setting
@@ -45,6 +47,8 @@ Notions from other files:
   twist of a representation by `normalizingAvatar O`; `ϑ.invAvatar`: the `ℓ`-adic avatar of `ϑ⁻¹`
   over `D.E`.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

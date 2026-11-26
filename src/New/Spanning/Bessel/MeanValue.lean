@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Bessel.FrameFibre
-import Lib.DiscreteSeries.Bruhat.ComplexPlace
-import New.Spanning.Bessel.GramSection
+module
+
+public import Lib.DiscreteSeries.Bessel.FrameFibre
+public import Lib.DiscreteSeries.Bruhat.ComplexPlace
+public import New.Spanning.Bessel.GramSection
 
 /-!
 # The mean value inequality over the Gram matrix of two frames
@@ -47,6 +49,8 @@ Part of the bound on the open cell for the Bessel integrals at a real place; see
 `New.Spanning.Bessel.FillingData`. For fibre measures of the Gram map compare Siegel, Über die
 analytische Theorie der quadratischen Formen, Ann. of Math. 36 (1935).
 -/
+
+@[expose] public section
 
 noncomputable section
 

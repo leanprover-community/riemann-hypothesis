@@ -1,5 +1,7 @@
-import New.Congruences.FirstOrder.RibetLemma
-import New.Congruences.FirstOrder.TraceRelations
+module
+
+public import New.Congruences.FirstOrder.RibetLemma
+public import New.Congruences.FirstOrder.TraceRelations
 
 /-!
 # Ribet's element for conjugate self-dual representations
@@ -55,6 +57,8 @@ Related work: Dasgupta–Kakde–Silliman–Wang, The residually indistinguishab
 for GL2, 2023; Bellaïche–Chenevier, Families of Galois representations and Selmer groups, 2009;
 Urban, Selmer groups and the Eisenstein–Klingen ideal, 2001.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

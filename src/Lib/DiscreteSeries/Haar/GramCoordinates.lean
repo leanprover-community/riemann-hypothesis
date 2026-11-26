@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Haar.CayleyChart
+module
+
+public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # Coordinates for the Gram map
@@ -22,6 +24,8 @@ Notions from other files:
 * `New.skewCoords`: the real-linear left inverse of `New.skewOfReal`, inverse to it on
   skew-hermitian matrices.
 -/
+
+@[expose] public section
 
 noncomputable section
 

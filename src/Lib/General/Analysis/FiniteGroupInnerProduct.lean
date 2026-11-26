@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Translation-invariant inner products on a finite group
@@ -6,6 +8,8 @@ import Lib.Base
 An inner product matrix whose entries depend only on the group difference
 has the same row sum in every row.
 -/
+
+@[expose] public section
 
 open InnerProductSpace Finset Complex
 open scoped BigOperators

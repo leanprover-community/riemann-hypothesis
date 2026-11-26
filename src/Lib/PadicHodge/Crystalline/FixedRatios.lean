@@ -1,5 +1,7 @@
-import Lib.PadicHodge.Kisin.Bicommutant
-import Lib.PadicHodge.Kisin.KummerChartExistence
+module
+
+public import Lib.PadicHodge.Kisin.Bicommutant
+public import Lib.PadicHodge.Kisin.KummerChartExistence
 
 /-!
 # Bounded poles, φ-fixed elements of B_max, and ratios of periods fixed near 1
@@ -31,6 +33,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Crystalline.Regularity` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Bounded poles and φ-fixed elements of B in B_dR⁺ -/
 

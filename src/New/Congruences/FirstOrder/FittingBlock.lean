@@ -1,5 +1,7 @@
-import Lib.General.Algebra.BlockFittingBound
-import New.Congruences.LocalLoss.Basic
+module
+
+public import Lib.General.Algebra.BlockFittingBound
+public import New.Congruences.LocalLoss.Basic
 
 /-!
 # Modules of functions, Fitting ideals and trace ideals for Ribet's method
@@ -29,6 +31,8 @@ Notions from other files:
 * `New.Selmer.ribetCocyclesIn u ρ B`: the cocycles `G → B^d` for `ρ` that obey the linear relations
   among the families `(u x g - 1)_x`.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

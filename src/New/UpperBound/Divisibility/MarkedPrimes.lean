@@ -1,4 +1,6 @@
-import New.UpperBound.Divisibility.JetExponent
+module
+
+public import New.UpperBound.Divisibility.JetExponent
 
 /-!
 # Marked primes above `p`, full marks and the scaled Hecke operator
@@ -34,6 +36,8 @@ Notions from other files:
 * `New.Data.lowColumns`: the number of columns at `τ` of height below `n_{j+1}` and different
   from `1`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

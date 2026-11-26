@@ -1,7 +1,9 @@
-import Lib.Adelic.AutomorphicForms.Cuspidality
-import Lib.DiscreteSeries.Theta.BlockRule
-import Lib.DiscreteSeries.Theta.LocalCorrespondence
-import Lib.Weil.DualPair.ThetaLiftConvergence
+module
+
+public import Lib.Adelic.AutomorphicForms.Cuspidality
+public import Lib.DiscreteSeries.Theta.BlockRule
+public import Lib.DiscreteSeries.Theta.LocalCorrespondence
+public import Lib.Weil.DualPair.ThetaLiftConvergence
 
 /-!
 # Theta lifts of forms: products of minors, edges, arrows between spaces of forms
@@ -53,6 +55,8 @@ to carry forms fixed by one kernel to forms fixed by the other, in both directio
 duality. Source: J.-S. Li, Theta lifting for unitary representations with nonzero cohomology, Duke
 Math. J. 61 (1990); Howe, JAMS 2 (1989); A. Ichino, arXiv 2002.09148, Lemma 7.8.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -255,7 +259,6 @@ abbrev negIf {α : Type*} [Neg α] (d : Bool) (l : α) : α := match d with
 
 theorem negIf_true {α : Type*} [Neg α] (l : α) : negIf true l = -l := rfl
 
-theorem negIf_false {α : Type*} [Neg α] (l : α) : negIf false l = l := rfl
 
 /-- The doubled parameters l for the signs s : n → ℤˣ and l' for the signs t : n' → ℤˣ correspond:
 at each infinite place w they satisfy the block rule (`New.IsBlockRule`) for the weights γ w and γ'

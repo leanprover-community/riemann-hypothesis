@@ -1,4 +1,6 @@
-import Lib.ClassField.GreenbergWiles.SelmerLevels
+module
+
+public import Lib.ClassField.GreenbergWiles.SelmerLevels
 
 /-!
 # Trivialised cocycles and power residue relations at split primes
@@ -40,6 +42,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Cocycles trivialised at places and corestriction -/
 

@@ -1,4 +1,6 @@
-import New.Spanning.RemainingTerms.BorderedDeterminant
+module
+
+public import New.Spanning.RemainingTerms.BorderedDeterminant
 
 /-!
 # Orthogonal lifts and the two isotropic lists of a link
@@ -33,6 +35,8 @@ Notions from other files:
   `New.Filling.isotropicRowsIndex_mul_dvd_submoduleIndex`: the discriminant of the two lists, and
   a divisor of the index attached to the classes of the `e_a` and `k e_a`, `a < j`.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

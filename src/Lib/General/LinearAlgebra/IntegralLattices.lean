@@ -1,5 +1,7 @@
-import Lib.Adelic.Hecke.Basic
-import Lib.General.Groups.BesselGroups
+module
+
+public import Lib.Adelic.Hecke.Basic
+public import Lib.General.Groups.BesselGroups
 
 /-!
 # Integral matrices over subrings: Smith normal form, Gelfand's condition and lattices
@@ -46,6 +48,8 @@ Part of a known result: the valuation pairs and integral matrices of this file a
 Witt's extension theorem for unimodular hermitian lattices and for the Iwasawa decomposition (see
 `Lib.Adelic.Witt.IwasawaDecomposition`).
 -/
+
+@[expose] public section
 
 noncomputable section
 

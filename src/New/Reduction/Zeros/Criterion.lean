@@ -1,6 +1,8 @@
-import Lib.Analytic.Landau
-import Lib.Analytic.QuadraticTwist
-import New.Reduction.Zeros.PrimeError
+module
+
+public import Lib.Analytic.Landau
+public import Lib.Analytic.QuadraticTwist
+public import New.Reduction.Zeros.PrimeError
 
 /-!
 # The one-sided criterion for a zero-free half-plane
@@ -25,6 +27,8 @@ of the `L(s, ψ)`. In the literature: a one-sided bound for a weighted sum over 
 Chebyshev's conjecture, arXiv 2411.07436, 2024; Montgomery–Vaughan, Multiplicative Number Theory I,
 §15.1–15.2, 2007; Landau, Über einen Satz von Tschebyschef, 1905.
 -/
+
+@[expose] public section
 
 open Complex Filter Nat Real Set MeasureTheory Topology
 

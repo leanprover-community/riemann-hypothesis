@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Holomorphic.ModelFunction
-import Lib.SiegelWeil.RallisInner.SharpData
-import Lib.Weil.DualPair.HolomorphicData
+module
+
+public import Lib.DiscreteSeries.Holomorphic.ModelFunction
+public import Lib.SiegelWeil.RallisInner.SharpData
+public import Lib.Weil.DualPair.HolomorphicData
 
 /-!
 # Holomorphic Fock vectors and a reproducing formula by theta lifts
@@ -45,6 +47,8 @@ Fourier-Jacobi-Entwicklung Siegelscher Eisensteinreihen, Math. Z. 183 (1983); J.
 
 See also `Lib.Weil.Fock.OscillatorPair` and `Lib.Weil.DualPair.HolomorphicData`.
 -/
+
+@[expose] public section
 
 namespace New.Rows
 

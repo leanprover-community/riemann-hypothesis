@@ -1,5 +1,7 @@
-import Lib.Adelic.Reduction.DefiniteClassSums
-import New.Spanning.Bessel.Basic
+module
+
+public import Lib.Adelic.Reduction.DefiniteClassSums
+public import New.Spanning.Bessel.Basic
 
 /-!
 # The data, standing hypotheses and amplitudes of the filling theorem
@@ -38,6 +40,8 @@ Notions from other files:
 * `New.frameDisc`: for Z of size ϱ+1 with leading minors D_l, the quantity |D_{ϱ+1}|² − N²|D_ϱ|²,
   where |x|² means x x̄.
 -/
+
+@[expose] public section
 
 noncomputable section
 

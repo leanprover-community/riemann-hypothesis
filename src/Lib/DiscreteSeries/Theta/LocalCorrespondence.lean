@@ -1,7 +1,9 @@
-import Lib.DiscreteSeries.Rigidity.KernelFixes
-import Lib.DiscreteSeries.Theta.CasimirComparison
-import Lib.DiscreteSeries.Theta.FockJointHarmonics
-import Lib.Weil.Fock.OscillatorPair
+module
+
+public import Lib.DiscreteSeries.Rigidity.KernelFixes
+public import Lib.DiscreteSeries.Theta.CasimirComparison
+public import Lib.DiscreteSeries.Theta.FockJointHarmonics
+public import Lib.Weil.Fock.OscillatorPair
 
 /-!
 # Existence of joint harmonics, Howe's argument and the local theta correspondence
@@ -57,6 +59,8 @@ Math. J. 61 (1990) 913-937; R. Howe, Transcending classical invariant theory, J.
 (1989); A. Paul, First occurrence for the dual pairs (U(p,q), U(r,s)), Canad. J. Math. 51 (1999)
 636-657, Theorem 2.7.
 -/
+
+@[expose] public section
 
 /-!
 ## Products of minors along layers and existence of joint harmonics

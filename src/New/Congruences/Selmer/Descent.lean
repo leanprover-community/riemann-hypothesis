@@ -1,6 +1,8 @@
-import Lib.GaloisRep.Main.DivisibleSelmerModules
-import New.Congruences.Selmer.Mirror
-import New.Congruences.Selmer.OneSystem
+module
+
+public import Lib.GaloisRep.Main.DivisibleSelmerModules
+public import New.Congruences.Selmer.Mirror
+public import New.Congruences.Selmer.OneSystem
 
 /-!
 # The descent
@@ -50,6 +52,8 @@ is known in the literature. Related work: Fakhruddin–Khare–Patrikis, Relativ
 relative Selmer groups, and lifting irreducible Galois representations, 2021; Mazur–Rubin,
 Diophantine stability, 2018; Darmon–Diamond–Taylor, Fermat's Last Theorem, 1995.
 -/
+
+@[expose] public section
 
 noncomputable section
 

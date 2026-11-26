@@ -1,5 +1,7 @@
-import Lib.Adelic.Adeles.LocalFactors
-import Lib.ClassField.Global.AlbertBrauerHasseNoether
+module
+
+public import Lib.Adelic.Adeles.LocalFactors
+public import Lib.ClassField.Global.AlbertBrauerHasseNoether
 
 /-!
 # Artin's reciprocity law and the sign law
@@ -71,6 +73,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

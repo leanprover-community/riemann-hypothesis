@@ -1,4 +1,6 @@
-import Lib.Analytic.EntireLFunction
+module
+
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # A Tauberian theorem with a power of the logarithm
@@ -19,6 +21,8 @@ Known result: the passage from a zero-free region to the error term of the prime
 Source: Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Section 6.2, where a contour
 integral is used in place of the Taylor coefficient.
 -/
+
+@[expose] public section
 
 open Complex Filter MeasureTheory Metric Set Topology
 

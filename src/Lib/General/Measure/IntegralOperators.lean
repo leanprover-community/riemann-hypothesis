@@ -1,4 +1,6 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Product measures, layer cake bounds, cocompact subgroups and L² bounds of integral operators
@@ -30,6 +32,8 @@ for `γ ∈ Γ`, and the following.
   passes to the product of finitely many such families, for σ-finite measures and measurable kernels
   that are integrable in the last variable.
 -/
+
+@[expose] public section
 
 /-! ## Regrouping, currying and flipping coordinates of product measures -/
 

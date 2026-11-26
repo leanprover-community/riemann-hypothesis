@@ -1,7 +1,9 @@
-import Lib.Adelic.AutomorphicForms.PAdicGauge
-import Lib.ClassField.HeckeCharacter.AlgebraicValues
-import Lib.General.LinearAlgebra.TensorChains
-import Lib.Weil.DualPair.WeilAction
+module
+
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.ClassField.HeckeCharacter.AlgebraicValues
+public import Lib.General.LinearAlgebra.TensorChains
+public import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Graded lattices, integrality away from q and admissible combinations of translates
@@ -48,6 +50,8 @@ Notions from other files:
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work. See
 `Lib.ClassField.Global.CMSplittingCharacters` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

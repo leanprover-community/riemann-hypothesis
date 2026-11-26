@@ -1,7 +1,9 @@
-import Lib.General.Algebra.MultivariatePolynomials
-import Lib.General.Geometry.PointsOfProperSchemes
-import Lib.General.Geometry.ProjectiveSpace
-import Lib.PadicComparison.Descent.TestCategory
+module
+
+public import Lib.General.Algebra.MultivariatePolynomials
+public import Lib.General.Geometry.PointsOfProperSchemes
+public import Lib.General.Geometry.ProjectiveSpace
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Projective Noether normalisation and homogeneous coordinates of embedded points
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.PointClass.LinearIndependence` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Noether normalisation of a cone by linear forms
@@ -131,6 +135,7 @@ lemma IsHomogeneousSolution.refl : IsHomogeneousSolution k v v := by tauto
 
 /-- An element of a field `L` that lies in every valuation ring containing the image of `f` is
 integral over that image. -/
+@[stacks 090P "part (1), for the integral closure of the image of a ring map"]
 lemma isIntegralElem_of_valuationSubring {f : A →+* L} {x : L}
     (h : ∀ V : ValuationSubring L, (∀ a : A, f a ∈ V) → x ∈ V) :
     f.IsIntegralElem x := by

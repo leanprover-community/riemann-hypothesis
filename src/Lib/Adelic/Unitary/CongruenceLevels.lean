@@ -1,4 +1,6 @@
-import Lib.Adelic.Unitary.ComponentsAndBlockSums
+module
+
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 
 /-!
 # Principal levels and levels defined by reductions in the finite adelic unitary group
@@ -43,6 +45,8 @@ of subgroups of the reductions at a family of places, or principal levels of a g
 the unitary group of the identity form. Source: V. Platonov, A. Rapinchuk, Algebraic groups and
 number theory, ch. 3 and 5; B. H. Gross, Algebraic modular forms, Israel J. Math. 113 (1999) 61-93.
 -/
+
+@[expose] public section
 
 noncomputable section
 

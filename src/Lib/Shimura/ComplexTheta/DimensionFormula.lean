@@ -1,5 +1,7 @@
-import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.Shimura.ComplexTheta.AppellHumbertData
+module
+
+public import Lib.General.Analysis.HolomorphicIntegrals
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Theta functions on complex tori: dimension formula, base points, multipliers
@@ -42,6 +44,8 @@ Abelian Varieties, 3.2.7, 4.1.5, 6.4; survey of proofs in D. Bump, A. Pekker, Pr
 
 See also `Lib.Shimura.Uniformisation.AppellHumbert`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

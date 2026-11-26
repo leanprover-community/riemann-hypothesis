@@ -1,5 +1,7 @@
-import Lib.GaloisRep.Main.SelmerModules
-import Lib.General.Algebra.BlockFittingBound
+module
+
+public import Lib.GaloisRep.Main.SelmerModules
+public import Lib.General.Algebra.BlockFittingBound
 
 /-!
 # Selmer modules with divisible coefficients
@@ -31,6 +33,8 @@ Notions from other files:
 Known. The comparison of Selmer groups with coefficients in `O / a` and in `Frac(O) / O` is
 standard; here it is immediate, because cocycles are counted and not classes.
 -/
+
+@[expose] public section
 
 noncomputable section
 

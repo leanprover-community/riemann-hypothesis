@@ -1,5 +1,7 @@
-import New.Congruences.GaloisRepresentations.AttachedRepresentations
-import New.Congruences.Selmer.AuxiliaryPrimes
+module
+
+public import New.Congruences.GaloisRepresentations.AttachedRepresentations
+public import New.Congruences.Selmer.AuxiliaryPrimes
 
 /-!
 # Main summands and conjugate self-dual representations from type polynomials
@@ -44,6 +46,8 @@ Notions from other files:
 
 See `New.Congruences.GaloisRepresentations.RowsFromEigensystems` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

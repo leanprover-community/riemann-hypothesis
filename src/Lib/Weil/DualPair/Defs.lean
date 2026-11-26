@@ -1,4 +1,6 @@
-import Lib.Weil.MixedModel.NamedData
+module
+
+public import Lib.Weil.MixedModel.NamedData
 
 /-!
 # Hom(S,T), the Weil representation and theta kernel of a pair, and data modulo an ideal
@@ -44,6 +46,8 @@ Notions from other files:
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence`, `Lib.Weil.MixedModel.ZeroTerm` and
 `Lib.Adelic.Unitary.WeakApproximation` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

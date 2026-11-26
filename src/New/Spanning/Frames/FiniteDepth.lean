@@ -1,5 +1,7 @@
-import New.Spanning.Frames.BesselVector
-import New.Spanning.Frames.OneFrame
+module
+
+public import New.Spanning.Frames.BesselVector
+public import New.Spanning.Frames.OneFrame
 
 /-!
 # Depth, heads and far positions at the finite places
@@ -39,6 +41,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

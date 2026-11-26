@@ -1,6 +1,8 @@
-import Lib.Shimura.IntegralModel.UniversalFamily
-import Lib.Shimura.TraceFormula.DefiniteTrace
-import Lib.Shimura.Uniformisation.ModelExists
+module
+
+public import Lib.Shimura.IntegralModel.UniversalFamily
+public import Lib.Shimura.TraceFormula.DefiniteTrace
+public import Lib.Shimura.Uniformisation.ModelExists
 
 /-!
 # Balls immerse; holomorphy, arcs and complex points of the covers
@@ -41,6 +43,8 @@ Notions from other files:
 Known; see `Lib.Shimura.IntegralModel.TowerExistence` and `Lib.Shimura.ThetaModuli.UniversalFamily`
 for sources.
 -/
+
+@[expose] public section
 
 open Filter in
 /-- Let `g` be a function on a complex normed space whose derivative has the derivative `D₂` at

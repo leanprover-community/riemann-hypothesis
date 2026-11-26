@@ -1,4 +1,6 @@
-import Lib.ClassField.Global.ExistenceTheorem
+module
+
+public import Lib.ClassField.Global.ExistenceTheorem
 
 /-!
 # Selmer cocycles, N-units, split places and the equivariant S-unit theorem
@@ -38,6 +40,8 @@ Notions from other files:
 Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` and `Lib.ClassField.Places.LocalFields` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

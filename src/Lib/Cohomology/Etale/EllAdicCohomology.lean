@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.FilteredLimits
-import Lib.PadicComparison.Completion
+module
+
+public import Lib.Cohomology.Etale.FilteredLimits
+public import Lib.PadicComparison.Completion
 
 /-!
 # ℓ-adic cohomology with its Galois action; finiteness and bijectivity from coefficients mod ℓ
@@ -27,6 +29,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.Etale.FilteredLimits`, `Lib.PadicComparison.Completion` and
 `Lib.PadicComparison.Primitive.ComparisonTheorem` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

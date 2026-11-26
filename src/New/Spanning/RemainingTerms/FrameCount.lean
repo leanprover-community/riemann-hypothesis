@@ -1,5 +1,7 @@
-import Lib.GLn.SchurModule.Basic
-import New.Spanning.Unfolding.ReducedPoints
+module
+
+public import Lib.GLn.SchurModule.Basic
+public import New.Spanning.Unfolding.ReducedPoints
 
 /-!
 # Frames of near terms: short shared vectors and moves between frames
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.Spanning.RemainingTerms.Sum` for related work.
 -/
+
+@[expose] public section
 
 /-!
 ## Short vectors of terms with a cell rank, and near terms with equal frames

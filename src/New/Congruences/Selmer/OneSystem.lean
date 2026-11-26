@@ -1,5 +1,7 @@
-import Lib.General.Algebra.SharpMinors
-import New.Congruences.Selmer.SelmerData
+module
+
+public import Lib.General.Algebra.SharpMinors
+public import New.Congruences.Selmer.SelmerData
 
 /-!
 # The universal twist and one system of equations for all twists
@@ -38,6 +40,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import Lib.PadicComparison.Crystalline.DividedPowerEnvelope
-import Lib.PadicComparison.Primitive.PeriodCoefficients
+module
+
+public import Lib.PadicComparison.Crystalline.DividedPowerEnvelope
+public import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
 # Crystalline comparison: bijectivity on étale charts and spanning of period cohomology
@@ -61,9 +63,11 @@ Invariants come from p-complete torsion-free rings modulo elements with divided 
 compared on toric towers one coordinate at a time. Source: Bhatt, Morrow, Scholze, Integral p-adic
 Hodge theory, 2018, Publ. IHÉS 128, Thm 1.1(i) (first proved in Faltings, Crystalline cohomology and
 p-adic Galois representations, 1989); for the site, Bhatt, Prismatic F-gauges, 2022, Rem. 2.5.12;
-for the line lemma, Andreatta–Brinon, Acyclicité géométrique de B_cris relatif, 2013, Comment. Math.
-Helv. 88.
+for the line lemma, Andreatta–Brinon, Acyclicité géométrique de B_cris, 2013, Comment. Math. Helv.
+88.
 -/
+
+@[expose] public section
 
 noncomputable section
 

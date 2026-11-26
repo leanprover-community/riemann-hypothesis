@@ -1,6 +1,8 @@
-import Lib.ClassField.HeckeL.EulerProduct
-import Lib.ClassField.HeckeL.IdelicThetaSum
-import Lib.General.Analysis.HolomorphicIntegrals
+module
+
+public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.ClassField.HeckeL.IdelicThetaSum
+public import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
 # Analyticity at 1 of L-functions of nontrivial Hecke characters
@@ -50,6 +52,8 @@ fields and Hecke's zeta-functions, 1950, in Cassels–Fröhlich ch. XV, §4.4–
 Theory, VI 4.8–4.9 (finite order); S. Lang, Algebraic Number Theory (non-vanishing); Titchmarsh,
 Theory of the Riemann zeta-function, §2.11 (the Riemann-sum continuation is Müntz's formula over ℚ).
 -/
+
+@[expose] public section
 
 noncomputable section
 

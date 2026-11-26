@@ -1,5 +1,7 @@
-import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
-import Lib.PadicHodge.Crystalline.Basic
+module
+
+public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+public import Lib.PadicHodge.Crystalline.Basic
 
 /-!
 # Tame inertia, Frobenius on roots of unity over ℚ_p, the cyclotomic character, Weil pairs
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Tame characters of inertia and roots of a uniformiser

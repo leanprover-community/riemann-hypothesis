@@ -1,5 +1,7 @@
-import Lib.ClassField.Local.InvariantMap
-import Lib.General.Algebra.CartanMap
+module
+
+public import Lib.ClassField.Local.InvariantMap
+public import Lib.General.Algebra.CartanMap
 
 /-!
 # The inequality of local Tate duality for orthogonal groups of cocycles
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.LocalDuality.CrystallineDuality` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

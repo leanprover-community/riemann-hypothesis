@@ -1,4 +1,6 @@
-import Lib.General.Geometry.LineBundles
+module
+
+public import Lib.General.Geometry.LineBundles
 
 /-!
 # Projective space, linear systems and projective embeddings, with Segre and Veronese
@@ -41,6 +43,8 @@ Notions from other files:
 * `New.PointFn.ofSection`: a section s over U as a function on ring-valued points: its value at t :
   Spec A → X is t*s in A if t lands in U, and 0 otherwise.
 -/
+
+@[expose] public section
 
 noncomputable section
 

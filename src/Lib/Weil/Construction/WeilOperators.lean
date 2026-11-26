@@ -1,4 +1,6 @@
-import Lib.Weil.Construction.HeisenbergModel
+module
+
+public import Lib.Weil.Construction.HeisenbergModel
 
 /-!
 # Weil operators, orthogonal sums and transport of the reproducing model
@@ -44,6 +46,8 @@ positivity at the split places and the sign of a Gauss sum at the inert places
 (`New.stdLattice.mem_cocycleRadical`). The formulas of the Schrödinger model are then proved for the
 slices in `Lib.Weil.MixedModel.ZeroTerm`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

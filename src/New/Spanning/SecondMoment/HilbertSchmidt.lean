@@ -1,5 +1,7 @@
-import Lib.General.Analysis.FiniteGroupInnerProduct
-import New.Spanning.SecondMoment.Spread
+module
+
+public import Lib.General.Analysis.FiniteGroupInnerProduct
+public import New.Spanning.SecondMoment.Spread
 
 /-!
 # Hilbert–Schmidt norms and the second-moment criterion for spread
@@ -13,6 +15,8 @@ of each subspace under some translate.
 
 Rank bounds from second moments: Welch, 1974.
 -/
+
+@[expose] public section
 
 open Module LinearMap Finset
 open scoped InnerProductSpace

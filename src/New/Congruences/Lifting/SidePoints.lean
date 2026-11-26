@@ -1,4 +1,6 @@
-import New.Congruences.Lifting.CupProductBound
+module
+
+public import New.Congruences.Lifting.CupProductBound
 
 /-!
 # Jump windows, the gap condition and points of the sides of a Kummer chart
@@ -32,6 +34,8 @@ Notions from other files:
 
 See `New.Congruences.Lifting.SafeMoves` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

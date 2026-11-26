@@ -1,7 +1,9 @@
-import Lib.Weil.Seesaw
-import New.UpperBound.Objects.AuxiliaryPair
-import New.UpperBound.Objects.Columns
-import New.UpperBound.Objects.Parameters
+module
+
+public import Lib.Weil.Seesaw
+public import New.UpperBound.Objects.AuxiliaryPair
+public import New.UpperBound.Objects.Columns
+public import New.UpperBound.Objects.Parameters
 
 /-!
 # Spaces Y_j and W_j, the forms on them, and the target parameter
@@ -36,6 +38,8 @@ Notions from other files:
   κ = `New.Data.weight`, h the gap and h₂ half the gap.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-- The bijection from κ plus a string of length 2ϱ + 1 to the basis indices
@@ -67,7 +71,7 @@ instance {u : Bool} : D.HasLogBound u D.ϱ (D.logX / 2 + (if u then 2 else -4)) 
   have h_mem : (D.ϱ : ℝ) ∈ Set.Icc (D.m / 4 : ℝ) D.m := by
     have h_nat : D.m ≤ 4 * D.ϱ ∧ D.ϱ ≤ D.m := by grind [ten_thousand_le_m]
     simpa [field] using mod_cast h_nat
-  exact .of_mem_Icc (D.m / 4) D.m h_mem (by cases u <;> scale_arith D)
+  exact .of_mem_Icc (D.m / 4) D.m h_mem (by cases u <;> grind [D.scale_inequalities])
 
 /-- A place w of the modulus Q of ϑ, or the conjugate of one, divides the product `ϑ.normQ` of
 the norms of the places of Q, and divides neither π̄₀π̄₁ (`D.piM`) nor the level N. -/

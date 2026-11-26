@@ -1,5 +1,7 @@
-import Lib.GLn.SchurModule.MinorBasis
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.GLn.SchurModule.MinorBasis
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Schur matrices, the standard basis of ∇, its weights and the highest vector
@@ -51,6 +53,8 @@ Notions from other files:
 
 Known; see `Lib.GLn.SchurModule.MinorBasis` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The standard basis of ∇ and Schur matrices

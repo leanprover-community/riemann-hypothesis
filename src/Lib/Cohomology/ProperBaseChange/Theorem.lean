@@ -1,6 +1,8 @@
-import Lib.Cohomology.Etale.ProperFunctors
-import Lib.Cohomology.ProjectiveLine.ChernClass
-import Lib.Cohomology.ProperBaseChange.SubringSplitting
+module
+
+public import Lib.Cohomology.Etale.ProperFunctors
+public import Lib.Cohomology.ProjectiveLine.ChernClass
+public import Lib.Cohomology.ProperBaseChange.SubringSplitting
 
 /-!
 # Proper base change over AIC valuation rings and its consequences for ℤ/ℓ-cohomology
@@ -64,6 +66,8 @@ with a Mayer–Vietoris splitting, together with Kummer theory. Source: Artin, S
 5.4, 5.5 (1973); Stacks Project Tag 095S; reduction to spaces of places as in Scholze, Étale
 cohomology of diamonds (2017), Thm 19.2 and Lemma 19.4, after Huber, Math. Ann. 295 (1993).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -170,6 +174,7 @@ maximal ideal of `P`, `J` an ideal of `D`, and `B` a ring in `absIntegrallyClose
 map from `D` to the residue field at `q`. A place `x` with values in `C` that is finite on `B` and
 kills `J` gives a ring map `B / J B → C`, naturally in `C`, which sends the class of the residue
 of `t` to the value of `x` at `t` (`ResiduePlace.baseRingMap_valueMap_mk`). -/
+@[no_expose]
 def New.Variety.ResiduePlace.valueMap {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D}
     {ξ : Y.obj P} {q : Ideal P} [q.IsMaximal] (z : ValuativeLift s ξ) (J : Ideal D)
     (B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom)) :

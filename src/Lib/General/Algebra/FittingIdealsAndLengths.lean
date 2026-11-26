@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.HermiteForm
+module
+
+public import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # Relations, relative lengths and Fitting ideals for Selmer group estimates
@@ -33,6 +35,8 @@ Three standard properties of Fitting ideals are proved in the cases that are use
 generators: base change (Stacks Project, Tag 07ZA), the product rule for an exact sequence, and the
 bound by a length.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,10 +1,12 @@
-import Lib.Weil.Periods.Unfolding
-import New.UpperBound.Objects.CharactersAtLevel
-import New.UpperBound.Objects.RowChain
-import New.UpperBound.Seesaw.Frequency
-import New.UpperBound.Seesaw.GluedLevel
-import New.UpperBound.Seesaw.LevelIdeles
-import New.UpperBound.Seesaw.Sandwich
+module
+
+public import Lib.Weil.Periods.Unfolding
+public import New.UpperBound.Objects.CharactersAtLevel
+public import New.UpperBound.Objects.RowChain
+public import New.UpperBound.Seesaw.Frequency
+public import New.UpperBound.Seesaw.GluedLevel
+public import New.UpperBound.Seesaw.LevelIdeles
+public import New.UpperBound.Seesaw.Sandwich
 
 /-!
 # Unfolding the chain of lifts: double lifts and the functions of the unfolding
@@ -44,6 +46,8 @@ Notions from other files:
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work. See
 `Lib.Weil.CompactLift.DefiniteThetaLift` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Two unfolding steps and the double lift of the finite evaluation

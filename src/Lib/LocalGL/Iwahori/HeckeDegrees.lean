@@ -1,5 +1,7 @@
-import Lib.LocalGL.Iwahori.QuadraticRelation
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Lib.LocalGL.Iwahori.QuadraticRelation
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Iwahori degrees, partial Hecke sums and Satake's formula
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.LocalGL.Iwahori.SphericalExponents` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

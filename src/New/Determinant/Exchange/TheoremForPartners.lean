@@ -1,6 +1,8 @@
-import Lib.Weil.DualPair.Flip
-import New.Determinant.Exchange.RealVectors
-import New.Determinant.Exchange.VanishingDescends
+module
+
+public import Lib.Weil.DualPair.Flip
+public import New.Determinant.Exchange.RealVectors
+public import New.Determinant.Exchange.VanishingDescends
 
 /-!
 # Exchange of theta integrals for matched functions and for data modulo an ideal
@@ -53,11 +55,13 @@ U(V') agree on matched ramified data up to a nonzero constant c, so theta lifts 
 Only |c|² is given, up to an uncomputed factor: it is sized by the conductor and the Hecke L-values
 at 1,…,e. Equal theta lifts of characters of complementary groups are known for trivial characters
 (Siegel–Weil) and for O(3), O(1) to Mp(2). Related work: Snitz, Theta correspondence of automorphic
-characters, J. Number Theory 122 (2007), arXiv math/0509486; Erez, Morphisms of global theta lifts
-of non-trivial automorphic characters of orthogonal groups, arXiv 2401.13469, 2024; Gan–Qiu–Takeda,
-The regularized Siegel–Weil formula (second term identity) and the Rallis inner product formula,
-2014.
+characters, J. Number Theory 122 (2007), arXiv math/0509486; Erez, Matchings of theta lifts
+associated to non-trivial automorphic characters of odd orthogonal groups, arXiv 2401.13469, 2024;
+Gan–Qiu–Takeda, The regularized Siegel–Weil formula (second term identity) and the Rallis inner
+product formula, 2014.
 -/
+
+@[expose] public section
 
 noncomputable section
 

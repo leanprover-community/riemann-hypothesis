@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.Ideles
-import Lib.Weil.DualPair.Kronecker
+module
+
+public import Lib.ClassField.Places.Ideles
+public import Lib.Weil.DualPair.Kronecker
 
 /-!
 # The module of an idele, Haar measure scaling and the norm map on finite adeles
@@ -44,6 +46,8 @@ Known result: the module of an idele, the product formula and the scaling of Haa
 Part of a known result: functoriality of ideles under the norm map, restricted here to the module
 and to supports.
 -/
+
+@[expose] public section
 
 /-!
 ## The module of an idele and the product formula

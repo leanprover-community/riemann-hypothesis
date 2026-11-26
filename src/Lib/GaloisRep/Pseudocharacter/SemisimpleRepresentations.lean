@@ -1,8 +1,10 @@
-import Lib.ClassField.Places.DecompositionCompletion
-import Lib.General.LinearAlgebra.Eigenvalues
-import Lib.General.LinearAlgebra.MatrixNormBounds
-import Lib.General.NumberTheory.CoefficientRings
-import Lib.PadicComparison.Descent.TestCategory
+module
+
+public import Lib.ClassField.Places.DecompositionCompletion
+public import Lib.General.LinearAlgebra.Eigenvalues
+public import Lib.General.LinearAlgebra.MatrixNormBounds
+public import Lib.General.NumberTheory.CoefficientRings
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Semisimple representations: conjugacy, continuity, cancellation and stable lattices
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Pseudocharacter.Pseudorepresentations` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

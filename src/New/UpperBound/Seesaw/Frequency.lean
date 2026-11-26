@@ -1,5 +1,7 @@
-import Lib.Weil.Periods.PointLattice
-import New.UpperBound.Seesaw.EdgePairEvaluation
+module
+
+public import Lib.Weil.Periods.PointLattice
+public import New.UpperBound.Seesaw.EdgePairEvaluation
 
 /-!
 # The shift at a nonzero constant term maps lattices into lattices
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 open Matrix Pointwise Kronecker
 

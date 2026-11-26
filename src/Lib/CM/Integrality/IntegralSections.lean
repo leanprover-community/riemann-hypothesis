@@ -1,4 +1,6 @@
-import Lib.CM.FormalGroup.IntegralParameter
+module
+
+public import Lib.CM.FormalGroup.IntegralParameter
 
 /-!
 # The integrality principle in one variable
@@ -39,6 +41,8 @@ torsion point is a unit if two different prime ideals divide the annihilator of 
 points `t / 2 ^ i` are treated, by doubling. Source: Ramachandra and Robert; Kubert and Lang,
 *Modular Units*.
 -/
+
+@[expose] public section
 
 open PowerSeries
 

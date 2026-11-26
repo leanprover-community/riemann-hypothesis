@@ -1,4 +1,6 @@
-import New.UpperBound.Seesaw.EdgePairEvaluation
+module
+
+public import New.UpperBound.Seesaw.EdgePairEvaluation
 
 /-!
 # The Poincaré map
@@ -25,6 +27,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 open MeasureTheory ComplexConjugate
 noncomputable section

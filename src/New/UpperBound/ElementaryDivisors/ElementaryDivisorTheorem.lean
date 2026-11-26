@@ -1,7 +1,9 @@
-import New.Reduction.Lattices.Colength
-import New.UpperBound.ElementaryDivisors.AveragingMap
-import New.UpperBound.ElementaryDivisors.DefectCount
-import New.UpperBound.ElementaryDivisors.Depth
+module
+
+public import New.Reduction.Lattices.Colength
+public import New.UpperBound.ElementaryDivisors.AveragingMap
+public import New.UpperBound.ElementaryDivisors.DefectCount
+public import New.UpperBound.ElementaryDivisors.Depth
 
 /-!
 # Elementary divisors of the edge Hecke operator
@@ -47,6 +49,8 @@ Notions from other files:
 * `New.FrobeniusCycle.divisorConstant`: the bound `c_div` for the mean depth of the forms that are
   deep for all edges.
 -/
+
+@[expose] public section
 
 noncomputable section
 

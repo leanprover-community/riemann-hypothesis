@@ -1,4 +1,6 @@
-import Lib.General.Algebra.FittingIdealsAndLengths
+module
+
+public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # Colength of modules, and endomorphisms surjective up to a bounded colength
@@ -18,6 +20,8 @@ images, preimages, sums of submodules and products of endomorphisms.
 * `New.ColengthDvd.relLength_le`, `New.IsOntoUpToColength.exists_relLength_le`: over a discrete
   valuation ring `New.ColengthDvd` bounds a length.
 -/
+
+@[expose] public section
 
 namespace New
 

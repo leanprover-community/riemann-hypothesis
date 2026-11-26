@@ -1,6 +1,8 @@
-import Lib.Adelic.TraceFormula.LineCount
-import Lib.Adelic.TraceFormula.TestFunction
-import Lib.Shimura.HeckeTower.HeckeData
+module
+
+public import Lib.Adelic.TraceFormula.LineCount
+public import Lib.Adelic.TraceFormula.TestFunction
+public import Lib.Shimura.HeckeTower.HeckeData
 
 /-!
 # The stabiliser of a line at a finite place
@@ -33,6 +35,8 @@ Notions from other files:
 A relation in the Hecke algebra of a parahoric subgroup of `GL_n`, proved by a direct count of
 cosets.
 -/
+
+@[expose] public section
 
 noncomputable section
 

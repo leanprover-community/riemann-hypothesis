@@ -1,5 +1,7 @@
-import Lib.General.Geometry.GaloisCovers
-import Lib.LocalGL.Shintani.CosetDescent
+module
+
+public import Lib.General.Geometry.GaloisCovers
+public import Lib.LocalGL.Shintani.CosetDescent
 
 /-!
 # Label characters Ξ_c: orthonormality, central idempotents and twisting by χ∘det
@@ -44,6 +46,8 @@ Notions from other files:
 
 Known; see `Lib.LocalGL.Green.TauFunctions` for sources.
 -/
+
+@[expose] public section
 
 /-- For `v ≠ 0`, the map `u ↦ u vᵀ` from vectors to matrices is injective. -/
 private lemma Matrix.vecMulVec_left_injective_of_ne_zero {m p R : Type*} [Field R] {v : p → R}

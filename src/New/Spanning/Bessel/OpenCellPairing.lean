@@ -1,4 +1,6 @@
-import New.Spanning.Bessel.OpenCellBound
+module
+
+public import New.Spanning.Bessel.OpenCellBound
 
 /-!
 # One pairing on the open cell, at all places together
@@ -36,6 +38,8 @@ Notions from other files:
 
 See `New.Spanning.Bessel.FillingData` for related work.
 -/
+
+@[expose] public section
 
 open Finset Fintype New.RealPlace MeasureTheory ENNReal Measure ComplexConjugate
 

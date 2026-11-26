@@ -1,4 +1,6 @@
-import Lib.Cohomology.SmoothBaseChange
+module
+
+public import Lib.Cohomology.SmoothBaseChange
 
 /-!
 # The congruence relation and the trivial action of inertia on ℓ-adic cohomology
@@ -36,6 +38,8 @@ pass to it. Here the base is the valuation ring of a place. Source: Stacks proje
 XVI 2.2) and 03SN (SGA5 XV); Deligne, Formes modulaires et représentations ℓ-adiques, Sém. Bourbaki
 355 (1969).
 -/
+
+@[expose] public section
 
 namespace New.Variety.ellAdicCohom
 

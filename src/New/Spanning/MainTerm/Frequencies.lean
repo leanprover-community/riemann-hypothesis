@@ -1,5 +1,7 @@
-import Lib.ClassField.HeckeL.EulerProduct
-import Lib.General.Analysis.PackingAndSobolev
+module
+
+public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.General.Analysis.PackingAndSobolev
 
 /-!
 # Sums over frequencies
@@ -15,6 +17,8 @@ Notions from other files:
 * `Φ v`: the chosen complex embedding of `E` that induces the infinite place `v`
   (`PlaceEmbedding E`).
 -/
+
+@[expose] public section
 
 open NumberField Finset
 

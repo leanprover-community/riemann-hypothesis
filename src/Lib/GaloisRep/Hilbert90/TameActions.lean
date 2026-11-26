@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.MatrixPolynomials
+module
+
+public import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Hilbert 90 for GL_n and units under tame actions on Artinian, finite or profinite rings
@@ -33,6 +35,8 @@ J.-P. Serre, Corps locaux, 1962, Ch. X §1 Prop. 3 and Ch. V §2; S. Chase, D. H
 Galois theory and Galois cohomology of commutative rings, Mem. AMS 52, 1965; for the norm on O[γ],
 P. Scholze, The Langlands-Kottwitz approach for some simple Shimura varieties, 2013, Lemma 2.2.
 -/
+
+@[expose] public section
 
 section TameDescent
 

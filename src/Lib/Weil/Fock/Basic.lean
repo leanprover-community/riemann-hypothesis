@@ -1,7 +1,9 @@
-import Lib.General.LinearAlgebra.HermitianMatrices
-import Lib.General.Measure.HaarModulus
-import Lib.General.Measure.IntegralOperators
-import Lib.Weil.Construction.WeilOperators
+module
+
+public import Lib.General.LinearAlgebra.HermitianMatrices
+public import Lib.General.Measure.HaarModulus
+public import Lib.General.Measure.IntegralOperators
+public import Lib.Weil.Construction.WeilOperators
 
 /-!
 # The Fock model of the Weil representation of U(ε) at a real place
@@ -43,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.Fock.OscillatorPair` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import New.Spanning.Bessel.Orthonormality
-import New.Spanning.Unfolding.CutoffIntegral
+module
+
+public import New.Spanning.Bessel.Orthonormality
+public import New.Spanning.Unfolding.CutoffIntegral
 
 /-!
 # Sums of amplitudes over blocks
@@ -52,6 +54,8 @@ The results on block sums belong to two steps: the bound for the second moment o
 series (`New.Spanning.Unfolding.Moments`, which lists related work) and the bound for degenerate
 terms and pairs with different links (`New.Spanning.RemainingTerms.Sum`).
 -/
+
+@[expose] public section
 
 section AmplitudeSums
 
@@ -567,7 +571,7 @@ theorem exists_tsum_classCutoff_mul_prod_enorm_le {E : Type} [Field E] [CMType E
             ((S.scaledBesselLengthProd ((S.ratToInf γ)⁻¹ * y))⁻¹ ^
               (𝔰.r ^ 3 * numInfPlaces E))) := by
       grw [h_decay]
-    _ ≤ bound := by exact tsum_classCutoff_mul_const_mul_inv_pow_le T c s (∏ v, a v) y
+    _ ≤ bound := tsum_classCutoff_mul_const_mul_inv_pow_le T c s (∏ v, a v) y
     _ = bound.toNNReal := (coe_toNNReal h_bound_fin).symm
 
 -- Keeps definitional checks from unfolding the finite sums.
@@ -594,7 +598,7 @@ theorem tsum_amplitudeMajorant_lt_top (T : Set (S.G E)) (c : S.Classes) (s : S.R
       grw [h_majorant, h_decay]
     _ ≤ .ofReal S.unipotentCovolume * .ofReal (2 * S.b ^ (12 * 𝔰.n ^ 3 * 𝔰.r * numInfPlaces E)) *
           (.ofReal (S.b ^ (400 * 𝔰.r ^ 2)) ^ numInfPlaces E * card S.BesselCoord) :=
-      by exact tsum_lintegral_classCutoff_mul_majorant_le T c s hw
+      tsum_lintegral_classCutoff_mul_majorant_le T c s hw
     _ < ∞ := by finiteness
 
 /-- Let `S` be admissible, let `d` run over all classes and `γ` over the elements of `T` that are

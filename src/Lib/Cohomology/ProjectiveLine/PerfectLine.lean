@@ -1,4 +1,6 @@
-import Lib.PadicComparison.Primitive.PeriodCoefficients
+module
+
+public import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
 # The perfect projective line glued from two perfect discs has the cohomology of a point
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.ProjectiveLine.ConstantLineFormula` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

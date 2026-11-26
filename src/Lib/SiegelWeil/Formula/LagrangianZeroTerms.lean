@@ -1,5 +1,7 @@
-import Lib.Weil.DualPair.MixedModel
-import Lib.Weil.Unramified.HeckeTransfer
+module
+
+public import Lib.Weil.DualPair.MixedModel
+public import Lib.Weil.Unramified.HeckeTransfer
 
 /-!
 # Lagrangians, zero terms of the Weil representation and vanishing of dominated functionals
@@ -47,6 +49,8 @@ Notions from other files:
 
 Known; see `Lib.SiegelWeil.Formula.WeilRange` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

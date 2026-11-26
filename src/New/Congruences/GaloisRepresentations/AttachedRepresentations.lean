@@ -1,5 +1,7 @@
-import New.Congruences.GaloisRepresentations.SelmerHypotheses
-import New.OneLift.HeckeValues.TwistedRatio
+module
+
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+public import New.OneLift.HeckeValues.TwistedRatio
 
 /-!
 # Lift settings and conjugate self-duality of attached Galois representations
@@ -42,6 +44,8 @@ Notions from other files:
 For sources see `Lib.GaloisRep.Main.OddRank`, `Lib.PadicHodge.Crystalline.Regularity` and
 `New.Congruences.GaloisRepresentations.RowsFromEigensystems`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

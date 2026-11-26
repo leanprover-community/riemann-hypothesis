@@ -1,4 +1,6 @@
-import New.Spanning.Frames.QuadricPlancherel
+module
+
+public import New.Spanning.Frames.QuadricPlancherel
 
 /-!
 # Depth
@@ -33,6 +35,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 

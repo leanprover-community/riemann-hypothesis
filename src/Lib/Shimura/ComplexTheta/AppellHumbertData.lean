@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.AdditiveCharacter
-import Lib.General.Analysis.FourierTransforms
-import Lib.General.Topology
+module
+
+public import Lib.Adelic.Adeles.AdditiveCharacter
+public import Lib.General.Analysis.FourierTransforms
+public import Lib.General.Topology
 
 /-!
 # Theta functions on complex tori: Appell–Humbert data and factors of automorphy
@@ -31,6 +33,8 @@ treats factors of automorphy, positive Riemann forms and theta functions without
 
 Known; see `Lib.Shimura.ComplexTheta.DimensionFormula` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

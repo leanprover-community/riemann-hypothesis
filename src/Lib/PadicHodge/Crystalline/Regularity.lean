@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Crystalline.FixedRatios
+module
+
+public import Lib.PadicHodge.Crystalline.FixedRatios
 
 /-!
 # Regularity of B_max, closure of admissibility, and crystalline descent from inertia
@@ -44,6 +46,8 @@ Summer School notes on p-adic Hodge theory (2009), 2.3.1, 5.2.1, 6.3, 9.1–9.3.
 
 See also `Lib.PadicHodge.PeriodRings.DeRhamPeriods` and `Lib.PadicHodge.Kisin.PeriodMatrixFrame`.
 -/
+
+@[expose] public section
 
 /-!
 ## Closure properties of admissible representations
@@ -138,7 +142,7 @@ lemma exists_leftInverse_baseChange (f : ∀ i : κ, T' →ₗ[ℤ_[p]] S i)
     simpa [injective_iff_map_eq_zero, funext_iff] using h_inj
   let L : ((i : κ) → S i) →ₗ[ℤ_[p]] Bmax ⊗[ℤ_[p]] T' := AlgebraTensorModule.curry Φ.leftInverse 1
   have hL (y : T') : L (fun i ↦ f i y) = 1 ⊗ₜ y := leftInverse_apply_of_inj hΦ (1 ⊗ₜ y)
-  refine ⟨liftBaseChange _ L ∘ₗ piRightInv .., fun x ↦ ?_⟩
+  refine ⟨liftBaseChange _ L ∘ₗ (piRight ℤ_[p] Bmax Bmax S).symm.toLinearMap, fun x ↦ ?_⟩
   induction x with
   | tmul b y => simp_all [smul_tmul']
   | add x x' hx hx' => simp_all [← Pi.add_def]

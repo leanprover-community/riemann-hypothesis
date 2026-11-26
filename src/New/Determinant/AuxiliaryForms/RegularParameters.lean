@@ -1,4 +1,6 @@
-import New.UpperBound.Kernels.JetConjugatesAndBounds
+module
+
+public import New.UpperBound.Kernels.JetConjugatesAndBounds
 
 /-!
 # Weights of regular parameters and bounds on boxes
@@ -19,6 +21,8 @@ boxes and the power of the determinant.
 Notions from other files:
 * `New.boxes κ N`: the number of boxes in the columns of height below `N`, over all places.
 -/
+
+@[expose] public section
 
 noncomputable section
 

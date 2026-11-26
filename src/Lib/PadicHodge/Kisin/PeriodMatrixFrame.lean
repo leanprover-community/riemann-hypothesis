@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Kisin.PeriodMatrixBasis
+module
+
+public import Lib.PadicHodge.Kisin.PeriodMatrixBasis
 
 /-!
 # The frame theorem for a period matrix, with Frobenius and Galois action on the frame
@@ -37,6 +39,8 @@ works directly by linear retractions onto the Breuil–Kisin ring, without slope
 459–496; Bhatt–Morrow–Scholze, Integral p-adic Hodge theory, Publ. IHÉS 128 (2018), 4.26–4.34;
 Cais–Liu, On F-crystalline representations, Doc. Math. 21 (2016).
 -/
+
+@[expose] public section
 
 namespace New.Lift.Chart
 

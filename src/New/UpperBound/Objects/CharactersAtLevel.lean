@@ -1,5 +1,7 @@
-import New.UpperBound.Divisibility.MarkedPrimes
-import New.UpperBound.Objects.Rows
+module
+
+public import New.UpperBound.Divisibility.MarkedPrimes
+public import New.UpperBound.Objects.Rows
 
 /-!
 # Characters of the lifts of the chain above the level N
@@ -31,6 +33,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.ValuationAtLevel` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

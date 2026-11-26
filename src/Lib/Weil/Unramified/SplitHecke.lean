@@ -1,5 +1,7 @@
-import Lib.General.LinearAlgebra.Eigenvalues
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Lib.General.LinearAlgebra.Eigenvalues
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Hecke operators and Hecke polynomials at split places; spherical eigenvectors
@@ -45,6 +47,8 @@ Notions from other files:
 
 Known; see `Lib.General.LinearAlgebra.IntegralLattices` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

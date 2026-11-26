@@ -1,5 +1,7 @@
-import Lib.Adelic.TraceFormula.TestFunction
-import Lib.DiscreteSeries.Haar.CayleyChart
+module
+
+public import Lib.Adelic.TraceFormula.TestFunction
+public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # Integration over the fibres of a conjugation map
@@ -27,6 +29,8 @@ Notions from other files:
 
 Known result: descent of invariant distributions to a slice, after Harish-Chandra.
 -/
+
+@[expose] public section
 
 open Set Topology Filter MeasureTheory Pointwise
 

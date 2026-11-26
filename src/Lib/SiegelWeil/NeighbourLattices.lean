@@ -1,6 +1,8 @@
-import Mathlib.LinearAlgebra.Projectivization.Basic
-import Lib.Weil.Construction.FiniteMultiplier
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Mathlib.LinearAlgebra.Projectivization.Basic
+public import Lib.Weil.Construction.FiniteMultiplier
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Neighbours of the standard lattice
@@ -48,6 +50,8 @@ and its translates by unitary elements are treated; split and inert places are t
 step, taken at w or at its conjugate. Source: M. Greenberg, J. Voight, Lattice methods for algebraic
 modular forms on classical groups (2014), section 5.
 -/
+
+@[expose] public section
 
 namespace New.SiegelWeil
 

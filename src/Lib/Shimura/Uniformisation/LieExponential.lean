@@ -1,6 +1,8 @@
-import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.General.Geometry.GeometricPoints
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+module
+
+public import Lib.General.Analysis.HolomorphicIntegrals
+public import Lib.General.Geometry.GeometricPoints
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Exponential of compact commutative Lie groups and uniformisation of abelian varieties
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` for sources.
 -/
+
+@[expose] public section
 
 /-! ## The exponential map of a compact commutative complex Lie group -/
 
@@ -133,7 +137,7 @@ lemma New.isFullRankLattice_ker_of_isolated {G V : Type*} [AddCommGroup G] [Topo
            span_top := eq_top_iff'.mpr fun v ↦ by_contra fun hv ↦ ?_ }
   obtain ⟨l, lv_ne, l_ker⟩ := exists_le_ker_of_notMem hv
   have small : {b : V | |l b| < |l v|} ∈ 𝓝 (0 : V) :=
-    (isOpen_lt l.toContinuousLinearMap.cont.abs continuous_const).mem_nhds (by simpa using lv_ne)
+    l.toContinuousLinearMap.cont.abs.continuousAt (gt_mem_nhds (by simpa using lv_ne))
   have often : ∃ᶠ n : ℕ in atTop, n • e v ∈ e '' {b : V | |l b| < |l v|} :=
     (mapClusterPt_zero_atTop_nsmul (e v)).frequently (e_open (image_mem_map small))
   obtain ⟨n, ⟨b, lb_lt, eb_eq⟩, n_ge⟩ := (often.and_eventually (eventually_ge_atTop 1)).exists

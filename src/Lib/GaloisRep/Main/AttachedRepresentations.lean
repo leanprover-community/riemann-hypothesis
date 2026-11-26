@@ -1,6 +1,8 @@
-import Lib.GLn.SchurModule.SchurNorm
-import Lib.PadicHodge.Characters
-import Lib.Weil.DualPair.FiniteAction
+module
+
+public import Lib.GLn.SchurModule.SchurNorm
+public import Lib.PadicHodge.Characters
+public import Lib.Weil.DualPair.FiniteAction
 
 /-!
 # Attached Galois representations: traces, characteristic polynomials and rank one
@@ -46,6 +48,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Main.OddRank` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Attached representations and the existence statement -/
 

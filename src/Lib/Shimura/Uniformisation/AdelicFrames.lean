@@ -1,7 +1,9 @@
-import Lib.Adelic.Adeles.StrongApproximation
-import Lib.Cohomology.Etale.Basic
-import Lib.General.Measure.HaarModulus
-import Lib.Shimura.ComplexTheta.AppellHumbertData
+module
+
+public import Lib.Adelic.Adeles.StrongApproximation
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.Measure.HaarModulus
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Adelic frames over a CM field, torsion classes, period lattices and period maps
@@ -37,6 +39,8 @@ Notions from other files:
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` and `Lib.Shimura.IntegralModel.TowerExistence`
 for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

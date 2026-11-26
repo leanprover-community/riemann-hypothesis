@@ -1,5 +1,7 @@
-import Lib.Adelic.TraceFormula.Convergence
-import Lib.Adelic.TraceFormula.CoprimeFactors
+module
+
+public import Lib.Adelic.TraceFormula.Convergence
+public import Lib.Adelic.TraceFormula.CoprimeFactors
 
 /-!
 # The geometric side, polynomial by polynomial
@@ -26,6 +28,8 @@ Notions from other files:
 Part of a known result: Comparison of simple trace formulas for unitary groups that differ only at
 real places. See `Lib.Adelic.TraceFormula.TraceComparison`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Matrix Polynomial Filter Topology
 

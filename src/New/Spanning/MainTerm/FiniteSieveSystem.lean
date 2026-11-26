@@ -1,5 +1,7 @@
-import New.Spanning.Frames.FixedLines
-import New.Spanning.MainTerm.SiegelTopBound
+module
+
+public import New.Spanning.Frames.FixedLines
+public import New.Spanning.MainTerm.SiegelTopBound
 
 /-!
 # The sieve system at the finite places
@@ -31,6 +33,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

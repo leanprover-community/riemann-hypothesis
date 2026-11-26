@@ -1,4 +1,6 @@
-import New.Spanning.Frames.OneFrame
+module
+
+public import New.Spanning.Frames.OneFrame
 
 /-!
 # Two frames: separation and the gains at one position
@@ -38,6 +40,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

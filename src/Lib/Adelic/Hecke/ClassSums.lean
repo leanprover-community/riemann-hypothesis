@@ -1,5 +1,7 @@
-import Lib.Adelic.Hecke.Basic
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Lib.Adelic.Hecke.Basic
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Class sums as integrals over Γ\G, orbit unfolding and means over compact subgroups
@@ -40,6 +42,8 @@ measure. Source: G. Shimura, Introduction to the Arithmetic Theory of Automorphi
 (1971), ch. 3; B. Gross, Algebraic modular forms, Israel J. Math. 113 (1999) 61-93; M. Greenberg and
 J. Voight, Lattice methods for algebraic modular forms on classical groups, arXiv 1209.2460.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Moving a quotient from one variable to another
@@ -17,6 +19,8 @@ Notions from other files:
 A consequence of a known result: the integral over a quotient does not depend on the cutoff. See
 `Lib.Adelic.QuotientMeasure.Basic`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Measure
 

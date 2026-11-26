@@ -1,8 +1,10 @@
-import Lib.Weil.DualPair.Flip
-import New.Determinant.AuxiliaryForms.GridPaths
-import New.Determinant.Chain.SquareLaw
-import New.Determinant.Twist.FitTwists
-import New.OneLift.ComparisonOperator.ExchangeData
+module
+
+public import Lib.Weil.DualPair.Flip
+public import New.Determinant.AuxiliaryForms.GridPaths
+public import New.Determinant.Chain.SquareLaw
+public import New.Determinant.Twist.FitTwists
+public import New.OneLift.ComparisonOperator.ExchangeData
 
 /-!
 # Moduli, spaces, moves, path data and periods on the two grids
@@ -36,6 +38,8 @@ Notions from other files:
 * `New.Exchange.IsEdgeFamily`: a family of characters over two pairs of conjugate cuspidal types
   which, with a polynomial, form an edge for the real Weil representation.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -178,10 +182,6 @@ lemma gridChar_true :
       D.liftChar (ϑ.pow (l + 1)) (l + 1) * WeilData.upsilonU1 ^ (card n / 2) :=
   rfl
 
-lemma gridChar_false :
-    gridChar ϑ false l n =
-      D.liftChar .one (l + 1) * WeilData.upsilonU1 ^ ((card n + 1) / 2) :=
-  rfl
 
 /-- The tame part of `gridChar`: that of `liftChar` with the twist `ϑ ^ (l + 1)` if `c`, and with
 the trivial twist otherwise. -/

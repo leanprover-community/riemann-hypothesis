@@ -1,5 +1,7 @@
-import New.Determinant.AuxiliaryForms.PathData
-import New.Determinant.Exchange.RemovingPlanes
+module
+
+public import New.Determinant.AuxiliaryForms.PathData
+public import New.Determinant.Exchange.RemovingPlanes
 
 /-!
 # Theta lifts as a triangle of arrows: spaces, lifts, descents and the first lift
@@ -38,6 +40,8 @@ Notions from other files:
 
 See `New.Determinant.Chain.ChainNorms` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

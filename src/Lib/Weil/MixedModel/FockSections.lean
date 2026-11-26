@@ -1,5 +1,7 @@
-import Lib.General.Analysis.MeanValueAndTaylor
-import Lib.Weil.Fock.WeightedNorms
+module
+
+public import Lib.General.Analysis.MeanValueAndTaylor
+public import Lib.Weil.Fock.WeightedNorms
 
 /-!
 # Mixed Schrödinger–Fock models and rapid sections with prescribed values
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Fock
 
@@ -207,8 +211,8 @@ lemma exists_norm_fourier_coherent_le {d : EuclideanSpace ℂ p → ℂ} (d_smoo
       ‖s‖ ≤ 1 → ‖a‖ ≤ 1 → a ≠ 0 → (∀ x ∈ tsupport d, ‖cexp (q (s, x) / a)‖ ≤ D) →
         (‖a‖ * (1 + ‖b‖)) ^ M *
           ‖FourierTransform.fourier (fun x ↦ d x * cexp (q (s, x) / a)) b‖ ≤ C * D :=
-    exists_pow_mul_norm_fourier_le (K := tsupport d) (c := fun p ↦ d p.2) d_supp M
-      (d_smooth.comp contDiff_snd) q_smooth fun _ _ hx ↦ image_eq_zero_of_notMem_tsupport hx
+    exists_pow_mul_norm_fourier_le d_supp M (d_smooth.comp contDiff_snd) q_smooth
+      fun _ _ ↦ image_eq_zero_of_notMem_tsupport
   set m : ℕ := 2 * M + n
   refine ⟨C * (rexp (m ^ 2) * (1 + B) ^ m), fun y w b ↦ ?_⟩
   simp only [← exp_q]

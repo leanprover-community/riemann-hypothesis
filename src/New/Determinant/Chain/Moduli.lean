@@ -1,6 +1,8 @@
-import New.Determinant.AuxiliaryForms.GridPaths
-import New.OneLift.ComparisonOperator.ExchangeData
-import New.OneLift.HeckeValues.TwistedRatio
+module
+
+public import New.Determinant.AuxiliaryForms.GridPaths
+public import New.OneLift.ComparisonOperator.ExchangeData
+public import New.OneLift.HeckeValues.TwistedRatio
 
 /-!
 # Ratios of Hecke values and heights of functions of the twist
@@ -25,6 +27,8 @@ Notions from other files:
 * `New.Data.CriticalPair`: an integer 1 ≤ z ≤ t and a character ν of weight −c, z ≤ c ≤ 4b, with
   tame part supported on the chosen places.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -85,16 +89,6 @@ lemma CriticalPair.ofReal_lRatioProd (p : D.CriticalPair) (ϑ : D.TameChar) :
   rw [lRatioProd, Complex.ofReal_prod]
   exact prod_congr rfl fun z hz ↦ by simp [CriticalPair.ratio, CriticalPair.lowerPoint,
     mem_Icc.1 hz]
-
-/-- For the character `ν` of a critical pair and a tame character `ϑ` of modulus `Q`, the product
-`lRatioProd` of the ratios of Hecke values can be written without inverses, as the product over
-`1 ≤ i ≤ s` of `|L^{MQ}(i, ν ϑ) / L^M(i, ν)|`. -/
-lemma CriticalPair.lRatioProd_eq_prod_norm_div (p : D.CriticalPair) (s : ℕ) (ϑ : D.TameChar) :
-    D.lRatioProd p.character s ϑ =
-      ∏ i ∈ Icc 1 s,
-        ‖(p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) i /
-          p.character.L {w : FinPlace D.E | D.IsChosen w} i‖ := by
-  simp only [lRatioProd, p.L_mul_inv ϑ, p.L_inv, norm_div]
 
 /-- For a critical pair `p` (a character `ν = p.character` and an integer `z = p.z`) and a tame
 character `ϑ` with places `ϑ.Q`, the number `lValueProd` up to `z` for `(ν ϑ)⁻¹` and the chosen

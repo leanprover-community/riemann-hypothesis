@@ -1,5 +1,7 @@
-import New.Congruences.Selmer.Line
-import New.Congruences.Selmer.RootsOfUnity
+module
+
+public import New.Congruences.Selmer.Line
+public import New.Congruences.Selmer.RootsOfUnity
 
 /-!
 # Twisting, general form
@@ -29,6 +31,8 @@ Notions from other files:
   variables indexed by `Q` with a point whose coordinates have valuation at least `r`.
 * `New.ellVal`: the valuation `v` on `PadicAlgCl ℓ` with `v(ℓ) = 1`, read in `[0, ∞]`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

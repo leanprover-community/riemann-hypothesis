@@ -1,7 +1,9 @@
-import Lib.General.Geometry.GaloisCovers
-import Lib.General.Geometry.SerreTheorem
-import Lib.Shimura.HeckeTower.Model
-import Lib.Shimura.Uniformisation.TorusModel
+module
+
+public import Lib.General.Geometry.GaloisCovers
+public import Lib.General.Geometry.SerreTheorem
+public import Lib.Shimura.HeckeTower.Model
+public import Lib.Shimura.Uniformisation.TorusModel
 
 /-!
 # The universal family: models along arcs, rigid fibres and points of linear data
@@ -55,6 +57,8 @@ base); M. Bolognesi, A. Massarenti, Comment. Math. Helv. 91 (2016), Lemma 4.1 (o
 
 See also `Lib.Shimura.ArcExtension` and `Lib.Shimura.IntegralModel.TowerExistence`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

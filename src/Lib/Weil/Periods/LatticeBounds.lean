@@ -1,4 +1,6 @@
-import Lib.Weil.Periods.PointLattice
+module
+
+public import Lib.Weil.Periods.PointLattice
 
 /-!
 # Finitely many orbits of lattices satisfy the bounds
@@ -34,6 +36,8 @@ Notions from other files:
 Known result: there are finitely many lattices between two given ones, and a lattice is determined
 by its local components. Source: O'Meara, Introduction to Quadratic Forms, §81.
 -/
+
+@[expose] public section
 
 open Matrix Pointwise Valued
 

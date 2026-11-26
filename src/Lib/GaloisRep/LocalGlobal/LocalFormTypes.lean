@@ -1,6 +1,8 @@
-import Lib.Adelic.AutomorphicForms.HeckeEigenforms
-import Lib.General.LinearAlgebra.BlockEmbeddings
-import Lib.LocalGL.Shintani.LiftingGreenCharacters
+module
+
+public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import Lib.LocalGL.Shintani.LiftingGreenCharacters
 
 /-!
 # Local GL_N(E_w)-action on forms, parahoric types and labels at a split place
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.LocalGlobal.LabelCompatibility` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

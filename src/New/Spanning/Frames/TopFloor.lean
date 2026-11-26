@@ -1,5 +1,7 @@
-import New.Spanning.Frames.FiberMeasures
-import New.Spanning.Frames.TopCorrelation
+module
+
+public import New.Spanning.Frames.FiberMeasures
+public import New.Spanning.Frames.TopCorrelation
 
 /-!
 # The density at the last entry
@@ -41,6 +43,8 @@ Notions from other files:
 * `PlaceData.scaledOrbitalIntegral` (in `New.Spanning.Frames.TopCorrelation`) is the normalized
   orbital integral of the finite Bessel vector of `Z` at `w_p l⁻¹`, indexed by pairs of cosets.
 -/
+
+@[expose] public section
 
 noncomputable section
 

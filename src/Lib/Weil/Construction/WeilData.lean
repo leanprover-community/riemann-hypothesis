@@ -1,6 +1,8 @@
-import Lib.Adelic.Unitary.GramMatrix
-import Lib.ClassField.HeckeCharacter.Basic
-import Lib.Weil.Construction.HeisenbergModel
+module
+
+public import Lib.Adelic.Unitary.GramMatrix
+public import Lib.ClassField.HeckeCharacter.Basic
+public import Lib.Weil.Construction.HeisenbergModel
 
 /-!
 # Splitting characters, Weil data, and the adelic Heisenberg cocycle and vacuum
@@ -35,6 +37,8 @@ Notions from other files:
 Known; see `Lib.Weil.MixedModel.ZeroTerm` and `Lib.ClassField.Global.CMSplittingCharacters` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

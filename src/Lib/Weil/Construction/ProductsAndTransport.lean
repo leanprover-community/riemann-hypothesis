@@ -1,4 +1,6 @@
-import Lib.Weil.Construction.VacuumProjections
+module
+
+public import Lib.Weil.Construction.VacuumProjections
 
 /-!
 # Products of data along a splitting of coordinates, and changes of coordinates
@@ -34,6 +36,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.Construction.VacuumProjections` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -392,8 +396,7 @@ lemma map_omega {g : G E s} {g₁ : G E s₁}
   refine ext fun x ↦ ?_
   show σ ((V₁.ω g₁ f).val (D.φ x)) = c * (V.ω g (D.map f)).val x
   -- write both values at `x` as `weilMultiplier` times an integral
-  repeat erw [Space.ω, weilRep, IsVacuum.smul_apply, ContinuousLinearMap.flip_apply,
-    integrated_apply_eq_integral]
+  repeat erw [Space.ω, weilRep, IsVacuum.smul_apply, integrated_apply_eq_integral]
   -- substitute `D.φ` in the integral on the left: `σ (∫ F) = ∫ σ ∘ F ∘ D.φ` for every `F`, and
   -- `σ (e (D.φ x)) = e x` for the vacuum `e`
   have h_val (y : n → 𝔸 E) : (D.map (V := V) f).val y = σ (f.val (D.φ y)) := transport_apply ..

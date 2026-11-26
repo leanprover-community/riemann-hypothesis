@@ -1,5 +1,7 @@
-import Lib.Adelic.AutomorphicForms.HeckeEigenforms
-import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+module
+
+public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 
 /-!
 # Matching unit pairs at congruence levels and at unramified places of a step
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Matching pairs at a congruence level over a profinite ring

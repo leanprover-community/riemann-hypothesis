@@ -1,5 +1,7 @@
-import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
-import Lib.GLn.Branching.IntegralMap
+module
+
+public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+public import Lib.GLn.Branching.IntegralMap
 
 /-!
 # Periods of algebraic forms over a block subgroup as class sums via branching
@@ -29,6 +31,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

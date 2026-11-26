@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Vocabulary of Galois theory: places, decomposition, Frobenius elements and inertia
@@ -28,6 +30,8 @@ Notions from Mathlib used in the statements:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,6 +1,8 @@
-import New.Spanning.MainTerm.FiniteSieveSystem
-import New.Spanning.RemainingTerms.Size
-import New.UpperBound.Objects.LabelsAndIndexTypes
+module
+
+public import New.Spanning.MainTerm.FiniteSieveSystem
+public import New.Spanning.RemainingTerms.Size
+public import New.UpperBound.Objects.LabelsAndIndexTypes
 
 /-!
 # Main-term bound for the second moment over open reductions fixing given vectors
@@ -42,6 +44,8 @@ literature. Related work: Jacquet–Ye, Germs of Kloosterman integrals for GL(3)
 Relative trace formulae toward Bessel and Fourier–Jacobi periods, 2014; Siegel, Über die analytische
 Theorie der quadratischen Formen, 1935.
 -/
+
+@[expose] public section
 
 section MainTermEstimate
 
@@ -170,9 +174,6 @@ lemma prod_poissonConst_eq [S.IsAdmissible] {kPred : ℕ} (hk : 𝔰.k = kPred +
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum Finset.prod Finset.univ in
--- Lean v4.37.0-rc1: side goals `0 < S.b ^ (c * 𝔰.n)` of `grw`/`bound` (`Shape.n` is an abbrev)
--- exceed the default recursion depth.
-set_option maxRecDepth 2000 in
 /-- The error is measured against the identity second moment. Let `f` be the number of infinite
 places, `n = 𝔰.n = ϱ + 1` the number of frame vectors, `k = 𝔰.k` and `dim` the number of Bessel
 coordinates. The left side has three factors: the constant `scaledSiegelConst` of Siegel's step; the

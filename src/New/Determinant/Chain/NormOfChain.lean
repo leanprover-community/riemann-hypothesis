@@ -1,5 +1,7 @@
-import New.Determinant.Chain.ChainNorms
-import New.Spanning.Multiplicities.EqualMultiplicities
+module
+
+public import New.Determinant.Chain.ChainNorms
+public import New.Spanning.Multiplicities.EqualMultiplicities
 
 /-!
 # The volume of ι on the target forms as a product of volumes of theta lifts
@@ -41,6 +43,8 @@ Notions from other files:
 
 See `New.Determinant.Chain.ChainNorms` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

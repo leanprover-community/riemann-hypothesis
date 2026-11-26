@@ -1,5 +1,7 @@
-import New.UpperBound.ElementaryDivisors.Edges
-import New.UpperBound.ElementaryDivisors.FrobeniusFactors
+module
+
+public import New.UpperBound.ElementaryDivisors.Edges
+public import New.UpperBound.ElementaryDivisors.FrobeniusFactors
 
 /-!
 # Averaging: removing the terms of large defect in all Levi translates at once
@@ -62,6 +64,8 @@ by weights are known in the literature. Related work: Benson–Doty, Schur–Wey
 fields, 2009; Green, Polynomial representations of GL_n, 1980; Donkin, On Schur algebras and related
 algebras I, 1986.
 -/
+
+@[expose] public section
 
 noncomputable section
 

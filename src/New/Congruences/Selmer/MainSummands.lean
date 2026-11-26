@@ -1,6 +1,8 @@
-import New.Congruences.GaloisRepresentations.AttachedRepresentations
-import New.Congruences.LocalLoss.LocalLattices
-import New.Congruences.Selmer.SelmerData
+module
+
+public import New.Congruences.GaloisRepresentations.AttachedRepresentations
+public import New.Congruences.LocalLoss.LocalLattices
+public import New.Congruences.Selmer.SelmerData
 
 /-!
 # Main summands are Selmer data
@@ -25,6 +27,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

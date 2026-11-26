@@ -1,7 +1,9 @@
-import New.Derivatives.Divisibility.NormalForm
-import New.Derivatives.FormalGroup.Exponent
-import New.Derivatives.FormalGroup.Resolution
-import New.Derivatives.Vacuum.TightFrames
+module
+
+public import New.Derivatives.Divisibility.NormalForm
+public import New.Derivatives.FormalGroup.Exponent
+public import New.Derivatives.FormalGroup.Resolution
+public import New.Derivatives.Vacuum.TightFrames
 
 /-!
 # The normal form of theta products at non-split primes
@@ -36,6 +38,8 @@ Notions from other files:
 * `New.coupling`, `New.HasNormalForm`: `Γ_e = ∑ z_(τ,c) ^ p ^ e * z_(τ',c)` with `τ'` the partner
   of `τ`, and `F(ϖ z) = W exp (c_ϖ ∑ λ_{e j} Γ_e ^ p ^ j)` with `W` integral.
 -/
+
+@[expose] public section
 
 /-! ## Substitution of a linear form -/
 
@@ -192,12 +196,9 @@ lemma norm_conj_pow_sub_partner_le {P : Parameters} {s p : ℕ} [Fact p.Prime] [
       norm_pow_sub_conj_partner_le he τ (star α)
   have h_fermat : piPrimeInt P.d ∣ (N : valRingCp p) ^ p ^ e - N := by
     have h_mod : (p : ℤ) ∣ (N : ℤ) ^ p ^ e - N :=
-      (ZMod.intCast_zmod_eq_zero_iff_dvd _ p).1
-        (by rw [Int.cast_sub, Int.cast_pow, Int.cast_natCast, ZMod.pow_card_pow, sub_self])
-    have h_cast : ((p : ℤ) : valRingCp p) ∣ (((N : ℤ) ^ p ^ e - N : ℤ) : valRingCp p) :=
-      map_dvd (Int.castRingHom (valRingCp p)) h_mod
-    push_cast at h_cast
-    exact (piPrimeInt_dvd_natCast P.d).trans h_cast
+      (ZMod.intCast_zmod_eq_zero_iff_dvd _ p).1 (by simp [ZMod.pow_card_pow])
+    exact (piPrimeInt_dvd_natCast P.d).trans
+      (mod_cast map_dvd (Int.castRingHom (valRingCp p)) h_mod)
   have h_unit : IsUnit ((N : valRingCp p) ^ p ^ e) :=
     (isUnit_integer_iff_norm_eq_one.2 (hN.norm_natCast_eq_one ℂ_[p])).pow _
   have h_mul : piPrimeInt P.d ∣ (N : valRingCp p) ^ p ^ e * (a ^ p ^ e - b) := by

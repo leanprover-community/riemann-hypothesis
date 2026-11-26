@@ -1,7 +1,9 @@
-import Lib.ClassField.HeckeCharacter.SplittingCharacters
-import Lib.SiegelWeil.SingularForms.CentreCoefficients
-import Lib.Weil.DualPair.KernelDecay
-import Lib.Weil.DualPair.KernelLaws
+module
+
+public import Lib.ClassField.HeckeCharacter.SplittingCharacters
+public import Lib.SiegelWeil.SingularForms.CentreCoefficients
+public import Lib.Weil.DualPair.KernelDecay
+public import Lib.Weil.DualPair.KernelLaws
 
 /-!
 # Characters on determinants, local values and characters tame for a modulus
@@ -42,6 +44,8 @@ Notions from other files:
 Known; see `Lib.ClassField.Global.CMSplittingCharacters` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-! ## Characters of given weight on determinants of integral unitary points -/
@@ -75,10 +79,7 @@ lemma apply_det_eq_prod (h : μ.HasWeight e ψ) {ι : Type*} [Fintype ι] {w : �
   have hψ_map : ∀ u : FinPlace E, u ∉ Finset.univ.map ⟨w, hw⟩ → ψ u = 1 := by simpa using hψ
   have h_int : (detFin s k.val : 𝔸 E).snd ∈ Ô E := by simp [det_mem (mem_stdLevel.mp k.property)]
   rw [h.apply_eq _ h_int, finprod_tame_eq_prod_reduceU1 (u := detFin s k.val) hψ_map h_int]
-  simp only [Matrix.snd_det] at h_red
-  simp [reduceU1, h_red]
-  exact Finset.prod_congr rfl fun i _ ↦
-    congrArg (ψ (w i)) (h_red (w i) (by rw [← Matrix.snd_det]; exact h_int))
+  simp [reduceU1, -snd_det, h_red]
 
 /-- A character `μ` with trivial tame part (`μ.HasWeight e 1`) is trivial on the determinant
 `detFin s k` of every `k` in the stabiliser `stdLevel E n` of the standard lattice. -/

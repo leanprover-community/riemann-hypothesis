@@ -1,5 +1,7 @@
-import Lib.GLn.SchurModule.SchurMatrix
-import Lib.General.LinearAlgebra.MinorProducts
+module
+
+public import Lib.GLn.SchurModule.SchurMatrix
+public import Lib.General.LinearAlgebra.MinorProducts
 
 /-!
 # The Weyl module inside the tensors of its diagram
@@ -37,6 +39,8 @@ Notions from other files:
 Known result: the Weyl module over `ℤ` as a direct summand as a ℤ-module of a tensor product of
 exterior powers. Source: Akin, Buchsbaum and Weyman, Schur functors and Schur complexes.
 -/
+
+@[expose] public section
 
 noncomputable section
 

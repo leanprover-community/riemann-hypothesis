@@ -1,5 +1,7 @@
-import New.Spanning.Unfolding.Climbing
-import New.UpperBound.Seesaw.AdmissibleCombinations
+module
+
+public import New.Spanning.Unfolding.Climbing
+public import New.UpperBound.Seesaw.AdmissibleCombinations
 
 /-!
 # Congruence levels inside the stabilizer of a glued lattice
@@ -31,6 +33,8 @@ Related work: `Grading.inclXFin_mem_stdLevel` is related to Nikulin's criterion 
 isometries to an overlattice: the congruence on `h` plays the part of the condition that an isometry
 preserve the gluing.
 -/
+
+@[expose] public section
 
 namespace New
 

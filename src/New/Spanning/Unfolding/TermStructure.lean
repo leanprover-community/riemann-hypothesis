@@ -1,4 +1,6 @@
-import New.Spanning.Unfolding.Climbing
+module
+
+public import New.Spanning.Unfolding.Climbing
 
 /-!
 # The structure of a term
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.Spanning.Unfolding.Climbing` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -222,17 +226,6 @@ theorem range_framePerpToX₀ (γ : S.G E) : (framePerpToX₀ γ).range = linked
   · obtain ⟨y, hy_perp, hy_X₀, hγy_z, h_link⟩ := exists_mem_isotropicPerp_comp_eq γ v
     exact ⟨⟨y, mem_framePerp.2 ⟨hy_perp, h_link.symm.trans hv, hγy_z⟩⟩, hy_X₀⟩
 
-/-- The map `y ↦ y₀` from `(A⁺_γ)^⊥` to `X₀` sends the form `S.ratGram` of the whole space to the
-standard hermitian product of `X₀`. -/
-theorem form_framePerpToX₀ (y y' : framePerp γ) :
-    star (framePerpToX₀ γ y) ⬝ᵥ framePerpToX₀ γ y' = star y.val ⬝ᵥ S.ratGram *ᵥ y'.val := by
-  obtain ⟨hy_perp, hy_z, -⟩ := mem_framePerp.1 y.2
-  obtain ⟨hy_dual, -⟩ := mem_isotropicPerp.1 hy_perp
-  obtain ⟨hy'_dual, -⟩ := mem_isotropicPerp.1 (mem_framePerp.1 y'.2).1
-  -- The product of `y` and `y'` is that of their middle blocks, and the `z_N`-part of `y` vanishes.
-  rw [ratGram_form_of_eStar_eq_zero hy_dual hy'_dual, dotProduct_ratMiddle_mulVec_eq_sum_sub, hy_z]
-  simp [framePerpToX₀_apply, dotProduct]
-
 /-- The space `I_γ = A ∩ γ A` is orthogonal to both frames. -/
 lemma commonIsotropic_le_framePerp (γ : S.G E) : commonIsotropic γ ≤ framePerp γ := by
   intro y hy
@@ -256,20 +249,6 @@ theorem ker_framePerpToX₀ (γ : S.G E) :
     _ ↔ (⟨y, hy⟩ : framePerp γ) ∈ (commonIsotropic γ).submoduleOf (framePerp γ) := by
       simp [h_ker, Submodule.submoduleOf]
 
-/-- A vector `y` of `framePerp γ = (A⁺_γ)^⊥` is isotropic for the form `S.ratGram` if and only if it
-lies in `commonIsotropic γ = A ∩ γ A`, where `A = ⟨e_1, …, e_ϱ⟩`. -/
-lemma form_self_eq_zero_iff_mem_commonIsotropic (hy : y ∈ framePerp γ) :
-    star y ⬝ᵥ S.ratGram *ᵥ y = 0 ↔ y ∈ commonIsotropic γ := by
-  have h_ker : framePerpToX₀ γ ⟨y, hy⟩ = 0 ↔ y ∈ commonIsotropic γ := by
-    simp [← LinearMap.mem_ker, ker_framePerpToX₀, Submodule.submoduleOf]
-  rw [← h_ker, ← form_framePerpToX₀ ⟨y, hy⟩ ⟨y, hy⟩]
-  refine ⟨fun h_norm ↦ ?_, fun h ↦ by rw [h, dotProduct_zero]⟩
-  -- The form of `X₀ ⊥ E z⁺` has no nonzero isotropic vector, hence neither has that of `X₀`.
-  have h_zero : (framePerpToX₀ γ ⟨y, hy⟩ ⊕ᵥ 0 : 𝔰.MiddleIndex → E) = 0 :=
-    eq_zero_of_positiveGram_form_eq_zero (S := S)
-      (by rw [dotProduct_positiveGram_mulVec_eq_sum_add]; simpa [dotProduct] using h_norm)
-  exact funext fun i ↦ congrFun h_zero (inl i)
-
 omit [CMType E] in
 /-- The space `M A`, spanned by `M e_1, …, M e_ϱ`, lies in `M A⁺`, the span of the columns of
 `frameImage M`, which are the images under `M` of the frame `e_1, …, e_ϱ, z`. -/
@@ -285,15 +264,6 @@ lemma commonIsotropic_le_colSpan_frameImage_one (γ : S.G E) :
 lemma commonIsotropic_le_colSpan_frameImage_coe (γ : S.G E) :
     commonIsotropic γ ≤ colSpan (frameImage γ.val.val) :=
   (commonIsotropic_le_isotropicSpan_coe γ).trans (isotropicSpan_le_colSpan_frameImage γ.val.val)
-
-/-- The space `I_γ = A ∩ γ A` is the radical of `A⁺_γ = A⁺ + γ A⁺`, that is, the intersection of
-`A⁺_γ` with its orthogonal complement. -/
-theorem frameSum_inf_framePerp (γ : S.G E) : frameSum γ ⊓ framePerp γ = commonIsotropic γ := by
-  refine le_antisymm ?_ (le_inf ?_ (commonIsotropic_le_framePerp γ))
-  · rintro y ⟨h_sum, h_perp⟩
-    exact (form_self_eq_zero_iff_mem_commonIsotropic h_perp).1
-      (mem_framePerp_iff_orthogonal.1 h_perp y h_sum)
-  · exact le_sup_of_le_left (commonIsotropic_le_colSpan_frameImage_one γ)
 
 /-- A vector `p` on two copies of the middle coordinates lies in the kernel of
 `zRowBlockDiagonal (S.ratMiddle E)` (two copies of the `z`-row of the Gram matrix) if and only if
@@ -629,26 +599,6 @@ lemma HasCellRank.isLeast_normOnePairOccursFrom {j : Fin (𝔰.ϱ + 2)} (h_rank 
     (h_above b (Fin.lt_def.2 (hij.trans_le hb))).right
   exact h_minor (leadingMinor_eq_zero_of_mulVec_eq_zero hx'_ne h_products hx'_above)
 
-/-- Let `E` contain a primitive root of unity of order `5040`. Let `S.CharsAgree γ` hold: the
-character `unipotentChar` takes the same value at `u` and at `γ⁻¹ u γ` for every rational `u` in
-`U₀ ∩ γ U₀ γ⁻¹`. Let `j` be least with `NormOnePairOccursFrom j γ`: for one `ζ` with `ζ ζ̄ = 1`, at
-every index from `j` on, the flags of the frame `e_1, …, e_ϱ, z_N` and of its image under `γ` share
-a vector with leading coefficients `ζ` and `1`. Then `flagSpan 1 j`, the span of the first `j` frame
-vectors, meets `colSpan (frameImage γ)`, the span of the image of the frame under `γ`, only in
-`0`. -/
-lemma CharsAgree.disjoint_flagSpan_one {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot5040 E]
-    (h_agree : S.CharsAgree γ) (h_least : IsLeast {i : ℕ | NormOnePairOccursFrom i γ} j.val) :
-    Disjoint (flagSpan 1 j)
-      (colSpan (frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))) := by
-  refine Submodule.disjoint_def.2 fun w hw hw' ↦ ?_
-  obtain ⟨x, hx, rfl⟩ := mem_flagSpan.1 hw
-  obtain ⟨x', hx' : frameImage γ *ᵥ x' = frameImage 1 *ᵥ x⟩ := hw'
-  by_contra h_ne
-  have hx_ne : x ≠ 0 := fun h ↦ h_ne (by rw [h, mulVec_zero])
-  obtain ⟨l, hl, hxl : x l ≠ 0, -⟩ := h_agree.exists_coords_ne_zero_of_common_vector h_least
-    hx'.symm hx_ne
-  exact hxl (hx l hl)
-
 /-- Let `E` contain a primitive root of unity of order `5040`. Let `γ` satisfy `S.CharsAgree γ`: the
 character `unipotentChar` takes the same value at `u` and at `γ⁻¹uγ` for every rational `u` in
 `U₀ ∩ γU₀γ⁻¹`. Let `j` be least with `NormOnePairOccursFrom j γ`: for one `ζ` with `ζ ζ̄ = 1`, at
@@ -683,15 +633,6 @@ theorem HasCellRank.flagSpan_coe_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
     flagSpan γ j ⊔ commonIsotropic γ = isotropicSpan γ :=
   h_rank.normOnePairOccursFrom.flagSpan_coe_sup_commonIsotropic
     (h_rank.le_of_termDisc_eq_zero h_disc)
-
-/-- Let `E` contain a primitive root of unity of order `5040`, let `γ` agree, let
-`gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then `A_{≤j} = ⟨e_1, …, e_j⟩`
-meets `I_γ = A ∩ γ A` only in `0`. -/
-theorem CharsAgree.disjoint_flagSpan_one_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
-    (h_rank : S.HasCellRank j γ) : Disjoint (flagSpan 1 j) (commonIsotropic γ) :=
-  (h_agree.disjoint_flagSpan_one (h_rank.isLeast_normOnePairOccursFrom h_disc)).mono_right
-    (commonIsotropic_le_colSpan_frameImage_coe γ)
 
 /-- Let `E` contain a primitive root of unity of order `5040`, let `γ` agree, let
 `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then

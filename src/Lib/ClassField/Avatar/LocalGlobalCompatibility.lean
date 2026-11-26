@@ -1,4 +1,6 @@
-import Lib.GaloisRep.Main.OddRank
+module
+
+public import Lib.GaloisRep.Main.OddRank
 
 /-!
 # Local-global compatibility for the ℓ-adic avatar of an algebraic Hecke character
@@ -34,6 +36,8 @@ Serre, Abelian ℓ-adic representations and elliptic curves, 1968, II–III (loc
 Hodge–Tate, Tate's theorem); B. Conrad, Lifting global representations with local properties,
 App. B (crystalline case).
 -/
+
+@[expose] public section
 
 open NumberField Polynomial New.AlgHeckeChar Filter New.Variety Submodule AlgEquiv
 

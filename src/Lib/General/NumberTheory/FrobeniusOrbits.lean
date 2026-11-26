@@ -1,4 +1,6 @@
-import Lib.Adelic.Adeles.Basic
+module
+
+public import Lib.Adelic.Adeles.Basic
 
 /-!
 # Frobenius orbits of roots over finite fields and residue fields at self-conjugate places
@@ -36,6 +38,8 @@ so places of prime norm are split. The file also contains two summation lemmas.
 
 Known: standard facts on finite fields and on residue fields of CM fields.
 -/
+
+@[expose] public section
 
 /-! ## Integer powers with a sum as exponent -/
 

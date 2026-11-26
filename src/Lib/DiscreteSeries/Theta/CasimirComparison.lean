@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
-import Lib.DiscreteSeries.Theta.FockDualPair
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+public import Lib.DiscreteSeries.Theta.FockDualPair
 
 /-!
 # The Casimir elements of an oscillator pair
@@ -35,6 +37,8 @@ First occurrence for the dual pairs (U(p,q), U(r,s)), Canad. J. Math. 51 (1999),
 
 See also `Lib.DiscreteSeries.Theta.LocalCorrespondence`.
 -/
+
+@[expose] public section
 
 namespace New
 

@@ -1,4 +1,6 @@
-import New.UpperBound.Objects.AuxiliaryPair
+module
+
+public import New.UpperBound.Objects.AuxiliaryPair
 
 /-!
 # The theta kernel of a descent pair with values in the weight representation
@@ -30,6 +32,8 @@ Notions from other files:
 * `New.stdClassSum K f`: the sum of `f` over the double cosets of the rational points and `K`, each
   weighted by the inverse of the order of its automorphism group.
 -/
+
+@[expose] public section
 
 noncomputable section
 

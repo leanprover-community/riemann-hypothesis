@@ -1,5 +1,7 @@
-import Lib.Shimura.HeckeTower.HeckeData
-import Lib.Weil.Unramified.SplitHecke
+module
+
+public import Lib.Shimura.HeckeTower.HeckeData
+public import Lib.Weil.Unramified.SplitHecke
 
 /-!
 # Steps E'/E of base change and commuting families of Hecke operators
@@ -37,6 +39,8 @@ Notions from other files:
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` and `Lib.Adelic.Hecke.ClassSums` for
 sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Steps, compatible CM types and matched places

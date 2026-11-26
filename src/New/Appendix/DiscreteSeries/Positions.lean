@@ -1,5 +1,7 @@
-import Lib.Adelic.Witt.WittTheorem
-import New.Appendix.DiscreteSeries.SteepParameters
+module
+
+public import Lib.Adelic.Witt.WittTheorem
+public import New.Appendix.DiscreteSeries.SteepParameters
 
 /-!
 # Positions of a smaller unitary group, and the two traces
@@ -18,6 +20,8 @@ Notions from other files:
 * `l.phase k (Y, Y')` is `tr μ Y - tr μ' Y'` for the weights `μ`, `μ'` of the lowest `K`-types of
   `l` and `k`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -464,20 +468,6 @@ lemma IsStationary.phase_eq (hP : IsStationary l k e e' d v i₀) {Y : Matrix n 
       hN hN'
   rw [HCParam.phase, h_split, hP.adjoint_weight_mul_eq, hσ, hσ']
   ring
-
-/-- **Two traces.** Let `μ`, `μ'` be the weights of the lowest `K`-types of the parameters `l` of
-`U(ε)` and `k` of `U(η)`, as diagonal matrices. Let `(v, i₀)` be a stationary position
-(`IsStationary`): the columns `v₁, …, v_{j₀}` of `v`, where `j₀ = d + 1`, and an isometry `i₀`
-into their orthogonal complement, with `μ v_j = v_{j + 1}` for `j < j₀` and `i₀† μ i₀ = μ'`. Let
-`Y` and its adjoint `Y†` lower the flag of the `v_j` (`LowersFlag`), with sums `σ` and `σ'` of the
-coefficients next to the diagonal, and let `Y` induce `Y'` on the image of `i₀` modulo the span of
-`v₁, …, v_{j₀ - 1}` (`InducesOn`). Then `Y` and `Y'` have the same trace, and the phase
-`tr μ Y - tr μ' Y'` is `σ + conj σ'`. -/
-theorem IsStationary.trace_eq_and_phase_eq (hP : IsStationary l k e e' d v i₀) {Y : Matrix n n ℂ}
-    {Y' : Matrix m m ℂ} {σ σ' : ℂ} (hY : LowersFlag d v Y σ) (hY' : InducesOn d v i₀ Y Y')
-    (hYadj : LowersFlag d v (formAdjoint ε ε Y) σ') :
-    Y.trace = Y'.trace ∧ l.phase k (Y, Y') = σ + conj σ' :=
-  ⟨hP.trace_eq hY hY' hYadj, hP.phase_eq hY hY' hYadj⟩
 
 end New.DiscreteSeries
 

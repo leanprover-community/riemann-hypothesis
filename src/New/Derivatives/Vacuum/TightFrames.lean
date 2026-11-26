@@ -1,8 +1,10 @@
-import Lib.Adelic.AutomorphicForms.PAdicGauge
-import Lib.CM.ChowlaSelberg
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
-import Lib.Weil.Construction.FourierInversion
-import New.Derivatives.Field.WeilData
+module
+
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.CM.ChowlaSelberg
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.Weil.Construction.FourierInversion
+public import New.Derivatives.Field.WeilData
 
 /-!
 # Scale of theta Taylor series, tight frames, jet series along lines
@@ -65,6 +67,8 @@ integrality via torsion values are known from the literature. Related work: Conw
 Low-dimensional lattices V, 1989; Finis, Divisibility of anticyclotomic L-functions and theta
 functions with CM, 2006; Mumford, On the equations defining abelian varieties I, 1966.
 -/
+
+@[expose] public section
 
 noncomputable section
 

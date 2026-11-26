@@ -1,4 +1,6 @@
-import Lib.Adelic.Adeles.AdditiveCharacter
+module
+
+public import Lib.Adelic.Adeles.AdditiveCharacter
 
 /-!
 # Principal ideles and a majorant on the complex torus
@@ -16,6 +18,8 @@ Notions from other files:
   chosen embeddings.
 * `New.ratAdeles E`: the image of E under `New.toAdele`, a lattice in the adeles.
 -/
+
+@[expose] public section
 
 namespace New
 
@@ -81,15 +85,13 @@ lemma integrable_prod_inv_one_add_log_sq [Fintype ι] :
       ext x
       simp [polar, L, exp_log, ofReal_log]
     rw [map_apply hL hK.measurableSet]
-    have h_prod : IsCompact (K ×ˢ (Set.univ : Set (ι → Circle))) := hK.prod isCompact_univ
-    have h_compact : IsCompact (polar.uncurry '' K ×ˢ Set.univ) := h_prod.image h_polar
+    have h_compact : IsCompact (polar.uncurry '' K ×ˢ Set.univ) :=
+      (hK.prod isCompact_univ).image h_polar
     exact (measure_mono h_sub).trans_lt h_compact.measure_lt_top
   have h_int : Integrable (fun t : ι → ℝ ↦ ∏ x : ι, (1 + t x ^ 2)⁻¹) (haar.map L) := by
     rw [(haar.map L).isAddLeftInvariant_eq_smul volume]
-    have h_volume : Integrable (fun t : ι → ℝ ↦ ∏ x : ι, (1 + t x ^ 2)⁻¹) := by
-      rw [volume_pi]
-      exact Integrable.fintype_prod (f := fun _ (s : ℝ) ↦ (1 + s ^ 2)⁻¹)
-        fun _ ↦ integrable_inv_one_add_sq
+    have h_volume : Integrable (fun t : ι → ℝ ↦ ∏ x : ι, (1 + t x ^ 2)⁻¹) :=
+      Integrable.fintype_prod fun _ ↦ integrable_inv_one_add_sq
     exact h_volume.smul_measure_nnreal
   exact h_int.comp_measurable hL
 

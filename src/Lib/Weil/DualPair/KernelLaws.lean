@@ -1,4 +1,6 @@
-import Lib.Weil.DualPair.FiniteAction
+module
+
+public import Lib.Weil.DualPair.FiniteAction
 
 /-!
 # Theta kernels of unitary pairs modulo an ideal: formal laws and seesaw identities
@@ -38,6 +40,8 @@ Known; see `Lib.Weil.DualPair.GaloisLaw` for sources.
 
 See also `Lib.Weil.DualPair.ThetaLiftConvergence`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

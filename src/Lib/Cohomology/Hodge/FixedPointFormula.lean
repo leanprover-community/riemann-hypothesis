@@ -1,7 +1,9 @@
-import Lib.Adelic.Unitary.Defs
-import Lib.Cohomology.Hodge.DiagonalClass
-import Lib.Cohomology.Hodge.Kunneth
-import Lib.General.Algebra.MultivariatePolynomials
+module
+
+public import Lib.Adelic.Unitary.Defs
+public import Lib.Cohomology.Hodge.DiagonalClass
+public import Lib.Cohomology.Hodge.Kunneth
+public import Lib.General.Algebra.MultivariatePolynomials
 
 /-!
 # Reduced coincidences and the fixed point formula in Hodge cohomology
@@ -67,6 +69,8 @@ symbol.
 
 See also `Lib.Cohomology.WoodsHole` and `Lib.Cohomology.PointClass.LinearIndependence`.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

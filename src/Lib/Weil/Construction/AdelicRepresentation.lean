@@ -1,6 +1,8 @@
-import Lib.Adelic.Unitary.RationalPoints
-import Lib.Weil.Construction.FiniteCocycle
-import Lib.Weil.Fock.Basic
+module
+
+public import Lib.Adelic.Unitary.RationalPoints
+public import Lib.Weil.Construction.FiniteCocycle
+public import Lib.Weil.Fock.Basic
 
 /-!
 # The adelic Weil representation on 𝒮(V) and its theta functional
@@ -53,6 +55,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Cohomology.Etale.Basic
+module
+
+public import Lib.Cohomology.Etale.Basic
 
 /-!
 # Multivariate polynomials: cost of vanishing, homogenization, Nullstellensatz, Hensel
@@ -37,6 +39,8 @@ which each u^κ(u) agrees with a polynomial of lower weighted degree. A nonzero 
 to order d at all these points then has a monomial of weighted degree at least d. Source: Alon,
 Combinatorial Nullstellensatz (1999); Ball–Serra, Punctured combinatorial Nullstellensätze (2009).
 -/
+
+@[expose] public section
 
 /-! ## Partial derivatives of multivariate polynomials commute -/
 

@@ -1,5 +1,7 @@
-import Lib.LocalGL.Iwahori.QuadraticRelation
-import Lib.LocalGL.Shintani.LiftingGreenCharacters
+module
+
+public import Lib.LocalGL.Iwahori.QuadraticRelation
+public import Lib.LocalGL.Shintani.LiftingGreenCharacters
 
 /-!
 # Sorted exponents at pro-p Iwahori level
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.LocalGL.Iwahori.SphericalExponents` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Sorting exponents, and sorted exponents from a parahoric type

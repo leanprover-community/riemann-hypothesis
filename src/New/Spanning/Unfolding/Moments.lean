@@ -1,5 +1,7 @@
-import New.Spanning.SecondMoment.HilbertSchmidt
-import New.Spanning.Unfolding.MomentBounds
+module
+
+public import New.Spanning.SecondMoment.HilbertSchmidt
+public import New.Spanning.Unfolding.MomentBounds
 
 /-!
 # The second moments of the operators `P* s P`, and good forms
@@ -49,6 +51,8 @@ Michel–Ramakrishnan–Yang, Bessel periods on U(2,1)×U(1,1), 2023.
 See `New.Spanning.SecondMoment.SpanningTheorem` and `New.Spanning.RemainingTerms.Sum` for related
 work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

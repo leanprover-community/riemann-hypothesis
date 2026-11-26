@@ -1,4 +1,6 @@
-import New.Derivatives.Sharpness.OneCurve
+module
+
+public import New.Derivatives.Sharpness.OneCurve
 
 /-!
 # Least valuations of coefficients of theta products
@@ -37,6 +39,8 @@ The imported notions used in the statements are:
   bounds for `val₆` in all degrees, when one form has unit coefficients and when integral
   combinations of the forms give the coordinates up to a unit.
 -/
+
+@[expose] public section
 
 /-!
 ## Least valuations of coefficients of theta products

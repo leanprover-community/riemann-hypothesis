@@ -1,9 +1,11 @@
-import Lib.Cyclotomic.OddSha
-import New.Congruences.FirstOrder.TateTwistCocycles
-import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
-import New.Congruences.LocalLoss.CrystallineDefect
-import New.Congruences.LocalLoss.LocalLattices
-import New.Congruences.LocalLoss.TateDualBound
+module
+
+public import Lib.Cyclotomic.OddSha
+public import New.Congruences.FirstOrder.TateTwistCocycles
+public import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
+public import New.Congruences.LocalLoss.CrystallineDefect
+public import New.Congruences.LocalLoss.LocalLattices
+public import New.Congruences.LocalLoss.TateDualBound
 
 /-!
 # Constants, trace relations, lattices and local defects for Ribet's method
@@ -54,6 +56,8 @@ four-dimensional symplectic representations, 2025; Chang–Diamond, Extensions o
 (φ,Γ)-modules, 2011; T. Liu, Torsion p-adic Galois representations and a conjecture of Fontaine,
 2007.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

@@ -1,4 +1,6 @@
-import Lib.Adelic.Adeles.IdeleModulus
+module
+
+public import Lib.Adelic.Adeles.IdeleModulus
 
 /-!
 # Criteria for CM fields
@@ -25,6 +27,8 @@ extends to its finite adeles.
   by `P`, compatibly with `E[X] → L` and with complex conjugation.
 * `New.adjoinRoot_cm_presentation`: these facts about `L` and `𝔸f L` in one statement.
 -/
+
+@[expose] public section
 
 /-! ## A CM criterion via a conjugation on the field -/
 

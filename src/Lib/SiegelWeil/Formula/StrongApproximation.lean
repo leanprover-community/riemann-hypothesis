@@ -1,5 +1,7 @@
-import Lib.SiegelWeil.Formula.LagrangianZeroTerms
-import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
+module
+
+public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
+public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
 
 /-!
 # Strong approximation and constancy of automorphic functions in equal rank
@@ -45,8 +47,10 @@ of the parabolic subgroup fixing the isotropic line, then the values of `D` on t
 
 Source: M. Kneser, Starke Approximation in algebraischen Gruppen I, J. reine angew. Math. 218
 (1965); G. Shimura, Arithmetic of unitary groups, Ann. of Math. 79 (1964); survey A. Rapinchuk, MSRI
-Publ. 61 (2013).
+Publ. 61 (2014).
 -/
+
+@[expose] public section
 
 section EqualRankConstant
 

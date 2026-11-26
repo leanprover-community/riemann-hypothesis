@@ -1,4 +1,6 @@
-import Lib.GLn.SchurModule.Basic
+module
+
+public import Lib.GLn.SchurModule.Basic
 
 /-!
 # A basis of minor products for Borel semi-invariants over any ring, by induction on rows
@@ -48,6 +50,8 @@ Invent. Math. 56 (1980); Akin, Buchsbaum, Weyman, Schur functors and Schur compl
 
 See also `Lib.DiscreteSeries.Character.WeylCharacterFormula`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

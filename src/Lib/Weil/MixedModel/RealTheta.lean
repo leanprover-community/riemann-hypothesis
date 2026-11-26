@@ -1,5 +1,7 @@
-import Lib.Weil.Construction.ProductsAndTransport
-import Lib.Weil.MixedModel.IsotropicSplitting
+module
+
+public import Lib.Weil.Construction.ProductsAndTransport
+public import Lib.Weil.MixedModel.IsotropicSplitting
 
 /-!
 # Real data, the entire theta function, and the real vacuum in the mixed model
@@ -40,6 +42,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.Fock.OscillatorPair` and `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Space
 
@@ -123,7 +127,9 @@ variable {E : Type _} [Field E] [CMType E] [WeilData E] {n : Type _} [Fintype n]
 omit [Fintype n] [DecidableEq n] in
 @[fun_prop]
 lemma continuous_realVec :
-    Continuous (realVec : (NumberField.InfinitePlace E × n → ℂ) → n → 𝔸 E) := by continuity
+    Continuous (realVec : (NumberField.InfinitePlace E × n → ℂ) → n → 𝔸 E) := by
+  simp only [realVec, AddMonoidHom.mk'_apply]
+  fun_prop
 
 /-- For f in 𝒮(V), the function Θ_f(y) = θ(ϱ(y)f)·exp(|y|²/2) of a real vector y in Fock
 coordinates, placed in the adelic vectors with finite part zero. -/
@@ -180,7 +186,7 @@ lemma entireTheta_eq_integral (hs : s = 1) (h_projReal : V.projReal f = f)
     simp [hs, beta_mul_realVac, holomorphicCoord_eq, dotProduct]
   have h_ne : realVac y ≠ 0 := exp_ne_zero _
   simp_rw [entireTheta, h_value, h_translate, ← integral_div]
-  refine integral_congr_ae (.of_forall fun w ↦ ?_)
+  congr with w
   field_simp
 
 /-- Suppose all signs `s` are +1 and `f` is fixed by the real vacuum projection
@@ -384,11 +390,7 @@ lemma IsAdapted.omega_projReal_of_isMixedLaw (hT : D.IsMixedLaw T) {g : G E s}
   have h_frame : MeasurePreserving (realMatrix (D.frameAt g t) *ᵥ ·) (normalizedVolume _)
       (normalizedVolume _) :=
     measurePreserving_equiv (realHeisenberg 1) (realHeisenberg 1)
-      (φ := {toLin'OfInv h_orth h_orth' with
-        continuous_toFun := LinearMap.continuous_of_finiteDimensional
-          (toLin'OfInv h_orth h_orth').toLinearMap
-        continuous_invFun := LinearMap.continuous_of_finiteDimensional
-          (toLin'OfInv h_orth h_orth').symm.toLinearMap}) h_vac
+      (φ := (toLin'OfInv h_orth h_orth').toContinuousLinearEquiv.toContinuousAddEquiv) h_vac
   -- Splitting the coordinates as ((c, b), w), and then as (c, b), preserves the measure too.
   let outer : (realHeisenberg (realSigns E ((1 : p ⊕ p → ℤˣ) ⊕ᵥ s₀))).OrthogonalSum
       (realHeisenberg (realSigns E (1 : p ⊕ p → ℤˣ))) (realHeisenberg (realSigns E s₀)) realVac :=

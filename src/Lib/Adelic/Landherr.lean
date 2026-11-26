@@ -1,4 +1,6 @@
-import Lib.ClassField.Global.CMSplittingCharacters
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
 
 /-!
 # Sums of two squares, Landherr's theorem and the Hasse principle for unitary cocycles
@@ -45,6 +47,8 @@ Landherr, Äquivalenz Hermitescher Formen über einem beliebigen algebraischen Z
 Sem. Hamburg 11 (1936) 245-248; M. Kneser, Lectures on Galois cohomology of classical groups, TIFR
 47 (1969), §5.5.
 -/
+
+@[expose] public section
 
 /-!
 ## A totally positive number as a sum of two squares

@@ -1,5 +1,7 @@
-import New.Determinant.Twist.LongForms
-import New.Reduction.ShortAndEnough
+module
+
+public import New.Determinant.Twist.LongForms
+public import New.Reduction.ShortAndEnough
 
 /-!
 # The main inequality
@@ -74,6 +76,8 @@ characters with negative discriminant, 2000; Bombieri, Counting points on curves
 Sém. Bourbaki 430, 1973; van Frankenhuijsen, The Riemann hypothesis for function fields over a
 finite field, 2008.
 -/
+
+@[expose] public section
 
 namespace New
 

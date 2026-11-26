@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bruhat.BigCell
-import New.Spanning.Unfolding.Terms
+module
+
+public import Lib.DiscreteSeries.Bruhat.BigCell
+public import New.Spanning.Unfolding.Terms
 
 /-!
 # Links of isometries, the link isometry Υ_γ, and invariance under `besselU`
@@ -49,6 +51,8 @@ Notions from other files:
   `c` with `c c̄ = 1` such that, for every frame index `a ≥ j` (counted from `0`), the flags of `f`
   and `γ f` share a vector with leading coefficients `c` and `1` at `a`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -747,13 +751,6 @@ theorem linkIsometry_eq_iff {γ γ' : S.G E} :
   · rw [mem_link_iff_linkIsometry, mem_link_iff_linkIsometry, h]
   · obtain ⟨p, hp, rfl⟩ := exists_mem_link_linkSource_eq γ a
     rw [linkIsometry_linkSource hp, linkIsometry_linkSource (h.le hp)]
-
-/-- The link isometry is the same for `u⁻¹ γ u'` as for `γ`, when `u` and `u'` lie in the Bessel
-unipotent group `besselU`, because the two links are equal. -/
-theorem linkIsometry_inv_mul_mul_of_mem_besselU {γ u u' : S.G E} (hu : u ∈ besselU)
-    (hu' : u' ∈ besselU) :
-    linkIsometry (u⁻¹ * γ * u') = linkIsometry γ :=
-  linkIsometry_eq_iff.2 (link_inv_mul_mul_of_mem_besselU hu hu')
 
 /-- The product of two pairs `p`, `q` for the form `S.linkForm = T ⊕ -T`, where `T` is the form of
 `X₀ ⊥ E z_N`, is the difference of the products, in the positive space `X₀ ⊥ E z⁺` with Gram matrix

@@ -1,4 +1,6 @@
-import Lib.Cohomology.Etale.DenseSubfunctors
+module
+
+public import Lib.Cohomology.Etale.DenseSubfunctors
 
 /-!
 # Continuity of cohomology along filtered limits, via test rings and relatively affine maps
@@ -50,6 +52,8 @@ and limits from finitary functors on test rings); Bhatt, Mathew, The arc-topolog
 
 See also `Lib.Cohomology.ProperBaseChange.Theorem`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

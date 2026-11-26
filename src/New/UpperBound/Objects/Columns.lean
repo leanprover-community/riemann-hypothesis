@@ -1,10 +1,12 @@
-import Lib.ClassField.Avatar.HeckeBaseChange
-import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.GLn.Branching.IntegralMap
-import Lib.General.Algebra.LevelModulus
-import New.UpperBound.Objects.LiftChains
-import New.UpperBound.Objects.Weights
-import New.UpperBound.Seesaw.AdmissibleCombinations
+module
+
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.GLn.Branching.IntegralMap
+public import Lib.General.Algebra.LevelModulus
+public import New.UpperBound.Objects.LiftChains
+public import New.UpperBound.Objects.Weights
+public import New.UpperBound.Seesaw.AdmissibleCombinations
 
 /-!
 # Levels of the chain, chain data, and the composite lift
@@ -42,6 +44,8 @@ This file sets up the objects of the upper bound. Related work is listed with th
 in `New.UpperBound.Divisibility.LocalDivisibility`, `New.UpperBound.Seesaw.SeesawIdentity` and
 `New.UpperBound.Divisibility.ValuationAtLevel`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -710,15 +714,7 @@ lemma exists_sum_columnsY_le_and_pow_le_exp :
     · exact Nat.mul_le_mul_right _ (by grind [Nat.card_Ico])
   · refine Real.le_exp_of_log_le ?_
     push_cast [sum_const, card_univ, smul_eq_mul, Real.log_pow]
-    -- `scale_arith` splits every `max` and times out, and the kernel cannot check `grind` with the
-    -- large numerals of `scale_inequalities'`: derive bounds with small numerals for `grind`.
-    exact D.le_of_hasLogBound (by
-      obtain ⟨⟨h64, -, -, -⟩, hc, hL, hX, hX₁, -⟩ := New.Data.scale_inequalities' D
-      have hcL : P.constantBound ≤ Real.log D.logB := by linarith
-      have hXB : D.logX ≤ D.logB := by linarith
-      clear hc hX hX₁
-      simp only [Bool.false_eq_true, ↓reduceIte, Nat.cast_ofNat]
-      grind)
+    exact D.le_of_hasLogBound
 
 /-- There is an integer matrix `br` from the Weyl module on `X_m` to that on `Y_m` that is a
 branching map (`IsBranchingMap`). It is equivariant for the block matrices `diag (g, z)` up to the
@@ -865,9 +861,8 @@ def liftKernel :
         (D.liftTamePart (ϑ.pow j.succ) j.succ) :=
     D.hasWeight_liftChar
   exact thetaKernel (D.isLiftWeight_columnCount j) (star ↑D.piMBar * P.jetScale D.towerExp)
-    (by
-      convert weight.hasWeight_rankTwist (n := D.X j)
-      grind [lastEntry, card_X])
+    ((weight.hasWeight_rankTwist (n := D.X j)).of_weight_eq (funext fun _ ↦ by
+      grind [lastEntry, card_X]))
     weight.hasWeight_rankTwist (D.levelX j)
 
 /-- Tuples (x_j) of finite adelic matrices with rows X_{j+1} and columns X_j, the translations

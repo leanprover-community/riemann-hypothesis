@@ -1,6 +1,8 @@
-import Lib.General.Geometry.GeometricPoints
-import Lib.LocalGL.Green.TauFunctions
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+module
+
+public import Lib.General.Geometry.GeometricPoints
+public import Lib.LocalGL.Green.TauFunctions
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Complex points over countable rings, Zariski generic members and Galois coverings
@@ -47,6 +49,8 @@ Notions from other files:
 The isomorphisms of fields come from Steinitz's theorem, and the étaleness criterion is that of
 Chase–Harrison–Rosenberg.
 -/
+
+@[expose] public section
 
 noncomputable section
 

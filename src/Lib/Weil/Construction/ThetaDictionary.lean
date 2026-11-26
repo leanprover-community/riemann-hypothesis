@@ -1,5 +1,7 @@
-import Lib.Shimura.Uniformisation.AdelicFrames
-import Lib.Weil.Construction.ThetaJets
+module
+
+public import Lib.Shimura.Uniformisation.AdelicFrames
+public import Lib.Weil.Construction.ThetaJets
 
 /-!
 # The dictionary between vectors and theta functions
@@ -38,6 +40,8 @@ Known result: the passage between the Fock model of the Weil representation and 
 functions. A principal polarization has one theta function up to a factor. Source: Beauville, Theta
 functions, old and new, Theorem 3.5.
 -/
+
+@[expose] public section
 
 open NumberField Complex ComplexConjugate Pointwise
 

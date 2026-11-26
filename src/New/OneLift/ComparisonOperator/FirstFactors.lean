@@ -1,7 +1,9 @@
-import New.Determinant.Twist.FitTwists
-import New.OneLift.ComparisonOperator.LineCoordinates
-import New.UpperBound.Kernels.DefiniteKernelSize
-import New.UpperBound.Size.Estimates
+module
+
+public import New.Determinant.Twist.FitTwists
+public import New.OneLift.ComparisonOperator.LineCoordinates
+public import New.UpperBound.Kernels.DefiniteKernelSize
+public import New.UpperBound.Size.Estimates
 
 /-!
 # The first factors: P_V along W_j and W^add, integrality and size
@@ -48,6 +50,8 @@ theta data are known in the literature. Related work: T. Yang, Theta liftings an
 1997; Böcherer–Schmidt, p-adic measures attached to Siegel modular forms, 2000; Harris–Li–Skinner,
 The Rallis inner product formula and p-adic L-functions, 2005.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -176,16 +180,7 @@ lemma firstFactorSize_sq_le_exp {q n : ℕ} {H : ℤ}
             (n * 3 * 2 * log D.M / 2 + 9 * ((12 * D.m + 1) * q) * log D.M / 2))))) ≤
       D.f * D.m * D.b * D.logB ^ 2 := by
     grw [hn, hq]
-    -- `scale_arith` does not split the nested `max` of the default proof, and the kernel cannot
-    -- check `grind` with the large numerals of `scale_inequalities'`: derive small ones for `grind`.
-    exact D.le_of_hasLogBound (by
-      obtain ⟨⟨h64, -, -, -⟩, hc, hL, hX, hX₁, -⟩ := New.Data.scale_inequalities' D
-      have hcL : 1000 * P.constantBound ≤ Real.log D.logB := by linarith
-      have hXX₁ : 1000 * D.logX ≤ D.logX₁ := by linarith
-      have hX₁B : 1000 * D.logX₁ ≤ D.logB := by linarith
-      clear hc hX hX₁
-      simp only [Bool.false_eq_true, ↓reduceIte, Nat.cast_ofNat]
-      grind)
+    exact D.le_of_hasLogBound
   have h_carrier : card D.CarrierIndex ≤ D.n D.m := by simpa using D.nat_le_of_hasLogBound
   have h_fin : card (Fin D.m) ≤ D.n D.m := by simpa using D.nat_le_of_hasLogBound
   grw [D.card_stdClasses_le_exp principalLevel_le_stdLevel h_carrier,

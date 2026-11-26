@@ -1,4 +1,6 @@
-import Lib.Cohomology.Hodge.Site
+module
+
+public import Lib.Cohomology.Hodge.Site
 
 /-!
 # Ext¹ classes of cocycles of functors, and contraction on exterior algebras
@@ -30,6 +32,8 @@ Notions from other files:
 
 Known; see `Lib.PadicComparison.HodgeTate.PeriodMap` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Ext¹ classes of 1-cocycles and signs of connecting classes

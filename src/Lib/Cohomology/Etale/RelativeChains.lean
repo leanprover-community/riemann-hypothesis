@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.DenseSubfunctors
-import Lib.Cohomology.Hodge.CupProduct
+module
+
+public import Lib.Cohomology.Etale.DenseSubfunctors
+public import Lib.Cohomology.Hodge.CupProduct
 
 /-!
 # Relative chains ℤ[V]/ℤ[U]: local isomorphisms, transfer, excision and gluing
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Etale.FilteredLimits` for sources.
 -/
+
+@[expose] public section
 
 section RelativeChains
 

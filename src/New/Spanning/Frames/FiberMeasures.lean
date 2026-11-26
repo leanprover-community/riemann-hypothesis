@@ -1,4 +1,6 @@
-import New.Spanning.Frames.StandardLevel
+module
+
+public import New.Spanning.Frames.StandardLevel
 
 /-!
 # Fiber measures of the standard form, and the top quadric by its last entry
@@ -30,6 +32,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 namespace New.Floors

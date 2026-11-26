@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bruhat.FloorMeasures
-import Lib.SiegelWeil.Mass
+module
+
+public import Lib.DiscreteSeries.Bruhat.FloorMeasures
+public import Lib.SiegelWeil.Mass
 
 /-!
 # Local measure bounds and local densities at a finite place
@@ -48,6 +50,8 @@ Notions from other files:
 Known; see `Lib.SiegelWeil.OneVector.SiegelClassSum`, `Lib.Adelic.Adeles.Basic` and
 `Lib.Adelic.Witt.IwasawaDecomposition` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 

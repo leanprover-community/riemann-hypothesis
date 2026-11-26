@@ -1,4 +1,6 @@
-import New.Spanning.RemainingTerms.FrameParts
+module
+
+public import New.Spanning.RemainingTerms.FrameParts
 
 /-!
 # Counting frames over a lattice of small discriminant
@@ -29,6 +31,8 @@ Notions from other files:
 * `New.genIndex d`: the generalised index of an idele `d`, the inverse of the factor by which `d`
   scales Haar measure.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 
@@ -410,8 +414,7 @@ lemma IsFrameSet.encard_le_of_conjTranspose_mul_eq (hB : S.IsFrameSet c B)
       obtain ⟨v, hv, h_value⟩ : ∃ v ∈ P, d.val • v =
           ((↑) : E → 𝔸f E) ∘ (x p - x p₀).col i - ((↑) : E → 𝔸f E) ∘ (x p₁ - x p₀).col i :=
         (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 (h_congr p hp p₁ hp₁ i)
-      exact ⟨v, saturatedLattice_le _ _ (by simpa only [P, complementLattice] using hv),
-        h_value.trans (by ext a; simp)⟩
+      exact ⟨v, saturatedLattice_le _ _ hv, h_value.trans (by ext a; simp)⟩
     have h_moved_cellRank (q : S.Classes × S.G E) (hq : q ∈ B) : S.HasCellRank j (u q * q.2) :=
       (h_cellRank q hq).mul_of_mem_classUnipotent₀ (hu q hq)
     have hZ₁ : S.frameProducts (u p₁ * p₁.2) = Z := hZ_moved p₁ (hD hp₁)

@@ -1,4 +1,6 @@
-import Lib.Adelic.TraceFormula.ChangingSigns
+module
+
+public import Lib.Adelic.TraceFormula.ChangingSigns
 
 /-!
 # Eigenline reflections of a separable matrix, and the term of the count at a marked triple
@@ -39,6 +41,8 @@ Notions from other files:
 Known; see `Lib.Shimura.Transfer.WeightOccurs` and `Lib.Shimura.TraceFormula.MarkedDefiniteSums` for
 sources.
 -/
+
+@[expose] public section
 
 open NumberField Finset Matrix Polynomial Lagrange MulAction Quotient ConjAct
 

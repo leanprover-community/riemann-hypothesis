@@ -1,8 +1,10 @@
-import New.Determinant.AuxiliaryForms.RegularParameters
-import New.Spanning.MainTerm.BadTypes
-import New.Spanning.Multiplicities.EqualMultiplicities
-import New.Spanning.Unfolding.Moments
-import New.Spanning.Unfolding.SeriesPeriod
+module
+
+public import New.Determinant.AuxiliaryForms.RegularParameters
+public import New.Spanning.MainTerm.BadTypes
+public import New.Spanning.Multiplicities.EqualMultiplicities
+public import New.Spanning.Unfolding.Moments
+public import New.Spanning.Unfolding.SeriesPeriod
 
 /-!
 # The dimension of the target and one good translate of the Poincaré map
@@ -46,6 +48,8 @@ literature. Related work: Petersson, Über die Entwicklungskoeffizienten der aut
 1932; Benedetto–Fickus, Finite normalized tight frames, 2003; Muić, Spectral decomposition of
 compactly supported Poincaré series and existence of cusp forms, 2010.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

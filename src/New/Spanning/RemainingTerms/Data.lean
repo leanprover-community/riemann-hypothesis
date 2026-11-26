@@ -1,6 +1,8 @@
-import New.Spanning.RemainingTerms.BorderedDeterminant
-import New.Spanning.RemainingTerms.Discriminants
-import New.Spanning.RemainingTerms.OrbitSize
+module
+
+public import New.Spanning.RemainingTerms.BorderedDeterminant
+public import New.Spanning.RemainingTerms.Discriminants
+public import New.Spanning.RemainingTerms.OrbitSize
 
 /-!
 # The data of a term and of a pair of terms
@@ -25,6 +27,8 @@ Notions from other files:
   `(x, y)` lies in both links, with `x` and `y` orthogonal to `z`.
 * `S.maxGauge j c c' γ`: the larger of the gauge `𝗀♯` and `Nm 𝗀`, for a term in the cell `j`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

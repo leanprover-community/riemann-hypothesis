@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Theta.FockDualPair
+module
+
+public import Lib.DiscreteSeries.Theta.FockDualPair
 
 /-!
 # Weights of matched pairs and uniqueness of joint harmonics in Fock space
@@ -43,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.DiscreteSeries.Theta.LocalCorrespondence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

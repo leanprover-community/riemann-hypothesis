@@ -1,9 +1,11 @@
-import Lib.Analytic.EntireLFunction
-import Lib.CM.ConjugateCurve
-import Lib.CM.Integrality.IsogenyIntegrality
-import Lib.CM.KroneckerLimit
-import Lib.ClassField.HeckeL.EulerProduct
-import Lib.ClassField.Places.ValuationSubrings
+module
+
+public import Lib.Analytic.EntireLFunction
+public import Lib.CM.ConjugateCurve
+public import Lib.CM.Integrality.IsogenyIntegrality
+public import Lib.CM.KroneckerLimit
+public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.ClassField.Places.ValuationSubrings
 
 /-!
 # Odd class number, ζ_K = ζ·L(s, χ), theta functions with CM and Chowla–Selberg
@@ -62,6 +64,8 @@ not identified with the Artin map and is not shown here to be a unit. Source: G.
 Introduction to the Arithmetic Theory of Automorphic Functions (1971), Thm 5.4; J. Milne, Complex
 Multiplication (2020), 9.17.
 -/
+
+@[expose] public section
 
 /-!
 ## The odd class number and the factorisation of ζ_K

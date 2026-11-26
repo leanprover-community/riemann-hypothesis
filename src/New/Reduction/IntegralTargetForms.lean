@@ -1,5 +1,7 @@
-import New.Determinant.Chain.NormOfChain
-import New.Reduction.Lattices.TwistedLattice
+module
+
+public import New.Determinant.Chain.NormOfChain
+public import New.Reduction.Lattices.TwistedLattice
 
 /-!
 # The target forms as a twisted lattice
@@ -21,6 +23,8 @@ Notions from other files:
   `Y_m`.
 * `New.LevelPlaces.LevelForm.integralForms`: the forms integral at an embedding `ℂ → ℂ_l`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

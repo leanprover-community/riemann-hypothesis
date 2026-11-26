@@ -1,6 +1,8 @@
-import Lib.ClassField.Global.ArtinMap
-import Lib.ClassField.HeckeL.ContinuationAtOne
-import Lib.General.NumberTheory.SUnitsAndClassNumber
+module
+
+public import Lib.ClassField.Global.ArtinMap
+public import Lib.ClassField.HeckeL.ContinuationAtOne
+public import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Real place symbols, the second inequality and Albert–Brauer–Hasse–Noether
@@ -48,6 +50,8 @@ Algebrenklassengruppe, Math. Ann. 107 (1933) (reciprocity from the sum formula).
 
 See also `Lib.ClassField.Places.LocalFields` and `Lib.ClassField.HeckeL.ContinuationAtOne`.
 -/
+
+@[expose] public section
 
 /-!
 ## Symbols of totally positive elements at the real places

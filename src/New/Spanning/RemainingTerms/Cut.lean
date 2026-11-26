@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.LinkLattice
-import New.Spanning.RemainingTerms.LinkVectors
+module
+
+public import New.Spanning.RemainingTerms.LinkLattice
+public import New.Spanning.RemainingTerms.LinkVectors
 
 /-!
 # The cut: from the lattice of a link to the vectors common to two links
@@ -36,6 +38,8 @@ Notions from other files:
 * `New.Filling.termsOver`: `S.termsOver c s c'` is the block of rational `γ` whose matrix in the
   bases of the lattices of `c` and `c'` is integral with reduction `s`.
 -/
+
+@[expose] public section
 
 open Matrix Submodule Module Finset Fin Fintype Pointwise
 

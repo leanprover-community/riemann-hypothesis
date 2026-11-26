@@ -1,4 +1,6 @@
-import New.Reduction.OneSidedBound
+module
+
+public import New.Reduction.OneSidedBound
 
 /-!
 # From non-vanishing in Re s > 1/2 to zeros on the critical line
@@ -15,6 +17,8 @@ zeros.
 Known result: the passage from the half-plane to the critical line by the functional equation. The
 non-vanishing itself is `New.grh`.
 -/
+
+@[expose] public section
 
 open Complex DirichletCharacter
 

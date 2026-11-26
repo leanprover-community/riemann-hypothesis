@@ -1,4 +1,6 @@
-import Lib.Adelic.Witt.WittTheorem
+module
+
+public import Lib.Adelic.Witt.WittTheorem
 
 /-!
 # Floor groups, Weyl elements and the Bessel subgroup of a split unitary group
@@ -45,6 +47,8 @@ unfolding, for which it supplies the groups. Sources: A. Borel, Introduction to 
 Proc. Sympos. Pure Math. 9 (1966) (Poincaré series); V. Platonov, A. Rapinchuk, Algebraic groups and
 number theory (1994) §7.1; for the set-up, W. T. Gan, B. Gross, D. Prasad, Astérisque 346 (2012).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -560,8 +564,11 @@ lemma commute_weylOn {p : ℕ → A} (hP : ∀ a : ℕ, P a → a < l) (hs : s �
   let k' : 𝔰.BesselIndex :=
     if P (floorOf k) ∧ floorOf k < 𝔰.ϱ ∧ IsUnit (p (floorOf k)) then oppositeIndex k else k
   have h_left : (weylOn P p * s).val i k = (weylOn P p : T.G).val i i' * s.val i' k :=
-    sum_eq_single i' fun j ↦ by grind (branches := 16384) only
-                                  [oppositeIndex_involutive_and_floorOf_level j]
+    sum_eq_single i' fun j _ ↦ by
+      dsimp only
+      rw [h_weyl i j]
+      clear h_entry h_weyl
+      grind only [oppositeIndex_involutive_and_floorOf_level j]
   have h_right : (s * weylOn P p).val i k = s.val i k' * (weylOn P p : T.G).val k' k :=
     sum_eq_single k' (by grind only)
   rw [h_left, h_right]

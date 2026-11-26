@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Few translates span almost everything
@@ -13,6 +15,8 @@ condition is proved in the sibling module `HilbertSchmidt`.
 Greedy covering with a logarithmic loss: Wolsey, Greedy algorithm for the submodular
 set covering problem, 1982.
 -/
+
+@[expose] public section
 
 open Module LinearMap Finset
 

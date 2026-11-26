@@ -1,5 +1,7 @@
-import Lib.PadicComparison.Crystalline.ComparisonMap
-import Lib.PadicComparison.HodgeTate.PeriodMap
+module
+
+public import Lib.PadicComparison.Crystalline.ComparisonMap
+public import Lib.PadicComparison.HodgeTate.PeriodMap
 
 /-!
 # Crystallinity of p-adic cohomology of charted proper schemes and Frobenius congruences
@@ -78,6 +80,8 @@ through Katz–Messing, Some consequences of the Riemann hypothesis for varietie
 1974, Invent. Math. 23, Thm 2(2); for the ramified base, Berthelot–Ogus, F-isocrystals and de Rham
 cohomology I, 1983, Invent. Math. 72.
 -/
+
+@[expose] public section
 
 /-!
 ## A Frobenius relation on p-adic tests modulo an element of O_C

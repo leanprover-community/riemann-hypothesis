@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.DecompositionCompletion
-import Lib.PadicHodge.PeriodRings.DeRhamPeriods
+module
+
+public import Lib.ClassField.Places.DecompositionCompletion
+public import Lib.PadicHodge.PeriodRings.DeRhamPeriods
 
 /-!
 # Crystalline and potentially crystalline representations and admissibility
@@ -40,6 +42,8 @@ Notions from other files:
 Known; see `Lib.PadicHodge.Crystalline.Regularity`, `Lib.PadicHodge.BlochKato` and
 `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

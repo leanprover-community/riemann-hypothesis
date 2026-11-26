@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.ValuationSubrings
-import New.Reduction.Data.FieldsAndPlaces
+module
+
+public import Lib.ClassField.Places.ValuationSubrings
+public import New.Reduction.Data.FieldsAndPlaces
 
 /-!
 # Different and prime decomposition of the CM field E = K(ζ)
@@ -28,6 +30,8 @@ Notions from other files:
 * `New.Parameters.Φ`: `P.Φ s` is the group of infinite places of `E`. It is distinct from the bare
   `Φ` of the CM type of `E` (`New.CMType`): `Φ v : E →+* ℂ` is the embedding over `K` inducing `v`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

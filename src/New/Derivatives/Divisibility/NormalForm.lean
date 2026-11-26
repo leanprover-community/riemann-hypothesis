@@ -1,6 +1,8 @@
-import Lib.General.Algebra.SeriesBounds
-import Lib.General.Algebra.SeriesCongruences
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.General.Algebra.SeriesBounds
+public import Lib.General.Algebra.SeriesCongruences
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # Couplings and the normal form
@@ -26,6 +28,8 @@ import Lib.General.NumberTheory.PadicLimitsValuation
 * The variables `z_x` are indexed by pairs `x = (τ, i)` in `Φ × c`, for finite types `Φ` and `c`;
   the elements `τ` of `Φ` are called places.
 -/
+
+@[expose] public section
 
 open MvPowerSeries WithPiTopology IsLocalRing
 

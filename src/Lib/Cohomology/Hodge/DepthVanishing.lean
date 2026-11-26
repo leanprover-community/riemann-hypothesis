@@ -1,5 +1,7 @@
-import Lib.Cohomology.Hodge.Site
-import Lib.PadicComparison.Descent.AlmostDescent
+module
+
+public import Lib.Cohomology.Hodge.Site
+public import Lib.PadicComparison.Descent.AlmostDescent
 
 /-!
 # Vanishing of Hodge cohomology with supports below the depth, and Zariski descent
@@ -26,6 +28,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` for sources.
 -/
+
+@[expose] public section
 
 open CategoryTheory Function TensorProduct Ideal RingTheory.Sequence MvPolynomial Functor RingHom
   IsLocalization.Away ConcreteCategory TrivSqZeroExt IsLocalizedModule LinearMap Localization Fin

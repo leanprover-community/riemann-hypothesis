@@ -1,5 +1,7 @@
-import Lib.General.Geometry.SerreTheorem
-import Lib.Shimura.Deformation.TangentCount
+module
+
+public import Lib.General.Geometry.SerreTheorem
+public import Lib.Shimura.Deformation.TangentCount
 
 /-!
 # Drinfeld lifting over k[ε] and a bound on the tangent space of the moduli scheme
@@ -47,6 +49,8 @@ without p-divisible groups or crystals. Source: N. Katz, Serre–Tate local modu
 94 (1966); M. Harris, R. Taylor, The Geometry and Cohomology of Some Simple Shimura Varieties
 (2001), III.4.1.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Cohomology.Etale.BijectiveComparisons
+module
+
+public import Lib.Cohomology.Etale.BijectiveComparisons
 
 /-!
 # Dense subfunctors, Mayer–Vietoris and partitions along idempotents
@@ -40,6 +42,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Etale.FilteredLimits` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Mayer–Vietoris sequence and the calculus of dense subfunctors -/
 

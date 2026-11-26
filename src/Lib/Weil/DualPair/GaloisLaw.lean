@@ -1,4 +1,6 @@
-import Lib.Weil.DualPair.FiniteAction
+module
+
+public import Lib.Weil.DualPair.FiniteAction
 
 /-!
 # Semilinear maps intertwining the Weil action up to σΔ/Δ
@@ -38,6 +40,8 @@ multiplication, Duke Math. J. 43 (1976) 673-696; for the rationality of the Weil
 Trias, On the rationality of the Weil representation and the local theta correspondence, arXiv
 2601.16141.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Cohomology.Etale.BijectiveComparisons
+module
+
+public import Lib.Cohomology.Etale.BijectiveComparisons
 
 /-!
 # Pointwise tensor product of functors, total Ext with Yoneda composition, external products
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

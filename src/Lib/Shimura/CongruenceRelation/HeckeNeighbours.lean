@@ -1,5 +1,7 @@
-import Lib.Shimura.CongruenceRelation.KernelReduction
-import Lib.Shimura.IntegralModel.UniversalFamily
+module
+
+public import Lib.Shimura.CongruenceRelation.KernelReduction
+public import Lib.Shimura.IntegralModel.UniversalFamily
 
 /-!
 # Hecke elements on adelic torsion and reductions of Frobenius twists of Hecke neighbours
@@ -42,6 +44,8 @@ sum with one fixed non-zero subspace. Source: Wedhorn, Congruence relations on s
 varieties, J. reine angew. Math. 524 (2000) 43–71; the method follows Katz–Mazur 1985 ch. 13 and
 Harris–Taylor 2001 III.4.
 -/
+
+@[expose] public section
 
 /-! ## The w-torsion and the action of Hecke elements on adelic torsion -/
 

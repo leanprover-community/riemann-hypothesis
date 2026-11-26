@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.MatricesNearIdentity
+module
+
+public import Lib.General.LinearAlgebra.MatricesNearIdentity
 
 /-!
 # Steep parameters and the setting of Laplace's method
@@ -28,6 +30,8 @@ Notions from other files:
 
 See `New.Appendix.DiscreteSeries.Localization` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

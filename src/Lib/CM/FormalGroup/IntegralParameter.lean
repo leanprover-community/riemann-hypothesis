@@ -1,4 +1,6 @@
-import Lib.CM.Integrality.TorsionValues
+module
+
+public import Lib.CM.Integrality.TorsionValues
 
 /-!
 # Integral series rings 𝔬[[T]], congruence parts of power series, a functional equation
@@ -46,6 +48,8 @@ a Lubin–Tate group. Source: Lubin–Tate, Formal complex multiplication in loc
 The statements on the CM curve use only that `a₁` is integral; `x ∈ 𝔬[[y]]` is Hensel's lemma for
 the cubic.
 -/
+
+@[expose] public section
 
 /-! ## Rings of integral series in a generating parameter -/
 

@@ -1,6 +1,8 @@
-import Lib.Weil.Periods.LatticeBounds
-import New.UpperBound.Seesaw.IntegralAsCosetSum
-import New.UpperBound.Seesaw.UnfoldingStages
+module
+
+public import Lib.Weil.Periods.LatticeBounds
+public import New.UpperBound.Seesaw.IntegralAsCosetSum
+public import New.UpperBound.Seesaw.UnfoldingStages
 
 /-!
 # The outer variables: finitely many classes, with weights
@@ -24,6 +26,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 open Function Finset MulAction
 noncomputable section

@@ -1,5 +1,7 @@
-import New.OneLift.ComparisonOperator.GluingMaps
-import New.OneLift.HeckeValues.TwistedValueHeights
+module
+
+public import New.OneLift.ComparisonOperator.GluingMaps
+public import New.OneLift.HeckeValues.TwistedValueHeights
 
 /-!
 # The cost of one lift: a height bound for Z_j(1)/Z_j(ξ^j)
@@ -38,6 +40,8 @@ Related work: Böcherer–Dummigan–Schulze-Pillot, Yoshida lifts and Selmer gr
 Special L-values and Selmer groups of Siegel modular forms of genus 2, 2018; Hida, Congruences of
 cusp forms and special values of their zeta functions, 1981.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.LocalFactors
-import Lib.General.LinearAlgebra.IdempotentRadical
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Lib.Adelic.Adeles.LocalFactors
+public import Lib.General.LinearAlgebra.IdempotentRadical
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Test functions and the two local conditions of the comparison of traces
@@ -23,6 +25,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.TraceFormula.TraceComparison` for sources.
 -/
+
+@[expose] public section
 
 open NumberField Polynomial Matrix Finset IsLocalRing Multiplicative
 

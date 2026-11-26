@@ -1,7 +1,9 @@
-import Lib.Adelic.AutomorphicForms.PAdicGauge
-import Lib.General.LinearAlgebra.BlockEmbeddings
-import Lib.Weil.DualPair.KernelDecay
-import Lib.Weil.DualPair.KernelLaws
+module
+
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import Lib.Weil.DualPair.KernelDecay
+public import Lib.Weil.DualPair.KernelLaws
 
 /-!
 # Level moduli, residue data as Schwartz–Bruhat functions, and descent in positive degree
@@ -37,6 +39,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

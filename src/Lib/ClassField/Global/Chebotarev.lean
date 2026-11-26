@@ -1,4 +1,6 @@
-import Lib.ClassField.Global.NormTheorems
+module
+
+public import Lib.ClassField.Global.NormTheorems
 
 /-!
 # Chebotarev: Frobenii at primes of degree one in every nonempty open set
@@ -19,6 +21,8 @@ Frobenius elements at primes of degree one outside a finite set are dense in the
 group, and no density value is given. Source: J. S. Milne, Class Field Theory, VIII 7.4 (Deuring's
 reduction); Stevenhagen–Lenstra, Chebotarëv and his density theorem, Math. Intelligencer 18 (1996).
 -/
+
+@[expose] public section
 
 open QuotientGroup Subgroup New QZChar Nat
 

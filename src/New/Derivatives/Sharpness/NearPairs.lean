@@ -1,5 +1,7 @@
-import New.Derivatives.FormalGroup.ThetaProducts
-import New.UpperBound.Size.ShortColumns
+module
+
+public import New.Derivatives.FormalGroup.ThetaProducts
+public import New.UpperBound.Size.ShortColumns
 
 /-!
 # Near pairs of `b`-places and the losses in the sharpness bound
@@ -43,6 +45,8 @@ Notions from other files:
 
 Legendre's formula for `v(n!)` is classical.
 -/
+
+@[expose] public section
 
 open Finset Real Nat New.Parameters
 

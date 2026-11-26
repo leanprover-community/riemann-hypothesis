@@ -1,5 +1,7 @@
-import New.OneLift.ComparisonOperator.DeterminantProducts
-import New.OneLift.ComparisonOperator.GluedLattices
+module
+
+public import New.OneLift.ComparisonOperator.DeterminantProducts
+public import New.OneLift.ComparisonOperator.GluedLattices
 
 /-!
 # The polynomial map ζ, the datum Ψ^add and the series Υ; norm, degree and denominator of ζ
@@ -42,6 +44,8 @@ Notions from other files:
 
 See `New.OneLift.ComparisonOperator.FirstFactors` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -588,23 +592,6 @@ lemma weylNormSq_comp_eval_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowC
   rw [comp_eval_stackedDetProdCoords_eq_of_toPoly_eq j i Y hξ]
   exact h_norm ⟨hY_small, hz_small⟩
 
-/-- Specialise the coordinates `stackedDetProdCoords j i Y` by values `z` for the remaining
-variables and a ring map `φ`. Then `toPoly` of the result is the specialised product of
-determinants. Assume `IsSmallSpecialization j Y φ z`: the images under `φ` of the conjugates of the
-entries of `Y`, and of the values of `z`, are at most `M ^ 4` in size. Then `weylNormSq` of the
-result is at most `(M ^ 9) ^ ((12 D.m + 1) N)`, where `N` is the sum over `τ` of
-`card (DetIndex j τ)`, the total number of determinants. -/
-lemma weylNormSq_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowChoice)
-    (Y : Matrix D.FlatIndex D.FlatIndex D.E) (φ : ℂ →+* ℂ)
-    (z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ) :
-    toPoly (fun _ : D.Φ ↦ FirstFactorIndex j) (untwistedDescentPair j).colsPlus
-        (φ ∘ eval z ∘ stackedDetProdCoords j i Y) =
-      .map (φ.comp (eval z)) (inFirstCols (stackedDetProd (posEquiv j) (constantRows j i Y))) ∧
-    (IsSmallSpecialization j Y φ z → weylNormSq (φ ∘ eval z ∘ stackedDetProdCoords j i Y) ≤
-      ↑(D.M ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ))) :=
-  ⟨toPoly_comp_eval_stackedDetProdCoords j i Y φ z, fun h_small ↦
-    weylNormSq_comp_eval_stackedDetProdCoords_le j i Y h_small.norm_entry_le h_small.norm_value_le⟩
-
 /-- Take the product of the determinants of the constant rows `constantRows j i Y`, some of them
 rows of the matrix `Y` chosen by `i`, stacked over rows of variables (`stackedDetProd`). Read it as
 a polynomial in the first `D.posRank j` columns of variables, with coefficients polynomials in the
@@ -648,16 +635,10 @@ lemma aeval_smul_X_stackedDetProdCoords (j : D.LiftIndex) (i : D.RowChoice)
   have h_subst : c ^ (∑ τ, ∑ h ∈ range N, h * κ τ h) •
       aeval (fun x ↦ c • MvPolynomial.X x) (stackedDetProdCoords j i Y l) =
       c ^ (∑ τ, ∑ h ∈ range N, N * κ τ h) • stackedDetProdCoords j i Y l := by
-    have h0 := twoSidedSubst_firstColsCoord (c • 1) 1
+    simpa [twoSidedSubst, h_schur, ↓ card_detIndex_eq_sum, -card_sum, prod_pow_eq_pow_sum, mul_sum,
+      ← pow_mul, Matrix.one_apply, N, κ] using
+      twoSidedSubst_firstColsCoord (c • 1) 1
         (twoSidedSubst_stackedDetProd (posEquiv j) (constantRows j i Y) ..) κ l
-    simp [h_schur, ↓ card_detIndex_eq_sum, -card_sum, prod_pow_eq_pow_sum, mul_sum, ← pow_mul,
-      Matrix.one_apply, N, κ] at h0
-    have h_sub : twoSidedSubst (c • 1) 1 =
-        aeval (fun x : D.Φ × FirstFactorIndex j × AddedIndex j ↦ c • MvPolynomial.X x) := by
-      refine MvPolynomial.algHom_ext fun ⟨τ, a, b⟩ ↦ ?_
-      simp [Matrix.one_apply]
-    rw [h_sub] at h0
-    exact h0
   have h_exp : ∑ τ, ∑ h ∈ range N, N * κ τ h =
       (∑ τ, ∑ h ∈ range N, h * κ τ h) + ∑ τ, ∑ h ∈ range N, (N - h) * κ τ h := by
     simp_rw [← sum_add_distrib, ← add_mul]

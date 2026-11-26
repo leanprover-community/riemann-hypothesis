@@ -1,5 +1,7 @@
-import Lib.Analytic.DirichletTheta
-import Lib.Analytic.EntireLFunction
+module
+
+public import Lib.Analytic.DirichletTheta
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # A prime `d` in a class whose quadratic twists have no zero in a box
@@ -44,6 +46,8 @@ Heath-Brown, A mean value estimate for real character sums, Acta Arith. 72 (1995
 density bound for the twists of the characters of a fixed modulus, by a smoothed mean square of
 Jacobi symbol sums.
 -/
+
+@[expose] public section
 
 open ArithmeticFunction DirichletCharacter Complex Moebius Finset Real ZMod vonMangoldt LSeries
   Filter jacobiSym legendreSym MeasureTheory Nat NumberTheorySymbols

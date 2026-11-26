@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Fubini and convolution lemmas; idempotent kernels
@@ -25,6 +27,8 @@ The results of this file are standard. The lemmas on iterated integrals and on c
 group are forms of Fubini's theorem, and `New.sq_lintegral_le` is the Cauchy–Schwarz inequality for
 lower integrals, deduced from Hölder's inequality.
 -/
+
+@[expose] public section
 
 open MeasureTheory ENNReal ComplexConjugate
 

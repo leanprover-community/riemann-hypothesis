@@ -1,4 +1,6 @@
-import New.Reduction.Data.Sizes
+module
+
+public import New.Reduction.Data.Sizes
 
 /-!
 # Prime sums: main amount, expected value and total remainder
@@ -24,6 +26,8 @@ Notions from other files:
 * `D.jetSize j` is `s_∞(j) = log j! + j log (M / Ω)` with `M = D.M` and `Ω = P.bigOmega D.towerExp`,
   and the direction amount `D.directionAmount` is `∑_τ (s_∞(κ(τ)) - s_fin(κ(τ), τ))`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

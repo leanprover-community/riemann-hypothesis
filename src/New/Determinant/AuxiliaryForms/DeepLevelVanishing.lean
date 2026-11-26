@@ -1,8 +1,10 @@
-import Lib.Adelic.TraceFormula.OrbitalUnfolding
-import New.Appendix.DiscreteSeries.PositionGroup
-import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
-import New.Determinant.AuxiliaryForms.PathData
-import New.UpperBound.Objects.RowChain
+module
+
+public import Lib.Adelic.TraceFormula.OrbitalUnfolding
+public import New.Appendix.DiscreteSeries.PositionGroup
+public import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
+public import New.Determinant.AuxiliaryForms.PathData
+public import New.UpperBound.Objects.RowChain
 
 /-!
 # Vanishing of forms on Y₀ orthogonal to the deep level on Ỹ^0_0
@@ -59,6 +61,8 @@ of Jacquet, 2008; Harris, Testing rationality of coherent cohomology of Shimura 
 Muić, Fourier coefficients of automorphic forms and integrable discrete series, 2015.
 -/
 
+@[expose] public section
+
 /-!
 ## A vanishing criterion through restrictions of deep level forms
 
@@ -89,7 +93,6 @@ lemma New.Exchange.norm_prod_conj_dsCoeff_inv_mul_sub_le {β δ : ℝ}
       ∏ w : NumberField.InfinitePlace D.E, conj ((l w).dsCoeff (z w))‖ ≤ β * (β * δ) := by
   -- There are at most `β` factors, each of norm at most `1` and with Lipschitz constant `β`.
   have β_nonneg : 0 ≤ β := hβ.trans' (by positivity)
-  have δ_nonneg : 0 ≤ δ := dist_nonneg.trans hu
   let c (g : GInf D.E s) (w : NumberField.InfinitePlace D.E) : ℂ := conj ((l w).dsCoeff (g w))
   have factor_le (w : NumberField.InfinitePlace D.E) : ‖c (u⁻¹ * z) w - c z w‖ ≤ β * δ := by
     have const_le : (100 * (card n + L + 1) ^ 5 : ℝ) ≤ β := hβ.trans' (mod_cast by lia)

@@ -1,6 +1,8 @@
-import Lib.GaloisRep.Main.LocalConditions
-import Lib.General.NumberTheory.PadicLimitsValuation
-import New.Reduction.Data.AdmissibleData
+module
+
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.General.NumberTheory.PadicLimitsValuation
+public import New.Reduction.Data.AdmissibleData
 
 /-!
 # Local loss above ℓ: main summand weights, b-places, crystalline relations and crystalline colength
@@ -48,6 +50,8 @@ Notions from other files:
 
 See `Lib.PadicHodge.BlochKato` and `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

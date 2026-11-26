@@ -1,6 +1,8 @@
-import Lib.Adelic.AutomorphicForms.HeckeEigenforms
-import Lib.General.LinearAlgebra.MatrixNormBounds
-import Lib.PadicComparison.Descent.TestCategory
+module
+
+public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+public import Lib.General.LinearAlgebra.MatrixNormBounds
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # The p-adic gauge of algebraic forms, class sums, and integral forms of a level
@@ -44,6 +46,8 @@ Notions from other files:
 Known; see `Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms` and `Lib.Adelic.Hecke.ClassSums` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

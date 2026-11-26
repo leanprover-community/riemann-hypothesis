@@ -1,10 +1,6 @@
 # Added for the shared build cache (see ../CACHE.md). The rest of this file, up to the
 # next such comment, is unchanged from grh-lean commit 72fead1.
 platformIndependent = true
-# Added for Lean 4.37: its Lake warns once per import when a non-`module` file imports Mathlib, which
-# requires the module system. This project's files are not modules; without this option the warnings
-# (hundreds of millions of lines) overflow Lake's stack.
-allowNonModules = true
 
 name = "GRH"
 srcDir = "src"
@@ -23,13 +19,15 @@ name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
 rev = "31ce06eaadf4a200c0e1407c5f10953cf606b8f8"
 
-# Added for Tau Ceti (see CACHE.md): https://github.com/TauCetiProject/TauCeti at a toolchain
-# tag. Its cached oleans are only usable if it was built against the Mathlib commit above, so
-# the two pins move together; `lake exe cache get` checks this (scripts/tauceti-cache-get.py).
+# Added for Tau Ceti (see CACHE.md): https://github.com/TauCetiProject/TauCeti at a commit of its
+# main branch (d9924582, 26 Nov 2026) whose cache Tau Ceti has published, on the same Lean and
+# Mathlib as its tag v4.37.0-rc1. Its cached oleans are only usable if it was built against the
+# Mathlib commit above, so the two pins move together; `lake exe cache get` checks this
+# (scripts/tauceti-cache-get.py).
 [[require]]
 name = "TauCeti"
 git = "https://github.com/TauCetiProject/TauCeti"
-rev = "v4.37.0-rc1"
+rev = "d99245820701158b6963b6129926b5e130c9314a"
 
 # The rest of this file, up to the next "Added" comment, is unchanged from grh-lean commit 72fead1.
 

@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+module
+
+public import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
 
 /-!
 # Integrals of densities over unitary groups and over the flag variety of `K_ℂ`
@@ -38,6 +40,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Character.FormalDegree` and
 `Lib.DiscreteSeries.FlenstedJensen.PsiKTypes` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

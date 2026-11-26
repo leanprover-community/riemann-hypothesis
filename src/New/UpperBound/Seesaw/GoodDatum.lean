@@ -1,6 +1,8 @@
-import New.UpperBound.Seesaw.AdmissibleEvaluation
-import New.UpperBound.Seesaw.LevelIdeles
-import New.UpperBound.Size.ShortColumns
+module
+
+public import New.UpperBound.Seesaw.AdmissibleEvaluation
+public import New.UpperBound.Seesaw.LevelIdeles
+public import New.UpperBound.Size.ShortColumns
 
 /-!
 # Evaluated data as admissible combinations of glued translates of the vacuum
@@ -29,6 +31,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 /-! ## Scaling factors and the evaluation of a pair of edges -/
 

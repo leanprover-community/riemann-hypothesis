@@ -1,6 +1,8 @@
-import Lib.Adelic.Landherr
-import Lib.Adelic.TraceFormula.OrbitalUnfolding
-import Lib.DiscreteSeries.Character.FormalDegree
+module
+
+public import Lib.Adelic.Landherr
+public import Lib.Adelic.TraceFormula.OrbitalUnfolding
+public import Lib.DiscreteSeries.Character.FormalDegree
 
 /-!
 # Comparison of traces of operators on forms for different spaces and signs
@@ -60,6 +62,8 @@ zero. Source: Harish-Chandra, Discrete series II, Acta Math. 116 (1966), Thm 11;
 Brylinski, Cyclic homology and the Selberg principle, J. Funct. Anal. 109 (1992); Hochs and Wang,
 Orbital integrals and K-theory classes (2019), Cor 4.8.
 -/
+
+@[expose] public section
 
 noncomputable section
 

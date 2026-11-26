@@ -1,4 +1,6 @@
-import Lib.CM.FormalGroup.FormalParameter
+module
+
+public import Lib.CM.FormalGroup.FormalParameter
 
 /-!
 # Frobenius congruence for `θ` and the coefficient of `z ^ (p - 1)` in `x`
@@ -33,6 +35,8 @@ Notions from other files:
 * `New.CMLattice.norm_coeff_taylorVia_translatedX_eq_one`: at an inert prime `p` the coefficient
   of `z ^ (p - 1)` in the series `x` is a unit.
 -/
+
+@[expose] public section
 
 /-!
 ## The Frobenius congruence for `θ`

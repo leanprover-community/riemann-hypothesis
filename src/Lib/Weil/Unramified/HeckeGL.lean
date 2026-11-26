@@ -1,5 +1,7 @@
-import Lib.Adelic.Unitary.CongruenceLevels
-import Lib.LocalGL.Iwahori.ParahoricStructure
+module
+
+public import Lib.Adelic.Unitary.CongruenceLevels
+public import Lib.LocalGL.Iwahori.ParahoricStructure
 
 /-!
 # Hecke operators of GL_n at a finite place and local criteria for principal level
@@ -38,6 +40,8 @@ cosets, indexed by the subspaces of dimension j of k_w^n.
 
 See also `Lib.Adelic.Unitary.CongruenceLevels`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -237,9 +241,7 @@ lemma diagGL_ite_mem_basicDoubleCoset (hϖ : v ϖ.val = exp (-1)) (s : Finset n)
   -- Each condition is read off the diagonal entries. `coe_units_inv` is left out so that the
   -- inverse stays the image of a unit under `diagGL`.
   simp +decide [basicDoubleCoset, -coe_units_inv, ← map_inv, diagonal_apply, apply_ite, hϖ,
-    ite_apply]
-  -- `univ ∩ s` carries the classical decidability instance, so `Finset.univ_inter` does not fire
-  exact congrArg card (Finset.ext fun _ ↦ by simp)
+    ite_apply, Finset.univ_inter]
 
 /-- For a uniformiser ϖ of E_w and a set s of indices, the kernel of the reduction modulo w of
 the diagonal matrix with ϖ on s and 1 elsewhere has dimension #s. -/

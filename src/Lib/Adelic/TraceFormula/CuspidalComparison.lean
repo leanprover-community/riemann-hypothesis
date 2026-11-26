@@ -1,6 +1,8 @@
-import Lib.Adelic.AutomorphicForms.HeckeEigenforms
-import Lib.Adelic.TraceFormula.LevelCut
-import Lib.Adelic.TraceFormula.TraceComparison
+module
+
+public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+public import Lib.Adelic.TraceFormula.LevelCut
+public import Lib.Adelic.TraceFormula.TraceComparison
 
 /-!
 # Comparison of traces for a cuspidal test function
@@ -15,6 +17,8 @@ simple zero and counts the spherical vectors through its determinant (`trace_eq_
 
 Known; see `Lib.Adelic.TraceFormula.TraceComparison` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

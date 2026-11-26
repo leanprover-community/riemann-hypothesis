@@ -1,4 +1,6 @@
-import New.Spanning.Unfolding.ReducedPoints
+module
+
+public import New.Spanning.Unfolding.ReducedPoints
 
 /-!
 # Class cutoffs and counting frames in boxes
@@ -30,6 +32,9 @@ Notions from other files:
 * `New.Filling.IsAdmissible`: the standing hypotheses, among them the size inequalities between
   `S.b`, `S.realM v` and `S.N`.
 -/
+
+@[expose] public section
+
 section BoxPartition
 
 open ENNReal Fin Matrix Module Set Norms.L2Operator Subgroup
@@ -64,22 +69,6 @@ lemma frameVector_sub_eq_sum {γ γ' : S.G E}
   rw [PiLp.sub_apply, h_coord, h_coord, Fintype.sum_sum_type, Fintype.sum_sum_type]
   simp only [h_lower]
   simp [frameVector, mul_sub, mul_comm]
-
-/-- Reduction of frames: for every class `c` and every point `y` at the infinite places, some `u` in
-the congruence group `S.classUnipotent c` of rational unipotent elements makes all entries of
-`gramSchmidtMatrix` of the components of `u y` at most `S.b ^ 26` in absolute value. Here
-`gramSchmidtMatrix x` is the upper unitriangular matrix expressing the frame vectors
-`x⁻¹ e₁, …, x⁻¹ e_ϱ, x⁻¹ z` in their Gram–Schmidt orthogonalisation. -/
-lemma exists_gramSchmidtMatrix_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
-    (c : S.Classes) (y : NumberField.InfinitePlace E → 𝔰.G₁) :
-    ∃ u : S.classUnipotent c, ∀ (v : NumberField.InfinitePlace E) (a b : Fin (𝔰.ϱ + 1)),
-      ‖gramSchmidtMatrix (S.ratToInf u v * y v) a b‖ ≤ S.b ^ 26 := by
-  obtain ⟨D, hD⟩ : ∃ D : Set (NumberField.InfinitePlace E → ℂ), S.IsResidueDomain D :=
-    S.exists_isResidueDomain
-  obtain ⟨u, hu⟩ : ∃ u₀ : S.classUnipotent c, ∀ u : S.classUnipotent c,
-      S.ratToInf u * y ∈ S.reducedPoints D ↔ (u * u₀⁻¹).val ∈ S.classUnipotent₀ c :=
-    hD.exists_mul_mem_reducedPoints_iff_rightCoset c y
-  exact ⟨u, hD.norm_gramSchmidtMatrix_le ((hu u).2 (by simp))⟩
 
 /-- The indicator of the reduced points for the chosen set of representatives is a partition of
 unity in boxes (`IsBoxPartitionOfUnity`) for every class `c`. -/
@@ -344,9 +333,6 @@ lemma frameImage_eq_frameImage_one_of_close {g : S.G E} {d : S.Classes} {r : S.R
 
 variable [HasPrimitiveRoot5040 E]
 
--- Lean v4.37.0-rc1: side goals `0 < S.b ^ (c * 𝔰.n ^ 2)` of `bound`/`gcongr` (`Shape.n` is an
--- abbrev) exceed the default recursion depth.
-set_option maxRecDepth 2000 in
 omit [HasPrimitiveRoot5040 E] in
 /-- **Packing of frames.** Let `E` be a CM field, `𝔰` a shape (`𝔰.ϱ` hyperbolic planes), and `S`
 admissible data of the filling theorem over `E` (`IsAdmissible`), with parameter `b = S.b`. Let

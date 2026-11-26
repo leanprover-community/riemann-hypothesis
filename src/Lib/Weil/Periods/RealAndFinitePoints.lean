@@ -1,5 +1,7 @@
-import Lib.Weil.Periods.BesselIntegral
-import Lib.Weil.Periods.Equivariant
+module
+
+public import Lib.Weil.Periods.BesselIntegral
+public import Lib.Weil.Periods.Equivariant
 
 /-!
 # Real and finite points of the Bessel group
@@ -16,6 +18,8 @@ Notions used in the statements:
   `Y.besselFin`.
 * A level `K` (`IsLevel K`) is an open subgroup of `G_f` inside the standard compact subgroup.
 -/
+
+@[expose] public section
 
 open MeasureTheory Measure
 

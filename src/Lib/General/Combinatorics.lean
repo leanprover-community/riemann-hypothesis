@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # The q-binomial theorem, fibre sums, and Schur polynomials in the coefficients
@@ -30,6 +32,8 @@ algebraic facts serve to extract values of Schur polynomials from vanishing line
 Known results: the q-binomial theorem, counted over the subspaces of a finite vector space, and the
 bialternant formula for Schur polynomials.
 -/
+
+@[expose] public section
 
 /-! ## The q-binomial theorem over the subspaces of a finite vector space -/
 

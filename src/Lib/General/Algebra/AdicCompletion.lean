@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Adic completeness: p-adic tools, extension by continuity, topological bases
@@ -37,6 +39,8 @@ Notions of this file:
 
 Known; see `Lib.PadicComparison.Completion` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -155,6 +159,7 @@ lemma eq_of_forall_pow_dvd_sub (π : R) [IsHausdorff (span {π}) R]
   IsHausdorff.eq_iff_smodEq.2 fun n ↦ smodEq_span_pow_iff_dvd.2 (h_dvd n)
 
 /-- In a ring that is complete for `(π)`, an element congruent to a unit modulo `π` is a unit. -/
+@[stacks 05GI "(1), for a ring complete for a principal ideal"]
 lemma isUnit_of_dvd_sub [IsAdicComplete (span {π}) R] (hy : IsUnit y) (h_dvd : π ∣ x - y) :
     IsUnit x := by
   -- `x - y` lies in the Jacobson radical, so `(x - y) * y⁻¹ + 1 = x * y⁻¹` is a unit
@@ -250,7 +255,8 @@ from the I-adic completion of R to the J-adic completion of S. -/
 @[irreducible]
 def adicMap (h : I ≤ comap f J) : AdicCompletion I R →+* AdicCompletion J S :=
   -- the component in `S / J ^ n` is the image of the component in `R / I ^ n`
-  liftRingHom J (fun n ↦ (quotientMap (J ^ n) f (by grw [← le_comap_pow, ← h])).comp (evalₐ I n))
+  liftRingHom J
+    (fun n ↦ (quotientMap (J ^ n) f (by grw [← le_comap_pow, ← h])).comp (evalₐ I n).toRingHom)
     fun {m n} hmn ↦ by
       -- these components are compatible because those of `x` are
       ext x
@@ -264,9 +270,8 @@ def adicMap (h : I ≤ comap f J) : AdicCompletion I R →+* AdicCompletion J S 
 @[simp]
 lemma evalₐ_adicMap (h : I ≤ comap f J) (n : ℕ) (x : AdicCompletion I R) :
     evalₐ J n (adicMap f h x) = quotientMap (J ^ n) f (by grw [h, le_comap_pow]) (evalₐ I n x) := by
-  rw [adicMap]
-  generalize_proofs
-  exact evalₐ_liftRingHom _ _ (by assumption) n x
+  rw [adicMap, evalₐ_liftRingHom]
+  rfl
 
 /-- For a ring map `f : R → S` carrying `I` into `J`, the induced map `adicMap f h` of adic
 completions sends the image of `x : R` to the image of `f x`. -/

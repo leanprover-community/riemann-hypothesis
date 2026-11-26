@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
-import Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+public import Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration
 
 /-!
 # Decay, tail bounds and the L² model of the discrete series coefficient c_λ
@@ -47,6 +49,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration`,
 `Lib.DiscreteSeries.FlenstedJensen.PsiKTypes` and `Lib.DiscreteSeries.CuspKernel` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

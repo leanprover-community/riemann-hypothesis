@@ -1,6 +1,8 @@
-import Lib.ClassField.Avatar.HeckeBaseChange
-import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.SiegelWeil.Tower.RealConeIntegral
+module
+
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.SiegelWeil.Tower.RealConeIntegral
 
 /-!
 # Products of `L`-values and Tate's integral at the finite places
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

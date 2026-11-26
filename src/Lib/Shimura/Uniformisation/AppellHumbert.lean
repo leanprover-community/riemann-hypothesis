@@ -1,6 +1,8 @@
-import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.Shimura.AbelianScheme.Pairings
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+module
+
+public import Lib.General.Analysis.HolomorphicIntegrals
+public import Lib.Shimura.AbelianScheme.Pairings
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Existence in Appell–Humbert: projective embeddings are given by theta functions
@@ -46,6 +48,8 @@ Math. 78 (1963); A. Borel, Some finiteness properties of adele groups over numbe
 16 (1963); D. Mumford, Abelian Varieties §§1–2; L. Breen, Fonctions thêta et théorème du cube, LNM
 980 (1983).
 -/
+
+@[expose] public section
 
 open CategoryTheory CartesianMonoidalCategory Complex Over New LineBundle PointFn NormedAddGroup
 

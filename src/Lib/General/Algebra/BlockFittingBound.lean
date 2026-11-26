@@ -1,4 +1,6 @@
-import Lib.General.Algebra.FittingIdealsAndLengths
+module
+
+public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # A matrix of relations with small block determinant valuation
@@ -25,6 +27,8 @@ solutions bounds the determinant of such a basis by the duality lemma
 
 General linear algebra over a discrete valuation ring (elementary divisors).
 -/
+
+@[expose] public section
 
 open IsDiscreteValuationRing Matrix Module Submodule Fintype Ideal LinearMap
 

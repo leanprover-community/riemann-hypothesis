@@ -1,5 +1,7 @@
-import Lib.ClassField.Avatar.LocalGlobalCompatibility
-import Lib.GaloisRep.Main.ThetaLift
+module
+
+public import Lib.ClassField.Avatar.LocalGlobalCompatibility
+public import Lib.GaloisRep.Main.ThetaLift
 
 /-!
 # Isotypic spaces of eigenforms and attached Galois representations in every positive rank
@@ -78,6 +80,8 @@ Notions from other files:
 Known; see `Lib.GaloisRep.Main.OddRank`, `Lib.ClassField.Global.CMSplittingCharacters` and
 `Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

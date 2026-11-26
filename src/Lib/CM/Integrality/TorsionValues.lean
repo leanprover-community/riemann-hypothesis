@@ -1,5 +1,7 @@
-import Lib.CM.GoodReduction
-import Lib.CM.Integrality.Doubling
+module
+
+public import Lib.CM.GoodReduction
+public import Lib.CM.Integrality.Doubling
 
 /-!
 # Integrality of values of sections at torsion points
@@ -39,6 +41,8 @@ Birch, *Weber's class invariants*.
 Known result: the integrality of Siegel functions at torsion points. Source: Kubert and Lang,
 *Modular Units*.
 -/
+
+@[expose] public section
 
 /-! ## Integrality of the coefficient `a₁` -/
 

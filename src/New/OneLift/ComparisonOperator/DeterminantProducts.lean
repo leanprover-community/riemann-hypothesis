@@ -1,4 +1,6 @@
-import New.OneLift.ComparisonOperator.ExchangeData
+module
+
+public import New.OneLift.ComparisonOperator.ExchangeData
 
 /-!
 # Products of determinants and first-column coordinates under substitution
@@ -23,6 +25,8 @@ Notions from other files:
 * `New.nablaBasis`, `New.schur`: products of minors indexed by families of standard fillings
   (`New.WeylIndexFamily`), and the matrix of a substitution of rows in these polynomials.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import New.Spanning.Frames.BesselVector
+module
+
+public import New.Spanning.Frames.BesselVector
 
 /-!
 # Scaled orbital integrals of the finite Bessel vector on the floor group
@@ -39,6 +41,8 @@ Notions from other files:
   the floor group has head `p` and link `l⁻¹`. The sequence is a head for a gauge `Γ` (a family of
   compact bounds on entries) if its inverse partial products are bounded by the gauge.
 -/
+
+@[expose] public section
 
 noncomputable section
 

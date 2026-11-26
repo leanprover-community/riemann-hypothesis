@@ -1,4 +1,6 @@
-import New.UpperBound.Seesaw.NeighbourLattice
+module
+
+public import New.UpperBound.Seesaw.NeighbourLattice
 
 /-!
 # The vacuum of the neighbour lattice
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Seesaw
 

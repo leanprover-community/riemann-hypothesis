@@ -1,5 +1,7 @@
-import Lib.PadicComparison.Completion
-import Lib.PadicComparison.ToricTower
+module
+
+public import Lib.PadicComparison.Completion
+public import Lib.PadicComparison.ToricTower
 
 /-!
 # Divided power envelopes, lifts modulo divided powers, and one divided power variable
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.PadicComparison.Crystalline.ComparisonMap` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

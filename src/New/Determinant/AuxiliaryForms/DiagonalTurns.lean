@@ -1,4 +1,6 @@
-import New.Determinant.AuxiliaryForms.Turns
+module
+
+public import New.Determinant.AuxiliaryForms.Turns
 
 /-!
 # Turns on the diagonal, and the transfer of periods from the first path to the last
@@ -34,6 +36,8 @@ Notions from other files:
 * `D.HasAbsUpToNormPower c f`: `‖c ϑ‖² = C (Nm Q)ᵏ (f ϑ)²`, with `Q` the modulus of the twist `ϑ`
   and with `C`, `k` independent of `ϑ`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

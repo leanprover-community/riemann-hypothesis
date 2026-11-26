@@ -1,5 +1,7 @@
-import New.Congruences.Lifting.LongGap
-import New.Congruences.Lifting.SafeMoves
+module
+
+public import New.Congruences.Lifting.LongGap
+public import New.Congruences.Lifting.SafeMoves
 
 /-!
 # Exponent bounds by cuts for paired sides of a Kummer chart: sparse thick letters, two sizes
@@ -62,6 +64,8 @@ and a rank-free factorial torsion bound by Sen operators are known in the litera
 Gao–Liu, Integral filtered Sen theory and applications, 2024; Iovita–Marmora, Continuity of the
 finite Bloch–Kato cohomology, 2015; Y. Min, Congruences of first syntomic cohomology groups, 2026.
 -/
+
+@[expose] public section
 
 namespace New.Lift.KummerChart
 

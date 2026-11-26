@@ -1,6 +1,8 @@
-import Lib.Adelic.AutomorphicForms.PAdicGauge
-import Lib.General.LinearAlgebra.BlockEmbeddings
-import New.Determinant.Exchange.MatchingPartners
+module
+
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import New.Determinant.Exchange.MatchingPartners
 
 /-!
 # One exchange, and class sums at the level of a row stabilizer
@@ -53,6 +55,8 @@ Notions from other files:
 See `New.OneLift.ComparisonOperator.FirstFactors`, `New.OneLift.ComparisonOperator.GluingMaps`
 and `New.Determinant.Exchange.ExplicitMatching` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

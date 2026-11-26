@@ -1,4 +1,6 @@
-import Lib.Shimura.GoodReduction.TorsionSizes
+module
+
+public import Lib.Shimura.GoodReduction.TorsionSizes
 
 /-!
 # Orthogonality of theta translates and balls of integral theta functions
@@ -44,6 +46,8 @@ Known result: Schur orthogonality for the theta group of a polarised complex tor
 See also `Lib.Shimura.ThetaNormality.RiemannRelation` and
 `Lib.Shimura.ComplexTheta.DimensionFormula`.
 -/
+
+@[expose] public section
 
 /-!
 ## Orthogonality of theta translates and proportional orbit lattices

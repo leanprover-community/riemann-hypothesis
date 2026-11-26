@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.Eigenvalues
+module
+
+public import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!
 # Amitsur's formula and Ribet's method for matrices over an algebra
@@ -24,6 +26,8 @@ ideal whose traces are controlled.
   the constants from `O` and, as functions of `x`, the coefficients of the characteristic
   polynomials of the group elements.
 -/
+
+@[expose] public section
 
 namespace New
 

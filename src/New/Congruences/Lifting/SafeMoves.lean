@@ -1,4 +1,6 @@
-import New.Congruences.Lifting.SidePoints
+module
+
+public import New.Congruences.Lifting.SidePoints
 
 /-!
 # Safe moves and the walk for pairings of sides of a Kummer chart
@@ -43,12 +45,14 @@ extensions, and Galois operators buy divisibility at known cost. A walk along Fr
 cup products of crystalline classes vanish up to powers of p, and these tools bound the loss above p
 in the Selmer bound. Zero cokernel for weights of one sign, cup products via Ext and torsion bounds
 by Sen operators are known in the literature. Related work: Čoupek–Gazaki–Marmora, Exactness
-property of Breuil–Kisin functors and Bloch–Kato Selmer groups, 2026; Gao–Liu, Integral Sen theory
-and integral Hodge filtration, 2024; Chang–Diamond, Extensions of rank one (φ,Γ)-modules and
-crystalline representations, 2011.
+property of Breuil–Kisin functors and Bloch–Kato Selmer groups, 2026; Gao–Liu, Integral filtered Sen
+theory and applications, 2024; Chang–Diamond, Extensions of rank one (φ,Γ)-modules and crystalline
+representations, 2011.
 
 The file `New.Congruences.Lifting.CutExponentBounds` applies the walk to two choices of cuts.
 -/
+
+@[expose] public section
 
 noncomputable section
 

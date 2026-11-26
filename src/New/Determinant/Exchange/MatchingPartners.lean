@@ -1,4 +1,6 @@
-import Lib.SiegelWeil.Tower.LineGaussSums
+module
+
+public import Lib.SiegelWeil.Tower.LineGaussSums
 
 /-!
 # Matched functions, sections over GL cosets and same-section pairs of matrix functions
@@ -38,6 +40,8 @@ Notions from other files:
 See `New.Determinant.Exchange.ExplicitMatching` and `New.Determinant.Exchange.TheoremForPartners`
 for related work. See `Lib.Adelic.Hecke.ClassSums` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

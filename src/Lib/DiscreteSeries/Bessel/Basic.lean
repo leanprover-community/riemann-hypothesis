@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bruhat.FloorMeasures
-import Lib.DiscreteSeries.Haar.CayleyChart
+module
+
+public import Lib.DiscreteSeries.Bruhat.FloorMeasures
+public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # The real unitary group G₁, unipotent coordinates and Bessel functions
@@ -42,6 +44,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Bruhat.FloorGroups`, `Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure`
 and `Lib.DiscreteSeries.Bruhat.ComplexPlace` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -283,6 +287,12 @@ abbrev realFrameGram (y : 𝔰.G₁) : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ 
   (𝔰.middleGram 1).frameGram y.val.val
 
 namespace RealPlace
+
+/-- For `γ ∈ G₁`, the matrix `Z(γ) = realFrameGram γ` equals `Fᴴ J₁ γ F`, with `F = 𝔰.frameCols` the
+frame (e₁, …, e_ϱ, z) and `J₁ = 𝔰.J₁`. -/
+lemma realFrameGram_eq_conjTranspose_mul (γ : 𝔰.G₁) :
+    realFrameGram γ = 𝔰.frameColsᴴ * 𝔰.J₁ * (γ.val.val * 𝔰.frameCols) := by
+  simp [← Matrix.ext_iff, inclMatrix, Shape.Form.frameGram, Matrix.mul_apply, Matrix.one_apply]
 
 /-- Coordinates on matrices, as a continuous `ℝ`-linear map. For a set `p` of positions `(a, i)`,
 a matrix `M` goes to its complex entries in row `e_a` and column `i` for `(a, i)` in `p`,

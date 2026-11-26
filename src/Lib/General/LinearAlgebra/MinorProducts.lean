@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.Defs
-import Lib.General.Analysis.HolomorphicIntegrals
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
+public import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
 # Products of principal minors, Fischer's inequality and the Cauchy–Binet formula
@@ -24,6 +26,8 @@ m_w and the closure properties of the invertible triangular matrices `New.IsBore
 * `New.det_fromCols_eq_sum_minors`, `New.sum_norm_det_fromCols_sq_le`: the Laplace expansion along
   a block of columns and a bound for its complementary minors.
 -/
+
+@[expose] public section
 
 /-!
 ## The products m_w of principal minors and invertible triangular matrices

@@ -1,5 +1,7 @@
-import Lib.Adelic.Reduction.FiniteVolume
-import Lib.Adelic.Reduction.FirstMinimumShortBases
+module
+
+public import Lib.Adelic.Reduction.FiniteVolume
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
 
 /-!
 # Mahler's criterion for hermitian spaces and class sums for definite spaces
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.Reduction.FiniteVolume` and `Lib.Adelic.QuotientMeasure.Basic` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Mahler compactness, and finiteness of classes in the definite case

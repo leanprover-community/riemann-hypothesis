@@ -1,4 +1,6 @@
-import New.Reduction.Data.LevelAndTwists
+module
+
+public import New.Reduction.Data.LevelAndTwists
 
 /-!
 # Harish-Chandra parameters, weights and lift diagrams of the definite spaces
@@ -36,6 +38,8 @@ Notions from other files:
 * `New.Data.targetParameter`: the sequence `λ^Y = (k/2 - 1, …, 1 - k/2; -κ_{1/2}, -κ_{3/2}, …)` at a
   place, where `κ_{i - 1/2} = κ_i - Δ / 2`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

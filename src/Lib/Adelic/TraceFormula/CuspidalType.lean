@@ -1,5 +1,7 @@
-import Lib.Adelic.TraceFormula.TestFunction
-import Lib.LocalGL.Green.LabelCharacters
+module
+
+public import Lib.Adelic.TraceFormula.TestFunction
+public import Lib.LocalGL.Green.LabelCharacters
 
 /-!
 # An irreducible label in a tuple gives a cuspidal test function
@@ -30,6 +32,8 @@ Notions from other files:
 The finite-field input is part of Green's theory of the characters of `GL_n(F_q)`; see
 `Lib.LocalGL.Green.TauFunctions`.
 -/
+
+@[expose] public section
 
 open NumberField MonoidAlgebra Matrix Multiplicative Finset Polynomial
 

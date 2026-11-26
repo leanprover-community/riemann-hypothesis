@@ -1,4 +1,6 @@
-import Lib.Adelic.Adeles.LocalFactors
+module
+
+public import Lib.Adelic.Adeles.LocalFactors
 
 /-!
 # Tame local characters, integral frames and the local Gauss sum
@@ -46,6 +48,8 @@ Jacobi sums on finite fields and Z/mZ, §4; for the local scalar case, Tate's th
 
 See also `Lib.Weil.MixedModel.ZeroTerm`.
 -/
+
+@[expose] public section
 
 /-! ## First facts on tame local characters -/
 

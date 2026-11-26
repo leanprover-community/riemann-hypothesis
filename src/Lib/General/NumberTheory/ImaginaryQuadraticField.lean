@@ -1,4 +1,6 @@
-import Lib.General.NumberTheory.EmbeddingsAndDifferent
+module
+
+public import Lib.General.NumberTheory.EmbeddingsAndDifferent
 
 /-!
 # The imaginary quadratic field ℚ(√−d): characters, Frobenius and splitting of primes
@@ -30,6 +32,8 @@ consequences of lifting the exponent at `2` for integers, which do not involve `
 * `New.QuadField.span_eq_or_exists_span_eq_mul`: `p` is inert in `K`, or it is the product of two
   places of degree one; `New.QuadField.prime_inert_or_eq_mul` also lists the places above `p`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -156,15 +160,14 @@ open Subalgebra Int Algebra Ideal ZMod
 contains a primitive d-th root of unity, given by the quadratic Gauss sum. -/
 def embOfPrimitiveRoot (d : ℕ) {M : Type} [Field M] [CharZero M] {x : M} [h : Fact (d % 4 = 3)]
     [Fact d.Prime] (hx : IsPrimitiveRoot x d) : QuadField d →ₐ[ℚ] M :=
-  embOfSqrt d <| by
+  embOfSqrt d <|
     -- the square of the quadratic Gauss sum is `χ(-1) d`, and `χ(-1) = -1` as `d ≡ 3` mod `4`
     have h_neg_one : quadraticChar (ZMod d) (-1) = -1 := by
       simp [quadraticCharFun, exists_sq_eq_neg_one_iff, (Fact.out : d % 4 = 3)]
     have h_ne_one : (quadraticChar (ZMod d)).ringHomComp (castRingHom M) ≠ 1 :=
       MulChar.ne_one_iff.2 ⟨-1, by simp [h_neg_one, neg_eq_self]⟩
-    rw [gaussSum_sq h_ne_one ((quadraticChar_isQuadratic _).comp (castRingHom M))
-      (zmodChar_primitive_of_primitive_root d hx)]
-    simp [h_neg_one]
+    (gaussSum_sq h_ne_one ((quadraticChar_isQuadratic _).comp (castRingHom M))
+      (zmodChar_primitive_of_primitive_root d hx)).trans (by simp [h_neg_one])
 
 /-- For `d ≡ 3 mod 4`, `4` divides `d + 1`. -/
 @[simp]

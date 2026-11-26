@@ -1,5 +1,7 @@
-import Lib.General.LinearAlgebra.HermitianMatrices
-import Lib.General.Measure.HaarNormalisation
+module
+
+public import Lib.General.LinearAlgebra.HermitianMatrices
+public import Lib.General.Measure.HaarNormalisation
 
 /-!
 # Cayley chart and an explicit Haar measure on the unitary group U(J)
@@ -34,6 +36,8 @@ Notions from other files:
 
 Part of a known result: the Haar measure of U(J) in Cayley coordinates.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -649,13 +653,8 @@ theorem Haar.lintegral_chart_rotate_le [FiniteDimensional ℝ V] [MeasureSpace V
   -- Fubini for null sets, against the image of the measure on `A` in the space of matrices
   have h_meas : MeasurableSet {z : Matrix n n ℂ × ℝ |
       IsUnit (((circleScalar z.2 : U J) : Matrix n n ℂ) * z.1 + 1)} := by
-    have h_scalar (t : ℝ) :
-        ((circleScalar t : U J) : Matrix n n ℂ) = Complex.exp (t * Complex.I) • 1 :=
-      rfl
-    simp only [h_scalar, isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-    exact (measurableSet_singleton 0).compl.preimage (f := fun z : Matrix n n ℂ × ℝ ↦
-      (Complex.exp (z.2 * Complex.I) • (1 : Matrix n n ℂ) * z.1 + 1).det)
-      (Continuous.measurable (by fun_prop))
+    simp only [isUnit_iff_isUnit_det, isUnit_iff_ne_zero, circleScalar, U.val_of_coe]
+    exact (by fun_prop : Continuous _).isOpen_support.measurableSet
   have h_swap : ∀ᵐ t, ∀ᵐ x ∂(volume.restrict A).map fun p ↦ (Φ p : Matrix n n ℂ),
       IsUnit (((circleScalar t : U J) : Matrix n n ℂ) * x + 1) :=
     (ae_ae_comm h_meas).1 (.of_forall ae_isUnit_circleScalar_mul_add_one)

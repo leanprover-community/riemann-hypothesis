@@ -1,7 +1,9 @@
-import Lib.GLn.SchurModule.Polarisation
-import New.Determinant.Exchange.TheoremForPartners
-import New.OneLift.ComparisonOperator.DeterminantProducts
-import New.OneLift.ComparisonOperator.OneExchange
+module
+
+public import Lib.GLn.SchurModule.Polarisation
+public import New.Determinant.Exchange.TheoremForPartners
+public import New.OneLift.ComparisonOperator.DeterminantProducts
+public import New.OneLift.ComparisonOperator.OneExchange
 
 /-!
 # Explicit real data: the exchange identity for a definite space with determinant data
@@ -50,6 +52,8 @@ Siegel–Weil formula, 2014 (after Kudla–Rallis, 1994; Ichino, 2004); Kashiwar
 Segal–Shale–Weil representations and harmonic polynomials, 1978; Böcherer–Schulze-Pillot, Siegel
 modular forms and theta series attached to quaternion algebras, 1991.
 -/
+
+@[expose] public section
 
 noncomputable section
 

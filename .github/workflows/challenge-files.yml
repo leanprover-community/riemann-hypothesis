@@ -16,8 +16,9 @@ name: challenge files
 #   `lean_exe` entries and the `[cache]` block: the libraries, `srcDir`, Lean's arguments and the
 #   rest stay as they are;
 # - changes the settings of `lake-manifest.json` other than its packages, changes the address of
-#   Mathlib there, or lists a package that is not a Git repository of leanprover-community or
-#   leanprover on GitHub;
+#   Mathlib there, or adds a package, or changes one in more than its revision, unless the package
+#   is then a Git repository of leanprover-community or leanprover on GitHub. A package that the
+#   base branch had where the pull request branched off may stay as it is: Tau Ceti is one;
 # - names a toolchain in `lean-toolchain` other than a release of leanprover/lean4;
 # - adds files under `.lake/`.
 #
@@ -148,6 +149,10 @@ jobs:
               packages = {package.get("name"): package for package in data.get("packages", [])}
               return {key: value for key, value in data.items() if key != "packages"}, packages
 
+          def source(package):
+              """A manifest entry without its revision: where Lake gets the package and how it reads it."""
+              return {key: value for key, value in package.items() if key not in ("rev", "inputRev")}
+
           try:
               if any(read(fork, "lakefile.lean") != read(head, "lakefile.lean") for fork in forks):
                   error("lakefile.lean", "This pull request adds or changes lakefile.lean, which Lake reads instead of lakefile.toml.")
@@ -155,15 +160,22 @@ jobs:
               if any(lakefile(read(fork, "lakefile.toml") or "") != new for fork in forks):
                   error("lakefile.toml", "This pull request changes lakefile.toml other than in Mathlib's rev, leanOptions, defaultTargets, lean_exe or [cache].")
               settings, packages = manifest(read(head, "lake-manifest.json") or "{}")
+              before = []
               for fork in forks:
                   old_settings, old_packages = manifest(read(fork, "lake-manifest.json") or "{}")
+                  before.append(old_packages)
                   if old_settings != settings:
                       error("lake-manifest.json", "This pull request changes the settings of lake-manifest.json.")
                   if (old_packages.get("mathlib") or {}).get("url") != (packages.get("mathlib") or {}).get("url"):
                       error("lake-manifest.json", "This pull request changes where Mathlib comes from.")
               for name, package in packages.items():
+                  # The base branch may have a package from elsewhere, as main has Tau Ceti, and then
+                  # every pull request branched off it lists that package too. Only a package that
+                  # the pull request adds, or changes in more than its revision, has to be trusted.
+                  if before and all(name in old and source(old[name]) == source(package) for old in before):
+                      continue
                   if package.get("type") != "git" or not str(package.get("url")).startswith(TRUSTED):
-                      error("lake-manifest.json", f"The package {name} is not a Git repository of leanprover-community or leanprover on GitHub.")
+                      error("lake-manifest.json", f"The package {name}, which this pull request adds or changes, is not a Git repository of leanprover-community or leanprover on GitHub.")
               toolchain = (read(head, "lean-toolchain") or "").strip()
               if not re.fullmatch(r"leanprover/lean4:v[0-9][0-9A-Za-z.+-]*", toolchain):
                   error("lean-toolchain", f"The toolchain {toolchain!r} is not a release of leanprover/lean4.")

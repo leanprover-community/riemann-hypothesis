@@ -1,5 +1,7 @@
-import Lib.General.Algebra.AdicCompletion
-import TauCeti.RingTheory.MvPowerSeries.Derivative
+module
+
+public import Lib.General.Algebra.AdicCompletion
+public import TauCeti.RingTheory.MvPowerSeries.Derivative
 
 /-!
 # Power series with prime power exponents, congruences and convergent sums
@@ -31,6 +33,8 @@ Known result: elementary facts on power series in characteristic `p`.
 Known result: elementary facts on formal power series with the topology of coefficientwise
 convergence. Source: Bourbaki, Algebra II, Chapter IV.
 -/
+
+@[expose] public section
 
 /-! ## Series with prime power exponents -/
 

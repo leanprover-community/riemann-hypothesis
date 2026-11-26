@@ -1,5 +1,7 @@
-import New.Derivatives.Vacuum.JetIntegrality
-import New.Derivatives.Vacuum.ShortVectors
+module
+
+public import New.Derivatives.Vacuum.JetIntegrality
+public import New.Derivatives.Vacuum.ShortVectors
 
 /-!
 # Standard data as products of theta functions of the curve
@@ -50,6 +52,8 @@ Notions from other files:
   `a` times the factor that keeps it a theta function.
 -/
 
+@[expose] public section
+
 open NumberField ComplexConjugate
 
 namespace New
@@ -88,17 +92,6 @@ lemma IsTightFrame.isResolution [WeilData E] [Fintype I] [Fintype n] {w : I → 
   by_cases hc : c = c' <;> simp [hc, ← Finset.sum_div, h_tight, apply_ite (· / (b * b : ℂ)), hb]
 
 end Frames
-
-/-- In the field `E = P.E s` of level `s` of the parameters `P` let `ζ = P.ζ s`, a primitive root of
-unity of order `q₁ = P.q₁ s`. The vectors `ζ ^ i / q₁` for `0 ≤ i < q₁`, each taken `q₁` times and
-placed in each copy of `E`, are a resolution of the identity on `Eⁿ`. -/
-lemma Parameters.isResolution_resolutionVectors_zeta_pow (P : Parameters) (s : ℕ) (n : Type)
-    [Fintype n] [DecidableEq n] :
-    IsResolution (resolutionVectors (n := n)
-      (fun x : (Σ _ : Fin (P.q₁ s), Fin (P.q₁ s)) ↦ P.ζ s ^ (x.fst : ℕ)) (P.q₁ s)) fun _ ↦ 1 := by
-  -- The powers of `ζ`, each taken `q₁` times, are a tight frame of length `q₁²`.
-  simpa only [mul_one] using (P.isTightFrame_zeta_pow s (P.q₁ s)).repeat_vectors.isResolution
-    (NeZero.ne (P.q₁ s)) one_ne_zero
 
 /-- Let `d` be a prime congruent to `7` modulo `8`, `C` a lattice with complex multiplication by the
 integers of `ℚ(√-d)`, and `δ ≠ 0` such an integer, of norm `N`. Write `T_y` for the twisted

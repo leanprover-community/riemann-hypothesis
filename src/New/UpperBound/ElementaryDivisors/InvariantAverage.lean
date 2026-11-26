@@ -1,5 +1,7 @@
-import Lib.GLn.SchurModule.Basic
-import Lib.General.Groups.BesselGroups
+module
+
+public import Lib.GLn.SchurModule.Basic
+public import Lib.General.Groups.BesselGroups
 
 /-!
 # An average on polynomials in the entries of a matrix
@@ -51,6 +53,8 @@ field. Here this is proved for Levi subgroups over local rings, in degrees `d` w
 the size of the residue field. Source: Green, Polynomial representations of GL_n, 1980; Benson–Doty,
 Schur–Weyl duality over finite fields, 2009.
 -/
+
+@[expose] public section
 
 namespace New.Average
 

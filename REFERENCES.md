@@ -73,7 +73,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | E. Bombieri and J. Vaaler, On Siegel's lemma, Invent. Math. 73 (1983) | work found, no place given | `Lib/Adelic/Reduction/FiniteVolume` |
 | Edixhoven, van der Geer, Moonen, Abelian Varieties, (5.1)–(5.2) | compared, place confirmed | `Lib/Shimura/AbelianScheme/IsogenyFlatness` |
 | Edixhoven, van der Geer, Moonen, Abelian Varieties, ch. VI §1 | compared, place confirmed | `Lib/Shimura/AbelianScheme/IsogenyFlatness` |
-| Erez, Matchings of theta lifts of automorphic characters, arXiv 2401.13469 | work found, no place given | `New/Determinant/Exchange/TheoremForPartners` |
+| Erez, Matchings of theta lifts associated to non-trivial automorphic characters of odd orthogonal groups, arXiv 2401.13469 | work found, no place given | `New/Determinant/Exchange/TheoremForPartners` |
 | Faltings, Scholze, primitive comparison (no titles) | work found, no place given | `Lib/PadicComparison/Duality/GoodPairs` |
 | Faltings, p-adic Hodge theory, JAMS 1 (1988) | work found, no place given | `Lib/Cohomology/PointClass/LinearIndependence` |
 | Faltings; Scholze; Bhatt-Morrow-Scholze (no titles) | work found, no place given | `Lib/PadicComparison/CrystallineFrobenius` |

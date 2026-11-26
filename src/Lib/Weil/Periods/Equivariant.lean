@@ -1,5 +1,7 @@
-import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
-import Lib.Weil.Periods.Grading
+module
+
+public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+public import Lib.Weil.Periods.Grading
 
 /-!
 # The character `ψ_U` and the function `𝒲_φ`
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.Periods.Unfolding` for sources.
 -/
+
+@[expose] public section
 
 open MeasureTheory Matrix
 noncomputable section

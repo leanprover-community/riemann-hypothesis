@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.FlenstedJensen.Defs
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
 
 /-!
 # gl_n-modules, unitary representations of U(J) and a Casimir bound on K-highest vectors
@@ -35,6 +37,8 @@ the half sum of the positive roots.
 Lowest K-type and Casimir value are known to determine a discrete series coefficient, via analytic
 vectors. See `Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

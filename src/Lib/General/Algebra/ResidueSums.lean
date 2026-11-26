@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.FlenstedJensen.Defs
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
 
 /-!
 # Sums of residues at simple real poles
@@ -19,6 +21,8 @@ are ordered.
 
 The residue sums rest on Lagrange interpolation.
 -/
+
+@[expose] public section
 
 noncomputable section
 

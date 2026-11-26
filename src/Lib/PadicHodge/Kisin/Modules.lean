@@ -1,6 +1,8 @@
-import Lib.ClassField.LocalDuality.CrystallineDuality
-import Lib.PadicHodge.ArtinSchreierSequence
-import Lib.PadicHodge.Kisin.KummerChartDeRham
+module
+
+public import Lib.ClassField.LocalDuality.CrystallineDuality
+public import Lib.PadicHodge.ArtinSchreierSequence
+public import Lib.PadicHodge.Kisin.KummerChartDeRham
 
 /-!
 # Kisin modules of Kummer charts: lattices with jump sets, letter projectors, invariant forms
@@ -56,6 +58,8 @@ Source: L. Berger, Limites de représentations cristallines, Compositio Math. 14
 
 See also `Lib.PadicHodge.Kisin.PeriodMatrixFrame`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

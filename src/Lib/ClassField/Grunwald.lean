@@ -1,9 +1,11 @@
-import Lib.ClassField.Global.CMSplittingCharacters
-import Lib.ClassField.Global.Chebotarev
-import Lib.ClassField.Global.ExistenceTheorem
-import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
-import Lib.General.NumberTheory.CMFields
-import Lib.General.NumberTheory.FrobeniusOrbits
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
+public import Lib.ClassField.Global.Chebotarev
+public import Lib.ClassField.Global.ExistenceTheorem
+public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+public import Lib.General.NumberTheory.CMFields
+public import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # Grunwald's theorem in prime degree and CM steps with prescribed local behaviour
@@ -62,6 +64,8 @@ arXiv 1401.0389 (2014).
 
 See also `Lib.Weil.MixedModel.ZeroTerm`.
 -/
+
+@[expose] public section
 
 namespace New
 

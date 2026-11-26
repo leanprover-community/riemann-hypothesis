@@ -1,8 +1,10 @@
-import Lib.ClassField.Avatar.HeckeBaseChange
-import Lib.General.Combinatorics
-import Lib.General.LinearAlgebra.BlockEmbeddings
-import Lib.Weil.DualPair.FiniteAction
-import Lib.Weil.Lift
+module
+
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.General.Combinatorics
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import Lib.Weil.DualPair.FiniteAction
+public import Lib.Weil.Lift
 
 /-!
 # Hecke polynomials pass through a theta lift
@@ -42,6 +44,8 @@ Known result: the unramified theta correspondence for GL_n, stated for operators
 representation, Amer. J. Math. 104 (1982); S. Kudla, On the local theta-correspondence, Invent.
 Math. 83 (1986).
 -/
+
+@[expose] public section
 
 /-!
 ## The value at a uniformiser of the character attached to a character of [U(1)]

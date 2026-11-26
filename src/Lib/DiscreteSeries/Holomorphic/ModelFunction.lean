@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
 
 /-!
 # The holomorphic model function and discrete series coefficients in the holomorphic chamber
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.DiscreteSeries.Holomorphic.HighestVectorExtension` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

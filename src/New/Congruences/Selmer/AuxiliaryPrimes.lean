@@ -1,7 +1,9 @@
-import Lib.ClassField.Global.CMSplittingCharacters
-import Lib.ClassField.Global.Chebotarev
-import Lib.ClassField.Global.ExistenceTheorem
-import Lib.General.NumberTheory.FrobeniusOrbits
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
+public import Lib.ClassField.Global.Chebotarev
+public import Lib.ClassField.Global.ExistenceTheorem
+public import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # Auxiliary primes, anticyclotomic characters, slopes and ties
@@ -41,6 +43,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` and `New.Congruences.Selmer.Descent` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

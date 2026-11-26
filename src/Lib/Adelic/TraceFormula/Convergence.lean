@@ -1,6 +1,8 @@
-import Lib.Adelic.AutomorphicForms.Cuspidality
-import Lib.Adelic.TraceFormula.IsotropicStabiliser
-import Lib.Adelic.TraceFormula.KernelBound
+module
+
+public import Lib.Adelic.AutomorphicForms.Cuspidality
+public import Lib.Adelic.TraceFormula.IsotropicStabiliser
+public import Lib.Adelic.TraceFormula.KernelBound
 
 /-!
 # Convergence of the geometric side
@@ -29,6 +31,8 @@ Notions from other files:
 * `New.Space.exists_norm_tsum_polyTerm_le`: the uniform bound for a set of polynomials.
 * `New.Space.exists_tsum_enorm_irreducibleTerm_le`: the absolute bound for irreducible polynomials.
 -/
+
+@[expose] public section
 
 open NumberField MeasureTheory Matrix Polynomial Fintype Norms.L2Operator
 

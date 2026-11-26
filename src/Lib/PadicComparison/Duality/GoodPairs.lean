@@ -1,5 +1,7 @@
-import Lib.Cohomology.ProjectiveLine.TiltedLineFormula
-import Lib.PadicComparison.Duality.LineIntegration
+module
+
+public import Lib.Cohomology.ProjectiveLine.TiltedLineFormula
+public import Lib.PadicComparison.Duality.LineIntegration
 
 /-!
 # Good pairs: excision, Thom retraction and Alexander duality for principal opens
@@ -39,6 +41,8 @@ which the projective line is computed. In these theories, a class supported on t
 Sources for the theorems: SGA 4 XVI, SGA 4½ Finitude/Dualité; Faltings, Scholze primitive
 comparison. The proof is in the spirit of Dold–Puppe dualisability.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -330,8 +334,9 @@ lemma isFiniteLerayHirsch_of_prod_projLine
   conv_rhs =>
     erw [map_zero, add_zero, ← TorsionCoeff.sliceEquiv_mulClass,
       ← map_restrictAlong_etaClass (g := 𝟭 _), ← hξ, map_pullbackAlong, map_comp_assoc,
-      map_homClass]
-  refine (TotalH.comp_assoc_of_sq ?_ _).trans (congrArg _ map_pullbackAlong).symm
+      map_homClass, sliceEquiv, AddEquiv.ofBijective_apply, AddMonoidHom.comp_apply,
+      map_pullbackAlong]
+  refine TotalH.comp_assoc_of_sq ?_ _
   -- What remains is a square of morphisms of functors, which commutes on generators.
   rw [← homClass_comp, ← homClass_comp]
   exact congrArg homClass (relFreeAb.hom_ext (U := .whisker ..))
@@ -369,35 +374,17 @@ private lemma exists_eq_add_mul_and_sub_derivative_mem {P : StandardEtalePair R}
     {t : c.obj} {m : Ideal c.obj} (w : AdjoinRoot P.f →ₐ[A] c.obj) (ψ : R[X] →ₐ[A] c.obj)
     (ht : t ∈ m) (hX : ψ X = w (root P.f) + t) (hC : ∀ r : R, w r = ψ (C r)) (p : R[X]) :
     ∃ s : c.obj, ψ p = w (AdjoinRoot.mk P.f p) + s * t ∧ s - ψ (derivative p) ∈ m := by
-  -- The ring map lemmas are applied through `toRingHom`: the instance search behind `map_add`
-  -- for `R[X] →ₐ[A] _` times out.
-  have hψ_add (x y : R[X]) : ψ (x + y) = ψ x + ψ y := ψ.toRingHom.map_add x y
-  have hψ_mul (x y : R[X]) : ψ (x * y) = ψ x * ψ y := ψ.toRingHom.map_mul x y
-  have hw_add (x y : AdjoinRoot P.f) : w (x + y) = w x + w y := w.toRingHom.map_add x y
-  have hw_mul (x y : AdjoinRoot P.f) : w (x * y) = w x * w y := w.toRingHom.map_mul x y
-  have hψ_zero : ψ 0 = 0 := ψ.toRingHom.map_zero
-  have hw_zero : w 0 = 0 := w.toRingHom.map_zero
   induction p using Polynomial.recOnHorner with
-  | M0 =>
-    refine ⟨0, ?_, ?_⟩
-    · rw [(AdjoinRoot.mk P.f).map_zero, hψ_zero, hw_zero]
-      ring
-    · rw [derivative_zero, hψ_zero, sub_zero]
-      exact m.zero_mem
-  | MC p a _h_coeff _h_ne ih =>
-    obtain ⟨s, h_eq, h_slope⟩ := ih
-    refine ⟨s, ?_, ?_⟩
-    · rw [hψ_add, (AdjoinRoot.mk P.f).map_add, hw_add, AdjoinRoot.mk_C, hC, h_eq]
-      ring
-    · rwa [derivative_add, derivative_C, add_zero]
+  | M0 => exact ⟨0, by simp⟩
+  | MC p a _h_coeff _h_ne ih => simpa [hC, add_right_comm _ (ψ (C a))] using ih
   | MX p _h_ne ih =>
     obtain ⟨s, h_eq, h_slope⟩ := ih
     refine ⟨s * w (root P.f) + ψ p, ?_, ?_⟩
-    · rw [hψ_mul, (AdjoinRoot.mk P.f).map_mul, hw_mul, AdjoinRoot.mk_X, hX, h_eq]
+    · simp only [map_mul, AdjoinRoot.mk_X, hX, h_eq]
       ring
     · have h_diff : s * w (root P.f) + ψ p - ψ (derivative (p * X)) =
           (s - ψ (derivative p)) * w (root P.f) - ψ (derivative p) * t := by
-        rw [derivative_mul, derivative_X, mul_one, hψ_add, hψ_mul, hX]
+        rw [derivative_mul, derivative_X, mul_one, map_add, map_mul, hX]
         ring
       rw [h_diff]
       exact sub_mem (m.mul_mem_right _ h_slope) (m.mul_mem_left _ ht)
@@ -436,10 +423,7 @@ lemma exists_notMem_of_rootPairs {P : StandardEtalePair R} {c : TestOver A} {t :
     have h_r : r ∉ m := fun h_r ↦ h_ψg <| IsPrime.mem_of_pow_mem inferInstance N <| by
       have h_deriv : ψ (derivative P.f) ∈ m := (m.sub_mem_iff_right h_r).mp h_r_slope
       have h_f : ψ P.f ∈ m := by simpa [h_f_taylor] using m.mul_mem_left r ht
-      rw [← show ψ (P.g ^ N) = ψ P.g ^ N from ψ.toRingHom.map_pow _ _, ← h_etale,
-        show ∀ x y : R[X], ψ (x + y) = ψ x + ψ y from ψ.toRingHom.map_add,
-        show ∀ x y : R[X], ψ (x * y) = ψ x * ψ y from ψ.toRingHom.map_mul,
-        show ∀ x y : R[X], ψ (x * y) = ψ x * ψ y from ψ.toRingHom.map_mul]
+      rw [← map_pow, ← h_etale, map_add, map_mul, map_mul]
       exact m.add_mem (m.mul_mem_right _ h_deriv) (m.mul_mem_right _ h_f)
     have h_prime : m.IsPrime := inferInstance
     exact h_prime.mul_notMem (h_prime.mul_notMem (h_prime.mul_notMem h_wg h_ψg) hε) h_r h_mem

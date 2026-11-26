@@ -1,4 +1,6 @@
-import Lib.Adelic.Hecke.Basic
+module
+
+public import Lib.Adelic.Hecke.Basic
 
 /-!
 # Uniqueness of Haar measure, integrals over subgroups and Gaussian normalisation of volumes
@@ -21,6 +23,8 @@ to finite sums. A normalisation of volumes by Gaussian integrals is defined. It 
 * `New.lintegral_inv_add_rpow`: the integral of `(c + q x) ^ (-s)`, computed through the Gamma
   function.
 -/
+
+@[expose] public section
 
 /-! ## Uniqueness of Haar measure -/
 

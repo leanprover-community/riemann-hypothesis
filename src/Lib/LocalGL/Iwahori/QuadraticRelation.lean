@@ -1,7 +1,9 @@
-import Lib.Adelic.Unitary.ComponentsAndBlockSums
-import Lib.General.LinearAlgebra.Eigenvalues
-import Lib.LocalGL.Iwahori.ParahoricStructure
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+module
+
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+public import Lib.General.LinearAlgebra.Eigenvalues
+public import Lib.LocalGL.Iwahori.ParahoricStructure
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Quadratic relation and injectivity of U_t at pro-p Iwahori level
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.LocalGL.Iwahori.SphericalExponents` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Monomial matrices and the quadratic relation

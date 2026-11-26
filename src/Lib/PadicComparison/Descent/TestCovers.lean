@@ -1,6 +1,8 @@
-import Lib.Cohomology.Etale.FilteredLimits
-import Lib.General.Algebra.CohomologyBaseChange
-import Lib.General.Geometry.EtaleCharts
+module
+
+public import Lib.Cohomology.Etale.FilteredLimits
+public import Lib.General.Algebra.CohomologyBaseChange
+public import Lib.General.Geometry.EtaleCharts
 
 /-!
 # p-adic tests: tilts, Fontaine's map, covers by tests and flat base change
@@ -51,6 +53,8 @@ spaces, Publ. Math. IHES 116 (2012), Theorem 5.2.
 
 See also `Lib.PadicComparison.Descent.AlmostDescent` and `Lib.Cohomology.Etale.FilteredLimits`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

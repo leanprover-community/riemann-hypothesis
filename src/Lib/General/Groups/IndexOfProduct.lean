@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # The index of a product of subgroups is the product of the indices
@@ -11,6 +13,8 @@ product of subgroups is the product of their indices (an infinite index is read 
 Known result: the index of a product of subgroups in a finite product of groups is the product of
 the indices. Mathlib's `Subgroup.index_pi` is the case where all the factors are the same group.
 -/
+
+@[expose] public section
 
 /-- In a finite product of groups `G i`, the index of the product `∏ i, H i` of subgroups
 `H i ≤ G i` is the product of the indices of the `H i`. An infinite index is read as `0`. -/

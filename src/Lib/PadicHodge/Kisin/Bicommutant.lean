@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Kisin.Charts
+module
+
+public import Lib.PadicHodge.Kisin.Charts
 
 /-!
 # The ring S_B of a chart and extension of S-linear maps of A_inf to B^+
@@ -31,6 +33,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

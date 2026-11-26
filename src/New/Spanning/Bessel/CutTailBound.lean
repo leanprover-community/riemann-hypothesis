@@ -1,4 +1,6 @@
-import New.Spanning.Bessel.LargeFunction
+module
+
+public import New.Spanning.Bessel.LargeFunction
 
 /-!
 # The Bessel function at a real place: decay and cut
@@ -38,6 +40,8 @@ discrete series, 2015; Miličić, Asymptotic behavior of matrix coefficients of 
 
 See `New.Spanning.Bessel.FillingData` for related work.
 -/
+
+@[expose] public section
 
 namespace New
 

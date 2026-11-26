@@ -1,5 +1,7 @@
-import Lib.SiegelWeil.SingularForms.CentreCoefficients
-import Lib.Weil.MixedModel.AdaptedSplitting
+module
+
+public import Lib.SiegelWeil.SingularForms.CentreCoefficients
+public import Lib.Weil.MixedModel.AdaptedSplitting
 
 /-!
 # Singular forms governed by unimodular coefficients
@@ -54,6 +56,8 @@ degenerate Fourier coefficients, Amer. J. Math. 119 (1997).
 The tower property for the constant term of a theta lift along an isotropic line is in
 `Lib.SiegelWeil.Tower.LargeSideConstantTerm`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Haar.CayleyChart
+module
+
+public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # Harish-Chandra parameters, c_λ, deg_λ, e_λ and holomorphic discrete series
@@ -46,6 +48,8 @@ The definitions are part of three known results, each treated in another file:
 * the highest coefficient of a holomorphic discrete series and its reproducing property, in
   `Lib.DiscreteSeries.Holomorphic.HighestVectorExtension`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

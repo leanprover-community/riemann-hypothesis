@@ -1,4 +1,6 @@
-import Lib.SiegelWeil.Mass
+module
+
+public import Lib.SiegelWeil.Mass
 
 /-!
 # Products of completions at finite sets of places and approximation of adeles by elements of E
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.Adeles.Basic` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

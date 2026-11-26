@@ -1,6 +1,8 @@
-import Lib.Adelic.Unitary.Defs
-import Lib.GLn.SchurModule.TensorModel
-import Lib.Shimura.ComplexTheta.AppellHumbertData
+module
+
+public import Lib.Adelic.Unitary.Defs
+public import Lib.GLn.SchurModule.TensorModel
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # The Weyl kernel and its Gram matrix: the hook number bound, positivity, Schur's lemma
@@ -36,6 +38,8 @@ Notions from other files:
 
 Known; see `Lib.GLn.SchurModule.SchurNorm` and `Lib.GLn.Dual` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Positivity and a bound for the hook number

@@ -1,8 +1,10 @@
-import New.UpperBound.Divisibility.ColengthAtLevel
-import New.UpperBound.Divisibility.MarkOperator
-import New.UpperBound.Divisibility.ValuationAtLevel
-import New.UpperBound.Divisibility.ValuationAtNonSplitPrimes
-import New.UpperBound.Size.Estimates
+module
+
+public import New.UpperBound.Divisibility.ColengthAtLevel
+public import New.UpperBound.Divisibility.MarkOperator
+public import New.UpperBound.Divisibility.ValuationAtLevel
+public import New.UpperBound.Divisibility.ValuationAtNonSplitPrimes
+public import New.UpperBound.Size.Estimates
 
 /-!
 # The divisibility of the composite lift at each prime
@@ -74,6 +76,8 @@ Rallis, Langlands' functoriality and the Weil representation, 1982; V. Lafforgue
 valuations p-adiques des valeurs propres des opérateurs de Hecke, 2011; Z. Liu, Test Schwartz
 functions at p for theta lifts of Hida families, arXiv 2510.21644, 2025.
 -/
+
+@[expose] public section
 
 open Module Finset Submodule Real
 

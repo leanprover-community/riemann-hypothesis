@@ -1,4 +1,6 @@
-import Lib.Analytic.PrimeNumberTheorem.LFunctionGrowth
+module
+
+public import Lib.Analytic.PrimeNumberTheorem.LFunctionGrowth
 
 /-!
 # A zero-free region for Dirichlet L-functions
@@ -20,6 +22,8 @@ Known result: the classical zero-free region, in the crude form with a power of 
 the 3-4-1 inequality gives directly. Source: Montgomery and Vaughan, Multiplicative Number Theory I,
 2007, ch. 11.
 -/
+
+@[expose] public section
 
 open Complex Real Filter Topology Metric
 namespace New

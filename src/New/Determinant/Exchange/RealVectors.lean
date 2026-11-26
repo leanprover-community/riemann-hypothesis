@@ -1,4 +1,6 @@
-import New.Determinant.Exchange.LargeTriple
+module
+
+public import New.Determinant.Exchange.LargeTriple
 
 /-!
 # Smooth local Witt theorem and the exchange identity for `V' ⊕ W₁` and `V'`
@@ -37,6 +39,8 @@ Notions from other files:
 See `New.Determinant.Exchange.TheoremForPartners` for related work. See
 `Lib.Adelic.Witt.IwasawaDecomposition` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Exchange
 

@@ -1,4 +1,6 @@
-import Lib.PadicComparison.Descent.AlmostDescent
+module
+
+public import Lib.PadicComparison.Descent.AlmostDescent
 
 /-!
 # Wang sequence on C × Bℕ, lines, and root systems of units via periodic sequences
@@ -53,6 +55,8 @@ for rigid-analytic varieties, Forum Math. Pi 1 (2013), Lemmas 4.5 and 5.5; Bhatt
 2018, Lemma 7.3; Stacks project, tag 0EBS; G. Faltings, p-adic Hodge theory, J. Amer. Math. Soc. 1
 (1988).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -159,7 +163,7 @@ lemma TimesBNat.shortExact_induced :
         (freeAb.map ((fst C ⋙ incl C ⋙ Y) ◁ { app _ := ↾ULift.map.{_, _, 1, 1} Nat.succ })))
       -- the second map, `(x, k) ↦ γ^k x`
       (freeAb.map ⟨fun D : TimesBNat C ↦ ↾fun x ↦ (shiftEnd Y x.2.down).asHom.app D.1 x.1,
-        fun _ _ f ↦ shiftEnd_naturality Y f⟩)
+        fun _ _ f ↦ by exact shiftEnd_naturality Y f⟩)
       w) := by
   -- With `t = shiftEnd Y 1` the maps are `(x, k) ↦ (t x, k) - (x, k + 1)` and `(x, k) ↦ tᵏ x`. The
   -- sequence splits at each object `A`.
@@ -207,7 +211,7 @@ def TimesBNat.wangSub :
 `γ = shiftEnd Y 1`. -/
 def TimesBNat.wangPow : freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift) ⟶ freeAb.obj Y :=
   freeAb.map ⟨fun D ↦ ↾fun x ↦ (shiftEnd Y x.2.down).asHom.app D.1 x.1,
-    fun _ _ f ↦ shiftEnd_naturality Y f⟩
+    fun _ _ f ↦ by exact shiftEnd_naturality Y f⟩
 
 /-- The two maps of the Wang sequence compose to zero, as `γ^k (γ x) = γ^(k + 1) x`. -/
 lemma TimesBNat.wangSub_comp_wangPow : wangSub Y ≫ wangPow Y = 0 :=

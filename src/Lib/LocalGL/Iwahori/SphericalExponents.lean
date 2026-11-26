@@ -1,4 +1,6 @@
-import Lib.LocalGL.Iwahori.HeckeDegrees
+module
+
+public import Lib.LocalGL.Iwahori.HeckeDegrees
 
 /-!
 # Exponents that survive on spherical vectors, and a Hecke operator on parahoric eigenvectors
@@ -43,6 +45,8 @@ vectors replace Jacquet modules. No regularity is assumed and ties between roots
 Source: Casselman, The unramified principal series of p-adic groups I, Compositio 40 (1980), Prop.
 2.4, 2.5, 3.6; Haines–Kottwitz–Prasad, Iwahori–Hecke algebras (arXiv math/0309168) §1.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
-import Lib.Weil.Fock.PolynomialVectors
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+public import Lib.Weil.Fock.PolynomialVectors
 
 /-!
 # Harmonic matrix coefficients of the Weil representation and oscillator pairs on matrices
@@ -49,6 +51,8 @@ of U(p,q) and its connection with the generalized unit disk, Pacific J. Math. 12
 Prop. 2.2; G. B. Folland, Harmonic Analysis in Phase Space (1989), ch. 1, 4; H. Reiter, Metaplectic
 Groups and Segal Algebras, LNM 1382 (1989).
 -/
+
+@[expose] public section
 
 /-!
 ## Matrix coefficients between harmonic polynomial vectors

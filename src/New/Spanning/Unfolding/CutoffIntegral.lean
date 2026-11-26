@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
-import New.Spanning.Unfolding.Packing
+module
+
+public import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+public import New.Spanning.Unfolding.Packing
 
 /-!
 # The Bessel kernel and the integral of a class cutoff over the real unipotent group
@@ -36,6 +38,8 @@ Notions from other files:
 * `New.Filling.unipotentCovolume`: an explicit positive number built from M, N, |κ|, ϱ, the
   discriminant of E and the scales of the frame at the infinite places.
 -/
+
+@[expose] public section
 
 /-!
 ## Continuity of the Bessel kernel and the bound of an amplitude
@@ -77,7 +81,7 @@ lemma enorm_besselKernel (y : InfinitePlace E → 𝔰.G₁) :
   simp only [eNorm_eq_nnNorm]
   norm_cast
   rw [← sq_eq_sq₀ zero_le zero_le]
-  simp [EuclideanSpace.nnnorm_eq, besselKernel, besselFn, mul_pow, ← Finset.prod_pow, sum_prod_type,
+  simp [EuclideanSpace.nnNorm_eq, besselKernel, besselFn, mul_pow, ← Finset.prod_pow, sum_prod_type,
     prod_sum, sum_mul_sum]
 
 /-- The norm of the amplitude `∫ β_c(y) β_c'(γ⁻¹ y) W(y) ⊗ W(γ⁻¹ y)^* dy` is at most the integral of

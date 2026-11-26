@@ -1,6 +1,8 @@
-import Lib.General.NumberTheory.ImaginaryQuadraticField
-import Lib.Shimura.Uniformisation.AdelicFrames
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
+public import Lib.Shimura.Uniformisation.AdelicFrames
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Hecke elements in group rings, marked triples, local terms and neat levels
@@ -49,6 +51,8 @@ Notions from other files:
 Known; see `Lib.Shimura.HeckeTower.Model`, `Lib.Shimura.IntegralModel.TowerExistence` and
 `Lib.Shimura.Uniformisation.AppellHumbert` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

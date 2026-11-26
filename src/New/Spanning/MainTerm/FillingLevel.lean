@@ -1,5 +1,7 @@
-import New.Spanning.Frames.StandardLevel
-import New.Spanning.MainTerm.GlobalSieve
+module
+
+public import New.Spanning.Frames.StandardLevel
+public import New.Spanning.MainTerm.GlobalSieve
 
 /-!
 # The place and level of a set of primes, orbit sums and the set of entries
@@ -30,6 +32,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

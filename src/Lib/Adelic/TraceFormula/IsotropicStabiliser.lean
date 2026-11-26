@@ -1,4 +1,6 @@
-import Lib.Adelic.Reduction.FirstMinimumShortBases
+module
+
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
 
 /-!
 # The stabiliser of an isotropic subspace
@@ -14,6 +16,8 @@ Notions from other files:
   `g * X = c • X` and `g` is the identity on `A^⊥` modulo its radical. Its members with `c = 1`
   form the unipotent radical.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

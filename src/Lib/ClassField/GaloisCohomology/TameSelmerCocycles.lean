@@ -1,4 +1,6 @@
-import Lib.ClassField.Global.CMSplittingCharacters
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
 
 /-!
 # Selmer groups unramified outside a set and cocycles of tamely ramified actions
@@ -38,6 +40,8 @@ Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts`,
 `Lib.ClassField.LocalDuality.CrystallineDuality` and `Lib.ClassField.Places.LocalFields` for
 sources.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

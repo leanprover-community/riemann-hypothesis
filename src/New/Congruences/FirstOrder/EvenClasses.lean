@@ -1,6 +1,8 @@
-import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
-import Lib.General.NumberTheory.PadicLimitsValuation
-import New.Congruences.Selmer.AuxiliaryPrimes
+module
+
+public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
+public import Lib.General.NumberTheory.PadicLimitsValuation
+public import New.Congruences.Selmer.AuxiliaryPrimes
 
 /-!
 # Even classes and auxiliary places for Selmer cocycles
@@ -41,6 +43,8 @@ Notions from other files:
 * `New.Z1` and `New.charRep`: the continuous cocycles of a representation, and the representation
   given by scalars through a character.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

@@ -1,6 +1,8 @@
-import New.Determinant.AuxiliaryForms.DeepLevelVanishing
-import New.Determinant.AuxiliaryForms.GridFirstColumns
-import New.Determinant.Chain.ChainNorms
+module
+
+public import New.Determinant.AuxiliaryForms.DeepLevelVanishing
+public import New.Determinant.AuxiliaryForms.GridFirstColumns
+public import New.Determinant.Chain.ChainNorms
 
 /-!
 # The maps `Θ^♭` and `res^♭`, and the first path
@@ -39,6 +41,8 @@ Notions from other files:
 
 See `New.Determinant.AuxiliaryForms.DeepLevelVanishing` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

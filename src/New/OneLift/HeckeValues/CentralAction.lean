@@ -1,6 +1,8 @@
-import New.OneLift.ComparisonOperator.GluedLattices
-import New.OneLift.HeckeValues.CharacterLiftNorm
-import New.UpperBound.Size.ShortColumns
+module
+
+public import New.OneLift.ComparisonOperator.GluedLattices
+public import New.OneLift.HeckeValues.CharacterLiftNorm
+public import New.UpperBound.Size.ShortColumns
 
 /-!
 # Central action on lifts from U(1) and a rank-one denominator bound
@@ -25,6 +27,8 @@ to the line of the lift, given a bound `New.Selmer.DenominatorLe` on that line.
 
 See `New.OneLift.HeckeValues.TwistedValueHeights` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

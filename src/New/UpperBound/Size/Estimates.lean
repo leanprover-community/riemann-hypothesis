@@ -1,4 +1,6 @@
-import New.UpperBound.Size.ClassCount
+module
+
+public import New.UpperBound.Size.ClassCount
 
 /-!
 # Numerical inequalities between the parameters of the data
@@ -33,6 +35,8 @@ Notions from other files:
 See `Lib.Adelic.Reduction.FiniteVolume` for sources. See
 `New.UpperBound.Divisibility.LocalDivisibility` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -379,8 +383,7 @@ lemma sum_allowedLoss_mul_log_le (U : Finset ℕ) :
       calc 2 * D.m * D.f * D.b * Real.log p
         _ ≤ T / (1 : ℕ) := by
           rw [hN]
-          have h_log : 0 ≤ Real.log D.logX₁ := Real.log_nonneg (by scale_arith D)
-          exact D.le_of_hasLogBound (by scale_arith D)
+          exact D.le_of_hasLogBound (by grind [log_nonneg, scale_inequalities])
         _ ≤ _ := h_single (r := 0) le_rfl (le_floor (by simpa)) (by norm_num) hN.symm
     · exact (zero_mul _).trans_le (by positivity)
   have h_harmonic : ∑ c ∈ Icc 1 ⌊D.x₁⌋₊, (c : ℝ)⁻¹ ≤ 1 + D.logX₁ := by

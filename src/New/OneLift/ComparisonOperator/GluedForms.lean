@@ -1,4 +1,6 @@
-import New.OneLift.ComparisonOperator.GluedLattices
+module
+
+public import New.OneLift.ComparisonOperator.GluedLattices
 
 /-!
 # Gluing: the descent of product forms and the denominators
@@ -57,6 +59,8 @@ Notions from other files:
 See `New.OneLift.ComparisonOperator.GluingMaps` and
 `New.OneLift.ComparisonOperator.FirstFactors` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

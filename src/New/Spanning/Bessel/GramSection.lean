@@ -1,5 +1,7 @@
-import Lib.General.Analysis.HolomorphicIntegrals
-import New.Spanning.Bessel.Basic
+module
+
+public import Lib.General.Analysis.HolomorphicIntegrals
+public import New.Spanning.Bessel.Basic
 
 /-!
 # The Gram section γ_Z of the frame Gram matrix map on the unitary group G₁
@@ -34,6 +36,8 @@ Notions from other files:
   basis vectors `(e₁, …, e_ϱ, z)` and `(e*₁, …, e*_ϱ, x_{k₀})`.
 * `New.Shape.FrameMatrix`: the complex `(ϱ+1) × (ϱ+1)` matrices; `New.Shape.top` is the last index.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -614,14 +618,6 @@ lemma gramSection_eventuallyEq {Z : 𝔰.FrameMatrix} (hZ : Z ∈ 𝔰.openCell)
       Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) =ᶠ[nhds Z] fun Y : 𝔰.FrameMatrix ↦
         sectionMatrix Y Yᴴ :=
   .mono (isOpen_openCell.mem_nhds hZ) fun _ ↦ coe_gramSection
-
-/-- For `γ ∈ G₁`, the matrix `Z(γ) = realFrameGram γ` equals `Fᴴ J₁ γ F`, with `F = 𝔰.frameCols` the
-frame (e₁, …, e_ϱ, z) and `J₁ = 𝔰.J₁`. -/
-lemma realFrameGram_eq_conjTranspose_mul (γ : 𝔰.G₁) :
-    realFrameGram γ = 𝔰.frameColsᴴ * 𝔰.J₁ *
-      (((γ : GL 𝔰.BesselIndex ℂ) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * 𝔰.frameCols) := by
-  rw [← Matrix.mul_assoc, Matrix.mul_assoc 𝔰.frameColsᴴ,
-    conjTranspose_inclMatrix_mul_mul_inclMatrix, realFrameGram, frameGram]
 
 /-- On Ω the map `Z ↦ γ_Z` is a section of `γ ↦ Z(γ) = Fᴴ J₁ γ F` (`realFrameGram`, with `F` the
 frame): `Z(γ_Z) = Z`. -/

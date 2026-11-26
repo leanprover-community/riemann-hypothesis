@@ -1,4 +1,6 @@
-import Lib.GaloisRep.BaseChange.Defs
+module
+
+public import Lib.GaloisRep.BaseChange.Defs
 
 /-!
 # Minors, polynomials of matrices and twisted norms
@@ -26,6 +28,8 @@ freeness condition on a family of integers.
 Notions from other files:
 * `New.twistedNorm τ p δ`: the product `δ · τ(δ) ⋯ τ^(p-1)(δ)` in a monoid `M`, for `τ : M → M`.
 -/
+
+@[expose] public section
 
 /-! ## A nonvanishing minor of the matrix of variables -/
 

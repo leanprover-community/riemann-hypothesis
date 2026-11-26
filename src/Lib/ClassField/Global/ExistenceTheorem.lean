@@ -1,4 +1,6 @@
-import Lib.ClassField.Global.NormTheorems
+module
+
+public import Lib.ClassField.Global.NormTheorems
 
 /-!
 # Kummer characters, power indices and the existence theorem for totally complex fields
@@ -33,6 +35,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

@@ -1,4 +1,6 @@
-import Lib.Adelic.Hecke.Basic
+module
+
+public import Lib.Adelic.Hecke.Basic
 
 /-!
 # The elements of a group algebra that keep a level
@@ -16,6 +18,8 @@ Notions from other files:
 Known result: the elements of a group algebra that keep the vectors fixed by a subgroup, and their
 action on these vectors. The related class sums are in `Lib.Adelic.Hecke.ClassSums`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

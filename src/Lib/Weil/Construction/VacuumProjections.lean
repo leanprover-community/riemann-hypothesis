@@ -1,6 +1,8 @@
-import Lib.Weil.Construction.AdelicRepresentation
-import Lib.Weil.Fock.PolynomialVectors
-import Lib.Weil.MixedModel.SchwartzBruhat
+module
+
+public import Lib.Weil.Construction.AdelicRepresentation
+public import Lib.Weil.Fock.PolynomialVectors
+public import Lib.Weil.MixedModel.SchwartzBruhat
 
 /-!
 # Vacuum projections and the finite part of the Weil representation
@@ -48,6 +50,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` and `Lib.Weil.Fock.OscillatorPair` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

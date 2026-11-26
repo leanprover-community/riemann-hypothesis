@@ -1,5 +1,7 @@
-import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
-import Lib.GaloisRep.Main.SplitCase
+module
+
+public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
+public import Lib.GaloisRep.Main.SplitCase
 
 /-!
 # Attached Galois representations in odd rank and their descent along weak base change
@@ -52,6 +54,8 @@ representations II, Camb. J. Math. 1 (2013), Thm 3.2.3; with Labesse, Changement
 séries discrètes (2011), Cor. 5.3, and Barnet-Lamb, Gee, Geraghty, Taylor, Potential automorphy and
 change of weight (2014), Thm 2.1.1.
 -/
+
+@[expose] public section
 
 /-!
 ## Descent along a step of weak base change

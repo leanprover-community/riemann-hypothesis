@@ -1,6 +1,8 @@
-import Lib.Adelic.TraceFormula.ChangingSigns
-import Lib.Adelic.TraceFormula.ReduciblePolynomials
-import Lib.Weil.Periods.Grading
+module
+
+public import Lib.Adelic.TraceFormula.ChangingSigns
+public import Lib.Adelic.TraceFormula.ReduciblePolynomials
+public import Lib.Weil.Periods.Grading
 
 /-!
 # Kernels of levels as forms, and unfolding of orbital integrals
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.TraceFormula.TraceComparison` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -633,7 +637,8 @@ lemma integral_mul_tripleKernel_mul (φ : TestFunction (Gf E n)) (he : IsCuspKer
   -- On the left substitute `(y, u) ↦ (u, u⁻¹ y)`; then integrate over `u` on both sides.
   rw [V.integral_tripleMeasure h_mul (measurePreserving_prod_inv_mul_swap volume volume),
     V.integral_tripleMeasure h_fst (.id _)]
-  refine integral_congr_ae (.of_forall fun x ↦ integral_congr_ae (.of_forall fun y ↦ ?_))
+  congr with x
+  congr with y
   -- On each side the factors that depend on `u` form a convolution `e ⋆ e = e`.
   let c : G E s := x⁻¹ * V.ratEmbed γ * x
   calc _ = ∫ u, b x y * (e u * e (u⁻¹ * y) * e (y⁻¹ * c.1) * φ.1 c.2) := by

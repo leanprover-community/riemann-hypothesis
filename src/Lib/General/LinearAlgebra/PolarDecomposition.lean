@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
-import Lib.Weil.Construction.WeilData
+module
+
+public import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+public import Lib.Weil.Construction.WeilData
 
 /-!
 # Gram–Schmidt, tight frames, polar decomposition in U(p,q), forms representing one
@@ -30,6 +32,8 @@ Notions from other files:
 * `Matrix.IsAccretive z`: the matrix `z + zᴴ` is positive definite.
 * `New.WeilData E`: data on a CM field `E`; only its finite idele `α` is used here.
 -/
+
+@[expose] public section
 
 /-! ## Gram–Schmidt with a block triangular change of basis -/
 

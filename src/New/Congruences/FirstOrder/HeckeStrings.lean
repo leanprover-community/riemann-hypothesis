@@ -1,6 +1,8 @@
-import Lib.General.Algebra.SeriesBounds
-import Lib.LocalGL.SphericalChainLemma
-import New.Congruences.GaloisRepresentations.SelmerHypotheses
+module
+
+public import Lib.General.Algebra.SeriesBounds
+public import Lib.LocalGL.SphericalChainLemma
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
 
 /-!
 # Chains of roots for weak lifts, and Hecke-stable subspaces of forms
@@ -41,6 +43,8 @@ Notions from other files:
   orthogonal complement of a Hecke-stable subspace Z is Hecke stable, and Z lies in a subspace N
   once every nonzero form of Z in an isotypic space lies in N.
 -/
+
+@[expose] public section
 
 /-!
 ## A single operator from several diagonal operators

@@ -1,4 +1,6 @@
-import New.Spanning.Frames.BesselVector
+module
+
+public import New.Spanning.Frames.BesselVector
 
 /-!
 # The orbital integral at the finite places is a Kloosterman sum
@@ -30,6 +32,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Kisin.FrameTheorem
+module
+
+public import Lib.PadicHodge.Kisin.FrameTheorem
 
 /-!
 # Lattices with prescribed orders, depth steps and the depth lemma
@@ -52,6 +54,8 @@ Notions from other files:
 See `New.Congruences.Lifting.SafeMoves` for related work. See
 `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

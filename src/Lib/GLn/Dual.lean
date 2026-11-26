@@ -1,6 +1,8 @@
-import Lib.GLn.SchurModule.SchurNorm
-import Lib.General.LinearAlgebra.BlockEmbeddings
-import Lib.General.LinearAlgebra.MatrixNormBounds
+module
+
+public import Lib.GLn.SchurModule.SchurNorm
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import Lib.General.LinearAlgebra.MatrixNormBounds
 
 /-!
 # Duality of integral GL(n) representations, mixed weights and the Cartan product
@@ -55,6 +57,8 @@ integral inverse and the Cartan map has an integral left inverse. Source: Fulton
 Representation Theory, 1991, section 15.5; Jantzen 2003; for Jacobi's identity, Grinberg, An
 Introduction to Algebraic Combinatorics, Thm 6.4.48.
 -/
+
+@[expose] public section
 
 namespace New
 

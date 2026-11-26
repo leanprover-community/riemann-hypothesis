@@ -1,4 +1,6 @@
-import New.Spanning.Unfolding.Link
+module
+
+public import New.Spanning.Unfolding.Link
 
 /-!
 # Links, lifts and gauges of a term
@@ -42,6 +44,8 @@ Notions from other files:
   it is `S.ratMiddle = diag(1, -N)`, and `S.linkForm` is the form `diag(T, -T)` for this matrix `T`.
 * `New.genIndex`: the generalised index `[a]` of an adele `a`; it is `0` for a non-unit.
 -/
+
+@[expose] public section
 
 noncomputable section
 

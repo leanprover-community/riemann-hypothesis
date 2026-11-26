@@ -1,4 +1,6 @@
-import New.UpperBound.ElementaryDivisors.RootLemma
+module
+
+public import New.UpperBound.ElementaryDivisors.RootLemma
 
 /-!
 # The substitution by Frobenius powers of generic matrices; weight and defect
@@ -52,6 +54,8 @@ Notions from other files:
 
 Here `h` is a matrix in `GL_k(W)`, not a form.
 -/
+
+@[expose] public section
 
 noncomputable section
 

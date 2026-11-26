@@ -1,6 +1,8 @@
-import New.Spanning.Bessel.LargeFunction
-import New.Spanning.Unfolding.AmplitudeSums
-import New.UpperBound.Objects.Rows
+module
+
+public import New.Spanning.Bessel.LargeFunction
+public import New.Spanning.Unfolding.AmplitudeSums
+public import New.UpperBound.Objects.Rows
 
 /-!
 # Poincaré series of fitting spaces, unfolding, Petersson products and source form coordinates
@@ -49,6 +51,8 @@ Notions from other files:
 The file also contains known results stated on this proof's data: Poincaré series along a Bessel
 subgroup and their unfolding. See `Lib.DiscreteSeries.Bruhat.FloorGroups`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -436,13 +440,6 @@ private theorem mul_poincareSeries_eq_sum (y : New.G E ε → ℂ) :
       ∑ a : S.Classes × S.BesselCoord, φ a * (y g * ∑' γ : V.Γ, X.cutBessel a (γ * g)) := by
   simp only [poincareSeries, Finset.mul_sum, mul_left_comm]
 
-/-- For admissible filling data and a form y on V of any type e (a bounded automorphic function),
-the product of y with the Poincaré series of φ is integrable on Γ∖G. -/
-theorem integrable_mul_poincareSeries {e : GInf E ε → ℂ} {y : New.G E ε → ℂ} (hy : V.IsForm e y) :
-    Integrable (fun g : New.G E ε ↦ y g * X.poincareSeries φ g) V.Γ.quotMeasure := by
-  simp only [mul_poincareSeries_eq_sum]
-  exact integrable_finsetSum _ fun a _ ↦ (integrable_mul_tsum_cutBessel a hy).const_mul (φ a)
-
 /-- Unfolding, for admissible filling data and a form y on V of any type e (a bounded automorphic
 function): the integral over Γ∖G of y times the Poincaré series of φ is
 ∑_a φ_a ∫_G y·`X.cutBessel a`. -/
@@ -452,18 +449,6 @@ theorem integral_mul_poincareSeries {e : GInf E ε → ℂ} {y : New.G E ε → 
   simp only [mul_poincareSeries_eq_sum]
   rw [integral_finsetSum _ fun a _ ↦ (integrable_mul_tsum_cutBessel a hy).const_mul (φ a)]
   simp only [integral_const_mul, integral_mul_tsum_cutBessel _ hy]
-
-/-- Unfolding, for admissible filling data S. Let y be a form on V of any type e (a bounded
-automorphic function). Then y times the Poincaré series of φ is integrable on Γ∖G, with integral ∑_a
-φ_a ∫_G y·`X.cutBessel a`.
-
-Known result: the unfolding of Poincaré series along a Bessel subgroup. -/
-theorem integrable_and_integral_mul_poincareSeries {e : GInf E ε → ℂ} {y : New.G E ε → ℂ}
-    (hy : V.IsForm e y) :
-    Integrable (fun g : New.G E ε ↦ y g * X.poincareSeries φ g) V.Γ.quotMeasure ∧
-    ∫ g : New.G E ε, y g * X.poincareSeries φ g ∂V.Γ.quotMeasure =
-      ∑ a : S.Classes × S.BesselCoord, φ a * ∫ g : New.G E ε, y g * X.cutBessel a g :=
-  ⟨integrable_mul_poincareSeries φ hy, integral_mul_poincareSeries φ hy⟩
 
 omit [S.IsAdmissible] [HasPrimitiveRoot5040 E] in
 /-- Right convolution over the real points with `typeKernel l ε` fixes each coordinate of the full
@@ -898,19 +883,6 @@ lemma finiteEquiv_inclXFin (X : S.Fits V l kw Y η) (a : Gf E 𝔰.κ) :
     X.finiteEquiv (Y.inclXFin a) = S.inclHFin a :=
   -- `Y.inclXFin a` is by definition the finite component of `Y.inclX (1, a)`.
   X.finiteEquiv_inclX (1, a)
-
-/-- If `X` says that `V` with grading `Y` fits `S`, then for `a` in `Gf E 𝔰.κ` (finite adelic
-U(X₀)), `Y.inclXFin a` lies in `stdLevel`, the stabiliser of the standard lattice, if and only if
-`S.inclHFin a` lies in `S.latticeStabilizer`. -/
-lemma inclXFin_mem_stdLevel_iff (X : S.Fits V l kw Y η) (a : Gf E 𝔰.κ) :
-    Y.inclXFin a ∈ stdLevel E 𝔰.BesselIndex ↔ S.inclHFin a ∈ S.latticeStabilizer := by
-  rw [← X.finiteEquiv_mem_latticeStabilizer_iff, finiteEquiv_inclXFin]
-
-/-- A finite adelic point of U(X₀), embedded by the grading Y, lies in the principal level of V at
-the chosen places if and only if its image `S.inclHFin a` lies in the principal level of S. -/
-lemma inclXFin_mem_stdPrincipalLevel_iff (X : S.Fits V l kw Y η) (a : Gf E 𝔰.κ) :
-    Y.inclXFin a ∈ S.stdPrincipalLevel ↔ S.inclHFin a ∈ S.principalLevel := by
-  rw [X.mem_stdPrincipalLevel_iff, finiteEquiv_inclXFin]
 
 /-- At each infinite place v, the embedding `Y.inclX` of the adelic unitary group U(X₀) on κ,
 rescaled into `𝔰.G₁`, is the embedding `toBesselH` applied to the component at v. -/

@@ -1,4 +1,6 @@
-import New.Spanning.Unfolding.Climbing
+module
+
+public import New.Spanning.Unfolding.Climbing
 
 /-!
 # The finite groups `Ū`, `H̄` and `R̄`
@@ -19,6 +21,8 @@ Notions from other files:
   invertible over the integral adeles `Ô E`; `S.reduction` reduces them modulo the chosen places.
 * `S.reducedImage B`: the image of `B ⊓ S.latticeStabilizer` under `S.reduction`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

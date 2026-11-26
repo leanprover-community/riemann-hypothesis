@@ -1,5 +1,7 @@
-import Lib.Weil.Construction.CanonicalTheta
-import Lib.Weil.DualPair.WeilAction
+module
+
+public import Lib.Weil.Construction.CanonicalTheta
+public import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Weil representation of unitary pairs: finite action, sums, negation and change of point
@@ -33,6 +35,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.DualPair.GaloisLaw` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -329,14 +333,14 @@ lemma theta_boxProd_target (hs : s ∘ e = s₁ ⊕ᵥ s₂) (T : Space E n' s')
     (f : 𝒮 (T.hom V₁)) (f' : 𝒮 (T.hom V₂)) :
     (T.hom V).θ (boxProd (homSigns_sum_target hs) f f') = (T.hom V₁).θ f * (T.hom V₂).θ f' :=
   -- The point of `Hom(T, V)` is block diagonal, as the point of `V` is.
-  by refine theta_boxProd (homSigns_sum_target hs) ?_ f f'; simp_all [Space.hom, ← ext_iff]
+  theta_boxProd _ (by simp_all [Space.hom, ← ext_iff]) f f'
 
 /-- For data f on Hom(V₁,T) and f' on Hom(V₂,T), θ on Hom(V₁ ⊕ V₂, T) of the product f ⊠ f' is
 θ(f)θ(f'). The product is taken along the splitting `New.homSigns_sum_source` of the coordinates. It
 is induced by the identity of the index set n₁ ⊕ n₂ of V₁ ⊕ V₂. -/
 lemma theta_boxProd_source (f : 𝒮 (V₁.hom T)) (f' : 𝒮 (V₂.hom T)) :
     ((V₁.sum V₂).hom T).θ (boxProd homSigns_sum_source f f') = (V₁.hom T).θ f * (V₂.hom T).θ f' :=
-  by refine theta_boxProd homSigns_sum_source ?_ f f'; simp [Space.hom, Space.sum, blockGL, ← ext_iff]
+  theta_boxProd _ (by simp [Space.hom, Space.sum, blockGL, ← ext_iff]) f f'
 
 /-- On Hom(V₁ ⊕ V₂, T), the block diagonal element with blocks g₁ and g₂ acts on a product f ⊠ f'
 factor by factor: ω_{bb',a}(g,h)(f ⊠ f') = ω_{b,a}(g₁,h)f ⊠ ω_{b',a}(g₂,h)f' for data f, f' on

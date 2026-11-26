@@ -1,6 +1,8 @@
-import Lib.CM.Integrality.IsogenyIntegrality
-import Lib.General.Algebra.SeriesBounds
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.CM.Integrality.IsogenyIntegrality
+public import Lib.General.Algebra.SeriesBounds
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # The logarithm of the theta function of a CM lattice and the integral group law
@@ -41,6 +43,8 @@ a constant. Moreover `θ(α z) / θ(z) ^ (α ᾱ)` is a unit on the formal group
 Known result: the formal group law of a Weierstrass curve has integral coefficients. Source:
 Silverman, The Arithmetic of Elliptic Curves, IV.1 and IV.2.
 -/
+
+@[expose] public section
 
 /-!
 ## The logarithm of the theta function

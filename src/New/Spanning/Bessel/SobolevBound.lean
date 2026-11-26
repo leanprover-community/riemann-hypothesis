@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bessel.SchurBound
-import New.Spanning.Bessel.MeanValue
+module
+
+public import Lib.DiscreteSeries.Bessel.SchurBound
+public import New.Spanning.Bessel.MeanValue
 
 /-!
 # Unfolding bounds over G₁ and the L² bound at the section γ_Z via Sobolev
@@ -39,6 +41,8 @@ Notions from other files:
 
 See `New.Spanning.Bessel.FillingData` for related work.
 -/
+
+@[expose] public section
 
 /-!
 ## An unfolding bound over G₁ for suitable weights
@@ -441,8 +445,8 @@ theorem New.RealPlace.lintegral_gramSection_le_of_hasDerivWords {𝔰 : Shape} {
         e_preserving.setLIntegral_comp_preimage measurableSet_ball
           (f := fun Y ↦ ∫⁻ ω, ‖V w (gramSection Y * shift ω)‖ₑ ^ 2 ∂μ) (by fun_prop)
       _ ≤ .ofReal ((2 * P ^ 2) ^ (2 * 𝔰.n ^ 2)) * ∫⁻ g, ‖V w g‖ₑ ^ 2 ∂besselQuotMeasure :=
-        lintegral_lintegral_gramSection_le (w := fun g ↦ ‖V w g‖ₑ ^ 2) one_le hc measurableSet_ball
-          h_disc h_cell (by fun_prop) hw_inv
+        lintegral_lintegral_gramSection_le one_le hc measurableSet_ball h_disc h_cell
+          (by fun_prop) hw_inv
       _ ≤ _ := by grw [hK w hw]
   -- Each of the `2 n ^ 2` coordinates costs `a` in Sobolev's inequality and `2 P ^ 2` on the cube.
   let a : ℝ := 2 / (P ^ 8)⁻¹ * (1 + (card L * (Λ * P ^ 85)) ^ 2)

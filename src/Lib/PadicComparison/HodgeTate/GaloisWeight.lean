@@ -1,4 +1,6 @@
-import Lib.PadicComparison.HodgeTate.Map
+module
+
+public import Lib.PadicComparison.HodgeTate.Map
 
 /-!
 # Galois twists and the weight of the Hodge–Tate map
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.PadicComparison.HodgeTate.PeriodMap` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

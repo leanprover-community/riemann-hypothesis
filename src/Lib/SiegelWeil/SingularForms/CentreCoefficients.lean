@@ -1,6 +1,8 @@
-import Lib.Adelic.Witt.IwasawaDecomposition
-import Lib.ClassField.HeckeCharacter.SplitTameCharacters
-import Lib.Weil.MixedModel.ZeroTerm
+module
+
+public import Lib.Adelic.Witt.IwasawaDecomposition
+public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+public import Lib.Weil.MixedModel.ZeroTerm
 
 /-!
 # Fourier coefficients along the centre of a unipotent radical and their partial means
@@ -45,6 +47,8 @@ Notions from other files:
 * `New.Space.Splitting.comp`: From splittings of V over V₀ (rank p) and V₀ over V₁ (rank q), the
   splitting of V over V₁ with frames (k, ik'), (l, il') and embedding ii'.
 -/
+
+@[expose] public section
 
 /-!
 ## Laws of the Fourier coefficients along the centre of the radical

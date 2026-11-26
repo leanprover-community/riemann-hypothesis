@@ -1,5 +1,7 @@
-import Lib.Adelic.Adeles.SemilocalProducts
-import Lib.Weil.DualPair.Defs
+module
+
+public import Lib.Adelic.Adeles.SemilocalProducts
+public import Lib.Weil.DualPair.Defs
 
 /-!
 # Splitting character on U(1), characters tamely ramified at split places, theta integrals
@@ -36,6 +38,8 @@ Notions from other files:
 The results of this file are known; see `Lib.ClassField.Global.CMSplittingCharacters` and
 `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

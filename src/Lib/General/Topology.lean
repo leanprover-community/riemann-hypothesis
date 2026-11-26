@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Open subgroups, a tube lemma, and procyclic images of ℓ-adic characters
@@ -16,6 +18,8 @@ principal ideal `(a)` by divisibility of the difference by `a`.
   homomorphism; `New.Selmer.exists_isGeneratorModKer` gives one for such a character of a profinite
   group.
 -/
+
+@[expose] public section
 
 /-! ## Open subgroups, a tube lemma, and congruence modulo a principal ideal -/
 

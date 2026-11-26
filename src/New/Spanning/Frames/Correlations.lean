@@ -1,5 +1,7 @@
-import New.Spanning.Frames.Levels
-import New.Spanning.Frames.TwoGauges
+module
+
+public import New.Spanning.Frames.Levels
+public import New.Spanning.Frames.TwoGauges
 
 /-!
 # The scale, near points and partial correlations
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

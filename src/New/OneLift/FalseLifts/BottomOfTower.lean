@@ -1,5 +1,7 @@
-import Lib.Weil.Periods.DescentVanishing
-import New.UpperBound.Objects.AuxiliaryPair
+module
+
+public import Lib.Weil.Periods.DescentVanishing
+public import New.UpperBound.Objects.AuxiliaryPair
 
 /-!
 # The bottom of the tower: from the block datum to all data
@@ -47,6 +49,8 @@ Notions from other files:
 * `New.DescentPair.formAction` is the action `s̄ y` on forms of the product of the groups `GL r`
   over the residue fields of the chosen places.
 -/
+
+@[expose] public section
 
 noncomputable section
 

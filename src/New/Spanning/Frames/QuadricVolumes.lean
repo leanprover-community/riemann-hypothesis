@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bruhat.FourierKernels
-import New.Spanning.Frames.Correlations
+module
+
+public import Lib.DiscreteSeries.Bruhat.FourierKernels
+public import New.Spanning.Frames.Correlations
 
 /-!
 # Volumes on quadrics and on sections
@@ -35,6 +37,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 

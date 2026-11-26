@@ -1,4 +1,6 @@
-import Lib.Weil.Periods.Grading
+module
+
+public import Lib.Weil.Periods.Grading
 
 /-!
 # The lattice of a finite point of a graded space
@@ -32,6 +34,8 @@ The results are known: duality of lattices, and Witt's theorem for unimodular he
 Sources: O'Meara, Introduction to Quadratic Forms; Jacobowitz, Hermitian forms over local fields
 (1962).
 -/
+
+@[expose] public section
 
 open Matrix Pointwise
 

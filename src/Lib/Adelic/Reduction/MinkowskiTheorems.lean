@@ -1,5 +1,7 @@
-import Lib.General.LinearAlgebra.PolarDecomposition
-import Lib.General.NumberTheory.FrobeniusOrbits
+module
+
+public import Lib.General.LinearAlgebra.PolarDecomposition
+public import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # Adelic Minkowski theorems and counts of rational points in boxes
@@ -40,6 +42,8 @@ Notions from other files:
 Part of a known result: Reduction theory, here the adelic Minkowski theorems. For Mahler-Godement
 compactness and finite covolume see `Lib.Adelic.Reduction.FiniteVolume`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,7 +1,9 @@
-import Lib.General.Analysis.FiniteGroupInnerProduct
-import Lib.Adelic.Unitary.Defs
-import Lib.General.Analysis.FiniteFourier
-import Lib.General.LinearAlgebra.IntegralLattices
+module
+
+public import Lib.General.Analysis.FiniteGroupInnerProduct
+public import Lib.Adelic.Unitary.Defs
+public import Lib.General.Analysis.FiniteFourier
+public import Lib.General.LinearAlgebra.IntegralLattices
 
 /-!
 # Functions of positive type and singular minors
@@ -26,6 +28,8 @@ Notions from other files:
 
 See `New.Spanning.Unfolding.Moments` for related work.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 open InnerProductSpace Finset EuclideanSpace Complex Matrix WithLp Fintype AddChar

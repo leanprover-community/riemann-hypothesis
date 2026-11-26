@@ -1,5 +1,7 @@
-import New.Determinant.AuxiliaryForms.GridFirstColumns
-import New.Determinant.AuxiliaryForms.RegularParameters
+module
+
+public import New.Determinant.AuxiliaryForms.GridFirstColumns
+public import New.Determinant.AuxiliaryForms.RegularParameters
 
 /-!
 # The branching pairing and the periods on the last path
@@ -45,6 +47,8 @@ Notions from other files:
   (`New.Data.gridModulus`), `𝔪₀ = ϖ Q` and `𝔟 = ϖ ^ b` (`New.Data.triangleModulus`). The level
   `J(𝔞)` consists of the integral finite points that reduce to `1` modulo `𝔞`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

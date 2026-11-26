@@ -1,5 +1,7 @@
-import New.Derivatives.Divisibility.NullFrames
-import New.Derivatives.FormalGroup.ThetaProducts
+module
+
+public import New.Derivatives.Divisibility.NullFrames
+public import New.Derivatives.FormalGroup.ThetaProducts
 
 /-!
 # Divisibility of the jets of a series with the normal form along products of minors
@@ -55,6 +57,8 @@ entre nombres de Bernoulli–Hurwitz dans le cas supersingulier, 1990; Fujiwara,
 special values of real analytic Eisenstein series, 1988; Bannai–Kobayashi–Yasuda, Radius of
 convergence of the p-adic sigma function, 2017.
 -/
+
+@[expose] public section
 
 open Finset MvPolynomial Matrix Fintype
 

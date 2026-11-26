@@ -1,8 +1,10 @@
-import New.Congruences.FirstOrder.AuxiliaryPrimeTie
-import New.Congruences.FirstOrder.HeckeStrings
-import New.Congruences.FirstOrder.RibetElement
-import New.Congruences.FirstOrder.TrianglePrimes
-import New.Congruences.GaloisRepresentations.BaseLevelOfLabel
+module
+
+public import New.Congruences.FirstOrder.AuxiliaryPrimeTie
+public import New.Congruences.FirstOrder.HeckeStrings
+public import New.Congruences.FirstOrder.RibetElement
+public import New.Congruences.FirstOrder.TrianglePrimes
+public import New.Congruences.GaloisRepresentations.BaseLevelOfLabel
 
 /-!
 # The bound for denominators
@@ -50,6 +52,8 @@ works. Related work: Dasgupta–Kakde–Silliman–Wang, The residually indistin
 method for GL2, 2023; Dotto–Thorne, Modularity of residually reducible representations of rank 2,
 2026; Martin–Wakatsuki, Mass formulas and Eisenstein congruences in higher rank, 2024.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

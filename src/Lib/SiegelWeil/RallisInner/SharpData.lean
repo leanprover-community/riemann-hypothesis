@@ -1,6 +1,8 @@
-import Lib.General.Algebra.LevelModulus
-import Lib.SiegelWeil.RallisInner.Doubling
-import Lib.SiegelWeil.UnramifiedSeries.RallisSeries
+module
+
+public import Lib.General.Algebra.LevelModulus
+public import Lib.SiegelWeil.RallisInner.Doubling
+public import Lib.SiegelWeil.UnramifiedSeries.RallisSeries
 
 /-!
 # Rallis' inner product formula for sharp data and injectivity of the theta lift
@@ -70,6 +72,8 @@ of modular forms of one and several variables, Ann. of Math. 102 (1975); method:
 liftings and Hecke L-functions, J. reine angew. Math. 485 (1997); Harris, Li, Skinner, The Rallis
 inner product formula and p-adic L-functions (2005); Finis, Ann. of Math. 163 (2006).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -601,8 +605,7 @@ lemma SiegelWeil.IsSharpFn.isSharp (hΨ : IsSharpFn S T b 𝔪 J Ψ)
     simp [vacuumDatum, projOn_schrodingerOp_vacElem, hB]
   · -- the coefficient at a point `g` integral off `𝔪 𝔪̄`
     split_ifs with g_lvl
-    · exact congrArg (dataInner (S.hom T) (vacuumDatum S T 𝔪 Ψ).1)
-        (hΨ.fixes g (Subgroup.mem_inf.1 g_lvl).1)
+    · exact congrArg _ (hΨ.fixes g g_lvl.1)
     by_cases g_int : g ∈ stdLevel E n
     · exact hΨ.weilMatrixCoeff_eq_zero_of_mem_stdLevel_of_notMem ⟨g, g_int⟩ fun h_mem ↦
         g_lvl ⟨h_mem, g_int⟩

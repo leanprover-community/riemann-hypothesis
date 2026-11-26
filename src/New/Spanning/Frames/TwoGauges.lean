@@ -1,4 +1,6 @@
-import New.Spanning.Frames.Lengths
+module
+
+public import New.Spanning.Frames.Lengths
 
 /-!
 # Comparing the lengths at two points; minors and heads
@@ -37,6 +39,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

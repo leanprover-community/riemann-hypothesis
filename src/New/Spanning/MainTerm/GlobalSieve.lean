@@ -1,6 +1,8 @@
-import New.Spanning.MainTerm.Frequencies
-import New.Spanning.RemainingTerms.Box
-import New.Spanning.Unfolding.BesselLevelStructure
+module
+
+public import New.Spanning.MainTerm.Frequencies
+public import New.Spanning.RemainingTerms.Box
+public import New.Spanning.Unfolding.BesselLevelStructure
 
 /-!
 # One-sided Poisson summation, sums over frequencies, and the sieve over all places
@@ -53,6 +55,8 @@ X^ε are known in the literature. Related work: Jacquet, Smooth transfer of Kloo
 decomposition of GL(3) Kloosterman sums and the spectral large sieve, 2015; Deshouillers–Iwaniec,
 Kloosterman sums and Fourier coefficients of cusp forms, 1982.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 
@@ -281,8 +285,7 @@ lemma mem_ratIntegralOff_of_transform_ne_zero {G : 𝔸 E → ℂ}
       New.stdAddChar E (toAdele (y / S.deltaE) * -a') *
         ∫ z, New.stdAddChar E (toAdele (y / S.deltaE) * -z) * G z := by
     rw [← integral_const_mul, ← integral_add_left_eq_self _ a']
-    refine integral_congr_ae (.of_forall fun z ↦ ?_)
-    dsimp only
+    congr with z
     rw [hG a ha, neg_add, mul_add, AddChar.map_add_eq_mul, Circle.coe_mul, mul_assoc]
   -- The factor is a value of the finite character: removing the components at `T` is
   -- multiplication by an idempotent, which can be moved from `a` to `y`.
@@ -1036,9 +1039,6 @@ lemma globalWeight_scaledHead_le [S.IsAdmissible] {A : Finset Eˣ}
       rw [prod_const, card_univ, Fintype.card_fin]
       ring
 
--- Lean v4.37.0-rc1: terms `S.b ^ (c * 𝔰.n ^ k)` (`Shape.n` is an abbrev) in side goals and
--- unification problems exceed the default recursion depth.
-set_option maxRecDepth 4000 in
 omit [T.StarStable] in
 /-- The sum of the weights of the heads of length `i ≤ ϱ` with entries in a finite set `A` of
 numbers integral off `T` is at most `b ^ (130 n⁹ f)`: the number of heads whose products are small
@@ -1124,9 +1124,6 @@ lemma sq_sum_globalWeight_le [S.IsAdmissible] {A : Finset Eˣ}
 
 end
 
--- Lean v4.37.0-rc1: terms `S.b ^ (c * 𝔰.n ^ k)` (`Shape.n` is an abbrev) in unification problems
--- exceed the default recursion depth.
-set_option maxRecDepth 20000 in
 omit [WeilData E] [T.StarStable] in
 /-- The sieve. Let `b = S.b`, `M = S.M` and `N = S.N` be the size parameter, the level and the prime
 of the admissible filling data `S`, let `k`, `ϱ`, `n = ϱ + 1` be the parameters of its shape `𝔰`,

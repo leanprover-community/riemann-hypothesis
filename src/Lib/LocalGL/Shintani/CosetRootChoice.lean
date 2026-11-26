@@ -1,5 +1,7 @@
-import Lib.GaloisRep.Hilbert90.TameActions
-import Lib.LocalGL.Green.HallAlgebra
+module
+
+public import Lib.GaloisRep.Hilbert90.TameActions
+public import Lib.LocalGL.Green.HallAlgebra
 
 /-!
 # Root choices in a coset, induction, and extension of invariant characters
@@ -39,6 +41,8 @@ Notions from other files:
 Known; see `Lib.LocalGL.Shintani.LiftingGreenCharacters` and `Lib.LocalGL.Green.CuspidalFunctions`
 for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

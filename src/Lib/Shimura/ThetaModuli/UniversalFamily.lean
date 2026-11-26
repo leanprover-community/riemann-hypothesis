@@ -1,8 +1,10 @@
-import Lib.General.Geometry.SmoothnessCriterion
-import Lib.Shimura.Deformation.TangentBound
-import Lib.Shimura.GoodReduction.MultiplicativeNorm
-import Lib.Shimura.IntegralModel.BallImmersion
-import Lib.Shimura.ThetaModuli.FamilyFromPoints
+module
+
+public import Lib.General.Geometry.SmoothnessCriterion
+public import Lib.Shimura.Deformation.TangentBound
+public import Lib.Shimura.GoodReduction.MultiplicativeNorm
+public import Lib.Shimura.IntegralModel.BallImmersion
+public import Lib.Shimura.ThetaModuli.FamilyFromPoints
 
 /-!
 # Existence of the universal theta family over a smooth projective base
@@ -43,6 +45,8 @@ locus cut out by quartic relations; the family on it comes from
 `New.Variety.exists_thetaFamily_of_points`. Source: D. Mumford, On the equations defining abelian
 varieties II, Invent. Math. 3 (1967) 75-135; theta groups in part I, Invent. Math. 1 (1966) 287-354.
 -/
+
+@[expose] public section
 
 open CategoryTheory AlgebraicGeometry Limits NumberField IsLocalRing RingHom New ThetaObject Obj
   LineBundle ThetaTori Over ProjSpace FaithfulSMul Ideal IsPrime PeriodMap And

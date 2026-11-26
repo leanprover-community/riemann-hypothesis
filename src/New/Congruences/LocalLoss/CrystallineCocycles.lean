@@ -1,5 +1,7 @@
-import New.Congruences.Lifting.CupOrthogonalityBounds
-import New.Congruences.LocalLoss.Basic
+module
+
+public import New.Congruences.Lifting.CupOrthogonalityBounds
+public import New.Congruences.LocalLoss.Basic
 
 /-!
 # Crystalline cocycles and the defect of a crystalline lattice at a place above ℓ
@@ -37,6 +39,8 @@ Notions from other files:
 
 See `New.Congruences.LocalLoss.CrystallineDefect` for related work.
 -/
+
+@[expose] public section
 
 /-!
 ## Rank of crystalline cocycles and a length bound

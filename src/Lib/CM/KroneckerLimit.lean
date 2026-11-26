@@ -1,4 +1,6 @@
-import Lib.CM.Sigma.Basic
+module
+
+public import Lib.CM.Sigma.Basic
 
 /-!
 # Kronecker's first limit formula
@@ -25,6 +27,8 @@ theorem. Source: C. L. Siegel, Lectures on Advanced Analytic Number Theory (1961
 Theorem 1; for a proof of this shape, F. Chamizo, A simple evaluation of a theta value, the
 Kronecker limit formula and a formula of Ramanujan, Ramanujan J. (2022), Prop. 3.1.
 -/
+
+@[expose] public section
 
 open Complex Nat Equiv MeasureTheory Set Real Function Periodic ModularForm intervalIntegral
 

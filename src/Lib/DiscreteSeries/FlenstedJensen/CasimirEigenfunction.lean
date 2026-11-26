@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.FlenstedJensen.FlagDensities
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.FlagDensities
 
 /-!
 # Flensted-Jensen's integral, analyticity of c_λ and its Casimir eigenvalue
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.DiscreteSeries.FlenstedJensen.PsiKTypes` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Flensted-Jensen's integral and analyticity of the coefficient

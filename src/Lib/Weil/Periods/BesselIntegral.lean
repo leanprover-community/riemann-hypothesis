@@ -1,5 +1,7 @@
-import Lib.Adelic.QuotientMeasure.UnfoldingInStages
-import Lib.Weil.DualPair.WeilAction
+module
+
+public import Lib.Adelic.QuotientMeasure.UnfoldingInStages
+public import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Integrals over the Bessel subgroup and the orbits surviving unipotent twists
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.Periods.Unfolding` and `Lib.Adelic.Reduction.FiniteVolume` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The Bessel subgroup, Eichler maps and integrals over [B]

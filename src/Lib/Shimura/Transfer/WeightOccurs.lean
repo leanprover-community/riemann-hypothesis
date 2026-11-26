@@ -1,9 +1,11 @@
-import Lib.DiscreteSeries.Character.WeylCharacterFormula
-import Lib.GLn.SchurModule.SchurNorm
-import Lib.Shimura.TraceFormula.DefiniteTrace
-import Lib.Shimura.TraceFormula.MarkedDefiniteSums
-import Lib.Shimura.TraceFormula.TestFunction
-import Lib.Shimura.Transfer.Lefschetz
+module
+
+public import Lib.DiscreteSeries.Character.WeylCharacterFormula
+public import Lib.GLn.SchurModule.SchurNorm
+public import Lib.Shimura.TraceFormula.DefiniteTrace
+public import Lib.Shimura.TraceFormula.MarkedDefiniteSums
+public import Lib.Shimura.TraceFormula.TestFunction
+public import Lib.Shimura.Transfer.Lefschetz
 
 /-!
 # Coefficient systems from weights and the degrees where Hecke eigensystems occur
@@ -41,6 +43,8 @@ Changement de base CM et séries discrètes (2011), Thm 5.4; count as in Goresky
 topological trace formula (2003), and Shimura, On the trace formula for Hecke operators, Acta Math.
 132 (1974).
 -/
+
+@[expose] public section
 
 open NumberField Matrix Polynomial Fintype Finset IsAlgClosed LinearMap Submodule New.QuadField Fin
 

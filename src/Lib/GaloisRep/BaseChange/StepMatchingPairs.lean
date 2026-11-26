@@ -1,4 +1,6 @@
-import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+module
+
+public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 
 /-!
 # Hecke-stable matching pairs for a step E'/E at split matched places
@@ -34,6 +36,8 @@ Notions from other files:
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` and `Lib.Adelic.Hecke.ClassSums` for
 sources.
 -/
+
+@[expose] public section
 
 namespace New
 

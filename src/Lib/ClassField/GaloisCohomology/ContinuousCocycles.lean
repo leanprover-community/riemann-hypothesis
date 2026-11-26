@@ -1,4 +1,6 @@
-import Lib.ClassField.Places.GaloisDefs
+module
+
+public import Lib.ClassField.Places.GaloisDefs
 
 /-!
 # Continuous cohomology of discrete modules: cocycles, H², cyclic classes, local Artin map
@@ -38,6 +40,8 @@ Known; see `Lib.ClassField.GaloisCohomology.KummerCyclicClasses`, `Lib.ClassFiel
 sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -57,7 +61,6 @@ variable {R G M H N : Type*} [CommRing R] [Group G] [TopologicalSpace G] [AddCom
   [Module R M] [TopologicalSpace M] [DiscreteTopology M] (ρ : Representation R G M)
   [Group H] [TopologicalSpace H] [AddCommGroup N] [Module R N] [TopologicalSpace N]
   [DiscreteTopology N] {ρ' : Representation R H N} (φ : H →ₜ* G) (u : M →ₗ[R] N)
-  (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by bound)
 
 /-- On a discrete module, scalar multiplication by each constant of `R` is continuous. -/
 instance (priority := 100) : ContinuousConstSMul R M := ⟨by fun_prop⟩
@@ -111,7 +114,8 @@ variable {ρ}
 /-- For a continuous homomorphism `φ : H →ₜ* G` and an `R`-linear `u : M → N` with
 `u (ρ (φ g) m) = ρ' g (u m)` (the hypothesis `h`, proved by `bound` when it is not
 given), the additive map `f ↦ u ∘ f ∘ φ` from continuous 1-cocycles of `ρ` to those of `ρ'`. -/
-abbrev pairMapZ1 : Z1 ρ →+ Z1 ρ' where
+abbrev pairMapZ1 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by bound) :
+    Z1 ρ →+ Z1 ρ' where
   toFun f := ⟨fun g ↦ u (f.1 (φ.1 g)), f.2.imp (by continuity) (by aesop)⟩
   map_zero' := by bound
   map_add' := by bound
@@ -120,7 +124,8 @@ abbrev pairMapZ1 : Z1 ρ →+ Z1 ρ' where
 `R`-linear `u : M → N` with `u (ρ (φ g) m) = ρ' g (u m)` (the hypothesis `h`, proved by
 `bound` when it is not given): the class of `f` goes to the class of
 `(g, g') ↦ u (f (φ g, φ g'))`. -/
-def pairMapH2 : H2 ρ →ₗ[R] H2 ρ' :=
+def pairMapH2 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by bound) :
+    H2 ρ →ₗ[R] H2 ρ' :=
   mapQ (comap (Z2 ρ).subtype (B2 ρ)) (comap (Z2 ρ').subtype (B2 ρ'))
     { toFun f :=
         ⟨fun p ↦ u (f.1 (p.map φ φ)), by have := f.2.1; fun_prop, fun g g' g'' ↦ by simp [f.2.2, h]⟩
@@ -582,7 +587,8 @@ abbrev quotient : DiscreteModule R Γ :=
     -- The action on cosets is continuous, as `Γ × A → Γ × (A ⧸ W)` is an open quotient map.
     ((IsOpenQuotientMap.id.prodMap W.isOpenQuotientMap_mkQ).continuous_comp_iff.mp
       (W.mkQL.cont.comp A.continuous))
-    (discrete := discreteTopology_quotient A W)
+    (discrete := discreteTopology_iff_forall_isOpen.mpr fun s ↦
+      (W.isOpenQuotientMap_mkQ.isQuotientMap.isOpen_preimage (s := s)).mp (isOpen_discrete _))
 
 /-- For a `Γ`-stable submodule `W` of `A`, the inclusion and the quotient map form a short exact
 sequence `0 → W → A → A ⧸ W → 0` of discrete `Γ`-modules. -/

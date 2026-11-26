@@ -1,4 +1,6 @@
-import New.UpperBound.Divisibility.ChainValuation
+module
+
+public import New.UpperBound.Divisibility.ChainValuation
 
 /-!
 # Two invariant sums of translates attached to a chain datum
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.LocalDivisibility` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

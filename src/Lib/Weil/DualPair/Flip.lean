@@ -1,4 +1,6 @@
-import Lib.Weil.DualPair.KernelLaws
+module
+
+public import Lib.Weil.DualPair.KernelLaws
 
 /-!
 # Flipping a dual pair by adjoints: Weil actions and theta kernels modulo ideals
@@ -47,6 +49,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

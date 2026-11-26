@@ -1,5 +1,7 @@
-import New.UpperBound.Divisibility.MarkedPrimes
-import New.UpperBound.ElementaryDivisors.ElementaryDivisorTheorem
+module
+
+public import New.UpperBound.Divisibility.MarkedPrimes
+public import New.UpperBound.ElementaryDivisors.ElementaryDivisorTheorem
 
 /-!
 # Elementary divisor bound for the scaled Hecke operator via edges
@@ -43,6 +45,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.MarkOperator` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section TwistedHeckeType
 
@@ -599,7 +603,7 @@ lemma exists_schur_eq_symPowMatrix {P : Parameters} {D : Data P} (q : D.X 0 ≃ 
     -- by the definition of the weight `D.columnCount`, given the value `hb` of `b`
     grind only [columnCount]
   exact exists_equiv_schur_one_row_eq_symPowMatrix q.symm
-    (show 2 ≤ Fintype.card (D.X 0) from D.nat_le_of_hasLogBound.trans_eq h_card.symm) h_row
+    (D.nat_le_of_hasLogBound.trans_eq h_card.symm) h_row
 
 /-- Let `q` number the `D.k` coordinates `D.X 0`, and let `t` number a set `Q` of a-places among the
 infinite places `D.Φ` of `D.E`. At an a-place the weight `D.columnCount` is one row of length

@@ -1,4 +1,6 @@
-import Lib.General.Measure.IdempotentKernel
+module
+
+public import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Quotient measures via cutoffs: unfolding, covolume, unimodularity, periodic means
@@ -35,6 +37,8 @@ applications to Palm and related kernels, Probab. Theory Related Fields 139 (200
 cited in D. Gentner, G. Last, Math. Z. 267 (2011), §2); for the classical form, N. Bourbaki,
 Intégration VII, 1963.
 -/
+
+@[expose] public section
 
 /-!
 ## Cutoff weights and the quotient measure

@@ -1,6 +1,8 @@
-import Lib.General.Algebra.MultivariatePolynomials
-import Lib.Shimura.ThetaGroup
-import Lib.Shimura.ThetaNormality.NormalGeneration
+module
+
+public import Lib.General.Algebra.MultivariatePolynomials
+public import Lib.Shimura.ThetaGroup
+public import Lib.Shimura.ThetaNormality.NormalGeneration
 
 /-!
 # Absolute Frobenius, Serre's theorem on sections of powers, and projective embeddings
@@ -37,6 +39,8 @@ Notions from other files:
 Known result: a case of the surjectivity half of Serre's theorem on sections of powers of a
 projective embedding.
 -/
+
+@[expose] public section
 
 universe u v
 

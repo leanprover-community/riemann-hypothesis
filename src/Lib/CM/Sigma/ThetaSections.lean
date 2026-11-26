@@ -1,5 +1,7 @@
-import Lib.General.Analysis.MeanValueAndTaylor
-import Lib.General.NumberTheory.SUnitsAndClassNumber
+module
+
+public import Lib.General.Analysis.MeanValueAndTaylor
+public import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Theta functions of a CM elliptic curve: Weierstrass equation and spanning monomials
@@ -50,6 +52,8 @@ Known results: sigma and theta functions of a lattice, their addition formulas, 
 equation and the elliptic functions with poles at one point are classical. See `Lib.CM.Sigma.Basic`
 for the sigma function used here and for sources.
 -/
+
+@[expose] public section
 
 section CurveTheta
 

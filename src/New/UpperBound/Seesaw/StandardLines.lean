@@ -1,5 +1,7 @@
-import Lib.Weil.Periods.StringPowers
-import New.UpperBound.Seesaw.AdmissibleCombinations
+module
+
+public import Lib.Weil.Periods.StringPowers
+public import New.UpperBound.Seesaw.AdmissibleCombinations
 
 /-!
 # The standard lattice of a graded space, line by line
@@ -44,6 +46,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 open Matrix Pointwise Valued
 

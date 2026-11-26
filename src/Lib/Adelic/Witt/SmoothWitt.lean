@@ -1,6 +1,8 @@
-import Lib.Adelic.Witt.WittTheorem
-import Lib.General.Analysis.MeanValueAndTaylor
-import Lib.General.LinearAlgebra.HermitianMatrices
+module
+
+public import Lib.Adelic.Witt.WittTheorem
+public import Lib.General.Analysis.MeanValueAndTaylor
+public import Lib.General.LinearAlgebra.HermitianMatrices
 
 /-!
 # Smooth families of isometries that carry an isotropic vector to its neighbours
@@ -19,6 +21,8 @@ The notions used in the statements:
 Known result: Witt's extension theorem for hermitian forms, here in a smooth local form for
 isotropic vectors. See also `Lib.Adelic.Witt.IwasawaDecomposition`.
 -/
+
+@[expose] public section
 
 namespace New.Exchange
 

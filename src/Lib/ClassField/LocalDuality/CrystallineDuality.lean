@@ -1,7 +1,9 @@
-import Lib.GaloisRep.Main.Defs
-import Lib.PadicComparison.Descent.TestCategory
-import Lib.PadicHodge.BlochKato
-import Lib.PadicHodge.Crystalline.Regularity
+module
+
+public import Lib.GaloisRep.Main.Defs
+public import Lib.PadicComparison.Descent.TestCategory
+public import Lib.PadicHodge.BlochKato
+public import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # Classes of Galois lattices, pairings and local duality for crystalline cocycles
@@ -58,6 +60,8 @@ Duality Theorems (2nd ed. 2006), I 2.3, 2.8.
 
 See also `Lib.PadicHodge.Crystalline.Regularity` and `Lib.PadicHodge.ArtinSchreierSequence`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

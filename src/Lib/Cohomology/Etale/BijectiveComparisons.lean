@@ -1,4 +1,6 @@
-import Lib.General.Algebra.LongExactSequences
+module
+
+public import Lib.General.Algebra.LongExactSequences
 
 /-!
 # Criteria for comparison maps of Ext cohomology of functors of points to be bijective
@@ -53,6 +55,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` and `Lib.Cohomology.Etale.FilteredLimits` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

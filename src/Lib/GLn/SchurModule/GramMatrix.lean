@@ -1,5 +1,7 @@
-import Lib.Adelic.Witt.WittTheorem
-import Lib.GLn.SchurModule.WeylKernel
+module
+
+public import Lib.Adelic.Witt.WittTheorem
+public import Lib.GLn.SchurModule.WeylKernel
 
 /-!
 # Fock pairing, Hermitian norm and Cartan products for the Gram matrix of the Weyl kernel
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.GLn.SchurModule.SchurNorm` and `Lib.GLn.Dual` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The Fock form and the Gram matrix

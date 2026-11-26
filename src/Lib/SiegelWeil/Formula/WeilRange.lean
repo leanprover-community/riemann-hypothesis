@@ -1,5 +1,7 @@
-import Lib.SiegelWeil.Formula.LagrangianZeroTerms
-import Lib.Weil.DualPair.ThetaIntegrals
+module
+
+public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
+public import Lib.Weil.DualPair.ThetaIntegrals
 
 /-!
 # Siegel sets and the Siegel–Weil formula in Weil's range
@@ -52,6 +54,8 @@ the convergent range (notes, 2005).
 Reduction theory, namely the existence of Siegel sets. The compactness criterion of Mahler that it
 uses is from `Lib.Adelic.Reduction.FiniteVolume`.
 -/
+
+@[expose] public section
 
 /-! ## Siegel sets and uniform summability of the zero terms -/
 

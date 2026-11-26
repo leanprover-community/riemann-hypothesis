@@ -1,4 +1,6 @@
-import New.UpperBound.Kernels.DefiniteKernelSize
+module
+
+public import New.UpperBound.Kernels.DefiniteKernelSize
 
 /-!
 # The period of a determinant theta kernel (used in rank two for the L-value at z = 1)
@@ -31,6 +33,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.ClassSums`.
 -/
+
+@[expose] public section
 
 namespace New.Rows
 

@@ -1,4 +1,6 @@
-import Lib.General.Analysis.HolomorphicIntegrals
+module
+
+public import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
 # Heisenberg cocycles, vacua, the reproducing model and Schur's lemma
@@ -29,6 +31,8 @@ by a Heisenberg representation `ρ`. The file proves superposition and Schur's l
 
 Known; see `Lib.Weil.Construction.WeilOperators` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

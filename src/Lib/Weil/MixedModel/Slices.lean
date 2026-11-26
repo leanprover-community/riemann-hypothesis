@@ -1,7 +1,9 @@
-import Lib.SiegelWeil.Tower.LineTerms
-import Lib.Weil.DualPair.ThetaIntegrals
-import Lib.Weil.MixedModel.FockSections
-import Lib.Weil.TameGaussSum
+module
+
+public import Lib.SiegelWeil.Tower.LineTerms
+public import Lib.Weil.DualPair.ThetaIntegrals
+public import Lib.Weil.MixedModel.FockSections
+public import Lib.Weil.TameGaussSum
 
 /-!
 # Real, named and finite slices of data in the mixed model of an adapted splitting
@@ -48,6 +50,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -115,8 +119,11 @@ noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapt
   -- `T` is the map of Fock spaces with `D.zeroTerm (V.integrated v f) = V₀.integrated (T v)
   -- (D.zeroTerm (V.projReal f))` (`hT`). The two laws of `slice` are tested against such vectors by
   -- `eq_of_integrated_zeroTerm_eq`.
-  choose T hT using by simpa [↓ Splitting.slice] using h.exists_apply_zero_omega_integrated_eq
-                         isMixedLaw_slice
+  choose T hT using
+    show ∃ T : fockSpace (realSigns E s) →L[ℂ] fockSpace (realSigns E s₀),
+        ∀ (v : fockSpace (realSigns E s)) (f : 𝒮 V),
+          D.zeroTerm (V.integrated v f) = V₀.integrated (T v) (D.zeroTerm (V.projReal f)) by
+      simpa [↓ Splitting.slice] using h.exists_apply_zero_omega_integrated_eq isMixedLaw_slice
   refine
     { L := realMatrix (D.lAdelic * t⁻¹.1ᴴ)
       K := realMatrix (D.kAdelic * t.1)

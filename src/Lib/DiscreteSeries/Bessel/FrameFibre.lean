@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
-import Lib.DiscreteSeries.Haar.GramFibre
+module
+
+public import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+public import Lib.DiscreteSeries.Haar.GramFibre
 
 /-!
 # Haar measure of G₁ and the fibre measure on frames
@@ -34,6 +36,8 @@ Known result: the fibre measure of the Gram map on tuples of vectors, in terms o
 the unitary group. The file proves the inequality that is used. Siegel, Über die analytische Theorie
 der quadratischen Formen, Ann. of Math. 36 (1935).
 -/
+
+@[expose] public section
 
 noncomputable section
 

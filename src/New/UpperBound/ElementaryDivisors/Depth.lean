@@ -1,5 +1,7 @@
-import Lib.General.Algebra.MultivariatePolynomials
-import New.UpperBound.ElementaryDivisors.TwistingData
+module
+
+public import Lib.General.Algebra.MultivariatePolynomials
+public import New.UpperBound.ElementaryDivisors.TwistingData
 
 /-!
 # Few forms have only deep translates
@@ -39,6 +41,8 @@ Notions from other files:
 
 See `New.UpperBound.ElementaryDivisors.DefectCount` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

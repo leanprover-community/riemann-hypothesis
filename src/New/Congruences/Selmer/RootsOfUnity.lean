@@ -1,4 +1,6 @@
-import Lib.General.NumberTheory.GaussValuation
+module
+
+public import Lib.General.NumberTheory.GaussValuation
 
 /-!
 # Roots of unity `ζ` with polynomials hardly more divisible at `ζ - 1` than at given points
@@ -27,6 +29,8 @@ literature. Related work: Kriz–Nordentoft, Horizontal p-adic L-functions, 2023
 infinitesimal p-adic multiplicative Manin–Mumford conjecture, 2018; Kurihara, The structure of
 Selmer groups of elliptic curves and modular symbols, 2014.
 -/
+
+@[expose] public section
 
 noncomputable section
 

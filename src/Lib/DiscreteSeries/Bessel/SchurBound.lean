@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Bessel.Basic
+module
+
+public import Lib.DiscreteSeries.Bessel.Basic
 
 /-!
 # Traces and L² bounds for Bessel functions
@@ -34,6 +36,8 @@ Notions from other files:
 Known; see `Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure` and `Lib.DiscreteSeries.CuspKernel` for
 sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The sum of the simple root entries as a trace against a fixed matrix

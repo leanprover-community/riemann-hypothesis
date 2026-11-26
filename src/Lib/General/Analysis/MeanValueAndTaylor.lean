@@ -1,4 +1,6 @@
-import Lib.CM.Sigma.Basic
+module
+
+public import Lib.CM.Sigma.Basic
 
 /-!
 # Circle means, Taylor series at zero, a power bound, and smooth matrix operations
@@ -29,6 +31,8 @@ The imported notion `New.taylorAtZero f` is the formal power series whose `n`-th
 The results of this file include the mean value property of holomorphic functions and the fact that
 an entire function is determined by its Taylor series at 0.
 -/
+
+@[expose] public section
 
 /-! ## Circle averages, the mean value property and a halving criterion for upper bounds -/
 

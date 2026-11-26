@@ -1,4 +1,6 @@
-import Lib.General.Geometry.PointsOfProperSchemes
+module
+
+public import Lib.General.Geometry.PointsOfProperSchemes
 
 /-!
 # Étale coordinates at zero, infinitesimal points and unramified torsion
@@ -32,6 +34,8 @@ Notions from other files:
 Known; see `Lib.Shimura.AbelianScheme.IsogenyFlatness` and `Lib.Shimura.ThetaModuli.UniversalFamily`
 for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

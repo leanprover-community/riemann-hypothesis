@@ -1,5 +1,7 @@
-import Lib.Adelic.Unitary.RationalPoints
-import Lib.General.NumberTheory.SUnitsAndClassNumber
+module
+
+public import Lib.Adelic.Unitary.RationalPoints
+public import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Transference, first minima and short bases of lattices of hermitian spaces
@@ -49,6 +51,8 @@ transference theorems from generalized tail bounds, SIAM J. Discrete Math. 33 (2
 
 See also `Lib.Adelic.AutomorphicForms.Cuspidality` and `Lib.Adelic.Reduction.FiniteVolume`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

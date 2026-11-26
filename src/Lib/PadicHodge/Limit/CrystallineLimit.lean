@@ -1,7 +1,9 @@
-import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
-import Lib.General.NumberTheory.PadicLimitsValuation
-import Lib.PadicHodge.Kisin.PeriodMatrixFrame
-import Lib.PadicHodge.RadiusLemma
+module
+
+public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+public import Lib.General.NumberTheory.PadicLimitsValuation
+public import Lib.PadicHodge.Kisin.PeriodMatrixFrame
+public import Lib.PadicHodge.RadiusLemma
 
 /-!
 # Uniform period bounds and limits of crystalline lattices with bounded jumps
@@ -45,6 +47,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Limit.TraceLimit` and `Lib.PadicHodge.RadiusLemma` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Crystalline modules with Hodge–Tate jumps in [0, h] -/
 

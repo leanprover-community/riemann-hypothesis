@@ -1,4 +1,6 @@
-import Lib.ClassField.LocalDuality.KummerFiniteness
+module
+
+public import Lib.ClassField.LocalDuality.KummerFiniteness
 
 /-!
 # The local invariant Br(k) ≅ Q/Z and its behaviour under restriction and maps of local fields
@@ -30,6 +32,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Local.ArtinMap` for sources.
 -/
+
+@[expose] public section
 
 /-- If `R ^ (l - 1) * (l * c ^ l) = (l * c) ^ l` in `ℚ`, with `l` prime and `l * c ≠ 0`, then
 `R = l`. -/

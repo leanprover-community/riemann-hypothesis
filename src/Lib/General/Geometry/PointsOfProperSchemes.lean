@@ -1,6 +1,8 @@
-import Lib.Cohomology.ProperBaseChange.PlaceSpace
-import Lib.General.Geometry.EtaleCharts
-import Lib.Shimura.AbelianScheme.Basic
+module
+
+public import Lib.Cohomology.ProperBaseChange.PlaceSpace
+public import Lib.General.Geometry.EtaleCharts
+public import Lib.Shimura.AbelianScheme.Basic
 
 /-!
 # Functors of points of proper schemes: closed loci, atlases and descent of relations
@@ -49,6 +51,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.Etale.FilteredLimits` and `Lib.PadicComparison.HodgeTate.PeriodMap` for
 sources.
 -/
+
+@[expose] public section
 
 /-! ## Morphisms of spectra over a base and algebra maps -/
 

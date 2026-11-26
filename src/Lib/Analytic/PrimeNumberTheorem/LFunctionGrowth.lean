@@ -1,4 +1,6 @@
-import Lib.Analytic.EntireLFunction
+module
+
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # Growth of Dirichlet L-functions near the line `re s = 1`
@@ -18,6 +20,8 @@ Known result: the bound `L(s, χ) ≪ log (N |s|)` near `re s = 1` and away from
 here for `𝖿_χ` and with a square in place of the first power. Source: Montgomery and Vaughan,
 Multiplicative Number Theory I, 2007, Lemma 10.15.
 -/
+
+@[expose] public section
 
 noncomputable section
 

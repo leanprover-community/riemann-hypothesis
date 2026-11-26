@@ -1,5 +1,7 @@
-import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.SiegelWeil.Tower.RealConeIntegral
+module
+
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.SiegelWeil.Tower.RealConeIntegral
 
 /-!
 # Zero terms of the mixed models of the Weil representation at the real places
@@ -36,6 +38,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

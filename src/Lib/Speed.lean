@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Speed settings
@@ -7,6 +9,8 @@ The three settings of this file make instance search and `simp` faster in all fi
 development. They add no axiom, and no proof relies on them: with this file emptied, the other files
 still compile, more slowly.
 -/
+
+@[expose] public section
 
 -- Instance search tries these instances late (the default priority is 1000). Tried early,
 -- they start long searches that fail.

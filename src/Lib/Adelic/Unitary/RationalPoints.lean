@@ -1,4 +1,6 @@
-import Lib.Adelic.Unitary.WeakApproximation
+module
+
+public import Lib.Adelic.Unitary.WeakApproximation
 
 /-!
 # Rational points and vectors of spaces under sums, moves and block embeddings
@@ -30,6 +32,8 @@ Notions from other files:
 Witt's extension theorem for hermitian forms is classical; `New.Space.witt` is its matrix form
 `New.witt` applied to the matrix of a space.
 -/
+
+@[expose] public section
 
 open Matrix Topology
 

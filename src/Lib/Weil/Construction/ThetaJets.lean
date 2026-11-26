@@ -1,7 +1,9 @@
-import Lib.General.LinearAlgebra.PolarDecomposition
-import Lib.Shimura.ComplexTheta.DimensionFormula
-import Lib.Weil.DualPair.Defs
-import Lib.Weil.MixedModel.RealTheta
+module
+
+public import Lib.General.LinearAlgebra.PolarDecomposition
+public import Lib.Shimura.ComplexTheta.DimensionFormula
+public import Lib.Weil.DualPair.Defs
+public import Lib.Weil.MixedModel.RealTheta
 
 /-!
 # Jet series of theta functions and translation by rational vectors
@@ -44,6 +46,8 @@ unitary group and the invariant theta functional. See `Lib.Weil.MixedModel.ZeroT
 
 See also `Lib.Weil.CompactLift.DefiniteThetaLift` and `Lib.Weil.DualPair.KernelLaws`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

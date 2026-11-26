@@ -1,4 +1,6 @@
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # Notation at a prime, and elements of prime-power norm at split primes
@@ -39,6 +41,8 @@ Known result: decomposition of primes in `ℚ(√-d)` and elements of prime-powe
 The existence of `α` follows from the finiteness of the class group. The numbers `ρ_p`, `γ_p` and
 the sets of exponents are notation, and the sum for `γ_p` is a geometric series.
 -/
+
+@[expose] public section
 
 section PrimeNotation
 

@@ -1,4 +1,6 @@
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # Coefficient rings with a large residue field
@@ -16,6 +18,8 @@ Notions from other files:
   by inclusion;
 * `New.ThePrime ℓ`: the class saying that `ℓ` is prime.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

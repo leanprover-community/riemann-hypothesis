@@ -1,4 +1,6 @@
-import Lib.PadicHodge.PeriodRings.DeRhamPeriods
+module
+
+public import Lib.PadicHodge.PeriodRings.DeRhamPeriods
 
 /-!
 # Power series charts Λ⟦z⟧ in A_inf: Weierstrass division and fixed elements
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

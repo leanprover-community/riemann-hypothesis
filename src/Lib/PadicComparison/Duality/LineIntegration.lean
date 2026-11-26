@@ -1,4 +1,6 @@
-import Lib.Cohomology.ProjectiveLine.ChernClass
+module
+
+public import Lib.Cohomology.ProjectiveLine.ChernClass
 
 /-!
 # Integration over ℙ¹, compared cohomology theories, and moving kernel classes in (ℙ¹)^d
@@ -44,6 +46,8 @@ Notions from other files:
 
 Known; see `Lib.PadicComparison.Duality.GoodPairs` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

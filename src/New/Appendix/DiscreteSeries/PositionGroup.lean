@@ -1,5 +1,7 @@
-import New.Appendix.DiscreteSeries.Periods
-import New.Appendix.DiscreteSeries.StationaryPosition
+module
+
+public import New.Appendix.DiscreteSeries.Periods
+public import New.Appendix.DiscreteSeries.StationaryPosition
 
 /-!
 # The group of a position
@@ -29,6 +31,8 @@ Notions from other files:
   and decreases in `[-3 B, -B]` on the other coordinates, with alternating signs there.
 * `IsLaplaceDatum` collects the hypotheses of Laplace's method on a map into `U(ε) × U(η)`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

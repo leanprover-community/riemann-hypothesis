@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Kisin.PeriodMatrixBasis
+module
+
+public import Lib.PadicHodge.Kisin.PeriodMatrixBasis
 
 /-!
 # Kummer charts: the different, the primes φ^a E of A_inf and their images in B_dR
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

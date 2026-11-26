@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.Defs
-import Lib.Shimura.ComplexTheta.AppellHumbertData
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Matrices near the identity: Jacobi's formula and norm estimates
@@ -24,6 +26,8 @@ Notions from other files:
 * `entryMask r X` keeps the entries `(i, j)` of `X` with `r i j` and replaces the others by `0`.
 * A matrix `A` is accretive (`A.IsAccretive`) if `A + Aᴴ` is positive definite.
 -/
+
+@[expose] public section
 
 noncomputable section
 

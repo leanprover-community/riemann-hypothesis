@@ -1,6 +1,8 @@
-import Lib.GaloisRep.Main.SelmerModules
-import Lib.General.Geometry.GaloisCovers
-import Lib.General.NumberTheory.CoefficientRings
+module
+
+public import Lib.GaloisRep.Main.SelmerModules
+public import Lib.General.Geometry.GaloisCovers
+public import Lib.General.NumberTheory.CoefficientRings
 
 /-!
 # Algebraicity from ℓ-adic bounds, roots of unity as limits, and the ℓ-adic valuation
@@ -35,6 +37,8 @@ rings.
 Known result: Teichmüller representatives as limits of powers. Source: Serre, Local Fields, Chapter
 II.
 -/
+
+@[expose] public section
 
 /-!
 ## An ℓ-adic criterion for algebraicity of complex numbers

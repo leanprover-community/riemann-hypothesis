@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.IdeleModulus
-import Lib.ClassField.LocalDuality.DualityInequality
-import Lib.ClassField.Places.TameInertia
+module
+
+public import Lib.Adelic.Adeles.IdeleModulus
+public import Lib.ClassField.LocalDuality.DualityInequality
+public import Lib.ClassField.Places.TameInertia
 
 /-!
 # Local and global Artin maps, algebraic Hecke characters and tame inertia
@@ -55,6 +57,8 @@ prime degree coming from Tate's lemma on the Herbrand quotient. Source: J.-P. Se
 
 See also `Lib.ClassField.Avatar.LocalGlobalCompatibility` and `Lib.ClassField.Places.LocalFields`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

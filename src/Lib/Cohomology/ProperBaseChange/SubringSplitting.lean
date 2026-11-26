@@ -1,4 +1,6 @@
-import Lib.Cohomology.ProperBaseChange.LineCharts
+module
+
+public import Lib.Cohomology.ProperBaseChange.LineCharts
 
 /-!
 # Splitting absolutely integrally closed subrings with a Mayer–Vietoris sequence
@@ -33,6 +35,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.ProperBaseChange.Theorem` for sources.
 -/
+
+@[expose] public section
 
 section SubringSplitting
 

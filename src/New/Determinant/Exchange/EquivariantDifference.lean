@@ -1,4 +1,6 @@
-import New.Determinant.Exchange.MatchingPartners
+module
+
+public import New.Determinant.Exchange.MatchingPartners
 
 /-!
 # The difference in the exchange identity as an equivariant lift
@@ -29,6 +31,8 @@ Notions from other files:
 
 See `New.Determinant.Exchange.TheoremForPartners` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Exchange
 

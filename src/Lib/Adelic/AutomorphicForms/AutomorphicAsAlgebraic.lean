@@ -1,5 +1,7 @@
-import Lib.Adelic.AutomorphicForms.RealConvolution
-import Lib.GLn.SchurModule.SchurNorm
+module
+
+public import Lib.Adelic.AutomorphicForms.RealConvolution
+public import Lib.GLn.SchurModule.SchurNorm
 
 /-!
 # Automorphic forms on standard definite spaces as algebraic forms
@@ -46,6 +48,8 @@ Notions from other files:
 Known result: algebraic modular forms as functions on the adelic group. For the source see
 `Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

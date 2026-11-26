@@ -1,4 +1,6 @@
-import Lib.General.Algebra.AbsIntegrallyClosed
+module
+
+public import Lib.General.Algebra.AbsIntegrallyClosed
 
 /-!
 # Cohomology of functors as Ext: test rings, points, functoriality, coefficients
@@ -37,6 +39,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Etale.FilteredLimits` and `Lib.Cohomology.WoodsHole` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -731,7 +735,6 @@ lemma H.dimension_shift_induction {P : ∀ {F : AbFunctor C} {n : ℕ}, H N F n 
       x.covariant_sequence_exact₁ N hS (eq_zero_of_injective _) rfl
     exact h S hS n y (ih y)
 
-set_option backward.isDefEq.respectTransparency false
 
 lemma mapExactFunctor_mapExactFunctor :
     (x.mapExactFunctor Φ).mapExactFunctor Θ = x.mapExactFunctor (Φ ⋙ Θ) := by

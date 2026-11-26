@@ -1,4 +1,6 @@
-import Lib.PadicHodge.PeriodRings.AxTheorem
+module
+
+public import Lib.PadicHodge.PeriodRings.AxTheorem
 
 /-!
 # The ring A_inf, the elements ε, μ, τ, ξ, the kernel of θ and adic completeness
@@ -37,6 +39,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.PeriodRings.DeRhamPeriods` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

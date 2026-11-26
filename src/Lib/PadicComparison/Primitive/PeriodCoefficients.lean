@@ -1,7 +1,9 @@
-import Lib.Cohomology.TorsionTheories
-import Lib.PadicComparison.Descent.AlmostDescent
-import Lib.PadicComparison.HodgeTate.GenericFibre
-import Lib.PadicHodge.ArtinSchreierSequence
+module
+
+public import Lib.Cohomology.TorsionTheories
+public import Lib.PadicComparison.Descent.AlmostDescent
+public import Lib.PadicComparison.HodgeTate.GenericFibre
+public import Lib.PadicHodge.ArtinSchreierSequence
 
 /-!
 # Tilts and period coefficients of p-adic tests: products, comparisons, theories
@@ -46,6 +48,8 @@ Notions from other files:
 Known; see `Lib.PadicComparison.Descent.TestCovers` and `Lib.PadicComparison.HodgeTate.PeriodMap`
 for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -594,9 +598,7 @@ lemma PadicTest.le_ker_of_tiltNearZeros_le_ker {d : PadicTest} (f : c ⟶ d)
   -- Then `f e` lies in the Jacobson radical, `1 - f e` is a unit, and `p ^ n ∣ (1 - f e) * f r`
   -- gives `p ^ n ∣ f r`.
   have h_unit : IsUnit (1 - f.toRingHom e) := by
-    have h_jac :=
-      mem_jacobson_bot.mp (jacobson_bot (R := d.ProdRing) ▸ HenselianRing.jac h_mod) (-1)
-    rwa [mul_neg_one, neg_add_eq_sub] at h_jac
+    simpa [neg_add_eq_sub] using Ring.mem_jacobson_iff.mp (HenselianRing.jac h_mod) (-1)
   exact h_unit.dvd_mul_left.mp (by simpa using map_dvd f.toRingHom h_dvd')
 
 /-- For an ideal `I` of the generic ring `R[1/p]` of `c`, the quotient of the tilt `R♭` by the
@@ -645,7 +647,7 @@ tests killing `I` are those whose tilt factors, uniquely, through the perfect al
 Then restriction of cohomology to these maps is onto as soon as `R♭ ⊗ M → (R♭ ⧸ J) ⊗ M` is, and a
 section that dies along these maps has image zero in `(R♭ ⧸ J) ⊗ M`. It is a separate lemma so that
 `tiltTheory` stays small for the kernel. -/
-private lemma tiltTheory_supp {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p]
+lemma tiltTheory_supp {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p]
     [Algebra Ω ℂ_[p]] (M : ModuleCat OFlat)
     (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) (c : PadicTest)
     (I : Ideal c.GenericRing) :

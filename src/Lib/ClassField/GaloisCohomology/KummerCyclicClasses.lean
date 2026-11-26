@@ -1,6 +1,8 @@
-import Lib.Adelic.Hecke.ClassSums
-import Lib.ClassField.GaloisCohomology.ShapiroCorestriction
-import Lib.ClassField.Places.LocalFields
+module
+
+public import Lib.Adelic.Hecke.ClassSums
+public import Lib.ClassField.GaloisCohomology.ShapiroCorestriction
+public import Lib.ClassField.Places.LocalFields
 
 /-!
 # Cup products, Hilbert 90, Kummer cocycles and cyclic symbols in Galois cohomology
@@ -57,6 +59,8 @@ are used. Shapiro's lemma and corestriction (summation of functions on a coset s
 (1997); Neukirch–Schmidt–Wingberg, Cohomology of Number Fields (2nd ed. 2008), Ch. I, VI;
 Atiyah–Wall in Cassels–Fröhlich (1967), IV §8.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import New.Spanning.Frames.Densities
+module
+
+public import New.Spanning.Frames.Densities
 
 /-!
 # One frame
@@ -31,6 +33,8 @@ Notions from other files:
   floors from l on; `F.weightedSquareIntegral l k x` is its integral over the floors below l.
 * `F.IsNear l g`: the coset R^(l) g meets `F.boxSet`, where R^(l) = `partialUnitriangularGroup l`.
 -/
+
+@[expose] public section
 
 namespace New.Floors.PlaceData
 

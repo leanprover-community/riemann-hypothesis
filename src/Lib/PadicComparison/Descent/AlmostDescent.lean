@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.RelativeChains
-import Lib.General.Algebra.PerfectAlgebras
+module
+
+public import Lib.Cohomology.Etale.RelativeChains
+public import Lib.General.Algebra.PerfectAlgebras
 
 /-!
 # Almost coefficients, v-descent for perfect algebras and acyclicity of tilt points
@@ -43,6 +45,8 @@ Scholze, Projectivity of the Witt vector affine Grassmannian, Invent. Math. 209 
 points argument O. Gabber, S. Kelly, Points in algebraic geometry, J. Pure Appl. Algebra 219 (2015),
 Theorem 2.3.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -290,7 +294,7 @@ private lemma coeffMap_id : coeffMap (𝟙 Φ) = 𝟙 (moduleCoeff Φ) :=
 
 /-- For a functor Φ to S-modules, the natural map M ⊗ Φ → M' ⊗ Φ induced by an S-linear map
 f: M → M'. -/
-private def tensorCoeffMap (Φ : C ⥤ ModuleCat S) (f : M →ₗ[S] M') :
+def tensorCoeffMap (Φ : C ⥤ ModuleCat S) (f : M →ₗ[S] M') :
     Φ ⋙ tensorWith S M ⟶ Φ ⋙ tensorWith S M' :=
   Φ.whiskerLeft ((curriedTensor (ModuleCat S)).map (↟f))
 

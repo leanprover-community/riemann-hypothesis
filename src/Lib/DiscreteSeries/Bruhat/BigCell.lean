@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Bruhat.FloorMeasures
+module
+
+public import Lib.DiscreteSeries.Bruhat.FloorMeasures
 
 /-!
 # The big cell: Bruhat decomposition of terms with non-zero leading minors, and its freeness
@@ -34,6 +36,8 @@ Notions from other files:
 This is a case of the known Bruhat decomposition of a unitary group on its big cell. See
 `Lib.DiscreteSeries.Bruhat.ComplexPlace`.
 -/
+
+@[expose] public section
 
 open Matrix New.Floors FloorGroups Sum Function Fin
 

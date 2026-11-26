@@ -1,5 +1,7 @@
-import Lib.GLn.SchurModule.Basic
-import Lib.General.Groups.BesselGroups
+module
+
+public import Lib.GLn.SchurModule.Basic
+public import Lib.General.Groups.BesselGroups
 
 /-!
 # Frobenius cycles, the twisted action of GL_k(W), depth and defect
@@ -47,6 +49,8 @@ the variables: for both parities, the translate of a polynomial `h` in the lette
 
 See `New.UpperBound.ElementaryDivisors.DefectCount` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -344,7 +348,7 @@ lemma letterRep_map : (T.map φ).letterRep n g = (T.letterRep n g).map φ := by
       (T.map φ).letterMatrix s g = (T.letterMatrix s g).map φ := rfl
   ext β α
   simp [h_letterMatrix_map, letterRep, kroneckerPi, symPowMatrix, linSubst, smul_eq_C_mul,
-    map_bind₁, ← coeff_map, aeval_monomial, Finsupp.prod_fintype]
+    map_aeval_eq_aeval_map_map, -map_aeval, ← coeff_map]
 
 @[simp]
 lemma one_add_val_sub_one_sub : 1 + (s - 1 - i).val = if s = i then N else (s - i).val := by

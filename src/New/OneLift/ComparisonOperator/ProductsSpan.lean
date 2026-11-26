@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Bruhat.ComplexPlace
-import New.OneLift.ComparisonOperator.ThetaKernelEstimates
-import New.OneLift.ComparisonOperator.ThreeExchanges
+module
+
+public import Lib.DiscreteSeries.Bruhat.ComplexPlace
+public import New.OneLift.ComparisonOperator.ThetaKernelEstimates
+public import New.OneLift.ComparisonOperator.ThreeExchanges
 
 /-!
 # Products span
@@ -64,6 +66,8 @@ Related work: J.-S. Li, Non-vanishing theorems for the cohomology of certain ari
 1992; Poor–Yuen, Linear dependence among Siegel modular forms, 2000; Khuri-Makdisi, Moduli
 interpretation of Eisenstein series, 2012.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

@@ -1,7 +1,9 @@
-import Lib.Adelic.Adeles.Basic
-import Lib.ClassField.Places.ProfiniteGalois
-import Lib.General.Algebra.AdicCompletion
-import Lib.General.Topology
+module
+
+public import Lib.Adelic.Adeles.Basic
+public import Lib.ClassField.Places.ProfiniteGalois
+public import Lib.General.Algebra.AdicCompletion
+public import Lib.General.Topology
 
 /-!
 # Valuation subrings over primes, primes from p-adic embeddings, and the efg formula
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -213,7 +217,8 @@ private lemma prime_span_natCast_rat {p : ℕ} (hp : p.Prime) : _root_.Prime (sp
   exact (irreducible_of_irreducible_absNorm h_irred).prime
 
 /-- The place of `ℚ` at a prime number `p`: the prime ideal `(p)` of `𝓞 ℚ`. -/
-def ratPlace {p : ℕ} (hp : p.Prime) : FinPlace ℚ := ofPrime (prime_span_natCast_rat hp)
+def ratPlace {p : ℕ} (hp : p.Prime) : FinPlace ℚ :=
+  ofPrime (p := span {(p : 𝓞 ℚ)}) (by exact prime_span_natCast_rat hp)
 
 lemma q_ratPlace {p : ℕ} (hp : p.Prime) : (ratPlace hp).q = p := absNorm_span_natCast_rat
 
@@ -513,12 +518,6 @@ lemma placeOfEmbExtension_algebraMap (x : E) :
     placeOfEmbExtension σ (algebraMap E (LocField (placeOfEmb σ)) x) = σ x :=
   let ⟨_, h_ext, _⟩ := (exists_placeOfEmb_extension σ).choose_spec
   h_ext x
-
-/-- The extension of `σ` to the completion takes values in the subfield `ℚ_p(σ E)` of `F`. -/
-lemma placeOfEmbExtension_mem_adjoin (x : LocField (placeOfEmb σ)) :
-    placeOfEmbExtension σ x ∈ adjoin ℚ_[p] (Set.range σ) :=
-  let ⟨_, _, h_image, _⟩ := (exists_placeOfEmb_extension σ).choose_spec
-  h_image x
 
 /-- The norm valuation of `F` pulled back along `New.placeOfEmbExtension σ` is equivalent to the
 valuation `Valued.v` of the completion at `New.placeOfEmb σ`. -/

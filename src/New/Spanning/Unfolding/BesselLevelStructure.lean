@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.LocalFactors
-import Lib.Shimura.HeckeTower.HeckeData
-import New.Spanning.Unfolding.Setup
+module
+
+public import Lib.Adelic.Adeles.LocalFactors
+public import Lib.Shimura.HeckeTower.HeckeData
+public import New.Spanning.Unfolding.Setup
 
 /-!
 # Bessel data: level subgroup, Eichler maps and strong approximation for the unipotent group
@@ -49,6 +51,8 @@ Notions from other files:
 
 See `Lib.DiscreteSeries.Bruhat.FloorGroups` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

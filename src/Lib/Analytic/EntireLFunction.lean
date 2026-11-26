@@ -1,5 +1,7 @@
-import Lib.General.NumberTheory.ImaginaryQuadraticField
-import TauCeti.Analysis.Contour.Argument.Principle
+module
+
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
+public import TauCeti.Analysis.Contour.Argument.Principle
 
 /-!
 # Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions
@@ -31,6 +33,8 @@ Notions from other files:
 
 Known; see `Lib.Analytic.Landau` for sources.
 -/
+
+@[expose] public section
 
 open ArithmeticFunction DirichletCharacter Complex Set Filter MeasureTheory Metric ProbabilityTheory
   Nat Topology ComplexOrder AnalyticOnNhd Real

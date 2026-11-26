@@ -1,6 +1,8 @@
-import Lib.Adelic.Reduction.DefiniteClassSums
-import Lib.ClassField.HeckeL.EulerProduct
-import Lib.Weil.Construction.FiniteMultiplier
+module
+
+public import Lib.Adelic.Reduction.DefiniteClassSums
+public import Lib.ClassField.HeckeL.EulerProduct
+public import Lib.Weil.Construction.FiniteMultiplier
 
 /-!
 # Masses of definite hermitian lattices and ideal zeta bounds for adelic Gauss sums
@@ -39,6 +41,8 @@ Part of a known result, Siegel's formula for representing a number by a hermitia
 bounds on the local densities: the Gauss sums are bounded at all finite places at once, by sorting
 the characters by their conductor ideal. See `Lib.SiegelWeil.OneVector.SiegelClassSum`.
 -/
+
+@[expose] public section
 
 /-!
 ## Positivity of masses and class sums of norm one vectors

@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.Data
-import New.Spanning.Unfolding.TermStructure
+module
+
+public import New.Spanning.RemainingTerms.Data
+public import New.Spanning.Unfolding.TermStructure
 
 /-!
 # The vectors `z⁺` and `Υ_γ⁻¹ z⁺`
@@ -23,6 +25,8 @@ Notions from other files:
 * `S.HasCellRank j γ`: the term `γ` has the cell rank `j`, the order of a distinguished leading
   minor of the products of the frame with its image under `γ`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.MinorProducts
+module
+
+public import Lib.General.LinearAlgebra.MinorProducts
 
 /-!
 # Gram determinants
@@ -18,6 +20,8 @@ Notions from other files:
 
 * `Matrix.gram ℂ x`: the matrix of the inner products `⟨x_i, x_k⟩`.
 -/
+
+@[expose] public section
 
 open Module Submodule Real LinearMap Matrix Fintype NormedField InnerProductSpace
 

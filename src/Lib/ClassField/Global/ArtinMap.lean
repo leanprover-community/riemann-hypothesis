@@ -1,4 +1,6 @@
-import Lib.ClassField.Local.ArtinMap
+module
+
+public import Lib.ClassField.Local.ArtinMap
 
 /-!
 # The global Artin map: product of local symbols, continuity, splitting and norms
@@ -29,6 +31,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

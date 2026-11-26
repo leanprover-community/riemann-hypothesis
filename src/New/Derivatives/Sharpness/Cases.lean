@@ -1,6 +1,8 @@
-import New.Derivatives.Sharpness.Couplings
-import New.Derivatives.Sharpness.NearPairs
-import New.Derivatives.Vacuum.Scale
+module
+
+public import New.Derivatives.Sharpness.Couplings
+public import New.Derivatives.Sharpness.NearPairs
+public import New.Derivatives.Vacuum.Scale
 
 /-!
 # The valuation bound `v(l!) + val₁₂(l) ≤ S_p + 2 ∑ v(B_τ)` for every prime
@@ -37,6 +39,8 @@ Notions from other files:
   after `(l_τ - n♯)₊`.
 * `P.cmCurve`: the curve `ℂ / Ω₀ 𝓞_K`, whose theta series is `θ`.
 -/
+
+@[expose] public section
 
 /-!
 ## Least valuations along a tight frame at non-split primes

@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.Basic
-import Lib.PadicHodge.PeriodRings.Ainf
+module
+
+public import Lib.Cohomology.Etale.Basic
+public import Lib.PadicHodge.PeriodRings.Ainf
 
 /-!
 # Divided power ideal, p-adic test rings, tilt, Witt vectors and reduction modulo p
@@ -36,6 +38,8 @@ Known; see `Lib.PadicComparison.Crystalline.ComparisonMap`, `Lib.PadicComparison
 `Lib.PadicComparison.Descent.AlmostDescent` and `Lib.PadicComparison.HodgeTate.PeriodMap` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

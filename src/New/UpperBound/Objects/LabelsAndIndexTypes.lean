@@ -1,5 +1,7 @@
-import Lib.LocalGL.Green.LabelCharacters
-import New.Reduction.Data.LevelAndTwists
+module
+
+public import Lib.LocalGL.Green.LabelCharacters
+public import New.Reduction.Data.LevelAndTwists
 
 /-!
 # Good labels, index types of hermitian spaces, the group 𝖦 and idempotent e₀
@@ -35,6 +37,8 @@ Notions from other files:
 * `New.tupleIdem`: the tensor product of the label idempotents e_c of a tuple of polynomials.
 * `New.piTensorElem`: the pure tensor ⊗ x_i in ℂ[∏ G_i] of elements x_i of ℂ[G_i].
 -/
+
+@[expose] public section
 
 noncomputable section
 

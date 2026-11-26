@@ -1,6 +1,8 @@
-import Lib.Cohomology.Hodge.DepthVanishing
-import Lib.General.Groups.CongruenceSubgroups
-import Lib.PadicComparison.HodgeTate.ExtCocycles
+module
+
+public import Lib.Cohomology.Hodge.DepthVanishing
+public import Lib.General.Groups.CongruenceSubgroups
+public import Lib.PadicComparison.HodgeTate.ExtCocycles
 
 /-!
 # Grothendieck's symbol [dT/T], cut-out loci and Hodge classes of points
@@ -49,6 +51,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` and
 `Lib.Cohomology.PointClass.LinearIndependence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

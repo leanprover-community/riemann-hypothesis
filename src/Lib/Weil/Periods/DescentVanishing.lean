@@ -1,6 +1,8 @@
-import Lib.Adelic.QuotientMeasure.UnfoldingInStages
-import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
-import Lib.Weil.DualPair.ThetaIntegrals
+module
+
+public import Lib.Adelic.QuotientMeasure.UnfoldingInStages
+public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
+public import Lib.Weil.DualPair.ThetaIntegrals
 
 /-!
 # Vanishing theta descents for unitary groups: Fourier coefficients and periods
@@ -47,6 +49,8 @@ periods of automorphic forms and special values of standard automorphic L-functi
 1501.01565 (2015), Prop. 2.1.1; S. Rallis, On the Howe duality conjecture, Compositio Math. 51
 (1984) 333–399.
 -/
+
+@[expose] public section
 
 /-! ## Vanishing of descents -/
 

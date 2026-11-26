@@ -1,7 +1,9 @@
-import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
-import Lib.SiegelWeil.Tower.LineTerms
-import Lib.SiegelWeil.Tower.PrincipalIdeles
-import Lib.Weil.DualPair.ThetaIntegrals
+module
+
+public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
+public import Lib.SiegelWeil.Tower.LineTerms
+public import Lib.SiegelWeil.Tower.PrincipalIdeles
+public import Lib.Weil.DualPair.ThetaIntegrals
 
 /-!
 # The constant term of a theta integral, unfolded along isotropic lines
@@ -45,6 +47,8 @@ Notions from other files:
 
 Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

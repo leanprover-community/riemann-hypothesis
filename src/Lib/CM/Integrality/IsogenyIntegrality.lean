@@ -1,4 +1,6 @@
-import Lib.CM.Integrality.IntegralSections
+module
+
+public import Lib.CM.Integrality.IntegralSections
 
 /-!
 # Isogenies and translates act integrally on expansions
@@ -29,6 +31,8 @@ Known result: an isogeny of elliptic curves with good reduction acts on the form
 integral power series. Background: Silverman, *The Arithmetic of Elliptic Curves*, Chapters IV and
 VII.
 -/
+
+@[expose] public section
 
 open PowerSeries ComplexConjugate
 

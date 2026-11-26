@@ -1,8 +1,10 @@
-import Lib.Cohomology.WoodsHole
-import Lib.PadicComparison.CrystallineFrobenius
-import Lib.PadicHodge.Limit.CrystallineLimit
-import Lib.Shimura.CongruenceRelation.EichlerShimura
-import Lib.Shimura.Transfer.Lefschetz
+module
+
+public import Lib.Cohomology.WoodsHole
+public import Lib.PadicComparison.CrystallineFrobenius
+public import Lib.PadicHodge.Limit.CrystallineLimit
+public import Lib.Shimura.CongruenceRelation.EichlerShimura
+public import Lib.Shimura.Transfer.Lefschetz
 
 /-!
 # Eigenquotients for Hecke eigensystems and the Galois representations they cut out
@@ -101,6 +103,8 @@ et représentations l-adiques, Sém. Bourbaki 355 (1969), Thm 4.9; Harris and Ta
 cohomology of some simple Shimura varieties (2001), ch. VII; Wedhorn, Congruence relations on some
 Shimura varieties, J. reine angew. Math. 524 (2000).
 -/
+
+@[expose] public section
 
 /-!
 ## The largest quotient on which Hecke operators act by an eigensystem
@@ -300,10 +304,7 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
   let Φ (v : ℤ) (L : List σ) :
       End (PadicAlgCl ℓ) (∀ i, hodgeTateMaps (ρ i) (toAlgHom ..) v) :=
     piMap fun i ↦ hodgeTateMaps.pull (L.map (T i)).prod
-      (.of_forall fun g x ↦ by
-        rw [← mul_apply_eq_comp, ← mul_apply_eq_comp, (Commute.list_prod_left _ _ fun t ht ↦ by
-          obtain ⟨s, -, rfl⟩ := List.mem_map.1 ht
-          exact hTρ i s g).eq])
+      (by simp [← mul_apply_eq_comp, -FunLike.coe_mul_eq_comp, (Commute.list_prod_left ..).eq, *])
   have h_alg : Algebra.IsAlgebraic ℤ_[ℓ] ℚ_[ℓ] := IsLocalization.isAlgebraic ℚ_[ℓ] ℤ_[ℓ]⁰
   have h_no_eigen (f : ∀ i : ι, hodgeTateMaps (ρ i) (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) u)
       (hf : ∀ s : σ, Φ u [s] f = (a ∘ θ) s • f) : f = 0 := by

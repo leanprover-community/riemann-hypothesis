@@ -1,6 +1,8 @@
-import New.Spanning.RemainingTerms.Box
-import New.Spanning.RemainingTerms.SiegelLemma
-import New.Spanning.Unfolding.BesselLevelStructure
+module
+
+public import New.Spanning.RemainingTerms.Box
+public import New.Spanning.RemainingTerms.SiegelLemma
+public import New.Spanning.Unfolding.BesselLevelStructure
 
 /-!
 # Near terms in the filling theorem: frames, cell ranks, nearness and integrality
@@ -41,6 +43,8 @@ Notions from other files:
   sourceDim² / (besselDegree · mass), with the mass of the genus of the standard lattice, and
   sourceDim times the order of the reduced image of the Bessel subgroup `besselS`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -488,10 +492,7 @@ lemma pow_le_tailScale [S.IsAdmissible] {e : ℕ} (he : e ≤ 10 ^ 5 * 𝔰.n ^ 
     have hk : 1000 * (2 * 𝔰.ϱ + 2) ^ 9 ≤ 𝔰.k := S.pow_le_k
     rify at he hk
     grw [he, ← hk]
-    have hf : (0 : ℝ) ≤ numInfPlaces E := by positivity
-    have hϱ : (0 : ℝ) ≤ ((𝔰.ϱ : ℝ) + 1) ^ 9 := by positivity
-    push_cast [Shape.n]
-    linear_combination 28000 * mul_nonneg hϱ hf
+    grind
   simpa [tailScale] using rpow_le_rpow_of_exponent_le S.one_le_b h_exponent
 
 /-- For admissible data, the fourth power of `tailScale` `τ = b ^ (k f / 4)` is `b ^ (k f)`, where

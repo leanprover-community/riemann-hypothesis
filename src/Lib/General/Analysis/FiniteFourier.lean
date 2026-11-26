@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Orthogonality, Fourier inversion and matrix Gauss sums over a finite ring
@@ -23,6 +25,8 @@ character `ψ` (no multiple `ψ (r * ·)` with `r ≠ 0` is trivial).
 
 Known; see `Lib.Weil.TameGaussSum` for sources.
 -/
+
+@[expose] public section
 
 open Matrix Finset Fintype AddChar Function
 

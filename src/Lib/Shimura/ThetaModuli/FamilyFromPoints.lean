@@ -1,6 +1,8 @@
-import Lib.General.Geometry.SerreTheorem
-import Lib.Shimura.ThetaNormality.RiemannRelation
-import Lib.Shimura.Uniformisation.TorusModel
+module
+
+public import Lib.General.Geometry.SerreTheorem
+public import Lib.Shimura.ThetaNormality.RiemannRelation
+public import Lib.Shimura.Uniformisation.TorusModel
 
 /-!
 # Linear systems and theta families from dense complex points carrying theta tori
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.ThetaModuli.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Linear systems from coordinates at dense points -/
 

@@ -1,7 +1,9 @@
-import Lib.General.LinearAlgebra.HermiteForm
-import Lib.LocalGL.Green.HallAlgebra
-import New.UpperBound.ElementaryDivisors.InvariantAverage
-import New.UpperBound.ElementaryDivisors.RootLemma
+module
+
+public import Lib.General.LinearAlgebra.HermiteForm
+public import Lib.LocalGL.Green.HallAlgebra
+public import New.UpperBound.ElementaryDivisors.InvariantAverage
+public import New.UpperBound.ElementaryDivisors.RootLemma
 
 /-!
 # Edges, halfway lattices and duality
@@ -48,6 +50,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.LocalDivisibility` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

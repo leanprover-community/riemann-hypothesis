@@ -1,6 +1,8 @@
-import Lib.General.LinearAlgebra.BlockEmbeddings
-import New.Appendix.DiscreteSeries.GaussianShape
-import New.Appendix.DiscreteSeries.Localization
+module
+
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import New.Appendix.DiscreteSeries.GaussianShape
+public import New.Appendix.DiscreteSeries.Localization
 
 /-!
 # Lower bounds for periods by Laplace's method
@@ -54,6 +56,8 @@ Related work: Nelson–Venkatesh, The orbit method and analysis of automorphic f
 the Gan–Gross–Prasad conjecture for U(p,q), 2017; B. Sun, Matrix coefficients of cohomologically
 induced representations, 2007.
 -/
+
+@[expose] public section
 
 section LaplaceMethod
 

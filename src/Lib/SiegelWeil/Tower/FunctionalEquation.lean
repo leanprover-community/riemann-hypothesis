@@ -1,5 +1,7 @@
-import Lib.SiegelWeil.Tower.LargeSideConstantTerm
-import Lib.SiegelWeil.Tower.TestVector
+module
+
+public import Lib.SiegelWeil.Tower.LargeSideConstantTerm
+public import Lib.SiegelWeil.Tower.TestVector
 
 /-!
 # The functional equation of the `L`-function of a tamely ramified character
@@ -29,6 +31,8 @@ Known result: analytic continuation and functional equation of Hecke `L`-functio
 arguments `x > -min μ` and absolute values are treated. Source: J. Tate, Fourier analysis in number
 fields and Hecke's zeta-functions (thesis, 1950), §2.5 and Main Theorem 4.4.1.
 -/
+
+@[expose] public section
 
 noncomputable section
 

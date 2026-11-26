@@ -1,7 +1,9 @@
-import Lib.General.Combinatorics
-import Lib.General.LinearAlgebra.IdempotentRadical
-import Lib.Shimura.HeckeTower.Model
-import Lib.Shimura.Transfer.MarkedPairs
+module
+
+public import Lib.General.Combinatorics
+public import Lib.General.LinearAlgebra.IdempotentRadical
+public import Lib.Shimura.HeckeTower.Model
+public import Lib.Shimura.Transfer.MarkedPairs
 
 /-!
 # For a function with a cuspidal type at one place, marked and definite orbit sums agree
@@ -41,6 +43,8 @@ Source: Dummigan, A simple trace formula for algebraic modular forms, Exp. Math.
 and Clozel, Simple algebras, base change and the advanced theory of the trace formula (1989), ch. 1
 §2, after Deligne and Kazhdan.
 -/
+
+@[expose] public section
 
 open Function NumberField Matrix Polynomial Set MulAction Pointwise Multiplicative
 

@@ -1,4 +1,6 @@
-import New.Spanning.Frames.Gains
+module
+
+public import New.Spanning.Frames.Gains
 
 /-!
 # The sum over the shells
@@ -26,6 +28,8 @@ Contents of this file:
 * `New.Floors.Gauge.lintegral_le_of_shells`: the sum over the shells. The integral over a shell is
   at most a common bound times the inverse of the height, and `∑ 2⁻¹ ^ i = 2`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

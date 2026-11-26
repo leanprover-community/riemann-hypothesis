@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.AdditiveCharacter
-import Lib.Adelic.Hecke.Basic
-import Lib.General.Topology
+module
+
+public import Lib.Adelic.Adeles.AdditiveCharacter
+public import Lib.Adelic.Hecke.Basic
+public import Lib.General.Topology
 
 /-!
 # Adelic unitary groups over a CM field: levels, hermitian spaces, lattices and mass
@@ -36,6 +38,8 @@ Notions from earlier files:
 Known; see `Lib.Adelic.Unitary.WeakApproximation` and `Lib.Adelic.Witt.IwasawaDecomposition` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

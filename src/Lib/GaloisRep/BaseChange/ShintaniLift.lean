@@ -1,5 +1,7 @@
-import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
-import Lib.LocalGL.Shintani.LiftingGreenCharacters
+module
+
+public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
+public import Lib.LocalGL.Shintani.LiftingGreenCharacters
 
 /-!
 # Base change at an inert place carries a label to its Shintani lift
@@ -31,6 +33,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

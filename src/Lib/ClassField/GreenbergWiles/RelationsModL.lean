@@ -1,4 +1,6 @@
-import Lib.ClassField.GreenbergWiles.Relations
+module
+
+public import Lib.ClassField.GreenbergWiles.Relations
 
 /-!
 # Relations modulo ℓ
@@ -29,6 +31,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.GreenbergWiles.CocycleCounts` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

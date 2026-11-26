@@ -1,4 +1,6 @@
-import Lib.Shimura.AbelianScheme.Pairings
+module
+
+public import Lib.Shimura.AbelianScheme.Pairings
 
 /-!
 # Lifts of morphisms to sections of line bundles, and theta structures on abelian schemes
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.IntegralModel.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

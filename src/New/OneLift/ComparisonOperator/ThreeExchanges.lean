@@ -1,6 +1,8 @@
-import Lib.SiegelWeil.Reproduction
-import New.Determinant.Exchange.ExplicitMatching
-import New.OneLift.ComparisonOperator.FirstFactors
+module
+
+public import Lib.SiegelWeil.Reproduction
+public import New.Determinant.Exchange.ExplicitMatching
+public import New.OneLift.ComparisonOperator.FirstFactors
 
 /-!
 # Three exchanges: the carrier, the third exchange and its left side as a theta series
@@ -66,6 +68,8 @@ Yang, Theta liftings and Hecke L-functions, 1997.
 See `New.OneLift.ComparisonOperator.FirstFactors` and `New.OneLift.ComparisonOperator.ProductsSpan`
 for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

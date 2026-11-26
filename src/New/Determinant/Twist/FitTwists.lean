@@ -1,6 +1,8 @@
-import New.OneLift.HeckeValues.CharacterLiftNorm
-import New.OneLift.TestedForms
-import New.Reduction.Lattices.Heights
+module
+
+public import New.OneLift.HeckeValues.CharacterLiftNorm
+public import New.OneLift.TestedForms
+public import New.Reduction.Lattices.Heights
 
 /-!
 # The ratio of twisted to untwisted Hecke L-values, main pairs and regular families of twists
@@ -38,6 +40,8 @@ Notions from other files:
 
 See `New.Congruences.FitTwistsExist` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

@@ -1,5 +1,7 @@
-import New.Congruences.Selmer.OneSystem
-import New.Congruences.Selmer.StickelbergerSystems
+module
+
+public import New.Congruences.Selmer.OneSystem
+public import New.Congruences.Selmer.StickelbergerSystems
 
 /-!
 # Stickelberger systems on a line
@@ -29,6 +31,8 @@ Notions from other files:
   `New.intQpBar` is its valuation ring.
 * `New.Selmer.gaussVal`: the Gauss valuation `v_ρ(g) = min_i (v(y_i) + ρ i)` of `g = ∑ y_i Y ^ i`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

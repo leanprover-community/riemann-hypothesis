@@ -1,5 +1,7 @@
-import New.Derivatives.FormalGroup.Resolution
-import New.Derivatives.Vacuum.IntegralVacuum
+module
+
+public import New.Derivatives.FormalGroup.Resolution
+public import New.Derivatives.Vacuum.IntegralVacuum
 
 /-!
 # The scale of the Taylor series of a vector
@@ -31,6 +33,8 @@ The statements use these notions:
 The modulus of `jetScale` is computed from the formula of Chowla and Selberg,
 `New.CMLattice.chowla_selberg`.
 -/
+
+@[expose] public section
 
 open NumberField ComplexConjugate MvPolynomial
 

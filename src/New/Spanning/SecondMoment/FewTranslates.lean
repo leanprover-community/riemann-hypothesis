@@ -1,5 +1,7 @@
-import New.Spanning.SecondMoment.HilbertSchmidt
-import New.Spanning.SecondMoment.PositiveType
+module
+
+public import New.Spanning.SecondMoment.HilbertSchmidt
+public import New.Spanning.SecondMoment.PositiveType
 
 /-!
 # Few translates fill

@@ -1,4 +1,6 @@
-import Lib.Adelic.Adeles.IdeleModulus
+module
+
+public import Lib.Adelic.Adeles.IdeleModulus
 
 /-!
 # Idelic theta sums over principal ideles as Riemann sums
@@ -29,6 +31,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.HeckeL.ContinuationAtOne` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -272,13 +276,10 @@ lemma hasSum_adelicTent_mul_range
     have hy_ne_zero : y ≠ 0 := fun hy_zero ↦ hy (by simp [f, hy_zero, hρ])
     exact ⟨⟨_, .mk0 y hy_ne_zero, rfl⟩, rfl⟩
   -- Only finitely many points of the discrete `j.range` lie in the compact support of `f`.
-  have h_fin_supp : Function.HasFiniteSupport fun y : j.range ↦ f y := by
-    have h_cocompact : (Function.support f)ᶜ ∈ Filter.cocompact (mixedSpace K × 𝔸f K) :=
-      Filter.mem_cocompact'.mpr ⟨_, hasCompactSupport_adelicTent_mul ρ d (b * γ),
-        (compl_compl (Function.support f)).symm ▸ subset_tsupport f⟩
-    have h_fin := tendsto_coe_cofinite_of_isDiscrete _ ⟨h_disc⟩ h_cocompact
-    rw [Filter.mem_map, Filter.mem_cofinite, ← Set.preimage_compl, compl_compl] at h_fin
-    exact h_fin
+  have h_fin_supp : Function.HasFiniteSupport fun y : j.range ↦ f y :=
+    tendsto_coe_cofinite_of_isDiscrete _ ⟨h_disc⟩ <|
+      (Filter.mem_cocompact' (s := {x | f x = 0})).mpr
+        ⟨_, hasCompactSupport_adelicTent_mul ρ d (b * γ), subset_tsupport f⟩
   rw [(summable_of_hasFiniteSupport h_fin_supp).hasSum_iff]
   calc ∑' y : j.range, f y
       = ∑' γ' : principalIdeles K, f (g γ') :=

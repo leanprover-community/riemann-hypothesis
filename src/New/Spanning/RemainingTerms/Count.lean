@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.Gain
-import New.Spanning.RemainingTerms.LatticesOfCorank
+module
+
+public import New.Spanning.RemainingTerms.Gain
+public import New.Spanning.RemainingTerms.LatticesOfCorank
 
 /-!
 # The sum over pairs of near terms
@@ -24,6 +26,8 @@ The main notions used in the statements:
 
 The main result is `New.Filling.sum_pairDiscriminant_inv_le`.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

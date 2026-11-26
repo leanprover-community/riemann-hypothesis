@@ -1,4 +1,6 @@
-import Lib.ClassField.Places.Ideles
+module
+
+public import Lib.ClassField.Places.Ideles
 
 /-!
 # Euler products over primes of a number field and densities at primes of degree one
@@ -34,6 +36,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.HeckeL.ContinuationAtOne` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,6 +1,8 @@
-import Lib.General.NumberTheory.FrobeniusOrbits
-import Lib.Weil.Construction.FiniteMultiplier
-import Lib.Weil.Construction.WeilOperators
+module
+
+public import Lib.General.NumberTheory.FrobeniusOrbits
+public import Lib.Weil.Construction.FiniteMultiplier
+public import Lib.Weil.Construction.WeilOperators
 
 /-!
 # The finite cocycle as a finite Gauss sum, and its triviality
@@ -34,6 +36,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

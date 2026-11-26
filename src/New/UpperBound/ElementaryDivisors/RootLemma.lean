@@ -1,4 +1,6 @@
-import New.UpperBound.ElementaryDivisors.TwistingData
+module
+
+public import New.UpperBound.ElementaryDivisors.TwistingData
 
 /-!
 # Gauss filtrations, Stepanov's count and the root lemma
@@ -51,6 +53,8 @@ zeros against degree are known in the literature. Related work: Ghate–Jana, Mo
 of GL2(F_q) using calculus, 2025; Imai–Koskivirta, Automorphic vector bundles on the stack of
 G-zips, 2021; Bombieri, Counting points on curves over finite fields, Sém. Bourbaki 430, 1973.
 -/
+
+@[expose] public section
 
 namespace New
 

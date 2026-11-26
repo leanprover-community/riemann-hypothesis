@@ -1,6 +1,8 @@
-import Lib.Adelic.Reduction.MinkowskiTheorems
-import Lib.Adelic.Unitary.WeakApproximation
-import Lib.General.NumberTheory.SUnitsAndClassNumber
+module
+
+public import Lib.Adelic.Reduction.MinkowskiTheorems
+public import Lib.Adelic.Unitary.WeakApproximation
+public import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Adelic reduction theory, Mahler's criterion and finite volume of the arithmetic quotient
@@ -49,6 +51,8 @@ Bombieri-Vaaler, On Siegel's lemma, Invent. Math. 73 (1983).
 For the adelic points of unitary groups and their Haar measures, see
 `Lib.Adelic.Unitary.WeakApproximation`.
 -/
+
+@[expose] public section
 
 /-! ## Reduced rational bases in a compact set of adelic matrices -/
 
@@ -101,8 +105,7 @@ lemma isCompact_setOf_le_ideleAbs_det {M : Set (Matrix n n (𝔸 E))} (hM : IsCo
     (fun (A, b) ↦ (A, MulOpposite.op ((t * b) • A.adjugate))) '' M ×ˢ T
   have hK : IsCompact K := (hM.prod (hB.mul (hF.image _).isCompact)).image_of_continuous _
   refine (Units.isClosedEmbedding_embedProduct.isCompact_preimage hK).of_isClosed_subset
-    (.and hM.isClosed.preimage_of_continuous
-      (isClosed_Ici.preimage_of_continuous (f := fun A : GL n (𝔸 E) ↦ ideleAbs A.det))) ?_
+    (.and hM.isClosed.preimage_of_continuous (isClosed_le continuous_const (by fun_prop))) ?_
   rintro (A : GL n (𝔸 E)) ⟨hA, hdet⟩
   have h_lt : (2 * NumberField.rootDiscr E) ^ numInfPlaces E <
       ideleAbs A.det * (2 ^ (2 * numInfPlaces E)) ^ N := by grw [← hdet, ← div_lt_iff₀' hc, hN]
@@ -652,21 +655,10 @@ lemma Space.lintegral_ne_top_of_le_encard_profileBases {N : Set (GL n (𝔸 E))}
   have bases_le (g : G E s) (x : n → ℤ) :
       (profileBases N x (V.move g).x).encard * ω x ≤ ∫⁻ γ : V.Γ, ∑' p, F p (γ • g) ∂.count := by
     calc
-      _ ≤ ∫⁻ γ : V.Γ, ∑' T : gram x, F ⟨x, T⟩ (γ • g) ∂.count := by
-        have h1 : ∀ h : G E s, ∀ Z ∈ profileBases N x (V.move h).x,
-            Z.valᴴ * V.J * Z.val ∈ gram x :=
-          fun h Z hZ ↦ ⟨IsSelfAdjoint.conjugate' V.conjTranspose_J _, gram_mem (V.move h) hZ⟩
-        have h2 : ∀ h : G E s, ∀ Z ∈ profileBases N x (V.move h).x,
-            r x (Z.valᴴ * V.J * Z.val) ∈
-              profileBases N x (V.move (A x (Z.valᴴ * V.J * Z.val))).x :=
-          fun h Z hZ ↦ hr x _ ⟨h, Z, hZ, rfl⟩
-        have h3 : ∀ h : G E s, ∀ Z ∈ profileBases N x (V.move h).x,
-            (r x (Z.valᴴ * V.J * Z.val)).valᴴ * V.J * (r x (Z.valᴴ * V.J * Z.val)).val =
-              Z.valᴴ * V.J * Z.val :=
-          fun h Z hZ ↦ gram_r x _ ⟨h, Z, hZ, rfl⟩
-        have h4 := V.encard_profileBases_mul_le_lintegral (𝒯 := gram x) (A := A x) (r := r x)
-          (B := B) subset_rfl h1 h2 h3 (ω x) g
-        exact h4
+      _ ≤ ∫⁻ γ : V.Γ, ∑' T : gram x, F ⟨x, T⟩ (γ • g) ∂.count :=
+        V.encard_profileBases_mul_le_lintegral (𝒯 := gram x) subset_rfl
+          (fun h Z hZ ↦ ⟨IsSelfAdjoint.conjugate' V.conjTranspose_J _, gram_mem (V.move h) hZ⟩)
+          (fun h Z hZ ↦ hr x _ ⟨h, Z, hZ, rfl⟩) (fun h Z hZ ↦ gram_r x _ ⟨h, Z, hZ, rfl⟩) _ g
       _ ≤ ∫⁻ γ : V.Γ, ∑' p, F p (γ • g) ∂.count :=
         lintegral_mono fun γ ↦ tsum_comp_le_tsum_of_injective sigma_mk_injective fun p ↦ F p (γ • g)
   refine ne_top_of_le_ne_top (mul_ne_top (mul_ne_top hC hω) (hB.measure_ne_top (μ := volume))) ?_

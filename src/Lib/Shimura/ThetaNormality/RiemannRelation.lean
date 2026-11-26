@@ -1,4 +1,6 @@
-import Lib.Shimura.ThetaModuli.PELThetaTori
+module
+
+public import Lib.Shimura.ThetaModuli.PELThetaTori
 
 /-!
 # Riemann's theta relation and the reduction of theta functions at a valuation
@@ -53,6 +55,8 @@ functions on bounded symmetric domains of type I, arXiv 2301.09243 (2023), Theor
 On the equations defining abelian varieties I, Invent. Math. 1 (1966) §3; G. Kempf, Linear systems
 on abelian varieties, Amer. J. Math. 111 (1989) 65–94.
 -/
+
+@[expose] public section
 
 noncomputable section
 

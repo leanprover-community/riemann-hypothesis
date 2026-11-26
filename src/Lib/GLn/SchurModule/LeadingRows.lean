@@ -1,4 +1,6 @@
-import Lib.GLn.SchurModule.GramMatrix
+module
+
+public import Lib.GLn.SchurModule.GramMatrix
 
 /-!
 # Fillings whose columns begin with the leading rows
@@ -39,6 +41,8 @@ Notions from other files:
 
 Part of a known result, the branching rule from GL(n+1) to GL(n), for any number of removed rows.
 -/
+
+@[expose] public section
 
 noncomputable section
 

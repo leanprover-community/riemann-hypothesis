@@ -1,6 +1,8 @@
-import Lib.PadicComparison.Completion
-import Lib.PadicComparison.Descent.TestCovers
-import Lib.PadicHodge.PeriodRings.CrystallineRings
+module
+
+public import Lib.PadicComparison.Completion
+public import Lib.PadicComparison.Descent.TestCovers
+public import Lib.PadicHodge.PeriodRings.CrystallineRings
 
 /-!
 # The ring R[1/p] of a p-adic test and the square-zero extension W(R♭)[1/p]/(ker θ)²
@@ -27,6 +29,8 @@ Notions from other files:
 
 Known; see `Lib.PadicComparison.HodgeTate.PeriodMap` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

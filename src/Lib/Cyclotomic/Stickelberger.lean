@@ -1,5 +1,7 @@
-import Lib.GaloisRep.Main.SelmerModules
-import Lib.General.NumberTheory.FrobeniusOrbits
+module
+
+public import Lib.GaloisRep.Main.SelmerModules
+public import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # A weak form of Stickelberger's theorem for Gauss sums, and a family of Jacobi-type quotients
@@ -34,6 +36,8 @@ The product relation is proved for Jacobi-type quotients of Gauss sums and only 
 unity. Source: L. Washington, Introduction to Cyclotomic Fields, 2nd ed. 1997, 6.2 and Thm 15.1; for
 the product relation, H. Davenport, H. Hasse, J. reine angew. Math. 172 (1935).
 -/
+
+@[expose] public section
 
 namespace New.OddPart
 

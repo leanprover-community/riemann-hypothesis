@@ -1,4 +1,6 @@
-import New.UpperBound.Divisibility.MarkedPrimes
+module
+
+public import New.UpperBound.Divisibility.MarkedPrimes
 
 /-!
 # The places `Σ_N` above N and the set-up at p = N
@@ -18,6 +20,8 @@ source forms with values integral for `L_0`.
 Notions from other files:
 * `New.Data.piNPlaces`: the set of primes dividing `π`, where `π π̄ = N`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

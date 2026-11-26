@@ -1,6 +1,8 @@
-import Lib.Cyclotomic.OddSha
-import Lib.GaloisRep.TaylorWiles
-import New.Congruences.FirstOrder.KummerMaps
+module
+
+public import Lib.Cyclotomic.OddSha
+public import Lib.GaloisRep.TaylorWiles
+public import New.Congruences.FirstOrder.KummerMaps
 
 /-!
 # Taylor–Wiles places in a triangle for the even classes, with prescribed Frobenii
@@ -66,6 +68,8 @@ with prescribed ramification, 2022; Taylor–Wiles, Ring-theoretic properties of
 algebras, 1995; Darmon–Diamond–Taylor, Fermat's Last Theorem (2.19), 1995; Dotto–Thorne, Residually
 reducible representations of rank 2, 2026.
 -/
+
+@[expose] public section
 
 open New Patching Function Finset Fintype Filter PadicInt WellFoundedLT OddPart
 

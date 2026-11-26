@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.Box
-import New.UpperBound.Size.ShortColumns
+module
+
+public import New.Spanning.RemainingTerms.Box
+public import New.UpperBound.Size.ShortColumns
 
 /-!
 # Explicit bound for the number of classes in the genus
@@ -28,6 +30,8 @@ Notions from other files:
 
 See `New.UpperBound.Size.Estimates` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

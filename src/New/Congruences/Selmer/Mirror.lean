@@ -1,4 +1,6 @@
-import New.Congruences.Selmer.Count
+module
+
+public import New.Congruences.Selmer.Count
 
 /-!
 # Reciprocity at conjugate primes
@@ -32,6 +34,8 @@ Notions from other files:
   Frobenius element, tame generator, character, slopes). It has a first prime `P₀`, whose Frobenius
   element lies in `W` and whose slopes are `0`, so that tied classes are unramified there.
 -/
+
+@[expose] public section
 
 noncomputable section
 

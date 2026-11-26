@@ -1,6 +1,8 @@
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
-import Lib.Weil.DualPair.Defs
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
+public import Lib.Weil.DualPair.Defs
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Extending columns, block matrices and block embeddings
@@ -30,6 +32,8 @@ Notions from other files:
 * `New.U`, `New.U.sum`: U(J) is the group of g with gᴴJg = J; for a block diagonal sum J'' of J
   and J', `New.U.sum` is the homomorphism U(J) × U(J') → U(J'') sending (g,h) to diag(g,h).
 -/
+
+@[expose] public section
 
 noncomputable section
 

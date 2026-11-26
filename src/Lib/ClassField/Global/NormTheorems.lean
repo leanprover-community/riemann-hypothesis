@@ -1,4 +1,6 @@
-import Lib.ClassField.Global.ArtinReciprocity
+module
+
+public import Lib.ClassField.Global.ArtinReciprocity
 
 /-!
 # Surjectivity of the Artin map, Hasse's norm theorem and norm groups of cyclic extensions
@@ -29,6 +31,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

@@ -1,5 +1,7 @@
-import Lib.Shimura.HeckeTower.Model
-import Lib.Shimura.Uniformisation.TorusModel
+module
+
+public import Lib.Shimura.HeckeTower.Model
+public import Lib.Shimura.Uniformisation.TorusModel
 
 /-!
 # Every full complex object is modelled on a point (g, ℓ)
@@ -31,6 +33,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` for sources.
 -/
+
+@[expose] public section
 
 open CategoryTheory NumberField Matrix FourierTransform LinearMap BilinForm Complex OrzechProperty
   Submodule ContinuousLinearMap Circle RingOfIntegers Finset

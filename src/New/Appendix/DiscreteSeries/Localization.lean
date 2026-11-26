@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
-import New.Appendix.DiscreteSeries.SteepParameters
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+public import New.Appendix.DiscreteSeries.SteepParameters
 
 /-!
 # Localizing products of discrete series coefficients near the compact subgroups
@@ -36,6 +38,8 @@ This file uses the discrete series coefficient that is known as Flensted-Jensen'
 coefficient of the lowest `K`-type of a discrete series
 (defined in `Lib.DiscreteSeries.FlenstedJensen.Defs`).
 -/
+
+@[expose] public section
 
 noncomputable section
 

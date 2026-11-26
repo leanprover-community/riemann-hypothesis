@@ -1,5 +1,7 @@
-import Lib.CM.Integrality.LogTheta
-import Lib.Weil.Construction.ThetaJets
+module
+
+public import Lib.CM.Integrality.LogTheta
+public import Lib.Weil.Construction.ThetaJets
 
 /-!
 # Resolutions of the identity and power series in the compositions `y(μ_i z)`
@@ -38,6 +40,8 @@ The following imported notions occur in the statements.
 A resolution of the identity is a Parseval frame.
 -/
 
+@[expose] public section
+
 /-! ## Resolutions of the identity, integrality above a prime, and products of theta series -/
 
 section Resolution
@@ -60,23 +64,6 @@ the linear form `u j† z`. -/
 def IsResolution (u : J → n → E) (m : J → ℕ) : Prop :=
   ∀ x y : InfinitePlace E × n,
     ∑ j : J, m j * (Φ x.1 (u j x.2) * dagger (u j) y) = if x = y then 1 else 0
-
-/-- Parseval's identity. If `∑ m_j u_j u_j† = 1` (`IsResolution u m`), then
-`∑ m_j conj (u_j† z') (u_j† z) = ∑ conj z'_x z_x` for all complex vectors `z` and `z'`. -/
-lemma IsResolution.sum_conj_mul [Fintype n] {u : J → n → E} {m : J → ℕ}
-    (hu : IsResolution u m) (z z' : InfinitePlace E × n → ℂ) :
-    ∑ j : J, m j * (conj (∑ x : InfinitePlace E × n, dagger (u j) x * z' x) *
-        ∑ y : InfinitePlace E × n, dagger (u j) y * z y) =
-      ∑ x : InfinitePlace E × n, conj (z' x) * z x := by
-  calc ∑ j, m j * (conj (∑ x, dagger (u j) x * z' x) * ∑ y, dagger (u j) y * z y)
-      = ∑ j, ∑ x, ∑ y, m j * (Φ x.1 (u j x.2) * dagger (u j) y) * (conj (z' x) * z y) := by
-        simp only [map_sum, map_mul, dagger, Complex.conj_conj, Finset.sum_mul_sum]
-        simp only [Finset.mul_sum]
-        congr! 3
-        ring
-    _ = ∑ x, ∑ y, ∑ j, m j * (Φ x.1 (u j x.2) * dagger (u j) y) * (conj (z' x) * z y) :=
-      Finset.sum_comm.trans (Finset.sum_congr rfl fun _ _ ↦ Finset.sum_comm)
-    _ = ∑ x, conj (z' x) * z x := by simp [← Finset.sum_mul, hu _ _]
 
 /-- The element `y` of the number field `E` is integral at all places above `p`. A finite place
 `w : FinPlace E` is a nonzero prime of `𝓞 E` (a point of `HeightOneSpectrum (𝓞 E)`), `w.asIdeal` is

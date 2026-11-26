@@ -1,4 +1,6 @@
-import Lib.SiegelWeil.OneVector.FinitePlaceDensity
+module
+
+public import Lib.SiegelWeil.OneVector.FinitePlaceDensity
 
 /-!
 # Classes modulo a lattice at a finite place
@@ -14,6 +16,8 @@ Notions from other files:
 * `New.Floors.IntegralPlace`: the structure `P` that makes `A` a finite place; `P.integers` is the
   ring of integers `R`, and `P.modulus x` is the inverse of the generalised index of `x R` in `R`.
 -/
+
+@[expose] public section
 
 namespace New.Floors.IntegralPlace
 

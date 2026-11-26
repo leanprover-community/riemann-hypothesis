@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Finite adeles of number fields: topology, idempotents, functoriality and base change
@@ -36,6 +38,8 @@ complex fields with chosen embeddings.
 Source: J. W. S. Cassels, Global Fields, in Cassels-Fröhlich, Algebraic Number Theory, 1967, ch. II
 §§14-16; A. Weil, Basic Number Theory, ch. IV.
 -/
+
+@[expose] public section
 
 noncomputable section
 

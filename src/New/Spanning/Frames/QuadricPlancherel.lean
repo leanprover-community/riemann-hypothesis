@@ -1,4 +1,6 @@
-import New.Spanning.Frames.QuadricVolumes
+module
+
+public import New.Spanning.Frames.QuadricVolumes
 
 /-!
 # Plancherel's formula on quadrics
@@ -28,6 +30,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Floors.Gauge
 

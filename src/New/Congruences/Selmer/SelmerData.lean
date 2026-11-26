@@ -1,7 +1,9 @@
-import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
-import Lib.ClassField.GreenbergWiles.SelmerLevels
-import Lib.General.NumberTheory.CoefficientRings
-import New.Congruences.Selmer.AuxiliaryPrimes
+module
+
+public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
+public import Lib.ClassField.GreenbergWiles.SelmerLevels
+public import Lib.General.NumberTheory.CoefficientRings
+public import New.Congruences.Selmer.AuxiliaryPrimes
 
 /-!
 # Selmer data, tied Selmer groups and classes as functions
@@ -38,6 +40,8 @@ Known result: Sah's lemma, by which cocycles vanishing at an element that acts b
 
 See `New.Congruences.Selmer.Descent` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,6 +1,8 @@
-import Lib.Adelic.AutomorphicForms.RealConvolution
-import Lib.DiscreteSeries.CuspKernel
-import Lib.Weil.DualPair.WeilAction
+module
+
+public import Lib.Adelic.AutomorphicForms.RealConvolution
+public import Lib.DiscreteSeries.CuspKernel
+public import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Growth of theta kernels and convergence of theta lifts
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.DualPair.KernelDecay` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

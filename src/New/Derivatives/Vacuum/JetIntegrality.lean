@@ -1,6 +1,8 @@
-import New.Derivatives.FormalGroup.Resolution
-import New.Derivatives.Vacuum.IntegralVacuum
-import New.UpperBound.Seesaw.AdmissibleCombinations
+module
+
+public import New.Derivatives.FormalGroup.Resolution
+public import New.Derivatives.Vacuum.IntegralVacuum
+public import New.UpperBound.Seesaw.AdmissibleCombinations
 
 /-!
 # Integrality of jets of theta products and stability of standard data
@@ -31,6 +33,8 @@ makes integral above `p`, and under the Weil operators of finite points that are
 * `New.Parameters.omega_mem_standardData`: they are stable under the Weil operators of finite
   points integral above `p`.
 -/
+
+@[expose] public section
 
 /-!
 ## Integrality of the derivatives of products of copies of `θ`

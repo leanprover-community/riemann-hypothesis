@@ -1,6 +1,8 @@
-import Lib.CM.FiniteLattices
-import Lib.Weil.Construction.CanonicalTheta
-import New.Derivatives.Vacuum.TightFrames
+module
+
+public import Lib.CM.FiniteLattices
+public import Lib.Weil.Construction.CanonicalTheta
+public import New.Derivatives.Vacuum.TightFrames
 
 /-!
 # The integral vacuum θ°: integrality and bounds of its values, standard data at p
@@ -42,6 +44,8 @@ Notions from other files:
 * `New.Space.IsStd`: The space `V` is standard: all its signs are `+1` and its point is the identity
   matrix.
 -/
+
+@[expose] public section
 
 noncomputable section
 

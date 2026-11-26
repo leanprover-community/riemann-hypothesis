@@ -1,4 +1,6 @@
-import New.Derivatives.Field.ChosenPlaces
+module
+
+public import New.Derivatives.Field.ChosenPlaces
 
 /-!
 # Tight frames in `𝔞₀`
@@ -38,6 +40,8 @@ In comments `P'(ζ)` is `P.relDifferentGen s`, the value at `ζ` of the derivati
 polynomial of order `q₁`; `φ(q₁)` is the totient of `q₁`, `j` is the least integer with
 `2 ^ j ≥ q₁`, and `y'† y = ∑ τ, τ(y) conj τ(y')`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset ComplexConjugate NumberField
 

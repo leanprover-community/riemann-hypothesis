@@ -1,5 +1,7 @@
-import Lib.SiegelWeil.Mass
-import New.Spanning.RemainingTerms.SiegelLemma
+module
+
+public import Lib.SiegelWeil.Mass
+public import New.Spanning.RemainingTerms.SiegelLemma
 
 /-!
 # Discriminants of lattices and sums over sublattices
@@ -15,6 +17,8 @@ commutative ring whose ideals of finite index are principal.
 The formula that compares the discriminant of `L ∩ W` with that of the dual lattice in `W^⊥` is
 `New.Filling.jacobi_perp_discriminant`, stated for Gram determinants.
 -/
+
+@[expose] public section
 
 noncomputable section
 

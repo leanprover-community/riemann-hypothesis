@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Bruhat.ComplexPlace
-import Lib.DiscreteSeries.Bruhat.QuadricBlocks
-import Mathlib.Probability.Kernel.WithDensity
+module
+
+public import Lib.DiscreteSeries.Bruhat.ComplexPlace
+public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+public import Mathlib.Probability.Kernel.WithDensity
 
 /-!
 # The spheres of ℂ^κ as fibres of the standard form
@@ -19,6 +21,8 @@ Notions from other files:
 ## Relation to the literature
 Elementary: polar coordinates.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 

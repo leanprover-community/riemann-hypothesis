@@ -1,8 +1,10 @@
-import Lib.Shimura.AbelianScheme.IsogenyFlatness
-import Lib.Shimura.HeckeTower.HeckeData
-import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
-import Lib.Shimura.Uniformisation.LieExponential
-import Lib.Weil.Unramified.SplitHecke
+module
+
+public import Lib.Shimura.AbelianScheme.IsogenyFlatness
+public import Lib.Shimura.HeckeTower.HeckeData
+public import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
+public import Lib.Shimura.Uniformisation.LieExponential
+public import Lib.Weil.Unramified.SplitHecke
 
 /-!
 # Properties of a Kuga–Sato tower, Hecke operators at split places, torsion counts and levels
@@ -49,6 +51,8 @@ and 7–8.
 See also `Lib.Shimura.IntegralModel.TowerExistence`, `Lib.Shimura.Uniformisation.AppellHumbert` and
 `Lib.Shimura.AbelianScheme.IsogenyFlatness`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

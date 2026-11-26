@@ -1,4 +1,6 @@
-import Lib.Cohomology.Etale.DenseSubfunctors
+module
+
+public import Lib.Cohomology.Etale.DenseSubfunctors
 
 /-!
 # Functors of points on algebras: open subfunctors, étale charts, atlases, charted schemes
@@ -43,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Etale.FilteredLimits` and `Lib.PadicComparison.ToricTower` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

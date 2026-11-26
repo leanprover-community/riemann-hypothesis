@@ -1,6 +1,8 @@
-import Lib.ClassField.Global.Chebotarev
-import Lib.Cyclotomic.Kolyvagin.DerivativeCocycles
-import Lib.PadicComparison.Descent.TestCategory
+module
+
+public import Lib.ClassField.Global.Chebotarev
+public import Lib.Cyclotomic.Kolyvagin.DerivativeCocycles
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Reciprocity laws and Stickelberger and Kolyvagin bounds for odd-part cocycles
@@ -51,6 +53,8 @@ v_ℓ(X)+1 Galois elements detect its classes. Source: J. Coates, W. Sinnott, An
 Stickelberger's theorem for the higher K-groups, Invent. Math. 24 (1974); K. Rubin, Euler Systems,
 2000, III.4, Thm 4.6.
 -/
+
+@[expose] public section
 
 namespace New.OddPart
 

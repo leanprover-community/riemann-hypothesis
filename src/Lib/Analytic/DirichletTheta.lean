@@ -1,4 +1,6 @@
-import Lib.Analytic.PolyaVinogradov
+module
+
+public import Lib.Analytic.PolyaVinogradov
 
 /-!
 # Theta series of Dirichlet characters, Poisson summation, and `L(s, χ)` as a Mellin transform
@@ -17,6 +19,8 @@ character. Sources: Davenport, Multiplicative Number Theory; Montgomery–Vaugha
 Number Theory I, ch. 10. Form here: the transformation is proved in absolute value only, so no root
 number appears.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -477,14 +481,8 @@ theorem hasMellin_thetaSeries_char (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (
 `(r, ∞)`. -/
 lemma image_inv_const_mul_Ioo {b r : ℝ} (hb : 0 < b) (hr : 0 < r) (h_fix : (b * r)⁻¹ = r) :
     (fun u : ℝ ↦ (b * u)⁻¹) '' Ioo 0 r = Ioi r := by
-  ext v
-  refine ⟨?_, fun (hv : r < v) ↦ ?_⟩
-  · rintro ⟨u, ⟨hu, hur⟩, rfl⟩
-    show r < (b * u)⁻¹
-    exact h_fix.ge.trans_lt (inv_strictAnti₀ (by positivity) (by gcongr))
-  have hv_pos : 0 < v := hr.trans hv
-  exact ⟨(b * v)⁻¹, ⟨by positivity, (inv_strictAnti₀ (by positivity) (by gcongr)).trans_eq h_fix⟩,
-    by field⟩
+  rw [← image_image Inv.inv (b * ·), image_mul_left_Ioo hb, mul_zero, image_inv_eq_inv,
+    inv_Ioo_0_left (mul_pos hb hr), h_fix]
 
 /-- The fold: for primitive `χ ≠ 1` of conductor `q` with `χ(-1) = (-1) ^ j`,
 `∫_0^∞ |θ_χ(u)| du / u = 2 ∫_{q ^ (-1/2)}^∞ |θ_χ(u)| du / u`, where

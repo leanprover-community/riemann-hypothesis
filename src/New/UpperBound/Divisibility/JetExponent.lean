@@ -1,5 +1,7 @@
-import New.Derivatives.Divisibility.Count
-import New.Derivatives.Sharpness.NearPairs
+module
+
+public import New.Derivatives.Divisibility.Count
+public import New.Derivatives.Sharpness.NearPairs
 
 /-!
 # A lower bound for the divisibility bound by the gain
@@ -27,6 +29,8 @@ Notions from other files:
 * `New.Data.placeOfInt`: The infinite place of E named by the class of the integer ν modulo q₁ if ν
   is prime to q₁, and the identity place otherwise.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -230,10 +234,10 @@ lemma lowBoxes_le (hj : j < D.m) (σ : D.Φ) :
           add_assoc]
         exact add_le_add le_rfl D.le_of_hasLogBound
 
-/-- For `j < D.m`, the number `boxes D.columnCount (D.n (j + 1))` of boxes in the columns of height
+/-- The number `boxes D.columnCount (D.n (j + 1))` of boxes in the columns of height
 below `D.n (j + 1)` equals `D.a` times the number of a-places `D.aPlaces`, plus the sum over `σ` of
 `D.lowBoxes j σ`, the boxes in columns at `σ` of height below `D.n (j + 1)` other than `1`. -/
-lemma boxes_eq_aPlaces_add_low (_hj : j < D.m) :
+lemma boxes_eq_aPlaces_add_low :
     (boxes D.columnCount (D.n (j + 1)) : ℝ) = #D.aPlaces * D.a + ∑ σ : D.Φ,
       (D.lowBoxes j σ : ℝ) := by
   have h_one : 1 < D.n (j + 1) := by grind [n]
@@ -244,15 +248,16 @@ lemma boxes_eq_aPlaces_add_low (_hj : j < D.m) :
   simp_rw [boxes, h_split, sum_add_distrib]
   simp [lowBoxes, h_one, Finset.univ_inter _]
 
-/-- For `j < m` the boxes removed with the columns of height one at the places of `S` are the `a`
+/-- The boxes removed with the columns of height one at the places of `S` are the `a`
 boxes at each a-place in `S`. -/
-lemma boxes_sub_boxes_eraseHeightOne (hj : j < D.m) (S : Finset D.Φ) :
+lemma boxes_sub_boxes_eraseHeightOne (S : Finset D.Φ) :
     (boxes D.columnCount (D.n (j + 1)) - boxes (eraseHeightOne D.columnCount S) (D.n (j + 1)) : ℝ)
       =
       #(D.aPlaces ∩ S) * D.a := by
   have h_card : (#D.aPlaces : ℝ) = #(D.aPlaces \ S) + #(D.aPlaces ∩ S) :=
     mod_cast (card_sdiff_add_card_inter D.aPlaces S).symm
-  simp [-Nat.cast_sum, boxes_eq_aPlaces_add_low hj, boxes_eq_sum, heightOneColumns_eraseHeightOne,
+  rw [boxes_eq_aPlaces_add_low]
+  simp [-Nat.cast_sum, boxes_eq_sum, heightOneColumns_eraseHeightOne,
     lowBoxCount_eraseHeightOne, sum_add_distrib, longRow, h_card, add_mul, sum_ite_mem, -mem_sdiff,
     Finset.univ_inter _]
 
@@ -268,7 +273,7 @@ lemma one_add_logb_boxes_le (hj : j < D.m) :
   have h_boxes : ((max (boxes D.columnCount (D.n (j + 1))) 1 : ℕ) : ℝ) ≤ D.f * D.a + D.f * D.M +
     1 := by
     grw [max_le_add_of_nonneg (Nat.zero_le _) zero_le_one, cast_add_one,
-      boxes_eq_aPlaces_add_low hj,
+      boxes_eq_aPlaces_add_low,
       h_low, card_le_univ]
     simp [f, Core.numInfPlaces]
   have h_log : 1 / 2 ≤ Real.log p := by
@@ -537,7 +542,7 @@ lemma le_divisibilityBound (hj : j < D.m) (hp : D.IsSmallNonsplit p) (S : Finset
     exact D.le_of_hasLogBound
   have h_losses : D.f * (5 * u) ≤ D.f * D.logB ^ 2 * (D.a / p) / D.m := by
     grw [mul_div_assoc, mul_assoc, ← hu, (D.le_of_hasLogBound : 5 ≤ D.logB ^ 2)]
-  rw [divisibilityBound, boxes_sub_boxes_eraseHeightOne hj, gain,
+  rw [divisibilityBound, boxes_sub_boxes_eraseHeightOne, gain,
     mul_div_cancel_left₀ _ (HasLogBound.pos D).ne', mul_assoc (D.f : ℝ) (_ ^ 3)]
   have h_predicted : v * ∑ τ, ∑' e, partnerTerm p j S τ e - D.f * (2 * u) ≤
       predictedDivisibility P.d p (P.partner D.towerExp p) (eraseHeightOne D.columnCount S)

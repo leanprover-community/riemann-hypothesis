@@ -1,7 +1,9 @@
-import Lib.Adelic.Landherr
-import Lib.Cohomology.Etale.Basic
-import Lib.General.LinearAlgebra.PolarDecomposition
-import Lib.Weil.MixedModel.IsotropicSplitting
+module
+
+public import Lib.Adelic.Landherr
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.LinearAlgebra.PolarDecomposition
+public import Lib.Weil.MixedModel.IsotropicSplitting
 
 /-!
 # Maximal compact subgroup, splittings of isotropic frames and the Iwasawa decomposition
@@ -51,6 +53,8 @@ lattices, Jacobowitz, Amer. J. Math. 84 (1962)). For the Iwasawa decomposition a
 J. Tits, Reductive groups over local fields, Proc. Sympos. Pure Math. 33 (1979), part 1, 3.3.2 and
 3.8.1.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,7 +1,9 @@
-import Lib.Adelic.Adeles.LocalFactors
-import Lib.ClassField.Global.AlbertBrauerHasseNoether
-import Lib.Cyclotomic.Voronoi
-import Lib.General.Algebra.FittingIdealsAndLengths
+module
+
+public import Lib.Adelic.Adeles.LocalFactors
+public import Lib.ClassField.Global.AlbertBrauerHasseNoether
+public import Lib.Cyclotomic.Voronoi
+public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # Selmer modules, Tate twists, components of cocycles and places above a prime
@@ -41,6 +43,8 @@ Known; see `Lib.Cyclotomic.OddSha`, `Lib.ClassField.Global.CMSplittingCharacters
 `Lib.ClassField.GaloisCohomology.KummerCyclicClasses` and `Lib.ClassField.Places.LocalFields` for
 sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,6 +1,8 @@
-import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
-import Lib.GaloisRep.LocalGlobal.LocalFormTypes
-import Lib.LocalGL.Iwahori.HeckeDegrees
+module
+
+public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
+public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
+public import Lib.LocalGL.Iwahori.HeckeDegrees
 
 /-!
 # Hilbert 90 for the pro-p Iwahori group and base change of Iwahori eigenforms
@@ -40,6 +42,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.BijectiveComparisons
-import Lib.PadicComparison.Descent.TestCategory
+module
+
+public import Lib.Cohomology.Etale.BijectiveComparisons
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Flat base change in functor cohomology, and the base change adjunction for algebras
@@ -41,6 +43,8 @@ Notions from other files:
 The arguments are the usual ones: the Yoneda lemma, exactness of tensoring with a flat module, and
 the tensor-hom adjunction.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

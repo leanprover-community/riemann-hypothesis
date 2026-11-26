@@ -1,4 +1,6 @@
-import Lib.Adelic.Adeles.LocalFactors
+module
+
+public import Lib.Adelic.Adeles.LocalFactors
 
 /-!
 # Finite Heisenberg datum, its lattice vacuum and the finite multiplier
@@ -36,6 +38,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

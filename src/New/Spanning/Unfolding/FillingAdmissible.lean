@@ -1,9 +1,11 @@
-import Lib.General.Groups.IndexOfProduct
-import New.Spanning.Unfolding.FrameMass
-import New.Spanning.Unfolding.PoincareSeries
-import New.Spanning.Unfolding.ReducedGroups
-import New.UpperBound.Seesaw.EdgePairEvaluation
-import New.UpperBound.Size.ShortColumns
+module
+
+public import Lib.General.Groups.IndexOfProduct
+public import New.Spanning.Unfolding.FrameMass
+public import New.Spanning.Unfolding.PoincareSeries
+public import New.Spanning.Unfolding.ReducedGroups
+public import New.UpperBound.Seesaw.EdgePairEvaluation
+public import New.UpperBound.Size.ShortColumns
 
 /-!
 # Filling data for admissible data: fit to Y₀, Bessel bounds, standing hypotheses
@@ -42,6 +44,8 @@ Notions from other files:
 * `New.Data.logLevelTarget`: a number `λ`, built from the mean of the `log (D.weight v)`, from
   `log (M rootDisc / 2π)` and from `log b`, with `λ ≤ log N ≤ λ + √(log b)`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -101,25 +105,6 @@ lemma filling_fits :
       exists_point_eq := ⟨γ, fun i w ↦ hγ_red ⟨i, w⟩, toUnits (D.latticeScale 0), ext hγ⟩
       central a := (Seesaw.commute_scalarFin a).inv_left }
 
-/-- A finite adelic point of U(X₀) preserves the lattice of Y₀ if and only if it is integral and
-its last row is that of 1 modulo π. In the coordinates of the filling data this is
-`New.Filling.inclHFin_mem_latticeStabilizer_iff`. -/
-lemma inclXFin_zero_mem_stdLevel_iff {a : Gf D.E (D.X 0)} :
-    (D.gradingY 0).inclXFin a ∈ stdLevel D.E (D.Y 0) ↔
-      a.val ∈ congruenceGL (Ô D.E ∙ D.piNIdele.val) Sum.inr :=
-  -- Both sides say that `D.filling.inclHFin a` lies in `D.filling.latticeStabilizer`.
-  (D.filling_fits.inclXFin_mem_stdLevel_iff a).trans D.filling.inclHFin_mem_latticeStabilizer_iff
-
-/-- The finite adelic points of U(X₀) that lie in the principal level of Y₀ at the chosen places
-form the level `New.Data.levelX` of X₀. In the coordinates of the filling data this is
-`New.Data.levelX_zero_eq_comap`. -/
-lemma comap_inclXFin_zero_chosenLevel :
-    (D.chosenLevel (n := D.Y 0)).comap (D.gradingY 0).inclXFin = D.levelX 0 := by
-  ext a
-  rw [levelX_zero_eq_comap]
-  -- `D.chosenLevel` is the standard principal level of the filling data.
-  exact D.filling_fits.inclXFin_mem_stdPrincipalLevel_iff a
-
 /-- The isomorphism that applies the central translation by `D.latticeScale 0` to a source form on
 X₀ and takes its values at the class representatives, in the coordinates of the Bessel systems. -/
 def sourceFormCoords :
@@ -163,7 +148,7 @@ lemma card_besselSystem_le_add_pow (v : D.Φ) :
     v).exists_conj_rep_eq_schur
   have h_degree : D.columnCount v 1 ≤ D.a := by by_cases hv : v ∈ D.aPlaces <;>
                                                   simp [columnCount, hv]
-  have one_lt_k : 1 < D.k := (D.nat_le_of_hasLogBound : 2 ≤ D.k)
+  have one_lt_k : 1 < D.k := D.nat_le_of_hasLogBound
   have h_row (i : ℕ) (_ : 0 < i) (hi_lt : i < Fintype.card (D.X 0)) :
       D.columnCount v i = if i = 1 then D.columnCount v 1 else 0 := by
     rw [D.card_X₀] at hi_lt
@@ -672,20 +657,7 @@ lemma abs_log_mainSecondMoment_div_identitySecondMoment_sub_le :
       |D.f * (D.m - 1) * (D.ϱ * log (D.M * D.rootDisc / 2 / π) + log (√D.rootDisc / 2 / π)) -
       D.m * ∑ v : D.Φ, log (D.weight v)| ≤ D.f * D.k * D.logB / 4 - (log (1 + D.b⁻¹ ^ 9) +
         D.m * (D.m * ∑ v : D.Φ, log (D.weight v) + D.f * D.r * D.x⁻¹) + D.f * D.k * √D.logB) :=
-    -- The default `h_exp` tactic (`scale_arith`) splits all the `max` cases and times out here.
-    le_sub_iff_add_le.mpr (D.le_of_hasLogBound (h_exp := by
-      clear_aux_decl
-      clear * - D
-      repeat clear ‹_›
-      obtain ⟨⟨_, _, _, _⟩, _, _, _, _, _⟩ := New.Data.scale_inequalities' D
-      simp only [Bool.false_eq_true, ↓reduceIte, ← max_add_add_right, ← max_add_add_left,
-        ← max_sub_sub_right, ← max_div_div_right (zero_le_two (α := ℝ)), Nat.cast_ofNat,
-        max_lt_iff]
-      and_intros
-      all_goals
-        try simp only [max_def]
-        try split_ifs
-      all_goals linarith))
+    le_sub_iff_add_le.mpr D.le_of_hasLogBound
   rw [mainSecondMoment_div_identitySecondMoment_eq, h_order]
   simp only [eq_tsub_of_add_eq D.r_add_one] at *
   -- Expand the logarithms and the sums: `sum_range_sub` telescopes the mass terms, and

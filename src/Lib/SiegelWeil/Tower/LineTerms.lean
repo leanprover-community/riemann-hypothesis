@@ -1,5 +1,7 @@
-import Lib.ClassField.HeckeCharacter.SplitTameCharacters
-import Lib.Weil.MixedModel.AdaptedSplitting
+module
+
+public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+public import Lib.Weil.MixedModel.AdaptedSplitting
 
 /-!
 # Coordinates on a line parabolic and Poisson's formula for terms along lines
@@ -36,6 +38,8 @@ Notions from other files:
 
 Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

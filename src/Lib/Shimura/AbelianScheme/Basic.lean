@@ -1,5 +1,7 @@
-import Lib.General.Geometry.LineBundles
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.General.Geometry.LineBundles
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Abelian schemes: base change, finite kernels and constant functions
@@ -30,6 +32,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.AbelianScheme.IsogenyFlatness` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -350,6 +354,7 @@ variable {R : Type} [CommRing R] {A B : Over (Spec ⟨R⟩)} [AddObj B] {f : A �
 omit [AddObj B] in
 /-- If `A` is locally of finite presentation over `Spec R` and `B` is locally of finite type over
 `Spec R`, then every morphism `f : A ⟶ B` over `Spec R` is locally of finite presentation. -/
+@[stacks 02FV "first assertion, over an affine base"]
 lemma locallyOfFinitePresentation_left [hB : LocallyOfFiniteType B.hom]
     [h : LocallyOfFinitePresentation A.hom] :
     LocallyOfFinitePresentation f.left := by

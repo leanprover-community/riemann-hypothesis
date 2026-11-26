@@ -1,4 +1,6 @@
-import New.OneLift.FalseLifts.HyperbolicPlaneStep
+module
+
+public import New.OneLift.FalseLifts.HyperbolicPlaneStep
 
 /-!
 # The tower of descents and the periods of false lifts
@@ -59,6 +61,8 @@ lifts for unitary groups, arXiv 2104.11954, 2021; Ginzburg–Jiang–Soudry, Pol
 theta liftings for orthogonal groups, 2009; Jiang–Wu, On (χ,b)-factors of cuspidal automorphic
 representations of unitary groups I, 2016; Rallis, On the Howe duality conjecture, 1984.
 -/
+
+@[expose] public section
 
 section MemberOrthogonality
 

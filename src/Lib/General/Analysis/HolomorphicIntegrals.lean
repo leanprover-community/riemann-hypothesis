@@ -1,7 +1,9 @@
-import Lib.General.Analysis.GaussianIntegral
-import Lib.General.Groups.CongruenceSubgroups
-import Lib.General.Measure.HaarNormalisation
-import Lib.General.Topology
+module
+
+public import Lib.General.Analysis.GaussianIntegral
+public import Lib.General.Groups.CongruenceSubgroups
+public import Lib.General.Measure.HaarNormalisation
+public import Lib.General.Topology
 
 /-!
 # Strong operator integrals, analyticity of parameter integrals, and Hua's integral bound
@@ -36,6 +38,8 @@ Known result: an upper bound for Hua's determinant integral. The integral is bou
 above, with an affine change of the rows, instead of being computed exactly. Source: Hua, Harmonic
 Analysis of Functions of Several Complex Variables in the Classical Domains, AMS 1963.
 -/
+
+@[expose] public section
 
 /-! ## The strong integral of a family of bounded operators -/
 
@@ -215,39 +219,37 @@ lemma isAnalyticFamily_of_continuousAt_of_differentiableAt [R1Space K] {f : E �
     have hG : ∀ᶠ x : ULift (Fin n) → ℂ in nhds (e p).2, ∀ q : K × sphere (e p).1 r,
         ContinuousAt G.uncurry (x, q) ∧ DifferentiableAt ℂ (fun z ↦ G z q) x := by
       filter_upwards [closedBall_mem_nhds (e p).2 hr] with x hx q
-      have hy : ((q.2 : ℂ), x) ∈ closedBall (e p) r := by
-        rw [mem_closedBall, Prod.dist_eq]
-        exact max_le (mem_sphere.1 q.2.prop).le (mem_closedBall.1 hx)
+      have hy : ((q.2 : ℂ), x) ∈ closedBall (e p) r := max_le q.2.prop.le hx
       have h_cont : ContinuousAt f.uncurry (e.symm (q.2, x), q.1) := h_cont_at _ hy q.1
       have h_diff : DifferentiableAt ℂ (fun z : E ↦ f z q.1) _ := h_diff_at _ hy q.1
-      have h_f : ContinuousAt (fun z : (ULift (Fin n) → ℂ) × (K × sphere (e p).1 r) ↦
-          f (e.symm ((z.2.2 : ℂ), z.1)) z.2.1) (x, q) :=
-        ContinuousAt.comp (g := f.uncurry) (x := (x, q)) (f := fun z : (ULift (Fin n) → ℂ) ×
-          (K × sphere (e p).1 r) ↦ (e.symm ((z.2.2 : ℂ), z.1), z.2.1)) h_cont (by fun_prop)
-      exact ⟨(((u (e p).1).continuous.continuousAt.comp continuousAt_snd).mul h_f).div_const _
-        |>.div_const _, by fun_prop⟩
+      exact ⟨by fun_prop, by fun_prop⟩
     obtain ⟨H, hH_an, hH_eq⟩ : DiscreteSeries.IsAnalyticFamily G (e p).2 :=
       ih (hG.mono fun _ hx q ↦ (hx q).1) (hG.mono fun _ hx q ↦ (hx q).2) (by simp)
     -- The Cauchy integrand `(u w)⁻¹ * H x` is analytic in `(w, x)`, because inversion is
     -- analytic at units.
     have h_inv : AnalyticAt ℂ (fun w : ℂ ↦ Ring.inverse (u w)) (e p).1 :=
-      AnalyticAt.comp (g := Ring.inverse) (f := u) (x := (e p).1)
-        (analyticAt_inverse (𝕜 := ℂ) (h_unit (e p).1 (by simpa)).unit) (by fun_prop)
+      (analyticOnNhd_inverse (u (e p).1) (h_unit (e p).1 (by simpa))).comp (by fun_prop)
     have h_integrand : AnalyticAt ℂ (fun y : E ↦ Ring.inverse (u (e y).1) * H (e y).2) p :=
       ((h_inv.comp analyticAt_fst).mul (hH_an.comp analyticAt_snd)).comp (e.analyticAt p)
     -- Integration over the circle, by the angle, is a bounded operator `C(K × circle) → C(K)`.
     let param (θ : ℝ) : sphere (e p).1 r :=
       ⟨circleMap (e p).1 r θ, circleMap_mem_sphere (e p).1 hr.le θ⟩
     let ν : Measure (sphere (e p).1 r) := (volume.restrict (.Icc 0 (2 * π))).map param
+    let L : C(sphere (e p).1 r, ℂ) →L[ℂ] ℂ := strongIntegral ν (evalCLM ℂ)
     let avg : C(K × sphere (e p).1 r, ℂ) →L[ℂ] C(K, ℂ) :=
-      contractSndCLM (strongIntegral ν (evalCLM ℂ))
+      ⟨contractSnd (toCLMEquiv.symm L),
+        continuous_of_continuous_uncurry (contractSnd (toCLMEquiv.symm L)) <| by
+          simp_rw [Function.uncurry_def, contractSnd_apply, coe_symm_toCLMEquiv]
+          refine L.continuous.comp (continuous_of_continuous_uncurry _ ?_)
+          simp_rw [Function.uncurry_def, coe_mk]
+          fun_prop⟩
     refine ⟨fun y : E ↦ avg (Ring.inverse (u (e y).1) * H (e y).2),
       (avg.analyticAt _).comp h_integrand, ?_⟩
     filter_upwards [e.continuousAt
       (prod_mem_nhds (ball_mem_nhds (e p).1 hr) (hH_eq.and (closedBall_mem_nhds (e p).2 hr)))] with
       y ⟨hw, hH, hx⟩
     ext k
-    change strongIntegral ν (evalCLM ℂ) ((Ring.inverse (u (e y).1) * H (e y).2).curry k) = f y k
+    simp only [avg, ContinuousLinearMap.coe_mk', contractSnd_apply, coe_symm_toCLMEquiv, L]
     rw [strongIntegral_eval, integral_map (by fun_prop) (by fun_prop)]
     -- What remains is Cauchy's integral formula for `z ↦ f (e.symm (z, (e y).2)) k` at `(e y).1`.
     have h_diff : DifferentiableOn ℂ (fun z : ℂ ↦ f (e.symm (z, (e y).2)) k)

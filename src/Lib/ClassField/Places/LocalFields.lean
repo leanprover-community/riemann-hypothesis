@@ -1,6 +1,8 @@
-import Lib.ClassField.Places.DecompositionCyclotomic
-import Lib.ClassField.Places.ValuationSubrings
-import Lib.General.Groups.ProfiniteCharacters
+module
+
+public import Lib.ClassField.Places.DecompositionCyclotomic
+public import Lib.ClassField.Places.ValuationSubrings
+public import Lib.General.Groups.ProfiniteCharacters
 
 /-!
 # Local fields: Frobenius, uniformisers, normalised valuation, extensions, unramified characters
@@ -46,6 +48,8 @@ local fields are only henselian with finite residue field. Source: J. Neukirch, 
 Theory, 1999, I §9, II §§7–9, VI §1; J.-P. Serre, Local Fields, 1979, I §7, IV §2; Stacks Project,
 tag 09EE.
 -/
+
+@[expose] public section
 
 /-! ## Existence of Frobenius; Frobenius and inertia are topological generators -/
 

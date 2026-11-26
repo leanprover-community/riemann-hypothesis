@@ -1,4 +1,6 @@
-import Lib.LocalGL.Green.LabelCharacters
+module
+
+public import Lib.LocalGL.Green.LabelCharacters
 
 /-!
 # Shintani lifting of Green's characters along extensions of prime degree
@@ -53,6 +55,8 @@ Algebra 319 (2008) 4147-4176, Thm 5.1; for tensor induction, Gluck-Isaacs, Illin
 
 See also `Lib.LocalGL.Green.TauFunctions`.
 -/
+
+@[expose] public section
 
 /-!
 ## Frobenius reciprocity for parabolically induced characters

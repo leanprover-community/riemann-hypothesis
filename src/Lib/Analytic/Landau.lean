@@ -1,4 +1,6 @@
-import Lib.Analytic.EntireLFunction
+module
+
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # Landau's lemma
@@ -29,6 +31,8 @@ simple poles whose residues at real points have non-negative real part: no pole 
 of the abscissa given by the one-sided bound. Source: Montgomery and Vaughan, Multiplicative
 Number Theory I, 2007, Lemma 15.1 (Widder, The Laplace Transform, 1941, II Thm 5b).
 -/
+
+@[expose] public section
 
 open ArithmeticFunction DirichletCharacter Complex Set Filter MeasureTheory Metric ProbabilityTheory
   Nat Topology ComplexOrder AnalyticOnNhd Real
@@ -151,9 +155,9 @@ lemma eventuallyEq_of_eq_far_right {f g : ℂ → ℂ} {a b : ℝ} (hf : Meromor
   have order_s₀ : meromorphicOrderAt (f - g) s₀ = ⊤ :=
     meromorphicOrderAt_eq_top_iff.mpr <| eventually_nhdsWithin_of_eventually_nhds <|
       mem_of_superset ((isOpen_re_gt b).mem_nhds hbs₀) fun z hz ↦ sub_eq_zero.mpr (hfg z hz)
-  exact eventuallyEq_iff_sub.mpr <| meromorphicOrderAt_eq_top_iff.mp <| by_contra fun hne ↦
-    (hf.sub hg).meromorphicOrderAt_ne_top_of_isPreconnected
-      (convex_halfSpace_re_gt a).isPreconnected hρ has₀ hne order_s₀
+  exact eventuallyEq_iff_sub.mpr <| meromorphicOrderAt_eq_top_iff.mp <|
+    (hf.sub hg).meromorphicOrderAt_eq_top_of_isPreconnected
+      (convex_halfSpace_re_gt a).isPreconnected has₀ hρ order_s₀
 
 /-- **Landau's lemma.** Let `X ≤ 0` be measurable and let the moment generating function
 `s ↦ ∫ exp (s X) ∂μ` converge to the right of `a`. If it agrees near the real points `x > a` close

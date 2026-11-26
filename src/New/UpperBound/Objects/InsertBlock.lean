@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Theta.BlockRule
+module
+
+public import Lib.DiscreteSeries.Theta.BlockRule
 
 /-!
 # Inserting a block into a parameter
@@ -28,6 +30,8 @@ Notions from other files:
   centred at 0; and the two coordinates of a common shifted entry have equal signs if the entry is
   positive and opposite signs if it is negative.
 -/
+
+@[expose] public section
 
 namespace New
 

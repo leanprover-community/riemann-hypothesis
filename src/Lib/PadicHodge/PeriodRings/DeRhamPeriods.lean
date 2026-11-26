@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.DecompositionCyclotomic
-import Lib.PadicHodge.PeriodRings.CrystallineRings
+module
+
+public import Lib.ClassField.Places.DecompositionCyclotomic
+public import Lib.PadicHodge.PeriodRings.CrystallineRings
 
 /-!
 # The cyclotomic action on μ, the period t, and the de Rham field B_dR
@@ -42,6 +44,8 @@ Théorie d'Iwasawa des représentations de de Rham d'un corps local, Ann. of Mat
 III.2-III.3; J.-M. Fontaine, Le corps des périodes p-adiques, Astérisque 223 (1994); X. Caruso, An
 introduction to p-adic period rings (2019), §3.
 -/
+
+@[expose] public section
 
 noncomputable section
 

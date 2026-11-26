@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.PartnerAlgebra
+module
+
+public import Lib.General.LinearAlgebra.PartnerAlgebra
 
 /-!
 # The Gram matrix of a space is invertible and hermitian; group elements from isometries
@@ -24,6 +26,8 @@ give elements of the adelic unitary group.
 * `New.Space.isUnit_J`, `New.Space.isHermitian_J`: `J` is invertible and hermitian.
 * `New.G.ofMatrix`: the group element given by a matrix that preserves the standard form.
 -/
+
+@[expose] public section
 
 section SpaceGram
 

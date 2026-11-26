@@ -1,7 +1,9 @@
-import Lib.ClassField.Global.CMSplittingCharacters
-import Lib.ClassField.Global.ExistenceTheorem
-import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
-import Lib.General.NumberTheory.CMFields
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
+public import Lib.ClassField.Global.ExistenceTheorem
+public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+public import Lib.General.NumberTheory.CMFields
 
 /-!
 # Idele Hasse principle, unitary roots and rationality of adelic roots up to coboundary
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## The Hasse principle for ideles in one CM field

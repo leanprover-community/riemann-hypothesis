@@ -1,5 +1,7 @@
-import Lib.PadicHodge.Crystalline.HodgeTateForms
-import Lib.PadicHodge.Kisin.Charts
+module
+
+public import Lib.PadicHodge.Crystalline.HodgeTateForms
+public import Lib.PadicHodge.Kisin.Charts
 
 /-!
 # Witt coefficients, the Frobenius group action and existence of Kummer charts
@@ -32,6 +34,8 @@ Notions from other files:
 Known; see `Lib.PadicHodge.Kisin.PeriodMatrixFrame` and `Lib.PadicHodge.PeriodRings.DeRhamPeriods`
 for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -389,9 +393,7 @@ lemma exists_kummerChart (Γ : Type) [Group Γ] [𝒥 : OverGp Γ p] :
     ((algebraMap ..).comp (localFieldOf Γ).val.toRingHom).restrict _ _ (by simp [← coe_nnNorm])
   -- `ev : Λ⟦X⟧ → A_inf` has `θ (ev X) = π`; each unit series `A` with `θ (ev A) = v` gives a chart
   obtain ⟨ev, h_evX, h_chart⟩ :=
-    exists_chart_of_pow_mul_eq_neg f (x := κ π) (e := e) (v.map κ) (by
-      simpa only [map_mul, map_pow, map_neg, map_natCast, Units.coe_map, MonoidHom.coe_coe] using
-        congrArg κ hv)
+    exists_chart_of_pow_mul_eq_neg f (v.map κ) (by simpa using congrArg κ hv)
   -- `O_C` is `π`-adically separated, since `p ∣ π ^ e`
   have h_sep : IsHausdorff (span {κ π}) OC := by
     refine ⟨fun x h ↦ eq_of_forall_pow_dvd_sub ↑p fun n ↦ ?_⟩

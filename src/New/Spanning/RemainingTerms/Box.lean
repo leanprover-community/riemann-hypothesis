@@ -1,5 +1,7 @@
-import Lib.Adelic.Adeles.SemilocalProducts
-import New.Spanning.Unfolding.Setup
+module
+
+public import Lib.Adelic.Adeles.SemilocalProducts
+public import New.Spanning.Unfolding.Setup
 
 /-!
 # The box
@@ -29,6 +31,8 @@ Notions from other files:
 * `New.Filling.mem_frameBox_of_mem_boxedPoints`: at a boxed point the frame vectors have length at
   most `b ^ (37 n)`.
 -/
+
+@[expose] public section
 
 open NumberField Matrix Set ENNReal
 

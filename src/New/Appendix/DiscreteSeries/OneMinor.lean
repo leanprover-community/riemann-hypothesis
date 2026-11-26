@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
-import New.Appendix.DiscreteSeries.MinorSecondOrder
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+public import New.Appendix.DiscreteSeries.MinorSecondOrder
 
 /-!
 # One minor near the identity
@@ -29,6 +31,8 @@ All norms of matrices are Frobenius norms, and `ε : n → ℤˣ` is a vector of
 
 See `New.Appendix.DiscreteSeries.Periods` for related work.
 -/
+
+@[expose] public section
 
 open Matrix Finset Norms.Frobenius Complex ComplexConjugate ComplexOrder
 

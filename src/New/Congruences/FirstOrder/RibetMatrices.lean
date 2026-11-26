@@ -1,4 +1,6 @@
-import New.Congruences.FirstOrder.FittingBlock
+module
+
+public import New.Congruences.FirstOrder.FittingBlock
 
 /-!
 # Tied rows and the matrices of Ribet's method to first order
@@ -30,6 +32,8 @@ Notions from other files:
   `c γ = 0`, then every `χ g - 1` kills `c a`.
 * `New.Selmer.IsDetectedBy` (`FittingBlock`): an element of the module that vanishes on `s` is zero.
 -/
+
+@[expose] public section
 
 section RibetFirstOrder
 

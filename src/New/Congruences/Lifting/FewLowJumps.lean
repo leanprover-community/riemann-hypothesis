@@ -1,4 +1,6 @@
-import New.Congruences.Lifting.DeepPoints
+module
+
+public import New.Congruences.Lifting.DeepPoints
 
 /-!
 # Few low jumps: length lost to depth and a submodule cupping to zero
@@ -49,6 +51,8 @@ Notions from other files:
 See `New.Congruences.Lifting.CutExponentBounds` and `New.Congruences.Lifting.CupOrthogonalityBounds`
 for related work.
 -/
+
+@[expose] public section
 
 section FewLowJumps
 

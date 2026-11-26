@@ -1,6 +1,8 @@
-import Lib.GaloisRep.Main.AttachedRepresentations
-import Lib.General.NumberTheory.GaussValuation
-import New.Congruences.Selmer.AuxiliaryPrimes
+module
+
+public import Lib.GaloisRep.Main.AttachedRepresentations
+public import Lib.General.NumberTheory.GaussValuation
+public import New.Congruences.Selmer.AuxiliaryPrimes
 
 /-!
 # Stickelberger systems
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

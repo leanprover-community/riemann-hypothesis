@@ -1,4 +1,6 @@
-import Lib.Cohomology.SmoothBaseChange
+module
+
+public import Lib.Cohomology.SmoothBaseChange
 
 /-!
 # The primitive comparison theorem and finiteness of p-adic cohomology
@@ -44,6 +46,8 @@ Thm 1.1; by duality, Zavyalov arXiv 2301.03821 Appl. 1.3.4.
 
 See also `Lib.PadicComparison.HodgeTate.PeriodMap`.
 -/
+
+@[expose] public section
 
 /-! ## The primitive comparison theorem and flat base change -/
 

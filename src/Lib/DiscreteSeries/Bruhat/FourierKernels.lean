@@ -1,6 +1,8 @@
-import Mathlib.Probability.Kernel.Composition.IntegralCompProd
-import Lib.DiscreteSeries.Bruhat.FloorMeasures
-import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+module
+
+public import Mathlib.Probability.Kernel.Composition.IntegralCompProd
+public import Lib.DiscreteSeries.Bruhat.FloorMeasures
+public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
 
 /-!
 # Fourier kernels between solved measures
@@ -28,6 +30,8 @@ Notions from other files:
 ## Relation to the literature
 Standard consequences of Fubini's theorem and the inequalities of Cauchy–Schwarz and Plancherel.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 

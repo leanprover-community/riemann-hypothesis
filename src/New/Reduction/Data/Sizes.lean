@@ -1,4 +1,6 @@
-import New.Reduction.Data.LevelAndTwists
+module
+
+public import New.Reduction.Data.LevelAndTwists
 
 /-!
 # Sizes of the data
@@ -33,6 +35,8 @@ Notions from other files:
 * `P.bigOmega s`: the real number `Ω = exp (γ - Re L'/L(1, χ_K)) · 2π / rd_E`.
 -/
 
+@[expose] public section
+
 namespace New.Data
 
 open Real Set Parameters
@@ -40,40 +44,6 @@ open Real Set Parameters
 variable {P : Parameters} (D : Data P)
 
 /-! ### Scales and the exponent of the tower -/
-
-/-- The scales `x = exp logX` (the length of the prime sum) and `x₁ = exp logX₁` of admissible data
-satisfy `x ^ 10⁶ ≤ x₁`. -/
-lemma x_pow_le_x₁ : D.x ^ 1000000 ≤ D.x₁ := by
-  rw [← exp_natCast_mul, exp_le_exp]
-  push_cast
-  linarith [D.logX_le_logX₁]
-
-/-- The scales `x₁ = exp logX₁` and `b = exp logB` of admissible data satisfy `x₁ ^ 10⁶ ≤ b`. -/
-lemma x₁_pow_le_b : D.x₁ ^ 1000000 ≤ D.b := by
-  rw [← exp_natCast_mul, exp_le_exp]
-  push_cast
-  linarith [D.logX₁_le_logB]
-
-/-- The scales `x₁` and `b` of admissible data satisfy `(log x₁) ^ 6 ≤ log b`. -/
-lemma logX₁_pow_le_logB : D.logX₁ ^ 6 ≤ D.logB := by
-  rw [← log_le_log_iff (HasLogBound.pos D) (HasLogBound.pos D), log_pow]
-  exact_mod_cast D.log_logX₁_le_log_logB
-
-/-- The scales `x` and `b` of admissible data satisfy `(log b) ^ 100 ≤ x`. -/
-lemma logB_pow_le_x : D.logB ^ 100 ≤ D.x := by
-  rw [← log_le_iff_le_exp (HasLogBound.pos D), log_pow]
-  exact_mod_cast D.mul_log_logB_le_logX
-
-/-- The number `m` of admissible data has the size of `√x`, for the scale `x = exp logX`:
-`x ≤ m² ≤ 4 x`. -/
-lemma m_sq_mem_Icc : (D.m : ℝ) ^ 2 ∈ Icc D.x (4 * D.x) := by
-  have h_sq : exp (D.logX / 2) ^ 2 = D.x := by rw [sq, ← exp_add, add_halves, x]
-  obtain ⟨h_lower, h_upper⟩ : exp (D.logX / 2) ≤ D.m ∧ D.m ≤ 2 * exp (D.logX / 2) := D.m_mem
-  constructor
-  · calc D.x = exp (D.logX / 2) ^ 2 := h_sq.symm
-      _ ≤ (D.m : ℝ) ^ 2 := by gcongr
-  · calc (D.m : ℝ) ^ 2 ≤ (2 * exp (D.logX / 2)) ^ 2 := by gcongr
-      _ = 4 * D.x := by linear_combination 4 * h_sq
 
 /-- The exponent `s = D.towerExp` of the tower of admissible data `D`, for which `2 ^ s = m ^ 22`
 with `m = D.m ≥ 2`, is not zero. -/
@@ -97,11 +67,6 @@ lemma x₁_pow_le_sqrt_b : D.x₁ ^ (3 * l₀ D.towerExp ^ 2) ≤ √D.b := by
 
 The numbers `m`, `k` are even and `r`, `t` are odd by the imported lemmas `m_even`, `k_even`,
 `r_odd`, `t_odd`; hence every `n_j = k + j (t + 1)` is even (`New.Data.n_even`). -/
-
-/-- The numbers `r ≥ x⁵` and `m ≤ 2 √x` of admissible data satisfy `r ≤ 2 k` for
-`k = r + 1 - m`. -/
-lemma r_le_two_mul_k : D.r ≤ 2 * D.k := by
-  linarith [D.r_add_one, D.hundred_mul_m_le_k]
 
 /-- The rank `m = D.m` and the exponent `s = D.towerExp` of the field `E = P.E s` of the data `D`
 satisfy `m ^ 22 = 2 ^ s`. -/
@@ -135,10 +100,6 @@ lemma f_mem_Icc : D.f ∈ Icc (D.m ^ 22) D.q₁ := by
 lemma f_even : Even D.f := by
   rw [f, P.numInfPlaces_E, towerDeg]
   simp [Nat.even_pow, D.towerExp_ne_zero]
-
-/-- The order `q₁` of the root of unity that generates `E` over `K` is at most `x¹²`, where `x` is
-the scale `D.x` of the data. -/
-lemma q₁_le : (D.q₁ : ℝ) ≤ D.x ^ 12 := D.le_of_hasLogBound
 
 /-- The modulus `q₂ s = (q₀ d) ^ (s + 6)` is at most `x ^ (33 q₀ d)`. Here `q₀`, a multiple of
 `18480`, and the prime `d` with `K = ℚ(√-d)` are the fixed parameters, `s` is the exponent of the
@@ -176,23 +137,6 @@ lemma log_classNumber_le : log (NumberField.classNumber D.E) ≤ D.x ^ 30 := by
 The bounds `a / x₁ ≤ κ ≤ b` and `κ + x⁴² ≤ 2 b` for the weight `κ = D.weight σ` are the imported
 lemmas `weight_mem_Icc`, `weight_le_b` and `weight_add_x_pow_le_two_mul_b`; those for the sequence
 `D.shiftedWeight` are `shiftedWeight_mem_Icc` and `log_shiftedWeight_le`. -/
-
-/-- With the scales `x = exp logX`, `x₁ = exp logX₁` and `b = exp logB` of admissible data and the
-product `a = x b`, the quotient `a / x₁` satisfies `x ^ 999 ≤ a / x₁ ≤ b / x ^ 999`. -/
-lemma a_div_x₁_mem_Icc : (D.a : ℝ) / D.x₁ ∈ Icc (D.x ^ 999) (D.b / D.x ^ 999) := by
-  have h_logX_pos : 0 < D.logX := by
-    linarith [D.constantBound_le, D.mul_log_logB_le_logX, (le_constantBound (P := P)).1]
-  have h_quotient : (D.a : ℝ) / D.x₁ = exp (D.logX + D.logB - D.logX₁) := by
-    rw [exp_sub, exp_add, a, Nat.cast_mul, D.exp_logX, D.exp_logB]
-  -- The logarithms of the three terms are linear in `log x`, `log x₁` and `log b`.
-  rw [h_quotient]
-  constructor
-  · calc D.x ^ 999 = exp (999 * D.logX) := by simp [← exp_natCast_mul]
-      _ ≤ exp (D.logX + D.logB - D.logX₁) :=
-        exp_le_exp.2 (by linarith [D.logX_le_logX₁, D.logX₁_le_logB])
-  · calc exp (D.logX + D.logB - D.logX₁)
-        ≤ exp (D.logB - 999 * D.logX) := exp_le_exp.2 (by linarith [D.logX_le_logX₁])
-      _ = D.b / D.x ^ 999 := by simp [exp_sub, ← exp_natCast_mul]
 
 /-! ### Primes, levels and the number `Ω`
 

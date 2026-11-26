@@ -1,5 +1,7 @@
-import Lib.ClassField.Global.Chebotarev
-import Lib.Weil.Unramified.SplitHecke
+module
+
+public import Lib.ClassField.Global.Chebotarev
+public import Lib.Weil.Unramified.SplitHecke
 
 /-!
 # Weights, Hecke polynomials, eigenforms and the filter of most Frobenii
@@ -37,6 +39,8 @@ Notions from other files:
 Known; see `Lib.GaloisRep.Main.OddRank`, `Lib.GaloisRep.LocalGlobal.LabelCompatibility` and
 `Lib.ClassField.Global.Chebotarev` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

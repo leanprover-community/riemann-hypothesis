@@ -1,5 +1,7 @@
-import New.OneLift.ComparisonOperator.OneExchange
-import New.OneLift.TestedForms
+module
+
+public import New.OneLift.ComparisonOperator.OneExchange
+public import New.OneLift.TestedForms
 
 /-!
 # Gluing: residue rings, divided lattices, the congruence group and glued lattices
@@ -46,6 +48,8 @@ Notions from other files:
 * `New.Rows.liftMod`: A chosen lift of an invertible matrix modulo an ideal to an integral point of
   G_f that is 1 outside the places dividing the ideal and their conjugates.
 -/
+
+@[expose] public section
 
 noncomputable section
 

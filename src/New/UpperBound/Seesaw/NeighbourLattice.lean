@@ -1,4 +1,6 @@
-import New.UpperBound.Seesaw.EdgePairEvaluation
+module
+
+public import New.UpperBound.Seesaw.EdgePairEvaluation
 
 /-!
 # The neighbour lattice of a pair of edges
@@ -27,6 +29,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Seesaw
 

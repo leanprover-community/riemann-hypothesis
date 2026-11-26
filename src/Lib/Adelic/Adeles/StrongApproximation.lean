@@ -1,6 +1,8 @@
-import Lib.Adelic.Unitary.Defs
-import Lib.General.Analysis.FourierTransforms
-import Lib.General.NumberTheory.EmbeddingsAndDifferent
+module
+
+public import Lib.Adelic.Unitary.Defs
+public import Lib.General.Analysis.FourierTransforms
+public import Lib.General.NumberTheory.EmbeddingsAndDifferent
 
 /-!
 # Standard character, self-duality, strong approximation and one-sided Poisson summation
@@ -49,6 +51,8 @@ ch. XV, Theorem 4.1.4; for strong approximation, Cassels, ch. II §15.
 
 See also `Lib.Adelic.Unitary.WeakApproximation`.
 -/
+
+@[expose] public section
 
 /-!
 ## Rational points of a space embed injectively and discretely

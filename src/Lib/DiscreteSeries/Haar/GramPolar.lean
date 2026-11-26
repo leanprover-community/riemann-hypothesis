@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Haar.GramCoordinates
+module
+
+public import Lib.DiscreteSeries.Haar.GramCoordinates
 
 /-!
 # The polar formula for the Gram map on bases
@@ -30,6 +32,8 @@ Notions from other files:
 Known result: the invariant measure `dY / dT` on tuples of vectors with a given Gram matrix. Source:
 C. L. Siegel, Über die analytische Theorie der quadratischen Formen, Ann. of Math. 36 (1935).
 -/
+
+@[expose] public section
 
 noncomputable section
 

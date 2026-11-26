@@ -1,5 +1,7 @@
-import Lib.ClassField.HeckeCharacter.SplitTameCharacters
-import Lib.General.LinearAlgebra.TensorChains
+module
+
+public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+public import Lib.General.LinearAlgebra.TensorChains
 
 /-!
 # Direct and mirror data modulo `N`, and the operator `Up`
@@ -32,6 +34,8 @@ Notions from other files:
 * `liftIntegralFn r f` is `S ↦ f (r S)` on integral matrices `S` and zero elsewhere.
 * `compUpTo f j` is the composite `f (j - 1) ∘ ⋯ ∘ f 0` of a chain of linear maps.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import New.Congruences.Selmer.OneSystem
+module
+
+public import New.Congruences.Selmer.OneSystem
 
 /-!
 # The failure to be tied
@@ -36,6 +38,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

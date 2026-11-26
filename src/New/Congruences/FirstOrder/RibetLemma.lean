@@ -1,5 +1,7 @@
-import New.Congruences.FirstOrder.RibetMatrices
-import New.Congruences.FirstOrder.RibetMethod
+module
+
+public import New.Congruences.FirstOrder.RibetMatrices
+public import New.Congruences.FirstOrder.RibetMethod
 
 /-!
 # Ribet's method to first order over a discrete valuation ring
@@ -40,6 +42,8 @@ Notions from other files:
 * `New.Selmer.tiedRows` (`RibetMatrices`): the rows whose element `∑ r i (gen i - 1)` lies in the
   tie ideal.
 -/
+
+@[expose] public section
 
 section RibetFirstOrder
 

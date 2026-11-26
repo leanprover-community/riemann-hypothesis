@@ -1,7 +1,9 @@
-import Lib.DiscreteSeries.Bruhat.ComplexPlace
-import Lib.SiegelWeil.Formula.LagrangianZeroTerms
-import New.OneLift.ComparisonOperator.GluedLattices
-import New.OneLift.FalseLifts.BottomOfTower
+module
+
+public import Lib.DiscreteSeries.Bruhat.ComplexPlace
+public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
+public import New.OneLift.ComparisonOperator.GluedLattices
+public import New.OneLift.FalseLifts.BottomOfTower
 
 /-!
 # Vanishing of theta descents from W to W plus hyperbolic planes
@@ -47,6 +49,8 @@ Notions from other files:
 
 See `New.OneLift.FalseLifts.PeriodsOfFalseLifts` for related work.
 -/
+
+@[expose] public section
 
 namespace New.SiegelWeil
 

@@ -1,4 +1,6 @@
-import Lib.Adelic.Witt.WittTheorem
+module
+
+public import Lib.Adelic.Witt.WittTheorem
 
 /-!
 # Measures on hermitian quadrics: existence and uniqueness of disintegrations
@@ -24,6 +26,8 @@ and `x⁻¹ʳ` is the ring inverse, which is zero at non-units. The vector `x �
 of index sets is `x` on the first part and `y` on the second. The group `U T` consists of the
 invertible matrices g with `gᴴ * T * g = T`.
 -/
+
+@[expose] public section
 
 namespace New.Floors
 

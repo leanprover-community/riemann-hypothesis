@@ -1,6 +1,8 @@
-import New.Derivatives.Divisibility.Count
-import New.Derivatives.Vacuum.Scale
-import New.Derivatives.Vacuum.StandardDataProducts
+module
+
+public import New.Derivatives.Divisibility.Count
+public import New.Derivatives.Vacuum.Scale
+public import New.Derivatives.Vacuum.StandardDataProducts
 
 /-!
 # Integrality and divisibility of the derivatives of standard data
@@ -30,6 +32,8 @@ homogeneous integral polynomials.
 * `New.Parameters.norm_schurJet_jetSeries_le_of_charges`: the bound with removed columns and charges
   for the derivatives along the entries of the Schur matrices.
 -/
+
+@[expose] public section
 
 /-!
 ## Integrality of the derivatives of standard data at all primes

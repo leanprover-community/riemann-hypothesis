@@ -1,6 +1,8 @@
-import Lib.Weil.DualPair.KernelLaws
-import New.Derivatives.Vacuum.Divisibility
-import New.UpperBound.Kernels.JetConjugatesAndBounds
+module
+
+public import Lib.Weil.DualPair.KernelLaws
+public import New.Derivatives.Vacuum.Divisibility
+public import New.UpperBound.Kernels.JetConjugatesAndBounds
 
 /-!
 # p-adic gauge bounds for one theta lift and data from functions modulo an ideal
@@ -44,6 +46,8 @@ Notions from other files:
 See `New.UpperBound.Divisibility.LocalDivisibility` and
 `New.UpperBound.Kernels.JetConjugatesAndBounds` for related work.
 -/
+
+@[expose] public section
 
 /-! ## Standard data and the p-adic gauge of a theta kernel -/
 

@@ -1,6 +1,8 @@
-import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
-import Lib.SiegelWeil.Tower.PrincipalIdeles
-import Lib.Weil.MixedModel.Slices
+module
+
+public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
+public import Lib.SiegelWeil.Tower.PrincipalIdeles
+public import Lib.Weil.MixedModel.Slices
 
 /-!
 # The real cone integral
@@ -22,6 +24,8 @@ Throughout, `A` and `X` split a hyperbolic plane off `W'` and `V'`, with complem
 
 Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

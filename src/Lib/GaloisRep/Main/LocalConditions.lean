@@ -1,6 +1,8 @@
-import Lib.GaloisRep.Main.Defs
-import Lib.PadicHodge.Crystalline.HodgeTateJumps
-import Lib.PadicHodge.Crystalline.Regularity
+module
+
+public import Lib.GaloisRep.Main.Defs
+public import Lib.PadicHodge.Crystalline.HodgeTateJumps
+public import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # Local conditions on ℓ-adic Galois representations and their passage to retracts
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.Main.OddRank` and `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Local conditions at a place

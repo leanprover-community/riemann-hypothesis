@@ -1,7 +1,9 @@
-import Lib.SiegelWeil.SingularForms.CentreCoefficients
-import Lib.Weil.DualPair.FiniteAction
-import Lib.Weil.DualPair.KernelDecay
-import Lib.Weil.DualPair.MixedModel
+module
+
+public import Lib.SiegelWeil.SingularForms.CentreCoefficients
+public import Lib.Weil.DualPair.FiniteAction
+public import Lib.Weil.DualPair.KernelDecay
+public import Lib.Weil.DualPair.MixedModel
 
 /-!
 # Terms of theta kernels at rational matrices and basic laws of theta integrals
@@ -43,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Terms of the theta kernel at rational matrices

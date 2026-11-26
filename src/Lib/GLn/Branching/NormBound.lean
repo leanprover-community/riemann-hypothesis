@@ -1,4 +1,6 @@
-import Lib.GLn.SchurModule.LeadingRows
+module
+
+public import Lib.GLn.SchurModule.LeadingRows
 
 /-!
 # Branching from GL(n+1) to GL(n) × GL(1): the branching vector and the norm bound
@@ -36,6 +38,8 @@ Notions from other files:
 
 Known; see `Lib.GLn.Branching.IntegralMap` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

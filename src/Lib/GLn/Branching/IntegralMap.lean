@@ -1,4 +1,6 @@
-import Lib.GLn.Branching.NormBound
+module
+
+public import Lib.GLn.Branching.NormBound
 
 /-!
 # Branching from GL(n+1) to GL(n) × GL(1): integral equivariant branching maps
@@ -41,6 +43,8 @@ is non-zero is not part of the statement. Source: Goodman, Wallach 2009, Theorem
 Zhelobenko, Compact Lie Groups and their Representations, 1973, ch. X; Molev, Gelfand-Tsetlin bases
 for classical Lie algebras, arXiv math/0211289.
 -/
+
+@[expose] public section
 
 noncomputable section
 

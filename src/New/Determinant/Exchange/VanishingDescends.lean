@@ -1,6 +1,8 @@
-import Lib.SiegelWeil.Tower.FunctionalEquation
-import New.Determinant.Exchange.ConeImage
-import New.Determinant.Exchange.RemovingPlanes
+module
+
+public import Lib.SiegelWeil.Tower.FunctionalEquation
+public import New.Determinant.Exchange.ConeImage
+public import New.Determinant.Exchange.RemovingPlanes
 
 /-!
 # Vanishing of theta integrals descends along hyperbolic planes
@@ -22,6 +24,8 @@ Notions from other files:
 
 See `New.Determinant.Exchange.TheoremForPartners` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

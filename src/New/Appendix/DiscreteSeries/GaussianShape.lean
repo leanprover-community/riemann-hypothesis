@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
-import New.Appendix.DiscreteSeries.OneMinor
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+public import New.Appendix.DiscreteSeries.OneMinor
 
 /-!
 # The Gaussian shape of the coefficient
@@ -28,6 +30,8 @@ Except in the first section, the norm of a matrix is the Frobenius norm.
 
 See `New.Appendix.DiscreteSeries.Periods` for related work.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory Finset Fintype Ring Complex ComplexConjugate
 

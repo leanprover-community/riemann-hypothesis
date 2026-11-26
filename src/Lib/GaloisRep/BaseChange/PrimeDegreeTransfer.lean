@@ -1,6 +1,8 @@
-import Lib.GaloisRep.BaseChange.CongruenceLevelMatching
-import Lib.GaloisRep.BaseChange.StepMatchingPairs
-import Lib.GaloisRep.BaseChange.TwistedTraceIdentity
+module
+
+public import Lib.GaloisRep.BaseChange.CongruenceLevelMatching
+public import Lib.GaloisRep.BaseChange.StepMatchingPairs
+public import Lib.GaloisRep.BaseChange.TwistedTraceIdentity
 
 /-!
 # Base change in prime degree for definite U(n): a weak base change eigenform
@@ -41,6 +43,8 @@ matching after P. Scholze, The Langlands-Kottwitz approach for some simple Shimu
 Prop. 2.1 (norms inverted inside O[γ]) and J.-P. Labesse, Fonctions élémentaires et lemme
 fondamental pour le changement de base stable, Duke Math. J. 61, 1990.
 -/
+
+@[expose] public section
 
 namespace New
 

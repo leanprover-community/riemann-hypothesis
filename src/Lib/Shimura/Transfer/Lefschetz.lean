@@ -1,6 +1,8 @@
-import Lib.General.Combinatorics
-import Lib.Shimura.HeckeTower.Model
-import Lib.Shimura.Transfer.MarkedPairs
+module
+
+public import Lib.General.Combinatorics
+public import Lib.Shimura.HeckeTower.Model
+public import Lib.Shimura.Transfer.MarkedPairs
 
 /-!
 # h-null Hecke elements and the Lefschetz formula as a sum over marked pairs
@@ -33,6 +35,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.Transfer.WeightOccurs` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

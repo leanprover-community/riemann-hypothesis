@@ -1,6 +1,8 @@
-import Lib.Weil.DualPair.HolomorphicData
-import New.OneLift.HeckeValues.CharacterLift
-import New.UpperBound.Objects.Rows
+module
+
+public import Lib.Weil.DualPair.HolomorphicData
+public import New.OneLift.HeckeValues.CharacterLift
+public import New.UpperBound.Objects.Rows
 
 /-!
 # Data of the three exchanges: the carrier, the choices and the functions 𝖥_i
@@ -69,6 +71,8 @@ Notions from other files:
 * Integral vectors with a monomial Fock polynomial: the height bound for inverse ratios of twisted
   to untwisted Hecke L-values. See `New.OneLift.HeckeValues.TwistedValueHeights`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

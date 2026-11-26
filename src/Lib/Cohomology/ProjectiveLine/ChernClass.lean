@@ -1,4 +1,6 @@
-import Lib.Cohomology.TorsionTheories
+module
+
+public import Lib.Cohomology.TorsionTheories
 
 /-!
 # Tate module, Kummer sequence and the first Chern class of O(1) on the projective line
@@ -39,6 +41,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.ProjectiveLine.ConstantLineFormula` and
 `Lib.PadicComparison.Duality.GoodPairs` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

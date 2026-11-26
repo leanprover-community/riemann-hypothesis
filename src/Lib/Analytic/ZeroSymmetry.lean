@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Zeros of L(s, χ) and of L(1 − s, χ⁻¹)
@@ -13,6 +15,8 @@ Known result: the symmetry of the zeros, a consequence of the functional equatio
 L-functions. Source: Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Corollaries 10.3
 and 10.8.
 -/
+
+@[expose] public section
 
 open Complex DirichletCharacter CharZero Nat.Prime
 

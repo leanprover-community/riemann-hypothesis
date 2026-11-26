@@ -1,4 +1,6 @@
-import Lib.General.Groups.BesselGroups
+module
+
+public import Lib.General.Groups.BesselGroups
 
 /-!
 # Lines and hyperplanes over a field
@@ -18,6 +20,8 @@ Notions from other files:
 
 Standard linear algebra.
 -/
+
+@[expose] public section
 
 namespace New
 

@@ -1,6 +1,8 @@
-import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
-import New.OneLift.ComparisonOperator.ExchangeData
-import New.Spanning.SecondMoment.SpanningTheorem
+module
+
+public import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
+public import New.OneLift.ComparisonOperator.ExchangeData
+public import New.Spanning.SecondMoment.SpanningTheorem
 
 /-!
 # Main summand conditions on Hodge–Tate jumps and existence of main summands for Hecke eigensystems
@@ -46,6 +48,8 @@ Langlands' functoriality and the Weil representation, 1982; Khare–Larsen–Sav
 the inverse Galois problem, 2008; Arias-de-Reyna–Dieulefait–Shin–Wiese, Compatible systems of
 symplectic Galois representations III, 2015.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

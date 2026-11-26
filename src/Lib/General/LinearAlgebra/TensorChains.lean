@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Chains of linear maps, tensor products of their data, and separation by forms
@@ -21,6 +23,8 @@ steps from pure data to arbitrary tensors of the data.
   no common zero but `0` and `V` is torsion-free, then the maps `U ⊗ V → V`,
   `u ⊗ v ↦ f i u • v`, have no common zero but `0`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

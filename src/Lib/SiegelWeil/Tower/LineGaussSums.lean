@@ -1,6 +1,8 @@
-import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
-import Lib.Weil.MixedModel.Slices
+module
+
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
+public import Lib.Weil.MixedModel.Slices
 
 /-!
 # Standard partners, shear invariance, Gauss sums along lines and coefficients of lifts
@@ -55,6 +57,8 @@ Notions from other files:
 Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` and
 `Lib.SiegelWeil.SingularForms.UnimodularCoefficients` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

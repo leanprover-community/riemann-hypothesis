@@ -1,4 +1,6 @@
-import Lib.Weil.DualPair.MixedModel
+module
+
+public import Lib.Weil.DualPair.MixedModel
 
 /-!
 # Adapted splittings: hyperbolic polarisation, Hom spaces, composition and stages
@@ -46,6 +48,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 open Matrix in
 /-- Restricting the Gram matrix `Mᴴ * J * M` to the rows and columns chosen by `e` gives the Gram

@@ -1,5 +1,7 @@
-import Lib.Weil.DualPair.ThetaLiftConvergence
-import Lib.Weil.Periods.ConstantTerm
+module
+
+public import Lib.Weil.DualPair.ThetaLiftConvergence
+public import Lib.Weil.Periods.ConstantTerm
 
 /-!
 # One step of the seesaw unfolding of the theta integral over the Bessel group
@@ -46,6 +48,8 @@ periods associated to nilpotent orbits, J. Number Theory 271 (2025) 122–149, P
 for the local case, R. Gomez, C.-B. Zhu, GAFA 24 (2014) 796–853; for unitary hooks, M. Furusawa, K.
 Morimoto, Math. Ann. 391 (2025) §3.
 -/
+
+@[expose] public section
 
 noncomputable section
 

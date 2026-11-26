@@ -1,7 +1,9 @@
-import Lib.General.NumberTheory.CoefficientInclusion
-import New.Congruences.Selmer.Descent
-import New.Congruences.Selmer.StickelbergerLine
-import New.Congruences.Selmer.Untied
+module
+
+public import Lib.General.NumberTheory.CoefficientInclusion
+public import New.Congruences.Selmer.Descent
+public import New.Congruences.Selmer.StickelbergerLine
+public import New.Congruences.Selmer.Untied
 
 /-!
 # Restriction to a line
@@ -47,6 +49,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

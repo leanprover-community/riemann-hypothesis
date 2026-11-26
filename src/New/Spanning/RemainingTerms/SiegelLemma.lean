@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.LocalFactors
-import Lib.General.NumberTheory.LatticeCovolumes
-import New.Spanning.Unfolding.Setup
+module
+
+public import Lib.Adelic.Adeles.LocalFactors
+public import Lib.General.NumberTheory.LatticeCovolumes
+public import New.Spanning.Unfolding.Setup
 
 /-!
 # Discriminants of sublattices, Siegel's lemma and a height zeta function of subspaces
@@ -37,6 +39,8 @@ out by lattice vectors; a power of the product of their norms is bounded by an e
 depending on the degree, the codimension and the root discriminant, times its discriminant. Source:
 E. Bombieri, J. Vaaler, On Siegel's lemma, Invent. Math. 73 (1983).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -600,7 +604,7 @@ lemma exists_inv_sublatticeDiscriminant_pow_le_prod (u : Gf E κ) {T : Submodule
   set P : ℝ := ∏ i, ‖((stdSpace E κ).move (1, u)).archCoords (X i)‖
   set n : ℕ := numInfPlaces E * (card κ + 1) with hn
   set C : ℝ := (8 * (numInfPlaces E * card κ) * rootDiscr E) ^ n with hC
-  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := Real.rpow_nonneg (by positivity) _
+  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := (rootDiscr_pos E).le
   have hd : 0 ≤ d := Real.sqrt_nonneg _
   have hP : 1 ≤ P := one_le_prod₀ fun i _ ↦ one_le_norm_archCoords u (hX i).left (hX i).right
   have h_pow : P ^ (2 * n) ≤ C ^ s * d ^ (card κ + 1) :=
@@ -638,7 +642,7 @@ lemma tsum_sublatticeDiscriminant_inv_le (u : Gf E κ) (s : ℕ) :
   let n : ℕ := numInfPlaces E * (card κ + 1)
   let C : ℝ := (8 * (numInfPlaces E * card κ) * rootDiscr E) ^ n
   let wt (x : L) : ℝ := ‖V.archCoords x.val‖⁻¹ ^ (2 * n) * C
-  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := Real.rpow_nonneg (by positivity) _
+  have h_rootDiscr_nonneg : 0 ≤ rootDiscr E := (rootDiscr_pos E).le
   have h_wt (x : L) : 0 ≤ wt x := by positivity
   -- Nonzero lattice vectors have length at least `1`, so they are `1`-separated and the packing
   -- bound `∑ ‖x‖⁻¹ ^ (2 n) ≤ 5 ^ (2 n)` holds, as `2 n` exceeds the real dimension

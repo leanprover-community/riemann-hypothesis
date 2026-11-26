@@ -1,4 +1,6 @@
-import Lib.CM.GoodReduction
+module
+
+public import Lib.CM.GoodReduction
 
 /-!
 # Galois conjugates of CM curves: conjugate sections, isogenies and translates of θ
@@ -46,6 +48,8 @@ Part of a known result: Main theorem of complex multiplication for elliptic curv
 `Lib.CM.ChowlaSelberg`. No reciprocity law is used: the conjugate lattice comes from uniformisation,
 and points are matched by transporting sections.
 -/
+
+@[expose] public section
 
 /-!
 ## Transport of sections and points to a conjugate curve

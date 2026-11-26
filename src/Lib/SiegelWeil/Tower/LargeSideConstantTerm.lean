@@ -1,6 +1,8 @@
-import Lib.SiegelWeil.Tower.ConstantTerm
-import Lib.SiegelWeil.Tower.FiniteTateIntegral
-import Lib.SiegelWeil.Tower.LineGaussSums
+module
+
+public import Lib.SiegelWeil.Tower.ConstantTerm
+public import Lib.SiegelWeil.Tower.FiniteTateIntegral
+public import Lib.SiegelWeil.Tower.LineGaussSums
 
 /-!
 # Removing a plane: the constant term on the side of the large space
@@ -49,6 +51,8 @@ times a factor whose size is given by a Hecke L-value. Source: S. Rallis, On the
 conjecture, Compositio Math. 51 (1984), Thm I.1.1; for the unitary case, C. Wu, Irreducibility of
 theta lifting for unitary groups, J. Number Theory 133 (2013), Prop. 3.1.
 -/
+
+@[expose] public section
 
 noncomputable section
 

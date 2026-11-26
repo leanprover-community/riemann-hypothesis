@@ -1,5 +1,7 @@
-import Lib.ClassField.GreenbergWiles.CocycleCounts
-import Lib.ClassField.GreenbergWiles.SelmerRelations
+module
+
+public import Lib.ClassField.GreenbergWiles.CocycleCounts
+public import Lib.ClassField.GreenbergWiles.SelmerRelations
 
 /-!
 # Relations at split primes
@@ -35,6 +37,8 @@ Part of a known result: Greenberg–Wiles formula, as a lower bound for the dual
 `Lib.ClassField.GreenbergWiles.CocycleCounts`. Source: Darmon, Diamond, Taylor, Fermat's Last
 Theorem, Theorem 2.19; the case that is used is proved here.
 -/
+
+@[expose] public section
 
 noncomputable section
 

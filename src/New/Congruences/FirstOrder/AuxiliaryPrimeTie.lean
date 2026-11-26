@@ -1,5 +1,7 @@
-import New.Congruences.FirstOrder.FittingBlock
-import New.Congruences.FirstOrder.TiedTraces
+module
+
+public import New.Congruences.FirstOrder.FittingBlock
+public import New.Congruences.FirstOrder.TiedTraces
 
 /-!
 # The family of operators at the auxiliary places
@@ -60,6 +62,8 @@ of p-adic groups I, 1980; Clozel–Harris–Taylor, Automorphy for some l-adic l
 §3.4), 2008.
 -/
 
+@[expose] public section
+
 open Pi Fintype Polynomial Nat Group Submodule ComplexOrder
 
 attribute [local instance low] Fintype.ofFinite
@@ -76,8 +80,6 @@ variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type} [Field E] [CMType 
 
 /-! ### One place: the operator `∂` -/
 
-set_option synthInstance.maxHeartbeats 200000
-
 omit [Nonempty n] [Fintype J] [DecidableEq J] [V.IsStd] [WeilData E] in
 lemma integralEnd_mul_apply (s s' : D.integralEnd Q.place) (y : D.formsOfLevel Q.place) :
     (s * s').val y = s.val (s'.val y) := rfl
@@ -86,7 +88,7 @@ omit [Nonempty n] [Fintype J] [DecidableEq J] [V.IsStd] [WeilData E] in
 lemma isSMulRegular_integralEnd {k : ℕ} (hk : k ≠ 0) :
     IsSMulRegular (D.integralEnd Q.place) k := by
   intro s s' h
-  refine Subtype.ext (LinearMap.ext fun y ↦ ?_)
+  refine Subtype.ext (FormEnd.ext fun y ↦ ?_)
   have h_apply : k • s.val y = k • s'.val y := congr(($h).val y)
   simp only [← cast_smul_eq_nsmul ℂ] at h_apply
   exact smul_right_injective _ (cast_ne_zero.2 hk) h_apply
@@ -319,7 +321,7 @@ lemma exists_norm_apply_eq_smul (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) :
   rw [← Equiv.sum_comp (.inv _) (D.residueRep Q)]
   calc _ = (∑ g, D.residueRep Q g⁻¹ * Ψ * D.residueRep Q g).1 y := by simp [fixed]
     _ = c • y := by
-        rw [hΨ, SubringClass.coe_natCast, Module.End.natCast_apply]
+        rw [hΨ, SubringClass.coe_natCast, FormEnd.natCast_apply]
 
 /-! ### From the top coefficient to the denominator -/
 
@@ -353,7 +355,7 @@ lemma heckeAction_pow_apply {A δ₀ : D.heckeAlgebra Q.place} {n₀ : EllAdicIn
     ring
   have kill : (heckeAction (v * s * (δ₀ - algebraMap _ _ n₀))).1 y = 0 := by
     simp [map_mul, hy, Algebra.algebraMap_eq_smul_one]
-  rw [split, map_add, map_smul, AddMemClass.coe_add, LinearMap.add_apply, kill, add_zero]
+  rw [split, map_add, map_smul, AddMemClass.coe_add, FormEnd.add_apply, kill, add_zero]
   rfl
 
 end
@@ -379,9 +381,9 @@ lemma norm_mul_heckeAction_apply (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
         rw [← comm.eq, integralEnd_mul_apply, hu]
     _ = d • c • c ^ 2 • (heckeAction s).1 ((heckeAction (A * δ₀)).1 l) := by
         rw [map_nsmul, map_nsmul, smul_mul_assoc, mul_comm _ s, map_nsmul, map_mul _ s,
-          AddSubmonoidClass.coe_nsmul, LinearMap.smul_apply, integralEnd_mul_apply]
+          AddSubmonoidClass.coe_nsmul, FormEnd.nsmul_apply, integralEnd_mul_apply]
     _ = d • c • c ^ 2 • n₀ • (heckeAction (A * s)).1 y := by
-        rw [h_proj, LinearMap.map_smul_of_tower, mul_comm A, map_mul, integralEnd_mul_apply]
+        rw [h_proj, FormEnd.map_smul_of_tower, mul_comm A, map_mul, integralEnd_mul_apply]
     _ = (n₀ * c ^ 2) • d • c • (heckeAction (A * s)).1 y := by
         simp only [← cast_smul_eq_nsmul EllAdicIntegers, smul_smul]
         push_cast
@@ -413,7 +415,7 @@ lemma sum_mul_residueRep_apply_eq_smul (h_offLevel : ∀ j : J, D.IsOffLevel ![]
       (Y Sᶜ * ((∑ g, D.residueRep Q g) * heckeAction (δ * coef S))).1 u =
         n₁ • d • c • (Y Sᶜ).1 ((heckeAction (A * coef S)).1 y) := by
     rw [integralEnd_mul_apply, norm_mul_heckeAction_apply Q h_offLevel hu h_proj,
-      LinearMap.map_smul_of_tower, map_nsmul, map_nsmul]
+      FormEnd.map_smul_of_tower, map_nsmul, map_nsmul]
   -- `Y ∅ = δ ^ i` acts as `(n₁ A) ^ i` on `y`.
   have on_y : (Y ∅).1 ((heckeAction (A * coef univ)).1 y) =
       n₁ ^ i • (heckeAction (A ^ (i + 1) * coef univ)).1 y := by
@@ -423,7 +425,7 @@ lemma sum_mul_residueRep_apply_eq_smul (h_offLevel : ∀ j : J, D.IsOffLevel ![]
       (Y Sᶜ * ((∑ g, D.residueRep Q g) * heckeAction (δ * coef S))).1 u = 0 := by
     rw [term, map_mul, integralEnd_mul_apply, h_low S hS]
     simp only [map_zero, smul_zero]
-  rw [AddSubmonoidClass.coe_finsetSum, LinearMap.sum_apply,
+  rw [AddSubmonoidClass.coe_finsetSum, FormEnd.sum_apply,
     sum_eq_single_of_mem univ (mem_univ _) lower_zero]
   calc _ = n₁ • d • c • (Y ∅).1 ((heckeAction (A * coef univ)).1 y) := by rw [term, compl_univ]
     _ = n₁ • d • c • n₁ ^ i • (heckeAction (A ^ (i + 1) * coef univ)).1 y := by rw [on_y]
@@ -526,7 +528,7 @@ theorem smul_top_coeff_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel ![] (Q
     refine smul_right_injective _ n₁_ne ?_
     simp only [algebraMap_smul]
     rw [← top, ← sub_sub_cancel (n₁ ^ (i + 1) • _) G', hW, mul_smul, ← smul_sub, SetLike.val_smul,
-      LinearMap.smul_apply]
+      FormEnd.smul_apply]
   change (d • c • (heckeAction (A ^ (i + 1) * coef univ)).1 y).1 ∈ ellIntegralForms
   rw [integral]
   exact (heckeAction (A ^ (i + 1)) * G - μ' • W).2 u (Ψ.2 (d • l) hd)
@@ -701,7 +703,7 @@ lemma exists_diagOp_mem_ellIntegralForms (hQ : ∀ j : J, D.IsOffLevel ![] (Q.pl
   have h_proj : (heckeAction (A * δ₀)).1 l = n₀ • (heckeAction A).1 y :=
     calc _ = (heckeAction (A * δ₀)).1 y := Subtype.ext (y_eq _ fun x hx ↦ by simp [hδ₀_apply, hx])
       _ = n₀ • (heckeAction A).1 y := by
-          rw [map_mul, integralEnd_mul_apply, h_lift, LinearMap.map_smul_of_tower]
+          rw [map_mul, integralEnd_mul_apply, h_lift, FormEnd.map_smul_of_tower]
   have h_lt_top (S : Finset J) (hS : S ≠ univ) :
       ∑ j ∈ S, Finsupp.single j 1 < ∑ j : J, Finsupp.single j 1 := by
     obtain ⟨j, hj⟩ : ∃ j, j ∉ S := by simpa [eq_univ_iff_forall] using hS

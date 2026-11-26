@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Holomorphic.ModelFunction
-import Lib.DiscreteSeries.Holomorphic.PeaksAwayFromCusp
-import New.OneLift.ComparisonOperator.ExchangeData
+module
+
+public import Lib.DiscreteSeries.Holomorphic.ModelFunction
+public import Lib.DiscreteSeries.Holomorphic.PeaksAwayFromCusp
+public import New.OneLift.ComparisonOperator.ExchangeData
 
 /-!
 # Decay of Fock matrix coefficients, sparse theta sums and the isolation estimate
@@ -48,6 +50,8 @@ Notions from other files:
 See `New.OneLift.ComparisonOperator.ProductsSpan` for related work. See
 `Lib.Weil.DualPair.ThetaLiftConvergence` and `Lib.Adelic.Reduction.FiniteVolume` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Decay of Heisenberg matrix coefficients of homogeneous Fock vectors

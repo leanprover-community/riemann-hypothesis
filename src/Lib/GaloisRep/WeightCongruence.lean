@@ -1,5 +1,7 @@
-import Lib.Adelic.AutomorphicForms.PAdicGauge
-import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
+module
+
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
 
 /-!
 # ℓ-adic models of algebraic forms and congruences that change the weight
@@ -58,6 +60,8 @@ Paškūnas, On the density of supercuspidal points of fixed regular weight, J. �
 (2020); J. Fintzen, S. W. Shin, Congruences of algebraic automorphic forms and supercuspidal
 representations, Camb. J. Math. 9 (2021); Kaplansky, Proc. AMS 1 (1950).
 -/
+
+@[expose] public section
 
 noncomputable section
 

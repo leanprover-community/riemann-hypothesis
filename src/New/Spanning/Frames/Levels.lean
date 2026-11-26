@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bruhat.FloorMeasures
-import New.Spanning.Frames.Lengths
+module
+
+public import Lib.DiscreteSeries.Bruhat.FloorMeasures
+public import New.Spanning.Frames.Lengths
 
 /-!
 # Place data, floor measures and depth
@@ -40,6 +42,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

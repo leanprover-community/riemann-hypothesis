@@ -1,6 +1,8 @@
-import Lib.General.Algebra.ResidueSums
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
-import New.Appendix.DiscreteSeries.Positions
+module
+
+public import Lib.General.Algebra.ResidueSums
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import New.Appendix.DiscreteSeries.Positions
 
 /-!
 # The stationary position
@@ -29,6 +31,8 @@ Notions from other files:
 * `signMatrix ε` is the diagonal matrix of the signs `ε`, and `formAdjoint ε η A` is the adjoint
   `A†` for the hermitian forms with the signs `ε` and `η`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

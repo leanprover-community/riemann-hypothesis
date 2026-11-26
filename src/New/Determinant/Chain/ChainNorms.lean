@@ -1,7 +1,9 @@
-import New.Determinant.Chain.Moduli
-import New.Determinant.Chain.TriangleLifts
-import New.Determinant.Chain.TriangleNorms
-import New.Determinant.Exchange.OneSquare
+module
+
+public import New.Determinant.Chain.Moduli
+public import New.Determinant.Chain.TriangleLifts
+public import New.Determinant.Chain.TriangleNorms
+public import New.Determinant.Exchange.OneSquare
 
 /-!
 # Norms along the chain of theta lifts and injectivity of ι_ϑ
@@ -60,6 +62,8 @@ Related work: Gan–Qiu–Takeda, Regularized Siegel–Weil formula and Rallis i
 1.3), 2014; Bruinier–Funke, Injectivity of the Kudla–Millson lift, 2010; He, Compositions of theta
 correspondences, 2005.
 -/
+
+@[expose] public section
 
 noncomputable section
 

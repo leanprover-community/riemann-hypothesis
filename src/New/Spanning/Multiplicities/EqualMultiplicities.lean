@@ -1,6 +1,8 @@
-import Lib.Adelic.TraceFormula.CuspidalComparison
-import Lib.Adelic.TraceFormula.CuspidalType
-import New.Determinant.Norms.AdjointThetaLift
+module
+
+public import Lib.Adelic.TraceFormula.CuspidalComparison
+public import Lib.Adelic.TraceFormula.CuspidalType
+public import New.Determinant.Norms.AdjointThetaLift
 
 /-!
 # Equality of multiplicities
@@ -40,6 +42,8 @@ The equality of traces is the analogue of the Jacquet–Langlands correspondence
 algebra that is ramified exactly at the real places. Related work: Harris–Labesse, Conditional base
 change for unitary groups, 2004; Labesse, Changement de base CM et séries discrètes, 2011.
 -/
+
+@[expose] public section
 
 namespace New
 

@@ -1,5 +1,7 @@
-import Lib.Cohomology.Hodge.DepthVanishing
-import Lib.Cohomology.LerayHirsch
+module
+
+public import Lib.Cohomology.Hodge.DepthVanishing
+public import Lib.Cohomology.LerayHirsch
 
 /-!
 # Künneth formula: Hodge classes on X × X are sums of external products
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

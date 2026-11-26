@@ -1,4 +1,6 @@
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # The Gauss valuation of a polynomial over the ring of integers of ℚ̄_ℓ
@@ -28,6 +30,8 @@ Notions from other files:
 Known result: Gauss norms and Gauss's lemma for polynomials over the integral elements of ℚ̄_ℓ.
 Source: Bosch, Güntzer, Remmert, Non-Archimedean Analysis.
 -/
+
+@[expose] public section
 
 noncomputable section
 

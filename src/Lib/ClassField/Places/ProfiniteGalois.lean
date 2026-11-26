@@ -1,4 +1,6 @@
-import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+module
+
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 
 /-!
 # Profinite Galois groups: continuity, restriction maps and the Galois correspondence
@@ -27,6 +29,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 open Function MulSemiringAction InfiniteGalois Subgroup Units IntermediateField IsScalarTower Module
   Fact Subtype DFunLike MulAction Topology algebraMap

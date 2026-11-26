@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Line bundles on schemes via ring-valued points: descent and the Picard group
@@ -31,6 +33,8 @@ defines the Picard group with its pull-back.
 These are standard facts on line bundles and faithfully flat descent, in the language of ring-valued
 points.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
+module
+
+public import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
 
 /-!
 # Primes congruent to `1` modulo `M ^ k` with logarithm in a prescribed window
@@ -24,6 +26,8 @@ consequence of the Siegel–Walfisz theorem. Only one prime is found, in a long 
 moduli that are powers of a fixed multiple of `4`. Source: Montgomery and Vaughan, Multiplicative
 Number Theory I, 2007, Cor. 11.19.
 -/
+
+@[expose] public section
 
 /-! ## A lower bound for Euler's totient -/
 

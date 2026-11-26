@@ -1,5 +1,7 @@
-import Lib.Cohomology.ProjectiveLine.ConstantLineFormula
-import Lib.PadicComparison.Duality.GoodPairs
+module
+
+public import Lib.Cohomology.ProjectiveLine.ConstantLineFormula
+public import Lib.PadicComparison.Duality.GoodPairs
 
 /-!
 # Charted varieties, and smooth base change from a valuation ring to its fraction field
@@ -42,14 +44,12 @@ duality in abstract 6-functor formalisms (arXiv 2301.03821) and Li-Reinecke-Zavy
 2410.08200).
 -/
 
+@[expose] public section
+
 namespace New.Variety
 
 open CategoryTheory AlgebraicGeometry ObjectProperty Function Ideal nonZeroDivisors Algebra
   PrimeSpectrum CommRingCat Set Localization TensorProduct IsSmoothAt Comparison
-
--- Several proofs below (the universal point of `isBijective_algToBaseChange`, the units in
--- `isBijective_restrict_restrictScalars_iff`) fail without this option.
-set_option backward.isDefEq.respectTransparency false
 
 section BaseChange
 
@@ -84,7 +84,9 @@ lemma isBijective_algToBaseChange (F : AbFunctor TestRing) :
     ⟨Over.homMk _ (Spec.homEquiv.eq_symm_apply.2 congr($(y.property).down))⟩
   refine ⟨B, x, 𝟙 c, ?_, fun d z f hzf ↦ ?_, ?_⟩
   · -- The point `x` lies over `y`.
-    aesop
+    refine Eq.trans ?_
+      (ConcreteCategory.congr_hom ((testIncl ⋙ (geomPoints R A).obj Y).map_id c) y).symm
+    rfl
   · -- The ring map of `f` is a map of `A`-algebras, by the second component of `hzf`.
     have h_commutes (a : A) : f.hom.hom (algebraMap A c.obj a) = algebraMap A d.obj a :=
       congr($(hzf).val.2.down.hom' a).symm
@@ -229,9 +231,11 @@ private lemma isBijective_restrict_restrictScalars_iff {A : ClosurePlace} {p : �
   -- `hasUniversalPoints_structurePt` gives the test `B` over `Ω` that is universal under `c`.
   have h_univ : κ.HasUniversalPoints u := fun c y ↦ by
     have h_unit (a : A⁰) : IsUnit (algebraMap A c.1 a) := by
-      -- (`using!`: the ring of `c` appears once as `c` and once as `(TestOver.toTest A).obj c`)
-      simpa [map_span] using! eq_top_mono
-        ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) y.2
+      -- (the ring of `c` appears once as `c` and once as `(TestOver.toTest A).obj c`)
+      have h := radical_eq_top.1 (eq_top_mono
+        ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) y.2)
+      rw [← span_singleton_eq_top, ← Set.image_singleton (f := algebraMap A c.1), ← map_span]
+      exact h
     obtain ⟨B, x, s, -, h_uniq, h_bij⟩ :=
       hasUniversalPoints_structurePt A Ω c
         ⟨⟨CommAlg.homOfRingHom _ (IsLocalization.lift_eq h_unit)⟩⟩

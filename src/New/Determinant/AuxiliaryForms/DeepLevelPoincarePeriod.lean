@@ -1,6 +1,8 @@
-import New.Appendix.DiscreteSeries.SteepParameters
-import New.UpperBound.Objects.Columns
-import New.UpperBound.Objects.Parameters
+module
+
+public import New.Appendix.DiscreteSeries.SteepParameters
+public import New.UpperBound.Objects.Columns
+public import New.UpperBound.Objects.Parameters
 
 /-!
 # Steep parameters of Y₀ and Ỹ^0_0; periods of Poincaré series of deep level
@@ -45,6 +47,8 @@ Notions from other files:
 * `New.principalLevel`: the finite adelic integral points congruent to `1` modulo an element `a`
   of the ring of integers of `E`.
 -/
+
+@[expose] public section
 
 /-! ## Steepness of the discrete series parameters at infinite places -/
 

@@ -1,4 +1,6 @@
-import New.Determinant.Norms.AdjointThetaLift
+module
+
+public import New.Determinant.Norms.AdjointThetaLift
 
 /-!
 # The lift of a character and its squared norm as a Hecke L-value
@@ -47,6 +49,8 @@ Notions from other files:
 
 See `Lib.SiegelWeil.RallisInner.SharpData` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -352,7 +356,7 @@ lemma LValueData.blockMass_eq_blockMeanSquare_div :
   have h_twist (w : FinPlace E) :
       ((w.q : ℂ) - 1) / w.q = (w.q - 1) * w.q ^ (card n - 1) / w.q ^ card n := by
     rw [← pow_sub_one_mul X.one_lt_card.ne_bot (w.q : ℂ)]
-    field_simp [Nat.cast_ne_zero.2 (zero_lt_one.trans w.one_lt_q).ne']
+    field_simp [w.q_bounds]
   calc X.descentPair.blockMass
       = (∏ i, (((X.twistPlace i).q : ℂ) - 1) * ((X.twistPlace i).q : ℂ) ^ (card n - 1)) /
           ((∏ i, ((X.chosenPlace i).q : ℂ) ^ card n) * ∏ i, ((X.twistPlace i).q : ℂ) ^ card n) /
@@ -402,11 +406,11 @@ lemma LValueData.blockMeanSquare_mul_relIndex_mul_prod_eq_pow :
     sub_ne_zero.2 (mod_cast (one_lt_pow₀ w.one_lt_q h_card).ne')
   have h_chosen (w : FinPlace E) :
       ((w.q : ℂ) ^ card n)⁻¹ * (w.q ^ card n - 1) * (1 - ((w.q : ℂ) ^ card n)⁻¹)⁻¹ = 1 := by
-    field_simp [h_ne w, Nat.cast_ne_zero.2 (zero_lt_one.trans w.one_lt_q).ne']
+    field_simp [w.q_bounds, h_ne w]
   have h_twist (w : FinPlace E) : ((w.q : ℂ) - 1) / w.q * (∑ j ∈ range (card n), (w.q : ℂ) ^ j) *
       (1 - ((w.q : ℂ) ^ card n)⁻¹)⁻¹ = w.q ^ (card n - 1) := by
     rw [div_mul_eq_mul_div, mul_geom_sum]
-    field_simp [h_ne w, Nat.cast_ne_zero.2 (zero_lt_one.trans w.one_lt_q).ne']
+    field_simp [w.q_bounds, h_ne w]
     rw [mul_pow_sub_one h_card]
   calc _ = (∏ i, ((X.chosenPlace i).q ^ card n : ℂ)⁻¹ * ((X.chosenPlace i).q ^ card n - 1) *
           (1 - ((X.chosenPlace i).q ^ card n : ℂ)⁻¹)⁻¹) *

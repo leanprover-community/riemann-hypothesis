@@ -1,6 +1,8 @@
-import Mathlib.Probability.Kernel.Composition.MeasureCompProd
-import Lib.DiscreteSeries.Bruhat.FloorGroups
-import Lib.General.Measure.QuadricDisintegration
+module
+
+public import Mathlib.Probability.Kernel.Composition.MeasureCompProd
+public import Lib.DiscreteSeries.Bruhat.FloorGroups
+public import Lib.General.Measure.QuadricDisintegration
 
 /-!
 # Solving the equation of a quadric in a block of coordinates
@@ -34,6 +36,8 @@ Notions from other files:
 ## Relation to the literature
 Elementary: Tonelli's theorem and the invariance of Haar measure.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -154,15 +158,14 @@ theorem IsDisintegration.lintegral_lintegral_comm {μ : Measure (κ → A)} {μ'
     Measurable.lintegral_kernel_prod_right (κ := k') (by fun_prop)
   calc
     _ = ∫⁻ b : skewAdjoint A, ∫⁻ y : κ → A, ∫⁻ z : B → A, f (y, z) ∂l' (β - b) ∂l b ∂skewMeasure :=
-      hl.lintegral_quadricIndex (G := fun p ↦ ∫⁻ z : B → A, f (p.2, z) ∂l' (β - p.1)) h_meas
+      hl.lintegral_quadricIndex h_meas
     _ = ∫⁻ b : skewAdjoint A, ∫⁻ y : κ → A, ∫⁻ z : B → A, f (y, z) ∂l' b ∂l (β - b)
           ∂skewMeasure := by
       rw [← lintegral_sub_left_eq_self _ β]
       simp only [_root_.sub_sub_cancel]
     _ = ∫⁻ b : skewAdjoint A, ∫⁻ z : B → A, ∫⁻ y : κ → A, f (y, z) ∂l (β - b) ∂l' b ∂skewMeasure :=
       lintegral_congr fun b ↦ lintegral_lintegral_swap (by fun_prop)
-    _ = _ := (hl'.lintegral_quadricIndex
-      (G := fun p ↦ ∫⁻ y : κ → A, f (y, p.2) ∂l (β - p.1)) h_meas').symm
+    _ = _ := (hl'.lintegral_quadricIndex h_meas').symm
 
 omit [TopologicalSpace A] [MeasureSpace A] [Place A] [Fintype B] [Fintype κ] in
 /-- Let T be hermitian and let e split κ into κ₂ and B so that the basis vectors indexed by B are

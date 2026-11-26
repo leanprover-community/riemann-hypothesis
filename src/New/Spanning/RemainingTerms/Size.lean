@@ -1,6 +1,8 @@
-import New.Spanning.Bessel.OpenCellPairing
-import New.Spanning.RemainingTerms.SchurOrbit
-import New.Spanning.Unfolding.TermStructure
+module
+
+public import New.Spanning.Bessel.OpenCellPairing
+public import New.Spanning.RemainingTerms.SchurOrbit
+public import New.Spanning.Unfolding.TermStructure
 
 /-!
 # The orbit bound: a bound for a block of amplitudes; the second moment of a set of terms
@@ -49,6 +51,8 @@ Notions from other files:
 
 See `New.Spanning.RemainingTerms.Sum` for related work.
 -/
+
+@[expose] public section
 
 /-!
 ## Second moment of a set of terms and transfer to cut Bessel functions

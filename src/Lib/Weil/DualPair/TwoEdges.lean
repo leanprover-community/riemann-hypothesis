@@ -1,6 +1,8 @@
-import Lib.General.LinearAlgebra.TensorChains
-import Lib.Weil.CompactLift.ThetaKernelDefs
-import Lib.Weil.DualPair.Flip
+module
+
+public import Lib.General.LinearAlgebra.TensorChains
+public import Lib.Weil.CompactLift.ThetaKernelDefs
+public import Lib.Weil.DualPair.Flip
 
 /-!
 # Two edges V → V′ → V″ joined into one datum of the pair (V′, V⁻ ⊕ V″)
@@ -48,6 +50,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

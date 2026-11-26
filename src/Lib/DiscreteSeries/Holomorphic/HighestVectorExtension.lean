@@ -1,5 +1,7 @@
-import Lib.General.Analysis.MeanValueAndTaylor
-import Lib.General.LinearAlgebra.PolarDecomposition
+module
+
+public import Lib.General.Analysis.MeanValueAndTaylor
+public import Lib.General.LinearAlgebra.PolarDecomposition
 
 /-!
 # Exponentials in U(diag ε) and holomorphic extension of coefficients of highest vectors
@@ -48,6 +50,8 @@ Source: Harish-Chandra, Representations of semisimple Lie groups IV-VI, Amer. J.
 (1956); A. Knapp (1986); A. Koranyi, A simplified approach to the holomorphic discrete series, arXiv
 2312.16350.
 -/
+
+@[expose] public section
 
 /-! ## Exponentials in U(diag ε) and its maximal compact subgroup -/
 

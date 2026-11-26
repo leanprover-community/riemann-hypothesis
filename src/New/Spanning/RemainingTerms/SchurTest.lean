@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.OneRealPlace
-import New.Spanning.Unfolding.AmplitudeSums
+module
+
+public import New.Spanning.RemainingTerms.OneRealPlace
+public import New.Spanning.Unfolding.AmplitudeSums
 
 /-!
 # Schur's test: Cauchy–Schwarz and integration in stages
@@ -23,6 +25,8 @@ Notions from other files:
 * `besselU0`: the unipotent elements that fix the frame; `classUnipotent₀ c` is the group of
   rational such elements in the class `c`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

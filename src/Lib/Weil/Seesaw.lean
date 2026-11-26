@@ -1,5 +1,7 @@
-import Lib.Weil.DualPair.KernelLaws
-import Lib.Weil.Lift
+module
+
+public import Lib.Weil.DualPair.KernelLaws
+public import Lib.Weil.Lift
 
 /-!
 # Theta lifts for families of characters over a real edge and the seesaw of periods
@@ -61,6 +63,8 @@ forms of several variables (Katata 1983), Progr. Math. 46, Birkhäuser 1984, 244
 
 See also `Lib.Weil.Lift`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Cohomology.Hodge.GrothendieckSymbol
+module
+
+public import Lib.Cohomology.Hodge.GrothendieckSymbol
 
 /-!
 # The Hodge class of the diagonal of a variety with an atlas, with its local description
@@ -38,6 +40,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.Hodge.FixedPointFormula` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

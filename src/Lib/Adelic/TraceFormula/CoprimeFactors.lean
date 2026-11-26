@@ -1,5 +1,7 @@
-import Lib.Adelic.TraceFormula.FibreIntegral
-import Lib.General.LinearAlgebra.Eigenvalues
+module
+
+public import Lib.Adelic.TraceFormula.FibreIntegral
+public import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!
 # Coprime factors
@@ -42,6 +44,8 @@ Part of a known result: in a simple trace formula with a cuspidal test function 
 not elliptic vanish (Deligne and Kazhdan). The proof here is a descent of invariant distributions to
 the block diagonal subgroup.
 -/
+
+@[expose] public section
 
 open NumberField Polynomial Matrix Topology Filter Pointwise Multiplicative MeasureTheory
 

@@ -1,5 +1,7 @@
-import New.Congruences.Selmer.ClassSums
-import New.Congruences.Selmer.StickelbergerSystems
+module
+
+public import New.Congruences.Selmer.ClassSums
+public import New.Congruences.Selmer.StickelbergerSystems
 
 /-!
 # The Stickelberger systems of the L-values
@@ -32,6 +34,8 @@ Notions from other files:
 
 See `New.Congruences.Selmer.TwistingTheorem` for related work.
 -/
+
+@[expose] public section
 
 open New Finset WeilData HeckeChar Data AlgHeckeChar AutChar HasWeight Unitary
 open scoped NumberField

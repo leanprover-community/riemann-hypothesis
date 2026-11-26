@@ -1,4 +1,6 @@
-import Lib.Adelic.Witt.WittTheorem
+module
+
+public import Lib.Adelic.Witt.WittTheorem
 
 /-!
 # Components of unitary adelic points at places; sums and moves of hermitian spaces
@@ -31,6 +33,8 @@ Notions from other files:
   for signs s at the infinite places and the identity matrix at the finite places.
 * `New.stdForm`: The diagonal adelic matrix that is diag(s) at infinity and 1 at the finite places.
 -/
+
+@[expose] public section
 
 noncomputable section
 

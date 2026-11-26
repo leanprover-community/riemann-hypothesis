@@ -1,5 +1,7 @@
-import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # Spanning criteria, limits of traces and pseudorepresentations
@@ -42,6 +44,8 @@ pseudo-caractères, J. Algebra 180 (1996); K. Conrad, Compact subgroups of GL_n(
 
 See also `Lib.GaloisRep.WeightCongruence`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

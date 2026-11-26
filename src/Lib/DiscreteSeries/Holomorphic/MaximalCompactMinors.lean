@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
-import Lib.General.LinearAlgebra.MinorProducts
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+public import Lib.General.LinearAlgebra.MinorProducts
 
 /-!
 # Maximal compact subgroup, block diagonal matrices and equivariance of minors
@@ -30,6 +32,8 @@ Notions from other files:
 
 Known; see `Lib.DiscreteSeries.Holomorphic.HighestVectorExtension` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

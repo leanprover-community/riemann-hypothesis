@@ -1,4 +1,6 @@
-import Lib.Weil.Periods.PointLattice
+module
+
+public import Lib.Weil.Periods.PointLattice
 
 /-!
 # Iwasawa decomposition for the flag of the grades
@@ -29,6 +31,8 @@ Notions from other files:
 Known result: the Iwasawa decomposition of an unramified unitary group. Source: J. Tits, Reductive
 groups over local fields, Proc. Sympos. Pure Math. 33 (1979), 3.3.2.
 -/
+
+@[expose] public section
 
 open Matrix
 

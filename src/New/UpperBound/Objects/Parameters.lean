@@ -1,6 +1,8 @@
-import Lib.Weil.Lift
-import New.UpperBound.Objects.InsertBlock
-import New.UpperBound.Objects.LabelsAndIndexTypes
+module
+
+public import Lib.Weil.Lift
+public import New.UpperBound.Objects.InsertBlock
+public import New.UpperBound.Objects.LabelsAndIndexTypes
 
 /-!
 # Index sets, signs and parameters of the grids; the parameters of every step correspond
@@ -35,6 +37,8 @@ Notions from other files:
 * `New.ParamsCorrespond γ γ' l l' s s'`: at each infinite place, the doubled parameters `l` (signs
   `s`) and `l'` (signs `s'`) satisfy the block rule (`New.IsBlockRule`) for the weights `γ`, `γ'`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

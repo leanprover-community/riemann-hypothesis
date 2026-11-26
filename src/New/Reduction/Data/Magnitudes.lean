@@ -1,4 +1,6 @@
-import New.Reduction.Data.AdmissibleData
+module
+
+public import New.Reduction.Data.AdmissibleData
 
 /-!
 # Logarithmic bounds for the sizes of the data
@@ -32,6 +34,8 @@ Notions from other files:
 * `D.weight`: the weight at the places `D.Φ`; it is `b` on the set `D.bPlaces` of `b`-places and
   `offWeight = a / x₁` elsewhere, where `a = x b`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -162,33 +166,6 @@ lemma m_even : Even D.m := by
   simp [hm, parity_simps]
 
 attribute [grind! .] le_constantBound r_odd m_even
-
-/-- The four inequalities `New.Data.le_constantBound` together with the five inequalities
-`New.Data.scale_inequalities`. -/
-lemma scale_inequalities' :
-    (64 ≤ P.constantBound ∧ P.q₀ ≤ P.constantBound ∧ P.d ≤ P.constantBound ∧
-      φ P.q₀ ≤ P.constantBound) ∧
-    1e12 * P.constantBound ≤ log D.logB ∧
-    100 * log D.logB ≤ D.logX ∧
-    1e6 * D.logX ≤ D.logX₁ ∧
-    1e6 * D.logX₁ ≤ D.logB ∧
-    6 * log D.logX₁ ≤ log D.logB :=
-  ⟨le_constantBound, D.scale_inequalities⟩
-
-/-- `scale_arith D` proves a linear inequality between exponents of the data `D` from
-`New.Data.scale_inequalities'`: it reduces `if true` and `if false`, splits `max` and `min` and
-calls `linarith`. Since Lean 4.37, the kernel can no longer check `grind` proofs over `ℝ` with
-numerals as large as those of `New.Data.scale_inequalities`, so this replaces
-`grind [D.scale_inequalities]` there. -/
-syntax "scale_arith " term : tactic
-
-macro_rules
-  | `(tactic| scale_arith $D) => `(tactic| (
-      obtain ⟨⟨_, _, _, _⟩, _, _, _, _, _⟩ := New.Data.scale_inequalities' $D
-      try simp only [Bool.false_eq_true, ↓reduceIte, max_def, min_def, Nat.cast_zero, Nat.cast_one,
-        Nat.cast_ofNat]
-      try split_ifs
-      all_goals linarith))
 
 /-! ### Upper and lower bounds, and the rules for arithmetic operations -/
 
@@ -334,9 +311,7 @@ instance [D.HasLogUpper F l] [D.HasLogLower F l'] : D.HasLogLower F⁻¹ (-l) :=
   exact inv_anti₀ (HasLogBound.pos D) ((le_abs_self F).trans (D.hasLogUpper_iff.1 inferInstance))
 
 /-- An exponent of `F` plus one of `G⁻¹` is one of `F / G`. -/
-instance [HasLogBound D u G⁻¹ l'] : HasLogBound D u (F / G) (l + l') := by
-  rw [div_eq_mul_inv]
-  exact hasLogBound_mul
+instance [HasLogBound D u G⁻¹ l'] : HasLogBound D u (F / G) (l + l') := hasLogBound_mul
 
 /-- An exponent of the real product of `A` and `B` is one of the cast of `A * B`. -/
 instance [HasLogBound D u (A * B) l] : HasLogBound D u ↑(A * B) l := by simpa
@@ -355,26 +330,16 @@ instance [D.HasLogUpper (|F| + 1) c] : HasLogBound D u ⌈F⌉₊ (if u then c e
 
 /-- `log b` has the exponent `log log b`, in both directions. -/
 instance : HasLogBound D u D.logB (Real.log D.logB) := by
-  have h_pos : 0 < D.logB := by scale_arith D
-  refine ⟨?_⟩
-  rw [exp_log h_pos, abs_of_pos h_pos]
-  split <;> exact le_rfl
+  grind [D.scale_inequalities, HasLogBound, exp_log]
 
 /-- `log x₁` has the exponent `log log x₁`, in both directions. -/
 instance : HasLogBound D u D.logX₁ (Real.log D.logX₁) := by
-  have h_pos : 0 < D.logX₁ := by scale_arith D
-  refine ⟨?_⟩
-  rw [exp_log h_pos, abs_of_pos h_pos]
-  split <;> exact le_rfl
+  grind [D.scale_inequalities, HasLogBound, exp_log]
 
 /-- The exponent `s = D.towerExp`, which satisfies `2 ^ s = m ^ 22`, is at most `log x₁`, since
 `s ≤ 32 log x` and `10⁶ log x ≤ log x₁`. -/
 instance : D.HasLogUpper D.towerExp (Real.log D.logX₁) := by
-  have h_pos : 0 < D.logX₁ := by scale_arith D
-  refine D.hasLogUpper_iff.2 ?_
-  rw [exp_log h_pos, abs_of_nonneg (Nat.cast_nonneg _)]
-  have := D.towerExp_le
-  scale_arith D
+  grind [D.scale_inequalities, HasLogBound, exp_log, towerExp_le]
 
 /-- If `|F| ≤ exp l` and `|G| ≤ F`, then `|G| ≤ exp l`: an upper exponent of `F` is one of `G`. -/
 lemma hasLogUpper_of_abs_le [D.HasLogUpper F l] (hGF : |G| ≤ F) : D.HasLogUpper G l :=
@@ -426,28 +391,47 @@ section
 
 -- The default proof of `l < l'` first clears all hypotheses but `D`, which keeps `grind` fast.
 variable [D.HasLogUpper F l] [D.HasLogLower G l'] [D.HasLogUpper A l] [D.HasLogLower B l']
-  (h_exp : l < l' := by
-    clear_aux_decl
-    clear * - D
-    repeat clear ‹_›
-    scale_arith D)
 
-include D h_exp
+include D
 /-- If `|F| ≤ exp l`, `exp l' ≤ G` and `l < l'`, then `F < G`. -/
-protected lemma lt_of_hasLogBound : F < G :=
+protected lemma lt_of_hasLogBound
+    (h_exp : l < l' := by
+      clear_aux_decl
+      clear * - D
+      repeat clear ‹_›
+      grind (splits := 99) [D.scale_inequalities]) :
+    F < G :=
   calc F ≤ |F| := le_abs_self F
     _ ≤ exp l := D.hasLogUpper_iff.1 inferInstance
     _ < exp l' := exp_lt_exp.2 h_exp
     _ ≤ G := D.hasLogLower_iff.1 inferInstance
 
 /-- If `|F| ≤ exp l`, `exp l' ≤ G` and `l < l'`, then `F ≤ G`. -/
-protected lemma le_of_hasLogBound : F ≤ G := (D.lt_of_hasLogBound h_exp).le
+protected lemma le_of_hasLogBound
+    (h_exp : l < l' := by
+      clear_aux_decl
+      clear * - D
+      repeat clear ‹_›
+      grind (splits := 99) [D.scale_inequalities]) :
+    F ≤ G := (D.lt_of_hasLogBound h_exp).le
 
 /-- If natural numbers `A`, `B` satisfy `A ≤ exp l`, `exp l' ≤ B` and `l < l'`, then `A < B`. -/
-lemma nat_lt_of_hasLogBound : A < B := cast_lt.mp (D.lt_of_hasLogBound h_exp)
+lemma nat_lt_of_hasLogBound
+    (h_exp : l < l' := by
+      clear_aux_decl
+      clear * - D
+      repeat clear ‹_›
+      grind (splits := 99) [D.scale_inequalities]) :
+    A < B := cast_lt.mp (D.lt_of_hasLogBound h_exp)
 
 /-- If natural numbers `A`, `B` satisfy `A ≤ exp l`, `exp l' ≤ B` and `l < l'`, then `A ≤ B`. -/
-lemma nat_le_of_hasLogBound : A ≤ B := (D.nat_lt_of_hasLogBound h_exp).le
+lemma nat_le_of_hasLogBound
+    (h_exp : l < l' := by
+      clear_aux_decl
+      clear * - D
+      repeat clear ‹_›
+      grind (splits := 99) [D.scale_inequalities]) :
+    A ≤ B := (D.nat_lt_of_hasLogBound h_exp).le
 
 end
 
@@ -467,10 +451,7 @@ instance : HasLogBound D u D.r (5 * D.logX + (if u then 3 else 0)) :=
 
 /-- The constant `P.constantBound` is at most `log b`, since `10¹² P.constantBound ≤ log log b`. -/
 instance : D.HasLogUpper P.constantBound (Real.log D.logB) := by
-  have h_pos : 0 < D.logB := by scale_arith D
-  refine D.hasLogUpper_iff.2 ?_
-  rw [exp_log h_pos, abs_le]
-  constructor <;> scale_arith D
+  grind [scale_inequalities, HasLogBound, exp_log]
 
 /-! ### Sizes of the derived parameters -/
 
@@ -522,7 +503,7 @@ instance :
     D.hasLogUpper_of_le (pow_log_le_add_one 3 D.towerExp)
   -- so instance search has an exponent for each factor of `3 ^ (Nat.log 3 s + 5) * 2 ^ s`
   rw [towerDeg, pow_add]
-  exact .of_lower_of_upper (by cases u <;> scale_arith D)
+  exact .of_lower_of_upper (by cases u <;> grind [D.scale_inequalities])
 
 /-- `x¹¹ ≤ f ≤ exp P.constantBound * x¹¹ (log b)^{1/5}` for the number `f` of infinite places of
 the number field `E = P.E D.towerExp` of the data. -/
@@ -539,7 +520,7 @@ instance {S : Finset D.Φ} [D.HasLogUpper D.f l] : D.HasLogUpper #S l :=
 /-- The last rank `n m = k + m (t + 1)` lies between `x^{5.5}` and `e^{12} x^{5.5}`. -/
 instance : HasLogBound D u (D.n D.m) (5.5 * D.logX + (if u then 12 else 0)) := by
   rw [n]
-  exact .of_lower_of_upper (by cases u <;> scale_arith D)
+  exact .of_lower_of_upper (by cases u <;> grind [D.scale_inequalities])
 
 /-- The primes `p₀`, `p₁` lie between `b¹⁰` and `b¹¹`. -/
 instance (i : Fin 2) : HasLogBound D u (D.levelPrime i) ((if u then 11 else 10) * D.logB) :=

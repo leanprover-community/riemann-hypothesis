@@ -1,5 +1,7 @@
-import Lib.GaloisRep.Main.Defs
-import Lib.LocalGL.Iwahori.HeckeDegrees
+module
+
+public import Lib.GaloisRep.Main.Defs
+public import Lib.LocalGL.Iwahori.HeckeDegrees
 
 /-!
 # Chains of roots of the Hecke polynomial of a spherical vector
@@ -37,6 +39,8 @@ Source: Tadić, Classification of unitary representations in irreducible represe
 linear group (non-archimedean case), Ann. ENS 19 (1986); Bernstein, P-invariant distributions on
 GL(N), LNM 1041 (1983) for the inequality at the ends of segments.
 -/
+
+@[expose] public section
 
 open ComplexOrder Finset Module New Pi Polynomial Valued Complex
 
@@ -482,9 +486,7 @@ lemma New.Patching.chain_lemma (hB : IsUnitary ρ.ρ B)
   have rec_U' (i : ℕ) (hi : i < n) :
       u ϖ⁻¹ (T i.succ) = (w.q : ℂ) ^ (n - i.succ) • ((t i.succ / w.q ^ n) • u ϖ⁻¹ x - T i) := by
     simpa [u, T, mulSingle_inv, partialHecke_zero_eq_heckeGL, ht, avg_T, avg_x, smul_smul,
-      div_mul_cancel₀ _
-        (pow_ne_zero n ((Nat.cast_ne_zero (R := ℂ)).2 (zero_lt_one.trans w.one_lt_q).ne'))] using
-      dual i (n - i.succ) (by lia)
+      w.q_bounds] using dual i (n - i.succ) (by lia)
   have U'_x : u ϖ⁻¹ x = (w.q : ℂ) ^ n • (t n.succ)⁻¹ • T n := by
     rw [← avg_T, ← dual_last]
     simp [u, mulSingle_inv, avg_x, t_last]

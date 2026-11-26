@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Traces on the range of an idempotent from traces of a raising operator
@@ -14,6 +16,8 @@ The first section collects what traces determine on generalised eigenspaces; in 
 traces of all powers of an operator determine its characteristic polynomial
 (`charpoly_eq_of_trace_pow_eq`).
 -/
+
+@[expose] public section
 
 open Module LinearMap Polynomial InnerProductSpace
 

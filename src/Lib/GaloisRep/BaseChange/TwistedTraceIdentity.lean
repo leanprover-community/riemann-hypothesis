@@ -1,7 +1,9 @@
-import Lib.Adelic.AutomorphicForms.HeckeEigenforms
-import Lib.Adelic.Landherr
-import Lib.GaloisRep.BaseChange.GlobalRoot
-import Lib.Shimura.TraceFormula.DefiniteTrace
+module
+
+public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+public import Lib.Adelic.Landherr
+public import Lib.GaloisRep.BaseChange.GlobalRoot
+public import Lib.Shimura.TraceFormula.DefiniteTrace
 
 /-!
 # Twisted trace identity for a step E'/E of CM fields of prime degree
@@ -37,6 +39,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Double counting of moves between weighted samples of pairs -/
 

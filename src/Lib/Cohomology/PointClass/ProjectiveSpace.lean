@@ -1,5 +1,7 @@
-import Lib.Cohomology.PointClass.NoetherNormalization
-import Lib.PadicComparison.Primitive.PeriodCoefficients
+module
+
+public import Lib.Cohomology.PointClass.NoetherNormalization
+public import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
 # Projective space as a functor, and injective pull-back along Noether normalisation
@@ -37,6 +39,8 @@ Notions from other files:
 Known; see `Lib.Cohomology.PointClass.LinearIndependence` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-! ## Projective space as a functor, standard charts and a product map -/
@@ -57,7 +61,7 @@ def New.Variety.projSpace : CommAlg k ⥤ Type 1 where
   obj A := Quot ((MulAction.orbitRel Aˣ (Fin (d + 1) → A)).comap
     (·.1.1 : @unimodular k _ (d + 1) A → Fin (d + 1) → A))
   -- Vectors that differ by the unit `u` are sent to vectors that differ by the unit `f u`.
-  map f := ↾Quot.map (unimodular.toFunctor.map f) fun _ _ ⟨u, h⟩ ↦ ⟨u.map _, by
+  map f := ↾Quot.map (unimodular.toFunctor.map f) fun _ _ ⟨u, h⟩ ↦ ⟨u.map f.hom.toMonoidHom, by
     simpa [Units.smul_def, _root_.funext_iff] using! congr(f ∘ $h)⟩
   map_id _ := by
     ext ⟨⟩

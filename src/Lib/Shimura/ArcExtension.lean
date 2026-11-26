@@ -1,7 +1,9 @@
-import Lib.General.Geometry.GeometricPoints
-import Lib.Shimura.ThetaGroup
-import Lib.Shimura.ThetaNormality.NormalGeneration
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+module
+
+public import Lib.General.Geometry.GeometricPoints
+public import Lib.Shimura.ThetaGroup
+public import Lib.Shimura.ThetaNormality.NormalGeneration
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Uniformisations over an arc: theta coordinates, Weil pairing and extension of maps
@@ -51,6 +53,8 @@ Moret-Bailly, Pinceaux de variétés abéliennes, Astérisque 129 (1985), II.3.5
 
 See also `Lib.Shimura.IntegralModel.UniversalFamily` and `Lib.Shimura.Uniformisation.AppellHumbert`.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 
@@ -147,6 +151,7 @@ private lemma apply_thetaChart_ne_zero (h : HasThetaCoords Λ (atGeneric s) L B 
 /-- Sections of `L` read as functions on `V`, for theta coordinates `θ` of `L` along `s`: a
 section `r` goes to `z ↦ θ z i * r_i (s z)` for a chart `i` with `θ z i ≠ 0`. The value does not
 depend on the chart (`New.Variety.thetaEval_eq_iff`). -/
+@[no_expose]
 noncomputable def thetaEval (h : HasThetaCoords Λ (atGeneric s) L B χ θ) : L.H0 O →ₗ[O] V → ℂ :=
   .pi fun z ↦ θ z (thetaChart h z) •
     { toFun r := r.val (thetaChart h z) (CommRingCat.of ℂ) (atGeneric s z)

@@ -1,7 +1,9 @@
-import Lib.General.Algebra.IntegralPowerSeries
-import New.Congruences.Lifting.CutExponentBounds
-import New.Congruences.Lifting.FewLowJumps
-import New.Congruences.Lifting.TameCharts
+module
+
+public import Lib.General.Algebra.IntegralPowerSeries
+public import New.Congruences.Lifting.CutExponentBounds
+public import New.Congruences.Lifting.FewLowJumps
+public import New.Congruences.Lifting.TameCharts
 
 /-!
 # From sides to lattices: few low jumps, b-letters and tame types
@@ -59,6 +61,8 @@ Exactness of Breuil–Kisin functors, 2026; Gao–Liu, Integral filtered Sen the
 2024.
 -/
 
+@[expose] public section
+
 namespace New.Lift
 
 open Period Polynomial Module Finset KummerChart JumpLattice Function IsLocalRing Topology Selmer
@@ -115,12 +119,12 @@ lemma KummerChart.fitsWindows_letterJumps {η b W : ℕ} {ε : ℤˣ}
     FitsWindows η ε b W (k.letterJumps ζ U i) := by
   grind [mem_letterJumps]
 
-/-- Let the set `V` lie in `[-η, η] ∪ -ε [b, b + W]` and `V'` in `[-η, η] ∪ ε [b, b + W]`, for a
-sign `ε` and `η ≤ b`. Then `-(v + v') - 1 ≤ b + W + η` for `v ∈ V` and `v' ∈ V'`, since `v` and `v'`
-cannot both lie in `-[b, b + W]`. -/
-lemma FitsWindows.neg_add_sub_one_le {η b W : ℕ} {ε : ℤˣ} {V V' : Finset ℤ}
-    (hV : FitsWindows η (-ε) b W V) (hV' : FitsWindows η ε b W V') (hηb : η ≤ b)
-    {v v' : ℤ} (hv : v ∈ V) (hv' : v' ∈ V') : -(v + v') - 1 ≤ b + (W + η : ℕ) := by
+/-- For opposite far windows, the negative sum is bounded by the larger of the
+near-near bound and the near-far bound. -/
+lemma FitsWindows.neg_add_le_of_opposite {η b W : ℕ} {ε : ℤˣ} {V V' : Finset ℤ}
+    (hV : FitsWindows η (-ε) b W V) (hV' : FitsWindows η ε b W V')
+    {v v' : ℤ} (hv : v ∈ V) (hv' : v' ∈ V') :
+    -(v + v') ≤ max (2 * (η : ℤ)) (b + W + η : ℤ) := by
   have h_window : (-η ≤ v ∧ v ≤ η) ∨ (-(ε : ℤ) = 1 ∧ b ≤ v ∧ v ≤ b + W) ∨
       (-(ε : ℤ) = -1 ∧ b ≤ -v ∧ -v ≤ b + W) := hV v hv
   have h_window' : (-η ≤ v' ∧ v' ≤ η) ∨ ((ε : ℤ) = 1 ∧ b ≤ v' ∧ v' ≤ b + W) ∨
@@ -259,8 +263,10 @@ lemma KummerChart.crysCocycles_le_cupOrthogonal_of_no_small_neg_jump [Topologica
   -- The jumps of the Tate dual side are `0` and the `-(v + v') - 1`, with `v` and `v'` in opposite
   -- windows.
   have tateDual_le (i : k.Letter) : ∀ u ∈ P.tateDualSide.jumpSet i, u ≤ b i + (W + η : ℕ) :=
-    k.le_of_mem_jumpSet_tateDualSide ζ P (by positivity) fun v hv v' hv' ↦
-      (hU i).neg_add_sub_one_le (hU' i) (le_trans (by omega) (h_far i).le) hv hv'
+    k.le_of_mem_jumpSet_tateDualSide ζ P (by positivity) fun v hv v' hv' ↦ by
+      have h_sum := (hU i).neg_add_le_of_opposite (hU' i) hv hv'
+      have h_far' := h_far i
+      omega
   -- The two cases of `h_small` pass from the embeddings to the letters.
   have h_small_letters :
       (∀ (i : k.Letter) (u : ℤ), u ∈ k.letterJumps ζ U i ∨ u ∈ k.letterJumps ζ U' i →
@@ -509,17 +515,6 @@ lemma FitsWindows.le_add_add {η b W : ℕ} {ε : ℤˣ} {V : Finset ℤ}
     (hV : FitsWindows η ε b W V) {u : ℤ} (hu : u ∈ V) : u ≤ b + W + η := by
   grind
 
-/-- Let the set `V` lie in `[-η, η] ∪ -ε [b, b + W]` and `V'` in `[-η, η] ∪ ε [b, b + W]`, for a
-sign `ε`. At most one of `v ∈ V` and `v' ∈ V'` is below `-η`, so `-(v + v') ≤ b + W + 2 η`. -/
-lemma FitsWindows.neg_add_le_of_opposite {η b W : ℕ} {ε : ℤˣ} {V V' : Finset ℤ}
-    (hV : FitsWindows η (-ε) b W V) (hV' : FitsWindows η ε b W V') {v v' : ℤ}
-    (hv : v ∈ V) (hv' : v' ∈ V') : -(v + v') ≤ b + W + 2 * η := by
-  have h_window : (-η ≤ v ∧ v ≤ η) ∨ (-(ε : ℤ) = 1 ∧ b ≤ v ∧ v ≤ b + W) ∨
-      (-(ε : ℤ) = -1 ∧ b ≤ -v ∧ -v ≤ b + W) := hV v hv
-  have h_window' : (-η ≤ v' ∧ v' ≤ η) ∨ ((ε : ℤ) = 1 ∧ b ≤ v' ∧ v' ≤ b + W) ∨
-      ((ε : ℤ) = -1 ∧ b ≤ -v' ∧ -v' ≤ b + W) := hV' v' hv'
-  omega
-
 /-- Let `Γ → Gp p = Gal(ℚ̄_p / ℚ_p)` be a surjective open embedding. For each `s` in inertia let
 `K s` be a tame type: it holds for `X ^ e - 1`, with `e` the least common multiple of the
 `p ^ i - 1` for `1 ≤ i ≤ r`, and for a monic polynomial over `ℤ_[p]` of degree at most `N`. A
@@ -579,8 +574,7 @@ lemma hasCupExponent_of_isTameType [TopologicalSpace Γ] (ho : IsOpenEmbedding �
   have tateDual_le (i : d.Letter) :
       ∀ u ∈ P.tateDualSide.jumpSet i, u ≤ (b + 6 * (W + η) : ℕ) := by
     refine d.le_of_mem_jumpSet_tateDualSide ζ P (by positivity) fun v hv v' hv' ↦ ?_
-    have neg_add_le : -(v + v') ≤ b + W + 2 * η :=
-      (h_window i).neg_add_le_of_opposite (h_window' i) hv hv'
+    have h_sum := (h_window i).neg_add_le_of_opposite (h_window' i) hv hv'
     omega
   have cost_le {n : ℕ} (hn : n ≤ N * N + N) : r ^ 2 * (n + 1) ≤ r ^ 2 * (N + 1) ^ 2 :=
     Nat.mul_le_mul_left _ (by nlinarith)

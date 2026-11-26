@@ -1,5 +1,7 @@
-import Lib.CM.Sigma.ThetaSections
-import Lib.General.Algebra.IntegralPowerSeries
+module
+
+public import Lib.CM.Sigma.ThetaSections
+public import Lib.General.Algebra.IntegralPowerSeries
 
 /-!
 # Doubling formulas for θ and σ and the quartic forms of doubling
@@ -39,6 +41,8 @@ Known result: good reduction of the duplication map on the `x`-coordinate of an 
 Source: Silverman, *The Arithmetic of Dynamical Systems* (GTM 241, Springer, 2007), Chapters 2 and
 6.
 -/
+
+@[expose] public section
 
 /-!
 ## Doubling formulas for θ and σ

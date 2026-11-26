@@ -1,4 +1,6 @@
-import Lib.Shimura.CongruenceRelation.KernelReduction
+module
+
+public import Lib.Shimura.CongruenceRelation.KernelReduction
 
 /-!
 # Counting w-torsion points bounds a space of natural semilinear functions by n − 1
@@ -14,6 +16,8 @@ kernel. A morphism `specOver k C ⟶ x.groupScheme` is a `C`-point, and `placeTo
 
 Known; see `Lib.Shimura.Deformation.TangentBound` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

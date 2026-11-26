@@ -1,5 +1,7 @@
-import New.UpperBound.Divisibility.ChainValuation
-import New.UpperBound.Objects.CharactersAtLevel
+module
+
+public import New.UpperBound.Divisibility.ChainValuation
+public import New.UpperBound.Objects.CharactersAtLevel
 
 /-!
 # Valuations of lifts at non-split primes
@@ -42,6 +44,8 @@ Notions from other files:
 
 See `New.UpperBound.Divisibility.ValuationAtLevel` for related work.
 -/
+
+@[expose] public section
 
 /-! ## One lift, evaluated at a neighbor -/
 

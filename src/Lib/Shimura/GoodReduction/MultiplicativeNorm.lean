@@ -1,6 +1,8 @@
-import Lib.General.NumberTheory.SUnitsAndClassNumber
-import Lib.Shimura.GoodReduction.GaussSums
-import Lib.Shimura.ThetaModuli.PELThetaTori
+module
+
+public import Lib.General.NumberTheory.SUnitsAndClassNumber
+public import Lib.Shimura.GoodReduction.GaussSums
+public import Lib.Shimura.ThetaModuli.PELThetaTori
 
 /-!
 # Good reduction of theta tori from shift bounds on kernels of multiplications
@@ -46,6 +48,8 @@ Lett. 18 (2011); R. Kottwitz, Points on some Shimura varieties over finite field
 Soc. 5 (1992), §5 (division algebra case); for the CM case B. Conrad, Semistable reduction for
 abelian varieties (notes), Prop. 6.3, after Serre and Tate, Ann. of Math. 88 (1968).
 -/
+
+@[expose] public section
 
 /-!
 ## Shift bounds on kernels of multiplications and the multiplicative norm

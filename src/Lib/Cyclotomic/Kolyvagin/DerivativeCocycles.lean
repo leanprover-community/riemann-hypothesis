@@ -1,5 +1,7 @@
-import Lib.ClassField.GreenbergWiles.SelmerLevels
-import Lib.Cyclotomic.Stickelberger
+module
+
+public import Lib.ClassField.GreenbergWiles.SelmerLevels
+public import Lib.Cyclotomic.Stickelberger
 
 /-!
 # Kolyvagin's derivative cocycles from Gauss sums, for one set of primes
@@ -40,6 +42,8 @@ system of Gauss sums, Arithmetic Algebraic Geometry (Texel 1989), Progr. Math. 8
 with a Tate twist: G. Banaszak, W. Gajda, Euler systems for higher K-theory of number fields, J.
 Number Theory 58 (1996).
 -/
+
+@[expose] public section
 
 namespace New.OddPart
 

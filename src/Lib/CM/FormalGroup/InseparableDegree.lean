@@ -1,5 +1,7 @@
-import Lib.CM.FormalGroup.PrimeNotation
-import Lib.CM.Integrality.IsogenyIntegrality
+module
+
+public import Lib.CM.FormalGroup.PrimeNotation
+public import Lib.CM.Integrality.IsogenyIntegrality
 
 /-!
 # The inseparable degree
@@ -30,6 +32,8 @@ Typen der Multiplikatorenringe elliptischer Funktionenkörper; Blake, A Deuring 
 varieties, arXiv 1311.5454, Theorem 1.1; Bluher, Formal groups, elliptic curves, and some theorems
 of Couveignes, ANTS-III, LNCS 1423 (1998), 3.2 and 6.1 (numbering of arXiv math/9708215).
 -/
+
+@[expose] public section
 
 open PowerSeries IsLocalRing ComplexConjugate
 

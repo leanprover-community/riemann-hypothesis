@@ -1,8 +1,10 @@
-import Lib.GLn.SchurModule.Basic
-import Lib.General.Geometry.ProjectiveSpace
-import Lib.PadicComparison.Descent.TestCategory
-import Lib.Shimura.AbelianScheme.TangentCoordinates
-import Lib.Shimura.ComplexTheta.AppellHumbertData
+module
+
+public import Lib.GLn.SchurModule.Basic
+public import Lib.General.Geometry.ProjectiveSpace
+public import Lib.PadicComparison.Descent.TestCategory
+public import Lib.Shimura.AbelianScheme.TangentCoordinates
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Holomorphic families of complex points, jets, uniformisations and theta coordinates
@@ -51,6 +53,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` and `Lib.Shimura.ArcExtension` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

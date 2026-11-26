@@ -1,4 +1,6 @@
-import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+module
+
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 
 /-!
 # Higman's criterion, dévissage and multiplicative functions on finite modules (Cartan map)
@@ -35,6 +37,8 @@ Source: J.-P. Serre, Linear Representations of Finite Groups (1977), Thm 35; for
 induction from cyclic subgroups in the local Euler characteristic formula, Milne, Arithmetic Duality
 Theorems, I 2.10-2.12.
 -/
+
+@[expose] public section
 
 namespace New.DiscreteModule
 

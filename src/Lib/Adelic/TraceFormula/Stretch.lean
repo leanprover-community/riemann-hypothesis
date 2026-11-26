@@ -1,4 +1,6 @@
-import Lib.Adelic.Reduction.FirstMinimumShortBases
+module
+
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
 
 /-!
 # Rational points that pair short lattice vectors non-trivially
@@ -23,6 +25,8 @@ Notions from other files:
   `Gf E n`; `V.ratEmbed γ` is the element of `G E s` given by a rational point `γ` of `U V.J`, the
   unitary group of the form `V.J` over `E`, in the basis `V.x`.
 -/
+
+@[expose] public section
 
 open NumberField Matrix Fintype Norms.L2Operator
 

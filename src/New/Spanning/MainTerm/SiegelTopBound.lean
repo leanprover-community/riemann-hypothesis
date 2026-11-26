@@ -1,7 +1,9 @@
-import Lib.SiegelWeil.OneVector.SiegelClassSum
-import New.Spanning.Frames.TopFloor
-import New.Spanning.MainTerm.GlobalToLocal
-import New.Spanning.Unfolding.ReducedGroups
+module
+
+public import Lib.SiegelWeil.OneVector.SiegelClassSum
+public import New.Spanning.Frames.TopFloor
+public import New.Spanning.MainTerm.GlobalToLocal
+public import New.Spanning.Unfolding.ReducedGroups
 
 /-!
 # Siegel's formula as an upper bound, and domination of class sums by the density at the last entry
@@ -47,6 +49,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

@@ -1,5 +1,7 @@
-import Lib.General.Algebra.AdicCompletion
-import Lib.General.Algebra.FittingIdealsAndLengths
+module
+
+public import Lib.General.Algebra.AdicCompletion
+public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # Coefficient rings of ℓ-adic lattices, and length versus cardinality of modules
@@ -24,6 +26,8 @@ Three imported notions occur in the statements:
 * `New.PadicIntegerRing R ℓ`: R is a discrete valuation ring of characteristic 0, finite and free
   over ℤ_ℓ, with finite quotients by nonzero ideals.
 -/
+
+@[expose] public section
 
 -- These instances on subalgebras get priority 10, so that other instances are tried first.
 open Subalgebra in

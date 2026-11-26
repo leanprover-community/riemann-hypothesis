@@ -1,7 +1,9 @@
-import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
-import Lib.Weil.CompactLift.ThetaKernelDefs
-import Lib.Weil.Lift
+module
+
+public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.Weil.CompactLift.ThetaKernelDefs
+public import Lib.Weil.Lift
 
 /-!
 # Theta lifts between definite unitary groups and algebraic lifts by jets
@@ -40,6 +42,8 @@ Taylor coefficients of the theta function against Schur polynomials. The constan
 unspecified. Source: B. Gross, Algebraic modular forms, Israel J. Math. 113 (1999); Kashiwara–Vergne
 1978; R. Howe, Transcending classical invariant theory, JAMS 2 (1989).
 -/
+
+@[expose] public section
 
 /-! ## The harmonic theta lift of definite spaces as a multiple of the algebraic lift -/
 

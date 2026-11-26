@@ -1,4 +1,6 @@
-import Lib.Shimura.ComplexTheta.DimensionFormula
+module
+
+public import Lib.Shimura.ComplexTheta.DimensionFormula
 
 /-!
 # Sizes of theta functions at torsion points: products, bounds and shift bounds
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.GoodReduction.MultiplicativeNorm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

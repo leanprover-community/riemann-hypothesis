@@ -1,7 +1,9 @@
-import Lib.GaloisRep.Main.LocalConditions
-import Lib.PadicComparison.HodgeTate.GaloisWeight
-import Lib.PadicComparison.Primitive.ComparisonTheorem
-import Lib.PadicComparison.Primitive.Periods
+module
+
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.PadicComparison.HodgeTate.GaloisWeight
+public import Lib.PadicComparison.Primitive.ComparisonTheorem
+public import Lib.PadicComparison.Primitive.Periods
 
 /-!
 # The period map for ℓ-adic cohomology on p-adic tests, and Hodge–Tate weights
@@ -44,6 +46,8 @@ the kernel of Fontaine's map, and bijectivity is not proved. Source: Scholze, p-
 for rigid-analytic varieties, Forum Math. Pi 1 (2013), Cor. 1.8; the construction follows Bhatt, The
 Hodge–Tate decomposition via perfectoid spaces, Arizona Winter School 2017, §3.4.
 -/
+
+@[expose] public section
 
 /-!
 ## The period map on p-adic tests

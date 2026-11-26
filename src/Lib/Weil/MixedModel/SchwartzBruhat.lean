@@ -1,4 +1,6 @@
-import Lib.Weil.Construction.FiniteMultiplier
+module
+
+public import Lib.Weil.Construction.FiniteMultiplier
 
 /-!
 # Schwartz–Bruhat functions on a set of places and the Schrödinger model there
@@ -31,6 +33,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

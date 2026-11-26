@@ -1,5 +1,7 @@
-import Lib.LocalGL.Iwahori.QuadraticRelation
-import Lib.Shimura.HeckeTower.Model
+module
+
+public import Lib.LocalGL.Iwahori.QuadraticRelation
+public import Lib.Shimura.HeckeTower.Model
 
 /-!
 # Test vectors, and the regular Hecke element that does not kill them
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.TraceFormula.MarkedDefiniteSums` for sources.
 -/
+
+@[expose] public section
 
 open NumberField Matrix Polynomial Submodule Set Subgroup Valued
 

@@ -1,5 +1,7 @@
-import Lib.PadicHodge.Crystalline.FixedRatios
-import Lib.PadicHodge.Crystalline.HodgeTateJumps
+module
+
+public import Lib.PadicHodge.Crystalline.FixedRatios
+public import Lib.PadicHodge.Crystalline.HodgeTateJumps
 
 /-!
 # Bloch–Kato crystalline cocycles: reduction modulo p^m, rank and vanishing
@@ -53,6 +55,8 @@ modulo p^m. Source: S. Bloch, K. Kato, L-functions and Tamagawa numbers of motiv
 Festschrift I (1990), Prop. 3.8, Cor. 3.8.4; J. Bellaïche, An introduction to the conjecture of
 Bloch and Kato, Clay Summer School notes (2009), Prop. 2.8, Thm 2.1.
 -/
+
+@[expose] public section
 
 noncomputable section
 

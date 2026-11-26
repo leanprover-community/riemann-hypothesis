@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.MatricesNearIdentity
+module
+
+public import Lib.General.LinearAlgebra.MatricesNearIdentity
 
 /-!
 # One minor of a product of three exponentials, to second order
@@ -23,6 +25,8 @@ Notions from other files:
 
 See `New.Appendix.DiscreteSeries.Periods` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -475,14 +479,8 @@ lemma differentiable_expMinor_scaleCross :
   have h_exp : Differentiable ℂ (NormedSpace.exp : Matrix n n ℂ → Matrix n n ℂ) :=
     fun X ↦ (NormedSpace.exp_analytic X).differentiableAt
   have h_det : Differentiable ℂ (det : Matrix n n ℂ → ℂ) := differentiable_matrix_det
-  have h_scale (A : Matrix n n ℂ) : Differentiable ℂ fun τ : ℂ ↦ scaleCross Q A τ :=
-    (differentiable_const _).add (differentiable_id.smul_const _)
-  have h_factor (A : Matrix n n ℂ) :
-      Differentiable ℂ fun τ : ℂ ↦ NormedSpace.exp (scaleCross Q A τ) :=
-    h_exp.comp (h_scale A)
-  unfold expMinor
-  exact h_det.comp ((differentiable_const 1).add ((differentiable_const Q).mul
-    ((((h_factor A₁).mul (h_factor A₂)).mul (h_factor A₃)).sub (differentiable_const 1))))
+  unfold expMinor scaleCross
+  fun_prop
 
 /-- The sum `∑ᵢ tr Q Aᵢ + ∑'_{i ≤ j} tr Q Aᵢ (1 - Q) Aⱼ` (the terms `i = j` halved) is an entire
 function of the factor `τ` that multiplies the crossing parts `Q Aᵢ (1 - Q) + (1 - Q) Aᵢ Q`. -/

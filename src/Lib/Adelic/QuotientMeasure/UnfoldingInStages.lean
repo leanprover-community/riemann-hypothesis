@@ -1,4 +1,6 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Pushing forward quotient measures, unfolding in stages and vanishing criteria
@@ -32,6 +34,8 @@ for the integral of a continuous left `Γ`-invariant function to vanish.
 
 Known; see `Lib.Adelic.QuotientMeasure.Basic` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Pushing forward quotient measures and unfolding in stages -/
 

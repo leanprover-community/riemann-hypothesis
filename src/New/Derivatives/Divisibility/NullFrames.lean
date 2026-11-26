@@ -1,5 +1,7 @@
-import Lib.Cohomology.Etale.Basic
-import Lib.General.Algebra.SeriesCongruences
+module
+
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.Algebra.SeriesCongruences
 
 /-!
 # The change of directions
@@ -23,6 +25,8 @@ the deduction: `v(π)` times the sum of the numbers `New.deductionTerm`.
 Notions from other files:
 * `New.valRingCp p`: the integers of `ℂ_p`.
 -/
+
+@[expose] public section
 
 /-!
 ## Changing the directions

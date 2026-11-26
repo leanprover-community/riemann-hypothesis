@@ -1,10 +1,12 @@
-import Lib.DiscreteSeries.Character.FormalDegree
-import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
-import New.Spanning.Bessel.CutTailBound
-import New.Spanning.Bessel.SchurBound
-import New.Spanning.Frames.RealBandLimits
-import New.Spanning.Unfolding.Climbing
-import New.UpperBound.Objects.Rows
+module
+
+public import Lib.DiscreteSeries.Character.FormalDegree
+public import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
+public import New.Spanning.Bessel.CutTailBound
+public import New.Spanning.Bessel.SchurBound
+public import New.Spanning.Frames.RealBandLimits
+public import New.Spanning.Unfolding.Climbing
+public import New.UpperBound.Objects.Rows
 
 /-!
 # Filling data from admissible data, with Bessel systems at the real places
@@ -40,9 +42,11 @@ almost span the target forms. Rank one is classical, and Bessel kernels are stud
 GSp(4).
 
 Related work: Petersson, Über die Entwicklungskoeffizienten der automorphen Formen, 1932; NIST DLMF
-§10.22; Baruch, Bessel distributions on the open cell, 2001–2004; Comtat et al., Effective Kuznetsov
-trace formula for GSp(4), 2025.
+§10.22; Baruch, On Bessel distributions for quasi-split groups, 2001, and Bessel distributions for
+GL(3) over the p-adics, 2004; Comtat et al., Effective Kuznetsov trace formula for GSp(4), 2025.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

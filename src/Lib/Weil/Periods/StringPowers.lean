@@ -1,4 +1,6 @@
-import Lib.Weil.Periods.PointLattice
+module
+
+public import Lib.Weil.Periods.PointLattice
 
 /-!
 # The string of a graded space as the powers `𝔢 ^ i`
@@ -27,6 +29,8 @@ Notions from other files:
   `s - 1` and keeps the number of any other string vector, up to a factor, and its part at the
   finite adeles;
 -/
+
+@[expose] public section
 
 open Matrix
 

@@ -1,4 +1,6 @@
-import New.Congruences.Lifting.HodgeExpansion
+module
+
+public import New.Congruences.Lifting.HodgeExpansion
 
 /-!
 # Sides of a pairing, cokernel killers and the pairing lemma for cup products
@@ -44,6 +46,8 @@ Notions from other files:
 * `New.Lift.KummerChart.JumpLattice.stdOrdersPart`: the elements of 𝒩, the Kisin module with all φ^a
   E inverted, that lie at the letter i and have the standard exponents of level l.
 -/
+
+@[expose] public section
 
 noncomputable section
 

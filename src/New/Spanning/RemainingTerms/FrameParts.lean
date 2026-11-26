@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.Data
-import New.Spanning.RemainingTerms.FrameCount
+module
+
+public import New.Spanning.RemainingTerms.Data
+public import New.Spanning.RemainingTerms.FrameCount
 
 /-!
 # The part in `X₀` of a frame, moves, and lifts of a lattice
@@ -32,6 +34,8 @@ Notions from other files:
 * `New.Filling.HasCellRank.exists_framePartX₀_sub_eq`: parts in `X₀` that are congruent modulo
   `M δ` differ by `M η Ξ₀`.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

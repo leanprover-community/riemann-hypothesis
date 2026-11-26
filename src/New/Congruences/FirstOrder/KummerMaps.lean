@@ -1,6 +1,8 @@
-import Lib.ClassField.GreenbergWiles.RelationsModL
-import Lib.GaloisRep.Main.Defs
-import New.Congruences.FirstOrder.EvenClasses
+module
+
+public import Lib.ClassField.GreenbergWiles.RelationsModL
+public import Lib.GaloisRep.Main.Defs
+public import New.Congruences.FirstOrder.EvenClasses
 
 /-!
 # Kummer maps
@@ -32,6 +34,8 @@ Notions from other files:
 * `New.cyclotomicCharMod`: the cyclotomic character modulo `N`; `New.cyclotomicChar` is the `ℓ`-adic
   one, written `cyc`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

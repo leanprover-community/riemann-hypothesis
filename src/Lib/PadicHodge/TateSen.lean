@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.TameInertia
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.ClassField.Places.TameInertia
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Tate's vanishing theorem, Hodge–Tate elimination and the filtration of B_dR
@@ -39,6 +41,8 @@ polynomials over local fields: the Galois action, J. Algebra 15 (1970); J. Tate,
 
 See also `Lib.PadicHodge.Crystalline.Regularity` and `Lib.PadicHodge.PeriodRings.DeRhamPeriods`.
 -/
+
+@[expose] public section
 
 /-! ## Tate's vanishing theorem for cyclotomic twists of ℂ_p -/
 

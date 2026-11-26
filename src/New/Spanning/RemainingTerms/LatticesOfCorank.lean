@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.FramesOverLattice
-import New.Spanning.Unfolding.Climbing
+module
+
+public import New.Spanning.RemainingTerms.FramesOverLattice
+public import New.Spanning.Unfolding.Climbing
 
 /-!
 # Sums over lattices of given corank and small discriminant
@@ -19,6 +21,8 @@ Notions from other files:
 * `discriminant r L` is the square root of the generalised index `genIndex` of the Gram determinant
   of a basis of the lattice `L` of rank `r`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

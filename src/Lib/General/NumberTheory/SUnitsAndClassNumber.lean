@@ -1,5 +1,7 @@
-import Lib.CM.Sigma.Basic
-import Lib.ClassField.Places.Ideles
+module
+
+public import Lib.CM.Sigma.Basic
+public import Lib.ClassField.Places.Ideles
 
 /-!
 # Principal ideal powers, S-units and a class number bound
@@ -37,6 +39,8 @@ Dirichlet's `S`-unit theorem is deduced from the unit theorem in Mathlib, and th
 is a crude explicit form of the finiteness of the class number, deduced from Minkowski's bound in
 Mathlib.
 -/
+
+@[expose] public section
 
 /-! ## Principal powers of ideals of a ring of integers -/
 

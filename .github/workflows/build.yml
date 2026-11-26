@@ -1,20 +1,29 @@
 name: build
 
-# Builds every pull request to main on a GitHub-hosted runner, and every merge queue group, push
-# to main and manual run on the self-hosted runner (labels self-hosted, rh-big; see CACHE.md,
-# "Self-hosted merge queue runner"), with the shared build cache (CACHE.md). It fails if the
-# build fails, if any module reports `sorry`, or if one of the five theorems of src/Main.lean
-# depends on an axiom other than propext, Classical.choice and Quot.sound. The job is called
-# `lake build` in every case: it is the merge queue's required check.
+# Builds every pull request to main from a fork on a GitHub-hosted runner (or the runner named by
+# the repository variable PR_RUNS_ON, see `runs-on` below), and every pull request from a branch
+# of this repository, merge queue group, push to main and manual run on the self-hosted runner
+# (labels self-hosted, rh-big; see CACHE.md, "Self-hosted merge queue runner"), with the shared
+# build cache (CACHE.md). It fails if the build fails, if any module reports `sorry`, or if one
+# of the five theorems of src/Main.lean depends on an axiom other than propext, Classical.choice
+# and Quot.sound. The job is called `lake build` in every case: it is the merge queue's required
+# check.
 #
 # Pull requests run their own code, so they use `pull_request` (not `pull_request_target`), a
-# read-only token and no secrets, and stay on GitHub-hosted runners. Only code that is queued to
-# land on main, or already on it, runs on the self-hosted runner (whose job-started hook refuses
-# every other event). No job here publishes anything: the cache is only read, over public HTTPS,
-# and every artifact is checked against the SHA-256 in the record it was selected from. On the
-# self-hosted runner the job uploads the new cache outputs (scripts/ci-cache-stage.py) as the
-# artifact cache-<commit>; after the merge queue has moved main to that commit,
-# .github/workflows/publish-ci-cache.yml verifies them with main's code and publishes them.
+# read-only token and no secrets. A pull request from a fork stays off the rh-big runner: it runs
+# on GitHub-hosted runners, or on a separate self-hosted runner named by PR_RUNS_ON. A pull
+# request whose head branch is in this repository (a batch branch, or a branch of someone who can
+# already push here) is trusted like a manual run and builds on the rh-big runner. Its
+# job-started hook (scripts/runner/job-started.sh) admits such pull requests, checking the head
+# repository in the event payload, and refuses those from forks. publish-ci-cache.yml never
+# takes a pull request run's artifact: scripts/ci-github.py accepts only merge_group, push to main
+# and workflow_dispatch runs whose job ran on the rh-big runner, and pull request runs upload
+# nothing. No job here publishes anything: the cache is only read, over public HTTPS, and every
+# artifact is checked against the SHA-256 in the record it was selected from. On the self-hosted
+# runner, except for pull requests, the job uploads the new cache outputs
+# (scripts/ci-cache-stage.py) as the artifact cache-<commit>; after the merge queue has moved main
+# to that commit, .github/workflows/publish-ci-cache.yml verifies them with main's code and
+# publishes them.
 #
 # The cache restore uses the record for the exact build inputs when there is one. A pull request
 # that changes src never has one, so scripts/ci-cache-get.py --baseline falls back to the newest
@@ -46,10 +55,15 @@ concurrency:
 jobs:
   build:
     name: lake build
-    runs-on: ${{ github.event_name == 'pull_request' && 'ubuntu-latest' || fromJSON('["self-hosted", "rh-big"]') }}
+    # Pull requests from forks run on the repository variable PR_RUNS_ON when it is set. It holds
+    # a JSON runs-on value, for example ["self-hosted","rh-pr"] or "ubuntu-latest" (a bare label
+    # without the JSON quotes is invalid). Deleting the variable sends them back to the
+    # GitHub-hosted ubuntu-latest runners. Pull requests whose head branch is in this repository,
+    # and every other event, run on the rh-big runner.
+    runs-on: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && fromJSON(vars.PR_RUNS_ON || '"ubuntu-latest"') || fromJSON('["self-hosted", "rh-big"]') }}
     timeout-minutes: 360
     env:
-      # Pull requests build on GitHub-hosted runners and upload nothing.
+      # Pull requests upload nothing, whichever runner they build on.
       STAGE: ${{ github.event_name != 'pull_request' }}
     steps:
       - uses: actions/checkout@v4

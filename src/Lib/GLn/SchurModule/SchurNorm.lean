@@ -1,4 +1,6 @@
-import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+module
+
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 
 /-!
 # Norm bound for Schur matrices and basic facts on the weight representations
@@ -41,6 +43,8 @@ U(n), and a bound of operator norms by singular values. Source: Jantzen, Represe
 Algebraic Groups, 2nd ed. 2003; Goodman, Wallach, Symmetry, Representations, and Invariants, 2009,
 ch. 5; Howe, Perspectives on invariant theory, 1995.
 -/
+
+@[expose] public section
 
 /-!
 ## Adjoint formula for Schur matrices and the norm bound

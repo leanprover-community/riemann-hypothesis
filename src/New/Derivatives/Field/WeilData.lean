@@ -1,6 +1,8 @@
-import Lib.ClassField.Global.CMSplittingCharacters
-import Lib.ClassField.HeckeCharacter.AlgebraicValues
-import New.Derivatives.Field.PrimeDecomposition
+module
+
+public import Lib.ClassField.Global.CMSplittingCharacters
+public import Lib.ClassField.HeckeCharacter.AlgebraicValues
+public import New.Derivatives.Field.PrimeDecomposition
 
 /-!
 # Weil data of the CM field E = K(ζ) and the number s₀
@@ -35,6 +37,8 @@ Notions from other files:
 * `New.Parameters.relDifferentGen`: P'(ζ), the value at `ζ` of the derivative of the cyclotomic
   polynomial of order `q₁`; it generates the different of `E/K`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

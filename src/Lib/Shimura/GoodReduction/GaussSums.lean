@@ -1,5 +1,7 @@
-import Lib.Shimura.GoodReduction.TorsionSizes
-import Lib.Shimura.Uniformisation.HolomorphicFamilies
+module
+
+public import Lib.Shimura.GoodReduction.TorsionSizes
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Hermitian tori with multiplications, Gauss sums and unfolding of the Poincaré kernel
@@ -39,6 +41,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.GoodReduction.MultiplicativeNorm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

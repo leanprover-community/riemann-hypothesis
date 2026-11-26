@@ -1,6 +1,8 @@
-import New.Determinant.AuxiliaryForms.PathData
-import New.Determinant.Chain.Moduli
-import New.Determinant.Exchange.OneSquare
+module
+
+public import New.Determinant.AuxiliaryForms.PathData
+public import New.Determinant.Chain.Moduli
+public import New.Determinant.Exchange.OneSquare
 
 /-!
 # Turning path data, and turns off the diagonal
@@ -41,6 +43,8 @@ Notions from other files:
 * `New.Exchange.SquareLaw` with constant `C`, for functions `L` and `L'` on matrices over a finite
   ring: `∑ Ψ L' = C ∑ Φ L` for all matched `Φ`, `Ψ`.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -230,9 +234,6 @@ lemma newTuple_apply_of_mem (hc : c.IsTurn ϑ w) {e : GridNode × GridNode} (he 
 
 lemma oldTuple_low (hc : c.IsTurn ϑ w) : c.oldTuple S y v (c.low, c.fst) = y.toRows₁ := by
   simp [oldTuple, hc.fst_ne_snd]
-
-lemma newTuple_fst (hc : c.IsTurn ϑ w) : c.newTuple S x v' (c.fst, c.high) = x.toCols₁ := by
-  simp [newTuple, hc.fst_ne_snd]
 
 lemma oldMatrix_oldTuple (hc : c.IsTurn ϑ w) : c.oldMatrix (c.oldTuple S y v) = y := by
   simp [oldMatrix, oldTuple, hc.fst_ne_snd]

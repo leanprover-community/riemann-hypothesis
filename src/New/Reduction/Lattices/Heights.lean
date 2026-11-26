@@ -1,4 +1,6 @@
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # The height of a family over all places: products, monotonicity and the product formula
@@ -21,6 +23,8 @@ The multiplier H, and so the bound at infinity, does not depend on ι, while y �
 may use its own twist. Related work: Gaudron, Pentes des fibrés vectoriels adéliques sur un corps
 global, 2006; Bombieri–Gubler, Heights in Diophantine Geometry, ch. 1, 2006.
 -/
+
+@[expose] public section
 
 open Algebra Module Real Finset Filter IntermediateField AdjoinSimple Padic PadicAlgCl
 

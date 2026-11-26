@@ -1,5 +1,7 @@
-import Lib.Adelic.Adeles.IdeleModulus
-import Lib.GaloisRep.Hilbert90.UnitaryGroups
+module
+
+public import Lib.Adelic.Adeles.IdeleModulus
+public import Lib.GaloisRep.Hilbert90.UnitaryGroups
 
 /-!
 # Witt's theorem over fields and over Ô; quasi-reflections, Eichler maps, frames
@@ -45,6 +47,8 @@ Notions from other files:
 Known; see `Lib.Adelic.Witt.IwasawaDecomposition`, `Lib.DiscreteSeries.Bruhat.FloorGroups` and
 `Lib.DiscreteSeries.Bruhat.ComplexPlace` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Left invertible and primitive matrices, quasi-reflections

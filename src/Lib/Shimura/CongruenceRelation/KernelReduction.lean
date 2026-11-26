@@ -1,4 +1,6 @@
-import Lib.Shimura.HeckeTower.Model
+module
+
+public import Lib.Shimura.HeckeTower.Model
 
 /-!
 # Reduction of isogeny kernels: Cartier density, the tangent line and torsion sections
@@ -45,6 +47,8 @@ Known; see `Lib.Shimura.AbelianScheme.IsogenyFlatness`,
 `Lib.Shimura.CongruenceRelation.HeckeNeighbours`, `Lib.Shimura.Deformation.TangentBound` and
 `Lib.Shimura.ThetaModuli.UniversalFamily` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Cartier's theorem on density of characteristic zero points

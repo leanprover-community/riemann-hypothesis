@@ -1,5 +1,7 @@
-import Lib.Cohomology.ProjectiveLine.TiltedLineFormula
-import Lib.PadicComparison.Duality.LineIntegration
+module
+
+public import Lib.Cohomology.ProjectiveLine.TiltedLineFormula
+public import Lib.PadicComparison.Duality.LineIntegration
 
 /-!
 # The projective line formula for locally constant ℤ/ℓ coefficients
@@ -42,6 +44,8 @@ stated in Leray–Hirsch form for locally constant ℤ/ℓ coefficients on test 
 coefficients serve only to show that η acts non-trivially. Source: SGA 4½ [Cycle]; SGA 5
 (Jouanolou); Milne, Étale Cohomology; Scholze, p-adic Hodge theory for rigid-analytic varieties.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -240,7 +244,7 @@ def TestOver.structurePt :
     onePointFunctor (TestOver k) ⟶ restrictScalars A k ⋙ reprBy
       ⟨of A k, isTest_of_preValuationRing⟩ :=
   sectionMap
-    { val B := ⟨⟨CommAlg.homOfRingHom _ (by tauto)⟩⟩
+    { val B := ⟨⟨CommAlg.homOfRingHom (algebraMap k B.obj) (by tauto)⟩⟩
       property f := congr(⟨⟨$(by ext; apply f.1.hom.2)⟩⟩) }
 
 /-- For an algebraically closed field k over A, restriction of scalars from tests over k to tests

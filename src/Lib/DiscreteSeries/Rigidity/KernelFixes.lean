@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
 
 /-!
 # The idempotent e_λ, the operator π(e_λ), and rigidity of highest vectors of type Λ
@@ -44,6 +46,8 @@ Known; see `Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration`,
 `Lib.DiscreteSeries.Theta.LocalCorrespondence` and `Lib.DiscreteSeries.FlenstedJensen.PsiKTypes` for
 sources.
 -/
+
+@[expose] public section
 
 namespace New
 

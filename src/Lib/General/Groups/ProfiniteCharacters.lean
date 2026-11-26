@@ -1,5 +1,7 @@
-import Lib.ClassField.GaloisCohomology.ContinuousCocycles
-import Lib.General.Topology
+module
+
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+public import Lib.General.Topology
 
 /-!
 # ℚ/ℤ, characters of profinite groups, and extension of homomorphisms
@@ -36,6 +38,8 @@ Notions from other files:
 * `New.QZChar.toHom χ`: the character `χ` as a group homomorphism to `ℚ/ℤ` written
   multiplicatively; `New.QZChar.ker χ` is its kernel.
 -/
+
+@[expose] public section
 
 noncomputable section
 

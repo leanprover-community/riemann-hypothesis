@@ -1,6 +1,8 @@
-import Lib.Adelic.Unitary.CongruenceLevels
-import Lib.General.Analysis.FiniteFourier
-import Lib.Weil.Construction.WeilData
+module
+
+public import Lib.Adelic.Unitary.CongruenceLevels
+public import Lib.General.Analysis.FiniteFourier
+public import Lib.Weil.Construction.WeilData
 
 /-!
 # Idelic generators of ideals, semilocal fields and tame local characters
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Global.CMSplittingCharacters` and `Lib.Weil.TameGaussSum` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

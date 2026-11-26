@@ -1,6 +1,8 @@
-import Lib.Analytic.PrimeNumberTheorem.Tauberian
-import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
-import New.Reduction.Zeros.PrimeError
+module
+
+public import Lib.Analytic.PrimeNumberTheorem.Tauberian
+public import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
+public import New.Reduction.Zeros.PrimeError
 
 /-!
 # The prime number theorem for the remainders `R_q`
@@ -28,6 +30,8 @@ Multiplicative Number Theory I, 2007, Cor. 11.19. Form here: the modulus is fixe
 the smoothed sum `∑_{n ≤ y} λ(n) (1/n - 1/y)` over the prime powers `n ≡ 1` mod `q`; for `d ≡ 3` mod
 `4` the primes that split in `ℚ(√-d)` have weight zero.
 -/
+
+@[expose] public section
 
 open ArithmeticFunction.vonMangoldt Complex Filter Finset MeasureTheory Nat Real Topology
 

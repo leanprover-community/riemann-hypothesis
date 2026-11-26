@@ -1,6 +1,8 @@
-import New.Spanning.MainTerm.EnergyEstimate
-import New.Spanning.SecondMoment.PositiveType
-import New.Spanning.Unfolding.SquareExpansion
+module
+
+public import New.Spanning.MainTerm.EnergyEstimate
+public import New.Spanning.SecondMoment.PositiveType
+public import New.Spanning.Unfolding.SquareExpansion
 
 /-!
 # The second moment over the whole group
@@ -38,6 +40,8 @@ Notions from other files:
   `s ∈ Ω`.
 * `reducedImage A`: the image in the finite group `ResidueGL` of the integral elements of `A`.
 -/
+
+@[expose] public section
 
 namespace New
 

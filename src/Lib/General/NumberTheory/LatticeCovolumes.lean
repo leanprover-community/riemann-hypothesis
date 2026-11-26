@@ -1,5 +1,7 @@
-import Lib.Adelic.Reduction.MinkowskiTheorems
-import Lib.Shimura.Uniformisation.AdelicFrames
+module
+
+public import Lib.Adelic.Reduction.MinkowskiTheorems
+public import Lib.Shimura.Uniformisation.AdelicFrames
 
 /-!
 # Lattice indices, primitive matrices, Jacobi's identity and covolumes of fundamental domains
@@ -45,6 +47,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.Adeles.Basic` and `New.Spanning.RemainingTerms.SiegelLemma` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

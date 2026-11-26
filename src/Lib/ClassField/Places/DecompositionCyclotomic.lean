@@ -1,5 +1,7 @@
-import Lib.ClassField.Places.ProfiniteGalois
-import Lib.General.Topology
+module
+
+public import Lib.ClassField.Places.ProfiniteGalois
+public import Lib.General.Topology
 
 /-!
 # Decomposition and inertia groups, and cyclotomic characters at Frobenii and inertia
@@ -29,6 +31,8 @@ Notions from other files:
 
 Known; see `Lib.ClassField.Places.LocalFields` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

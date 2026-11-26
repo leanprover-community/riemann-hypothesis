@@ -1,8 +1,10 @@
-import Lib.General.NumberTheory.LargeResidueField
-import New.Congruences.FirstOrder.EvenClasses
-import New.Congruences.Selmer.GeneralTheorem
-import New.Congruences.Selmer.LValueSystems
-import New.Congruences.Selmer.MainSummands
+module
+
+public import Lib.General.NumberTheory.LargeResidueField
+public import New.Congruences.FirstOrder.EvenClasses
+public import New.Congruences.Selmer.GeneralTheorem
+public import New.Congruences.Selmer.LValueSystems
+public import New.Congruences.Selmer.MainSummands
 
 /-!
 # The twisting theorem
@@ -39,6 +41,8 @@ of ℓ-power order at new primes that kill a Selmer group or keep L-values barel
 in the literature. Related work: Mazur–Rubin, Diophantine stability, 2018; Kriz–Nordentoft,
 Horizontal p-adic L-functions, 2023; Hida, Non-vanishing modulo p of Hecke L-values, 2004.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

@@ -1,4 +1,6 @@
-import Lib.Cohomology.Hodge.CupProduct
+module
+
+public import Lib.Cohomology.Hodge.CupProduct
 
 /-!
 # The Leray–Hirsch map as a map of δ-functors, and dévissage from representable functors
@@ -32,6 +34,8 @@ the Leray–Hirsch map is bijective on ℤ[h_c] for every representable functor 
 bijective on every functor. Source: Leray, Hirsch; Hatcher, Algebraic Topology, Thm 4D.1; SGA 5 VII
 (projective bundle formula).
 -/
+
+@[expose] public section
 
 noncomputable section
 

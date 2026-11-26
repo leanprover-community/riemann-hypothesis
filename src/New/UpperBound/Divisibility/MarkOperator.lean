@@ -1,4 +1,6 @@
-import New.UpperBound.Divisibility.HeckeEdges
+module
+
+public import New.UpperBound.Divisibility.HeckeEdges
 
 /-!
 # Elementary divisors of one scaled Hecke operator on the integral source forms
@@ -39,6 +41,8 @@ integral scalings of Hecke operators, are known. Related work: Arsovski, Limitin
 supersingularities, 2019; Liu–Truong–Xiao–Zhao, Slopes of modular forms and geometry of eigencurves,
 2023; Fakhruddin–Pilloni, Hecke operators and the coherent cohomology of Shimura varieties, 2021.
 -/
+
+@[expose] public section
 
 namespace New.Data
 

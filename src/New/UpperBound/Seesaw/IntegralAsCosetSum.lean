@@ -1,4 +1,6 @@
-import Lib.Weil.Periods.BesselIntegral
+module
+
+public import Lib.Weil.Periods.BesselIntegral
 
 /-!
 # Integrals over a quotient as finite sums over cosets with controlled multiplicity
@@ -33,6 +35,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 open MeasureTheory Measure Subgroup QuotientGroup MulAction Set Pointwise ProbabilityTheory
 

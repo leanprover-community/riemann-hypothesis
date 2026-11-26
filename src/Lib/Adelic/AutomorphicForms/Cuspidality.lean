@@ -1,7 +1,9 @@
-import Lib.Adelic.Adeles.SemilocalProducts
-import Lib.Adelic.AutomorphicForms.UnipotentRadical
-import Lib.Weil.Construction.AdelicRepresentation
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Lib.Adelic.Adeles.SemilocalProducts
+public import Lib.Adelic.AutomorphicForms.UnipotentRadical
+public import Lib.Weil.Construction.AdelicRepresentation
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Cuspidality bounds, unipotent reduction, rapid decay and finite dimension of forms
@@ -66,6 +68,8 @@ Smooth cuspidal automorphic forms and integrable discrete series, arXiv 1610.054
 through N. Wallach, On the constant term of a square integrable automorphic form, 1984).
 -/
 
+@[expose] public section
+
 /-! ## The cusp of a point with a short vector; cuspidal functions -/
 
 namespace New
@@ -84,7 +88,7 @@ noncomputable def cuspConst (E n : Type) [Field E] [CMType E] [Fintype n] (N : �
 
 lemma one_le_cuspConst (E n : Type) [Field E] [CMType E] [Fintype n] (N : ℕ) :
     1 ≤ cuspConst E n N := by
-  rw [cuspConst, rootDiscr, ← add_assoc]
+  rw [cuspConst, rootDiscr_def, ← add_assoc]
   bound
 
 variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}

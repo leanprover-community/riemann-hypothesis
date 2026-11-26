@@ -1,8 +1,10 @@
-import New.Reduction.Data.Existence
-import New.Reduction.MainInequality
-import New.Reduction.Zeros.Criterion
-import New.Reduction.Zeros.PrimeNumberTheorem
-import Statements
+module
+
+public import New.Reduction.Data.Existence
+public import New.Reduction.MainInequality
+public import New.Reduction.Zeros.Criterion
+public import New.Reduction.Zeros.PrimeNumberTheorem
+public import Statements
 
 /-!
 # The one-sided bound, and the theorem in half-plane form
@@ -19,6 +21,8 @@ Notions from other files:
 * `Data P`: admissible data, among them the scales `x`, `x₁`, `b`, `a = x b`, the number of lifts
   `m` and two finite sets of places of a number field, `Φ_a = D.aPlaces` and `Φ_b = D.bPlaces`.
 -/
+
+@[expose] public section
 
 open DirichletCharacter Filter Finset Real ZMod
 

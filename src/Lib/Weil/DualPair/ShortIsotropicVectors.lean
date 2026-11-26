@@ -1,5 +1,7 @@
-import Lib.Adelic.Reduction.FirstMinimumShortBases
-import Lib.Weil.DualPair.Defs
+module
+
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.Weil.DualPair.Defs
 
 /-!
 # Short isotropic vectors and means of theta functionals over isotropic subspaces
@@ -34,6 +36,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.DualPair.KernelDecay` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Bruhat.FloorGroups
-import Lib.General.Measure.IntegralOperators
-import Lib.General.Measure.QuadricDisintegration
+module
+
+public import Lib.DiscreteSeries.Bruhat.FloorGroups
+public import Lib.General.Measure.IntegralOperators
+public import Lib.General.Measure.QuadricDisintegration
 
 /-!
 # Heisenberg elements, measures of the floors, hyperbolic bases and Plancherel at a place
@@ -46,6 +48,8 @@ Notions from other files:
 
 Known; see `Lib.DiscreteSeries.Bruhat.ComplexPlace` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

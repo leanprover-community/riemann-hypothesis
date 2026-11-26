@@ -1,8 +1,10 @@
-import Lib.Adelic.Unitary.Defs
-import Lib.Cohomology.Etale.Basic
-import Lib.General.Geometry.ProjectiveSpace
-import Lib.General.NumberTheory.EmbeddingsAndDifferent
-import Lib.Shimura.AbelianScheme.Basic
+module
+
+public import Lib.Adelic.Unitary.Defs
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.Geometry.ProjectiveSpace
+public import Lib.General.NumberTheory.EmbeddingsAndDifferent
+public import Lib.Shimura.AbelianScheme.Basic
 
 /-!
 # Pairings of line bundle classes on abelian schemes and their fpqc descent
@@ -36,6 +38,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.AbelianScheme.IsogenyFlatness` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Quasi-finiteness, rules for the pairing, and multiplication by m -/
 

@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.IntegralLattices
+module
+
+public import Lib.General.LinearAlgebra.IntegralLattices
 
 /-!
 # Pushforward of Haar measures, the modulus of GL_n and the generalised index
@@ -32,6 +34,8 @@ Notions from other files:
 * `New.IsAdelic R`: the subring `R` of `A` is open, compact, stable under `star` and satisfies
   `New.IsValuationPair`, with further properties that are not used here.
 -/
+
+@[expose] public section
 
 /-!
 ## Units along non-unital ring maps and invertible matrices from spanning sets

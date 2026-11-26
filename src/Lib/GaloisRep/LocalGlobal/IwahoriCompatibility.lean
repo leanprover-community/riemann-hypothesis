@@ -1,7 +1,9 @@
-import Lib.GaloisRep.BaseChange.IwahoriEigenforms
-import Lib.GaloisRep.Main.AllRanks
-import Lib.LocalGL.Iwahori.SortedExponents
-import Lib.LocalGL.Iwahori.SphericalExponents
+module
+
+public import Lib.GaloisRep.BaseChange.IwahoriEigenforms
+public import Lib.GaloisRep.Main.AllRanks
+public import Lib.LocalGL.Iwahori.SortedExponents
+public import Lib.LocalGL.Iwahori.SphericalExponents
 
 /-!
 # Local-global compatibility at split places for Iwahori eigencharacters and parahoric types
@@ -46,6 +48,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.LocalGlobal.LabelCompatibility` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Compatibility for a sorted Iwahori eigencharacter

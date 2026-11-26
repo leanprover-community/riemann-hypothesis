@@ -1,5 +1,7 @@
-import Lib.PadicHodge.Crystalline.HodgeTateJumps
-import Lib.PadicHodge.Crystalline.Regularity
+module
+
+public import Lib.PadicHodge.Crystalline.HodgeTateJumps
+public import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # Period matrices over a chart: lattice bases and existence for crystalline lattices
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Kisin.PeriodMatrixFrame` for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Lifting the exponent and bases for period matrices

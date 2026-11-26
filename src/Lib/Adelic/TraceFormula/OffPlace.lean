@@ -1,6 +1,8 @@
-import Lib.Adelic.TraceFormula.TestFunction
-import Lib.Shimura.HeckeTower.HeckeData
-import Lib.Weil.Unramified.SplitHecke
+module
+
+public import Lib.Adelic.TraceFormula.TestFunction
+public import Lib.Shimura.HeckeTower.HeckeData
+public import Lib.Weil.Unramified.SplitHecke
 
 /-!
 # Test functions with a deeper level at an auxiliary place
@@ -29,6 +31,8 @@ Notions from other files:
 Known result: Test functions with a deeper level at an auxiliary split place, by removing the
 components there. It serves `Lib.Adelic.TraceFormula.CuspidalComparison`.
 -/
+
+@[expose] public section
 
 open NumberField MonoidAlgebra
 

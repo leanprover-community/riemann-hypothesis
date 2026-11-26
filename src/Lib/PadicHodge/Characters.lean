@@ -1,6 +1,8 @@
-import Lib.ClassField.Global.ExistenceTheorem
-import Lib.GaloisRep.Main.LocalConditions
-import Lib.General.NumberTheory.PadicLimitsValuation
+module
+
+public import Lib.ClassField.Global.ExistenceTheorem
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # p-adic avatars of Hecke characters and local conditions for twists and characters
@@ -60,6 +62,8 @@ representations (1968), III, Appendix.
 See also `Lib.ClassField.Avatar.LocalGlobalCompatibility` and
 `Lib.PadicHodge.Crystalline.Regularity`.
 -/
+
+@[expose] public section
 
 /-!
 ## p-adic avatars of algebraic Hecke characters

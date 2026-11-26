@@ -1,4 +1,6 @@
-import New.Spanning.RemainingTerms.FrameCount
+module
+
+public import New.Spanning.RemainingTerms.FrameCount
 
 /-!
 # The covolume of the lattice of columns
@@ -26,6 +28,8 @@ Notions from other files:
 
 See `New.Spanning.RemainingTerms.Sum` for related work.
 -/
+
+@[expose] public section
 
 open MeasureTheory Matrix Module Fintype NumberField
 

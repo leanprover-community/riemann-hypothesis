@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
-import Lib.General.NumberTheory.FrobeniusOrbits
+module
+
+public import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+public import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # First properties of c_λ and its K-types
@@ -44,6 +46,8 @@ semisimple symmetric spaces, Ann. of Math. 111 (1980) 253-311; B. Sun, Matrix co
 cohomologically induced representations, Compositio Math. 143 (2007), Thm 1.1 (arXiv math/0403440);
 A. Knapp, Representation Theory of Semisimple Groups (1986), ch. IX.
 -/
+
+@[expose] public section
 
 /-! ## Value at one, polar formula and symmetries of c_λ -/
 

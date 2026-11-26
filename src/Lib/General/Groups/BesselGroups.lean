@@ -1,4 +1,6 @@
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
@@ -28,6 +30,8 @@ The file also defines the Kronecker product of a finite family of matrices and t
 
 Known; see `Lib.DiscreteSeries.Bruhat.FloorGroups` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

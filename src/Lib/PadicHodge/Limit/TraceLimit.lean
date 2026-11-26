@@ -1,6 +1,8 @@
-import Lib.GaloisRep.Main.LocalConditions
-import Lib.General.LinearAlgebra.TensorChains
-import Lib.PadicHodge.Limit.CrystallineLimit
+module
+
+public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.General.LinearAlgebra.TensorChains
+public import Lib.PadicHodge.Limit.CrystallineLimit
 
 /-!
 # Hodge–Tate jumps with bounded denominators and local conditions at limits of traces
@@ -78,6 +80,8 @@ représentations cristallines, Compositio Math. 140 (2004) 1473–1498; for the 
 the image of the group ring, P. Wake, C. Wang-Erickson, Deformation conditions for
 pseudorepresentations, Forum Math. Sigma 7 (2019).
 -/
+
+@[expose] public section
 
 /-!
 ## Bounded denominators of Hodge–Tate projectors for jumps in [0, n]

@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Level spaces, Hecke operators, stabilisers and class sums
@@ -28,6 +30,8 @@ this condition, the value at `v` does not depend on the choice of representative
 
 Known; see `Lib.Adelic.Hecke.ClassSums` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

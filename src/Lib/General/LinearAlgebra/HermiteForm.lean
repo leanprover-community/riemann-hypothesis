@@ -1,4 +1,6 @@
-import Lib.Adelic.Witt.WittTheorem
+module
+
+public import Lib.Adelic.Witt.WittTheorem
 
 /-!
 # Hermite forms over valuation pairs and integral matrices over valued fields
@@ -32,6 +34,8 @@ Notions from other files:
 The property `New.IsValuationPair` and the Smith normal form are in
 `Lib.General.LinearAlgebra.IntegralLattices`.
 -/
+
+@[expose] public section
 
 /-!
 ## Hermite forms over valuation pairs

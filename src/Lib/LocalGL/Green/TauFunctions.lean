@@ -1,4 +1,6 @@
-import Lib.LocalGL.Green.CuspidalFunctions
+module
+
+public import Lib.LocalGL.Green.CuspidalFunctions
 
 /-!
 # Green's characters of GL_n over a finite field: θ_x, τ_P, labels and their degrees
@@ -48,6 +50,8 @@ root and a degree bound. Hall polynomials are not covered. Source: J. A. Green, 
 the finite general linear groups, Trans. AMS 80 (1955), Thms 2, 9, 12-14; for the ring on all
 matrices, Z. Chen, arXiv 2408.06191, Prop. 3.2.
 -/
+
+@[expose] public section
 
 noncomputable section
 

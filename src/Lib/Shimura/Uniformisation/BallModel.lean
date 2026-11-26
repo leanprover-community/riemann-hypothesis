@@ -1,5 +1,7 @@
-import Lib.Shimura.ThetaModuli.PELThetaTori
-import Lib.Shimura.Transfer.MarkedPairs
+module
+
+public import Lib.Shimura.ThetaModuli.PELThetaTori
+public import Lib.Shimura.Transfer.MarkedPairs
 
 /-!
 # Period signatures, analytic families of theta tori and the ball chart of moduli points
@@ -48,6 +50,8 @@ Notions from other files:
 
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -184,7 +188,7 @@ private lemma eventually_isUnit_of_analyticAt_of_apply_ne_zero {c : BallBase D.I
   -- The value at `w` is continuous in `b`, so it stays nonzero near `b₀`.
   have h_near : ∀ᶠ b : BallBase D.Index in nhds b₀, (c b • φ b) w ≠ 0 :=
     h_an.curry_left.continuousAt.eventually_ne h_ne
-  exact h_near.mono fun b hb ↦ (left_ne_zero_of_smul hb).isUnit
+  exact h_near.mono fun b hb ↦ (left_ne_zero_of_smul (b := φ b w) hb).isUnit
 
 /-- Let f be an analytic family of theta tori, b₀ in its domain, and θ_t(b, ·) (t ∈ T) the theta
 coordinates of the member b, functions on V. There is a function c of b such that

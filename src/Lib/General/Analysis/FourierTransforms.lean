@@ -1,4 +1,6 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Fourier inversion for periodic functions and decay of Fourier transforms
@@ -28,6 +30,8 @@ The results of this file include the Stone–Weierstrass theorem for a monoid of
 inversion on a compact quotient of an abelian group, and the decay of Fourier transforms by
 integration by parts.
 -/
+
+@[expose] public section
 
 /-! ## Dual families of characters and Fourier inversion -/
 

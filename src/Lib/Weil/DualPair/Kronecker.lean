@@ -1,4 +1,6 @@
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # The action x ↦ hxg⁻¹ on matrices as a map of unitary groups
@@ -15,6 +17,8 @@ invertible `g` with `gᴴ J g = J`.
 
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
+
+@[expose] public section
 
 open Matrix Kronecker
 

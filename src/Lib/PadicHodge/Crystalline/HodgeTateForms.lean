@@ -1,5 +1,7 @@
-import Lib.General.NumberTheory.CoefficientRings
-import Lib.PadicHodge.TateSen
+module
+
+public import Lib.General.NumberTheory.CoefficientRings
+public import Lib.PadicHodge.TateSen
 
 /-!
 # Semilinear forms of given weight: independence, finiteness, and jumps read off a basis
@@ -30,6 +32,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Crystalline.Regularity` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Period
 

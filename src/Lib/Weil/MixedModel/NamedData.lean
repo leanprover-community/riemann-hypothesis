@@ -1,4 +1,6 @@
-import Lib.Weil.Construction.ProductsAndTransport
+module
+
+public import Lib.Weil.Construction.ProductsAndTransport
 
 /-!
 # Data named by Schwartz–Bruhat functions: Heisenberg laws, transport, Weil action
@@ -41,6 +43,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

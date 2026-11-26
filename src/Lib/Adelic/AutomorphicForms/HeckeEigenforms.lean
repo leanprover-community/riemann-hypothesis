@@ -1,4 +1,6 @@
-import Lib.GLn.SchurModule.SchurNorm
+module
+
+public import Lib.GLn.SchurModule.SchurNorm
 
 /-!
 # Algebraic modular forms: delta forms, unitary translation and spanning by Hecke eigenforms
@@ -43,6 +45,8 @@ Known result: Finite dimension of spaces of algebraic modular forms and the Heck
 spanning them. Related files: `Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms` and, for congruence
 subgroups and level structures, `Lib.Adelic.Unitary.CongruenceLevels`.
 -/
+
+@[expose] public section
 
 /-!
 ## Algebraic forms of a level: delta forms, values on classes, dimension

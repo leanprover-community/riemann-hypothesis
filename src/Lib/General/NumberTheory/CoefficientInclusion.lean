@@ -1,4 +1,6 @@
-import Lib.General.NumberTheory.GaussValuation
+module
+
+public import Lib.General.NumberTheory.GaussValuation
 
 /-!
 # Coefficient rings inside the ring of all integral elements
@@ -18,6 +20,8 @@ Notions from other files:
   is the ring `ℤ̄_ℓ` of integral elements; throughout, the instance `ThePrime ℓ` fixes `ℓ` as the
   prime in play.
 -/
+
+@[expose] public section
 
 noncomputable section
 

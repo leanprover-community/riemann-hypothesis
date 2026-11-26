@@ -1,4 +1,6 @@
-import New.UpperBound.Objects.RowChain
+module
+
+public import New.UpperBound.Objects.RowChain
 
 /-!
 # Orders of block triangular groups and Gram forms of chains in triangles
@@ -37,6 +39,8 @@ Notions from other files:
 * `New.compUpTo L j`: for linear maps `L i : M i → M (i + 1)`, the composite
   `L (j - 1) ∘ ⋯ ∘ L 0 : M 0 → M j`.
 -/
+
+@[expose] public section
 
 /-! ## Order of a group of block triangular matrices -/
 
@@ -320,27 +324,6 @@ lemma HasSquareModuli.exists_chainCommutes [∀ (t : I) (n : ℕ), NeZero (w t n
     rw [← add_assoc, prod_Ioc_succ_top (by lia)]
     exact h_moduli.modulus_mul hβ hβ'
 
-/-- Take a triangle of size `m` with nonzero weights (`IsTriangle`): arrows `a` along the rows and
-maps `d` down a row whose squares commute up to scalars, with `a` adjoint to `d` on the copies `j i`
-of `V`. Let `X i n` be the weighted composite of the first `n` arrows of row `i`. For `i + n < m`
-there are `β` and `κ`, functions of the parameter `t : I`, such that `X (i + 1) n ∘ d ∘ a = (w
-(n + 1) / (w 1 * w 0 * conj β)) • d ∘ X i (n + 1)` (`ChainCommutes`). Moreover, under
-`HasSquareModuli`, `κ * β` has modulus the product of the `L (i + 1) k` over `i + 1 < k ≤ i + 1 + n`
-and `⟪z, a (X i n)⟫ = κ * ⟪d z, X (i + 1) n⟫` at the images of any `y` in `V` (`ChainAdjoint`). -/
-lemma IsTriangle.exists_chainCommutes_and_chainAdjoint [∀ (t : I) (n : ℕ), NeZero (w t n)]
-    (h_tri : IsTriangle m w a d j) (i n : ℕ) (hi : i + n < m) :
-    ∃ β κ : I → ℂ,
-      ChainCommutes w a d i n β ∧
-      (HasSquareModuli m w M L a d →
-        M (κ * β) (∏ k ∈ Ioc (i + 1) (i + 1 + n), L (i + 1) k) ∧ ChainAdjoint w a d j i n κ) := by
-  by_cases h_moduli : HasSquareModuli m w M L a d
-  · obtain ⟨β, hβ, h_commutes⟩ := h_moduli.exists_chainCommutes i n hi
-    obtain ⟨κ, hκ, h_adjoint⟩ := h_tri.exists_chainAdjoint h_moduli i n hi
-    exact ⟨β, κ, h_commutes,
-      fun _ ↦ ⟨by simpa only [one_mul] using h_moduli.modulus_mul hκ hβ, h_adjoint⟩⟩
-  · obtain ⟨β, h_commutes⟩ := h_tri.exists_chainCommutes i n hi
-    exact ⟨β, 1, h_commutes, fun h_moduli' ↦ absurd h_moduli' h_moduli⟩
-
 /-- Take a triangle of size `m` with nonzero weights (`IsTriangle`): spaces `F i n`, arrows `a`
 along the rows and maps `d` down a row whose squares commute up to scalars, and isometries
 `j i : V → F i 0` such that `d ∘ a` maps the image of `j i` injectively to that of `j (i + 1)`.
@@ -381,19 +364,6 @@ lemma IsTriangle.ne_zero_of_chainCommutes [∀ (t : I) (n : ℕ), NeZero (w t n)
     simp [hx, h_commutes t, hβ_zero]
   have hx_zero : x = 0 := h_tri.eq_zero_of_weightedChain_eq_zero n (i + 1) (by lia) x h_next
   exact hy (h_tri.eq_zero_of_first i (by lia) t y (by rw [← hx, hx_zero, map_zero]))
-
-/-- Take a triangle of size `m` with nonzero weights and `V ≠ 0` (`IsTriangle`): arrows `a` along
-the rows and maps `d` down a row whose squares commute up to scalars, with `d ∘ a` mapping each copy
-`j i` of `V` injectively to the next. If for `i + n + 2 ≤ m` the square at `(i, n)` satisfies
-`w n • a ∘ d = (w (n + 2) / conj β') • d ∘ a` on `F i (n + 1)`, then `β'` has no zero, so both sides
-differ by a nonzero factor. -/
-lemma IsTriangle.ne_zero_of_squareCommutes [∀ (t : I) (n : ℕ), NeZero (w t n)] [Nontrivial V]
-    (h_tri : IsTriangle m w a d j) {i n : ℕ} (hi : i + (n + 1) < m) {β' : I → ℂ}
-    (h_square : SquareCommutes w a d i n β') (t : I) :
-    β' t ≠ 0 := by
-  obtain ⟨β, h_chain⟩ := h_tri.exists_chainCommutes i n (by lia)
-  have h_prod : β t * β' t ≠ 0 := h_tri.ne_zero_of_chainCommutes hi (h_chain.succ h_square) t
-  exact right_ne_zero_of_mul h_prod
 
 /-- For a parameter `t : I`, the Gram form of the `(n + 1)`-chain of row `i` is expressed through
 the `n`-chain of row `i + 1`. This holds for `i + n < m` in a triangle of size `m` with nonzero

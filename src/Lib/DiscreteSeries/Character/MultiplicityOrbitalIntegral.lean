@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Character.WeylCharacterFormula
-import Lib.DiscreteSeries.Rigidity.KernelFixes
+module
+
+public import Lib.DiscreteSeries.Character.WeylCharacterFormula
+public import Lib.DiscreteSeries.Rigidity.KernelFixes
 
 /-!
 # K-type multiplicities of the discrete series and orbital integrals as Laurent polynomials
@@ -39,6 +41,8 @@ Notions from other files:
 
 See `Lib.DiscreteSeries.Character.FormalDegree`.
 -/
+
+@[expose] public section
 
 /-!
 ## Multiplicities of K-types computed via characters

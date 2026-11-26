@@ -1,4 +1,6 @@
-import Lib.Adelic.QuotientMeasure.Basic
+module
+
+public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
 # Unfolding over orbits and integration in Iwasawa coordinates
@@ -30,6 +32,8 @@ Known result: The unfolding trick and the integration formula in Iwasawa coordin
 by a discrete subgroup. Weil's formula for invariant integration on a quotient is in
 `Lib.Adelic.QuotientMeasure.Basic`.
 -/
+
+@[expose] public section
 
 /-!
 ## Unfolding a sum over an orbit
@@ -312,9 +316,8 @@ lemma New.integral_tsum_orbit_of_lt_top_or_integrable (hi : Function.Injective i
   obtain rfl : D = orbit Λ y := Set.ext fun z ↦ (h_orbit z).trans mem_orbit_symm
   subst hΓ h_stab
   -- The sum over the orbit is at most the sum over all of `Y`.
-  refine integral_tsum_orbit_eq_integral_stabilizer hi hk_meas hk (h_fin.imp_left fun h ↦ ?_)
-  exact (lintegral_mono fun x ↦ ENNReal.tsum_comp_le_tsum_of_injective Subtype.val_injective
-    fun z ↦ ‖k z x‖ₑ).trans_lt h
+  exact integral_tsum_orbit_eq_integral_stabilizer hi hk_meas hk <| h_fin.imp_left <|
+    (lintegral_mono fun x ↦ ENNReal.tsum_comp_le_tsum_of_injective Subtype.val_injective _).trans_lt
 
 /-- Left invariance of `k y` and unfolding over the orbit `D` of `y`, as one statement. Here `i`
 maps `Λ` isomorphically onto the discrete subgroup `Γ`, `S` is the image under `i` of the stabiliser

@@ -1,6 +1,8 @@
-import New.Reduction.Lattices.Colength
-import New.UpperBound.Divisibility.SetupAtLevel
-import New.UpperBound.Objects.Rows
+module
+
+public import New.Reduction.Lattices.Colength
+public import New.UpperBound.Divisibility.SetupAtLevel
+public import New.UpperBound.Objects.Rows
 
 /-!
 # The colength of source forms at p = N
@@ -22,6 +24,8 @@ Notions from other files:
 * `New.Data.diagPointN`: the point `δ_j`, which takes the standard lattice at `Σ_N` to `L_j`.
 * `New.Data.upIntegralForms`: the module `𝒜'`, the preimage of `𝒜^L` under `Up ^ (m / 2)`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

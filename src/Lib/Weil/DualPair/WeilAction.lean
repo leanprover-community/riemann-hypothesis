@@ -1,9 +1,11 @@
-import Lib.Adelic.AutomorphicForms.Basic
-import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
-import Lib.Adelic.Witt.IwasawaDecomposition
-import Lib.Weil.Fock.OscillatorPair
-import Lib.Weil.MixedModel.ThetaInvariance
-import Lib.Weil.Periods.Grading
+module
+
+public import Lib.Adelic.AutomorphicForms.Basic
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.Adelic.Witt.IwasawaDecomposition
+public import Lib.Weil.Fock.OscillatorPair
+public import Lib.Weil.MixedModel.ThetaInvariance
+public import Lib.Weil.Periods.Grading
 
 /-!
 # Laws of the Weil action of a pair: translations, real points, levels, rational maps
@@ -57,6 +59,8 @@ Notions from other files:
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence`, `Lib.Weil.Fock.OscillatorPair`,
 `Lib.Weil.CompactLift.DefiniteThetaLift` and `Lib.Weil.Periods.Unfolding` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

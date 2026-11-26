@@ -1,6 +1,8 @@
-import Lib.General.Combinatorics
-import Lib.Shimura.CongruenceRelation.HeckeNeighbours
-import Lib.Shimura.IntegralModel.BallImmersion
+module
+
+public import Lib.General.Combinatorics
+public import Lib.Shimura.CongruenceRelation.HeckeNeighbours
+public import Lib.Shimura.IntegralModel.BallImmersion
 
 /-!
 # Existence of the model: the tower of Kuga–Sato covers with its congruence relation
@@ -40,6 +42,8 @@ relation at good split places is part of the statement.
 Source: Harris, Taylor, The geometry and cohomology of some simple Shimura varieties, 2001, III.4;
 Kottwitz, Points on some Shimura varieties over finite fields, JAMS 5 (1992), §5.
 -/
+
+@[expose] public section
 
 open NumberField CategoryTheory AlgebraicGeometry IsLocalRing CommRingCat New.Variety Spec
   ULift QuotientGroup Category Function ReducedClosure Finset IncidenceAlgebra Filter Algebra

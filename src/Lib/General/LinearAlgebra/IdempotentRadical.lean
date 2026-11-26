@@ -1,4 +1,6 @@
-import Lib.General.LinearAlgebra.MatrixPolynomials
+module
+
+public import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # The unipotent radical attached to an idempotent matrix
@@ -8,6 +10,8 @@ parabolic subgroup that keeps the image of `ε`. If a polynomial in `g` is a pro
 image of `ε`, then every translate of `g` by the radical is conjugate to `g` under the radical
 (`semiconjBy_radicalHom_aeval_sub`).
 -/
+
+@[expose] public section
 
 open Matrix Polynomial Multiplicative
 

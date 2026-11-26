@@ -1,4 +1,6 @@
-import Lib.Adelic.Unitary.Defs
+module
+
+public import Lib.Adelic.Unitary.Defs
 
 /-!
 # Twisted norms, matching pairs and base change maps for unitary groups
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
+
+@[expose] public section
 
 namespace New
 

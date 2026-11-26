@@ -1,4 +1,6 @@
-import Lib.Adelic.Unitary.GramMatrix
+module
+
+public import Lib.Adelic.Unitary.GramMatrix
 
 /-!
 # Closed matrix embedding of adelic unitary groups, discrete rational points, weak approximation
@@ -41,6 +43,8 @@ Groups and Number Theory, 1994, ch. 7. Here a hermitian space comes with an adel
 diagonal form, and this form is the identity at all finite places, so every space of one signature
 shares one adelic group.
 -/
+
+@[expose] public section
 
 /-! ## Closed embedding into matrices and discreteness of rational points -/
 

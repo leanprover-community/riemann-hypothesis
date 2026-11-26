@@ -1,5 +1,7 @@
-import New.OneLift.ComparisonOperator.FirstFactors
-import New.UpperBound.Divisibility.ChainValuation
+module
+
+public import New.OneLift.ComparisonOperator.FirstFactors
+public import New.UpperBound.Divisibility.ChainValuation
 
 /-!
 # The lift of a character: denominators, and one group ring element for all twists
@@ -41,6 +43,8 @@ interpolate twisted values of Hecke L-functions (see `New.Congruences.Selmer.Cla
 squared norms of theta lifts from U(1) (see `Lib.SiegelWeil.RallisInner.SharpData`). Here only the
 side of the squared norms is treated.
 -/
+
+@[expose] public section
 
 noncomputable section
 

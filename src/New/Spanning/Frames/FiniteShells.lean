@@ -1,5 +1,7 @@
-import New.Spanning.Frames.FiniteDepth
-import New.Spanning.Frames.Shells
+module
+
+public import New.Spanning.Frames.FiniteDepth
+public import New.Spanning.Frames.Shells
 
 /-!
 # Shells, decay and mass at the finite places
@@ -38,6 +40,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Adelic.Reduction.DefiniteClassSums
+module
+
+public import Lib.Adelic.Reduction.DefiniteClassSums
 
 /-!
 # Automorphic forms on adelic unitary groups, the Petersson product and rapid decay
@@ -41,6 +43,8 @@ Notions from other files:
 Known result: automorphic forms on unitary groups and their rapid decay. Cusp forms are treated in
 `Lib.Adelic.AutomorphicForms.Cuspidality`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import New.Spanning.Frames.Densities
-import New.Spanning.Frames.StandardLevel
+module
+
+public import New.Spanning.Frames.Densities
+public import New.Spanning.Frames.StandardLevel
 
 /-!
 # The Bessel vector at the finite places
@@ -38,6 +40,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -399,19 +403,6 @@ theorem isCut_besselVector : F.IsCut Z.besselVector := by
     exact ⟨u, hu, box_eq.ge hux⟩
   exact { toIsBoundedMeasurable := ⟨h_meas, _,
     h_bdd⟩, map_unipotent_mul := h_law, exists_mul_mem_box := h_supp }
-
-/-- For a large lattice datum and K(g) ≤ Z ≤ K, let the orbital integral J(γ) = ∫_G W(y) ⊗ W(γ⁻¹y)^*
-dy (`besselOrbitalIntegral`, for the Haar measure `F.groupMeasure`) of the finite Bessel vector
-`W = Z.besselVector` be non-zero. Then all leading minors of `T.frameGram γ`, the matrix of the
-products h(f_a, γ f_b) of the frame vectors f_a under the form h = `T.splitGram`, are integral. -/
-theorem leadingMinor_mem_of_besselOrbitalIntegral_ne_zero (Z : F.IntermediateGroup) {γ : T.G}
-    (hγ : besselOrbitalIntegral F.groupMeasure Z.besselVector γ ≠ 0) (j : Fin (𝔰.n + 1)) :
-    leadingMinor (T.frameGram γ.val.val) j ∈ P.integers := by
-  -- For the gauge of scale `1`, having any given size means being integral.
-  let Γ : Gauge F := h.gauge 1 (one_mem P.integers) (star_one A)
-  have h_size : leadingMinor (T.frameGram γ.val.val) j ∈ Γ.ofSize (9 * 𝔰.n) :=
-    Γ.leadingMinor_mem_ofSize_of_besselOrbitalIntegral_ne_zero (isCut_besselVector Z) hγ j
-  simpa [Γ, gauge] using h_size
 
 /-- The pairing of two translates of the finite Bessel vector as an integral over the Bessel
 unipotent group 𝖴. For a large lattice datum and K(g) ≤ Z ≤ K, let fl = `F.unipotentMass` be the

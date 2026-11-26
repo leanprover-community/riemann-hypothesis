@@ -1,5 +1,7 @@
-import Lib.General.Algebra.MultivariatePolynomials
-import Lib.PadicComparison.Descent.TestCategory
+module
+
+public import Lib.General.Algebra.MultivariatePolynomials
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Mayer–Vietoris for two charts of a line modulo an ideal
@@ -32,6 +34,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.ProperBaseChange.Theorem` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Variety
 

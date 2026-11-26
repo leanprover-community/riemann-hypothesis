@@ -1,4 +1,6 @@
-import Lib.GLn.SchurModule.SchurOrthogonality
+module
+
+public import Lib.GLn.SchurModule.SchurOrthogonality
 
 /-!
 # Irreducibility under U(n)^Φ, polarisation and averaging of determinant polynomials
@@ -34,6 +36,8 @@ Notions from other files:
 Irreducibility under U(n) is part of the known theory of the contravariant form on Weyl's lattice.
 See `Lib.GLn.SchurModule.SchurNorm`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

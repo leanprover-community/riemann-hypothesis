@@ -1,6 +1,8 @@
-import Lib.Weil.DualPair.FiniteAction
-import Lib.Weil.Periods.GradedLattice
-import New.UpperBound.Seesaw.StandardLines
+module
+
+public import Lib.Weil.DualPair.FiniteAction
+public import Lib.Weil.Periods.GradedLattice
+public import New.UpperBound.Seesaw.StandardLines
 
 /-!
 # Bounds for the lattices of points on graded spaces
@@ -34,6 +36,8 @@ Notions from other files:
 
 See `New.UpperBound.Seesaw.SeesawIdentity` for related work.
 -/
+
+@[expose] public section
 
 open Matrix Pointwise Valued
 

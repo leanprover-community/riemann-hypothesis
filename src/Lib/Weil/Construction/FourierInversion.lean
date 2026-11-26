@@ -1,4 +1,6 @@
-import Lib.Weil.Construction.ThetaDictionary
+module
+
+public import Lib.Weil.Construction.ThetaDictionary
 
 /-!
 # Fourier inversion for theta functions
@@ -37,6 +39,8 @@ Known result: theta functions for a sublattice are spanned by translates of the 
 principal polarization. The proof is by Fourier inversion on a finite abelian group. Source:
 Mumford, Tata lectures on theta I.
 -/
+
+@[expose] public section
 
 open NumberField Complex ComplexConjugate Pointwise
 

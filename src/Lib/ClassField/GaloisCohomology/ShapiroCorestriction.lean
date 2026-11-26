@@ -1,4 +1,6 @@
-import Lib.General.Groups.ProfiniteCharacters
+module
+
+public import Lib.General.Groups.ProfiniteCharacters
 
 /-!
 # Shapiro's lemma, corestriction and reduction of H² statements to steps of prime index
@@ -38,6 +40,8 @@ Notions from other files:
 Known; see `Lib.ClassField.GaloisCohomology.KummerCyclicClasses` for sources.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 /-!
@@ -59,10 +63,6 @@ variable {R Γ : Type} {H : Type*} [CommRing R] [Group Γ] [TopologicalSpace Γ]
 /-- For a continuous homomorphism φ: H → Γ, the additive map from continuous ℚ/ℤ-valued
 characters of Γ to those of H, χ ↦ χ∘φ. -/
 def New.QZChar.comap : QZChar Γ →+ QZChar H := pairMapZ1 φ LinearMap.id
-
-omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
-lemma New.QZChar.comap_val_apply (χ : ↥(QZChar Γ)) (h : H) :
-    (QZChar.comap φ χ).val h = χ.val (φ h) := rfl
 
 omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
 /-- The character `χ ∘ φ`, as a homomorphism to `ℚ/ℤ`, takes the value `χ (φ h)` at `h`. -/

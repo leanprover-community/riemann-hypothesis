@@ -1,6 +1,8 @@
-import New.Spanning.RemainingTerms.Discriminants
-import New.Spanning.RemainingTerms.OrthogonalLifts
-import New.Spanning.Unfolding.ReducedPoints
+module
+
+public import New.Spanning.RemainingTerms.Discriminants
+public import New.Spanning.RemainingTerms.OrthogonalLifts
+public import New.Spanning.Unfolding.ReducedPoints
 
 /-!
 # The lattice of a link
@@ -31,6 +33,8 @@ Notions from other files:
 * `New.Filling.exists_lifts_linkDiscSq_le`: the discriminant of `L¹`.
 * `New.Filling.exists_hasLevelLifts_linkDiscSq_le`: the discriminant of `L⁺_γ`.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

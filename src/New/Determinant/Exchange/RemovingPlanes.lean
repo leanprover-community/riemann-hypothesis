@@ -1,4 +1,6 @@
-import New.Determinant.Exchange.LargeTriple
+module
+
+public import New.Determinant.Exchange.LargeTriple
 
 /-!
 # Change of point and sign, and descent of the exchange identity by removing hyperbolic planes
@@ -42,6 +44,8 @@ Notions from other files:
 
 See `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Exchange
 
@@ -171,11 +175,10 @@ lemma exists_circle_thetaIntegral_localDatum_eq_mul (W W₁ : Space E n s) (V V�
     identDistrib_orbitMeasure_comp (measurePreserving_count ((MulAut.conj k').subtypeEquiv Γ_conj))
       (measurePreserving_mul_left _ k') (by simp [Subgroup.smul_def, mul_assoc]) kernel₁_inv
   calc thetaIntegral W V α β (localDatum W V v Φ hπ) g
-    _ = ∫ h, u * kernel₁ (k' * h) ∂V.quotMeasure := by
-      rw [thetaIntegral]
-      exact congrArg _ (funext kernel_eq)
+    _ = ∫ h, u * kernel₁ (k' * h) ∂V.quotMeasure := congrArg _ (funext kernel_eq)
     _ = u * thetaIntegral W₁ V₁ α β (localDatum W₁ V₁ v Φ hπ) (k * g) := by
-      rw [integral_const_mul, same_distrib.integral_eq, thetaIntegral]
+      rw [integral_const_mul, same_distrib.integral_eq]
+      rfl
 
 /-- Let the points of `W` and `W₁` differ by a rational matrix `c` on the left and `k` in the adelic
 unitary group on the right, and let `V`, `V₁` have the same signs. Let `𝔠` be a character of

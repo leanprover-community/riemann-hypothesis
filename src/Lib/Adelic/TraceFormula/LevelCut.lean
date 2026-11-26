@@ -1,7 +1,9 @@
-import Lib.Adelic.TraceFormula.LevelAlgebra
-import Lib.Adelic.TraceFormula.LineDeterminant
-import Lib.Adelic.TraceFormula.LineStabiliser
-import Lib.Adelic.TraceFormula.OffPlace
+module
+
+public import Lib.Adelic.TraceFormula.LevelAlgebra
+public import Lib.Adelic.TraceFormula.LineDeterminant
+public import Lib.Adelic.TraceFormula.LineStabiliser
+public import Lib.Adelic.TraceFormula.OffPlace
 
 /-!
 # Passage to the stabiliser of a line at an auxiliary place
@@ -28,6 +30,8 @@ Notions from other files:
 * `LineRelation d c A T⁺ T⁻ e`: `T⁻` is adjoint to `T⁺`, `T⁺ T⁻ = d (1 + c e)`, `e` is idempotent,
   `A` commutes with `T⁺` and `T⁻`, and `d, c > 0`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

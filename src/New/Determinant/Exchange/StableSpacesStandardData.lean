@@ -1,4 +1,6 @@
-import New.Determinant.Exchange.MatchingPartners
+module
+
+public import New.Determinant.Exchange.MatchingPartners
 
 /-!
 # Criteria for a function with a matched function to lie in a stable space; vanishing of lifts
@@ -38,6 +40,8 @@ Notions from other files:
 * `New.Space.Splitting.partialMean`: the mean of a Fourier coefficient over the shifts of one more
   isotropic vector; `New.Space.Splitting.ShearInvariant` is its invariance under local shears.
 -/
+
+@[expose] public section
 
 /-! ## Stable spaces containing a standard datum -/
 
@@ -162,13 +166,11 @@ lemma match_mem_of_stdColDatum
     ⟨(V.ϖ ^ c)⁻¹ • GeneralLinearGroup.mk'' (1 - x * (s - V.ϖ ^ c • s))
       (by simp [↓det_one_sub_mul_comm x, hsx, Matrix.sub_mul]), rfl⟩
   have : CompactSpace (intGL n V.O) := isCompact_iff_compactSpace.1 (isCompact_intGL isCompact_O)
-  have h_inv : Continuous fun k : intGL n V.O ↦ (k : GL n F).inv :=
-    Units.continuous_coe_inv.comp continuous_subtype_val
   have h_translates :
       IsLocallyConstant fun (k : intGL n V.O) (y : Matrix n b F) ↦ p ((d * k : GL n F).val * y) :=
     isLocallyConstant_curry (hP_le hp) (fun (k : intGL n V.O) y ↦ d.val * (k : GL n F).val * y)
       (fun k y ↦ (k : GL n F).inv * d.inv * y) (fun k y ↦ by simp [Matrix.mul_assoc])
-      (hg := ((h_inv.comp continuous_fst).matrix_mul continuous_const).matrix_mul continuous_snd)
+      (hg := by simp only [Units.inv_eq_val_inv]; fun_prop)
   -- The integral `I y` of `‖p (d * k * y)‖` over `k` is constant where `Ψ y ≠ 0`: these `y` are in
   -- the orbit of `x`.
   let I (y : Matrix n b F) : ℝ := ∫ k : intGL n V.O, ‖p ((d * k : GL n F).val * y)‖ ∂.haar

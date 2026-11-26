@@ -1,4 +1,6 @@
-import Lib.Analytic.ZeroSymmetry
+module
+
+public import Lib.Analytic.ZeroSymmetry
 
 /-!
 # A small nonzero integer in all Stickelberger ideals via Voronoi's congruence
@@ -30,6 +32,8 @@ has (c ^ e - 1) (c ^ (e + 1) - 1) ∣ X. Source: K. Ireland, M. Rosen, A Classic
 Modern Number Theory, 2nd ed. 1990; for the untwisted statement also M. Eberl, Kummer's congruence,
 Archive of Formal Proofs 2024.
 -/
+
+@[expose] public section
 
 open Finset DirichletCharacter Matrix Nat Polynomial Complex NeZero ZMod Real
 

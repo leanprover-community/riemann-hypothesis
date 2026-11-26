@@ -1,4 +1,6 @@
-import New.Congruences.Lifting.CupProductBound
+module
+
+public import New.Congruences.Lifting.CupProductBound
 
 /-!
 # Tame Kummer charts and the power of p that kills cokernels of Kisin modules
@@ -32,6 +34,8 @@ Notions from other files:
 
 See `New.Congruences.Lifting.CupOrthogonalityBounds` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Lift
 

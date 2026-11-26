@@ -1,5 +1,7 @@
-import New.UpperBound.Divisibility.MarkedPrimes
-import New.UpperBound.Kernels.ThetaLiftGauge
+module
+
+public import New.UpperBound.Divisibility.MarkedPrimes
+public import New.UpperBound.Kernels.ThetaLiftGauge
 
 /-!
 # p-adic gauge bounds for chains of theta lifts and restrictions to `Y_m`
@@ -41,6 +43,8 @@ Notions from other files:
   X_{j+1}) translated by the finite Heisenberg operator of x_j.
 * `New.Data.piNPlaces`: the set of primes dividing `π`, where `π π̄ = N`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

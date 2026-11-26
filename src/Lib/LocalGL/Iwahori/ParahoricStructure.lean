@@ -1,5 +1,7 @@
-import Lib.Adelic.Hecke.ClassSums
-import Lib.General.LinearAlgebra.HermiteForm
+module
+
+public import Lib.Adelic.Hecke.ClassSums
+public import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # Parahoric and pro-p Iwahori subgroups of GL_n over a local field and U_t operators
@@ -48,6 +50,8 @@ The last section proves conjugacy in I₁ t I₁, twisted by an isometric automo
 
 See also `Lib.LocalGL.Iwahori.HeckeDegrees`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

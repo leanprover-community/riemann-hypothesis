@@ -1,4 +1,6 @@
-import Lib.Weil.Unramified.HeckeGL
+module
+
+public import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Norms, logarithms and first-order deformations of the norm
@@ -34,6 +36,8 @@ Notions from other files:
   completion `E_w`, its ring of integers `O_w` and its residue field, which has `w.q` elements.
 * `New.localIntGL n w`: the subgroup `GL_n(O_w)` of `GL_n(E_w)`.
 -/
+
+@[expose] public section
 
 /-!
 ## Congruences, norms and the family

@@ -1,5 +1,7 @@
-import New.Spanning.RemainingTerms.Count
-import New.Spanning.RemainingTerms.Size
+module
+
+public import New.Spanning.RemainingTerms.Count
+public import New.Spanning.RemainingTerms.Size
 
 /-!
 # The remaining terms: a bound for their sum
@@ -47,6 +49,8 @@ relative trace formulas by congruences and counts is known in the literature. Re
 Michel–Ramakrishnan–Yang, Bessel periods on U(2,1)×U(1,1), 2023; Kowalski–Saha–Tsimerman, Local
 spectral equidistribution for Siegel modular forms, 2012; Blomer, Density theorems for GL(n), 2023.
 -/
+
+@[expose] public section
 
 open ENNReal Fin Finset Module
 

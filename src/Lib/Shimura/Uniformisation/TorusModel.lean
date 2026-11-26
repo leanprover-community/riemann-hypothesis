@@ -1,9 +1,11 @@
-import Lib.Shimura.AbelianScheme.IsogenyFlatness
-import Lib.Shimura.ArcExtension
-import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
-import Lib.Shimura.Uniformisation.AppellHumbert
-import Lib.Shimura.Uniformisation.BallModel
-import Lib.Shimura.Uniformisation.LieExponential
+module
+
+public import Lib.Shimura.AbelianScheme.IsogenyFlatness
+public import Lib.Shimura.ArcExtension
+public import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
+public import Lib.Shimura.Uniformisation.AppellHumbert
+public import Lib.Shimura.Uniformisation.BallModel
+public import Lib.Shimura.Uniformisation.LieExponential
 
 /-!
 # Objects modelled on complex tori and their homomorphisms as rational matrices
@@ -47,6 +49,8 @@ Notions from other files:
 Known; see `Lib.Shimura.Uniformisation.AppellHumbert` and `Lib.Shimura.ThetaModuli.UniversalFamily`
 for sources.
 -/
+
+@[expose] public section
 
 /-!
 ## Theta uniformisation, Weil pairing and canonical multiplier

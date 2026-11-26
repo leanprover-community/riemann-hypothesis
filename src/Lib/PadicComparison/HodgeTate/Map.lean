@@ -1,4 +1,6 @@
-import Lib.PadicComparison.Primitive.PeriodCoefficients
+module
+
+public import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
 # The Hodge–Tate maps λ_h on pairs (S, M): construction, properties and restriction
@@ -49,6 +51,8 @@ Notions from other files:
 
 Known; see `Lib.PadicComparison.HodgeTate.PeriodMap` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

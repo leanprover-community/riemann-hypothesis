@@ -1,5 +1,7 @@
-import Lib.General.Groups.BesselGroups
-import Lib.General.Measure.IntegralOperators
+module
+
+public import Lib.General.Groups.BesselGroups
+public import Lib.General.Measure.IntegralOperators
 
 /-!
 # Sieve systems over places: products, positivity and lower semicontinuity
@@ -25,6 +27,8 @@ last the integral of the next one over a common entry, with bounds `B₀`, `Λ`,
 
 See `New.Spanning.MainTerm.GlobalSieve` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

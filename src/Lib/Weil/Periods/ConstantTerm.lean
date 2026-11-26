@@ -1,8 +1,10 @@
-import Lib.Adelic.AutomorphicForms.BlockPeriods
-import Lib.General.LinearAlgebra.BlockEmbeddings
-import Lib.Weil.DualPair.MixedModel
-import Lib.Weil.Periods.BesselIntegral
-import Lib.Weil.Periods.Equivariant
+module
+
+public import Lib.Adelic.AutomorphicForms.BlockPeriods
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import Lib.Weil.DualPair.MixedModel
+public import Lib.Weil.Periods.BesselIntegral
+public import Lib.Weil.Periods.Equivariant
 
 /-!
 # Constant terms of Weil functions along maps of positive degree
@@ -51,6 +53,8 @@ Notions from other files:
 
 See also `Lib.Weil.MixedModel.ZeroTerm`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

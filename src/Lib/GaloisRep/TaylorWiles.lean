@@ -1,5 +1,7 @@
-import Lib.GaloisRep.LocalGlobal.LocalFormTypes
-import Lib.GaloisRep.Main.AllRanks
+module
+
+public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
+public import Lib.GaloisRep.Main.AllRanks
 
 /-!
 # Auxiliary places, base level, integral Hecke algebra and operators at the auxiliary places
@@ -47,6 +49,8 @@ subgroup of the product of the finite general linear groups at the auxiliary pla
 only up to a fixed integer and is expressed as one Higman operator. Source: Taylor–Wiles, Ann. Math.
 141 (1995); Clozel–Harris–Taylor, Publ. IHES 108 (2008), §3.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -197,14 +201,92 @@ lemma repOff_eq_of_mem_trivialOn (k : Gf E n) (hk : k ∈ trivialOn n D.places) 
 /-- The `New.Patching.EllAdicIntegers`-algebra of ℂ-linear endomorphisms of the space of forms
 `New.Patching.BaseLevel.formsOfLevel` attached to the base data D and the family of finite places
 L. -/
-@[reducible]
 def FormEnd [ThePrime ℓ] [PadicIso ℓ] : Type := End ℂ (D.formsOfLevel L)
   deriving Semiring, Ring, Algebra EllAdicIntegers
 
+instance [ThePrime ℓ] [PadicIso ℓ] :
+    FunLike (D.FormEnd L) (D.formsOfLevel L) (D.formsOfLevel L) :=
+  inferInstanceAs (FunLike (End ℂ (D.formsOfLevel L)) _ _)
+
+instance [ThePrime ℓ] [PadicIso ℓ] :
+    LinearMapClass (D.FormEnd L) ℂ (D.formsOfLevel L) (D.formsOfLevel L) :=
+  inferInstanceAs (LinearMapClass (End ℂ (D.formsOfLevel L)) ℂ _ _)
+
+namespace FormEnd
+
+variable {L} [ThePrime ℓ] [PadicIso ℓ]
+
+/-- View a `ℂ`-linear endomorphism of `D.formsOfLevel L` as an element of `D.FormEnd L`. -/
+def ofEnd (T : End ℂ (D.formsOfLevel L)) : D.FormEnd L := T
+
+@[ext]
+lemma ext {a b : D.FormEnd L} (h : ∀ y, a y = b y) : a = b :=
+  DFunLike.ext a b h
+
+@[simp]
+lemma ofEnd_apply (T : End ℂ (D.formsOfLevel L)) (y : D.formsOfLevel L) : ofEnd T y = T y := rfl
+
+@[simp]
+lemma zero_apply (y : D.formsOfLevel L) : (0 : D.FormEnd L) y = 0 := rfl
+
+@[simp]
+lemma one_apply (y : D.formsOfLevel L) : (1 : D.FormEnd L) y = y := rfl
+
+@[simp]
+lemma add_apply (a b : D.FormEnd L) (y : D.formsOfLevel L) : (a + b) y = a y + b y := rfl
+
+@[simp]
+lemma sub_apply (a b : D.FormEnd L) (y : D.formsOfLevel L) : (a - b) y = a y - b y := rfl
+
+@[simp]
+lemma neg_apply (a : D.FormEnd L) (y : D.formsOfLevel L) : (-a) y = -a y := rfl
+
+@[simp]
+lemma mul_apply (a b : D.FormEnd L) (y : D.formsOfLevel L) : (a * b) y = a (b y) := rfl
+
+@[simp]
+lemma nsmul_apply (k : ℕ) (a : D.FormEnd L) (y : D.formsOfLevel L) : (k • a) y = k • a y := rfl
+
+@[simp]
+lemma zsmul_apply (k : ℤ) (a : D.FormEnd L) (y : D.formsOfLevel L) : (k • a) y = k • a y := rfl
+
+@[simp]
+lemma smul_apply (r : EllAdicIntegers) (a : D.FormEnd L) (y : D.formsOfLevel L) :
+    (r • a) y = r • a y := rfl
+
+@[simp]
+lemma natCast_apply (k : ℕ) (y : D.formsOfLevel L) : (k : D.FormEnd L) y = k • y :=
+  natCast_apply_eq_smul (F := Module.End ℂ ↥(D.formsOfLevel L)) k y
+
+@[simp]
+lemma intCast_apply (k : ℤ) (y : D.formsOfLevel L) : (k : D.FormEnd L) y = k • y :=
+  intCast_apply_eq_smul (F := Module.End ℂ ↥(D.formsOfLevel L)) k y
+
+@[simp]
+lemma algebraMap_apply (r : EllAdicIntegers) (y : D.formsOfLevel L) :
+    algebraMap EllAdicIntegers (D.FormEnd L) r y = r • y := rfl
+
+@[simp]
+lemma sum_apply {ι : Type*} (s : Finset ι) (f : ι → D.FormEnd L) (y : D.formsOfLevel L) :
+    (∑ i ∈ s, f i) y = ∑ i ∈ s, f i y :=
+  LinearMap.sum_apply s f y
+
+lemma map_smul_of_tower {R : Type*} [SMul R ↥(D.formsOfLevel L)]
+    [LinearMap.CompatibleSMul ↥(D.formsOfLevel L) ↥(D.formsOfLevel L) R ℂ]
+    (a : D.FormEnd L) (r : R) (y : D.formsOfLevel L) : a (r • y) = r • a y :=
+  LinearMap.map_smul_of_tower a r y
+
+end FormEnd
+
 /-- The `New.Patching.EllAdicIntegers`-algebra of ℂ-linear endomorphisms of the space of forms
 `New.Patching.BaseLevel.formsOfLevel` that preserve its integral forms. -/
-abbrev integralEnd [ThePrime ℓ] [PadicIso ℓ] : Subalgebra EllAdicIntegers (D.FormEnd L) :=
-  endPreserving (ellIntegralForms.comap ((formsOfLevel L).subtype.restrictScalars EllAdicIntegers))
+def integralEnd [ThePrime ℓ] [PadicIso ℓ] : Subalgebra EllAdicIntegers (D.FormEnd L) :=
+  let A := endPreserving
+    (ellIntegralForms.comap ((formsOfLevel L).subtype.restrictScalars EllAdicIntegers))
+  { carrier := A.carrier
+    mul_mem' := A.mul_mem'
+    add_mem' := A.add_mem'
+    algebraMap_mem' := A.algebraMap_mem' }
 
 /-- The forms of the base level, with no auxiliary places, are forms of every level `L`. -/
 lemma formsOfLevel_base_le : D.formsOfLevel ![] ≤ D.formsOfLevel L := by
@@ -435,7 +517,7 @@ the ℂ-linear endomorphisms; ιℓ : ℂ → `PadicAlgCl ℓ` is the identifica
 `ιℓ.symm (t x)`. -/
 def systemAction : (D.Eigensystem L → PadicAlgCl ℓ) →ₐ[EllAdicIntegers] D.FormEnd L where
   toFun t :=
-    (diagOp t).restrict <|
+    FormEnd.ofEnd <| (diagOp t).restrict <|
       formsOfLevel_le_of_eigensystem fun x _ ⟨hf_iso, hf⟩ ↦
         Submodule.mem_comap.2 (diagOp_apply t x hf_iso ▸ smul_mem (formsOfLevel (m := c) (D := D) L)
           (ιℓ.symm (t x)) hf)
@@ -820,7 +902,7 @@ lemma exists_higman_operator (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
     · rintro ⟨_, x, hx, rfl⟩
       exact h_comm _ ⟨_, (h_cut x).trans hx, rfl⟩
   -- at `g`, `T f` agrees with an integer multiple of `f`, so `T` keeps the integral forms
-  use ⟨T.restrict hT, fun f hf g ↦ nsmul_mem hf (u ↑g⁻¹ 1) g⟩
+  use ⟨FormEnd.ofEnd (T.restrict hT), fun f hf g ↦ nsmul_mem hf (u ↑g⁻¹ 1) g⟩
   ext y g i
   -- evaluate at `y`, `g`, `i`, write `c` as `∑ d, u g⁻¹ d`, and compare term by term
   let f : Gf E n → WeylIndex n κ.fst → ℂ := (y : V.forms κ)

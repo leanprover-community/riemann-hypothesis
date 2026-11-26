@@ -1,6 +1,8 @@
-import Lib.Weil.Seesaw
-import New.Determinant.Chain.SquareLaw
-import New.Determinant.Exchange.TheoremForPartners
+module
+
+public import Lib.Weil.Seesaw
+public import New.Determinant.Chain.SquareLaw
+public import New.Determinant.Exchange.TheoremForPartners
 
 /-!
 # One square: up then down against down then up
@@ -44,6 +46,8 @@ in chains. The seesaw principle and a rank-one exchange of periods are known in 
 Related work: Kudla, Seesaw dual reductive pairs, 1984; Chan, Period identities of CM forms on
 quaternion algebras, 2020; He, Compositions of theta correspondences, 2005.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import Lib.Adelic.AutomorphicForms.RealConvolution
-import Lib.DiscreteSeries.CuspKernel
+module
+
+public import Lib.Adelic.AutomorphicForms.RealConvolution
+public import Lib.DiscreteSeries.CuspKernel
 
 /-!
 # The mean along a unipotent radical vanishes; reduction in the radical
@@ -35,6 +37,8 @@ Notions from other files:
 
 Known; see `Lib.Adelic.AutomorphicForms.Cuspidality` for sources.
 -/
+
+@[expose] public section
 
 /-! ## The mean along a unipotent radical vanishes -/
 

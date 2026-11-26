@@ -1,5 +1,7 @@
-import Lib.Analytic.Primes
-import New.Reduction.Data.AdmissibleData
+module
+
+public import Lib.Analytic.Primes
+public import New.Reduction.Data.AdmissibleData
 
 /-!
 # Admissible data exist at every large x
@@ -37,6 +39,8 @@ numbering). Form here: all weights up to a given bound are avoided at once, modu
 integer, with a fixed number of digits and the explicit count of points on a sphere. This concerns
 `exists_three_term_free`.
 -/
+
+@[expose] public section
 
 /-!
 ## Existence of admissible data at every large integer x
@@ -389,9 +393,9 @@ lemma exists_isLeast_two_pow_three_pow {y : ℝ} (hy : 2 ≤ y) :
       (∃ e : ℕ, r = 3 ^ (e + 1)) ∧
       s ≤ 32 * y := by
   obtain ⟨a, hm, hm_pred_lt : ((2 : ℕ) : ℝ) ^ a < exp (y / 2)⟩ :=
-    exists_isLeast_pow (z := exp (y / 2)) one_lt_two (by bound)
+    exists_isLeast_pow (z := exp (y / 2)) one_lt_two (Real.one_lt_exp_iff.2 (by linarith))
   obtain ⟨c, hr, hr_pred_lt : ((3 : ℕ) : ℝ) ^ c < exp (5 * y)⟩ :=
-    exists_isLeast_pow (q := 3) (z := exp (5 * y)) (by simp) (by bound)
+    exists_isLeast_pow (q := 3) (z := exp (5 * y)) (by simp) (Real.one_lt_exp_iff.2 (by linarith))
   refine ⟨2 ^ (a + 1), 3 ^ (c + 1), (a + 1) * 22, hm, hr, by simpa [pow_succ'] using hm_pred_lt.le,
     by simpa [pow_succ'] using hr_pred_lt.le, ⟨a, rfl, rfl⟩, ⟨c, rfl⟩, ?_⟩
   -- `a log 2 < y / 2` and `2 ≤ y`
@@ -896,11 +900,11 @@ theorem eventually_exists_data (P : Parameters) {ε : ℝ} (hε : 0 < ε) (hε_l
   have h_four : 4 ∣ P.q₀ * P.d := Dvd.dvd.mul_right (.trans (by norm_num) P.dvd_q₀) P.d
   have hW : Tendsto (fun x : ℕ ↦ (x : ℝ) ^ (ε / 6)) atTop atTop :=
     (tendsto_rpow_atTop (by positivity)).comp tendsto_natCast_atTop_atTop
-  filter_upwards [h_scale, hW.eventually (exists_prime_modEq_one_log_mem _ (n + 7) h_four),
-    eventually_exists_data_of_isAdmissibleData P hε hε_lt] with x hx h_window h_data
+  filter_upwards [h_scale, hW.eventually (exists_prime_modEq_one_log_mem _ (n + 7) h_four)]
+    with x hx h_window
   -- admissible data exist, and they are the fields of the data `D`
   obtain ⟨m, r, s, b, T, g, α, N, β, h_adm⟩ := hx.exists_isAdmissibleData h_window
-  obtain ⟨D, h_fields, h_logX₁, h_logB⟩ := h_data m r s b T g α N β h_adm
+  obtain ⟨D, h_fields, h_logX₁, h_logB⟩ := h_adm.exists_hasFields hx
   obtain rfl : D.m = m := h_fields.m_eq
   obtain rfl : D.r = r := h_fields.r_eq
   obtain rfl : D.natB = b := h_fields.natB_eq
@@ -908,6 +912,6 @@ theorem eventually_exists_data (P : Parameters) {ε : ℝ} (hε : 0 < ε) (hε_l
   have h_natB : IsLeast {b : ℕ | D.q₁ * D.natX₁ ∣ b ∧ exp ((x : ℝ) ^ ε) < b} D.natB := by
     simpa only [h_fields.natX₁_eq, rpow_div_six_pow_six] using h_adm.isLeast_b
   exact ⟨D, h_fields.natX_eq, h_fields.natX₁_eq, h_natB, h_adm.isLeast_m, h_adm.isLeast_r, h_logX₁,
-    h_logB⟩
+    by simpa only [rpow_div_six_pow_six] using h_logB⟩
 
 end New

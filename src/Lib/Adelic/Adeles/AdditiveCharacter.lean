@@ -1,6 +1,8 @@
-import Lib.Adelic.Adeles.Basic
-import Lib.Adelic.QuotientMeasure.Basic
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.Adelic.Adeles.Basic
+public import Lib.Adelic.QuotientMeasure.Basic
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # The additive character, Haar measures and the rational lattice in the adeles
@@ -37,6 +39,8 @@ Notions from other files:
 For totally complex `E` the file proves a known result: a number field is a discrete subgroup of its
 adeles with compact quotient, here with a measure for which the covolume is one.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import Lib.General.Algebra.SeriesCongruences
-import New.Derivatives.FormalGroup.FrobeniusCongruence
+module
+
+public import Lib.General.Algebra.SeriesCongruences
+public import New.Derivatives.FormalGroup.FrobeniusCongruence
 
 /-!
 # The exponent on one curve
@@ -42,6 +44,8 @@ functions and the p-adic interpolation of Eisenstein–Kronecker numbers (first 
 radius of convergence of the p-adic sigma function; Fujiwara, On divisibilities of special values of
 real analytic Eisenstein series.
 -/
+
+@[expose] public section
 
 open PowerSeries Finset
 

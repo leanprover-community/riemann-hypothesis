@@ -1,6 +1,8 @@
-import Lib.CM.FormalGroup.IntegralParameter
-import Lib.General.Algebra.AbsIntegrallyClosed
-import TauCeti.RingTheory.PowerSeries.Log
+module
+
+public import Lib.CM.FormalGroup.IntegralParameter
+public import Lib.General.Algebra.AbsIntegrallyClosed
+public import TauCeti.RingTheory.PowerSeries.Log
 
 /-!
 # Integrality of exponentials, logarithms and roots of power series
@@ -42,6 +44,8 @@ closed valued field. Source: Bosch, Güntzer and Remmert, *Non-Archimedean Analy
 Known result: the integrality of the `p`-adic exponential and logarithm on series of large enough
 valuation, and of the binomial series with exponent in `ℤ_p`.
 -/
+
+@[expose] public section
 
 /-!
 ## A general integral point

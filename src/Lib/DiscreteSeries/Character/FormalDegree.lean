@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Character.MultiplicityOrbitalIntegral
-import Lib.DiscreteSeries.Character.OpenOrbitIntegral
+module
+
+public import Lib.DiscreteSeries.Character.MultiplicityOrbitalIntegral
+public import Lib.DiscreteSeries.Character.OpenOrbitIntegral
 
 /-!
 # Harish-Chandra's formula for formal degrees and stable orbital integrals
@@ -41,6 +43,8 @@ Harish-Chandra, Discrete series for semisimple Lie groups II: explicit determina
 characters, Acta Math. 116 (1966), Thm 16 (with part I, Acta Math. 113 (1965), Thm 3); Knapp,
 Representation Theory of Semisimple Groups (1986), Thm 12.7.
 -/
+
+@[expose] public section
 
 namespace New.Orbital
 

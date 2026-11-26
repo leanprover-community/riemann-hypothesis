@@ -1,4 +1,6 @@
-import Lib.CM.GoodReduction
+module
+
+public import Lib.CM.GoodReduction
 
 /-!
 # Finitely many CM lattices
@@ -28,6 +30,8 @@ Notions from other files:
 Known result: lattices with complex multiplication by `𝓞_K` up to homothety correspond to the ideal
 classes. Source: Silverman, Advanced topics in the arithmetic of elliptic curves, Chapter II.
 -/
+
+@[expose] public section
 
 open NumberField PeriodPair ComplexConjugate nonZeroDivisors
 

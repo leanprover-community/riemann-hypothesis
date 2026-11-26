@@ -1,4 +1,6 @@
-import New.Derivatives.Sharpness.LeastValuation
+module
+
+public import New.Derivatives.Sharpness.LeastValuation
 
 /-!
 # Least valuations along couplings
@@ -37,6 +39,8 @@ Notions from other files:
   of degree `ν` in a product `∏ (H_c Θ)(z_c)` over `n` copies, where `Θ = C.thetaProd μ m` and the
   `H_c` run through the ring `C.multiSeriesRing μ`.
 -/
+
+@[expose] public section
 
 /-! ## Families of couplings -/
 

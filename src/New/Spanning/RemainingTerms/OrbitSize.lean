@@ -1,4 +1,6 @@
-import New.Spanning.Unfolding.Terms
+module
+
+public import New.Spanning.Unfolding.Terms
 
 /-!
 # Near terms in the filling theorem: the bound for an orbit, the tail and the open-cell term
@@ -33,6 +35,8 @@ Notions from other files:
 * `New.Filling.termDiscNorm`, `New.Filling.pairCountScale` (from `New.Spanning.Unfolding.Terms`):
   the product over the infinite places of |𝗀(γ)|_v, and the number n_p = #R̄₀ n_X N^(−kf).
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -190,9 +194,6 @@ lemma prod_frameScaleSq_bounds [S.IsAdmissible] (v : NumberField.InfinitePlace E
     grw [prod_le_prod₀ (fun a _ ↦ pow_nonneg (h_pos a) _) fun a _ ↦ h_factor a]
     simp [← pow_mul, mul_assoc, ← pow_succ]
 
--- Lean v4.37.0-rc1: elaborating side goals `0 < S.b ^ (60 * 𝔰.n ^ 2)` (`Shape.n` is an abbrev)
--- exceeds the default recursion depth.
-set_option maxRecDepth 2000 in
 /-- For admissible data, `pairingBoundConst ≤ 2 ^ (k f) τ d² / (deg c_G ^ f Λ²)`. The left side is
 the factor of the product over the infinite places of the open-cell bounds `pairingBoundSq` that
 does not depend on the rational element at which they are taken. The numbers `d = card BesselCoord`
@@ -240,13 +241,8 @@ lemma pairingBoundConst_le_mul [S.IsAdmissible] :
       _ ≤ 2 ^ 𝔰.k * (S.b ^ (453 * 𝔰.n ^ 2)) ^ (10 ^ 5 * 𝔰.n ^ 4) * (S.b ^ (46 * 𝔰.n ^ 2)) ^ 2 *
           (card (S.besselSystem v).Index ^ 2 /
             ((S.besselSystem v).deg * 𝔰.openCellConst * (s ^ 𝔰.k) ^ 2)) := by
-        -- `gcongr` hits the maximum recursion depth here (Lean v4.37.0-rc1, see above), so the
-        -- monotonicity step is spelled out.
-        have h_two : (2 : ℝ) ^ k₀ ≤ 2 ^ 𝔰.k :=
-          pow_le_pow_right₀ one_le_two (k₀.le_succ.trans_eq hk₀.symm)
-        refine mul_le_mul_of_nonneg_right (mul_le_mul (mul_le_mul_of_nonneg_right h_two
-          (pow_pos (pow_pos b_pos _) _).le) (pow_le_pow_left₀ hs.le h_upper 2) (by positivity)
-          (by positivity)) (by positivity)
+        gcongr
+        exacts [one_le_two, k₀.le_succ.trans_eq hk₀.symm]
       _ = _ := by
         simp only [e, pow_add, ← pow_mul]
         field_simp
@@ -289,7 +285,9 @@ lemma two_pow_mul_pairCountScale_mul_le [S.IsAdmissible] :
   set x : ℝ := 200 * (f * 𝔰.k) * rd with hx
   have h_discr : (1 : ℝ) ≤ |(NumberField.discr E : ℝ)| :=
     mod_cast Int.one_le_abs (NumberField.discr_ne_zero E)
-  have h_rd : 1 ≤ rd := one_le_rpow (mod_cast h_discr) (by positivity)
+  have h_rd : 1 ≤ rd := by
+    rw [show rd = _ from NumberField.rootDiscr_def E, Int.cast_abs]
+    exact one_le_rpow h_discr (by positivity)
   have hf : (1 : ℝ) ≤ f := Nat.one_le_cast.2 NeZero.one_le
   have hk : (1 : ℝ) ≤ 𝔰.k := Nat.one_le_cast.2 (by grind [S.pow_le_k])
   have hN : (0 : ℝ) < S.N := Nat.cast_pos.2 S.N_prime.pos

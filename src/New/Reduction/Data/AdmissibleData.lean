@@ -1,5 +1,7 @@
-import New.Derivatives.Vacuum.IntegralVacuum
-import New.Reduction.Zeros.PrimeError
+module
+
+public import New.Derivatives.Vacuum.IntegralVacuum
+public import New.Reduction.Zeros.PrimeError
 
 /-!
 # Admissible data
@@ -37,6 +39,8 @@ Notions from other files:
   infinite places, which form a group isomorphic to `(ℤ/q₁)ˣ`.
 * `P.q₂ s`: the number `(q₀ d) ^ (s + 6)`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

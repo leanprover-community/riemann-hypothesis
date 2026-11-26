@@ -1,6 +1,8 @@
-import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
-import Lib.Weil.MixedModel.NamedData
-import Lib.Weil.MixedModel.RealTheta
+module
+
+public import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+public import Lib.Weil.MixedModel.NamedData
+public import Lib.Weil.MixedModel.RealTheta
 
 /-!
 # Zero term and mixed model of the Weil representation: slices and θ as a sum of slices
@@ -43,6 +45,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ThetaInvariance` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

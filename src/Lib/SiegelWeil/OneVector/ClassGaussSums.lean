@@ -1,4 +1,6 @@
-import Lib.SiegelWeil.OneVector.ResidueClasses
+module
+
+public import Lib.SiegelWeil.OneVector.ResidueClasses
 
 /-!
 # Gauss sums of classes modulo a lattice at a finite place
@@ -33,6 +35,8 @@ Main definition and results:
 Known result: bounds for local densities of hermitian forms by Gauss sums, part of Siegel's formula
 for representing a number by a hermitian form. See `Lib.SiegelWeil.OneVector.SiegelClassSum`.
 -/
+
+@[expose] public section
 
 namespace New.Floors.IntegralPlace
 
@@ -163,9 +167,8 @@ lemma enorm_classGaussSum_sq_le (hJ : IsUnimodular P.integers J)
   have h_sq : conj (∫ y in M, F y) * ∫ y in M, F y = ∫ d in M, corr d := by
     have h_integrable : Integrable (uncurry fun (y d : κ → A) ↦ conj (F y) * F (y + d))
         ((volume.restrict M).prod (volume.restrict M)) := by
-      have h_cont : Continuous (uncurry fun (y d : κ → A) ↦ conj (F y) * F (y + d)) := by fun_prop
       rw [Measure.prod_restrict]
-      exact h_cont.continuousOn.integrableOn_compact (M_compact.prod M_compact)
+      exact ContinuousOn.integrableOn_compact (M_compact.prod M_compact) (by fun_prop)
     rw [← integral_conj, ← integral_mul_const, ← integral_integral_swap h_integrable]
     refine setIntegral_congr_fun M_open.measurableSet fun y hy ↦ ?_
     rw [integral_const_mul, setIntegral_add_left_eq_self_of_mem F hy]

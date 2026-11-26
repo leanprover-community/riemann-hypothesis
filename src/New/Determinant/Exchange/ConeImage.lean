@@ -1,6 +1,8 @@
-import Lib.Adelic.Witt.SmoothWitt
-import Lib.SiegelWeil.Tower.LargeSideConstantTerm
-import Lib.Weil.MixedModel.TargetZeroTerm
+module
+
+public import Lib.Adelic.Witt.SmoothWitt
+public import Lib.SiegelWeil.Tower.LargeSideConstantTerm
+public import Lib.Weil.MixedModel.TargetZeroTerm
 
 /-!
 # The image of the cone integral
@@ -38,6 +40,8 @@ place `w`. The word real refers to the components at the infinite places of `E`.
 
 See `New.Determinant.Exchange.TheoremForPartners` for related work.
 -/
+
+@[expose] public section
 
 noncomputable section
 

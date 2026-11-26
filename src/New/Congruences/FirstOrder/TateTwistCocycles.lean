@@ -1,6 +1,8 @@
-import Lib.PadicHodge.BlochKato
-import New.Congruences.FirstOrder.EvenClasses
-import New.Congruences.FirstOrder.FittingBlock
+module
+
+public import Lib.PadicHodge.BlochKato
+public import New.Congruences.FirstOrder.EvenClasses
+public import New.Congruences.FirstOrder.FittingBlock
 
 /-!
 # Cocycles of Tate twists: the even part and the triangle cost
@@ -46,6 +48,8 @@ Notions from other files:
 
 See `New.Congruences.FirstOrder.RibetElement` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Selmer
 

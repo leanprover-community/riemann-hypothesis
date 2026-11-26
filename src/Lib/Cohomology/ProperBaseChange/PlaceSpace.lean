@@ -1,4 +1,6 @@
-import Lib.Cohomology.Etale.FilteredLimits
+module
+
+public import Lib.Cohomology.Etale.FilteredLimits
 
 /-!
 # The space of places of residue fields and its properness over the base
@@ -27,6 +29,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.ProperBaseChange.Theorem` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

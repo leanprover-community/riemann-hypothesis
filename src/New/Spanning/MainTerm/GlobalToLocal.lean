@@ -1,7 +1,9 @@
-import New.Spanning.Frames.TopCorrelation
-import New.Spanning.MainTerm.FillingLevel
-import New.Spanning.MainTerm.KloostermanSum
-import New.Spanning.Unfolding.AmplitudeSums
+module
+
+public import New.Spanning.Frames.TopCorrelation
+public import New.Spanning.MainTerm.FillingLevel
+public import New.Spanning.MainTerm.KloostermanSum
+public import New.Spanning.Unfolding.AmplitudeSums
 
 /-!
 # Class sums as orbit sums, and unfolding at a set of primes
@@ -62,6 +64,8 @@ Notions from other files:
 
 See `New.Spanning.MainTerm.EnergyEstimate` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Filling
 

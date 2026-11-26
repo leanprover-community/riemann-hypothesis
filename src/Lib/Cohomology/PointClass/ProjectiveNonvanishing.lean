@@ -1,7 +1,9 @@
-import Lib.Cohomology.Hodge.FixedPointFormula
-import Lib.Cohomology.PointClass.ProjectiveSpace
-import Lib.Cohomology.ProjectiveLine.TiltedLineFormula
-import Lib.PadicComparison.HodgeTate.Map
+module
+
+public import Lib.Cohomology.Hodge.FixedPointFormula
+public import Lib.Cohomology.PointClass.ProjectiveSpace
+public import Lib.Cohomology.ProjectiveLine.TiltedLineFormula
+public import Lib.PadicComparison.HodgeTate.Map
 
 /-!
 # The Hodge–Tate map does not kill point classes of the projective line and space
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.Cohomology.PointClass.LinearIndependence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

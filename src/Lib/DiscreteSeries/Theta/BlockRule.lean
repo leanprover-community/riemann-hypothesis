@@ -1,4 +1,6 @@
-import Lib.DiscreteSeries.Theta.FockDualPair
+module
+
+public import Lib.DiscreteSeries.Theta.FockDualPair
 
 /-!
 # The block rule for corresponding parameters
@@ -29,6 +31,8 @@ about the parameters, as integer vectors, are proved here. Sources: J.-S. Li, Th
 unitary representations with nonzero cohomology, Duke Math. J. 61 (1990); A. Paul, First occurrence
 for the dual pairs (U(p,q), U(r,s)), Canad. J. Math. 51 (1999), 636–657.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,8 +1,10 @@
-import New.Congruences.FirstOrder.DenominatorBound
-import New.Congruences.GaloisRepresentations.RowsFromEigensystems
-import New.Congruences.Selmer.TwistingTheorem
-import New.Determinant.Chain.NormOfChain
-import New.OneLift.HeckeValues.CentralAction
+module
+
+public import New.Congruences.FirstOrder.DenominatorBound
+public import New.Congruences.GaloisRepresentations.RowsFromEigensystems
+public import New.Congruences.Selmer.TwistingTheorem
+public import New.Determinant.Chain.NormOfChain
+public import New.OneLift.HeckeValues.CentralAction
 
 /-!
 # All data have regular families of m-fold twists
@@ -41,6 +43,8 @@ Selmer classes and that twisting lowers Selmer ranks. Related work: Prasanna, In
 of Petersson norms, 2006 (after Ribet, 1976; Wiles); Klosin, Congruences among modular forms on
 U(2,2) and the Bloch–Kato conjecture, 2009; Mazur–Rubin, Ranks of twists of elliptic curves, 2010.
 -/
+
+@[expose] public section
 
 open New Selmer Submodule Data GaloisRep Polynomial Multiset Finset Real
 

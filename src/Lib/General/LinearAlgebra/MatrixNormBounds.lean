@@ -1,4 +1,6 @@
-import Lib.GLn.SchurModule.GramMatrix
+module
+
+public import Lib.GLn.SchurModule.GramMatrix
 
 /-!
 # Auerbach's lemma, ultrametric matrix bounds and Gram norms
@@ -22,6 +24,8 @@ This file collects norm estimates for linear maps and matrices.
 
 Known result: Auerbach's lemma, here for a compact family of linear forms.
 -/
+
+@[expose] public section
 
 /-! ## Auerbach's lemma for a compact family of linear forms -/
 

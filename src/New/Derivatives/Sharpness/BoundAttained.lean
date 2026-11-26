@@ -1,4 +1,6 @@
-import New.Derivatives.Sharpness.Cases
+module
+
+public import New.Derivatives.Sharpness.Cases
 
 /-!
 # Sharpness of the valuation bound
@@ -40,6 +42,8 @@ Eisenstein–Kronecker numbers (arXiv v1), 2006; Bannai–Kobayashi–Yasuda, Ra
 p-adic sigma function, 2017; Schneider–Teitelbaum, p-adic Fourier theory, 2001; Bannai–Kobayashi,
 Integral structures on p-adic Fourier theory, 2016.
 -/
+
+@[expose] public section
 
 open Finset MvPowerSeries ComplexConjugate Real IsUltrametricDist Fintype Nat Finsupp
 

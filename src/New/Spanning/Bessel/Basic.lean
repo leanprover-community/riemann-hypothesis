@@ -1,5 +1,7 @@
-import Lib.DiscreteSeries.Bessel.Basic
-import New.Spanning.MainTerm.SieveSystem
+module
+
+public import Lib.DiscreteSeries.Bessel.Basic
+public import New.Spanning.MainTerm.SieveSystem
 
 /-!
 # Bessel systems at a real place: length and norm bounds, lattice basis, discriminant
@@ -45,6 +47,8 @@ Notions from other files:
 References on Bessel functions and kernels are in `New.Spanning.Bessel.FillingData`; references on
 the decay of discrete series coefficients are in `New.Spanning.Bessel.CutTailBound`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

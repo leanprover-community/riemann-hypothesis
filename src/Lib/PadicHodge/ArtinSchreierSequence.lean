@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Kisin.KummerChartExistence
+module
+
+public import Lib.PadicHodge.Kisin.KummerChartExistence
 
 /-!
 # W(𝔪^♭), the diagonal tensor module W(C^♭) ⊗ T and the Artin–Schreier sequence
@@ -44,6 +46,8 @@ Known result: The Artin–Schreier–Witt resolution over the tilt. Only the φ�
 is treated, on Witt vectors of the tilt of C_p modulo p^m, and the Γ-step is not treated. Source: L.
 Herr, Sur la cohomologie galoisienne des corps p-adiques, Bull. SMF 126 (1998) 563–600.
 -/
+
+@[expose] public section
 
 noncomputable section
 

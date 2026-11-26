@@ -1,4 +1,6 @@
-import Lib.General.Geometry.ProjectiveSpace
+module
+
+public import Lib.General.Geometry.ProjectiveSpace
 
 /-!
 # Dense families of complex points: reduced closures, separation of maps, and arcs
@@ -33,6 +35,8 @@ Notions from other files:
   chart with the same affine coordinates and the same image in `S` are equal.
 -/
 
+@[expose] public section
+
 /-! ## Reduced closures of families of complex points -/
 
 section ReducedClosure
@@ -41,6 +45,7 @@ open CategoryTheory AlgebraicGeometry Scheme IdealSheafData IsLocalRing
 
 /-- Let `i : Y ⟶ Z` be a closed immersion and `f : X ⟶ Z` with `X` reduced. If the preimage under
 `f` of the image of `i` is dense in `X`, then `f` factors through `i`. -/
+@[stacks 0356 "'if' direction, with the preimage of the closed subscheme only assumed dense"]
 lemma New.exists_lift_of_dense_preimage {X Y Z : Scheme} [IsReduced X] (i : Y ⟶ Z)
     [IsClosedImmersion i] (f : X ⟶ Z) (h_dense : Dense (f ⁻¹' Set.range i)) :
     ∃ g : X ⟶ Y, g ≫ i = f := by
@@ -319,6 +324,7 @@ lemma New.exists_subalgebra_minimalPrimes_span_singleton (O W : Type*) [CommRing
 
 /-- Let `e` identify a ring `R` with a subring of a field `K`. Every prime `P` of `R` is the centre
 of a valuation subring `U` of `K` that contains `R`. -/
+@[stacks 00IA "for a prime of a subring"]
 lemma New.exists_valuationSubring_comap_maximalIdeal_eq {R K : Type*} [CommRing R] [Field K]
     {B : Subring K} (e : R ≃+* B) (P : Ideal R) [P.IsPrime] :
     ∃ (U : ValuationSubring K) (f : R →+* U),

@@ -1,5 +1,7 @@
-import Lib.General.Analysis.GaussianIntegral
-import Lib.General.Groups.CongruenceSubgroups
+module
+
+public import Lib.General.Analysis.GaussianIntegral
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Determinants of positive semidefinite matrices, principal minors and hermitian involutions
@@ -25,6 +27,8 @@ hermitian involution `J` and its unitary group `New.U J`, the group of invertibl
 
 Known; see `Lib.DiscreteSeries.Haar.TotalMass` for sources.
 -/
+
+@[expose] public section
 
 /-! ## Positive semidefinite matrices -/
 

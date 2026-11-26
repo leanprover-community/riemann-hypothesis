@@ -1,7 +1,9 @@
-import Mathlib.LinearAlgebra.Projectivization.Cardinality
-import Lib.Adelic.AutomorphicForms.PAdicGauge
-import Lib.ClassField.HeckeCharacter.TameModulus
-import Lib.SiegelWeil.NeighbourLattices
+module
+
+public import Mathlib.LinearAlgebra.Projectivization.Cardinality
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.SiegelWeil.NeighbourLattices
 
 /-!
 # Vacuum coefficients, coset representatives and the weight of steps through neighbours
@@ -42,6 +44,8 @@ Notions from other files:
 
 Known; see `Lib.SiegelWeil.UnramifiedSeries.RallisSeries` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

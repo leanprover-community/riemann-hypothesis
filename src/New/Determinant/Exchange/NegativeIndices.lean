@@ -1,4 +1,6 @@
-import Lib.Weil.Periods.DescentVanishing
+module
+
+public import Lib.Weil.Periods.DescentVanishing
 
 /-!
 # Theta coefficients vanish off negative forms
@@ -29,6 +31,8 @@ Notions from other files:
 
 See `New.Determinant.Exchange.TheoremForPartners` for related work.
 -/
+
+@[expose] public section
 
 section NonnegativeVanishing
 

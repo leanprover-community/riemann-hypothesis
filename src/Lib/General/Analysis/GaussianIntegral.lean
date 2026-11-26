@@ -1,4 +1,6 @@
-import Lib.Base
+module
+
+public import Lib.Base
 
 /-!
 # Matrix norm estimates, the Ostrowski–Taussky inequality, and the complex Gaussian integral
@@ -27,6 +29,8 @@ This file proves estimates for complex matrices and computes the complex Gaussia
 
 The Ostrowski–Taussky inequality and the complex Gaussian integral are known results.
 -/
+
+@[expose] public section
 
 /-! ## Operator norm, matrix entries and the Ostrowski–Taussky inequality -/
 

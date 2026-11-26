@@ -1,7 +1,9 @@
-import Lib.General.Groups.IndexOfProduct
-import Lib.SiegelWeil.RallisInner.SharpData
-import New.OneLift.HeckeValues.CharacterLift
-import New.Spanning.Multiplicities.HeckeEigensystems
+module
+
+public import Lib.General.Groups.IndexOfProduct
+public import Lib.SiegelWeil.RallisInner.SharpData
+public import New.OneLift.HeckeValues.CharacterLift
+public import New.Spanning.Multiplicities.HeckeEigensystems
 
 /-!
 # The lift Θ_W, its adjoint and its norm
@@ -50,6 +52,8 @@ Cossutta–Marshall, Theta lifting and cohomology growth in p-adic towers, arXiv
 Rallis, Injectivity properties of liftings associated to Weil representations, 1984; Rallis,
 L-functions and the oscillator representation, 1987.
 -/
+
+@[expose] public section
 
 noncomputable section
 

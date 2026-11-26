@@ -1,4 +1,6 @@
-import Lib.PadicHodge.Crystalline.HodgeTateForms
+module
+
+public import Lib.PadicHodge.Crystalline.HodgeTateForms
 
 /-!
 # Hodge frames and Hodge–Tate jumps under operations on representations
@@ -51,6 +53,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Crystalline.Regularity` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

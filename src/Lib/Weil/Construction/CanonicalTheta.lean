@@ -1,5 +1,7 @@
-import Lib.Adelic.Landherr
-import Lib.Weil.MixedModel.ThetaInvariance
+module
+
+public import Lib.Adelic.Landherr
+public import Lib.Weil.MixedModel.ThetaInvariance
 
 /-!
 # Independence of the theta functional of the chosen group element; transport and sums
@@ -36,6 +38,8 @@ Notions from other files:
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 -/
+
+@[expose] public section
 
 namespace New.Space
 

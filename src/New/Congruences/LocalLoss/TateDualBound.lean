@@ -1,4 +1,6 @@
-import New.Congruences.LocalLoss.CrystallineCocycles
+module
+
+public import New.Congruences.LocalLoss.CrystallineCocycles
 
 /-!
 # A bound for non-crystalline cocycles modulo `ℓ ^ m` by the Tate dual lattice
@@ -44,6 +46,8 @@ The estimate bounds the non-crystalline defect above `ℓ` of the cocycles used 
 
 See `New.Congruences.FirstOrder.RibetElement` for related work.
 -/
+
+@[expose] public section
 
 open New Matrix Period Lift Module Function Topology Submodule crysCocycles Ideal.Quotient
   NeZero LinearMap LE DistribSMul

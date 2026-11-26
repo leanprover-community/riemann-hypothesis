@@ -1,4 +1,6 @@
-import New.Congruences.Lifting.SafeMoves
+module
+
+public import New.Congruences.Lifting.SafeMoves
 
 /-!
 # Deep points and scaled cup coboundaries for a gap below zero or nonpositive jumps
@@ -55,6 +57,8 @@ Notions from other files:
 
 See `New.Congruences.Lifting.FewLowJumps` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Lift.KummerChart.PairingSide
 

@@ -1,6 +1,8 @@
-import Lib.Shimura.AbelianScheme.TangentCoordinates
-import Lib.Shimura.ThetaGroup
-import Lib.Shimura.ThetaModuli.PELThetaTori
+module
+
+public import Lib.Shimura.AbelianScheme.TangentCoordinates
+public import Lib.Shimura.ThetaGroup
+public import Lib.Shimura.ThetaModuli.PELThetaTori
 
 /-!
 # Theta objects of PEL moduli problems, their pull-backs, and rigidity over local rings
@@ -40,6 +42,8 @@ Known; see `Lib.Shimura.ThetaModuli.UniversalFamily`,
 `Lib.Cohomology.ProjectiveLine.ConstantLineFormula` and `Lib.Shimura.IntegralModel.UniversalFamily`
 for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

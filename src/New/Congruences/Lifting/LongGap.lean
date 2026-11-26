@@ -1,4 +1,6 @@
-import New.Congruences.Lifting.SidePoints
+module
+
+public import New.Congruences.Lifting.SidePoints
 
 /-!
 # The long gap lemma for a side of a Kummer chart, by expansion in powers of E
@@ -46,6 +48,8 @@ Notions from other files:
 
 See `New.Congruences.Lifting.CutExponentBounds` for related work.
 -/
+
+@[expose] public section
 
 namespace New.Lift.KummerChart
 

@@ -1,4 +1,6 @@
-import New.Spanning.RemainingTerms.Sum
+module
+
+public import New.Spanning.RemainingTerms.Sum
 
 /-!
 # The expansion of the squares and the second moment near the Bessel subgroup
@@ -24,6 +26,8 @@ Notions from other files:
   `s ∈ Ω`.
 * `reducedImage A`: the image in the finite group `ResidueGL` of the integral elements of `A`.
 -/
+
+@[expose] public section
 
 namespace New
 

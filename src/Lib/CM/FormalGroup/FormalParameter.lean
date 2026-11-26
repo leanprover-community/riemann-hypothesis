@@ -1,5 +1,7 @@
-import Lib.CM.FormalGroup.InseparableDegree
-import Lib.CM.Integrality.LogTheta
+module
+
+public import Lib.CM.FormalGroup.InseparableDegree
+public import Lib.CM.Integrality.LogTheta
 
 /-!
 # The formal parameter
@@ -33,6 +35,8 @@ an endomorphism in the sense of Lubin and Tate. That `b₁` is a unit follows fr
 height of the formal group (`New.CMLattice.insepDegree_piPrime_le`), and the scaling is an
 elementary consequence. Lubin–Tate, Formal complex multiplication in local fields.
 -/
+
+@[expose] public section
 
 open PowerSeries IsLocalRing
 

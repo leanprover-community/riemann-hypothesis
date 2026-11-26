@@ -1,6 +1,8 @@
-import Lib.PadicHodge.Kisin.Modules
-import Lib.PadicHodge.Kisin.PeriodMatrixFrame
-import Lib.PadicHodge.RadiusLemma
+module
+
+public import Lib.PadicHodge.Kisin.Modules
+public import Lib.PadicHodge.Kisin.PeriodMatrixFrame
+public import Lib.PadicHodge.RadiusLemma
 
 /-!
 # The frame theorem for Kisin modules and stability under normalising Galois elements
@@ -81,6 +83,8 @@ Notions from other files:
 
 Known; see `Lib.PadicHodge.Kisin.PeriodMatrixFrame` and `Lib.PadicHodge.Kisin.Modules` for sources.
 -/
+
+@[expose] public section
 
 /-! ## The frame theorem: spanning and bounded height -/
 

@@ -1,4 +1,6 @@
-import Lib.Analytic.EntireLFunction
+module
+
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # A weighted prime-counting error term and its poles at zeros of L-functions
@@ -28,6 +30,8 @@ Euler's constant.
 The transform of a weighted prime sum in a residue class is computed by orthogonality of characters
 and partial summation. Source: Davenport, Multiplicative Number Theory.
 -/
+
+@[expose] public section
 
 noncomputable section
 

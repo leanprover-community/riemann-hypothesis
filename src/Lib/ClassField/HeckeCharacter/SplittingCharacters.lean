@@ -1,4 +1,6 @@
-import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+module
+
+public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
 
 /-!
 # Splitting characters
@@ -16,6 +18,8 @@ by minus the signature of a space, and the splitting characters of a pair with o
 Known result: splitting characters of a CM extension, described through Hilbert's Theorem 90.
 Source: Harris–Kudla–Sweet (1996), §1.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.SiegelWeil.Tower.RealConeIntegral
+module
+
+public import Lib.SiegelWeil.Tower.RealConeIntegral
 
 /-!
 # The test vector of the zeta integral
@@ -32,6 +34,8 @@ Part of a known result: analytic continuation and functional equation of Hecke `
 `Lib.SiegelWeil.Tower.FunctionalEquation`. Up to a scaling of the variable the test function is that
 of J. Tate, Fourier analysis in number fields and Hecke's zeta-functions (thesis, 1950), §2.5.
 -/
+
+@[expose] public section
 
 noncomputable section
 

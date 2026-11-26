@@ -1,5 +1,7 @@
-import Mathlib.LinearAlgebra.Projectivization.Cardinality
-import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
+module
+
+public import Mathlib.LinearAlgebra.Projectivization.Cardinality
+public import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
 
 /-!
 # The series of translates weighted by the coefficients of the vacuum
@@ -62,6 +64,8 @@ for the constant `1` in rank one it is evaluated in `New.vacuumSum_eq_L_div_eule
 lattices uses neighbours in Kneser's sense; see M. Greenberg and J. Voight, Lattice methods for
 algebraic modular forms on classical groups (2014), §5.
 -/
+
+@[expose] public section
 
 noncomputable section
 

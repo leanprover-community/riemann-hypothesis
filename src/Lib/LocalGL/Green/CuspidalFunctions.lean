@@ -1,6 +1,8 @@
-import Lib.General.LinearAlgebra.MatrixPolynomials
-import Lib.General.NumberTheory.FrobeniusOrbits
-import Lib.LocalGL.Green.HallAlgebra
+module
+
+public import Lib.General.LinearAlgebra.MatrixPolynomials
+public import Lib.General.NumberTheory.FrobeniusOrbits
+public import Lib.LocalGL.Green.HallAlgebra
 
 /-!
 # Cuspidal class functions on GL_n over a finite field: μ, supports, values, inner products
@@ -48,6 +50,8 @@ Crapo's complementation theorem, for the vanishing of the Möbius number off sem
 
 See also `Lib.LocalGL.Green.TauFunctions`.
 -/
+
+@[expose] public section
 
 /-! ## Crapo's lemma, the inverse μ of 𝟙, and cuspidality of C_η -/
 

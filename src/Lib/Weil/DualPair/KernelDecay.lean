@@ -1,5 +1,7 @@
-import Lib.Weil.DualPair.ShortIsotropicVectors
-import Lib.Weil.DualPair.ThetaLiftConvergence
+module
+
+public import Lib.Weil.DualPair.ShortIsotropicVectors
+public import Lib.Weil.DualPair.ThetaLiftConvergence
 
 /-!
 # Rapid decay of theta kernels of unitary dual pairs under support conditions
@@ -47,6 +49,8 @@ Harris, Kudla, Sweet, Theta dichotomy for unitary groups, J. Amer. Math. Soc. 9 
 for decay, Kudla, Rallis, A regularized Siegel-Weil formula: the first term identity, Ann. Math. 140
 (1994).
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import Lib.Cohomology.PointClass.LinearIndependence
+module
+
+public import Lib.Cohomology.PointClass.LinearIndependence
 
 /-!
 # Woods Hole (half of Atiyah–Bott): maps killed under λ_h on Hodge classes are h-null
@@ -73,6 +75,8 @@ M. F. Atiyah, R. Bott, A Lefschetz fixed point formula for elliptic complexes II
 (1968) 451-491; G. Kondyrev, A. Prikhodko, Holomorphic Atiyah-Bott formula for correspondences,
 Arnold Math. J. (2022); SGA5 III 6.12.
 -/
+
+@[expose] public section
 
 open CategoryTheory AlgebraicGeometry Polynomial Finset CartesianMonoidalCategory Functor
   MonoidalCategory

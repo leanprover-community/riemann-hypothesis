@@ -1,4 +1,6 @@
-import Lib.Weil.DualPair.WeilAction
+module
+
+public import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Mixed models and zero terms of a pair with one split space: Levi and radical laws
@@ -37,6 +39,8 @@ splitting character and * is the conjugate transpose.
 
 Known; see `Lib.Weil.DualPair.ThetaLiftConvergence` for sources.
 -/
+
+@[expose] public section
 
 noncomputable section
 

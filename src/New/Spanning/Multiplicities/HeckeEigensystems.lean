@@ -1,5 +1,7 @@
-import Lib.Adelic.TraceFormula.LevelAlgebra
-import New.UpperBound.Objects.Rows
+module
+
+public import Lib.Adelic.TraceFormula.LevelAlgebra
+public import New.UpperBound.Objects.Rows
 
 /-!
 # Spherical Hecke operators away from the level, and eigensystems
@@ -32,6 +34,8 @@ Notions from other files:
 * `New.universalLevelAlgebra`: the elements of a group algebra that keep the vectors of a given
   level in every representation.
 -/
+
+@[expose] public section
 
 noncomputable section
 
