@@ -96,13 +96,6 @@ lemma IsMainSummandLike.conjGal_inv_eq_smul_one (hrow : IsMainSummandLike D t J 
     ext_on_range h_span_top h_trace
   exact ext_iff_trace_mul_left.2 (LinearMap.ext_iff.1 h_forms)
 
-/-- A scalar by which a Galois element acts through `u` is a unit. The hypothesis `hrow` is used
-only to know that `n` is not empty. -/
-lemma IsMainSummandLike.isUnit_of_eq_smul_one (hrow : IsMainSummandLike D t J R) {g : AbsGal D}
-    {y : ↑O} (hy : u g = y • 1) : IsUnit y := by
-  have h_pow : IsUnit (y ^ card n) := by simpa [hy] using isUnits_det_units (u.toHomUnits g)
-  exact (isUnit_pow_iff (Nat.ne_of_gt hrow.rank_mem.1)).1 h_pow
-
 /-- For a main summand `R`, the number of negative integers among the Hodge–Tate jumps `J σ`,
 counted with multiplicity and summed over all complex embeddings `σ` of `D.E`, is at most the number
 of infinite places of `D.E` times `card n`. -/
@@ -163,7 +156,8 @@ lemma IsMainSummandLike.normLength_congruenceTerm_le (hrow : IsMainSummandLike D
       mul_le_mul' hrow.rank_mem.2 (by grind [D.t_odd.pos, hrow.t_le])⟩
   have hδ : δ.val = (1 - D.levelPrime l ^ d) * α.val := by
     simp [δ, d, cyclotomicInv, h_cyc, ← mul_assoc, pow_succ', ← one_sub_mul, pow_mul]
-  have hα : ‖α.val‖ = 1 := (O.isUnit_iff_norm_eq_one α).1 (hrow.isUnit_of_eq_smul_one hg)
+  have hα : ‖α.val‖ = 1 := (O.isUnit_iff_norm_eq_one α).1
+    ((isUnit_pow_iff (Nat.ne_of_gt hrow.rank_mem.1)).1 (by simpa [hg] using isUnits_det_units (u.toHomUnits g)))
   have h_gap : ellVal δ.val ≤ ellVal (D.levelPrime l ^ d - 1 : PadicAlgCl ℓ) :=
     ellVal_le_ellVal (by rw [hδ, norm_mul, hα, mul_one, norm_sub_rev])
   have h_term : congruenceTerm ℓ u ≤ card n * addVal O δ :=
