@@ -40,7 +40,7 @@ It keeps the published Lean source unchanged and provides a prebuilt cache for i
 | `LFunction_eq_zero_re_of_isPrimitive` | the special case of `LFunction_eq_zero_re` for primitive characters |
 
 [`Challenge.lean`](Challenge.lean) states the same five with `sorry` in place of the
-proofs, in a file that imports only Mathlib. Comparator checks that `Main.lean` proves exactly those statements, that it uses no axioms other than `propext`, `Quot.sound` and
+proofs, in a file that imports only [`src/Statements.lean`](src/Statements.lean). That file defines the propositions that four of the five theorems state, and it imports only Mathlib. Comparator checks that `Main.lean` proves exactly those statements, that it uses no axioms other than `propext`, `Quot.sound` and
 `Classical.choice`, and that Lean's kernel and nanoda both accept the proof.
 
 ## Cache
