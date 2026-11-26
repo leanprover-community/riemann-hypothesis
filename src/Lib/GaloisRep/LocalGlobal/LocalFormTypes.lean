@@ -257,19 +257,6 @@ def HasProductLabel (f : Gf E n → M → ℂ) (hw : star w ≠ w) (T : MulChar 
   -- (d) `f` has the class function induced from `labelChar T c` and the `χ l ∘ det` in size `t l`
   HasLabel f hw (labelChar T c * ∏ l : Fin s, (detChar (χ l)).rankPart (t l)).evalGL
 
-omit [IsCMField E] in
-/-- Let block `0` of the blocks `b` be the image of `e` (`h_block`). Then the map from the
-parabolic subgroup of `b` to `GL ρ (ResField w)` that takes block `0`, renumbered along `e`, is
-onto: a matrix `x` extends by the identity matrix outside block `0`. -/
-private lemma surjective_reindexGL_comp_blockHom_zero {e : ρ ↪ n} {b : n → Fin (s + 1)}
-    (h_block : ∀ i : n, b i = 0 ↔ i ∈ Set.range e) :
-    Surjective
-      ((reindexGL ((Equiv.subtypeEquivRight h_block).trans e.toEquivRange.symm)).toMonoidHom.comp
-        (blockHom b 0) : parabolic b →* GL ρ (ResField w)) := by
-  intro x
-  refine ⟨⟨extendGL e x, fun _ ↦ ?_⟩, Units.ext (submatrix_extendGL e x)⟩
-  grind [one_apply_ne, extendGL_apply_of_notMem_range]
-
 /-- A parahoric type gives a label. Let `σ` be a representation of `GL ρ (k_w)` on `V`, `L` an
 injective linear map from `V` to functions on the finite adelic group, and `y` a vector not killed
 by the idempotent `labelIdem ρ c` (a multiple of `∑ x, star ((labelChar T c).evalGL x) • x`, with
@@ -364,9 +351,13 @@ lemma HasParahoricType.hasProductLabel {f : Gf E n → M → ℂ} {hw : w.IsSpli
       inv_apply_eq_inv', prod_ne_zero_iff, ← evalGL_labelChar_mul_det hc]
   have h_par_sum : ∑ᶠ p, Φ (π p) = 0 := by
     simpa [finsum_eq_sum_of_fintype, ← h_term, Finset.sum_apply] using congrFun₂ h_sum g m
-  -- The projection `π` to the block `0` is onto, so the two averages agree.
+  -- Extend by the identity outside block `0` to see that the projection `π` is onto.
+  have h_surj : Surjective π := by
+    intro x
+    refine ⟨⟨extendGL e x, fun _ ↦ ?_⟩, Units.ext (submatrix_extendGL e x)⟩
+    grind [one_apply_ne, extendGL_apply_of_notMem_range]
   have h_mean : finMean Φ = finMean fun p : parabolic b ↦ Φ (π p) :=
-    (finMean_comp_surjective π.toAdditive (surjective_reindexGL_comp_blockHom_zero h_block) Φ).symm
+    (finMean_comp_surjective π.toAdditive h_surj Φ).symm
   have h_sum_Φ : ∑ x : GL ρ (ResField w), Φ x = 0 := by
     rw [finMean, finMean, h_par_sum] at h_mean
     simpa [finsum_eq_sum_of_fintype] using h_mean
