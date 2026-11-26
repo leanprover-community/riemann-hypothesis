@@ -1,27 +1,23 @@
 module
 
-public import Mathlib.Probability.Moments.ComplexMGF
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.HalfPlane
-import Mathlib.Analysis.Complex.TaylorSeries
 import Mathlib.Analysis.Meromorphic.Order
-import Mathlib.MeasureTheory.Order.Group.Lattice
+import TauCeti.Analysis.LaplaceTransform.Landau
 public import Lib.Analytic.EntireLFunction
 
 /-!
-# Landau's lemma
+# Landau's lemma for polar transforms
 
-This part proves Landau's lemma: the moment generating function of a measure is not analytic at
-its abscissa of convergence. It applies the lemma to transforms satisfying `New.IsPolar`. Assume
-a one-sided bound on the error term `E`, and assume that the residues `r x` at real `x > β` have
-non-negative real part. Then the part concludes that there is no pole to the right of `β`.
-Together with `Lib.Analytic.EntireLFunction`, these are the analytic tools for passing from a
-one-sided bound on an error term to the absence of zeros of L-functions.
+This file applies Tau Ceti's Landau theorem for Laplace transforms
+(`TauCeti.integrableOn_cexp_neg_mul_smul_ofReal_of_ae_nonneg`) to transforms satisfying
+`New.IsPolar`. Assuming a one-sided bound on the error term `E` and that the residues `r x` at real
+`x > β` have non-negative real part, `New.IsPolar.landau` concludes that there is no pole to the
+right of `β`. Together with `Lib.Analytic.EntireLFunction`, this is the analytic tool for passing
+from a one-sided bound on an error term to the absence of zeros of L-functions.
 
-## Main definitions and results
+## Main results
 
-* `New.exists_Ioi_subset_integrableExpSet_of_analyticAt`: Landau's lemma; the Laplace transform of
-  a measure is not analytic at its abscissa of convergence.
 * `New.IsPolar.landau`: let `β > 0`. If `E v ≤ A e^{(β-1)v}` for all large `v` and `re (r x) ≥ 0`
   for real `x > β`, then `r ρ = 0` for `re ρ > β`.
 
@@ -40,54 +36,11 @@ Number Theory I, 2007, Lemma 15.1 (Widder, The Laplace Transform, 1941, II Thm 5
 
 @[expose] public section
 
-open ArithmeticFunction DirichletCharacter Complex Set Filter MeasureTheory Metric ProbabilityTheory
-  Nat Topology ComplexOrder AnalyticOnNhd Real
+open Complex Set Filter MeasureTheory Metric Topology ComplexOrder AnalyticOnNhd Real TauCeti
 
 namespace New
 
-variable {N : ℕ} (χ : DirichletCharacter ℂ N) (d : ℕ) [Fact d.Prime]
-
-variable {E : ℝ → ℝ} [NeZero N] {s : ℂ}
-
-/-! ### Landau's lemma -/
-
-/-- Let `X ≤ 0` be measurable and let `g` be equal near a real `z` to the moment generating function
-`s ↦ ∫ exp (s X) ∂μ`, which converges near `z`. If the Taylor series of `g` at `z` converges at a
-real `σ ≤ z`, then the moment generating function converges at `σ`. -/
-lemma mem_integrableExpSet_of_summable_taylor {μ : Measure ℝ} {X : ℝ → ℝ} (hX : Measurable X)
-    (hX_nonpos : ∀ y : ℝ, X y ≤ 0) {z σ : ℝ} (hz : z ∈ interior (integrableExpSet X μ)) {g : ℂ → ℂ}
-    (hg_eq : g =ᶠ[𝓝 (z : ℂ)] complexMGF X μ) (hσ_le : σ ≤ z)
-    (hg : Summable fun k : ℕ ↦ (k ! : ℂ)⁻¹ • (σ - z : ℂ) ^ k • iteratedDeriv k g z) :
-    σ ∈ integrableExpSet X μ := by
-  -- Expand `exp (σ X) = exp ((σ - z) X) exp (z X)` in the exponential series of the first factor.
-  let term (k : ℕ) (y : ℝ) : ℝ := ((σ - z) * X y) ^ k / k ! * (z * X y).exp
-  have term_nonneg (k : ℕ) (y : ℝ) : 0 ≤ term k y := by
-    positivity [mul_nonneg_of_nonpos_of_nonpos (sub_nonpos.mpr hσ_le) (hX_nonpos y)]
-  have tsum_term (y : ℝ) : ∑' k : ℕ, term k y = Real.exp (σ * X y) := by
-    simp [term, tsum_mul_right, (NormedSpace.expSeries_div_hasSum_exp _).tsum_eq,
-      ← Real.exp_eq_exp_ℝ, sub_mul, Real.exp_sub]
-  -- The integral of the `k`-th term is the `k`-th term of the Taylor series of `g` at `z`.
-  let taylor (k : ℕ) : ℝ := ((k ! : ℂ)⁻¹ • (σ - z : ℂ) ^ k • iteratedDeriv k g z).re
-  have lintegral_term (k : ℕ) : ∫⁻ y : ℝ, ‖term k y‖ₑ ∂μ = ENNReal.ofReal (taylor k) := by
-    have term_eq : term k =
-        fun y : ℝ ↦ (k ! : ℝ)⁻¹ * ((σ - z) ^ k * (X y ^ k * Real.exp (z * X y))) :=
-      funext fun y ↦ by simp [term, mul_pow, field]
-    have integrable : Integrable (term k) μ := by
-      simpa only [term_eq] using
-        ((integrable_pow_mul_exp_of_mem_interior_integrableExpSet hz k).const_mul _).const_mul _
-    have taylor_eq : taylor k = ∫ y : ℝ, term k y ∂μ := by
-      simp_rw [taylor, hg_eq.iteratedDeriv_eq, iteratedDeriv_complexMGF (z := z) hz, term_eq,
-        integral_const_mul, smul_eq_mul, ← ofReal_natCast]
-      norm_cast
-    simp_rw [← ofReal_integral_norm_eq_lintegral_eNorm integrable,
-      Real.norm_of_nonneg (term_nonneg _ _), taylor_eq]
-  change Integrable (fun y : ℝ ↦ (σ * X y).exp) μ
-  refine ⟨by fun_prop, ?_⟩
-  calc
-    ∫⁻ y, ‖(σ * X y).exp‖ₑ ∂μ = ∫⁻ y, ‖∑' k, term k y‖ₑ ∂μ := by simp only [tsum_term]
-    _ ≤ ∫⁻ y, ∑' k, ‖term k y‖ₑ ∂μ := lintegral_mono fun y ↦ eNorm_tsum_le_tsum_eNorm
-    _ = ∑' k, .ofReal (taylor k) := by rw [lintegral_tsum (by fun_prop), tsum_congr lintegral_term]
-    _ < ⊤ := (hasSum_re hg.hasSum).summable.tsum_ofReal_lt_top
+variable {E : ℝ → ℝ}
 
 /-- Let `E` satisfy `|E v| ≤ C e^v` for `v ≥ 0`, and let `β > 0`. If `E v ≤ A e^{(β-1)v}` for large
 `v`, then `E(v) e^v ≤ K e^{βv}` for some `K` and all `v > 0`. -/
@@ -110,46 +63,6 @@ lemma exists_mul_exp_le {C A β : ℝ} (hE_growth : ∀ v ≥ (0 : ℝ), |E v| �
         ((show 0 ≤ |C| * Y.exp ^ 2 by positivity).trans (le_max_right _ _))
         (Real.one_le_exp (by positivity))
 
-/-- Let `E` be measurable with `|E v| ≤ C e^v` for `v ≥ 0`, and let `β > 0`. If `E v ≤ A e^{(β-1)v}`
-for large `v`, then there are a measure `μ` and a real `K` such that, for `re s > β + 2`, the
-integral `∫ e^{-s|v|} ∂μ` converges to `K / (s - β) - ∫₀^∞ E(v) e^{(1-s)v} dv`. -/
-lemma exists_measure_laplace_eq {C A β : ℝ} (hE : Measurable E)
-    (hE_growth : ∀ v ≥ (0 : ℝ), |E v| ≤ C * Real.exp v) (hβ : 0 < β)
-    (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v)) :
-    ∃ (μ : Measure ℝ) (K : ℝ), ∀ s : ℂ, β + 2 < s.re →
-      s.re ∈ integrableExpSet (fun v : ℝ ↦ -|v|) μ ∧
-      complexMGF (fun v : ℝ ↦ -|v|) μ s =
-        K / (s - β) - ∫ v : ℝ in Ioi 0, E v * cexp ((1 - s) * v) := by
-  -- The measure has the density `K e^{βv} - E(v) e^v ≥ 0` on `v > 0`.
-  obtain ⟨K, hK⟩ := exists_mul_exp_le hE_growth hβ hE_le
-  let density (v : ℝ) : ℝ := K * Real.exp (β * v) - E v * Real.exp v
-  let μ : Measure ℝ := (volume.restrict (Ioi 0)).withDensity fun v ↦ (density v).toNNReal
-  refine ⟨μ, K, fun s hs ↦ ?_⟩
-  have hsβ : (β - s).re < 0 := by grind [sub_re, ofReal_re]
-  have int_exp : Integrable (fun v : ℝ ↦ K * cexp ((β - s) * v)) (volume.restrict (Ioi 0)) :=
-    (integrableOn_exp_mul_complex_Ioi hsβ 0).const_mul K
-  have int_E := integrableOn_laplace_of_abs_le hE hE_growth (s := s) (by linarith)
-  have integrand_eq :
-      (fun v : ℝ ↦ K * cexp ((β - s) * v) - E v * cexp ((1 - s) * v)) =ᵐ[volume.restrict (Ioi 0)]
-        fun v : ℝ ↦ (density v).toNNReal • cexp (s * (-|v| : ℝ)) := by
-    filter_upwards [ae_restrict_mem measurableSet_Ioi] with v (hv : 0 < v)
-    rw [NNReal.smul_def, Real.coe_toNNReal (density v) (sub_nonneg.2 (hK v hv))]
-    simp [density, abs_of_pos hv, sub_mul, Complex.exp_sub, Complex.exp_neg, field]
-  have int_μ : Integrable (fun v : ℝ ↦ cexp (s * (-|v| : ℝ))) μ :=
-    (integrable_withDensity_iff_integrable_smul (by fun_prop)).2
-      ((int_exp.sub int_E).congr integrand_eq)
-  refine ⟨int_μ.norm.congr (by simp [norm_exp]), ?_⟩
-  calc
-    complexMGF (fun v : ℝ ↦ -|v|) μ s
-        = ∫ v : ℝ in Ioi 0, (density v).toNNReal • cexp (s * (-|v| : ℝ)) :=
-      integral_withDensity_eq_integral_smul (by fun_prop) _
-    _ = ∫ v : ℝ in Ioi 0, (K * cexp ((β - s) * v) - E v * cexp ((1 - s) * v)) :=
-      (integral_congr_ae integrand_eq).symm
-    _ = _ := by
-      rw [integral_sub int_exp int_E, integral_const_mul, integral_exp_mul_complex_Ioi hsβ,
-        ← neg_sub s, neg_div_neg_eq]
-      simp [div_eq_mul_inv]
-
 /-- Identity theorem: two functions meromorphic on `re z > a` that agree far to the right agree
 on a punctured neighbourhood of every point of the half-plane. -/
 lemma eventuallyEq_of_eq_far_right {f g : ℂ → ℂ} {a b : ℝ} (hf : MeromorphicOn f {z : ℂ | a < z.re})
@@ -165,62 +78,6 @@ lemma eventuallyEq_of_eq_far_right {f g : ℂ → ℂ} {a b : ℝ} (hf : Meromor
     (hf.sub hg).meromorphicOrderAt_eq_top_of_isPreconnected
       (convex_halfSpace_re_gt a).isPreconnected has₀ hρ order_s₀
 
-/-- **Landau's lemma.** Let `X ≤ 0` be measurable and let the moment generating function
-`s ↦ ∫ exp (s X) ∂μ` converge to the right of `a`. If it agrees near the real points `x > a` close
-to `a` with a function `g` that is analytic at `a`, then it converges on a larger half-line. So it
-is not analytic at its abscissa of convergence. -/
-lemma exists_Ioi_subset_integrableExpSet_of_analyticAt {μ : Measure ℝ} {X : ℝ → ℝ}
-    (hX : Measurable X) (hX_nonpos : ∀ y : ℝ, X y ≤ 0) {a : ℝ}
-    (ha : Ioi a ⊆ interior (integrableExpSet X μ)) {g : ℂ → ℂ} (hg : AnalyticAt ℂ g a)
-    (hg_eq : ∀ᶠ x : ℝ in 𝓝[>] a, g =ᶠ[𝓝 (x : ℂ)] complexMGF X μ) :
-    ∃ b : ℝ, b < a ∧ Ioi b ⊆ integrableExpSet X μ := by
-  obtain ⟨ε, hε, hg_ball⟩ := hg.exists_ball_analyticOnNhd
-  -- The Taylor series at a real `z ∈ (a, a + ε / 2)` converges at every `σ ∈ (z - ε / 2, a]`.
-  obtain ⟨z, hgz, haz, hz⟩ :=
-    (hg_eq.and (Ioo_mem_nhdsGT (by linarith : a < a + ε / 2))).exists
-  refine ⟨z - ε / 2, by linarith, fun σ (hσ : z - ε / 2 < σ) ↦ ?_⟩
-  obtain hσa | haσ := le_or_gt σ a
-  · have hza : dist (z : ℂ) a < ε / 2 := by grind [isometry_ofReal.dist_eq, Real.dist_eq]
-    have hσz : dist (σ : ℂ) z < ε / 2 := by grind [isometry_ofReal.dist_eq, Real.dist_eq]
-    exact mem_integrableExpSet_of_summable_taylor hX hX_nonpos (ha haz) hgz (hσa.trans haz.le)
-      (hasSum_taylorSeries_on_ball (hg_ball.mono (ball_half_subset _ hza)).differentiableOn
-        (mem_ball.2 hσz)).summable
-  · exact interior_subset (ha haσ)
-
-/-- Let `X ≤ 0` be measurable and let the moment generating function `s ↦ ∫ exp (s X) ∂μ` converge
-to the right of `a`. Let `Ψ` be meromorphic at `a`, equal to it on a punctured neighbourhood of
-every real `x > a`, and with at most a simple pole at `a`: `(z - a) Ψ z → c` with `re c ≤ 0`. Then
-the moment generating function converges on a larger half-line. -/
-lemma exists_Ioi_subset_integrableExpSet {μ : Measure ℝ} {X : ℝ → ℝ} (hX : Measurable X)
-    (hX_nonpos : ∀ y : ℝ, X y ≤ 0) {a : ℝ} (ha : Ioi a ⊆ interior (integrableExpSet X μ))
-    {Ψ : ℂ → ℂ} (hΨ : MeromorphicAt Ψ a)
-    (hΨ_eq : ∀ x : ℝ, a < x → Ψ =ᶠ[𝓝[≠] (x : ℂ)] complexMGF X μ) {c : ℂ} (hc : c.re ≤ 0)
-    (hΨ_res : Tendsto (fun z : ℂ ↦ (z - a) * Ψ z) (𝓝[≠] a) (𝓝 c)) :
-    ∃ b : ℝ, b < a ∧ Ioi b ⊆ integrableExpSet X μ := by
-  have tendsto_real : Tendsto (fun x : ℝ ↦ (x : ℂ)) (𝓝[>] a) (𝓝[≠] a) :=
-    ((hasDerivAt_id' a).ofReal_comp.tendsto_nhdsNE one_ne_zero).mono_left (nhdsGT_le_nhdsNE a)
-  have eq_near : ∀ᶠ x : ℝ in 𝓝[>] a, Ψ =ᶠ[𝓝 (x : ℂ)] complexMGF X μ := by
-    filter_upwards [tendsto_real.eventually hΨ.eventually_analyticAt, self_mem_nhdsWithin]
-      with x hΨx hx using (hΨx.frequently_eq_iff_eventually_eq (analyticAt_complexMGF (ha hx))).mp
-        (hΨ_eq x hx).frequently
-  -- A residue of negative real part would make `Ψ(x) ≥ 0` tend to `-∞`: as `(x - a) Ψ(x) ≥ 0` for
-  -- real `x > a` near `a`, we have `c ≥ 0`, and with `hc` this gives `c = 0`.
-  have c_nonneg : 0 ≤ c := by
-    refine ge_of_tendsto (hΨ_res.comp tendsto_real) ?_
-    filter_upwards [eq_near, self_mem_nhdsWithin] with x hΨx (hx : a < x)
-    simp [hΨx.self_of_nhds, complexMGF_ofReal, mul_nonneg, hx.le, mgf_nonneg]
-  obtain rfl : c = 0 := Complex.ext (le_antisymm hc c_nonneg.1) c_nonneg.2.symm
-  -- So there is no pole: `G(z) = (z - a) Ψ(z)` is analytic at `a`, and so is `g = G / (z - a)`,
-  -- which is `Ψ` off `a`. Landau's lemma applies to `g`.
-  let G (z : ℂ) : ℂ := (z - a) * Ψ z
-  obtain ⟨p, hp⟩ : AnalyticAt ℂ G a :=
-    MeromorphicAt.analyticAt (by fun_prop) (by simpa [continuousAt_iff_punctured_nhds, G])
-  refine exists_Ioi_subset_integrableExpSet_of_analyticAt hX hX_nonpos ha
-    hp.dslope_fslope.analyticAt ?_
-  filter_upwards [eq_near, self_mem_nhdsWithin] with x hΨx (hx : a < x) using
-    ((eqOn_dslope_sub_smul Ψ a).eventuallyEq_of_mem
-      (isOpen_ne.mem_nhds (ofReal_injective.ne hx.ne'))).trans hΨx
-
 /-- **No pole to the right of `β`**, by Landau's lemma and the sign of the residues at real points.
 Suppose `IsPolar E r`: `|E v| ≤ C e^v` for `v ≥ 0` and the transform
 `∫₀^∞ E(v) e^{(1-s)v} dv` has a meromorphic continuation with at most simple poles of residue `r ρ`
@@ -231,44 +88,110 @@ lemma IsPolar.landau {r : ℂ → ℂ} (h : IsPolar E r) {A β : ℝ} (hβ : 0 <
     (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v))
     {ρ : ℂ} (hρ : β < ρ.re) :
     r ρ = 0 := by
-  -- `Ψ(s) = K / (s - β) - Φ(s)` continues the Laplace transform `F` of a measure. Let `a` be the
-  -- larger of `β` and the abscissa of convergence of `F`; `Ψ` has no pole in `re s > a`. If
-  -- `β < a`, the sign of the residue at `a` makes `F` converge to the left of `a`, which is absurd.
+  -- `Ψ(s) = K / (s - β) - Φ(s)` continues the Laplace transform `F` of `f v = K e^{βv} - E(v) e^v ≥ 0`.
+  -- Let `a` be the larger of `β` and the abscissa of convergence of `F`. If `β < a`, the residue
+  -- sign forces `Ψ` to be analytic at `a`, so Tau Ceti's Landau theorem extends convergence left of `a`.
   obtain ⟨hE, C, Φ, hΦ, hE_growth, Φ_eq, Φ_res⟩ := h
-  obtain ⟨μ, K, hμ⟩ : ∃ (μ : Measure ℝ) (K : ℝ), ∀ s : ℂ, β + 2 < s.re →
-      s.re ∈ integrableExpSet (fun v : ℝ ↦ -|v|) μ ∧ complexMGF (fun v : ℝ ↦ -|v|) μ s =
-        K / (s - β) - ∫ v : ℝ in Ioi 0, E v * cexp ((1 - s) * v) :=
-    exists_measure_laplace_eq hE hE_growth hβ hE_le
-  -- `S` is the set of real points where `F` converges.
-  let S : Set ℝ := integrableExpSet (fun v ↦ -|v|) μ
-  let F : ℂ → ℂ := complexMGF (fun v ↦ -|v|) μ
+  obtain ⟨K, hK⟩ := exists_mul_exp_le hE_growth hβ hE_le
+  let f (v : ℝ) : ℝ := K * Real.exp (β * v) - E v * Real.exp v
+  have hf_nonneg : ∀ v : ℝ, 0 < v → 0 ≤ f v := fun v hv ↦ sub_nonneg.2 (hK v hv)
+  let F (s : ℂ) : ℂ := ∫ v : ℝ in Ioi 0, cexp (-s * v) • (f v : ℂ)
   let Ψ (s : ℂ) : ℂ := K / (s - β) - Φ s
-  have far_right (s : ℂ) (hs : β + 2 < s.re) : Ψ s = F s := by
-    simp [Ψ, F, hμ s hs, Φ_eq s (by linarith)]
-  have Ψ_res (ρ : ℂ) (hρ : β < ρ.re) : Tendsto (fun z ↦ (z - ρ) * Ψ z) (𝓝[≠] ρ) (𝓝 (-r ρ)) := by
-    have hK : ContinuousAt (fun s : ℂ ↦ K / (s - β)) ρ := by
-      fun_prop (disch := exact sub_ne_zero.2 fun h_eq ↦ by simp [h_eq] at hρ)
-    simpa [Ψ, mul_sub] using (tendsto_sub_mul_of_continuousAt hK).sub (Φ_res ρ (hβ.trans hρ))
-  have bdd : BddAbove Sᶜ := ⟨β + 2, fun x hx ↦ le_of_not_gt fun hlt ↦ hx (hμ x hlt).1⟩
+  -- For `re s > β + 2`, the Laplace transform of `f` converges and equals `Ψ s`.
+  have h_far_laplace (s : ℂ) (hs : β + 2 < s.re) :
+      HasLaplace (fun v ↦ (f v : ℂ)) s (Ψ s) := by
+    have hsβ : (β - s).re < 0 := by simp; linarith
+    have int_exp : Integrable (fun v : ℝ ↦ K * cexp ((β - s) * v)) (volume.restrict (Ioi 0)) :=
+      (integrableOn_exp_mul_complex_Ioi hsβ 0).const_mul K
+    have int_E := integrableOn_laplace_of_abs_le hE hE_growth (s := s) (by linarith)
+    have h_integrand (v : ℝ) :
+        cexp (-s * v) • (f v : ℂ) = K * cexp ((β - s) * v) - E v * cexp ((1 - s) * v) := by
+      simp only [f, smul_eq_mul, ofReal_sub, ofReal_mul, ofReal_exp, mul_sub, sub_mul, one_mul,
+        neg_mul, Complex.exp_sub, Complex.exp_neg]
+      ring
+    have h_int : Integrable (fun v : ℝ ↦ cexp (-s * v) • (f v : ℂ)) (volume.restrict (Ioi 0)) :=
+      (int_exp.sub int_E).congr (.of_forall fun v ↦ (h_integrand v).symm)
+    have h_eq : F s = Ψ s := by
+      simp_rw [F, h_integrand, integral_sub int_exp int_E, integral_const_mul,
+        integral_exp_mul_complex_Ioi hsβ, ← neg_sub s, neg_div_neg_eq, Ψ, Φ_eq s (by linarith)]
+      simp [div_eq_mul_inv]
+    exact h_eq ▸ h_int.hasLaplace
+  -- `S` is the set of real points where the Laplace transform of `f` converges; let `a = sup (insert β Sᶜ)`.
+  let S : Set ℝ := {x : ℝ | IntegrableOn (fun v : ℝ ↦ cexp (-(x : ℂ) * v) • (f v : ℂ)) (Ioi 0)}
+  have bdd : BddAbove Sᶜ := ⟨β + 2, fun x hx ↦ le_of_not_gt fun hlt ↦
+    hx (h_far_laplace x (by simpa)).integrable⟩
   obtain ⟨a, ha⟩ : ∃ a : ℝ, IsLUB (insert β Sᶜ) a := Real.exists_isLUB (by simp) (bdd.insert β)
-  have Ioi_subset : Ioi a ⊆ interior S := interior_maximal
-    (fun x hx ↦ of_not_not fun hxS ↦ hx.not_ge (ha.1 (mem_insert_of_mem β hxS))) isOpen_Ioi
-  have F_analytic {ρ : ℂ} (hρ : a < ρ.re) : AnalyticAt ℂ F ρ :=
-    analyticAt_complexMGF (Ioi_subset hρ)
-  have Ψ_eq {ρ : ℂ} (hρ : a < ρ.re) : Ψ =ᶠ[𝓝[≠] ρ] F := eventuallyEq_of_eq_far_right
-    (fun z _ ↦ by fun_prop) (fun z hz ↦ (F_analytic hz).meromorphicAt) far_right hρ
+  have h_laplace {z : ℂ} (hz : a < z.re) : HasLaplace (fun v ↦ (f v : ℂ)) z (F z) := by
+    obtain ⟨x, hax, hxz⟩ := exists_between hz
+    have hxS : x ∈ S := of_not_not fun hx ↦ hax.not_ge (ha.1 (mem_insert_of_mem β hx))
+    exact (hxS.hasLaplace.integrableOn_of_re_le (by simpa using hxz.le)).integrable.hasLaplace
+  have F_analytic {z : ℂ} (hz : a < z.re) : AnalyticAt ℂ F z :=
+    (differentiableOn_of_hasLaplace_re_gt (fun w hw ↦ h_laplace hw)).analyticAt
+      ((isOpen_re_gt a).mem_nhds hz)
+  have far_right (s : ℂ) (hs : β + 2 < s.re) : Ψ s = F s := (h_far_laplace s hs).integral_eq.symm
+  have Ψ_eq {z : ℂ} (hz : a < z.re) : Ψ =ᶠ[𝓝[≠] z] F := eventuallyEq_of_eq_far_right
+    (fun w _ ↦ by fun_prop) (fun w hw ↦ (F_analytic hw).meromorphicAt) far_right hz
+  have Ψ_res (z : ℂ) (hz : β < z.re) : Tendsto (fun w ↦ (w - z) * Ψ w) (𝓝[≠] z) (𝓝 (-r z)) := by
+    have hK_cont : ContinuousAt (fun s : ℂ ↦ K / (s - β)) z := by
+      fun_prop (disch := exact sub_ne_zero.2 fun h_eq ↦ by simp [h_eq] at hz)
+    simpa [Ψ, mul_sub] using (tendsto_sub_mul_of_continuousAt hK_cont).sub (Φ_res z (hβ.trans hz))
   obtain rfl | hβa : β = a ∨ β < a := (ha.1 (mem_insert β Sᶜ)).eq_or_lt
   · -- The residue `-r ρ` of `Ψ` is that of the analytic function `F`.
     simpa using tendsto_nhds_unique ((Ψ_res ρ hρ).congr' (Ψ_eq hρ).mul_left)
       (tendsto_sub_mul_of_continuousAt (F_analytic hρ).continuousAt)
-  · have res_nonpos : (-r a).re ≤ 0 := by simpa using hr a hβa
-    obtain ⟨b, hba, hb⟩ : ∃ b : ℝ, b < a ∧ Ioi b ⊆ S :=
-      exists_Ioi_subset_integrableExpSet (by fun_prop) (by simp) Ioi_subset (Ψ := Ψ) (by fun_prop)
-        (fun x hx ↦ Ψ_eq hx) res_nonpos (Ψ_res a hβa)
-    -- By the choice of `a`, some `σ ∉ S` lies to the right of `β` and `b`.
-    obtain ⟨σ, hσ, hσ_gt, -⟩ : ∃ σ ∈ insert β Sᶜ, max β b < σ ∧ σ ≤ a :=
-      ha.exists_between (max_lt hβa hba)
-    obtain ⟨hβσ, hbσ⟩ : β < σ ∧ b < σ := max_lt_iff.mp hσ_gt
-    exact absurd (hb hbσ) (hσ.resolve_left hβσ.ne')
+  · -- If `β < a`, then `(x - a) Ψ x = (x - a) F x ≥ 0` for real `x > a`, forcing `-r a = 0`.
+    have hΨ_mero : MeromorphicAt Ψ a := by fun_prop
+    have tendsto_real : Tendsto (fun x : ℝ ↦ (x : ℂ)) (𝓝[>] a) (𝓝[≠] a) :=
+      ((hasDerivAt_id' a).ofReal_comp.tendsto_nhdsNE one_ne_zero).mono_left (nhdsGT_le_nhdsNE a)
+    have eq_near : ∀ᶠ x : ℝ in 𝓝[>] a, Ψ =ᶠ[𝓝 (x : ℂ)] F := by
+      filter_upwards [tendsto_real.eventually hΨ_mero.eventually_analyticAt, self_mem_nhdsWithin]
+        with x hΨx (hx : a < x) using
+          (hΨx.frequently_eq_iff_eventually_eq (F_analytic (by simpa using hx))).mp
+            (Ψ_eq (by simpa using hx)).frequently
+    have F_nonneg (x : ℝ) : 0 ≤ F x := by
+      have h_int : F x = ((∫ v : ℝ in Ioi 0, Real.exp (-x * v) * f v : ℝ) : ℂ) := by
+        calc F x = ∫ v : ℝ in Ioi 0, ((Real.exp (-x * v) * f v : ℝ) : ℂ) :=
+              integral_congr_ae (.of_forall fun v ↦ by simp [smul_eq_mul, ofReal_exp])
+          _ = _ := integral_ofReal
+      rw [h_int, zero_le_real]
+      exact setIntegral_nonneg measurableSet_Ioi fun v hv ↦
+        mul_nonneg (Real.exp_nonneg _) (hf_nonneg v hv)
+    have h_res_nonneg : 0 ≤ -r a := by
+      refine ge_of_tendsto ((Ψ_res a hβa).comp tendsto_real) ?_
+      filter_upwards [eq_near, self_mem_nhdsWithin] with x hΨx (hx : a < x)
+      rw [Function.comp_apply, hΨx.self_of_nhds, ← ofReal_sub]
+      exact mul_nonneg (zero_le_real.2 (sub_nonneg.2 hx.le)) (F_nonneg x)
+    have h_res_zero : -r a = 0 :=
+      Complex.ext (le_antisymm (by simpa using hr a hβa) h_res_nonneg.1) h_res_nonneg.2.symm
+    -- Removable singularity at `a`: `g = dslope ((z - a) * Ψ z) a` is analytic on `ball a r₀`.
+    let G (z : ℂ) : ℂ := (z - a) * Ψ z
+    obtain ⟨p, hp⟩ : AnalyticAt ℂ G a :=
+      MeromorphicAt.analyticAt (by fun_prop) (by
+        rw [continuousAt_iff_punctured_nhds]
+        simpa [G, h_res_zero] using Ψ_res a hβa)
+    let g : ℂ → ℂ := dslope G a
+    have hg_eq : ∀ z : ℂ, z ≠ a → g z = Ψ z := fun z hz ↦ eqOn_dslope_sub_smul Ψ a hz
+    obtain ⟨r₀, hr₀, hg_ball⟩ := hp.dslope_fslope.analyticAt.exists_ball_analyticOnNhd
+    have h_agree (z : ℂ) (hz : z ∈ ball (a : ℂ) r₀) (hza : a < z.re) :
+        HasLaplace (fun v ↦ (f v : ℂ)) z (g z) := by
+      have hz_ne : z ≠ a := fun h_eq ↦ by simp [h_eq] at hza
+      have h_gF : g =ᶠ[𝓝[≠] z] F := by
+        have h_open : ({(a : ℂ)}ᶜ : Set ℂ) ∈ 𝓝[≠] z :=
+          mem_nhdsWithin_of_mem_nhds (isOpen_ne.mem_nhds hz_ne)
+        filter_upwards [h_open, Ψ_eq hza] with w hw hΨF
+        exact (hg_eq w hw).trans hΨF
+      have h_eq : g z = F z :=
+        ((hg_ball z hz).frequently_eq_iff_eventually_eq (F_analytic hza)).1
+          h_gF.frequently |>.self_of_nhds
+      exact h_eq.symm ▸ h_laplace hza
+    -- Tau Ceti's Landau theorem extends convergence to `a - r₀ < re s`, contradicting `IsLUB`.
+    have h_ext (σ : ℝ) (hσ : a - r₀ < σ) : σ ∈ S :=
+      integrableOn_cexp_neg_mul_smul_ofReal_of_ae_nonneg
+        ((ae_restrict_mem measurableSet_Ioi).mono hf_nonneg) hr₀
+        hg_ball.differentiableOn h_agree (by simpa)
+    obtain ⟨σ, hσ, hσ_gt, -⟩ : ∃ σ ∈ insert β Sᶜ, max β (a - r₀) < σ ∧ σ ≤ a :=
+      ha.exists_between (max_lt hβa (by linarith))
+    obtain ⟨hβσ, hσr⟩ : β < σ ∧ a - r₀ < σ := max_lt_iff.mp hσ_gt
+    exact absurd (h_ext σ hσr) (hσ.resolve_left hβσ.ne')
 
 end New
