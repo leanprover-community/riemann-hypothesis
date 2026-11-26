@@ -102,9 +102,15 @@ def flipCoords : CoordChange E (.id ℂ) (homSigns t s) (homSigns s t') where
     grind [star_mul', star_one, α.mul_inv]
   beta_realEquiv := by
     -- Conjugation exchanges the two sums in the exponent, and `t' = -t` changes their signs.
-    simp [ht, realHeisenberg, signMatrix, dotProduct, Finset.sum_comm (γ := a), ← mul_assoc,
-      ← cast_mul,
-      mul_comm, pairSign, mulVec_diagonal, sum_prod_type, starCoordEquiv]
+    simp only [realHeisenberg, dotProduct, Pi.star_apply, Complex.star_def, signMatrix, pairSign,
+      mul_comm, mul_one, Units.val_mul, mulVec_diagonal, sum_prod_type, starCoordEquiv, map_mul,
+      Units.coe_map, MonoidHom.coe_ofClass, eq_intCast, ← cast_mul, Equiv.prodCongr_apply,
+      Equiv.Perm.coe_one, Equiv.coe_prodComm, _root_.mul_inv_rev, Units.val_inv_eq_inv_val,
+      ← mul_assoc, Equiv.prodCongr_symm, Equiv.prodComm_symm, ContinuousAddEquiv.coe_mk,
+      AddEquiv.coe_mk, Equiv.coe_fn_mk, Prod.map_apply, id_eq, Prod.swap_prod_mk,
+      units_coe_mul_self, cast_one, one_mul, map_intCast, RingHomCompTriple.comp_apply,
+      RingHom.id_apply, ht, Pi.neg_apply, mul_neg, Units.val_neg, cast_neg, neg_mul,
+      Finset.sum_neg_distrib, Finset.sum_comm (γ := a), sub_neg_eq_add]
     grind
   vac_realEquiv := by
     simp [dotProduct, Finset.sum_comm (γ := a), ← mul_assoc, ← cast_mul, mul_comm, realVac,
