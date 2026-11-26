@@ -144,11 +144,17 @@ lemma grunwald [IsTotallyComplex E] {p : ℕ} {S : Set (FinPlace E)} (hp : p.Pri
       (pow_mem_range_pow_of_coprime h_coprime (x : E)).mp ⟨norm E root, h_norm⟩
     have h_eq : (x.ofPow z hp.ne_zero hz) ^ p = x := Units.ext hz
     exact hx (by rw [← h_eq, map_pow, map_pow, hψ_pow])
+  -- `Q` is the finite set of classes of `T`-units mod `p`-th powers not killed by `ψ`, and
+  -- `ρ q` is a chosen `p`-th root of a representative of `q` in `Ω`.
   let Q : Type := {q : T.unit E ⧸ N // ψ (principalIdele q.out) ≠ 1}
   let ρ (q : Q) : Ω := r (algebraMap E Ω (q.val.out : Eˣ))
+  -- By Chebotarev, pick a place `w q ∉ T` with closure place `A q` and Frobenius `σ q ∈ H`
+  -- moving `ρ q`.
   choose w hwT hw_prime A hA σ hσ h_frob using fun q : Q ↦
     chebotarev ((Fact.out : IsOpen (H : Set Gal(Ω/E))).sdiff
       (isClosed_setOf_smul (ρ q) fun y ↦ y = ρ q)) (h_moves _ q.prop) hT_fin
+  -- `R q` consists of ideles that are local `p`-th powers at `w q`; `U` intersects them with
+  -- the units off `T`, so any principal idele in `U` is killed by `ψ`.
   let R (q : Q) : Subgroup (𝔸f E)ˣ := (powMonoidHom p).range.comap (ideleAt (w q))
   let U : Subgroup (𝔸f E)ˣ := idelesUnitOff T ⊓ iInf R
   have h_principal (x : Eˣ) (hx : principalIdele x ∈ U) : ψ (principalIdele x) = 1 := by
@@ -352,15 +358,19 @@ lemma isStep_stepField [HasPrimitiveRoot5040 E] {p : ℕ} (hp : Nat.Prime p) (h�
     by_contra h_ne
     obtain ⟨u, hu⟩ :=
       (IsDedekindDomain.HeightOneSpectrum.ideal_ne_top_iff_exists (not_isField E) _).mp h_ne
+    -- Since `tr 1 = p`, `p` lies in `u`; pick a place `P` of `stepField χ` above `u`.
     have hp_mem : (p : 𝓞 E) ∈ u.asIdeal := hu ⟨1,
       ext (by simp [algebraMap_intTrace (L := stepField χ), trace_apply, map_one, h_rank])⟩
     obtain ⟨P, rfl⟩ := FinPlace.comap_surjective (algebraMap E (stepField χ)) u
     refine not_dvd_differentIdeal_stepField χ (fun h_place ↦ h_unram h_place hp_mem)
       (dvd_iff_le.mpr ?_)
+    -- `P` divides the different iff `P⁻¹ ⊆ codifferent`, i.e., `tr x` is integral for `x ∈ P⁻¹`.
     rw [differentialIdeal_le_iff (K := E) (L := stepField χ) P.ne_bot]
     rintro _ ⟨x, hx, rfl⟩
     let u : FractionalIdeal (nonZeroDivisors (𝓞 E)) E := (P.below E).asIdeal
     have hu_ne : u ≠ 0 := coeIdeal_ne_zero.mpr (P.below E).ne_bot
+    -- Every `a ∈ u` gives `x * a ∈ 𝓞 (stepField χ)`, whose trace lies in `u`; hence
+    -- `tr x ∈ u / u = 1`, so `tr x` is integral.
     suffices h_div : trace E (stepField χ) x ∈ u / u by
       rw [div_self hu_ne] at h_div
       exact coeToSubmodule_one.le h_div
@@ -546,6 +556,8 @@ lemma New.nonempty_weilData_of_not_dvd_differentIdeal {E L : Type} [Field E] [CM
     push_cast
     ring
   obtain ⟨h_linearOrder, -⟩ := exists_wellFoundedLT (FinPlace L)
+  -- `halfOrder u` splits `-(v (s u)).log` across conjugate pairs `{u, star u}` (using a linear
+  -- order to break ties when `u ≠ star u`, and evenness `hs_even` when `star u = u`).
   let halfOrder (u : FinPlace L) : ℤ := ((if u < star u then 1 else 0) - (v (s.val u)).log) / 2
   have h_half_eq_zero (u : FinPlace L) (h_one : v (s.val u) = 1) : halfOrder u = 0 := by
     simp only [halfOrder, h_one, log_one, sub_zero]
@@ -561,6 +573,8 @@ lemma New.nonempty_weilData_of_not_dvd_differentIdeal {E L : Type} [Field E] [CM
             υ_inert := Cohomology.upsilon_atUniformizer_eq_neg_one }⟩
   rw [← exp_log (x := v ((algebraMap L (𝔸f L) (algebraMap E L j) * β.val * star β.val) u))
     (by simp [j_ne_zero, hβ]), exp_inj]
+  -- For `u ≠ star u` one of the two floors gets `+1` and they sum to `-(v (s u)).log`; for
+  -- `star u = u` the valuation is even so both halves are equal.
   have h_halves : halfOrder u + halfOrder (star u) = -(v (s.val u)).log := by
     simp only [halfOrder, star_star, hs_star]
     rcases lt_trichotomy u (star u) with h | h | h
@@ -677,6 +691,7 @@ lemma New.GaloisRep.exists_isStepOfLocalChar {E : Type} [Field E] [EmbeddedNumbe
     rw [← artinMap_locIdele, abelianLift_symmetrize, star_locIdele,
       hν_unit u x hu hx, hν_unit (star u) _ hu_star (by simpa using hx), one_mul]
   obtain ⟨x₀, hx₀⟩ := DFunLike.ne_iff.mp hχ_ne
+  -- Pick `g₀` in the decomposition group at `A` where `symmetrize ν` takes the value `χ x₀ ≠ 1`.
   obtain ⟨g₀, hg₀, hg₀_eq⟩ :=
     (hA.range_abelianLift_comp_artinAt (symmetrize ν)).le ⟨x₀, h_sym_w x₀⟩
   have h_sym_ne : symmetrize ν ≠ 0 := fun h_zero ↦
@@ -685,6 +700,8 @@ lemma New.GaloisRep.exists_isStepOfLocalChar {E : Type} [Field E] [EmbeddedNumbe
   obtain ⟨h_step, h_deg⟩ := isStep_stepField ν hp hν h_sym_ne fun hB hu ↦ h_unram hB (.inr hu)
   have h_index : (ker (symmetrize ν)).relIndex (decompGroup Gal(Ω/E) A) ≠ 1 := fun h_one ↦
     hx₀ (hg₀_eq.symm.trans (Subgroup.relIndex_eq_one.mp h_one hg₀))
+  -- The number of places above `w` times the decomposition-group index equals `[L : E] = p`;
+  -- since the index is not `1` (`h_index`), `u` is the unique place above `w`.
   have h_count : {u' : FinPlace (stepField ν) | u'.below E = w}.ncard = 1 :=
     ((Nat.prime_mul_iff.mp (by
       rwa [hA.ncard_above_mul_relIndex_eq_finrank (ker (symmetrize ν)), h_deg])).resolve_left
