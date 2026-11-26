@@ -757,24 +757,8 @@ def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace �
         convert add_mem (h_deriv 1) (h_deriv I)
         ext
         clear hP h_deriv
-        simp_all only [holomorphicCoord_eq, Pi.star_apply, star_def, heisenbergDeriv, ite_smul,
-          ite_mul, Units.val_one, cast_one, mul_one, mem_univ, ne_eq, not_false_eq_true,
-          Pi.single_eq_of_ne, map_zero, zero_smul, ite_self, zero_mul, sub_self, implies_true,
-          not_true_eq_false, Pi.single_eq_same, sum_eq_single i, LinearMap.sub_apply,
-          LinearMap.smul_apply, map_sub, smul_eval, LinearMap.pi_apply, LinearMap.coe_smulRight,
-          AlgHom.toLinearMap_apply, aeval_eq_eval, map_mul, eval_X, mul_ite, smul_eq_mul, one_div,
-          map_one, one_smul, one_mul, conj_I, neg_smul, Pi.add_apply, Pi.smul_apply, Pi.mul_apply]
-        split
-        · simp_all only [↓reduceIte, raiseOp, LinearMap.smul_apply, LinearMap.mulLeft_apply,
-            smul_eval, map_mul, eval_X, lowerOp, Derivation.coeFn_coe, map_one, one_mul,
-            LinearMap.neg_apply, map_neg, conj_I, neg_neg]
-          grind [I_sq]
-        · simp_all only [↓reduceIte, raiseOp, smul_neg, LinearMap.neg_apply, LinearMap.smul_apply,
-            Derivation.coeFn_coe, map_neg, smul_eval, map_mul, lowerOp, LinearMap.mulLeft_apply,
-            eval_X, units_ne_iff_eq_neg, neg_units_ne_self, Units.val_neg, Units.val_one, reduceNeg,
-            cast_neg, cast_one, map_one, neg_mul, one_mul, sub_neg_eq_add, mul_neg, mul_one, conj_I,
-            neg_neg]
-          grind [I_sq]
+        simp_all [heisenbergDeriv, holomorphicCoord_eq, sum_eq_single i]
+        split <;> simp_all [units_ne_iff_eq_neg, raiseOp, lowerOp] <;> grind [I_sq]
 
 instance : Coe (MvPolynomial ι ℂ) (fockSpace ε) := ⟨polyVector ε⟩
 
