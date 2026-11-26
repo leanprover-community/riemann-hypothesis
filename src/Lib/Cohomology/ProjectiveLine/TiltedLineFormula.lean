@@ -1143,23 +1143,33 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       rw [FreeAddCommGroup.lift_apply_of]
       let t₁ : (tiltPointsSum pointOrTorus).obj c := ⟨⟨true⟩, t⟩
       change (α.app c).hom (FreeAddCommGroup.of y₁ - FreeAddCommGroup.of t₁) = _
-      erw [_root_.map_sub, h_alpha, h_alpha, h_glue, _root_.map_sub, h_zero, h_one, zero_sub, map_neg]
+      refine ((_root_.map_sub (α.app c).hom _ _).trans
+        (congrArg₂ (· - ·) (h_alpha c y) (h_alpha c t))).trans ?_
+      let incl := ((kummerSeq (genericTestOver A)).f.app c).hom
+      have h_image := (_root_.map_sub (κ.app c).hom _ _).trans
+        ((congrArg₂ (· - ·) h_zero h_one).trans (zero_sub _))
+      have h_restrict := (congrArg (fun u ↦ incl ((κ.app c).hom u)) h_glue).trans
+        ((congrArg incl h_image).trans (_root_.map_neg incl _))
+      refine Eq.trans ?_ h_restrict.symm
       apply neg_injective
       rw [neg_sub, neg_neg]
       refine sub_eq_of_eq_add (AddMonoidHom.ext fun s ↦ Gm.ext.2 ?_)
       -- The twist sends the power `X^s` to `χ s · X^s`, whose untilt is the root of unity at `s`
       -- times the untilt of `X^s`.
-      have h_twist : ρ c (y.down.hom (lift OFlat OFlat[ℚ] ℚ
+      let φ : OFlat[ℚ] →ₐ[OFlat] PadicTest.tilt c := y.down.hom
+      have h_twist : ρ c (φ (lift OFlat OFlat[ℚ] ℚ
             (((algebraMap OFlat OFlat[ℚ] : OFlat →* OFlat[ℚ])).comp χ * of OFlat ℚ)
             (of OFlat ℚ (.ofAdd s)))) =
           c.genericStructureMap (algebraMap A ℂ_[ℓ]
               ((compatibleRootsOfUnity (ℓ := ℓ) (A := A)).val (.ofAdd s) : A)) *
-            ρ c (y.down.hom (of OFlat ℚ (.ofAdd s))) := by
-        erw [lift_of, MonoidHom.mul_apply, map_mul, map_mul, ← hχ, ← ρ_const]
-        exact congrArg (fun z ↦ ρ c z * _) (y.down.hom.commutes _)
+            ρ c (φ (of OFlat ℚ (.ofAdd s))) := by
+        rw [lift_of, MonoidHom.mul_apply, map_mul, map_mul, ← hχ, ← ρ_const]
+        exact congrArg (fun z ↦ ρ c z * _) (φ.commutes _)
       refine h_twist.trans ?_
-      -- `erw` and `rfl`: `tateGen` is the family of these roots of unity by definition.
-      erw [desc_of]
+      refine Eq.trans ?_ (congrArg (fun u ↦
+        let v : ℚ →+ Gm (CommRingCat.of c.GenericRing) := incl u + pow c y
+        (v s).down.val)
+        (freeAb.desc_of (Y := onePointFunctor PadicTest) _ _ c PUnit.unit)).symm
       rfl
   have h_gen : origin ⟨true⟩ ≫ κ = tateGen (genericTestOver A) := hom_ext fun _ _ ↦ rfl
   exact exists_isTodaCancellation_etaClass_of_squares χ f α κ h_torus h_disc h_kummer h_gen
