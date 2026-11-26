@@ -103,6 +103,19 @@ lemma abs_discr_eq_rootDiscr_pow [IsTotallyComplex K] :
   simp [← pow_mul', ← finrank_eq_two_mul_card_infinitePlace, rootDiscr_def,
     rpow_inv_natCast_pow, finrank_pos.ne']
 
+/-- In a totally complex field, the product of the absolute values of a generator of the different
+over all infinite places is the root discriminant raised to the number of infinite places. -/
+lemma prod_infinitePlace_eq_rootDiscr_pow_of_differentIdeal_eq_span [IsTotallyComplex L] {x : 𝓞 L}
+    (hx : differentIdeal ℤ (𝓞 L) = Ideal.span {x}) :
+    ∏ v : InfinitePlace L, v (x : L) = rootDiscr L ^ Core.numInfPlaces L := by
+  have h_absNorm : Ideal.absNorm (Ideal.span {x}) = (discr L).natAbs := by
+    rw [← hx, absNorm_differentIdeal L]
+  have h_norm : |(Algebra.norm ℚ (x : L) : ℝ)| = |(discr L : ℝ)| := by
+    simpa [← Algebra.coe_norm_int] using congrArg (Nat.cast : ℕ → ℝ) h_absNorm
+  rw [← sq_eq_sq₀ (by positivity) (pow_pos (rootDiscr_pos L) _).le,
+    ← abs_discr_eq_rootDiscr_pow, ← h_norm]
+  simpa [Finset.prod_pow] using InfinitePlace.prod_eq_abs_norm (x : L)
+
 end New
 
 /-! ## The maximal real subfield: trace, norm, different and discriminant -/

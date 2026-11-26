@@ -3,6 +3,7 @@ module
 public import New.Spanning.MainTerm.Frequencies
 public import New.Spanning.RemainingTerms.Box
 public import New.Spanning.Unfolding.BesselLevelStructure
+import Lib.General.NumberTheory.EmbeddingsAndDifferent
 
 /-!
 # One-sided Poisson summation, sums over frequencies, and the sieve over all places
@@ -773,17 +774,9 @@ places is `(M rd / (2π)) ^ f`, because `ϖ` generates the different. Here `rd` 
 discriminant of `E`, and `f` is the number of infinite places. -/
 lemma prod_abs_realM : ∏ v : InfinitePlace E, |S.realM v| =
     (S.M * rootDiscr E / (2 * π)) ^ numInfPlaces E := by
-  -- The square of `∏ ‖Φ v ϖ‖` is the norm of the different, that is `|discr E| = rd ^ (2 f)`.
-  have h_absNorm : Ideal.absNorm (Ideal.span {S.deltaE}) = (discr E).natAbs := by
-    rw [← S.span_deltaE, absNorm_differentIdeal E]
-  have h_norm : |(Algebra.norm ℚ S.deltaE.val : ℝ)| = |(discr E : ℝ)| := by
-    simpa [← Algebra.coe_norm_int] using congrArg (Nat.cast : ℕ → ℝ) h_absNorm
-  have h_varpi : ∏ v : InfinitePlace E, v S.deltaE.val = rootDiscr E ^ numInfPlaces E := by
-    rw [← sq_eq_sq₀ (by positivity) (pow_pos (rootDiscr_pos E) _).le,
-      ← abs_discr_eq_rootDiscr_pow, ← h_norm]
-    simpa [prod_pow] using InfinitePlace.prod_eq_abs_norm S.deltaE.val
   simp only [abs_realM_eq, ← InfinitePlace.apply, mk_Φ, Finset.prod_div_distrib,
-    prod_mul_distrib, prod_const, card_univ, h_varpi, div_pow, mul_pow]
+    prod_mul_distrib, prod_const, card_univ,
+    prod_infinitePlace_eq_rootDiscr_pow_of_differentIdeal_eq_span S.span_deltaE, div_pow, mul_pow]
 
 /-- The product over the infinite places of the constants in the decay: `scaledVolumeRatio`, a
 constant of the shape, times the power `k - n⁷` of `|κ_v| ^ (2 ϱ + 1) / (M N)`, where

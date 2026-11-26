@@ -2,6 +2,7 @@ module
 
 public import Lib.ClassField.Places.ValuationSubrings
 public import New.Reduction.Data.FieldsAndPlaces
+import Lib.General.NumberTheory.EmbeddingsAndDifferent
 
 /-!
 # Different and prime decomposition of the CM field E = K(ζ)
@@ -361,17 +362,9 @@ lemma differentIdeal_eq_span_deltaE : differentIdeal ℤ (𝓞 (P.E s)) = span {
 /-- The product of `v (P.deltaE s)` over all infinite places `v` of `E` (the type `P.Φ s`) is the
 root discriminant of `E` raised to the number of infinite places. -/
 lemma prod_deltaE_eq_rootDiscr_pow :
-    ∏ v : P.Φ s, v (P.deltaE s).val = rootDiscr (P.E s) ^ Core.numInfPlaces (P.E s) := by
-  -- The square of the product is `|N (P.deltaE s)|`, the norm of the different, that is
-  -- `|discr E|`.
-  have h_absNorm : absNorm (span {P.deltaE s}) = (discr (P.E s)).natAbs := by
-    rw [← differentIdeal_eq_span_deltaE, absNorm_differentIdeal (P.E s)]
-  rw [← sq_eq_sq₀ (prod_nonneg fun v _ ↦ apply_nonneg v _) (pow_pos (rootDiscr_pos _) _).le]
-  calc (∏ v : P.Φ s, v (P.deltaE s).val) ^ 2 = |(norm ℚ (P.deltaE s).val : ℝ)| := by
-        simpa [prod_pow] using prod_eq_abs_norm (P.deltaE s).val
-    _ = |(discr (P.E s) : ℝ)| := by
-        simpa [← coe_norm_int] using congrArg (Nat.cast : ℕ → ℝ) h_absNorm
-    _ = (rootDiscr (P.E s) ^ Core.numInfPlaces (P.E s)) ^ 2 := by rw [abs_discr_eq_rootDiscr_pow]
+    ∏ v : P.Φ s, v (P.deltaE s).val = rootDiscr (P.E s) ^ Core.numInfPlaces (P.E s) :=
+  prod_infinitePlace_eq_rootDiscr_pow_of_differentIdeal_eq_span
+    (differentIdeal_eq_span_deltaE (P := P) (s := s))
 
 /-- The element `c = differentGenPhase`, which satisfies `star c * c = 1`, has absolute value `1`
 under the chosen embedding `Φ v : E →+* ℂ` at every infinite place `v`. -/
