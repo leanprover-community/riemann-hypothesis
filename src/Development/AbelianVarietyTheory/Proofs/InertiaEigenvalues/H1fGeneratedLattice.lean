@@ -14,7 +14,6 @@ open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.Weakl
 namespace GlobalTheory.H1fGeneration
 
 
-set_option maxHeartbeats 1000000 in
 theorem h1fGen_tied : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAinf l P), LocTied l P AI → ∀ (K LL : FinExt l) [Fintype (↥K.1 →ₐ[ℚ_[l]] ↥LL.1)] (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL)) [IsTopologicalAddGroup T.V], FiniteCohomologyGeneratorsBound (P.PD K) T.L := by
   intro l _ P AI hT K LL _ T _ hG hC hcont
   have hO := (GlobalTheory.LocalIntegers.good_integers l LL).1
@@ -23,10 +22,9 @@ theorem h1fGen_tied : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : LocAin
   have hBK := _root_.GlobalTheory.BlochKatoTied.blochKatoDim_of_tied l P AI hT K LL hG.1 T.V T.ρ hcont hC
   refine ⟨s, hs, ?_⟩
   have h0 : (0 : ℤ) ≤ (finrank ↥LL.1 ↥(H0V T.ρ) : ℤ) := by positivity
-  set_option synthInstance.maxHeartbeats 200000 in
-    have hc : ((s.card + finrank ↥LL.1 ↥(H0V T.ρ) : ℕ) : ℤ) ≤ ((finrank ↥LL.1 (FiniteCohomology (P.PD K) T.ρ) + finrank ↥LL.1 T.V : ℕ) : ℤ) := by
-      exact_mod_cast hcard
-    push_cast at hc
-    linarith
+  have hc : ((s.card + finrank ↥LL.1 ↥(H0V T.ρ) : ℕ) : ℤ) ≤ ((finrank ↥LL.1 (FiniteCohomology (P.PD K) T.ρ) + finrank ↥LL.1 T.V : ℕ) : ℤ) := by
+    exact_mod_cast hcard
+  push_cast at hc
+  linarith
 
 end GlobalTheory.H1fGeneration

@@ -406,10 +406,8 @@ theorem card_span {O Λ K G ι : Type} [CommRing O] [IsDomain O] [IsDiscreteValu
     choose c hc using fun j => IsLocalRing.residue_surjective (φ (b j))
     have h1 : ∀ g a, ∃ y, (∑ j, c j • β j : Z).1 g a = ϖ * y := fun g a => by
       have h2 := congrArg φ ((hΦ b g a).symm.trans (congrFun (congrFun hb g) a))
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_sum, ← hs', map_smul, ← hc, smul_eq_mul, Pi.zero_apply, map_zero, ← map_mul] at h2
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [← map_sum, IsLocalRing.residue_eq_zero_iff, hϖ.maximalIdeal_eq, Ideal.mem_span_singleton] at h2
+      simp only [map_sum, ← hs', map_smul, ← hc, smul_eq_mul, Pi.zero_apply, map_zero, ← map_mul] at h2
+      rw [← map_sum, IsLocalRing.residue_eq_zero_iff, hϖ.maximalIdeal_eq, Ideal.mem_span_singleton] at h2
       obtain ⟨y, hy⟩ := h2
       exact ⟨y, by simpa [mul_comm] using hy⟩
     choose y hy using h1
@@ -530,8 +528,6 @@ theorem B1_le_Z1f (P : LocPrime l) {m : ℕ} (T : ↥Gw →* GL (Fin m) O)
     abel
   · simp [h, Formalism.WeaklyAdmissibleFiltrations.actVB, TensorProduct.sub_tmul]
 
-set_option synthInstance.maxHeartbeats 100000 in
-set_option maxHeartbeats 1600000 in
 theorem card_local [IsDiscreteValuationRing O] [IsTopologicalRing O] (hO : IsAdic (IsLocalRing.maximalIdeal O))
     (hfin : Formalism.GaloisCohomology.LocalFinitenessK) (P : LocPrime l) {m : ℕ} (T : ↥Gw →* GL (Fin m) O)
     (hT : Continuous fun g => ((T g : GL (Fin m) O) : Matrix (Fin m) (Fin m) O))
@@ -631,15 +627,12 @@ theorem card_local [IsDiscreteValuationRing O] [IsTopologicalRing O] (hO : IsAdi
     · intro g h
       funext a
       have h1 := congrFun (hy'.2 (Bw.e g) (Bw.e h)) a
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [← map_mul, MulEquiv.symm_apply_apply, Pi.add_apply, hrep, ← map_sum,
-        ← map_add] at h1
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Pi.add_apply, hρ, hf, hinj h1, map_add (f := _), map_sum, map_mul, add_smul, Finset.sum_smul, mul_smul]
+      simp only [← map_mul, MulEquiv.symm_apply_apply, Pi.add_apply, hrep, ← map_sum,
+      ← map_add] at h1
+      simp only [Pi.add_apply, hρ, hf, hinj h1, map_add (f := _), map_sum, map_mul, add_smul, Finset.sum_smul, mul_smul]
   have hBS : B1 ρ ≤ Submodule.span Λ S := by
     rintro _ ⟨x, rfl⟩
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← Finset.univ_sum_single x, map_sum]
+    rw [← Finset.univ_sum_single x, map_sum]
     refine Submodule.sum_mem _ fun j _ => Submodule.subset_span
       ⟨fun g a => (T g : Matrix (Fin m) (Fin m) O) a j - (Pi.single j 1 : Fin m → O) a, ?_, x j, fun g a => ?_⟩
     · rw [hZ]

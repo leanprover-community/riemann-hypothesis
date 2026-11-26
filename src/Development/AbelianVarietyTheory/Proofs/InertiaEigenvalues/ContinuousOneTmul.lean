@@ -10,7 +10,6 @@ import Formalism.SharpRestriction.LevelLetterCocycles.DeltaInvariantLattices
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc TensorProduct GlobalTheory.NL Formalism.MainNotions.DeltaInvariantLattices GlobalTheory.WeakClosed
 open scoped Topology PowerSeries.WithPiTopology
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1600000
 
 noncomputable section
 

@@ -186,8 +186,6 @@ theorem dot_dual {O L : Type} [CommRing O] [CommRing L] (φ : O →+* L) {m : �
   rw [h1, Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul, Matrix.dotProduct_mulVec, Matrix.vecMul_transpose,
     Matrix.mulVec_mulVec, h2, Matrix.one_mulVec]
 
-set_option maxHeartbeats 1000000 in
-set_option synthInstance.maxHeartbeats 100000 in
 theorem cup_cob {m : ℕ} (r r' : ↥Gw →* GL (Fin m) O)
     (hr : Continuous fun g => ((r g : GL (Fin m) O) : Matrix (Fin m) (Fin m) O))
     (hr' : Continuous fun g => ((r' g : GL (Fin m) O) : Matrix (Fin m) (Fin m) O))
@@ -247,8 +245,7 @@ theorem cup_cob {m : ℕ} (r r' : ↥Gw →* GL (Fin m) O)
       f (Bw.e g) = c (Bw.e g) ⬝ᵥ Bw.rep r' (Bw.e g) (c' (Bw.e h)) := congrFun hf' (Bw.e g, Bw.e h)
   rw [cycLL_eq, rep_apply, MulEquiv.symm_apply_apply, ← map_mul] at h1
   refine Eq.trans ?_ h1.symm
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [dotProduct, Matrix.mulVec, map_sum, map_mul, Matrix.map_apply, hy, hy']
+  simp only [dotProduct, Matrix.mulVec, map_sum, map_mul, Matrix.map_apply, hy, hy']
 
 end Bridge
 

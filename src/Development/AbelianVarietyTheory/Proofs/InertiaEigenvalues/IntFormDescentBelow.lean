@@ -984,7 +984,6 @@ open Classical
 
 namespace GlobalTheory.CoverPullComb
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 400000 in
 theorem exists_pull_comb_integral : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.L2.Pj.InR D j → ∀ σ : T.Q.c.F →+* ℂ, GoodEmb T.Q.c σ → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → ∀ C : Cover T j σ, C.IsUnif → C.IsPinned a n → ∀ (la : HeightOneSpectrum (𝓞 C.d.c₂.F)) (m : ℕ) (β : Fin m → Rul (T.Q.Xo j) T.Q.c), (∀ k, β k ∈ sec (T.Q.Xo j) T.Q.c a n) → ∀ y : Fin m → C.d.c₂.F, (∑ k, C.σ₂ (y k) • T.phiJ j σ a (β k)) ∈ C.intForms a n {la} → ∃ g : Fin m → Rul C.d.Xo₂ C.d.c₂, (∀ k, g k ∈ sec C.d.Xo₂ C.d.c₂ a n) ∧ (∀ k, C.IsPull (β k) (g k)) ∧ ∀ v ∈ valSet C.d.Xo₂ C.d.c₂ (algCls C.d.Xo₂ C.d.c₂) la, 0 ≤ v (∑ k, y k • g k) := by
   intro D T hL j hj σ hσ a n hD C hU hP la m β hβ y hy
@@ -999,8 +998,7 @@ theorem exists_pull_comb_integral : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ 
       ((adel (T.V j σ) C.dict₂ (muPin (T.V j σ) C.dict₂ (T.mu j σ) C.cc₂)).comp (rdU C.U₂))
   have hR : ∀ f, C.rd a f = R f := fun _ => rfl
   have hsum : C.rd a (∑ k, y k • g k) = ∑ k, C.σ₂ (y k) • T.phiJ j σ a (β k) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hR, map_sum]
+    rw [hR, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_smulₛₗ, ← hR, hP.2 (β k) (hβ k) (g k) (hg k) (hgp k)]
   set s := ∑ k, y k • g k with hs
@@ -1394,8 +1392,7 @@ theorem intForm_descent_below (l e : ℕ) (hl : l.Prime) : ∃ c₀ : ℕ, ∀ (
     (fun a f ha hf => by
       by_cases h0 : a = 0
       · subst h0
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [zero_smul]
+        rw [zero_smul]
         exact (hval 0).2 (by rintro _ ⟨y, rfl⟩; rw [vAtV_zero]; exact le_top)
       have hv : (0 : ℤ) ≤ vLa p a := by
         have hne : p.valuation T.Q.c.F a ≠ 0 := (Valuation.ne_zero_iff _).2 h0
@@ -1417,16 +1414,14 @@ theorem intForm_descent_below (l e : ℕ) (hl : l.Prime) : ∃ c₀ : ℕ, ∀ (
     obtain ⟨cc, hcc⟩ := hspanβ f (GlobalTheory.CuspAllEmb.mem_cuspA_of_rdU_mem_holSub0 D T hL j hj w hlast f hf.1 hf.2)
     refine ⟨cc, ?_⟩
     rw [← hfe, hcc]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [CoreJ.phiJ, map_sum, map_smulₛₗ, Finset.smul_sum]
+    simp only [CoreJ.phiJ, map_sum, map_smulₛₗ, Finset.smul_sum]
     exact Finset.sum_congr rfl fun k _ => smul_comm _ _ _
   choose cc hcc using hcc'
   have hσ₂ : ∀ z, C.σ₂ (C.inc z) = T.σ₀ z := fun z => congrArg (fun f => f z) hU.2.2.1
   let y : Fin m → C.d.c₂.F := fun k => ∑ i, x i * C.inc (cc i k)
   have hsum : φ = ∑ k, C.σ₂ (y k) • T.phiJ j T.σ₀ (wtA w) (β k) := by
     rw [hφe]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [y, hcc, Finset.smul_sum, smul_smul, map_sum, Finset.sum_smul, map_mul, hσ₂]
+    simp only [y, hcc, Finset.smul_sum, smul_smul, map_sum, Finset.sum_smul, map_mul, hσ₂]
     exact Finset.sum_comm
   have hφ' : (∑ k, C.σ₂ (y k) • T.phiJ j T.σ₀ (wtA w) (β k)) ∈ C.intForms (wtA w) w.n {la} := hsum ▸ hφ
   obtain ⟨N, hN⟩ := _root_.GlobalTheory.TraceIdem.trace_comb_integral D T hL j hj T.σ₀ hσ _ _ hD hspan hK C hU hP la p hp m β hβs

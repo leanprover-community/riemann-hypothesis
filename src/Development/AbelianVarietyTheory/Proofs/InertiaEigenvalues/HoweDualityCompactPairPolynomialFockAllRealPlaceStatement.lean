@@ -1260,8 +1260,7 @@ namespace GlobalTheory.LowestKType.DegBound
 theorem deg_X_mul_pderiv {σ : Type} (a b : σ) (P : MvPolynomial σ ℂ) :
     (MvPolynomial.X a * MvPolynomial.pderiv b P).totalDegree ≤ P.totalDegree := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    conv_lhs => rw [P.as_sum, map_sum, Finset.mul_sum]
+  conv_lhs => rw [P.as_sum, map_sum, Finset.mul_sum]
   refine (MvPolynomial.totalDegree_finsetSum _ _).trans (Finset.sup_le fun s hs => ?_)
   rw [MvPolynomial.pderiv_monomial]
   by_cases h : s b = 0

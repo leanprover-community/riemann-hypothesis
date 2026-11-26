@@ -9,7 +9,6 @@ import Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.GlobalCore
 @[expose] public section
 
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1000000
 
 noncomputable section
 

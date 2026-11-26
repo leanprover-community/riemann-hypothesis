@@ -259,8 +259,7 @@ theorem centralScalar : ∀ (D : D7) (V : HSp D) (Q : Finset (Pl D.host.E)) (es 
     · rw [← map_mul, ← star_mul, mul_inv_cancel₀ (hne i hi), star_one, map_one]
   refine ⟨exists_scalar V a hn, fun z hz => ⟨scalar_central V hz, scalar_fin V ?_ hz, scalar_supp V ?_ hz, ?_,
     scalar_inv V hn hz, ?_, ?_, ?_, ?_⟩⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [ha, map_add (f := _), map_one, map_sum, Finset.sum_eq_zero, add_zero]
+  · rw [ha, map_add (f := _), map_one, map_sum, Finset.sum_eq_zero, add_zero]
     intro i hi
     have h0 := Formalism.IndefR.Fin.LevelGroupLemmas.Lat.infPart_of_splitIdem (hes i hi).1
     rw [map_add (f := _), map_mul, map_mul, h0, GlobalTheory.PlaceVec.infPart_cA h0, zero_mul, zero_mul, add_zero]
@@ -293,11 +292,9 @@ theorem centralScalar : ∀ (D : D7) (V : HSp D) (Q : Finset (Pl D.host.E)) (es 
     exact Finset.sum_congr rfl fun i hi => hp _ _ i hi
   · rw [mul_comm, Finset.sum_mul, hca]
     exact Finset.sum_congr rfl fun i hi => hp _ _ i hi
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [mul_comm, map_sum, map_sum, Finset.sum_mul]
+  · rw [mul_comm, map_sum, map_sum, Finset.sum_mul]
     exact Finset.sum_congr rfl fun i hi => by rw [map_mul, _root_.GlobalTheory.DualPairCheck.cA_incA]; exact hq _ _ i hi
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [mul_comm, map_sum, map_sum, Finset.sum_mul, hca]
+  · rw [mul_comm, map_sum, map_sum, Finset.sum_mul, hca]
     exact Finset.sum_congr rfl fun i hi => by rw [map_mul, _root_.GlobalTheory.DualPairCheck.cA_incA]; exact hq _ _ i hi
 
 end GlobalTheory.CentralScalar

@@ -126,7 +126,6 @@ open scoped TensorProduct Matrix
 noncomputable section
 
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 800000
 
 open GlobalTheory.ExportSeries
 

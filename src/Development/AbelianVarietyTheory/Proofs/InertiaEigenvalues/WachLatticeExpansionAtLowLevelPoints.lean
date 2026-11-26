@@ -180,8 +180,6 @@ private theorem exists_smul_expansion_eq {O L A N M J : Type}
       (congrArg (fun p => conv p (expansion (basis j)) r) hlev.symm)
   exact (congrArg (fun y : M => bL⁻¹ • y) hkey.symm).trans (inv_smul_smul₀ hb0 _)
 
-set_option maxHeartbeats 20000000 in
-set_option synthInstance.maxHeartbeats 200000 in
 theorem lattice_at_level : ∀ (loc : LocTheory) (locA : ∀ (l : ℕ) [Fact l.Prime], LocAinf l (loc l)) (locT : ∀ (l : ℕ) [Fact l.Prime], Formalism.BasicNotions.LocTied l (loc l) (locA l)) (HW : HWOf loc) (F : FonOf loc locA HW)
     (Cm : CmpOf loc locA HW F), p4L loc HW locA F Cm := by
   intro loc locA locT HW F Cm l _ K s LL h T hT

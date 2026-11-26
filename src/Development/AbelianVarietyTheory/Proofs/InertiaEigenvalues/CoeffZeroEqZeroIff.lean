@@ -132,8 +132,7 @@ theorem sum_crd (x : O ⊗[Z] W) : ∑ i, b i ⊗ₜ[Z] crd b i x = x := by
 
 theorem crd_sum (w : I → W) (i : I) : crd b i (∑ j, b j ⊗ₜ[Z] w j) = w i := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [map_sum, Finsupp.single_apply]
+  simp [map_sum, Finsupp.single_apply]
 
 theorem ext_crd {x y : O ⊗[Z] W} (h : ∀ i, crd b i x = crd b i y) : x = y := by
   rw [← sum_crd b x, ← sum_crd b y]

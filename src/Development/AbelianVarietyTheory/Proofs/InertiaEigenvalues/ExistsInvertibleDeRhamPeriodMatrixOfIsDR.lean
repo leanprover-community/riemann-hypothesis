@@ -94,8 +94,7 @@ theorem exists_period_matrix_of_isDR : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrim
       funext i
       rw [← LinearMap.toMatrix_mulVec_repr b b (ρ g) v]
       simp only [hM, Matrix.mulVec, dotProduct, Matrix.map_apply, Algebra.smul_def, map_mul, AlgEquiv.commutes]
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum, Finset.sum_mul]
+      rw [map_sum, Finset.sum_mul]
       refine Finset.sum_congr rfl fun k _ => by rw [map_mul]; ring
     | add x y hx hy =>
       rw [map_add (f := _), map_add (f := _), hx, hy, ← Matrix.mulVec_add]
@@ -145,8 +144,7 @@ theorem exists_period_matrix_of_isDR : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrim
       have : (Q0.map (P.actQdR (g : GQ l)) *ᵥ fun j => (P.actQdR (g : GQ l) : P.R.BdR →+* P.R.BdR) (u j)) = 0 := by
         funext i
         have := congrArg (P.actQdR (g : GQ l)) (congrFun hu i)
-        set_option synthInstance.maxHeartbeats 100000 in
-          simpa [Matrix.mulVec, dotProduct, map_sum, map_mul] using this
+        simpa [Matrix.mulVec, dotProduct, map_sum, map_mul] using this
       rw [this, Matrix.mulVec_zero]
     obtain ⟨w, hwN, hw0, hwfix⟩ :=
       exists_fixed_of_stable S (LinearMap.ker (Matrix.mulVecLin Q0)) hstab v (by simpa using hQv) hv0

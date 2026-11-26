@@ -228,15 +228,13 @@ theorem exists_dR_frame : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : Lo
       Submodule.sum_mem _ fun j _ => GlobalTheory.DRFil.tmul_mem_FilV (P.PD K) _ (hy j)
     have hcY : coordF P LL m (∑ j, (Pi.single j 1 : Fin m → ↥LL.1) ⊗ₜ[ℚ_[l]] y j) = y := by
       funext j'
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp [map_sum, Finset.sum_apply, Pi.single_apply]
+      simp [map_sum, Finset.sum_apply, Pi.single_apply]
     obtain ⟨r, hr, he⟩ := had.span n _ hY
     refine ⟨fun i => mulF P LL (r i), fun i => mulF_mem_fil P LL K (hr i), ?_⟩
     have e1 := coordF_sm P LL m (GlobalTheory.DRFil.idem P.R.BdR τ')
       (∑ j, (Pi.single j 1 : Fin m → ↥LL.1) ⊗ₜ[ℚ_[l]] y j)
     rw [mulF_idem P LL K τ' hτ, one_smul, hcY] at e1
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← e1, he, map_sum]
+    rw [← e1, he, map_sum]
     exact Finset.sum_congr rfl fun i _ => coordF_sm P LL m (r i) (d i)
   have htop : ⊤ ≤ Submodule.span P.R.BdR (Set.range u') := by
     rintro y -
@@ -265,8 +263,7 @@ theorem exists_dR_frame : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : Lo
         rw [GlobalTheory.DRFil.eq_sum_basis (Pi.basisFun ↥LL.1 (Fin m))
           (∑ i, GlobalTheory.DRFil.sm ℚ_[l] P.R.BdR ↥LL.1 (Fin m → ↥LL.1) (r i) (d i))]
         refine Finset.sum_eq_zero fun j _ => ?_
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+        rw [map_sum]
         simp only [GlobalTheory.DRFil.ext_sm, GlobalTheory.DRFil.sm_self]
         rw [hr j, map_zero, LinearMap.zero_apply]))
     simpa using this

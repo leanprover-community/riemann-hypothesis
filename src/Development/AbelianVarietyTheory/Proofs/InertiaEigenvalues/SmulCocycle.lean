@@ -72,9 +72,8 @@ theorem fixed_RW (LL : FinExt l) (b : RW LL) (hb : φRW LL b = b) :
     ∃ x : ↥(OL LL), b = algebraMap ↥(OL LL) (RW LL) x :=
   by
     haveI := GlobalTheory.Cyc.FontW.free_OL LL
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact (GlobalTheory.Cyc.FontW.as_one (O := ↥(OL LL)) (frobW l) (GlobalTheory.ArtinSchreierWitt.main l).1
-        (GlobalTheory.ArtinSchreierWitt.main l).2.1).2 b hb
+    exact (GlobalTheory.Cyc.FontW.as_one (O := ↥(OL LL)) (frobW l) (GlobalTheory.ArtinSchreierWitt.main l).1
+      (GlobalTheory.ArtinSchreierWitt.main l).2.1).2 b hb
 
 section Gen
 

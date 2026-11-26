@@ -503,8 +503,6 @@ theorem exists_finset_span_eq_top {A ι : Type} [CommRing A] (v : ι → A) (h :
   exact ⟨g ⟨x, hx⟩, by simp, hg ⟨x, hx⟩⟩
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem exists_finite_subfamily {E : Type} [Field E] [NumberField E] [IsCMField E]
     {H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E} {Dw : Datum H} {l : Level H} {Xo : Moduli Dw l} {c : Coeff l}
     (la : HeightOneSpectrum (𝓞 c.F)) (hM : GlobalTheory.Reg.ModelAt Xo c la) (σ : c.F →+* ℂ) {ι : Type}
@@ -844,7 +842,6 @@ theorem evR_of_frMap {D : D7} (T : CoreJ D) (h : LawsJ T) {j : ℕ} (hj : Formal
 
 
 set_option synthInstance.maxHeartbeats 200000 in
-set_option maxHeartbeats 1000000 in
 theorem exists_family : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.L2.Pj.InR D j → ∀ σ : T.Q.c.F →+* ℂ, GoodEmb T.Q.c σ → ∀ (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ), Dom a n → ∃ (b : (D.host.E →+* ℂ) × ℕ → ℕ) (m N : ℕ) (t : Fin N → Rul (T.Q.Xo j) T.Q.c), Dom b m ∧ (∀ i, t i ∈ sec (T.Q.Xo j) T.Q.c b m) ∧ (∀ (p : TRing T.Q.c.F) (y : FrPt (T.Q.Xo j) T.Q.c p.R), Ideal.span (Set.range fun i => t i p y) = ⊤) ∧ ∀ P ∈ holSub0 (T.U j σ).X (laU (T.U j σ) a n), ∀ i, P * rdU (T.U j σ) (t i) ∈ Submodule.span ℂ (rdU (T.U j σ) '' (sec (T.Q.Xo j) T.Q.c (a + b) (n + m) : Set (Rul (T.Q.Xo j) T.Q.c))) := by
   intro D T h j hj σ hσ a n hdom
   obtain ⟨b, m, hbm, hlast, hm, hnz⟩ := _root_.GlobalTheory.BpfUniform.exists_weight_noCommonZero D T h j hj σ hσ

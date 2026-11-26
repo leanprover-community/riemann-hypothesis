@@ -568,7 +568,6 @@ open scoped TensorProduct
 open Formalism.BasicNotions Formalism.MainNotions Formalism.BasicNotions.TH Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes Formalism.L2.Theta Formalism.L2.DIV Formalism.IndefR Formalism.IndefR.Links Formalism.IndefR.Datum Formalism.IndefR.FWT Formalism.L2.Pj GlobalTheory.CoverRead
 
 
-set_option maxHeartbeats 1000000 in
 theorem mem_cuspA_of_rdU_mem_holSub0 : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, InR D j → ∀ w : WeightFamilies.Wt D j, w.LastPos → ∀ f ∈ sec (T.Q.Xo j) T.Q.c (wtA w) w.n, rdU (T.U j T.σ₀) f ∈ holSub0 (T.U j T.σ₀).X (laU (T.U j T.σ₀) (wtA w) w.n) → f ∈ T.cuspA j (wtA w) w.n := by
   intro D T h j hj w hw f hf hfh
   have hr : 1 ≤ D.R.r := by unfold Ranks.r; have := D.R.two_le_m; omega
@@ -595,11 +594,9 @@ theorem mem_cuspA_of_rdU_mem_holSub0 : ∀ (D : D7) (T : CoreJ D), LawsJ T → �
     refine (Submodule.span_le.2 ?_) hspan
     rintro _ ⟨y, hy, rfl⟩
     have e := congrArg S.subtype (b.sum_repr ⟨y, hy⟩).symm
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at e
+    rw [map_sum] at e
     replace e : y = ∑ i, b.repr ⟨y, hy⟩ i • (b i : T.R j) := e
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [e, map_sum]
+    rw [e, map_sum]
     refine Submodule.sum_mem _ fun i _ => ?_
     rw [map_smulₛₗ]
     exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)

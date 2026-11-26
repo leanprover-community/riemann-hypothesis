@@ -191,8 +191,7 @@ theorem algebraMap_mem_fixNear (s : Per.Acris0 l) :
       have hy0 := (GlobalTheory.MemLoc.mem_Acris0_iff_span l e he y).2 hy
       have hz0 := (GlobalTheory.MemLoc.mem_Acris0_iff_span l e he z).2 hz
       have e0 : (⟨y + z, h0⟩ : Per.Acris0 l) = ⟨y, hy0⟩ + ⟨z, hz0⟩ := Subtype.ext rfl
-      set_option synthInstance.maxHeartbeats 200000 in
-        rw [e0, map_add (f := _)]; exact add_mem (ihy hy0) (ihz hz0)
+      rw [e0, map_add (f := _)]; exact add_mem (ihy hy0) (ihz hz0)
     | smul r y hy ihy =>
       intro h0
       have hy0 := (GlobalTheory.MemLoc.mem_Acris0_iff_span l e he y).2 hy

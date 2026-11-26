@@ -1013,8 +1013,7 @@ theorem gal_iSl_sub_mem (ϖ : PiSys l e) (C : GlobalTheory.MemLoc.Core l) (m : �
   · rw [h0] at hw
     rw [hDdef]
     linear_combination (l : OCr l O) ^ k * hw
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.mul_sum, map_sum]
+  · rw [Finset.mul_sum, map_sum]
     refine Submodule.sum_mem _ fun i hi => ?_
     have hi1 : 1 ≤ i := Nat.pos_of_ne_zero (Finset.ne_of_mem_erase hi)
     obtain ⟨h', hh', he⟩ := hdesc i hi1

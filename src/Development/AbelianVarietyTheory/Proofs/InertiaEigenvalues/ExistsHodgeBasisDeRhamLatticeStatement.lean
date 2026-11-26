@@ -151,9 +151,8 @@ theorem filtered_coords : ∀ (l : ℕ) [Fact l.Prime] (P : LocPrime l) (AI : Lo
   · have hg : actVdR (P.PD K) (qRep ρ) g (dd r) = dd r :=
       (GlobalTheory.DRFil.mem_DdR (P.PD K) (qRep ρ) _).1 (h r).1 g
     rw [← hact, hg]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [← hfx, e, map_sum]
-      exact Finset.sum_congr rfl fun r _ => hfmul _ _
+  · rw [← hfx, e, map_sum]
+    exact Finset.sum_congr rfl fun r _ => hfmul _ _
 
 end GlobalTheory.DRFilCoord
 end -- clump:auto

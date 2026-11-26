@@ -1154,8 +1154,6 @@ theorem vecMul_rows_repr {E : Type} [Field E] {n : Type} [Fintype n] [DecidableE
   simp [Matrix.vecMul, dotProduct, Finset.sum_apply]
 
 
-set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 1000000 in
 theorem splits_of_stable_rat_subspace : ∀ (l : ℕ) [Fact l.Prime] (n : Type) [Fintype n] [DecidableEq n] (K : FinExt l) (r : ℕ) (ρ : ↥(GK K) →* GL n ↥(MaximalUnramifiedExtension l)), IsRat r ρ → ∀ W : AddSubgroup (n → ↥(MaximalUnramifiedExtension l)), (∀ c ∈ W, ∀ i, fr l r (c i) = c i) → (∀ e : ↥(MaximalUnramifiedExtension l), fr l r e = e → ∀ c ∈ W, e • c ∈ W) → (∀ g, ∀ c ∈ W, Matrix.vecMul c (ρ g : Matrix n n ↥(MaximalUnramifiedExtension l)) ∈ W) → W ≠ ⊥ → (∃ c : n → ↥(MaximalUnramifiedExtension l), (∀ i, fr l r (c i) = c i) ∧ c ∉ W) → Splits r ρ := by
   classical
   intro l _ n _ _ K r ρ hρ W hWE hWsm hWst hW0 hWtop
@@ -1263,8 +1261,7 @@ theorem splits_of_stable_rat_subspace : ∀ (l : ℕ) [Fact l.Prime] (n : Type) 
       convert h2 using 1
       funext k
       show ι (Matrix.vecMul (b i) (R g) k) = Matrix.vecMul (cv (b i)) (ρ g : Matrix n n ↥(MaximalUnramifiedExtension l)) k
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [Matrix.vecMul, dotProduct, map_sum, map_mul]
+      simp only [Matrix.vecMul, dotProduct, map_sum, map_mul]
       rfl
     have := (Module.Basis.mem_span_image b).1 (hWspan hw)
     by_contra hne

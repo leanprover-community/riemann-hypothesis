@@ -105,7 +105,6 @@ theorem inclR_injective (LL : FinExt l) : Function.Injective (inclR LL) := by
   exact Module.Flat.lTensor_preserves_injective_linearMap (M := ↥(OL LL)) (inclWA l).toLinearMap
     (WittVector.map_injective _ (IsFractionRing.injective (OCb l) (Cb l)))
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem inclR_gRA {P : LocPrime l} (AI : LocAinf l P) (LL : FinExt l) (g : GQ l) (r : RA LL) :
     inclR LL (gRA AI LL g r) = AI.gRW LL g (inclR LL r) := by
   induction r using TensorProduct.induction_on with
@@ -114,7 +113,6 @@ theorem inclR_gRA {P : LocPrime l} (AI : LocAinf l P) (LL : FinExt l) (g : GQ l)
   | tmul a w =>
     exact congrArg (fun u => a ⊗ₜ[ℤ_[l]] u) (inclW_act AI g w).symm
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem kap_thR_gRA {P : LocPrime l} (AI : LocAinf l P) {LL : FinExt l} {f n : ℕ}
     (o : Module.Basis (Fin f) ℤ_[l] ↥(OL LL)) {θ : Ainf l →ₐ[ℤ_[l]] OC l} (hθ : IsThetaShift AI n θ)
     (g : GQ l) (r : RA LL) (k : Fin f) :

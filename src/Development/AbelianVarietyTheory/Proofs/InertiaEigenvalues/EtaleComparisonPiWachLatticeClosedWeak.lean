@@ -24,7 +24,6 @@ namespace GlobalTheory.WeakClosed
 variable {l : ℕ} [Fact l.Prime]
 
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1600000
 
 theorem hausdorff_tilt_witt : letI := cbTop l; T2Space (Cb l) := by
   letI := cbValued l

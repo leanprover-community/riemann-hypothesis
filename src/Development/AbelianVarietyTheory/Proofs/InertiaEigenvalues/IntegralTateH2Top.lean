@@ -191,8 +191,7 @@ theorem tateH2OAt_of_fund (P : LocPrime l) (K Lf : FinExt l) [CompactSpace ↥(G
   have hrec : ∀ {X : Type} [TopologicalSpace X] (F : Fin (Module.finrank ℤ_[l] ↥(OL Lf)) → X → ℤ_[l]),
       (∀ j, Continuous (F j)) → Continuous fun x => ι (b.equivFun.symm (fun j => F j x)) := by
     intro X _ F hF
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Module.Basis.equivFun_symm_apply, map_sum, hsm]
+    simp only [Module.Basis.equivFun_symm_apply, map_sum, hsm]
     exact continuous_finsetSum _ fun j _ => ((hAlg.comp (hcZ.comp (hF j))).mul continuous_const)
   have hd1 : ∀ (f : ↥(GK K) → ↥Lf.1) g h, ReciprocityTheory.Def.d1 (Formalism.WeaklyAdmissibleFiltrations.charRep (cycLL (P.PD K) ↥Lf.1)) f (g, h) =
       ((cycLL (P.PD K) ↥Lf.1 g : (↥Lf.1)ˣ) : ↥Lf.1) * f h - f (g * h) + f g := by

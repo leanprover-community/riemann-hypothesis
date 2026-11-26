@@ -531,11 +531,9 @@ theorem dual_family (ρ : Representation LL G V) (ρ' : Representation LL G V') 
       · simp
   · rw [← sub_eq_zero]
     refine hz _ ?_ fun j => ?_
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, ← sm_mul, he, map_sum]
+    · rw [map_sub, ← sm_mul, he, map_sum]
       simp only [sm_comm e, hed']
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, map_sum]
+    · rw [map_sub, map_sum]
       simp only [bil_sm_right, hδ, sm_self]
       rw [Finset.sum_eq_single j (fun b _ hb => by simp [Ne.symm hb]) (by simp)]
       simp [mul_comm]

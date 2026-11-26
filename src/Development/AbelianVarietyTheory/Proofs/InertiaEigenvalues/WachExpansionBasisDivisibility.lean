@@ -271,7 +271,6 @@ theorem expansion_basis : ∀ (loc : LocTheory) (locA : ∀ (l : ℕ) [Fact l.Pr
   refine ⟨hsm, fun r nb => ?_⟩
   haveI := LL.2
   haveI : IsFractionRing ↥(OL LL) ↥LL.1 := integralClosure.isFractionRing_of_finite_extension ℚ_[l] ↥LL.1
-  set_option synthInstance.maxHeartbeats 200000 in
   have hr : r ≤ Module.finrank ↥LL.1 ↥(Di (HW l) h T i) := by
     rw [card_eq_rank W T hT r nb,
       (GlobalTheory.Per.LetterDim.tied_letter_component_finrank l _ _ (locT l) K LL T.V T.ρ).1 (card_emb W) hT]

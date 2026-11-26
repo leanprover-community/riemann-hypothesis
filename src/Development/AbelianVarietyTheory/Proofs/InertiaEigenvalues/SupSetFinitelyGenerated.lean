@@ -29,8 +29,6 @@ public import Development.AbelianVarietyTheory.Definitions.RegularCharts.ModelAt
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
-
 open AlgebraicGeometry CategoryTheory NumberField IsDedekindDomain MvPolynomial
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD Formalism.L2.Pj GlobalTheory.GoodPts
 

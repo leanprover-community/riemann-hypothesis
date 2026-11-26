@@ -166,8 +166,7 @@ theorem fixed_field_deg : ∀ (l : ℕ) [Fact l.Prime] (r : ℕ), 0 < r → ∃ 
   · intro c hc
     refine ⟨bas.repr ⟨c, (hF c).2 hc⟩, ?_⟩
     have e := congrArg (F.val.toLinearMap) (bas.sum_repr ⟨c, (hF c).2 hc⟩)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at e
+    rw [map_sum] at e
     simpa using e.symm
   · intro h0
     let M : Matrix (Fin r) (Fin r) ↥F := Matrix.of fun i j : Fin r => (τ ^ (j : ℕ)) (bas i)

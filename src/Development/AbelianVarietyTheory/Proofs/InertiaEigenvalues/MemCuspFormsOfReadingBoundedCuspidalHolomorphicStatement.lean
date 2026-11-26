@@ -64,7 +64,6 @@ open scoped TensorProduct
 namespace GlobalTheory.CuspOfReading
 
 
-set_option maxHeartbeats 1000000 in
 set_option synthInstance.maxHeartbeats 200000 in
 theorem mem_cuspA_of_rdU_mem_holSub0 : ∀ (D : D7) (T : CoreJ D), LawsJ T → ∀ j, Formalism.L2.Pj.InR D j → ∀ w : WeightFamilies.Wt D j, w.LastPos → 8 * D.R.f * D.R.r + 4 ≤ w.n → ∀ f ∈ sec (T.Q.Xo j) T.Q.c (wtA w) w.n, rdU (T.U j T.σ₀) f ∈ Formalism.L2.Pj.holSub0 (T.U j T.σ₀).X (laU (T.U j T.σ₀) (wtA w) w.n) → f ∈ T.cuspA j (wtA w) w.n := by
   intro D T h j hj w hw hn f hf hfh

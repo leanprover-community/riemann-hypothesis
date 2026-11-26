@@ -796,16 +796,14 @@ theorem evEmb_eq_sum {LL : FinExt l} {f : ℕ} (o : Module.Basis (Fin f) ℤ_[l]
   induction x using TensorProduct.induction_on with
   | zero => simp only [map_zero, kap_zero, zero_mul, Finset.sum_const_zero]
   | add x y hx hy =>
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_add ev, kap_add, hx, hy, add_mul, Finset.sum_add_distrib]
+    simp only [map_add ev, kap_add, hx, hy, add_mul, Finset.sum_add_distrib]
   | tmul c a =>
     rw [hev]
     simp only [kap_tmul, mul_assoc, ← Finset.mul_sum]
     congr 1
     conv_lhs => rw [← o.sum_repr a]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Algebra.smul_def, AddSubmonoidClass.coe_finsetSum, MulMemClass.coe_mul, map_sum,
-      map_mul, coe_emb_algebraMap]
+    simp only [Algebra.smul_def, AddSubmonoidClass.coe_finsetSum, MulMemClass.coe_mul, map_sum,
+    map_mul, coe_emb_algebraMap]
 
 theorem exists_emb_det_ne_zero {LL : FinExt l} {f : ℕ} (o : Module.Basis (Fin f) ℤ_[l] ↥(OL LL)) :
     ∃ τ : Fin f → (↥LL.1 →ₐ[ℚ_[l]] Om l),

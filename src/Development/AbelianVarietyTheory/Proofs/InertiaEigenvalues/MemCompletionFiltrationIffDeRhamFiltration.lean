@@ -118,7 +118,6 @@ open scoped Formalism.Per
 open GlobalTheory.BKGal.HatVal
 open scoped GlobalTheory.BKGal.HatVal
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1000000
 
 private theorem actDRG {Z Q O P D V R : Type} [CommRing Z] [CommRing Q] [CommRing O] [Algebra Z O]
     [CommRing P] [Algebra Z P] [CommRing D] [Algebra Z D] [AddCommGroup V] [Module Q V]
@@ -246,8 +245,7 @@ theorem _root_.UpperTheory.KN.phiMod_coefficients_eq_sum_of_inverse_matrix :
   intro l _ a e _ _ O K _ _ _ _ _ _ _ _ _ _ _ t ϖ ι _ _ P n s m c h j
   funext τ
   apply algebraMap_AhatE_injective l e
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [h τ j, Finset.sum_apply, map_sum]
+  rw [h τ j, Finset.sum_apply, map_sum]
   simp only [GlobalTheory.BKGal.JumpDR.hsum, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun k _ => ?_
@@ -276,8 +274,6 @@ section -- clump:auto
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1000000
 
 open GlobalTheory.BKGal.HatVal in
 private theorem gen {l : ℕ} [Fact l.Prime] {a e : ℕ} [NeZero a] [NeZero e] {O K : Type} [CommRing O] [Algebra ℤ_[l] O] [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K] [NormedAlgebra ℚ_[l] K] [TameDescentExponentData K l e a] [CompleteSpace K] (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e) {ι : Type} [Fintype ι] [DecidableEq ι] (P : PhiMod O K l e a ι) (T : LocLat (Gl l) ℚ_[l] K O)
@@ -394,7 +390,6 @@ section -- clump:auto
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
-set_option synthInstance.maxHeartbeats 400000
 
 private theorem sum_through_tensor_basis {O A B M V ι κ : Type} [CommRing O] [CommRing A] [CommRing B] [Algebra O A] [Algebra O B]
     [AddCommGroup M] [Module O M] [AddCommGroup V] [Fintype ι] [DecidableEq ι] [Fintype κ]
@@ -633,7 +628,6 @@ section -- clump:auto
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
-set_option synthInstance.maxHeartbeats 400000
 
 private theorem UpperTheory.KN.basis_change_matrices_algebra_map {O R R' M ι : Type} [CommRing O] [CommRing R] [CommRing R']
     [Algebra O R] [Algebra O R'] [AddCommGroup M] [Module O M] [Fintype ι] [DecidableEq ι]
@@ -744,7 +738,6 @@ section -- clump:auto
 
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
-set_option synthInstance.maxHeartbeats 400000 in
 theorem _root_.GlobalTheory.T.breuilKisin_filtration_span_deRhamLattice : GlobalTheory.Published.FontaineBcris → ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e] (ϖ : PiSys l e) (LL : FinExt l) [HasUnr a LL] [TameDescentExponentData ↥LL.1 l e a], l ≠ 2 → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (P : PhiMod ↥(OL LL) ↥LL.1 l e a ι) (T : QLat LL) (I : Ident (thetaW a LL) ϖ P T) (jB : (ι → OB l ↥(OL LL)) ≃ₗ[OB l ↥(OL LL)] TW (OB l ↥(OL LL)) T) (Pl : LocPrime l) (AI : LocAinf l Pl) (Td : LocTied l Pl AI), IsCrisCmp I jB → ∀ (X : TW (OB l ↥(OL LL)) T →+ T.V ⊗[ℚ_[l]] Pl.R.BdR), (∀ (o : ↥(OL LL)) (b : Per.Bcris l) (x : ↥T.L.T), X ((o ⊗ₜ[ℤ_[l]] b) ⊗ₜ[↥(OL LL)] x) = ((o : ↥LL.1) • (x : T.V)) ⊗ₜ[ℚ_[l]] GlobalTheory.BKGal.JumpDR.cB Td b) → ∀ (act : OD l ↥(OL LL) →+ (T.V ⊗[ℚ_[l]] Pl.R.BdR →+ T.V ⊗[ℚ_[l]] Pl.R.BdR)), (∀ (o : ↥(OL LL)) (b : Per.BdRp l) (v : T.V) (c : Pl.R.BdR), act (o ⊗ₜ[ℤ_[l]] b) (v ⊗ₜ[ℚ_[l]] c) = ((o : ↥LL.1) • v) ⊗ₜ[ℚ_[l]] (GlobalTheory.BKGal.JumpDR.cD Td b * c)) → ∀ (α β : ℕ), (∀ v ∈ P.L, E ↥LL.1 l e ^ α • v ∈ P.M) → (∀ v ∈ P.M, E ↥LL.1 l e ^ β • v ∈ P.L) → ∀ (hβ : ∀ τ j i, E ↥LL.1 l e ^ β * P.mxInv τ j i ∈ A ↥(OL LL) ↥LL.1) (w : T.V ⊗[ℚ_[l]] Pl.R.BdR), w ∈ FilV (Pl.PD (Formalism.MainNotions.ElementDenominator.qlExt l)) (LL := ↥LL.1) (V := T.V) ((β : ℤ)) ↔ ∃ d : ι → OD l ↥(OL LL), w = ∑ i, act (d i) (∑ j, act (toOD l ↥(OL LL) (ϖ.iTot (thetaW a LL) ↥LL.1 (fun τ => ⟨E ↥LL.1 l e ^ β * P.mxInv τ j i, hβ τ j i⟩))) (X (jB (Pi.single j 1)))) := by
   intro _ l _ a e _ _ ϖ LL _ _ _ ι _ _ P T I jB Pl AI Td hC X hX act hA α β _ _ hβ w
   obtain ⟨hmul, hone⟩ := _root_.GlobalTheory.BKGal.JumpDR.odAct_mul_one l LL T Pl AI Td act hA
@@ -955,8 +948,6 @@ private theorem map_pow_mul_of_eq {R S : Type} [Semiring R] [Semiring S]
     f (z ^ n * y) = f z ^ (n + m) * w := by
   rw [map_mul, map_pow, h, pow_add, mul_assoc]
 
-set_option maxHeartbeats 8000000 in
-set_option synthInstance.maxHeartbeats 400000 in
 theorem GlobalTheory.BKGal.JumpDR.basis_images : GlobalTheory.Published.FontaineBcris → ∀ (l : ℕ) [Fact l.Prime] (a e : ℕ) [NeZero a] [NeZero e] (ϖ : PiSys l e) (LL : FinExt l) [HasUnr a LL] [TameDescentExponentData ↥LL.1 l e a], l ≠ 2 → ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (P : PhiMod ↥(OL LL) ↥LL.1 l e a ι) (T : QLat LL) (I : Ident (thetaW a LL) ϖ P T) (jB : (ι → OB l ↥(OL LL)) ≃ₗ[OB l ↥(OL LL)] TW (OB l ↥(OL LL)) T) (Pl : LocPrime l) (AI : LocAinf l Pl) (Td : LocTied l Pl AI), IsCrisCmp I jB → ∀ (X : TW (OB l ↥(OL LL)) T →+ T.V ⊗[ℚ_[l]] Pl.R.BdR), (∀ (o : ↥(OL LL)) (b : Per.Bcris l) (x : ↥T.L.T), X ((o ⊗ₜ[ℤ_[l]] b) ⊗ₜ[↥(OL LL)] x) = ((o : ↥LL.1) • (x : T.V)) ⊗ₜ[ℚ_[l]] GlobalTheory.BKGal.JumpDR.cB Td b) → ∀ (A : OD l ↥(OL LL) →+ (T.V ⊗[ℚ_[l]] Pl.R.BdR →+ T.V ⊗[ℚ_[l]] Pl.R.BdR)), (∀ (o : ↥(OL LL)) (b : Per.BdRp l) (v : T.V) (c : Pl.R.BdR), A (o ⊗ₜ[ℤ_[l]] b) (v ⊗ₜ[ℚ_[l]] c) = ((o : ↥LL.1) • v) ⊗ₜ[ℚ_[l]] (GlobalTheory.BKGal.JumpDR.cD Td b * c)) → ∀ (β : ℕ) (y : ZMod a → ι → ι → Ahat ↥(OL LL) ↥LL.1 l e), (∀ τ j i, algebraMap (Ahat ↥(OL LL) ↥LL.1 l e) (AhatE ↥(OL LL) ↥LL.1 l e) (y τ j i) = algebraMap (Ahat ↥(OL LL) ↥LL.1 l e) (AhatE ↥(OL LL) ↥LL.1 l e) (Ehat ↥(OL LL) ↥LL.1 l e) ^ β * hat ↥(OL LL) l e (P.mxInv τ j i)) → ∃ f : ι → T.V ⊗[ℚ_[l]] Pl.R.BdR, (∀ i, A ((ϖ.iD (thetaW a LL) ↥LL.1 (fun _ => Ehat ↥(OL LL) ↥LL.1 l e)) ^ β) (f i) = ∑ j, A (ϖ.iD (thetaW a LL) ↥LL.1 (fun τ => y τ j i)) (X (jB (Pi.single j 1)))) ∧ (∀ v, v ∈ FilV (Pl.PD (Formalism.MainNotions.ElementDenominator.qlExt l)) (LL := ↥LL.1) (V := T.V) (0) ↔ ∃ d : ι → OD l ↥(OL LL), v = ∑ i, A (d i) (f i)) ∧ ∀ d : ι → OD l ↥(OL LL), ∑ i, A (d i) (f i) = 0 → ∀ i, d i = 0 := by
   intro hF l _ a e _ _ ϖ LL _ _ hl2 ι _ _ P T I jB Pl AI Td hC X hX act hA β y hy
   have hAct := _root_.GlobalTheory.BKGal.JumpDR.odAct_mul_one l LL T Pl AI Td act hA
@@ -1125,7 +1116,6 @@ theorem aoneL {l : ℕ} [Fact l.Prime] {LL : FinExt l} {T : QLat LL} {Pl : LocPr
     (v : T.V ⊗[ℚ_[l]] Pl.R.BdR) : A 1 v = v :=
   aoneG (K := ↥LL.1) (fun o : ↥(OL LL) => (o : ↥LL.1)) rfl (GlobalTheory.BKGal.JumpDR.cD Td) A hA v
 
-set_option maxHeartbeats 1000000 in
 theorem coreG {l : ℕ} [Fact l.Prime] {a e : ℕ} [NeZero a] [NeZero e] {O K : Type} [CommRing O] [Algebra ℤ_[l] O]
     [Module.Free ℤ_[l] O] [Module.Finite ℤ_[l] O] [NormedField K] [IsUltrametricDist K] [Algebra O K] [IsUnitBall O K]
     [NormedAlgebra ℚ_[l] K] [CompleteSpace K] (t : Wq l a →ₐ[ℤ_[l]] O) (ϖ : PiSys l e) {ι : Type} [Fintype ι] [DecidableEq ι]
@@ -1173,8 +1163,7 @@ theorem coreG {l : ℕ} [Fact l.Prime] {a e : ℕ} [NeZero a] [NeZero e] {O K : 
       obtain ⟨z, rfl⟩ := (hspan v').1 h0
       have h4 : ∑ i, A (d i - (ϖ.iD t K (fun _ => Ehat O K l e)) ^ kk * z i) (f i) = 0 := by
         simp only [map_sub, AddMonoidHom.sub_apply, Finset.sum_sub_distrib, amul]
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [← map_sum, hv', sub_self]
+        rw [← map_sum, hv', sub_self]
       intro i
       have h5 := hind _ h4 i
       rw [sub_eq_zero] at h5
@@ -1183,8 +1172,7 @@ theorem coreG {l : ℕ} [Fact l.Prime] {a e : ℕ} [NeZero a] [NeZero e] {O K : 
     · intro hd
       choose z hz using fun i => Ideal.mem_span_singleton'.1 (hd i)
       have h6 : ∑ i, A (d i) (f i) = A ((ϖ.iD t K (fun _ => Ehat O K l e)) ^ kk) (∑ i, A (z i) (f i)) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+        rw [map_sum]
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [← hz i, mul_comm, amul]
       have h7 := (hSh kk _ 0).1 ((hspan _).2 ⟨z, rfl⟩)
@@ -1200,30 +1188,25 @@ theorem coreG {l : ℕ} [Fact l.Prime] {a e : ℕ} [NeZero a] [NeZero e] {O K : 
       simp only [GlobalTheory.BKGal.JumpDR.hsum, s', Pi.mul_apply, Pi.pow_apply, map_mul, map_pow, Finset.mul_sum, mul_assoc]
     have hc : ∀ τ j, algebraMap (Ahat O K l e) (AhatE O K l e) (c τ j) = ∑ i, hat O l e (P.mxInv τ j i) * GlobalTheory.BKGal.JumpDR.hsum P s' (fun k => (m k).1) τ i := by
       intro τ j
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [c, map_sum, map_mul, hy, hx, hw]
+      simp only [c, map_sum, map_mul, hy, hx, hw]
       refine Finset.sum_congr rfl fun i _ => ?_
       ring
     have hC' := hC s' c hc
     have h1 : ∑ k, A (ϖ.iD t K (s' k)) (g k) = A ((ϖ.iD t K (fun _ => Ehat O K l e)) ^ (N + β)) (∑ k, A (ϖ.iD t K (s k)) (g k)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+      rw [map_sum]
       refine Finset.sum_congr rfl fun k _ => ?_
       simp only [s', map_mul, map_pow]
       rw [amul]
     have h2' : ∑ j, A (ϖ.iD t K (fun τ => c τ j)) (gB j) = ∑ i, A (ϖ.iD t K (fun τ => x τ i)) (A ((ϖ.iD t K (fun _ => Ehat O K l e)) ^ β) (f i)) := by
       have h3 : ∀ j, (fun τ => c τ j) = ∑ i, (fun τ => x τ i) * (fun τ => y τ j i) := by
         intro j; funext τ; simp only [c, Finset.sum_apply, Pi.mul_apply, mul_comm]
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [h3, map_sum, AddMonoidHom.finsetSum_apply, map_mul, amul]
+      simp only [h3, map_sum, AddMonoidHom.finsetSum_apply, map_mul, amul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun i _ => ?_
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [hf1 i, map_sum]
+      rw [hf1 i, map_sum]
     rw [h1, h2'] at hC'
     have h3 : ∑ i, A (ϖ.iD t K (fun τ => x τ i)) (A ((ϖ.iD t K (fun _ => Ehat O K l e)) ^ β) (f i)) = A ((ϖ.iD t K (fun _ => Ehat O K l e)) ^ β) (∑ i, A (ϖ.iD t K (fun τ => x τ i)) (f i)) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
+      rw [map_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [← amul, ← amul, mul_comm]
     rw [h3, pow_add, mul_comm, amul] at hC'

@@ -667,7 +667,6 @@ theorem lat_one_std : ∀ (loc : LocTheory) (locA : ∀ (l : ℕ) [Fact l.Prime]
   have hF := down s i ζ hζ (_root_.GlobalTheory.NL.FullLevel.full_lat loc locA locT HW F Cm l K s LL h T hT _ ζ hζ)
   have hG := _root_.GlobalTheory.NL.GradedLat.graded_of_level_le loc locA HW F Cm l K s LL h T hT i 1 (one_pow _) hF
   haveI : Module.Finite (AA K LL) ↥(W.N T) := Module.Finite.iff_fg.2 (W.N_fg T)
-  set_option synthInstance.maxHeartbeats 200000 in
   have hex : ∀ (a : AA K LL) (x : ↥(W.N T)),
       ex C h T i 1 (a • x) = conv (W.lev i 1 a) (ex C h T i 1 x) := by
     intro a x

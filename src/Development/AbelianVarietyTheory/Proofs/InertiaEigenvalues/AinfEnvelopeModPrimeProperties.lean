@@ -82,8 +82,7 @@ theorem exists_coeffs_eq_of_null (tb : TopBasis s I ι) (hS : IsHausdorff I S) (
     exact c_mem_of_mem tb n (by simpa using neg_mem h) i
   have h2 : tb.c i (y n) - a i ∈ I ^ n := by
     have e : tb.c i (y n) = ∑ j ∈ F n, a j * tb.c i (tb.b j) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [y, map_sum, tb.c_mul]
+      simp only [y, map_sum, tb.c_mul]
     rw [e]
     by_cases hi : i ∈ F n
     · rw [Finset.sum_eq_single i (fun j _ hj => by rw [tb.c_ne i j (Ne.symm hj), mul_zero])

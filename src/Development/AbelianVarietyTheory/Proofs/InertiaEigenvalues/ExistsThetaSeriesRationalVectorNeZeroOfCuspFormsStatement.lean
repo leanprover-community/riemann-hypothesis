@@ -236,7 +236,6 @@ namespace GlobalTheory.MovedUnifNe
 
 open ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.FD
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem indepToC_sec {D : D7} (T : Core D) (hM : LawsM T) {j : ℕ} (hj : InR D j) {σ : T.Q.c.F →+* ℂ}
     (hσ : GoodEmb T.Q.c σ) (a : (D.host.E →+* ℂ) × ℕ → ℕ) (n : ℕ) :
     ReciprocityTheory.ChartRestriction.G.PullbackSections.IndepToC ((rdU (T.U j σ)).comp (sec (T.Q.Xo j) T.Q.c a n).subtype) := by
@@ -325,7 +324,6 @@ theorem rel_of_dict {D : D7} (T : Core D) (hM : LawsM T) {j : ℕ} (hj : InR D j
 
 
 set_option synthInstance.maxHeartbeats 400000 in
-set_option maxHeartbeats 800000 in
 theorem eq_zero_of_rdU {D : D7} (T : Core D) (hM : LawsM T) {j : ℕ} (hj : InR D j) (c' : Coeff T.Q.l)
     (hle : T.Q.c.F ≤ c'.F) (σ' : c'.F →+* ℂ) (hσ : GoodEmb T.Q.c (σ'.comp (incF T.Q.c c' hle)))
     {a : (D.host.E →+* ℂ) × ℕ → ℕ} {n m : ℕ} {f' : Rul (T.Q.Xo j) c'} (hf' : f' ∈ sec (T.Q.Xo j) c' a n)
@@ -342,8 +340,7 @@ theorem eq_zero_of_rdU {D : D7} (T : Core D) (hM : LawsM T) {j : ℕ} (hj : InR 
     ∑ i, as i ⊗ₜ[T.Q.c.F] (⟨gs i, hgs i⟩ : sec (T.Q.Xo j) T.Q.c a n)
   have hbt : GlobalTheory.IndefiniteRowSideFullHecke.BaseChangeTensorProduct.bcMap hσ'
       ((rdU (T.U j (σ'.comp (incF T.Q.c c' hle)))).comp (sec (T.Q.Xo j) T.Q.c a n).subtype) t = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [t, map_sum, GlobalTheory.ReadingComparison.bcMap_tmul]
+    simp only [t, map_sum, GlobalTheory.ReadingComparison.bcMap_tmul]
     exact h0
   have ht : t = 0 := by
     by_contra ht
@@ -386,8 +383,7 @@ theorem eq_zero_of_rdU {D : D7} (T : Core D) (hM : LawsM T) {j : ℕ} (hj : InR 
   have e := congrArg Φ ht
   rw [map_zero] at e
   have e2 : Φ t = ∑ i, algebraMap c'.F p.R (as i) * evR (T.Q.Xo j) T.Q.c (gs i) (y.res hle hA) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [t, map_sum, Φ, TensorProduct.liftAddHom_tmul]
+    simp only [t, map_sum, Φ, TensorProduct.liftAddHom_tmul]
     rfl
   rw [← e2, e]
 

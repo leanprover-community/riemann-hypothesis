@@ -1147,7 +1147,6 @@ open NumberField Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Pj Fo
 open scoped TensorProduct
 
 set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1000000
 
 noncomputable section
 

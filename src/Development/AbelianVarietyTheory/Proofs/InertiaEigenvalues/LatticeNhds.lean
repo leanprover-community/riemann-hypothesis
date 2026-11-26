@@ -258,11 +258,10 @@ theorem as_TW {G : Type} [Group G] [TopologicalSpace G] (LL : FinExt l)
     (T : LocLat G ℚ_[l] ↥LL.1 ↥(OL LL)) : (∀ y, ∃ b, TWmap (φRW LL) T b - b = y) ∧
     ∀ b, TWmap (φRW LL) T b = b → ∃ t : ↥T.L.T, b = (1 : RW LL) ⊗ₜ[↥(OL LL)] t :=
   by
-    set_option synthInstance.maxHeartbeats 200000 in
-      haveI := T.L.free
-      haveI := free_OL LL
-      exact as_two (O := ↥(OL LL)) (P := ↥T.L.T) (frobW l) (GlobalTheory.ArtinSchreierWitt.main l).1
-        (GlobalTheory.ArtinSchreierWitt.main l).2.1
+    haveI := T.L.free
+    haveI := free_OL LL
+    exact as_two (O := ↥(OL LL)) (P := ↥T.L.T) (frobW l) (GlobalTheory.ArtinSchreierWitt.main l).1
+      (GlobalTheory.ArtinSchreierWitt.main l).2.1
 
 
 

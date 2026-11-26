@@ -390,8 +390,6 @@ section -- clump:auto
 open Formalism Formalism.BasicNotions Formalism.BasicNotions.Loc Formalism.WeaklyAdmissibleFiltrations TensorProduct PowerSeries GlobalTheory.Prism GlobalTheory.BK GlobalTheory.BKReal GlobalTheory.BKGal GlobalTheory.Per Matrix
 open scoped Formalism.Per
 
-set_option synthInstance.maxHeartbeats 400000
-set_option maxHeartbeats 1600000
 
 noncomputable section
 
@@ -918,8 +916,7 @@ theorem stable_EN {κ : Type} [Fintype κ] (Ξ : κ → ι → AhatE O K l e) (�
     have h2 : ∑ j, w j * Γ j i = ∑ k, φ (g k) * ∑ j, Ξ k j * Γ j i := by
       simp only [hw, Finset.sum_mul, Finset.mul_sum, mul_assoc]
       exact Finset.sum_comm
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h2, hw, map_sum, ← Finset.sum_add_distrib, Finset.mul_sum]
+    rw [h2, hw, map_sum, ← Finset.sum_add_distrib, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul, NHatE_algebraMap, map_mul]
     linear_combination (-(s * φ (g k))) * hΞ k i
@@ -933,8 +930,7 @@ theorem stable_EN {κ : Type} [Fintype κ] (Ξ : κ → ι → AhatE O K l e) (�
   have h5 := mul_derivation_pow (NHatE O K l e) s N
   rw [hν] at h4 h5
   have h6 : s ^ N * (s * ∑ j, w j * Γ j i) = s ^ p * φ (∑ j, x j * γ j i) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
+    rw [map_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [map_mul, hγ]
     linear_combination (-(s * Γ j i)) * hx' j
@@ -998,8 +994,7 @@ theorem grading [NeZero a] (P : PhiMod O K l e a ι) (hP : ∀ m ∈ P.M, P.EN m
     exact IsUnit.map (algebraMap K _) (IsUnit.mk0 _ (natCast_ne_zero' (K := K) l n.succ_ne_zero))
   · refine ⟨Ehat O K l e ^ N * ψ w ^ (α + p) * ∑ k, ψ (h k) * ξ (k, i), ?_⟩
     have hξ' (k) : φ (ξ (k, i)) = φ (Ehat O K l e) ^ α * Ξ k i := (hξ (k, i)).trans (by rw [map_pow])
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Pi.smul_apply, smul_eq_mul, map_mul, map_sum, map_pow, Finset.mul_sum, hξ']
+    simp only [Pi.smul_apply, smul_eq_mul, map_mul, map_sum, map_pow, Finset.mul_sum, hξ']
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [show ψ X = _ from hw, map_mul]
     ring
@@ -1109,8 +1104,7 @@ theorem not_next [NeZero a] (P : PhiMod O K l e a ι) (i : ℤ) {y : Vec K a ι}
   have h3 : P.hatTot y τ j = constPart P y τ j + φ (Ehat O K l e) *
       ∑ j', hat O l e (P.mx τ j j') * φ (∑ k, r k τ * toHat O K l e ⟨m k τ j', hm k τ j'⟩) := by
     rw [hatTot_eq_hsum P (xiExt_symm_mem P hy), constPart, hsum, hsum]
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [map_sum, Finset.mul_sum]
+    simp only [map_sum, Finset.mul_sum]
     rw [Finset.sum_comm, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun k _ => ?_
     have h4 : P.hatTot (xiVec P k) τ j =
@@ -1125,8 +1119,7 @@ theorem not_next [NeZero a] (P : PhiMod O K l e a ι) (i : ℤ) {y : Vec K a ι}
     ring
   have h5 : ∑ j', hat O l e (P.mx τ j j') * φ (∑ k, r k τ * toHat O K l e ⟨m k τ j', hm k τ j'⟩) =
       hat O l e (z τ j) + φ (Ehat O K l e) ^ p * φ (∑ j', μ (τ, j, j') * s τ j') := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [h2, map_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    rw [h2, map_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun j' _ => ?_
     have h6 : φ (μ (τ, j, j')) = φ (Ehat O K l e) ^ α * hat O l e (P.mx τ j j') :=
       (hμ (τ, j, j')).trans (by rw [map_pow])

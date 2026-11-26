@@ -268,9 +268,8 @@ theorem exists_hom (hcard : Module.finrank ℚ_[l] ↥(K0 K) ≤ Fintype.card ι
     rw [IsScalarTower.algebraMap_eq ℤ_[l] ℚ_[l] ↥(K0 K)]
     exact (algebraMap ℚ_[l] ↥(K0 K)).injective.comp (IsFractionRing.injective ℤ_[l] ℚ_[l]))
   have hmon := minpoly.monic hi
-  set_option synthInstance.maxHeartbeats 200000 in
-    refine exists_lift hu ((minpoly ℤ_[l] c).map (algebraMap ℤ_[l] ↥(OL LL))) (hmon.map _) ?_
-      (fun i => ?_) _ ?_
+  refine exists_lift hu ((minpoly ℤ_[l] c).map (algebraMap ℤ_[l] ↥(OL LL))) (hmon.map _) ?_
+    (fun i => ?_) _ ?_
   · rw [hmon.natDegree_map, ← hmon.natDegree_map (algebraMap ℤ_[l] ℚ_[l]),
       ← minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hi]
     exact (minpoly.natDegree_le c).trans hcard

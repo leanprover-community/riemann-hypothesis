@@ -59,8 +59,7 @@ theorem isCrys_restrict (T : LocTied l P AI) (hc : IsCrys (P.PD K) ρ) :
   rw [isCrys_iff_finrank] at hc ⊢
   refine le_antisymm h3 ?_
   let e := by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact Module.finBasisOfFinrankEq ↥(K0 K) _ hc
+    exact Module.finBasisOfFinrankEq ↥(K0 K) _ hc
   have hB := indepB (P.PD K) (fracInv_of_tied T K) ρ e e.linearIndependent
   let d : Fin (Module.finrank ℚ_[l] V) → ↥(DcrisK₀ (P.PD K') (ρ.comp (Subgroup.inclusion (GK_le h)))) :=
     fun i => ⟨e i, dcris_le h ρ (e i).2⟩
