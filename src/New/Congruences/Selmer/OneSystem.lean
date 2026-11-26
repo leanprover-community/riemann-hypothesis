@@ -68,10 +68,6 @@ for `q ≠ 0` the exponents are taken in the interval `[0, q)`. -/
 def universalChar (g : G) : MvPolynomial σ R :=
   ∏ j : σ, (1 + X j) ^ (h j g).toAdd.val
 
-lemma aeval_universalChar {A : Type*} [CommRing A] [Algebra R A] (x : σ → A) (g : G) :
-    aeval x (universalChar (R := R) h g) = ∏ j : σ, (1 + x j) ^ (h j g).toAdd.val := by
-  simp [universalChar]
-
 lemma eval_universalChar (x : σ → R) (g : G) :
     eval x (universalChar h g) = ∏ j : σ, (1 + x j) ^ (h j g).toAdd.val := by
   simp [universalChar]
@@ -82,7 +78,7 @@ lemma eval_universalChar (x : σ → R) (g : G) :
 lemma aeval_sub_one_universalChar [NeZero q] {A : Type} [CommRing A] [Algebra R A] {ζ : σ → A}
     (hζ : ∀ j : σ, ζ j ^ q = 1) (g : G) :
     aeval (fun j : σ ↦ ζ j - 1) (universalChar (R := R) h g) = pointChar h ζ hζ g := by
-  simp [aeval_universalChar]
+  simp [universalChar]
 
 variable {ℓ : ℕ} [ThePrime ℓ] {E ι O : Type} [Field E]
   [EmbeddedNumberField E] [NumberField.IsCMField E] [CommRing O]
