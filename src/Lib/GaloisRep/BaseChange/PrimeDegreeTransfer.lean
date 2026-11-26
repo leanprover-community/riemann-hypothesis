@@ -832,7 +832,8 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
       (fun u' ↦ X'_max (lift u')) (A := fun u' ↦ T' (.inr (lift u', i))) (fun _u' _x ↦ rfl)
       (Θ := fun u' ↦ Θ (.inr (lift u', i)))
       (fun u' v' ↦ Θ_twist (.inr (lift u', i)) (.inr (lift v', i))) ⟨u, hu_below⟩ ⟨U x, hU x⟩
-  exact (g_eig' (.inr (lift ⟨u, hu_below⟩, i))).trans (by rw [Θ_u, Θ_U])
+  exact (g_eig' (.inr (lift ⟨u, hu_below⟩, i))).trans
+    (congrArg (· • g.val) (Θ_u.trans Θ_U))
 
 /-- Base change in prime degree for definite U(n) along the step `E'/E` (`New.IsStep`), with `E'`
 containing a primitive 5040th root of unity. Let `f` be a form of weight `κ` over `E`, and `F`, `F'`
