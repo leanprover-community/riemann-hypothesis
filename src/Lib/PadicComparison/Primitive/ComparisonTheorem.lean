@@ -151,8 +151,6 @@ noncomputable def toGenericPoints [Algebra R OC]
         exact (mapGeneric_algebraMap ..).symm }
     (algPointsOf R R Y)
 
-set_option backward.isDefEq.respectTransparency false
-
 /-- Let `Ω` be a field in which `ℓ` is invertible and `D` a compared theory on tests over `Ω`
 (`New.Variety.ComparedTheory`). Then `D.IsFiniteLerayHirsch` (the classes `D.comparison` form a
 Leray–Hirsch basis and the total cohomology is finite) holds for `ℤ[X] = freeAb X` iff it holds for
@@ -175,7 +173,9 @@ lemma ComparedTheory.isFiniteLerayHirsch_freeAb_iff_relFreeAb {ℓ : ℕ} {Ω : 
     refine (zar (U := .whisker (Y := (offClosedFibre X).toFunctor) ⊥ _)
       fun _ y _ hm ↦ ?_).isCohomEquiv
     refine (hm.ne_top (eq_top_mono ?_ y.prop)).elim
-    simp only [IdealFamily.ofMaximalIdeal, IsLocalRing.maximalIdeal_eq_bot, Ideal.map_bot, bot_le]
+    simp only [IdealFamily.ofMaximalIdeal, IsLocalRing.maximalIdeal_eq_bot]
+    erw [Ideal.map_bot]
+    exact bot_le
   obtain ⟨w, h_exact⟩ := relFreeAb.shortExact (offClosedFibre X)
   exact h_ses ⟨_, _, w⟩ h_exact h_sub
 
@@ -289,8 +289,8 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
       simp [E, ← lof_eq_of (ZMod p)]
       -- on the summand `n`: base change sends `b i ⊗ x` to the push of `x` along `x ↦ b i ⊗ x`,
       -- and pushing along a map is composing with its class (`of_comp_homClass`)
-      simp only [lof_eq_of, of_comp_homClass, ← AddEquiv.coe_toAddMonoidHom, coe_congrAddEquiv,
-        DirectSum.map_of]
+      simp only [lof_eq_of, ← AddEquiv.coe_toAddMonoidHom, coe_congrAddEquiv, DirectSum.map_of]
+      erw [of_comp_homClass, of_comp_homClass]
       rfl
     -- Under `E` the Leray–Hirsch map is restriction along `genericTestOver Ω` followed by
     -- `c.coeffHom`.
@@ -300,11 +300,14 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
       ext i n x : 3
       refine (lerayHirsch_single ..).trans (.trans ?_ congr(mapThenComp _ _ $(hE i n x)).symm)
       -- unfold `mapThenComp`: restrict the composite along `genericTestOver Ω`, then compose
-      simp only [mapThenComp, AddMonoidHom.coe_comp, Function.comp_apply, AddMonoidHom.flip_apply]
-      rw [TotalH.map_comp_assoc, TotalH.map_comp_assoc]
-      simp_rw [map_homClass, ← homClass_comp]
+      simp only [mapThenComp, AddMonoidHom.coe_comp, Function.comp_apply]
+      erw [TotalH.map_comp_assoc, TotalH.map_comp_assoc]
+      erw [map_homClass, map_homClass, ← homClass_comp, ← homClass_comp]
       rfl
     -- Pull-back along the isomorphism `u` is bijective, and so is `E`.
+    have : IsIso (freeAbMap u.hom) := by
+      change IsIso (freeAb.map u.hom)
+      infer_instance
     erw [← bijective_totalH_iff_isBijective,
       (IsCohomEquiv.of_isIso _).bijective_pullbackAlong.of_comp_iff',
       ← E.bijective.of_comp_iff]
