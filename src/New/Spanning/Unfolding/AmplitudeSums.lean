@@ -308,10 +308,10 @@ lemma le_scaledBesselLengthProd_mul {γ : S.G E} {y : InfinitePlace E → 𝔰.G
     one_le_scaledBesselLengthProd _
   have h_left : ∀ v,
       (S.besselSystem v).besselFn .cut (y v) = (S.besselSystem v).besselFn .full (y v) :=
-    h_eq y fun h ↦ h_near (h.trans (le_mul_of_one_le_right (by linarith) h_one_z))
+    h_eq y fun h ↦ h_near (h.trans (le_mul_of_one_le_right (zero_le_one.trans h_one_y) h_one_z))
   have h_right : ∀ v, (S.besselSystem v).besselFn .cut (((S.ratToInf γ)⁻¹ * y) v) =
       (S.besselSystem v).besselFn .full (((S.ratToInf γ)⁻¹ * y) v) :=
-    h_eq _ fun h ↦ h_near (h.trans (le_mul_of_one_le_left (by linarith) h_one_y))
+    h_eq _ fun h ↦ h_near (h.trans (le_mul_of_one_le_left (zero_le_one.trans h_one_z) h_one_y))
   -- For the full kernel this gives equality; for the cut kernel there is nothing to prove.
   cases side with
   | full => exact h_ne (by simp only [besselKernel, besselFn, h_left, h_right])
