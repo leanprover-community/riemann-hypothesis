@@ -516,7 +516,7 @@ lemma sum_translate_eq_gluedDatum [hP : IsSplitLevel P N] (hS : IsSplitLevel S N
     simp [← sum_add_distrib, ← sum_neg_distrib, ← sum_sub_distrib, ← sub_add, mul_sub, mul_sum]
     grind [idem_mul_residueOverN]
   -- By `hb` the two supports agree.
-  all_goals grind
+  all_goals grind only
 
 open scoped Classical in
 /-- **The glued datum in any model.** Let `P` and `S` each hold one place of every conjugate pair
