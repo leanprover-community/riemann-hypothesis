@@ -828,21 +828,12 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
         ∏ a : Fin N, v (if a.val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val =
           exp (-((i + j : ℕ) : ℤ)) := by
       subst h_sum
-      rw [Fin.prod_univ_add]
-      have h1 : ∏ a : Fin m,
-          v (if (Fin.castAdd (i + j) a).val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val = 1 :=
-        Finset.prod_eq_one fun a _ ↦ by simp [a.isLt]
-      have h2 : ∏ a : Fin (i + j),
-          v (if (Fin.natAdd m a).val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val =
-            exp (-((i + j : ℕ) : ℤ)) := by
-        calc _ = ∏ _a : Fin (i + j), exp (-1) :=
-              Finset.prod_congr rfl fun a _ ↦ by simp [show ¬ m + a.val < m by omega, hϖ]
-          _ = exp (-1) ^ (i + j) := by simp
-          _ = exp (-((i + j : ℕ) : ℤ)) := by rw [← WithZero.exp_nsmul]; congr 1; simp
-      rw [h1, h2, one_mul]
-    have h_det_inv : g⁻¹.val.det = (g.val.det)⁻¹ :=
-      eq_inv_of_mul_eq_one_left (by
-        rw [← Matrix.det_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.det_one])
+      -- The first m diagonal factors are 1; each of the remaining i + j has valuation exp (-1).
+      have tail (a : Fin (i + j)) : ¬ m + a.val < m := by omega
+      simp [Fin.prod_univ_add, tail, hϖ, ← WithZero.exp_nsmul]
+    have h_det_inv : g⁻¹.val.det = (g.val.det)⁻¹ := by
+      simpa only [Matrix.GeneralLinearGroup.val_det_apply, Units.val_inv_eq_inv_val] using
+        congrArg Units.val (map_inv Matrix.GeneralLinearGroup.det g)
     have h_det :
         v (c⁻¹ * invTransposeGL g).val.det = exp (-((i + j : ℕ) : ℤ)) * (v g.val.det)⁻¹ := by
       rw [Units.val_mul, Matrix.det_mul, map_mul, hc, ← map_inv, coe_diagGL, Matrix.det_diagonal,
