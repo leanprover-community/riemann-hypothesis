@@ -174,6 +174,14 @@ lemma weylGauge_sum_le {α : Type*} {s : Finset α} {C : ℝ} {f : α → WeylIn
   have h_comp : ιₚ ∘ (∑ a ∈ s, f a) = ∑ a ∈ s, ιₚ ∘ f a := funext fun _ ↦ by simp
   simpa [weylGauge, h_comp, mulVec_sum] using norm_sum_le_of_forall_le_of_nonneg hC hf
 
+/-- The gauge satisfies the ultrametric inequality. -/
+lemma Rows.weylGauge_add_le_max {E V : Type} [Field E] [CMType E] [Fintype V] [DecidableEq V]
+    {p : ℕ} [Fact p.Prime] {κ : InfinitePlace E → ℕ → ℕ}
+    (g : Gf E V) {e : InfinitePlace E → ℤ} [PadicPlace p]
+    (ξ η : WeylIndex V κ → ℂ) :
+    weylGauge κ e g (ξ + η) ≤ max (weylGauge κ e g ξ) (weylGauge κ e g η) := by
+  simpa [weylGauge, Matrix.mulVec_add] using IsUltrametricDist.norm_add_le_max _ _
+
 /-! ### Integral forms -/
 
 /-- The algebraic form `φ` (with `φ.val (γ g)` equal to `γ` acting on `φ.val g` for rational `γ`) is
@@ -187,8 +195,8 @@ noncomputable def integralFormsAt (S : Submodule ℂ (AlgForm n κ e)) (d : Gf E
     Submodule embValRing (AlgForm (E := E) n κ e) :=
   S.restrictScalars embValRing ⊓
     { carrier := Set.ofPred (GaugeLe d 1)
-      add_mem' {φ ψ} hφ hψ g := by
-        simpa [weylGauge, mulVec_add] using (norm_add_le_max _ _).trans (max_le (hφ g) (hψ g))
+      add_mem' {φ ψ} hφ hψ g :=
+        (Rows.weylGauge_add_le_max (g * d) (φ.val g) (ψ.val g)).trans (max_le (hφ g) (hψ g))
       zero_mem' := by simp [GaugeLe, weylGauge]
       smul_mem' a φ hφ g := (weylGauge_smul (g * d) a).trans_le
         ((mul_le_of_le_one_left (norm_nonneg _) a.property).trans (hφ g)) }
@@ -851,12 +859,6 @@ open NumberField HasFiniteType Nat
 variable {E V : Type} [Field E] [CMType E] [Fintype V] [DecidableEq V] {p : ℕ} [Fact p.Prime]
   {κ : InfinitePlace E → ℕ → ℕ} {G : Type*} [Group G] [TopologicalSpace G] {Γ K : Subgroup G}
   [HasFiniteType Γ K] {B : ℝ} {f : G → WeylIndex V κ → ℂ}
-
-/-- The gauge satisfies the ultrametric inequality. -/
-lemma weylGauge_add_le_max (g : Gf E V) {e : InfinitePlace E → ℤ} [PadicPlace p]
-    (ξ η : WeylIndex V κ → ℂ) :
-    weylGauge κ e g (ξ + η) ≤ max (weylGauge κ e g ξ) (weylGauge κ e g η) := by
-  simpa [weylGauge, Matrix.mulVec_add] using IsUltrametricDist.norm_add_le_max _ _
 
 /-- If every `c • f x` has gauge at most one at `g` and `A` is divisible by the orders of all
 stabilisers `classAut Γ K x`, then `A * c` times the class sum of `f` has gauge at most one at
