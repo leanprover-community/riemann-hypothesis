@@ -182,7 +182,10 @@ lemma flipCoords_map_omega (hc : star (c : 𝔸f E) * c = -1) (V : Space E a t) 
     · simp [mul_comm, pairSign]
   -- So `conj_weilMultiplier_of_eq_neg` at `(onHom (g, h))⁻¹` is the required ratio, as inversion
   -- conjugates `weilMultiplier`.
-  simpa [Δ_transpose, det_onHom, weilMultiplier_inv]
+  simpa only [pairChar_apply, SubmonoidClass.coe_pow, ContinuousMonoidHom.pow_apply, Circle.coe_pow,
+    Δ_transpose, map_inv, weilMultiplier_inv, RingHomCompTriple.comp_apply, RingHom.id_apply,
+    det_onHom, inv_pow, _root_.mul_inv_rev, inv_inv, map_mul, map_pow, Circle.coe_mul,
+    Circle.coe_inv]
     using conj_weilMultiplier_of_eq_neg rfl (onHom (g, h))⁻¹.adeleMatrix_neg
 
 /-- The opposite space of the space V with matrix J and point x: it has matrix −J and the opposite
