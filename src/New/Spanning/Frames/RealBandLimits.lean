@@ -137,8 +137,6 @@ lemma IsCutBessel.inner_embedH_mul (hF : IsCutBessel F rep ρ s b W f)
   simp [(hF.isBesselFunction .cut).map_unitary_mul, Unitary.map_mem,
     ContinuousLinearMap.inner_map_map_of_mem_unitary, -Matrix.toEuclideanCLM_apply]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let `F` be a cut Bessel function and let `p`, `q` have the same entry at index `ϱ`, `q ϱ = p ϱ`.
 Let `σ` fix the hyperbolic basis vectors of floor below `ϱ`, with h(z, σ
 z) = `realFrameGram σ 𝔰.top 𝔰.top` equal to `p ϱ`. Then the inner product of

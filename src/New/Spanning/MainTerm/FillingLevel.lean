@@ -470,8 +470,6 @@ theorem exists_integralPlace : ∃ P : IntegralPlace (LocProd T), P.ψ = S.charO
       self_dual := h_dual
       modulus_eq_inv_genIndex := fun _ ↦ rfl }, rfl⟩
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 variable (S T) in
 /-- Let `(S.latticeMiddle (LocProd T)).G` be the unitary group, over the product of the completions
 at `T`, of `ϱ` hyperbolic planes plus the space `X₀ ⊕ E z` with its Gram matrix `S.latticeMiddle` in

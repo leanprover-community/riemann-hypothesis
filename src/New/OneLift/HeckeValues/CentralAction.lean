@@ -137,8 +137,6 @@ lemma LValueData.centralRep_mem_range_groupAlgAction (z : Gf D.E Unit)
     DescentPair.coe_formAction, coe_centralRep_apply, map_smul,
     algFormRep_scalarFin_apply_comm]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let `Y` be data for a theta lift from `U(1)` to the definite `U(n)` over the CM field `D.E`,
 with space of algebraic forms `Y.descentPair.FormV` on `U(n)`. Translation `Y.centralRep z` by a
 scalar `z ∈ U(1)(𝔸_f)` commutes with the operator

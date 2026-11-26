@@ -172,8 +172,6 @@ lemma termSize_sq_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling
   grw [hD]
   exact le_of_eq (by ring)
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let `S` be data of the filling theorem.
 Let `(γ, γ')` be a near pair over the classes `c`, `c'` and `d` the discriminant of its common
 lattice `S.pairLattice`. Let `η > 0`. If `(d η)²` is at most the product of the two gauges and the
