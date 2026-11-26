@@ -286,13 +286,6 @@ lemma New.exists_character_of_eigenvalues {A V : Type*} [CommGroup A] [AddCommGr
 
 variable {E : Type} [Field E] [CMType E]
 
-/-- The map `x ↦ x / star x` (`divStar`) from the finite ideles of `E` to the norm-one adeles, read
-as scalar matrices in `U(1)` (`scalarFin`), is continuous. -/
-lemma New.continuous_scalarFin_divStar :
-    Continuous fun x : (𝔸f E)ˣ ↦ scalarFin (Fin 1) (divStar x) :=
-  (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2 <|
-    .matrix_diagonal (continuous_pi fun _ ↦ continuous_subtypeVal.comp divStar.continuous)
-
 /-- At a split place `w`, the element `x / star x` of `U(1)` for the idele with component `x` at `w`
 and `1` elsewhere is the scalar matrix `x` embedded at `w`. -/
 lemma New.scalarFin_divStar_locIdele {w : FinPlace E} (hw : w.IsSplit) (x : (LocField w)ˣ) :
@@ -390,7 +383,8 @@ lemma New.GaloisRep.Attached.exists_det_eq_avatar {E : Type} [Field E] [CMType E
   have h_ker : (rightStabilizer f).comap z ≤ χ.ker := fun x hx ↦
     Units.ext (hχ x 1 ((funext hx).trans (one_smul ℂ f).symm))
   have h_open : IsOpen (χ.ker : Set (𝔸f E)ˣ) :=
-    Subgroup.isOpen_mono h_ker (hf.1.preimage continuous_scalarFin_divStar)
+    Subgroup.isOpen_mono h_ker (hf.1.preimage ((Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous_iff.2 <|
+      .matrix_diagonal (continuous_pi fun _ ↦ continuous_subtypeVal.comp divStar.continuous)))
   let m (σ : E →+* ℂ) : ℤ := (if σ = Φ (.mk σ) then 1 else -1) * κ (.mk σ)
   have h_type (x : Eˣ) : χ (principalIdele x) = ∏ σ : E →+* ℂ, σ x.val ^ (-m σ) := by
     rw [hχ _ _ (apply_mul_scalarFin_divStar_principalIdele hf x),
