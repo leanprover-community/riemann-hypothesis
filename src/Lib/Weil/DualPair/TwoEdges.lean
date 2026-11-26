@@ -226,15 +226,8 @@ lemma injective_arrowTensor :
   replace ht : arrowTensor t ((y ⊕ᵥ x') ∘ Equiv.sumProdDistrib ι ι'' ι') = 0 := by simp [ht]
   obtain ⟨S, rfl⟩ := t.exists_finset
   rw [← theta_rho] at ht ⊢
-  simp_all only [arrowTensor, arrowProduct, coe_comp, ContinuousLinearMap.comp_apply,
-    Function.comp_def, map_sum, map_tmul, subtype_apply, lift.tmul,
-    ContinuousLinearMap.toLinearMap₁₂_apply_apply_apply, Equiv.prodCongr_refl_refl,
-    Equiv.trans_refl, rho_boxProd, ← CoordChange.map_rho, Equiv.sumProdDistrib_symm_apply_left,
-    Equiv.sumProdDistrib_apply_left, Sum.elim_inl, Equiv.sumProdDistrib_symm_apply_right,
-    Equiv.sumProdDistrib_apply_right, Sum.elim_inr, ← Finset.mul_sum, domRestrict_apply,
-    ContinuousLinearMap.coe_coe, lsmul_apply, AddSubmonoidClass.coe_finsetSum, SetLike.val_smul,
-    map_smul, smul_eq_mul, ZeroMemClass.coe_zero, Space.zero_apply]
-  exact (mul_eq_zero.mp ht).resolve_left hz_ne
+  simp_all [Function.comp_def, ← Finset.mul_sum, arrowProduct, arrowTensor, rho_boxProd,
+    ← CoordChange.map_rho]
 
 lemma leftInverse_arrowTensor : arrowTensor.leftInverse (arrowTensor t) = t :=
   leftInverse_apply_of_inj (LinearMap.ker_eq_bot.mpr injective_arrowTensor) t
