@@ -146,28 +146,6 @@ def vacuumFn (x : n → 𝔸 E) : ℂ :=
       0
 
 omit [DecidableEq n] in
-open scoped Classical in
-/-- The phase of the vacuum is ψ_f(−¼ x_f*x_f): c₀ȷ/2 = (ȷ − 1)/4, and ψ_f does not see the skew
-part ȷ x_f*x_f/4. -/
-lemma vacuumFn_eq_exp_mul_ite (x : n → 𝔸 E) :
-    vacuumFn x =
-      Real.exp (-∑ i : n, ∑ w : InfinitePlace E, π * (Φ w j).im * ‖(x i).1 w‖ ^ 2) *
-        if ∀ i : n, α⁻¹.1 * (x i).2 ∈ Ô E then
-          (ψf E ((-4⁻¹ : E) * ∑ i : n, star (x i).2 * (x i).2) : ℂ)
-        else
-          0 := by
-  set r : 𝔸f E := ∑ i : n, star (x i).2 * (x i).2
-  have h_trace : 2⁻¹ * ((traceOne * j / 2 : E) + star (traceOne * j / 2)) = -4⁻¹ := by
-    have h_coeff : (traceOne * j / 2 : E) = (j - 1) / 4 := by
-      rw [traceOne]
-      field [j_ne_zero]
-    simp only [h_coeff, star_div₀, star_sub, star_j, star_one, star_ofNat]
-    ring
-  have h_phase : ψf E ((traceOne * j / 2 : E) * r) = ψf E ((-4⁻¹ : E) * r) := by
-    have h_real : star r = r := by simp [r, mul_comm]
-    rw [← ψf_inv_two_mul_add_star, ← h_trace, star_mul', h_real]
-    simp [mul_add, add_mul, mul_assoc]
-  rw [vacuumFn, h_phase]
 
 variable (E)
 

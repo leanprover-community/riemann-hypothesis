@@ -29,41 +29,6 @@ namespace New
 
 open Finset
 
-/-- The model case of the bound on colengths. In the free module on the monomials `z ^ α` of degree
-`a` in `k` variables, the span of the vectors `N ^ α_i • z ^ α` has index dividing
-`N ^ ∑_α α_i`, in the sense of `New.ColengthDvd`. -/
-lemma colengthDvd_span_pow_monomials {O : Type*} [CommRing O] [IsDomain O] [ValuationRing O] (N : O)
-    {k a : ℕ} (i : Fin k) :
-    ColengthDvd ⊤
-      (Submodule.span O (Set.range fun α : Monomials (Fin k) a ↦ Pi.single α (N ^ α.val i)))
-      (N ^ ∑ α : Monomials (Fin k) a, α.val i) := by
-  -- The diagonal matrix of the factors `N ^ α_i` carries `z ^ α` to `N ^ α_i • z ^ α`.
-  let A : Matrix (Monomials (Fin k) a) (Monomials (Fin k) a) O := .diagonal fun α ↦ N ^ α.1 i
-  refine ColengthDvd.of_det_dvd (A := A) (by simp [A, prod_pow_eq_pow_sum]) ?_
-  rintro _ ⟨v, rfl⟩
-  have h_sum : A.mulVecLin v = ∑ α, v α • Pi.single α (N ^ α.1 i) := funext fun β ↦ by
-    simp [A, Matrix.mulVec_diagonal, Finset.sum_apply, Pi.single_apply, mul_comm]
-  rw [h_sum]
-  exact Submodule.sum_mem _ fun α _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨α, rfl⟩)
-
-/-- The mean degree in one of `k` variables of the monomials of degree `a` is `a / k`, by symmetry
-in the variables. -/
-lemma mul_sum_monomials_apply {k a : ℕ} (i : Fin k) :
-    k * ∑ α : Monomials (Fin k) a, α.val i = a * Fintype.card (Monomials (Fin k) a) := by
-  -- Swapping `z_i` and `z_j` permutes the monomials and exchanges their exponents.
-  have h_swap (j : Fin k) :
-      ∑ α : Monomials (Fin k) a, α.1 j = ∑ α : Monomials (Fin k) a, α.1 i :=
-    have h_sum (α : Fin k →₀ ℕ) : ∑ x, Finsupp.equivMapDomain (Equiv.swap i j) α x = ∑ x, α x :=
-      Fintype.sum_equiv (Equiv.swap i j) _ _ fun x ↦ by simp
-    Fintype.sum_equiv ((Finsupp.equivCongrLeft (Equiv.swap i j)).subtypeEquiv fun α ↦ by
-      simp [h_sum]) _ _ fun α ↦ by simp
-  calc k * ∑ α : Monomials (Fin k) a, α.1 i
-      = ∑ j : Fin k, ∑ α : Monomials (Fin k) a, α.1 j := by
-        simp only [h_swap, sum_const, card_fin, smul_eq_mul]
-    _ = ∑ α : Monomials (Fin k) a, ∑ j, α.1 j := sum_comm
-    _ = a * Fintype.card (Monomials (Fin k) a) := by
-      simp [fun α : Monomials (Fin k) a ↦ (mem_finsuppAntidiag.1 α.2).1, mul_comm]
-
 end New
 
 namespace New.Data

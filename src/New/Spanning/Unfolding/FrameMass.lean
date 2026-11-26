@@ -88,24 +88,6 @@ where `b` is the weight of the data. -/
 lemma apply_deltaE_mem_Icc (v : D.Φ) : v (P.deltaE D.towerExp).val ∈ Set.Icc 2 D.b :=
   ⟨D.le_of_hasLogBound, D.le_of_hasLogBound⟩
 
-/-- At the infinite place `v`, let `ϖ = P.deltaE D.towerExp`. Write `|ϖ|_v = v ϖ` and let `b = D.b`
-be the scale of the data. Then the numbers `2 / |ϖ|_v` and `|ϖ|_v ^ (-1 / 2)` lie between `b⁻¹` and
-`1`. -/
-theorem two_div_and_inv_sqrt_deltaE_mem_Icc (v : D.Φ) :
-    2 / v (P.deltaE D.towerExp).val ∈ Set.Icc D.b⁻¹ 1 ∧
-      (√(v (P.deltaE D.towerExp).val))⁻¹ ∈ Set.Icc D.b⁻¹ 1 := by
-  obtain ⟨h_two, h_le⟩ : 2 ≤ v (P.deltaE D.towerExp).val ∧ v (P.deltaE D.towerExp).val ≤ D.b :=
-    D.apply_deltaE_mem_Icc v
-  set w : ℝ := v (P.deltaE D.towerExp).val
-  have hw_pos : 0 < w := two_pos.trans_le h_two
-  have h_one_le_sqrt : 1 ≤ √w := one_le_sqrt.2 (one_le_two.trans h_two)
-  have h_sqrt_le : √w ≤ D.b := (sqrt_le_left (hw_pos.le.trans h_le)).2 (by nlinarith)
-  refine ⟨⟨?_, (div_le_one hw_pos).2 h_two⟩, inv_anti₀ (sqrt_pos.2 hw_pos) h_sqrt_le,
-    inv_le_one_of_one_le₀ h_one_le_sqrt⟩
-  calc D.b⁻¹ ≤ w⁻¹ := inv_anti₀ hw_pos h_le
-    _ = 1 / w := inv_eq_one_div w
-    _ ≤ 2 / w := div_le_div_of_nonneg_right one_le_two hw_pos.le
-
 /-- The number `sph_l = (2π) ^ l / (|ϖ|_v ^ (l - 1 / 2) (l - 1)!)` at the infinite place `v`, where
 `ϖ` generates the different of `E`. For `l ≥ 1` it is the mass of the unit sphere of `ℂ ^ l` for
 the fibre measure `dy / d⟨y, y⟩`, when `ℂ` carries `2 / |ϖ|_v` and `ℝ` carries `|ϖ|_v ^ (-1 / 2)`
@@ -125,21 +107,6 @@ lemma unitSphereMass_pos (l : ℕ) (v : D.Φ) : 0 < D.unitSphereMass l v := by
 
 lemma frameMass_pos (v : D.Φ) : 0 < D.frameMass v :=
   mul_pos (pow_pos (mod_cast D.N_prime.pos) _) (prod_pos fun _ _ ↦ D.unitSphereMass_pos _ v)
-
-/-- The mass `sph_l` of the unit sphere of `ℂ ^ l` is at most one for `l ≥ 1`, at every infinite
-place `v`. This is a corollary of the size of the different. -/
-lemma one_le_inv_unitSphereMass {l : ℕ} (hl_pos : 1 ≤ l) (v : D.Φ) :
-    1 ≤ (D.unitSphereMass l v)⁻¹ := by
-  have hw_one : 1 ≤ v (P.deltaE D.towerExp).val := D.le_of_hasLogBound
-  have hw_lower : 2 * π ≤ √(v (P.deltaE D.towerExp).val) := D.le_of_hasLogBound
-  rw [unitSphereMass, inv_div, one_le_div (by positivity)]
-  set w : ℝ := v (P.deltaE D.towerExp).val
-  calc (2 * π) ^ l ≤ √w ^ l := by gcongr
-    _ = w ^ (1 / 2 * l : ℝ) := by rw [sqrt_eq_rpow, rpow_mul_natCast (by linarith)]
-    _ ≤ w ^ (l - 1 / 2 : ℝ) :=
-      rpow_le_rpow_of_exponent_le hw_one (by linarith [Nat.one_le_cast (α := ℝ).mpr hl_pos])
-    _ ≤ w ^ (l - 1 / 2 : ℝ) * (l - 1).factorial :=
-      le_mul_of_one_le_right (by positivity) (mod_cast (l - 1).factorial_pos)
 
 /-- For `l ≤ r` and every infinite place `v`, the number `sph_l` satisfies `sph_l⁻¹ ≤ x ^ (18 l)`.
 For `l ≥ 1` it is the mass of the unit sphere of `ℂ ^ l`; for `l = 0` the formula that defines it
@@ -172,31 +139,6 @@ lemma r_eq_k_add_two_mul_varrho_add_one : D.r = D.k + (2 * D.ϱ + 1) := by
 is the number of hyperbolic planes. -/
 lemma cast_card_Ico_k_r : ((Ico D.k D.r).card : ℝ) = 2 * D.ϱ + 1 := by
   simp [D.r_eq_k_add_two_mul_varrho_add_one]
-
-/-- The number `fr_v = N ^ k sph_{k+1} ⋯ sph_r` is at least `b ^ (-(ϱ + 1) r)` at every infinite
-place `v`. -/
-lemma inv_pow_le_frameMass (v : D.Φ) : (D.b ^ ((D.ϱ + 1) * D.r))⁻¹ ≤ D.frameMass v := by
-  -- Each of the `r - k = 2 ϱ + 1` sphere masses is at least `x ^ (-18 r)`, and `x ^ 36 ≤ b`.
-  have hx_one : 1 ≤ D.x := D.le_of_hasLogBound
-  have h_scale : D.x ^ 36 ≤ D.b := D.le_of_hasLogBound
-  have h_card : (Ico D.k D.r).card = 2 * D.ϱ + 1 := mod_cast D.cast_card_Ico_k_r
-  have h_factor (i : ℕ) (hi : i ∈ Ico D.k D.r) :
-      (D.x ^ (18 * D.r))⁻¹ ≤ D.unitSphereMass (i + 1) v := by
-    have hi_lt : i < D.r := (mem_Ico.mp hi).2
-    refine inv_le_of_inv_le₀ (D.unitSphereMass_pos (i + 1) v) ?_
-    calc (D.unitSphereMass (i + 1) v)⁻¹ ≤ D.x ^ (18 * (i + 1)) :=
-          D.inv_unitSphereMass_le_pow hi_lt v
-      _ ≤ D.x ^ (18 * D.r) := pow_le_pow_right₀ hx_one (Nat.mul_le_mul_left 18 hi_lt)
-  have h_exponent : 18 * D.r * (2 * D.ϱ + 1) ≤ 36 * ((D.ϱ + 1) * D.r) := by nlinarith
-  calc (D.b ^ ((D.ϱ + 1) * D.r))⁻¹ ≤ ((D.x ^ 36) ^ ((D.ϱ + 1) * D.r))⁻¹ := by gcongr
-    _ ≤ ((D.x ^ (18 * D.r)) ^ (2 * D.ϱ + 1))⁻¹ := by
-      rw [← pow_mul, ← pow_mul]
-      gcongr
-    _ = ∏ _i ∈ Ico D.k D.r, (D.x ^ (18 * D.r))⁻¹ := by rw [prod_const, h_card, inv_pow]
-    _ ≤ ∏ i ∈ Ico D.k D.r, D.unitSphereMass (i + 1) v :=
-      prod_le_prod₀ (fun _ _ ↦ by positivity) h_factor
-    _ ≤ D.frameMass v := le_mul_of_one_le_left
-      (prod_nonneg fun _ _ ↦ (D.unitSphereMass_pos _ v).le) (mod_cast pow_pos D.N_prime.pos _)
 
 /-- The logarithm of the product of the sphere masses `sph_{i+1}` over the `f` infinite places is
 `-f ((i + 1/2) log rd + log i! - (i + 1) log 2π)`, with `rd` the root discriminant of `E`. -/
