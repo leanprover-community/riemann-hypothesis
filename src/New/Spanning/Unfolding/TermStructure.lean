@@ -375,10 +375,9 @@ lemma HasCellRank.linkedX₀_eq_top {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellR
   rw [mem_linkedX₀, h_link]
   exact (mul_eq_zero_iff_left (right_ne_zero_of_mul_eq_one hζ)).1 hγy_z
 
-/-- Let `E` contain a primitive root of unity of order `5040`. If `γ` agrees and
-`gr(γ) = S.termDisc γ` vanishes, then the link of `γ` maps all of `X₀` into `X₀`, that is,
-`X₀^γ = X₀`. -/
-theorem CharsAgree.linkedX₀_eq_top [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ)
+/-- If `γ` agrees and `gr(γ) = S.termDisc γ` vanishes, then the link of `γ` maps all of `X₀`
+into `X₀`, that is, `X₀^γ = X₀`. -/
+theorem CharsAgree.linkedX₀_eq_top (h_agree : S.CharsAgree γ)
     (h_disc : S.termDisc γ = 0) : linkedX₀ γ = ⊤ :=
   h_agree.exists_hasCellRank h_disc |>.elim fun _ h_rank ↦ h_rank.linkedX₀_eq_top h_disc
 
