@@ -13,6 +13,7 @@ public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
 public import Lib.SiegelWeil.Mass
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Adelic.Unitary.RationalPoints
+import TauCeti.Analysis.LaplaceTransform.Elementary
 import Lib.Analytic.EntireLFunction
 import Lib.Shimura.Uniformisation.HolomorphicFamilies
 import Lib.SiegelWeil.Formula.WeilRange
@@ -569,13 +570,15 @@ e^{2πixz} (1 + 2πiz)^{−(k+1)} equals x^k e^{−x} / k!. -/
 lemma New.integral_fourierChar_mul_inv_pow {k : ℕ} (hk : 1 ≤ k) {x : ℝ} (hx : 0 ≤ x) :
     ∫ z : ℝ, 𝐞 (x * z) * ((1 + 2 * π * Complex.I * z : ℂ) ^ (k + 1))⁻¹ =
       x ^ k * cexp (-x) / k ! := by
-  -- The function `g` is the Fourier transform of the density `p` (`laplace_pow`); invert.
+  -- The function `g` is the Fourier transform of the density `p` (`TauCeti.hasLaplace_pow`); invert.
   let g (z : ℝ) : ℂ := ((1 + 2 * π * .I * z) ^ (k + 1))⁻¹
   let p (t : ℝ) : ℂ := toNNReal t ^ k * cexp (-t) / k.factorial
   have hg : g = 𝓕 p := by
     ext z
     calc g z = (∫ t : ℝ in Set.Ioi 0, (t : ℂ) ^ k * cexp (-(1 + 2 * π * .I * z) * t)) / k ! := by
-          rw [laplace_pow (by simp) k, div_div_cancel_left₀ (mod_cast k.factorial_ne_zero)]
+          have h := (TauCeti.hasLaplace_pow k (s := 1 + 2 * π * .I * z) (by simp)).integral_eq
+          simp only [smul_eq_mul, mul_comm (cexp _)] at h
+          rw [h, div_div_cancel_left₀ (mod_cast k.factorial_ne_zero)]
       _ = 𝓕 p z := by
           rw [fourier_eq', ← integral_div, ← integral_indicator measurableSet_Ioi]
           congr with t

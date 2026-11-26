@@ -1,7 +1,6 @@
 module
 
 import TauCeti.Analysis.Contour.Residue.LogDeriv
-import TauCeti.Analysis.LaplaceTransform.Elementary
 public import Mathlib.Analysis.Meromorphic.Basic
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.NumberTheory.LSeries.Nonvanishing
@@ -109,11 +108,6 @@ lemma integrableOn_laplace_of_abs_le {C : ℝ} (hE : Measurable E)
     _ = C * ((2 - s.re) * v).exp := by
       rw [mul_assoc, ← Real.exp_add]
       ring_nf
-
-/-- For `re s > 0`, the Laplace transform of `t ^ k` at `s` is `k! / s ^ (k + 1)`. -/
-lemma laplace_pow {s : ℂ} (hs : 0 < s.re) (k : ℕ) :
-    ∫ t : ℝ in Ioi 0, t ^ k * Complex.exp (-s * t) = k ! / s ^ (k + 1) := by
-  simpa only [smul_eq_mul, mul_comm] using (TauCeti.hasLaplace_pow k hs).integral_eq
 
 /-! ### The logarithmic derivative of a Dirichlet L-function -/
 

@@ -5,6 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.MeasureTheory.Function.Floor
 import Mathlib.NumberTheory.LSeries.Linearity
 import Mathlib.NumberTheory.LSeries.SumCoeff
+import TauCeti.Analysis.LaplaceTransform.Elementary
 public import Lib.Analytic.EntireLFunction
 
 /-!
@@ -323,7 +324,8 @@ lemma integral_primeRemainder (hd : d ≠ 2) (h_cop : q.Coprime d) {s : ℂ} (hs
   have hs_sub_ne : s - 1 ≠ 0 := sub_ne_zero.2 (ne_of_apply_ne re hs_one.ne')
   have hs_ne : s ≠ 0 := ne_zero_of_re_pos (by linarith)
   have hP_val (k : ℕ) : ∫ v in Set.Ioi 0, P k v = k ! / (s - 1) ^ (k + 1) := by
-    simpa only [neg_sub] using laplace_pow (s := s - 1) (by simpa using hs_one) k
+    simpa only [smul_eq_mul, mul_comm (cexp _), neg_sub, P] using
+      (TauCeti.hasLaplace_pow k (s := s - 1) (by simpa using hs_one)).integral_eq
   have hP_int (k : ℕ) : IntegrableOn (P k) (Set.Ioi 0) :=
     -- The integral of a function that is not integrable is `0`.
     .of_integral_ne_zero (by simp [hP_val, k.factorial_ne_zero, hs_sub_ne])

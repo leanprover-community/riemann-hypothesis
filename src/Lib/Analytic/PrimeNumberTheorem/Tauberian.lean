@@ -6,6 +6,7 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.HalfPlane
 import Mathlib.Order.CompletePartialOrder
 public import Lib.Speed
+import TauCeti.Analysis.LaplaceTransform.Elementary
 import Lib.Analytic.EntireLFunction
 
 /-!
@@ -91,8 +92,10 @@ integrable there, with integral `j! / H ^ (j + 1)`. -/
 lemma integrableOn_and_integral_pow_mul_exp_neg_mul {H : ℝ} (hH : 0 < H) (j : ℕ) :
     IntegrableOn (fun v : ℝ ↦ v ^ j * rexp (-H * v)) (Ioi 0) ∧
       ∫ v in Ioi (0 : ℝ), v ^ j * rexp (-H * v) = j ! / H ^ (j + 1) := by
-  have h_eq : ∫ v in Ioi (0 : ℝ), v ^ j * rexp (-H * v) = j ! / H ^ (j + 1) :=
-    mod_cast laplace_pow (s := H) (by simpa) j
+  have h_eq : ∫ v in Ioi (0 : ℝ), v ^ j * rexp (-H * v) = j ! / H ^ (j + 1) := by
+    have h := (TauCeti.hasLaplace_pow j (s := H) (by simpa)).integral_eq
+    simp only [smul_eq_mul, mul_comm (cexp _)] at h
+    exact_mod_cast h
   exact ⟨.of_integral_ne_zero (h_eq.trans_ne (by positivity)), h_eq⟩
 
 /-- For `H > 0` and the mean `u = (k + 1) / H` of the Gamma density
