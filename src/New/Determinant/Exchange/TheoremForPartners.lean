@@ -126,13 +126,6 @@ lemma IsSchwartzVector.adjointDatum {y : PairFock E u s} (hy : IsSchwartzVector 
         fun x ↦ (1 + ‖x‖ₑ) ^ N * ‖y x‖ₑ
     _ ≠ ⊤ := hy N
 
-/-- `New.G.neg` carries the rational points of `U` onto those of the opposite space
-`U⁻ = flipSpace U`. -/
-lemma neg_mem_flipSpace_Gamma_iff (U : Space E b u) (g : G E u) :
-    G.neg g ∈ (flipSpace U).Γ ↔ g ∈ U.Γ := by
-  simp [flipSpace, Space.mem_Gamma_iff_range, ← map_inv, ← smul_one_eq_diagonal, ← mul_assoc,
-    ← star_mul]
-
 omit [DecidableEq r] in
 /-- Multiplying the argument by a unit `ε` of `O` divides the second of two matched functions by
 `χ ε ^ card b`, the value of `χ` at the determinant of the scalar matrix `ε` of size `b`. -/
@@ -229,7 +222,9 @@ lemma exists_mul_thetaSmall_adjointDatum_eq_mul_integral (W : Space E n s) (U : 
   have h_neg (F : G E (-u) → ℂ) :
       ∫ h : G E (-u), F h ∂(flipSpace U).quotMeasure =
         ∫ h : G E u, F (G.neg h) ∂U.quotMeasure :=
-    (isForm_neg_iff_and_integral_neg U (flipSpace U) (neg_mem_flipSpace_Gamma_iff U)).2 F
+    (isForm_neg_iff_and_integral_neg U (flipSpace U) fun g ↦ by
+      simp [flipSpace, Space.mem_Gamma_iff_range, ← map_inv, ← smul_one_eq_diagonal, ← mul_assoc,
+        ← star_mul]).2 F
   rw [thetaSmall, thetaIntegral, h_datum Φ Ψ hΨ hΦΨ, h_neg, ← integral_const_mul,
     ← integral_const_mul]
   congr with h
