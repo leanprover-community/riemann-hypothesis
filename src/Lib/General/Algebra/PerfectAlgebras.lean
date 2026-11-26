@@ -306,6 +306,7 @@ lemma exists_injective_algHom_perfect (hp : (p : S) = 0) (k : Type) [Field k] [A
   obtain ⟨n, hn⟩ := h_ker u 0 (by rw [hu, map_zero])
   exact eq_zero_of_pow_eq_zero (n := p ^ n) (by simpa [ne] using hn)
 
+omit [ThePrime p] in
 lemma bijective_pow_prime_pow (A : PerfectAlg p S) (n : ℕ) : Bijective fun x : A.obj ↦ x ^ p ^ n :=
   (A.property.pow _ p n).bijective_frobenius
 
