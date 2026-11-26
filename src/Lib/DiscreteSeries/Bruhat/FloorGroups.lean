@@ -326,7 +326,6 @@ lemma mem_partialUnitriangularGroup_succ_iff (hs : s ∈ floorGroup b) :
     · -- A row of level below `b` has floor below `b`, so there `s` agrees with `1`.
       have hi_lt : level i < b := not_le.1 (by rwa [level_besselFrame] at hi)
       have h_cases := floorOf_level_cases i
-      have hb_le : b.val ≤ 𝔰.ϱ := b.is_le
       obtain ⟨h_low, h_pair⟩ : floorOf i < b ∧ floorOf i < 𝔰.ϱ := ⟨by lia, by lia⟩
       exact floorGroup_apply_row hs i _ h_low h_pair
   · by_cases h_floor : floorOf j < b
@@ -447,7 +446,6 @@ lemma partialUnitriangularGroup_inf_floorGroup_last :
     g ∈ partialUnitriangularGroup l :=
   mem_partialUnitriangularGroup.2 fun i j _ hj ↦ mem_floorGroup.1 hg i j <| by
     have := floorOf_level_cases j
-    have : 𝔰.ϱ < 𝔰.n := Nat.lt_succ_self _
     rcases hj with ⟨h1, h2⟩ | hn <;> lia
 
 /-- The fixer `H_l` of the floors below `l` meets the unitriangular group `𝒩_{<j}` of the floors
@@ -475,7 +473,6 @@ lemma floorUnipotent_superdiag_eq_zero (a : Fin 𝔰.ϱ) (hs : s ∈ floorUnipot
   · -- Both indices are given the middle level `ϱ`.
     refine mem_unipotentBelow.1 h_unipotent _ _ ?_
     simp only [floorOf_besselFrame, level_besselFrame, Fin.val_castSucc, Fin.val_succ]
-    have := a.is_lt
     split_ifs <;> lia
 
 /-! ### Conjugation and projections -/
@@ -635,7 +632,6 @@ lemma floorGroup_apply_besselFrame (hσ : σ ∈ floorGroup b)
         one_apply_ne (by rintro rfl; exact hi hk),
         zero_mul, zero_mul]
     · have hk_cases := floorOf_level_cases k
-      have hb_le : b.val ≤ 𝔰.ϱ := b.is_le
       have := level_besselFrame b
       rw [mem_partialUnitriangularGroup.1 hs k _ (by lia)
         (.inl ⟨by simp only [floorOf_besselFrame, lt_add_one],
@@ -965,7 +961,7 @@ lemma unipotentBelow_mulVec_apply (hg : g ∈ unipotentBelow j)
   refine Finset.sum_congr rfl fun k _ ↦ ?_
   change g.val i k * v k = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i k * v k
   have h_key_i : 𝔰.ϱ ≤ if floorOf i < j then level i else 𝔰.ϱ := by
-    have := floorOf_level_cases i; split_ifs <;> lia
+    split_ifs <;> lia
   obtain hk_le | ⟨b, rfl, hkb⟩ := level_le_or_exists_eq_eStar k
   · have h_le : (if floorOf k < j then level k else 𝔰.ϱ) ≤
         if floorOf i < j then level i else 𝔰.ϱ := by split_ifs <;> lia
@@ -1195,7 +1191,6 @@ lemma simpleRootSum_mul (hh : h ∈ besselS) (hu : u ∈ besselS) :
     dsimp only
     by_cases hz : BesselIndex.level z ≤ i.val
     · have h_cases := floorOf_level_cases z
-      have hi := i.is_lt
       rw [mem_partialUnitriangularGroup.1 hh x z ((level_besselFrame i.castSucc).symm ▸ hz)
         (.inl ⟨by lia, by lia⟩), one_apply_ne hzx.symm, zero_mul]
     · have h_col : u.val z y = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) z y :=
