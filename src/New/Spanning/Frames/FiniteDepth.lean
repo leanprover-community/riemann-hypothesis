@@ -16,8 +16,6 @@ losses are powers of `Γ.loss = 2 / modulus α`.
 
 ## Main definitions and results
 
-* `New.Floors.IntegralPlace.IsLargeLatticeData.exists_ideal_depth_eq`: at a near point the products
-  with the stable vectors form an ideal of `R`, and the depth is its index.
 * `New.Floors.IntegralPlace.IsLargeLatticeData.prod_mem_of_formMajorant_ne_zero`: the forms vanish
   unless the leading products of both heads are integral.
 * `New.Floors.IntegralPlace.IsLargeLatticeData.exists_gauge_of_formMajorant_ne_zero`: a scale
@@ -219,25 +217,15 @@ theorem prod_mem_of_formMajorant_ne_zero (Z : F.IntermediateGroup) {j : ℕ}
   -- Where the integrand is not zero, the frames `y`, `y * x` and their translates by the inverses
   -- of the Weyl elements of `p` and of `q` respectively are near at `j`.
   obtain ⟨y, -, hy⟩ := exists_ne_zero_of_formMajorant_ne_zero Z hx
-  obtain ⟨σ, hσ, h_first⟩ : ∃ σ ∈ floorGroup j,
-      ⟪Z.besselVector (σ * y), Z.besselVector (1 * (σ * (y * x)))⟫_ℂ ≠ 0 :=
-    exists_ne_zero_of_pivotL1Norm_ne_zero (left_ne_zero_of_mul hy)
-  obtain ⟨τ, hτ, h_second⟩ : ∃ τ ∈ floorGroup j,
-      ⟪Z.besselVector (τ * ((weylElem j p)⁻¹ * y)),
-        Z.besselVector (weylRatio j p q * (τ * ((weylElem j p)⁻¹ * y * x)))⟫_ℂ ≠ 0 :=
-    exists_ne_zero_of_pivotL1Norm_ne_zero (right_ne_zero_of_mul hy)
-  have h_near {ρ z : T.G} (hρ : ρ ∈ floorGroup j) (hz : Z.besselVector (ρ * z) ≠ 0) :
-      F.IsNear j z :=
-    ((isCut_besselVector Z).isNear_of_ne_zero hz).of_floorGroup_mul hρ le_rfl
-  have h_pair {ρ z z' : T.G} (hρ : ρ ∈ floorGroup j)
-      (hz : ⟪Z.besselVector (ρ * z), Z.besselVector (ρ * z')⟫_ℂ ≠ 0) :
-      F.IsNear j z ∧ F.IsNear j z' :=
-    ⟨h_near hρ fun h_zero ↦ hz (by rw [h_zero, inner_zero_left]),
-      h_near hρ fun h_zero ↦ hz (by rw [h_zero, inner_zero_right])⟩
-  obtain ⟨h_y, h_yx⟩ : F.IsNear j y ∧ F.IsNear j (y * x) := h_pair hσ (by simpa using h_first)
-  obtain ⟨h_py, h_qyx⟩ :
-      F.IsNear j ((weylElem j p)⁻¹ * y) ∧ F.IsNear j ((weylElem j q)⁻¹ * (y * x)) :=
-    h_pair hτ (by simpa [weylRatio, mul_assoc, ← (weylElem_mul_left_comm hτ).2] using h_second)
+  have cut := isCut_besselVector Z
+  obtain ⟨h_y, h_yx⟩ : F.IsNear j y ∧ F.IsNear j (y * x) := by
+    simpa using cut.isNear_pair_of_pivot_ne_zero (d := 1) (by simp) (left_ne_zero_of_mul hy)
+      (ρ := 1) (one_mem _)
+  obtain ⟨h_py, h_qyx⟩ : F.IsNear j ((weylElem j p)⁻¹ * y) ∧
+      F.IsNear j ((weylElem j q)⁻¹ * (y * x)) := by
+    simpa [weylRatio, mul_assoc] using cut.isNear_pair_of_pivot_ne_zero
+      (by intro τ hτ; simp [weylRatio, mul_assoc, weylElem_mul_left_comm hτ])
+      (right_ne_zero_of_mul hy) (ρ := 1) (one_mem _)
   -- In the gauge of scale `1` every size means integral.
   have h_minor {r : ℕ → Aˣ} {z : T.G} (hz : F.IsNear j z)
       (hrz : F.IsNear j ((weylElem j r)⁻¹ * z)) :
@@ -362,16 +350,16 @@ theorem exists_gauge_of_formMajorant_ne_zero {F : PlaceData ι T (m + 1)} [h : I
   let Γ : Gauge F := h.gauge α hα_mem hα_star
   have h_size (z : A) : z ∈ Γ.ofSize 1 ↔ α.val * z ∈ integers := by simp [Γ]
   -- A unit that divides `β` or `γ` divides `α`, and so does `g`.
-  have h_dvd_left (u : Aˣ) (hu : (β / u).val ∈ integers) : α.val * u⁻¹.val ∈ integers := by
-    have h_quot : α * u⁻¹ = F.levelUnit * star (β * γ) * γ * (β / u) := by
-      simp only [α, div_eq_mul_inv, mul_assoc, mul_left_comm]
+  have h_dvd (v w u : Aˣ) (hvw : β * γ = v * w)
+      (hw : w.val ∈ integers) (hu : (v / u).val ∈ integers) :
+      α.val * u⁻¹.val ∈ integers := by
+    have h_quot : α * u⁻¹ = F.levelUnit * star (β * γ) * w * (v / u) := by
+      rw [show α = F.levelUnit * star (β * γ) * (β * γ) by simp [α, mul_assoc], hvw]
+      simp [div_eq_mul_inv, mul_assoc, mul_left_comm]
     rw [← Units.val_mul, h_quot]
-    exact mul_mem (mul_mem (mul_mem hg h_star) hγ) hu
-  have h_dvd_right (u : Aˣ) (hu : (γ / u).val ∈ integers) : α.val * u⁻¹.val ∈ integers := by
-    have h_quot : α * u⁻¹ = F.levelUnit * star (β * γ) * β * (γ / u) := by
-      simp only [α, div_eq_mul_inv, mul_assoc]
-    rw [← Units.val_mul, h_quot]
-    exact mul_mem (mul_mem (mul_mem hg h_star) hβ) hu
+    exact mul_mem (mul_mem (mul_mem hg h_star) hw) hu
+  have h_dvd_left (u : Aˣ) := h_dvd β γ u rfl hγ
+  have h_dvd_right (u : Aˣ) := h_dvd γ β u (mul_comm β γ) hβ
   have h_dvd_g : α.val * F.levelUnit⁻¹.val ∈ integers := by
     have h_quot : α * F.levelUnit⁻¹ = star (β * γ) * β * γ := by
       rw [mul_comm]
@@ -491,7 +479,7 @@ theorem exists_volume_stableProducts_le {F : PlaceData ι T (m + 1)} [h : IsLarg
   -- `Gauge.hasMatrixSize_sub_one_of_stableProducts` the matrix `(x - 1) / g` has size `99 * 𝔰.n`.
   have h_scale : (α ^ (10 * 𝔰.n) * C).val ∈ integers := mul_mem (pow_mem hα_mem _) hC
   let Γ' : Gauge F :=
-    h.gauge (α ^ (10 * 𝔰.n) * C) h_scale (by simp [hα_star, hC_star, mul_comm])
+    h.gauge (α ^ (10 * 𝔰.n) * C) h_scale (by simp [hα_star, hC_star])
   have h_subset : Γ.ofSize (10 * 𝔰.n) ⊆ Γ'.ofSize 1 := by
     intro b hb
     have hb_int : α.val ^ (10 * 𝔰.n) * b ∈ integers := by simpa [hΓ] using hb

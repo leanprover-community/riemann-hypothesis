@@ -20,14 +20,14 @@ git = "https://github.com/leanprover-community/mathlib4"
 rev = "31ce06eaadf4a200c0e1407c5f10953cf606b8f8"
 
 # Added for Tau Ceti (see CACHE.md): https://github.com/TauCetiProject/TauCeti at a commit of its
-# main branch (d9924582, 26 Nov 2026) whose cache Tau Ceti has published, on the same Lean and
+# main branch (6d810e58, 26 Nov 2026) whose cache Tau Ceti has published, on the same Lean and
 # Mathlib as its tag v4.37.0-rc1. Its cached oleans are only usable if it was built against the
 # Mathlib commit above, so the two pins move together; `lake exe cache get` checks this
 # (scripts/tauceti-cache-get.py).
 [[require]]
 name = "TauCeti"
 git = "https://github.com/TauCetiProject/TauCeti"
-rev = "d99245820701158b6963b6129926b5e130c9314a"
+rev = "6d810e58e90dc1a8f89e5cb6056ee36c26da67d3"
 
 # The rest of this file, up to the next "Added" comment, is unchanged from grh-lean commit 72fead1.
 

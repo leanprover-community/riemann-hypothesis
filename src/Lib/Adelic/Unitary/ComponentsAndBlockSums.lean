@@ -295,8 +295,10 @@ variable {S : Finset (FinPlace E)} (hS : ∀ w ∈ S, star w ∉ S)
 and `1` off `S ∪ S̄`. -/
 def ofSplitPlaces : (∀ w : S, GL n (LocField w.val)) →* Gf E n :=
   -- the factors commute: at each place one of the two is trivial
-  noncommPiCoprod (fun w : S ↦ ofSplitPlace (n := n) (w := w.val) (by grind)) fun v w hvw g h ↦
-    commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn _ _) (by simp (disch := grind))
+  noncommPiCoprod (fun w : S ↦ ofSplitPlace (n := n) (w := w.val) (by grind)) <| by
+    intro v w hvw g h
+    exact commute_supportedOn_trivialOn (ofSplitPlace_mem_supportedOn _ _)
+      (by simp (disch := grind))
 
 /-- For a finite set `S` of places of the CM field `E` disjoint from `S̄` and a family
 `g w ∈ GL_n(E_w)` for `w` in `S`, the component at `w ∈ S` of the finite adelic unitary element
@@ -311,9 +313,8 @@ lemma atPlace_ofSplitPlaces (g : (i : S) → GL n (LocField (i : FinPlace E))) (
   have h_other : ∀ v ∈ (Finset.univ : Finset S).erase w,
       (ofSplitPlace (n := n) (h_split v) (g v)).atPlace w = 1 :=
     fun v hv ↦ atPlace_ofSplitPlace_of_ne (h_split v) (g v) (by grind) (by grind)
-  -- `erw`: the commutation proof in `ofSplitPlaces` has a type equal to `Pairwise …` only up to
-  -- unfolding `Pairwise`, so `rw` does not find the pattern
-  erw [noncommPiCoprod_apply, ← Finset.mul_noncommProd_erase (a := w) (h := Finset.mem_univ w)]
+  rw [ofSplitPlaces, noncommPiCoprod_apply,
+    ← Finset.mul_noncommProd_erase (a := w) (h := Finset.mem_univ w)]
   simp only [map_mul, atPlace_ofSplitPlace, mul_eq_left]
   exact (Gf.atPlace (w : FinPlace E)).ker.noncommProd_mem _ h_other
 
@@ -504,7 +505,7 @@ variable [HasPrimitiveRoot5040 E]
 def Weil.normNegOne {E : Type*} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] :
     (Ô E)ˣ :=
   have h_norm := exists_unit_star_mul_self_eq (u := -1) (by simp) (by simp)
-  Units.mkOfMulEqOne h_norm.choose (-star h_norm.choose.1) (by
+  Units.mkOfMulEqOne h_norm.choose (-star h_norm.choose.val) (by
     ext1
     rw [mul_neg]
     change -(h_norm.choose.val.val * star h_norm.choose.val.val) = (1 : 𝔸f E)
@@ -574,8 +575,8 @@ def neg : Space E n (-s) where
 /-- For a space (J, x) and g in G, the space (J, xg): the same matrix with the point moved by g. -/
 def move : Space E n s where
   J := V.J
-  x := V.x * g.toUnitary.1
-  gram_point := gram_mul_of_gram_eq V.gram_point (mem_unitaryGroupOf_iff.1 g.toUnitary.2)
+  x := V.x * g.toUnitary.val
+  gram_point := gram_mul_of_gram_eq V.gram_point (mem_unitaryGroupOf_iff.1 g.toUnitary.property)
 
 attribute [simps J] signedSpace sum reindex neg move
 

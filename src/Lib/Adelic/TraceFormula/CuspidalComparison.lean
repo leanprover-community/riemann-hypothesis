@@ -1,6 +1,5 @@
 module
 
-public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
 public import Lib.Adelic.TraceFormula.LevelCut
 public import Lib.Adelic.TraceFormula.TraceComparison
 
@@ -80,10 +79,10 @@ theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ c
     (h_cusp : IsCuspidalAt hw (convIndicator hK.isOpen hK.isCompact a))
     {T : End ℂ (levelSpace (V.formRep (typeKernel l s)) K)}
     (hT : ∀ y : levelSpace (V.formRep (typeKernel l s)) K,
-      (T y).1 = (V.formRep (typeKernel l s)).asAlgebraHom a y.1)
+      (T y).val = (V.formRep (typeKernel l s)).asAlgebraHom a y.val)
     {T' : End ℂ (levelSpace (V'.formRep (typeKernel l s')) K)}
     (hT' : ∀ y : levelSpace (V'.formRep (typeKernel l s')) K,
-      (T' y).1 = (V'.formRep (typeKernel l s')).asAlgebraHom a y.1) :
+      (T' y).val = (V'.formRep (typeKernel l s')).asAlgebraHom a y.val) :
     trace ℂ (levelSpace (V.formRep (typeKernel l s)) K) T =
       trace ℂ (levelSpace (V'.formRep (typeKernel l s')) K) T' := by
   -- Cut the level at an auxiliary split place `v` down to the stabiliser of a line. There the
@@ -92,9 +91,9 @@ theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ c
   obtain ⟨v, hv, hv_ne, h_max, h_int⟩ := exists_auxiliary_place hK.isOpen a w
   obtain ⟨i⟩ : Nonempty n := inferInstance
   let K' : OpenSubgroup (Gf E n) := ⟨cutLevel K v (lineStabilizer v i), IsLevel.isOpen⟩
-  have : Module.Finite ℂ (levelSpace (V.formRep (typeKernel l s)) K'.1) :=
+  have : Module.Finite ℂ (levelSpace (V.formRep (typeKernel l s)) K'.toSubgroup) :=
     V.finite_levelSpace (isCuspKernel_typeKernel h_gap) K'
-  have : Module.Finite ℂ (levelSpace (V'.formRep (typeKernel l s')) K'.1) :=
+  have : Module.Finite ℂ (levelSpace (V'.formRep (typeKernel l s')) K'.toSubgroup) :=
     V'.finite_levelSpace (isCuspKernel_typeKernel h_gap') K'
   refine trace_eq_of_trace_cutLevel_eq hv h_max i V.inner_formRep V'.inner_formRep ha h_int
     (fun j m S S' hS hS' ↦ ?_) hT hT'

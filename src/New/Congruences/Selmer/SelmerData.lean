@@ -13,6 +13,8 @@ A lattice `T` is given by matrices `ρ g` over `O`, and `W = (O / a) ^ n` is its
 with `ζ_* ^ 2 - 1` a unit. A class in `H¹(E, W)` is identified with its cocycle that vanishes at
 `γ_*`.
 
+* `New.Selmer.finite_selmerModule`: for finite `S` and `ρ` locally constant modulo `ℓ ^ M`, the
+  Selmer module with coefficients in a finite `O / a`, `a ∣ ℓ ^ M`, is finite.
 * `New.Selmer.SelmerDatum`: a lattice with modules `Z_w` of local cocycles above `ℓ`;
   `New.Selmer.SelmerDatum.β` is the sum of a global term and local terms.
 * `New.Selmer.SelmerDatum.localRelations`,
@@ -46,6 +48,38 @@ See `New.Congruences.Selmer.Descent` for related work.
 noncomputable section
 
 namespace New.Selmer
+
+section Finite
+
+open Module Matrix.Module
+
+variable {E n O : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n] [CommRing O]
+  {ℓ M : ℕ} {ρ : Gal(Ω/E) →* Matrix n n O} {S : Set (FinPlace E)}
+
+/-- Let `E` be a number field embedded in the algebraic closure `Ω` of `ℚ`, let `ρ` be a
+representation of `Gal(Ω/E)` by matrices over `O` that is locally constant modulo `ℓ ^ M`, and let
+`S` be a finite set of primes of `E`. Let `a ∣ ℓ ^ M` with `QuotSpan a = O / a` finite, and let `L`
+be a set of relations `∑ γ, f γ • c γ = 0` on functions `c`. Then the Selmer module of `ρ` with
+coefficients in `O / a` is finite. -/
+theorem finite_selmerModule {a : O} [Finite (QuotSpan a)] (ha : a ∣ ℓ ^ M)
+    (hρ : IsLocallyConstant (reduceModPow ℓ M ρ)) (hS : S.Finite)
+    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) : Finite (selmerModule ρ S L (QuotSpan a)) := by
+  let : TopologicalSpace (QuotSpan a) := ⊥
+  have : DiscreteTopology (QuotSpan a) := ⟨rfl⟩
+  -- The ring `O / ℓ ^ M` acts on `O / a`, so `ρ` acts through its reduction, hence continuously.
+  let : Module (QuotSpan (ℓ ^ M : O)) (QuotSpan a) :=
+    Module.IsTorsionBy.module (smul_quot_eq_zero_of_dvd ha)
+  have h_cont (b : n → QuotSpan a) : IsLocallyConstant fun g : Gal(Ω/E) ↦ ρ g • b :=
+    hρ.comp fun m : Matrix n n (QuotSpan (ℓ ^ M : O)) ↦ m • b
+  let V : DiscreteModule O Gal(Ω/E) := .of (actionRep O (n → QuotSpan a) ρ)
+    (continuous_prod_of_discrete_right.2 fun b ↦ (h_cont b).continuous)
+  -- The Selmer module lies in the finite set of cocycles in `V` unramified outside `S`.
+  change (selmerModule ρ S L (QuotSpan a) : Set (Gal(Ω/E) → n → QuotSpan a)).Finite
+  refine (finite_cocycles_unramified_outside V hS).subset fun z hz ↦ ?_
+  obtain ⟨h_cocycle, h_unr, -, h_const⟩ := mem_selmerModule_iff.1 hz
+  exact ⟨⟨h_const.continuous, h_cocycle⟩, fun v hv A hA g hg ↦ h_unr g ⟨v, hv, A, hA, hg⟩⟩
+
+end Finite
 
 section Data
 
@@ -123,12 +157,12 @@ structure SelmerDatum (S₀ : Finset (FinPlace E)) (g₀ : Gal(Ω/E)) (O : Type)
   /-- `T` is unramified outside `S`. -/
   unramified : ∀ g ∈ inertiaAbove placesᶜ, ρ g = 1
   /-- The module `Z_w` of maps from the decomposition group at `w ∣ ℓ` to `T`. -/
-  Z (w : placesDividing E ℓ) : Submodule O (decompGroup Gal(Ω/E) (placeOver w.1) → n → O)
+  Z (w : placesDividing E ℓ) : Submodule O (decompGroup Gal(Ω/E) (placeOver w.val) → n → O)
   /-- `Z_w` is finitely generated. -/
   finite_Z (w : placesDividing E ℓ) : Module.Finite O (Z w)
   /-- `Z_w` contains the coboundaries. -/
   coboundary_mem_Z (w : placesDividing E ℓ) (b : n → O) :
-    (fun g : decompGroup Gal(Ω/E) (placeOver w.1) ↦ ρ g • b - b) ∈ Z w
+    (fun g : decompGroup Gal(Ω/E) (placeOver w.val) ↦ ρ g • b - b) ∈ Z w
   /-- `T / ϖ` is absolutely irreducible, in Burnside's form: the matrices `ρ g` span all
   matrices. -/
   span_range_eq_top : Submodule.span O (Set.range ρ) = ⊤
@@ -197,7 +231,7 @@ decomposition group obeys all the relations that the members of `Z_w = T.Z w` ob
 lemma mem_obeying_localRelations_iff {B : Type} [AddCommGroup B] [Module O B]
     {c : Gal(Ω/E) → n → B} :
     c ∈ obeying T.localRelations B ↔ ∀ w : placesDividing E ℓ,
-      (fun g : decompGroup Gal(Ω/E) (placeOver w.1) ↦ c g) ∈ obeying (relationsOn (T.Z w)) B := by
+      (fun g : decompGroup Gal(Ω/E) (placeOver w.val) ↦ c g) ∈ obeying (relationsOn (T.Z w)) B := by
   -- A relation pushed forward by `Finsupp.mapDomain` is evaluated on the restriction of `c`.
   simp [localRelations, obeying, forall_comm (α := _ →₀ _), Function.comp_def]
 
@@ -210,7 +244,7 @@ lemma coboundary_mem_obeying_localRelations (a : O) (b : n → QuotSpan a) :
   refine T.mem_obeying_localRelations_iff.2 fun w ↦ ?_
   have h_lift (k : n) : ∃ c : O, Ideal.Quotient.mk _ c = b k := Ideal.Quotient.mk_surjective _
   choose c hc using h_lift
-  have h_red (g : decompGroup Gal(Ω/E) (placeOver w.1)) :
+  have h_red (g : decompGroup Gal(Ω/E) (placeOver w.val)) :
       T.ρ g • b - b = fun k : n ↦ (Ideal.span {a}).mkQ ((T.ρ g • c - c) k) := by
     ext k
     simp [Matrix.Module.smul_apply, hc, Algebra.smul_def]
@@ -220,7 +254,7 @@ lemma coboundary_mem_obeying_localRelations (a : O) (b : n → QuotSpan a) :
 `w` of the cocycles for `T.ρ` with values in `(O / a) ^ n` that obey the local conditions
 `T.localRelations` form a module of length at most `rk (T.Z w) · len (O / a)`. -/
 lemma length_localCocycles_le_finrank_mul (a : O) (w : placesDividing E ℓ) :
-    length O (localCocycles T.ρ T.localRelations (placeOver w.1) (QuotSpan a)) ≤
+    length O (localCocycles T.ρ T.localRelations (placeOver w.val) (QuotSpan a)) ≤
       finrank O (T.Z w) * length O (QuotSpan a) := by
   have : Module.Finite O (T.Z w) := T.finite_Z w
   have : Nonempty n := T.nonempty

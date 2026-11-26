@@ -1,5 +1,6 @@
 module
 
+public import Std.Tactic.BVDecide.Normalize.Bool
 public import Lib.Adelic.QuotientMeasure.UnfoldingInStages
 public import New.Spanning.Unfolding.AmplitudeSums
 
@@ -280,14 +281,6 @@ namespace New.Filling
 open NumberField Matrix Valued
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
 
-/-- The matrix `l` with row `o` multiplied by `a` is integral iff that row times `a` and the other
-rows of `l` are integral. -/
-lemma isIntMatrix_scaleAt_mul_iff {κ m R : Type*} [Fintype κ] [DecidableEq κ] [CommRing R]
-    {O : Subring R} {a : R} {o : κ} {l : Matrix κ m R} :
-    IsIntMatrix O (scaleAt a o * l) ↔ (∀ j : m, a * l o j ∈ O) ∧ ∀ i ≠ o, ∀ j : m, l i j ∈ O := by
-  simp only [IsIntMatrix, diagonal_mul]
-  grind
-
 /-- Let `S.piN` be the integral idele of the filling data `S`, and let `l` be a matrix over the
 finite adeles with rows indexed by `𝔰.κ`; a matrix is integral (`IsIntMatrix (Ô E)`) if its entries
 are integral finite adeles. The columns of `middleInclusionMatrix 𝔰 S.piN` are the orthonormal basis
@@ -358,36 +351,6 @@ lemma forall_inclHFin_sub_one_iff {k : U (1 : Matrix 𝔰.κ 𝔰.κ (𝔸f E))}
           Matrix (𝔰.κ ⊕ Unit) 𝔰.κ (𝔸f E)) a b) := by
   rw [inclHFin_sub_one_eq]
   simp [hP]
-
-/-- Let the idele `p` be a unit at `w` or at the conjugate of `w`, for each place `w` (`v` is the
-valuation). If the finite adelic unitary matrix `k` is integral with row `o` congruent to that of
-`1` modulo `p`, then `k - 1` stays integral after dividing row `o` by `p` and column `o` by
-`p̄`. -/
-lemma isIntMatrix_scaleAt_mul_sub_one_mul_scaleAt {κ : Type*} [Fintype κ] [DecidableEq κ]
-    (p : (𝔸f E)ˣ) (o : κ)
-    (hp : ∀ w : FinPlace E, v (p.val w) = 1 ∨ v (p.val (star w)) = 1) {k : Gf E κ}
-    (hk : k.val ∈ congruenceGL (Ô E ∙ p.val) fun () ↦ o) :
-    IsIntMatrix (Ô E) (scaleAt p⁻¹.val o * ((k.val.val - 1) * scaleAt (star p⁻¹.val) o)) := by
-  -- Row `o` of `M = k - 1` is divisible by `p`. The same holds for `k⁻¹ = kᴴ`, so column `o` of
-  -- `M` is divisible by `star p`. All entries of `M` are integral.
-  set M : Matrix κ κ (𝔸f E) := k.val.val - 1 with hM
-  obtain ⟨-, hk_inv_row⟩ := inv_mem hk
-  obtain ⟨hk_int, hk_row⟩ := hk
-  have h_int : IsIntMatrix (Ô E) M := hk_int.isIntMatrix.sub .one
-  have h_row (j : κ) : p⁻¹.val * M o j ∈ Ô E := mem_span_unit_iff.1 (hk_row () j)
-  have h_col (i : κ) : M i o * star p⁻¹.val ∈ Ô E := by
-    have h_inv : p⁻¹.val * Mᴴ o i ∈ Ô E := by
-      rw [hM, conjTranspose_sub, conjTranspose_one, ← U.inv_val_eq_conjTranspose]
-      exact mem_span_unit_iff.1 (hk_inv_row () i)
-    simpa [star_mul] using star_mem_Ô h_inv
-  -- The entry `(o, o)` is divided twice, but at each place one of the two divisors is a unit.
-  have h_corner : p⁻¹.val * (M o o * star p⁻¹.val) ∈ Ô E := mem_Ô.2 fun w ↦ by
-    obtain h_unit | h_unit := hp w
-    · simpa [idele_inv_apply_and_ne_zero, h_unit] using mem_Ô.1 (h_col o) w
-    · simpa [idele_inv_apply_and_ne_zero, h_unit] using mem_Ô.1 (h_row o) w
-  refine isIntMatrix_scaleAt_mul_iff.2 ⟨fun j ↦ ?_, fun i _ j ↦ ?_⟩
-  · by_cases hj : j = o <;> simp [hj, h_corner, h_row]
-  · by_cases hj : j = o <;> simp [hj, h_col, h_int i j]
 
 /-- The diagonal matrix with `a ∈ O` at `o` and `1` elsewhere has entries in the subring `O`. -/
 lemma isIntMatrix_scaleAt {A κ : Type*} [CommRing A] [DecidableEq κ] {O : Subring A} {a : A}
@@ -588,7 +551,7 @@ lemma amplitudeSum_eq_zero_of_not_charsAgree [HasPrimitiveRoot5040 E]
     have coe_mul (u : S.classUnipotent c) : (↑(u * γ) : S.G E ⧸ S.classUnipotent c') = u • x := rfl
     calc _ = ∑' u : S.classUnipotent c, reps.indicator 1 (u • x) * φ (u • x)
            (S.ratToInf u * y) := by
-          simp [wt, tsum_classCutoff_eq_one, coe_mul, ENNReal.tsum_prod', ENNReal.tsum_mul_right]
+          simp [wt, tsum_classCutoff_eq_one, coe_mul, tsum_prod', ENNReal.tsum_mul_right]
       _ = ∑' u : stabilizer (S.classUnipotent c) (a x • x),
             φ (a x • x) (S.ratToInf (u * a x : S.classUnipotent c) * y) :=
           tsum_indicator_smul_eq_tsum_stabilizer ha (fun z u ↦ φ z (S.ratToInf u * y)) x

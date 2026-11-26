@@ -3,7 +3,8 @@
 # workstation whose `gh` is logged in as a repository admin, every minute or so (a systemd user
 # timer): `mint-jit.sh <ssh-host> [depth] [instance] [label]`. Without an instance it fills the
 # rh-big runner's spool /var/lib/rh-runner/spool; with one, /var/lib/rh-runner/<instance>/spool
-# (see loop.sh). The label defaults to rh-big.
+# (see loop.sh), and the runner names include the host and the instance. The label defaults to
+# rh-big.
 #
 # Each configuration comes from POST /repos/{owner}/{repo}/actions/runners/generate-jitconfig.
 # It registers one ephemeral runner (labels self-hosted, linux and the label) that can run
@@ -35,7 +36,7 @@ for f in $listing; do
   fi
 done
 while (( count < depth )); do
-  name="$label-${instance:+$instance-}$(date +%Y%m%d%H%M%S)-$RANDOM"
+  name="$label-${instance:+$host-$instance-}$(date +%Y%m%d%H%M%S)-$RANDOM"
   response=$(gh api -X POST "repos/$repo/actions/runners/generate-jitconfig" \
     -f name="$name" -F runner_group_id=1 -f work_folder=_work \
     -f 'labels[]=self-hosted' -f 'labels[]=linux' -f "labels[]=$label")

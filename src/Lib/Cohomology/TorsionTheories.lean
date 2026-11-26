@@ -1,6 +1,8 @@
 module
 
-public import Lib.Adelic.Unitary.Defs
+public import Aesop.BuiltinRules
+public import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.CategoryTheory.Limits.Indization.LocallySmall -- shake: keep (its global `unif_hint` for `(F ⋙ G).obj X`; `sectionLift` callers need it)
 public import Lib.Cohomology.Etale.RelativeChains
 public import Lib.Cohomology.LerayHirsch
 public import Lib.General.Algebra.CohomologyBaseChange
@@ -201,23 +203,22 @@ lemma exists_isTensorClass [HasFlatValues N] [HasFlatValues K] (ξ : H N K 2) :
     -- exact functors respect Yoneda products, extension classes and `mk₀`; then both sides are the
     -- same class, written with `abTensor.flip` or `abTensor`
     let Φ := restrictAlong φ ⋙ abTensor.obj S
-    erw [TotalH.map_map]
+    simp only [TotalH.map_map]
     let α : H N N₁ 1 := h_exact.extClass
     let β : H N₁ (kerComplex g₁).X₁ 1 := h_exact₁.extClass
     let γ : H (kerComplex g₁).X₁ K 0 := Ext.mk₀ u
-    erw [TotalH.map_of (Φ := Φ) (α.comp (β.comp γ rfl) rfl)]
     have h_map :
         (α.comp (β.comp γ rfl) rfl).mapExactFunctor Φ =
           (h_exact.map_of_exact Φ).extClass.comp
             ((h_exact₁.map_of_exact Φ).extClass.comp (.mk₀ (Φ.map u)) rfl) rfl := by
-      erw [Ext.mapExactFunctor_comp Φ α (β.comp γ rfl) rfl,
+      simp only [Ext.mapExactFunctor_comp Φ α (β.comp γ rfl) rfl,
         Ext.mapExactFunctor_comp Φ β γ rfl]
       change (h_exact.extClass.mapExactFunctor Φ).comp
         ((h_exact₁.extClass.mapExactFunctor Φ).comp ((Ext.mk₀ u).mapExactFunctor Φ) rfl) rfl = _
-      erw [Ext.mapExactFunctor_extClass Φ h_exact,
+      simp only [Ext.mapExactFunctor_extClass Φ h_exact,
         Ext.mapExactFunctor_extClass Φ h_exact₁, Ext.mapExactFunctor_mk₀ Φ u]
-    erw [h_map]
-    rfl
+    refine Eq.trans ?_ (TotalH.map_of (Φ := Φ) (α.comp (β.comp γ rfl) rfl)).symm
+    exact (congrArg Ext.toTotalH h_map).symm
   · intro D instD φ S E instE ψ
     -- likewise
     simp only [map_of, Ext.mapExactFunctor_comp, Ext.mapExactFunctor_extClass,
@@ -345,8 +346,8 @@ lemma surjective_and_map_eq_zero_of_quotient_sieve {A : C'} {R : Subfunctor (rep
 /-- For φ: C' → C and a section q of X∘φ, the functor a ↦ (φ(a), q(a)) from C' to the category
 of elements of X. -/
 def sectionLift (q : (φ ⋙ X).sections) : C' ⥤ X.Elements where
-  obj c := X.elementsMk (φ.obj c) (q.1 c)
-  map f := ⟨φ.map f, q.2 f⟩
+  obj c := X.elementsMk (φ.obj c) (q.val c)
+  map f := ⟨φ.map f, q.property f⟩
 
 /-- For a section q of a set-valued functor X, the morphism from the constant one-point functor
 to X sending the point at c to q(c). -/
@@ -372,24 +373,24 @@ lemma Comparison.HasUniversalPoints.on_elements {E' : C' ⥤ Type 1} {u : E' ⟶
   obtain ⟨b, x, s, hx_over, h_univ, h_coeff_bij⟩ := hu a.obj y
   refine ⟨(c.functor ⋙ X).elementsMk b (X.map s a.val), x, ⟨s, rfl⟩, hx_over, fun d w f hw ↦ ?_,
     h_coeff_bij⟩
-  obtain ⟨g, ⟨hg_x, hg_comp⟩, h_uniq⟩ := h_univ d.obj w f.1 hw
+  obtain ⟨g, ⟨hg_x, hg_comp⟩, h_uniq⟩ := h_univ d.obj w f.hom hw
   -- `g` respects the elements of `X` because `f = s ≫ c.functor.map g` does
   have hg_el : X.map (c.functor.map g) (X.map s a.val) = d.val := by
     rw [← Functor.map_comp_apply, hg_comp]
-    exact f.2
+    exact f.map_val
   refine ⟨⟨g, hg_el⟩, ⟨hg_x, ?_⟩, ?_⟩
   · ext
     exact hg_comp
   · rintro g' ⟨hg'_x, hg'_comp⟩
     ext
-    exact h_uniq g'.1 ⟨hg'_x, congrArg (·.1) hg'_comp⟩
+    exact h_uniq g'.hom ⟨hg'_x, congrArg (·.hom) hg'_comp⟩
 
 /-- For an element a = (c, x) of E, the forgetful map from morphisms out of a to morphisms out of c
 has universal points (`New.Variety.Comparison.HasUniversalPoints`) for the restriction of G to the
 category of elements of E. -/
 lemma hasUniversalPoints_reprBy_elements (a : E.Elements) :
     HasUniversalPoints (Comparison.restrict (elementsProj E) G) (Y := reprBy a.obj) (Y' := reprBy a)
-      { app _ := ↾fun f ↦ ⟨f.down.1⟩ } := by
+      { app _ := ↾fun f ↦ ⟨f.down.hom⟩ } := by
   intro b y
   -- the universal point over `y : a.fst ⟶ b` is `y` itself, read as a map from `a` to the
   -- point `E.map y a.snd` over `b`; the coefficient map is the identity of `G b`
@@ -405,7 +406,7 @@ lemma hasUniversalPoints_reprBy_elements (a : E.Elements) :
 
 /-- The tautological section (c, x) ↦ x of the pull-back of X to its own category of elements. -/
 def tautologicalSection : onePointFunctor X.Elements ⟶ elementsProj X ⋙ X :=
-  sectionMap ⟨fun a ↦ a.2, fun f ↦ f.2⟩
+  sectionMap ⟨fun a ↦ a.val, fun f ↦ f.map_val⟩
 
 /-- The tautological section `New.Variety.tautologicalSection` has universal points
 (`New.Variety.Comparison.HasUniversalPoints`) for the restriction of any coefficient G to the
@@ -569,7 +570,7 @@ structure IdealFamily where
 /-- For an ideal I of ι(c), the subfunctor of Hom(c, −) of the morphisms f: c → d such that ι(f)
 sends I to zero. -/
 def killingMaps {c : C} (I : Ideal (ι.obj c)) : Subfunctor (reprFunctor.obj ⟨c⟩) where
-  obj _ := {f | I.map (ι.map f.1).hom = ⊥}
+  obj _ := {f | I.map (ι.map f.down).hom = ⊥}
   map {U V} i := by
     intro f hf
     change I.map (ι.map (f.down ≫ i)).hom = ⊥
@@ -736,15 +737,17 @@ def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
       apply hasPartitions_locConstCoeff.bijective_prod⟩ (𝟙 _) (by simp) fun B ↦ B.2.isComparableRing
     -- The cut along `e` is the quotient by the ideal `(e)`, which is radical.
     obtain ⟨D, π, h_ker, h_surj, h_univ, h_kill⟩ := B.exists_quotient (span {e})
-    refine ⟨D, π, ?_, ?_, h_surj, h_ker.le.trans (B.2.isRadical_span_idempotent he)⟩
-    · change π.hom.hom' e = 0
-      erw [Ideal.map_span, Set.image_singleton, Ideal.span_singleton_eq_bot] at h_kill
-      exact h_kill
-    · intro E f h
-      apply h_univ E f
-      change (span {e}).map f.hom.hom' = ⊥
-      erw [Ideal.map_span, Set.image_singleton, Ideal.span_singleton_eq_bot]
-      exact h
+    have h_map_iff {E : TestOver A} (f : B ⟶ E) :
+        (span {e}).map f.hom.hom'.toRingHom = ⊥ ↔ f.hom.hom' e = 0 := by
+      let ρ := ((ringOf (𝟭 (TestOver A))).map f).hom
+      change (span {e}).map ρ = ⊥ ↔ ρ e = 0
+      calc
+        _ ↔ span (ρ '' {e}) = ⊥ := (congrArg (· = ⊥) (Ideal.map_span ρ {e})).to_iff
+        _ ↔ _ := by rw [Set.image_singleton, Ideal.span_singleton_eq_bot]
+    refine ⟨D, π, (h_map_iff π).mp h_kill, ?_, h_surj,
+      h_ker.le.trans (B.property.isRadical_span_idempotent he)⟩
+    intro E f h
+    exact h_univ E f ((h_map_iff f).mpr h)
   restrict_surjective B I := by
     -- The maps that kill `I` are those through the quotient `π` by the radical of `I`, and locally
     -- constant functions lift along `π`.
@@ -754,18 +757,18 @@ def Theory.locallyConstant : Theory (𝟭 (TestOver A)) where
     · rintro E _ k (rfl : π ≫ k = _)
       exact (killingMaps ..).map k h_kill
     · exact ULift.map_surjective.2 (comapAddMonoidHom_surjective_of_isComparableRing _
-        (B.2.isComparableRing_of_associated (h_surj.forall.2 fun x ↦ ⟨x, .rfl⟩)))
-  dies_near B I s hs (m : Ideal B.1) hm hIm := by
+        (B.property.isComparableRing_of_associated (h_surj.forall.2 fun x ↦ ⟨x, .rfl⟩)))
+  dies_near B I s hs (m : Ideal B.obj) hm hIm := by
     -- `s` dies on the residue field at `m`, so its value at `m` is `0`; it is constant near `m`.
     let : m.IsTwoSided := ⟨fun b hb ↦ mul_comm b _ ▸ m.smul_mem b hb⟩
     let : m.IsMaximal := hm
-    let π : B ⟶ ⟨CommAlgCat.of A (B.1 ⧸ m), B.2.quotient hm.isPrime.isRadical⟩ :=
+    let π : B ⟶ ⟨CommAlgCat.of A (B.obj ⧸ m), B.property.quotient hm.isPrime.isRadical⟩ :=
       ⟨ofHom (Quotient.mkₐ ..)⟩
     have h_zero : (locConstAlong (𝟭 (TestOver A))).map π s = 0 :=
       hs _ π (map_mk_eq_bot_of_le (J := m) hIm)
     obtain ⟨a, ha, h_const⟩ := exists_locConst_eq_const s (.comap (Ideal.Quotient.mk m) ⊥)
     refine ⟨a, fun h ↦ ha ((mk_ker (I := m)).ge h), fun d f hf ↦ (h_const d f hf).trans ?_⟩
-    exact congr(⟨.const _ (($h_zero).1.1 _)⟩)
+    exact congr(⟨.const _ (($h_zero).down.toFun _)⟩)
 
 variable (Θ : Theory g) (I : IdealFamily (ringOf g)) (M : TorsionCoeff g)
 
@@ -778,26 +781,26 @@ def oneLocConst : freeAb (onePointFunctor C) ⟶ locConstAlong g :=
 category of elements of X along the projection (c, x) ↦ c. -/
 protected def TorsionCoeff.onElements : TorsionCoeff (elementsProj X ⋙ g) where
   functor := elementsProj X ⋙ M.functor
-  prime_smul_eq_zero a := M.prime_smul_eq_zero a.1
+  prime_smul_eq_zero a := M.prime_smul_eq_zero a.obj
   zariski_descent Y U hU a y := by
     -- Maps out of the point `a` are maps out of `a.1` (`hasUniversalPoints_reprBy_elements`), so it
     -- suffices to show that the sieve `V` of the `f` out of `a.1` that carry `y` into `U` is dense
     -- for `M.functor`.
-    let V : Subfunctor (reprBy a.1) :=
-      { obj d := {f | ⟨⟨f.1, rfl⟩⟩ ∈ (U.preimage (pointMap y)).obj ⟨X.map f.1 a.2⟩}
+    let V : Subfunctor (reprBy a.obj) :=
+      { obj d := {f | ⟨⟨f.down, rfl⟩⟩ ∈ (U.preimage (pointMap y)).obj ⟨X.map f.down a.val⟩}
         map g f hf := (U.preimage (pointMap y)).map (Functor.Elements.homMk (x :=
-          ⟨X.map f.1 a.2⟩) (y := ⟨X.map (f.1 ≫ g) a.2⟩) g (X.map_comp_apply ..).symm) hf }
+          ⟨X.map f.down a.val⟩) (y := ⟨X.map (f.down ≫ g) a.val⟩) g (X.map_comp_apply ..).symm) hf }
     -- `V` is locally everything, because `U` is so at the image of `y` under `f`.
     have hV : IsZariskiLocallyTop (ringOf g) V :=
       fun d f m hm ↦ by
-        obtain ⟨r, hr, h_mem⟩ := hU ⟨X.map f.1 a.2⟩ (Y.map ⟨f.1, rfl⟩ y) m hm
+        obtain ⟨r, hr, h_mem⟩ := hU ⟨X.map f.down a.val⟩ (Y.map ⟨f.down, rfl⟩ y) m hm
         exact ⟨r, hr, fun e k hk ↦ by
           simpa only [← Y.map_comp_apply] using!
-            h_mem ⟨X.map (f.1 ≫ k) a.2⟩ ⟨k, (X.map_comp_apply ..).symm⟩ hk⟩
+            h_mem ⟨X.map (f.down ≫ k) a.val⟩ ⟨k, (X.map_comp_apply ..).symm⟩ hk⟩
     refine ((hasUniversalPoints_reprBy_elements a).isCohomEquiv_incl_iff V ?_).1
       (M.zariski_descent hV).isCohomEquiv
     -- `V` pulls back to the preimage of `U`.
-    ext @⟨d, x⟩ ⟨f : a.1 ⟶ d, rfl : X.map f a.2 = x⟩
+    ext @⟨d, x⟩ ⟨f : a.obj ⟶ d, rfl : X.map f a.val = x⟩
     rfl
 
 /-- The restriction of a theory Θ on C to the category of elements of a set-valued functor X on
@@ -812,8 +815,8 @@ def Theory.onElements : Theory (elementsProj X ⋙ g) :=
             map_pull_eq_pull_map (by exact freeAb.hom_ext fun _ _ ↦ rfl) ..⟩),
     fun a I x h m hm hI ↦ by
       obtain ⟨b, hb, h_dies⟩ := Θ.dies_near _ I x
-        (fun d f ↦ h (X.elementsMk d (X.map f a.2)) ⟨f, rfl⟩) m hm hI
-      exact ⟨b, hb, fun d f ↦ h_dies d.1 f.1⟩⟩
+        (fun d f ↦ h (X.elementsMk d (X.map f a.val)) ⟨f, rfl⟩) m hm hI
+      exact ⟨b, hb, fun d f ↦ h_dies d.obj f.hom⟩⟩
 
 /-- Zero sections of the kernel of `I.toZerosCoeff Θ.functor`, together with the objects where `I`
 is the unit ideal (the preimage of `I.topLocus` under the map `toUnit _` to the one-point functor),
@@ -894,7 +897,7 @@ def Theory.onZeros : TorsionCoeff g where
     -- There `I.toZerosCoeff Θ.functor` is bijective, so descent follows from descent for
     -- `Θ.functor`.
     have h_bij (e : C) (f : (reprBy d).obj e) : Bijective ((I.toZerosCoeff Θ.functor).app e) :=
-      I.bijective_toZerosCoeff _ _ ((pointMap z).app e f).2
+      I.bijective_toZerosCoeff _ _ ((pointMap z).app e f).property
     exact (bijective_iff_of_comm_sq (map_push _ _) (push_bijective_of_points _ h_bij n)
         (push_bijective_of_points _ (fun e f ↦ h_bij e (Subtype.val f)) n)).1
       (Θ.zariski_descent hU ..)
@@ -904,7 +907,6 @@ abelian groups, `ℓ` kills the total cohomology `TotalH N M.functor`, the sum o
 `Ext^n (N, M.functor)`. -/
 lemma TorsionCoeff.nsmul_totalH_eq_zero (y : TotalH N M.functor) : ℓ • y = 0 := by
   -- `End M.functor` acts on total cohomology, and `ℓ` times the identity of `M.functor` is zero
-  let act : CoeffAction (End M.functor) M.functor := ⟨RingHom.id (End M.functor)⟩
   have h_zero : ℓ • (1 : End M.functor) = 0 := End.ext (by bound [M.prime_smul_eq_zero])
   rw [← smul_one_smul (End M.functor) ℓ y, h_zero, zero_smul]
 
@@ -943,8 +945,8 @@ def IdealFamily.constToZeros :
     (abCoker.desc (oneLocConst ≫ I.toZerosCoeff (locConstAlong g)) (by
       -- where `I` is everything, a map that kills `I` goes to the zero ring, which has no prime
       refine freeAb.hom_ext fun _ u ↦ (eq_zero_iff _).2 fun _ f h_bot ↦ ?_
-      have h_triv : (⊥ : Ideal _) = ⊤ := h_bot.symm.trans (I.topLocus.map f u.2)
-      exact congr(⟨⟨$(funext fun P ↦ P.2.1.elim (eq_top_mono bot_le h_triv)), _⟩⟩)))
+      have h_triv : (⊥ : Ideal _) = ⊤ := h_bot.symm.trans (I.topLocus.map f u.property)
+      exact congr(⟨⟨$(funext fun P ↦ P.isPrime.ne_top'.elim (eq_top_mono bot_le h_triv)), _⟩⟩)))
     -- locally constant functions with values in `ZMod ℓ` are killed by `ℓ`
     (relFreeAb.hom_ext fun c x ↦ congr(⟦$(by
       change (oneLocConst.app c).hom' (ℓ • FreeAddCommGroup.of x) = 0
@@ -1011,9 +1013,9 @@ lemma IdealFamily.isCohomEquiv_constToZeros (hΘ : Θ.functor = locConstAlong g)
       change ℓ • (r • relFreeAb.mk (I.topLocus.whisker φ) ⟨⟩) =
         ((relFreeAb I.topLocus).map (φ.map f.down)).hom
           ((↑ℓ * r) • relFreeAb.mk (I.topLocus.whisker φ) ⟨⟩)
-      erw [map_zsmul]
-      rw [h_map]
-      exact (mul_smul (ℓ : ℤ) r (relFreeAb.mk (I.topLocus.whisker φ) (A := B) ⟨⟩)).symm
+      refine Eq.trans ?_ (map_zsmul ((relFreeAb I.topLocus).map (φ.map f.down)).hom _ _).symm
+      refine (mul_smul (ℓ : ℤ) r (relFreeAb.mk (I.topLocus.whisker φ) (A := B) ⟨⟩)).symm.trans ?_
+      exact (congrArg ((↑ℓ * r : ℤ) • ·) h_map).symm
   · -- Cokernel: a locally constant function is constant near each maximal ideal, and constants
     -- are in the image.
     have h_loc : IsZariskiLocallyTop (ringOf g) (zeroSection (abCoker I.constToZeros)) := by
@@ -1057,13 +1059,12 @@ lemma TorsionCoeff.pullbackAlong_oneLocConst_surjective :
     fun y ↦ ⟨pullbackAlong (g.whiskerLeft (I.toZerosCoeff _)) y, ?_⟩
   -- each side is one pull-back, and the two composite maps are the same by definition of
   -- `IdealFamily.constToZeros`
-  erw [pullbackAlong_pullbackAlong]
-  change _ =
-    pullbackAlong (relFreeAb.π (I.whisker g).topLocus)
-      (pullbackAlong (abCoker.π (ℓ • 𝟙 (relFreeAb (I.whisker g).topLocus)))
-        (pullbackAlong (g.whiskerLeft I.constToZeros) y))
-  erw [pullbackAlong_pullbackAlong, pullbackAlong_pullbackAlong]
-  rfl
+  let q := relFreeAb.π (I.whisker g).topLocus
+  let r := abCoker.π (ℓ • 𝟙 (relFreeAb (I.whisker g).topLocus))
+  let s := g.whiskerLeft I.constToZeros
+  refine (pullbackAlong_pullbackAlong (f := oneLocConst) (g.whiskerLeft (I.toZerosCoeff _)) y).trans ?_
+  exact ((pullbackAlong_pullbackAlong (f := q) r (pullbackAlong s y)).trans
+    (pullbackAlong_pullbackAlong (f := q ≫ r) s y)).symm
 
 end Theories
 

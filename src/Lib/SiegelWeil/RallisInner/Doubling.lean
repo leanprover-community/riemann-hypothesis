@@ -206,7 +206,7 @@ lemma zeroTerm_graphSplitting (b : AutChar E) (δ : U S.J) (f f' : 𝒮 (S.hom T
     have hT : IsUnit (T.x⁻¹.val * T.J⁻¹.map toAdele) := by simp [map_J_inv]
     have hS : IsUnit (S.J.map toAdele * S.x.val)ᵀ := by simp [isUnit_transpose, S.map_J]
     simp only [P, hom_point_inv_mul_kronecker]
-    exact (kroneckerGL hT.unit hS.unit).isUnit
+    exact (Matrix.GeneralLinearGroup.kronecker hT.unit hS.unit).isUnit
   have h_per : IsContPeriodic (S.hom T).ratVectors fun x : m × n → 𝔸 E ↦
       pairWeil S T 1 b (S.ratEmbed δ⁻¹, 1) f x * conj (f' x) := by
     obtain ⟨h_invariant, -⟩ := (S.hom T).isThetaFunctional_rawTheta
@@ -351,7 +351,7 @@ lemma graphSplitting_lagrangian_injective :
   -- Equal graphs have frames `(δ'⁻¹, -1) = (δ⁻¹, -1) * c`; the lower block forces `c = 1`.
   intro δ δ' h_eq
   have h_frames : ∃ c : Matrix n n E, (graphSplitting S δ⁻¹).k * c = (graphSplitting S δ'⁻¹).k :=
-    Filling.exists_mul_eq_of_col_mem_range fun i ↦ h_eq.ge ⟨_, mulVec_single_one _ i⟩
+    exists_mul_eq_of_range_le fun i ↦ h_eq.ge ⟨_, mulVec_single_one _ i⟩
   -- `-coe_units_inv` keeps the inverse of a unit from turning into a matrix inverse.
   simpa [fromRows_ext_iff, ← Units.ext_iff, -coe_units_inv] using h_frames
 
@@ -451,7 +451,7 @@ lemma exists_doubling_bound (h_rank : 2 * card n < card m) : ∃ C : ENNReal, C 
   · let e : U S.J ≃ S.Γ := .ofInjective _ S.ratEmbed_injective
     calc _ ≤ Z * ‖d‖ₑ := by
           rw [← e.tsum_eq, ← ENNReal.tsum_mul_right]
-          refine ENNReal.tsum_le_tsum fun δ ↦ .trans (le_of_eq ?_) (le_opENorm _ d)
+          refine tsum_le_tsum fun δ ↦ .trans (le_of_eq ?_) (le_opENorm _ d)
           exact congrArg eNorm (zeroTerm_graphSplitting_doubleDatum b f f' g g' δ).symm
       _ ≤ _ := by grw [hd, mul_assoc, ← le_add_self]
 
@@ -552,7 +552,7 @@ theorem inner_product_formula (h_rank : 2 * card n < card m) (a b : AutChar E)
   have h_unfold := measurePreserving_quotMeasure_unfold S
   have hΦ_unfold (g g' : G E s) (γ : S.Γ) : Φ (g', g'⁻¹ * (γ * g)) =
       conj (y' g') * y g * weilMatrixCoeff b f f' (g'⁻¹ * (γ * g)) := by
-    simp only [Φ, mul_inv_cancel_left, hy_aut.rat_mul γ γ.2]
+    simp only [Φ, mul_inv_cancel_left, hy_aut.rat_mul γ γ.property]
     exact mul_comm ..
   have hΦ : Integrable Φ (S.quotMeasure.prod volume) := by
     refine ⟨aestronglyMeasurable (by fun_prop), h_finite.trans_le' ?_⟩
@@ -608,10 +608,10 @@ lemma weilMatrixCoeff_mul {A : Set (FinPlace E)} (b : AutChar E) {f : 𝒮 (S.ho
   set u : 𝒮 (S.hom T) := pairWeil S T 1 b (g, 1) f with hu
   have hu_vac : projOn (S.hom T) A u = u :=
     projOn_pairWeil hf (g, 1) fun w hw ↦ onHom_atPlace_mem (hg w hw) (by simp)
-  have h_char : pairChar (s' := t) 1 b ((γ : G E s), 1) = (b.1 (detFin 1 γ) : ℂ)⁻¹ := by
+  have h_char : pairChar (s' := t) 1 b ((γ : G E s), 1) = (b.val (detFin 1 γ) : ℂ)⁻¹ := by
     -- The determinant of a finite point does not depend on the signs.
     have h_det : detFin 1 γ = detFin s γ := by ext <;> simp
-    change _ = (Circle.coeHom (b.1 (detFin 1 γ)))⁻¹
+    change _ = (Circle.coeHom (b.val (detFin 1 γ)))⁻¹
     simp [pairChar, h_det]
   have h_mult : finMultiplier (onHom (s' := t) ((γ : G E s), 1)).2⁻¹ =
       finMultiplier γ ^ card m := by simp [finMultiplier_inv, finMultiplier_onHom_left]

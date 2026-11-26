@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.RingTheory.ZMod.Torsion
 public import Lib.ClassField.Global.Chebotarev
 public import Lib.Cyclotomic.Kolyvagin.DerivativeCocycles
 public import Lib.PadicComparison.Descent.TestCategory
@@ -136,7 +137,7 @@ lemma finite_vanishingCocycles [Finite M] {n : ℕ}
   let : MulAction Gal(Ω/ℚ) M := .compHom M χ
   have cont : ContinuousSMul Gal(Ω/ℚ) M :=
     continuousSMul_iff_stabilizer_isOpen.2 fun y ↦ isOpen_mono (fun g hg ↦ h_triv ⟨g, hg⟩) out
-  refine (selmerZ1.finite_unramified_cocycles (.of (charRep M χ) cont.1)
+  refine (selmerZ1.finite_unramified_cocycles (.of (charRep M χ) cont.continuous_smul)
     ((finite_natCast_mem N).union (placesDividing ℚ l).toFinite)).subset
     fun z ⟨z_lc, z_cocycle, z_zero⟩ ↦
       ⟨⟨z_lc.continuous, z_cocycle⟩, Submodule.mem_pi.2 fun g hg ↦ z_zero g ?_⟩
@@ -210,18 +211,6 @@ private lemma apply_conj_eq_smul_of_cyclotomicCharMod_eq {x : Gal(Ω/ℚ) → Qu
   have h_cyc : (cyclotomicCharMod Ω (N * m) σ).val = (u.val.val : ℕ) := by simp [hσ]
   rw [cocycle_conj_eq_smul (apply_mul_of_mem_vanishingCocycles hx) h_fix]
   simpa using cyclotomicPowDirichlet_smul h_cyc (hx_tors φ)
-
-/-- Let `x ∈ component l e ψ ν` be killed by `m`, and let `σ` fix the `N m`-th roots of unity and
-satisfy `σ * σ = 1`. Then `2 • x σ = 0`. -/
-private lemma two_smul_apply_eq_zero_of_mul_self_eq_one {x : Gal(Ω/ℚ) → QuotSpan ((l : O) ^ ν)}
-    (hx : x ∈ component l e ψ ν) (hx_tors : ∀ g : Gal(Ω/ℚ), m • x g = 0) {σ : Gal(Ω/ℚ)}
-    (hσ : σ ∈ cycloGalGroup (N * m)) (hσ_sq : σ * σ = 1) :
-    (2 : O) • x σ = 0 := by
-  -- `σ` acts trivially on `x σ`, so the cocycle rule gives `x (σ * (σ * σ)) = 3 • x σ`, while
-  -- `σ * (σ * σ) = σ`.
-  have h_val : x (σ * (σ * σ)) = x σ := by rw [hσ_sq, mul_one]
-  simpa [apply_mul_of_mem_vanishingCocycles hx, hx_tors, two_smul,
-    cyclotomicPowDirichlet_smul_eq_self hσ] using h_val
 
 /-- Let `s u ∈ Gal(Ω/ℚ)` act on the `N m`-th roots of unity by `u ∈ (ℤ/N m)ˣ`, and let the
 decomposition group of the place `B` fix them. If `w u` is a place of `ℚ(μ_{N m})` below
@@ -323,18 +312,22 @@ lemma artin_reciprocity_of_mem_component {a : ℕ} (ha : l.Coprime a) (ha_one : 
     ext
     simp [χ, ← map_nsmul, smul_comm, hx_tors]
   -- `χ` kills complex conjugations `σ`, since `2 • x σ = 0` and `2 ∣ d`.
-  have conj_zero (σ : G) (hσ : IsComplexConj σ) : χ.1 σ = 0 := by
+  have conj_zero (σ : G) (hσ : IsComplexConj σ) : χ.val σ = 0 := by
     have hσ_sq : (σ : Gal(Ω/ℚ)) * σ = 1 := by simp [← Subgroup.coe_mul, hσ.mul_self]
-    simp [χ, d, mul_comm (2 : O), mul_smul,
-      two_smul_apply_eq_zero_of_mul_self_eq_one hx hx_tors σ.prop hσ_sq]
+    -- The cocycle rule evaluates `x (σ * (σ * σ)) = x σ` as `3 • x σ = x σ`.
+    have h_val : x (σ * (σ * σ) : Gal(Ω/ℚ)) = x σ := by rw [hσ_sq, mul_one]
+    have h_two : (2 : O) • x σ = 0 := by
+      simpa [apply_mul_of_mem_vanishingCocycles hx, hx_tors, two_smul,
+        cyclotomicPowDirichlet_smul_eq_self σ.prop] using h_val
+    simp [χ, d, mul_comm (2 : O), mul_smul, h_two]
   -- Above `l`, `χ` kills the decomposition group, since `(a ^ e - 1) • x g = 0` there.
   have dec_zero (A : ClosurePlace) (hA : A.valuation l < 1) (g : G)
-      (hg : (g : Gal(Ω/ℚ)) ∈ decompGroup Gal(Ω/ℚ) A) : χ.1 g = 0 := by
+      (hg : (g : Gal(Ω/ℚ)) ∈ decompGroup Gal(Ω/ℚ) A) : χ.val g = 0 := by
     simp [χ, d, mul_smul,
       pow_sub_one_smul_apply_eq_zero_of_mem_decompGroup ha ha_one hx hx_tors hA g.prop hg]
   -- `χ` is unramified: off `l`, `x` vanishes on inertia over `ℚ(μ_N)`.
   have unramified {A : ClosurePlace} {t : FinPlace ℚ} (hA : IsPlaceOver A t) (g : G)
-      (hg : g ∈ inertiaGroup G A) : χ.1 g = 0 := by
+      (hg : g ∈ inertiaGroup G A) : χ.val g = 0 := by
     rcases (A.valuation_le_one l).eq_or_lt with h | h
     · simp [χ, apply_eq_zero_of_mem_inertiaGroup_of_valuation_eq_one hx hA h g.prop hg]
     · exact dec_zero A h g (IsFrob.mem_decompGroup hg)
@@ -347,7 +340,7 @@ lemma artin_reciprocity_of_mem_component {a : ℕ} (ha : l.Coprime a) (ha_one : 
   have frob_isFrob (u : (ZMod (N * m))ˣ) : IsFrob ((s u)⁻¹ • B) (w u).q (frob u) := by
     rw [(split u).left]
     exact hφ.conj (s u)⁻¹
-  have reciprocity : ∑ u, -((w u).valuation F y).log • χ.1 (frob u) = 0 := by
+  have reciprocity : ∑ u, -((w u).valuation F y).log • χ.val (frob u) = 0 := by
     -- `χ` kills complex conjugations, hence the Artin symbol of `y`.
     refine sum_ord_smul_frob_eq_zero torsion
       (abelianLift_artinMap_principalIdele_eq_one χ y conj_zero)
@@ -360,7 +353,7 @@ lemma artin_reciprocity_of_mem_component {a : ℕ} (ha : l.Coprime a) (ha_one : 
     · rcases h_away _ h (unit_q t ht) with h_unit | h_dec
       · exact .inr ⟨h_unit, unramified h_over.isPlaceOver_below⟩
       · exact .inl ((h_over.artinAt_trivial_iff_decompGroup_le χ).2
-          (fun g hg ↦ show χ.1 g = 0 by simp [χ, h_dec g hg]) _)
+          (fun g hg ↦ show χ.val g = 0 by simp [χ, h_dec g hg]) _)
     · exact .inl ((h_over.artinAt_trivial_iff_decompGroup_le χ).2 (dec_zero _ h) _)
   -- Each `x (frob u)` is `(u ^ e * ψ u) • x φ`, so `reciprocity` is the claim.
   have frob_val (u : (ZMod (N * m))ˣ) : x (frob u) = (u.val.val ^ e * ψ u.val.val : O) • x φ :=
@@ -379,8 +372,9 @@ private lemma exists_apply_eq_galUnitsRep_sub {κ : Gal(Ω/ℚ) → M} {s : Set 
   refine hilbert90_unitsRep ⟨_, h_lc.continuous.comp continuous_subtypeVal, fun g h ↦ ?_⟩
   -- `g` fixes the root of unity `L (κ h)` and acts trivially on `κ h`.
   change L (κ (g * h)) = L (κ g) + unitsRep (g : Gal(Ω/ℚ)) (L (κ h))
-  rw [cyclotomicCharMod_eq_one_iff.1 g.2]
-  · simp [hκ_tors, apply_mul_of_mem_vanishingCocycles hκ, cyclotomicPowDirichlet_smul_eq_self g.2]
+  rw [cyclotomicCharMod_eq_one_iff.1 g.property]
+  · simp [hκ_tors, apply_mul_of_mem_vanishingCocycles hκ,
+    cyclotomicPowDirichlet_smul_eq_self g.property]
   · simp [mul_smul, ← map_nsmul, hκ_tors]
 
 /-- Let `z` be an element of `M`, let `b` be a basis of `O ∙ z` over `ZMod l`, and let `j ∈ ZMod l`.
@@ -483,7 +477,7 @@ lemma reciprocity_mod_ell {a : ℕ} (ha : l.Coprime a) (ha_one : a ≡ 1 [MOD N]
     -- `l • (m i u • π - σ u • r i)` is a unit at `B`, so `τ` moves `m i u • π - σ u • r i` by a
     -- principal unit; it moves it by the root of unity `μ (m i u * j - u * b.repr y i)`.
     have coord i : m i u * j = b.equivFun (u.val.val • y) i := by
-      have unit : B.valuation (l • (m i u • π - galUnitsRep (σ u) (r i))).toMul.1 = 1 := by
+      have unit : B.valuation (l • (m i u • π - galUnitsRep (σ u) (r i))).toMul.val = 1 := by
         simp [↓← hv.ordRat_eq_zero_iff, smul_comm, hπ, ord_q, smul_sub, ← hm]
       refine eq_of_mem_principalUnits
         (hq_one.of_mul_left.coprime_of_modEq_one.valuation_eq_one hB) ?_
@@ -613,12 +607,12 @@ lemma sum_floorDiff_dvd (h : IsStickelbergerBound N e X)
   -- over the units modulo `N lⁿ⁺¹`.
   let T (m : ℕ) : O := ∑ x ∈ range (N * m), ↑(a * x / (N * m)) * (x ^ e * ψ x)
   let U : O := ∑ u : (ZMod (N * l ^ (n + 1)))ˣ,
-    ↑(a * u.1.val / (N * l ^ (n + 1))) * (u.1.val ^ e * ψ u.1.val)
+    ↑(a * u.val.val / (N * l ^ (n + 1))) * (u.val.val ^ e * ψ u.val.val)
   have h_split : T (l ^ (n + 1)) = U + l ^ e * ψ l * T (l ^ n) := sum_range_eq_sum_units_add a n
   -- Modulo `lⁿ⁺¹` our sum is `2 U`: `floorDiff` is a difference of two integer parts, and `u ↦ -u`
   -- changes the sign of `u ^ e * ψ u`.
-  have h_twice : ((∑ u : (ZMod (N * l ^ (n + 1)))ˣ, floorDiff a (ofZMod _ u.1) *
-      (u.1.val ^ e * ψ u.1.val) : O) : QuotSpan (l ^ (n + 1) : O)) = 2 * U := by
+  have h_twice : ((∑ u : (ZMod (N * l ^ (n + 1)))ˣ, floorDiff a (ofZMod _ u.val) *
+      (u.val.val ^ e * ψ u.val.val) : O) : QuotSpan (l ^ (n + 1) : O)) = 2 * U := by
     have h_char : ringChar (QuotSpan (l ^ (n + 1) : O)) ∣ N * l ^ (n + 1) :=
       ringChar.dvd (by simp [h_nil])
     simp only [floorDiff, ↓← map_neg, ofZMod_apply, QZ.fracRep_mk, mul_div, mod_eq_of_lt, val_lt,
@@ -699,7 +693,7 @@ lemma nsmul_component_eq_zero (h_bound : IsStickelbergerBound N e X)
       galUnitsRep g (J (ofZMod (N * l ^ ν) 1)) = J (ofZMod (N * l ^ ν) 1) := by
     rw [hJ_level.galUnitsRep_apply (h_tors 1) g 1 (by simp [MonoidHom.mem_ker.1 g.prop]),
       one_nsmul]
-  have hJ_away (A : ValuationSubring Ω) (_hA_l : A.valuation (l : Ω) = 1)
+  have hJ_away (A : ValuationSubring Ω)
       (hA_p : A.valuation (p : Ω) = 1) :
       (∃ r : DiscreteUnits Ω, A.valuation (J (ofZMod (N * l ^ ν) 1) - l ^ ν • r).toMul = 1 ∧
         ∀ i ∈ inertiaGroup (cycloGalGroup (N * l ^ ν)) A, galUnitsRep i r = r) ∨
@@ -710,10 +704,10 @@ lemma nsmul_component_eq_zero (h_bound : IsStickelbergerBound N e X)
       (surjInv (cyclotomicCharMod_surjective _) u) = u :=
     surjInv_eq (cyclotomicCharMod_surjective _) u
   obtain ⟨μ, hμ, h_law⟩ := artin_reciprocity_of_mem_component hla ha hB hσ hz hp hz_tors hJ_fix
-    hJ_away h_reps
+    (fun A _ ↦ hJ_away A) h_reps
   have h_ord (u : (ZMod (N * l ^ ν))ˣ) :
       μ u = floorDiff a (ofZMod (N * l ^ ν) (u : ZMod (N * l ^ ν))) := by
-    simpa [hJ_level.galUnitsRep_apply (h_tors 1) _ _ zmod_eq_natCast_val, surjInv_eq,
+    simpa [hJ_level.galUnitsRep_apply (h_tors 1) _ _ (ZMod.natCast_zmod_val _).symm, surjInv_eq,
       ← map_nsmul, hJ_level.ordRat_eq (h_tors _)] using (hμ u).symm
   -- In `O / l ^ ν`, the Stickelberger sum `t` divides `(a ^ (e + 1) - 1) X` with quotient `k`, and
   -- `X = (a ^ e - 1) (a ^ (e + 1) - 1) b`; so `k b` times Artin's law gives `2 X² z σ = 0`.
@@ -767,9 +761,6 @@ lemma exists_modEq_one_forall_isUnit_pow_sub_one (hl : N < l) :
   have h_unit : IsUnit (a ^ k - 1 : ℤ_[l]) :=
     .of_map PadicInt.toZMod _ (by simpa [sub_eq_zero] using hb.pow_ne_one_of_pos_of_lt hk.ne' hkl)
   simpa using h_unit.map (algebraMap ℤ_[l] O)
-
-private lemma isUnit_two_of_two_lt (hl : 2 < l) : IsUnit (2 : O) := by
-  exact_mod_cast isUnit_natCast_of_not_dvd (O := O) (not_dvd_of_pos_of_lt two_pos hl)
 
 /-- For `e ≠ 0` and `l > N + e + 3`, the numbers `a ^ e - 1` and `a ^ (e + 1) - 1` are units of `O`
 for some `a ≡ 1 mod N` prime to `l`. -/
@@ -872,9 +863,8 @@ lemma mem_vanishingCocycles_of_mem_insert {a m : ℕ} (ha : a ≡ 1 [MOD N]) (hl
       (inertiaOff N l T) := by
   -- Local constancy and the cocycle identity come from `hy`; it remains to show that `y` vanishes
   -- on the inertia groups of the places above neither `l` nor a prime of `T`.
-  suffices hy_zero : ∀ τ ∈ inertiaOff N l T, y τ = 0 by
-    obtain ⟨hy_const, hy_cocycle, -⟩ := hy
-    exact ⟨hy_const, hy_cocycle, hy_zero⟩
+  refine ⟨isLocallyConstant_of_mem_vanishingCocycles hy,
+    apply_mul_of_mem_vanishingCocycles hy, ?_⟩
   rintro τ ⟨A, ⟨h_fix, h_val, hτ⟩, hA⟩
   by_cases hAr : A.valuation (r : Ω) < 1
   · obtain ⟨σ, hσ, h_detect⟩ := exists_isFrob_forall_isTrivialAbove (e := e) (ψ := ψ) (ν := ν) hr
@@ -931,8 +921,7 @@ lemma not_cycloGalGroup_le_openCocycleKer_of_ne_zero (hc : cyclotomicPowDirichle
   have h_char : ((cyclotomicPowDirichlet l e ψ)⁻¹ cmConj : O) - 1 = -2 := by norm_num [hc]
   refine not_cycloGalGroup_le_openCocycleKer hz cmConj
     (apply_eq_zero_of_mem_vanishingCocycles hz (Set.mem_insert cmConj _)) ?_ f
-  rw [h_char]
-  exact h_two.neg.smul_eq_zero.ne.2 hz_ne
+  simpa only [h_char] using h_two.neg.smul_eq_zero.ne.2 hz_ne
 
 /-- Let `cyc ^ e ψ` be odd (value `-1` at `cmConj`) and `2` a unit of `O`. There is a finite set `Q`
 of primes `≡ 1 mod f` with this property. Let `y` be a cocycle for the dual character
@@ -1074,8 +1063,8 @@ private lemma nsmul_mem_vanishingCocycles_of_isTight {a m : ℕ} [NeZero a] (ha 
       hwσ (h_triv A hA σ hσ.mem_decompGroup)
     have hrS : r ∉ S := fun hrS ↦ hwr (hw_triv r (mem_insert_of_mem hrS))
     have h_tight_next : IsTight l e ψ m (insert p (insert r S)) := by
-      rw [insert_comm]
-      exact h_tight.insert ha hla h_two h_totient h_pow hr hw hw_tors hw_triv hwr
+      simpa only [insert_comm p r] using
+        h_tight.insert ha hla h_two h_totient h_pow hr hw hw_tors hw_triv hwr
     have h_next : l ^ (i + 1) • κ (insert r S) ∈ vanishingCocycles
         (cyclotomicPowDirichlet l (e + 1) ψ) (QuotSpan (l ^ m : O)) (inertiaOff N l ∅) :=
       ih _ (insert_subset hrQ hS) ((card_insert_le r S).trans (Nat.succ_le_succ h_card))
@@ -1106,7 +1095,8 @@ lemma exists_detecting_points_component (h_bound : IsStickelbergerBound N e X)
   -- `l ^ m ∣ X` in `O`.
   by_contra! h_blind
   set m : ℕ := X.factorization l + 1
-  have h_two : IsUnit (2 : O) := isUnit_two_of_two_lt (by lia)
+  have h_two : IsUnit (2 : O) := by
+    exact_mod_cast isUnit_natCast_of_not_dvd (O := O) (not_dvd_of_pos_of_lt two_pos (by lia : 2 < l))
   have h_totient : IsUnit (φ (N * l) : O) := isUnit_totient_mul (by lia)
   obtain ⟨a, ha, hla, h_pow, h_pow_succ⟩ :=
     exists_modEq_one_coprime_isUnit_pow_sub_one (O := O) he_ne_zero hl

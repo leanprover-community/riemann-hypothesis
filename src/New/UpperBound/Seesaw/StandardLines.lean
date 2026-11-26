@@ -452,20 +452,13 @@ lemma exists_pole_of_notMem_latticeMinus {y : ι → 𝔸f E} (hL : Y.SpansLatti
     ∃ (m : Fin s) (w : FinPlace E), m = m.rev ∧ (w ∈ P ∨ star w ∈ P) ∧
       1 < v (((lineIdele a u m)⁻¹.val * y (Y.indexEquiv (.inr m))) w) := by
   obtain ⟨hy_string, hy_line⟩ := (hL.mem_latticePlus_iff hπ).1 hy
-  obtain ⟨m, w, h_pole⟩ : ∃ (m : Fin s) (w : FinPlace E),
-      1 < v (((lineIdele a u m)⁻¹.val * y (Y.indexEquiv (.inr m))) w) := by
-    simpa only [hL.mem_latticeMinus_iff, hy_string, true_and, mem_Ô, not_forall, not_le]
-      using hy_notMem
-  -- The factor that clears this pole is not a unit at `w`.
-  have hm : m = m.rev := by
-    by_contra hm
-    exact h_pole.not_ge (by simpa [hm] using mem_Ô.1 (hy_line m) w)
-  have hw : w ∈ P ∨ star w ∈ P := by
-    by_contra hw
-    exact h_pole.not_ge
-      (by simpa only [ite_eq_left hm, finAdele_mul_apply (algebraMap E (𝔸f E) N), map_mul,
-        hπ.v_algebraMap, ite_eq_right hw, one_mul] using mem_Ô.1 (hy_line m) w)
-  exact ⟨m, w, hm, hw, h_pole⟩
+  simp only [hL.mem_latticeMinus_iff, hy_string, true_and, mem_Ô, not_forall, not_le] at hy_notMem
+  obtain ⟨m, w, h_pole⟩ := hy_notMem
+  have h_mem := mem_Ô.1 (hy_line m) w
+  have hm : m = m.rev := by_contra fun hm ↦ h_pole.not_ge (by simpa [hm] using h_mem)
+  refine ⟨m, w, hm, by_contra fun hw ↦ h_pole.not_ge ?_, h_pole⟩
+  simpa only [ite_eq_left hm, finAdele_mul_apply (algebraMap E (𝔸f E) N), map_mul,
+    hπ.v_algebraMap, ite_eq_right hw, one_mul] using h_mem
 
 /-- Let `Λ⁻ = Y.latticeMinus 1` and `Λ⁺ = Y.latticePlus 1` be the intersection with and the
 projection to the span of the string of the lattice with basis `New.gradedLatticeBasis`, and let

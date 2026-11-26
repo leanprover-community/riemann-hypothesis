@@ -17,7 +17,7 @@ form, the translations `T_γ` of functions on `ℂ^(Φ × n)` and the theta func
 * `New.Space.range_apply_finVec_eq_range_ratShift_entireTheta`: for a standard space and `φ` in the
   finite part, the values of `φ` at the finite adelic vectors are the values
   `T_γ (entireTheta φ) 0`.
-* `New.Space.isThetaFunction_iff`: for a standard space, the theta functions for `𝔞₀ⁿ` are the
+* `New.Space.exists_smul_entireTheta_of_isThetaFunction`: for a standard space, the theta functions for `𝔞₀ⁿ` are the
   multiples of the theta function of the vacuum, because the Riemann form on `𝔞₀ⁿ` is unimodular.
 
 Here `ℂ^(Φ × n)` stands for `InfinitePlace E × n → ℂ`, and `Φ w` is the embedding of `E` in `ℂ` that
@@ -539,8 +539,8 @@ lemma finrank_thetaSpace_realLattice
 A function `F` on `ℂ^(Φ × n)` is a theta function for the lattice `𝔞₀ⁿ` of `Eⁿ`, that is, entire
 and fixed by its signed translations, exactly when it is a multiple of the theta function of the
 vacuum vector of `V`. -/
-theorem Space.isThetaFunction_iff :
-    IsThetaFunction (idealLattice E n) F ↔ ∃ c : ℂ, c • entireTheta V.vacElem = F := by
+theorem Space.exists_smul_entireTheta_of_isThetaFunction (hF : IsThetaFunction (idealLattice E n) F) :
+    ∃ c : ℂ, c • entireTheta V.vacElem = F := by
   -- The theta functions are those of the Hermitian form `B` on `ℂ^(Φ × n)` for the image of
   -- `𝔞₀ⁿ`. As this lattice is unimodular, their space is spanned by that of the vacuum.
   let b : (InfinitePlace E × n → ℂ) →L[ℂ] InfinitePlace E × n → ℂ :=
@@ -552,14 +552,11 @@ theorem Space.isThetaFunction_iff :
     finrank_thetaSpace_realLattice hb
   have h_vac : entireTheta V.vacElem ∈ B.thetaSpace (canonicalMultiplier B b) :=
     (mem_thetaSpace_iff_isThetaFunction hb).2 V.isThetaFunction_vacElem
-  refine ⟨fun hF ↦ ?_, ?_⟩
-  · let θ : B.thetaSpace (canonicalMultiplier B b) := ⟨entireTheta V.vacElem, h_vac⟩
-    have hθ : θ ≠ 0 := fun h ↦ V.entireTheta_vacElem_ne_zero (congrArg Subtype.val h)
-    obtain ⟨c, hc⟩ : ∃ c : ℂ, c • θ = ⟨F, (mem_thetaSpace_iff_isThetaFunction hb).2 hF⟩ :=
-      (finrank_eq_one_iff_of_ne_zero' θ hθ).1 h_dim _
-    exact ⟨c, congrArg Subtype.val hc⟩
-  · rintro ⟨c, rfl⟩
-    exact (mem_thetaSpace_iff_isThetaFunction hb).1 (Submodule.smul_mem _ c h_vac)
+  let θ : B.thetaSpace (canonicalMultiplier B b) := ⟨entireTheta V.vacElem, h_vac⟩
+  have hθ : θ ≠ 0 := fun h ↦ V.entireTheta_vacElem_ne_zero (congrArg Subtype.val h)
+  obtain ⟨c, hc⟩ : ∃ c : ℂ, c • θ = ⟨F, (mem_thetaSpace_iff_isThetaFunction hb).2 hF⟩ :=
+    (finrank_eq_one_iff_of_ne_zero' θ hθ).1 h_dim _
+  exact ⟨c, congrArg Subtype.val hc⟩
 
 end StandardSpace
 

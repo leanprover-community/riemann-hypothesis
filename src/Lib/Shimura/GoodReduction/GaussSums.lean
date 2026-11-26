@@ -1,7 +1,10 @@
 module
 
+public import Mathlib.LinearAlgebra.Matrix.Module
+public import Mathlib.NumberTheory.SumFourSquares
 public import Lib.Shimura.GoodReduction.TorsionSizes
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Hermitian tori with multiplications, Gauss sums and unfolding of the Poincaré kernel
@@ -71,7 +74,7 @@ structure IsHermitianAction where
   /-- The adjoint of `F a` for `B` is `F (star a)`. -/
   adjoint (a : R) (x y : V) : B (F a x) y = B x (F (star a) y)
   /-- The Riemann form of `B` takes integer values on `L`. -/
-  riemannForm_integral : ∀ᵉ (l ∈ L) (m ∈ L), ∃ n : ℤ, B.riemannForm l m = n
+  riemannForm_integral : ∀ l ∈ L, ∀ m ∈ L, ∃ n : ℤ, B.riemannForm l m = n
   /-- The element `β` and its conjugate add up to `1`. -/
   star_eq_one_sub : star β = 1 - β
 

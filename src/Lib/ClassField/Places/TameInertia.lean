@@ -1,5 +1,7 @@
 module
 
+public import Aesop.BuiltinRules
+public import Mathlib.GroupTheory.Nilpotent
 public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
 public import Lib.PadicHodge.Crystalline.Basic
 
@@ -222,11 +224,11 @@ private lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq {P : Type*} [Monoid P] {
   -- Each `r ^ i • w / w` is `1` modulo the maximal ideal, but their sum over `i < n`
   -- telescopes to a multiple of `r ^ n • x - x = 0`. So `n` would not be a unit.
   have pow_fix : r ^ n • x = x := hx ⟨r ^ n, by simp [hP]⟩
-  have sum_eq : ∑ i ∈ range n, ((r ^ i).1 • w / w - 1) = -n := by
+  have sum_eq : ∑ i ∈ range n, ((r ^ i).val • w / w - 1) = -n := by
     -- `↓` rewrites the subgroup action before simp splits the sum
     simp [w, smul_div₀', ← sum_div, smul_sub, smul_smul, smul_eq_self_of_mem_zpowers _ hr,
       ← pow_succ, ↓← Subgroup.smul_def, sum_range_sub (r ^ · • x), pow_fix]
-  have h_sum_lt : A.valuation (∑ i ∈ range n, ((r ^ i).1 • w / w - 1)) < 1 :=
+  have h_sum_lt : A.valuation (∑ i ∈ range n, ((r ^ i).val • w / w - 1)) < 1 :=
     A.valuation.map_sum_lt' one_pos fun i _ ↦ valuation_smul_div_sub_one_lt_one (r ^ i).2 w_unit
   simp only [sum_eq, Valuation.map_neg, hn, lt_self_iff_false] at h_sum_lt
 

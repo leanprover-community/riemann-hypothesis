@@ -1,5 +1,12 @@
 module
 
+public import TauCeti.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
+public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.TotallySplit
 public import Lib.General.Geometry.LineBundles
 
 /-!
@@ -61,13 +68,6 @@ variable {X Y S : Scheme} {ι κ : Type} {A : CommRingCat} {i j k l : ι} {L M :
   {N : LineBundle X κ} {t : Spec A ⟶ X} {v : ι → A} {p : Y ⟶ X} {s : X ⟶ S}
 
 attribute [local instance] gradedAlgebra
-
-/-- The value of a homogeneous polynomial `a` of degree `n`, with coefficients mapped by `f`, at the
-scaled point `c • v` is `c ^ n` times its value at `v`. -/
-lemma eval₂_mul_of_isHomogeneous {σ R S : Type*} [CommRing R] [CommRing S] {n : ℕ}
-    {a : MvPolynomial σ R} (ha : a.IsHomogeneous n) (f : R →+* S) (c : S) (v : σ → S) :
-    eval₂ f (fun i : σ ↦ c * v i) a = c ^ n * eval₂ f v a := by
-  simpa only [MvPolynomial.eval_map, Pi.smul_def, smul_eq_mul] using (ha.map f).eval_smul c v
 
 /-! ### Projective space and its charts -/
 
@@ -401,11 +401,11 @@ lemma _root_.New.ProjSpace.surjective_eval₂Hom_coordFraction (i : ι) :
   have h_frac (j : ι) : φ (X i) * (coordFraction i j).val = φ (X j) := by simp [φ, mk_eq_mk']
   have h_clear (f : ℤ →+* Localization.Away (X i : MvPolynomial ι ℤ)) :
       φ (X i) ^ n * eval₂ f (fun j : ι ↦ (coordFraction i j).val) a = φ a := by
-    simp only [← eval₂_mul_of_isHomogeneous (a := a) (n := n) (by simpa using ha), h_frac]
+    simp only [← IsHomogeneous.eval₂_const_mul (p := a) (n := n) (by simpa using ha), h_frac]
     exact eval₂Hom_X f φ a
   refine ⟨a, val_injective _ ?_⟩
   rw [← HomogeneousLocalization.algebraMap_apply, map_eval₂Hom]
-  simpa [φ, mk_eq_mk', eq_mk'_iff_mul_eq, mul_comm] using h_clear _
+  simpa [mk_eq_mk', eq_mk'_iff_mul_eq, mul_comm] using h_clear _
 
 /-- Two ring maps from the sections over the chart D₊(X_i) that agree on all X_j/X_i are equal. -/
 lemma _root_.New.ProjSpace.hom_ext_of_coordSection_eq

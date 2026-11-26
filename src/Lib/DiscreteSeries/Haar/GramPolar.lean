@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 public import Lib.DiscreteSeries.Haar.GramCoordinates
 
 /-!
@@ -47,7 +48,7 @@ variable {ι n : Type} [Fintype ι] [Fintype n] [DecidableEq ι] [DecidableEq n]
 /-- The Haar measure of `U J` is invariant under right translations. -/
 instance : (volume (α := U J)).IsMulRightInvariant :=
   ⟨fun g ↦ (measurePreserving_haarU 1 g 1 (.mulRight g)
-    (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.2) (by simp)).map_eq⟩
+    (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.property) (by simp)).map_eq⟩
 
 theorem IsHermitianInvolution.norm_det : ‖J.det‖ = 1 := by
   refine (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 ?_
@@ -382,7 +383,7 @@ theorem lintegral_eq_cayleyChart_mul (hσ : IsGramSection J V σ) {K : Matrix ι
       rw [← lintegral_indicator h_meas, lintegral_eq_comp_skewAddHerm (hK.indicator h_meas),
         Set.image_comp, e.image_eq_preimage_symm,
         ← lintegral_indicator (e.symm.continuous.measurable h_meas)]
-      simp only [← Function.comp_def K, Set.indicator_comp_right]
+      simp only [← Function.comp_def K]
       rfl
     _ = (2 ^ card ι)⁻¹ * ∫⁻ p in A, ENNReal.ofReal (cayleyDensity J p.2) * K (Φ p) := by
       rw [lintegral_image_eq_lintegral_abs_det_fderiv_mul volume hA (fun p hp ↦

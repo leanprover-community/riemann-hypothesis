@@ -86,7 +86,7 @@ namespace trivialisedCocycles
 functions with u. -/
 def map (u : A.Hom B) : A.trivialisedCocycles X I →+ B.trivialisedCocycles X I :=
   AddMonoidHom.mk'
-    (fun p ↦ ⟨p.1.map (Function.comp u) (Function.comp u), by
+    (fun p ↦ ⟨p.val.map (Function.comp u) (Function.comp u), by
       obtain ⟨⟨f, z⟩, h_cont, h_triv, h_zero⟩ := p
       refine ⟨by dsimp only [Prod.map_snd]; fun_prop, fun g x ↦ ?_, fun g hg ↦ ?_⟩
       · simpa [u.isIntertwining] using congrArg u (h_triv g x)
@@ -142,7 +142,7 @@ lemma snd_mem_Z1 [Nonempty X] {p : (X → V) × (G → V)} (hp : p ∈ V.trivial
   -- Compute the action of `g * k` on the trivialisation at any point `y` in two ways.
   obtain ⟨y⟩ : Nonempty X := inferInstance
   have h_two_ways : f ((g * k) • y) + z (g * k) = f ((g * k) • y) + (z g + V.ρ g (z k)) := by
-    rw [← h_triv, map_mul, Module.End.mul_apply, h_triv, map_add, h_triv, mul_smul, add_assoc]
+    rw [← h_triv, map_mul, mul_apply_eq_comp, h_triv, map_add, h_triv, mul_smul, add_assoc]
   exact add_left_cancel h_two_ways
 
 /-- Let the points `x i` represent the orbits of `G` on `X`, and let `z` be a cocycle that vanishes
@@ -163,7 +163,7 @@ lemma exists_mem_of_orbit_reps {κ : Sort*} {x : κ → X}
       V.ρ a (m j) - z a = V.ρ b (m j) - z b := by
     have h_fixes : (b⁻¹ * a) • x j = x j := by rw [mul_smul, hab, inv_smul_smul]
     have h_cocycle : z a = z b + V.ρ b (z (b⁻¹ * a)) := by rw [← hz_cocycle, mul_inv_cancel_left]
-    rw [h_cocycle, h_stab j _ h_fixes, map_sub, ← Module.End.mul_apply, ← map_mul,
+    rw [h_cocycle, h_stab j _ h_fixes, map_sub, ← mul_apply_eq_comp, ← map_mul,
       mul_inv_cancel_left]
     abel
   obtain ⟨i, s, hs⟩ : ∃ (i : X → κ) (s : X → G), ∀ y : X, s y • x (i y) = y := by
@@ -176,7 +176,7 @@ lemma exists_mem_of_orbit_reps {κ : Sort*} {x : κ → X}
     have h_same_point : s (g • y) • x (i y) = (g * s y) • x (i y) := by rw [h_point, ← h_index, hs]
     have h_value : V.ρ (s (g • y)) (m (i y)) - z (s (g • y)) =
         V.ρ (g * s y) (m (i y)) - z (g * s y) := h_well (i y) _ _ h_same_point
-    simp only [h_index, h_value, hz_cocycle, map_mul, map_sub, Module.End.mul_apply]
+    simp only [h_index, h_value, hz_cocycle, map_mul, map_sub, mul_apply_eq_comp]
     abel
   · have h_index : j = i (x j) := index_unique _ _ (s (x j)) (hs _)
     have h_fix : s (x j) • x j = x j := by simpa only [← h_index] using hs (x j)
@@ -225,8 +225,8 @@ lemma corestrict_mem [IsTopologicalGroup G] (P : OpenSubgroup G) [Fintype (G ⧸
       rw [← h_point]
       exact h_triv ⟨x.out⁻¹ * g * (g⁻¹ • x).out, out_inv_mul_mul_out_mem P.toSubgroup g x⟩
         ((g⁻¹ • x).out⁻¹ • y)
-    rw [← map_add, ← h_term, ← Module.End.mul_apply, ← map_mul, mul_assoc,
-      mul_inv_cancel_left, map_mul, Module.End.mul_apply, toPerm_apply]
+    rw [← map_add, ← h_term, ← mul_apply_eq_comp, ← map_mul, mul_assoc,
+      mul_inv_cancel_left, map_mul, mul_apply_eq_comp, toPerm_apply]
   · -- All conjugates of `g` lie in `I`, hence in `P`: `g` fixes every coset and each term is `0`.
     have h_fix (x : G ⧸ P.toSubgroup) : g⁻¹ • x = x := by
       induction x using QuotientGroup.induction_on with
@@ -460,6 +460,12 @@ private noncomputable abbrev liftToFixedField :
   s.liftToSubgroup U.1 ⟨⊤, normal_top⟩ le_rfl le_top (fun g _ ↦ s.cyclotomicCharMod_eq_one _ g.2) _
     out_eq'
 
+private noncomputable abbrev conjugateTameGenerator {γ : ι → G}
+    (hγ : ∀ i, IsTameGeneratorFor m (s.valuationSubring i) (γ i))
+    (θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup) : U.toOpenSubgroup.toSubgroup :=
+  ⟨θ.snd.out⁻¹ * γ θ.fst * θ.snd.out⁻¹⁻¹,
+    U.isNormal'.conj_mem _ (s.decompGroup_le (s.isPlaceOver _) (hγ _).1.1) _⟩
+
 /-- For `θ = (i, g)`, the Kummer character of an element `x` of the field of `U` takes at
 `g⁻¹ (γ i) g` the value `cyclotomicCharMod Ω m g⁻¹` times the order of `x` at the prime
 `(liftToFixedField s).v θ`. -/
@@ -468,9 +474,8 @@ private lemma kummer_conj_liftToFixedField {γ : ι → G}
     {κ : (unitsModule U.toOpenSubgroup.toSubgroup).H0 →+
       Z1 (Representation.trivial ℤ U.toOpenSubgroup.toSubgroup (ZMod m))}
     (hκ : IsKummerMap κ) (θ : ι × G ⧸ U.toOpenSubgroup.toSubgroup)
-    (h_mem : θ.snd.out⁻¹ * γ θ.fst * θ.snd.out⁻¹⁻¹ ∈ U.toOpenSubgroup.toSubgroup)
     (x : (fixedFieldOf U.toOpenSubgroup.toSubgroup)ˣ) :
-    (κ (ofBase U.toOpenSubgroup.toSubgroup Ω (.ofMul x))).val ⟨_, h_mem⟩ =
+    (κ (ofBase U.toOpenSubgroup.toSubgroup Ω (.ofMul x))).val (conjugateTameGenerator s hγ θ) =
       cyclotomicCharMod Ω m θ.snd.out⁻¹ *
         ↑(-(((liftToFixedField s).v θ).valuation (fixedFieldOf U.toOpenSubgroup.toSubgroup)
           x.val).log) := by
@@ -599,9 +604,9 @@ private lemma IsLargeLevel.SplitPlaces.sum_ord_smul_kummer_frob_eq_zero [Fintype
   -- Artin's law: the symbol `(χ, x)` dies on the stabiliser of `r`, which contains the complex
   -- conjugations.
   have h_artin : abelianLift χ (artinMap Q (principalIdele x.toMul)) = 1 :=
-    artin_reciprocity ⟨_, IsProGalois.isOpen_stabilizer r.toMul.1⟩
+    artin_reciprocity ⟨_, IsProGalois.isOpen_stabilizer r.toMul.val⟩
       (fun q hq ↦ congrArg (fun z : DiscreteUnits Ω ↦ z.toMul.val) (h_cc q hq))
-      (resH2_cyclicClass_eq_zero hx fun q ↦ ⟨ext q.2, χ_tors q⟩)
+      (resH2_cyclicClass_eq_zero hx fun q ↦ ⟨ext q.property, χ_tors q⟩)
   refine sum_ord_smul_frob_eq_zero (n := m) (Subtype.ext (funext χ_tors)) h_artin S.v_injective
     S.isPlaceOver (fun θ ↦ (S.isFrob θ).left)
     (fun θ ↦ χ_ine (S.isPlaceOver θ) (S.level_notMem θ)) fun u hu ↦ ?_
@@ -636,11 +641,7 @@ private lemma IsLargeLevel.SplitPlaces.sum_symbol_smul_snd_generators_eq_zero {�
   let F : IntermediateField K Ω := fixedFieldOf Q
   let S := liftToFixedField s
   have h_inj : Function.Injective (rootPowHom Ω m).val := (rootPowHom Ω m).prop.left
-  have hγ_mem (i : ι) : γ i ∈ Q := by
-    obtain ⟨⟨hγ_dec, -⟩, -⟩ := hγ i
-    exact s.decompGroup_le (s.isPlaceOver i) hγ_dec
-  let γ' (θ : ι × G ⧸ Q) : Q :=
-    ⟨θ.snd.out⁻¹ * γ θ.fst * θ.snd.out⁻¹⁻¹, U.isNormal'.conj_mem _ (hγ_mem θ.fst) _⟩
+  let γ' := conjugateTameGenerator s hγ
   obtain ⟨z_cts, z_mul⟩ : P.snd ∈ Z1 V.ρ := snd_mem_Z1 hP
   obtain ⟨-, -, hP_zero⟩ := mem_trivialisedCocycles.mp hP
   obtain ⟨y, y_unit, y_fix⟩ := y
@@ -649,18 +650,18 @@ private lemma IsLargeLevel.SplitPlaces.sum_symbol_smul_snd_generators_eq_zero {�
   refine eq_zero_of_forall_hom_eq_zero
     ((bijective_ofZMod_comp (char_nsmul_eq_zero m)).surjective.forall.mpr fun l ↦ ?_)
   -- `l ∘ z` is additive on `U`, which acts trivially on `V`
-  obtain ⟨r, x, hx, hr⟩ : ∃ (r : DiscreteUnits Ω) (x : Additive Fˣ), m • r = ofBase Q Ω x ∧
-      ∀ q : Q, (rootPowHom Ω m).val (l (P.snd q)) = unitsRep q r - r :=
-    exists_kummer_root (fun q ↦ S.cyclotomicCharMod_eq_one q ⟨⟩) _ (by fun_prop)
-      fun g k ↦ by simp [z_mul, h_triv _]
+  obtain ⟨r, x, hx, hr⟩ :=
+    exists_kummer_root (fun q ↦ S.cyclotomicCharMod_eq_one q ⟨⟩)
+      (fun q : Q ↦ l (P.snd q)) (by fun_prop) fun g k ↦ by simp [z_mul, h_triv _]
   have r_fix (q : Q) (h : P.snd q = 0) : unitsRep q r = r := by simp [← sub_eq_zero, ← hr, h]
   -- `l ∘ z` and `κ x` have the same root of unity at each `γ' θ`
   have l_γ (θ : ι × G ⧸ Q) : l (V.ρ θ.snd.out⁻¹ (P.snd (γ θ.fst))) =
       cyclotomicCharMod Ω m θ.snd.out⁻¹ * ↑(-((S.v θ).valuation F x.toMul.val).log) :=
     calc _ = l (P.snd (γ' θ)) :=
-        congrArg l (cocycle_conj_eq_smul (a := V.ρ) z_mul (h_triv _ (hγ_mem _) _)).symm
+        congrArg l (cocycle_conj_eq_smul (a := V.ρ) z_mul
+          (h_triv _ (s.decompGroup_le (s.isPlaceOver _) (hγ _).1.1) _)).symm
       _ = (κ (ofBase Q Ω x)).val (γ' θ) := h_inj (by rw [hr, hκ _ r hx])
-      _ = _ := kummer_conj_liftToFixedField s hγ hκ θ _ x.toMul
+      _ = _ := kummer_conj_liftToFixedField s hγ hκ θ x.toMul
   -- The character `χ = κ y / m`, with values in `ℚ/ℤ`, and Artin's law for `(χ, x)`: `r` is fixed
   -- wherever `z` vanishes, in particular at the complex conjugations and on the decomposition
   -- groups above `N`.
@@ -687,7 +688,7 @@ family `liftToFixedField s`, and of order `cyclotomicCharMod Ω m g * f (i, g)` 
 `(i, g)`. Then `z = κ x • a` is trivialised at the places above `N` and infinity, and its
 corestriction to `G` has the values `z (γ i) = ∑ g, g (f (i, g) • a)`. -/
 private lemma IsLargeLevel.SplitPlaces.exists_mem_trivialisedCocycles_of_valuation {γ : ι → G}
-    (hγ : ∀ i : ι, IsTameGeneratorFor m (s.valuationSubring i) (γ i)) [Fintype ι]
+    (hγ : ∀ i : ι, IsTameGeneratorFor m (s.valuationSubring i) (γ i))
     (h_triv : V.TrivialOn U.toOpenSubgroup.toSubgroup)
     [IsTotallyComplex (fixedFieldOf U.toOpenSubgroup.toSubgroup)]
     {κ : (unitsModule U.toOpenSubgroup.toSubgroup).H0 →+
@@ -709,18 +710,14 @@ private lemma IsLargeLevel.SplitPlaces.exists_mem_trivialisedCocycles_of_valuati
   let S := liftToFixedField s
   have h_inj : Function.Injective (rootPowHom Ω m).val := (rootPowHom Ω m).prop.left
   have h_place (u : FinPlace F) : IsPlaceOver (placeOver u) u := u.isPlaceOver_placeOver
-  have hγ_mem (i : ι) : γ i ∈ Q := by
-    obtain ⟨⟨hγ_dec, -⟩, -⟩ := hγ i
-    exact s.decompGroup_le (s.isPlaceOver i) hγ_dec
   choose root h_root using fun x : DiscreteUnits Ω ↦ exists_nsmul x (NeZero.ne m)
   have κ_fix (x : ↥(unitsModule Q).H0) (q : Q) (h : unitsRep q (root x.val) = root x.val) :
       (κ x).val q = 0 :=
     h_inj (by simp [hκ x _ (h_root _), h])
-  let γ' (θ : ι × G ⧸ Q) : Q :=
-    ⟨θ.snd.out⁻¹ * γ θ.fst * θ.snd.out⁻¹⁻¹, U.isNormal'.conj_mem _ (hγ_mem θ.fst) _⟩
+  let γ' := conjugateTameGenerator s hγ
   have κ_γ (θ : ι × G ⧸ Q) : (κ (ofBase Q Ω (.ofMul x))).val (γ' θ) =
       cyclotomicCharMod Ω m θ.snd.out⁻¹ * ↑(-((S.v θ).valuation F x.val).log) :=
-    kummer_conj_liftToFixedField s hγ hκ θ _ x
+    kummer_conj_liftToFixedField s hγ hκ θ x
 
   -- The cocycle `z = κ x • a` of `U` vanishes on `I` and on the stabilisers of the places above
   -- `N` and infinity, so it is trivialised by `0` at representatives of the orbits.
@@ -760,8 +757,8 @@ private lemma IsLargeLevel.SplitPlaces.exists_mem_trivialisedCocycles_of_valuati
   have h_value : z (γ' (i, δ)) = f (i, δ) • a := by simp [z, xFixed, κ_γ, h_ord]
   have h_coset : (γ i)⁻¹ • δ = δ := by
     induction δ using QuotientGroup.induction_on with
-    | H g => simp [(eq_one_iff (N := Q) _).mpr, hγ_mem]
-  simp [← h_value, γ', h_coset]
+    | H g => simp [s.decompGroup_le (s.isPlaceOver i) (hγ i).1.1]
+  simp [← h_value, γ', conjugateTameGenerator, h_coset]
 
 /-- Part (d) of `New.IsLargeLevel.SplitPlaces.power_residue_reciprocity`: let the field of `U` be
 totally complex. A family `f` that satisfies the relations of the symbols `b` gives, for each

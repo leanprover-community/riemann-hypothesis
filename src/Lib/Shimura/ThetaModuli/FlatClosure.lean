@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Algebra.Order.Group.Ideal
 public import Lib.General.Algebra.MultivariatePolynomials
 public import Lib.General.Geometry.GeometricPoints
 public import Lib.General.LinearAlgebra.MatrixPolynomials
@@ -579,12 +580,15 @@ section Charts
 variable {J : Type} {X : Scheme} {R : CommRingCat} {L : LineBundle X J} {s : X ⟶ Spec R}
   {u : ∀ c : J, MvPolynomial J R →+* Γ(X, L.opens c)}
 
+private abbrev chartPresentationCover (hu : ∀ c : J, IsChartPresentation L s c (u c)) :
+    X.OpenCover :=
+  (AffineOpenCover.ofIsOpenCover _ (cover L) fun c ↦ (hu c).isAffineOpen).openCover
+
 /-- `X` is flat over `Spec R` if the ring of each chart is a flat `R`-module. -/
 lemma flat_of_isChartPresentation (hu : ∀ c : J, IsChartPresentation L s c (u c))
     (h_flat : ∀ c : J, Module.Flat R (MvPolynomial J R ⧸ ker (u c))) : Flat s := by
-  let charts : X.OpenCover :=
-    (AffineOpenCover.ofIsOpenCover _ (cover L) fun c ↦ (hu c).isAffineOpen).openCover
-  refine HasRingHomProperty.instIsZariskiLocalAtSource.of_openCover charts fun c ↦ ?_
+  refine HasRingHomProperty.instIsZariskiLocalAtSource.of_openCover
+    (chartPresentationCover hu) fun c ↦ ?_
   -- (`RespectsIso` takes the property with its implicit arguments, hence `@`)
   obtain ⟨h_comp_equiv, -⟩ : RingHom.RespectsIso @RingHom.Flat := respectsIso
   have h_alg : ((u c).comp C).Flat := h_comp_equiv _
@@ -595,8 +599,7 @@ lemma flat_of_isChartPresentation (hu : ∀ c : J, IsChartPresentation L s c (u 
 /-- `X` is reduced if the ideal of each chart is radical. -/
 lemma isReduced_of_isChartPresentation (hu : ∀ c : J, IsChartPresentation L s c (u c))
     (h_rad : ∀ c : J, (ker (u c)).IsRadical) : IsReduced X := by
-  let charts : X.OpenCover :=
-    (AffineOpenCover.ofIsOpenCover _ (cover L) fun c ↦ (hu c).isAffineOpen).openCover
+  let charts := chartPresentationCover hu
   have h_chart (c : charts.I₀) : IsReduced (charts.X c) :=
     (affine_isReduced_iff _).mpr
       ((ker_isRadical_iff_reduced_of_surjective (hu c).surjective).mp (h_rad c))
@@ -680,7 +683,7 @@ lies in the kernel of `u` exactly when, for every `a` and every `ψ : stalk → 
 factors, the image of `f` under `ψ` vanishes at every point `θ a v / (θ a v) c` with
 `(θ a v) c ≠ 0`. -/
 lemma IsChartPresentation.mem_ker_stalk_iff {J W ι : Type} [Finite ι] {A S : Scheme} [IsReduced A]
-    [IsReduced S] {N : LineBundle A J} {z : A ⟶ S} {p : S} {c : J}
+    {N : LineBundle A J} {z : A ⟶ S} {p : S} {c : J}
     {u : MvPolynomial J (S.presheaf.stalk p) →+*
       Γ(pullback z (S.fromSpecStalk p), (N.pull (fst z (S.fromSpecStalk p))).opens c)}
     (hu : IsChartPresentation (N.pull (fst z (S.fromSpecStalk p))) (snd z (S.fromSpecStalk p)) c u)

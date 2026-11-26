@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Algebra.AffineMonoid.UniqueSums
+public import Mathlib.LinearAlgebra.FixedSubmodule
 public import Lib.Shimura.CongruenceRelation.KernelReduction
 
 /-!
@@ -133,24 +135,18 @@ lemma adjoin_eq_top_and_exists_algHom_eq_smul {B : Type*} [CommRing B] [Algebra 
     {τ : B} {N : ℕ} (hN : τ ^ N = 0) (h_dvd : ∀ b : B, z b = 0 → τ ∣ b) :
     k[τ] = ⊤ ∧ ∀ a : k, ∃ σ : B →ₐ[k] B, σ τ = a • τ := by
   -- Descending induction: write `b = τ * d + z b`.
-  have h_desc (m : ℕ) (h_mem : ∀ b : B, τ ^ m * b ∈ k[τ]) : k[τ] = ⊤ := by
-    induction m with
-    | zero => simpa [SetLike.ext_iff] using h_mem
-    | succ m ih =>
-      refine ih fun b ↦ ?_
-      obtain ⟨d, hd⟩ := h_dvd (b - z b • 1) (by simp)
-      rw [eq_add_of_sub_eq hd]
-      simp [mul_add, ← mul_assoc, ← pow_succ, add_mem_cancel_left, h_mem, Subalgebra.smul_mem,
-        pow_mem]
-  have h_top : k[τ] = ⊤ := h_desc N (by simp [hN])
+  have h_top : k[τ] = ⊤ :=
+    Nat.rec (motive := fun m ↦ (∀ b : B, τ ^ m * b ∈ k[τ]) → k[τ] = ⊤)
+      (fun h ↦ by simpa [SetLike.ext_iff] using h)
+      (fun m ih h ↦ ih fun b ↦ by
+        obtain ⟨d, hd⟩ := h_dvd (b - z b • 1) (by simp)
+        rw [eq_add_of_sub_eq hd, mul_add, ← mul_assoc, ← pow_succ]
+        exact add_mem (h d) (by simp [Subalgebra.smul_mem, pow_mem])) N (by simp [hN])
   -- The minimal polynomial of `τ` is a power of `X`, so it also kills `a • τ`.
   obtain ⟨m, -, hm⟩ := (dvd_prime_pow prime_X N).mp (dvd k τ (by simp [hN]))
-  have h_minpoly_ne : minpoly k τ ≠ 0 := by simp [hm.eq_zero_iff]
-  let pb : PowerBasis k B := PowerBasis.ofAdjoinEqTop (ne_zero_iff.mp h_minpoly_ne) h_top
-  have hτ : τ ^ m = 0 := by simpa [dvd_iff] using hm.dvd
-  refine ⟨h_top, fun a ↦ ?_⟩
-  have h_aeval : aeval (a • τ) (X ^ m : k[X]) = 0 := by simp [_root_.smul_pow, hτ]
-  exact ⟨pb.lift (a • τ) (aeval_eq_zero_of_dvd_aeval_eq_zero hm.dvd' h_aeval), pb.lift_gen _ _⟩
+  let pb := PowerBasis.ofAdjoinEqTop (ne_zero_iff.mp (by simp [hm.eq_zero_iff])) h_top
+  exact ⟨h_top, fun a ↦ ⟨pb.lift (a • τ) (aeval_eq_zero_of_dvd_aeval_eq_zero hm.dvd' <| by
+    simp [_root_.smul_pow, (by simpa [dvd_iff] using hm.dvd : τ ^ m = 0)]), pb.lift_gen _ _⟩⟩
 
 omit [IsAlgClosed k] in
 /-- In a local `k`-algebra `B` with a `k`-point `z`, every `t ≠ 0` has a linear form `γ` with

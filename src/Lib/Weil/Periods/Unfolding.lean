@@ -65,7 +65,7 @@ lemma New.exists_equiv_quotient_prod_block {Λ Y : Type*} [Group Λ] [MulAction 
     rintro ⟨q, y⟩ ⟨q', y'⟩ h_eq
     have h_smul : q.out • (y : Y) = q'.out • (y' : Y) := congrArg Subtype.val h_eq
     have h_mem : q.out⁻¹ * q'.out ∈ S :=
-      (hC _ _ y'.2).1 (by simp [mul_smul, ← h_smul])
+      (hC _ _ y'.property).1 (by simp [mul_smul, ← h_smul])
     obtain rfl : q = q' := by simpa using QuotientGroup.eq.2 h_mem
     exact Prod.ext rfl (Subtype.ext (MulAction.injective _ h_smul))
   have f_surj : Function.Surjective f := by
@@ -92,8 +92,9 @@ variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq �
 `V → V'`, with `γ` and `δ` in rational coordinates. -/
 noncomputable def ratSubst (p : Y.ratBessel × V'.ratParabolic d) :
     ratMatrices E ι' ι →+ ratMatrices E ι' ι :=
-  .mk' (fun w ↦ ⟨V'.ratCoordMatrix p.2 * (w.1 * V.ratCoordMatrix p⁻¹.1),
-    mul_mem_ratMatrices p⁻¹.1.2.1 p.2.2.1 w.2⟩) (by simp [Matrix.add_mul, Matrix.mul_add])
+  .mk' (fun w ↦ ⟨V'.ratCoordMatrix p.2 * (w.val * V.ratCoordMatrix p⁻¹.1),
+    mul_mem_ratMatrices p⁻¹.1.property.1 p.2.property.1 w.property⟩) (by simp [Matrix.add_mul,
+      Matrix.mul_add])
 
 section
 
@@ -128,7 +129,7 @@ omit [Fintype X'] in
 lemma agreesWithStringMap_out_smul (hd_le : d ≤ Y'.gradeOf ⊔ 0)
     (p : Y.ratBessel × V'.ratParabolic d) (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) :
     Y.AgreesWithStringMap Y' (p • w).out ↔
-      Y.AgreesWithStringMap Y' (V'.ratCoordMatrix p.2 * (w.out.1 * V.ratCoordMatrix p⁻¹.1)) :=
+      Y.AgreesWithStringMap Y' (V'.ratCoordMatrix p.2 * (w.out.val * V.ratCoordMatrix p⁻¹.1)) :=
   agreesWithStringMap_congr_rat hd_le (mk_out_smul p w)
 
 end
@@ -139,7 +140,7 @@ representative of `w`, of the twisted Weil translate of `Φ` by `(r, h)`. For we
 `Y'.stringReversal` any representative gives the same value (`constTerm_out`). -/
 noncomputable def classTerm (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) (h : G E ε')
     (r : Y.besselGroup) : ℂ :=
-  W r * Y.constTerm d (twistedPairWeil α (r.1, h) Φ) w.out
+  W r * Y.constTerm d (twistedPairWeil α (r.val, h) Φ) w.out
 
 /-- For `W` equivariant and `d` odd, the term of a class is jointly continuous in `(h, r)`. -/
 lemma continuous_classTerm (hW : Y.IsEquivariant W)
@@ -160,9 +161,9 @@ lemma classTerm_smul (hW : Y.IsEquivariant W)
     classTerm α Φ W ((γ, δ) • w) (δ * h) (Subgroup.inclusion inf_le_right γ * r) =
       classTerm α Φ W w h r := by
   -- The constant term may be read at `δ w γ⁻¹`, and translating by `(γ, δ)` substitutes back.
-  rw [classTerm, hW.rat_mul _ γ.2.1 r, constTerm_congr_rat hd _ _ (mk_out_smul (γ, δ) w)]
-  simp [classTerm, ratSubst, constTerm_mul_of_mem_ratBessel hd γ.2 δ.2, Matrix.mul_assoc,
-    ← map_mul, ← (V'.ratCoordMatrix _⁻¹).mul_assoc]
+  rw [classTerm, hW.rat_mul _ γ.property.1 r, constTerm_congr_rat hd _ _ (mk_out_smul (γ, δ) w)]
+  simp [classTerm, ratSubst, constTerm_mul_of_mem_ratBessel hd γ.property δ.property,
+    Matrix.mul_assoc, ← map_mul, ← (V'.ratCoordMatrix _⁻¹).mul_assoc]
 
 /-- Let `W` on the Bessel group of `Y` be equivariant (`New.Grading.IsEquivariant`) and let the
 weights `d` be odd under `Y'.stringReversal`. The sum of the norms of the terms
@@ -173,7 +174,7 @@ lemma exists_tsum_enorm_classTerm_le (hW : Y.IsEquivariant W)
     (hd : ∀ b : ι', d (Y'.stringReversal b) = -d b) :
     ∃ a : NNReal, ∀ (h : G E ε') (δ : V'.ratParabolic d)
       (S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d)) (r : Y.besselGroup),
-      ∑' w : S, ‖classTerm α Φ W w.1 h r‖ₑ ≤ ‖pairWeil V V' (α ι) (α ι') (1, δ * h)‖ₑ * a := by
+      ∑' w : S, ‖classTerm α Φ W w.val h r‖ₑ ≤ ‖pairWeil V V' (α ι) (α ι') (1, δ * h)‖ₑ * a := by
   -- The norms of the constant terms of any datum `Ψ` have sum at most `b ‖Ψ‖`. Every `r` has a
   -- rational translate `γ * r` in the compact set `K`, and for `r` in `K` the datum
   -- `W r • twistedPairWeil α (r, 1) Φ` has norm at most `a`.
@@ -184,19 +185,19 @@ lemma exists_tsum_enorm_classTerm_le (hW : Y.IsEquivariant W)
     Y.exists_tsum_enorm_constTerm_le hd
   obtain ⟨K, hK, K_covers⟩ := Y.isCocompact_ratBessel
   obtain ⟨a, ha⟩ : BddAbove
-      ((fun r : Y.besselGroup ↦ ‖W r • twistedPairWeil α (r.1, 1) Φ‖₊) '' K) :=
+      ((fun r : Y.besselGroup ↦ ‖W r • twistedPairWeil α (r.val, 1) Φ‖₊) '' K) :=
     hK.bddAbove_image (by with_reducible fun_prop)
   refine ⟨b * a, fun h δ S r ↦ ?_⟩
   obtain ⟨γ, γ_rat, γ_mem⟩ := K_covers r
   let γ₀ : Y.ratBessel := ⟨γ, γ_rat⟩
   set ρ : 𝒮 (V.hom V') →L[ℂ] 𝒮 (V.hom V') := pairWeil V V' (α ι) (α ι') (1, δ * h) with hρ
-  set Ψ : 𝒮 (V.hom V') := W (γ * r) • twistedPairWeil α ((γ * r).1, 1) Φ with hΨ
+  set Ψ : 𝒮 (V.hom V') := W (γ * r) • twistedPairWeil α ((γ * r).val, 1) Φ with hΨ
   have Ψ_le : ‖Ψ‖ₑ ≤ a := ENNReal.coe_le_coe.2 (ha ⟨γ * r, γ_mem, rfl⟩)
   -- The constant term is linear in the datum, and `(1, δ h) (γ r, 1) = (γ r, δ h)`.
   have term_eq (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) :
       classTerm α Φ W w (δ * h) (γ * r) = Y.constTerm d (ρ Ψ) w.out := by
     simp [hρ, hΨ, classTerm, constTerm_eq_theta_zeroTerm D h_frame, rep_apply_apply]
-  calc _ = ∑' w : S, ‖classTerm α Φ W ((γ₀, δ) • w.1) (δ * h) (γ * r)‖ₑ :=
+  calc _ = ∑' w : S, ‖classTerm α Φ W ((γ₀, δ) • w.val) (δ * h) (γ * r)‖ₑ :=
         tsum_congr fun w ↦ congrArg _ (classTerm_smul Y' α Φ hW hd γ₀ δ w h r).symm
     _ ≤ ∑' w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d, ‖classTerm α Φ W w (δ * h) (γ * r)‖ₑ :=
         tsum_comp_le_tsum_of_injective (MulAction.injective (γ₀, δ)).injOn.injective
@@ -210,7 +211,7 @@ lemma exists_tsum_enorm_classTerm_le (hW : Y.IsEquivariant W)
 lemma lintegral_tsum_enorm_classTerm_lt_top (hW : Y.IsEquivariant W)
     (hd : ∀ b : ι', d (Y'.stringReversal b) = -d b) (h : G E ε')
     (S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d)) :
-    ∫⁻ r : Y.besselGroup, ∑' w : S, ‖classTerm α Φ W w.1 h r‖ₑ ∂Y.besselMeasure < ∞ := by
+    ∫⁻ r : Y.besselGroup, ∑' w : S, ‖classTerm α Φ W w.val h r‖ₑ ∂Y.besselMeasure < ∞ := by
   obtain ⟨a, ha⟩ := exists_tsum_enorm_classTerm_le Y' α Φ hW hd
   exact IsFiniteMeasure.lintegral_lt_top_of_bounded_to_ennreal Y.besselMeasure ⟨_, ha h 1 S⟩
 
@@ -219,8 +220,8 @@ to the integral of the sum. -/
 lemma hasSum_integral_classTerm (hW : Y.IsEquivariant W)
     (hd : ∀ b : ι', d (Y'.stringReversal b) = -d b) (h : G E ε')
     (S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d)) :
-    HasSum (fun w : S ↦ ∫ r : Y.besselGroup, classTerm α Φ W w.1 h r ∂Y.besselMeasure)
-      (∫ r : Y.besselGroup, ∑' w : S, classTerm α Φ W w.1 h r ∂Y.besselMeasure) := by
+    HasSum (fun w : S ↦ ∫ r : Y.besselGroup, classTerm α Φ W w.val h r ∂Y.besselMeasure)
+      (∫ r : Y.besselGroup, ∑' w : S, classTerm α Φ W w.val h r ∂Y.besselMeasure) := by
   have term_cont (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) : Continuous ↿(classTerm α Φ W w) :=
     continuous_classTerm Y' α Φ hW hd w
   exact hasSum_integral_of_lintegral_tsum_lt_top
@@ -236,9 +237,9 @@ lemma exists_classTerm_mul_eq_of_not_survives (hW : Y.IsEquivariant W)
       ∀ r : Y.besselGroup, classTerm α Φ W w h (u * r) = c • classTerm α Φ W w h r := by
   obtain ⟨u, hu, ⟨u_deg, wu_deg⟩, phase_ne⟩ : ∃ u ∈ Y.unipotent,
       (HasDegreeGe Y.gradeOf Y.gradeOf 2 (V.ratCoordMatrix u - 1) ∧
-        HasDegreeGe d Y.gradeOf 1 (w.out.1 * (V.ratCoordMatrix u - 1))) ∧
+        HasDegreeGe d Y.gradeOf 1 (w.out.val * (V.ratCoordMatrix u - 1))) ∧
       V.homBicharacter V' (Y.stringMap Y' * V.ratCoordMatrix u) (Y.stringMap Y') ≠
-        V.homBicharacter V' (w.out.1 * V.ratCoordMatrix u) w.out := by
+        V.homBicharacter V' (w.out.val * V.ratCoordMatrix u) w.out := by
     simpa only [not_forall, exists_prop] using h_killed
   -- The constant is the quotient of the two phases (`IsEquivariant.unipotent_mul_constTerm`).
   let u' : Y.besselGroup := ⟨u, Y.unipotent_le_besselGroup hu⟩
@@ -255,7 +256,7 @@ lemma integral_tsum_classTerm_eq_zero (hW : Y.IsEquivariant W)
     (hd : ∀ b : ι', d (Y'.stringReversal b) = -d b) (h : G E ε')
     {S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d)} (h_killed : ∀ w ∈ S, ¬Y.Survives Y' d w.out)
     (h_stable : ∀ w ∈ S, ∀ γ : Y.ratBessel, (γ, (1 : V'.ratParabolic d)) • w ∈ S) :
-    ∫ r : Y.besselGroup, ∑' w : S, classTerm α Φ W w.1 h r ∂Y.besselMeasure = 0 := by
+    ∫ r : Y.besselGroup, ∑' w : S, classTerm α Φ W w.val h r ∂Y.besselMeasure = 0 := by
   have term_cont (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) : Continuous ↿(classTerm α Φ W w) :=
     continuous_classTerm Y' α Φ hW hd w
   -- `Y.ratBessel` acts on `S`, and embeds by `i` in the Bessel group; the terms are equivariant.
@@ -264,16 +265,16 @@ lemma integral_tsum_classTerm_eq_zero (hW : Y.IsEquivariant W)
     ⟨S, fun γ w hw ↦ h_stable w hw γ⟩
   let i : Y.ratBessel →* Y.besselGroup := Subgroup.inclusion inf_le_right
   have term_smul (γ : Y.ratBessel) (w : Z) (r : Y.besselGroup) :
-      classTerm α Φ W (γ • w : Z).1 h (i γ * r) = classTerm α Φ W w.1 h r := by
-    change classTerm α Φ W ((γ, (1 : V'.ratParabolic d)) • w.1) h _ = _
+      classTerm α Φ W (γ • w : Z).val h (i γ * r) = classTerm α Φ W w.val h r := by
+    change classTerm α Φ W ((γ, (1 : V'.ratParabolic d)) • w.val) h _ = _
     simpa using classTerm_smul Y' α Φ hW hd γ 1 w h r
   -- Each orbit unfolds to an integral over the quotient by the stabiliser; there left translation
   -- by some `u` multiplies the term by a constant `c ≠ 1` of modulus one.
   have orbit_zero (q : Quot (orbitRel Y.ratBessel Z)) : ∑' w : Quot.mk _ ⁻¹' {q},
-      ∫ r : Y.besselGroup, classTerm α Φ W (w.1 : Z).1 h r ∂Y.besselMeasure = 0 := by
+      ∫ r : Y.besselGroup, classTerm α Φ W (w.val : Z).val h r ∂Y.besselMeasure = 0 := by
     obtain ⟨o⟩ := q
     obtain ⟨u, c, c_norm, c_ne, twist⟩ :=
-      exists_classTerm_mul_eq_of_not_survives Y' α Φ hW hd h (h_killed _ o.2)
+      exists_classTerm_mul_eq_of_not_survives Y' α Φ hW hd h (h_killed _ o.property)
     -- The stabiliser is written as an intersection so that it is seen to be discrete.
     have stab_eq : (stabilizer Y.ratBessel o).map i =
         Y.ratBessel.subgroupOf Y.besselGroup ⊓ (stabilizer Y.ratBessel o).map i :=
@@ -282,7 +283,7 @@ lemma integral_tsum_classTerm_eq_zero (hW : Y.IsEquivariant W)
         w ∈ Quot.mk (orbitRel Y.ratBessel Z) ⁻¹' {Quot.mk _ o} ↔ o ∈ orbit Y.ratBessel w :=
       Quotient.eq.trans comm
     obtain ⟨fixes, unfold⟩ := integral_tsum_orbit (μ := .haar)
-      (k := fun w : Z ↦ classTerm α Φ W w.1 h) (inclusion_injective _) (inclusion_range _)
+      (k := fun w : Z ↦ classTerm α Φ W w.val h) (inclusion_injective _) (inclusion_range _)
       (by fun_prop) term_smul stab_eq mem_orbit
     obtain ⟨-, -, sum_eq⟩ := unfold (.inl (lintegral_tsum_enorm_classTerm_lt_top Y' α Φ hW hd h S))
     exact sum_eq.trans
@@ -301,13 +302,13 @@ lemma tsum_integral_eq_of_not_survives (hW : Y.IsEquivariant W)
     {A B : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d)} (hAB : A ⊆ B)
     (h_killed : ∀ w ∈ B \ A, ¬Y.Survives Y' d w.out)
     (h_stable : ∀ w ∈ B \ A, ∀ γ : Y.ratBessel, (γ, (1 : V'.ratParabolic d)) • w ∈ B \ A) :
-    ∑' w : A, ∫ r : Y.besselGroup, classTerm α Φ W w.1 h r ∂Y.besselMeasure =
-      ∫ r : Y.besselGroup, ∑' w : B, classTerm α Φ W w.1 h r ∂Y.besselMeasure := by
+    ∑' w : A, ∫ r : Y.besselGroup, classTerm α Φ W w.val h r ∂Y.besselMeasure =
+      ∫ r : Y.besselGroup, ∑' w : B, classTerm α Φ W w.val h r ∂Y.besselMeasure := by
   -- Integrate term by term over `A`, `B \ A` and `B`; the part over `B \ A` is zero.
   let period (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) : ℂ :=
     ∫ r, classTerm α Φ W w h r ∂Y.besselMeasure
   let total (S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d)) : ℂ :=
-    ∫ r, ∑' w : S, classTerm α Φ W w.1 h r ∂Y.besselMeasure
+    ∫ r, ∑' w : S, classTerm α Φ W w.val h r ∂Y.besselMeasure
   have termwise (S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps d)) :
       HasSum (fun w : S ↦ period w) (total S) :=
     hasSum_integral_classTerm Y' α Φ hW hd h S
@@ -339,8 +340,8 @@ lemma smul_mem_agreeingClasses_iff (hd_le : d ≤ Y'.gradeOf ⊔ 0)
 include Y' in
 /-- For the weights `d = 0`, the terms of all classes add up to `W r` times the theta kernel. -/
 lemma tsum_classTerm (h : G E ε') (r : Y.besselGroup) :
-    ∑' w : (univ : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps 0)), classTerm α Φ W w.1 h r =
-      W r * θ (V.hom V') (twistedPairWeil α (r.1, h) Φ) := by
+    ∑' w : (univ : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps 0)), classTerm α Φ W w.val h r =
+      W r * θ (V.hom V') (twistedPairWeil α (r.val, h) Φ) := by
   simp [classTerm, tsum_mul_left,
     (tsum_univ _).trans (Y.hasSum_constTerm_out (Y' := Y') (d := 0) (by simp)).tsum_eq]
 
@@ -372,7 +373,7 @@ lemma tsum_agreeingTranslates (hW : Y.IsEquivariant W) (h : G E ε') :
 /-- For `W` equivariant, the integrals of the terms of `𝒞` add up to `Y.unfoldStep Y' α Φ W h`:
 expanded again for the weights `Y'.gradeOf`, only the class of `T` survives. -/
 lemma tsum_integral_classTerm_agreeingClasses (hW : Y.IsEquivariant W) (h : G E ε') :
-    ∑' w : Y.agreeingClasses Y' 0, ∫ r : Y.besselGroup, classTerm α Φ W w.1 h r ∂Y.besselMeasure =
+    ∑' w : Y.agreeingClasses Y' 0, ∫ r : Y.besselGroup, classTerm α Φ W w.val h r ∂Y.besselMeasure =
       Y.unfoldStep Y' α Φ W h := by
   let T : ratMatrices E ι' ι := ⟨Y.stringMap Y', _, rfl⟩
   have T_mem : ↑T ∈ Y.agreeingClasses Y' Y'.gradeOf :=
@@ -380,14 +381,14 @@ lemma tsum_integral_classTerm_agreeingClasses (hW : Y.IsEquivariant W) (h : G E 
   have T_fixed (γ : Y.ratBessel) :
       (γ, (1 : V'.ratParabolic Y'.gradeOf)) •
         (T : ratMatrices E ι' ι ⧸ Y.nonnegMaps Y'.gradeOf) = T :=
-    eq_iff_sub_mem.2 (Y.hasDegreeGe_zero_mul_stringMap_mul_sub γ⁻¹.2.2 (one_mem _))
-  calc _ = ∫ r, ∑' w : Y.agreeingClasses Y' 0, classTerm α Φ W w.1 h r ∂Y.besselMeasure :=
+    eq_iff_sub_mem.2 (Y.hasDegreeGe_zero_mul_stringMap_mul_sub γ⁻¹.property.2 (one_mem _))
+  calc _ = ∫ r, ∑' w : Y.agreeingClasses Y' 0, classTerm α Φ W w.val h r ∂Y.besselMeasure :=
         (hasSum_integral_classTerm Y' α Φ hW (by simp) h _).tsum_eq
     _ = ∫ r, ∑' w : Y.agreeingClasses Y' Y'.gradeOf, classTerm α Φ W w.1 h r ∂Y.besselMeasure := by
         -- Both sums give the same Fourier coefficient, which does not depend on the weights.
         simp (disch := simp) only [classTerm, tsum_mul_left, Y.tsum_constTerm_agreesWithStringMap]
     _ = ∑' w : ({↑T} : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps Y'.gradeOf)),
-          ∫ r, classTerm α Φ W w.1 h r ∂Y.besselMeasure := by
+          ∫ r, classTerm α Φ W w.val h r ∂Y.besselMeasure := by
         refine (tsum_integral_eq_of_not_survives Y' α Φ hW Y'.gradeOf_stringReversal h
           (singleton_subset_iff.2 T_mem)
           (fun w ⟨agrees, ne_T⟩ survives ↦ ne_T ?_) fun w ⟨agrees, ne_T⟩ γ ↦ ?_).symm
@@ -408,7 +409,7 @@ representative of `q`. -/
 lemma exists_equiv_agreeingTranslates (hW : Y.IsEquivariant W) :
     ∃ e : (V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ) × Y.agreeingClasses Y' 0 ≃ Y.agreeingTranslates Y',
       ∀ (q : V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ) (w : Y.agreeingClasses Y' 0) (h : G E ε'),
-        classTerm α Φ W (e (q, w)).1 h = classTerm α Φ W w.1 ((q.out : G E ε')⁻¹ * h) := by
+        classTerm α Φ W (e (q, w)).val h = classTerm α Φ W w.val ((q.out : G E ε')⁻¹ * h) := by
   -- For `d = 0` the parabolic condition is empty, so `V'.Γ` acts on classes through `δ ↦ (1, δ)`.
   -- It keeps a class of `𝒞` in `𝒞` exactly on `Y'.ratBessel`, so the translates are blocks.
   have rat_le : V'.Γ ≤ V'.ratParabolic 0 := fun δ δ_rat ↦ ⟨δ_rat, nofun⟩
@@ -439,18 +440,18 @@ of the values of the unfolded function `Y.unfoldStep Y' α Φ W` at `γ h`, over
 lemma hasSum_unfoldStep (hW : Y.IsEquivariant W) (h : G E ε') :
     HasSum (fun q : V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ ↦
         Y.unfoldStep Y' α Φ W ((q.out : G E ε')⁻¹ * h))
-      (∫ r : Y.besselGroup, W r * θ (V.hom V') (twistedPairWeil α (r.1, h) Φ)
+      (∫ r : Y.besselGroup, W r * θ (V.hom V') (twistedPairWeil α (r.val, h) Φ)
         ∂Y.besselMeasure) := by
   -- Only the translates of `𝒞` survive, and the integrals of the terms of one translate add up to
   -- one value of the unfolded function.
   obtain ⟨e, he⟩ := exists_equiv_agreeingTranslates Y' α Φ hW
   have all_translates : HasSum
-      (fun w : Y.agreeingTranslates Y' ↦ ∫ r, classTerm α Φ W w.1 h r ∂Y.besselMeasure)
-      (∫ r, W r * θ (V.hom V') (twistedPairWeil α (r.1, h) Φ) ∂Y.besselMeasure) :=
+      (fun w : Y.agreeingTranslates Y' ↦ ∫ r, classTerm α Φ W w.val h r ∂Y.besselMeasure)
+      (∫ r, W r * θ (V.hom V') (twistedPairWeil α (r.val, h) Φ) ∂Y.besselMeasure) :=
     (hasSum_integral_classTerm Y' α Φ hW (by simp) h _).summable.hasSum_iff.2
       (tsum_agreeingTranslates Y' α Φ hW h)
   have one_translate (q : V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ) : HasSum
-      (fun w : Y.agreeingClasses Y' 0 ↦ ∫ r, classTerm α Φ W (e (q, w)).1 h r ∂Y.besselMeasure)
+      (fun w : Y.agreeingClasses Y' 0 ↦ ∫ r, classTerm α Φ W (e (q, w)).val h r ∂Y.besselMeasure)
       (Y.unfoldStep Y' α Φ W ((q.out : G E ε')⁻¹ * h)) := by
     simp only [he]
     exact (hasSum_integral_classTerm Y' α Φ hW (by simp) _ _).summable.hasSum_iff.2
@@ -463,7 +464,7 @@ of the terms times `y h` are bounded, uniformly in `h`, `r` and the set of class
 lemma exists_tsum_enorm_classTerm_mul_le (hW : Y.IsEquivariant W) {y : G E ε' → ℂ}
     (hy_rapid : V'.IsRapid y) :
     ∃ c : NNReal, ∀ (h : G E ε') (S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps 0))
-      (r : Y.besselGroup), ∑' w : S, ‖classTerm α Φ W w.1 h r * y h‖ₑ ≤ c := by
+      (r : Y.besselGroup), ∑' w : S, ‖classTerm α Φ W w.val h r * y h‖ₑ ≤ c := by
   -- With `h` reduced, the growth of the Weil representation is absorbed by the decay of `y`.
   obtain ⟨a, ha⟩ := exists_tsum_enorm_classTerm_le Y' α Φ hW (d := 0) (by simp)
   obtain ⟨B, reduce⟩ : ∃ B : ℕ, ∀ h : G E ε', ∃ δ ∈ V'.Γ,
@@ -474,7 +475,7 @@ lemma exists_tsum_enorm_classTerm_mul_le (hW : Y.IsEquivariant W) {y : G E ε' �
   obtain ⟨δ, δ_rat, hδ⟩ := reduce h
   set ρ : 𝒮 (V.hom V') →L[ℂ] 𝒮 (V.hom V') := pairWeil V V' (α ι) (α ι') (1, δ * h)
   have absorb : ‖y h‖ * ‖ρ‖ ≤ 2 ^ B * C := by grw [hδ, mul_left_comm, decay]
-  calc _ = (∑' w : S, ‖classTerm α Φ W w.1 h r‖ₑ) * ‖y h‖ₑ := by
+  calc _ = (∑' w : S, ‖classTerm α Φ W w.val h r‖ₑ) * ‖y h‖ₑ := by
         simp only [eNorm_mul, ENNReal.tsum_mul_right]
     _ ≤ ‖ρ‖ₑ * a * ‖y h‖ₑ := by grw [ha h ⟨δ, δ_rat, nofun⟩ S r]
     _ = .ofReal (‖y h‖ * ‖ρ‖) * a := by
@@ -492,23 +493,23 @@ lemma exists_tsum_enorm_unfoldStep_mul_le (hW : Y.IsEquivariant W) {y : G E ε' 
   have term_cont (w : ratMatrices E ι' ι ⧸ Y.nonnegMaps 0) : Continuous ↿(classTerm α Φ W w) :=
     continuous_classTerm Y' α Φ hW (by simp) w
   obtain ⟨c, bound⟩ : ∃ c : NNReal, ∀ (h : G E ε') (S : Set (ratMatrices E ι' ι ⧸ Y.nonnegMaps 0))
-      (r : Y.besselGroup), ∑' w : S, ‖classTerm α Φ W w.1 h r * y h‖ₑ ≤ c :=
+      (r : Y.besselGroup), ∑' w : S, ‖classTerm α Φ W w.val h r * y h‖ₑ ≤ c :=
     exists_tsum_enorm_classTerm_mul_le Y' α Φ hW hy_rapid
   obtain ⟨e, he⟩ := exists_equiv_agreeingTranslates Y' α Φ hW
   refine ⟨c, fun h ↦ ?_⟩
   calc _ ≤ ∑' (q : V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ) (w : Y.agreeingClasses Y' 0),
-          ‖∫ r, classTerm α Φ W (e (q, w)).1 h r * y h ∂Y.besselMeasure‖ₑ := by
+          ‖∫ r, classTerm α Φ W (e (q, w)).val h r * y h ∂Y.besselMeasure‖ₑ := by
         simp only [he, ← tsum_integral_classTerm_agreeingClasses Y' α Φ hW, ← tsum_mul_right,
           integral_mul_const]
-        exact ENNReal.tsum_le_tsum fun q ↦ eNorm_tsum_le_tsum_eNorm
+        exact tsum_le_tsum fun q ↦ eNorm_tsum_le_tsum_eNorm
     _ = ∑' w : Y.agreeingTranslates Y',
-          ‖∫ r, classTerm α Φ W w.1 h r * y h ∂Y.besselMeasure‖ₑ := by
-        rw [← e.tsum_eq, ENNReal.tsum_prod']
+          ‖∫ r, classTerm α Φ W w.val h r * y h ∂Y.besselMeasure‖ₑ := by
+        rw [← e.tsum_eq, tsum_prod']
     _ ≤ ∑' w : Y.agreeingTranslates Y',
-          ∫⁻ r, ‖classTerm α Φ W w.1 h r * y h‖ₑ ∂Y.besselMeasure :=
-        ENNReal.tsum_le_tsum fun w ↦ eNorm_integral_le_lintegral_eNorm _
+          ∫⁻ r, ‖classTerm α Φ W w.val h r * y h‖ₑ ∂Y.besselMeasure :=
+        tsum_le_tsum fun w ↦ eNorm_integral_le_lintegral_eNorm _
     _ = ∫⁻ r, ∑' w : Y.agreeingTranslates Y',
-          ‖classTerm α Φ W w.1 h r * y h‖ₑ ∂Y.besselMeasure := by
+          ‖classTerm α Φ W w.val h r * y h‖ₑ ∂Y.besselMeasure := by
         rw [lintegral_tsum (by fun_prop)]
     _ ≤ ∫⁻ _, c ∂Y.besselMeasure := lintegral_mono (bound h _)
     _ = c * Y.besselMeasure univ := lintegral_const _
@@ -523,7 +524,7 @@ lemma integral_besselGroup_unfold (hW : Y.IsEquivariant W) {y : G E ε' → ℂ}
     (hy : V'.IsAutomorphic y) (hy_rapid : V'.IsRapid y) :
     Integrable (fun h : G E ε' ↦ Y.unfoldStep Y' α Φ W h * y h) Y'.ratBessel.quotMeasure ∧
     ∫ r : Y.besselGroup, W r * ∫ h : G E ε',
-        θ (V.hom V') (twistedPairWeil α (r.1, h) Φ) * y h ∂V'.quotMeasure ∂Y.besselMeasure =
+        θ (V.hom V') (twistedPairWeil α (r.val, h) Φ) * y h ∂V'.quotMeasure ∂Y.besselMeasure =
       ∫ h : G E ε', Y.unfoldStep Y' α Φ W h * y h ∂Y'.ratBessel.quotMeasure := by
   -- Exchange the two integrals, write the period over the Bessel group as a sum over cosets
   -- (`hasSum_unfoldStep`), and unfold that sum.
@@ -534,7 +535,7 @@ lemma integral_besselGroup_unfold (hW : Y.IsEquivariant W) {y : G E ε' → ℂ}
   have k_meas (q : V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ) : Measurable (k q) :=
     Continuous.measurable (by fun_prop)
   have k_sum (h : G E ε') : ∑' q : (univ : Set (V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ)), k q h =
-      (∫ r : Y.besselGroup, W r * θ (V.hom V') (twistedPairWeil α (r.1, h) Φ)
+      (∫ r : Y.besselGroup, W r * θ (V.hom V') (twistedPairWeil α (r.val, h) Φ)
         ∂Y.besselMeasure) * y h :=
     (tsum_univ fun q ↦ k q h).trans ((hasSum_unfoldStep Y' α Φ hW h).mul_right (y h)).tsum_eq
   -- The term of a coset may be read at any representative, so `V'.Γ` permutes the terms.
@@ -547,7 +548,7 @@ lemma integral_besselGroup_unfold (hW : Y.IsEquivariant W) {y : G E ε' → ℂ}
   have k_smul (δ : V'.Γ) (q : V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ) (h : G E ε') :
       k (δ • q) (δ * h) = k q h := by
     rw [← Quotient.mk_smul_out, k_eq]
-    simp [k, mul_assoc, hy.rat_mul _ δ.2]
+    simp [k, mul_assoc, hy.rat_mul _ δ.property]
   have k_one : k (1 : V'.Γ) = fun h : G E ε' ↦ Y.unfoldStep Y' α Φ W h * y h :=
     funext fun h ↦ by simpa using k_eq 1 h
   have stab_eq : (stabilizer V'.Γ ((1 : V'.Γ) : V'.Γ ⧸ Y'.ratBessel.subgroupOf V'.Γ)).map
@@ -565,7 +566,7 @@ lemma integral_besselGroup_unfold (hW : Y.IsEquivariant W) {y : G E ε' → ℂ}
     (.inl finite)
   simp only [k_sum, k_one] at integrable unfolded
   have product_integrable : Integrable (Function.uncurry fun h (r : Y.besselGroup) ↦
-      W r * θ (V.hom V') (twistedPairWeil α (r.1, h) Φ) * y h)
+      W r * θ (V.hom V') (twistedPairWeil α (r.val, h) Φ) * y h)
       (V'.quotMeasure.prod Y.besselMeasure) := by
     have W_cont : Continuous W := hW.continuous
     obtain ⟨c, bound⟩ := exists_tsum_enorm_classTerm_mul_le Y' α Φ hW hy_rapid
@@ -574,8 +575,8 @@ lemma integral_besselGroup_unfold (hW : Y.IsEquivariant W) {y : G E ε' → ℂ}
     rw [Function.uncurry_apply_pair, ← tsum_classTerm Y' α Φ, ← tsum_mul_right]
     exact eNorm_tsum_le_tsum_eNorm.trans (bound h univ r)
   have fubini : ∫ r : Y.besselGroup, W r * ∫ h : G E ε',
-        θ (V.hom V') (twistedPairWeil α (r.1, h) Φ) * y h ∂V'.quotMeasure ∂Y.besselMeasure =
-      ∫ h : G E ε', (∫ r : Y.besselGroup, W r * θ (V.hom V') (twistedPairWeil α (r.1, h) Φ)
+        θ (V.hom V') (twistedPairWeil α (r.val, h) Φ) * y h ∂V'.quotMeasure ∂Y.besselMeasure =
+      ∫ h : G E ε', (∫ r : Y.besselGroup, W r * θ (V.hom V') (twistedPairWeil α (r.val, h) Φ)
         ∂Y.besselMeasure) * y h ∂V'.quotMeasure := by
     simp only [← integral_const_mul, ← mul_assoc, ← integral_integral_swap product_integrable,
       integral_mul_const]

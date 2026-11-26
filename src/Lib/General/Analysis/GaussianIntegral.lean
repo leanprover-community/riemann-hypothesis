@@ -1,7 +1,26 @@
 module
 
-public import Lib.Base
 import TauCeti.Analysis.Matrix.L2OpNorm
+public import Mathlib.Algebra.Algebra.Field
+public import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+public import Mathlib.MeasureTheory.Integral.Pi
+public import Mathlib.RingTheory.Complex
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.TotallySplit
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Base
 
 /-!
 # Matrix norm estimates, the Ostrowski–Taussky inequality, and the complex Gaussian integral

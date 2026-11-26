@@ -1,6 +1,12 @@
 module
 
-public import Lib.Base
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ReduceModChar
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # Measures below a fibre measure
@@ -164,23 +170,18 @@ theorem trans {π₂ : X → B'} {b' : B'} [SFinite ν'] [OpensMeasurableSpace X
     LeFibreMeasure μ (ν.prod ν') (fun x : X ↦ (π x, π₂ x)) (b, b') l' := by
   -- For small open `S` and `S'` the hypothesis at `S ×ˢ S'` bounds the integral of `K` cut off by
   -- `π₂ ⁻¹' S'`, a lower semicontinuous function, over `π ⁻¹' S`.
-  intro K hK C hC
-  obtain ⟨V, hV, h_sub⟩ := eventually_smallSets.1 hC
-  obtain ⟨W, hW, W', hW', h_prod⟩ := mem_nhds_prod_iff.1 hV
-  refine hl' K hK C ((eventually_smallSets_subset.2 hW').mono fun S' hS' hS'_open ↦ ?_)
-  have h_open : IsOpen (π₂ ⁻¹' S') := hS'_open.preimage hπ₂
-  have h_lsc : LowerSemicontinuous ((π₂ ⁻¹' S').indicator K) := fun x c hc ↦ by
-    have hx : x ∈ π₂ ⁻¹' S' := mem_of_indicator_ne_zero hc.ne_zero
-    filter_upwards [hK x c (by simpa [hx] using hc), h_open.mem_nhds hx] with y hy hy_mem
-    simpa [hy_mem] using hy
+  refine fun K hK C hC ↦ let ⟨V, hV, h_sub⟩ := eventually_smallSets.1 hC
+    let ⟨W, hW, W', hW', h_prod⟩ := mem_nhds_prod_iff.1 hV
+    hl' K hK C ((eventually_smallSets_subset.2 hW').mono fun S' hS' hS'_open ↦ ?_)
+  have h_open := hS'_open.preimage hπ₂
   rw [← lintegral_indicator h_open.measurableSet]
-  refine hl _ h_lsc _ ((eventually_smallSets_subset.2 hW).mono fun S hS hS_open ↦ ?_)
-  calc ∫⁻ x in π ⁻¹' S, (π₂ ⁻¹' S').indicator K x ∂μ
-      = ∫⁻ x in (fun x ↦ (π x, π₂ x)) ⁻¹' S ×ˢ S', K x ∂μ := by
-        rw [lintegral_indicator h_open.measurableSet, restrict_restrict h_open.measurableSet,
-          mk_preimage_prod, inter_comm]
-    _ ≤ C * ν.prod ν' (S ×ˢ S') := h_sub _ (by grw [hS, hS', h_prod]) (hS_open.prod hS'_open)
-    _ = C * ν' S' * ν S := by rw [prod_prod, mul_comm (ν S), mul_assoc]
+  refine hl _ (fun x c hc ↦ ?_) _ ((eventually_smallSets_subset.2 hW).mono fun S hS hS_open ↦ ?_)
+  · have hx := mem_of_indicator_ne_zero hc.ne_zero
+    filter_upwards [hK x c (by simpa [hx] using hc), h_open.mem_nhds hx] with y hy hy'
+    simpa [hy'] using hy
+  · simpa [lintegral_indicator h_open.measurableSet, restrict_restrict h_open.measurableSet,
+      mk_preimage_prod, inter_comm, prod_prod, mul_comm, mul_assoc, mul_left_comm] using
+      h_sub _ (by grw [hS, hS', h_prod]) (hS_open.prod hS'_open)
 
 /-- Let `x ↦ φ (p, x)` be a measurable family of continuous maps `X → X'` with
 `π₀ (φ (p, x)) = π x`. If `l` is at most the fibre measure of `π` for `μ` over `b` (see

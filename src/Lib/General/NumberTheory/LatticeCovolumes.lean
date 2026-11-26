@@ -143,7 +143,7 @@ lemma genIndex_det_conj_of_isIntMatrix [PolishSpace A] (hn : IsIntMatrix R n) (h
     simp [Matrix.mul_assoc, ← Matrix.mul_assoc l n, hln, ← conjTranspose_mul, hnl]
   obtain ⟨u, hu, hu_eq⟩ : ∃ u ∈ intGL π R, u.val = n * nᴴ := isPrimitiveMatrix_iff.1
     ⟨hn.mul hn.conjTranspose, lᴴ * l, hl.conjTranspose.mul hl, h_inv⟩
-  have h_det : (nᴴ * H * n).det = u.1.det * H.det := by
+  have h_det : (nᴴ * H * n).det = u.val.det * H.det := by
     rw [← det_comm' hnl hln, ← Matrix.mul_assoc, ← hu_eq, det_mul]
   simp [h_det, genIndex_det_eq_one ad.isOpen_isCompact.1 ad.isOpen_isCompact.2 hu]
 
@@ -151,18 +151,18 @@ omit [IsTopologicalRing A] [LocallyCompactSpace A] in
 /-- A left invertible matrix whose columns fall into two blocks becomes primitive after
 multiplication by a block upper triangular matrix with invertible diagonal blocks. -/
 lemma exists_isPrimitiveMatrix_mul_fromBlocks (m : Matrix π (σ ⊕ τ) A) (hm : HasLeftInv m) :
-    ∃ᵉ (a : GL σ A) (e : GL τ A) (z : Matrix σ τ A),
+    ∃ a : GL σ A, ∃ e : GL τ A, ∃ z : Matrix σ τ A,
       IsPrimitiveMatrix R (m * fromBlocks a.val z 0 e.val) := by
   -- Some `b`, block triangular for the weight 0 on `σ` and 1 on `τ`, makes `m * b` primitive.
   obtain ⟨b, hb_tri, hb_prim⟩ := ad.isValuationPair.exists_isPrimitiveMatrix_mul hm (0 ⊕ᵥ 1)
-  have h_lower : b.1.toBlocks₂₁ = 0 := Matrix.ext fun i j ↦ hb_tri zero_lt_one
-  have h_blocks : fromBlocks b.1.toBlocks₁₁ b.1.toBlocks₁₂ 0 b.1.toBlocks₂₂ = b.1 := by
+  have h_lower : b.val.toBlocks₂₁ = 0 := Matrix.ext fun i j ↦ hb_tri zero_lt_one
+  have h_blocks : fromBlocks b.val.toBlocks₁₁ b.val.toBlocks₁₂ 0 b.val.toBlocks₂₂ = b.val := by
     rw [← h_lower, fromBlocks_toBlocks]
   -- The diagonal blocks of an invertible block triangular matrix are invertible.
-  obtain ⟨h₁, h₂⟩ : IsUnit b.1.toBlocks₁₁ ∧ IsUnit b.1.toBlocks₂₂ := by
-    rw [← isUnit_fromBlocks_zero₂₁ (B := b.1.toBlocks₁₂), h_blocks]
+  obtain ⟨h₁, h₂⟩ : IsUnit b.val.toBlocks₁₁ ∧ IsUnit b.val.toBlocks₂₂ := by
+    rw [← isUnit_fromBlocks_zero₂₁ (B := b.val.toBlocks₁₂), h_blocks]
     exact b.isUnit
-  exact ⟨h₁.unit, h₂.unit, b.1.toBlocks₁₂, by simpa [h_blocks]⟩
+  exact ⟨h₁.unit, h₂.unit, b.val.toBlocks₁₂, by simpa [h_blocks]⟩
 
 omit [IsTopologicalRing A] [LocallyCompactSpace A] in
 /-- For an adelic pair `R ⊆ A` and a left invertible matrix `m` over `A`, there is an invertible
@@ -201,15 +201,15 @@ omit [Fintype π] [DecidableEq π] in
 lemma submoduleIndex_intVectors_mul_genIndex_det [PolishSpace A] {a : GL σ A} (hF : IsIntMatrix R F)
     (h_sat : preimageLattice R F = colLattice R a.val) :
     submoduleIndex (intVectors R σ) (preimageLattice R F) * genIndex a.val.det = 1 := by
-  have h_le : intVectors R σ ≤ colLattice R a.1 :=
+  have h_le : intVectors R σ ≤ colLattice R a.val :=
     le_of_le_of_eq (fun v hv ↦ hF.mulVec hv) h_sat
-  have h_one : submoduleIndex (colLattice R a.1) (intVectors R σ) = 1 :=
+  have h_one : submoduleIndex (colLattice R a.val) (intVectors R σ) = 1 :=
     relIndex_eq_one.2 (toAddSubgroup_mono h_le)
   have h_quot :
-      1 / (submoduleIndex (intVectors R σ) (preimageLattice R F) : ℝ) = genIndex a.1.det := by
+      1 / (submoduleIndex (intVectors R σ) (preimageLattice R F) : ℝ) = genIndex a.val.det := by
     simpa [h_one, h_sat] using submoduleIndex_colLattice_div (R := R) (M := a)
   -- the index is nonzero because `genIndex (det a)` is
-  have h_pos : 0 < genIndex a.1.det := by simpa using genIndex_pos a.det
+  have h_pos : 0 < genIndex a.val.det := by simpa using genIndex_pos a.det
   grind
 
 omit [TopologicalSpace A] [IsTopologicalRing A] [LocallyCompactSpace A] ad in
@@ -219,28 +219,28 @@ matrix, one plus a product of a block column and a block row, is `N` between two
 matrices. -/
 lemma one_add_fromRows_mul_fromCols_eq [DecidableEq ρ] {u : GL π A} {a : GL σ A}
     {Q : Matrix π σ A} {p : Matrix π ρ A} {c : Aˣ} {N : Matrix (σ ⊕ ρ) (σ ⊕ ρ) A}
-    (h_herm : u.1ᴴ = u.1) (hPQ : (F * a.1)ᴴ * u.1 * Q = 1)
-    (hN : N = (fromCols F p)ᴴ * u.1 * fromCols F p + fromBlocks 0 0 0 (c • 1)) :
-    1 + fromRows ((F * a.1)ᴴ * u.1) (pᴴ * u.1 * (1 - Q * ((F * a.1)ᴴ * u.1))) *
-        fromCols (u⁻¹.1 * ((F * a.1)ᴴ * u.1)ᴴ - Q) (c⁻¹ • p) =
-      fromBlocks aᴴ 0 (-pᴴ * u.1 * Q * a.1ᴴ) 1 * N * fromBlocks a 0 0 (c⁻¹ • 1) := by
+    (h_herm : u.valᴴ = u.val) (hPQ : (F * a.val)ᴴ * u.val * Q = 1)
+    (hN : N = (fromCols F p)ᴴ * u.val * fromCols F p + fromBlocks 0 0 0 (c • 1)) :
+    1 + fromRows ((F * a.val)ᴴ * u.val) (pᴴ * u.val * (1 - Q * ((F * a.val)ᴴ * u.val))) *
+        fromCols (u⁻¹.val * ((F * a.val)ᴴ * u.val)ᴴ - Q) (c⁻¹ • p) =
+      fromBlocks aᴴ 0 (-pᴴ * u.val * Q * a.valᴴ) 1 * N * fromBlocks a 0 0 (c⁻¹ • 1) := by
   -- Write both sides as block matrices and compare the four blocks.
-  set P : Matrix σ π A := (F * a.1)ᴴ * u.1
-  set C : Matrix ρ σ A := -pᴴ * u.1 * Q * a.1ᴴ
-  have hN_blocks : N = fromBlocks (Fᴴ * u.1 * F) (Fᴴ * u.1 * p) (pᴴ * u.1 * F)
-      (pᴴ * u.1 * p + c • 1) := by
+  set P : Matrix σ π A := (F * a.val)ᴴ * u.val
+  set C : Matrix ρ σ A := -pᴴ * u.val * Q * a.valᴴ
+  have hN_blocks : N = fromBlocks (Fᴴ * u.val * F) (Fᴴ * u.val * p) (pᴴ * u.val * F)
+      (pᴴ * u.val * p + c • 1) := by
     simp [hN, conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul, fromBlocks_add]
-  have hPu : u⁻¹.1 * Pᴴ = F * a.1 := by simp [P, h_herm, ← Matrix.mul_assoc]
-  have h₁₁ : 1 + P * (u⁻¹.1 * Pᴴ - Q) = a.1ᴴ * (Fᴴ * u.1 * F) * a.1 := by
+  have hPu : u⁻¹.val * Pᴴ = F * a.val := by simp [P, h_herm, ← Matrix.mul_assoc]
+  have h₁₁ : 1 + P * (u⁻¹.val * Pᴴ - Q) = a.valᴴ * (Fᴴ * u.val * F) * a.val := by
     rw [hPu, Matrix.mul_sub, hPQ]
     simp [P, Matrix.mul_assoc]
-  have h₂₁ : pᴴ * u.1 * (1 - Q * P) * (u⁻¹.1 * Pᴴ - Q) =
-      (C * (Fᴴ * u.1 * F) + pᴴ * u.1 * F) * a.1 := by
+  have h₂₁ : pᴴ * u.val * (1 - Q * P) * (u⁻¹.val * Pᴴ - Q) =
+      (C * (Fᴴ * u.val * F) + pᴴ * u.val * F) * a.val := by
     have hQ : (1 - Q * P) * Q = 0 := by simp [Matrix.sub_mul, Matrix.mul_assoc, hPQ]
     rw [Matrix.mul_sub, Matrix.mul_assoc _ (1 - Q * P) Q, hQ, hPu]
     simp [P, C, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, sub_eq_neg_add]
-  have h₂₂ : 1 + pᴴ * u.1 * (1 - Q * P) * (c⁻¹ • p) =
-      (C * (Fᴴ * u.1 * p) + (pᴴ * u.1 * p + c • 1)) * (c⁻¹ • (1 : Matrix ρ ρ A)) := by
+  have h₂₂ : 1 + pᴴ * u.val * (1 - Q * P) * (c⁻¹ • p) =
+      (C * (Fᴴ * u.val * p) + (pᴴ * u.val * p + c • 1)) * (c⁻¹ • (1 : Matrix ρ ρ A)) := by
     simp [P, C, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, sub_eq_add_neg, add_assoc,
       add_comm, add_left_comm]
   rw [hN_blocks, fromRows_mul_fromCols, ← fromBlocks_one, fromBlocks_add, fromBlocks_multiply,
@@ -271,13 +271,13 @@ lemma genIndex_det_orthogonal_mul_submoduleIndex_sq [DecidableEq ρ] {J : Matrix
   obtain ⟨hn_int, l, hl, hln⟩ := hn
   obtain ⟨h_herm, u, hu, rfl⟩ := hJ
   let N : Matrix (σ ⊕ ρ) (σ ⊕ ρ) A :=
-    (fromCols F p)ᴴ * u.1 * fromCols F p + fromBlocks 0 0 0 (c • 1)
-  let P : Matrix σ π A := (F * a.1)ᴴ * u.1
-  let Q : Matrix π σ A := u⁻¹.1 * rᴴ
+    (fromCols F p)ᴴ * u.val * fromCols F p + fromBlocks 0 0 0 (c • 1)
+  let P : Matrix σ π A := (F * a.val)ᴴ * u.val
+  let Q : Matrix π σ A := u⁻¹.val * rᴴ
   have hP : IsIntMatrix R P := hFa.conjTranspose.mul hu.isIntMatrix
   have hQ : IsIntMatrix R Q := hu.isIntMatrix_inv.mul hr.conjTranspose
   have hPQ : P * Q = 1 := by simpa [P, Q, Matrix.mul_assoc] using congrArg conjTranspose hrFa
-  have hPn : P * n = 0 := by simpa [P, Matrix.mul_assoc] using congrArg (a.1ᴴ * ·) hFn
+  have hPn : P * n = 0 := by simpa [P, Matrix.mul_assoc] using congrArg (a.valᴴ * ·) hFn
   let B : Matrix π (σ ⊕ τ) A := fromCols Q n
   let B' : Matrix (σ ⊕ τ) π A := fromRows P (l - l * Q * P)
   have h_left : B' * B = 1 := fromRows_mul_fromCols_eq_one hPQ hPn hln
@@ -285,28 +285,28 @@ lemma genIndex_det_orthogonal_mul_submoduleIndex_sq [DecidableEq ρ] {J : Matrix
     (mul_eq_one_comm_of_card_eq π (σ ⊕ τ) A (by rw [card_sum, hπ])).2 h_left
   have hB : IsIntMatrix R B := fun i ↦ Sum.rec (hQ i) (hn_int i)
   have hB' : IsIntMatrix R B' := Sum.rec hP (hl.sub ((hl.mul hQ).mul hP))
-  let X : Matrix π (σ ⊕ ρ) A := fromCols (u⁻¹.1 * Pᴴ - Q) (c⁻¹ • p)
-  let Y : Matrix (σ ⊕ ρ) π A := fromRows P (pᴴ * u.1 * (1 - Q * P))
-  let H : Matrix π π A := u.1 * (1 + X * Y)
+  let X : Matrix π (σ ⊕ ρ) A := fromCols (u⁻¹.val * Pᴴ - Q) (c⁻¹ • p)
+  let Y : Matrix (σ ⊕ ρ) π A := fromRows P (pᴴ * u.val * (1 - Q * P))
+  let H : Matrix π π A := u.val * (1 + X * Y)
   -- In the basis `B`, `H` is block triangular with diagonal blocks `1` and the form on `n`.
-  have h_tri : (Bᴴ * H * B).det = (nᴴ * (u.1 + c⁻¹ • (u.1 * p * pᴴ * u.1)) * n).det := by
+  have h_tri : (Bᴴ * H * B).det = (nᴴ * (u.val + c⁻¹ • (u.val * p * pᴴ * u.val)) * n).det := by
     rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul]
     simp [B, H, X, Y, hPQ, hPn, ← conjTranspose_mul, Units.smul_def, Matrix.mul_add, sub_eq_add_neg,
       Matrix.mul_assoc, fromCols_mul_fromRows, Matrix.add_mul]
   -- `1 + Y * X` is `N` up to two block triangular factors, of determinants `det aᴴ` and
   -- `det a * c⁻¹ ^ card ρ`.
   have h_swap :
-      1 + Y * X = fromBlocks aᴴ 0 (-pᴴ * u.1 * Q * a.1ᴴ) 1 * N * fromBlocks a 0 0 (c⁻¹ • 1) :=
+      1 + Y * X = fromBlocks aᴴ 0 (-pᴴ * u.val * Q * a.valᴴ) 1 * N * fromBlocks a 0 0 (c⁻¹ • 1) :=
     one_add_fromRows_mul_fromCols_eq h_herm hPQ rfl
   have h_factor : genIndex H.det =
-      genIndex N.det * genIndex a.1.det ^ 2 * genIndex c⁻¹.1 ^ card ρ := by
+      genIndex N.det * genIndex a.val.det ^ 2 * genIndex c⁻¹.val ^ card ρ := by
     rw [det_mul, det_one_add_mul_comm, h_swap]
     simp [Units.smul_def, genIndex_det_eq_one ad.isOpen_isCompact.1 ad.isOpen_isCompact.2 hu]
     ring
   -- Equate the two computations of `genIndex H.det` and cancel the factors of `a` and of `c`.
   calc _ = genIndex N.det *
-        (submoduleIndex (intVectors R σ) (preimageLattice R F) * genIndex a.1.det) ^ 2 *
-          (genIndex c.1 * genIndex c⁻¹.1) ^ card ρ := by
+        (submoduleIndex (intVectors R σ) (preimageLattice R F) * genIndex a.val.det) ^ 2 *
+          (genIndex c.val * genIndex c⁻¹.val) ^ card ρ := by
         rw [← h_tri, ← genIndex_det_conj_of_isIntMatrix hB hB' h_left h_right, h_factor]
         ring
     _ = genIndex N.det := by
@@ -550,7 +550,7 @@ lemma exists_fundamental_domain_classLattice [DecidableEq n] (t : RealVectors E 
   -- each adelic `x` exactly one `ξ ∈ Eⁿ` has `a (ξ + x) ∈ F × Ôⁿ`, so unfolding over `𝔸ⁿ / Eⁿ`
   -- gives `vol (F × Ôⁿ) = |det a|`.
   let L : Submodule ℤ (RealVectors E n) := classLattice m⁻¹ ⊥ (.smulLeft ht.unit)
-  obtain ⟨F, h_meas, h_fund⟩ : ∃ F, MeasurableSet F ∧ ∀ x, ∃! l : L, l.1 + x ∈ F := by
+  obtain ⟨F, h_meas, h_fund⟩ : ∃ F, MeasurableSet F ∧ ∀ x, ∃! l : L, l.val + x ∈ F := by
     let b : Module.Basis _ ℝ (RealVectors E n) := (Module.finBasis ℤ L).ofZLatticeBasis ℝ
     have h_span := exist_unique_vadd_mem_fundamentalDomain b
     rw [Module.Basis.ofZLatticeBasis_span] at h_span
@@ -779,7 +779,7 @@ lemma exists_isAddFundamentalDomain_of_integral {V σ : Type*} [NormedAddCommGro
   let M : Matrix σ σ ℝ := e.toMatrix (b.ofZLatticeBasis ℝ L)
   have h_det : M.det ≠ 0 := (e.isUnit_det (b.ofZLatticeBasis ℝ L)).ne_zero
   have h_entry (s t : σ) : ∃ n : ℤ, (Mᵀ * M) s t = n := by
-    simpa [M, Matrix.mul_apply, Basis.toMatrix_apply] using h_int _ (b s).2 _ (b t).2
+    simpa [M, Matrix.mul_apply, Basis.toMatrix_apply] using h_int _ (b s).property _ (b t).property
   choose N hN using h_entry
   have h_map : (Int.castRingHom ℝ).mapMatrix (of N) = Mᵀ * M := ext fun s t ↦ (hN s t).symm
   have h_cast : ((of N).det : ℝ) = M.det ^ 2 := by

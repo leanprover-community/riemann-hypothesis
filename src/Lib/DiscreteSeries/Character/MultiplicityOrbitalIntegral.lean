@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Topology.ContinuousMap.SecondCountableSpace
+public import Mathlib.Topology.Metrizable.ContinuousMap
 public import Lib.DiscreteSeries.Character.WeylCharacterFormula
 public import Lib.DiscreteSeries.Rigidity.KernelFixes
 
@@ -166,13 +168,13 @@ lemma exists_isKHighest_inner_eq_mean_coefficient [Nonempty n] [hg : l.HasLargeG
   -- weight `ν`.
   have z_high (t : ℕ) : l.IsKHighest l.dsAction ν (z t).val := by
     refine .of_E_eq_smul fun a c hε hl ↦ Subtype.mk.inj (ext_inner_right ℂ (x := ⟨_,
-      E_mem_filtration (z t).2 hε⟩) (y := (if a = c then (ν a : ℂ) else 0) • z t) fun y ↦ ?_)
+      E_mem_filtration (z t).property hε⟩) (y := (if a = c then (ν a : ℂ) else 0) • z t) fun y ↦ ?_)
     calc
       _ = φ (hg.toL2 (l.dsAction.E c a y.val)) := by
-        simp [h_inv.inner_E_left a, hε, hz (E_mem_filtration y.2 hε.symm) le_rfl]
+        simp [h_inv.inner_E_left a, hε, hz (E_mem_filtration y.property hε.symm) le_rfl]
       _ = _ := by
         rw [mean_coefficient_lowering hν hφ y hε hl]
-        simp +contextual [↓inner_smul_left, hz y.2 le_rfl, apply_ite conj, eq_comm (a := c)]
+        simp +contextual [↓inner_smul_left, hz y.property le_rfl, apply_ite conj, eq_comm (a := c)]
   -- Rigidity: `z (s ⊔ t) - z s` is an eigenvector of `casimirK` orthogonal to `W s`. Since
   -- `casimirK` grows along the filtration and `s` is large, it is orthogonal to `W t`.
   refine ⟨z s, (z s).prop, z_high s, fun t y hy ↦ ?_⟩
@@ -207,10 +209,7 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
   -- With `u = l.dsGenerator` and `ι = hg.toL2`, put `φ w = ∫_K conj (weightMinors ν k) * ⟪ι u,
   -- rightRegularL2 x (rightRegularL2 k w)⟫`. A vector `v` of `V` represents `φ ∘ ι`; compare the
   -- two at the translate `rightRegularL2 x⁻¹ (ι u)`.
-  have hd : IsDerivedAction rightRegularL2 hg.toL2 l.dsAction := hg.isDerivedAction_toL2
-  have h_coef (y : l.DsModule) (g : USign ε) :
-      ⟪hg.toL2 l.dsGenerator, rightRegularL2 g (hg.toL2 y)⟫_ℂ = y.val.val g :=
-    hg.inner_toL2_dsGenerator_rightRegularL2 y g
+  obtain ⟨hd, h_coef, -⟩ := hg.isDerivedAction_toL2_and_inner_toL2
   have h_cont : ∀ w : Lp ℂ 2 volume, Continuous fun g : USign ε ↦ rightRegularL2 g w :=
     (isUnitaryRep_rightRegularL2 (ε := ε)).continuous
   let T : (USign ε →₂[volume] ℂ) →L[ℂ] ℂ := innerSL ℂ (hg.toL2 l.dsGenerator) ∘L rightRegularL2 x
@@ -417,7 +416,8 @@ lemma New.Orbital.integrable_mul_dsCoeff_conj [Nonempty n] (hg : l.HasLargeGap (
   -- the decay |l.dsCoeff g| ≤ (2 / ‖g‖)^(mN) of `norm_dsCoeff_le_pow`.
   set N : ℕ := 4 * card n ^ 2 + 1
   refine ((DiscreteSeries.integral_decay_le _ .monoidHom_id (c := 2 * N) (by omega) 1).1.const_mul
-    (2 ^ (#(oppositePairs ε) * N * 2))).mono' (by fun_prop)
+    (2 ^ (#(oppositePairs ε) * N * 2))).mono'
+    (continuous_const.mul ψ.continuous).aestronglyMeasurable
     (.of_forall fun x ↦ (norm_le_of_nonempty _).2 fun k ↦ ?_)
   obtain ⟨y, t, rfl⟩ := exists_conj_diagTorusK k
   let u : USign ε := y⁻¹ * x
@@ -443,7 +443,7 @@ lemma New.Orbital.integrable_mul_dsCoeff_conj [Nonempty n] (hg : l.HasLargeGap (
     _ ≤ ((2 * ‖g.val.val‖) ^ #(oppositePairs ε) / (‖u.val.val‖ / 2) ^ 2) ^ N *
         (2 / ‖g.val.val‖) ^ (#(oppositePairs ε) * N) := by
       grw [minor, DiscreteSeries.norm_dsCoeff_le_pow hg gap]
-    _ = _ := by simp [norm_u, div_pow, field, mul_pow, ← pow_mul, mul_comm]
+    _ = _ := by simp [norm_u, div_pow, field, mul_pow, ← pow_mul]
 
 /-- If all coefficients of a vector against an orthonormal family are integers, only finitely many
 are not zero: they tend to zero by Bessel's inequality. -/
@@ -571,7 +571,7 @@ lemma linearCombination_rootProd_mul_apply_conj (hXY : IsWeylFamily l X Y) (hl :
   have denominator_comp (w : {w : Perm n // ε ∘ w = ε}) :
       torusEval (x ∘ w.val) (alternant ε (l.lowerCount Eq)) =
         w.val.sign * torusEval x (alternant ε (l.lowerCount Eq)) :=
-    (torusEval_comp_eq_mul_iff _).2 (isWeylAntisymm_alternant _ w.2) x
+    (torusEval_comp_eq_mul_iff _).2 (isWeylAntisymm_alternant _ w.property) x
   simp [weyl_denominator hl, ← torusEval_comp_perm, ← mul_assoc, ← cast_mul, denominator_comp,
     mul_sum]
 
@@ -585,7 +585,7 @@ lemma exists_apply_conj_eq (hXY : IsWeylFamily l X Y) (hl : l.Injective) {D : �
   let W : Type := {w : Perm n // ε ∘ w = ε}
   have : Nonempty W := ⟨1, rfl⟩
   refine ⟨Finsupp.linearCombination ℂ X (l.rootProd Eq * (card W : ℂ)⁻¹ • D).coeff, fun y x ↦ ?_⟩
-  simp [W, hXY.linearCombination_rootProd_mul_apply_conj hl, fun w : W ↦ hD w.val w.2 x]
+  simp [W, hXY.linearCombination_rootProd_mul_apply_conj hl, fun w : W ↦ hD w.val w.property x]
 
 /-- Brauer's rule. Let `l` be injective, and let `X`, `Y` be a Weyl family for `l`: each `X γ` is a
 continuous class function on K = U(diag ε) ∩ U(n) that equals the Laurent polynomial `Y γ` on the
@@ -613,7 +613,7 @@ lemma inner_toLp_mul (hXY : IsWeylFamily l X Y) (hl : l.Injective) {d : C(maxCom
     refine hXY.linearCombination_apply_conj hl (fun x ↦ ?_) y x
     rw [mul_left_comm, map_mul _ S, alternant_sum, mul_sum]
     exact sum_congr rfl fun w _ ↦ by
-      simp [hS, apply_comp_perm_of_conj_invariant _ w.2 hd, mul_left_comm]
+      simp [hS, apply_comp_perm_of_conj_invariant _ w.property hd, mul_left_comm]
   calc
     _ = ⟪toLp (E := ℂ) 2 (haarK ε) ℂ (Finsupp.linearCombination ℂ X (S * .single γ 1).coeff),
           toLp (E := ℂ) 2 (haarK ε) ℂ f⟫_ℂ := by
@@ -740,8 +740,8 @@ lemma orthonormal_virtualChar (hs : IsStraightening l s ν) (hl : l.Injective) :
     Orthonormal ℂ (toLp (E := ℂ) 2 (haarK ε) ℂ ∘
       fun μ : {μ : n → ℤ // IsKDominant ε (-l) μ} ↦ virtualChar ε s ν (μ + l.lowerCount Eq)) := by
   refine orthonormal_iff_ite.2 fun i j ↦ ?_
-  simp [hs.inner_virtualChar hl, hs.apply_add_lowerCount hl i.2, hs.coeff_alternant hl j.2,
-    Subtype.ext_iff]
+  simp [hs.inner_virtualChar hl, hs.apply_add_lowerCount hl i.property,
+    hs.coeff_alternant hl j.property, Subtype.ext_iff]
 
 /-- For a straightening `s`, `ν` of exponents and injective `l`, every virtual character is in
 the span of the characters of the K-types. -/

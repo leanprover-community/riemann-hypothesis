@@ -1,6 +1,5 @@
 module
 
-public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 public import Lib.General.LinearAlgebra.Eigenvalues
 public import Lib.LocalGL.Iwahori.ParahoricStructure
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
@@ -68,6 +67,12 @@ lemma mem_proIwahori_iff_blockParahoric :
     g ∈ proIwahori ↔ g ∈ blockParahoric id ∧ ∀ i : Fin N, g i i ∈ {x : F | v (x - 1) < 1} :=
   and_assoc.symm
 
+omit [Valued F ℤᵐ⁰] in
+private lemma conj_monomial_apply (t : Fin N → Fˣ) (σ : Perm (Fin N)) (a b : Fin N) :
+    ((permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) : GL (Fin N) F) a b =
+      (t a).val⁻¹ * g (σ a) (σ b) * (t b).val := by
+  simp [← map_inv, Matrix.mul_apply, symm_apply_eq, diagonal, mul_assoc]
+
 /-- Let `c` and `d` be level functions `ℕ → ℕ` (see `New.blockParahoric`), and let `g` lie in the
 parahoric of level function `d`. Let `m = σ diag(t)`, with `σ` a permutation matrix. Suppose that
 for all `a`, `b` either `g_{σa,σb} = 0` or
@@ -81,20 +86,13 @@ lemma conj_monomial_mem_blockParahoric_of_mem (t : Fin N → Fˣ) (σ : Perm (Fi
         log (v (t a).val) + if d (σ b) < d (σ a) then 1 else 0) :
     (permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) ∈ blockParahoric c := by
   set k : GL (Fin N) F := (permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t)
-  have h_entry (a b : Fin N) : k a b = (t a).val⁻¹ * g (σ a) (σ b) * (t b).val := by
-    simp [k, ← map_inv, Matrix.mul_apply, symm_apply_eq, diagonal, mul_assoc]
   have h_det : k.val.det = g.val.det := det_units_conj' _ _
-  simp only [mem_blockParahoric, mem_intGL_iff_det, h_entry, h_det, map_mul, map_inv₀] at hg ⊢
+  simp only [mem_blockParahoric, mem_intGL_iff_det, k, conj_monomial_apply, h_det, map_mul, map_inv₀] at hg ⊢
   obtain ⟨⟨hg_int, hg_det⟩, hg_below⟩ :
       ((∀ a b : Fin N, v (g a b) ≤ 1) ∧ v g.val.det = 1) ∧
         (∀ i j : Fin N, d j.val < d i.val → v (g i j) < 1) := hg
-  refine ⟨⟨fun a b ↦ ?_, hg_det⟩, fun i j hij ↦ ?_⟩
-  -- For a nonzero entry of `g` take `log` of its valuation, an integer that is `≤ 0`, or `≤ -1`
-  -- if `d (σ b) < d (σ a)`, and add the inequality `ht`.
-  · -- the entries of `k` are integral
-    grind [Units.ne_zero, =_ log_le_log, =_ log_lt_log, map_eq_zero, log_mul, log_inv, mul_eq_zero,
-      one_pos]
-  · -- the entries `(i, j)` of `k` with `c j < c i` lie in the maximal ideal
+  -- For nonzero entries, `ht` gives the required bound on the log of the valuation.
+  refine ⟨⟨fun a b ↦ ?_, hg_det⟩, fun i j hij ↦ ?_⟩ <;>
     grind [Units.ne_zero, =_ log_le_log, =_ log_lt_log, map_eq_zero, log_mul, log_inv, mul_eq_zero,
       one_pos]
 
@@ -104,11 +102,7 @@ they lie in every set `S` that holds the diagonal entries of `g`. -/
 lemma conj_monomial_apply_self_mem (t : Fin N → Fˣ) (σ : Perm (Fin N)) {S : Set F}
     (hgS : ∀ i : Fin N, g i i ∈ S) (i : Fin N) :
     ((permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) : GL (Fin N) F) i i ∈ S := by
-  have h_entry (a b : Fin N) :
-      ((permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) : GL (Fin N) F) a b =
-        (t a).val⁻¹ * g (σ a) (σ b) * (t b).val := by
-    simp [← map_inv, Matrix.mul_apply, symm_apply_eq, diagonal, mul_assoc]
-  rw [h_entry, mul_right_comm, inv_mul_cancel₀ (t i).ne_zero, one_mul]
+  rw [conj_monomial_apply, mul_right_comm, inv_mul_cancel₀ (t i).ne_zero, one_mul]
   exact hgS (σ i)
 
 /-- Let `g` lie in the parahoric of level function `d`, with diagonal entries in `S`, and let
@@ -136,7 +130,7 @@ lemma transvectionGL_apply_permGL_inv {h : a ≠ b} {σ : Perm (Fin N)}
     simpa using (permGL_mul_transvectionGL σ⁻¹ hσ.ne c).symm
   have h_fix : ρ (transvectionGL hσ.ne c) x = x := by
     simpa using hx ⟨_, transvectionGL_mem_proIwahori hσ.ne (.inr ⟨hc, hσ⟩)⟩
-  rw [← Module.End.mul_apply, ← map_mul ρ.ρ, h_comm, map_mul ρ.ρ, Module.End.mul_apply, h_fix]
+  rw [← mul_apply_eq_comp, ← map_mul ρ.ρ, h_comm, map_mul ρ.ρ, mul_apply_eq_comp, h_fix]
 
 /-- If `c j < c i` forces `j < i`, as it does for monotone `c`, then the pro-`p` Iwahori subgroup
 lies in the parahoric subgroup for the blocks of `c`. -/
@@ -170,32 +164,21 @@ integral `c` such that the transposition of `a` and `b` conjugates `g (1 + c E_a
 lemma exists_swap_conj_mem_proIwahori (h : a ⋖ b) (hg : g ∈ proIwahori) :
     ∃ c : 𝒪[F],
       MulAut.conj (permGL (Equiv.swap a b)) (g * transvectionGL h.ne c.val) ∈ proIwahori := by
-  -- Choose `c` so that the column operation `transvectionGL h.ne c` clears the entry `(a, b)`. As
-  -- `a` and `b` are adjacent, this is the only entry that the swap moves from above the diagonal to
-  -- below it.
+  -- Choose `c` so `transvectionGL h.ne c` clears entry `(a, b)`, the only entry swapped across
+  -- the diagonal.
   let c : F := -g a b / g a a
-  have hc_int : v c ≤ 1 := by simp_all [c, v_diag_eq_one_of_mem_proIwahori, mem_proIwahori]
-  have h_cleared : g * transvectionGL h.ne c ∈ proIwahori :=
-    mul_mem hg (transvectionGL_mem_proIwahori _ (.inr ⟨hc_int, h.lt⟩))
-  have h_conj_eq : MulAut.conj (permGL (Equiv.swap a b)) (g * transvectionGL h.ne c) =
-      (permGL (swap a b) * diagGL 1)⁻¹ * (g * transvectionGL h.ne c) *
-        (permGL (swap a b) * diagGL 1) := by simp [MulAut.conj_apply, ← map_inv]
-  refine ⟨⟨c, hc_int⟩, ?_⟩
-  rw [mem_proIwahori_iff_blockParahoric] at h_cleared
-  rw [h_conj_eq, mem_proIwahori_iff_blockParahoric]
-  refine conj_monomial_mem_blockParahoric 1 (swap a b) _ h_cleared ?_
-  -- For `t = 1` the condition of `conj_monomial_mem_blockParahoric` asks only that the entry
-  -- `(a, b)` vanish.
-  have h_entry_zero : (g.val * transvection a b c) a b = 0 := by
-    have h_aa_ne : g a a ≠ 0 := fun h_zero ↦ by
-      simpa [h_zero] using v_diag_eq_one_of_mem_proIwahori hg a
-    simp [mul_transvection_apply_same, c, h_aa_ne]
-  obtain ⟨h_lt, h_adj⟩ := h
-  -- Only the pair `(a, b)` is exchanged across the diagonal, and there the entry is `0`.
-  suffices h_pairs : ∀ i j : Fin N, (g.val * transvection a b c) (swap a b i) (swap a b j) = 0 ∨
-        ((if j < i then 1 else 0 : ℤ) ≤ if swap a b j < swap a b i then 1 else 0) by
-    simpa using h_pairs
-  grind [one_pos]
+  have hc : v c ≤ 1 := by simp_all [c, v_diag_eq_one_of_mem_proIwahori, mem_proIwahori]
+  have h_mem : (permGL (swap a b) * diagGL 1)⁻¹ * (g * transvectionGL h.ne c) *
+      (permGL (swap a b) * diagGL 1) ∈ proIwahori :=
+    mem_proIwahori_iff_blockParahoric.mpr <| conj_monomial_mem_blockParahoric 1 (swap a b) _
+      (mem_proIwahori_iff_blockParahoric.mp <|
+        mul_mem hg (transvectionGL_mem_proIwahori _ (.inr ⟨hc, h.lt⟩))) <| by
+    have haa : g a a ≠ 0 := fun h0 ↦ by simpa [h0] using v_diag_eq_one_of_mem_proIwahori hg a
+    have h0 : (g.val * transvection a b c) a b = 0 := by simp [mul_transvection_apply_same, c, haa]
+    obtain ⟨h_lt, h_adj⟩ := h
+    simp
+    grind [one_pos]
+  exact ⟨⟨c, hc⟩, by simpa [MulAut.conj_apply, ← map_inv] using h_mem⟩
 
 /-- If `v u = 1`, every entry of the diagonal torus element with `-u⁻¹` at `a`, `u` at `b` and `1`
 elsewhere has valuation `1`. -/
@@ -225,7 +208,7 @@ lemma quadratic_relation [CompactSpace 𝒪[F]] [IsSmoothRep ρ.ρ]
       φ (ρ (τ * transvectionGL hab.ne w) x) = if v w < 1 then φ (ρ τ x) else c := by
     rcases hw.lt_or_eq with hw_lt | hw_eq
     · -- Moved to the left of `τ`, `transvectionGL hab.ne w` lies in `proIwahori`.
-      rw [ite_eq_left hw_lt, hτ, permGL_mul_transvectionGL, map_mul ρ.ρ, Module.End.mul_apply]
+      rw [ite_eq_left hw_lt, hτ, permGL_mul_transvectionGL, map_mul ρ.ρ, mul_apply_eq_comp]
       exact hφ _ (transvectionGL_mem_proIwahori _ (.inl hw_lt)) _
     · -- Factor `τ (1 + w E_ab) = (1 + w⁻¹ E_ab) d (1 + w⁻¹ E_ba)`: the left factor lies in
       -- `proIwahori`, the right one fixes `x`, and `φ (ρ d x) = c`.
@@ -233,7 +216,7 @@ lemma quadratic_relation [CompactSpace 𝒪[F]] [IsSmoothRep ρ.ρ]
       lift w to Fˣ using hw_unit
       have hw_inv : v w.val⁻¹ ≤ 1 := by simp [hw_eq]
       rw [ite_eq_right hw_eq.not_lt, hτ, swap_mul_transvectionGL hab.ne w]
-      simp only [map_mul ρ.ρ, Module.End.mul_apply, hx _ hw_inv,
+      simp only [map_mul ρ.ρ, mul_apply_eq_comp, hx _ hw_inv,
         hφ _ (transvectionGL_mem_proIwahori hab.ne (.inr ⟨hw_inv, hab.lt⟩))]
       exact hc w hw_eq
   have h_tv (p q : F) :
@@ -261,7 +244,7 @@ lemma quadratic_relation [CompactSpace 𝒪[F]] [IsSmoothRep ρ.ρ]
           MulAut.conj (permGL (Equiv.swap a b)) (g * transvectionGL hab.ne z.val) *
             (τ * transvectionGL hab.ne (f r - z).val) := by
         simp [τ, MulAut.conj_apply, mul_assoc, h_tv]
-      rw [h_prod, map_mul ρ.ρ, Module.End.mul_apply, hφ _ hk]
+      rw [h_prod, map_mul ρ.ρ, mul_apply_eq_comp, hφ _ hk]
     have h_lt_iff (r : 𝓀[F]) : v (f r - z).val < 1 ↔ r = residue 𝒪[F] z := by
       rw [← residue_eq_zero_iff_valuation_lt_one, map_sub, hf, sub_eq_zero]
     calc
@@ -347,7 +330,7 @@ lemma exists_iwahoriHeckeHom_injective [CompactSpace 𝒪[F]] (hϖ : v ϖ.val = 
   let φ : Module.End ℂ ρ := compactMean ρ.ρ proIwahori
   let P (σ : Perm (Fin N)) : Prop := φ (ρ (permGL σ⁻¹) y) = 0
   have hx_zero : compactMean ρ.ρ proIwahori (ρ (diagGL (s a)) x) = 0 := congrArg Subtype.val hx
-  have h_start : P (finCycle a)⁻¹ := by simpa [P, φ, y, n] using hx_zero
+  have h_start : P (finCycle a)⁻¹ := by simpa [P, y, n] using hx_zero
   -- The quadratic relation, with `c = 0`, carries `P` across a transposition that removes an
   -- inversion.
   have h_swap (σ : Perm (Fin N)) (i j : Fin N) (hij : i ⋖ j) (hσ : σ j < σ i) (hP : P σ) :

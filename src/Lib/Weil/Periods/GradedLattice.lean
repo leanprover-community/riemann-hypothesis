@@ -182,7 +182,8 @@ lemma exists_gram_eq_degreeZeroPart [HasPrimitiveRoot5040 E] {w : ι → ℤ} {k
     calc (G * n.val) a j = (n.valᴴ * (G * n.val)) a j := by
           simp [Matrix.mul_apply (M := n.valᴴ), hn_col _ ha, Matrix.one_apply, apply_ite star]
       _ = G₀ a j := by rw [← mul_assoc, hn_gram]
-  rw [show n.val - 1 = G' * (G * n.val - G) by rw [mul_sub, ← mul_assoc, h_inv, one_mul], Matrix.mul_apply]
+  rw [show n.val - 1 = G' * (G * n.val - G) by rw [mul_sub, ← mul_assoc, h_inv, one_mul],
+    Matrix.mul_apply]
   refine Finset.sum_eq_zero fun a _ ↦ ?_
   obtain ha | ha := lt_or_ge (w i) (-w a)
   · rw [hG'_deg i a (by simpa using ha), zero_mul]
@@ -312,7 +313,7 @@ lemma exists_isGraded [Fintype X] [HasPrimitiveRoot5040 E] (x : Gf E ι) :
   obtain ⟨g, hg⟩ : ∃ g : Gf E ι, V.ratCoordMatrixFin g = v := by
     refine ⟨U.of isUnit_one (V.xFin⁻¹.val * v * V.xFin.val) ?_, ?_⟩
     · rw [gram_mul, gram_mul, gram_inv_of_gram_eq V.gram_xFin, hv_gram, V.gram_xFin]
-    · simp [Space.ratCoordMatrixFin, U.of, mul_assoc]
+    · simp [Space.ratCoordMatrixFin, mul_assoc]
   have hg_mem : ((1, g) : G E ε) ∈ Y.unipotent := Y.mem_unipotent.2 fun i k h_lt ↦ by
     -- The matrix of `(1, g)` is `1` at the infinite places and `v` at the finite places.
     simpa [V.ratCoordMatrix_inr, hg, Prod.ext_iff, Matrix.one_apply, apply_ite Prod.fst,

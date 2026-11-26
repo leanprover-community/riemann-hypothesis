@@ -1,6 +1,12 @@
 module
 
-public import Lib.Base
+public import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ReduceModChar
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # Absolutely integrally closed rings and their stability properties; Frobenius powers

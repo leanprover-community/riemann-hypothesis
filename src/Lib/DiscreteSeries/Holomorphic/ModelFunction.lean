@@ -64,30 +64,22 @@ the indices of sign `1`. -/
 theorem holMinors_ite_sign {a b : ℤ} (hab : a ≤ b) (g : USign ε) :
     holMinors ε (fun i : n ↦ if ε i = 1 then a else b) g =
       (g : Matrix n n ℂ).det ^ b / principalMinor g (fun i : n ↦ ε i = 1) ^ (b - a) := by
-  -- Let `p` be the principal minor and `c` the shift in `holMinors`, whose denominator is `p ^ c`.
-  -- Its numerator times `p ^ (b - a)` and `det ^ b * p ^ c` are both `weightMinors` of the weight
-  -- `b + c` on the sign `1` and `b` elsewhere.
+  -- Let `c` be the shift in `holMinors`; both sides of the cross-multiplication equal
+  -- `weightMinors` of the weight `b + c` on sign `1` and `b` elsewhere.
   let w (i : n) : ℤ := if ε i = 1 then a else b
   let c : ℤ := 2 * ∑ j : n, |w j|
-  have hc_nonneg : 0 ≤ c := by positivity
+  have hc : 0 ≤ c := by positivity
+  have hg : (g : Matrix n n ℂ).det ≠ 0 := by simp [Matrix.GeneralLinearGroup.det_ne_zero]
   have h_top (i j : n) (hi : ε i = 1) (hj : ¬ε j = 1) :
       (w j + if ε j = 1 then c else 0) ≤ w i + if ε i = 1 then c else 0 := by
     grind [neg_sum_abs_le_and_le_sum_abs w i, neg_sum_abs_le_and_le_sum_abs w j]
-  have h_weight : (fun i : n ↦ (w i + if ε i = 1 then c else 0) + if ε i = 1 then b - a else 0) =
-      fun i : n ↦ b + if ε i = 1 then c else 0 := by grind
-  have hg : (g : Matrix n n ℂ).det ≠ 0 := by simp [Matrix.GeneralLinearGroup.det_ne_zero]
-  have h_num : weightMinors (fun i : n ↦ w i + if ε i = 1 then c else 0) (g : Matrix n n ℂ) *
-      principalMinor g (fun i : n ↦ ε i = 1) ^ (b - a) =
-        weightMinors (fun i : n ↦ b + if ε i = 1 then c else 0) g := by
-    rw [← weightMinors_add_ite hg (sub_nonneg.2 hab) h_top, h_weight]
-  have h_det : (g : Matrix n n ℂ).det ^ b *
-      weightMinors (fun i : n ↦ if ε i = 1 then c else 0) g =
-        weightMinors (fun i : n ↦ b + if ε i = 1 then c else 0) g := by
-    rw [weightMinors_add_ite hg hc_nonneg (by simp), weightMinors_const hg,
-      weightMinors_ite_eq_zpow hg hc_nonneg]
-  have h_den_ne : weightMinors (fun i : n ↦ if ε i = 1 then c else 0) (g : Matrix n n ℂ) ≠ 0 := by
-    simp [weightMinors_ite_eq_zpow hg hc_nonneg, zpow_ne_zero]
-  rw [holMinors, div_eq_div_iff h_den_ne (by simp [zpow_ne_zero]), h_num, h_det]
+  have h_den : weightMinors (fun i : n ↦ if ε i = 1 then c else 0) (g : Matrix n n ℂ) ≠ 0 := by
+    simp [weightMinors_ite_eq_zpow hg hc, zpow_ne_zero]
+  rw [holMinors, div_eq_div_iff h_den (by simp [zpow_ne_zero]),
+    ← weightMinors_add_ite hg (sub_nonneg.2 hab) h_top,
+    show (fun i : n ↦ (w i + if ε i = 1 then c else 0) + if ε i = 1 then b - a else 0) =
+      fun i : n ↦ b + if ε i = 1 then c else 0 by grind,
+    weightMinors_add_ite hg hc (by simp), weightMinors_const hg, weightMinors_ite_eq_zpow hg hc]
 
 @[simp]
 theorem holMinorsPi_one : holMinorsPi ε u 1 = 1 := by simp [holMinorsPi, holMinors]
@@ -142,6 +134,12 @@ theorem IsPosFirstOrder.isKDominant_shift (ho : IsPosFirstOrder ε o)
   · simp [h_same]
   · simp [hi, hj, sum_nonneg]
 
+private theorem shiftMinors_ne_zero (u : Φ → n → ℤ) (h : Φ → USign ε) :
+    let c (τ : Φ) (i : n) : ℤ := if ε i = 1 then 2 * ∑ j : n, |u τ j| else 0
+    ∏ τ : Φ, weightMinors (c τ) (h τ) ≠ 0 := by
+  simp [Matrix.GeneralLinearGroup.det_ne_zero, sum_nonneg, weightMinors_ite_eq_zpow,
+    prod_ne_zero_iff, zpow_ne_zero]
+
 open scoped Matrix.Norms.L2Operator in
 /-- If the order o is injective with the indices of sign +1 first, and every u^τ is K-dominant
 for o (decreases weakly within the indices of each sign), then `New.holMinorsPi ε u`, the product
@@ -171,19 +169,14 @@ theorem isHolOfWeight_holMinorsPi (ho : IsPosFirstOrder ε o)
   -- Both factors of the denominator `G₂ (h * b)` are nonzero.
   have h_char_ne : ∏ τ : Φ, diagChar (c τ) (b τ) ≠ 0 := by
     simp [diagChar, (hb _).diag_ne_zero ho.1, prod_ne_zero_iff, zpow_ne_zero]
-  have h_minors_ne : ∏ τ : Φ, weightMinors (c τ) (h τ) ≠ 0 := by
-    simp [c, Matrix.GeneralLinearGroup.det_ne_zero, sum_nonneg, weightMinors_ite_eq_zpow,
-      prod_ne_zero_iff, zpow_ne_zero]
   -- The characters of weights `u + c` and `c` divide to the character of weight `u`.
   have h_char : ∏ τ : Φ, diagChar ((u + c) τ) (b τ) =
       (∏ τ : Φ, diagChar (u τ) (b τ)) * ∏ τ : Φ, diagChar (c τ) (b τ) := by
     simp [diagChar, (hb _).diag_ne_zero ho.1, prod_mul_distrib, zpow_add₀]
-  refine ⟨h_an₁.div h_an₂ (h_eq₂.trans_ne (mul_ne_zero h_char_ne h_minors_ne)), ?_⟩
-  have h_quot : holMinorsPi ε u h =
-      (∏ τ : Φ, weightMinors (u τ + c τ) (h τ)) / ∏ τ : Φ, weightMinors (c τ) (h τ) :=
-    holMinorsPi_eq_div u h
-  rw [Pi.div_apply, h_eq₁, h_eq₂, h_char, h_quot]
+  refine ⟨h_an₁.div h_an₂ (h_eq₂.trans_ne (mul_ne_zero h_char_ne (shiftMinors_ne_zero u h))), ?_⟩
+  rw [Pi.div_apply, h_eq₁, h_eq₂, h_char, holMinorsPi_eq_div u h]
   field_simp
+  rfl
 
 /-- Let `o` put the signs `1` first, let each `u τ` be K-dominant for `o` (decreasing weakly within
 the indices of each sign), and let `F` be holomorphic of weight `u` (`New.IsHolOfWeight`:
@@ -210,7 +203,7 @@ theorem IsHolOfWeight.circle_mean_holMinorsPi (ho : IsPosFirstOrder ε o)
         (∏ τ : Φ, weightMinors (u τ + c τ) (h τ)) * F 1 := by
     -- `circle_mean_weightMinors` allows a block restriction `ε'` and an analytic factor `q`;
     -- it is applied to `F` times the denominator with both of these equal to `1`.
-    simpa [r, χ, Pi.add_def, Pi.mul_def] using
+    simpa [r, Pi.add_def, Pi.mul_def] using
       (hF.mul ho.1 h_den).circle_mean_weightMinors (g := h) ho.1 (.inl rfl) h_dom (by simp) 1
         analyticOnNhd_const
   -- Under rotation the denominator changes by its own character, which cancels.
@@ -221,13 +214,8 @@ theorem IsHolOfWeight.circle_mean_holMinorsPi (ho : IsPosFirstOrder ε o)
     have h_ne : χ c θ ≠ 0 := by simp [χ, prod_ne_zero_iff, zpow_ne_zero]
     rw [show χ (u + c) θ = χ u θ * χ c θ by simp [χ, prod_mul_distrib, zpow_ne_zero, zpow_add₀]]
     field_simp
-  have h_minors_ne : ∏ τ : Φ, weightMinors (c τ) (h τ) ≠ 0 := by
-    simp [c, Matrix.GeneralLinearGroup.det_ne_zero, sum_nonneg, weightMinors_ite_eq_zpow,
-      prod_ne_zero_iff, zpow_ne_zero]
-  have h_quot : holMinorsPi ε u h =
-      (∏ τ : Φ, weightMinors (u τ + c τ) (h τ)) / ∏ τ : Φ, weightMinors (c τ) (h τ) :=
-    holMinorsPi_eq_div u h
-  rw [h_quot, div_mul_eq_mul_div, eq_div_iff h_minors_ne, ← h_mean, ← integral_mul_const]
+  rw [holMinorsPi_eq_div u h, div_mul_eq_mul_div, eq_div_iff (shiftMinors_ne_zero u h), ← h_mean,
+    ← integral_mul_const]
   refine integral_congr_ae (.of_forall fun θ ↦ ?_)
   have h_coe : ∏ τ : Φ, ∏ i : n, ((((θ.toCircle ^ o i) ^ u τ i)⁻¹ : Circle) : ℂ) = (χ u θ)⁻¹ := by
     simp [χ]
@@ -348,7 +336,7 @@ theorem IsInCornerBlock.isBorelMatrix_and_diagChar_eq_one {s : ℤˣ} {x : Matri
   have h_tri : x.BlockTriangular o := fun i j hij ↦ by
     have h_ne : i ≠ j := fun h_eq ↦ hij.ne (congrArg o h_eq.symm)
     simpa [h_ne] using hx i j fun ⟨hi, hj⟩ ↦ (h_first i j hi hj).not_gt hij
-  exact ⟨⟨h_tri, by simp [det_eq_prod_diag_of_blockTriangular ho h_tri, h_diag]⟩,
+  exact ⟨⟨h_tri, by simp [h_tri.det_eq_prod_diag ho, h_diag]⟩,
     fun w ↦ by simp [diagChar, h_diag]⟩
 
 /-- A block diagonal matrix that is invertible and upper triangular for the order `o`
@@ -606,31 +594,20 @@ theorem dsCoeff_eq_holMinors_lowestKType (hl : l.HasGap h) (ho : IsPosFirstOrder
   -- Both sides are analytic on the group, so it is enough to treat `g = x' * a * x` near `1`.
   refine USign.eq_of_analyticAt_of_eventually_eq l.analyticAt_dsCoeff
     (analyticAt_holMinors l.lowestKType) ?_ g
-  have h_dom : IsKDominant ε o l.lowestKType := hl.isKDominant_lowestKType_of_order h_same
   have h_acc : ∀ᶠ z : Matrix n n ℂ in 𝓝 1, z.IsAccretive := PosDef.one.isAccretive.setOf_mem_nhds
   have h_coe : Tendsto (fun g : USign ε ↦ (g : Matrix n n ℂ)) (𝓝 1) (𝓝 1) :=
     Continuous.tendsto' (by fun_prop) 1 1 rfl
-  filter_upwards [h_coe.eventually h_acc,
-    h_coe.eventually (eventually_exists_eq_corner_mul_mul_corner ε (h_acc.and
-      (eventually_flenstedJensen_eq_holMinors_of_mem_blockDiagAlg hl ho h_same)))]
-    with g hg_acc hg
-  obtain ⟨x', a, x, (hx' : IsInCornerBlock ε (-1) (x' - 1)), ha_mem,
-    ⟨(ha_acc : a.IsAccretive), ha_eq⟩, (hx : IsInCornerBlock ε 1 (x - 1)),
-    (hg_eq : (g : Matrix n n ℂ) = x' * a * x)⟩ := hg
+  filter_upwards [h_coe.eventually (h_acc.and (eventually_exists_eq_corner_mul_mul_corner ε
+      (h_acc.and (eventually_flenstedJensen_eq_holMinors_of_mem_blockDiagAlg hl ho h_same))))]
+    with g ⟨hg_acc, x', a, x, hx', ha_mem, ⟨ha_acc, ha_eq⟩, hx, hg_eq⟩
   -- In the order `o` the factors `x'` and `x` are lower and upper unipotent.
-  obtain ⟨h_lower, h_lower_char⟩ : IsBorelMatrix (-o) x' ∧ ∀ w : n → ℤ, diagChar w x' = 1 :=
-    hx'.isBorelMatrix_and_diagChar_eq_one (neg_injective.comp ho.1)
-      fun i j hi hj ↦ neg_lt_neg (ho.2 j i hj hi)
-  obtain ⟨h_upper, h_upper_char⟩ : IsBorelMatrix o x ∧ ∀ w : n → ℤ, diagChar w x = 1 :=
-    hx.isBorelMatrix_and_diagChar_eq_one ho.1 ho.2
-  calc l.dsCoeff g = l.flenstedJensen 1 g := by
-        rw [dsCoeff_eq_flenstedJensen hl (one_mem _) (by simpa using hg_acc), inv_one, one_mul]
-    _ = l.flenstedJensen 1 a := by
-        rw [hg_eq, flenstedJensen_corner_mul_mul_corner hl h_cross hx' ha_acc.det_ne_zero hx]
-    _ = holMinors ε l.lowestKType a := ha_eq ha_mem
-    _ = holMinors ε l.lowestKType g := by
-        rw [hg_eq, holMinors_oppBorel_mul_mul_borel ho h_dom h_lower ha_acc.det_ne_zero h_upper,
-          h_lower_char, h_upper_char, one_mul, one_mul]
+  obtain ⟨h_lower, h_lower_char⟩ := hx'.isBorelMatrix_and_diagChar_eq_one (neg_injective.comp ho.1)
+    fun i j hi hj ↦ neg_lt_neg (ho.2 j i hj hi)
+  obtain ⟨h_upper, h_upper_char⟩ := hx.isBorelMatrix_and_diagChar_eq_one ho.1 ho.2
+  rw [dsCoeff_eq_flenstedJensen hl (one_mem _) (by simpa using hg_acc), inv_one, one_mul, hg_eq,
+    flenstedJensen_corner_mul_mul_corner hl h_cross hx' ha_acc.det_ne_zero hx, ha_eq ha_mem,
+    holMinors_oppBorel_mul_mul_borel ho (hl.isKDominant_lowestKType_of_order h_same) h_lower
+      ha_acc.det_ne_zero h_upper, h_lower_char, h_upper_char, one_mul, one_mul]
 
 end
 

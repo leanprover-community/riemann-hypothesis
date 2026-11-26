@@ -1,5 +1,9 @@
 module
 
+public import Mathlib.Analysis.Normed.Group.Completeness
+public import Mathlib.MeasureTheory.Function.L2Space
+public import Mathlib.MeasureTheory.Function.LpSpace.InfiniteSum
+public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
@@ -308,7 +312,7 @@ instance : CoeFun he.Model fun _ ↦ W → ℂ := ⟨val⟩
 
 /-- The complex-linear map sending a function in the reproducing space to its class in L¹(W, μ). -/
 def IsVacuum.toL1 : he.Model →ₗ[ℂ] W →₁[μ] ℂ where
-  toFun v := v.2.1.toL1
+  toFun v := v.property.1.toL1
   map_add' := by tauto
   map_smul' := by tauto
 
@@ -392,17 +396,17 @@ def heisenbergRep : H.Rep he.Model :=
   -- the twisted translation `x ↦ H.β y x * v (x - y)`, an isometry for the `L¹` norm
   let ρ (y : W) : he.Model →ₗᵢ[ℂ] he.Model :=
     { toFun v :=
-        ⟨fun x ↦ H.β y x * v.1 (x - y),
-          (v.2.1.comp_sub_right y).bdd_mul (c := 1) (by fun_prop) (by simp [norm_eq_one]),
+        ⟨fun x ↦ H.β y x * v.val (x - y),
+          (v.property.1.comp_sub_right y).bdd_mul (c := 1) (by fun_prop) (by simp [norm_eq_one]),
           fun x ↦ by
             -- translate the variable of integration by `y` and use the equation of `v` at `x - y`
             rw [← integral_add_right_eq_self _ y]
-            simp [↓← v.2.2 (x - _), ← integral_const_mul, sub_eq_add_neg, add_right, self_eq_one,
-              add_left]
+            simp only [↓← v.property.2 (x - _), ← integral_const_mul, sub_eq_add_neg, add_right,
+              self_eq_one, add_left, mul_one, add_neg_cancel_right, neg_add_rev, beta_neg_right]
             ac_nf⟩
       map_add' v w := ext fun x ↦ mul_add (H.β y x) (v (x - y)) (w (x - y))
       map_smul' c v := ext fun x ↦ mul_left_comm (H.β y x) c (v (x - y))
-      norm_map' v := by simp [↓norm_eq_integral_norm, coe, integral_sub_right_eq_self (‖v.1 ·‖),
+      norm_map' v := by simp [↓norm_eq_integral_norm, coe, integral_sub_right_eq_self (‖v.val ·‖),
         norm_eq_one] }
   { ρ y := (ρ y).toContinuousLinearMap
     mul := by
@@ -413,14 +417,14 @@ def heisenbergRep : H.Rep he.Model :=
       -- each `ρ y` is an isometry, so continuity in `y` for each fixed `v` suffices
       refine continuous_prod_of_continuous_lipschitzWith' _ _ (fun y ↦ (ρ y).lipschitzWith) fun v ↦
         continuous_iff_continuousAt.2 fun a ↦ tendsto_iff_norm_sub_tendsto_zero.2 ?_
-      have h_int (w : he.Model) : Integrable (‖w ·‖) μ := w.2.1.norm
+      have h_int (w : he.Model) : Integrable (‖w ·‖) μ := w.property.1.norm
       -- Scheffé's trick: this integrand is dominated by `‖ρ a v x‖` and continuous in `t`; its
       -- integral is `‖v‖ - ‖ρ t v - ρ a v‖`, which is `‖v‖` at `t = a`
       have h_cont : Continuous fun t : W ↦ ∫ x : W, ‖ρ t v x‖ - ‖(ρ t v + -ρ a v) x‖ ∂μ := by
         refine continuous_of_dominated (fun t ↦ ((h_int _).sub (h_int _)).1) ?_ (h_int (-ρ a v))
           (.of_forall ?_)
         · simp [(abs_norm_sub_norm_le ..).trans]
-        · simp [↓add_apply, ρ, coe]
+        · simp only [↓add_apply, ρ, coe, Complex.norm_mul]
           fun_prop
       simpa [norm_map, integral_sub, h_int, ← norm_eq_integral_norm, ← sub_eq_add_neg] using
         (h_cont.tendsto a).const_sub ‖v‖ }
@@ -443,7 +447,7 @@ def kernelIntegral (σ : ℂ →+* ℂ) [RingHomIsometric σ] (K : W → X →L[
     he.Model →SL[σ] X →L[ℂ] Y :=
   -- the integrand `σ (v y) • K y x` is dominated by `‖v y‖ * ‖x‖`
   have h_dom (v : he.Model) (x : X) : Integrable (fun y : W ↦ ‖v y‖ * ‖x‖) μ :=
-    v.2.1.norm.mul_const ‖x‖
+    v.property.1.norm.mul_const ‖x‖
   have h_int (v : he.Model) (x : X) : Integrable (fun y : W ↦ σ (v y) • K y x) μ :=
     (h_dom v x).mono'
       ((σ.isometry.continuous.comp' (continuous v)).fun_smul (hK x)).aestronglyMeasurable

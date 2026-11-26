@@ -99,13 +99,13 @@ lemma mapRel_crysRelations_subset [DecidableEq n] {O' : CoeffRing ℓ} (hO : O �
       l ((A.map (inclusion hO) *ᵥ x) j) = (A *ᵥ (l ∘ x)) j := by
     have h_linear (a : ↑O) (y : ↑O') : l (inclusion hO a * y) = a * l y := l.map_smul a y
     simp only [mulVec, dotProduct, Matrix.map_apply, map_sum, h_linear, Function.comp_apply]
-  let lz : decompGroup Gal(Ω/E) (placeOver v.1) → n → ↑O :=
+  let lz : decompGroup Gal(Ω/E) (placeOver v.val) → n → ↑O :=
     (l.restrictScalars ℤ_[ℓ]).compLeft n ∘ z
   -- `ψ` is trivial on the decomposition group, so `l` is equivariant there and `l ∘ z` is a
   -- crystalline cocycle of `u`.
   have h_mem : lz ∈ crysCocyclesAt v u := by
     refine Period.crysCocycles.comp_mem hz _ fun g x ↦ funext fun j ↦ ?_
-    have hψg : ψ g = 1 := hψ v v.2 g g.2
+    have hψg : ψ g = 1 := hψ v v.property g g.property
     have h_comp : (l.restrictScalars ℤ_[ℓ]).compLeft n x = l ∘ x := rfl
     simpa [twistRep, hψg, h_comp] using h_mulVec (u g) x j
   calc
@@ -133,10 +133,10 @@ lemma IsSmallTwist.isAuxTwist {S₀ Q : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} 
   classical
   let γ (w : FinPlace E) : Gal(Ω/E) := w.isPlaceOver_placeOver.tameGenerator
   refine ⟨hQ, hψ.isFromU1, fun v ↦ γ v, fun v ↦ ?_, ?_⟩
-  · have hvℓ : v.1 ∉ placesDividing E ℓ := fun hv ↦ by
-      obtain ⟨hvS, -⟩ := hQ v v.2
+  · have hvℓ : v.val ∉ placesDividing E ℓ := fun hv ↦ by
+      obtain ⟨hvS, -⟩ := hQ v v.property
       exact hvS (hS₀ hv)
-    exact ⟨hvℓ, map_one _, placeOver v.1, v.1.isPlaceOver_placeOver, rfl⟩
+    exact ⟨hvℓ, map_one _, placeOver v.val, v.val.isPlaceOver_placeOver, rfl⟩
   · calc
       ∑ v : Q, ellVal (ψ (γ v) - 1) = ∑ w ∈ Q, ellVal (ψ (γ w) - 1) :=
         Q.sum_coe_sort fun w ↦ ellVal (ψ (γ w) - 1)

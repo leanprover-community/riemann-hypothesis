@@ -378,14 +378,6 @@ lemma stdKernelForm_apply (σ : b ⊕ r ≃ n) (y : Matrix b n (LocProd 𝔠.ram
       (localDatum W V v (stdRowDatum σ 𝔠.semilocalChar y) 𝔠.readsAt) (g, h) :=
   rfl
 
-/-- The integral over `[U(V)]` of the kernel `stdKernelForm` on a real vector `v` is the theta
-integral of `(W, V)` on `v` and the standard datum of `y`. -/
-lemma integral_stdKernelForm (σ : b ⊕ r ≃ n) (y : Matrix b n (LocProd 𝔠.ramifiedPlaces)) (g : G E s)
-    (v : PairFock E s t) :
-    ∫ h : G E t, stdKernelForm 𝔠 W V σ y g h v ∂V.quotMeasure =
-      thetaLarge W V 𝔠 v (stdRowDatum σ 𝔠.semilocalChar y) g :=
-  rfl
-
 /-- The datum factors. For integral `y`, the function of Tate's integral of `planeDatum 𝔠 A σ' v y`
 at `α α₀`, where `α₀ = scaleIdele E`, is `l β * γ` times the finite factor `lineFinFactor` shifted
 by the uniformiser `ϖ` times the kernel of `(W, V)` on the real line term at `α∞` of `k v`. Here `l`
@@ -494,7 +486,7 @@ theorem integral_coneKernel (hv : IsSchwartzVector v) {x : ℝ} (hx : 0 < x) :
       thetaLarge W V 𝔠 (∫ p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ,
         coneIntegrand A X μ β x v p ∂haar.prod haar)
         (stdRowDatum σ 𝔠.semilocalChar y) g := by
-  rw [integral_prod _ (integrable_coneKernel A X y g β hv hx), ← integral_stdKernelForm]
+  rw [integral_prod _ (integrable_coneKernel A X y g β hv hx)]
   exact integral_congr_ae (.of_forall fun h ↦ (stdKernelForm 𝔠 W V σ y g h).integral_comp_comm
     (integrable_coneIntegrand A X μ β hx hv).1)
 
@@ -607,7 +599,7 @@ theorem integral_zetaIntegrand_of_one_lt
 character `𝔠 : SplitTameChar E μ` in terms of the cone kernel holds for all `x ≥ 1`, under the same
 hypotheses, if Tate's integral is continuous in its exponent: both sides are then continuous up to
 `1`. -/
-theorem integral_zetaIntegrand_of_one_le [Fintype b] [DecidableEq b]
+theorem integral_zetaIntegrand_of_one_le
     (h_factor : LineValueFactors 𝔠 A X σ v y g f κ)
     (hc : ∀ a : 𝔸f E, lineFinFactor 𝔠 ϖ.val a = lineFinFactor 𝔠 1 (a * c))
     (hn : 2 ∣ card n) (hv : IsSchwartzVector v) (u : (𝔸 E)ˣ)
@@ -770,14 +762,8 @@ theorem exists_zetaIntegral (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2
   have h_vol (β : Bool) : 0 < vol β := measureReal_idelesUnitOff_empty_pos (ρ β)
   refine ⟨fun β ↦ |cUnfold| * ‖(lineConst β).val‖ * vol β, fun β ↦ ?_, fun 𝔠 ↦ ?_⟩
   · exact mul_pos (mul_pos (abs_pos.2 h_cUnfold) (norm_pos_iff.2 (lineConst β).ne_zero)) (h_vol β)
-  obtain ⟨γ, hγ, hγ_factor⟩ : ∃ γ : ℂ, ‖γ‖ ^ 2 = (∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ))⁻¹ ∧
-      ∀ (v : PairFock E s' t') (y : Matrix b n (LocProd 𝔠.ramifiedPlaces)), IsIntMatrix O y → ∀ g :
-        G E s,
-        LineValueFactors 𝔠 A X σ v y g (planeDatum 𝔠 A σ' v y) fun β ↦ lineConst β * γ :=
-    h_lineConst 𝔠
-  obtain ⟨c, hc_abs, hc⟩ : ∃ c : (𝔸f E)ˣ, finIdeleAbs c⁻¹ = ∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ) ∧
-      ∀ a : 𝔸f E, lineFinFactor 𝔠 ϖ.val a = lineFinFactor 𝔠 1 (a * c) :=
-    exists_lineFinFactor_uniformizer_eq 𝔠
+  obtain ⟨γ, hγ, hγ_factor⟩ := h_lineConst 𝔠
+  obtain ⟨c, hc_abs, hc⟩ := exists_lineFinFactor_uniformizer_eq 𝔠
   let K : (𝔸 E)ˣ := shiftIdele c
   let Q : ℝ := ∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ)
   have hQ : 0 < Q := Finset.prod_pos fun w _ ↦ by simp [FinPlace.q_bounds]
@@ -799,10 +785,7 @@ theorem exists_zetaIntegral (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2
     analyticOnNhd_integral_zetaIntegrand A X (h_conv true) (h_conv false)
   refine ⟨fun x ↦ cUnfold * ∫ p, zetaIntegrand 𝔠.character A X f g u x p ∂zetaMeasure V t',
     analyticOnNhd_const.mul h_analytic, h_unfold 𝔠 hv y g hu (h_int _), fun β x hx ↦ ?_⟩
-  have h_value : ∫ p, zetaIntegrand 𝔠.character A X f g u (cond β x (1 - x)) p ∂zetaMeasure V t' =
-      (∫ p, coneKernel 𝔠 A X σ v y g β x p ∂V.quotMeasure.prod (haar.prod haar)) *
-        (lineConst β * γ * 𝔠.character.baseChange.val K * (ideleAbs K ^ x : ℝ) *
-          (𝔠.character.L 𝔠.ramifiedPlaces x * vol β)) :=
+  have h_value :=
     integral_zetaIntegrand_of_one_le A X h_factor hc hn hv u (hρ β)
       (continuousOn_univ.1 h_analytic.continuousOn) hx
   have h_abs : ideleAbs K ^ x =

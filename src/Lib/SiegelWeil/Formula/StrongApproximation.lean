@@ -1,6 +1,5 @@
 module
 
-public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
 public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
 
 /-!
@@ -75,7 +74,7 @@ lemma New.Exchange.exists_torus_mul_quasiReflection_fixes {D : G E s → ℂ}
         = D g := by
   -- A product of three radical points has such a Levi component.
   let ρ : U W₀.J := quasiReflection W₀.conjTranspose_J hJ v σ hσ
-  let c : Matrix m Unit (𝔸 E) := W₀.x⁻¹.1 * (replicateCol Unit v).map toAdele
+  let c : Matrix m Unit (𝔸 E) := W₀.x⁻¹.val * (replicateCol Unit v).map toAdele
   have hc : cᴴ * (stdForm E s₀ * c) = toAdele (σ + star ↑σ : E) • 1 := by
     ext1
     simp [hσ, ← stdForm_vecAtPoint]; rfl
@@ -85,14 +84,26 @@ lemma New.Exchange.exists_torus_mul_quasiReflection_fixes {D : G E s → ℂ}
   let u : G E s := M σ⁻¹ * H.radicalElement 0 1 * M j
   -- The product `u` keeps the isotropic line, acting on it by `-j * σ`.
   have h_line : H.ActsOnFrame u (toAdele (-j * σ : E) • 1) := by
-    simp [u, M, radicalElement, hc, Matrix.mul_assoc, smul_smul, Matrix.mul_add, Matrix.add_mul,
-      Matrix.mul_sub, Matrix.sub_mul]
-    -- Compare coefficients; each is the image of an identity in `E`. The context is cleared
-    -- because the local facts slow the automation down.
+    -- Associating to the right first multiplies the three factors of `u` into `kAdelic` one at a
+    -- time, which keeps the expanded terms small.
+    simp only [ActsOnFrame, u, adeleMatrix_mul, Matrix.mul_assoc]
+    simp only [radicalElement, symm_iAdelic, Matrix.mul_smul, symm_lCoord, smul_mul,
+      Matrix.mul_assoc, symm_kAdelic, conjTranspose_smul, star_toAdele, symm_iCoord, neg_mul,
+      map_neg, map_mul, map_add, map_one, neg_smul, conjTranspose_neg, star_mul', star_j, star_add,
+      star_one, conjTranspose_one, neg_neg, smul_add, smul_neg, smul_smul, hc, Matrix.mul_add,
+      Matrix.mul_neg, Matrix.mul_one, Matrix.add_mul, Matrix.neg_mul, star_inv₀,
+      adeleMatrix_ofMatrix, Matrix.mul_zero, Matrix.zero_mul, sub_zero, conjTranspose_zero,
+      add_zero, mul_neg, Matrix.sub_mul, Matrix.one_mul, kCoord_mul_kAdelic, iCoord_mul_kAdelic,
+      smul_zero, neg_zero, Matrix.mul_sub, lCoord_mul_kAdelic, lCoord_mul_iAdelic_mul,
+      lCoord_mul_lAdelic, kCoord_mul_iAdelic_mul, iCoord_mul_iAdelic_mul, kCoord_mul_lAdelic,
+      iCoord_mul_lAdelic, M]
+    -- Compare coefficients; each is the image of an identity in `E`, proved in `E`. The context is
+    -- cleared because the local facts slow the automation down.
     clear * -
     match_scalars
     all_goals
-      simp only [← map_mul, ← map_add, ← map_neg, ← map_sub, ← map_one toAdele]
+      simp only [← map_mul, ← map_add, ← map_neg, ← map_sub, ← map_one toAdele,
+        (toAdele (E := E)).injective.eq_iff, map_eq_zero_iff _ (toAdele (E := E)).injective]
       grind [σ.ne_zero, star_eq_zero]
   -- So it is a point of the radical of `H` times `H.levi (t, x)`, with `x` its `W₀`-block.
   obtain ⟨c', z', t, x, h_eq, -, hx⟩ := H.exists_eq_radicalElement_mul_levi h_line
@@ -102,9 +113,24 @@ lemma New.Exchange.exists_torus_mul_quasiReflection_fixes {D : G E s → ℂ}
       replicateRow_vecMul, adeleMatrix_ratEmbed, Matrix.mul_assoc, Matrix.mul_sub, Matrix.sub_mul]
   -- That block is the quasi-reflection.
   have h_block : H.iCoord * (u.adeleMatrix * H.iAdelic) = (W₀.ratEmbed ρ).adeleMatrix := by
-    simp [h_reflection, u, M, radicalElement, hc, Matrix.mul_assoc, smul_smul, Matrix.mul_add,
-      Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul]
-    match_scalars <;> grind
+    -- As for `h_line`: associate to the right, expand, and compare coefficients in `E`.
+    simp only [u, adeleMatrix_mul, Matrix.mul_assoc]
+    simp only [radicalElement, symm_iAdelic, Matrix.mul_smul, symm_lCoord, smul_mul,
+      Matrix.mul_assoc, symm_kAdelic, conjTranspose_smul, star_toAdele, symm_iCoord, neg_mul,
+      map_neg, map_mul, map_add, map_one, neg_smul, conjTranspose_neg, star_mul', star_j, star_add,
+      star_one, conjTranspose_one, neg_neg, smul_add, smul_neg, smul_smul, hc, Matrix.mul_add,
+      Matrix.mul_neg, Matrix.mul_one, Matrix.add_mul, Matrix.neg_mul, star_inv₀,
+      adeleMatrix_ofMatrix, Matrix.mul_zero, Matrix.zero_mul, sub_zero, conjTranspose_zero,
+      add_zero, mul_neg, Matrix.sub_mul, Matrix.one_mul, kCoord_mul_iAdelic, smul_zero,
+      iCoord_mul_iAdelic, mul_one, neg_zero, lCoord_mul_iAdelic, lCoord_mul_lAdelic_mul,
+      Matrix.mul_sub, kCoord_mul_lAdelic_mul, iCoord_mul_lAdelic_mul, mul_zero,
+      kCoord_mul_kAdelic_mul, iCoord_mul_kAdelic_mul, iCoord_mul_iAdelic_mul, zero_sub, neg_add_rev,
+      h_reflection, M]
+    clear * -
+    match_scalars <;>
+      simp only [← map_mul, ← map_add, ← map_neg, ← map_one toAdele,
+        (toAdele (E := E)).injective.eq_iff]
+    grind
   obtain rfl : x = W₀.ratEmbed ρ := ext_adeleMatrix (hx.trans h_block)
   refine ⟨t, fun g ↦ ?_⟩
   -- Cut `h_eq` to `R`: cut points of the radicals are points of the radicals, which fix `D`.
@@ -142,7 +168,7 @@ lemma New.Exchange.exists_torus_mul_rational_fixes {D : G E s → ℂ}
   obtain ⟨γ', hγ'Γ, hγ⟩ :=
     witt_of_quasiReflection_mem exists_isUnit_sub_star W₀.conjTranspose_J (by simp)
       (X := (1 : Matrix m m E)) (Y := γ.val.val) ⟨1, one_mul 1⟩ ⟨γ.val.inv, γ.val.inv_val⟩
-      (by simp [show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.2]) Γ hΓ
+      (by simp [show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.property]) Γ hΓ
   obtain rfl : γ = γ' := Subtype.ext (Units.ext (by simp [← hγ]))
   exact (mem_Γ γ).1 hγ'Γ
 
@@ -194,14 +220,16 @@ lemma New.Exchange.IsAutFunction.apply_eq_apply_one {S : Set (FinPlace E)}
       closurePart R (H.levi (t, x)) =
         H.levi (cutGL (idemAdele_conjClosure_mul_self (S := R)) t, closurePart R x) :=
     ext_adeleMatrix <| by
-      simp [Splitting.levi, cutGL, ← H.sum_frame_mul_coord_eq_one, -coe_units_inv, Matrix.mul_assoc,
+      simp [Splitting.levi, cutGL, ← H.sum_frame_mul_coord_eq_one, -coe_units_inv,
         Matrix.add_mul, Matrix.mul_add]
       module
   -- Weak approximation in `W₀`: up to points trivial on `R`, the rational points are dense.
   have h_levi (R : Set (FinPlace E)) (hR : R.Finite) (t : GL Unit (𝔸 E)) (x : G E s₀) :
       D (closurePart R (H.levi (t, x))) = D 1 := by
     refine (W₀.weak_approximation hR).induction_on x (isClosed_singleton.preimage (hD.1.comp <| by
-      simp [↓continuous_iff, Splitting.levi, Matrix.mul_assoc]; fun_prop))
+      simp only [↓continuous_iff, Splitting.levi, Matrix.mul_assoc, coe_units_inv, inv_subsingleton,
+        diagonal_conjTranspose, MonoidHom.mk'_apply, adeleMatrix_closurePart, adeleMatrix_ofMatrix,
+        smul_add]; fun_prop))
       fun ⟨⟨_, γ, rfl⟩, k, hk⟩ ↦ ?_
     obtain ⟨a, ha⟩ := exists_torus_mul_rational_fixes H h_rad R γ
     have hk' : componentOn m R k = 1 := eq_of_supportedOn componentOn_mem_supportedOn (one_mem _)
@@ -222,7 +250,7 @@ lemma New.Exchange.IsAutFunction.apply_eq_apply_one {S : Set (FinPlace E)}
   -- It is `a * b` with `a` supported on `S ∪ S̄` and `b` integral and trivial on `S`.
   obtain ⟨a, ha, b, hb, hab, h_ab⟩ :=
     exists_supportedOn_mul_trivialOn S (k⁻¹ * componentOn n Tᶜ (k * κ.2))
-  calc D (γ.1 * (1, k)) = D (1, k) := hD.2 _ γ.2 _
+  calc D (γ.val * (1, k)) = D (1, k) := hD.2 _ γ.property _
     _ = D ((1, k) * (1, a) * (1, b)) := by rw [hK b ⟨(h_ab h_int).2, hb⟩, h_on a ha]
     _ = D (closurePart Tᶜ ((1, k) * κ)) := by simp [closurePart, mul_assoc, ← hab, Prod.map]
     _ = D (closurePart Tᶜ (H.levi (t, x))) := by

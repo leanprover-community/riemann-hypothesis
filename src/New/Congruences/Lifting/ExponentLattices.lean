@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.LinearAlgebra.Span.TensorProduct
 public import Lib.PadicHodge.Kisin.FrameTheorem
 
 /-!
@@ -578,8 +579,8 @@ lemma smul_sub_mem_withOrders (hx : x ∈ L.withOrders i c) (g : k.galMonoid) :
   obtain ⟨h_span, h_letter, h_exp⟩ := mem_withOrders_iff.1 hx
   refine mem_withOrders_iff.2 ⟨sub_mem (galMonoid_smul_mem_kisinLocAinf h_span) h_span,
     sub_mem ((gal_smul_mem_letterPart g).2 h_letter) h_letter, fun a u hu μ hμ ↦ ?_⟩
-  rw [valueAt_smul_sub h_span hμ.1]
-  exact sub_mem (galMonoid_smul_mem_hodgeFil g (h_exp a u hu μ hμ)) (h_exp a u hu μ hμ)
+  have h_mem := h_exp a u hu μ hμ
+  simpa only [valueAt_smul_sub h_span hμ.1] using sub_mem (galMonoid_smul_mem_hodgeFil g h_mem) h_mem
 
 /-! ### Divisibility of `g x - x` by `zTau` -/
 
@@ -667,17 +668,12 @@ lemma phi_pow_smul_mem_kisinLoc {x : L.Ambient} (hx : x ∈ L.kisinLoc) : φ ^ l
   | zero => simpa using hx
   | succ l ih => simpa only [pow_succ', mul_smul] using phi_smul_mem_kisinLoc ih
 
-/-- The A_inf-module `L.kisinAinf` is spanned by the Kisin module `L.kisinModule`. This is a part of
-`frame_theorem`. -/
-lemma span_kisinModule : span Ainf (L.kisinModule : Set L.Ambient) = L.kisinAinf :=
-  L.frame_theorem.kisinAinf_eq_span_kisinModule.symm
-
 /-- The A_inf-span of the Kisin module `L.kisinLoc` with all φ^a E inverted is `L.kisinLocAinf`,
 which is defined as the set of x that some product of the φ^a E sends into `L.kisinAinf`, the
 A_inf-span of the Kisin module `L.kisinModule`. -/
 lemma span_kisinLoc : span Ainf (L.kisinLoc : Set L.Ambient) = L.kisinLocAinf := by
   have h_base : L.kisinAinf ≤ span Ainf (L.kisinLoc : Set L.Ambient) :=
-    span_kisinModule.ge.trans (span_mono kisinModule_le_kisinLoc)
+    kisinAinf_eq_span_kisinModule.le.trans (span_mono kisinModule_le_kisinLoc)
   have h_step (a : ℕ) (y : L.Ambient)
       (hy : (k.frobE a).val • y ∈ span Ainf (L.kisinLoc : Set L.Ambient)) :
       y ∈ span Ainf (L.kisinLoc : Set L.Ambient) := by
@@ -769,8 +765,7 @@ lemma exists_coordRetract :
     simpa [ℓ, Subtype.ext_iff] using
       sum_map_smul_eq_zero_of_mem_kisinLoc k.coord₀ (fun j ↦ (v j).prop) h_rel
   have hπ : Function.Surjective π := surjective_tensorToSpan _ _
-  refine ⟨(LinearMap.ker π).liftQ ℓ h_ker ∘ₗ (π.quotKerEquivOfSurjective hπ).symm.toLinearMap,
-    fun a x hx hax ↦ ?_⟩
+  refine ⟨π.liftOfSurjective hπ ⟨ℓ, h_ker⟩, fun a x hx hax ↦ ?_⟩
   have h_tmul : π (a ⊗ₜ ⟨x, hx⟩) = ⟨a • x, hax⟩ := by simp [π, Subtype.ext_iff]
   simp [← h_tmul, ℓ]
 
@@ -961,18 +956,13 @@ finite set `L.jumpSet j` of jumps at the letter `j = i.stepBack a` (the one with
 and every form `μ` of type `u` at `j` (a linear map to `B_dR`, `Γ'`-equivariant on `1 ⊗ L`, sending
 its projection to `j` into `hodgeFil (-u)`): the value `valueAt a μ x = μ (φ^{-a} x)` is congruent
 modulo `hodgeFil (o a u) = t^(o a u)B_dR⁺` to a constant in the fixed field of `Γ'`. -/
-lemma mem_invariantsMod_withOrders_iff {i : Letter} {x : L.Ambient} {o : ℕ → ℤ → ℤ}
-    (h_span : x ∈ L.kisinLocAinf) (h_letter : x ∈ L.letterPart i) :
-    x ∈ invariantsMod (L.withOrders i o) ↔
-      ∀ a : ℕ, ∀ u ∈ L.jumpSet (i.stepBack a), ∀ μ ∈ L.formsOfType (i.stepBack a) u,
-        ∃ c : localFieldOf k.subgroup, valueAt a μ x - c ∈ hodgeFil (o a u) := by
-  refine ⟨fun h_inv a u hu μ hμ ↦ ?_, fun h_const g ↦ mem_withOrders_iff.2
-    ⟨sub_mem (galMonoid_smul_mem_kisinLocAinf h_span) h_span,
-      sub_mem ((gal_smul_mem_letterPart g).2 h_letter) h_letter, fun a u hu μ hμ ↦ ?_⟩⟩
-  · exact exists_valueAt_sub_mem_hodgeFil h_span hμ.1 fun g ↦
-      valueAt_mem_hodgeFil_of_mem_withOrders (h_inv g) hu hμ
-  · obtain ⟨c, h_close⟩ := h_const a u hu μ hμ
-    exact valueAt_smul_sub_mem_hodgeFil_of_sub_const_mem h_span hμ.1 h_close g
+lemma exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod {i : Letter} {x : L.Ambient}
+    {o : ℕ → ℤ → ℤ} (h_span : x ∈ L.kisinLocAinf) (h_inv : x ∈ invariantsMod (L.withOrders i o))
+    (a : ℕ) {u : ℤ} (hu : u ∈ L.jumpSet (i.stepBack a)) {μ : L.Functional}
+    (hμ : μ ∈ L.formsOfType (i.stepBack a) u) :
+    ∃ c : localFieldOf k.subgroup, valueAt a μ x - c ∈ hodgeFil (o a u) :=
+  exists_valueAt_sub_mem_hodgeFil h_span hμ.1 fun g ↦
+    valueAt_mem_hodgeFil_of_mem_withOrders (h_inv g) hu hμ
 
 /-- Let `i` be a letter and `x` an element of `L.Ambient = W(C^♭) ⊗ L` with orders `lo` at `i`: it
 lies in `L.kisinLocAinf` and in the part at `i`, and for all natural numbers `a`, all jumps `u` at
@@ -987,7 +977,7 @@ lemma mem_withOrders_improvedOrders {i : Letter} {x : L.Ambient} {lo hi : ℕ �
   refine mem_withOrders_iff.2 ⟨h_span, h_letter, fun a u hu μ hμ ↦ ?_⟩
   -- The value is a constant `y` modulo `hodgeFil (hi a u)`.
   obtain ⟨y, h_close⟩ : ∃ y : localFieldOf k.subgroup, valueAt a μ x - y ∈ hodgeFil (hi a u) :=
-    (mem_invariantsMod_withOrders_iff h_span h_letter).1 h_inv a u hu μ hμ
+    exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod h_span h_inv a hu hμ
   -- The constant lies in the step `min (lo a u) (hi a u)`, so it is zero if both are positive.
   have h_min : (y : BdR) ∈ hodgeFil (min (lo a u) (hi a u)) :=
     (sub_mem_iff_right _ (hodgeFil_anti (min_le_left _ _) (h_exp a u hu μ hμ))).1
@@ -1139,8 +1129,7 @@ lemma exists_valueAt_sub_mem_hodgeFil_succ (a : ℕ) (n : ℤ) :
     have h_fix (g : k.galMonoid) :
         g • ∑ l, t l • valueAt a μ x - ∑ l, t l • valueAt a μ x ∈ hodgeFil 1 :=
       smul_sub_mem_hodgeFil_of_valueField g t (valueAt_mem_valueField hμ hx) h_int (ht g)
-    rw [h_value, zero_add]
-    exact exists_const_sub_mem_hodgeFil_of_smul_sub_mem h_fix
+    simpa only [h_value, zero_add] using exists_const_sub_mem_hodgeFil_of_smul_sub_mem h_fix
 
 end New.Lift.KummerChart.JumpLattice
 

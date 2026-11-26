@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Algebra.AlgebraicCard
+public import Mathlib.Algebra.Polynomial.Basis
+public import Mathlib.NumberTheory.Padics.AddChar
 public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.General.Geometry.GaloisCovers
 public import Lib.General.NumberTheory.CoefficientRings
@@ -44,7 +47,9 @@ II.
 ## An ℓ-adic criterion for algebraicity of complex numbers
 
 A transcendental number can be sent to any transcendental element of `PadicAlgCl ℓ` by
-`New.exists_ringEquiv_extend`, and these elements have unbounded norm.
+`New.exists_ringEquiv_extend`, and these elements have unbounded norm. The isomorphisms here are
+of abstract fields; no continuity is required. This is the algebraicity input used for the
+common multiplier in `New.HeightLe.nonneg_of_one`.
 -/
 
 /-- Let `ℓ` be a prime. If the `ℓ`-adic norms of the images of `x : ℂ` under all field isomorphisms
@@ -58,14 +63,16 @@ lemma New.isAlgebraic_of_norm_complexToCp_le {ℓ : ℕ} [Fact ℓ.Prime] {x : �
   obtain ⟨y, hy, hcy⟩ : ∃ y : PadicAlgCl ℓ, ¬IsAlgebraic ℚ y ∧ c < ‖y‖ :=
     ((Algebraic.countable ℚ (PadicAlgCl ℓ)).dense_compl ℚ_[ℓ]).exists_mem_open
       (isOpen_Ioi.preimage continuous_norm) (NormedField.exists_lt_norm _ c)
-  -- Evaluation at `x` and at `y` embed the countable ring `ℚ[X]` in two algebraically closed fields
-  -- of the same uncountable cardinality; an isomorphism `ι` matching them sends `x` to `y`.
+  -- Transcendence is precisely injectivity of the two evaluations on `ℚ[X]`.
+  -- Relative Steinitz (`Lib.General.Geometry.GaloisCovers`) extends their identification to
+  -- a field isomorphism, since the two ambient fields have the same uncountable cardinality.
   have : Countable (Polynomial ℚ) := (Polynomial.basisMonomials ℚ).repr.injective.countable
   rw [isAlgebraic_iff_not_injective, not_not] at hx hy
   obtain ⟨ι, hι⟩ : ∃ ι : ℂ ≃+* PadicAlgCl ℓ, ∀ P : Polynomial ℚ,
       ι (Polynomial.aeval x P) = Polynomial.aeval y P :=
     exists_ringEquiv_extend mk_complex_eq_mk_padicAlgCl _ _ hx hy
-  exact hcy.not_ge (by simpa [show ι x = y by simpa using hι .X] using h_bound ι)
+  have h_image : ι x = y := by simpa using hι .X
+  exact hcy.not_ge (by simpa [h_image] using h_bound ι)
 
 namespace New
 
@@ -173,30 +180,21 @@ limit of images under `ιₚ` of pairs `(α, α ᾱ)` with `α` an integer of `K
 lemma mem_normPairClosure_of_pow_eq {ζ : ℂ_[p]} (hζ_norm : ‖ζ‖ = 1)
     (hζ_pow : ζ ^ primeNorm d p = ζ) : (ζ, ζ ^ (p + 1)) ∈ normPairClosure d := by
   -- Lift the residue of `ζ` to an integer `a` of `K` whose conjugate lifts that of `ζ ^ p`.
-  -- With `q = q_p`, the powers `a ^ q ^ n` tend to `ζ` and their conjugates to `ζ ^ p`.
   let φ : 𝓞 (QuadField d) →+* valRingCp p :=
     ((ιₚ.domRestrict (QuadField d)).comp (algebraMap _ _)).codRestrict (valRingCp p)
       (norm_ringOfIntegers_le (ιₚ.domRestrict (QuadField d)))
   let z : valRingCp p := ⟨ζ, hζ_norm.le⟩
-  obtain ⟨a, ha, ha_star⟩ : ∃ a : 𝓞 (QuadField d),
-      residue (valRingCp p) (φ a) = residue (valRingCp p) z ∧
-      residue (valRingCp p) (φ (star a)) = residue (valRingCp p) z ^ p :=
-    exists_map_eq_and_map_star_eq_pow d ((residue (valRingCp p)).comp φ) _
-      (by rw [← map_pow]; exact congrArg _ (Subtype.ext hζ_pow))
-  set q : ℕ := primeNorm d p
+  obtain ⟨a, ha, ha_star⟩ := exists_map_eq_and_map_star_eq_pow d
+    ((residue (valRingCp p)).comp φ) (residue _ z)
+    ((map_pow (residue _) z _).symm.trans (congrArg _ (Subtype.ext hζ_pow)))
+  set q := primeNorm d p
   have hq : p ∣ q := by simp [q, apply_ite]
-  have hζ_fixed (n : ℕ) : ζ ^ q ^ n = ζ := by
-    simpa using Function.iterate_fixed (f := fun w : ℂ_[p] ↦ w ^ q) hζ_pow n
-  have lim_a : Filter.Tendsto (fun n : ℕ ↦ (φ a).val ^ q ^ n) Filter.atTop (nhds ζ) :=
-    tendsto_pow_pow_of_residue_eq hq ha hζ_norm hζ_fixed
-  have lim_star : Filter.Tendsto (fun n : ℕ ↦ (φ (star a)).val ^ q ^ n) .atTop (nhds (ζ ^ p)) :=
-    tendsto_pow_pow_of_residue_eq (y := z ^ p) hq ha_star (by simp [z, hζ_norm])
-      (by simp [z, pow_right_comm _ p, hζ_fixed])
-  -- The approximating integers are `b n = a ^ q ^ n`.
-  let b : ℕ → ℂ := fun n ↦ ((a ^ q ^ n : 𝓞 (QuadField d)) : QuadField d)
-  refine mem_closure_iff_seq_limit.2
-    ⟨fun n ↦ (ιₚ (b n), ιₚ (b n * conj (b n))), fun n ↦ ⟨b n, ⟨a ^ q ^ n, rfl⟩, rfl⟩, ?_⟩
-  simpa [b, φ, RingHom.codRestrict, pow_succ'] using lim_a.prodMk_nhds (lim_a.mul lim_star)
+  have hζ_fixed n : ζ ^ q ^ n = ζ := by simpa using Function.iterate_fixed (f := (· ^ q)) hζ_pow n
+  have lim_a := tendsto_pow_pow_of_residue_eq hq ha hζ_norm hζ_fixed
+  have lim_star := tendsto_pow_pow_of_residue_eq (y := z ^ p) hq ha_star
+    (by simp [z, hζ_norm]) (by simp [z, pow_right_comm _ p, hζ_fixed])
+  refine mem_closure_iff_seq_limit.2 ⟨_, fun n ↦ ⟨_, ⟨a ^ q ^ n, rfl⟩, rfl⟩, ?_⟩
+  simpa [φ, RingHom.codRestrict, pow_succ'] using lim_a.prodMk_nhds (lim_a.mul lim_star)
 
 end TeichmullerLimits
 
@@ -297,8 +295,6 @@ variable (O) in
 protected noncomputable def uniformizer : ↑O := (exists_irreducible O).choose
 
 variable (O) in
-lemma irreducible_uniformizer : Irreducible O.uniformizer := (exists_irreducible O).choose_spec
-
 /-- Normalised length: the additive map sending n to n·v(ϖ) and ∞ to ∞, where ϖ is the chosen
 uniformiser `O.uniformizer` and v(ℓ) = 1. The value does not depend on the choice of ϖ
 (`normLength_natCast_of_irreducible`). -/
@@ -321,7 +317,7 @@ let the normalised length `normLength` send n to n·v(ϖ) (and ∞ to ∞). Then
 normalised by v(ℓ) = 1. -/
 @[simp]
 lemma normLength_addVal (x : ↑O) : O.normLength (addVal O x) = ellVal x.val := by
-  have hϖ : Irreducible O.uniformizer := O.irreducible_uniformizer
+  have hϖ : Irreducible O.uniformizer := (exists_irreducible O).choose_spec
   obtain rfl | hx := eq_or_ne x 0
   · simp [ellVal, normLength_top]
   -- `x = u * ϖ ^ n` with `‖u‖ = 1`, and both sides are `n` times the valuation of `ϖ`

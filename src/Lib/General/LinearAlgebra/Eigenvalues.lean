@@ -1,7 +1,20 @@
 module
 
-public import Lib.General.Groups.CongruenceSubgroups
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Roots
+public import Mathlib.Algebra.Lie.Weights.Linear
+public import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+public import Mathlib.LinearAlgebra.PID
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Etale.Weakly
+public import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+public import Mathlib.RingTheory.Finiteness.Nilpotent
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.TotallySplit
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Eigenvalues: traces of powers, common eigenvectors, Amitsur's theorem, Sylvester's law
@@ -104,15 +117,6 @@ lemma New.det_one_sub_smul_eq_prod_roots {ι : Type*} [Fintype ι] [DecidableEq 
     (1 - c • N).det = (N.charpoly.roots.map fun x : ℂ ↦ 1 - c * x).prod :=
   det_one_sub_smul_eq_prod_roots_of_isAlgClosed N c
 
-/-! ## The trace of an idempotent matrix -/
-
-/-- The trace of an idempotent matrix over a field is its rank. -/
-lemma New.trace_eq_rank_of_isIdempotentElem {k n : Type*} [Field k] [Fintype n] [DecidableEq n]
-    {p : Matrix n n k} (hp : IsIdempotentElem p) : p.trace = p.rank := by
-  -- `p` is a projection, so its trace is the dimension of its range.
-  rw [← p.trace_toLin'_eq, ← p.finrank_range_mulVecLin]
-  exact (LinearMap.IsIdempotentElem.isProj_range _ (hp.map Matrix.toLinAlgEquiv')).trace
-
 /-! ## Sorting by adjacent swaps and common eigenvectors -/
 
 section CommonEigenvectors
@@ -170,7 +174,7 @@ lemma New.exists_eigenvector_of_commute (hS : ∀ m : ι, ∀ x ∈ S, φ m x �
   -- A weight of `L` has a weight vector `x`; evaluate the weight on the generators `f m` of `L`.
   let f (m : ι) : L := ⟨(φ m).restrict (hS m), subset_lieSpan ⟨m, rfl⟩⟩
   obtain ⟨x, hx, h_eigen⟩ := exists_forall_lie_eq_smul k L S χ
-  refine ⟨fun m ↦ χ (f m), ?_, x, x.2, by simpa using hx, fun m ↦ ?_⟩
+  refine ⟨fun m ↦ χ (f m), ?_, x, x.property, by simpa using hx, fun m ↦ ?_⟩
   · -- The generalised eigenspace of `f m` for `χ (f m)` is its generalised weight space.
     exact fun h_le ↦ hχ ((le_iInf_comp _ f).trans h_le)
   · -- The bracket of `f m` with `x` is the value of `φ m` at `x`.
@@ -245,7 +249,7 @@ lemma New.exists_eigencharacter_of_ne_bot {M : Type*} [CommMonoid M] (ρ : M →
     (hS : ∀ m : M, ∀ x ∈ S, ρ m x ∈ S) (hS_ne : S ≠ ⊥) :
     ∃ χ : M →* k, ∃ x ∈ S, x ≠ 0 ∧ ∀ m : M, ρ m x = χ m • x := by
   have comm (m n : M) : ∀ x ∈ S, ρ m (ρ n x) = ρ n (ρ m x) := by
-    simp [← End.mul_apply, ← map_mul, mul_comm]
+    simp [← mul_apply_eq_comp, ← map_mul, mul_comm]
   have : Nontrivial S := Submodule.nontrivial_iff_ne_bot.2 hS_ne
   obtain ⟨χ, -, x, x_mem, x_ne, eigen⟩ := exists_eigenvector_of_commute ρ hS comm bot_ne_top
   -- The eigenvalues are multiplicative, since scalars are determined by their action on `x ≠ 0`.
@@ -281,17 +285,10 @@ lemma trace_restrict_ne_zero {p : Submodule ℂ V} [FiniteDimensional ℂ p] {b 
   -- `b - c` is nilpotent on `p`, so it has trace zero: the trace of `b` is `c * finrank ℂ p`.
   have h_nil : IsNilpotent (restrict b h_stable - c • 1) :=
     isNilpotent_iff_of_finite.2 fun v ↦ mem_genEigenspace_top.1
-      ((genEigenspace_restrict b p ⊤ c h_stable).ge (hp_le v.2))
+      ((genEigenspace_restrict b p ⊤ c h_stable).ge (hp_le v.property))
   have h_trace : trace ℂ p (restrict b h_stable) = c * finrank ℂ p := by
     simpa [sub_eq_zero] using isNilpotent_trace_of_isNilpotent h_nil
   simp [h_trace, hc, hp_ne]
-
-/-- Generalised eigenspaces for different eigenvalues meet trivially: in a complex vector space
-`V`, a vector killed by a power of `f - μ` that lies in the generalised eigenspace of `f` for
-`ν ≠ μ` is zero. -/
-lemma eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace {f : End ℂ V} {μ ν : ℂ} (hne : μ ≠ ν)
-    {N : ℕ} {v : V} (hμ : ((f - μ • 1) ^ N) v = 0) (hν : v ∈ maxGenEigenspace f ν) : v = 0 :=
-  disjoint_def.1 (disjoint_genEigenspace f hne ⊤ ⊤) v ((mem_maxGenEigenspace f μ v).2 ⟨N, hμ⟩) hν
 
 /-- If `s` intertwines `f` and `g`, that is `s * f = g * s`, and `u` commutes with `g`, then
 `f * (u * s)` and `g * (u * s)` have the same trace. -/
@@ -520,12 +517,12 @@ lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimens
   -- non-zero map of `U` to itself: so `χ` is `θ` on the first pairs and `0` on the others.
   have h_eig (v : U) (a : κ) : (x * A b) v ∈ maxGenEigenspace (G a).1 (Sum.elim θ 0 a) := by
     rcases a with a | e
-    · exact (mem_iInf _).1 (hU hx v v.2) a
+    · exact (mem_iInf _).1 (hU hx v v.property) a
     · exact eigenspace_le_maxGenEigenspace (mem_eigenspace_iff.2 (by simp [G]))
   have hχ (a : κ) : χ a = Sum.elim θ 0 a := by
     by_contra h_ne
     have hzero (v : U) : (x * A b) v = 0 :=
-      eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace h_ne (hN_fst a (A b v)) (h_eig v a)
+      disjoint_def.1 (disjoint_genEigenspace _ h_ne ⊤ ⊤) _ ((mem_maxGenEigenspace _ _ _).2 ⟨_, hN_fst a (A b v)⟩) (h_eig v a)
     have hρ : ρ ⟨(x, y), hx, hy, htr⟩ = 0 := ext fun v ↦ Subtype.ext (hzero v)
     exact hτ_ne (by simp [τ, hρ])
   obtain rfl : χ = Sum.elim θ 0 := funext hχ

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.MeasureTheory.SpecificCodomains.WithLp
 public import Lib.DiscreteSeries.Bessel.SchurBound
 public import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
 public import New.Spanning.Bessel.Basic

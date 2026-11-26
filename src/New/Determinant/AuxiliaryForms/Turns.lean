@@ -1,5 +1,6 @@
 module
 
+public import Std.Tactic.BVDecide.Normalize.BitVec
 public import New.Determinant.AuxiliaryForms.PathData
 public import New.Determinant.Chain.Moduli
 public import New.Determinant.Exchange.OneSquare
@@ -418,33 +419,25 @@ lemma turned_tupleAction (hc : c.IsTurn ϑ w) (hΨ' : IsPathDatum N (c.oldEdges 
     edgeCharProd g (c.newEdges w) * c.turned ε ψ Ψ' (tupleAction g S) = c.turned ε ψ Ψ' S := by
   -- The match commutes with the action at `W₁ ⊕ W₂` and transforms by `χ⁻¹` at `V`.
   let H := c.columnFourier ψ Ψ' (tupleAction g S) (c.newRow S * (c.sndGL g).val)
-  let Φ := matchOf (c.char ϑ) ε H
-  have h_moved : AreMatched ⊤ ε (c.char ϑ) Φ H := hc.areMatched_columnFourier _ hΨ' ε _
   let a : ℂ := edgeChar ϑ (c.low, c.fst) (g c.fst).val.det *
     edgeChar ϑ (c.lowExt, c.snd) (g c.snd).val.det * edgeCharProd g w
+  have h_moved := hc.areMatched_columnFourier (ψ := ψ) (c.newRow S * (c.sndGL g).val) hΨ' ε
+    (tupleAction g S)
   have h_fourier :
-      c.columnFourier ψ Ψ' S (c.newRow S) = fun y ↦ a * H ((c.sumGL g)⁻¹.val * y) := by
-    funext y
-    simpa [a, H] using (hc.columnFourier_tupleAction y (c.newRow S) hΨ' hg 1 S).symm
-  have h_translate : AreMatched ⊤ ε (c.char ϑ)
-      (fun x ↦ a * c.char ϑ (c.sumGL g).val.det * Φ (x * (c.sumGL g).val))
-      (c.columnFourier ψ Ψ' S (c.newRow S)) := by
-    simpa only [h_fourier] using h_moved.translate a (c.sumGL g)
-  have h_sum : c.turned ε ψ Ψ' S =
-      a * c.char ϑ (c.sumGL g).val.det * Φ (c.newMatrix S * (c.sumGL g).val) := by
-    rw [turned, (hc.areMatched_columnFourier (c.newRow S) hΨ' ε S).unique h_translate]
-  have h_value : c.turned ε ψ Ψ' (tupleAction g S) =
-      c.char ϑ (g c.high).val.det * Φ (c.newMatrix S * (c.sumGL g).val) := by
-    rw [turned, hc.newRow_tupleAction hg, hc.newMatrix_tupleAction hg]
-    refine (h_moved.left_mul (g := g c.high) (by simp [mem_intGL])).symm.trans ?_
-    rw [← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul]
+      c.columnFourier ψ Ψ' S (c.newRow S) = fun y ↦ a * H ((c.sumGL g)⁻¹.val * y) :=
+    funext fun y ↦ by
+      simpa [a, H] using (hc.columnFourier_tupleAction y (c.newRow S) hΨ' hg 1 S).symm
+  rw [turned, turned, hc.newRow_tupleAction hg, hc.newMatrix_tupleAction hg,
+    ← h_moved.left_mul (g := g c.high) (by simp [mem_intGL]),
+    ← Matrix.mul_assoc, Units.mul_inv, Matrix.one_mul,
+    (hc.areMatched_columnFourier (c.newRow S) hΨ' ε S).unique
+      (by simpa only [h_fourier] using h_moved.translate a (c.sumGL g)),
+    ← mul_assoc]
   -- Opposite edges have the same character.
-  have h_char : edgeCharProd g (c.newEdges w) * c.char ϑ (g c.high).val.det =
-      a * c.char ϑ (c.sumGL g).val.det := by
-    simp [a, edgeCharProd, char, hc.high_notMem, hc.highExt_notMem, hc.fst_ne_snd.symm,
-      hc.edgeChar_fst, hc.edgeChar_snd, hc.apply_highExt g hg, MulChar.inv_apply_eq_inv']
-    field [MulChar.apply_eq_zero_iff]
-  rw [h_value, ← mul_assoc, h_char, h_sum]
+  congr 1
+  simp [a, edgeCharProd, char, hc.high_notMem, hc.highExt_notMem, hc.fst_ne_snd.symm,
+    hc.edgeChar_fst, hc.edgeChar_snd, hc.apply_highExt g hg, MulChar.inv_apply_eq_inv']
+  field [MulChar.apply_eq_zero_iff]
 
 /-! ### The turned datum and the sum over a square -/
 
@@ -740,7 +733,7 @@ lemma exists_squareLaw_grid_hasAbsUpToNormPower (z : Bool) (ha : a < D.m) (hb : 
   let n : D.LiftIndex := ⟨(if z then a else b) + 1, by grind⟩
   have h_signs : negCount (Sum.elim (D.gridSigns z 0 a (b + 1)) (D.gridSigns z 0 (a + 1) b)) =
       negCount (D.gridSigns z 0 (a + 1) (b + 1)) + negCount (D.gridSigns z 0 a b) := by
-    simp [negCount_gridSigns, add_comm]
+    simp [negCount_gridSigns]
   have h_rank : card (D.GridIndex z (a + 1) (b + 1)) = card (D.GridIndex z a b) + 2 * D.t := by
     cases z <;> simp [card_gridIndex] <;> grind
   have h_ratio : (fun ϑ : D.MFoldTwist ↦ D.lRatioProd pair.character pair.z (ϑ.pow n)) =
@@ -869,13 +862,18 @@ lemma isTurn_innerCorner {z : Bool} (hab : a < b) (hb : b < D.m) (ϑ : D.MFoldTw
       exact hg.1 z'
     · rw [update_of_ne (by grind), update_of_ne (by grind), hg.2 j]
 
+private lemma edges_eq_union_halves (Γ : TwoGridPath D.m) (z : Bool) :
+    Γ.edges = (Γ.half z).edges z ∪ (Γ.half !z).edges !z := by
+  cases z <;> simp [TwoGridPath.edges, union_comm]
+
 /-- If the half in the grid `z` of `Γ'` is `q`, the two sides through `(a, b)`, then `r`, the edges
 of `Γ'` are these two sides and the edges of `q`, `r` and the other half. -/
 lemma edges_eq_oldEdges_innerCorner {z : Bool} (Γ' : TwoGridPath D.m)
     (q : GridPath 0 D.m a (b + 1)) (r : GridPath (a + 1) b Γ'.diagonalIndex Γ'.diagonalIndex)
     (hΓ' : Γ'.half z = q.down.right.append r) :
     Γ'.edges = (D.innerCorner z a b).oldEdges (q.edges z ∪ r.edges z ∪ (Γ'.half !z).edges !z) := by
-  cases z <;> simp [TwoGridPath.edges, hΓ', GridPath.edges_append, GridPath.edges]; grind
+  rw [edges_eq_union_halves Γ' z, hΓ']
+  simp [GridPath.edges_append, GridPath.edges]
 
 /-- If the half in the grid `z` is replaced by `q`, the two sides through `(a + 1, b + 1)`, then
 `r`, the edges are these two sides and the edges of `q`, `r` and the other half. -/
@@ -883,7 +881,8 @@ lemma edges_update_eq_newEdges_innerCorner (z : Bool) (Γ' : TwoGridPath D.m)
     (q : GridPath 0 D.m a (b + 1)) (r : GridPath (a + 1) b Γ'.diagonalIndex Γ'.diagonalIndex) :
     (⟨Γ'.diagonalIndex, update Γ'.half z (q.right.down.append r)⟩ : TwoGridPath D.m).edges =
       (D.innerCorner z a b).newEdges (q.edges z ∪ r.edges z ∪ (Γ'.half !z).edges !z) := by
-  cases z <;> simp [TwoGridPath.edges, GridPath.edges_append, GridPath.edges]; grind
+  rw [edges_eq_union_halves _ z]
+  simp [GridPath.edges_append, GridPath.edges]
 
 /-- The exchange at the corner `(a, b)` of the grid `z`, for one twist `ϑ`. Let `q` be a grid path
 from `(0, D.m)` to `(a, b + 1)` and `r` one from `(a + 1, b)` to a diagonal node `(k, k)`. Let the
@@ -936,24 +935,22 @@ lemma sum_formMap_eq_of_squareLaw {z : Bool} {ϑ : D.MFoldTwist} {w : Finset (Gr
   simp only [GridPath.formMap_append, GridPath.formMap, LinearMap.comp_apply]
   exact h_square
 
-/-- Fix the data `D`, with `m = D.m`, let `a < b < m` and let `z` say which of the two halves of a
-path is changed. A turn off the diagonal, at the corner `(a, b)` of that half, transfers periods
-with bound `1` and nonzero numbers `c ϑ`, one for each `m`-fold twist `ϑ`, whose absolute value is,
-up to a constant and a power of the norm of the modulus of `ϑ`, the ratio of Hecke values
-`turnRatio` of the square (at `(b, a)` if `z`): the old half is `q`, the two sides through `(a, b)`,
-then `r`, and the new half passes through `(a + 1, b + 1)` instead. -/
+/-- Fix an off-diagonal corner `a < b < D.m` in half `z`. Every turn there transfers periods
+with bound `1` and the same nonzero factor `c ϑ` for each twist `ϑ`. Up to a constant and a power
+of the norm of its modulus, the absolute value of this factor is the Hecke ratio `turnRatio` at
+`(a, b)` for the ordinary half and at `(b, a)` for the reflected half. -/
 lemma exists_transfersPeriods_off_diagonal (z : Bool) (hab : a < b) (hb : b < D.m) :
     ∃ c : D.MFoldTwist → ℂˣ,
       D.HasAbsUpToNormPower (fun ϑ : D.MFoldTwist ↦ c ϑ)
         (if z then D.turnRatio b a else D.turnRatio a b) ∧
-      ∀ (Γ' : TwoGridPath D.m) (q : GridPath 0 D.m a (b + 1))
-        (r : GridPath (a + 1) b Γ'.diagonalIndex Γ'.diagonalIndex),
-        Γ'.half z = q.down.right.append r →
-        TransfersPeriods Γ' ⟨Γ'.diagonalIndex, update Γ'.half z (q.right.down.append r)⟩ 1 c := by
+      ∀ Γ' Γ : TwoGridPath D.m, Γ'.Turn (bif z then (b, a) else (a, b)) Γ →
+        TransfersPeriods Γ' Γ 1 c := by
   -- The exchange on the square, applied to the form that arrives at it along `q`, shows that the
   -- period of `Ψ'` is `κ / c` times that of the turned datum `Ψ`, with a constant `κ`.
   obtain ⟨κ, σ, c, hc, h_law⟩ := exists_squareLaw_grid_hasAbsUpToNormPower z (hab.trans hb) hb
-  refine ⟨c, hc, fun Γ' q r hΓ' N Ψ' hΨ' ↦ ?_⟩
+  refine ⟨c, hc, fun Γ' Γ h_step ↦ ?_⟩
+  obtain ⟨q, r, hΓ', rfl⟩ := h_step.exists_corner (z := z) hab
+  intro N Ψ' hΨ'
   let Γ : TwoGridPath D.m := ⟨Γ'.diagonalIndex, update Γ'.half z (q.right.down.append r)⟩
   let w : Finset (GridNode × GridNode) := q.edges z ∪ r.edges z ∪ (Γ'.half !z).edges !z
   let K : D.Corner (D.GridIndex z (a + 1) b) Empty := D.innerCorner z a b

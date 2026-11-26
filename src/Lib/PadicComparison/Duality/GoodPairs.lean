@@ -107,10 +107,11 @@ def testUnitLocus (a : T) : Subfunctor (testSpec A T) where
   map f _ h_unit := h_unit.map f.hom.hom
 
 open IsLocalization Away Algebra in
-/-- Let `L` be a localization of `T` away from `a`. Then the functor of points of `L` on tests over
-`A` is isomorphic to the unit locus `testUnitLocus a` of `a` in Spec `T`. -/
-lemma testUnitLocus.nonempty_testSpec_iso_of_isLocalization_away (a : T) (L : Type) [CommRing L]
-    [Algebra A L] [Algebra T L] [IsScalarTower A T L] [Away a L] :
+/-- Let `L` be a localization of `T` away from `a` (`Localization.Away a` unless `L` is given). Then
+the functor of points of `L` on tests over `A` is isomorphic to the unit locus `testUnitLocus a` of
+`a` in Spec `T`. -/
+lemma testUnitLocus.nonempty_iso_away (a : T) (L : Type := Localization.Away a) [CommRing L]
+    [Algebra A L] [Algebra T L] [IsScalarTower A T L] [IsLocalization.Away a L] :
     Nonempty (testSpec A L ≅ (testUnitLocus a).toFunctor) :=
   -- The universal property of the localization: a map out of `L` is the same as a map out of `T`
   -- that sends `a` to a unit.
@@ -122,13 +123,6 @@ lemma testUnitLocus.nonempty_testSpec_iso_of_isLocalization_away (a : T) (L : Ty
         algHom_ext (.powers a) (AlgHom.ext (lift_eq (S := L) _))
       right_inv ψ := Subtype.ext <| ULift.down_injective <| CommAlgCat.hom_ext <|
         AlgHom.ext fun t ↦ IsLocalization.lift_eq .. }⟩
-
-/-- `nonempty_testSpec_iso_of_isLocalization_away` with `L := Localization.Away a` unless `L` is
-given: the functor of points of `L` is isomorphic to the unit locus `testUnitLocus a`. -/
-lemma testUnitLocus.nonempty_iso_away (a : T) (L : Type := Localization.Away a) [CommRing L]
-    [Algebra A L] [Algebra T L] [IsScalarTower A T L] [IsLocalization.Away a L] :
-    Nonempty (testSpec A L ≅ (testUnitLocus a).toFunctor) :=
-  testUnitLocus.nonempty_testSpec_iso_of_isLocalization_away a L
 
 /-- For e: A[X_1,…,X_d] ≅ T, the map from Spec T to (P¹)^d on tests over A sending ψ to the
 points (ψ(e X_i) : 1). -/
@@ -210,7 +204,7 @@ lemma multihomogeneousIdeal_eq_top_iff {a : T} {c : TestOver A}
 `B`: one ideal of `B` for each element, compatible with ring maps (`map_eq`). -/
 def multihomFamily (Φ : MvPolynomial (Fin d) A) (J : Ideal A) :
     IdealFamily (elementsProj (projLinePow (Fin d) ⊗ reprBy (CommRingCat.of A))) where
-  ideal x := multihomogeneousIdeal Φ J x.2.2.down.hom fun i ↦ unimodularRow (x.2.1 i)
+  ideal x := multihomogeneousIdeal Φ J x.val.2.down.hom fun i ↦ unimodularRow (x.val.1 i)
   map_eq := by
     rintro @⟨B, q, ⟨φ⟩⟩ @⟨B', x⟩ ⟨f : B ⟶ B', hf⟩
     obtain rfl : (projLinePow (Fin d) ⊗ reprBy (CommRingCat.of A)).map f (q, ⟨φ⟩) = x := hf
@@ -254,25 +248,19 @@ lemma isFiniteLerayHirsch_iff_of_locally_bijective (u : E ⟶ Y)
     (h_surj : IsZariskiLocallyTop (ringOf (𝟭 (TestOver A))) (Subfunctor.range u ⊔ U))
     (h_inj : IsZariskiLocallyTop (ringOf (𝟭 (TestOver A))) (sameClassLocus u U)) :
     D.IsFiniteLerayHirsch (relFreeAb (U.preimage u)) ↔ D.IsFiniteLerayHirsch (relFreeAb U) := by
-  -- Under Zariski descent what holds near every closed point holds on a dense subfunctor, so it
-  -- suffices that the kernel and the cokernel of `relFreeAb.map u` are locally zero.
-  refine D.isFiniteLerayHirsch_iff_of_isCohomEquiv (relFreeAb.map u le_rfl) fun g' h_zar ↦ ?_
-  refine LocalIso.isCohomEquiv ⟨fun c ↦ Quot.ind ?_, fun c ↦ ?_⟩
-  · -- The kernel is spanned by differences of points with equal image and by points over `U`.
-    refine relFreeAb.mem_of_map_eq_zero u (relFreeAb.π _) _ (fun x y hxy ↦ ?_) fun x hx ↦ ?_
-    · exact (h_zar (h_inj.whisker g')).of_preimage_le (pointMap ⟨(x, y), hxy⟩)
-        fun c' z ↦ sub_eq_zero.mpr
-    · -- A point over `U` has class zero.
-      rw [show (relFreeAb.π (U.preimage u)).app (g'.obj c) (FreeAddCommGroup.of x) = 0 from
-        relFreeAb.mk_eq_zero hx]
-      exact zero_mem _
-  · -- Locally a generator `y` lies in the image of `u`, or it lies in `U` and its class is zero.
-    refine relFreeAb.mem_of_mk_mem (U := U.whisker g') (.comap _ (locallyZero ..)) fun y ↦
-      (h_zar (h_surj.whisker g')).of_preimage_le (pointMap y) ?_
-    rintro c' f (⟨x, hx⟩ | hU)
-    · exact (QuotientAddGroup.eq_zero_iff _).mpr
-        ⟨relFreeAb.mk (U.preimage u) x, congrArg (relFreeAb.mk U) hx⟩
-    · exact (QuotientAddGroup.eq_zero_iff _).mpr ⟨0, (relFreeAb.mk_eq_zero hU).symm⟩
+  -- Under Zariski descent it suffices that the kernel and cokernel of `relFreeAb.map u` are
+  -- locally zero.
+  exact D.isFiniteLerayHirsch_iff_of_isCohomEquiv (relFreeAb.map u le_rfl) fun g' h_zar ↦
+    LocalIso.isCohomEquiv ⟨fun _ ↦ Quot.ind <| relFreeAb.mem_of_map_eq_zero u (relFreeAb.π _) _
+      (fun x y hxy ↦ (h_zar (h_inj.whisker g')).of_preimage_le (pointMap ⟨(x, y), hxy⟩)
+        fun _ _ ↦ sub_eq_zero.mpr)
+      fun x hx ↦ (show (relFreeAb.π (U.preimage u)).app _ _ = 0 from
+        relFreeAb.mk_eq_zero hx).symm ▸ zero_mem _,
+    fun _ ↦ relFreeAb.mem_of_mk_mem (U := U.whisker g') (.comap _ (locallyZero ..)) fun y ↦
+      (h_zar (h_surj.whisker g')).of_preimage_le (pointMap y) fun _ _ h ↦
+        (QuotientAddGroup.eq_zero_iff _).mpr <| Or.elim h
+          (fun ⟨x, hx⟩ ↦ ⟨relFreeAb.mk (U.preimage u) x, congrArg (relFreeAb.mk U) hx⟩)
+          fun hU ↦ ⟨0, (relFreeAb.mk_eq_zero hU).symm⟩⟩
 
 -- Unsealed, `Ext` is unfolded when the two forms of the restricted Tate module are compared.
 seal Abelian.Ext in
@@ -453,9 +441,8 @@ private def rootPairsToProdLine :
   app c := ↾fun ⟨(w, ψ), _⟩ ↦ (w, affinePt (asAlgHom ψ.val X - asAlgHom w.val (root _)))
   naturality _ _ f := by
     refine congr(↾fun _ ↦ (_, $(?_)))
-    -- `erw`: the component of the map of tests matches `map_affinePt` only after unfolding.
-    erw [map_affinePt, map_sub]
-    rfl
+    -- The component of the map of tests matches `map_affinePt` only after unfolding.
+    exact .symm ((map_affinePt ..).trans (congrArg affinePt (map_sub ..)))
 
 /-- The map `(y, x) ↦ (y, (x - y : 1))` from `rootPairs P` to `Y × ℙ¹` is injective on every test:
 `y` and `x - y` determine `x`. -/
@@ -495,10 +482,10 @@ private lemma isZariskiLocallyTop_range_rootPairsToProdLine_sup :
   obtain ⟨ε, hε, h_idem, z, hz⟩ :=
     exists_dvd_idempotent_of_notMem c.property.isComparableRing hm' h_snd
   let ψ : R[X] →ₐ[A] c.obj :=
-    aevalTower ((asAlgHom w.1).comp (ofAlgHom ..))
-      (asAlgHom w.1 (root _) + z * (unimodularRow q).1)
-  have hψ_X : ψ X = asAlgHom w.1 (root P.f) + z * (unimodularRow q).1 := by simp [ψ]
-  refine exists_notMem_of_rootPairs _ ψ (.inl w.2) hε (m'.mul_mem_left z h_fst)
+    aevalTower ((asAlgHom w.val).comp (ofAlgHom ..))
+      (asAlgHom w.val (root _) + z * (unimodularRow q).1)
+  have hψ_X : ψ X = asAlgHom w.val (root P.f) + z * (unimodularRow q).1 := by simp [ψ]
+  refine exists_notMem_of_rootPairs _ ψ (.inl w.property) hε (m'.mul_mem_left z h_fst)
     (fun _d f _hw _hψ h_unit h_mem ↦ ?_) hψ_X (by simp [ψ])
   -- Where `ε` is a unit, `f q₁ = f q₂ * (x - y)`, so `(x - y : 1)` is the image of `q`.
   have h_one : f.hom.hom ε = 1 := h_unit.mul_eq_left.mp (h_idem.map _)
@@ -550,7 +537,7 @@ lemma isFiniteLerayHirsch_principal_open
   -- fibre.
   have h_quot : IsCohomEquiv F ((restrictAlong p).map (Q.toZerosCoeff (locConstAlong (𝟭 _)))) :=
     dense_fibre.isCohomEquiv_of_bijective_on fun _ ↦ Q.bijective_toZerosCoeff _ _
-  choose θ hθ using fun i : ι ↦ (h_quot _).2 i.1.2
+  choose θ hθ using fun i : ι ↦ (h_quot _).2 i.val.2
   -- Source and target of `lerayHirsch θ` only see the special fibre.
   have transfer {E Y : TestOver A ⥤ Type 1} (u : E ⟶ Y)
       (hu : ∀ c, Q.ideal c = ⊥ → Function.Bijective (u.app c)) :
@@ -573,7 +560,14 @@ lemma isFiniteLerayHirsch_principal_open
       exact (of_comp_homClass ..).trans (congrArg _ (push_homReprEquiv_symm ..))
     have factor : lerayHirsch θ _ ∘ mapRange r r.map_zero = lerayHirsch (fun i : ι ↦ i.1.2) _ := by
       refine _root_.funext (lerayHirsch_naturality _ r (r' := .id _) fun i x ↦ ?_)
-      erw [map_comp_assoc, map_homClass, pullbackAlong_of, hθ, AddMonoidHom.id_apply]
+      let Φ : AbFunctor (TestOver A) ⥤ AbFunctor X.Elements := restrictAlong p
+      let π := Q.toZerosCoeff (locConstAlong (𝟭 (TestOver A)))
+      change comp (TotalH.map Φ (comp x (homClass π))) (θ i).toTotalH =
+        comp (TotalH.map Φ x) i.1.2.toTotalH
+      refine (map_comp_assoc Φ (θ i).toTotalH).trans (congrArg (comp (TotalH.map Φ x)) ?_)
+      refine (congrArg (fun y ↦ comp y (θ i).toTotalH) (map_homClass (f := π) (Φ := Φ))).trans ?_
+      exact (pullbackAlong_of (f := Φ.map π) (θ i)).trans
+        (congrArg (DirectSum.of _ _) (hθ i))
     have h_comp : (lerayHirsch θ _ ∘ mapRange r r.map_zero).Bijective := by
       rw [factor]
       exact h_basis c hc
@@ -604,8 +598,8 @@ lemma isFiniteLerayHirsch_principal_open
       relFreeAb.isCohomEquiv_of_le (U := W.topPoints.whisker g) (U' := U.whisker g)
         (fun _ ↦ h_le _) (h_zar fun c q m hm ↦ ?_)
     by_cases h_fibre : (Q.whisker g).ideal c ≤ m
-    · have h_form : ¬(I ⊥).pullToTests.ideal (.mk (obj := g.obj c) q.1) ≤ m :=
-        fun h ↦ hm.ne_top (eq_top_mono (sup_le (le_sup_left.trans h) h_fibre) q.2)
+    · have h_form : ¬(I ⊥).pullToTests.ideal (.mk (obj := g.obj c) q.val) ≤ m :=
+        fun h ↦ hm.ne_top (eq_top_mono (sup_le (le_sup_left.trans h) h_fibre) q.property)
       obtain ⟨b, hb, h_unit⟩ := (I ⊥).pullToTests.exists_notMem_eq_top h_form
       exact ⟨b, hb, fun c' f hf ↦
         .inl ((multihomogeneousIdeal_eq_top_iff ..).1
@@ -618,7 +612,7 @@ lemma isFiniteLerayHirsch_principal_open
     refine transfer (homOfLe (le_sup_left.trans h_le))
       (fun c hc ↦ ⟨injective_of_mono _, fun q ↦
         ⟨⟨_, (multihomogeneousIdeal_eq_top_iff ..).1 ?_⟩, rfl⟩⟩) ?_
-    · exact eq_top_mono (sup_le le_sup_left (hc.trans_le bot_le)) q.2
+    · exact eq_top_mono (sup_le le_sup_left (hc.trans_le bot_le)) q.property
     · obtain ⟨iso⟩ := testUnitLocus.nonempty_iso_away (A := A) a
       exact (isClosedClass_isLerayHirschBasis.iff_of_isIso (freeAb.map (iso.hom ≫ toRange _))).1
         (lh_qc (isAffinelyCovered_reprBy _))
@@ -705,21 +699,21 @@ lemma isFiniteLerayHirsch_standard_etale
     let m' : Ideal c.obj := m
     have hm' : m'.IsMaximal := hm
     have : m'.IsPrime := hm'.isPrime
-    obtain hf | hf := em' (asAlgHom ψ.1 P.f ∈ m')
+    obtain hf | hf := em' (asAlgHom ψ.val P.f ∈ m')
     · exact ⟨_, hf, fun _ _ h_unit ↦ .inr (.inr h_unit)⟩
     -- Otherwise `x` is a root of `f` modulo `m`, and it lifts to a root `y` in the test ring.
-    have h_root_mod : (P.f.map ((asAlgHom ψ.1).comp CAlgHom).toRingHom).eval₂
-        (Ideal.Quotient.mk m') (Ideal.Quotient.mk m' (asAlgHom ψ.1 X)) = 0 := by
+    have h_root_mod : (P.f.map ((asAlgHom ψ.val).comp CAlgHom).toRingHom).eval₂
+        (Ideal.Quotient.mk m') (Ideal.Quotient.mk m' (asAlgHom ψ.val X)) = 0 := by
       rw [eval₂_map, ← hom_eval₂]
       change Ideal.Quotient.mk m'
-          (P.f.eval₂ ((asAlgHom ψ.1).toRingHom.comp C) ((asAlgHom ψ.1).toRingHom X)) = 0
+          (P.f.eval₂ ((asAlgHom ψ.val).toRingHom.comp C) ((asAlgHom ψ.val).toRingHom X)) = 0
       rw [← hom_eval₂, eval₂_C_X]
       exact eq_zero_iff_mem.mpr hf
     obtain ⟨y, hy, h_lift⟩ := c.property.exists_root_map_eq (f := Ideal.Quotient.mk m')
-      (x := Ideal.Quotient.mk m' (asAlgHom ψ.1 X))
-      (P.monic_f.map ((asAlgHom ψ.1).comp CAlgHom).toRingHom) h_root_mod
-    let w := liftAlgHom P.f ((asAlgHom ψ.1).comp CAlgHom) y ((eval₂_eq_eval_map _).trans hy)
-    exact exists_notMem_of_rootPairs w (asAlgHom ψ.1) (.inr ψ.2) m'.one_notMem
+      (x := Ideal.Quotient.mk m' (asAlgHom ψ.val X))
+      (P.monic_f.map ((asAlgHom ψ.val).comp CAlgHom).toRingHom) h_root_mod
+    let w := liftAlgHom P.f ((asAlgHom ψ.val).comp CAlgHom) y ((eval₂_eq_eval_map _).trans hy)
+    exact exists_notMem_of_rootPairs w (asAlgHom ψ.val) (.inr ψ.property) m'.one_notMem
       ((Ideal.Quotient.eq (I := m')).mp h_lift.symm)
       (fun _d _f _hw _hψ _h_unit h_mem ↦ .inl ⟨⟨_, h_mem⟩, rfl⟩) (by simp [w]) (by simp [w])
   -- On `rootPairs P`, `f x` is a unit exactly when `x - y` is.
@@ -735,14 +729,14 @@ lemma isFiniteLerayHirsch_standard_etale
     let m' : Ideal c.obj := m
     have hm' : m'.IsMaximal := hm
     have : m'.IsPrime := hm'.isPrime
-    obtain hf | hf := em' (asAlgHom ψ.1 P.f ∈ m')
+    obtain hf | hf := em' (asAlgHom ψ.val P.f ∈ m')
     · exact ⟨_, hf, fun _ _ h ↦
         .trans (relFreeAb.mk_eq_zero (.inr h)) (.symm (relFreeAb.mk_eq_zero (.inr h)))⟩
-    have h_diff : asAlgHom w.1 (root _) - asAlgHom (c := c) χ.1 (root _) ∈ m' := by
+    have h_diff : asAlgHom w.val (root _) - asAlgHom (c := c) χ.val (root _) ∈ m' := by
       -- `f x` divides both `x - y` and `x - y'`, and `f x ∈ m`.
       simpa using m'.mem_of_dvd (hχ.dvd.sub hw.dvd) hf
-    refine exists_notMem_of_rootPairs (asAlgHom χ.1)
-      ((asAlgHom w.1).comp ((mkₐ P.f).restrictScalars A)) (.inl χ.2) m'.one_notMem h_diff
+    refine exists_notMem_of_rootPairs (asAlgHom χ.val)
+      ((asAlgHom w.val).comp ((mkₐ P.f).restrictScalars A)) (.inl χ.property) m'.one_notMem h_diff
       (fun _d f _hw _hψ _h_unit ⟨h_assoc, h_const⟩ ↦ ?_)
       (by simp) (fun r ↦ by simpa using (hχ_C r).trans (hw_C r).symm)
     -- `(y', y)` is locally in `rootPairs P`, so `f y = 0` divides `y - y'`: after `f` the roots

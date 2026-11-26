@@ -110,7 +110,6 @@ lemma measurePreserving_append_last {Z : Type} [MeasurableSpace Z] (ζ : Measure
     MeasurePreserving
       (fun ((t, (s, w), z) : A × (A × (κ → A)) × Z) ↦ ((s, w ⊕ᵥ fun _ : Unit ↦ u * t), z))
       ((P.modulus u • volume).prod (volume.prod ζ)) (volume.prod ζ) := by
-  classical
   let ν : Measure A := P.modulus u • volume
   have h_scale : MeasurePreserving (fun t : A ↦ u * t) ν volume := by
     refine ⟨by fun_prop, ?_⟩
@@ -177,33 +176,17 @@ lemma gram_middleBasisMatrix {N : A} (hN : π * star (π : A) = N) :
       (-1) := by
   have h_inv : star (↑π⁻¹ : A) * star (π : A) = 1 := by rw [← star_mul, π.mul_inv, star_one]
   have h_cancel : star (↑π⁻¹ : A) * N = π := by rw [← hN, mul_left_comm, h_inv, mul_one]
-  -- The pairings of the new basis with the lattice basis: only `x_{k₀} = π̄ v - π⁻¹ z` and `π⁻¹ z`
-  -- pair with `v` (at the index `k₀`), and only `π⁻¹ z` pairs with `z`.
-  have h_pairing : (middleBasisMatrix 𝔰 π)ᴴ * latticeMiddleGram 𝔰 N =
-      fromBlocks (Filling.scaleAt (star (↑π⁻¹ : A)) 𝔰.k₀) 0
-        (of fun _ j ↦ if j = 𝔰.k₀ then -star (↑π⁻¹ : A) else 0) (of fun _ _ ↦ -(π : A)) := by
-    ext (i | ⟨⟩) (j | ⟨⟩)
-    · by_cases hi : i = 𝔰.k₀ <;> by_cases hj : j = 𝔰.k₀ <;>
-        simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
-          diagonal, apply_ite star,
-          hi, hj, eq_comm]
-    · by_cases hi : i = 𝔰.k₀ <;>
-        simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
-          diagonal, apply_ite star,
-          h_cancel, hi, eq_comm]
-    · simp [middleBasisMatrix, latticeMiddleGram, Matrix.mul_apply]
-    · simp [middleBasisMatrix, latticeMiddleGram, Matrix.mul_apply, h_cancel]
-  -- Multiply by the new basis: the `x_i` are orthonormal and orthogonal to `π⁻¹ z`, whose norm
-  -- is `-π π⁻¹ = -1`.
-  rw [h_pairing]
   ext (i | ⟨⟩) (j | ⟨⟩)
-  · by_cases hi : i = 𝔰.k₀ <;> by_cases hj : j = 𝔰.k₀ <;>
-      simp [middleBasisMatrix, middleInclusionMatrix, Matrix.mul_apply, diagonal, Matrix.one_apply,
-        h_inv, hi, hj, eq_comm]
-  · simp [middleBasisMatrix, Matrix.mul_apply]
+  · simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
+      diagonal, Matrix.one_apply, apply_ite star, h_cancel, eq_comm]
+    split_ifs <;> simp_all
+  · by_cases hi : i = 𝔰.k₀ <;>
+      simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
+        diagonal, apply_ite star, h_cancel, hi, eq_comm]
   · by_cases hj : j = 𝔰.k₀ <;>
-      simp [middleBasisMatrix, middleInclusionMatrix, Matrix.mul_apply, diagonal, h_inv, hj]
-  · simp [middleBasisMatrix, Matrix.mul_apply]
+      simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
+        diagonal, h_cancel, h_inv, hj, eq_comm]
+  · simp [middleBasisMatrix, latticeMiddleGram, Matrix.mul_apply, h_cancel]
 
 /-- In the basis `middleBasisMatrix`, the orthonormal basis of `X₀` followed by `π⁻¹ z`, the vector
 `vectorOfLastEntry π t x = x - (π π̄)⁻¹ t z` has the coordinates `x` on `X₀` and `-π̄⁻¹ t` at
@@ -269,24 +252,14 @@ lemma IntegralPlace.normFiberMeasure_eq_map_flatChart (h_rank : 2 ≤ card κ)
 `δ = P.skewUnit`: almost every `x` satisfies this equation. -/
 lemma IntegralPlace.ae_normFiberMeasure_dotProduct_eq (h_rank : 2 ≤ card κ) (b : skewAdjoint A) :
     ∀ᵐ x : κ → A ∂P.normFiberMeasure κ b, star x ⬝ᵥ x = (↑P.skewUnit⁻¹ : A) * b := by
-  obtain ⟨B, hB⟩ : ∃ B : Matrix κ (Fin 2 ⊕ Fin (card κ - 2)) A, Bᴴ * B = planeSumGram 1 :=
-    P.exists_hyperbolic_basis h_rank
-  have h_closed : IsClosed {x : κ → A | star x ⬝ᵥ x = (↑P.skewUnit⁻¹ : A) * b} :=
-    isClosed_eq (by fun_prop) continuous_const
-  -- The chart takes values on the quadric where the parameter `p.1.1` is a unit, so almost surely.
-  have h_unit_pair : ∀ᵐ sw : A × (Fin (card κ - 2) → A), IsUnit sw.1 :=
-    quasiMeasurePreserving_fst.ae P.ae_isUnit
-  have h_unit : ∀ᵐ p : (A × (Fin (card κ - 2) → A)) × skewAdjoint A ∂volume.prod P.skewMeasure,
-      IsUnit p.1.1 :=
-    quasiMeasurePreserving_fst.ae h_unit_pair
+  obtain ⟨B, hB⟩ := P.exists_hyperbolic_basis h_rank
   rw [P.normFiberMeasure_eq_map_flatChart h_rank hB,
-    ae_map_iff (by fun_prop) h_closed.measurableSet]
-  filter_upwards [h_unit] with p hp
-  calc
-    star (B *ᵥ flatChart 1 b p) ⬝ᵥ B *ᵥ flatChart 1 b p
-      = star (flatChart 1 b p) ⬝ᵥ planeSumGram 1 *ᵥ flatChart 1 b p := by
-        rw [← hB, ← mulVec_mulVec, ← star_mulVec_dotProduct]
-    _ = (↑P.skewUnit⁻¹ : A) * b := form_flatChart conjTranspose_one hp
+    ae_map_iff (by fun_prop) (isClosed_eq (by fun_prop) continuous_const).measurableSet]
+  -- The chart takes values on the quadric where the parameter `p.1.1` is a unit, so almost surely.
+  filter_upwards [quasiMeasurePreserving_fst.ae (quasiMeasurePreserving_fst.ae P.ae_isUnit)]
+    with p hp
+  rw [star_mulVec_dotProduct, mulVec_mulVec, hB]
+  exact form_flatChart conjTranspose_one hp
 
 /-- Let `π π̄ = N`, let `X₀ = 𝔰.κ → A` have an orthonormal basis of at least two vectors and let `z`
 be orthogonal to it, of norm `-N`; `latticeMiddleGram 𝔰 N` is the form of `X₀ ⊕ A z`. For almost

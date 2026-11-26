@@ -85,7 +85,7 @@ of 1, and (b) w · φ(A) = w. Condition (a) says that A fixes the projection
 fixes w under right multiplication, hence the passage through the opposite group. -/
 def rowStabilizer (φ : R →+* S) (w : Matrix c N S) (e : r ↪ N) : Subgroup (GL N R) :=
   -- the set is the intersection of two stabilizers, for left and for right multiplication
-  Subgroup.copy (s := {A : GL N R | FixesColsOff e A.1 ∧ w * A.1.map φ = w})
+  Subgroup.copy (s := {A : GL N R | FixesColsOff e A.val ∧ w * A.val.map φ = w})
     (stabilizer (GL N R) (1 - inclMatrix R e * (inclMatrix R e)ᵀ) ⊓
       ((stabilizer (Matrix N N S)ᵐᵒᵖˣ w.row).comap Units.opEquiv.symm.toMonoidHom).unop.comap
         (GeneralLinearGroup.map φ))
@@ -131,7 +131,7 @@ lemma columnDatum_mul_ite_eq_ite_mem_rowStabilizer (χ : MulChar R ℂ) (φ : R 
           (Matrix.zero_mul _)]
     simp only [columnDatum, h_cols, h_det, h_w_cols, h_w_all]
   have h_mem (Z : GL N R) :
-      Z ∈ rowStabilizer φ w e ↔ FixesColsOff e Z.1 ∧ w * Z.1.map φ = w := .rfl
+      Z ∈ rowStabilizer φ w e ↔ FixesColsOff e Z.val ∧ w * Z.val.map φ = w := .rfl
   split_ifs with h_fixes hz hz
   · obtain ⟨Z, hZ, rfl⟩ := hz
     have hF_inv : F (Z.val⁻¹ * y) = F y := by simpa [coe_units_inv] using hF Z⁻¹ (inv_mem hZ) y
@@ -195,7 +195,7 @@ invertible matrices. Then the functions `Φ x = χ (det x'') Ψ' (x''⁻¹ x')` 
 `Ψ y = χ (det y') Ψ' (y'')` of `y = (y'; y'')` are matched for `χ⁻¹` (`AreMatched`). -/
 lemma areMatched_det_mul {𝔪 : Modulus E} (χ : MulChar 𝔪.ResidueRing ℂ)
     {Ψ' : Matrix n b 𝔪.ResidueRing → ℂ}
-    (hΨ' : ∀ (y : Matrix n b 𝔪.ResidueRing) (γ : GL b 𝔪.ResidueRing), Ψ' (y * γ.1) = Ψ' y) :
+    (hΨ' : ∀ (y : Matrix n b 𝔪.ResidueRing) (γ : GL b 𝔪.ResidueRing), Ψ' (y * γ.val) = Ψ' y) :
     AreMatched ⊤ (.refl (b ⊕ n)) χ⁻¹
       (fun x : Matrix n (b ⊕ n) 𝔪.ResidueRing ↦ χ x.toCols₂.det * Ψ' (x.toCols₂⁻¹ * x.toCols₁))
       (fun y : Matrix (b ⊕ n) b 𝔪.ResidueRing ↦ χ y.toRows₁.det * Ψ' y.toRows₂) := by
@@ -227,7 +227,7 @@ kernel of `(V', W')` at `g` is integrable, and its integral is `c` times the cla
 lemma integrable_and_mul_stdClassSum_eq_integral_mul {s : n → ℤˣ} {t : b → ℤˣ} {𝔪 : Modulus E}
     (V' : Space E b t) (W' : Space E n s) {a β β' : AutChar E}
     (h𝔪 : Nonempty 𝔪.places) (χ : MulChar 𝔪.ResidueRing ℂ) {Ψ' : Matrix n b 𝔪.ResidueRing → ℂ}
-    (hΨ' : ∀ (y : Matrix n b 𝔪.ResidueRing) (γ : GL b 𝔪.ResidueRing), Ψ' (y * γ.1) = Ψ' y)
+    (hΨ' : ∀ (y : Matrix n b 𝔪.ResidueRing) (γ : GL b 𝔪.ResidueRing), Ψ' (y * γ.val) = Ψ' y)
     {P : MvPolynomial (InfinitePlace E × n × b) ℂ} {h' : Gf E b} {g : G E s}
     {K : (Matrix n (b ⊕ n) 𝔪.ResidueRing → ℂ) → Gf E n → ℂ} {c : ℂ}
     (h_exchange : ∀ (Φ : Matrix n (b ⊕ n) 𝔪.ResidueRing → ℂ)
@@ -275,7 +275,7 @@ lemma mul_stdClassSum_eq_integral_mul_modKernel {s : n → ℤˣ} {t : b → ℤ
     {c₀ : ℂ} (hF : ∀ x : G E t, c₀ * stdClassSum (stdLevel E b) (fun h' : Gf E b ↦ coef h' *
       modKernelStdSpace V' a β 𝔪 (fun y : Matrix b b 𝔪.ResidueRing ↦ χ y.det) 1 x h') = F x)
     {Ψ' : Matrix n b 𝔪.ResidueRing → ℂ}
-    (hΨ' : ∀ (y : Matrix n b 𝔪.ResidueRing) (γ : GL b 𝔪.ResidueRing), Ψ' (y * γ.1) = Ψ' y)
+    (hΨ' : ∀ (y : Matrix n b 𝔪.ResidueRing) (γ : GL b 𝔪.ResidueRing), Ψ' (y * γ.val) = Ψ' y)
     {P : MvPolynomial (InfinitePlace E × n × b) ℂ} {g : G E s}
     {K : (Matrix n (b ⊕ n) 𝔪.ResidueRing → ℂ) → Gf E b → Gf E n → ℂ} {c : ℂ}
     (h_exchange : ∀ (Φ : Matrix n (b ⊕ n) 𝔪.ResidueRing → ℂ)
@@ -297,8 +297,7 @@ lemma mul_stdClassSum_eq_integral_mul_modKernel {s : n → ℤˣ} {t : b → ℤ
       h_exchange Φ Ψ hΦΨ h'
   have h_mul (x : G E t) : F x * modKernel V' W' a β' 𝔪 Ψ' P x g =
       c₀ * stdClassSum (stdLevel E b) fun h' ↦ coef h' * θ h' x := by
-    -- `finsum_eq_sum_of_fintype` must act first, before the summand is rewritten.
-    simp [← hF, θ, classSum, ↓finsum_eq_sum_of_fintype, sum_mul, mul_assoc]
+    simp [← hF, θ, mul_assoc]
   -- The class sum is finite, so it commutes with the integral.
   have h_comm : ∫ x, stdClassSum (stdLevel E b) (fun h' ↦ coef h' * θ h' x) ∂V'.quotMeasure =
       stdClassSum (stdLevel E b) fun h' ↦ coef h' * ∫ x, θ h' x ∂V'.quotMeasure := by
@@ -324,7 +323,7 @@ lemma integral_mul_modKernel_sum_translates {s : n → ℤˣ} {t : b → ℤˣ} 
     (h_le : 𝔪'.ideal ≤ 𝔪.ideal) (ψ : Matrix n b 𝔪.ResidueRing → ℂ)
     (P : MvPolynomial (InfinitePlace E × n × b) ℂ) (g : G E s) :
     ∫ x : G E t, F x * modKernel V' W' a β' 𝔪' (fun y : Matrix n b 𝔪'.ResidueRing ↦
-        ∑ γ : GL b 𝔪.ResidueRing, ψ (y.map (factor h_le) * γ.1)) P x g ∂V'.quotMeasure =
+        ∑ γ : GL b 𝔪.ResidueRing, ψ (y.map (factor h_le) * γ.val)) P x g ∂V'.quotMeasure =
       Fintype.card (GL b 𝔪.ResidueRing) *
         ∫ x : G E t, F x * modKernel V' W' a β' 𝔪 ψ P x g ∂V'.quotMeasure := by
   obtain ⟨hF_aut, hF_rapid⟩ := hF
@@ -337,19 +336,19 @@ lemma integral_mul_modKernel_sum_translates {s : n → ℤˣ} {t : b → ℤˣ} 
       hF_rapid.mul ((pairThetaKer V' W' a β').isModerate _ g)
   -- The integrand for `ψ (· γ)` is that for `ψ`, translated by a lift of `γ`.
   have I_translate (γ : GL b 𝔪.ResidueRing) :
-      I (fun y ↦ ψ (y * γ.1)) = fun x ↦ I ψ (x * (1, (liftMod γ).1)) := by
-    have h_char : (β'.val (detFin t (liftMod γ).1) : ℂ) = 1 := by
+      I (fun y ↦ ψ (y * γ.val)) = fun x ↦ I ψ (x * (1, (liftMod γ).val)) := by
+    have h_char : (β'.val (detFin t (liftMod γ).val) : ℂ) = 1 := by
       rw [hβ'.apply_det_eq_charOfTamePart (𝔪 := 𝔪) (by simp)]
       exact finprod_eq_one_of_forall_eq_one fun w ↦
         MulChar.one_apply (((isUnit_iff_isUnit_det _).1 (Units.isUnit _)).map _)
     ext x
-    simp [I, modKernel_mul_stdLevel_left, h_char, hF_level _ (liftMod γ).2]
+    simp [I, modKernel_mul_stdLevel_left, h_char, hF_level _ (liftMod γ).property]
   have h_same (γ : GL b 𝔪.ResidueRing) :
-      ∫ x, I (fun y ↦ ψ (y * γ.1)) x ∂V'.quotMeasure = ∫ x, I ψ x ∂V'.quotMeasure ∧
-      Integrable (I fun y ↦ ψ (y * γ.1)) V'.quotMeasure := by
+      ∫ x, I (fun y ↦ ψ (y * γ.val)) x ∂V'.quotMeasure = ∫ x, I ψ x ∂V'.quotMeasure ∧
+      Integrable (I fun y ↦ ψ (y * γ.val)) V'.quotMeasure := by
     simpa [I_translate, I_rapid.integrable I_cont] using
-      V'.integral_comp_mul_right (1, (liftMod γ).1) I_rat I_cont
-  calc _ = ∫ x, ∑ γ : GL b 𝔪.ResidueRing, I (fun y ↦ ψ (y * γ.1)) x ∂V'.quotMeasure := by
+      V'.integral_comp_mul_right (1, (liftMod γ).val) I_rat I_cont
+  calc _ = ∫ x, ∑ γ : GL b 𝔪.ResidueRing, I (fun y ↦ ψ (y * γ.val)) x ∂V'.quotMeasure := by
         simp [I, ← modKernel_factor h_le, ← Finset.sum_fn, ← modKernelBilin_apply, mul_sum]
     _ = _ := by simp [integral_finsetSum, h_same, I]
 
@@ -363,7 +362,7 @@ that level is the class sum of `f` at full level. -/
 lemma stdClassSum_tower {𝔪 : Modulus E} (H : Subgroup (GL b 𝔪.ResidueRing)) {f f₀ : Gf E b → ℂ}
     (right_inv : stdLevel E b ≤ rightStabilizer f) (left_inv₀ : (stdSpace E b).Γf.FixesLeft f₀)
     (right_inv₀ : 𝔪.levelOfSubgroup H ≤ rightStabilizer f₀)
-    (sum_eq : ∀ h : Gf E b, f h = ∑ q : GL b 𝔪.ResidueRing ⧸ H, f₀ (h * (liftMod q.out).1)) :
+    (sum_eq : ∀ h : Gf E b, f h = ∑ q : GL b 𝔪.ResidueRing ⧸ H, f₀ (h * (liftMod q.out).val)) :
     stdClassSum (𝔪.levelOfSubgroup H) f₀ = stdClassSum (stdLevel E b) f := by
   refine .symm ?_
   calc _ = classIntegral (stdSpace E b).Γf (stdLevel E b) f :=
@@ -528,10 +527,10 @@ lemma stdClassSum_rowStabilizer_eq {𝔪 : Modulus E} {r c S : Type} [Fintype r]
     if FixesColsOff e x.toCols₂ then F x.toCols₁ else 0
   let θ (Ψ : Matrix b (n ⊕ b) 𝔪.ResidueRing → ℂ) : Gf E b → ℂ := modKernelStdSpace W α β 𝔪 Ψ P g
   let tr (A : GL b 𝔪.ResidueRing) (Ψ : Matrix b (n ⊕ b) 𝔪.ResidueRing → ℂ) :
-      Matrix b (n ⊕ b) 𝔪.ResidueRing → ℂ := χ A.1.det • fun x ↦ Ψ (A⁻¹.1 * x)
+      Matrix b (n ⊕ b) 𝔪.ResidueRing → ℂ := χ A.val.det • fun x ↦ Ψ (A⁻¹.val * x)
   -- Right translation of the kernel by `k` is the twisted translation of the datum.
   have θ_tr (Ψ : Matrix b (n ⊕ b) 𝔪.ResidueRing → ℂ) (k : stdLevel E b) (h : Gf E b) :
-      θ Ψ (h * k.1) = θ (tr (𝔪.reductionGL k) Ψ) h := by
+      θ Ψ (h * k.val) = θ (tr (𝔪.reductionGL k) Ψ) h := by
     simp only [θ, tr, ↓modKernel_mul_stdLevel_right, hα.apply_det]
   -- The twist cancels the factor χ(det A)⁻¹ that the translation adds to χ(det x″).
   have tr_Φ (A : GL b 𝔪.ResidueRing) : tr A Φ = Φ := by
@@ -542,11 +541,11 @@ lemma stdClassSum_rowStabilizer_eq {𝔪 : Modulus E} {r c S : Type} [Fintype r]
     · simp [tr, Φ, ← mul_assoc (χ _), ← map_mul, ← det_mul, Matrix.mul_inv_rev, Matrix.mul_assoc]
     · simp [tr, Φ, χ.map_nonunit ((isUnit_iff_isUnit_det y).not.1 hy)]
   have Φ₀_eq (x : Matrix b (n ⊕ b) 𝔪.ResidueRing) :
-      Φ₀ x = if ∃ Z ∈ H, Z.1 = x.toCols₂ then Φ x else 0 := by
+      Φ₀ x = if ∃ Z ∈ H, Z.val = x.toCols₂ then Φ x else 0 := by
     convert columnDatum_mul_ite_eq_ite_mem_rowStabilizer χ φ w e hF x.toCols₁ x.toCols₂
   have tr_Φ₀ (A : GL b 𝔪.ResidueRing) (x : Matrix b (n ⊕ b) 𝔪.ResidueRing) :
-      tr A Φ₀ x = if ∃ Z : GL b 𝔪.ResidueRing, A⁻¹ * Z ∈ H ∧ Z.1 = x.toCols₂ then Φ x else 0 := by
-    have shift : (∃ Z ∈ H, Z.1 = A⁻¹.1 * x.toCols₂) ↔ ∃ Z, A⁻¹ * Z ∈ H ∧ Z.1 = x.toCols₂ :=
+      tr A Φ₀ x = if ∃ Z : GL b 𝔪.ResidueRing, A⁻¹ * Z ∈ H ∧ Z.val = x.toCols₂ then Φ x else 0 := by
+    have shift : (∃ Z ∈ H, Z.val = A⁻¹.val * x.toCols₂) ↔ ∃ Z, A⁻¹ * Z ∈ H ∧ Z.val = x.toCols₂ :=
       (Equiv.mulLeft A).exists_congr fun Z ↦ by simp [← Units.eq_inv_mul_iff_mul_eq]
     rw [← tr_Φ A, ← x.fromCols_toCols]
     simp only [tr, Pi.smul_apply, Φ₀_eq, smul_ite, smul_zero, mul_fromCols, toCols₂_fromCols, shift]
@@ -558,7 +557,7 @@ lemma stdClassSum_rowStabilizer_eq {𝔪 : Modulus E} {r c S : Type} [Fintype r]
   have right_inv : stdLevel E b ≤ rightStabilizer (θ Φ) :=
     fun k hk h ↦ by simpa [tr_Φ] using θ_tr Φ ⟨k, hk⟩ h
   have right_inv₀ : 𝔪.levelOfSubgroup H ≤ rightStabilizer (θ Φ₀) := by
-    rintro _ ⟨k, hk, rfl : k.1 = _⟩ h
+    rintro _ ⟨k, hk, rfl : k.val = _⟩ h
     rw [θ_tr]
     congr with x
     simp only [tr_Φ₀, Φ₀_eq, H.mul_mem_cancel_left (inv_mem hk)]

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unitary
 public import Lib.ClassField.Global.CMSplittingCharacters
 public import Lib.ClassField.Global.ExistenceTheorem
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
@@ -616,11 +617,9 @@ lemma New.isUnit_and_isRootQuotient_of_isSelfAdjoint {R n ι : Type} [CommRing R
     (h_adj : ∀ i : ι, IsSelfAdjoint (star (θ i c) * θ i x)) :
     IsUnit (aeval (γ : Matrix n n R) x) ∧
       ∀ a : Matrix n n R, IsRootQuotient γ x a → IsRootQuotient γ c a := by
-  have h_inv_glued : aeval (γ : Matrix n n R) (x * x') = aeval (γ : Matrix n n R) (1 : R[X]) := by
-    refine h_glue fun i ↦ ?_
-    rw [map_mul, h_inv, map_one]
   have h_inv_γ : aeval (γ : Matrix n n R) x * aeval (γ : Matrix n n R) x' = 1 := by
-    rwa [map_mul, map_one] at h_inv_glued
+    simpa only [map_mul, map_one] using
+      (h_glue (f := x * x') (f' := 1) fun i ↦ by rw [map_mul, h_inv, map_one])
   refine ⟨.of_mul_eq_one _ h_inv_γ, fun a ha ↦ ?_⟩
   have β_eq : aeval (γ : Matrix n n R) (β c) = aeval (γ : Matrix n n R) (β x * (c * x')) := by
     refine h_glue fun i ↦ ?_
@@ -633,8 +632,7 @@ lemma New.isUnit_and_isRootQuotient_of_isSelfAdjoint {R n ι : Type} [CommRing R
       rw [hβ_adjoint, hβ_adjoint, β_eq, map_mul, mul_assoc]
     _ = aeval (γ : Matrix n n R) (c * (x * x')) := by rw [ha, ← map_mul, mul_left_comm]
     _ = aeval (γ : Matrix n n R) c := by
-      refine h_glue fun i ↦ ?_
-      rw [map_mul, map_mul, h_inv, mul_one]
+      rw [map_mul, map_mul, h_inv_γ, mul_one]
 
 /-- The complex roots of a factor `q` of the characteristic polynomial `P` of a unitary matrix over
 a CM field have absolute value `1`. -/
@@ -699,13 +697,6 @@ theorem exists_mem_coe_eq_norm_aeval_of_forall_det_aeval_mem {R A : Type*} [Comm
   refine ⟨d, hd, ?_⟩
   rw [Algebra.norm_eq_matrix_det b, ← aeval_algHom_apply]
   exact hd_det
-
-/-- The `i`-th power of `Polynomial.mapRingHom f` maps the coefficients by `f ^ i`. -/
-theorem Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ)
-    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) :=
-  let F : (R →+* R) →* R[X] →+* R[X] :=
-    ⟨⟨mapRingHom, mapRingHom_id⟩, fun f g ↦ (mapRingHom_comp f g).symm⟩
-  DFunLike.congr_fun (map_pow F f i).symm p
 
 /-- The finite idele of `y` in `Lˣ` is the image of `y` in the finite adeles. -/
 private lemma New.coe_principalIdele {L : Type*} [Field L] [NumberField L] (y : Lˣ) :

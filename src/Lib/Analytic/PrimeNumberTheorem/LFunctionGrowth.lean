@@ -1,7 +1,11 @@
 module
 
-public import Lib.Analytic.EntireLFunction
 import TauCeti.NumberTheory.DirichletCharacter.LFunction.Bounds
+import TauCeti.NumberTheory.LSeries.RiemannZeta.Basic
+import TauCeti.NumberTheory.LSeries.RiemannZeta.Bounds
+public import Mathlib.Analysis.Complex.Hadamard
+public import Mathlib.Analysis.Complex.HalfPlane
+public import Lib.Analytic.EntireLFunction
 
 /-!
 # Growth of Dirichlet L-functions near the line `re s = 1`
@@ -40,24 +44,18 @@ omit [NeZero N] in
 lemma norm_LSeries_char_le {A : ℝ} (hA : 0 < A) (hs : 1 + 1 / A ≤ s.re) :
     ‖LSeries (fun n : ℕ ↦ χ n) s‖ ≤ 1 + A := by
   have hs_one : 1 < s.re := by linarith [one_div_pos.2 hA]
-  have h_summable : Summable fun n : ℕ ↦ 1 / (n : ℝ) ^ s.re :=
-    Real.summable_one_div_nat_rpow.2 hs_one
+  have h_sum : HasSum (fun n : ℕ ↦ 1 / (n : ℝ) ^ s.re) (riemannZeta s.re).re := by
+    simpa only [Real.rpow_neg (Nat.cast_nonneg _), one_div] using
+      TauCeti.hasSum_nat_rpow_neg_riemannZeta_re hs_one
   have term_le (n : ℕ) : ‖LSeries.term (χ ·) s n‖ ≤ 1 / (n : ℝ) ^ s.re := by
     rw [LSeries.norm_term_eq]
     split_ifs
     · positivity
     · exact div_le_div_of_nonneg_right (χ.norm_le_one _) (by positivity)
-  -- `ζ(σ) - 1 / (σ - 1) = 1 - σ T` with `T ≥ 0`
-  have zeta_le : ∑' n : ℕ, 1 / (n + 1 : ℝ) ^ s.re ≤ 1 + 1 / (s.re - 1) := by
-    have h_nonneg : 0 ≤ s.re * ZetaAsymptotics.termTSum s.re :=
-      mul_nonneg (by linarith) (tsum_nonneg fun n ↦ ZetaAsymptotics.term_nonneg _ _)
-    linarith [ZetaAsymptotics.zeta_limit_aux1 hs_one]
   calc
-    _ ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ s.re := tsum_of_norm_bounded h_summable.hasSum term_le
-    _ = ∑' n : ℕ, 1 / (n + 1 : ℝ) ^ s.re := by
-      rw [h_summable.tsum_eq_zero_add]
-      simp [Real.zero_rpow (one_pos.trans hs_one).ne']
-    _ ≤ 1 + 1 / (s.re - 1) := zeta_le
+    _ ≤ (riemannZeta s.re).re := tsum_of_norm_bounded h_sum term_le
+    _ ≤ 1 + 1 / (s.re - 1) :=
+      (TauCeti.riemannZeta_re_lt_one_add_one_div_sub_one (zero_lt_one.trans hs_one) hs_one.ne').le
     _ ≤ 1 + A := by linarith [(one_div_le hA (sub_pos.2 hs_one)).1 (by linarith)]
 
 /-- `𝖿_χ(s)` is `L(s, χ)`, times `(s - 1) / s` if `χ` is principal. The entire function `entireL χ`
@@ -99,14 +97,12 @@ lemma norm_sub_ite_le {p : Prop} [Decidable p] (hs : 1 / 2 ≤ s.re) :
 /-- Linear growth bound: `|𝖿_χ(s)| ≤ 8 N |s|` in `re s ≥ 1 / 2`, where `𝖿_χ` (`regularL χ`) is
 `L(s, χ)`, times `(s - 1) / s` if `χ` is principal, and `N` is the modulus of `χ`. -/
 lemma norm_regularL_le_linear (hs : 1 / 2 ≤ s.re) : ‖regularL χ s‖ ≤ 8 * N * ‖s‖ := by
-  have bound_ne {z : ℂ} (hz : 1 / 2 ≤ z.re) (h1 : z ≠ 1 ∨ χ ≠ 1) :
+  have bound_ne {z : ℂ} (hz : 1 / 2 ≤ z.re) (hz1 : z ≠ 1) :
       ‖regularL χ z‖ ≤ 8 * N * ‖z‖ := by
     have hz_pos : 0 < z.re := by linarith
     have hz_norm : 1 / 2 ≤ ‖z‖ := hz.trans (re_le_norm z)
-    have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
     by_cases hχ : χ = 1
-    · have hz1 : z ≠ 1 := h1.resolve_right (not_not.mpr hχ)
-      have h_eq : regularL χ z = (z - 1) / z * χ.LFunction z := by
+    · have h_eq : regularL χ z = (z - 1) / z * χ.LFunction z := by
         simp [regularL, entireL, hχ, LFunctionTrivChar₁, Function.update_of_ne hz1]
         ring
       have h_sub : ‖z - 1‖ ≤ ‖z‖ := by simpa using norm_sub_ite_le (p := True) hz
@@ -130,7 +126,7 @@ lemma norm_regularL_le_linear (hs : 1 / 2 ≤ s.re) : ‖regularL χ s‖ ≤ 8 
         ‖regularL χ z‖ = ‖z - 1‖ / ‖z‖ * ‖χ.LFunction z‖ := by rw [h_eq, norm_mul, norm_div]
         _ ≤ ‖z - 1‖ / ‖z‖ * (N * (‖z - 1‖⁻¹ + 1 + ‖z‖ / z.re)) := by
           gcongr
-          exact χ.norm_LFunction_le hz_pos h1
+          exact χ.norm_LFunction_le hz_pos (.inl hz1)
         _ = N * (‖z - 1‖ / ‖z‖ * (‖z - 1‖⁻¹ + 1 + ‖z‖ / z.re)) := by ring
         _ ≤ N * (8 * ‖z‖) := by gcongr
         _ = 8 * N * ‖z‖ := by ring
@@ -140,19 +136,14 @@ lemma norm_regularL_le_linear (hs : 1 / 2 ≤ s.re) : ‖regularL χ s‖ ≤ 8 
         _ ≤ N * ‖z‖ / z.re := χ.norm_LFunction_le_level_mul_norm_div_re hχ hz_pos
         _ ≤ N * ‖z‖ / (1 / 2) := by gcongr
         _ ≤ 8 * N * ‖z‖ := by nlinarith [norm_nonneg z]
-  by_cases h1 : s ≠ 1 ∨ χ ≠ 1
-  · exact bound_ne hs h1
-  · push Not at h1
-    rcases h1 with ⟨rfl, rfl⟩
-    refine le_of_tendsto_of_tendsto (b := 𝓝[≠] (1 : ℂ))
-      ((differentiableAt_regularL (s := 1) 1 (by norm_num)).continuousAt.norm.tendsto.mono_left
-        nhdsWithin_le_nhds)
-      ((continuous_const.mul continuous_norm).continuousAt.tendsto.mono_left
-        nhdsWithin_le_nhds) ?_
-    filter_upwards [mem_nhdsWithin_of_mem_nhds
-      ((isOpen_re_gt (1 / 2)).mem_nhds (by norm_num : (1 / 2 : ℝ) < (1 : ℂ).re)),
-      self_mem_nhdsWithin] with z hz hz1
-    exact bound_ne (le_of_lt hz) (Or.inl hz1)
+  -- Extend the estimate from the punctured open half-plane by continuity.
+  have hs_closure : s ∈ closure ({z : ℂ | 1 / 2 < z.re} ∩ {1}ᶜ) :=
+    closure_minimal
+      ((dense_compl_singleton (1 : ℂ)).open_subset_closure_inter (isOpen_re_gt (1 / 2)))
+      isClosed_closure (by simpa only [closure_setOfPred_lt_re, Set.mem_ofPred_eq] using hs)
+  exact ContinuousWithinAt.closure_le (g := fun z : ℂ ↦ 8 * N * ‖z‖) hs_closure
+    (differentiableAt_regularL χ (by linarith)).continuousAt.norm.continuousWithinAt
+    (by fun_prop) (fun z hz ↦ bound_ne (le_of_lt hz.1) hz.2)
 
 /-- For `l ≥ 1` and `re s > 1`, at distance at least `1 / l` from `1` if `χ` is principal, we have
 `|L(s, χ)| ≤ 2 l |𝖿_χ(s)|`, where `𝖿_χ` (`regularL χ`) is `L(s, χ)`, times `(s - 1) / s` if `χ` is
@@ -245,21 +236,15 @@ for `re s ≥ 1 - 1 / (2 l)` and `|s| ≤ 2 e^l`. Here `𝖿_χ` (`regularL χ`)
 lemma norm_deriv_regularL_le (hl : 10 ^ 10 ≤ l) (hN : N ≤ rexp l) (h_re : 1 - 1 / l / 2 ≤ s.re)
     (h_norm : ‖s‖ ≤ 2 * rexp l) : ‖deriv (regularL χ) s‖ ≤ 2 * l ^ 3 := by
   have inv_le : 1 / l ≤ 1 / 6 := one_div_le_one_div_of_le (by norm_num) (by linarith)
-  have disc (z : ℂ) (hz : z ∈ closedBall s (1 / l / 2)) :
-      1 - 1 / l ≤ z.re ∧ ‖z‖ ≤ 3 * rexp l := by
-    rw [mem_closedBall_iff_norm] at hz
-    exact ⟨by linarith [neg_le_of_abs_le (abs_re_le_norm (z - s)), sub_re z s],
-      by linarith [norm_le_norm_sub_add z s, add_one_le_exp l]⟩
-  have h_diff : DiffContOnCl ℂ (regularL χ) (ball s (1 / l / 2)) :=
-    DifferentiableOn.diffContOnCl_ball (fun z hz ↦ (differentiableAt_regularL χ
-      (by linarith [(disc z hz).1])).differentiableWithinAt) subset_rfl
-  have h_sphere (z : ℂ) (hz : z ∈ sphere s (1 / l / 2)) : ‖regularL χ z‖ ≤ l ^ 2 := by
-    obtain ⟨hz_re, hz_norm⟩ := disc z (sphere_subset_closedBall hz)
-    exact norm_regularL_le_sq χ hl hN hz_re hz_norm
-  calc
-    _ ≤ l ^ 2 / (1 / l / 2) :=
-      norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity) h_diff h_sphere
-    _ = 2 * l ^ 3 := by field
+  have disc {z : ℂ} (hz : z ∈ closedBall s (1 / l / 2)) : 1 - 1 / l ≤ z.re ∧ ‖z‖ ≤ 3 * rexp l :=
+    ⟨by linarith [mem_closedBall_iff_norm.mp hz, neg_le_of_abs_le (abs_re_le_norm (z - s)),
+        sub_re z s],
+      by linarith [mem_closedBall_iff_norm.mp hz, norm_le_norm_sub_add z s, add_one_le_exp l]⟩
+  refine ((norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity)
+    (DifferentiableOn.diffContOnCl_ball (fun _ hz ↦ (differentiableAt_regularL χ
+      (by linarith [(disc hz).1])).differentiableWithinAt) subset_rfl)
+    fun _ hz ↦ norm_regularL_le_sq χ hl hN (disc (sphere_subset_closedBall hz)).1
+      (disc (sphere_subset_closedBall hz)).2 : _ ≤ l ^ 2 / (1 / l / 2))).trans_eq (by field)
 
 end New
 

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Topology.MetricSpace.Ultra.Pi
 public import Lib.Adelic.AutomorphicForms.HeckeEigenforms
 public import Lib.General.LinearAlgebra.MatrixNormBounds
 public import Lib.PadicComparison.Descent.TestCategory
@@ -171,10 +172,6 @@ bounded by `c` at `d`: for every `g`, the gauge of `φ g` at `g * d` is at most 
 def GaugeLe (c : ℝ) (φ : AlgForm (E := E) n κ e) : Prop :=
   ∀ g : Gf E n, weylGauge κ e (g * d) (φ.val g) ≤ c
 
-/-- The valuation ring O_ι ⊂ ℂ of complex numbers whose image under ι : ℂ → ℂ_p has absolute
-value at most 1. -/
-noncomputable abbrev embValRing : ValuationSubring ℂ := (valuation.comap ιₚ).valuationSubring
-
 /-- The O_ι-module of forms φ in S that are integral at d: the value φ(g) has gauge at most 1 at
 gd for every g. -/
 noncomputable def integralFormsAt (S : Submodule ℂ (AlgForm n κ e)) (d : Gf E n) :
@@ -185,7 +182,7 @@ noncomputable def integralFormsAt (S : Submodule ℂ (AlgForm n κ e)) (d : Gf E
         simpa [weylGauge, mulVec_add] using (norm_add_le_max _ _).trans (max_le (hφ g) (hψ g))
       zero_mem' := by simp [GaugeLe, weylGauge]
       smul_mem' a φ hφ g := (weylGauge_smul (g * d) a).trans_le
-        ((mul_le_of_le_one_left (norm_nonneg _) a.2).trans (hφ g)) }
+        ((mul_le_of_le_one_left (norm_nonneg _) a.property).trans (hφ g)) }
 
 /-- The stabiliser of the standard lattice is integral at every set `S` of finite places. -/
 lemma stdLevel_le_localLevel {S : Set (FinPlace E)} : stdLevel E n ≤ localLevel n S := fun _ hk ↦
@@ -493,7 +490,7 @@ that neither `w` nor `w̄` is a place of `S`. -/
 lemma LevelForm.mem_sphericalAt {w : FinPlace E} (hS : w ∉ S.places.conjClosure) :
     φ.val ∈ sphericalAt (algFormRep κ e) w := by
   intro k
-  simp [φ.algFormRep_eq_self_of_mem (maxCompactAt_le_levelOf hS k.2)]
+  simp [φ.algFormRep_eq_self_of_mem (maxCompactAt_le_levelOf hS k.property)]
 
 /-- Evaluation at g, as a complex-linear map on the forms of the level. -/
 def _root_.New.Rows.evalForm (g : Gf E n) : S.LevelForm H χ κ e →ₗ[ℂ] WeylIndex n κ → ℂ where
@@ -527,7 +524,7 @@ def LevelForm.innerAt :
 /-- An element `k` of the level acts on a form, by right translation, through the character `χ`. -/
 lemma LevelForm.apply_mul_eq_smul {k : Gf E n} (hk : k ∈ levelOf S.placeAt H) (g : Gf E n) :
     φ (g * k) = χ (levelOf.reduction S.placeAt H ⟨k, hk⟩) • φ g :=
-  congrFun (congrArg Subtype.val (φ.2 ⟨k, hk⟩)) g
+  congrFun (congrArg Subtype.val (φ.property ⟨k, hk⟩)) g
 
 /-- For a CM field `E`, level places `S`, a subgroup `H` of the product of the groups `GL n` over
 the residue fields at the places of `S`, a character `χ` and weight `(κ, e)`, let `φ φ'` be level
@@ -545,11 +542,11 @@ lemma LevelForm.innerAt_eq_stdClassSum :
       stdLevelIndex (levelOf S.placeAt H) * classIntegral stdRatPoints (stdLevel E n) f := by
     have h_values (ψ : S.LevelForm H χ κ e) : (toSmoothForm ψ).val = ψ := rfl
     simp [innerAt, f, smoothPairing, h_values, toLinearMapₛₗ₂'_apply, gramForm_apply, dotProduct,
-      mulVec, mul_sum, mul_comm, mul_left_comm]
+      mulVec, mul_sum, mul_comm]
   have h_left : stdRatPoints.FixesLeft f := by
     rintro _ ⟨γ, rfl⟩ g
     have h_equivariant (ψ : S.LevelForm H χ κ e) :
-        ψ (stdEmbFin γ * g) = (stdSpace E n).weightRep κ e γ (ψ g) := ψ.val.2.2 γ g
+        ψ (stdEmbFin γ * g) = (stdSpace E n).weightRep κ e γ (ψ g) := ψ.val.property.2 γ g
     simp only [f, h_equivariant]
     exact congrArg ⇑σ⁻¹ (gramForm_map_weightRep σ γ _ _)
   -- An element `k` of the level multiplies both forms by the root of unity `χ k`.

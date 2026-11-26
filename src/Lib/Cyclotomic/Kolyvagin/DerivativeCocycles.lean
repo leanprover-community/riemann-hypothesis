@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Order.Interval.Finset.Box
 public import Lib.ClassField.GreenbergWiles.SelmerLevels
 public import Lib.Cyclotomic.Stickelberger
 
@@ -146,6 +147,15 @@ lemma cyclotomicPowDirichlet_smul (hg : (cyclotomicCharMod Ω (N * m) g).val = a
   -- The two scalars differ by `ψ a * b * m`, and `m` kills `x`.
   rw [h_scalar]
   linear_combination (norm := module) ψ a • (hb • x + b • hx)
+
+private lemma cyclotomicPowDirichlet_succ_smul
+    (hg : (cyclotomicCharMod Ω (N * m) g).val = a) {V : Type*} [AddCommGroup V] [Module O V]
+    {x : V} (hx : m • x = 0) :
+    (cyclotomicPowDirichlet l (e + 1) ψ g).val • x =
+      (cyclotomicPowDirichlet l e ψ g).val • a • x := by
+  have hax : m • a • x = 0 := by rw [smul_comm m a, hx, smul_zero]
+  rw [cyclotomicPowDirichlet_smul hg hx, cyclotomicPowDirichlet_smul hg hax]
+  module
 
 /-- Discrete logarithm: for a prime `q ≡ 1 mod k` there is a homomorphism `L` from `(ℤ/q)ˣ` to
 `ℤ/k` (written multiplicatively) that sends some unit `g` to `1`, so `L` is onto. -/
@@ -376,12 +386,8 @@ lemma sub_one_smul_sum_eq_zero (hM : N * l ^ n ∣ M)
     cyclotomicPowDirichlet_smul_derivativeSum hM (by simp) hg (by simp) hG
   have h_sub : derivativeSum e ψ L ∅ d (a • F - G) = a • derivativeSum e ψ L ∅ d F := by
     rw [map_sub, map_nsmul, h_zero, sub_zero]
-  -- On `O/lⁿ`, `cycᵉ⁺¹ ψ (g)` acts as `aᵉ⁺¹ ψ(a)` and `cycᵉ ψ (g)` as `aᵉ ψ(a)`.
-  have h_scalar : (cyclotomicPowDirichlet l (e + 1) ψ g : O) • derivativeSum e ψ L ∅ d F =
-      (cyclotomicPowDirichlet l e ψ g : O) • a • derivativeSum e ψ L ∅ d F := by
-    rw [cyclotomicPowDirichlet_smul hg killed, cyclotomicPowDirichlet_smul hg killed]
-    module
-  rw [h_sum, sub_smul, one_smul, h_scalar, ← h_sub, h_equiv, sub_self]
+  rw [h_sum, sub_smul, one_smul, cyclotomicPowDirichlet_succ_smul hg killed,
+    ← h_sub, h_equiv, sub_self]
 
 end Derivative
 
@@ -392,7 +398,7 @@ section CommutatorLog
 is of no use). -/
 noncomputable def commutatorLog (m : ℕ) [NeZero m] (γ : Gal(Ω/ℚ)) (y : DiscreteUnits Ω)
     (g : Gal(Ω/ℚ)) : ZMod m :=
-  invFun (rootPowHom Ω m).1 (galUnitsRep γ y - galUnitsRep (g * γ * g⁻¹) y)
+  invFun (rootPowHom Ω m).val (galUnitsRep γ y - galUnitsRep (g * γ * g⁻¹) y)
 
 /-- If the commutator `γ⁻¹ (g γ g⁻¹)` moves `y` by an `m`-th root of unity, then `commutatorLog`
 is the exponent of `γ y / (g γ g⁻¹) y`: `ζ ^ commutatorLog m γ y g = γ y / (g γ g⁻¹) y`. -/
@@ -456,8 +462,8 @@ lemma exists_inertia_smul_add_ofZMod [NeZero M] {q : Nat.Primes} (hq : B.valuati
     cyclotomicCharMod_eq_of_dvd (dvd_pow_self (q : ℕ) one_ne_zero)
       ((pow_dvd_cyclotomicChar_sub_iff 1).mp (by simp only [cyc_τ, sub_self, dvd_zero]))
   -- Without `-inv_coe_unit` this `simp` call loops.
-  simp [← map_nsmul, ← cyclotomicCharMod_eq_of_dvd _ zmod_eq_natCast_val, cyc_M, cyc_mod_q,
-    -inv_coe_unit]
+  simp [← map_nsmul, ← cyclotomicCharMod_eq_of_dvd _ (ZMod.natCast_zmod_val _).symm, cyc_M,
+    cyc_mod_q, -inv_coe_unit]
 
 /-- Let `g` lie in the inertia group of a place `B` at which `m` is a unit, let `γ` act on the
 `m`-th roots of unity by `a`, and let `g r / r = ζᵇ`. Suppose that `g y / y` and `γ y / y'` are
@@ -569,7 +575,7 @@ lemma derivative_sub_frob_mem_principalUnits (γ : Gal(Ω/ℚ)) (hq : B.valuatio
   have root : (k * m) • W 1 = 0 := by
     simpa [W, ← smul_sub, smul_sum, smul_comm _ (lg _), hτY, mul_smul] using h_diff
   have γ_mem : galUnitsRep γ (W 1) ∈ principalUnits B := by
-    rw [cyclotomicCharMod_eq_iff_unitsRep.mp zmod_eq_natCast_val root]
+    rw [cyclotomicCharMod_eq_iff_unitsRep.mp (ZMod.natCast_zmod_val _).symm root]
     exact nsmul_mem (by simpa using W_mem 1) _
   -- Conjugating by `φ` and `τ` does not change how `γ` acts on these roots of unity.
   have h_conj_τ : ∑ u : (ZMod q)ˣ, lg u • galUnitsRep γ (galUnitsRep τ (Y (v * u)) - Y u) =
@@ -735,7 +741,8 @@ private lemma cyclotomicPowDirichlet_sub_one_smul_sum_eq_zero_of_isJacobiFamily
   -- Take `τ` in the inertia group at `B` moving an `lⁿ`-th root `r` of a uniformiser by `ζ`. As
   -- `y x ^ lⁿ` is a unit times `r ^ (lⁿ floorDiff c x)`, the exponent of `y x` at `τ` is
   -- `a floorDiff c x - floorDiff c (a x)`, where `a` is the cyclotomic character of `γ`.
-  obtain ⟨a, ha⟩ : ∃ a : ℕ, (cyclotomicCharMod Ω (N * l ^ n) γ).val = a := ⟨_, zmod_eq_natCast_val⟩
+  obtain ⟨a, ha⟩ : ∃ a : ℕ, (cyclotomicCharMod Ω (N * l ^ n) γ).val = a :=
+    ⟨_, (ZMod.natCast_zmod_val _).symm⟩
   obtain ⟨v, hv, -⟩ := exists_isPlaceOver_prime hpB
   obtain ⟨τ, hτ, π, r, unif, hr, τ_r⟩ := exists_isTameGeneratorFor Gal(Ω/ℚ) (l ^ n) hv
   have h_unit {x : QZ} (hx : (N * l ^ n) • x = 0) :
@@ -773,7 +780,7 @@ private lemma derivativeSum_commutatorLog_mul_eq_of_isJacobiFamily
   change derivativeSum e ψ L I 0 (F (g * g')) = derivativeSum e ψ L I 0 (F g) +
     (cyclotomicPowDirichlet l (e + 1) ψ g).val • derivativeSum e ψ L I 0 (F g')
   have killed {v : QuotSpan (l ^ n : O)} : l ^ n • v = 0 := nsmul_quot_eq_zero dvd_rfl v
-  obtain ⟨a, ha⟩ : ∃ a : ℕ, (cyclotomicCharMod Ω M g).val = a := ⟨_, zmod_eq_natCast_val⟩
+  obtain ⟨a, ha⟩ : ∃ a : ℕ, (cyclotomicCharMod Ω M g).val = a := ⟨_, (ZMod.natCast_zmod_val _).symm⟩
   have ha_N : (cyclotomicCharMod Ω (N * l ^ n) g).val = a := cyclotomicCharMod_eq_of_dvd hM ha
   have h_exponent {x : QZ} (hx : M • x = 0) : (a • F g') x = (F (g * g') - F g) (a • x) := by
     have hax : M • a • x = 0 := by simp [smul_comm M, hx]
@@ -788,27 +795,9 @@ private lemma derivativeSum_commutatorLog_mul_eq_of_isJacobiFamily
     exists_cyclotomicPowDirichlet_smul_derivativeSum hM hI_dvd ha h_exponent
   have h_shift (h : Gal(Ω/ℚ)) : derivativeSum e ψ L I f (F h) = derivativeSum e ψ L I 0 (F h) :=
     derivativeSum_commutatorLog_eq_of_isJacobiFamily hJ hM hI_dvd hI_one h le_rfl f 0
-  -- On `O/lⁿ`, `Υ(g)` acts as `aᵉ⁺¹ ψ(a)` and `cyc^e ψ (g)` as `aᵉ ψ(a)`.
-  have h_scalar : (cyclotomicPowDirichlet l (e + 1) ψ g).val • derivativeSum e ψ L I 0 (F g') =
-      (cyclotomicPowDirichlet l e ψ g : O) • derivativeSum e ψ L I 0 (a • F g') := by
-    rw [cyclotomicPowDirichlet_smul ha_N killed, cyclotomicPowDirichlet_smul ha_N killed, map_nsmul]
-    module
-  rw [h_scalar, h_equiv, map_sub, h_shift, h_shift]
+  rw [cyclotomicPowDirichlet_succ_smul ha_N killed, ← map_nsmul, h_equiv, map_sub, h_shift,
+    h_shift]
   abel
-
-/-- The cocycles vanish at `γ`. Let `lⁿ • y` be a Jacobi family at level `M`, with `N lⁿ ∣ M` and
-every prime of `I` dividing `M`. As `γ γ γ⁻¹ = γ`, every exponent `commutatorLog (l ^ n) γ (y x) γ`
-is zero, and so is their derivative sum. -/
-private lemma derivativeSum_commutatorLog_self_eq_zero_of_isJacobiFamily
-    (hJ : IsJacobiFamily p B c M (l ^ n • y)) (hM : N * l ^ n ∣ M) {I : Finset Nat.Primes}
-    (hI_dvd : ∀ q ∈ I, (q : ℕ) ∣ M) :
-    derivativeSum e ψ L I 0 (fun x : QZ ↦ commutatorLog (l ^ n) γ (y x) γ) = 0 := by
-  have μ_inj : Injective (rootPowHom Ω (l ^ n)).val := (rootPowHom Ω (l ^ n)).property.left
-  have h_exponent_zero {x : QZ} (hx : M • x = 0) : commutatorLog (l ^ n) γ (y x) γ = 0 := by
-    apply μ_inj
-    rw [rootPowHom_commutatorLog_of_isJacobiFamily hJ hx γ, mul_inv_cancel_right, sub_self,
-      map_zero]
-  rw [derivativeSum_congr hM hI_dvd (fun _ _ ↦ rfl) (G' := 0) h_exponent_zero, map_zero]
 
 /-- The cocycles at the level `M = N lⁿ ∏_{r ∈ I} r`, when `lⁿ • y` is a Jacobi family at level `M`
 and the primes of `I` are `≡ 1 mod c N lⁿ`: `g ↦ derivativeSum e ψ L I 0 F_g`, where `F_g x` is the
@@ -846,7 +835,8 @@ private lemma derivativeSum_commutatorLog_mem_vanishingCocycles_of_isJacobiFamil
       simp +contextual [hlA, hIA]
     have hgM : g ∈ cycloGalGroup M :=
       mem_cycloGalGroup_of_mem_inertiaGroup hg h_cofactor (by rw [← hM_eq, mul_assoc]) hgN
-    obtain ⟨a, ha⟩ : ∃ a : ℕ, (cyclotomicCharMod Ω M γ).val = a := ⟨_, zmod_eq_natCast_val⟩
+    obtain ⟨a, ha⟩ : ∃ a : ℕ, (cyclotomicCharMod Ω M γ).val = a :=
+      ⟨_, (ZMod.natCast_zmod_val _).symm⟩
     have h_unit {x : QZ} (hx : M • x = 0) :
         A.valuation (l ^ n • (y x - floorDiff c x • (0 : DiscreteUnits Ω))).toMul.val = 1 := by
       simpa using hJ.valuation_eq_one hx A hpA
@@ -899,7 +889,8 @@ private lemma sum_mul_commutatorLog_eq_of_isJacobiFamily {q : Nat.Primes}
       (hφ.cyclotomicCharMod_eq (hq_cop.valuation_eq_one hqA))
   have hτ_Y (u : ZMod q) : l ^ n • (galUnitsRep τ (Y (v * u)) - Y u) = 0 := by
     simpa only [hτ_cyc x hx u] using
-      nsmul_galUnitsRep_sub_eq_zero_of_isJacobiFamily hJ_q (h_level (v * u)) τ _ zmod_eq_natCast_val
+      nsmul_galUnitsRep_sub_eq_zero_of_isJacobiFamily hJ_q (h_level (v * u)) τ _
+        (ZMod.natCast_zmod_val _).symm
   have h_dist : IsOfFinAddOrder (l ^ n • (∑ b : ZMod q, Y b - y ((q : ℕ) • x))) := by
     simpa [Y, smul_sub, smul_sum] using
       hJ_q.isOfFinAddOrder_sum_sub (h_level 0) q (dvd_mul_right _ _)
@@ -1019,9 +1010,14 @@ lemma exists_isKolyvaginSystem {O : Type} [CommRing O] {B : ClosurePlace} {N l n
     { mem_vanishingCocycles := fun S hS ↦
         derivativeSum_commutatorLog_mem_vanishingCocycles_of_isJacobiFamily (hJ_level hS) rfl
           (base_dvd S) (prime_dvd S) fun q hq ↦ hP_one q (hS hq)
-      apply_eq_zero := fun S hS ↦
-        derivativeSum_commutatorLog_self_eq_zero_of_isJacobiFamily (hJ_level hS) (base_dvd S)
-          (prime_dvd S)
+      apply_eq_zero := fun S hS ↦ by
+        dsimp only [κ]
+        rw [derivativeSum_congr (base_dvd S) (prime_dvd S) (fun _ _ ↦ rfl) (G' := 0), map_zero]
+        intro x hx
+        apply (rootPowHom Ω (l ^ n)).property.left
+        rw [rootPowHom_commutatorLog_of_isJacobiFamily (hJ_level hS) hx γ, mul_inv_cancel_right,
+          sub_self]
+        simp
       exists_mem_inertiaGroup_eq := fun S hS q hqP hqS A φ hφ hqA ↦
         exists_mem_inertiaGroup_derivativeSum_insert_eq_of_isJacobiFamily hJ rfl (base_dvd S)
           (prime_dvd S) (hp_level hS) (fun r hr ↦ hP_one r (hS hr)) (hP_one q hqP) hqS

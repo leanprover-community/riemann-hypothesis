@@ -1,5 +1,8 @@
 module
 
+import TauCeti.NumberTheory.PrimitivePrimeDivisors.Zsigmondy
+public import Mathlib.GroupTheory.CosetCover
+public import Mathlib.RingTheory.Fintype
 public import Lib.Adelic.Adeles.LocalFactors
 public import Lib.ClassField.Global.AlbertBrauerHasseNoether
 
@@ -115,9 +118,17 @@ lemma map_eq_one_iff_pos {M : Type*} [Monoid M] (F : ℚˣ →* M)
   have h_nat : ∀ (n : ℕ) (h0 : (n : ℚ) ≠ 0), F (Units.mk0 n h0) = 1 :=
     recOnMul nofun (by simp) h_prime (by simp +contextual)
   -- A rational number times its denominator is its sign times a natural number.
-  have h_sign : x * .mk0 x.val.den (by simp) =
-      (if 0 < x.val then 1 else -1) * .mk0 x.val.num.natAbs (by simp) := by
-    aesop (add simp [abs, le_of_lt])
+  have h_sign : x * .mk0 x.val.den (Nat.cast_ne_zero.mpr x.val.den_nz) =
+      (if 0 < x.val then 1 else -1) *
+        .mk0 x.val.num.natAbs (Nat.cast_ne_zero.mpr (Int.natAbs_ne_zero.mpr
+          (Rat.num_ne_zero.mpr x.ne_zero))) := by
+    apply Units.ext
+    rw [Units.val_mul, Units.val_mk0, Rat.mul_den_eq_num, Units.val_mul, Units.val_mk0]
+    split_ifs with hx
+    · rw [Units.val_one, one_mul, ← Int.cast_natCast,
+        Int.natAbs_of_nonneg (Rat.num_pos.mpr hx).le]
+    · rw [Units.val_neg, Units.val_one, neg_one_mul, ← Int.cast_natCast, ← Int.cast_neg,
+        Int.ofNat_natAbs_of_nonpos (Rat.num_nonpos.mpr (le_of_not_gt hx)), neg_neg]
   have h_val : F x = F (if 0 < x.val then 1 else -1) := by
     simpa only [F.map_mul, h_nat, mul_one] using congrArg F h_sign
   simp [h_val, apply_ite F, h_neg]
@@ -280,32 +291,15 @@ lemma QZChar.apply_pow (χ : QZChar Γ) (g : Γ) (n : ℕ) : χ.val (g ^ n) = n 
 the order of `a` modulo `p`. -/
 lemma exists_prime_dvd_orderOf {l a : ℕ} (hl : l.Prime) (ha : 1 < a) :
     ∃ p : ℕ, p.Prime ∧ 2 < p ∧ IsUnit (a : ZMod p) ∧ l ∣ orderOf (a : ZMod p) := by
-  -- Take a prime factor `p` of the cyclotomic value `Φ_N (a)`, where `N = l (l + 1)`.
-  let N : ℕ := l * (l + 1)
-  have hN : 1 < N := one_lt_mul'' hl.one_lt (by simp [hl.pos])
-  have hN_ne : N ≠ 0 := hN.ne_bot
-  have h_eval_gt : a - 1 < ((cyclotomic N ℤ).eval ↑a).natAbs :=
-    sub_one_lt_natAbs_cyclotomic_eval hN ha.ne'
-  obtain ⟨p, hp, hp_dvd⟩ := exists_prime_and_dvd (n := ((cyclotomic N ℤ).eval ↑a).natAbs) (by omega)
-  have : Fact p.Prime := ⟨hp⟩
-  -- Modulo `p` the order of `a` is the part `m` of `N` prime to `p`; in particular `m < p`.
-  let m : ℕ := ordCompl[p] N
-  have m_pos : 0 < m := ordCompl_pos p hN_ne
-  have : NeZero (↑m : ZMod p) := .of_not_dvd (ZMod p) (not_dvd_ordCompl hp hN_ne)
-  have h_root : (cyclotomic (p ^ N.factorization p * m) (ZMod p)).IsRoot (a : ℤ) := by
-    refine (cyclotomic.eval_apply (a : ℤ) _ (algebraMap ℤ (ZMod p))).trans <| ?_
-    rwa [eq_intCast, intCast_zmod_eq_zero_iff_dvd, Int.natCast_dvd, ordProj_mul_ordCompl_eq_self]
-  have h_prim : IsPrimitiveRoot (a : ZMod p) m := isRoot_cyclotomic_prime_pow_mul_iff_of_charP.mp
-    (mod_cast h_root)
-  have m_lt : m < p := h_prim.eq_orderOf.trans_lt (orderOf_lt hp.one_lt _)
-  -- If `p` divided `l`, then `l + 1` would divide `m`, and `l < m < p ≤ l`.
-  have h_not_dvd : ¬p ∣ l := fun hpl ↦ by
-    have h_succ : l + 1 ∣ m := dvd_ordCompl_of_dvd_not_dvd (dvd_mul_left (l + 1) l) fun h ↦ by
-      simpa [hp.ne_one] using dvd_sub h hpl
-    linarith [le_of_dvd m_pos h_succ, le_of_dvd hl.pos hpl]
-  have h_dvd : l ∣ m := dvd_ordCompl_of_dvd_not_dvd (dvd_mul_right l (l + 1)) h_not_dvd
-  have hp_two_lt : 2 < p := (hl.two_le.trans (le_of_dvd m_pos h_dvd)).trans_lt m_lt
-  exact ⟨p, hp, hp_two_lt, h_prim.isUnit m_pos.ne', by rwa [← h_prim.eq_orderOf]⟩
+  -- By Zsigmondy's theorem, whose exceptional orders are `2` and `6`, `a` has order exactly
+  -- `4 * l` modulo some prime `p`. Then `4 * l < p`.
+  have hl_two : 2 ≤ l := hl.two_le
+  obtain ⟨p, hp, h_order⟩ : ∃ p : ℕ, p.Prime ∧ orderOf (a : ZMod p) = 4 * l :=
+    (TauCeti.exists_prime_orderOf_eq_iff ha (by omega)).mpr
+      ⟨fun ⟨h, _⟩ ↦ by omega, fun ⟨_, h⟩ ↦ by omega⟩
+  have h_lt : orderOf (a : ZMod p) < p := orderOf_lt hp.one_lt _
+  have h_pos : 0 < orderOf (a : ZMod p) := by omega
+  exact ⟨p, hp, by omega, (orderOf_pos_iff.mp h_pos).isUnit, Dvd.intro_left 4 h_order.symm⟩
 
 /-- Artin's lemma: for a Frobenius `σ` at a place `A` of `Ω` over the finite place `v` of `K` (`v.q`
 the size of its residue field), a prime `l` and `m ≠ 0`, some character `χ` that satisfies the
@@ -407,9 +401,10 @@ lemma resH2_ker_cyclicClass_eq_zero {ξ χ : QZChar Γ} {x : Kˣ} (U : OpenSubgr
     (hv.isLocalGalois_and_residueCard_eq_and_isUniformiser Γ).left.resH2_classOfInvariant_eq_zero V
       hr
   -- The restricted class lives in `restrictTo` of the module, which is
-  -- `unitsModule (decompGroup Γ A)` only after unfolding, hence `erw`.
-  erw [hv.abelianLift_artinAt_principal, _root_.map_neg, neg_eq_zero] at h_cls
-  exact (unitsModule ..).resH2_subgroupOf_eq_zero_symm (V := decompGroup ..) h_cls
+  -- `unitsModule (decompGroup Γ A)` only after unfolding, so `map_neg` is used as an equation.
+  rw [hv.abelianLift_artinAt_principal] at h_cls
+  exact (unitsModule ..).resH2_subgroupOf_eq_zero_symm (V := decompGroup ..)
+    (neg_eq_zero.mp ((_root_.map_neg _ _).symm.trans h_cls))
 
 /-- `Ω` is an algebraic closure of `ℚ`, on which `Γ` acts as the Galois group of `Ω/K`.
 If the symbols `(ξ, x)` and `(χ, y)` are equal in `H²(Γ, Ωˣ)`, then `ξ` at the local Artin
@@ -489,7 +484,8 @@ lemma artin_reciprocity {ξ : QZChar Γ} {x : Kˣ} (U : OpenSubgroup Γ)
     obtain ⟨a, ha, h_zero⟩ :=
       (mem_H v l _).mp ((H ⟨v, l⟩).nsmul_index_mem (⟨χ, (mem_G χ).mpr hχ⟩ : G))
     have h_zero' : a • (n v * (H ⟨v, l⟩).index) • χ.val (σ v) = 0 := by
-      simpa [mul_smul] using h_zero
+      rw [mul_smul]
+      exact h_zero
     exact h_ne a ha h_zero'
   -- Finitely many subgroups of infinite index do not cover `G`.
   obtain ⟨χ, hχ⟩ : ∃ χ : G, ∀ (v : FinPlace K) (l : ℕ), l.Prime → l ∣ n v → χ ∉ H ⟨v, l⟩ := by
@@ -501,7 +497,9 @@ lemma artin_reciprocity {ξ : QZChar Γ} {x : Kˣ} (U : OpenSubgroup Γ)
       refine eq_univ_of_forall fun χ ↦ ?_
       obtain ⟨v, l, hl, hln, hχ_mem⟩ := h_cover χ
       have hv : s v ≠ 1 := fun h_one ↦ by simp [n, h_one, hl.ne_one] at hln
-      exact mem_iUnion₂.mpr ⟨⟨v, l⟩, by simp [S, hv, hl, hln, hn v], by simpa using hχ_mem⟩
+      exact mem_iUnion₂.mpr ⟨⟨v, l⟩,
+        Finset.mem_sigma.mpr ⟨h_fin.mem_toFinset.mpr hv, Nat.mem_primeFactors.mpr ⟨hl, hln, hn v⟩⟩,
+        ⟨χ, hχ_mem, zero_add χ⟩⟩
     obtain ⟨⟨v, l⟩, hl, ⟨h_ne⟩⟩ :=
       AddSubgroup.exists_finiteIndex_of_leftCoset_cover (H := H) (g := 0) (s := S) h_covers
     exact h_ne (h_index v l (Nat.prime_of_mem_primeFactors (Finset.mem_sigma.mp hl).right))

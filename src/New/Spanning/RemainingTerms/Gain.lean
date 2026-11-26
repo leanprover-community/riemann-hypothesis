@@ -45,20 +45,17 @@ namespace New.Filling
 
 open NumberField Matrix Module Pointwise ComplexOrder
 
-variable {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040 E] {𝔰 : Shape} {S : Filling E 𝔰}
+variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
   {j j' : Fin (𝔰.ϱ + 2)} {c c' : S.Classes} {γ γ' : S.G E} {s : S.ResidueGL} {x : ℕ}
 
 /-! ### Ranks -/
 
-omit [HasPrimitiveRoot5040 E] in
 lemma commonLink_comm : commonLink γ γ' = commonLink γ' γ := by
   rw [commonLink, commonLink, inf_comm (link γ')]
 
-omit [HasPrimitiveRoot5040 E] in
 lemma linkCorank_comm : S.linkCorank γ γ' = S.linkCorank γ' γ := by
   rw [linkCorank, linkCorank, inf_comm]
 
-omit [HasPrimitiveRoot5040 E] in
 /-- The corank `S.linkCorank γ γ'`, the codimension of the intersection of the links of `γ` and
 `γ'` in each of them, vanishes exactly if the links are equal. -/
 lemma linkCorank_eq_zero_iff : S.linkCorank γ γ' = 0 ↔ link γ = link γ' := by
@@ -70,7 +67,6 @@ lemma linkCorank_eq_zero_iff : S.linkCorank γ γ' = 0 ↔ link γ = link γ' :=
     Submodule.eq_of_le_of_finrank_le inf_le_right ((finrank_link γ').trans_le h_le)
   exact h_left.symm.trans h_right
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `γ` have cell rank `j`. The codimension in `X₀` of `commonLink γ γ'`, the space of the
 vectors that both links send to one vector of `X₀`, is at most `c⁺ + (j - ϱ)`. Here
 `c⁺ = S.linkCorank γ γ'` is the codimension of the intersection of the links in each of them, and
@@ -83,14 +79,13 @@ lemma le_finrank_commonLink_add (h_cell : S.HasCellRank j γ) (γ' : S.G E) :
   rw [linkCorank]
   omega
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `γ` and `γ'` have cell ranks and the same link. Then `𝗀 = S.termDisc` vanishes at `γ` if and
 only if it vanishes at `γ'`. -/
 lemma termDisc_eq_zero_iff_of_link_eq (h_cell : S.HasCellRank j γ) (h_cell' : S.HasCellRank j' γ')
     (h_link : link γ = link γ') : S.termDisc γ = 0 ↔ S.termDisc γ' = 0 := by
   -- The link determines `X₀^γ`, which is `X₀` if `𝗀 = 0` and a hyperplane of `X₀` otherwise.
   have h_linked : linkedX₀ γ = linkedX₀ γ' := by
-    rw [linkedX₀, linkedX₀, linkIsometry_eq_iff.2 h_link]
+    rw [linkedX₀, linkedX₀, linkIsometry_eq_of_link_eq h_link]
   have h_rank : finrank E (linkedX₀ γ) + (j.val - 𝔰.ϱ) = 𝔰.k := h_cell.finrank_linkedX₀_add_sub
   have h_rank' : finrank E (linkedX₀ γ') + (j'.val - 𝔰.ϱ) = 𝔰.k := h_cell'.finrank_linkedX₀_add_sub
   rw [h_linked] at h_rank
@@ -100,7 +95,6 @@ lemma termDisc_eq_zero_iff_of_link_eq (h_cell : S.HasCellRank j γ) (h_cell' : S
 
 /-! ### The congruence -/
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `a` have absolute value `r` at every complex embedding of the CM type, and let `f` be the
 number of infinite places. Multiplying an `i × i` matrix by `a` multiplies the absolute norm to
 `ℚ` of its determinant by `r ^ (2 i f)`. -/
@@ -113,12 +107,10 @@ lemma abs_norm_det_smul {i : ℕ} {a : E} {r : ℝ} (ha : ∀ v : InfinitePlace 
     Finset.prod_const, Finset.card_univ, Fintype.card_fin]
   ring
 
-omit [HasPrimitiveRoot5040 E] in
 /-- The form of `X₀ ⊥ E z⁺` is positive definite at every complex embedding `Φ w` of the CM type. -/
 lemma positiveGram_posDef (w : InfinitePlace E) : (S.positiveGram.map (Φ w)).PosDef := by
   simp [positiveGram, diagonal_map, S.N_prime.pos]
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `b` and `b'` be `i` columns with the same Gram matrix in `X₀ ⊥ E z⁺`, so that `b' = u b`
 for an isometry `u`. Then the absolute norm to `ℚ` of the Gram determinant of `b - b' = (1 - u) b`
 is at most `4 ^ (2 i f)` times that of `b`, where `f` is the number of infinite places: at each
@@ -167,7 +159,6 @@ def sourceCols {σ : Type} (y : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) �
     Matrix 𝔰.MiddleIndex σ E :=
   (of fun a : σ ↦ linkSource E 𝔰 (y.col a))ᵀ
 
-omit [HasPrimitiveRoot5040 E] in
 /-- The entries of `yᴴ Q y'` are the values of the form with matrix `Q` on the columns of `y` and
 `y'`. -/
 lemma conjTranspose_mul_mul_apply_eq_dotProduct {m σ : Type} [Fintype m] (Q : Matrix m m E)
@@ -176,7 +167,6 @@ lemma conjTranspose_mul_mul_apply_eq_dotProduct {m σ : Type} [Fintype m] (Q : M
   rw [Matrix.mul_assoc]
   rfl
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `y` be a matrix whose columns span a submodule of `link γ`. Its Gram matrix for
 `S.linkMetric`, the positive form on pairs of middle vectors, equals the Gram matrix for
 `S.positiveGram` of the vectors `sourceCols y` of `X₀ ⊥ E z⁺`. -/
@@ -187,7 +177,6 @@ lemma gram_linkMetric_eq_gram_sourceCols {i : ℕ}
   simp only [conjTranspose_mul_mul_apply_eq_dotProduct]
   exact linkMetric_form_of_mem_link (col_mem_of_colSpan_le hy a) (col_mem_of_colSpan_le hy a')
 
-omit [HasPrimitiveRoot5040 E] in
 /-- A pair of middle vectors `(y₀ + λ' z, y₀' + λ z)` has the source `y₀ + λ z⁺` and the target
 `y₀' + λ' z⁺` in `X₀ ⊥ E z⁺`. Let the columns of `y` and `y'` lie in the links of `γ` and `γ'`, and
 let `Υ_γ b' = Υ_γ' (sourceCols y')`. Then the products of `y` with `y'` for `S.linkForm`, the
@@ -213,7 +202,8 @@ columns and adelic bases. Suppose that `S.linkForm`, the difference of the forms
 vectors of a pair, pairs `y` with `y'` nondegenerately and the lattices with values in `M Ô`, for
 the level `M = S.M`. Then the product of their squared discriminants `S.linkDiscSq` is at least
 `(M / 2) ^ (4 i f)`, where `f` is the number of infinite places. -/
-lemma one_le_mul_linkDiscSq {i : ℕ} {y y' : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin i) E}
+lemma one_le_mul_linkDiscSq [HasPrimitiveRoot5040 E] {i : ℕ}
+    {y y' : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin i) E}
     (hy : colSpan y ≤ link γ) (hy' : colSpan y' ≤ link γ') {v v' : GL (Fin i) (𝔸f E)}
     (h_det : (yᴴ * S.linkForm * y').det ≠ 0)
     (h_int : IsIntMatrix (Ô E)
@@ -270,7 +260,6 @@ lemma one_le_mul_linkDiscSq {i : ℕ} {y y' : Matrix (𝔰.MiddleIndex ⊕ 𝔰.
       simp only [div_eq_mul_inv, mul_pow, ← pow_mul, a, b]
       ring
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let the columns of `m` lie in the link of `γ'` and span the link of `γ` together with those of
 `y`. Let the columns of `y'` lie in the link of `γ'` and be independent modulo the intersection of
 the links. Then `S.linkForm`, the difference of the forms on the two middle vectors of a pair,
@@ -299,7 +288,6 @@ lemma det_conjTranspose_mul_linkForm_mul_ne_zero {ρ : Type} [Fintype ρ] {i : �
     fromRows_mulVec, h_orth_m, h_orth_y]
   simp
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `a w` and `b w'` be adelic combinations of the rational columns `a` and `b`. Their matrix
 of products for the form `r B` is `wᴴ (r aᴴ B b) w'`, with `finAdeleMatrix` the diagonal embedding
 of rational matrices into adelic ones. -/
@@ -317,7 +305,8 @@ two lattices are paired nondegenerately by `S.linkForm`, the difference of the f
 middle vectors of a pair, with values in `M Ô` for `M = S.M`. So the product of their squared
 discriminants `S.linkDiscSq` is at least `(M / 2) ^ (4 i f)`, where `f = numInfPlaces E` is the
 number of infinite places. -/
-lemma LinkSplitting.one_le_mul_linkDiscSq {x' i : ℕ} (D : S.LinkSplitting c c' j x γ γ' i)
+lemma LinkSplitting.one_le_mul_linkDiscSq [HasPrimitiveRoot5040 E] {x' i : ℕ}
+    (D : S.LinkSplitting c c' j x γ γ' i)
     (D' : S.LinkSplitting c c' j' x' γ' γ i) (h_over : γ ∈ S.termsOver c s c')
     (h_over' : γ' ∈ S.termsOver c s c') :
     1 ≤ ((2 / S.M : ℝ) ^ (2 * i * numInfPlaces E)) ^ 2 *
@@ -351,8 +340,8 @@ lemma LinkSplitting.one_le_mul_linkDiscSq {x' i : ℕ} (D : S.LinkSplitting c c'
 
 /-- If `γ` is a term over `(c, s, c')` (it lies in `S.termsOver c s c'`) and has cell rank `j`, then
 its gauge `S.levelGauge j c c' γ` is positive. -/
-lemma levelGauge_pos (h_over : γ ∈ S.termsOver c s c') (h_cell : S.HasCellRank j γ) :
-    0 < S.levelGauge j c c' γ := by
+lemma levelGauge_pos [HasPrimitiveRoot5040 E] (h_over : γ ∈ S.termsOver c s c')
+    (h_cell : S.HasCellRank j γ) : 0 < S.levelGauge j c c' γ := by
   have h_gauge : 0 < S.maxGauge j c c' γ := maxGauge_pos h_over h_cell
   have hM : 0 < S.M := Nat.pos_of_ne_zero (by simp [Nat.Prime.ne_zero])
   unfold levelGauge
@@ -374,7 +363,7 @@ isotropic row indices, times `M ^ (2 min(ϱ, j) f)`, `j'` for `γ'`. Here `M = S
 `c⁺ = S.linkCorank γ γ'` is the codimension of the intersection of the links in each and `f` is the
 number of infinite places. The bound may be divided by `x ^ 2` if `c⁺ = 0` and `γ` has the top rank
 `𝔰.ϱ < j`. -/
-lemma torsionIndex_mul_discriminant_commonPart_le (h_agrees : S.Agrees s)
+lemma torsionIndex_mul_discriminant_commonPart_le [HasPrimitiveRoot5040 E] (h_agrees : S.Agrees s)
     (h_meet : x ≤ S.meetNorm s) (h_over : γ ∈ S.termsOver c s c')
     (h_over' : γ' ∈ S.termsOver c s c')
     (h_cell : S.HasCellRank j γ) (h_cell' : S.HasCellRank j' γ') :
@@ -461,7 +450,6 @@ lemma frameImage_conjTranspose_mulVec {R : Type} [CommRing R] [StarRing R] {T : 
     fromBlocks_conjTranspose, conjTranspose_fromCols_eq_fromRows_conjTranspose, Matrix.one_apply]
   ring
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let `t` be a vector of `A ⊕ X₀` whose part `v` in `X₀` lies in `commonLink γ γ'`, the vectors of
 `X₀` that are the first entry of a pair, orthogonal to `z`, lying in the links of both `γ` and `γ'`.
 If `t` is orthogonal for the form `S.ratGram` to the frame `(γ e₁, …, γ e_ϱ, γ z)` of `γ`, then
@@ -514,7 +502,6 @@ lemma mulVec_sub_mem_colSpan_isotropicFramePair {a : Fin 𝔰.ϱ → E} {v : �
     h_decomp]
   exact Submodule.add_mem_sup h_fst (Submodule.mem_map_of_mem h_snd)
 
-omit [HasPrimitiveRoot5040 E] in
 /-- Let the columns of `p` lie in `commonLink γ γ'` and let those of `P` be the `e_a` and the
 columns of `p`. Then `(γ' γ⁻¹ - 1) P = F W + Z Q` for some matrices `W` and `Z`. Here the columns of
 `F = isotropicFramePair γ'` are the `e_a` and the `γ' e_a`, and `Q` is the matrix of products of `P`
@@ -555,12 +542,11 @@ lemma exists_sub_one_mul_eq_isotropicFramePair_mul_add {r : ℕ} {p : Matrix �
       rfl
     rwa [h_eq, sub_mulVec, one_mulVec]
   obtain ⟨w, hw : isotropicFramePair γ' * w = (m - 1) * P * y⟩ :=
-    exists_mul_eq_of_col_mem_range h_col
+    exists_mul_eq_of_range_le h_col
   refine ⟨w * e, (m - 1) * P * b, ?_⟩
   rw [← Matrix.mul_assoc, hw, Matrix.mul_assoc _ y, Matrix.mul_assoc _ b, ← Matrix.mul_add, h_one,
     Matrix.mul_one]
 
-omit [HasPrimitiveRoot5040 E] in
 /-- The matrix `S.classCoord c`, which passes to the coordinates of the lattice of `c`, intertwines
 the rational matrix `δ` with `S.translateByClassReps c c δ`. -/
 lemma translateByClassReps_mul_classCoord (δ : S.G E) :
@@ -569,6 +555,8 @@ lemma translateByClassReps_mul_classCoord (δ : S.G E) :
   rw [coe_translateByClassReps, classCoord, Units.val_mul, Units.val_mul, Matrix.mul_assoc,
     Units.mul_inv, Matrix.mul_one]
   rfl
+
+variable [HasPrimitiveRoot5040 E]
 
 /-- The adelic form of `mulVec_sub_mem_colSpan_isotropicFramePair`, in the coordinates of the
 lattice of `c`. Let `y` be a vector of `A ⊕ X₀` whose part in `X₀` is an adelic vector `v` of the

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.MeasureTheory.Constructions.Polish.EmbeddingReal
 public import Lib.Adelic.Adeles.SemilocalProducts
 public import New.Spanning.Unfolding.Setup
 
@@ -117,7 +118,7 @@ lemma mem_levelMultiples {w : InfinitePlace E → ℂ} :
 `S.IsAdmissible`. For `r ≥ 0` and a tuple `w` over the infinite places, only finitely many `l` in
 `S.levelMultiples` make all coordinates of `l + w` have modulus at most `r`. Here `S.levelMultiples`
 is the set of tuples `M x`, where `x` is an integer of `E` and `M = S.M` is the level. -/
-lemma finite_setOf_levelMultiples_add_le [S.IsAdmissible] {r : ℝ} (hr : 0 ≤ r)
+lemma finite_setOf_levelMultiples_add_le {r : ℝ} (hr : 0 ≤ r)
     (w : InfinitePlace E → ℂ) :
     {l : S.levelMultiples | ∀ v : InfinitePlace E, ‖(l.val + w) v‖ ≤ r}.Finite := by
   have h_integer (l : S.levelMultiples) :
@@ -297,23 +298,16 @@ lemma IsResidueDomain.mem_frameBox [S.IsAdmissible] (hD : S.IsResidueDomain D)
     y v ∈ frameBox (S.b ^ 27 * besselLength (y v)) := by
   -- A frame vector is a sum of `ϱ + 1 ≤ b` orthogonal vectors, each no longer than the Bessel
   -- length, with coefficients of modulus at most `b ^ 26`.
-  intro (l : Fin (𝔰.ϱ + 1))
-  show ‖frameVector (y v) l‖ ≤ S.b ^ 27 * besselLength (y v)
+  intro l
   have hb_pos : 0 < S.b := zero_lt_one.trans_le S.one_le_b
-  have h_besselLength_nonneg : 0 ≤ besselLength (y v) := besselLength_nonneg (y v)
-  have h_term (a : Fin (𝔰.ϱ + 1)) :
-      ‖gramSchmidtMatrix (y v) a l • orthoFrame (y v) a‖ ≤ S.b ^ 26 * besselLength (y v) := by
-    have h_ortho : ‖orthoFrame (y v) a‖ ≤ besselLength (y v) :=
-      (norm_orthoFrame_mem_Icc (y v) a le_rfl).right
-    grw [norm_smul, hD.norm_gramSchmidtMatrix_le hy, h_ortho]
+  have h_nonneg : 0 ≤ besselLength (y v) := besselLength_nonneg (y v)
   calc ‖frameVector (y v) l‖
     _ = ‖∑ a : Fin (𝔰.ϱ + 1), gramSchmidtMatrix (y v) a l • orthoFrame (y v) a‖ := by
       rw [← frameVector_eq_sum_orthoFrame]
-    _ ≤ ∑ _ : Fin (𝔰.ϱ + 1), S.b ^ 26 * besselLength (y v) :=
-      norm_sum_le_of_le _ fun a _ ↦ h_term a
-    _ = ↑(𝔰.ϱ + 1) * (S.b ^ 26 * besselLength (y v)) := by simp
-    _ ≤ S.b * (S.b ^ 26 * besselLength (y v)) := by grw [S.succ_le_b]
-    _ = S.b ^ 27 * besselLength (y v) := by ring
+    _ ≤ ∑ _ : Fin (𝔰.ϱ + 1), S.b ^ 26 * besselLength (y v) := norm_sum_le_of_le _ fun a _ ↦ by
+      grw [norm_smul, hD.norm_gramSchmidtMatrix_le hy, (norm_orthoFrame_mem_Icc (y v) a le_rfl).2]
+    _ ≤ S.b ^ 27 * besselLength (y v) := by
+      simpa [pow_succ', mul_assoc] using mul_le_mul_of_nonneg_right S.succ_le_b (by positivity)
 
 /-- Let `S` be admissible, that is, satisfy the standing hypotheses `New.Filling.IsAdmissible`,
 `n = 𝔰.n`, and let `y` be boxed: the entries above the diagonal of `S.ratTriangle y` lie in the set

@@ -97,7 +97,7 @@ lemma comp_absFrobenius {B : CommRingCat} (t : Spec B ⟶ X.left) :
 
 lemma absFrobenius_comm (g : X.left ⟶ Y.left) : absFrobenius f X ≫ g = g ≫ absFrobenius f Y :=
   -- Test on ring-valued points, where both sides are given by `comp_absFrobenius`.
-  hom_ext_of_points (by simp [← Category.assoc, comp_absFrobenius])
+  Scheme.hom_ext_of_forall_spec (by simp [← Category.assoc, comp_absFrobenius])
 
 lemma absFrobenius_apply (x : X.left) : absFrobenius f X x = x := by
   -- Test on the spectrum of the residue field at `x`, which has a single point.
@@ -185,7 +185,7 @@ lemma eventually_mem_formSpan_of_mul {k F : Type*} {ι : Type} [CommRing k] [IsN
     (map_homogeneousSubmodule_eq_formSpan k x (D + 1)).ge (by simpa [hr] using hf r)
   have hp : φ p = .X ^ (D + 1) * algebraMap F (Polynomial F) f := by
     rw [← hp_val, ← p.aeval_algebraMap_apply (Polynomial F)]
-    exact eval₂_mul_of_isHomogeneous hp_homog ..
+    exact hp_homog.eval₂_const_mul ..
   have hp_mem : p ∈ I (D + 1) := fun n ↦ by
     obtain rfl | hn := eq_or_ne n (D + 1) <;> simp [*, T]
   rw [← hc (D + 1) (by lia)] at hp_mem
@@ -261,7 +261,7 @@ lemma exists_mul_pow_mem_formSpan_of_isSection {k ι : Type} [CommRing k] [Finit
     exists_homogenization (N := m + P.totalDegree) (isHomogeneous_X k j) P le_add_self
   have hQ_val : aeval x Q = t (fun _ ↦ i) B ξ * x j ^ P.totalDegree :=
     calc aeval x Q = aeval (fun l ↦ x j * y l) Q := by rw [← h_cocycle]
-      _ = x j ^ (m + P.totalDegree) * aeval y Q := eval₂_mul_of_isHomogeneous hQ _ (x j) y
+      _ = x j ^ (m + P.totalDegree) * aeval y Q := hQ.eval₂_const_mul _ y (x j)
       _ = t (fun _ ↦ i) B ξ * x j ^ P.totalDegree := by
         rw [hQP (aeval y) (by simp [y, transition_self _ _ _ _ hj]), ht_i, pow_add, mul_right_comm]
   exact ⟨P.totalDegree, (map_homogeneousSubmodule_eq_formSpan k x _).le ⟨Q, hQ, hQ_val⟩⟩

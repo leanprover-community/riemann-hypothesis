@@ -1,7 +1,12 @@
 module
 
+public import TauCeti.RingTheory.MvPowerSeries.Dvd
+public import TauCeti.RingTheory.MvPowerSeries.Order
+public import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.RingTheory.PowerSeries.Expand
 public import Lib.General.Algebra.AdicCompletion
-public import TauCeti.RingTheory.MvPowerSeries.Derivative
 
 /-!
 # Power series with prime power exponents, congruences and convergent sums
@@ -19,8 +24,8 @@ work with such congruences.
   has only terms of the degrees `p ^ i + p ^ j`.
 * `New.dvd_sum_pow_sub_sum`: for a prime `p` the `p ^ j`-th powers are additive modulo a divisor of
   `p`.
-* `New.continuous_subst_of_constantCoeff_eq_zero`, `New.continuous_pderiv`: substitution of finitely
-  many series without constant term and differentiation are continuous.
+* `New.continuous_subst_of_constantCoeff_eq_zero`: substitution of finitely many series without
+  constant term is continuous.
 * `New.C_dvd_of_hasSum`: over the valuation ring of `ℂ_[p]` a convergent sum of power series
   divisible by `π` is divisible by `π`.
 
@@ -259,22 +264,6 @@ lemma dvd_sum_pow_sub_sum {p : ℕ} [Fact p.Prime] {π : R} (hπ : π ∣ (p : R
       Ideal.Quotient.eq_zero_iff_dvd]
   simp only [map_pow, map_sum, sum_pow_char_pow]
 
-lemma C_dvd_iff_forall_dvd_coeff {π : R} {F : MvPowerSeries σ R} :
-    C π ∣ F ↔ ∀ d : σ →₀ ℕ, π ∣ coeff d F := by
-  refine ⟨fun ⟨G, hG⟩ d ↦ ⟨coeff d G, by rw [hG, coeff_C_mul]⟩, fun h ↦ ?_⟩
-  choose g hg using (h : ∀ d : σ →₀ ℕ, ∃ c : R, coeff d F = π * c)
-  exact ⟨g, MvPowerSeries.ext fun d ↦ (hg d).trans (coeff_C_mul d g π).symm⟩
-
-/-- If the series `Z x` have no constant term, then the monomial `∏_x Z x ^ d x` has order at least
-the total degree of `d`. -/
-lemma degree_le_order_prod_pow {Z : σ → MvPowerSeries τ R}
-    (hZ : ∀ x : σ, constantCoeff (Z x) = 0) (d : σ →₀ ℕ) :
-    (d.degree : ℕ∞) ≤ (d.prod fun (x : σ) (k : ℕ) ↦ Z x ^ k).order :=
-  calc (d.degree : ℕ∞) = ∑ x ∈ d.support, (d x : ℕ∞) := by simp [Finsupp.degree_apply]
-    _ ≤ ∑ x ∈ d.support, (Z x ^ d x).order :=
-        Finset.sum_le_sum fun x _ ↦ le_order_pow_of_constantCoeff_eq_zero (d x) (hZ x)
-    _ ≤ (∏ x ∈ d.support, Z x ^ d x).order := le_order_prod _ _
-
 /-- Substitution of series `Z x` without constant term for finitely many variables `x` is continuous
 in the topology of coefficientwise convergence. -/
 lemma continuous_subst_of_constantCoeff_eq_zero [Finite σ] [TopologicalSpace R]
@@ -293,12 +282,6 @@ lemma continuous_subst_of_constantCoeff_eq_zero [Finite σ] [TopologicalSpace R]
     exact hd (by simp only [h_zero, smul_zero])
   refine continuous_pi fun m ↦ (continuous_congr (h_coeff m)).2 ?_
   exact continuous_finsetSum _ fun d _ ↦ (continuous_coeff R d).mul continuous_const
-
-/-- Partial differentiation of power series is continuous in the topology of coefficientwise
-convergence. -/
-lemma continuous_pderiv [TopologicalSpace R] [IsTopologicalRing R] (y : σ) :
-    Continuous (pderiv y : MvPowerSeries σ R → MvPowerSeries σ R) :=
-  MvPowerSeries.WithPiTopology.continuous_pderiv y
 
 /-- A family of power series is summable, in the topology of coefficientwise convergence, if for
 each `n` only finitely many of its members have order at most `n`. -/
@@ -328,22 +311,13 @@ lemma summable_smul_pow_pow [TopologicalSpace R] {p : ℕ} (hp : 1 < p) {G : ℕ
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- In the valuation ring of `ℂ_[p]` the element `x` divides `y` exactly if `‖y‖ ≤ ‖x‖`. -/
-lemma dvd_iff_norm_le {x y : valRingCp p} : x ∣ y ↔ ‖(y : ℂ_[p])‖ ≤ ‖(x : ℂ_[p])‖ := by
-  refine ⟨?_, fun h ↦ ?_⟩
-  · rintro ⟨z, rfl⟩
-    simpa using mul_le_of_le_one_right (norm_nonneg _) z.property
-  obtain rfl | hx := eq_or_ne x 0
-  · simpa using h
-  have h_div : ‖(y / x : ℂ_[p])‖ ≤ 1 := by simpa using div_le_one_of_le₀ h (norm_nonneg _)
-  exact ⟨⟨y / x, h_div⟩, Subtype.ext (mul_div_cancel₀ _ (by simpa using hx)).symm⟩
-
 /-- In the valuation ring of `ℂ_[p]` the sum of a convergent family of multiples of `π` is a
 multiple of `π`. -/
 lemma dvd_of_hasSum {π a : valRingCp p} {f : ι → valRingCp p} (h_sum : HasSum f a)
     (hf : ∀ i : ι, π ∣ f i) : π ∣ a := by
   have h_closed : IsClosed {y : valRingCp p | π ∣ y} := by
-    simpa only [dvd_iff_norm_le] using isClosed_le continuous_subtypeVal.norm continuous_const
+    simpa only [valRingCp.dvd_iff_norm_le] using
+      isClosed_le continuous_subtypeVal.norm continuous_const
   exact h_closed.mem_of_tendsto h_sum (.of_forall fun t ↦ Finset.dvd_sum fun i _ ↦ hf i)
 
 /-- A convergent sum of power series over the valuation ring `valRingCp p` of `ℂ_[p]`, each
@@ -351,8 +325,8 @@ divisible by the constant `π`, is divisible by `π`. -/
 lemma C_dvd_of_hasSum {π : valRingCp p} {F : MvPowerSeries σ (valRingCp p)}
     {f : ι → MvPowerSeries σ (valRingCp p)} (h_sum : HasSum f F) (hf : ∀ i : ι, C π ∣ f i) :
     C π ∣ F :=
-  C_dvd_iff_forall_dvd_coeff.2 fun d ↦ dvd_of_hasSum (hasSum_iff_hasSum_coeff.1 h_sum d) fun i ↦
-    C_dvd_iff_forall_dvd_coeff.1 (hf i) d
+  (C_dvd_iff_dvd_coeff _ _).2 fun d ↦ dvd_of_hasSum (hasSum_iff_hasSum_coeff.1 h_sum d) fun i ↦
+    (C_dvd_iff_dvd_coeff _ _).1 (hf i) d
 
 end New
 
@@ -365,12 +339,6 @@ section OneVariable
 open PowerSeries
 
 namespace New
-
-lemma C_dvd_iff_dvd_coeff {R : Type*} [CommRing R] {π : R} {F : R⟦X⟧} :
-    C π ∣ F ↔ ∀ n : ℕ, π ∣ coeff n F := by
-  refine C_dvd_iff_forall_dvd_coeff.trans ⟨fun h n ↦ h (Finsupp.single () n), fun h m ↦ ?_⟩
-  -- A multi-index `m` in one variable is the degree `m ()`.
-  simpa only [coeff_def (s := m) rfl] using h (m ())
 
 /-- If `F ≡ l G` and `G ≡ H` modulo `D`, then `F ≡ l H` modulo `D`. -/
 lemma dvd_sub_smul_of_dvd_sub {R : Type*} [CommRing R] {l : R} {D F G H : R⟦X⟧}

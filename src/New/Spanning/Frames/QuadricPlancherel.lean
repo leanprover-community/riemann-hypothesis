@@ -134,16 +134,8 @@ lemma fourierSqNormLe_floorQuadricMeasure (ξ : Aˣ) {ρ : Measure (𝔰.BesselI
       (Γ.loss ^ (99 * 𝔰.n * (i + 6)) * Γ.loss ^ (99 * 𝔰.n * (j + 6)) *
         (P.kernelBound / P.modulus ξ) ^ Fintype.card F.FreeIndex) := by
   -- In the coordinates of the basis `F.floorBasis b`, solve for `v` and `y` in different blocks.
-  have h_solve {μ : Measure (𝔰.BesselIndex → A)}
-      (hμ : μ = FloorGroups.floorVolume b ∨ μ = F.floorQuadricMeasure b) :
-      ∃ μ₀ : Measure (Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m → A),
-        μ = μ₀.map (F.floorBasis b *ᵥ ·) ∧
-        ∀ blk : Fin F.blockRank → ι, Function.Injective blk → ∀ l : ℕ,
-          IsSolvedIn (.inr ∘ .inr ∘ .inl ∘ blk) μ₀ (Γ.ofSize l)
-            (Γ.loss ^ (F.blockRank * (l + 1))) :=
-    Γ.exists_isSolvedIn hμ
-  obtain ⟨ρ', rfl, h_solved'⟩ := h_solve hρ
-  obtain ⟨ρ₀, h_eq, h_solved⟩ := h_solve (.inr rfl)
+  obtain ⟨ρ', rfl, h_solved'⟩ := Γ.exists_isSolvedIn hρ
+  obtain ⟨ρ₀, h_eq, h_solved⟩ := Γ.exists_isSolvedIn (b := b) (.inr rfl)
   obtain ⟨blk', blk, h_inj⟩ : ∃ blk' blk : Fin F.blockRank → ι,
       Function.Injective (F.freeIndex ⊕ᵥ (blk' ⊕ᵥ blk)) := Γ.exists_blocks
   have h_inj' : Function.Injective blk' := h_inj.comp (Sum.inr_injective.comp Sum.inl_injective)
@@ -390,7 +382,7 @@ lemma parseval_heisenbergMeasure_le {S : Set T.G} {i : ℕ} {Φ : T.G → ℝ≥
       heisenbergElem_mul, partialCorrelation_heisenbergElem_eq_integral a hk h_twist]
     congr 3 with σ
     simp only [← add_assoc, ← form_mulVec_mulVec t _ (orbitPoint _ _), mulVec_add,
-      inclMatrix_mulVec_floor_block a.2, inv_mem, ht]
+      inclMatrix_mulVec_floor_block a.isLt, inv_mem, ht]
     simp [← inverse_star_unit, star_mulVec_dotProduct, mul_add, mul_assoc]
   -- the measure is invariant under the group on both sides and under conjugation by `t`
   have h_subst : ∫⁻ n, Φ n ∂heisenbergMeasure a =

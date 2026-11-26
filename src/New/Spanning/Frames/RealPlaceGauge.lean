@@ -4,7 +4,6 @@ public import Lib.Shimura.ComplexTheta.AppellHumbertData
 public import Lib.DiscreteSeries.Bessel.FrameFibre
 public import Lib.DiscreteSeries.Bruhat.FloorFibre
 public import Lib.DiscreteSeries.Bruhat.SphereFibres
-public import Lib.Weil.Construction.HeisenbergModel
 public import New.Spanning.Bessel.Basic
 public import New.Spanning.Frames.Correlations
 
@@ -428,7 +427,7 @@ lemma RealPlaceSizes.leGramFibre_partialGroupMeasure (hF : RealPlaceSizes 𝔰 �
   -- Choose the vectors of the tuple in turn.
   induction l with
   | zero =>
-    have : IsEmpty {i : 𝔰.BesselIndex // floorOf i < 0} := ⟨fun i ↦ Nat.not_lt_zero _ i.2⟩
+    have : IsEmpty {i : 𝔰.BesselIndex // floorOf i < 0} := ⟨fun i ↦ Nat.not_lt_zero _ i.property⟩
     simpa [descConv, Measure.inv] using leGramFibre_dirac _
   | succ a ih =>
     lift a to Fin 𝔰.ϱ using hl
@@ -449,7 +448,7 @@ lemma RealPlaceSizes.leGramFibre_partialGroupMeasure (hF : RealPlaceSizes 𝔰 �
           (Subtype.val : {i : 𝔰.BesselIndex // floorOf i < a ∨ i = .inl a} → 𝔰.BesselIndex))
         (((2⁻¹ : ℝ≥0∞) ^ (2 * a.val) • (hF.complexData.partialGroupMeasure 0 a).inv) ∗ₘ
           ((2⁻¹ : ℝ≥0∞) • (hF.complexData.floorMeasure a).inv)) :=
-      hF.leGramFibre_mconv_floorMeasure a.castSucc (by simp) (ih a.2.le)
+      hF.leGramFibre_mconv_floorMeasure a.castSucc (by simp) (ih a.isLt.le)
     rw [h_split]
     refine h_frame.insert (j := eStar a) (by simp) h_index ?_ ?_
     · have h_zero : (𝔰.J₁ (eStar a) (eStar a)).re = 0 := by simp
@@ -465,7 +464,7 @@ lemma RealPlaceSizes.inv_groupMeasure_le (hF : RealPlaceSizes 𝔰 ρ s b) :
   -- Add `z` to the hyperbolic pairs. The complement `X₀` of this tuple is definite, and the
   -- measure of floor `ϱ + 1` is the Haar measure of `U(X₀)`.
   have h_disjoint (i : {i : 𝔰.BesselIndex // floorOf i < 𝔰.n}) (j : 𝔰.κ) :
-      i.val ≠ 𝔰.indexX₀ j := fun h ↦ by simpa [h] using i.2
+      i.val ≠ 𝔰.indexX₀ j := fun h ↦ by simpa [h] using i.property
   have h_bij : Function.Bijective (Sum.elim Subtype.val 𝔰.indexX₀ :
       {i : 𝔰.BesselIndex // floorOf i < 𝔰.n} ⊕ 𝔰.κ → 𝔰.BesselIndex) :=
     ⟨Subtype.val_injective.sumElim (fun _ _ h ↦ by simpa using h) h_disjoint,
@@ -545,7 +544,7 @@ lemma RealPlaceSizes.lintegral_quotientMeasureFrom_eq_haarRatio_mul (hF : RealPl
       (hF.haarRatio • volume) := h_mul.comp h_incl
   have h_law : ProbabilityTheory.IdentDistrib f f
       (orbitMeasure 𝔰.besselHaar (hF.haarRatio • volume)) θ :=
-    identDistrib_orbitMeasure_of_unfold (.id _) h_unfold hf measurable_id fun u ↦ h_inv u u.2
+    identDistrib_orbitMeasure_of_unfold (.id _) h_unfold hf measurable_id fun u ↦ h_inv u u.property
   calc ∫⁻ g : 𝔰.G₁, f g ∂θ
       = ∫⁻ g : 𝔰.G₁, f g ∂orbitMeasure 𝔰.besselHaar (hF.haarRatio • volume) :=
         h_law.lintegral_eq.symm
@@ -613,7 +612,7 @@ lemma exists_unitary_mul_submatrix_eq_zero {m ι : Type} [Fintype m] [Fintype ι
   refine ⟨H.eigenvectorUnitary, D, D_card, ?_⟩
   rw [← conjTranspose_mul_self_mul_eq_zero]
   ext a i
-  have h_eig : H.eigenvalues i = 0 := by simpa using hD i.2
+  have h_eig : H.eigenvalues i = 0 := by simpa using hD i.property
   have h_ker : (Cᴴ * C) *ᵥ ⇑(H.eigenvectorBasis i) = 0 := by
     rw [H.mulVec_eigenvectorBasis, h_eig, zero_smul]
   exact congrFun h_ker a
@@ -632,7 +631,7 @@ lemma measurePreserving_normSq_prod_compl {ι : Type} [Fintype ι] [DecidableEq 
         ENNReal.ofReal (sphereDensity (card D) r / 2)).prod volume) := by
   have h_unitary : MeasurePreserving (fun u : ι → ℂ ↦ Q.valᴴ *ᵥ u) volume volume :=
     complexPlace.measurePreserving_mulVec Q.valᴴ (Unitary.star_mul_self_of_mem
-      (det_of_mem_unitary (star Q).2))
+      (det_of_mem_unitary (star Q).property))
   have h_split : MeasurePreserving
       (fun w : ι → ℂ ↦ (fun i : D ↦ w i, fun i : {i : ι // i ∉ D} ↦ w i)) volume volume := by
     have h_pi := volume_preserving_piEquivPiSubtypeProd (fun _ : ι ↦ ℂ) (· ∈ D)
@@ -647,7 +646,7 @@ lemma norm_unitary_conjTranspose_mulVec_le {ι : Type} [Fintype ι] [DecidableEq
   calc ‖(Q.valᴴ *ᵥ u) i‖ ≤ ∑ k : ι, ‖star (Q.val k i) * u k‖ := norm_sum_le _ _
     _ ≤ ∑ _k : ι, 1 * R := by
         gcongr with k
-        grw [norm_mul, norm_star, entry_norm_bound_of_unitary Q.2, hu k]
+        grw [norm_mul, norm_star, entry_norm_bound_of_unitary Q.property, hu k]
     _ = card ι * R := by simp
 
 /-- The integral of `(36 / r) ^ s` over `0 < r ≤ R` against the density
@@ -698,7 +697,7 @@ lemma exists_orthonormal_ker_lintegral_le {𝔰 : Shape} {s : ℕ} {L : ℝ} {m 
     exists_unitary_mul_submatrix_eq_zero C (by lia)
   set O : Matrix ι D ℂ := Q.val.submatrix id (↑)
   have hO : Oᴴ * O = 1 := by
-    have hQ : Q.valᴴ * Q.val = 1 := Unitary.star_mul_self_of_mem Q.2
+    have hQ : Q.valᴴ * Q.val = 1 := Unitary.star_mul_self_of_mem Q.property
     rw [conjTranspose_submatrix, ← submatrix_mul _ _ _ _ _ Function.bijective_id, hQ]
     exact submatrix_one _ Subtype.val_injective
   refine ⟨D, O, hCO, hO, fun j ↦ ?_⟩
@@ -795,7 +794,7 @@ lemma RealPlaceSizes.norm_le_of_mem_productDifferences (hF : RealPlaceSizes 𝔰
       ‖star u ⬝ᵥ 𝔰.J₁ *ᵥ v‖ ≤ (‖toLp 2 u‖ ^ 2 + ‖toLp 2 v‖ ^ 2) / 2 := by
     rw [dotProduct_comm]
     refine (norm_inner_J₁_le (v := toLp 2 u) (w := toLp 2 v)).trans ?_
-    linarith [two_mul_le_add_sq ‖toLp 2 u‖ ‖toLp 2 v‖]
+    linarith only [two_mul_le_add_sq ‖toLp 2 u‖ ‖toLp 2 v‖]
   change ‖toLp 2 ω₁‖ ^ 2 + ‖toLp 2 ω₂‖ ^ 2 < 1 at h_close
   change ‖toLp 2 ω₁'‖ ^ 2 + ‖toLp 2 ω₂'‖ ^ 2 < 1 at h_close'
   simp only [complexData_levelUnit, inv_one, Units.val_one, one_mul]
@@ -878,7 +877,7 @@ lemma volume_le_of_subset_closedBall {W : Set ℂ} {t : ℝ} (ht : 0 < t)
         ring_nf
     _ ≤ ENNReal.ofReal (36 / t) := by
         gcongr
-        linarith [pi_le_four]
+        linarith only [pi_le_four]
     _ = (ENNReal.ofReal (t / 36))⁻¹ := by
         rw [← ofReal_inv_of_pos (by positivity), inv_div]
 
@@ -1181,29 +1180,18 @@ lemma realDepth_lt_iff {a : Fin 𝔰.ϱ} {g g' : 𝔰.G₁} {t : ℝ} :
         lengthAt g ζ ^ 2 + lengthAt g' ζ' ^ 2 < t := by
   have : Nonempty {ζ : 𝔰.BesselIndex → ℂ // IsOrthogonalBelow a ζ ∧ ζ (eStar a) = 1} :=
     ⟨Pi.single (eStar a) 1, fun b hb ↦ by simp [Fin.ne_of_lt hb], by simp⟩
-  have h_bdd : BddBelow (range
-      fun ζ : {ζ : 𝔰.BesselIndex → ℂ // IsOrthogonalBelow a ζ ∧ ζ (eStar a) = 1} ↦
-        inducedLength g a ζ ^ 2 + inducedLength g' a ζ ^ 2) :=
-    ⟨0, forall_mem_range.2 fun _ ↦ by positivity⟩
-  rw [realDepth, ciInf_lt_iff h_bdd]
+  rw [realDepth, ciInf_lt_iff ⟨0, forall_mem_range.2 fun _ ↦ by positivity⟩]
   constructor
   · -- Choose a lift `ζ₁` at `g`, then a lift `ζ₂` at `g'`.
     rintro ⟨⟨ζ, h_orth, h_one⟩, h_lt⟩
-    obtain ⟨ζ₁, h₁, h_lt₁⟩ : ∃ ζ₁ : 𝔰.BesselIndex → ℂ, CongrBelow a ζ ζ₁ ∧
-        lengthAt g ζ₁ ^ 2 < t - inducedLength g' a ζ ^ 2 :=
-      inducedLength_sq_lt_iff.1 (lt_sub_iff_add_lt.2 h_lt)
-    obtain ⟨ζ₂, h₂, h_lt₂⟩ : ∃ ζ₂ : 𝔰.BesselIndex → ℂ, CongrBelow a ζ ζ₂ ∧
-        lengthAt g' ζ₂ ^ 2 < t - lengthAt g ζ₁ ^ 2 :=
-      inducedLength_sq_lt_iff.1 (lt_sub_comm.1 h_lt₁)
-    have h_orth₁ : IsOrthogonalBelow a ζ₁ := h_orth.of_congrBelow h₁ a.isLt.le
-    have h_one₁ : ζ₁ (eStar a) = 1 := (h₁.apply_eStar a.isLt.le a).trans h_one
-    exact ⟨ζ₁, ζ₂, h_orth₁, h_one₁, h₁.symm.trans h₂, lt_sub_iff_add_lt'.1 h_lt₂⟩
+    obtain ⟨ζ₁, h₁, h_lt₁⟩ := inducedLength_sq_lt_iff.1 (lt_sub_iff_add_lt.2 h_lt)
+    obtain ⟨ζ₂, h₂, h_lt₂⟩ := inducedLength_sq_lt_iff.1 (lt_sub_comm.1 h_lt₁)
+    exact ⟨ζ₁, ζ₂, h_orth.of_congrBelow h₁ a.isLt.le, (h₁.apply_eStar a.isLt.le a).trans h_one,
+      h₁.symm.trans h₂, lt_sub_iff_add_lt'.1 h_lt₂⟩
   · rintro ⟨ζ, ζ', h_orth, h_one, h_congr, h_lt⟩
-    have h_lt₂ : inducedLength g' a ζ ^ 2 < t - lengthAt g ζ ^ 2 :=
-      inducedLength_sq_lt_iff.2 ⟨ζ', h_congr, lt_sub_iff_add_lt'.2 h_lt⟩
-    have h_lt₁ : inducedLength g a ζ ^ 2 < t - inducedLength g' a ζ ^ 2 :=
-      inducedLength_sq_lt_iff.2 ⟨ζ, .refl a ζ, lt_sub_comm.1 h_lt₂⟩
-    exact ⟨⟨ζ, h_orth, h_one⟩, lt_sub_iff_add_lt.1 h_lt₁⟩
+    have h_lt₂ := inducedLength_sq_lt_iff.2 ⟨ζ', h_congr, lt_sub_iff_add_lt'.2 h_lt⟩
+    exact ⟨⟨ζ, h_orth, h_one⟩,
+      lt_sub_iff_add_lt.1 (inducedLength_sq_lt_iff.2 ⟨ζ, .refl a ζ, lt_sub_comm.1 h_lt₂⟩)⟩
 
 /-- At ℂ a number c lies in `stableProducts a x y` exactly if c = ⟨e_a, ω⟩ for a vector ω orthogonal
 to the e_b, b < a, whose class modulo these e_b has a lift ω' with |ω|_x² + |ω'|_{x y}² < 1. -/

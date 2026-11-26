@@ -1,10 +1,13 @@
 module
 
+import TauCeti.AlgebraicGeometry.Morphisms.Separated
+import TauCeti.AlgebraicGeometry.Morphisms.Smooth.StandardSmooth
+public import Mathlib.AlgebraicGeometry.QuasiAffine
+public import Mathlib.AlgebraicGeometry.ValuativeCriterion
+public import Mathlib.CategoryTheory.Sites.SubcanonicalOver
 public import Lib.Cohomology.ProperBaseChange.PlaceSpace
 public import Lib.General.Geometry.EtaleCharts
 public import Lib.Shimura.AbelianScheme.Basic
-import TauCeti.AlgebraicGeometry.Morphisms.Separated
-import TauCeti.AlgebraicGeometry.Morphisms.Smooth.StandardSmooth
 
 /-!
 # Functors of points of proper schemes: closed loci, atlases and descent of relations
@@ -192,7 +195,7 @@ lemma New.Variety.exists_locallyOfFiniteType_forall_factors [IsProper s] :
     nonempty_isColimit_cofanMk_of _ hD_cover (hD_disj.mono (by simp [← Opens.coe_disjoint]))
   -- Lift `z` on each piece and glue along the coproduct `c`; equality is checked piece by piece.
   let piece (x : t) : Opens.toScheme (D x).toOpens ⟶ 𝒰.X (i x) :=
-    lift (𝒰.f (i x)) (Opens.ι _ ≫ z) (range_subset_iff.2 fun y ↦ hC x y.1 (hD_le x y.2))
+    lift (𝒰.f (i x)) (Opens.ι _ ≫ z) (range_subset_iff.2 fun y ↦ hC x y.val (hD_le x y.property))
   let glued : Spec O ⟶ ∐ 𝒰.X := desc c fun x ↦ piece x ≫ Sigma.ι 𝒰.X (i x)
   have h_glued : glued ≫ Sigma.desc 𝒰.f = z :=
     hom_ext c _ _ fun x ↦ by

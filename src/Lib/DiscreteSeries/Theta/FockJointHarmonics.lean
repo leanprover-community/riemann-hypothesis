@@ -154,21 +154,15 @@ theorem IsMatch.relWeight_eq_neg (hm : IsMatch T l l') {r : R} {c : C}
   -- of `r` is the negative of that of `c` and exceeds `|card R - card C|` in absolute value.
   let F (j : R) : ℤ := T.swap.varSign (c, j) - ε r * ε j * (l j - l r).sign
   let G (d : C) : ℤ := ε' c * ε' d * (l' d - l' c).sign - T.varSign (r, d)
-  have matched (j : R) (d : C) (hjd : T.IsMatchedPair l l' j d) : G d = F j := by
-    grind [pairSign, val_mul, Units.val_neg]
-  have free_row (j : R) (hj : |T.centredParam l j| < card R - card C) : F j = 0 := by
-    grind [pairSign, val_mul, Units.val_neg]
-  have free_col (d : C) (hd : |T.swap.centredParam l' d| < card C - card R) : G d = 0 := by
-    grind [pairSign, val_mul, Units.val_neg]
-  have sum_eq : ∑ d : C, G d = ∑ j : R, F j :=
-    le_antisymm
-      (hm.sum_cols_le_sum_rows F G (fun j d hjd ↦ (matched j d hjd).le)
-        (fun j hj ↦ (free_row j hj).ge) fun d hd ↦ (free_col d hd).le)
-      (by simpa using hm.sum_cols_le_sum_rows (-F) (-G)
-            (fun j d hjd ↦ neg_le_neg (matched j d hjd).ge)
-            (fun j hj ↦ neg_nonneg.2 (free_row j hj).le) fun d hd ↦ neg_nonpos.2 (free_col d hd).ge)
+  have hle (s : ℤ) : ∑ d : C, s * G d ≤ ∑ j : R, s * F j :=
+    hm.sum_cols_le_sum_rows (fun j ↦ s * F j) (fun d ↦ s * G d)
+      (fun j d hjd ↦ by grind [pairSign, val_mul, Units.val_neg])
+      (fun j hj ↦ by grind [pairSign, val_mul, Units.val_neg])
+      (fun d hd ↦ by grind [pairSign, val_mul, Units.val_neg])
+  have h1 := hle 1
+  have h2 := hle (-1)
   have param : l r - 2 * T.rowShift + card C = -(l' c - 2 * T.columnShift + card R) := hrc.1
-  simp only [F, G, sum_sub_distrib] at sum_eq
+  simp only [F, G, one_mul, neg_mul, sum_neg_distrib, sum_sub_distrib] at h1 h2
   linarith [hm.hasGap_row.two_mul_relWeight (T := T) r,
     hm.hasGap_column.two_mul_relWeight (T := T.swap) c]
 
@@ -324,7 +318,7 @@ the lowest `K`-type. Put `k = s * (Λ_a - v)`, where `v` is the weight of the va
 `k ≥ 0`, then `P` has degree `k` in the variables of sign `s` of row `a`, and it does not depend on
 the variables of sign `-s` of that row. -/
 theorem DiscreteSeries.polarisation_self_eq_smul_of_isCompactPrimitive [DecidableEq R]
-    [DecidableEq C] [Fintype ι] {P : MvPolynomial ι ℂ}
+    [DecidableEq C] {P : MvPolynomial ι ℂ}
     (hl : l.Injective) (h_prim : T.oscRows.IsCompactPrimitive l P)
     (h_harm : T.swap.IsLaplaceHarmonic P) {s : ℤˣ} {a : R}
     (h_wt : T.oscRows.E a a P = (l.lowestKType a : ℂ) • P) (h_nonneg : 0 ≤ s * T.relWeight l a) :
@@ -355,23 +349,6 @@ theorem DiscreteSeries.polarisation_self_eq_smul_of_isCompactPrimitive [Decidabl
     ((sum_eq_zero_iff_of_nonneg fun c _ ↦ CStarModule.inner_self_nonneg).1 inner_eq.symm c
       (mem_filter.2 ⟨mem_univ c, hc⟩))
 
-/-- Let the entries of `l` be distinct, and let `P` be killed by the compact raising operators of
-the rows and by the Laplacians of the columns. Fix a row `a` and a sign `s`. The polarisation
-`∑ c, X_ac ∂P/∂X_bc` over the variables `X_bc` of sign `s` vanishes if `ε a = ε b` and
-`s * l b < s * l a`. If `E a a` acts on `P` by the entry of the lowest `K`-type, and the weight
-`T.relWeight l a` relative to the vacuum has sign `s` or is zero, then `P` is homogeneous of degree
-`s * T.relWeight l a` in the variables of sign `s` of row `a` and free of those of sign `-s`. -/
-theorem DiscreteSeries.polarisation_eq_of_isCompactPrimitive [DecidableEq R] [DecidableEq C]
-    [Fintype ι] {P : MvPolynomial ι ℂ}
-    (hl : l.Injective) (h_prim : T.oscRows.IsCompactPrimitive l P)
-    (h_harm : T.swap.IsLaplaceHarmonic P) (a : R) (s : ℤˣ) :
-    (∀ b : R, ε a = ε b → s * l b < s * l a → T.polarisation P a b s = 0) ∧
-      (T.oscRows.E a a P = (l.lowestKType a : ℂ) • P → 0 ≤ s * T.relWeight l a →
-        T.polarisation P a a s = ((s * T.relWeight l a : ℤ) : ℂ) • P ∧
-          ∀ c : C, T.varSign (a, c) = -s → pderiv (T.varEquiv (a, c)) P = 0) :=
-  ⟨fun _ ↦ polarisation_eq_zero_of_isCompactPrimitive hl h_prim h_harm,
-    polarisation_self_eq_smul_of_isCompactPrimitive hl h_prim h_harm⟩
-
 omit [Fintype R] in
 /-- If each mixed derivative `∂_ac ∂_bc Φ` with `ε a ≠ ε b` vanishes, then the Laplacians of the
 rows, which are sums of such derivatives up to sign, kill `Φ`. -/
@@ -389,7 +366,7 @@ theorem FockDualPair.IsTermwiseHarmonic.isLaplaceHarmonic {Φ : MvPolynomial ι 
 the lowest `K`-type of `l` as weight for the row action and any weight `ν` for the column action.
 Then `Φ` is a pre-joint harmonic: nonzero, killed by the compact raising operators of the columns
 and by the Laplacians of both sides, and highest of weight `l.lowestKType` for the rows. -/
-lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableEq C] [Fintype ι]
+lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableEq C]
     {Φ : MvPolynomial ι ℂ} {ν : C → ℤ} (hΦ : T.IsJointHighest l l' Φ l.lowestKType ν) :
     T.IsPreJointHarmonic l l' Φ := by
   obtain ⟨-, raise_col⟩ := hΦ.isKHighest_cols
@@ -399,7 +376,7 @@ lemma FockDualPair.IsJointHighest.isPreJointHarmonic [DecidableEq R] [DecidableE
 /-- A combination `P - c • Q` of pre-joint harmonics (nonzero polynomials killed by the Laplacians
 and the compact raising operators of both sides, of weight `l.lowestKType` for the rows) is again
 one, unless it is zero. -/
-theorem FockDualPair.IsPreJointHarmonic.sub_smul [DecidableEq R] [DecidableEq C] [Fintype ι]
+theorem FockDualPair.IsPreJointHarmonic.sub_smul [DecidableEq R] [DecidableEq C]
     {P Q : MvPolynomial ι ℂ} {c : ℂ}
     (hP : T.IsPreJointHarmonic l l' P) (hQ : T.IsPreJointHarmonic l l' Q) (h_ne : P ≠ c • Q) :
     T.IsPreJointHarmonic l l' (P - c • Q) := by
@@ -440,10 +417,8 @@ inductive DiscreteSeries.IsEigenDirection (F : MvPolynomial ι ℂ) (x : ι → 
 
 /-- The translation `G ↦ G (X + x)` commutes with partial derivatives. -/
 theorem DiscreteSeries.bind₁_X_add_C_pderiv {τ : Type*} (x : τ → ℂ) (G : MvPolynomial τ ℂ) (i : τ) :
-    bind₁ (fun j : τ ↦ X j + MvPolynomial.C (x j)) (pderiv i G) =
-      pderiv i (bind₁ (fun j : τ ↦ X j + MvPolynomial.C (x j)) G) := by
-  change aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) (pderiv i G) =
-    pderiv i (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G)
+    aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) (pderiv i G) =
+      pderiv i (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G) := by
   induction G using induction_on with
   | C a => simp
   | add p q hp hq => simp only [map_add, hp, hq]
@@ -452,8 +427,7 @@ theorem DiscreteSeries.bind₁_X_add_C_pderiv {τ : Type*} (x : τ → ℂ) (G :
 
 /-- The constant coefficient of `G (X + x)` is the value of `G` at `x`. -/
 theorem DiscreteSeries.coeff_zero_bind₁_X_add_C {τ : Type*} (x : τ → ℂ) (G : MvPolynomial τ ℂ) :
-    (bind₁ (fun j : τ ↦ X j + MvPolynomial.C (x j)) G).coeff 0 = eval x G := by
-  change (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G).coeff 0 = eval x G
+    (aeval (fun j : τ ↦ X j + MvPolynomial.C (x j)) G).coeff 0 = eval x G := by
   rw [← constantCoeff_eq]
   induction G using induction_on with
   | C a => simp
@@ -562,14 +536,17 @@ theorem IsMatch.isEigenDirection_of_swap_polarisation (hm : IsMatch T l l') {F :
     {r : R} {c d : C} {μ : ℂ} (hrd : T.IsMatchedPair l l' r d)
     (h_eigen : T.swap.polarisation F d c (T.swap.varSign (c, r)) = μ • F) :
     IsEigenDirection F (T.matchingPoint l l') (T.varEquiv (r, c)) := by
-  have only_r (a : R) : T.matchingPoint l l' (T.varEquiv (a, d)) ≠ 0 ↔ a = r := by
-    grind [matchingPoint_ne_zero_iff, hm.row_eq_of_isMatchedPair]
-  have field : ∑ a with T.swap.varSign (c, a) = T.swap.varSign (c, r),
-      X (T.varEquiv (a, d)) * pderiv (T.varEquiv (a, c)) F = μ • F := h_eigen
-  exact ⟨R, _, fun a ↦ T.varEquiv (a, d), fun a ↦ T.varEquiv (a, c), r, μ, by simp, rfl, only_r,
-    field⟩
+  have h_point : T.swap.matchingPoint l' l = T.matchingPoint l l' := by
+    funext i
+    obtain ⟨⟨a, b⟩, rfl⟩ := T.varEquiv.surjective i
+    have h_pair : T.swap.IsMatchedPair l' l b a ↔ T.IsMatchedPair l l' a b :=
+      ⟨fun h ↦ by simpa only [T.swap_swap] using h.swap, fun h ↦ h.swap⟩
+    change T.swap.matchingPoint l' l (T.swap.varEquiv (b, a)) = _
+    simp only [matchingPoint, Equiv.symm_apply_apply, h_pair]
+  rw [← h_point]
+  exact hm.swap.isEigenDirection_of_polarisation hrd.swap h_eigen
 
-variable [DecidableEq R] [DecidableEq C] [Fintype ι]
+variable [DecidableEq R] [DecidableEq C]
 
 /-- Let `l`, `l'` match. A pre-joint harmonic `F` (nonzero, killed by the Laplacians and the compact
 raising operators of both sides, of weight `l.lowestKType` for the rows) does not vanish at the

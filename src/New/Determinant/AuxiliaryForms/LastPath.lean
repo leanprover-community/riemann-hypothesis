@@ -1,5 +1,7 @@
 module
 
+public import Std.Tactic.BVDecide.Normalize.BitVec
+public import Lib.Adelic.AutomorphicForms.BlockPeriods
 public import New.Determinant.AuxiliaryForms.GridFirstColumns
 public import New.Determinant.AuxiliaryForms.RegularParameters
 
@@ -287,8 +289,8 @@ lemma exists_isBranchingPairing [DecidableEq n'] [DecidableEq n] [Nonempty n]
     grw [Int.natAbs_add_le, Int.natAbs_natCast, h_row, h_term]
   · calc ‖v' ⬝ᵥ (A * b).map (↑) *ᵥ v‖
         ≤ √(weylNormSq v' * weylNormSq (b.map (↑) *ᵥ v)) := by
-          rw [map_intCast_mul_mulVec]
-          exact norm_dotProduct_mulVec_le_of_isDualPairing hA v' _
+          simpa only [map_intCast_mul_mulVec] using
+            norm_dotProduct_mulVec_le_of_isDualPairing hA v' (b.map (↑) *ᵥ v)
       _ ≤ √(weylNormSq v' * (((M ^ M) ^ 3) ^ 2 * weylNormSq v)) := by
           grw [hb_norm M (by simpa using h_boxes.trans hM) v]
           simp
@@ -619,8 +621,8 @@ residue fields that gives it on integral finite points, is `gridTamePart ϑ z j`
 lemma gridChar_hasWeight_lastPathDetExp :
     (gridChar ϑ z j (D.LastPathIndex z j)).HasWeight (D.lastPathDetExp z (j + 1))
       (gridTamePart ϑ z j) := by
-  rw [← D.gridWeight_eq_lastPathDetExp z j]
-  exact gridChar_hasWeight ϑ z j (D.LastPathIndex z j)
+  simpa only [D.gridWeight_eq_lastPathDetExp z j] using
+    gridChar_hasWeight ϑ z j (D.LastPathIndex z j)
 
 /-- The theta kernel of the edge from `(z, j, m)` to `(z, j + 1, m)`, for the characters `gridChar`
 at the two ends and the level at `(z, j, m)`. The derivatives in the Taylor series of the theta
@@ -724,7 +726,7 @@ lemma lastPathKernel_omega_lastPathEdgeDatum {g : NodeFamily ϑ} {z : Bool} {j :
       edgeCharProd g {rowEdge z j D.m} • lastPathEdgeDatum S z j := by
   have h_char : edgeCharProd g {rowEdge z j D.m} =
       pairChar (s := 1) (s' := 1) (gridChar ϑ z j (D.LastPathIndex z j))
-        (gridChar ϑ z j (D.LastPathIndex z (j + 1))) ((1, u.1), 1, u'.1) := by
+        (gridChar ϑ z j (D.LastPathIndex z (j + 1))) ((1, u.val), 1, u'.val) := by
     simp [gridChar_det, edgeCharProd, edgeChar, hu, hu', div_eq_mul_inv]
   rw [h_char, lastPathEdgeDatum, lastPathEdgeDatum, map_smul, smul_comm]
   congr 1
@@ -774,7 +776,7 @@ lemma IsPathDatum.sum_lastPathPairing_omega_invariant
     · simp [g, hj, Prod.mk_one_one]
   -- Acting by `u` on the data of `tupleAction g S` gives those of `S`, times the characters.
   have h_pure (z : Bool) (S : EdgeTuple ϑ) :
-      pure (fun j : ℕ ↦ (lastPathKernel ϑ z j).ω (u z j, (u z (j + 1)).1)
+      pure (fun j : ℕ ↦ (lastPathKernel ϑ z j).ω (u z j, (u z (j + 1)).val)
           (lastPathEdgeDatum (tupleAction g S) z j)) D.m =
         (∏ j ∈ range D.m, edgeCharProd g {rowEdge z j D.m}) • pure (lastPathEdgeDatum S z) D.m :=
     pure_smul (lastPathEdgeDatum S z) _ D.m fun j _ ↦
@@ -802,8 +804,8 @@ lemma lastPathPairing_lastPathChain_mem_smoothInvariants (S : EdgeTuple ϑ)
         ((lastPathChain S true D.m (y true)).val (lastPathBlockPoint ϑ h))) ∈
       smoothInvariants stdRatPoints := by
   -- Each lift is an algebraic form: it has an open stabiliser and is automorphic.
-  obtain ⟨h_open, h_aut⟩ := (lastPathChain S false D.m (y false)).2
-  obtain ⟨h_open', h_aut'⟩ := (lastPathChain S true D.m (y true)).2
+  obtain ⟨h_open, h_aut⟩ := (lastPathChain S false D.m (y false)).property
+  obtain ⟨h_open', h_aut'⟩ := (lastPathChain S true D.m (y true)).property
   constructor
   · -- Both lifts are automorphic, and the pairing is invariant under `diag(γ, 1)`.
     rintro _ ⟨γ, rfl⟩ g
@@ -826,12 +828,12 @@ lemma lastPathPairing_lastPathChain_mem_smoothInvariants (S : EdgeTuple ϑ)
       change Continuous fun h : Gf D.E (D.LastPathIndex false D.m) ↦
         (G.blockEmb (s := 1) Sum.elim_one_one.symm ⟨⟨1, h⟩, 1⟩).2
       fun_prop
-    refine Subgroup.isOpen_mono (H₁ := rightStabilizer (lastPathChain S false D.m (y false)).1 ⊓
-      comap incl (rightStabilizer (lastPathChain S true D.m (y true)).1)) ?_
+    refine Subgroup.isOpen_mono (H₁ := rightStabilizer (lastPathChain S false D.m (y false)).val ⊓
+      comap incl (rightStabilizer (lastPathChain S true D.m (y true)).val)) ?_
       (.and h_open (h_open'.preimage h_cont))
     rintro a ⟨ha_false, ha_true⟩ g
-    have h_true : (lastPathChain S true D.m (y true)).1 (lastPathBlockPoint ϑ (g * a)) =
-        (lastPathChain S true D.m (y true)).1 (lastPathBlockPoint ϑ g) := by
+    have h_true : (lastPathChain S true D.m (y true)).val (lastPathBlockPoint ϑ (g * a)) =
+        (lastPathChain S true D.m (y true)).val (lastPathBlockPoint ϑ g) := by
       simpa [incl, lastPathBlockPoint, ← map_mul] using ha_true (lastPathBlockPoint ϑ g)
     simp [ha_false g, h_true]
 
@@ -857,16 +859,16 @@ lemma IsPathDatum.sum_lastPathPairing_mul_level (hΨ : IsPathDatum N (TwoGridPat
   -- Act by `u` and `diag(u, 1)` at the node `(m, m)` of the two grids.
   obtain ⟨h_int, h_red⟩ :=
     map_block_eq_blockGL (gridModulus ϑ).reduction (D.gridDiagEquiv D.m) u 1
-  have h_level : U.block (D.gridDiagEquiv D.m) (u.1, 1) ∈ lastPathLevel ϑ true D.m := by
+  have h_level : U.block (D.gridDiagEquiv D.m) (u.val, 1) ∈ lastPathLevel ϑ true D.m := by
     refine ⟨⟨_, h_int⟩, ?_, rfl⟩
     -- By `h_red` its residue is `diag(r, 1)`, where `r` is that of `u` and lies in the level.
     simp_all [Modulus.reductionGL, nodeLevel, m_eq_two_mul_varrho_add_two, Units.ext_iff,
       ← submatrix_map, fromBlocks_map]
   -- The family that is `u`, `diag(u, 1)` at `(m, m)` in the two grids and `1` elsewhere.
   let a : ∀ (z : Bool) (j : ℕ), lastPathLevel ϑ z j
-    | false => Pi.mulSingle D.m ⟨u.1, u, hu, rfl⟩
-    | true => Pi.mulSingle D.m ⟨U.block (D.gridDiagEquiv D.m) (u.1, 1), h_level⟩
-  have ha : (a true D.m).1 = U.block (D.gridDiagEquiv D.m) ((a false D.m).1, 1) := by simp [a]
+    | false => Pi.mulSingle D.m ⟨u.val, u, hu, rfl⟩
+    | true => Pi.mulSingle D.m ⟨U.block (D.gridDiagEquiv D.m) (u.val, 1), h_level⟩
+  have ha : (a true D.m).val = U.block (D.gridDiagEquiv D.m) ((a false D.m).val, 1) := by simp [a]
   -- The values of the two chains at `g` and at `lastPathBlockPoint ϑ g` are linear images of the
   -- tensors of their data.
   obtain ⟨β, hβ⟩ :=
@@ -1103,7 +1105,7 @@ theorem isProportional_lastPathPeriod (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ 
   intro g
   have h_chain (z : Bool) : ∃ c : ℂ,
       ∀ (ϑ : D.MFoldTwist) (S : EdgeTuple ϑ) (F : D.GridForm z 0 D.m),
-        ((GridPath.row D.m D.m).formMap S z F).1 =
+        ((GridPath.row D.m D.m).formMap S z F).val =
           ofAlgForm (-D.gridParam z 0 D.m D.m) (D.gridSigns z 0 D.m D.m)
             ((c * levelIndex ϑ z D.m D.m / levelIndex ϑ z 0 D.m) • lastPathChain S z D.m F) :=
     D.exists_gridPathMap_eq_ofAlgForm_smul_lastPathChain z le_rfl
@@ -1116,21 +1118,21 @@ theorem isProportional_lastPathPeriod (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ 
   refine ⟨γ * κ, fun ⟨ϑ, y, φ⟩ ↦ ?_⟩
   -- Compare the two sides for each tuple `S`; `I S` is its term of `Ξ` without the factor `Ψ S`.
   let I (S : EdgeTuple ϑ) : ℂ := classIntegral stdRatPoints (lastPathLevel ϑ false D.m) fun h ↦
-    D.lastPathPairing ((lastPathChain S false D.m y).1 h)
-      ((lastPathChain S true D.m φ).1 (lastPathBlockPoint ϑ h))
+    D.lastPathPairing ((lastPathChain S false D.m y).val h)
+      ((lastPathChain S true D.m φ).val (lastPathBlockPoint ϑ h))
   have h_term (S : EdgeTuple ϑ) :
       diagonalPeriodForm ϑ le_rfl g ((GridPath.row D.m D.m).formMap S false y)
           ((GridPath.row D.m D.m).formMap S true φ) = γ / levelIndex ϑ false 0 D.m * I S := by
     suffices h_integral : ∫ x : New.G D.E (D.gridSigns false 0 D.m D.m),
-        ((GridPath.row D.m D.m).formMap S false y).1 x *
-          ((GridPath.row D.m D.m).formMap S true φ).1
+        ((GridPath.row D.m D.m).formMap S false y).val x *
+          ((GridPath.row D.m D.m).formMap S true φ).val
             (G.reindex (D.gridDiagEquiv D.m) (D.sumElim_gridSigns_comp_gridDiagEquiv_symm le_rfl)
               (.sum (x, 1, (gridModulus ϑ).flipScalar ^ D.m)) *
               ((g, 1) : New.G D.E (D.gridSigns true 0 D.m D.m)))
           ∂(D.gridSpace 0 false D.m D.m).quotMeasure = γ / levelIndex ϑ false 0 D.m * I S by
       simpa [periodPairing] using h_integral
     -- `erw`, as the grid spaces at `(m, m)` agree with those of `hc` and `hβ` by definition.
-    erw [hc, hc, hβ _ _ _ _ (lastPathLevel ϑ false D.m)]
+    rw [hc, hc, hβ _ _ _ _ (lastPathLevel ϑ false D.m)]
     -- The index at `Y^m_m` cancels, and those in the grid of the `Ỹ` do not depend on the twist.
     simp [I, γ, lastPathLevel, stdLevelIndex_levelOfSubgroup, levelIndex_eq_card_GL_untwisted,
       lastPathBlockPoint]

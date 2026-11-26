@@ -1,45 +1,27 @@
 module
 
-public import Mathlib.LinearAlgebra.Projectivization.Cardinality
 public import Lib.SiegelWeil.UnramifiedSeries.VacuumCoefficients
+public import Lib.SiegelWeil.RallisInner.VacuumSummability
 
 /-!
 # The series of translates weighted by the coefficients of the vacuum
 
-This file extends the bound on the coefficients of the vacuum to all sets of places, by induction
-over the weights `New.SiegelWeil.stepWeight`. For `2 n < m` it proves that the coefficients are
-absolutely summable and that the series `New.SiegelWeil.rallisSeries` converges uniformly. It proves
-that the series keeps levels and forms, is multiplicative over the places and is injective. The last
-section defines the sum of the coefficients `New.SiegelWeil.vacuumSum` and writes it as a product
-over the pairs of conjugate places.
+This file proves, for `2 n < m`, that the series `New.SiegelWeil.rallisSeries` converges uniformly
+(the coefficients are absolutely summable by `New.SiegelWeil.summable_norm_vacuumCoeff`, from the
+doubling formula), that it keeps levels and forms and that it is multiplicative over the places. The
+last section defines the sum of the coefficients `New.SiegelWeil.vacuumSum` and writes it as a
+product over the pairs of conjugate places.
 
 Let `G_f` be the finite adelic unitary group of rank `n` over the CM field `E`, and let `A` be a set
 of finite places. The series `∑ mc(γ) R(γ) y` runs over the cosets `γ` of the points integral at
 `A`; here `R` is right translation and `mc(γ)` is the coefficient of the vacuum for a second space
 of rank `m`, of modulus `[γ L : L ∩ γ L] ^ (-m / 2)` for the standard lattice `L`. In the inner
-product formula `A` is the set of the places off the level and its conjugate. For `2 n < m` the
-coefficients are absolutely summable, and, if the character in `mc` is unramified on `A`
-(`IsUnramifiedOn`: `b ∘ det` is trivial on the integral points supported on `A` and its conjugate),
-the series is an injective operator on the bounded functions fixed by the integral points supported
-on `A` and its conjugate.
-
-Both facts come from counting lattices through neighbours. A lattice other than `L` is brought
-nearer to `L` by a step at a place `w`. The weight `s_w` is the number of steps at `w` times
-`q_w ^ (-m / 2)`, where `q_w` is the order of the residue field at `w`. For `2 n < m` it is at most
-`1 / (q_w - 1)`, and at most `1 / ((q_w - 1) √q_w)` if `w` is split. If the `s_w` over `A` and its
-conjugate add up to `ϱ ≤ 1 / 3`, the nontrivial cosets contribute at most `ϱ + ϱ ^ 2 + ⋯ ≤ 1 / 2`,
-so the series is close to the identity. This holds for one place and its conjugate, because
-`q_w ≥ 4` (under `WeilData E`, `E` has a primitive root of unity of order `5040`, hence the third
-and fourth roots of unity), and for the places outside a finite set, because `∑ s_w` converges. The
-series is multiplicative over the places, which gives all `A`. The last section writes the sum of
-the coefficients as a product over the pairs of conjugate places.
+product formula `A` is the set of the places off the level and its conjugate.
 
 ## Main definitions and results
 
-* `New.SiegelWeil.summable_norm_vacuumCoeff`: the coefficients are absolutely summable.
 * `New.SiegelWeil.exists_form_eq_rallisSeries`: the series keeps forms and their levels.
 * `New.SiegelWeil.rallisSeries_union`: the series is multiplicative over the places.
-* `New.SiegelWeil.eq_zero_of_rallisSeries_eq_zero`: a function with series `0` is `0`.
 
 Notions from other files:
 * `localLevel n A`: the points of `G_f` integral at the places of `A`; `stdLevel E n`: the points
@@ -50,8 +32,6 @@ Notions from other files:
   signs `s : n → ℤˣ`) and a point of `Gf E n`.
 * `New.SiegelWeil.rallisSeries M b A y`: the series `∑ mc(q) R(q) y`, with coefficient
   `New.SiegelWeil.vacuumCoeff M b` and right translation taken at `New.SiegelWeil.cosetRep q`.
-* `New.SiegelWeil.stepWeight n M w`: the number of steps at `w` to a neighbouring lattice times
-  `q_w ^ (-M / 2)`.
 * `New.SiegelWeil.IsUnramifiedOn`: `b ∘ det` is trivial on the integral finite points supported on
   `A` and its conjugate.
 
@@ -60,9 +40,7 @@ Notions from other files:
 Part of a known result: non-vanishing of theta lifts in large rank. See
 `Lib.SiegelWeil.RallisInner.SharpData`. The series is the contribution of the unramified places to
 Rallis' inner product formula, left as a sum over cosets instead of being evaluated as an L-value;
-for the constant `1` in rank one it is evaluated in `New.vacuumSum_eq_L_div_eulerProd`. The count of
-lattices uses neighbours in Kneser's sense; see M. Greenberg and J. Voight, Lattice methods for
-algebraic modular forms on classical groups (2014), §5.
+for the constant `1` in rank one it is evaluated in `New.vacuumSum_eq_L_div_eulerProd`.
 -/
 
 @[expose] public section
@@ -76,72 +54,7 @@ open Matrix MeasureTheory Fintype Space Gf G WeilData NumberField Rows
 variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
   {s : n → ℤˣ} {b : AutChar E} {A : Set (FinPlace E)} {y : G E s → ℂ}
 
-/-! ### From few steps to all places -/
-
-omit [DecidableEq n] in
-/-- Induction over sets of places. Let `2 * card n < M`, and let `stepWeight n M w` be the number of
-steps at `w` (lines in the `n`-space over the residue field, with a neighbour class) times
-`q_w ^ (-M / 2)`. A property `P` of arbitrary (possibly infinite) sets of finite places holds for
-all sets if two conditions hold: it holds for every `A` whose weights `stepWeight n M w`, summed
-over `A` and its conjugates, add up to at most `1 / 3`; and it passes from `A₁` and `A₂` to
-`A₁ ∪ A₂` whenever `A₂` is disjoint from `A₁` and its conjugate. -/
-lemma induction_on_stepWeight {M : ℕ} (h_rank : 2 * card n < M) {P : Set (FinPlace E) → Prop}
-    (h_small : ∀ A : Set (FinPlace E),
-      ∑' w : A.conjClosure, ENNReal.ofReal (stepWeight n M w.val) ≤ 3⁻¹ → P A)
-    (h_union : ∀ A₁ A₂ : Set (FinPlace E), Disjoint A₁.conjClosure A₂ → P A₁ → P A₂ → P (A₁ ∪ A₂))
-    (A : Set (FinPlace E)) : P A := by
-  -- The weights off a finite set `T` add up to at most `1 / 3`; split off the places of `T` and
-  -- their conjugates one at a time.
-  classical
-  let weight (w : FinPlace E) : ENNReal := ENNReal.ofReal (stepWeight n M w)
-  suffices h_induct : ∀ (T : Finset (FinPlace E)) (A : Set (FinPlace E)),
-      ∑' w : (A.conjClosure \ T : Set (FinPlace E)), weight w ≤ 3⁻¹ → P A by
-    obtain ⟨T, hT⟩ :
-        ∃ T : Finset (FinPlace E), ∑' w : ((↑T)ᶜ : Set (FinPlace E)), weight w ≤ 3⁻¹ :=
-      ((ENNReal.tendsto_tsum_compl_atTop_zero
-        (summable_stepWeight h_rank).tsum_ofReal_ne_top).eventually
-          (ge_mem_nhds (by norm_num))).exists
-    exact h_induct T A ((ENNReal.tsum_mono_subtype weight (Set.sdiff_subset_compl _ _)).trans hT)
-  intro T
-  induction T using Finset.induction_on with
-  | empty =>
-    intro A h_le
-    exact h_small A (by rwa [Finset.coe_empty, Set.sdiff_empty] at h_le)
-  | insert w T _ ih =>
-    intro A h_le
-    let W : Set (FinPlace E) := ({w} : Set (FinPlace E)).conjClosure
-    have h_star (u : FinPlace E) : star u ∈ W ↔ u ∈ W := by simp [W, or_comm]
-    have h_left : (A ∩ W).conjClosure ⊆ W := by
-      rintro u (⟨-, huW⟩ | ⟨-, huW⟩)
-      · exact huW
-      · exact (h_star u).1 huW
-    have h_off {u : FinPlace E} (huW : u ∉ W) (huT : u ∉ T) : u ∉ insert w T := by
-      have h_ne : u ≠ w := fun h_eq ↦ huW (.inl h_eq)
-      simp [h_ne, huT]
-    have h_right : (A \ W).conjClosure \ T ⊆ A.conjClosure \ ↑(insert w T) := by
-      rintro u ⟨(⟨huA, huW⟩ | ⟨huA, huW⟩), huT⟩
-      · exact ⟨.inl huA, h_off huW huT⟩
-      · exact ⟨.inr huA, h_off ((h_star u).not.1 huW) huT⟩
-    have h_inter : P (A ∩ W) :=
-      h_small _ ((ENNReal.tsum_mono_subtype weight h_left).trans
-        (tsum_stepWeight_conjClosure_singleton_le h_rank w))
-    have h_diff : P (A \ W) := ih _ ((ENNReal.tsum_mono_subtype weight h_right).trans h_le)
-    rw [← Set.inter_union_sdiff A W]
-    exact h_union _ _ (Set.disjoint_sdiff_right.mono_left h_left) h_inter h_diff
-
 /-! ### Convergence, level and forms -/
-
-/-- For `2 * card n < card m`, consider the numbers `vacuumCoeff (card m) b g = (b(det g) *
-finMultiplier g ^ card m)⁻¹`. This is the factor by which `g` changes the vacuum matrix coefficient
-when the second space has rank `m`. These numbers are absolutely summable over the representatives
-`cosetRep q` of the cosets `q` of `Gf E n` modulo `localLevel n A`, the points integral at `A`. -/
-theorem summable_norm_vacuumCoeff (h_rank : 2 * card n < card m) (b : AutChar E)
-    (A : Set (FinPlace E)) :
-    Summable fun q : Gf E n ⧸ localLevel n A ↦ ‖vacuumCoeff (card m) b (cosetRep q).val‖ := by
-  refine induction_on_stepWeight h_rank (fun A hA ↦ ?_)
-    (fun _ _ h_disj ↦ summable_norm_vacuumCoeff_union h_disj) A
-  simpa using ENNReal.summable_toReal
-    (ne_top_of_le_ne_top (by finiteness) (tsum_ofReal_norm_vacuumCoeff_le _ b hA))
 
 /-- For `2 * card n < card m` and `y` bounded, the series `rallisSeries` converges uniformly: its
 partial sums over finite sets of cosets tend to it uniformly. -/
@@ -154,15 +67,6 @@ lemma tendstoUniformly_rallisSeries (h_rank : 2 * card n < card m) (b : AutChar 
   obtain ⟨C, hC⟩ := hy
   exact tendstoUniformly_tsum ((summable_norm_vacuumCoeff h_rank b A).mul_right C)
     fun q g ↦ norm_mul_le_of_le le_rfl (hC _)
-
-/-- For `2 * card n < card m` and `y` bounded by `C`, the series `rallisSeries` is bounded by `C`
-times the sum of the moduli of the coefficients of the vacuum. -/
-lemma norm_rallisSeries_le (h_rank : 2 * card n < card m) (b : AutChar E)
-    (A : Set (FinPlace E)) {C : ℝ} (hC : ∀ g : G E s, ‖y g‖ ≤ C) (g : G E s) :
-    ‖rallisSeries (card m) b A y g‖ ≤
-      (∑' q : Gf E n ⧸ localLevel n A, ‖vacuumCoeff (card m) b (cosetRep q).val‖) * C :=
-  tsum_of_norm_bounded ((summable_norm_vacuumCoeff h_rank b A).hasSum.mul_right C)
-    fun _ ↦ norm_mul_le_of_le le_rfl (hC _)
 
 /-- For `2 * card n < card m` and `y` continuous and bounded, the series `rallisSeries` is
 continuous. -/
@@ -181,20 +85,6 @@ lemma rallisSeries_comp_mul_left (M : ℕ) (b : AutChar E) (A : Set (FinPlace E)
     (x g : G E s) :
     rallisSeries M b A (fun g' : G E s ↦ y (x * g')) g = rallisSeries M b A y (x * g) := by
   simp only [rallisSeries, mul_assoc]
-
-/-- For a natural number `M`, a character `b : AutChar E` and a set `A` of finite places,
-`rallisSeries M b A y` is the series `∑ mc(q) R(q) y` of right translates of `y`. The sum runs over
-the cosets `q` of the subgroup of finite points integral at `A`, and the coefficient
-`vacuumCoeff M b` and the right translation are taken at the representative `cosetRep q`. The series
-commutes with right translation: if the finite part `x.2` of `x` has component `1` at every place of
-`A`, then the series of `g' ↦ y (g' * x)` at `g` equals the series of `y` at `g * x`. -/
-lemma rallisSeries_comp_mul_right (M : ℕ) (b : AutChar E) (y : G E s → ℂ)
-    {x : G E s} (hx : x.2 ∈ trivialOn n A) (g : G E s) :
-    rallisSeries M b A (fun g' : G E s ↦ y (g' * x)) g = rallisSeries M b A y (g * x) := by
-  have h_comm (q : Gf E n ⧸ localLevel n A) :
-      ((1, (cosetRep q).val) : G E s) * x = x * (1, (cosetRep q).val) :=
-    Prod.ext (by simp) (commute_supportedOn_trivialOn (cosetRep q).property hx).eq
-  simp only [rallisSeries, mul_assoc, h_comm]
 
 /-- Let `b ∘ det` be trivial on the integral points supported on `A` and its conjugate, and let `y`
 be fixed by these points. A finite point `k` integral at `A` that fixes `y` also fixes
@@ -341,7 +231,8 @@ lemma isForm_rallisSeries {S : Space E n s} (h_rank : 2 * card n < card m)
   toIsAutomorphic := isAutomorphic_rallisSeries h_rank hb hy.toIsAutomorphic hy.bounded h_level
   bounded := by
     obtain ⟨C, hC⟩ := hy.bounded
-    exact ⟨_, norm_rallisSeries_le h_rank b A hC⟩
+    exact ⟨_, fun g ↦ tsum_of_norm_bounded ((summable_norm_vacuumCoeff h_rank b A).hasSum.mul_right _)
+      fun _ ↦ norm_mul_le_of_le le_rfl (hC _)⟩
   realConv_eq he := by
     rw [realConv_rallisSeries h_rank b A hy.isBoundedMeasurable he, hy.realConv_eq he]
 
@@ -360,7 +251,7 @@ theorem exists_form_eq_rallisSeries {S : Space E n s} (h_rank : 2 * card n < car
     isForm_rallisSeries h_rank hb y.property fun k hk ↦ hy k (h_ge hk)
   exact ⟨⟨_, h_form⟩, hasLevel_rallisSeries hb (card m) h_ge h_le hy, rfl⟩
 
-/-! ### Injectivity -/
+/-! ### Multiplicativity over the places -/
 
 /-- The series is multiplicative over the places. Let `2 * card n < card m`, let `A₂` be disjoint
 from `A₁` and its conjugate, let `b ∘ det` be unramified on `A₁ ∪ A₂`, and let `y` be bounded and
@@ -394,117 +285,6 @@ lemma rallisSeries_union {A₁ A₂ : Set (FinPlace E)} (h_rank : 2 * card n < c
   calc rallisSeries (card m) b (A₁ ∪ A₂) y g = ∑' p, term (e p) := (e.tsum_eq term).symm
     _ = ∑' q₁, ∑' q₂, term (e (q₁, q₂)) := (e.summable_iff.2 h_summable).tsum_prod
     _ = _ := by simp only [h_term, tsum_mul_left, rallisSeries]
-
-/-- Let `2 * card n < card m` and let `A` be a set of finite places. The weight
-`stepWeight n (card m) w` is the number of neighbour steps at `w` times `q_w ^ (-card m / 2)`, where
-`q_w` is the order of the residue field at `w`. Suppose the weights over the places of `A` and their
-conjugates add up to at most `1 / 3`. Let `q` run over the cosets other than that of `1` of
-`localLevel n A`, the points integral at `A`, in the finite adelic unitary group `Gf E n`. Then the
-moduli of the coefficients `vacuumCoeff (card m) b u = (b(det u) * finMultiplier u ^ card m)⁻¹` at
-the representatives `u = cosetRep q` add up to at most `1 / 2`. -/
-lemma tsum_compl_one_norm_vacuumCoeff_le {A : Set (FinPlace E)} (h_rank : 2 * card n < card m)
-    (b : AutChar E)
-    (hA : ∑' w : A.conjClosure, ENNReal.ofReal (stepWeight n (card m) w.val) ≤ 3⁻¹) :
-    ∑' q : ({((1 : Gf E n) : Gf E n ⧸ localLevel n A)}ᶜ : Set (Gf E n ⧸ localLevel n A)),
-      ‖vacuumCoeff (card m) b (cosetRep q.val).val‖ ≤ 2⁻¹ := by
-  -- The whole sum is at most `3 / 2`, and the trivial coset `q₀` contributes `1`.
-  let q₀ : Gf E n ⧸ localLevel n A := (1 : Gf E n)
-  let c (q : Gf E n ⧸ localLevel n A) : ℝ := ‖vacuumCoeff (card m) b (cosetRep q).val‖
-  have h_summable : Summable c := summable_norm_vacuumCoeff h_rank b A
-  have h_total : ∑' q : Gf E n ⧸ localLevel n A, c q ≤ 1 + 2⁻¹ := by
-    have h_walk : ∑' q : Gf E n ⧸ localLevel n A, ENNReal.ofReal (c q) ≤ 1 + 2⁻¹ :=
-      tsum_ofReal_norm_vacuumCoeff_le (card m) b hA
-    rw [← ENNReal.ofReal_tsum_of_nonneg (fun _ ↦ norm_nonneg _) h_summable,
-      ENNReal.ofReal_le_iff_le_toReal (by finiteness)] at h_walk
-    simpa [ENNReal.toReal_add] using h_walk
-  have h_base : c q₀ = 1 := norm_vacuumCoeff_cosetRep_one (card m) b A
-  have h_split : 1 + ∑' q : ({q₀}ᶜ : Set (Gf E n ⧸ localLevel n A)), c q =
-      ∑' q : Gf E n ⧸ localLevel n A, c q := by
-    rw [← h_base, ← Finset.sum_singleton c, ← Finset.coe_singleton, h_summable.sum_add_tsum_compl]
-  exact le_of_add_le_add_left (h_split.trans_le h_total)
-
-/-- The series `rallisSeries (card m) b A y` is the sum, over the cosets `q` of the finite points
-modulo those integral at `A`, of the right translates of `y` by a representative of `q`, each
-weighted by the vacuum coefficient `vacuumCoeff (card m) b`. This series is injective where it is
-close to the identity. Let `2 * card n < card m`, let `b ∘ det` be unramified on `A`, and let the
-sum of the weights `stepWeight` over the places `w` of `A` and its conjugate be at most `1 / 3`;
-here `stepWeight` is the number of neighbour steps at `w` times `q_w ^ (-card m / 2)`. Then a
-bounded function `y` on `G E s` that is right invariant under the integral points supported on `A`
-and its conjugate, and whose series is `0`, is itself `0`. -/
-lemma eq_zero_of_rallisSeries_eq_zero_of_tsum_le (h_rank : 2 * card n < card m)
-    (hA : ∑' w : A.conjClosure, ENNReal.ofReal (stepWeight n (card m) w.val) ≤ 3⁻¹)
-    (hb : IsUnramifiedOn b n A) (hy_bdd : ∃ C : ℝ, ∀ g : G E s, ‖y g‖ ≤ C)
-    (hy : HasLevel y (stdLevel E n ⊓ supportedOn n A)) (h_zero : rallisSeries (card m) b A y = 0) :
-    y = 0 := by
-  -- The term of the trivial coset is `y`, and the moduli of the other coefficients add up to at
-  -- most `1 / 2`. So the supremum `C` of `‖y‖` is at most `C / 2`.
-  let q₀ : Gf E n ⧸ localLevel n A := (1 : Gf E n)
-  let c (q : Gf E n ⧸ localLevel n A) : ℂ := vacuumCoeff (card m) b (cosetRep q).val
-  have h_summable : Summable fun q ↦ ‖c q‖ := summable_norm_vacuumCoeff h_rank b A
-  have h_tail : ∑' q : ({q₀}ᶜ : Set (Gf E n ⧸ localLevel n A)), ‖c q‖ ≤ 2⁻¹ :=
-    tsum_compl_one_norm_vacuumCoeff_le h_rank b hA
-  let C : ℝ := ⨆ g : G E s, ‖y g‖
-  have hC (g : G E s) : ‖y g‖ ≤ C :=
-    le_ciSup (hy_bdd.imp fun _ h ↦ Set.forall_mem_range.2 h) g
-  have h_half (g : G E s) : ‖y g‖ ≤ 2⁻¹ * C := by
-    let term (q : Gf E n ⧸ localLevel n A) : ℂ := c q * y (g * (1, (cosetRep q).val))
-    have h_le (q : Gf E n ⧸ localLevel n A) : ‖term q‖ ≤ ‖c q‖ * C :=
-      norm_mul_le_of_le le_rfl (hC _)
-    have h_base : term q₀ = y g := by
-      simp [term, c, q₀, vacuumCoeff_mul_apply_cosetRep hb _ hy (one_mem _),
-        vacuumCoeff_eq_one_of_mem hb _ (one_mem _), Prod.mk_one_one]
-    have h_split : y g + ∑' q : ({q₀}ᶜ : Set (Gf E n ⧸ localLevel n A)), term q = 0 := by
-      rw [← h_base, ← Finset.sum_singleton term, ← Finset.coe_singleton,
-        (Summable.of_norm_bounded (h_summable.mul_right C) h_le).sum_add_tsum_compl]
-      exact congrFun h_zero g
-    calc ‖y g‖ = ‖∑' q : ({q₀}ᶜ : Set _), term q‖ := by
-          rw [eq_neg_of_add_eq_zero_left h_split, norm_neg]
-      _ ≤ (∑' q : ({q₀}ᶜ : Set _), ‖c q‖) * C :=
-          tsum_of_norm_bounded ((h_summable.subtype _).hasSum.mul_right C) fun q ↦ h_le q
-      _ ≤ 2⁻¹ * C := mul_le_mul_of_nonneg_right h_tail ((norm_nonneg _).trans (hC g))
-  exact funext fun g ↦ norm_le_zero_iff.1 ((hC g).trans (by linarith [ciSup_le h_half]))
-
-/-- Let `A₂` be disjoint from `A₁` and its conjugate, and let `y` be fixed by the integral
-points supported on `A₁` and its conjugate. These points also fix the series of `y` at `A₂`. -/
-lemma hasLevel_rallisSeries_of_disjoint {A₁ A₂ : Set (FinPlace E)}
-    (h_disj : Disjoint A₁.conjClosure A₂) (M : ℕ) (b : AutChar E)
-    (hy : HasLevel y (stdLevel E n ⊓ supportedOn n A₁)) :
-    HasLevel (rallisSeries M b A₂ y) (stdLevel E n ⊓ supportedOn n A₁) := by
-  intro k hk g
-  rw [← rallisSeries_comp_mul_right M b y
-    (supportedOn_le_trivialOn_right h_disj (Subgroup.mem_inf.1 hk).2)]
-  simp only [hy k hk]
-
-/-- Let `2 * card n < card m` and let `b ∘ det` be unramified on `A`. A bounded function fixed by
-the integral points supported on `A` and its conjugate whose series `rallisSeries`, the sum of its
-translates weighted by the coefficients of the vacuum, is `0` is itself `0`. -/
-theorem eq_zero_of_rallisSeries_eq_zero (h_rank : 2 * card n < card m) (hb : IsUnramifiedOn b n A)
-    (hy_bdd : ∃ C : ℝ, ∀ g : G E s, ‖y g‖ ≤ C) (hy : HasLevel y (stdLevel E n ⊓ supportedOn n A))
-    (h_zero : rallisSeries (card m) b A y = 0) : y = 0 := by
-  -- Induct over the sets of places. The series at `A₁ ∪ A₂` is the series at `A₁` of the series at
-  -- `A₂`.
-  let IsInjectiveAt (A : Set (FinPlace E)) : Prop :=
-    IsUnramifiedOn b n A → ∀ y : G E s → ℂ, (∃ C : ℝ, ∀ g : G E s, ‖y g‖ ≤ C) →
-      HasLevel y (stdLevel E n ⊓ supportedOn n A) → rallisSeries (card m) b A y = 0 → y = 0
-  have h_small (A : Set (FinPlace E))
-      (hA : ∑' w : A.conjClosure, ENNReal.ofReal (stepWeight n (card m) w.val) ≤ 3⁻¹) :
-      IsInjectiveAt A :=
-    fun hb _ ↦ eq_zero_of_rallisSeries_eq_zero_of_tsum_le h_rank hA hb
-  have h_union (A₁ A₂ : Set (FinPlace E)) (h_disj : Disjoint A₁.conjClosure A₂)
-      (h_inj₁ : IsInjectiveAt A₁) (h_inj₂ : IsInjectiveAt A₂) : IsInjectiveAt (A₁ ∪ A₂) := by
-    intro hb_union y' hy_bdd' hy' h_zero'
-    have h_le₁ : stdLevel E n ⊓ supportedOn n A₁ ≤ stdLevel E n ⊓ supportedOn n (A₁ ∪ A₂) :=
-      inf_le_inf_left _ (supportedOn_mono Set.subset_union_left)
-    have h_le₂ : stdLevel E n ⊓ supportedOn n A₂ ≤ stdLevel E n ⊓ supportedOn n (A₁ ∪ A₂) :=
-      inf_le_inf_left _ (supportedOn_mono Set.subset_union_right)
-    have h_outer : rallisSeries (card m) b A₁ (rallisSeries (card m) b A₂ y') = 0 :=
-      (rallisSeries_union h_rank h_disj hb_union hy_bdd' hy').symm.trans h_zero'
-    obtain ⟨C, hC⟩ := hy_bdd'
-    have h_inner : rallisSeries (card m) b A₂ y' = 0 :=
-      h_inj₁ (fun k hk ↦ hb_union k (h_le₁ hk)) _ ⟨_, norm_rallisSeries_le h_rank b A₂ hC⟩
-        (hasLevel_rallisSeries_of_disjoint h_disj _ b fun k hk ↦ hy' k (h_le₁ hk)) h_outer
-    exact h_inj₂ (fun k hk ↦ hb_union k (h_le₂ hk)) y' ⟨C, hC⟩ (fun k hk ↦ hy' k (h_le₂ hk)) h_inner
-  exact induction_on_stepWeight h_rank h_small h_union A hb y hy_bdd hy h_zero
 
 /-! ### The sum of the coefficients as a product over the places -/
 

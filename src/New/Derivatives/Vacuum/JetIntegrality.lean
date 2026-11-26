@@ -123,11 +123,6 @@ lemma theta_mem_jetRing (i : I) :
     (taylorVia ιₚ C.θ).subst (linearSeries (μ i)) ∈ C.jetRing μ :=
   Subring.subset_closure (.inl (.inr ⟨i, rfl⟩))
 
-/-- The series `g'(μ_i z)`, where `g = -log θ`, lies in `jetRing`. -/
-lemma derivative_negLogTheta_mem_jetRing (i : I) :
-    (PowerSeries.derivative C.negLogTheta).subst (linearSeries (μ i)) ∈ C.jetRing μ :=
-  Subring.subset_closure (.inr ⟨i, rfl⟩)
-
 /-- The ring `jetRing` is stable under multiplication by integral constants. -/
 lemma smul_mem_jetRing {c : ℂ_[p]} (hc : ‖c‖ ≤ 1) (hF : F ∈ C.jetRing μ) :
     c • F ∈ C.jetRing μ := by
@@ -182,7 +177,7 @@ lemma pderiv_mem_jetRing {F : MvPowerSeries X ℂ_[p]} {ν : I → X → ℂ_[p]
           ← PowerSeries.coe_substAlgHom (hasSubst_linearSeries _), map_neg, map_mul]
       rw [h_eq]
       exact C.smul_mem_jetRing (h_int i x)
-        (neg_mem (mul_mem (C.theta_mem_jetRing i) (C.derivative_negLogTheta_mem_jetRing i)))
+        (neg_mem (mul_mem (C.theta_mem_jetRing i) (Subring.subset_closure (.inr ⟨i, rfl⟩))))
     · -- The derivative is `ν_i x` times `(d g'')(μ_i z)`: the factor `d` of the linear form clears
       -- the denominator of `g''`.
       rw [pderiv_subst_linearSeries, hμ i x, mul_smul,

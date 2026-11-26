@@ -139,10 +139,11 @@ lemma EtaleChart.exists_chart_near_diagonal (a : EtaleChart d X) :
         fun j ↦ l (a.coordinate j ⊗ₜ 1 - 1 ⊗ₜ a.coordinate j) := by
       rw [h_fst, h_snd]
       exact funext fun j ↦ (map_sub l.hom _ _).symm
-    rw [h_diff]
-    -- `using!`: the point of `V` is the image of the point of `a × a` under `l` by definition.
-    simpa [span_le, -map_sub, range_subset_iff] using! ((h_eq_iff C (l ≫ α)).trans (and_iff_right
-      h_unit)).symm
+    rw [h_diff, span_le, range_subset_iff]
+    change (∀ i : Fin d, (l ≫ α) (a.coordinate i ⊗ₜ 1 - 1 ⊗ₜ a.coordinate i) = 0) ↔
+      X.map α (X.map l (X.map tensorInl a.point)) = X.map α (X.map l (X.map tensorInr a.point))
+    rw [← X.map_comp_apply l α, ← X.map_comp_apply l α]
+    exact ((h_eq_iff C (l ≫ α)).trans (and_iff_right h_unit)).symm
   · -- `e` is a unit at a diagonal pair
     obtain ⟨⟨χ : a.coordRing ⊗ a.coordRing ⟶ K⟩, hχ : (X ⊗ X).map χ (a.prod a).point = (z, z)⟩ :
         (z, z) ∈ (a.prod a).locus.obj K :=
@@ -225,12 +226,15 @@ lemma exists_isLocalSymbol_of_charts_near_diagonal [IsSeparatedFunctor X] {r : �
       obtain ⟨⟨⟨χ⟩, hχ⟩, ⟨χ'⟩, hχ'⟩ := hc.le c.coordRing c.point_mem_locus
       obtain ⟨h_cut_i, h_le, h_symb⟩ := h_local hχ
       obtain ⟨h_cut_j, h_le', h_symb'⟩ := h_local hχ'
-      -- `erw`: the points of `(V i).locus` are a subtype here and values of the subfunctor there.
-      erw [c.symbolClass_eq_of_cutsOutLocus h_cut_i h_cut_j, ← h_symb'] at h_symb
+      have h_cut_i' : CutsOutLocus (X ⊗ X) (fun _ p ↦ p.fst = p.snd) c.point _ := h_cut_i
+      have h_cut_j' : CutsOutLocus (X ⊗ X) (fun _ p ↦ p.fst = p.snd) c.point _ := h_cut_j
+      have h_eq := h_symb.trans
+        ((congrArg ((1 : k) • ·) (c.symbolClass_eq_of_cutsOutLocus h_cut_i' h_cut_j')).trans
+          h_symb'.symm)
       -- a class on the overlap is determined by its value at `c.point`; on each side, restriction
-      -- to the overlap followed by that value is the value in `h_symb`
+      -- to the overlap followed by that value is the value in `h_eq`
       refine (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) hc d).injective
-        (.trans ?_ (h_symb.trans (.symm ?_)))
+        (.trans ?_ (h_eq.trans (.symm ?_)))
       · refine (HodgeH.map_comp _ (relFreeAb.restrict _ (by simp)) (ξ i)).symm.trans ?_
         rw [relFreeAb.map_comp_map]
         rfl

@@ -1,5 +1,10 @@
 module
 
+public import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.CategoryTheory.Shift.Basic
+public import Mathlib.GroupTheory.Nilpotent
+public import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Mathlib.Tactic.ENatToNat
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 
 /-!
@@ -54,7 +59,7 @@ variable {R G : Type} [CommRing R] [Group G] [TopologicalSpace G]
 /-- Higman's criterion for the discrete `G`-module `A` relative to a subgroup `Q` of finite index:
 some additive `τ : A → A` has `∑ g τ g⁻¹ = 1`, summed over the chosen representatives `g.out` of the
 cosets in `G ⧸ Q`. The map `τ` is not asked to commute with `Q`. If `Q` acts trivially on `A`, the
-choice of representatives does not matter, see `TrivialOn.isHigmanProjective_iff`. -/
+choice of representatives does not matter. -/
 def IsHigmanProjective (Q : Subgroup G) [Finite (G ⧸ Q)] (A : DiscreteModule R G) : Prop :=
   ∃ τ : A →+ A, ∀ a : A.V, ∑ g : G ⧸ Q, A.ρ g.out (τ (A.ρ g.out⁻¹ a)) = a
 
@@ -256,7 +261,7 @@ lemma FiniteKilledFixedInj.diagonalPermModule [IsTopologicalGroup G] {l : ℕ} [
   · simpa [(eq_one_iff g).2 hg] using h_triv g hg (f y)
   · -- A function fixed by `z` is fixed by `z ^ l ^ j`, which acts trivially on `Y`.
     have hf_fixed : B.ρ z f = f := by simpa [B, sub_eq_zero] using hf
-    have h_fixed : B.ρ (z ^ l ^ j) f = f := by simp [Module.End.pow_apply, iterate_fixed hf_fixed]
+    have h_fixed : B.ρ (z ^ l ^ j) f = f := by simp [pow_apply_eq_iterate, iterate_fixed hf_fixed]
     have h_value : (A.ρ z ^ l ^ j) (f y) = f y := by
       simpa [B, (eq_one_iff _).2 hz_mem, compHom_smul_def] using congrFun h_fixed y
     -- As `l` kills `A`, `z ^ l ^ j - 1` acts as `(z - 1) ^ l ^ j`, which is injective.

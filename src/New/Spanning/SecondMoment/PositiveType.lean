@@ -1,6 +1,15 @@
 module
 
-public import Lib.Adelic.Unitary.Defs
+public import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.TensorProduct
+public import Mathlib.NumberTheory.LegendreSymbol.Complex
+public import Mathlib.RingTheory.Etale.Weakly
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.TotallySplit
 public import Lib.General.Analysis.FiniteFourier
 public import Lib.General.LinearAlgebra.IntegralLattices
 
@@ -187,7 +196,7 @@ lemma card_mul_sum_det_eq_zero_le [DecidableEq m] [Fintype k] [DecidableEq k] (�
     · linarith [on_axes y v (.inl hy)]
     · linarith [on_axes y v (.inl hy)]
     · linarith [on_axes y v (.inr hv)]
-    · linarith [off_axes y v hy hv]
+    · linarith only [off_axes y v hy hv]
   -- By orthogonality of characters, the mean over `v` is the mass of the `s` with `y` in the left
   -- kernel of `Z s`.
   have mean_eq (y : m → k) : 𝔼 v : m → k, (∑ s, W y v s).re = ∑ s with y ᵥ* Z s = 0, Θ s := by

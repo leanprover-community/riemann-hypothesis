@@ -1,7 +1,23 @@
 module
 
-public import Lib.Base
 import TauCeti.LinearAlgebra.Submodule.CardFinrank
+public import Mathlib.Algebra.AffineMonoid.UniqueSums
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.NumberTheory.NumberField.CanonicalEmbedding.Basic
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.Polynomial.UniversalFactorizationRing
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # The q-binomial theorem, fibre sums, and Schur polynomials in the coefficients
@@ -81,7 +97,8 @@ lemma New.q_binomial_submodule (n k : Type*) [Finite n] [Field k] [Finite k]
     intro T
     change weight (finrank k T) = heckePolyCoeff X (T.map W.subtype)
     unfold heckePolyCoeff
-    rw [Nat.card_eq_fintype_card, ← (T.equivMapOfInjective W.subtype W.subtype_injective).finrank_eq]
+    rw [Nat.card_eq_fintype_card,
+      ← (T.equivMapOfInjective W.subtype W.subtype_injective).finrank_eq]
   -- Collect the terms of each dimension and apply the finite q-binomial theorem.
   have ranks (U : Submodule k W) (_ : U ∈ univ) : finrank k U ∈ range (d + 1) :=
     mem_range.mpr (Nat.lt_succ_of_le U.finrank_le)
@@ -165,28 +182,20 @@ Vandermonde determinant `det (r i ^ l j)`. -/
 lemma rootCoeffEval_genericSchur_mul_det [IsDomain R] :
     rootCoeffEval (univ.val.map r) (genericSchur l) * (vandermonde r).det =
       (of fun i j : Fin a ↦ r i ^ l j).det := by
-  -- `φ` specialises the generic monic polynomial `freeMonic ℤ a` to `∏ (X - r k)`, which
-  -- vanishes at `r i`; so the remainder of `X ^ l j` takes the value `r i ^ l j` there.
-  let p : MonicDegreeEq R a := .mk (nodal univ r) nodal_monic (by simp)
-  let φ : MvPolynomial (Fin a) ℤ →ₐ[ℤ] R := (MvPolynomial.mapEquivMonic ℤ R a).symm p
+  -- Specialise `freeMonic ℤ a` to `nodal univ r = ∏ (X - r k)` via `φ = rootCoeffEval`.
+  let φ := (MvPolynomial.mapEquivMonic ℤ R a).symm (.mk (nodal univ r) nodal_monic (by simp))
   have hφ : (freeMonic ℤ a).map φ = nodal univ r :=
-    congrArg Subtype.val ((MvPolynomial.mapEquivMonic ℤ R a).apply_symm_apply p)
+    congrArg Subtype.val ((MvPolynomial.mapEquivMonic ℤ R a).apply_symm_apply _)
   have hφ_eq : rootCoeffEval (univ.val.map r) = φ := MvPolynomial.algHom_ext fun k ↦ by
-    simp [rootCoeffEval, φ, p, MvPolynomial.mapEquivMonic, nodal, ← Fin.prod_ofFn,
-      Function.comp_def]
-  have h_rem (i j : Fin a) : (X ^ l j %ₘ freeMonic ℤ a).eval₂ φ (r i) = r i ^ l j := by
-    rw [eval₂_modByMonic_eq_self_of_root (by simp [eval₂_eq_eval_map, hφ, eval_nodal_at_node]),
-      eval₂_X_pow]
-  -- Expanding this value in powers of `r i`: the Vandermonde matrix times the matrix of
-  -- coefficients of the remainders has entries `r i ^ l j`.
-  have h_mul : vandermonde r *
-      φ.mapMatrix (of fun k j : Fin a ↦ (X ^ l j %ₘ freeMonic ℤ a).coeff k.val) =
-        of fun i j : Fin a ↦ r i ^ l j := by
-    ext i j
-    rw [of_apply, ← h_rem i j]
-    conv_rhs => rw [← sum_modByMonic_coeff (monic_freeMonic ℤ a) (degree_freeMonic ℤ a).le]
+    simp [rootCoeffEval, φ, MvPolynomial.mapEquivMonic, nodal, ← Fin.prod_ofFn, Function.comp_def]
+  rw [hφ_eq, genericSchur, mul_comm, AlgHom.map_det, ← det_mul]
+  refine congrArg det (Matrix.ext fun i j ↦ ?_)
+  -- Each entry `(i, j)` evaluates `X ^ l j %ₘ freeMonic ℤ a` at `r i`, giving `r i ^ l j`.
+  trans (X ^ l j %ₘ freeMonic ℤ a).eval₂ φ (r i)
+  · conv_rhs => rw [← sum_modByMonic_coeff (monic_freeMonic ℤ a) (degree_freeMonic ℤ a).le]
     simp [Matrix.mul_apply, mul_comm, eval₂_finsetSum]
-  rw [hφ_eq, genericSchur, mul_comm, AlgHom.map_det, ← det_mul, h_mul]
+  · rw [eval₂_modByMonic_eq_self_of_root (by simp [eval₂_eq_eval_map, hφ, eval_nodal_at_node]),
+      eval₂_X_pow, of_apply]
 
 end New.Variety
 
@@ -274,17 +283,19 @@ lemma algebraicIndependent_embedding_two_mul {E : Type*} [Field E] [NumberField 
   -- `coord (i, σ)` is `σ (2 αᵢ)` as a linear form in the coordinates of `αᵢ`.
   let coord : ι × (E →+* ℂ) → MvPolynomial (ι × I) ℂ :=
     fun (i, σ) ↦ 2 • ∑ k : I, .X (i, k) * .C (b k σ)
-  have h_nat (z : ι × I → ℕ) : MvPolynomial.aeval (fun p ↦ (z p : ℂ)) (P.bind₁ coord) = 0 := by
+  have h_nat (z : ι × I → ℕ) :
+      MvPolynomial.aeval (fun p ↦ (z p : ℂ)) (MvPolynomial.aeval coord P) = 0 := by
     let α (i : ι) : 𝓞 E := ∑ k : I, (z (i, k) : 𝓞 E) * basis E k
     have hPα : MvPolynomial.aeval (fun p : ι × (E →+* ℂ) ↦ p.2 (2 * α p.1 : 𝓞 E)) P = 0 := by
       simpa [comp_aeval_apply] using congrArg (Pi.evalAlgHom ℂ _ α) hP
     have hb (k : I) (σ : E →+* ℂ) : b k σ = σ (basis E k) := by simp [b, I]
-    simpa [aeval_bind₁, α, hb, coord, two_mul] using hPα
-  have h_zero : P.bind₁ coord = 0 := by
+    simpa [comp_aeval_apply, α, hb, coord, two_mul] using hPα
+  have h_zero : MvPolynomial.aeval coord P = 0 := by
     refine funext_set (fun _ ↦ Set.range (Nat.cast : ℕ → ℂ))
       (fun _ ↦ infinite_range_of_injective Nat.cast_injective) fun x hx ↦ ?_
     choose z hz using fun p : ι × I ↦ hx p (Set.mem_univ p)
-    simpa [← _root_.funext hz, ← aeval_eq_eval] using h_nat z
+    rw [← _root_.funext hz, ← aeval_eq_eval, _root_.map_zero]
+    exact h_nat z
   -- To evaluate `P` at `v`, take as coordinates those of `v (i, ·) / 2` in the basis `b`.
   refine MvPolynomial.funext fun v ↦ ?_
   let y (p : ι × I) : ℂ := b.repr (fun σ ↦ v (p.1, σ) / 2) p.2
@@ -292,7 +303,7 @@ lemma algebraicIndependent_embedding_two_mul {E : Type*} [Field E] [NumberField 
     have h_repr : ∑ k : I, y (p.1, k) * b k p.2 = v p / 2 := by
       simpa [y] using congrFun (b.sum_repr fun σ ↦ v (p.1, σ) / 2) p.2
     simp [coord, two_mul, h_repr]
-  simpa [aeval_bind₁, h_coord] using congrArg (MvPolynomial.aeval y) h_zero
+  simpa [comp_aeval_apply, h_coord] using congrArg (MvPolynomial.aeval y) h_zero
 
 /-- Let the functions `c (i, σ) : A → K` be algebraically independent over `K`, let each polynomial
 `q σ` have total degree at most `card ι`, and let each multiset `x j σ` have `a` elements. If a
@@ -310,16 +321,16 @@ lemma map_prod_rootCoeffEval_eq_zero [Fintype ι] {A : Type*} {q : S → MvPolyn
   -- Let `e σ k` be the signed elementary symmetric functions of `x · σ`, and `M σ` their span.
   -- Comparing coefficients shows that `L` kills `∏ σ, M σ ^ card ι`, and
   -- `rootCoeffEval (x · σ) (q σ)` lies in `M σ ^ card ι`.
-  let e (σ : S) (k : Fin a.succ) (j : J) : R := (-1) ^ k.1 * (x j σ).esymm k
+  let e (σ : S) (k : Fin a.succ) (j : J) : R := (-1) ^ k.val * (x j σ).esymm k
   let M (σ : S) : Submodule K (J → R) := span K (.range (e σ))
   -- Vieta's formula at `X = 1` for the multiset `b • x j σ`.
   have vieta (j : J) (σ : S) (b : K) :
-      ((x j σ).map fun t ↦ 1 - b • t).prod = ∑ k : Fin a.succ, b ^ k.1 • e σ k j := by
-    simpa [e, eval_multiset_prod, sum_range, eval_finsetSum, hx, ← pow_smul_esymm] using
+      ((x j σ).map fun t ↦ 1 - b • t).prod = ∑ k : Fin a.succ, b ^ k.val • e σ k j := by
+    simpa [eval_multiset_prod, sum_range, eval_finsetSum, hx, ← pow_smul_esymm] using
       congrArg (Polynomial.eval 1) ((x j σ).map fun t ↦ b • t).prod_X_sub_X_eq_sum_esymm
   -- Expand the product in `hL`.
   have expand (α : A) :
-      L (∑ y : ι × S → Fin a.succ, (∏ p, c p α ^ (y p).1) • ∏ p, e p.2 (y p)) = 0 := by
+      L (∑ y : ι × S → Fin a.succ, (∏ p, c p α ^ (y p).val) • ∏ p, e p.2 (y p)) = 0 := by
     rw [← hL α]
     refine congrArg L (_root_.funext fun j ↦ ?_)
     simp_rw [← Algebra.smul_def, vieta, ← prod_prod_type']

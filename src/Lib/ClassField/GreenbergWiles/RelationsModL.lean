@@ -100,7 +100,7 @@ lemma pow_le_card_reductions_mul [Finite M] (ℓ : ℕ) {ι : Type} [Fintype ι]
   -- relation, whose reduction determines it.
   have : Finite (D.cocycles P) :=
     (selmerZ1.finite_unramified_cocycles M (D.localPrimes.finite_toSet.union hP)).subset inf_le_left
-  let values : D.cocycles P →+ ι → M := .mk' (fun z i ↦ z.1 (γ i)) fun _ _ ↦ rfl
+  let values : D.cocycles P →+ ι → M := .mk' (fun z i ↦ z.val (γ i)) fun _ _ ↦ rfl
   -- `X = M[ℓ] ^ ι` maps by `f` to `M ^ ι / B`, with kernel `B[ℓ]`.
   let X : AddSubgroup (ι → M) := (ℓ • AddMonoidHom.id (ι → M)).ker
   let f : X →+ (ι → M) ⧸ values.range := (QuotientAddGroup.mk' _).comp X.subtype
@@ -129,12 +129,12 @@ lemma pow_le_card_reductions_mul [Finite M] (ℓ : ℕ) {ι : Type} [Fintype ι]
     have h_mk (g : Gal(Ω/K)) : (Submodule.Quotient.mk (y χ g) :
         QuotSMulTop (ℓ : R) (CharacterModule M)) = Submodule.Quotient.mk (y χ' g) :=
       congrFun (Subtype.ext_iff.1 h) g
-    have h_sum : ∑ i, y χ (φ i) (x.1 i) = ∑ i, y χ' (φ i) (x.1 i) :=
-      sum_congr rfl fun i _ ↦ apply_eq_of_mkQ_eq (h_mk (φ i)) (congrFun x.2 i)
+    have h_sum : ∑ i, y χ (φ i) (x.val i) = ∑ i, y χ' (φ i) (x.val i) :=
+      sum_congr rfl fun i _ ↦ apply_eq_of_mkQ_eq (h_mk (φ i)) (congrFun x.property i)
     exact (y_sum χ x).symm.trans (h_sum.trans (y_sum χ' x))
   have h_ker : Nat.card f.ker ≤ Nat.card (Submodule.torsionBy ℕ values.range ℓ) := by
     have h_range (x : f.ker) : (x : X).1 ∈ values.range := (QuotientAddGroup.eq_zero_iff _).1 x.2
-    have h_torsion (x : f.ker) : ℓ • (x : X).1 = 0 := (x : X).2
+    have h_torsion (x : f.ker) : ℓ • (x : X).val = 0 := (x : X).property
     exact Nat.card_le_card_of_injective (fun x ↦ ⟨⟨_, h_range x⟩, Subtype.ext (h_torsion x)⟩)
       fun x x' h ↦ by simpa only [Subtype.ext_iff] using h
   calc Nat.card {a : M // ℓ • a = 0} ^ card ι
@@ -162,19 +162,19 @@ lemma exists_add_two_primes [NeZero ℓ] [NeZero N]
     ∃ (I' : Set Gal(Ω/K)) (s' : SplitPlaces (K := K) ℓ N I' O (ι ⊕ Bool)),
       (∀ i : ι, s'.v (.inl i) = s.v i) ∧
       (∀ i : ι, s'.φ (.inl i) = s.φ i) ∧
-      ∀ j : Bool, (x j).1 * s'.φ (.inr j) ∈ U := by
+      ∀ j : Bool, (x j).val * s'.φ (.inr j) ∈ U := by
   -- Chebotarev: for `g` in `O`, a new prime other than `w` with a Frobenius in `g⁻¹ U`.
-  have cheb (g : O) (w : FinPlace K) : ∃ v : FinPlace K, (v ≠ w ∧ ↑N ∉ v.1 ∧ ∀ i, s.v i ≠ v) ∧
-      ∃ B : ClosurePlace, IsPlaceOver B v ∧ ∃ φ : Gal(Ω/K), g.1 * φ ∈ U ∧ IsFrob B v.q φ := by
+  have cheb (g : O) (w : FinPlace K) : ∃ v : FinPlace K, (v ≠ w ∧ ↑N ∉ v.asIdeal ∧ ∀ i, s.v i ≠ v) ∧
+      ∃ B : ClosurePlace, IsPlaceOver B v ∧ ∃ φ : Gal(Ω/K), g.val * φ ∈ U ∧ IsFrob B v.q φ := by
     obtain ⟨v, hv, -, B, hB, φ, hφU, hφ, -⟩ :=
-      chebotarev (U.isOpen.preimage (continuous_const_mul g.1)) ⟨g⁻¹, by simp⟩
+      chebotarev (U.isOpen.preimage (continuous_const_mul g.val)) ⟨g⁻¹, by simp⟩
         (((finite_natCast_mem N).union (Set.finite_range s.v)).insert w)
     exact ⟨v, by simpa using hv, B, hB, φ, hφU, hφ⟩
   -- The first new prime avoids an arbitrary prime, the second avoids the first.
   obtain ⟨v, B, φ, v_inj, hv⟩ :
       ∃ (v : Bool → FinPlace K) (B : Bool → ClosurePlace) (φ : Bool → Gal(Ω/K)),
-        Injective v ∧ ∀ j, (↑N ∉ (v j).1 ∧ ∀ i, s.v i ≠ v j) ∧ IsPlaceOver (B j) (v j) ∧
-          (x j).1 * φ j ∈ U ∧ IsFrob (B j) (v j).q (φ j) := by
+        Injective v ∧ ∀ j, (↑N ∉ (v j).asIdeal ∧ ∀ i, s.v i ≠ v j) ∧ IsPlaceOver (B j) (v j) ∧
+          (x j).val * φ j ∈ U ∧ IsFrob (B j) (v j).q (φ j) := by
     obtain ⟨v₁, ⟨-, hv₁⟩, B₁, hB₁, φ₁, hφ₁⟩ := cheb (x true) Classical.ofNonempty
     obtain ⟨v₀, ⟨h_ne, hv₀⟩, B₀, hB₀, φ₀, hφ₀⟩ := cheb (x false) v₁
     exact ⟨fun j ↦ cond j v₁ v₀, fun j ↦ cond j B₁ B₀, fun j ↦ cond j φ₁ φ₀,
@@ -190,7 +190,7 @@ lemma exists_add_two_primes [NeZero ℓ] [NeZero N]
       isPlaceOver := Sum.forall.2 ⟨s.isPlaceOver, hB⟩
       φ := Sum.elim s.φ φ
       isFrob := Sum.forall.2 ⟨fun i ↦ ⟨(s.isFrob i).1, hUO (s.isFrob i).2⟩,
-        fun j ↦ ⟨hφ j, (mul_mem_cancel_left (x j).2).1 (hUO (hφU j))⟩⟩
+        fun j ↦ ⟨hφ j, (mul_mem_cancel_left (x j).property).1 (hUO (hφU j))⟩⟩
       mem_inertia_iff _ := Iff.of_eq Set.mem_ofPred_eq
       inertiaGroup_le hv hB := (s.inertiaGroup_le hv hB).trans hUO
       principal_sup_idelesUnitOff F _ h :=
@@ -229,11 +229,6 @@ def torsionAction : Gal(Ω/K) →* Multiplicative (AddAut (M.torsion ℓ)) × (Z
   ((DistribMulAction.toAddAut _ (M.torsion ℓ)).comp (M.torsion ℓ).ρ.asGroupHom).prod
     (cyclotomicCharMod Ω ℓ)
 
-/-- An element of the kernel of the action on `M[ℓ]` and `μ_ℓ` fixes the `ℓ`-th roots of unity. -/
-lemma cyclotomicCharMod_eq_one_of_mem_ker_torsionAction {g : Gal(Ω/K)}
-    (hg : g ∈ (torsionAction M ℓ).ker) : cyclotomicCharMod Ω ℓ g = 1 :=
-  congrArg Prod.snd (MonoidHom.mem_ker.1 hg)
-
 /-- The kernel of the action on `M[ℓ]` and `μ_ℓ` acts trivially on `M[ℓ]`. -/
 lemma trivialOn_ker_torsionAction : (M.torsion ℓ).TrivialOn (torsionAction M ℓ).ker := fun _ hg a ↦
   DFunLike.congr_fun (congrArg (fun p ↦ Multiplicative.toAdd p.1) (MonoidHom.mem_ker.1 hg)) a
@@ -242,7 +237,7 @@ lemma trivialOn_ker_torsionAction : (M.torsion ℓ).TrivialOn (torsionAction M �
 unity. -/
 lemma le_ker_torsionAction (hm : ℓ ∣ m) : D.subgroup.toSubgroup ≤ (torsionAction M ℓ).ker :=
   fun g hg ↦
-  MonoidHom.mem_ker.2 <| Prod.ext (AddEquiv.ext fun a ↦ Subtype.ext (D.apply_eq_of_mem g hg a.1))
+  MonoidHom.mem_ker.2 <| Prod.ext (AddEquiv.ext fun a ↦ Subtype.ext (D.apply_eq_of_mem g hg a.val))
     (cyclotomicCharMod_eq_one_of_dvd hm (D.cyclotomicCharMod_eq_one g hg))
 
 /-- If `M[ℓ]` has order `ℓ`, the kernel of the action on `M[ℓ]` and `μ_ℓ` has index prime to `ℓ`:
@@ -278,7 +273,7 @@ lemma card_torsionBy_cocycles_le [Finite M] {P P' : Set (FinPlace K)} (hP : P �
     (selmerZ1.finite_unramified_cocycles _ (D.localPrimes.finite_toSet.union hP')).subset
       inf_le_left
   let lift (z : Submodule.torsionBy ℕ (D.cocycles P) ℓ) (g : Gal(Ω/K)) : M.torsion ℓ :=
-    ⟨(z : D.cocycles P).1 g, congrFun (Subtype.ext_iff.1 z.2) g⟩
+    ⟨(z : D.cocycles P).val g, congrFun (Subtype.ext_iff.1 z.property) g⟩
   have lift_mem (z : Submodule.torsionBy ℕ (D.cocycles P) ℓ) :
       lift z ∈ selmerZ1 (M.torsion ℓ) D.localPrimes D.place (D.allowedTorsion ℓ) P' := by
     obtain ⟨⟨⟨h_cont, h_mul⟩, h_unram⟩, h_loc, h_conj⟩ := D.cocycles_mono hP (z : D.cocycles P).2
@@ -295,7 +290,7 @@ variable {κ : Gal(Ω/K) →* ℤ_[ℓ]ˣ}
 /-- Let `κ` be continuous with values in `1 + 4 ℤ_ℓ`, so that the image of a closed subgroup `H` is
 procyclic. Some `γ ∈ H` and `H ⊓ ker κ` generate `H` topologically: every open subgroup of `H` that
 contains both is all of `H`. -/
-lemma exists_generator_mod_ker (hκ : Continuous κ) (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).1 - 1)
+lemma exists_generator_mod_ker (hκ : Continuous κ) (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).val - 1)
     (H : Subgroup Gal(Ω/K)) (hH : IsClosed (H : Set Gal(Ω/K))) :
     ∃ γ : H, ∀ F ≥ (κ.domRestrict H).ker, F.IsOpen → γ ∈ F → ∀ g : H, g ∈ F :=
   Selmer.exists_procyclic_generator (κ.domRestrict H) hκ.continuousOn.domRestrict
@@ -307,16 +302,16 @@ consists of the functions that vanish on the whole decomposition group if `v` is
 on its intersection with `ker κ` if `v` is above `ℓ`. Then there is at most one allowed local
 cocycle with values in `M[ℓ]` if `v` is not above `ℓ`, and at most `#M[ℓ]` if it is, as a cocycle
 that vanishes on the kernel of `κ` is determined by one value. -/
-lemma card_allowedTorsion_le (hκ : Continuous κ) (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).1 - 1)
+lemma card_allowedTorsion_le (hκ : Continuous κ) (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).val - 1)
     [Finite M] (h_allowed : ∀ v : FinPlace K,
-      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.1 → κ g = 1} ⊥)
+      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.asIdeal → κ g = 1} ⊥)
     (v : FinPlace K) :
     Nat.card ↥(D.allowedTorsion ℓ v ⊓
       Z1 ((M.torsion ℓ).restrictTo (decompGroup Gal(Ω/K) (D.place v))).ρ) ≤
-      if ↑ℓ ∉ v.1 then 1 else Nat.card (M.torsion ℓ) := by
+      if ↑ℓ ∉ v.asIdeal then 1 else Nat.card (M.torsion ℓ) := by
   let G : Subgroup Gal(Ω/K) := decompGroup Gal(Ω/K) (D.place v)
   have h_zero {z : G → M.torsion ℓ} (hz : z ∈ D.allowedTorsion ℓ v) (g : G)
-      (hg : ↑ℓ ∈ v.1 → κ g = 1) : z g = 0 := by
+      (hg : ↑ℓ ∈ v.asIdeal → κ g = 1) : z g = 0 := by
     rw [allowedTorsion, h_allowed] at hz
     exact Subtype.ext (hz g hg)
   split_ifs with hv
@@ -337,7 +332,7 @@ cocycles trivialised above the level and infinity and on the inertia groups of t
 That the Frobenius elements detect roots means that `U` fixes every `m`-th root of a `q`-unit of
 its field that they all fix. -/
 lemma exists_hasFewCocycles_torsion (hκ : Continuous κ)
-    (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).1 - 1) [Finite M] (hm : ℓ ∣ m) {c : Gal(Ω/K)}
+    (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).val - 1) [Finite M] (hm : ℓ ∣ m) {c : Gal(Ω/K)}
     (hU : ∀ g : Gal(Ω/K), κ g = 1 → g ∈ D.subgroup ∨ g * c ∈ D.subgroup)
       (h_card : Nat.card (M.torsion ℓ) = ℓ)
     {q : ℕ} [NeZero q] {ι : Type} [Fintype ι] {I : Set Gal(Ω/K)}
@@ -350,27 +345,27 @@ lemma exists_hasFewCocycles_torsion (hκ : Continuous κ)
   -- element `γ`, and `c` if `c ∈ O`; the new Frobenius elements are their inverses modulo `U`.
   have hUO : D.subgroup.1.1 ≤ (torsionAction M ℓ).ker := D.le_ker_torsionAction hm
   let O : OpenNormalSubgroup Gal(Ω/K) := .mk
-    ⟨(torsionAction M ℓ).ker, isOpen_mono hUO D.subgroup.1.2⟩
+    ⟨(torsionAction M ℓ).ker, isOpen_mono hUO D.subgroup.toOpenSubgroup.isOpen'⟩
   obtain ⟨γ, hγ⟩ := exists_generator_mod_ker hκ hκ_four _ O.isClosed
   let x (j : Bool) : O := cond j γ (if h : c ∈ O then ⟨c, h⟩ else 1)
   obtain ⟨I', s', v_eq, φ_eq, φ_mem⟩ := s.exists_add_two_primes (O := O) hm hUO
-    (fun _ ↦ cyclotomicCharMod_eq_one_of_mem_ker_torsionAction) x
+    (fun _ hg ↦ congrArg Prod.snd (MonoidHom.mem_ker.1 hg)) x
   refine ⟨O, I', s', Set.range_subset_iff.2 fun i ↦ ⟨.inl i, v_eq i⟩, ?_⟩
   -- An `ℓ`-th root `y` of a `q`-unit that the Frobenius elements of `s'` fix is fixed by `O`: its
   -- stabiliser `F` is open and contains `U`, `γ` and `O ⊓ ker κ`.
   have fixed (y : DiscreteUnits Ω) (hy : ℓ • y ∈ fixedSUnits q O)
-      (h_frob : ∀ i, unitsRep (s'.φ i) y = y) (g : O) : unitsRep g.1 y = y := by
+      (h_frob : ∀ i, unitsRep (s'.φ i) y = y) (g : O) : unitsRep g.val y = y := by
     let F := MulAction.stabilizer Gal(Ω/K) y.toMul
     have hUF : D.subgroup.1.1 ≤ F := s.le_stabilizer h_detect hm hUO hy fun i ↦ by
       rw [← φ_eq i, h_frob]
-    have hxF (j : Bool) : (x j).1 ∈ F :=
+    have hxF (j : Bool) : (x j).val ∈ F :=
       (F.mul_mem_cancel_right (h_frob (.inr j))).1 (hUF (φ_mem j))
     have h_ker : (κ.domRestrict O.1.1).ker ≤ F.subgroupOf O.1.1 := by
       refine fun g hg ↦ (hU g hg).elim (fun hgU ↦ hUF hgU) fun hgc ↦ ?_
       -- `g c ∈ U` forces `c ∈ O`, so `c = x false ∈ F`.
-      have hcO : c ∈ O := (mul_mem_cancel_left g.2).1 (hUO hgc)
+      have hcO : c ∈ O := (mul_mem_cancel_left g.property).1 (hUO hgc)
       exact (F.mul_mem_cancel_right (by simpa [x, hcO] using hxF false)).1 (hUF hgc)
-    exact hγ _ h_ker (isOpen_mono hUF D.subgroup.1.2).preimage_val (hxF true) g
+    exact hγ _ h_ker (isOpen_mono hUF D.subgroup.toOpenSubgroup.isOpen').preimage_val (hxF true) g
   -- `M[ℓ]` is finite, killed by `ℓ`, fixed by `O`, and `ρ 1 - 0` is injective on it.
   have hV : (M.torsion ℓ).FiniteKilledFixedInj ℓ O 1 0 :=
     ⟨inferInstance, fun a ↦ Subtype.ext a.2, trivialOn_ker_torsionAction, by simp [Injective]⟩
@@ -378,7 +373,7 @@ lemma exists_hasFewCocycles_torsion (hκ : Continuous κ)
   obtain ⟨h_few, -⟩ := s'.card_trivialised_of_isHigmanProjective hV
     (hV.isHigmanProjective_of_coprime (coprime_index_ker_torsionAction h_card))
     fun y hy h_frob g ↦ by
-      simp only [map_one, Module.End.one_apply, zero_smul, sub_zero]
+      simp only [map_one, one_apply_eq_self, zero_smul, sub_zero]
       exact fixed y hy h_frob g
   -- The family `s'` has `#ι + 2` primes and the bound has one further factor `#M[ℓ]`.
   simpa using h_few
@@ -393,17 +388,17 @@ points times `ℓ ^ (k + 1)` is at most `ℓ ^ #ι`, where `k` counts the primes
 above `ℓ`. Indeed the bound `ℓ ^ (#ι + 3)` of `exists_hasFewCocycles_torsion` loses one factor `ℓ`
 for each of four infinite places and for each of these `k` primes. -/
 lemma card_torsionBy_cocycles_mul_pow_le (hκ : Continuous κ)
-    (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).1 - 1) [Finite M] (hm : ℓ ∣ m)
+    (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).val - 1) [Finite M] (hm : ℓ ∣ m)
     (h_places : 4 ≤ card (InfinitePlace K)) {c : Gal(Ω/K)}
     (hU : ∀ g : Gal(Ω/K), κ g = 1 → g ∈ D.subgroup ∨ g * c ∈ D.subgroup)
       (h_card : Nat.card (M.torsion ℓ) = ℓ)
     (h_allowed : ∀ v : FinPlace K,
-      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.1 → κ g = 1} ⊥)
-    {q : ℕ} [NeZero q] (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.1) {ι : Type} [Fintype ι]
+      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.asIdeal → κ g = 1} ⊥)
+    {q : ℕ} [NeZero q] (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal) {ι : Type} [Fintype ι]
       {I : Set Gal(Ω/K)}
     (s : SplitPlaces (K := K) m q I D.subgroup ι) (h_detect : s.FrobeniiDetectRoots) :
     Nat.card (Submodule.torsionBy ℕ (D.cocycles (Set.range s.v)) ℓ) *
-      ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.1} + 1) ≤ ℓ ^ card ι := by
+      ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal} + 1) ≤ ℓ ^ card ι := by
   obtain ⟨O, I', s', h_range, h_few⟩ :=
     D.exists_hasFewCocycles_torsion hκ hκ_four hm hU h_card s h_detect
   have triv {g : Gal(Ω/K)} (hg : M.ρ g = 1) : (M.torsion ℓ).ρ g = 1 :=
@@ -416,11 +411,11 @@ lemma card_torsionBy_cocycles_mul_pow_le (hκ : Continuous κ)
       ℓ ^ (card ι + 3) * ∏ v ∈ D.localPrimes, loc v := by
     simpa only [h_card] using selmerZ1.card_mul_pow_le (fun g hg ↦ triv (D.unramified g hg))
       D.isPlaceOver (D.allowedTorsion ℓ)
-      (fun v hv ↦ Set.range_subset_iff.2 fun a ↦ D.coboundary_le v hv ⟨a.1, rfl⟩)
+      (fun v hv ↦ Set.range_subset_iff.2 fun a ↦ D.coboundary_le v hv ⟨a.val, rfl⟩)
       (fun hc ↦ triv (D.ρ_eq_one_of_isComplexConj hc)) s' h_few hS
   set t : ℕ := Nat.card (Submodule.torsionBy ℕ (D.cocycles (Set.range s.v)) ℓ)
-  set k : ℕ := #{v ∈ D.localPrimes | ↑ℓ ∉ v.1}
-  set k' : ℕ := #{v ∈ D.localPrimes | ¬↑ℓ ∉ v.1}
+  set k : ℕ := #{v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal}
+  set k' : ℕ := #{v ∈ D.localPrimes | ¬↑ℓ ∉ v.asIdeal}
   have h_prod : ∏ v ∈ D.localPrimes, loc v ≤ ℓ ^ k' := by
     unfold loc
     grw [D.card_allowedTorsion_le hκ hκ_four h_allowed, h_card]
@@ -447,21 +442,21 @@ generators. This is weaker than the count given by the formula of Greenberg and 
 with the number of infinite places; here only four of these places are used. -/
 theorem exists_pow_le_card_reductions [Finite M] (hm : ℓ ∣ m)
     (h_places : 4 ≤ card (InfinitePlace K)) {κ : Gal(Ω/K) →* ℤ_[ℓ]ˣ} (hκ : Continuous κ)
-    (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).1 - 1) {c : Gal(Ω/K)}
+    (hκ_four : ∀ g : Gal(Ω/K), 4 ∣ (κ g).val - 1) {c : Gal(Ω/K)}
     (hU : ∀ g : Gal(Ω/K), κ g = 1 → g ∈ D.subgroup ∨ g * c ∈ D.subgroup)
     (h_card : Nat.card {a : M // ℓ • a = 0} = ℓ)
     (h_allowed : ∀ v : FinPlace K,
-      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.1 → κ g = 1} ⊥) :
+      D.allowed v = .pi {g : decompGroup Gal(Ω/K) (D.place v) | ↑ℓ ∈ v.asIdeal → κ g = 1} ⊥) :
     open Classical in
     ∃ T : Finset (FinPlace K), D.localPrimes ⊆ T ∧
-      ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.1} + 1) ≤ Nat.card (D.reductions ℓ T) := by
+      ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal} + 1) ≤ Nat.card (D.reductions ℓ T) := by
   classical
   -- A family of split primes whose Frobenius elements detect roots, such that every family of
   -- characters that kills the values of the cocycles at the `γ i` comes from a relation off `T`.
   obtain ⟨q, _, ι, _, I, s, γ, T, hS, hST, -, h_detect, -, h_forms⟩ :=
     D.exists_splitPlaces_forall_exists_mem_relations D.avoids_one
   set t : ℕ := Nat.card (Submodule.torsionBy ℕ (D.cocycles (Set.range s.v)) ℓ)
-  have h_few : t * ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.1} + 1) ≤ ℓ ^ card ι :=
+  have h_few : t * ℓ ^ (#{v ∈ D.localPrimes | ↑ℓ ∉ v.asIdeal} + 1) ≤ ℓ ^ card ι :=
     D.card_torsionBy_cocycles_mul_pow_le hκ hκ_four hm h_places hU h_card h_allowed hS s h_detect
   have h_many : ℓ ^ card ι ≤ Nat.card (D.reductions ℓ T) * t := by
     simpa only [h_card] using D.pow_le_card_reductions_mul ℓ (Set.finite_range s.v) h_forms

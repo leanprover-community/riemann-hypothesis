@@ -1,5 +1,6 @@
 module
 
+public import Lib.General.LinearAlgebra.BlockEmbeddings
 public import New.Appendix.DiscreteSeries.Periods
 public import New.Appendix.DiscreteSeries.StationaryPosition
 

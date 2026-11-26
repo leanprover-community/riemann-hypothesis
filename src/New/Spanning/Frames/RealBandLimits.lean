@@ -284,7 +284,7 @@ lemma sq_lintegral_enorm_inner_le {A B : 𝔰.G₁ → EuclideanSpace ℂ I} (hA
   have h_inv (u : (𝔰.middleGram (1 : ℂ)).besselU) (y : 𝔰.G₁) :
       ‖B (u • y)‖ₑ ^ 2 = ‖B y‖ₑ ^ 2 := by
     rw [Subgroup.smul_def, smul_eq_mul,
-      hB.enorm_besselS_mul (mem_partialUnitriangularGroup_of_mem_besselU u.2)]
+      hB.enorm_besselS_mul (mem_partialUnitriangularGroup_of_mem_besselU u.property)]
   have h_translate : ∫⁻ y, ‖B (y * x)‖ₑ ^ 2 ∂besselQuotMeasure =
       ∫⁻ y, ‖B y‖ₑ ^ 2 ∂besselQuotMeasure :=
     (identDistrib_orbitMeasure_mul_right (F := fun y ↦ ‖B y‖ₑ ^ 2) x h_inv).lintegral_eq
@@ -436,7 +436,7 @@ lemma IsCutBessel.norm_le_of_mem_positionBall (hF : IsCutBessel F rep ρ s b W f
     one_le_pow₀ (one_le_mul_of_one_le_of_one_le (one_le_pow₀ one_le_b) (one_le_pow₀ one_le_ρ))
   have h_entries : ‖X - 1‖ ≤ 𝔰.r * 𝔰.r * R := l2_opNorm_le_of_apply hx
   have rank_sq_le : (𝔰.r : ℝ) * 𝔰.r + 1 ≤ ρ ^ 2 := by
-    nlinarith [hF.eight_mul_r_le_rho, hF.four_le, Nat.cast_nonneg (α := ℝ) 𝔰.r]
+    nlinarith only [hF.eight_mul_r_le_rho, hF.four_le, Nat.cast_nonneg (α := ℝ) 𝔰.r]
   have cube_le : 10 ^ 9 * 𝔰.n ^ 3 ≤ 𝔰.r := hF.mul_cube_lt_s.le.trans (by grind [hF.r_eq_add])
   calc ‖X‖ ≤ ‖X - 1‖ + 1 := by simpa using norm_add_le (X - 1) 1
     _ ≤ (𝔰.r * 𝔰.r + 1) * R := by linarith
@@ -537,26 +537,19 @@ lemma IsCutBessel.scaledVolumeRatio_mul_pow_div_pow_le (hF : IsCutBessel F rep �
     (deg_pos : 0 < deg) (deg_le : deg * 𝔰.scaledVolumeRatio ≤ b ^ (4 * 𝔰.r ^ 2)) :
     𝔰.scaledVolumeRatio * ρ ^ (10 ^ 9 * 𝔰.n ^ 4) * ρ ^ (24 * 𝔰.k) *
       (b ^ (6 * 𝔰.r)) ^ (10 ^ 8 * 𝔰.n ^ 4) / (b ^ (6 * 𝔰.r)) ^ s ≤ b⁻¹ ^ 12 / deg := by
-  have one_le_b : 1 ≤ b := one_le_two.trans hF.two_le_b
-  have ρ_nonneg : 0 ≤ ρ := by linarith [hF.four_le]
-  have ρ_le : ρ ≤ b ^ (7 * 𝔰.n) := hF.rho_le_pow
-  have const_le : 𝔰.scaledVolumeRatio ≤ b ^ (4 * 𝔰.r ^ 2) / deg := (le_div_iff₀' deg_pos).2 deg_le
-  let E : ℕ := 4 * 𝔰.r ^ 2 + 7 * 𝔰.n * (10 ^ 9 * 𝔰.n ^ 4) + 7 * 𝔰.n * (24 * 𝔰.k) +
-    6 * 𝔰.r * (10 ^ 8 * 𝔰.n ^ 4)
-  have exponent_le : E + 12 ≤ 6 * 𝔰.r * s := by
-    -- Use `r = s + 5 n + 5`, `k = s + 3 n + 6` and `10 ^ 10 n ^ 4 ≤ s`.
-    simp only [E, hF.r_eq_add, hF.k_eq]
-    obtain ⟨d, rfl⟩ : ∃ d : ℕ, s = 10 ^ 10 * 𝔰.n ^ 4 + d := exists_add_of_le hF.mul_pow_four_le_s
-    lia
-  calc
-    _ ≤ b ^ (4 * 𝔰.r ^ 2) / deg * (b ^ (7 * 𝔰.n)) ^ (10 ^ 9 * 𝔰.n ^ 4) *
-        (b ^ (7 * 𝔰.n)) ^ (24 * 𝔰.k) * (b ^ (6 * 𝔰.r)) ^ (10 ^ 8 * 𝔰.n ^ 4) /
-          (b ^ (6 * 𝔰.r)) ^ s := by gcongr
-    _ = b ^ E / b ^ (6 * 𝔰.r * s) / deg := by
-      simp only [E, pow_add, pow_mul b (7 * 𝔰.n), pow_mul b (6 * 𝔰.r), div_eq_mul_inv]
-      ac_rfl
-    _ ≤ b ^ E / b ^ (E + 12) / deg := by gcongr
-    _ = b⁻¹ ^ 12 / deg := by field
+  have hb : 1 ≤ b := one_le_two.trans hF.two_le_b
+  have hρ : 0 ≤ ρ := by linarith [hF.four_le]
+  have hρ_le := hF.rho_le_pow
+  have hΘ := (le_div_iff₀' deg_pos).2 deg_le
+  refine le_trans (by gcongr : _ ≤ b ^ (4 * 𝔰.r ^ 2) / deg * (b ^ (7 * 𝔰.n)) ^ _ *
+    (b ^ (7 * 𝔰.n)) ^ _ * _ / _) ?_
+  simp only [← pow_mul, div_mul_eq_mul_div]
+  rw [div_right_comm, ← pow_add, ← pow_add, ← pow_add, div_le_div_iff_of_pos_right deg_pos,
+    div_le_iff₀ (by positivity), inv_pow, inv_mul_eq_div, le_div_iff₀ (by positivity), ← pow_add]
+  gcongr
+  simp only [hF.r_eq_add, hF.k_eq]
+  obtain ⟨d, rfl⟩ := exists_add_of_le hF.mul_pow_four_le_s
+  lia
 
 variable [Nonempty I]
 

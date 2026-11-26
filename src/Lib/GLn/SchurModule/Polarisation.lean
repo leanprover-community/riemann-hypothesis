@@ -95,7 +95,6 @@ lemma mem_span_rowSubst_unitary {f g : MatrixPoly (Σ _ : Φ, n) ℂ}
   rw [← range_toPoly] at hf hg
   obtain ⟨v, rfl⟩ := hf
   obtain ⟨w, rfl⟩ := hg
-
   let bar : USign (1 : n → ℤˣ) →* USign (1 : n → ℤˣ) := U.map (starRingEnd ℂ)
   have h_translate (x : Φ → USign (1 : n → ℤˣ)) :
       toPoly (fun _ : Φ ↦ n) κ (conjWeylRep κ 0 x v) =

@@ -171,7 +171,6 @@ lemma reduction_levelModulus_eq_zero_iff {c : ℕ} {x : Ô E} :
       Valued.v (O.genIdele⁻¹.val w) ^ c := by
     have h_mult : multiplicity w.asIdeal (O.levelModulus c false).ideal =
         c * multiplicity w.asIdeal (O.levelModulus 1 false).ideal := by
-      have := (O.levelModulus 1).ne_bot
       simp_all [levelModulus, multiplicity_pow, w.prime]
     simp [DescentPair.genIdele, idele_inv_apply_and_ne_zero, valued_generator, h_mult]
   simp [h_reduction, mem_Ô, h_val]
@@ -336,7 +335,7 @@ lemma DividedLattice.reduceAt_conj_eq_one (L : DividedLattice O) (j : stdLevel E
   -- As `j⁻¹ = jᴴ` is also `1` modulo `ϖ`, the matrix `j - 1` is divisible by `conj ϖ`.
   have h_star (c d : n) : star O.genIdele⁻¹.val * (j.val.val.val - 1) c d ∈ Ô E := by
     have h_inv : O.genIdele.val * (O.genIdele⁻¹.val ^ 2 * ((j⁻¹).val.val.val - 1) d c) ∈ Ô E :=
-      mul_mem O.genIntAdele.2 (h_sq j⁻¹ (by simp [hj]) d c)
+      mul_mem O.genIntAdele.property (h_sq j⁻¹ (by simp [hj]) d c)
     rw [Subgroup.coe_inv, U.inv_val_eq_conjTranspose] at h_inv
     simpa [sq, mul_assoc, Matrix.one_apply, apply_ite star, @eq_comm n] using star_mem_Ô h_inv
   have h_div (c d : n) :
@@ -370,7 +369,7 @@ lemma DividedLattice.reduceAt_conj_eq_one (L : DividedLattice O) (j : stdLevel E
       -coe_star_inv] using h_sum
   refine ⟨mem_stdLevel.2 fun a b ↦ ?_, fun i ↦ (stdLevel.map_eq_one _).2 fun a b ↦ ?_⟩
   · simpa [sub_eq_add_neg, add_mem_cancel_right, ite_mem, Matrix.one_apply] using
-      mul_mem O.genIntAdele.2 (h_div_conj a b)
+      mul_mem O.genIntAdele.property (h_div_conj a b)
   · -- Reduction at `O.chosenPlace i` factors through reduction modulo `ϖ`, which kills every
     -- entry of `γ⁻¹ j γ - 1`.
     rw [← modulusResidue_reduction (O.levelModulus 1 _) (places_levelModulus_false.ge ⟨i, rfl⟩),
@@ -383,7 +382,7 @@ lemma DividedLattice.exists_reducedInverse_eq (C G : Matrix n n (Ô E))
     (hCG : C * G = O.genIntAdele • 1) :
     ∃ L : DividedLattice O, L.reducedInverse = G.map O.chosenModulusSq.reduction := by
   classical
-  have hC : C.map (Ô E).subtype * O.genIdele⁻¹.1 • G.map (Ô E).subtype = 1 := by
+  have hC : C.map (Ô E).subtype * O.genIdele⁻¹.val • G.map (Ô E).subtype = 1 := by
     ext
     simp [← Matrix.map_mul, hCG, apply_ite, -Subring.coe_subtype, Matrix.one_apply]
   let c : GL n (𝔸f E) :=
@@ -398,10 +397,10 @@ lemma DividedLattice.exists_reducedInverse_eq (C G : Matrix n n (Ô E))
   let γ : Gf E n := ⟨star c⁻¹ * c, mem_unitaryGroupOf_iff.2 <| val_inj.2 <|
     show star (star c⁻¹ * c) * 1 * (star c⁻¹ * c) = 1 by simp [h_comm.inv_right.eq]⟩
   -- `ϖ γ⁻¹` is `G` at the chosen places, `ϖ Cᴴ` at their conjugates and `ϖ` elsewhere.
-  have h_entry (a b : n) : O.genIdele * γ⁻¹.1.1 a b =
-      e * G a b + star e * (O.genIdele * star (C b a).1) +
+  have h_entry (a b : n) : O.genIdele * γ⁻¹.val.val a b =
+      e * G a b + star e * (O.genIdele * star (C b a).val) +
         if a = b then (1 - e - star e) * O.genIdele else 0 := by
-    simp [γ, c, cutGL, mul_add, add_mul, h_disj, mul_left_comm O.genIdele.1, ← mul_assoc (star _),
+    simp [γ, c, cutGL, mul_add, add_mul, h_disj, mul_left_comm O.genIdele.val, ← mul_assoc (star _),
       mul_comm (star _), ← he, Matrix.one_apply]
     -- The remaining identity follows from `e * star e = 0`.
     grind
@@ -410,12 +409,12 @@ lemma DividedLattice.exists_reducedInverse_eq (C G : Matrix n n (Ô E))
       places_levelModulus_false]
   refine ⟨⟨γ, h_support, fun a b ↦ ?_⟩, ext fun a b ↦ reduction_congr _ fun w hw ↦ ?_⟩
   · rw [h_entry]
-    simp (maxDischargeDepth := 5) [e, star_mem_Ô, O.genIntAdele.2, add_mem, mul_mem, sub_mem,
+    simp (maxDischargeDepth := 5) [e, star_mem_Ô, O.genIntAdele.property, add_mem, mul_mem, sub_mem,
       ite_mem]
   -- At a chosen place `e` is `1` and its conjugate is `0`.
   have h_star : star e w = 0 := by
     simpa [e, idem_apply, hw] using congrArg (fun x : 𝔸f E ↦ x w) h_disj
-  change (O.genIdele * γ⁻¹.1.1 a b) w = (G a b).1 w
+  change (O.genIdele * γ⁻¹.val.val a b) w = (G a b).val w
   rw [h_entry]
   split_ifs <;> simp [h_star, e, hw, -finAdele_star_apply]
 
@@ -482,7 +481,7 @@ lemma reduceAt_liftMod_congruenceGroup (V : DividedSplitting N m a O z) (Y : V.c
       V.genResidue • ((O.levelModulus 2).reductionGL (liftMod Y.val)).val.map
         reduceToChosenModulusSq =
         V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing id := by
-    simpa [inclMatrix] using (V.mem_congruenceGroup_iff _).1 Y.2
+    simpa [inclMatrix] using (V.mem_congruenceGroup_iff _).1 Y.property
   exact ext ((reductionGL_map_modulusResidue ..).symm.trans
     ((V.genResidue_smul_eq_inclMatrix_iff _ id).1 hY i))
 

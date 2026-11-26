@@ -170,7 +170,7 @@ lemma prod_mem_holomorphicData (ho : IsPosFirstOrder s o)
   simp only [h_factor]
   exact HCParam.IsKHighest.isHolOfWeight_coeffMap ho.1 highest
     (fun w ↦ (rep w).derives.isCoeffMap 1)
-    (ℓ.compContinuousMultilinearMap piTensor) fun w _ ↦ (rep w).unitary_rep.1 _
+    (ℓ.compContinuousMultilinearMap piTensor) fun w _ ↦ (rep w).unitary_rep.continuous _
 
 /-- Let the linear map f to the Fock space intertwine the conjugate of the representation
 `conjWeylRep κ e'` (on `WeylIndex n' κ → ℂ`, of highest weight given by κ, twisted by powers e′ of

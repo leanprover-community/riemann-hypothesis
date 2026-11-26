@@ -1,16 +1,25 @@
 module
 
+public import Aesop.Frontend.Tactic
+public import Aesop.Main
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.Harmonic.Bounds
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
 public import Lib.Analytic.ZeroSymmetry
-public import TauCeti.NumberTheory.DirichletCharacter.GaussSum
 
 /-!
 # Gauss sums of primitive characters and the Pólya–Vinogradov bound
 
-The Gauss sum of a primitive Dirichlet character mod `q` has absolute value `√q`. For a
-non-principal character mod `q`, every partial sum of its values is at most `2 √q (1 + log q)` in
-absolute value.
+For a non-principal character mod `q`, every partial sum of its values is at most
+`2 √q (1 + log q)` in absolute value.
 
-* `New.norm_gaussSum_of_isPrimitive`: the modulus of the Gauss sum.
 * `New.polya_vinogradov`: the Pólya–Vinogradov inequality.
 
 ## Relation to the literature
@@ -28,16 +37,6 @@ open Complex Finset DirichletCharacter Real ZMod ArithmeticFunction Moebius NeZe
 namespace New
 
 variable {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
-
-/-- The Gauss sum of a primitive Dirichlet character mod `q`, taken with the standard additive
-character `x ↦ exp (2 π i x / q)` of `ZMod q`, has absolute value `√q`. -/
-lemma norm_gaussSum_of_isPrimitive (hχ : χ.IsPrimitive) : ‖gaussSum χ stdAddChar‖ = √q := by
-  have h_prod := gaussSum_mul_gaussSum_inv_eq_card_of_isPrimitive hχ (isPrimitive_stdAddChar q)
-  have h_conj : gaussSum χ⁻¹ stdAddChar⁻¹ = star (gaussSum χ stdAddChar) := by
-    rw [star_gaussSum_eq, AddChar.inv_mulShift, ← Units.coe_neg_one, gaussSum_mulShift_eq, inv_inv]
-  have h_sq : ‖gaussSum χ stdAddChar‖ * ‖gaussSum χ stdAddChar‖ = q := by
-    simpa [h_conj] using congrArg norm h_prod
-  rw [← h_sq, Real.sqrt_mul_self (norm_nonneg _)]
 
 /-- The chord from `1` to the root of unity `stdAddChar k = exp (2 π i x)`, where `x = k / q` lies
 in `[0, 1]`, has length at least `4 x (1 - x)`. -/
@@ -69,7 +68,6 @@ lemma norm_sum_stdAddChar_pow_le {k : ZMod q} (hk : k ≠ 0) (X : ℕ) :
   have hx : (k.val : ℝ) = q * x := (mul_div_cancel₀ _ hq_pos.ne').symm
   have hx_pos : 0 < x := div_pos (mod_cast val_pos.mpr hk) hq_pos
   have hx_lt : x < 1 := (div_lt_one hq_pos).mpr (mod_cast k.val_lt)
-  have h_sub_pos : 0 < 1 - x := sub_pos.mpr hx_lt
   have h_ne : stdAddChar k ≠ 1 := by simpa using injective_stdAddChar.ne hk
   calc ‖∑ v ∈ Ioc 0 X, stdAddChar k ^ v‖
       = ‖stdAddChar k ^ (X + 1) - stdAddChar k ^ 1‖ / ‖stdAddChar k - 1‖ := by
@@ -98,7 +96,7 @@ lemma norm_sum_le_of_isPrimitive (hχ : χ.IsPrimitive) (hq : q ≠ 1) (X : ℕ)
   let f (n : ℕ) : ℝ := √q * q / 2 * ((n : ℝ)⁻¹ + ((q - n : ℕ) : ℝ)⁻¹)
   have h_term (k : ZMod q) (hk : k ∈ univ.erase 0) :
       ‖(∑ v ∈ Ioc 0 X, stdAddChar k ^ v) * (χ⁻¹ (-k) * gaussSum χ stdAddChar)‖ ≤ f k.val := by
-    grw [norm_mul, norm_mul, norm_le_one, norm_gaussSum_of_isPrimitive hχ,
+    grw [norm_mul, norm_mul, norm_le_one, norm_gaussSum_stdAddChar hχ,
       norm_sum_stdAddChar_pow_le (ne_of_mem_erase hk)]
     exact le_of_eq (by ring)
   have h_subset : ((univ : Finset (ZMod q)).erase 0).image ZMod.val ⊆ range (q + 1) :=

@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.RepresentationTheory.AsAlgebraHom
 public import Lib.Adelic.TraceFormula.LevelAlgebra
 public import Lib.Adelic.TraceFormula.LineDeterminant
 public import Lib.Adelic.TraceFormula.LineStabiliser
@@ -82,18 +83,20 @@ abbrev localRep : Representation ℂ (GL n (LocField w)) M := ρ.comp (ofSplitPl
 /-- An element acts as its component at `w` followed by its part off `w`. -/
 lemma apply_eq_offRep_localRep (g : Gf E n) (y : M) :
     ρ g y = offRep hw ρ g (localRep hw ρ (g.atPlace w) y) := by
-  simp [← End.mul_apply, ← map_mul, offPlace_apply]
+  simp [← mul_apply_eq_comp, ← map_mul, offPlace_apply]
 
 /-- The action of an element off `w` commutes with the action of the group algebra at `w`. -/
 lemma commute_offRep_localRep (g : Gf E n) (u : ℂ[GL n (LocField w)]) :
     Commute (offRep hw ρ g) ((localRep hw ρ).asAlgebraHom u) :=
-  commute_asAlgebraHom (fun x ↦ (commute_offPlace_ofSplitPlace hw g x).map ρ) u
+  Representation.commute_asAlgebraHom_of_forall_commute _
+      (fun x ↦ (commute_offPlace_ofSplitPlace hw g x).map ρ) u
 
 /-- The action of an element at `w` commutes with the action of the group algebra through the parts
 off `w`. -/
 lemma commute_localRep_offRep (x : GL n (LocField w)) (a : ℂ[Gf E n]) :
     Commute (localRep hw ρ x) ((offRep hw ρ).asAlgebraHom a) :=
-  commute_asAlgebraHom (fun g ↦ (commute_offPlace_ofSplitPlace hw g x).symm.map ρ) a
+  Representation.commute_asAlgebraHom_of_forall_commute _
+      (fun g ↦ (commute_offPlace_ofSplitPlace hw g x).symm.map ρ) a
 
 /-- Let `a` be a combination of group elements whose components at the split place `w` lie in
 `GL_n(𝒪_w)`. On vectors that are spherical at `w` (fixed by the maximal compact subgroup there),
@@ -156,7 +159,7 @@ def offAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w) :
         obtain ⟨h_off, h_local⟩ := (mem_levelSpace_cutLevel_iff hw ρ hK hJ).1 hy
         change ρ.asAlgebraHom (mapDomain (offPlace hw) a) y ∈ levelSpace ρ (cutLevel K w J)
         rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
-        exact ⟨a.2 y h_off, map_mem_levelSpace_of_commute h_local
+        exact ⟨a.property y h_off, map_mem_levelSpace_of_commute h_local
           fun x ↦ commute_localRep_offRep hw ρ x a⟩
 
 /-- The elements of the group algebra at `w` that map the space of vectors fixed by `J` to itself
@@ -170,7 +173,7 @@ def localAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w) :
         change ρ.asAlgebraHom (mapDomain (ofSplitPlace hw) u) y ∈ levelSpace ρ (cutLevel K w J)
         rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
         exact ⟨map_mem_levelSpace_of_commute h_off fun k ↦ commute_offRep_localRep hw ρ k u,
-          u.2 y h_local⟩
+          u.property y h_local⟩
 
 /-- On the vectors of the cut level, `offAction` of `a` is the action of `a` through the parts off
 `w`. -/
@@ -193,7 +196,8 @@ lemma commute_offAction_localAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ lo
     (a : levelAlgebra (offRep hw ρ) K) (u : levelAlgebra (localRep hw ρ) J) :
     Commute (offAction hw ρ hK hJ a) (localAction hw ρ hK hJ u) := by
   have h_comm : Commute ((offRep hw ρ).asAlgebraHom a) ((localRep hw ρ).asAlgebraHom u) :=
-    commute_asAlgebraHom (fun x ↦ (commute_localRep_offRep hw ρ x a).symm) u
+    Representation.commute_asAlgebraHom_of_forall_commute _
+        (fun x ↦ (commute_localRep_offRep hw ρ x a).symm) u
   ext y
   simpa [coe_offAction_apply, coe_localAction_apply] using LinearMap.congr_fun h_comm.eq y
 
@@ -207,9 +211,9 @@ lemma coe_offAction_mul_localAction_apply (hK : maxCompactAt n w ≤ K) (hJ : J 
       ρ.asAlgebraHom (mapDomain (ofSplitPlace hw) u * mapDomain (offPlace hw) a) y := by
   calc ((offAction hw ρ hK hJ a * localAction hw ρ hK hJ u) y : M)
     _ = (localRep hw ρ).asAlgebraHom u ((offRep hw ρ).asAlgebraHom a y) := by
-      rw [(commute_offAction_localAction hw ρ hK hJ a u).eq, End.mul_apply, coe_localAction_apply,
-        coe_offAction_apply]
-    _ = _ := by rw [map_mul, End.mul_apply, asAlgebraHom_mapDomain, asAlgebraHom_mapDomain]
+      rw [(commute_offAction_localAction hw ρ hK hJ a u).eq, mul_apply_eq_comp,
+        coe_localAction_apply, coe_offAction_apply]
+    _ = _ := by rw [map_mul, mul_apply_eq_comp, asAlgebraHom_mapDomain, asAlgebraHom_mapDomain]
 
 /-- The operator `T⁺` at `w` on the vectors whose level is the stabiliser of the `i`-th coordinate
 line at `w` and `K` elsewhere. -/
@@ -372,9 +376,9 @@ theorem trace_eq_of_trace_cutLevel_eq (hw : w.IsSplit) (hK : maxCompactAt n w �
   let a₂ : levelAlgebra (offRep hw ρ') K := ⟨a, universalLevelAlgebra_le K (offRep hw ρ') ha⟩
   -- Vectors of level `K` are spherical at `w`, so `a` acts on them through its part off `w`.
   have hT_off (y : levelSpace ρ K) : (T y : M) = (offRep hw ρ).asAlgebraHom a y :=
-    (hT y).trans (asAlgebraHom_offRep_apply hw ρ h_int (levelSpace_anti hK y.2)).symm
+    (hT y).trans (asAlgebraHom_offRep_apply hw ρ h_int (levelSpace_anti hK y.property)).symm
   have hT_off' (y : levelSpace ρ' K) : (T' y : M') = (offRep hw ρ').asAlgebraHom a y :=
-    (hT' y).trans (asAlgebraHom_offRep_apply hw ρ' h_int (levelSpace_anti hK y.2)).symm
+    (hT' y).trans (asAlgebraHom_offRep_apply hw ρ' h_int (levelSpace_anti hK y.property)).symm
   rw [← trace_offAction_mul_mean hw ρ hK i a₁ hT_off,
     ← trace_offAction_mul_mean hw ρ' hK i a₂ hT_off']
   -- By the line relation it suffices to compare the traces of the products of positive powers.

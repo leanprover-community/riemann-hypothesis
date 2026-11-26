@@ -1,7 +1,9 @@
 module
 
+public import Mathlib.GroupTheory.NoncommCoprod
 public import Lib.PadicHodge.Crystalline.HodgeTateForms
 public import Lib.PadicHodge.Kisin.Charts
+public import Lib.ClassField.Places.TameInertia
 
 /-!
 # Witt coefficients, the Frobenius group action and existence of Kummer charts
@@ -252,12 +254,11 @@ lemma exists_smul_teichmuller_eq (C : Subgroup (Gp p)) [hC : IsClosed (C : Set (
   have hg_C : g ∈ C := (hg 0).left
   refine ⟨g, hg_C, (map_teichmuller ..).trans (congrArg _ (Perfection.ext fun n ↦ ?_))⟩
   -- the `n`-th coefficient is the class of the `n`-th component modulo `p`
-  -- `erw`: `OFlat` is the perfection of `O_C / p` only up to unfolding
   erw [map_pow, pow_one, ← coeff_tiltMap _ (mk_untiltRoot ..), ← mk_untiltRoot]
   have hg_n : ((g • b u n : PadicAlgCl p) : ℂ_[p]) = (v.untiltRoot n).val := (hg n).right
   have h_root_eq : g • untiltRoot n u = untiltRoot n v :=
     Subtype.ext (by simpa [← hb] using hg_n)
-  exact congrArg _ h_root_eq
+  exact congrArg (Ideal.Quotient.mk (span {(p : OC)})) h_root_eq
 
 /-- A Kummer chart for j : Γ → G_p with open image: a chart S = Λ⟦z⟧ ⊂ A_inf, Λ = W(𝔽_{p^f}), and a
 subgroup Γ' (the field `subgroup`) of Γ of index prime to p, with four properties. The image j(Γ')
@@ -398,7 +399,7 @@ lemma exists_kummerChart (Γ : Type) [Group Γ] [𝒥 : OverGp Γ p] :
   have h_sep : IsHausdorff (span {κ π}) OC := by
     refine ⟨fun x h ↦ eq_of_forall_pow_dvd_sub ↑p fun n ↦ ?_⟩
     grw [← map_natCast κ, neg_dvd.mp (Associated.dvd' ⟨v, hv⟩), map_pow, ← pow_mul,
-      smodEq_span_pow_iff_dvd.mp (h _)]
+      (TauCeti.sModEq_span_singleton_pow_iff ..).mp (h _)]
   -- `θ` maps `Λ` into the integers of `K` (by `τ`), and every integer of `K` is a Teichmüller
   -- constant modulo `π` (`using!` below: the fact bounds `‖·‖`, the goal `‖·‖₊`)
   let τ : WittFq f →+* valRingBelow (localFieldOf Γ) (intQpBar p) :=

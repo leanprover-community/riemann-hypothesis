@@ -1,9 +1,18 @@
 module
 
-public import Lib.ClassField.Places.ProfiniteGalois
 public import Lib.General.Algebra.AbsIntegrallyClosed
 public import Lib.General.Algebra.AdicCompletion
+public import TauCeti.Analysis.Normed.Ring.Ultra
 public import TauCeti.NumberTheory.Padics.Complex.FixedPoints
+
+import TauCeti.RingTheory.RootsOfUnity.Ultrametric
+public import Lib.ClassField.Places.GaloisDefs
+public import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.RingTheory.Perfectoid.FontaineTheta
+public import Mathlib.Topology.Algebra.Nonarchimedean.Completion
+public import Mathlib.Topology.Connected.Separation
+public import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 
 /-!
 # Tilting, Fontaine's θ, the ring O_C and Ax's theorem on Galois invariants in ℂ_p
@@ -302,27 +311,11 @@ namespace New.Period
 variable {p : ℕ} [Fact p.Prime]
   {F : Type*} [NormedField F] [IsUltrametricDist F] {ζ : F}
 
-/-- In an ultrametric normed field, if `‖ζ‖ ≤ 1` then `‖ζ ^ a - 1‖ ≤ ‖ζ - 1‖` for every `a`. -/
-lemma norm_pow_sub_one_le_norm_sub_one (hζ_norm : ‖ζ‖ ≤ 1) (a : ℕ) : ‖ζ ^ a - 1‖ ≤ ‖ζ - 1‖ :=
-  -- `ζ - 1` divides `ζ ^ a - 1` in the ring of elements of norm at most one
-  (Valuation.integer.integers NormedField.valuation).le_of_dvd
-    (sub_one_dvd_pow_sub_one ⟨ζ, hζ_norm⟩ a)
-
 /-- If `ζ` is a primitive `p ^ (m + 1)`-th root of unity in an ultrametric normed field `F`, then
 `‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖p‖`, where `φ (p ^ (m + 1)) = p ^ m (p - 1)`. -/
 lemma norm_zeta_sub_one_pow {m : ℕ} (hζ : IsPrimitiveRoot ζ (p ^ (m + 1))) :
-    ‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖(p : F)‖ := by
-  -- `p` is the value at `1` of the cyclotomic polynomial, the product of the `1 - ξ` over the
-  -- primitive roots `ξ`. Two primitive roots are powers of each other, so `‖1 - ξ‖ = ‖ζ - 1‖`.
-  have norm_le {ξ η : F} (hξ : IsPrimitiveRoot ξ (p ^ (m + 1)))
-      (hη : IsPrimitiveRoot η (p ^ (m + 1))) : ‖η - 1‖ ≤ ‖ξ - 1‖ := by
-    obtain ⟨a, -, rfl⟩ := hξ.eq_pow_of_pow_eq_one hη.pow_eq_one
-    exact norm_pow_sub_one_le_norm_sub_one (hξ.isOfFinOrder NeZero.out).norm_eq_one.le a
-  have norm_eq (ξ : F) (hξ : ξ ∈ primitiveRoots (p ^ (m + 1)) F) : ‖1 - ξ‖ = ‖ζ - 1‖ := by
-    rw [mem_primitiveRoots (NeZero.pos _)] at hξ
-    rw [norm_sub_rev, (norm_le hζ hξ).antisymm (norm_le hξ hζ)]
-  simp [← eval_one_cyclotomic_prime_pow m, cyclotomic_eq_prod_X_sub_primitiveRoots hζ, eval_prod,
-    prod_eq_pow_card norm_eq, hζ.card_primitiveRoots]
+    ‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖(p : F)‖ :=
+  hζ.norm'_sub_one_pow_totient_prime_pow
 
 /-- Let K be algebraically closed, L a normed field over K, f in K[X] with leading coefficient
 a, x in L, r ≥ 0. If ‖x − w‖ ≥ r for every root w of f, then ‖f(x)‖ ≥ ‖a‖ r^(deg f). -/
@@ -345,7 +338,7 @@ inclusion `coe'` of `ℚ̄_p` into its completion `ℂ_p`, of the fixed field of
 lemma ax_mem_closure_fixedField (J : Subgroup (Gp p)) {x : ℂ_[p]} (hx : ∀ g ∈ J, g • x = x) :
     x ∈ closure (coe' '' fixedField J) := by
   -- this is Tau Ceti's `PadicComplex.fixedPoints_eq_closure_fixedField`
-  have hx_fixed : x ∈ MulAction.fixedPoints J ℂ_[p] := fun g ↦ hx g g.2
+  have hx_fixed : x ∈ MulAction.fixedPoints J ℂ_[p] := fun g ↦ hx g g.property
   rw [PadicComplex.fixedPoints_eq_closure_fixedField] at hx_fixed
   simpa [Set.image_eq_range] using hx_fixed
 

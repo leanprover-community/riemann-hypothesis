@@ -237,7 +237,7 @@ def vanishingCocycles (χ : Gal(Ω/ℚ) →* Oˣ) (B : Type*) [AddCommGroup B] [
         (∀ g h : Gal(Ω/ℚ), x (g * h) = x g + (χ g).val • x h) ∧ ∀ g ∈ s, x g = 0}
       add_mem' := by simp_all [add_add_add_comm]
       zero_mem' := by simp
-      smul_mem' := by simp_all [smul_comm (χ _).1] }
+      smul_mem' := by simp_all [smul_comm (χ _).val] }
 
 /-- The elements of Gal(Ω/ℚ(μ_N)) lying in the inertia group of some place above neither l nor
 any prime of T. -/

@@ -1,5 +1,9 @@
 module
 
+public import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
+public import Mathlib.RingTheory.PicardGroup
 public import Lib.General.Geometry.ProjectiveSpace
 
 /-!
@@ -236,7 +240,6 @@ lemma New.eq_map_C_of_ne_bot_of_le_map_C {A σ : Type*} [CommRing A] [IsDomain A
     rw [← coeff_rename_mapDomain u hu]
     exact mem_map_C_iff.1 (hJ_le (mem_comap.1 ha)) _
   have h_ne_bot : J' ≠ ⊥ := J'.ne_bot_iff.2 ⟨w, mem_comap.2 hw_mem, ne_zero_of_map hw_ne⟩
-  have : p.IsPrime := Ideal.IsMinimalPrime.isPrime hp
   have h_eq : J' = p.map C := J'.eq_of_le_of_height_le h_le
     ((height_map_C_le_one hp).trans (by simpa [Order.one_le_iff_ne_zero] using h_ne_bot))
   refine hJ_le.antisymm (map_le_of_le_comap fun a ha ↦ ?_)
@@ -276,21 +279,15 @@ lemma New.exists_nnreal_valuation {K : Type*} [Field K] (V : ValuationSubring K)
   -- The canonical valuation of the valuative relation of `V` is equivalent to that of `V`.
   let : ValuativeRel K := ofValuation V.valuation
   have : V.valuation.Compatible := .ofValuation V.valuation
-  have h_equiv : (valuation K).IsEquiv V.valuation := isEquiv _ _
-  have h_prime (J : Ideal V) (hJ : J.IsPrime) (hJ_ne : J ≠ ⊥) : maximalIdeal V ≤ J :=
-    let ⟨c, hc_mem, hc_ne⟩ := J.ne_bot_iff.1 hJ_ne
-    hV J hJ c (mem_nonZeroDivisors_of_ne_zero hc_ne) hc_mem
-  have h_arch : MulArchimedean (ValueGroupWithZero K) := by
-    refine ⟨valuation_surjective.forall₂.2 fun z y hy ↦ ?_⟩
-    obtain ⟨n, hn⟩ :=
-      exists_valuation_le_pow_of_maximalIdeal_le V h_prime z (h_equiv.one_lt_iff_one_lt.1 hy)
-    exact ⟨n, by rwa [← map_pow, h_equiv.le_iff_le, map_pow]⟩
-  -- An archimedean value group has rank at most one, that is, it embeds in `ℝ≥0` by some `g`.
-  obtain ⟨g, hg⟩ : IsRankLeOne K := isRankLeOne_iff_mulArchimedean.2 h_arch
-  refine ⟨(valuation K).map ⟨g, hg.monotone⟩, ?_⟩
-  rw [(isEquiv_iff_valuationSubring _ _).1
-    ((isEquiv_map_self_of_strictMono ⟨g, hg.monotone⟩ hg.injective).trans h_equiv),
-    V.valuationSubring_valuation]
+  have h : (valuation K).IsEquiv V.valuation := isEquiv _ _
+  -- The value group is archimedean, hence has rank at most one and embeds into `ℝ≥0` by some `g`.
+  obtain ⟨g, hg⟩ : IsRankLeOne K := isRankLeOne_iff_mulArchimedean.2
+    ⟨valuation_surjective.forall₂.2 fun z y hy ↦
+      (exists_valuation_le_pow_of_maximalIdeal_le V (fun J hJ hne ↦ (J.ne_bot_iff.1 hne).elim
+        fun c ⟨hc, hc0⟩ ↦ hV J hJ c (mem_nonZeroDivisors_of_ne_zero hc0) hc) z
+        (h.one_lt_iff_one_lt.1 hy)).imp fun n hn ↦ by rwa [← map_pow, h.le_iff_le, map_pow]⟩
+  exact ⟨(valuation K).map ⟨g, hg.monotone⟩, V.valuationSubring_valuation ▸
+    (isEquiv_iff_valuationSubring _ _).1 ((isEquiv_map_self_of_strictMono _ hg.injective).trans h)⟩
 
 /-- Blowing up inside a valuation ring. Let `O ⟶ W` be a local map from a noetherian local ring to
 a valuation ring. Then `W` has a noetherian `O`-subalgebra `A` with a prime `p` that is minimal

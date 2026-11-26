@@ -279,7 +279,7 @@ lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdm
   let ν : Measure G := .pi fun _ ↦ 𝔰.besselHaar₀
   let i : Γ →* G :=
     MonoidHom.mk' (fun k v ↦ ⟨S.ratToInf ((k : S.classUnipotent c) : S.G E) v,
-        ratToInf_mem_besselU0 (Subgroup.mem_inf.1 (mem_subgroupOf.1 k.2)).2 v⟩)
+        ratToInf_mem_besselU0 (Subgroup.mem_inf.1 (mem_subgroupOf.1 k.property)).2 v⟩)
       fun k k' ↦ funext fun v ↦ Subtype.ext <| congrFun (map_mul S.ratToInf _ _) v
   let ι (u : G) : NumberField.InfinitePlace E → 𝔰.G₁ := fun v ↦ u v
   have ι_mul (k : Γ) (u : G) : ι (i k * u) = S.ratToInf k * ι u := rfl
@@ -290,8 +290,8 @@ lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdm
       (by fun_prop) (by fun_prop) ?_ ?_ m (by fun_prop) h_pos h_finite ?_
     · simp only [ι_mul, mul_assoc, p_sum, implies_true]
     · intro k u
-      rw [ι_mul, mul_assoc, hF _ (mem_subgroupOf.1 k.2)]
-    · exact fun u ↦ h_bound (ι u) (fun v ↦ (u v).2) a ha
+      rw [ι_mul, mul_assoc, hF _ (mem_subgroupOf.1 k.property)]
+    · exact fun u ↦ h_bound (ι u) (fun v ↦ (u v).property) a ha
   -- Write both integrals as integrals of orbit integrals and compare orbit by orbit.
   grw [← lintegral_classCutoff_mul_sq_le c]
   rw [← lintegral_const_mul C (by fun_prop), lintegral_eq_lintegral_orbit (by fun_prop),
@@ -304,12 +304,12 @@ lemma lintegral_boxCutoff_le_of_average {X : Type*} [MeasurableSpace X] [S.IsAdm
   have hω : S.IsBoxPartitionOfUnity c ω := isBoxPartitionOfUnity_reducedIndicator c
   have cutoff_orbit (u : G) : S.classCutoff c (ι u * a) = p (ι u * a) * ω a := by
     rw [h_cutoff, Pi.mul_apply,
-      hω.besselFixer_invariant (ι u) a fun v ↦ mem_besselFixer_of_mem_besselU0 (u v).2]
+      hω.besselFixer_invariant (ι u) a fun v ↦ mem_besselFixer_of_mem_besselU0 (u v).property]
   have norm_orbit (u : G) : S.besselCutNormSq (ι u * a) = S.besselCutNormSq a := by
     refine Finset.prod_congr rfl fun v _ ↦ ?_
-    rw [Pi.mul_apply, enorm_besselSystem_cut_mul v (Subgroup.mem_inf.1 (u v).2).1]
+    rw [Pi.mul_apply, enorm_besselSystem_cut_mul v (Subgroup.mem_inf.1 (u v).property).1]
   have box_orbit (u : G) : ι u * a ∈ S.boxedPoints ↔ a ∈ S.boxedPoints :=
-    mul_mem_boxedPoints_iff fun v ↦ (u v).2
+    mul_mem_boxedPoints_iff fun v ↦ (u v).property
   by_cases ha : a ∈ S.boxedPoints
   · -- Pull the constant `K` out of both orbit integrals; `h_orbit` remains.
     let K : ENNReal := ω a * S.besselCutNormSq a

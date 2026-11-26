@@ -193,13 +193,6 @@ section PeriodLifting
 open CategoryTheory TensorProduct Function Functor Module LinearMap AlgebraTensorModule Period Lift
   WittVector AdicCompletion Submodule ModuleCat Comparison AddCommGrpCat
 
-/-- If `p * y` lies in `W(𝔪) = wittOfMaxIdeal`, for `𝔪` the maximal ideal of `O♭`, so does `y`:
-`W(𝔪)` is the kernel of the map to the Witt vectors of the residue field, a domain in which
-`p ≠ 0`. -/
-private lemma mem_wittOfMaxIdeal_of_natCast_mul_mem {p : ℕ} [ThePrime p] {y : Ainf}
-    (h : (p : Ainf) * y ∈ wittOfMaxIdeal) : y ∈ wittOfMaxIdeal := by
-  aesop (add simp [wittOfMaxIdeal, p_ne_zero])
-
 /-- There is a linear map `W(𝔪) → 𝔪` that is onto with kernel `p W(𝔪)`: the zeroth coordinate.
 Here `𝔪` is the maximal ideal of `O♭` and `W(𝔪) = wittOfMaxIdeal`. -/
 lemma exists_isReductionMod_wittOfMaxIdeal {p : ℕ} [ThePrime p] :
@@ -222,7 +215,8 @@ lemma exists_isReductionMod_wittOfMaxIdeal {p : ℕ} [ThePrime p] :
     simpa [Subtype.ext_iff] using h_iff
   constructor
   · rintro ⟨y, rfl⟩
-    exact ⟨y, mem_wittOfMaxIdeal_of_natCast_mul_mem hx, rfl⟩
+    -- The Witt vectors of the residue field form a domain, and `p` is nonzero there.
+    exact ⟨y, by simpa [wittOfMaxIdeal, p_ne_zero] using hx, rfl⟩
   · rintro ⟨y, -, rfl⟩
     exact ⟨y, rfl⟩
 
@@ -533,7 +527,7 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
   refine (NatIso.ofComponents (F := ringFunctor ⋙ locConstAlg)
       (G := genericTest ⋙ testIncl ⋙ locConstAlg)
       (fun c ↦ isoMk (.ofBijective
-        (locConstAlg.map (ofHom (algebraMap c.ProdRing c.GenericRing))).1
+        (locConstAlg.map (ofHom (algebraMap c.ProdRing c.GenericRing))).hom'
         c.bijective_locConstAlg_map_algebraMap))
       fun _ ↦ ?restrict).inv ≫
     { app c := ConcreteCategory.ofHom (.mk'
@@ -549,8 +543,18 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
     ext x
     refine ext fun n ↦ toPiLocalization_injective _ (funext fun q ↦ .trans ?_
       (Localization.localRingHom_to_map _ _ (quotientMap _ f.1 (by simp)) (comap_asIdeal ..) _))
-    erw [hφ, eq_comm, ← RingHom.comp_apply, ext_zmod (.comp ..)]
-    exact .symm (hφ ..)
+    let ρ := quotientMap (I := Ideal.span {(p : c.ProdRing)})
+      (Ideal.span {(p : d.ProdRing)}) f.1 (by simp)
+    let r := PrimeSpectrum.comap ρ q
+    let L := Localization.localRingHom r.asIdeal q.asIdeal ρ (comap_asIdeal ..)
+    let restrict (a : PadicTest) := locConstAlg.map (CommRingCat.ofHom (Ideal.Quotient.mk
+      (Ideal.span ({(p : a.ProdRing)} : Set a.ProdRing))))
+    change algebraMap _ (Localization.AtPrime q.asIdeal)
+        (φ d (restrict d ((ringFunctor ⋙ locConstAlg).map f x))) =
+      L (algebraMap _ (Localization.AtPrime r.asIdeal) (φ c (restrict c x)))
+    refine (hφ d _ q).trans (.trans ?_ (congrArg L (hφ c _ r).symm))
+    let α := (L.comp (algebraMap (ZMod p) (Localization.AtPrime r.asIdeal)))
+    exact (DFunLike.congr_fun (ext_zmod α (algebraMap _ _)) _).symm
 
 /-- The functor from test rings to `O♭`-algebras sending `A` to `O♭ ⊗_{𝔽_p} LC(A)`, where `LC(A)` is
 the ring of locally constant functions `Spec A → 𝔽_p`. -/

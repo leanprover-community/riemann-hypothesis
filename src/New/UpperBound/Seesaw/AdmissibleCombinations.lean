@@ -195,27 +195,13 @@ lemma map_gluedGram {K L : Type*} [CommRing K] [CommRing L] (f : K →+* L) (p q
 /-- The matrices `gluedGram p 0` and `gluedGram 0 p` multiply to `1`. -/
 lemma gluedGram_mul_eq_one [Fintype X] {K : Type*} [CommRing K] (p : K) :
     gluedGram (X := X) (s := s) p 0 * gluedGram 0 p = 1 := by
-  -- The product is computed block by block, by cases on whether there is a middle vector; `A r`,
-  -- `C` and `J r` name the blocks of `gluedGram`.
-  let J (r : K) : Matrix (Fin s) (Fin s) K :=
-    of fun b c ↦ if b = c.rev then (if b = c then -r else 1) else 0
-  let A (r : K) : Matrix (X ⊕ Unit) (X ⊕ Unit) K :=
-    diagonal (1 ⊕ᵥ fun _ : Unit ↦ if Odd s then r else 1)
-  let C : Matrix (X ⊕ Unit) (Fin s) K := of (0 ⊕ᵥ fun _ b ↦ if b = b.rev then -1 else 0)
-  change fromBlocks (A 0) C Cᵀ (J p) * fromBlocks (A p) C Cᵀ (J 0) = 1
-  suffices (A 0 * A p + C * Cᵀ = 1 ∧ A 0 * C + C * J 0 = 0 ∧ Cᵀ * C + J p * J 0 = 1) ∧
-      Cᵀ * A p + J p * Cᵀ = 0 by
-    simp only [fromBlocks_multiply, this, fromBlocks_one]
+  -- Compute the block product by cases on whether `s` is odd (existence of a middle vector).
   by_cases hs : Odd s
-  · constructor
-    · simp [A, C, J, hs, eq_rev_iff_of_odd hs, ← ext_iff, Matrix.mul_apply, Matrix.one_apply,
-        diagonal, Function.swap]
-      grind
-    · simp [A, C, J, hs, eq_rev_iff_of_odd hs, ← ext_iff, Matrix.mul_apply, diagonal,
-        ← Fin.rev_eq_iff, Function.swap]
-      grind
-  · simp [A, C, J, hs, ne_rev_of_not_odd hs, ← ext_iff, Matrix.mul_apply, Matrix.one_apply,
-      diagonal, Function.swap]
+  · simp [gluedGram, fromBlocks_multiply, ← fromBlocks_one, hs, eq_rev_iff_of_odd hs, ← ext_iff,
+      Matrix.mul_apply, Matrix.one_apply, diagonal, Function.swap]
+    grind [eq_rev_iff_of_odd, Fin.rev_eq_iff]
+  · simp [gluedGram, fromBlocks_multiply, ← fromBlocks_one, hs, ne_rev_of_not_odd hs, ← ext_iff,
+      Matrix.mul_apply, Matrix.one_apply, diagonal, Function.swap]
     grind
 
 /-- A ring homomorphism carries the graded Gram matrix with parameter `r` to the one with `f r`. -/
@@ -239,6 +225,7 @@ lemma isHermitian_map_gradedGram_natCast (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S 
 
 variable [Fintype X] [Fintype ι]
 
+omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`. Let `J = New.gradedGram e N` be the
 form that is the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to
 `-N` if they are equal, carried from `S` to the star ring `R` by `f`; write `π̄ = star π` and
@@ -248,11 +235,13 @@ follows. For odd `s`, the string vectors are multiplied by `u` and the vector `y
 string is multiplied by `u a⁻¹` and the second half by `u ā`. If `N = π π̄` in `R`, then `Bᴴ J B`
 is `gluedGram N 0`, reindexed by `e`. It agrees with `J` except that, for odd `s`, the vector of
 `Unit` has norm `0` and pairs to `-1` with the middle vector. -/
-lemma gram_gradedLatticeBasis_eq_gluedGram (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*} [CommRing S]
+lemma gram_gradedLatticeBasis_eq_gluedGram
+    [Finite X] (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*} [CommRing S]
     [StarRing R] {f : S →+* R} (a : Rˣ) {π : Rˣ} (u : unitary R)
     (hN : f (N : S) = π * star (π : R)) :
     (gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f * gradedLatticeBasis e a π u =
       reindex e e (gluedGram (N : R) 0) := by
+  have := Fintype.ofFinite X
   -- The blocks of the basis are `T`, `0`, `Z`, `D`; the form is `G` on the string.
   let T : Matrix (X ⊕ Unit) (X ⊕ Unit) R :=
     if Odd s then diagonal (1 ⊕ᵥ fun _ : Unit ↦ ((star π)⁻¹ : Rˣ).val) else 1
@@ -296,6 +285,7 @@ lemma gram_gradedLatticeBasis_eq_gluedGram (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {
 
 variable [DecidableEq ι]
 
+omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`. Let `J = New.gradedGram e N` be the
 form that is the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to
 `-N` if they are equal, carried from `S` to the star ring `R` by `f`. For units `a`, `π` and a
@@ -304,11 +294,13 @@ changed as follows. For odd `s`, the string vectors are multiplied by `u` and th
 `Unit` becomes `y / π̄ + u z / (π π̄)`, with `z` the middle string vector. For even `s`, the first
 half of the string is multiplied by `u a⁻¹` and the second half by `u ā`. If `N = π π̄` in `R`,
 then `Bᴴ J B` is unimodular over every subring `O` of `R`: it is hermitian and lies in `GL(O)`. -/
-lemma isUnimodular_gradedLatticeBasis_gram {s N : ℕ} (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*}
+lemma isUnimodular_gradedLatticeBasis_gram
+    [Finite X] {s N : ℕ} (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*}
     {O : Subring R} [CommRing S] [StarRing R] {f : S →+* R} {a π : Rˣ} {u : unitary R}
     (hN : f (N : S) = π * star (π : R)) :
     IsUnimodular O ((gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f *
       gradedLatticeBasis e a π u) := by
+  have := Fintype.ofFinite X
   -- The Gram matrix is `gluedGram N 0`, reindexed by `e`; it and its inverse `gluedGram 0 N` have
   -- entries in `O`.
   let B : Matrix ι ι R := gradedLatticeBasis e a π u
@@ -399,15 +391,17 @@ lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFram
     Finset.sum_add_distrib]
   split_ifs <;> first | lia | (norm_cast; grind)
 
+omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`, and let `N` be a positive integer.
 Let `J` be the image under `φ` of `New.gradedGram e N`, the form that is the identity on `X ⊕ Unit`
 and pairs string vectors `b` and `s - 1 - b` to `1`, or to `-N` if they are equal. If exactly
 `⌊(s + 1) / 2⌋` of the signs `ε i` are `-1`, then `yᴴ J y = diag(ε)` (`New.signMatrix ε`) for some
 complex matrix `y`, which is unitary if `N = 1`. -/
-lemma exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix (e : (X ⊕ Unit) ⊕ Fin s ≃ ι)
+lemma exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix [Finite X] (e : (X ⊕ Unit) ⊕ Fin s ≃ ι)
     (φ : R →+* ℂ) (hN : 0 < N) {ε : ι → ℤˣ} (hε : negCount ε = (s + 1) / 2) :
     ∃ y : Matrix ι ι ℂ, yᴴ * (gradedGram e (N : R)).map φ * y = signMatrix ε ∧
       (N = 1 → yᴴ * y = 1) := by
+  have := Fintype.ofFinite X
   -- Up to a bijection `f` of the indices the signs are `1` on `X ⊕ Unit` and `stringSign s` on
   -- the string. The frame is the identity on `X ⊕ Unit` and `stringFrame s N` on the string.
   let σ : (X ⊕ Unit) ⊕ Fin s → ℤˣ := 1 ⊕ᵥ stringSign s
@@ -832,7 +826,7 @@ lemma star_idem_smul_mem_translations {q : ℕ} (𝔪 : Modulus E) {d : Ô E}
     simp only [t, star_mul', star_natCast]
     ring
   have h_int : q * t ∈ Ô E := by
-    simpa only [h_eq] using star_mem_Ô (mul_mem (idem_mem_Ô _) (mul_mem h_dq (z i).2))
+    simpa only [h_eq] using star_mem_Ô (mul_mem (idem_mem_Ô _) (mul_mem h_dq (z i).property))
   have h_unit : Valued.v ((q : 𝔸f E) w) = 1 := by simpa using v_algebraMap_eq_one hw
   calc Valued.v (t w) = Valued.v ((q : 𝔸f E) w * t w) := by rw [map_mul, h_unit, one_mul]
     _ ≤ 1 := mem_Ô.1 h_int w

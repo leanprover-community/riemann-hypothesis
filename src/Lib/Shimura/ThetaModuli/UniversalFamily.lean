@@ -72,7 +72,7 @@ lemma isUnit_star_sub_and_card_of_isGoodOver {E : Type} [Field E] [CMBase E] {D 
   -- As `#T ∉ w`, the factor `β̄ - β` is in `m`; adding `β - b` puts `β̄ - b` in `w`, against
   -- coprimality.
   have h_diff : algebraMap (𝓞 E) R (star D.β - D.β) ∈ m :=
-    (hm.isPrime.mem_or_mem h_mem).resolve_right (by simpa using hT)
+    (hm.isPrime.mem_or_mem h_mem).resolve_right (hT)
   have h_conj : star D.β - b ∈ m.comap (algebraMap (𝓞 E) R) := by
     simpa using add_mem h_diff hβ
   exact notMem_of_isCoprime_of_mem h_coprime hβ h_conj
@@ -223,13 +223,6 @@ def levelPoint (R : Subalgebra (𝓞 E) E) (ω : D.levelTorsion) (a : FamilyPara
   homMk (exists_isHomogeneousCoords_levelCoords R ω a).choose
     (exists_isHomogeneousCoords_levelCoords R ω a).choose_spec.1
 
-/-- The theta coordinates of the level point `ω` at `a` are homogeneous coordinates of
-`levelPoint R ω a`. -/
-lemma isHomogeneousCoords_levelPoint (ω : D.levelTorsion) (a : FamilyParameter D) :
-    ((hyperplaneBundle D.dualTorsion).pull prod.fst).IsHomogeneousCoords (levelPoint R ω a).left
-      (a.levelCoords ω) :=
-  (exists_isHomogeneousCoords_levelCoords R ω a).choose_spec.2
-
 /-- The reduced closure, in a product of projective spaces over `R` indexed by the level torsion,
 of the theta coordinates of the level points at the parameters `y b`. -/
 abbrev ThetaClosure [Fintype D.levelTorsion] (R : Subalgebra (𝓞 E) E) {B : Type}
@@ -262,7 +255,7 @@ lemma isHomogeneousCoords_complexPoint (b : B) (ω : D.levelTorsion) :
   -- The bundle is pulled back along the projection to the factor `ω`, which sends the point at `b`
   -- to `levelPoint R ω (y b)`.
   rw [IsHomogeneousCoords.pull_iff, ← comp_left, C.point_comp_proj]
-  exact isHomogeneousCoords_levelPoint ω (y b)
+  exact (exists_isHomogeneousCoords_levelCoords R ω (y b)).choose_spec.2
 
 /-- The morphism `C.scheme.hom` has a projective embedding, obtained via `C.incl` into a product of
 projective spaces. -/
@@ -373,7 +366,7 @@ lemma holomorphicAt_complexPoint {F : AnalyticFamily D} ⦃b : BallBase D.Index�
     ∏ ω : D.levelTorsion, (u b' • FamilyParameter.levelCoords (F, b') ω) (k ω)
   have h_analytic (k : D.levelTorsion → D.dualTorsion) : AnalyticAt ℂ (fun b' ↦ coords b' k) b :=
     Finset.analyticAt_fun_prod _ fun ω _ ↦
-      (hu ..).comp₂ analyticAt_id (F.analyticAt _ hb (toRealVectors (ratLift F.frame ω.1)))
+      (hu ..).comp₂ analyticAt_id (F.analyticAt _ hb (toRealVectors (ratLift F.frame ω.val)))
   refine .of_isHomogeneousCoords C.isProjEmbedding_pi_coordBundle h_analytic
     (hu_ne.mono fun b' h_unit ↦ ?_) fun _ ↦ Over.w _
   exact .pi (w := (·)) fun ω ↦ (C.isHomogeneousCoords_complexPoint (F, b') ω).smul h_unit
@@ -510,29 +503,23 @@ theorem nonempty_universalFamily {M : Submonoid (𝓞 E)} [IsLocalization M R]
   -- The base is the closure `C` of the theta coordinates of the level points at all parameters.
   -- Finitely many generic points are dense in it, so it carries a family `X`. It is smooth near
   -- each of the arcs `α z`, and these neighbourhoods cover it.
-  have h_finite : Finite D.levelTorsion := finite_torsionBy ⟨_, by simp [D.level_ne_zero]⟩
-  have h_fintype := Fintype.ofFinite D.levelTorsion
-  have h_dedekind : IsDedekindDomain R := IsLocalization.isDedekindDomain (𝓞 E) hM_le R
+  have : Finite D.levelTorsion := finite_torsionBy ⟨_, by simp [D.level_ne_zero]⟩
+  have := Fintype.ofFinite D.levelTorsion
+  have := IsLocalization.isDedekindDomain (𝓞 E) hM_le R
   obtain ⟨C⟩ : Nonempty (ThetaClosure (D := D) R id) := inferInstance
   obtain ⟨ι, hι, a, h_generic, h_dense⟩ := C.exists_finite_isDenseFamily M hR_good
   obtain ⟨X, hX⟩ := C.exists_hasThetaFibres M hR_good h_dense
   choose i v α hα h_spec h_good using C.exists_arc_isGoodAt hR_good h_dense
-  choose U hU hU_smooth using fun z : C.scheme.left ↦
+  choose U hU hU_smooth using fun z ↦
     C.exists_smooth_near_arc hX (h_generic (i z)) (hα z) (h_good z)
-  have h_cover : ⨆ z, U z = ⊤ :=
-    top_unique fun z _ ↦ le_iSup U z ((h_spec z).mem_open (U z).isOpen (hU z ⟨⟩))
-  have h_smooth : SmoothOfRelativeDimension (Fintype.card D.Index - 1) C.scheme.hom :=
-    HasRingHomProperty.instIsZariskiLocalAtSource.of_iSup_eq_top U h_cover hU_smooth
   choose m hθ using hX
-  exact ⟨{ isDedekindDomain := h_dedekind
-           base := C.scheme
-           family := X
-           hasProjEmbedding := C.hasProjEmbedding
-           smooth := h_smooth
-           obj := C.point
-           model := m
-           holomorphic := C.holomorphicAt_uniformisation m hθ
-           dense := C.isSeparatingFamily.right }⟩
+  exact ⟨{
+    isDedekindDomain := inferInstance, base := C.scheme, family := X
+    hasProjEmbedding := C.hasProjEmbedding, obj := C.point, model := m
+    holomorphic := C.holomorphicAt_uniformisation m hθ, dense := C.isSeparatingFamily.right
+    smooth := HasRingHomProperty.instIsZariskiLocalAtSource.of_iSup_eq_top U
+      (top_unique fun z _ ↦ le_iSup U z ((h_spec z).mem_open (U z).isOpen (hU z ⟨⟩)))
+      hU_smooth }⟩
 
 end New.Variety.ThetaNull
 

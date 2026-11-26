@@ -1,5 +1,10 @@
 module
 
+public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
+public import Mathlib.GroupTheory.FiniteAbelian.Duality
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Topology.Instances.ZMod
+public import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 public import Lib.General.Topology
 
@@ -119,9 +124,9 @@ lemma eq_zero_of_forall_hom_eq_zero {a : A} (h_eval : ∀ u : A →+ QZ, u a = 0
 
 /-! ### The embedding of `ZMod n` -/
 
-/-- For `n` nonzero, the additive homomorphism `ℤ/n → ℚ/ℤ` sending the class of `k` to the class
-of `k / n`. -/
-def ofZMod (n : ℕ) [NeZero n] : ZMod n →+ QZ :=
+/-- The additive homomorphism `ℤ/n → ℚ/ℤ` sending the class of `k` to the class
+of `k / n`. For `n = 0`, this is the zero homomorphism. -/
+def ofZMod (n : ℕ) : ZMod n →+ QZ :=
   ZMod.lift n ⟨zmultiplesHom QZ (mk (n : ℚ)⁻¹), int.divByNat_self n⟩
 
 variable [NeZero n]
@@ -282,7 +287,6 @@ lemma exists_eval_eq_on_finset (t : QZChar G →+ QZ) (S : Finset (QZChar G)) :
   -- `E` is the group of the homomorphisms `T →+ QZ` that are evaluation at a point of `G`.
   let pair : QZChar G →+ Additive G →+ QZ := .mk' (fun χ ↦ toAdditiveLeft (toHom χ)) fun _ _ ↦ rfl
   let ev : Additive G →+ T →+ QZ := (pair.domRestrict T).flip
-  have ev_apply (g : Additive G) (χ : T) : ev g χ = (χ : QZChar G).val g.toMul := rfl
   let E : AddSubgroup (T →+ QZ) := ev.range
   -- Evaluations separate characters, so `T` embeds in the dual of `E`. As a finite group and
   -- its dual have the same order, `E` is all of the dual of `T`.

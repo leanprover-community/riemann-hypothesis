@@ -1,17 +1,21 @@
 module
 
-public import Lib.CM.FormalGroup.IntegralParameter
+public import Mathlib.Algebra.AffineMonoid.UniqueSums
+public import Lib.General.Algebra.SeriesBounds
 
 /-!
 # The integrality principle in one variable
 
-* `New.CMLattice.mem_span_monomialSection`: a section with integral torsion values is an integral
-  combination of monomials; `New.CMLattice.exists_polynomial_of_even` treats even sections.
+* `New.CMLattice.mem_span_monomialSection`: a section of degree `m` that is at most `h ^ m`, where
+  `h` is the naive height, is an integral combination of monomials;
+  `New.CMLattice.exists_polynomial_of_even` treats even sections.
 * `New.CMLattice.exists_taylorVia_eq_theta_pow_mul`: its Taylor series lies in `θ ^ m 𝒪[[y]]`.
 
-Write the section as `θ ^ m (P₀(x) + y P₁(x))`, where `P₁ = 0` if the section is even, and
-interpolate at the nodes `x(tᵢ)`, where `tᵢ = t / 2 ^ i` and `i ≥ 1`. The numbers `θ[tᵢ]`, `x'(tᵢ)`
-and `x(tᵢ) - x(tⱼ)` for `i ≠ j` are units.
+Write the section as `θ ^ m (P₀(x) + y P₁(x))`, where `P₁ = 0` if the section is even. Take an
+integral number `c` at which `P₀`, `P₁` and the cubic `Q` with `x' ^ 2 = Q(x)` are at least as
+large as all their coefficients, and a point `z` with `x(z) = c`. There the height is the norm of
+`θ(z)`, so the bracket is integral at `z` and at `-z`. As `x'(z)` is a unit, `P₁(c)` is integral,
+and then so is `P₀(c)`.
 
 Notions from other files:
 
@@ -24,10 +28,9 @@ For a lattice `Λ = C.Λ` with a point `t = C.t` of order two modulo `Λ`:
   `θ ^ (a + 2 b + 3 c) x ^ b y ^ c` off `t + Λ`, with degree
   `monomialDeg (a, b, c) = a + 2 b + 3 c`, and `spanningExponents m` is the set of triples with
   `c ≤ 1` and `a + 2 b + 3 c = m`.
-* The value `G[u]` is the value at `0` of the translate of `G` by `u`, twisted by the degree `m`
-  (written `torsionValue m G u`); it is called a torsion value if `u` is a torsion point, and
-  `HasIntegralValues` says that all torsion values have norm at most `1` in `ℂ_p`, under the ring
-  homomorphism `ιₚ : ℂ →+* ℂ_[p]` fixed by the instance `PadicPlace p`.
+* The naive height `h = naiveHeight` is `max (‖ιₚ (σ z)‖, ‖ιₚ (θ z)‖)`, where `σ` is the sigma
+  function of `Λ` and `ιₚ : ℂ →+* ℂ_[p]` is the ring homomorphism fixed by the instance
+  `PadicPlace p`.
 
 ## Relation to the literature
 
@@ -35,11 +38,6 @@ Known result: integral expansions of theta functions of CM elliptic curves, at o
 `p ≥ 5`. Here `p` is arbitrary, but `d` is a prime congruent to `7` modulo `8`. Source: Bannai and
 Kobayashi, Algebraic theta functions and the p-adic interpolation of Eisenstein-Kronecker numbers,
 Duke Math. J. 153 (2010), 229-295, after Norman and Mazur–Tate.
-
-Known result: for a lattice with complex multiplication, the value of the Siegel function at a
-torsion point is a unit if two different prime ideals divide the annihilator of the point. Only the
-points `t / 2 ^ i` are treated, by doubling. Source: Ramachandra and Robert; Kubert and Lang,
-*Modular Units*.
 -/
 
 @[expose] public section
@@ -47,29 +45,6 @@ points `t / 2 ^ i` are treated, by doubling. Source: Ramachandra and Robert; Kub
 open PowerSeries
 
 namespace New
-
-/-- Lagrange interpolation: if the points `x i` are integral and any two have difference of norm
-`1`, then a polynomial with integral values at all of them has integral coefficients. -/
-lemma norm_coeff_le_one_of_norm_eval_le_one {p : ℕ} [Fact p.Prime] {x : ℕ → ℂ_[p]}
-    (hx : ∀ i : ℕ, ‖x i‖ ≤ 1) (h_sub : ∀ i j : ℕ, i ≠ j → ‖x i - x j‖ = 1) {P : Polynomial ℂ_[p]}
-    (hP : ∀ i : ℕ, ‖P.eval (x i)‖ ≤ 1) (n : ℕ) : ‖P.coeff n‖ ≤ 1 := by
-  -- `S` holds the polynomials with coefficients in `valRingCp p`, that is, of norm at most `1`.
-  let S : Subring (Polynomial ℂ_[p]) := Polynomial.liftsRing (valRingCp p).subtype
-  have hC {a : ℂ_[p]} (ha : ‖a‖ ≤ 1) : Polynomial.C a ∈ S := ⟨.C ⟨a, ha⟩, Polynomial.map_C _⟩
-  have hX : Polynomial.X ∈ S := ⟨Polynomial.X, Polynomial.map_X _⟩
-  have h_inj : Function.Injective x := fun i j h ↦
-    by_contra fun hij ↦ by simpa [h] using h_sub i j hij
-  -- The denominators `x i - x j` in the interpolation formula are units.
-  have h_mem : P ∈ S := by
-    rw [Lagrange.eq_interpolate (s := Finset.range (P.natDegree + 1)) h_inj.injOn
-      (P.degree_le_natDegree.trans_lt (mod_cast by simp))]
-    simp only [Lagrange.interpolate_apply, Lagrange.basis, Lagrange.basisDivisor]
-    refine sum_mem fun i _ ↦ mul_mem (hC (hP i)) (prod_mem fun j hj ↦ ?_)
-    refine mul_mem (hC ?_) (sub_mem hX (hC (hx j)))
-    rw [norm_inv, h_sub i j (Finset.ne_of_mem_erase hj).symm, inv_one]
-  obtain ⟨Q, rfl⟩ := h_mem
-  rw [Polynomial.coe_mapRingHom, Polynomial.coeff_map]
-  exact (Q.coeff n).property
 
 namespace CMLattice
 variable {d : ℕ} (C : CMLattice d) {p : ℕ} [Fact p.Prime] [PadicPlace p] {f : ℂ → ℂ} {m : ℕ}
@@ -211,236 +186,121 @@ lemma taylorVia_eq_of_eq_theta_pow_mul_eval {P : Polynomial ℂ}
   simp (disch := fun_prop) only [taylorVia, C.taylorAtZero_congr h_eq, taylorAtZero_mul,
     taylorAtZero_pow, taylorAtZero_eval, map_mul, map_pow, h_eval]
 
-/-! ### Units at the points `t / 2 ^ i`
+/-! ### A general integral point and the integrality principle -/
 
-The lemmas of this part prove the case of the theorem on Siegel units (Ramachandra, Robert) that is
-used. The proof follows the pair `w(u) = (ιₚ θ[u] ^ 2, ιₚ σ[u] ^ 2)` of elements of `ℂ_p`, that is
-`squarePair u`, under doubling. -/
-
-lemma torsionValue_theta_neg (u : ℂ) : C.torsionValue 1 C.θ (-u) = C.torsionValue 1 C.θ u := by
-  rw [torsionValue_eq, torsionValue_eq, theta_neg, norm_neg]
-
-variable {C} in
-/-- Let `f` have integral torsion values in degree `m`, and let `u` be a torsion point where
-`θ[u]` is a unit. If `f(u) = θ(u) ^ m c`, then `c` is integral. -/
-lemma HasIntegralValues.norm_le_one_of_eq_theta_pow_mul (h_int : C.HasIntegralValues m f)
-    {u c : ℂ} (hu : C.IsTorsion u) (hθ : ‖ιₚ (C.torsionValue 1 C.θ u)‖ = 1)
-    (h_eq : f u = C.θ u ^ m * c) : ‖ιₚ c‖ ≤ 1 := by
-  simpa [C.torsionValue_eq_mul_theta_pow h_eq, hθ] using h_int u hu
-
-/-- If `u + t` is not a period, the second coordinate of the pair
-`squarePair u = (ιₚ θ[u] ^ 2, ιₚ σ[u] ^ 2)` is `ιₚ (x(u))` times the first, where
-`x = translatedX`. -/
-lemma squarePair_snd {u : ℂ} (hu : u + C.t ∉ C.Λ) :
-    (C.squarePair u).2 = (C.squarePair u).1 * ιₚ (C.translatedX u) := by
-  have h_sq : (C.σ ^ 2) u = C.θ u ^ (2 * 1) * C.translatedX u := by
-    rw [Pi.pow_apply, C.sigma_sq_eq_translatedX_mul_theta_sq hu, mul_comm]
-  simp only [squarePair, ← map_pow, ← map_mul]
-  rw [← torsionValue_pow, C.torsionValue_eq_mul_theta_pow h_sq]
-
-/-- The points `tᵢ = t / 2 ^ i`, where `t` is the chosen point of order two modulo the lattice. -/
-noncomputable def halvingPoint (i : ℕ) : ℂ := C.t / 2 ^ i
-
-lemma two_pow_mul_halvingPoint (i : ℕ) : 2 ^ i * C.halvingPoint i = C.t :=
-  mul_div_cancel₀ C.t (pow_ne_zero i two_ne_zero)
-
-lemma two_mul_halvingPoint_succ (i : ℕ) : 2 * C.halvingPoint (i + 1) = C.halvingPoint i := by
-  simp [halvingPoint, pow_succ, field]
-
-lemma two_pow_mul_two_t_mem (i : ℕ) : 2 ^ i * (C.t + C.t) ∈ C.Λ := by
-  simpa only [nsmul_eq_mul, Nat.cast_pow, Nat.cast_ofNat] using nsmul_mem C.two_t_mem (2 ^ i)
-
-lemma two_pow_mul_halvingPoint_mem {i j : ℕ} (hij : i < j) : 2 ^ j * C.halvingPoint i ∈ C.Λ := by
-  obtain ⟨k, rfl⟩ : ∃ k : ℕ, j = i + k + 1 := Nat.exists_eq_add_of_lt hij
-  have h_eq : 2 ^ (i + k + 1) * C.halvingPoint i = 2 ^ k * (C.t + C.t) := by
-    linear_combination 2 ^ (k + 1) * C.two_pow_mul_halvingPoint i
-  simpa only [h_eq] using C.two_pow_mul_two_t_mem k
-
-lemma isTorsion_halvingPoint (i : ℕ) : C.IsTorsion (C.halvingPoint i) :=
-  ⟨2 ^ (i + 1), by positivity, mod_cast C.two_pow_mul_halvingPoint_mem (lt_add_one i)⟩
+omit C in
+/-- Some integral `c` makes each of finitely many polynomials as large as its coefficients. -/
+lemma exists_norm_coeff_le_norm_eval {n : ℕ} (F : Fin n → Polynomial ℂ) :
+    ∃ c : ℂ, ‖ιₚ c‖ ≤ 1 ∧ ∀ (i : Fin n) (k : ℕ), ‖ιₚ ((F i).coeff k)‖ ≤ ‖ιₚ ((F i).eval c)‖ := by
+  -- Read the polynomials as polynomials in one variable indexed by `Unit`, with the valuation
+  -- `c ↦ ‖ιₚ c‖` on `ℂ`.
+  let v : Valuation ℂ NNReal := NormedField.valuation.comap ιₚ
+  obtain ⟨y, hy⟩ := exists_val_coeff_le_val_eval v fun i : Fin n ↦
+    (MvPolynomial.uniqueAlgEquiv ℂ Unit).symm (F i)
+  refine ⟨y (), (y ()).property, fun i k ↦ ?_⟩
+  have h_eval : MvPolynomial.eval (algebraMap v.valuationSubring ℂ ∘ y)
+      ((MvPolynomial.uniqueAlgEquiv ℂ Unit).symm (F i)) = (F i).eval (y () : ℂ) :=
+    MvPolynomial.eval₂_uniqueAlgEquiv_symm
+  have h_le := hy i (Finsupp.single () k)
+  rw [MvPolynomial.coeff_uniqueAlgEquiv_symm, Finsupp.single_eq_same, h_eval] at h_le
+  exact h_le
 
 variable [PrimeSevenModEight d]
-
-/-- If numbers `a ∈ [0, 1]` and `b ≤ 1` satisfy `a ^ 2 b = 1`, then `a = 1`. -/
-lemma eq_one_of_sq_mul_eq_one {a b : ℝ} (ha₀ : 0 ≤ a) (ha : a ≤ 1) (hb : b ≤ 1)
-    (h_eq : a ^ 2 * b = 1) : a = 1 := by
-  nlinarith [mul_le_mul_of_nonneg_left hb (sq_nonneg a)]
-
-/-- If `2 ^ j v` is a period and `tⱼ = t / 2 ^ j`, then the pairs `w(tⱼ)` and `w(v)`, where
-`w = squarePair`, reduce to distinct points of the projective line (their determinant is a unit):
-doubling `j` times takes the first to `(0 : 1)` and the second to `(1 : 0)`. -/
-lemma norm_det_squarePair_halvingPoint {j : ℕ} {v : ℂ} (hv : 2 ^ j * v ∈ C.Λ) :
-    ‖(C.squarePair (C.halvingPoint j)).1 * (C.squarePair v).2 -
-      (C.squarePair (C.halvingPoint j)).2 * (C.squarePair v).1‖ = 1 := by
-  have h_norm : ‖(doublingForms (ιₚ C.a₁))^[j] (C.squarePair (C.halvingPoint j))‖ = 1 := by
-    rw [← squarePair_two_pow_mul, norm_squarePair_two_pow_mul,
-      C.norm_squarePair (C.isTorsion_halvingPoint j), one_pow]
-  have h_fst : ((doublingForms (ιₚ C.a₁))^[j] (C.squarePair (C.halvingPoint j))).1 = 0 := by
-    rw [← squarePair_two_pow_mul, two_pow_mul_halvingPoint, squarePair_fst_eq_zero_iff]
-    exact C.two_t_mem
-  have h_snd : ((doublingForms (ιₚ C.a₁))^[j] (C.squarePair v)).2 = 0 := by
-    rwa [← squarePair_two_pow_mul, squarePair_snd_eq_zero_iff]
-  exact norm_det_eq_one_of_iterate_doublingForms C.norm_a₁_le_one
-    (C.norm_squarePair (C.isTorsion_halvingPoint j))
-    (C.norm_squarePair ⟨2 ^ j, by positivity, mod_cast hv⟩) h_norm h_fst h_snd
-
-/-- With `tᵢ = t / 2 ^ i` the torsion value `θ[tᵢ₊₁]` is a unit, as `w(tᵢ₊₁)`, where
-`w = squarePair`, does not reduce to `w(t₀) = (0 : 1)`.
-
-This is a local analogue of the unit property of Siegel units (Ramachandra, Robert), only for `θ` at
-the points `t / 2 ^ (i + 1)`, at the chosen place above `p`, with `d` prime `≡ 7 mod 8`. -/
-lemma norm_torsionValue_theta_halvingPoint (i : ℕ) :
-    ‖ιₚ (C.torsionValue 1 C.θ (C.halvingPoint (i + 1)))‖ = 1 := by
-  have h_zero : (C.squarePair (C.halvingPoint 0)).1 = 0 :=
-    C.squarePair_fst_eq_zero_iff.2 (by simpa [halvingPoint] using C.two_t_mem)
-  have h_det : ‖(C.squarePair (C.halvingPoint (i + 1))).1‖ *
-      ‖(C.squarePair (C.halvingPoint 0)).2‖ = 1 := by
-    simpa [h_zero] using
-      C.norm_det_squarePair_halvingPoint (C.two_pow_mul_halvingPoint_mem (Nat.succ_pos i))
-  have h_le : ‖ιₚ (C.torsionValue 1 C.θ (C.halvingPoint (i + 1)))‖ ≤ 1 :=
-    C.hasIntegralValues_theta _ (C.isTorsion_halvingPoint _)
-  have h_snd : ‖(C.squarePair (C.halvingPoint 0)).2‖ ≤ 1 :=
-    (norm_snd_le _).trans (C.norm_squarePair (C.isTorsion_halvingPoint 0)).le
-  rw [show ‖(C.squarePair (C.halvingPoint (i + 1))).1‖ =
-    ‖ιₚ (C.torsionValue 1 C.θ (C.halvingPoint (i + 1)))‖ ^ 2 from norm_pow _ _] at h_det
-  exact eq_one_of_sq_mul_eq_one (norm_nonneg _) h_le h_snd h_det
-
-/-- Let `C` be a CM lattice (`d` a prime `≡ 7 mod 8`) with point `t` of order two, let
-`tᵢ = t / 2 ^ i`, and let `ιₚ : ℂ → ℂ_p` be the chosen `p`-adic place. The torsion value `σ[tᵢ]`
-(value at 0 of the degree-1 twisted translate of `C.σ` by `tᵢ`) has norm 1, as `w(tᵢ)`, where
-`w = squarePair`, does not reduce to `w(2 t) = (1 : 0)`.
-
-This is a local form of the unit property of Siegel units (Ramachandra, Robert), only at the points
-`t / 2 ^ i` of these CM lattices and at the chosen place above `p`. -/
-lemma norm_torsionValue_sigma_halvingPoint (i : ℕ) :
-    ‖ιₚ (C.torsionValue 1 C.σ (C.halvingPoint i))‖ = 1 := by
-  have h_zero : (C.squarePair (C.t + C.t)).2 = 0 := C.squarePair_snd_eq_zero_iff.2 C.two_t_mem
-  have h_det : ‖(C.squarePair (C.halvingPoint i)).2‖ * ‖(C.squarePair (C.t + C.t)).1‖ = 1 := by
-    simpa [h_zero] using C.norm_det_squarePair_halvingPoint (C.two_pow_mul_two_t_mem i)
-  have h_le : ‖ιₚ (C.torsionValue 1 C.σ (C.halvingPoint i))‖ ≤ 1 :=
-    C.hasIntegralValues_sigma _ (C.isTorsion_halvingPoint _)
-  have h_fst : ‖(C.squarePair (C.t + C.t)).1‖ ≤ 1 :=
-    (norm_fst_le _).trans (C.norm_squarePair (.of_mem C.two_t_mem)).le
-  rw [show ‖(C.squarePair (C.halvingPoint i)).2‖ =
-    ‖ιₚ (C.torsionValue 1 C.σ (C.halvingPoint i))‖ ^ 2 from norm_pow _ _] at h_det
-  exact eq_one_of_sq_mul_eq_one (norm_nonneg _) h_le h_fst h_det
-
-omit [PrimeSevenModEight d] in
-/-- A point `u` with `‖θ[u]‖ = 1` does not lie in `t + Λ = -t + Λ`, the zero set of `θ`. -/
-lemma add_t_notMem_of_norm_eq_one {u : ℂ} (hθ : ‖ιₚ (C.torsionValue 1 C.θ u)‖ = 1) :
-    u + C.t ∉ C.Λ :=
-  fun h ↦ by simp [torsionValue_eq, C.theta_eq_zero_iff.2 h] at hθ
-
-/-- At a torsion point `u` where `θ[u]` is a unit, `x(u) = translatedX u` is integral in `ℂ_p`. -/
-lemma norm_translatedX_le_one {u : ℂ} (hu : C.IsTorsion u)
-    (hθ : ‖ιₚ (C.torsionValue 1 C.θ u)‖ = 1) : ‖ιₚ (C.translatedX u)‖ ≤ 1 := by
-  refine (C.hasIntegralValues_sigma.pow 2).norm_le_one_of_eq_theta_pow_mul hu hθ ?_
-  rw [Pi.pow_apply, C.sigma_sq_eq_translatedX_mul_theta_sq (C.add_t_notMem_of_norm_eq_one hθ),
-    mul_comm]
-
-/-- At a torsion point `u` where `θ[u]` is a unit, `y(u) = translatedY u` is integral in `ℂ_p`. -/
-lemma norm_translatedY_le_one {u : ℂ} (hu : C.IsTorsion u)
-    (hθ : ‖ιₚ (C.torsionValue 1 C.θ u)‖ = 1) : ‖ιₚ (C.translatedY u)‖ ≤ 1 := by
-  refine C.hasIntegralValues_translatedYThetaCube.norm_le_one_of_eq_theta_pow_mul hu hθ ?_
-  rw [C.translatedYThetaCube_eq_translatedY_mul_theta_cube (C.add_t_notMem_of_norm_eq_one hθ),
-    mul_comm]
-
-/-- The numbers `x(tᵢ₊₁)`, where `x = translatedX` and `tᵢ = t / 2 ^ i`, are distinct modulo the
-maximal ideal of the integers of `ℂ_p`. -/
-lemma norm_translatedX_halvingPoint_sub {i j : ℕ} (hij : i ≠ j) :
-    ‖ιₚ (C.translatedX (C.halvingPoint (i + 1))) -
-      ιₚ (C.translatedX (C.halvingPoint (j + 1)))‖ = 1 := by
-  wlog h_lt : i < j generalizing i j with h_symm
-  · simpa [norm_sub_rev] using h_symm hij.symm (hij.lt_or_gt.resolve_left h_lt)
-  let w (k : ℕ) : ℂ_[p] × ℂ_[p] := C.squarePair (C.halvingPoint (k + 1))
-  let x (k : ℕ) : ℂ_[p] := ιₚ (C.translatedX (C.halvingPoint (k + 1)))
-  have h_fst (k : ℕ) : ‖(w k).1‖ = 1 := by
-    simp only [w, squarePair, norm_pow, norm_torsionValue_theta_halvingPoint, one_pow]
-  have h_snd (k : ℕ) : (w k).2 = (w k).1 * x k :=
-    C.squarePair_snd (C.add_t_notMem_of_norm_eq_one (C.norm_torsionValue_theta_halvingPoint k))
-  calc ‖x i - x j‖ = ‖(w j).1 * (w i).1 * (x i - x j)‖ := by simp [h_fst]
-    _ = ‖(w j).1 * (w i).2 - (w j).2 * (w i).1‖ := by
-      rw [h_snd, h_snd, mul_sub, mul_assoc, mul_right_comm, mul_right_comm (w j).1 (x j)]
-    _ = 1 :=
-      C.norm_det_squarePair_halvingPoint (C.two_pow_mul_halvingPoint_mem (Nat.succ_lt_succ h_lt))
-
-/-- For `tᵢ = t / 2 ^ i` the number `x'(tᵢ₊₁) = σ[tᵢ] / θ[tᵢ₊₁] ^ 4` is a unit, where
-`x = translatedX`. -/
-lemma norm_deriv_translatedX_halvingPoint (i : ℕ) :
-    ‖ιₚ (deriv C.translatedX (C.halvingPoint (i + 1)))‖ = 1 := by
-  have hθ : ‖ιₚ (C.torsionValue 1 C.θ (C.halvingPoint (i + 1)))‖ = 1 :=
-    C.norm_torsionValue_theta_halvingPoint i
-  have h_double : C.torsionValue 1 C.σ (C.halvingPoint i) =
-      C.torsionValue 1 C.θ (C.halvingPoint (i + 1)) ^ 4 *
-        deriv C.translatedX (C.halvingPoint (i + 1)) := by
-    rw [← two_mul_halvingPoint_succ, torsionValue_two_mul]
-    refine C.torsionValue_eq_mul_theta_pow ?_
-    rw [C.sigma_two_mul_eq (C.add_t_notMem_of_norm_eq_one hθ), mul_comm]
-  simpa [h_double, hθ] using C.norm_torsionValue_sigma_halvingPoint i
-
-/-! ### Interpolation and the integrality principle -/
-
-/-- A polynomial whose values at the nodes `translatedX (t / 2 ^ (i + 1))` are integral in `ℂ_p`
-has integral coefficients. -/
-lemma norm_coeff_le_one_of_norm_eval_halvingPoint_le_one {P : Polynomial ℂ}
-    (hP : ∀ i : ℕ, ‖ιₚ (P.eval (C.translatedX (C.halvingPoint (i + 1))))‖ ≤ 1) (n : ℕ) :
-    ‖ιₚ (P.coeff n)‖ ≤ 1 := by
-  simpa using norm_coeff_le_one_of_norm_eval_le_one (P := P.map ιₚ)
-    (fun i ↦ C.norm_translatedX_le_one (C.isTorsion_halvingPoint (i + 1))
-      (C.norm_torsionValue_theta_halvingPoint i))
-    (fun i j ↦ C.norm_translatedX_halvingPoint_sub) (by simpa using hP) n
 
 /-- Let `C` be a CM lattice for a prime `d ≡ 7 mod 8`, with point `t` of order two, and let
 `ιₚ : ℂ → ℂ_p` be a `p`-adic place. Suppose `f z = θ z ^ m (P₀(x z) + y z · P₁(x z))` whenever
 `z + t ∉ Λ`, where `x = translatedX` is `℘(z + t) - ℘(t)` and `y = translatedY` is
-`½(℘'(z + t) - a₁ x(z))`. Suppose also that `f` has integral torsion values in degree `m`, meaning
-every torsion value `f[u]` has `‖ιₚ f[u]‖ ≤ 1`. Then every coefficient of `P₀` and `P₁` has image
-under `ιₚ` of norm at most `1`. -/
-lemma norm_coeff_le_one_of_hasIntegralValues {P₀ P₁ : Polynomial ℂ}
+`½(℘'(z + t) - a₁ x(z))`. Suppose also that `‖ιₚ (f z)‖ ≤ h(z) ^ m` for all `z`, where `h` is the
+naive height `max (‖ιₚ (σ z)‖, ‖ιₚ (θ z)‖)`. Then every coefficient of `P₀` and `P₁` has image under
+`ιₚ` of norm at most `1`. -/
+lemma norm_coeff_le_one_of_norm_le_naiveHeight_pow {P₀ P₁ : Polynomial ℂ}
     (h_eq : ∀ z : ℂ, z + C.t ∉ C.Λ → f z = C.θ z ^ m *
       (P₀.eval (C.translatedX z) + C.translatedY z * P₁.eval (C.translatedX z)))
-    (h_int : C.HasIntegralValues m f) :
+    (h_le : ∀ z : ℂ, ‖ιₚ (f z)‖ ≤ C.naiveHeight z ^ m) :
     (∀ n : ℕ, ‖ιₚ (P₀.coeff n)‖ ≤ 1) ∧ ∀ n : ℕ, ‖ιₚ (P₁.coeff n)‖ ≤ 1 := by
-  -- Bound the values of `P₁` and then of `P₀` at the points `x(v i)`, and interpolate.
-  -- Membership in `valRingCp p` is by definition having norm at most `1`.
-  let v (i : ℕ) : ℂ := C.halvingPoint (i + 1)
-  let F (u : ℂ) : ℂ := P₀.eval (C.translatedX u) + C.translatedY u * P₁.eval (C.translatedX u)
-  have hθ (i : ℕ) : ‖ιₚ (C.torsionValue 1 C.θ (v i))‖ = 1 :=
-    C.norm_torsionValue_theta_halvingPoint i
-  have hv (i : ℕ) : C.IsTorsion (v i) := C.isTorsion_halvingPoint (i + 1)
-  have hF {u : ℂ} (hu : C.IsTorsion u) (hθu : ‖ιₚ (C.torsionValue 1 C.θ u)‖ = 1) :
-      ιₚ (F u) ∈ valRingCp p :=
-    h_int.norm_le_one_of_eq_theta_pow_mul hu hθu (h_eq u (C.add_t_notMem_of_norm_eq_one hθu))
-  have h₁ (i : ℕ) : ‖ιₚ (P₁.eval (C.translatedX (v i)))‖ ≤ 1 := by
-    have h_diff : deriv C.translatedX (v i) * P₁.eval (C.translatedX (v i)) =
-        F (v i) - F (-v i) := by
+  -- Take an integral `c` at which `P₀`, `P₁` and the cubic `Q` with `x'² = Q(x)` are at least as
+  -- large as their coefficients. It suffices to show that `P₀(c)` and `P₁(c)` are integral.
+  let Q : Polynomial ℂ := .monomial 3 4 + .monomial 2 (C.a₁ ^ 2) + .monomial 1 4
+  obtain ⟨c, hc, h_general⟩ := exists_norm_coeff_le_norm_eval (p := p) ![P₀, P₁, Q]
+  have hQ_eval : Q.eval c = c * (4 * c ^ 2 + C.a₁ ^ 2 * c + 4) := by
+    simp only [Q, Polynomial.eval_add, Polynomial.eval_monomial]
+    ring
+  -- The value `Q(c)` is a unit: otherwise `4` and `a₁²` are not units, but `a₁ ^ 4 - 64` is one.
+  have hc_mem : ιₚ c ∈ valRingCp p := hc
+  have ha₁ : ιₚ C.a₁ ∈ valRingCp p := C.norm_a₁_le_one
+  have h_four : (4 : ℂ_[p]) ∈ valRingCp p := ofNat_mem _ 4
+  have hQ_norm : ‖ιₚ (Q.eval c)‖ = 1 := by
+    refine le_antisymm ?_ (not_lt.1 fun h_lt ↦ ?_)
+    · rw [hQ_eval]
+      simp only [map_mul, map_add, map_pow, map_ofNat]
+      exact mul_mem hc_mem (add_mem (add_mem (mul_mem h_four (pow_mem hc_mem 2))
+        (mul_mem (pow_mem ha₁ 2) hc_mem)) h_four)
+    · have h_coeff₁ : ‖(4 : ℂ_[p])‖ < 1 := by
+        simpa [Q, Polynomial.coeff_monomial, map_ofNat] using (h_general 2 1).trans_lt h_lt
+      have h_coeff₂ : ‖ιₚ C.a₁ ^ 2‖ < 1 := by
+        simpa [Q, Polynomial.coeff_monomial] using (h_general 2 2).trans_lt h_lt
+      have h_disc : ιₚ C.a₁ ^ 4 - 64 = ιₚ C.a₁ ^ 2 * ιₚ C.a₁ ^ 2 + -16 * 4 := by ring
+      exact (norm_lt_one_of_eq_mul_add_mul (pow_mem ha₁ 2) (intCast_mem (valRingCp p) (-16))
+        (by simpa using h_disc) h_coeff₂ h_coeff₁).ne (C.norm_disc_eq_one ιₚ)
+  obtain ⟨z, hz, rfl⟩ := C.exists_translatedX_eq c
+  have hz_neg : -z + C.t ∉ C.Λ := by rwa [← theta_eq_zero_iff, theta_neg, theta_eq_zero_iff]
+  -- Where `x` is integral and finite, the height is `‖ιₚ θ‖`, so the bracket is integral.
+  let F (w : ℂ) : ℂ := P₀.eval (C.translatedX w) + C.translatedY w * P₁.eval (C.translatedX w)
+  have hF {w : ℂ} (hw : w + C.t ∉ C.Λ) (hx : ‖ιₚ (C.translatedX w)‖ ≤ 1) : ‖ιₚ (F w)‖ ≤ 1 := by
+    have h_sq : ‖ιₚ (C.σ w)‖ ^ 2 ≤ ‖ιₚ (C.θ w)‖ ^ 2 := by
+      rw [← norm_pow, ← map_pow, C.sigma_sq_eq_translatedX_mul_theta_sq hw, map_mul, norm_mul,
+        map_pow, norm_pow]
+      exact mul_le_of_le_one_left (by positivity) hx
+    have h_height : C.naiveHeight w = ‖ιₚ (C.θ w)‖ :=
+      max_eq_right ((pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 h_sq)
+    have hθ : 0 < ‖ιₚ (C.θ w)‖ ^ m :=
+      pow_pos (norm_pos_iff.2 ((map_ne_zero ιₚ).2 (mt C.theta_eq_zero_iff.1 hw))) m
+    have h_bound : ‖ιₚ (C.θ w)‖ ^ m * ‖ιₚ (F w)‖ ≤ ‖ιₚ (C.θ w)‖ ^ m * 1 := by
+      simpa only [h_eq w hw, map_mul, norm_mul, map_pow, norm_pow, h_height, mul_one]
+        using h_le w
+    exact le_of_mul_le_mul_left h_bound hθ
+  have hFz : ‖ιₚ (F z)‖ ≤ 1 := hF hz hc
+  have hFz_neg : ‖ιₚ (F (-z))‖ ≤ 1 := hF hz_neg (by rwa [translatedX_neg])
+  -- The difference of the brackets at `z` and `-z` is `x' P₁(x)`, and `x'² = Q(x)` is a unit.
+  have h_deriv : ‖ιₚ (deriv C.translatedX z)‖ = 1 := by
+    have h_sq : ‖ιₚ (deriv C.translatedX z)‖ ^ 2 = 1 := by
+      rw [← norm_pow, ← map_pow, C.deriv_translatedX_sq hz, ← hQ_eval, hQ_norm]
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 h_sq
+  have h₁ : ‖ιₚ (P₁.eval (C.translatedX z))‖ ≤ 1 := by
+    have h_diff : deriv C.translatedX z * P₁.eval (C.translatedX z) = F z - F (-z) := by
       simp only [F, ← translatedY_sub_translatedY_neg, translatedX_neg]
       ring
-    have h_le : ‖ιₚ (deriv C.translatedX (v i) * P₁.eval (C.translatedX (v i)))‖ ≤ 1 := by
+    have h_mul : ‖ιₚ (deriv C.translatedX z * P₁.eval (C.translatedX z))‖ ≤ 1 := by
       rw [h_diff, map_sub]
-      exact sub_mem (hF (hv i) (hθ i)) (hF (hv i).neg (by rw [torsionValue_theta_neg, hθ]))
-    rwa [map_mul, norm_mul, norm_deriv_translatedX_halvingPoint, one_mul] at h_le
-  have h₀ (i : ℕ) : ‖ιₚ (P₀.eval (C.translatedX (v i)))‖ ≤ 1 := by
-    have h_sum : ιₚ (P₀.eval (C.translatedX (v i))) + ιₚ (C.translatedY (v i)) *
-        ιₚ (P₁.eval (C.translatedX (v i))) ∈ valRingCp p := by
-      simpa only [F, map_add, map_mul] using hF (hv i) (hθ i)
-    exact (add_mem_cancel_right
-      (mul_mem (C.norm_translatedY_le_one (hv i) (hθ i)) (h₁ i))).1 h_sum
-  exact ⟨C.norm_coeff_le_one_of_norm_eval_halvingPoint_le_one h₀,
-    C.norm_coeff_le_one_of_norm_eval_halvingPoint_le_one h₁⟩
+      exact sub_mem (mem_valRingCp.2 hFz) (mem_valRingCp.2 hFz_neg)
+    rwa [map_mul, norm_mul, h_deriv, one_mul] at h_mul
+  -- The coordinate `y` is integral, as a root of the cubic equation, so `P₀(x)` is integral.
+  have hy : ‖ιₚ (C.translatedY z)‖ ≤ 1 := by
+    refine norm_le_of_sq_add_mul_eq (u := ιₚ C.a₁ * ιₚ (C.translatedX z))
+      (v := ιₚ (C.translatedX z) ^ 3 + ιₚ (C.translatedX z)) ?_ ?_ ?_
+    · exact mul_mem ha₁ hc_mem
+    · rw [one_pow]
+      exact add_mem (pow_mem hc_mem 3) hc_mem
+    · simpa only [map_add, map_mul, map_pow] using congrArg ιₚ (C.weierstrass_equation hz)
+  have h₀ : ‖ιₚ (P₀.eval (C.translatedX z))‖ ≤ 1 := by
+    have h_sum : ιₚ (P₀.eval (C.translatedX z)) + ιₚ (C.translatedY z) *
+        ιₚ (P₁.eval (C.translatedX z)) ∈ valRingCp p := by
+      simpa only [F, map_add, map_mul] using mem_valRingCp.2 hFz
+    exact (add_mem_cancel_right (mul_mem (mem_valRingCp.2 hy) (mem_valRingCp.2 h₁))).1 h_sum
+  exact ⟨fun n ↦ (h_general 0 n).trans h₀, fun n ↦ (h_general 1 n).trans h₁⟩
 
 /-- Let `d` be a prime `≡ 7 (mod 8)` and fix a `p`-adic place `ιₚ`. Let `f` be a section of degree
-`m` (a theta function for `Λ` of degree `m`) with integral torsion values: for every torsion point
-`u`, the value `f[u]` satisfies `‖ιₚ f[u]‖ ≤ 1`. Then `f` is a combination, with coefficients
+`m` (a theta function for `Λ` of degree `m`) with `‖ιₚ (f z)‖ ≤ h(z) ^ m` for all `z`, where `h` is
+the naive height `max (‖ιₚ (σ z)‖, ‖ιₚ (θ z)‖)`. Then `f` is a combination, with coefficients
 integral in `ℂ_p`, of the monomials of the triples `(a, b, c)` with `c ≤ 1` and degree
 `a + 2 b + 3 c = m` (the set `spanningExponents m`); off `t + Λ` these monomials are
 `θ ^ m translatedX ^ b translatedY ^ c`. The scalars are the complex numbers whose image under `ιₚ`
 lies in the valuation ring `valRingCp p`. -/
 lemma mem_span_monomialSection {f : ℂ → ℂ} {m : ℕ} (hf : f ∈ C.sections m)
-    (h_int : C.HasIntegralValues m f) :
+    (h_le : ∀ z : ℂ, ‖ιₚ (f z)‖ ≤ C.naiveHeight z ^ m) :
     f ∈ Submodule.span ((valRingCp p).comap ιₚ) (C.monomialSection '' spanningExponents m) := by
   obtain ⟨P₀, P₁, h_deg₀, h_deg₁, h_eq⟩ := C.exists_eq_theta_pow_mul_eval hf
-  obtain ⟨h_int₀, h_int₁⟩ := C.norm_coeff_le_one_of_hasIntegralValues h_eq h_int
+  obtain ⟨h_int₀, h_int₁⟩ := C.norm_coeff_le_one_of_norm_le_naiveHeight_pow h_eq h_le
   -- The summands `θ ^ m P₀(x)` and `θ ^ m y P₁(x)` extend to entire `g₀` and `g₁` in the span.
   obtain ⟨g₀, hg₀_mem, hg₀_diff, hg₀⟩ :=
     C.exists_mem_span_monomialSection_eq_theta_pow_mul_eval zero_le_one h_deg₀ h_int₀
@@ -468,19 +328,20 @@ structure IsIntegralEvenExpansion (m : ℕ) (f : ℂ → ℂ) (R : Polynomial �
 
 /-- Let `C` be a CM lattice for a prime `d ≡ 7 mod 8`, with point `t` of order two, and let `ιₚ` be
 a `p`-adic place. Let `f` be an even section of degree `m` (a theta function for `Λ` with hermitian
-form `m H` and multiplier `χ ^ m`) whose torsion values all have `ιₚ`-norm at most `1`. Then
+form `m H` and multiplier `χ ^ m`) with `‖ιₚ (f z)‖ ≤ h(z) ^ m` for all `z`, where `h` is the naive
+height `max (‖ιₚ (σ z)‖, ‖ιₚ (θ z)‖)`. Then
 `f = ∑ Rᵢ θ ^ (m - 2 i) σ ^ (2 i)` for a polynomial `R` with `ιₚ`-integral coefficients and degree
 at most `m / 2`, and the Taylor series of `f` at `0` is that of `θ ^ m R(x)`, where
 `x(z) = ℘(z + t) - ℘(t)` is `translatedX`; these are the clauses of `IsIntegralEvenExpansion`. -/
 lemma exists_polynomial_of_even {f : ℂ → ℂ} {m : ℕ} (hf : f ∈ C.sections m)
-    (h_int : C.HasIntegralValues m f) (hf_even : f.Even) :
+    (h_le : ∀ z : ℂ, ‖ιₚ (f z)‖ ≤ C.naiveHeight z ^ m) (hf_even : f.Even) :
     ∃ R : Polynomial ℂ, C.IsIntegralEvenExpansion m f R := by
   obtain ⟨R, h_deg, h_eq⟩ : ∃ R : Polynomial ℂ, (∀ i : ℕ, R.coeff i ≠ 0 → 2 * i ≤ m) ∧
       ∀ z : ℂ, z + C.t ∉ C.Λ → f z = C.θ z ^ m * R.eval (C.translatedX z) :=
     C.exists_eq_theta_pow_mul_eval_of_even hf hf_even
   -- This is the form `θ ^ m (P₀(x) + y P₁(x))` with `P₀ = R` and `P₁ = 0`.
   have hR_int : ∀ i : ℕ, ‖ιₚ (R.coeff i)‖ ≤ 1 :=
-    (C.norm_coeff_le_one_of_hasIntegralValues (P₁ := 0) (by simpa using h_eq) h_int).left
+    (C.norm_coeff_le_one_of_norm_le_naiveHeight_pow (P₁ := 0) (by simpa using h_eq) h_le).left
   have h_natDegree : 2 * R.natDegree ≤ m := by
     rcases eq_or_ne R 0 with rfl | hR
     · simp
@@ -524,17 +385,18 @@ lemma exists_taylorVia_eq_theta_pow_mul_of_mem_span {s : Set (ℕ × ℕ × ℕ)
       taylorAtZero_mul analyticAt_const hg, taylorAtZero_const, map_mul, map_C, smul_eq_C_mul]
 
 /-- Let `d` be a prime congruent to 7 mod 8. Let `f` be a section of degree `m` (a theta function
-for `Λ` with hermitian form `m H` and multiplier `χ ^ m`) whose torsion values `f[u]` at all torsion
-points `u` satisfy `‖ιₚ f[u]‖ ≤ 1`. Then the Taylor series of `f` at `0`, with `ιₚ` applied to its
-coefficients, is the `m`-th power of that of the degree-one theta function `θ` times an element of
-`integralSeriesRing`, the ring `𝒪[[y]]` of integral power series in the series of
-`y(z) = ½(℘′(z + t) − a₁ x(z))` (`translatedY`), where `x(z) = ℘(z + t) − ℘(t)` and `t` is the
-chosen point of order two. -/
-lemma exists_taylorVia_eq_theta_pow_mul (hf : f ∈ C.sections m) (h_int : C.HasIntegralValues m f) :
+for `Λ` with hermitian form `m H` and multiplier `χ ^ m`) with `‖ιₚ (f z)‖ ≤ h(z) ^ m` for all `z`,
+where `h` is the naive height `max (‖ιₚ (σ z)‖, ‖ιₚ (θ z)‖)`. Then the Taylor series of `f` at `0`,
+with `ιₚ` applied to its coefficients, is the `m`-th power of that of the degree-one theta function
+`θ` times an element of `integralSeriesRing`, the ring `𝒪[[y]]` of integral power series in the
+series of `y(z) = ½(℘′(z + t) − a₁ x(z))` (`translatedY`), where `x(z) = ℘(z + t) − ℘(t)` and `t` is
+the chosen point of order two. -/
+lemma exists_taylorVia_eq_theta_pow_mul (hf : f ∈ C.sections m)
+    (h_le : ∀ z : ℂ, ‖ιₚ (f z)‖ ≤ C.naiveHeight z ^ m) :
     ∃ u ∈ C.integralSeriesRing, taylorVia ιₚ f = taylorVia ιₚ C.θ ^ m * u :=
   (C.exists_taylorVia_eq_theta_pow_mul_of_mem_span
     (fun ⟨_, _, _⟩ hx ↦ (mk_mem_spanningExponents.1 hx).right)
-    (C.mem_span_monomialSection hf h_int)).right
+    (C.mem_span_monomialSection hf h_le)).right
 
 end CMLattice
 

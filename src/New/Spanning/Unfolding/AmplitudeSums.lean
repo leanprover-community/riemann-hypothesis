@@ -88,7 +88,7 @@ instance sigmaFinite_orbitMeasure
 the Haar measure on `P → G₁`, for a finite type `P`. -/
 lemma measurePreserving_pi_orbitMeasure {A : Subgroup 𝔰.G₁} (ν : Measure A)
     [RealPlace.IsUnimodularHaar ν] {P : Type*} [Fintype P] :
-    MeasurePreserving (fun p : (P → 𝔰.G₁) × (P → A) ↦ (fun v : P ↦ (p.2 v).1) * p.1)
+    MeasurePreserving (fun p : (P → 𝔰.G₁) × (P → A) ↦ (fun v : P ↦ (p.2 v).val) * p.1)
       ((Measure.pi fun _ : P ↦ orbitMeasure ν (volume : Measure 𝔰.G₁)).prod
         (Measure.pi fun _ : P ↦ ν))
       (volume : Measure (P → 𝔰.G₁)) :=
@@ -104,7 +104,7 @@ lemma tsum_integral_apply {X J I : Type*} [MeasurableSpace X] {μ : Measure X} [
     (hg_fin : ∑' j : J, ∫⁻ x : X, ‖g j x‖ₑ ∂μ < ∞) (i : I) :
     (∑' j : J, ∫ x : X, g j x ∂μ) i = ∫ x : X, ∑' j : J, g j x i ∂μ := by
   -- Take the `i`-th coordinate through the sum and the integral, then exchange the two.
-  have h_integrable (j) : Integrable (g j) μ := ⟨by fun_prop, (ENNReal.le_tsum j).trans_lt hg_fin⟩
+  have h_integrable (j) : Integrable (g j) μ := ⟨by fun_prop, (le_tsum _ j).trans_lt hg_fin⟩
   have h_coord_fin : ∑' j, ∫⁻ x, ‖g j x i‖ₑ ∂μ < ∞ := by grw [PiLp.eNorm_apply_le, hg_fin]
   have h_summable : Summable fun j ↦ ∫ x, g j x ∂μ :=
     .of_eNorm (ne_of_lt (by grw [eNorm_integral_le_lintegral_eNorm, hg_fin]))
@@ -124,7 +124,7 @@ lemma besselFn_mul_of_mem_classUnipotent {c : S.Classes} (u : S.classUnipotent c
     S.besselFn side (S.ratToInf u * y) = S.besselFn side y := by
   -- `besselFn` changes by the inverse of `unipotentChar`. The conjugate of `u` by the
   -- representative of `c` lies in `S.principalLevel`, so the character has at `u` its value at `1`.
-  obtain ⟨hu_besselU, hu_level⟩ := u.2
+  obtain ⟨hu_besselU, hu_level⟩ := u.property
   have h_char : S.unipotentChar (S.ratToFin u) = 1 := by
     simp_all [unipotentChar_eq_of_mem_principalLevel (one_mem _) _ c.out]
   simp [besselFn_ratToInf_mul hu_besselU, h_char]
@@ -165,7 +165,7 @@ lemma lintegral_classCutoff_mul_prod [HasPrimitiveRoot5040 E] [S.IsAdmissible]
   -- Unfold `y = u * x` with `u` in the product of the groups `besselU`: the factors `w v` do not
   -- see `u`, and the integral of `S.classCutoff c` over `u` is `S.unipotentCovolume`.
   calc
-    _ = ∫⁻ x, (∫⁻ u, S.classCutoff c (fun v ↦ ((u v).1 : 𝔰.G₁) * x v)
+    _ = ∫⁻ x, (∫⁻ u, S.classCutoff c (fun v ↦ ((u v).val : 𝔰.G₁) * x v)
           ∂(Measure.pi fun _ : InfinitePlace E ↦ 𝔰.besselHaar)) *
         ∏ v, w v (x v) ∂(Measure.pi fun _ : InfinitePlace E ↦ besselQuotMeasure) := by
       simp (disch := measurability) [lintegral_prod, Pi.mul_def, hw_inv, lintegral_mul_const,
@@ -174,7 +174,7 @@ lemma lintegral_classCutoff_mul_prod [HasPrimitiveRoot5040 E] [S.IsAdmissible]
         ∫⁻ x, ∏ v, w v (x v) ∂(.pi fun _ : InfinitePlace E ↦ besselQuotMeasure) := by
       simp only [lintegral_classCutoff_eq_unipotentCovolume]
       exact lintegral_const_mul' _ _ ofReal_ne_top
-    _ = _ := by simp (disch := measurability) [lintegral_pi_prod]
+    _ = _ := by simp (disch := measurability) [TauCeti.lintegral_fintype_prod_eq_prod]
 
 /-- Summation by layers. Let `u ≥ 1` and `K ≥ 0`. If the points with `u p ≤ R` have total weight at
 most `(K R ^ e) ^ d` for all `R ≥ 1`, then the weighted sum of `u p ^ (-i)` is at most `2 K ^ d` as
@@ -271,7 +271,7 @@ lemma tsum_classCutoff_mul_inv_pow_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
   calc
     _ = ∑' p, weight p *
         .ofReal ((S.scaledBesselLengthProd (z p))⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)) :=
-      (ENNReal.tsum_sigma' _).symm
+      (tsum_sigma' _).symm
     _ ≤ .ofReal (2 * (S.b ^ (6 * 𝔰.n ^ 2)) ^ (2 * 𝔰.n * 𝔰.r * numInfPlaces E)) :=
       tsum_mul_inv_pow_le_of_layers (fun p ↦ one_le_scaledBesselLengthProd (z p)) (by positivity)
         h_count h_exp
@@ -425,7 +425,7 @@ lemma cut_exponent_le {n r k f : ℕ} (hk : 12 * n ^ 3 + 500 ≤ k) (hr : k + 1 
   have h_small : 402 * r ^ 2 ≤ r ^ 3 := by grw [pow_succ' r 2, show 402 ≤ r by lia]
   have h_cube : k ^ 3 ≤ r ^ 3 := Nat.pow_le_pow_left (by lia) 3
   calc
-    _ ≤ (12 * n ^ 3 * r + 400 * r ^ 2 + (2 * k + 1) + k ^ 3) * f := by nlinarith
+    _ ≤ (12 * n ^ 3 * r + 400 * r ^ 2 + (2 * k + 1) + k ^ 3) * f := by linarith
     _ ≤ 2 * r ^ 3 * f := Nat.mul_le_mul_right f (by lia)
     _ = _ := mul_assoc ..
 
@@ -582,24 +582,13 @@ for all classes `d`. The sum of the integrals `∫ β_c(y) β_d(γ⁻¹ y) ‖W(
 theorem tsum_amplitudeMajorant_lt_top (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) :
     ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)), S.amplitudeMajorant side c d γ < ∞ := by
   choose w a hw using fun v : InfinitePlace E ↦ (S.besselSystem v).isCutPair.exists_majorant
-  have h_majorant (y : InfinitePlace E → 𝔰.G₁) :
-      ∏ v, ‖(S.besselSystem v).besselFn side (y v)‖ₑ ≤ ∏ v, w v (y v) :=
-    (le_scaledBesselLengthProd_pow_mul y _ _).trans (pow_mul_prod_enorm_le_majorant hw y)
-  have h_decay (z : InfinitePlace E → 𝔰.G₁) : ∏ v, ‖(S.besselSystem v).besselFn side (z v)‖ₑ ≤
-      (∏ v, a v) * .ofReal ((S.scaledBesselLengthProd z)⁻¹ ^ (𝔰.r ^ 3 * numInfPlaces E)) :=
-    (le_scaledBesselLengthProd_pow_mul z _ _).trans (pow_mul_prod_enorm_le_bound hw z)
-  calc
-    _ ≤ ∑' (d : S.Classes) (γ : ↥(T ∩ S.termsOver c s d)), ∫⁻ y : InfinitePlace E → 𝔰.G₁,
-          S.classCutoff c y * S.classCutoff d ((S.ratToInf γ)⁻¹ * y) *
-            ((∏ v, w v (y v)) * ((∏ v, a v) * .ofReal
-              ((S.scaledBesselLengthProd ((S.ratToInf γ)⁻¹ * y))⁻¹ ^
-                (𝔰.r ^ 3 * numInfPlaces E)))) := by
-      simp_rw [amplitudeMajorant, enorm_besselKernel]
-      grw [h_majorant, h_decay]
-    _ ≤ .ofReal S.unipotentCovolume * .ofReal (2 * S.b ^ (12 * 𝔰.n ^ 3 * 𝔰.r * numInfPlaces E)) *
-          (.ofReal (S.b ^ (400 * 𝔰.r ^ 2)) ^ numInfPlaces E * card S.BesselCoord) :=
-      tsum_lintegral_classCutoff_mul_majorant_le T c s hw
-    _ < ∞ := by finiteness
+  refine lt_of_le_of_lt (le_trans ?_ (tsum_lintegral_classCutoff_mul_majorant_le T c s hw))
+    (by finiteness)
+  simp_rw [amplitudeMajorant, enorm_besselKernel]
+  refine tsum_le_tsum fun d ↦ tsum_le_tsum fun γ ↦ lintegral_mono fun y ↦ ?_
+  exact mul_le_mul' le_rfl (mul_le_mul'
+    ((le_scaledBesselLengthProd_pow_mul y _ _).trans (pow_mul_prod_enorm_le_majorant hw y))
+    ((le_scaledBesselLengthProd_pow_mul _ _ _).trans (pow_mul_prod_enorm_le_bound hw _)))
 
 /-- Let `S` be admissible, let `d` run over all classes and `γ` over the elements of `T` that are
 terms over `(c, s, d)`. The kernel `besselKernel side γ y` is `W(y) ⊗ W(γ⁻¹ y)^*`. The sum of the
@@ -636,7 +625,7 @@ lemma summable_amplitude (T : Set (S.G E)) (c : S.Classes) (s : S.ResidueGL) (c'
     Summable fun γ : ↥(T ∩ S.termsOver c s c') ↦ S.amplitude side c c' γ := by
   refine .of_eNorm (ne_of_lt ?_)
   grw [enorm_amplitude_le]
-  exact (ENNReal.le_tsum c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)
+  exact (le_tsum _ c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)
 
 variable {T : Set (S.G E)}
 
@@ -688,11 +677,11 @@ over `(c, s, c')` is stable under `γ ↦ u γ u'⁻¹` for `u` in `S.classUnipo
 `S.classUnipotent c'`. -/
 lemma mul_mul_inv_mem_inter_termsOver (hT : S.IsStable T) {c : S.Classes} {s : S.ResidueGL}
     {c' : S.Classes} (u : S.classUnipotent c) (u' : S.classUnipotent c') {γ : S.G E}
-    (hγ_mem : γ ∈ T ∩ S.termsOver c s c') : u.1 * γ * u'.1⁻¹ ∈ T ∩ S.termsOver c s c' := by
-  obtain ⟨hu, hu_over⟩ := u.2
-  obtain ⟨hu', hu'_over⟩ := (u'⁻¹).2
-  exact ⟨by simpa using (hT u.1⁻¹ (inv_mem hu) u'.1⁻¹ hu' γ).2 hγ_mem.1,
-    by simpa [mul_assoc] using termsOver.mul (termsOver.mul hu_over hγ_mem.2) hu'_over⟩
+    (hγ_mem : γ ∈ T ∩ S.termsOver c s c') : u.val * γ * u'.val⁻¹ ∈ T ∩ S.termsOver c s c' := by
+  obtain ⟨hu, hu_over⟩ := u.property
+  obtain ⟨hu', hu'_over⟩ := (u'⁻¹).property
+  exact ⟨by simpa using (hT u.val⁻¹ (inv_mem hu) u'.val⁻¹ hu' γ).2 hγ_mem.1,
+    by simpa using termsOver.mul (termsOver.mul hu_over hγ_mem.2) hu'_over⟩
 
 /-- Let the group `H`, with an s-finite inversion invariant measure `η`, act measurably on `Z` and
 preserve the s-finite measure `μ`. A cutoff (`IsCutoff η β`) is a measurable `β : Z → [0, ∞]` with
@@ -743,7 +732,7 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
   let Y : Type := InfinitePlace E → 𝔰.G₁
   let : MeasurableSpace (S.G E) := ⊤
   let : MulAction Δ X :=
-    { smul u γ := ⟨u.1 * γ * u.2⁻¹, mul_mul_inv_mem_inter_termsOver hT u.1 u.2 γ.2⟩
+    { smul u γ := ⟨u.1 * γ * u.2⁻¹, mul_mul_inv_mem_inter_termsOver hT u.1 u.2 γ.property⟩
       one_smul := by simp [HSMul.hSMul, Δ]
       mul_smul := by simp [HSMul.hSMul, Δ, mul_assoc] }
   -- The first component of `u` acts on `y` by left translation.
@@ -766,10 +755,10 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
   have β₀_cutoff : IsCutoff (count : Measure Δ) β₀ := by
     refine ⟨by fun_prop, fun p ↦ ?_⟩
     simp +zetaDelta [HSMul.hSMul, tsum_classCutoff_eq_one, mul_assoc, lintegral_count,
-      ENNReal.tsum_prod', ENNReal.tsum_mul_left, SMul.smul]
+      tsum_prod', ENNReal.tsum_mul_left, SMul.smul]
   have φ_cutoff : IsCutoff (count : Measure Δ) fun p : X × Y ↦ φ p.1 p.2 :=
     ⟨measurable_from_prod_countable_right fun γ ↦ hφ_meas γ,
-      fun p ↦ (lintegral_count _).trans (h_sum p.1 p.1.2 p.2)⟩
+      fun p ↦ (lintegral_count _).trans (h_sum p.1 p.1.property p.2)⟩
   -- The integral of an invariant `F` against any cutoff is at most the sum of integrals for `β₀`.
   have lintegral_le {β F : X × Y → ℝ≥0∞} (hβ : IsCutoff (count : Measure Δ) β)
       (hF : Measurable F) (h_inv : ∀ (u : Δ) (p : X × Y), F (u • p) = F p) :
@@ -780,7 +769,7 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
       Integrable (fun p ↦ (β p).toReal • kernel side p) ρ :=
     integrable_toReal_smul hβ.1 (kernel_meas side).aestronglyMeasurable
       ((lintegral_le hβ (kernel_meas side).eNorm (by simp [kernel_smul])).trans_lt
-        ((ENNReal.le_tsum c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)))
+        ((le_tsum _ c').trans_lt (tsum_amplitudeMajorant_lt_top T c s)))
   -- Fubini: for every cutoff the integrals over `y` sum to that of the kernel over the quotient.
   have hasSum {β : X × Y → ℝ≥0∞} (hβ : IsCutoff (count : Measure Δ) β) :
       HasSum (fun γ : X ↦ ∫ y, (β (γ, y)).toReal • S.besselKernel side γ y)
@@ -800,7 +789,7 @@ lemma hasSum_amplitudeSum_of_cutoff (hT : S.IsStable T) (c : S.Classes) (s : S.R
       ((lintegral_prod _ (φ_cutoff.1.mul diff_meas).aemeasurable).trans (lintegral_count _)).symm
     _ ≤ ∑' γ : X, ∫⁻ y, β₀ (γ, y) * ‖kernel side (γ, y) - kernel .cut (γ, y)‖ₑ :=
       lintegral_le φ_cutoff diff_meas (by simp [kernel_smul])
-    _ ≤ _ := (ENNReal.le_tsum c').trans (tsum_lintegral_enorm_besselKernel_sub_cut_le T c s)
+    _ ≤ _ := (le_tsum _ c').trans (tsum_lintegral_enorm_besselKernel_sub_cut_le T c s)
 
 /-- Moving a block. Let `S` be admissible and `T` stable. Let `σ` over `(c, t, c₁)` and `σ'` over
 `(c', t', c₁')` be rational elements (`(S.ratMiddle E).G` is the group `S.G E`) of the Bessel
@@ -829,7 +818,7 @@ lemma amplitudeSum_mul_mul_inv (hT : S.IsStable T) {c : S.Classes} {t : S.Residu
         φ (u.1 * γ * u.2⁻¹) (S.ratToInf u.1 * y) = 1 := by
     simp [φ, tsum_classCutoff_ratToInf_mul_eq_one hσ hσ_over,
       tsum_classCutoff_ratToInf_mul_eq_one hσ' hσ'_over,
-      mul_assoc, ENNReal.tsum_prod', ENNReal.tsum_mul_left]
+      mul_assoc, tsum_prod', ENNReal.tsum_mul_left]
   have φ_meas (γ : S.G E) : Measurable (φ γ) := by fun_prop
   obtain ⟨hasSum, integrable, -⟩ :=
     hasSum_amplitudeSum_of_cutoff (side := side) hT c₁ s c₁' φ (fun γ _ ↦ φ_sum γ) φ_meas
@@ -854,11 +843,13 @@ lemma amplitudeSum_besselU_mul (hT : S.IsStable T) {u u' : S.latticeStabilizer}
       ((S.unipotentChar u)⁻¹ * S.unipotentChar u') • S.amplitudeSum side T c s c' := by
   -- Approximate `u`, `u'` modulo `S.principalLevel` by rational `x`, `x'` in `besselU` with the
   -- same character; they lie over `(c, ū, c)` and `(c', ū', c')`. Move the block by them.
-  obtain ⟨x, hx, ⟨k, hk⟩, hψ⟩ := exists_rat_approx_unipotentChar_eq c hu
-  obtain ⟨x', hx', ⟨k', hk'⟩, hψ'⟩ := exists_rat_approx_unipotentChar_eq c' hu'
-  -- `h_c⁻¹ x h_c` is `u` times an element of the kernel of the reduction, and likewise for `x'`.
-  have hx_over : x ∈ S.termsOver c (S.reduction u) c := ⟨u * k, by simp_all⟩
-  have hx'_over : x' ∈ S.termsOver c' (S.reduction u') c' := ⟨u' * k', by simp_all⟩
+  have approx (d : S.Classes) {v : S.latticeStabilizer} (hv : v.val ∈ besselU) :
+      ∃ x : S.G E, x ∈ besselU ∧ x ∈ S.termsOver d (S.reduction v) d ∧
+        S.unipotentChar (S.ratToFin x) = S.unipotentChar v := by
+    obtain ⟨x, hx, ⟨k, hk⟩, hψ⟩ := exists_rat_approx_unipotentChar_eq d hv
+    exact ⟨x, hx, ⟨v * k, by simp_all⟩, hψ⟩
+  obtain ⟨x, hx, hx_over, hψ⟩ := approx c hu
+  obtain ⟨x', hx', hx'_over, hψ'⟩ := approx c' hu'
   -- The kernel changes by the scalar `ψ(x)⁻¹ ψ(x')`, and so does the block.
   simpa [hψ, hψ'] using amplitudeSum_mul_mul_inv hT
     (mem_partialUnitriangularGroup_of_mem_besselU hx) hx_over
@@ -935,8 +926,8 @@ lemma amplitudeSum_besselS_one_eq_ite {E : Type} [Field E] [CMType E] {𝔰 : Sh
   have one_term : 1 ∈ ↑(S.ratMiddle E).besselS ∩ S.termsOver c 1 c :=
     ⟨besselS.one_mem, (S.classUnipotent c).one_mem.2⟩
   have others (γ : ↥(↑(S.ratMiddle E).besselS ∩ S.termsOver c 1 c)) (hγ : γ ≠ ⟨1, one_term⟩) :
-      ∫ y, (φ γ.1 y).toReal • S.besselKernel .full γ y = 0 := by
-    simp [φ, show 1 ≠ γ.1 from fun h ↦ hγ (Subtype.ext h.symm)]
+      ∫ y, (φ γ.val y).toReal • S.besselKernel .full γ y = 0 := by
+    simp [φ, show 1 ≠ γ.val from fun h ↦ hγ (Subtype.ext h.symm)]
   have h_int_prod : Integrable fun y : InfinitePlace E → 𝔰.G₁ ↦
       (S.classCutoff c y).toReal * ∏ v, F v (y v) := by
     simpa [φ, ker_one] using (integrable ⟨1, one_term⟩).eval_piLp (i, j)

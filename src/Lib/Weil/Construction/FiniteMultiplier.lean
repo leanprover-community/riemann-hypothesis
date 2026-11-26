@@ -149,7 +149,7 @@ def _root_.New.stdLattice (E ι : Type*) [Field E] [NumberField E] :
 
 /-- The character `z ↦ ψf (j α ᾱ z)` of the finite adeles, with complex values. -/
 def selfDualAddChar : AddChar (𝔸f E) ℂ :=
-  coeHom.compAddChar ((ψf E).mulShift (algebraMap E (𝔸f E) j * α.1 * star α.1))
+  coeHom.compAddChar ((ψf E).mulShift (algebraMap E (𝔸f E) j * α.val * star α.val))
 
 variable {E ι}
 
@@ -188,9 +188,9 @@ lemma forall_selfDualAddChar_mul_eq_one_iff (z : 𝔸f E) :
   obtain ⟨-, -, -, t, -, h_val, h_gen⟩ :=
     exists_reduction_and_idele_generator (I := differentIdeal ℤ (𝓞 E)) differentIdeal_ne_bot
   refine (h_gen _).trans ?_
-  set c : 𝔸f E := algebraMap E (𝔸f E) j * α.1 * star α.1
+  set c : 𝔸f E := algebraMap E (𝔸f E) j * α.val * star α.val
   have h_dual (w : FinPlace E) : Valued.v (c w) =
-      WithZero.exp (multiplicity w.1 (differentIdeal ℤ (𝓞 E)) : ℤ) := WeilData.self_dual w
+      WithZero.exp (multiplicity w.asIdeal (differentIdeal ℤ (𝓞 E)) : ℤ) := WeilData.self_dual w
   -- At each place `w` the valuations of `t` and of `c = j α ᾱ` cancel.
   have h_unit (w : FinPlace E) : Valued.v (t.val w) * Valued.v (c w) = 1 := by
     rw [h_val, h_dual, ← WithZero.exp_add, neg_add_cancel, WithZero.exp_zero]
@@ -225,7 +225,7 @@ lemma selfDualAddChar_congr {a b o : 𝔸f E} (t : 𝔸f E) (ho : o ∈ Ô E)
 /-! ### The vacuum and the Heisenberg datum -/
 
 /-- For a finite adelic vector x, the complex number ψ₀(c₀ x* x / 2). It equals ψ_f(−y* y / 4) at
-y = αx (`New.stdLattice.semichar_eq_ψf`) and is a sign on the lattice Ô^ι. -/
+y = αx and is a sign on the lattice Ô^ι. -/
 def semichar (x : ι → 𝔸f E) : ℂ := selfDualAddChar E (traceOneAdele * half * star x ⬝ᵥ x)
 
 lemma isOfFinOrder_semichar (x : ι → 𝔸f E) : IsOfFinOrder (semichar x) := by
@@ -556,12 +556,6 @@ def denominatorIdele (x : (𝔸f E)ˣ) : (𝔸f E)ˣ where
   val_inv := by grind [idem_compl, idem_mul_self, Units.inv_mul]
   inv_val := by grind [idem_compl, idem_mul_self, Units.inv_mul]
 
-/-- The inverse of the denominator of `x` is `1` where `x` is integral and `x` elsewhere. -/
-lemma coe_inv_denominatorIdele (x : (𝔸f E)ˣ) :
-    (denominatorIdele x)⁻¹.val =
-      idem {w : FinPlace E | v (x.val w) ≤ 1} + idem {w : FinPlace E | v (x.val w) ≤ 1}ᶜ * x.val :=
-      rfl
-
 /-- The valuation of the denominator of `x` at `w` is the inverse of `max 1 |x_w|`. -/
 lemma v_denominatorIdele (x : (𝔸f E)ˣ) (w : FinPlace E) :
     v ((denominatorIdele x).val w) = (max 1 (v (x.val w)))⁻¹ := by
@@ -586,7 +580,7 @@ lemma isSaturating_diagGL (d : ι → (𝔸f E)ˣ) :
       mul_inv_le_one_of_le₀ (le_max_right _ _) zero_le
     simpa [v_denominatorIdele] using h_le
   · rw [← map_inv, coe_diagGL, coe_diagGL, diagonal_mul_diagonal, diagonal_add]
-    exact congrArg diagonal (funext fun i ↦ coe_inv_denominatorIdele (d i))
+    rfl
 
 /-! ### The chosen saturating matrix -/
 
@@ -648,7 +642,7 @@ variable {E ι κ B : Type*} [Ring B] {S : Subring B} [Field E] [CMType E] [Fint
 character and |x| the idele norm. -/
 @[local simp]
 def chiAdelic : (𝔸 E)ˣ →* ℂ where
-  toFun x := υ.1 x * (↑√(ideleAbs x))⁻¹
+  toFun x := υ.val x * (↑√(ideleAbs x))⁻¹
   map_one' := by simp
   map_mul' := by simp [field]
 
@@ -765,10 +759,10 @@ lemma glMultiplier_mul_of_map_evalAt_eq_one
   refine chiFin_congr fun w ↦ ?_
   have h_local {x y : GL ι (𝔸f E)} (hxy : x.map (evalAt w) = y.map (evalAt w)) :
       v ((saturatingElem x).val.val.det w) = v ((saturatingElem y).val.val.det w) := by
-    obtain ⟨u, hu⟩ : ∃ u : GL ι (𝔸f E), IsSaturating (Ô E).matrix y u := exists_isSaturating y
-    have h_sat : IsSaturating (LocInt w).matrix (x.map (evalAt w)) (u.map (evalAt w)) := by
-      simpa only [hxy] using hu.map_evalAt w
-    rw [h_sat.v_det_saturatingElem, (hu.map_evalAt w).v_det_saturatingElem]
+    have hx := (saturatingElem x).property.map_evalAt w
+    rw [hxy] at hx
+    simpa [← evalAt_apply, RingHom.map_det] using
+      hx.v_det_eq ((saturatingElem y).property.map_evalAt w)
   obtain hb | hb' := h_supp w
   · have h_comp : (b * b').map (evalAt w) = b'.map (evalAt w) := by rw [map_mul, hb, one_mul]
     simp [h_local h_comp, v_det_saturatingElem_eq_one hb]

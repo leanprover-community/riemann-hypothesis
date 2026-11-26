@@ -1,10 +1,9 @@
 module
 
+public import Mathlib.Analysis.Polynomial.Norm
 public import Lib.GLn.SchurModule.SchurNorm
 public import Lib.PadicHodge.Characters
 public import Lib.Weil.DualPair.FiniteAction
-public import TauCeti.Analysis.Normed.Ring.CompactMonoid
-public import TauCeti.Topology.Instances.Matrix
 
 /-!
 # Attached Galois representations: traces, characteristic polynomials and rank one
@@ -15,7 +14,9 @@ complex polynomials, one for each finite place. A continuous representation `ρ`
 trace form, with an open map `j` to the Galois group, is attached to `P` when, along most Frobenius
 elements (the filter `New.mostFrobenii`), its characteristic polynomials approach `ιℓ (P w)`. The
 file shows that the characteristic polynomials are then determined by `P`, so two attached
-representations have the same traces. It also shows that the representation attached to an
+representations have the same traces. The attachment condition itself asserts coefficientwise
+approximation on the Frobenius filter, not pointwise equality at every unramified place.
+It also shows that the representation attached to an
 eigenform on the definite unitary group of rank one is the avatar of an algebraic Hecke character.
 
 ## Main definitions and results
@@ -232,10 +233,12 @@ lemma GaloisRep.Attached.tendsto_charpoly_coeff [PadicIso ℓ] (hρ : Attached P
 lemma GaloisRep.Attached.trace_eq [PadicIso ℓ] {G : Type} [Group G] [TopologicalSpace G]
     {j' : G → Gal(Ω/E)} {σ : G →* GL n (PadicAlgCl ℓ)} (hρ : Attached P ρ j) (hσ : Attached P σ j')
     (x : H) {y : G} (hxy : j x = j' y) : (ρ x).val.trace = (σ y).val.trace := by
-  -- both characteristic polynomials are the limit of `ιℓ (P w)` as the Frobenius tends to `j x`
-  have h_char : (ρ x).val.charpoly = (σ y).val.charpoly :=
-    AddMonoidAlgebra.ext <| Finsupp.ext fun i ↦ tendsto_nhds_unique (hρ.tendsto_charpoly_coeff x i)
+  -- The localized Frobenius filter is nontrivial by Chebotarev, so its limits are unique.
+  have h_coeff (i : ℕ) : (ρ x).val.charpoly.coeff i = (σ y).val.charpoly.coeff i :=
+    tendsto_nhds_unique (hρ.tendsto_charpoly_coeff x i)
       (by simpa only [hxy] using hσ.tendsto_charpoly_coeff y i)
+  have h_char : (ρ x).val.charpoly = (σ y).val.charpoly :=
+    AddMonoidAlgebra.ext <| Finsupp.ext h_coeff
   simp [h_char, trace_eq_sum_roots_charpoly]
 
 end New

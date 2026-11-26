@@ -1,6 +1,18 @@
 module
 
-public import Lib.Base
+public import Aesop.Frontend.Tactic
+public import Aesop.Main
+public import Mathlib.Algebra.Module.LinearMap.Polynomial
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.RingTheory.MvPowerSeries.Derivative
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # Schur modules: semi-invariants, minors, Fock pairing, Schur and Gram matrices
@@ -208,7 +220,7 @@ abbrev nablaFamily : Submodule R (MatrixPoly (Sigma n) R) :=
 /-- For a family i of chosen standard fillings, the polynomial that is the product over places τ
 of the minor product of i_τ in the rows of block τ. -/
 def nablaBasis (i : WeylIndexFamily n κ) : MatrixPoly ((τ : Φ) × n τ) R :=
-  ∏ τ : Φ, tableauPoly (m := Σ τ : Φ, n τ) R (Sigma.mk τ) (i τ).1
+  ∏ τ : Φ, tableauPoly (m := Σ τ : Φ, n τ) R (Sigma.mk τ) (i τ).val
 
 /-- The polynomial product over places τ and h<N_τ of the leading principal h×h minor of the
 variables in block τ raised to κ_τ(h). -/
@@ -391,8 +403,7 @@ abbrev weylGramOver {κ : Φ → ℕ → ℕ} : Matrix (WeylIndexFamily n κ) (W
   (weylGram n κ).map (Int.cast : ℤ → R)
 
 /-- The polynomial of a vector ξ of the Weyl module: Σ_i (Gξ)_i b_i, with G the Gram matrix and b_i
-the basis minor products. It is the pairing of the tensor of ξ with the tensor of the variables
-(`toPoly_eq_sum_fillingPoly`). -/
+the basis minor products. -/
 def toPoly : (WeylIndexFamily n κ → R) →ₗ[R] MatrixPoly ((τ : Φ) × n τ) R :=
   GL.nablaCombination κ ∘ₗ ((weylGram n κ).map (Int.cast : ℤ → R)).mulVecLin
 
@@ -448,17 +459,17 @@ abbrev Monomials : Type := ↥((univ : Finset σ).finsuppAntidiag a)
 
 omit [DecidableEq σ] in
 /-- `linSubst A` substitutes for each variable the linear form of the matching row of `Aᵀ`. -/
-lemma linSubst_eq_bind₁ : linSubst A = bind₁ Aᵀ.toMvPolynomial := by
+lemma linSubst_eq_bind₁ : linSubst A = aeval Aᵀ.toMvPolynomial := by
   ext s : 1
-  simp [linSubst, MvPolynomial.bind₁, Matrix.toMvPolynomial, smul_eq_C_mul, C_mul_X_eq_monomial]
+  simp [linSubst, Matrix.toMvPolynomial, smul_eq_C_mul, C_mul_X_eq_monomial]
 
 @[simp]
 lemma linSubst_one : linSubst 1 f = f := by
-  simp [linSubst_eq_bind₁, MvPolynomial.bind₁, aeval_X_left_apply]
+  simp [linSubst_eq_bind₁, aeval_X_left_apply]
 
 omit [DecidableEq σ] in
 lemma linSubst_mul : linSubst (A * B) f = linSubst A (linSubst B f) := by
-  simp [linSubst_eq_bind₁, MvPolynomial.bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
+  simp [linSubst_eq_bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
 
 omit [DecidableEq σ] in
 lemma map_linSubst :
@@ -471,7 +482,7 @@ lemma Monomials.degree_eq : α.val.degree = a := by
   simpa [degree_eq_sum] using (mem_finsuppAntidiag.mp α.property).left
 
 lemma Monomials.isHomogeneous_linSubst : (linSubst A (monomial α 1)).IsHomogeneous a := by
-  rw [linSubst_eq_bind₁, ← aeval_eq_bind₁]
+  rw [linSubst_eq_bind₁]
   simpa only [one_mul] using
     (isHomogeneous_monomial (1 : R) α.degree_eq).aeval _ Aᵀ.toMvPolynomial_isHomogeneous
 
@@ -487,19 +498,19 @@ lemma sum_monomials_eq_of_isHomogeneous (hf : f.IsHomogeneous a) :
 /-- The a-th symmetric power: the homomorphism sending a square matrix A to the matrix, in the
 monomial basis, of `New.linSubst` A on forms of degree a. -/
 def symPowMatrix (a : ℕ) : Matrix σ σ R →* Matrix (Monomials σ a) (Monomials σ a) R where
-  toFun A := of fun β α ↦ (linSubst A (monomial α.1 1)).coeff β.1
+  toFun A := of fun β α ↦ (linSubst A (monomial α.val 1)).coeff β.val
   map_one' := by simp [eq_comm, Matrix.one_apply, ← ext_iff]
   map_mul' A B := by
     ext β α
     -- Expand `linSubst B (monomial α 1)` in the monomials of degree `a`, then apply `linSubst A`.
-    change (linSubst (A * B) (monomial α.1 1)).coeff β.1 = _
+    change (linSubst (A * B) (monomial α.val 1)).coeff β.val = _
     rw [linSubst_mul, ← sum_monomials_eq_of_isHomogeneous (α.isHomogeneous_linSubst B)]
     simp [mul_comm, Matrix.mul_apply]
 
 /-- For a family `β` of degree-`a` exponent vectors indexed by `S`, the single exponent vector on
 the variables `(b, s)` whose value is `β_s(b)`. -/
 def exponentOf : (S → Monomials σ a) ↪ σ × S →₀ ℕ where
-  toFun β := equivFunOnFinite.symm fun x ↦ (β x.2).1 x.1
+  toFun β := equivFunOnFinite.symm fun x ↦ (β x.2).val x.1
   inj' :=
     id fun β β' h ↦ by
       ext s t
@@ -727,18 +738,25 @@ lemma diagramWeight_apply (τ : Φ) (i : ℕ) : diagramWeight N κ (τ, i) = (Io
 lemma diagramWeight_add : diagramWeight N (κ + κ') = diagramWeight N κ + diagramWeight N κ' := by
   simp [diagramWeight, smul_sum, sum_add_distrib]
 
+private lemma map_minor {h : ℕ} (I : Fin h → m) :
+    MvPolynomial.map φ (minor R I) = minor S I := by
+  simp only [minor, RingHom.map_det]
+  congr 1
+  ext a b
+  simp
+
 @[simp]
 lemma map_nablaBasis [∀ τ : Φ, DecidableEq (n τ)] (i : WeylIndexFamily n κ) :
     MvPolynomial.map φ (nablaBasis R n κ i) = nablaBasis S n κ i := by
-  simp [nablaBasis, tableauPoly, minor, det_apply]
+  simp [nablaBasis, tableauPoly, map_minor]
 
 @[simp]
 lemma map_highestPoly : MvPolynomial.map φ (highestPoly R κ N) = highestPoly S κ N := by
-  simp [highestPoly, tableauPoly, minor, det_apply]
+  simp [highestPoly, tableauPoly, map_minor]
 
 @[simp]
 lemma map_detPow (e : Φ → ℕ) : MvPolynomial.map φ (detPow R n e) = detPow S n e := by
-  simp [detPow, minor, det_apply]
+  simp [detPow, map_minor]
 
 @[simp]
 lemma detPow_zero : detPow R n 0 = 1 := by simp [detPow]

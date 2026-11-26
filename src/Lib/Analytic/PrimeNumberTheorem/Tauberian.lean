@@ -1,5 +1,7 @@
 module
 
+import TauCeti.Analysis.Convex.Lipschitz
+public import Mathlib.Analysis.Complex.HalfPlane
 public import Lib.Analytic.EntireLFunction
 
 /-!
@@ -223,23 +225,20 @@ constant `L` on `[0, ∞)`. -/
 lemma abs_sub_le_of_unit_steps
     (h_step_le : ∀ u v : ℝ, 0 ≤ u → u ≤ v → v ≤ u + 1 → |R v - R u| ≤ L * (v - u)) {u v : ℝ}
     (hu : 0 ≤ u) (hv : 0 ≤ v) : |R v - R u| ≤ L * |v - u| := by
-  wlog huv : u ≤ v generalizing u v with h_ordered
-  · simpa only [abs_sub_comm] using h_ordered hv hu (le_of_not_ge huv)
-  -- Cut the interval from `u` to `v` into `n` steps of length `t ≤ 1`.
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, v - u < n := exists_nat_gt (v - u)
-  have hn_pos : (0 : ℝ) < n := (sub_nonneg.2 huv).trans_lt hn
-  let t : ℝ := (v - u) / n
-  have ht_nonneg : 0 ≤ t := div_nonneg (sub_nonneg.2 huv) hn_pos.le
-  have ht_le_one : t ≤ 1 := (div_le_one hn_pos).2 hn.le
-  have h_step (i : ℕ) : dist (R (u + i * t)) (R (u + (i + 1 : ℕ) * t)) ≤ L * t := by
-    rw [dist_comm, Real.dist_eq, Nat.cast_succ, add_one_mul, ← add_assoc]
-    simpa using
-      h_step_le (u + i * t) (u + i * t + t) (by positivity) (by linarith) (by linarith)
-  calc |R v - R u| = dist (R (u + (0 : ℕ) * t)) (R (u + n * t)) := by
-        simp [t, mul_div_cancel₀ _ hn_pos.ne', Real.dist_eq, abs_sub_comm]
-    _ ≤ ∑ _ ∈ Finset.range n, L * t :=
-        dist_le_range_sum_of_dist_le (f := fun i : ℕ ↦ R (u + i * t)) n fun _ ↦ h_step _
-    _ = L * |v - u| := by simp [abs_of_nonneg (sub_nonneg.2 huv), t, field]
+  have hL : 0 ≤ L := by
+    simpa using (abs_nonneg _).trans (h_step_le 0 1 le_rfl zero_le_one (by simp))
+  have h_lip : LipschitzOnWith (NNReal.mk L hL) R (Ici (0 : ℝ)) := by
+    refine (convex_Ici _).lipschitzOnWith_of_locally_dist_le fun x hx ↦ ?_
+    filter_upwards [mem_nhdsWithin_of_mem_nhds (Metric.ball_mem_nhds x zero_lt_one),
+      self_mem_nhdsWithin] with y hy hy0
+    simp only [Metric.mem_ball, Real.dist_eq, abs_lt] at hy
+    rw [Real.dist_eq, Real.dist_eq, NNReal.coe_mk]
+    rcases le_total x y with hxy | hyx
+    · rw [abs_of_nonneg (sub_nonneg.mpr hxy)]
+      exact h_step_le x y hx hxy (by linarith [hy.2])
+    · rw [abs_sub_comm (R y), abs_sub_comm y, abs_of_nonneg (sub_nonneg.mpr hyx)]
+      exact h_step_le y x hy0 hyx (by linarith [hy.1])
+  simpa only [Real.dist_eq, NNReal.coe_mk] using h_lip.dist_le_mul v hv u hu
 
 /-- Let `R` be measurable and Lipschitz with constant `L` on `[0, ∞)`, with transform
 `Φ s = ∫₀^∞ R(v) e^{(1 - s) v} dv` in `re s > 2`, and let `u, δ > 0` and `H = (k + 1) / u > 1`. The
@@ -257,7 +256,7 @@ lemma norm_taylorCoeff_transform_sub_le_of_lipschitz (hR : Measurable R)
   have h_near (v : ℝ) (hv : 0 < v) : |R v - R u| ≤ L * δ + L / δ * (v - (k + 1) / H) ^ 2 := by
     have h_amgm : |v - u| ≤ δ + (v - u) ^ 2 / δ := by
       field_simp
-      nlinarith [sq_nonneg (|v - u| - δ), abs_nonneg (v - u), sq_abs (v - u)]
+      nlinarith only [sq_nonneg (|v - u| - δ), abs_nonneg (v - u), sq_abs (v - u)]
     rw [H_eq, div_div_cancel₀ (by positivity)]
     calc |R v - R u| ≤ L * |v - u| := h_lip u hu.le v hv.le
       _ ≤ L * (δ + (v - u) ^ 2 / δ) := by gcongr

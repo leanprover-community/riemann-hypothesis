@@ -1,6 +1,5 @@
 module
 
-public import New.Spanning.RemainingTerms.Data
 public import New.Spanning.Unfolding.TermStructure
 
 /-!
@@ -9,7 +8,7 @@ public import New.Spanning.Unfolding.TermStructure
 Let `γ` be an element of the unitary group, with the link isometry `Υ_γ` of the positive space
 `X₀ ⊥ E z⁺`. Let `z` be the last vector of the frame and let `A` be spanned by the others.
 
-* `New.Filling.linkVectors_mulVec_eq_zero_iff`: the orthogonal complement of `z⁺` and `Υ_γ⁻¹ z⁺`
+* `New.Filling.linkVectors_mulVec_eq_zero_of_mem_map`: elements in the image of `linkedX₀ γ` are orthogonal to `z⁺` and `Υ_γ⁻¹ z⁺`
   is `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀`.
 * `New.Filling.gram_linkVectors`, `New.Filling.HasCellRank.norm_det_gram_linkVectors`: the Gram
   matrix of `z⁺` and `Υ_γ⁻¹ z⁺`, and the modulus of its determinant at each infinite place.
@@ -60,19 +59,14 @@ lemma linkVectors_mulVec (γ : S.G E) (a : 𝔰.MiddleIndex → E) :
       S.N * linkIsometry γ a (inr ())
     rw [← dotProduct_positiveGram_mulVec_linkIsometry γ, LinearEquiv.apply_symm_apply, h_single]
 
-/-- The vectors `a` orthogonal, for `S.positiveGram`, to `z⁺` and `Υ_γ⁻¹ z⁺` in `X₀ ⊥ E z⁺` are
-exactly the image under `inclPositive E 𝔰` of `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀` (`linkedX₀ γ`). -/
-theorem linkVectors_mulVec_eq_zero_iff (γ : S.G E) (a : 𝔰.MiddleIndex → E) :
-    ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ a = 0 ↔ a ∈ (linkedX₀ γ).map (inclPositive E 𝔰) := by
-  have h_coords : ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ a = 0 ↔
-      a (inr ()) = 0 ∧ linkIsometry γ a (inr ()) = 0 := by
-    simp [linkVectors_mulVec, S.N_prime.ne_zero]
-  rw [h_coords, ← mem_range_inclPositive]
-  constructor
-  · rintro ⟨⟨v, rfl⟩, h_link⟩
-    exact ⟨v, mem_linkedX₀.2 h_link, rfl⟩
-  · rintro ⟨v, hv, rfl⟩
-    exact ⟨⟨v, rfl⟩, mem_linkedX₀.1 hv⟩
+/-- Vectors in the image under `inclPositive E 𝔰` of `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀` (`linkedX₀ γ`) are
+orthogonal, for `S.positiveGram`, to `z⁺` and `Υ_γ⁻¹ z⁺` in `X₀ ⊥ E z⁺`. -/
+theorem linkVectors_mulVec_eq_zero_of_mem_map (γ : S.G E) {a : 𝔰.MiddleIndex → E}
+    (ha : a ∈ (linkedX₀ γ).map (inclPositive E 𝔰)) :
+    ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ a = 0 := by
+  obtain ⟨v, hv, rfl⟩ := ha
+  simp [linkVectors_mulVec, S.N_prime.ne_zero]
+  exact ⟨by simp [inclPositive], mem_linkedX₀.1 hv⟩
 
 /-- A vector `y` is orthogonal to the frame `(γ e₁, …, γ e_ϱ, γ z)` if and only if the coordinates
 of `γ⁻¹ y` at the dual basis vectors `e*_a` and at `z` vanish. -/
@@ -108,7 +102,7 @@ theorem HasCellRank.exists_linkIsometry_symm_eq_smul (hγ : S.HasCellRank j γ)
   set w : 𝔰.MiddleIndex → E := (linkIsometry γ).symm (Pi.single (inr ()) 1)
   have h_orth (v : 𝔰.κ → E) : star w ⬝ᵥ S.positiveGram *ᵥ (v ⊕ᵥ 0) = 0 := by
     have h_products : ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ (v ⊕ᵥ 0) = 0 :=
-      (linkVectors_mulVec_eq_zero_iff γ _).2 ⟨v, by simp [hγ.linkedX₀_eq_top h_disc], rfl⟩
+      linkVectors_mulVec_eq_zero_of_mem_map γ ⟨v, by simp [hγ.linkedX₀_eq_top h_disc], rfl⟩
     rw [← mulVec_mulVec] at h_products
     exact congrFun h_products 1
   use w (inr ())
@@ -174,7 +168,7 @@ lemma gram_linkVectors (γ : S.G E) :
   have h_first : ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ Pi.single (inr ()) 1 =
       ![(S.N : E), S.N * star (w (inr ()))] := by
     ext i
-    fin_cases i <;> simp [linkVectors, positiveGram, Matrix.mul_apply, diagonal, hw, mul_comm]
+    fin_cases i <;> simp [linkVectors, positiveGram, Matrix.mul_apply, hw, mul_comm]
   have h_second : ((linkVectors γ)ᴴ * S.positiveGram) *ᵥ w = ![S.N * w (inr ()), S.N] := by
     simp [linkVectors_mulVec, hw]
   ext i k

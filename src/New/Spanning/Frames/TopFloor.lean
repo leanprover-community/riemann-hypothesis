@@ -72,7 +72,7 @@ def PlaceData.fiberPairing (e : 𝔰.BesselIndex → A) : ℂ :=
 /-- Two elements `l`, `l'` of the floor group G^(ϱ) with `l'⁻¹ z = l⁻¹ z` differ on the left by an
 element of `besselH`, the fixer in G^(ϱ) of the last frame vector `z`. -/
 lemma mul_inv_mem_besselH_of_orbitPoint_eq {A : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
-    {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] {l l' : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ)
+    {T : 𝔰.Form A} {l l' : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ)
     (hl' : l' ∈ T.floorGroup 𝔰.ϱ) (h_point : orbitPoint 𝔰.top l' = orbitPoint 𝔰.top l) :
     l' * l⁻¹ ∈ T.besselH := by
   simpa only [inv_inv] using partialUnitriangularGroup_inf_floorGroup_last.le
@@ -107,7 +107,7 @@ lemma PlaceData.fiberPairing_orbitPoint {F : PlaceData ι T (m + 1)} (Z : F.Inte
 the norm of the last frame vector `z`. -/
 lemma mulVec_mem_lastVectorQuadric {A : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
     {T : 𝔰.Form A}
-    [IsHermitianUnit T.splitGram] {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) {e : 𝔰.BesselIndex → A}
+    {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) {e : 𝔰.BesselIndex → A}
     (he : e ∈ lastVectorQuadric T) : (l : GL 𝔰.BesselIndex A).val *ᵥ e ∈ lastVectorQuadric T := by
   obtain ⟨h_floor, h_norm⟩ : (∀ i : 𝔰.BesselIndex, floorOf i < 𝔰.ϱ → e i = 0) ∧
       star e ⬝ᵥ T.splitGram *ᵥ e = T.splitGram 𝔰.z 𝔰.z := he
@@ -153,7 +153,7 @@ lemma PlaceData.headSumNormSq_nonneg {R : Matrix j j ℂ} (hR : R.PosSemidef) (�
 `lastVectorQuadric T`: it has no component along the hyperbolic pairs and has the norm of the last
 frame vector `z`. -/
 lemma orbitPoint_mem_lastVectorQuadric {A : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
-    {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) :
+    {T : 𝔰.Form A} {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) :
     orbitPoint 𝔰.top l ∈ lastVectorQuadric T := by
   have hz : Pi.single (𝔰.besselFrame 𝔰.top) 1 ∈ lastVectorQuadric T := by
     refine ⟨fun i hi ↦ Pi.single_eq_of_ne ?_ 1, by simp⟩
@@ -589,7 +589,6 @@ form `latticeMiddleGram 𝔰 N`, whose last frame vector `z` has norm `-N`. Then
 lemma continuous_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (m + 1)}
     (Z : F.IntermediateGroup) [h : P.IsLargeLatticeData F] [IsOpenUnits A] (hN : π * star ↑π = N) :
     Continuous (lastEntryDensity π Z).uncurry := by
-  classical
   -- Near `(p, q)` the fiber pairing does not change, and its step function `Φ` does not see the
   -- change of the last entry. What moves is the sphere; the fiber measures are weakly continuous.
   refine continuous_iff_continuousAt.2 fun (p, q) ↦ ?_

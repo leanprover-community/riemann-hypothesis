@@ -9,7 +9,8 @@ public import Lib.General.Groups.CongruenceSubgroups
 of `x ↦ h x g⁻¹` on matrices indexed by pairs (row, column). Here `New.U J` is the group of
 invertible `g` with `gᴴ J g = J`.
 
-* `New.kroneckerGL`: the Kronecker product of two invertible matrices, as an invertible matrix.
+* `Matrix.GeneralLinearGroup.kronecker`: Mathlib's Kronecker product of two invertible matrices,
+  as an invertible matrix.
 * `New.U.kroneckerHom`: the homomorphism of unitary groups.
 * `New.map_kronecker`: applying a ring homomorphism entrywise commutes with the Kronecker product.
 
@@ -24,14 +25,7 @@ open Matrix Kronecker
 
 variable {m n R : Type*} [Fintype m] [DecidableEq m] [Fintype n] [DecidableEq n]
 
-/-- The Kronecker product x ⊗ y of invertible matrices x and y over a commutative semiring, as
-an invertible matrix with inverse x⁻¹ ⊗ y⁻¹. -/
-@[local simp]
-noncomputable def New.kroneckerGL [CommSemiring R] (x : GL m R) (y : GL n R) : GL (m × n) R where
-  val := x ⊗ₖ y
-  inv := x⁻¹.val ⊗ₖ y⁻¹.val
-  val_inv := by simp [← mul_kronecker_mul]
-  inv_val := by simp [← mul_kronecker_mul]
+attribute [local simp] Matrix.GeneralLinearGroup.kronecker
 
 /-- For SK = 1 and J = T ⊗ Kᵀ, the homomorphism (g, h) ↦ h ⊗ (g⁻¹)ᵀ from U(S) × U(T) to U(J). -/
 @[simps! apply_coe_val]
@@ -40,7 +34,7 @@ noncomputable def New.U.kroneckerHom [CommRing R] [StarRing R] {S K : Matrix n n
     U S × U T →* U J :=
   MonoidHom.mk'
     (fun p ↦
-      ⟨kroneckerGL p.2 (transposeGL p.1⁻¹), by
+      ⟨Matrix.GeneralLinearGroup.kronecker p.2 (transposeGL p.1⁻¹), by
         -- For `p = (x, y)`: the Kronecker product of `yᴴ T y = T` and the inverse transpose of
         -- `xᴴ S x = S`.
         simpa [mem_unitaryGroupOf_iff, star_eq_conjTranspose, inv_eq_right_inv hS, h,

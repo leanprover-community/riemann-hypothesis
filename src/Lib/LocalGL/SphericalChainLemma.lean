@@ -79,22 +79,6 @@ private lemma New.Patching.eq_apply_partialHecke_zero_top
     simpa [ρ'] using partialHecke_dual hϖ hx N h_sum
   rw [← h_dual, partialHecke_zero_right hx']
 
-omit [IsSmoothRep ρ.ρ] in
-/-- Let `x` be fixed by `GL_N(O_w)` and `ϖ` a uniformiser. Then `x` is the translate by
-`diag(1, ϖ⁻¹, …, ϖ⁻¹)` of the top partial Hecke sum `partialHecke ρ 1 (N - 1) x`. -/
-private lemma New.Patching.eq_apply_partialHecke_one_top
-    (hx : x ∈ levelSpace ρ.ρ (localIntGL (Fin N) w)) {ϖ : (LocField w)ˣ}
-    (hϖ : v ϖ.val = WithZero.exp (-1)) :
-    x = ρ.ρ (diagGL fun i : Fin N ↦ if i = 0 then 1 else ϖ⁻¹)
-      (partialHecke ρ.ρ 1 (N - 1) x) := by
-  let ρ' : Representation ℂ (GL (Fin N) (LocField w)) ρ := ρ.ρ.comp invTransposeGL.toMonoidHom
-  have hx' : x ∈ levelSpace ρ' (localIntGL (Fin N) w) := by simp_all [ρ']
-  have h_sum : 1 + (N - 1 + 0) = N := by grind [NeZero.ne N]
-  have h_dual : partialHecke ρ' 1 0 x =
-      ρ.ρ (diagGL fun i : Fin N ↦ if i = 0 then 1 else ϖ⁻¹) (partialHecke ρ.ρ 1 (N - 1) x) := by
-    simpa [ρ', Nat.lt_one_iff, Fin.val_eq_zero_iff] using partialHecke_dual hϖ hx (N - 1) h_sum
-  rw [← h_dual, partialHecke_zero_right hx']
-
 /-- Let `x` be fixed by `GL_N(O_w)`, let `ϖ` be a uniformiser (valuation `exp (-1)`), and let `a` be
 the inverse of `ρ(diag(ϖ, 1, …, 1))`. Write `M(y)` for the mean of `ρ` over `proIwahori` applied to
 `y`, and let `partialHecke ρ r m x` be the partial Hecke sum of `ρ g x` over the cosets in
@@ -169,8 +153,15 @@ lemma New.Patching.apply_inv_partialHecke_zero_top
   let c₁ (i : Fin N) : (LocField w)ˣ := if i = 0 then 1 else ϖ⁻¹
   have single_eq : mulSingle 0 ϖ = c₀⁻¹ * c₁ := by aesop
   have h_top : ρ.ρ (diagGL c₀) (partialHecke ρ.ρ 0 N x) =
-      ρ.ρ (diagGL c₁) (partialHecke ρ.ρ 1 (N - 1) x) :=
-    (eq_apply_partialHecke_zero_top hx hϖ).symm.trans (eq_apply_partialHecke_one_top hx hϖ)
+      ρ.ρ (diagGL c₁) (partialHecke ρ.ρ 1 (N - 1) x) := by
+    rw [← eq_apply_partialHecke_zero_top hx hϖ]
+    let ρ' := ρ.ρ.comp invTransposeGL.toMonoidHom
+    have hx' : x ∈ levelSpace ρ' (localIntGL (Fin N) w) := by simp_all [ρ']
+    have h_sum : 1 + (N - 1 + 0) = N := by grind [NeZero.ne N]
+    have h_dual : partialHecke ρ' 1 0 x = ρ.ρ (diagGL c₁) (partialHecke ρ.ρ 1 (N - 1) x) := by
+      simpa [ρ', c₁, Nat.lt_one_iff, Fin.val_eq_zero_iff] using
+        partialHecke_dual hϖ hx (N - 1) h_sum
+    rw [← h_dual, partialHecke_zero_right hx']
   simpa [single_eq, ρ.ρ.inv_apply_eq_iff] using h_top
 
 omit [NeZero N] [IsSmoothRep ρ.ρ] in
@@ -491,7 +482,7 @@ lemma New.Patching.chain_lemma (hB : IsUnitary ρ.ρ B)
     rw [← avg_T, ← dual_last]
     simp [u, mulSingle_inv, avg_x, t_last]
   have U_last : u ϖ (T n) = (w.q : ℂ) ^ n • t n.succ • x := by
-    simp only [u, LinearMap.smul_apply, End.mul_apply, avg_T]
+    simp only [u, LinearMap.smul_apply, mul_apply_eq_comp, avg_T]
     simp [← dual_last, avg_x]
   have ht_zero : t 0 • x = x := by rw [← ht, heckeGL_zero hx]
   have linear := chain_lemma_of_adjoint (u ϖ) (u ϖ⁻¹) T hB.pos (adj ϖ) (adj ϖ⁻¹) hP_eq (by simp)

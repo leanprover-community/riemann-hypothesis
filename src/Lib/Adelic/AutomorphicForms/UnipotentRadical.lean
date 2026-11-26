@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.Convex.Integral
 public import Lib.Adelic.AutomorphicForms.RealConvolution
 public import Lib.DiscreteSeries.CuspKernel
 
@@ -403,7 +404,7 @@ lemma eq_radicalElem_of_mem_dilationGroup {u : U J} (hu : (u, 1) ∈ dilationGro
       using congrArg (·ᴴ * z) (eq_sub_of_add_eq h_split)
   have preserves_mul (z : Matrix n n R) : (u : Matrix n n R)ᴴ * (J * (u * z)) = J * z := by
     rw [← mul_assoc, ← mul_assoc,
-        show (u : Matrix n n R)ᴴ * J * u = J from mem_unitaryGroupOf_iff.1 u.2]
+        show (u : Matrix n n R)ᴴ * J * u = J from mem_unitaryGroupOf_iff.1 u.property]
   -- `u` preserves `J` and fixes `a`, hence so does its adjoint for `J`.
   have adj_fixes (z : Matrix n n R) : (u : Matrix n n R)ᴴ * (J * (a * z)) = J * (a * z) := by
     simpa only [← mul_assoc (u : Matrix n n R), hu_fixes] using preserves_mul (a * z)

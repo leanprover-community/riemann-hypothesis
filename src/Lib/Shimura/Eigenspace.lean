@@ -1,6 +1,7 @@
 module
 
 public import Lib.Cohomology.WoodsHole
+public import Lib.GaloisRep.Main.Defs
 public import Lib.PadicComparison.CrystallineFrobenius
 public import Lib.PadicHodge.Limit.CrystallineLimit
 public import Lib.Shimura.CongruenceRelation.EichlerShimura
@@ -192,7 +193,7 @@ lemma exists_isEigenQuotient [Fintype ι] [∀ i, Module.Finite ℚ_[ℓ] (V i)]
   -- `R g` is the map that the universal property attaches to the family `F i ∘ ρ i g`.
   have h_eig_comp (g : Γ) (i : ι) (s : σ) (x : V i) :
       F i (ρ i g (T i s x)) = θ s • F i (ρ i g x) := by
-    rw [← h_eig, ← End.mul_apply (T i s), (h_comm i s g).eq, End.mul_apply]
+    rw [← h_eig, ← mul_apply_eq_comp (T i s), (h_comm i s g).eq, mul_apply_eq_comp]
   have h_act (g : Γ) : ∃ R : End (PadicAlgCl ℓ) (Fin _ → PadicAlgCl ℓ),
       ∀ (i : ι) (x : V i), R (F i x) = F i (ρ i g x) :=
     h_univ _ (fun i ↦ F i ∘ₗ ρ i g) (h_eig_comp g)
@@ -276,7 +277,7 @@ lemma IsEigenQuotient.isKilledBy {f : ℕ} {g : Γ} (hg : IsWeilPair (toGp g) f)
   simp only [h_tmul, LinearMap.zero_apply]
   rw [← map_zero (φ.baseChange Bmax), ← h_rel i (a ⊗ₜ x)]
   simp only [eval₂_finsetSum, C_mul_X_pow_eq_monomial, eval₂_monomial, LinearMap.sum_apply,
-    End.mul_apply, h_frob, h_coef, map_sum]
+    mul_apply_eq_comp, h_frob, h_coef, map_sum]
 
 /-- Let `r` with the maps `F i` be the largest quotient on which `T` acts by `θ` (`h`), the `ρ i`
 crystalline (`hρ`), `toGp` (from `[OverGp Γ ℓ]`) of open image, and the `T i s` commuting with each
@@ -316,11 +317,14 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
       let := γ.toModule
       have h_eig (i : ι) (s : σ) (x : V i) : (f i).val (T i s x) = γ (θ s) * (f i).val x := by
         have h_f_apply : ((Φ u [s] f) i).val x = (((a ∘ θ) s • f) i).val x := by rw [hf s]
-        simpa [Φ, hodgeTateMaps.pull, ha, Algebra.smul_def] using! h_f_apply
+        simpa only [ha, Function.comp_apply, Pi.smul_apply, SetLike.val_smul, LinearMap.smul_apply,
+          Algebra.smul_def] using! h_f_apply
       -- the instances are passed by hand, since `ℂ_ℓ` carries another action of `ℚ̄_ℓ`
       obtain ⟨φ, hφ⟩ := @h_univ ℂ_[ℓ] _ _ _ (.of_algHom (γ.extendScalarsOfIsLocalization _ _⁰))
-        (fun i ↦ ⟨(f i).val.toAddHom, by simp [Algebra.smul_def]⟩) h_eig
-      exact ⟨⟨φ.1, φ.2⟩, hφ⟩
+        (fun i ↦ ⟨(f i).val.toAddHom, by
+          simp only [AddHom.toFun_eq_coe, coe_toAddHom, LinearMap.map_smulₛₗ, coe_toAlgHom,
+            smul_eq_mul, RingHom.id_apply, Algebra.smul_def, implies_true]⟩) h_eig
+      exact ⟨⟨φ.toAddHom, φ.map_smul'⟩, hφ⟩
     have h_mem : φ ∈ hodgeTateMaps (matrixRep r) γ u :=
       mem_hodgeTateMaps_of_span h_span fun ⟨i, x⟩ ↦ by simpa [↓h_equiv, ← hφ] using! (f i).prop x
     ext
@@ -329,7 +333,8 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
     -- Both sides apply the same form to `x` moved by `T j s` and `T j t`, which commute.
     ext i f j x
     exact congrArg _ (LinearMap.congr_fun (hTT j s t).eq.symm x)
-  obtain ⟨c, h_one, h_kill⟩ := exists_words_comb_eq_zero (Φ u) (by aesop) h_comm h_no_eigen
+  obtain ⟨c, h_one, h_kill⟩ := exists_words_comb_eq_zero (Φ u) (fun s L ↦ by simp [Φ]; rfl) h_comm
+    h_no_eigen
   refine ⟨c, h_one, fun i y hy ↦ ?_⟩
   -- A basis `b` of the forms on `V i`, with `b l` of weight `w l` (`hb`).
   obtain ⟨-, w, -, -, b, hb, -⟩ :=
@@ -475,7 +480,7 @@ lemma New.Variety.Model.isNullHecke_mul_of_kills_weight {E : Type} [Field E] [CM
   · simp [n, legPullback, ← hΘ, HodgeH.map_comp, cosetFn, cosetSum]
   · simpa [legPullback, Finsupp.linearCombination, Finsupp.sum, c.support.sum_comm,
       smul_comm (ε.symm _), cosetSum, baseChange_comp, smul_sum] using
-      congr(cosetSum (fun g ↦ Θ (baseChange _ _ $(hc_kill n v hv_weight))) b.val)
+      congr(cosetSum (fun g ↦ Θ (LinearMap.baseChange _ _ $(hc_kill n v hv_weight))) b.val)
 
 open scoped Classical in
 /-- Let `T` be Hecke operators on the cohomology groups `V^n(Z)` of the model `X` that
@@ -602,7 +607,9 @@ lemma New.Variety.Model.aeval_heckePoly_eq_zero_of_isEigenQuotient {E : Type} [F
   have hs_t : IsFrob A (t ^ f) s⁻¹ := by
     rw [← hq]
     exact hs
-  simpa [hT_pull, sum_filter, sum_comm, (finrank_le _).trans_eq, smul_sum] using
+  simpa only [map_sum, map_smul_of_tower, hT_pull, sum_filter, smul_sum, smul_ite, smul_zero,
+    sum_comm, sum_ite_eq, Finset.mem_range_succ_iff, finrank_fintype_fun_eq_card, Fintype.card_fin,
+    (finrank_le _).trans_eq, ↓reduceIte, map_zero, reduceNegSucc, Nat.cast_pow, inv_inv] using
     congruence_relation hR (by simpa [ValuationSubring.valuation_eq_one_iff]) ht_val hs_t _
       _ _ (h_cong hq) x
 
@@ -615,7 +622,7 @@ crystalline cohomology. Then for `s` a geometric Frobenius at `A` and `(s, k)` a
 Hecke polynomial of `ιℓ ∘ θ` at `w` kills `decompRep r A` at `(s, k)`. -/
 lemma New.Variety.Model.isKilledBy_heckePoly_of_isEigenQuotient {E : Type} [Field E] [CMBase E]
     {a d₀ : ℕ} [HasQuadSubfield d₀ E] {𝔑 : 𝓞 E} {ν : ℕ} {R : Subalgebra (𝓞 E) E}
-    (X : Model (Fin a) d₀ 𝔑 ν R) {ℓ : ℕ} [NeZero a] [ThePrime ℓ] [Algebra E Ω]
+    (X : Model (Fin a) d₀ 𝔑 ν R) {ℓ : ℕ} [ThePrime ℓ] [Algebra E Ω]
     (M : Submonoid (𝓞 E)) [IsLocalization M R] [PadicIso ℓ] (θ : SafePlace 𝔑 → ℕ → ℂ)
     {w : SafePlace 𝔑} {A : ClosurePlace} (hA : IsPlaceOver A w.val.val)
     (hR : ∀ x : CommRingCat.of R, algebraMap (CommRingCat.of R) Ω x ∈ A)
@@ -673,8 +680,10 @@ lemma New.Variety.Model.isKilledBy_heckePoly_of_isEigenQuotient {E : Type} [Fiel
   apply lTensor_preserves_injective_linearMap
     (((ellAdicCohom (.of R) Ω n).map (X.leg (l w) ⟦1⟧).op).hom.restrictScalars ℤ_[ℓ])
     (h_inj n (l w))
-  simpa [← baseChange_eq_lTensor, hT_pull_cris, sum_filter, sum_comm, (finrank_le _).trans_eq,
-    ↓LinearMap.sum_apply, smul_sum] using! LinearMap.congr_fun h_rel y
+  simpa only [map_sum, map_smul_of_tower, ← baseChange_eq_lTensor, hT_pull_cris, sum_filter,
+    smul_sum, smul_ite, smul_zero, sum_comm, sum_ite_eq, Finset.mem_range_succ_iff,
+    finrank_fintype_fun_eq_card, Fintype.card_fin, (finrank_le _).trans_eq,
+    ↓LinearMap.sum_apply] using! LinearMap.congr_fun h_rel y
 
 open scoped Classical in
 /-- The Galois representation cut out of the cohomology of the model `X` by the system `θ` of Hecke

@@ -121,7 +121,7 @@ theorem pairWeil_modDatum_single {a b : AutChar E} {x y : Matrix n' n 𝔪.Resid
   have h_single : (fun m : Matrix n' n 𝔪.ResidueRing ↦ (Pi.single x 1 : _ → ℂ)
       ((𝔪.reductionGL k')⁻¹.val * m * (𝔪.reductionGL k).val)) = Pi.single y 1 := by
     ext m
-    simp [hx, Pi.single_apply, Matrix.mul_left_inj_of_invertible,
+    simp only [hx, Pi.single_apply, Matrix.mul_left_inj_of_invertible,
       Matrix.mul_right_inj_of_invertible]
   intro g
   rw [pairWeil_modDatum_stdLevel, h_single]
@@ -403,7 +403,11 @@ theorem IsEdgeFamily.petersson_lift_eq_mul_inner_modTransposedLift (h : IsEdgeFa
     (h.isArrow_swap S T x i).inner_formLift_adjoint (h.isArrow_lift S T x i)
       (eq_star_of_eq_star hk_star) hk'_star y z
   have h_conj (F : G E s' → ℂ) : T.petersson z.val (star F) = star (T.petersson z' F) := by
-    simp [z', petersson, ← integral_conj]
+    rw [petersson, petersson, RCLike.star_def, ← integral_conj]
+    refine MeasureTheory.integral_congr_ae (.of_forall fun g ↦ ?_)
+    dsimp only
+    rw [map_mul, starRingEnd_self_apply]
+    rfl
   have h_w : w.val = star (liftBy P) := congrArg star ((h.isArrow_lift S T x i).coe_formLift y')
   have h_scale : T.petersson z' (liftBy Q) = κ Q * T.petersson z' (liftBy P) :=
     (hκ (a i n) (a i n') (schrodingerOp_mem_finitePart _ _) Q y' z').1
@@ -430,17 +434,51 @@ lemma Space.height_reindex (e : n ≃ m) (he : s ∘ e.symm = t) (g : G E s) :
   -- Relabelling vectors along `e` matches the two lattices and preserves the Euclidean norm.
   let V := S.move g
   let V' := (S.reindex e he).move (G.reindex (t := t) e he g)
+  have h_sub (M : Matrix n n (𝔸 E)) (v : n → 𝔸 E) :
+      M.submatrix e.symm e.symm *ᵥ (v ∘ e.symm) = (M *ᵥ v) ∘ e.symm := by
+    funext j
+    simp only [mulVec, dotProduct, submatrix_apply, Function.comp_apply]
+    exact e.symm.sum_comp fun i ↦ M (e.symm j) i * v i
   have h_vec (ξ : n → E) : V'.vecAtPoint (ξ ∘ e.symm) = V.vecAtPoint ξ ∘ e.symm := by
-    simp [V, V', ↓vecAtPoint_move, vecAtPoint, reindex, ← map_inv, mulVec_eq_sum, reindex_equiv e,
-      funext_iff]
+    rw [vecAtPoint_move, vecAtPoint_move, ← map_inv (G.reindex (t := t) e he),
+      G.adeleMatrix_reindex]
+    have hx : (S.reindex e he).vecAtPoint (ξ ∘ e.symm) = S.vecAtPoint ξ ∘ e.symm := by
+      change (reindexGL e S.x)⁻¹.val *ᵥ (toAdele ∘ ξ ∘ e.symm) =
+        (S.x⁻¹.val *ᵥ (toAdele ∘ ξ)) ∘ e.symm
+      rw [← map_inv (reindexGL e)]
+      exact h_sub S.x⁻¹.val (toAdele ∘ ξ)
+    rw [hx]
+    exact h_sub g⁻¹.adeleMatrix (S.vecAtPoint ξ)
   have h_mem (ξ : n → E) : ξ ∘ e.symm ∈ V'.baseLattice ↔ ξ ∈ V.baseLattice := by
-    simp [baseLattice, h_vec, reindex_equiv e]
+    change (∀ j : m, (V'.vecAtPoint (ξ ∘ e.symm) j).2 ∈ Ô E) ↔
+      ∀ i : n, (V.vecAtPoint ξ i).2 ∈ Ô E
+    rw [h_vec]
+    exact ⟨fun h i ↦ by simpa only [Function.comp_apply, Equiv.symm_apply_apply] using h (e i),
+      fun h j ↦ h (e.symm j)⟩
   have h_norm (ξ : n → E) : ‖V'.archCoords (ξ ∘ e.symm)‖ = ‖V.archCoords ξ‖ := by
-    simp [archCoords, h_vec, PiLp.norm_eq_of_L2, sum_prod_type, reindex_equiv e]
+    rw [PiLp.norm_eq_of_L2, PiLp.norm_eq_of_L2, sum_prod_type, sum_prod_type]
+    congr 1
+    refine Finset.sum_congr rfl fun w _ ↦ ?_
+    change ∑ j : m, ‖(V'.vecAtPoint (ξ ∘ e.symm) j).1 w‖ ^ 2 =
+      ∑ i : n, ‖(V.vecAtPoint ξ i).1 w‖ ^ 2
+    rw [h_vec]
+    exact e.symm.sum_comp fun i ↦ ‖(V.vecAtPoint ξ i).1 w‖ ^ 2
   suffices h_min : V'.firstMinimum = V.firstMinimum from congrArg (·⁻¹) h_min
-  simp only [firstMinimum, image, reindex_equiv (e.piCongrLeft' fun _ ↦ E)]
-  simp [show ∀ ξ, e.piCongrLeft' (fun _ ↦ E) ξ = ξ ∘ e.symm from fun _ ↦ rfl, h_mem, h_norm,
-    funext_iff, reindex_equiv e]
+  simp only [firstMinimum]
+  congr 2
+  ext r
+  simp only [Set.mem_image]
+  refine ((e.piCongrLeft' fun _ ↦ E).exists_congr fun ξ ↦ ?_).symm
+  have h_eq : e.piCongrLeft' (fun _ ↦ E) ξ = ξ ∘ e.symm := rfl
+  have h_ne : ξ ∘ e.symm ≠ 0 ↔ ξ ≠ 0 := by
+    refine not_congr ⟨fun h ↦ funext fun i ↦ ?_, fun h ↦ by rw [h]; rfl⟩
+    have hi := congrFun h (e i)
+    simp only [Function.comp_apply, Equiv.symm_apply_apply, Pi.zero_apply] at hi
+    exact hi
+  change (ξ ∈ V.baseLattice ∧ ξ ≠ 0) ∧ ‖V.archCoords ξ‖ = r ↔
+    (e.piCongrLeft' (fun _ ↦ E) ξ ∈ V'.baseLattice ∧ e.piCongrLeft' (fun _ ↦ E) ξ ≠ 0) ∧
+      ‖V'.archCoords (e.piCongrLeft' (fun _ ↦ E) ξ)‖ = r
+  rw [h_eq, h_mem, h_ne, h_norm]
 
 /-- Let the types `k` form a conjugate cuspidal pair. The product of the moderate weight
 `w.weightFn`, a form of type `k d` on `S` (which decreases rapidly) and a form on `T`, read along
@@ -466,15 +504,28 @@ noncomputable def Space.periodPairing {k : Bool → GInf E s → ℂ} {d : Bool}
     (fun f y ↦ ∫ z : G E s, w.weightFn z * f z * y (w.comparisonMap z * (r, 1)) ∂S.quotMeasure)
     -- additivity needs the integrability `integrable_moderate_mul_forms` of the two summands
     (fun f f' y ↦ by
-      simp [show (f + f').val = f.val + f'.val from rfl, integrable_moderate_mul_forms h w,
-        ← integral_add, mul_add, add_mul])
+      rw [← integral_add (integrable_moderate_mul_forms h w f y)
+        (integrable_moderate_mul_forms h w f' y)]
+      refine integral_congr_ae (.of_forall fun z ↦ ?_)
+      change w.weightFn z * (f z + f' z) * y (w.comparisonMap z * (r, 1)) = _
+      rw [mul_add, add_mul])
     (fun c f y ↦ by
-      simp [show (c • f).val = c • f.val from rfl, ← integral_const_mul, mul_assoc, mul_left_comm])
+      rw [smul_eq_mul, ← integral_const_mul]
+      refine integral_congr_ae (.of_forall fun z ↦ ?_)
+      change w.weightFn z * (c * f z) * y (w.comparisonMap z * (r, 1)) = _
+      rw [mul_left_comm (w.weightFn z) c, mul_assoc])
     (fun f y y' ↦ by
-      simp [show (y + y').val = y.val + y'.val from rfl, integrable_moderate_mul_forms h w,
-        ← integral_add, mul_add])
+      rw [← integral_add (integrable_moderate_mul_forms h w f y)
+        (integrable_moderate_mul_forms h w f y')]
+      refine integral_congr_ae (.of_forall fun z ↦ ?_)
+      change w.weightFn z * f z *
+        (y (w.comparisonMap z * (r, 1)) + y' (w.comparisonMap z * (r, 1))) = _
+      exact mul_add _ _ _)
     (fun c f y ↦ by
-      simp [show (c • y).val = c • y.val from rfl, ← integral_const_mul, mul_left_comm])
+      rw [smul_eq_mul, ← integral_const_mul]
+      refine integral_congr_ae (.of_forall fun z ↦ ?_)
+      change w.weightFn z * f z * (c * y (w.comparisonMap z * (r, 1))) = _
+      exact mul_left_comm _ c _)
 
 /-- The types `k` on the source of an edge family form a pair of conjugate cuspidal types. -/
 lemma Exchange.IsEdgeFamily.isConjKernelPair_source {I : Type*}
@@ -560,8 +611,9 @@ lemma Exchange.integrable_mul_weight_mul_forms (hk' : IsConjKernelPair k')
   have h_int : Integrable (⇑M.weightFn * f.val) S'.quotMeasure :=
     ((hk'.form_mem_rapidFunctions f).right.mul M.isModerate).integrable
       (M.weightFn.continuous.mul f.prop.continuous)
-  simpa [mul_assoc] using U.prop.isBoundedMeasurable.integrable_mul_comp
-    (α.integrable.mul_prod h_int) fun p : GInf E t × G E s' ↦ M.comparisonMap p.2 * (p.1, 1)
+  refine (U.prop.isBoundedMeasurable.integrable_mul_comp (α.integrable.mul_prod h_int)
+    fun p : GInf E t × G E s' ↦ M.comparisonMap p.2 * (p.1, 1)).congr (.of_forall fun p ↦ ?_)
+  exact mul_assoc _ _ _
 
 /-- The seesaw for one pair of forms. If the lift of `y` by the datum of `Q` is the average against
 `α` of the real translates of `U`, and the weight `N` times the kernel of `p` with characters `a'`,
@@ -587,14 +639,36 @@ lemma Exchange.integral_kernel_mul_forms_eq_integral_periodPairing
       ∫ r : GInf E t, α r * periodPairing hk' M r f U := by
   -- By Fubini the integral over `g` may be taken inside; by the kernel identity it is then the
   -- lift of `y` with datum `Q` at `M.comparisonMap x`.
-  simp_rw [modKernel, pairTheta, periodPairing, LinearMap.mk₂_apply, ← integral_const_mul (α _)]
-  rw [integral_integral_swap (integrable_kernel_mul_forms hk hk' a' b' N y f _), eq_comm,
-    integral_integral_swap (integrable_mul_weight_mul_forms hk' α M f U)]
-  simp_rw [mul_left_comm (α _), integral_const_mul, ← realConv.eq_1, ← h_lift, lift,
-    ← integral_const_mul]
-  refine integral_congr_ae (.of_forall fun x ↦ integral_congr_ae (.of_forall fun g ↦ ?_))
-  simp only [modKernel, pairTheta] at h_kernel
-  linear_combination -(y.val g * f.val x) * h_kernel g x
+  have h_lhs :
+      ∫ g : G E s, ∫ x : G E s', N.weightFn g * y g *
+          (modKernel T' S' a' b' 𝔪 Ψ' p (N.comparisonMap g) x * f x)
+            ∂S'.quotMeasure ∂S.quotMeasure =
+        ∫ x : G E s', ∫ g : G E s, N.weightFn g * y g *
+          (modKernel T' S' a' b' 𝔪 Ψ' p (N.comparisonMap g) x * f x)
+            ∂S.quotMeasure ∂S'.quotMeasure :=
+    integral_integral_swap (integrable_kernel_mul_forms hk hk' a' b' N y f _)
+  have h_rhs :
+      ∫ r : GInf E t, α r * periodPairing hk' M r f U =
+        ∫ x : G E s', ∫ r : GInf E t,
+          α r * (M.weightFn x * f x * U (M.comparisonMap x * (r, 1)))
+            ∂volume ∂S'.quotMeasure := by
+    calc ∫ r : GInf E t, α r * periodPairing hk' M r f U
+        = ∫ r : GInf E t, ∫ x : G E s',
+            α r * (M.weightFn x * f x * U (M.comparisonMap x * (r, 1))) ∂S'.quotMeasure :=
+          integral_congr_ae (.of_forall fun r ↦ (integral_const_mul (α r) _).symm)
+      _ = _ := integral_integral_swap (integrable_mul_weight_mul_forms hk' α M f U)
+  rw [h_lhs, h_rhs]
+  refine integral_congr_ae (.of_forall fun x ↦ ?_)
+  dsimp only
+  have h_inner :
+      ∫ r : GInf E t, α r * (M.weightFn x * f x * U (M.comparisonMap x * (r, 1))) =
+        M.weightFn x * f x * realConv α U (M.comparisonMap x) := by
+    rw [realConv, ← integral_const_mul]
+    exact integral_congr_ae (.of_forall fun r ↦ mul_left_comm (α r) (M.weightFn x * f x) _)
+  rw [h_inner, ← h_lift, lift, ← integral_const_mul]
+  refine integral_congr_ae (.of_forall fun g ↦ ?_)
+  dsimp only [modKernel, pairTheta] at h_kernel ⊢
+  linear_combination (y.val g * f.val x) * h_kernel g x
 
 end
 
@@ -676,7 +750,9 @@ lemma Exchange.seesaw_periods (J : Type*) {X : J → Type}
   let L : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] J → ℂ :=
     .pi fun o ↦ ∑ i ∈ W o, u o i • Lᵢ o i
   have L_apply (v : fockSpace (realSigns E (homSigns t' s'))) (o : J) :
-      L v o = ∑ i ∈ W o, u o i * Lᵢ o i v := by simp [L]
+      L v o = ∑ i ∈ W o, u o i * Lᵢ o i v := by
+    simp only [L, ContinuousLinearMap.pi_apply, FunLike.coe_sum, Finset.sum_apply,
+      FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
   have h_line (v : fockSpace (realSigns E (homSigns t' s'))) : L v ∈ ℂ ∙ c := by
     -- The preimage of the line is closed and polynomials are dense; matched ones span them.
     refine denseRange_polyVector.induction_on v
@@ -693,9 +769,9 @@ lemma Exchange.seesaw_periods (J : Type*) {X : J → Type}
             (modDatum S T (𝔪 o) (Ψ o i) (polyVector (realSigns E (homSigns s t)) Q)) (y o i) =
           realConv α (U o i) :=
       (h_edge.exists_lift_eq_realConv Q).imp fun α hα o i ↦ hα o S T (𝔪 o) (Ψ o i) (y o i)
-    have h_int (o : J) (i : X o) : Integrable fun r : GInf E t ↦ α r * P o i r := by
-      simpa [P, periodPairing, integral_const_mul] using
-        (integrable_mul_weight_mul_forms hk' α (M o i) (f o i) (U o i)).integral_prod_left
+    have h_int (o : J) (i : X o) : Integrable fun r : GInf E t ↦ α r * P o i r :=
+      (integrable_mul_weight_mul_forms hk' α (M o i) (f o i) (U o i)).integral_prod_left.congr
+        (.of_forall fun r ↦ integral_const_mul (α r) _)
     -- the see-saw: each double integral in `L` is the `α`-average of the periods of the lift
     have h_seesaw (o : J) (i : X o) : Lᵢ o i (polyVector _ p) = ∫ r, α r * P o i r :=
       (hLᵢ o i _).trans <| integral_kernel_mul_forms_eq_integral_periodPairing hk hk' (f o i)
@@ -703,10 +779,14 @@ lemma Exchange.seesaw_periods (J : Type*) {X : J → Type}
     -- average `hβ` against `α` and exchange the finite sum with the integral over `r`
     refine mem_span_singleton.2 ⟨∫ r, α r * β r, funext fun o ↦ ?_⟩
     calc (∫ r, α r * β r) * c o = ∫ r, ∑ i ∈ W o, u o i * (α r * P o i r) := by
-          simp_rw [← integral_mul_const, mul_assoc, ← hβ, Finset.mul_sum, mul_left_comm _ (u ..)]
+          rw [← integral_mul_const]
+          refine integral_congr_ae (.of_forall fun r ↦ ?_)
+          dsimp only
+          rw [mul_assoc, ← hβ, Finset.mul_sum]
+          exact Finset.sum_congr rfl fun i _ ↦ mul_left_comm (α r) (u o i) _
       _ = L (polyVector _ p) o := by
           rw [L_apply, integral_finsetSum _ fun i _ ↦ (h_int o i).const_mul _]
-          simp_rw [integral_const_mul, h_seesaw]
+          exact Finset.sum_congr rfl fun i _ ↦ by rw [integral_const_mul, h_seesaw]
   -- The transposed lift is the integral of the kernel against `f` (`coe_formLift`); translating it
   -- by `r` moves the datum (`lift_mul_right`), and only its real part (`pairWeil_integrated`, by
   -- the weights `hγ`, `hγ'`).
@@ -720,11 +800,17 @@ lemma Exchange.seesaw_periods (J : Type*) {X : J → Type}
             (modDatum T' S' (𝔪 o) (Ψ' o i) (realPairWeil γ γ' (r, 1) (polyVector _ Φ')))) *
               f o i x ∂S'.quotMeasure := by
       rw [(h_edge'.isArrow_swap T' S' (Ψ' o i) o).coe_formLift, lift_mul_right]
-      simp [lift, modDatum, ← Prod.mk_one_one, pairWeil_integrated]
+      refine integral_congr_ae (.of_forall fun x ↦ ?_)
+      change (T'.hom S').θ (pairWeil T' S' (a' o m') (a' o n') (g, x)
+        (pairWeil T' S' (a' o m') (a' o n') ((r, 1), 1, 1)
+          (modDatum T' S' (𝔪 o) (Ψ' o i) (polyVector _ Φ')))) * f o i x = _
+      rw [modDatum, pairWeil_integrated]
+      rfl
     simp only [hLᵢ, periodPairing, LinearMap.mk₂_apply, h_translate, integral_const_mul]
   obtain ⟨β, hβ⟩ := mem_span_singleton.1 (h_line (realPairWeil γ γ' (r, 1) (polyVector _ Φ')))
   refine ⟨β, fun o ↦ ?_⟩
-  simp_rw [h_descent, ← L_apply, ← hβ, Pi.smul_apply, smul_eq_mul]
+  rw [← smul_eq_mul, ← Pi.smul_apply, hβ, L_apply]
+  exact Finset.sum_congr rfl fun i _ ↦ by rw [h_descent]
 
 end New
 

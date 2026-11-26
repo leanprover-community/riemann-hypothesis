@@ -160,25 +160,19 @@ lemma isUnit_coeff_primeNorm_of_rescale_formalParam_eq {g : (valRingCp p)⟦X⟧
   have hT_mem := (C.isSeriesGenerator_formalParam (p := p)).generator_mem
   have hT_order : C.reducedOrder (C.formalParam : ℂ_[p]⟦X⟧) = 1 :=
     C.reducedOrder_eq_one hT_mem C.constantCoeff_formalParam (by simp [coeff_one_formalParam])
-  have h_order : (g.map (residue (valRingCp p))).order = C.insepDegree (piPrime d p) := calc
-    _ = C.reducedOrder (rescale (ιₚ (piPrime d p)) C.formalParam) := by
-      rw [hg, C.reducedOrder_subst hT_mem C.constantCoeff_formalParam, hT_order, mul_one]
-    _ = _ := by rw [C.reducedOrder_rescale (piPrime_mem_quadInt d) hT_mem, hT_order, one_mul]
-  have h_lt : (primeNorm d p + 1 : ℕ) ≤ (g.map (residue (valRingCp p))).order := by
-    refine nat_le_order _ _ fun n hn ↦ ?_
-    rw [coeff_map, residue_eq_zero_iff, mem_maximalIdeal, mem_nonunits_iff]
-    intro h_unit
-    obtain ⟨i, rfl⟩ := h_degree n h_unit.ne_zero
-    rcases i with _ | _ | i
-    · rw [zero_mul, add_zero, hg₁] at h_unit
-      exact not_isUnit_piPrimeInt h_unit
-    · rw [zero_add, one_mul, Nat.add_sub_cancel' hq.le] at h_unit
-      exact hb₁ h_unit
-    · rw [add_mul, add_mul] at hn
-      omega
-  exact Nat.not_succ_le_self _
-    (mod_cast h_lt.trans (h_order.trans_le C.insepDegree_piPrime_le) :
-      primeNorm d p + 1 ≤ primeNorm d p)
+  have h_order : (g.map (residue (valRingCp p))).order = C.insepDegree (piPrime d p) := by
+    simpa [C.reducedOrder_rescale (piPrime_mem_quadInt d) hT_mem,
+      C.reducedOrder_subst hT_mem C.constantCoeff_formalParam, hT_order] using
+      (congrArg C.reducedOrder hg).symm
+  refine absurd (mod_cast (nat_le_order _ (primeNorm d p + 1) fun n hn ↦ ?_).trans
+    (h_order.trans_le C.insepDegree_piPrime_le)) (Nat.not_succ_le_self _)
+  rw [coeff_map, residue_eq_zero_iff, mem_maximalIdeal, mem_nonunits_iff]
+  intro h_unit
+  obtain ⟨_ | _ | i, rfl⟩ := h_degree n h_unit.ne_zero
+  · exact not_isUnit_piPrimeInt (by simpa [hg₁] using h_unit)
+  · exact hb₁ (by simpa [Nat.add_sub_cancel' hq.le] using h_unit)
+  · rw [add_mul, add_mul] at hn
+    omega
 
 /-- Let `d` be a prime `≡ 7 mod 8`, `p` a prime with fixed `p`-adic place `ιₚ`, `q = primeNorm d p`
 (`p²` if `(p/d) = -1`, else `p`), `π = piPrime d p` (`√-d` if `p = d`, else `p`; `piPrimeInt d` is
@@ -279,24 +273,20 @@ to `1/(p-1)`, `1/(p²-1)`, `1/(2p-2)` for `p` split, inert, ramified in `ℚ(√
 integral coefficients (it lies in the range of `seriesToCp`). -/
 lemma rescale_mem_range_seriesToCp {ϖ : ℂ_[p]} (hϖ : ‖ϖ‖ ≤ (p : ℝ) ^ (-varpiValuation d p))
     {g : ℂ_[p]⟦X⟧} (hg : g ∈ C.integralSeriesRing) : rescale ϖ g ∈ seriesToCp.range := by
-  obtain ⟨ϖ₀, Y, hϖ₀ : ‖ϖ₀‖ = (p : ℝ) ^ (-varpiValuation d p),
-    hY : rescale ϖ₀ C.formalParam = ϖ₀ • seriesToCp Y, -, -⟩ := C.exists_scaled_formalParam
-  have h_le : (p : ℝ) ^ (-varpiValuation d p) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos
+  obtain ⟨ϖ₀, Y, hϖ₀, hY, -, -⟩ := C.exists_scaled_formalParam
+  obtain ⟨f, rfl⟩ := C.mem_integralSeriesRing_iff_exists_subst_formalParam.1 hg
+  have h_le : ‖ϖ₀‖ ≤ 1 := hϖ₀.trans_le <| Real.rpow_le_one_of_one_le_of_nonpos
     (mod_cast (Fact.out : p.Prime).one_le) (neg_nonpos.2 (varpiValuation_nonneg d p))
-  obtain ⟨f, rfl⟩ : ∃ f : (valRingCp p)⟦X⟧, g = subst C.formalParam (seriesToCp f) :=
-    C.mem_integralSeriesRing_iff_exists_subst_formalParam.1 hg
-  -- `g(ϖ₀ z)` is an integral series in `ϖ₀ Y`.
-  have h_scaled (n : ℕ) : ‖coeff n (rescale ϖ₀ (subst C.formalParam (seriesToCp f)))‖ ≤ 1 := by
-    have h_mem : rescale ϖ₀ C.formalParam ∈ integralBelow p (n + 1) := by
-      refine mem_integralBelow.2 fun k _ ↦ ?_
-      rw [hY, coeff_smul, norm_smul, hϖ₀, coeff_seriesToCp]
-      exact (mul_le_of_le_one_left (norm_nonneg _) h_le).trans (coeff k Y).property
-    rw [rescale_subst C.constantCoeff_formalParam]
-    exact mem_integralBelow.1 (subst_seriesToCp_mem_integralBelow
-      (by simp [constantCoeff_rescale, constantCoeff_formalParam]) h_mem f) n n.lt_succ_self
-  refine mem_range_seriesToCp.2 fun n ↦ le_trans ?_ (h_scaled n)
-  simp only [coeff_rescale, norm_mul, norm_pow, hϖ₀]
-  gcongr
+  -- Compare `g(ϖ z)` to `g(ϖ₀ z)`, which is an integral series in `ϖ₀ Y`.
+  have h_mem (n : ℕ) : rescale ϖ₀ C.formalParam ∈ integralBelow p (n + 1) := mem_integralBelow.2
+    fun k _ ↦ by
+      simpa [hY, coeff_seriesToCp] using
+        (mul_le_of_le_one_left (norm_nonneg _) h_le).trans (coeff k Y).2
+  refine mem_range_seriesToCp.2 fun n ↦ le_trans ?_ (mem_integralBelow.1
+    (subst_seriesToCp_mem_integralBelow
+      (by simp [constantCoeff_rescale, constantCoeff_formalParam]) (h_mem n) f) n n.lt_succ_self)
+  simpa [← rescale_subst C.constantCoeff_formalParam, coeff_rescale, hϖ₀] using
+    mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hϖ n) (norm_nonneg _)
 
 /-- If `g` is an integral series in `y`, the `p`-adic Taylor series of `C.translatedY` (that is,
 `g ∈ C.integralSeriesRing`), then its coefficients in degrees below `q = primeNorm d p` are

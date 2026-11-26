@@ -272,7 +272,7 @@ lemma New.Selmer.exists_anticyclotomicChar_of_frob_fixes_roots {E : Type} [Field
     (hθ_cont.comp (continuous_id.div' continuous_star)) hθ'_rat
   refine ⟨χ, θ, hχ_cont, ?_, hθ_rat, fun a ha ha_one ↦ (hθ a ha).trans (hlg_one _ ha_one), hχ⟩
   -- the tame generator is the Artin symbol of `u₀` at `P`; its conjugate has component `1` at `P`
-  have h_art : artinMap Gal(Ω/E) (locIdele P u₀) = hA.tameGenerator.1 := by
+  have h_art : artinMap Gal(Ω/E) (locIdele P u₀) = hA.tameGenerator.val := by
     rw [artinMap_locIdele, hA.artinAt_eq_of_localArtin_eq hu₀_art]
   have h_conj_mem : star (locIdele P u₀) ∈ idelesUnitOff T := by
     rw [star_locIdele]
@@ -353,7 +353,7 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
   let U : Subgroup Gal(Ω/E) :=
     (cyclotomicCharMod Ω (ℓ ^ N)).ker ⊓
       ⨅ u : s, MulAction.stabilizer Gal(Ω/E) (y (u.val.toMul : Eˣ))
-  have hU_open : IsOpen (SetLike.coe U) := isOpen_ker_cyclotomicCharMod.1.inter
+  have hU_open : IsOpen (SetLike.coe U) := isOpen_ker_cyclotomicCharMod.out.inter
     (by simp [isOpen_iInter_of_finite, stabilizer_isOpen_of_isIntegral])
   -- the inertia groups in question sit at places off `T`, so `z` lies in `U`
   have hz : z ∈ U := by
@@ -375,8 +375,8 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
     exists_anticyclotomicChar_of_frob_fixes_roots h_gen hs hp hk hPT hP_ne_star hA hσ
       fun u hu ↦ ⟨y (u.toMul : Eˣ), hy _, mem_iInf.1 hσ_root ⟨u, hu⟩⟩
   -- multiply `σ` by a power of the tame generator to get a Frobenius `τ` at which `χ` is trivial
-  let τ : Gal(Ω/E) := σ * hA.tameGenerator.1 ^ (χ σ⁻¹).toAdd.val
-  have hτ : IsFrob A P.q τ := by simpa using hσ.mul_iff.2 (pow_mem hA.tameGenerator.2 _)
+  let τ : Gal(Ω/E) := σ * hA.tameGenerator.val ^ (χ σ⁻¹).toAdd.val
+  have hτ : IsFrob A P.q τ := by simpa using hσ.mul_iff.2 (pow_mem hA.tameGenerator.property _)
   have hχτ : χ τ = 1 := by simp [τ, hχ_tg, ← ofAdd_nsmul]
   obtain ⟨-, hτW⟩ := h_frob τ hτ
   have hχ_lc : IsLocallyConstant χ := fun V ↦ hχ_cont.isOpen_preimage V (isOpen_discrete V)
@@ -385,7 +385,7 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
   have hT'T : T'.conjClosure ⊆ T :=
     (Set.union_subset_union hT' (Set.preimage_mono hT')).trans hST
   refine ⟨⟨hχ_lc, θ, hθ_rat, fun a ha ha_one ↦ ?_, hχ⟩, h_norm, hA, hτ,
-    fun h ↦ hPT (hT'T (.inl h)), hP_ne_star, hA.tameGenerator.2, hχ_tg, rfl⟩
+    fun h ↦ hPT (hT'T (.inl h)), hP_ne_star, hA.tameGenerator.property, hχ_tg, rfl⟩
   -- an idele that is a unit off `T'.conjClosure ⊆ T` and `≡ 1` at `P` is killed by `θ`
   exact hθ_one a (idelesUnitOff_mono hT'T ha) (ha_one P ⟨rfl, fun h ↦ hPT (hT'T h)⟩)
 

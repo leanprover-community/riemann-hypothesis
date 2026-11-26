@@ -54,7 +54,7 @@ vector in the span of the columns to the positive basis vector `i`. -/
 lemma New.Exchange.exists_unitary_mulVec_eq_single {i : n} (hs_pos : s i = 1) {x : Matrix n b ℂ}
     (hx : ¬∃ c : Matrix b b ℂ, cᴴ * signMatrix (-1 : b → ℤˣ) * c = xᴴ * signMatrix s * x) :
     ∃ (u : U (signMatrix s)) (v : b → ℂ), (u.val.val * x) *ᵥ v = Pi.single i 1 := by
-  have hs_herm : (signMatrix s)ᴴ = signMatrix s := Fock.conjTranspose_signMatrix
+  have hs_herm : (signMatrix s)ᴴ = signMatrix s := conjTranspose_signMatrix
   have h_herm : (xᴴ * signMatrix s * x).IsHermitian := isHermitian_conjTranspose_mul_mul x hs_herm
   -- the Gram form is not negative semidefinite, so it represents `1`
   have h_not_nsd : ¬(-(xᴴ * signMatrix s * x)).PosSemidef := fun h_psd ↦ by
@@ -435,7 +435,7 @@ lemma New.Exchange.homSlice_pairWeil_stabilizer_mul {r : m → ℤˣ} {s : n →
     (k : stabilizer (G E s) x') (g : G E r) (h : G E s) (f : 𝒮 (X.hom Y)) :
     D.homSlice Y x' (pairWeil X Y δ δ (g, k * h) f) =
       pairWeil Z Y ν δ (1, k) (D.homSlice Y x' (pairWeil X Y δ δ (g, h) f)) := by
-  have hk : k.1⁻¹.adeleMatrix * x' = x' := k⁻¹.2
+  have hk : k.val⁻¹.adeleMatrix * x' = x' := k⁻¹.property
   simpa [← hδ, -coe_units_inv, hk, Prod.mk_one_one, rep_apply_apply] using
     D.homSlice_levi Y ν δ 1 1 k x' (pairWeil X Y δ δ (g, h) f)
 

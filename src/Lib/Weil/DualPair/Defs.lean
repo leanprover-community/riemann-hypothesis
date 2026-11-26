@@ -23,8 +23,7 @@ and a function modulo an ideal at the finite places.
   from `New.Ô E`.
 * `New.modDatum`: the vector in the data space of `New.Space.hom S T` with real part `v`, with `Ψ`
   at the primes dividing `𝔪` (`New.Space.schrodingerOp`) and the vacuum elsewhere.
-* `New.modKernel`: its theta kernel `New.pairTheta`, for `v` the Fock vector of a polynomial;
-  `New.stdKernel`: this kernel for the standard characters `New.stdChar` of `S` and `T`.
+* `New.modKernel`: its theta kernel `New.pairTheta`, for `v` the Fock vector of a polynomial.
 
 Notions from other files:
 * `New.Space`: a hermitian space over a CM field E with `CMType E` (a chosen embedding at each
@@ -60,8 +59,6 @@ namespace New
   divided by the `k`-th power of the fixed splitting character `υ` of `New.WeilData`.
 * `New.rankTwist`: the product of `a` with the `⌊n/2⌋`-th power of `υ` on norm-one ideles, for an
   index type of size `n`.
-* `New.stdChar`: the standard character of a space, the power of `υ` on `[U(1)]` by the number
-  of negative signs.
 -/
 
 section PairDefs
@@ -123,7 +120,7 @@ the Kronecker product `J_T ⊗ (J_S⁻¹)ᵀ`, its point is `x_T ⊗ (x_S⁻¹)�
 def Space.hom : Space E (n' × n) (homSigns s s') where
   J := T.J ⊗ₖ S.J⁻¹ᵀ
   x :=
-    { val := T.x ⊗ₖ S.x⁻¹.1ᵀ
+    { val := T.x ⊗ₖ S.x⁻¹.valᵀ
       inv := ↑T.x⁻¹ ⊗ₖ S.xᵀ
       val_inv := by simp [← mul_kronecker_mul, ← transpose_mul]
       inv_val := by simp [← mul_kronecker_mul, ← transpose_mul] }
@@ -156,14 +153,10 @@ def AutChar.spaceChar (k : ℕ) : HeckeChar E := a.baseChange * υ⁻¹ ^ k
 where υ is restricted to the norm-one ideles (`upsilonU1`). -/
 def rankTwist (n : Type*) [Fintype n] : AutChar E := a * upsilonU1 ^ (Fintype.card n / 2)
 
-/-- The standard character of a space with signs s: the character υ^{n₋} of [U(1)], where υ is
-restricted to the norm-one ideles (`upsilonU1`) and n₋ is the number of signs −1. -/
-def stdChar {n : Type*} [Fintype n] (s : n → ℤˣ) : AutChar E := upsilonU1 ^ Exchange.negCount s
-
 /-- For characters a, b of [U(1)], the complex character (g, h) ↦ a(det h) b(det g)⁻¹ of
 G(s) × G(s′). -/
 def pairChar : G E s × G E s' →* ℂ :=
-  Circle.coeHom.comp ((b⁻¹.1.toMonoidHom.comp G.det).coprod (a.1.toMonoidHom.comp G.det))
+  Circle.coeHom.comp ((b⁻¹.val.toMonoidHom.comp G.det).coprod (a.val.toMonoidHom.comp G.det))
 
 /-- The representation (g, h) ↦ a(det h) b(det g)⁻¹ ω(x ↦ hxg⁻¹) of the product of the two adelic
 unitary groups on the data space of Hom(S, T). -/
@@ -265,12 +258,6 @@ def modKernel (a b : AutChar E) (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.Residu
     (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) : G E s → G E s' → ℂ :=
   fun g h ↦
     pairTheta S T a b (modDatum S T 𝔪 Ψ (Fock.polyVector (realSigns E (homSigns s s')) P)) (g, h)
-
-/-- The theta kernel θ^{S,T}[Ψ, P]: the kernel `New.modKernel` of a function Ψ on n′ × n matrices
-modulo 𝔪 and a polynomial P, for the standard characters (`New.stdChar`) of S and T. -/
-abbrev stdKernel (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) : G E s → G E s' → ℂ :=
-  modKernel S T (stdChar s) (stdChar s') 𝔪 Ψ P
 
 end ModulusKernel
 
@@ -388,7 +375,7 @@ lemma reduction_congr {x y : Ô E} (hxy : ∀ w : FinPlace E, w ∈ 𝔪.places 
     by_cases hw : w ∈ 𝔪.places <;> simp [hw, hxy, generator_apply_of_notMem]
   rw [← sub_eq_zero, ← map_sub, reduction_eq_zero_iff_generator_inv_mul_mem,
     AddSubgroupClass.coe_sub, h_eq, Units.inv_mul_cancel_left]
-  exact mul_mem (idem_mem_Ô _) (sub_mem x.2 y.2)
+  exact mul_mem (idem_mem_Ô _) (sub_mem x.property y.property)
 
 /-- Setting the components outside the primes dividing `𝔪` to `0` does not change the reduction
 modulo `𝔪`. -/
@@ -517,35 +504,25 @@ lemma localInner_liftFn (Ψ' : (n → 𝔪.ResidueRing) → ℂ) :
     localInner 𝔪.places (𝔪.liftFn Ψ) (𝔪.liftFn Ψ') =
       star Ψ ⬝ᵥ Ψ' / Fintype.card (n → 𝔪.ResidueRing) := by
   classical
-  -- With `F = star Ψ * Ψ'` the left side is the integral of the lift of `F`. Average this integral
-  -- over the translates of `F`, whose sum is the constant `∑ y, F y`.
+  -- Average `F = star Ψ * Ψ'` over translates; the sum is constant and each translate has the same
+  -- integral by translation invariance of the Haar measure on `Ô^n`.
   let F : (n → 𝔪.ResidueRing) → ℂ := star Ψ * Ψ'
   let μ : Measure (n → 𝔸f E) := (latticeMeasure E n).restrict (integralBox n 𝔪.placesᶜ)
-  have h_inner : localInner 𝔪.places (𝔪.liftFn Ψ) (𝔪.liftFn Ψ') = ∫ x, 𝔪.liftFn F x ∂μ := by
-    simp +contextual [localInner, F, μ, liftFn_apply]
-  -- every `y` comes from an integral vector, and the integral is invariant under those
-  have h_transl (y : n → 𝔪.ResidueRing) :
-      ∫ x, 𝔪.liftFn (fun z ↦ F (y + z)) x ∂μ = ∫ x, 𝔪.liftFn F x ∂μ := by
-    obtain ⟨z, rfl⟩ := 𝔪.reduction_surjective.comp_left y
-    have h_mem : (fun i : n ↦ (z i : 𝔸f E)) ∈ integralBox n 𝔪.placesᶜ := by
-      simp [mem_integralBox, mul_mem]
-    simp only [𝔪.liftFn_reduction_add F z]
-    exact setIntegral_add_left_eq_self_of_mem (𝔪.liftFn F) h_mem
-  have h_integrable (y : n → 𝔪.ResidueRing) : Integrable (𝔪.liftFn fun z ↦ F (y + z)) μ := by
-    simpa [IntegrableOn, μ] using
-      (isSchwartzBruhat_liftFn 𝔪 _).integrableOn_mul (continuous_const (y := 1))
   have h_avg : boxIndicator n 𝔪.places.conjClosure 0 * ∑ y : n → 𝔪.ResidueRing, F y =
       Fintype.card (n → 𝔪.ResidueRing) • ∫ x, 𝔪.liftFn F x ∂μ :=
     calc _
-      -- Fourier transform at `0`: the integrand is `∑ y, F y` times the indicator of the box
       _ = ∫ x, ∑ y, 𝔪.liftFn (fun z ↦ F (y + z)) x ∂μ := by
         refine (fourier_boxIndicator 0 0 _ fun x ↦ ?_).symm
         simp [(AddGroup.addRight_bijective _).sum_comp, mem_integralBox, liftFn_apply]
-      _ = ∑ y, ∫ x, 𝔪.liftFn (fun z ↦ F (y + z)) x ∂μ :=
-        integral_finsetSum _ fun y _ ↦ h_integrable y
-      _ = _ := sum_eq_card_nsmul fun y _ ↦ h_transl y
-  rw [h_inner, eq_div_iff (by simp), mul_comm, ← nsmul_eq_mul, ← h_avg]
-  simp [F, dotProduct, boxIndicator]
+      _ = ∑ y, ∫ x, 𝔪.liftFn (fun z ↦ F (y + z)) x ∂μ := integral_finsetSum _ fun y _ ↦ by
+        simpa [IntegrableOn, μ] using
+          (isSchwartzBruhat_liftFn 𝔪 _).integrableOn_mul (continuous_const (y := 1))
+      _ = _ := sum_eq_card_nsmul fun y _ ↦ by
+        obtain ⟨z, rfl⟩ := 𝔪.reduction_surjective.comp_left y
+        simpa [𝔪.liftFn_reduction_add F z] using setIntegral_add_left_eq_self_of_mem (𝔪.liftFn F)
+          (by simp [mem_integralBox, mul_mem] : (fun i : n ↦ (z i : 𝔸f E)) ∈ _)
+  rw [eq_div_iff (by simp), mul_comm, ← nsmul_eq_mul]
+  simpa +contextual [localInner, F, μ, liftFn_apply, dotProduct, boxIndicator] using h_avg.symm
 
 /-! ### The primitive character modulo `𝔪` -/
 

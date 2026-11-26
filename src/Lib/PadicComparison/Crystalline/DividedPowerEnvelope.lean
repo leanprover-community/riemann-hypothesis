@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
 public import Lib.PadicComparison.Completion
 public import Lib.PadicComparison.ToricTower
 
@@ -347,12 +348,14 @@ lemma exists_preEnvelope_basis (z : T) (b : Basis (I × ℕ) B T) (u : I → T) 
     suffices h_gen : ∀ (i : I × ℕ), ∀ x ∈ Submonoid.closure ((Subtype.val : preEnvelope {z} → _) ⁻¹'
         {(z' ^ n) ⊗ₜ[ℤ] (n ! : ℚ)⁻¹ | (z' ∈ ({z} : Set T)) (n : ℕ)}),
           b' i • x ∈ span B (Set.range w) by
-      -- `erw`: `preEnvelope {z}` is `adjoin T _` only after unfolding its definition, and
-      -- `adjoin_adjoin_coe_preimage` is stated for `adjoin`.
-      erw [← restrictScalars_top _ T, ← top_toSubmodule, ← adjoin_adjoin_coe_preimage,
-        adjoin_eq_span, ← span_smul_of_span_eq_top b'.span_eq, span_le, Set.smul_subset_iff,
-        Set.forall_mem_range]
-      exact h_gen
+      let generators : Set (T ⊗[ℤ] ℚ) :=
+        {(z' ^ n) ⊗ₜ[ℤ] (n ! : ℚ)⁻¹ | (z' ∈ ({z} : Set T)) (n : ℕ)}
+      rw [← restrictScalars_top _ T, ← top_toSubmodule]
+      change Submodule.restrictScalars B ((⊤ : Subalgebra T (adjoin T generators)).toSubmodule) ≤ _
+      rw [← adjoin_adjoin_coe_preimage, adjoin_eq_span, ← span_smul_of_span_eq_top b'.span_eq]
+      refine span_le.mpr (Set.smul_subset_iff.mpr ?_)
+      rintro _ ⟨i, rfl⟩
+      exact h_gen i
     rintro ⟨a, k⟩ x hx
     suffices key : ∀ n c : ℕ, algebraMap T _ (u a) * (c * y n) * x ∈ span B (Set.range w) by
       simpa [← hb', smul_def', hy] using key k k !

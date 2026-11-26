@@ -1,8 +1,12 @@
 module
 
+public import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+public import Mathlib.Analysis.Calculus.TangentCone.Seq
+public import Mathlib.Analysis.Normed.Module.ContinuousInverse
 public import Lib.General.Analysis.HolomorphicIntegrals
 public import Lib.General.Geometry.GeometricPoints
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Exponential of compact commutative Lie groups and uniformisation of abelian varieties
@@ -379,28 +383,16 @@ every open `U` containing `γ t₀` and every function `f` regular on `U`, the p
 in `U` for `t` near `t₀` and `t ↦ f (γ t)` is continuous at `t₀`. -/
 lemma continuousAt_complexPoint_iff :
     ContinuousAt γ t₀ ↔ HasGermAt (fun g : T → ℂ ↦ ContinuousAt g t₀) (fun t : T ↦ (γ t).1) t₀ := by
-  -- Unfold the induced topology: `γ` is continuous at `t₀` iff, for `f` regular on `U` and `O`
-  -- open, the condition "`γ t ∈ U` and `f (γ t) ∈ O`" spreads from `t₀` to a neighbourhood.
-  have h_unfold : ContinuousAt γ t₀ ↔ ∀ (U : A.left.Opens) (f : PointFn A.left) (O : Set ℂ),
-      f.IsRegularOn U → IsOpen O → LandsIn (γ t₀).left U → f (CommRingCat.of ℂ) (γ t₀).left ∈ O →
-        f.IsRegularOn U ∧ IsOpen O ∧ (∀ᶠ t in 𝓝 t₀, LandsIn (γ t).left U) ∧
-          ∀ᶠ t in 𝓝 t₀, f (CommRingCat.of ℂ) (γ t).left ∈ O := by
-    simp [ContinuousAt, tendsto_pi_nhds, nhds_induced, tendsto_nhds_Prop]
-  have h_germ : HasGermAt (fun g : T → ℂ ↦ ContinuousAt g t₀) (fun t : T ↦ (γ t).1) t₀ ↔
-      ∀ ⦃U : A.left.Opens⦄ ⦃f : PointFn A.left⦄, f.IsRegularOn U → LandsIn (γ t₀).left U →
-        (∀ᶠ t in 𝓝 t₀, LandsIn (γ t).left U) ∧
-          ∀ O' : Set ℂ, f (CommRingCat.of ℂ) (γ t₀).left ∈ O' → IsOpen O' →
-            ∀ᶠ t in 𝓝 t₀, f (CommRingCat.of ℂ) (γ t).left ∈ O' := by
-    simp [HasGermAt, ContinuousAt, (nhds_basis_opens (_ : ℂ)).tendsto_right_iff]
-  rw [h_unfold, h_germ]
+  -- Unfold the induced topology on `ComplexPoint A` and the germ condition on `ℂ`.
+  simp [ContinuousAt, HasGermAt, tendsto_pi_nhds, nhds_induced, tendsto_nhds_Prop,
+    (nhds_basis_opens (_ : ℂ)).tendsto_right_iff]
   constructor
   · intro h U f hf hU
-    -- The case `O = univ` says that `γ` stays in `U`.
-    obtain ⟨-, -, h_lands, -⟩ := h U f Set.univ hf isOpen_univ hU (Set.mem_univ _)
-    exact ⟨h_lands, fun O hO hO_open ↦ (h U f O hf hO_open hU hO).right.right.right⟩
+    -- Taking `O = univ` shows that `γ` stays in `U` near `t₀`.
+    exact ⟨(h U f Set.univ hf isOpen_univ hU (Set.mem_univ _)).2.2.1,
+      fun O hO hO_open ↦ (h U f O hf hO_open hU hO).2.2.2⟩
   · intro h U f O hf hO_open hU hO
-    obtain ⟨h_lands, h_mem⟩ := h hf hU
-    exact ⟨hf, hO_open, h_lands, h_mem O hO hO_open⟩
+    exact ⟨hf, hO_open, (h hf hU).1, (h hf hU).2 O hO hO_open⟩
 
 /-- The zeros of an analytic map `F : ℂ^ι → ℂ^σ` near a zero `p₀` with onto derivative have an
 analytic chart `c` to `ℂᵈ`, `d = #ι - #σ`, with analytic local inverse `g`. -/
@@ -491,10 +483,6 @@ private lemma surjective_fderiv_relations {V : (Spec (CommRingCat.of ℂ)).Opens
   ext
   simp [h_eval, ← ofSection_eq hx, vecMul_eq_sum, Pi.single_apply, pderiv_map]
 
-private lemma concreteCategory_hom_eq_hom {R S : CommRingCat} (f : R ⟶ S) :
-    ConcreteCategory.hom f = f.hom :=
-  rfl
-
 /-- Let `P` present `Γ(A, U)` over `Γ(Spec ℂ, V)`, the algebra map being `A.hom.appLE V U e`, for
 affine opens `U` and `V`. Every zero `p` of the relations of `P`, read as polynomial functions on
 `ℂ^ι`, is the vector of coordinates of a complex point of `U`. -/
@@ -524,7 +512,7 @@ private lemma exists_point_of_relations_eq_zero {V : (Spec (CommRingCat.of ℂ))
     landsIn_fromSpec hU _, funext fun i ↦ ?_⟩
   · -- The point lies over `Spec ℂ`, since the constants are evaluated as before.
     rw [← ofSection_appLE A.hom e r (landsIn_fromSpec hU _)]
-    simpa [landsIn_fromSpec hU, ofSection_eq hV1, h_alg, ev, concreteCategory_hom_eq_hom] using
+    simpa [landsIn_fromSpec hU, ofSection_eq hV1, h_alg, ev] using!
       h_lift (C r)
   · -- Its `i`-th coordinate is `p i`: the generator `X i` evaluates to `p i`.
     simpa [Algebra.Generators.algebraMap_apply, ev] using h_lift (X i)
@@ -662,7 +650,7 @@ lemma LineBundle.IsProjEmbedding.compactSpace_complexPoint (hN : N.IsProjEmbeddi
   have hf : Continuous f := by
     refine continuous_iff_continuousAt.mpr fun c ↦ continuousAt_complexPoint_iff.mpr ?_
     have hv_coords (c : K) : (((hyperplaneBundle ι).pull Limits.prod.fst).pull
-        j).IsHomogeneousCoords (f c).left (c.1 : ι → ℂ) := by
+        j).IsHomogeneousCoords (f c).left (c.val : ι → ℂ) := by
       rw [IsHomogeneousCoords.pull_iff, show (f c).left ≫ j = t c from hs c]
       exact ht_lifts c
     exact .of_isHomogeneousCoords hN (continuousAt_pi.mp (by fun_prop)) (.of_forall hv_coords)

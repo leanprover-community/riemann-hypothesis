@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.RingTheory.TwoSidedIdeal.Instances
 public import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!

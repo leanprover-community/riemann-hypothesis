@@ -236,12 +236,6 @@ lemma commonCosetSum_eq_sum (f : GL b F → ℂ) (t : Finset (GL b F ⧸ intGL b
 lemma isCommonCosetRep_commonCosetRep : IsCommonCosetRep n (commonCosetRep F b n) :=
   exists_linearMap_eq_sum_and_isCommonCosetRep.choose_spec.choose_spec.right
 
-/-- For `y` with a left inverse, exactly one of the chosen coset representatives `r` makes `y * r`
-primitive (integral with an integral left inverse). -/
-lemma existsUnique_isPrimitiveMatrix_mul_commonCosetRep {y : Matrix n b F} (hy : HasLeftInv y) :
-    ∃! q : GL b F ⧸ intGL b O, IsPrimitiveMatrix O (y * (commonCosetRep F b n q).val) :=
-  isCommonCosetRep_commonCosetRep.existsUnique_mul y hy
-
 /-- For `y` with a left inverse (`HasLeftInv y`), exactly one coset `q` of `GL b O` in `GL b F`
 makes `y * (commonCosetRep F b n q)⁻¹` primitive (entries in `O`, with a left inverse that has
 entries in `O`). -/
@@ -335,7 +329,7 @@ lemma exists_isPrimitiveMatrix_localSection_eq (χ : MulChar F ℂ) (y : Matrix 
       ∀ Ψ : Matrix n b F → ℂ, (∀ x : Matrix n b F, Ψ x ≠ 0 → IsPrimitiveMatrix O x) →
         localSection χ y Ψ = χ g.val.det * Ψ (y * g.val) := by
   -- Exactly one representative `r` makes `y * r` primitive, and only it counts in the sum.
-  obtain ⟨q, hq, hq_unique⟩ := existsUnique_isPrimitiveMatrix_mul_commonCosetRep (n := n) hy
+  obtain ⟨q, hq, hq_unique⟩ := isCommonCosetRep_commonCosetRep.existsUnique_mul _ hy
   refine ⟨commonCosetRep F b n q, hq, fun Ψ hΨ ↦ ?_⟩
   simpa using localSection_eq_sum χ y Ψ {q} fun p hp ↦ by simp [hq_unique p (hΨ _ hp)]
 
@@ -398,6 +392,7 @@ lemma isClopen_setOf_isPrimitiveMatrix : IsClopen {y : Matrix n a F | IsPrimitiv
       isPrimitiveMatrix_iff_int_and_unit_det.2 ⟨L_int.mul z_int, hz⟩
     exact ⟨z_int, L' * L, L'_int.mul L_int, by rwa [L'.mul_assoc]⟩
 
+omit [DecidableEq b] in
 /-- A matrix `x` consists of the rows `a` of `k⁻¹` (`invLastRows`) for some `k` in `GL n O` exactly
 when `xᵀ` is primitive (integral, with an integral left inverse). -/
 lemma exists_eq_invLastRows_iff_isPrimitiveMatrix (e : b ⊕ a ≃ n) (x : Matrix a n F) :
@@ -544,12 +539,14 @@ variable {a b n : Type} [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] 
   [DecidableEq n] {F : Type} [SemilocalField F] {χ : MulChar F ℂ} {e : b ⊕ a ≃ n}
   {Φ : Matrix a n F → ℂ} {Ψ : Matrix n b F → ℂ}
 
+omit [DecidableEq b] in
 /-- If `Φ` and `Ψ` are matched functions over the ring of integers `O` of `F` (`AreMatched`), then
 `y ↦ Φ yᵀ` vanishes off the primitive matrices (integral, with an integral left inverse). -/
 lemma isPrimitiveMatrix_of_apply_transpose_ne_zero (hΦΨ : AreMatched O e χ Φ Ψ) (y : Matrix n a F)
     (hy : Φ yᵀ ≠ 0) : IsPrimitiveMatrix O y :=
   (exists_eq_invLastRows_iff_isPrimitiveMatrix e yᵀ).1 (hΦΨ.supp_left yᵀ hy)
 
+omit [DecidableEq b] in
 /-- Let `F` be a semilocal field with ring of integers `O` (`SemilocalField.O`), and `χ` a tame
 character of `F`. Let `e : b ⊕ a ≃ n` mark `b` as the first and `a` as the last indices. Let `Φ` and
 `Ψ` be matched functions over `O` (`AreMatched`): they vanish off the rows `a` of `k⁻¹`

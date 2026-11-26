@@ -125,7 +125,7 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
     (p.hasWeight.mul ϑ.hasWeight).inv.isHeckeOfType.norm_heckeCoeff_le {v, star v}
   have h_coeff : heckeCoeff φ (S ϑ'.Q) = Set.indicator {v, star v}ᶜ (heckeCoeff φ (S ϑ.Q)) := by
     -- The places removed for `ϑ'` are those for `ϑ` together with `v` and `star v`.
-    simp [φ, S, funext_iff, heckeCoeff, Set.indicator, hQ]
+    simp [φ, funext_iff, heckeCoeff, Set.indicator, hQ]
     grind [star_star]
   have h_factors :
       ∏ w ∈ {v, star v}, (1 - heckeCoeff φ (S ϑ.Q) w * (w.q : ℂ) ^ (-(p.z : ℂ))) =
@@ -134,7 +134,7 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
     simp_all [φ, S, HeckeChar.atUniformizer, heckeCoeff, cpow_neg, Ne.symm]
     grind
   rw [h_coeff, ← h_factors]
-  simpa [φ, S] using h_erase p.z (mod_cast H.2)
+  simpa [φ] using h_erase p.z (mod_cast H.2)
 
 /-- For a critical pair `p = (ν, z)`, let `H` say that `n` has `2 z` elements and `z ≥ 2`. Then
 `integralAlgebraicPart H`, an integral multiple of the algebraic part of the twisted `L`-value at
@@ -187,7 +187,7 @@ lemma exists_mul_norm_sq_detPeriod_eq {p : D.CriticalPair} (h_ram : p.IsRamified
     (fun τ : D.Φ ↦ p.negWeight τ - 1)
   refine ⟨C, fun ϑ ↦ ?_⟩
   set Λ : ℂ := detPeriod (Fin 2) (p.character * ϑ.toAutChar * upsilonU1 ^ 1)
-    (fun τ : D.Φ ↦ p.negWeight τ - 1) (D.twistModulus ϑ.1 2) (p.tamePart * ϑ.tamePart)
+    (fun τ : D.Φ ↦ p.negWeight τ - 1) (D.twistModulus ϑ.toTameChar 2) (p.tamePart * ϑ.tamePart)
   obtain ⟨γ, norm_γ, eq_γ⟩ :=
     exists_period_inv (isTameFor_of_hasWeight (c := 2) ϑ (hasWeight_mul_upsilonU1 p ϑ.1) h_ram)
   have h_norm : ‖γ‖ * ‖Λ‖ = 1 := by rw [← norm_mul, show γ * Λ = 1 from eq_γ 1, norm_one]
@@ -239,7 +239,6 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
         detPeriod (Fin 2) (p.character * ϑ'.toAutChar * upsilonU1 ^ 1)
           (fun τ : D.Φ ↦ p.negWeight τ - 1)
           (D.twistModulus ϑ' 2) (p.tamePart * ϑ'.tamePart)‖ ^ 2 := by
-  classical
   -- The period is a weighted sum of kernel values at points `g x` that depend only on the modulus,
   -- and `N` times such a value is integral once `g x` is moved to an integral point.
   let c (τ : D.Φ) : ℕ := p.negWeight τ - 1
@@ -256,7 +255,7 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
   refine ⟨N, hN, fun ϑ ↦ ?_⟩
   let g (x : StdClasses (stdLevel D.E (Fin 2)) × GL (Fin 2) (D.twistModulus ϑ 2).ResidueRing) :
     Gf D.E (Fin 2) :=
-    x.1.out * (Rows.liftMod x.2).1
+    x.1.out * (Rows.liftMod x.2).val
   let θ : Gf D.E (Fin 2) → ℂ :=
     detKernel (Fin 2) (p.character * TameChar.one.toAutChar * upsilonU1 ^ 1) c (D.twistModulus ϑ 2)
       (Pi.single 1 1)
@@ -282,7 +281,7 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
     simp [variableMinor, det_apply]
   have h_twist (μ : AutChar D.E) (x : Gf D.E (Fin 2)) :
       detKernel (Fin 2) (p.character * μ * upsilonU1 ^ 1) c (D.twistModulus ϑ 2) (Pi.single 1 1) x =
-        μ.1 (detFin 1 x) * θ x := by
+        μ.val (detFin 1 x) * θ x := by
     simp [θ, detKernel, modKernel_twist]
     ac_rfl
   -- So the period at a character of modulus `ϑ.Q` is a sum of multiples of its values.
@@ -291,7 +290,7 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
         (p.tamePart * ϑ'.tamePart) =
         stdClassSum (stdLevel D.E (Fin 2)) fun x ↦ ∑ y :
           GL (Fin 2) (D.twistModulus ϑ 2).ResidueRing,
-          ϑ'.toAutChar.1 (detFin 1 (x * (liftMod y).1)) * θ (x * (liftMod y).1) := by
+          ϑ'.toAutChar.val (detFin 1 (x * (liftMod y).val)) * θ (x * (liftMod y).val) := by
     have h_weight : (p.character * ϑ'.toAutChar * upsilonU1 ^ 1).HasWeight (-c ·)
       (p.tamePart * ϑ'.tamePart) := weight ϑ'
     obtain ⟨μ, Q, ψ⟩ := ϑ'
@@ -323,8 +322,8 @@ theorem exists_isTwistMeasure_of_z_eq_one {p : D.CriticalPair} (h_ram : p.IsRami
   -- `D.chosenGroupOrder * N` clears the denominators of the period; `C` relates its size at a
   -- twist to `L`-values.
   obtain ⟨N, hN, h_measure⟩ := exists_isIntegralMeasure_norm_sq_detPeriod p
-  obtain ⟨C, Λ_twist⟩ : ∃ C : ℝ, ∀ ϑ : D.Twist, Λ ϑ.1 ≠ 0 ∧ C ≠ 0 ∧
-      C * ‖Λ ϑ.1‖ ^ 2 =
+  obtain ⟨C, Λ_twist⟩ : ∃ C : ℝ, ∀ ϑ : D.Twist, Λ ϑ.toTameChar ≠ 0 ∧ C ≠ 0 ∧
+      C * ‖Λ ϑ.toTameChar‖ ^ 2 =
         Exchange.lValueProd ({w | D.IsChosen w} ∪ ϑ.Q) (p.character * ϑ.toAutChar)⁻¹ 1 :=
     exists_mul_norm_sq_detPeriod_eq h_ram
   refine ⟨fun ϑ ↦ ‖D.chosenGroupOrder * N * Λ ϑ‖ ^ 2,
@@ -341,13 +340,13 @@ theorem exists_isTwistMeasure_of_z_eq_one {p : D.CriticalPair} (h_ram : p.IsRami
     ring
   · -- Compare `Λ_twist` at `ϑ` and at `1`: the two values of `lValueProd` differ by the factor
     -- in `lValueProd_eq_mul_prod_ratio_sq`, and `C ≠ 0` cancels.
-    have h_sq : (‖Λ ϑ.1‖ : ℂ) ^ 2 =
+    have h_sq : (‖Λ ϑ.toTameChar‖ : ℂ) ^ 2 =
         ‖Λ TameChar.one‖ ^ 2 * (ϑ.normQ * p.ratio ϑ ^ 2) := by
       have h_ratio : Exchange.lValueProd ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
           (p.character * ϑ.toAutChar ^ (1 : ℤˣ).val)⁻¹ p.z = ϑ.normQ ^ p.z ^ 2 *
             (Exchange.lValueProd {w : FinPlace D.E | D.IsChosen w} p.character⁻¹ p.z *
-              ∏ k ∈ Icc 1 p.z, (p.lowerPoint k).ratio ϑ.1 1 ^ 2) :=
-        p.lValueProd_eq_mul_prod_ratio_sq 1 ϑ.1
+              ∏ k ∈ Icc 1 p.z, (p.lowerPoint k).ratio ϑ.toTameChar 1 ^ 2) :=
+        p.lValueProd_eq_mul_prod_ratio_sq 1 ϑ.toTameChar
       obtain ⟨-, hC, h_one⟩ := Λ_twist 1
       obtain ⟨-, -, h_ϑ⟩ := Λ_twist ϑ
       -- With `z = 1` the product has one factor, the square of the ratio; divide by `C` after
@@ -410,11 +409,11 @@ auxiliary set avoiding `badPlaces D ℓ`, the places dividing `ℓ`, `D.M` or `D
 noncomputable def tameCharOfAuxiliary (I : Finset (FinPlace D.E))
     (hI : IsAuxiliary (badPlaces D ℓ) I) (χ : tameChars I) :
     D.TameChar where
-  toAutChar := χ.1.1
+  toAutChar := χ.val.1
   Q := I
-  tamePart := χ.1.2
-  hasWeight := χ.2.1
-  tamePart_eq_one := χ.2.2
+  tamePart := χ.val.2
+  hasWeight := χ.property.1
+  tamePart_eq_one := χ.property.2
   star_notMem := by grind
   coprime := (coprime_prod_q_of_isAuxiliary hI).2
 

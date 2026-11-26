@@ -156,6 +156,10 @@ lemma CharUnramifiedAt.det_maxCompactAt_eq_one (ha : CharUnramifiedAt a.baseChan
   · simp [hw]
   · simpa using hg_supp
 
+private lemma heckePolyCoeff_mul_pow {ι K : Type*} [Field K] (X c : ℂ) (U : Submodule K (ι → K)) :
+    heckePolyCoeff X U * c ^ Module.finrank K U = heckePolyCoeff (X * c) U := by
+  simp only [heckePolyCoeff, ← neg_mul, mul_pow, mul_right_comm]
+
 namespace SiegelWeil
 
 /-! ### The Hecke polynomials on the vacuum -/
@@ -177,22 +181,19 @@ private lemma sum_heckePolyCoeff_mul_ite_integral_eq {ι₁ ι₂ : Type} [Finty
     ∑ U : Submodule (ResField w) (ι₂ → ResField w),
         heckePolyCoeff X U * (c ^ Module.finrank (ResField w) U *
           if ∀ (i : ι₁) (j : ι₂), v ((y * (basicCosetRep U)⁻¹.val) i j) ≤ 1 then 1 else 0) =
-      qPochhammer w.q (card ι₂ - (y.map residueOrZero).rank) (X * c) *
-        if ∀ (i : ι₁) (j : ι₂), v (y i j) ≤ 1 then 1 else 0 := by
+      if ∀ (i : ι₁) (j : ι₂), v (y i j) ≤ 1 then
+        qPochhammer w.q (card ι₂ - (y.map residueOrZero).rank) (X * c) else 0 := by
   -- Only the subspaces `U` of the kernel of `y` modulo `w` contribute, and only for integral `y`.
   have h_integral (U : Submodule (ResField w) (ι₂ → ResField w)) :
       (∀ (i : ι₁) (j : ι₂), v ((y * (basicCosetRep U)⁻¹.val) i j) ≤ 1) ↔
         (∀ (i : ι₁) (j : ι₂), v (y i j) ≤ 1) ∧ U ≤ residueKer y := by
-    rw [v_mul_inv_le_one_iff (basicCosetRep_mem_and_residueKer_eq U).left,
-      (basicCosetRep_mem_and_residueKer_eq U).right]
-  have h_coeff (U : Submodule (ResField w) (ι₂ → ResField w)) :
-      heckePolyCoeff X U * c ^ Module.finrank (ResField w) U = heckePolyCoeff (X * c) U := by
-    simp only [heckePolyCoeff, ← neg_mul, mul_pow, mul_right_comm]
+    rw [v_mul_inv_le_one_iff (basicCosetRep_mem_basicDoubleCoset U), residueKer_basicCosetRep U]
   have h_binom : ∑ U : Submodule (ResField w) (ι₂ → ResField w) with U ≤ residueKer y,
       heckePolyCoeff (X * c) U =
         qPochhammer w.q (card ι₂ - (y.map residueOrZero).rank) (X * c) := by
     rw [q_binomial_submodule, card_ResField, card_sub_rank_eq_finrank_ker]
-  simp only [h_integral, ← mul_assoc, h_coeff]
+  conv_rhs => rw [← mul_boole]
+  simp only [h_integral, ← mul_assoc, heckePolyCoeff_mul_pow]
   by_cases hy : ∀ (i : ι₁) (j : ι₂), v (y i j) ≤ 1
   · simp only [← h_binom, sum_filter, ite_eq_left hy, and_iff_right hy, mul_one, mul_boole]
   · simp [hy]
@@ -239,8 +240,8 @@ lemma pairWeil_transposeGL_basicCosetRep (ha : CharUnramifiedAt a.baseChange.fin
           then 1 else 0) f := by
   classical
   set γ : GL m (LocField w) := basicCosetRep U
-  obtain ⟨⟨-, -, hγ_det : v γ.det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ))⟩, -⟩ :=
-    basicCosetRep_mem_and_residueKer_eq U
+  obtain ⟨-, -, hγ_det : v γ.det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ))⟩ :=
+    basicCosetRep_mem_basicDoubleCoset U
   have h_det : v (transposeGL γ).det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ)) := by
     simpa using hγ_det
   have h_local : (ofSplitPlace hw (transposeGL γ))⁻¹.val.val.map (evalAt w) = γ⁻¹.valᵀ := by
@@ -278,8 +279,8 @@ lemma pairWeil_basicCosetRep_inv (hb : CharUnramifiedAt b.baseChange.finPart w)
           then 1 else 0) f := by
   classical
   set γ : GL n (LocField w) := basicCosetRep U
-  obtain ⟨⟨-, -, hγ_det : v γ.det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ))⟩, -⟩ :=
-    basicCosetRep_mem_and_residueKer_eq U
+  obtain ⟨-, -, hγ_det : v γ.det.val = WithZero.exp (-(Module.finrank (ResField w) U : ℤ))⟩ :=
+    basicCosetRep_mem_basicDoubleCoset U
   have h_local : (ofSplitPlace hw γ⁻¹).val.val.map (evalAt w) = γ⁻¹.val :=
     congrArg Units.val (atPlace_ofSplitPlace hw γ⁻¹)
   have h_integral (x : m × n → 𝔸f E) :
@@ -324,17 +325,6 @@ lemma sum_heckePolyCoeff_smul_pairWeil
   -- `pairWeil_transposeGL_basicCosetRep` and `pairWeil_basicCosetRep_inv`; summing them over the
   -- subspaces `U` is the `q`-binomial theorem, for the matrix `loc x` or its transpose.
   let loc (x : m × n → 𝔸f E) : Matrix m n (LocField w) := (vecToMatrix x).map (evalAt w)
-  -- `y * (basicCosetRep U)⁻¹` is integral if and only if `y` is integral and `U` lies in the kernel
-  -- of `y` modulo `w`; the dimension of that kernel is the width of `y` minus its rank.
-  have h_binom {I J : Type} [Fintype I] [Fintype J] [DecidableEq J]
-      (y : Matrix I J (LocField w)) (c : ℂ) :
-      ∑ U : Submodule (ResField w) (J → ResField w),
-          heckePolyCoeff X U * (c ^ Module.finrank (ResField w) U *
-            if ∀ (i : I) (j : J), v ((y * (basicCosetRep U)⁻¹.val) i j) ≤ 1 then 1 else 0) =
-        if ∀ (i : I) (j : J), v (y i j) ≤ 1 then
-          qPochhammer w.q (card J - (y.map residueOrZero).rank) (X * c) else 0 := by
-    rw [← mul_boole]
-    convert sum_heckePolyCoeff_mul_ite_integral_eq X c y
   have h_dat (d : ℕ) (c : ℂ) :
       residueDatum (fun () ↦ w) (fun x ↦ qPochhammer w.q (d - (x ()).rank) (X * c)) =
         fun x ↦ if ∀ (i : m) (j : n), v (loc x i j) ≤ 1 then
@@ -345,9 +335,11 @@ lemma sum_heckePolyCoeff_smul_pairWeil
     h_dat, smul_schrodingerOp, ← _root_.sum_apply, ← map_sum]
   constructor
   · congr with x
-    simpa [loc, transpose_map, forall_comm (α := n)] using h_binom (loc x)ᵀ (a.frobValue n w)
+    simpa [loc, transpose_map, forall_comm (α := n)] using
+      sum_heckePolyCoeff_mul_ite_integral_eq X (a.frobValue n w) (loc x)ᵀ
   · congr with x
-    simpa [loc] using h_binom (loc x) (b.frobValue m w)
+    simpa [loc] using
+      sum_heckePolyCoeff_mul_ite_integral_eq X (b.frobValue m w) (loc x)
 
 /-- The local identity behind the transfer, in the group of T. Let w be split of norm q, let the
 base changes of a and b be unramified at w, and let f be a vacuum at w. Write
@@ -678,17 +670,13 @@ lemma SiegelWeil.hasHeckePolynomial_of_apply_eq_smul_det (hw : w.IsSplit) {s : n
       (ρ.val (detFin s (ofSplitPlace hw (transposeGL (basicCosetRep U)))) : ℂ) =
         c ^ Module.finrank (ResField w) U := by
     -- The determinant of the representative has order `dim U` at `w`.
-    obtain ⟨⟨-, -, h_det⟩, -⟩ := basicCosetRep_mem_and_residueKer_eq U
+    obtain ⟨-, -, h_det⟩ := basicCosetRep_mem_basicDoubleCoset U
     rw [detFin_of_mem_supportedOn, detOn_eq_prod, prod_singleton,
       ← AutChar.baseChange_apply_coe_toFun,
       hρ.apply_locFullIdele]
     · simp [h_det, c]
     · simp [hw]
     · simp
-  have h_coeff (X : ℂ) (U : Submodule (ResField w) (n → ResField w)) :
-      heckePolyCoeff X U * c ^ Module.finrank (ResField w) U = heckePolyCoeff (c * X) U := by
-    rw [heckePolyCoeff, heckePolyCoeff, ← mul_neg, mul_pow]
-    ring
   refine ⟨h_sph, fun X ↦ ?_⟩
   have h_binom :
       ∑ U : Submodule (ResField w) (n → ResField w), heckePolyCoeff (c * X) U =
@@ -699,7 +687,7 @@ lemma SiegelWeil.hasHeckePolynomial_of_apply_eq_smul_det (hw : w.IsSplit) {s : n
           heckePolyCoeff X U • π (ofSplitPlace hw (transposeGL (basicCosetRep U))) v :=
         (heckePolyOp_eq_sum hw h_sph X).left
     _ = ∑ U : Submodule (ResField w) (n → ResField w), heckePolyCoeff (c * X) U • v := by
-        simp only [hv, h_rep, smul_smul, h_coeff]
+        simp only [hv, h_rep, smul_smul, heckePolyCoeff_mul_pow, mul_comm X c]
     _ = qPochhammer w.q (card n) (c * X) • v := by rw [← sum_smul, h_binom]
 
 /-- At a split place w of norm q, a vector fixed by the finite adelic unitary group of rank n is

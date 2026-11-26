@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Order.Interval.Finset.Box
 public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
 public import Lib.Weil.DualPair.ThetaIntegrals
 
@@ -98,7 +99,8 @@ lemma exists_compact_parabolic_normal_form :
   obtain ⟨N, hN, hN_cover⟩ := IsCovolOneLattice.exists_compact_cover (ratMatrices E p p)
   obtain ⟨M, _, hM, h_bases⟩ := exists_isCompact_profileBases E p
   have h_levi : Continuous fun a : GL p (𝔸 E) ↦ P.levi (a, 1) := by
-    simp [↓continuous_iff, Splitting.levi, -coe_units_inv]
+    simp only [↓continuous_iff, Splitting.levi, mk'_apply, adeleMatrix_one, Matrix.mul_one,
+      adeleMatrix_ofMatrix]
     fun_prop
   -- The compact set is `N ×ˢ (K * levi '' M)⁻¹` with `K` the maximal compact subgroup.
   open Pointwise in
@@ -168,7 +170,7 @@ lemma exists_siegel_set :
   let A : Matrix n I E := Y.val.submatrix id ((↑) : I → n)
   have hA_inv : HasLeftInv A :=
     ⟨_, (congrArg (submatrix · _ _) Y.inv_val).trans (submatrix_one _ (by simp))⟩
-  have hA_isotropic : Aᴴ * S.J * A = 0 := funext₂ fun i j ↦ hY.isotropic i i.2 j j.2
+  have hA_isotropic : Aᴴ * S.J * A = 0 := funext₂ fun i j ↦ hY.isotropic i i.property j j.property
   obtain ⟨γ, hγ⟩ := exists_isometry_orthogonal P hA_inv hA_isotropic
   let γk : Matrix n p E := γ.val.val * P.k
   have fix : W.val * (D * (⅟W.val * γk)) = γk := by

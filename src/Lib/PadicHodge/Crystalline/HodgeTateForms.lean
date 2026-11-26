@@ -1,5 +1,6 @@
 module
 
+import Mathlib.CategoryTheory.Sites.ConcreteSheafification -- shake: keep (found by bisection: without it a `DiscreteTopology (Gp _)` search below times out)
 public import Lib.General.NumberTheory.CoefficientRings
 public import Lib.PadicHodge.TateSen
 
@@ -115,12 +116,11 @@ lemma hodgeTateMaps.mem_span_same_weight {k : ι → ℤ} {f : ι → T →ₛ�
   -- Write `φ = ∑ c i • f (a i)` with the `f (a i)` linearly independent. Comparing the actions on
   -- both sides gives `χ(g) ^ (k (a i) - u) • g • c i = c i` near `1`; so `c i` is algebraic if
   -- `k (a i) = u` (Ax–Sen–Tate), and zero otherwise (Tate's vanishing theorem).
-  obtain ⟨n, x, hx⟩ : ∃ (n : ℕ) (x : Fin n → T), span R (Set.range x) = ⊤ := F.exists_fin
+  obtain ⟨n, x, hx⟩ := F.exists_fin
   obtain ⟨κ, a, -, h_span, h_indep⟩ := exists_linearIndependent' ℂ_[p] f
   have := h_indep.finite
   let := Fintype.ofFinite κ
-  obtain ⟨c, rfl⟩ : ∃ c : κ → ℂ_[p], ∑ i, c i • (f ∘ a) i = φ :=
-    (mem_span_range_iff_exists_fun ℂ_[p]).mp (h_span.ge hφ_span)
+  obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun ℂ_[p]).mp (h_span.ge hφ_span)
   have h_coeff : ∀ i : κ,
       ∀ᶠ g : Gp p in nhds 1, (cyclotomicGp g ^ (-u + k (a i))).val • g • c i = c i := by
     -- It suffices to prove this at `toGp g` for `g` near 1 in `Γ`.
@@ -129,27 +129,18 @@ lemma hodgeTateMaps.mem_span_same_weight {k : ι → ℤ} {f : ι → T →ₛ�
       eventually_all.mp (nhds_one_le_map_nearOne Γ (mem_map.mpr h_near))
     filter_upwards [eventually_all.mpr fun l ↦ hφ (x l),
       eventually_all.mpr fun l ↦ eventually_all.mpr fun i ↦ hf (a i) (x l)] with g hgφ hgf
-    -- The two combinations agree after composing with the surjection `ρ g`: test on generators.
-    have h_eq : ∑ i, ((χ g ^ (-u + k (a i))).val • toGp g • c i) • (f ∘ a) i =
-        ∑ i, c i • (f ∘ a) i := by
-      refine (cancel_right (ρ.apply_bijective g).surjective).mp (ext_on_range hx fun l ↦ ?_)
-      simpa [hgf, smul_sum, smul_smul, zpow_add] using (hgφ l).symm
-    exact Fintype.linearIndependent_iffₛ.mp h_indep
-      (fun i ↦ (χ g ^ (-u + k (a i))).val • toGp g • c i) c h_eq
+    refine Fintype.linearIndependent_iffₛ.mp h_indep _ c
+      ((cancel_right (ρ.apply_bijective g).surjective).mp (ext_on_range hx fun l ↦ ?_))
+    simpa [hgf, smul_sum, smul_smul, zpow_add] using (hgφ l).symm
   refine sum_mem fun i _ ↦ ?_
   by_cases hu : u = k (a i)
   · -- weight `u`: `c i` is fixed near `1`, hence algebraic (Ax–Sen–Tate)
-    have h_fixed : ∀ᶠ g : Gp p in nhds 1, g • c i = c i := by simpa [hu] using h_coeff i
-    obtain ⟨y, hy⟩ := exists_algebraic_of_fixed_near_one h_fixed
+    obtain ⟨y, hy⟩ := exists_algebraic_of_fixed_near_one (by simpa [hu] using h_coeff i)
     rw [hy, PadicComplex.coe_eq, _root_.algebraMap_smul]
     exact smul_mem _ _ (subset_span ⟨a i, hu.symm, rfl⟩)
   · -- another weight: `c i` is fixed after a nonzero twist, hence zero (Tate)
-    have h_twist : ∀ᶠ g : Gp p in nhds 1,
-        (cyclotomicGp g ^ (-u + k (a i))).val • g • c i = (cyclotomicGp g ^ (0 : ℤ)).val • c i := by
-      simpa using h_coeff i
-    have hc_zero : c i = 0 := tate_eq_zero_of_cyclotomicGp_twist (neg_add_eq_zero.not.mpr hu)
-      h_twist
-    simp [hc_zero]
+    simp [tate_eq_zero_of_cyclotomicGp_twist (neg_add_eq_zero.not.mpr hu)
+      (by simpa using h_coeff i)]
 
 /-- If `toGp` has open image (as the instance `OverGp Γ p` gives) and T is finite over R, the
 ℚ̄_p-space `New.Period.hodgeTateMaps` for γ and u is finite-dimensional, for every integer u. -/

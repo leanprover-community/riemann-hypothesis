@@ -169,17 +169,29 @@ lemma New.Lift.uniform_period_bound {p : ℕ} [ThePrime p] (Γ : Type) [Group Γ
   have h_act_Z : act m Z = C * incl V.val := by
     simpa [← ext_iff, act, m, incl, FrobGal.smul_def] using hV
   -- The new matrix is `α (E ^ h Q) V⁻¹`, over `Amax`; over `BPlus` it equals `(m U) C`.
-  have h_new_matrix : incl ((k.E.1 ^ h • Q).map α * V.val⁻¹) = act m U * C := by
+  have h_new_matrix : incl ((k.E.val ^ h • Q).map α * V.val⁻¹) = act m U * C := by
     -- multiplied by `incl V`, both sides become `m (U Z) = m (E ^ h Q)`
-    have h_mul_V : incl ((k.E.1 ^ h • Q).map α) = act m U * C * incl V.val := by
-      rw [mul_assoc, ← h_act_Z, ← map_mul]
-      simp [← ext_iff, hUZ, incl, act, α, Algebra.smul_def (A := BPlus),
-        ← IsScalarTower.algebraMap_apply]
-    rw [map_mul, ← coe_units_inv, h_mul_V, mul_assoc, ← map_mul, Units.mul_inv, map_one, mul_one]
-  refine ⟨(k.E.1 ^ h • Q).map α * V.val⁻¹, V * L.map α, ?_, fun g ↦ ?_⟩
+    have h_mul_V : incl ((k.E.val ^ h • Q).map α) = act m U * C * incl V.val := by
+      rw [mul_assoc, ← h_act_Z, ← _root_.map_mul, hUZ]
+      ext i j
+      simp only [incl, act, α, RingHom.mapMatrix_apply, map_apply, Matrix.smul_apply, smul_eq_mul,
+        RingHom.comp_apply, toRingHom_apply, ← IsScalarTower.algebraMap_apply,
+        Algebra.smul_def (A := BPlus), smul_algebraMap_eq_algebraMap_smul, _root_.map_mul]
+    rw [_root_.map_mul, ← coe_units_inv, h_mul_V, mul_assoc, ← _root_.map_mul, Units.mul_inv,
+      _root_.map_one, mul_one]
+  refine ⟨(k.E.val ^ h • Q).map α * V.val⁻¹, V * L.map α, ?_, fun g ↦ ?_⟩
   · -- `α (E ^ h Q) V⁻¹ · V α L = α (E ^ h τ ^ h)`, as `Q L = τ ^ h`
-    simpa [mul_assoc, Matrix.map_smul', mul_pow, mul_smul] using
-      congrArg (fun X : Matrix ι ι Ainf ↦ α (k.E.1 ^ h) • X.map α) hQL
+    calc (k.E.val ^ h • Q).map α * V.val⁻¹ * (V * L.map α)
+      _ = α (k.E.val ^ h) • (Q * L).map α := by
+          rw [Matrix.map_smul' (hf := _root_.map_mul α), Matrix.smul_mul, Matrix.smul_mul,
+            mul_assoc, ← mul_assoc V.val⁻¹, ← coe_units_inv, Units.inv_mul, one_mul,
+            ← RingHom.mapMatrix_apply, ← RingHom.mapMatrix_apply, ← _root_.map_mul,
+            RingHom.mapMatrix_apply]
+      _ = α (k.E * tau) ^ h • 1 := by
+          rw [hQL, Matrix.map_smul' (hf := _root_.map_mul α),
+            Matrix.map_one α (map_zero α) (_root_.map_one α), smul_smul, ← _root_.map_mul,
+            ← mul_pow, map_pow]
+          rfl
   · -- Invariance can be checked over `BPlus`: `U` is invariant, `m` commutes with `toGp g`, and
     -- `toGp g` fixes `C`.
     -- `using!`: the coercions from `ℤ_p` and `Amax` to `Bmax` agree with the composite maps only
@@ -279,7 +291,7 @@ lemma exists_finite_groupRing_quotient [IsTopologicalGroup G] [Finite κ] {τ : 
   have h_finite : Module.Finite ℤ_[p] Φ.range := by
     let L (s : κ) : Matrix (τ s).Index (τ s).Index (O s) →ₗ[ℤ_[p]]
         Matrix (τ s).Index (τ s).Index (PadicAlgCl p) :=
-      mulLeftRight ℤ_[p] ((P s).val, (P s).inv) ∘ₗ (O s).1.val.toLinearMap.mapMatrix
+      mulLeftRight ℤ_[p] ((P s).val, (P s).inv) ∘ₗ (O s).val.val.toLinearMap.mapMatrix
     refine Finite.of_fg ((fg_pi fun s ↦ fg_range (L s)).of_le (S := Φ.range.toSubmodule) ?_)
     rintro _ ⟨y, rfl⟩ s -
     refine ⟨y.lift _ _ _ (ν s), ?_⟩
@@ -287,17 +299,23 @@ lemma exists_finite_groupRing_quotient [IsTopologicalGroup G] [Finite κ] {τ : 
         (ν s g).map Subtype.val = (P s).val⁻¹ * (τ s).rep g * (P s).val := by
       simpa using (hP s g).symm
     simp [L, Φ, lift_apply, Finsupp.sum, h_conj, mul_assoc]
-  -- It is torsion free, being inside matrices over `Q̄_p`, hence free. `h_torsionFree`, a statement
-  -- about all modules over `Q̄_p`, serves as the instance.
-  have h_torsionFree := IsTorsionFree.trans_faithfulSMul ℤ_[p] (PadicAlgCl p)
+  -- It is torsion free, being inside matrices over `Q̄_p`, hence free.
+  let : Algebra ℤ_[p] Φ.range := Φ.range.algebra
+  let : Module ℤ_[p] Φ.range := Φ.range.algebra.toModule
+  have h_comm : SMulCommClass Φ.range ℤ_[p] Φ.range := ⟨fun x r y ↦ mul_smul_comm r x y⟩
+  have h_tf : IsTorsionFree ℤ_[p] Φ.range :=
+    have : IsTorsionFree ℤ_[p] (∀ s, Matrix (τ s).Index (τ s).Index (PadicAlgCl p)) :=
+      IsTorsionFree.trans_faithfulSMul ℤ_[p] (PadicAlgCl p) _
+    inferInstance
+  have h_free : Free ℤ_[p] Φ.range := Module.free_of_finite_type_torsion_free'
   let u (s : κ) : Φ.range →ₐ[ℤ_[p]] Matrix (τ s).Index (τ s).Index (PadicAlgCl p) :=
     (Pi.evalAlgHom _ _ s).comp Φ.range.val
   refine ⟨.of _ Φ.range, Φ.rangeRestrict, u,
-    { free := inferInstance
+    { free := h_free
       finite := h_finite
       surjective := Φ.rangeRestrict_surjective
-      factors := fun s y ↦ by simp [u, Φ] -- the maps `u s` recover the `τ s`
-      apply_eq_zero_iff := fun y ↦ Subtype.ext_iff.trans (by simp [Φ, funext_iff])
+      factors := fun _ _ ↦ rfl -- the maps `u s` recover the `τ s`
+      apply_eq_zero_iff := fun _ ↦ Subtype.ext_iff.trans funext_iff
       isCrystallineUpTo := fun {h w} h_crys ↦ ?_ }⟩
   -- The columns of the `u s` are jointly injective equivariant maps from `T` to the `τ s`.
   let f (s : Σ s, (τ s).Index) : Φ.range →ₗ[ℤ_[p]] (τ s.fst).Index → PadicAlgCl p :=
@@ -309,7 +327,10 @@ lemma exists_finite_groupRing_quotient [IsTopologicalGroup G] [Finite κ] {τ : 
   have h_equiv (s : Σ s, (τ s).Index) (g : Δ) (t : Φ.range) :
       f s (actionRep ℤ_[p] Φ.range (Φ.rangeRestrict.toMonoidHom.comp w) g t) =
         viaGroupRing w (τ s.fst) g (f s t) := by
-    simp [f, u, Φ, -mulVec_single]
+    change (u s.fst (Φ.rangeRestrict (w g) * t)) *ᵥ Pi.single s.snd 1 =
+      groupRingHom (τ s.fst) (w g) *ᵥ (u s.fst t *ᵥ Pi.single s.snd 1)
+    rw [map_mul, Matrix.mulVec_mulVec]
+    rfl
   refine ⟨.of_jointly_injective le_top (fun s ↦ (h_crys _).left) f
     (fun s ↦ .of_forall (h_equiv s)) h_inj, fun γ k h_jump ↦ ?_⟩
   -- Every jump of `T` is a jump of some `τ s` (`γ` is the only `ℤ_[p]`-algebra map to `ℂ_[p]`).
@@ -438,7 +459,7 @@ lemma finite_free_of_fixed_periods {c : Chart} (hc : c.IsChartOf (Γ := Δ) Over
   have hindep {n : Type} [Fintype n] {y : n → D} (hy : LinearIndependent (WittFq c.f) y) :
       LinearIndependent Amax fun i : n ↦ (y i).val :=
     linearIndependent_of_mem_fixedPeriods hc halg (fun i ↦ hD _ (y i).prop)
-      (hy.map' _ D.ker_subtype)
+      (hy.map' D.subtype D.ker_subtype)
   -- `D` is `p`-adically separated and `p`-torsion free, of rank at most the rank of `A ⊗ T`.
   have hsep : IsHausdorff (Ideal.span {(p : WittFq c.f)}) D :=
     isHausdorff_of_injective_pi _
@@ -455,7 +476,8 @@ lemma finite_free_of_fixed_periods {c : Chart} (hc : c.IsChartOf (Γ := Δ) Over
       (by simp)
   -- A basis of `D` stays independent over `A`.
   refine ⟨injective_of_linearIndependent ((finBasis ..).baseChange _).span_eq ?_, hfree, hfinite⟩
-  simpa [Function.comp_def] using hindep (finBasis ..).linearIndependent
+  simpa only [Function.comp_def, LinearMap.liftBaseChange_tmul, Basis.baseChange_apply,
+    Submodule.coe_subtype, one_smul] using hindep (finBasis ..).linearIndependent
 
 /-- A finite free module over `Amax` is `p`-adically separated and complete: the bundle of
 `eq_zero_of_forall_mem_nsmulRange` and `exists_forall_sub_mem_nsmulRange_of_sub_mem`. -/
@@ -465,7 +487,7 @@ lemma separated_and_complete_of_free (M : Type) [AddCommGroup M] [Module Amax M]
     ∀ s : ℕ → M, (∀ {k m : ℕ}, k ≤ m → s k - s m ∈ nsmulRange (p ^ k) M) →
       ∃ x : M, ∀ k : ℕ, s k - x ∈ nsmulRange (p ^ k) M := by
   simpa only [isAdicComplete_iff, isHausdorff_iff, isPrecomplete_iff, SModEq.sub_mem, sub_zero,
-    mem_span_pow_smul_top_iff] using isAdicComplete_of_free (S := Amax) (M := M) (.span {↑p})
+    mem_span_pow_smul_top_iff] using IsAdicComplete.of_finite_projective (R := Amax) (.span {↑p}) M
 
 /-- In a finite free `Amax`-module, an element that lies in `p ^ k M` for every `k` is zero. -/
 lemma eq_zero_of_forall_mem_nsmulRange {M : Type} [AddCommGroup M] [Module Amax M] [Free Amax M]
@@ -500,7 +522,7 @@ lemma exists_monotone_coord_support {Λ A : Type} [CommRing Λ] [AddCommGroup A]
   intro k i s hs
   have h_approx : b k i - Finsupp.linearCombination Λ c.b (∑ s' ∈ partialSups S k,
       Finsupp.single s' (c.coord s' (b k i))) ∈ I ^ k • (⊤ : Submodule Λ A) := by
-    simpa using hS k _ (le_partialSups S k) i
+    simpa only [map_sum, Finsupp.linearCombination_single] using hS k _ (le_partialSups S k) i
   simpa [Finsupp.single_apply, hs] using c.coord_sub_mem_pow h_approx s
 
 /-- Passage to the limit. Let `A = Amax` be an algebra over a `p`-adically complete ring `Λ` with
@@ -538,8 +560,10 @@ lemma mem_span_of_forall_mem_span_preimage {Λ : Type} [CommRing Λ] [Algebra Λ
       ∑ i, b m i ⊗ₜ[Λ] (⟨_, hanti k m _ hkm (y m i).prop⟩ : D' k)
     have hv : v k le_rfl = v m hkm := hinj k (by simpa [v, ← hy m] using congrArg (Q' k) (hy k))
     -- Apply the `s`-th coordinate to both sides of `hv`.
-    simpa [U, v, sub_eq_zero] using
-      congrArg (fun t ↦ (lift (lsmul Λ (D' k) ∘ₗ c.coord s) t).val) hv
+    have h_eq := congrArg (fun t : Amax ⊗[Λ] D' k ↦ (lift (lsmul Λ (D' k) ∘ₗ c.coord s) t).val) hv
+    simpa only [U, v, sub_eq_zero, map_sub, map_sum, LinearMap.map_smul_of_tower, lift.tmul,
+      LinearMap.comp_apply, LinearMap.lsmul_apply, Submodule.coe_sum,
+      Submodule.coe_smul_of_tower] using h_eq
   -- So `Q (U s k)` converges to some `z s`, which lies in `D`.
   choose z hz using fun s ↦ exists_forall_sub_mem_nsmulRange_of_sub_mem (s := fun k ↦ Q (U s k))
     fun hkm ↦ by simpa using hker _ _ (hU_compat s hkm)
@@ -658,12 +682,16 @@ lemma isCrystalline_of_trace_limit [IsTopologicalGroup G]
   -- The invariants of `A ⊗ T` form a `Λ`-module, as the group fixes `Λ`.
   let D {T : AlgCat ℤ_[p]} (q : ℤ_[p][G] →ₐ[ℤ_[p]] T) : Submodule Λ (A ⊗[ℤ_[p]] T) :=
     { carrier := fixedPeriods (actionRep ℤ_[p] T (q.toMonoidHom.comp w)) A ⊤
-      add_mem' := by simp +contextual [fixedPeriods]
-      zero_mem' := by tauto
-      smul_mem' a _ hy g := by
-        erw [← algebraMap_smul A, mem_ofPred, tensorAction_smul, hy,
-          smul_algebraMap_eq_algebraMap_smul (A := Ainf), (hfix _).1]
-        rfl }
+      add_mem' hx hy g := by
+        change tensorAction A (OverGp.toGp g) _ (_ + _) = _ + _
+        rw [map_add, hx g, hy g]
+      zero_mem' _ := map_zero _
+      smul_mem' a x hy g := by
+        change tensorAction A (OverGp.toGp g) _ (a • x) = a • x
+        rw [← algebraMap_smul A, tensorAction_smul, hy g]
+        change (OverGp.toGp g • algebraMap Ainf A (algebraMap Λ Ainf a)) • x =
+          algebraMap Ainf A (algebraMap Λ Ainf a) • x
+        rw [smul_algebraMap_eq_algebraMap_smul (A := Ainf), (hfix g).1] }
   have hD {T : AlgCat ℤ_[p]} [Free ℤ_[p] T] [Module.Finite ℤ_[p] T] (q : ℤ_[p][G] →ₐ[ℤ_[p]] T) :
       (⇑((D q).subtype.liftBaseChange A)).Injective ∧ Free Λ (D q) ∧ Module.Finite Λ (D q) :=
     finite_free_of_fixed_periods chart.chart_isChartOf (fun _ ↦ rfl) fun _ hy ↦ hy
@@ -705,11 +733,16 @@ lemma isCrystalline_of_trace_limit [IsTopologicalGroup G]
     obtain ⟨v, hv, hvz⟩ := hz k
     let σ := tensorAction A (OverGp.toGp g) (actionRep ℤ_[p] T (q.toMonoidHom.comp w) g)
     have h₁ : σ (Q v) - Q v ∈ nsmulRange (p ^ k) _ := by
-      -- `erw`: `σ` is the action on `A ⊗ T` written through `q`, which `rw` does not unfold.
-      erw [tensorAction_periodTensorMap (g := mulLeft ℤ_[p] (w g)) (by simp), ← map_sub]
+      -- `σ` is the action on `A ⊗ T` written through `q`.
+      rw [show σ (Q v) = Q (tensorAction A (OverGp.toGp g) (mulLeft ℤ_[p] (w g)) v) from
+        tensorAction_periodTensorMap (g := mulLeft ℤ_[p] (w g)) (by simp) .., ← map_sub]
       exact (hker (hinv.mp hv g)).left
     -- `σ z - z = (σ (Q v) - Q v) - σ (Q v - z) + (Q v - z)`
-    simpa [σ] using add_mem (sub_mem h₁ (nsmulRange.map_mem σ hvz)) hvz
+    have h_tel : σ z - z = (σ (Q v) - Q v) - σ (Q v - z) + (Q v - z) := by
+      rw [map_sub]
+      abel
+    rw [h_tel]
+    exact add_mem (sub_mem h₁ (nsmulRange.map_mem σ hvz)) hvz
   -- `D q` is saturated because `A ⊗ T` is torsion free.
   have hsat (k : ℕ) (v : A ⊗[ℤ_[p]] T) (hv : p ^ k • v ∈ D q) : v ∈ D q :=
     fun g ↦ by simpa [NeZero.ne, -nsmul_eq_mul] using hv g
@@ -720,9 +753,14 @@ lemma isCrystalline_of_trace_limit [IsTopologicalGroup G]
   -- The equivariant map `t ↦ u () t * v` carries this to `δ ⊗ v`, and `δ` is a unit in `Bmax`.
   refine isAdmissible_of_one_tmul_mem_span fun v ↦
     (smul_mem_iff_of_isUnit _ hδ_unit).mp (span_subset_span A _ _ ?_)
-  simpa [Q, periodTensorMap, Algebra.smul_def] using
-    mapsTo_span (f := periodTensorMap A Bmax (applyVec (u ()).toLinearMap v))
-      (fun y hy ↦ fixedPeriods.periodTensorMap_mem (by simp [hu]) hy) hδ_span
+  refine Set.mem_of_eq_of_mem ?_
+    (mapsTo_span (f := periodTensorMap A Bmax (applyVec (u ()).toLinearMap v))
+      (fun y hy ↦ fixedPeriods.periodTensorMap_mem (ρ' := viaGroupRing w R)
+        (by simp [hu]) hy) hδ_span)
+  simp only [Q, periodTensorMap, LinearMap.baseChange_tmul, map_one, AlgebraTensorModule.map_tmul,
+    Algebra.linearMap_apply, LinearMap.comp_apply, LinearMap.flip_apply, AlgHom.toLinearMap_apply,
+    Matrix.mulVecBilin_apply, Matrix.one_mulVec, smul_tmul', smul_eq_mul, mul_one]
+  rfl
 
 end New.Period
 

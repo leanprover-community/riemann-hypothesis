@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.Complex.Tietze
 public import Lib.Adelic.QuotientMeasure.UnfoldingInStages
 public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
 public import Lib.Weil.DualPair.ThetaIntegrals
@@ -430,7 +431,7 @@ lemma mem_range_secondBlock {g : G E (1 : n → ℤˣ)} :
       cases i <;> simp [h_entry, Matrix.one_apply]
     obtain ⟨a, ha⟩ : ∃ a : U (stdForm E (1 : n₂ → ℤˣ)),
         U.sum stdForm_sum (1, a) = g'.toUnitary :=
-      ((U.exists_sum_eq_iff_toCols_eq stdForm_sum).right (by simp)).mpr h_cols
+      (U.mem_range_sum_right stdForm_sum (by simp)).mpr h_cols
     have ha_mat : g'.adeleMatrix = fromBlocks 1 0 0 (a : Matrix n₂ n₂ (𝔸 E)) :=
       (congrArg (fun k : U (stdForm E _) ↦ k.val.val) ha).symm
     have h_sum : G.sum (1, toUnitary.symm a) = g' := by
@@ -720,10 +721,7 @@ lemma DescentsVanish.integral_frameChar_eq_zero {T : Set (FinPlace E)} {Y : G E 
       (isRapid_of_isCocompact hY_cont hY_inv V.isCocompact_Gamma) υ f g₀
   have h_gram : IsUnit (x₀ᴴ * V.J * x₀) :=
     ⟨1, by simp [x₀, V, inclMatrix, Matrix.mul_apply, ← ext_iff, Matrix.one_apply]⟩
-  obtain ⟨h_int, h_coeff⟩ : Integrable (fun g ↦ A.thetaTerm V υ 1 f g₀ x₀ g * Y g) ν ∧
-      A.centreCoeff (j (E := E) • (x₀ᴴ * V.J * x₀))
-          (fun g ↦ ∫ h, pairTheta (hyperbolicSpace E n₁) V υ 1 f (g, h) * Y h ∂V.quotMeasure) g₀ =
-        ∫ g, A.thetaTerm V υ 1 f g₀ x₀ g * Y g ∂ν :=
+  obtain ⟨h_int, h_coeff⟩ :=
     (A.centreCoeff_eq_integral_stabilizer h_terms hY_cont hY_inv h_gram
       (mem_map_Gamma_secondBlock o hs)).right
   have h_zero : ∫ g, A.thetaTerm V υ 1 f g₀ x₀ g * Y g ∂ν = 0 := by

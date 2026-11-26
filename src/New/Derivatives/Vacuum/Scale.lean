@@ -10,12 +10,9 @@ public import New.Derivatives.Vacuum.IntegralVacuum
   homogeneous polynomial is a theta value times a power of the scale.
 * `New.Parameters.norm_periodFactor_mul_daggerForms_le_one`: the scaled linear form of a vector `y`
   is integral at `p` if `α⁻¹ y` is integral above `p`.
-* `New.Parameters.norm_jetScale_sq`: the modulus of `jetScale`, from the area of the CM lattice and
-  the formula of Chowla and Selberg.
 
-The period scale is `jetScale` times an integer `π_M` of `K` of norm `M`. The statements with this
-factor are `New.Data.norm_conj_piMBar_mul_jetScale_sq` and
-`New.Data.norm_taylorScale_eq_one_of_not_dvd`.
+The period scale is `jetScale` times an integer `π_M` of `K` of norm `M`. The statement with this
+factor is `New.Data.norm_taylorScale_eq_one_of_not_dvd`.
 
 The statements use these notions:
 * `jetSeries a f`: the Taylor series of the theta function of `f`, with variables scaled by `a`;

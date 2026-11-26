@@ -73,10 +73,7 @@ lemma Gauge.IsShell.subset_positions {Γ : Gauge F} {j : ℕ} {p q : ℕ → Aˣ
     {W : T.G → EuclideanSpace ℂ I} {S : Set T.G} {height : ℝ≥0∞}
     (hS : Γ.IsShell j p q W S height) : S ⊆ F.positions := by
   obtain ⟨𝒢, -, h_subset, -⟩ := hS.exists_cover
-  intro x hx
-  obtain ⟨Γ', -, h_close⟩ := Set.mem_iUnion₂.1 (h_subset hx)
-  simp only [Gauge.positionsOfSize] at h_close
-  exact h_close.1
+  exact h_subset.trans (Set.iUnion₂_subset fun Γ' _ ↦ Set.sep_subset _ _)
 
 /-- The height of a shell is finite and not zero, so it cancels against its inverse. -/
 lemma Gauge.IsShell.inv_height_mul_height {Γ : Gauge F} {j : ℕ} {p q : ℕ → Aˣ}

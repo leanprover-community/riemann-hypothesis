@@ -98,9 +98,7 @@ lemma RepresentedBy.of_conjTranspose_mul_mul {t' : b → ℤˣ} {T : Matrix b b 
     _ = (q⁻¹.valᴴ * (q.valᴴ * T * q.val) * q⁻¹.val).map (evalInf u) := by
         rw [Matrix.map_mul, Matrix.map_mul]
         rfl
-    _ = atRealPlace T u := by
-        rw [h_inv]
-        rfl
+    _ = atRealPlace T u := congrArg (fun M ↦ M.map (evalInf u)) h_inv
 
 variable {W₁} in
 /-- The real slice of `v` along `D` vanishes at every adelic matrix `x` whose Gram matrix for the
@@ -173,7 +171,7 @@ lemma hasIntegrableTerms_localDatum_of_eq_stdDatum (hπ : ReadsAt A π) (β γ :
   have h_inv : M * M⁻¹ = 1 := mul_nonsing_inv M (.of_mul_eq_one_right d h_det)
   -- the frame at the point enters `M`, so the right inverse is a triangular matrix times `N M⁻¹`
   simp only [M, ← coordMatrix_mul_fromBlocks_eq_fromCols W₁ D c z q g, Matrix.map_mul] at h_inv
-  exact ⟨_, by simpa [← Matrix.mul_assoc, fromBlocks_map] using congrArg transpose h_inv⟩
+  exact ⟨_, by simpa [← Matrix.mul_assoc] using congrArg transpose h_inv⟩
 
 open scoped Classical in
 omit [Nontrivial (LocProd P)] in
@@ -470,9 +468,11 @@ lemma mem_map_sum_iff_fixes_cols (k : G E (t' ⊕ᵥ s)) :
       γ.val.val * fromRows (1 : Matrix b b E) (0 : Matrix n b E) = fromRows 1 0 := by
     have h_cols : γ.val.val * fromRows (1 : Matrix b b E) (0 : Matrix n b E) =
         γ.val.val.toCols₁ := by ext; simp [Matrix.mul_apply, Matrix.one_apply]
-    simpa only [h_cols] using (New.U.exists_sum_eq_iff_toCols_eq rfl).2 V'.isUnit_J
-  -- the form of `V'.sum W₁` is `fromBlocks V'.J 0 0 W₁.J` by definition
-  erw [← exists_congr fun γ ↦ and_congr_left' (h_fixes γ)]
+    simpa only [h_cols] using New.U.mem_range_sum_right rfl V'.isUnit_J
+  change _ ↔ ∃ γ : U (fromBlocks V'.J 0 0 W₁.J),
+    γ.val.val * fromRows (1 : Matrix b b E) (0 : Matrix n b E) = fromRows 1 0 ∧
+      (V'.sum W₁).ratEmbed γ = k
+  rw [← exists_congr fun γ ↦ and_congr_left' (h_fixes γ)]
   simp [Γ, sum_ratEmbed, -Subtype.exists]
 
 omit [WeilData E] [Fintype b] [DecidableEq b] in
@@ -513,10 +513,9 @@ lemma exists_blockSumOne_mul_mem_stdLevel {Y : GL b (𝔸 E)} {k : GL b (𝔸f E
   obtain ⟨g₀, hg₀, h_cols⟩ : ∃ g₀ ∈ stdLevel E (b ⊕ n), g₀.val.val * Z = Z₀ :=
     witt_Ô_of_orthonormal hZ_orth hZ₀_orth hZ_int hZ₀_int
   obtain ⟨w', hw'⟩ : ∃ w' : Gf E n, U.blockSumOne (1, w') = g₀ * (u⁻¹ * U.blockSumOne w) :=
-    ((New.U.exists_sum_eq_iff_toCols_eq fromBlocks_one).2 isUnit_one).mpr h_cols
-  have h_eq : U.blockSumOne ((1, w') / w) * u = g₀ := by
-    rw [map_div, hw', ← mul_assoc, mul_div_cancel_right, inv_mul_cancel_right]
-  exact ⟨(1, w') / w, by rwa [h_eq]⟩
+    (New.U.mem_range_sum_right fromBlocks_one isUnit_one).mpr h_cols
+  refine ⟨(1, w') / w, ?_⟩
+  rwa [map_div, hw', ← mul_assoc, mul_div_cancel_right, inv_mul_cancel_right]
 
 open scoped Classical in
 /-- Let `x` in `GL_b(𝔸_f)` have integral entries. The vector of `𝒮(Hom(W₁, V' ⊕ W₁))` given at the

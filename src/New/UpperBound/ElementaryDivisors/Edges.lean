@@ -1,7 +1,8 @@
 module
 
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Lib.General.LinearAlgebra.HermiteForm
-public import Lib.LocalGL.Green.HallAlgebra
 public import New.UpperBound.ElementaryDivisors.InvariantAverage
 public import New.UpperBound.ElementaryDivisors.RootLemma
 
@@ -104,9 +105,9 @@ lemma card_le_mul_finrank_of_dual_rows {O X I E : Type*} [CommRing O] [IsLocalRi
       simpa [v] using congrArg (fun f : X → S ↦ S.subtype (f y.1) y.2) hc
     -- Pair the relation with row `i` of `R`: only the coefficient `c i` survives.
     calc c i = ∑ j : s, c j * residue O ((R * Q) i j) := by
-          simp [h_dual, apply_ite (residue O)]
+          simp [h_dual]
       _ = ∑ y : X × I, residue O (R i y) * ∑ j : s, c j * residue O (Q y j) := by
-          simp only [Matrix.mul_apply, map_sum, map_mul, mul_sum, mul_left_comm]
+          simp only [Matrix.mul_apply, map_sum, mul_sum, mul_left_comm]
           exact sum_comm
       _ = 0 := by simp only [h_entry, mul_zero, sum_const_zero]
   simpa [finrank_pi_fintype] using h_indep.fintype_card_le_finrank
@@ -143,13 +144,6 @@ section Edges
 variable {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
   (T : FrobeniusCycle N W O)
 
-/-- A coefficient vector `v` lies in `T.translatesIn n τ I B` if and only if its translates by the
-Levi subgroup of the labelling `τ` have their coefficients at the exponents in `B` in `I`. -/
-lemma mem_translatesIn_iff {τ : Fin k → ℕ} {I : Ideal O} {B : Set (Exponents N k n)}
-    {v : Exponents N k n → O} :
-    v ∈ T.translatesIn n τ I B ↔ ∀ g ∈ levi W τ, ∀ β ∈ B, (T.letterRep n g *ᵥ v) β ∈ I :=
-  Iff.rfl
-
 /-- Let `v` be a coefficient vector whose translates `T.letterRep n g *ᵥ v`, for `g` in the Levi
 subgroup of the labelling `τ`, have their coefficients at the exponents in `B` in the maximal ideal
 of `O`. Then the translates of the reduction of `v`, for the Frobenius cycle pushed to the residue
@@ -158,7 +152,6 @@ lemma residue_mem_translatesIn [IsLocalRing O] {τ : Fin k → ℕ} {B : Set (Ex
     {v : Exponents N k n → O} (hv : v ∈ T.translatesIn n τ (maximalIdeal O) B) :
     (fun β : Exponents N k n ↦ residue O (v β)) ∈
       (T.map (residue O)).translatesIn n τ (⊥ : Ideal (ResidueField O)) B := by
-  rw [mem_translatesIn_iff] at hv ⊢
   intro g hg β hβ
   have h_residue : ((T.map (residue O)).letterRep n g *ᵥ fun α ↦ residue O (v α)) β =
       residue O ((T.letterRep n g *ᵥ v) β) := by simp [letterRep_map, mulVec, dotProduct]
@@ -323,34 +316,26 @@ edge with the edge of dual lattices exists if `p = T.p` is not a unit in `O` and
 each letter is less than `q = T.q`, the number of elements of the residue field of `W`. -/
 lemma exists_isEdgePairing [IsDomain O] [ValuationRing O] [CharZero O] (hp : ¬IsUnit (T.p : O))
     (hn : n < T.q) : ∃ b b' : Exponents N k n → O, T.IsEdgePairing b b' := by
-  -- In one letter, `b₀ γ` is `p ^ (k log_p q)` divided by a multinomial coefficient, and with these
-  -- weights the substitutions by a matrix and by its transpose are adjoint.
+  -- In one letter, `b₀ γ` is `p ^ (k log_p q)` divided by a multinomial coefficient.
   obtain ⟨b₀, hb₀_mul, hb₀_adj⟩ :=
     Average.exists_isAdjointWeight (Fin k) T.prime hp (T.frobExp * N)
   -- The factor `u` raises the exponent `k log_p q` to `c₀ = k² log_p q`.
   let u : O := (T.p : O) ^ ((k - 1) * k * (T.frobExp * N))
   refine ⟨fun β ↦ ∏ s, u * b₀ (β s).val, fun β ↦ ∏ s, ((β s).val.multinomial : O),
     fun g α β ↦ ?_, fun β ↦ ?_⟩
-  · have h_transpose (s : ZMod N) : T.letterMatrix s (transposeGL g) = (T.letterMatrix s g)ᵀ := by
-      -- The simp lemma `coe_units_inv` would hide that the inverse is one in `GL`.
-      by_cases h_even : T.isEven s <;>
-        simp [letterMatrix_apply, h_even, transposeGL, transpose_map, -coe_units_inv]
-    simp only [letterRep_apply, kroneckerPi, of_apply, ← prod_mul_distrib, h_transpose]
+  · simp only [letterRep_apply, kroneckerPi, of_apply, ← prod_mul_distrib]
     refine prod_congr rfl fun s _ ↦ ?_
-    have h_adj : b₀ (β s).val * symPowMatrix n (T.letterMatrix s g)ᵀ (β s) (α s) =
-        b₀ (α s).val * symPowMatrix n (T.letterMatrix s g) (α s) (β s) := by
-      simpa [symPowMatrix, mul_comm] using
-        (hb₀_adj (T.letterMatrix s g) (α s).val (β s).val).symm
-    rw [mul_assoc, h_adj, mul_assoc]
-  · have h_exponent : (k - 1) * k * (T.frobExp * N) + k * (T.frobExp * N) =
-        T.multinomialExponent k := by
-      rw [multinomialExponent, ← add_mul, Nat.sub_one_mul, Nat.sub_add_cancel k.le_mul_self, sq]
-    have h_letter (s : ZMod N) :
+    have h_tr : T.letterMatrix s (transposeGL g) = (T.letterMatrix s g)ᵀ := by
+      by_cases hs : T.isEven s <;>
+        simp [letterMatrix_apply, hs, transposeGL, transpose_map, -coe_units_inv]
+    simpa [h_tr, symPowMatrix, mul_assoc, mul_left_comm, mul_comm] using
+      congrArg (u * ·) (hb₀_adj (T.letterMatrix s g) (α s).val (β s).val).symm
+  · have h (s : ZMod N) :
         u * b₀ (β s).val * (β s).val.multinomial = (T.p : O) ^ T.multinomialExponent k := by
       rw [mul_assoc, mul_comm (b₀ _), ← hb₀_mul _ (by rwa [Monomials.degree_eq, pow_mul]),
-        Fintype.card_fin, ← pow_add, h_exponent]
-    simp only [← prod_mul_distrib, h_letter, prod_const, card_univ, ZMod.card, ← pow_mul,
-      mul_comm N]
+        Fintype.card_fin, ← pow_add, multinomialExponent, ← add_mul, Nat.sub_one_mul,
+        Nat.sub_add_cancel k.le_mul_self, sq]
+    simp only [← prod_mul_distrib, h, prod_const, card_univ, ZMod.card, ← pow_mul, mul_comm N]
 
 /-! ### Functions on edges -/
 

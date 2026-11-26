@@ -160,7 +160,7 @@ lemma normLength_dualDefect_le_of_hasCupExponent {k : ℕ} (hL : IsPotentiallyCr
   have h_sub : I • ⊤ ≤ (cupOrthogonal 𝒬 L).submoduleOf (crysCocycles L.ρ) := by
     rw [ideal_span_singleton_smul]
     rintro _ ⟨c, -, rfl⟩
-    exact h_exp _ c.2
+    exact h_exp _ c.property
   calc _ ≤ O.normLength (length O (crysCocycles L.ρ ⧸ I • (⊤ : Submodule O _))) := by
         grw [dualDefect, relLength, length_le_of_surjective _ (factor_surjective h_sub)]
     _ = finrank O (crysCocycles L.ρ) * k := by
@@ -521,21 +521,21 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
     split_ifs <;> omega
   -- The two bounds of `dualDefect_eq_zero_and_dualDefect_le`, for the length `2 (v + 1)`. The
   -- defect vanishes if `U` and `U'` avoid `[-2 (v + 1), 0)` or `U'` lies in `[-η, 0]`. If at most
-  -- `n` jumps lie in `[-η, η]`, it is at most `11 f (n (2 (v + 1) + 1) + rank L · (W + 1))` times
+  -- `n` jumps lie in `[-η, η]`, it is at most `f (n (16 (v + 1) + 1) + 3 rank L · (W + 1))` times
   -- the length of `O / ℓ`.
   obtain ⟨h_zero, h_defect_le⟩ :=
     k.dualDefect_eq_zero_and_dualDefect_le ζ h_open h_un (by omega) h_height (by omega) h_far h_gap
       hL hU hU'
   by_cases h_few : h / 5 ≤ v ∧ HasFewLowJumps L h μ η U U'
   · -- At most `μ` low jumps, and `⌊h / 5⌋ ≤ v`: the bound `h_defect_le` is at most
-    -- `11 f (6 μ v + rank L · K)` times the length of `O / ℓ`, and `f` is the index.
+    -- `f (33 μ v + 3 rank L · K)` times the length of `O / ℓ`, and `f` is the index.
     obtain ⟨hv_large, h_low⟩ := h_few
     have hW_lt_K : W + 1 ≤ K := Nat.le_of_mul_le_mul_right (by omega) hQ_pos
     have hm_pos : 1 ≤ m :=
       Nat.zero_lt_of_lt (natLog_lt_of_two_mul_log_lt (ℓ := ℓ) h_log (Nat.zero_le _))
-    have h_bound : 11 * (k.f * (μ * (2 * (v + 1) + 1) + finrank O L * (W + 1))) ≤
+    have h_bound : k.f * (μ * (8 * (2 * (v + 1)) + 1) + finrank O L * (3 * (W + 1))) ≤
         k.f * (10 ^ 5 * (finrank O L * (K * m) + μ * v)) := by
-      grw [show 2 * (v + 1) + 1 ≤ 6 * v by omega, ← hm_pos, hW_lt_K]
+      grw [show 8 * (2 * (v + 1)) + 1 ≤ 33 * v by omega, ← hm_pos, hW_lt_K]
       ring_nf
       omega
     -- The normalised length of `O / ℓ` is `1`.

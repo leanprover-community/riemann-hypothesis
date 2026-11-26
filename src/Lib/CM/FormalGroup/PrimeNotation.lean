@@ -52,7 +52,7 @@ namespace New
 /-- The number `π_p`, as a complex number: `√-d = I * √d` if `p = d`, and `p` otherwise. -/
 noncomputable def piPrime (d p : ℕ) : ℂ := if p = d then .I * √d else p
 
-lemma exists_primeNorm_eq_pow (d p : ℕ) [Fact d.Prime] [Fact p.Prime] :
+lemma exists_primeNorm_eq_pow (d p : ℕ) [Fact d.Prime] :
     ∃ e : ℕ, e ≠ 0 ∧ primeNorm d p = p ^ e := by
   by_cases h : chiK d p = -1
   · exact ⟨2, two_ne_zero, by simp [primeNorm, h]⟩
@@ -265,7 +265,7 @@ lemma piPrime_mem_quadInt (d : ℕ) {p : ℕ} [PrimeSevenModEight d] : piPrime d
   split_ifs
   exacts [I_mul_sqrt_mem_quadInt d, natCast_mem _ p]
 
-lemma piPrime_ne_zero (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] :
+lemma piPrime_ne_zero (d : ℕ) {p : ℕ} [Fact p.Prime] :
     piPrime d p ≠ 0 := by
   have hp : p ≠ 0 := (Fact.out : p.Prime).ne_zero
   unfold piPrime

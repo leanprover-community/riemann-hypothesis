@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Algebra.GroupWithZero.Torsion
+public import Mathlib.Algebra.Order.Monoid.Unbundled.Units
 public import Lib.Analytic.EntireLFunction
 public import Lib.CM.ConjugateCurve
 public import Lib.CM.Integrality.IsogenyIntegrality
@@ -231,7 +233,7 @@ lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
       ← h_above]
   -- The fibre over `p` is `{w, J}`.
   have h_fibre_prod : HasProd
-      (fun v : {v // below v = ⟨p, hp⟩} ↦ ((1 : ℂ) - v.1.q ^ (-s : ℂ))⁻¹)
+      (fun v : {v // below v = ⟨p, hp⟩} ↦ ((1 : ℂ) - v.val.q ^ (-s : ℂ))⁻¹)
       (∏ v ∈ {w, J}, ((1 : ℂ) - v.q ^ (-s : ℂ))⁻¹) :=
     (Equiv.subtypeEquivRight h_fibre).hasProd_iff.2 (Finset.hasProd {w, J} _)
   simpa [h_char, h_factor] using h_fibre_prod
@@ -620,8 +622,7 @@ lemma CMLattice.sum_kronecker_terms {E : ClassGroup (𝓞 (QuadField d)) → CML
     push_cast
     field [classNumber_ne_zero, hd_pos.ne']
   rw [chowlaSelbergConst, ← hL, h_log, ofReal_re]
-  field_simp [classNumber_ne_zero]
-  ring
+  field [classNumber_ne_zero]
 
 /-- There are fractional ideals of `K`, one in each ideal class, whose product is `(1)`. -/
 lemma QuadField.exists_mk_eq_and_prod_eq_one :

@@ -2,7 +2,6 @@ module
 
 public import Lib.Adelic.AutomorphicForms.Basic
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
-public import Lib.Adelic.Witt.IwasawaDecomposition
 public import Lib.Weil.Fock.OscillatorPair
 public import Lib.Weil.MixedModel.ThetaInvariance
 public import Lib.Weil.Periods.Grading
@@ -339,7 +338,7 @@ def pairHomInf :
 @[simps! -isSimp apply_apply]
 def realPairWeil : GInf E s × GInf E s' →* PairFock E s s' →L[ℂ] PairFock E s s' where
   toFun p :=
-    (∏ w : NumberField.InfinitePlace E, (p.2 w).1.1.det ^ γ w * (p.1 w).1.1.det ^ (-γ' w)) •
+    (∏ w : NumberField.InfinitePlace E, (p.2 w).val.val.det ^ γ w * (p.1 w).val.val.det ^ (-γ' w)) •
       realWeil (pairHomInf p)
   map_one' := by simp
   map_mul' p q := by
@@ -353,17 +352,13 @@ lemma continuous_realPairWeil :
     Continuous fun q : (GInf E s × GInf E s') × PairFock E s s' ↦ realPairWeil γ γ' q.1 q.2 := by
   have h_pairHomInf : Continuous (pairHomInf : GInf E s × GInf E s' →
       USign fun (p : NumberField.InfinitePlace E × n' × n) ↦ homSigns s s' p.2) := by
-    simp [continuous_U_iff_matrix, pairHomInf, coe_pairHom, Prod.map]
+    simp only [continuous_U_iff_matrix, pairHomInf, coe_pairHom, Prod.map, MonoidHom.coe_comp,
+      Function.comp_apply, MonoidHom.pi_apply, MonoidHom.coe_prodMap, Pi.coe_evalMonoidHom,
+      val_blockU_apply_coe]
     simp only [← Matrix.coe_units_inv]
     fun_prop [kroneckerMap, Units.continuous_coe_inv]
-  simp [realPairWeil]
+  simp only [realPairWeil_apply_apply]
   fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero, zpow_ne_zero])
-
-/-- The principal minor of `y` on the indices of sign `σ` is the determinant of the diagonal block
-of `y` for `σ` in the partition of the indices by sign. -/
-private lemma principalMinor_eq_det_toSquareBlock {ι : Type} [Fintype ι] [DecidableEq ι]
-    (y : Matrix ι ι ℂ) (ε : ι → ℤˣ) (σ : ℤˣ) :
-    principalMinor y (ε · = σ) = (y.toSquareBlock ε σ).det := rfl
 
 /-- Let the isometry `u` of signs `s` be block diagonal for the partition of the indices by sign
 (it lies in `New.blockDiagAlg s`, the matrices that commute with the sign matrix). Then its
@@ -375,7 +370,7 @@ lemma det_eq_prod_principalMinor {u : USign s}
   -- `u` is block diagonal, hence block triangular, for the partition of the indices by sign.
   have h_tri : BlockTriangular (u : Matrix n n ℂ) s :=
     fun i j h_lt ↦ mem_blockDiagAlg.mp hu i j h_lt.ne'
-  simp only [h_tri.det_fintype, principalMinor_eq_det_toSquareBlock]
+  exact h_tri.det_fintype
 
 /-- For a block diagonal isometry `u = diag(γ, z)` of the form with signs `ε` (`z` is the block on
 the negative coordinates), the multiplier of the real Weil representation is `det z⁻¹`. -/
@@ -629,7 +624,9 @@ lemma exists_level_pairWeil {E : Type*} {n n' : Type} {s : n → ℤˣ} {s' : n'
     (((b⁻¹).val.toMonoidHom.comp G.det).coprod (a.val.toMonoidHom.comp G.det)).comp
       embed.toMonoidHom
   have h_χ_cont : Continuous χ := by
-    simp [χ, Function.comp_def]
+    simp only [InvMemClass.coe_inv, ContinuousMonoidHom.coe_toMonoidHom, MonoidHom.coe_comp,
+      MonoidHom.coe_ofClass, Function.comp_def, MonoidHom.coprod_apply, Function.comp_apply,
+      circleChar_inv_apply, χ]
     fun_prop
   have h_char : ∀ᶠ k in nhds 1, pairChar a b (embed k) = 1 :=
     (char_eventually_eq_one χ h_χ_cont).mono fun k hk ↦

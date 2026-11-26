@@ -1,7 +1,6 @@
 module
 
 public import Lib.Adelic.TraceFormula.LineCount
-public import Lib.Adelic.TraceFormula.TestFunction
 public import Lib.Shimura.HeckeTower.HeckeData
 
 /-!
@@ -93,7 +92,7 @@ lemma apply_of_mem_levelSpace (hy : y ∈ levelSpace ρ J) {g : G} (hg : g ∈ J
 /-- The translate `ρ g y` of a vector fixed by `J` depends only on the coset `g J`. -/
 lemma apply_eq_of_inv_mul_mem (hy : y ∈ levelSpace ρ J) {g h : G} (h_mem : g⁻¹ * h ∈ J) :
     ρ h y = ρ g y := by
-  rw [← mul_inv_cancel_left g h, map_mul, Module.End.mul_apply, apply_of_mem_levelSpace hy h_mem]
+  rw [← mul_inv_cancel_left g h, map_mul, mul_apply_eq_comp, apply_of_mem_levelSpace hy h_mem]
 
 /-- Membership in `J t J` is unchanged by right multiplication with an element of `J`. -/
 lemma mul_mem_doubleCoset_iff_of_mem {g k : G} (hk : k ∈ J) :
@@ -115,7 +114,7 @@ lemma heckeCoset_eq_sum (hy : y ∈ levelSpace ρ J) {s : Finset ι} {r : ι →
   -- The indicator of `J t J` is right `J`-invariant, and the cosets `r a J` cover its support.
   have h_right (g : G) (k : J) : (doubleCoset t J J).indicator (1 : G → ℂ) (g * k) =
       (doubleCoset t J J).indicator 1 g := by
-    classical simp [Set.indicator_apply, mul_mem_doubleCoset_iff_of_mem k.2]
+    classical simp [Set.indicator_apply, mul_mem_doubleCoset_iff_of_mem k.property]
   have h_all (g : G) (hg : (doubleCoset t J J).indicator (1 : G → ℂ) g ≠ 0) :
       ∃ a ∈ s, (r a : G ⧸ J) = g := by
     obtain ⟨j, hj, l, hl, rfl⟩ := mem_doubleCoset.1 (Set.mem_of_indicator_ne_zero hg)
@@ -206,26 +205,26 @@ lemma reduceGL_inv (k : localIntGL n w) : reduceGL (k⁻¹ : localIntGL n w) = (
 /-- For `k` in `GL_n(𝒪)`, the entries of `reduceGL k` are the residues of those of `k`, computed by
 `residueOrZero`, which reduces integral elements and is `0` elsewhere. -/
 lemma coe_reduceGL (k : localIntGL n w) :
-    (reduceGL k).1 = (k : GL n (LocField w)).1.map residueOrZero := by
+    (reduceGL k).val = (k : GL n (LocField w)).val.map residueOrZero := by
   ext a b
   -- The entries of `reduceGL k` are by definition the residues of the integral entries of `k`.
-  exact (residueOrZero_coe ⟨k.1 a b, v_le_one_of_mem_localIntGL k.2 a b⟩).symm
+  exact (residueOrZero_coe ⟨k.val a b, v_le_one_of_mem_localIntGL k.property a b⟩).symm
 
 /-- An entry of the reduction of `k ∈ GL_n(𝒪)` vanishes exactly when that of `k` has valuation
 less than `1`. -/
-lemma reduceGL_apply_eq_zero_iff {a b : n} : (reduceGL k).1 a b = 0 ↔ v (k.1 a b) < 1 := by
+lemma reduceGL_apply_eq_zero_iff {a b : n} : (reduceGL k).val a b = 0 ↔ v (k.val a b) < 1 := by
   rw [coe_reduceGL, Matrix.map_apply, residueOrZero_eq_zero,
-    (v_le_one_of_mem_localIntGL k.2 a b).lt_iff_ne]
+    (v_le_one_of_mem_localIntGL k.property a b).lt_iff_ne]
 
 /-- An element of `GL_n(𝒪)` stabilises the line of `e_i` modulo `w` exactly when its reduction is
 block upper triangular for `(· ≠ i)`. -/
-lemma coe_mem_lineStabilizer : k.1 ∈ lineStabilizer w i ↔ reduceGL k ∈ parabolic (· ≠ i) :=
+lemma coe_mem_lineStabilizer : k.val ∈ lineStabilizer w i ↔ reduceGL k ∈ parabolic (· ≠ i) :=
   Subgroup.mem_map_iff_mem (localIntGL n w).subtype_injective
 
 /-- An element of `GL_n(𝒪)` stabilises the hyperplane of the `e_j`, `j ≠ i`, modulo `w` exactly
 when its reduction is block upper triangular for `(· = i)`. -/
 lemma coe_mem_hyperplaneStabilizer :
-    k.1 ∈ hyperplaneStabilizer w i ↔ reduceGL k ∈ parabolic (· = i) :=
+    k.val ∈ hyperplaneStabilizer w i ↔ reduceGL k ∈ parabolic (· = i) :=
   Subgroup.mem_map_iff_mem (localIntGL n w).subtype_injective
 
 /-- The stabiliser of the line of `e_i` modulo `w` consists of the elements of
@@ -248,15 +247,15 @@ lemma mem_hyperplaneStabilizer :
 
 /-- The cosets `k J_line` and `l J_line` agree exactly when `l e_i` lies on the line of `k e_i`
 modulo `w`. -/
-lemma inv_mul_mem_lineStabilizer : k.1⁻¹ * l.1 ∈ lineStabilizer w i ↔
-    ∃ c : ResField w, (reduceGL l).1.col i = c • (reduceGL k).1.col i := by
+lemma inv_mul_mem_lineStabilizer : k.val⁻¹ * l.val ∈ lineStabilizer w i ↔
+    ∃ c : ResField w, (reduceGL l).val.col i = c • (reduceGL k).val.col i := by
   rw [← Subgroup.coe_inv, ← Subgroup.coe_mul, coe_mem_lineStabilizer, reduceGL_mul, reduceGL_inv,
     inv_mul_mem_parabolic_ne]
 
 /-- The cosets `J k` and `J l` of the stabiliser `J` of the hyperplane agree exactly when the
 `i`-th row of `l` is a multiple of that of `k` modulo `w`. -/
-lemma mul_inv_mem_hyperplaneStabilizer : l.1 * k.1⁻¹ ∈ hyperplaneStabilizer w i ↔
-    ∃ c : ResField w, (reduceGL l).1.row i = c • (reduceGL k).1.row i := by
+lemma mul_inv_mem_hyperplaneStabilizer : l.val * k.val⁻¹ ∈ hyperplaneStabilizer w i ↔
+    ∃ c : ResField w, (reduceGL l).val.row i = c • (reduceGL k).val.row i := by
   rw [← Subgroup.coe_inv, ← Subgroup.coe_mul, coe_mem_hyperplaneStabilizer, reduceGL_mul,
     reduceGL_inv, mul_inv_mem_parabolic_eq]
 
@@ -264,8 +263,8 @@ lemma mul_inv_mem_hyperplaneStabilizer : l.1 * k.1⁻¹ ∈ hyperplaneStabilizer
 lemma v_mul_uniformizer_lt_one_iff {x : LocField w} : v (x * (uniformizer w).1) < 1 ↔ v x ≤ 1 := by
   rw [← v_uniformizer_inv_mul_le_one_iff, mul_comm x, inv_mul_cancel_left₀ (uniformizer w).ne_zero]
 
-lemma v_uniformizer_lt_one : v (uniformizer w).1 < 1 := by
-  rw [← one_mul (uniformizer w).1, v_mul_uniformizer_lt_one_iff, map_one]
+lemma v_uniformizer_lt_one : v (uniformizer w).val < 1 := by
+  rw [← one_mul (uniformizer w).val, v_mul_uniformizer_lt_one_iff, map_one]
 
 omit [Fintype n] in
 /-- A property `p` of index pairs holds everywhere if it holds at `(i, i)`, on the rest of row `i`
@@ -283,8 +282,8 @@ lemma conj_lineElement_mem_lineStabilizer_iff :
   -- Conjugation divides the `i`-th row by `ϖ`, multiplies the `i`-th column by `ϖ`, and keeps the
   -- determinant.
   set g' : GL n (LocField w) := (lineElement w i)⁻¹ * g * lineElement w i with hg'
-  have h_entry (a b : n) : g' a b = (if a = i then (uniformizer w).1⁻¹ else 1) * g a b *
-      if b = i then (uniformizer w).1 else 1 := by
+  have h_entry (a b : n) : g' a b = (if a = i then (uniformizer w).val⁻¹ else 1) * g a b *
+      if b = i then (uniformizer w).val else 1 := by
     simp only [hg', Units.val_mul, coe_lineElement_inv, coe_lineElement, mul_diagonal, diagonal_mul]
   have h_diag : v (g' i i) ≤ 1 ↔ v (g i i) ≤ 1 := by simp [h_entry, mul_right_comm _ (g i i)]
   have h_row (j : n) (hj : j ≠ i) : v (g' i j) ≤ 1 ↔ v (g i j) < 1 := by
@@ -293,9 +292,9 @@ lemma conj_lineElement_mem_lineStabilizer_iff :
     rw [h_entry, ite_eq_left rfl, ite_eq_right hj, one_mul, v_mul_uniformizer_lt_one_iff]
   have h_rest (a b : n) (ha : a ≠ i) (hb : b ≠ i) : v (g' a b) ≤ 1 ↔ v (g a b) ≤ 1 := by
     simp [h_entry, ha, hb]
-  have h_det : g'.1.det = g.1.det := by rw [hg', Units.val_mul, Units.val_mul, det_units_conj']
+  have h_det : g'.val.det = g.val.det := by rw [hg', Units.val_mul, Units.val_mul, det_units_conj']
   have h_Kw (x : GL n (LocField w)) :
-      x ∈ localIntGL n w ↔ (∀ a b : n, v (x a b) ≤ 1) ∧ v x.1.det = 1 := mem_intGL_iff_det
+      x ∈ localIntGL n w ↔ (∀ a b : n, v (x a b) ≤ 1) ∧ v x.val.det = 1 := mem_intGL_iff_det
   rw [mem_lineStabilizer, mem_hyperplaneStabilizer, h_Kw, h_Kw, h_det]
   constructor
   · rintro ⟨⟨h_int, h_unit⟩, h_small⟩
@@ -312,44 +311,44 @@ lemma conj_lineElement_mem_lineStabilizer_iff :
 /-- A chosen element of `GL_n(𝒪)` with reduction `M`, for an invertible matrix `M` over the residue
 field. -/
 def liftMatrix (M : Matrix n n (ResField w)) : localIntGL n w :=
-  Function.invFun (fun k : localIntGL n w ↦ (reduceGL k).1) M
+  Function.invFun (fun k : localIntGL n w ↦ (reduceGL k).val) M
 
 /-- For an invertible matrix `M` over the residue field, the chosen lift `liftMatrix M` reduces to
 `M`. -/
 lemma reduceGL_liftMatrix {M : Matrix n n (ResField w)} (hM_det : M.det ≠ 0) :
-    (reduceGL (liftMatrix M)).1 = M := by
+    (reduceGL (liftMatrix M)).val = M := by
   obtain ⟨k, hk⟩ := reduceGL_surjective (GeneralLinearGroup.mkOfDetNeZero M hM_det)
   exact Function.invFun_eq (f := fun k : localIntGL n w ↦ (reduceGL k).1) ⟨k, congrArg Units.val hk⟩
 
-lemma reduceGL_liftMatrix_val (g : GL n (ResField w)) : reduceGL (liftMatrix g.1) = g :=
+lemma reduceGL_liftMatrix_val (g : GL n (ResField w)) : reduceGL (liftMatrix g.val) = g :=
   Units.ext (reduceGL_liftMatrix g.det_ne_zero)
 
 /-- The representative of the coset in `J_line diag (ϖ, 1, …, 1) J_line / J_line` that corresponds
 to the hyperplane on which the linear form `ξ` with `ξ e_i = 1` vanishes. -/
 def raiseCosetRep (i : n) (ξ : n → ResField w) : GL n (LocField w) :=
-  (liftMatrix (updateRow 1 i ξ)).1⁻¹ * lineElement w i
+  (liftMatrix (updateRow 1 i ξ)).val⁻¹ * lineElement w i
 
 /-- The representative of the coset in `J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line` that corresponds
 to the line of a vector `z` with `z i = 1`. -/
 def lowerCosetRep (i : n) (z : n → ResField w) : GL n (LocField w) :=
-  (lineElement w i)⁻¹ * (liftMatrix (updateCol 1 i z)).1
+  (lineElement w i)⁻¹ * (liftMatrix (updateCol 1 i z)).val
 
 variable {ξ z : n → ResField w}
 
 /-- For `ξ i = 1`, the chosen lift of the identity with row `i` replaced by `ξ` has this matrix as
 its reduction. -/
 lemma reduceGL_liftMatrix_updateRow (hξ : ξ i = 1) :
-    (reduceGL (liftMatrix (updateRow 1 i ξ))).1 = updateRow 1 i ξ :=
+    (reduceGL (liftMatrix (updateRow 1 i ξ))).val = updateRow 1 i ξ :=
   reduceGL_liftMatrix (by simp [det_updateRow_one, hξ])
 
 /-- For `z i = 1`, the chosen lift of the identity with column `i` replaced by `z` has this matrix
 as its reduction. -/
 lemma reduceGL_liftMatrix_updateCol (hz : z i = 1) :
-    (reduceGL (liftMatrix (updateCol 1 i z))).1 = updateCol 1 i z :=
+    (reduceGL (liftMatrix (updateCol 1 i z))).val = updateCol 1 i z :=
   reduceGL_liftMatrix (by simp [det_updateCol_one, hz])
 
 lemma col_reduceGL_liftMatrix_updateCol (hz : z i = 1) :
-    (reduceGL (liftMatrix (updateCol 1 i z))).1.col i = z :=
+    (reduceGL (liftMatrix (updateCol 1 i z))).val.col i = z :=
   funext fun _ ↦ by simp [reduceGL_liftMatrix_updateCol hz]
 
 /-- For `ξ i = 1`, `raiseCosetRep i ξ` lies in the double coset of `diag (ϖ, 1, …, 1)` for the
@@ -357,7 +356,7 @@ stabiliser of the line of `e_i` modulo `w`. -/
 lemma raiseCosetRep_mem_doubleCoset (hξ : ξ i = 1) :
     raiseCosetRep i ξ ∈
       doubleCoset (lineElement w i) (lineStabilizer w i) (lineStabilizer w i) := by
-  have h_mem : (liftMatrix (updateRow 1 i ξ)).1 ∈ lineStabilizer w i :=
+  have h_mem : (liftMatrix (updateRow 1 i ξ)).val ∈ lineStabilizer w i :=
     coe_mem_lineStabilizer.2 <| mem_parabolic_ne.2 fun j hj ↦ by
       simp [reduceGL_liftMatrix_updateRow hξ, hj]
   exact mem_doubleCoset.2 ⟨_, inv_mem h_mem, 1, one_mem _, by rw [mul_one, raiseCosetRep]⟩
@@ -367,7 +366,7 @@ stabiliser of the line of `e_i` modulo `w`. -/
 lemma lowerCosetRep_mem_doubleCoset (hz : z i = 1) :
     lowerCosetRep i z ∈
       doubleCoset (lineElement w i)⁻¹ (lineStabilizer w i) (lineStabilizer w i) := by
-  have h_mem : (liftMatrix (updateCol 1 i z)).1 ∈ hyperplaneStabilizer w i :=
+  have h_mem : (liftMatrix (updateCol 1 i z)).val ∈ hyperplaneStabilizer w i :=
     coe_mem_hyperplaneStabilizer.2 <| mem_parabolic_eq.2 fun j hj ↦ by
       simp [reduceGL_liftMatrix_updateCol hz, hj, hj.symm]
   -- Conjugation by `diag (ϖ, 1, …, 1)` takes the lift into the stabiliser of the line.
@@ -385,10 +384,10 @@ lemma eq_of_eq_smul_of_apply_eq_one {z z' : n → ResField w} {c : ResField w} (
 representative `raiseCosetRep i ξ` exactly when `ξ` is a multiple of the `i`-th row of `k` modulo
 `w`. Here `J_line` is the stabiliser of the line of `e_i` modulo `w`. -/
 lemma raiseCosetRep_inv_mul_mem_lineStabilizer_iff (hξ : ξ i = 1) :
-    (raiseCosetRep i ξ)⁻¹ * (k.1⁻¹ * lineElement w i) ∈ lineStabilizer w i ↔
-      ∃ c : ResField w, ξ = c • (reduceGL k).1.row i := by
-  have h_conj : (raiseCosetRep i ξ)⁻¹ * (k.1⁻¹ * lineElement w i) = (lineElement w i)⁻¹ *
-      ((liftMatrix (updateRow 1 i ξ)).1 * k.1⁻¹) * lineElement w i := by
+    (raiseCosetRep i ξ)⁻¹ * (k.val⁻¹ * lineElement w i) ∈ lineStabilizer w i ↔
+      ∃ c : ResField w, ξ = c • (reduceGL k).val.row i := by
+  have h_conj : (raiseCosetRep i ξ)⁻¹ * (k.val⁻¹ * lineElement w i) = (lineElement w i)⁻¹ *
+      ((liftMatrix (updateRow 1 i ξ)).val * k.val⁻¹) * lineElement w i := by
     simp [raiseCosetRep, mul_assoc]
   rw [h_conj, conj_lineElement_mem_lineStabilizer_iff, mul_inv_mem_hyperplaneStabilizer,
     reduceGL_liftMatrix_updateRow hξ, show (updateRow 1 i ξ).row i = ξ from updateRow_self]
@@ -397,10 +396,10 @@ lemma raiseCosetRep_inv_mul_mem_lineStabilizer_iff (hξ : ξ i = 1) :
 representative `lowerCosetRep i z` exactly when the `i`-th column of `k` modulo `w` is a multiple of
 `z`. Here `J_line` is the stabiliser of the line of `e_i` modulo `w`. -/
 lemma lowerCosetRep_inv_mul_mem_lineStabilizer_iff (hz : z i = 1) :
-    (lowerCosetRep i z)⁻¹ * ((lineElement w i)⁻¹ * k.1) ∈ lineStabilizer w i ↔
-      ∃ c : ResField w, (reduceGL k).1.col i = c • z := by
-  have h_cancel : (lowerCosetRep i z)⁻¹ * ((lineElement w i)⁻¹ * k.1) =
-      (liftMatrix (updateCol 1 i z)).1⁻¹ * k.1 := by simp [lowerCosetRep, mul_assoc]
+    (lowerCosetRep i z)⁻¹ * ((lineElement w i)⁻¹ * k.val) ∈ lineStabilizer w i ↔
+      ∃ c : ResField w, (reduceGL k).val.col i = c • z := by
+  have h_cancel : (lowerCosetRep i z)⁻¹ * ((lineElement w i)⁻¹ * k.val) =
+      (liftMatrix (updateCol 1 i z)).val⁻¹ * k.val := by simp [lowerCosetRep, mul_assoc]
   rw [h_cancel, inv_mul_mem_lineStabilizer, col_reduceGL_liftMatrix_updateCol hz]
 
 end LineStabilizer
@@ -423,7 +422,7 @@ variable (n) in
 /-- The mean in the group algebra of chosen lifts to `GL_n(𝒪)` of all elements of `GL_n` of the
 residue field. -/
 def sphericalMeanElement : ℂ[GL n (LocField w)] :=
-  (Nat.card (GL n (ResField w)) : ℂ)⁻¹ • ∑ᶠ g : GL n (ResField w), .single (liftMatrix g.1).1 1
+  (Nat.card (GL n (ResField w)) : ℂ)⁻¹ • ∑ᶠ g : GL n (ResField w), .single (liftMatrix g.val).val 1
 
 variable {w} {W : Type} [AddCommGroup W] [Module ℂ W] (ρ : Representation ℂ (GL n (LocField w)) W)
 
@@ -441,7 +440,7 @@ def sphericalMean : Module.End ℂ W := ρ.asAlgebraHom (sphericalMeanElement n 
 `w`. It is used for `z ≠ 0` and `y` fixed by `J_line`; then it depends only on the line of `z`
 (`lineTranslate_eq_apply_of_col_eq_smul`). -/
 def lineTranslate (y : W) (z : n → ResField w) : W :=
-  ρ (Function.invFun (fun k : localIntGL n w ↦ (reduceGL k).1.col i) z).1 y
+  ρ (Function.invFun (fun k : localIntGL n w ↦ (reduceGL k).val.col i) z).val y
 
 lemma asAlgebraHom_lineHecke : ρ.asAlgebraHom (lineHecke w i) = lineRaise i ρ :=
   asAlgebraHom_doubleCosetSum (isHeckeFunction_indicator_doubleCoset w i (lineElement w i)).1
@@ -474,15 +473,15 @@ lemma lineLower_mem (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
 the vector `y[z] = lineTranslate i ρ y z` is the translate of `y` by any `k` in `GL_n(𝒪)` whose
 reduction modulo `w` takes `e_i` to a multiple of `z`. -/
 lemma lineTranslate_eq_apply_of_col_eq_smul (hy : y ∈ levelSpace ρ (lineStabilizer w i))
-    (hz : z ≠ 0) {c : ResField w} (hk : (reduceGL k).1.col i = c • z) :
-    lineTranslate i ρ y z = ρ k.1 y := by
+    (hz : z ≠ 0) {c : ResField w} (hk : (reduceGL k).val.col i = c • z) :
+    lineTranslate i ρ y z = ρ k.val y := by
   obtain ⟨g, hg⟩ := exists_col_eq i hz
   obtain ⟨l, rfl⟩ : ∃ l : localIntGL n w, reduceGL l = g := reduceGL_surjective g
   set k₀ : localIntGL n w := Function.invFun (fun k : localIntGL n w ↦ (reduceGL k).1.col i) z with
     hk₀
-  have h_col : (reduceGL k₀).1.col i = z :=
-    Function.invFun_eq (f := fun k : localIntGL n w ↦ (reduceGL k).1.col i) ⟨l, hg⟩
-  have h_mem : k₀.1⁻¹ * k.1 ∈ lineStabilizer w i :=
+  have h_col : (reduceGL k₀).val.col i = z :=
+    Function.invFun_eq (f := fun k : localIntGL n w ↦ (reduceGL k).val.col i) ⟨l, hg⟩
+  have h_mem : k₀.val⁻¹ * k.val ∈ lineStabilizer w i :=
     inv_mul_mem_lineStabilizer.2 ⟨c, by rw [hk, h_col]⟩
   rw [lineTranslate, ← hk₀, apply_eq_of_inv_mul_mem hy h_mem]
 
@@ -491,37 +490,37 @@ lemma lineTranslate_eq_apply_of_col_eq_smul (hy : y ∈ levelSpace ρ (lineStabi
 lemma lineTranslate_eq_self (hy : y ∈ levelSpace ρ (lineStabilizer w i)) (hz : z ≠ 0)
     (h_line : ∀ j ≠ i, z j = 0) : lineTranslate i ρ y z = y := by
   obtain ⟨c, rfl⟩ := exists_eq_smul_single_iff.2 h_line
-  have h_col : (reduceGL (1 : localIntGL n w)).1.col i = c⁻¹ • c • Pi.single i 1 := by
+  have h_col : (reduceGL (1 : localIntGL n w)).val.col i = c⁻¹ • c • Pi.single i 1 := by
     rw [inv_smul_smul₀ (left_ne_zero_of_smul hz), ← mulVec_single_one,
       show reduceGL (1 : localIntGL n w) = 1 from reduceGL.map_one, Units.val_one, one_mulVec]
   rw [lineTranslate_eq_apply_of_col_eq_smul hy hz h_col, Subgroup.coe_one, map_one,
-    Module.End.one_apply]
+    one_apply_eq_self]
 
 /-- For a vector `y` fixed by the stabiliser `J_line` of the line of `e_i` modulo `w`, a vector
 `z ≠ 0` and `k` in `GL_n(𝒪) = localIntGL n w`, the translate of `y[z] = lineTranslate i ρ y z` by
 `k` is `y[k z]`, where `k z` is taken modulo `w` by the reduction `reduceGL`. -/
 lemma apply_lineTranslate (hy : y ∈ levelSpace ρ (lineStabilizer w i)) (hz : z ≠ 0)
     (k : localIntGL n w) :
-    ρ k.1 (lineTranslate i ρ y z) = lineTranslate i ρ y ((reduceGL k).1 *ᵥ z) := by
+    ρ k.val (lineTranslate i ρ y z) = lineTranslate i ρ y ((reduceGL k).val *ᵥ z) := by
   obtain ⟨g, rfl⟩ := exists_col_eq i hz
   obtain ⟨l, rfl⟩ : ∃ l : localIntGL n w, reduceGL l = g := reduceGL_surjective g
-  have h_ne : (reduceGL k).1 *ᵥ (reduceGL l).1.col i ≠ 0 := by
+  have h_ne : (reduceGL k).val *ᵥ (reduceGL l).val.col i ≠ 0 := by
     simpa only [mulVec_zero] using (mulVec_injective_iff_isUnit.2 (reduceGL k).isUnit).ne hz
-  have h_col : (reduceGL (k * l)).1.col i =
-      (1 : ResField w) • (reduceGL k).1 *ᵥ (reduceGL l).1.col i := by
+  have h_col : (reduceGL (k * l)).val.col i =
+      (1 : ResField w) • (reduceGL k).val *ᵥ (reduceGL l).val.col i := by
     rw [one_smul, reduceGL_mul, Units.val_mul, ← mulVec_single_one, ← mulVec_single_one,
       mulVec_mulVec]
   rw [lineTranslate_eq_apply_of_col_eq_smul hy hz (one_smul _ _).symm,
     lineTranslate_eq_apply_of_col_eq_smul hy h_ne h_col, Subgroup.coe_mul,
-    map_mul, Module.End.mul_apply]
+    map_mul, mul_apply_eq_comp]
 
 /-- Let `y` be fixed by `J_line`, let `k` be in `GL_n(𝒪)` and let `S`, `S'` be sets of vectors with
 `0 ∉ S` such that `z ∈ S` exactly when `k z ∈ S'` modulo `w`. Then `k` takes the sum of the
 translates `y[z] = lineTranslate i ρ y z` over `S` to the sum over `S'`. -/
 lemma apply_sum_lineTranslate (hy : y ∈ levelSpace ρ (lineStabilizer w i)) (k : localIntGL n w)
     {S S' : Finset (n → ResField w)} (hS : 0 ∉ S)
-    (h_iff : ∀ z : n → ResField w, z ∈ S ↔ (reduceGL k).1 *ᵥ z ∈ S') :
-    ρ k.1 (∑ z ∈ S, lineTranslate i ρ y z) = ∑ z ∈ S', lineTranslate i ρ y z := by
+    (h_iff : ∀ z : n → ResField w, z ∈ S ↔ (reduceGL k).val *ᵥ z ∈ S') :
+    ρ k.val (∑ z ∈ S, lineTranslate i ρ y z) = ∑ z ∈ S', lineTranslate i ρ y z := by
   rw [map_sum]
   exact sum_bijective _ (mulVec_injective_iff_isUnit.2 (reduceGL k).isUnit).bijective_of_finite
     h_iff fun z hz ↦ apply_lineTranslate hy (ne_of_mem_of_not_mem hz hS) k
@@ -529,7 +528,7 @@ lemma apply_sum_lineTranslate (hy : y ∈ levelSpace ρ (lineStabilizer w i)) (k
 /-- On a vector fixed by `J_line`, the chosen lift of `g` to `GL_n(𝒪)` acts as any other lift
 `k`. -/
 lemma apply_liftMatrix_eq (hy : y ∈ levelSpace ρ (lineStabilizer w i)) {g : GL n (ResField w)}
-    (hk : reduceGL k = g) : ρ (liftMatrix g.1).1 y = ρ k.1 y :=
+    (hk : reduceGL k = g) : ρ (liftMatrix g.val).val y = ρ k.val y :=
   apply_eq_of_inv_mul_mem hy <|
     inv_mul_mem_lineStabilizer.2 ⟨1, by rw [reduceGL_liftMatrix_val, hk, one_smul]⟩
 
@@ -551,29 +550,29 @@ lemma sphericalMean_mem (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
   have : Fintype (GL n (ResField w)) := Fintype.ofFinite _
   refine mem_levelSpace.2 fun k ↦ ?_
   have h_term (g : GL n (ResField w)) :
-      ρ k.1 (ρ (liftMatrix g.1).1 y) = ρ (liftMatrix (reduceGL k * g).1).1 y := by
-    have h_reduce : reduceGL (k * liftMatrix g.1) = reduceGL k * g := by
+      ρ k.val (ρ (liftMatrix g.val).val y) = ρ (liftMatrix (reduceGL k * g).val).val y := by
+    have h_reduce : reduceGL (k * liftMatrix g.val) = reduceGL k * g := by
       rw [reduceGL_mul, reduceGL_liftMatrix_val]
-    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
+    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, mul_apply_eq_comp]
   -- Left multiplication by the reduction of `k` permutes the terms of the mean.
   rw [sphericalMean_apply, map_smul, map_sum, MonoidHom.one_apply, one_smul,
     Fintype.sum_equiv (Equiv.mulLeft (reduceGL k)) _
-      (fun g ↦ ρ (liftMatrix g.1).1 y) h_term]
+      (fun g ↦ ρ (liftMatrix g.val).val y) h_term]
 
 /-- A vector fixed by `J_line` and its translates by `GL_n(𝒪)` have the same image under
 `e_sph = sphericalMean ρ`. -/
 lemma sphericalMean_apply_translate (hy : y ∈ levelSpace ρ (lineStabilizer w i))
-    (k : localIntGL n w) : sphericalMean ρ (ρ k.1 y) = sphericalMean ρ y := by
+    (k : localIntGL n w) : sphericalMean ρ (ρ k.val y) = sphericalMean ρ y := by
   have : Fintype (GL n (ResField w)) := Fintype.ofFinite _
   have h_term (g : GL n (ResField w)) :
-      ρ (liftMatrix g.1).1 (ρ k.1 y) = ρ (liftMatrix (g * reduceGL k).1).1 y := by
-    have h_reduce : reduceGL (liftMatrix g.1 * k) = g * reduceGL k := by
+      ρ (liftMatrix g.val).val (ρ k.val y) = ρ (liftMatrix (g * reduceGL k).val).val y := by
+    have h_reduce : reduceGL (liftMatrix g.val * k) = g * reduceGL k := by
       rw [reduceGL_mul, reduceGL_liftMatrix_val]
-    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, Module.End.mul_apply]
+    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, mul_apply_eq_comp]
   -- Right multiplication by the reduction of `k` permutes the terms of the mean.
   rw [sphericalMean_apply, sphericalMean_apply,
     Fintype.sum_equiv (Equiv.mulRight (reduceGL k)) _
-      (fun g ↦ ρ (liftMatrix g.1).1 y) h_term]
+      (fun g ↦ ρ (liftMatrix g.val).val y) h_term]
 
 /-- Let `y` be fixed by the stabiliser `J_line` of the line of `e_i` modulo `w`. Then
 `T⁺ y = lineRaise i ρ y` is the sum of its translates by the coset representatives
@@ -592,12 +591,12 @@ lemma lineRaise_eq_sum [Fintype (ResField w)] [DecidableEq (ResField w)]
     exact (eq_of_eq_smul_of_apply_eq_one hη hξ hc).symm
   have h_cover (j : GL n (LocField w)) (hj : j ∈ lineStabilizer w i) : ∃ ξ : n → ResField w,
       ξ i = 1 ∧ (raiseCosetRep i ξ)⁻¹ * (j * lineElement w i) ∈ lineStabilizer w i := by
-    obtain ⟨k, hk, rfl⟩ : ∃ k : localIntGL n w, k.1 ∈ lineStabilizer w i ∧ j = k.1⁻¹ :=
+    obtain ⟨k, hk, rfl⟩ : ∃ k : localIntGL n w, k.val ∈ lineStabilizer w i ∧ j = k.val⁻¹ :=
       ⟨⟨j⁻¹, lineStabilizer_le_localIntGL w i (inv_mem hj)⟩, inv_mem hj, (inv_inv j).symm⟩
-    have h_corner : (reduceGL k).1 i i ≠ 0 :=
+    have h_corner : (reduceGL k).val i i ≠ 0 :=
       diag_ne_zero_of_col (mem_parabolic_ne.1 (coe_mem_lineStabilizer.1 hk))
     -- The hyperplane is given by the `i`-th row of `k`, scaled to take the value `1` at `e_i`.
-    let ξ : n → ResField w := ((reduceGL k).1 i i)⁻¹ • (reduceGL k).1.row i
+    let ξ : n → ResField w := ((reduceGL k).val i i)⁻¹ • (reduceGL k).val.row i
     have hξ : ξ i = 1 := by simp [ξ, h_corner]
     exact ⟨ξ, hξ, (raiseCosetRep_inv_mul_mem_lineStabilizer_iff hξ).2 ⟨_, rfl⟩⟩
   exact heckeCoset_eq_sum hy (fun ξ hξ ↦ raiseCosetRep_mem_doubleCoset (mem_filter.1 hξ).2)
@@ -621,17 +620,17 @@ lemma lineLower_eq_sum [Fintype (ResField w)] [DecidableEq (ResField w)]
       z i = 1 ∧ (lowerCosetRep i z)⁻¹ * (j * (lineElement w i)⁻¹) ∈ lineStabilizer w i := by
     have h_conj : lineElement w i * j * (lineElement w i)⁻¹ ∈ hyperplaneStabilizer w i := by
       simpa [← conj_lineElement_mem_lineStabilizer_iff, mul_assoc] using hj
-    obtain ⟨k, hk, h_eq⟩ : ∃ k : localIntGL n w, k.1 ∈ hyperplaneStabilizer w i ∧
-        j * (lineElement w i)⁻¹ = (lineElement w i)⁻¹ * k.1 :=
+    obtain ⟨k, hk, h_eq⟩ : ∃ k : localIntGL n w, k.val ∈ hyperplaneStabilizer w i ∧
+        j * (lineElement w i)⁻¹ = (lineElement w i)⁻¹ * k.val :=
       ⟨⟨_, (mem_hyperplaneStabilizer.1 h_conj).1⟩, h_conj, by simp [mul_assoc]⟩
-    have h_corner : (reduceGL k).1 i i ≠ 0 :=
+    have h_corner : (reduceGL k).val i i ≠ 0 :=
       diag_ne_zero_of_row (mem_parabolic_eq.1 (coe_mem_hyperplaneStabilizer.1 hk))
     -- The line is spanned by the `i`-th column of `k`, scaled to have the entry `1` at `i`.
-    let z : n → ResField w := ((reduceGL k).1 i i)⁻¹ • (reduceGL k).1.col i
+    let z : n → ResField w := ((reduceGL k).val i i)⁻¹ • (reduceGL k).val.col i
     have hz : z i = 1 := by simp [z, h_corner]
     rw [h_eq]
     exact ⟨z, hz, (lowerCosetRep_inv_mul_mem_lineStabilizer_iff hz).2
-      ⟨(reduceGL k).1 i i, (smul_inv_smul₀ h_corner _).symm⟩⟩
+      ⟨(reduceGL k).val i i, (smul_inv_smul₀ h_corner _).symm⟩⟩
   exact heckeCoset_eq_sum hy (fun z hz ↦ lowerCosetRep_mem_doubleCoset (mem_filter.1 hz).2)
     (by simpa using fun z hz z' ↦ h_inj z z' hz) (by simpa using h_cover)
 
@@ -649,23 +648,23 @@ lemma raiseCosetRep_apply_lineLower [Fintype (ResField w)] [DecidableEq (ResFiel
     rw [lineLower_eq_sum hy, map_sum]
     refine sum_congr rfl fun z hz ↦ ?_
     have hz_one : z i = 1 := (mem_filter.1 hz).2
-    have h_col : (reduceGL (liftMatrix (updateCol 1 i z))).1.col i = (1 : ResField w) • z := by
+    have h_col : (reduceGL (liftMatrix (updateCol 1 i z))).val.col i = (1 : ResField w) • z := by
       rw [col_reduceGL_liftMatrix_updateCol hz_one, one_smul]
     have hz_ne : z ≠ 0 := Function.ne_iff.2 ⟨i, hz_one.trans_ne one_ne_zero⟩
-    rw [lineTranslate_eq_apply_of_col_eq_smul hy hz_ne h_col, lowerCosetRep, ← Module.End.mul_apply,
+    rw [lineTranslate_eq_apply_of_col_eq_smul hy hz_ne h_col, lowerCosetRep, ← mul_apply_eq_comp,
       ← map_mul,
       mul_inv_cancel_left]
-  have h_move : ρ b.1 (∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z) =
+  have h_move : ρ b.val (∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z) =
       ∑ z : n → ResField w with z i = 1, lineTranslate i ρ y z := by
     refine apply_sum_lineTranslate hy b (by simp) fun z ↦ ?_
     rw [mem_filter_univ, mem_filter_univ, hb, reduceGL_liftMatrix_updateRow hξ, updateRow_mulVec,
       Function.update_self]
   calc ρ (raiseCosetRep i ξ) (lineLower i ρ y)
-    _ = ρ b.1⁻¹ (ρ (lineElement w i) (lineLower i ρ y)) := by
-      rw [raiseCosetRep, ← hb, map_mul, Module.End.mul_apply]
-    _ = ρ b.1⁻¹ (ρ b.1 (∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z)) := by
+    _ = ρ b.val⁻¹ (ρ (lineElement w i) (lineLower i ρ y)) := by
+      rw [raiseCosetRep, ← hb, map_mul, mul_apply_eq_comp]
+    _ = ρ b.val⁻¹ (ρ b.val (∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z)) := by
       rw [h_lower, h_move]
-    _ = ∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z := ρ.inv_self_apply b.1 _
+    _ = ∑ z : n → ResField w with ξ ⬝ᵥ z = 1, lineTranslate i ρ y z := ρ.inv_self_apply b.val _
 
 /-- For `y` fixed by `J_line`, the sum of the translates `y[z] = lineTranslate i ρ y z` over all
 `z ≠ 0`, in which each line occurs `q - 1` times, is `(q ^ n - 1) e_sph y`. Here `q` is the order
@@ -681,7 +680,7 @@ lemma sum_lineTranslate [Fintype (ResField w)] [DecidableEq (ResField w)]
     refine mem_levelSpace.2 fun k ↦ ?_
     rw [MonoidHom.one_apply, one_smul]
     refine apply_sum_lineTranslate hy k (by simp) fun z ↦ ?_
-    have h_inj : Function.Injective (reduceGL k).1.mulVec :=
+    have h_inj : Function.Injective (reduceGL k).val.mulVec :=
       mulVec_injective_iff_isUnit.2 (reduceGL k).isUnit
     simpa only [mem_filter_univ, mulVec_zero] using (h_inj.ne_iff (x := z) (y := 0)).symm
   have h_term (z : n → ResField w) :
@@ -758,7 +757,7 @@ structure KeepsLineMod (i : n) (g : GL n (LocField w)) : Prop where
   /-- The entries are integral. -/
   v_le_one : ∀ a b : n, v (g a b) ≤ 1
   /-- The reduction has the block shape `(∗ ∗; 0 g')` with `g'` invertible. -/
-  keepsLine : KeepsLine i (g.1.map residueOrZero)
+  keepsLine : KeepsLine i (g.val.map residueOrZero)
 
 lemma KeepsLineMod.mul (hg : KeepsLineMod i g) (hh : KeepsLineMod i h) :
     KeepsLineMod i (g * h) where
@@ -773,7 +772,7 @@ the quotient, then the `(i, i)` entry of their product reduces to the product of
 lemma KeepsLineMod.residue_mul_apply_self (hg : KeepsLineMod i g) (hh : KeepsLineMod i h) :
     residueOrZero ((g * h) i i) = residueOrZero (g i i) * residueOrZero (h i i) :=
   calc residueOrZero ((g * h) i i)
-    _ = (g.1.map residueOrZero * h.1.map residueOrZero) i i :=
+    _ = (g.val.map residueOrZero * h.val.map residueOrZero) i i :=
       congrFun₂ (map_residueOrZero_mul hg.v_le_one hh.v_le_one) i i
     _ = residueOrZero (g i i) * residueOrZero (h i i) := hh.keepsLine.mul_apply_self
 
@@ -798,11 +797,17 @@ lemma keepsLineMod_lineElement : KeepsLineMod i (lineElement w i) where
     have h_one : residueOrZero (1 : LocField w) = 1 := (residueOrZero_coe 1).trans (map_one _)
     rw [coe_lineElement, diagonal_map h_zero]
     refine ⟨fun j hj ↦ diagonal_apply_ne _ hj, ?_⟩
-    have h_block : (diagonal fun j : n ↦ residueOrZero (if j = i then (uniformizer w).1 else 1)
+    have h_block : (diagonal fun j : n ↦ residueOrZero (if j = i then (uniformizer w).val else 1)
         ).toSquareBlockProp (· ≠ i) = 1 := by
       ext ⟨a, ha⟩ ⟨b, hb⟩
       simp [toSquareBlockProp_def, diagonal_apply, Matrix.one_apply, ha, h_one]
     simp [h_block]
+
+private lemma KeepsLineMod.mul_residue_eq_zero {g h : GL n (LocField w)}
+    (hg : KeepsLineMod i g) (hh : KeepsLineMod i h)
+    (h_zero : residueOrZero (g i i) = 0 ∨ residueOrZero (h i i) = 0) :
+    KeepsLineMod i (g * h) ∧ residueOrZero ((g * h) i i) = 0 :=
+  ⟨hg.mul hh, by rw [hg.residue_mul_apply_self hh, mul_eq_zero]; exact h_zero⟩
 
 /-- An element `g` of the double coset of `diag (ϖ, 1, …, 1)` by the stabiliser of the line of
 `e_i` is integral, and modulo `w` it has the shape `(0 ∗; 0 g')` with `g'` invertible. -/
@@ -810,14 +815,11 @@ lemma keepsLineMod_of_mem_doubleCoset
     (hg : g ∈ doubleCoset (lineElement w i) (lineStabilizer w i) (lineStabilizer w i)) :
     KeepsLineMod i g ∧ residueOrZero (g i i) = 0 := by
   obtain ⟨j, hj, j', hj', rfl⟩ := mem_doubleCoset.1 hg
-  have h_left : KeepsLineMod i (j * lineElement w i) :=
-    (keepsLineMod_of_mem hj).mul keepsLineMod_lineElement
   have h_corner : residueOrZero (lineElement w i i i) = 0 := by
     simp [coe_lineElement, residueOrZero_eq_zero]
-  refine ⟨h_left.mul (keepsLineMod_of_mem hj'), ?_⟩
-  rw [h_left.residue_mul_apply_self (keepsLineMod_of_mem hj'),
-    (keepsLineMod_of_mem hj).residue_mul_apply_self keepsLineMod_lineElement, h_corner, mul_zero,
-    zero_mul]
+  obtain ⟨h_left, h_zero⟩ := (keepsLineMod_of_mem hj).mul_residue_eq_zero
+    keepsLineMod_lineElement (.inr h_corner)
+  exact h_left.mul_residue_eq_zero (keepsLineMod_of_mem hj') (.inl h_zero)
 
 lemma spanOn_mono {G : Type} [Group G] {D D' : Set G} (h_sub : D ⊆ D') :
     spanOn ℂ D ≤ spanOn ℂ D' :=
@@ -837,7 +839,7 @@ theorem lineHecke_pow_mem_spanOn {m : ℕ} (hm : 0 < m) : lineHecke w i ^ m ∈
       (doubleCosetSum_mem_spanOn (isHeckeFunction_indicator_doubleCoset w i _).1)
   have h_mul : ∀ g ∈ D, ∀ h : GL n (LocField w), KeepsLineMod i h → g * h ∈ D :=
     fun g ⟨hg, hg_zero⟩ h hh ↦
-      ⟨hg.mul hh, by rw [hg.residue_mul_apply_self hh, hg_zero, zero_mul]⟩
+      hg.mul_residue_eq_zero hh (.inl hg_zero)
   have h_pow : lineHecke w i ^ m ∈ spanOn ℂ D := by
     induction hm with
     | refl => rwa [pow_one]

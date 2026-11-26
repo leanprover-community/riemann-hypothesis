@@ -123,8 +123,7 @@ lemma absNorm_denominator_le {y : E} (hy : y ∈ ratIntegralOff T) :
   have h_comap : (denominator y).toAddSubgroup = D.comap f := by
     ext a
     have h_off : algebraMap E (𝔸f E) (algebraMap (𝓞 E) E a * y) ∈ integralOff T := by
-      rw [map_mul]
-      exact mul_mem ((mem_Ô_iff T).1 (h_integral a)).right hy
+      simpa only [map_mul] using mul_mem ((mem_Ô_iff T).1 (h_integral a)).right hy
     rw [Submodule.mem_toAddSubgroup, mem_denominator, ← algebraMap_mem_Ô, mem_Ô_iff T,
       and_iff_left h_off]
     simp [D, f, mul_comm]
@@ -275,28 +274,19 @@ lemma mem_ratIntegralOff_of_transform_ne_zero {G : 𝔸 E → ℂ}
     (hG : ∀ a ∈ Ô E, ∀ z : 𝔸 E, G ((0, a - adeleOfLocal T (evalPlaces T a)) + z) = G z) {y : E}
     (hy : ∫ z : 𝔸 E, New.stdAddChar E (toAdele (y / S.deltaE) * -z) * G z ≠ 0) :
     y ∈ ratIntegralOff T := by
-  -- Translation multiplies the transform by a value of the character, so these values are `1`;
-  -- and `Ô E` is its own dual.
   rw [ratIntegralOff, Subring.mem_comap, ← sub_adeleOfLocal_mem_iff,
     ← S.forall_selfDualChar_mul_eq_one_iff]
   rintro ⟨a, ha⟩
   let a' : 𝔸 E := (0, a - adeleOfLocal T (evalPlaces T a))
-  have h_shift : ∫ z, New.stdAddChar E (toAdele (y / S.deltaE) * -z) * G z =
-      New.stdAddChar E (toAdele (y / S.deltaE) * -a') *
-        ∫ z, New.stdAddChar E (toAdele (y / S.deltaE) * -z) * G z := by
-    rw [← integral_const_mul, ← integral_add_left_eq_self _ a']
-    congr with z
-    rw [hG a ha, neg_add, mul_add, AddChar.map_add_eq_mul, Circle.coe_mul, mul_assoc]
-  -- The factor is a value of the finite character: removing the components at `T` is
-  -- multiplication by an idempotent, which can be moved from `a` to `y`.
-  have h_arg :
-      algebraMap E (𝔸f E) (-(S.deltaE : E)⁻¹) * (a * (y - adeleOfLocal T (evalPlaces T y))) =
-        (toAdele (y / S.deltaE) * -a').2 := by
-    simp only [a', adeleOfLocal_evalPlaces, Prod.snd_mul, Prod.snd_neg, toAdele_apply_snd,
-      div_eq_mul_inv, map_mul, map_neg]
-    ring
-  rw [selfDualChar_apply, h_arg, ← (mul_eq_right₀ hy).1 h_shift.symm]
-  simp [New.stdAddChar, a']
+  -- Translation by `a'` multiplies the transform by a character value, which must be `1`.
+  suffices (New.stdAddChar E (toAdele (y / S.deltaE) * -a') : ℂ) = 1 by
+    rw [← this, selfDualChar_apply]
+    simp [New.stdAddChar, a', adeleOfLocal_evalPlaces, div_eq_mul_inv]
+    exact congrArg _ (by ring)
+  refine (mul_eq_right₀ hy).1 (Eq.symm ?_)
+  rw [← integral_const_mul, ← integral_add_left_eq_self _ a']
+  congr with z
+  rw [hG a ha, neg_add, mul_add, AddChar.map_add_eq_mul, Circle.coe_mul, mul_assoc]
 
 /-- The function on the adeles that reads `F` after scaling by `r` at the infinite places and
 projecting to `T`, on the adeles that are integral off `T`, and is zero elsewhere. -/
@@ -334,10 +324,8 @@ with `a ∈ Ô E` integral. -/
 lemma extendToAdeles_sub_adeleOfLocal_add {a : 𝔸f E} (ha : a ∈ Ô E) (z : 𝔸 E) :
     extendToAdeles T r F ((0, a - adeleOfLocal T (evalPlaces T a)) + z) =
       extendToAdeles T r F z := by
-  obtain ⟨-, ha_off⟩ := (mem_Ô_iff T).1 ha
-  have h_int : a - adeleOfLocal T (evalPlaces T a) ∈ Ô E := (sub_adeleOfLocal_mem_iff T).2 ha_off
   have h_off : a - adeleOfLocal T (evalPlaces T a) ∈ integralOff T :=
-    ((mem_Ô_iff T).1 h_int).right
+    sub_mem ((mem_Ô_iff T).1 ha).right (adeleOfLocal_mem_integralOff T _)
   by_cases hz : z.2 ∈ integralOff T
   · rw [extendToAdeles_of_mem T hz, extendToAdeles_of_mem T (add_mem h_off hz)]
     simp
@@ -390,7 +378,7 @@ lemma integral_stdAddChar_mul_extendToAdeles (hr : ∀ v : InfinitePlace E, 0 < 
     have h_arg (v : InfinitePlace E) :
         (ξ * m z).1 v = 2 * π * .I / Φ v S.deltaE * Φ v y * z.1 v := by
       have h_ne : (r v : ℂ) ≠ 0 := ofReal_ne_zero.2 (hr v).ne'
-      simp [hξ, m, ratPoint, field]
+      simp [hξ, ratPoint, field]
     have h_snd : (ξ * m z).2 = ratToPlaces T y * evalPlaces T z.2 := by simp [hξ, m, ratPoint]
     simp only [ψ, globalChar, h_arg, h_snd, S.stdAddChar_div_deltaE T hy hz]
   calc
@@ -621,7 +609,7 @@ with entries in `A` and a common last entry. Up to the constant `poissonConst i 
 frameScaleSq v i ^ 2`, with `volÔ E` the volume of the integral finite adeles, the frequency `0`
 gives the sum of `J i` over all pairs of heads of length `i`, and the other frequencies give at most
 `ε` times the squared sum of the weights of these heads. -/
-lemma densitySum_succ_le [S.IsAdmissible] (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
+lemma densitySum_succ_le (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
     (K : S.IsGlobalSieveSystem T n J massBound Λ β) (hβ : S.BoundsDecay T β ε) {i : ℕ}
     (hi : i ≤ n) :
     S.densitySum T A J (i + 1) ≤ S.poissonConst i *
@@ -661,11 +649,11 @@ lemma re_le_of_last_entries_ne [S.IsAdmissible]
     {t s : A} (hts : t ≠ s) (p q : Fin i → A) :
     (J (i + 1) (S.scaledHead T p t) (S.scaledHead T q s)).re ≤
       ε * (Λ (i + 1) (S.scaledHead T p t) * Λ (i + 1) (S.scaledHead T q s)) := by
-  let y : E := (S.M : E)⁻¹ * (t.1⁻¹.1 - s.1⁻¹.1)
+  let y : E := (S.M : E)⁻¹ * (t.val⁻¹.val - s.val⁻¹.val)
   let ξ : (InfinitePlace E → ℂ) × LocProd T := ratPoint T (fun v ↦ S.M / S.frameScaleSq v i) y
   have y_ne : y ≠ 0 := by
     simp [y, sub_eq_zero, Units.val_inj, hts, Nat.Prime.ne_zero]
-  have y_mem : y ∈ ratIntegralOff T := mul_mem hM_inv (sub_mem (hA t t.2) (hA s s.2))
+  have y_mem : y ∈ ratIntegralOff T := mul_mem hM_inv (sub_mem (hA t t.property) (hA s s.property))
   have ξ_unit : IsUnit ξ := by
     simp [ξ, y_ne, ratPoint, Prod.isUnit_iff, Pi.isUnit_iff, IsUnit.map,
       (S.frameScaleSq_pos _ i).ne', Nat.Prime.ne_zero]
@@ -848,7 +836,7 @@ lemma boundsDecay_prod [S.IsAdmissible] :
     simp only [B, ← pow_mul, ← pow_succ']
     gcongr
     grw [← Nat.pow_le_pow_right 𝔰.ϱ.succ_pos (by norm_num : 2 ≤ 9)]
-    nlinarith [S.ten_pow_five_le_varrho]
+    nlinarith only [S.ten_pow_five_le_varrho]
   have h_sum : ∑ y ∈ X,
       (∏ v, dampedPower (𝔰.k - 𝔰.n ^ 7) ‖c v / S.frameScaleSq v a * Φ v y‖⁻¹) *
         (√(genIndex (ratToPlaces T y)) ^ (𝔰.k - 𝔰.n ^ 7) / denomIndex O (ratToPlaces T y) ^ 3) ≤
@@ -887,7 +875,7 @@ lemma headProduct_injective {A : Finset Eˣ} {i : ℕ} :
   -- `p j` is the quotient of two consecutive products.
   funext j
   have h_quot : headProduct p (j + 1) / headProduct p j =
-      headProduct q (j + 1) / headProduct q j := by rw [h_all (j + 1) j.2, h_all j j.2.le]
+      headProduct q (j + 1) / headProduct q j := by rw [h_all (j + 1) j.isLt, h_all j j.isLt.le]
   simpa [headProduct, prod_range_succ, padTuple, prod_eq_zero_iff, Units.val_inj] using h_quot
 
 omit [WeilData E] [T.StarStable] in
@@ -948,7 +936,7 @@ chosen complex embedding inducing `v`, and let `c j v` be the product of the sca
 entries. There the factor is `max 1 ‖c j v * Φ v δ‖⁻¹ ^ n⁶` if `‖c j v * Φ v δ‖ ≤ b ^ (60 n²)`, and
 `0` otherwise. At `T` the factor is `[O : δ O] ^ (n⁶ / 2)` if `ratToPlaces T δ` lies in `O`, and `0`
 otherwise. Here `O` is the ring of integers of the product of the completions at `T`. -/
-lemma globalWeight_scaledHead [S.IsAdmissible] {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) :
+lemma globalWeight_scaledHead {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) :
     let c (j : Fin i) (v : InfinitePlace E) : ℂ := ∏ a ∈ range (j + 1), S.frameScaleSq v a
     S.globalWeight T i (S.scaledHead T p 1) = ∏ j : Fin i,
       (∏ v : InfinitePlace E,
@@ -995,7 +983,7 @@ lemma isIntegral_headProduct_and_norm_le [S.IsAdmissible] {A : Finset Eˣ}
       _ = ‖c‖⁻¹ * ‖c * Φ v (headProduct p (j + 1))‖ := by
         simp [c, prod_ne_zero_iff, (S.frameScaleSq_pos v _).ne']
       _ ≤ S.b ^ (60 * 𝔰.n ^ 2) * S.b ^ (60 * 𝔰.n ^ 2) := by
-        grw [h_small, S.inv_norm_prod_frameScaleSq_le v (j.2.trans_le hi)]
+        grw [h_small, S.inv_norm_prod_frameScaleSq_le v (j.isLt.trans_le hi)]
       _ = _ := by ring
 
 omit [T.StarStable] in
@@ -1010,7 +998,6 @@ parameter, `n = ϱ + 1`, and `f` is the number of infinite places. -/
 lemma globalWeight_scaledHead_le [S.IsAdmissible] {A : Finset Eˣ}
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T) {i : ℕ} (hi : i ≤ 𝔰.ϱ) (p : Fin i → A) :
     S.globalWeight T i (S.scaledHead T p 1) ≤ S.b ^ (120 * 𝔰.n ^ 8 * numInfPlaces E * i) := by
-  classical
   have hb : 1 ≤ S.b := S.one_le_b
   by_cases hp : S.globalWeight T i (S.scaledHead T p 1) = 0
   · exact hp.trans_le (by positivity)
@@ -1021,7 +1008,7 @@ lemma globalWeight_scaledHead_le [S.IsAdmissible] {A : Finset Eˣ}
       √(genIndex (ratToPlaces T (δ j))) ≤ (S.b ^ (120 * 𝔰.n ^ 2)) ^ numInfPlaces E :=
     prod_max_inv_norm_mul_sqrt_genIndex_le T (headProduct_ne_zero p _)
       (headProduct_mem_ratIntegralOff T hA p _)
-      (fun v ↦ (S.inv_norm_prod_frameScaleSq_le v (j.2.trans_le hi)).trans
+      (fun v ↦ (S.inv_norm_prod_frameScaleSq_le v (j.isLt.trans_le hi)).trans
         (pow_le_pow_right₀ hb (by lia)))
       (S.isIntegral_headProduct_and_norm_le T hA hi hp j).2
   rw [globalWeight_scaledHead]
@@ -1048,7 +1035,6 @@ lemma sum_globalWeight_le [S.IsAdmissible] {A : Finset Eˣ}
     (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T) {i : ℕ} (hi : i ≤ 𝔰.ϱ) :
     ∑ p : Fin i → A, S.globalWeight T i (S.scaledHead T p 1) ≤
       S.b ^ (130 * 𝔰.n ^ 9 * numInfPlaces E) := by
-  classical
   have hb : 1 ≤ S.b := S.one_le_b
   let P : Finset (Fin i → A) := {p | S.globalWeight T i (S.scaledHead T p 1) ≠ 0}
   have h_card : (#P : ℝ) ≤ (1 + 2 * S.b ^ (120 * 𝔰.n ^ 2)) ^ (i * numInfPlaces E * 2) := by
@@ -1059,7 +1045,7 @@ lemma sum_globalWeight_le [S.IsAdmissible] {A : Finset Eˣ}
       headProduct_injective.injOn
   have h_base : 1 + 2 * S.b ^ (120 * 𝔰.n ^ 2) ≤ S.b ^ (120 * 𝔰.n ^ 2 + 1) := by
     rw [pow_succ S.b]
-    nlinarith [S.thousand_le_b, one_le_pow₀ hb (n := 120 * 𝔰.n ^ 2)]
+    nlinarith only [S.thousand_le_b, one_le_pow₀ hb (n := 120 * 𝔰.n ^ 2)]
   calc
     _ = ∑ p ∈ P, S.globalWeight T i (S.scaledHead T p 1) := (sum_filter_ne_zero univ).symm
     _ ≤ #P * S.b ^ (120 * 𝔰.n ^ 8 * numInfPlaces E * i) := by
@@ -1088,7 +1074,8 @@ lemma one_le_pow_mul_prod_poissonConst [S.IsAdmissible] {i : ℕ} (hi : i ≤ �
   calc
     _ ≤ S.b ^ (100 * 𝔰.n ^ 2 * numInfPlaces E) * ∏ _a ∈ range i,
           (S.b ^ numInfPlaces E)⁻¹ / ∏ _v : InfinitePlace E, ((S.b ^ 23) ^ (2 * 𝔰.ϱ)) ^ 2 := by
-      simp [field, ← pow_mul, ← pow_add]
+      simp only [← pow_mul, prod_const, card_univ, Finset.card_range, div_pow, inv_pow, field,
+        ← pow_add]
       gcongr
       grw [hi]
       lia

@@ -227,7 +227,7 @@ lemma New.Selmer.exists_separating_element {ℓ : ℕ} {E : Type} [ThePrime ℓ]
   have h_onto : Surjective fun g o ↦ Ψ o g := by
     refine surjective_of_linearIndependent_cast hν ?_ ?_
     · rintro (_ | i) a b
-      exacts [hψ₀.map_mul a.2 b.2, (hψ i).map_mul a.2 b.2]
+      exacts [hψ₀.map_mul a.property b.property, (hψ i).map_mul a.property b.property]
     · have h_eq : (fun o g ↦ ((Ψ o g).cast : ZMod ℓ)) =
           fun o ↦ o.casesOn' (reductionModL ψ₀) fun i ↦ reductionModL (ψ i) := by
         funext o
@@ -237,7 +237,7 @@ lemma New.Selmer.exists_separating_element {ℓ : ℕ} {E : Type} [ThePrime ℓ]
   have hg₀ : ψ₀ g = 1 := congrFun hg none
   have hg_zero (i : I) (hi : ty i = e) : ψ i g = 0 := congrFun hg (some ⟨i, hi⟩)
   -- Remove the other exponents by conjugation.
-  obtain ⟨u, hu, huψ⟩ := exists_apply_eq_prod_mul γ g.2 {e}ᶜ
+  obtain ⟨u, hu, huψ⟩ := exists_apply_eq_prod_mul γ g.property {e}ᶜ
   refine ⟨u, hu, fun i ↦ ?_, ?_⟩
   · rw [huψ (hψ i)]
     by_cases hi : ty i = e
@@ -450,7 +450,7 @@ lemma New.Selmer.TriangleEntry.exists_mayFollow {ℓ : ℕ} {E : Type} [ThePrime
     (hψ₀.hasKummerType.eventually_eq_two_mul hδ hg hu).and <|
       (eventually_all.2 fun i ↦ (h_type i).eventually_eq_two_mul hδ hg hu).and <|
       (evenClasses_eventually_eq_two_nsmul e hδ hg hu).and
-        (isOpen_ker_cyclotomicCharMod.1.mem_nhds hσ_cyc)
+        (isOpen_ker_cyclotomicCharMod.out.mem_nhds hσ_cyc)
   let T' : Set (FinPlace (NumberField.maximalRealSubfield E)) :=
     T₀ ∪ ⋃ i, insert (primeBelowPlus (f i).frobeniusDatum.place) (f i).avoidedPrimes
   have h_most : ∀ᶠ x : FrobeniusDatum E in mostFrobenii E,
@@ -481,7 +481,7 @@ lemma New.Selmer.TriangleEntry.exists_mayFollow {ℓ : ℕ} {E : Type} [ThePrime
 instance New.Selmer.TriangleEntry.nonempty {ℓ : ℕ} {E : Type} [ThePrime ℓ] [Field E]
     [CMFieldWithRoot5040 E] {ν : ℕ} : Nonempty (TriangleEntry ℓ E ν) := by
   have h_near : ∀ᶠ s : Gal(Ω/E) in nhds 1, cyclotomicCharMod Ω (ℓ ^ ν) s = 1 :=
-    isOpen_ker_cyclotomicCharMod.1.mem_nhds (map_one _)
+    isOpen_ker_cyclotomicCharMod.out.mem_nhds (map_one _)
   obtain ⟨x, ⟨h_off, -⟩, h_cyc⟩ := nonempty_of_mem (f := mostFrobeniiAt E 1) (inter_mem_inf
     (eventually_mostFrobenii (eventually_primeBelowPlus_notMem (ℓ := ℓ) Set.finite_empty)
       fun _ ↦ id) (preimage_mem_comap h_near))
@@ -513,16 +513,16 @@ lemma New.Selmer.TriangleEntry.exists_forall_mayFollow {ℓ : ℕ} {E : Type} [T
   refine exists_forall_of_wellFoundedLT (P := fun j f ↦
     MayFollow (fun i : Set.Iio j ↦ ty i) f (ty j) (g j) (ℓ ^ (y * h)) W) fun f j h_prev ↦ ?_
   have h_inj : Injective fun i : Set.Iio j ↦ primeBelowPlus (f i).frobeniusDatum.place :=
-    .of_lt_imp_ne fun a b hab ↦ (h_prev b b.2).primeBelowPlus_ne ⟨a, hab⟩
+    .of_lt_imp_ne fun a b hab ↦ (h_prev b b.property).primeBelowPlus_ne ⟨a, hab⟩
   have h_type (i : Set.Iio j) : HasKummerType ν (ty i) (f i).kummerCandidate :=
-    (h_prev i i.2).isKummerMap.hasKummerType
+    (h_prev i i.property).isKummerMap.hasKummerType
   -- By induction the earlier maps of the exponent of `j` are independent modulo `ℓ`.
   have h_indep : LinearIndependent (ZMod ℓ)
-      fun i : {i : Set.Iio j | ty i = ty j} ↦ reductionModL (f i.1).kummerCandidate := by
+      fun i : {i : Set.Iio j | ty i = ty j} ↦ reductionModL (f i.val).kummerCandidate := by
     refine linearIndependent_of_notMem_span_Iio fun i h_mem ↦
-      (h_prev i i.1.2).notMem_span (Submodule.span_mono ?_ h_mem)
+      (h_prev i i.val.property).notMem_span (Submodule.span_mono ?_ h_mem)
     rintro _ ⟨k, hk, rfl⟩
-    exact ⟨⟨⟨k, hk⟩, k.2.trans i.2.symm⟩, rfl⟩
+    exact ⟨⟨⟨k, hk⟩, k.property.trans i.property.symm⟩, rfl⟩
   exact exists_mayFollow hν h_inf_places hty hγ_dvd (ty j) (h_four ⟨j⟩) (hg j) hW _ h_inj h_type
     h_indep
 
@@ -668,12 +668,12 @@ lemma New.Selmer.exists_isPrimeTriangle {ℓ : ℕ} {E : Type} [ThePrime ℓ] [F
   -- `4` divides `cyc γ ^ e - 1`, which divides `ℓ ^ h`; so `4 (cyc γ ^ e - 1) ^ 2` divides
   -- `ℓ ^ (3 h)`.
   have h_four (e : {e : Fin t // 0 < e.val}) :
-      (4 * ((cyclotomicChar Ω ℓ γ ^ e.1.val).val - 1) ^ 2 : ℤ_[ℓ]) ∣ ℓ ^ (3 * h) := by
+      (4 * ((cyclotomicChar Ω ℓ γ ^ e.val.val).val - 1) ^ 2 : ℤ_[ℓ]) ∣ ℓ ^ (3 * h) := by
     have he : (cyclotomicChar Ω ℓ γ ^ e.1.val).val - 1 ∣ ℓ ^ h := hγ_dvd _ ⟨e.2, e.1.isLt⟩
     have h_dvd : (2 ^ 2 : ℤ_[ℓ]) ∣ ℓ ^ h :=
-      (four_dvd_cyclotomicChar_sub_one (γ ^ e.1.val)).trans (by simpa using he)
-    calc (4 * ((cyclotomicChar Ω ℓ γ ^ e.1.val).val - 1) ^ 2 : ℤ_[ℓ])
-        = 2 ^ 2 * ((cyclotomicChar Ω ℓ γ ^ e.1.val).val - 1) ^ 2 := by norm_num
+      (four_dvd_cyclotomicChar_sub_one (γ ^ e.val.val)).trans (by simpa using he)
+    calc (4 * ((cyclotomicChar Ω ℓ γ ^ e.val.val).val - 1) ^ 2 : ℤ_[ℓ])
+        = 2 ^ 2 * ((cyclotomicChar Ω ℓ γ ^ e.val.val).val - 1) ^ 2 := by norm_num
       _ ∣ ℓ ^ h * (ℓ ^ h) ^ 2 := mul_dvd_mul h_dvd (pow_dvd_pow_of_dvd he 2)
       _ = ℓ ^ (3 * h) := by ring
   -- Well-order the test points, and order `J` lexicographically, first by the exponent.
@@ -708,5 +708,5 @@ lemma New.Selmer.exists_isPrimeTriangle {ℓ : ℕ} {E : Type} [ThePrime ℓ] [F
     exact ⟨toLex (e, ⟨i, hi⟩), rfl, (hf (toLex (e, ⟨i, hi⟩))).even_apply⟩
   · simpa using mul_prod_pow_sub_pow_dvd hty hγ_dvd e (one_dvd _)
   · have h_int : (4 * ((cyclotomicChar Ω ℓ γ ^ (e : ℕ)).val - 1) ^ 2 : ℤ_[ℓ]) ∣ ℓ ^ (y * h) :=
-      dvd_of_mul_right_dvd (mul_prod_pow_sub_pow_dvd hty hγ_dvd e.1 (h_four e))
+      dvd_of_mul_right_dvd (mul_prod_pow_sub_pow_dvd hty hγ_dvd e.val (h_four e))
     simpa [cyclotomicInv, map_ofNat] using map_dvd (algebraMap _ O) h_int

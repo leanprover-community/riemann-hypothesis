@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
 public import Lib.General.LinearAlgebra.BlockEmbeddings
 public import Lib.Weil.DualPair.KernelDecay
@@ -70,16 +71,16 @@ variable [IsCMField E] (S : LevelPlaces E)
 `New.LevelPlaces.chosenPlace` and `New.LevelPlaces.twistPlace` of S. -/
 noncomputable def LevelPlaces.levelModulus (c : ℕ) (b := true) : Modulus E where
   ideal :=
-    (∏ i : S.ChosenIndex, (S.chosenPlace i).1) ^ c *
-      if b then ∏ i : S.TwistIndex, (S.twistPlace i).1 else 1
+    (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
+      if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1
   ne_bot := by simp [← absNorm_eq_zero_iff, prod_eq_zero_iff, ite_eq_iff]
   not_le_star := by
     -- A place that divides the modulus is a chosen place or a twist place, and none of these is
     -- conjugate to itself or to another.
     obtain ⟨-, h_conj⟩ := S.apart
     have h_place : ∀ w : FinPlace E,
-        (∏ i : S.ChosenIndex, (S.chosenPlace i).1) ^ c *
-          (if b then ∏ i : S.TwistIndex, (S.twistPlace i).1 else 1) ≤ w.asIdeal →
+        (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
+          (if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1) ≤ w.asIdeal →
           ∃ i : S.ChosenIndex ⊕ S.TwistIndex, (S.chosenPlace ⊕ᵥ S.twistPlace) i = w := fun w hw ↦ by
       rw [Sum.exists]
       exact (w.isPrime.mul_le.1 hw).imp (fun h ↦ prod_places_le_iff.1 (w.isPrime.le_of_pow_le h))
@@ -272,7 +273,7 @@ lemma exists_rho_finVec_vacElem_eq_sum_modDatum {g : 𝓞 E} (h_ideal : 𝔪.ide
   have h_ker_mul (q : n' × n) (a : Ô E) (ha : 𝔪.reduction a = 0) : ↑a * star (x q) ∈ Ô E := by
     obtain ⟨c, rfl⟩ : ∃ c : Ô E, c * algebraMap (𝓞 E) (Ô E) (star g) = a := by
       simpa [𝔪.reduction_eq_zero_iff, h_ideal, map_span, mem_span_singleton'] using ha
-    simpa [mul_assoc] using mul_mem c.2 (star_mem_Ô (hx q))
+    simpa [mul_assoc] using mul_mem c.property (star_mem_Ô (hx q))
   let y : n' × n → 𝔸f E := star (idem 𝔪.places) • x - x
   have hy : y ∈ stdLattice E (n' × n) := fun q ↦ by
     have h_red : 𝔪.reduction (⟨idem 𝔪.places, idem_mem_Ô _⟩ - 1) = 0 := by
@@ -386,7 +387,7 @@ lemma New.GaloisRep.eval₂_prod_eq_zero_of_mul_pow {K A : Type*} {n : ℕ} [Fie
   have h_mem (x : K) : g x ∈ Z := by
     simp +contextual [Z, Subring.mem_centralizer_iff, ← map_mul, mul_comm]
   let : Algebra K Z := (g.codRestrict Z h_mem).toAlgebra' fun c x ↦
-    Subtype.ext (Subring.mem_centralizer_iff.1 x.2 (g c) (Set.mem_range_self c))
+    Subtype.ext (Subring.mem_centralizer_iff.1 x.property (g c) (Set.mem_range_self c))
   have h_eval (P : K[X]) (x : Z) : eval₂ g x P = 0 ↔ aeval x P = 0 := by
     have h_coe : (aeval x P : A) = eval₂ g x P := hom_eval₂ P _ Z.subtype x
     rw [← h_coe, ZeroMemClass.coe_eq_zero]

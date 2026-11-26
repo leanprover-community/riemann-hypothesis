@@ -13,6 +13,11 @@ For admissible data at an integer `x`, the main inequality and the prime number 
 larger cut-off `x₁` give the bound `R_{q₀}(x) ≤ (128 φ(q₀) + 32) x ^ (-1/2 + ε)` for large `x`.
 The one-sided criterion gives non-vanishing of Dirichlet `L`-functions in `re s > 1/2`.
 
+The exponent `-1/2 + 6 ε` comes from the term `log⁶ b / m`: choose `log b ≤ 2 x^ε` and
+`m ≥ √x`. The auxiliary cutoff is large enough for the prime number theorem to bound both
+remainders there by `x^(-2)`. The passage to real `x` and the choice of a smaller `ε` preserve
+the resulting exponent bound.
+
 Notions from other files:
 * `Parameters`: a multiple `q₀ = P.q₀` of `18480` and a prime `d = P.d ≡ q₀ / 2 - 1` modulo `q₀`.
 * `primeRemainder d q x`: the remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`.
@@ -140,12 +145,14 @@ lemma eventually_primeRemainder_natCast_le (P : Parameters) {ε : ℝ} (hε : 0 
   obtain ⟨h_rem_q₀, h_rem_one⟩ : |primeRemainder P.d P.q₀ D.x₁| ≤ (x : ℝ) ^ (-2 : ℝ) ∧
       |primeRemainder P.d 1 D.x₁| ≤ (x : ℝ) ^ (-2 : ℝ) := h_at_x₁ D.logX₁ h_logX₁
   have h_logB_pos : 0 < D.logB := Data.HasLogBound.pos D
-  have h_inv : (x : ℝ) ^ (-2 : ℝ) ≤ (x : ℝ) ^ (-1 / 2 + 6 * ε) :=
+  have h_remainder_decay : (x : ℝ) ^ (-2 : ℝ) ≤ (x : ℝ) ^ (-1 / 2 + 6 * ε) :=
     rpow_le_rpow_of_exponent_le hx_ge (by linarith)
-  have h_mul : (x : ℝ) ^ ε * (x : ℝ) ^ (-2 : ℝ) ≤ (x : ℝ) ^ (-1 / 2 + 6 * ε) := by
+  have h_weighted_remainder_decay :
+      (x : ℝ) ^ ε * (x : ℝ) ^ (-2 : ℝ) ≤ (x : ℝ) ^ (-1 / 2 + 6 * ε) := by
     rw [← rpow_add hx_pos]
     exact rpow_le_rpow_of_exponent_le hx_ge (by linarith)
-  have h_main : ((x : ℝ) ^ ε) ^ 6 / (x : ℝ) ^ (1 / 2 : ℝ) = (x : ℝ) ^ (-1 / 2 + 6 * ε) := by
+  have h_main_exponent :
+      ((x : ℝ) ^ ε) ^ 6 / (x : ℝ) ^ (1 / 2 : ℝ) = (x : ℝ) ^ (-1 / 2 + 6 * ε) := by
     rw [← rpow_mul_natCast hx_pos.le, ← rpow_sub hx_pos]
     ring_nf
   calc primeRemainder P.d P.q₀ x = primeRemainder P.d P.q₀ D.x := by rw [hx_eq]
@@ -155,7 +162,7 @@ lemma eventually_primeRemainder_natCast_le (P : Parameters) {ε : ℝ} (hε : 0 
         2 * (x : ℝ) ^ ε * (x : ℝ) ^ (-2 : ℝ) := by
       grw [h_rem_q₀, h_rem_one, h_logB, ← hm]
     _ ≤ (64 * P.q₀.totient + 3) * (x : ℝ) ^ (-1 / 2 + 6 * ε) := by
-      rw [mul_pow, mul_div_assoc, mul_div_assoc, h_main]
+      rw [mul_pow, mul_div_assoc, mul_div_assoc, h_main_exponent]
       linarith
 
 /-- Let `d` be a prime, `q > 0`, and `R_q(y) = primeRemainder d q y = ∑_{n ≤ y} λ(n) (1/n - 1/y) -
@@ -163,19 +170,18 @@ log y / φ(q) - c_q`. Then `R_q(y) - R_q(⌊y⌋) ≤ 26 / y` for `y ≥ 2`. -/
 lemma primeRemainder_sub_primeRemainder_floor_le {d : ℕ} [Fact d.Prime] {q : ℕ} [NeZero q] {y : ℝ}
     (hy : 2 ≤ y) : primeRemainder d q y - primeRemainder d q ⌊y⌋₊ ≤ 26 / y := by
   have h_le : (⌊y⌋₊ : ℝ) ≤ y := Nat.floor_le (zero_le_two.trans hy)
-  have h_lt : y < ⌊y⌋₊ + 1 := Nat.lt_floor_add_one y
-  have h_one : (1 : ℝ) ≤ ⌊y⌋₊ := by linarith
+  have h_half := Nat.div_two_lt_floor (one_le_two.trans hy)
   calc primeRemainder d q y - primeRemainder d q ⌊y⌋₊ ≤ 13 * ((y - ⌊y⌋₊) / ⌊y⌋₊) :=
-        (le_abs_self _).trans (abs_primeRemainder_sub_le h_one h_le)
-    _ ≤ 13 * (1 / (y / 2)) := by gcongr <;> linarith
+        (le_abs_self _).trans (abs_primeRemainder_sub_le (by linarith) h_le)
+    _ ≤ 13 * (1 / (y / 2)) := by gcongr; linarith [Nat.self_sub_floor_lt_one y]
     _ = 26 / y := by field
 
 /-- For `y ≥ 2` and `-1 ≤ t ≤ 0` we have `⌊y⌋ ^ t ≤ 2 y ^ t`, since `y / 2 ≤ ⌊y⌋`. -/
 lemma natFloor_rpow_le_two_mul_rpow {y t : ℝ} (hy : 2 ≤ y) (ht_ge : -1 ≤ t) (ht_le : t ≤ 0) :
     (⌊y⌋₊ : ℝ) ^ t ≤ 2 * y ^ t := by
   have hy_pos : 0 < y := two_pos.trans_le hy
-  have h_half : y / 2 ≤ ⌊y⌋₊ := by linarith [Nat.lt_floor_add_one y]
-  calc (⌊y⌋₊ : ℝ) ^ t ≤ (y / 2) ^ t := rpow_le_rpow_of_nonpos (half_pos hy_pos) h_half ht_le
+  calc (⌊y⌋₊ : ℝ) ^ t ≤ (y / 2) ^ t :=
+    rpow_le_rpow_of_nonpos (half_pos hy_pos) (Nat.div_two_lt_floor (one_le_two.trans hy)).le ht_le
     _ = y ^ t / 2 ^ t := div_rpow hy_pos.le zero_le_two t
     _ ≤ y ^ t / 2 ^ (-1 : ℝ) := by
         gcongr
@@ -211,7 +217,7 @@ theorem eventually_primeRemainder_le_mul_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ 
       d_prime := hd_prime.out
       q₀_dvd_and_not_dvd := dvd_two_mul_succ_and_not_dvd_succ (NeZero.pos q₀) (by omega) hd }
   -- It suffices to prove the bound with `6 δ` in place of `ε`, for `0 < δ < 1/100`.
-  obtain ⟨δ, hδ, hδ_lt, hδε⟩ : ∃ δ > (0 : ℝ), δ < 1 / 100 ∧ 6 * δ ≤ ε := by
+  obtain ⟨δ, hδ, hδ_lt, h_exponent_slack⟩ : ∃ δ > (0 : ℝ), δ < 1 / 100 ∧ 6 * δ ≤ ε := by
     refine ⟨min (1 / 200) (ε / 6), by positivity, ?_, ?_⟩
     · linarith [min_le_left (1 / 200) (ε / 6)]
     · linarith [min_le_right (1 / 200) (ε / 6)]
@@ -219,9 +225,9 @@ theorem eventually_primeRemainder_le_mul_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ 
   set t : ℝ := -1 / 2 + 6 * δ with ht
   have ht_ge : -1 ≤ t := by linarith
   have ht_le : t ≤ 0 := by linarith
-  have h_floor : ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ ⌊y⌋₊ ≤ C * (⌊y⌋₊ : ℝ) ^ t :=
+  have h_integer_bound : ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ ⌊y⌋₊ ≤ C * (⌊y⌋₊ : ℝ) ^ t :=
     tendsto_nat_floor_atTop.eventually (eventually_primeRemainder_natCast_le P hδ hδ_lt)
-  filter_upwards [h_floor, eventually_ge_atTop 2] with y hy_floor hy
+  filter_upwards [h_integer_bound, eventually_ge_atTop 2] with y hy_floor hy
   have hy_one : 1 ≤ y := one_le_two.trans hy
   calc primeRemainder d q₀ y
       ≤ primeRemainder d q₀ ⌊y⌋₊ + 26 / y :=
@@ -253,18 +259,19 @@ theorem grh : DirichletLNonvanishingRightOfHalf := by
     rw [h_eq]
     exact h_two.mul_right (by simp)
   -- The one-sided bound is the hypothesis of the criterion.
-  have h_bound (d : Nat.Primes) (hd : (d : ℕ) ≡ d₀ [MOD 18480 * q]) :
+  have h_criterion_bound (d : Nat.Primes) (hd : (d : ℕ) ≡ d₀ [MOD 18480 * q]) :
       ∃ A : ℝ, ∀ᶠ x : ℝ in atTop, primeRemainder d (18480 * q) x ≤ A * x ^ (β - 1) := by
     refine ⟨128 * (18480 * q).totient + 32, ?_⟩
     have hd₀_eq : d₀ = 18480 * q / 2 - 1 := by omega
-    have h_exp : β - 1 = -1 / 2 + (β - 1 / 2) := by ring
+    have h_criterion_exponent : β - 1 = -1 / 2 + (β - 1 / 2) := by ring
     rw [hd₀_eq] at hd
-    rw [h_exp]
+    rw [h_criterion_exponent]
     exact eventually_primeRemainder_le_mul_rpow (dvd_mul_right 18480 q) hd (sub_pos.2 hβ)
-  have h_induced : (χ.changeLevel (dvd_mul_left q 18480)).LFunction ρ ≠ 0 :=
-    LFunction_ne_zero_of_primeRemainder_le (by omega) (by omega) hd₀_cop hβ h_bound _ hρ_ne hβρ
+  have h_induced_nonvanishing : (χ.changeLevel (dvd_mul_left q 18480)).LFunction ρ ≠ 0 :=
+    LFunction_ne_zero_of_primeRemainder_le (by omega) (by omega) hd₀_cop hβ
+      h_criterion_bound _ hρ_ne hβρ
   -- Inducing multiplies `L(s, χ)` by finitely many factors `1 - χ(p) p ^ (-s)`.
-  rw [LFunction_changeLevel _ χ h_pole] at h_induced
-  exact left_ne_zero_of_mul h_induced
+  rw [LFunction_changeLevel _ χ h_pole] at h_induced_nonvanishing
+  exact left_ne_zero_of_mul h_induced_nonvanishing
 
 end New

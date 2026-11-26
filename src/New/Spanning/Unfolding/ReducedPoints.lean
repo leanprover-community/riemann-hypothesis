@@ -89,7 +89,7 @@ lemma eichler_apply_eq_zero_of_level_le {m : Type} [Fintype m] {p : m → Fin �
     ∀ i j : 𝔰.BesselIndex, BesselIndex.level j ≤ BesselIndex.level i →
       (x * (uᴴ * S.ratGram) - (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram)) i j =
         0 := by
-  simp [← hx, splitGram, BesselIndex.level, inclMatrix, Matrix.mul_assoc, Matrix.mul_sub,
+  simp [← hx, splitGram, BesselIndex.level, inclMatrix, Matrix.mul_sub,
     Matrix.add_mul, Matrix.sub_mul, Matrix.one_apply, Matrix.mul_apply, sub_eq_zero]
   grind [Finset.sum_eq_zero, star_zero]
 
@@ -106,7 +106,6 @@ lemma isIntMatrix_ideleM_inv_smul_eichler (c : S.Classes) {m : Type} [Fintype m]
     {γ : S.G E} (h_val : γ.val.val = 1 + (S.M : E) •
       (x * (uᴴ * S.ratGram) - (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram))) :
     IsIntMatrix (Ô E) (S.ideleM⁻¹ • ((S.translateByClassReps c c γ).val.val - 1)) := by
-  classical
   -- In the basis of the lattice this is the same expression in integral matrices, as
   -- `classCoord_conj_splitGram` moves `J` to that basis.
   have hJ : IsIntMatrix (Ô E) (S.latticeMiddle (𝔸f E)).splitGram :=
@@ -152,7 +151,6 @@ lemma exists_mem_classUnipotent_eq_one_add_smul [HasPrimitiveRoot5040 E] (c : S.
             (S.M : E) •
               (x * (uᴴ * S.ratGram) -
                 (u + x * (τ • (uᴴ * S.ratGram * u) - s)) * (xᴴ * S.ratGram)) := by
-  classical
   -- The matrix is an Eichler map along the isotropic columns `x`; take `τ = S.M * τ₀` with an
   -- integer `τ₀` such that `τ₀ + star τ₀ = 1`.
   obtain ⟨-, τ₀, -, -, hτ₀, -⟩ :=
@@ -225,7 +223,7 @@ lemma exists_eichler_classUnipotent [HasPrimitiveRoot5040 E] (c : S.Classes) (a 
   -- write `l = u ᵥ* J` and apply `exists_mem_classUnipotent_eq_one_add_smul` to the single columns
   -- `e_a` and `uᴴ`
   obtain ⟨u, rfl⟩ := S.ratGram.vecMul_surjective_iff_isUnit.2 IsHermitianUnit.isUnit l
-  have h_form : IsIntMatrix (Ô E) (finAdeleMatrix (of ![u] * S.ratGram) * (classBasis c).1) := by
+  have h_form : IsIntMatrix (Ô E) (finAdeleMatrix (of ![u] * S.ratGram) * (classBasis c).val) := by
     intro i
     rw [Subsingleton.elim i 0]
     exact hl_int
@@ -244,15 +242,15 @@ lemma exists_eichler_classUnipotent [HasPrimitiveRoot5040 E] (c : S.Classes) (a 
   have h_zero (a' : Fin 𝔰.ϱ) (i i' : Fin 1) (ha' : a' ≤ ![a] i') :
       (of ![u])ᴴ (eStar a') i = 0 := by
     simp_all
-  have h_skew : !![(s.1 : E)]ᴴ = -!![(s.1 : E)] :=
+  have h_skew : !![(s.val : E)]ᴴ = -!![(s.val : E)] :=
     ext (by simp [← coe_star_ringOfIntegers])
-  have h_int : IsIntMatrix (Ô E) (finAdeleMatrix !![(s.1 : E)]) := by
+  have h_int : IsIntMatrix (Ô E) (finAdeleMatrix !![(s.val : E)]) := by
     intro i j
     fin_cases i
     fin_cases j
     exact coe_mem_Ô _
   obtain ⟨γ, hγ, -, τ, h_val⟩ :=
-    exists_mem_classUnipotent_eq_one_add_smul c ![a] (of ![u])ᴴ !![s.1] h_zero h_skew hu h_int rfl
+    exists_mem_classUnipotent_eq_one_add_smul c ![a] (of ![u])ᴴ !![s.val] h_zero h_skew hu h_int rfl
   refine ⟨⟨γ, hγ⟩, ?_⟩
   -- read off the rows `e_b` of `γ`
   simp [h_val, splitGram, vecMul_eq_sum, funext_iff, Matrix.one_apply, inclMatrix, Matrix.add_mul,
@@ -424,7 +422,7 @@ lemma tsum_le_relIndex_pow_mul {A : Set α} [AddCommGroup β] (f : α → ι →
     ∑' a : A, w a ≤ ENNReal.ofReal (K.relIndex K' ^ card ι) * x := by
   -- Colour `a` by the classes of the `f a i` in `K' / (K ⊓ K')`.
   have : Fintype (K' ⧸ K.addSubgroupOf K') := fintypeOfIndexNeZero h_index
-  let colour (a : A) (i : ι) : K' ⧸ K.addSubgroupOf K' := mk' _ ⟨f a i, hf a a.2 i⟩
+  let colour (a : A) (i : ι) : K' ⧸ K.addSubgroupOf K' := mk' _ ⟨f a i, hf a a.property i⟩
   refine tsum_le_of_encard_range_le colour ?_ (fun a b hab i ↦ ?_) h_class
   · grw [encard_le_card]
     simp [relIndex, index]

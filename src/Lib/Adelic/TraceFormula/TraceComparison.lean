@@ -134,7 +134,7 @@ lemma mul_orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
   have h_sum (p : G E s × GInf E s × GInf E s) :
       ℓ * P p = a₁ p * P p + a₂ p * P p + a₃ p * P p := by
     simp [a₁, a₂, a₃, ← add_mul]
-  have one_le (y : GInf E s) : 1 ≤ ∏ w, ‖(y w).1.1‖ := (le_prod_opNorm y).1
+  have one_le (y : GInf E s) : 1 ≤ ∏ w, ‖(y w).val.val‖ := (le_prod_opNorm y).1
   have h₀ : Integrable P m := by
     simpa using V.integrable_mul_tripleKernel hB φ he hγ (a := 1) measurable_one
       fun _ y u ↦ abs_one.trans_le (one_le_mul_of_one_le_of_one_le (one_le y) (one_le u))
@@ -187,38 +187,38 @@ theorem orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
     V.orbitalIntegral e φ γ = 0 := by
   -- Let `ℓ ≠ 0` be the logarithm of the modulus of the root, and `H y` the logarithm of the norm
   -- of the `i`-th row of `k y`, with `k` diagonalising `γ` at `w`. Then `H (γ y) = ℓ + H y`.
-  let A : Matrix n n ℂ := ((V.ratEmbed γ).1 w).1.1
-  let d : n ↪ ℂ := numberedRoots (Φ w) γ.1.1.charpoly
-  obtain ⟨k, hk⟩ : ∃ k : (Matrix n n ℂ)ˣ, SemiconjBy k.1 A (diagonal d) := by
+  let A : Matrix n n ℂ := ((V.ratEmbed γ).1 w).val.val
+  let d : n ↪ ℂ := numberedRoots (Φ w) γ.val.val.charpoly
+  obtain ⟨k, hk⟩ : ∃ k : (Matrix n n ℂ)ˣ, SemiconjBy k.val A (diagonal d) := by
     refine IsConj.symm (isConj_diagonal_of_isRoot_charpoly fun j ↦ ?_)
-    have hA : A = (V.x.map (evalInf w))⁻¹.1 * γ.1.1.map (Φ w) * (V.x.map (evalInf w)).1 :=
+    have hA : A = (V.x.map (evalInf w))⁻¹.val * γ.val.val.map (Φ w) * (V.x.map (evalInf w)).val :=
       V.coe_ratEmbed_fst γ w
     rw [hA, charpoly_mul_comm, ← mul_assoc, Units.mul_inv, one_mul]
     exact isRoot_numberedRoots hγ.separable (Φ w) j
-  let Q : Matrix n n ℂ := diagonal (Pi.single i 1) * k.1
+  let Q : Matrix n n ℂ := diagonal (Pi.single i 1) * k.val
   have hQ_ne : Q ≠ 0 := by simp [Q]
-  let H (y : GInf E s) : ℝ := ‖Q * (y w).1.1‖.log
-  have hQ_mul (y : GInf E s) : Q * (y w).1.1 ≠ 0 := (y w).1.isUnit.mul_left_eq_zero.ne.2 hQ_ne
+  let H (y : GInf E s) : ℝ := ‖Q * (y w).val.val‖.log
+  have hQ_mul (y : GInf E s) : Q * (y w).val.val ≠ 0 := (y w).val.isUnit.mul_left_eq_zero.ne.2 hQ_ne
   -- An element that multiplies `Q` by a scalar `m` shifts `H` by `log ‖m‖`.
-  have h_ne {t : GInf E s} {m : ℂ} (ht : Q * (t w).1.1 = m • Q) : m ≠ 0 :=
+  have h_ne {t : GInf E s} {m : ℂ} (ht : Q * (t w).val.val = m • Q) : m ≠ 0 :=
     fun h ↦ hQ_mul t (by rw [ht, h, zero_smul])
-  have hH {t : GInf E s} {m : ℂ} (ht : Q * (t w).1.1 = m • Q) (y : GInf E s) :
+  have hH {t : GInf E s} {m : ℂ} (ht : Q * (t w).val.val = m • Q) (y : GInf E s) :
       H (t * y) = ‖m‖.log + H y := by
-    have h_mul : Q * ((t * y) w).1.1 = m • (Q * (y w).1.1) := by
+    have h_mul : Q * ((t * y) w).val.val = m • (Q * (y w).val.val) := by
       simp [← smul_mul_assoc, ← ht, mul_assoc]
     simp only [H, h_mul, norm_smul]
     exact Real.log_mul (norm_ne_zero_iff.2 (h_ne ht)) (norm_ne_zero_iff.2 (hQ_mul y))
-  have hQ {t : Matrix n n ℂ} (ht : Commute t A) : Q * t = (k * t * k⁻¹.1) i i • Q :=
+  have hQ {t : Matrix n n ℂ} (ht : Commute t A) : Q * t = (k * t * k⁻¹.val) i i • Q :=
     row_mul_eq_smul_of_commute hk ht i
   have hQA : Q * A = d i • Q := by simpa [hk.eq] using hQ (.refl A)
   have hℓ : (‖d i‖.log : ℂ) ≠ 0 :=
     ofReal_ne_zero.2 (Real.log_ne_zero_of_pos_of_ne_one (norm_pos_iff.2 (h_ne hQA)) h_root)
-  have h_lip (a b : GInf E s) : |H (a * b) - H a| ≤ ∏ v, ‖(b v).1.1‖ :=
+  have h_lip (a b : GInf E s) : |H (a * b) - H a| ≤ ∏ v, ‖(b v).val.val‖ :=
     (abs_log_norm_mul_sub_le hQ_ne w a b).trans ((le_prod_opNorm b).2 w)
   have h_cent (t : U V.J) (ht : Commute γ t) :
       ∃ r : ℝ, ∀ y, H ((V.ratEmbed t).1 * y) = r + H y := by
-    have h_comm : Commute ((V.ratEmbed t).1 w).1.1 A :=
-      congrArg (fun g : G E s ↦ (g.1 w).1.1) (ht.map V.ratEmbed).symm.eq
+    have h_comm : Commute ((V.ratEmbed t).1 w).val.val A :=
+      congrArg (fun g : G E s ↦ (g.1 w).val.val) (ht.map V.ratEmbed).symm.eq
     exact ⟨_, hH (hQ h_comm)⟩
   have h_mul_zero : (‖d i‖.log : ℂ) * V.orbitalIntegral e φ γ = 0 :=
     V.mul_orbitalIntegral_eq_zero hB φ he hγ (by fun_prop) h_lip (hH hQA) h_cent
@@ -293,7 +293,7 @@ lemma exists_ratEmbed_eq_diagTorus {x : GL n (𝔸f E)} {y : GL n E} {σ : Infin
   obtain ⟨β, h_ell, h_frame, h_pos⟩ := hx
   -- At each infinite place an eigenbasis of `y`, in the order `σ w`, has Gram matrix
   -- `signMatrix s`.
-  have h_basis (w : InfinitePlace E) : ∃ k : GL n ℂ, k.1ᴴ * β.map (Φ w) * k = signMatrix s ∧
+  have h_basis (w : InfinitePlace E) : ∃ k : GL n ℂ, k.valᴴ * β.map (Φ w) * k = signMatrix s ∧
       k⁻¹.1 * y.1.map (Φ w) * k = diagonal fun i ↦ numberedRoots (Φ w) y.1.charpoly (σ w i) := by
     obtain ⟨k, d, -, h_pos_iff, h_signs⟩ := exists_eigenbasis_diag_form h_ell w (σ w)
     have h_sign (i : n) : 0 < d i * s i := by
@@ -309,8 +309,8 @@ lemma exists_ratEmbed_eq_diagTorus {x : GL n (𝔸f E)} {y : GL n E} {σ : Infin
     simpa [mem_unitaryGroupOf_iff, star_eq_conjTranspose] using h_ell.conjTranspose_mul_mul
   refine ⟨W, rfl, hy, fun w ↦ ?_⟩
   have h_point : W.x.map (evalInf w) = k w := rfl
-  have h_torus : (diagTorus s (z w ∘ σ w)).1.1 =
-      diagonal fun i ↦ numberedRoots (Φ w) y.1.charpoly (σ w i) := by
+  have h_torus : (diagTorus s (z w ∘ σ w)).val.val =
+      diagonal fun i ↦ numberedRoots (Φ w) y.val.charpoly (σ w i) := by
     simp only [← hz]
     rfl
   ext : 2
@@ -333,15 +333,6 @@ lemma map_embFin_centralizer_le {s' : n → ℤˣ} (W : Space E n s') {y : GL n 
     exact mem_unitaryGroupOf_iff.1 ha
   refine ⟨⟨a, ha'⟩, mem_centralizer_singleton_iff.2 (Subtype.ext h_comm.symm), ?_⟩
   simp [Gf.val_ext_iff, coe_embFin, h_conj a h_comm]
-
-/-- If the finite frames of two spaces conjugate the rational centraliser of `y` in the same way,
-then the centralisers of `y` in the two unitary groups have the same image in `G_f`. -/
-lemma map_embFin_centralizer_eq {s' : n → ℤˣ} (W : Space E n s') {y : GL n E} (hy : y ∈ U V.J)
-    (hy' : y ∈ U W.J) (h_conj : ∀ a : GL n E, Commute y a →
-      V.xFin⁻¹ * toFinGL a * V.xFin = W.xFin⁻¹ * toFinGL a * W.xFin) :
-    (centralizer {⟨y, hy⟩}).map V.embFin = (centralizer {⟨y, hy'⟩}).map W.embFin :=
-  (V.map_embFin_centralizer_le W hy hy' h_conj).antisymm
-    (W.map_embFin_centralizer_le V hy' hy fun a ha ↦ (h_conj a ha).symm)
 
 /-- The inverse of a group isomorphism `f` maps the centraliser of `f a` onto that of `a`. -/
 lemma map_symm_centralizer_singleton {M N : Type*} [Group M] [Group N] (f : M ≃* N) (a : M) :
@@ -377,7 +368,7 @@ theorem exists_classIntegral_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
   obtain ⟨β, hβ_meas, hβ⟩ : ∃ β : Gf E n → ℝ≥0∞, IsCutoff
       (Measure.count : Measure ↥(W₀.Γf ⊓ (centralizer {⟨y, hy₀⟩}).map W₀.embFin)) β :=
     (hasCutoff_count _).out
-  refine ⟨∫ v, (β v).toReal • φ.1 (v⁻¹ * W₀.embFin ⟨y, hy₀⟩ * v),
+  refine ⟨∫ v, (β v).toReal • φ.val (v⁻¹ * W₀.embFin ⟨y, hy₀⟩ * v),
     fun {s} V l σ x he hx same_conj ↦ ?_⟩
   -- `W` is a space of signs `s` with frame `x` in which `y` is diagonal at infinity.
   obtain ⟨W, rfl, hy, h_diag⟩ := exists_ratEmbed_eq_diagTorus hx hz
@@ -386,14 +377,16 @@ theorem exists_classIntegral_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
   obtain ⟨b, g, hb, -, emb_conj⟩ := V.exists_x_eq_and_ratEmbed_conj_eq W
   set conj : U W.J ≃* U V.J := U.conj b hb
   let γ : U V.J := conj ⟨y, hy⟩
-  have class_eq : frameClass (V.xFin, γ.1) = frameClass (W.xFin, y) :=
+  have class_eq : frameClass (V.xFin, γ.val) = frameClass (W.xFin, y) :=
     frameClass_eq_iff.2 ⟨b, (V.mem_U_one_iff_gram_eq gram_xFin).2 hb, rfl⟩
   -- By `same_conj`, `y` and its centraliser have the same finite images for `W₀` and for `W`.
   have embf_eq : W₀.embFin ⟨y, hy₀⟩ = W.embFin ⟨y, hy⟩ := by
     simp [Gf.val_ext_iff, coe_embFin, same_conj]
   have centralizer_eq : W₀.Γf ⊓ (centralizer {⟨y, hy₀⟩}).map W₀.embFin =
       (centralizer {γ}).map (W.embFin.comp conj.symm) := by
-    rw [inf_eq_right.2 (map_le_range _ _), W₀.map_embFin_centralizer_eq W hy₀ hy same_conj,
+    rw [inf_eq_right.2 (map_le_range _ _),
+      (W₀.map_embFin_centralizer_le W hy₀ hy same_conj).antisymm
+        (W.map_embFin_centralizer_le W₀ hy hy₀ fun a ha ↦ (same_conj a ha).symm),
       ← map_symm_centralizer_singleton conj, Subgroup.map_map]
     rfl
   -- So `β` of the finite part of `g⁻¹ x` is a cutoff for the centraliser of `γ` in `V`.
@@ -409,9 +402,9 @@ theorem exists_classIntegral_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
           simp [embFin, mul_assoc, emb_eq]
       _ = ∑' t : (centralizer {γ}).map (W.embFin.comp conj.symm), β (t • (g⁻¹ * x).2) :=
           (tsum_image (fun t : Gf E n ↦ β (t * (g⁻¹ * x).2))
-            (W.fact_embFin_injective.1.comp conj.symm.injective).injOn).symm
-  have h_poly : γ.1.1.charpoly = y.1.charpoly := by simp [γ, conj]
-  have h_irr : Irreducible γ.1.1.charpoly := by
+            (W.fact_embFin_injective.out.comp conj.symm.injective).injOn).symm
+  have h_poly : γ.val.val.charpoly = y.val.charpoly := by simp [γ, conj]
+  have h_irr : Irreducible γ.val.val.charpoly := by
     obtain ⟨_, h_ell, -⟩ := hu
     simpa only [h_poly] using h_ell.irreducible_charpoly
   have h_embed : V.ratEmbed γ =
@@ -489,7 +482,7 @@ theorem exists_tsum_signedClasses_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
           (toHCParam s (l w)).dsKernel (h⁻¹ * diagTorus s (z w ∘ σ w) * h)) * c := by
   -- Match the classes with those of signs `1`, and add up their finite orbital integrals `C a`.
   have h_repr (a : signedClasses (n := n) R 1) : ∃ (u : GL n (𝔸f E)) (y : GL n E),
-      y.1.charpoly = R ∧ HasSignType 1 1 y {1} u ∧ frameClass (u, y) = a := a.2
+      y.val.charpoly = R ∧ HasSignType 1 1 y {1} u ∧ frameClass (u, y) = a := a.property
   choose u y h_poly h_sign h_rep using h_repr
   choose C hC using fun a ↦
     exists_classIntegral_eq hB φ (h_sign a) (z := z) (by simpa only [h_poly] using hz)
@@ -515,13 +508,13 @@ lemma frameClass_mem_signedClasses_iff {γ : U V.J} (hγ : IsEllipticSimilitude 
   -- The rational matrix `g` that identifies the classes carries `V.J` to the form `β` of `a`.
   obtain ⟨g, hg, hgγ⟩ : ∃ g : GL n E, V.xFin⁻¹ * toFinGL g * x ∈ U 1 ∧ g * a * g⁻¹ = γ :=
     frameClass_eq_iff.1 h_class.symm
-  obtain rfl : g.1ᴴ * V.J * g.1 = β := (V.mem_U_one_iff_gram_eq h_frame).1 hg
+  obtain rfl : g.valᴴ * V.J * g.val = β := (V.mem_U_one_iff_gram_eq h_frame).1 hg
   -- Conjugation by `g` keeps positivity and turns the polynomial in `γ` into that in `a`.
-  have h_conj : SemiconjBy (g.map (Φ w)).1 (a.1.map (Φ w)) (γ.1.1.map (Φ w)) := by
+  have h_conj : SemiconjBy (g.map (Φ w)).val (a.val.map (Φ w)) (γ.val.val.map (Φ w)) := by
     simp [SemiconjBy, ← hgγ, ← Matrix.map_mul]
-  have h_form : (g.1ᴴ * V.J * g.1).map (Φ w) =
-      star (g.map (Φ w)).1 * V.J.map (Φ w) * (g.map (Φ w)).1 :=
-    map_conjTranspose_mul_mul (Φ w) (by simp) g.1 V.J
+  have h_form : (g.valᴴ * V.J * g.val).map (Φ w) =
+      star (g.map (Φ w)).val * V.J.map (Φ w) * (g.map (Φ w)).val :=
+    map_conjTranspose_mul_mul (Φ w) (by simp) g.val V.J
   rw [← (g.map (Φ w)).isUnit.posDef_star_left_conjugate_iff, mul_assoc, mul_assoc,
     ← aeval_semiconj h_conj, ← h_poly, ← mul_assoc, ← mul_assoc, ← h_form]
   exact h_pos w
@@ -530,7 +523,7 @@ lemma frameClass_mem_signedClasses_iff {γ : U V.J} (hγ : IsEllipticSimilitude 
 signs `s`. -/
 lemma gram_map_evalInf (w : InfinitePlace E) :
     (V.x.map (evalInf w)).valᴴ * V.J.map (Φ w) * (V.x.map (evalInf w)).val = signMatrix s := by
-  have h_map : (V.x.1ᴴ * V.J.map toAdele * V.x.1).map (evalInf w) = signMatrix s := by
+  have h_map : (V.x.valᴴ * V.J.map toAdele * V.x.val).map (evalInf w) = signMatrix s := by
     simp [V.gram_point, stdForm, signMatrix]
   rwa [map_conjTranspose_mul_mul (evalInf w) fun _ ↦ rfl, Matrix.map_map] at h_map
 
@@ -545,10 +538,10 @@ lemma card_perm_posDef {γ : U V.J} (hγ : IsEllipticSimilitude 1 γ V.J) (w : I
   classical
   -- In an eigenbasis `k` of `γ` the form is `diagonal d`, and positivity is read off from `d`.
   obtain ⟨k, d, hd, h_pos, h_basis⟩ := exists_eigenbasis_diag_form hγ w 1
-  have h_frame : (V.x.map (evalInf w))⁻¹.1ᴴ * signMatrix s * (V.x.map (evalInf w))⁻¹.1 =
+  have h_frame : (V.x.map (evalInf w))⁻¹.valᴴ * signMatrix s * (V.x.map (evalInf w))⁻¹.val =
       V.J.map (Φ w) := gram_inv_of_gram_eq (V.gram_map_evalInf w)
   -- The form is hermitian and invertible, so the `d i` are real and nonzero; `ε i` is their sign.
-  obtain ⟨g, hg⟩ : ∃ g : GL n ℂ, g.1ᴴ * diagonal (fun i ↦ (s i : ℂ)) * g.1 = diagonal d :=
+  obtain ⟨g, hg⟩ : ∃ g : GL n ℂ, g.valᴴ * diagonal (fun i ↦ (s i : ℂ)) * g.val = diagonal d :=
     ⟨_, gram_mul_of_gram_eq h_frame hd⟩
   have hd_unit : IsUnit (diagonal d) := by simp [← hg, Pi.isUnit_iff]
   have hd_herm : (diagonal d)ᴴ = diagonal d := by simp [← hg, Pi.star_def, mul_assoc]
@@ -643,7 +636,7 @@ theorem exists_geometricSide_singleton_eq [Nonempty n] (hB : 13 * card n ^ 3 ≤
     obtain ⟨γ, rfl, rfl⟩ := V.exists_frameClass_eq_of_classIntegral_ne_zero ha
     have h_ell : IsEllipticSimilitude 1 γ V.J :=
       V.isEllipticSimilitude_of_norm_eq_one hR fun w i ↦ by rw [← hz, Circle.norm_coe]
-    have h_card : #{σ | frameClass (V.xFin, γ.1) ∈ S σ} = N := by
+    have h_card : #{σ | frameClass (V.xFin, γ.val) ∈ S σ} = N := by
       rw [← Fintype.card_subtype, ← Nat.card_eq_fintype_card]
       exact V.card_mem_signedClasses h_ell
     simp only [Set.indicator, ← sum_filter, sum_const, nsmul_eq_mul, h_card]

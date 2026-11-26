@@ -1,5 +1,7 @@
 module
 
+public import Aesop.BuiltinRules
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Lib.General.Groups.CongruenceSubgroups
 
 /-!

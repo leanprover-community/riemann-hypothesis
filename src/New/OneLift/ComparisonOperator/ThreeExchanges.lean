@@ -118,8 +118,7 @@ variable {D} (j : D.LiftIndex)
 the `j`-th lift at an infinite place `v` is at most `4 b`, where `b = D.b` is the real number
 `exp D.logB` of the data. -/
 lemma liftWeight_le_four_mul_b (v : D.Φ) : D.liftWeight j v ≤ 4 * D.b := by
-  have hb_pos : 0 < D.b := Real.exp_pos D.logB
-  linarith [D.liftWeight_le_two_mul_b (j := j) (by grind) v]
+  linarith only [D.liftWeight_le_two_mul_b (j := j) (by grind) v]
 
 /-- For a lift index `j`, let `n = j + (t - 11 m - 1) / 2`; this is the exponent of the splitting
 character `υ` in the character `ν_j = μ_j⁰ υ ^ n` of `exchangePair`. At every infinite place `v`,
@@ -259,7 +258,7 @@ level `stdLevel`, of the theta kernel of `(I_m, I_m)` with characters `c⁻¹, c
 sum of the kernel of `(I_m⁻, I_m)` with characters `c υ ^ m, c υ ^ m` and function `χ ∘ det`. Here
 `υ = upsilonU1` is the splitting character of `WeilData E` on the norm-one ideles, and
 `η = 𝔪.normNegOne` is the unit mod 𝔪 that is the reduction of a chosen element of norm -1. -/
-lemma exists_stdClassSum_modKernelStdSpace_neg_eq_one {m : ℕ} [NeZero m] :
+lemma exists_stdClassSum_modKernelStdSpace_neg_eq_one {m : ℕ} :
     ∃ n : ℂ, ‖n‖ = 1 ∧ ∀ (𝔪 : Modulus E) (c : AutChar E) (χ : MulChar 𝔪.ResidueRing ℂ) (γ : ℂ),
       (∀ g : G E (1 : Fin m → ℤˣ), γ * stdClassSum (stdLevel E (Fin m))
         (modKernelStdSpace (stdSpace E (Fin m)) c⁻¹ c⁻¹ 𝔪
@@ -308,8 +307,9 @@ lemma exists_mul_stdClassSum_eq_carrierForm {m : ℕ} [NeZero m] (hm_even : Even
   obtain ⟨C₂, h_match⟩ :=
     exists_mul_stdClassSum_eq_integral_modKernel (J.sum H) (.emptySum Empty _) J.neg 1
       (.trans (.emptySum ..) (.sumComm ..))
-      (.sumAssoc ..) (by aesop) (d := m) (by simp +arith)
-      (by grind [Fintype.card_sum, Fintype.card_fin, NeZero]) fun _ : InfinitePlace E ↦ Empty
+      (.sumAssoc ..) (by ext1 (_ | (_ | _)) <;> rfl) (d := m) (by simp +arith)
+      (by simp [Fintype.card_sum, Fintype.card_fin]; have := NeZero.pos m; omega)
+      fun _ : InfinitePlace E ↦ Empty
   obtain ⟨n, hn_norm, h_conj⟩ := exists_stdClassSum_modKernelStdSpace_neg_eq_one E (m := m)
   refine ⟨C₁ * C₂, fun {𝔪 c χ} h_tame ↦ ?_⟩
   obtain ⟨γ₁, h_norm₁, h_sum₁⟩ := h_full h_tame.inv
@@ -350,9 +350,56 @@ lemma exists_mul_stdClassSum_eq_carrierForm {m : ℕ} [NeZero m] (hm_even : Even
         ∫ y : G E (-1), modKernel J.neg H (c * upsilonU1 ^ m) 1 𝔪 1
           (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x ∂J.neg.quotMeasure := by
     simpa [h_seesaw] using h_move
-  simpa [modKernel, mul_left_comm _ _⁻¹, mul_assoc, ← mul_classSum, field, carrierCoeff,
-    pairTheta, pairWeil, modDatum, Modulus.liftFn_one, Modulus.isConjDisjoint_places,
-    schrodingerOp_boxIndicator, carrierForm, lift, integral_const_mul] using h_split
+  let cx : ℂ := ((c.val x.det : Circle) : ℂ)
+  have hcx_ne : cx ≠ 0 := Circle.coe_ne_zero _
+  have h_mod1 (g : Gf E (Fin m)) (h : Gf E (Fin (2 * m) ⊕ Fin m)) :
+      modKernelStdSpace J c 1 𝔪 1 1 (1, g) h =
+        modKernelStdSpace J c 1 (unitModulus E) 1 1 (1, g) h := by
+    simp only [modKernelStdSpace, modKernel, modDatum, Pi.one_comp, Modulus.liftFn_one,
+      Modulus.isConjDisjoint_places, schrodingerOp_boxIndicator, Space.projOn_vacElem]
+  have h_mod2 (h : Gf E (Fin (2 * m) ⊕ Fin m)) :
+      modKernelStdSpace H (upsilonU1 ^ m) 1 𝔪 (χ ·.det) 1 x h =
+        cx * modKernelStdSpace H (upsilonU1 ^ m) c 𝔪 (χ ·.det) 1 x h := by
+    have ht := modKernel_twist H (stdSpace E (Fin (2 * m) ⊕ Fin m)) (upsilonU1 ^ m) 1 𝔪 1 c
+      (χ ·.det) 1 x (1, h)
+    rw [mul_one, one_mul] at ht
+    change modKernel H (stdSpace E (Fin (2 * m) ⊕ Fin m)) (upsilonU1 ^ m) 1 𝔪 (χ ·.det) 1 x (1, h) =
+      cx * modKernel H (stdSpace E (Fin (2 * m) ⊕ Fin m)) (upsilonU1 ^ m) c 𝔪 (χ ·.det) 1 x (1, h)
+    rw [ht]
+    have h1 : (((1 : AutChar E).val (G.det (s := 1) (1, h)) : Circle) : ℂ) = 1 := rfl
+    rw [h1, one_div, mul_inv_cancel_left₀ hcx_ne]
+  have h_mod3 (y : G E (-1)) :
+      modKernel J.neg H (c * upsilonU1 ^ m) 1 𝔪 1
+          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x =
+        cx * modKernel J.neg H (upsilonU1 ^ m) 1 (unitModulus E) 1
+          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x := by
+    have ht := modKernel_twist J.neg H (upsilonU1 ^ m) 1 𝔪 c 1 1
+      (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x
+    rw [mul_one] at ht
+    rw [mul_comm c, ht]
+    have h1 : (((1 : AutChar E).val y.det : Circle) : ℂ) = 1 := rfl
+    rw [h1, div_one]
+    congr 1
+    simp only [modKernel, modDatum, Pi.one_comp, Modulus.liftFn_one,
+      Modulus.isConjDisjoint_places, schrodingerOp_boxIndicator, Space.projOn_vacElem]
+  have h_factor : cx * (γ₂ * star γ₁ * n / χ 𝔪.normNegOne ^ m *
+      stdClassSum (stdLevel E (Fin (2 * m) ⊕ Fin m)) (fun h ↦ carrierCoeff m c h *
+        modKernelStdSpace H (upsilonU1 ^ m) c 𝔪 (fun y ↦ χ y.det) 1 x h)) =
+      cx * carrierForm E m x := by
+    rw [carrierForm, lift, ← integral_const_mul]
+    have h_rhs : ∫ y : G E (-1), cx * (modKernel J.neg H (upsilonU1 ^ m) 1 (unitModulus E) 1
+          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x * 1) ∂J.neg.quotMeasure =
+        ∫ y : G E (-1), modKernel J.neg H (c * upsilonU1 ^ m) 1 𝔪 1
+          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x ∂J.neg.quotMeasure :=
+      MeasureTheory.integral_congr_ae (.of_forall fun y ↦ by dsimp only; rw [mul_one, h_mod3 y])
+    change _ = ∫ y : G E (-1), cx * (modKernel J.neg H (upsilonU1 ^ m) 1 (unitModulus E) 1
+          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x * 1) ∂J.neg.quotMeasure
+    rw [h_rhs, ← h_split]
+    simp_rw [h_mod1, h_mod2, carrierCoeff, div_eq_mul_inv, mul_classSum, classSum_mul]
+    congr 1; funext h
+    rw [mul_classSum, mul_classSum]
+    congr 1; funext g; ring
+  exact mul_left_cancel₀ hcx_ne h_factor
 
 end Carrier
 
@@ -401,8 +448,18 @@ lemma carrierForm_mem_rapidOfLevel_and_isAdelicHol {m : ℕ} [NeZero m] (hm_even
   have h_mem (N : RingOfIntegers E) (g : Gf E (Fin (2 * m) ⊕ Fin m)) : θ g ∈ rapidOfLevel V N := by
     -- Level one: on `stdLevel` the factor `c (det k)⁻¹` cancels against `χ (det k)`.
     have h_level : HasLevel (θ g) (⟨stdLevel E _, isOpen_stdLevel⟩ : OpenSubgroup _) := by
-      simp [θ, V, ↓Subtype.forall', modKernel_mul_stdLevel_left, h_tame.apply_det, Pi.smul_def,
-        mul_comm, χ.apply_eq_zero_iff]
+      intro k hk x
+      change modKernel V (stdSpace E _) (WeilData.upsilonU1 ^ m) c 𝔪 (fun y ↦ χ y.det) 1
+          (x * (1, k)) (1, g) =
+        modKernel V (stdSpace E _) (WeilData.upsilonU1 ^ m) c 𝔪 (fun y ↦ χ y.det) 1 x (1, g)
+      rw [modKernel_mul_stdLevel_left (k := ⟨k, hk⟩)]
+      congr 1
+      ext y
+      simp only [Pi.smul_apply, smul_eq_mul, Matrix.det_mul, map_mul]
+      have hne : ((c.val (detFin (1 ⊕ᵥ -1) k) : Circle) : ℂ) ≠ 0 := Circle.coe_ne_zero _
+      rw [h_tame.apply_det (s := 1 ⊕ᵥ -1) ⟨k, hk⟩] at hne
+      rw [h_tame.apply_det (s := 1 ⊕ᵥ -1) ⟨k, hk⟩, mul_comm (χ y.det), ← mul_assoc,
+        inv_mul_cancel₀ hne, one_mul]
     -- Rapid decay: `χ (det y) ≠ 0` makes `y` invertible.
     have h_rapid : V.IsRapid (θ g) := isRapid_modKernel _ _ _ _ h𝔪
       (fun y hy ↦ ⟨y⁻¹, y.nonsing_inv_mul (χ.apply_ne_zero_iff.1 hy)⟩) _ _
@@ -538,21 +595,6 @@ private lemma carrierChar_inv_div_twistedChiMPow_mul_upsilonU1_pow (ϑ : D.Twist
   -- compare the exponents of each character
   match_scalars <;> grind [mainPairPoint]
 
-/-- The character `χ'⁻¹ υ ^ m`, with `χ' = twistedChiMPow ϑ j`, is `ϑ⁻¹` divided by
-`υ ^ (-m) χ ^ j`, the character of `exchangePair j (some 1)`. -/
-private lemma twistedChiMPow_inv_mul_upsilonU1_pow (ϑ : D.Twist) (j : D.LiftIndex) :
-    (twistedChiMPow ϑ.toTameChar j)⁻¹ * upsilonU1 ^ D.m =
-      ϑ.toAutChar⁻¹ / ((upsilonU1 ^ D.m)⁻¹ * D.chiM ^ j.val) := by
-  rw [twistedChiMPow, div_eq_mul_inv ϑ.toAutChar⁻¹, _root_.mul_inv_rev, _root_.mul_inv_rev, inv_inv,
-    mul_assoc]
-
-/-- The character `χ' υ ^ (m / 2)`, with `χ' = twistedChiMPow ϑ j`, is `ϑ` divided by
-`υ ^ (-m / 2) χ ^ (-j)`, the character of `exchangePair j (some (-1))`. -/
-private lemma twistedChiMPow_mul_upsilonU1_pow (ϑ : D.Twist) (j : D.LiftIndex) :
-    twistedChiMPow ϑ.toTameChar j * upsilonU1 ^ (D.m / 2) =
-      ϑ.toAutChar / ((upsilonU1 ^ (D.m / 2))⁻¹ / D.chiM ^ j.val) := by
-  rw [twistedChiMPow, div_eq_mul_inv ϑ.toAutChar, inv_div, div_inv_eq_mul, mul_left_comm, mul_assoc]
-
 variable (ϑ : D.Twist) (j : D.LiftIndex)
 
 /-- The space `W' = W_j ⊕ (E^j)⁻ ⊕ E^{3m-j} ⊕ W♭` of the third exchange, where `W♭` is the standard
@@ -604,17 +646,6 @@ def invariantTraceChar (Λ : Matrix D.CarrierIndex (FirstFactorIndex j)
     (x : Matrix (FirstFactorIndex j) D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing) : ℂ :=
   ∑ γ : GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing,
     traceChar Λ (x.map (forgetTwist ϑ.toTameChar) * γ.val)
-
-/-- The invariant trace character `ψ^inv_Λ = invariantTraceChar ϑ j Λ` is invariant under right
-multiplication of its argument `x` by an invertible matrix `γ` over the residue ring of
-`D.twistModulus ϑ 2`. -/
-lemma invariantTraceChar_mul
-    (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
-    (x : Matrix (FirstFactorIndex j) D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing)
-    (γ : GL D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing) :
-    invariantTraceChar ϑ j Λ (x * γ.val) = invariantTraceChar ϑ j Λ x :=
-  Finset.sum_equiv (.mulLeft (γ.map (forgetTwist ϑ.toTameChar))) (by simp)
-    (by simp [Matrix.mul_assoc])
 
 /-- The character of the residue ring modulo `D.twistModulus ϑ 2 = ϖ² Q`, with `ϖ` the product of
 the chosen places and `Q` the product of the places of `ϑ`, that comes from the tame part of
@@ -671,8 +702,8 @@ lemma isTameFor_twistedChiMPow_mul_carrierChar :
   have h_weight : (fun τ : InfinitePlace D.E ↦ (card (Fin D.m) : ℤ) - card (DetIndex j τ)) =
       0 + fun τ : InfinitePlace D.E ↦ ↑(D.m + firstFactorCharExp j) - (D.liftWeight j τ : ℤ) := by
     simp [← card_detIndex_add_firstFactorCharExp j]
-  rw [h_weight]
-  exact (isTameFor_twistedChiMPow (c := 2) j ϑ).mul (carrierChar_hasWeight j)
+  simpa only [h_weight] using
+    (isTameFor_twistedChiMPow (c := 2) j ϑ).mul (carrierChar_hasWeight j)
 
 /-- Let `D` be admissible data, `j` a lift index (`1 ≤ j ≤ m`) and `W = E^{3m} ⊕ W'`, where
 `W' = W_j ⊕ (E^j)⁻ ⊕ E^{3m-j} ⊕ W♭`: the space `W_j = D.spaceW j`, its padding, and the definite
@@ -702,8 +733,12 @@ lemma matchedPoly_constantRows (i : D.RowChoice) :
   congr! 4
   · omega
   · rw [← Fin.prod_const]
-    congr!
-    aesop (add simp [Matrix.mul_apply, inclMatrix, posRowIndex, Matrix.one_apply])
+    congr! 3 with τ _ h _
+    refine Matrix.ext fun r c ↦ ?_
+    simp only [Matrix.mul_apply, Matrix.of_apply, inclMatrix, Matrix.submatrix_apply,
+      Matrix.one_apply, id_eq, apply_ite MvPolynomial.C, map_one, map_zero, ite_mul, one_mul,
+      zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, posRowIndex]
+    split_ifs <;> rfl
   · simp [← ext_iff, Matrix.mul_apply]
 
 -- Keeps definitional checks from unfolding `Finset.prod`.
@@ -739,8 +774,11 @@ lemma integral_carrierForm_mul_eq_card_mul_choiceFn (i : ChoiceIndex j)
       (isTameFor_twistedChiMPow (c := 2) j ϑ)).1 1
   have h_full : HasLevel (carrierForm D.E D.m) (stdLevel D.E D.CarrierIndex) := fun k hk ↦ congrFun
     (h_level ⟨k, ((unitModulus D.E).mem_principalLevel_iff (by simp) ⟨k, hk⟩).2 (by subsingleton)⟩)
-  exact integral_mul_modKernel_sum_translates _ (enlargedSpace j) (carrierChar_hasWeight j) h_rapid
-    h_full (𝔪' := D.twistModulus ϑ 2) levelModulus_ideal_le (traceChar i.matrix) _ _
+  unfold invariantTraceChar choiceFn
+  exact integral_mul_modKernel_sum_translates (signedSpace D.E (1 ⊕ᵥ -1)) (enlargedSpace j)
+    (a := upsilonU1 ^ D.m) (β' := carrierChar j) (carrierChar_hasWeight j) h_rapid
+    h_full (𝔪 := D.untwistedModulus 2) (𝔪' := D.twistModulus ϑ 2) levelModulus_ideal_le
+    (traceChar i.matrix) _ (enlargedPoint j i g)
 
 /-- The third exchange. There are a constant `C` and numbers `c ϑ`, one for each twist `ϑ`, with two
 properties. First, `‖c ϑ‖ ^ 2` is `C` divided by `heckeValueProd j ϑ`, the product over the three
@@ -780,8 +818,14 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
       exchangePair,
       hc₃_norm, hc₁₂_norm, signPoint, ← division_def, div_right_comm _ (_ * _), div_mul_div_comm]
     -- what is left are the characters of the three pairs
-    rw [carrierChar_inv_div_twistedChiMPow_mul_upsilonU1_pow, twistedChiMPow_inv_mul_upsilonU1_pow,
-      twistedChiMPow_mul_upsilonU1_pow]
+    have h_inv : (twistedChiMPow ϑ.toTameChar j)⁻¹ * upsilonU1 ^ D.m =
+        ϑ.toAutChar⁻¹ / ((upsilonU1 ^ D.m)⁻¹ * D.chiM ^ j.val) := by
+      rw [twistedChiMPow, div_eq_mul_inv ϑ.toAutChar⁻¹, _root_.mul_inv_rev, _root_.mul_inv_rev,
+        inv_inv, mul_assoc]
+    have h_half : twistedChiMPow ϑ.toTameChar j * upsilonU1 ^ (D.m / 2) =
+        ϑ.toAutChar / ((upsilonU1 ^ (D.m / 2))⁻¹ / D.chiM ^ j.val) := by
+      rw [twistedChiMPow, div_eq_mul_inv ϑ.toAutChar, inv_div, div_inv_eq_mul, mul_left_comm, mul_assoc]
+    rw [carrierChar_inv_div_twistedChiMPow_mul_upsilonU1_pow, h_inv, h_half]
   · have hN : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.2 card_ne_zero
     suffices h_mul : c₃ (h_tame₃ ϑ) * c₁₂ (h_tame ϑ) * thirdExchangeLeftSide ϑ j i g =
         N * choiceFn j i g by
@@ -789,14 +833,15 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
     rw [← integral_carrierForm_mul_eq_card_mul_choiceFn ϑ]
     refine mul_stdClassSum_eq_integral_mul_modKernel _ (enlargedSpace j) (h_tame ϑ).1
       (h_carrier (h_tame ϑ))
-      (invariantTraceChar_mul ϑ j i.matrix) (K := thirdExchangeKernel ϑ j i g) fun Φ Ψ hΦΨ h' ↦ ?_
+      (fun x γ ↦ Finset.sum_equiv (.mulLeft (γ.map (forgetTwist ϑ.toTameChar))) (by simp) (by simp [Matrix.mul_assoc]))
+      (K := thirdExchangeKernel ϑ j i g) fun Φ Ψ hΦΨ h' ↦ ?_
     rw [← matchedPoly_constantRows, eq_div_of_mul_eq'' (firstFactorChar_mul_upsilonU1_pow ϑ j)]
     exact h_third (h_tame₃ ϑ) (constantRows j i.rowChoice (D.shortRows i.rowChoice)) hΦΨ _ _
 
 /-- The product datum `Ψ^×` at `x = (x' x″)`, with `x″` square: the datum `columnDatum` of the rows
 `w` on the columns of `x″` at `W_j`, times `ψ^inv_Λ (x')` if the other columns of `x″` are those of
 `1` (`FixesColsOff`), and `0` otherwise. -/
-def productDatum {a : Type} [Fintype a]
+def productDatum {a : Type}
     (w : Matrix a (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
     (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
     (x : Matrix (FirstFactorIndex j) (D.CarrierIndex ⊕ FirstFactorIndex j)
@@ -824,7 +869,7 @@ that lift times a power of the splitting character), its datum is `columnDatum` 
 polynomial is `letterPoly` of the vector `leftSideSeries ϑ j i h` of the Weyl module with column
 counts `colsPlus`. The coordinates of this vector are formed from the kernels at `h` of the summands
 of `W` other than `W_j`. -/
-lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type} [Fintype a]
+lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type}
     (w : Matrix a (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing) (i : ChoiceIndex j)
     (g : New.G D.E (D.signsW j)) (h : Gf D.E (FirstFactorIndex j)) :
     stdClassSum (stdLevel D.E D.CarrierIndex) (fun h' : Gf D.E D.CarrierIndex ↦ carrierCoeff D.m
@@ -847,31 +892,110 @@ lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type} [Fintype a]
   have h_sign : ((1 : D.CarrierIndex → ℤˣ) ⊕ᵥ (padSigns j ⊕ᵥ 1)) ∘ regroupEquiv j =
       D.signsW j ⊕ᵥ (-1 ⊕ᵥ 1) := by
     ext1 (_ | _ | _ | _ | _) <;> rfl
-  -- `erw` is needed: the kernels are stated on index types that agree only after unfolding
-  erw [← modKernel_reindex (regroupEquiv ..).symm h_sign (.refl _) rfl,
-    ← map_sum ((modKernelBilin ..) _), modKernelBilin_apply]
+  rw [← modKernel_reindex (regroupEquiv ..).symm h_sign (.refl _) rfl]
+  conv_rhs =>
+    simp only [← modKernelBilin_apply]
+    rw [← map_sum, modKernelBilin_apply]
   -- compare the two kernels argument by argument
   congr! 1
   · -- the first spaces
     ext1
     simp [GeneralLinearGroup.ext_iff, Space.reindex, Space.sum, regroupEquiv, Matrix.one_apply]
   · -- the first characters: `W_j` has `m - j` negative signs, and `υ ^ m = υ ^ (m - j) * υ ^ j`
-    grind [pow_sub_mul_pow, negCount_signsW, descentPair]
+    rw [firstFactorChar, DescentPair.charW, descentPair, negCount_signsW,
+      ← mul_assoc (upsilonU1 ^ (D.m - j)), pow_sub_mul_pow _ j.prop.2,
+      mul_left_comm (upsilonU1 ^ D.m), mul_comm (upsilonU1 ^ D.m)]
   · -- the finite data
     unfold productDatum
     congr! 2
-    simp [addedDatum, invariantTraceChar, ← ite_and, regroupEquiv]
-    congr
-    simp [← ext_iff, Matrix.mul_apply, inclMatrix, forall_and, -sum_sum_type, Matrix.one_apply]
-    tauto
+    simp only [addedDatum, invariantTraceChar, ← ite_and, regroupEquiv]
+    congr 1
+    have h_fixes (A : Matrix (FirstFactorIndex j) (FirstFactorIndex j)
+        (D.twistModulus ϑ 2).ResidueRing) :
+        FixesColsOff (r := D.RowIndex) (.trans .inl .inl) A ↔
+          ∀ a (b : FirstFactorIndex j), (∀ r : D.RowIndex, b ≠ inl (inl r)) →
+            A a b = (1 : Matrix _ _ _) a b := by
+      let P : Matrix (FirstFactorIndex j) (FirstFactorIndex j) (D.twistModulus ϑ 2).ResidueRing :=
+        1 - inclMatrix (D.twistModulus ϑ 2).ResidueRing
+              (Function.Embedding.inl.trans Function.Embedding.inl) *
+            (inclMatrix (D.twistModulus ϑ 2).ResidueRing
+              (Function.Embedding.inl.trans Function.Embedding.inl))ᵀ
+      have h_rhs (a b : FirstFactorIndex j) :
+          P a b = if ∀ r : D.RowIndex, b ≠ inl (inl r) then (1 : Matrix _ _ _) a b else 0 := by
+        change (1 : Matrix (FirstFactorIndex j) (FirstFactorIndex j) _) a b -
+            ∑ r' : D.RowIndex,
+              inclMatrix (D.twistModulus ϑ 2).ResidueRing
+                (Function.Embedding.inl.trans Function.Embedding.inl) a r' *
+              inclMatrix (D.twistModulus ϑ 2).ResidueRing
+                (Function.Embedding.inl.trans Function.Embedding.inl) b r' = _
+        rcases b with (r | p) | f
+        · simp only [inclMatrix, Matrix.submatrix_apply, Matrix.one_apply, id_eq,
+            Embedding.trans_apply, Embedding.inl_apply, inl.injEq, mul_ite, mul_one, mul_zero,
+            Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, sub_self, ne_eq]
+          exact (ite_eq_right fun h' ↦ False.elim (h' r rfl)).symm
+        · simp only [inclMatrix, Matrix.submatrix_apply, Matrix.one_apply, id_eq,
+            Embedding.trans_apply, Embedding.inl_apply, inl.injEq, reduceCtorEq, ↓reduceIte,
+            mul_zero, Finset.sum_const_zero, sub_zero, ne_eq, not_false_eq_true, implies_true]
+        · simp only [inclMatrix, Matrix.submatrix_apply, Matrix.one_apply, id_eq,
+            Embedding.trans_apply, Embedding.inl_apply, reduceCtorEq, ↓reduceIte, mul_zero,
+            Finset.sum_const_zero, sub_zero, ne_eq, not_false_eq_true, implies_true]
+      change A * P = P ↔ _
+      simp only [← Matrix.ext_iff, Matrix.mul_apply, h_rhs, mul_ite, mul_zero, Matrix.one_apply]
+      constructor
+      · intro h a b hb
+        have h_ab := h a b
+        simp only [eq_true hb, ↓reduceIte, mul_one, Finset.sum_ite_eq', Finset.mem_univ] at h_ab
+        exact h_ab
+      · intro h a b
+        by_cases hb : ∀ r : D.RowIndex, b ≠ inl (inl r)
+        · simp only [eq_true hb, ↓reduceIte, mul_one, Finset.sum_ite_eq', Finset.mem_univ]
+          exact h a b hb
+        · simp only [eq_false hb, ↓reduceIte, Finset.sum_const_zero]
+    rw [h_fixes]
+    apply propext
+    constructor
+    · intro h
+      refine ⟨Matrix.ext fun a b ↦ ?_, Matrix.ext fun a b ↦ ?_⟩
+      · exact h a (inl (inr (inl b))) (by simp)
+      · rcases b with b | b
+        · exact h a (inl (inr (inr b))) (by simp)
+        · exact h a (inr b) (by simp)
+    · rintro ⟨h1, h2⟩ a ((r | (p | p)) | f) hne
+      · exact absurd rfl (hne r)
+      · exact congrFun (congrFun h1 a) p
+      · exact congrFun (congrFun h2 a) (inl p)
+      · exact congrFun (congrFun h2 a) (inr f)
   · -- the polynomials: the stacked determinants are the sum over the coordinates of
     -- `paddedMinorProd`
     simpa [signOrder, Prod.map_comp_map, ← comp_assoc] using!
       renameRowsCols_stackedDetProd_eq_sum j _ inl (inr ∘ inr)
   · -- the points, entry by entry
     apply G.ext_adeleMatrix
-    simp [← ext_iff, Prod.ext_iff, funext_iff, New.U.sum, regroupEquiv, Matrix.one_apply]
-    aesop (add simp regroupEquiv)
+    have h_blk : G.adeleMatrix (s := (1 : AddedIndex j → ℤˣ))
+          (1, U.blockSumOne (1, U.blockSumOne (i.rowChoice.classRep, h'))) =
+        (1 : Matrix (Fin (2 * D.m + (D.m - j))) _ (𝔸 D.E)).fromBlocks 0 0
+          ((G.adeleMatrix (s := (1 : D.FlatIndex → ℤˣ)) (1, i.rowChoice.classRep)).fromBlocks 0 0
+            (G.adeleMatrix (s := (1 : D.CarrierIndex → ℤˣ)) (1, h'))) := by
+      refine Matrix.ext fun a b ↦ Prod.ext (funext fun w ↦ ?_) ?_
+      · rcases a with a | a | a <;> rcases b with b | b | b
+        all_goals simp [G.adeleMatrix_fst, Matrix.one_apply]
+        split_ifs <;> rfl
+      · rcases a with a | a | a <;> rcases b with b | b | b
+        all_goals first
+          | rfl
+          | (simp [G.adeleMatrix_snd, U.blockSumOne, U.sum, Matrix.one_apply]
+             split_ifs <;> rfl)
+    simp only [G.adeleMatrix_reindex, G.adeleMatrix_sum, G.adeleMatrix_one, h_blk]
+    refine Matrix.ext fun a b ↦ ?_
+    rcases a with a | a | a | a | a <;> rcases b with b | b | b | b | b
+    all_goals first
+      | rfl
+      | (change (1 : Matrix (PadIndex j) (PadIndex j) (𝔸 D.E)) (inl a) (inl b) =
+          (1 : Matrix (Fin j) (Fin j) (𝔸 D.E)) a b
+         simp only [Matrix.one_apply, inl.injEq])
+      | (change (1 : Matrix (PadIndex j) (PadIndex j) (𝔸 D.E)) (inr a) (inr b) =
+          (1 : Matrix (Fin (2 * D.m + (D.m - j))) (Fin (2 * D.m + (D.m - j))) (𝔸 D.E)) a b
+         simp only [Matrix.one_apply, inr.injEq])
 
 -- Keeps definitional checks from unfolding `Finset.prod`.
 seal Finset.prod in
@@ -984,9 +1108,10 @@ lemma polyVector_letterPoly_mem_holomorphicData (ξ : WeylIndexFamily
     (letterPoly_highestVector_mem_holomorphicData isPosFirstOrder_orderW (paramW_lt_of_orderW_lt 1)
       h_inj
       (h_fit.numbering_eq 1) _ h_fit.colsPlus_eq_zero).2
-  -- `erw` sees through the composite linear map
-  erw [realPairWeil_fockLetters, star_mulVec]
-  simp [letterPoly, weylRep, ← mulVec_transpose, comp_def, conjTranspose_transpose]
+  simp only [letterPoly, LinearMap.comp_apply, AlgHom.toLinearMap_apply]
+  rw [realPairWeil_fockLetters]
+  simp [conjWeylRep, weylRep, star_mulVec, ← mulVec_transpose, comp_def,
+    conjTranspose_transpose]
 
 /-- The function `𝖥_i = choiceFn j i` on `U(W_j)` is a multiple of the theta series
 `kernelClassSum` for the trivial twist, at the level cut out by the rows of `Λ = i.matrix`. -/

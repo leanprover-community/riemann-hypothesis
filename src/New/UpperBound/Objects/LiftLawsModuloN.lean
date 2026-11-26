@@ -59,7 +59,7 @@ class IsSplitLevel (P : Finset (FinPlace E)) (N : outParam ℕ) : Prop where
   /-- `N` is a uniformiser at each place in `P`. -/
   protected v_natCast : ∀ w ∈ P, v (N : LocField w) = exp (-1)
   /-- The places above `N` are those in `P` and their conjugates. -/
-  natCast_mem_iff (w : FinPlace E) : ↑N ∈ w.1 ↔ w ∈ P ∨ star w ∈ P
+  natCast_mem_iff (w : FinPlace E) : ↑N ∈ w.asIdeal ↔ w ∈ P ∨ star w ∈ P
 
 /-- The finite adele that is `y w / N` at `w ∈ P`, with `y w` read in `[0, N)`, and `0`
 elsewhere. -/
@@ -92,9 +92,9 @@ variable [Λ : IsSplitLevel P N] (π : Rep ℂ (GL (n ⊕ Unit) (LocProd P)))
   (π' : Rep ℂ (GL (n' ⊕ Unit) (LocProd P)))
 
 /-- The residue field at a place of `P` is `ℤ / N`. -/
-def residueEquiv (w : P) : ResField w.1 ≃+* ZMod N :=
-  letI : Fintype (ResField w.1) := Fintype.ofFinite (ResField w.1)
-  (ZMod.ringEquivOfPrime (ResField w.1) Fact.out (by simp [← card_ResField, ← Λ.q_eq w])).symm
+def residueEquiv (w : P) : ResField w.val ≃+* ZMod N :=
+  letI : Fintype (ResField w.val) := Fintype.ofFinite (ResField w.val)
+  (ZMod.ringEquivOfPrime (ResField w.val) Fact.out (by simp [← card_ResField, ← Λ.q_eq w])).symm
 
 /-- Reduction modulo `N` of the integers at `P`. -/
 def reduction : O (F := LocProd P) →+* (P → ZMod N) :=
@@ -113,7 +113,8 @@ lemma reduction_eq_iff {x : O (F := LocProd P)} {c : P → ZMod N} :
   refine funext_iff.trans (forall_congr' fun w ↦ ?_)
   calc Λ.reduction x w = c w
       ↔ Λ.residueEquiv w (residueAt w (x - (c w).val)) = 0 := by
-        simp only [map_sub, map_natCast, ZMod.natCast_zmod_val, sub_eq_zero]
+        rw [(residueAt w).map_sub, (residueEquiv w).map_sub, map_natCast (residueAt w),
+          map_natCast (residueEquiv w), ZMod.natCast_zmod_val, sub_eq_zero]
         rfl
     _ ↔ v ((x : LocProd P) w - (c w).val) < 1 :=
         (residueEquiv w).map_eq_zero_iff.trans (residueAt_eq_zero w)
@@ -124,7 +125,7 @@ instance : IsLocalHom Λ.reduction := ⟨by simp [reduction, Pi.isUnit_iff]⟩
 
 lemma reduction_surjective : Surjective Λ.reduction := by
   intro y
-  have h_int : (fun w : P ↦ ((y w).val : LocField w.1)) ∈ O (F := LocProd P) :=
+  have h_int : (fun w : P ↦ ((y w).val : LocField w.val)) ∈ O (F := LocProd P) :=
     mem_O_locProd.2 fun w ↦ (v.mem_integer_iff _).1 (natCast_mem v.integer (y w).val)
   exact ⟨⟨_, h_int⟩, by simp [reduction_eq_iff]⟩
 
@@ -137,7 +138,7 @@ abbrev reductionGL : GL n (O (F := LocProd P)) →* GL n (P → ZMod N) := map �
 
 /-- A section of `reductionGL`. -/
 abbrev liftGL : GL n (P → ZMod N) → GL n (O (F := LocProd P)) :=
-  surjInv (GL_map_surjective Λ.reduction reduction_surjective)
+  surjInv (Matrix.GeneralLinearGroup.map_surjective Λ.reduction reduction_surjective)
 
 lemma reductionGL_liftGL (k : GL n (P → ZMod N)) : reductionGL (Λ.liftGL k) = k := surjInv_eq _ k
 
@@ -320,14 +321,16 @@ omit [WeilData E] in
 /-- An integer at `P` reduces to zero modulo `N` exactly if `N` divides it at every place. -/
 lemma reduction_eq_zero_iff {x : O (F := LocProd P)} :
     Λ.reduction x = 0 ↔ ∀ w : P, v ((x : LocProd P) w) ≤ exp (-1) := by
-  simp [reduction_eq_iff, Λ.v_natCast, div_le_one₀]
+  simp only [reduction_eq_iff, Pi.zero_apply, ZMod.val_zero, Nat.cast_zero, sub_zero, map_div₀,
+    SetLike.coe_mem, Λ.v_natCast, Int.reduceNeg, exp_pos, div_le_one₀, Subtype.forall]
 
 omit [WeilData E] in
 /-- An integer `x` at `P` reduces to one modulo `N` exactly if `N` divides `x - 1` at every
 place. -/
 lemma reduction_eq_one_iff {x : O (F := LocProd P)} :
     Λ.reduction x = 1 ↔ ∀ w : P, v ((x : LocProd P) w - 1) ≤ exp (-1) := by
-  simp [reduction_eq_iff, Λ.v_natCast, div_le_one₀, ZMod.val_one]
+  simp only [reduction_eq_iff, Pi.one_apply, ZMod.val_one, Nat.cast_one, map_div₀, SetLike.coe_mem,
+    Λ.v_natCast, Int.reduceNeg, exp_pos, div_le_one₀, Subtype.forall]
 
 omit [Fintype n] [WeilData E] in
 /-- An integral vector is the last basis vector modulo `N` exactly if, at every place of `P`, `N`
@@ -336,8 +339,9 @@ lemma reduction_comp_eq_lastBasisVector_iff {x : n ⊕ Unit → O (F := LocProd 
     (fun j : n ⊕ Unit ↦ Λ.reduction (x j)) = lastBasisVector ↔
       (∀ (j : n) (w : P), v ((x (.inl j) : LocProd P) w) ≤ exp (-1)) ∧
         ∀ w : P, v ((x (.inr ()) : LocProd P) w - 1) ≤ exp (-1) := by
-  simp [funext_iff (α := n ⊕ Unit), reduction_eq_zero_iff, reduction_eq_one_iff,
-    Unique.forall_iff]
+  simp only [funext_iff (α := n ⊕ Unit), Sum.forall, ne_eq, reduceCtorEq, not_false_eq_true,
+    Pi.single_eq_of_ne, reduction_eq_zero_iff, Int.reduceNeg, Subtype.forall, Pi.single_eq_same,
+    reduction_eq_one_iff, Unique.forall_iff, PUnit.default_eq_unit]
 
 omit [DecidableEq n] [DecidableEq n'] [WeilData E] in
 /-- Let `p` be a condition on matrices modulo `N`, and let `Q` be equivalent, when `T` is integral,
@@ -385,25 +389,42 @@ lemma lastRowDatum_conj_diagNInv (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd
     lastRowDatum ((Λ.diagNInv (n := n'))⁻¹.val * T * (Λ.diagNInv (n := n)).val) =
       directDatum T := by
   -- Conjugation multiplies the last row of `T` by `N` and the last column by `N⁻¹`, off the corner.
-  set C := (Λ.diagNInv (n := n'))⁻¹.val * T * (Λ.diagNInv (n := n)).val with hC
+  set C : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) :=
+    (Λ.diagNInv (n := n'))⁻¹.val * T * (Λ.diagNInv (n := n)).val with hC
   have h_block (i : n') (j : n) : C (.inl i) (.inl j) = T (.inl i) (.inl j) := by
-    simp [hC, diagNInv, diagN, ← map_inv]
+    simp only [hC, diagNInv, diagN, ← map_inv, inv_inv, coe_diagGL, Pi.inv_apply,
+      Units.val_inv_eq_inv_val, mul_diagonal, diagonal_mul, Sum.isLeft_inl, Units.val_one, one_mul,
+      inv_one, mul_one, ↓reduceIte]
   have h_corner : C (.inr ()) (.inr ()) = T (.inr ()) (.inr ()) := by
     ext w : 1
-    simp [hC, diagNInv, diagN, ← map_inv, ← div_eq_mul_inv,
-      (NeZero.out : (N : LocField w.1) ≠ 0)]
+    simp only [hC, diagNInv, diagN, ← map_inv, inv_inv, coe_diagGL, Pi.inv_apply,
+      Units.val_inv_eq_inv_val, mul_diagonal, diagonal_mul, Sum.isLeft_inr, Bool.false_eq_true,
+      Pi.mul_apply, MulEquiv.val_piUnits_symm_apply, Units.val_mk0, ← div_eq_mul_inv, w.property,
+      ↓reduceIte, mul_div_cancel_left₀ _ (NeZero.out : (N : LocField w.val) ≠ 0)]
   have h_row (j : n) (w : P) :
       v (C (.inr ()) (.inl j) w) = v (T (.inr ()) (.inl j) w) * exp (-1) := by
-    simp [hC, diagNInv, diagN, ← map_inv, Λ.v_natCast, mul_comm]
+    simp only [hC, diagNInv, diagN, ← map_inv, inv_inv, coe_diagGL, Pi.inv_apply,
+      Units.val_inv_eq_inv_val, mul_diagonal, diagonal_mul, Sum.isLeft_inr, Bool.false_eq_true,
+      Sum.isLeft_inl, Units.val_one, inv_one, Pi.mul_apply, MulEquiv.val_piUnits_symm_apply,
+      Units.val_mk0, Pi.one_apply, mul_one, map_mul, Λ.v_natCast, w.property, ↓reduceIte, mul_comm]
   have h_col (i : n') (w : P) :
       v (C (.inl i) (.inr ()) w) ≤ 1 ↔ v (T (.inl i) (.inr ()) w) ≤ exp (-1) := by
-    simp [hC, diagNInv, diagN, ← map_inv, Λ.v_natCast, ← div_eq_mul_inv, div_le_one₀]
+    simp only [hC, diagNInv, diagN, ← map_inv, inv_inv, coe_diagGL, Pi.inv_apply,
+      Units.val_inv_eq_inv_val, mul_diagonal, diagonal_mul, Sum.isLeft_inl, Units.val_one, one_mul,
+      Sum.isLeft_inr, Bool.false_eq_true, Pi.mul_apply, MulEquiv.val_piUnits_symm_apply,
+      Units.val_mk0, ← div_eq_mul_inv, map_div₀, Λ.v_natCast, w.property, ↓reduceIte, exp_pos,
+      div_le_one₀]
   have hN : exp (-1 : ℤ) ≤ 1 := exp_le_exp.2 (by norm_num)
   simp only [lastRowDatum_apply, directDatum_apply, Sum.forall, Unique.forall_iff,
     PUnit.default_eq_unit, h_block, h_corner, h_row, h_col, exp_pos, mul_le_iff_le_one_left]
   -- Both sides say: `T` is integral, `N` divides its last column off the corner, and the corner is
   -- `1` modulo `N`. The remaining conditions follow from these because `N` is integral.
-  grind [mul_le_one']
+  refine if_congr ⟨fun ⟨⟨h_left, _, h_corner⟩, h_row, h_one⟩ ↦
+      ⟨⟨fun i ↦ ⟨(h_left i).1, fun w ↦ ((h_left i).2 w).trans hN⟩, h_row, h_corner⟩,
+        fun i ↦ (h_left i).2, h_one⟩,
+    fun ⟨⟨h_left, h_row, h_corner⟩, h_col, h_one⟩ ↦
+      ⟨⟨fun i ↦ ⟨(h_left i).1, h_col i⟩, fun j w ↦ mul_le_one' (h_row j w) hN, h_corner⟩,
+        h_row, h_one⟩⟩ rfl rfl
 
 /-! ## The stabilisers fix the direct and the mirror datum -/
 
@@ -445,7 +466,8 @@ lemma exists_inclGL_eq_conj_diagNInv {g : GL (n ⊕ Unit) (LocProd P)} (hg : g �
     rw [Units.val_mul, Units.val_mul, lastRowDatum_conj_diagNInv]
     exact directDatum_ne_zero_of_mem_mirabolic ha
   have h_conj_inv : lastRowDatum (Λ.diagNInv⁻¹ * g * Λ.diagNInv)⁻¹.val ≠ 0 := by
-    simpa [mul_assoc] using h_conj (inv_mem hg)
+    rw [_root_.mul_inv_rev, _root_.mul_inv_rev, inv_inv, ← mul_assoc]
+    exact h_conj (inv_mem hg)
   obtain ⟨k, hk_row, hk⟩ := exists_inclGL_eq
     (f := fun T ↦ if T (.inr ()) = lastBasisVector then 1 else 0) (h_conj hg) h_conj_inv
   exact ⟨k, by simpa using hk_row, hk⟩
@@ -495,24 +517,23 @@ lemma mirabolic_fix_upOperator
     rw [h_row, single_one_dotProduct]
   -- Both `k * lastRowColGL y` and `lastRowColGL (k y)` have last column `k y` modulo `N`, so they
   -- differ by an element of `mirabolic`.
-  have h_term (y : n ⊕ Unit → P → ZMod N) (hy : IsUnit (y (.inr ()))) :
-      π.ρ g (π.ρ (diagNInv * inclGL (lastRowColGL y)) φ) =
-        π.ρ (diagNInv * inclGL (lastRowColGL (reductionGL k • y))) φ := by
-    have h_mem : (diagNInv * inclGL (lastRowColGL (reductionGL k • y)))⁻¹ * g *
+  have h_mem (y : n ⊕ Unit → P → ZMod N) (hy : IsUnit (y (.inr ()))) :
+      (diagNInv * inclGL (lastRowColGL (reductionGL k • y)))⁻¹ * g *
         (diagNInv * inclGL (lastRowColGL y)) ∈ Λ.mirabolic := by
-      refine mem_mirabolic.2
-        ⟨(lastRowColGL (reductionGL k • y))⁻¹ * k * lastRowColGL y, ?_, by simp [hk, mul_assoc]⟩
-      rw [map_mul, map_mul, map_inv, mul_smul, mul_smul, inv_smul_eq_iff,
+    refine mem_mirabolic.2 ⟨(lastRowColGL (reductionGL k • y))⁻¹ * k * lastRowColGL y, ?_, ?_⟩
+    · rw [map_mul, map_mul, map_inv, mul_smul, mul_smul, inv_smul_eq_iff,
         lastRowColGL_smul_lastBasisVector hy,
         lastRowColGL_smul_lastBasisVector (by rwa [h_last])]
-    rw [← π.ρ.inv_apply_eq_iff, ← mul_apply_eq_comp, ← mul_apply_eq_comp, ← map_mul,
-      ← map_mul]
-    exact hφ _ h_mem
+    · rw [map_mul, map_mul, map_inv, hk, _root_.mul_inv_rev]
+      simp only [mul_assoc]
   -- So `g` permutes the terms of the sum that defines `Up`, by `y ↦ k y`.
   simp only [upOperator, mul_sum, mul_smul_comm, ← map_mul, LinearMap.sum_apply,
     LinearMap.smul_apply, map_sum, map_smul]
   refine sum_equiv (toPerm (reductionGL k)) (by simp [h_last]) fun y hy ↦ ?_
-  rw [h_term y (mem_filter.1 hy).2, toPerm_apply, h_last]
+  rw [toPerm_apply, h_last]
+  congr 1
+  rw [← π.ρ.inv_apply_eq_iff, ← mul_apply_eq_comp, ← mul_apply_eq_comp, ← map_mul, ← map_mul]
+  exact hφ _ (h_mem y (mem_filter.1 hy).2)
 
 /-- An endomorphism of `π` that commutes with the action of all matrices at `P` commutes with `Up`
 (`upOperator`). -/
@@ -521,9 +542,10 @@ lemma commute_upOperator {T : Module.End ℂ π}
   (hT _).mul_right (Commute.sum_right _ _ _ fun _ _ ↦ (hT _).smul_right _)
 
 lemma scalar_commute_upOperator (x : (O (F := LocProd P))ˣ) :
-    Commute (π.ρ (inclGL (scalar (n ⊕ Unit) x))) (upOperator π) := by
-  simp [upOperator, commute_iff_eq, mul_sum, sum_mul, ← map_mul, map_scalar,
-    GeneralLinearGroup.scalar_commute]
+    Commute (π.ρ (inclGL (scalar (n ⊕ Unit) x))) (upOperator π) :=
+  commute_upOperator fun g ↦ by
+    rw [map_scalar]
+    exact (show Commute _ g from GeneralLinearGroup.scalar_commute _ g).map π.ρ
 
 omit [WeilData E] in
 /-- A linear map `T` from `π` to `π'` that commutes with integral unit scalars sends ramified
@@ -534,7 +556,7 @@ lemma map_mem_ramified (T : π →ₗ[ℂ] π')
     (hφ : φ ∈ ramified π) : T φ ∈ ramified π' := by
   intro w
   obtain ⟨x, hx_one, ψ, rfl⟩ := hφ w
-  exact ⟨x, hx_one, T ψ, by simp [hT]⟩
+  exact ⟨x, hx_one, T ψ, (congrArg (T ψ - ·) (hT x ψ)).trans (map_sub T ψ _).symm⟩
 
 /-- `Up` (`upOperator`) commutes with integral unit scalars, so it preserves ramified vectors. -/
 lemma upOperator_mem_ramified (hφ : φ ∈ ramified π) : upOperator π φ ∈ ramified π :=
@@ -572,7 +594,10 @@ lemma exists_GL_smul_lastBasisVector {y : n ⊕ Unit → P → ZMod N}
   obtain ⟨k, hk⟩ : IsUnit (piRingEquiv.symm fun w : P ↦ (g w).val) :=
     (Pi.isUnit_iff.2 fun w ↦ (g w).isUnit).map piRingEquiv.symm
   refine ⟨k, funext₂ fun a w ↦ ?_⟩
-  simpa [Units.smul_def, hk] using congrFun (hg w) a
+  have h_entry := congrFun (hg w) a
+  rw [Units.smul_def, smul_eq_mulVec, mulVec_single_one, col_apply] at h_entry
+  rw [Units.smul_def, smul_eq_mulVec, mulVec_single_one, col_apply, hk, piRingEquiv_symm_apply,
+    of_apply, h_entry]
 
 namespace LiftLaw
 
@@ -588,7 +613,12 @@ lemma mem_ramified (H : LiftLaw π π' L γ) (f : Matrix (n' ⊕ Unit) (n ⊕ Un
   refine map_mem_ramified _ (fun x ψ ↦ ?_) hφ
   rw [← H.integral_equivariant (scalar (n ⊕ Unit) x)⁻¹ (scalar (n' ⊕ Unit) x) f
     (π.ρ (inclGL (scalar (n ⊕ Unit) x)) ψ)]
-  simp [← smul_eq_diagonal_mul, smul_eq_mul_diagonal, Matrix.mul_assoc]
+  simp only [val_map_apply, coe_scalar, scalar_apply, diagonal_map Λ.reduction.map_zero,
+    ← smul_eq_diagonal_mul, smul_eq_mul_diagonal, map_inv, coe_units_inv, Matrix.mul_assoc,
+    det_diagonal, prod_const, card_univ, Fintype.card_sum, Fintype.card_unique, ne_eq,
+    Nat.add_eq_zero_iff, one_ne_zero, and_false, not_false_eq_true, isUnit_pow_iff,
+    _root_.isUnit_map_iff, Units.isUnit, mul_nonsing_inv, Matrix.mul_one,
+    Representation.inv_self_apply]
 
 /-- Let the lift `L Ψ : π → π'`, linear in its datum `Ψ`, obey the lift law, and let the function
 `f` of matrices modulo `N` be invariant under the unit scalars that are `1` away from the place `w`.
@@ -602,9 +632,10 @@ lemma apply_liftFn_eq_zero_of_smul_invariant (H : LiftLaw π π' L γ) (hφ : φ
     L (liftFn f) φ = 0 := by
   obtain ⟨x, hx_one, ψ, rfl⟩ := hφ w
   have h_fix : L (liftFn f) (π.ρ (inclGL (scalar (n ⊕ Unit) x)) ψ) = L (liftFn f) ψ := by
-    simp [← smul_eq_mul_diagonal, ← H.integral_equivariant (scalar (n ⊕ Unit) x) 1 f ψ,
-      hf _ (x.isUnit.map reduction) hx_one]
-  simp [h_fix]
+    simp only [← H.integral_equivariant (scalar (n ⊕ Unit) x) 1 f ψ, map_one, Units.val_one,
+      Matrix.one_mul, val_map_apply, coe_scalar, scalar_apply, diagonal_map Λ.reduction.map_zero,
+      ← smul_eq_mul_diagonal, hf _ (Λ.reduction.isUnit_map x.isUnit) hx_one, one_apply_eq_self]
+  exact (map_sub _ _ _).trans (sub_eq_zero.2 h_fix.symm)
 
 /-- Let the lift `L Ψ : π → π'` be linear in its datum `Ψ`, a function on matrices at `P`, and obey
 the lift law; in particular integral invertible matrices move freely between the datum and the two

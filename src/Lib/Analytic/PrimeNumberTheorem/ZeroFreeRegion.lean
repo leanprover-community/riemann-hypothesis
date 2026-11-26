@@ -67,7 +67,7 @@ lemma pow_three_le_mul_norm_regularL_pow (χ : DirichletCharacter ℂ N) {s : �
     have at_re : (1 : ℂ) + (s.re - 1 : ℝ) = s.re := by simp
     have at_s : s.re + I * s.im = s := by rw [mul_comm, re_add_im]
     have at_s₂ : s.re + 2 * I * s.im = s₂ := by linear_combination at_s
-    simpa only [at_re, at_s, at_s₂, norm_mul, norm_pow, ge_iff_le] using
+    simpa only [at_re, at_s, at_s₂, norm_mul, norm_pow] using
       χ.norm_LSeries_product_ge_one (by linarith : 0 < s.re - 1) s.im
   have trivial_char_le : ‖LSeries ((1 : DirichletCharacter ℂ N) ·) s.re‖ ≤ 2 / η := calc
     _ ≤ 1 + 1 / η := norm_LSeries_char_le 1 (one_div_pos.2 hη) (by simpa using h_re)
@@ -119,7 +119,6 @@ lemma norm_logDeriv_regularL_le (χ : DirichletCharacter ℂ N) {s : ℂ} {l : �
     regularL χ s ≠ 0 ∧ ‖logDeriv (regularL χ) s‖ ≤ l ^ 25 := by
   -- Compare `s` with `v = s + 2 η`, `η = l⁻²⁵`: between them `𝖿_χ` changes by at most
   -- `2 l³ · 2 η = 4 / l²²`, and `|𝖿_χ(v)| ≥ 12 / l²²`.
-  have hl_pos : 0 < l := by linarith
   have exp_ge : l + 1 ≤ rexp l := add_one_le_exp l
   have inv_le : 1 / l ≤ 1 / 6 := one_div_le_one_div_of_le (by norm_num) (by linarith)
   let η : ℝ := 1 / l ^ 25

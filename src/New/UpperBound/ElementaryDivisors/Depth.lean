@@ -1,9 +1,11 @@
 module
 
-public import Lib.General.Algebra.MultivariatePolynomials
-public import New.UpperBound.ElementaryDivisors.TwistingData
 import TauCeti.Algebra.BigOperators.Finset.LayerCake
 import TauCeti.RingTheory.MvPolynomial.Symmetric.Alternant
+public import Mathlib.RingTheory.PiTensorProduct
+public import Std.Tactic.BVDecide.Normalize.Bool
+public import Lib.General.Algebra.MultivariatePolynomials
+public import New.UpperBound.ElementaryDivisors.TwistingData
 
 /-!
 # Few forms have only deep translates
@@ -57,6 +59,37 @@ open MvPolynomial Matrix Finset Finsupp IsLocalRing Fintype Ideal
 section DeepForms
 
 variable {N k : ℕ} {W K : Type} [CommRing W] [IsLocalRing W] [Field K] (T : FrobeniusCycle N W K)
+
+private lemma ringHom_map_zero {R S : Type*} [NonAssocSemiring R] [NonAssocSemiring S]
+    (f : R →+* S) : f 0 = 0 := f.map_zero'
+
+private lemma ringHom_map_one {R S : Type*} [NonAssocSemiring R] [NonAssocSemiring S]
+    (f : R →+* S) : f 1 = 1 := f.map_one'
+
+private lemma ringHom_map_add {R S : Type*} [NonAssocSemiring R] [NonAssocSemiring S]
+    (f : R →+* S) (a b : R) : f (a + b) = f a + f b := f.map_add' a b
+
+private lemma ringHom_map_mul {R S : Type*} [NonAssocSemiring R] [NonAssocSemiring S]
+    (f : R →+* S) (a b : R) : f (a * b) = f a * f b := f.map_mul' a b
+
+private lemma ringHom_map_neg {R S : Type*} [NonAssocRing R] [NonAssocRing S]
+    (f : R →+* S) (a : R) : f (-a) = -f a :=
+  eq_neg_of_add_eq_zero_left (by rw [← ringHom_map_add, neg_add_cancel, ringHom_map_zero])
+
+private lemma ringHom_map_sub {R S : Type*} [NonAssocRing R] [NonAssocRing S]
+    (f : R →+* S) (a b : R) : f (a - b) = f a - f b := by
+  rw [sub_eq_add_neg, ringHom_map_add, ringHom_map_neg, ← sub_eq_add_neg]
+
+private lemma ringHom_map_sum {ι R S : Type*} [NonAssocSemiring R] [NonAssocSemiring S]
+    (f : R →+* S) (s : Finset ι) (g : ι → R) : f (∑ i ∈ s, g i) = ∑ i ∈ s, f (g i) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => exact ringHom_map_zero f
+  | insert a s ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha, ringHom_map_add, ih]
+
+private lemma ringHom_ne_zero {R S : Type*} [NonAssocSemiring R] [NonAssocSemiring S]
+    {f : R →+* S} (hf : Function.Injective f) {a : R} (ha : a ≠ 0) : f a ≠ 0 :=
+  fun h ↦ ha (hf (h.trans (ringHom_map_zero f).symm))
 
 theorem deepIndicator_eq_zero_or_eq_one (r : ℕ) (v : Fin k × ZMod N) :
     T.deepIndicator r v = 0 ∨ T.deepIndicator r v = 1 :=
@@ -147,8 +180,16 @@ theorem map_polyOfCoeffs_mem_pow_of_mem_deepForms {n r τ : ℕ} {F : Exponents 
   have hF_eq : F = T.letterRep n g⁻¹ *ᵥ G := by simp [G, ← map_mul]
   have h_expand : ψ (polyOfCoeffs F) = ∑ β : Exponents N k n,
       ψ (C (G β)) * ∏ v : Fin k × ZMod N, ψ (T.polyAction g⁻¹ (X v)) ^ exponentOf β v := by
-    rw [hF_eq, ← polyAction_polyOfCoeffs]
-    simp [polyOfCoeffs, monomial_eq]
+    rw [hF_eq, ← polyAction_polyOfCoeffs, polyOfCoeffs, LinearMap.sum_apply, ← AlgHom.coe_toRingHom,
+      ringHom_map_sum, ringHom_map_sum]
+    refine Finset.sum_congr rfl fun β _ ↦ ?_
+    rw [LinearMap.comp_apply, LinearMap.proj_apply, monomial_eq,
+      Finsupp.prod_fintype _ _ (fun _ ↦ pow_zero _), AlgHom.coe_toRingHom, map_mul,
+      ringHom_map_mul, show (T.polyAction g⁻¹) (C (G β)) = C (G β) from
+        (T.polyAction g⁻¹).commutes (G β), map_prod, map_prod]
+    congr 1
+    refine Finset.prod_congr rfl fun v _ ↦ ?_
+    rw [map_pow, map_pow]
   rw [h_expand]
   refine sum_mem fun β _ ↦ ?_
   obtain h_deep | h_shallow := le_or_gt τ (T.depth k n r β)
@@ -158,7 +199,9 @@ theorem map_polyOfCoeffs_mem_pow_of_mem_deepForms {n r τ : ℕ} {F : Exponents 
     refine pow_le_pow_right h_deep (mul_mem_left _ _ ?_)
     rw [h_pow]
     exact prod_mem_prod fun v _ ↦ pow_mem_pow (h_var v) _
-  · simp [show G β = 0 from T.letterRep_mulVec_eq_zero_of_mem_deepForms hF g h_shallow]
+  · have hG0 : G β = 0 := T.letterRep_mulVec_eq_zero_of_mem_deepForms hF g h_shallow
+    rw [hG0, ringHom_map_zero C, ringHom_map_zero ψ, zero_mul]
+    exact Ideal.zero_mem _
 
 /-- For a ring map `x` from the polynomials to `L`, the ring map to polynomials over `L` that keeps
 the variables that are deep for `r` and sends the constants and the other variables to their images
@@ -187,8 +230,8 @@ theorem specializeShallow_polyOfCoeffs_ne_zero {L : Type} [CommRing L] {n : ℕ}
     {F : Exponents N k n → K} (hF_ne : F ≠ 0) : T.specializeShallow r x (polyOfCoeffs F) ≠ 0 := by
   obtain ⟨β, hβ⟩ : ∃ β : Exponents N k n, F β ≠ 0 := Function.ne_iff.1 hF_ne
   have h_coeff : (polyOfCoeffs F).coeff (exponentOf β) = F β := by simp [polyOfCoeffs]
-  rw [map_ne_zero_iff _ (T.specializeShallow_injective r hx), MvPolynomial.ne_zero_iff]
-  exact ⟨exponentOf β, h_coeff.trans_ne hβ⟩
+  exact ringHom_ne_zero (T.specializeShallow_injective r hx)
+    (MvPolynomial.ne_zero_iff.2 ⟨exponentOf β, h_coeff.trans_ne hβ⟩)
 
 /-- The ring map `T.specializeShallow r x` keeps the deep variables and reads the others in `L`
 through `x`. Each monomial `α` of its value at the polynomial with coefficients `F` is the deep part
@@ -206,12 +249,32 @@ theorem exists_eq_of_mem_support_specializeShallow {L : Type} [CommRing L] {n r 
     x (C (F β)) * x (∏ v with T.deepIndicator r v = 0, X v ^ exponentOf β v)
   have h_expand : T.specializeShallow r x (polyOfCoeffs F) =
       ∑ β : Exponents N k n, C (c β) * ∏ v ∈ deep, X v ^ exponentOf β v := by
-    simp [polyOfCoeffs, specializeShallow, prod_fintype, prod_ite, c, deep, mul_assoc]
+    rw [polyOfCoeffs, LinearMap.sum_apply, ringHom_map_sum]
+    refine Finset.sum_congr rfl fun β _ ↦ ?_
+    rw [LinearMap.comp_apply, LinearMap.proj_apply, monomial_eq,
+      Finsupp.prod_fintype _ _ (fun _ ↦ pow_zero _), ringHom_map_mul, map_prod]
+    have h_C : T.specializeShallow r x (C (F β)) = C (x (C (F β))) := by
+      simp only [specializeShallow, eval₂Hom_C, RingHom.comp_apply]
+    have h_prod :
+        (∏ v : Fin k × ZMod N, T.specializeShallow r x (X v ^ exponentOf β v)) =
+          C (x (∏ v with T.deepIndicator r v = 0, X v ^ exponentOf β v)) *
+            ∏ v ∈ deep, X v ^ exponentOf β v := by
+      have h_term (v : Fin k × ZMod N) :
+          T.specializeShallow r x (X v ^ exponentOf β v) =
+            if T.deepIndicator r v = 0 then C (x (X v ^ exponentOf β v))
+            else X v ^ exponentOf β v := by
+        rw [map_pow]
+        simp only [specializeShallow, eval₂Hom_X']
+        split_ifs <;> simp only [map_pow]
+      simp only [h_term, Finset.prod_ite, ← map_prod]
+      rfl
+    rw [h_C, h_prod, ← mul_assoc, ← ringHom_map_mul C]
   have h_coeff : ∑ β : Exponents N k n, (if α = deepPart β then c β else 0) ≠ 0 := by
     simpa [h_expand, coeff_sum, coeff_prod_X_pow] using hα
   obtain ⟨β, h_eq, hc⟩ : ∃ β : Exponents N k n, α = deepPart β ∧ c β ≠ 0 := by
     simpa using exists_ne_zero_of_sum_ne_zero h_coeff
-  exact ⟨β, fun h_zero ↦ by simp [c, h_zero] at hc,
+  exact ⟨β, fun h_zero ↦ hc (by dsimp only [c]; rw [h_zero, ringHom_map_zero C,
+      ringHom_map_zero x, zero_mul]),
     fun v ↦ by simp [h_eq, deepPart, deep, Finsupp.indicator_apply]⟩
 
 /-- Let the variable `v u b` determine `b`, and let the exponents `e u` be positive and distinct.
@@ -296,23 +359,30 @@ lemma single_mem_lowPowerForms_of_ne_zero {r m : ℕ} (hm : 2 * r + m = k) {L : 
     simpa [entryRow, Fin.ext_iff] using congrArg Prod.fst h_var
   have h_unit : IsUnit (x.mapMatrix M) := by
     rw [isUnit_iff_isUnit_det, ← x.map_det]
-    exact ((map_ne_zero_iff x hx).2 h_det).isUnit
+    exact (ringHom_ne_zero hx h_det).isUnit
   obtain ⟨μ, hμ⟩ : ∃ μ : Fin r → L, μ ᵥ* x.mapMatrix M = Pi.single b 1 :=
     vecMul_surjective_iff_isUnit.2 h_unit _
   let row (u : Fin r) : Fin r × Fin (m + 1) → L :=
     (x ∘ T.entryCoeff hm (entryCol hm (b, l), i - J u)) ^ T.P ^ J u
   have row_mem (u : Fin r) : row u ∈ T.lowPowerForms hm x i := by
-    have h_col : 2 * r ≤ entryCol hm (b, l) := by grind [entryCol]
+    have h_col : 2 * r ≤ entryCol hm (b, l) := by simp only [entryCol, hl, ↓reduceIte]; lia
     have h_order : T.deepOrder r (entryCol hm (b, l), i - J u) = T.P ^ (2 * r) := by
       simp [deepOrder, deepIndicator, hJ_even, h_col, show r ≤ entryCol hm (b, l) by lia]
     refine Submodule.subset_span ⟨(entryCol hm (b, l), i - J u), J u, by simp, ?_, rfl⟩
     rw [h_order]
-    exact Nat.pow_lt_pow_right hP (by grind [hJ_div u])
+    exact Nat.pow_lt_pow_right hP (by have := hJ_div u; lia)
   have row_apply (u : Fin r) (t : Fin r × Fin (m + 1)) :
       row u t = if t.2 = l then x (M u t.1) else 0 := by
-    have h_same_col : entryCol hm t = entryCol hm (b, l) ↔ t.2 = l := by grind [entryCol]
-    split_ifs with ht <;>
-      simp [row, entryCoeff, M, rootVar, hJ_even, h_same_col, ht, entryRow, T.prime.ne_zero]
+    have h_same_col : entryCol hm t = entryCol hm (b, l) ↔ t.2 = l := by
+      rcases eq_or_ne t.2 0 with ht0 | ht0 <;>
+        simp only [Fin.ext_iff, entryCol, hl, ht0, ↓reduceIte] <;>
+        constructor <;> intro h <;> lia
+    dsimp only [row, Pi.pow_apply, Function.comp_apply, entryCoeff, rootVar, M, Matrix.of_apply]
+    simp only [hJ_even, ↓reduceIte, mul_one, Prod.mk.injEq, and_true, h_same_col]
+    split_ifs with ht
+    · rw [map_pow]
+      rfl
+    · rw [ringHom_map_zero, zero_pow (pow_ne_zero _ (pow_ne_zero _ T.prime.ne_zero))]
   have h_comb : Pi.single (b, l) 1 = ∑ u : Fin r, μ u • row u := by
     ext ⟨b', l'⟩
     by_cases hl' : l' = l
@@ -331,16 +401,26 @@ lemma single_zero_mem_lowPowerForms {r m : ℕ} (hm : 2 * r + m = k) {L : Type} 
   let v : Fin k × ZMod N := T.rootVar (entryRow hm (b, 0)) (entryCol hm (b, 0)) i
   let row : Fin r × Fin (m + 1) → L := x ∘ T.entryCoeff hm v
   have row_mem : row ∈ T.lowPowerForms hm x i := by
-    have h_deep : T.deepIndicator r v = 1 := by grind [deepIndicator, rootVar, entryRow, entryCol]
+    have h_deep : T.deepIndicator r v = 1 := by
+      cases h_even : T.isEven i <;>
+        simp [deepIndicator, v, rootVar, entryRow, entryCol, h_even, Nat.not_le_of_lt b.isLt]
     refine Submodule.subset_span ⟨v, 0, by simp [v], ?_, by simp [row]⟩
     rw [deepOrder, h_deep, one_mul]
-    exact Nat.pow_lt_pow_right (mod_cast T.one_lt_P) (by grind [b.pos])
+    exact Nat.pow_lt_pow_right (mod_cast T.one_lt_P) (by have := b.isLt; split_ifs <;> lia)
   have h_pivot : row (b, 0) ≠ 0 := by
-    cases h_even : T.isEven i <;> simp [row, entryCoeff, v, h_even, map_eq_zero_iff x hx]
+    dsimp only [row, Function.comp_apply, entryCoeff]
+    cases h_even : T.isEven i
+    · simp only [v, rootVar, h_even, Bool.false_eq_true, ↓reduceIte, mul_neg, mul_one]
+      exact ringHom_ne_zero hx (neg_ne_zero.mpr (X_ne_zero _))
+    · simp only [v, rootVar, h_even, ↓reduceIte, mul_one]
+      exact ringHom_ne_zero hx (X_ne_zero _)
   have h_other (b' : Fin r) (hb' : b' ≠ b) : row (b', 0) = 0 := by
     suffices h_var : T.rootVar (entryRow hm (b', 0)) (entryCol hm (b', 0)) v.2 ≠ v by
-      simp [row, entryCoeff, h_var]
-    grind [rootVar, entryRow, entryCol]
+      dsimp only [row, Function.comp_apply, entryCoeff]
+      simp only [h_var, ↓reduceIte, zero_mul, ringHom_map_zero]
+    cases h_even : T.isEven i <;>
+      simp only [v, rootVar, entryRow, entryCol, h_even, Bool.false_eq_true, ↓reduceIte] <;>
+      intro h <;> exact hb' (Fin.ext (by lia))
   have h_solve : row (b, 0) • (Pi.single (b, 0) 1 : Fin r × Fin (m + 1) → L) =
       row - ∑ t : Fin r × Fin (m + 1) with t.2 ≠ 0, row t • Pi.single t 1 := by
     ext ⟨b', l⟩
@@ -418,7 +498,9 @@ lemma exists_specializeShallow_polyAction_X_eq_sub [NeZero N]
     simp [A, Matrix.sum_apply, Matrix.single]
   -- The positions lie in rows `< r` and columns `≥ r`, so `A ^ 2 = 0` and `1 - A` inverts `1 + A`.
   have h_row (t : Fin r × Fin (m + 1)) : entryRow hm t < r := by simp [entryRow]
-  have h_col (t : Fin r × Fin (m + 1)) : r ≤ entryCol hm t := by grind [entryCol]
+  have h_col (t : Fin r × Fin (m + 1)) : r ≤ entryCol hm t := by
+    dsimp only [entryCol]
+    split_ifs <;> lia
   have h_sq : A * A = 0 := by
     simp [A, univ.sum_mul_sum, fun t t' ↦ (Fin.lt_def.2 ((h_row t').trans_le (h_col t))).ne']
   let g : GL (Fin k) W :=
@@ -432,23 +514,52 @@ lemma exists_specializeShallow_polyAction_X_eq_sub [NeZero N]
     have h_sum : ∑ t : Fin r × Fin (m + 1), C (T.embedding v.2 (y t).out) * T.entryCoeff hm v t =
         if T.isEven v.2 then ∑ b : Fin k, C (T.embedding v.2 (A b v.1)) * X (b, v.2)
           else -∑ b : Fin k, C (T.embedding v.2 (A v.1 b)) * X (b, v.2) := by
-      cases h_even : T.isEven v.2 <;>
-        simp [A_apply, entryCoeff, rootVar, h_even, univ.sum_mul, ite_and, Prod.ext_iff,
-          Finset.sum_comm (α := Fin r × Fin (m + 1)), apply_ite (DFunLike.coe _)]
+      cases h_even : T.isEven v.2
+      · simp only [Bool.false_eq_true, ↓reduceIte, A_apply, ringHom_map_sum,
+          Finset.sum_mul, ← Finset.sum_neg_distrib]
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun t _ ↦ ?_
+        simp only [entryCoeff, rootVar, h_even, Bool.false_eq_true, ↓reduceIte, mul_neg, mul_one,
+          Prod.ext_iff, and_true, apply_ite (T.embedding v.2), apply_ite C, ringHom_map_zero,
+          ite_mul, zero_mul, ite_and]
+        split_ifs <;> simp
+      · simp only [↓reduceIte, A_apply, ringHom_map_sum, Finset.sum_mul]
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun t _ ↦ ?_
+        simp only [entryCoeff, rootVar, h_even, ↓reduceIte, mul_one, Prod.ext_iff, and_true,
+          apply_ite (T.embedding v.2), apply_ite C, ringHom_map_zero, ite_mul, zero_mul,
+          ite_and, Finset.sum_ite_eq, mem_univ]
+        split_ifs <;> simp
     rw [polyAction_X, h_matrix, h_sum]
-    cases h_even : T.isEven v.2 <;>
-      simp [add_mul, sub_mul, sum_add_distrib, sum_sub_distrib, Matrix.one_apply,
-        apply_ite (DFunLike.coe _)]
+    cases h_even : T.isEven v.2
+    · simp only [Bool.false_eq_true, ↓reduceIte, Matrix.map_apply, Matrix.add_apply,
+        Matrix.transpose_apply, Matrix.one_apply, ringHom_map_add, add_mul, sum_add_distrib,
+        apply_ite (T.embedding v.2), apply_ite C, ringHom_map_zero, ringHom_map_one,
+        ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq', sub_neg_eq_add]
+    · simp only [↓reduceIte, Matrix.map_apply, Matrix.sub_apply, Matrix.one_apply,
+        ringHom_map_sub, sub_mul, sum_sub_distrib, apply_ite (T.embedding v.2), apply_ite C,
+        ringHom_map_zero, ringHom_map_one, ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq']
   -- The coefficients involve only variables that are not deep.
   have h_coeff (t : Fin r × Fin (m + 1)) :
       T.specializeShallow r x (T.entryCoeff hm v t) = C (x (T.entryCoeff hm v t)) := by
     have h_zero : T.deepIndicator r (T.rootVar (entryCol hm t) (entryRow hm t) v.2) = 0 := by
       cases h_even : T.isEven v.2 <;> simp [deepIndicator, rootVar, h_even, h_row t, h_col t]
-    rw [entryCoeff]
-    split_ifs <;> simp [specializeShallow, h_zero]
+    rw [entryCoeff, ringHom_map_mul, ringHom_map_mul, ringHom_map_mul]
+    congr 1
+    · split_ifs
+      · simp only [specializeShallow, eval₂Hom_X', h_zero, ↓reduceIte]
+      · rw [ringHom_map_zero, ringHom_map_zero, ringHom_map_zero]
+    · split_ifs
+      · rw [ringHom_map_one, ringHom_map_one, ringHom_map_one]
+      · rw [ringHom_map_neg, ringHom_map_neg, ringHom_map_neg,
+          ringHom_map_one, ringHom_map_one, ringHom_map_one]
   have h_X : T.specializeShallow r x (X v) = X v := by simp [specializeShallow, hv]
   have h_C (a : K) : T.specializeShallow r x (C a) = C (x (C a)) := by simp [specializeShallow]
-  simp [h_image, h_coeff, h_X, h_C, entryFormValue, dotProduct]
+  rw [h_image, ringHom_map_sub, h_X, ringHom_map_sum, entryFormValue, dotProduct, ringHom_map_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun t _ ↦ ?_
+  rw [ringHom_map_mul, h_C, h_coeff, ← ringHom_map_mul C]
+  rfl
 
 end Points
 
@@ -476,15 +587,17 @@ lemma _root_.New.exists_eval_eq_dotProduct_of_mem_span {σ I Y L : Type*} [Finty
     calc weight (fun v : σ ↦ (o v : ℝ))⁻¹ (Finsupp.single v e) = e / o v := by
           simp [weight_single, div_eq_mul_inv]
       _ < 1 := (div_lt_one (h_cast.trans_le' e.cast_nonneg)).2 h_cast
-  | zero => exact ⟨0, by simp, by simp⟩
+  | zero => exact ⟨0, by simp, fun y ↦ by rw [ringHom_map_zero, zero_dotProduct]⟩
   | add u u' _ _ ih ih' =>
     obtain ⟨g, hg_cost, hg_eval⟩ := ih
     obtain ⟨g', hg'_cost, hg'_eval⟩ := ih'
-    refine ⟨g + g', fun α hα ↦ ?_, fun y ↦ by simp [hg_eval, hg'_eval]⟩
+    refine ⟨g + g', fun α hα ↦ ?_, fun y ↦ by rw [ringHom_map_add, hg_eval, hg'_eval,
+      add_dotProduct]⟩
     exact (mem_union.1 (MvPolynomial.support_add hα)).elim (hg_cost α) (hg'_cost α)
   | smul s u _ ih =>
     obtain ⟨g, hg_cost, hg_eval⟩ := ih
-    exact ⟨s • g, fun α hα ↦ hg_cost α (MvPolynomial.support_smul hα), fun y ↦ by simp [hg_eval]⟩
+    exact ⟨s • g, fun α hα ↦ hg_cost α (MvPolynomial.support_smul hα), fun y ↦ by
+      rw [smul_eq_C_mul, ringHom_map_mul, eval_C, hg_eval, smul_dotProduct, smul_eq_mul]⟩
 
 /-- Let `x` embed the polynomials over `K` in a field `L`, both fields of characteristic `p`. Each
 linear form `∑ t, u t * x (C (ι_i (y t).out))` is the value at the point `z` of a polynomial that
@@ -598,8 +711,11 @@ lemma specializeShallow_polyOfCoeffs_mem_vanishingIdeal_pow {n r m τ : ℕ} (hm
     T.exists_specializeShallow_polyAction_X_eq_sub hm y
   refine T.map_polyOfCoeffs_mem_pow_of_mem_deepForms hF _ _ g fun v ↦ ?_
   obtain h_shallow | h_deep := T.deepIndicator_eq_zero_or_eq_one r v
-  · simp [h_shallow]
-  · simp [hg v (h_deep.trans_ne one_ne_zero), h_deep]
+  · rw [h_shallow, pow_zero, Ideal.one_eq_top]
+    exact Submodule.mem_top
+  · rw [hg v (h_deep.trans_ne one_ne_zero), h_deep, pow_one, mem_vanishingIdeal_singleton_iff,
+      ← AlgHom.coe_toRingHom, ringHom_map_sub, AlgHom.coe_toRingHom, aeval_X, aeval_C,
+      Algebra.algebraMap_self, RingHom.id_apply, sub_self]
 
 /-- Let `K` have characteristic `p` and `2 r ≤ k`. A non-zero `F` in `T.deepForms k n r τ` has
 `F β ≠ 0` for a monomial `β` of weight at least `τ`. The weight is the sum over the variables of the
@@ -733,17 +849,23 @@ lemma New.FrobeniusCycle.sum_deepIndicator_div_le (T : FrobeniusCycle N W K) {r 
       ∑ s : ZMod N, (T.deepIndicator r (b, s) / T.P ^ (if 2 * r ≤ b.val then 2 * r else 1) : ℝ) =
         (N / 2 : ℕ) / T.P ^ (if 2 * r ≤ b.val then 2 * r else 1) := by
     rw [← T.sum_deepIndicator r b, cast_sum, Finset.sum_div]
+  have _ := hr
   have hr_sq : (r : ℝ) ≤ r ^ 2 := mod_cast Nat.le_self_pow two_ne_zero r
+  have hN_half : ((N / 2 : ℕ) : ℝ) ≤ (N : ℝ) / 2 := by
+    simpa only [Nat.cast_ofNat] using (Nat.cast_div_le (α := ℝ) (m := N) (n := 2))
+  have hP_nonneg : (0 : ℝ) ≤ T.P := Nat.cast_nonneg _
+  have h_card : (#{b : Fin k | 2 * r ≤ b.val} : ℝ) ≤ k := Nat.cast_le.mpr (card_finset_fin_le _)
   calc _ = #{b : Fin k | 2 * r ≤ b.val} * ((N / 2 : ℕ) / (T.P : ℝ) ^ (2 * r)) +
           2 * r * ((N / 2 : ℕ) / T.P) := by
         simp only [Fintype.sum_prod_type, h_row]
         simp [apply_ite, sum_ite, Fin.card_filter_val_lt, hk]
-    _ ≤ k * (N / 2 / T.P ^ (2 * r)) + 2 * r * (N / 2 / T.P) := by
-        grw [card_finset_fin_le, cast_div_le]
-        norm_num
+    _ ≤ k * (N / 2 / T.P ^ (2 * r)) + 2 * r * (N / 2 / T.P) := by gcongr
     _ = N * (k / T.P ^ (2 * r) / 2 + r / T.P) := by ring
-    _ ≤ N * (k / T.P ^ (2 * r) + r ^ 2 / T.P) := by
-        grw [← hr_sq, half_le_self (by positivity : (0 : ℝ) ≤ k / T.P ^ (2 * r))]
+    _ ≤ N * (k / T.P ^ (2 * r) + r ^ 2 / T.P) :=
+        mul_le_mul_of_nonneg_left
+          (add_le_add (half_le_self (div_nonneg (Nat.cast_nonneg _) (pow_nonneg hP_nonneg _)))
+            (div_le_div_of_nonneg_right hr_sq hP_nonneg))
+          (Nat.cast_nonneg _)
 
 /-- Let `K` have characteristic `p` and `0 < 2 r ≤ k`. For every `M` the dimensions of the spaces
 `T.deepForms k n r δ` for `1 ≤ δ ≤ M` add up to at most `T.divisorConstant k n r = N n (P ^ (-2
@@ -780,11 +902,14 @@ lemma New.FrobeniusCycle.sum_finrank_deepForms_le (T : FrobeniusCycle N W K) [Ch
     _ = total * n / k * ∑ x : Fin k × ZMod N, c x := by
         simp only [cost, weight_eq_sum, nsmul_eq_mul, Finset.sum_comm (γ := Exponents N k n),
           ← Finset.sum_mul, h_mean, ← Finset.mul_sum]
-    _ ≤ total * n / k * (N * (k / T.P ^ (2 * r) + r ^ 2 / T.P)) := by
-        grw [T.sum_deepIndicator_div_le hr hk]
+    _ ≤ total * n / k * (N * (k / T.P ^ (2 * r) + r ^ 2 / T.P)) :=
+        mul_le_mul_of_nonneg_left (T.sum_deepIndicator_div_le hr hk)
+          (div_nonneg (mul_nonneg (pow_nonneg (Nat.cast_nonneg _) _) (Nat.cast_nonneg _)) hk_pos.le)
     _ = T.divisorConstant k n r * total := by
         rw [divisorConstant]
-        field
+        have hk_ne : (k : ℝ) ≠ 0 := hk_pos.ne'
+        have hP_ne : (T.P : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (pow_pos T.prime.pos _).ne'
+        field_simp
 
 end DepthCount
 

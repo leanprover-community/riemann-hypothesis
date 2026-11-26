@@ -258,24 +258,18 @@ lemma formMajorant_eq_zero_of_lt (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j 
     hF.complexData.formMajorant j p q F x = 0 := by
   -- An active point `y` (`IsActive`) would bound the products of the entries of both lists
   -- (`head_products_mem_ofSize`). There are none, so `formMajorant_sq_le` holds with the gain `0`.
-  have h_cut : hF.complexData.IsCut F := hF.isCut_complexData
   obtain ⟨L, hL, hp, -⟩ := hF.exists_gauge_isHead j p q 0
   have h_small {r : ℕ → ℂˣ} {y : 𝔰.G₁} (hy : F y ≠ 0)
-      (h_near : hF.complexData.IsNear j ((FloorGroups.weylElem j r)⁻¹ * y)) :
-      ‖(∏ a ∈ range l, r a).val‖ ≤ ρ ^ (9 * 𝔰.n) := by
-    obtain ⟨u, hu⟩ : hF.complexData.IsNear j y := h_cut.isNear_of_ne_zero hy
-    exact (hF.mem_ofSize_gauge le_rfl).1
+      (h_near : hF.complexData.IsNear j ((FloorGroups.weylElem j r)⁻¹ * y)) :=
+    let ⟨_, hu⟩ := hF.isCut_complexData.isNear_of_ne_zero hy
+    (hF.mem_ofSize_gauge le_rfl).1
       (head_products_mem_ofSize (hF.gauge le_rfl).hasMatrixSize_boxSet hj h_near hu l hl)
-  have no_active (y : 𝔰.G₁) : ¬ hF.complexData.IsActive j p q F x y := by
-    rintro ⟨hy, near_p, near_q⟩
-    rcases h_big with big_p | big_q
-    · exact big_p.not_ge (h_small (fun h ↦ hy (by simp [h])) near_p)
-    · exact big_q.not_ge (h_small (fun h ↦ hy (by simp [h])) near_q)
-  have h_sq : hF.complexData.formMajorant j p q F x ^ 2 ≤
-      0 ^ hF.complexData.volumeExponent * ∞ ^ 2 * (hF.gauge hL).weightedSquareProduct j p q F x :=
-    formMajorant_sq_le (hF.gauge hL) h_cut hj hp (Set.mem_univ x) (fun _ ↦ le_top) le_top
-      fun _ y h_active ↦ (no_active y h_active).elim
-  simpa [hF.volumeExponent_eq, hF.mul_cube_lt_s.ne_zero] using h_sq
+  simpa [hF.volumeExponent_eq, hF.mul_cube_lt_s.ne_zero] using
+    (formMajorant_sq_le (hF.gauge hL) hF.isCut_complexData hj hp (Set.mem_univ x)
+      (fun _ ↦ le_top) le_top fun _ y ⟨hy, near_p, near_q⟩ ↦
+        (h_big.elim (fun h ↦ h.not_ge (h_small (fun h ↦ hy (by simp [h])) near_p))
+          (fun h ↦ h.not_ge (h_small (fun h ↦ hy (by simp [h])) near_q))).elim :
+      _ ≤ 0 ^ _ * ∞ ^ 2 * _)
 
 /-- Let `F` be a cut Bessel function (`hF`) and `l ≤ j ≤ 𝔰.ϱ`. If the product of the first `l`
 entries of `p` or of `q` has modulus above `ρ ^ (9 * 𝔰.n)`, then the form `floorForm j p q F ω` of
@@ -369,19 +363,13 @@ lemma floorMassLe (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) :
     hF.complexData.FloorMassLe j (.ofReal ((π * ρ ^ 24) ^ 𝔰.k * ρ ^ (9999 * 𝔰.n))) 1 := by
   intro g
   have one_le_ρ : 1 ≤ ρ := by linarith [hF.four_le]
-  have h_volume : (ρ ^ 24) ^ (𝔰.k - 5) ≤ (π * ρ ^ 24) ^ 𝔰.k := by
-    grw [← one_le_two.trans two_le_pi, one_mul]
-    exact pow_le_pow_right₀ (one_le_pow₀ one_le_ρ) (by lia)
   -- The bound of `floorMassLe_one` in the gauge of size `ρ`, whose `loss` is `ρ ^ 2`.
-  have h_real : (ρ ^ 2) ^ (99 * 𝔰.n * 13) * ((ρ ^ 2) ^ 12) ^ (𝔰.k - 5) ≤
-      (π * ρ ^ 24) ^ 𝔰.k * ρ ^ (9999 * 𝔰.n) :=
-    calc _ = (ρ ^ 24) ^ (𝔰.k - 5) * ρ ^ (2574 * 𝔰.n) := by ring
-      _ ≤ _ := by
-        gcongr
-        lia
   grw [(hF.gauge le_rfl).floorMassLe_one ⟨j, by lia⟩ g, volume_ofSize_le]
-  simpa (disch := finiteness) [RealPlaceSizes.gauge, ← toReal_le_toReal, PlaceData.blockRank,
-    Nat.sub_sub] using h_real
+  simp (disch := finiteness) [RealPlaceSizes.gauge, ← toReal_le_toReal, PlaceData.blockRank,
+    Nat.sub_sub]
+  grw [← one_le_two.trans two_le_pi, one_mul]
+  simp only [← pow_mul, ← pow_add]
+  exact pow_le_pow_right₀ one_le_ρ (by lia)
 
 /-- The bound `(π ρ ^ 24) ^ k ρ ^ (9999 n)` for the mass of a floor is at least 1. -/
 lemma one_le_massBound (hF : IsCutBessel F rep ρ s b F₀ f) :
@@ -412,7 +400,7 @@ whose `loss` is L². The dyadic shell of index `i` is a shell of height H = `2 ^
 It is covered by the positions `x` with `x - 1` of size 1 for at most 2 H ^ (9 n) gauges of loss at
 most L² H². If σ < 1 and L ^ (2400 n²) ≤ σ ^ (400 n²) H, then at each of its positions every active
 point has a vector e_a, `a ≥ j`, of depth at least σ⁻². -/
-lemma isShell_dyadicShell [Nonempty I]
+lemma isShell_dyadicShell
     (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) {hL : ρ ≤ L}
     (hp : (hF.gauge hL).IsHead j p) (hq : (hF.gauge hL).IsHead j q) (i : ℕ) :
     (hF.gauge hL).IsShell j p q F (dyadicShell 𝔰 i) (2 ^ i) := by

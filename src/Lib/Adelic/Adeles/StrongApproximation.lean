@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+public import Mathlib.NumberTheory.Padics.HeightOneSpectrum
+public import Mathlib.Topology.Algebra.ProperConstSMul
 public import Lib.Adelic.Unitary.Defs
 public import Lib.General.Analysis.FourierTransforms
 public import Lib.General.NumberTheory.EmbeddingsAndDifferent

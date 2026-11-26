@@ -109,7 +109,9 @@ lemma integrable_slice (f : 𝒮 V) : Integrable fun x : p → 𝔸 E ↦ D.slic
     _ < ⊤ := by
       refine IsFiniteMeasure.lintegral_lt_top_of_bounded_to_ennreal _ ⟨C * ‖f‖₊, fun x ↦ ?_⟩
       -- The points of `ratVectors` are the `toAdele ∘ ξ`.
-      erw [lintegral_count, ← (ofInjective _ (toAdele (E := E)).injective.comp_left).tsum_eq]
+      rw [lintegral_count, New.ratVectors,
+        ← (AddMonoidHom.ofInjective (f := (toAdele (E := E)).toAddMonoidHom.compLeft p)
+          (toAdele (E := E)).injective.comp_left).toEquiv.tsum_eq]
       exact h_bound x
 
 end MixedModelIntegrable
@@ -146,7 +148,7 @@ lemma exists_hyperbolic_levi_multiplier_nonneg :
     (hyperbolicSpace E p).toRatCoords.symm
       ⟨blockGL (star a⁻¹, a), by simp [mem_unitaryGroupOf_iff, fromBlocks_conjTranspose,
       fromBlocks_map, star_eq_conjTranspose, fromBlocks_multiply, ← conjTranspose_mul]⟩
-  have h_mat : g₁.adeleMatrix = (hyperbolicSpace E p).x⁻¹.1 * fromBlocks a⁻¹.1ᴴ 0 0 a.1 *
+  have h_mat : g₁.adeleMatrix = (hyperbolicSpace E p).x⁻¹.val * fromBlocks a⁻¹.valᴴ 0 0 a.val *
     (hyperbolicSpace E p).x := rfl
   refine ⟨g₁, ?_, h_mat⟩
   -- Both `weilMultiplier` and `υ` are products of factors at the infinite places and a finite
@@ -158,7 +160,7 @@ lemma exists_hyperbolic_levi_multiplier_nonneg :
     -- `x⁻¹ diag(a⁻¹ᴴ, a) x` is `(a⁻¹ᴴ + a) / 2`. Its adjoint times `a` is `(1 + aᴴ a) / 2`, whose
     -- determinant is nonnegative.
     have hx : (hyperbolicSpace E p).x.1.map (evalInf w) = (√2 : ℂ)⁻¹ • fromBlocks 1 (-1) 1 1 := rfl
-    have hx_inv : (hyperbolicSpace E p).x⁻¹.1.map (evalInf w) = (√2 : ℂ)⁻¹ • fromBlocks 1 1 (-1)
+    have hx_inv : (hyperbolicSpace E p).x⁻¹.val.map (evalInf w) = (√2 : ℂ)⁻¹ • fromBlocks 1 1 (-1)
       1 := rfl
     have h_lower : (g₁.adeleMatrix.map (evalInf w)).toBlocks₂₂ =
         (2 : ℂ)⁻¹ • ((a⁻¹.val.map (evalInf w))ᴴ + a.val.map (evalInf w)) := by
@@ -236,33 +238,25 @@ lemma exists_zeroTerm_omega_eq_smul :
     ∃ c : ℂ, ∀ f : 𝒮 V, D.zeroTerm (V.ω g f) = c • V₀.ω g₀ (D.zeroTerm f) := by
   -- With `L = ω(g₀⁻¹) zeroTerm ω(g)`, the family `x ↦ L ϱ(lAdelic x)` obeys the same law as
   -- `slice`. At `ω(k) vacElem`, `k` adapted, both families are multiples of
-  -- `‖vacuumFn x‖ ^ 2 • V₀.vacElem`, so they differ by a scalar; and the translates of
-  -- `ω(k) vacElem` determine a bounded map (`ext_of_vacElem`).
+  -- `‖vacuumFn x‖ ^ 2 • V₀.vacElem`, so they differ by a scalar (`ext_of_vacElem`).
   obtain ⟨k, h_adapted, -⟩ := D.exists_isAdapted_and_frame_eq 1
   let L : 𝒮 V →L[ℂ] 𝒮 V₀ := V₀.ω g₀⁻¹ ∘L D.zeroTerm ∘L V.ω g
-  have hL_k (b : p → 𝔸 E) (f : 𝒮 V) : L (V.ϱ (D.kAdelic *ᵥ b) f) = L f := by
-    simp_all [L, ← slice_zero, omega_rho]
-  have hL_i (w : n₀ → 𝔸 E) (f : 𝒮 V) : L (V.ϱ (D.iAdelic *ᵥ w) f) = V₀.ϱ w (L f) := by
-    simp [L, hi, ← adeleMatrix_mul, ← D.lCoord.mul_assoc, D.lCoord_mul_adeleMatrix hk, ← slice_zero,
-      omega_rho,
-      Matrix.mul_assoc]
   have h_law : D.IsMixedLaw fun x : p → 𝔸 E ↦ L ∘L V.ϱ (D.lAdelic *ᵥ x) :=
-    D.isMixedLaw_comp_rho L hL_k hL_i
+    D.isMixedLaw_comp_rho L (fun b f ↦ by simp_all [L, ← slice_zero, omega_rho]) fun w f ↦ by
+      simp [L, hi, ← adeleMatrix_mul, ← D.lCoord.mul_assoc, D.lCoord_mul_adeleMatrix hk,
+        ← slice_zero, omega_rho, Matrix.mul_assoc]
   obtain ⟨c', hc'_ne, hc'⟩ := h_adapted.slice_omega_vacElem
   obtain ⟨c, hc⟩ := h_adapted.exists_omega_vacElem_of_isMixedLaw h_law
-  have hL : L = (c / c') • D.zeroTerm := by
-    have hc_ratio (x : p → 𝔸 E) : (L ∘L V.ϱ (D.lAdelic *ᵥ x)) (V.ω k V.vacElem) =
-        (c / c' * (c' * ‖vacuumFn ((1 : GL p (𝔸 E)).valᴴ *ᵥ x)‖ ^ 2)) • V₀.vacElem := by
-      rw [hc, ← mul_assoc, div_mul_cancel₀ c hc'_ne]
-    refine V.ext_of_vacElem k fun y ↦ ?_
-    calc L (V.ω k (V.ϱ y V.vacElem))
-      _ = (L ∘L V.ϱ (D.lAdelic *ᵥ 0)) (V.ϱ (k.adeleMatrix *ᵥ y) (V.ω k V.vacElem)) := by
-        simp [omega_rho]
-      _ = ((c / c') • D.zeroTerm) (V.ω k (V.ϱ y V.vacElem)) := by
-        rw [h_law]
-        simp [↓hc_ratio, hc', smul_smul, ← slice_zero, omega_rho, mul_left_comm]
-  exact ⟨c / c', fun f ↦ by
-    simpa [L, rep_apply_apply] using congrArg (V₀.ω g₀) (DFunLike.congr_fun hL f)⟩
+  conv at hc =>
+    intro x
+    rw [← div_mul_cancel₀ c hc'_ne, mul_assoc]
+  refine ⟨c / c', fun f ↦ ?_⟩
+  have hL : L = (c / c') • D.zeroTerm := V.ext_of_vacElem k fun y ↦ by
+    trans (L ∘L V.ϱ (D.lAdelic *ᵥ 0)) (V.ϱ (k.adeleMatrix *ᵥ y) (V.ω k V.vacElem))
+    · simp [omega_rho]
+    · rw [h_law]
+      simp [↓hc, hc', smul_smul, ← slice_zero, omega_rho, mul_left_comm]
+  simpa [L, rep_apply_apply] using congrArg (V₀.ω g₀) (DFunLike.congr_fun hL f)
 
 omit [WeilData E] in
 /-- The push-forward of the volume under `x ↦ aᴴ x` is `|det a|⁻¹` times the volume: for continuous
@@ -425,23 +419,16 @@ lemma zeroTerm_omega {a : Matrix p p (𝔸 E)} (hk : D.ActsOnFrame g a) (d : (�
   obtain rfl : g₀' = g₀ := ext_adeleMatrix (hg₀.trans hi)
   have h_scalar (b₁ : Matrix p p (𝔸 E)) :
       ∃ z : ℂ, ∀ u : 𝒮 V, D.zeroTerm (V.ω (D.radicalElement c b₁) u) = z • D.zeroTerm u := by
-    obtain ⟨h_frame, h_block⟩ : D.ActsOnFrame (D.radicalElement c b₁) 1 ∧
-        D.iCoord * ((D.radicalElement c b₁).adeleMatrix * D.iAdelic) = 1 :=
-      D.exists_eq_radicalElement_iff.1 ⟨c, b₁, rfl⟩
+    obtain ⟨h_frame, h_block⟩ := D.exists_eq_radicalElement_iff.1 ⟨c, b₁, rfl⟩
     simpa using D.exists_zeroTerm_omega_eq_smul 1 (h_block.trans adeleMatrix_one.symm) 1 h_frame
   choose z hz using h_scalar
-  obtain ⟨t, b', h_comm⟩ : ∃ (t : GL p (𝔸 E)) (b' : Matrix p p (𝔸 E)),
-      D.levi (t, 1) * D.radicalElement c b' = D.radicalElement c b' * D.radicalElement c b * D.levi
-        (t, 1) :=
-    D.exists_levi_mul_radicalElement_eq c b
+  obtain ⟨t, b', h_comm⟩ := D.exists_levi_mul_radicalElement_eq c b
   let m : G E s := D.levi (t, 1) * D.radicalElement c b'
   -- Both sides are `zeroTerm u` times the product of `z b`, `z b'` and `(chiAdelic t.det)⁻¹`.
-  have h_unip (u : 𝒮 V) : D.zeroTerm (V.ω (D.radicalElement c b * m) u) = D.zeroTerm (V.ω m u) :=
-    calc D.zeroTerm (V.ω (D.radicalElement c b * m) u)
-      _ = z b' • z b • (chiAdelic t.det)⁻¹ • D.zeroTerm u := by
-        simp [m, hz, zeroTerm_omega_levi, smul_comm (z b')]
-      _ = D.zeroTerm (V.ω m u) := by
-        simp [m, h_comm, hz, zeroTerm_omega_levi]
+  have h_unip (u : 𝒮 V) :
+      D.zeroTerm (V.ω (D.radicalElement c b * m) u) = D.zeroTerm (V.ω m u) := by
+    conv_rhs => rw [show m = _ from h_comm]
+    simp [m, hz, zeroTerm_omega_levi, smul_comm (z b')]
   -- `ω m` is onto, so `radicalElement c b` can be dropped in front of the Levi factor too.
   rw [← zeroTerm_omega_levi]
   simpa only [rep_apply_apply, mul_assoc, mul_inv_cancel_left] using
@@ -611,23 +598,14 @@ rational unitary group of V and every f in 𝒮(V), where ω is the Weil represe
 A case of Weil's invariance of the theta distribution under rational points, for the unitary group
 of a hermitian space V with a point, with the representation ω and the functional θ on 𝒮(V). -/
 lemma theta_omega_ratEmbed (γ : U V.J) (f : 𝒮 V) : V.θ (V.ω (V.ratEmbed γ) f) = V.θ f := by
-  -- Doubling. The space `W = V ⊕ V⁻` is split, so `(γ, 1)` fixes its theta functional, and with it
+  -- Doubling. The space `V ⊕ V⁻` is split, so `(γ, 1)` fixes its theta functional, and with it
   -- the functionals `θ (· ⊠ y)`. These are multiples of the `θ` of `V`, not all zero.
-  let W : Space E (n ⊕ n) (s ⊕ᵥ -s) := V.sum V.neg
   obtain ⟨f₀, y, h_ne⟩ := exists_theta_boxProd_ne_zero V V.neg
-  obtain ⟨c, hc⟩ : ∃ c : ℂ, ∀ f' : 𝒮 V, W.θ (boxProd signs_comp_refl f' y) = c * V.θ f' :=
-    exists_theta_boxProd_eq_mul y
-  have h_act : W.ω (W.ratEmbed (U.sum rfl (γ, 1))) (boxProd signs_comp_refl f y) =
-      boxProd signs_comp_refl (V.ω (V.ratEmbed γ) f) y := by
-    rw [sum_ratEmbed, omega_boxProd signs_comp_refl (G.adeleMatrix_sum _)]
-    simp
-  refine mul_left_cancel₀ (left_ne_zero_of_mul (by rwa [hc] at h_ne) : c ≠ 0) ?_
-  calc c * V.θ (V.ω (V.ratEmbed γ) f)
-    _ = W.θ (W.ω (W.ratEmbed (U.sum rfl (γ, 1))) (boxProd signs_comp_refl f y)) := by
-      rw [h_act, hc]
-    _ = W.θ (boxProd signs_comp_refl f y) :=
-      theta_omega_ratEmbed_of_splitting _ V.diagonalSplitting _
-    _ = c * V.θ f := hc f
+  obtain ⟨c, hc⟩ := exists_theta_boxProd_eq_mul (V := V) y
+  refine mul_left_cancel₀ (left_ne_zero_of_mul (by rwa [hc] at h_ne)) ?_
+  simpa [sum_ratEmbed, omega_boxProd signs_comp_refl (G.adeleMatrix_sum _), hc] using
+    theta_omega_ratEmbed_of_splitting (U.sum rfl (γ, 1)) V.diagonalSplitting
+      (boxProd signs_comp_refl f y)
 
 /-- A rational point γ acts on a datum f, read as the function f(x) = θ(ϱ(x)f) of the adelic vector
 x, by substitution: (ω(γ)f)(x) = f(γ⁻¹x). -/

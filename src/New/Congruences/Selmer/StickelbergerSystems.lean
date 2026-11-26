@@ -1,6 +1,6 @@
 module
 
-public import Lib.GaloisRep.Main.AttachedRepresentations
+public import TauCeti.Analysis.Normed.Ring.CompactMonoid
 public import Lib.General.NumberTheory.GaussValuation
 public import New.Congruences.Selmer.AuxiliaryPrimes
 
@@ -110,7 +110,7 @@ are `≡ 1` at the primes of `Q`. -/
 abbrev U1ClassGroup : Type :=
   unitary (𝔸f E) ⧸ Subgroup.closure {u : unitary (𝔸f E) |
     Unitary.toUnits u ∈ principalIdele.range ∨ Unitary.toUnits u ∈ idelesUnitOff ∅ ∧
-      ∀ w ∈ Q, Valued.v ((ideleAt w (Unitary.toUnits u)).1 - 1) < 1}
+      ∀ w ∈ Q, Valued.v ((ideleAt w (Unitary.toUnits u)).val - 1) < 1}
 
 /-- The class of `y / ȳ` in `Cl_Q`, for a finite idele `y`. -/
 def divStarClass : (𝔸f E)ˣ →* U1ClassGroup Q := (QuotientGroup.mk' _).comp divStar.toMonoidHom
@@ -123,12 +123,12 @@ lemma divStarClass_surjective (Q : Finset (FinPlace E)) :
   refine QuotientGroup.mk_surjective.forall.2 fun u ↦ ?_
   let σ : Gal(E/NumberField.maximalRealSubfield E) := NumberField.IsCMField.complexConj E
   -- The adele map of complex conjugation is, by definition, the involution `star`.
-  have h_star_mul : adeleMap σ u.1 * u.1 = 1 := Unitary.coe_star_mul_self u
-  have h_norm : ∏ i ∈ range (orderOf σ), adeleMap (↑(σ ^ i) : E →+* E) u.1 = 1 := by
+  have h_star_mul : adeleMap σ u.val * u.val = 1 := Unitary.coe_star_mul_self u
+  have h_norm : ∏ i ∈ range (orderOf σ), adeleMap (↑(σ ^ i) : E →+* E) u.val = 1 := by
     simpa [σ, NumberField.IsCMField.orderOf_complexConj, range, AlgEquiv.aut_one] using h_star_mul
   obtain ⟨_, ⟨y, rfl⟩, hy⟩ := hilbert90_finite_idele h_norm
-  have h_eq : u.1 * star y.1 = y.1 := hy
-  have h_divStar : y.1 * star y⁻¹.1 = u.1 := by
+  have h_eq : u.val * star y.val = y.val := hy
+  have h_divStar : y.val * star y⁻¹.val = u.val := by
     nth_rw 1 [← h_eq, mul_assoc, ← star_mul', Units.mul_inv, star_one, mul_one]
   exact ⟨y, congrArg QuotientGroup.mk (Subtype.ext h_divStar)⟩
 

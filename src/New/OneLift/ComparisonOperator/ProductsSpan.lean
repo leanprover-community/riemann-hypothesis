@@ -188,7 +188,7 @@ norm. -/
 lemma maxOpNorm_sum_one_le (y : GInf D.E (D.signsW j)) :
     maxOpNorm (G.sum ((y, 1), (1 : New.G D.E (-1 ⊕ᵥ 1 : PadIndex j → ℤˣ)))).1 ≤ maxOpNorm y := by
   simp [G.sum, U.sum, pi_norm_le_iff_of_nonempty, one_le_maxOpNorm,
-    norm_le_pi_norm (fun w ↦ (y w).1.1)]
+    norm_le_pi_norm (fun w ↦ (y w).val.val)]
 
 /-- Let `S` be the space of signature `(2 m, m)`, with index set `D.CarrierIndex` and signs
 `1 ⊕ᵥ -1`, and let `W̃` be the space `W_j` (`1 ≤ j ≤ m`) padded to the signs `padSigns j`. Let
@@ -216,7 +216,7 @@ lemma polyMatrixCoeff_paddedMinorProd_ne_zero_and_bounded (γ e : D.Φ → ℤ) 
         ‖inner ℂ (l v) (l (realWeil (pairHomInf (h, h')) v))‖ := by
       simp [polyMatrixCoeff, realPairWeil, v, ε, ← h_inner]
     have h_iso : ‖l (realWeil (pairHomInf (h, h')) v)‖ = ‖l v‖ := by
-      simpa [ε] using h_unitary (pairHomInf (h, h')) v
+      simpa using h_unitary (pairHomInf (h, h')) v
     grw [h_phase, norm_inner_le_norm, h_iso]
 
 /-- The product of minors `paddedMinorProd j` is homogeneous of degree at most `b ^ (3 / 2)`, where
@@ -244,8 +244,7 @@ lemma exists_eval_smul_paddedMinorProd : ∃ d : ℕ, d ≤ D.b * √D.b ∧
         (row : p → D.RowIndex ⊕ PadIndex j) (col : p → D.CarrierIndex) :
         (variableMinor τ row col).eval (r • y) =
           r ^ card p * (variableMinor τ row col).eval y := by
-      simp [variableMinor, det_apply', mul_sum, prod_mul_distrib]
-      exact sum_congr rfl fun _ _ ↦ mul_left_comm ..
+      simp [variableMinor, det_apply', mul_sum, prod_mul_distrib, mul_left_comm]
     simp only [paddedMinorProd, map_prod, ← prod_pow_eq_pow_sum, ← prod_mul_distrib]
     refine prod_congr rfl fun w _ ↦ ?_
     simp only [deg, map_mul, map_pow, map_prod, h_minor, Fintype.card_fin, mul_pow,
@@ -296,15 +295,15 @@ lemma polyMatrixCoeff_paddedMinorProd (γ : D.Φ → ℤ) (h : GInf D.E (1 ⊕�
       1 1 * holMinorsPi (1 ⊕ᵥ -1) (holomorphicWeight j) h *
         starRingEnd ℂ (holMinorsPi (1 ⊕ᵥ -1) (antiholomorphicWeight j) h) := by
   obtain ⟨-, h_neg_rows, h_pos_rows⟩ := negIndex_posRowIndex_injective_and_padSigns j
-  have h_neg : Exchange.negCount (padSigns j) = D.m := by simp [negCount_signsW, j.2.2]
+  have h_neg : Exchange.negCount (padSigns j) = D.m := by simp [negCount_signsW, j.property.2]
   let ν (w : D.Φ) : ℕ := ∑ k : Fin (D.posRank j), (untwistedDescentPair j).colsPlus w k
   let κ (w : D.Φ) : ℕ := card (DetIndex j w) + card (FirstFactorIndex j) + D.m
   -- Each minor in `paddedMinorProd` uses all columns of one sign, so a substitution multiplies it
   -- by a principal minor.
   have h_scale (u : GInf D.E (1 ⊕ᵥ -1 : D.CarrierIndex → ℤˣ)) :
       linSubst (complexLinearPart (pairHomInf (s' := padSigns j) (u⁻¹, 1))) (paddedMinorProd j) =
-        (∏ w, principalMinor (u w).1.1 (fun k ↦ (1 ⊕ᵥ -1 : _ → ℤˣ) k = 1) ^ ν w *
-          principalMinor (u w).1.1 (fun k ↦ (1 ⊕ᵥ -1 : _ → ℤˣ) k = -1) ^ κ w) • paddedMinorProd
+        (∏ w, principalMinor (u w).val.val (fun k ↦ (1 ⊕ᵥ -1 : _ → ℤˣ) k = 1) ^ ν w *
+          principalMinor (u w).val.val (fun k ↦ (1 ⊕ᵥ -1 : _ → ℤˣ) k = -1) ^ κ w) • paddedMinorProd
             j := by
     simp [ν, κ, paddedMinorProd, prod_pow_eq_pow_sum, -card_sum,
       linSubst_variableMinor (h_pos_rows _) inl_injective,
@@ -515,8 +514,7 @@ variable (D) in
 /-- The identity `b ^ (-20 n_*) b ^ n_* = b ^ (-19 n_*)` for `n_* = nStar D`. -/
 lemma inv_pow_twenty_mul_pow_nStar :
     (D.b ^ (20 * nStar D))⁻¹ * D.b ^ nStar D = (D.b ^ (19 * nStar D))⁻¹ := by
-  field_simp
-  ring
+  field
 
 /-- Let `S = signedSpace D.E (1 ⊕ᵥ -1)`. Suppose the first minimum of `S` moved by `g₁` is at least
 `(5 b √b) ^ (-1 / 2)`. Suppose that of `D.spaceW j` moved by `g` is at least
@@ -794,7 +792,7 @@ lemma integral_mul_sum_choiceFn_eq_zero (F : D.goodForms (D.spaceW j))
   classical
   have fit : (D.descentPair .one j).FitsParams D.paramW := D.fitsParams_descentPair .one j
   have prod_level (i : ChoiceIndex j) :
-      F.1.1.1 * choiceFn j i ∈ rapidOfLevel (D.spaceW j) (D.piM ^ 2) :=
+      F.val.val.val * choiceFn j i ∈ rapidOfLevel (D.spaceW j) (D.piM ^ 2) :=
     mul_choiceFn_mem_rapidOfLevel F i
   have rank_lt : 2 * card D.RowIndex < card D.SecondFactorIndex := by
     rw [D.card_rowIndex, card_sum, D.card_rowIndex, Fintype.card_fin, D.t_eq_five_mul_r]
@@ -813,8 +811,8 @@ lemma integral_mul_sum_choiceFn_eq_zero (F : D.goodForms (D.spaceW j))
     (hasWeight_upsilonU1_pow _) (hasWeight_upsilonU1_zpow (D.m / 2 - j))
     (isKDominant_kernelWeight j) h_int rank_lt .inl top_ne top_hol (fun _ ↦ Q)
     (fun _ _ ↦ by
-      -- `erw` is needed: the first weight is `negCount` only after unfolding.
-      erw [realPairWeil_fockLetters]
+      -- `letterPoly` is `fockLetters` after `toPoly`.
+      rw [letterPoly, LinearMap.comp_apply, AlgHom.toLinearMap_apply, realPairWeil_fockLetters]
       -- The translate of a `toPoly` is a combination of the `Q`; `clear` keeps the search short.
       clear * -
       aesop (add safe sum_mem, simp [Q, toPoly, linearCombination_apply])) g
@@ -835,12 +833,12 @@ lemma integral_mul_sum_choiceFn_eq_zero (F : D.goodForms (D.spaceW j))
       Pi.single_apply]
     rfl
   have h_pair (i : ChoiceIndex j) :
-      ∫ x, F.1.1 x * (choiceFn j i * K) x ∂(D.spaceW j).quotMeasure = 0 := by
+      ∫ x, F.val.val x * (choiceFn j i * K) x ∂(D.spaceW j).quotMeasure = 0 := by
     simpa [h_theta, mul_assoc] using! h_orth i (Pi.single p.1 (star v))
-  calc ∫ x, (F.1.1.1 * fun y ↦ ∑ i, c i * choiceFn j i y) x * K x ∂(D.spaceW j).quotMeasure
-    _ = ∫ x, F.1.1 x * ∑ i, c i * (choiceFn j i * K) x ∂(D.spaceW j).quotMeasure := by
+  calc ∫ x, (F.val.val.val * fun y ↦ ∑ i, c i * choiceFn j i y) x * K x ∂(D.spaceW j).quotMeasure
+    _ = ∫ x, F.val.val x * ∑ i, c i * (choiceFn j i * K) x ∂(D.spaceW j).quotMeasure := by
       simp [mul_assoc, sum_mul]
-    _ = ∑ i, c i * ∫ x, F.1.1 x * (choiceFn j i * K) x ∂(D.spaceW j).quotMeasure := by
+    _ = ∑ i, c i * ∫ x, F.val.val x * (choiceFn j i * K) x ∂(D.spaceW j).quotMeasure := by
       refine integral_mul_sum_const_mul (a := D.piM ^ 2) fun i ↦ ?_
       rw [← mul_assoc]
       exact mul_modKernel_mem_rapidOfLevel D.ideal_untwistedModulus_eq_span (fun _ _ ↦ rfl)
@@ -881,7 +879,7 @@ theorem eq_zero_of_integral_choiceFn_thetaKernelPairing (F : D.goodForms (D.spac
     by
     have h_one : 1 ≤ 300 * nStar D := by linarith [D.nStar_pos]
     exact le_trans (by gcongr) (hasHolGap_conjHolomorphicWeight j τ a b ha hb)
-  have peak_min {g : New.G D.E (D.signsW j)} (hg : IsPeak (fun g ↦ star (F.1.1 g)) g) :
+  have peak_min {g : New.G D.E (D.signsW j)} (hg : IsPeak (fun g ↦ star (F.val.val g)) g) :
       (√(5 * D.b * D.b ^ 23))⁻¹ ≤ ((D.spaceW j).move g).firstMinimum :=
     hg.le_firstMinimum _ _ isPosFirstOrder_orderW gap_one (abs_conjHolomorphicWeight_le j)
       D.le_of_hasLogBound D.le_of_hasLogBound (by simp [star_sqrtNegDInE])

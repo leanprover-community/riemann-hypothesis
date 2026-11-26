@@ -29,11 +29,11 @@ include h
 /-- Assume `DirichletLNonvanishingRightOfHalf` (hypothesis `h`): Dirichlet L-functions do not vanish
 for Re s > 1/2, the pole excepted. Then `DirichletLZerosOnLine` holds: every zero s of a Dirichlet
 L-function with 0 < Re s < 1 has Re s = 1/2. -/
-lemma New.zeros_on_line : DirichletLZerosOnLine :=
-  fun N _ ↦ by
-    grind [h N, Complex.one_re, Complex.sub_re,
-      → New.gammaFactor_eq_zero_or_LFunction_one_sub_eq_zero, Complex.ext_iff,
-      DirichletCharacter.gammaFactor, Complex.Gammaℝ_ne_zero_of_re_pos]
+lemma New.zeros_on_line : DirichletLZerosOnLine := by
+  refine fun N _ χ ↦ χ.zeroFreeRightOf_one_half_LFunction_iff_re_eq_one_half.mp ?_
+  refine TauCeti.zeroFreeRightOf_iff.mpr fun s hs ↦ ?_
+  rw [← not_lt, χ.meromorphicOrderAt_LFunction_pos_iff]
+  exact fun ⟨hz, hpole⟩ ↦ h N χ s hs hpole.symm hz
 
 /-- Assume `DirichletLNonvanishingRightOfHalf` (hypothesis `h`): Dirichlet L-functions do not vanish
 for Re s > 1/2, the pole excepted. Then `RiemannZetaZerosOnLine` holds: every zero s of ζ outside

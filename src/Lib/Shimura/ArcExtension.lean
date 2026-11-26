@@ -4,6 +4,8 @@ public import Lib.General.Geometry.GeometricPoints
 public import Lib.Shimura.ThetaGroup
 public import Lib.Shimura.ThetaNormality.NormalGeneration
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.PadicComparison.Descent.TestCategory
+public import Lib.Shimura.AbelianScheme.Pairings
 
 /-!
 # Uniformisations over an arc: theta coordinates, Weil pairing and extension of maps
@@ -67,17 +69,6 @@ variable {X : Scheme.{0}} {ι : Type} {L : LineBundle X ι} {R : Type} [CommRing
 
 private lemma _root_.New.LineBundle.H0.isSection_val (r : L.H0 R) : L.IsSection r.val :=
   r.prop.left
-
-private lemma _root_.New.LineBundle.H0.isRegularOn_val (r : L.H0 R) (i : ι) :
-    (r.val i).IsRegularOn (L.opens i) :=
-  (LineBundle.H0.isSection_val r).left i
-
-/-- At a point that lands in the charts `i` and `j`, the components of a global section `r`
-differ by the transition function: `r i = g_ij · r j`. -/
-private lemma _root_.New.LineBundle.H0.val_eq_transition_mul (r : L.H0 R) (i j : ι)
-    (A : CommRingCat) (t : Spec A ⟶ X) (hi : LandsIn t (L.opens i)) (hj : LandsIn t (L.opens j)) :
-    r.val i A t = L.transition i j A t * r.val j A t :=
-  (LineBundle.H0.isSection_val r).right i j A t hi hj
 
 /-- A component `r.val i` of a global section vanishes at the points outside the chart `i`. -/
 private lemma _root_.New.LineBundle.H0.val_eq_zero_of_not_landsIn (r : L.H0 R) (i : ι)
@@ -166,7 +157,7 @@ lemma thetaEval_eq_iff (h : HasThetaCoords Λ (atGeneric s) L B χ θ) (r : L.H0
   -- the chart does not matter: `θ z i * r i = θ z j * r j` if `θ z i` and `θ z j` are not zero
   constructor
   · rintro rfl i z hi
-    simp [thetaEval, LineBundle.H0.val_eq_transition_mul r i (thetaChart h z),
+    simp [thetaEval, (LineBundle.H0.isSection_val r).right i (thetaChart h z),
       h.hasFieldCoords .., field, apply_thetaChart_ne_zero h, hi]
   · -- at each `z` the value of `thetaEval h r` is read in the chart `thetaChart h z`
     intro h_val
@@ -419,21 +410,6 @@ private lemma translation_comp_eq_of_nsmul_mem {ν : A'.left ⟶ A'.left}
     (translation (s' z₀)).left ≫ ν = ν := by
   simp [← hν_def, ← comp_nsmul _, ← map_nsmul, hs' _ h_mem, ← comp_left, comp_nsmul]
 
-omit h hs' hn h_tors_lift hM [IsProper A'.hom] in
-/-- The translation of `A'` by `s' z₀` moves the complex point `atGeneric s' x` to
-`atGeneric s' (x + z₀)`. -/
-private lemma atGeneric_comp_translation (x z₀ : V) :
-    atGeneric s' x ≫ (translation (s' z₀)).left = atGeneric s' (x + z₀) := by
-  simp [atGeneric, ← comp_left, comp_add]
-
-omit h hs' hn h_tors_lift hM [IsProper A'.hom] in
-/-- If the homomorphism `π : A' ⟶ A` sends `s' z` to `u.expMap z`, it carries the translation of
-`A'` by `s' z₀` to the translation of `A` by `u.expMap z₀`. -/
-private lemma comp_translation_eq_translation_comp (π : A' ⟶ A) [IsAdditive π]
-    (h_lift : ∀ z : V, s' z ≫ π = u.expMap z) (z₀ : V) :
-    π.left ≫ (translation (u.expMap z₀)).left = (translation (s' z₀)).left ≫ π.left := by
-  simp [h_lift, ← comp_left, comp_add, add_comp]
-
 /-- Assume the standing hypotheses from the section head (`h`, `IsPosRiemann B`, unit `n` with
 `h_tors_lift`, `s'` killing `u.lattice`, `A'` proper, `hM`). Let `π : A' ⟶ A` be a homomorphism that
 sends `s' z` to `u.expMap z`. Let the theta coordinates `f` of `M` along `s'` have the same type
@@ -469,7 +445,8 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
   have hA : IsSeparatingFamily (atGeneric u.expMap) :=
     isSeparatingFamily_atGeneric_of_surjective u.surjective
   -- `Γ → A` is proper and its image holds the dense points `atGeneric u.expMap z`
-  have h_surj : AlgebraicGeometry.Surjective (p ≫ π.left) := hA.2.surjective _ P (by grind)
+  have h_surj : AlgebraicGeometry.Surjective (p ≫ π.left) :=
+    hA.2.surjective _ P fun z ↦ by rw [← Category.assoc, hP, ← hπ]
   -- a coordinate `i₀` of `M` whose theta function does not vanish at `0`
   obtain ⟨i₀, hi₀⟩ := (hf.hasFieldCoords 0).exists_ne_zero
   have hf_ne : (fun z : V ↦ f z i₀) ≠ 0 := ne_of_apply_ne (fun g ↦ g 0) hi₀
@@ -483,7 +460,7 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
   -- times their quotient `f (n • z) θ(z) ^ m / (θ (n • z) f(z) ^ m)` (`hw_val`).
   have hθ := h.pull 1 hπ fun _ ↦ id
   have hn_mem (l) (hl : l ∈ u.lattice) : (n : V →L[ℂ] V) l ∈ u.lattice := by
-    simpa using nsmul_mem hl n
+    simpa only [ContinuousLinearMap.natCast_apply, nsmul_eq_mul] using nsmul_mem hl n
   obtain ⟨-, -, c, hw_val⟩ :=
     ((hθ.pull _ hν hn_mem).mul (hf.pow _)).riemannForm_eq_of_isFrame
       ((hf.pull _ hν hn_mem).mul (hθ.pow _)) hw (hf.holomorphicAt hM)
@@ -501,12 +478,13 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
     obtain ⟨h_tors, -⟩ := h_tors_lift z₀ hz₀
     let T : A'.left ⟶ A'.left := (translation (s' z₀)).left
     have hTν : T ≫ ν = ν := translation_comp_eq_of_nsmul_mem u hs' hν_def h_tors
-    have hT (x : V) : atGeneric s' x ≫ T = atGeneric s' (x + z₀) := atGeneric_comp_translation x z₀
-    have hTπ : π.left ≫ (translation (u.expMap z₀)).left = T ≫ π.left :=
-      comp_translation_eq_translation_comp u π h_lift z₀
+    have hT (x : V) : atGeneric s' x ≫ T = atGeneric s' (x + z₀) := by
+      simp [T, atGeneric, ← comp_left, comp_add]
+    have hTπ : π.left ≫ (translation (u.expMap z₀)).left = T ≫ π.left := by
+      simp [T, h_lift, ← comp_left, comp_add, add_comp]
     let Q := M.mul (N.pull π.left)
     obtain ⟨⟨b, b₁, b', i'⟩, hb⟩ := (M.mul ((M.pull T).mul (Q.pull ν))).exists_landsIn (ζ ≫ p)
-    have hr_reg (j : κ) := LineBundle.H0.isRegularOn_val (r j : N.H0 O)
+    have hr_reg (j : κ) := (LineBundle.H0.isSection_val (r j : N.H0 O)).left
     have hw_unit (x) := hw.isUnit_apply x (.of K)
     obtain ⟨h_lin, h_ah, h_mem, h_lifts⟩ := hf
     have hM_reg (i j : κ) : (M.transition i j).IsRegularOn (M.opens i) :=
@@ -516,8 +494,14 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
     -- points `P z`, hence on `Γ`.
     let φ (b : κ) (i : ι) (j : κ) : PointFn A'.left :=
       w ((i', fun _ ↦ b), b', fun _ ↦ i) * ((r j : N.H0 O).val i ^ m).pull π.left
-    simp [IsHomogeneousCoords, hTπ, Q, IsFrame, IsSection, IsRegularOn, pow,
-      landsIn_iInf] at hw hr_reg hM_reg hw_unit h_lifts h_zero ha hb
+    simp [IsFrame, IsSection, IsRegularOn, pow, landsIn_iInf] at hw
+    simp only [IsRegularOn] at hr_reg hM_reg
+    simp only [pow, mul_opens, pull_opens, pi_opens, inv_opens, landsIn_inf, landsIn_preimage,
+      assoc, landsIn_iInf, isUnit_iff_ne_zero] at hw_unit
+    simp only [IsHomogeneousCoords, isUnit_iff_ne_zero, ne_eq, Ring.inverse_eq_inv'] at h_lifts
+    push Not at h_zero
+    simp only [assoc, hTπ] at ha
+    simp only [mul_opens, pull_opens, landsIn_inf, landsIn_preimage, assoc, Q] at hb
     have key : (φ b i b * (M.transition b₁ j ^ m).pull T).pull p _ ζ =
         (φ b₁ a j).pull (p ≫ T) _ ζ := by
       -- Both sides are regular on the open `U` of `Γ` and agree at the `P z` in it; `ζ` is in `U`.
@@ -544,8 +528,10 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
   obtain ⟨e, he, heM⟩ :=
     hA.exists_map_of_coords (ProjSpace.isLinearSystem_hyperplaneBundle.pull W) hM h_lifts
       hf.hasFieldCoords
-  exact ⟨e, fun z ↦ bijective_restrict_genericPt.injective (he z), by rw [heM, hW_cls],
-    hA.hom_ext (by grind)⟩
+  have he' (z : V) : u.expMap z ≫ e = s' z := bijective_restrict_genericPt.injective (he z)
+  exact ⟨e, he', by rw [heM, hW_cls],
+    hA.hom_ext fun z ↦ by
+      simp only [Category.assoc, reassoc_of% (he' z), h_lift, Category.comp_id]⟩
 
 /-- Let `u` uniformise the abelian scheme `A` over `O`, and let `N` be a projective embedding of `A`
 with theta coordinates of type `(B, χ)` along `u`, where `B` is positive. Let `n` be a unit of `O`
@@ -574,7 +560,7 @@ lemma exists_hom_of_hasThetaCoords (hN : N.IsProjEmbedding A.hom)
     by_contra! h_none
     simpa [← one_add_one_eq_two] using
       (IsLocalRing.maximalIdeal O).sub_mem (h_none 2 nofun) (h_none 1 nofun)
-  have : NeZero (μ + k) := ⟨by lia⟩
+  have : NeZero (μ + k) := ⟨by omega⟩
   let S := AddMonoidHom.mk' (fun z ↦ lift (u.expMap z) (s' z)) fun a b ↦ by
     ext1 <;> simp [add_comp]
   let Q := (M.pull (snd A A').1).mul ((N.pow k).pull (fst A A').1)

@@ -65,13 +65,13 @@ variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n �
 `x` an adelic point. At a finite place `w`, the characteristic polynomial of the component of
 `x⁻¹ γ x` is the image over the completion `LocField w` of the characteristic polynomial of `γ`. -/
 lemma charpoly_atPlace_conj_ratEmbed (w : FinPlace E) (γ : U V.J) (x : G E s) :
-    ((x⁻¹ * V.ratEmbed γ * x).2.atPlace w).1.charpoly
+    ((x⁻¹ * V.ratEmbed γ * x).2.atPlace w).val.charpoly
       = (γ : Matrix n n E).charpoly.map (algebraMap E (LocField w)) := by
   set y : Gf E n := (x⁻¹ * V.ratEmbed γ * x).2
   -- Over the finite adeles, `y` is conjugate to the image of `γ`.
   set z : GL n (𝔸f E) := V.xFin * x.2
   have h_conj : (y : GL n (𝔸f E)) =
-      z⁻¹ * GeneralLinearGroup.map (algebraMap E (𝔸f E)) γ.1 * z := by
+      z⁻¹ * GeneralLinearGroup.map (algebraMap E (𝔸f E)) γ.val * z := by
     change (x.2 : GL n (𝔸f E))⁻¹ * V.embFin γ * x.2 = _
     simp [z, coe_embFin, mul_assoc]
   calc _ = (y : Matrix n n (𝔸f E)).charpoly.map (evalAt w) := charpoly_map _ _
@@ -196,7 +196,7 @@ lemma geometricSide_translate (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspK
   have h_term (γ : U V.J) (x : G E s) :
       V.polyTerm k (TestFunction.translate (g, g) φ) S γ x = V.polyTerm k φ S γ (x * (1, g)) := by
     simp [kernelTerm, TestFunction.translate_apply, mul_assoc]
-  have : IsScalarTower V.Γ (G E s) (G E s) := ⟨fun δ x y ↦ mul_assoc δ.1 x y⟩
+  have : IsScalarTower V.Γ (G E s) (G E s) := ⟨fun δ x y ↦ mul_assoc δ.val x y⟩
   have h_inv : ∀ (δ : V.Γ) (x : G E s),
       ∑' γ : U V.J, V.polyTerm k φ S γ (δ • x) = ∑' γ : U V.J, V.polyTerm k φ S γ x := by
     rintro ⟨_, δ₀, rfl⟩ x
@@ -213,7 +213,7 @@ over the completion `LocField w`. -/
 lemma geometricSide_singleton_eq_zero_of_forall (hB : 13 * Fintype.card n ^ 3 ≤ B)
     (he : IsCuspKernel B k) (w : FinPlace E) {R : E[X]}
     {φ : TestFunction (Gf E n)} (h_zero : ∀ y : Gf E n,
-      (y.atPlace w).1.charpoly = R.map (algebraMap E (LocField w)) → φ.1 y = 0) :
+      (y.atPlace w).val.charpoly = R.map (algebraMap E (LocField w)) → φ.val y = 0) :
     V.geometricSide hB he {R} φ = 0 := by
   have h_term (γ : U V.J) (x : G E s) : V.polyTerm k φ {R} γ x = 0 := by
     by_cases hγ : (γ : Matrix n n E).charpoly = R
@@ -232,13 +232,13 @@ is `0`. -/
 theorem geometricSide_singleton_eq_zero (hB : 13 * Fintype.card n ^ 3 ≤ B)
     (hk : IsCuspKernel B k) {w w' : FinPlace E} {hw : w.IsSplit} {φ : TestFunction (Gf E n)}
     (h_cusp : IsCuspidalAt hw φ)
-    (h_supp : ∀ g : Gf E n, φ.1 g ≠ 0 → HasSimpleZero (g.atPlace w')) {R : E[X]}
+    (h_supp : ∀ g : Gf E n, φ.val g ≠ 0 → HasSimpleZero (g.atPlace w')) {R : E[X]}
     (hR : ¬Irreducible R) : V.geometricSide hB hk {R} φ = 0 := by
   by_contra h_ne
   -- Some point of the support has the image of `R` as its polynomial at `w'`.
   -- Hence `R` is not a proper power.
   obtain ⟨y, hy_charpoly, hy_ne⟩ : ∃ y : Gf E n,
-      (y.atPlace w').1.charpoly = R.map (algebraMap E (LocField w')) ∧ φ.1 y ≠ 0 := by
+      (y.atPlace w').val.charpoly = R.map (algebraMap E (LocField w')) ∧ φ.val y ≠ 0 := by
     by_contra! h_zero
     exact h_ne (V.geometricSide_singleton_eq_zero_of_forall hB hk w' h_zero)
   have h_monic : R.Monic := monic_map_iff.1 <| by
@@ -250,7 +250,7 @@ theorem geometricSide_singleton_eq_zero (hB : 13 * Fintype.card n ^ 3 ≤ B)
   -- The part of `R = A * C` is an invariant linear form that only sees the fibre of `R` at `w`.
   set f : E →+* LocField w := algebraMap E (LocField w)
   have h_fibre (ψ : TestFunction (Gf E n))
-      (h_zero : ∀ y : Gf E n, (y.atPlace w).1.charpoly = A.map f * C.map f → ψ.1 y = 0) :
+      (h_zero : ∀ y : Gf E n, (y.atPlace w).val.charpoly = A.map f * C.map f → ψ.val y = 0) :
       V.geometricSide hB hk {A * C} ψ = 0 :=
     V.geometricSide_singleton_eq_zero_of_forall hB hk w (by rwa [Polynomial.map_mul])
   exact h_ne (eq_zero_of_coprime_factors hw (h_coprime.map (mapRingHom f))

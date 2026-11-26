@@ -44,8 +44,8 @@ open Finset ComplexOrder MeasureTheory Floors ENNReal PlaceData IntegralPlace.Is
 whose powers sizes are measured, `M = S.M` the product of the two level primes, `f = numInfPlaces E`
 the number of infinite places, and `n = 𝔰.n = ϱ + 1` with `ϱ` the number of hyperbolic planes. Then
 `(2 (M ^ f) ^ 2) ^ (n ^ 6) ≤ b ^ (n ^ 9 * f)`. -/
-lemma two_mul_M_pow_sq_pow_le {E : Type} {𝔰 : Shape} [Field E] [CMType E] [WeilData E]
-    (S : Filling E 𝔰) [S.IsAdmissible] :
+lemma two_mul_M_pow_sq_pow_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
+    (S : Filling E 𝔰) :
     (2 * ((S.M : ℝ) ^ numInfPlaces E) ^ 2) ^ 𝔰.n ^ 6 ≤ S.b ^ (𝔰.n ^ 9 * numInfPlaces E) := by
   have one_le_b : 1 ≤ S.b := S.one_le_b
   have exponent_le : 46 * numInfPlaces E + 1 ≤ 𝔰.n ^ 3 * numInfPlaces E := by
@@ -65,8 +65,8 @@ of `G`, `K(g) = F.congruenceSubgroup` its principal congruence subgroup and `vol
 the Haar measure. Then `F.massIntegral K = ∫_G |∫_K χ(y x y⁻¹) dy| ^ 2 dx`, with
 `χ = phase F.levelUnit` the generic character of the unipotent group `U` extended to `U K(g)` and by
 zero, is at most `vol(K) vol(K(g)) (1 + b⁻¹ ^ 6)`, where `b = S.b` is the size parameter of `S`. -/
-lemma IsFillingData.massIntegral_full_le {E : Type} {𝔰 : Shape} [Field E] [CMType E] [WeilData E]
-    {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable]
+lemma IsFillingData.massIntegral_full_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
+    {S : Filling E 𝔰} {T : Finset (FinPlace E)} [T.StarStable]
     {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -91,7 +91,7 @@ lemma IsFillingData.massIntegral_full_le {E : Type} {𝔰 : Shape} [Field E] [CM
 /-- Let `Z` be a group between the congruence subgroup of the place datum `F` and the integral
 points, and let `c = Z.massRatio` be its normalising constant in `ℝ≥0∞`. A bound `‖x‖ₑ ≤ c * D` with
 `D` finite gives `‖x / c.toReal‖ ≤ D.toReal`. -/
-lemma norm_div_massRatio_le {E : Type} {𝔰 : Shape} [Field E] [CMType E] [WeilData E]
+lemma norm_div_massRatio_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
     {S : Filling E 𝔰} {T : Finset (FinPlace E)} [T.StarStable] {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -112,7 +112,7 @@ n⁷) / 2) / [O : O ∩ ξ⁻¹ O] ^ 3 * b ^ (n⁹ f)` times the weights `finHea
 `0` if some `D` is not integral. Here `n = 𝔰.n = ϱ + 1`, `k = 𝔰.k`, `b = S.b`, `f` is the number of
 infinite places, and `[O : ξ O]` is the generalised index `genIndex ξ`. -/
 lemma IsFillingData.norm_floorForm_div_massRatio_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
-    [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable]
+    {S : Filling E 𝔰} {T : Finset (FinPlace E)} [T.StarStable]
     {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -120,8 +120,8 @@ lemma IsFillingData.norm_floorForm_div_massRatio_le {E : Type} {𝔰 : Shape} [F
     {j : ℕ} {p q : ℕ → (LocProd T)ˣ}
     {ξ : LocProd T} {ω : (S.latticeMiddle (LocProd T)).G → ℂ} (hj : j ≤ 𝔰.ϱ) (hξ : IsUnit ξ)
     (hω : (ω = fun x : (S.latticeMiddle (LocProd T)).G ↦
-        P.ψ (ξ * ((S.latticeMiddle (LocProd T)).frameGram x.1.1).diag ⟨j, by lia⟩)) ∨
-      ∃ i : ℕ, j = i + 1 ∧ ω = 1 ∧ ξ = F.levelUnit⁻¹.1 * ((p i)⁻¹.1 - (q i)⁻¹.1)) :
+        P.ψ (ξ * ((S.latticeMiddle (LocProd T)).frameGram x.val.val).diag ⟨j, by lia⟩)) ∨
+      ∃ i : ℕ, j = i + 1 ∧ ω = 1 ∧ ξ = F.levelUnit⁻¹.val * ((p i)⁻¹.val - (q i)⁻¹.val)) :
     ‖F.floorForm j p q Z.besselVector ω / Z.massRatio.toReal‖ ≤
       S.frequencyDecay T ξ * (finHeadWeight (𝔰.n ^ 6) j p * finHeadWeight (𝔰.n ^ 6) j q) := by
   obtain ⟨pow_four_le, half_pow_le_inv_pow_six, pow_seven_le⟩ : 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 6 ∧
@@ -138,8 +138,8 @@ lemma IsFillingData.norm_floorForm_div_massRatio_le {E : Type} {𝔰 : Shape} [F
   grw [norm_div_massRatio_le Z (by simp [denomIndex_ne_zero, mul_eq_top, div_eq_top]) h_bound]
   -- the factors agree one by one, except the power of `2 / modulus F.levelUnit = 2 (S.M ^ f) ^ 2`
   -- (`modulus_levelUnit`), which is bounded by `two_mul_M_pow_sq_pow_le`
-  simp (disch := positivity) [-Nat.cast_mul, modulus_levelUnit, frequencyDecay, finHeadWeight,
-    -map_prod]
+  simp (disch := positivity) only [modulus_levelUnit, frequencyDecay, finHeadWeight, toReal_mul,
+    toReal_pow, toReal_ofReal, toReal_inv, inv_pow, toReal_div, div_inv_eq_mul]
   gcongr _ * ?_ * _
   exact S.two_mul_M_pow_sq_pow_le
 
@@ -149,7 +149,7 @@ orbital integral `F.floorForm 0` of `Z.besselVector`, the vector of the translat
 character `χ = phase F.levelUnit` by the cosets of `K(g)` in `Z`. Its norm times the square of
 `F.unipotentMass` is at most `F.massIntegral Z = ∫_G |∫_Z χ(y x y⁻¹) dy| ^ 2 dx`. -/
 lemma IsFillingData.enorm_floorForm_zero_mul_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
-    [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable]
+    {S : Filling E 𝔰} {T : Finset (FinPlace E)} [T.StarStable]
     {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -174,7 +174,7 @@ character, `b = S.b` for the size parameter and `k = 𝔰.k` for the rank of the
 `F.floorForm 0` of `Z.besselVector`, divided by `Z.massRatio = vol(Z) vol(K(g)) / F.unipotentMass ^
 2`, has norm at most `(1 + b⁻¹ ^ 6) / (b ^ (6 k)) ^ s`. -/
 lemma IsFillingData.norm_floorForm_zero_div_massRatio_le {E : Type} {𝔰 : Shape} [Field E]
-    [CMType E] [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)}
+    [CMType E] {S : Filling E 𝔰} {T : Finset (FinPlace E)}
     [T.StarStable] {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -201,7 +201,8 @@ lemma IsFillingData.norm_floorForm_zero_div_massRatio_le {E : Type} {𝔰 : Shap
   -- clear the denominators and multiply by `vol K`, which is finite and nonzero
   rwa [ofReal_div_of_pos (by positivity), IntermediateGroup.massRatio,
     ← ENNReal.mul_div_mul_comm (by simp) (by simp),
-    ENNReal.le_div_iff_mul_le (by simp; left; positivity) (by simp [mul_eq_top]),
+    ENNReal.le_div_iff_mul_le (.inl (mul_ne_zero (by simp) (ofReal_pos.2 (by positivity)).ne'))
+      (by simp [mul_eq_top]),
     ← ENNReal.mul_le_mul_iff_left (P.unitaryLevel_open_compact.1.measure_ne_zero _ (by simp))
       (hF.groupMeasure_ne_top le_rfl : vol K ≠ ∞), ← mul_assoc, ofReal_pow (by positivity)]
 
@@ -246,7 +247,7 @@ scaled orbital integrals of `p` and `q` over the vectors of the top quadric with
 On finitely many sequences `a i` with the same entry `t` at position `ϱ = 𝔰.ϱ`, the number of
 hyperbolic planes, it is a positive semidefinite matrix. -/
 lemma IsFillingData.posSemidef_lastEntryDensity {E : Type} {𝔰 : Shape} [Field E] [CMType E]
-    [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable]
+    {S : Filling E 𝔰} {T : Finset (FinPlace E)} [T.StarStable]
     {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}

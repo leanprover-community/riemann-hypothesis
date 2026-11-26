@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Data.NNRat.BigOperators
 public import Lib.General.NumberTheory.GaussValuation
 
 /-!
@@ -121,7 +122,7 @@ open Classical in
 where the valuation `ellVal` is normalised by `v ℓ = 1`. For `r = ρ_h` it is written `R_h` in the
 docstrings. -/
 def rootsOfValuation (g : (intQpBar ℓ)[X]) (r : ℚ≥0) : Multiset (intQpBar ℓ) :=
-  g.roots.filter fun α : intQpBar ℓ ↦ ellVal α.1 = (r : ℝ≥0)
+  g.roots.filter fun α : intQpBar ℓ ↦ ellVal α.val = (r : ℝ≥0)
 
 /-- A member of `rootsOfValuation g r`, the roots of `g` in `ℤ̄_ℓ` of valuation `r`, has valuation
 `r`. -/
@@ -139,7 +140,7 @@ lemma card_rootsOfValuation_mul (g : (intQpBar ℓ)[X]) (r : ℚ≥0) (c : ℝ�
   rw [rootsOfValuation]
   induction g.roots using Multiset.induction_on with
   | empty => simp
-  | cons α s ih => by_cases hα : ellVal α.1 = (r : ℝ≥0) <;> simp [hα, ← ih, add_mul, add_comm]
+  | cons α s ih => by_cases hα : ellVal α.val = (r : ℝ≥0) <;> simp [hα, ← ih, add_mul, add_comm]
 
 /-- Let `v = ellVal` be the valuation on `ℚ̄_ℓ` with `v ℓ = 1`, let `g = ∑ y_i Y ^ i` be a
 polynomial over the valuation ring `ℤ̄_ℓ = intQpBar ℓ`, and let `v_r(g) = gaussVal r g` be its Gauss
@@ -154,11 +155,11 @@ lemma ellVal_eval_add_card_mul (g : (intQpBar ℓ)[X]) {r : ℚ≥0} {y : intQpB
         ((rootsOfValuation g r).map fun α : intQpBar ℓ ↦ ellVal (y - α).val).sum := by
   classical
   set R : Multiset (intQpBar ℓ) := rootsOfValuation g r
-  set R' : Multiset (intQpBar ℓ) := g.roots.filter fun α ↦ ¬ellVal α.1 = (r : ℝ≥0)
+  set R' : Multiset (intQpBar ℓ) := g.roots.filter fun α ↦ ¬ellVal α.val = (r : ℝ≥0)
   have h_split : g.roots = R + R' := (Multiset.filter_add_not _ g.roots).symm
-  have h_other : ∀ α ∈ R', ellVal (y - α).1 = min (ellVal α.1) (r : ℝ≥0) := fun α hα ↦ by
+  have h_other : ∀ α ∈ R', ellVal (y - α).val = min (ellVal α.val) (r : ℝ≥0) := fun α hα ↦ by
     rw [ellVal_sub_eq_min_of_ne (hy.trans_ne (Ne.symm (Multiset.mem_filter.1 hα).2)), hy, min_comm]
-  have h_same : ∀ α ∈ R, min (ellVal α.1) (r : ℝ≥0) = (r : ℝ≥0) :=
+  have h_same : ∀ α ∈ R, min (ellVal α.val) (r : ℝ≥0) = (r : ℝ≥0) :=
     fun α hα ↦ min_eq_right (ellVal_of_mem_rootsOfValuation hα).ge
   rw [ellVal_eval_eq_add_sum_roots, gaussVal_eq_add_sum_roots (ρ := r), h_split]
   simp only [Multiset.map_add, Multiset.sum_add, Multiset.map_congr rfl h_other,
@@ -170,10 +171,10 @@ open Classical in
 with `v ℓ = 1`. At most one radius `ρ_h = rootRadius ℓ h = 1 / φ(ℓ ^ h)` with `h` in
 `radiusExponents ℓ ρ h₀` equals `v(α)`, so the sum of these radii is at most `min (v(α)) ρ`. -/
 lemma sum_rootRadius_filter_le_min {ρ : ℚ≥0} {h₀ : ℕ} (α : intQpBar ℓ) :
-    ∑ h ∈ radiusExponents ℓ ρ h₀ with ellVal α.1 = (rootRadius ℓ h : ℝ≥0),
-      ((rootRadius ℓ h : ℝ≥0) : ℝ≥0∞) ≤ min (ellVal α.1) (ρ : ℝ≥0) := by
+    ∑ h ∈ radiusExponents ℓ ρ h₀ with ellVal α.val = (rootRadius ℓ h : ℝ≥0),
+      ((rootRadius ℓ h : ℝ≥0) : ℝ≥0∞) ≤ min (ellVal α.val) (ρ : ℝ≥0) := by
   obtain h_empty | ⟨k, hk⟩ :=
-    {h ∈ radiusExponents ℓ ρ h₀ | ellVal α.1 = (rootRadius ℓ h : ℝ≥0)}.eq_empty_or_nonempty
+    {h ∈ radiusExponents ℓ ρ h₀ | ellVal α.val = (rootRadius ℓ h : ℝ≥0)}.eq_empty_or_nonempty
   · simp [h_empty]
   · obtain ⟨hk_mem, hk_val⟩ := mem_filter.1 hk
     obtain ⟨hk_one, -, hk_radius⟩ := mem_radiusExponents.1 hk_mem
@@ -195,10 +196,10 @@ lemma sum_card_rootsOfValuation_mul_le {ρ : ℚ≥0} {h₀ : ℕ} (g : (intQpBa
   classical
   -- A root lies in at most one `R_h`, and its summand `min (v(α)) ρ` in `v_ρ(g)` is then `ρ_h`.
   calc _ = (g.roots.map fun α ↦
-          ∑ h ∈ radiusExponents ℓ ρ h₀ with ellVal α.1 = (rootRadius ℓ h : ℝ≥0),
+          ∑ h ∈ radiusExponents ℓ ρ h₀ with ellVal α.val = (rootRadius ℓ h : ℝ≥0),
             ((rootRadius ℓ h : ℝ≥0) : ℝ≥0∞)).sum := by
         simp only [sum_filter, Multiset.sum_map_sum, card_rootsOfValuation_mul]
-    _ ≤ (g.roots.map fun α ↦ min (ellVal α.1) (ρ : ℝ≥0)).sum :=
+    _ ≤ (g.roots.map fun α ↦ min (ellVal α.val) (ρ : ℝ≥0)).sum :=
         Multiset.sum_map_le_sum_map _ _ fun α _ ↦ sum_rootRadius_filter_le_min α
     _ ≤ gaussVal ρ g := le_add_self.trans_eq (gaussVal_eq_add_sum_roots g).symm
 
@@ -231,7 +232,7 @@ lemma sum_min_ellVal_sub_le {α : intQpBar ℓ} (hα : IsUnit (1 + α)) (h : ℕ
   have h_coeff : f.coeff 1 = (1 + α) ^ (ℓ ^ h - 1) * ℓ ^ h := by
     rw [hf, coeff_sub, coeff_X_add_C_pow, coeff_one, ite_eq_right one_ne_zero, sub_zero,
       Nat.choose_one_right, Nat.cast_pow]
-  have h_val : ellVal (f.coeff 1).1 = h := by
+  have h_val : ellVal (f.coeff 1).val = h := by
     rw [h_coeff, ellVal_val_mul, ellVal_eq_zero_iff_isUnit.2 (hα.pow _), zero_add]
     simp [ellVal_pow, ellVal_ell]
   have hf_ne : f ≠ 0 := fun h_zero ↦ ENNReal.natCast_ne_top h
@@ -245,7 +246,7 @@ lemma sum_min_ellVal_sub_le {α : intQpBar ℓ} (hα : IsUnit (1 + α)) (h : ℕ
     have h_point : ζ - 1 - α + (1 + α) = ζ := by ring
     rw [mem_roots hf_ne, IsRoot.def, hf, eval_sub, eval_pow, eval_add, eval_X, eval_C, eval_one,
       h_point, (isPrimitiveRoot_of_mem_primitiveRoots hζ).pow_eq_one, sub_self]
-  calc _ ≤ (f.roots.map fun y ↦ min (ellVal y.1) 1).sum := by
+  calc _ ≤ (f.roots.map fun y ↦ min (ellVal y.val) 1).sum := by
         obtain ⟨rest, h_rest⟩ := Multiset.le_iff_exists_add.1 h_roots
         simp [h_rest]
     _ ≤ gaussVal 1 f := by simp [gaussVal_eq_add_sum_roots (ρ := 1)]

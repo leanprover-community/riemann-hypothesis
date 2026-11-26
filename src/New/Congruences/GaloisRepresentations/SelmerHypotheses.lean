@@ -221,7 +221,7 @@ lemma isLabelledAt_avatar {a : AutChar D.E} {e : NumberField.InfinitePlace D.E �
   intro T s y hy
   have ⟨hA, _, hs, _⟩ := hy
   obtain ⟨-, -, weil⟩ := avatarCompatAt_of_hasPrimitiveRoot5040 (ha.toAlgebraic k j) hA
-  obtain ⟨x, hx : Valued.v x.1 = 1, hxs,
+  obtain ⟨x, hx : Valued.v x.val = 1, hxs,
       (kills : PolyKillsAt ((scalar (Fin 1)).comp (ha.toAlgebraic k j).avatar) A s
         (X - C (ιℓ ((ha.toAlgebraic k j).val.1 (locIdele w x) : ℂ))))⟩ :=
     weil s 0 bot_le (inv_mem hs)
@@ -301,7 +301,7 @@ structure IsConjSelfDual : Prop where
   /-- Conjugate self-duality on traces: `tr R(g^c) = cyc(g)^{1 - t} tr R(g⁻¹)`, where
   `cyclotomicInv` is the inverse of the cyclotomic character `cyc`; `t = 0` is read as `t = 1`. -/
   trace_conj (g : Gal(Ω/D.E)) :
-      (R (conjGal g)).1.trace = cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ (t - 1) * (R g⁻¹).1.trace
+      (R (conjGal g)).val.trace = cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ (t - 1) * (R g⁻¹).val.trace
 
 variable (ℓ D) in
 /-- The negligible number `e'_ℓ = (4 f + 3) r v_ℓ(D.chosenGroupOrder) + 2 ^ (-ℓ)` that bounds the
@@ -459,8 +459,8 @@ structure IsMainSummandLike : Prop extends IsConjSelfDualOfLevel D t J ∅ R,
   /-- Some inertia element at a place above `p₀` or `p₁` and prime to `ℓ` acts by a scalar `y` such
   that `y ^ (ℓ ^ a * j) - 1` is a unit for all `a` and `1 ≤ j ≤ 4 * card n + 2`. -/
   exists_scalar_inertia :
-      ∃ᵉ (γ ∈ inertiaAbove (placesAboveM D \ placesDividing D.E ℓ)) (y : PadicAlgCl ℓ),
-        (R γ).val = y • 1 ∧ ∀ᵉ (a : ℕ) (j ∈ Icc 1 (4 * card n + 2)), ‖y ^ (ℓ ^ a * j) - 1‖ = 1
+      ∃ γ ∈ inertiaAbove (placesAboveM D \ placesDividing D.E ℓ), ∃ y : PadicAlgCl ℓ,
+        (R γ).val = y • 1 ∧ ∀ a : ℕ, ∀ j ∈ Icc 1 (4 * card n + 2), ‖y ^ (ℓ ^ a * j) - 1‖ = 1
 
 variable {D t J R}
 
@@ -541,7 +541,7 @@ abbrev normalisedRep (R : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ)) : Gal(Ω/D.E) 
 (`New.charName`) the character `(O.tamePart w)⁻¹`, where `w = O.chosenPlace i`. -/
 def scaledTypePoly (i : O.ChosenIndex) : (ResField (O.chosenPlace i))[X] :=
   (c i).scaleRoots
-    (charName (faithfulChar (ResField (O.chosenPlace i))) (O.tamePart (O.chosenPlace i))⁻¹).1
+    (charName (faithfulChar (ResField (O.chosenPlace i))) (O.tamePart (O.chosenPlace i))⁻¹).val
 
 /-- The descent pair `O` with the labels `c` is a lift setting for the twist `ϑ`. Conditions on the
 pair: its places are `D.levelPlaces ϑ`. Its character `O.tamePart` is `D.chiMLocal ^ j * ϑ.tamePart`
@@ -566,7 +566,7 @@ structure IsLiftSetting (ϑ : D.Twist) where
   `card r = D.r` and `c i` is a primitive polynomial (`IsPrimitivePolynomial`), or `card r = 1` and
   `c i = X - 1`. -/
   exists_primitive_or_one (k : Fin 2) : ∃ i : O.ChosenIndex,
-    ↑(D.levelPrime k) ∈ (O.chosenPlace i).1 ∧
+    ↑(D.levelPrime k) ∈ (O.chosenPlace i).asIdeal ∧
     (card r = D.r ∧ IsPrimitivePolynomial (card r) (c i) ∨ card r = 1 ∧ c i = X - 1)
   /-- The scaled type polynomial `New.Selmer.scaledTypePoly O c i` does not have `1` as a root. -/
   not_isRoot_scaledTypePoly (i : O.ChosenIndex) : ¬(scaledTypePoly O c i).IsRoot 1

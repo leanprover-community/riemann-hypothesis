@@ -1,5 +1,9 @@
 module
 
+import TauCeti.RingTheory.Smooth.Lifting
+import TauCeti.AlgebraicGeometry.Frobenius.Perfect
+public import Mathlib.CategoryTheory.Limits.Shapes.Connected
+public import Mathlib.FieldTheory.IsPerfectClosure
 public import Lib.PadicComparison.Descent.TestCovers
 
 /-!
@@ -303,28 +307,6 @@ lemma exists_injective_algHom_perfect (hp : (p : S) = 0) (k : Type) [Field k] [A
 lemma bijective_pow_prime_pow (A : PerfectAlg S) (n : ℕ) : Bijective fun x : A.obj ↦ x ^ p ^ n :=
   (A.property.pow _ p n).bijective_frobenius
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
-/-- Let B, B₁, B₂, B₀ be perfect S-algebras with maps E₁ : B[X] → B₁, E₂ : B[X] → B₂ and
-E₀ : B[T, T⁻¹] → B₀. Suppose E₀ kills f - g T, maps B[X] → B₀ that kill f - g X factor through E₁,
-and those that kill g - f X factor through E₂. Then X ↦ T and X ↦ T⁻¹ induce maps j₁ : B₁ → B₀ and
-j₂ : B₂ → B₀. -/
-lemma exists_blowup_gluing_maps {B B₁ B₂ B₀ : PerfectAlg S} (f g : B.obj)
-    (E₁ : B.obj[X] →ₐ[S] B₁.obj) (E₂ : B.obj[X] →ₐ[S] B₂.obj)
-    (E₀ : B.obj[T;T⁻¹] →ₐ[S] B₀.obj) (h_rel : E₀ (C f - C g * X).toLaurent = 0)
-    (h_lift₁ : ∀ φ : B.obj[X] →ₐ[S] B₀.obj, φ (C f - C g * X) = 0 →
-      ∃ ψ : B₁.obj →ₐ[S] B₀.obj, ψ.comp E₁ = φ)
-    (h_lift₂ : ∀ φ : B.obj[X] →ₐ[S] B₀.obj, φ (C g - C f * X) = 0 →
-      ∃ ψ : B₂.obj →ₐ[S] B₀.obj, ψ.comp E₂ = φ) :
-    ∃ (j₁ : B₁.obj →ₐ[S] B₀.obj) (j₂ : B₂.obj →ₐ[S] B₀.obj),
-      (∀ P : B.obj[X], j₁ (E₁ P) = E₀ P.toLaurent) ∧
-      ∀ P : B.obj[X], j₂ (E₂ P) = E₀ (invert P.toLaurent) := by
-  obtain ⟨j₁, hj₁⟩ := h_lift₁ (E₀.comp ⟨toLaurent, by simp⟩) h_rel
-  obtain ⟨j₂, hj₂⟩ := h_lift₂ (E₀.comp ⟨.comp invert.toRingHom toLaurent, by simp⟩)
-    (show E₀ (invert (C g - C f * X).toLaurent) = 0 by
-      simp [invert_toLaurent_C_sub_C_mul_X, h_rel, -map_sub])
-  exact ⟨j₁, j₂, AlgHom.congr_fun hj₁, AlgHom.congr_fun hj₂⟩
-
 /-- Let p = 0 in S and B, B₁, B₂, B₀ be perfect S-algebras. Let E₁, E₂ map B[X] to B₁, B₂, let E₀
 map B[T, T⁻¹] to B₀, and let j₁, j₂ map B₁, B₂ to B₀ with j₁ (E₁ P) = E₀ (P(T)) and
 j₂ (E₂ P) = E₀ (P(T⁻¹)). If every element of B₀ has a p^n-th power in the image of E₀, then
@@ -428,7 +410,12 @@ lemma exists_perfect_blowup_charts (hp : (p : S) = 0) [PerfectRing S p] (B : Per
   obtain ⟨B₁, E₁, lift₁, -, rel₁, root₁⟩ := exists_perfection_quotient hp _ (C f - C g * X)
   obtain ⟨B₂, E₂, lift₂, -, rel₂, root₂⟩ := exists_perfection_quotient hp _ (C g - C f * X)
   obtain ⟨B₀, E₀, -, ker₀, rel₀, root₀⟩ := exists_perfection_quotient hp _ (C f - C g * X).toLaurent
-  obtain ⟨j₁, j₂, hj₁, hj₂⟩ := exists_blowup_gluing_maps f g E₁ E₂ E₀ rel₀ lift₁ lift₂
+  obtain ⟨j₁, hj₁'⟩ := lift₁ (E₀.comp ⟨toLaurent, by simp⟩) rel₀
+  obtain ⟨j₂, hj₂'⟩ := lift₂ (E₀.comp ⟨.comp invert.toRingHom toLaurent, by simp⟩)
+    (show E₀ (invert (C g - C f * X).toLaurent) = 0 by
+      simp [invert_toLaurent_C_sub_C_mul_X, rel₀, -map_sub])
+  have hj₁ : ∀ P : B.obj[X], j₁ (E₁ P) = E₀ P.toLaurent := AlgHom.congr_fun hj₁'
+  have hj₂ : ∀ P : B.obj[X], j₂ (E₂ P) = E₀ (invert P.toLaurent) := AlgHom.congr_fun hj₂'
   let i₁ : B.obj →ₐ[S] B₁.obj := E₁.comp CAlgHom
   let i₂ : B.obj →ₐ[S] B₂.obj := E₂.comp CAlgHom
   let j : (B₁.obj × B₂.obj) →ₗ[S] B₀.obj := j₁.toLinearMap.coprod (-j₂.toLinearMap)
@@ -460,84 +447,21 @@ B ≅ D ⊗_C T as D-algebras for some étale C-algebra T. -/
 lemma exists_etale_lift (B : Type*) [CommRing B] [Algebra D B] [h_etale : Etale D B]
     (h_surj : Surjective (algebraMap C D)) :
     ∃ T : CommAlg C, Algebra.Etale C T ∧ Nonempty (D ⊗[C] T ≃ₐ[D] B) := by
-  -- Lift a submersive presentation `P` of `B` of dimension `0` to a presentation `Q` over `C` and
-  -- invert the Jacobian of `Q`; after base change to `D` the Jacobian is already a unit.
-  algebraize [(algebraMap D B).comp (algebraMap C D)]
-  obtain ⟨ι, σ, _, _, P : SubmersivePresentation D B ι σ, h_dim : P.dimension = 0⟩ :=
-    (iff_isStandardSmoothOfRelativeDimension_zero.1 h_etale).1
-  -- The coefficients of the relations of `P` come from `C`, so `P` has a model over `C`.
-  have : P.HasCoeffs C := ⟨fun x _ ↦ h_surj x⟩
-  let Q : PreSubmersivePresentation C (P.ModelOfHasCoeffs C) ι σ := P.1.ofHasCoeffs C
-  let φ : D ⊗[C] P.ModelOfHasCoeffs C ≃ₐ[D] B := P.tensorModelOfHasCoeffsEquiv C
-  -- `φ` sends the Jacobian of `Q` to that of `P`, a unit because `P` is submersive.
-  have h_unit : IsUnit (φ (1 ⊗ₜ Q.jacobian)) := by
-    let := Fintype.ofFinite σ
-    classical
-    -- `φ (1 ⊗ y)` is the value of the polynomial `y` at the generators of `B`.
-    have hφ (y : MvPolynomial ι C) :
-        φ (1 ⊗ₜ[C] algebraMap Q.Ring (P.ModelOfHasCoeffs C) y) = MvPolynomial.aeval P.val y :=
-      (P.tensorModelOfHasCoeffsEquiv_tmul C 1 y).trans (by simp)
-    have h_det : Q.jacobiMatrix.det = P.jacobianOfHasCoeffs C := rfl
-    rw [Q.jacobian_eq_jacobiMatrix_det, hφ, h_det, P.aeval_jacobianOfHasCoeffs C]
-    exact P.jacobian_isUnit
-  refine ⟨.of _ (Localization.Away Q.jacobian), ?_, ⟨?_⟩⟩
-  · -- Adjoining an inverse of the Jacobian adds one generator and one relation.
-    let loc := PreSubmersivePresentation.localizationAway (Localization.Away Q.jacobian) Q.jacobian
-    refine iff_isStandardSmoothOfRelativeDimension_zero.2
-      ⟨_, _, _, inferInstance, ⟨loc.comp Q, ?_⟩, ?_⟩
-    · simp [loc, algebraMap_isUnit, smul_def, -isUnit_map_iff]
-    · grind [Presentation.dimension, Nat.card_sum]
-  · -- Base change commutes with localisation, and localising at a unit changes nothing.
-    have h_unit' : IsUnit ((1 : D) ⊗ₜ[C] Q.jacobian) := .of_map φ _ h_unit
-    let e₁ : D ⊗[C] Localization.Away Q.jacobian ≃ₐ[D]
-        Localization.Away ((1 : D) ⊗ₜ[C] Q.jacobian) :=
-      tensorProductEquivTMulRight C D Q.jacobian (Localization.Away Q.jacobian)
-    let e₂ : Localization.Away ((1 : D) ⊗ₜ[C] Q.jacobian) ≃ₐ[D] D ⊗[C] P.ModelOfHasCoeffs C :=
-      (atUnit _ _ _ h_unit').symm.restrictScalars D
-    exact e₁.trans (e₂.trans φ)
+  obtain ⟨T, _, _, h_etale_T, e⟩ :=
+    Algebra.Etale.exists_tensorProduct_algEquiv_of_surjective C D B h_surj
+  exact ⟨.of _ T, h_etale_T, e⟩
 
-/-- Let `D` be étale over `C` with `p = 0` in `D`, and `f : D → E` a ring map with `C → E` étale.
-If `s` is inverse to `f` up to the `p`-th power on both sides, then `f` is bijective. -/
-lemma bijective_of_etale_of_inverse_up_to_pow [Etale C D] {E : Type} [CommRing E] (f : D →+* E)
-    (hf : (f.comp (algebraMap C D)).Etale) (hp : (p : D) = 0) (s : E →+* D)
-    (hsf : ∀ x : D, s (f x) = x ^ p) (hfs : ∀ x : E, f (s x) = x ^ p) : Bijective f := by
-  -- `E` is étale and faithfully flat over `D`, so by descent it is enough to show
-  -- `y ⊗ 1 = 1 ⊗ y` in `E ⊗[D] E` for every `y`.
-  algebraize [f, f.comp (algebraMap C D)]
-  have : Algebra.Etale D E := .of_restrictScalars C D E
-  -- A prime `P` of `D` is the image of `P.comap s`, as `s (f x) = x ^ p`.
-  have : Module.FaithfullyFlat D E := .of_comap_surjective fun P ↦ ⟨P.comap s, by
-    ext
-    simp [algebraMap_toAlgebra, hsf, P.isPrime.pow_mem_iff_mem, pos]⟩
-  -- Frobenius of `E ⊗[D] E` factors through the multiplication map to `E` and `s`.
-  have h_frob : frobPow (natCast_eq_zero_of_algebra hp (E ⊗[D] E)) 1 =
-      (algebraMap D (E ⊗[D] E)).comp (s.comp (lmul' D).toRingHom) := by
-    ext y <;> simp [← hfs, ← algebraMap_toAlgebra f, tmul_one_eq_one_tmul]
-  -- The separability element `elem D E` multiplies to `1`, so its `p`-th power is `1`.
-  have h_pow : elem D E ^ p = 1 := by
-    calc elem D E ^ p = frobPow (natCast_eq_zero_of_algebra hp (E ⊗[D] E)) 1 (elem D E) := by simp
-      _ = algebraMap D (E ⊗[D] E) (s (lmul' D (elem D E))) := RingHom.congr_fun h_frob _
-      _ = 1 := by simp [lmul_elem, Algebra.TensorProduct.one_def]
-  have h_unit : IsUnit (elem D E) := .of_pow_eq_one h_pow out
-  refine ⟨FaithfulSMul.algebraMap_injective D E, fun y ↦ ?_⟩
-  -- `elem D E` equalises `y ⊗ 1` and `1 ⊗ y`, and it is a unit.
-  have h_eq : (y ⊗ₜ 1 : E ⊗[D] E) = 1 ⊗ₜ y := h_unit.mul_right_cancel (one_tmul_mul_elem y).symm
-  exact (IsEffective.of_faithfullyFlat D E y).mp (sub_eq_zero.mpr h_eq :)
-
+open AlgebraicGeometry in
 /-- An étale algebra over a perfect ring in which p = 0 is perfect. -/
 lemma perfectRing_of_etale [Etale C D] [k : PerfectRing C p] (hp : (p : C) = 0) :
     PerfectRing D p := by
-  have hD : (p : D) = 0 := natCast_eq_zero_of_algebra hp D
-  -- `C → D → D` (Frobenius last) is also Frobenius of `C`, a bijection, followed by `C → D`.
-  have h_comm : (frobPow hD 1).comp (algebraMap C D) = (algebraMap C D).comp (frobPow hp 1) :=
-    RingHom.ext fun _ ↦ by simp
-  have h_etale : ((frobPow hD 1).comp (algebraMap C D)).Etale := by
-    rw [h_comm]
-    exact RingHom.Etale.stableUnderComposition _ _ (.of_bijective (bijective_frobPow_one hp))
-      (etale_algebraMap.2 inferInstance)
-  -- The identity is inverse to Frobenius of `D` up to the `p`-th power.
-  exact perfectRing_of_bijective_frobPow hD
-    (bijective_of_etale_of_inverse_up_to_pow C D _ h_etale hD (.id D) (by simp) (by simp))
+  -- Perfect schemes are stable under étale morphisms; apply this to `Spec D → Spec C`.
+  have : Scheme.IsPerfect (Spec (.of C)) p := (Scheme.isPerfect_Spec_iff C).2 ⟨hp, k⟩
+  let f := Spec.map (CommRingCat.ofHom (algebraMap C D))
+  have : AlgebraicGeometry.Etale f :=
+    (HasRingHomProperty.Spec_iff (P := @AlgebraicGeometry.Etale)).2
+      (RingHom.etale_algebraMap.2 inferInstance)
+  exact ((Scheme.isPerfect_Spec_iff D).1 (Scheme.IsPerfect.of_etale f)).2
 
 end EtalePerfect
 

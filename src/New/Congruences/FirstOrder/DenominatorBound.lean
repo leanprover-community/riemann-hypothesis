@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.InnerProductSpace.Semisimple
 public import New.Congruences.FirstOrder.AuxiliaryPrimeTie
 public import New.Congruences.FirstOrder.HeckeStrings
 public import New.Congruences.FirstOrder.RibetElement
@@ -15,12 +16,17 @@ orthogonal to the false lifts to an integral form. `O` is a descent pair of herm
 ranks `r < n` (`New.DescentPair`). `Z` is a subspace of its forms spanned by vectors in the ranges
 of the idempotents `New.Selmer.typeProjection O c` of types `c` in lift setting.
 
+The operator bound is not a scalar denominator bound: it controls the determinant by
+bounding the valuations of eigenvalues. The factor `D.chosenGroupOrder` is used to clear
+stabilizer denominators in the pairing with integral forms, after projection integrality
+has been established. Both properties are needed in `DenominatorLe`.
+
 The *chain* at a place of norm `q` is `∏ (X - q ^ i)`, `i < t'`, with `t' = O.rankDiff`.
 
 * `New.Selmer.typeProjection_sub_starProjection_mem_of_isOrthogonalToFalseLifts`: a form orthogonal
   to the false lifts differs from its projection to `Z`, in each type, only outside the weak lifts.
 * `New.Selmer.exists_operator_ellVal_le_liftValuationBound`: the bound for denominators. An operator
-  on `Z` preserves the Hecke eigenspaces, has eigenvalues of valuation at most
+  on `Z` has eigenvalues of valuation at most
   `New.Selmer.liftValuationBound` and takes projections of integral forms orthogonal to the false
   lifts to integral forms.
 * `New.Selmer.denominatorLe_clearingBound`: if `Z` is spanned by lifts whose twisted main summands
@@ -180,8 +186,8 @@ abbrev IsLiftWithTwistedLattice {P : Parameters} {D : Data P} {ℓ : ℕ} [ThePr
 that clears denominators. Here `r′ = card r`, `t′ = O.rankDiff`, `loc = localDefectBound D ℓ` and
 `err = denominatorError D ℓ`; `ram` bounds the ramification of the twist and `sel` the lengths of
 the Selmer groups. -/
-noncomputable def liftValuationBound {P : Parameters} {D : Data P} (ℓ : ℕ) [ThePrime ℓ]
-    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair D.E r n)
+noncomputable def liftValuationBound {P : Parameters} {D : Data P} (ℓ : ℕ)
+    {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] (O : DescentPair D.E r n)
     (ram sel : ENNReal) : ENNReal :=
   sel + 2 * O.rankDiff * ram + card r * localDefectBound D ℓ + denominatorError D ℓ
 
@@ -232,7 +238,7 @@ lemma exists_eventually_hasRootChain_mostFrobeniiAt {P : Parameters} {D : Data P
       ∀ᶠ y : FrobeniusDatum D.E in mostFrobeniiAt D.E (δ ^ ℓ ^ ν * g),
         -- (a)
         y.place ∉ badPlaces D ℓ ∧
-        B.IsOffLevel ![] y.place ∧
+        B.IsOffLevel (ℓ := ℓ) ![] y.place ∧
         -- (b)
         (∀ x : B.Eigensystem ![], IsWeakLift O x.val →
           ∀ S : (PadicAlgCl ℓ)[X], 1 ≤ ‖S.eval 1‖ →
@@ -270,7 +276,7 @@ lemma exists_eventually_hasRootChain_mostFrobeniiAt {P : Parameters} {D : Data P
   have hF : F ≤ mostFrobenii D.E := inf_le_left
   have h_good : ∀ᶠ z : FrobeniusDatum D.E in F, z.place ∉ badPlaces D ℓ :=
     hF (eventually_mostFrobenii (badPlaces D ℓ).eventually_cofinite_notMem fun _ hz ↦ hz)
-  have h_offLevel : ∀ᶠ z : FrobeniusDatum D.E in F, B.IsOffLevel ![] z.place :=
+  have h_offLevel : ∀ᶠ z : FrobeniusDatum D.E in F, B.IsOffLevel (ℓ := ℓ) ![] z.place :=
     hF (eventually_mostFrobenii B.eventually_isOffLevel fun _ hz ↦ hz)
   have h_away : ∀ᶠ z : FrobeniusDatum D.E in F, 1 ≤ ‖(T z.frob).charpoly.eval 1‖ :=
     mem_inf_of_right (preimage_mem_comap hi)
@@ -321,7 +327,7 @@ lemma exists_taylorWilesPlaces_hasRootChain {P : Parameters} {D : Data P} {ℓ :
         (D.halfGap ^ 22 * h) ∧
       -- (b)
       (∀ j : J, Q.place j ∉ badPlaces D ℓ) ∧
-      (∀ j : J, B.IsOffLevel ![] (Q.place j)) ∧
+      (∀ j : J, B.IsOffLevel (ℓ := ℓ) ![] (Q.place j)) ∧
       -- (c)
       ∃ e : J → EllAdicIntegers[X], (∀ j : J, (e j).eval 1 = 1) ∧
         ∀ (j : J) (x : B.Eigensystem ![]),
@@ -344,7 +350,7 @@ lemma exists_taylorWilesPlaces_hasRootChain {P : Parameters} {D : Data P} {ℓ :
   let HasShape (x : B.Eigensystem ![]) (y : FrobeniusDatum D.E) (e : EllAdicIntegers[X]) : Prop :=
     HasRootChain (x.val.heckePolyAt y.place) (e.map (algebraMap EllAdicIntegers ℂ)) y.place.q
       (ιℓ.symm (normalizingAvatar O y.frob).val)⁻¹ O.rankDiff
-  let W : Set (FrobeniusDatum D.E) := {y | y.place ∉ badPlaces D ℓ ∧ B.IsOffLevel ![] y.place ∧
+  let W : Set (FrobeniusDatum D.E) := {y | y.place ∉ badPlaces D ℓ ∧ B.IsOffLevel (ℓ := ℓ) ![] y.place ∧
     (∀ x : B.Eigensystem ![], IsWeakLift O x.val → ∀ S : (PadicAlgCl ℓ)[X], 1 ≤ ‖S.eval 1‖ →
       (∀ k : ℕ, ‖(χ x y.frob).coeff k - (S * chain y.frob).coeff k‖ < 1) →
       ∃ e : EllAdicIntegers[X], HasShape x y e ∧ e.eval 1 = 1) ∧
@@ -372,7 +378,7 @@ lemma exists_taylorWilesPlaces_hasRootChain {P : Parameters} {D : Data P} {ℓ :
   have h_good (j : J) : Q.place j ∉ badPlaces D ℓ := by
     obtain ⟨h_notMem, -⟩ := hQ j
     exact h_notMem
-  have h_offLevel (j : J) : B.IsOffLevel ![] (Q.place j) := by
+  have h_offLevel (j : J) : B.IsOffLevel (ℓ := ℓ) ![] (Q.place j) := by
     obtain ⟨-, h_off, -⟩ := hQ j
     exact h_off
   -- So the condition in `W` applies with `S` the polynomial of the twist.
@@ -661,7 +667,7 @@ lemma exists_heckePolyOnForms_eq_zero {P : Parameters} {D : Data P} {ℓ : ℕ} 
       IsWeakLift O x →
       O.heckePolyOnForms hw hS (O.liftHeckeRoot w) v = 0 := by
   obtain ⟨w, ⟨-, -, hℓ, h_eigen⟩, hw, hS⟩ :
-      ∃ w : FinPlace D.E, B.IsOffLevel ![] w ∧ w.IsSplit ∧ w ∉ O.places.conjClosure :=
+      ∃ w : FinPlace D.E, B.IsOffLevel (ℓ := ℓ) ![] w ∧ w.IsSplit ∧ w ∉ O.places.conjClosure :=
     ((B.eventually_isOffLevel (L := ![])).and_frequently
       (frequently_isSplit_notMem_places O)).exists
   refine ⟨w, hw, hS, fun x v hv hv₀ h_weak ↦ ?_⟩
@@ -1004,7 +1010,7 @@ lemma diagOp_typeProjection_eq_zero_of_mem_span {P : Parameters} {D : Data P} {�
     [PadicIso ℓ] {ϑ : D.Twist} {r n : Type} [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
     {O : DescentPair D.E r n} {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
     {sel : ENNReal} {B : BaseLevel (stdSpace D.E n) (O.columnCount, O.detExp) D.chosenGroupOrder}
-    {J : Type} [Finite J] {L : J → FinPlace D.E}
+    {J : Type} {L : J → FinPlace D.E}
     {c : ∀ i : O.ChosenIndex, (ResField (O.chosenPlace i))[X]}
     (h_base : ∀ y ∈ (typeProjection O c).range, y.toSmoothForm ∈ B.formsOfLevel ![])
     {s : B.Eigensystem L → PadicAlgCl ℓ}
@@ -1113,45 +1119,11 @@ lemma exists_linearMap_eq_smul_mem_integralForms {P : Parameters} {D : Data P} {
   rw [mem_integralForms_ofIso_iff, hw_eq]
   simpa [sq, mul_smul, Nat.cast_smul_eq_nsmul ℂ] using h_ell
 
-/-- The operator `Λ` on `Z` preserves every eigenspace in `Z` of every Hecke polynomial at a split
-place off the places of `O` and their conjugates. -/
-def PreservesHeckeEigenspaces {P : Parameters} {D : Data P} {r n : Type} [Fintype r]
-    [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair D.E r n} {Z : Submodule ℂ O.FormV}
-    (Λ : Module.End ℂ Z) : Prop :=
-  ∀ (w : FinPlace D.E) (hw : star w ≠ w) (hw_off : w ∉ O.places.conjClosure) (ξ a : ℂ) (z : Z),
-    O.heckePolyOnForms hw hw_off ξ z = a • (z : O.FormV) →
-      O.heckePolyOnForms hw hw_off ξ (Λ z) = a • (Λ z : O.FormV)
-
-/-- An operator on `Z` that is diagonal in a basis of lifts (`O.HasLiftHeckePolynomial`: Hecke
-eigenforms that lift some system `z`) preserves the eigenspaces of the Hecke polynomials. -/
-lemma preservesHeckeEigenspaces_toLin_diagonal {P : Parameters} {D : Data P} {r n : Type}
-    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair D.E r n}
-    {Z : Submodule ℂ O.FormV} {m : ℕ} (b : Basis (Fin m) ℂ Z)
-    (hb : ∀ k : Fin m, ∃ z : FinPlace D.E → ℕ → ℂ, O.HasLiftHeckePolynomial (b k : O.FormV) z)
-      (μ : Fin m → ℂ) :
-    PreservesHeckeEigenspaces (Matrix.toLin b b (Matrix.diagonal μ)) := by
-  intro w hw hw_off ξ a z hz
-  -- On `Z` the Hecke polynomial is diagonal in `b` as well, and diagonal operators commute.
-  have h_eig (k : Fin m) : ∃ e : ℂ, O.heckePolyOnForms hw hw_off ξ (b k) = e • (b k : O.FormV) := by
-    obtain ⟨z_k, hz_k⟩ := hb k
-    exact ⟨_, O.heckePolyOnForms_eq_smul hw hw_off (hz_k w hw hw_off) ξ⟩
-  choose e he using h_eig
-  let T : Module.End ℂ Z := Matrix.toLin b b (Matrix.diagonal e)
-  have h_lin : O.heckePolyOnForms hw hw_off ξ ∘ₗ Z.subtype = Z.subtype ∘ₗ T :=
-    b.ext fun k ↦ by simp [T, Matrix.diagonal, he]
-  have hT (z' : Z) : O.heckePolyOnForms hw hw_off ξ z' = T z' := LinearMap.congr_fun h_lin z'
-  have h_comm :
-      T * Matrix.toLin b b (Matrix.diagonal μ) = Matrix.toLin b b (Matrix.diagonal μ) * T :=
-    b.ext fun k ↦ by simp [T, Matrix.diagonal, smul_smul, mul_comm]
-  have hTz : T z = a • z := Subtype.ext ((hT z).symm.trans hz)
-  rw [hT, ← mul_apply_eq_comp, h_comm, mul_apply_eq_comp, hTz, map_smul, Submodule.coe_smul]
-
 /-- Bound for denominators. Let the twist `ϑ` have ramification at most `ram` (`IsAuxTwist`), let
 `sel` be finite, and let `Z` be spanned by lift generators: forms in `Z`, of a type compatible with
 `ϑ` (a lift setting) inside the image of the group-algebra element `E`, that lift Hecke eigenvalues
 with main summands whose twisted Selmer groups with divisible coefficients have length at most
-`sel`. Then an operator `Λ` on `Z` preserves the eigenspaces of the Hecke polynomials at the split
-places off `O.places.conjClosure`, has eigenvalues of valuation at most
+`sel`. Then an operator `Λ` on `Z` has eigenvalues of valuation at most
 `liftValuationBound ℓ O ram sel`, which is `sel + 2 * O.rankDiff * ram + card r * localDefectBound D
 ℓ + denominatorError D ℓ`, and takes to forms integral at `ιℓ` the projections to `Z` of forms
 integral at `ιℓ` and orthogonal to the false lifts, which are the forms in `Zᗮ` and the image of `E`
@@ -1164,7 +1136,6 @@ theorem exists_operator_ellVal_le_liftValuationBound {P : Parameters} {D : Data 
     {E : MonoidAlgebra ℂ (O.ChosenGL r)} {Z : Submodule ℂ O.FormV}
     (h_span : Z ≤ span ℂ {y : O.FormV | IsLiftGenerator ϑ O E Z sel y}) :
     ∃ Λ : Module.End ℂ Z,
-      PreservesHeckeEigenspaces Λ ∧
       (∀ μ : ℂ, Λ.HasEigenvalue μ → ellVal (ℓ := ℓ) (ιℓ μ) ≤ liftValuationBound ℓ O ram sel) ∧
       ∀ y : O.FormV, y ∈ integralForms (PadicPlace.ofIso ιℓ) → O.IsOrthogonalToFalseLifts E Zᗮ y →
         (Λ (Z.orthogonalProjectionOnto y) : O.FormV) ∈ integralForms (PadicPlace.ofIso ιℓ) := by
@@ -1210,13 +1181,10 @@ theorem exists_operator_ellVal_le_liftValuationBound {P : Parameters} {D : Data 
   obtain ⟨μ, hμ_good, hμ_ge⟩ : ∃ μ : ι → ℂ, Matrix.toLin b b (Matrix.diagonal μ) ∈ Good ∧
       ∀ k : ι, ‖ιℓ (eig k k)‖ ≤ ‖ιℓ (μ k)‖ :=
     exists_diagonal_mem_norm_ge b h_comb eig h_good
-  refine ⟨Matrix.toLin b b (Matrix.diagonal μ), ?_, fun ν hν ↦ ?_, hμ_good⟩
-  · refine preservesHeckeEigenspaces_toLin_diagonal b (fun k ↦ ?_) μ
-    obtain ⟨z, hz, -⟩ := IsLiftGenerator.exists_hasLiftHeckePolynomial (hωA k)
-    exact ⟨z, by rwa [hb]⟩
-  · obtain ⟨k, rfl⟩ : ∃ k : ι, μ k = ν := (hasEigenvalue_toLin_diagonal_iff μ b).1 hν
-    calc ellVal (ιℓ (μ k)) ≤ ellVal (ιℓ (eig k k)) := ellVal_le_ellVal (hμ_ge k)
-      _ ≤ liftValuationBound ℓ O ram sel := hG_bound k (eig k k) (h_eig k k)
+  refine ⟨Matrix.toLin b b (Matrix.diagonal μ), fun ν hν ↦ ?_, hμ_good⟩
+  obtain ⟨k, rfl⟩ : ∃ k : ι, μ k = ν := (hasEigenvalue_toLin_diagonal_iff μ b).1 hν
+  calc ellVal (ιℓ (μ k)) ≤ ellVal (ιℓ (eig k k)) := ellVal_le_ellVal (hμ_ge k)
+    _ ≤ liftValuationBound ℓ O ram sel := hG_bound k (eig k k) (h_eig k k)
 
 /-- If `N * ιℓ μ` has `ℓ`-adic valuation at most `B` for every eigenvalue `μ` of `Λ`, then the
 determinant of `N • Λ` has `ℓ`-adic norm at least `exp (-(finrank ℂ Z * (B * log ℓ)))`. -/
@@ -1276,7 +1244,7 @@ theorem exists_operator_det_clearingBound {P : Parameters} {D : Data P} {ℓ : �
   have h_budget : liftValuationBound ℓ O (twistError ℓ D) (twistError ℓ D) +
       padicValNat ℓ D.chosenGroupOrder ≤ card r * clearingBound D ℓ :=
     add_denominatorError_le_mul_clearingBound ⟨h_rank_pos, h_r_le⟩ h_rankDiff_le le_rfl le_rfl
-  obtain ⟨Λ, -, h_eig, h_int⟩ :=
+  obtain ⟨Λ, h_eig, h_int⟩ :=
     exists_operator_ellVal_le_liftValuationBound ϑ hϑ ENNReal.coe_ne_top h_span
   refine ⟨(D.chosenGroupOrder : ℂ) • Λ, ?_, fun y' hy' hy'_test ↦ ?_, fun y y' hy hy' hy'_test ↦ ?_⟩
   · -- the determinant is the product of the eigenvalues, each of valuation at most
@@ -1294,7 +1262,8 @@ theorem exists_operator_det_clearingBound {P : Parameters} {D : Data P} {ℓ : �
   · -- an integer multiple of an integral form is integral
     rw [LinearMap.smul_apply, Submodule.coe_smul, Nat.cast_smul_eq_nsmul ℂ]
     exact nsmul_mem (h_int y' hy' hy'_test) _
-  · -- with the factor `D.chosenGroupOrder` the pairing is integral
+  · -- Projection integrality alone need not give an integral pairing: the class stabilizer
+    -- orders divide `D.chosenGroupOrder`, which clears their denominators.
     have h_pair : ‖(PadicPlace.ofIso ιℓ).ιₚ
         (D.chosenGroupOrder • inner ℂ y (Λ (Z.orthogonalProjectionOnto y') : O.FormV))‖ ≤ 1 :=
       y.norm_nsmul_inner_le_one _ (PadicPlace.ofIso ιℓ)

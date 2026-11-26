@@ -362,7 +362,6 @@ lemma New.Data.CriticalPair.exists_log_norm_map_norm_sq_trivialLift_eq_add_sum_j
   obtain ⟨h_ne, r, hr_ge, hr_le : (∀ τ : D.Φ, Y.rowLength τ = 0) → r ≤ 4 * D.f,
     h_log : log N = c + r + ∑ τ : D.Φ, log (Y.rowLength τ).factorial⟩ :=
     h_size Y p.z h_places H.1 H.2
-  have hN_pos : 0 < N := norm_pos_iff.2 h_ne
   refine ⟨r, hr_ge, fun ⟨h_flat, _⟩ ↦ hr_le fun τ ↦ ?_, ?_⟩
   · obtain ⟨τ, rfl⟩ := (placePerm D.towerExp σ).surjective τ
     rw [h_deg, h_flat, Nat.sub_self]
@@ -457,7 +456,7 @@ lemma CriticalPair.IsMainPair.negWeight_sub_z_mem_Icc {p : D.CriticalPair} {j : 
   have hc_ge : D.liftWeight j τ + D.r ≤ p.negWeight τ + D.t := hp.le_negWeight τ
   have h_gap : D.weight τ + D.t ≤ D.liftWeight j τ := by
     rw [D.liftWeight_eq j τ]
-    linarith [D.k_add_t_add_one_le_halfGap, Nat.zero_le (j * D.gap), Nat.zero_le D.k]
+    linarith only [D.k_add_t_add_one_le_halfGap, Nat.zero_le (j * D.gap), Nat.zero_le D.k]
   exact ⟨Nat.cast_le.2 (by omega),
     (Nat.cast_le.2 (by omega : p.negWeight τ - p.z ≤ D.liftWeight j τ)).trans
       (D.liftWeight_le_weight_add (by linarith [hp.j_mem.2]) τ)⟩
@@ -521,7 +520,7 @@ lemma heightLe_norm_trivialLift_sq {j : ℕ} {p : D.CriticalPair} (hp : p.IsMain
   · -- `integralAlgebraicPart` at the trivial character is integral at every prime
     have h_prod : mult * normSqP = q.integralAlgebraicPart h_flat.2 .one :=
       div_mul_cancel₀ _ (by simp [normSqP])
-    change ‖ι.2 (mult * normSqP)‖ ≤ exp 0
+    change ‖ι.iso (mult * normSqP)‖ ≤ exp 0
     simp [h_prod, norm_integralAlgebraicPart_one_le_one]
 
 end New.Data

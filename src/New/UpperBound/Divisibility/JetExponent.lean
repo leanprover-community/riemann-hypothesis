@@ -156,8 +156,10 @@ lemma collisionSum_le {S : Finset D.Φ} {o : ℕ}
     have h_bound (e : ℕ) : ‖t (o + e)‖ ≤ D.a / p ^ o * 2 / 2 / 2 ^ e :=
       calc ‖t (o + e)‖ ≤ (D.a / p ^ o / p ^ e : ℝ) := by
             unfold t
-            split <;> simp [pow_add, ← div_div]; positivity
-        _ ≤ D.a / p ^ o / 2 ^ e := by gcongr; exact mod_cast q.1.two_le
+            split
+            · simp [pow_add, ← div_div]
+            · rw [norm_zero]; positivity
+        _ ≤ D.a / p ^ o / 2 ^ e := by gcongr; exact mod_cast q.out.two_le
         _ = _ := by ring
     grw [← (add_right_injective o).tsum_eq h_support, le_norm_self (tsum _)]
     exact tsum_of_norm_bounded (hasSum_geometric_two' _) h_bound
@@ -182,8 +184,8 @@ lemma mul_collisionSum_le_loss (hp : D.IsSmallNonsplit p)
     have h_far {τ : D.Φ} {e : ℕ} (hc : D.IsCollision p ∅ τ e) : D.ceilLogLifts p + 1 ≤ e := by
       obtain ⟨h_ne, h_odd, h_dvd⟩ := hc.ne_and_odd_and_dvd
       grind [IsExceptional, chiK_cases, Odd.of_dvd_nat, Nat.le_of_dvd h_odd.pos h_dvd]
-    grw [collisionSum_le h_far, le_pow_clog q.1.one_lt D.m, ← ceilLogLifts]
-    have hp_ne : p ≠ 0 := q.1.ne_zero
+    grw [collisionSum_le h_far, le_pow_clog q.out.one_lt D.m, ← ceilLogLifts]
+    have hp_ne : p ≠ 0 := q.out.ne_zero
     simp [pow_succ, field]
 
 /-- The least height `k` of a low column is below `n_{j+1}`. -/
@@ -278,7 +280,7 @@ lemma one_add_logb_boxes_le (hj : j < D.m) :
     simp [f, Core.numInfPlaces]
   have h_log : 1 / 2 ≤ Real.log p := by
     grw [← q.out.two_le]
-    linarith [Real.log_two_gt_d9]
+    linarith only [Real.log_two_gt_d9]
   calc _ ≤ 1 + Real.log (D.f * D.a + D.f * D.M + 1) / (1 / 2) := by
         grw [logb, ← h_log, h_boxes]
     _ ≤ D.logB ^ 2 := D.le_of_hasLogBound
@@ -311,7 +313,7 @@ lemma posPart_sub_weight_le_posPart_longRow (hj : j < D.m) (hp : D.IsSmallNonspl
   · simp only [h_aPlace, mem_inter, false_and, and_false, ite_false, add_zero]
     positivity
   have h_nonneg : (0 : ℝ) ≤ D.weight τ' := Nat.cast_nonneg _
-  simp only [IsCollision, ← hτ', mem_inter, mem_sdiff, h_aPlace, he, posPart_def, longRow]
+  simp only [IsCollision, ← hτ', mem_inter, h_aPlace, he, posPart_def, longRow]
   by_cases h_removed : τ ∈ S
   · -- A removed row: only the surplus at `e = 1` is to be absorbed.
     have h_surplus (h_one : e = 1) : (D.a / D.x₁ : ℝ) ≤ D.a / p ^ e := by
@@ -381,7 +383,7 @@ lemma sub_le_predictedDivisibility (hj : j < D.m) (S : Finset D.Φ) :
     grw [sum_le_card_nsmul univ _ _ fun τ _ ↦
       min_longRow_add_lowColumns_add_min_lowBoxes_le hj S τ, nsmul_eq_mul]
     change (1 / 2 * (D.f * (3 * (D.a / P.d / D.m))) : ℝ) ≤ D.f * (2 * (D.a / P.d / D.m))
-    linarith [show (0 : ℝ) ≤ D.f * (D.a / P.d / D.m) by positivity]
+    linarith only [show (0 : ℝ) ≤ D.f * (D.a / P.d / D.m) by positivity]
   · positivity
 
 /-- For `j < D.m` and a place `τ`, the number `γ_p = gammaPrime P.d p` times the number

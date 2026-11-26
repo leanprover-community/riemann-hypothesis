@@ -1,10 +1,13 @@
 module
 
-public import Lib.General.Analysis.GaussianIntegral
-public import Lib.General.Groups.CongruenceSubgroups
 import TauCeti.Analysis.Matrix.LDL
 import TauCeti.Analysis.Matrix.PosSemidef.Determinant
 import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
+public import Aesop.BuiltinRules
+public import Mathlib.Algebra.Order.Archimedean.Real.Hom
+public import Mathlib.Analysis.CStarAlgebra.Hom
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Determinants of positive semidefinite matrices, principal minors and hermitian involutions
@@ -110,24 +113,16 @@ variable {x b : Matrix n n ℂ} {p : n → Prop} [DecidablePred p] {ε : n → �
 satisfying `p` is at most `‖x‖ ^ k`, where `‖x‖` is the operator norm and `k` is the number of
 these indices. -/
 theorem norm_principalMinor_le_pow : ‖principalMinor x p‖ ≤ ‖x‖ ^ card {i // p i} := by
-  -- With `A` the block of `x` on `p`: `Aᴴ * A ≤ ‖x‖ ^ 2` in the Loewner order,
-  -- and taking determinants gives the square of the claim.
-  set A : Matrix {i // p i} {i // p i} ℂ := x.toBlock p p with hA
-  set c : Matrix n n ℂ := algebraMap ℝ (Matrix n n ℂ) (‖x‖ ^ 2) with hc
-  have h_le : Aᴴ * A ≤ c.toBlock p p :=
-    calc
-      _ ≤ Aᴴ * A + (x.toBlock (¬p ·) p)ᴴ * x.toBlock (¬p ·) p :=
-        le_add_of_nonneg_right (posSemidef_conjTranspose_mul_self _).nonneg
-      _ = (star x * x).toBlock p p := (toBlock_mul_eq_add p p p (star x) x).symm
-      -- restrict `star x * x ≤ ‖x‖ ^ 2` to the block
-      _ ≤ c.toBlock p p := (star_mul_le_algebraMap_norm_sq (a := x)).submatrix _
+  -- `Aᴴ * A ≤ ‖x‖ ^ 2` in the Loewner order; taking determinants gives the square of the claim.
+  have h_le :
+      (x.toBlock p p)ᴴ * x.toBlock p p ≤ (algebraMap ℝ (Matrix n n ℂ) (‖x‖ ^ 2)).toBlock p p :=
+    ((le_add_of_nonneg_right (posSemidef_conjTranspose_mul_self _).nonneg).trans_eq
+      (toBlock_mul_eq_add p p p (star x) x).symm).trans
+      ((star_mul_le_algebraMap_norm_sq (a := x)).submatrix _)
   refine le_of_sq_le_sq ?_ (by positivity)
-  calc
-    ‖principalMinor x p‖ ^ 2 = ‖(Aᴴ * A).det‖ := by simp [sq, principalMinor, toSquareBlockProp, hA]
-    _ ≤ ‖(c.toBlock p p).det‖ :=
-      norm_det_le_norm_det_of_posSemidef A.posSemidef_conjTranspose_mul_self h_le
-    _ = (‖x‖ ^ card {i // p i}) ^ 2 := by
-      simp [hc, algebraMap_eq_diagonal, toBlock_diagonal_self, pow_right_comm]
+  simpa [sq, mul_pow, principalMinor, toSquareBlockProp, algebraMap_eq_diagonal,
+    toBlock_diagonal_self] using
+    norm_det_le_norm_det_of_posSemidef (x.toBlock p p).posSemidef_conjTranspose_mul_self h_le
 
 -- lets `aesop` reduce an equality of two determinants to an equality of the two matrices
 attribute [local aesop 1%] congr
@@ -331,7 +326,24 @@ section UnitaryNorm
 
 open Matrix CStarRing Norms.L2Operator IsHermitianInvolution
 
-variable {n : Type*} [Fintype n] [DecidableEq n] {J : Matrix n n ℂ}
+variable {n : Type*} [Fintype n] [DecidableEq n]
+
+/-- The L² operator norm of diag(x, b) is the larger of the norms of x and b. -/
+@[simp]
+theorem norm_fromBlocks_zero_zero {m : Type*} [Fintype m] [DecidableEq m]
+    (x : Matrix n n ℂ) (b : Matrix m m ℂ) :
+    ‖fromBlocks x 0 0 b‖ = ‖x‖ ⊔ ‖b‖ := by
+  -- `(x, b) ↦ fromBlocks x 0 0 b` is an injective star homomorphism of C⋆-algebras, so an isometry
+  let φ : Matrix n n ℂ × Matrix m m ℂ →⋆ₙₐ[ℂ] Matrix (n ⊕ m) (n ⊕ m) ℂ :=
+    { toFun p := fromBlocks p.1 0 0 p.2
+      map_smul' := by simp [fromBlocks_smul]
+      map_zero' := fromBlocks_zero
+      map_add' := by simp [fromBlocks_add]
+      map_mul' := by simp [fromBlocks_multiply]
+      map_star' := by simp [star_eq_conjTranspose, fromBlocks_conjTranspose] }
+  exact NonUnitalStarAlgHom.norm_map φ (fun p q h ↦ by simpa [φ, Prod.ext_iff] using h) (x, b)
+
+variable {J : Matrix n n ℂ}
   [IsHermitianInvolution (n := n) J] (g : U J)
 
 theorem IsHermitianInvolution.isUnit : IsUnit J := .of_mul_eq_one _ mul_self

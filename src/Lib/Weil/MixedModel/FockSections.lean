@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Analysis.Calculus.ContDiff.WithLp
+public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 public import Lib.General.Analysis.FourierTransforms
 public import Lib.General.Analysis.MeanValueAndTaylor
 public import Lib.Weil.Fock.WeightedNorms
@@ -102,7 +104,7 @@ lemma MixedModel.exists_fockMoment_slice_le (N M : ℕ) :
       (1 + ‖a‖ₑ) ^ M * ‖(-(star (a + b) ⬝ᵥ (a + b))).exp‖ₑ ≤
         .ofReal (.exp (M ^ 2)) * (1 + ‖b‖ₑ) ^ M := by
     have h_tri : 1 + ‖a‖ ≤ (‖a + b‖ + 1) * (1 + ‖b‖) := by
-      nlinarith [norm_le_add_norm_add a b, norm_nonneg (a + b), norm_nonneg b]
+      nlinarith only [norm_le_add_norm_add a b, norm_nonneg (a + b), norm_nonneg b]
     -- `exp (-|x|²) ≤ exp (-|x|² / 2) = realVac x`, and `pow_mul_realVac_le` turns `h_tri` into
     -- `(1 + ‖a‖) ^ M * ‖realVac (a + b)‖ ≤ exp (M ^ 2) * (1 + ‖b‖) ^ M`.
     have h_half : ‖(-(star (a + b) ⬝ᵥ (a + b))).exp‖ ≤ ‖realVac (a + b)‖ := by
@@ -186,7 +188,7 @@ lemma exists_smooth_exponent_coherent {A : EuclideanSpace ℂ p → (ι → ℂ)
     fun_prop
   · intro r hr t x
     have hr_ne : (r : ℂ) ≠ 0 := mod_cast hr.ne'
-    simp [e, mulVec_smul, star_trivial, field]
+    simp [mulVec_smul, star_trivial, field]
 
 omit [DecidableEq ι] [DecidableEq p] in
 /-- For `d` smooth of compact support and `A x` a smooth family of real-linear maps, the Fourier
@@ -359,7 +361,8 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
     τ x * (star (principalMinor (S x) (ε · = -1)) * cexp (star x ⬝ᵥ x))
   have d_supp : HasCompactSupport d := (hτ_supp.comp_homeomorph (PiLp.homeomorph ..)).mul_right
   have d_smooth : ContDiff ℝ ∞ d := by
-    simp [d, principalMinor, dotProduct, det_apply, toSquareBlockProp]
+    simp only [d, principalMinor, dotProduct, det_apply, toSquareBlockProp, toBlock_apply,
+      Pi.star_apply, star_def]
     fun_prop
   -- `A x y = I (S x y)`.
   let A (x : EuclideanSpace ℂ p) : (ι → ℂ) →L[ℝ] ι' → ℂ :=

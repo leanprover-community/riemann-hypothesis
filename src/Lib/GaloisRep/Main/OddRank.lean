@@ -439,27 +439,13 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
   have n_mem_w (T : ℕ) : ↑(n T) ∈ w.asIdeal := n_mem T w (by omega)
   have not_mem_S (x : FinPlace E) (hx : ↑(n 0) ∉ x.asIdeal) : x ∉ S :=
     fun hxS ↦ hx (n_mem 0 x (le_add_left (S.le_sup hxS)))
-  -- Step `T` is the field `stepField (χ T) ⊇ ℚ(√-D T)`. Its group, cut down to `ker (χ T)`, and
-  -- the inertia groups at small places prime to `n T` generate `Gal(Ω/E)` (`h_gen`). At places
-  -- dividing `n T`: the places of `ℚ(√-D T)` below are split (`h_spl`), decomposition groups fix
-  -- the field, and `χ T` kills inertia, and decomposition if the place is split (`h_loc`).
-  have exists_step (T : ℕ) : ∃ (χ : QZChar Gal(Ω/E)) (D : ℕ) (_ : HasQuadSubfield D (stepField χ)),
-      IsStep (stepField χ) (ideleChar χ) ∧
-      (∃ m : ℕ, ∀ H : Subgroup Gal(Ω/E),
-        inertiaAbove {x : FinPlace E | ↑(n T) ∉ x.asIdeal ∧ x.q ≤ m} ⊆ H →
-        ∀ g : Gal(Ω/E), ∃ h ∈ H, g * h ∈ stepKer χ) ∧
-      (∀ v : FinPlace (stepField χ),
-        ↑(n T) ∈ v.asIdeal → IsSplitPrimeToDisc (v.below (QuadField D))) ∧
-      ∀ {A : ClosurePlace} {x : FinPlace E}, IsPlaceOver A x → ↑(n T) ∈ x.asIdeal →
-        decompGroup Gal(Ω/E) A ≤ QZChar.ker (symmetrise χ) ∧ inertiaGroup Gal(Ω/E) A ≤ stepKer χ ∧
-        (x.IsSplit → decompGroup Gal(Ω/E) A ≤ stepKer χ) :=
-    exists_isStep_hasQuadSubfield E (n T) NeZero.out
-  choose χ D D_subfield h_step h_gen h_spl h_loc using exists_step
+  -- Step `T` is the field `stepField (χ T) ⊇ ℚ(√-D T)`, given by `exists_isQuadraticStep`.
+  choose χ D D_subfield h_quad using fun T ↦ exists_isQuadraticStep E (n T) NeZero.out
   -- `F T` is an eigenform over step `T`, with polynomials `P' T`: a weak base change of `f`.
   have exists_form (T : ℕ) : ∃ (F : (stdSpace (stepField (χ T)) (Fin a)).forms κ.baseChange)
       (P' : FinPlace (stepField (χ T)) → Polynomial ℂ),
       IsEigenform F.val P' ∧ IsWeakBaseChange (ideleChar (χ T)) ∅ f F.val :=
-    exists_weak_baseChange (h_step T) hf he.1
+    exists_weak_baseChange (h_quad T).isStep hf he.1
   choose F P' hF h_bc using exists_form
   -- For `A` over the place `x` of `E`, `u T hA` is a place of step `T` between them.
   have exists_place (T : ℕ) {x : FinPlace E} {A : ClosurePlace} (hA : IsPlaceOver A x) :
@@ -469,7 +455,7 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
   have h_split_case (T : ℕ) {x : FinPlace E} {A : ClosurePlace} (hA : IsPlaceOver A x)
       (hx : ↑(n T) ∈ x.asIdeal) :
       SphericalCompat (ℓ := ℓ) (stepField (χ T)) (Fin a) a (u T hA) := by
-    refine sphericalCompat_of_split ha fun v hv ↦ h_spl T v ?_
+    refine sphericalCompat_of_split ha fun v hv ↦ (h_quad T).isSplitPrimeToDisc_below v ?_
     obtain hℓ | rfl := hv
     · exact mem_of_dvd _ (by simp [n]) hℓ
     · rw [← h_below T hA] at hx
@@ -484,15 +470,16 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
       (hfx : f ∈ sphericalAt (rightRegular ℂ (Gf E (Fin a)) (WeylIndex (Fin a) κ.1 → ℂ)) x) :
       IsCompatibleAt (F T).val a (u T hA) (r T) A := by
     -- Step `T` is unramified at `x`, so `F T` is spherical above `x`.
-    obtain ⟨h_dec, h_inertia, -⟩ := h_loc T hA hx
     have h_unram : IsStepUnramifiedAt (stepField (χ T)) (ideleChar (χ T)) x :=
-      isStepUnramifiedAt_of_decompGroup_le (h_step T) hA h_dec (h_inertia.trans inf_le_right)
+      isStepUnramifiedAt_of_decompGroup_le (h_quad T).isStep hA
+        ((h_quad T).decompGroup_le_ker_symmetrise hA hx)
+        (((h_quad T).inertiaGroup_le_ker_inf hA hx).trans inf_le_right)
     exact (h_split_case T hA hx).isCompatibleAt (F T).prop (hF T) (hr T)
       (((h_bc T).2 x nofun _ (h_below T hA)).1 h_unram hfx) (hu T hA)
   -- The representation `ρ T` above: the restriction of `r T` to `stepKer (χ T)`, attached to `P`.
   have hρ (T : ℕ) : Attached P ((r T).comp (stepKerInclusion (χ T))) (stepKer (χ T)).subtype :=
     (h_bc T).attached_comp_stepKerInclusion (hr T) (hF T) he
-  obtain ⟨m, h_gen₀⟩ := h_gen 0
+  obtain ⟨m, h_gen₀⟩ := (h_quad 0).exists_mul_mem_of_inertiaAbove_subset
   refine ⟨?_, fun R' hR' f_sph_w A hA ↦ ?_⟩
   · -- Glue the `ρ (T + m)` to `ρ 0`.
     refine exists_attached_of_open_subgroups (hρ 0) (fun T ↦ isOpen_stepKer (χ (T + m)))
@@ -507,15 +494,15 @@ lemma New.GaloisRep.sphericalCompat_of_odd {ℓ : ℕ} [ThePrime ℓ] [PadicIso 
           (by simpa [LE.le, funext_iff] using hS)
       have hℓ : ↑ℓ ∉ x.asIdeal := fun hℓ ↦ hx (mem_of_dvd _ (by simp [n]) hℓ)
       have hx_dvd : ↑(n (T + m)) ∈ x.asIdeal := n_mem (T + m) x (by omega)
-      obtain ⟨-, h_inertia, -⟩ := h_loc (T + m) hA' hx_dvd
-      exact ⟨h_inertia hs',
+      exact ⟨(h_quad (T + m)).inertiaGroup_le_ker_inf hA' hx_dvd hs',
         (h_sph (T + m) hA' hx_dvd hfx).isGoodAt.1 (hA'.valuation_natCast_eq_one_iff.2 hℓ) _ hs'⟩
     · -- A place `y` of prime norm is split and divides `n (y.q + m)`.
-      obtain ⟨-, -, h_dec⟩ := h_loc (y.q + m) hA (n_mem (y.q + m) y (by omega))
-      exact h_dec (isSplit_of_q_prime hy) h_frob.1
+      exact (h_quad (y.q + m)).decompGroup_le_ker_inf_of_isSplit hA
+        (n_mem (y.q + m) y (by omega)) (isSplit_of_q_prime hy) h_frob.1
   -- The clause at `w` descends from step `0`, where the decomposition group fixes the field.
-  obtain ⟨-, h_inertia, h_dec⟩ := h_loc 0 hA (n_mem_w 0)
   exact (h_bc 0).isCompatibleAt_of_attached (hr 0) (hF 0) he hR' (by simp [Set.conjClosure]) hA
-    h_inertia h_dec (h_below 0 hA) (h_sph 0 hA (n_mem_w 0) f_sph_w)
+    ((h_quad 0).inertiaGroup_le_ker_inf hA (n_mem_w 0))
+    ((h_quad 0).decompGroup_le_ker_inf_of_isSplit hA (n_mem_w 0))
+    (h_below 0 hA) (h_sph 0 hA (n_mem_w 0) f_sph_w)
 
 end QuadraticDescent

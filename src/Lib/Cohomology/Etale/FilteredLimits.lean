@@ -1,5 +1,15 @@
 module
 
+public import Mathlib.CategoryTheory.Abelian.GrothendieckAxioms.Colim
+public import Mathlib.CategoryTheory.Limits.Constructions.Over.Connected
+public import Mathlib.CategoryTheory.Limits.FunctorCategory.Shapes.Images
+public import Mathlib.CategoryTheory.Limits.Preserves.Over
+public import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Over
+public import Mathlib.CategoryTheory.MorphismProperty.Representable
+public import Mathlib.CategoryTheory.Subfunctor.Subobject
+public import Mathlib.CategoryTheory.WithTerminal.Lemmas
+public import Mathlib.Tactic.Linter.HaveILetI
+public import Mathlib.Tactic.Polynomial.Basic
 public import Lib.Cohomology.Etale.DenseSubfunctors
 
 /-!
@@ -116,13 +126,13 @@ lemma isFilteredColimit_iff_bijective {X : J ⥤ Ab.{2}} {c : Cocone X} :
   have h_surj : Surjective fun a : Σ j : J, X j ↦ ι X a.fst a.snd :=
     Concrete.from_union_surjective_of_isColimit _ (isColimit X)
   have h_zero (j : J) (x : X j) : ι X j x = 0 ↔ ∃ (i : J) (f : j ⟶ i), X.map f x = 0 := by
-    simpa using (isColimit X).eq_iff' x 0
+    simpa only [map_zero, colimit.cocone_ι] using (isColimit X).eq_iff' x 0
   simp only [IsFilteredColimit, Bijective, injective_iff_map_eq_zero]
   refine and_congr ?_ ?_
   · -- injectivity, tested on the representatives `ι X j x`
-    simp [h_surj.forall, Sigma.forall, h_zero]
+    simp only [h_surj.forall, Sigma.forall, h_zero, colimit.ι_desc_apply]
   · -- surjectivity: both sides say that every element of `c.pt` comes from some stage
-    simp [Surjective, h_surj.exists, Sigma.exists]
+    simp only [Surjective, h_surj.exists, Sigma.exists, colimit.ι_desc_apply]
 
 /-- Cover lemma for continuity. Let `a` be a cone over a cofiltered system `A` of maps `E j ⟶ Y j`
 of set-valued functors, each a cover for the coefficients `F` (`hp`), whose vertex `E ⟶ Y` is a
@@ -288,6 +298,8 @@ bijection onto H⁰(T, Λ), and Hⁿ(T, Λ) = 0 for n > 0 (there `locConstClass`
 def IsAcyclicOver (Λ : Ab) : Prop :=
   Function.Injective (locConstClass (Λ := Λ) q 0) ∧ ∀ n : ℕ, Surjective (locConstClass (Λ := Λ) q n)
 
+private lemma locConstClass_succ (n : ℕ) : locConstClass (Λ := Λ) q (n + 1) = 0 := rfl
+
 variable {q}
 
 /-- Naturality of `New.Variety.locConstClass`. Let `q : T ⟶ h_B`, `q' : T' ⟶ h_B'` and `e : T' ⟶ T`.
@@ -301,10 +313,15 @@ lemma map_locConstClass {e : T' ⟶ T} {f : (locConstSpec Λ).obj B} {f' : (locC
   rintro (_ | n)
   · -- in degree `0` both sides are classes of morphisms; compare these on generators, by `h_eq`
     refine (mk₀_comp_mk₀ ..).trans (congrArg _ (freeAb.hom_ext fun c x ↦ ?_))
-    -- `erw`: both sides are `ULift.up` of the sides of `h_eq c x` only after `homOfValue` and
-    -- `freeAb.map` are unfolded on generators, which no rewriting lemma states
-    erw [up_inj]
-    tauto
+    let c₀ : Comparison (liftCoeff (locConstSpec Λ)) (locConstCoeff Λ) := ⟨testIncl, 𝟙 _⟩
+    have h_map : (freeAb.map e).app c (FreeAddCommGroup.of x) = FreeAddCommGroup.of (e c x) :=
+      FreeAddCommGroup.map_of_apply x
+    change (c₀.homOfValue q (ULift.up f)).app c ((freeAb.map e).app c (FreeAddCommGroup.of x)) =
+      (c₀.homOfValue q' (ULift.up f')).app c (FreeAddCommGroup.of x)
+    rw [h_map]
+    have h_up := congrArg ULift.up.{1} (h_eq c x)
+    exact (homOfValue_app (c := c₀) q (ULift.up f) c (e c x)).trans
+      (h_up.trans (homOfValue_app (c := c₀) q' (ULift.up f') c x).symm)
   · exact map_zero _
 
 /-- On the spectrum of a domain, the locally constant `Λ`-valued functions are the constants. -/
@@ -323,35 +340,25 @@ needed. -/
 lemma IsAcyclicOver.isCohomEquiv (hB : IsDomain B) (hB' : IsDomain B') (u : T' ⟶ T)
     (hT : IsAcyclicOver q Λ) (hT' : IsAcyclicOver q' Λ) :
     IsCohomEquiv (locConstCoeff Λ) (freeAb.map u) := by
-  obtain ⟨h_inj, h_onto⟩ : Function.Injective (locConstClass (Λ := Λ) q 0) ∧
-      ∀ n : ℕ, Surjective (locConstClass (Λ := Λ) q n) := hT
-  obtain ⟨h_inj', h_onto'⟩ : Function.Injective (locConstClass (Λ := Λ) q' 0) ∧
-      ∀ n : ℕ, Surjective (locConstClass (Λ := Λ) q' n) := hT'
+  obtain ⟨h_inj, h_onto⟩ := hT
+  obtain ⟨h_inj', h_onto'⟩ := hT'
   rintro (_ | n)
   · -- the spectra are connected, so the constants give all of `H⁰` on both sides
     have h_const : Bijective fun x : Λ ↦ locConstClass q 0 (.const _ x) :=
       .comp ⟨h_inj, h_onto 0⟩ (down_bijective.comp bijective_const_of_isDomain)
     have h_const' : Bijective fun x : Λ ↦ locConstClass q' 0 (.const _ x) :=
       .comp ⟨h_inj', h_onto' 0⟩ (down_bijective.comp bijective_const_of_isDomain)
-    have h_sq (x : Λ) :
-        H.map (locConstCoeff Λ) (freeAb.map u) 0 (locConstClass q 0 (.const _ x)) =
-          locConstClass q' 0 (.const _ x) := by
-      -- constants pull back to constants along any ring map
-      have h_pull (c : TestRing) (y : T'.obj c) :
-          (locConstSpec Λ).map (q c (u c y)).down (.const _ x) =
-            (locConstSpec Λ).map (q' c y).down (.const _ x) := by
-        tauto
-      exact map_locConstClass h_pull 0
-    exact (bijective_iff_of_comm_sq (f := id) h_sq h_const h_const').mp bijective_id
+    refine (bijective_iff_of_comm_sq (f := id) ?_ h_const h_const').mp bijective_id
+    exact fun x ↦ map_locConstClass (fun _ _ ↦ by tauto) 0
   · -- in positive degree `locConstClass` is zero and onto, so both groups vanish
-    have h_triv (x : H (freeAb T) (locConstCoeff Λ) (n + 1)) : x = 0 := by
-      obtain ⟨f, rfl⟩ := h_onto (n + 1) x
-      simp [locConstClass]
-    have h_triv' (y : H (freeAb T') (locConstCoeff Λ) (n + 1)) : y = 0 := by
-      obtain ⟨f, rfl⟩ := h_onto' (n + 1) y
-      simp [locConstClass]
-    exact ⟨fun x₁ x₂ _ ↦ (h_triv x₁).trans (h_triv x₂).symm,
-      fun y ↦ ⟨0, (map_zero _).trans (h_triv' y).symm⟩⟩
+    constructor
+    · intro x₁ x₂ _
+      obtain ⟨_, rfl⟩ := h_onto (n + 1) x₁
+      obtain ⟨_, rfl⟩ := h_onto (n + 1) x₂
+      simp only [locConstClass_succ, AddMonoidHom.zero_apply]
+    · intro y
+      obtain ⟨_, rfl⟩ := h_onto' (n + 1) y
+      exact ⟨0, by simp only [map_zero, locConstClass_succ, AddMonoidHom.zero_apply]⟩
 
 /-- A filtered colimit of test rings, taken in commutative rings, is a test ring: absolutely
 integrally closed, comparable for divisibility after splitting by an idempotent, and reduced. -/
@@ -423,18 +430,32 @@ lemma continuousUpTo_locConstCoeff (hL : ∀ j : J, IsTest (L j)) :
   rcases n with _ | n
   · -- Transport the claim along `locConstClass` to the continuity of locally constant functions.
     have h_locConst : IsFilteredColimit ((locConstSpec Λ).mapCocone (colimit.cocone L)) :=
-      isFilteredColimit_locConstSpec (colimit_exists_rep L) fun i x ↦ by
-        simpa using ((isColimit L).eq_iff' x 0).mp
-    -- `+instances` lets simp rewrite inside instance arguments.
-    simpa +instances [IsFilteredColimit, ((h_acyclic (hL _)).right _).forall,
-      ((h_acyclic (hL _)).right _).exists, (h_acyclic_colim.right _).forall,
-      h_acyclic_colim.left.eq_iff, map_eq_zero_iff _ h_acyclic_colim.left,
-      map_eq_zero_iff _ (h_acyclic (hL _)).left, class_nat] using h_locConst
+      isFilteredColimit_locConstSpec (colimit_exists_rep L) fun i x hx ↦ by
+        have h_eq := ((isColimit L).eq_iff' x 0).mp (by rwa [map_zero])
+        simpa only [map_zero] using h_eq
+    obtain ⟨h_kill, h_surj⟩ := h_locConst
+    refine ⟨fun j x hx ↦ ?_, fun y ↦ ?_⟩
+    · obtain ⟨x, rfl⟩ := (h_acyclic (hL j)).right 0 x
+      have hx' : (locConstSpec Λ).map (colimit.ι L j) x = 0 :=
+        (map_eq_zero_iff _ h_acyclic_colim.left).mp (by
+          change H.map (locConstCoeff Λ) (freeAb.map (mapOnTests (reprMap (colimit.ι L j)))) 0
+            (locConstClass (𝟙 _) 0 x) = 0 at hx
+          rwa [← class_nat])
+      obtain ⟨i, f, hf⟩ := h_kill j x hx'
+      refine ⟨i, f, ?_⟩
+      change H.map (locConstCoeff Λ) (freeAb.map (mapOnTests (reprMap (L.map f)))) 0
+        (locConstClass (𝟙 _) 0 x) = 0
+      rw [class_nat, ← Functor.comp_map, hf, map_zero]
+    · obtain ⟨y, rfl⟩ := h_acyclic_colim.right 0 y
+      obtain ⟨j, x, rfl⟩ := h_surj y
+      exact ⟨j, locConstClass (𝟙 _) 0 x, class_nat (colimit.ι L j) x⟩
   · -- In positive degree `locConstClass` is zero and onto, so every group vanishes.
-    have h_later (j : J) : ∃ i : J, Nonempty (j ⟶ i) := ⟨j, ⟨𝟙 j⟩⟩
-    simp +instances [IsFilteredColimit, ((h_acyclic (hL _)).right _).forall,
-      ((h_acyclic (hL _)).right _).exists, (h_acyclic_colim.right _).forall, locConstClass.eq_2,
-      nonempty, h_later]
+    refine ⟨fun j x _ ↦ ⟨j, 𝟙 j, ?_⟩, fun y ↦ ?_⟩
+    · obtain ⟨_, rfl⟩ := (h_acyclic (hL j)).right (n + 1) x
+      rw [locConstClass_succ, AddMonoidHom.zero_apply, map_zero]
+    · obtain ⟨_, rfl⟩ := h_acyclic_colim.right (n + 1) y
+      obtain ⟨j⟩ := IsFiltered.nonempty (C := J)
+      exact ⟨j, 0, by rw [map_zero, locConstClass_succ, AddMonoidHom.zero_apply]⟩
 
 end AcyclicTests
 
@@ -523,31 +544,21 @@ admit an idempotent `e` with `a ∣ e b` and `b ∣ (1 − e) a`), then `W` is a
 that roots of monic polynomials, the idempotents that compare two elements, and reducedness all pull
 back along `g`. -/
 lemma IsSolutionClosed.isTest (h : IsSolutionClosed g) (hV : IsTest V) : IsTest W := by
-  have h_dvd_iff {a b : W} : g a ∣ g b ↔ a ∣ b := h.map_dvd_iff
-  obtain ⟨hg_inj, hg_closed⟩ := h
-  have hV_reduced : IsReduced V := hV.isReduced
+  have := hV.isReduced
   refine { toIsAbsIntegrallyClosed := ⟨fun P h_monic h_deg ↦ ?_⟩, isComparableRing := fun x y ↦ ?_,
-           isReduced := isReduced_of_injective g hg_inj }
+           isReduced := isReduced_of_injective g h.1 }
   · -- `P(x) = 0` is equation number `n + 2` for the `n = P.natDegree + 1` coefficients of `P`
     obtain ⟨x, hx⟩ := hV.toIsAbsIntegrallyClosed.exists_eval₂_eq_zero g h_monic h_deg
-    have h_sol : ∃ x : V, IsSolution (g ∘ P.coeff) x (P.natDegree + 3) :=
-      ⟨x, show ∑ k ∈ Finset.range (P.natDegree + 1), (g ∘ P.coeff) k * x ^ k = 0 by
-        simpa [P.eval₂_eq_sum_range] using hx⟩
-    obtain ⟨x, hx⟩ := hg_closed (P.natDegree + 3) P.coeff h_sol
-    change ∑ k ∈ Finset.range (P.natDegree + 1), (g ∘ P.coeff) k * g x ^ k = 0 at hx
-    have h_sum : g (∑ k ∈ Finset.range (P.natDegree + 1), P.coeff k * x ^ k) = g 0 := by
-      simpa using hx
-    exact ⟨x, (P.eval_eq_sum_range x).trans (hg_inj h_sum)⟩
+    obtain ⟨x, hx⟩ := h.2 (P.natDegree + 3) P.coeff
+      ⟨x, by simpa [IsSolution, P.eval₂_eq_sum_range] using hx⟩
+    refine ⟨x, (P.eval_eq_sum_range x).trans (h.1 ?_)⟩
+    simpa [IsSolution] using hx
   · -- equation `0` for the coefficients `x, y`; divisibility descends along `g`
-    have h_sol : ∃ e : V, IsSolution (g ∘ fun k ↦ [x].getD k y) e 0 :=
-      hV.isComparableRing (g x) (g y)
-    obtain ⟨e, he_sol⟩ := hg_closed 0 (fun k ↦ [x].getD k y) h_sol
-    change IsIdempotentElem (g e) ∧ g x ∣ g e * g y ∧ g y ∣ (1 - g e) * g x at he_sol
-    obtain ⟨he_idem, h_dvd_x, h_dvd_y⟩ := he_sol
-    refine ⟨e, ?_, ?_, ?_⟩
-    · exact hg_inj ((map_mul g e e).trans he_idem.eq)
-    · rwa [← h_dvd_iff, map_mul]
-    · rwa [← h_dvd_iff, map_mul, map_sub, map_one]
+    obtain ⟨e, he_idem, h_dvd_x, h_dvd_y⟩ :=
+      h.2 0 (fun k ↦ [x].getD k y) (hV.isComparableRing (g x) (g y))
+    exact ⟨e, h.1 ((map_mul g e e).trans he_idem.eq),
+      by simpa [← h.map_dvd_iff] using h_dvd_x,
+      by simpa [← h.map_dvd_iff] using h_dvd_y⟩
 
 /-- For any family of commutative rings R o there are an endofunctor E of commutative rings and a
 natural map θ : A → E(A) such that (a) every E(A) is a test ring, and (b) every ring map φ from
@@ -723,13 +734,13 @@ def pullbackOver : Over Y ⥤ Over X where
   obj Z := Over.mk (fibreProd.fst s Z.hom)
   map {Z Z'} f :=
     homMk
-      { app B := ↾fun x ↦ ⟨(x.1.1, f.left.app B x.1.2), congr(($f.w) B _) ▸ x.2⟩
+      { app B := ↾fun x ↦ ⟨(x.val.1, f.left.app B x.val.2), congr(($f.w) B _) ▸ x.property⟩
         naturality B B' g := by
           ext x
           apply Subtype.ext
           refine Prod.ext rfl ?_
-          change f.left.app B' (Z.left.map g x.1.2) = Z'.left.map g (f.left.app B x.1.2)
-          exact ConcreteCategory.congr_hom (f.left.naturality g) x.1.2 }
+          change f.left.app B' (Z.left.map g x.val.2) = Z'.left.map g (f.left.app B x.val.2)
+          exact ConcreteCategory.congr_hom (f.left.naturality g) x.val.2 }
 
 instance pullbackOver_isRightAdjoint : (pullbackOver s).IsRightAdjoint where
   exists_leftAdjoint :=
@@ -739,16 +750,18 @@ instance pullbackOver_isRightAdjoint : (pullbackOver s).IsRightAdjoint where
           let h := isPullback_fibreProd (u := s) (p := Z.hom)
           isoMk h.isoPullback h.isoPullback_hom_snd)
           fun {Z Z'} f ↦ OverMorphism.ext (by
-            change ((pullbackOver s).map f).left ≫
-                (isPullback_fibreProd (u := s) (p := Z'.hom)).isoPullback.hom =
-              (isPullback_fibreProd (u := s) (p := Z.hom)).isoPullback.hom ≫
+            let m : fibreProd s Z.hom ⟶ fibreProd s Z'.hom := ((pullbackOver s).map f).left
+            let h := isPullback_fibreProd (u := s) (p := Z.hom)
+            let h' := isPullback_fibreProd (u := s) (p := Z'.hom)
+            change m ≫ h'.isoPullback.hom =
+              h.isoPullback.hom ≫
                 pullback.lift (pullback.fst Z.hom s ≫ f.left) (pullback.snd Z.hom s) _
             apply pullback.hom_ext
-            · erw [Category.assoc, IsPullback.isoPullback_hom_fst, Category.assoc,
-                pullback.lift_fst, ← Category.assoc, IsPullback.isoPullback_hom_fst]
+            · rw [Category.assoc, h'.isoPullback_hom_fst, Category.assoc,
+                pullback.lift_fst, ← Category.assoc, h.isoPullback_hom_fst]
               rfl
-            · erw [Category.assoc, IsPullback.isoPullback_hom_snd, Category.assoc,
-                pullback.lift_snd, IsPullback.isoPullback_hom_snd]
+            · rw [Category.assoc, h'.isoPullback_hom_snd, Category.assoc,
+                pullback.lift_snd, h.isoPullback_hom_snd]
               rfl)).symm⟩⟩
 
 /-! ### Continuity and its first consequences -/
@@ -930,33 +943,35 @@ lemma IsCohomContinuous.of_hasCohomDenseImage {T : CommRingCat} {q : reprBy T �
         (isLimitOfPreserves uliftCoyoneda (isColimit B).op).conePointsIsoOfNatIso
           (isLimitOfPreserves (pullbackOver q ⋙ Over.forget (reprBy T))
             (isLimitOfReflects (Over.forget Y) hc)) e
+      let aHom : reprBy (colimit (B ⋙ E)) ⟶ (Over.forget Y).obj c.pt := a.pt.hom
       have h_fac :
-          reprMap (θ.app (colimit B)) ≫ e'.hom ≫ ε.app c.pt = reprMap (post B E) ≫ a.pt.hom := by
+          reprMap (θ.app (colimit B)) ≫ e'.hom ≫ ε.app c.pt = reprMap (post B E) ≫ aHom := by
         refine hc.hom_ext fun j ↦ ?_
         -- compare the projections to `D j`: both sides come down to `e` and `ε` at `j` after a map
         -- of rings `B j → E (colimit B)`, and the two ring maps agree by naturality of `θ`
-        simp only [e', Category.assoc]
-        have h_nat : ε.app c.pt ≫ ((Over.forget Y).mapCone c).π.app j =
-            ((pullbackOver q ⋙ Over.forget (reprBy T)).mapCone c).π.app j ≫ ε.app (D.obj j) :=
+        have h_nat : ε.app c.pt ≫ (Over.forget Y).map (c.π.app j) =
+            (pullbackOver q ⋙ Over.forget (reprBy T)).map (c.π.app j) ≫ ε.app (D.obj j) :=
           (ε.naturality (c.π.app j)).symm
-        rw [h_nat]
-        erw [IsLimit.conePointsIsoOfNatIso_hom_comp_assoc]
-        simp only [Functor.mapCone_π_app, Over.forget_map]
-        -- `erw`: `reprMap` and the maps of `a` match these lemmas only after unfolding definitions
-        erw [Category.assoc, fac, ← map_comp_assoc, ← op_comp, θ.naturality, ← ι_post]
-        rfl
-      have h_dense_colim :
-          HasCohomDenseImage Λ (reprMap (θ.app (colimit B)) ≫ e'.hom ≫ ε.app c.pt) :=
-        h_dense none e'
-      refine (h_dense_colim.mono ?_).isCohomEquiv
-      rw [h_fac]
-      change Subfunctor.range (whiskerLeft testIncl (reprMap (post B E) ≫ a.pt.hom)) ≤
-        Subfunctor.range (whiskerLeft testIncl a.pt.hom)
-      erw [whiskerLeft_comp]
-      exact range_comp_le (whiskerLeft testIncl (reprMap (post B E))) (whiskerLeft testIncl a.pt.hom)
+        have h_iso : e'.hom ≫ (pullbackOver q ⋙ Over.forget (reprBy T)).map (c.π.app j) ≫
+            ε.app (D.obj j) = reprMap (colimit.ι B j.unop) ≫ e.hom.app j ≫ ε.app (D.obj j) :=
+          IsLimit.conePointsIsoOfNatIso_hom_comp_assoc _ _ e j (ε.app (D.obj j))
+        have h_a : aHom ≫ (Over.forget Y).map (c.π.app j) =
+            reprMap (colimit.ι (B ⋙ E) j.unop) ≫ reprMap (θ.app (B.obj j.unop)) ≫
+              e.hom.app j ≫ ε.app (D.obj j) :=
+          (a.π.app j).w.symm
+        simp only [Functor.mapCone_π_app, Category.assoc]
+        rw [h_nat, h_iso, h_a]
+        simp only [← reprFunctor.map_comp_assoc, ← op_comp, Category.assoc, ι_post,
+          ← θ.naturality, Functor.id_map]
+      refine ((h_dense none e').mono ?_).isCohomEquiv
+      dsimp only [R', Option.elim]
+      simp only [h_fac, mapOnTests, whiskerLeft_comp]
+      exact range_comp_le (mapOnTests (reprMap (post B E))) (mapOnTests aHom)
     · -- the induction hypothesis applies to the system of the fibre powers of the `p j`, over `Y`
       let toY : toArrowFunctor.obj (.mk p) ⋙ cechFunctor m ⟶ (const _).obj Y :=
-        { app j := cech.proj (p.app j) m 0 } ≫ p ≫ { app j := (D.obj j).hom }
+        { app j := cech.proj (p.app j) m 0 } ≫ p ≫
+          { app j := (D.obj j).hom
+            naturality _ _ f := (D.map f).w.trans (Category.comp_id _).symm }
       refine ih (D := Over.lift _ toY) (c := raiseCone ((cechFunctor m).mapCone a)) ?_ fun j ↦ ?_
       · -- fibre powers commute with limits, pointwise
         letI : (cech (D := Arrow (Type 1)) Arrow.leftToRight m).IsCorepresentable :=

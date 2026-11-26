@@ -125,14 +125,14 @@ def twistedSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRin
 `ψ` with values in a discrete valuation ring `O'` over `O` (by the map `e`): the cocycles in
 `T ψ ⊗ Frac(O') / O'` that vanish at `γ_* = T.γ`, are unramified outside `S ∪ Q ∪ Q̄`,
 where `S = T.places`, and satisfy the local conditions of `T`. -/
-def divisibleSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [DVR O']
+def divisibleSelmer {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O']
     [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E))
     (e : O →+* O') (ψ : Gal(Ω/E) →* O') : Submodule O' (Gal(Ω/E) → n → DivisibleQuot O') :=
   selmerModule (twistRep e ψ T.ρ) (unionWithConj T.places Q) (mapRel e '' T.classRelations)
     (DivisibleQuot O')
 
 /-- The length over `O'` of the Selmer group `Sel_Q(T ψ)` with coefficients in `Frac(O') / O'`. -/
-def divisibleLength {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O'] [DVR O']
+def divisibleLength {O O' n : Type} [CommRing O] [PadicIntegerRing O ℓ] [CommRing O']
     [Fintype n] [DecidableEq n] (T : SelmerDatum ℓ S₀ g₀ O n) (Q : Finset (FinPlace E))
     (e : O →+* O') (ψ : Gal(Ω/E) →* O') : ℕ∞ :=
   length O' (T.divisibleSelmer Q e ψ)
@@ -162,7 +162,7 @@ open scoped Classical in
 component) and slopes `s` indexed by `ι` (second component). The ties `z(γ_w) = s • z(φ_w)` with the
 slopes of index `i`, as relations by `n × n` matrices, at the primes of `I ∪ I'` are the ties at
 the primes of `I` together with those at the primes of `I'`. -/
-lemma tieRelations_union {O n ι : Type} [CommRing O] [Fintype n] [DecidableEq n] {q : ℕ}
+lemma tieRelations_union {O n ι : Type} [CommRing O] [DecidableEq n] {q : ℕ}
     (I I' : Finset (FinPlace E)) (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) :
     tieRelations (n := n) (I ∪ I') d i = tieRelations I d i ∪ tieRelations I' d i := by
   ext f
@@ -173,7 +173,7 @@ lemma tieRelations_union {O n ι : Type} [CommRing O] [Fintype n] [DecidableEq n
 of `ρ` by `ψ_x(g) = ∏ (1 + x_j) ^ (h_j g)`: we have `len Sel(x) ≤ v(P(x))` at all points `x` over
 all discrete valuation rings of characteristic zero over `O`, not only where `ψ_x` is a
 character. -/
-def BoundsSelmer (ℓ : ℕ) {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
+def BoundsSelmer (ℓ : ℕ) {E : Type} [Field E] [EmbeddedNumberField E]
     {O n σ : Type} [CommRing O] [Fintype n] [DecidableEq n] [Fintype σ] {q : ℕ} (M : ℕ)
     (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)) (ρ : Gal(Ω/E) →* Matrix n n O)
     (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O)) (P : MvPolynomial σ O) : Prop :=
@@ -314,7 +314,7 @@ lemma exists_boundsSelmer_and_eval_dvd {O : Type} [CommRing O] [PadicIntegerRing
   let L₀ : Set (Gal(Ω/E) →₀ Matrix n n O) := T.classRelations ∪ tieRelations (J.erase P₀) d i
   let a : J → O := lineDirection P₀ J d i
   have h_lam (v : J) : IsLocallyConstant (lam v) :=
-    (h_primes.isAuxPrimeDataAt v v.2).isLocallyConstant
+    (h_primes.isAuxPrimeDataAt v v.property).isLocallyConstant
   -- A polynomial `G` for the tied module that is sharp at `0`; `P⁰` is its restriction to the line.
   obtain ⟨G, hG_sharp, hG_bound⟩ : ∃ G : MvPolynomial J O,
       addVal O (G.eval₂ (.id O) fun _ ↦ 0) =
@@ -606,9 +606,9 @@ lemma nonempty_twistPolynomials_of_isTiedPrimes (T : ∀ i : ι, SelmerDatum ℓ
     (Y k).exists_point_ellVal_universalChar_le h_primes (hM' k) (h_frob_system k) hs₀
       (h_card (h_exps k)) hr hN'
   have h_inertia (v : J) : ∃ g ∈ inertiaAbove {v.val}, lam v g = Multiplicative.ofAdd 1 := by
-    obtain ⟨hγ_inertia, hγ_one, -⟩ := (h_primes.isAuxPrimeDataAt v v.2).tame_gen
+    obtain ⟨hγ_inertia, hγ_one, -⟩ := (h_primes.isAuxPrimeDataAt v v.property).tame_gen
     exact ⟨(d v).1.tameGenerator,
-      ⟨v, rfl, _, (h_primes.isAuxPrimeDataAt v v.2).isPlaceOver, hγ_inertia⟩, hγ_one⟩
+      ⟨v, rfl, _, (h_primes.isAuxPrimeDataAt v v.property).isPlaceOver, hγ_inertia⟩, hγ_one⟩
   choose P x hx hP_val hP_bound using h_datum
   choose x' hx' hx'_val using h_system
   exact ⟨{
@@ -616,7 +616,7 @@ lemma nonempty_twistPolynomials_of_isTiedPrimes (T : ∀ i : ι, SelmerDatum ℓ
     auxiliary := h_primes.auxiliary
     two_mul_card_le := by simpa using h_card hc
     primeChar := lam
-    isFromU1_primeChar v := (h_primes.isAuxPrimeDataAt v v.2).toIsFromU1
+    isFromU1_primeChar v := (h_primes.isAuxPrimeDataAt v v.property).toIsFromU1
     exists_eq_ofAdd_one := h_inertia
     datumPoly i := (P i).map O.toIntQpBar
     systemPoly k := groupRingEval (universalChar lam) ((Y k).element J)

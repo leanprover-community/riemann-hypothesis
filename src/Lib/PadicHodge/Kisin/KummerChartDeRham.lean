@@ -217,19 +217,20 @@ lemma zTau_mul_E_dvd_smul_sub (s : k.S) : k.zTau * k.E ∣ g • s - s := by
   grw [zTau, mul_rotate, mul_assoc, k.associated_E_mul_tau_mu.dvd]
   apply k.dvd_smul_sub_of_fixesLambda _ h_const
   -- `z = [ϖ]` and `g z = [ϖ']` with `ϖ' = g ϖ`; `ϖ'` has the same untilt as `ϖ`, so `ϖ' = ϖ η`.
-  -- `erw` sees through the coercion of `z` from `S` to `A_inf`.
-  erw [← theta_smul, k.z_eq_teichmuller, smul_teichmuller] at *
-  generalize MonoidHom.inr (Multiplicative ℕ) (Gp p) (toGp (γ : Γ)) • k.varpiFlat = ϖ'
-    at h_fix ⊢
-  change theta (WittVector.teichmuller p ϖ') = theta (WittVector.teichmuller p k.varpiFlat) at h_fix
-  change WittVector.teichmuller p k.varpiFlat * mu ∣
-    WittVector.teichmuller p ϖ' - WittVector.teichmuller p k.varpiFlat
-  have h_untilt_dvd : k.varpiFlat.untilt ∣ ϖ'.untilt := by simpa using h_fix.symm.dvd
+  let a : FrobGal := MonoidHom.inr (Multiplicative ℕ) (Gp p) (toGp (γ : Γ))
+  have h_z : k.z.val = WittVector.teichmuller p k.varpiFlat := k.z_eq_teichmuller
+  have h_fix' : theta (a • k.z.val) = theta k.z.val :=
+    (theta_smul (toGp (γ : Γ)) k.z.val).trans h_fix
+  change k.z.val * mu ∣ a • k.z.val - k.z.val
+  rw [h_z, smul_teichmuller] at h_fix' ⊢
+  rw [h_z] at hz
+  generalize a • k.varpiFlat = ϖ' at h_fix' ⊢
+  have h_untilt_dvd : k.varpiFlat.untilt ∣ ϖ'.untilt := by simpa using h_fix'.symm.dvd
   obtain ⟨η, hη⟩ : k.varpiFlat ∣ ϖ' := Variety.untilt_dvd_iff.mp h_untilt_dvd
   -- `η` has untilt `1`, as `ϖ` and `ϖ η` have the same nonzero untilt; so `θ (φ ^ n ([η] - 1)) = 0`
   -- for all `n`, which makes `[η] - 1` a multiple of `μ` (`mu_dvd_of_theta_frobEnd`)
   have hη_one : η.untilt = 1 := by
-    have h_untilt : k.varpiFlat.untilt * η.untilt = k.varpiFlat.untilt := by simpa [hη] using h_fix
+    have h_untilt : k.varpiFlat.untilt * η.untilt = k.varpiFlat.untilt := by simpa [hη] using h_fix'
     have h_ne : k.varpiFlat.untilt ≠ 0 := by simpa using hz
     exact (mul_eq_left₀ h_ne).mp h_untilt
   have h_theta (j : ℕ) : theta (frobEnd^[j] (WittVector.teichmuller p η - 1)) = 0 := by
@@ -341,13 +342,6 @@ lemma valueField_eq_adjoin_union :
       (Set.forall_mem_range.mpr algebraMap_bicommutant_mem_valueField)
       (Set.forall_mem_range.mpr phiInvToBdR_mem_valueField))
 
-/-- The image in B_dR of an element `s` of S is the image of `s` under S_B → B_dR: both maps
-factor through B^+. -/
-private lemma algebraMap_ainf_eq_algebraMap_bicommutant (s : k.S) :
-    algebraMap Ainf BdR s =
-      algebraMap k.bicommutant BdR ⟨Chart.ainfToBPlus s, k.ainfToBPlus_mem_bicommutant s⟩ :=
-  rfl
-
 /-- The field `𝒦_0` is contained in `𝒦_a`. -/
 lemma valueField_zero_le : valueField 0 ≤ valueField a := by
   rw [valueField_eq_adjoin_union (a := 0)]
@@ -355,9 +349,8 @@ lemma valueField_zero_le : valueField 0 ≤ valueField a := by
     (Set.forall_mem_range.mpr algebraMap_bicommutant_mem_valueField)
     (Set.forall_mem_range.mpr fun s ↦ ?_))
   -- At level `0` the image of `S` lies in the image of `S_B`.
-  rw [show phiInvToBdR 0 (s : Ainf) = algebraMap Ainf BdR s by simp [phiInvToBdR],
-    algebraMap_ainf_eq_algebraMap_bicommutant]
-  exact algebraMap_bicommutant_mem_valueField _
+  rw [show phiInvToBdR 0 (s : Ainf) = algebraMap Ainf BdR s by simp [phiInvToBdR]]
+  exact algebraMap_bicommutant_mem_valueField ⟨Chart.ainfToBPlus s, k.ainfToBPlus_mem_bicommutant s⟩
 
 /-- An element of `B_dR` fixed by `Γ'` lies in `Fil⁰` and in `𝒦₀`. -/
 lemma mem_hodgeFil_zero_and_mem_valueField_zero_of_fixed
@@ -387,23 +380,15 @@ lemma sum_phiInvToBdR_map_mul_mem_of_mem_valueField (f : Ainf →ₗ[k.S] k.S) {
   let A : Subalgebra (localFieldOf k.subgroup) BdR :=
     Algebra.adjoin (localFieldOf k.subgroup) (Set.range prod)
   -- Clear denominators: `𝒦_a` is the fraction field of `A`.
-  obtain ⟨d, w, hw⟩ : ∃ (d : BdR) (w : ι → A), ∀ l, d * w l = v l := by
-    obtain ⟨d, hd⟩ : ∃ d : nonZeroDivisors A, ∀ l : ι, IsLocalization.IsInteger A
-        ((d : A) • (⟨v l, hv l⟩ : IntermediateField.adjoin (localFieldOf k.subgroup)
-          (Set.range prod))) :=
-      IsLocalization.exist_integer_multiples_of_finite (nonZeroDivisors A) _
-    choose w hw using hd
-    refine ⟨(((d : A) : BdR))⁻¹, w, fun l ↦ ?_⟩
-    -- `using!`: the map from `A` to its field of fractions is the inclusion, seen only by unfolding
+  obtain ⟨d, hd⟩ := IsLocalization.exist_integer_multiples_of_finite (nonZeroDivisors A)
+    fun l ↦ (⟨v l, hv l⟩ : IntermediateField.adjoin (localFieldOf k.subgroup) (Set.range prod))
+  choose w hw using hd
+  have hw (l : ι) : ((d : A) : BdR)⁻¹ * w l = v l := by
     simpa [Subtype.ext_iff, smul_def' (d : A), ← inv_mul_eq_iff_eq_mul₀] using! hw l
   -- The products form a monoid, so they span `A` over the constants.
-  have h_span (l : ι) : ∃ (q : Finset (k.bicommutant × k.S)) (c : q → localFieldOf k.subgroup),
-      ∑ i : q, c i • prod i = w l := by
-    have h_mem : (w l : BdR) ∈ span (localFieldOf k.subgroup) (prod '' Set.univ) := by
-      simpa using (adjoin_eq_span _ (Set.range prod)).le (w l).property
-    obtain ⟨q, -, c, hc⟩ := (mem_span_image_iff_exists_fun _).mp h_mem
-    exact ⟨q, c, hc⟩
-  choose q c hc using h_span
+  choose q _ c hc using fun l ↦ (mem_span_image_iff_exists_fun _).mp
+    (by simpa using (adjoin_eq_span _ (Set.range prod)).le (w l).property :
+      (w l : BdR) ∈ span (localFieldOf k.subgroup) (prod '' Set.univ))
   -- The conjugate `f' = φ^{-a} ∘ f ∘ φ^a` is again `S`-linear.
   let f' : Ainf →ₗ[k.S] Ainf :=
     { toFun x := (φ ^ a)⁻¹ • f (φ ^ a • x)
@@ -411,37 +396,24 @@ lemma sum_phiInvToBdR_map_mul_mem_of_mem_valueField (f : Ainf →ₗ[k.S] k.S) {
       map_smul' s x := by
         simpa [smul_def', inv_smul_eq_iff, Subtype.ext_iff] using
           f.map_smul ⟨φ ^ a • s, by simp [phi_pow_smul, ← k.coe_phi_pow]⟩ (φ ^ a • x) }
-  -- Applying the extension of `f'` to `BPlus` to the terms `b * φ^{-a} (s * r l)` multiplies
-  -- their sum, weighted by the `c`, by some `u` in `BdRPlus`. The extension is linear over
-  -- `bicommutant` and sends such a term to `b * φ^{-a} s * φ^{-a} (f (r l))`.
-  obtain ⟨u, h_mul⟩ : ∃ u : BdRPlus, ∑ l, w l * phiInvToBdR a (f (r l)) =
+  -- Applying the extension of `f'` to `BPlus` multiplies the weighted sum by some `u : BdRPlus`.
+  let term (i : Σ l, q l) : BPlus :=
+    i.2.1.1 * Chart.ainfToBPlus ((φ ^ a)⁻¹ • i.2.1.2 • r i.1)
+  obtain ⟨u, hu⟩ := k.isChartOf.dvd_extendToBPlus _
+    (fun i : Σ l, q l ↦ (c i.1 i.2).property) f' term
+  simp [term, f', k.extendToBPlus_mul, k.extendToBPlus_ainfToBPlus,
+    -not_isEmpty_of_nonempty] at hu
+  have h_mul : ∑ l, w l * phiInvToBdR a (f (r l)) =
       (∑ l, w l * phiInvToBdR a (r l)) * algebraMap BdRPlus BdR u := by
-    let term (l : ι) (bs : k.bicommutant × k.S) : BPlus :=
-      bs.fst * Chart.ainfToBPlus ((φ ^ a)⁻¹ • bs.snd • r l)
-    obtain ⟨u, hu⟩ : ∑ i : Σ l, q l, algebraMap (PadicAlgCl p) BdRPlus (c i.fst i.snd) *
-          algebraMap BPlus BdRPlus (term i.fst i.snd) ∣
-        ∑ i : Σ l, q l, algebraMap (PadicAlgCl p) BdRPlus (c i.fst i.snd) *
-          algebraMap BPlus BdRPlus (k.extendToBPlus f' (term i.fst i.snd)) :=
-      k.isChartOf.dvd_extendToBPlus _ (fun i : Σ l, q l ↦ (c i.fst i.snd).property) f'
-        fun i ↦ term i.fst i.snd
-    -- evaluate the extension of `f'` on each term; it is linear over `bicommutant`
-    simp [term, f', k.extendToBPlus_mul, k.extendToBPlus_ainfToBPlus,
-      -not_isEmpty_of_nonempty] at hu
-    refine ⟨u, ?_⟩
-    -- regroup the sum over the pairs `(l, i)`; the two sides then agree only up to the maps
-    -- `B^+ → B_dR^+ → B_dR` and `S_B → B_dR`, which `simp` does not identify without unfolding
     with_unfolding_all
       simpa [← hc, prod, sum_mul, sum_sigma', smul_def', mul_assoc,
-        -not_isEmpty_of_nonempty] using!
-        congr(algebraMap BdRPlus BdR $hu)
-  -- Multiply by `d`: the new sum is `u` times the old one.
-  have h_scale (z : ι → BdR) : ∑ l, z l * v l = d * ∑ l, w l * z l := by
+        -not_isEmpty_of_nonempty] using! congr(algebraMap BdRPlus BdR $hu)
+  -- Multiply by `d⁻¹`: the new sum is `u` times the old one.
+  have h_scale (z : ι → BdR) : ∑ l, z l * v l = ((d : A) : BdR)⁻¹ * ∑ l, w l * z l := by
     simp only [← hw, mul_sum, mul_assoc, mul_comm (z _)]
-  have h_new : ∑ l, phiInvToBdR a (f (r l)) * v l = u • ∑ l, phiInvToBdR a (r l) * v l := by
-    rw [h_scale, h_scale, h_mul, Algebra.smul_def]
-    ring
-  rw [h_new]
-  exact smul_mem W u h_sum
+  convert smul_mem W u h_sum using 1
+  rw [h_scale, h_scale, h_mul, Algebra.smul_def]
+  ring
 
 /-- Let `g` and `t 0, …, t (m - 1)` be elements of the Galois monoid of the chart, that is, elements
 (0, γ) of ℤ × Γ with γ in the subgroup Γ', each acting through γ. Let `x` be an element of `𝒦_a`

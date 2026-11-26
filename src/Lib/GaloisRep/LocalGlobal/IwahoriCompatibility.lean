@@ -188,9 +188,9 @@ lemma IsIwahoriEigen.exists_hasHeckePolyAt
   let c : GL (Fin (card n)) (LocField w) → ℂ := (basicDoubleCoset (Fin (card n)) w j).indicator 1
   let T' : Module.End ℂ ρ := heckeFun ρ.ρ K fun a ↦ starRingEnd ℂ (c a⁻¹)
   have hbi : IsHeckeFunction K c := isHeckeFunction_basicDoubleCoset j
-  have hbi' : IsHeckeFunction K _ := (hbi.heckeFun_adjoint B hg hB.2 hg).1
+  have hbi' : IsHeckeFunction K _ := (hbi.heckeFun_adjoint B hg hB.map_map_eq hg).1
   have adjoint (y : ρ) (hy : y ∈ S) : B (T g) y = B g (T' y) :=
-    (hbi.heckeFun_adjoint B hg hB.2 hy).2
+    (hbi.heckeFun_adjoint B hg hB.map_map_eq hy).2
   have satake (y : ρ) (hy : y ∈ S) : B g (T y) = t j * B g y := by
     rw [B_g (T y) (hbi.heckeFun_mem hy), B_g y hy,
       show T = partialHecke ρ.ρ 0 j from partialHecke_zero_eq_heckeGL.symm]
@@ -200,7 +200,7 @@ lemma IsIwahoriEigen.exists_hasHeckePolyAt
     exact congrArg _ (hbi.heckeFun_comm hbi' hg).symm
   -- Hence `T g - t j • g` is orthogonal to `T g` and to `g`, so to itself.
   by_contra hne
-  refine (hB.1 _ (sub_ne_zero.mpr hne)).ne' ?_
+  refine (hB.pos _ (sub_ne_zero.mpr hne)).ne' ?_
   change B (T g - t j • g) (T g - t j • g) = 0
   simp [normal, satake g hg]
 
@@ -343,7 +343,7 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_unramified
       HasHeckePolyAt g.val w hw (∏ i : Fin (card n), (X - C (ξ i ϖ).val)) :=
     hf_iwahori.exists_hasHeckePolyAt he hϖ hunr hξ_antitone
   obtain ⟨hgood, hjump, hpoly⟩ : IsCompatibleAt g.val (card n) w r A :=
-    (sphericalCompat_std w g.2 hg).2 hr hgw.1 A hA
+    (sphericalCompat_std w g.property hg).2 hr hgw.1 A hA
   refine ⟨(isGoodAt_iff.1 hgood).1, hjump, ?_⟩
   simpa [Polynomial.map_prod] using hpoly hw _ hgw s hs_frob
 
@@ -397,7 +397,7 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_pos
   let N : (LocField u)ˣ →* (LocField (u.below E))ˣ := localNorm E u
   obtain ⟨f', P', he', hsame, hf'_iwahori⟩ :=
     exists_baseChange_isIwahoriEigen hu hbelow (by simp [*]) hf_iwahori
-  obtain ⟨r', hr'⟩ := (sphericalCompat_std u f'.2 he').1
+  obtain ⟨r', hr'⟩ := (sphericalCompat_std u f'.property he').1
   have h_down : DescendsAt μ r' r A := hsame.descendsAt hr' he' he hr A
   -- As `χ x = 1`, `x` is a norm: the residue degree `e` divides `k`, and `s` fixes the step.
   have hx_ker : abelianLift (symmetrise μ) (artinAt Gal(Ω/E) (u.below E) x) = 1 :=
@@ -421,7 +421,7 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_pos
   obtain ⟨y, hy_val, hy_artin⟩ := hAu.exists_localArtin_eq hs'_frob k'
   have hart : localArtin Gal(Ω/E) A (u.below E) (N y) = s :=
     (hAu.localArtin_localNorm (Γ := Gal(Ω/stepField μ))
-      (AlgEquiv.restrictScalarsHom E)).1 hy_artin
+      (AlgEquiv.restrictScalarsHom E)).localArtin_localNorm hy_artin
   have hNy : normAbsChar.prod (.pi ξ) (N y) = normAbsChar.prod (.pi ξ) x :=
     hf_iwahori.eq_of_localArtin_eq hA (by simp [v_norm, hx_val, hy_val]) (hart.trans hx_artin.symm)
   have hξy (i : Fin (card n)) : ξ i (N y) = ξ i x := congrFun (congrArg Prod.snd hNy) i
@@ -573,7 +573,7 @@ lemma isParahoricCompatible_galRep (hA : IsPlaceOver A w) (hϖ : v ϖ.val = With
       (fun t ht ↦ h_par _ ⟨ht, fun i j hij ↦ by simp [Fin.ext_iff, ne_of_apply_ne f hij.ne']⟩)
       (fun σ hσ ↦ ⟨c (permGL σ), h_par _ (h_perm σ fun i ↦ hσ i u hu)⟩) isUnitary_localFormRep hy_ne
   have z_form : IsEigenform z.val x.heckePolyAt :=
-    (x.isEigenform hy hy_ne).of_mem_cyclicSpan z_mem z_eig.1
+    (x.isEigenform hy hy_ne).of_mem_cyclicSpan z_mem z_eig.ne_zero
   -- if `g⁻¹` acts as the `w.q ^ k`-th power on the residue field and `g` is the local Artin symbol
   -- of `ε`, of order `k`, then `∏ i, (X - ιℓ (θ (σ i) ε))` kills `g`
   have h_poly (g : decompGroup Gal(Ω/E) A) (ε : (LocField w)ˣ) (k : ℕ)

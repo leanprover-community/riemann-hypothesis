@@ -1,5 +1,9 @@
 module
 
+public import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+public import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.RingTheory.Etale.Weakly
+public import Mathlib.RingTheory.PicardGroup
 public import Lib.ClassField.Places.DecompositionCyclotomic
 public import Lib.ClassField.Places.ValuationSubrings
 public import Lib.General.Groups.ProfiniteCharacters
@@ -584,34 +588,17 @@ lemma IsLocalGalois.exists_ordRat_eq_intCast {x : DiscreteUnits Ω}
     ∃ n : ℤ, ordRat k A x = n := by
   -- The field fixed by the stabiliser `V` of `x` contains `x` and is unramified over `k`, so its
   -- normalised order agrees with that of `k`.
-  obtain ⟨V, hV⟩ :
-      ∃ V : OpenSubgroup Γ, ∀ g : Γ, g ∈ (V : Subgroup Γ) ↔ g • (x.toMul : Ω) = x.toMul :=
-    ⟨⟨MulAction.stabilizer Γ _, G.isOpen_stabilizer _⟩, fun _ ↦ .rfl⟩
-  have h_ext : IsLocalExtension k A (V : Subgroup Γ) (fixedFieldOf (V : Subgroup Γ)) :=
-    G.isLocalExtension_fixedFieldOf V
-  have h_local : IsLocalGalois (V : Subgroup Γ) (fixedFieldOf (V : Subgroup Γ)) A :=
-    h_ext.isLocalGalois
-  obtain ⟨e, f, h_data, h_unram⟩ : ∃ e f : ℕ,
-      IsRamificationData k A (fixedFieldOf (V : Subgroup Γ)) (V : Subgroup Γ).index e f ∧
-        (inertiaGroup Γ A ≤ (V : Subgroup Γ) → e = 1) :=
-    h_ext.exists_isRamificationData
-  -- The inertia group fixes `x`, so it lies in `V`, and the extension is unramified.
-  have h_inertia_le : inertiaGroup Γ A ≤ (V : Subgroup Γ) := fun g hg ↦
-    (hV g).mpr (congrArg (fun y : DiscreteUnits Ω ↦ y.toMul.val) (h_fixed g hg))
-  obtain rfl : e = 1 := h_unram h_inertia_le
-  have h_ord : ordRat (fixedFieldOf (V : Subgroup Γ)) A = ordRat k A :=
-    h_data.ordRat_eq.trans (one_smul _ _)
-  obtain ⟨π, hπ⟩ : ∃ π : (fixedFieldOf (V : Subgroup Γ))ˣ, IsUniformiser A π.val :=
-    h_local.exists_isUniformiser
+  let V : OpenSubgroup Γ := ⟨MulAction.stabilizer Γ (x.toMul : Ω), G.isOpen_stabilizer _⟩
+  have h_ext := G.isLocalExtension_fixedFieldOf V
+  obtain ⟨e, f, h_data, h_unram⟩ := h_ext.exists_isRamificationData
+  obtain rfl := h_unram fun g hg ↦ congrArg (fun y : DiscreteUnits Ω ↦ y.toMul.val) (h_fixed g hg)
+  obtain ⟨π, hπ⟩ := h_ext.isLocalGalois.exists_isUniformiser
   -- In that field `x` has the valuation of an integral power `π ^ n`.
-  let y : fixedFieldOf (V : Subgroup Γ) := ⟨x.toMul, fun g ↦ (hV g).mp g.property⟩
-  have hy_ne : y ≠ 0 := fun h_zero ↦ x.toMul.ne_zero (congrArg Subtype.val h_zero)
-  obtain ⟨n, hn⟩ : ∃ n : ℤ, A.valuation (x.toMul : Ω) =
-      valuationVia (fixedFieldOf (V : Subgroup Γ)) A π.val ^ n :=
-    hπ.exists_valuationVia_eq_zpow h_local y hy_ne
-  have h_eq : (1 : ℕ) * ordRat (fixedFieldOf (V : Subgroup Γ)) A x = n :=
-    (hπ.valuation_pow_eq_zpow_iff_mul_ordRat_eq h_local 1 n).mp ((pow_one _).trans hn)
-  exact ⟨n, by simpa [h_ord] using h_eq⟩
+  obtain ⟨n, hn⟩ := hπ.exists_valuationVia_eq_zpow h_ext.isLocalGalois
+    ⟨x.toMul, fun g ↦ g.2⟩ (fun h ↦ x.toMul.ne_zero (congrArg Subtype.val h))
+  have h_eq := (hπ.valuation_pow_eq_zpow_iff_mul_ordRat_eq h_ext.isLocalGalois 1 n).mp
+    ((pow_one _).trans hn)
+  exact ⟨n, by simpa [h_data.ordRat_eq] using h_eq⟩
 
 end LocalExtension
 

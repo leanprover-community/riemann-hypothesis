@@ -114,10 +114,8 @@ lemma theta_omega_eq_of_mapsTo_ratVectors {g : G E s}
     exists_mapsTo_ratVectors
   let g₀ : G E s := h_exists.choose
   have h_def (f' : 𝒮 V) : V.θ f' = exists_isThetaFunctional_signedSpace.choose (V.ω g₀ f') := by
-    -- `erw`, `rfl`: `rawTheta` is stated on `Model (adelicHeisenberg E s)`, which `𝒮 V` unfolds to,
-    -- so plain `rw` and `simp` find no type-correct motive for `dite_eq_left`
-    erw [theta_eq_rawTheta, rawTheta, dite_eq_left h_exists]
-    rfl
+    rw [theta_eq_rawTheta, rawTheta]
+    exact congrArg (fun T : 𝒮 V →L[ℂ] ℂ ↦ T f') (dite_eq_left h_exists)
   -- These vectors are the columns of `V.x * (g * g₀).adeleMatrix * V.x⁻¹`.
   have h_rat (i : n) :
       V.x *ᵥ g.adeleMatrix *ᵥ g₀.adeleMatrix *ᵥ V.vecAtPoint (Pi.single i 1) ∈ New.ratVectors E n :=

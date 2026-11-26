@@ -93,8 +93,8 @@ lemma stickelbergerChar_tameGenerator_ne_one_and_pow_eq_one {w : FinPlace D.E} (
   have h_base : p.character.baseChange.finPart (locIdele w x) = p.tamePart w γ :=
     p.hasWeight.baseChange_finPart_locIdele (fun h ↦ hw.not_star (h.substr hw))
       (p.tamePart_eq_one _ hw.not_star) hx_unit
-  have h_value : (p.stickelbergerChar (ℓ := ℓ) δ w.isPlaceOver_placeOver.tameGenerator).1 =
-      ιℓ (p.tamePart w γ) ^ (-δ).1 := by
+  have h_value : (p.stickelbergerChar (ℓ := ℓ) δ w.isPlaceOver_placeOver.tameGenerator).val =
+      ιℓ (p.tamePart w γ) ^ (-δ).val := by
     simp [CriticalPair.stickelbergerChar,
       avatar_localArtin _ w.isPlaceOver_placeOver (.inl hℓ) hx_art,
       toAlgebraic, h_base]
@@ -118,7 +118,7 @@ lemma stickelbergerChar_mul_invAvatar_frob (p : D.CriticalPair) (δ : ℤˣ) (τ
     (hv : v ∉ badPlaces D ℓ) (hvQ : v ∉ τ.Q) (hv'Q : star v ∉ τ.Q) {A : ClosurePlace}
     (hA : IsPlaceOver A v) {φ : AbsGal D} (hφ : IsFrob A v.q φ) :
     (p.stickelbergerChar δ φ : PadicAlgCl ℓ) * τ.invAvatar φ =
-      ιℓ ((p.character * τ.toAutChar ^ δ.1).baseChange.atUniformizer v) ^ δ.1 := by
+      ιℓ ((p.character * τ.toAutChar ^ δ.val).baseChange.atUniformizer v) ^ δ.val := by
   have hvℓ : (ℓ : 𝓞 D.E) ∉ v.asIdeal := (not_isChosen_of_notMem_badPlaces hv).1
   -- After this substitution `φ` is a geometric Frobenius element, where the avatar is known.
   obtain ⟨φ, rfl⟩ := inv_surjective φ
@@ -140,13 +140,13 @@ lemma stickelbergerChar_mul_invAvatar_frob (p : D.CriticalPair) (δ : ℤˣ) (τ
 takes at `x` the value of its base change at `y`. -/
 lemma exists_finPart_baseChange_eq (x : unitary (𝔸 D.E)) :
     ∃ y : (𝔸f D.E)ˣ,
-      ∀ τ : D.TameChar, τ.toAutChar.1 x = (τ.toAutChar.baseChange.finPart y).1 := by
+      ∀ τ : D.TameChar, τ.toAutChar.val x = (τ.toAutChar.baseChange.finPart y).val := by
   refine (exists_snd_div_divStar_finIdeleIncl_eq_one x).imp fun y hy τ ↦ ?_
   -- `τ` is trivial on `x / divStar y`, whose finite part is `1`, as its weight is `0`.
-  have h_one : (τ.toAutChar.1 (x / divStar (finIdeleIncl y))).1 = 1 := by
+  have h_one : (τ.toAutChar.val (x / divStar (finIdeleIncl y))).val = 1 := by
     simpa using
       eq_of_mem_integralU1 τ.tamePart_eq_one τ.hasWeight.2 _ (mem_integralU1_of_snd_eq_one _ hy)
-  change (τ.toAutChar.1 x).1 = (τ.toAutChar.1 (divStar (finIdeleIncl y))).1
+  change (τ.toAutChar.val x).val = (τ.toAutChar.val (divStar (finIdeleIncl y))).val
   simpa [field] using h_one
 
 omit [PadicIso ℓ] in
@@ -155,7 +155,7 @@ auxiliary set outside which the residue characters of `τ` are trivial. -/
 noncomputable abbrev _root_.New.Data.TameChar.zpowOfAuxiliary (τ : D.TameChar) (δ : ℤˣ)
     {I : Finset (FinPlace D.E)} (hI : IsAuxiliary (badPlaces D ℓ) I)
     (hτ : ∀ v : FinPlace D.E, v ∉ I → τ.tamePart v = 1) : D.TameChar :=
-  tameCharOfAuxiliary I hI (⟨(τ.toAutChar, τ.tamePart), τ.hasWeight, hτ⟩ ^ δ.1)
+  tameCharOfAuxiliary I hI (⟨(τ.toAutChar, τ.tamePart), τ.hasWeight, hτ⟩ ^ δ.val)
 
 /-- Let `F` be a function on tame characters `τ` that is an integral measure: on each modulus `I` it
 is `τ ↦ ∑ j, α j τ(u j)` for finitely many points `u j` and coefficients `α j` that are integral
@@ -181,7 +181,7 @@ lemma exists_groupRingEval_eq_of_isIntegralMeasure {F : D.TameChar → ℂ}
   have h_meas (I : Finset (FinPlace D.E)) (hI : IsAuxiliary (badPlaces D ℓ) I) :
       ∃ (J : Type) (_ : Fintype J) (u : J → unitary (𝔸 D.E)) (α : J → ℂ),
         (∀ j, α j ∈ Seesaw.integralAway (∏ v ∈ I, v.q)) ∧
-        ∀ τ : D.TameChar, τ.Q = I → F τ = ∑ j, α j * τ.toAutChar.1 (u j) :=
+        ∀ τ : D.TameChar, τ.Q = I → F τ = ∑ j, α j * τ.toAutChar.val (u j) :=
     hF (tameCharOfAuxiliary I hI 1)
   choose J _ u α hα h_sum using h_meas
   -- The coefficients are integral at `ιℓ`, since the places of `I` have norm prime to `ℓ`.
@@ -192,11 +192,11 @@ lemma exists_groupRingEval_eq_of_isIntegralMeasure {F : D.TameChar → ℂ}
   -- `Θ I` is the image of the combination of points under `u ↦ u ^ (-δ)`.
   let Θ (I : Finset (FinPlace D.E)) : MonoidAlgebra (intQpBar ℓ) (U1ClassGroup I) :=
     if hI : IsAuxiliary (badPlaces D ℓ) I then
-      ∑ j, .single (divStarClass I (y (u I hI j) ^ (-δ.1))) ⟨ιℓ (α I hI j), hα_int I hI j⟩
+      ∑ j, .single (divStarClass I (y (u I hI j) ^ (-δ.val))) ⟨ιℓ (α I hI j), hα_int I hI j⟩
     else 0
   have hΘ (I : Finset (FinPlace D.E)) (hI : IsAuxiliary (badPlaces D ℓ) I)
       (ψ : AbsGal D →* PadicAlgCl ℓ) : groupRingEval ψ (Θ I) =
-        ∑ j, ιℓ (α I hI j) * ψ (galoisLift (divStarClass I (y (u I hI j) ^ (-δ.1)))) := by
+        ∑ j, ιℓ (α I hI j) * ψ (galoisLift (divStarClass I (y (u I hI j) ^ (-δ.val)))) := by
     simp only [Θ, dite_eq_left hI, groupRingEval_sum_single]
     rfl
   refine ⟨Θ, ?_, fun I hI τ hτ hψ ↦ ?_⟩
@@ -207,8 +207,8 @@ lemma exists_groupRingEval_eq_of_isIntegralMeasure {F : D.TameChar → ℂ}
       (hψ.apply_galoisLift (Quotient.out_eq _).symm).trans
         (invAvatar_eq_of_artinMap_eq (Quotient.out_eq _).symm)
     have h_char (j : J I hI) :
-        τ.invAvatar (galoisLift (divStarClass I (y (u I hI j) ^ (-δ.1)))) =
-          ιℓ ((τ.zpowOfAuxiliary δ hI hτ).toAutChar.1 (u I hI j)).1 := by
+        τ.invAvatar (galoisLift (divStarClass I (y (u I hI j) ^ (-δ.val)))) =
+          ιℓ ((τ.zpowOfAuxiliary δ hI hτ).toAutChar.val (u I hI j)).val := by
       rw [h_lift, hy]
       simp
     rw [hΘ I hI, h_sum I hI _ rfl]
@@ -251,7 +251,7 @@ lemma apply_insert_eq_mul_eulerFactor {p : D.CriticalPair} {K : Finset ℕ} {m :
   obtain ⟨hv_bad, -, hv_star, -⟩ := hQ_insert v (mem_insert_self v τ.Q)
   have h_insert : F (τ.zpowOfAuxiliary δ hQ_insert hτ) =
       F (τ.zpowOfAuxiliary δ hQ τ.tamePart_eq_one) * ∏ l ∈ K, ∏ ε : ℤˣ,
-        (1 - (p.character * τ.toAutChar ^ δ.1).baseChange.atUniformizer v ^ ε.val / v.q ^ l) :=
+        (1 - (p.character * τ.toAutChar ^ δ.val).baseChange.atUniformizer v ^ ε.val / v.q ^ l) :=
     hF.apply_insert _ _ v hv rfl rfl rfl
   rw [h_insert, map_mul, stickelbergerChar_mul_invAvatar_frob p δ τ hv_bad hv
     (notMem_mono (subset_insert v τ.Q) hv_star) hA hφ, eulerFactor_zpow_units]

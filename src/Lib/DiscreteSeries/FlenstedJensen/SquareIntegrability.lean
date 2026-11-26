@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.MeasureTheory.Function.LpSpace.ContinuousCompMeasurePreserving
+public import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Basic
+public import Mathlib.MeasureTheory.Measure.RegularityCompacts
 public import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 public import Lib.DiscreteSeries.Rigidity.HighestVectorsAndFiltration
 
@@ -387,7 +390,7 @@ theorem isKHighest_dsGenerator (hg : l.HasGap h) :
   let F (y : Matrix n n ℂ) : ℂ := (-l).dsCoeff y⁻¹
   have h_ext (u : USign ε) : F u = l.dsCoeff u := by simpa [F] using dsCoeff_inv hg.neg u
   have h_diff : DifferentiableAt ℂ F g :=
-    (((-l).analyticAt_dsCoeff g⁻¹).comp_of_eq (analyticAt_matrix_inv g.1.det_ne_zero)
+    (((-l).analyticAt_dsCoeff g⁻¹).comp_of_eq (analyticAt_matrix_inv g.val.det_ne_zero)
       (by simp)).differentiableAt
   have h_equiv : ∀ᶠ y in nhds (g : Matrix n n ℂ), ∀ x ∈ blockDiagAlg ε, IsBorelMatrix (-l) x →
       y = g * x → F y = diagChar l.lowestKType x * F g :=
@@ -409,7 +412,7 @@ theorem DiscreteSeries.norm_dsCoeff_le_one (hg : l.HasGap h) (g : USign ε) : �
 conj(m_Λ(k)) w(k⁻¹g) dk = ∫_K |m_Λ|² · w(g) for all g (m_Λ = `New.weightMinors` of the lowest K-type
 Λ, and dk = `haarK ε` is the Haar measure of mass one on K = U(diag ε) ∩ U(n)).
 Then ∫ w(g)c_λ(xga) dg = c_λ(x) ∫ w(g)c_λ(ga) dg. -/
-theorem integral_mul_dsCoeff_translate [Nonempty n] (hg : l.HasLargeGap A) {w : USign ε → ℂ}
+theorem integral_mul_dsCoeff_translate (hg : l.HasLargeGap A) {w : USign ε → ℂ}
     (hw_int : Integrable w)
     (hw_type : ∀ g : USign ε,
       ∫ k : maxCompactU ε, conj (weightMinors l.lowestKType k) * w (k.val⁻¹ * g) ∂haarK ε =
@@ -443,29 +446,29 @@ smearing of c_λ. That is, there is a smooth function β of compact support on U
 of `New.DiscreteSeries.Bumps`) with f(g) = ∫ β(y⁻¹) c_λ(gy) dy for all g, which is
 `New.DiscreteSeries.smear` of c_λ applied to β. -/
 theorem exists_smear_dsCoeffSmooth_eq (hg : l.HasLargeGap A) (f : l.DsModule) :
-    ∃ β : Bumps ε, (smear l.dsCoeffSmooth.1) β = f.1 := by
+    ∃ β : Bumps ε, (smear l.dsCoeffSmooth.val) β = f.val := by
   -- The range of `smear` is stable under `𝔤` (`rightDeriv_smear`), so it suffices that it
   -- contains `c_λ`. Smear with `β g = b(g g*)² c_λ(g)` for a bump `b` at `0`: this is a nonzero
   -- multiple of `c_λ`.
   let b : ContDiffBump (0 : Matrix n n ℂ) := default
-  obtain ⟨P, hP⟩ := l.dsCoeffSmooth.2
-  have hP_apply (g : USign ε) : P.1 g.1.1 = l.dsCoeff g := congrFun hP g
-  have h_smooth : ContDiff ℝ (⊤ : ℕ∞) fun x : Matrix n n ℂ ↦ ↑(b (x * star x) ^ 2) * P.1 x := by
+  obtain ⟨P, hP⟩ := l.dsCoeffSmooth.property
+  have hP_apply (g : USign ε) : P.val g.val.val = l.dsCoeff g := congrFun hP g
+  have h_smooth : ContDiff ℝ (⊤ : ℕ∞) fun x : Matrix n n ℂ ↦ ↑(b (x * star x) ^ 2) * P.val x := by
     have h_self_star : ContDiff ℝ (⊤ : ℕ∞) fun x : Matrix n n ℂ ↦ x * star x :=
       contDiff_id.mul (starL' ℝ).contDiff
-    exact (ofRealCLM.contDiff.comp ((b.contDiff.comp h_self_star).pow 2)).mul P.2
-  have h_supp : HasCompactSupport fun g : USign ε ↦ ↑(b (g * star g.1.1) ^ 2) * l.dsCoeff g :=
+    exact (ofRealCLM.contDiff.comp ((b.contDiff.comp h_self_star).pow 2)).mul P.property
+  have h_supp : HasCompactSupport fun g : USign ε ↦ ↑(b (g * star g.val.val) ^ 2) * l.dsCoeff g :=
     .intro (isCompact_U_norm_le √b.rOut) (by
       simp +contextual [b.zero_of_le_dist, CStarRing.norm_self_mul_star, sqrt_lt', sq, le_of_lt])
   -- as a smooth function with compact support, this is a bump `β`
   obtain ⟨β, hβ⟩ : ∃ β : Bumps ε, ∀ g : USign ε,
-      β.1.1 g = ↑(b (g * star g.1.1) ^ 2) * l.dsCoeff g :=
+      β.val.val g = ↑(b (g * star g.val.val) ^ 2) * l.dsCoeff g :=
     ⟨⟨⟨_, ⟨_, h_smooth⟩, funext fun g ↦ by simp [← hP_apply]⟩, h_supp⟩, fun _ ↦ rfl⟩
   -- `g ↦ β g⁻¹` has the left `K`-type of `conj c_λ`, as `b (g⁻¹ g⁻¹*)` is left `K`-invariant in `g`
   have h_type (g : USign ε) :
       ∫ k : maxCompactU ε, conj (weightMinors l.lowestKType k) * β.1.1 (k.1⁻¹ * g)⁻¹ ∂haarK ε =
-        l.lowestKType.kTypeNormSq * β.1.1 g⁻¹ := by
-    set c : ℂ := ↑(b (g⁻¹.1.1 * star g⁻¹.1.1) ^ 2) with hc
+        l.lowestKType.kTypeNormSq * β.val.val g⁻¹ := by
+    set c : ℂ := ↑(b (g⁻¹.val.val * star g⁻¹.val.val) ^ 2) with hc
     have h_translate (k : maxCompactU ε) : β.1.1 (k.1⁻¹ * g)⁻¹ = c * l.dsCoeff ↑(g⁻¹ * k) := by
       simp [hβ, hc, star, ← maxCompactU.coe_inv, mul_assoc]
     have h_proj :
@@ -474,23 +477,23 @@ theorem exists_smear_dsCoeffSmooth_eq (hg : l.HasLargeGap A) (f : l.DsModule) :
       simpa using integral_conj_weightMinors_lowestKType_mul_dsCoeff hg g⁻¹ 1
     simp_rw [h_translate, mul_left_comm _ c]
     rw [integral_const_mul, h_proj, hβ, mul_left_comm]
-  have h_smear : (smear l.dsCoeffSmooth.1) β =
-      ((∫ g : USign ε, β.1.1 g⁻¹ * l.dsCoeff g) • l.dsCoeffSmooth).1 := by
+  have h_smear : (smear l.dsCoeffSmooth.val) β =
+      ((∫ g : USign ε, β.val.val g⁻¹ * l.dsCoeff g) • l.dsCoeffSmooth).val := by
     ext x
-    have hβ_int : Integrable fun g : USign ε ↦ β.1.1 g⁻¹ := by
+    have hβ_int : Integrable fun g : USign ε ↦ β.val.val g⁻¹ := by
       simpa using integrable_bump_inv_smul (E := ℂ) 1 β
     simpa [mul_comm (dsCoeff ..)] using integral_mul_dsCoeff_translate hg hβ_int h_type x 1
   -- the factor is the integral of `b(…)² |c_λ(g)|² ≥ 0`, which is positive at `g = 1`
-  have h_factor : ∫ g, β.1.1 g⁻¹ * l.dsCoeff g ≠ 0 := by
-    have h_pos : 0 < ∫ g : USign ε, ‖β.1.1 g⁻¹ • l.dsCoeff g‖ :=
+  have h_factor : ∫ g, β.val.val g⁻¹ * l.dsCoeff g ≠ 0 := by
+    have h_pos : 0 < ∫ g : USign ε, ‖β.val.val g⁻¹ • l.dsCoeff g‖ :=
       integral_pos_of_integrable_nonneg_ne_zero (x := 1) (by fun_prop)
         (integrable_bump_inv_smul _ β).norm (fun _ ↦ norm_nonneg _)
         (by simp [hβ, b, ContDiffBump.one_of_mem_closedBall, default])
     simpa [hβ, ↓dsCoeff_inv hg, ← ofReal_pow, ← ofReal_mul, mul_assoc, conj_mul',
       integral_complex_ofReal] using h_pos.ne'
-  let S : Submodule ℂ (SmoothU ε ℂ) := (smear l.dsCoeffSmooth.1).range.submoduleOf (SmoothU ε ℂ)
+  let S : Submodule ℂ (SmoothU ε ℂ) := (smear l.dsCoeffSmooth.val).range.submoduleOf (SmoothU ε ℂ)
   have h_generator : l.dsCoeffSmooth ∈ S := (smul_mem_iff _ h_factor).1 ⟨β, h_smear⟩
-  refine mem_sInf.1 f.2 S ⟨h_generator, ?_⟩
+  refine mem_sInf.1 f.property S ⟨h_generator, ?_⟩
   rintro i j - v ⟨α, hα⟩
   exact ⟨_, rightDeriv_smear _ _ hα _⟩
 
@@ -504,17 +507,17 @@ U(𝔤)c_λ is the space of smooth functions on U(diag ε) generated by c_λ und
 ‖g‖ is the norm of g as a complex matrix. -/
 theorem exists_decay_bound (hg : l.HasLargeGap A) (f : l.DsModule) (c : ℕ)
     (hc : c ≤ gapThreshold n A) :
-    ∃ K : ℝ, ∀ g : USign ε, ‖f.1.1 g‖ ≤ K * (2 / ‖(g : Matrix n n ℂ)‖) ^ c := by
+    ∃ K : ℝ, ∀ g : USign ε, ‖f.val.val g‖ ≤ K * (2 / ‖(g : Matrix n n ℂ)‖) ^ c := by
   -- `f g = ∫ α(y⁻¹) c_λ(g y) dy`, and `‖g‖ ≤ ‖g y‖ ‖y⁻¹‖` carries the decay of `c_λ` over to `f`
   obtain ⟨α, hα⟩ := exists_smear_dsCoeffSmooth_eq hg f
-  have h_int : Integrable fun y : USign ε ↦ ‖α.1.1 y⁻¹‖ * ‖y⁻¹.1.1‖ ^ c := by
+  have h_int : Integrable fun y : USign ε ↦ ‖α.val.val y⁻¹‖ * ‖y⁻¹.val.val‖ ^ c := by
     simpa [← U.norm_inv] using (integrable_bump_inv_smul (E := ℂ) (fun y ↦ ‖y⁻¹.1.1‖ ^ c) α).norm
-  refine ⟨∫ y : USign ε, ‖α.1.1 y⁻¹‖ * ‖y⁻¹.1.1‖ ^ c, fun g ↦ ?_⟩
+  refine ⟨∫ y : USign ε, ‖α.val.val y⁻¹‖ * ‖y⁻¹.val.val‖ ^ c, fun g ↦ ?_⟩
   rw [← hα, ← integral_mul_const]
   refine norm_integral_le_of_norm_le (h_int.mul_const _) (.of_forall fun y ↦ ?_)
   grw [norm_smul, dsCoeffSmooth, norm_dsCoeff_le_pow hg hc, mul_assoc, ← mul_pow]
   gcongr
-  simpa [field] using norm_mul_le (g * y).1.1 y⁻¹.1.1
+  simpa [field] using norm_mul_le (g * y).val.val y⁻¹.val.val
 
 /-- For `n ≥ 1` and a natural number `c > 8 n²`, the function `g ↦ (2 / ‖g‖) ^ c` is integrable on
 `U(diag ε)`, where `‖g‖` is the operator norm. -/
@@ -785,7 +788,7 @@ omit [Nonempty n] in
 /-- For g in U(diag ε), A = g − 1 and real t, the matrix γ = 1 + t A u⁻¹ with u = 1 − ((t − 1)/2) A
 satisfies γᴴ J γ = J, where J = diag ε and the inverse of a non-unit is 0. -/
 theorem conjTranspose_mul_signMatrix_mul_curve (g : USign ε) (t : ℝ) :
-    let A : Matrix n n ℂ := g.1.1 - 1
+    let A : Matrix n n ℂ := g.val.val - 1
     let u : Matrix n n ℂ := 1 - ((t - 1) * 2⁻¹) • A
     (1 + t • A * u⁻¹ʳ)ᴴ * signMatrix ε * (1 + t • A * u⁻¹ʳ) = signMatrix ε := by
   -- As `γ * u = 1 + ((1 + t) / 2) • A`, one has
@@ -795,8 +798,8 @@ theorem conjTranspose_mul_signMatrix_mul_curve (g : USign ε) (t : ℝ) :
   · have factor : 1 + t • A * u⁻¹ʳ = (u + t • A) * hu.unit⁻¹ := by
       simp [add_mul, ← inverse_unit, mul_inverse_cancel _ hu]
     rw [factor, gram_mul, gram_inv_of_gram_eq]
-    simp [u, A, show g.1.1ᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 g.2, Matrix.sub_mul,
-        Matrix.mul_sub, Matrix.add_mul, Matrix.mul_add]
+    simp [u, A, show g.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 g.property,
+        Matrix.sub_mul, Matrix.mul_sub, Matrix.add_mul, Matrix.mul_add]
     module
   · simp [inverse_non_unit _ hu]
 
@@ -805,7 +808,7 @@ theorem conjTranspose_mul_signMatrix_mul_curve (g : USign ε) (t : ℝ) :
 theorem norm_dsCoeff_sub_le [hg : l.HasLargeGap B] (hL : ∀ a : n, |l a| ≤ L) (x g : USign ε) :
     ‖l.dsCoeff (x * g :) - l.dsCoeff x‖ ≤ 100 * (card n + L + 1) ^ 5 * ‖g.val.val - 1‖ := by
   -- Join `1` to `g = 1 + A` by a curve `γ` in the group and bound the derivative along `x * γ t`.
-  let A : Matrix n n ℂ := g.1.1 - 1
+  let A : Matrix n n ℂ := g.val.val - 1
   by_cases! hA : 1 ≤ ‖A‖
   · -- Far from `1` the trivial bound `2` suffices.
     grw [norm_sub_le, norm_dsCoeff_le_one hg, norm_dsCoeff_le_one hg, ← hA]
@@ -823,25 +826,25 @@ theorem norm_dsCoeff_sub_le [hg : l.HasLargeGap B] (hL : ∀ a : n, |l a| ≤ L)
       grind
     -- `u t` is a unit `w` with `‖w⁻¹‖ ≤ 2`, by the geometric series.
     let w : (Matrix n n ℂ)ˣ := Units.oneSub _ (small.trans_lt two_inv_lt_one)
-    have hγ : (γ t).1.1 = 1 + t • (A * w⁻¹) := by simp [γ, ← inverse_unit, u, w]
-    have norm_inv_le : ‖w⁻¹.1‖ ≤ 2 := by
+    have hγ : (γ t).val.val = 1 + t • (A * w⁻¹) := by simp [γ, ← inverse_unit, u, w]
+    have norm_inv_le : ‖w⁻¹.val‖ ≤ 2 := by
       refine (tsum_geometric_le_of_norm_lt_one _ (small.trans_lt two_inv_lt_one)).trans ?_
       grw [small]
       bound
     -- The derivative of `γ` at `t`, from that of the inverse at the unit `w`.
     let γ' : Matrix n n ℂ := t • (2 : ℝ)⁻¹ • (A * (w⁻¹ * (A * w⁻¹))) + A * w⁻¹
-    have hγ' : HasDerivAt (fun t ↦ (x * γ t).1.1) (x * γ') t := by
-      have hw : u t = w.1 := by simp [u, w]
+    have hγ' : HasDerivAt (fun t ↦ (x * γ t).val.val) (x * γ') t := by
+      have hw : u t = w.val := by simp [u, w]
       have h_u : HasDerivAt u (-((2 : ℝ)⁻¹ • A)) t := by
         simpa [u] using ((((hasDerivAt_id t).sub_const 1).mul_const 2⁻¹).smul_const A).const_sub 1
-      have h_inv : HasDerivAt (fun s ↦ (u s)⁻¹ʳ) ((2 : ℝ)⁻¹ • (w⁻¹.1 * (A * w⁻¹.1))) t := by
+      have h_inv : HasDerivAt (fun s ↦ (u s)⁻¹ʳ) ((2 : ℝ)⁻¹ • (w⁻¹.val * (A * w⁻¹.val))) t := by
         simpa [Function.comp_def, mul_assoc] using
           (hasFDerivAt_ringInverse (𝕜 := ℝ) w).comp_hasDerivAt_of_eq t h_u hw.symm
       -- the product rule, then the derivative is rearranged into `x * γ'`
       refine
         (((((hasDerivAt_id t).smul_const A).mul h_inv).const_add 1).const_mul x.1.1).congr_deriv ?_
       rw [hw, inverse_unit, one_smul, id, smul_mul_assoc, mul_smul_comm, add_comm]
-    have norm_γ : ‖(γ t).1.1‖ ≤ 3 := by
+    have norm_γ : ‖(γ t).val.val‖ ≤ 3 := by
       grw [hγ, norm_add_le, norm_smul, norm_mul_le, norm_inv_le, hA, norm_of_nonneg ht₀, ht₁]
       norm_num
     have norm_γ' : ‖γ'‖ ≤ 4 * ‖A‖ := by
@@ -849,9 +852,9 @@ theorem norm_dsCoeff_sub_le [hg : l.HasLargeGap B] (hL : ∀ a : n, |l a| ≤ L)
         norm_inv_le, norm_of_nonneg ht₀, ht₁]
       norm_num
       nlinarith [norm_nonneg A]
-    have direction : x * γ' = (x * γ t).1 * ((γ t)⁻¹.1.1 * γ') := by simp [mul_assoc]
+    have direction : x * γ' = (x * γ t).val * ((γ t)⁻¹.val.val * γ') := by simp [mul_assoc]
     refine ⟨_, hasDerivAt_curve l.dsCoeffSmooth (hγ'.congr_deriv direction), ?_⟩
-    calc _ ≤ (card n + 1) ^ 4 * (card n + L + 1) * ‖(γ t)⁻¹.1.1 * γ'‖ :=
+    calc _ ≤ (card n + 1) ^ 4 * (card n + L + 1) * ‖(γ t)⁻¹.val.val * γ'‖ :=
            norm_rightDeriv_dsCoeffSmooth_le hL ..
       _ ≤ (card n + L + 1) ^ 4 * (card n + L + 1) * (3 * (4 * ‖A‖)) := by
         grw [norm_mul_le, U.norm_inv, norm_γ, norm_γ']
@@ -904,13 +907,6 @@ theorem measure_ball_le_integral_dsCoeff [hg : l.HasLargeGap B] (hL : ∀ a : n,
   grw [← small_ball]
   simpa [δ] using measure_ball_le_covering ν j 1 (by bound) hr const_le
 
-/-- For a parameter `l` and a natural number `c > 8 n²`, the function
-`g ↦ deg_λ * (2 / ‖g‖) ^ c` is integrable on `U(diag ε)`, where `deg_λ = l.formalDegree`. -/
-theorem integrable_formalDegree_mul_two_div_norm_pow (l : HCParam ε) {c : ℕ}
-    (hc : 8 * card n ^ 2 < c) :
-    Integrable fun g : USign ε ↦ l.formalDegree * (2 / ‖(g : Matrix n n ℂ)‖) ^ c :=
-  (integrable_two_div_norm_pow hc).const_mul l.formalDegree
-
 /-- Let n = `card n` ≥ 1, and let `l = 2λ` be a parameter of gap `500 n³ + B`: its entries are
 distinct and congruent to n - 1 mod 2, and |λ i - λ j| ≥ 500 n³ + B whenever ε i ≠ ε j. Suppose all
 `|l a| ≤ L` and `c > 8 n²` is a natural number. Then the integral of `deg_λ * (2 / ‖g‖) ^ c` over
@@ -953,7 +949,7 @@ theorem integral_tail_le [hg : l.HasLargeGap B] (hL : ∀ a : n, |l a| ≤ L) (c
     Integrable (fun g : USign ε ↦ l.formalDegree * (2 / ‖(g : Matrix n n ℂ)‖) ^ c) ∧
     ∫ g : USign ε, l.formalDegree * (2 / ‖(g : Matrix n n ℂ)‖) ^ c ≤
       8 * (2000 * (card n + L + 1) ^ 6) ^ (2 * card n ^ 2) * 2 ^ c :=
-  ⟨integrable_formalDegree_mul_two_div_norm_pow l hc,
+  ⟨(integrable_two_div_norm_pow hc).const_mul l.formalDegree,
     integral_formalDegree_mul_two_div_norm_pow_le hL hc⟩
 
 end New

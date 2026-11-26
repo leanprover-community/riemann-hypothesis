@@ -136,7 +136,7 @@ lemma blockScaling_mem_basicDoubleCoset (q : n ≃ Fin k) (hp : l.valuation E p 
     simp [localGL, coe_blockScaling, s, ϖ, Fin.lt_def, diagonal_apply, apply_ite Units.val,
       apply_ite (algebraMap E (LocField l))]
   simpa [h_diag, s] using
-    (diagGL_mem_basicDoubleCoset (ϖ := ϖ) ((v_algebraMap_eq_valuation (p : E)).trans hp) s).1
+    diagGL_ite_mem_basicDoubleCoset (ϖ := ϖ) ((v_algebraMap_eq_valuation (p : E)).trans hp) s
 
 /-- Over a local ring `W`, a matrix is parahoric for the blocks of sizes `r` and `k - r` exactly if
 its entries at `(i, j)` with `i < r ≤ j` lie in the maximal ideal. -/
@@ -172,7 +172,7 @@ lemma conj_blockScaling_mem_localIntGL_iff (q : n ≃ Fin k) (hp : l.valuation E
         apply_ite (l.valuation E)]
     change l.valuation E _ ≤ 1 ↔ _
     rw [h_entry, Valuation.mem_maximalIdeal_iff]
-    have h_int : l.valuation E (x (q i) (q j)) ≤ 1 := (x (q i) (q j)).2
+    have h_int : l.valuation E (x (q i) (q j)) ≤ 1 := (x (q i) (q j)).property
     split_ifs with hi hj hj
     · simpa [mul_right_comm, ← exp_add, hj.not_ge] using h_int
     · -- the block that is divided by `p`
@@ -324,7 +324,7 @@ variable {K : Subgroup (Gf E n)} [IsLevel K] {hl : l.IsSplit}
 /-- The component at any place of an element of a level is integral. -/
 lemma atPlace_mem_localIntGL_of_isLevel (u : K) (v : FinPlace E) :
     u.val.atPlace v ∈ localIntGL n v :=
-  mem_stdLevel_iff.1 (IsLevel.le u.2) v
+  mem_stdLevel_iff.1 (IsLevel.le u.property) v
 
 variable (r K hl) in
 /-- Let `l` be a split finite place above `p`, let `K` be a level and let `q` number the
@@ -437,7 +437,7 @@ lemma eq_of_origin_eq_of_mem_parahoric (hp : l.valuation E p = exp (-1)) (hK : m
     have h_rep (z : StdClasses K) := C.rep_mem_integralAbove z l (natCast_mem_of_valuation_eq hp)
     simpa [y, atPlace_embFin] using mul_mem (mul_mem (mul_mem (inv_mem (h_rep x)) hη_l) (h_rep x'))
       (atPlace_mem_localIntGL_of_isLevel u l)
-  have h_level : y ∈ K := (mul_mem_cancel_right u.2).1
+  have h_level : y ∈ K := (mul_mem_cancel_right u.property).1
     (hK ⟨(mem_stdLevel_iff_of_supportedOn h_support).2 (by simpa using h_int), h_support⟩)
   have h_stabilizer (γ : U (stdSpace E n).J)
       (hγ : (C.rep x')⁻¹ * (stdSpace E n).embFin γ * C.rep x' ∈ K) : γ = 1 :=
@@ -670,7 +670,7 @@ lemma exists_schur_eq_map {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime]
       have h_star : star (inducedPlace τ.val) = v := (placeOfEmb_comp_star _).symm
       obtain ⟨m, hm⟩ : γ ∈ intGL (D.X 0) (valuationRingAt v).toSubring := by
         rw [← localGL_mem_localIntGL_iff, ← h_star]
-        exact hγ τ hτ τ.2
+        exact hγ τ hτ τ.property
       let ι : valuationRingAt v →+* embValRing :=
         ((Φ τ.val).comp conj).restrict _ _ fun _ ↦ (isEquiv_placeOfEmb _).le_one_iff_le_one.2
       refine ⟨GeneralLinearGroup.map ι m, ?_⟩
@@ -744,11 +744,12 @@ lemma range_sourceFormOfValues {ρ : StdClasses (D.levelX 0) → Gf D.E (D.X 0)}
     rintro _ ⟨F, rfl⟩
     refine (h_mem _).2 fun g ↦ ?_
     obtain ⟨x, η, u, rfl⟩ := exists_eq_map_mul_rep_mul _ _ hρ g
-    rw [levelSpace_smoothFormRep_apply (sourceFormOfValues hρ F).2, MonoidHom.one_apply, one_smul,
-      weylGauge_mul_of_mem_integralAbove _ (stdLevel_le_localLevel (IsLevel.le u.2)),
+    rw [levelSpace_smoothFormRep_apply (sourceFormOfValues hρ F).property, MonoidHom.one_apply,
+      one_smul,
+      weylGauge_mul_of_mem_integralAbove _ (stdLevel_le_localLevel (IsLevel.le u.property)),
         weylGauge_embFin,
       weylGauge_le_one_iff _ (hρ_int x), sourceFormOfValues_apply_rep]
-    exact fun i ↦ (F x i).2
+    exact fun i ↦ (F x i).property
   · let F (x : StdClasses (D.levelX 0)) (i : WeylIndex (D.X 0) D.columnCount) : embValRing :=
       ⟨φ.val.val (ρ x) i, (weylGauge_le_one_iff _ (hρ_int x)).1 ((h_mem φ).1 hφ (ρ x)) i⟩
     exact ⟨F, levelSpace_ext_doubleCosets hρ (sourceFormOfValues_apply_rep hρ F)⟩
@@ -801,17 +802,9 @@ lemma isOntoUpToColength_scaledHeckeOperator_of_frobeniusCycle {P : Parameters} 
   have q : D.X 0 ≃ Fin D.k := Fintype.equivFinOfCardEq (by simp [D.card_X 0, Data.n])
   obtain ⟨C⟩ : Nonempty (HeckeEdges D.k p r (D.levelX 0) hl) :=
     nonempty_heckeEdges r (D.levelX 0) hl q (hΛ.natCast_mem_asIdeal hlΛ)
-  have h_aPlace (i : ZMod N) : (t i).val ∈ D.aPlaces := ((hQ (t i)).1 (t i).2).1
+  have h_aPlace (i : ZMod N) : (t i).val ∈ D.aPlaces := ((hQ (t i)).1 (t i).property).1
   let H : Type := WeylIndex (D.X 0) fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ
-  obtain ⟨J, hJ⟩ : ∃ J : WeylIndex (D.X 0) D.columnCount ≃ Exponents N D.k D.a × H,
-      ∀ (c : ZMod N → ℂ) (z : D.Φ → Matrix (D.X 0) (D.X 0) ℂ)
-        (i j : WeylIndex (D.X 0) D.columnCount),
-        (∏ s : ZMod N, c s) ^ D.a * schur D.columnCount z i j =
-          schur (fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ) (fun τ ↦ z τ) (J i).2 (J j).2 *
-            kroneckerPi (fun s : ZMod N ↦
-              symPowMatrix D.a (c s • (z (t s))ᵀ.submatrix C.numbering.symm C.numbering.symm))
-              (J j).1 (J i).1 :=
-    exists_weylIndex_equiv C.numbering t h_aPlace
+  obtain ⟨J, hJ⟩ := exists_weylIndex_equiv C.numbering t h_aPlace
   have h_off (e : ClassEdges (D.levelX 0) l D.k r) :
       ∃ m : GL H embValRing,
         schur (fun τ : {τ : D.Φ // ¬Q τ} ↦ D.columnCount τ)
@@ -854,7 +847,7 @@ lemma isOntoUpToColength_scaledHeckeOperator_of_frobeniusCycle {P : Parameters} 
         (heckeSplit (algFormRep D.columnCount (D.lastEntry 0)) hl r (f F).val).val (C.rep x) =
       (f (T.edgeHeckeOperator D.a J 𝓔 F)).val.val (C.rep x)
     have h_origin : C.origin = 𝓔.origin := rfl
-    rw [C.heckeSplit_apply_rep hp_val hr hK (f F).2, sourceFormOfValues_apply_rep,
+    rw [C.heckeSplit_apply_rep hp_val hr hK (f F).property, sourceFormOfValues_apply_rep,
       edgeHeckeOperator_apply]
     -- In each coordinate, `h_edge` identifies the two matrix coefficients of every edge.
     ext i

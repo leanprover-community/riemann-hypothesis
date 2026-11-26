@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Algebra.Divisibility.Prod
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
@@ -258,9 +261,6 @@ lemma span_natCast_le_comap (σ : R →+* R) (N : ℕ) : span {(N : R)} ≤ (spa
 /-- The ring endomorphism of `R ⧸ (N)` induced by `σ`, for a natural number `N`. -/
 def quotientNatMap (σ : R →+* R) (N : ℕ) : R ⧸ span {(N : R)} →+* R ⧸ span {(N : R)} :=
   quotientMap (span {(N : R)}) σ (span_natCast_le_comap σ N)
-
-private lemma quotientNatMap_mk (σ : R →+* R) (N : ℕ) (x : R) :
-    quotientNatMap σ N (mk (span {(N : R)}) x) = mk (span {(N : R)}) (σ x) := rfl
 
 /-- Let `R` be profinite (`New.IsProfiniteRing`) and `σ` a ring endomorphism of `R`. Some
 `R`-algebra map `Λ` from the families of residues modulo `N !` to `R` carries the maps
@@ -708,7 +708,8 @@ lemma IsTameAtLevel.exists_prod_range_pow_apply_eq (h_tame : IsTameAtLevel σ p 
     h_tame.exists_algHom_semiconj_quotientNatMap hR
   choose h_finite h_tame_quotient using h_quotient
   have hx_fixed (N : ℕ) : q N ! (Ideal.Quotient.mk _ x) = Ideal.Quotient.mk _ x := by
-    rw [quotientNatMap_mk, hσx]
+    change Ideal.Quotient.mk _ (σ x) = Ideal.Quotient.mk _ x
+    rw [hσx]
   choose z hz hz_inv hz_norm using fun N ↦
     (h_tame_quotient N).exists_norm_of_finite (hx.map _) (hx_fixed N) (map_dvd _ hx_one)
   -- `Λ` keeps congruences modulo `m`

@@ -70,7 +70,7 @@ lemma two_mul_re_sub_one_apply (g : USign ε) (i : n) :
     2 * (((g : Matrix n n ℂ) - 1) i i).re =
       2 * ∑ j : n, ‖noncompactPart ε g i j‖ ^ 2 - ∑ j : n, ‖((g : Matrix n n ℂ) - 1) i j‖ ^ 2 := by
   have h_form : (g : Matrix n n ℂ) * (signMatrix ε * (g : Matrix n n ℂ)ᴴ * signMatrix ε) = 1 := by
-    rw [← U.inv_coe_eq_mul_conjTranspose_mul, mul_nonsing_inv _ g.1.det_ne_zero.isUnit]
+    rw [← U.inv_coe_eq_mul_conjTranspose_mul, mul_nonsing_inv _ g.val.det_ne_zero.isUnit]
   generalize (g : Matrix n n ℂ) = A at h_form ⊢
   have h_signed : ∑ j : n, (‖A i j‖ ^ 2 - 2 * ‖noncompactPart ε A i j‖ ^ 2) = 1 := by
     have h_entry : (A * (signMatrix ε * Aᴴ * signMatrix ε)) i i = 1 := by simp [h_form]
@@ -132,14 +132,11 @@ lemma norm_sub_one_sq (g : USign ε) :
   set x : Matrix n n ℂ := (g : Matrix n n ℂ) - 1
   set y : Matrix n n ℂ := noncompactPart ε g
   have h_row (i : n) : ∑ j : n, ‖x i j‖ ^ 2 = 2 * ∑ j : n, ‖y i j‖ ^ 2 - 2 * (x i i).re := by
-    linarith [two_mul_re_sub_one_apply g i]
+    linarith only [two_mul_re_sub_one_apply g i]
   calc ‖x‖ ^ 2 = ∑ i : n, ∑ j : n, ‖x i j‖ ^ 2 := frobenius_norm_sq_eq_sum
     _ = ∑ i : n, (2 * ∑ j : n, ‖y i j‖ ^ 2 - 2 * (x i i).re) := sum_congr rfl fun i _ ↦ h_row i
     _ = 2 * ‖y‖ ^ 2 - 2 * x.trace.re := by
       simp [frobenius_norm_sq_eq_sum, trace, re_sum, mul_sum, sum_sub_distrib]
-
-omit [Fintype n] in
-lemma conjTranspose_signMatrix : (signMatrix ε)ᴴ = signMatrix ε := by simp [signMatrix]
 
 lemma norm_signMatrix_mul (A : Matrix n n ℂ) : ‖signMatrix ε * A‖ = ‖A‖ :=
   frobenius_norm_mul_of_unitary (by rw [conjTranspose_signMatrix, signMatrix_mul_self]) A
@@ -187,7 +184,8 @@ abbrev onBlock (e : X ⊕ Fin M ≃ n) (A : Matrix n n ℂ) : Matrix X X ℂ :=
 
 lemma norm_onBlock_le (e : X ⊕ Fin M ≃ n) (A : Matrix n n ℂ) : ‖onBlock e A‖ ≤ ‖A‖ := by
   rw [← sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)]
-  simp [frobenius_norm_sq_eq_sum, ← e.sum_comp, sum_add_distrib, add_assoc]
+  simp only [frobenius_norm_sq_eq_sum, submatrix_apply, Function.comp_apply, ← e.sum_comp,
+    Fintype.sum_sum_type, sum_add_distrib, add_assoc, le_add_iff_nonneg_right]
   positivity
 
 /-- The square of the Frobenius norm of `A` is at most the sum of those of its rows off `X`, its
@@ -217,7 +215,7 @@ lemma norm_onBlock_gram_sub_one_le (e : X ⊕ Fin M ≃ n) (hε : ∀ x : X, ε 
   -- The block on `X` of `gᴴ ε g = ε` reads `aᴴ a + onBlock e (Wᴴ ε W) = 1`, where `W` consists of
   -- the rows of `g - 1` off `X`.
   have h_form : (g : Matrix n n ℂ)ᴴ * signMatrix ε * (g : Matrix n n ℂ) = signMatrix ε :=
-    mem_unitaryGroupOf_iff.1 g.2
+    mem_unitaryGroupOf_iff.1 g.property
   generalize (g : Matrix n n ℂ) = A at h_form ⊢
   set W : Matrix n n ℂ := intDiagonal (offBlockIndicator e) * (A - 1) with hW
   have hW_on (x : X) (i : n) : W (e (.inl x)) i = 0 := by simp [hW, offBlockIndicator]
@@ -259,7 +257,8 @@ lemma exists_unitary_sub_one_eq_inclMatrix {u : Matrix X X ℂ} {Y : Type}
   calc (1 + Q * (u - 1) * Qᴴ)ᴴ * signMatrix ε * (1 + Q * (u - 1) * Qᴴ)
       = signMatrix ε + Q * (uᴴ - 1) * (Qᴴ * signMatrix ε) + signMatrix ε * Q * (u - 1) * Qᴴ +
           Q * (uᴴ - 1) * (Qᴴ * (signMatrix ε * Q)) * (u - 1) * Qᴴ := by
-        simp [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc, add_assoc, add_left_comm]
+        simp [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]
+        abel
     _ = signMatrix ε + Q * ((uᴴ - 1) + (u - 1) + (uᴴ - 1) * (u - 1)) * Qᴴ := by
         simp [hQ_sgn, hQ_sgn', hQ_iso, Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc, add_assoc]
     _ = signMatrix ε := by simp [h_expand, hu]
@@ -324,35 +323,22 @@ lemma IsLaplaceDatum.phase_logOneAdd (hj : IsLaplaceDatum l k j τ B e φ) (s : 
     l.phase k ((subOnePair j s).map logOneAdd logOneAdd) = φ s := by
   -- In the geometric series of `phase ((1 + r • x)⁻¹ * x)` only the term `phase x = φ s` is left,
   -- by `phase_pow_mul`; integrate over `r`.
-  have h_powers (i : ℕ) : l.phase k (subOnePair j s ^ i * subOnePair j s) = 0 ^ i * φ s :=
-    hj.phase_pow_mul s i
-  set x : Matrix n n ℂ × Matrix m m ℂ := subOnePair j s
-  let D : Matrix n n ℂ := intDiagonal l.lowestKType
-  let D' : Matrix m m ℂ := intDiagonal k.lowestKType
-  have h_integrand (r : ℝ) (hr : r ∈ Set.Icc 0 1) :
-      (D * ((1 + r • x.1)⁻¹ * x.1)).trace - (D' * ((1 + r • x.2)⁻¹ * x.2)).trace = φ s := by
-    have h_term (i : ℕ) :
-        (D * ((-(r • x.1)) ^ i * x.1)).trace - (D' * ((-(r • x.2)) ^ i * x.2)).trace =
-          (-r : ℂ) ^ i * (0 ^ i * φ s) := by
-      rw [← h_powers]
-      simp [D, D', phase, ← neg_smul, smul_pow, mul_sub]
-    have h_single : HasSum (fun i : ℕ ↦ (-r : ℂ) ^ i * (0 ^ i * φ s)) (φ s) := by
-      convert hasSum_ite_eq (0 : ℕ) (φ s) with i
-      cases i <;> simp
-    refine ((hasSum_trace_geom h_fst D hr).sub (hasSum_trace_geom h_snd D' hr)).unique ?_
-    simpa only [h_term] using h_single
-  calc l.phase k (x.map logOneAdd logOneAdd)
-      = ∫ r : ℝ in 0..1,
-          ((D * ((1 + r • x.1)⁻¹ * x.1)).trace - (D' * ((1 + r • x.2)⁻¹ * x.2)).trace) := by
-        rw [intervalIntegral.integral_sub
-            (intervalIntegrable_trace_mul_inv_one_add_smul_mul h_fst D)
-            (intervalIntegrable_trace_mul_inv_one_add_smul_mul h_snd D'),
-          integral_trace_mul_inv_one_add_smul_mul h_fst,
-          integral_trace_mul_inv_one_add_smul_mul h_snd, phase, Prod.map_fst, Prod.map_snd]
-    _ = ∫ _ : ℝ in 0..1, φ s :=
-        intervalIntegral.integral_congr fun r hr ↦
-          h_integrand r (by rwa [Set.uIcc_of_le zero_le_one] at hr)
-    _ = φ s := by simp
+  let D := intDiagonal l.lowestKType
+  let D' := intDiagonal k.lowestKType
+  rw [phase, Prod.map_fst, Prod.map_snd,
+    ← integral_trace_mul_inv_one_add_smul_mul h_fst,
+    ← integral_trace_mul_inv_one_add_smul_mul h_snd,
+    ← intervalIntegral.integral_sub
+      (intervalIntegrable_trace_mul_inv_one_add_smul_mul h_fst D)
+      (intervalIntegrable_trace_mul_inv_one_add_smul_mul h_snd D')]
+  refine (intervalIntegral.integral_congr (g := fun _ ↦ φ s) fun r hr ↦ ?_).trans (by simp)
+  rw [Set.uIcc_of_le zero_le_one] at hr
+  refine ((hasSum_trace_geom h_fst D hr).sub (hasSum_trace_geom h_snd D' hr)).unique ?_
+  convert hasSum_ite_eq (0 : ℕ) (φ s) with i
+  trans (-r : ℂ) ^ i * (0 ^ i * φ s)
+  · rw [← hj.phase_pow_mul s i]
+    simp [D, D', phase, ← neg_smul, smul_pow, mul_sub]
+  · cases i <;> simp
 
 /-! ### Left translation by `U(X)` -/
 
@@ -487,22 +473,16 @@ lemma one_add_sum_le_prod_one_add {ι : Type*} (s : Finset ι) {μ : ι → ℝ}
 lemma one_add_norm_sq_le_norm_det_one_add (A : Matrix n n ℂ) :
     1 + ‖A‖ ^ 2 ≤ ‖(1 + Aᴴ * A).det‖ := by
   -- In terms of the eigenvalues `μ i ≥ 0` of `Aᴴ * A` this is `1 + ∑ μ i ≤ ∏ (1 + μ i)`.
-  have hA : (Aᴴ * A).PosSemidef := A.posSemidef_conjTranspose_mul_self
-  let μ : n → ℝ := hA.isHermitian.eigenvalues
-  have hμ (i : n) : 0 ≤ μ i := hA.eigenvalues_nonneg i
-  have h_sum : ‖A‖ ^ 2 = ∑ i : n, μ i := by
-    rw [← ofReal_inj, ← trace_star_mul_self_eq_norm_sq, hA.isHermitian.trace_eq_sum_eigenvalues]
-    simp [μ]
-  have h_prod : ‖(1 + Aᴴ * A).det‖ = ∏ i : n, (1 + μ i) :=
-    calc ‖(1 + Aᴴ * A).det‖ = ‖(Aᴴ * A).charpoly.eval (-1)‖ := by
-          rw [eval_charpoly, map_neg, map_one, ← neg_add', det_neg]
-          simp
-      _ = ∏ i : n, ‖(-1 : ℂ) - μ i‖ := by
-          simp [μ, hA.isHermitian.charpoly_eq, Polynomial.eval_prod]
-      _ = ∏ i : n, (1 + μ i) := prod_congr rfl fun i _ ↦ by
-          rw [← neg_add', norm_neg, ← ofReal_one, ← ofReal_add,
-            Complex.norm_of_nonneg (add_nonneg zero_le_one (hμ i))]
-  simpa [h_sum, h_prod] using one_add_sum_le_prod_one_add Finset.univ hμ
+  have hA := A.posSemidef_conjTranspose_mul_self
+  convert one_add_sum_le_prod_one_add Finset.univ hA.eigenvalues_nonneg using 2
+  · rw [← ofReal_inj, ← trace_star_mul_self_eq_norm_sq, hA.isHermitian.trace_eq_sum_eigenvalues]
+    simp
+  · rw [show ‖(1 + Aᴴ * A).det‖ = ‖(Aᴴ * A).charpoly.eval (-1)‖ from by
+      rw [eval_charpoly, map_neg, map_one, ← neg_add', det_neg]
+      simp, hA.isHermitian.charpoly_eq, Polynomial.eval_prod, norm_prod]
+    exact prod_congr rfl fun i _ ↦ by
+      simpa [← neg_add', ← ofReal_one, ← ofReal_add] using
+        Complex.norm_of_nonneg (add_nonneg zero_le_one (hA.eigenvalues_nonneg i))
 
 /-- The part of `gᴴ ε g = ε` that commutes with `ε` reads `aᴴ a = 1 + yᴴ y`, for the compact part
 `a = blockDiagPart ε g` and the noncompact part `y = noncompactPart ε g`. -/
@@ -512,7 +492,7 @@ lemma conjTranspose_blockDiagPart_mul_blockDiagPart (g : USign ε) :
   -- With `g' = ε g ε` one has `a = (g + g') / 2`, `y = (g - g') / 2` and `gᴴ g' = g'ᴴ g = 1`.
   set g' : Matrix n n ℂ := signMatrix ε * g * signMatrix ε with hg'
   have h_right : (g : Matrix n n ℂ)ᴴ * g' = 1 := by
-    rw [hg', ← mul_assoc, ← mul_assoc, ← star_eq_conjTranspose, mem_unitaryGroupOf_iff.1 g.2,
+    rw [hg', ← mul_assoc, ← mul_assoc, ← star_eq_conjTranspose, mem_unitaryGroupOf_iff.1 g.property,
       signMatrix_mul_self]
   have h_left : g'ᴴ * (g : Matrix n n ℂ) = 1 := by simpa using congrArg conjTranspose h_right
   simp only [noncompactPart, blockDiagPart_eq, ← hg', conjTranspose_sub, conjTranspose_smul,
@@ -555,29 +535,22 @@ lemma IsLaplaceDatum.norm_intDiagonal_mul_subOnePair_sq_le (hj : IsLaplaceDatum 
       6 * (‖noncompactPart ε (j s).1‖ ^ 2 + ‖noncompactPart η (j s).2‖ ^ 2) := by
   -- Sum the row relations of `g` with the weights `-l.lowestKType`, those of `g'` with the weights
   -- `k.lowestKType`, and add: the real parts of the traces cancel.
-  have h_lower (i : n) : B * (offBlockIndicator e i : ℝ) ^ 2 ≤ (-l.lowestKType) i := by
-    obtain ⟨x | a, rfl⟩ := e.surjective i
-    · simp [offBlockIndicator, hj.weight_eq_zero]
-    · simpa [offBlockIndicator, le_neg] using (hj.weight_mem a).2
-  have h_upper (i : n) : ((-l.lowestKType) i : ℝ) ≤ 3 * B := by
-    obtain ⟨x | a, rfl⟩ := e.surjective i
-    · simpa [hj.weight_eq_zero] using zero_le_one.trans hB
-    · simpa [neg_le] using (hj.weight_mem a).1
-  have h_fst : B * ‖intDiagonal (offBlockIndicator e) * (subOnePair j s).1‖ ^ 2 -
-        2 * (intDiagonal l.lowestKType * (subOnePair j s).1).trace.re ≤
-      2 * (3 * B) * ‖noncompactPart ε (j s).1‖ ^ 2 := by
-    simpa [← diagonal_neg, ← sub_eq_add_neg] using
-      norm_sq_add_re_trace_le (j s).1 B (3 * B) (offBlockIndicator e) (-l.lowestKType) h_lower
-        fun i _ _ ↦ h_upper i
-  have h_snd : 2 * (intDiagonal k.lowestKType * (subOnePair j s).2).trace.re ≤
-      2 * (3 * B) * ‖noncompactPart η (j s).2‖ ^ 2 := by
-    simpa using norm_sq_add_re_trace_le (j s).2 0 (3 * B) 0 k.lowestKType
-      (fun i ↦ by simpa using (hj.weight_nonneg_and_le i i).1)
-      fun i i' ↦ (hj.weight_nonneg_and_le i i').2
+  have h_fst := norm_sq_add_re_trace_le (j s).1 B (3 * B) (offBlockIndicator e) (-l.lowestKType)
+    (fun i ↦ by
+      obtain ⟨x | a, rfl⟩ := e.surjective i
+      · simp [offBlockIndicator, hj.weight_eq_zero]
+      · simpa [offBlockIndicator, le_neg] using (hj.weight_mem a).2)
+    (fun i _ _ ↦ by
+      obtain ⟨x | a, rfl⟩ := e.surjective i
+      · simpa [hj.weight_eq_zero] using zero_le_one.trans hB
+      · simpa [neg_le] using (hj.weight_mem a).1)
+  have h_snd := norm_sq_add_re_trace_le (j s).2 0 (3 * B) 0 k.lowestKType
+    (fun i ↦ by simpa using (hj.weight_nonneg_and_le i i).1)
+    fun i i' ↦ (hj.weight_nonneg_and_le i i').2
+  simp [← diagonal_neg] at h_fst h_snd
   -- The two weighted traces differ by `φ s`, which is imaginary.
-  have h_traces : (intDiagonal l.lowestKType * (subOnePair j s).1).trace.re =
-      (intDiagonal k.lowestKType * (subOnePair j s).2).trace.re := by
-    rw [← sub_eq_zero, ← sub_re, ← hj.re_phase_eq_zero s, ← hj.phase_eq s, phase]
+  have h_traces := hj.re_phase_eq_zero s
+  rw [← hj.phase_eq s, phase, sub_re] at h_traces
   exact le_of_mul_le_mul_left (by linarith) (zero_lt_one.trans_le hB)
 
 /-- In the setting of `IsLaplaceDatum.norm_intDiagonal_mul_subOnePair_sq_le`, let `(g, g') = j s`.
@@ -593,7 +566,7 @@ lemma IsLaplaceDatum.norm_subOnePair_mul_intDiagonal_sq_le (hj : IsLaplaceDatum 
     simp only [map_inv, Prod.fst_inv, U.coe_inv (signMatrix_mul_self ε) (j s).1]
     ext a b
     rcases eq_or_ne a b with rfl | hab
-    · rcases units_eq_one_or (ε a) with ha | ha <;> simp [signMatrix, ha, mul_comm]
+    · rcases units_eq_one_or (ε a) with ha | ha <;> simp [signMatrix, ha]
     · simp [signMatrix, hab, mul_comm, mul_left_comm]
   calc ‖(subOnePair j s).1 * intDiagonal (offBlockIndicator e)‖ ^ 2
       = ‖intDiagonal (offBlockIndicator e) * (subOnePair j s⁻¹).1‖ ^ 2 := by

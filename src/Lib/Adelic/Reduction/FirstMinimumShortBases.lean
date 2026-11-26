@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+public import Mathlib.MeasureTheory.Group.GeometryOfNumbers
 public import Lib.Adelic.Unitary.RationalPoints
 public import Lib.General.NumberTheory.SUnitsAndClassNumber
 
@@ -110,7 +112,7 @@ lemma span_eq_top_of_le_norm_dual (Λ : Submodule ℤ E) [Module.Finite ℝ E] {
     span ℝ (Λ : Set E) = ⊤ := by
   -- The orthogonal complement lies in the dual, so it is discrete; being connected, it is zero.
   have h_mem (u : (span ℝ (Λ : Set E))ᗮ) : (u : E) ∈ dualSubmodule (innerₗ E) Λ :=
-    fun y hy ↦ by simp [real_inner_comm, u.2 y (subset_span hy)]
+    fun y hy ↦ by simp [real_inner_comm, u.property y (subset_span hy)]
   have : DiscreteTopology (span ℝ (Λ : Set E))ᗮ :=
     .of_forall_le_norm hρ fun u hu ↦ h_dual u (h_mem u) (by simpa using hu)
   exact orthogonal_eq_bot_iff.1 (subsingleton_iff_eq_bot.1 PreconnectedSpace.trivial_of_discrete)
@@ -498,13 +500,14 @@ lemma exists_smul_mulVec_mem_latticeBall {Ω : Set (Gf E n)} (hΩ : IsCompact Ω
     (isOpen_Ô.matrix.mem_nhds (Ô E).matrix.zero_mem)
   refine ⟨c, hc, fun {γ g g' R} h_mem h_norm y hy ↦ ?_⟩
   -- The matrix of `g⁻¹ γ g'` takes the coordinates of `y` at `g'` to those of `γ y` at `g`.
+  let k := (g⁻¹ * V.ratEmbed γ * g').adeleMatrix
   have h_crd : (V.move g).vecAtPoint ((c : E) • γ *ᵥ y) =
-      c • (g⁻¹ * V.ratEmbed γ * g').adeleMatrix *ᵥ (V.move g').vecAtPoint y := by
-    simp [vecAtPoint_move, ← ratEmbed_mulVec_vecAtPoint, ← G.adeleMatrix_mul, funext_iff]
-  have h_entries : ∀ i j : n, (c : 𝔸f E) * ((g⁻¹ * V.ratEmbed γ * g').adeleMatrix i j).2 ∈ Ô E :=
+      c • k *ᵥ (V.move g').vecAtPoint y := by
+    simp [k, vecAtPoint_move, ← ratEmbed_mulVec_vecAtPoint, ← G.adeleMatrix_mul, funext_iff]
+  have h_entries : ∀ i j : n, (c : 𝔸f E) * (k i j).2 ∈ Ô E :=
     h_integral _ ⟨_, h_mem, rfl⟩
-  exact ⟨mem_baseLattice_of_vecAtPoint_eq h_crd h_entries hy,
-    norm_archCoords_le_of_vecAtPoint_eq (k := (g⁻¹ * V.ratEmbed γ * g').adeleMatrix) h_norm h_crd⟩
+  obtain ⟨h_lattice, h_length⟩ := mem_and_norm_le_of_vecAtPoint _ _ _ k c h_norm h_crd
+  exact ⟨h_lattice h_entries hy, h_length⟩
 
 variable (V) in
 /-- The hermitian form `V.J` takes algebraic integer values on pairs of vectors of the lattice
@@ -682,36 +685,29 @@ lemma smul_mem_baseLattice_of_trace_int {d : 𝓞 E} (h_diff : d ∈ differentId
     {a : n → E} (h_trace : ∀ ξ : n → E, ξ ∈ V.baseLattice →
       ∃ k : ℤ, (Algebra.trace ℚ E (star ξ ⬝ᵥ V.J *ᵥ a) : ℝ) = k) :
     d.val • a ∈ V.baseLattice := by
-  intro i
-  change (V.vecAtPoint (d.val • a) i).2 ∈ Ô E
   -- The character `ψf` kills the pairing of `a` with every integral finite adelic vector `y`: the
   -- condition is closed, so the dense rational vectors suffice.
-  have h_dense : DenseRange fun (ξ : n → E) (i : n) ↦ (V.vecAtPoint ξ i).2 := by
-    have h_factor : (fun (ξ : n → E) (i : n) ↦ (V.vecAtPoint ξ i).2) =
-        (fun y : n → 𝔸f E ↦ V.xFin⁻¹ • y) ∘ Pi.map fun _ : n ↦ algebraMap E (𝔸f E) := by
-      funext ξ i
-      -- `-coe_units_inv` keeps the inverse of the point in the form that `map_inv` produces.
-      simp [-coe_units_inv, xFin, ← map_inv, mulVec, vecAtPoint, dotProduct, snd_sum,
-        Units.smul_def]
-    rw [h_factor]
-    exact (MulAction.surjective V.xFin⁻¹).denseRange.comp
-      (.piMap fun _ ↦ denseRange_algebraMap_finAdele) (by fun_prop)
   have h_char : ∀ y : n → 𝔸f E, (∀ i ∈ Set.univ, y i ∈ (Ô E : Set (𝔸f E))) →
-      ψf E (star y ⬝ᵥ snd ∘ V.vecAtPoint a) = 1 := by
-    refine isClosed_property h_dense
+      ψf E (star y ⬝ᵥ snd ∘ V.vecAtPoint a) = 1 :=
+    isClosed_property (by
+      have h_eq : (fun (ξ : n → E) (i : n) ↦ (V.vecAtPoint ξ i).2) =
+          (fun y : n → 𝔸f E ↦ V.xFin⁻¹ • y) ∘ Pi.map fun _ : n ↦ algebraMap E (𝔸f E) := by
+        funext ξ i
+        simp [-coe_units_inv, xFin, ← map_inv, mulVec, vecAtPoint, dotProduct, snd_sum,
+          Units.smul_def]
+      exact h_eq ▸ (MulAction.surjective V.xFin⁻¹).denseRange.comp
+        (.piMap fun _ ↦ denseRange_algebraMap_finAdele) (by fun_prop))
       (isClosed_imp (isOpen_set_pi Set.finite_univ fun _ _ ↦ isOpen_Ô)
-        (isClosed_eq (by fun_prop) continuous_one)) fun ξ hξ ↦ ?_
-    obtain ⟨k, hk⟩ := h_trace ξ fun j ↦ hξ j trivial
-    have h_pair : (star fun j : n ↦ (V.vecAtPoint ξ j).2) ⬝ᵥ snd ∘ V.vecAtPoint a =
-        algebraMap E (𝔸f E) (star ξ ⬝ᵥ V.J *ᵥ a) := by
-      rw [← toAdele_apply_snd, ← stdForm_vecAtPoint]
-      simp [dotProduct, stdForm, mulVec_diagonal, snd_sum]
-    rw [h_pair, ψf_coe]
-    exact fourierChar_eq_one_iff.2 ⟨k, hk⟩
+        (isClosed_eq (by fun_prop) continuous_one)) fun ξ hξ ↦ by
+      have h_pair : (star fun j : n ↦ (V.vecAtPoint ξ j).2) ⬝ᵥ snd ∘ V.vecAtPoint a =
+          algebraMap E (𝔸f E) (star ξ ⬝ᵥ V.J *ᵥ a) := by
+        rw [← toAdele_apply_snd, ← stdForm_vecAtPoint]
+        simp [dotProduct, stdForm, mulVec_diagonal, snd_sum]
+      simpa [h_pair, ψf_coe, fourierChar_eq_one_iff] using h_trace ξ fun j ↦ hξ j trivial
   -- So the finite part of each coordinate of `V.vecAtPoint a` lies in the inverse different.
-  have h_inv_diff (u : 𝔸f E) (hu : u ∈ Ô E) : ψf E (u * (V.vecAtPoint a i).2) = 1 := by
+  intro i
+  refine (by simpa [↓map_smulₛₗ] using forall_ψf_mul_eq_one_iff.1 · d h_diff) fun u hu ↦ by
     simpa using h_char (Pi.single i (star u)) (by simp [star_mem_Ô, hu, Pi.single_apply, apply_ite])
-  simpa [↓map_smulₛₗ] using forall_ψf_mul_eq_one_iff.1 h_inv_diff d h_diff
 
 /-- For `d` in `E` and a vector `x` of the archimedean coordinate space, the real inner product of
 `x` with the coordinates of `(2 / d) ξ`, written with the components `(V.vecAtPoint ξ i).1 w` at the
@@ -743,7 +739,7 @@ lemma firstMinimum_le_norm_of_inner_int {d : 𝓞 E} (hd : d ≠ 0)
   -- With `t = (x_V⁻¹)ᴴ (x / star d)` at the infinite places (x_V the point of `V`), pairing with
   -- `x` becomes a dot product with `t`. It will turn out that `t = J a` at the infinite places,
   -- with `d • a` in the lattice and as long as `x`.
-  let t : n → 𝔸 E := V.x⁻¹.1ᴴ *ᵥ fun i : n ↦
+  let t : n → 𝔸 E := V.x⁻¹.valᴴ *ᵥ fun i : n ↦
     (fun w : InfinitePlace E ↦ x ⟨w, i⟩ / star (Φ w d), 0)
   have h_pair (ξ : n → E) :
       ⟪x, V.archCoords ((2 / d.val) • ξ)⟫ =
@@ -765,10 +761,10 @@ lemma firstMinimum_le_norm_of_inner_int {d : 𝓞 E} (hd : d ≠ 0)
   -- signs `s`.
   have h_abs (w : InfinitePlace E) (i : n) :
       ‖x ⟨w, i⟩‖ = ‖Φ w d.val * (V.vecAtPoint a i).1 w‖ := by
-    have h_left : ((V.x.1ᴴ *ᵥ t) i).1 w = x ⟨w, i⟩ / star (Φ w d) := by
+    have h_left : ((V.x.valᴴ *ᵥ t) i).1 w = x ⟨w, i⟩ / star (Φ w d) := by
       simp [t, ← conjTranspose_mul]
-    have h_right : ((V.x.1ᴴ *ᵥ t) i).1 w = (s i : ℤ) * (V.vecAtPoint a i).1 w := by
-      trans ((V.x.1ᴴ *ᵥ V.J.map toAdele *ᵥ toAdele ∘ a) i).1 w
+    have h_right : ((V.x.valᴴ *ᵥ t) i).1 w = (s i : ℤ) * (V.vecAtPoint a i).1 w := by
+      trans ((V.x.valᴴ *ᵥ V.J.map toAdele *ᵥ toAdele ∘ a) i).1 w
       · simp [mulVec, hc, dotProduct, fst_sum]
       · simp [map_J, ← mul_assoc, ← conjTranspose_mul, ← (diagonal _).mulVec_mulVec, vecAtPoint,
           stdForm, mulVec_diagonal]

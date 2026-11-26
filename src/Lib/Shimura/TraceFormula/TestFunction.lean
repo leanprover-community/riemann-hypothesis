@@ -123,7 +123,7 @@ lemma exists_local_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E))
       have h_fix_k :
           ρ (conjAtSplit w (MulAut.conj t⁻¹ ((k : J) : GL (Fin a) (LocField w.val)))) x = x := by
         simpa using mem_levelSpace.mp hx ⟨_, k.property.right⟩
-      simpa [r, ← Module.End.mul_apply, ← map_mul, mul_assoc, (hz _).left_comm] using
+      simpa [r, ← mul_apply_eq_comp, ← map_mul, mul_assoc, (hz _).left_comm] using
         congrArg (ρ (r 1)) h_fix_k
     have h_right (j : J) (k : U) : f (j * k) = f j := by
       obtain ⟨hk_J, hχ_k⟩ := hχ _ k.property.left
@@ -154,7 +154,7 @@ lemma exists_local_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E))
       f j • T (π z⁻¹ (π (r j) x)) = (Fintype.card (J ⧸ U) : ℂ)⁻¹ • y := by
     have h_cancel : z⁻¹ * r j = conjAtSplit w (j.val * t) := by simp [r, (hz _).left_comm]
     have h_act : π z⁻¹ (π (r j) x) = π (conjAtSplit w (j.val * t)) x := by
-      rw [← h_cancel, map_mul π z⁻¹ (r j), Module.End.mul_apply]
+      rw [← h_cancel, map_mul π z⁻¹ (r j), mul_apply_eq_comp]
     have h_coeff : f j * χ j = (Fintype.card (J ⧸ U) : ℂ)⁻¹ := by simp [f, hχ_ne]
     rw [h_act, hT j, smul_smul, h_coeff]
   calc (T * π z⁻¹) (π.asAlgebraHom (⟨b, h_hecke⟩ : heckeAlgebra (Fin a) ℂ 𝔑) x)
@@ -310,7 +310,8 @@ lemma exists_iwahori_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E
     have hg_one : dualComponent w g = 1 := MonoidHom.mem_ker.mp hg.2
     -- `dualComponent w (j z t g)` is `j · N t`, since `dualComponent` inverts the scalar `z`; `N t`
     -- is strictly dominant like `t`
-    refine ⟨fun i ↦ .mk0 N (mod_cast hN) * t i, by simpa [StrictMono, zero_lt_iff, hN], j, 1, ?_⟩
+    refine ⟨fun i ↦ .mk0 N (mod_cast hN) * t i,
+      by simpa [StrictMono, pos_iff_ne_zero, hN], j, 1, ?_⟩
     rw [map_mul, map_mul, map_mul, dualComponent_conjAtSplit, dualComponent_conjAtSplit, hg_one]
     simp [z, dualComponent, invTransposeGL, Equiv.symm, Units.ext_iff, Matrix.map_natCast,
       map_zero]

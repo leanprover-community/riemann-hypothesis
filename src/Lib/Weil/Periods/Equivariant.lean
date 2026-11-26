@@ -315,19 +315,14 @@ lemma sourceFn_inclX (a : G E (1 : X → ℤˣ)) :
     Y.sourceFn t φ ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩ = algFormCoeff 1 t φ a := by
   rw [sourceFn, leviPart_inclX, mul_inv_cancel, Y.unipotentChar_of_mem_Gamma (one_mem _), one_mul]
 
-omit [WeilData E] in
-/-- The algebraic form `algFormRep κ e a φ` is the right translate `g ↦ φ (g a)`. -/
-private lemma algFormRep_apply (a g : Gf E X) (φ : AlgForm (E := E) X κ e) :
-    (algFormRep κ e a φ : Gf E X → WeylIndex X κ → ℂ) g =
-      (φ : Gf E X → WeylIndex X κ → ℂ) (g * a) := rfl
-
 /-- Right translation of `𝒲_φ` by a finite point of `H` is right translation of `φ`. -/
 lemma sourceFn_mul_inclX (r : Y.besselGroup) (a : Gf E X) :
     Y.sourceFn t φ (r * ⟨Y.inclX (1, a), Y.inclX_mem_besselGroup (1, a)⟩) =
       Y.sourceFn t (algFormRep κ e a φ) r := by
   rw [sourceFn, sourceFn, map_mul, leviPart_inclX, map_mul, Subgroup.coe_mul, _root_.mul_inv_rev,
     mul_assoc, mul_inv_cancel_left, algFormCoeff_apply, algFormCoeff_apply, Prod.fst_mul, mul_one,
-    Prod.snd_mul, algFormRep_apply]
+    Prod.snd_mul]
+  rfl
 
 lemma sourceFn_add (ψ : AlgForm (E := E) X κ e) (r : Y.besselGroup) :
     Y.sourceFn t (φ + ψ) r = Y.sourceFn t φ r + Y.sourceFn t ψ r := by

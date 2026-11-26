@@ -146,14 +146,14 @@ lemma isIntegralAbove_of_finiteImage_mem (hp_not_dvd : ¬p ∣ P.q₁ s) {y : n 
     (i : n) : IsIntegralAbove p (y i) := by
   intro w hw
   have h_unit : Valued.v (P.q₁ s : LocField w) = 1 := by
-    simpa using v_algebraMap_eq_one (w.2.notMem_of_isCoprime_of_mem
+    simpa using v_algebraMap_eq_one (w.isPrime.notMem_of_isCoprime_of_mem
       ((Fact.out : p.Prime).coprime_iff_not_dvd.2 hp_not_dvd).cast hw)
-  have hα : Valued.v ((P.α s).1 w) ≤ 1 := by
-    have h_int : Valued.v ((P.q₁ s : LocField w) * (P.α s).1 w) ≤ 1 := mem_Ô.1 q₁_mul_alpha_mem w
+  have hα : Valued.v ((P.α s).val w) ≤ 1 := by
+    have h_int : Valued.v ((P.q₁ s : LocField w) * (P.α s).val w) ≤ 1 := mem_Ô.1 q₁_mul_alpha_mem w
     rwa [map_mul, h_unit, one_mul] at h_int
-  have h_global : algebraMap (P.E s) (𝔸f (P.E s)) (y i) = (P.α s).1 * finiteImage y i := by
+  have h_global : algebraMap (P.E s) (𝔸f (P.E s)) (y i) = (P.α s).val * finiteImage y i := by
     simp [finiteImage, WeilData.α]
-  calc w.valuation (P.E s) (y i) = Valued.v ((P.α s).1 w) * Valued.v (finiteImage y i w) := by
+  calc w.valuation (P.E s) (y i) = Valued.v ((P.α s).val w) * Valued.v (finiteImage y i w) := by
         simpa using congrArg (fun x : 𝔸f (P.E s) ↦ Valued.v (x w)) h_global
     _ ≤ 1 := mul_le_one' hα (by simpa using hy i w hw)
 

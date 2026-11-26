@@ -66,10 +66,6 @@ def OccursInWeight (a ν : ℕ) (θ : SafePlace 𝔑 → ℕ → ℂ) (h : ℕ) 
     ∑ L ∈ s, c L * (L.map ↿θ).prod = 1 →
     ¬∀ b : heckeAlgebra (Fin a) ℂ 𝔑, IsNullHecke ν h (b * ∑ L ∈ s, c L • (L.map tauHecke).prod)
 
-private lemma realVecAction_eq_toLin' (B : Matrix n n E) :
-    realVecAction B = Matrix.toLin' (B.map cmEmbedding) :=
-  rfl
-
 /-- Let the rational matrix `z` be integral in the frame `x`, and let `β` be an integer of `E`. Then
 `B = 1 - 2 β z` maps the lattice `frameLattice x` into itself, `det B ≠ 0`, and the index of the
 lattice in its preimage under `B` is the product of the `σ (det B)` over the complex embeddings
@@ -110,7 +106,9 @@ lemma relIndex_comap_one_sub_two_smul {x : GL n (𝔸f E)} {z B : Matrix n n E}
     omega
   -- The complex determinant is the product of the `Φ v (det B)` over the infinite places.
   have h_det : F.det = ∏ v : InfinitePlace E, Φ v B.det := by
-    rw [det_restrictScalars, realVecAction_eq_toLin', det_toLin', ← RingHom.mapMatrix_apply,
+    rw [det_restrictScalars]
+    change Algebra.norm ℂ ((Matrix.toLin' (B.map cmEmbedding)).det) = _
+    rw [det_toLin', ← RingHom.mapMatrix_apply,
       ← cmEmbedding.map_det]
     -- The norm on `InfinitePlace E → ℂ` is the determinant of multiplication in each coordinate.
     change LinearMap.det (LinearMap.pi fun v ↦ mul ℂ ℂ (Φ v B.det) ∘ₗ LinearMap.proj v) = _
@@ -324,16 +322,8 @@ private lemma exists_isFixedPair_of_countTerm_ne_zero {b : heckeAlgebra n ℂ �
     (isReflection_markedReflection_and_exists_eq_iff (h_reg h_ne)).left _⟩
   refine ⟨p, ⟨h_ne, rfl, fun j ↦ zero_mem _⟩, ?_⟩
   -- `simp` unfolds `p` and the coset of `c.out.fst.out`; what is left is `⟦c.out⟧ = c`.
-  simp [p, tripleClass]
+  simp only [p, tripleClass, Quotient.out_eq]
   exact c.out_eq
-
-/-- Moving a point of level `i` by a deck transformation does not change its image under
-`X.leg i ⟦1⟧`. -/
-private lemma Model.comp_leg_eq_of_comp_deck_eq {i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)}
-    {p : ModuliPoint E n ν} {y : specOver R ℂ ⟶ X.cover i} {δ : X.deckGroup i}
-    (e : X.point i p ≫ (X.deck i δ).asHom = y) :
-    X.point i p ≫ X.leg i ⟦1⟧ = y ≫ X.leg i ⟦1⟧ := by
-  rw [← e, Category.assoc, (X.covering i).comp_eq]
 
 /-- Let `t` be a fixed pair of `p` and `t'` one of `p'`, with the same class of triples. Then the
 point of `p'` on level `i` is the point of `p` with its vectors replaced by solutions `u`, moved
@@ -373,7 +363,9 @@ private lemma Model.exists_isFixedPair_of_point_eq
     ∃ t' : GL n E × n, IsFixedPair b α p' t' ∧ tripleClass 𝔑 p'.frame t' = tripleClass 𝔑 p.frame
       t := by
   -- An isomorphism `w` from the moved point to `p'` carries `t` to a fixed pair of `p'`.
-  obtain ⟨w, hw⟩ := (X.point_eq_iff i _ _).mp (X.comp_leg_eq_of_comp_deck_eq hu)
+  obtain ⟨w, hw⟩ :=
+    (X.point_eq_iff i {p with markedPoint j := (u.fst j).out} p').mp
+      (by rw [← hu, Category.assoc, (X.covering i).comp_eq])
   have h_fixed_u : IsFixedPair b α {p with markedPoint j := (u.fst j).out} t :=
     ⟨ht.heckeCosetFn_ne_zero, ht.reflection_eq, fun j ↦ (u.fst j).out.prop⟩
   exact ⟨_, h_fixed_u.conj hw, (triple_class_eq_iff (h_fixed_u.conj hw).reflection_eq

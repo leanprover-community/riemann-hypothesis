@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.NumberTheory.MulChar.Duality
 public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
 public import Lib.ClassField.Places.Ideles
 public import Lib.GaloisRep.Hilbert90.UnitaryGroups
@@ -83,7 +84,7 @@ variable {E}
 /-- The homomorphism sending a unitary Hecke character of E to its restriction to the finite
 ideles, with values in ℂ^×. -/
 def HeckeChar.finPart : HeckeChar E →* (𝔸f E)ˣ →* ℂˣ :=
-  MonoidHom.mk' (fun χ ↦ Circle.toUnits.comp (χ.1.toMonoidHom.comp finIdeleIncl)) (by aesop)
+  MonoidHom.mk' (fun χ ↦ Circle.toUnits.comp (χ.val.toMonoidHom.comp finIdeleIncl)) (by aesop)
 
 /-- The value of the Hecke character χ at the local idele given by the chosen uniformiser at the
 finite place w. -/
@@ -115,7 +116,7 @@ lemma comp_divStar_mem_charsTrivialOnPrincipal (μ : AutChar E) :
 to the Hecke character x ↦ μ(x/x̄) of E. -/
 @[simps! -isSimp]
 def AutChar.baseChange : AutChar E →* HeckeChar E :=
-  MonoidHom.mk' (fun μ ↦ ⟨μ.1.comp divStar, comp_divStar_mem_charsTrivialOnPrincipal μ⟩) fun _ _ ↦
+  MonoidHom.mk' (fun μ ↦ ⟨μ.val.comp divStar, comp_divStar_mem_charsTrivialOnPrincipal μ⟩) fun _ _ ↦
     rfl
 
 /-- On a unitary adele `w`, where `w / w̄ = w * w`, the base change of `ν` is `ν (w * w)`. -/
@@ -321,8 +322,8 @@ This is the analogue for `U(1)` of a CM field of the finiteness of ray class gro
 field, for a tame level given by a finite set of finite places. -/
 instance finite_u1_classGroup : Finite (unitary (𝔸 E) ⧸ rationalU1 ⊔ integralU1 S) := by
   -- `f x = x / x̄` maps the finite ideles onto the class group, through a finite quotient.
-  let f : (𝔸f E)ˣ →* unitary (𝔸 E) := divStar.1.comp finIdeleIncl
-  have h_cont : Continuous f := divStar.2.comp (.units_map _ (.prodMk_right 1))
+  let f : (𝔸f E)ˣ →* unitary (𝔸 E) := divStar.toMonoidHom.comp finIdeleIncl
+  have h_cont : Continuous f := divStar.continuous_toFun.comp (.units_map _ (.prodMk_right 1))
   have h_open : IsOpen (SetLike.coe ((rationalU1 ⊔ integralU1 S).comap f)) :=
     (isOpen_mono le_sup_right (isOpen_integralU1 S)).preimage h_cont
   -- An open subgroup of the finite ideles that contains `Eˣ` has finite index.
@@ -609,7 +610,7 @@ lemma exists_mem_tameChars (χ : unitary (𝔸 E) ⧸ (rationalU1 ⊔ integralU1
     refine exists_monoidHom_extend (.pi fun w : S ↦ reduceU1 (w : FinPlace E))
       ((χ.toHomUnits.comp (mk' _)).domRestrict _) ⊥ fun u hu ↦ ?_
     -- `u` reduces to 1 at every place of `S`, so it lies in `integralU1 S`, which χ kills.
-    have h_mem : (u : unitary (𝔸 E)) ∈ integralU1 S := ⟨snd_mem_Ô_of_mem_integralU1 u.2,
+    have h_mem : (u : unitary (𝔸 E)) ∈ integralU1 S := ⟨snd_mem_Ô_of_mem_integralU1 u.property,
       fun w hw ↦ congrArg Units.val (congrFun (Subgroup.mem_bot.1 hu) ⟨w, hw⟩)⟩
     exact ext (le_comap_mk' _ χ.ker (mem_sup_right h_mem))
   let e_pi := Pi.monoidHomMulEquiv (fun w : S ↦ (ResField (w : FinPlace E))ˣ) ℂˣ
@@ -653,17 +654,17 @@ instance finite_tameChars : Finite (tameChars S) := by
   -- Such a character comes from a character of the finite class group of level `S`; its tame part
   -- is determined by its finitely many components at the places of `S`.
   choose θ hθ using fun χ : tameChars S ↦
-    exists_classGroup_char_eq_of_hasWeight_zero χ.2.1 χ.2.2
+    exists_classGroup_char_eq_of_hasWeight_zero χ.property.1 χ.property.2
   let data (χ : tameChars S) :
-      (AdelicU1ClassGroup S →* ℂˣ) × ∀ w : S, MulChar (ResField w.1) ℂ :=
-    (toUnits.comp (θ χ), S.restrict χ.1.2)
+      (AdelicU1ClassGroup S →* ℂˣ) × ∀ w : S, MulChar (ResField w.val) ℂ :=
+    (toUnits.comp (θ χ), S.restrict χ.val.2)
   refine .of_injective data fun χ χ' h ↦ ?_
   ext w
   · rw [← hθ χ w, ← hθ χ' w]
     congrm $h.1 w
   · by_cases hw : w ∈ S
     · congrm $h.2 ⟨w, hw⟩ _
-    · rw [χ.2.2 w hw, χ'.2.2 w hw]
+    · rw [χ.property.2 w hw, χ'.property.2 w hw]
 
 /-- There are finitely many characters `μ` of `U(1)(𝔸)` of a given weight `e` and tame part `ψ`.
 These satisfy `μ u = ∏_v u_v^{e(v)} · ∏_w ψ_w(u mod w)` for all `u` with integral finite part. -/
@@ -748,8 +749,9 @@ lemma exists_conj (h : μ.HasWeight e ψ) {σ : ℂ ≃+* ℂ}
   let χ : unitary (𝔸 E) →* ℂ :=
     { toFun u := (∏ v, (u : 𝔸 E).fst (p v) ^ e v) * σ (μ.val u / ∏ v, (u : 𝔸 E).fst v ^ e v)
       map_one' := by simp
-      map_mul' := by
-        simp [mul_zpow, Finset.prod_mul_distrib, mul_div_mul_comm, mul_mul_mul_comm] }
+      map_mul' x y := by
+        simp [mul_zpow, Finset.prod_mul_distrib]
+        ring }
   have hχ (u : unitary (𝔸 E)) :
       χ u = (∏ v, (u : 𝔸 E).fst (p v) ^ e v) * σ (μ.val u / ∏ v, (u : 𝔸 E).fst v ^ e v) :=
     rfl

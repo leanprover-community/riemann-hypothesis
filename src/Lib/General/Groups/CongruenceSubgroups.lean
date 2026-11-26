@@ -1,7 +1,20 @@
 module
 
-public import Lib.Base
+public import Mathlib.Analysis.Matrix.MeasurableSpace
 public import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
+public import TauCeti.Topology.Algebra.Group.Units
+public import Aesop.Frontend.Tactic
+public import Aesop.Main
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Algebra.Group.Matrix
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # Integral, congruence and unitary matrix groups over a ring, with their topology
@@ -110,15 +123,9 @@ section
 variable [Countable m] [Countable n] [Monoid R] [TopologicalSpace R] [ContinuousMul R]
   [PolishSpace R]
 
-instance : PolishSpace Rˣ := by
-  have : PolishSpace Rᵐᵒᵖ := opEquiv.symm.polishSpace_induced
-  exact isClosedEmbedding_embedProduct.polishSpace
-
 deriving instance PolishSpace for Matrix m n R
 
 variable [MeasurableSpace R] [BorelSpace R]
-
-instance : MeasurableSpace (Matrix m n R) := .pi
 
 instance : BorelSpace Rˣ := by
   borelize Rˣ
@@ -135,7 +142,9 @@ deriving instance Countable, LocallyCompactSpace, BorelSpace for Matrix m n R
 
 end
 
-instance [Fintype m] [Fintype n] [MeasureSpace R] : MeasureSpace (Matrix m n R) := .pi
+/-- The product measure on matrices, over Mathlib's `σ`-algebra `Matrix.instMeasurableSpace`. -/
+instance [Fintype m] [Fintype n] [MeasureSpace R] : MeasureSpace (Matrix m n R) where
+  volume := (volume : Measure (m → n → R))
 
 /-! ### Special matrices -/
 
@@ -149,6 +158,10 @@ def signMatrix (s : n → ℤˣ) : Matrix n n ℂ := Matrix.diagonal fun i : n �
 
 @[simp]
 lemma signMatrix_one : signMatrix (n := n) 1 = 1 := by simp [signMatrix]
+
+/-- The diagonal matrix of a vector of signs ε is Hermitian. -/
+lemma conjTranspose_signMatrix {ε : n → ℤˣ} : (signMatrix ε)ᴴ = signMatrix ε := by
+  simp [signMatrix]
 
 variable [Fintype n] [CommRing R] [CommRing S] {O : Subring R}
 
@@ -173,21 +186,25 @@ def diagGL : (n → Rˣ) →* GL n R :=
 lemma coe_diagGL (t : n → Rˣ) : (diagGL t).val = Matrix.diagonal fun i : n ↦ ↑(t i) := rfl
 
 /-- The transpose of g, as an element of GL_n(R). -/
-@[simps]
+@[simps -isSimp]
 def transposeGL (g : GL n R) : GL n R where
   val := gᵀ
-  inv := g⁻¹.1ᵀ
+  inv := g⁻¹.valᵀ
   val_inv := by simp [← transpose_mul]
   inv_val := by simp [← transpose_mul]
 
+attribute [simp] val_transposeGL
+
 /-- For distinct indices i, j and a in R, the element 1 + aE_{ij} of GL_n(R), with inverse
 1 − aE_{ij}. -/
-@[simps]
+@[simps -isSimp]
 def transvectionGL {i j : n} (h : i ≠ j) (a : R) : GL n R where
   val := transvection i j a
   inv := transvection i j (-a)
   val_inv := by simp [transvection_mul_transvection_same, h]
   inv_val := by simp [transvection_mul_transvection_same, h]
+
+attribute [simp] val_transvectionGL
 
 /-! ### Integral matrices and congruence subgroups -/
 
@@ -248,11 +265,11 @@ lemma mem_span_singleton_iff_exists_mul {a x : R} : x ∈ O ∙ a ↔ ∃ y ∈ 
 rows e(i) are congruent to those of 1 modulo M; for e the identity, the principal congruence
 subgroup of level M. -/
 def congruenceGL (M : Submodule O R) (e : m → n) : Subgroup (GL n R) :=
-  Subgroup.ofDiv {g ∈ intGL n O | ∀ (i : m) (j : n), (g.1 - 1) (e i) j ∈ M} ⟨1, by simp⟩ <| by
+  Subgroup.ofDiv {g ∈ intGL n O | ∀ (i : m) (j : n), (g.val - 1) (e i) j ∈ M} ⟨1, by simp⟩ <| by
     rintro g ⟨hg, hg_row⟩ k ⟨hk, hk_row⟩
     refine ⟨div_mem hg hk, fun i j ↦ ?_⟩
     -- `g k⁻¹ - 1 = ((g - 1) - (k - 1)) k⁻¹`, and `k⁻¹` has entries in `O`.
-    have h_eq : (g * k⁻¹).1 - 1 = ((g.1 - 1) - (k.1 - 1)) * k⁻¹.1 := by simp [sub_mul]
+    have h_eq : (g * k⁻¹).val - 1 = ((g.val - 1) - (k.val - 1)) * k⁻¹.val := by simp [sub_mul]
     rw [h_eq, Matrix.mul_apply]
     refine sum_mem fun l _ ↦ ?_
     rw [mul_comm]
@@ -357,13 +374,13 @@ lemma mem_range_map {f : R →+* S} (hf_star : ∀ x : R, f (star x) = star (f x
 
 /-- For x in GL_n(R) with xᴴJx = J', the isomorphism U(J') ≅ U(J), g ↦ x g x⁻¹. -/
 @[simps! apply_coe symm_apply_coe]
-def conj (x : GL n R) {J} {J' : Matrix n n R} (h : x.1ᴴ * J * x = J') : U J' ≃* U J where
+def conj (x : GL n R) {J} {J' : Matrix n n R} (h : x.valᴴ * J * x = J') : U J' ≃* U J where
   toFun g := ⟨x * g * x⁻¹, mem_unitaryGroupOf_iff.2 <|
-    gram_mul_of_gram_eq (gram_mul_of_gram_eq h (mem_unitaryGroupOf_iff.1 g.2))
+    gram_mul_of_gram_eq (gram_mul_of_gram_eq h (mem_unitaryGroupOf_iff.1 g.property))
         (gram_inv_of_gram_eq h)⟩
   invFun g := ⟨x⁻¹ * g * x, mem_unitaryGroupOf_iff.2 <|
     gram_mul_of_gram_eq (gram_mul_of_gram_eq (gram_inv_of_gram_eq h)
-        (mem_unitaryGroupOf_iff.1 g.2)) h⟩
+        (mem_unitaryGroupOf_iff.1 g.property)) h⟩
   left_inv g := by simp [mul_assoc]
   right_inv g := by simp [mul_assoc]
   map_mul' g k := by simp [mul_assoc]

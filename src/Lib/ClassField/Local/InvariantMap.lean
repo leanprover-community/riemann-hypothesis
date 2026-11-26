@@ -41,7 +41,8 @@ private lemma Nat.eq_of_pow_sub_one_mul_eq_mul_pow {R l c : ℕ} (hl : l.Prime)
     (hlc : (l : ℚ) * c ≠ 0) (h : (R : ℚ) ^ (l - 1) * (l * c ^ l) = ((l : ℚ) * c) ^ l) : R = l := by
   -- Cancel `l * c ^ l`, then take `(l - 1)`-th roots, where `l - 1 ≠ 0`.
   have h_pow : (R : ℚ) ^ (l - 1) = (l : ℚ) ^ (l - 1) := by
-    refine mul_right_cancel₀ (b := (l * c ^ l : ℚ)) (by simp_all) ?_
+    refine mul_right_cancel₀ (b := (l * c ^ l : ℚ))
+      (mul_ne_zero (left_ne_zero_of_mul hlc) (pow_ne_zero l (right_ne_zero_of_mul hlc))) ?_
     rw [h, mul_pow, ← mul_assoc, pow_sub_one_mul hl.ne_zero]
   exact Nat.pow_left_injective (Nat.sub_ne_zero_of_lt hl.one_lt) (by exact_mod_cast h_pow)
 
@@ -65,51 +66,36 @@ lemma mem_zmultiples_of_index_prime [V.Normal] {β x : (unitsModule Γ).H2} (h_p
   -- Write `V = ker ψ`. The symbol map `y ↦ (ψ, y)` sends `kˣ` onto the classes split by `V` and
   -- kills the norms `N`; by Tate's formula `kˣ ⧸ N` has prime order `[Γ : V]`, so the image of
   -- `β ≠ 0` generates.
-  have h_fact : Fact V.index.Prime := ⟨h_prime⟩
-  -- The fixed field of `V` is local, and `#(O' / n) = #(O / n) ^ [Γ : V]` for the valuation rings.
+  have : Fact V.index.Prime := ⟨h_prime⟩
   have h_ext : IsLocalExtension k A (V : Subgroup Γ) (fixedFieldOf (V : Subgroup Γ)) := of_finite V
-  have h_cyclic : IsCyclic (Γ ⧸ (V : Subgroup Γ)) := isCyclic_of_prime_card (p := V.index) rfl
-  obtain ⟨ψ, hψ⟩ : ∃ χ : QZChar Γ, QZChar.ker χ = V := exists_ker_eq_of_isCyclic V h_cyclic
-  -- From here on `V` is the kernel of the character `ψ`.
-  obtain ⟨V, V_open⟩ := V
+  obtain ⟨ψ, hψ⟩ := exists_ker_eq_of_isCyclic V (isCyclic_of_prime_card (p := V.index) rfl)
+  obtain ⟨V, _⟩ := V
   obtain rfl : QZChar.ker ψ = V := hψ
   -- The split classes are the symbols `(ψ, y)` with `y ∈ kˣ`.
-  have split_iff : ∀ z : (unitsModule Γ).H2, (unitsModule Γ).resH2 (QZChar.ker ψ) z = 0 ↔
-      ∃ y : kˣ, z = cyclicClass unitsRep ψ (ofBase Γ Ω (Additive.ofMul y)) :=
-    (cyclicClass_spec ψ).left
-  obtain ⟨y, rfl⟩ := (split_iff β).mp hβ
-  obtain ⟨z, rfl⟩ := (split_iff x).mp hx
+  obtain ⟨y, rfl⟩ := ((cyclicClass_spec ψ).1 β).mp hβ
+  obtain ⟨z, rfl⟩ := ((cyclicClass_spec ψ).1 x).mp hx
   -- The symbol map kills the group `N` of norms.
   let N : Subgroup kˣ := map (Units.map (Algebra.norm k : fixedFieldOf (ker ψ) →* k)) ⊤
   let f : kˣ ⧸ N →* Multiplicative (unitsModule Γ).H2 :=
     lift N ((cyclicClass unitsRep ψ).comp (ofBase Γ Ω)).toMultiplicativeRight fun _ ⟨b, _, hb⟩ ↦
       (cyclicClass_eq_zero_iff_norm _).mpr ⟨b, hb⟩
-  have f_mk (a : kˣ) : f (a : kˣ ⧸ N) =
-      Multiplicative.ofAdd (cyclicClass unitsRep ψ (ofBase Γ Ω (Additive.ofMul a))) := rfl
-  -- Tate's formula for the norm from the fixed field `K` of `ker ψ`: with `l = [Γ : ker ψ]`,
-  -- `c = #(O / l)` for the integers `O` of `k`, and `q(Y) = #(Y / Y ^ l) / #Y[l]`, it reads
-  -- `[kˣ : N] ^ (l - 1) * q(Kˣ) = q(kˣ) ^ l`, where `q(kˣ) = l * c` and `q(Kˣ) = l * c ^ l`.
+  -- Tate's formula for the norm from `K = fixedFieldOf (ker ψ)` gives `#(kˣ ⧸ N) = [Γ : ker ψ]`.
   have card_eq : Nat.card (kˣ ⧸ N) = (QZChar.ker ψ).index := by
     set l : ℕ := (QZChar.ker ψ).index
-    set c : ℕ := Nat.card (valRingBelow k A ⧸ Ideal.span {(l : valRingBelow k A)})
-    have h_ne_l : NeZero l := ⟨h_prime.ne_zero⟩
-    let q (Y : Type) [CommGroup Y] : ℚ :=
-      cokerKerIndex (l : Module.End ℤ (Additive (⊤ : Subgroup Y)))
-    obtain ⟨qk_ne, qk_eq⟩ : q kˣ ≠ 0 ∧ q kˣ = l * c :=
-      cokerKerIndex_local_units L l topEquiv.toAdditive
-    have qK_eq : q (fixedFieldOf (ker ψ))ˣ = l * c ^ l := by
-      rw [← Nat.cast_pow, ← h_ext.card_quotient]
-      exact (cokerKerIndex_local_units h_ext.isLocalGalois l topEquiv.toAdditive).right
-    have tate : (N.relIndex ⊤ : ℚ) ^ (l - 1) * q (fixedFieldOf (ker ψ))ˣ = q kˣ ^ l :=
-      tate_index_formula_norm l (finrank_fixedFieldOf (QZChar.ker ψ)) ⊤ ⊤ (comap_top _).symm
-        (fun g y _ ↦ mem_top _) (fun _ _ ↦ ⟨1, mem_top _⟩) qk_ne
+    have : NeZero l := ⟨h_prime.ne_zero⟩
+    obtain ⟨qk_ne, qk_eq⟩ := cokerKerIndex_local_units L l (topEquiv (G := kˣ)).toAdditive
+    have qK_eq := (cokerKerIndex_local_units h_ext.isLocalGalois l
+      (topEquiv (G := (fixedFieldOf (ker ψ))ˣ)).toAdditive).2
+    rw [h_ext.card_quotient, Nat.cast_pow] at qK_eq
+    have tate := tate_index_formula_norm l (finrank_fixedFieldOf (QZChar.ker ψ)) ⊤ ⊤
+      (comap_top _).symm (fun _ _ _ ↦ mem_top _) (fun _ _ ↦ ⟨1, mem_top _⟩) qk_ne
     rw [qK_eq, qk_eq, relIndex_top_right] at tate
     exact Nat.eq_of_pow_sub_one_mul_eq_mul_pow h_prime (by rwa [← qk_eq]) tate
-  have y_ne : (y : kˣ ⧸ N) ≠ 1 := fun hy ↦ hβ_ne (by rw [← ofAdd_eq_one, ← f_mk, hy, map_one])
   -- So `z` is a power `y ^ m` modulo `N`, and applying `f` gives `(ψ, z) = m • (ψ, y)`.
-  obtain ⟨m, hm⟩ : ∃ m : ℤ, (y : kˣ ⧸ N) ^ m = z := mem_zpowers_of_prime_card card_eq y_ne
-  refine AddSubgroup.mem_zmultiples_iff.mpr ⟨m, Multiplicative.ofAdd.injective ?_⟩
-  rw [ofAdd_zsmul, ← f_mk, ← f_mk, ← map_zpow, hm]
+  obtain ⟨m, hm⟩ : ∃ m : ℤ, (y : kˣ ⧸ N) ^ m = z := mem_zpowers_of_prime_card card_eq
+    fun hy ↦ hβ_ne <| ofAdd_eq_one.mp ((congrArg f hy).trans f.map_one)
+  exact AddSubgroup.mem_zmultiples_iff.mpr ⟨m, Multiplicative.ofAdd.injective <|
+    (ofAdd_zsmul _ _).trans <| (f.map_zpow (y : kˣ ⧸ N) m).symm.trans (congrArg f hm)⟩
 
 /-- If the class `β` in `H²(Γ, Ωˣ)` is split by the open normal subgroup `V` (its restriction to
 `V` is zero) and is killed only by multiples of `[Γ : V]`, then every class `x` split by `V` is an
@@ -130,7 +116,8 @@ lemma mem_zmultiples_of_resH2_eq_zero [V.Normal] {β x : (unitsModule Γ).H2}
   have hβ_U : ((unitsModule Γ).restrictTo U).resH2 V_U ((unitsModule Γ).resH2 U β) = 0 :=
     resH2_subgroupOf_eq_zero_symm (by rw [hβ, map_zero])
   have dies : ((unitsModule Γ).restrictTo U).resH2 W β' = 0 := by
-    simp only [β', map_nsmul]
+    dsimp only [β']
+    rw [map_nsmul]
     exact index_smul_eq_zero_of_resH2 V' (resH2_subgroupOf_eq_zero_symm (by rw [hβ_U, map_zero]))
   have index_eq : V.index = V'.index * U.index * W.index := by
     -- `V'.index` is by definition the relative index of `V` (inside `U`) in `W`.
@@ -151,7 +138,8 @@ lemma mem_zmultiples_of_resH2_eq_zero [V.Normal] {β x : (unitsModule Γ).H2}
   -- `s + j • V'.index • β` is the multiple of `β` sought.
   obtain ⟨j, hj⟩ : ∃ j : ℤ, j • β' = (unitsModule Γ).resH2 U (x - s) :=
     mem_zmultiples_of_index_prime W (L := (of_finite U).isLocalGalois) hW_prime dies β'_ne hxs
-  refine ⟨s + j • V'.index • β, by aesop, ?_⟩
+  refine ⟨s + j • V'.index • β,
+    add_mem hs (zsmul_mem (nsmul_mem (AddSubgroup.mem_zmultiples β) _) _), ?_⟩
   rw [← sub_sub, map_sub, ← hj, map_zsmul, map_nsmul, sub_self]
 
 /-! ### The class attached to an element of `ℚ/ℤ` -/
@@ -180,17 +168,26 @@ lemma exists_isClassOfInvariant :
       exists_ordRat_eq_intCast fun g hg ↦ y.property ⟨g, hχ hg⟩
     refine ⟨j, ?_⟩
     qify
-    -- `erw`: `corestrictH0` unfolds to `DiscreteModule.sum`, a sum of maps only after unfolding.
-    erw [← hn, ← hy, corestrictH0, LinearMap.sum_apply, map_sum,
-        Finset.sum_eq_card_nsmul (b := ↑j)] <;>
-      simp [index, Fintype.card_eq_nat_card, ← hj, eq_iff, ↓L.ordRat_eq_zero, decompGroup.val_smul,
-        L.mem_decompGroup]
+    rw [← hn, ← hy]
+    dsimp only [corestrictH0, DiscreteModule.sum]
+    rw [Representation.IntertwiningMap.coe_mk, LinearMap.sum_apply, map_sum,
+      Finset.sum_eq_card_nsmul (b := (j : ℚ))]
+    · simp only [Finset.card_univ, Fintype.card_eq_nat_card, nsmul_eq_mul, index]
+    · intro x _
+      dsimp only [LinearMap.proj_apply]
+      simp [← hj, eq_iff, ↓L.ordRat_eq_zero, decompGroup.val_smul, L.mem_decompGroup]
   -- `c` is additive by the uniqueness in `c_unique`.
-  have c_add (r s : QZ) : c (r + s) = c r + c s := (c_unique _ _ (by simp_all)).symm
+  have c_add (r s : QZ) : c (r + s) = c r + c s :=
+    (c_unique _ _ ⟨fun g hg ↦ by
+        change (c r).val g + (c s).val g = 0
+        rw [(hc r).1 g hg, (hc s).1 g hg, add_zero],
+      by
+        change (c r).val φ₀ + (c s).val φ₀ = r + s
+        rw [(hc r).2, (hc s).2]⟩).symm
   refine ⟨((cyclicClass _).flip π).comp (.mk' c c_add),
     (injective_iff_map_eq_zero _).mpr fun r h ↦ ?_, fun χ hχ φ hφ w n hn ↦ ?_⟩
   · -- If `(c r, π) = 0`, the kernel of `c r` has index one, so `r = c r φ₀ = 0`.
-    have h_index : (ker (c r)).index ∣ 1 := mod_cast index_dvd (hc r).left π 1 hπ h
+    have h_index : (ker (c r)).index ∣ 1 := Int.ofNat_dvd.mp (index_dvd (hc r).left π 1 hπ h)
     have h_frob : φ₀ ∈ ker (c r) := (index_eq_one.mp (Nat.dvd_one.mp h_index)).ge (mem_top φ₀)
     exact (hc r).right.symm.trans h_frob
   -- All classes `(χ, w)` are split by `ker χ`, and `(χ, π)` generates the split classes.
@@ -200,16 +197,24 @@ lemma exists_isClassOfInvariant :
     exact ((cyclicClass_spec χ).left _).mpr ⟨y.toMul, rfl⟩
   obtain ⟨j, hj⟩ : ∃ j : ℤ, j • cyclicClass _ χ π = cyclicClass _ χ w :=
     mem_zmultiples_of_resH2_eq_zero ⟨_, isOpen_ker χ⟩ (h_split π)
-      (fun n hn ↦ Int.ofNat_dvd.mp (index_dvd hχ (n • π) _ (by simp [hπ]) (by simpa using hn)))
+      (fun n hn ↦ Int.ofNat_dvd.mp (index_dvd hχ (n • π) n
+        (by rw [AddSubmonoidClass.coe_nsmul, map_nsmul, hπ, nsmul_eq_mul, mul_one,
+          Int.cast_natCast])
+        (by rw [map_nsmul]; exact hn)))
       (h_split w)
   -- `j ≡ n` modulo the index, which kills `(χ, π)`.
-  have h_ord_diff : ordRat k A (j • π - w).val = (j - n : ℤ) := by simp [hπ, hn]
-  have h_class_diff : cyclicClass _ χ (j • π - w) = 0 := by simp [hj]
+  have h_ord_diff : ordRat k A (j • π - w).val = (j - n : ℤ) := by
+    rw [AddSubgroupClass.coe_sub, AddSubgroupClass.coe_zsmul, map_sub, map_zsmul, hπ, hn,
+      zsmul_eq_mul, mul_one, Int.cast_sub]
+  have h_class_diff : cyclicClass _ χ (j • π - w) = 0 := by
+    rw [map_sub, map_zsmul, hj, sub_self]
   obtain ⟨i, hi⟩ : ↑(ker χ).index ∣ j - n := index_dvd hχ (j • π - w) _ h_ord_diff h_class_diff
   have χ_eq : χ = c (χ.val φ) := c_unique _ χ
     ⟨hχ, (toHom χ).eq_iff.mpr (hχ _ (hφ.inv_mul_mem_inertiaGroup hφ₀))⟩
-  simpa [← χ_eq, mul_zsmul', index_smul_eq_zero_of_resH2 ⟨_, isOpen_ker χ⟩ (h_split π),
-    eq_add_of_sub_eq hi, add_zsmul] using hj.symm
+  rw [← hj]
+  change (j • cyclicClass _ χ π) = n • cyclicClass _ (c (χ.val φ)) π
+  rw [← χ_eq, eq_add_of_sub_eq hi, add_zsmul, mul_zsmul', natCast_zsmul,
+    index_smul_eq_zero_of_resH2 ⟨_, isOpen_ker χ⟩ (h_split π), zsmul_zero, zero_add]
 
 /-- The chosen map `classOfInvariant` from `ℚ/ℤ` to `H²(Γ, Ωˣ)` is injective, and the cyclic class
 of an unramified character `χ` and an invariant `w` of order `n` is
@@ -246,10 +251,9 @@ lemma pairMapH2_classOfInvariant_of_ordRat_eq (φ : Γ' →ₜ* Γ) (j : Ω →+
   subst hA
   let χ' : QZChar Γ' := comap φ χ
   -- The image of `w` in `Ω'ˣ` is fixed by `Γ'`, as `w` is fixed by `Γ` and `j` is compatible.
-  let w' : (unitsModule Γ').H0 := ⟨(Units.map (j : Ω →* Ω')).toAdditive w.val, fun g ↦ by
-    have hw : unitsRep (φ g) w.val = w.val := w.property (φ g)
-    ext
-    simpa [← hj] using congrArg (fun u : DiscreteUnits Ω ↦ j u.toMul.val) hw⟩
+  let w' : (unitsModule Γ').H0 := ⟨(Units.map (j : Ω →* Ω')).toAdditive w.val, fun g ↦
+    Additive.toMul.injective (Units.ext ((hj g w.val.toMul.val).symm.trans
+      (congrArg (fun u : DiscreteUnits Ω ↦ j u.toMul.val) (w.property (φ g)))))⟩
   have χ'_unr : ∀ g ∈ inertiaGroup Γ' A', χ'.val g = 0 := fun g hg ↦ χ_unr _ (hg.map hj)
   -- `φ τ` and `σ ^ f` are both Frobenius elements for `residueCard k A ^ f`, so they differ by
   -- inertia.
@@ -261,9 +265,13 @@ lemma pairMapH2_classOfInvariant_of_ordRat_eq (φ : Γ' →ₜ* Γ) (j : Ω →+
     isClassOfInvariant_classOfInvariant.right χ χ_unr σ hσ w 1 hw_ord
   have h_cyc' : cyclicClass unitsRep χ' w' = (e : ℤ) • classOfInvariant Γ' k' A' (χ'.val τ) :=
     isClassOfInvariant_classOfInvariant.right χ' χ'_unr τ hτ w' e he
+  have h_eq : ∀ (g : Γ') (m : DiscreteUnits Ω),
+      (Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap (unitsRep (φ g) m) =
+        unitsRep g ((Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap m) :=
+    fun g m ↦ Additive.toMul.injective (Units.ext (hj g m.toMul.val))
   -- The cocycles of both classes take the values `n • w` and `n • j w` with the same integers.
-  have h_map : (pairMapH2 φ (Units.map j).toAdditive.toIntLinearMap) (cyclicClass unitsRep χ w) =
-      cyclicClass unitsRep χ' w' :=
+  have h_map : (pairMapH2 φ (Units.map (j : Ω →* Ω')).toAdditive.toIntLinearMap h_eq)
+      (cyclicClass unitsRep χ w) = cyclicClass unitsRep χ' w' :=
     congrArg (Quotient.mk _) (Subtype.ext (funext fun _ ↦ map_zsmul _ _ _))
   rwa [h_cyc, h_cyc', one_zsmul, χ'_frob, natCast_zsmul, ← map_nsmul, ← mul_smul] at h_map
 
@@ -299,7 +307,10 @@ lemma _root_.New.Cohomology.resH2_classOfInvariant {r : QZ} :
   have hπ : ordRat k A (ofBase Γ Ω (Additive.ofMul π)) = 1 := hπ_unif.ordRat_eq_one L
   have hπ_V : ordRat (fixedFieldOf (V : Subgroup Γ)) A
       ((Units.map (RingHom.id Ω)).toAdditive (ofBase Γ Ω (Additive.ofMul π)).val) = e := by
-    simp [h_ram.ordRat_eq, hπ]
+    have hmap : (Units.map (RingHom.id Ω)).toAdditive (ofBase Γ Ω (Additive.ofMul π)).val =
+        (ofBase Γ Ω (Additive.ofMul π)).val :=
+      Additive.toMul.injective (Units.ext rfl)
+    rw [hmap, h_ram.ordRat_eq, AddMonoidHom.smul_apply, hπ, nsmul_eq_mul, mul_one]
   rw [← h_ram.mul_eq]
   exact pairMapH2_classOfInvariant_of_ordRat_eq (L' := (of_finite V).isLocalGalois) _ (.id Ω) rfl
     (fun _ _ ↦ rfl) hπ hπ_V h_ram.residueCard_eq r
@@ -327,11 +338,14 @@ lemma classOfInvariant_bijective : Bijective (classOfInvariant Γ k A) := by
   have hW_index : NeZero W.index := ⟨index_ne_zero_of_finite⟩
   let r : QZ := ofZMod W.index 1
   have r_split : (unitsModule Γ).resH2 W.toOpenSubgroup (classOfInvariant Γ k A r) = 0 :=
-    resH2_classOfInvariant_eq_zero _ (by simp [r, ← map_nsmul, ZMod.natCast_self])
+    resH2_classOfInvariant_eq_zero _
+      (by rw [← map_nsmul, nsmul_eq_mul, mul_one, ZMod.natCast_self, map_zero])
   -- `classOfInvariant` is injective, and `n • r` is the image of `n` in `ZMod W.index`.
   have r_order (n : ℕ) (h : n • classOfInvariant Γ k A r = 0) : W.index ∣ n := by
-    rw [← map_nsmul, map_eq_zero_iff _ isClassOfInvariant_classOfInvariant.left] at h
-    simpa [r, ← map_nsmul, map_eq_zero_iff, ZMod.natCast_eq_zero_iff] using h
+    rw [← map_nsmul, map_eq_zero_iff _ isClassOfInvariant_classOfInvariant.left, ← map_nsmul,
+      nsmul_eq_mul, mul_one, map_eq_zero_iff _ QZ.ofZMod_injective,
+      ZMod.natCast_eq_zero_iff] at h
+    exact h
   -- On `W`, `x (g, h) = x (g, 1) = g • x (1, 1)` is the coboundary of the constant `x (1, 1)`.
   have x_g_one (g : Γ) : x (g, 1) = unitsRep g (x (1, 1)) - x (1, 1) + x (1, 1) := by
     simpa using x_cocycle g 1 1

@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 
 /-!
@@ -69,7 +70,7 @@ lemma New.exists_congruenceGL_subset {E : Type*} [Field E] [NumberField E] {n : 
     obtain ⟨M, hM, hMU⟩ := mem_nhds_zero_finAdele_iff.1 hU
     refine ⟨M, fun x hx ↦ ?_, hM⟩
     obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.1 hx
-    simpa [Subring.smul_def, mul_comm] using hMU a a.2
+    simpa [Subring.smul_def, mul_comm] using hMU a a.property
   exact (h_freq.and_eventually (eventually_congruenceGL_subset Filter.map_comap_le hs)).exists
 
 namespace New
@@ -81,6 +82,53 @@ namespace New
 place w ≠ `star w`, with component 1 away from w and `star w`.
 -/
 
+
+namespace Filling
+
+open Matrix Valued
+
+/-- The matrix `l` with row `o` multiplied by `a` is integral iff that row times `a` and the other
+rows of `l` are integral. -/
+lemma isIntMatrix_scaleAt_mul_iff {κ m R : Type*} [Fintype κ] [DecidableEq κ] [CommRing R]
+    {O : Subring R} {a : R} {o : κ} {l : Matrix κ m R} :
+    IsIntMatrix O (scaleAt a o * l) ↔ (∀ j : m, a * l o j ∈ O) ∧ ∀ i ≠ o, ∀ j : m, l i j ∈ O := by
+  simp only [IsIntMatrix, diagonal_mul]
+  grind
+
+variable {E : Type} [Field E] [CMType E]
+
+/-- Let the idele `p` be a unit at `w` or at the conjugate of `w`, for each place `w` (`v` is the
+valuation). If the finite adelic unitary matrix `k` is integral with row `o` congruent to that of
+`1` modulo `p`, then `k - 1` stays integral after dividing row `o` by `p` and column `o` by
+`p̄`. -/
+lemma isIntMatrix_scaleAt_mul_sub_one_mul_scaleAt {κ : Type*} [Fintype κ] [DecidableEq κ]
+    (p : (𝔸f E)ˣ) (o : κ)
+    (hp : ∀ w : FinPlace E, v (p.val w) = 1 ∨ v (p.val (star w)) = 1) {k : Gf E κ}
+    (hk : k.val ∈ congruenceGL (Ô E ∙ p.val) fun () ↦ o) :
+    IsIntMatrix (Ô E) (scaleAt p⁻¹.val o * ((k.val.val - 1) * scaleAt (star p⁻¹.val) o)) := by
+  -- Row `o` of `M = k - 1` is divisible by `p`. The same holds for `k⁻¹ = kᴴ`, so column `o` of
+  -- `M` is divisible by `star p`. All entries of `M` are integral.
+  set M : Matrix κ κ (𝔸f E) := k.val.val - 1 with hM
+  obtain ⟨-, hk_inv_row⟩ := inv_mem hk
+  obtain ⟨hk_int, hk_row⟩ := hk
+  have h_int : IsIntMatrix (Ô E) M := hk_int.isIntMatrix.sub .one
+  have h_row (j : κ) : p⁻¹.val * M o j ∈ Ô E := mem_span_unit_iff.1 (hk_row () j)
+  have h_col (i : κ) : M i o * star p⁻¹.val ∈ Ô E := by
+    have h_inv : p⁻¹.val * Mᴴ o i ∈ Ô E := by
+      rw [hM, conjTranspose_sub, conjTranspose_one, ← U.inv_val_eq_conjTranspose]
+      exact mem_span_unit_iff.1 (hk_inv_row () i)
+    simpa [star_mul] using star_mem_Ô h_inv
+  -- The entry `(o, o)` is divided twice, but at each place one of the two divisors is a unit.
+  have h_corner : p⁻¹.val * (M o o * star p⁻¹.val) ∈ Ô E := mem_Ô.2 fun w ↦ by
+    obtain h_unit | h_unit := hp w
+    · simpa [idele_inv_apply_and_ne_zero, h_unit] using mem_Ô.1 (h_col o) w
+    · simpa [idele_inv_apply_and_ne_zero, h_unit] using mem_Ô.1 (h_row o) w
+  refine isIntMatrix_scaleAt_mul_iff.2 ⟨fun j ↦ ?_, fun i _ j ↦ ?_⟩
+  · by_cases hj : j = o <;> simp [hj, h_corner, h_row]
+  · by_cases hj : j = o <;> simp [hj, h_col, h_int i j]
+
+end Filling
+
 section Levels
 
 open Function Matrix NumberField IsLocalRing Subgroup stdLevel Gf Ideal Valued algebraMap
@@ -90,22 +138,14 @@ variable {n ι R S E : Type*} [Fintype n] [DecidableEq n] [CommRing R] [CommRing
 
 /-! ### Reduction of GL_n and divisibility in the integral finite adeles -/
 
-/-- Entrywise application of a surjective local ring homomorphism gives a surjective map on
-GL_n. -/
-lemma GL_map_surjective (f : R →+* S) [IsLocalHom f] (hf : Surjective f) :
-    Surjective (GeneralLinearGroup.map (n := n) f) := by
-  -- The entrywise map on matrices is surjective, and local because `f` commutes with `det`.
-  refine surjective_units_map_of_local_ringHom _ hf.comp_left.comp_left ⟨fun M hM ↦ ?_⟩
-  rw [isUnit_iff_isUnit_det, ← f.map_det] at hM
-  exact (isUnit_iff_isUnit_det M).2 ((isUnit_map_iff f M.det).1 hM)
-
 /-- The reduction homomorphism from GL_n(O_w) to GL_n of the residue field at w. -/
 def reduceGL : intGL n (Valued.v (R := LocField w)).integer →* GL n (ResField w) :=
   intGL.map (n := n) (O := v.integer) (S := ResField w) (residue (LocInt w))
 
 /-- Reduction GL_n(O_w) → GL_n(k_w) to the residue field k_w at the place w is surjective. -/
 lemma reduceGL_surjective : Surjective (reduceGL (n := n) (w := w)) := fun s ↦ by
-  obtain ⟨g, rfl⟩ := GL_map_surjective (residue (LocInt w)) residue_surjective s
+  obtain ⟨g, rfl⟩ :=
+    Matrix.GeneralLinearGroup.map_surjective (residue (LocInt w)) residue_surjective s
   -- The matrix `g`, read in GL_n(E_w), is integral, and its reduction is by definition that of `g`.
   exact ⟨⟨GeneralLinearGroup.map (LocInt w).subtype g, g, rfl⟩, rfl⟩
 
@@ -132,13 +172,13 @@ variable [IsCMField E] (n a) {f : Ô E →+* S}
 under f of the entries of g. -/
 @[simp]
 lemma stdLevel.map_apply (g : stdLevel E n) (i j : n) :
-    map n f g i j = f ⟨g.val.val.val i j, mem_stdLevel.mp g.2 i j⟩ := rfl
+    map n f g i j = f ⟨g.val.val.val i j, mem_stdLevel.mp g.property i j⟩ := rfl
 
 /-- An element g of K₀ = `stdLevel E n` maps to 1 under the entrywise homomorphism
 `stdLevel.map n f` if and only if f kills every entry of g - 1, read in Ô. -/
 lemma stdLevel.map_eq_one {g : stdLevel E n} :
     map n f g = 1 ↔ ∀ i j : n,
-      f (⟨(g.val.val : Matrix n n (𝔸f E)) i j, mem_stdLevel.mp g.2 i j⟩ -
+      f (⟨(g.val.val : Matrix n n (𝔸f E)) i j, mem_stdLevel.mp g.property i j⟩ -
         ⟨(1 : Matrix n n (𝔸f E)) i j, mem_stdLevel.mp (one_mem (stdLevel E n)) i j⟩) = 0 :=
   intGL.map_eq_one
 
@@ -198,7 +238,7 @@ lemma principalLevel_le_of_dvd (hab : a ∣ b) : principalLevel n b ≤ principa
   obtain ⟨c, rfl⟩ := hab
   refine fun x ⟨hx, h_cong⟩ ↦ ⟨hx, fun i j ↦ ?_⟩
   obtain ⟨y, hy, h_entry⟩ := h_cong i j
-  exact ⟨c * y, mul_mem (algebraMap_mem_Ô.2 c.2) hy, by simp [h_entry, mul_assoc]⟩
+  exact ⟨c * y, mul_mem (algebraMap_mem_Ô.2 c.property) hy, by simp [h_entry, mul_assoc]⟩
 
 /-- Every neighbourhood of 1 in G_f contains the principal level `New.principalLevel` of some
 nonzero natural number M. -/
@@ -277,7 +317,7 @@ w_i. -/
 def levelOf.reduction (w : ι → FinPlace E) (H : Subgroup (∀ i : ι, GL n (ResField (w i)))) :
     levelOf w H →* H :=
   ((reduceFamily w).comp (inclusion levelOf_le_stdLevel)).codRestrict H fun g ↦
-    (mem_levelOf.1 g.2).2
+    (mem_levelOf.1 g.property).2
 
 lemma inf_trivialOn_le_levelOf : stdLevel E n ⊓ trivialOn n (Set.range w) ≤ levelOf w H :=
   -- An element of the left side has component `1` at each `w i`, so it reduces to `1 ∈ H`.
@@ -402,13 +442,13 @@ lemma dvd_iff_reduceAt_eq_zero
   -- Both sides are conditions place by place: `a ∣ y` says `v(y_u) ≤ v_u(a)` for all `u`, the right
   -- side says `v(y_u) < 1` for the places `u` containing `a`.
   have h_local (u : FinPlace E) :
-      Valued.v (y.1 u) ≤ u.valuation E (a : E) ↔ (a ∈ u.1 → Valued.v (y.1 u) < 1) := by
-    by_cases ha : a ∈ u.1
+      Valued.v (y.val u) ≤ u.valuation E (a : E) ↔ (a ∈ u.asIdeal → Valued.v (y.val u) < 1) := by
+    by_cases ha : a ∈ u.asIdeal
     · -- here `v_u(a) = exp (-1)`, and `x ≤ exp (-1)` means `x < 1`
       simp [ha, u.valuation_of_algebraMap, h_val ha, ← WithZero.lt_mul_exp_iff_le,
         ← WithZero.exp_add]
     · -- here `v_u(a) = 1`, and `y` is integral
-      simp [ha, u.valuation_of_algebraMap, u.intValuation_eq_one_iff.2 ha, mem_Ô.1 y.2]
+      simp [ha, u.valuation_of_algebraMap, u.intValuation_eq_one_iff.2 ha, mem_Ô.1 y.property]
   simp [exists_eq_mul_iff_v_le, reduceAt_eq_zero, h_local, dvd_def, Subtype.ext_iff]
 
 /-- For distinct places w_i, an integer x of E lies in their product if and only if it lies in
@@ -505,7 +545,7 @@ lemma levelSpace_levelOf_apply {v : W}
     π k v = χ x • v := by
   obtain ⟨x, hx⟩ := x
   subst hk
-  exact mem_levelSpace.1 hv ⟨k, mem_levelOf.2 ⟨k.2, hx⟩⟩
+  exact mem_levelSpace.1 hv ⟨k, mem_levelOf.2 ⟨k.property, hx⟩⟩
 
 variable [Finite ι] [IsConjApart w] (s : ∀ i : ι, GL n (ResField (w i)))
 
@@ -527,8 +567,8 @@ lemma apply_liftResidue_eq (v : levelSpace π (levelOf w H) (χ.comp (levelOf.re
     (k : stdLevel E n) {s : ∀ i : ι, GL n (ResField (w i))} (hk : stdLevel.reduceFamily w k = s) :
     π (liftResidue s).val v = π k v := by
   -- `k⁻¹ * liftResidue s` reduces to `1`, so it fixes `v`; now apply `π k`.
-  have h_fix : π (k⁻¹ * liftResidue s : stdLevel E n) v = v.1 := by
-    simpa using levelSpace_levelOf_apply v.2 (k⁻¹ * liftResidue s) 1 (by simp [hk])
+  have h_fix : π (k⁻¹ * liftResidue s : stdLevel E n) v = v.val := by
+    simpa using levelSpace_levelOf_apply v.property (k⁻¹ * liftResidue s) 1 (by simp [hk])
   simpa using congr_arg (π k.val) h_fix
 
 /-- If s normalises H and fixes χ, then π of the chosen lift of s maps vectors of level
@@ -543,7 +583,7 @@ lemma map_liftResidue_mem_levelSpace {s : ∀ i : ι, GL n (ResField (w i))}
   let l : stdLevel E n := liftResidue s
   let x : H := levelOf.reduction w H g
   obtain ⟨hx, hχ⟩ := h_norm x
-  let c : stdLevel E n := l⁻¹ * ⟨g, levelOf_le_stdLevel g.2⟩ * l
+  let c : stdLevel E n := l⁻¹ * ⟨g, levelOf_le_stdLevel g.property⟩ * l
   -- The reduction of `g` is `x` by definition.
   have h_red : stdLevel.reduceFamily w c = s⁻¹ * x.val * s := by
     simp [c, l]
@@ -568,8 +608,8 @@ noncomputable def levelRep {S : Type*} [Group S] (φ : S →* (i : ι) → GL n 
   map_mul' s t := by
     -- The lift of `φ (s * t)` and the product of the lifts have the same reduction.
     ext v
-    change π (liftResidue (φ (s * t))).val v.1 =
-      π (liftResidue (φ s)).val (π (liftResidue (φ t)).val v.1)
+    change π (liftResidue (φ (s * t))).val v.val =
+      π (liftResidue (φ s)).val (π (liftResidue (φ t)).val v.val)
     simp [apply_liftResidue_eq v (liftResidue (φ s) * liftResidue (φ t))]
 
 end FiniteGroupAction

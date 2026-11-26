@@ -247,7 +247,7 @@ lemma New.Exchange.map_shear_stdColDatum_eq {F b n : Type} [V : SemilocalField F
   let Ψ (y : Matrix n b F) : ℂ := stdColDatum χ s (y + u * (r * y))
   let S : AddSubgroup (Matrix n b F) := V.O.toAddSubgroup.matrix
   have : CompactSpace S := isCompact_iff_compactSpace.1 isCompact_O.matrix
-  let τ (t : S) (y : Matrix n b F) : Matrix n b F := y + u * (r * t.1 * (s * y))
+  let τ (t : S) (y : Matrix n b F) : Matrix n b F := y + u * (r * t.val * (s * y))
   let mean (Φ : Matrix n b F → ℂ) (y : Matrix n b F) : ℂ := ⨍ t, Φ (τ t y) ∂.addHaar
   have h_mean {Φ : Matrix n b F → ℂ} (hΦ : Φ ∈ M) : Λ (mean Φ) = Λ Φ := by
     have h_loc : IsLocallyConstant fun (t : S) (y : Matrix n b F) ↦ Φ (τ t y) :=
@@ -444,7 +444,7 @@ lemma stdRowDatum_frameAt_lineTermSplitting (X : V'.Splitting V Unit) [IsBaseAda
     fromCols_mul_fromBlocks, fromBlocks_mul_fromRows, fromCols_mul_fromRows, Matrix.add_mul]
   -- It remains to rearrange the products and sums in each entry.
   cases β <;> congr with ⟨⟩ <;>
-    simp [Finset.mul_sum, diagonal, mul_add, mul_assoc, Matrix.mul_apply, Finset.sum_add_distrib]
+    simp [Finset.mul_sum, diagonal, mul_add, mul_assoc, Matrix.mul_apply]
   all_goals simp only [show (0 : Unit × Unit) = (PUnit.unit, PUnit.unit) from rfl] at *
   all_goals grind
 
@@ -551,7 +551,7 @@ lemma components_of_mat_eq_one_add (g : G E r) (C C' : Matrix m m (𝔸 E))
     (hg : g.adeleMatrix = 1 + ((idemAdele 𝔠.ramifiedPlaces : 𝔸 E) • C - star
       (idemAdele 𝔠.ramifiedPlaces : 𝔸 E) • C')) :
     ((1, g.2) : G E r) = g ∧ g.2 ∈ New.Gf.supportedOn m 𝔠.ramifiedPlaces ∧
-      (atPlaces 𝔠.ramifiedPlaces g.2).1 = (1 + C).map (componentsAt 𝔠) := by
+      (atPlaces 𝔠.ramifiedPlaces g.2).val = (1 + C).map (componentsAt 𝔠) := by
   refine ⟨?_, ?_, ?_⟩
   · -- both idempotents vanish at infinity
     aesop (add simp [Prod.ext_iff, funext_iff, Matrix.one_apply, ext_iff.symm])
@@ -589,7 +589,7 @@ lemma apply_shear (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) {Ψ : Matrix m b (Lo
   have h_det : (atPlaces 𝔠.ramifiedPlaces g.2).val.det = 1 := by
     rw [h_at, ← RingHom.mapMatrix_apply, ← RingHom.map_det, det_one_add_mul_comm]
     simp [← Matrix.mul_assoc, k.mul_assoc, ← adeleMatrix_mul, hkc]
-  have h_shear : (fun y ↦ Ψ ((atPlaces 𝔠.ramifiedPlaces g.2).1 * y)) = Ψ' := by
+  have h_shear : (fun y ↦ Ψ ((atPlaces 𝔠.ramifiedPlaces g.2).val * y)) = Ψ' := by
     simp [Ψ', h_at, Matrix.map_add, Matrix.add_mul, Matrix.mul_assoc]
   obtain ⟨h_mem, h_law⟩ := h𝒟.map_translate hΨ g.2 h_supp
   simp only [h_shear, h_det, h_fin] at h_mem h_law
@@ -639,7 +639,7 @@ lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Finty
     { toFun Ψ := H.centreCoeff T (𝒟 Ψ) x
       map_add' Ψ Φ := by
         simpa using H.centreCoeff_add (h𝒟.isAutFunction Ψ.2) (h𝒟.isAutFunction Φ.2) T x
-      map_smul' := by simp [centreCoeff, ← quotMean_const_mul, mul_left_comm] }
+      map_smul' := by simp [centreCoeff, mul_left_comm] }
   obtain ⟨L, hL₀ : L ∘ₗ M.subtype = L₀⟩ := L₀.exists_extend
   have hL Φ (hΦ : Φ ∈ M) : L Φ = H.centreCoeff T (𝒟 Φ) x := LinearMap.congr_fun hL₀ ⟨Φ, hΦ⟩
   refine ⟨L, fun Ψ hΨ ↦ ⟨hL Ψ hΨ, fun z ↦ ?_⟩⟩
@@ -658,10 +658,10 @@ lemma exists_linear_centreCoeff (h𝒟 : IsEquivariantLift 𝔠 X M 𝒟) [Finty
     mul_inv_cancel_left] at h_cf
   -- The character at S is `ψf` twisted by the finite part of `invDifferentIdele E`, which cancels
   -- `(invDifferentIdele E)⁻¹`.
-  have h_char : 𝔠.readsAt.ψ (((invDifferentIdele E)⁻¹.1 • T.map toAdele * N).map
+  have h_char : 𝔠.readsAt.ψ (((invDifferentIdele E)⁻¹.val • T.map toAdele * N).map
       (componentsAt 𝔠)).trace = stdAddChar E (T.map toAdele * e • N).trace := by
     have h_δ : algebraMap E (𝔸f E) WeilData.j * WeilData.α.val * star WeilData.α.val =
-        (invDifferentIdele E).1.2 := rfl
+        (invDifferentIdele E).val.2 := rfl
     rw [← AddMonoidHom.map_trace, componentsAt, RingHom.comp_apply, ReadsAt.psi_apply,
       stdLattice.selfDualAddChar_apply, h_δ, mul_left_comm, RingHom.coe_snd, ← Prod.snd_mul]
     simp [stdAddChar, e]

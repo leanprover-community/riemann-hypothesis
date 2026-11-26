@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap -- shake: keep (its `CStarAlgebra (E →L[ℂ] E)` instance keeps a `StarHomClass` search below from timing out)
+public import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Continuous
+public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Lib.Adelic.Reduction.FirstMinimumShortBases
 public import Lib.General.LinearAlgebra.HermitianMatrices
 
@@ -147,7 +150,7 @@ lemma exists_left_translation_operator {G : Type*} [Group G] [TopologicalSpace G
     {D : Subgroup (G × ℂˣ)} {V : Submodule ℂ (G →ᵇ ℂ)}
     (hV : ∀ φ : G →ᵇ ℂ, φ ∈ V ↔ T φ = φ ∧ ∀ r : G, (r, 1) ∈ D → ∀ g : G, φ (r * g) = φ g)
     {a : G} {z : ℂˣ} (ha : (a, z) ∈ D) :
-    ∃ U : V →L[ℂ] V, ∀ (φ : V) (y : G), (U φ).1 y = φ.1 (a * y) := by
+    ∃ U : V →L[ℂ] V, ∀ (φ : V) (y : G), (U φ).val y = φ.val (a * y) := by
   refine ⟨(compContinuousCLM _ _ (.mulLeft a)).restrict fun φ hφ ↦ ?_, fun _ _ ↦ rfl⟩
   obtain ⟨h_fix, h_inv⟩ := (hV φ).1 hφ
   refine (hV _).2 ⟨ext fun y ↦ ?_, fun r hr g ↦ ?_⟩
@@ -168,14 +171,14 @@ lemma norm_one_sub_left_translation_le {G : Type*} [Group G] [TopologicalSpace G
     (hV : ∀ φ : G →ᵇ ℂ, φ ∈ V ↔ T φ = φ ∧ ∀ r : G, (r, 1) ∈ D → ∀ g : G, φ (r * g) = φ g)
     {a : G} {z : ℂˣ} (ha : (a, z) ∈ D) {b : G → G} (hb : ∀ y : G, (y * b y * y⁻¹, z) ∈ D)
     (hb_dist : ∀ y : G, ‖(he.sub (he.comp_mul_left (b y)⁻¹)).toL1‖ < 1 / 2)
-    {U : V →L[ℂ] V} (hU : ∀ (φ : V) (y : G), (U φ).1 y = φ.1 (a * y)) : ‖1 - U‖ ≤ 1 / 2 := by
+    {U : V →L[ℂ] V} (hU : ∀ (φ : V) (y : G), (U φ).val y = φ.val (a * y)) : ‖1 - U‖ ≤ 1 / 2 := by
   refine (1 - U).opNorm_le_bound one_half_pos.le fun ⟨φ, hφ⟩ ↦ norm_le_of_nonempty.2 fun y ↦ ?_
   obtain ⟨h_fix, h_inv⟩ := (hV φ).1 hφ
   have h_rad : (y * b y * y⁻¹ * a⁻¹, 1) ∈ D := by simpa using mul_mem (hb y) (inv_mem ha)
-  calc ‖((1 - U) ⟨φ, hφ⟩).1 y‖
+  calc ‖((1 - U) ⟨φ, hφ⟩).val y‖
     _ = ‖T φ y - T φ (y * b y)‖ := by
       -- `φ (a * y) = φ (y * b y)`, as `φ` is invariant under `y * b y * y⁻¹ * a⁻¹`.
-      simp [hU, h_fix, ← h_inv _ h_rad (a * y), mul_assoc]
+      simp [hU, h_fix, ← h_inv _ h_rad (a * y)]
     _ ≤ 1 / 2 * ‖φ‖ := by grw [hT, hT, norm_integral_mul_translate_sub_le he φ y (b y), hb_dist y]
 
 /-- Let `T φ y = ∫ g, e g * φ (y * g)` and `χ = exp (i H θ)`, where `|H (y * g) - H y| ≤ ℓ g` and
@@ -229,7 +232,7 @@ lemma eq_zero_of_mem_fixed_invariant {G : Type*} [Group G] [TopologicalSpace G]
   let θ : ℝ := Real.pi / -τ / n
   let χ : G →ᵇ ℂ :=
     ofNormedAddCommGroup (fun g : G ↦ circleMap 0 1 (H g * θ)) (by fun_prop) 1 (by simp)
-  obtain ⟨S, hS⟩ : ∃ S : V →L[ℂ] V, ∀ φ : V, (S φ).1 = T (χ * φ.1) := by
+  obtain ⟨S, hS⟩ : ∃ S : V →L[ℂ] V, ∀ φ : V, (S φ).val = T (χ * φ.val) := by
     refine ⟨(T * .mul ℂ (G →ᵇ ℂ) χ).restrict fun φ hφ ↦ hTV _ fun r hr g ↦ ?_, fun _ ↦ rfl⟩
     obtain ⟨-, h_inv⟩ := (hV φ).1 hφ
     simp [χ, hD_shift _ hr, h_inv r hr]

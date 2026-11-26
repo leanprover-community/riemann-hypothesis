@@ -1,8 +1,8 @@
 module
 
-public import New.OneLift.ComparisonOperator.GluedLattices
-public import New.OneLift.HeckeValues.CharacterLiftNorm
 public import New.UpperBound.Size.ShortColumns
+public import New.Determinant.Norms.AdjointThetaLift
+public import New.OneLift.TestedForms
 
 /-!
 # Central action on lifts from U(1) and a rank-one denominator bound
@@ -112,13 +112,6 @@ lemma LValueData.normalizedCentralOp_trivialLift (z : Gf D.E Unit) :
         simp [← normalizedCentralOp_kernelForm]
     _ = Y.trivialLift := (Y.trivialLift_eq_stdClassSum_translate z⁻¹).symm
 
-/-- On algebraic forms of the weight of `Y`, translation by a scalar matrix commutes with every
-translation. -/
-lemma LValueData.commute_algFormRep_scalarFin (ν : unitary (𝔸f D.E)) (g : Gf D.E n) :
-    Commute (algFormRep Y.descentPair.columnCount Y.descentPair.detExp (scalarFin n ν))
-      (algFormRep Y.descentPair.columnCount Y.descentPair.detExp g) :=
-  (commute_scalarFin g).map _
-
 /-- On an algebraic form `φ` of the weight of `Y`, translation (`algFormRep`) by the scalar matrix
 `scalarFin n ν` commutes with translation by `g`: applying the two in either order gives the same
 form. -/
@@ -128,7 +121,7 @@ lemma LValueData.algFormRep_scalarFin_apply_comm (ν : unitary (𝔸f D.E)) (g :
         (algFormRep Y.descentPair.columnCount Y.descentPair.detExp g φ) =
       algFormRep Y.descentPair.columnCount Y.descentPair.detExp g
         (algFormRep Y.descentPair.columnCount Y.descentPair.detExp (scalarFin n ν) φ) := by
-  rw [← Module.End.mul_apply, (Y.commute_algFormRep_scalarFin ν g).eq, Module.End.mul_apply]
+  rw [← mul_apply_eq_comp, ((commute_scalarFin g).map _).eq, mul_apply_eq_comp]
 
 /-- Central translations preserve the image of an element `e` of the group algebra of the residue
 units at the chosen places. -/
@@ -139,7 +132,7 @@ lemma LValueData.centralRep_mem_range_groupAlgAction (z : Gf D.E Unit)
   refine DescentPair.range_groupAlgAction_mem_invtSubmodule _
     (fun g ↦ LinearMap.ext fun x ↦ Subtype.ext ?_) hy
   -- The action `Y.descentPair.formAction g` is a right translation times a number.
-  rw [Module.End.mul_apply, Module.End.mul_apply, coe_centralRep_apply, DescentPair.coe_formAction,
+  rw [mul_apply_eq_comp, mul_apply_eq_comp, coe_centralRep_apply, DescentPair.coe_formAction,
     DescentPair.coe_formAction, coe_centralRep_apply, map_smul,
     algFormRep_scalarFin_apply_comm]
 
@@ -179,9 +172,9 @@ lemma LValueData.normalizedCentralOp_inv_mem_integralForms {ℓ : ℕ} [Fact ℓ
     -- The entries of `k` and `k⁻¹` are `0` or the entry of `z⁻¹`, resp. `z`.
     simp only [mem_localLevel, mem_intGL, ← map_inv, k] at hz ⊢
     simp_all [scalarFin, U.det, diagonal, apply_ite, Gf.atPlace, -map_inv]
-  have h_norm : ‖ιₚ (Y.descentPair.charV.1 (detFin 1 z⁻¹) : ℂ)‖ = 1 :=
+  have h_norm : ‖ιₚ (Y.descentPair.charV.val (detFin 1 z⁻¹) : ℂ)‖ = 1 :=
     Y.charV_hasWeight.norm_apply_detFin_eq_one (hg := inv_mem hz)
-  have h_value : Y.normalizedCentralOp z⁻¹ Ξ g = (Y.descentPair.charV.1 (detFin 1 z⁻¹) : ℂ) • Ξ
+  have h_value : Y.normalizedCentralOp z⁻¹ Ξ g = (Y.descentPair.charV.val (detFin 1 z⁻¹) : ℂ) • Ξ
     (g * k) := rfl
   calc weylGauge Y.descentPair.columnCount Y.descentPair.detExp g (Y.normalizedCentralOp z⁻¹ Ξ g)
       = weylGauge Y.descentPair.columnCount Y.descentPair.detExp g (Ξ (g * k)) := by

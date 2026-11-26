@@ -102,11 +102,12 @@ lemma inclXFin_scalarFin_map_evalAt {Y : Grading V N X s} {z : unitary (𝔸f E)
     (V.xFin * Y.inclXFin (scalarFin X z) * V.xFin⁻¹).map (evalAt u) = 1 := by
   refine Units.ext ?_
   change (V.ratCoordMatrixFin (Y.inclXFin (scalarFin X z))).map (evalAt u) = 1
-  rw [ratCoordMatrixFin_inclXFin]
-  ext i l
-  obtain ⟨i | i, rfl⟩ := Y.indexEquiv.surjective i <;>
-    obtain ⟨l | l, rfl⟩ := Y.indexEquiv.surjective l <;>
-    simp [scalarFin, Matrix.one_apply, diagonal_apply, apply_ite, hz]
+  ext i j : 1
+  have h := congrArg (fun v : ι → 𝔸f E ↦ evalAt u (v i))
+    (inclXFin_scalarFin_mulVec (Y := Y) z (Pi.single j 1))
+  by_cases hij : i = j <;>
+    simpa [Matrix.mulVec_single_one, Matrix.col, hz, Pi.single_apply, Matrix.one_apply, hij,
+      eq_comm] using h
 
 /-- Let `x` be a point of the finite adelic unitary group `Gf E ι` whose lattice, spanned by the
 columns of `V.xFin * x`, splits along `X` at a place `w ≠ w̄`: there its projection to `X^⊥` lies in
@@ -118,7 +119,7 @@ lemma LatticeSplitsAt.conj_scalarFin_mem {Y : Grading V N X s} {w : FinPlace E} 
     {z : unitary (𝔸f E)} (hz_int : z.val ∈ Ô E)
     (hz_off : ∀ u : FinPlace E, u ≠ w → star u ≠ w → z.val u = 1) :
     x⁻¹ * (Y.inclXFin (scalarFin X z) * x) ∈ maxCompactAt ι w := by
-  refine ⟨V.conj_mem_stdLevel_iff.2 fun y hy ↦ ?_, mem_supportedOn.2 fun u hu hu' ↦ ?_⟩
+  refine ⟨V.conj_mem_stdLevel_of_mapsTo_lattice fun y hy ↦ ?_, mem_supportedOn.2 fun u hu hu' ↦ ?_⟩
   · -- The conjugate is integral, as the scaling by `z` maps the lattice of `x` into itself.
     show V.ratCoordMatrixFin (Y.inclXFin (scalarFin X z)) *ᵥ y ∈ V.lattice x
     have h_supp : z.val - 1 = (z.val - 1) * (idem {w} + idem {star w}) := by
@@ -136,7 +137,7 @@ lemma LatticeSplitsAt.conj_scalarFin_mem {Y : Grading V N X s} {w : FinPlace E} 
       (h_split.idem_smul_sub_stringProj_mem hy) (h_split.conj.idem_smul_sub_stringProj_mem hy)))
   · -- The conjugate is trivial at a place other than `w` and `w̄`, where `z` is `1`.
     have h_scaling : atPlace u (Y.inclXFin (scalarFin X z)) = 1 := by
-      simpa [atPlace, mul_eq_one_iff_eq_inv] using inclXFin_scalarFin_map_evalAt (hz_off u hu hu')
+      simpa [atPlace] using inclXFin_scalarFin_map_evalAt (hz_off u hu hu')
     simp [h_scaling]
 
 end Splitting

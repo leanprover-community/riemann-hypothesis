@@ -167,7 +167,7 @@ lemma heckeSplit_comp_baseChangeGf (hu : u.IsSplit) (hw : (u.below E).IsSplit)
     φ g ∈ localIntGL n u ↔ g ∈ localIntGL n (u.below E) :=
     map_locMap_mem_intGL_iff rfl
   refine heckeFun_comp φ h_right_inv ((mem_sphericalAt_iff _).1 hx) h_finite
-    (GL_map_surjective _ h_surj) h_preimage (fun g ↦ ?_) fun g ↦ ?_
+    (Matrix.GeneralLinearGroup.map_surjective _ h_surj) h_preimage (fun g ↦ ?_) fun g ↦ ?_
   · -- the two elements differ by one supported at the other places above `w` and their
     -- conjugates, and such an element fixes `x`
     change π (baseChangeGf (ofSplitPlace hw g)) x = π (ofSplitPlace hu (φ g)) x
@@ -194,7 +194,7 @@ lemma heckeSplit_comp_baseChangeGf (hu : u.IsSplit) (hw : (u.below E).IsSplit)
           rw [mul_inv_cancel_left]
       _ = π (ofSplitPlace hu (φ g)) (π ((ofSplitPlace hu (φ g))⁻¹ * baseChangeGf
         (ofSplitPlace hw g)) x) := by
-          rw [map_mul, Module.End.mul_apply]
+          rw [map_mul, mul_apply_eq_comp]
       _ = π (ofSplitPlace hu (φ g)) x := by rw [h_fix _ h_supp]
   · -- a uniformiser of `E'_u` comes from `E_w`, so valuations and `basicDoubleCoset` are preserved
     have h_unit : ∃ ϖ : LocField (u.below E),
@@ -406,7 +406,8 @@ lemma isMatchingPairAbove_of_mem_biInvariantPairs {μ : (𝔸f E)ˣ →* ℂˣ} 
         simpa [placesAbove] using hu
       exact atPlace_iterate_galoisGf_mem_localIntGL 1 (hk _ hu_comap)
     intro δ
-    show ((localLevel n A : Set (Gf E' n)).indicator 1 * F : Gf E' n → ℂ) (k⁻¹ * δ * galoisGf σ k) =
+    change ((localLevel n A : Set (Gf E' n)).indicator 1 * F : Gf E' n → ℂ)
+        (k⁻¹ * δ * galoisGf σ k) =
       ((localLevel n A : Set (Gf E' n)).indicator 1 * F : Gf E' n → ℂ) δ
     simp_all [IsBiInvariantAt, indicator, leftTranslation, funext_iff, mul_mem_cancel_left,
       mul_mem_cancel_right]

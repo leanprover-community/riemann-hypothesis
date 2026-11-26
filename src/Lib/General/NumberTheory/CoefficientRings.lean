@@ -1,8 +1,11 @@
 module
 
+public import TauCeti.RingTheory.Length
+public import Mathlib.Algebra.Ring.Subring.IntPolynomial
+public import Mathlib.NumberTheory.Padics.ProperSpace
+public import Mathlib.Topology.Algebra.Module.Compact
 public import Lib.General.Algebra.AdicCompletion
 public import Lib.General.Algebra.FittingIdealsAndLengths
-public import TauCeti.RingTheory.Length
 
 /-!
 # Coefficient rings of ℓ-adic lattices, and length versus cardinality of modules
@@ -97,7 +100,7 @@ finite Galois extension K of ℚ_ℓ inside ℚ̄_ℓ, that is, the elements of 
 abbrev CoeffRing : Type :=
   Set.range fun K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) ↦
     ⟨NormedField.valuation.integer.toSubsemiring, fun r : ℤ_[ℓ] ↦
-        (norm_algebraMap' (PadicAlgCl ℓ) (r : ℚ_[ℓ])).trans_le r.2⟩ ⊓
+        (norm_algebraMap' (PadicAlgCl ℓ) (r : ℚ_[ℓ])).trans_le r.property⟩ ⊓
       K.toSubalgebra.restrictScalars ℤ_[ℓ]
 
 variable {ℓ : ℕ} [ThePrime ℓ] {O : CoeffRing ℓ}

@@ -207,7 +207,7 @@ lemma exists_local_gauss_sum {χ : MulChar F ℂ} (hχ : TameLocalChar χ) {ψ :
         _ = ∫ _ : F in (O : Subring F), hχ.resChar⁻¹ u * Γ :=
           setIntegral_congr_fun isCompact_O.measurableSet fun x hx ↦ h_sum ⟨x, hx⟩
         _ = hχ.resChar⁻¹ u * Γ := by simp [Set.univ_inter, volume_O, Measure.real]
-    simpa [f, u, hη ⟨_, ht⟩, MulChar.inv_apply_eq_inv', field] using h_avg
+    simpa [u, hη ⟨_, ht⟩, MulChar.inv_apply_eq_inv', field] using h_avg
   · -- translating by `ϖ * s` multiplies the integral by `ψ (ϖ * t * s)`, which is not always `1`
     have h_zero : ∫ x in (O : Subring F), f x = 0 := by
       by_contra h_ne
@@ -256,29 +256,19 @@ blocks have entries in `O`, and each block of the dual basis is a left inverse o
 of the basis and vanishes on the other two. They are read off block by block from
 `A.isIntMatrix_and_mul_eq_one`. -/
 lemma IntegralFrame.blockRelations (A : IntegralFrame F m n p) : A.BlockRelations := by
-  obtain ⟨hP_int, hQ_int, -, hQP⟩ := A.isIntMatrix_and_mul_eq_one
-  -- the nine products are the blocks of `Q * P = 1`
-  have h_entry (i j : p ⊕ n ⊕ p) :
+  obtain ⟨hP, hQ, -, hQP⟩ := A.isIntMatrix_and_mul_eq_one
+  simp only [IsIntMatrix, Sum.forall, fromCols_apply_inl, fromCols_apply_inr,
+    fromRows_apply_inl, fromRows_apply_inr, forall_and] at hP hQ
+  have hQP' (i j : p ⊕ n ⊕ p) :
       (fromRows A.dualK (fromRows A.dualI A.dualL) * fromCols A.K (fromCols A.I A.L)) i j =
-        if i = j then 1 else 0 := by rw [hQP, Matrix.one_apply]
-  exact
-    { isIntMatrix_dualL := fun i j ↦ hQ_int (.inr (.inr i)) j
-      isIntMatrix_dualI := fun i j ↦ hQ_int (.inr (.inl i)) j
-      isIntMatrix_K := fun i j ↦ hP_int i (.inl j)
-      isIntMatrix_L := fun i j ↦ hP_int i (.inr (.inr j))
-      isIntMatrix_dualK := fun i j ↦ hQ_int (.inl i) j
-      isIntMatrix_I := fun i j ↦ hP_int i (.inr (.inl j))
-      dualK_mul_K := ext fun i j ↦ by simpa [Matrix.one_apply] using h_entry (.inl i) (.inl j)
-      dualI_mul_K := ext fun i j ↦ by simpa using h_entry (.inr (.inl i)) (.inl j)
-      dualL_mul_K := ext fun i j ↦ by simpa using h_entry (.inr (.inr i)) (.inl j)
-      dualK_mul_I := ext fun i j ↦ by simpa using h_entry (.inl i) (.inr (.inl j))
-      dualI_mul_I := ext fun i j ↦ by
-           simpa [Matrix.one_apply] using h_entry (.inr (.inl i)) (.inr (.inl j))
-      dualL_mul_I := ext fun i j ↦ by simpa using h_entry (.inr (.inr i)) (.inr (.inl j))
-      dualK_mul_L := ext fun i j ↦ by simpa using h_entry (.inl i) (.inr (.inr j))
-      dualI_mul_L := ext fun i j ↦ by simpa using h_entry (.inr (.inl i)) (.inr (.inr j))
-      dualL_mul_L := ext fun i j ↦ by
-           simpa [Matrix.one_apply] using h_entry (.inr (.inr i)) (.inr (.inr j)) }
+        (1 : Matrix (p ⊕ n ⊕ p) (p ⊕ n ⊕ p) F) i j := by rw [hQP]
+  simp only [Sum.forall, fromRows_mul, mul_fromCols, fromRows_apply_inl, fromRows_apply_inr,
+    fromCols_apply_inl, fromCols_apply_inr, Matrix.one_apply, Sum.inl.injEq, Sum.inr.injEq,
+    reduceCtorEq, ↓reduceIte, forall_and] at hQP'
+  constructor <;>
+    first
+    | exact fun i j ↦ by simp [hP, hQ]
+    | exact ext fun i j ↦ by simp [Matrix.one_apply, hQP']
 
 open scoped Classical in
 /-- For an integral frame A with blocks K, I, L and a function G on `a × (p ⊕ n)` matrices, the

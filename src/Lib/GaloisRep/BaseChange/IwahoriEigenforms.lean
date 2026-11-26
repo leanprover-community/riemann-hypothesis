@@ -681,7 +681,6 @@ lemma isLocalMatching_proIwahori
       {t : dominantTorus | StrictMono fun i : Fin (Fintype.card m) ↦ v (t.val i).val}
       (fun t : dominantTorus ↦ (iwahoriDoubleCoset (localNorm E u ∘ t)).indicator 1)
       fun t : dominantTorus ↦ (iwahoriDoubleCoset t.val).indicator 1 := by
-  classical
   -- Everything is read at `u`, where some `τ ≠ 1` acts by an isometry of order dividing `[E' : E]`
   -- whose fixed points come from the completion at `w`. The local results
   -- `cocyclesSplit_comap_proIwahori` and `isMatchingPairAbove_proIwahori` then give the splitting

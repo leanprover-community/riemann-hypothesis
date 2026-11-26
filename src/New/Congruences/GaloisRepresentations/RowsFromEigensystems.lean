@@ -206,24 +206,19 @@ lemma isMainSummandWeights_mainPair {p : D.CriticalPair} {j : ℕ} (hp : p.IsMai
     IsMainSummandWeights D 1 (2 * p.z - 1) fun σ : D.E →+* ℂ ↦
       {(p.z - 1 - cmSign σ * p.negWeight (InfinitePlace.mk σ) : ℤ)} := by
   have ht : D.t = 5 * D.r := rfl
-  obtain ⟨hz_gt : D.m < p.z, hz_le : p.z ≤ D.r⟩ := hp.z_mem
+  obtain ⟨hz_gt, hz_le⟩ := hp.z_mem
   refine
     { rank_mem := ⟨le_rfl, by omega⟩
       t_le := by omega
-      low_or_high :=
-        ⟨j, hp.j_mem.2, fun σ u hu ↦ .inr
-          (abs_mainPair_weight_add_liftWeight_le hp σ (mem_singleton.1 hu))⟩
-      card_small_le σ := ?_
-      card_neg_le σ := ?_ }
-  · have hw_large : 2 * D.halfGap ^ 2 + D.t < D.liftWeight j (InfinitePlace.mk σ) :=
-      D.nat_lt_of_hasLogBound
-    have h_large : 2 * D.halfGap ^ 2 < (p.z - 1 - cmSign σ * p.negWeight (InfinitePlace.mk σ) :
-      ℤ).natAbs :=
-      lt_natAbs_of_abs_add_liftWeight_le hw_large (abs_mainPair_weight_add_liftWeight_le hp σ rfl)
-    simp [countP_eq_zero.2, h_large]
-  · -- The jumps at `σ` and at its conjugate have the sum `2 (z - 1) ≥ 0`.
-    rw [InfinitePlace.mk_conjugate_eq σ, cmSign_star, Units.val_neg, ← cons_zero, ← cons_zero]
-    grind [countP_cons, countP_zero]
+      low_or_high := ⟨j, hp.j_mem.2, fun σ _ hu ↦
+        .inr (abs_mainPair_weight_add_liftWeight_le hp σ (mem_singleton.1 hu))⟩
+      card_small_le σ := by
+        simp [countP_eq_zero.2, lt_natAbs_of_abs_add_liftWeight_le (D.nat_lt_of_hasLogBound :
+          2 * D.halfGap ^ 2 + D.t < _) (abs_mainPair_weight_add_liftWeight_le hp σ rfl)]
+      card_neg_le σ := by
+        -- The jumps at `σ` and at its conjugate have the sum `2 (z - 1) ≥ 0`.
+        rw [InfinitePlace.mk_conjugate_eq σ, cmSign_star, Units.val_neg, ← cons_zero, ← cons_zero]
+        grind [countP_cons, countP_zero] }
 
 end RowJumps
 
@@ -350,16 +345,23 @@ lemma eventually_trace_frob_eq_of_hasLiftHeckePolynomial (ι : PadicIso ℓ) [De
             (((O.hasWeight.inv.toAlgebraic 0 a).avatar x.frob).val * ι.ιℓ (b x.place 1)) +
           ∑ e ∈ Finset.range V.rankDiff, cyclotomicInv ℓ D.E (PadicAlgCl ℓ) x.frob ^ e := by
   classical
-  have n_even : 2 ∣ card n := by grind [IsLiftSetting]
+  have n_even : 2 ∣ card n := by
+    obtain ⟨⟨k, hk⟩, ⟨l, hl⟩⟩ := hO.odd
+    have := O.rank_lt
+    simp only [DescentPair.rankDiff] at hl
+    omega
   obtain ⟨hy_ne, hH⟩ := hy_eig
-  set θ₀ : AlgHeckeChar D.E := ϑ.hasWeight.inv.toAlgebraic 0 0
-  set θ : AlgHeckeChar D.E := O.hasWeight.inv.toAlgebraic 0 a
+  let θ₀ : AlgHeckeChar D.E := ϑ.hasWeight.inv.toAlgebraic 0 0
+  let θ : AlgHeckeChar D.E := O.hasWeight.inv.toAlgebraic 0 a
   filter_upwards [eventually_mostFrobenii
       (hH.and (eventually_notMem_star_notMem ℓ (.image V.placeAt ⊤))) fun _ ↦ id,
     θ₀.eventually_avatar_frob, θ.eventually_avatar_frob] with
     x ⟨hx_eig, hx_off, hx_star_off, hℓ⟩ avatar_θ₀ avatar_θ
   obtain ⟨hw_split, hx_poly⟩ := hx_eig x.prime_q
-  have hw_off : x.place ∉ V.places.conjClosure := by aesop
+  have hw_off : x.place ∉ V.places.conjClosure := by
+    rintro (⟨i, hi⟩ | ⟨i, hi⟩)
+    · exact hx_off (hi ▸ Finset.mem_image_of_mem _ (Finset.mem_univ i))
+    · exact hx_star_off (hi ▸ Finset.mem_image_of_mem _ (Finset.mem_univ i))
   -- the values of `θ₀` and `θ` at the place multiply to `q ^ (n - r) / ν'`, where `ν'` is the
   -- `frobValue` of `V.charV`
   have char_eq : (x.place.q : ℂ) ^ V.rankDiff / V.charV.frobValue n x.place =

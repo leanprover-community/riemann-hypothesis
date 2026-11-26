@@ -2,8 +2,7 @@ module
 
 public import Lib.DiscreteSeries.Bruhat.ComplexPlace
 public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
-public import New.OneLift.ComparisonOperator.GluedLattices
-public import New.OneLift.FalseLifts.BottomOfTower
+public import Lib.Weil.Periods.DescentVanishing
 
 /-!
 # Vanishing of theta descents from W to W plus hyperbolic planes
@@ -184,7 +183,7 @@ lemma theta_sub_zeroTerm_rho_ratMap (D : W'.Splitting W Unit) (z : Matrix n Unit
       θ (W'.hom V) φ := by simp [← vecAtPoint_hom]
   -- The translation lies in the span of the isotropic frame of `Hom(W', V)`.
   have h_span : matrixToVec (V.ratMap W' (z * D.kᴴ * W'.J)) =
-      (D.homSource V).kAdelic *ᵥ matrixToVec (V.dualFrame.1 * V.coordMatrix 1 z) := by
+      (D.homSource V).kAdelic *ᵥ matrixToVec (V.dualFrame.val * V.coordMatrix 1 z) := by
     rw [homSource_kAdelic, kronecker_mulVec_eq_matrixToVec]
     simp [Space.ratMap, W'.map_J, lCoord, kAdelic, coordMatrix, Matrix.mul_assoc]
   simp only [_root_.sub_apply, ContinuousLinearMap.comp_apply, h_theta]
@@ -426,7 +425,7 @@ lemma DescentsVanish.of_isEmpty {S : Set (FinPlace E)} (h_vanish : DescentsVanis
     (D : W'.Splitting W p) [IsBaseAdapted D] [IsEmpty p] : DescentsVanish W' V a S Y := by
   refine fun φ hφ ↦ funext fun g ↦ ?_
   have h_whole (ψ : 𝒮 (W'.hom V)) : θ (W.hom V) (D.homSlice V 0 ψ) = θ (W'.hom V) ψ := by
-    simp [univ_eq_empty, mulVec_eq_sum, homSlice, zeroTerm_apply]
+    simp [univ_eq_empty, mulVec_eq_sum, zeroTerm_apply]
   simpa only [lift_pairThetaKer_swap_apply, h_whole, Fintype.card_eq_zero, pow_zero, mul_one,
     Pi.zero_apply] using h_vanish.integral_homSlice_eq_zero D hφ g
 
@@ -466,7 +465,8 @@ lemma descentsVanish_add_planes {A : Set (FinPlace E)} (hA : A.IsConjDisjoint)
   have hχ : CharUnramifiedAt χ.baseChange.finPart (star w) := fun u hu ↦ by
     simp [hχ_eq, ha u hu, charUnramifiedAt_upsilon _ u hu]
   have hφ : projOn (W'.hom V) {star w} φ = φ := by
-    rw [projOn_integrated, projOn_schrodingerOp_vacElem _ (by simpa [or_comm, and_comm] using hw_off)]
+    rw [projOn_integrated,
+      projOn_schrodingerOp_vacElem _ (by simpa [or_comm, and_comm] using hw_off)]
   have h_card : card m = card r + 2 * (l + 1) := by rw [D.card_eq, hl]
   -- Here `|X|⁻¹ = √q ^ d` with `d = r' + 2 (t' - 1)`, and both exponents needed are at most `d`.
   have h_one_le : 1 ≤ √(w.q : ℝ) := one_le_sqrt.2 (mod_cast w.one_lt_q.le)

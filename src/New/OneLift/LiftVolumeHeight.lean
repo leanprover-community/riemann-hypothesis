@@ -1,5 +1,6 @@
 module
 
+public import New.Determinant.Chain.NormOfChain
 public import New.OneLift.ComparisonOperator.GluingMaps
 public import New.OneLift.HeckeValues.TwistedValueHeights
 
@@ -156,7 +157,7 @@ lemma _root_.New.DescentPair.exists_smul_mem_integralForms_maximal {E r n : Type
     have h_value : ψ g =
         O.levelChar ⟨k, hk⟩ • (stdSpace E n).weightRep O.columnCount O.detExp γ (ψ (s q)) := by
       rw [hg]
-      exact levelSpace_smoothFormRep_apply ψ.2 γ (s q) ⟨k, hk⟩
+      exact levelSpace_smoothFormRep_apply ψ.property γ (s q) ⟨k, hk⟩
     calc weylGauge O.columnCount O.detExp g (ψ g)
       _ = weylGauge O.columnCount O.detExp (s q) (ψ (s q)) := by
         rw [h_value, weylGauge_smul, h_char, one_mul, hg,
@@ -259,7 +260,7 @@ lemma isOrthogonalToFalseLifts_comparisonOp {P : Parameters} {D : Data P} {j : D
     {ϑ : D.Twist} (z : (D.goodLift ϑ j).range) :
     IsOrthogonalToFalseLifts (D.descentPair ϑ j) D.e₀ (D.goodLift ϑ j).rangeᗮ
       (comparisonOp j ϑ z) := by
-  obtain ⟨y, hy⟩ := LinearMap.mem_range.1 z.2
+  obtain ⟨y, hy⟩ := LinearMap.mem_range.1 z.property
   have h_op : comparisonOp j ϑ z = ((D.chosenGroupOrder : ℂ) * hookNumberMinus j ^ 2 *
       (Rows.twistFactor j ϑ)⁻¹) • glue j ϑ (periodLift j y) := by
     rw [← hy, comparisonOp, LinearMap.smul_apply, LinearMap.comp_apply, adjoint_glue_goodLift,
@@ -665,18 +666,18 @@ lemma IsComparisonOperator.norm_padic_det_liftCompression_le {j : D.LiftIndex}
   have h_one : ‖ι.iso (Λ * liftCompression U ϑ).det‖ ≤ 1 ^ finrank ℂ (D.goodLift ϑ j).range := by
     refine norm_map_det_le_pow ι.iso.toRingHom _ fun α z hz ↦ ?_
     let ιp : PadicPlace ι.prime := ⟨(algebraMap _ ℂ_[ι.prime]).comp ι.iso.toRingHom⟩
-    obtain ⟨c, -, h_int, h_least⟩ : ∃ c : ℂ, c ≠ 0 ∧ c • z.1 ∈ integralForms ιp ∧
-        ∀ μ : ℂ, μ • c • z.1 ∈ integralForms ιp → ‖ιp.ιₚ μ‖ ≤ 1 :=
+    obtain ⟨c, -, h_int, h_least⟩ : ∃ c : ℂ, c ≠ 0 ∧ c • z.val ∈ integralForms ιp ∧
+        ∀ μ : ℂ, μ • c • z.val ∈ integralForms ιp → ‖ιp.ιₚ μ‖ ≤ 1 :=
       DescentPair.exists_smul_mem_integralForms_maximal (Subtype.coe_ne_coe.2 hz.2) ιp
-    have h_image : (Λ ((D.goodLift ϑ j).range.orthogonalProjectionOnto (U ϑ (c • z.1))) :
+    have h_image : (Λ ((D.goodLift ϑ j).range.orthogonalProjectionOnto (U ϑ (c • z.val))) :
         (D.descentPair ϑ j).FormV) ∈ integralForms ιp :=
       -- `U_ϑ (c • z)` is integral and orthogonal to the false lifts.
       hΛ_integral _ (hU.mem_integralForms ϑ ι.prime ιp hι _ h_int)
         (hU.isOrthogonalToFalseLifts ϑ (c • z))
-    have h_apply : Λ ((D.goodLift ϑ j).range.orthogonalProjectionOnto (U ϑ z.1)) = α • z :=
+    have h_apply : Λ ((D.goodLift ϑ j).range.orthogonalProjectionOnto (U ϑ z.val)) = α • z :=
       hz.apply_eq_smul
-    have h_eigen : (Λ ((D.goodLift ϑ j).range.orthogonalProjectionOnto (U ϑ (c • z.1))) :
-        (D.descentPair ϑ j).FormV) = α • c • z.1 := by
+    have h_eigen : (Λ ((D.goodLift ϑ j).range.orthogonalProjectionOnto (U ϑ (c • z.val))) :
+        (D.descentPair ϑ j).FormV) = α • c • z.val := by
       rw [map_smul, map_smul, map_smul, h_apply, smul_comm α c]
       rfl
     rw [h_eigen] at h_image
@@ -703,12 +704,12 @@ lemma IsComparisonOperator.norm_map_det_liftCompression_le {j : D.LiftIndex}
       exp (finrank ℂ (D.goodForms (D.spaceW j)) * (3 * (D.f * D.m * D.b * D.logB ^ 2))) := by
   rw [exp_natCast_mul, ← finrank_range_goodLift j 1]
   refine norm_map_det_le_pow σ.toRingHom _ fun α z hz ↦ ?_
-  have hz_pos : 0 < normSqAt z.1 σ := normSqAt_pos (Subtype.coe_ne_coe.2 hz.2) σ
+  have hz_pos : 0 < normSqAt z.val σ := normSqAt_pos (Subtype.coe_ne_coe.2 hz.2) σ
   -- `U_1 z` is orthogonal to the false lifts, so projecting it does not raise its norm at `σ`.
   have h_proj : normSqAt ((D.goodLift (1 : D.Twist) j).range.starProjection (U 1 z)) σ ≤
       normSqAt (U 1 z) σ :=
     normSqAt_starProjection_range_goodLift_le (hU.isOrthogonalToFalseLifts 1 z) σ
-  have h_eigen : (D.goodLift (1 : D.Twist) j).range.starProjection (U 1 z) = α • z.1 :=
+  have h_eigen : (D.goodLift (1 : D.Twist) j).range.starProjection (U 1 z) = α • z.val :=
     congrArg Subtype.val hz.apply_eq_smul
   rw [h_eigen, normSqAt_smul] at h_proj
   have h_sq : ‖σ α‖ ^ 2 ≤ exp (3 * (D.f * D.m * D.b * D.logB ^ 2)) ^ 2 :=

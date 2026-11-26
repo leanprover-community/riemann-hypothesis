@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.RingTheory.LocalRing.Pullback
 public import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
@@ -72,7 +73,6 @@ section HodgeTatePairs
 open CategoryTheory HodgeTest TrivSqZeroExt ExteriorAlgebra AddCommGrpCat TotalH thickeningOver
   CommAlgCat CliffordAlgebra
 
-set_option backward.isDefEq.respectTransparency false
 
 variable {p : ℕ} {k : Type} [Field k] [EmbeddedInQpBar p k]
 
@@ -111,7 +111,16 @@ induced by f. The identity is (𝟙, m ↦ (0, m)), and (f, φ) followed by (g, 
       simp [add_add_add_comm]⟩, by simp⟩} ..
   all_goals
     intros
-    exact congr(⟨_, $(by ext <;> simp [add_assoc])⟩)
+    exact congr(⟨_, $(by
+      ext m : 1
+      apply Prod.ext
+      · simp [add_assoc]
+        rfl
+      · simp
+        first
+        | rfl
+        | change _ = 0 + (0 + _)
+          simp only [zero_add])⟩)
 
 /-- The map of tests `S ⟶ S'` of a morphism of pairs `(S, M) ⟶ (S', M')`. -/
 abbrev testMap {X Y : HodgeTatePair} (f : X ⟶ Y) : X.test ⟶ Y.test := f.1
@@ -211,13 +220,13 @@ def pairAlg : HodgeTatePair ⥤ CommAlg k where
   map {X Y} f := CommAlgCat.ofHom <| AlgHom.codRestrict
     (AlgHom.prod
       { toFun (x : X.PairRing) :=
-          thickeningOver.map f.1 x.1.1 + thickeningOver.mulMu Y.test (f.2 x.1.2.snd).fst
+          thickeningOver.map f.1 x.val.1 + thickeningOver.mulMu Y.test (f.2 x.val.2.snd).fst
         map_one' := by simp
         map_mul' := map_base_add_mulMu_mul f
         map_zero' := by simp
         map_add' := map_fst_add_mulMu_add f
         commutes' r := by simp [algebraMap_eq_inl'] }
-      (((toHodgeTest ⋙ HodgeTest.sqZeroExt).map f).1.comp (AlgHom.pullbackSnd ..)))
+      (((toHodgeTest ⋙ HodgeTest.sqZeroExt).map f).hom'.comp (AlgHom.pullbackSnd ..)))
     Y.PairRing
     fun x ↦ (map_add ..).trans ((add_eq_left.2 (proj_mulMu ..)).trans (proj_map_fst f x))
   map_id X := by ext : 4 <;> simp <;> rfl
@@ -268,7 +277,7 @@ def contractionCocycle : Cocycle formCoeff formCoeff where
         exteriorMapSnd (f ≫ g).2 x = exteriorMapSnd g.2 (exteriorMapSnd f.2 x) := by
       induction x using left_induction <;> simp_all [Algebra.algebraMap_eq_smul_one,
         mul_add] <;> module
-    exact ext fun x ↦ congrArg ULift.up (h_chain x.1).1
+    exact ext fun x ↦ congrArg ULift.up (h_chain x.down).1
 
 /-- For h : ℕ, the class in total Ext(Λ, F) given by the h-th Yoneda power of the class of
 `contractionCocycle` in Ext¹(Λ, Λ), followed by the projection of ⋀M onto its degree-zero part T.
@@ -301,7 +310,11 @@ lemma act_comp_contractionPow (t : k) (h : ℕ) :
     -- `k`-linear
     simp only [smul_eq_comp, contractionPow, ← homClass_comp]
     congr 1 with c
-    exact congrArg ULift.up (algebraMapInv (R := c.GenericRing).map_smul_of_tower t _)
+    rename_i x
+    apply ULift.down_injective
+    let z : ExteriorAlgebra c.GenericRing (Fin c.rank → c.GenericRing) := x.down
+    change algebraMapInv (R := c.GenericRing) (t • z) = t • algebraMapInv z
+    exact (algebraMapInv (R := c.GenericRing)).map_smul_of_tower t z
   | succ h ih =>
     -- the cocycle `contractionCocycle` commutes with multiplication by `t`, since contraction is
     -- semilinear
@@ -442,14 +455,9 @@ lemma hodgeTateMap_map {q h : ℕ} (α : N' ⟶ N) (x : HodgeH N q) :
     hodgeTateMap h (HodgeH.map α x) = PairH.map α (hodgeTateMap h x) := by
   -- restriction to pairs commutes with precomposition by the class of `α`; then compose with
   -- `contractionPow h`
-  have h_nat :
-      comp ((Ext.mk₀ α).mapExactFunctor (restrictAlong pairAlg)).toTotalH
-          (comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull
-            (Functor.whiskerRight toSqZero N) q x).toTotalH (contractionPow h)) =
-        comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N') q
-          (((Ext.mk₀ α).mapExactFunctor (restrictAlong HodgeTest.sqZeroExt)).comp x
-            (zero_add q))).toTotalH (contractionPow h) :=
-    comp_assoc_of_eq (Comparison.pull_comp_restrictAlong (.mk₀ α) x (zero_add q)) (contractionPow h)
+  have h_nat := comp_assoc_of_eq (Comparison.pull_comp_restrictAlong
+    (c := Comparison.restrict toHodgeTest hodgeCoeff) (η := toSqZero) (.mk₀ α) x (zero_add q))
+    (contractionPow h)
   -- both sides, written as precompositions with the classes of `α`
   change comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull
         (Functor.whiskerRight toSqZero N') q
@@ -494,7 +502,6 @@ def HodgeTatePair.cross {M L : AbFunctor HodgeTatePair} [HasFlatValues M]
     refine congrArg (comp (x.cup y)) (congrArg TotalH.homClass ?_)
     exact abTensor_hom_ext fun _ _ _ ↦ congrArg _ (smul_mul_assoc ..)
 
-set_option backward.isDefEq.respectTransparency false
 
 /-- The cocycle on `formCoeff ⊗ formCoeff` (`Λ ⊗ Λ`, `Λ = ⋀ M`) with values in two copies of it.
 At a morphism `f`, its `true` component is `D(f) ⊗ Λ(f)` and its `false` component is
@@ -508,9 +515,23 @@ def HodgeTatePair.tensorContractionCocycle :
         (cond b (abTensorMap (contractionCocycle.component f) (formCoeff.map f))
           (abTensorMap (formCoeff.map f) (contractionCocycle.component f))).hom
   cocycle_comp f g :=
-    addCommGrp_tensor_hom_ext <| by
-      simp [funext_iff, contractionCocycle.cocycle_comp, add_tmul, tmul_add, piAbFunctor,
-        abTensor, Functor.curryObj]
+    addCommGrp_tensor_hom_ext fun a b ↦ by
+      let F := formCoeff (p := p) (k := k)
+      let C := contractionCocycle (p := p) (k := k)
+      have h_map := F.map_comp f g
+      have h_cocycle := C.cocycle_comp f g
+      funext i
+      cases i
+      · change (F.map (f ≫ g)).hom a ⊗ₜ (C.component (f ≫ g)).hom b =
+          (F.map g).hom ((F.map f).hom a) ⊗ₜ (F.map g).hom ((C.component f).hom b) +
+            (F.map g).hom ((F.map f).hom a) ⊗ₜ (C.component g).hom ((F.map f).hom b)
+        rw [h_map, h_cocycle]
+        exact tmul_add _ _ _
+      · change (C.component (f ≫ g)).hom a ⊗ₜ (F.map (f ≫ g)).hom b =
+          (F.map g).hom ((C.component f).hom a) ⊗ₜ (F.map g).hom ((F.map f).hom b) +
+            (C.component g).hom ((F.map f).hom a) ⊗ₜ (F.map g).hom ((F.map f).hom b)
+        rw [h_map, h_cocycle]
+        exact add_tmul _ _ _
 
 /-- Let `M`, `L` be functors on pairs, `M` with flat values, `x` a class of degree `a` on `M` and
 `y` a total class on `L`, both with coefficients `formCoeff` (`Λ = ⋀ M`). The `true` component
@@ -528,19 +549,27 @@ lemma HodgeTatePair.cup_comp_tensorContractionCocycle_π_true {a : ℕ}
       contractionCocycle.extension.X₃.obj c ⟶ contractionCocycle.extension.X₂.obj c :=
     ofHom (.inr _ (formCoeff c))
   simp_rw [TotalH.cup, TotalH.map_comp, comp_assoc]
-  -- `erw`: `cohomClass` is the class of the extension only after unfolding its definition.
-  erw [map_extClass contractionCocycle.shortExact_extension]
   refine congrArg (_ ∘ _) <| .trans (tensorContractionCocycle.cohomClass_comp_eq_extClass
     (S := ⟨_, _, _⟩) _ (𝟙 _) (piAbFunctor.π _ true)
       (fun c ↦ by exact abTensorMap (σ c) (𝟙 _)) ?_ ?_)
-    pullbackAlong_id
+    (pullbackAlong_id.trans
+      (TotalH.map_extClass (Φ := abTensor.flip.obj formCoeff)
+        contractionCocycle.shortExact_extension).symm)
   · -- `σ ⊗ 𝟙` lifts the identity
-    exact fun c ↦ addCommGrp_tensor_hom_ext <| by
-      simp [Cocycle.extension, abTensor, σ, Functor.curryObj]
+    exact fun c ↦ addCommGrp_tensor_hom_ext fun a b ↦ by
+      change TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b)) = a ⊗ₜ[ℤ] b
+      simp only [TensorProduct.map_tmul]
+      rfl
   · -- its failure to be natural is the `true` component
-    exact fun c d f ↦ addCommGrp_tensor_hom_ext <| by
-      simp [Cocycle.extension, abTensor, piAbFunctor, tensorContractionCocycle, σ, piAbFunctor.π,
-        ← add_tmul, Functor.curryObj]
+    exact fun c d f ↦ addCommGrp_tensor_hom_ext fun a b ↦ by
+      change TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b)) =
+        TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b)) +
+          TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b))
+      simp only [TensorProduct.map_tmul]
+      let F := (formCoeff.map f).hom
+      let C := (contractionCocycle.component f).hom
+      have h : ((F 0 + C a, F a) : contractionCocycle.extension.X₂.obj d) = (C a, 0) + (0, F a) := by simp
+      exact (congrArg (fun q : contractionCocycle.extension.X₂.obj d ↦ q ⊗ₜ[ℤ] F b) h).trans (add_tmul ..)
 
 /-- Let `M`, `L` be functors on pairs, `M` with flat values, `x` a class of degree `a` on `M` and
 `y` a total class on `L`, both with coefficients `formCoeff` (`Λ = ⋀ M`). The `false` component
@@ -558,20 +587,33 @@ lemma HodgeTatePair.cup_comp_tensorContractionCocycle_π_false {a : ℕ}
       contractionCocycle.extension.X₃.obj c ⟶ contractionCocycle.extension.X₂.obj c :=
     ofHom (.inr _ (formCoeff c))
   simp_rw [TotalH.cup, TotalH.map_comp, comp_assoc]
-  -- `erw`: `cohomClass` is the class of the extension only after unfolding its definition.
-  erw [← map_zsmul, map_extClass contractionCocycle.shortExact_extension,
-    ← extClass_sign_comm (abTensor_shortExact contractionCocycle.shortExact_extension)]
+  rw [← map_zsmul]
+  refine Eq.trans ?_ (congrArg
+    (fun e ↦ comp (map (abTensor.obj M) y)
+      ((-1 : ℤ) ^ a • comp e (map (abTensor.flip.obj formCoeff) x.toTotalH)))
+    (TotalH.map_extClass (Φ := abTensor.obj M)
+      contractionCocycle.shortExact_extension).symm)
+  refine Eq.trans ?_ (congrArg _
+    (extClass_sign_comm (abTensor_shortExact contractionCocycle.shortExact_extension) x))
   refine congrArg (_ ∘ _) <| .trans (tensorContractionCocycle.cohomClass_comp_eq_extClass
     (S := ⟨_, _, _⟩) _ (𝟙 _) (piAbFunctor.π _ false)
       (fun c ↦ by exact abTensorMap (𝟙 _) (σ c)) ?_ ?_)
     pullbackAlong_id
   · -- `𝟙 ⊗ σ` lifts the identity
-    exact fun c ↦ addCommGrp_tensor_hom_ext <| by
-      simp [abTensor, σ, Functor.curryObj]
+    exact fun c ↦ addCommGrp_tensor_hom_ext fun a b ↦ by
+      change TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b)) = a ⊗ₜ[ℤ] b
+      simp only [TensorProduct.map_tmul]
+      rfl
   · -- its failure to be natural is the `false` component
-    exact fun c d f ↦ addCommGrp_tensor_hom_ext <| by
-      simp [abTensor, piAbFunctor, tensorContractionCocycle, σ, piAbFunctor.π,
-        ← tmul_add, Functor.curryObj]
+    exact fun c d f ↦ addCommGrp_tensor_hom_ext fun a b ↦ by
+      change TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b)) =
+        TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b)) +
+          TensorProduct.map _ _ (TensorProduct.map _ _ (a ⊗ₜ[ℤ] b))
+      simp only [TensorProduct.map_tmul]
+      let F := (formCoeff.map f).hom
+      let C := (contractionCocycle.component f).hom
+      have h : (F 0 + C b, F b) = (C b, 0) + (0, F b) := by simp
+      exact (congrArg (fun q ↦ F a ⊗ₜ[ℤ] q) h).trans (tmul_add ..)
 
 /-- The Leibniz rule for the contraction (`contraction_mul`) on classes. The `false` component of
 `tensorContractionCocycle`, followed by the grade involution (scaling by `-1`) on the first
@@ -607,6 +649,7 @@ lemma HodgeTatePair.contractionPow_cup {a : ℕ} {M L : AbFunctor HodgeTatePair}
     -- agree because the degree-zero component `algebraMapInv` is multiplicative.
     simp [cross, cup_comp_homClass_right, ← homClass_comp, contractionPow, comp_assoc,
       cup_comp_homClass_left]
+    erw [← homClass_comp, ← homClass_comp]
     refine congrArg (comp (x.toTotalH.cup y)) (congrArg TotalH.homClass ?_)
     exact abTensor_hom_ext fun X _ _ ↦ congrArg _ ((algebraMapInv (R := X.GenericRing)).map_mul ..)
   | succ l ih =>
@@ -629,8 +672,17 @@ lemma HodgeTatePair.contractionPow_cup {a : ℕ} {M L : AbFunctor HodgeTatePair}
         scaleModule_comp_contractionPow, comp_smul, Nat.succ_sub, comp_assoc, contractionPow]
       module
     · -- terms where the contraction acts on `x`: the degrees `a + 1 + h` and `a + (h + 1)` agree
-      simp [← comp_of, comp_assoc]
-      module
+      let z : H M formCoeff (a + 1) := x.comp contractionCocycle.shortExact_extension.extClass rfl
+      have hz : comp x.toTotalH contractionCocycle.cohomClass = z.toTotalH :=
+        comp_of x contractionCocycle.shortExact_extension.extClass rfl
+      rw [hz]
+      change comp (z.toTotalH.cup y) (pullbackAlong wedgePairing (contractionPow l)) = _
+      rw [ih z y]
+      apply sum_congr rfl
+      intro h _
+      rw [show a + 1 + h = a + (h + 1) by omega]
+      rw [← hz, comp_assoc (x := x.toTotalH) contractionCocycle.cohomClass (contractionPow h)]
+
 
 /-- Product formula: let `N`, `N'` be functors from `k`-algebras to abelian groups, `x` a Hodge
 class of degree `a` on `N` (with flat values) and `y` one of degree `b` on `N'`. Their product
@@ -698,8 +750,8 @@ lemma HodgeTatePair.exists_contractionPow_eq_directSum_of (h : ℕ) :
   | succ h ih =>
     obtain ⟨y, hy⟩ := ih
     refine ⟨contractionCocycle.shortExact_extension.extClass.comp y (add_comm 1 h), ?_⟩
-    erw [contractionPow, hy, comp_of _ _ (add_comm 1 h)]
-    rfl
+    exact (congrArg (TotalH.comp contractionCocycle.cohomClass) hy).trans
+      (comp_of _ _ (add_comm 1 h))
 
 /-- If restriction along B_{S,M} → T = S[1/p] is bijective on the cohomology of N
 (`New.Variety.PairRestrictBijective`), then for `x : HodgeH N q` the class `hodgeTateMap h x` is the
@@ -823,8 +875,8 @@ lemma IsChartCovered.pairRestrictBijective {n : ℕ} {X : CommAlg k ⥤ Type 1}
     have h_exists_mulMu_eq (r : a.coordRing) :
         ∃ t, mulMu D.test t = (ψ r).val.fst - thickeningOver.map f (s r).val.fst := by
       refine (h_exact _).1 ?_
-      erw [map_sub, proj.naturality_apply, (s _).2, (ψ _).2, ConcreteCategory.congr_hom hψ r,
-        sub_self]
+      erw [map_sub, proj.naturality_apply, (s _).property, (ψ _).property,
+        ConcreteCategory.congr_hom hψ r, sub_self]
     choose t ht using h_exists_mulMu_eq
     -- `g` must send `e_i` to `(t (a.coordinate i), M'-part of ψ (a.coordinate i))`, and coordinates
     -- determine lifts.

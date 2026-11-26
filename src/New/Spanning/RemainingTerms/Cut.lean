@@ -2,6 +2,7 @@ module
 
 public import New.Spanning.RemainingTerms.LinkLattice
 public import New.Spanning.RemainingTerms.LinkVectors
+public import New.Spanning.RemainingTerms.Data
 
 /-!
 # The cut: from the lattice of a link to the vectors common to two links
@@ -90,7 +91,6 @@ lemma toRows_classCoord_mul {γ : S.G E} {ρ : Type} [Fintype ρ] (c : S.Classes
     (S.classCoord c * finAdeleMatrix t * w).toRows₂.toRows₁ = S.classCoordX₀ c * p := by
   -- The first half of the images is the middle part of `t w`, and `S.classCoord c` is block
   -- diagonal.
-  classical
   have h_middle : (finAdeleMatrix t * w).toRows₂.toRows₁ = fromRows p 0 := by
     rw [← hp]
     simp [← ext_iff, linkMatrix, Matrix.mul_apply, Matrix.one_apply]
@@ -456,6 +456,7 @@ discriminant of this lattice, times `x`, the torsion index of `γ` and the discr
 structure LinkSplitting (c c' : S.Classes) (j : Fin (𝔰.ϱ + 2)) (x : ℕ) (γ γ' : S.G E) (i : ℕ) where
   /-- The index set of a family that spans the intersection of the links. -/
   CommonIndex : Type
+  /-- The index set `CommonIndex` is finite. -/
   [fintypeCommonIndex : Fintype CommonIndex]
   /-- A family that spans the intersection of the links. -/
   commonCols : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) CommonIndex E
@@ -647,7 +648,7 @@ images, in the links of `γ` and `γ'`, of vectors of the lattice of `c`. Then t
 columns of `w` with those of `w'` for the form `S.linkForm / M` are integral adeles. Here
 `S.linkForm = diag(T, -T)` on two copies of `X₀ ⊕ E z`, of Gram matrix `T`. -/
 lemma HasIntegralLifts.isIntMatrix_linkForm {c c' : S.Classes} {s : S.ResidueGL} {γ γ' : S.G E}
-    {σ : Type} [Fintype σ] {w : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ (𝔸f E)}
+    {σ : Type} {w : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ (𝔸f E)}
     {w' : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) σ (𝔸f E)} (h_lift : HasIntegralLifts c γ w)
     (hγ : γ ∈ S.termsOver c s c') (hγ' : γ' ∈ S.termsOver c s c')
     (h_lift' : HasIntegralLifts c γ' w') :

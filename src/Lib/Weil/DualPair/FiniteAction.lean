@@ -355,7 +355,7 @@ lemma pairWeil_boxProd_source (h : G E s') (f : 𝒮 (V₁.hom T)) (f' : 𝒮 (V
   have h_ω : ((V₁.sum V₂).hom T).ω (onHom (G.sum (g₁, g₂), h)) (boxProd homSigns_sum_source f f') =
       boxProd homSigns_sum_source ((V₁.hom T).ω (onHom (g₁, h)) f)
         ((V₂.hom T).ω (onHom (g₂, h)) f') :=
-    omega_boxProd _ (by simp_all [adeleMatrix_inv, stdForm, ← ext_iff]) f f'
+    omega_boxProd _ (by simp [adeleMatrix_inv, stdForm, ← ext_iff]) f f'
   simp [pairWeil_apply, det_eq, h_ω]
   module
 
@@ -423,26 +423,13 @@ lemma conj_weilMultiplier_of_eq_neg {g : G E s} {t : n → ℤˣ} {g₁ : G E t}
     conj (weilMultiplier g₁) = upsilonU1.val g₁.det * weilMultiplier g := by
   subst hs
   obtain rfl : g = g₁.neg := ext_adeleMatrix (h_mat.trans g₁.adeleMatrix_neg.symm)
-  -- Split `upsilonU1 (det g₁)` into the determinants at the infinite places, which have modulus
-  -- one, and the value of `υ` at the finite part. In the three `simp` calls below,
-  -- `-implicitDefEqProofs` keeps the kernel from unfolding the groups.
-  have υ_split : (upsilonU1.val g₁.det : ℂ) =
-      (∏ w : InfinitePlace E, (g₁.1 w).val.val.det) * υ.val (finIdeleIncl g₁.2.val.det) := by
-    -- `det g₁` has the valuations of its finite part, and modulus one at the infinite places
-    rw [upsilonU1_apply, upsilon_eq_prod_mul_of_v_eq g₁.2.val.det
-      (by simp -implicitDefEqProofs [-coe_det])]
-    simp -implicitDefEqProofs [-coe_det]
-  -- Negation exchanges the positive and the negative block, and at an infinite place the negative
-  -- minor is `det` times the conjugate of the positive one. It keeps the finite part.
-  have h_real (w : InfinitePlace E) :
-      conj (realMultiplier (g₁.1 w)) = (g₁.1 w).val.val.det * realMultiplier (g₁.neg.1 w) := by
-    simp -implicitDefEqProofs [G.neg, MulEquiv.prodCongr, ← units_ne_iff_eq_neg, realMultiplier,
-      U.principalMinor_compl]
-  have h_fin :
-      conj (finMultiplier g₁.2) = υ.val (finIdeleIncl g₁.2.val.det) * finMultiplier g₁.neg.2 := by
-    rw [G.neg_snd, upsilon_mul_finMultiplier]
-  rw [weilMultiplier, weilMultiplier, map_mul, map_prod, υ_split, h_fin,
-    Finset.prod_congr rfl fun w _ ↦ h_real w, Finset.prod_mul_distrib]
+  -- Split `upsilonU1 (det g₁)` into infinite-place determinants and the finite part, then
+  -- conjugate each infinite minor up to `det` while preserving the finite part.
+  rw [weilMultiplier, weilMultiplier, map_mul, map_prod, upsilonU1_apply,
+    upsilon_eq_prod_mul_of_v_eq g₁.2.val.det (by simp -implicitDefEqProofs [-coe_det]),
+    G.neg_snd, ← upsilon_mul_finMultiplier]
+  simp -implicitDefEqProofs [-coe_det, G.neg, MulEquiv.prodCongr, ← units_ne_iff_eq_neg,
+    realMultiplier, U.principalMinor_compl, Finset.prod_mul_distrib]
   ring
 
 omit [WeilData E] in
@@ -490,8 +477,9 @@ lemma exists_theta_negSource :
   -- with `‖c‖ = 1` (`CoordChange.exists_theta_omega_map` with `g = 1`).
   have h_rat (x : n' × n → 𝔸 E) (hx : (negSource (s := s) (s' := s')).φ x ∈ (S.hom T).ratVectors) :
       (1 : G E (homSigns (-s) s')) • x ∈ (S.neg.hom T).ratVectors := by
-    simp [Space.neg, mem_ratVectors_hom] at hx ⊢
-    rwa [← smul_mul, ← T.x.1.mul_smul]
+    simp only [mem_ratVectors_hom, coe_units_inv, Space.neg, one_smul, Units.smul_inv,
+      Units.val_smul, Matrix.mul_smul] at hx ⊢
+    rwa [← smul_mul, ← T.x.val.mul_smul]
   obtain ⟨c, hc, hθ⟩ := negSource.exists_theta_omega_map (S.hom T) (S.neg.hom T) 1 h_rat
   exact ⟨conj c, by simpa using hc, fun f ↦ by simp [hθ f]⟩
 

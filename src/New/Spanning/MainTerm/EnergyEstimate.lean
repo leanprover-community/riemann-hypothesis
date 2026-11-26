@@ -2,7 +2,6 @@ module
 
 public import New.Spanning.MainTerm.FiniteSieveSystem
 public import New.Spanning.RemainingTerms.Size
-public import New.UpperBound.Objects.LabelsAndIndexTypes
 
 /-!
 # Main-term bound for the second moment over open reductions fixing given vectors
@@ -71,22 +70,22 @@ each `l` the leading minor of order `l` of `S.frameProducts γ` is integral. At 
 `(S.latticeMiddle (ResField w)).frameGram (s i w)`. -/
 lemma exists_leadingMinor_reduceAt_eq {c c' : S.Classes} {s : S.ResidueGL} {γ : S.G E}
     (hγ : γ ∈ S.termsOver c s c') (l : Fin (𝔰.n + 1)) :
-    ∃ δ : Ô E, δ.1 = algebraMap E (𝔸f E) (leadingMinor (S.frameProducts γ) l) ∧
-      ∀ (i : Fin 2) (w : S.chosenPlaces i), reduceAt w.1 δ =
-        leadingMinor ((S.latticeMiddle (ResField w.1)).frameGram (s i w).1) l := by
+    ∃ δ : Ô E, δ.val = algebraMap E (𝔸f E) (leadingMinor (S.frameProducts γ) l) ∧
+      ∀ (i : Fin 2) (w : S.chosenPlaces i), reduceAt w.val δ =
+        leadingMinor ((S.latticeMiddle (ResField w.val)).frameGram (s i w).val) l := by
   -- The translate of `γ` by class representatives has an integral matrix with the frame products of
   -- `γ` and reduction `s`.
   obtain ⟨k, rfl, hk⟩ := hγ
   let X : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (Ô E) :=
-    of fun a b ↦ ⟨k.1.1.1 a b, (mem_intGL.1 k.2).1 a b⟩
+    of fun a b ↦ ⟨k.val.val.val a b, (mem_intGL.1 k.property).1 a b⟩
   refine ⟨leadingMinor ((S.latticeMiddle (Ô E)).frameGram X) l, ?_, fun i w ↦ ?_⟩
   · have h_gram : (S.latticeMiddle (𝔸f E)).frameGram (X.map (Ô E).subtype) =
         (S.frameProducts γ).map (algebraMap E (𝔸f E)) :=
-      (congrArg (fun g : S.GFin ↦ (S.latticeMiddle (𝔸f E)).frameGram g.1.1) hk).trans
+      (congrArg (fun g : S.GFin ↦ (S.latticeMiddle (𝔸f E)).frameGram g.val.val) hk).trans
         frameGram_translateByClassReps
     rw [← (Ô E).coe_subtype, ← leadingMinor_frameGram_map, h_gram, leadingMinor, leadingMinor,
       map_det, RingHom.mapMatrix_apply, submatrix_map]
-  · rw [show (S.reduction k i w).1 = X.map (reduceAt w.1) from rfl, leadingMinor_frameGram_map]
+  · rw [show (S.reduction k i w).val = X.map (reduceAt w.val) from rfl, leadingMinor_frameGram_map]
 
 /-- If `s` is open, that is, at some chosen place above the first prime none of its proper leading
 minors of frame products vanishes, then for every term `γ` over a block `(c, s, c')` no proper
@@ -101,7 +100,7 @@ lemma IsOpenElement.leadingMinor_ne_zero {c c' : S.Classes} {s : S.ResidueGL}
 
 /-- With `f` the number of infinite places, the factor `(1 + S.b⁻¹ ^ 10) ^ f` of the sieve is at
 most `1 + S.b⁻¹ ^ 9`, because `f ≤ S.b / 1000` by the hypothesis `S.IsAdmissible`. -/
-lemma one_add_inv_pow_ten_pow_le [S.IsAdmissible] :
+lemma one_add_inv_pow_ten_pow_le :
     (1 + S.b⁻¹ ^ 10) ^ Core.numInfPlaces E ≤ 1 + S.b⁻¹ ^ 9 := by
   have hb_one : 1 ≤ S.b := le_trans (by norm_num) S.thousand_le_b
   set u : ℝ := S.b⁻¹ ^ 9 / 1000 with hu_def
@@ -141,17 +140,17 @@ lemma one_add_pow_six_mul_add_pow_ten_le_one_add_pow_four {u : ℝ} (hu : 0 ≤ 
 /-- The normalising constant `r` of the main term, used with `k = 𝔰.k - 1`: the product over the
 infinite places of √`openCellConst` and powers of the squared scales `frameScaleSq` of the frame
 vectors, divided by the number of Bessel coordinates. -/
-noncomputable abbrev normalizingConst (S : Filling E 𝔰) [S.IsAdmissible] (k : ℕ) : ℝ :=
+noncomputable abbrev normalizingConst (S : Filling E 𝔰) (k : ℕ) : ℝ :=
   (∏ v : NumberField.InfinitePlace E,
     √𝔰.openCellConst * ∏ a : Fin 𝔰.n, S.frameScaleSq v a ^ (k + 2 * a.rev)) /
       Fintype.card S.BesselCoord
 
-/-- Assume `S.IsAdmissible` and `𝔰.k = kPred + 1`. The product of the Poisson summation constants
+/-- Assume `𝔰.k = kPred + 1`. The product of the Poisson summation constants
 `S.poissonConst i` over `i < 𝔰.n` is `S.normalizingConst kPred ^ 2` times
 `volÔ E ^ 𝔰.n (dim / Λ) ^ 2 / c_G ^ f`, where `dim = Fintype.card S.BesselCoord` is the number of
 Bessel coordinates, `Λ = S.frameScaleProd`, `c_G = 𝔰.openCellConst` and `f` is the number of
 infinite places. -/
-lemma prod_poissonConst_eq [S.IsAdmissible] {kPred : ℕ} (hk : 𝔰.k = kPred + 1) :
+lemma prod_poissonConst_eq {kPred : ℕ} (hk : 𝔰.k = kPred + 1) :
     ∏ i ∈ Finset.range 𝔰.n, S.poissonConst i =
       S.normalizingConst kPred ^ 2 *
         (volÔ E ^ 𝔰.n * (Fintype.card S.BesselCoord / S.frameScaleProd) ^ 2 /
@@ -242,8 +241,7 @@ lemma scaledSiegelConst_mul_decayConst_le [S.IsAdmissible] :
     generalize x⁻¹ ^ 𝔰.n ^ 7 = y
     simp only [x, Q, D, Shape.openCellConst, Shape.scaledVolumeRatio, sphereDensity, one_pow,
       mul_pow, div_pow]
-    field_simp [(volU_pos _).ne']
-    ring
+    field [(volU_pos _).ne']
   -- Those factors are at most `b ^ n⁹`: `2 / s²` is at most `b`, `s / s^(2ϱ)` at most `1` and
   -- `x⁻¹` at most a power of `b`.
   have h_factor : (2 / s ^ 2) ^ (𝔰.n + 2 * 𝔰.ϱ ^ 2) * (s / s ^ (2 * 𝔰.ϱ)) /
@@ -349,7 +347,7 @@ lemma sieve_constant_le [S.IsAdmissible] {kPred numSieved : ℕ} (hk : 𝔰.k = 
     _ = _ := by ring
 
 /-- The square of the normalising constant is positive. -/
-lemma normalizingConst_sq_pos [S.IsAdmissible] (kPred : ℕ) :
+lemma normalizingConst_sq_pos (kPred : ℕ) :
     0 < S.normalizingConst kPred ^ 2 := by
   have h_prod : 0 < ∏ v : NumberField.InfinitePlace E,
       √𝔰.openCellConst * ∏ a : Fin 𝔰.n, S.frameScaleSq v a ^ (kPred + 2 * a.rev) :=
@@ -369,7 +367,7 @@ groups and `(S.besselSystem v).Index` indexes a basis of the value space of the 
 product is `S.normalizingConst kPred`, with `kPred = 𝔰.k - 1`, times the square root of (∏ (‖t‖² -
 N²))^(𝔰.k - 1). By the product formula the powers of `p` cancel; the constant collects
 √`openCellConst`, the powers of the squared scales and the numbers of indices. -/
-lemma gramScalar_mul_headDensity [WeilData E]
+lemma gramScalar_mul_headDensity
     [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable] {P : Floors.IntegralPlace (LocProd T)}
     {G : Floors.PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T))
       (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)} {kPred : ℕ} (hk : 𝔰.k = kPred + 1)
@@ -423,7 +421,7 @@ over `v` of `bandLimit 𝔰.n`, the top one of the forms on pairs of heads that 
 each weighted by the product over `v` of the scalar of `normalizedOrbitalIntegral`, √c_G · (|x_ϱ|² -
 1)^((k - 1)/2) · |I|⁻¹ · ∏_{a<ϱ} |x_a|^(k + 1 + 2(ϱ - a - 1)), where `x = x v p`, `k = 𝔰.k`,
 `c_G = 𝔰.openCellConst` and `I` is the index set of the Bessel system at `v`. -/
-lemma prod_bandLimit_eq_gram [S.IsAdmissible] {T₀ : Finset Eˣ} {σ : S.G E} {t : Eˣ}
+lemma prod_bandLimit_eq_gram {T₀ : Finset Eˣ} {σ : S.G E} {t : Eˣ}
     (hσ : σ ∈ Shape.Form.floorGroup 𝔰.ϱ) (h_tail : S.frameProducts σ 𝔰.top 𝔰.top = t) :
     let x (v : NumberField.InfinitePlace E) (p : Fin 𝔰.ϱ → T₀) (a : ℕ) : ℂˣ :=
       unitOrOne (S.frameScaleSq v a * Φ v (padTuple (fun b : Fin 𝔰.ϱ ↦ (p b).val) t a).val)
@@ -517,31 +515,31 @@ lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le [S.IsAdmissible] {T : 
   let R (t : Eˣ) : Matrix (Fin 𝔰.ϱ → T₀) (Fin 𝔰.ϱ → T₀) ℂ :=
     fun p q ↦ ∏ v, (S.besselSystem v).bandLimit 𝔰.n (x v p t) (x v q t)
   let ρ (t : Eˣ) (p : Fin 𝔰.ϱ → T₀) : ℝ :=
-    ∏ v, √𝔰.openCellConst * √(‖(x v p t 𝔰.ϱ).1‖ ^ 2 - 1) ^ (𝔰.k - 1) /
+    ∏ v, √𝔰.openCellConst * √(‖(x v p t 𝔰.ϱ).val‖ ^ 2 - 1) ^ (𝔰.k - 1) /
       card (S.besselSystem v).Index *
-      ∏ a ∈ range 𝔰.ϱ, ‖(x v p t a).1‖ ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1)))
+      ∏ a ∈ range 𝔰.ϱ, ‖(x v p t a).val‖ ^ (𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1)))
   have h_weight (i : ι) (p : Fin 𝔰.ϱ → T₀) :
       ρ (t i) p * (G.headDensity 𝔰.ϱ (y p (t i)) 1).toReal =
-        r * √((∏ v, (‖Φ v (t i).1‖ ^ 2 - S.N ^ 2)) ^ (𝔰.k - 1)) :=
+        r * √((∏ v, (‖Φ v (t i).val‖ ^ 2 - S.N ^ 2)) ^ (𝔰.k - 1)) :=
     gramScalar_mul_headDensity hk hT₀ (h_large i) p
   -- the classes with the last entry of `i`
   have h_top (i : ι) :
       ∑ j : {j // t j = t i}, r ^ 2 * ‖∑ p : Fin 𝔰.ϱ → T₀, S.cosetAmplitude .cut (c j)
           (S.reduction (n j)) (c' j)
-          (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).1) (t i)) * σ j)‖ ^ 2 ≤
+          (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).val) (t i)) * σ j)‖ ^ 2 ≤
         (1 + S.b⁻¹ ^ 6) * S.scaledSiegelConst * (∑ p, ∑ q, R (t i) p q *
           (G.lastEntryDensity (S.piNAt T) Y (y p (t i)) (y q (t i)) / Y.massRatio.toReal)).re := by
     have h_fiber_tail (j : {j // t j = t i}) : S.frameProducts (σ j) 𝔰.top 𝔰.top = t i := by
-      rw [h_tail j, j.2]
+      rw [h_tail j, j.property]
     have h_fiber_gram (j : {j // t j = t i}) : R (t i) = .gram ℂ fun p : Fin 𝔰.ϱ → T₀ ↦
         ρ (t i) p • besselOrbitalIntegral volume (fun g ↦ .toLp 2 (S.besselFn .cut g))
           (S.ratToInf
-            (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).1) (t i)) * σ j)) :=
+            (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).val) (t i)) * σ j)) :=
       prod_bandLimit_eq_gram (hσ j) (h_fiber_tail j)
     have h_head (p : Fin 𝔰.ϱ → T₀) (l : ℕ) (hl : l < 𝔰.ϱ) :
-        (padTuple (fun a ↦ (p a).1) (t i) l).1 ∈ ratIntegralOff T ∧
-          (padTuple (fun a ↦ (p a).1) (t i) l)⁻¹.1 ∈ ratIntegralOff T := by
-      simpa only [padTuple, dite_eq_left hl] using hT₀ _ (p ⟨l, hl⟩).2
+        (padTuple (fun a ↦ (p a).val) (t i) l).val ∈ ratIntegralOff T ∧
+          (padTuple (fun a ↦ (p a).val) (t i) l)⁻¹.val ∈ ratIntegralOff T := by
+      simpa only [padTuple, dite_eq_left hl] using hT₀ _ (p ⟨l, hl⟩).property
     exact hG.sum_mul_norm_sum_cosetAmplitude_sq_le_lastEntryDensity hT_basis hT_N
       (j := {j // t j = t i})
       (c := (c ·)) (c' := (c' ·)) (h_inj.comp Subtype.val_injective) (hσ ·) h_fiber_tail (h_large i)
@@ -643,8 +641,8 @@ theorem linkSecondMoment_isOpenElement_le [S.IsAdmissible] (Sg : Finset (S.chose
   -- `S.entrySet`. These entries are units off the set `T` of places, and the inverses of the level
   -- and of `N` are integral there.
   obtain ⟨T, _, hT₀, hT_M, hT_basis, hT_N⟩ := S.exists_places_integralOff S.entrySet
-  simp_rw [linkSecondMoment, ← ENNReal.tsum_prod]
-  refine (tsum_subtype_support _).ge.trans (ENNReal.summable.tsum_le_of_sum_le fun F ↦ ?_)
+  simp_rw [linkSecondMoment, ← tsum_prod]
+  refine (tsum_subtype_support _).ge.trans (CompleteLattice.summable.tsum_le_of_sum_le fun F ↦ ?_)
   -- a block `j` has two classes, a reduction and a link
   let block (j : F) : S.Classes × S.Classes × {s | s ∈ S.fixer Sg D ∧ S.IsOpenElement s} ×
       Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E) := j.val.val
@@ -659,7 +657,7 @@ theorem linkSecondMoment_isOpenElement_le [S.IsAdmissible] (Sg : Finset (S.chose
   have h_class (j : F) : ∃ (t : Eˣ) (σ : S.G E) (n : S.latticeStabilizer),
       S.NamesLink T (c j) (s j) (c' j) (Λ j) t σ n ∧
       classSum j = ∑ p : Fin 𝔰.ϱ → S.entrySet, S.cosetAmplitude .cut (c j) (s j) (c' j)
-        (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).1) t) * σ) :=
+        (Floors.FloorGroups.weylElem 𝔰.ϱ (padTuple (fun a ↦ (p a).val) t) * σ) :=
     exists_amplitudeSum_eq_sum_cosetAmplitude hT₀ (h_ne j)
       fun _ ↦ (hs j).right.leadingMinor_ne_zero
   choose t σ n h_names h_sum using h_class

@@ -2,6 +2,7 @@ module
 
 public import New.Determinant.AuxiliaryForms.PathData
 public import New.Determinant.Exchange.RemovingPlanes
+public import Lib.SiegelWeil.RallisInner.SharpData
 
 /-!
 # Theta lifts as a triangle of arrows: spaces, lifts, descents and the first lift
@@ -85,13 +86,6 @@ lemma formNegEquiv_apply_neg (l : NumberField.InfinitePlace E → N → ℤ)
   have h_symm (F : S.neg.Form (typeKernel l (-s))) :
       ((formNegEquiv S l).symm F).val g = F.val (G.neg g) := rfl
   rw [← h_symm, LinearIsometryEquiv.symm_apply_apply]
-
-/-- The isometry `formNegEquiv` commutes with right translation by the finite adelic group. -/
-lemma formNegEquiv_formRep (l : NumberField.InfinitePlace E → N → ℤ) (k : Gf E N)
-    (y : S.Form (typeKernel l s)) :
-    formNegEquiv S l (S.formRep (typeKernel l s) k y) =
-      S.neg.formRep (typeKernel l (-s)) k (formNegEquiv S l y) :=
-  rfl
 
 /-- The transposed lift `modTransposedLift S T α Φ Ψ e' e y` is linear in `Ψ`: it is the sum over
 matrices `x` of `Ψ x` times the transposed lift for the indicator function `Pi.single x 1` of
@@ -288,8 +282,7 @@ theorem triangleNegEquiv_triangleRep (k : Gf D.E (D.GridIndex z 0 0)) (y : D.Tri
   | zero => rfl
   | succ i ih =>
     rw [triangleNegEquiv_succ_apply, triangleNegEquiv_succ_apply, ih]
-    exact formNegEquiv_formRep (D.gridSpace i z 0 0) (D.gridParam z i 0 0) k
-      (D.triangleNegEquiv z i y)
+    rfl
 
 /-! ### The first lift -/
 
@@ -444,10 +437,11 @@ lemma mem_triangleBase_of_inner_eq_inner_triangleFirstLift {P : Parameters} (D :
 
 /-- The inner product formula for `a = triangleFirstLift z ϑ i`, which copies a form from the corner
 `(0, 0)` of the triangle `z` to `(i, 0)` and lifts it to `(i, 1)`. Here `i < D.m`, the number of
-lifts of the data `D`. There is a constant `C` such that for every twist `ϑ` and every form `y` at the
-corner fixed by the base level (`triangleBase`), the lift vanishes only if `y = 0`. For each form
-`x` at the corner, the series of the terms `C * triangleRallisTerm` converges to `triangleGLCard z ϑ 0 * ⟪a x, a y⟫`; the first factor is
-the order of the general linear group of the corner modulo `𝔪 = triangleModulus z ϑ`. -/
+lifts of the data `D`. There is a constant `C` such that for every twist `ϑ` and every form `y` at
+the corner fixed by the base level (`triangleBase`), the lift vanishes only if `y = 0`. For each
+form `x` at the corner, the series of the terms `C * triangleRallisTerm` converges to
+`triangleGLCard z ϑ 0 * ⟪a x, a y⟫`; the first factor is the order of the general linear group of
+the corner modulo `𝔪 = triangleModulus z ϑ`. -/
 lemma exists_hasSum_triangleRallisTerm {P : Parameters} (D : Data P) (z : Bool) (i : ℕ)
     (hi : i < D.m) :
     ∃ C : ℂ, ∀ (ϑ : D.MFoldTwist) (y : D.triangleBase z),
@@ -463,12 +457,14 @@ lemma exists_hasSum_triangleRallisTerm {P : Parameters} (D : Data P) (z : Bool) 
       (D.two_mul_card_gridIndex_zero_lt z)
   refine ⟨C, fun ϑ y ↦ ?_⟩
   obtain ⟨h_inj, h_series⟩ :=
-    h_rallis (D.gridChar ϑ (!z) (0 + i) (D.GridIndex z 0 0)) _ (D.isSharp_pointDatum z ϑ i) _ (D.hasLevel_triangleNegEquiv z ϑ i y)
+    h_rallis (D.gridChar ϑ (!z) (0 + i) (D.GridIndex z 0 0)) _ (D.isSharp_pointDatum z ϑ i) _
+      (D.hasLevel_triangleNegEquiv z ϑ i y)
   refine ⟨fun hy ↦ ?_, fun x ↦ ?_⟩
   · have h_copy : D.triangleNegEquiv z i y = 0 := h_inj hy
     simpa using h_copy
   · let term (γ : D.TriangleCoset z ϑ) : ℂ :=
-      cosetTerm (card (D.GridIndex z 0 (0 + 1))) (D.gridChar ϑ (!z) (0 + i) (D.GridIndex z 0 (0 + 1)))
+      cosetTerm (card (D.GridIndex z 0 (0 + 1)))
+        (D.gridChar ϑ (!z) (0 + i) (D.GridIndex z 0 (0 + 1)))
         (triangleModulus z ϑ).places.conjClosureᶜ (D.triangleNegEquiv z i x)
           (D.triangleNegEquiv z i y) γ
     have h_sum : HasSum
@@ -527,7 +523,7 @@ lemma exists_flipPoly_map_conj_eq (s : N → ℤˣ) (t : N' → ℤˣ)
     have h_var : flipPoly s t (.map conj (flipPoly t s (.map conj (.X v)))) = .X v := by
       -- `zsmul_eq_mul` is excluded so that the two signs meet in one scalar
       simp [flipPoly, Int.cast_smul_eq_zsmul, pairSign, -zsmul_eq_mul, smul_smul, ← Units.val_mul,
-        mul_comm (t _), MvPolynomial.bind₁_X_right]
+        mul_comm (t _), MvPolynomial.aeval_X]
     simp only [map_mul, hp, h_var]
 
 /-! ### Left and reversed pairs, descents and ascents -/
@@ -636,14 +632,14 @@ lemma exists_isLeftPair (h_lt : i + n < D.m) :
   refine ⟨_, isEdgeFamily_of_paramsCorrespond _ true (fun _ ↦ inferInstance)
     (fun _ ↦ inferInstance) ?_⟩
   rw [zero_add]
-  exact (D.paramsCorrespond_leftPair z h_lt).1
+  exact D.paramsCorrespond_neg_gridParam_insert_first h_lt
 
 lemma exists_isReversedPair (h_lt : i + n < D.m) :
     ∃ Φ : D.EdgePoly z (n + 1) n, D.IsReversedPair z i n Φ := by
   refine ⟨_, isEdgeFamily_of_paramsCorrespond _ true (fun _ ↦ inferInstance)
     (fun _ ↦ inferInstance) ?_⟩
   rw [zero_add]
-  exact (D.paramsCorrespond_leftPair z h_lt).2
+  exact (D.paramsCorrespond_neg_gridParam_insert_first h_lt).symm
 
 end Data
 

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Algebra.AffineMonoid.UniqueSums
 public import Lib.PadicHodge.PeriodRings.Ainf
 
 /-!
@@ -116,14 +117,14 @@ abbrev OC.toPadicIntAlgHom [Algebra ℤ_[p] R] (f : R →+* OC) : R →ₐ[ℤ_[
     -- The canonical map `ℤ_[p] → ℂ_[p]` has values of norm at most one, so it lands in `OC`.
     have h_mem (b : ℤ_[p]) : algebraMap ℤ_[p] ℂ_[p] b ∈ valRingCp p := by
       have h_norm : ‖algebraMap ℤ_[p] ℂ_[p] b‖ ≤ 1 :=
-        (norm_algebraMap' ℂ_[p] (b : ℚ_[p])).trans_le b.2
+        (norm_algebraMap' ℂ_[p] (b : ℚ_[p])).trans_le b.property
       simpa
     -- It agrees with `f` on the natural numbers, which approximate any `b` modulo `p ^ n`.
     have h_eq :
         f.comp (algebraMap ℤ_[p] R) =
           RingHom.codRestrict (algebraMap ℤ_[p] ℂ_[p]) (valRingCp p) h_mem :=
       ringHom_ext_of_approx fun b n ↦ ⟨b.appr n, by simp, mem_span_singleton.1 (b.appr_spec n)⟩
-    exact congr(($h_eq a).1)⟩
+    exact congr(($h_eq a).val)⟩
 
 @[simp ←]
 lemma p_mul_X : p * Amax.xiDivP = xi :=
@@ -160,10 +161,10 @@ lemma Amax.exists_lift [IsAdicComplete (span {(p : R)}) R] (f : Ainf →+* R) (x
   let F₀ : AdjoinRoot (C (p : Ainf) * .X - C xi) →+* R := AdjoinRoot.lift f x h_root
   let e : R ≃ₐ[R] AdicCompletion (span {(p : R)}) R := AdicCompletion.ofAlgEquiv (span {(p : R)})
   refine ⟨e.symm.toRingHom.comp (adicMap F₀ (by simp)), fun a ↦ ?_, ?_⟩
-  -- `erw`: the composite is typed through `Amax`, which is the completion only by definition, so a
-  -- plain `rw` finds no type-correct motive.
+  -- The composite is typed through `Amax`, which is the completion only by definition, so its two
+  -- steps are used as equations.
   all_goals
-    erw [RingHom.comp_apply, adicMap_algebraMap]
+    refine (RingHom.comp_apply ..).trans ((congrArg _ (adicMap_algebraMap ..)).trans ?_)
     simp [F₀, e]
 
 /-- The image in `A` of an element of `(p, ξ) ^ n` is divisible by `p ^ n`. -/
@@ -930,8 +931,7 @@ instance [FaithfulSMul R BPlus] : FaithfulSMul R BdRPlus := by
   intro n
   have hy_zero : (y : BdRPlus) = 0 := by simpa using hy
   have h_dvd : (xi : BdRPlus) ^ n ∣ y := by
-    rw [hy_zero]
-    exact dvd_zero _
+    simp [hy_zero]
   simpa using xi_pow_dvd_iff.mp h_dvd
 
 /-! ### `B_dR⁺` is a discrete valuation ring; the period rings are domains -/

@@ -1,6 +1,12 @@
 module
 
-public import Lib.Base
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.NormDet
+import Mathlib.Algebra.DirectSum.LinearMap
+import Mathlib.LinearAlgebra.Charpoly.BaseChange
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.LinearAlgebra.Eigenspace.Zero
+public import Lib.Speed
 
 /-!
 # Traces on the range of an idempotent from traces of a raising operator
@@ -13,8 +19,8 @@ eigenvalue they give the eigenvalues of `T⁺`, hence the dimension and
 `|det T⁺| ^ 2 = d ^ dim * (1 + c) ^ rank e`.
 
 The first section collects what traces determine on generalised eigenspaces; in particular the
-traces of all powers of an operator determine its characteristic polynomial
-(`charpoly_eq_of_trace_pow_eq`).
+traces of all positive powers of an invertible operator determine its characteristic polynomial
+(`charpoly_eq_of_trace_pow_succ_eq`).
 -/
 
 @[expose] public section
@@ -160,14 +166,6 @@ lemma charpoly_eq_of_finrank_maxGenEigenspace_eq
   rw [(IsAlgClosed.splits A.charpoly).eq_prod_roots_of_monic A.charpoly_monic,
     (IsAlgClosed.splits A'.charpoly).eq_prod_roots_of_monic A'.charpoly_monic, h_roots]
 
-/-- Operators `A` and `A'` with the same traces of all powers have the same characteristic
-polynomial. -/
-lemma charpoly_eq_of_trace_pow_eq (h_trace : ∀ l : ℕ, trace ℂ B (A ^ l) = trace ℂ B' (A' ^ l)) :
-    A.charpoly = A'.charpoly := by
-  refine charpoly_eq_of_finrank_maxGenEigenspace_eq fun μ ↦ Nat.cast_injective (R := ℂ) ?_
-  rw [← trace_restrictGenEigenspace_one, ← trace_restrictGenEigenspace_one]
-  exact trace_restrictGenEigenspace_eq _ _ (fun l ↦ by simp only [mul_one, h_trace]) μ
-
 lemma finrank_maxGenEigenspace_zero_of_det_ne_zero (h_det : T.det ≠ 0) :
     finrank ℂ (T.maxGenEigenspace 0) = 0 := by
   rw [finrank_maxGenEigenspace_eq]
@@ -195,7 +193,7 @@ lemma det_one_add_smul_of_isIdempotentElem {e : End ℂ B} (he : IsIdempotentEle
     simpa only [h_range x hx] using Submodule.smul_mem _ (1 + c) hx
   have h_restrict : (1 + c • e).restrict h_stable = (1 + c) • 1 := by
     ext x
-    simpa using h_range x x.2
+    simpa using h_range x x.property
   have h_quotient : (range e).mapQ (range e) (1 + c • e) h_stable = 1 := by
     ext x
     simp

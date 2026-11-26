@@ -83,11 +83,11 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   /-- A Bessel system at each infinite place, for the parameter b. -/
   besselSystem : InfinitePlace E → BesselSystem 𝔰 b (Core.numInfPlaces E)
   /-- The product of π with its conjugate is N. -/
-  piN_mul_star : piN * star piN.1 = N
+  piN_mul_star : piN * star piN.val = N
   /-- N is prime. -/
   N_prime : N.Prime
   /-- At each finite place w, either π is a unit, or w has norm N and π is a unit at w̄. -/
-  N_split (w : FinPlace E) : v (piN.1 w) = 1 ∨ w.q = N ∧ v (piN.1 (star w)) = 1
+  N_split (w : FinPlace E) : v (piN.val w) = 1 ∨ w.q = N ∧ v (piN.val (star w)) = 1
   /-- π is integral at every finite place. -/
   piN_mem : ↑piN ∈ Ô E
   /-- p₀ and p₁ are primes different from N. -/
@@ -99,14 +99,14 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   /-- The places chosen for p_i have norm p_i. -/
   chosenPlaces_q (i : Fin 2) : ∀ w ∈ chosenPlaces i, w.q = levelPrime i
   /-- No place is chosen for both indices. -/
-  chosenPlaces_injective : (·.2.1 : (Σ i : Fin 2, chosenPlaces i) → FinPlace E).Injective
+  chosenPlaces_injective : (·.2.val : (Σ i : Fin 2, chosenPlaces i) → FinPlace E).Injective
   /-- The conjugate of a chosen place is not chosen. -/
   star_notMem_chosenPlaces {i j : Fin 2} {w : FinPlace E} :
       w ∈ chosenPlaces i → star w ∉ chosenPlaces j
   /-- An integral finite adele r is divisible by M = p₀ p₁ if and only if r and r̄ vanish modulo
   every chosen place. -/
   M_dvd_iff (r : Ô E) : ↑(levelPrime 0 * levelPrime 1) ∣ r ↔
-      ∀ p : Σ i : Fin 2, chosenPlaces i, reduceAt p.2 r = 0 ∧ reduceAt p.2.1 (star r) = 0
+      ∀ p : Σ i : Fin 2, chosenPlaces i, reduceAt p.2 r = 0 ∧ reduceAt p.2.val (star r) = 0
   /-- For each p_i there are as many chosen places as E has infinite places. -/
   card_chosenPlaces (i : Fin 2) : Fintype.card (chosenPlaces i) = Core.numInfPlaces E
   /-- ϖ is purely imaginary. -/
@@ -121,8 +121,6 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   mul_finrank_le_pow : (𝔰.ϱ + 1) * Module.finrank ℚ E ≤ 2 ^ (2 * 𝔰.ϱ)
   /-- 1000 (2ϱ + 2)⁹ ≤ k. -/
   pow_le_k : 1000 * (2 * 𝔰.ϱ + 2) ^ 9 ≤ 𝔰.k
-  /-- 1000 (2ϱ + 2) ≤ k. -/
-  thousand_mul_le_k : 1000 * (2 * 𝔰.ϱ + 2) ≤ 𝔰.k
   /-- k is at most the number f of infinite places of E. -/
   k_le_f : 𝔰.k ≤ Core.numInfPlaces E
   /-- (200 f k rd)¹⁰⁰⁰ ≤ b, with f the number of infinite places and rd the root discriminant of
@@ -146,8 +144,6 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   le_M : b ^ 19 ≤ ↑(levelPrime 0 * levelPrime 1)
   /-- 5 ≤ N. -/
   five_le_N : (5 : ℝ) ≤ N
-  /-- With n = ϱ + 1: 10¹⁰ n⁴ ≤ n⁶, 3 n⁶ + 12 ≤ n⁷ and n⁷ ≤ k. -/
-  pow_chain : 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 6 ∧ 3 * 𝔰.n ^ 6 + 12 ≤ 𝔰.n ^ 7 ∧ 𝔰.n ^ 7 ≤ 𝔰.k
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
 
@@ -158,6 +154,26 @@ export Core (numInfPlaces)
 attribute [instance] fintypeChosen isLevel_sourceLevel
 
 attribute [scoped simp] N_prime levelPrime_prime_and_ne
+
+/-- 1000 (2ϱ + 2) ≤ k. -/
+lemma thousand_mul_le_k (S : Filling E 𝔰) : 1000 * (2 * 𝔰.ϱ + 2) ≤ 𝔰.k :=
+  Nat.le_trans (Nat.mul_le_mul_left 1000 (Nat.le_self_pow (by decide : 9 ≠ 0) _)) S.pow_le_k
+
+/-- With n = ϱ + 1: 10¹⁰ n⁴ ≤ n⁶, 3 n⁶ + 12 ≤ n⁷ and n⁷ ≤ k. -/
+lemma pow_chain (S : Filling E 𝔰) :
+    10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 6 ∧ 3 * 𝔰.n ^ 6 + 12 ≤ 𝔰.n ^ 7 ∧ 𝔰.n ^ 7 ≤ 𝔰.k := by
+  have hn : 10 ^ 5 ≤ 𝔰.n := Nat.le_trans S.ten_pow_five_le_varrho (Nat.le_succ _)
+  refine ⟨?_, ?_, ?_⟩
+  · calc 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 2 * 𝔰.n ^ 4 :=
+          Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hn 2)
+        _ = 𝔰.n ^ 6 := (Nat.pow_add 𝔰.n 2 4).symm
+  · have hpos : 1 ≤ 𝔰.n ^ 6 := Nat.one_le_pow _ _ 𝔰.ϱ.succ_pos
+    calc 3 * 𝔰.n ^ 6 + 12 ≤ 𝔰.n ^ 6 * 15 := by omega
+         _ ≤ 𝔰.n ^ 6 * 𝔰.n := Nat.mul_le_mul_left _ (by omega)
+         _ = 𝔰.n ^ 7 := (Nat.pow_succ 𝔰.n 6).symm
+  · calc 𝔰.n ^ 7 ≤ 𝔰.n ^ 9 := Nat.pow_le_pow_right 𝔰.ϱ.succ_pos (by decide)
+         _ ≤ (2 * 𝔰.ϱ + 2) ^ 9 := Nat.pow_le_pow_left (by unfold Shape.n; omega) _
+         _ ≤ 𝔰.k := by have := S.pow_le_k; omega
 
 /-! ### Groups, classes and reduction -/
 
@@ -207,8 +223,8 @@ def latticeStabilizer : Subgroup S.GFin := (intGL 𝔰.BesselIndex (Ô E)).subgr
 /-- The homomorphism from the integral subgroup K to the finite group `ResidueGL` reducing matrix
 entries modulo each chosen place above p₀ and p₁. -/
 protected def reduction : S.latticeStabilizer →* S.ResidueGL :=
-  MonoidHom.pi fun _ ↦ MonoidHom.pi
-    (reduceAt · |> intGL.map |>.comp (S.GFin.subtype.subgroupComap (intGL 𝔰.BesselIndex (Ô E))))
+  MonoidHom.pi fun _ ↦ MonoidHom.pi fun v ↦
+    (intGL.map (reduceAt v.1)).comp (S.GFin.subtype.subgroupComap (intGL 𝔰.BesselIndex (Ô E)))
 
 /-- The principal congruence subgroup K(M): the kernel of the reduction from K to `ResidueGL`, as a
 subgroup of the finite adelic unitary group. -/
@@ -447,7 +463,7 @@ structure IsBoxPartitionOfUnity (c : S.Classes) (ω : (InfinitePlace E → 𝔰.
   over each right coset of `classUnipotent₀ c` is one. -/
   tsum_mul_eq_one (y : InfinitePlace E → 𝔰.G₁) (a : S.classUnipotent c → ENNReal) :
     (∀ γ : S.classUnipotent c, ∑' u : (S.classUnipotent₀ c).subgroupOf (S.classUnipotent c),
-      a (u.1 * γ) = 1) →
+      a (u.val * γ) = 1) →
       ∑' γ : S.classUnipotent c, a γ * ω (S.ratToInf γ * y) = 1
   /-- `ω` is at most one. -/
   le_one (y : InfinitePlace E → 𝔰.G₁) : ω y ≤ 1
@@ -592,10 +608,10 @@ lemma finite_classUnipotent_inter_compact (c : S.Classes) {m : Type*} [Finite m]
   rintro _ ⟨hu, ⟨u, hu_unip, k, hk_ker, hk⟩, rfl⟩ v i j
   let z : InfinitePlace E → Matrix m m ℂ := fun w ↦ (S.ratToInf u w).val.val.submatrix f f
   -- The element `k` of K(M) is `h_c⁻¹ u h_c`, so `(z, k)` gives the adele of the entry.
-  have hk_eq : k.val = (S.classRep c)⁻¹ * S.ratToFin u * S.classRep c := by simpa using hk
+  have hk_eq : k.val = (S.classRep c)⁻¹ * S.ratToFin u * S.classRep c := hk
   have h_entry : entry i j (z, k.val.val) = toAdele (u.val (f i) (f j)) := by
     simp [entry, z, hk_eq, coe_ratToFin, mul_assoc, Prod.ext_iff, funext_iff]
-  exact ⟨u.val (f i) (f j), ⟨(z, k.val.val), ⟨hu, k.2⟩, h_entry⟩, by simp⟩
+  exact ⟨u.val (f i) (f j), ⟨(z, k.val.val), ⟨hu, k.property⟩, h_entry⟩, by simp⟩
 
 /-- Let 𝖴_c(M) = `classUnipotent c` be the group of rational unipotent elements of level M at the
 class c. The image of any subgroup `K` of 𝖴_c(M) at the infinite places (`ratToInf`) is discrete. -/
@@ -637,7 +653,7 @@ lemma exists_cutoff_classUnipotent {c : S.Classes} (K : Subgroup (S.classUnipote
     simp [funext_iff, ← SetLike.coe_eq_coe, GeneralLinearGroup.ext_iff,
       (RingHom.injective _).eq_iff]
   -- Take a cutoff `β` of `Γ` for the counting measure; `K` maps bijectively onto `Γ`.
-  obtain ⟨β, hβ_meas, hβ_int⟩ := (hasCutoff_count (Γ := Γ)).1
+  obtain ⟨β, hβ_meas, hβ_int⟩ := (hasCutoff_count (Γ := Γ)).out
   refine ⟨β, hβ_meas, fun y ↦ ?_, h_disc, hβ_meas, hβ_int⟩
   calc
     ∑' u : K, β (S.ratToInf u * y) = ∑' γ : Γ, β (γ • y) :=
@@ -734,7 +750,7 @@ lemma unipotentCovolume_pos : 0 < S.unipotentCovolume := by
 
 /-- The level M = p₀p₁ as a unit of the finite adeles of E. -/
 def ideleM : (𝔸f E)ˣ :=
-  Units.map (algebraMap E (𝔸f E)).1 (Units.mk0 S.M (by simp [Nat.Prime.ne_zero]))
+  Units.map (algebraMap E (𝔸f E)).toMonoidHom (Units.mk0 S.M (by simp [Nat.Prime.ne_zero]))
 
 /-- For u in the finite adelic unitary group, the number ψ_f(−σ(u)/(Mϖ)), where σ(u) sums the
 entries just above the diagonal in the frame block of u. -/
@@ -749,7 +765,7 @@ def Agrees (s : S.ResidueGL) : Prop :=
 /-- A set T of rational elements is stable if, for all rational points u, u' of 𝖴 and every γ,
 u⁻¹γu' lies in T if and only if γ does. -/
 def IsStable (T : Set (S.G E)) : Prop :=
-  ∀ᵉ (u ∈ besselU) (u' ∈ besselU) (γ : S.G E), u⁻¹ * γ * u' ∈ T ↔ γ ∈ T
+  ∀ u ∈ besselU, ∀ u' ∈ besselU, ∀ γ : S.G E, u⁻¹ * γ * u' ∈ T ↔ γ ∈ T
 
 /-- The set of rational elements γ of the unitary group with `termDisc γ ≠ 0` whose link
 (`New.link`) is the given submodule `Λ`. -/

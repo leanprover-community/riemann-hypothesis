@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Lib.General.LinearAlgebra.HermitianMatrices
 public import Lib.General.Measure.HaarModulus
 public import Lib.General.Measure.IntegralOperators
@@ -162,10 +164,6 @@ omit [Fintype ι] in
 lemma conjTranspose_posProj : (posProj ε)ᴴ = posProj ε := by
   simp [posProj]
 
-omit [Fintype ι] in
-lemma conjTranspose_signMatrix : (signMatrix ε)ᴴ = signMatrix ε := by
-  simp [signMatrix]
-
 /-- The projection P₊ is idempotent and Hermitian, and the matrix of signs is Hermitian: the three
 facts `posProj_mul_posProj`, `conjTranspose_posProj` and `conjTranspose_signMatrix` together. -/
 @[simp]
@@ -267,7 +265,7 @@ lemma integrable_exp_mul_realVac (C : ℝ) :
   -- As `realVac u = exp (-|u|² / 2)`, the bound on exponents `C ‖u‖ - |u|² / 2 ≤ C² - |u|² / 4`
   -- follows from `C ‖u‖ ≤ C² + ‖u‖² / 4 ≤ C² + |u|² / 4` (sup norm against Euclidean norm).
   have h_exponent_le : C * ‖u‖ - (star u ⬝ᵥ u).re / 2 ≤ C ^ 2 - 4⁻¹ * (star u ⬝ᵥ u).re := by
-    linarith [norm_sq_le_re_star_dotProduct_self u, sq_nonneg (‖u‖ - 2 * C)]
+    linarith only [norm_sq_le_re_star_dotProduct_self u, sq_nonneg (‖u‖ - 2 * C)]
   calc
     ‖Real.exp (C * ‖u‖) * ‖realVac u‖‖ = Real.exp (C * ‖u‖ - (star u ⬝ᵥ u).re / 2) := by
       simp [realVac, norm_exp, ← Real.exp_add, neg_div, ← sub_eq_add_neg]
@@ -515,7 +513,7 @@ conjugate of the determinant of the negative block of `g`, and its cocycle is tr
 def realAction (ε : ι → ℤˣ) :
     (realHeisenberg ε).MultiplierAction (normalizedVolume ι) realVac (USign ε) where
   beta_smul := by simp [↓form_mulVec_mulVec, realHeisenberg]
-  measurePreserving g := ⟨by fun_prop, by simp [map_mulVec_addHaar_eq_smul g.1.det_ne_zero]⟩
+  measurePreserving g := ⟨by fun_prop, by simp [map_mulVec_addHaar_eq_smul g.val.det_ne_zero]⟩
   Δ := realMultiplier
   continuous_delta := by fun_prop [realMultiplier]
   Δ_one := by simp [realMultiplier]
@@ -734,7 +732,7 @@ def polyVector (ε : ι → ℤˣ) : MvPolynomial ι ℂ →ₗ[ℂ] fockSpace �
     fun P ↦ by
       induction P using induction_on with
       | C c =>
-        convert (c • vacVector).2
+        convert (c • vacVector).property
         ext
         simp
       | add => aesop
@@ -839,14 +837,14 @@ def piTensor :
     (MultilinearMap.codRestrict
       (MultilinearMap.pi fun x : T × ι → ℂ ↦
         MultilinearMap.compLinearMap (MultilinearMap.mkPiAlgebra ℂ T ℂ) fun τ ↦
-          (IsVacuum.valueAt (MeasurableEquiv.curry T ι ℂ x τ)).1)
+          (IsVacuum.valueAt (MeasurableEquiv.curry T ι ℂ x τ)).toLinearMap)
       (IsVacuum.modelSubmodule (realHeisenberg fun p ↦ ε p.2)) fun v ↦ by
         -- Integrability and the reproducing identity hold factor by factor, by Fubini.
         refine ⟨(integrable_map_equiv ..).1
-          (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).2.1)), ?_⟩
+          (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).property.1)), ?_⟩
         simpa [realHeisenberg, signMatrix, dotProduct, mulVec_diagonal, sum_prod_type, realVac,
           ← integral_fintype_prod_eq_prod, prod_mul_distrib, ← exp_sum, ← sum_div,
-          integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).2.2 _)))
+          integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).property.2 _)))
     1 fun v ↦ by
       simp [norm_eq_integral_norm, integral_map_equiv, ← integral_fintype_prod_eq_prod, ← norm_prod,
         MeasurableEquiv.curry_apply_eq]

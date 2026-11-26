@@ -248,7 +248,7 @@ theorem exists_tsum_enorm_kernelTerm_le {B : ℕ} {k : GInf E s → ℂ} {j : �
       ≤ ∑' γ : U V.J, .ofReal (C * r ^ j) *
           ENNReal.ofReal (majorant φ (8 * card n ^ 2 + 1) (g⁻¹ * V.ratEmbed γ * x)) := by
         simp only [← ofReal_norm, ← ENNReal.ofReal_mul (show 0 ≤ C * r ^ j by positivity)]
-        exact ENNReal.tsum_le_tsum fun γ ↦ ENNReal.ofReal_le_ofReal (h_term γ)
+        exact tsum_le_tsum fun γ ↦ ENNReal.ofReal_le_ofReal (h_term γ)
     _ ≤ .ofReal (C * r ^ j) * .ofReal (D * V.height x ^ d) :=
         ENNReal.tsum_mul_left.trans_le (mul_le_mul_right (h_crude g x) _)
     _ = .ofReal (C * D * r ^ j * V.height x ^ d) := by
@@ -441,41 +441,33 @@ theorem exists_norm_tsum_polyTerm_le {B : ℕ} {k : GInf E s → ℂ} (hB : 13 *
   -- that move the isotropic subspace and those that keep it.
   classical
   obtain ⟨J, hJ, h_level, -⟩ := TestFunction.exists_isLevel_invariant φ
-  obtain ⟨κ, -, h_cusp⟩ :=
-    exists_cuspFrame_of_height (s := s) (⟨J, hJ.isOpen⟩ : OpenSubgroup (Gf E n))
-  set d : ℕ := 4 * Core.numInfPlaces E * card n ^ 2
-  obtain ⟨C₀, hC₀, h_low⟩ := V.exists_tsum_enorm_kernelTerm_le_height
+  obtain ⟨κ, -, h_cusp⟩ := exists_cuspFrame_of_height (s := s) ⟨J, hJ.isOpen⟩
+  set d := 4 * Core.numInfPlaces E * card n ^ 2
+  obtain ⟨C₀, hC₀, h₀⟩ := V.exists_tsum_enorm_kernelTerm_le_height
     (eight_mul_sq_lt_of_thirteen_mul_cube_le card_pos hB) φ he.decay
   obtain ⟨C₁, hC₁, h_moves⟩ := V.exists_tsum_enorm_kernelTerm_le_of_notMem hB φ he.decay
   obtain ⟨C₂, h_keeps⟩ := V.exists_norm_partialKernel_spanStabilizer_le hB φ he h_level
   refine ⟨max (C₀ * κ ^ d) (C₂ * κ ^ d + C₁ * κ ^ d), fun x S ↦ ?_⟩
-  have h_height : 0 < V.height x := V.height_pos x
+  have := V.height_pos x
   -- The equation `δ ^ card n * V.height x = κ` eliminates `κ`.
   obtain ⟨δ, hδ, rfl, h_frame⟩ := h_cusp V x
   let inS : Set (U V.J) := {γ | ((γ : GL n E) : Matrix n n E).charpoly ∈ S}
-  have h_sum : ∑' γ : U V.J, V.polyTerm k φ S γ x = V.partialKernel k φ inS x x :=
-    tsum_congr fun γ ↦ V.polyTerm_eq_kernelTerm_indicator k φ S γ x
-  rw [h_sum]
+  rw [tsum_congr fun γ ↦ V.polyTerm_eq_kernelTerm_indicator k φ S γ x]
   obtain h_one | h_one := le_total 1 δ
   · -- The height is bounded, so the bound by a power of the height suffices.
-    have h_norm : ‖V.partialKernel k φ inS x x‖ ≤ C₀ * V.height x ^ d :=
-      norm_tsum_le_of_tsum_enorm_le (by positivity) (h_low inS x x)
-    refine le_max_of_le_left (h_norm.trans ?_)
+    refine le_max_of_le_left <| (norm_tsum_le_of_tsum_enorm_le (by positivity) (h₀ _ x x)).trans ?_
     gcongr
     exact V.height_le_pow_mul_height h_one x
   -- High in a cusp, split the sum according to whether `γ` keeps the isotropic subspace.
   obtain ⟨A, h_cover⟩ := h_frame h_one
-  let stab : Set (U V.J) := spanStabilizer V.J A.isotropicCols
-  have h_split : V.partialKernel k φ inS x x =
-      V.partialKernel k φ (stab ∩ inS) x x + V.partialKernel k φ (inS \ stab) x x := by
+  let stab := spanStabilizer V.J A.isotropicCols
+  rw [show (∑' γ, V.kernelTerm k φ (inS.indicator 1) x γ x) =
+      V.partialKernel k φ (stab ∩ inS) x x + V.partialKernel k φ (inS \ stab) x x by
     simp only [partialKernel, ← (V.summable_kernelTerm hB φ he.decay _ x x).tsum_add
       (V.summable_kernelTerm hB φ he.decay _ x x)]
-    refine tsum_congr fun γ ↦ ?_
-    by_cases hγ : γ ∈ stab <;> simp [kernelTerm, Set.indicator, hγ]
-  have h_move : ‖V.partialKernel k φ (inS \ stab) x x‖ ≤ C₁ * (δ ^ card n * V.height x) ^ d :=
-    norm_tsum_le_of_tsum_enorm_le (by positivity) (h_moves x δ hδ.le A _ fun γ hγ ↦ hγ.2)
-  rw [h_split]
-  exact le_max_of_le_right (norm_add_le_of_le (h_keeps x δ hδ.le A h_cover S) h_move)
+    exact tsum_congr fun γ ↦ by by_cases hγ : γ ∈ stab <;> simp [kernelTerm, Set.indicator, hγ]]
+  exact le_max_of_le_right <| norm_add_le_of_le (h_keeps x δ hδ.le A h_cover S)
+    (norm_tsum_le_of_tsum_enorm_le (by positivity) (h_moves x δ hδ.le A _ fun _ hγ ↦ hγ.2))
 
 end Space
 

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.SpecialFunctions.Stirling
 public import New.Reduction.PrimeSums
 public import New.Spanning.Unfolding.FillingAdmissible
 public import New.UpperBound.Divisibility.ChainDatumExpansion
@@ -344,7 +345,7 @@ lemma chainSize_sub_le {P : Parameters} (D : Data P) :
       D.mainAmount - D.m * D.totalRemainder + 2 * ∑ p ∈ D.smallNonsplitPrimes, D.gain p * log p +
         32 * (D.f * D.a * D.logB) := by
   rw [mainAmount_sub_add_two_mul_sum_gain, chainSize]
-  linarith [D.card_aPlaces_mul_excess_le]
+  linarith only [D.card_aPlaces_mul_excess_le]
 
 /-! ### The terms and the restriction -/
 
@@ -488,7 +489,7 @@ lemma lowerChain_goodProjTranslate_apply {P : Parameters} {D : Data P} (ϑ : D.T
         (g * firstBlockLift ϑ (t * s)) := by
   -- Expand the action of `e₀` as a sum over `𝖦`; the lift turns the action of `t * s` into right
   -- translation by `firstBlockLift ϑ (t * s)` (`lowerChain_principalRep`).
-  simp [asAlgebraHom_eq_sum, ← Module.End.mul_apply, ← map_mul, lowerChain_principalRep, smul_sum,
+  simp [asAlgebraHom_eq_sum, ← mul_apply_eq_comp, ← map_mul, lowerChain_principalRep, smul_sum,
     mul_smul]
 
 /-- Passage to the good part keeps integrality. Let `j : ℂ → ℂ_l` be a ring homomorphism; a form is
@@ -516,7 +517,7 @@ lemma goodProjTranslate_mem_integralForms {P : Parameters} {D : Data P} {l : ℕ
   have h_int : IsIntegral ℤ (Nat.card D.chosenGL * D.e₀.coeff t) :=
     D.isCentralProj_e₀.isChar_card_mul_coeff.isIntegral _
   rw [weylGauge_smul, ← weylGauge_mul_of_mem_integralAbove
-    (hk := stdLevel_le_localLevel (firstBlockLift ϑ (t * s)).2)]
+    (hk := stdLevel_le_localLevel (firstBlockLift ϑ (t * s)).property)]
   exact (mul_le_of_le_one_left (norm_nonneg _) (norm_le_one_of_isIntegral _ h_int)).trans
     (h_integral _)
 

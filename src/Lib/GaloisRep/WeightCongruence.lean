@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Topology.Algebra.Group.CompactOpen
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
 public import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
 
@@ -192,7 +193,7 @@ lemma New.stoneWeierstrass_ultrametric (N : Submodule k C(X, k)) (φ : C(X, k))
   have mul_mem_N (c : B) {d : C(X, k)} (hd : d ∈ N) : (c : C(X, k)) * d ∈ N := c.property.1 d hd
   -- The `w` with `w * φ` within `ε` of `N` form a proper ideal of `B`; a maximal ideal holds it.
   obtain ⟨m, _, h_near⟩ : ∃ m : Ideal B, m.IsMaximal ∧
-      ∀ w : B, ∀ g ∈ N, ‖w.1 * φ - g‖ ≤ ε → w ∈ m := by
+      ∀ w : B, ∀ g ∈ N, ‖w.val * φ - g‖ ≤ ε → w ∈ m := by
     let N' : Submodule B C(X, k) :=
       { N.toAddSubmonoid with smul_mem' := fun c _ hd ↦ mul_mem_N c hd }
     let ball : Submodule B C(X, k) := ⟨(closedBall_openAddSubgroup _ hε).1.1,
@@ -222,7 +223,8 @@ lemma New.stoneWeierstrass_ultrametric (N : Submodule k C(X, k)) (φ : C(X, k))
       calc ‖(f : C(X, k)) x‖ ^ n * ‖g x‖ ≤ r / (‖g x‖ + 1) * ‖g x‖ := by grw [hn]
         _ ≤ r := by simp [field]
     have h_mono (e f : P) : U f ⊆ U (e * f) := fun x hx ↦ by
-      simp [U, mul_assoc] at hx ⊢
+      simp only [U, Set.mem_preimage, Metric.mem_closedBall, dist_zero_right, ContinuousMap.coe_mul,
+        Pi.mul_apply, MulMemClass.coe_mul, norm_mul, mul_assoc] at hx ⊢
       grw [norm_coe_le_norm, norm_le_one, one_mul, hx]
     have h_open (f : P) : IsOpen (U f) :=
       (isOpen_closedBall 0 hr.ne').preimage ((f : C(X, k)) * g).continuous
@@ -243,7 +245,7 @@ lemma New.stoneWeierstrass_ultrametric (N : Submodule k C(X, k)) (φ : C(X, k))
     obtain ⟨f, hf⟩ := h_small v h_pos h_max
     -- `w = f * v / v y` vanishes at `a` and `f - w` at `y`, so both lie in `m`, while `f` does not.
     let w : B := ⟨(v y)⁻¹ • (f * v),
-      A.smul_mem (mul_mem f.1.2.1 (sub_mem hu (algebraMap_mem ..))) _, by
+      A.smul_mem (mul_mem f.val.property.1 (sub_mem hu (algebraMap_mem ..))) _, by
         simpa [norm_smul, field, closedBall_openAddSubgroup]⟩
     have w_mem : w ∈ m := by_contra fun hw ↦ (ha ⟨w, hw⟩).not_gt (by simp [w, v])
     have diff_mem : f - w ∈ m := by_contra fun hw ↦
@@ -353,8 +355,9 @@ lemma New.mem_uniformClosure_weylRep_coeff {l N : ℕ} {Φ : Type} [Fact l.Prime
   let y (x : (Σ _ : Φ, Fin N) × ℕ) : k := if x.2 ≤ x.1.2 then v x.1.2 else 0
   let κ (d : Φ → ℕ) (τ : Φ) (h : ℕ) : ℕ := (N + 1) ^ (4 * (N - h)) + if h = 1 then d τ else 0
   let E (F : MatrixPoly (Σ _ : Φ, Fin N) k) : C(X, k) :=
-    ⟨fun γ ↦ (rowSubst (fun τ ↦ (z γ τ).1) F).eval y, by
-      simp [rowSubst, eval₂_eq]
+    ⟨fun γ ↦ (rowSubst (fun τ ↦ (z γ τ).val) F).eval y, by
+      simp only [rowSubst, map_aeval, algebraMap_eq, map_sum, smul_eval, eval_X, coe_eval₂Hom,
+        eval₂_eq]
       fun_prop⟩
   let S : Submodule k C(X, k) :=
     span k {E F | (d) (F ∈ nabla k Sigma.fst (diagramWeight (fun _ ↦ N + 1) (κ d)))}
@@ -387,7 +390,7 @@ lemma New.mem_uniformClosure_weylRep_coeff {l N : ℕ} {Φ : Type} [Fact l.Prime
     simp [w, y, tableauPoly, prod_eq_zero_iff, BlockTriangular, hv.ne_zero,
       det_of_isLowerTriangular, minor, RingHom.map_det]
   have h_local (γ : X) : ∃ b ∈ S, ∀ δ : X, (∀ u ∈ S / S, u δ = u γ) → φ δ = b δ := by
-    refine ⟨E ((φ γ / w.eval y) • rowSubst (fun τ ↦ (z γ τ).1⁻¹) w), subset_span
+    refine ⟨E ((φ γ / w.eval y) • rowSubst (fun τ ↦ (z γ τ).val⁻¹) w), subset_span
       ⟨0, _, smul_mem _ _ (rowSubst_mem_nabla _ prod_tableauPoly_mem_nabla), rfl⟩, fun δ h ↦ ?_⟩
     simp [E, z_eq γ δ h, h_factors (z_eq γ δ h), rowSubst_rowSubst, w_ne]
   refine mem_uniformClosure.2 fun ε hε ↦ ?_
@@ -442,9 +445,9 @@ lemma inducesPlacePair_mk (σ : E →+* ℂ) (h : inducedPrime σ = w) :
   · -- `ιℓ ∘ Φ ∘ conj` is `ιℓ ∘ star Φ`, and `star Φ = σ` induces `w`
     right
     show placeOfEmb (weightEmbedding ιℓ.toRingHom (InfinitePlace.mk σ)) = w
-    -- elaborator: `isConj_complexConj` is stated with `complexConj E`, which matches
-    -- `starRingEnd E` only up to unfolding, hence `erw`
-    erw [weightEmbedding, comp_assoc, ← isConj_complexConj]
+    -- `isConj_complexConj` is stated with `complexConj E`, which is `starRingEnd E` by unfolding
+    rw [weightEmbedding, comp_assoc, show starRingEnd E = (complexConj E : E →+* E) from rfl,
+      ← isConj_complexConj]
     exact (congrArg inducedPrime hσ).trans h
 
 /-- An element supported at `w` and its conjugate has component `1` over `τ`, unless `w` lies above
@@ -464,8 +467,9 @@ lemma padicComponents_ofSplitPlace {τ : InfinitePlace E}
   have h_ne : u ≠ w := fun h_eq ↦ h_not (.inr h_eq)
   have h_star_ne : star u ≠ w := fun h_eq ↦ h_not (.inl (by rw [← h_eq, star_star]))
   have h_one : (ofSplitPlace hw g).atPlace u = 1 := atPlace_ofSplitPlace_of_ne hw g h_ne h_star_ne
-  -- `erw` is needed, as the component is the one at `u` only after unfolding `padicComponents`
-  erw [padicComponents_toFun, h_one, map_one]
+  -- the component is the one at `u` after unfolding `padicComponents` and `u`
+  rw [padicComponents_toFun]
+  exact (congrArg _ h_one).trans (map_one _)
 
 /-- If `v` induces `w` or its conjugate and the component of `g` over `v` is `1`, then `g` is `1`
 at `w`. -/
@@ -553,7 +557,9 @@ lemma GaloisRep.exists_padicModel_hecke_contraction (j : ℕ) :
         congrArg (padicModel κ κ' M · z) (h_eig (N - j))
     -- `P` is the Hecke polynomial, whose coefficient of degree `j` is `c` times `t (N - j)`
     have h_coeff : P.coeff j = c * t (N - j) := by rw [hP, coeff_heckePoly, Fintype.card_fin]
-    simp [funext_iff, h_hecke, h_coeff, mul_left_comm, mul_assoc]
+    rw [LinearMap.smul_apply, LinearMap.smul_apply, h_hecke, h_coeff, map_mul, map_intCast,
+      mul_smul, mul_smul, Int.cast_smul_eq_zsmul]
+    exact smul_comm _ _ _
 
 attribute [local fun_prop] Continuous.if_const
 
@@ -599,8 +605,8 @@ lemma exists_weylRep_eq_submatrix_kronecker (T : Set (InfinitePlace E))
 It is locally constant, since `f` has an open right stabiliser and `θ` is `1` near `1`. -/
 private lemma continuous_character_smul_form {K : Subgroup (Gf E (Fin N))} {θ : K →* ℂ}
     (hθ : θ =ᶠ[nhds 1] 1) (f : (stdSpace E (Fin N)).forms κ) (c : Gf E (Fin N)) :
-    Continuous fun k : K ↦ (ιℓ (θ k), ιℓ (θ k⁻¹) • ιℓ ∘ f.1 (c * k)) := by
-  obtain ⟨hf_open, -⟩ := f.2
+    Continuous fun k : K ↦ (ιℓ (θ k), ιℓ (θ k⁻¹) • ιℓ ∘ f.val (c * k)) := by
+  obtain ⟨hf_open, -⟩ := f.property
   have h_nhds := hθ.and (IsOpen.mem_nhds (.preimage_val hf_open) (by simp))
   exact (isLocallyConstant_of_eventually_mul
     (h_nhds.mono (by simp +contextual [← mul_assoc]))).continuous
@@ -610,10 +616,10 @@ places of `T`, of the fields generated over `ℚ_[l]` by the images of `E` under
 private lemma padicComponents_apply_mem_iSup_adjoin (T : Set (InfinitePlace E)) (x : Gf E (Fin N))
     (τ : T) (i j : Fin N) :
     padicComponents (l := l) x τ i j ∈
-      (⨆ τ : T, .adjoin ℚ_[l] (.range (weightEmbedding ιℓ.toRingHom τ.1)) :
+      (⨆ τ : T, .adjoin ℚ_[l] (.range (weightEmbedding ιℓ.toRingHom τ.val)) :
         IntermediateField ℚ_[l] (PadicAlgCl l)) := by
   obtain ⟨-, -, h_image, -⟩ :=
-    (exists_placeOfEmb_extension (weightEmbedding ιℓ.toRingHom τ.1)).choose_spec
+    (exists_placeOfEmb_extension (weightEmbedding ιℓ.toRingHom τ.val)).choose_spec
   exact mem_of_le_of_mem (le_iSup _ τ) (h_image _)
 
 -- Keeps definitional checks from unfolding the finite sums.
@@ -649,10 +655,10 @@ lemma padicModel_mem_uniformClosure {K : Subgroup (Gf E (Fin N))} (hK : IsLevel 
   -- `s c g` is the finite set of rational `γ` with `q c g γ = c⁻¹ γ g ∈ K`. It has as many elements
   -- as `classAut` at `c` if `c` and `g` have the same double coset, and is empty otherwise.
   let s (c g : Gf E (Fin N)) := transporter K (stdSpace E (Fin N)).embFin c g
-  let q (c g : Gf E (Fin N)) (γ : s c g) : K := ⟨_, mem_transporter.1 γ.2⟩
+  let q (c g : Gf E (Fin N)) (γ : s c g) : K := ⟨_, mem_transporter.1 γ.property⟩
   -- `u c` is locally constant, since elements near `1` fix `f` and have `θ = 1`.
   let u (c : Gf E (Fin N)) (k : K) : PadicAlgCl l × (WeylIndex (Fin N) κ.1 → PadicAlgCl l) :=
-    (ιℓ (θ k), ιℓ (θ k⁻¹) • ιℓ ∘ f.1 (c * k))
+    (ιℓ (θ k), ιℓ (θ k⁻¹) • ιℓ ∘ f.val (c * k))
   have hu (c : Gf E (Fin N)) : Continuous (u c) := continuous_character_smul_form κ hθ f c
   let R (c : Gf E (Fin N)) (k : K) :
       Matrix (WeylIndex (Fin N) κ.1) (WeylIndex (Fin N) κ.1) (PadicAlgCl l) :=
@@ -663,7 +669,7 @@ lemma padicModel_mem_uniformClosure {K : Subgroup (Gf E (Fin N))} (hK : IsLevel 
   let L (c : Gf E (Fin N)) (y : WeylIndex (Fin N) κ.1) := LinearMap.pi fun x : _ × _ ↦
     dotProductEquiv _ _ (fun γ ↦ R c (q c x.1 γ) x.2 y) ∘ₗ .funLeft _ _ (q c x.1)
   -- Each transporter contributes the value at `g`, by the equivariance of `f` under `γ`.
-  obtain ⟨-, hf_equiv⟩ := f.2
+  obtain ⟨-, hf_equiv⟩ := f.property
   have h_term (c g : Gf E (Fin N)) (γ : s c g) :
       R c (q c g γ) *ᵥ Φ c (q c g γ) = fun i ↦ padicModel κ κ 1 f (g, i) := by
     simp +contextual [Φ, R, u, q, padicModel, mul_assoc, (hf_equiv · g),
@@ -671,7 +677,7 @@ lemma padicModel_mem_uniformClosure {K : Subgroup (Gf E (Fin N))} (hK : IsLevel 
       ← (weylRep ..).map_mul, Pi.mul_def, Pi.inv_def, ((Group.isUnit _).map θ).ne_zero, mulVec_smul,
       mulIndicator, smul_mulVec]
   -- Only the class of `g` contributes at `g`, with as many terms as `s c c` has elements.
-  have h_sum : padicModel κ κ 1 f.1 = ∑ c : StdClasses K,
+  have h_sum : padicModel κ κ 1 f.val = ∑ c : StdClasses K,
       ((s c.out c.out).card : PadicAlgCl l)⁻¹ • ∑ y, L c.out y (Φ c.out · y) := by
     simp [L, s, ↓card_transporter, dotProduct, sum_comm, ← mulVec_apply_eq_sum, h_term,
       -mem_classAut, -MonoidHom.coe_range, funext_iff, HasFiniteType.finite_aut,
@@ -683,7 +689,7 @@ lemma padicModel_mem_uniformClosure {K : Subgroup (Gf E (Fin N))} (hK : IsLevel 
     dsimp [R, Φ, weylRep, mulIndicator]
     constructor <;> fun_prop
   -- `Φ c` factors through the components `z` over `T`, by `h_fix`.
-  let z : C(K, T → GL (Fin N) (PadicAlgCl l)) := .mk fun k τ ↦ padicComponents (c * k.1)⁻¹ τ
+  let z : C(K, T → GL (Fin N) (PadicAlgCl l)) := .mk fun k τ ↦ padicComponents (c * k.val)⁻¹ τ
   have h_factor : (fun k ↦ Φ c k y).FactorsThrough z := fun k ↦ by
     refine (mul_left_surjective k).forall.2 fun d hd ↦ ?_
     -- `simp_all` works with `hd` and `h_fix` only
@@ -697,7 +703,7 @@ lemma padicModel_mem_uniformClosure {K : Subgroup (Gf E (Fin N))} (hK : IsLevel 
   obtain ⟨B, hB, hR_le⟩ := (isCompact_range hR).isBounded.exists_pos_norm_le
   refine map_mem_uniformClosure_of_bound _ hB (fun φ δ hδ hφ x ↦ ?_) ?_
     (mem_uniformClosure_weylRep_coeff z _
-      (fun k τ i j ↦ padicComponents_apply_mem_iSup_adjoin T (c * k.1)⁻¹ τ i j)
+      (fun k τ i j ↦ padicComponents_apply_mem_iSup_adjoin T (c * k.val)⁻¹ τ i j)
       hΦ h_factor)
   · exact norm_sum_le_of_forall_le_of_nonneg (by positivity) fun γ _ ↦
       norm_mul_le_of_le ((norm_le_pi_norm (fun i ↦ R c (q c x.1 γ) i y) x.2).trans
@@ -717,7 +723,7 @@ lemma padicModel_mem_uniformClosure {K : Subgroup (Gf E (Fin N))} (hK : IsLevel 
   have hM (x : _ → GL (Fin N) (PadicAlgCl l)) (hx : ∀ τ ∈ T, x τ = 1) :
       weylRep κ.1 κ.2 x * M * weylRep ν.1 ν.2 x⁻¹ = M := by
     simp [M, ν, e, *, ← Pi.one_def, ← map_mul, Pi.mul_def, ← mul_kronecker_mul]
-  suffices h_eq : padicModel κ ν M φ.1 = L c y (fun k ↦ β ⬝ᵥ weylRep a b (z k) *ᵥ ξ) by
+  suffices h_eq : padicModel κ ν M φ.val = L c y (fun k ↦ β ⬝ᵥ weylRep a b (z k) *ᵥ ξ) by
     rw [← h_eq]
     exact hD ν _ φ.2 (by simp +contextual [ν, e]) (by simpa +contextual [ν, e] using h_free) M hM
   -- Both sides are sums over `s c g` (the model of `φ` by the definition of `deltaForm`); compare
@@ -725,7 +731,7 @@ lemma padicModel_mem_uniformClosure {K : Subgroup (Gf E (Fin N))} (hK : IsLevel 
   ext
   refine (map_sum (.proj _ ∘ₛₗ padicModel _ ν M ∘ₛₗ .const ∘ₛₗ .applyₗ _) ..).trans
     ((sum_coe_sort ..).symm.trans (Finset.sum_congr rfl fun γ _ ↦ ?_))
-  rw [dite_eq_left (q _ _ γ).2]
+  rw [dite_eq_left (q _ _ γ).property]
   -- First move the action of `γ` into `weylRep`, then multiply out the Kronecker products.
   simp [padicModel, Function.comp_def _ (_ ∘ _), comp_weightRep_eq_weylRep_mulVec ν, ← map_mul,
     -mulVec_single, ← (weylRep _ _ _).mul_assoc, M.mul_assoc]

@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Algebra.Category.Grp.Ulift
+public import Mathlib.RingTheory.Regular.Category
 public import Lib.General.Algebra.CohomologyBaseChange
 
 /-!
@@ -474,7 +476,7 @@ def algCompletion.of : 𝟭 (CommAlg S) ⟶ algCompletion S p where
 /-- The functor sending an S-module to its p-adic completion. -/
 def moduleCompletion : ModuleCat S ⥤ ModuleCat S :=
   CategoryTheory.Functor.mk _ fun f ↦
-    ofHom (LinearMap.restrictScalars S (AdicCompletion.map (span {↑p}) f.1))
+    ofHom (LinearMap.restrictScalars S (AdicCompletion.map (span {↑p}) f.hom'))
 
 /-- The `p`-adic completion functor on `S`-modules is additive. -/
 instance : (moduleCompletion S p).Additive := ⟨hom_ext (map_ext'' _ rfl)⟩

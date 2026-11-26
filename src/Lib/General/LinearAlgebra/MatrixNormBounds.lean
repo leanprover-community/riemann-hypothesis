@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.LinearAlgebra.PiTensorProduct.Generators
 public import Lib.GLn.SchurModule.GramMatrix
 
 /-!
@@ -40,12 +41,14 @@ basis `z` such that the coordinates of `z` are the forms `ℓ (S k)` and `‖φ 
 all `a`, `k`. The result depends on the basis `b` only through its index type `ι`. The topology
 `topA` of `A` is implicit: it is found from the continuity hypothesis. -/
 lemma New.exists_auerbach {K U A L ι : Type*} [Field K] [AddCommGroup U] [Module K U]
-    [Module.Finite K U] [Fintype ι] {topA : TopologicalSpace A} [CompactSpace A] [NormedField L]
+    [Module.Finite K U] {topA : TopologicalSpace A} [CompactSpace A] [NormedField L]
     (b : Basis ι K U) (ℓ : A → Dual K U) (h_sep : ∀ v : U, (∀ a : A, ℓ a v = 0) → v = 0)
     (φ : K →+* L) (hℓ_cont : ∀ v : U, Continuous fun a : A ↦ φ (ℓ a v)) :
     ∃ (S : ι → A) (z : Basis ι K U),
       (∀ k : ι, z.coord k = ℓ (S k)) ∧ ∀ (a : A) (k : ι), ‖φ (ℓ a (z k))‖ ≤ 1 := by
   classical
+  have : Finite ι := Module.Finite.finite_basis b
+  have := Fintype.ofFinite ι
   -- Choose `S` to maximise `‖φ (det (ℓ ∘ S))‖` and let `z` be the basis dual to `ℓ ∘ S`. By
   -- Cramer's rule `ℓ a (z k)` is the determinant with `S k` replaced by `a` over the maximal one.
   -- First, the forms span the dual space, so the determinant is nonzero on some family of them.

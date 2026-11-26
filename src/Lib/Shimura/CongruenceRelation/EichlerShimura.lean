@@ -57,13 +57,15 @@ variable {ℓ : ℕ} [ThePrime ℓ]
 in U(B) to its image under b ↦ b^(p^j). -/
 def frobEnd : U ⟶ U where
   app B := ↾fun x ↦ U.map (ofHom (frobPow (hU_char B x) j)) x
-  naturality := by
-    intros
-    ext
-    dsimp
-    simp_rw [← U.map_comp_apply]
-    congr 3
-    aesop
+  naturality X Y f := by
+    ext x
+    change U.map (ofHom (frobPow (hU_char Y (U.map f x)) j)) (U.map f x) =
+      U.map f (U.map (ofHom (frobPow (hU_char X x) j)) x)
+    rw [← U.map_comp_apply, ← U.map_comp_apply]
+    have h_hom : f ≫ ofHom (frobPow (hU_char Y (U.map f x)) j) =
+        ofHom (frobPow (hU_char X x) j) ≫ f :=
+      CommRingCat.hom_ext <| RingHom.ext fun b ↦ (map_pow f.hom b (p ^ j)).symm
+    rw [h_hom]
 
 /-- The absolute Frobenius acts trivially on ℓ-adic cohomology. Let p = 0 in every ring B in which
 U has a point (`hU_char`). Then the endomorphism `New.Variety.ellAdicCohom.frobEnd` of U, which
@@ -137,18 +139,35 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
     (geomPoints R A).map (u i) ≫ baseChangeTransition _ (ofHom (σ i)) (h_σ_alg i)
   -- it suffices that the sum vanishes over `A`, before passing to `Ω`
   suffices h_sum : ∑ i, m i • ellAdicPull n (freeAb.map (mapOnTests (μ i))) y = 0 by
-    let toA :
-        testIncl ⋙ baseChangeOf (pointsToBase W.hom) (ofHom (algebraMap R A) ≫ ofHom A.subtype) ⟶
-          testIncl ⋙ geomPoints R A W :=
-      mapOnTests (Y := geomPoints R A W) (baseChangeTransition _ (ofHom A.subtype) rfl)
-    -- each term is the pull-back along `toA` of the matching term over `A`; `erw`, since the
-    -- terms match these lemmas only up to unfolding definitions
-    conv_lhs =>
-      enter [2, i]
-      erw [comp, ← freeAb.map_comp, comp, ← freeAb.map_comp, freeAb.map_comp toA (mapOnTests (μ i)),
-        ← comp, ← map_zsmul]
-    erw [← map_sum, h_sum, map_zero]
-    rfl
+    let toA_W : testIncl ⋙ geomPoints R Ω W ⟶ testIncl ⋙ geomPoints R A W :=
+      mapOnTests (X := geomPoints R Ω W) (Y := geomPoints R A W)
+        (baseChangeTransition (pointsToBase W.hom) (ofHom A.subtype) rfl)
+    let toA_Y : testIncl ⋙ geomPoints R Ω Y ⟶ testIncl ⋙ geomPoints R A Y :=
+      mapOnTests (X := geomPoints R Ω Y) (Y := geomPoints R A Y)
+        (baseChangeTransition (pointsToBase Y.hom) (ofHom A.subtype) rfl)
+    let pullToA : _ →ₗ[ℚ_[ℓ]] ((ellAdicCohom R Ω n).obj (Opposite.op W)) :=
+      ellAdicPull (ℓ := ℓ) n (freeAb.map toA_W)
+    -- each term is the pull-back along `toA_W` of the matching term over `A`
+    have h_term (i : I) :
+        (ellAdicCohom R Ω n).map (u i).op (galoisAction R Ω Γ Y n (g⁻¹ ^ e i)
+            (ellAdicPull n (freeAb.map toA_Y) y)) =
+          pullToA (ellAdicPull n (freeAb.map (mapOnTests (μ i))) y) := by
+      let g_aut := MulSemiringAction.toAlgAut Γ R Ω (g⁻¹ ^ e i)
+      let fm := mapOnTests ((geomPoints R Ω).map (u i))
+      let tr := mapOnTests (X := geomPoints R Ω Y) (Y := geomPoints R Ω Y)
+        (baseChangeTransition (pointsToBase Y.hom) (ofHom g_aut) (by ext r; exact g_aut.commutes r))
+      have h_lhs : (ellAdicCohom R Ω n).map (u i).op (galoisAction R Ω Γ Y n (g⁻¹ ^ e i)
+            (ellAdicPull n (freeAb.map toA_Y) y)) =
+          ellAdicPull n (freeAb.map fm) (ellAdicPull n (freeAb.map tr)
+            (ellAdicPull n (freeAb.map toA_Y) y)) := rfl
+      have h_eq : (fm ≫ tr) ≫ toA_Y = toA_W ≫ mapOnTests (μ i) := by
+        ext B p
+        exact baseChangeOf.ext rfl fun _ ↦ rfl
+      rw [h_lhs, comp, ← freeAb.map_comp, comp, ← freeAb.map_comp, h_eq, freeAb.map_comp, ← comp]
+      rfl
+    exact (Finset.sum_congr rfl fun i _ ↦
+      (congrArg (m i • ·) (h_term i)).trans (map_zsmul pullToA ..).symm).trans <|
+      (map_sum pullToA ..).symm.trans <| (congrArg pullToA h_sum).trans (map_zero pullToA)
   -- the special fibre: the points that kill the maximal ideal of `A`; they have characteristic `p`
   let s₀ : geomPoints R A W ⟶ reprBy (of A) :=
     fibreProd.snd (pointsToBase W.hom) (reprMap (ofHom (algebraMap R A)))
@@ -166,7 +185,17 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
   -- `F i` is `μ i` after the Frobenius of exponent `p ^ (e i * f)` on `U₀`, which acts trivially
   let F (i : I) : U₀.toFunctor ⟶ geomPoints R A Y := frobEnd h_char (e i * f) ≫ U₀.ι ≫ μ i
   trans ellAdicPull n (∑ i, m i • freeAb.map (mapOnTests (F i))) y
-  · simp [F, ← comp, ellAdicPull_frobEnd]
+  · let pullU := ellAdicPull (ℓ := ℓ) n (freeAb.map (mapOnTests U₀.ι))
+    rw [map_sum pullU, map_sum (ellAdicPull n), LinearMap.sum_apply]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    rw [map_zsmul pullU, map_zsmul (ellAdicPull n), LinearMap.smul_apply]
+    refine congrArg (m i • ·) ?_
+    have hF : freeAb.map (mapOnTests (F i)) =
+        freeAb.map (mapOnTests (frobEnd h_char (e i * f))) ≫
+          freeAb.map (mapOnTests U₀.ι) ≫ freeAb.map (mapOnTests (μ i)) := by
+      dsimp only [F, mapOnTests]
+      rw [Functor.whiskerLeft_comp, Functor.whiskerLeft_comp, freeAb.map_comp, freeAb.map_comp]
+    rw [hF, ← comp, ← comp, ellAdicPull_frobEnd, one_apply_eq_self]
   · -- the sum vanishes on the locus where the points `F i x` cancel; it is enough that this locus
     -- is dense
     suffices h_dense : IsCohomDense (locConstCoeff ⟨ZMod ℓ⟩)
@@ -181,12 +210,18 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
     -- `ω a = ω (σ i a) ^ p ^ (e i * f)`, as `g` is a Frobenius
     let ω : of A ⟶ of k := baseRingMap s₀ z.val
     have h_frob (i : I) (a : A) : ω a = ω (σ i a) ^ p ^ (e i * f) := by
+      have h_act : g ^ e i • (σ i a : Ω) = (a : Ω) := by
+        change g ^ e i • (g⁻¹ ^ e i • (a : Ω)) = (a : Ω)
+        rw [← mul_smul, inv_pow, mul_inv_cancel, one_smul]
       have h_val : A.valuation ((a : Ω) - (σ i a : Ω) ^ (p ^ f) ^ e i) < 1 := by
-        simpa [σ] using (hg.pow (e i)).right (σ i a) (by simp)
+        have h' := (hg.pow (e i)).right (σ i a) (A.valuation_le_one (σ i a))
+        rwa [h_act] at h'
       have h_zero : ω (a - σ i a ^ (p ^ f) ^ e i) = 0 := z.property _ <| by
         change A.valuation ((a : Ω) - ((σ i a ^ (p ^ f) ^ e i : A) : Ω)) < 1
-        simpa using h_val
-      simpa [sub_eq_zero, ← pow_mul'] using h_zero
+        rw [Subring.coe_pow]
+        exact h_val
+      rw [map_sub, map_pow, sub_eq_zero, ← pow_mul'] at h_zero
+      exact h_zero
     -- so `F i z = (Frob (u i w), ω)`, and these points cancel by the congruence relation
     have hk_char : CharP k p := (CharP.charP_iff_prime_eq_zero Fact.out).mpr (h_char _ z)
     have h_cancel : Cancels m fun i ↦
@@ -210,7 +245,12 @@ lemma galoisAction_eq_one_of_inertia {g : Γ} (hg : g ∈ inertiaGroup Γ A) :
   -- `-[y] + [y] = 0`
   have h_cong : CongruenceRelation ![-1, 1] (algebraMap R Ω ⁻¹' A.nonunits) p
       (fun i : Fin 2 ↦ i * 0) ![𝟙 Y, 𝟙 Y] := by simp [CongruenceRelation, Cancels]
-  simpa [neg_add_eq_iff_eq_add] using
-    congruence_relation hR hℓ hp (f := 0) (inv_mem hg) ![𝟙 Y, 𝟙 Y] Fin.val ![-1, 1] h_cong x
+  have h := congruence_relation hR hℓ hp (f := 0) (inv_mem hg) ![𝟙 Y, 𝟙 Y] Fin.val ![-1, 1] h_cong x
+  rw [Fin.sum_univ_two] at h
+  simp only [Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Fin.val_zero, Fin.val_one,
+    pow_zero, pow_one, inv_inv, op_id, map_one, one_apply_eq_self, neg_smul, one_smul] at h
+  rw [(ellAdicCohom R Ω n).map_id, ModuleCat.id_apply, ModuleCat.id_apply, neg_add_eq_zero] at h
+  rw [one_apply_eq_self]
+  exact h.symm
 
 end New.Variety.ellAdicCohom

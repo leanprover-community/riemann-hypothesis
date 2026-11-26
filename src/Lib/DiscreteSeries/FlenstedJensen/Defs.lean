@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
 public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
@@ -81,11 +83,11 @@ def unitaryLie : Submodule ℝ (Matrix n n ℂ) where
 `U(J)`. -/
 @[simps! coe_val]
 def expU {J : Matrix n n ℂ} (X : unitaryLie J) : U J where
-  val := X.1.isUnit_exp.unit
+  val := X.val.isUnit_exp.unit
   property := by
     -- Exponentiate the relation `J * X = -Xᴴ * J`.
-    have h_semiconj : SemiconjBy J X.1 (-X.1ᴴ) :=
-      (eq_neg_of_add_eq_zero_right X.2).trans (neg_mul X.1ᴴ J).symm
+    have h_semiconj : SemiconjBy J X.val (-X.valᴴ) :=
+      (eq_neg_of_add_eq_zero_right X.property).trans (neg_mul X.valᴴ J).symm
     -- `using!`: the two sides differ in the topology instance under which `exp` is taken.
     simpa [mem_unitaryGroupOf_iff, star_eq_conjTranspose, ← exp_conjTranspose] using!
       h_semiconj.exp_neg_mul_mul_exp_eq_self

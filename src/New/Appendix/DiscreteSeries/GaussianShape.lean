@@ -1,7 +1,7 @@
 module
 
 public import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
-public import New.Appendix.DiscreteSeries.OneMinor
+public import New.Appendix.DiscreteSeries.MinorExpansion
 
 /-!
 # The Gaussian shape of the coefficient
@@ -10,8 +10,8 @@ Near `1` the coefficient `l.dsCoeff g` of a discrete series with a large gap is 
 `exp (tr μ log g)` times a number in `[0, 1]`, where `μ` is the weight `l.lowestKType`
 (`exists_norm_dsCoeff_div_cexp_sub_le`). The coefficient is a mean over `K` of a quotient of
 products of minors, and the estimates for one minor are multiplied over the sets `{i | t ≤ w i}` of
-a weight `w`. In the comments, `λ^ρ` is `paramAddRho l`, `Q_w` is `gapWeightedNormSq w`, and `ĝ` is
-`reducedExp ε l Z`. The Gaussian is `exp (-q)` with `q = Q_{-λ^ρ} (log g) / 4`; note `Q_{-w} = Q_w`.
+a weight `w`. In the comments, `λ^ρ` is `paramAddRho l` and `Q_w` is `gapWeightedNormSq w`.
+The Gaussian is `exp (-q)` with `q = Q_{-λ^ρ} (g - 1) / 4`; note `Q_{-w} = Q_w`.
 Except in the first section, the norm of a matrix is the Frobenius norm.
 
 * `USign ε` is the unitary group of the form `diag ε`; `K = maxCompactU ε` is its subgroup of
@@ -38,7 +38,7 @@ open Matrix MeasureTheory Finset Fintype Ring Complex ComplexConjugate
 namespace New.DiscreteSeries
 
 variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {l : HCParam ε} {δ T q : ℝ}
-  {h L A : ℕ} {a b : ℤ} {w : n → ℤ} {Z : Matrix n n ℂ}
+  {h L A : ℕ} {a b : ℤ} {w : n → ℤ}
 
 section Dimension
 
@@ -145,49 +145,6 @@ lemma norm_weightMinors_sq_le_exp (w : n → ℤ) (k : maxCompactU ε) :
     _ = Real.exp (-(gapWeightedNormSq w k / 2)) := by
         rw [← Real.exp_sum, sum_neg_distrib, ← sum_div, sum_norm_lie_coordProj_sq hw]
 
-/-- Let `l` have distinct entries, let `w` be a weight whose order is opposite to that of `l`, let
-`Z` lie in the Lie algebra of `U(diag ε)` with Frobenius norm at most `δ ≤ 1 / 20`, and let
-`k ∈ K = maxCompactU ε`. Put `ĝ = reducedExp ε l Z = exp (-u) exp Z exp (-v)`, where `u` and `v` are
-the strictly lower and the strictly upper triangular part, in the order of decreasing `l`, of the
-block diagonal part of `Z` (the entries `Z i j` with `ε i = ε j`). Then the highest weight
-coefficient `weightMinors w (kᴴ ĝ k)` is `exp (tr (diag w * Z) + Q_w (Z) / 4 + r)` with
-`|r| ≤ 10 ^ 5 δ (Q_w (Z) + Q_w (k))`. -/
-lemma exists_weightMinors_conj_reducedExp_eq_cexp (hl : Function.Injective l)
-    (hw : ∀ i j : n, w j < w i → l i < l j) (hZ : Z ∈ unitaryLie (signMatrix ε))
-    (hδ : δ ≤ 1 / 20) (hZ_le : ‖Z‖ ≤ δ) (k : maxCompactU ε) :
-    ∃ r : ℂ,
-      weightMinors w ((k : Matrix n n ℂ)ᴴ * reducedExp ε l Z * k) =
-        cexp ((intDiagonal w * Z).trace + (gapWeightedNormSq w Z / 4 : ℝ) + r) ∧
-      ‖r‖ ≤ 10 ^ 5 * δ * (gapWeightedNormSq w Z + gapWeightedNormSq w k) := by
-  -- Multiply the formulas for one minor over the sets `{i | t ≤ w i}`.
-  have hk : (k : Matrix n n ℂ)ᴴ * k = 1 := maxCompactU_conjTranspose_mul_self k
-  have h_det : ((k : Matrix n n ℂ)ᴴ * reducedExp ε l Z * k).det = cexp Z.trace := by
-    rw [det_mul, det_mul, mul_right_comm, ← det_mul, hk, det_one, one_mul, det_reducedExp]
-  have h_minor (t : ℤ) : ∃ r : ℂ,
-      principalMinor ((k : Matrix n n ℂ)ᴴ * reducedExp ε l Z * (k : Matrix n n ℂ)) (t ≤ w ·) =
-        cexp ((coordProj (t ≤ w ·) * Z).trace + (‖⁅coordProj (t ≤ w ·), Z⁆‖ ^ 2 / 4 : ℝ) + r) ∧
-      ‖r‖ ≤ 10 ^ 5 * δ *
-        (‖⁅coordProj (t ≤ w ·), Z⁆‖ ^ 2 + ‖⁅coordProj (t ≤ w ·), (k : Matrix n n ℂ)⁆‖ ^ 2) :=
-    exists_principalMinor_conj_reducedExp_eq_cexp hl
-      (fun i j hi hj ↦ hw i j ((not_le.1 hj).trans_le hi)) hZ hδ
-      hZ_le hk (mem_maxCompactU.1 k.2)
-  choose r hr_eq hr_le using h_minor
-  let M : ℤ := ∑ j : n, |w j|
-  have h_range : ∀ i : n, -M ≤ w i ∧ w i ≤ M := neg_sum_abs_le_and_le_sum_abs w
-  refine ⟨∑ t ∈ Ioc (-M) M, r t, ?_, ?_⟩
-  · have h_prod : ∏ t ∈ Ioc (-M) M,
-        principalMinor ((k : Matrix n n ℂ)ᴴ * reducedExp ε l Z * (k : Matrix n n ℂ)) (t ≤ w ·) =
-          cexp ((intDiagonal w * Z).trace + M * Z.trace + (gapWeightedNormSq w Z / 4 : ℝ) +
-            ∑ t ∈ Ioc (-M) M, r t) := by
-      rw [prod_congr rfl fun t _ ↦ hr_eq t, ← exp_sum, sum_add_distrib, sum_add_distrib,
-        ← ofReal_sum, ← sum_div, sum_norm_lie_coordProj_sq h_range,
-        sum_trace_coordProj_mul h_range, Int.cast_neg, neg_mul, sub_neg_eq_add]
-    rw [weightMinors_eq_det_zpow_mul_prod (h_det.trans_ne (exp_ne_zero _)) _ _ h_range, h_det,
-      h_prod, ← exp_intCast_mul, ← exp_add, Int.cast_neg]
-    exact congrArg cexp (by ring)
-  · refine (norm_sum_le_of_le _ fun t _ ↦ hr_le t).trans_eq ?_
-    simp only [← mul_sum, sum_add_distrib, sum_norm_lie_coordProj_sq h_range]
-
 /-- The entries of `paramAddRho l - l.lowestKType = 2 ρ_c` (written `twoRho l (ε · = ε ·)`) are at
 most `n` in modulus, so the traces of `Z` against the diagonal matrices of the two weights differ
 by at most `n ^ 2 ‖Z‖` (Frobenius norm). -/
@@ -198,7 +155,7 @@ lemma norm_trace_paramAddRho_sub_trace_lowestKType_le (l : HCParam ε) (Z : Matr
     (norm_intCast _).trans_le (mod_cast abs_twoRho_le (ε · = ε ·) i l)
   calc _ = ‖∑ i : n, twoRho l (ε · = ε ·) i * Z i i‖ := by simp [trace, lowestKType, sub_mul]
     _ ≤ ∑ _i : n, card n * ‖Z‖ :=
-        norm_sum_le_of_le _ fun i _ ↦ norm_mul_le_of_le (h_rho i) (norm_apply_le Z i i)
+        norm_sum_le_of_le _ fun i _ ↦ norm_mul_le_of_le (h_rho i) (norm_apply_le_frobenius_norm ..)
     _ = card n ^ 2 * ‖Z‖ := by simp [sq, mul_assoc]
 
 /-- For `k ∈ K = maxCompactU ε` we have `Q_{-λ^ρ} (k) ≤ Q_μ (k) + 2 n ^ 2`. This holds because
@@ -222,46 +179,77 @@ lemma gapWeightedNormSq_neg_paramAddRho_le (l : HCParam ε) (k : maxCompactU ε)
         simp [gapWeightedNormSq, frobenius_norm_sq_eq_sum, add_mul, mul_sum, sum_add_distrib]
     _ = gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2 := by rw [h_norm, mul_assoc, ← sq]
 
-/-- Let `l = 2λ` be a parameter of gap `h` (the entries of `λ` are distinct, and those with
-different signs `ε` are at least `h` apart), let `Z` lie in the Lie algebra of `U(diag ε)` with
-Frobenius norm at most `δ ≤ 1 / 20`, and let `k ∈ K = maxCompactU ε`. Put
-`λ^ρ = paramAddRho l = λ + ρ` and `μ = l.lowestKType = λ + ρ - 2ρ_c`, where `ρ` and `ρ_c` are the
-half sums of the roots and of the compact roots that are positive for `λ`. Put also
-`Q_w (X) = ∑_{i, j} |w i - w j| |X i j| ^ 2`, `q = Q_{-λ^ρ} (Z) / 4` and
-`ĝ = reducedExp ε l Z = exp (-u) exp Z exp (-v)`, where `u` and `v` are the strictly lower and the
-strictly upper triangular part, in the order of decreasing `l`, of the block diagonal part of `Z`
-(the entries `Z i j` with `ε i = ε j`). Then the denominator `weightMinors (-λ^ρ) (kᴴ ĝ k)` of
-Flensted-Jensen's integrand at `ĝ`, a product of principal minors, is `exp (q - tr μ Z - r)` with
-`|r| ≤ 5 · 10 ^ 5 δ (q + Q_μ (k) + n ^ 2)`. -/
-lemma exists_weightMinors_neg_paramAddRho_eq_cexp (hl : l.HasGap h)
-    (hZ : Z ∈ unitaryLie (signMatrix ε)) (hδ : δ ≤ 1 / 20) (hZ_le : ‖Z‖ ≤ δ)
-    (hq : q = gapWeightedNormSq (-paramAddRho l) Z / 4) (k : maxCompactU ε) :
-    ∃ r : ℂ,
-      weightMinors (-paramAddRho l) ((k : Matrix n n ℂ)ᴴ * reducedExp ε l Z * k) =
-        cexp (q - (intDiagonal l.lowestKType * Z).trace - r) ∧
-      ‖r‖ ≤ 5 * 10 ^ 5 * δ * (q + gapWeightedNormSq l.lowestKType k + card n ^ 2) := by
-  have h_order (i j : n) (hij : (-paramAddRho l) j < (-paramAddRho l) i) : l i < l j :=
-    hl.paramAddRho_lt_iff.1 (neg_lt_neg_iff.1 hij)
-  obtain ⟨r₀, hr₀_eq, hr₀_le⟩ := exists_weightMinors_conj_reducedExp_eq_cexp hl.injective h_order hZ
-    hδ hZ_le k
-  refine ⟨(intDiagonal (paramAddRho l) * Z).trace - (intDiagonal l.lowestKType * Z).trace - r₀,
-    ?_, ?_⟩
-  · have h_neg : (intDiagonal (-paramAddRho l) * Z).trace =
-        -(intDiagonal (paramAddRho l) * Z).trace := by simp [trace]
-    rw [hr₀_eq, h_neg, ← hq]
+/-- Let `l = 2λ` be a parameter of gap `h` and let `g` in `USign ε` satisfy
+`‖g - 1‖ ≤ δ ≤ 10 ^ (-12)` (Frobenius norm). Put `λ^ρ = paramAddRho l`, `μ = l.lowestKType`,
+`Q_w (X) = ∑_{i, j} |w i - w j| |X i j| ^ 2` and `q = Q_{-λ^ρ} (g - 1) / 4`. Then
+`l.dsCoeff g = l.flenstedJensen 1 y` for an invertible matrix `y` such that, for all
+`k ∈ K = maxCompactU ε`, the product of principal minors `weightMinors (-λ^ρ) (kᴴ y k)` is
+`exp (q - tr (μ logOneAdd (g - 1)) - r)` with `|r| ≤ 10 ^ 6 δ (q + Q_μ (k) + n ^ 2)`. -/
+lemma exists_weightMinors_neg_paramAddRho_eq_cexp (hl : l.HasGap h) (g : USign ε)
+    (hg : ‖(g : Matrix n n ℂ) - 1‖ ≤ δ) (hδ : δ ≤ 1e-12) :
+    ∃ y : Matrix n n ℂ, l.dsCoeff g = l.flenstedJensen 1 y ∧ y.det ≠ 0 ∧
+      ∀ k : maxCompactU ε, ∃ r : ℂ,
+        weightMinors (-paramAddRho l) ((k : Matrix n n ℂ)ᴴ * y * k) =
+          cexp ((gapWeightedNormSq (-paramAddRho l) ((g : Matrix n n ℂ) - 1) / 4 : ℝ) -
+            (intDiagonal l.lowestKType * logOneAdd ((g : Matrix n n ℂ) - 1)).trace - r) ∧
+        ‖r‖ ≤ 10 ^ 6 * δ * (gapWeightedNormSq (-paramAddRho l) ((g : Matrix n n ℂ) - 1) / 4 +
+          gapWeightedNormSq l.lowestKType k + card n ^ 2) := by
+  have hδ_nonneg : 0 ≤ δ := (norm_nonneg _).trans hg
+  have hg_half : ‖(g : Matrix n n ℂ) - 1‖ ≤ 2⁻¹ := by linarith
+  obtain ⟨y, h_coeff, h_minor⟩ := exists_principalMinor_eq_exp hl g (by linarith)
+  set X : Matrix n n ℂ := (g : Matrix n n ℂ) - 1
+  set Z : Matrix n n ℂ := logOneAdd X
+  set w : n → ℤ := -paramAddRho l
+  have hZ_le : ‖Z‖ ≤ 2 * δ := (norm_logOneAdd_le hg_half).trans (by linarith)
+  -- The sets `{i | t ≤ w i}` consist of lowest entries of `l`.
+  have h_order (t : ℤ) (i j : n) (hi : t ≤ w i) (hj : ¬t ≤ w j) : l i < l j :=
+    hl.paramAddRho_lt_iff.1 (neg_lt_neg_iff.1 ((not_le.1 hj).trans_le hi))
+  -- For the set of all indices the formula for one minor gives the determinant.
+  have h_det (k : maxCompactU ε) :
+      ((k : Matrix n n ℂ)ᴴ * y * (k : Matrix n n ℂ)).det = cexp Z.trace := by
+    simpa [principalMinor_of_forall, coordProj, lie_def, -det_mul] using (h_minor ⊤ · k)
+  have hy : y.det ≠ 0 := fun h_zero ↦
+    (h_det 1).trans_ne (exp_ne_zero _) (by simp [h_zero])
+  refine ⟨y, h_coeff, hy, fun k ↦ ?_⟩
+  -- Multiply the formulas for one minor over the sets `{i | t ≤ w i}`.
+  choose r hr_eq hr_le using fun t : ℤ ↦ h_minor (t ≤ w ·) (h_order t) k
+  let M : ℤ := ∑ j : n, |w j|
+  have h_range : ∀ i : n, -M ≤ w i ∧ w i ≤ M := neg_sum_abs_le_and_le_sum_abs w
+  refine ⟨(intDiagonal (paramAddRho l) * Z).trace - (intDiagonal l.lowestKType * Z).trace -
+    ∑ t ∈ Ioc (-M) M, r t, ?_, ?_⟩
+  · have h_sq : (∑ t ∈ Ioc (-M) M, (‖⁅coordProj (t ≤ w ·), X⁆‖ : ℂ) ^ 2 / 4 : ℂ) =
+        ((gapWeightedNormSq w X / 4 : ℝ) : ℂ) := by
+      rw [← sum_norm_lie_coordProj_sq h_range X]
+      push_cast
+      rw [sum_div]
+    have h_prod : ∏ t ∈ Ioc (-M) M,
+        principalMinor ((k : Matrix n n ℂ)ᴴ * y * (k : Matrix n n ℂ)) (t ≤ w ·) =
+          cexp ((intDiagonal w * Z).trace + M * Z.trace + (gapWeightedNormSq w X / 4 : ℝ) +
+            ∑ t ∈ Ioc (-M) M, r t) := by
+      rw [prod_congr rfl fun t _ ↦ hr_eq t, ← exp_sum, sum_add_distrib, sum_add_distrib, h_sq,
+        sum_trace_coordProj_mul h_range, Int.cast_neg, neg_mul, sub_neg_eq_add]
+    have h_neg : (intDiagonal w * Z).trace = -(intDiagonal (paramAddRho l) * Z).trace := by
+      simp [w, trace]
+    rw [weightMinors_eq_det_zpow_mul_prod ((h_det k).trans_ne (exp_ne_zero _)) _ _ h_range, h_det,
+      h_prod, ← exp_intCast_mul, ← exp_add, Int.cast_neg, h_neg]
     exact congrArg cexp (by ring)
-  · have hδ_nonneg : 0 ≤ δ := (norm_nonneg _).trans hZ_le
-    have hq_nonneg : 0 ≤ q := by linarith [gapWeightedNormSq_nonneg (-paramAddRho l) Z]
-    have h_four_q : gapWeightedNormSq (-paramAddRho l) Z = 4 * q := by linarith
-    calc ‖(intDiagonal (paramAddRho l) * Z).trace - (intDiagonal l.lowestKType * Z).trace - r₀‖
+  · have h_sum : ‖∑ t ∈ Ioc (-M) M, r t‖ ≤
+        200000 * ‖X‖ * (gapWeightedNormSq w X + gapWeightedNormSq w k) := by
+      refine (norm_sum_le_of_le _ fun t _ ↦ hr_le t).trans_eq ?_
+      simp only [← mul_sum, sum_add_distrib, sum_norm_lie_coordProj_sq h_range]
+    have h_k : gapWeightedNormSq w k ≤ gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2 :=
+      gapWeightedNormSq_neg_paramAddRho_le l k
+    calc ‖(intDiagonal (paramAddRho l) * Z).trace - (intDiagonal l.lowestKType * Z).trace -
+          ∑ t ∈ Ioc (-M) M, r t‖
         ≤ ‖(intDiagonal (paramAddRho l) * Z).trace - (intDiagonal l.lowestKType * Z).trace‖ +
-            ‖r₀‖ := norm_sub_le _ _
-      _ ≤ card n ^ 2 * δ +
-            10 ^ 5 * δ * (4 * q + (gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2)) := by
-          grw [norm_trace_paramAddRho_sub_trace_lowestKType_le, hZ_le, hr₀_le, h_four_q,
-            gapWeightedNormSq_neg_paramAddRho_le]
-      _ ≤ 5 * 10 ^ 5 * δ * (q + gapWeightedNormSq l.lowestKType k + card n ^ 2) := by
-          nlinarith [gapWeightedNormSq_nonneg l.lowestKType k, sq_nonneg (card n : ℝ)]
+            ‖∑ t ∈ Ioc (-M) M, r t‖ := norm_sub_le _ _
+      _ ≤ card n ^ 2 * (2 * δ) + 200000 * δ *
+            (gapWeightedNormSq w X + (gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2)) := by
+          grw [norm_trace_paramAddRho_sub_trace_lowestKType_le, hZ_le, h_sum, hg, h_k]
+      _ ≤ 10 ^ 6 * δ *
+            (gapWeightedNormSq w X / 4 + gapWeightedNormSq l.lowestKType k + card n ^ 2) := by
+          nlinarith [gapWeightedNormSq_nonneg l.lowestKType k, sq_nonneg (card n : ℝ),
+            gapWeightedNormSq_nonneg w X]
 
 /-- Let `y` be invertible. Flensted-Jensen's integral `l.flenstedJensen g y` at the identity matrix
 `g = 1` is the mean over `k ∈ K = maxCompactU ε` of `|weightMinors μ k| ^ 2 / weightMinors
@@ -332,7 +320,7 @@ lemma mul_norm_exp_sub_one_le {m Q N : ℝ} {r : ℂ} (hT : 1 ≤ T) (hδ_nonneg
 be at least `1`, `n ^ 2` and `n ^ 2 log (n + L + 1)`, and let `δ T ≤ 10 ^ (-12)`. For `g` in the
 unitary group `USign ε` of the form `diag ε` with `‖g - 1‖ ≤ δ` (Frobenius norm), the discrete
 series coefficient `l.dsCoeff g`, divided by the phase `exp (tr μ log g)`, is within
-`ϱ / 10 + exp (-100 T)` of a number `ϱ ∈ [0, 1]`; the proof takes a Gaussian in `log g` for `ϱ`. -/
+`ϱ / 10 + exp (-100 T)` of a number `ϱ ∈ [0, 1]`; the proof takes a Gaussian in `g - 1` for `ϱ`. -/
 lemma exists_norm_dsCoeff_div_cexp_sub_le [Nonempty n] (hl : l.HasLargeGap A)
     (hL : ∀ i : n, |l i| ≤ L)
     {g : USign ε} (hg : ‖(g : Matrix n n ℂ) - 1‖ ≤ δ) (hT : 1 ≤ T) (hT_card : card n ^ 2 ≤ T)
@@ -340,35 +328,22 @@ lemma exists_norm_dsCoeff_div_cexp_sub_le [Nonempty n] (hl : l.HasLargeGap A)
     ∃ ϱ ∈ Set.Icc (0 : ℝ) 1,
       ‖l.dsCoeff g / cexp (intDiagonal l.lowestKType * logOneAdd ((g : Matrix n n ℂ) - 1)).trace -
           ϱ‖ ≤ ϱ / 10 + Real.exp (-100 * T) := by
-  -- Take `ϱ = exp (-q)` with `q = gapWeightedNormSq (-λ^ρ) Z / 4`, where `Z = log g` and
+  -- Take `ϱ = exp (-q)` with `q = gapWeightedNormSq (-λ^ρ) (g - 1) / 4`, where
   -- `λ^ρ = paramAddRho l`.
   have hδ_nonneg : 0 ≤ δ := (norm_nonneg _).trans hg
   have hδ_le : δ ≤ 1e-12 := (le_mul_of_one_le_right hδ_nonneg hT).trans hδT
-  have hg_half : ‖(g : Matrix n n ℂ) - 1‖ ≤ 2⁻¹ := by linarith
   set Z : Matrix n n ℂ := logOneAdd ((g : Matrix n n ℂ) - 1)
-  have hZ_mem : Z ∈ unitaryLie (signMatrix ε) := logOneAdd_mem_unitaryLie g hg_half
-  have hZ_le : ‖Z‖ ≤ 2 * δ := (norm_logOneAdd_le hg_half).trans (by linarith)
-  set q : ℝ := gapWeightedNormSq (-paramAddRho l) Z / 4 with hq
+  set q : ℝ := gapWeightedNormSq (-paramAddRho l) ((g : Matrix n n ℂ) - 1) / 4 with hq
   have hq_nonneg : 0 ≤ q := by positivity
   refine ⟨Real.exp (-q), ⟨Real.exp_nonneg _, Real.exp_le_one_iff.2 (by linarith)⟩, ?_⟩
-  -- Step 1: a mean over `K`. The unipotent factors of `reducedExp ε l Z` do not change the
-  -- integral.
-  have h_dsCoeff_eq : l.dsCoeff g = l.flenstedJensen 1 (reducedExp ε l Z) := by
-    rw [flenstedJensen_reducedExp hl (by linarith), exp_logOneAdd hg_half, add_sub_cancel,
-      dsCoeff_eq_flenstedJensen hl (one_mem _)
-        (by simpa using isAccretive_of_norm_sub_one_lt (hg.trans_lt (by linarith))),
-      inv_one, one_mul]
-  have h_denom (k : maxCompactU ε) : ∃ r : ℂ,
-      weightMinors (-paramAddRho l) ((k : Matrix n n ℂ)ᴴ * reducedExp ε l Z * k) =
-        cexp (q - (intDiagonal l.lowestKType * Z).trace - r) ∧
-      ‖r‖ ≤ 5 * 10 ^ 5 * (2 * δ) * (q + gapWeightedNormSq l.lowestKType k + card n ^ 2) :=
-    exists_weightMinors_neg_paramAddRho_eq_cexp hl hZ_mem (by linarith) hZ_le hq k
+  -- Step 1: a mean over `K`, at a matrix `y` whose products of minors are known.
+  obtain ⟨y, h_dsCoeff_eq, hy, h_denom⟩ := exists_weightMinors_neg_paramAddRho_eq_cexp hl g hg hδ_le
   choose r hr_eq hr_le using h_denom
   have h_mean : l.dsCoeff g / cexp (intDiagonal l.lowestKType * Z).trace - Real.exp (-q) =
       (∫ k : maxCompactU ε,
           (‖weightMinors l.lowestKType k‖ ^ 2 * Real.exp (-q) : ℝ) * (cexp (r k) - 1) ∂haarK ε) /
         l.lowestKType.kTypeNormSq := by
-    rw [h_dsCoeff_eq, flenstedJensen_div_exp_sub (det_reducedExp.trans_ne (exp_ne_zero _)) hr_eq]
+    rw [h_dsCoeff_eq, flenstedJensen_div_exp_sub hy hr_eq]
   -- Step 2: the integrand is small where `r k` is not.
   have h_point (k : maxCompactU ε) :
       ‖(‖weightMinors l.lowestKType k‖ ^ 2 * Real.exp (-q) : ℝ) * (cexp (r k) - 1)‖ ≤
@@ -376,7 +351,7 @@ lemma exists_norm_dsCoeff_div_cexp_sub_le [Nonempty n] (hl : l.HasLargeGap A)
     rw [norm_mul, Complex.norm_of_nonneg (by positivity)]
     exact mul_norm_exp_sub_one_le hT hδ_nonneg hδT hq_nonneg (gapWeightedNormSq_nonneg _ _)
       (sq_nonneg _) hT_card (sq_nonneg _) (norm_weightMinors_sq_le_exp l.lowestKType k)
-      ((hr_le k).trans_eq (by ring))
+      (hr_le k)
   -- Integrate this bound, and use the lower bound for `l.lowestKType.kTypeNormSq`.
   have h_sq : Integrable (fun k : maxCompactU ε ↦
       Real.exp (-q) / 10 * ‖weightMinors l.lowestKType k‖ ^ 2) (haarK ε) :=

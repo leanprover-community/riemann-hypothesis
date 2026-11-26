@@ -164,7 +164,7 @@ lemma exists_zeroTerm_rho_integrated_eq (D : V.Splitting V₀ p) (y : n → 𝔸
   set g : G E s := (D.exists_isAdapted_and_frame_eq 1).choose with hg_def
   have hg : D.IsAdapted g 1 := (D.exists_isAdapted_and_frame_eq 1).choose_spec.1
   obtain ⟨w, hw⟩ := V.exists_rho_integrated_eq y v
-  obtain ⟨L, -, hL⟩ := hg.exists_map_vacVector_apply_zero_omega_eq D.isMixedLaw_slice
+  obtain ⟨L, hL⟩ := hg.exists_apply_zero_omega_integrated_eq D.isMixedLaw_slice
   refine ⟨L (realWeil (blockU g⁻¹.1) w), fun f ↦ ?_⟩
   have h_integrated_eq_omega (f : 𝒮 V) :
       V.integrated w f = V.ω g (V.integrated (realWeil (blockU g⁻¹.1) w) (V.ω (1, g⁻¹.2) f)) := by
@@ -295,9 +295,7 @@ lemma exists_eq_iFin_add_isotropicBasisFin_of_mulVec_eq_zero (D : V.Splitting V�
     {z : n → 𝔸f E} (hz : D.isotropicBasisFinᴴ *ᵥ z = 0) :
     ∃ (w : n₀ → 𝔸f E) (b : p → 𝔸f E), z = D.iFin *ᵥ w + D.isotropicBasisFin *ᵥ b := by
   obtain ⟨a, w, b, rfl⟩ := D.exists_eq_finFrameVector 1 1 z
-  obtain ⟨h_dual, -⟩ : D.isotropicBasisFinᴴ *ᵥ D.finFrameVector 1 1 a w b = a ∧
-      D.iFinᴴ *ᵥ D.finFrameVector 1 1 a w b = w :=
-        conjTranspose_isotropicBasisFin_iFin_mulVec_finFrameVector D a b w
+  have h_dual := (conjTranspose_isotropicBasisFin_iFin_mulVec_finFrameVector D a b w).1
   obtain rfl : a = 0 := h_dual.symm.trans hz
   exact ⟨w, b, finFrameVector_zero D w b⟩
 
@@ -314,7 +312,7 @@ lemma exists_eq_add_of_zeroTermFin_ne_zero (D : V.Splitting V₀ p) {y : n → �
     simpa using exists_sub_orthogonal_of_zeroTermFin_ne_zero D 1 1 h_ne (by simp)
       fun x hx ↦ by rw [one_mulVec, finHeisenbergOp_vacElem hx]
   obtain ⟨w, b, h_sub⟩ := exists_eq_iFin_add_isotropicBasisFin_of_mulVec_eq_zero D h_perp
-  exact ⟨l, hl, w, b, by rw [← h_sub, sub_add_cancel]⟩
+  exact ⟨l, hl, w, b, sub_eq_iff_eq_add.1 h_sub⟩
 
 /-- The translates of the vacuum under the finite Heisenberg operators of `x` and of `x + l`, with
 `l` in the standard lattice `Ô ^ n`, agree up to a root of unity. -/
@@ -428,8 +426,7 @@ lemma map_stdLattice_le_zeroTermLattice {D : V.Splitting V₀ p} {g : Gf E n₀}
   rintro _ ⟨x, hx, rfl⟩
   refine ⟨c *ᵥ x, ?_⟩
   change D.iFin *ᵥ (g : Matrix n₀ n₀ (𝔸f E)) *ᵥ x + D.isotropicBasisFin *ᵥ c *ᵥ x ∈ stdLattice E n
-  rw [mulVec_mulVec, mulVec_mulVec, ← add_mulVec, ← hB_def]
-  exact hB.mulVec hx
+  simpa only [hB_def, add_mulVec, ← mulVec_mulVec] using! hB.mulVec hx
 
 /-- Let `D` be a splitting of `V` over `V₀`, with finite parts `i = D.iFin` of the embedding of `V₀`
 and `k = D.isotropicBasisFin` of the isotropic frame. The lattice `zeroTermLattice D` consists of
@@ -443,8 +440,8 @@ lemma mem_zeroTermLattice_iff {D : V.Splitting V₀ p} {g : Gf E n₀} {c : Matr
   constructor
   · -- The integral matrix `Bᴴ` sends a lattice vector of class `w` to `g⁻¹ w`.
     rintro ⟨b, hb⟩
-    rw [← conjTranspose_mulVec_iFin_add_isotropicBasisFin hB_def w b]
-    exact hB.conjTranspose.mulVec hb
+    simpa only [conjTranspose_mulVec_iFin_add_isotropicBasisFin hB_def w b] using!
+      hB.conjTranspose.mulVec hb
   · exact fun hx ↦ map_stdLattice_le_zeroTermLattice hB_def hB ⟨_, hx, smul_inv_smul g w⟩
 
 end
@@ -635,11 +632,6 @@ section
 
 omit [WeilData E]
 
-/-- The Gram matrix of `V` vanishes at two indices whose weights are not opposite. -/
-lemma GradeZeroPart.J_eq_zero_of_add_ne_zero (Z : GradeZeroPart V V'' w) {a b : ι}
-    (hab : w a + w b ≠ 0) : V.J a b = 0 :=
-  by_contra fun h_ne ↦ hab (Z.grade_add_eq_zero a b h_ne)
-
 /-- The Gram matrix pairs weight `a` only with weight `-a`, so it intertwines the projections to the
 positive and to the negative weights. -/
 lemma GradeZeroPart.proj_pos_mul_J (Z : GradeZeroPart V V'' w) :
@@ -648,7 +640,7 @@ lemma GradeZeroPart.proj_pos_mul_J (Z : GradeZeroPart V V'' w) :
   ext a b
   by_cases hab : w a + w b = 0
   · simp [show 0 < w a ↔ w b < 0 by omega]
-  · simp [Z.J_eq_zero_of_add_ne_zero hab]
+  · simp [by_contra fun h_ne ↦ hab (Z.grade_add_eq_zero _ _ h_ne)]
 
 /-- The inverse of the Gram matrix of `V` vanishes at two indices of positive weight. -/
 lemma GradeZeroPart.inv_J_apply_eq_zero_of_pos (Z : GradeZeroPart V V'' w) {a b : ι} (ha : 0 < w a)
@@ -931,7 +923,7 @@ lemma zeroTerm_splitting_tripleWeil (D : DoubleLiftData X'' q Y Y' Y'') (a b : A
     constructor <;> simp [P, r', kAdelic, iAdelic, Space.ratMap, removePlanes, hyperbolicSum, sum,
       blockGL, -coe_units_inv, fromRows_map, fromBlocks_mul_fromRows, fromBlocks_multiply]
   have h_planes : ∀ f, (P.homTarget (stdSpace E X')).zeroTerm (ω _ (.onHom (g', r')) f) =
-      ((WeilData.upsilonU1.1 g'.det).1 : ℂ) ^ card q •
+      ((WeilData.upsilonU1.val g'.det).val : ℂ) ^ card q •
         ω _ (.onHom (g', r)) ((P.homTarget (stdSpace E X')).zeroTerm f) := by
     simpa [pairWeil, inv_smul_eq_iff₀, r'] using P.homTarget_zeroTerm_pairWeil (stdSpace E X')
       1 1 r' r 1 (by simp [ActsOnFrame, h_k]) (by simp [h_i]) g'
@@ -997,8 +989,12 @@ lemma finEval_arrowProduct_equivariant (D : DoubleLiftData X'' q Y Y' Y'') (a b 
   have h_point : finVec (stackedStringMapFin Y Y' Y'') = V'.homAtPoint (flipSum V V'')
       (fromRows (V.formAdjoint V' (((0, 1) : 𝔸 E) • Y.stringMap Y'))
         (((0, 1) : 𝔸 E) • Y'.stringMap Y'')) := by
-    ext <;> simp [finVec, stackedStringMapFin, homAtPoint, matrixToVec, stackedStringMap,
-      formAdjoint, Prod.fst_sum, Prod.snd_sum, Matrix.mul_apply]
+    ext <;> simp only [finVec, stackedStringMapFin, homAtPoint, matrixToVec, stackedStringMap,
+      formAdjoint, AddMonoidHom.mk'_apply, Units.mul_inv_cancel_left, Matrix.mul_apply, sum_sum_type,
+      fromRows_apply_inl, fromRows_apply_inr, conjTranspose_smul, Matrix.smul_apply, smul_eq_mul,
+      Prod.fst_sum, Prod.snd_sum, Prod.fst_mul, Prod.snd_mul, Prod.fst_add, Prod.snd_add,
+      Prod.fst_star, Prod.snd_star, Pi.zero_apply, star_zero, star_one, zero_mul, mul_zero, one_mul,
+      add_zero, Finset.sum_const_zero]
   rw [← leftInverse_arrowTensor (TensorProduct.map _ _ _), arrowTensor_map_liftWeilFin,
     arrowTensor_finEval, h_equivariant]
   -- Split the translation over the two factors (`homHeisenbergOp_arrowProduct`,

@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import Lib.Adelic.Adeles.StrongApproximation
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.Measure.HaarModulus
@@ -75,7 +78,7 @@ ones, an adelic model of `(E / 𝓞 E)ⁿ`. -/
 def AdelicTorsion : Type :=
   (n → 𝔸f E) ⧸ Submodule.pi Set.univ fun _ : n ↦
       -- `Ô E` as an `𝓞 E`-subalgebra, then as a submodule
-      Subalgebra.toSubmodule (R := 𝓞 E) ⟨(Ô E).toSubsemiring, (algebraMap_mem_Ô.2 ·.2)⟩
+      Subalgebra.toSubmodule (R := 𝓞 E) ⟨(Ô E).toSubsemiring, (algebraMap_mem_Ô.2 ·.property)⟩
   deriving AddCommGroup, Module (𝓞 E)
 
 namespace Variety
@@ -87,7 +90,7 @@ variable {E n} [DecidableEq n] (β : Matrix n n E) (x : GL n (𝔸f E))
 /-- `x` is a frame for the form `β`: `xᴴ β x = ε • 1` (`ᴴ` is the conjugate transpose for the star
 of `𝔸f E`) for a unit `ε` of `Ẑ = Ô ℚ`. -/
 def IsFrameFor : Prop :=
-  ∃ ε : (Ô ℚ)ˣ, xᴴ * β.map (algebraMap E (𝔸f E)) * x.1 = finAdeleIncl ℚ E ε • 1
+  ∃ ε : (Ô ℚ)ˣ, xᴴ * β.map (algebraMap E (𝔸f E)) * x.val = finAdeleIncl ℚ E ε • 1
 
 /-- The rational number c is positive and x is a frame for the scalar matrix c·1: c·xᴴx = ε·1
 for some unit ε of Ẑ. -/
@@ -331,7 +334,7 @@ variable {E : Type} [Field E] [NumberField E] (g : GL n (𝔸f E))
 /-- The coordinates of a rational vector in the adelic frame `g`: the `E`-linear map `y ↦ g⁻¹ y`
 from `Eⁿ` to `n`-tuples of finite adeles. -/
 def frameCoords : (n → E) →ₗ[E] n → 𝔸f E :=
-  g⁻¹.1.mulVecLin.restrictScalars E ∘ₗ (Algebra.linearMap E (𝔸f E)).compLeft n
+  g⁻¹.val.mulVecLin.restrictScalars E ∘ₗ (Algebra.linearMap E (𝔸f E)).compLeft n
 
 /-- The `𝓞 E`-linear map sending `y` in `Eⁿ` to the class of the adelic vector `g⁻¹ y` in the
 torsion module `(𝔸f / Ô)ⁿ`. -/

@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.RingTheory.MvPolynomial.Basic -- shake: keep
+public import Mathlib.Algebra.MvPolynomial.Comap -- shake: keep (`open ... hiding comap`)
 public import Lib.General.Algebra.BlockFittingBound
 public import New.Congruences.LocalLoss.Basic
 
@@ -306,11 +308,11 @@ def IsCommonRibetElement [Fintype J] {I : Type*} (β : I → Y → L) {𝓧 : Se
   (∀ (i : I) (x : 𝓧), β i x = 0) ∧
   ∃ f : S,
     -- (a) `f` multiplies every `β i` into `𝒥`
-    (∀ i : I, f.1 * (fun x : Y ↦ MvPolynomial.C (β i x)) ∈ 𝒥) ∧
+    (∀ i : I, f.val * (fun x : Y ↦ MvPolynomial.C (β i x)) ∈ 𝒥) ∧
     -- (b) on `𝓧`, `f` has no term below `∏ X j`
-    (∀ x : 𝓧, ∀ d < ∑ j : J, Finsupp.single j 1, (f.1 x).coeff d = 0) ∧
+    (∀ x : 𝓧, ∀ d < ∑ j : J, Finsupp.single j 1, (f.val x).coeff d = 0) ∧
     -- (c) the coefficient of `∏ X j` at `π`
-    (f.1 π).coeff (∑ j : J, Finsupp.single j 1) = c
+    (f.val π).coeff (∑ j : J, Finsupp.single j 1) = c
 
 end Definitions
 

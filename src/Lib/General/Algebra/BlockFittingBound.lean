@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.RingTheory.PicardGroup
 public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
@@ -149,9 +150,9 @@ lemma addVal_le_length_torsionBy {X : Type} [AddCommGroup X] [Module O X] {a : O
     ext t
     have h_smul : t • w = 0 ↔ a * c ∣ t * c := by simp [w, Subtype.ext_iff, smul_smul, hb]
     simp [mulW, h_smul, Ideal.mem_span_singleton, mul_dvd_mul_iff_right hc]
-  rw [← length_quot_span_eq_addVal]
-  exact length_le_of_injective ((Ideal.span {a}).liftQ mulW h_ker.le)
-    (LinearMap.ker_eq_bot.1 ((Ideal.span {a}).ker_liftQ_eq_bot' mulW h_ker))
+  rw [← length_quot_span_eq_addVal,
+    ((quotEquivOfEq _ _ h_ker).trans mulW.quotKerEquivRange).length_eq]
+  exact length_le_of_injective _ (LinearMap.range mulW).injective_subtype
 
 /-- Let O be a discrete valuation ring with normalized valuation v = `addVal O` and fraction field
 K, and write `DivisibleQuot O` for K/O. Let ψ : A → M_d(O) be onto and N an A-submodule of A^ι.

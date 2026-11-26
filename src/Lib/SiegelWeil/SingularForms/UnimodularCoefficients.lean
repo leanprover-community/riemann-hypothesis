@@ -95,13 +95,30 @@ lemma map_conjugate_selfAdjoint {a : GL Unit (𝔸 E)}
       invFun z := (⟨z + star z, .add_star_self z⟩,
         ⟨toAdele (j : E) • z + star (toAdele (j : E) • z), .add_star_self _⟩)
       -- both inverses: expand, using `star j = -j`, and compare the scalar coefficients
-      left_inv _ := by
-        simp [Subtype.ext_iff, Prod.ext_iff]
-        constructor <;> match_scalars <;> grind
+      left_inv x := by
+        obtain ⟨⟨p, hp⟩, ⟨q, hq⟩⟩ := x
+        simp only [Subtype.ext_iff, Prod.ext_iff, smul_add, star_add, star_smul, star_toAdele,
+          star_inv₀, star_ofNat, hp.star_eq, hq.star_eq, smul_smul]
+        constructor <;> match_scalars
+        all_goals
+          simp only [← map_mul, star_toAdele, ← map_add]
+          first | rw [← map_zero (toAdele (E := E))] | rw [← map_one (toAdele (E := E))]
+          refine congrArg (toAdele (E := E)) ?_
+          try simp only [star_mul, star_inv₀, star_ofNat, star_j]
+          field_simp [j_ne_zero]
+          ring
       right_inv _ := by
-        simp
-        match_scalars <;> grind
-      map_add' _ _ := by simp [add_add_add_comm] }
+        simp only [smul_add, star_smul, star_toAdele, star_j, smul_smul]
+        match_scalars
+        all_goals
+          simp only [← map_mul, ← map_add]
+          first | rw [← map_zero (toAdele (E := E))] | rw [← map_one (toAdele (E := E))]
+          exact congrArg (toAdele (E := E)) (by field_simp [j_ne_zero]; ring)
+      map_add' x₁ x₂ := by
+        obtain ⟨⟨p₁, hp₁⟩, ⟨q₁, hq₁⟩⟩ := x₁
+        obtain ⟨⟨p₂, hp₂⟩, ⟨q₂, hq₂⟩⟩ := x₂
+        simp only [AddSubgroup.coe_add, smul_add]
+        abel }
   have h_semiconj (x : selfAdjoint (Matrix Unit Unit (𝔸 E)) ×
       selfAdjoint (Matrix Unit Unit (𝔸 E))) :
       e (Prod.map conj conj x) = a.val * e x * (star a).val := by
@@ -142,7 +159,36 @@ variable {T : Matrix p p E} {s₂ : n₂ → ℤˣ} {W₀ : Space E ((p ⊕ p) �
 def closureIntegers {E : Type} [Field E] [NumberField E] [IsCMField E] (S : Set (FinPlace E)) :
     Subring (𝔸 E) := by
   -- the set is closed under the ring operations, as one sees place by place
-  use! {x | (idemAdele S.conjClosure * x).2 ∈ Ô E} <;> simp [Ô, idem_apply, ite_mem] <;> bound
+  refine
+    { carrier := {x | (idemAdele S.conjClosure * x).2 ∈ Ô E}
+      mul_mem' := fun {a b} ha hb ↦ ?_
+      one_mem' := ?_
+      add_mem' := fun ha hb ↦ ?_
+      zero_mem' := ?_
+      neg_mem' := fun ha ↦ ?_ }
+  · have h : (idemAdele S.conjClosure * (a * b)).2 =
+        (idemAdele S.conjClosure * a).2 * (idemAdele S.conjClosure * b).2 := by
+      rw [← snd_mul, mul_mul_mul_comm]
+      simp [idem_mul_self]
+    change (idemAdele S.conjClosure * (a * b)).2 ∈ Ô E
+    rw [h]
+    exact (Ô E).mul_mem ha hb
+  · change (idemAdele S.conjClosure * 1).2 ∈ Ô E
+    rw [mul_one]
+    simp only [Ô, Subring.mem_mk, Subalgebra.mem_toSubsemiring,
+      IsDedekindDomain.FiniteAdeleRing.mem_integralAdeles, idem_apply, Set.mem_union,
+      Set.star_preimage, Set.mem_star]
+    intro i
+    split_ifs <;> simp only [one_mem, zero_mem]
+  · change (idemAdele S.conjClosure * (_ + _)).2 ∈ Ô E
+    rw [mul_add, snd_add]
+    exact (Ô E).add_mem ha hb
+  · change (idemAdele S.conjClosure * 0).2 ∈ Ô E
+    rw [mul_zero, snd_zero]
+    exact (Ô E).zero_mem
+  · change (idemAdele S.conjClosure * -_).2 ∈ Ô E
+    rw [mul_neg, snd_neg]
+    exact (Ô E).neg_mem ha
 
 /-- The endomorphism of the adelic unitary group that keeps the components on S ∪ S̄ and
 replaces all others by 1. -/
@@ -195,7 +241,7 @@ lemma snd_invDifferentIdele :
 /-- Siegel's T[γ] = γᴴTγ for a matrix T over E, read in the adeles, and an adelic matrix γ, divided
 by the idele δ = ȷκκ̄ (`New.Exchange.invDifferentIdele`). -/
 def siegelBracket (T : Matrix p p E) (γ : Matrix p p (𝔸 E)) : Matrix p p (𝔸 E) :=
-  (invDifferentIdele E)⁻¹.1 • (γᴴ * T.map toAdele * γ)
+  (invDifferentIdele E)⁻¹.val • (γᴴ * T.map toAdele * γ)
 
 lemma star_invDifferentIdele_inv :
     star (invDifferentIdele E)⁻¹.val = -(invDifferentIdele E)⁻¹.val := by
@@ -254,8 +300,13 @@ lemma centreCoeff_mul_radicalCentre (hf : IsAutFunction W f) {T : Matrix p p E} 
   -- Off `S ∪ S̄` both sides below are `X`; on `S ∪ S̄` they are the two sides of `h_part`.
   have h_comm : X * closurePart S (D.radicalCentre M) =
       closurePart S (D.radicalCentre (c * M * cᴴ)) * X := ext_adeleMatrix <| by
-    simpa [smul_sub, Matrix.mul_add, mul_sub, Matrix.add_mul, sub_mul, smul_smul]
-      using congrArg adeleMatrix h_part
+    have h_mat := congrArg adeleMatrix h_part
+    simp only [adeleMatrix_mul, closurePart_radicalCentre, adeleMatrix_closurePart,
+      adeleMatrix_radicalCentre, conjTranspose_smul, star_idemAdele_conjClosure, Matrix.mul_sub,
+      Matrix.sub_mul, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, smul_add, smul_sub,
+      sub_smul, smul_smul, Matrix.mul_smul, smul_mul, Matrix.mul_one, Matrix.one_mul, one_smul,
+      idemAdele_conjClosure_mul_self, sub_self, add_zero] at h_mat ⊢
+    exact sub_eq_zero.1 ((by abel : _ = _).trans (sub_eq_zero.2 h_mat))
   have h_char : selfDualAddChar E (idemAdele S.conjClosure * (M * siegelBracket T c).trace).2 =
       stdAddChar E (T.map toAdele * idemAdele S.conjClosure • (c * M * cᴴ)).trace := by
     rw [← stdAddChar_idemAdele_mul]
@@ -311,11 +362,15 @@ lemma dualIndex_lt_dualIndex_mul_of_det_inv_notMem {T : Matrix p p E} {γ r : Ma
   have h_inv : (rᴴ * C * r)⁻¹.det = Ring.inverse r.det * (C⁻¹.det * Ring.inverse rᴴ.det) := by
     simp [det_nonsing_inv, Ring.mul_inverse_rev]
   have h_det : C⁻¹.det = (rᴴ * r).det * (rᴴ * C * r)⁻¹.det := by
-    grind [det_mul, Ring.mul_inverse_cancel]
+    rw [det_mul, h_inv, mul_assoc rᴴ.det, mul_comm C⁻¹.det, ← mul_assoc r.det,
+      Ring.mul_inverse_cancel _ hr_unit, one_mul, mul_comm rᴴ.det, mul_right_comm _ C⁻¹.det,
+      Ring.inverse_mul_cancel _ hrH_unit, one_mul]
   have h_clear : C⁻¹.det * (rᴴ * C).det = rᴴ.det := by
-    grind [det_mul, det_nonsing_inv_mul_det]
+    rw [det_mul, mul_left_comm, det_nonsing_inv_mul_det _ hC_unit, mul_one]
   have h_not_clear : (rᴴ * C * r)⁻¹.det * (rᴴ * C).det = Ring.inverse r.det := by
-    grind [Ring.mul_inverse_cancel]
+    rw [h_inv, det_mul, mul_assoc (Ring.inverse r.det), mul_assoc C⁻¹.det,
+      ← mul_assoc (Ring.inverse rᴴ.det), Ring.inverse_mul_cancel _ hrH_unit, one_mul,
+      det_nonsing_inv_mul_det _ hC_unit, mul_one]
   refine denomIndex_lt_of_mul_mem_of_mul_notMem
     (mem_closureIntegers_iff.1 (hr.conjTranspose.mul hr).det_mem) ?_
     (mem_closureIntegers_iff.1 (hr.conjTranspose.mul hγ).det_mem) ?_ ?_ <;>
@@ -505,11 +560,9 @@ lemma exists_eq_radicalElement_mul_actsOnFrame {g : G E s} {α : Matrix Unit Uni
       A.symm.ActsOnFrame (A.levi (t, g₀)) (t⁻¹).valᴴ := by
     constructor <;> simp [Splitting.levi, Matrix.mul_assoc, Matrix.add_mul]
   refine ⟨c, z, t.val, (t⁻¹).valᴴ, A.levi (t, g₀), hg_eq, ?_, ?_,
-    by rw [conjTranspose_conjTranspose, t.inv_mul]⟩
-  · simp [ActsOnFrame, comp_kAdelic, mul_fromCols, h_k, h_compl, fromCols_mul_fromBlocks,
-      Matrix.mul_assoc]
-  · simp only [ActsOnFrame, comp_kAdelic, mul_fromCols, h_l]
-    simp [h_compl, fromCols_mul_fromBlocks, Matrix.mul_assoc]
+    by rw [conjTranspose_conjTranspose, t.inv_mul]⟩ <;>
+    (simp only [ActsOnFrame, comp_kAdelic, mul_fromCols, h_k, h_l]
+     simp [h_compl, fromCols_mul_fromBlocks, Matrix.mul_assoc])
 
 /-- Let the splittings `A`, `B` be adapted to the integral structure, let `h` act on the frame of
 `A.comp B` with upper right block `0` and lower blocks `x`, `γ`, and let `h * κ`, with `κ` integral
@@ -541,7 +594,8 @@ lemma dualIndex_lt_of_actsOnFrame [IsBaseAdapted A] [IsBaseAdapted B] {h κ : G 
   have ha₂₂ : IsIntMatrix (closureIntegers S) a.toBlocks₂₂ := fun i j ↦ ha_int (.inr i) (.inr j)
   obtain ⟨rfl, rfl⟩ : x = γ' * a.toBlocks₂₁ ∧ γ = γ' * a.toBlocks₂₂ := by
     rw [← a.fromBlocks_toBlocks, fromBlocks_multiply, fromBlocks_inj] at ha
-    simp_all
+    simp only [Matrix.zero_mul, zero_add] at ha
+    exact ⟨ha.2.2.1, ha.2.2.2⟩
   have hγ' : IsUnit γ'.det := isUnit_of_mul_isUnit_left (by rwa [← det_mul])
   rw [Matrix.mul_inv_rev, Matrix.mul_assoc, nonsing_inv_mul_cancel_left _ _ hγ'] at h_not_int
   refine dualIndex_lt_dualIndex_mul_of_det_inv_notMem h_int ha₂₂ h_unit fun h_inv ↦ h_not_int ?_

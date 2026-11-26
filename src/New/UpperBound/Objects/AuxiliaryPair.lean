@@ -145,19 +145,13 @@ lemma firstBlockHom_conj_mem_descentResidueLevel (s : S.ChosenGL r)
     (hx : x ∈ descentResidueLevel S u) :
     (firstBlockHom S u s)⁻¹ * x * firstBlockHom S u s ∈ descentResidueLevel S u := by
   obtain ⟨h_fix, h_parabolic⟩ := (mem_descentResidueLevel_iff S u).1 hx
-  refine (mem_descentResidueLevel_iff S u).2 ⟨fun i ↦ ?_, fun i ↦ ?_⟩
-  · -- With `d = diag(t, 1)` and `e` the inclusion matrix, `d * e = e * t`, so `x` fixes `d * e`.
-    let t : GL r (ResField (S.placeAt (inl i))) := s i
-    let d : GL n (ResField (S.placeAt (inl i))) := extendGL u t
-    let e : Matrix n r (ResField (S.placeAt (inl i))) := inclMatrix _ u
-    have h_block : d.val * e = e * t.val := extendGL_mul_inclMatrix u t
-    have h_fix_block : (x (inl i)).val * (d.val * e) = d.val * e := by
-      rw [h_block, ← Matrix.mul_assoc, h_fix i]
-    have h_apply : ((firstBlockHom S u s)⁻¹ * x * firstBlockHom S u s) (inl i) =
-        d⁻¹ * x (inl i) * d := rfl
-    rw [h_apply, Units.val_mul, Units.val_mul, Matrix.mul_assoc, Matrix.mul_assoc, h_fix_block,
-      ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
-  · simpa only [firstBlockHom_conj_apply_inr] using h_parabolic i
+  refine (mem_descentResidueLevel_iff S u).2 ⟨fun i ↦ ?_,
+    fun i ↦ by simpa only [firstBlockHom_conj_apply_inr] using h_parabolic i⟩
+  let t : GL r (ResField (S.placeAt (inl i))) := s i
+  change ((extendGL u t)⁻¹ * x (inl i) * extendGL u t).val * inclMatrix _ u = inclMatrix _ u
+  simp only [Units.val_mul, Matrix.mul_assoc, extendGL_mul_inclMatrix]
+  rw [← Matrix.mul_assoc (x (inl i)).val, h_fix i, ← extendGL_mul_inclMatrix,
+    ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
 
 end
 
@@ -463,11 +457,6 @@ def LevelPlaces.twistResidue (A : TwistGL S n) :
 lemma LevelPlaces.twistResidue_inl (A : TwistGL S n) (i : S.ChosenIndex) :
     S.twistResidue A (.inl i) = 1 := rfl
 
-/-- For an index `i : S.TwistIndex` of a place of the twist, the family `S.twistResidue A` at
-`.inr i` is `(A i)⁻¹`, the inverse of the component of `A` at that place. -/
-lemma LevelPlaces.twistResidue_inr (A : TwistGL S n) (i : S.TwistIndex) :
-    S.twistResidue A (.inr i) = (A i)⁻¹ := rfl
-
 /-- For A in the product of GL_n(k_w) over Q, a chosen element of K₀ reducing to A⁻¹ at the
 places in Q and to 1 at those in M. -/
 def LevelPlaces.twistResidueLift (A : TwistGL S n) : stdLevel E n := liftResidue (S.twistResidue A)
@@ -486,7 +475,7 @@ lemma LevelPlaces.reduceAt_twistResidueLift_inl (A : TwistGL S n) (i : S.ChosenI
 `S.placeAt (.inr i)`. -/
 lemma LevelPlaces.reduceAt_twistResidueLift_inr (A : TwistGL S n) (i : S.TwistIndex) :
     stdLevel.reduceAt (S.placeAt (.inr i)) (S.twistResidueLift A) = (A i)⁻¹ :=
-  (congrFun (S.reduceFamily_twistResidueLift A) (.inr i)).trans (S.twistResidue_inr A i)
+  congrFun (S.reduceFamily_twistResidueLift A) (.inr i)
 
 variable [WeilData E]
 
@@ -949,8 +938,8 @@ lemma FitsParams.isJointHarmonic_productOfMinors {O : DescentPair E r n}
       (FockDualPair.std 1 O.signs (negCount O.signs) (-((Fintype.card n / 2 : ℕ) + O.weight w)))
       (O.paramV w) (-l w) (O.productOfMinors w) := by
   refine ⟨h_fits.paramsCorrespond.isMatch w, ?_⟩
-  rw [funext (h_fits.lowestKType_eq_staircaseWeight w)]
-  exact h_fits.isJointHighest_productOfMinors w
+  simpa only [funext (h_fits.lowestKType_eq_staircaseWeight w)] using
+    h_fits.isJointHighest_productOfMinors w
 
 /-- Let the parameter l fit O, let l' = `O.paramV`, let r₋ be the number of minus signs of W and
 γ_w = ⌊n/2⌋ + `O.weight w`. There are polynomials Φ_w, one for each infinite place w, such that

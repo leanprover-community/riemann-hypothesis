@@ -107,23 +107,16 @@ theorem dsCoeff_polar (hg : l.HasGap h) (p q : maxCompactU ε) {z : USign ε}
 
 /-- For a parameter λ of gap h and g in U(diag ε), c_λ(g⁻¹) is the complex conjugate of c_λ(g). -/
 theorem dsCoeff_inv (hg : l.HasGap h) (g : USign ε) : l.dsCoeff ↑g⁻¹ = conj (l.dsCoeff g) := by
-  -- Write `g = k z` with `z > 0`. Then `g⁻¹ = z⁻¹ k⁻¹`, and the integrands of `dsCoeff_polar` for
-  -- the two are conjugate, because `weightMinors` is conjugated by inversion.
+  -- Write `g = k z` with `z > 0`. Then `g⁻¹ = z⁻¹ k⁻¹`, and the `dsCoeff_polar` integrands are
+  -- conjugate because `weightMinors` is conjugated by inversion.
   obtain ⟨k, z, hz, rfl, -⟩ := exists_polar g
-  let F (u : maxCompactU ε) : ℂ := weightMinors l.lowestKType (k * u.val) *
-    conj (weightMinors l.lowestKType u) /
-    weightMinors (-paramAddRho l) ((u : Matrix n n ℂ)ᴴ * z * u)
-  have h_denom (u : maxCompactU ε) (w : n → ℤ) :
-      weightMinors w ((u : Matrix n n ℂ)⁻¹ * ((z : Matrix n n ℂ)⁻¹ * u)) =
-        conj (weightMinors w ((u : Matrix n n ℂ)⁻¹ * (z * u))) := by
-    simpa [mul_assoc, Matrix.mul_inv_rev, GeneralLinearGroup.det_ne_zero] using
-      weightMinors_unitary_inv ((u : USign ε)⁻¹ * z * (u : USign ε)) w
-  have h_self : l.dsCoeff ↑(k * z) = (∫ u, F u ∂haarK ε) / l.lowestKType.kTypeNormSq := by
-    simpa [F] using dsCoeff_polar hg k 1 hz
-  have h_inv : l.dsCoeff ↑(k * z)⁻¹ = (∫ u, conj (F u) ∂haarK ε) / l.lowestKType.kTypeNormSq := by
-    simpa [F, mul_assoc, mul_comm, ← maxCompactU.coe_inv, Matrix.mul_inv_rev, h_denom] using
-      dsCoeff_polar hg 1 k (z := z⁻¹) (by simpa using hz)
-  rw [h_inv, h_self, integral_conj, map_div₀, Complex.conj_ofReal]
+  have h_self := dsCoeff_polar hg k 1 hz
+  have h_inv := dsCoeff_polar hg 1 k (z := z⁻¹) (by simpa using hz)
+  have h_denom (u : maxCompactU ε) :=
+    weightMinors_unitary_inv ((u : USign ε)⁻¹ * z * (u : USign ε)) (-paramAddRho l)
+  simp [mul_assoc, Matrix.mul_inv_rev] at h_self h_inv h_denom
+  simp [h_inv, h_self, mul_comm, ← maxCompactU.coe_inv, h_denom,
+    ← integral_conj]
 
 /-- Let `l = 2λ` be a parameter of gap `h`: its entries are distinct and congruent to `card n - 1`
 mod 2, and `|λ i - λ j| ≥ h` whenever `ε i ≠ ε j`. Let c_λ = `l.dsCoeff` be the function
@@ -406,7 +399,7 @@ private theorem New.eventually_integral_conj_weightMinors_mul_dsCoeff (hg : l.Ha
       fun s hs ↦ hA_acc k s hs j
   let c : ℂ := l.lowestKType.kTypeNormSq
   have h_x : l.dsCoeff x = (∫ j, G j j 1 ∂haarK ε) / c := by
-    simp [HCParam.dsCoeff, HCParam.flenstedJensen, G, S, c, mul_assoc]
+    simp [HCParam.dsCoeff, HCParam.flenstedJensen, G, S, c]
   have h_b : l.dsCoeff b = (∫ k, F k ∂haarK ε) / c := by
     simp [dsCoeff_eq_flenstedJensen hg (one_mem _) (by simpa using hb_acc 1),
       HCParam.flenstedJensen, F, S, c]

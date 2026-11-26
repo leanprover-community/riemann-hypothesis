@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Data.Finset.Slice
 public import Lib.DiscreteSeries.Theta.BlockRule
 
 /-!
@@ -159,10 +160,12 @@ lemma IsSeparated.disjoint_entries_block (hX : X.IsSeparated h) (hB : B ⊆ X.ce
     mem_centredBlock.1 hy_block
   grind
 
+omit [DecidableEq ι] in
 /-- In a separated system the stem and the blocks of the centres in B are pairwise disjoint, so the
 number of entries of λ⁺_B is the rank n_B, the sum of the lengths of the stem and the blocks. -/
 lemma IsSeparated.card_entries (hX : X.IsSeparated h) (hB : B ⊆ X.centres) :
     #(X.entries B) = X.rank B := by
+  classical
   induction B using Finset.induction_on with
   | empty => simp [entries, rank]
   | insert c B hcB ih =>
@@ -183,16 +186,17 @@ lemma IsSeparated.odd_add_card_of_mem_entries (hX : X.IsSeparated h) (hB : B ⊆
     have h_length : X.length c % 2 = #X.stem % 2 := hX.length_mod_two c (hB hcB)
     grind
 
+omit [DecidableEq ι] in
 /-- In a separated system the residue mod 2 of the rank n_B is that of the length of the stem minus
 the lowering (1 if the length of the stem and #B are odd, 0 otherwise). -/
 lemma IsSeparated.rank_mod_two (hX : X.IsSeparated h) (hB : B ⊆ X.centres) :
     (X.rank B : ℤ) % 2 = #X.stem % 2 - X.lowering B := by
+  classical
   induction B using Finset.induction_on with
   | empty => simp [rank, lowering]
   | insert c B hcB ih =>
     obtain ⟨hc, hB⟩ := insert_subset_iff.1 hB
     have h_length : X.length c % 2 = #X.stem % 2 := hX.length_mod_two c hc
-    have h_rank : (X.rank B : ℤ) % 2 = #X.stem % 2 - X.lowering B := ih hB
     rw [rank_insert hcB]
     grind [lowering]
 

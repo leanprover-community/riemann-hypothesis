@@ -126,8 +126,8 @@ lemma exists_det_ne_zero_and_mulVec_eq_coord {Q : Matrix d d Ainf}
         π (t ⬝ᵥ x).val = 0) : ∀ i : d, π (t i).val = 0 := by
     -- `O^♭` is separated for the `π z`-adic topology, as `z = seriesMap X` is not a unit.
     have h_haus : IsHausdorff (span {π (c.seriesMap PowerSeries.X)}) OFlat :=
-      (OFlat.isHausdorff_and_shiftDiff_surjective
-        (mt Ainf.isUnit_iff_isUnit_constantCoeff.mpr c.not_isUnit_z)).left
+      OFlat.isHausdorff_span_singleton_of_not_isUnit
+        (mt Ainf.isUnit_iff_isUnit_constantCoeff.mpr c.not_isUnit_z)
     -- All coordinates of `(Q t) j` in the adic basis lie in the kernel of `π`.
     have h_coord (j : d) (i : c.adicBasis.Index) :
         π (c.adicBasis.coord i ((Q *ᵥ fun l : d ↦ (t l : Ainf)) j)).val = 0 := by

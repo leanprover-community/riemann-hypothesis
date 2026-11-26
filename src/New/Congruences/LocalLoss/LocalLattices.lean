@@ -75,11 +75,9 @@ lemma isTameType_of_roots {N r : ℕ} {K : O[X] → Prop} {M : Multiset (PadicAl
   let q : ℤ_[ℓ][X] := (M.map (minpoly ℤ_[ℓ])).prod
   have hq_monic : q.Monic := monic_multiset_prod_of_monic _ _ fun y hy ↦ (h_minpoly y hy).1
   have hq_natDegree : q.natDegree ≤ N * r :=
-    calc
-      q.natDegree ≤ ((M.map (minpoly ℤ_[ℓ])).map natDegree).sum := natDegree_multiset_prod_le _
-      _ ≤ card M * r := by
-        simpa using sum_map_le_sum_map _ (fun _ ↦ r) fun y hy ↦ (h_minpoly y hy).2
-      _ ≤ N * r := by gcongr
+    (natDegree_multiset_prod_le _).trans <|
+      (sum_le_card_nsmul _ r (by simpa using fun y hy ↦ (h_minpoly y hy).2)).trans <| by
+        simpa using Nat.mul_le_mul_right r h_card
   refine ⟨hK _ fun y hy ↦ ?_, q, hq_monic, hq_natDegree, hK _ fun y hy ↦ ?_⟩
   · obtain ⟨a, ha, hya⟩ := h_root y hy
     obtain ⟨c, hc⟩ : ℓ ^ a - 1 ∣ (Finset.Icc 1 r).lcm fun i : ℕ ↦ ℓ ^ i - 1 :=
@@ -111,7 +109,7 @@ lemma IsLatticeIn.exists_equivariant_embedding {u : AbsGal D →* Matrix n n O} 
     L.toLinearMap.restrictScalars ℤ_[ℓ] ∘ₗ O.val.val.toLinearMap.compLeft n
   refine ⟨F, (basisFun (PadicAlgCl ℓ) n).map L, by simp [F, funext_iff],
     fun a x ↦ L.map_smul (O.val.val a) (O.val.val ∘ x), fun i ↦ ?_, fun g x ↦ ?_⟩
-  · simp [F, funext_iff, single_apply, apply_ite]
+  · simp [F]
   · calc
       F ((u g).mulVec x) = L (((u g).map O.val.val).mulVec (O.val.val ∘ x)) :=
         congrArg L (funext (O.val.val.toRingHom.map_mulVec (u g) x))
@@ -209,6 +207,7 @@ lemma IsConjSelfDualOfLevel.hasJumps_localLattice {τ : (D.E →+* ℂ) → Mult
     (h_selfDual : IsConjSelfDualOfLevel D t τ S R) (hu : IsLatticeIn R u)
     (w : placesDividing D.E ℓ) (g : Gp ℓ) :
     HasJumps (localLattice u w).ρ (coefficientEmbedding O g) (τ (complexEmbeddingAt w g)) := by
+  -- Use the actual local data supplied by `localChart ℓ D.E w` at the chosen place.
   -- Jumps are unchanged by extension of scalars from `O` to `ℚ̄_ℓ`.
   obtain ⟨-, h_jump, -⟩ := h_selfDual.local_conditions w.val (by simp) w.val.isPlaceOver_placeOver
   obtain ⟨F, b, -, F_smul, F_basis, F_mulVec⟩ := hu.exists_equivariant_embedding
@@ -240,7 +239,8 @@ lemma IsConjSelfDualOfLevel.inClass_localLattice {τ : (D.E →+* ℂ) → Multi
     (hu : IsLatticeIn R u) (w : placesDividing D.E ℓ) :
     InClass (crystallinityFilter w) (KillsAboveM 𝓡 w) (jumpSetAt τ w) (localLattice u w) := by
   refine ⟨?_, fun γ i hi ↦ ?_, fun s Q ⟨_, h_kills⟩ hs ↦ ?_⟩
-  · -- `R` is potentially crystalline at `w`, and crystalline if `w` is not in `placesAboveM D`
+  · -- Instantiate the local conditions using `localChart`. At `w`, `R` is potentially
+    -- crystalline, and crystalline if `w` is not in `placesAboveM D`.
     obtain ⟨⟨-, h_potCrys⟩, -, h_good⟩ :=
       h_selfDual.local_conditions w.val (by simp) w.val.isPlaceOver_placeOver
     refine hu.isAdmissible_localLattice le_sup_left ?_

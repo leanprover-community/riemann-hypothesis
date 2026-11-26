@@ -125,7 +125,8 @@ lemma directDatum_ne_zero_iff {j : ℕ} (M : Matrix (D.X j) (D.X j) (LocProd D.n
   have h_lift : directDatum M ≠ 0 ↔ ∃ h : ∀ b c : D.X j, M b c ∈ SemilocalField.O,
       ∀ b : D.X j, D.isSplitLevel_nonInducedPlaces.reduction ⟨M b (.inr ()), h b (.inr ())⟩ =
         lastBasisVector b := by
-    simp [directDatum, lastColDatum, liftFn_apply, funext_iff (α := D.X j), -Sum.forall]
+    simp only [directDatum, lastColDatum, funext_iff (α := D.X j), transpose_apply, liftFn_apply,
+      of_apply, ne_eq, dite_eq_right_iff, not_forall]
     exact exists_congr fun _ ↦ by split_ifs <;> simp [*]
   simp [h_lift, mem_O_locProd, reduction_eq_iff, D.isSplitLevel_nonInducedPlaces.v_natCast,
     div_le_one₀, ZMod.val_one, ← forall_and, forall_comm (β := D.nonInducedPlaces),

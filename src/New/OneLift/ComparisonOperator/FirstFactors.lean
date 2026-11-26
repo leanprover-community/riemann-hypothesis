@@ -88,16 +88,21 @@ lemma New.Data.renameRowsCols_stackedDetProd_eq_sum {P : Parameters} {D : Data P
         (inFirstCols (Φ := D.Φ) (p := D.posRank j)) := by
     ext1 ⟨τ, a, s | s⟩
     · -- exactly one index has sign `1` and number `s`, namely `D.rowIndexOfNumber s`
-      simp [inFirstCols, fockLetters, descentPair]
+      simp only [rename_X, Prod.map_apply, id_eq, Sum.elim_inl, Function.comp_apply,
+        fockLetters, descentPair, Int.pred_toNat, aeval_X, map_sum, inFirstCols,
+        AlgHom.coe_comp, aevalTower_X]
       rw [sum_eq_single] <;> grind [rowIndexOfNumber, D.basisNumber.eq_symm_apply, signsW]
     · simp [inFirstCols]
   -- `toPoly_stackedDetProdCoords` expands `inFirstCols (stackedDetProd …)` in the basis
   -- `nablaBasis` with coordinates `stackedDetProdCoords`; both sides become the same double sum, up
   -- to the order of summation.
   rw [rename_eq]
-  simp [← toPoly_stackedDetProdCoords, toPoly, letterPoly, dotProduct, mulVec, nablaBasis,
-    tableauPoly, minor, smul_eq_C_mul, AlgHom.map_det, Matrix.map, Fintype.linearCombination_apply,
-    sum_mul, mul_right_comm _ (rename _ _)]
+  simp only [AlgHom.coe_comp, Function.comp_apply, ← toPoly_stackedDetProdCoords, toPoly,
+    Matrix.map, LinearMap.coe_comp, mulVecBilin_apply, Fintype.linearCombination_apply, mulVec,
+    dotProduct, of_apply, nablaBasis, tableauPoly, minor, smul_eq_C_mul, map_sum,
+    map_intCast, sum_mul, map_mul, aevalTower_C, map_prod, AlgHom.map_det, AlgHom.mapMatrix_apply,
+    aevalTower_X, mul_right_comm _ (rename _ _), letterPoly, AlgHom.coe_toLinearMap,
+    mulVec_single, MulOpposite.op_one, col_of, one_smul]
   exact sum_comm
 
 end LineLeftSide
@@ -126,11 +131,11 @@ variable {P : Parameters} {D : Data P} {ϑ : D.TameChar}
 lemma normQ_mul_M_pow_mem_modulus {c : ℕ} :
     ↑(ϑ.normQ * D.M ^ c) ∈ (D.twistModulus ϑ c).ideal := by
   -- `D.M` lies in the product `(D.piM)` of the chosen places, and each norm `w.q` in `w`.
-  have hM_mem : ↑D.M ∈ ∏ i, (D.chosenPlace i).1 := by
+  have hM_mem : ↑D.M ∈ ∏ i, (D.chosenPlace i).asIdeal := by
     rw [← span_piM D, mem_span_singleton]
     exact Dvd.intro _ D.piM_mul_star
   rw [TameChar.normQ, ← ϑ.Q.prod_coe_sort FinPlace.q, Nat.cast_mul, Nat.cast_pow, Nat.cast_prod]
-  exact mul_mem_mul_rev (pow_mem_pow hM_mem c) (prod_mem_prod fun w _ ↦ absNorm_mem w.1.1)
+  exact mul_mem_mul_rev (pow_mem_pow hM_mem c) (prod_mem_prod fun w _ ↦ absNorm_mem w.val.asIdeal)
 
 /-- Replacing the matrix Y by Y·Bᵀ multiplies the matrices `constantRows` on the right by the
 transpose of the block diagonal matrix (1, 1, τB, τA) at each τ, whatever A is. -/
@@ -146,10 +151,19 @@ lemma constantRows_mul_transpose_eq_mul_fromBlocks (j : D.LiftIndex) (i : D.RowC
   · -- A row that is a standard basis vector, in a block where the matrix is the identity.
     obtain z | z | z | z := z
     all_goals
-      simp [constantRows, inclMatrix, Matrix.one_apply]
-      split <;> simp [Matrix.one_apply, eq_comm]
+      simp only [constantRows, inclMatrix, transpose_submatrix, transpose_one, Matrix.map_mul,
+        elim_inl, submatrix_apply, Matrix.one_apply, id_eq, transpose_apply, ite_mul, one_mul,
+        zero_mul, Finset.sum_ite_eq, mem_univ, ↓reduceIte]
+      split <;> simp only [eq_comm, inl.injEq, inr.injEq, reduceCtorEq, ↓reduceIte,
+        fromBlocks_apply₁₁, fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂,
+        Matrix.one_apply, Matrix.zero_apply, map_apply, map_zero,
+        MonoidWithZeroHom.map_ite_one_zero]
   · -- A row of τ(Y), supported on the block of B.
-    obtain z | z | z | z := z <;> simp [constantRows, Matrix.mul_apply]
+    obtain z | z | z | z := z <;> simp only [constantRows, Matrix.map_mul, elim_inr,
+      fromCols_apply_inl, fromCols_apply_inr, Matrix.zero_apply, transpose_apply, sum_sum_type,
+      fromBlocks_apply₁₁, fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂,
+      submatrix_apply, id_eq, Matrix.mul_apply, map_apply, map_zero, zero_mul, mul_zero,
+      sum_const_zero, add_zero, zero_add]
 
 /-- Let `q` be the bound on the number of determinants, `n ≤ (10 m + 1) q` a degree with `n ≤ D.M`
 and `0 < H ≤ (n ^ n) ^ 3` a denominator. Then the constant `chosenGroupOrder ^ 2`, the two class
@@ -189,9 +203,16 @@ lemma firstFactorSize_sq_le_exp {q n : ℕ} {H : ℤ}
     Modulus.card_residueRing_le (levelModulus_ideal_le normQ_mul_M_pow_mem_modulus),
     ← le_exp_of_log_le]
   -- The goals left are the inequality of logarithms, which is `h_scale`, and positivity conditions.
-  all_goals simp [log_mul, ne, log_sqrt, pos, sqrt_eq_zero', ← pow_mul,
-    toAutChar_one_and_toTwist_one_and_Q_one]
-  exact h_scale
+  · simp only [map_pow, map_natCast, norm_pow, RCLike.norm_natCast, ← pow_mul, Nat.reduceMul,
+      card_sum, Fintype.card_fin, Nat.cast_pow, Nat.cast_mul, Nat.cast_prod,
+      toAutChar_one_and_toTwist_one_and_Q_one, Finset.prod_empty, one_mul, Int.cast_pow,
+      Int.cast_natCast, Nat.cast_nonneg, pow_nonneg, sqrt_mul, ne_eq, ne, not_false_eq_true,
+      pow_eq_zero_iff, mul_eq_zero, exp_ne_zero, or_self, sqrt_eq_zero',
+      false_or, not_or, not_le, Nat.cast_pos, pos, pow_pos, and_self, log_mul, log_pow,
+      Nat.cast_ofNat, log_exp, Nat.cast_add, log_sqrt, Nat.cast_one]
+    exact h_scale
+  simp only [CanonicallyOrderedAdd.prod_pos, toAutChar_one_and_toTwist_one_and_Q_one,
+    notMem_empty, FinPlace.q_bounds, implies_true, mul_pos_iff_of_pos_left, pos]
 
 /-- Equivariance under rational points. Let Γ and γ' be rational unitary points of the definite
 spaces W^add and V″, and let the constant rows built from Y' be those built from Y multiplied by
@@ -252,10 +273,13 @@ lemma modKernelBilin_stackedDetProdCoords_equivariant (j : D.LiftIndex) (i : D.R
     refine (modKernelStdSpace_embFin_mul h_char h_char 𝔪 Ψ _ Γ γ' g h).trans ?_
     rw [twoSidedSubst_firstColsCoord A B h_subst]
     -- the powers of the determinants cancel
-    simp [θ, A, B, B', ← modKernelBilin_apply, ← map_det, mul_pow,
-      ← card_detIndex_add_firstFactorCharExp,
-      add_assoc, -card_sum, ← mapMatrix_apply, prod_mul_distrib]
-    field [prod_ne_zero_iff, GeneralLinearGroup.det_ne_zero]
+    simp only [Nat.cast_add, Int.natCast_ediv, add_pos_iff, k_pos, or_true, Nat.cast_pred,
+      Nat.cast_ofNat, ← card_detIndex_add_firstFactorCharExp, neg_add_rev, add_assoc,
+      add_neg_cancel_left, neg_neg, zpow_natCast, _root_.zpow_neg, prod_mul_distrib,
+      prod_inv_distrib, InvMemClass.coe_inv, coe_units_inv, ← mapMatrix_apply, ← map_det,
+      det_nonsing_inv, Ring.inverse_eq_inv', map_inv₀, det_fromBlocks_zero₂₁, det_one, one_mul,
+      mul_pow, inv_pow, ← modKernelBilin_apply, map_smul, smul_eq_mul, A, B', B, θ]
+    field_simp [prod_ne_zero_iff, GeneralLinearGroup.det_ne_zero]
   -- On complex conjugates `γ'⁻¹` acts by the Schur matrix of `A`.
   have h_rep (v : WeylIndex (FirstFactorIndex j) (untwistedDescentPair j).colsPlus → ℂ) :
       (stdSpace D.E (FirstFactorIndex j)).weightRep (untwistedDescentPair j).colsPlus 0 γ'⁻¹

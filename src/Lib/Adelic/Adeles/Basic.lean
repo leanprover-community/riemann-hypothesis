@@ -1,12 +1,29 @@
 module
 
-public import Lib.Base
 public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.Basic
 public import TauCeti.NumberTheory.NumberField.Countable
-public import TauCeti.RingTheory.DedekindDomain.Countable
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.Completion
 public import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
+public import Aesop.Frontend.Tactic
+public import Aesop.Main
+public import Mathlib.Algebra.Star.Subsemiring
+public import Mathlib.NumberTheory.NumberField.CMField
+public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Algebra.Group.SubmonoidClosure
+public import Mathlib.Topology.Algebra.Valued.LocallyCompact
+public import Mathlib.Topology.UniformSpace.Uniformizable
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # Finite adeles of number fields: topology, idempotents, functoriality and base change
@@ -197,7 +214,7 @@ lemma mem_Ô {x : 𝔸f E} : x ∈ Ô E ↔ ∀ w : HeightOneSpectrum (𝓞 E), 
 field at w. -/
 def reduceAt : Ô E →+* ResField w :=
   (residue (LocInt w)).comp
-    (((evalAt w).domRestrict (Ô E)).codRestrict (LocInt w) fun x ↦ mem_Ô.1 x.2 w)
+    (((evalAt w).domRestrict (Ô E)).codRestrict (LocInt w) fun x ↦ mem_Ô.1 x.property w)
 
 instance : MeasurableSpace (LocField w) := borel _
 
@@ -283,7 +300,7 @@ variable {u : FinPlace K} {w : FinPlace L}
 `f : K → L` to a homomorphism of the completions at u and at w. -/
 def locMap (h : w.comap f = u) : adicCompletion K u →+* adicCompletion L w :=
   let := f.toAlgebra
-  have : w.1.LiesOver u.1 := .mk (congrArg HeightOneSpectrum.asIdeal h).symm
+  have : w.asIdeal.LiesOver u.asIdeal := .mk (congrArg HeightOneSpectrum.asIdeal h).symm
   -- `f` is uniformly continuous for the valuations at `u` and `w`, so it extends to the completions
   (equiv L w).symm.toRingHom.comp
     ((mapRingHom _ (uniformContinuous_algebraMap_liesOver K L u w).continuous).comp
@@ -320,8 +337,8 @@ lemma exists_v_locMap_eq_pow {u : FinPlace K} {w : FinPlace L} (hw : w.comap f =
   -- suffices to treat elements of `K`, which is dense in its completion.
   refine ⟨w.asIdeal.ramificationIdx (𝓞 K), (w.asIdeal.ramificationIdx_pos (𝓞 K)).ne',
     (denseRange_algebraMap K u).eq fun x : K ↦ ?_⟩
-  rw [locMap_algebraMap, v_algebraMap_eq_valuation, v_algebraMap_eq_valuation]
-  exact (valuation_liesOver L u w x).symm
+  simpa only [locMap_algebraMap, v_algebraMap_eq_valuation] using!
+    (valuation_liesOver L u w x).symm
 
 /-- The map of completions induced by a field homomorphism preserves and reflects integrality. -/
 @[simp] lemma v_locMap_le_one_iff {u : FinPlace K} {w : FinPlace L} (hw : w.comap f = u)
@@ -558,16 +575,6 @@ lemma residue_eq_iff_valuation_sub_lt_one {F Γ : Type*} [Field F] [LinearOrdere
 lemma isOpen_v_lt (γ : WithZero (Multiplicative ℤ)) : IsOpen {x : LocField w | v x < γ} :=
   isOpen_lt continuous_v (by fun_prop)
 
-/-- Every element `x` of `LocInt w`, the ring of integers of the completion of `E` at `w`, is
-approximated by algebraic integers `a` of `E` to any order: `a - x` has valuation `v` less than
-`exp n`, the image of the integer `n` in the value group. -/
-lemma exists_int_approx (x : LocInt w) (n : ℤ) :
-    ∃ a : 𝓞 E, v (algebraMap E (adicCompletion E w) a - x.val) < exp n := by
-  -- Tau Ceti approximates to order `exp (-m)` for natural `m`; take `m = (1 - n).toNat`.
-  obtain ⟨a, ha⟩ := exists_valued_sub_le (K := E) w x (1 - n).toNat
-  rw [Valuation.map_sub_swap] at ha
-  exact ⟨a, ha.trans_lt (exp_lt_exp.2 (by omega))⟩
-
 /-- Every element of the residue field at w is the residue of an algebraic integer of E. -/
 lemma algebraMap_ResField_surjective : Function.Surjective (algebraMap (𝓞 E) (ResField w)) :=
   residue_algebraMap_adicCompletionIntegers_surjective (K := E) w
@@ -649,9 +656,9 @@ lemma exists_natCast_smul_mem_of_isCompact {M : Type*} [AddCommMonoid M] [Module
   -- `N • 1` come close to `0` for arbitrarily large `N`.
   have : CompactSpace (Ô E) := isCompact_iff_compactSpace.1 isCompact_Ô
   have h_cont : Continuous fun p : Ô E × M ↦ (p.1 : 𝔸f E) • p.2 := by fun_prop
-  have h_small : ∀ᶠ a : Ô E in nhds 0, ∀ x ∈ K, a.1 • x ∈ U :=
+  have h_small : ∀ᶠ a : Ô E in nhds 0, ∀ x ∈ K, a.val • x ∈ U :=
     hK.eventually_forall_of_forall_eventually fun x _ ↦ h_cont.tendsto' (0, x) 0 (by simp) hU
-  have h_freq : ∃ᶠ N : ℕ in .atTop, ∀ x ∈ K, (N • (1 : Ô E)).1 • x ∈ U :=
+  have h_freq : ∃ᶠ N : ℕ in .atTop, ∀ x ∈ K, (N • (1 : Ô E)).val • x ∈ U :=
     (mapClusterPt_zero_atTop_nsmul _).frequently h_small
   obtain ⟨N, hN, hN_mem⟩ := h_freq.forall_exists_of_atTop 1
   exact ⟨N, one_le_iff_ne_zero.1 hN, fun x hx ↦ by simpa using hN_mem x hx⟩
@@ -685,9 +692,9 @@ lemma exists_mem_nhds_isIntegral_sub_div {E : Type*} [Field E] [NumberField E] (
     mem_nhds_zero_finAdele_iff.mpr ⟨c, hc, fun z hz ↦ ⟨z, hz, rfl⟩⟩
   have hU : U ∈ nhds y₀ := (continuous_sub_right y₀).tendsto' y₀ 0 (sub_self y₀) h_zero
   refine ⟨U, hU, fun x x' ⟨z, hz, hx⟩ ⟨z', hz', hx'⟩ ↦ algebraMap_mem_Ô.mp ?_⟩
-  have h_diff : algebraMap E (𝔸f E) (x - x') = c * (z - z') := by simp [mul_sub, ← hx, ← hx']
   have h_mul : (c : 𝔸f E) * algebraMap E (𝔸f E) ((x - x') / c) = c * (z - z') := by
-    rw [← h_diff, ← map_natCast (algebraMap E (𝔸f E)), ← map_mul, mul_div_cancel₀ _ (mod_cast hc)]
+    rw [← map_natCast (algebraMap E (𝔸f E)), ← map_mul, mul_div_cancel₀ _ (mod_cast hc)]
+    simp [mul_sub, ← hx, ← hx']
   rw [(isUnit_natCast_finAdele hc).mul_left_cancel h_mul]
   exact sub_mem hz hz'
 

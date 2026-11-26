@@ -201,15 +201,6 @@ lemma map_augmentationIdeal_le_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : 
       tieIdeal u p τ φ ε ρ₀ :=
   le_sup_right.trans (le_sup_left.trans le_sup_left)
 
-/-- The tie `τ k - 1 - X j * (ε j)(φ k) * (φ k - 1)` of index `k = (j, b)` lies in the tie
-ideal. -/
-lemma tie_mem_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
-    (k : J × Bool) :
-    MonoidAlgebra.single (τ k) 1 - 1 - (MvPolynomial.X k.1 : MvPolynomial J O) •
-      (aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ k)) (ε k.1) *
-        (MonoidAlgebra.single (φ k) 1 - 1)) ∈ tieIdeal u p τ φ ε ρ₀ :=
-  mem_sup_left (mem_sup_right (subset_span ⟨k, rfl⟩))
-
 /-- For `r` in the augmentation ideal, `r ρ₀` lies in the tie ideal. -/
 lemma mul_mem_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
     {r : (MvPolynomial J O)[G]} (hr : r ∈ augmentationIdeal (O := O) (G := G) J) :
@@ -377,7 +368,7 @@ lemma coordRows_tau_sub_mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {
     simp only [map_sub, LinearMap.map_smul_of_tower, map_smul, smul_eq_mul, mul_sub, smul_sub]
     abel
   rw [mem_tiedRows, h_val]
-  refine add_mem (tie_mem_tieIdeal u i) (ker_le_tieIdeal u ?_)
+  refine add_mem (mem_sup_left (mem_sup_right (subset_span ⟨i, rfl⟩))) (ker_le_tieIdeal u ?_)
   exact sub_mem (h_ker (τ i))
     (Submodule.smul_of_tower_mem _ _ (Ideal.mul_mem_left _ c (h_ker (φ i))))
 
@@ -518,7 +509,7 @@ lemma exists_mem_tiedRows_polyActionAtZero_eq {r ι : Type} [Fintype r] [Decidab
       _ = A := by rw [hc₁, one_smul]
   refine ⟨(MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1) • normaliserRow z γ a c₁,
     sub_one_smul_normaliserRow_mem_tiedRows u hz γ a c₁ γ, fun j ↦ ?_⟩
-  simp [normaliserRow, polyActionAtZero_single, hργ, h_one, mul_add, sub_mul, map_smul, sub_smul]
+  simp [normaliserRow, polyActionAtZero_single, hργ, h_one, mul_add, sub_mul, map_smul]
 
 /-- Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`, with
 `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`). Let the matrices
@@ -561,7 +552,7 @@ every linear form `Ψ` with values in `O / p` on coordinate vectors that kills t
 `K`, the function `Ψ ∘ z` is a cocycle for `ξ` in the sense of `IsCharacterCocycle`: it obeys the
 linear relations among the families `(u x g - 1)_x`, vanishes at the `δ w`, and if it vanishes at
 `γ` then every `ξ g - 1` kills its value at `a`. -/
-lemma isCharacterCocycle_of_tiedRows [DVR O] {ξ : G →* O}
+lemma isCharacterCocycle_of_tiedRows {ξ : G →* O}
     [Fintype W] {δ : W → G} {ι' : Type} [Fintype ι'] {gen' : ι' → G} {z : G → W ⊕ ι' → O}
     (hz : AreCoordinates u (δ ⊕ᵥ gen') z)
     {γ a : G} (hξγ : ξ γ = 1) (c₁ : O) {r' : Type}
@@ -897,14 +888,8 @@ lemma nonempty_characterRows [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G]
       ∃ d ∈ fittingIdeal (K e), ∃ ζ ∈ 𝔮 e, d + ζ = Γ e * ∏ j with ty j = e, .X j :=
     mem_sup.1 (fittingIdeal.sup_smul_top_le (hΓ e))
   choose d hd ζ hζ hdζ using h_split
-  have h_expand (e : Fin t) : ∃ (l : ℕ) (w : Fin l → Λ) (B : Fin l → Matrix s s Λ)
-      (B' : Fin l → s → W ⊕ s₀ ⊕ s → Λ[G]),
-      (∀ (i : Fin l) (j : s), B' i j ∈ N) ∧
-      (∀ (i : Fin l) (j : s) (k : s₀), η e (B' i j (inr (inl k))) = 0) ∧
-      (∀ (i : Fin l) (j : s), (fun k : s ↦ η e (B' i j (inr (inr k)))) = B i j) ∧
-      ∑ i : Fin l, w i * (B i).det = d e :=
+  choose l w B B' hB' hB'_zero hB'_eq hw using fun e : Fin t ↦
     exists_sum_mul_det_of_mem_fittingIdeal_evalRowAtChar (ξ e) hν (hν_eq e) (hd e)
-  choose l w B B' hB' hB'_zero hB'_eq hw using h_expand
   -- Choose one `B e (i e)` for each `e`. Without the coordinates of the `δ v`, the rows `ν j` and
   -- `B' e (i e) j` meet the hypotheses of `exists_rows_det_eq_pow_mul_det`.
   let forget : (W ⊕ s₀ ⊕ s → Λ[G]) →ₗ[Λ[G]] s₀ ⊕ s → Λ[G] := LinearMap.funLeft _ _ inr

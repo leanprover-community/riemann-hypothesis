@@ -178,7 +178,7 @@ lemma eq_zero_on_decompGroup {A' : ClosurePlace} {v : FinPlace E} (hA' : IsPlace
     (h_zero : ∀ g ∈ inertiaGroup Gal(Ω/E) A', c g = 0) {φ : Gal(Ω/E)} (hφ : IsFrob A' v.q φ)
     (hφ_zero : c φ = 0) (g : decompGroup Gal(Ω/E) A') : c g = 0 :=
   -- The zeros of `c` form an open subgroup containing inertia and `φ`.
-  hA'.decompGroup_le hφ (U := cocycleKer ρ hc) (hc_lc {0}) h_zero hφ_zero g.2
+  hA'.decompGroup_le hφ (U := cocycleKer ρ hc) (hc_lc {0}) h_zero hφ_zero g.property
 
 /-- An upper bound on length, of the kind given by the local Euler characteristic formula and local
 duality. Let `A` be a place of `Ω` over `P`, let `ℓ ^ M` kill `B`, let `ρ` be trivial on inertia at
@@ -210,7 +210,7 @@ lemma length_localCocycles_le (hB : ∀ b : B, ℓ ^ M • b = 0) (hA : IsPlaceO
     rintro _ ⟨⟨y, hy, rfl⟩, h_tame : y hA.tameGenerator = 0⟩
     obtain ⟨h_cocycle, -, -, -⟩ := mem_selmerModule_iff.1 hy
     have h_conj_mem : φ⁻¹ * (γ * φ) ∈ inertiaGroup Gal(Ω/E) A :=
-      .inv_mul_mem_inertiaGroup (by simpa) (γ.2.mul_iff.2 hφ : IsFrob A (1 * P.q) (γ * φ))
+      .inv_mul_mem_inertiaGroup (by simpa) (γ.property.mul_iff.2 hφ : IsFrob A (1 * P.q) (γ * φ))
     have h_fix : ρ γ • y φ = y φ := by
       simpa [h_cocycle γ, h_unram hy h_tame _ h_conj_mem, h_unram hy h_tame γ γ.property]
         using h_cocycle φ (φ⁻¹ * (γ * φ))
@@ -221,10 +221,8 @@ lemma length_localCocycles_le (hB : ∀ b : B, ℓ ^ M • b = 0) (hA : IsPlaceO
     exact funext (eq_zero_on_decompGroup hA h_cocycle h_lc (h_unram hy h_tame) hφ hφ_zero)
   have h_ker : length O Z₀ ≤ length O (ker ((ρ γ - 1) • 1 : End O (n → B))) := by
     simpa using relLength_le_of_mapsTo evalFrob (T := ⊥) (T' := ⊥) h_fixed h_inj
-  have h_quot : relLength (localCocycles ρ L A B) (ker evalTame) ≤ length O (n → B) := by
-    grw [relLength_ker, length_mono le_top, length_top]
-  rw [← relLength_add_length_inf _ (ker evalTame)]
-  exact add_le_add h_quot h_ker
+  rw [← length_map_add_length_inf_ker _ evalTame]
+  exact add_le_add (length_le_of_injective _ (Submodule.subtype_injective _)) h_ker
 
 /-- Let `A'` be a place of `Ω` over `v`, and let `ρ` be trivial on the inertia groups above `v`.
 A cocycle `c` for `ρ` that vanishes on the inertia group of `A'` vanishes on every inertia group

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
 public import Lib.General.Geometry.SerreTheorem
 public import Lib.Shimura.ThetaNormality.RiemannRelation
 public import Lib.Shimura.Uniformisation.TorusModel
@@ -211,8 +212,7 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
     simp [π, ← smoothLocus_eq_top_iff, ← preimage_smoothLocus_eq]
   obtain ⟨U, hU, htU⟩ : ∃ V : S.Opens, IsAffineOpen V ∧ LandsIn t V := exists_isAffineOpen_landsIn t
   have hxU : π x ∈ U := by
-    rw [hx]
-    exact landsIn_iff_mem.mp htU
+    simpa only [hx] using landsIn_iff_mem.mp htU
   obtain ⟨W, hW, hxW, hWU⟩ : ∃ W : A.left.Opens, IsAffineOpen W ∧ x ∈ W ∧ W ≤ π ⁻¹ᵁ U :=
     exists_isAffineOpen_mem_and_subset (π.mem_preimage.mpr hxU)
   -- Smoothness descends from k to the residue field of the image of t.
@@ -234,10 +234,12 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
   -- Restate the fibre through Spec Γ(W) → Spec Γ(U), at the prime under the prime of x.
   have h_point :
       hU.fromSpec (Spec.map (π.appLE U W hWU) (hW.primeIdealOf ⟨x, hxW⟩)) = t (closedPoint k) := by
-    -- `erw`: `primeIdealOf` is a point of the prime spectrum, which is the carrier of
-    -- `Spec Γ(A.left, W)` only after unfolding.
-    erw [← Hom.comp_apply, hU.SpecMap_appLE_fromSpec _ hW, Hom.comp_apply, hW.fromSpec_primeIdealOf,
-      hx]
+    -- `primeIdealOf` is a point of the prime spectrum, which is the carrier of `Spec Γ(A.left, W)`
+    -- only after unfolding, so `Hom.comp_apply` is used as an equation.
+    refine (Hom.comp_apply ..).symm.trans ?_
+    rw [hU.SpecMap_appLE_fromSpec _ hW]
+    refine (Hom.comp_apply ..).trans ?_
+    rw [hW.fromSpec_primeIdealOf, hx]
   rw [← h_point, ← hU.SpecMap_appLE_fromSpec π hW hWU] at h_fibre
   -- The ring-theoretic fibre at that prime is isomorphic to it, so it is smooth.
   have h_alg_smooth : Algebra.Smooth 𝔭.ResidueField (𝔭.Fiber Γ(A.left, W)) :=
@@ -411,7 +413,7 @@ lemma ThetaTori.ThetaTorus.exists_eigenline (b : ℤ) {ρ : 𝓞 E →+* ℂ}
   obtain ⟨ε, hε⟩ := x.exists_std_equiv
   have h_std (d : 𝓞 E) (z : V) : ε (x.intAction d z) =
       ((Φ v₀ d.val * (ε z).fst.fst, star (Φ v₀ d.val) • (ε z).fst.snd),
-        fun w ↦ Φ w.1 d.val • (ε z).snd w) := by
+        fun w ↦ Φ w.val d.val • (ε z).snd w) := by
     -- `using!`: the last component comes out as `Pi.map` of the diagonal maps, which is the
     -- stated function only after unfolding.
     simpa using! LinearMap.congr_fun (hε d) (ε z)
@@ -934,7 +936,7 @@ lemma Variety.exists_linearMap_coe_eq_of_comp_eq_torsionLift {E : Type} [Field E
 
 /-- The points of `A` over a point `η` of `S`, seen as points of the fibre of `A` over `η`; the map
 is `𝓞 E`-linear. -/
-noncomputable def Variety.fibrePointMap {E : Type} [Field E] [CMBase E] {S : Scheme}
+noncomputable def Variety.fibrePointMap {E : Type} [Field E] {S : Scheme}
     (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A] (η : Spec (CommRingCat.of ℂ) ⟶ S) :
     (Over.mk η ⟶ A) →ₗ[𝓞 E] (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ (Over.pullback η).obj A) :=
   ((isGroupBaseChange_counit (O := 𝓞 E) (A := A) η).pointEquiv (T := 𝟙_ _)).symm.toLinearMap
@@ -1090,7 +1092,7 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
     exact hd
   -- The fibre over `η i` is the base change of `A` along `η i`, so it has the same dimension.
   choose u hu_theta hu_e hu_L _ using fun i : κ ↦
-    h_unif i _ ((smoothOfRelativeDimension_isStableUnderBaseChange _).1
+    h_unif i _ ((smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback
       (isGroupBaseChange_counit (O := 𝓞 E) (A := A) (η i)).isPullback h_dim)
   refine ⟨{ total := A, lineBundle := N, embeds := hN, levelPoints := ς, class_laws := h_class
             relative_dim := h_dim

@@ -1,5 +1,11 @@
 module
 
+public import Aesop.Frontend.Tactic
+public import Aesop.Main
+public import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.FieldTheory.Galois.IsGaloisGroup
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
 public import Lib.ClassField.Places.GaloisDefs
 
 /-!
@@ -14,6 +20,7 @@ modules, and counts continuous 1-cocycles along exact sequences.
 
 ## Main definitions and results
 
+* `New.B1`: the 1-coboundaries among the continuous 1-cocycles `New.Z1`.
 * `New.Z2`, `New.B2`, `New.H2`: continuous 2-cocycles, coboundaries and their quotient.
 * `New.QZ`, `New.QZ.carry`, `New.QZChar`: the discrete group `ℚ/ℤ`, the carry of two representatives
   in `[0, 1)`, and continuous characters into `ℚ/ℤ`.
@@ -79,6 +86,14 @@ def Z1 : Submodule R (G → M) :=
 to `g ↦ ρ g m - m`. -/
 abbrev coboundaryMap : M →ₗ[R] G → M := LinearMap.pi fun g ↦ ρ g - LinearMap.id
 
+/-- The 1-coboundaries of `ρ`, as a submodule of the continuous 1-cocycles: the cocycles of the form
+`g ↦ ρ g m - m` for some `m : M`. -/
+def B1 : Submodule R (Z1 ρ) := (LinearMap.range (coboundaryMap ρ)).comap (Z1 ρ).subtype
+
+variable {ρ} in
+lemma mem_B1_iff {z : Z1 ρ} : z ∈ B1 ρ ↔ ∃ m : M, ∀ g : G, ρ g m - m = (z : G → M) g := by
+  simp [B1, funext_iff]
+
 /-- The continuous 2-cocycles of `ρ`: continuous `f : G × G → M` with
 `f (g * h, k) = f (g, h * k) - f (g, h) + ρ g (f (h, k))`. -/
 def Z2 : Submodule R (G × G → M) :=
@@ -102,7 +117,12 @@ def B2 : Submodule R (G × G → M) :=
       module⟩
 
 /-- Continuous cohomology `H²(G, M)`: the continuous 2-cocycles of `ρ` modulo the coboundaries of
-continuous 1-cochains `G → M`. -/
+continuous 1-cochains `G → M`.
+
+For a discrete module `A`, this explicit quotient is identified with the cohomology `A.H 2`,
+Mathlib's `continuousCohomology 2`, by `New.DiscreteModule.H2EquivH`. It stays a separate definition
+until the class field theory built on it (`cyclicClass`, `IsLocalArtin`, `localArtin`) moves onto Tau
+Ceti's, which waits on Tau Ceti. -/
 @[instance_reducible]
 def H2 : Type _ := Z2 ρ ⧸ (B2 ρ).comap (Z2 ρ).subtype
   deriving AddCommGroup, Module R
@@ -116,7 +136,7 @@ variable {ρ}
 given), the additive map `f ↦ u ∘ f ∘ φ` from continuous 1-cocycles of `ρ` to those of `ρ'`. -/
 abbrev pairMapZ1 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by bound) :
     Z1 ρ →+ Z1 ρ' where
-  toFun f := ⟨fun g ↦ u (f.1 (φ.1 g)), f.2.imp (by continuity) (by aesop)⟩
+  toFun f := ⟨fun g ↦ u (f.val (φ.toMonoidHom g)), f.property.imp (by continuity) (by aesop)⟩
   map_zero' := by bound
   map_add' := by bound
 
@@ -239,7 +259,7 @@ lemma carry_smul_mem_Z2 (χ : QZChar G) (w : ρ.invariants) :
   -- `w` is invariant, so this is the cocycle identity of the carry, times `w`
   have hf_mul (a b : G) : f (a * b) = f a + f b := QZChar.apply_mul χ a b
   have h_carry (a b c : QZ) : (a + b).carry c = a.carry (b + c) - a.carry b + b.carry c := by
-    linarith [QZ.carry_add_add_carry a b c]
+    linarith only [QZ.carry_add_add_carry a b c]
   have hw_inv : ρ g (w : M) = w := w.prop g
   rw [hf_mul, hf_mul, h_carry, map_zsmul, hw_inv, add_smul, sub_smul]
 

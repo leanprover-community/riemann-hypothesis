@@ -239,19 +239,6 @@ lemma adjoin_betaKInE_zetaInt_eq_top : adjoin ℤ {P.betaKInE s, P.zetaInt s} = 
   simpa [adjoin_eq_top_of_isPrimitiveRoot isPrimitiveRoot_zetaInt, Set.pair_comm] using
     (adjoin_eq_adjoin_union ℤ {betaK P.d} {P.zetaInt s} h_quad).symm
 
-/-! ### Summary for a primitive root of unity -/
-
-/-- Let `z` be a primitive `q₁`-th root of unity in `𝓞 E`, and `y` the derivative at `z` of the
-cyclotomic polynomial of level `q₁`. Then `y` divides `q₁`, `y` generates the different of `E/K`,
-and `z` generates `𝓞 E` over `𝓞 K`. -/
-lemma relDifferent_spec (hz : IsPrimitiveRoot z (P.q₁ s)) :
-    (cyclotomic (P.q₁ s) (𝓞 (P.E s))).derivative.eval z ∣ P.q₁ s ∧
-    span {(cyclotomic (P.q₁ s) (𝓞 (P.E s))).derivative.eval z} =
-      differentIdeal (𝓞 P.K) (𝓞 (P.E s)) ∧
-    (𝓞 P.K)[z] = ⊤ :=
-  ⟨eval_derivative_cyclotomic_dvd_q₁ hz, (differentIdeal_eq_span_derivative_cyclotomic hz).symm,
-    adjoin_eq_top_of_isPrimitiveRoot hz⟩
-
 /-! ### The generator P'(ζ) and the different of `E` -/
 
 /-- The value at `ζ` of the derivative of the `q₁`-th cyclotomic polynomial, as an element of `𝓞 E`.
@@ -569,25 +556,17 @@ lemma map_galOfPlaceInt_eq_pow_iff_eq_frobElem_pow [IsDomain R] (φ : 𝓞 (P.E 
       (v, e) = P.frobElem s p ^ n := by
   -- The first condition of `forall_map_galOfPlaceInt_eq_pow_iff` determines `v`; as
   -- `φ sqrtNegDInE ≠ 0`, the second one determines `e`.
-  obtain ⟨hp_not_dvd_q₁, hp_not_dvd_d⟩ : ¬p ∣ P.q₁ s ∧ ¬p ∣ P.d := by
-    rwa [hp.out.dvd_mul, not_or] at hp_not_dvd
-  have sqrt_sq : φ (P.sqrtNegDInE s) ^ 2 = -P.d :=
-    map_sqrtNegDInt_sq (φ.comp (algebraMap (𝓞 P.K) (𝓞 (P.E s))))
-  have sqrt_ne_zero : φ (P.sqrtNegDInE s) ≠ 0 := fun h_zero ↦ by
-    simp [h_zero, CharP.cast_eq_zero_iff R p, hp_not_dvd_d] at sqrt_sq
-  -- `chiK P.d p ^ n` and `e` are `1` or `-1`, which stay distinct in `R` because `p ≠ 2`
-  have neg_one_ne_one : (-1 : R) ≠ 1 := by
-    simpa [_root_.neg_one_eq_one_iff, ringChar.eq R p] using ne_two_of_not_dvd_q₁ hp_not_dvd_q₁
-  have sign_iff : chiK P.d p ^ n * e * φ (P.sqrtNegDInE s) = φ (P.sqrtNegDInE s) ↔
-      e = chiK P.d p ^ n := by
-    rw [mul_left_eq_self₀, or_iff_left sqrt_ne_zero, ← Int.cast_pow]
-    rcases chiK_pow_eq_one_or_neg_one hp_not_dvd_d n with h_pow | h_pow <;>
-      rcases h_sign.sign_eq_one_or_neg_one with rfl | rfl <;> simp [h_pow, neg_one_ne_one]
-  have frobElem_pow : P.frobElem s p ^ n =
-      (P.placeOfInt s (chiK P.d p ^ n * p ^ n), chiK P.d p ^ n) := by simp [placeOfInt_pow, mul_pow]
-  rw [forall_map_galOfPlaceInt_eq_pow_iff hp_not_dvd_q₁ φ n h_sign,
-    map_galOfPlaceInt_zetaInt_inj φ hp_not_dvd_q₁, sign_iff, frobElem_pow, Prod.mk.injEq]
-  exact and_congr_left fun he : e = chiK P.d p ^ n ↦ by rw [he]
+  obtain ⟨hq₁, hd⟩ : ¬p ∣ P.q₁ s ∧ ¬p ∣ P.d := by rwa [hp.out.dvd_mul, not_or] at hp_not_dvd
+  have hsq : φ (P.sqrtNegDInE s) ^ 2 = -P.d := map_sqrtNegDInt_sq (φ.comp (algebraMap _ _))
+  have hsqrt : φ (P.sqrtNegDInE s) ≠ 0 := fun h ↦ by
+    simp [h, CharP.cast_eq_zero_iff R p, hd] at hsq
+  have h2 : (-1 : R) ≠ 1 := by
+    simpa [_root_.neg_one_eq_one_iff, ringChar.eq R p] using ne_two_of_not_dvd_q₁ hq₁
+  rw [forall_map_galOfPlaceInt_eq_pow_iff hq₁ φ n h_sign,
+    map_galOfPlaceInt_zetaInt_inj φ hq₁, mul_left_eq_self₀, or_iff_left hsqrt, ← Int.cast_pow]
+  rcases h_sign.sign_eq_one_or_neg_one with rfl | rfl
+  · rcases chiK_pow_eq_one_or_neg_one hd n with h | h <;> simp [h, h2, placeOfInt_pow, mul_pow]
+  · rcases chiK_pow_eq_one_or_neg_one hd n with h | h <;> simp [h, h2, placeOfInt_pow, mul_pow]
 
 /-! ### Decomposition groups, norms and ramification -/
 

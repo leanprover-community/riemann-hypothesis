@@ -95,7 +95,7 @@ lemma exists_pow_smul_add_eq (hΨ : IsLocallyConstant Ψ) (hΦΨ : AreMatched V.
   obtain ⟨-, hΨ_mem, -⟩ := mem_sameSectionPairs_iff.1 (hΦΨ.mem_sameSectionPairs hχ hΨ)
   have h_translate : IsLocallyConstant fun t y : Matrix n b F ↦ Ψ (t + y) :=
     isLocallyConstant_curry hΨ_mem (· + ·) (-· + ·) neg_add_cancel_left
-  have h_maps : ∀ᶠ c : ℕ in .atTop, Set.MapsTo (V.ϖ.1 ^ c • ContinuousMap.id (Matrix n b F))
+  have h_maps : ∀ᶠ c : ℕ in .atTop, Set.MapsTo (V.ϖ.val ^ c • ContinuousMap.id (Matrix n b F))
       (SetLike.coe V.O).matrix {t | (fun y ↦ Ψ (t + y)) = Ψ} :=
     (V.isTopologicallyNilpotent_ϖ.smul_const (.id _)).eventually <| ContinuousMap.eventually_mapsTo
       isCompact_O.matrix (h_translate.isOpen_fiber Ψ) (by simp_intro _ _)
@@ -240,7 +240,7 @@ If η vanishes at the determinant of the reduction of T, then the sum over b × 
 lemma sum_mul_addChar_lift_eq_zero {R : Type} [CommRing R] [Fintype R] [DecidableEq R]
     {π : V.O →+* R} {η : MulChar R ℂ} (h_prim : IsPrimitiveMulChar η)
     {φ : AddChar R ℂ} (hφ : φ.IsPrimitive) {ψ : AddChar F ℂ}
-    (hφπ : ∀ x : V.O, φ (π x) = ψ (V.ϖ⁻¹.1 * x)) {l : Matrix b b R → Matrix b b V.O}
+    (hφπ : ∀ x : V.O, φ (π x) = ψ (V.ϖ⁻¹.val * x)) {l : Matrix b b R → Matrix b b V.O}
     (hl : ∀ r : Matrix b b R, (l r).map π = r) {T : Matrix b b V.O}
     (h_det : η (T.map π).det = 0) :
     ∑ r : Matrix b b R, η r.det * ψ (↑V.ϖ⁻¹ * (T.map Subtype.val * (l r).map Subtype.val).trace) =
@@ -261,6 +261,11 @@ lemma invOnUnits_det_eq_resChar_det (N : Matrix b b V.O) :
   simpa [RingHom.map_det, ← V.O.subtype_apply, -Subring.subtype_apply] using
     hχ.isPrimitive_resChar_and_invOnUnits_eq.right N.det
 
+omit [Fintype b] [DecidableEq b] in
+private lemma exists_integral_lift {M : Matrix b b F} (hM : IsIntMatrix O M) :
+    ∃ M₀ : Matrix b b V.O, M₀.map Subtype.val = M :=
+  ⟨of fun i j ↦ ⟨M i j, hM i j⟩, rfl⟩
+
 /-- Let χ be tame: there are a reduction π of O onto a finite ring with kernel ϖO and a primitive
 character η of that ring with η ∘ π equal to χ⁻¹ on units and 0 on the rest of O. Let A be an
 integral frame (an integral basis with column blocks K, I, L, whose integral inverse has row blocks
@@ -269,24 +274,22 @@ K', I', L'), so that L' L = 1 and K' L = 0. The standard datum `stdColDatum χ s
 the standard datum of L' at L r K' x - ϖ x is η(det π(r)) times the standard datum of K' at x. -/
 lemma IntegralFrame.stdColDatum_mul_sub_smul (A : IntegralFrame F n m b) (r : Matrix b b V.O)
     {x : Matrix n b F} (hx : IsIntMatrix O x) :
-    stdColDatum χ A.dualL (A.L * (r.map Subtype.val * (A.dualK * x)) - V.ϖ.1 • x) =
+    stdColDatum χ A.dualL (A.L * (r.map Subtype.val * (A.dualK * x)) - V.ϖ.val • x) =
       hχ.resChar (r.map hχ.reduction).det * stdColDatum χ A.dualK x := by
   have h_blocks := A.blockRelations
-  set y : Matrix n b F := A.L * (r.map Subtype.val * (A.dualK * x)) - V.ϖ.1 • x with hy
+  set y : Matrix n b F := A.L * (r.map Subtype.val * (A.dualK * x)) - V.ϖ.val • x with hy
   have hy_int : IsIntMatrix O y :=
     (h_blocks.isIntMatrix_L.mul
-      (.mul (fun i j ↦ (r i j).2) (h_blocks.isIntMatrix_dualK.mul hx))).sub (hx.smul ϖ_mem)
+      (.mul (fun i j ↦ (r i j).property) (h_blocks.isIntMatrix_dualK.mul hx))).sub (hx.smul ϖ_mem)
   -- With `k`, `u` the lifts of `A.dualK * x`, `A.dualL * x` to `O`, `A.dualL * y` is
   -- `r * k - ϖ • u`.
-  obtain ⟨k, hk⟩ : ∃ k : Matrix b b V.O, k.map Subtype.val = A.dualK * x :=
-    ⟨of fun i j ↦ ⟨(A.dualK * x) i j, h_blocks.isIntMatrix_dualK.mul hx i j⟩, rfl⟩
-  obtain ⟨u, hu⟩ : ∃ u : Matrix b b V.O, u.map Subtype.val = A.dualL * x :=
-    ⟨of fun i j ↦ ⟨(A.dualL * x) i j, h_blocks.isIntMatrix_dualL.mul hx i j⟩, rfl⟩
-  let N : Matrix b b V.O := r * k - (⟨V.ϖ.1, ϖ_mem⟩ : V.O) • u
+  obtain ⟨k, hk⟩ := exists_integral_lift (h_blocks.isIntMatrix_dualK.mul hx)
+  obtain ⟨u, hu⟩ := exists_integral_lift (h_blocks.isIntMatrix_dualL.mul hx)
+  let N : Matrix b b V.O := r * k - (⟨V.ϖ.val, ϖ_mem⟩ : V.O) • u
   have hN : A.dualL * y = N.map Subtype.val := by
     simp [N, hy, ← Matrix.mul_assoc, h_blocks.dualL_mul_L, ← hk, ← hu, ← Matrix.ext_iff,
       Matrix.mul_apply, Matrix.mul_sub]
-  have hϖ : hχ.reduction ⟨V.ϖ.1, ϖ_mem⟩ = 0 :=
+  have hϖ : hχ.reduction ⟨V.ϖ.val, ϖ_mem⟩ = 0 :=
     (hχ.reduction_surjective_and_eq_zero_iff.right _).2 (by simp)
   have hN_red : N.map hχ.reduction = r.map hχ.reduction * k.map hχ.reduction := by
     simp [N, Matrix.map_sub, Matrix.map_smul', hϖ]
@@ -333,13 +336,13 @@ lemma IntegralFrame.match_mem_of_isPrimitiveMatrix_vanishing
   have : Fintype R := Fintype.ofFinite R
   obtain ⟨hL', -, hK, hL, -, -, hK'K, -, hL'K, -, -, -, hK'L, -, hL'L⟩ := A.blockRelations
   -- `x ↦ ψ (ϖ⁻¹ x)` descends to a primitive character `φ` of the residue ring.
-  obtain ⟨φ, hφ, hφπ⟩ : ∃ φ : AddChar R ℂ, φ.IsPrimitive ∧ ∀ x : V.O, φ (π x) = ψ (V.ϖ⁻¹.1 * x) :=
+  obtain ⟨φ, hφ, hφπ⟩ : ∃ φ : AddChar R ℂ, φ.IsPrimitive ∧ ∀ x : V.O, φ (π x) = ψ (V.ϖ⁻¹.val * x) :=
     exists_primitive_residue_addChar hχ.reduction_surjective_and_eq_zero_iff hψ.right
   -- `l r` is a lift of `r` to `O`, with `l 1 = 1`.
   let l (r : Matrix b b R) : Matrix b b V.O := if r = 1 then 1 else r.map (surjInv h_surj)
   have hl (r : Matrix b b R) : (l r).map π = r := by
     ext i j
-    by_cases hr : r = 1 <;> simp [l, hr, Matrix.one_apply, apply_ite π, surjInv_eq h_surj]
+    by_cases hr : r = 1 <;> simp [l, hr, Matrix.one_apply, surjInv_eq h_surj]
   let f (r : Matrix b b R) : Matrix n b F → ℂ := η r.det • S (V.ϖ.inv • (l r).map Subtype.val)
   have h_avg : ∑ r, f r ∈ P := by
     refine h_kill _ (sum_mem fun r _ ↦ M.smul_mem _ (h_shear_mem _)) ?_
@@ -355,8 +358,7 @@ lemma IntegralFrame.match_mem_of_isPrimitiveMatrix_vanishing
       have h_single : IsIntMatrix O (single j i a) := fun _ _ ↦ by simp [single_apply, ite_mem, ha]
       simpa [S, A.stdColDatum_shear_of_isIntMatrix h_single, h_std, trace_mul_single] using
         hΛ (single j i a)
-    obtain ⟨T₀, rfl⟩ : ∃ T₀ : Matrix b b V.O, T₀.map Subtype.val = T :=
-      ⟨of fun i j ↦ ⟨T i j, hT i j⟩, rfl⟩
+    obtain ⟨T₀, rfl⟩ := exists_integral_lift hT
     -- `T` is not unimodular, so the Gauss sum of index `T` is zero.
     have h_det : η (T₀.map π).det = 0 := by
       rw [← invOnUnits_det_eq_resChar_det, invOnUnits,
@@ -365,26 +367,26 @@ lemma IntegralFrame.match_mem_of_isPrimitiveMatrix_vanishing
       hl h_det)
   let g : GL n F := -V.ϖ⁻¹ • 1
   -- Every nonzero term of the sum at `g * y` equals `stdColDatum χ A.dualL y`.
-  have h_term (y : Matrix n b F) (r : Matrix b b R) (hr : f r (g.1 * y) ≠ 0) :
-      f r (g.1 * y) = stdColDatum χ A.dualL y := by
-    let x : Matrix n b F := g.1 * y + A.L * (V.ϖ.inv • (l r).map Subtype.val) *
-      (A.dualK * (g.1 * y))
+  have h_term (y : Matrix n b F) (r : Matrix b b R) (hr : f r (g.val * y) ≠ 0) :
+      f r (g.val * y) = stdColDatum χ A.dualL y := by
+    let x : Matrix n b F := g.val * y + A.L * (V.ϖ.inv • (l r).map Subtype.val) *
+      (A.dualK * (g.val * y))
     have hx_int : IsIntMatrix O x := (ite_ne_right_iff.1 (right_ne_zero_of_mul hr)).1
     -- `A.dualK * x = A.dualK * (g * y)` as `A.dualK * A.L = 0`; solve the definition of `x` for
     -- `y`.
-    have hy : y = A.L * ((l r).map Subtype.val * (A.dualK * x)) - V.ϖ.1 • x := by
+    have hy : y = A.L * ((l r).map Subtype.val * (A.dualK * x)) - V.ϖ.val • x := by
       simp [x, g, ← Matrix.mul_assoc, hK'L, Units.smul_def, smul_smul, Matrix.mul_add]
-    calc f r (g.1 * y) = η r.det * stdColDatum χ A.dualK x := rfl
+    calc f r (g.val * y) = η r.det * stdColDatum χ A.dualK x := rfl
       _ = stdColDatum χ A.dualL y := by rw [hy, A.stdColDatum_mul_sub_smul (l r) hx_int, hl]
   -- The sum translated by `g` is a multiple of `stdColDatum χ A.dualL`, non-zero at
   -- `A.L - ϖ • A.K`.
-  have h_ne_one : f 1 (g.1 * (A.L - V.ϖ.1 • A.K)) ≠ 0 := by
+  have h_ne_one : f 1 (g.val * (A.L - V.ϖ.val • A.K)) ≠ 0 := by
     -- the term `r = 1` is `stdColDatum χ A.dualK A.K = 1` there
     simp [f, g, l, ← Units.smul_def, S, invOnUnits, hK, hK'K, hK'L, stdColDatum,
       Matrix.mul_add, Matrix.mul_sub]
   refine match_mem_of_stdColDatum hP_stable hP_le hΨ hΦΨ (hP_stable g _ h_avg)
     (hL.sub (hK.smul ϖ_mem)) hL'
-    (by simp [hL'K, hL'L, Matrix.mul_sub]) (fun y ↦ #{r | f r (g.1 * y) ≠ 0}) (fun y ↦ ?_)
+    (by simp [hL'K, hL'L, Matrix.mul_sub]) (fun y ↦ #{r | f r (g.val * y) ≠ 0}) (fun y ↦ ?_)
     (card_ne_zero.2 ⟨1, by simpa using h_ne_one⟩)
   rw [Finset.sum_apply, ← sum_filter_ne_zero]
   exact sum_eq_card_nsmul (by simpa using h_term y)
@@ -592,7 +594,7 @@ lemma New.Space.Splitting.centreCoeff_eq_zero_of_orthonormal
     (.inl ⟨V'.x⁻¹ * (c.map toAdele * q), k, k_int, Units.ext (by simp), ?_, rfl⟩)
   -- The finite part of `V'.x⁻¹ * c * q * k` is that of the unitary point `w`, which is in `U 1`.
   have h_snd := congrArg (GeneralLinearGroup.map (.snd _ (𝔸f E))) (inv_mul_eq_of_eq_mul hw)
-  convert w.2.2
+  convert w.2.property
   simpa [mul_assoc] using! h_snd
 
 section PartialMeans
@@ -653,7 +655,7 @@ lemma New.Exchange.IsEquivariantLift.exists_linear_partialMean
     { toFun Ψ := A.partialMean B D T (𝒟 Ψ) x
       map_add' Ψ Φ := by
         simpa using partialMean_add hD (h_lift.isAutFunction Ψ.2) (h_lift.isAutFunction Φ.2) x
-      map_smul' := by simp [partialMean, centreCoeff, ← quotMean_const_mul, mul_left_comm] }
+      map_smul' := by simp [partialMean, centreCoeff, mul_left_comm] }
   obtain ⟨L, hL₀ : L ∘ₗ M.subtype = L₀⟩ := L₀.exists_extend
   have hL (Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) (hΨ : Ψ ∈ M) :
       L Ψ = A.partialMean B D T (𝒟 Ψ) x := LinearMap.congr_fun hL₀ ⟨Ψ, hΨ⟩
@@ -821,12 +823,13 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
   -- `D.radicalElement l z * D.levi (q₀, g)` of the parabolic.
   let τ : GL b (𝔸 E) :=
     (invDifferentIdele E)⁻¹ • (GeneralLinearGroup.mkOfDetNeZero T hdet).map toAdele
-  have hτ : τ.1ᴴ = τ := by simp [τ, hT, Units.smul_def, star_invDifferentIdele_inv, Matrix.map_neg]
+  have hτ : τ.valᴴ = τ := by simp [τ, hT, Units.smul_def, star_invDifferentIdele_inv,
+    Matrix.map_neg]
   obtain ⟨l, z, q₀, g, rfl, hq₀, -⟩ := D.exists_eq_radicalElement_mul_levi hx
   -- The Gram matrix `siegelBracket T q₀` is `siegelBracket T γ` on `S` and `τ` off `S`, so it is
   -- unimodular at all finite places.
   let e : 𝔸 E := idemAdele S.conjClosure
-  let Q : Matrix b b (𝔸 E) := e • siegelBracket T γ + (1 - e) • τ.1
+  let Q : Matrix b b (𝔸 E) := e • siegelBracket T γ + (1 - e) • τ.val
   have Q_prim : IsPrimitiveMatrix (Ô E) (Q.map snd) := by
     have τ_inv_int := ((isPrimitiveMatrix_iff_mem_intGL (τ.map _)).1 hP).isIntMatrix_inv
     refine ⟨𝔠.isIntMatrix_glue_hermitian (S := S) rfl hτ C_int hP.1, _,
@@ -834,7 +837,7 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
     -- the inverse glues `C'` and `τ⁻¹`: show that `τ⁻¹` is hermitian and compute the product
     · simp [hτ, conjTranspose_nonsing_inv]
     · simp [Q, e, ← coe_snd, ← Matrix.map_mul, sub_mul, hC', mul_add, add_mul, smul_smul, mul_sub]
-  have Q_eq : Q = siegelBracket T q₀.1 := by
+  have Q_eq : Q = siegelBracket T q₀.val := by
     simp [Q, e, S, hq₀, siegelBracket, τ, mul_comm, smul_smul, Units.smul_def, mul_sub, add_mul,
       mul_add]
   have Q_herm : (Q.map snd)ᴴ = Q.map snd := by

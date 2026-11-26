@@ -1,8 +1,8 @@
 module
 
+public import Mathlib.Data.ENat.BigOperators
 public import Lib.GaloisRep.Main.DivisibleSelmerModules
 public import New.Congruences.Selmer.Mirror
-public import New.Congruences.Selmer.OneSystem
 
 /-!
 # The descent
@@ -113,10 +113,6 @@ lemma tilting {O m B : Type*} [CommRing O] [DVR O] [Fintype m] [AddCommGroup B]
   have h_ker : C' ⊓ evγ.ker ≤ C ⊓ evγ.ker ⊓ (C.map evγ).comap evφ :=
     le_inf (inf_le_inf_right _ hC')
       (inf_le_left.trans (h_image.trans (comap_mono (map_mono hC'))))
-  -- Every map splits the length of `C'` into the lengths of image and kernel.
-  have h_split (Φ : B →ₗ[O] m → O ⧸ I) :
-      length O (C'.map Φ) + length O ↥(C' ⊓ Φ.ker) = length O C' := by
-    rw [← relLength_ker C' Φ, relLength_add_length_inf]
   have h_le : C ⊓ (a • evγ - evφ).ker ≤ C' ⊓ (a • evγ - evφ).ker :=
     le_inf (le_iSup (fun t : O ↦ C ⊓ (t • evγ - evφ).ker) a) inf_le_right
   -- The image has finite length, so it cancels.
@@ -124,7 +120,8 @@ lemma tilting {O m B : Type*} [CommRing O] [DVR O] [Fintype m] [AddCommGroup B]
   calc length O (C'.map (a • evγ - evφ)) + length O ↥(C ⊓ (a • evγ - evφ).ker)
     _ ≤ length O (C'.map (a • evγ - evφ)) + length O ↥(C' ⊓ (a • evγ - evφ).ker) :=
       add_le_add_right (length_mono h_le) _
-    _ = length O (C'.map evγ) + length O ↥(C' ⊓ evγ.ker) := by rw [h_split, h_split]
+    _ = length O (C'.map evγ) + length O ↥(C' ⊓ evγ.ker) := by
+      simp only [length_map_add_length_inf_ker]
     _ ≤ length O (C'.map (a • evγ - evφ)) + length O ↥(C ⊓ evγ.ker ⊓ (C.map evγ).comap evφ) :=
       add_le_add (length_mono h_map) (length_mono h_ker)
 
@@ -258,7 +255,7 @@ lemma exists_isTiedPrimes_singleton {O ι : Type} [CommRing O] {W : Set Gal(Ω/E
   have hR : R.Finite := S₀.finite_toSet.biUnion fun v _ ↦
     have : NeZero v.q := ⟨v.one_lt_q.ne_bot⟩
     finite_natCast_mem v.q
-  have hS₀ (v : FinPlace E) (hv : v ∈ S₀) : v ∈ R := Set.mem_biUnion hv v.1.absNorm_mem
+  have hS₀ (v : FinPlace E) (hv : v ∈ S₀) : v ∈ R := Set.mem_biUnion hv v.asIdeal.absNorm_mem
   have hg₀R : g₀ ∈ inertiaAbove (R \ (.conjClosure (∅ : Finset (FinPlace E)) ∪
       placesDividing E ℓ)) := by
     obtain ⟨v, ⟨hvS, hvℓ⟩, hv⟩ := hg₀
@@ -269,7 +266,7 @@ lemma exists_isTiedPrimes_singleton {O ι : Type} [CommRing O] {W : Set Gal(Ω/E
   -- If `v ∈ S₀` divided the prime number `P₀.q`, then `P₀.q ∣ v.q` and `P₀` would divide `v.q`.
   have h_norm (v : FinPlace E) (hv : v ∈ S₀) : v ∉ placesDividing E P₀.q := fun hvP ↦ by
     obtain h_coprime | h_dvd := Nat.coprime_or_dvd_of_prime h_prime v.q
-    · exact natCast_notMem_of_coprime h_coprime hvP v.1.absNorm_mem
+    · exact natCast_notMem_of_coprime h_coprime hvP v.asIdeal.absNorm_mem
     · exact hP₀R (Set.mem_biUnion hv (P₀.1.mem_of_dvd (Nat.cast_dvd_cast h_dvd) P₀.1.absNorm_mem))
   have h_split : star P₀ ≠ P₀ := (hl_anti _ Set.subset_union_right).star_ne
   have h_notMem : P₀ ∉ S₀ ∧ star P₀ ∉ S₀ := ⟨mt (hS₀ P₀) hP₀R, mt (hS₀ (star P₀)) hP₀R'⟩

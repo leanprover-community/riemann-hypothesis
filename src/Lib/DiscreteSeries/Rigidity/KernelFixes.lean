@@ -223,7 +223,8 @@ theorem exists_integration_by_parts (hg : l.HasLargeGap A) (hu : IsUnitaryRep A 
       simpa [intervalIntegral.integral_of_le] using intervalIntegral.integral_eq_sub_of_hasDerivAt
         (fun t _ ↦ h_deriv g t) ((h_cont g).intervalIntegrable 0 1)
     rw [← add_eq_zero_iff_eq_neg, ← integral_add (h_int f _) (h_int _ _)]
-    calc ∫ g : USign ε, F' g = ∫ t in Set.Ioc (0 : ℝ) 1, ∫ g : USign ε, F' g := by simp [Set.univ_inter]
+    calc ∫ g : USign ε, F' g = ∫ t in Set.Ioc (0 : ℝ) 1, ∫ g : USign ε, F' g := by
+          simp [Set.univ_inter]
       _ = ∫ g : USign ε, ∫ t in Set.Ioc (0 : ℝ) 1, F' (g * expU (t • Y)) :=
         (integral_skew_product (fun t ↦ map_mul_right_eq_self volume (expU (t • Y)))
           (hF'.comp_snd _)).2.symm
@@ -544,7 +545,7 @@ theorem coeff_eq_dsCoeff_of_isKHighest (hg : l.HasLargeGap A) (hu : IsUnitaryRep
     have gen_highest := isKHighest_dsGenerator hg
     have gen_mk (Y : Matrix n n ℂ) (y : σ.filtration 1 x 0) :
         σ.generatedModule x Y y = ⟨σ Y y.val, (σ.generatedModule x Y y).prop⟩ := rfl
-    simp_all [d, x, jι, smul_smul, mul_comm, IsKHighest, WithLp.ext_iff]
+    simp_all [d, x, smul_smul, mul_comm, IsKHighest, WithLp.ext_iff]
   -- A highest vector is orthogonal to lowered vectors, and `norm_dsGenerator` handles `d 1` itself.
   have perp_zero : d (-inner ℂ x x) ∈ (P.filtration ε (d 1) 0)ᗮ :=
     (highest 1).filtration_le_of_word_mem (innerSLFlip ℂ _).ker

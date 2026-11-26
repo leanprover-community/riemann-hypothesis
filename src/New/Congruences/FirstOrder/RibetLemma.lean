@@ -264,8 +264,8 @@ lemma exists_traceIdeal_multiplier_eq_sum_det {r : Type} [Fintype r] [DecidableE
     add_mem (N.smul_mem _ (hB₀ j)) (N.smul_mem _ (hM i j))
   have exists_f (i : κ) : ∃ f : S,
       (∀ w ∈ span Λ[G] (Set.range gen_sub_one),
-        f.1 * (fun x ↦ algebraMap Λ (MvPolynomial J L) (χ x w).det) ∈ 𝒥) ∧
-      ∀ x : 𝓧, f.1 x = algebraMap Λ (MvPolynomial J L) (μ₀ *
+        f.val * (fun x ↦ algebraMap Λ (MvPolynomial J L) (χ x w).det) ∈ 𝒥) ∧
+      ∀ x : 𝓧, f.val x = algebraMap Λ (MvPolynomial J L) (μ₀ *
         (Matrix.comp ι ι r r Λ (((1 - k) • B₀ + k • M i).map (ψ x))).det *
         ∏ e, (((1 - k) • B₀ + k • M i).map (η e)).det) :=
     Selmer.exists_ribet_element_of_tied_rows blockEquiv χ κS hκS hχ_coeff 𝒥 gen_sub_one
@@ -284,7 +284,7 @@ lemma exists_traceIdeal_multiplier_eq_sum_det {r : Type} [Fintype r] [DecidableE
     rw [mul_smul, Subalgebra.smul_def (f i), smul_eq_mul]
     exact 𝒥.smul_mem _ (hf_mem i w hw)
   · -- On `𝓧`, `(1 - k) • B₀ + k • M i` is `B₀` on the block and `M i` on the characters.
-    have hκS_apply (c : Λ) : (κS c).1 x = algebraMap Λ (MvPolynomial J L) c :=
+    have hκS_apply (c : Λ) : (κS c).val x = algebraMap Λ (MvPolynomial J L) c :=
       congrFun (RingHom.congr_fun hκS c) x
     have h_block (i : κ) : ((1 - k) • B₀ + k • M i).map (ψ x) = B₀.map (ψ x) := by
       ext1
@@ -467,14 +467,14 @@ lemma exists_smul_eq_zero_of_mem_ribetCocyclesIn [DVR O] [Fintype Y] {r : Type} 
 
 /-- From coefficients modulo powers of `p` to coefficients in `K/O = Frac(O) / O`. Let `u x` be a
 finite family of representations of `G` over `O`. Consider the cocycles `c` of `ρ` that vanish on
-`T` and at `γ` and have `∑ θ g • c g = 0` whenever `∑ θ g • (u x g - 1) = 0` for all `x`. If for
-every `M` those modulo `p ^ M` have length at most `b`, where `p ≠ 0` is not a unit, so have those
-with values in `K/O`: division by `a = p ^ (b + 1)` maps the cocycles modulo `a` onto the
-`a`-torsion, and as `v(a) > b` this torsion is everything. -/
+`T` and at `γ` and have `∑ θ g • c g = 0` whenever `∑ θ g • (u x g - 1) = 0` for all `x`. It
+suffices to bound the length by `b` at the single level `a = p ^ (b + 1)`, where `p ≠ 0` is not a
+unit. Division by `a` maps the cocycles modulo `a` onto the `a`-torsion; as `v(a) > b`, this torsion
+is everything. No uniform bound over all truncation levels is needed. -/
 lemma length_ribetCocyclesVanishingOn_divisibleQuot_le [DVR O] [Fintype Y] {r : Type}
     [Fintype r] [DecidableEq r] (ρ : G →* Matrix r r O) (T : Set G) (γ : G) {p : O} (hp : p ≠ 0)
     (hp_unit : ¬IsUnit p) {b : ℕ}
-    (h_length_pow : ∀ M : ℕ, length O (ribetCocyclesVanishingOn u ρ (QuotSpan (p ^ M)) T γ) ≤ b) :
+    (h_length_pow : length O (ribetCocyclesVanishingOn u ρ (QuotSpan (p ^ (b + 1))) T γ) ≤ b) :
     length O (ribetCocyclesVanishingOn u ρ (DivisibleQuot O) T γ) ≤ b := by
   set V : Submodule O (G → r → DivisibleQuot O) :=
     ribetCocyclesVanishingOn u ρ (DivisibleQuot O) T γ
@@ -500,7 +500,7 @@ lemma length_ribetCocyclesVanishingOn_divisibleQuot_le [DVR O] [Fintype Y] {r : 
     simpa only [hc'] using h_obey
   have h_length : length O (torsionBy O V a) ≤ b := by
     rw [(Submodule.equivMapOfInjective V.subtype V.injective_subtype _).length_eq]
-    exact (length_le_of_le_map E _ h_le).trans (h_length_pow (b + 1))
+    exact (length_le_of_le_map E _ h_le).trans h_length_pow
   -- Every member of `V` is torsion and `v(a) ≥ b + 1`, so the `a`-torsion is all of `V`.
   have h_torsion : ∀ w : V, ∃ a' : O, a' ≠ 0 ∧ a' • w = 0 := by
     rintro ⟨c, hcV⟩
@@ -629,7 +629,7 @@ lemma exists_isCommonRibetElement_addVal_le (u : Y → G →* Matrix σ σ O)
     (Matrix.comp _ _ r r (MvPolynomial J O) (B₀.map (polyAction J (ρ x)))).det
   let F (x : 𝓧) : MvPolynomial J O := D x * .C (C * c₀ ^ t)
   obtain ⟨f, hf_mem, hf_val⟩ : ∃ f : S,
-      (∀ ω : G →₀ O, f.1 * (fun x : Y ↦ MvPolynomial.C
+      (∀ ω : G →₀ O, f.val * (fun x : Y ↦ MvPolynomial.C
         (algebraMap O L (linearCombination O (fun g ↦ u x g - 1) ω).det)) ∈ 𝒥) ∧
       ∀ x : 𝓧, f.1 x = algebraMap (MvPolynomial J O) (MvPolynomial J L) (∑ i : ∀ e, Fin (R.count e),
         (∏ e, R.coeff e (i e)) * (.C C * D x * ∏ e,
@@ -639,7 +639,7 @@ lemma exists_isCommonRibetElement_addVal_le (u : Y → G →* Matrix σ σ O)
       hkξ hkρ (μ₀ := .C C) (hq 0) B₀ hB₀ (fun i : ∀ e, Fin (R.count e) ↦ ∏ e, R.coeff e (i e))
         R.tiedMatrix R.tied
   have hf_eq (x : 𝓧) :
-      f.1 x = algebraMap (MvPolynomial J O) (MvPolynomial J L) (F x * ∏ e, R.detSum e) := by
+      f.val x = algebraMap (MvPolynomial J O) (MvPolynomial J L) (F x * ∏ e, R.detSum e) := by
     rw [hf_val x]
     congr 1
     calc ∑ i : ∀ e, Fin (R.count e), (∏ e, R.coeff e (i e)) *
@@ -653,7 +653,7 @@ lemma exists_isCommonRibetElement_addVal_le (u : Y → G →* Matrix σ σ O)
           simp only [F, map_mul, map_pow]
           ring
   have hf_coeff (x : 𝓧) (i : J →₀ ℕ) (hi : i ≤ ∑ j : J, .single j 1) :
-      (f.1 x).coeff i = algebraMap O L
+      (f.val x).coeff i = algebraMap O L
         (if ∑ j, .single j 1 = i then constantCoeff (F x * ∏ e, R.multiplier e) else 0) := by
     rw [hf_eq, ← coeff_mul_prod_of_mem_colon ty R.correction_mem_colon R.add_eq_mul_prod (F x) hi]
     exact MvPolynomial.coeff_map (algebraMap O L) (F x * ∏ e, R.detSum e) i

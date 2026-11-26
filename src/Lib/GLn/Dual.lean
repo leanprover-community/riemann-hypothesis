@@ -1,9 +1,9 @@
 module
 
+public import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
 public import Lib.GLn.SchurModule.SchurNorm
 public import Lib.General.LinearAlgebra.BlockEmbeddings
 public import Lib.General.LinearAlgebra.MatrixNormBounds
-public import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
 
 /-!
 # Duality of integral GL(n) representations, mixed weights and the Cartan product
@@ -101,11 +101,6 @@ lemma GL.diagramWeight_zero_eq_sum_min_mul (N : Φ → ℕ) (κ : Φ → ℕ →
   rintro ⟨_ | h, -⟩ - <;> simp
 
 variable [DecidableEq Φ]
-
-lemma GL.map_intCast_mul {R a b c : Type*} [CommRing R] [Fintype b] (A : Matrix a b ℤ)
-    (B : Matrix b c ℤ) :
-    (A * B).map (Int.cast : ℤ → R) = A.map (Int.cast : ℤ → R) * B.map (Int.cast : ℤ → R) :=
-  Matrix.map_mul (f := Int.castRingHom R)
 
 /-- If `c'` counts the columns of the diagram complementary to that of `c`, then `c` counts those
 of the diagram complementary to that of `c'`. -/
@@ -343,7 +338,7 @@ lemma GL.exists_int_duality_matrix (e e' : ∀ τ : Φ, n τ ≃ Fin (rankAt n �
       Q * fillingMatrix n κ = 1 := exists_fillingMatrix_leftInverse
   have h_left (R : Type) [CommRing R] (v : WeylIndexFamily n κ → R) :
       Q.map (Int.cast : ℤ → R) *ᵥ fillingMatrixOver R n κ *ᵥ v = v := by
-    simp [← map_intCast_mul, hQ]
+    simp [← map_mul_intCast, hQ]
   have h_tensor (R : Type) [CommRing R] (g : ∀ τ : Φ, Matrix (n τ) (n τ) R)
       (hg : ∀ τ : Φ, IsUnit (g τ).det) :
       P.map (Int.cast : ℤ → R) *ᵥ
@@ -360,8 +355,8 @@ lemma GL.exists_int_duality_matrix (e e' : ∀ τ : Φ, n τ ≃ Fin (rankAt n �
   · -- Compare both sides over `ℂ` on the vectors `S(g) ev_e`, which span the Weyl module.
     refine toLin'.injective (ext_schur_weylEval e fun g ↦ ?_)
     have hg (τ : Φ) : IsUnit (g τ).val.det := (isUnit_iff_isUnit_det _).1 (g τ).isUnit
-    simp only [toLin'_apply, map_intCast_mul, ← mulVec_mulVec, h_tensor ℂ _ hg, mulVec_smul, h_left]
-  · simp only [map_intCast_mul, ← mulVec_mulVec, h_tensor R g hg, mulVec_smul, h_left]
+    simp only [toLin'_apply, map_mul_intCast, ← mulVec_mulVec, h_tensor ℂ _ hg, mulVec_smul, h_left]
+  · simp only [map_mul_intCast, ← mulVec_mulVec, h_tensor R g hg, mulVec_smul, h_left]
 
 /-- For an enumeration `e` of the rows, the integer matrix `J`, from coordinates of weight `κ'` to
 those of weight `κ`, identifies the lattice of weight `κ'` with that of weight `κ` composed with
@@ -412,11 +407,11 @@ lemma exists_isDualIsometry (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ))
   -- Identities of integer matrices are checked over `ℂ`.
   have hJK : J * K = 1 := by
     refine map_injective (Int.cast_injective (α := ℂ)) (toLin'.injective (ext_schur_weylEval e' ?_))
-    simp +contextual [map_intCast_mul, hJ, hK, h_exp, h_exp',
+    simp +contextual [map_mul_intCast, hJ, hK, h_exp, h_exp',
       GeneralLinearGroup.det_ne_zero, transpose_nonsing_inv, prod_eq_zero_iff]
   have hKJ : K * J = 1 := by
     refine map_injective (Int.cast_injective (α := ℂ)) (toLin'.injective (ext_schur_weylEval e ?_))
-    simp +contextual [map_intCast_mul, hJ, hK, h_exp, h_exp',
+    simp +contextual [map_mul_intCast, hJ, hK, h_exp, h_exp',
       GeneralLinearGroup.det_ne_zero, transpose_nonsing_inv, prod_eq_zero_iff]
   have h_ev (R : Type) [Field R] :
       J.map (Int.cast : ℤ → R) *ᵥ weylEval n κ' (permArray e) = weylEval n κ (permArray e') := by
@@ -798,8 +793,7 @@ lemma mixedCartan_mulVec_cartanProduct {Φ n N m : Type} [Fintype Φ] [Decidable
     rfl
   suffices h_bilin :
       (cartanProduct ε 1).compr₂ ((mixedCartan n kp km).matrix.map (↑)).mulVecLin = T by
-    rw [← h_T]
-    exact LinearMap.congr_fun₂ h_bilin y η
+    exact (LinearMap.congr_fun₂ h_bilin y η).trans (h_T y η)
   refine ext_schur_weylEval (rowEquivFin fun _ : Φ ↦ N) fun u ↦
     ext_schur_weylEval (rowEquivFin fun _ : Φ ↦ m) fun w ↦ ?_
   set y : WeylIndexFamily (fun _ : Φ ↦ N) kp → K := schur kp (fun τ : Φ ↦ (u τ).val) *ᵥ
@@ -831,7 +825,8 @@ lemma mixedCartan_mulVec_cartanProduct {Φ n N m : Type} [Fintype Φ] [Decidable
       inv_fromBlocks_zero₂₁_of_isUnit_iff, Matrix.one_apply, vecMulVec_apply, kronecker_mulVec_vec,
       mul_vecMulVec, vecMulVec_mul, vecMul_transpose, weylEvalAt]
     unfold weylEval nablaBasis tableauPoly minor
-    simp [RingHom.map_det, Matrix.map]
+    simp only [Function.comp_apply, map_prod, RingHom.map_det, RingHom.mapMatrix_apply, Matrix.map,
+      of_apply, MvPolynomial.eval_X]
     -- Each side is the product of the minors of the `N`-block and of the `m`-block, in the two
     -- orders; `congr!` matches them entry by entry, and each entry is closed by the case split on
     -- the block of `ε.symm`.
@@ -1031,8 +1026,7 @@ structure IsDualPairing (A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ) : Pr
     (v' : WeylIndex n κ' → R) (v : WeylIndex n κ → R) :
     weylRep κ' e' g *ᵥ v' ⬝ᵥ A.map (↑) *ᵥ weylRep κ e g *ᵥ v = v' ⬝ᵥ A.map (↑) *ᵥ v
   /-- The function of a form of weight `(κ', e')` is the pairing of its value with a translate of
-  the highest vector of `l`. Here the pairing is written as a bilinear map; see
-  `New.IsDualPairing.ofAlgForm_apply`. -/
+  the highest vector of `l`. Here the pairing is written as a bilinear map. -/
   ofAlgForm_eq_bilin (s : n → ℤˣ) (η : AlgForm n κ' e') (x : GInf E s) (g : Gf E n) :
     ofAlgForm (-l) s η (x, g) = (dotProductBilin ℂ ℂ).compl₂ (A.map (↑)).mulVecLin (η.val g)
       (conjWeylRep κ e x (highestVector κ l))

@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.RingTheory.IsAdjoinRoot
+public import Mathlib.RingTheory.PicardGroup
 public import Lib.Adelic.Adeles.IdeleModulus
 
 /-!
@@ -44,24 +46,15 @@ lemma New.isCMField_of_forall_exists_conj (E : Type*) {L : Type*} [Field E] [IsT
     (h_conj : ∀ x : L, ∃ y : L, ∀ φ : L →+* ℂ, φ y = star (φ x)) :
     IsCMField L := by
   have : IsTotallyComplex L := isTotallyComplex_of_algebra E L
-  let K : Subfield L := maximalRealSubfield L
-  -- A place `v` of `L` is known by its restriction to `K`: `v x ^ 2 = v (x * y)`, where `y` is the
-  -- conjugate of `x` and `x * y` lies in `K`.
-  have h_inj : Function.Injective fun v : InfinitePlace L ↦ v.comap K.subtype := by
-    refine fun v w hvw ↦ ext v w fun x ↦ ?_
-    obtain ⟨y, hy⟩ := h_conj x
-    have h_real : x * y ∈ K := fun φ ↦ by simp [hy φ, mul_comm]
-    have h_sq (u : InfinitePlace L) : u (x * y) = u x ^ 2 := by
-      rw [map_mul, ← norm_embedding_eq u y, hy, norm_star, norm_embedding_eq, sq]
-    simpa [h_sq] using (DFunLike.congr_fun hvw (⟨x * y, h_real⟩ : K) : v (x * y) = w (x * y))
-  have h_card : card (InfinitePlace L) = card (InfinitePlace K) :=
-    card_of_bijective ⟨h_inj, comap_surjective⟩
-  -- The places of `K` are real and those of `L` complex, so with equally many places
-  -- `[L : ℚ] = 2 [K : ℚ]`.
-  have hK : finrank ℚ K = card (InfinitePlace K) := by simp [← sum_mult_eq]
-  have hL : finrank ℚ L = card (InfinitePlace L) * 2 := by simp [← sum_mult_eq]
-  refine { is_quadratic := ⟨?_⟩ }
-  simpa [hK, hL, h_card] using finrank_mul_finrank ℚ K L
+  -- Places of `L` are determined by their restriction to `maximalRealSubfield L`.
+  have h_card : card (InfinitePlace L) = card (InfinitePlace (maximalRealSubfield L)) :=
+    card_of_bijective ⟨fun v w hvw ↦ ext v w fun x ↦ by
+      obtain ⟨y, hy⟩ := h_conj x
+      have h_eq : v (x * y) = w (x * y) :=
+        DFunLike.congr_fun hvw ⟨x * y, fun φ ↦ by simp [hy φ, mul_comm]⟩
+      simpa [← norm_embedding_eq, hy, ← sq] using h_eq, comap_surjective⟩
+  exact { is_quadratic := ⟨by
+    simpa [← sum_mult_eq, h_card] using finrank_mul_finrank ℚ (maximalRealSubfield L) L⟩ }
 
 end CMCriterion
 

@@ -1,6 +1,24 @@
 module
 
-public import Lib.Analytic.PolyaVinogradov
+public import Aesop.Main
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Complex.HalfPlane
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.NumberTheory.LSeries.Nonvanishing
+public import Mathlib.NumberTheory.MulChar.Lemmas
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Mathlib.Topology.Separation.CompletelyRegular
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # Theta series of Dirichlet characters, Poisson summation, and `L(s, χ)` as a Mellin transform
@@ -101,7 +119,7 @@ lemma norm_gaussianMonomial_le (ht : 0 ≤ t) : ‖gaussianMonomial j t‖ ≤ 3
       _ ≤ rexp t := add_one_le_exp t
   -- As `π > 3`, this follows from `3 t² - 3 t + 1 = 3 (t - 1/2)² + 1/4 ≥ 0`.
   have h_exp : t + -π * t ^ 2 ≤ 1 + (-t + -t) := by
-    nlinarith [pi_gt_three, sq_nonneg (t - 2⁻¹), sq_nonneg t]
+    nlinarith only [pi_gt_three, sq_nonneg (t - 2⁻¹), sq_nonneg t]
   calc ‖gaussianMonomial j t‖ = t ^ j.val * rexp (-π * t ^ 2) := by
         simp [gaussianMonomial, abs_of_nonneg ht]
     _ ≤ rexp t * rexp (-π * t ^ 2) := by gcongr
@@ -118,9 +136,10 @@ lemma summable_and_norm_gaussianTheta_le (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (ht
   -- `∑ 3 r ^ n`, `r = e^(-2t)`.
   let r : ℝ := rexp (-t) ^ 2
   have hr : |r| < 1 := by simpa [r] using ht
-  have h_geom : HasSum (fun n : ℕ+ ↦ 3 * r ^ (n : ℕ)) (3 * (1 - r)⁻¹ - 3) :=
+  have h_geom : HasSum (fun n : ℕ+ ↦ 3 * r ^ (n : ℕ)) (3 * r / (1 - r)) :=
     (hasSum_pnat_iff_hasSum_succ (f := fun n : ℕ ↦ 3 * r ^ n)).2 <| by
-      simpa using (hasSum_nat_add_iff' 1).2 ((hasSum_geometric_of_abs_lt_one hr).mul_left 3)
+      simpa only [pow_succ', mul_assoc, div_eq_mul_inv] using
+        (hasSum_geometric_of_abs_lt_one hr).mul_left (3 * r)
   have h_term (n : ℕ+) : ‖c n * gaussianMonomial j (n * t)‖ ≤ 3 * r ^ (n : ℕ) := by
     grw [norm_mul, hc, norm_real, norm_gaussianMonomial_le (by positivity)]
     simp [r, ← Real.exp_natCast_mul, field]
@@ -128,12 +147,9 @@ lemma summable_and_norm_gaussianTheta_le (hc : ∀ n : ℕ, ‖c n‖ ≤ 1) (ht
   have h_mul_exp_le : t * rexp (-t) ≤ 1 - r := by
     nlinarith [add_one_le_exp t, exp_pos (-t), exp_le_one_iff.2 (neg_nonpos.2 ht.le),
       show rexp t * rexp (-t) = 1 by simp [← Real.exp_add]]
-  have h_sum : 3 * (1 - r)⁻¹ - 3 ≤ 3 * rexp (-t) / t := by
-    have h_one_sub : 0 < 1 - r := (mul_pos ht (exp_pos _)).trans_le h_mul_exp_le
-    calc 3 * (1 - r)⁻¹ - 3 = 3 * r / (1 - r) := by field
-      _ ≤ 3 * r / (t * rexp (-t)) := by gcongr
-      _ = 3 * rexp (-t) / t := by simp [r, field]
-  exact ⟨h_geom.summable.of_norm_bounded h_term, (tsum_of_norm_bounded h_geom h_term).trans h_sum⟩
+  refine ⟨h_geom.summable.of_norm_bounded h_term, (tsum_of_norm_bounded h_geom h_term).trans ?_⟩
+  calc 3 * r / (1 - r) ≤ 3 * r / (t * rexp (-t)) := by gcongr
+    _ = 3 * rexp (-t) / t := by simp [r, field]
 
 /-- The absolute value of `θ(u) = u ^ (1/2) ∑_{n ≥ 1} c(n) w(n u)` is `u ^ (1/2)` times that of
 the sum. -/
@@ -188,13 +204,15 @@ lemma mellin_pow_mul_comp_sq (F : ℝ → ℂ) (k : ℕ) (s : ℂ) :
 /-- For `re s > 0` the Mellin transform `Γ_j` of `w(z) = z ^ j e^(-π z²)` is
 `Γ_j(s) = π ^ (-(s + j) / 2) Γ((s + j) / 2) / 2`. -/
 lemma gaussianMellin_eq (hs : 0 < s.re) : gaussianMellin j s = Gammaℝ (s + j.val) / 2 := by
-  -- `w(t) = t ^ j F(t²)` with `F(u) = e^(-π u)`, a series of Gaussians with a single term.
-  let F (u : ℝ) : ℂ := rexp (-π * u)
-  have h_re : 0 < (s + j.val).re := by simpa using hs.trans_le (by simp)
-  have h_single : HasSum (fun _ : Unit ↦ Gammaℝ (s + j.val)) (mellin F ((s + j.val) / 2)) := by
-    simpa using hasSum_mellin_pi_mul_sq (a := 1) (r := 1) (F := F) h_re (by simp [F]) .of_finite
-  rw [(hasSum_unique _).unique h_single, ← mellin_pow_mul_comp_sq]
-  simp [gaussianMellin, gaussianMonomial, F]
+  have h_re : 0 < ((s + j.val) / 2).re := by
+    simp only [div_ofNat_re, add_re, natCast_re]
+    positivity
+  simp only [gaussianMellin, gaussianMonomial, ofReal_mul, ofReal_pow]
+  rw [mellin_pow_mul_comp_sq (fun u : ℝ ↦ (rexp (-π * u) : ℂ)), Gammaℝ_def, neg_div]
+  congr 1
+  simpa only [mellin, smul_eq_mul, ofReal_exp, ofReal_mul, ofReal_neg, neg_mul, one_div, cpow_neg,
+    inv_cpow _ _ (arg_ofReal_of_nonneg pi_pos.le ▸ pi_pos.ne)] using
+      integral_cpow_mul_exp_neg_mul_Ioi h_re pi_pos
 
 /-- Integration term by term: if `|c(n)| ≤ 1` and `re s > 1`, the Mellin transform of
 `∑_{n ≥ 1} c(n) w(n u)` at `s` is `Γ_j(s) L(s, c)`, where `Γ_j` is the Mellin transform of the
@@ -414,7 +432,7 @@ theorem norm_thetaSeries_inv (hχ_ne : χ ≠ 1) (hχ_parity : χ (-1) = (-1) ^ 
     have h_theta : gaussianTheta j (fun n : ℕ ↦ 𝓕⁻ χ n) u =
         (q : ℂ)⁻¹ * gaussSum χ stdAddChar * star (gaussianTheta j (fun n : ℕ ↦ χ n) u) := by
       simp [gaussianTheta, tsum_star, h_coeff, mul_assoc, ← tsum_mul_left]
-    simp [h_theta, norm_gaussSum_of_isPrimitive hχ, field]
+    simp [h_theta, DirichletCharacter.norm_gaussSum_stdAddChar hχ, field]
   rw [norm_thetaSeries, norm_thetaSeries, ← h_dual,
     ← gaussianTheta_poisson_summation hχ_ne hχ_parity ht, sqrt_inv, sqrt_mul hq.le]
   simp [field, sq_sqrt ht.le]

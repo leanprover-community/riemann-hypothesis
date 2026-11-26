@@ -1,5 +1,9 @@
 module
 
+public import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.Analysis.Normed.Algebra.Basic
+public import Mathlib.Tactic.Linter.Style
+public import Mathlib.Topology.Algebra.Ring.Compact
 public import Lib.ClassField.Places.LocalFields
 public import Lib.PadicHodge.PeriodRings.AxTheorem
 
@@ -69,17 +73,15 @@ variable {p : ℕ} [Fact p.Prime] {K : Type*} [Field K]
 
 /-- The place of `Ω` induced by `ι : Ω → ℚ̄_p` lies above `p`. -/
 lemma valuation_comap_intQpBar_lt_one : ((intQpBar p).comap ι) p < 1 := by
-  simp [comap_apply_lt_one_iff, PadicAlgCl.norm_p_lt_one]
-
-/-- The valuation ring that `ℚ̄_p` induces on `ℚ_p` is `ℤ_p`: both consist of the elements of norm
-at most `1`. -/
-private lemma toSubring_valRingBelow_intQpBar :
-    (valRingBelow ℚ_[p] (intQpBar p)).toSubring = subring p := by
-  aesop
+  rw [comap_apply_lt_one_iff, map_natCast, valuation_intQpBar_lt_one_iff]
+  exact PadicAlgCl.norm_p_lt_one p
 
 /-- The valuation ring that `ℚ̄_p` induces on `ℚ_p`, identified with `ℤ_p`. -/
 private noncomputable def valRingBelowEquivPadicInt : valRingBelow ℚ_[p] (intQpBar p) ≃+* ℤ_[p] :=
-  .subringCongr toSubring_valRingBelow_intQpBar
+  .subringCongr (by
+    ext x
+    change intQpBar p (algebraMap ℚ_[p] (PadicAlgCl p) x) ≤ 1 ↔ ‖x‖ ≤ 1
+    rw [← map_one (intQpBar p).valuation, valuation_intQpBar_le_iff, norm_one, norm_algebraMap'])
 
 /-- The residue field of `ℚ_p` for the valuation ring that `ℚ̄_p` induces on it (which is `ℤ_p`) has
 `p` elements. -/
@@ -191,11 +193,13 @@ lemma smul_eq_self_of_mem_decompGroup_of_mem_closure (ι : Ω →+* PadicAlgCl p
     have h_val : ((intQpBar p).comap ι) (σ • (x - algebraMap K Ω a)) =
         ((intQpBar p).comap ι) (x - algebraMap K Ω a) :=
       decompGroup.val_smul hσ (x - algebraMap K Ω a)
-    simpa [nnDist_eq_nnNorm, smul_sub, k] using
+    have h_eq : ‖ι (σ • (x - algebraMap K Ω a))‖₊ = ‖ι (x - algebraMap K Ω a)‖₊ :=
       ((PadicAlgCl.valued p).v.comap ι).isEquiv_valuation_valuationSubring.eq_iff.mpr h_val
+    rw [nnDist_eq_nnNorm, nnDist_eq_nnNorm, RingHom.comp_apply, ← map_sub, ← map_sub]
+    rwa [smul_sub, smul_algebraMap] at h_eq
   have h_dist_self : nndist (ι (σ • x)) (ι x) = nndist (ι x) (ι x) :=
     h_dist.closure (by fun_prop) (by fun_prop) hx
-  exact ι.injective (by simpa using h_dist_self)
+  exact ι.injective (nndist_eq_zero.mp (h_dist_self.trans (nndist_self _)))
 
 variable (K Γ)
 
@@ -208,8 +212,9 @@ lemma exists_inducesPlace [NumberField K] {ι : Ω →+* PadicAlgCl p} {A : Valu
     (h_comap : (intQpBar p).comap ι = A) :
     ∃ j : decompGroup Γ A →* Gp p, GaloisRep.InducesPlace (Γ := Γ) K A ι j := by
   subst h_comap
-  -- Let `U` be the open subgroup of `Gp p` fixing `ℚ_p (ι K)`. Restriction along `ι` is an
-  -- isomorphism `res` from `U` to the decomposition group, and `j` is its inverse.
+  -- The embedding of `Ω` inducing `A` is already given. Identify the decomposition group
+  -- by restriction from the open subgroup `U` of `Gp p` fixing `ℚ_p (ι K)`.
+  -- The desired map `j` is the inverse of this restriction isomorphism.
   let k : K →+* PadicAlgCl p := ι.comp (algebraMap K Ω)
   -- `id` keeps the open subgroup folded, as instance search needs it.
   let U : OpenSubgroup (Gp p) := id ⟨_, (adjoin ℚ_[p] (range k)).fixingSubgroup_isOpen⟩
@@ -258,7 +263,9 @@ lemma exists_inducesPlace [NumberField K] {ι : Ω →+* PadicAlgCl p} {A : Valu
     intro g x
     obtain ⟨u, rfl⟩ := res.surjective g
     calc ((U : Subgroup (Gp p)).subtype.comp res.symm) (res u) (ι x) = (u : Gp p) • ι x := by
-          simp [AlgEquiv.smul_def]
+          change ((U : Subgroup (Gp p)).subtype (res.symm (res u))) (ι x) = (u : Gp p) • ι x
+          rw [res.symm_apply_apply]
+          rfl
       _ = ι (f u • x) := (hf u x).symm
   · -- a continuous bijection from a compact space to a Hausdorff space is a homeomorphism
     exact U.isOpen.isOpenEmbedding_subtypeVal.comp
@@ -272,7 +279,9 @@ lemma exists_inducesPlace [NumberField K] {ι : Ω →+* PadicAlgCl p} {A : Valu
         ← MonoidHom.range_eq_map, Subgroup.range_subtype]
     have h_fix :
         g ∈ (U : Subgroup (Gp p)) ↔ ∀ x : K, g (ι (algebraMap K Ω x)) = ι (algebraMap K Ω x) := by
-      simp [U, ← AlgEquiv.smul_def, forall_mem_adjoin_smul_eq_self_iff, k]
+      change g ∈ (adjoin ℚ_[p] (range k)).fixingSubgroup ↔ _
+      simp only [IntermediateField.mem_fixingSubgroup_iff, ← AlgEquiv.smul_def,
+        forall_mem_adjoin_smul_eq_self_iff, Set.forall_mem_range, k, RingHom.comp_apply]
     exact h_range.trans h_fix
 
 end PadicDecomposition
@@ -338,8 +347,9 @@ valuation below `1` (`A p` is the valuation of `p` at `A`) is the preimage of th
 `ℚ̄_p` under some embedding `Ω → ℚ̄_p`. -/
 lemma exists_comap_intQpBar_eq (h_val_lt_one : A p < 1) :
     ∃ e : Ω →+* PadicAlgCl p, (intQpBar p).comap e = A := by
-  -- `A` and the place induced by any embedding `ι` both lie over the prime of `ℚ` above `p`, so
-  -- they are conjugate under `Gal(Ω/ℚ)`, and a twist of `ι` induces `A`.
+  -- The inequality `A p < 1` fixes the rational prime in advance. Both `A` and the place
+  -- induced by any embedding `ι` lie above that prime. Transitivity on places over it
+  -- lets us precompose `ι` with a Galois automorphism to induce the prescribed `A`.
   obtain ⟨v, -, -, h_over : ∀ B : ClosurePlace, B.valuation p < 1 → IsPlaceOver B v⟩ :=
     exists_rat_place_of_prime (out : p.Prime)
   let ι : Ω →+* PadicAlgCl p := Classical.ofNonempty
@@ -386,7 +396,7 @@ lemma nonempty_isCompletionEmb_of_isPadicAt (h_at : IsPadicAt v p A j) :
       (isClosed_eq (h_at.continuous.const_smul (J g)) h_at.continuous) fun x ↦ ?_
     -- On `K` the map to `ℚ̄_p` is `j`, and `J g` moves `j x` as `g` moves `x`, which it fixes.
     change J g (algebraMap (LocField v) (PadicAlgCl p) (algebraMap K (LocField v) x)) = _
-    simp [← h_at.map_algebraMap, hJ_equivariant]
+    rw [← h_at.map_algebraMap, hJ_equivariant, smul_algebraMap]
   -- An automorphism fixing `C` fixes `K`, so it comes from the group; thus invariants lie in `C`.
   have h_invariant_mem (x : PadicAlgCl p) (hx : ∀ g : decompGroup Γ A, g • x = x) : x ∈ C := by
     refine (fixedFieldOf_fixingSubgroup (Γ := Gp p) C).le fun ⟨g, hg⟩ ↦ ?_
@@ -396,7 +406,11 @@ lemma nonempty_isCompletionEmb_of_isPadicAt (h_at : IsPadicAt v p A j) :
     obtain ⟨g', rfl⟩ := MonoidHom.mem_range.mp ((hJ_range g).mpr hg_fixes_K)
     exact hx g'
   exact ⟨{ action, h_at, h_galois, Period.isLocalGalois_of_isOpenEmbedding hJ_open with
-    commutes := ⟨fun g y z ↦ by simp [Algebra.smul_def, h_smul_algebraMap]⟩
+    commutes := ⟨fun g y z ↦
+      (congrArg (J g) (Algebra.smul_def y z)).trans <|
+      ((J g).map_mul _ z).trans <|
+      (congrArg (· * J g z) (h_smul_algebraMap g y)).trans
+      (Algebra.smul_def y (J g z)).symm⟩
     isInvariant := ⟨h_invariant_mem⟩
     isDiscreteValuationRing := by
       rw [h_at.valRingBelow_eq]
@@ -477,9 +491,16 @@ def cocycleKer [Monoid R] [DistribMulAction R M] (a : G →* R)
     (c : ∀ g k : G, x (g * k) = x g + a g • x k) : Subgroup G :=
   Subgroup.ofDiv (x ⁻¹' {0})
     -- `x 1 = x 1 + x 1` gives `x 1 = 0`
-    ⟨1, by simpa using c 1 1⟩
+    ⟨1, by
+      show x 1 = 0
+      have h1 := c 1 1
+      rwa [mul_one, map_one, one_smul, left_eq_add] at h1⟩
     -- `x g = x (g * k⁻¹) + a (g * k⁻¹) • x k`, with `x g = 0` and `x k = 0`
-    (fun g (hg : x g = 0) k (hk : x k = 0) ↦ by simpa [hg, hk, eq_comm] using c (g * k⁻¹) k)
+    (fun g (hg : x g = 0) k (hk : x k = 0) ↦ by
+      show x (g * k⁻¹) = 0
+      have h := c (g * k⁻¹) k
+      rw [inv_mul_cancel_right, hg, hk, smul_zero, add_zero] at h
+      exact h.symm)
 
 variable [Ring R] [Module R M]
 
@@ -504,7 +525,18 @@ lemma cocycle_conj_eq_smul (c : ∀ g k : G, x (g * k) = x g + a g • x k) {g �
     rw [mul_assoc, c γ (g * γ⁻¹), c g γ⁻¹, h_fix, smul_add, add_assoc]
   -- `x γ + a γ • x γ⁻¹ = x (γ * γ⁻¹) = x 1`, which vanishes.
   have h_one : x γ + a γ • x γ⁻¹ = 0 := by
-    grind [smul_add, mul_assoc, mul_inv_cancel, c 1 g, c 1 γ⁻¹, c γ γ⁻¹]
+    have h_fix_one : a 1 • x γ⁻¹ = x γ⁻¹ := by
+      have h1 : x g + x γ⁻¹ = x g + a 1 • x γ⁻¹ :=
+        calc x g + x γ⁻¹ = x (1 * (g * γ⁻¹)) := by rw [one_mul, c g γ⁻¹, h_fix]
+          _ = x 1 + a 1 • (x g + x γ⁻¹) := by rw [c 1 (g * γ⁻¹), c g γ⁻¹, h_fix]
+          _ = (x 1 + a 1 • x g) + a 1 • x γ⁻¹ := by rw [smul_add, add_assoc]
+          _ = x g + a 1 • x γ⁻¹ := by rw [← c 1 g, one_mul]
+      exact (add_left_cancel h1).symm
+    have hx1 : x 1 = 0 := by
+      have h1 := c 1 γ⁻¹
+      rw [one_mul, h_fix_one, right_eq_add] at h1
+      exact h1
+    rw [← c γ γ⁻¹, mul_inv_cancel, hx1]
   rw [h_expand, add_right_comm, h_one, zero_add]
 
 namespace IsPlaceOver
@@ -538,14 +570,13 @@ lemma isLocalGalois_and_residueCard_eq_and_isUniformiser (h : IsPlaceOver A v) :
   -- `j` sends `F` to the elements fixed by `decompGroup Γ A`, which form a copy of `LocField v`.
   have h_fixed (x : Ω) (hx : x ∈ F) :
       j x ∈ FixedPoints.subsemiring (PadicAlgCl p) (decompGroup Γ A) :=
-    fun g ↦ by simp [← hj.equivariant, hx g]
+    fun g ↦ by rw [← hj.equivariant, hx g]
   let φ : F →+* LocField v := comp hj.ringEquivFixedPoints.symm.toRingHom (j.restrict F _ h_fixed)
-  have hφ (x : K) : φ (algebraMap K F x) = algebraMap K (LocField v) x := by
+  have hφ_emb (x : F) : algebraMap (LocField v) (PadicAlgCl p) (φ x) = j (algebraMap F Ω x) :=
+    congrArg Subtype.val (hj.ringEquivFixedPoints.apply_symm_apply _)
+  have hφ (x : K) : φ (algebraMap K F x) = algebraMap K (LocField v) x :=
     -- In `ℚ̄_p` both sides are `j x`.
-    have h_image :
-        algebraMap (LocField v) (PadicAlgCl p) (φ (algebraMap K F x)) = j (algebraMap K Ω x) := by
-      aesop
-    exact RingHom.injective _ (h_image.trans (hj.map_algebraMap x))
+    RingHom.injective _ ((hφ_emb (algebraMap K F x)).trans (hj.map_algebraMap x))
   have h_val (x : K) : Valued.v.comap φ (algebraMap K F x) = v.valuation K x := by
     rw [comap_apply, hφ, v_algebraMap_eq_valuation]
   -- The valuation ring `A ∩ F` is the preimage of `LocInt v` under `φ`.
@@ -553,8 +584,9 @@ lemma isLocalGalois_and_residueCard_eq_and_isUniformiser (h : IsPlaceOver A v) :
     ext x
     have h_mem : φ x ∈ valRingBelow (LocField v) (intQpBar p) ↔ φ x ∈ LocInt v := by
       rw [hj.valRingBelow_eq]
-    simpa [← hj.comap_eq, φ, IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers]
-      using h_mem
+    simpa only [Valuation.mem_valuationSubring_iff, Valuation.comap_apply,
+      ValuationSubring.valuation_le_one_iff, ← hj.comap_eq, ValuationSubring.mem_comap, hφ_emb,
+      IsDedekindDomain.HeightOneSpectrum.mem_adicCompletionIntegers] using h_mem
   -- The residue fields agree, since integers of `K` already give every residue of `LocInt v`.
   let ψ : valRingBelow F A →+* ResField v := comp (residue _) (φ.restrict _ _ h_ring.le)
   have hψ : Function.Surjective ψ := by
@@ -612,7 +644,7 @@ lemma exists_uniformiser (h : IsPlaceOver A v) :
       v.valuation K π = exp (-1) ∧
       IsUniformiser A (π.map (algebraMap K (fixedFieldOf (decompGroup Γ A))).toMonoidHom).val := by
   obtain ⟨π, hπ⟩ := v.valuation_exists_uniformizer K
-  have hπ_ne : π ≠ 0 := by grind [exp_pos]
+  have hπ_ne : π ≠ 0 := fun h0 ↦ WithZero.exp_ne_zero (hπ.symm.trans (by rw [h0, map_zero]))
   exact ⟨mk0 π hπ_ne, hπ,
     h.isUniformiser_map_fixedFieldOf_decompGroup Γ (h.isUniformiser_iff.mpr hπ)⟩
 
@@ -714,14 +746,24 @@ lemma ordRat_smul (h : IsPlaceOver A v) (g : Γ) (x : DiscreteUnits Ω) :
   -- Expand: `g` fixes `π`, which has order `1` at `A` and at `g • A`; then cancel `q.den`.
   have h_fix_π : unitsRep g (ofBase Γ Ω (.ofMul π) : DiscreteUnits Ω) = ofBase Γ Ω (.ofMul π) :=
     (ofBase Γ Ω (.ofMul π)).property g
+  have h_ord_π : ordRat K A (ofBase Γ Ω (.ofMul π)) = 1 := by
+    rw [h.ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
+  have h_ord_π_g : ordRat K (g • A) (ofBase Γ Ω (.ofMul π)) = 1 := by
+    rw [(h.smul g).ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
   have h_ord_y : ordRat K A y = q.den * ordRat K A x - q.num := by
-    simp [y, h.ordRat_ofBase, hπ]
+    dsimp only [y]
+    rw [_root_.map_sub, map_nsmul, map_zsmul, nsmul_eq_mul, zsmul_eq_mul, h_ord_π, mul_one]
   have h_ord_gy :
       ordRat K (g • A) (unitsRep g y) = q.den * ordRat K (g • A) (unitsRep g x) - q.num := by
-    simp [y, h_fix_π, (h.smul g).ordRat_ofBase, hπ]
+    dsimp only [y]
+    rw [_root_.map_sub, map_nsmul, map_zsmul, h_fix_π, _root_.map_sub, map_nsmul, map_zsmul,
+      nsmul_eq_mul, zsmul_eq_mul, h_ord_π_g, mul_one]
   rw [h_ord_gy, h_ord_y] at h_int
   -- Cancel `q.den > 0`: `q ≤ t` exactly when `0 ≤ q.den * t - q.num`.
-  simpa [pos, ← den_mul_eq_num] using h_int
+  have h_le (t : ℚ) : q ≤ t ↔ 0 ≤ q.den * t - q.num := by
+    rw [sub_nonneg, ← den_mul_eq_num q, mul_le_mul_iff_right₀ (Nat.cast_pos.mpr q.pos)]
+  rw [h_le, h_le]
+  exact h_int
 
 /-- Let A lie over v. If x in Ωˣ is fixed by every element of the inertia group of A, then the
 order of x at A, normalised on K, is an integer. -/
@@ -762,17 +804,46 @@ lemma ramification_in_tower (h : IsPlaceOver A v) (U : Subgroup Γ) [hU_open : F
   obtain ⟨-, ⟨e, f, ⟨h_ef, hq, h_ord⟩, h_unram⟩, -⟩ :=
     (h.isLocalGalois_decompGroup Γ).of_finite V
   -- The fixed field of `V` is the decomposition field of `A` over `L`.
-  have h_same_set : (fixedFieldOf (decompGroup U A) : Set Ω) =
-      fixedFieldOf (U.subgroupOf (decompGroup Γ A)) := by aesop
-  -- `erw` here and in the next two steps: the two fields are equal as sets only, so the rewrites
-  -- go through a copy of the field, equal to it by definition.
-  erw [← (fixedFieldOf (U.subgroupOf _)).copy_eq (fixedFieldOf (decompGroup U A)) h_same_set]
-    at hq h_ord
+  have h_same_set (x : Ω) :
+      x ∈ fixedFieldOf (decompGroup U A) ↔ x ∈ fixedFieldOf (V : Subgroup (decompGroup Γ A)) :=
+    ⟨fun hx ⟨⟨g, hgA⟩, hgU⟩ ↦ hx ⟨⟨g, hgU⟩, hgA⟩,
+     fun hx ⟨⟨g, hgU⟩, hgA⟩ ↦ hx ⟨⟨g, hgA⟩, hgU⟩⟩
+  let e_field :
+      fixedFieldOf (decompGroup U A) ≃+* fixedFieldOf (V : Subgroup (decompGroup Γ A)) :=
+    { toFun := fun x ↦ ⟨x.1, (h_same_set x.1).mp x.2⟩
+      invFun := fun x ↦ ⟨x.1, (h_same_set x.1).mpr x.2⟩
+      left_inv := fun _ ↦ rfl
+      right_inv := fun _ ↦ rfl
+      map_mul' := fun _ _ ↦ rfl
+      map_add' := fun _ _ ↦ rfl }
+  let e_ring :
+      valRingBelow (fixedFieldOf (decompGroup U A)) A ≃+*
+        valRingBelow (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A :=
+    { toFun := fun x ↦ ⟨e_field x.1, x.2⟩
+      invFun := fun x ↦ ⟨e_field.symm x.1, x.2⟩
+      left_inv := fun _ ↦ rfl
+      right_inv := fun _ ↦ rfl
+      map_mul' := fun _ _ ↦ rfl
+      map_add' := fun _ _ ↦ rfl }
+  have h_res_eq :
+      residueCard (fixedFieldOf (decompGroup U A)) A =
+        residueCard (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A :=
+    Nat.card_congr (IsLocalRing.ResidueField.mapEquiv e_ring).toEquiv
+  have h_ord_eq :
+      ordRat (fixedFieldOf (decompGroup U A)) A =
+        ordRat (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A := by
+    unfold ordRat
+    congr 1
+    funext f
+    exact propext
+      ⟨fun hf π hπ ↦ hf (π.map e_field.symm.toMonoidHom) fun x ↦ hπ (e_field x),
+       fun hf π hπ ↦ hf (π.map e_field.toMonoidHom) fun x ↦ hπ (e_field.symm x)⟩
   have h_q : w.q = v.q ^ f := by
-    erw [← h.residueCard_fixedFieldOf_decompGroup Γ, ← hw.residueCard_fixedFieldOf_decompGroup U,
-      hq]
+    rw [← hw.residueCard_fixedFieldOf_decompGroup U, h_res_eq, hq,
+      h.residueCard_fixedFieldOf_decompGroup Γ]
   have h_ord_L : ordRat L A = e • ordRat K A := by
-    erw [← h.ordRat_fixedFieldOf_decompGroup Γ, ← hw.ordRat_fixedFieldOf_decompGroup U, h_ord]
+    rw [← hw.ordRat_fixedFieldOf_decompGroup U, h_ord_eq, h_ord,
+      h.ordRat_fixedFieldOf_decompGroup Γ]
   have h_norm : v.q ^ w.asIdeal.inertiaDeg (𝓞 K) = w.q :=
     absNorm_pow_inertiaDeg v.asIdeal w.asIdeal
   obtain rfl : w.asIdeal.inertiaDeg (𝓞 K) = f :=
@@ -782,9 +853,11 @@ lemma ramification_in_tower (h : IsPlaceOver A v) (U : Subgroup Γ) [hU_open : F
       ofBase U Ω (.ofMul (π.map (algebraMap K L).toMonoidHom)) :=
     ext (IsScalarTower.algebraMap_apply K L Ω π)
   have hπL : ordRat L A (ofBase Γ Ω (.ofMul π)) = -(w.valuation L (algebraMap K L π)).log := by
-    simpa [hπ_image] using hw.ordRat_ofBase (π.map (algebraMap K L).toMonoidHom)
+    rw [hπ_image]
+    exact hw.ordRat_ofBase (π.map (algebraMap K L).toMonoidHom)
   have h_ord_π_L : ordRat L A (ofBase Γ Ω (.ofMul π)) = e := by
-    simp [h_ord_L, h.ordRat_ofBase, hπ]
+    rw [h_ord_L, AddMonoidHom.smul_apply, h.ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg,
+      Int.cast_one, neg_neg, nsmul_eq_mul, mul_one]
   have h_log :
       -((w.valuation L (algebraMap K L π)).log : ℚ) = w.asIdeal.ramificationIdx (𝓞 K) := by
     simp [← v.valuation_liesOver L, hπ]
@@ -794,7 +867,7 @@ lemma ramification_in_tower (h : IsPlaceOver A v) (U : Subgroup Γ) [hU_open : F
   refine ⟨fun hU ↦ ?_, fun hI ↦ h_unram fun g hg ↦ hI hg, h_ef.symm⟩
   -- If `decompGroup Γ A ≤ U`, the index `e * f` is `1`, so `e = f = 1`.
   obtain ⟨h_e, h_f⟩ := mul_eq_one.mp (h_ef.trans (U.relIndex_eq_one.mpr hU))
-  simp [h_q, h_ord_L, h_e, h_f]
+  exact ⟨by rw [h_q, h_f, pow_one], by rw [h_ord_L, h_e, one_smul]⟩
 
 /-- Let A lie over v. An open subgroup of `Γ` that contains the inertia group of `A` and a
 Frobenius element `φ` at `v` (`IsFrob A v.q φ`: `φ` stabilises `A` and acts as x ↦ x ^ v.q modulo

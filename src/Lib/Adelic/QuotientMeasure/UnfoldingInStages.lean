@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -72,7 +73,7 @@ lemma New.exists_integral_comp_quotMeasure_eq_smul [T2Space H]
     let S (r : H) : ENNReal := ∫⁻ γ : Γ, f (γ * π r) ∂count
     have hS (δ : Λ) (r : H) : S (δ • r) = S r := by
       simpa [S, Subgroup.smul_def, mul_assoc] using
-        lintegral_mul_right_eq_self (μ := count) (fun γ : Γ ↦ f (γ * π r)) ⟨π δ, hΛ δ.2⟩
+        lintegral_mul_right_eq_self (μ := count) (fun γ : Γ ↦ f (γ * π r)) ⟨π δ, hΛ δ.property⟩
     -- So its integral over `Λ \ H` is unchanged by the right translation `r ↦ r * a`.
     have h_transl : ∫⁻ r, S (r * a) ∂Λ.quotMeasure ν = ∫⁻ r, S r ∂Λ.quotMeasure ν :=
       (identDistrib_orbitMeasure_mul_right a hS).lintegral_eq
@@ -82,7 +83,7 @@ lemma New.exists_integral_comp_quotMeasure_eq_smul [T2Space H]
   -- `κ = d • μ` says that the measure of `Λ \ H` unfolds to `d • μ` along `π`.
   have h_dist : IdentDistrib F (F ∘ π) (Γ.quotMeasure (d • μ)) (Λ.quotMeasure ν) :=
     identDistrib_orbitMeasure_of_unfold (.id _) ⟨by fun_prop, hd⟩ hF (by fun_prop)
-      fun γ ↦ hF_inv γ γ.2
+      fun γ ↦ hF_inv γ γ.property
   simpa [withDensity_smul_measure] using h_dist.integral_eq.symm
 
 /-- Unfolding in stages. Let `i : H → G` be an injective homomorphism with `i Λ = Γ` (both
@@ -110,7 +111,7 @@ lemma New.integral_quotMeasure_stages [T2Space H] {Z : Type*} [MeasurableSpace Z
       IdentDistrib F (fun p : Z × H ↦ F (i p.2 * T p.1)) (Γ.quotMeasure μ)
         (m.prod (Λ.quotMeasure ν)) :=
     identDistrib_orbitMeasure_of_unfold (measurePreserving_count e.toEquiv) h_unfold hF
-      hT.measurable fun γ ↦ hF_inv γ γ.2
+      hT.measurable fun γ ↦ hF_inv γ γ.property
   have h_int := h_dist.integrable_snd hF_int
   exact ⟨h_int.integral_prod_left, h_dist.integral_eq.trans (integral_prod _ h_int)⟩
 
@@ -198,7 +199,7 @@ lemma New.integral_integral_quotMeasure_translate {L : Type*} [Group L] [Topolog
       ∫ a, F (i (l, a * k.2) * g) ∂Λ.quotMeasure ν = ∫ a, F (i (l, a) * g) ∂Λ.quotMeasure ν := by
     have h_left (γ : Λ) (a : H) : F (i (l, γ • a) * g) = F (i (l, a) * g) := by
       simpa [Subgroup.smul_def, ← mul_assoc, ← map_mul] using
-        hF_inv (i (1, γ)) ⟨γ, γ.2, rfl⟩ (i (l, a) * g)
+        hF_inv (i (1, γ)) ⟨γ, γ.property, rfl⟩ (i (l, a) * g)
     exact (identDistrib_orbitMeasure_mul_right (F := fun a ↦ F (i (l, a) * g)) k.2 h_left
       (Continuous.measurable (by fun_prop))).integral_eq
   calc
@@ -350,7 +351,7 @@ lemma New.integral_quotMeasure_eq_zero_of_mean (hF_inv : Γ.FixesLeft F) (hF : C
       identDistrib_orbitMeasure_comp (.id (count : Measure Λ)) (F := fun s : H ↦ F (s * x))
         ⟨measurable_mul_const (translator x b), h_scale x b⟩
         (fun γ s ↦ smul_mul_assoc γ s (translator x b))
-        (fun γ s ↦ by simpa [smul_def, mul_assoc] using hF_inv γ γ.2 (s * x))
+        (fun γ s ↦ by simpa [smul_def, mul_assoc] using hF_inv γ γ.property (s * x))
   have h_prod : Integrable (Function.uncurry fun (s : H) b ↦ F (s * translator x b * x))
       (σ.prod κ) := by
     have h_slice (b : C) : Integrable (fun s : H ↦ F (s * translator x b * x)) σ :=

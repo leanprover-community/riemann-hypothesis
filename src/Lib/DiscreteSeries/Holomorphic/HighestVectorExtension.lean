@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
+public import Mathlib.MeasureTheory.Integral.CurveIntegral.Basic
 public import Lib.General.Analysis.MeanValueAndTaylor
 public import Lib.General.LinearAlgebra.PolarDecomposition
 
@@ -126,7 +128,7 @@ noncomputable def lowerLiePart (c : ℂ) : Matrix n n ℂ →L[ℝ] Matrix n n �
 lemma lowerLiePart_mem_unitaryLie (c : ℂ) (Z : Matrix n n ℂ) :
     lowerLiePart ε ε' o c Z ∈ unitaryLie (signMatrix ε) := by
   let N : Matrix n n ℂ := lowerMask ε' o Z + c • entryMask Eq Z
-  convert (unitaryLie (signMatrix ε)).smul_mem (2 : ℝ) (unitaryLiePart ε N).2 using 1
+  convert (unitaryLie (signMatrix ε)).smul_mem (2 : ℝ) (unitaryLiePart ε N).property using 1
   change N - signMatrix ε * Nᴴ * signMatrix ε =
     (2 : ℝ) • (2⁻¹ : ℝ) • (N - (signMatrix ε)⁻¹ * Nᴴ * signMatrix ε)
   rw [smul_smul, mul_inv_cancel₀ two_ne_zero, one_smul, inv_eq_left_inv (signMatrix_mul_self ε)]
@@ -559,7 +561,7 @@ lemma isBorelMatrix_one_add_lowerMask (ho : o.Injective) (Z : Matrix n n ℂ) :
   have triangular : (1 + lowerMask ε o Z).BlockTriangular (-o) := fun i j hij ↦ by
     simp [(neg_lt_neg_iff.1 hij : o i < o j).not_gt, show i ≠ j by grind]
   refine ⟨triangular, ?_⟩
-  rw [det_eq_prod_diag_of_blockTriangular (neg_injective.comp ho) triangular]
+  rw [triangular.det_eq_prod_diag (neg_injective.comp ho)]
   simp
 
 /-- Let `o` be injective, `w` dominant within the blocks of `ε` (`w j ≤ w i` whenever `ε i = ε j`

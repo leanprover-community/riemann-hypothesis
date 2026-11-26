@@ -193,6 +193,7 @@ theorem leFibreMeasure_conjTranspose_mul_mul {E : Matrix ι n₁ ℂ} {R : Matri
   exact .of_measurePreserving (measurePreserving_mul_mul_add_mul hE hR h_orth h_card)
     (by fun_prop) h_proj fun _ ↦ Continuous.continuousAt (by fun_prop)
 
+omit [DecidableEq n] [DecidableEq n₁] in
 /-- Choosing `g` with law `m` and completing `g E₁` by further columns with the Lebesgue measure, in
 the places given by `e` (`joinCols`), is the same as completing `E₁` first and then moving all
 columns by `g`. -/
@@ -213,13 +214,13 @@ theorem map_joinCols_prod_volume (e : n₁ ⊕ n₂ ≃ n) (E₁ : Matrix ι n�
       (f := fun y : Matrix ι n₂ ℂ ↦ K (joinCols e (g.val.val * E₁, y))) (by fun_prop)
   simp only [mul_joinCols, Prod.swap_prod_mk, h_subst]
 
-omit [DecidableEq n₁] [IsHermitianInvolution J] in
+omit [DecidableEq n] [DecidableEq n₁] [DecidableEq n₂] [IsHermitianInvolution J] in
 /-- Let `E = joinCols e (E₁, E₂)` have the columns of `E₁` and `E₂`. If `m'` is carried by the
 elements that fix `E₁`, then the law of `g (E₁, g' E₂)` under `m × m'` is the law of `g E` under
 the convolution `m ∗ₘ m'`. -/
 theorem map_mul_joinCols_prod_eq_map_mconv {E : Matrix ι n ℂ} {E₁ : Matrix ι n₁ ℂ}
     {E₂ : Matrix ι n₂ ℂ} (e : n₁ ⊕ n₂ ≃ n) (hE : joinCols e (E₁, E₂) = E) {m m' : Measure (U J)}
-    [SFinite m] [SFinite m'] (h_fix : ∀ᵐ g : U J ∂m', g.val.val * E₁ = E₁) :
+    [SFinite m'] (h_fix : ∀ᵐ g : U J ∂m', g.val.val * E₁ = E₁) :
     (m.prod (m'.map fun g : U J ↦ g.val.val * E₂)).map
         (fun p : U J × Matrix ι n₂ ℂ ↦ p.1.val.val * joinCols e (E₁, p.2)) =
       (m ∗ₘ m').map fun g : U J ↦ g.val.val * E := by
@@ -372,7 +373,7 @@ theorem LeGramFibre.insert {p q : ι → Prop} [DecidablePred p] [DecidablePred 
     funext fun i ↦ by simp [E, inclMatrix, mulVec, dotProduct, Matrix.one_apply]
   rw [← h_join]
   refine h_first.append_vector _ ?_ (h_fix.mono fun g hg ↦
-    (mul_inclMatrix g.val.val _).trans (Matrix.ext fun i k ↦ hg i k k.2))
+    (mul_inclMatrix g.val.val _).trans (Matrix.ext fun i k ↦ hg i k k.property))
   -- `mulVec_mulVec` would merge `Eᴴ` and `J` before `h_products` applies.
   simpa [h_products, -mulVec_mulVec] using h_next
 

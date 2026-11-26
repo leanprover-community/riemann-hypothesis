@@ -99,7 +99,8 @@ lemma frameVector_eq_sum (hs : s ∈ besselU) :
       (s * y)⁻¹.val.val.submatrix id 𝔰.besselFrame * frameMatrix s := by
     simpa using submatrix_mul_besselFrame hs (y⁻¹ * s⁻¹).val.val id
   ext i
-  simpa [frameVector, Matrix.mul_apply, mul_comm] using congrFun₂ h_cols i a
+  simpa [frameVector] using (congrFun₂ h_cols i a).trans
+    (Matrix.mul_apply.trans (Finset.sum_congr rfl fun _ _ ↦ mul_comm _ _))
 
 /-- The vector `frameVector y a` = y⁻¹ f_a, where f_a is the `a`-th vector of the frame (e₁, …, e_ϱ,
 z), is not longer than the operator norm of `y`. -/
@@ -136,7 +137,7 @@ lemma RealPlace.exists_norm_le_of_besselLength_le {T : ℝ} (hT : besselLength y
   -- The infimum gives `s` in `besselS` with `‖s * y‖ + 1 < T + 1`. Write `s⁻¹ = u * embedH w` with
   -- `u` in `besselU`; then `embedH w * s = u⁻¹`, and `embedH w` does not change the norm.
   obtain ⟨s, hs⟩ := exists_lt_of_ciInf_lt (hT.trans_lt (lt_add_one T))
-  obtain ⟨u, hu, w, hs_eq⟩ := exists_besselU_mul_toBesselH s⁻¹.2 isUnit_one
+  obtain ⟨u, hu, w, hs_eq⟩ := exists_besselU_mul_toBesselH s⁻¹.property isUnit_one
   have h_inv : embedH w * s.val = u⁻¹ := by simp_all [inv_eq_iff_eq_inv]
   refine ⟨u⁻¹, inv_mem hu, ?_⟩
   rw [← h_inv, mul_assoc, norm_embedH_mul]
@@ -319,8 +320,7 @@ lemma gramSchmidt_eq_of_sub_mem_span {ι V : Type*} [LinearOrder ι] [LocallyFin
         h_perp.ge (Submodule.mem_span_singleton_self _)
       refine Submodule.isOrtho_span.2 ?_
       rintro _ ⟨b, hb, rfl⟩ _ rfl
-      rw [← hx b hb]
-      exact gramSchmidt_orthogonal ℂ x (ne_of_lt hb)
+      simpa only [hx b hb] using gramSchmidt_orthogonal ℂ x (ne_of_lt hb)
   obtain ⟨hv_span, hv_orth⟩ := h_proj v ih
   obtain ⟨hw_span, hw_orth⟩ := h_proj w fun _ _ ↦ rfl
   have h_diff : v a - w a ∈ B := (span_gramSchmidt_Iio ℂ w a).ge (h_sub a)
@@ -427,10 +427,6 @@ theorem norm_orthoFrame_mem_Icc (h_size : besselLength y ≤ M) :
   · grw [inv_le_iff_one_le_mul₀' hM, ← h_norm, ← one_le_norm_mul_norm_orthoFrame]
   · grw [norm_orthoFrame_le, norm_frameVector_le, h_norm]
 
-lemma linearIndependent_orthoFrame : LinearIndependent ℂ (orthoFrame y) :=
-  linearIndependent_of_ne_zero_of_inner_eq_zero (orthoFrame_ne_zero y)
-    fun _ _ ↦ inner_orthoFrame_eq_zero_of_ne y
-
 /-- For `y` in the unitary group `𝔰.G₁`, let `gramSchmidtMatrix y` be the unitriangular matrix of
 the moved frame in its Gram–Schmidt vectors. Let `s` lie in the Bessel subgroup `besselS`, the group
 of the elements of `𝔰.G₁` that map each vector of the frame (e₁, …, e_ϱ, z) to itself plus a
@@ -451,10 +447,12 @@ theorem gramSchmidtMatrix_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s �
     rw [← frameVector_eq_sum_orthoFrame, ← h_fix, frameVector_eq_sum b hu, ← mul_assoc, hC,
       frameMatrix_mul_besselH u hh]
     simp only [frameVector_eq_sum_orthoFrame, h_orth, Matrix.mul_apply, sum_smul, smul_sum,
-      smul_smul, mul_comm]
-    exact sum_comm
+      smul_smul]
+    exact sum_comm.trans (sum_congr rfl fun _ _ ↦ sum_congr rfl fun _ _ ↦ by rw [mul_comm])
   ext a b
-  exact Fintype.linearIndependent_iffₛ.1 (linearIndependent_orthoFrame y) (C · b)
+  exact Fintype.linearIndependent_iffₛ.1
+    (linearIndependent_of_ne_zero_of_inner_eq_zero (orthoFrame_ne_zero y)
+      fun _ _ ↦ inner_orthoFrame_eq_zero_of_ne y) (C · b)
     (gramSchmidtMatrix y · b) (h_same_expansion b) a
 
 /-- The Gram–Schmidt vectors `orthoFrame y a` of the moved frame (y⁻¹ e₁, …, y⁻¹ e_ϱ, y⁻¹ z) depend
@@ -605,7 +603,7 @@ def latticeMiddleGram : 𝔰.Form R :=
 /-- The matrix whose columns are the orthonormal basis vectors x_i of X₀ in the lattice basis (x_i
 for i ≠ k₀, v, z), where v = x_{k₀}/p̄ + z/(p p̄). -/
 def middleInclusionMatrix : Matrix (𝔰.κ ⊕ Unit) 𝔰.κ R :=
-  fromRows (scaleAt (star p.1) 𝔰.k₀) (of fun () j ↦ if j = 𝔰.k₀ then -p⁻¹ else 0)
+  fromRows (scaleAt (star p.val) 𝔰.k₀) (of fun () j ↦ if j = 𝔰.k₀ then -p⁻¹ else 0)
 
 /-- With the column of z appended, the inclusion matrix `middleInclusionMatrix` from the x_i to the
 lattice basis is block lower triangular: `scaleAt p̄ k₀` (diagonal, p̄ at k₀ and 1 elsewhere), `1`,
@@ -644,7 +642,7 @@ def besselLatticeBasis : GL 𝔰.BesselIndex R where
   val :=
     fromBlocks 1 0 0
       (fromBlocks
-        (fromBlocks (scaleAt (star p⁻¹.1) 𝔰.k₀) 0
+        (fromBlocks (scaleAt (star p⁻¹.val) 𝔰.k₀) 0
           (of fun _ j ↦ if j = 𝔰.k₀ then ↑(p * star p)⁻¹ else 0) 1)
         0 0 1)
   inv := fromBlocks 1 0 0 (fromBlocks (fromCols (middleInclusionMatrix 𝔰 p) (fromRows 0 1)) 0 0 1)
@@ -677,22 +675,13 @@ lemma gram_besselLatticeBasis (p : Rˣ) (N : R) (hN : p * star ↑p = N) :
     (besselLatticeBasis 𝔰 p).valᴴ * (𝔰.middleGram N).splitGram * besselLatticeBasis 𝔰 p =
       (latticeMiddleGram 𝔰 N).splitGram := by
   subst hN
-  have h_norm : (p : R) * star ↑p * (star (↑p⁻¹ : R) * ↑p⁻¹) = 1 := by
-    grind [p.mul_inv, star_mul, star_one]
-  let A : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex R :=
-    fromBlocks (scaleAt (star (↑p⁻¹ : R)) 𝔰.k₀) 0
-      (of fun _ j ↦ if j = 𝔰.k₀ then ↑(p * star p)⁻¹ else 0) 1
-  -- Outside the middle block the basis is standard. In it, the entries away from `k₀` agree at
-  -- once and those at `k₀` follow from `h_norm`.
-  have h_mid : Aᴴ * 𝔰.middleGram ((p : R) * star ↑p) * A =
-      latticeMiddleGram 𝔰 ((p : R) * star ↑p) := by
-    ext (i | i) (j | j) <;>
-      simp [A, Shape.middleGram, latticeMiddleGram, diagonal, fromBlocks_conjTranspose,
-        fromBlocks_multiply, Matrix.mul_apply] <;>
-      grind [star_star, star_mul, star_one, star_zero] -- uses `h_norm` at the entries of `k₀`
-  have h_basis : (besselLatticeBasis 𝔰 p).val = fromBlocks 1 0 0 (fromBlocks A 0 0 1) := rfl
-  simp [h_basis, Shape.Form.splitGram, Floors.hyperbolicGram, fromBlocks_conjTranspose,
-    fromBlocks_multiply, fromBlocks_mul_fromRows, fromCols_mul_fromBlocks, ← h_mid]
+  -- Outside the middle block the basis is standard; reduce to the middle block and check entries.
+  simp [besselLatticeBasis, Shape.Form.splitGram, Floors.hyperbolicGram, fromBlocks_conjTranspose,
+    fromBlocks_multiply, fromBlocks_mul_fromRows, fromCols_mul_fromBlocks]
+  ext (i | i) (j | j)
+  all_goals simp [Shape.middleGram, latticeMiddleGram, diagonal,
+    fromBlocks_multiply, Matrix.mul_apply]
+  all_goals grind [p.mul_inv, star_star, star_mul, star_one, star_zero]
 
 /-- For γ in the unitary group, the matrix (f | γf) of the frame f and its image under γ, side by
 side. -/
@@ -769,7 +758,7 @@ lemma gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
         (castSucc_ne_last _).symm]
   have h_herm : (𝔰.middleGram N).splitGramᴴ = (𝔰.middleGram N).splitGram := by
     simp [Shape.Form.splitGram, Shape.middleGram, ← Matrix.ext_iff, hN, Matrix.one_apply,
-      apply_ite star, eq_comm]
+      apply_ite star, @eq_comm (Fin 𝔰.ϱ), @eq_comm 𝔰.κ]
   have h_block (x y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) :
       (frameImage x)ᴴ * (𝔰.middleGram N).splitGram * frameImage y =
         (xᴴ * (𝔰.middleGram N).splitGram * y).submatrix 𝔰.besselFrame 𝔰.besselFrame := rfl
@@ -941,7 +930,7 @@ at p and at q. -/
 def HasLocalBounds (b : ℝ) (W : 𝔰.G₁ → EuclideanSpace ℂ I) (deg : ℝ)
     (J : ℕ → (ℕ → ℂˣ) → (ℕ → ℂˣ) → ℂ) : Prop :=
   -- (a) `J` is a system over `ℂ` with the character `wave` and these bounds
-  SieveSystem unitOrOne (fun z ↦ z⁻¹.1) 𝔰.ϱ J wave ((1 + b⁻¹ ^ 10) / deg)
+  SieveSystem unitOrOne (fun z ↦ z⁻¹.val) 𝔰.ϱ J wave ((1 + b⁻¹ ^ 10) / deg)
     (headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6))
     (fun ξ ↦ 𝔰.scaledVolumeRatio * b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖ξ‖⁻¹) ∧
   -- (b) its top form is an inner product of values of `normalizedOrbitalIntegral σ`, if both last
@@ -1039,7 +1028,7 @@ structure BesselSystem (b : ℝ) (f : ℕ) where
   isCutPair : IsCutPair b f rep besselFn
   /-- Every matrix that commutes with all rep(h) is scalar. -/
   irreducible (M : Matrix Index Index ℂ) :
-    (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h).1) → M ∈ range (scalar Index)
+    (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h).val) → M ∈ range (scalar Index)
   /-- For every P ≥ b^5, W satisfies `New.RealPlace.HasSchurBound` with constants P and
   |Index|/deg. -/
   hasSchurBound : ∀ P ≥ b ^ 5, HasSchurBound (besselFn FullOrCut.full) rep P

@@ -1,9 +1,13 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
+public import Mathlib.Analysis.SpecialFunctions.Elliptic.Weierstrass
+public import Mathlib.GroupTheory.IndexNSmul
+public import Mathlib.NumberTheory.ModularForms.Discriminant
+import TauCeti.Analysis.SpecialFunctions.Elliptic.AdditionTheorem
 public import Lib.General.Analysis.MeanValueAndTaylor
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 public import Lib.Shimura.ComplexTheta.DimensionFormula
-import TauCeti.Analysis.SpecialFunctions.Elliptic.LatticeClassification
 
 /-!
 # Sigma and Weierstrass functions, lattice invariants and lattices with complex multiplication
@@ -18,8 +22,7 @@ of σ and the classical facts on ℘.
 
 * `New.IsAppellHumbert.theta_eq_zero_iff_mem_lattice`, `New.IsAppellHumbert.deriv_theta_ne_zero`,
   `New.IsAppellHumbert.thetaSpace_two_eq_span_pair`: a theta function f ≠ 0 for (H, χ) with
-  f(0) = 0 has simple zeros exactly on Λ, and ℘f² and f² span the theta functions for (2H, χ²);
-  `New.IsAppellHumbert.thetaSpace_two_eq_span` collects the three.
+  f(0) = 0 has simple zeros exactly on Λ, and ℘f² and f² span the theta functions for (2H, χ²).
 * `PeriodPair.σ`, `New.sigma_add_mul_sigma_sub`: for u and v outside Λ,
   σ(u + v)σ(u − v) = (℘(v) − ℘(u))σ(u)²σ(v)².
 * `PeriodPair.exists_weierstrassP_eq_of_cubic`: every point of `y² = 4x³ - g₂x - g₃` is
@@ -30,8 +33,6 @@ of σ and the classical facts on ℘.
   `New.quadInt d`, and neither `ω t` nor `ω̄ t` lies in it, where `ω = New.quadGen d`.
 * `New.exists_lattice_eq_mul_tau`: every lattice is a(ℤτ + ℤ) with τ in the upper half plane.
 * `New.g₂_pow_three_sub_g₃_sq_eq_discriminant`: g₂³ − 27 g₃² of that lattice in terms of Δ(τ).
-* `New.exists_lattice_of_g₂_g₃`: conversely, every pair (a, b) with a³ − 27 b² ≠ 0 is (g₂, g₃) of a
-  lattice (uniformization, via `PeriodPair.exists_g₂_g₃_eq`).
 
 Notions from other files:
 * `New.RealComplexForm.thetaSpace` Λ B χ: the entire f with f(z + l) = χ(l)·exp(B(l, z) + B(l,
@@ -464,12 +465,6 @@ def _root_.PeriodPair.σ (L : PeriodPair) : ℂ → ℂ :=
 lemma sigma_mem_thetaSpace : L.σ ∈ L.hermitianForm.thetaSpace (sigmaSign L) :=
   exists_odd_mem_thetaSpace_deriv_eq_one.choose_spec.1
 
-/-- The functional equation of the sigma function: for a lattice point `l` and
-`H = L.hermitianForm`, `σ (z + l) = sigmaSign L l * exp (H l z + H l l / 2) * σ z`. -/
-lemma sigma_add_of_mem_lattice {l : ℂ} (hl : l ∈ L.lattice) (z : ℂ) :
-    L.σ (z + l) = sigmaSign L l * exp (L.hermitianForm l z + L.hermitianForm l l / 2) * L.σ z :=
-  sigma_mem_thetaSpace.2 l hl z
-
 @[fun_prop]
 lemma differentiable_sigma : Differentiable ℂ L.σ := sigma_mem_thetaSpace.1
 
@@ -521,7 +516,7 @@ lemma sigma_add_mul_sigma_sub_mem_thetaSpace (v : ℂ) :
   change L.σ (z + l + v) * L.σ (z + l - v) = (sigmaSign L ^ 2) l *
     exp ((2 • L.hermitianForm) l z + (2 • L.hermitianForm) l l / 2) * (L.σ (z + v) * L.σ (z - v))
   simp only [Pi.pow_apply, add_right_comm z l v, add_sub_right_comm z l v,
-    sigma_add_of_mem_lattice hl, ← exponent, exp_add]
+    sigma_mem_thetaSpace.2 _ hl, ← exponent, exp_add]
   ring
 
 /-- The addition formula of the sigma function: for `u` and `v` off the lattice,
@@ -626,18 +621,7 @@ coefficients. -/
 abbrev taylorVia {K : Type*} [Semiring K] (ι : ℂ →+* K) (f : ℂ → ℂ) : PowerSeries K :=
   (taylorAtZero f).map ι
 
-/-- The linear form ∑ c_i z_i, as a power series in the variables z_i. -/
-def linearSeries {ι R : Type*} [Fintype ι] [CommSemiring R] (c : ι → R) : MvPowerSeries ι R :=
-  ∑ i : ι, c i • MvPowerSeries.X i
-
 /-! ### Lattices with complex multiplication -/
-
-/-- The complex number ω = (1 + i√d)/2. -/
-def quadGen (d : ℕ) : ℂ := (1 + I * √d) / 2
-
-/-- The image in ℂ of the ring of integers of K = ℚ(i√d), as a subring of ℂ. -/
-def quadInt (d : ℕ) : Subring ℂ :=
-  ((algebraMap (QuadField d) ℂ).comp (algebraMap (𝓞 (QuadField d)) (QuadField d))).range
 
 /-- A lattice `Λ` with a point `t` of order two modulo `Λ`, scaled so that `℘''(t) = 2`, and a
 square root `a₁` of `12 ℘(t)`. If `d ≠ 0`, then moreover `Λ` is stable under the ring of integers of
@@ -791,13 +775,6 @@ lemma g₂_pow_three_sub_g₃_sq_eq_discriminant {L : PeriodPair} {a : ℂ} {τ 
 
 lemma weierstrass_disc_ne_zero (L : PeriodPair) : g₂ L ^ 3 - 27 * g₃ L ^ 2 ≠ 0 :=
   L.weierstrassCurve_Δ ▸ L.weierstrassCurve_Δ_ne_zero
-
-/-- For complex numbers a, b with a³ − 27b² ≠ 0 there is a period lattice L with Weierstrass
-invariants g₂(L) = a and g₃(L) = b.
-This is the existence part of the uniformisation theorem for elliptic curves over ℂ. -/
-lemma exists_lattice_of_g₂_g₃ {a b : ℂ} (h_ne : a ^ 3 - 27 * b ^ 2 ≠ 0) :
-    ∃ L : PeriodPair, g₂ L = a ∧ g₃ L = b :=
-  PeriodPair.exists_g₂_g₃_eq h_ne
 
 end New
 

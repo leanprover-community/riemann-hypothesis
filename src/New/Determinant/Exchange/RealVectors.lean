@@ -94,7 +94,7 @@ lemma exists_isSchwartzVector_realSlice_eq (D : X.Splitting W₁ b) [IsBaseAdapt
         symm_homSource_zeroTerm_eq_integral D V' _
       _ = ∫ x,
           (W₁.hom V').integrated v ((D.homSource V').slice x ((X.hom V').projReal f)) := by
-        simpa [hc, ν, term, integral_domSMul, star, -coe_units_inv] using congrArg (c • ·) h
+        simpa [hc, ν, integral_domSMul, star, -coe_units_inv] using congrArg (c • ·) h
       _ = (W₁.hom V').integrated v ((D.symm.homSource V').zeroTerm ((X.hom V').projReal f)) := by
         rw [symm_homSource_zeroTerm_eq_integral,
           ← (integrated _ v).integral_comp_comm (by fun_prop)]
@@ -281,21 +281,15 @@ lemma exists_contDiff_witt_and_bump {ι : Type*} [Fintype ι] {J : Matrix m m �
       IsWittBump J x₀ γ k σ := by
   obtain ⟨γ, γ_smooth, γ_inv⟩ := exists_contDiff_eventuallyEq_inv hdet
   obtain ⟨k, k_smooth, span_near⟩ := exists_contDiff_witt hJ hdet
-  have gram_near : ∀ᶠ y : Matrix m b ℂ in nhds x₀,
-      γ (yᴴ * J * y) = (yᴴ * J * y)⁻¹ ∧ (yᴴ * J * y).det ≠ 0 :=
-    Continuous.tendsto (f := fun y : Matrix m b ℂ ↦ yᴴ * J * y) (by fun_prop) x₀
-      (γ_inv.and (ContinuousAt.eventually_ne (by fun_prop) hdet))
-  obtain ⟨σ, σ_supp, σ_cpt, σ_smooth, σ_range, σ_one⟩ :=
-    exists_contDiff_tsupport_subset
-      (nhds_pi.le (eventually_pi fun _ : ι ↦ span_near.and gram_near))
-  have near (x : ι → Matrix m b ℂ) (hx : σ x ≠ 0) (i : ι) :
-      (∃ c : Matrix b b ℂ, (k (x i) : Matrix m m ℂ) * x₀ * c = x i) ∧
-        γ ((x i)ᴴ * J * x i) = ((x i)ᴴ * J * x i)⁻¹ ∧ ((x i)ᴴ * J * x i).det ≠ 0 :=
-    σ_supp (subset_closure hx) i
-  simp only [forall_and] at near
-  obtain ⟨span_supp, inv_supp, det_supp⟩ := near
+  obtain ⟨σ, σ_supp, σ_cpt, σ_smooth, σ_range, σ_one⟩ := exists_contDiff_tsupport_subset <|
+    nhds_pi.le <| eventually_pi fun _ : ι ↦ span_near.and <|
+      (by fun_prop : Continuous fun y : Matrix m b ℂ ↦ yᴴ * J * y).tendsto x₀ <|
+        γ_inv.and (ContinuousAt.eventually_ne (by fun_prop) hdet)
   exact ⟨γ, k, σ, γ_smooth, γ_inv.eq_of_nhds, k_smooth, σ_smooth, σ_cpt,
-    fun x ↦ (σ_range ⟨x, rfl⟩).1, σ_one, span_supp, inv_supp, det_supp⟩
+    fun x ↦ (σ_range ⟨x, rfl⟩).1, σ_one,
+    fun x hx i ↦ (σ_supp (subset_closure hx) i).1,
+    fun x hx i ↦ (σ_supp (subset_closure hx) i).2.1,
+    fun x hx i ↦ (σ_supp (subset_closure hx) i).2.2⟩
 
 omit [DecidableEq m] in
 /-- The `J`-orthogonal projection `x * (xᴴ * J * x)⁻¹ * xᴴ * J * x₀` of `x₀` to the span of a frame
@@ -441,7 +435,8 @@ lemma exists_isSchwartzVector_exchangeSection (D : X.Splitting W₁ b) [IsBaseAd
     have w_eq (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) : w x = fun p ↦
         signMatrix (t' ⊕ᵥ s) * (S (z (x p)))ᴴ * signMatrix (t' ⊕ᵥ s) * x p :=
       funext fun p ↦ congrArg (· * x p) (U.coe_inv IsHermitianInvolution.mul_self _)
-    simp [τ, w_eq, comp_def, det_apply, -real_smul, Matrix.mul_assoc]
+    simp only [τ, w_eq, comp_def, det_apply, Matrix.mul_assoc, toRows₁_apply, star_sum, star_smul,
+      star_prod, star_def]
     fun_prop
   -- On the support, `x = k y * w x` with `y = z ∘ x` and `w x` in the support of `σ`.
   have τ_cpt : HasCompactSupport (τ ∘ C) := by

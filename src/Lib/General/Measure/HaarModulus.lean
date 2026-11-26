@@ -1,5 +1,12 @@
 module
 
+import TauCeti.MeasureTheory.Measure.Haar.DistribChar
+public import Mathlib.MeasureTheory.Measure.Haar.DistribChar
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.General.LinearAlgebra.IntegralLattices
 
 /-!
@@ -68,7 +75,7 @@ lemma New.exists_GL_col_mem_of_span {K n : Type*} [Field K] [Fintype n] [Decidab
     (ofSpan h_span).reindex (indexEquiv (ofSpan h_span) (Pi.basisFun K n))
   have h_unit : IsUnit (Matrix.of b)ᵀ := linearIndependent_col_iff_isUnit.1 b.linearIndependent
   exact ⟨h_unit.unit, fun i ↦ ofSpan_subset h_span
-    (by simp [b]; exact ((indexEquiv (ofSpan h_span) (Pi.basisFun K n)).symm i).2)⟩
+    (by simp [b, Function.swap_def])⟩
 
 end NonUnitalUnits
 
@@ -159,7 +166,6 @@ lemma measure_smul_map_restrict_eq_smul_inv (μ : Measure Z) [SFinite μ] [μ.Is
 `G`, `π : Z →* G` measurable, `O` a measurable set with `New.HasStableLifts π O`, and `K`
 measurable in `G`. Then `μ (π ⁻¹' K ∩ O)` times `η.inv`, the image of `η` under inversion, is left
 invariant. -/
-@[to_additive isAddLeftInvariant_measure_smul_neg]
 lemma isMulLeftInvariant_measure_smul_inv (μ : Measure Z) [SFinite μ] [μ.IsMulLeftInvariant]
     [μ.IsMulRightInvariant] (η : Measure G) [SFinite η] [η.IsMulLeftInvariant] {π : Z →* G}
     (hπ : Measurable π) {O : Set Z} (hO : MeasurableSet O) (h_lift : HasStableLifts π O)
@@ -220,21 +226,13 @@ lemma map_addHaar_eq_smul_of_semiconj (μ : Measure B) [μ.IsAddHaarMeasure] {ν
     _ = c • (μ.map e).map e.symm := by simp (disch := fun_prop) only [h_map, Measure.map_smul]
     _ = c • μ := by simp (disch := fun_prop) [Measure.map_map, comp_def]
 
-/-- The action of `a : G` pushes a Haar measure `ν` on `A` forward to `ν` divided by
-`distribHaarChar A a`, the factor by which `a` scales Haar measure. -/
-lemma map_const_smul_eq_inv_distribHaarChar_smul {ν : Measure A} [ν.IsAddHaarMeasure] (a : G) :
-    ν.map (fun x : A ↦ a • x) = (distribHaarChar A a)⁻¹ • ν := by
-  ext S hS
-  rw [map_apply (measurable_const_smul a) hS, preimage_smul, ← distribHaarChar_mul]
-  simp
-
-/-- `map_const_smul_eq_inv_distribHaarChar_smul` with the scalar written as `ENNReal.ofReal` of a
-real number: `a : G` pushes a Haar measure `ν` on `A` forward to `ν` divided by
-`distribHaarChar A a`, the factor by which `a` scales Haar measure. -/
+/-- `MeasureTheory.Measure.map_smul_eq_inv_distribHaarChar_smul` with the scalar written as
+`ENNReal.ofReal` of a real number: `a : G` pushes a Haar measure `ν` on `A` forward to `ν`
+divided by `distribHaarChar A a`, the factor by which `a` scales Haar measure. -/
 lemma map_smul_eq_inv_distribHaarChar_smul {ν : Measure A} [ν.IsAddHaarMeasure] (a : G) :
     ν.map (fun x : A ↦ a • x) = ENNReal.ofReal (distribHaarChar A a : ℝ)⁻¹ • ν := by
-  rw [map_const_smul_eq_inv_distribHaarChar_smul, ← NNReal.coe_inv, ofReal_coe_nnreal,
-    ENNReal.smul_def]
+  rw [MeasureTheory.Measure.map_smul_eq_inv_distribHaarChar_smul, ← NNReal.coe_inv,
+    ofReal_coe_nnreal, ENNReal.smul_def]
 
 end ScalingFactor
 
@@ -422,23 +420,16 @@ the generalised index `genIndex a` (the inverse of the factor by which `a` scale
 lemma genIndex_star [hR : IsAdelic R] (a : A) : genIndex (star a) = genIndex a := by
   obtain h_nonunit | ⟨a, rfl⟩ := em' (IsUnit a)
   · simp [genIndex.map_nonunit, h_nonunit]
-  obtain ⟨h_open, h_compact⟩ := hR.isOpen_isCompact
-  let L : AddSubgroup A := R.toAddSubgroup
-  -- conjugation maps `star b • R` to `b • R`, and in particular fixes `R`
+  let L := R.toAddSubgroup
   let σ : RingAut A := starRingAut
-  have h_map (b : Aˣ) : σ • star b • L = b • L := by
-    ext x
-    suffices (∃ r ∈ R, b * star r = x) ↔ ∃ r ∈ R, b * r = x by
-      simpa [L, σ, mem_smul_pointwise_iff_exists, Units.smul_def]
-    exact ⟨fun ⟨r, hr, h_eq⟩ ↦ ⟨star r, hR.star_mem hr, h_eq⟩,
-      fun ⟨r, hr, h_eq⟩ ↦ ⟨star r, hR.star_mem hr, by rwa [star_star]⟩⟩
-  have h_fix : σ • L = L := by simpa using h_map 1
-  -- on units `genIndex` is a quotient of two indices, which conjugation preserves
-  have h_num : (star a • L).relIndex L = (a • L).relIndex L := by
-    rw [← relIndex_pointwise_smul σ, h_map, h_fix]
-  have h_den : L.relIndex (star a • L) = L.relIndex (a • L) := by
-    rw [← relIndex_pointwise_smul σ, h_map, h_fix]
-  simp only [← coe_star, genIndex_eq_relIndex_div L h_open h_compact, h_num, h_den]
+  -- `σ` maps `star b • R` to `b • R` (and fixes `R`), preserving relative indices
+  have h_map (b : Aˣ) : σ • star b • L = b • L := AddSubgroup.ext fun x ↦ by
+    simpa [L, σ, mem_smul_pointwise_iff_exists, Units.smul_def] using
+      ⟨fun ⟨r, hr, h⟩ ↦ ⟨star r, hR.star_mem hr, h⟩,
+        fun ⟨r, hr, h⟩ ↦ ⟨star r, hR.star_mem hr, by rwa [star_star]⟩⟩
+  simp only [← coe_star, genIndex_eq_relIndex_div L hR.isOpen_isCompact.1 hR.isOpen_isCompact.2]
+  rw [← relIndex_pointwise_smul σ (star a • L), ← relIndex_pointwise_smul σ L, h_map,
+    show σ • L = L by simpa using h_map 1]
 
 /-! ### Indices of lattices -/
 

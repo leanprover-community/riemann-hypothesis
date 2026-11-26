@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.RingTheory.TrivSqZeroExt
 public import Lib.General.Geometry.SerreTheorem
 public import Lib.Shimura.Deformation.TangentCount
 
@@ -262,9 +263,6 @@ variable {E k : Type} [Field E] [CMBase E]
   (f : x.groupScheme ⟶ x'.groupScheme) [IsAdditive f] {a : 𝓞 E}
   (hf : hq.schemeMap ≫ f = a • hq'.schemeMap) [Fact (ringChar k).Prime]
 
-/-- The dual numbers `k[ε] = k × k` are a finite `k`-module. -/
-instance : Module.Finite k k[ε] := .prod
-
 include hf
 
 /-- Let `f : x.groupScheme ⟶ x'.groupScheme` be a homomorphism of deformations of `x₀.groupScheme`
@@ -455,10 +453,6 @@ variable {E k M : Type} [Field E] [CMBase E] {D : PEL E} [Field k] {Z : Scheme}
   [Algebra k C] [CommRing C'] [Algebra k C'] (φ : C →ₐ[k] C')
 
 instance : CommRing (TrivSqZeroExt C (M →ₗ[k] C)) := inferInstance
-
-/-- `k ⊕ M*` is a local ring: an element is a unit exactly when its first component is not zero. -/
-instance : IsLocalRing (TrivSqZeroExt k (M →ₗ[k] k)) :=
-  .of_nonunits_add fun a b _ _ ↦ by simp_all [isUnit_iff_isUnit_fst]
 
 /-! ### The rings `C ⊕ Hom(M, C)` and lifts of points -/
 
@@ -749,7 +743,7 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   have hv : c • v = 0 := by simpa [map_smul] using congr(_ ≫ hz₀.isGroupBaseChange.pointEquiv $hy)
   let y' : specOver k[ε] C ⟶ z.groupScheme := hz.isGroupBaseChange.pointEquiv.symm (d ≫ Y v)
   obtain ⟨_, ψ, _, -, _, ψ_ker, ψ_univ⟩ := exists_isReductionModEps (specOver k[ε] C).hom
-  have θ_red : ofHom θ ≫ ψ = ofHom (fstHom C C _).1 ≫ ψ := by
+  have θ_red : ofHom θ ≫ ψ = ofHom (fstHom C C _).toRingHom ≫ ψ := by
     ext
     simp [θ, smul_def, ψ_ker, -map_mul, ↓ lift_def]
   have h_agree : AgreeModEps hq hq₀ _ y' y := by
@@ -762,7 +756,7 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   -- So `y ≫ G = (β' - b) c • y'`, which by `ω_ker` is zero once
   -- `ω (d ≫ c • Y v)`, which is `θ (ω (c • Y v))`, is zero.
   refine (G_agree _ y' y h_agree).trans (hz.isGroupBaseChange.pointEquiv.injective ?_)
-  have v_tiny : IsInfinitesimal (ofHom (fstHom C C _).1) (c • Y v) :=
+  have v_tiny : IsInfinitesimal (ofHom (fstHom C C _).toRingHom) (c • Y v) :=
     isInfinitesimal_of_comp_eq_zero _
       (by rw [ModuleObj.comp_smul, hY, ← LinearEquiv.map_smul, hv, map_zero])
   -- `t • v` is killed by `𝔭`, and `t ≡ 1` modulo `𝔭`, so `hl` for `t • v` computes `ω (c • Y v)`.
@@ -817,17 +811,12 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
     simpa only [hρ, coe_comp, Function.comp_apply, ↓algebraMap_eq_inl', algebraMap_self,
       RingHomCompTriple.comp_apply, mk_left] using
       x.exists_tangent_log (b := b) (by simp [hρ, hb])
-  have h_lifts : ∀ ⦃C : Type⦄ [CommRing C] [Algebra k C] [IsLocalRing C]
-      (y : specOver k C ⟶ x₀.groupScheme),
-      ∃ Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme,
-        toSqZeroSpec C ≫ Z = hp.isGroupBaseChange.pointEquiv y :=
-    exists_point_lift hp
-  choose Y hY using h_lifts
+  choose Y hY using exists_point_lift hp
   have c_Y_infinitesimal {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C]
-      (y : placeTorsion x₀ C) : IsInfinitesimal (ofHom (fstHom C C _).1) (c • Y y.1) := by
+      (y : placeTorsion x₀ C) : IsInfinitesimal (ofHom (fstHom C C _).toRingHom) (c • Y y.val) := by
     -- `c` lies in `𝔭`, which kills `y`
-    have h_torsion : c • y.1 = 0 :=
-      (Submodule.mem_torsionBySet_iff ..).mp y.2 ⟨c, RingHom.mem_ker.mpr hc⟩
+    have h_torsion : c • y.val = 0 :=
+      (Submodule.mem_torsionBySet_iff ..).mp y.property ⟨c, RingHom.mem_ker.mpr hc⟩
     exact isInfinitesimal_of_comp_eq_zero _
       (by rw [ModuleObj.comp_smul, hY, ← LinearEquiv.map_smul, h_torsion, map_zero])
   -- `ω (c • Z)` is the same for all lifts `Z` of `y`: their difference is infinitesimal, and
@@ -835,14 +824,14 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
   have ω_lift {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (y : placeTorsion x₀ C)
       (Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme)
       (hZ : toSqZeroSpec C ≫ Z = hp.isGroupBaseChange.pointEquiv y) :
-      ω (c • Y y.1) = ω (c • Z) := by
-    have h_diff : IsInfinitesimal (ofHom (fstHom C C _).1) (Z - Y y.1) :=
+      ω (c • Y y.val) = ω (c • Z) := by
+    have h_diff : IsInfinitesimal (ofHom (fstHom C C _).toRingHom) (Z - Y y.val) :=
       isInfinitesimal_of_comp_eq_zero _ (by simp [hY, hZ, AddGrpObj.comp_sub])
     simpa [← smul_add, ω_smul h_diff, hc] using
       (ω_add (h_diff.smul c) (c_Y_infinitesimal y)).symm
   let f (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C] :
       placeTorsion x₀ C →ₛₗ[x₀.baseHom] M →ₗ[k] C :=
-    { toFun y := snd (ω (c • Y y.1))
+    { toFun y := snd (ω (c • Y y.val))
       map_add' y z := by
         simp [↓ω_lift (y + z) (Y y + Y z) (by rw [comp_add, hY, hY, Submodule.coe_add, map_add]),
           ω_add (c_Y_infinitesimal y) (c_Y_infinitesimal z)]
@@ -856,7 +845,7 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
       ← ModuleObj.comp_smul, ω_comp (c_Y_infinitesimal y) (sqZeroSpecMap φ) rfl]
   · -- Tangent vectors: as `y` is `0` at `ε = 0`, the point `Z'` below also lifts `y`. It vanishes
     -- at `ε = 0`, so `ω (c • Z')` is `x₀.baseHom c = 0` times `ω Z'`.
-    let Z' := Y y.1 - sqZeroSpecMap ((ofId k k[ε]).comp (fstHom k k k)) ≫ Y y.1
+    let Z' := Y y.val - sqZeroSpecMap ((ofId k k[ε]).comp (fstHom k k k)) ≫ Y y.val
     have hZ' : toSqZeroSpec _ ≫ Z' = hp.isGroupBaseChange.pointEquiv y := by
       simp [Z', sqZeroSpecMap_point_lift hp, ← specOver.map_comp_assoc, hY, hy, AddGrpObj.comp_sub]
     have : IsSqZeroExt (ofHom (sqZeroMap (M := M) (fstHom k k k))) :=

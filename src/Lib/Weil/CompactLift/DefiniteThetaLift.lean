@@ -79,7 +79,9 @@ lemma New.IsHCParam.paramsCorrespond_iff (hl : IsHCParam κ ec l) (hκ : IsLiftW
   -- No column has height strictly between the two ranks.
   have sum_eq (w : InfinitePlace E) (p : ℕ) :
       ∑ x ∈ Ioo p (card n'), κ w x = ∑ x ∈ Ioc p (card n), κ w x :=
-    (sum_subset (Ioc_subset_Ioo_right h_lt) (by grind [FitsRanks])).symm
+    (sum_subset (Ioc_subset_Ioo_right h_lt) fun x hx hnx ↦
+      (fits w).2 x (mem_Ioo.2 ⟨not_le.1 fun hle ↦
+        hnx (mem_Ioc.2 ⟨(mem_Ioo.1 hx).1, hle⟩), (mem_Ioo.1 hx).2⟩)).symm
   -- The shifted entries of the parameter of `(κ, ea)` in rank `n'`, in decreasing order.
   let entry (w : InfinitePlace E) (p : ℕ) : ℤ :=
     hcParameter κ ea (card n') w p - 2 * ea w + card n
@@ -103,13 +105,16 @@ lemma New.IsHCParam.paramsCorrespond_iff (hl : IsHCParam κ ec l) (hκ : IsLiftW
     have h_small : univ.image (shiftedEntry (eb w) (card n') (l w)) =
         (range (card n)).image (entry w) :=
       (hl.image_comp_eq w fun y : ℤ ↦ y - 2 * eb w + card n').trans
-        (image_congr fun p hp ↦ (h_low w p (by simpa using hp)).1)
+        (image_congr fun p hp ↦ (h_low w p (mem_range.1 hp)).1)
     have h_block : doubledBlock (card n' - card n) = (Ico (card n) (card n')).image (entry w) := by
       ext y
       simp only [doubledBlock, mem_image, mem_range, mem_Ico]
-      refine ⟨fun ⟨b, hb, hy⟩ ↦ ⟨card n + b, ?_⟩, fun ⟨p, hp, hy⟩ ↦ ⟨p - card n, ?_⟩⟩
-      · grind [h_high w (card n + b) (by omega)]
-      · grind [h_high w p hp.1]
+      refine ⟨fun ⟨b, hb, hy⟩ ↦ ⟨card n + b, ⟨Nat.le_add_right .., by omega⟩, ?_⟩,
+        fun ⟨p, hp, hy⟩ ↦ ⟨p - card n, by omega, ?_⟩⟩
+      · rw [h_high w (card n + b) (Nat.le_add_right ..)]
+        omega
+      · rw [h_high w p hp.1] at hy
+        omega
     rw [h_small, h_block, ← image_union, range_eq_Ico, range_eq_Ico,
       Ico_union_Ico_eq_Ico (Nat.zero_le _) h_lt.le]
   constructor
@@ -117,8 +122,10 @@ lemma New.IsHCParam.paramsCorrespond_iff (hl : IsHCParam κ ec l) (hκ : IsLiftW
     refine ⟨(h_rule w).hasGap_right.injective, fun r ↦ ?_⟩
     obtain ⟨p, hp, h_eq⟩ :
         ∃ p ∈ range (card n'), entry w p = shiftedEntry (ea w) (card n) (l' w) r :=
-      mem_image.1 (by simp [← h_entries, ← (h_rule w).entries_of_le h_lt.le])
-    exact ⟨p, mem_range.1 hp, by simpa [entry, shiftedEntry] using h_eq.symm⟩
+      mem_image.1 (by
+        rw [← h_entries, ← (h_rule w).entries_of_le h_lt.le]
+        exact mem_image_of_mem _ (mem_univ r))
+    exact ⟨p, mem_range.1 hp, by simp only [entry, shiftedEntry] at h_eq; omega⟩
   · intro hl' w
     refine ⟨hl.hasGap w _, hl'.hasGap w _, fun _ ↦ ?_, fun h_ge ↦ absurd h_lt h_ge.not_gt,
       -- The signs are all `1`; the last condition concerns negative shifted entries of `l`.
@@ -126,7 +133,11 @@ lemma New.IsHCParam.paramsCorrespond_iff (hl : IsHCParam κ ec l) (hκ : IsLiftW
     · exact (hl'.image_comp_eq w fun y : ℤ ↦ y - 2 * ea w + card n).trans (h_entries w).symm
     · -- A shifted entry of `l` is positive, so it is not negative.
       obtain ⟨p, hp, hc⟩ : ∃ p < card n, l w c = hcParameter κ _ (card n) w p := (hl w).2 c
-      grind [shiftedEntry, h_low w p hp]
+      have ⟨h_eq, h_pos⟩ := h_low w p hp
+      rw [shiftedEntry] at h_neg
+      change l w c - 2 * eb w + card n' < 0 at h_neg
+      rw [hc, h_eq] at h_neg
+      omega
 
 /-- The joint harmonic is a multiple of the Fock polynomial of two highest vectors. Let `E` be a CM
 field with Weil data, let the weight `(κ, ec)` of rank `n` go up to rank `n'` along `eb`, and let
@@ -166,7 +177,20 @@ lemma New.exists_smul_schurCoeffPoly_eq_jointHarmonic {E : Type} [Field E] [CMTy
       (ν := HCParam.lowestKType (ε := 1) (l' w)) (o := decreasingPosition (l w))
       (hl w).1 (hl' w).1 (by simp [decreasingPosition]) _ (h_cols w) (by simp)
       (by simp [hl'.lowestKType_eq, diagramWeight_apply, vacuumWeight])
-    simpa [M, staircaseBlock] using (h_match w).unique
+    have h_M (p : Fin (card n')) :
+        staircaseBlock (1 : n → ℤˣ) (decreasingPosition (l w)) (l' w) 1 p = M w p := by
+      ext i j
+      simp only [staircaseBlock, M, of_apply, Units.val_one, one_smul, Pi.one_apply, true_and]
+    have h_prod : (∏ η : ℤˣ, ∏ p : Fin (card n'),
+        (staircaseBlock (1 : n → ℤˣ) (decreasingPosition (l w)) (l' w) η p).det ^
+          (Pi.single 1 (κ w) : ℤˣ → ℕ → ℕ) η p) =
+        ∏ p : Fin (card n'), (M w p).det ^ κ w p := by
+      rw [Fintype.prod_eq_single (1 : ℤˣ) fun η hη ↦ prod_eq_one fun p _ ↦ by
+        rw [Pi.single_eq_of_ne hη, Pi.zero_apply, pow_zero]]
+      refine prod_congr rfl fun p _ ↦ ?_
+      rw [Pi.single_eq_same, h_M p]
+    rw [← h_prod]
+    exact (h_match w).unique
       (isJointHarmonic_jointHarmonicAt (h_match w)).isJointHighest.isPreJointHarmonic
       h_highest.isPreJointHarmonic
   choose u hu using h_stair
@@ -179,11 +203,22 @@ lemma New.exists_smul_schurCoeffPoly_eq_jointHarmonic {E : Type} [Field E] [CMTy
       ∏ w : InfinitePlace E, ∏ p : Fin (card n'),
         eval (fun v : n' × n ↦ x (w, v)) (M w p)ᵀ.det ^ κ w p := by
     rw [eval_schurCoeffPoly hκ, ← smul_eq_mul, ← dotProduct_smul, schur_mulVec_weylEval hκ.1,
-      highestVector, ← dotProduct_mulVec, ← GL.eval_toPoly, toPoly_weylEval]
-    simp [M, y, RingHom.map_det, AlgHom.map_det, Matrix.map, permArray, highestPoly, tableauPoly,
-      ite_and, apply_ite, weylKernel, rowSubst, minor, Matrix.transpose]
+      highestVector, ← dotProduct_mulVec, ← GL.eval_toPoly, toPoly_weylEval, weylKernel,
+      highestPoly, map_prod, map_prod]
+    refine prod_congr rfl fun w _ ↦ ?_
+    rw [tableauPoly, map_prod, map_prod]
+    refine prod_congr rfl fun p _ ↦ ?_
+    rw [prod_const, Finset.card_fin, map_pow, map_pow, minor, AlgHom.map_det, RingHom.map_det,
+      RingHom.map_det]
+    congr 2
+    ext i j
+    simp only [M, y, RingHom.mapMatrix_apply, AlgHom.mapMatrix_apply, Matrix.map_apply,
+      Matrix.transpose_apply, of_apply, Function.comp_apply, rowSubst, aeval_X, map_sum, eval_X,
+      smul_eq_C_mul, map_mul, eval_C, permArray, Fin.val_castLE, sum_mul, mul_ite, mul_one,
+      mul_zero, apply_ite (eval _), map_zero, ite_and]
   rw [smul_eval, mul_assoc, highestVector.eq_def κ l, h_schur]
-  simp [jointHarmonic, hu, det_transpose, prod_mul_distrib, eval_rename, Function.comp_def]
+  simp only [jointHarmonic, hu, map_prod, eval_rename, Function.comp_def, smul_eq_C_mul,
+    map_mul, eval_C, prod_mul_distrib, map_pow, det_transpose]
 
 /-- The harmonic theta lift is a multiple of the algebraic lift. Let the weight `(κ, ec)` of rank
 `n` go up to rank `n'` along `eb`, let `l`, `l'` be the parameters (twice the Harish-Chandra
@@ -234,13 +269,34 @@ lemma New.exists_lift_ofAlgForm_eq_smul {E : Type} [Field E] [CMType E]
     d • gramForm (highestVector κ l') ∘ₗ conjWeylRep κ ea y⁻¹
   have Θ_coef (x : GInf E 1) (g : Gf E n) :
       Θ (x, g) = (L ∘ₗ k.jetMap (k.ω (g, z) f)) (conjWeylRep κ ec x (highestVector κ l)) := by
-    simp [Θ, Φ, L, d, ← hβ, hk, thetaKernel, gramForm_apply, star_highestVector, dotProduct_mulVec,
-      ← theta_pairWeil_schurCoeffPoly hκ c ha hb x g y z
-        (highestVector κ l' ᵥ* weylGramOver) (highestVector κ l) f, field]
+    have h_th := theta_pairWeil_schurCoeffPoly hκ c ha hb x g y z
+      (highestVector κ l' ᵥ* weylGramOver) (highestVector κ l) f
+    have h_val : Θ (x, g) = β * ((stdSpace E n).hom (stdSpace E n')).θ
+        (pairWeil (stdSpace E n) (stdSpace E n') a b ((x, g), y, z)
+          (integrated ((stdSpace E n).hom (stdSpace E n'))
+            (Fock.polyVector (realSigns E (homSigns 1 1))
+              (schurCoeffPoly (highestVector κ l' ᵥ* weylGramOver) (highestVector κ l))) f)) := by
+      simp only [Θ, Φ, ← hβ, LinearMap.map_smul, ContinuousLinearMap.map_smul, _root_.smul_apply,
+        smul_eq_mul]
+    have h_rhs : (L ∘ₗ k.jetMap (k.ω (g, z) f)) (conjWeylRep κ ec x (highestVector κ l)) =
+        d * (highestVector κ l' ᵥ* weylGramOver ⬝ᵥ
+          conjWeylRep κ ea y⁻¹ (schurJet κ (jetSeries ((stdSpace E n).hom (stdSpace E n')) c
+            (pairWeil (stdSpace E n) (stdSpace E n') a b ((1, g), 1, z) f)) *ᵥ
+              conjWeylRep κ ec x (highestVector κ l))) := by
+      simp only [L, hk, thetaKernel, LinearMap.comp_apply, LinearMap.smul_apply, smul_eq_mul,
+        gramForm_apply, star_highestVector, dotProduct_mulVec, pairWeilFinite]
+      rfl
+    rw [h_val, h_rhs, ← h_th]
+    dsimp only [d]
+    rw [← mul_assoc, div_mul_cancel₀ _ (pow_ne_zero _ hc)]
   -- `L` commutes with the mean, which is the value of the algebraic lift at `z`.
   refine (integral_mul_eq_classIntegral hl K Θ_aut _ Θ_coef).trans ?_
   rw [classIntegral_map_mul_right L 1 (k.integrand_mem_smoothInvariants f φ z) (by simp)]
-  simp [L, algFormCoeff, Kernel.lift, field]
+  change _ * L _ = _
+  simp only [L, algFormCoeff, Kernel.lift, LinearMap.smul_apply, LinearMap.comp_apply,
+    LinearMap.pi_apply, LinearMap.domRestrict_apply, LinearMap.proj_apply, Pi.smul_apply,
+    smul_eq_mul, LinearMap.mk₂_apply, div_eq_mul_inv, mul_inv]
+  ring
 
 end DefiniteLift
 
@@ -272,7 +328,8 @@ lemma integral_theta_mul_algFormCoeff_add [DecidableEq n'] [DecidableEq n] (a b 
     (isAutomorphic_algFormCoeff φ).mem_rapidFunctions fun _ _ ↦ rfl
   rw [← integral_add ((pairThetaKer _ _ a b).integrable_theta_mul (h_rapid s) v h)
     ((pairThetaKer _ _ a b).integrable_theta_mul (h_rapid t) v h)]
-  simp [algFormCoeff, mul_add]
+  refine integral_congr_ae (.of_forall fun g ↦ ?_)
+  simp only [algFormCoeff, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.add_apply, mul_add]
  
 /-- Let `(κ, e)` go up from rank `n > 0` to rank `n' > 0` along `eb`, let `a o n` and `a o n'` be
 characters at the ranks `n` and `n'` of weights `ea` and `eb` (with residue-field characters `ψ o`,
@@ -318,7 +375,12 @@ lemma isThetaLift_thetaKernel [Nonempty n] [Nonempty n'] [DecidableEq n'] [Decid
     -- the multiple by `α u * (β / stdLevelIndex K)` of the highest coefficient moved by `u⁻¹`.
     obtain ⟨α, hα⟩ := h_edge.exists_lift_eq_realConv
       (realPairWeil ea eb (x, 1) (Fock.polyVector _ P))
-      (by simp [realPairWeil_polyVector, ← map_smul])
+      ⟨_, by
+        have h_mem {m : Type} [Fintype m] [DecidableEq m] (M : Matrix m m ℂ) :
+            M ∈ blockDiagAlg (1 : m → ℤˣ) := by
+          simp [blockDiagAlg, Subalgebra.mem_centralizer_iff]
+        rw [realPairWeil_polyVector (hx := fun _ ↦ h_mem _) (hy := fun _ ↦ h_mem _),
+          ← LinearMap.map_smul]⟩
     let T (u : GInf E (1 : n' → ℤˣ)) : (WeylIndex n' κ → ℂ) →L[ℂ] ℂ :=
       .mk ((α u * (β / stdLevelIndex K)) •
         gramForm (highestVector κ l') ∘ₗ conjWeylRep κ ea (s := 1) u⁻¹)
@@ -337,20 +399,47 @@ lemma isThetaLift_thetaKernel [Nonempty n] [Nonempty n'] [DecidableEq n'] [Decid
     rw [← h_realPart, Prod.mk_one_one, lift_omega_left _ (isAutomorphic_algFormCoeff φ),
       hβ (ha o) (hb o) K] at h_mean
     have T_int (v : WeylIndex n' κ → ℂ) : Integrable fun u : GInf E (1 : n' → ℤˣ) ↦ T u v := by
-      simpa [T] using DiscreteSeries.integrable_of_compactSpace
-    simpa [strongIntegral_apply volume T T_int, T, realConv, algFormCoeff, ← mul_assoc, lift]
-      using congrFun h_mean h
-  | zero => exact ⟨0, by simp [algFormCoeff]⟩
+      refine DiscreteSeries.integrable_of_compactSpace (f := fun u ↦ T u v) ?_
+      change Continuous fun u : GInf E (1 : n' → ℤˣ) ↦
+        (α u * (β / stdLevelIndex K)) *
+          gramForm (highestVector κ l') (conjWeylRep κ ea (s := 1) u⁻¹ v)
+      exact (α.continuous.mul continuous_const).mul
+        ((LinearMap.continuous_of_finiteDimensional (gramForm (highestVector κ l'))).comp
+          ((continuous_conjWeylRep (s := 1) (κ := κ) (e := ea) v).comp continuous_inv))
+    have h_fn : (fun g : G E 1 ↦ ofAlgForm l 1 φ (g * (x, 1)⁻¹)) =
+        algFormCoeff 1 (gramForm (highestVector κ l) ∘ₗ conjWeylRep κ e x) φ := by
+      ext g
+      simp only [algFormCoeff, LinearMap.pi_apply, LinearMap.comp_apply,
+        LinearMap.domRestrict_apply, LinearMap.proj_apply, Prod.fst_mul, Prod.snd_mul,
+        Prod.fst_inv, Prod.snd_inv, inv_one, mul_one, mul_inv_rev, inv_inv, MonoidHom.map_mul,
+        mul_apply_eq_comp]
+    rw [h_fn] at h_mean
+    refine (congrFun h_mean h).trans ?_
+    rw [realConv, algFormCoeff, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.comp_apply,
+      LinearMap.domRestrict_apply, LinearMap.proj_apply, ContinuousLinearMap.coe_coe,
+      strongIntegral_apply volume T T_int]
+    refine integral_congr_ae (.of_forall fun u ↦ ?_)
+    simp only [T, algFormCoeff, ContinuousLinearMap.coe_mk', LinearMap.smul_apply,
+      LinearMap.comp_apply, LinearMap.pi_apply, LinearMap.domRestrict_apply, LinearMap.proj_apply,
+      Pi.smul_apply, smul_eq_mul, Prod.fst_mul, Prod.snd_mul, mul_one, mul_inv_rev,
+      MonoidHom.map_mul, mul_apply_eq_comp, mul_assoc]
+  | zero =>
+    refine ⟨0, fun o Φ φ h ↦ ?_⟩
+    simp only [algFormCoeff, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.zero_apply,
+      mul_zero, integral_zero]
   | add s t _ _ hs ht =>
     obtain ⟨⟨s', hs'⟩, ⟨t', ht'⟩⟩ := hs, ht
     refine ⟨s' + t', fun o Φ φ h ↦ ?_⟩
     rw [integral_theta_mul_algFormCoeff_add, hs' o Φ φ h, ht' o Φ φ h]
-    simp [algFormCoeff]
+    simp only [algFormCoeff, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.add_apply]
   | smul r t _ ht =>
     obtain ⟨t', ht'⟩ := ht
     -- The integral is linear in `t` and the coefficient of the lift is linear in `t'`.
     refine ⟨r • t', fun o Φ φ h ↦ ?_⟩
-    simpa [algFormCoeff, mul_left_comm _ r, integral_const_mul] using
-      congrArg (r * ·) (ht' o Φ φ h)
+    refine (?_ : _ = r * _).trans (congrArg (r * ·) (ht' o Φ φ h))
+    rw [← integral_const_mul]
+    refine integral_congr_ae (.of_forall fun g ↦ ?_)
+    simp only [algFormCoeff, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.smul_apply,
+      smul_eq_mul, mul_left_comm _ r]
 
 end New

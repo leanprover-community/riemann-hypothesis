@@ -247,7 +247,7 @@ theorem exists_inner_chain_eq :
     (D.descentPair ϑ 1).gramFactor_div_card
   -- The orders `triangleGLCard` cancel.
   rw [h_chain, h_index, (div_eq_iff (NeZero.out : matrixCard ≠ 0)).1 h_factor]
-  simp [indexFactor, indexConst, matrixCard, mul_pow, field]
+  simp [indexFactor, matrixCard, mul_pow, field]
 
 /-- Let `ij = (i, j)` be a pair with `1 ≤ i < j ≤ m` and `χ_j = D.untwistedLiftChar j` the character
 of the `j`-th lift without twist. Then `quotientRatio i j`, the product of the ratios of Hecke
@@ -359,39 +359,40 @@ lemma exists_chainDeterminant_eq_pow_mul_prod_liftDeterminant :
         ((C * ((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) *
             ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ) : ℝ) : ℂ) ^ D.targetDim *
           ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j := by
-  -- Take determinants in the norms of the chain and of the single lifts. The determinants of the
-  -- series and the factor `c_Q` cancel.
-  obtain ⟨C, e, c, hC, hc, h_chain⟩ := D.exists_adjoint_chain_comp_eq_smul_rallisProduct
-  choose A hA h_lift using fun i : Fin D.m ↦ D.exists_normDet_goodLift_sq_eq ⟨i + 1, by simp⟩
-  have hA_prod : ∏ i, A i ≠ 0 := prod_ne_zero_iff.2 fun i _ ↦ hA i
+  -- Compare the determinant of the chain Gram operator with those of the single lifts.
+  -- Both contain the same Rallis determinants and modulus factor c_Q.
+  obtain ⟨C, e, c, hC, hc, h_chain_gram⟩ := D.exists_adjoint_chain_comp_eq_smul_rallisProduct
+  choose A hA h_single_gram using fun i : Fin D.m ↦ D.exists_normDet_goodLift_sq_eq ⟨i + 1, by simp⟩
+  have h_normalizers_ne : ∏ i, A i ≠ 0 := prod_ne_zero_iff.2 fun i _ ↦ hA i
   refine ⟨C * ‖∏ i, A i‖⁻¹, e, by positivity, fun ϑ ↦ ?_⟩
   let cQ : ℂ := (D.descentPair ϑ 1).twistFactor
   let rallisDet (i : ℕ) : ℂ := (D.rallisOnGood (D.spaceY 0) (ϑ.pow (i + 1)) (i + 1)).det
   -- The powers of `ϑ` have the same modulus `Q`, hence the same `c_Q`.
   have h_liftDet (i : Fin D.m) :
       D.liftDeterminant ϑ (i + 1) = (A i * cQ) ^ D.targetDim * rallisDet i :=
-    h_lift i (ϑ.pow (i + 1))
-  have h_det : (D.rallisProduct ϑ).det = ∏ i : Fin D.m, rallisDet i := by
+    h_single_gram i (ϑ.pow (i + 1))
+  have h_rallis_det : (D.rallisProduct ϑ).det = ∏ i : Fin D.m, rallisDet i := by
     simp [rallisProduct, rallisDet, map_list_prod, Function.comp_def, prod_range,
       ← List.prod_toFinset _ List.nodup_range, List.toFinset_range]
-  have h_prod : ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j = ∏ i : Fin D.m,
+  have h_reindex_lifts : ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j = ∏ i : Fin D.m,
     D.liftDeterminant ϑ (i + 1) := by
     rw [← prod_range fun i ↦ D.liftDeterminant ϑ (i + 1), range_eq_Ico, prod_Ico_add',
       zero_add, Ico_add_one_right_eq_Icc]
-  have h_eq : D.chainDeterminant ϑ =
+  have h_chain_factorization : D.chainDeterminant ϑ =
       (c ϑ * (∏ i, A i)⁻¹) ^ D.targetDim * ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j := by
     calc D.chainDeterminant ϑ = ((D.Θ ϑ).adjoint ∘ₗ D.Θ ϑ).det := by
           simpa [chainDeterminant] using (D.Θ ϑ).normDet_sq
       _ = (c ϑ * cQ ^ D.m) ^ D.targetDim * ∏ i : Fin D.m, rallisDet i := by
-        rw [h_chain, det_smul, h_det]
+        rw [h_chain_gram, det_smul, h_rallis_det]
       _ = (c ϑ * (∏ i, A i)⁻¹) ^ D.targetDim * ∏ i, ((A i * cQ) ^ D.targetDim * rallisDet i) := by
         simp_rw [prod_mul_distrib, prod_pow, prod_mul_distrib, Fin.prod_const]
         rw [← mul_assoc, ← mul_pow]
         field_simp
-      _ = _ := by simp_rw [h_prod, h_liftDet]
+      _ = _ := by simp_rw [h_reindex_lifts, h_liftDet]
   -- The determinants are squares of real numbers, so they equal their norms.
   rw [mul_right_comm, ← hc]
-  simpa [chainDeterminant, liftDeterminant] using congrArg (fun z : ℂ ↦ (‖z‖ : ℂ)) h_eq
+  simpa [chainDeterminant, liftDeterminant] using
+    congrArg (fun z : ℂ ↦ (‖z‖ : ℂ)) h_chain_factorization
 
 /-- There is an integer `e` such that, for every twist `ϑ` whose first `m` powers are twists, the
 ratio `chainDeterminant ϑ / chainDeterminant 1` is `(normQ ϑ ^ (e / 2) * ∏_{1 ≤ i < j ≤ m}
@@ -403,13 +404,15 @@ theorem exists_div_chainDeterminant_one_eq :
         (((ϑ.normQ : ℝ) ^ (e / 2 : ℝ) *
             ∏ i ∈ Ioc 0 D.m, ∏ j ∈ Ioc i D.m, D.quotientRatio i j ϑ : ℝ) : ℂ) ^ D.targetDim *
           ∏ j ∈ Icc 1 D.m, D.liftDeterminant ϑ j / D.liftDeterminant 1 j := by
-  obtain ⟨C, e, hC, h_volume⟩ := D.exists_chainDeterminant_eq_pow_mul_prod_liftDeterminant
+  obtain ⟨C, e, hC, h_absolute_volume⟩ := D.exists_chainDeterminant_eq_pow_mul_prod_liftDeterminant
   refine ⟨e, fun ϑ ↦ ?_⟩
-  -- Divide by the identity for `ϑ = 1`, where the norm of the level and the ratios are `1`.
-  have h_one : D.chainDeterminant 1 = C ^ D.targetDim * ∏ j ∈ Icc 1 D.m, D.liftDeterminant 1 j := by
-    simp [h_volume, D.prod_quotientRatio_one, toAutChar_one_and_toTwist_one_and_Q_one]
-  rw [h_volume ϑ, h_one, prod_div_distrib, Complex.ofReal_mul, mul_pow, mul_assoc,
-    mul_div_mul_left _ _ (by simp [hC.ne']), mul_div_assoc]
+  -- Divide by the untwisted volume: the character-independent normalization cancels,
+  -- leaving the pairwise exchange ratios and the single-lift ratios.
+  have h_untwisted_volume :
+      D.chainDeterminant 1 = C ^ D.targetDim * ∏ j ∈ Icc 1 D.m, D.liftDeterminant 1 j := by
+    simp [h_absolute_volume, D.prod_quotientRatio_one, toAutChar_one_and_toTwist_one_and_Q_one]
+  rw [h_absolute_volume ϑ, h_untwisted_volume, prod_div_distrib, Complex.ofReal_mul, mul_pow,
+    mul_assoc, mul_div_mul_left _ _ (by simp [hC.ne']), mul_div_assoc]
 
 open scoped ComplexOrder in
 /-- **Factorization of the determinant.** For the data `D`, let `ϑ` be an `m`-fold twist
@@ -468,24 +471,6 @@ lemma range_tupleIdem_le {f : MonoidAlgebra ℂ D.chosenGL →ₐ[ℂ] End ℂ U
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
-/-- The theta lift `D.singleLift ϑ j`, for a tame character `ϑ` and `1 ≤ j ≤ m`, commutes with the
-group algebra of `D.chosenGL`, the product of the groups `GL_r` over the residue fields of the
-chosen places. An element `x` acts through `principalRep` on `principalForms`, the forms on the
-hermitian space `W_j = D.spaceW j` fixed by the principal level at the chosen places. It acts by
-`groupAlgAction` on the forms on the larger space of `D.descentPair ϑ j`, the datum of the lift. -/
-lemma singleLift_asAlgebraHom {ϑ : D.TameChar} {j : D.LiftIndex} {x : MonoidAlgebra ℂ D.chosenGL}
-    (y : D.principalForms (D.spaceW j)) :
-    D.singleLift ϑ j ((D.principalRep (D.spaceW j)).asAlgebraHom x y) =
-      (D.descentPair ϑ j).groupAlgAction x (D.singleLift ϑ j y) := by
-  -- Both sides are sums over the group, and `singleLift` commutes with each group element.
-  have h_sum : (D.descentPair ϑ j).groupAlgAction x (D.singleLift ϑ j y) =
-      ∑ g : D.chosenGL, x.coeff g • (D.descentPair ϑ j).formAction g (D.singleLift ϑ j y) :=
-    -- A term, as `rw` does not see that `D.chosenGL` is the group acting on the forms.
-    (LinearMap.congr_fun (asAlgebraHom_eq_sum (D.descentPair ϑ j).formAction) _).trans
-      (LinearMap.sum_apply ..)
-  rw [h_sum, asAlgebraHom_eq_sum]
-  simp [singleLift_principalRep]
-
 open scoped Classical in
 /-- Let `ϑ` be a tame character and `1 ≤ j ≤ m`. The range of `D.goodLift ϑ j`, the lift
 `singleLift` restricted to the good forms on `W_j = D.spaceW j`, is spanned by the lifts of good

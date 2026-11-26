@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
@@ -150,6 +151,7 @@ variable [Fintype ι] [DecidableEq n]
 
 /-! ### Measurability and linear changes of variables -/
 
+omit [DecidableEq n] in
 /-- The product of two measurable families of complex matrices is measurable. -/
 @[fun_prop]
 theorem _root_.Measurable.matrix_mul [Fintype n] {X : Type} [MeasurableSpace X] [Fintype n₁]
@@ -437,7 +439,7 @@ theorem exists_measurePreserving_hermCorner [Fintype n] [Fintype n₁] [Decidabl
   obtain ⟨φ, φ_vol, φ_apply⟩ := exists_measurePreserving_hermBlocks e
   refine ⟨φ.trans ((Homeomorph.refl _).prodCongr (toCorner n₁).symm), ((MeasurePreserving.id _).prod
     (measurePreserving_toCorner.symm (toCorner n₁).toMeasurableEquiv)).comp φ_vol, fun t ↦ ?_⟩
-  simp [φ_apply] <;> rfl
+  simp [φ_apply]; rfl
 
 end New
 

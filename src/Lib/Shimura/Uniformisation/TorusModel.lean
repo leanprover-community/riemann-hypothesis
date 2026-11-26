@@ -165,7 +165,7 @@ lemma ThetaTori.PeriodMap.multiplier_eq_of_pullback {A : Over (Spec (CommRingCat
     ((σ p.2).prop.left.left p.1).mono inf_le_left
   have h_sec : (N.mul M.inv).IsSection fun p : D.dualTorsion × D.dualTorsion ↦ (σ p.2).val p.1 := by
     refine ⟨h_reg, fun p p' R x hp hp' ↦ h_sep.pointFn_ext ((h_reg p).mono (by order))
-      (.mul (regular ..) (h_reg p')) ?_ R x (by simp_all)⟩
+      (.mul (regular ..) (h_reg p')) ?_ R x (landsIn_inf.mpr ⟨landsIn_inf.mpr ⟨hp, hp'⟩, hp'⟩)⟩
     -- At the points `e z` both sides are computed from `hσ_val` and the coordinates of `N`, `M`.
     simp +contextual [h_lifts .., hσ_val, (h_pull hM).hasFieldCoords .., field]
   obtain ⟨G, hG, hG_val⟩ := hu.exists_theta_of_isSection hM h_sec (hu.holomorphicAt hN)
@@ -240,9 +240,10 @@ lemma ThetaTori.PeriodMap.exists_uniformisation_of_isSeparatingFamily
   -- by `multiplier_eq_of_pullback` a vector dual to `F Y.periodLattice` is dual to `u.lattice`.
   have h_dual (b : Fin d → ℂ) (hb : ∀ l ∈ Y.periodLattice, B'.riemannPhase (F l) b = 1)
       (l : Fin d → ℂ) (hl : l ∈ u.lattice) : B'.riemannPhase l b = 1 := by
-    simpa [hu.isAppellHumbert.ne_zero hl] using
-      Y.multiplier_eq_of_pullback hN h_sep hY h_kill hu hF h_riem
-        (hu.pull_translate (u.atGeneric_add b)) (by aesop) l hl
+    have h := Y.multiplier_eq_of_pullback hN h_sep hY h_kill hu hF h_riem
+      (hu.pull_translate (u.atGeneric_add b))
+      (fun l' hl' ↦ by rw [hb l' hl', mul_one]; exact hχ' l' hl') l hl
+    exact mul_left_cancel₀ (hu.isAppellHumbert.ne_zero hl) (h.trans (mul_one _).symm)
   -- `F` is bijective: with `T b = B'.riemannForm (F ·) b`, the map `T ∘ F` is bijective since the
   -- pulled-back form is nondegenerate, and `T` is injective: the real subspace `ker T` pairs
   -- integrally, hence trivially, with `u.lattice`, which spans, and `B'.riemannForm` is
@@ -256,8 +257,10 @@ lemma ThetaTori.PeriodMap.exists_uniformisation_of_isSeparatingFamily
     refine le_ker_iff_comp_subtype_eq_zero.mpr
       (flip_inj (ext_on (IsZLattice.span_top (L := u.lattice)) fun l hl ↦ ?_))
     refine eq_zero_of_forall_fourierChar_eq_one _ fun ⟨b, hb⟩ ↦ ?_
-    have hb_dual : ∀ l ∈ Y.periodLattice, B'.riemannPhase (F l) b = 1 := by
-      simp_all [T, LinearMap.ext_iff]
+    have hb_dual : ∀ l ∈ Y.periodLattice, B'.riemannPhase (F l) b = 1 := fun l _ ↦ by
+      have h0 : B'.riemannForm (F l) b = 0 := LinearMap.congr_fun (mem_ker.mp hb) l
+      rw [RealComplexForm.riemannPhase, h0, map_zero_eq_one]
+      rfl
     exact h_dual b hb_dual l hl
   let F_equiv : V ≃ₗ[ℂ] (Fin d → ℂ) := .ofBijective F.toLinearMap (.of_comp_left hTF hT)
   have he : ⇑e = u.expMap ∘ F_equiv := (funext hF).symm
@@ -317,6 +320,7 @@ lemma exists_unit_on_roots_of_unity (φ : O →+* ℂ) :
     ∃ ε : (Ô ℚ)ˣ, ∀ t : 𝔸f E, ∃ c : O,
       algebraMap O ℂ c = ψf E t ∧ φ c = ψf E (t * finAdeleIncl ℚ E ε) := by
   -- Roots of unity are integral, so they lie in `O`: `ζ z` is the preimage of `z`.
+  have : IsIntegrallyClosed O := (ValuationRing.integers O ℂ).isIntegrallyClosed
   have h_lift (z : ℂ) (hz : IsOfFinOrder z) : ∃ c : O, algebraMap O ℂ c = z :=
     isIntegral_iff (R := O).mp
       ((IsPrimitiveRoot.orderOf z).isIntegral (orderOf_pos_iff.mpr hz)).tower_top
@@ -351,11 +355,17 @@ lemma exists_unit_on_roots_of_unity (φ : O →+* ℂ) :
       simp [ht_alg, ← Circle.coe_pow, ← map_nsmul_eq_pow, ψf_eq_one_of_mem (hU ⟨t, ht⟩)]
     -- So `ζ (ψf E t)` is a power of `ζ ω`: `φ` acts on it as the `k`-th power, undone by `l`.
     obtain ⟨a, -, ha⟩ := hζω.eq_pow_of_pow_eq_one ht_pow
-    have h_act : φ (ζ (ψf E t)) = ψf E t ^ k := by grind [pow_right_comm]
-    have h_undo : ((ψf E t : ℂ) ^ k) ^ l = ψf E t := by grind [pow_right_comm]
-    -- Without the flag, `simp` turns the `•` of `← nsmul_eq_mul'` back into a product.
-    simpa [C, ι, Circle.ext_iff, -nsmul_eq_mul, ← nsmul_eq_mul', map_nsmul_eq_pow] using
-      And.intro h_act h_undo
+    have h_pow : ω ^ a = ψf E t := by rw [← hω_alg, ← map_pow, ha, ht_alg]
+    have h_act : φ (ζ (ψf E t)) = ψf E t ^ k := by
+      rw [← ha, map_pow, ← hk, pow_right_comm, h_pow]
+    have h_undo : ((ψf E t : ℂ) ^ k) ^ l = ψf E t := by
+      rw [← h_pow, pow_right_comm ω a k, hk, pow_right_comm, hl]
+    refine ⟨?_, Circle.ext ?_⟩
+    · change φ (ζ (ψf E t)) = ψf E (t * ι (k : 𝔸f ℚ))
+      rw [map_natCast, ← nsmul_eq_mul', map_nsmul_eq_pow, Circle.coe_pow, h_act]
+    · change (ψf E (t * ι ((k : 𝔸f ℚ) * (l : 𝔸f ℚ))) : ℂ) = ψf E t
+      rw [map_mul ι, map_natCast, map_natCast, ← mul_assoc, ← nsmul_eq_mul', ← nsmul_eq_mul',
+        map_nsmul_eq_pow, map_nsmul_eq_pow, Circle.coe_pow, Circle.coe_pow, h_undo]
   obtain ⟨⟨ε, ε'⟩, ⟨hε, hε'⟩, h_mem⟩ :=
     (isCompact_Ô.prod isCompact_Ô).inter_iInter_nonempty C hC_closed h_fin
   rw [Set.mem_iInter] at h_mem
@@ -423,18 +433,13 @@ noncomputable def fullStructure : y.FullLevelStructure where
       sub_self, (D.mem_dualTorsion _).1, (ψf_unit_mul_eq_one_iff _).2, mul_one, ht,
       Circle.ext_iff] using h_repr
 
-/-- The torsion point of a class under `New.ThetaObject.TorusModel.fullStructure` is the section at
-the period of its chosen rational lift `ratLift g`. -/
-private lemma fullStructure_torsionPoint_apply (s : AdelicTorsion E D.Index) :
-    m.fullStructure.torsionPoint s = m.uniformisation.expMap (Y.periodPoint (ratLift g s)) :=
-  rfl
-
 /-- `New.ThetaObject.TorusModel.fullStructure` sends the class of g⁻¹z to the section at the period
 of z for every z in Eⁿ, not only for the chosen representative of the class. -/
 lemma torsionPoint_frameTorsionClass (z : D.Index → E) :
     m.fullStructure.torsionPoint (Variety.frameTorsionClass g z) =
       m.uniformisation.expMap (Y.periodPoint z) := by
-  rw [fullStructure_torsionPoint_apply, m.expMap_periodPoint_eq_iff, frameTorsionClass_ratLift]
+  change m.uniformisation.expMap (Y.periodPoint (ratLift g (Variety.frameTorsionClass g z))) = _
+  rw [m.expMap_periodPoint_eq_iff, frameTorsionClass_ratLift]
 
 /-! ### The dual lattice and the multiplier of a model -/
 
@@ -484,6 +489,14 @@ lemma exists_isTranslationLift_of_dualLattice :
   fun b hb ↦
     ⟨m.card_nsmul_mem_of_mem_dualLattice b hb, m.exists_isTranslationLift_of_mem_dualLattice b hb⟩
 
+private lemma intAction_apply (Y : PeriodMap D g ℓ V) (c : 𝓞 E) (v : V) :
+    Y.intAction c v = Y.realEquiv (cmEmbedding c.val • Y.realEquiv.symm v) :=
+  rfl
+
+private lemma intAction_realEquiv (Y : PeriodMap D g ℓ V) (c : 𝓞 E) (w : RealVectors E D.Index) :
+    Y.intAction c (Y.realEquiv w) = Y.realEquiv (cmEmbedding c.val • w) := by
+  rw [intAction_apply, ContinuousLinearEquiv.symm_apply_apply]
+
 /-- Let `m` model the object `y` on the torus of the polarised period map `Y`. On the period lattice
 `m.uniformisation.lattice`, the multiplier `m.χ` of the theta coordinates is χ(l) = exp(πi·e(βl,
 l)). Here e is the Riemann form of B = `Y.automorphyForm`, and β = `D.β` ∈ `𝓞 E` acts on V through
@@ -500,7 +513,11 @@ lemma multiplier_eq_canonicalMultiplier (l : V) (hl : l ∈ m.uniformisation.lat
   have h_generic (c : 𝓞 E) (v : V) :
       atGeneric m.uniformisation.expMap (F c v) =
         atGeneric m.uniformisation.expMap v ≫ (c • 𝟙 y.groupScheme).left := by
-    simp [F, PeriodMap.intAction, m.equivariant, atGeneric, ← Over.comp_left]
+    obtain ⟨w, rfl⟩ := Y.realEquiv.surjective v
+    have h_eq : m.uniformisation.expMap (F c (Y.realEquiv w)) =
+        m.uniformisation.expMap (Y.realEquiv w) ≫ (c • 𝟙 y.groupScheme) := by
+      rw [intAction_realEquiv, m.equivariant, ModuleObj.comp_smul, Category.comp_id]
+    rw [atGeneric, atGeneric, ← Over.comp_left, Category.assoc, h_eq]
   have h_pull (c : 𝓞 E) : HasThetaCoords m.uniformisation.lattice
     (atGeneric m.uniformisation.expMap)
       (y.lineBundle.pull (c • 𝟙 y.groupScheme).left) (Y.automorphyForm.pullForm (F c)) (m.χ ∘ F c)
@@ -599,12 +616,15 @@ lemma exists_matrix_of_hom (m : x.TorusModel Y) (m' : x'.TorusModel Y')
       ((m.uniformisation.immersive 0).1.comp_hom _)
   -- Isomorphic bundles with theta coordinates have the same Riemann form
   -- (`riemannForm_eq_of_isFrame`); here `x.lineBundle ^ μ` and `ψ^* x'.lineBundle`.
-  have hF_mem : ∀ l ∈ m.uniformisation.lattice, F l ∈ m'.uniformisation.lattice := by simp_all
+  have hF_mem : ∀ l ∈ m.uniformisation.lattice, F l ∈ m'.uniformisation.lattice := fun l hl ↦
+    (m'.uniformisation.eq_zero_iff (F l)).mpr <| by
+      rw [hF, (m.uniformisation.eq_zero_iff l).mp hl]
+      exact (IsAddMonHom.addMonoidHom ψ _).map_zero
   have h_cls : (x.lineBundle.pow μ).picClass = (x'.lineBundle.pull ψ.left).picClass := by
     simp [← Pic.pull_picClass, hψ_cls]
   have h_generic (w : V) :
       atGeneric m'.uniformisation.expMap (F w) = atGeneric m.uniformisation.expMap w ≫ ψ.left := by
-    simp [atGeneric, hF, ← Over.comp_left]
+    rw [atGeneric, atGeneric, ← Over.comp_left, assoc, hF]
   obtain ⟨_, h_frame⟩ := picClass_eq_iff.mp h_cls
   obtain ⟨h_riem, -⟩ :
       RealComplexForm.riemannForm (μ • Y.automorphyForm) = RealComplexForm.riemannForm
@@ -615,9 +635,12 @@ lemma exists_matrix_of_hom (m : x.TorusModel Y) (m' : x'.TorusModel Y')
   have h_rat (y : D.Index → E) :
       ∃ y', toRealVectors y' = Y'.realEquiv.symm (F (Y.realEquiv (toRealVectors y))) := by
     obtain ⟨k, hk, hky⟩ := exists_nsmul_adelicTorsion_eq_zero (frameTorsionClass g y)
-    have h_ker : k • F (Y.realEquiv (toRealVectors y)) ∈ Y'.latticeOver ⊥ := by
-      simp [← m'.lattice_eq, ← torsionPoint_frameTorsionClass, ← nsmul_comp,
-        ← map_nsmul m.fullStructure.torsionPoint, hky, hF]
+    have h_ker : k • F (Y.realEquiv (toRealVectors y)) ∈ Y'.periodLattice := by
+      rw [← m'.lattice_eq, m'.uniformisation.eq_zero_iff, map_nsmul, hF, ← nsmul_comp]
+      have hy0 : k • m.uniformisation.expMap (Y.realEquiv (toRealVectors y)) = 0 := by
+        rw [← m.torsionPoint_frameTorsionClass y, ← map_nsmul, hky, map_zero]
+      rw [hy0]
+      exact (IsAddMonHom.addMonoidHom ψ _).map_zero
     obtain ⟨y', -, hy'⟩ := (Y'.nsmul_mem_latticeOver hk).mp h_ker
     exact ⟨y', Y'.realEquiv.eq_symm_apply.mpr hy'⟩
   choose f hf using h_rat
@@ -626,18 +649,30 @@ lemma exists_matrix_of_hom (m : x.TorusModel Y) (m' : x'.TorusModel Y')
         Y'.realEquiv (cmEmbedding (algebraMap (𝓞 E) E c) • Y'.realEquiv.symm
           (F (Y.realEquiv w))) := by
     have h_comp : F ∘L Y.intAction c = Y'.intAction c ∘L F :=
-      m'.uniformisation.linear_ext (by simp [equivariant, hF, PeriodMap.intAction])
-    simpa [PeriodMap.intAction] using DFunLike.congr_fun h_comp (Y.realEquiv w)
+      m'.uniformisation.linear_ext fun v ↦ by
+        obtain ⟨u, rfl⟩ := Y.realEquiv.surjective v
+        rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, intAction_realEquiv,
+          hF, m.equivariant, IsLinear.smul_comp, ← hF, intAction_apply, m'.equivariant,
+          ContinuousLinearEquiv.apply_symm_apply]
+    have h := DFunLike.congr_fun h_comp (Y.realEquiv w)
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, intAction_realEquiv,
+      intAction_apply] at h
+    exact h
   -- `f` is `𝓞 E`-linear, hence `E`-linear; rational points are dense, so its matrix gives `F`.
   obtain ⟨z, hz⟩ : ∃ z : Matrix D.Index D.Index E, ∀ w,
     F (Y.realEquiv w) = Y'.realEquiv (realVecAction z w) := by
     let f₀ : (D.Index → E) →ₗ[𝓞 E] D.Index → E :=
       { toFun := f
-        map_add' := by simp [hf, ← toRealVectors_injective.eq_iff]
-        map_smul' := by simp [hf, h_lin, ← toRealVectors_injective.eq_iff] }
+        map_add' a b := toRealVectors_injective <| by
+          rw [map_add, hf, hf, hf, map_add, map_add, map_add, map_add]
+        map_smul' c a := toRealVectors_injective <| by
+          rw [RingHom.id_apply, toRealVectors_smul, hf, hf, toRealVectors_smul, h_lin,
+            ContinuousLinearEquiv.symm_apply_apply] }
     refine ⟨toMatrix' (f₀.extendScalarsOfIsLocalization (nonZeroDivisors (𝓞 E)) E),
       denseRange_toRealVectors.eq fun y ↦ ?_⟩
-    simp [f₀, hf, realVecAction_toRealVectors]
+    rw [realVecAction_toRealVectors, ← Matrix.toLin'_apply, Matrix.toLin'_toMatrix',
+      LinearMap.extendScalarsOfIsLocalization_apply', LinearMap.coe_mk, AddHom.coe_mk, hf,
+      ContinuousLinearEquiv.apply_symm_apply]
   -- `z` is invertible because it pulls a form back to the nondegenerate form of
   -- `μ • Y.automorphyForm`.
   have hz_inj : Injective z.mulVec := by
@@ -710,21 +745,60 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
   have hQ : Function.Surjective Y.realEquiv := Y.realEquiv.surjective
   -- `F` is complex linear because `z` carries `ℓ` to `ℓ'`.
   have h_conj : z.map (Φ v₀) * ℓ = ℓ' * z.map (Φ v₀) := (z.map _).mul_inv_eq_iff_eq_mul.mp hz
+  have h_rva (u : RealVectors E D.Index) (i : D.Index) (v : InfinitePlace E) :
+      realVecAction z.val u i v = (z.val.map (Φ v) *ᵥ fun j ↦ u j v) i := by
+    simp only [realVecAction, Matrix.mulVecLin_apply, Matrix.mulVec, dotProduct,
+      Finset.sum_apply, Pi.mul_apply, Matrix.map_apply, RingHom.pi_apply]
+  have hF_I (w : RealVectors E D.Index) :
+      Y'.realEquiv (realVecAction z.val (Complex.I • fun (i : D.Index) (v : InfinitePlace E) ↦
+          ((if v = v₀ then ℓ else 1) *ᵥ fun j ↦ w j v) i)) =
+        Complex.I • Y'.realEquiv (realVecAction z.val w) := by
+    rw [← Y'.isPeriodMap]
+    refine congrArg Y'.realEquiv ?_
+    funext i v
+    rw [h_rva, Pi.smul_apply]
+    change (z.val.map (Φ v) *ᵥ (Complex.I • ((if v = v₀ then ℓ else 1) *ᵥ fun j ↦ w j v))) i =
+      Complex.I * ((if v = v₀ then ℓ' else 1) *ᵥ fun j ↦ realVecAction z.val w j v) i
+    rw [mulVec_smul, Pi.smul_apply, smul_eq_mul, mulVec_mulVec]
+    have h_eq : z.val.map (Φ v) * (if v = v₀ then ℓ else 1) =
+        (if v = v₀ then ℓ' else 1) * z.val.map (Φ v) := by
+      split_ifs with hv
+      · subst hv; exact h_conj
+      · rw [Matrix.mul_one, Matrix.one_mul]
+    rw [h_eq, ← mulVec_mulVec]
+    congr 2
+    funext j
+    exact (h_rva w j v).symm
+  let F_r : V →L[ℝ] V' :=
+    Y.realEquiv.arrowCongr Y'.realEquiv (realVecAction z.val).toContinuousLinearMap
+  have hF_r (w : RealVectors E D.Index) :
+      F_r (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) := by
+    change Y'.realEquiv (realVecAction z.val (Y.realEquiv.symm (Y.realEquiv w))) = _
+    rw [ContinuousLinearEquiv.symm_apply_apply]
   let F : V →L[ℂ] V' :=
-    { Y.realEquiv.arrowCongr Y'.realEquiv (realVecAction z.val).toContinuousLinearMap with
-      map_smul' a := by
-        -- `↓`: the quantifier is moved to `Y.realEquiv` before `simp_all` rewrites under it;
-        -- without it the goal is left with a spurious disjunction.
-        simp_all [↓hQ.forall, ← Y'.realEquiv.symm.injective.eq_iff, smul_eq_re_smul_add_im_smul a,
-          ← PeriodMap.isPeriodMap _ _, funext_iff, mulVec_add, mulVec_smul] }
+    { F_r with
+      map_smul' a v := by
+        obtain ⟨w, rfl⟩ := hQ v
+        change F_r (a • Y.realEquiv w) = a • F_r (Y.realEquiv w)
+        rw [smul_eq_re_smul_add_im_smul a, smul_eq_re_smul_add_im_smul a, ← Y.isPeriodMap w,
+          F_r.map_add, F_r.map_smul, F_r.map_smul, hF_r, hF_r, hF_I w] }
+  have hF_Q (w : RealVectors E D.Index) :
+      F (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) := hF_r w
   -- `F` maps lattice to lattice because `g'⁻¹ z g` is integral.
   have h_lat : ∀ l ∈ m.uniformisation.lattice, F l ∈ m'.uniformisation.lattice := by
-    simpa [lattice_eq, F, frameLattice, mem_classLattice] using fun P ↦
-      realVecAction_mem_frameLattice hk_int (P := P)
+    intro l hl
+    rw [m.lattice_eq, mem_classLattice] at hl
+    obtain ⟨y, hy, rfl⟩ := hl
+    have hP : toRealVectors y ∈ frameLattice g := by
+      rw [frameLattice, Submodule.mem_toAddSubgroup, mem_classLattice]
+      exact ⟨y, hy, rfl⟩
+    have hPz := realVecAction_mem_frameLattice hk_int hP
+    rw [frameLattice, Submodule.mem_toAddSubgroup, mem_classLattice] at hPz
+    obtain ⟨y', hy', hy'_eq⟩ := hPz
+    rw [m'.lattice_eq, mem_classLattice]
+    exact ⟨y', hy', by rw [hF_Q, ← hy'_eq]; rfl⟩
   -- `z` pulls the form `Y'.formMatrix` back to `μ • Y.formMatrix`, by positivity and `hμ`
   -- (`conjTranspose_mul_mul_eq_smul`).
-  have hF_Q (w : RealVectors E D.Index) :
-    F (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) := by simp [F]
   have h_riem :
       RealComplexForm.riemannForm (Y'.automorphyForm.pullForm F) = RealComplexForm.riemannForm
         (μ • Y.automorphyForm) := by
@@ -748,7 +822,7 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
     -- `F` commutes with the action of `D.β`, since `z` acts linearly over `E ⊗ ℝ`.
     have h_comm : Y'.intAction D.β (F l) = F (Y.intAction D.β l) := by
       obtain ⟨w, rfl⟩ := hQ l
-      simp [PeriodMap.intAction, hF_Q]
+      rw [hF_Q, intAction_realEquiv, intAction_realEquiv, hF_Q, (realVecAction z.val).map_smul]
     -- So `h_riem` at `β l`, `l` compares the two exponents.
     have h_form := LinearMap.congr_fun₂ h_riem (Y.intAction D.β l) l
     rw [riemannForm_pullForm, ← h_comm, map_nsmul, LinearMap.smul_apply, LinearMap.smul_apply,
@@ -801,8 +875,13 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
   -- Linearity is tested on the dense set of sections of `x`.
   have h_lin : IsLinear ψ := by
     refine ⟨fun c ↦ (isSeparatingFamily_atGeneric_of_surjective
-      (m.uniformisation.surjective.comp hQ)).hom_ext ?_⟩
-    simp [← assoc (m.uniformisation.expMap _), ← equivariant, hF_Q, hψ]
+      (m.uniformisation.surjective.comp hQ)).hom_ext fun w ↦ ?_⟩
+    rw [assoc, assoc]
+    refine congrArg (_ ≫ ·) ?_
+    change m.uniformisation.expMap (Y.realEquiv w) ≫ (c • 𝟙 x.groupScheme) ≫ ψ =
+      m.uniformisation.expMap (Y.realEquiv w) ≫ (c • ψ)
+    rw [← assoc, ModuleObj.comp_smul, Category.comp_id, ← m.equivariant, hψ, hF_Q,
+      (realVecAction z.val).map_smul, m'.equivariant, ← hF_Q, ← hψ, ← ModuleObj.comp_smul]
   exact ⟨ψ, h_isog, h_lin, h_cls, m.torsionPoint_comp m' hψ_π, hψ_π⟩
 
 /-- Let `z ∈ GL_n(E)` satisfy `z ℓ z⁻¹ = ℓ'` (`hz`), and let `k = g'⁻¹ z g` have integral entries

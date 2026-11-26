@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt
 public import Lib.Adelic.Unitary.CongruenceLevels
 public import Lib.General.Analysis.FiniteFourier
 public import Lib.Weil.Construction.WeilData
@@ -296,31 +297,24 @@ lemma schwartzBruhat.isLocallyConstant_curry (hφ : φ ∈ schwartzBruhat s) (f 
     (g : Γ → X → Y) (hgf : ∀ (γ : Γ) (y : Y), g γ (f γ y) = y)
     (hf : Continuous ↿f := by fun_prop) (hg : Continuous ↿g := by fun_prop) :
     IsLocallyConstant fun (γ : Γ) (y : Y) ↦ φ (f γ y) := by
-  -- The family `x ↦ φ (f a (g b x))` is locally constant in `(a, b, x)`. On the compact support of
-  -- `φ` its members therefore all agree for `a` and `b` in an open set `U ∋ k`.
-  obtain ⟨h_const, h_compact, -⟩ := hφ
+  -- The family `x ↦ φ (f a (g b x))` is locally constant in `(a, b, x)`, so on `tsupport φ`
+  -- its members agree for `a, b` in an open neighborhood `U` of `k`.
   refine (IsLocallyConstant.iff_exists_open _).2 fun k ↦ ?_
   let ψ (ab : Γ × Γ) (x : X) : ℂ := φ (f ab.1 (g ab.2 x))
-  have hψ : IsLocallyConstant ψ.uncurry := h_const.comp_continuous (by fun_prop)
-  obtain ⟨U, hU_open, hk, hU⟩ : ∃ U : Set Γ, IsOpen U ∧ k ∈ U ∧
-      U ×ˢ U ⊆ {ab : Γ × Γ | ∀ x ∈ tsupport φ, ψ ab x = ψ (k, k) x} :=
-    exists_nhds_square (eventually_eqOn_of_isLocallyConstant_uncurry hψ h_compact (k, k))
-  -- If `φ (f b y) ≠ 0`, compare `(a, b)` with `(b, b)` at the point `x = f b y` of the support.
-  have eq_of_ne_zero {a b : Γ} (ha : a ∈ U) (hb : b ∈ U) {y : Y} (hy : φ (f b y) ≠ 0) :
+  have hψ : IsLocallyConstant ψ.uncurry := hφ.1.comp_continuous (by fun_prop)
+  obtain ⟨U, hU_open, hk, hU⟩ :=
+    exists_nhds_square (eventually_eqOn_of_isLocallyConstant_uncurry hψ hφ.2.1 (k, k))
+  -- If `φ (f b y) ≠ 0`, compare `(a, b)` and `(b, b)` with `(k, k)` at `f b y ∈ tsupport φ`.
+  have eq_of_ne {a b : Γ} (ha : a ∈ U) (hb : b ∈ U) {y : Y} (hy : φ (f b y) ≠ 0) :
       φ (f a y) = φ (f b y) := by
-    have hx : f b y ∈ tsupport φ := subset_tsupport φ hy
-    calc
-      φ (f a y) = ψ (a, b) (f b y) := by simp only [ψ, hgf]
-      _ = ψ (k, k) (f b y) := hU ⟨ha, hb⟩ _ hx
-      _ = ψ (b, b) (f b y) := (hU ⟨hb, hb⟩ _ hx).symm
-      _ = φ (f b y) := by simp only [ψ, hgf]
+    simpa [ψ, hgf] using (hU (Set.mk_mem_prod ha hb) _ (subset_tsupport φ hy)).trans
+      (hU (Set.mk_mem_prod hb hb) _ (subset_tsupport φ hy)).symm
   refine ⟨U, hU_open, hk, fun a ha ↦ funext fun y ↦ ?_⟩
-  -- Both values are zero, or one is not and `eq_of_ne_zero` makes them equal.
-  by_cases hk_zero : φ (f k y) = 0
-  · by_cases ha_zero : φ (f a y) = 0
-    · simp [hk_zero, ha_zero]
-    · exact (eq_of_ne_zero hk ha ha_zero).symm
-  · exact eq_of_ne_zero ha hk hk_zero
+  by_cases hky : φ (f k y) = 0
+  · by_cases hay : φ (f a y) = 0
+    · rw [hky, hay]
+    · exact (eq_of_ne hk ha hay).symm
+  · exact eq_of_ne ha hk hky
 
 /-- The pointwise integral of a locally constant family of functions over a compact space, for a
 finite measure, lies in every subspace `P` that contains all members of the family. -/
@@ -366,7 +360,7 @@ class SemilocalField (F : Type*) extends CommRing F, TopologicalSpace F, Measure
   /-- The ring of integers is open. -/
   isOpen_O : _root_.IsOpen O.carrier
   /-- The powers of the uniformiser tend to zero. -/
-  isTopologicallyNilpotent_ϖ : IsTopologicallyNilpotent ϖ.1
+  isTopologicallyNilpotent_ϖ : IsTopologicallyNilpotent ϖ.val
   /-- As in a product of valuation rings, for `a, b` in `F` there is an idempotent `e` of `O` such
   that `a` and `b` are `O`-multiples of `(1 - e) a + e b`. -/
   isValuationPair : IsValuationPair O
@@ -399,10 +393,10 @@ class TameLocalChar where
   resChar : MulChar ResidueRing ℂ
   /-- The reduction is surjective with kernel `ϖ O`. -/
   reduction_surjective_and_eq_zero_iff : Function.Surjective reduction ∧ ∀ x : O,
-    reduction x = 0 ↔ ϖ⁻¹.1 * x.1 ∈ O
+    reduction x = 0 ↔ ϖ⁻¹.val * x.val ∈ O
   /-- `η` is primitive, and `η ∘ π` is `χ⁻¹` on the units of `O` and zero on the rest of `O`. -/
   isPrimitive_resChar_and_invOnUnits_eq :
-      Exchange.IsPrimitiveMulChar resChar ∧ ∀ x : O, invOnUnits χ x.1 = resChar (reduction x)
+      Exchange.IsPrimitiveMulChar resChar ∧ ∀ x : O, invOnUnits χ x.val = resChar (reduction x)
 
 attribute [instance_reducible, instance] TameLocalChar.commRing
 attribute [instance] TameLocalChar.finite

@@ -1,6 +1,7 @@
 module
 
 public import Lib.ClassField.Global.ExistenceTheorem
+public import Lib.GaloisRep.Main.Defs
 public import Lib.GaloisRep.Main.LocalConditions
 public import Lib.General.NumberTheory.PadicLimitsValuation
 
@@ -22,7 +23,7 @@ of `Ω`: finite type, good, Hodge–Tate jumps, and polynomials killing an eleme
   `New.GaloisRep.JumpsRelAt` (Hodge–Tate jumps) and `New.GaloisRep.PolyKillsAt` (a polynomial kills
   an element) behave when a representation is multiplied by a character. It collects the four
   lemmas `IsFiniteTypeAt.twist`, `IsGoodAt.twist`, `JumpsRelAt.twist` and `PolyKillsAt.twist`.
-* `New.Period.isPotentiallyCrystalline_of_unramified_char`: take a continuous `p`-adic character `ν`
+* Take a continuous `p`-adic character `ν`
   of an open subgroup of `G_p`, trivial on inertia near `1`. An algebra on which `ν` acts by scalars
   is potentially crystalline (`IsPotentiallyCrystalline.of_unramified_char`) with the jumps of the
   trivial action (`jump_eq_jump_one_of_unramified_char`). Weil elements act on its Weil–Deligne
@@ -124,8 +125,8 @@ lemma exists_avatar :
     ext g : 1
     obtain ⟨x, hx⟩ := artinMap_surjective Gal(Ω/K) ⟦g⟧
     have hψ_mul : ψ (θ * θ') x = ψ θ x * ψ θ' x := by
-      simp [ψ, AlgHeckeChar.character, AlgHeckeChar.infinityType, zpow_add, prod_mul_distrib]
-      exact mul_mul_mul_comm ..
+      simpa [ψ, AlgHeckeChar.character, AlgHeckeChar.infinityType, zpow_add, prod_mul_distrib]
+        using mul_mul_mul_comm ..
     rw [MonoidHom.mul_apply, hμ _ x g hx, hμ θ x g hx, hμ θ' x g hx, hψ_mul]
   exact ⟨.mk' μ hμ_mul, fun θ ↦ ⟨hμ_cont θ, fun x g hg ↦ by simp [ψ, hμ θ x g hg]⟩⟩
 
@@ -407,7 +408,7 @@ lemma jump_twist [OverGp (decompGroup Gal(Ω/E) A) ℓ] {γ : PadicAlgCl ℓ →
       ∃ x : Fin 1 → PadicAlgCl ℓ, f x ≠ 0 := by
     -- `jump` is the rank of the space `hodgeTateMaps`, so that space has a nonzero element.
     obtain ⟨f, hf_ne, -⟩ := finrank_eq_one_iff'.1 hμ
-    exact ⟨f, f.property, by simpa [Subtype.ext_iff, DFunLike.ext_iff] using hf_ne⟩
+    exact ⟨f, f.property, not_forall.mp fun h ↦ hf_ne (Subtype.ext (LinearMap.ext h))⟩
   have h_period : ∀ᶠ t : decompGroup Gal(Ω/E) A in nearOne _,
       γ (μ t.val).val * f x = (χ t ^ (-u)).val • toGp t • f x := by
     filter_upwards [hf x] with t ht
@@ -556,7 +557,7 @@ private lemma exists_isUnit_mul_frobenius_smul_eq [Free ℤ_[p] T] [Module.Finit
       ring
   have h_pow : (1 - α) ^ e = (p : Ainf) • (1 ⊗ₜ b) := by
     simp [α, one_def, hb, ← nsmul_eq_mul, ← tmul_sub, smul_tmul']
-  have complete : IsAdicComplete (span {(p : Ainf)}) (Ainf ⊗[ℤ_[p]] T) := isAdicComplete_of_free _
+  have complete : IsAdicComplete (span {(p : Ainf)}) (Ainf ⊗[ℤ_[p]] T) := .of_finite_projective _ _
   obtain ⟨x, hx⟩ : ∃ x : Ainf ⊗[ℤ_[p]] T, α * φ • x - x = 1 := by
     let f : Ainf ⊗[ℤ_[p]] T →+ Ainf ⊗[ℤ_[p]] T :=
       α • (frobEnd (A := Ainf ⊗[ℤ_[p]] T)).toAddMonoidHom - .id _
@@ -565,8 +566,9 @@ private lemma exists_isUnit_mul_frobenius_smul_eq [Free ℤ_[p] T] [Module.Finit
     exact ⟨n, 1 ⊗ₜ b * w, by rwa [h_pow, smul_mul_assoc] at hv⟩
   refine ⟨(1 - α) * x + 1, ?_, ?_⟩
   · -- `(1 - α) ^ e` lies in `(p)`, so `1 - α` lies in the Jacobson radical
-    refine mem_jacobson_bot.1 (isRadical_jacobson _ ⟨e, ?_⟩) x
-    apply ((map_algebraMap_iff ..).2 complete).le_jacobson_bot
+    refine Ring.mem_jacobson_iff.1 (Ideal.jacobson_bot.le (isRadical_jacobson _ ⟨e, ?_⟩)) x
+    apply Ideal.jacobson_bot.ge
+    apply ((map_algebraMap_iff ..).2 complete).le_jacobson
     simp [h_pow, Algebra.smul_def, mem_span_singleton, Ideal.map_span]
   · rw [smul_add, smul_mul', smul_sub, smul_one, α_fixed]
     linear_combination (1 - α) * hx
@@ -720,7 +722,9 @@ lemma exists_period_of_character [TopologicalSpace Γ]
     refine isClosed_eq ?_ (by fun_prop)
     -- on a pure tensor `a ⊗ o` the left side is `(toGp g⁻¹ • θ a) * o`
     obtain ⟨s, rfl⟩ : ∃ s : Finset (Ainf × O), y = ∑ i ∈ s, i.1 ⊗ₜ[ℤ_[p]] i.2 := y.exists_finset
-    simp [Θ, Finset.smul_sum, smul_tmul']
+    suffices h : Continuous fun g : Γ ↦
+        ∑ i ∈ s, (toGp g)⁻¹ • (theta i.1 : ℂ_[p]) * algebraMap (PadicAlgCl p) ℂ_[p] i.2 by
+      simpa [Θ, Finset.smul_sum, smul_tmul'] using h
     fun_prop
   -- it holds at `φ ^ k * i` with `i` in inertia: the inverse is a Weil element of degree `f * k`,
   -- so it multiplies `y` by `a ^ (f * k) = (ν φ) ^ k`, and `ν i = 1`

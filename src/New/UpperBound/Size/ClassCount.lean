@@ -1,7 +1,7 @@
 module
 
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
 public import New.Spanning.RemainingTerms.Box
-public import New.UpperBound.Size.ShortColumns
 
 /-!
 # Explicit bound for the number of classes in the genus

@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.LinearAlgebra.PiTensorProduct.Dual
 public import New.UpperBound.ElementaryDivisors.Edges
 public import New.UpperBound.ElementaryDivisors.FrobeniusFactors
 

@@ -217,40 +217,30 @@ can be chosen supported on the places dividing `𝔪` and their conjugates, mean
 at every other place. -/
 lemma Rows.exists_reductionGL_eq :
     ∃ k : stdLevel E n, k.val ∈ Gf.supportedOn n 𝔪.places ∧ 𝔪.reductionGL k = g := by
-  -- Lift the entries of `g` to `Ô`. At each place dividing `𝔪` the component of the lift is
-  -- invertible over the local integers; `ofSplitPlaces` glues these components to a unitary
-  -- element.
-  have h_lift (i j : n) : ∃ m : Ô E, 𝔪.reduction m = g i j := 𝔪.reduction_surjective (g i j)
-  choose M hM using h_lift
-  obtain ⟨S, hS⟩ : ∃ S : Finset (FinPlace E), ↑S = 𝔪.places := 𝔪.places.toFinite.exists_finset_coe
+  -- Lift the entries of `g` to `Ô` and glue their local components at `𝔪.places` via
+  -- `ofSplitPlaces`.
+  choose M hM using fun i j ↦ 𝔪.reduction_surjective (g i j)
+  obtain ⟨S, hS⟩ := 𝔪.places.toFinite.exists_finset_coe
   have h_split (w : FinPlace E) (hw : w ∈ S) : star w ∉ S :=
     fun hw' ↦ 𝔪.isConjDisjoint_places.le_compl_right (hS.le hw) (hS.le hw')
   let Mloc (w : S) : Matrix n n (LocInt w.val) :=
     fun i j ↦ ⟨(M i j).val w, mem_Ô.mp (M i j).property w⟩
   -- The residue of `Mloc w` is the invertible matrix `g` read modulo `w`.
-  have h_unit (w : S) : IsUnit (Mloc w) := by
-    refine isUnit_of_mapMatrix (IsLocalRing.residue _)
-      ⟨g.map (modulusResidue 𝔪 (hS.le w.property)), ?_⟩
-    -- Both sides are the residue at `w` of the entry `M i j`.
-    have h_res (i j : n) :
-        reduceAt w.val (M i j) = IsLocalRing.residue (LocInt w.val) (Mloc w i j) := rfl
-    ext i j
-    simp [← hM, h_res]
+  have h_unit (w : S) : IsUnit (Mloc w) :=
+    isUnit_of_mapMatrix (IsLocalRing.residue _)
+      ⟨g.map (modulusResidue 𝔪 (hS.le w.property)), by
+        ext i j
+        have h_res : reduceAt w.val (M i j) = IsLocalRing.residue _ (Mloc w i j) := rfl
+        simp [← hM, h_res]⟩
   let γ (w : S) : GL n (LocField w.val) := .map (LocInt w.val).subtype (h_unit w).unit
-  -- `ofSplitPlaces` glues the local components `γ w`, which are integral, into an element of `K₀`.
-  have h_int : ofSplitPlaces h_split γ ∈ stdLevel E n :=
-    (ofSplitPlaces_mem_stdLevel h_split γ).mpr fun w ↦ ⟨(h_unit w).unit, rfl⟩
-  refine ⟨⟨ofSplitPlaces h_split γ, h_int⟩, ?_, ?_⟩
-  · simpa only [← hS] using ofSplitPlaces_mem_supportedOn h_split γ
+  refine ⟨⟨ofSplitPlaces h_split γ,
+      (ofSplitPlaces_mem_stdLevel h_split γ).mpr fun w ↦ ⟨(h_unit w).unit, rfl⟩⟩,
+    by simpa only [← hS] using ofSplitPlaces_mem_supportedOn h_split γ, ?_⟩
   -- Reduction modulo `𝔪` only sees the components at `𝔪.places`, where the entries agree with `M`.
-  have h_comp (i j : n) (w : FinPlace E) (hw : w ∈ 𝔪.places) :
-      (ofSplitPlaces h_split γ).val.val i j w = (M i j).val w := by
-    have h_at : (ofSplitPlaces h_split γ).atPlace w = γ ⟨w, hS.ge hw⟩ :=
-      atPlace_ofSplitPlaces h_split γ ⟨w, hS.ge hw⟩
-    exact congrArg (fun A : GL n (LocField w) ↦ A i j) h_at
   ext i j
   rw [← hM]
-  exact reduction_congr 𝔪 (h_comp i j)
+  exact reduction_congr 𝔪 fun w hw ↦
+    congrArg (fun A : GL n (LocField w) ↦ A i j) (atPlace_ofSplitPlaces h_split γ ⟨w, hS.ge hw⟩)
 
 /-- A chosen lift of g ∈ GL_n(O_E/𝔪) to K₀, with component 1 outside the places dividing 𝔪 and their
 conjugates. -/
@@ -311,7 +301,7 @@ residue fields. -/
 def Modulus.charOfTamePart (𝔪 : Modulus E) (ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ) :
     MulChar 𝔪.ResidueRing ℂ :=
   MulChar.mk
-    { toFun x := ∏ᶠ w : places 𝔪, ψ w (modulusResidue 𝔪 w.2 x)
+    { toFun x := ∏ᶠ w : places 𝔪, ψ w (modulusResidue 𝔪 w.property x)
       map_one' := by simp
       map_mul' := by simp [finprod_eq_prod_of_fintype, Finset.prod_mul_distrib] }
     (by

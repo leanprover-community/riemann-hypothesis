@@ -59,6 +59,8 @@ section
 
 variable [InvertsPrime A ℓ]
 
+-- Keeps definitional checks from unfolding the Ext groups, their group structure, and `projLine`.
+seal CategoryTheory.Abelian.Ext addCommGroupH projLine in
 /-- The projective line formula over a coefficient `S` with flat values, from a family that contains
 η. Let Θ be a theory along g and θ a family of classes on the points of ℙ¹ over g, of degrees `d`,
 whose member `θ i` is η (`hθ_eta`). If θ is a Leray–Hirsch basis over `S` (`h_base`) and over
@@ -86,16 +88,18 @@ lemma isLerayHirschBasis_lineBasis_of_basis (Θ : Theory g) {I : Type*} {S : AbF
   obtain ⟨w, hw⟩ := h_base.surjective (sliceEquiv x)
   -- On ℙ¹ × ℙ¹ the product with η in the second factor commutes with each `θ j`, and `hx` turns
   -- the result into the image of the family with `x` at `i`.
+  let r := Θ.mulClass (S := S) (etaClass g).toTotalH
   have h_prod :
-      lerayHirsch θ _ (w.mapRange (Θ.mulClass (etaClass g).toTotalH) (map_zero _)) =
-        lerayHirsch θ _ (single i x) := by
-    refine (lerayHirsch_naturality θ _ (fun _ _ ↦ Θ.mulClass_naturality ..) w).trans ?_
+      lerayHirsch θ ((abTensor.obj S).obj (freeAb (projLineAlong g))) (w.mapRange r r.map_zero) =
+        lerayHirsch θ ((abTensor.obj S).obj (freeAb (projLineAlong g))) (single i x) := by
+    refine (lerayHirsch_naturality θ r (fun _ _ ↦ Θ.mulClass_naturality ..) w).trans ?_
     rwa [lerayHirsch_single, map_restrictAlong_etaClass, hw, hθ_eta]
   -- By `h_line` the two families agree; their coefficients at `i` give the preimage `w i` of `x`.
-  have h_coeff : w.mapRange (Θ.mulClass (etaClass g).toTotalH) (map_zero _) = single i x :=
-    h_line.injective h_prod
-  have h_coeff_i : Θ.mulClass (etaClass g).toTotalH (w i) = x := by
-    simpa using DFunLike.congr_fun h_coeff i
+  have h_coeff : w.mapRange r r.map_zero = single i x := h_line.injective h_prod
+  have h_coeff_i : r (w i) = x := by
+    have h_at := DFunLike.congr_fun h_coeff i
+    rw [Finsupp.mapRange_apply, Finsupp.single_eq_same] at h_at
+    exact h_at
   exact ⟨w i, h_coeff_i⟩
 
 /-- For a test c over A, the class η · 1 with locally constant ℤ/ℓ coefficients L: η of
@@ -148,8 +152,8 @@ lemma comp_restrict_pull_map {D D' : Type 1} [Category D] [Category D'] (φ : D'
     _ = pullbackAlong (α ≫ (restrictAlong φ).map f)
           (mapThenComp (restrictAlong φ) T x.toTotalH) := comp_assoc ..
 
--- Keeps definitional checks from unfolding the Ext groups and their group structure.
-seal CategoryTheory.Abelian.Ext addCommGroupH in
+-- Keeps definitional checks from unfolding the Ext groups, their group structure, and `projLine`.
+seal CategoryTheory.Abelian.Ext addCommGroupH projLine in
 /-- Let c be a test over A and u a map from the point to the functor d ↦ Hom(c, g(d)), that is, maps
 c → g(d) natural in the object d of C. Let T be a class in total Ext from the locally constant
 ℤ/ℓ coefficient to M, both restricted to the points of ℙ¹ over g. Pull `New.Variety.etaOneClass` c
@@ -194,6 +198,14 @@ lemma comp_pull_etaOneClass_eq_pullbackAlong_oneLocConst {M : TorsionCoeff g}
   exact (congrArg _ h_nat).trans
     (congrArg (fun f ↦ pullbackAlong f (comp T M.cupClass.toTotalH)) h_one)
 
+private lemma comparison_pull_zero {D D' : Type 1} [Category D] [Category D']
+    {F : AbFunctor D} {F' : AbFunctor D'} (c : Comparison F F')
+    {N : AbFunctor D} {N' : AbFunctor D'} (α : N' ⟶ c.functor ⋙ N) (n : ℕ) :
+    c.pull α n 0 = 0 :=
+  (c.pull α n).map_zero
+
+-- Keeps definitional checks from unfolding the Ext groups, their group structure, and `projLine`.
+seal CategoryTheory.Abelian.Ext addCommGroupH projLine in
 /-- Let c be a test over A and u a map from the point to the functor d ↦ Hom(c, g(d)) that has
 universal points for the restriction along g of the locally constant ℤ/ℓ coefficient. Suppose that
 this restriction is a coefficient along g (`h_torsion`, `h_descent`) and that its class η, pulled
@@ -214,16 +226,18 @@ lemma etaOneClass_eq_zero_of_hasUniversalPoints {c : TestOver A}
     (freeAbMap (Y := testOfPoint A projLine ⋙ reprBy c)
       ((elementsProj (g ⋙ ringOf (𝟭 (TestOver A)) ⋙ projLine)).whiskerLeft u)) 2
   let M : TorsionCoeff g := ⟨locConstAlong g, h_torsion, h_descent⟩
-  let one : freeAb (onePointFunctor (projLineAlong g).Elements) ⟶
-      locConstAlong (elementsProj (projLineAlong g) ⋙ g) := oneLocConst
   have h_pull : (P (etaOneClass c)).toTotalH = 0 :=
     comp_id.symm.trans <|
-      (comp_pull_etaOneClass_eq_pullbackAlong_oneLocConst (M := M) u).trans <|
-        (congrArg _ pullbackAlong_id).trans h_zero
+      (comp_pull_etaOneClass_eq_pullbackAlong_oneLocConst (M := M)
+          (T := homClass (𝟙 M.onElements.functor)) u).trans <|
+        (congrArg
+          (pullbackAlong
+            (oneLocConst (g := elementsProj (g ⋙ ringOf (𝟭 (TestOver A)) ⋙ projLine) ⋙ g)))
+          pullbackAlong_id).trans h_zero
   have h_pull_two : P (etaOneClass c) = 0 :=
-    DirectSum.of_injective 2 (h_pull.trans (map_zero _).symm)
+    DirectSum.of_injective 2 (h_pull.trans (DirectSum.of _ 2).map_zero.symm)
   have h_injective : Function.Injective P := (hu.on_elements.isBijective 2).injective
-  exact (map_eq_zero_iff P h_injective).mp h_pull_two
+  exact h_injective (h_pull_two.trans (comparison_pull_zero ..).symm)
 
 variable (A) (k : Type _) [Field k] [IsAlgClosed k] [Algebra A k]
 
@@ -240,7 +254,7 @@ def TestOver.structurePt :
       ⟨of A k, isTest_of_preValuationRing⟩ :=
   sectionMap
     { val B := ⟨⟨CommAlg.homOfRingHom (algebraMap k B.obj) (by tauto)⟩⟩
-      property f := congr(⟨⟨$(by ext; apply f.1.hom.2)⟩⟩) }
+      property f := congr(⟨⟨$(by ext; apply f.hom.hom.commutes')⟩⟩) }
 
 /-- For an algebraically closed field k over A, restriction of scalars from tests over k to tests
 over A compares the point with the functor Hom_A(k, −) in the sense of
@@ -298,8 +312,8 @@ lemma pointMap_ofSelf_bijective :
 end
 
 /-! ### The projective line formula over a valuation ring -/
--- Without the seal, unification unfolds these two functors and runs out of heartbeats.
-seal locConstCoeff projLine in
+-- Without the seal, unification unfolds these functors, Ext groups, and their group structure.
+seal locConstCoeff projLine CategoryTheory.Abelian.Ext addCommGroupH in
 /-- If every non-zero element of A is a unit in every test g(d) (so every g(d) lies over the generic
 point of A) and `New.Variety.etaOneClass` vanishes at the residue field of A at its generic point
 (`residueTest (TestOver.ofSelf A) ⊥`, with A seen as a test over itself), then y · η = 0 over the
@@ -326,11 +340,24 @@ lemma lerayHirsch_lineBasis_single_false_eq_zero_of_etaOneClass_eq_zero {C : Typ
   -- pulled back along `u`, composed with `T`.
   obtain ⟨T, rfl⟩ := M.pullbackAlong_oneLocConst_surjective y
   rw [lerayHirsch_single, map_comp_assoc, map_homClass]
-  -- `erw`: the goal has `pullbackAlong oneLocConst` only after unfolding the restriction of
-  -- `oneLocConst` to the points of ℙ¹.
-  erw [← comp_pull_etaOneClass_eq_pullbackAlong_oneLocConst u, h_generic]
-  simp
-  rfl
+  have h_one :
+      (restrictAlong (elementsProj (projLineAlong g))).map (oneLocConst (g := g)) =
+        oneLocConst (g := elementsProj (g ⋙ ringOf (𝟭 (TestOver A)) ⋙ projLine) ⋙ g) :=
+    rfl
+  let T' : TotalH
+      (Functor.Elements.precomp g (ringOf (𝟭 (TestOver A)) ⋙ projLine) ⋙
+        (Theory.locallyConstant.toTorsionCoeff.onElements
+          (X := projLineAlong (𝟭 (TestOver A)))).functor)
+      M.onElements.functor :=
+    TotalH.map (restrictAlong (elementsProj (projLineAlong g))) T
+  rw [h_one]
+  change pullbackAlong
+    (oneLocConst (g := elementsProj (g ⋙ ringOf (𝟭 (TestOver A)) ⋙ projLine) ⋙ g))
+    (comp T' M.cupClass.toTotalH) = 0
+  rw [← comp_pull_etaOneClass_eq_pullbackAlong_oneLocConst (M := M) (T := T') u,
+    h_generic, comparison_pull_zero]
+  exact (congrArg (fun x ↦ comp x T') (DirectSum.of _ 2).map_zero).trans
+    (DFunLike.congr_fun comp.map_zero T')
 
 /-- If `New.Variety.etaOneClass` vanishes at a test k over A that is a field, then it vanishes at
 the residue field of A at its generic point. -/
@@ -346,7 +373,7 @@ lemma etaOneClass_residueTest_bot_eq_zero {ℓ : ℕ} {A : Type} [CommRing A] [I
       fun a ha ↦ IsUnit.mk0 (algebraMap A k.obj a) ha)⟩
   -- Vanishing passes from `k` to `Q`, as pull-back between fields is injective.
   have h_eta_under : etaOneClass (ℓ := ℓ) (residueTest (TestOver.ofSelf A) Q).right = 0 :=
-    (isDetectedAtPoints_projLine.isCohomEquiv_of_isField _ k toK
+    (isDetectedAtPoints_projLine.isCohomEquiv_map_of_isField _ k toK
       (Field.toIsField (ResidueField _)) k_field 2).injective
       ((map_etaOneClass toK).trans (h_eta_k.trans (map_zero _).symm))
   -- Vanishing then passes to the generic point, as the vanishing locus is open.
@@ -495,7 +522,8 @@ lemma hasLineFormula_locallyConstant {ℓ : ℕ} (A : Type) [CommRing A] [Invert
   have h_mem : π ∈ span {pFlat} • (⊤ : Submodule OFlat _) :=
     (LinearMap.ker_tensorProductMk _).le h_zero
   obtain ⟨a, ha_mem, ha_eq⟩ : ∃ a ∈ IsLocalRing.maximalIdeal OFlat, pFlat * a = pFlat := by
-    simpa [π, Submodule.mem_smul_top_iff, mem_span_singleton_mul] using h_mem
+    rw [Submodule.mem_smul_top_iff, smul_eq_mul, mem_span_singleton_mul] at h_mem
+    exact h_mem
   obtain rfl : a = 1 := mul_left_cancel₀ pFlat_ne_zero (ha_eq.trans (mul_one pFlat).symm)
   exact (IsLocalRing.mem_maximalIdeal 1).mp ha_mem isUnit_one
 

@@ -1,9 +1,31 @@
 module
 
-public import Lib.Adelic.Unitary.Defs
 public import TauCeti.RepresentationTheory.CharacterTable.CentralCharacter
 public import TauCeti.RepresentationTheory.CharacterTable.Completeness
 import TauCeti.RepresentationTheory.CharacterTable.Values
+public import Aesop.BuiltinRules
+public import Aesop.Frontend.Tactic
+public import Aesop.Main
+public import Mathlib.Algebra.Category.ModuleCat.Projective
+public import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.Algebra.Order.PUnit
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+public import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.Etale.Weakly
+public import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+public import Mathlib.RingTheory.HopfAlgebra.Basic
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.TotallySplit
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # Characters of finite groups: averages, virtual characters and central projections
@@ -24,8 +46,7 @@ This file sets up the character theory of a finite group `G` that is used for th
   `New.IsClassFunction.mem_virtualChars`, `New.IsClassFunction.exists_eq_mul_groupAlgElem_mul`:
   criteria for a class function `f` to be an irreducible character, for `f` to be a combination of
   characters with coefficients in a given semiring, and for an element of `ℂ[G]` to be recovered
-  from its product with `New.groupAlgElem f`. They are collected in
-  `New.isIrreducibleChar_and_mem_virtualChars_and_exists_mul`.
+  from its product with `New.groupAlgElem f`.
 * `New.IsCentralProj.isChar_card_mul_coeff`: for a central idempotent `e` of `ℂ[G]`, the function
   `g ↦ |G| · e(g)` is a character. Its pairing with any character is the rank of an idempotent, so a
   natural number. It is the character of a representation of dimension at most `|G|`
@@ -184,10 +205,6 @@ def virtualChars : Subalgebra S (G → ℂ) :=
     (BilinMap.apply_apply_mem_of_mem_span (span S {f : G → ℂ | IsChar f}) {f : G → ℂ | IsChar f}
       {f : G → ℂ | IsChar f} (LinearMap.mul S (G → ℂ)) fun _ hχ _ hψ ↦ subset_span (hχ.mul hψ))
 
-/-- The zero function is a character, that of the zero representation. -/
-lemma isChar_zero : IsChar (0 : G → ℂ) :=
-  ⟨.of (Representation.trivial ℂ G PUnit), funext fun _ ↦ (trace ℂ PUnit).map_zero⟩
-
 /-- The sum of two characters is a character, that of the direct sum. -/
 lemma IsChar.add (hχ : IsChar χ) (hψ : IsChar ψ) : IsChar (χ + ψ) := by
   obtain ⟨V, rfl⟩ := hχ
@@ -196,7 +213,8 @@ lemma IsChar.add (hχ : IsChar χ) (hψ : IsChar ψ) : IsChar (χ + ψ) := by
 
 lemma isChar_of_mem_virtualChars (hf : f ∈ virtualChars ℕ G) : IsChar f := by
   -- The characters form an additive submonoid, which is therefore its own `ℕ`-span.
-  let M : AddSubmonoid (G → ℂ) := ⟨⟨{χ : G → ℂ | IsChar χ}, IsChar.add⟩, isChar_zero⟩
+  let M : AddSubmonoid (G → ℂ) :=
+    ⟨⟨{χ : G → ℂ | IsChar χ}, IsChar.add⟩, ⟨.of (Representation.trivial ℂ G PUnit), funext fun _ ↦ (trace ℂ PUnit).map_zero⟩⟩
   have h_span : f ∈ (span ℕ (M : Set (G → ℂ))).toAddSubmonoid := hf
   rwa [span_nat_eq] at h_span
 
@@ -464,7 +482,8 @@ lemma exists_isExpansionFamily : ∃ (n : ℕ) (χ : Fin n → G → ℂ), IsExp
   let χ : Fin (Fintype.card (ConjClasses G)) → G → ℂ := fun i ↦ (ρ (e.symm i)).character
   have hχ (i) : IsChar (χ i) := ⟨.of (ρ (e.symm i)), rfl⟩
   have h_translate (φ : G → ℂ) (hφ : IsClassFunction φ) (i) :
-      ∃ c : ℂ, ∀ y : G, classInner (χ i) (fun x ↦ φ (x * y)) = (Nat.card G : ℂ)⁻¹ * (c * χ i y) := by
+      ∃ c : ℂ, ∀ y : G, classInner (χ i) (fun x ↦ φ (x * y)) =
+          (Nat.card G : ℂ)⁻¹ * (c * χ i y) := by
     have hφ_inv : IsClassFunction (fun t : G ↦ φ t⁻¹) := fun g x ↦ by
       simpa [mul_assoc] using hφ g⁻¹ x
     let z : Subalgebra.center ℂ ℂ[G] :=
@@ -472,7 +491,7 @@ lemma exists_isExpansionFamily : ∃ (n : ℕ) (χ : Fin n → G → ℂ), IsExp
     refine ⟨TauCeti.Representation.centralCharacter (ρ (e.symm i)) z, fun y ↦ ?_⟩
     rw [classInner, finMean, finsum_eq_sum_of_fintype, div_eq_inv_mul]
     congr 1
-    have h_repr : ∑ u : G, φ (u⁻¹ * y) • single u (1 : ℂ) = z.1 * single y 1 := by
+    have h_repr : ∑ u : G, φ (u⁻¹ * y) • single u (1 : ℂ) = z.val * single y 1 := by
       ext u
       have h_swap : φ (y * u⁻¹) = φ (u⁻¹ * y) := by
         simpa [mul_assoc] using hφ (u⁻¹ * y) u
@@ -481,7 +500,7 @@ lemma exists_isExpansionFamily : ∃ (n : ℕ) (χ : Fin n → G → ℂ), IsExp
       refine Fintype.sum_equiv (Equiv.inv G) _ _ fun x ↦ ?_
       simp [(hχ i).apply_inv, mul_comm]
     calc ∑ x : G, conj (χ i x) * φ (x * y)
-        = LinearMap.trace ℂ _ ((ρ (e.symm i)).asAlgebraHom (z.1 * single y 1)) := by
+        = LinearMap.trace ℂ _ ((ρ (e.symm i)).asAlgebraHom (z.val * single y 1)) := by
           rw [h_sum, ← h_repr, map_sum, map_sum]
           refine Finset.sum_congr rfl fun u _ ↦ ?_
           simp [χ, Representation.character]
@@ -502,7 +521,8 @@ lemma exists_isExpansionFamily : ∃ (n : ℕ) (χ : Fin n → G → ℂ), IsExp
     ring
   · let Φ : TauCeti.ClassFunction ℂ G := ⟨φ, TauCeti.ClassFunction.mem_iff.2 hφ⟩
     have h_pair (i : Fin (Fintype.card (ConjClasses G))) :
-        TauCeti.ClassFunction.characterPairing (TauCeti.ClassFunction.ofCharacter (ρ (e.symm i))) Φ =
+        TauCeti.ClassFunction.characterPairing
+            (TauCeti.ClassFunction.ofCharacter (ρ (e.symm i))) Φ =
           classInner (χ i) φ := by
       rw [TauCeti.ClassFunction.characterPairing_apply, classInner, finMean,
         finsum_eq_sum_of_fintype, div_eq_inv_mul]
@@ -579,25 +599,6 @@ lemma IsClassFunction.exists_eq_mul_groupAlgElem_mul (hf : IsClassFunction f) (a
         congrArg Matrix.toLinAlgEquiv'.symm h
     simp [ha_zero]
   · simp [hc, hi, algebraMap_eq_smul_one]
-
-/-- Three criteria for a class function `f` on a finite group `G`, collected in one statement:
-(a) `New.IsClassFunction.isIrreducibleChar_of_classInner_eq_intCast`, for `f` to be an irreducible
-character; (b) `New.IsClassFunction.mem_virtualChars`, for `f` to be a `Z`-combination of
-characters, `Z` a commutative semiring with `ℂ` a `Z`-algebra;
-(c) `New.IsClassFunction.exists_eq_mul_groupAlgElem_mul`, for a left multiple of
-`New.groupAlgElem f` to fix an element `a` of `ℂ[G]`. -/
-lemma isIrreducibleChar_and_mem_virtualChars_and_exists_mul (hf_class : IsClassFunction f) :
-    (∀ I : G → ℂ, IsClassFunction I → classInner I f ≠ 0 → classInner f f = 1 → 0 ≤ (f 1).re →
-      (∀ χ : G → ℂ, IsChar χ → classInner χ I ≠ 0 →
-        (∀ y : G, χ 1 * classInner χ (fun x : G ↦ I (x * y)) = classInner χ I * χ y) →
-        ∃ m : ℤ, classInner χ f = m) →
-      IsIrreducibleChar f) ∧
-    ((∀ χ : G → ℂ, IsChar χ → ∃ m : Z, classInner χ f = algebraMap Z ℂ m) → f ∈ virtualChars Z G) ∧
-    ∀ a : ℂ[G],
-      (∀ V : FDRep ℂ G, asAlgebraHom V.ρ (groupAlgElem f) = 0 → asAlgebraHom V.ρ a = 0) →
-      ∃ u : ℂ[G], a = u * groupAlgElem f * a :=
-  ⟨fun _ ↦ hf_class.isIrreducibleChar_of_classInner_eq_intCast, hf_class.mem_virtualChars,
-    hf_class.exists_eq_mul_groupAlgElem_mul⟩
 
 /-- Let `i : G →* H` be a group homomorphism with `G` finite, `χ` a character of `H` and `s ∈ H`.
 If the product of `χ ∘ i` with the character of a finite-dimensional representation `ρ` of `G` has

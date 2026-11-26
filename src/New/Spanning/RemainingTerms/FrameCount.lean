@@ -1,6 +1,5 @@
 module
 
-public import Lib.GLn.SchurModule.Basic
 public import New.Spanning.Unfolding.ReducedPoints
 
 /-!
@@ -225,7 +224,7 @@ lemma norm_coeff_le_norm_sum_frameVector {y : 𝔰.G₁} (h_box : y ∈ frameBox
     rw [mulVec_mulVec, adjugate_mul, det_eq_one_of_unitriangular (frameMatrix_unitriangular hu),
       one_smul, one_mulVec]
   have h_exponent : 1 + ((2 + (7 * 𝔰.n + 37 * 𝔰.n)) * 𝔰.ϱ + 7 * 𝔰.n) ≤ 46 * 𝔰.n ^ 2 := by
-    nlinarith [S.ten_pow_five_le_varrho, (rfl : 𝔰.n = 𝔰.ϱ + 1)]
+    nlinarith only [S.ten_pow_five_le_varrho, (rfl : 𝔰.n = 𝔰.ϱ + 1)]
   calc ‖x a‖ ≤ ∑ i, ‖T.adjugate a i‖ * ‖(T *ᵥ x) i‖ := by
         rw [h_cramer]
         exact norm_sum_le_of_le _ fun i _ ↦ norm_mul_le _ _
@@ -340,7 +339,7 @@ noncomputable def sharedVectors (S : Filling E 𝔰) (j : Fin (𝔰.ϱ + 2)) (γ
 /-- Let `γ` have cell rank `j` (`S.HasCellRank j γ`). Let `k ≥ j`. Then column `k` of `γ f · adj Y`
 lies in the span of the frame `f = frameImage 1`. Here `γ f = frameImage γ`, and `Y` is the first
 `j` rows of the matrix of products `S.frameProducts γ`, completed by rows of the identity matrix. -/
-lemma HasCellRank.exists_frameImage_one_mulVec_eq {S : Filling E 𝔰} [HasPrimitiveRoot5040 E]
+lemma HasCellRank.exists_frameImage_one_mulVec_eq {S : Filling E 𝔰}
     {j : Fin (𝔰.ϱ + 2)} {γ : S.G E} (h : S.HasCellRank j γ) {k : Fin (𝔰.ϱ + 1)}
     (hk : j.val ≤ k.val) :
     ∃ w : Fin (𝔰.ϱ + 1) → E,
@@ -371,7 +370,7 @@ lemma frameProducts_mul_of_mem_besselU0 {S : Filling E 𝔰} {u : S.G E} (hu : u
 elements that fix each vector of the frame `f`. Then `u γ` and `γ` have the same shared vectors (the
 first `ϱ` coordinates of the columns `k ≥ j` of `γ f · adj Y`, see `sharedVectors`), as these
 columns lie in the span of `f`. -/
-lemma HasCellRank.sharedVectors_mul_of_mem_besselU0 {S : Filling E 𝔰} [HasPrimitiveRoot5040 E]
+lemma HasCellRank.sharedVectors_mul_of_mem_besselU0 {S : Filling E 𝔰}
     {j : Fin (𝔰.ϱ + 2)} {γ : S.G E} (h : S.HasCellRank j γ) {u : S.G E} (hu : u ∈ besselU0) :
     S.sharedVectors j (u * γ) = S.sharedVectors j γ := by
   ext a k
@@ -395,7 +394,7 @@ completed by rows of `1`. If `j ≤ k`, column `k` of `S.sharedVectors j γ` con
 coordinates along `e₁, …, e_ϱ` of column `k` of `γ f · adj Y`, which lies in the spans of both the
 frame `f` and `γ f`. If `k < j`, the column is zero. All these entries have norm at most
 `S.b ^ (182 n²)` under the embedding `Φ v` of every infinite place `v`, where `n = ϱ + 1`. -/
-lemma HasCellRank.norm_sharedVectors_le [S.IsAdmissible] [HasPrimitiveRoot5040 E]
+lemma HasCellRank.norm_sharedVectors_le [S.IsAdmissible]
     {j : Fin (𝔰.ϱ + 2)} {γ : S.G E} (h : S.HasCellRank j γ) (h_near : S.IsNear γ)
     (v : InfinitePlace E) (a : Fin 𝔰.ϱ) (k : Fin (𝔰.ϱ + 1)) :
     ‖Φ v (S.sharedVectors j γ a k)‖ ≤ S.b ^ (182 * 𝔰.n ^ 2) := by
@@ -499,7 +498,6 @@ lemma skewSolution_mul (h_gram : μᴴ * P = -(Pᴴ * μ)) (h_solve : μ * α * 
 lemma isIntMatrix_skewSolution {O : Subring R} [IsStarStable O] (hP : IsIntMatrix O P)
     (hμ : IsIntMatrix O μ) (hα : IsIntMatrix O α) (hδ : δ ∈ O) :
     IsIntMatrix O (skewSolution P μ α δ) := by
-  classical
   have hμα : IsIntMatrix O (μ * α) := hμ.mul hα
   have h_third : IsIntMatrix O (αᴴ * (Pᴴ * μ) * α) :=
     (hα.conjTranspose.mul (hP.conjTranspose.mul hμ)).mul hα
@@ -519,7 +517,7 @@ variable {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {Z : Matrix (Fin (𝔰.ϱ 
 
 /-- The elements of `E` that are integral at every finite place, the preimage of the ring `Ô E` of
 integral finite adeles, form a subring stable under conjugation. -/
-lemma isStarStable_comap_Ô [HasPrimitiveRoot5040 E] :
+lemma isStarStable_comap_Ô :
     IsStarStable ((Ô E).comap (algebraMap E (𝔸f E))) :=
   ⟨fun hx ↦ by simpa using star_mem_Ô hx⟩
 
@@ -531,7 +529,7 @@ lemma frameModulus_ne_zero (h_minor : leadingMinor Z j ≠ 0) : S.frameModulus j
 
 /-- If the entries of `Z` are algebraic integers, then its first `j` rows completed by rows of `1`
 have entries that are integral at every finite place. -/
-lemma isIntMatrix_paddedLeading [HasPrimitiveRoot5040 E] {𝔰 : Shape} {j : Fin (𝔰.ϱ + 2)}
+lemma isIntMatrix_paddedLeading {𝔰 : Shape} {j : Fin (𝔰.ϱ + 2)}
     {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E}
     (hZ : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (Z a b)) :
     IsIntMatrix ((Ô E).comap (algebraMap E (𝔸f E))) (paddedLeading j Z) := by
@@ -653,7 +651,7 @@ a skew-hermitian matrix over `E` that is integral at every finite place, and let
 `ϱ` rows of `S.frameProducts γ`. Then an element of `S.classUnipotent₀ c`, the unipotent group of
 level `M` fixing the standard frame `f`, adds `M σ P` to the first block of rows of
 `γ f = frameImage γ`. Here `M = S.M` is the product of the two level primes. -/
-lemma exists_frameImage_mul_eq_add_fromRows [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+lemma exists_frameImage_mul_eq_add_fromRows [HasPrimitiveRoot5040 E]
     (c : S.Classes) (γ : S.G E) {σ : Matrix (Fin 𝔰.ϱ) (Fin 𝔰.ϱ) E} (h_skew : σᴴ = -σ)
     (h_int : IsIntMatrix (Ô E) (finAdeleMatrix σ)) :
     ∃ r ∈ S.classUnipotent₀ c, frameImage (r * γ).val.val =
@@ -681,7 +679,7 @@ completed by rows of `1`. If the two frames agree outside the isotropic space an
 unipotent group `S.classUnipotent₀ c` of level `M = S.M` fixing the standard frame, carries the
 frame of `γ` to that of `γ'`. -/
 lemma exists_mem_classUnipotent₀_frameImage_mul_eq [HasPrimitiveRoot5040 E] {𝔰 : Shape}
-    {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} [S.IsAdmissible] {γ γ' : S.G E} (c : S.Classes)
+    {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ γ' : S.G E} (c : S.Classes)
     (hZ : S.frameProducts γ' = S.frameProducts γ)
     (hZ_int : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (S.frameProducts γ a b))
     (h_minor : leadingMinor (S.frameProducts γ) j ≠ 0)

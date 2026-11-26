@@ -88,9 +88,11 @@ abbrev blockSigns : b → ℤˣ := (1 ⊕ᵥ -1) ∘ f.symm
 
 /-- The embedding of the compact groups `U(m)`, one for each infinite place, as the positive block
 of the unitary group of signs `blockSigns j`. -/
-@[simps!]
+@[simps! -isSimp]
 def posBlockEmb : GInf E (1 : m → ℤˣ) →* GInf E (blockSigns j) :=
   ((U.reindex j (by simp [signMatrix])).toMonoidHom.comp (U.inl 1 (-1))).compLeft (InfinitePlace E)
+
+attribute [simp] val_posBlockEmb_apply_coe
 
 omit [NumberField E] in
 /-- At each place, the inverse of the image of `k` has the matrix of the image of `k⁻¹`. -/
@@ -165,8 +167,8 @@ abbrev posFockVector :
 variable `x` multiplied by `s ^ w x` is differentiable in `s`. -/
 lemma differentiable_apply_bind₁_pow_smul {σ : Type} (L : MvPolynomial σ ℂ →ₗ[ℂ] ℂ) (w : σ → ℕ)
     (P : MvPolynomial σ ℂ) :
-    Differentiable ℂ fun s : ℂ ↦ L (P.bind₁ fun x : σ ↦ s ^ w x • X x) := by
-  simp only [← aeval_eq_bind₁, aeval_def, eval₂_eq, algebraMap_eq, C_mul', smul_pow, prod_smul,
+    Differentiable ℂ fun s : ℂ ↦ L (aeval (fun x : σ ↦ s ^ w x • X (R := ℂ) x) P) := by
+  simp only [aeval_def, eval₂_eq, algebraMap_eq, C_mul', smul_pow, prod_smul,
     map_sum, map_smul, smul_eq_mul]
   fun_prop
 
@@ -316,13 +318,13 @@ lemma exists_mul_eq_circle_mean (j : m ⊕ l ≃ n) (e : p ⊕ a ≃ m)
   -- `P₀` is `P` with variables outside the columns `cols` set to zero. Averaged over U(`a`) with
   -- the weight `∏ τ, det (u τ) ^ (-card (ι τ))`, it is `κ` times `∏ τ, det ^ card (ι τ)`.
   let P₀ : MvPolynomial (InfinitePlace E × a × a) ℂ :=
-    P.bind₁ fun (τ, i, k) ↦ extend cols (fun k' ↦ X (τ, i, k')) 0 k
+    aeval (fun (τ, i, k) ↦ extend cols (fun k' ↦ X (τ, i, k')) 0 k) P
   obtain ⟨κ, hκ⟩ := exists_forall_eq_mul_map_det_pow (fun τ ↦ card (ι τ)) P₀
   refine ⟨κ, funext fun ⟨ℓ, hℓ⟩ ↦ ?_⟩
   -- The torus scales the variables outside the columns `cols` by `z`; the result is polynomial in
   -- `z`, so its circle mean is the value `scaled 0`.
   let scaled (s : ℂ) : ℂ :=
-    ℓ (polyVector _ (P.bind₁ fun (τ, i, k) ↦ s ^ extend cols 0 1 k • X (τ, i, k)))
+    ℓ (polyVector _ (aeval (fun (τ, i, k) ↦ s ^ extend cols 0 1 k • X (R := ℂ) (τ, i, k)) P))
   have h_torus (z : Circle) : ℓ (orbit (polyVector _ P) z) = scaled z := by
     simp [orbit, hγ, principalMinor_of_forall, DiscreteSeries.principalMinor_of_forall_not,
       ↓coe_inv_posBlockEmb, ↓posBlockEmb_mem_blockDiagAlg, ↓principalMinor_posBlockEmb_eq_det,
@@ -349,7 +351,7 @@ lemma exists_mul_eq_circle_mean (j : m ⊕ l ≃ n) (e : p ⊕ a ≃ m)
     have h_det : ∏ τ, (u τ : Matrix a a ℂ).det ^ card (ι τ) ≠ 0 :=
       prod_ne_zero_iff.2 fun τ _ ↦ pow_ne_zero _ (GeneralLinearGroup.det_ne_zero _)
     simp [hγ, field, rename_eq_aeval, evalCols, P₀, principalMinor_of_forall,
-      DiscreteSeries.principalMinor_of_forall_not, ← aeval_eq_bind₁, ↓comp_aeval_apply,
+      DiscreteSeries.principalMinor_of_forall_not, ↓comp_aeval_apply,
       ↓realPairWeil_polyVector, ↓prod_pair, ↓Nat.card_eq_fintype_card, Matrix.one_apply]
     -- Both substitutions keep the columns `cols`, mixed by `u`, and kill the other variables.
     congr
@@ -404,9 +406,7 @@ lemma exists_stackedDetProd_eq_sum_unitary (f : p ⊕ l ≃ b) (j : m ⊕ l ≃ 
     exists_pairedDetProd_eq_sum_unitary h_card (e.injective.comp inl_injective) ξ
   refine ⟨c, MvPolynomial.funext fun x ↦ ?_, ?_⟩
   · -- At the point `x`, `stackedDetProd e` is a fixed multiple of the product for complex `Y τ`.
-    have h_point (τ : InfinitePlace E) : ∃ (Y : m → p → ℂ) (d : ℂ), ∀ ζ : Matrix p m ℂ,
-        (stackedDet τ ζ e).eval x = d * (ζ * of Y).det := exists_eval_stackedDet_eq e τ x
-    choose Y d hY using h_point
+    choose Y d hY using fun τ : InfinitePlace E ↦ exists_eval_stackedDet_eq e τ x
     have h_eval (ζ : (τ : InfinitePlace E) → ι τ → Matrix p m ℂ) :
         (stackedDetProd e ζ).eval x =
           (∏ τ : InfinitePlace E, d τ ^ card (ι τ)) * pairedDetProd Y ζ := by
@@ -465,7 +465,7 @@ lemma exists_mul_apply_eq_apply_matchedPoly (f : p ⊕ l ≃ b) (j : m ⊕ l ≃
     -- multiple of `matchedPoly (z⁻¹ ^ 2 • ξ)`, so `h_match` applies.
     have h_frame (z : Circle) (τ : InfinitePlace E) (i : ι τ) :
         η τ i * ((k * t z) τ : Matrix m m ℂ)ᵀ = (z⁻¹ : Circle).val ^ 2 • ξ τ i := by
-      simp [η, ξ, ← ext_iff, Matrix.mul_apply, t, standardFrame, frameTorus, mul_comm, ↓diagTorus,
+      simp [η, ξ, ← ext_iff, Matrix.mul_apply, t, standardFrame, frameTorus, ↓diagTorus,
         Matrix.one_apply, ↓diagonal_apply]
     have h_transl (z : Circle) : ℓ (posBlockEmb j (k * t z)) v =
         ℓ' ((∏ τ, ((k * t z) τ : Matrix m m ℂ).det ^ c τ)⁻¹ •
@@ -488,7 +488,7 @@ lemma exists_mul_apply_eq_apply_matchedPoly (f : p ⊕ l ≃ b) (j : m ⊕ l ≃
             ← prod_pow_eq_pow_sum, ← map_mul, mul_pow, prod_mul_distrib]
           -- What is left is an equation between powers of `z` and of `det k τ ≠ 0`.
           field_simp [↓prod_ne_zero_iff, GeneralLinearGroup.det_ne_zero]
-          simp [pow_add, ← pow_mul, mul_pow, prod_mul_distrib, mul_comm, mul_left_comm, mul_assoc]
+          simp [pow_add, ← pow_mul, mul_pow, prod_mul_distrib, mul_comm, mul_assoc]
         simp [field, h_integrand]
   -- Both sides are linear in the polynomials, so the identity passes to combinations.
   intro ξ
@@ -556,6 +556,7 @@ lemma exists_linearMap_eq_integral_modKernel {s : b → ℤˣ} {t : n → ℤˣ}
            map_smul' c Q := by simp [integral_const_mul] },
     fun Q ↦ rfl⟩ -- by definition of `modKernelBilin`
 
+omit [DecidableEq b] in
 /-- Let `W` have `card l` negative signs and let `I_a` be the positive definite standard space
 `stdSpace E a`. Let the character `α` be tame for `(𝔪, χ)` of weight `card l - card (ι τ)`. Let `Φ`
 have a matched function `Ψ` for `χ⁻¹` (`AreMatched`): for invertible `k` modulo `𝔪` they vanish off

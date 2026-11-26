@@ -47,11 +47,21 @@ lemma exists_lagrangian {V G : Type*} [AddCommGroup V] [CommGroup G] (e : V → 
   have mem_iff (x : V) : x ∈ M ↔ ∀ y ∈ M, e x y = 1 := by
     refine ⟨fun hx y hy ↦ ?_, fun hx ↦ ?_⟩
     · -- A chain gives `e x y = 1` or `e y x = 1`; expanding `e (x - y) (x - y) = 1` links the two.
-      grind [h_max.isChain hx hy, h_alt (x - y), div_eq_one]
+      by_cases hxy : x = y
+      · exact hxy ▸ h_alt x
+      · rcases h_max.isChain hx hy hxy with h | h
+        · exact h
+        · have h0 := h_alt (x - y)
+          rw [(h_sub_div x y (x - y)).1, (h_sub_div x y x).2, (h_sub_div x y y).2,
+            h_alt x, h_alt y, h, _root_.div_one, _root_.div_one, one_div] at h0
+          exact inv_eq_one.mp h0
     · -- An `x` that pairs trivially with `M` can be added to the chain, so lies in it already.
-      exact (h_max.2 (h_max.isChain.insert (by tauto)) (M.subset_insert x)).ge (M.mem_insert x)
+      exact (h_max.2 (h_max.isChain.insert fun y hy _ ↦ .inl (hx y hy))
+        (M.subset_insert x)).ge (M.mem_insert x)
   -- An annihilator is closed under subtraction, since `e` is multiplicative.
-  have h_sub : ∀ x ∈ M, ∀ y ∈ M, x + -y ∈ M := by grind [=_ sub_eq_add_neg, div_self']
+  have h_sub : ∀ x ∈ M, ∀ y ∈ M, x + -y ∈ M := fun x hx y hy ↦ (mem_iff _).mpr fun z hz ↦ by
+    rw [← sub_eq_add_neg, (h_sub_div x y z).1, (mem_iff x).mp hx z hz, (mem_iff y).mp hy z hz,
+      _root_.div_one]
   exact ⟨.ofSub M (h_max.nonempty_iff.mp ⟨0⟩) h_sub, hSM, mem_iff⟩
 
 open Filter Fin Finset in
@@ -80,13 +90,24 @@ lemma eventually_hasPadding {E : Type} [Field E] [NumberField E] [IsCMField E] (
     refine top_unique (b.span_eq.ge.trans (Submodule.span_mono ?_))
     rintro _ ⟨i, rfl⟩
     exact ⟨natAdd _ (castAdd _ (natAdd _ i)), by simp [v]⟩
-  -- `erw`: the list has index type `Fin (r - 3)`, which is `Fin (m + …)` only up to unfolding
-  erw [sum_univ_add]
+  change star c * c + 3 + ∑ l : Fin (m + (1 + d + (d + zeros))), _ = _
+  rw [sum_univ_add]
   -- Expand the norms of `b i + n i`: the cross terms `∑ n i * b i` and `∑ n i * star (b i)` are
   -- given by `hn` and `hn_star`, and they cancel the norms of `c` and of the `b i`.
   -- After this unfolding, the goal is an identity in `∑ n i * b i` and its conjugate.
-  simp [v, d, zeros, sum_univ_add, sum_add_distrib, mul_add, add_mul, mul_comm] at hn hn_star ⊢
-  rw [hn, hn_star]
+  simp only [Module.Basis.equivFun_symm_apply, zsmul_eq_mul, sum_univ_add, Fin.sum_univ_one,
+    append_left, append_right, v, Matrix.cons_val_zero, sum_sub_distrib, Fin.sum_const,
+    nsmul_eq_mul, mul_one, star_sum, star_mul, star_intCast, star_sub, star_add, star_one,
+    star_natCast, star_star, Nat.cast_add, Nat.cast_one] at hn hn_star
+  simp only [append_left, append_right, Pi.one_apply, star_one, mul_one, Fin.sum_const,
+    nsmul_eq_mul, sum_univ_add, Pi.zero_apply, star_zero, mul_zero, sum_const_zero, add_zero, v,
+    Fin.sum_univ_one, Matrix.cons_val_zero, star_add, star_intCast, mul_add, add_mul,
+    sum_add_distrib, zeros, Nat.cast_add, Nat.cast_sum, Nat.cast_one]
+  have hsq : (∑ i : Fin d, (((n i * n i).natAbs : ℕ) : 𝓞 E)) =
+      ∑ i : Fin d, (n i : 𝓞 E) * (n i : 𝓞 E) :=
+    Finset.sum_congr rfl fun i _ ↦ by
+      rw [← Int.cast_natCast, Int.natAbs_of_nonneg (mul_self_nonneg (n i)), Int.cast_mul]
+  rw [hsq, hn, hn_star]
   ring
 
 /-- For `s ≠ 0` there is a purely imaginary `ξ` in the inverse different of `E`, with positive
@@ -135,20 +156,44 @@ lemma exists_star_eq_neg_and_im_pos {E : Type} [Field E] [CMBase E]
       fun v ↦ (norm_le_pi_norm _ v).trans (mem_closedBall_zero_iff.mp hy_ball)⟩
   refine ⟨a * γ + ↑(s * (z - star z)), μ • γ * (z - star z) + c • 1, ?_, fun v ↦ ?_, ?_,
     γ * algebraMap _ _ μ, ?_, ?_⟩
-  · simp [← coe_star_ringOfIntegers, hγ_star, mem_maximalRealSubfield_iff_star_eq.mp, add_comm,
-      mul_sub]
+  · rw [star_add, star_mul', RingOfIntegers.coe_eq_algebraMap ((s : 𝓞 E) * (z - star z)), map_mul,
+      map_natCast, map_sub, star_mul', star_natCast, star_sub,
+      ← RingOfIntegers.coe_eq_algebraMap z, ← RingOfIntegers.coe_eq_algebraMap (star z),
+      coe_star_ringOfIntegers, star_star, ← coe_star_ringOfIntegers, hγ_star,
+      RingOfIntegers.coe_eq_algebraMap (-γ), map_neg, ← RingOfIntegers.coe_eq_algebraMap γ,
+      mem_maximalRealSubfield_iff_star_eq.mp a.2]
+    ring
   · -- The shift by `(C + 1) i` forces `0 < Im (Φ v z) + Im (Φ v (a γ)) / (2 s)`, and
     -- `Im (Φ v ξ)` is `2 s` times this sum.
     have h_abs_im : |(Φ v (z : E) + (Φ v (a * γ / 2 / s : E) - ⟨0, C + 1⟩)).im| ≤ C :=
       (Complex.abs_im_le_norm _).trans (hz v)
     have h_im : -(C + 1) < (Φ v (z : E) + (Φ v (a * γ / 2 / s : E) - ⟨0, C + 1⟩)).im :=
       (neg_lt_neg (lt_add_one C)).trans_le (neg_le_of_abs_le h_abs_im)
-    simp [field, map_ofNat] at h_im ⊢
+    have h_im_star : (Φ v (star (z : E))).im = -(Φ v (z : E)).im := by
+      rw [map_star_complex]
+      rfl
+    have h_div_im : (Φ v (a * γ / 2 / s : E)).im = (Φ v (a * γ : E)).im / (2 * (s : ℝ)) := by
+      rw [div_div, map_div₀, map_mul, map_mul, map_ofNat, map_natCast, ← Complex.ofReal_natCast,
+        ← Complex.ofReal_ofNat, ← Complex.ofReal_mul, Complex.div_ofReal_im]
+    simp only [Complex.add_im, Complex.sub_im, h_div_im] at h_im
+    have h_im_sz : (Φ v (↑(s * (z - star z)) : E)).im = 2 * (s : ℝ) * (Φ v (z : E)).im := by
+      have hsz : ((s * (z - star z) : 𝓞 E) : E) = (s : E) * ((z : E) - star (z : E)) := by
+        rw [RingOfIntegers.coe_eq_algebraMap ((s : 𝓞 E) * (z - star z)), map_mul, map_natCast,
+          map_sub, ← RingOfIntegers.coe_eq_algebraMap z, ← RingOfIntegers.coe_eq_algebraMap
+          (star z), coe_star_ringOfIntegers]
+      rw [hsz, map_mul, map_natCast, map_sub, ← Complex.ofReal_natCast, Complex.im_ofReal_mul,
+        Complex.sub_im, h_im_star]
+      ring
+    rw [map_add, Complex.add_im, h_im_sz]
+    have h_mul := mul_lt_mul_of_pos_left h_im (by positivity : (0 : ℝ) < 2 * s)
+    have h_cancel : 2 * (s : ℝ) * ((Φ v (a * γ : E)).im / (2 * s)) = (Φ v (a * γ : E)).im :=
+      mul_div_cancel₀ _ (by positivity)
     linarith
   · -- `ξ` lies in the inverse different of `E`: `a γ` does by transitivity, the rest is integral.
-    have hξ : (a * γ + ↑(s * (z - star z)) : E) ∈ codiffE := by
-      apply_rules [Submodule.add_mem, coe_mem_one, smul_mem_dual_one ℤ ℚ F _ _ E ha,
-        one_le_dual_one]
+    have hξ : (a * γ + ↑(s * (z - star z)) : E) ∈ codiffE :=
+      Submodule.add_mem _
+        (smul_mem_dual_one ℤ ℚ F (𝓞 F) (𝓞 E) E ha (one_le_dual_one (𝓞 F) F (coe_mem_one _ γ)))
+        (one_le_dual_one ℤ ℚ (coe_mem_one _ _))
     -- `ψf` is trivial on `x Ô` exactly when `x` times the different is integral.
     refine forall_ψf_mul_eq_one_iff.mpr fun e he ↦ ?_
     have he_inv : (e : E) ∈ codiffE⁻¹ := (coeIdeal_differentIdeal ℤ ℚ E (𝓞 E)).le ⟨e, he, rfl⟩
@@ -167,8 +212,12 @@ lemma exists_star_eq_neg_and_im_pos {E : Type} [Field E] [CMBase E]
       rw [h_one, OneMemClass.coe_one]
     have hγ_sq_E : (γ : E) * γ = -1 := by simpa using congrArg (algebraMap (𝓞 E) E) hγ_sq
     linear_combination (norm := skip) h_one_E - ((μ • a : F) : E) * hγ_sq_E
-    simp [smul_def, mul_sub, sub_eq_zero]
-    ring!
+    have hF (x : 𝓞 F) : algebraMap (𝓞 E) E (algebraMap (𝓞 F) (𝓞 E) x) =
+        ((algebraMap (𝓞 F) F x : F) : E) := rfl
+    have hsF : ((s : F) : E) = s := rfl
+    simp only [smul_def, RingOfIntegers.coe_eq_algebraMap, map_sub, map_mul, map_natCast, map_add,
+      map_one, Algebra.smul_def, hF, Subfield.coe_add, Subfield.coe_mul, hsF, sub_eq_zero]
+    ring
 
 /-- For an embedding `σ` of `E ⊇ QuadField d`, some CM type picks `σ` at its base place and, at
 every other place, an embedding whose restriction to `QuadField d` differs from that of `σ`. -/
@@ -182,16 +231,43 @@ lemma exists_cmBase_restrict_ne {d : ℕ} {E : Type} [Field E] [NumberField E] [
   classical
   let i : QuadField d →+* E := algebraMap (QuadField d) E
   -- Conjugate `v.embedding` exactly when its restriction to `QuadField d` is on the wrong side.
-  use { v₀ := mk σ, mk_Φ := ?_
-        Φ v := if (v.embedding.comp i = σ.comp i ↔ v ≠ mk σ) then star v.embedding
-          else v.embedding }
-  · -- `Φ v₀ = σ`, and at `v ≠ v₀` the chosen embedding restricts differently from `σ`;
-    -- `dsimp +instances` unfolds `Φ` and `v₀` of the CM type just built, which is an instance
-    dsimp +instances
-    grind [mk_embedding, mk_eq_iff, ComplexEmbedding.conjugate_comp]
-  · -- Conjugating an embedding does not change its place (`dsimp +instances` as above).
-    dsimp +instances
-    grind [mk_embedding, mk_eq_iff]
+  let Φfun (v : InfinitePlace E) : E →+* ℂ :=
+    if (v.embedding.comp i = σ.comp i ↔ v ≠ mk σ) then star v.embedding else v.embedding
+  have hmk (v : InfinitePlace E) : mk (Φfun v) = v := by
+    dsimp only [Φfun]
+    split_ifs
+    · exact (mk_eq_iff.mpr (.inr rfl)).symm.trans (mk_embedding v)
+    · exact mk_embedding v
+  have h_star_ne (f : E →+* ℂ) : (star f).comp i ≠ f.comp i := fun h ↦ by
+    have hval : star (f (i (sqrtNegD d))) = f (i (sqrtNegD d)) := DFunLike.congr_fun h (sqrtNegD d)
+    rw [← map_star_complex f, ← map_star_CM i] at hval
+    have hq : star (sqrtNegD d) = sqrtNegD d := i.injective (f.injective hval)
+    rw [star_sqrtNegD] at hq
+    have h0 : sqrtNegD d = 0 := by linear_combination -hq / 2
+    have hsq := sqrtNegD_sq d
+    rw [h0, zero_pow two_ne_zero] at hsq
+    exact neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (NeZero.ne d)) hsq.symm
+  have hv0 : Φfun (mk σ) = σ := by
+    dsimp only [Φfun]
+    rcases mk_eq_iff.mp (mk_embedding (mk σ)) with h | h
+    · split_ifs with hif
+      · exact (hif.mp (by rw [h]) rfl).elim
+      · exact h
+    · change star (mk σ).embedding = σ at h
+      split_ifs with hif
+      · exact h
+      · exfalso
+        apply hif
+        exact ⟨fun heq ↦ (h_star_ne (mk σ).embedding (by rw [h, heq])).elim,
+          fun hne ↦ (hne rfl).elim⟩
+  refine ⟨{ v₀ := mk σ, Φ := Φfun, mk_Φ := hmk }, hv0, fun v hv ↦ ?_⟩
+  change (Φfun v).comp i ≠ (Φfun (mk σ)).comp i
+  rw [hv0]
+  dsimp only [Φfun]
+  split_ifs with hif
+  · rw [← hif.mpr hv]
+    exact h_star_ne v.embedding
+  · exact fun h ↦ hif (iff_of_true h hv)
 
 /-- On integers, the map `𝓞 (QuadField d) → 𝓞 E` induced by the inclusion is the algebra map. -/
 private lemma mapRingHom_algebraMap_eq {d : ℕ} {E : Type} [Field E]
@@ -246,10 +322,15 @@ lemma ψf_xiForm_eq_one_of_torsionClass_eq_zero {E : Type} [Field E] [NumberFiel
     {m : Type} [Fintype m] {ξ : E} (hξ : ∀ u ∈ Ô E, ψf E (u * algebraMap E (𝔸f E) ξ) = 1) {r : ℕ}
     {x y : m → 𝔸f E} (hx : torsionClass (r • x) = 0) (hy : torsionClass (r • y) = 0) :
     ψf E (xiForm (r ^ 2 * ξ) x y) = 1 := by
-  have h_int : star (r • y) ⬝ᵥ r • x ∈ Ô E := sum_mem fun i _ ↦ by
-    apply_rules [mul_mem, star_mem_Ô, torsionClass_eq_zero.mp]
-  simpa [star_trivial, -nsmul_eq_mul, ← nsmul_eq_mul, sq, mul_assoc, mul_comm, xiForm] using
-    hξ _ h_int
+  have h_int : star (r • y) ⬝ᵥ r • x ∈ Ô E := sum_mem fun i _ ↦
+    mul_mem (star_mem_Ô (torsionClass_eq_zero.mp hy i)) (torsionClass_eq_zero.mp hx i)
+  have heq : xiForm (r ^ 2 * ξ) x y = (star (r • y) ⬝ᵥ r • x) * algebraMap E (𝔸f E) ξ := by
+    simp only [xiForm, dotProduct, Pi.star_apply, nsmul_eq_mul, Pi.mul_apply, Pi.natCast_apply,
+      star_mul, star_natCast, map_mul, map_pow, map_natCast, Finset.mul_sum, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    ring
+  rw [heq]
+  exact hξ _ h_int
 
 /-- A group of torsion vectors killed by `(s c - 1) (s + 1) ^ 2` has order prime to `s`. -/
 lemma coprime_card_of_le_torsionBySet {E : Type} [Field E] [NumberField E] {m : Type} [Fintype m]
@@ -264,16 +345,23 @@ lemma coprime_card_of_le_torsionBySet {E : Type} [Field E] [NumberField E] {m : 
   have h_norm : p ∣ Ideal.absNorm (span {κ}) := by
     by_cases h_bot : span {κ} = ⊥
     · simp [h_bot]
-    · have h_dvd : Nat.card T ∣ Ideal.absNorm (span {κ}) ^ Fintype.card m :=
-        (card_torsionBySet_adelicTorsion h_bot).subst (T.card_dvd_of_le hT)
-      exact hp.dvd_of_dvd_pow (hpT.trans h_dvd)
+    · have h_dvd0 : Nat.card T ∣ Nat.card (Submodule.torsionBySet (𝓞 E) (AdelicTorsion E m)
+          (span {κ})).toAddSubgroup := T.card_dvd_of_le hT
+      have h_eq : Nat.card (Submodule.torsionBySet (𝓞 E) (AdelicTorsion E m)
+          (span {κ})).toAddSubgroup = Ideal.absNorm (span {κ}) ^ Fintype.card m :=
+        (congrArg Nat.card (rfl : ↥(Submodule.torsionBySet (𝓞 E) (AdelicTorsion E m)
+          (span {κ})).toAddSubgroup = _)).trans (card_torsionBySet_adelicTorsion h_bot)
+      rw [h_eq] at h_dvd0
+      exact hp.dvd_of_dvd_pow (hpT.trans h_dvd0)
   -- Take a prime `P ∣ κ` over `p`. As `p ∣ s`, `s ∈ P`, so `κ ≡ -1` modulo `P`; yet `κ ∈ P`.
   obtain ⟨P, hP_max, hP_under, hPκ⟩ : ∃ P : Ideal (𝓞 E), P.IsMaximal ∧ under ℤ P = span {(p : ℤ)} ∧
     P ∣ span {κ} := exists_isMaximal_dvd_of_dvd_absNorm' hp _ h_norm
   have hs_zero : (s : 𝓞 E ⧸ P) = 0 := by
     rw [← map_natCast (Ideal.Quotient.mk P), Ideal.Quotient.eq_zero_iff_mem]
     simpa [← Int.ofNat_dvd, ← mem_span_singleton (α := ℤ), ← hP_under] using hps
-  have hκ_neg_one : Ideal.Quotient.mk P κ = -1 := by simp [hκ, hs_zero]
+  have hκ_neg_one : Ideal.Quotient.mk P κ = -1 := by
+    rw [hκ, map_mul, map_sub, map_mul, map_natCast, map_one, map_pow, map_natCast,
+      Nat.cast_succ, hs_zero, zero_mul, zero_sub, zero_add, one_pow, mul_one]
   have hκ_zero : Ideal.Quotient.mk P κ = 0 :=
     Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.dvd_span_singleton.mp hPκ)
   exact neg_ne_zero.mpr one_ne_zero (hκ_neg_one.symm.trans hκ_zero)
@@ -319,8 +407,14 @@ private lemma map_dualOfIntegral_le_torsionBySet {E : Type} [Field E] [NumberFie
   simp_rw [mul_smul, ← algebraMap_smul E (_ - _), hmξ, smul_assoc]
   refine forall_ψf_mul_eq_one_iff.mp (fun u hu ↦ ?_) m hm
   -- Pair `x` with the integral vector that has `star u` at the index `l`.
-  have h_int : torsionClass (Pi.single l (star u)) = 0 := by
-    grind [star_mem_Ô, Subring.zero_mem, torsionClass_eq_zero]
+  have h_int : torsionClass (Pi.single l (star u)) = 0 :=
+    torsionClass_eq_zero.mpr fun k ↦ by
+      by_cases h : k = l
+      · subst h
+        rw [Pi.single_eq_same]
+        exact star_mem_Ô hu
+      · rw [Pi.single_eq_of_ne h]
+        exact Subring.zero_mem _
   simpa [smul_def, mul_left_comm, mul_assoc, xiForm] using hx _ h_int
 
 /-- A purely imaginary `ξ` (`star ξ = -ξ`) has real part `0` under every embedding `Φ v` of the
@@ -381,9 +475,20 @@ private lemma exists_forall_dvd_exists_isSafeGoodPEL (n : ℕ) {d : ℕ} {E : Ty
   let incl : QuadField d →+* E := algebraMap (QuadField d) E
   let β : 𝓞 E := algebraMap (𝓞 (QuadField d)) (𝓞 E) (betaK d)
   have hβ : (β : E) = incl ((1 + sqrtNegD d) / 2) := rfl
-  have h_star : star β = 1 - β := by
-    simp [hβ, ← map_star_CM, RingOfIntegers.ext_iff, map_ofNat]
-    ring
+  have h_star : star β = 1 - β := eq_sub_iff_add_eq.mpr <| by
+    apply RingOfIntegers.ext
+    have hq : star ((1 + sqrtNegD d) / 2) + (1 + sqrtNegD d) / 2 = 1 := by
+      rw [star_div₀, star_add, star_one, star_sqrtNegD, star_ofNat]
+      ring
+    have haddO (x y : 𝓞 E) :
+        algebraMap (𝓞 E) E (x + y) = algebraMap (𝓞 E) E x + algebraMap (𝓞 E) E y :=
+      (algebraMap (𝓞 E) E).map_add' x y
+    have hadd (x y : QuadField d) : incl (x + y) = incl x + incl y := incl.map_add' x y
+    have hone : incl 1 = 1 := incl.map_one'
+    rw [RingOfIntegers.coe_eq_algebraMap (star β + β), haddO,
+      ← RingOfIntegers.coe_eq_algebraMap (star β), ← RingOfIntegers.coe_eq_algebraMap β,
+      coe_star_ringOfIntegers, hβ, ← map_star_CM, ← hadd, hq, hone]
+    exact ((RingOfIntegers.coe_eq_algebraMap 1).trans (algebraMap (𝓞 E) E).map_one').symm
   obtain ⟨r₀, h_pad⟩ : ∃ r₀ : ℕ, ∀ r ≥ r₀, HasPadding E r 1 ∧ HasPadding E r β :=
     ((eventually_hasPadding 1).and (eventually_hasPadding β)).exists_forall_of_atTop
   let s : ℕ := (r₀ + B.sup FinPlace.q + 2)!
@@ -413,10 +518,15 @@ private lemma exists_forall_dvd_exists_isSafeGoodPEL (n : ℕ) {d : ℕ} {E : Ty
   have h_finite : Finite T := (card_pos_iff.mp h_odd.pos).right
   -- `j` is the degree bound that the field `isCutDegree` of `PEL` asks for.
   obtain ⟨j, hj⟩ : ∃ j, IsCutDegree T j r (thetaRanks T r) := (eventually_isCutDegree ..).exists
-  refine ⟨⟨r ^ j.succ * Nat.card T, by bound [h_odd.pos]⟩, fun w hw ↦ ?_, fun 𝔑 h𝔑 hN ↦ ?_⟩
+  refine ⟨⟨r ^ j.succ * Nat.card T, mul_pos (pow_pos (Nat.succ_pos _) _) h_odd.pos⟩,
+    fun w hw ↦ ?_, fun 𝔑 h𝔑 hN ↦ ?_⟩
   · -- The norm of `w` lies in `w` and divides `s`, which is prime to `N`.
-    have h_dvd : w.q ∣ s := dvd_factorial w.one_lt_q.le (by grind [Finset.le_sup])
-    exact natCast_notMem_of_coprime w h_dvd (.mul_right (by simp [r]) h_card)
+    have h_le : w.q ≤ r₀ + B.sup FinPlace.q + 2 := by
+      have := Finset.le_sup (f := FinPlace.q) hw
+      omega
+    have h_dvd : w.q ∣ s := dvd_factorial w.one_lt_q.le h_le
+    exact natCast_notMem_of_coprime w h_dvd
+      (.mul_right (Coprime.pow_right _ (coprime_self_add_right.mpr (coprime_one_right s))) h_card)
   -- If `r ^ l • t ∈ T` with `l ≤ j`, then `r ^ l * #T` kills `t`, and it divides the level.
   have h_level (l : ℕ) (hl : l ≤ j) (t : AdelicTorsion E (Fin n)) (ht : r ^ l • t ∈ T) :
       t ∈ Submodule.torsionBy (𝓞 E) _ 𝔑 := by
@@ -445,14 +555,28 @@ private lemma exists_forall_dvd_exists_isSafeGoodPEL (n : ℕ) {d : ℕ} {E : Ty
       xi_im_pos v := by simpa [sq, re_Φ_eq_zero_of_star_eq_neg hξ_star] using hξ_im v
       xi_re_eq_zero v := by simp [sq, re_Φ_eq_zero_of_star_eq_neg hξ_star]
       emb_beta_eq_of_ne v hv := by
-        simpa [hβ, h_star, map_ofNat] using
-          congrArg star (DFunLike.congr_fun (h_conj v hv) (sqrtNegD d))
-      emb_star_beta_ne := by simp [hβ, ← map_star_CM, neg_eq_self, Subtype.ext_iff, NeZero.ne] }
+        have hc := DFunLike.congr_fun (h_conj v hv) (star ((1 + sqrtNegD d) / 2))
+        rw [hβ, ← map_star_CM incl]
+        change ((Φ v).comp incl) _ = ((Φ v₀).comp incl) _
+        rw [← hc]
+        change (Φ v) (incl _) = starRingEnd ℂ ((Φ v) (incl (star _)))
+        rw [← Complex.star_def, ← map_star_complex (Φ v), ← map_star_CM incl, star_star]
+      emb_star_beta_ne := fun h ↦ by
+        rw [hβ, ← map_star_CM incl] at h
+        have hq : star ((1 + sqrtNegD d) / 2) = (1 + sqrtNegD d) / 2 :=
+          incl.injective ((Φ v₀).injective h)
+        rw [star_div₀, star_add, star_one, star_sqrtNegD, star_ofNat] at hq
+        have h0 : sqrtNegD d = 0 := by linear_combination -hq
+        have hsq := sqrtNegD_sq d
+        rw [h0, zero_pow two_ne_zero] at hsq
+        exact neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (NeZero.ne d)) hsq.symm }
   refine ⟨D, rfl, rfl, rfl, fun w hw ↦ ?_⟩
   -- `r` and `#T` divide `N`, which divides the level, and the level is not in `w`.
   obtain ⟨-, h𝔑_notMem, -⟩ := id hw
-  have h_units : ↑D.paddedNorm ∉ w.asIdeal ∧ ↑(Nat.card D.dualTorsion) ∉ w.asIdeal := by
-    simpa [D, ← eq_zero_iff_mem] using h𝔑_notMem ∘ w.asIdeal.mem_of_dvd hN
+  have h_units : ↑D.paddedNorm ∉ w.asIdeal ∧ ↑(Nat.card D.dualTorsion) ∉ w.asIdeal :=
+    ⟨fun h ↦ h𝔑_notMem (w.asIdeal.mem_of_dvd
+        (((dvd_pow_self r (Nat.succ_ne_zero j)).mul_right _).natCast.trans hN) h),
+     fun h ↦ h𝔑_notMem (w.asIdeal.mem_of_dvd ((dvd_mul_left _ _).natCast.trans hN) h)⟩
   exact pel_good_of_safe D rfl hw h_units.left h_units.right
 
 /-- Existence of PEL data. Let `d % 4 = 3`, let the CM field `E ⊇ QuadField d = ℚ(√-d)` satisfy

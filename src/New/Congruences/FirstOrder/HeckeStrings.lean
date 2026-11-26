@@ -1,6 +1,5 @@
 module
 
-public import Lib.General.Algebra.SeriesBounds
 public import Lib.LocalGL.SphericalChainLemma
 public import New.Congruences.GaloisRepresentations.SelmerHypotheses
 

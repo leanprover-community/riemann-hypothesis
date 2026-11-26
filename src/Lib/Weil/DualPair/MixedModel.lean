@@ -59,7 +59,7 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E]
 /-- For a space T with adelic frame x, the invertible adelic matrix (x⁻¹)* ε, with inverse ε x*,
 where ε is the standard form of its signs. -/
 def dualFrame : GL n' (𝔸 E) where
-  val := T.x⁻¹.1ᴴ * stdForm E s'
+  val := T.x⁻¹.valᴴ * stdForm E s'
   inv := stdForm E s' * T.xᴴ
   val_inv := by simp [conjTranspose_nonsing_inv, Matrix.mul_assoc]
   inv_val := by simp [conjTranspose_nonsing_inv, Matrix.mul_assoc]

@@ -1,5 +1,15 @@
 module
 
+public import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Calculus.FDeriv.Star
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.LinearAlgebra.Matrix.Bilinear
+public import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+public import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Mathlib.RingTheory.Complex
+public import Mathlib.RingTheory.TotallySplit
+public import Mathlib.Tactic.Linter.Style
 public import Lib.General.LinearAlgebra.HermitianMatrices
 public import Lib.General.Measure.HaarNormalisation
 

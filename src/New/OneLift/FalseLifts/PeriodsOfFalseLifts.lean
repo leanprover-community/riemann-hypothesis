@@ -1,6 +1,8 @@
 module
 
 public import New.OneLift.FalseLifts.HyperbolicPlaneStep
+public import New.OneLift.ComparisonOperator.GluedLattices
+public import New.OneLift.FalseLifts.BottomOfTower
 
 /-!
 # The tower of descents and the periods of false lifts
@@ -505,7 +507,7 @@ lemma hyperplaneSum_apply_eq_zero_of_rank_one {O : DescentPair E Unit n}
   have h_zero : (piTensorElem fun i ↦ hyperplaneSum (O.tamePart (O.chosenPlace i)) (v i)) *
       tupleIdem Unit (fun _ ↦ Polynomial.X - 1) = 0 :=
     piTensorElem_mul_eq_zero i (hyperplaneSum_mul_labelIdem_X_sub_one (h_chosen i) hv)
-  rw [← Module.End.mul_apply, ← map_mul, h_zero, map_zero, LinearMap.zero_apply]
+  rw [← mul_apply_eq_comp, ← map_mul, h_zero, map_zero, LinearMap.zero_apply]
 
 omit [WeilData E] [Nonempty r] in
 /-- Conjugates of the second block fix forms. Let `ε` split `I_n = I_N ⊕ I_l`, with `U.block ε` the
@@ -532,17 +534,17 @@ lemma algFormRep_conj_block_apply_eq_self (Ξ : O.FormV) (ε : N ⊕ l ≃ n) {x
   let c : stdLevel E n := A⁻¹ * ⟨_, h_mem⟩ * A
   -- At the chosen places the columns `O.incl` of `c` are those of `1`, as `x⁻¹ (1, k) x` fixes `Y`.
   have h_col (i : O.ChosenIndex) :
-      (stdLevel.reduceAt (O.placeAt (inl i)) c).1 *
+      (stdLevel.reduceAt (O.placeAt (inl i)) c).val *
           inclMatrix (ResField (O.placeAt (inl i))) O.incl =
         inclMatrix (ResField (O.placeAt (inl i))) O.incl := by
     simp [c, hA_col, h_fixY, inv_mul_eq_iff_eq_mul_of_invertible, -elim_inl, Matrix.mul_assoc]
   -- At the twist places the point `x` is trivial, so `x⁻¹ (1, k) x` reduces to the block matrix
   -- `(1, k)`; it fixes the rows `e'`. So the rows `O.incl` of `c` are those of `1`.
   have h_row (i : O.TwistIndex) :
-      (stdLevel.reduceAt (O.placeAt (inr i)) c).1ᵀ *
+      (stdLevel.reduceAt (O.placeAt (inr i)) c).valᵀ *
           inclMatrix (ResField (O.placeAt (inr i))) O.incl =
         inclMatrix (ResField (O.placeAt (inr i))) O.incl := by
-    obtain ⟨h_blk, h_red⟩ : ∃ h : U.block ε (1, k.1) ∈ stdLevel E n,
+    obtain ⟨h_blk, h_red⟩ : ∃ h : U.block ε (1, k.val) ∈ stdLevel E n,
       stdLevel.reduceAt (O.twistPlace i) ⟨_, h⟩ =
         reindexGL ε (blockGL (1, stdLevel.reduceAt (O.twistPlace i) k)) := by
       simpa using! map_block_eq_blockGL (reduceAt (O.twistPlace i)) ε 1 k
@@ -550,7 +552,7 @@ lemma algFormRep_conj_block_apply_eq_self (Ξ : O.FormV) (ε : N ⊕ l ≃ n) {x
       ⟨_, h_blk⟩ :=
       (MonoidHom.eq_iff _).2
         (stdLevel.reduceAt_eq_one_of_atPlace (by simp [atPlace_twistPlace_eq_one hx]))
-    have h_fix_rows : (stdLevel.reduceAt (O.twistPlace i) ⟨_, h_mem⟩).1ᵀ *
+    have h_fix_rows : (stdLevel.reduceAt (O.twistPlace i) ⟨_, h_mem⟩).valᵀ *
           inclMatrix (ResField (O.twistPlace i)) e' =
         inclMatrix (ResField (O.twistPlace i)) e' := by
       rw [h_eq.trans h_red, mul_inclMatrix]
@@ -566,7 +568,7 @@ lemma algFormRep_conj_block_apply_eq_self (Ξ : O.FormV) (ε : N ⊕ l ≃ n) {x
       (1 : ∀ i : O.ChosenIndex, GL r (ResField (O.chosenPlace i))) := rfl
   rw [h_one, map_one] at h_act
   change _ = _ • Ξ.val at h_act
-  simpa [c, mul_assoc] using h_act
+  simpa [c] using h_act
 
 open scoped Classical in
 /-- Periods against point forms vanish. Let `O` be a descent pair `(W, I_n)`; its level `O.places`
@@ -656,16 +658,16 @@ lemma DividedSplitting.algFormRep_conj_block_eq_self {z : r ↪ l} (V : DividedS
   -- first block.
   obtain ⟨h_mem', h_conj⟩ := L.reduceAt_conj_eq_one _ h_one
   have h_incl : ⇑O.incl = V.ε ∘ inl ∘ V.fixedEmb := (funext V.equiv_inl_fixedEmb).symm
-  have h_fixY (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) ⟨_, h_mem'⟩).1 *
+  have h_fixY (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) ⟨_, h_mem'⟩).val *
       inclMatrix _ O.incl = inclMatrix _ O.incl := by
     have h_red : stdLevel.reduceAt (O.placeAt (inl i)) ⟨_, h_mem'⟩ = 1 := h_conj i
     rw [h_red]
     exact Matrix.one_mul _
   -- So `algFormRep_conj_block_apply_eq_self` applies with `A = 1`.
-  have h_col (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) (1 : stdLevel E n)).1 *
+  have h_col (i : O.ChosenIndex) : (stdLevel.reduceAt (O.placeAt (inl i)) (1 : stdLevel E n)).val *
       inclMatrix (ResField (O.placeAt (inl i))) O.incl = inclMatrix _ O.incl := by
     rw [map_one, Units.val_one, Matrix.one_mul]
-  have h_row (i : O.TwistIndex) : (stdLevel.reduceAt (O.placeAt (inr i)) (1 : stdLevel E n)).1ᵀ *
+  have h_row (i : O.TwistIndex) : (stdLevel.reduceAt (O.placeAt (inr i)) (1 : stdLevel E n)).valᵀ *
       inclMatrix (ResField (O.placeAt (inr i))) O.incl = inclMatrix _ O.incl := by
     rw [map_one, Units.val_one, transpose_one, Matrix.one_mul]
   simpa using algFormRep_conj_block_apply_eq_self Ξ V.ε L.mem_supportedOn h_incl h_col h_row k
@@ -700,25 +702,25 @@ lemma DividedSplitting.stdClassSum_inner_productForm_eq_zero {z : r ↪ l}
       (star (kernelVector O b O.chosenModulusSq Ψ O.colsMinus g h))) Ξ) = 0 := by
   -- Apply the vanishing of periods to the conjugate-linear map `ζ ↦ y · conj ζ` and the point `γ`.
   let C : (WeylIndex l O.colsMinus → ℂ) →ₗ⋆[ℂ] WeylIndex n O.columnCount → ℂ :=
-    cartanProduct V.ε 1 y ∘ₛₗ (starLinearEquiv ℂ).1
+    cartanProduct V.ε 1 y ∘ₛₗ (starLinearEquiv ℂ).toLinearMap
   -- `C` is equivariant for the real group of the second block.
   have hC (g : GInf E (1 : n → ℤˣ)) (u : GInf E (1 : l → ℤˣ)) (ζ : WeylIndex l O.colsMinus → ℂ)
       (hg : ∀ τ : InfinitePlace E, (g τ : GL n ℂ) = reindexGL V.ε (blockGL (1, u τ))) :
       conjWeylRep O.columnCount O.detExp g (C ζ) = C (conjWeylRep O.colsMinus 0 u ζ) := by
-    have h_inv (τ : InfinitePlace E) : (g τ).1.1⁻¹ = (g τ).1.1ᴴ := by
+    have h_inv (τ : InfinitePlace E) : (g τ).val.val⁻¹ = (g τ).val.valᴴ := by
       simpa using U.form_mul_inv_eq (g τ)
     -- In the first block the columns of `conj g` are those of `1`; in the second those of its
     -- inverse transpose, which is `g`, are given by `u`.
-    have h_first (τ : InfinitePlace E) : ((g τ).1.1.map conj).submatrix id (V.ε ∘ inl) =
+    have h_first (τ : InfinitePlace E) : ((g τ).val.val.map conj).submatrix id (V.ε ∘ inl) =
         (1 : Matrix n n ℂ).submatrix id (V.ε ∘ inl) := by
       simp [hg, ← ext_iff, reindex_equiv V.ε, Matrix.one_apply]
-    have h_second (τ : InfinitePlace E) : ((g τ).1.1ᴴ.map conj)ᵀ.submatrix id (V.ε ∘ inr) =
-        (1 : Matrix n n ℂ).submatrix id (V.ε ∘ inr) * (u τ).1.1.map (conj ∘ conj) := by
+    have h_second (τ : InfinitePlace E) : ((g τ).val.valᴴ.map conj)ᵀ.submatrix id (V.ε ∘ inr) =
+        (1 : Matrix n n ℂ).submatrix id (V.ε ∘ inr) * (u τ).val.val.map (conj ∘ conj) := by
       simp [hg, ← ext_iff, Matrix.mul_apply, reindex_equiv V.ε, Matrix.one_apply]
     -- `conjWeylRep` acts through the conjugate matrix `gc`, which `weylRep_mulVec_cartanProduct`
     -- moves into `cartanProduct`; there it acts on the two factors by the Schur maps of those
     -- columns.
-    let gc (τ : InfinitePlace E) : GL n ℂ := GeneralLinearGroup.map conj (g τ).1
+    let gc (τ : InfinitePlace E) : GL n ℂ := GeneralLinearGroup.map conj (g τ).val
     suffices h_factors : cartanProduct V.ε gc y (star ζ) =
         cartanProduct V.ε 1 y (star (conjWeylRep O.colsMinus 0 u ζ)) by
       simpa [gc, C, conjWeylRep, weylRep_mulVec_cartanProduct, V.hasColumnsBelow,

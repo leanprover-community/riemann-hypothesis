@@ -1,12 +1,26 @@
 module
 
-public import Lib.Analytic.ZeroSymmetry
-public import Lib.Base
 public import TauCeti.LinearAlgebra.Matrix.GroupMatrix
 public import TauCeti.NumberTheory.Bernoulli.Basic
 public import TauCeti.NumberTheory.DirichletCharacter.LFunction.TrivialZeros
-public import TauCeti.NumberTheory.MulChar.Basic
 public import TauCeti.NumberTheory.MulChar.Orthogonality
+import TauCeti.NumberTheory.ZetaValues
+public import Mathlib.Algebra.Order.Star.Rat
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
+public import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
+public import Mathlib.NumberTheory.Multiplicity
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.RingTheory.WittVector.IsPoly
+public import Mathlib.Tactic.Basify
+public import Mathlib.Tactic.ENatToNat
+public import Mathlib.Tactic.Polynomial.Basic
+public import Mathlib.Tactic.ReduceModChar
+public import Std.Internal.Order.Automation
+public import Std.Tactic.BVDecide.Normalize.Prop
+public import Lib.Speed
 
 /-!
 # A small nonzero integer in all Stickelberger ideals via Voronoi's congruence
@@ -51,17 +65,14 @@ namespace New.OddPart
 
 variable (N e : ℕ) [NeZero N]
 
-/-- The primorial `primorial n` divides `n !`. -/
-lemma primorial_dvd_factorial (n : ℕ) : primorial n ∣ n ! :=
-  prod_primes_dvd _ (fun _ hp ↦ (mem_filter.1 hp).2.prime) fun _ hp ↦
-    dvd_factorial (mem_filter.1 hp).2.pos (Nat.lt_succ_iff.1 (mem_range.1 (mem_filter.1 hp).1))
-
 /-- For every `i`, the number `(i + 1)! Bᵢ` is an integer. -/
 lemma exists_intCast_eq_factorial_mul_bernoulli (i : ℕ) :
     ∃ c : ℤ, (c : ℚ) = (i + 1)! * _root_.bernoulli i := by
   -- `primorial (i + 1) Bᵢ` is an integer, by von Staudt–Clausen.
   obtain ⟨z, hz⟩ := TauCeti.exists_intCast_eq_primorial_mul_bernoulli (le_refl i)
-  obtain ⟨d, hd⟩ := primorial_dvd_factorial (i + 1)
+  obtain ⟨d, hd⟩ : primorial (i + 1) ∣ (i + 1)! :=
+    prod_primes_dvd _ (fun _ hp ↦ (mem_filter.1 hp).2.prime) fun _ hp ↦
+      dvd_factorial (mem_filter.1 hp).2.pos (Nat.lt_succ_iff.1 (mem_range.1 (mem_filter.1 hp).1))
   refine ⟨z * d, ?_⟩
   rw [hd, Nat.cast_mul, Int.cast_mul, hz, Int.cast_natCast]
   ring
@@ -268,34 +279,6 @@ lemma det_ne_zero_of_forall_sum_mul_ne_zero (g : (ZMod N)ˣ → ℂ)
   rw [sum_eq_zero fun χ _ ↦ by rw [h_orth χ⁻¹, mul_zero]] at h
   exact (mul_eq_zero.1 h).resolve_left (Nat.cast_ne_zero.2 Nat.card_pos.ne')
 
-/-- For `e ≥ 1` and `0 ≤ x ≤ 1`, the Bernoulli function satisfies `|B_{e+1}(x)| < 17 (e + 1)!`,
-by its Fourier series. -/
-lemma abs_bernoulliFun_lt (he_ne : e ≠ 0) {x : ℝ} (hx : x ∈ Set.Icc 0 1) :
-    |bernoulliFun (e + 1) x| < (e + 1)! * 17 := by
-  -- The Fourier series gives `(2π)^(e+1) |B_{e+1}(x)| ≤ (e+1)! π²`, and `π² < 17`.
-  have h_fourier :
-      ‖-(2 * π * I) ^ (e + 1) / (e + 1)! * bernoulliFun (e + 1) x‖ ≤ π ^ 2 / 6 * 6 := by
-    refine (hasSum_one_div_nat_pow_mul_fourier (by omega) hx).norm_le_of_bounded
-      (hasSum_zeta_two.mul_right 6) fun n ↦ ?_
-    grw [norm_mul, norm_add_le]
-    cases n with
-    | zero => simp
-    | succ k =>
-      -- `fourier` has norm `1`, and `(k + 1) ^ (e + 1) ≥ (k + 1) ^ 2` as `e ≥ 1`.
-      simp [norm_exp, -Nat.cast_add]
-      bound [he_ne.pos]
-  have h_bound : (2 * |π|) ^ (e + 1) * |bernoulliFun (e + 1) x| ≤ (e + 1)! * π ^ 2 := by
-    simpa [field] using h_fourier
-  have h_base : 1 ≤ (2 * |π|) ^ (e + 1) :=
-    one_le_pow₀ (by linarith [two_le_pi, le_abs_self π])
-  calc |bernoulliFun (e + 1) x|
-      ≤ (2 * |π|) ^ (e + 1) * |bernoulliFun (e + 1) x| :=
-        le_mul_of_one_le_left (abs_nonneg _) h_base
-    _ ≤ (e + 1)! * π ^ 2 := h_bound
-    _ < (e + 1)! * 17 := by
-      gcongr
-      nlinarith [pi_le_four, pi_pos]
-
 omit [NeZero N] in
 /-- For a prime `l`, one of `c = 1 + N` and `c = 1 + 2 N` is prime to `l`. This `c` is `≡ 1 mod N`,
 and `(c ^ e - 1) (c ^ (e + 1) - 1)` divides, for every `Y`,
@@ -386,7 +369,10 @@ lemma exists_isStickelbergerBound (he : e ≠ 0) :
   · simpa [X, tsub_eq_zero_iff_le, add_assoc, hN, he] using hT_ne
   · have hb_lt (t : ℕ) (ht : t ≤ N) : |b t| < M * 17 := by
       have h_bound : |bernoulliFun (e + 1) (t / N)| < (e + 1)! * 17 :=
-        abs_bernoulliFun_lt e he ⟨by positivity, div_le_one_of_le₀ (mod_cast ht) (by positivity)⟩
+        (TauCeti.abs_bernoulliFun_le_four_mul_factorial_div _
+          ⟨by positivity, div_le_one_of_le₀ (mod_cast ht) (by positivity)⟩).trans_lt <|
+          (_root_.div_le_self (by positivity) (one_le_pow₀ (by linarith [two_le_pi]))).trans_lt
+            (by linarith [show (0 : ℝ) < (e + 1)! by positivity])
       simpa [← Int.cast_lt (R := ℝ), M, hb ℝ, abs_mul, mul_assoc, bernoulliFun] using
         mul_lt_mul_of_pos_left h_bound (by positivity : (0 : ℝ) < (e + 2)! * N ^ (e + 1))
     -- The entries of `T` are at most `34 M + 2 ≤ 64 M`.

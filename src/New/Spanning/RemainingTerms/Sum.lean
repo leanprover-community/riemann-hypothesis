@@ -86,6 +86,18 @@ lemma IsNearPairOverAgreeingBlock.pairDiscriminant_sq_le {E : Type} [Field E] [C
   simpa only [ite_self, Nat.cast_one, mul_one] using
     Filling.pairDiscriminant_sq_le h_agrees (one_le_meetNorm s) h_over h_over' h_cell h_cell'
 
+-- Absorb the congruence gain into the discriminant before comparing the two gauges.
+private lemma IsNearPairOverAgreeingBlock.scaled_pairDiscriminant_sq_le
+    {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} [HasPrimitiveRoot5040 E]
+    {c c' : S.Classes} {γ γ' : S.G E}
+    (hq : S.IsNearPairOverAgreeingBlock c c' (γ, γ')) :
+    (S.pairDiscriminant c c' γ γ' * ((S.M : ℝ) / 2) ^ (S.linkCorank γ γ' * numInfPlaces E)) ^ 2 ≤
+      S.levelGauge (S.cellRank γ) c c' γ * S.levelGauge (S.cellRank γ') c c' γ' := by
+  have hM : 2 ≤ S.M := two_le_M
+  rw [mul_pow, ← pow_mul, ← le_div_iff₀ (by positivity), div_eq_mul_inv, ← inv_pow, inv_div,
+    mul_comm, Nat.mul_comm (_ * _) 2, ← Nat.mul_assoc]
+  exact hq.pairDiscriminant_sq_le
+
 /-- Let `S` be data of the filling theorem that satisfy the standing hypotheses `S.IsAdmissible`.
 Let `(γ, γ')` be a near pair over the classes `c`, `c'`. Its common lattice has corank at most `n³`
 and discriminant at most `S.discriminantBound = b ^ (n³ f)`. -/
@@ -101,40 +113,30 @@ lemma IsNearPairOverAgreeingBlock.corank_le_and_pairDiscriminant_le {E : Type} [
   set i : ℕ := S.linkCorank γ γ'
   set d : ℝ := S.pairDiscriminant c c' γ γ'
   have h_one_le_d : 1 ≤ d := hq.one_le_pairDiscriminant
-  have h_gain : d ^ 2 ≤ (2 / S.M) ^ (2 * i * numInfPlaces E) *
-      (S.levelGauge j c c' γ * S.levelGauge j' c c' γ') := hq.pairDiscriminant_sq_le
+  have h_gain := hq.scaled_pairDiscriminant_sq_le
   obtain ⟨⟨⟨h_near, -⟩, h_cell⟩, ⟨⟨h_near', -⟩, h_cell'⟩, s, -, h_over, h_over'⟩ := hq
   have h_corank : 𝔰.k ≤ finrank E (commonLink γ γ') + i + (j - 𝔰.ϱ) :=
     le_finrank_commonLink_add h_cell γ'
-  have h_gauge_pos' : 0 < S.levelGauge j' c c' γ' := levelGauge_pos h_over' h_cell'
-  have h_bound : 0 ≤ S.discriminantBound :=
-    h_gauge_pos'.le.trans (h_near'.levelGauge_le h_over' h_cell')
-  have hM : 2 ≤ S.M := two_le_M
+  have h_bound := (levelGauge_pos h_over' h_cell').le.trans (h_near'.levelGauge_le h_over' h_cell')
   have hb₂ : 2 ≤ S.b := two_le_b
-  have h_ratio : (2 / S.M : ℝ) ≤ (S.b ^ 18)⁻¹ := by
-    rw [div_le_iff₀ (by positivity), inv_mul_eq_div, le_div_iff₀ (by positivity)]
+  have h_ratio : S.b ^ 18 ≤ (S.M : ℝ) / 2 := by
+    rw [le_div_iff₀ (by positivity)]
     calc
-      2 * S.b ^ 18 ≤ S.b ^ 19 := by grw [hb₂, ← pow_succ']
+      S.b ^ 18 * 2 ≤ S.b ^ 19 := by grw [hb₂, ← pow_succ]
       _ ≤ (S.M : ℝ) := S.le_M
   have h_pow_mul_disc_le : S.b ^ (18 * i * numInfPlaces E) * d ≤ S.discriminantBound := by
-    refine le_of_sq_le_sq ?_ h_bound
-    calc
-      _ = d ^ 2 * (S.b ^ 18) ^ (2 * i * numInfPlaces E) := by ring
-      _ ≤ (S.b ^ 18)⁻¹ ^ (2 * i * numInfPlaces E) * (S.discriminantBound * S.discriminantBound) *
-          (S.b ^ 18) ^ (2 * i * numInfPlaces E) := by
-        grw [h_gain, h_near.levelGauge_le h_over h_cell,
-          h_near'.levelGauge_le h_over' h_cell', h_ratio]
-      _ = S.discriminantBound ^ 2 := by
-        rw [inv_pow]
-        field_simp
+    rw [Nat.mul_assoc, pow_mul, mul_comm]
+    grw [h_ratio]
+    apply le_of_sq_le_sq _ h_bound
+    rw [sq S.discriminantBound]
+    exact h_gain.trans (mul_le_mul (h_near.levelGauge_le h_over h_cell)
+      (h_near'.levelGauge_le h_over' h_cell') (levelGauge_pos h_over' h_cell').le h_bound)
   refine ⟨?_,
     (le_mul_of_one_le_left (by positivity) (one_le_pow₀ S.one_le_b)).trans h_pow_mul_disc_le⟩
   have h_exp : 18 * i * numInfPlaces E ≤ 𝔰.n ^ 3 * numInfPlaces E :=
     (pow_le_pow_iff_right₀ (by linarith : 1 < S.b)).1
       ((le_mul_of_one_le_right (by positivity) h_one_le_d).trans h_pow_mul_disc_le)
   have h_codim : 18 * i ≤ 𝔰.n ^ 3 := Nat.le_of_mul_le_mul_right h_exp NeZero.one_le
-  have h_rank_excess_le : j.val - 𝔰.ϱ ≤ 1 := by lia
-  have h_ϱ_large : 10 ^ 5 ≤ 𝔰.ϱ := S.ten_pow_five_le_varrho
   lia
 
 /-- A near pair (two near representative terms over one block whose `s` agrees) lies in
@@ -148,12 +150,11 @@ lemma IsNearPairOverAgreeingBlock.mem_boundedDiscNearPairs {E : Type} [Field E] 
     (Submodule.finrank_le _).trans (by simp)
   ⟨hq, Nat.add_sub_cancel' h_rank, hq.corank_le_and_pairDiscriminant_le.right⟩
 
-/-- Let `S` be data of the filling theorem that satisfy the standing hypotheses `S.IsAdmissible`.
-Let `c`, `c'` be classes and `γ` a rational point of cell rank `j = S.cellRank γ` whose gauge
+/-- Let `S` be data of the filling theorem and let `c`, `c'` be classes and `γ` a rational point of cell rank `j = S.cellRank γ` whose gauge
 `G = S.levelGauge j c c' γ` is positive. If the constant `S.cellRankSecondMoment j` is at most `D`,
 then the square of the size `S.termSize c c' γ` is at most `τ⁴ D / (n_p G ^ k)`. -/
 lemma termSize_sq_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
-    [S.IsAdmissible] {c c' : S.Classes} {γ : S.G E} {D : ℝ}
+    {c c' : S.Classes} {γ : S.G E} {D : ℝ}
     (h_gauge_pos : 0 < S.levelGauge (S.cellRank γ) c c' γ)
     (hD : S.cellRankSecondMoment (S.cellRank γ) ≤ D) :
     S.termSize c c' γ ^ 2 ≤
@@ -226,14 +227,13 @@ lemma IsNearPairOverAgreeingBlock.ofReal_termSize_mul_le {E : Type} [Field E] [C
       B / (S.tailScale ^ (l + 2) * S.pairCountScale) :=
     calc
       _ = S.tailScale ^ (l + 6) * D / η ^ 𝔰.k / (S.tailScale ^ (l + 2) * S.pairCountScale) := by
-        field_simp
-        ring
+        field
       _ ≤ _ := by gcongr
   grw [← ofReal_mul' (by positivity), hq.termSize_mul_le hη h_gain hD hD', h_const]
 
 /-- The number `n³ + 1` of possible coranks is at most `τ = S.tailScale`. -/
-lemma cube_add_one_le_tailScale {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
-    [S.IsAdmissible] : ((𝔰.n ^ 3 + 1 : ℕ) : ℝ) ≤ S.tailScale := by
+lemma cube_add_one_le_tailScale {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰) :
+    ((𝔰.n ^ 3 + 1 : ℕ) : ℝ) ≤ S.tailScale := by
   have hb : 2 ≤ S.b := two_le_b
   calc
     _ = (𝔰.n : ℝ) ^ 3 + 1 := by norm_cast
@@ -373,8 +373,7 @@ lemma pow_mul_mainSecondMoment_div_le {E : Type} [Field E] [CMType E] {𝔰 : Sh
     _ ≤ (S.tailScale ^ 4) ^ 2 * (S.b / S.b ^ 6) ^ m * S.identitySecondMoment := by gcongr
     _ = S.identitySecondMoment / (S.tailScale ^ 4) ^ 3 := by
       rw [tailScale_pow_four, div_pow]
-      field_simp
-      ring
+      field
     _ ≤ S.identitySecondMoment / S.tailScale ^ 10 := by
       grw [← pow_mul, pow_le_pow_right₀ hτ (by norm_num : 10 ≤ 4 * 3)]
 
@@ -410,8 +409,7 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
   set j : Fin (𝔰.ϱ + 2) := S.cellRank γ
   set j' : Fin (𝔰.ϱ + 2) := S.cellRank γ'
   set i : ℕ := S.linkCorank γ γ'
-  have h_gain : S.pairDiscriminant c c' γ γ' ^ 2 ≤ (2 / S.M) ^ (2 * i * numInfPlaces E) *
-      (S.levelGauge j c c' γ * S.levelGauge j' c c' γ') := hq.pairDiscriminant_sq_le
+  have h_gain := hq.scaled_pairDiscriminant_sq_le
   obtain ⟨⟨-, h_cell : S.HasCellRank j γ⟩, ⟨-, h_cell' : S.HasCellRank j' γ'⟩, -⟩ := hq
   have h_corank : 𝔰.k ≤ finrank E (commonLink γ γ') + i + (j - 𝔰.ϱ) :=
     le_finrank_commonLink_add h_cell γ'
@@ -427,7 +425,7 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
       h_cell'.lt_iff_termDisc_ne_zero.1 h_top (h_both.1 h_disc)
     have h_full : 𝔰.k - finrank E (commonLink γ γ') = 0 := by lia
     have h_one : (S.pairDiscriminant c c' γ γ' * 1) ^ 2 ≤
-        S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by simpa [hi] using h_gain
+        S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by simpa [show S.linkCorank γ γ' = 0 from hi] using h_gain
     have h_moment : S.cellRankSecondMoment j = S.identitySecondMoment / S.tailScale ^ 16 :=
       ite_eq_right h_low
     have h_moment' : S.cellRankSecondMoment j' = S.identitySecondMoment / S.tailScale ^ 16 :=
@@ -438,16 +436,9 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
     field_simp
   · -- Different links: the gain is `(M / 2) ^ (i f)`, and the corank is at most `i + 1`.
     have h_corank_le : 𝔰.k - finrank E (commonLink γ γ') ≤ i + 1 := by lia
-    refine ⟨(S.M / 2) ^ (i * numInfPlaces E), S.mainSecondMoment, by positivity, ?_,
+    exact ⟨(S.M / 2) ^ (i * numInfPlaces E), S.mainSecondMoment, by positivity, h_gain,
       cellRankSecondMoment_le_mainSecondMoment j, cellRankSecondMoment_le_mainSecondMoment j',
-        pow_mul_mainSecondMoment_div_le hi h_corank_le⟩
-    calc
-      _ ≤ (2 / S.M) ^ (2 * i * numInfPlaces E) * (S.levelGauge j c c' γ * S.levelGauge j' c c' γ') *
-          ((S.M / 2) ^ (i * numInfPlaces E)) ^ 2 := by grw [mul_pow, h_gain]
-      _ = _ := by
-        rw [← inv_div 2 (S.M : ℝ), inv_pow]
-        field_simp
-        ring
+      pow_mul_mainSecondMoment_div_le hi h_corank_le⟩
 
 /-- **Remaining terms, pairs in the same link class.** Let `E` be a CM field with a primitive root
 of unity of order 5040, and let `S` be data of the filling theorem over `E` that satisfy the

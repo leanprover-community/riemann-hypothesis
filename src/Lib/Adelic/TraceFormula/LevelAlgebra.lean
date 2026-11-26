@@ -39,15 +39,6 @@ lemma asAlgebraHom_mapDomain {H : Type*} [Group H] (f : H →* G) (a : ℂ[H]) :
   | add a b ha hb => simp [mapDomain_add, ha, hb]
   | single h c => simp
 
-variable {ρ} in
-/-- An operator that commutes with the group commutes with the group algebra. -/
-lemma commute_asAlgebraHom {T : Module.End ℂ M} (hT : ∀ g : G, Commute T (ρ g)) (a : ℂ[G]) :
-    Commute T (ρ.asAlgebraHom a) := by
-  induction a using induction_linear with
-  | zero => simp
-  | add a b ha hb => simpa using ha.add_right hb
-  | single g c => simpa using (hT g).smul_right c
-
 /-- The elements of the group algebra that map `K`-fixed vectors of `ρ` to `K`-fixed vectors. -/
 def levelAlgebra : Subalgebra ℂ ℂ[G] where
   carrier := {a : ℂ[G] | ∀ y ∈ levelSpace ρ K, ρ.asAlgebraHom a y ∈ levelSpace ρ K}
@@ -65,24 +56,18 @@ lemma mem_levelAlgebra {a : ℂ[G]} :
 
 /-- The action of `levelAlgebra ρ K` on the `K`-fixed vectors. -/
 def levelAction : levelAlgebra ρ K →ₐ[ℂ] Module.End ℂ (levelSpace ρ K) where
-  toFun a := (ρ.asAlgebraHom a).restrict a.2
+  toFun a := (ρ.asAlgebraHom a).restrict a.property
   map_one' := by simp [LinearMap.ext_iff, Subtype.ext_iff]
   map_mul' a b := by
     ext y
-    exact LinearMap.congr_fun (map_mul ρ.asAlgebraHom a.1 b.1) y
+    exact LinearMap.congr_fun (map_mul ρ.asAlgebraHom a.val b.val) y
   map_zero' := by simp [LinearMap.ext_iff, Subtype.ext_iff]
   map_add' a b := by
     ext y
-    exact LinearMap.congr_fun (map_add ρ.asAlgebraHom a.1 b.1) y
+    exact LinearMap.congr_fun (map_add ρ.asAlgebraHom a.val b.val) y
   commutes' c := by
     ext y
     simp
-
-variable {ρ K} in
-/-- The operator `levelAction ρ K a` sends a `K`-fixed vector `y` to `ρ.asAlgebraHom a y`. -/
-@[simp] lemma coe_levelAction_apply (a : levelAlgebra ρ K) (y : levelSpace ρ K) :
-    (levelAction ρ K a y : M) = ρ.asAlgebraHom a y :=
-  rfl
 
 /-- The elements of the group algebra that keep the `K`-fixed vectors in every representation of
 `G` on a complex vector space in `Type`. -/

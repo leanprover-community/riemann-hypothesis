@@ -1,6 +1,8 @@
 module
 
+public import Mathlib.NumberTheory.Harmonic.Bounds
 public import New.UpperBound.Size.ClassCount
+public import New.UpperBound.Size.ShortColumns
 
 /-!
 # Numerical inequalities between the parameters of the data
@@ -265,7 +267,8 @@ lemma card_stdClasses_le_exp_mul_log {n : Type} [Fintype n] [DecidableEq n]
     relIndex_principalLevel_le NeZero.out, Ideal.absNorm_span_natCast, RingOfIntegers.rank,
     finrank_eq_two_mul_card_infinitePlace, card_stdClasses_le P.conductor_mem_differentIdeal,
     shortBasisConst, hn, hn, ← le_exp_of_log_le] <;>
-    simp [-cast_add, NeZero.pos, ne, log_mul, mul_add, ← mul_assoc]
+    simp only [← mul_assoc, cast_mul, cast_pow, ne_eq, ne, not_false_eq_true, log_mul,
+      Real.log_pow, mul_add, mul_one, NeZero.pos]
   -- The remaining logarithmic terms are controlled by the admissible data.
   gcongr <;> exact D.le_of_hasLogBound
 
@@ -349,7 +352,7 @@ lemma sum_allowedLoss_mul_log_le (U : Finset ℕ) :
       calc 2 * D.loss p * Real.log p
         _ ≤ 2 * (D.f * D.logB ^ 2 * (D.a / p * (↑(2 * p) / c))) * D.logX₁ := by
           grw [loss, h_factor, h_log_p, cast_div_le]
-        _ = T / c := by simp [T, field]
+        _ = T / c := by simp [field]
         _ ≤ _ := h_single hc_pos (hc_le.trans (le_floor hp_lt.le)) hr h_served
     · -- The level `N` takes `c = 1`.
       calc 2 * D.m * D.f * D.b * Real.log p

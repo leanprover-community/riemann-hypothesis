@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Algebra.Order.Ring.Opposite
+public import Mathlib.Tactic.Linter.Style
 public import Lib.Cohomology.TorsionTheories
 
 /-!
@@ -152,13 +154,13 @@ def tateGen : freeAb (onePointFunctor C) ⟶ tateModule g :=
     (fun c _ ↦
       ⟨AddMonoidHom.comp (AddMonoidHom.mk' ULift.up fun _ _ ↦ rfl)
           ((Units.map (algebraMap A (g c).1).1).comp compatibleRootsOfUnity.1).toAdditiveRight,
-        Gm.ext.2 ((congrArg (fun x : Aˣ ↦ algebraMap A (g c).1 x)
+        Gm.ext.2 ((congrArg (fun x : Aˣ ↦ algebraMap A (g c).obj x)
           compatibleRootsOfUnity_ofAdd_one).trans (map_one _))⟩)
     (by
       intros
       congr
       ext
-      exact Gm.ext.2 ((g.map _).1.hom.2 _).symm)
+      exact Gm.ext.2 ((g.map _).hom.hom.commutes' _).symm)
 
 end TateModule
 
@@ -203,7 +205,7 @@ private lemma isPrimitiveRoot_tateRoot_tateGen {c : C} {K : Type} [CommRing K] [
     have h_gen : tateGen g c (.of ⟨⟩) =
         ⟨AddMonoidHom.comp (AddMonoidHom.mk' ULift.up fun _ _ ↦ rfl)
             ((Units.map (algebraMap A (g c).1).1).comp compatibleRootsOfUnity.1).toAdditiveRight,
-          Gm.ext.2 ((congrArg (fun x : Aˣ ↦ algebraMap A (g c).1 x)
+          Gm.ext.2 ((congrArg (fun x : Aˣ ↦ algebraMap A (g c).obj x)
             compatibleRootsOfUnity_ofAdd_one).trans (map_one _))⟩ :=
       freeAb.desc_of (Y := onePointFunctor C) _ _ c ⟨⟩
     exact congrArg (fun x : tateModule g c ↦ ((tateRoot ψ x).val : K)) h_gen
@@ -541,7 +543,7 @@ def projLineSetoid (B : Type) [CommRing.{0} B] : Setoid (B × B) where
 def projLine : PointFunctor where
   obj B := ULift (Quotient (projLineSetoid B))
   map f :=
-    ↾fun q ↦ ⟨q.1.map (Prod.map f.hom f.hom) fun x y
+    ↾fun q ↦ ⟨q.down.map (Prod.map f.hom f.hom) fun x y
       (h : (1 + x.1 * x.2) * y.2 = x.2 * (1 + y.1 * y.2)) ↦
         show (1 + f.hom x.1 * f.hom x.2) * f.hom y.2 = f.hom x.2 * (1 + f.hom y.1 * f.hom y.2) by
           simpa using congrArg f.hom h⟩
@@ -615,7 +617,7 @@ lemma eq_and_eq_of_smul_unimodularRow_eq {q q' : projLine.obj B} {a b : Bˣ}
 /-- The unit by which `f` rescales the row of a point (`unimodularRow_map`), extended additively
 to the free abelian group on the points. -/
 def rowUnit : FreeAddCommGroup (projLine B) →+ Gm B' :=
-  lift fun q : projLine B ↦ ⟨(exists_unit_smul_unimodularRow (q.1.out.map f f)).choose⟩
+  lift fun q : projLine B ↦ ⟨(exists_unit_smul_unimodularRow (q.down.out.map f f)).choose⟩
 
 /-- The image under `f` of a point `q` is the class of the image of its chosen representative. -/
 lemma map_eq_mk_map_out (f : B ⟶ B') (q : projLine B) :
@@ -676,8 +678,7 @@ lemma affinePt_eq_map (x : B')
     simp only [unimodularRow, map_add, map_mul, map_one] at h_ratio
     change (1 + (x - 1) * 1) * f q.down.out.snd = 1 * (1 + f q.down.out.fst * f q.down.out.snd)
     linear_combination -h_ratio
-  rw [map_eq_mk_map_out]
-  exact congrArg ULift.up (Quotient.sound h_rel)
+  simpa only [map_eq_mk_map_out] using! congrArg ULift.up (Quotient.sound h_rel)
 
 /-- If `f` sends the first coordinate of the row of `q` to a unit, then the row of the image point
 also has a unit as first coordinate. -/
@@ -702,13 +703,21 @@ def basePt : (projLineAlong g).sections :=
 unit `New.Variety.projLine.rowUnit` of the chosen rows. -/
 def cocycle : Cocycle (freeAb (projLineAlong g)) (ringOf g ⋙ Gm) where
   component f := ofHom (rowUnit ((ringOf g).map f))
-  cocycle_comp _ _ := by
+  cocycle_comp f h := by
     -- Both sides are the unit by which `unimodularRow` changes along the composite map.
-    ext : 2
+    ext q : 2
     symm
-    apply add_rowUnit_eq
-    erw [← unimodularRow_map, ← unimodularRow_map]
-    aesop
+    let F := (ringOf g).map f
+    let H := (ringOf g).map h
+    let q' := projLine.map F q
+    change Gm.map H (rowUnit F (.of q)) + rowUnit H (.of q') =
+      rowUnit ((ringOf g).map (f ≫ h)) (.of q)
+    let K := (ringOf g).map (f ≫ h)
+    apply add_rowUnit_eq (q' := projLine.map K q)
+    change ((rowUnit F (.of q)).down.toMul.val • unimodularRow (projLine.map F q)).map H H =
+      (rowUnit K (.of q)).down.toMul.val • unimodularRow (projLine.map K q)
+    rw [← unimodularRow_map F q, ← unimodularRow_map K q]
+    ext <;> simp [F, H, K]
 
 /-- The determinant `a v' - v a'` of the rows `(a, v)` and `(a', v')` of two points `p`, `p'` of the
 projective line. -/
@@ -920,13 +929,6 @@ lemma exists_etaClass_supported_diagonal (q q' : (projLineAlong g).sections) :
     Ext.contravariant_sequence_exact₂ h_exact _ _ h_dies
   exact ⟨ξ, by rw [pullbackAlong_of, pullbackAlong_of, hξ]⟩
 
-/-- `mapThenComp Φ u x` is `Φ x` followed by `u`. -/
-private lemma mapThenComp_eq_comp_map {E E' : Type 1} [Category E] [Category E']
-    (Φ : AbFunctor E ⥤ AbFunctor E') [IsExactFunctor Φ] {N F : AbFunctor E} {K : AbFunctor E'}
-    (u : TotalH (Φ.obj F) K) (x : TotalH N F) :
-    mapThenComp Φ u x = comp (map Φ x) u :=
-  rfl
-
 namespace TorsionCoeff
 
 variable [InvertsPrime A ℓ]
@@ -995,7 +997,8 @@ lemma etaAt_naturality (b : freeAb (onePointFunctor C) ⟶ freeAb (projLineAlong
     _ = comp (homClass (tensorPoint (φ.whiskerLeft b) (φ ⋙ K.functor)))
           (comp (etaTensorClass (φ ⋙ g) (φ ⋙ K.functor)).toTotalH
             (mapThenComp (restrictAlong φ) T K.tateAction.toTotalH)) := by
-        rw [map_comp_assoc, map_comp_assoc, mapThenComp_eq_comp_map, map_homClass,
+        simp only [mapThenComp, AddMonoidHom.coe_comp, Function.comp_apply, AddMonoidHom.flip_apply]
+        rw [map_comp_assoc, map_comp_assoc, map_homClass,
           map_restrictAlong_etaTensorClass]
         -- the sides differ only in implicit objects, `(restrictAlong φ).obj F` against `φ ⋙ F`
         rfl

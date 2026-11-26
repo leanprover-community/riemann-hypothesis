@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.RingTheory.PowerSeries.Dvd
 public import Lib.General.Algebra.SeriesCongruences
 public import New.Derivatives.FormalGroup.FrobeniusCongruence
 
@@ -97,7 +98,7 @@ lemma exists_seriesToCp_eq_and_C_dvd_sub {p : ℕ} [Fact p.Prime] {π : valRingC
     mem_range_seriesToCp.2 fun n ↦ (h n).trans π.property
   refine ⟨D + G, by rw [map_add, hD, sub_add_cancel], ?_⟩
   rw [add_sub_cancel_right]
-  refine C_dvd_iff_dvd_coeff.2 fun n ↦ dvd_iff_norm_le.2 ?_
+  refine (C_dvd_iff_dvd_coeff _ _).2 fun n ↦ valRingCp.dvd_iff_norm_le.2 ?_
   rw [← coeff_seriesToCp, hD]
   exact h n
 
@@ -177,9 +178,8 @@ lemma norm_piPrime_pow_div_le (hp : chiK d p ≠ 1) {n : ℕ} (hn : 2 < n) :
       ‖ιₚ (piPrime d p)‖ ^ (k + 1) := by
     rcases ramified_or_inert hp with ⟨hd, hq⟩ | ⟨hpd_ne, -, hq⟩
     · -- Here `π_p ^ 2 = -p`.
-      simp [hq, pow_add, piPrime_sq_of_ramified hd]
-      rw [mul_right_comm, inv_mul_cancel₀ (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero),
-        one_mul]
+      simp [hq, pow_add, piPrime_sq_of_ramified hd, mul_right_comm _ _ (p : ℝ),
+        (Fact.out : p.Prime).ne_zero]
     · simp [hq, piPrime, hpd_ne, pow_add, hp0]
   rw [h_eq]
   exact pow_le_of_le_one (norm_nonneg _) (norm_piPrime_lt_one d).le k.succ_ne_zero
@@ -479,7 +479,8 @@ lemma exists_seriesToCp_eq_exponentSeries_of_ramified {ϖ : ℂ_[p]} {Y : (valRi
         one_add_one_eq_two]
     have h_double : ‖2 * x - (l * c).val‖ ≤ ‖ιₚ (piPrime d p)‖ := by
       simpa only [h_factor] using hl 2
-    have h_one : ‖(l * (1 - c)).val‖ ≤ ‖ιₚ (piPrime d p)‖ := dvd_iff_norm_le.1 (hY_two.mul_left l)
+    have h_one : ‖(l * (1 - c)).val‖ ≤ ‖ιₚ (piPrime d p)‖ :=
+      valRingCp.dvd_iff_norm_le.1 (hY_two.mul_left l)
     have h_eq : x - (l * (c - half)).val =
         half.val * ((2 * x - (l * c).val) + (l * (1 - c)).val) := by
       have h_coe : 2 * half.val = 1 := congrArg Subtype.val h_half
@@ -656,7 +657,7 @@ lemma CMLattice.exists_eq_exponentSeries_dvd_sub_tsum_of_inert {ϖ : ℂ_[p]} {Y
       exact C.norm_coeff_exponentSeries_eq_one h_inert (ne_zero_of_norm_eq_rpow hϖ)
     refine isUnit_of_piPrimeInt_dvd_sub (d := d) h_unit ?_
     simpa only [map_sub, coeff_smul, h_coeff, smul_eq_mul, mul_one]
-      using C_dvd_iff_dvd_coeff.1 h_dvd (p + 1)
+      using (C_dvd_iff_dvd_coeff _ _).1 h_dvd (p + 1)
 
 open scoped Classical in
 /-- The exponent modulo `π_p` at the ramified prime. Let `p = d`, so that `π_p = piPrimeInt d` is
@@ -686,7 +687,7 @@ lemma CMLattice.exists_exponentSeries_tsum_of_ramified {ϖ : ℂ_[p]} {Y : (valR
     simpa using coeff_primePowerSeries_univ_sq (R := valRingCp p) hp_ne_two 0 0
   have hY_two : piPrimeInt d ∣ 1 - coeff 2 (Y ^ 2) := by
     rw [dvd_sub_comm, ← h_coeff, ← map_sub]
-    exact C_dvd_iff_dvd_coeff.1 hY_sq_congr 2
+    exact (C_dvd_iff_dvd_coeff _ _).1 hY_sq_congr 2
   obtain ⟨Ξ, l, hΞ, hΞ_congr⟩ : ∃ (Ξ : (valRingCp p)⟦X⟧) (l : valRingCp p),
       seriesToCp Ξ = C.exponentSeries ϖ ∧
       PowerSeries.C (piPrimeInt d) ∣ Ξ - l • (Y ^ 2 - half • X ^ 2) :=

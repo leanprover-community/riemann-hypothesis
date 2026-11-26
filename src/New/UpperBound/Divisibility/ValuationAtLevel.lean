@@ -71,15 +71,15 @@ lemma norm_detCharAt_diagN_le {i : ℕ} (hi : i ≤ 2 * D.m) (k j : ℕ) (S : Fi
   -- `‖(det g)_τ‖ ^ D.liftWeight i τ`, where `g = diagPoint j S`, `(det g)_τ` is `N⁻¹` or `1`, and
   -- `D.liftWeight i τ ≤ 2 b`.
   have h_place (τ : D.Φ) :
-      ‖adeleExtension (ιₚ.comp (Φ τ)) (G.det (s := 1) (1, D.diagPoint j S)).1.2‖ ^
+      ‖adeleExtension (ιₚ.comp (Φ τ)) (G.det (s := 1) (1, D.diagPoint j S)).val.2‖ ^
         (D.liftWeight i τ : ℤ) ≤
         if star (D.inducedPlace τ) ∈ S then (D.N : ℝ) ^ (2 * D.b) else 1 := by
-    have h_det : adeleExtension (ιₚ.comp (Φ τ)) (G.det (s := 1) (1, D.diagPoint j S)).1.2 =
+    have h_det : adeleExtension (ιₚ.comp (Φ τ)) (G.det (s := 1) (1, D.diagPoint j S)).val.2 =
         ((diagGL fun l : D.X j ↦ if l.isLeft then 1
-          else if star (D.inducedPlace τ) ∈ S then .mk0 ↑D.N NeZero.out else 1)⁻¹).1.det := by
+          else if star (D.inducedPlace τ) ∈ S then .mk0 ↑D.N NeZero.out else 1)⁻¹).val.det := by
       -- `g` is unitary, so `det g` at `τ` is `det g⁻¹` at the conjugate embedding. The rewriting is
       -- up to the definitions of `G` and of the unitary group, hence `erw`.
-      erw [G.det_snd, ← star_star (det _), adeleExtension_star, ← det_conjTranspose,
+      rw [G.det_snd, ← star_star (det _), adeleExtension_star, ← det_conjTranspose,
         ← U.inv_val_eq_conjTranspose, RingHom.map_det]
       exact congrArg (fun g : GL (D.X j) ℂ_[D.N] ↦ g⁻¹.1.det) (D.map_adeleExtension_diagPoint j S τ)
     rw [h_det]
@@ -106,9 +106,13 @@ lemma exists_mem_inducedPlace_one_le_norm : ∃ δ : 𝓞 P.K, 1 ≤ ‖ιₚ (s
   -- Let `q` be the reduction of the integers of `K` at the prime induced by `ιₚ`.
   -- It maps into the residue field of `E` at that prime.
   let q : 𝓞 P.K →+* 𝓞 D.E ⧸ (D.inducedPlace 1).asIdeal := algebraMap _ _
-  have h_ker (x : 𝓞 P.K) : q x = 0 ↔ ‖ιₚ x‖ < 1 := by
-    -- `q x` is by definition the class of `algebraMap x`, hence `erw`.
-    erw [eq_zero_iff_mem, mem_placeOfEmb, ιₚ.comp_apply, phi_algebraMap]
+  have h_mem (σ : D.Φ) (x : 𝓞 P.K) :
+      algebraMap (𝓞 P.K) (𝓞 D.E) x ∈ (D.inducedPlace σ).asIdeal ↔ ‖ιₚ x‖ < 1 := by
+    change _ ∈ (placeOfEmb (ιₚ.comp (Φ σ))).asIdeal ↔ _
+    exact (mem_placeOfEmb _ _).trans
+      (congrArg (fun z : ℂ ↦ ‖ιₚ z‖ < 1) (phi_algebraMap P _ σ (x : P.K))).to_iff
+  have h_ker (x : 𝓞 P.K) : q x = 0 ↔ ‖ιₚ x‖ < 1 :=
+    Ideal.Quotient.eq_zero_iff_mem.trans (h_mem 1 x)
   -- The residue field has prime order `N`, so the generator `betaK P.d` reduces to some `c : ℕ`.
   have h_card : Nat.card (𝓞 D.E ⧸ (D.inducedPlace 1).asIdeal) = D.N :=
     (Ideal.absNorm_eq_natCard _).symm.trans
@@ -120,12 +124,22 @@ lemma exists_mem_inducedPlace_one_le_norm : ∃ δ : 𝓞 P.K, 1 ≤ ‖ιₚ (s
     -- `N` does not divide `d`, neither this nor the image of `d` is zero.
     have h_ne : q (star δ * P.d) ≠ 0 := by
       suffices 1 - q (betaK P.d) - c ≠ 0 ∧ q P.d ≠ 0 by simpa [δ] using this
-      grind [two_mul, map_natCast, map_sqrtNegDInt_sq q,
-        (FinPlace.charP_quotient _ (D.p_mem_inducedPlace 1)).cast_eq_zero_iff,
-        not_dvd_q₁_mul_d_of_modEq_one D.N_modEq_one]
+      have hc' : (c : 𝓞 D.E ⧸ (D.inducedPlace 1).asIdeal) = q (betaK P.d) := by
+        simpa using hc
+      have h_qd : q P.d ≠ 0 := by
+        rw [map_natCast, Ne,
+          (FinPlace.charP_quotient _ (D.p_mem_inducedPlace 1)).cast_eq_zero_iff]
+        exact fun h ↦ not_dvd_q₁_mul_d_of_modEq_one D.N_modEq_one (dvd_mul_of_dvd_right h _)
+      refine ⟨fun h ↦ h_qd ?_, h_qd⟩
+      have hsq : (-q (sqrtNegDInt P.d)) ^ 2 = (1 - q (betaK P.d) - c) ^ 2 := by
+        rw [hc', sqrtNegDInt, map_sub, map_mul, map_ofNat, map_one]
+        ring
+      rw [neg_sq, map_sqrtNegDInt_sq q, ← map_natCast q P.d, h, sq, mul_zero,
+        neg_eq_zero] at hsq
+      exact hsq
     simpa using (h_ker _).2.mt h_ne
   · -- On `K` all the induced primes give the kernel of `q`.
-    erw [mem_placeOfEmb, ιₚ.comp_apply, phi_algebraMap, ← h_ker]
+    apply (h_mem σ δ).mpr ((h_ker δ).mp ?_)
     simp [δ, ← hc]
 
 /-- Let `x = (x_j)` be a tuple of finite adelic matrices, and let `D.translateDatum x j` be the
@@ -137,10 +151,11 @@ lies in `standardData`, the span over the `N`-integral complex numbers of the tr
 integral vacuum by the points `z` with `δ z` integral above `N`. -/
 lemma projOn_translateDatum_mem_standardData (x : D.Translations) (j : ℕ) (δ : 𝓞 P.K)
     {𝔪 : Modulus D.E} (h_places : 𝔪.places = Set.range ((↑) : D.nonInducedPlaces → FinPlace D.E)) :
-    (D.homX j).projOn 𝔪.places (D.translateDatum x j).1 ∈
+    (D.homX j).projOn 𝔪.places (D.translateDatum x j).val ∈
       Parameters.standardData (p := D.N) (D.homX j) δ := by
-  -- A translate datum is a Heisenberg translate of the vacuum by definition, hence `erw`.
-  erw [projOn_finHeisenbergOp _ (by simp [intVacuum]), boxIndicator_apply]
+  change (D.homX j).projOn 𝔪.places
+    ((D.homX j).finHeisenbergOp (x j) (P.intVacuum (D.homX j))) ∈ _
+  rw [projOn_finHeisenbergOp _ (by simp [intVacuum]), boxIndicator_apply]
   split_ifs with h_box
   · rw [one_smul]
     refine Submodule.subset_span ⟨_, fun l w hw ↦ ?_, rfl⟩
@@ -170,21 +185,21 @@ lemma schrodingerOpAt_directDatum_mem_raises (x : D.Translations) {j : ℕ} (hj 
   obtain ⟨δ, hδ_norm, hδ_mem⟩ := D.exists_mem_inducedPlace_one_le_norm
   obtain ⟨𝔪, hS, h𝔪⟩ : ∃ 𝔪 : Modulus D.E,
       𝔪.places = Set.range ((↑) : D.nonInducedPlaces → FinPlace D.E) ∧
-      (univ.inf fun w : D.nonInducedPlaces ↦ w.1.asIdeal) ≤ 𝔪.ideal :=
+      (univ.inf fun w : D.nonInducedPlaces ↦ w.val.asIdeal) ≤ 𝔪.ideal :=
     exists_modulus_places_eq (by simp [star_notMem])
   set Θ := schrodingerOpAt (P := D.nonInducedPlaces) directDatum (D.translateDatum x j)
   let c : ℕ := absNorm (span {(D.N : 𝓞 D.E)}) ^ Fintype.card (D.X (j + 1) × D.X j)
   let δ' : 𝓞 D.E := star (algebraMap (𝓞 P.K) (𝓞 D.E) δ)
   have hN_mem : (D.N : 𝓞 D.E) * (1 : ℕ) ∈ 𝔪.ideal := h𝔪 (by simpa using natCast_level_mem)
   have hδ'_mem : δ' ∈ 𝔪.ideal := by
-    suffices ∀ w ∈ D.nonInducedPlaces, δ' ∈ w.1 from h𝔪 (by simpa)
+    suffices ∀ w ∈ D.nonInducedPlaces, δ' ∈ w.asIdeal from h𝔪 (by simpa)
     simpa [δ', nonInducedPlaces] using hδ_mem
   -- `Θ` is given by the function `Ψ` modulo `𝔪` that tests the last column at each place.
   let Ψ : (D.X (j + 1) × D.X j → 𝔪.ResidueRing) → ℂ := fun T ↦
     if (fun (a : D.X (j + 1)) (w : D.nonInducedPlaces) ↦ residueEquiv w
       (Rows.modulusResidue 𝔪 (hS.ge ⟨w, rfl⟩) (vecToMatrix T a (.inr ())))) = lastBasisVector
     then 1 else 0
-  have hΘ : (D.homX j).schrodingerOp 𝔪.places (𝔪.liftFn Ψ) (D.translateDatum x j).1 = Θ.1 := by
+  have hΘ : (D.homX j).schrodingerOp 𝔪.places (𝔪.liftFn Ψ) (D.translateDatum x j).val = Θ.val := by
     simp only [Θ, IsSplitLevel.schrodingerOpAt, directDatum, lastColDatum]
     simp [Ψ, liftFn_eq_residueDatum, ← Rows.liftFn_eq_residueDatum hS, hS]
     rfl
@@ -194,12 +209,12 @@ lemma schrodingerOpAt_directDatum_mem_raises (x : D.Translations) {j : ℕ} (hj 
     exacts [one_mem _, zero_mem _]
   have h_translate (z : D.X (j + 1) × D.X j → 𝔸f D.E)
       (hz : z ∈ translations (D.X (j + 1) × D.X j) 1 (star (δ' : 𝔸f D.E))) :
-      (D.homX j).finHeisenbergOp z ((D.homX j).projOn 𝔪.places (D.translateDatum x j).1) ∈
+      (D.homX j).finHeisenbergOp z ((D.homX j).projOn 𝔪.places (D.translateDatum x j).val) ∈
         Parameters.standardData (D.homX j) δ :=
     -- `hz` is the integrality condition up to the definition of `translations`, hence `using!`.
     finHeisenbergOp_mem_standardData (fun l w _ ↦ by simpa [δ', one_notMem] using! hz l w)
       (D.projOn_translateDatum_mem_standardData x j δ hS)
-  have h_std : (c : ℂ) • Θ.1 ∈ Parameters.standardData (D.homX j) δ := by
+  have h_std : (c : ℂ) • Θ.val ∈ Parameters.standardData (D.homX j) δ := by
     rw [← hΘ]
     exact (isAdmissibleCombination_schrodingerOp_of_reduction _ 𝔪 (B := 0) hN_mem hΨ id rfl
       (d := algebraMap _ _ δ') (by simpa using eq_zero_iff_mem.2 hδ'_mem)).smul_mem (by simp)
@@ -258,7 +273,8 @@ lemma lift_schrodingerOpAt_comp (j : ℕ) (v : (D.homX j).finitePart)
       (D.liftCharAtN ϑ (j + 1) (D.n (j + 1)) g / D.liftCharAtN ϑ (j + 1) (D.n j) k) •
         (D.liftKernel ϑ j).ω (embedGL g, embedGL k) (schrodingerOpAt (liftFn f) v) := by
     -- The two `↓` lemmas have to apply before `simp` unfolds the characters and the index types.
-    simp [liftKernel_ω, pairWeilFinite_schrodingerOpAt, ↓spaceChar_rankTwist, ↓card_X, smul_smul]
+    simp only [Matrix.coe_units_inv, liftKernel_ω, pairWeilFinite_schrodingerOpAt,
+      ↓spaceChar_rankTwist, ↓card_X, smul_smul, div_mul_mul_cancel, mul_inv_cancel, one_smul]
   rw [h_datum, ← (D.liftKernel ϑ j).lift_equivariant (embedGL g)]
   simp [Units.smul_def]
 
@@ -271,7 +287,7 @@ noncomputable def schrodingerOpAtN (j : ℕ)
 
 /-- Complex scalars on forms commute. A shortcut for instance search. -/
 local instance smulCommClass_formX (j : ℕ) : SMulCommClass ℂ ℂ (D.FormX j) :=
-  ⟨fun a b φ ↦ Subtype.ext (smul_comm a b φ.1)⟩
+  ⟨fun a b φ ↦ Subtype.ext (smul_comm a b φ.val)⟩
 
 /-- The lift from `X_j` to `X_{j+1}` by `v` with the function `Ψ` at `Σ_N`, written in bases of
 `L_j` and `L_{j+1}`, as a linear map in `Ψ`. -/
@@ -289,7 +305,8 @@ lemma liftAtN_apply (j : ℕ) (v : (D.homX j).finitePart)
     D.liftAtN ϑ j v Ψ φ = smoothFormRep (stdSpace D.E (D.X (j + 1))).embFin _ (D.diagPointN (j + 1))
       ((D.liftKernel ϑ j).lift (schrodingerOpAt Ψ v)
         (smoothFormRep (stdSpace D.E (D.X j)).embFin _ (D.diagPointN j)⁻¹ φ)) := by
-  simp [← (D.liftKernel ϑ j).lift_equivariant (D.diagPointN j), liftAtN]
+  simp only [liftAtN, LinearMap.coe_comp, Function.comp_apply, LinearMap.applyₗ_apply_apply,
+    ← (D.liftKernel ϑ j).lift_equivariant (D.diagPointN j), Representation.self_inv_apply]
 
 /-- The factor by which `Up` moves through the direct lift from `X_j` to `X_{j+1}`: the ratio of the
 values of `liftCharAtN` at `diag (1, …, 1, N)` on `X_j` and on `X_{j+1}`. -/
@@ -318,11 +335,20 @@ lemma liftLaw_liftAtN (j : ℕ) (v : (D.homX j).finitePart) :
         D.charUnramifiedAt_rankTwist_of_N_mem _ _ _ w (natCast_level_mem _ hw)) ..
     rw [liftAtN_apply, liftAtN_apply, liftFn_comp_mul, ← inv_inv (inclGL b),
       D.lift_schrodingerOpAt_comp]
-    simp [conjEmbedGL, h_unr]
+    simp only [conjEmbedGL, MulEquiv.toMonoidHom_eq_coe, inv_inv, MonoidHom.coe_comp,
+      MonoidHom.coe_ofClass, Function.comp_apply, MulAut.conj_apply, map_mul, h_unr, map_inv,
+      inv_one, div_self', mul_apply_eq_comp, Representation.inv_self_apply, one_smul,
+      Representation.self_inv_apply]
   diagNInv_lastRowDatum φ := by
     rw [liftAtN_apply, liftAtN_apply, ← funext lastRowDatum_conj_diagNInv]
     simp only [lastRowDatum, D.lift_schrodingerOpAt_comp]
-    simp [upCommutationFactor, conjEmbedGL, Units.smul_def, smul_smul, div_mul_eq_mul_div]
+    simp only [conjEmbedGL, MulEquiv.toMonoidHom_eq_coe, MonoidHom.coe_comp, MonoidHom.coe_ofClass,
+      Function.comp_apply, map_inv, MulAut.conj_apply, _root_.mul_inv_rev, map_mul,
+      mul_apply_eq_comp, Representation.inv_self_apply, upCommutationFactor,
+      Units.val_div_eq_div_val, div_inv_eq_mul, inv_inv, Representation.self_inv_apply,
+      Units.smul_def, Units.val_mul, Units.val_inv_eq_inv_val, map_smul, smul_smul,
+      div_mul_eq_mul_div, ne_eq, Units.ne_zero, not_false_eq_true, mul_inv_cancel_left₀, div_self,
+      one_smul]
 
 open scoped Classical in
 /-- The factor for rewriting the glued datum of `X_{2i} → X_{2i+1} → X_{2i+2}` in bases of `L_{2i}`
@@ -381,27 +407,34 @@ lemma liftInPairs_gluedDoubleLiftDatum (v : ∀ j : ℕ, (D.homX j).finitePart) 
         D.liftCharAtN ϑ (2 * i + 1) (D.n (2 * i + 1)) (diagN (D.InitIndex (2 * i)) D.piNPlaces) •
           ρ (D.diagPointN (2 * i + 1))⁻¹ (D.liftAtN ϑ (2 * i) (v (2 * i)) (liftFn f) φ) := by
     simpa [ρ, liftAtN_apply] using D.lift_schrodingerOpAt_comp ϑ _ _ f (diagN _ D.piNPlaces) 1 φ
+  let k₂ : GL (D.X (2 * i + 1 + 1)) (LocProd D.nonInducedPlaces) :=
+    diagN (D.InitIndex (2 * i + 1 + 1)) (D.nonInducedPlaces \ D.piNPlaces)
   have h_second
       (f : Matrix (D.X (2 * i + 1 + 1)) (D.X (2 * i + 1)) (D.nonInducedPlaces → ZMod D.N) → ℂ)
       (ψ : D.FormX (2 * i + 1)) :
       (D.liftKernel ϑ (2 * i + 1)).lift (schrodingerOpAt (P := D.nonInducedPlaces)
-          (fun R ↦ liftFn f ((diagN (P := D.nonInducedPlaces) (D.InitIndex (2 * i + 1 + 1))
-            (D.nonInducedPlaces \ D.piNPlaces)).val * R)) (v (2 * i + 1))) ψ =
-        D.liftCharAtN ϑ (2 * i + 2) (D.n (2 * i + 1))
-            (diagN (D.InitIndex (2 * i + 2)) (D.nonInducedPlaces \ D.piNPlaces)) •
+          (fun R ↦ liftFn f (k₂.val * R)) (v (2 * i + 1))) ψ =
+        D.liftCharAtN ϑ (2 * i + 2) (D.n (2 * i + 1)) k₂ •
           (D.formRepAtN (2 * i + 1 + 1)).ρ diagNInv (D.liftAtN ϑ (2 * i + 1) (v (2 * i + 1))
             (liftFn f) (ρ (D.diagPointN (2 * i + 1)) ψ)) := by
     -- The matrix `diagN` for all of `Σ_N` is the one moved here times the one of `δ_{2i+2}`.
-    simpa [ρ, liftAtN_apply, conjEmbedGL, diagN_eq_sdiff_mul D.piNPlaces] using
-      D.lift_schrodingerOpAt_comp ϑ _ _ f 1 (diagN _ (D.nonInducedPlaces \ D.piNPlaces))⁻¹ ψ
+    simpa only [ρ, conjEmbedGL, MulEquiv.toMonoidHom_eq_coe, MonoidHom.coe_comp,
+      MonoidHom.coe_ofClass, Function.comp_apply, map_inv, diagN_eq_sdiff_mul D.piNPlaces, map_mul,
+      mul_inv_rev, MulAut.conj_apply, mul_inv_cancel_left, liftAtN_apply,
+      Representation.inv_self_apply, mul_apply_eq_comp, inv_inv, Units.val_one, Matrix.mul_one,
+      map_one, div_inv_eq_mul, one_mul, inv_one, one_apply_eq_self, k₂]
+      using D.lift_schrodingerOpAt_comp ϑ (2 * i + 1) (v (2 * i + 1)) f 1 k₂⁻¹ ψ
   -- The glued datum is a sum over `y` of tensors of the two kinds of data treated above.
   refine LinearMap.ext fun φ ↦ ?_
   rw [gluedDoubleLiftDatum,
     D.isSplitLevel_nonInducedPlaces.doubleLiftGluing_eq_sum_schrodingerOpAt
       D.isSplitLevel_piNPlaces]
   simp only [map_sum, LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.comp_apply, smul_sum,
-    TensorChain.liftInPairs_tmul, lastColDatum, charDatum, h_first, h_second]
-  simp [ρ.self_inv_apply, gluedFactor, smul_smul, Units.smul_def]
+    TensorChain.liftInPairs_tmul, lastColDatum, charDatum, h_first]
+  refine Finset.sum_congr rfl fun y _ ↦ ?_
+  rw [h_second]
+  simp only [ρ.self_inv_apply, smul_smul, Units.smul_def, map_smul, gluedFactor,
+    Units.val_mul, MonoidHom.coe_comp, Function.comp_apply, map_inv, k₂]
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
@@ -465,30 +498,34 @@ lemma omega_schrodingerOpAtN_directDatum (ϑ : D.TameChar) (j : ℕ) (v : (D.hom
   -- In bases of `L_j` and `L_{j+1}`, the parts `part a` and `part b` of `a` and `b` at `Σ_N`
   -- stabilise the standard marked lattices, so they fix the direct datum.
   let part {i : ℕ} (k : D.levelX i) : GL (D.X i) (LocProd D.nonInducedPlaces) :=
-    atPlaces D.nonInducedPlaces ((D.diagPointN i)⁻¹ * k.1 * D.diagPointN i)
+    atPlaces D.nonInducedPlaces ((D.diagPointN i)⁻¹ * k.val * D.diagPointN i)
   have h_fix (S : Matrix (D.X (j + 1)) (D.X j) (LocProd D.nonInducedPlaces)) :
-      directDatum ((part b)⁻¹.1 * S * (part a).1) = directDatum S :=
+      directDatum ((part b)⁻¹.val * S * (part a).val) = directDatum S :=
     directDatum_mul_mul_of_mem_mirabolic (D.atPlaces_conj_mem_mirabolic a)
       (D.atPlaces_conj_mem_mirabolic b) S
   -- Move the points `δ_j = diagPointN j` and `δ_{j+1}` into the function; the factor is the same
   -- on both sides. After `simp` the goal is an equation of two operators applied to `v`.
   ext1
-  simp [schrodingerOpAtN, liftKernel_ω, directDatum, lastColDatum, pairWeilFinite_schrodingerOpAt,
-    smul_left_cancel_iff, -coe_units_inv]
+  simp only [liftKernel_ω, schrodingerOpAtN, directDatum, lastColDatum, LinearMap.coe_comp,
+    Function.comp_apply, pairWeilFinite_schrodingerOpAt, Fintype.card_sum, Fintype.card_fin,
+    Fintype.card_unique, LinearMap.map_smul_of_tower, SetLike.val_smul_of_tower,
+    pairWeilFinite_apply_apply_coe, smul_left_cancel_iff]
   dsimp [schrodingerOpAt, comp_def]
   -- The integral pair `(a, b)` passes through the operator and acts on its function.
-  have h_int {i : ℕ} (k : D.levelX i) : k.1 ∈ stdLevel D.E (D.X i) :=
-    levelOf_le_stdLevel (D.mem_levelX.1 k.2).1
+  have h_int {i : ℕ} (k : D.levelX i) : k.val ∈ stdLevel D.E (D.X i) :=
+    levelOf_le_stdLevel (D.mem_levelX.1 k.property).1
   rw [pairWeil_schrodingerOp_of_mem isConjDisjoint (hΨ := isSchwartzBruhat_liftFn_mul ..) (h_int a)
     (h_int b)]
   refine congrArg (Space.schrodingerOp _ _ · _)
     (funext fun x ↦ .trans (congrArg directDatum ?_) (h_fix _))
-  have h_left : (b.1.1.1)⁻¹.map (evalPlaces D.nonInducedPlaces) =
-      (atPlaces D.nonInducedPlaces b.1).1⁻¹ := by
-    rw [← coe_units_inv (atPlaces _ _), ← map_inv, ← coe_units_inv b.1.1]
+  have h_left : (b.val.val.val)⁻¹.map (evalPlaces D.nonInducedPlaces) =
+      (atPlaces D.nonInducedPlaces b.val).val⁻¹ := by
+    rw [← coe_units_inv (atPlaces _ _), ← map_inv, ← coe_units_inv b.val.val]
     rfl
-  have h_right : a.1.1.1.map (evalPlaces _) = (atPlaces D.nonInducedPlaces a.1).1 := rfl
-  simp [part, h_left, h_right, Matrix.mul_assoc, -val_map_apply]
+  have h_right : a.val.val.val.map (evalPlaces _) = (atPlaces D.nonInducedPlaces a.val).val := rfl
+  simp only [coe_units_inv, Gf.coe_inv, Matrix.mul_assoc, vecToMatrix_matrixToVec, Matrix.map_mul,
+    h_left, h_right, map_mul, map_inv, atPlaces_embedGL, _root_.mul_inv_rev, inv_inv, Units.val_mul,
+    isUnits_det_units, mul_nonsing_inv_cancel_left, part]
 
 /-- **Direct lifts lose little.** For `j < m`, the direct datum at `Σ_N`, in bases of `L_j` and
 `L_{j+1}`, on a translate of the integral vacuum raises `N`-adic gauges from
@@ -555,7 +592,7 @@ lemma gaugeLe_compositeLift_at_N {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
   rw [h_compositeLift_eq]
   refine GaugeLe.restrictToY_of_diag D (D.map_adeleExtension_diagPoint _ _) fun g ↦ ?_
   calc _ = ‖ιₚ c‖ * weylGauge _ (D.lastEntry D.m) (g * D.diagPointN D.m)
-          ((chainCombination ϑ Ψ direct D.m ψ).1 g) := weylGauge_smul ..
+          ((chainCombination ϑ Ψ direct D.m ψ).val g) := weylGauge_smul ..
     _ ≤ D.N ^ (D.m * D.f * D.b) * D.N ^ ∑ _ ∈ Finset.range D.m, D.f * D.b := by
       grw [h_direct g, hc]
     _ = D.N ^ (2 * D.m * D.f * D.b) := by

@@ -1,9 +1,10 @@
 module
 
-public import Lib.CM.Sigma.Basic
+public import TauCeti.RingTheory.MvPowerSeries.Derivative
+public import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+public import Mathlib.RingTheory.PowerSeries.Exp
 public import Lib.GLn.SchurModule.Basic
 public import Lib.General.Algebra.AdicCompletion
-public import TauCeti.RingTheory.MvPowerSeries.Derivative
 
 /-!
 # Integral power series over ℂ_p: jets, the chain rule and the exponential
@@ -15,7 +16,6 @@ with coefficients in the ring of integers of `ℂ_[p]`.
 
 * `New.mem_range_seriesToCp`: a series in one variable is integral iff all its coefficients have
   norm at most one.
-* `New.pderiv_subst`: the chain rule for partial derivatives of a substitution of power series.
 * `New.jet_subst_linearSeries`: for a linear substitution `M`, the jet `P(∂) (F ∘ M) (0)` is the jet
   of `F` along the polynomial `New.linSubst M P` obtained from `P` by the transposed substitution.
 * `New.expSubst`: the exponential `exp a` of a power series `a` in several variables without
@@ -64,6 +64,11 @@ open MvPowerSeries PowerSeries
 
 namespace New
 
+/-- The linear form ∑ c_i z_i, as a power series in the variables z_i. -/
+noncomputable def linearSeries {ι R : Type*} [Fintype ι] [CommSemiring R] (c : ι → R) :
+    MvPowerSeries ι R :=
+  ∑ i : ι, c i • MvPowerSeries.X i
+
 variable {σ : Type*} {R S : Type*} [CommRing R] [CommRing S] {p : ℕ} [Fact p.Prime]
 
 /-- A power series `f` in one variable over `ℂ_[p]` comes from a series over the ring of integers
@@ -103,15 +108,6 @@ section JetChainRule
 
 open MvPowerSeries Finset WithPiTopology
 
-
-variable {ι : Type _} {κ : Type _} {R : Type _} [CommRing R] [Fintype ι] in
-/-- The chain rule for power series: if the family `a` can be substituted into series in the
-variables `ι`, then `∂_k F(a) = ∑_i (∂_i F)(a) * ∂_k a_i`. -/
-@[simp]
-lemma New.pderiv_subst {a : ι → MvPowerSeries κ R} (ha : HasSubst a) (k : κ)
-    (F : MvPowerSeries ι R) :
-    pderiv k (subst a F) = ∑ i : ι, (pderiv i F).subst a * pderiv k (a i) :=
-  MvPowerSeries.pderiv_subst ha F k
 
 /-- Jets of a linear substitution. Let `M` be a matrix and substitute the linear forms
 `(M z)_i = ∑_k M_(i k) z_k` into the series `F`. The jet `P(∂) F(M z) (0)` equals the jet of `F`
@@ -240,7 +236,6 @@ lemma rpow_le_norm_factorial {n : ℕ} : p ^ (-(n / (p - 1)) : ℝ) ≤ ‖(n ! 
     _ = ‖(n ! : ℂ_[p])‖ := by simp [norm_natCast_eq_inv_pow_padicValNat n.factorial_ne_zero]
 
 /-- Substituting `a` into the rescaled series `f(c X)` is substituting `c • a` into `f`. -/
-@[simp]
 lemma subst_rescale_eq_subst_smul {c : ℂ_[p]} (a : MvPowerSeries σ ℂ_[p]) (ha : HasSubst a)
     (f : ℂ_[p]⟦X⟧) :
     (rescale c f).subst a = f.subst (c • a) := by

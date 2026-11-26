@@ -148,14 +148,16 @@ lemma centreCoeff_rat_mul (T : Matrix p p E) {γ : G E s} (hγ : γ ∈ W.Γ) (c
   -- Move γ to the left (z(a M aᴴ) γ = γ z(M)), absorb it in D, and cycle the trace.
   have h_move (M : Matrix p p (𝔸 E)) :
       D (H.radicalCentre (φ M) * (γ * g)) = D (H.radicalCentre M * g) := by
-    simp [φ, ha, ← mul_assoc, H.mul_radicalCentre h_frame, ← hD.2 γ hγ (H.radicalCentre M * g)]
+    have hφ : φ M = c.map toAdele * M * (c.map toAdele)ᴴ := by
+      rw [← ha]; exact (Matrix.mul_assoc _ _ _).symm
+    rw [hφ, ← mul_assoc, ← H.mul_radicalCentre h_frame, mul_assoc, hD.2 γ hγ]
   have h_trace (M : Matrix p p (𝔸 E)) :
       (T.map toAdele * φ M).trace = ((cᴴ * T * c).map toAdele * M).trace := by
     simp [φ, ha, Matrix.map_mul, Matrix.mul_assoc, (cᴴ.map toAdele).trace_mul_comm]
   rw [centreCoeff, ← quotMean_comp _ φ
     (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD (γ * g)) T) hrat hsurj
     ((continuous_const_mul _).comp (continuous_mul_const _))]
-  simp [centreCoeff, h_move, h_trace]
+  simp only [centreCoeff, h_move, h_trace]
 
 /-- For D continuous and left invariant under the rational points, a rational point that fixes the
 isotropic frame of H does not change the coefficient at T. -/
@@ -312,11 +314,13 @@ def frameStabilizer (D : W.Splitting W₁ p) (e : 𝔸 E) : Subgroup (G E s) whe
   mul_mem' {g h : G E s} hg hh := by
     change (g * h).adeleMatrix * e • D.kAdelic = e • D.kAdelic
     rw [G.adeleMatrix_mul, Matrix.mul_assoc, hh, hg]
-  one_mem' := by simp
+  one_mem' := by
+    change (1 : G E s).adeleMatrix * e • D.kAdelic = e • D.kAdelic
+    rw [G.adeleMatrix_one, Matrix.one_mul]
   inv_mem' {g : G E s} hg := by
     change g⁻¹.adeleMatrix * e • D.kAdelic = e • D.kAdelic
-    rw [← hg, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, inv_mul_cancel, hg]
-    simp
+    rw [← hg, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, inv_mul_cancel, G.adeleMatrix_one,
+      Matrix.one_mul, hg]
 
 lemma mem_frameStabilizer {D : W.Splitting W₁ p} {e : 𝔸 E} {g : G E s} :
     g ∈ D.frameStabilizer e ↔ g.adeleMatrix * e • D.kAdelic = e • D.kAdelic :=
@@ -355,14 +359,34 @@ lemma lineShift_mem {a : Matrix Unit p (𝔸 E)} (ha : a ∈ ratMatrices E Unit 
   obtain ⟨a₀, rfl⟩ := ha
   simp [lineShift, mem_ratMatrices, ratAdeles]
 
+private noncomputable abbrev lineShiftTerm (a : Matrix Unit p (𝔸 E)) : Matrix n n (𝔸 E) :=
+  A.lAdelic * a * (B.lCoord * A.iCoord) - A.iAdelic * B.kAdelic * aᴴ * A.kCoord
+
+private lemma adeleMatrix_lineShift (a : Matrix Unit p (𝔸 E)) :
+    (A.lineShift B a).adeleMatrix =
+      1 + (A.lAdelic * a * (B.lCoord * A.iCoord) - A.iAdelic * B.kAdelic * aᴴ * A.kCoord) := by
+  rw [lineShift, adeleMatrix_radicalCentre, comp_kAdelic, comp_lCoord, symm_kAdelic,
+    symm_iAdelic, symm_lCoord, symm_iCoord, fromBlocks_conjTranspose, sub_eq_add_neg,
+    fromBlocks_neg, fromBlocks_add]
+  simp only [conjTranspose_zero, neg_zero, zero_add, add_zero]
+  rw [fromCols_mul_fromBlocks]
+  simp only [Matrix.mul_zero, zero_add, add_zero]
+  rw [fromCols_mul_fromRows, Matrix.mul_neg, Matrix.neg_mul, neg_add_eq_sub, Matrix.mul_assoc]
+
 /-- The shift n₊(a) carries the frame (u, k) of the composite of A and B, k the image in W of the
 frame of B, to (u − k aᴴ, k). -/
 lemma actsOnFrame_lineShift (a : Matrix Unit p (𝔸 E)) :
     (A.comp B).ActsOnFrame (A.lineShift B a) (fromBlocks 1 0 (-aᴴ) 1) := by
   -- compare the two sides on the column of `u` and on those of the frame of B
-  ext i (j | j) <;> simp [lineShift, comp_kAdelic, fromBlocks_conjTranspose, sub_eq_add_neg,
-    Matrix.mul_add, fromCols_mul_fromBlocks, Matrix.mul_assoc, Matrix.add_mul,
-    fromCols_mul_fromRows]
+  rw [ActsOnFrame, comp_kAdelic, Matrix.mul_fromCols, fromCols_mul_fromBlocks,
+    adeleMatrix_lineShift]
+  congr 1
+  · simp only [Matrix.add_mul, Matrix.one_mul, Matrix.mul_assoc,
+      A.iCoord_mul_kAdelic, A.kCoord_mul_kAdelic, Matrix.mul_zero, Matrix.mul_one,
+      Matrix.mul_neg, Matrix.neg_mul, zero_add, sub_eq_add_neg]
+  · simp only [Matrix.add_mul, Matrix.one_mul, Matrix.sub_mul, Matrix.mul_assoc,
+      A.iCoord_mul_iAdelic_mul, B.lCoord_mul_kAdelic, A.kCoord_mul_iAdelic_mul,
+      Matrix.mul_zero, Matrix.mul_one, sub_zero, add_zero, zero_add]
 
 variable (D : W.Splitting W₁ p) (T : Matrix p p E) (f : G E s → ℂ)
 
@@ -401,7 +425,29 @@ lemma lCoord_eq_lCoord_mul_iCoord (hD : D.kAdelic = A.iAdelic * B.kAdelic) :
 /-- If the frame of D is the image of the frame of B, the shifts n₊(a) fix it. -/
 lemma actsOnFrame_lineShift_one (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (a : Matrix Unit p (𝔸 E)) : D.ActsOnFrame (A.lineShift B a) 1 := by
-  simp [lineShift, hD, Matrix.mul_assoc, Matrix.add_mul]
+  rw [ActsOnFrame, hD, adeleMatrix_lineShift]
+  simp only [Matrix.add_mul, Matrix.one_mul, Matrix.sub_mul, Matrix.mul_assoc,
+    A.iCoord_mul_iAdelic_mul, B.lCoord_mul_kAdelic, A.kCoord_mul_iAdelic_mul,
+    Matrix.mul_zero, Matrix.mul_one, sub_zero, add_zero]
+
+omit [WeilData E] in
+private lemma lineShiftTerm_mul_symm (a b : Matrix Unit p (𝔸 E)) :
+    A.lineShiftTerm B a * A.symm.lineShiftTerm B b =
+      -(A.iAdelic * B.kAdelic * (aᴴ * b) * (B.lCoord * A.iCoord)) := by
+  unfold lineShiftTerm
+  rw [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_sub]
+  simp only [Matrix.mul_assoc, symm_iAdelic, symm_iCoord,
+    show A.symm.lAdelic = A.kAdelic from rfl, show A.symm.kCoord = A.lCoord from rfl,
+    A.iCoord_mul_kAdelic_mul, A.iCoord_mul_iAdelic_mul, B.lCoord_mul_kAdelic_mul,
+    A.kCoord_mul_kAdelic_mul, A.kCoord_mul_iAdelic_mul, Matrix.mul_zero, sub_zero, zero_sub]
+
+omit [WeilData E] in
+private lemma radicalTerm_mul_lineShiftTerm (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+    (M : Matrix p p (𝔸 E)) (a : Matrix Unit p (𝔸 E)) :
+    D.kAdelic * M * D.lCoord * A.lineShiftTerm B a = 0 := by
+  rw [lineShiftTerm, lCoord_eq_lCoord_mul_iCoord hD, Matrix.mul_sub]
+  simp only [Matrix.mul_assoc, A.iCoord_mul_lAdelic_mul, A.iCoord_mul_iAdelic_mul,
+    B.lCoord_mul_kAdelic_mul, Matrix.mul_zero, sub_self]
 
 /-- Let the frame of `D` be the image under `A` of the frame of `B` (`hD`), and for adelic rows a, b
 let n₊(a) = `A.lineShift B a` and n₋(b) = `A.symm.lineShift B b` be the shifts of the two isotropic
@@ -414,9 +460,34 @@ lemma lineShift_mul_lineShift_symm (hD : D.kAdelic = A.iAdelic * B.kAdelic)
       D.radicalCentre (-(aᴴ * b)) * (A.symm.lineShift B b * A.lineShift B a) := by
   refine G.ext_adeleMatrix ?_
   -- Both shifts are 1 plus terms of square zero; the cross terms differ by k (bᴴ a − aᴴ b) k*ε.
-  simp [lineShift, G.adeleMatrix_mul, hD, lCoord_eq_lCoord_mul_iCoord hD, sub_eq_add_neg,
-    Matrix.mul_add, Matrix.add_mul, comp_kAdelic, fromBlocks_conjTranspose, fromCols_mul_fromBlocks,
-    fromCols_mul_fromRows, Matrix.mul_assoc]
+  have hDl : D.lCoord = B.lCoord * A.iCoord := lCoord_eq_lCoord_mul_iCoord hD
+  have h_l : A.symm.lAdelic = A.kAdelic := rfl
+  have h_k : A.symm.kCoord = A.lCoord := rfl
+  let X := A.lineShiftTerm B a
+  let Y := A.symm.lineShiftTerm B b
+  set Z : Matrix n n (𝔸 E) := D.kAdelic * (-(aᴴ * b) - (-(aᴴ * b))ᴴ) * D.lCoord
+  have h_prod (P Q : Matrix n n (𝔸 E)) : (1 + P) * (1 + Q) = 1 + (P + Q + P * Q) := by
+    simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one]
+    abel
+  have hXY := lineShiftTerm_mul_symm (A := A) (B := B) a b
+  have hYX := lineShiftTerm_mul_symm (A := A.symm) (B := B) b a
+  simp only [symm_symm, symm_iAdelic, symm_iCoord] at hYX
+  have hZX : Z * X = 0 := radicalTerm_mul_lineShiftTerm hD _ a
+  have hZY : Z * Y = 0 := radicalTerm_mul_lineShiftTerm (A := A.symm) hD _ b
+  have hZ : Z = A.iAdelic * B.kAdelic * (bᴴ * a) * (B.lCoord * A.iCoord) -
+      A.iAdelic * B.kAdelic * (aᴴ * b) * (B.lCoord * A.iCoord) := by
+    dsimp only [Z]
+    rw [hD, hDl, conjTranspose_neg, conjTranspose_mul, conjTranspose_conjTranspose,
+      sub_neg_eq_add, neg_add_eq_sub, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
+      Matrix.mul_assoc]
+  rw [G.adeleMatrix_mul, G.adeleMatrix_mul, G.adeleMatrix_mul, adeleMatrix_radicalCentre,
+    adeleMatrix_lineShift, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+  change (1 + X) * (1 + Y) = (1 + Z) * ((1 + Y) * (1 + X))
+  rw [h_prod X Y, h_prod Y X, h_prod Z (Y + X + Y * X)]
+  have hZ_all : Z * (Y + X + Y * X) = 0 := by
+    rw [Matrix.mul_add, Matrix.mul_add, hZY, hZX, ← Matrix.mul_assoc, hZY, Matrix.zero_mul,
+      add_zero, add_zero]
+  rw [hZ_all, add_zero, hXY, hYX, hZ]
   abel
 
 /-- Let the frame of D be the image of the frame of B and let f be automorphic. The coefficient
@@ -518,7 +589,8 @@ lemma shiftedMean_rat_add (hD : D.kAdelic = A.iAdelic * B.kAdelic) (hf : IsAutFu
       (actsOnFrame_lineShift_one hD _) x
   have h_index (b : Matrix Unit p (𝔸 E)) :
       T.map toAdele * -((a₀.map toAdele)ᴴ * b) = (-(T * a₀ᴴ)).map toAdele * b := by
-    simp [Matrix.map_neg, Matrix.map_mul, Matrix.mul_assoc]
+    rw [Matrix.map_neg _ (map_neg toAdele), Matrix.map_mul, ← conjTranspose_map_toAdele,
+      Matrix.neg_mul, Matrix.mul_neg, Matrix.mul_assoc]
   simp only [shiftedMean, partialMean, lineShift_add, mul_assoc,
     centreCoeff_lineShift_symm_mul_lineShift hD hf (a₀.map toAdele), h_rat, h_index]
 
@@ -630,9 +702,37 @@ lemma radicalCentre_comp_fromBlocks (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (A.comp B).radicalCentre (fromBlocks z b c N) =
       D.radicalCentre N * (A.symm.lineShift B (b - cᴴ) * A.radicalCentre z) := by
   refine G.ext_adeleMatrix ?_
-  simp [lineShift, G.adeleMatrix_mul, hD, lCoord_eq_lCoord_mul_iCoord hD, sub_eq_add_neg,
-    Matrix.mul_add, Matrix.add_mul, comp_kAdelic, fromBlocks_conjTranspose, fromBlocks_add,
-    fromBlocks_neg, fromCols_mul_fromBlocks, fromCols_mul_fromRows, Matrix.mul_assoc]
+  have hDl : D.lCoord = B.lCoord * A.iCoord := lCoord_eq_lCoord_mul_iCoord hD
+  have h_l : A.symm.lAdelic = A.kAdelic := rfl
+  have h_k : A.symm.kCoord = A.lCoord := rfl
+  set U : Matrix n n (𝔸 E) := D.kAdelic * (N - Nᴴ) * D.lCoord
+  set V : Matrix n n (𝔸 E) :=
+    A.kAdelic * (b - cᴴ) * (B.lCoord * A.iCoord) - A.iAdelic * B.kAdelic * (b - cᴴ)ᴴ * A.lCoord
+  set Z : Matrix n n (𝔸 E) := A.kAdelic * (z - zᴴ) * A.lCoord
+  have hVZ : V * Z = 0 := by
+    dsimp only [V, Z]
+    rw [Matrix.sub_mul]
+    simp only [Matrix.mul_assoc, A.iCoord_mul_kAdelic_mul, A.lCoord_mul_kAdelic_mul,
+      Matrix.mul_zero, sub_self]
+  have hUV : U * V = 0 := radicalTerm_mul_lineShiftTerm (A := A.symm) hD _ _
+  have hUZ : U * Z = 0 := by
+    dsimp only [U, Z]
+    rw [hDl]
+    simp only [Matrix.mul_assoc, A.iCoord_mul_kAdelic_mul, Matrix.mul_zero]
+  have h_rhs : (1 + U) * ((1 + V) * (1 + Z)) = 1 + U + V + Z := by
+    simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, hVZ, hUV, hUZ,
+      add_zero]
+  rw [G.adeleMatrix_mul, G.adeleMatrix_mul, adeleMatrix_radicalCentre, adeleMatrix_radicalCentre,
+    adeleMatrix_radicalCentre, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+  change 1 + (A.comp B).kAdelic * (fromBlocks z b c N - (fromBlocks z b c N)ᴴ) *
+      (A.comp B).lCoord = (1 + U) * ((1 + V) * (1 + Z))
+  rw [h_rhs, comp_kAdelic, comp_lCoord, fromBlocks_conjTranspose,
+    sub_eq_add_neg (fromBlocks z b c N), fromBlocks_neg, fromBlocks_add,
+    fromCols_mul_fromBlocks, fromCols_mul_fromRows]
+  dsimp only [U, V, Z]
+  rw [hD, hDl]
+  simp only [Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul, Matrix.mul_sub, conjTranspose_sub,
+    conjTranspose_conjTranspose, Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc]
   abel
 
 /-- Let `A` split one hyperbolic plane off `W` over `W₀`, `B` split `p` planes off `W₀` over `W₂`,
@@ -656,8 +756,10 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
       (N : Matrix p p (𝔸 E)) :
       Φ (fromBlocks z b c N) = stdAddChar E (T.map toAdele * N).trace *
         f (D.radicalCentre N * (A.symm.lineShift B (b - cᴴ) * (A.radicalCentre z * g))) := by
-    simp [Φ, radicalCentre_comp_fromBlocks hD, mul_assoc, fromBlocks_map, fromBlocks_multiply,
-      trace]
+    dsimp only [Φ]
+    rw [radicalCentre_comp_fromBlocks hD, mul_assoc, mul_assoc]
+    simp only [fromBlocks_map, Matrix.map_zero _ (map_zero toAdele), fromBlocks_multiply,
+      Matrix.zero_mul, zero_add, add_zero, trace_fromBlocks, trace_zero]
   let φ₁ : Matrix Unit Unit (𝔸 E) × Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E) →+
       Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E) :=
     .mk' (fun (z, M) ↦ fromBlocks z M.toBlocks₁₂ M.toBlocks₂₁ M.toBlocks₂₂)
@@ -674,16 +776,27 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
     refine ⟨?_, ?_, ?_⟩ <;> fun_prop
   have hφ₁_rat : ∀ z ∈ ratMatrices E Unit Unit, ∀ M ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p),
       φ₁ (z, M) ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p) := by
-    simp +contextual [φ₁, mem_ratMatrices, toBlocks₁₂, toBlocks₂₁, toBlocks₂₂]
+    rintro _ ⟨z, rfl⟩ _ ⟨M, rfl⟩
+    refine ⟨fromBlocks z M.toBlocks₁₂ M.toBlocks₂₁ M.toBlocks₂₂, ?_⟩
+    refine Matrix.ext fun i j ↦ ?_
+    rcases i with i | i <;> rcases j with j | j <;> rfl
   have hφ₂_rat : ∀ M ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p), ∀ N ∈ ratMatrices E p p,
       φ₂ (M, N) ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p) := by
-    simp +contextual [φ₂, mem_ratMatrices, toBlocks₁₁, toBlocks₁₂, toBlocks₂₁]
+    rintro _ ⟨M, rfl⟩ _ ⟨N, rfl⟩
+    refine ⟨fromBlocks M.toBlocks₁₁ M.toBlocks₁₂ M.toBlocks₂₁ N, ?_⟩
+    refine Matrix.ext fun i j ↦ ?_
+    rcases i with i | i <;> rcases j with j | j <;> rfl
   have h_inner (z : Matrix Unit Unit (𝔸 E)) :
       (quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦ Φ (φ₁ (z, M))) =
         A.partialMean B D T f (A.radicalCentre z * g) := by
     have hΦz : IsContPeriodic (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦ Φ (φ₁ (z, M)) :=
-      ⟨hΦ.1.comp (by fun_prop), fun γ hγ M ↦ by
-        simpa [← map_add] using hΦ.2 _ (hφ₁_rat 0 (zero_mem _) γ hγ) (φ₁ (z, M))⟩
+      ⟨hΦ.1.comp (hφ₁.comp (continuous_const.prodMk continuous_id)), fun γ hγ M ↦ by
+        have h := hΦ.2 _ (hφ₁_rat 0 (zero_mem _) γ hγ) (φ₁ (z, M))
+        rwa [← map_add, Prod.mk_add_mk, zero_add] at h⟩
+    have hφ₁₂ (M : Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E)) (N : Matrix p p (𝔸 E)) :
+        φ₁ (z, φ₂ (M, N)) = fromBlocks z M.toBlocks₁₂ M.toBlocks₂₁ N := by
+      refine Matrix.ext fun i j ↦ ?_
+      rcases i with i | i <;> rcases j with j | j <;> rfl
     calc (quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦ Φ (φ₁ (z, M)))
       _ = quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦
             quotMean (ratMatrices E p p) fun N ↦ Φ (φ₁ (z, φ₂ (M, N))) :=
@@ -691,7 +804,7 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
           fun M ↦ ⟨(M, M.toBlocks₂₂), M.fromBlocks_toBlocks⟩).symm
       _ = quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦
             D.centreCoeff T f (A.symm.lineShift B (π M) * (A.radicalCentre z * g)) := by
-        simp [φ₁, φ₂, π, hΦ_eq, centreCoeff]
+        simp only [hφ₁₂, hΦ_eq, centreCoeff, π, AddMonoidHom.mk'_apply]
       _ = A.partialMean B D T f (A.radicalCentre z * g) := by
         refine quotMean_comp _ π (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf _) ?_
           (fun b ↦ ⟨fromBlocks 0 b 0 0, by simp [π]⟩) hπ
@@ -723,8 +836,12 @@ lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic *
   suffices h_dense : ∀ (Y : Matrix Unit Unit E) (y : Matrix Unit Unit (𝔸 E)),
       A.partialMean B D T f (A.radicalCentre (Y.map toAdele + e • y) * g) =
         A.partialMean B D T f g from
-    (denseRange_rat_matrix_add hU 1).eq (fun ⟨Y, y⟩ ↦ by simpa using h_dense Y y)
-      ((continuous_partialMean hD hf).comp (by fun_prop))
+    (denseRange_rat_matrix_add hU 1).eq
+      (fun ⟨Y, y⟩ ↦ by
+        dsimp only [Function.comp_apply]
+        rw [inv_one, Units.val_one, Matrix.one_mul]
+        exact h_dense Y y)
+      ((continuous_partialMean hD hf).comp (A.continuous_radicalCentre.mul continuous_const))
   intro Y y
   -- A rational point of the centre commutes with the shifts n₋(b) and fixes the frame of D.
   have h_rat (x : G E s) :
@@ -733,8 +850,14 @@ lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic *
         A.symm.lineShift B b * A.radicalCentre (Y.map toAdele) =
           A.radicalCentre (Y.map toAdele) * A.symm.lineShift B b := by
       have h_frame : A.ActsOnFrame (A.symm.lineShift B b) 1 := by
-        simp [lineShift, comp_kAdelic, Matrix.add_mul, Matrix.mul_assoc]
-      simpa using A.mul_radicalCentre h_frame (Y.map toAdele)
+        have h_l : A.symm.lAdelic = A.kAdelic := rfl
+        have h_k : A.symm.kCoord = A.lCoord := rfl
+        rw [ActsOnFrame, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+        simp only [Matrix.add_mul, Matrix.one_mul, Matrix.sub_mul, Matrix.mul_assoc,
+          A.iCoord_mul_kAdelic, A.lCoord_mul_kAdelic, Matrix.mul_zero, Matrix.mul_one,
+          sub_zero, add_zero]
+      have h := A.mul_radicalCentre h_frame (Y.map toAdele)
+      rwa [Matrix.one_mul, conjTranspose_one, Matrix.mul_one] at h
     simp only [partialMean, ← mul_assoc (A.symm.lineShift B _), h_comm]
     have h_mem : A.radicalCentre (Y.map toAdele) ∈ W.Γ := A.radicalCentre_mem ⟨Y, rfl⟩
     simp only [mul_assoc, D.centreCoeff_rat_mul_of_actsOnFrame_one hf h_mem
@@ -742,8 +865,10 @@ lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic *
   -- A point of the centre supported on U ∪ Ū is a shear.
   have h_mat : (A.radicalCentre (e • y)).adeleMatrix =
       1 + (star e • (A.kAdelic * -(yᴴ * A.lCoord) :) - e • -(A.kAdelic * y * A.lCoord)) := by
-    rw [adeleMatrix_radicalCentre]
-    simp [sub_eq_add_neg, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, add_comm]
+    rw [adeleMatrix_radicalCentre, conjTranspose_smul, Matrix.mul_sub, Matrix.sub_mul,
+      Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_smul, Matrix.smul_mul,
+      Matrix.mul_neg, smul_neg, smul_neg, Matrix.mul_assoc, Matrix.mul_assoc]
+    abel
   rw [AddChar.map_add_eq_mul, mul_assoc, h_rat, h_shear _ _ (by simp [Matrix.mul_assoc]) h_mat]
 
 /-- Let the frame of D be the image of the frame of B, let f be automorphic and U a nonempty set of
@@ -778,21 +903,39 @@ lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAd
   let Y₀ : Matrix ((p ⊕ p) ⊕ n₂) Unit (𝔸 E) := W₀.x⁻¹.val * Y.map toAdele
   let u : Matrix (Unit ⊕ p) (Unit ⊕ p) E := fromBlocks 1 (Yᴴ * W₀.J * B.k) 0 1
   have h_frame : (A.comp B).ActsOnFrame (A.radicalElement Y₀ 0) (u.map toAdele) := by
-    have hB : B.kAdelic = W₀.x⁻¹.val * B.k.map toAdele := rfl
-    simp [Y₀, u, hB, ← Matrix.mul_assoc, add_comm, map_J, comp_kAdelic, actsOnFrame_radicalElement,
-      radicalElement_mul_iAdelic, Matrix.add_mul, fromBlocks_map, fromCols_mul_fromBlocks]
+    rw [ActsOnFrame, comp_kAdelic, Matrix.mul_fromCols]
+    simp only [u, fromBlocks_map, Matrix.map_one _ (map_zero toAdele) (map_one toAdele),
+      Matrix.map_zero _ (map_zero toAdele), fromCols_mul_fromBlocks,
+      Matrix.mul_one, Matrix.mul_zero, add_zero]
+    congr 1
+    · exact (A.actsOnFrame_radicalElement Y₀ 0).trans (Matrix.mul_one _)
+    · rw [← Matrix.mul_assoc, A.radicalElement_mul_iAdelic, Matrix.add_mul, add_comm]
+      congr 1
+      have hB : B.kAdelic = W₀.x⁻¹.val * B.k.map toAdele := rfl
+      rw [Matrix.mul_assoc, Matrix.mul_assoc]
+      congr 1
+      dsimp only [Y₀]
+      rw [hB, Matrix.map_mul, Matrix.map_mul, ← conjTranspose_map_toAdele, W₀.map_J,
+        conjTranspose_mul]
+      simp only [Matrix.mul_assoc]
   have h_rat (g' : G E s) :
       A.borderedCentreCoeff B T f (A.radicalElement Y₀ 0 * g') =
         A.borderedCentreCoeff B T f g' := by
     rw [borderedCentreCoeff,
       centreCoeff_rat_mul _ hf _ (A.radicalElement_mem_Gamma Y (by simp)) u h_frame]
-    simp [u, fromBlocks_conjTranspose, fromBlocks_multiply]
+    simp only [u, fromBlocks_conjTranspose, conjTranspose_one, conjTranspose_zero,
+      fromBlocks_multiply, Matrix.mul_zero, Matrix.zero_mul, Matrix.one_mul, Matrix.mul_one,
+      add_zero, zero_add]
   -- The centre of the radical for `A` pairs trivially with `0 ⊕ T`.
   have h_centre (M : Matrix Unit Unit (𝔸 E)) (g' : G E s) :
       A.borderedCentreCoeff B T f (A.radicalCentre M * g') = A.borderedCentreCoeff B T f g' := by
-    simpa [radicalCentre_comp_fromBlocks hD, lineShift_zero, fromBlocks_map, fromBlocks_multiply]
-      using centreCoeff_radicalCentre_mul (A.comp B) hf (T := fromBlocks 0 0 0 T)
-        (fromBlocks M 0 0 0) g'
+    have h := centreCoeff_radicalCentre_mul (A.comp B) hf (T := fromBlocks 0 0 0 T)
+      (fromBlocks M 0 0 0) g'
+    rw [radicalCentre_comp_fromBlocks hD] at h
+    simp only [conjTranspose_zero, sub_self, lineShift_zero, one_mul, AddChar.map_zero_eq_one,
+      fromBlocks_map, Matrix.map_zero _ (map_zero toAdele), fromBlocks_multiply, Matrix.zero_mul,
+      Matrix.mul_zero, add_zero, trace_fromBlocks, trace_zero, Circle.coe_one] at h
+    exact h
   -- The element `ν` of the radical is a shear, and it commutes with the centre.
   let ν : G E s := A.radicalElement (e • y) 0
   have h_local : A.borderedCentreCoeff B T f (ν * g) = A.borderedCentreCoeff B T f g := by
@@ -800,8 +943,19 @@ lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAd
       (A.iCoord - toAdele (2⁻¹ : E) • e • y * A.lCoord)
     have h_mat : ν.adeleMatrix = 1 + (star e • (A.kAdelic * c₁ :) - e •
       (A.iAdelic * y * A.lCoord)) := by
-      simp [ν, c₁, Splitting.radicalElement, Matrix.mul_assoc, sub_eq_add_neg, Matrix.mul_add]
-      module
+      dsimp only [ν, Splitting.radicalElement]
+      rw [G.adeleMatrix_ofMatrix]
+      simp only [c₁, conjTranspose_zero, add_zero, smul_zero, zero_add, conjTranspose_smul,
+        Matrix.smul_mul, Matrix.mul_smul, Matrix.mul_sub, smul_sub, Matrix.mul_assoc]
+      have h_sc : toAdele (2⁻¹ : E) • e • star e •
+          (A.kAdelic * (yᴴ * (stdForm E (hyperbolicSigns p ⊕ᵥ s₂) * (y * A.lCoord)))) =
+          star e • toAdele (2⁻¹ : E) • e •
+            (A.kAdelic * (yᴴ * (stdForm E (hyperbolicSigns p ⊕ᵥ s₂) * (y * A.lCoord)))) := by
+        simp only [smul_smul]
+        congr 1
+        rw [mul_comm e, ← mul_assoc, mul_comm _ (star e), mul_assoc]
+      rw [h_sc]
+      abel
     have h_comm (w : Matrix Unit Unit (𝔸 E)) :
         A.radicalCentre w * (ν * g) = ν * (A.radicalCentre w * g) := by
       rw [← mul_assoc ν, A.mul_radicalCentre (A.actsOnFrame_radicalElement _ _), mul_assoc]

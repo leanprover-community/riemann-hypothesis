@@ -65,6 +65,7 @@ theorem embedH_mul_definiteCols (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
   simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
     conjTranspose_definiteCols_mul_self]
 
+omit [DecidableEq n] in
 /-- Let `f` be a measurable map to the unitary group `G₁` whose values all fix the tuple of
 vectors given by the columns of `E`. Then almost every element for the image of `μ` under `f`
 fixes this tuple. -/
@@ -119,40 +120,30 @@ theorem _root_.New.LeGramFibre.mconv_embedH_le (e : n ⊕ 𝔰.κ ≃ 𝔰.Besse
   set E : Matrix 𝔰.BesselIndex n ℂ := inclMatrix ℂ (e ∘ Sum.inl)
   set c : ℝ := volU 𝔰.k / 2 ^ 𝔰.k
   have hc : 0 < c := div_pos (volU_pos _) (by positivity)
-  have hE : Eᴴ * E = 1 := inclMatrix_gram_eq_one (e.injective.comp Sum.inl_injective)
   have hXE : 𝔰.definiteColsᴴ * E = 0 := inclMatrix_gram_eq_zero fun i j ↦ by simp [← he]
   have h_orth : Eᴴ * 𝔰.J₁ * 𝔰.definiteCols = 0 := by
     simpa [Matrix.mul_assoc, J₁_mul_definiteCols] using congrArg conjTranspose hXE
-  have h_linear : LeFibreMeasure volume volume (fun y : Matrix 𝔰.BesselIndex 𝔰.κ ℂ ↦ Eᴴ * 𝔰.J₁ * y)
-      (Eᴴ * 𝔰.J₁ * 𝔰.definiteCols) (volume.map fun x : Matrix 𝔰.κ 𝔰.κ ℂ ↦ 𝔰.definiteCols * x) := by
-    simpa only [h_orth, Matrix.mul_zero, zero_add] using leFibreMeasure_conjTranspose_mul_mul hE
-      conjTranspose_definiteCols_mul_self h_orth (by simp [← card_congr e]) (0 : Matrix n 𝔰.κ ℂ)
-  have h_join : joinCols e (E, 𝔰.definiteCols) = 1 := by
-    rw [← LinearEquiv.eq_symm_apply, Shape.definiteCols, ← funext he]
-    rfl
-  have h_embed (u : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) : (embedH u).val.val * E = E := by
-    simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc, hXE]
-  have h_definite : LeFibreMeasure volume (volume.prod volume)
-      (fun y : Matrix 𝔰.BesselIndex 𝔰.κ ℂ ↦ (Eᴴ * 𝔰.J₁ * y, gramCoords 𝔰.J₁ y))
-      (Eᴴ * 𝔰.J₁ * 𝔰.definiteCols, gramCoords 𝔰.J₁ 𝔰.definiteCols)
-      ((ENNReal.ofReal c • volume.map embedH).map fun g : 𝔰.G₁ ↦ g.val.val * 𝔰.definiteCols) :=
-    h_linear.trans leFibreMeasure_definiteCols (by fun_prop)
   have h_basis : LeGramFibre 𝔰.J₁ (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
-      (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) :=
-    hm.append e h_join h_definite (ae_smul_measure (ae_map_mul_eq (by fun_prop) h_embed) _)
+      (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) := by
+    refine hm.append e ?_ (LeFibreMeasure.trans ?_ leFibreMeasure_definiteCols (by fun_prop))
+      (ae_smul_measure (ae_map_mul_eq (by fun_prop) fun u ↦ by
+        simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc, hXE]) _)
+    · rw [← LinearEquiv.eq_symm_apply, Shape.definiteCols, ← funext he]
+      rfl
+    · simpa only [h_orth, Matrix.mul_zero, zero_add] using leFibreMeasure_conjTranspose_mul_mul
+        (inclMatrix_gram_eq_one (e.injective.comp Sum.inl_injective))
+        conjTranspose_definiteCols_mul_self h_orth (by simp [← card_congr e]) (0 : Matrix n 𝔰.κ ℂ)
   have h_const : volU 𝔰.r / volU 𝔰.k / 2 ^ (2 * 𝔰.ϱ + 1) =
       c⁻¹ * (volU (card 𝔰.BesselIndex) / 2 ^ card 𝔰.BesselIndex) := by
     rw [show 𝔰.r = card 𝔰.BesselIndex by simp,
       show card 𝔰.BesselIndex = 2 * 𝔰.ϱ + 1 + 𝔰.k by simp +arith]
     simp [c, pow_add, field]
-  calc m ∗ₘ volume.map embedH
-      = ENNReal.ofReal c⁻¹ • (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) := by
-        simp [mconv_smul_right, smul_smul, ← ENNReal.ofReal_mul (inv_pos.2 hc).le, hc.ne']
-    _ ≤ ENNReal.ofReal c⁻¹ •
-        ENNReal.ofReal (volU (card 𝔰.BesselIndex) / 2 ^ card 𝔰.BesselIndex) • volume := by
-        gcongr
-        exact h_basis.le_haar
-    _ = _ := by rw [h_const, smul_smul, ENNReal.ofReal_mul (by positivity)]
+  rw [show m ∗ₘ volume.map embedH =
+      ENNReal.ofReal c⁻¹ • (m ∗ₘ (ENNReal.ofReal c • volume.map embedH)) by
+        simp [mconv_smul_right, smul_smul, ← ENNReal.ofReal_mul (inv_pos.2 hc).le, hc.ne'],
+    h_const, ENNReal.ofReal_mul (inv_pos.2 hc).le, mul_smul]
+  gcongr
+  exact h_basis.le_haar
 
 /-! ### Coordinates adapted to the frame -/
 
@@ -246,7 +237,7 @@ theorem leFibreMeasure_dualCols :
         fun g : 𝔰.G₁ ↦ g.val.val * 𝔰.dualCols) := by
   -- Fix the products with the frame, then the Gram matrix.
   have h_dual : 𝔰.J₁ * 𝔰.frameCols * (𝔰.frameColsᴴ * 𝔰.J₁ * 𝔰.dualCols) = 𝔰.dualCols := by
-    simp [← ext_iff, J₁_eq, inclMatrix, Matrix.mul_apply, Matrix.one_apply, Fin.sum_univ_castSucc]
+    simp [← ext_iff, inclMatrix, Matrix.mul_apply, Matrix.one_apply, Fin.sum_univ_castSucc]
   let μ : Measure (Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ) ℂ) :=
     volume.map fun p : Matrix (Fin 𝔰.ϱ ⊕ 𝔰.κ) (Fin 𝔰.ϱ) ℂ ↦ 𝔰.dualCols + 𝔰.freeCols * p
   have h_linear : LeFibreMeasure volume volume (𝔰.frameColsᴴ * 𝔰.J₁ * ·)

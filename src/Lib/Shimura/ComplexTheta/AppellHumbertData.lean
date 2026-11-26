@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.RingTheory.Coalgebra.IsFrobenius
+public import Mathlib.RingTheory.HopfAlgebra.Basic
 public import Lib.Adelic.Adeles.AdditiveCharacter
 public import Lib.General.Analysis.FourierTransforms
 public import Lib.General.Topology
@@ -132,7 +134,7 @@ class IsAppellHumbert (B : ThetaTori.LatticeForm L) (χ : V → ℂ) where
   norm_eq_one : ∀ l ∈ L, ‖χ l‖ = 1
   /-- χ is a semicharacter of L for the Riemann form E of B:
   χ(l + m) = χ(l) χ(m) exp(π i E(m, l)). -/
-  semicharacter : ∀ᵉ (l ∈ L) (m ∈ L), χ (l + m) = χ l * χ m * exp (π * I * B.riemannForm m l)
+  semicharacter : ∀ l ∈ L, ∀ m ∈ L, χ (l + m) = χ l * χ m * exp (π * I * B.riemannForm m l)
 
 /-- The Riemann form E of B is positive: E(u, iu) > 0 for every u ≠ 0. -/
 @[mk_iff pr_iff]
@@ -202,7 +204,7 @@ lemma thetaShift_zero : B.thetaShift 0 f = f := by
 
 @[simp]
 lemma thetaShift_mul : (B + B').thetaShift u (f * g) = B.thetaShift u f * B'.thetaShift u g := by
-  simp [funext_iff, thetaShift_apply, add_div, add_right_comm, exp_add, exp_neg, fieldEq]
+  simp [funext_iff, thetaShift_apply, add_div, exp_add, exp_neg, fieldEq]
 
 @[simp]
 lemma thetaShift_pow : (n • B).thetaShift u (f ^ n) = B.thetaShift u f ^ n := by
@@ -402,6 +404,14 @@ lemma thetaShift_of_mem (hf : f ∈ B.thetaSpace χ) (hl : l ∈ L) : B.thetaShi
   rw [thetaShift_apply_apply, apply_add_of_mem_thetaSpace hf hl z, exp_neg]
   simp [field]
 
+omit hB in
+private lemma mem_thetaSpace_of_thetaShift (hf : Differentiable ℂ f)
+    (h_shift : ∀ l ∈ L, B.thetaShift l f = χ l • f) : f ∈ B.thetaSpace χ := by
+  refine ⟨hf, fun l hl z ↦ ?_⟩
+  have h := congrFun (h_shift l hl) z
+  rw [thetaShift_apply_apply, exp_neg, inv_mul_eq_iff_eq_mul₀ (exp_ne_zero _)] at h
+  simpa [mul_left_comm, mul_assoc] using h
+
 /-! ### Translates, products and powers of a theta function -/
 
 /-- On a theta function, adding a lattice vector `l` to `u` changes the translation by `u` only by
@@ -419,20 +429,9 @@ lemma IsAppellHumbert.thetaShift_add_eq_smul_of_mem (hf : f ∈ B.thetaSpace χ)
 `a ∈ V` of a theta function is a theta function for the multiplier `l ↦ χ l * exp (2πi E(l, a))`. -/
 lemma IsAppellHumbert.thetaShift_mem (hf : f ∈ B.thetaSpace χ) (a : V) :
     B.thetaShift a f ∈ B.thetaSpace fun l : V ↦ χ l * B.riemannPhase l a := by
-  -- The exponents differ by `B l a - B a l = 2πi E(l, a)` (`sub_eq_riemannForm`).
-  rw [mem_thetaSpace_iff]
-  refine ⟨differentiable_thetaShift B a (differentiable_of_mem_thetaSpace hf), fun l hl z ↦ ?_⟩
-  have h_exp :
-      exp (-(B a (z + l) + B a a / 2)) * exp (B l (z + a) + B l l / 2) =
-        exp (2 * π * I * B.riemannForm l a) * exp (B l z + B l l / 2) *
-          exp (-(B a z + B a a / 2)) := by
-    rw [← exp_add, ← exp_add, ← exp_add]
-    congr 1
-    simp only [map_add]
-    linear_combination hB.sub_eq_riemannForm l a
-  rw [thetaShift_apply_apply, thetaShift_apply_apply, add_right_comm z l a,
-    apply_add_of_mem_thetaSpace hf hl (z + a), RealComplexForm.riemannPhase, coe_fourierChar_eq_exp]
-  linear_combination (χ l * f (z + a)) * h_exp
+  refine mem_thetaSpace_of_thetaShift
+    (differentiable_thetaShift B a (differentiable_of_mem_thetaSpace hf)) fun l hl ↦ ?_
+  rw [hB.thetaShift_comm l a, thetaShift_of_mem hf hl, map_smul, smul_smul, mul_comm]
 
 /-- For Appell–Humbert data, the twisted translation by a vector a of the dual lattice maps theta
 functions of type (B, χ) to theta functions of the same type. -/
@@ -461,22 +460,18 @@ omit hB
 `(B + B', χ * χ')`. -/
 lemma thetaSpace.mul (hf : f ∈ B.thetaSpace χ) (hg : g ∈ B'.thetaSpace χ') :
     f * g ∈ (B + B').thetaSpace (χ * χ') := by
-  refine ⟨(differentiable_of_mem_thetaSpace hf).mul (differentiable_of_mem_thetaSpace hg),
-    fun l hl z ↦ ?_⟩
-  have h_exp : exp (B l z + B l l / 2) * exp (B' l z + B' l l / 2) =
-      exp ((B + B') l z + (B + B') l l / 2) := by
-    simp [← exp_add, add_div, add_add_add_comm]
-  simp only [Pi.mul_apply, apply_add_of_mem_thetaSpace hf hl z, apply_add_of_mem_thetaSpace hg hl z,
-    ← h_exp]
-  ring
+  refine mem_thetaSpace_of_thetaShift
+    ((differentiable_of_mem_thetaSpace hf).mul (differentiable_of_mem_thetaSpace hg)) fun l hl ↦ ?_
+  rw [thetaShift_mul, thetaShift_of_mem hf hl, thetaShift_of_mem hg hl]
+  ext z
+  simp [mul_mul_mul_comm]
 
 /-- The `n`-th power of a theta function of type `(B, χ)` is one of type `(n • B, χ ^ n)`. -/
 lemma thetaSpace.pow (hf : f ∈ B.thetaSpace χ) (n : ℕ) : f ^ n ∈ (n • B).thetaSpace (χ ^ n) := by
-  refine ⟨(differentiable_of_mem_thetaSpace hf).pow n, fun l hl z ↦ ?_⟩
-  have h_exp : exp (B l z + B l l / 2) ^ n = exp ((n • B) l z + (n • B) l l / 2) := by
-    simp [← exp_natCast_mul, mul_add, mul_div_assoc]
-  simp only [Pi.pow_apply, apply_add_of_mem_thetaSpace hf hl z, ← h_exp]
-  ring
+  refine mem_thetaSpace_of_thetaShift ((differentiable_of_mem_thetaSpace hf).pow n) fun l hl ↦ ?_
+  rw [thetaShift_pow, thetaShift_of_mem hf hl]
+  ext z
+  simp [mul_pow]
 
 end New
 

@@ -1,10 +1,10 @@
 module
 
-public import Lib.Adelic.AutomorphicForms.BlockPeriods
 public import Lib.General.LinearAlgebra.BlockEmbeddings
 public import Lib.Weil.DualPair.MixedModel
 public import Lib.Weil.Periods.BesselIntegral
 public import Lib.Weil.Periods.Equivariant
+public import Lib.Adelic.Witt.IwasawaDecomposition
 
 /-!
 # Constant terms of Weil functions along maps of positive degree
@@ -164,7 +164,7 @@ lemma actsOnFrame_submatrix_ratCoordMatrix (D : U.Splitting V₀ {i // 0 < wt i}
     D.ActsOnFrame g (submatrix (U.ratCoordMatrix g) val val) := by
   -- The columns of positive weight of `U.ratCoordMatrix g` vanish in the rows of weight `≤ 0`.
   let cols : Matrix n {i // 0 < wt i} (𝔸 E) := (U.ratCoordMatrix g).submatrix id val
-  have h_cols : HasDegreeGe wt 0 1 cols := fun i l hi ↦ h i l (by simpa using hi) l.2
+  have h_cols : HasDegreeGe wt 0 1 cols := fun i l hi ↦ h i l (by simpa using hi) l.property
   change g.adeleMatrix * D.kAdelic = D.kAdelic * cols.submatrix val id
   refine Eq.trans ?_ (kAdelic_mul_submatrix D hD cols h_cols).symm
   simp [cols, ← mul_inclMatrix, ratCoordMatrix_eq, Matrix.mul_assoc, kAdelic, hD, map_inclMatrix]
@@ -195,16 +195,16 @@ lemma zeroTerm_omega_of_inclMatrix [WeilData E] (D : U.Splitting V₀ {i // 0 < 
     rw [h_one i l (by omega) (by omega), one_apply_ne (ne_of_apply_ne wt (by omega))]
   -- `C` is block triangular, with a unitriangular block in weights `≤ 0`.
   have h_low : (C.toSquareBlockProp fun i ↦ ¬0 < wt i).det = 1 :=
-    det_eq_one_of_unitriangular (lev := fun i ↦ -wt i.1) fun a b hab ↦ by
-      simp [toSquareBlockProp_def, h_one a b (not_lt.1 a.2) (neg_le_neg_iff.1 hab),
+    det_eq_one_of_unitriangular (lev := fun i ↦ -wt i.val) fun a b hab ↦ by
+      simp [toSquareBlockProp_def, h_one a b (not_lt.1 a.property) (neg_le_neg_iff.1 hab),
         Matrix.one_apply, Subtype.ext_iff]
-  have h_det : M.det = u.1 :=
+  have h_det : M.det = u.val :=
     calc
       _ = (C.toSquareBlockProp fun i ↦ 0 < wt i).det :=
-        congrArg det (Matrix.ext fun i l ↦ h_col i l l.2)
+        congrArg det (Matrix.ext fun i l ↦ h_col i l l.property)
       _ = C.det := by
         rw [twoBlockTriangular_det C (0 < wt ·) fun i hi l ↦ h_zero i l (by omega), h_low, mul_one]
-      _ = u.1 := hu
+      _ = u.val := hu
   -- The defect `Δ` has nonzero rows only in positive weight, so `U.x⁻¹ * Δ` is `D.kAdelic` times a
   -- matrix and has no `V₀`-coordinate.
   have h_mid : D.iCoord * (g.adeleMatrix * D.iAdelic) = g₀.adeleMatrix := by
@@ -330,7 +330,7 @@ lemma exists_splitting_k_eq_inclMatrix (hd : ∀ b : ι', d (Y'.stringReversal b
   let pos : {r // 0 < Y.mapDegree d r} ↪ ι' × ι := .subtype _
   have h_isotropic : (inclMatrix E pos)ᴴ * (V.hom V').J * inclMatrix E pos = 0 := by
     ext a b
-    have h_pair : (V.hom V').J a.1 b.1 = 0 :=
+    have h_pair : (V.hom V').J a.val b.val = 0 :=
       Y.hom_J_eq_zero_of_mapDegree_ne_neg hd a.1 b.1 (a.2.trans' (neg_lt_zero.2 b.2)).ne'
     simp [pos, Matrix.mul_apply, inclMatrix, Matrix.one_apply, h_pair]
   exact (V.hom V').exists_splitting ⟨_, inclMatrix_transpose_mul_self pos⟩ h_isotropic
@@ -359,7 +359,7 @@ lemma J_inv_mul_k_mul_eq_diagonal (hd : ∀ b : ι', d (Y'.stringReversal b) = -
     · simp [Q, pos, inclMatrix, Matrix.mul_apply, Matrix.one_apply, diagonal_apply, hl]
     · have hl_nonneg : -Y.mapDegree d l ≤ 0 := by simpa using hl
       simp [Q, pos, inclMatrix, Matrix.mul_apply, Matrix.one_apply, diagonal_apply, hl,
-        h_pair a.1 l (hl_nonneg.trans_lt a.2).ne]
+        h_pair a.val l (hl_nonneg.trans_lt a.property).ne]
   have h_zero : ∀ i ∉ range pos, ∀ l : ι' × ι, ((V.hom V').J * Q) i l = 0 := fun i hi l ↦ by
     have hi_nonpos : Y.mapDegree d i ≤ 0 := not_lt.1 fun h_pos ↦ hi ⟨⟨i, h_pos⟩, rfl⟩
     by_cases hl : d l.1 < Y.gradeOf l.2
@@ -386,7 +386,7 @@ lemma constTerm_eq_theta_zeroTerm (D : (V.hom V').Splitting U {r // 0 < Y.mapDeg
   have h_point (y : ι' × ι → 𝔸 E) : D.kAdelic *ᵥ res y =
       V.homAtPoint V' (vecToMatrix fun r ↦ if 0 < Y.mapDegree d r then y r else 0) := by
     rw [← x_inv_mulVec_matrixToVec, ← kAdelic_mulVec D hD]
-    · exact congrArg _ (funext fun r ↦ (ite_eq_left r.2).symm)
+    · exact congrArg _ (funext fun r ↦ (ite_eq_left r.property).symm)
     · exact fun r hr ↦ ite_eq_right hr
   -- `U.θ` is evaluation at `0`, by definition.
   change _ = D.zeroTerm (homHeisenbergOp w f) 0
@@ -438,12 +438,12 @@ lemma constTerm_congr_rat (hd : ∀ b : ι', d (Y'.stringReversal b) = -d b)
     rw [← (V.hom V').theta_rho, rho_swap, map_smul, θ_rat, theta_rho, smul_eq_mul]
   -- As `u` has positive degree, the phase sees only the entries of `w`, `w'` of negative degree.
   have phase : V.homBicharacter V' u w = V.homBicharacter V' u w' := by
-    have neg_eq : ∀ (b : ι') (a : ι), d b < Y.gradeOf a → w.1 b a = w'.1 b a := by
+    have neg_eq : ∀ (b : ι') (a : ι), d b < Y.gradeOf a → w.val b a = w'.val b a := by
       simpa [eq_iff_sub_mem, nonnegMaps, HasDegreeGe, sub_eq_zero] using hw
     -- The string reversals negate the degree of each entry.
     have rev_eq (b : ι') (a : ι) (h : Y.gradeOf a < d b) :
-        w.1 (Y'.stringReversal b) (Y.stringReversal a) =
-          w'.1 (Y'.stringReversal b) (Y.stringReversal a) :=
+        w.val (Y'.stringReversal b) (Y.stringReversal a) =
+          w'.val (Y'.stringReversal b) (Y.stringReversal a) :=
       neg_eq _ _ (by simpa [hd, gradeOf_stringReversal] using h)
     simp +contextual [homBicharacter_eq, trace, Matrix.mul_apply, formAdjoint_apply Y Y', hu,
       vecToMatrix, rev_eq]
@@ -593,15 +593,15 @@ lemma tsum_constTerm_agreesWithStringMap (hd : ∀ b : ι', d (Y'.stringReversal
   -- (`tsum_coeff_eq_quotMean`). `r x` is the matrix over `E` of `x - Y.stringMap Y'`, and `ξ x`
   -- keeps, times `j`, the entries at which `Y.AgreesWithStringMap Y'` asks for equality.
   have sub_rat (x : ratMatrices E ι' ι) (b : ι') (a : ι) :
-      ∃ c : E, toAdele c = x.1 b a - Y.stringMap Y' b a :=
-    mem_ratMatrices.1 (sub_mem x.2 ⟨_, rfl⟩) b a
+      ∃ c : E, toAdele c = x.val b a - Y.stringMap Y' b a :=
+    mem_ratMatrices.1 (sub_mem x.property ⟨_, rfl⟩) b a
   choose r hr using sub_rat
   let ξ (x : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) : Matrix ι' ι E :=
     of fun b a ↦ j * if 0 ⊔ Y'.gradeOf b < Y.gradeOf a then r x.out b a else 0
   have ξ_eq_zero (x : ratMatrices E ι' ι ⧸ Y.nonnegMaps d) :
       ξ x = 0 ↔ x ∈ Y.agreeingClasses Y' d := by
     -- `toAdele` is injective and `j` is not zero.
-    have r_eq_zero (b : ι') (a : ι) : r x.out b a = 0 ↔ x.out.1 b a = Y.stringMap Y' b a := by
+    have r_eq_zero (b : ι') (a : ι) : r x.out b a = 0 ↔ x.out.val b a = Y.stringMap Y' b a := by
       rw [← map_eq_zero (toAdele (E := E)), hr, sub_eq_zero]
     simp [ξ, ← ext_iff, agreeingClasses, j_ne_zero, r_eq_zero]
   rw [isDualFamily_ratMatrices.tsum_coeff_eq_quotMean ξ ξ_eq_zero
@@ -635,7 +635,7 @@ lemma tsum_constTerm_agreesWithStringMap (hd : ∀ b : ι', d (Y'.stringReversal
   rw [← (Y.hasSum_constTerm_out hd (f := homHeisenbergOp (V'.formAdjoint V y) f)).tsum_eq,
     ← tsum_div_const]
   refine tsum_congr fun x ↦ ?_
-  have trace_eq : toAdele j * (y * x.out.1).trace - toAdele j * (y * Y.stringMap Y').trace =
+  have trace_eq : toAdele j * (y * x.out.val).trace - toAdele j * (y * Y.stringMap Y').trace =
       ((ξ x).map toAdele * v).trace := by
     rw [← mul_sub, ← trace_sub, ← Matrix.mul_sub, trace_mul_comm]
     simp [trace, Matrix.mul_apply, ξ, hy, hr, apply_ite, Finset.mul_sum, mul_assoc]
@@ -711,24 +711,18 @@ lemma hasDegreeGe_ratCoordMatrix_onHom_sub_one {γ : G E ε} {δ : G E ε'} (hγ
     HasDegreeGe (Y.mapDegree d) (Y.mapDegree d) 1
       ((V.hom V').ratCoordMatrix (G.onHom (γ, δ)) - 1) := by
   intro i l hil
-  have δ_eq (h_le : d i.1 ≤ d l.1) :
-      V'.ratCoordMatrix δ i.1 l.1 = (1 : Matrix ι' ι' (𝔸 E)) i.1 l.1 :=
-    sub_eq_zero.1 (hδ i.1 l.1 (Int.lt_add_one_of_le h_le))
-  have γ_eq (h_le : Y.gradeOf l.2 ≤ Y.gradeOf i.2) :
-      V.ratCoordMatrix γ⁻¹ l.2 i.2 = (1 : Matrix ι ι (𝔸 E)) l.2 i.2 :=
-    sub_eq_zero.1 (Y.mem_unipotent.1 (inv_mem hγ) l.2 i.2 (Int.lt_add_one_of_le h_le))
-  suffices h_entry : V'.ratCoordMatrix δ i.1 l.1 * V.ratCoordMatrix γ⁻¹ l.2 i.2 =
-      (1 : Matrix ι' ι' (𝔸 E)) i.1 l.1 * (1 : Matrix ι ι (𝔸 E)) l.2 i.2 by
-    rw [ratCoordMatrix_onHom, ← one_kronecker_one, ← transpose_one (n := ι)]
-    exact sub_eq_zero.2 h_entry
-  -- Either both factors are entries of the identity, or one of them is off the diagonal and zero.
-  obtain ⟨h_target, h_source⟩ | h_target | h_source :
-      d i.1 ≤ d l.1 ∧ Y.gradeOf l.2 ≤ Y.gradeOf i.2 ∨ d i.1 < d l.1 ∨
-        Y.gradeOf l.2 < Y.gradeOf i.2 := by
-    lia
-  · rw [δ_eq h_target, γ_eq h_source]
-  · rw [δ_eq h_target.le, one_apply_ne (ne_of_apply_ne d h_target.ne), zero_mul, zero_mul]
-  · rw [γ_eq h_source.le, one_apply_ne (ne_of_apply_ne Y.gradeOf h_source.ne), mul_zero, mul_zero]
+  have hδ' (h : d i.1 ≤ d l.1) := sub_eq_zero.1 (hδ i.1 l.1 (Int.lt_add_one_of_le h))
+  have hγ' (h : Y.gradeOf l.2 ≤ Y.gradeOf i.2) :=
+    sub_eq_zero.1 (Y.mem_unipotent.1 (inv_mem hγ) l.2 i.2 (Int.lt_add_one_of_le h))
+  rw [ratCoordMatrix_onHom, ← one_kronecker_one, ← transpose_one (n := ι)]
+  refine sub_eq_zero.2 (show V'.ratCoordMatrix δ i.1 l.1 * V.ratCoordMatrix γ⁻¹ l.2 i.2 =
+    (1 : Matrix ι' ι' (𝔸 E)) i.1 l.1 * (1 : Matrix ι ι (𝔸 E)) l.2 i.2 from ?_)
+  -- Either both factors are entries of the identity, or one is off-diagonal and zero.
+  rcases lt_or_ge (d i.1) (d l.1) with h | h
+  · rw [hδ' h.le, one_apply_ne (ne_of_apply_ne d h.ne), zero_mul, zero_mul]
+  · rcases lt_or_ge (Y.gradeOf l.2) (Y.gradeOf i.2) with h' | h'
+    · rw [hγ' h'.le, one_apply_ne (ne_of_apply_ne Y.gradeOf h'.ne), mul_zero, mul_zero]
+    · rw [hδ' (by lia), hγ' (by lia)]
 
 /-- Substitution law of the constant term for unipotent points. Let the weights `d` on `V'` be odd
 under the string reversal of `Y'`, let `γ` be unipotent for the grading `Y`, and let `δ - 1` raise
@@ -792,21 +786,21 @@ lemma IsEquivariant.unipotent_mul_constTerm (hd : ∀ b : ι', d (Y'.stringRever
     (hu_deg : HasDegreeGe Y.gradeOf Y.gradeOf 2 (V.ratCoordMatrix u - 1))
     (hw_deg : HasDegreeGe d Y.gradeOf 1 (w * (V.ratCoordMatrix u - 1)))
     (r : Y.besselGroup) (h : G E ε') :
-    W (u * r) * Y.constTerm d (twistedPairWeil α (u.1 * r.1, h) f) w =
+    W (u * r) * Y.constTerm d (twistedPairWeil α (u.val * r.val, h) f) w =
       V.homBicharacter V' (Y.stringMap Y' * V.ratCoordMatrix u) (Y.stringMap Y') /
         V.homBicharacter V' (w * V.ratCoordMatrix u) w *
-          (W r * Y.constTerm d (twistedPairWeil α (r.1, h) f) w) := by
+          (W r * Y.constTerm d (twistedPairWeil α (r.val, h) f) w) := by
   -- For `W` the factor is `Y.unipotentChar u = β(T u, T)`, as `Y.shift = T† T`.
   have h_char : W (u * r) =
       V.homBicharacter V' (Y.stringMap Y' * V.ratCoordMatrix u) (Y.stringMap Y') * W r := by
     rw [hW.unipotent_mul u hu_deg, homBicharacter_eq, ← Matrix.mul_assoc,
       Y.formAdjoint_stringMap_mul_stringMap_eq_shift, unipotentChar]
   -- In the constant term, `u` replaces `w` by `w u`, and we return to `w` at the cost of a phase.
-  have hu : u.1 ∈ Y.unipotent := Y.mem_unipotent.2 fun a b hab ↦ hu_deg a b (by omega)
-  set f' : 𝒮 (V.hom V') := twistedPairWeil α (r.1, h) f
-  have h_move : Y.constTerm d (twistedPairWeil α (u.1 * r.1, h) f) w =
+  have hu : u.val ∈ Y.unipotent := Y.mem_unipotent.2 fun a b hab ↦ hu_deg a b (by omega)
+  set f' : 𝒮 (V.hom V') := twistedPairWeil α (r.val, h) f
+  have h_move : Y.constTerm d (twistedPairWeil α (u.val * r.val, h) f) w =
       Y.constTerm d f' (w * V.ratCoordMatrix u) := by
-    simpa using constTerm_mul_of_mem_unipotent hd (δ := 1) hu (by simp [HasDegreeGe]) r.1 h w
+    simpa using constTerm_mul_of_mem_unipotent hd (δ := 1) hu (by simp [HasDegreeGe]) r.val h w
   have h_back : Y.constTerm d f' w =
       V.homBicharacter V' (w * V.ratCoordMatrix u) w * Y.constTerm d f' (w * V.ratCoordMatrix u) :=
     Y.constTerm_eq_homBicharacter_mul hd _ w (by simpa [Matrix.mul_sub] using hw_deg)
@@ -824,8 +818,8 @@ lemma constTermAtStringMap_rat_mul (γ : Y.ratBessel) (δ : Y'.ratBessel) (g : G
     ⟨hδ_rat, fun b ↦ by simpa using hasDegreeGe_zero_of_mem_besselGroup _ hδ_bessel b⟩
   -- Substitution moves `T` to the rational point `δ⁻¹ T γ`, which is `T` modulo degree `≥ 0`.
   let T : ratMatrices E ι' ι := ⟨Y.stringMap Y', _, rfl⟩
-  let T' : ratMatrices E ι' ι := ⟨V'.ratCoordMatrix δ⁻¹ * (T.1 * V.ratCoordMatrix γ),
-    mul_mem_ratMatrices hγ_rat (inv_mem hδ_rat) T.2⟩
+  let T' : ratMatrices E ι' ι := ⟨V'.ratCoordMatrix δ⁻¹ * (T.val * V.ratCoordMatrix γ),
+    mul_mem_ratMatrices hγ_rat (inv_mem hδ_rat) T.property⟩
   have same_class : (T' : ratMatrices E ι' ι ⧸ Y.nonnegMaps Y'.gradeOf) = T :=
     eq_iff_sub_mem.2 (Y.hasDegreeGe_zero_mul_stringMap_mul_sub hγ_bessel (inv_mem hδ_bessel))
   calc
@@ -848,13 +842,13 @@ lemma continuous_unfoldStep (hW : Y.IsEquivariant W) : Continuous (Y.unfoldStep 
     constTerm_eq_theta_zeroTerm D h_frame Ψ w
   have W_cont : Continuous W := hW.continuous
   let F (r : Y.besselGroup) : 𝒮 (V.hom V') →L[ℂ] ℂ :=
-    W r • U.θ ∘L D.zeroTerm ∘L homHeisenbergOp (Y.stringMap Y') ∘L twistedPairWeil α (r.1, 1)
+    W r • U.θ ∘L D.zeroTerm ∘L homHeisenbergOp (Y.stringMap Y') ∘L twistedPairWeil α (r.val, 1)
   have F_cont (Ψ : 𝒮 (V.hom V')) : Continuous (F · Ψ) := by
     simp only [F, _root_.smul_apply, ContinuousLinearMap.comp_apply]
     fun_prop
   have F_int (Ψ : 𝒮 (V.hom V')) : Integrable (F · Ψ) Y.besselMeasure :=
     integrable_of_isCocompact Y.isCocompact_ratBessel (F_cont Ψ) fun γ hγ r ↦ by
-      simp [F, ← const_eq, hW.rat_mul γ hγ.1, ← constTermAtStringMap_rat_mul ⟨_, hγ⟩ 1 r.1]
+      simp [F, ← const_eq, hW.rat_mul γ hγ.1, ← constTermAtStringMap_rat_mul ⟨_, hγ⟩ 1 r.val]
   have unfold_eq (h : G E ε') :
       strongIntegral Y.besselMeasure F (twistedPairWeil α (1, h) f) = Y.unfoldStep Y' α f W h := by
     simp [strongIntegral_apply _ _ F_int, F, unfoldStep, const_eq, rep_apply_apply]
@@ -880,7 +874,7 @@ lemma isEquivariant_unfoldStep (hW : Y.IsEquivariant W) (hc : Y'.genericConst = 
   have hd : ∀ b : ι', Y'.gradeOf (Y'.stringReversal b) = -Y'.gradeOf b :=
     Y'.gradeOf_stringReversal
   refine ⟨(continuous_unfoldStep hW).comp (by fun_prop), fun γ hγ r ↦ ?_, fun u u_deg r ↦ ?_⟩
-  · simpa [mul_assoc] using unfoldStep_rat_mul γ.1 ⟨hγ, γ.2⟩ (r * h)
+  · simpa [mul_assoc] using unfoldStep_rat_mul γ.val ⟨hγ, γ.property⟩ (r * h)
   -- Move `T` to `u T` at the cost of a phase; `u` acting on the target moves it back.
   have T_deg : HasDegreeGe Y'.gradeOf Y.gradeOf 1
       (V'.ratCoordMatrix u * Y.stringMap Y' - Y.stringMap Y') := by

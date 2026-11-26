@@ -1,7 +1,6 @@
 module
 
 public import Lib.Analytic.Primes
-public import New.Spanning.RemainingTerms.Size
 public import New.UpperBound.Objects.LabelsAndIndexTypes
 
 /-!
@@ -108,30 +107,24 @@ lemma New.totient_le_mul_card_isPrimitivePolynomial (k : Type*) [Field k] [Finit
   have hq : 1 < Nat.card k := Finite.one_lt_card
   have hqr : 1 < Nat.card k ^ r := one_lt_pow₀ hq hr
   have : NeZero ((Nat.card k ^ r - 1 : ℕ) : k) := ⟨by simp [Ne.pos, hr]⟩
-  obtain ⟨ζ, hζ⟩ : ∃ ζ : AlgebraicClosure k, IsPrimitiveRoot ζ (Nat.card k ^ r - 1) :=
-    (hasEnoughRootsOfUnity k _).prim
-  rw [← hζ.card_primitiveRoots]
+  rw [← (hasEnoughRootsOfUnity k _).prim.choose_spec.card_primitiveRoots]
   refine card_le_mul_card_image_of_maps_to (f := minpoly k) (fun ξ hξ ↦ ?_) r fun c hc ↦ ?_
   · rw [mem_primitiveRoots (by lia)] at hξ
     obtain ⟨ξ_ne, ξ_fixed⟩ := (pow_pred_eq_one_iff hqr).mp hξ.pow_eq_one
-    have int : IsIntegral k ξ := Algebra.IsIntegral.isIntegral ξ
-    have coeff_ne : (minpoly k ξ).coeff 0 ≠ 0 := coeff_zero_ne_zero int ξ_ne
-    set d : ℕ := (minpoly k ξ).natDegree
+    have int := Algebra.IsIntegral.isIntegral (R := k) ξ
+    have irr := irreducible int
     -- `q ^ r - 1` and `q ^ d - 1` divide each other, so `d = r`.
-    obtain ⟨pow_eq_one, two_le⟩ : ξ ^ (Nat.card k ^ d - 1) = 1 ∧ 2 ≤ Nat.card k ^ d :=
-      root_pow_card_pow_pred_eq_one (irreducible int) coeff_ne (aeval k ξ)
-    have deg_dvd : d ∣ r := (root_pow_card_pow_eq_self_iff (irreducible int) (aeval k ξ)).mp ξ_fixed
-    have pow_eq : Nat.card k ^ r - 1 = Nat.card k ^ d - 1 :=
-      (hξ.dvd_of_pow_eq_one _ pow_eq_one).antisymm (pow_sub_one_dvd_pow_sub_one _ deg_dvd)
-    have deg : d = r := Nat.pow_right_injective hq (by lia)
-    exact mem_filter.mpr ⟨by simp [monicsOfDegree, monic int, d, ← deg],
-      ⟨monic int, (irreducible int).squarefree, deg, coeff_ne⟩, irreducible int, ξ, aeval k ξ, hξ⟩
+    obtain ⟨h1, h2⟩ := root_pow_card_pow_pred_eq_one irr (coeff_zero_ne_zero int ξ_ne) (aeval k ξ)
+    have := (hξ.dvd_of_pow_eq_one _ h1).antisymm (pow_sub_one_dvd_pow_sub_one _
+      ((root_pow_card_pow_eq_self_iff irr (aeval k ξ)).mp ξ_fixed))
+    have deg : (minpoly k ξ).natDegree = r := Nat.pow_right_injective hq (by lia)
+    exact mem_filter.mpr ⟨by simp [monicsOfDegree, monic int, deg],
+      ⟨monic int, irr.squarefree, deg, coeff_zero_ne_zero int ξ_ne⟩, irr, ξ, aeval k ξ, hξ⟩
   · -- The `ξ` with minimal polynomial `c` are roots of `c`, which has degree `r`.
-    obtain ⟨⟨monic, -, rfl, -⟩, -⟩ : IsPrimitivePolynomial r c := (mem_filter.mp hc).2
+    obtain ⟨⟨monic, -, rfl, -⟩, -⟩ := (mem_filter.mp hc).2
     grw [← natDegree_map_le (f := algebraMap k (AlgebraicClosure k))]
     refine card_le_degree_of_subset_roots fun ξ hξ ↦ ?_
-    obtain rfl : minpoly k ξ = c := (mem_filter.mp hξ).2
-    simp [monic.ne_zero]
+    simpa [(mem_filter.mp hξ).2, monic.ne_zero] using aeval k ξ
 
 open scoped Classical in
 /-- Over a field with `q` elements and for `1 < r < q`, weight every polynomial by
@@ -170,35 +163,27 @@ lemma New.card_not_primitive_mul_le (k : Type*) [Field k] [Finite k] {q r : ℕ}
   -- `φ (q ^ r - 1)` is at most `r` times the number of primitive polynomials, and
   -- `N ≤ φ N * (2 log N + 1)`.
   set A : ℝ := 2 * r * (2 * (r * Real.log q) + 1)
+  set nPrim : ℕ := #{c ∈ monicsOfDegree k r | IsPrimitivePolynomial r c}
   have hqr : 1 < q ^ r := one_lt_pow hr_one_lt.ne_bot (hr_one_lt.trans hrq)
   have hqr_pos : 0 < (q : ℝ) ^ r := mod_cast (by lia : 0 < q ^ r)
-  have hA_pos : 0 < A := by positivity
-  set nPrim : ℕ := #{c ∈ monicsOfDegree k r | IsPrimitivePolynomial r c}
-  have log_le : Real.log (q ^ r - 1 : ℕ) ≤ r * Real.log q := by
-    grw [sub_le, cast_pow, Real.log_pow]
-    exact_mod_cast (by lia : 0 < q ^ r - 1)
   have totient_le : (φ (q ^ r - 1) : ℝ) ≤ r * nPrim := by
     rw [← hq]
     exact_mod_cast totient_le_mul_card_isPrimitivePolynomial k hr_one_lt.ne_zero
-  have prim_ge : (q : ℝ) ^ r ≤ A * nPrim := calc
-    (q : ℝ) ^ r ≤ (q ^ r - 1 : ℕ) * 2 := mod_cast (by lia : q ^ r ≤ (q ^ r - 1) * 2)
-    _ ≤ φ (q ^ r - 1) * (2 * Real.log (q ^ r - 1 : ℕ) + 1) * 2 := by
-      gcongr
-      exact le_totient_mul_log (by lia)
-    _ ≤ r * nPrim * (2 * (r * Real.log q) + 1) * 2 := by gcongr
-    _ = A * nPrim := by ring
+  have prim_ge : (q : ℝ) ^ r ≤ A * nPrim := by
+    have : (q : ℝ) ^ r ≤ (q ^ r - 1 : ℕ) * 2 := mod_cast (by lia : q ^ r ≤ (q ^ r - 1) * 2)
+    grw [this, le_totient_mul_log (by lia), totient_le, sub_le, cast_pow, Real.log_pow]
+    · exact le_of_eq (by ring)
+    · exact_mod_cast (by lia : 0 < q ^ r - 1)
   have card_split :
       (nPrim : ℝ) + #{c ∈ monicsOfDegree k r | ¬IsPrimitivePolynomial r c} = q ^ r := by
     simp [nPrim, ← cast_add, card_filter_add_card_filter_not, monicsOfDegree, ofEquiv_card, ← hq]
-  calc
-    _ ≤ (q ^ r - nPrim : ℝ) * (1 / (q : ℝ) ^ r) := by
-      rw [← card_split, add_sub_cancel_left]
-      bound [(by positivity : 0 ≤ (r : ℝ) / q)]
-    _ = 1 - nPrim / (q : ℝ) ^ r := by field_simp
-    _ ≤ 1 - 1 / A := by
-      rw [sub_le_sub_iff_left, div_le_div_iff₀ hA_pos hqr_pos]
-      linarith
-    _ ≤ exp (-(1 / A)) := one_sub_le_exp_neg _
+  have h1 : (q ^ r - nPrim : ℝ) * (1 / (q : ℝ) ^ r) ≤ 1 - 1 / A := by
+    rw [mul_one_div, sub_div, div_self hqr_pos.ne', sub_le_sub_iff_left,
+      div_le_div_iff₀ (by positivity) hqr_pos]
+    linarith
+  refine le_trans ?_ (h1.trans (one_sub_le_exp_neg (1 / A)))
+  rw [← card_split, add_sub_cancel_left]
+  bound [(by positivity : 0 ≤ (r : ℝ) / q)]
 
 /-- Let `k w` be finitely many fields with `q` elements, `r = card n < q`, and `c w` a label of
 degree `r` over `k w`: a monic squarefree polynomial of degree `r` that does not vanish at `0`. The
@@ -210,7 +195,6 @@ lemma New.prod_le_re_tupleIdem_coeff_one {n ι : Type*} [Fintype n] [DecidableEq
     (hq : ∀ w : ι, Nat.card (k w) = q) (hr : Fintype.card n = r) (hrq : r < q)
     {c : ∀ w : ι, (k w)[X]} (hc : ∀ w : ι, IsLabel r (c w)) :
     ∏ _ : ι, ((1 - r / q) / q ^ r : ℝ) ≤ ((tupleIdem n c).coeff 1).re := by
-  classical
   subst r
   have weight_nonneg : 0 ≤ (1 - card n / q : ℝ) / q ^ card n := by
     bound [(mod_cast hrq.le : (card n : ℝ) ≤ q)]

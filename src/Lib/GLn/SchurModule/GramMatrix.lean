@@ -1,7 +1,9 @@
 module
 
-public import Lib.Adelic.Witt.WittTheorem
+public import Mathlib.LinearAlgebra.Matrix.Integer
+public import Mathlib.Tactic.Monotonicity.Lemmas
 public import Lib.GLn.SchurModule.WeylKernel
+public import Lib.General.LinearAlgebra.IntegralLattices
 
 /-!
 # Fock pairing, Hermitian norm and Cartan products for the Gram matrix of the Weyl kernel
@@ -210,10 +212,6 @@ noncomputable def firstColumnExponent (α : ∀ τ : Φ, n τ → ℕ) : ((τ : 
   (Finsupp.equivFunOnFinite.symm fun x : (τ : Φ) × n τ ↦ α x.1 x.2).embDomain
     (Function.Embedding.sectL ((τ : Φ) × n τ) 0)
 
-lemma firstColumnExponent_injective : Function.Injective (firstColumnExponent (n := n)) :=
-  (Finsupp.embDomain_injective _).comp <| Finsupp.equivFunOnFinite.symm.injective.comp
-    (Equiv.piCurry fun τ (_ : n τ) ↦ ℕ).symm.injective
-
 /-- A product over the exponent `firstColumnExponent α` runs over the variables in the first
 columns. -/
 lemma prod_firstColumnExponent {M : Type} [CommMonoid M] (α : ∀ τ : Φ, n τ → ℕ)
@@ -395,7 +393,7 @@ lemma exists_tightFrame : ∃ η : ColumnFilling n κ → WeylIndexFamily n κ �
       rw [← fillingMatrix_transpose_mul_self, ← mulVec_mulVec, dotProduct_mulVec, vecMul_transpose]
     have h_single : w T * w T ≤ w ⬝ᵥ w :=
       Finset.single_le_sum (fun S _ ↦ mul_self_nonneg (w S)) (Finset.mem_univ T)
-    have h_le : η T ⬝ᵥ weylGram n κ *ᵥ η T ≤ hk ^ 2 := by nlinarith [sq_nonneg (hk - w T)]
+    have h_le : η T ⬝ᵥ weylGram n κ *ᵥ η T ≤ hk ^ 2 := by linarith [sq_nonneg (hk - w T)]
     simpa [weylNormSq, dotProduct, mulVec] using (Int.cast_le (R := ℝ)).2 h_le
 
 omit [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
@@ -567,13 +565,15 @@ lemma _root_.New.weylNormSq_le_mul_of_toPoly_eq {ξ : WeylIndexFamily n κ → �
   -- The hypothesis in coordinates: multiplication sends `G ξ ⊗ G η` to `G ζ`.
   have h_coord : (vecMulVec (weylGramOver *ᵥ η) (weylGramOver *ᵥ ξ)).vec ᵥ* C = weylGramOver *ᵥ ζ :=
     vecMul_comulMatrix_eq_iff.mpr h_toPoly_eq.symm
+  have h_tensorVec : B *ᵥ v = (vecMulVec (weylGramOver *ᵥ η) (weylGramOver *ᵥ ξ)).vec := by
+    simp [B, v, vecMul_transpose _ ξ, kronecker_mulVec_vec, mul_vecMulVec, vecMulVec_mul]
   have h_pair : star (C *ᵥ ζ) ⬝ᵥ B *ᵥ v = weylNormSq ζ := by
-    simp [B, v, star_mulVec, ← dotProduct_mulVec, h_coord, ← coe_weylNormSq, hC_real,
-      vecMul_transpose _ ξ, kronecker_mulVec_vec, mul_vecMulVec, vecMulVec_mul, mulVec_transpose]
+    rw [h_tensorVec]
+    simp [star_mulVec, ← dotProduct_mulVec, h_coord, ← coe_weylNormSq, hC_real, mulVec_transpose]
   have h_tensor : (star v ⬝ᵥ B *ᵥ v).re = weylNormSq η * weylNormSq ξ := by
-    simp [B, v, ← coe_weylNormSq, ↓map_vecMulVec_star, ← dotProduct_mulVec,
-      vecMul_transpose _ ξ, kronecker_mulVec_vec, mul_vecMulVec, vecMulVec_mul, star_vec,
-      vec_dotProduct_vec, vecMulVec_mulVec]
+    rw [h_tensorVec]
+    simp [v, ← coe_weylNormSq, ↓map_vecMulVec_star, star_vec, vec_dotProduct_vec,
+      vecMulVec_mul_vecMulVec, mul_comm]
   have h_isom : (star (C *ᵥ ζ) ⬝ᵥ B *ᵥ (C *ᵥ ζ)).re = weylNormSq ζ := by
     simp [B, C, star_mulVec, ← dotProduct_mulVec, hC_real, mulVec_mulVec, comulMatrix_isometry,
       ← coe_weylNormSq]

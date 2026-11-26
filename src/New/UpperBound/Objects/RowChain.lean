@@ -104,13 +104,6 @@ lemma isArrow_datumY (ϑ : D.TameChar) {j : ℕ} (hj : j < D.m) :
   -- tensored with a finite datum is an arrow both ways.
   (paramsCorrespond_paramY hj).isEdge_jointHarmonic.isArrow _ _ (pointDatumY ϑ j).prop
 
-/-- For j < m the datum `New.Data.datumY` ϑ j of lift j + 1 is an arrow from forms on Y_j to forms
-on Y_(j+1). -/
-lemma isArrow_thetaKernelY_datumY (ϑ : D.TameChar) {j : ℕ} (hj : j < D.m) :
-    IsArrow (thetaKernelY ϑ j) (typeKernel (D.paramY j) (D.signsY j))
-      (typeKernel (D.paramY (j + 1)) (D.signsY (j + 1))) (datumY ϑ j) :=
-  (isArrow_datumY ϑ hj).left
-
 /-- For j < m the datum `New.Data.datumY` ϑ j of lift j + 1 is an arrow for the swapped Weil
 representation, from forms of the conjugate type on Y_(j+1) to forms of the conjugate type on
 Y_j. -/
@@ -305,7 +298,7 @@ lemma formRep_lowerChainUpTo_eq_lowerChainUpTo_smul (ϑ : D.TameChar) {j : ℕ} 
           (liftY ϑ j (lowerChainUpTo ϑ j y))
       _ = c_last • liftY ϑ j ((D.spaceY j).formRep (typeKernel (D.paramY j) (D.signsY j))
             (liftResidue g').val (lowerChainUpTo ϑ j y)) :=
-        formRep_liftY ϑ j (isArrow_thetaKernelY_datumY ϑ hj) hk (reduceFamily_liftResidue g') h_incl
+        formRep_liftY ϑ j (isArrow_datumY ϑ hj).left hk (reduceFamily_liftResidue g') h_incl
           (lowerChainUpTo ϑ j y)
       _ = c_last • liftY ϑ j (lowerChainUpTo ϑ j (c_init • D.principalRep (D.spaceY 0) s y)) := by
         rw [ih (Nat.le_of_succ_le hj) _ g' (reduceFamily_liftResidue g') hA_tri h_first]

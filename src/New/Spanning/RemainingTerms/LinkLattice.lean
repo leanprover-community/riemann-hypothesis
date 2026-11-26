@@ -102,7 +102,6 @@ lemma classCoord_orthogonal (ht : u.toCols₁ᴴ * S.ratGram * t = 0)
     (a : GL (IndexNotBelow j) (𝔸f E)) :
     (S.classCoord c * finAdeleMatrix u.toCols₁ * a.val)ᴴ * (S.latticeMiddle (𝔸f E)).splitGram *
       (S.classCoord c * finAdeleMatrix t) = 0 := by
-  classical
   rw [conjTranspose_mul, Matrix.mul_assoc a.valᴴ, Matrix.mul_assoc a.valᴴ, classCoord_gram, ht]
   simp
 
@@ -118,7 +117,6 @@ lemma gram_classOf
     (ht : u.toCols₁ᴴ * S.ratGram * t = 0) (ht' : u.toCols₁ᴴ * S.ratGram * t' = 0) :
     (classOf c q t)ᴴ * (Bᴴ * (S.latticeMiddle (𝔸f E)).splitGram * B) * classOf c q t' =
       finAdeleMatrix (tᴴ * S.ratGram * t') := by
-  classical
   have h_herm : (S.latticeMiddle (𝔸f E)).splitGramᴴ = (S.latticeMiddle (𝔸f E)).splitGram :=
     (S.isUnimodular_latticeMiddle.splitGram (R := Ô E)).1
   rw [hq.gram_coord h_herm (classCoord_orthogonal ht a) (classCoord_orthogonal ht' a),
@@ -399,7 +397,7 @@ lemma exists_lifts_linkDiscSq_le [HasPrimitiveRoot5040 E] [DecidableEq τ]
   have h_rank : card (Fin r) = card (IndexBelow j ⊕ IndexBelow j) + card τ := by
     have h_link : card τ = card 𝔰.κ + 1 := by rw [card_eq_finrank_colSpan hv, hL, finrank_link]
     have h_levels : card (IndexBelow j) + card (IndexNotBelow j) = 𝔰.ϱ := by
-      rw [← card_sum, card_congr (sumCompl fun a : Fin 𝔰.ϱ ↦ a.1 < j), Fintype.card_fin]
+      rw [← card_sum, card_congr (sumCompl fun a : Fin 𝔰.ϱ ↦ a.val < j), Fintype.card_fin]
     simp only [card_sum, Fintype.card_unit, Fintype.card_fin] at h_card ⊢
     omega
   let latticeIndex : ℕ := submoduleIndex (intVectors (Ô E) (IndexBelow j ⊕ IndexBelow j))
@@ -521,7 +519,6 @@ lemma HasLevelLifts.hasIntegralLifts (h_lift : HasLevelLifts c γ m) : HasIntegr
 every integral `V`. -/
 lemma HasLevelLifts.mul (h_lift : HasLevelLifts c γ m) {V : Matrix τ σ (𝔸f E)}
     (hV : IsIntMatrix (Ô E) V) : HasLevelLifts c γ (m * V) := by
-  classical
   obtain ⟨ρ, _, t, w, h_orth, h_int, h_level, rfl⟩ := h_lift
   refine ⟨ρ, inferInstance, t, w * V, h_orth, ?_, ?_, (Matrix.mul_assoc ..).symm⟩
   · rw [← Matrix.mul_assoc]
@@ -586,7 +583,7 @@ lemma submoduleIndex_inf_of_le (h_le : M ≤ N) : submoduleIndex (N ⊓ K) M = s
 
 /-- If `M ≤ N`, the index in `M` of the elements of `N` that `f` maps into `L` is the index of `L`
 in the image `f M`. -/
-lemma submoduleIndex_inf_comap [HasPrimitiveRoot5040 E] {L : Submodule (Ô E) (l → 𝔸f E)}
+lemma submoduleIndex_inf_comap {L : Submodule (Ô E) (l → 𝔸f E)}
     (f : (n → 𝔸f E) →ₗ[Ô E] l → 𝔸f E) (h_le : M ≤ N) :
     submoduleIndex (N ⊓ L.comap f) M = submoduleIndex L (M.map f) := by
   rw [submoduleIndex_inf_of_le h_le]
@@ -611,9 +608,9 @@ lemma submoduleIndex_ideleM_smul_isotropicRows_dvd [HasPrimitiveRoot5040 E]
     (S.latticeMiddle (𝔸f E)).frameGram (S.translateByClassReps c c' γ)
   let L : Submodule (Ô E) (Fin (𝔰.ϱ + 1) → 𝔸f E) := colLattice (Ô E) (isotropicRows Z)ᴴ
   let Zⱼ : Matrix (Fin (𝔰.ϱ + 1)) (IndexBelow j) (𝔸f E) :=
-    (Z.submatrix (fun a : IndexBelow j ↦ a.1.castSucc) id)ᴴ
+    (Z.submatrix (fun a : IndexBelow j ↦ a.val.castSucc) id)ᴴ
   let Lⱼ : Submodule (Ô E) (Fin (𝔰.ϱ + 1) → 𝔸f E) := colLattice (Ô E) Zⱼ
-  have h_le : Lⱼ ≤ L := colLattice_le fun a ↦ col_mem_colLattice a.1
+  have h_le : Lⱼ ≤ L := colLattice_le fun a ↦ col_mem_colLattice a.val
   have h_finite : submoduleIndex Lⱼ L ≠ 0 := (isotropicRowsIndex_pos hγ hj).ne'
   have h_level : submoduleIndex (S.ideleM • intVectors (Ô E) (IndexBelow j))
       (intVectors (Ô E) (IndexBelow j)) = S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) := by
@@ -643,14 +640,13 @@ lemma IsOrthogonalLift.eq_mul_of_isotropicRows_mul_eq_zero {σ : Type}
     {u : Matrix 𝔰.BesselIndex (IndexNotBelow j ⊕ τ) E} (hu : IsOrthogonalLift j γ v u)
     (hj : S.HasCellRank j γ) {ω : Matrix (Fin 𝔰.ϱ) σ (𝔸f E)}
     (hω : (isotropicRows (finAdeleMatrix (S.frameProducts γ)))ᴴ * ω = 0) :
-    ω = finAdeleMatrix u.toCols₁.toRows₁ * ω.submatrix (fun a : IndexNotBelow j ↦ a.1) id := by
+    ω = finAdeleMatrix u.toCols₁.toRows₁ * ω.submatrix (fun a : IndexNotBelow j ↦ a.val) id := by
   -- The difference has no coordinates at the indices `≥ j`, and the leading minor is not `0`.
-  classical
   set d : Matrix (Fin 𝔰.ϱ) σ (𝔸f E) :=
-    ω - finAdeleMatrix u.toCols₁.toRows₁ * ω.submatrix (fun a : IndexNotBelow j ↦ a.1) id with hd
-  have h_above (a : Fin 𝔰.ϱ) (ha : ¬a.1 < j) (b : σ) : d a b = 0 := by
+    ω - finAdeleMatrix u.toCols₁.toRows₁ * ω.submatrix (fun a : IndexNotBelow j ↦ a.val) id with hd
+  have h_above (a : Fin 𝔰.ϱ) (ha : ¬a.val < j) (b : σ) : d a b = 0 := by
     have h_row (x : IndexNotBelow j) : u (.inl a) (.inl x) = if ⟨a, ha⟩ = x then 1 else 0 :=
-      (hu.apply_inl ⟨a, ha⟩).1 x
+      hu.apply_inl ⟨a, ha⟩ x
     rw [hd, Matrix.sub_apply, Matrix.mul_apply]
     simp [h_row, apply_ite (algebraMap E (𝔸f E))]
   have h_orth : (isotropicRows (finAdeleMatrix (S.frameProducts γ)))ᴴ * d = 0 := by
@@ -669,7 +665,7 @@ lemma IsOrthogonalLift.eq_mul_of_isotropicRows_mul_eq_zero {σ : Type}
     refine Matrix.ext fun a b ↦ ?_
     rw [Matrix.mul_apply, Matrix.mul_apply]
     refine Finset.sum_congr rfl fun x _ ↦ ?_
-    by_cases hx : x.1 < j
+    by_cases hx : x.val < j
     · simp [Y, paddedLeading, hx]
     · simp [h_above x hx]
   have h_left : (finAdeleMatrix Y⁻¹)ᴴ.submatrix castSucc id * (isotropicRows (finAdeleMatrix Y))ᴴ =
@@ -698,13 +694,8 @@ lemma hasLevelLifts_of_col_mem (hj : S.HasCellRank j γ) {ρ : Type} [Fintype ρ
         (S.classCoord c * finAdeleMatrix t * w).toRows₁.col b ∈
       S.ideleM • colLattice (Ô E) (isotropicRows (finAdeleMatrix (S.frameProducts γ)))ᴴ) :
     HasLevelLifts c γ (finAdeleMatrix (linkMatrix γ * t) * w) := by
-  classical
-  obtain ⟨v, -, hv⟩ : ∃ v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex)
-      (Fin (Module.finrank E (link γ))) E, HasLeftInv v ∧ colSpan v = link γ :=
-    exists_hasLeftInv_colSpan_eq (link γ)
-  obtain ⟨u, hu⟩ : ∃ u : Matrix 𝔰.BesselIndex
-      (IndexNotBelow j ⊕ Fin (Module.finrank E (link γ))) E, IsOrthogonalLift j γ v u :=
-    exists_orthogonal_lift hj hv
+  obtain ⟨v, -, hv⟩ := exists_hasLeftInv_colSpan_eq (link γ)
+  obtain ⟨u, hu⟩ := exists_orthogonal_lift hj hv
   set n : Matrix 𝔰.BesselIndex τ (𝔸f E) := S.classCoord c * finAdeleMatrix t * w with hn
   set P : Matrix (Fin (𝔰.ϱ + 1)) (Fin 𝔰.ϱ) (𝔸f E) :=
     (isotropicRows (finAdeleMatrix (S.frameProducts γ)))ᴴ
@@ -715,7 +706,7 @@ lemma hasLevelLifts_of_col_mem (hj : S.HasCellRank j γ) {ρ : Type} [Fintype ρ
   choose ω hω h_products using h_exists
   -- `ι`, the part in `A` minus `M ω`, is orthogonal to the frame of `γ`, so it lies in `I`.
   let ι : Matrix (Fin 𝔰.ϱ) τ (𝔸f E) := n.toRows₁ - S.ideleM • (of ω)ᵀ
-  have hι : ι = finAdeleMatrix u.toCols₁.toRows₁ * ι.submatrix (fun a : IndexNotBelow j ↦ a.1)
+  have hι : ι = finAdeleMatrix u.toCols₁.toRows₁ * ι.submatrix (fun a : IndexNotBelow j ↦ a.val)
     id := by
     refine hu.eq_mul_of_isotropicRows_mul_eq_zero hj (ext_col fun b ↦ ?_)
     change P *ᵥ (n.toRows₁.col b - S.ideleM • ω b) = 0
@@ -726,14 +717,14 @@ lemma hasLevelLifts_of_col_mem (hj : S.HasCellRank j γ) {ρ : Type} [Fintype ρ
     rw [hu.toCols₁_eq_fromRows, classCoord_eq_fromBlocks]
     ext (a | a) b <;> simp [Matrix.mul_apply, Matrix.one_apply]
   have h_new : S.classCoord c * finAdeleMatrix (fromCols t u.toCols₁) *
-      fromRows w (-ι.submatrix (fun a : IndexNotBelow j ↦ a.1) id) =
+      fromRows w (-ι.submatrix (fun a : IndexNotBelow j ↦ a.val) id) =
         fromRows (S.ideleM • (of ω)ᵀ) n.toRows₂ := by
     rw [finAdeleMatrix, fromCols_map, mul_fromCols, fromCols_mul_fromRows, h_shared, ← hn,
       fromRows_mul, Matrix.mul_neg, ← hι, Matrix.zero_mul]
     ext (a | a) b <;> simp [ι]
   have hω_int : IsIntMatrix (Ô E) (of ω)ᵀ := fun a b ↦ hω b a
   refine ⟨ρ ⊕ IndexNotBelow j, inferInstance, fromCols t u.toCols₁,
-    fromRows w (-ι.submatrix (fun a : IndexNotBelow j ↦ a.1) id), ?_, ?_, ?_, ?_⟩
+    fromRows w (-ι.submatrix (fun a : IndexNotBelow j ↦ a.val) id), ?_, ?_, ?_, ?_⟩
   · rw [mul_fromCols, h_orth, hu.orthogonal_toCols₁, fromCols_zero]
   · rw [h_new]
     rintro (a | a) b

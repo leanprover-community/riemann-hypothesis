@@ -1,9 +1,8 @@
 module
 
-public import Lib.Adelic.Unitary.Defs
+public import Mathlib.AlgebraicGeometry.AffineSpace
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.Geometry.ProjectiveSpace
-public import Lib.General.NumberTheory.EmbeddingsAndDifferent
 public import Lib.Shimura.AbelianScheme.Basic
 
 /-!

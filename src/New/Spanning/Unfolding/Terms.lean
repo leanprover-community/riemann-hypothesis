@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import New.Spanning.RemainingTerms.Box
 public import New.Spanning.RemainingTerms.SiegelLemma
 public import New.Spanning.Unfolding.BesselLevelStructure
@@ -23,7 +24,7 @@ algebraic integers.
   the unipotent character, the vectors common to the two flags of a term, and its cell rank.
 * `New.Filling.IsNear`: `γ` is near if some boxed point `y` (`New.Filling.boxedPoints`) has `γ⁻¹ y`
   boxed.
-* `New.Filling.norm_sq_middle_part_eq`, `New.Filling.map_termDisc_eq_norm`: a norm identity, which
+* `New.Filling.map_termDisc_eq_norm`: a norm identity, which
   makes `S.termDisc γ` real and nonnegative at every infinite place. So `S.termDisc γ` is totally
   positive or zero (`New.Filling.termDisc_pos_or_eq_zero`).
 * `New.Filling.IsNear.norm_frameProducts_le`, `New.Filling.IsNear.norm_map_leadingMinor_sq_le`: for
@@ -137,7 +138,7 @@ def IsNear (γ : S.G E) : Prop :=
 /-- The finite character `New.Filling.unipotentChar` takes the same value at u and at γ⁻¹uγ for
 every rational u in 𝖴 ∩ γ𝖴γ⁻¹. -/
 def CharsAgree (γ : S.G E) : Prop :=
-  ∀ᵉ (u ∈ besselU) (u' ∈ besselU), u * γ = γ * u' →
+  ∀ u ∈ besselU, ∀ u' ∈ besselU, u * γ = γ * u' →
     S.unipotentChar (S.ratToFin u) = S.unipotentChar (S.ratToFin u')
 
 end Filling
@@ -335,8 +336,7 @@ lemma gramDiscReal_realFrameGram_ratToInf {γ : S.G E} (v : InfinitePlace E) :
   have h_disc : frameDisc 1 (realFrameGram (S.ratToInf γ v)) =
       ((∏ a : Fin 𝔰.n, S.frameScaleSq v a) ^ 2 : ℝ) * Φ v (S.termDisc γ) := by
     simp [frameDisc, h_det, h_minor, frameScaleSq, prod_univ_castSucc]
-    field_simp [Nat.Prime.ne_zero]
-    ring
+    field [Nat.Prime.ne_zero]
   rw [RealPlace.gramDiscReal, h_disc, re_ofReal_mul, ← ofReal_re ‖Φ v _‖, ← map_termDisc_eq_norm]
 
 /-! ### Passing to the infinite and the finite places; the Bessel group; sizes of constants -/
@@ -393,7 +393,7 @@ lemma termsOver.isIntMatrix_translateByClassReps :
     γ ∈ S.termsOver c r c' → IsIntMatrix (Ô E) (S.translateByClassReps c c' γ).val.val := by
   rintro ⟨g, -, hg⟩
   rw [← hg]
-  exact g.2.isIntMatrix
+  exact g.property.isIntMatrix
 
 /-- For a class c, the matrix classCoord c, which takes rational coordinates to coordinates in the
 basis of the lattice h_cΛ₀, carries the form in rational coordinates to the form in lattice
@@ -483,10 +483,10 @@ lemma two_le_b : 2 ≤ S.b := by linarith [S.thousand_le_b]
 
 lemma b_pos : 0 < S.b := by linarith [S.thousand_le_b]
 
-lemma two_le_tailScale [S.IsAdmissible] : 2 ≤ S.tailScale :=
+lemma two_le_tailScale : 2 ≤ S.tailScale :=
   two_le_b.trans (by simpa using pow_le_tailScale (S := S) (e := 1) NeZero.one_le)
 
-lemma one_le_tailScale [S.IsAdmissible] : 1 ≤ S.tailScale := one_le_two.trans two_le_tailScale
+lemma one_le_tailScale : 1 ≤ S.tailScale := one_le_two.trans two_le_tailScale
 
 lemma identitySecondMoment_nonneg : 0 ≤ S.identitySecondMoment := by simp [identitySecondMoment]
 
@@ -546,7 +546,7 @@ lemma IsNear.norm_map_leadingMinor_sq_le [S.IsAdmissible] (l : Fin (𝔰.ϱ + 1 
   -- by `l ≤ ϱ + 1 ≤ b` the left side is at most a power of `b`; compare the exponents
   have hl : (l : ℝ) ≤ S.b := by grw [l.is_le, S.succ_le_b]
   have h_exponent : (l.val + 134 * 𝔰.n * l.val) * 2 ≤ 270 * 𝔰.n ^ 2 := by
-    nlinarith [S.ten_pow_five_le_varrho, l.is_le]
+    nlinarith only [S.ten_pow_five_le_varrho, l.is_le]
   grw [h_det, hl, ← pow_add, ← pow_mul]
   exact pow_le_pow_right₀ S.one_le_b h_exponent
 

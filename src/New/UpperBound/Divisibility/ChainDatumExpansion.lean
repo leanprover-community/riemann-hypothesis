@@ -78,7 +78,7 @@ lemma eq_zero_of_poleColumn_mem_integralBox {j : ℕ} {y : D.X (j + 1) → D.piN
     D.isSplitLevel_piNPlaces.reduction_eq_iff]
   intro w
   have h_entry : Valued.v (poleColumn (D.InitIndex j) y (k, Sum.inr ()) w) ≤ 1 :=
-    idem_mul_mem_Ô.1 (mem_integralBox.1 hy (k, Sum.inr ())) w (.inl w.2)
+    idem_mul_mem_Ô.1 (mem_integralBox.1 hy (k, Sum.inr ())) w (.inl w.property)
   simpa [poleColumn] using h_entry
 
 /-- Let `t` be a tuple of translations that is admissible for `ϑ.normQ`, the product of the norms of
@@ -341,12 +341,9 @@ fixed scalar multiple of the vacuum vector of `Hom(X_j, X_{j+1})`) translated by
 `gluingTuple y` vanish at the places not above `N`. -/
 lemma IsChainDatum.gluedTensor_eq_sum_translates {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
     (hΨ : IsChainDatum ϑ Ψ) :
-    (gluedTensor Ψ = Ψ.sum fun (x : D.Translations) (c : ℂ) ↦
-      c • ∑ y : D.GluingClasses, D.ungluedVacuum (x + gluingTuple y)) ∧
-    Fintype.card D.GluingClasses ≤ D.N ^ (D.f * D.m * D.n D.m / 2) ∧
-    ∀ y : D.GluingClasses, gluingTuple y ∈ D.supportedTranslations D.N := by
-  refine ⟨Finsupp.sum_congr fun x hx ↦ ?_, D.card_gluingClasses_le,
-    gluingTuple_mem_supportedTranslations⟩
+    gluedTensor Ψ = Ψ.sum fun (x : D.Translations) (c : ℂ) ↦
+      c • ∑ y : D.GluingClasses, D.ungluedVacuum (x + gluingTuple y) := by
+  refine Finsupp.sum_congr fun x hx ↦ ?_
   -- `x` vanishes at the places prime to `D.M * ϑ.normQ`, hence above `N`.
   have hx_zero : x ∈ D.supportedTranslations (D.M * ϑ.normQ) :=
     Set.inter_subset_right (hΨ.support_subset x hx)
@@ -368,7 +365,7 @@ lemma IsChainDatum.exists_isWeakChainDatum_compositeLift_eq {ϑ : D.Twist}
       (fun x : D.Translations ↦ ∑ y : D.GluingClasses, D.ungluedVacuum (x + gluingTuple y))
       (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.M * ϑ.normQ))
       ϑ.normQ 1 (ϑ.Q = ∅) (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2)) (gluedTensor Ψ) :=
-    ⟨Ψ, hΨ.toIsAdmissibleCoeffs, hΨ.gluedTensor_eq_sum_translates.left⟩
+    ⟨Ψ, hΨ.toIsAdmissibleCoeffs, hΨ.gluedTensor_eq_sum_translates⟩
   have h_size : (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2) * D.N ^ (D.f * D.m * D.n D.m) : ℝ) ≤
       Real.exp (D.x ^ 60) := Real.le_exp_of_log_le D.le_of_hasLogBound
   obtain ⟨Ψ', h_adm, h_sum⟩ : IsAdmissibleCombination D.ungluedVacuum

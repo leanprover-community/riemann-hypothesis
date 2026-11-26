@@ -158,10 +158,6 @@ lemma homHeisenbergOp_arrowProduct (w : Matrix ι' ι (𝔸 E)) (w' : Matrix ι'
     matrixToVec_fromRows_comp_inl, matrixToVec_fromRows_comp_inr, formAdjoint, map_J_inv, V'.map_J,
     ← mul_smul, flipCoords_apply, vecToMatrix_matrixToVec, -matrixToVec_smul]
 
-private lemma finVec_comp {m k : Type*} (x : m → 𝔸f E) (e : k → m) :
-    finVec x ∘ e = finVec (x ∘ e) :=
-  rfl
-
 /-- The finite Heisenberg operator of `y` on the joined datum acts on `f'` by the second block of
 `y` and on `f` by `normNegOne` (the fixed unit u of Ô with ūu = −1) times the conjugate transpose of
 the first block. The scalar is `stdLattice.semichar` of the first block, squared. -/
@@ -185,9 +181,15 @@ lemma finHeisenbergOp_arrowProduct (y : (ι ⊕ ι'') × ι' → 𝔸f E) :
     -- Without -two_mul_half, grind rewrites 2 * half = 1 first and misses the ring identity.
     grind [-stdLattice.two_mul_half]
   -- The action passes through the product and the flip; it remains to compare the scalars.
-  simp [finHeisenbergOp, arrowProduct, rho_boxProd, ← CoordChange.map_rho, ← mul_smul]
-  rw [finVec_comp, CoordChange.apply_finVec, h_scalar]
-  rfl -- The vectors agree by the definitions of `finEquiv` and `finVec`.
+  simp only [finHeisenbergOp, arrowProduct, Equiv.prodCongr_refl_refl, Equiv.trans_refl,
+    ContinuousLinearMap.comp_apply, _root_.smul_apply, rho_boxProd, ← CoordChange.map_rho, map_smul,
+    ← mul_smul]
+  have h_vec : (flipCoords star_normNegOne_mul_self rfl (t := ε) (s := ε')).φ
+      (finVec y ∘ (Equiv.sumProdDistrib ι ι'' ι').symm ∘ Sum.inl) =
+      finVec (fun q : ι' × ι ↦ ((normNegOne : (Ô E)ˣ) : 𝔸f E) * star (y (Sum.inl q.2, q.1))) :=
+    CoordChange.apply_finVec _ (fun q : ι × ι' ↦ y (Sum.inl q.1, q.2))
+  rw [h_vec, h_scalar]
+  rfl -- The second-block vectors agree by the definition of `finVec`.
 
 @[simp]
 lemma arrowProduct_vacElem :
@@ -211,13 +213,6 @@ lemma arrowProduct_twistedPairWeil (g' : G E ε') (g'' : G E ε'') :
 
 /-! ### The joining map on finite parts -/
 
-/-- The point evaluations separate the finite part: a vector u of the finite part of the data on
-Hom(V, V′) with θ(ϱ(x) u) = 0 for every point x is zero. -/
-private lemma eq_zero_of_forall_theta_rho_eq_zero {u : (V.hom V').finitePart}
-    (h : ∀ x : ι' × ι → 𝔸 E, (V.hom V').θ ((V.hom V').ϱ x u) = 0) : u = 0 :=
-  -- `θ (ϱ x f)` is the value `f x` (`theta_rho`), and data are determined by their values.
-  Subtype.ext ((V.hom V').data_ext fun x ↦ by simpa [theta_rho] using h x)
-
 /-- The induced map `New.Seesaw.arrowTensor` on the tensor product of the finite parts is
 injective. -/
 lemma injective_arrowTensor :
@@ -229,7 +224,8 @@ lemma injective_arrowTensor :
   obtain ⟨z, hz_ne, hz⟩ := theta_arrowProduct V V' V''
   refine tensor_eq_zero_of_separating
     (f := fun x ↦ ((V.hom V').θ ∘L (V.hom V').ϱ x).toLinearMap.domRestrict (V.hom V').finitePart)
-    (fun h ↦ eq_zero_of_forall_theta_rho_eq_zero fun x ↦ h x) t fun x ↦ ?_
+    (fun h ↦ Subtype.ext ((V.hom V').data_ext fun x ↦ by simpa [theta_rho] using h x)) t
+    fun x ↦ ?_
   -- Write the point `x` as the flip of a point `y`.
   obtain ⟨y, rfl⟩ := (flipCoords star_normNegOne_mul_self rfl (t := ε) (s := ε')).φ.surjective x
   ext x'
@@ -249,20 +245,20 @@ lemma range_arrowTensor : arrowTensor.range = (V'.hom (flipSum V V'')).finitePar
   -- Both sides are spans. By `finHeisenbergOp_arrowProduct` each generator
   -- `finHeisenbergOp _ y vacElem` of `finitePart` is a nonzero multiple of `arrowProduct` of two
   -- generators; what is left is that every pair of generators arises from some `y`.
-  simp [← map₂_eq_range_lift_comp_mapIncl, finitePart, map₂_span_span, ← arrowProduct_vacElem,
-    finHeisenbergOp_arrowProduct, le_antisymm_iff, span_le, smul_mem, mem_span_of_mem,
-    arrowTensor, Set.range_subset_iff]
-  change ∀ (x : ι' × ι → 𝔸f E) (x' : ι'' × ι' → 𝔸f E),
-    arrowProduct ((V.hom V').finHeisenbergOp x (V.hom V').vacElem)
-        ((V'.hom V'').finHeisenbergOp x' (V'.hom V'').vacElem) ∈
-      span ℂ (Set.range fun z : (ι ⊕ ι'') × ι' → 𝔸f E ↦
-        (stdLattice.semichar fun q : ι' × ι ↦ z (Sum.inl q.2, q.1)) ^ 2 •
-          arrowProduct
-            ((V.hom V').finHeisenbergOp
-              (fun q : ι' × ι ↦ ((normNegOne : (Ô E)ˣ) : 𝔸f E) * star (z (Sum.inl q.2, q.1)))
-              (V.hom V').vacElem)
-            ((V'.hom V'').finHeisenbergOp (fun q : ι'' × ι' ↦ z (Sum.inr q.1, q.2))
-              (V'.hom V'').vacElem))
+  suffices h : ∀ (x : ι' × ι → 𝔸f E) (x' : ι'' × ι' → 𝔸f E),
+      arrowProduct ((V.hom V').finHeisenbergOp x (V.hom V').vacElem)
+          ((V'.hom V'').finHeisenbergOp x' (V'.hom V'').vacElem) ∈
+        span ℂ (Set.range fun z : (ι ⊕ ι'') × ι' → 𝔸f E ↦
+          (stdLattice.semichar fun q : ι' × ι ↦ z (Sum.inl q.2, q.1)) ^ 2 •
+            arrowProduct
+              ((V.hom V').finHeisenbergOp
+                (fun q : ι' × ι ↦ ((normNegOne : (Ô E)ˣ) : 𝔸f E) * star (z (Sum.inl q.2, q.1)))
+                (V.hom V').vacElem)
+              ((V'.hom V'').finHeisenbergOp (fun q : ι'' × ι' ↦ z (Sum.inr q.1, q.2))
+                (V'.hom V'').vacElem)) by
+    simpa [← map₂_eq_range_lift_comp_mapIncl, finitePart, map₂_span_span, ← arrowProduct_vacElem,
+      finHeisenbergOp_arrowProduct, le_antisymm_iff, span_le, smul_mem, mem_span_of_mem,
+      arrowTensor, Set.range_subset_iff] using h
   intro x x'
   -- Conjugation followed by multiplication by the unit `normNegOne` is onto.
   obtain ⟨y, rfl⟩ :
@@ -281,12 +277,12 @@ lemma arrowTensor_map_liftWeilFin (p : Gf E ι) (q : Gf E ι') (r : Gf E ι'') :
       tripleWeil a b ((1, p), (1, q), 1, r) (arrowTensor t) := by
   -- Both sides are linear in `t`; on pure tensors this is `arrowProduct_twistedPairWeil`.
   induction t with
-  | tmul u u' => simp [arrowProduct_twistedPairWeil, arrowTensor, tripleWeil]
+  | tmul u u' => simp [arrowProduct_twistedPairWeil, arrowTensor]
   | add u u' hu hu' => simp_all [arrowTensor]
 
 /-- The theta functional of `tripleWeil a b (g, g', k) f` is unchanged when `g` is multiplied on the
 left by a rational point `γ` of `U(V)` and `g'` by a rational point `δ` of `U(V')`. -/
-lemma theta_tripleWeil_mul_mul_eq_of_mem_Gamma (f : 𝒮 (V'.hom (flipSum V V''))) {γ : G E ε}
+lemma theta_tripleWeil_rat_mul (f : 𝒮 (V'.hom (flipSum V V''))) {γ : G E ε}
     (hγ : γ ∈ V.Γ) {δ : G E ε'} (hδ : δ ∈ V'.Γ) (g : G E ε) (g' : G E ε') (k : G E ε'') :
     (V'.hom (flipSum V V'')).θ (tripleWeil a b (γ * g, δ * g', k) f) =
       (V'.hom (flipSum V V'')).θ (tripleWeil a b (g, g', k) f) := by
@@ -300,15 +296,6 @@ lemma theta_tripleWeil_mul_mul_eq_of_mem_Gamma (f : 𝒮 (V'.hom (flipSum V V'')
   obtain ⟨γ, rfl⟩ := hγ
   obtain ⟨δ, rfl⟩ := hδ
   simpa [pairTheta, pairWeil, ← G.sum.map_mul, tripleWeil] using h_aut
-
-/-- The function `F x = θ (tripleWeil a b x f)` of a triple of adelic points is unchanged when the
-first point is multiplied on the left by a rational point `γ` of `U(V)` and the second by a rational
-point `δ` of `U(V')`. -/
-lemma theta_tripleWeil_rat_mul (f : 𝒮 (V'.hom (flipSum V V''))) :
-    let F (x : G E ε × G E ε' × G E ε'') := (V'.hom (flipSum V V'')).θ (tripleWeil a b x f)
-    ∀ γ ∈ V.Γ, ∀ δ ∈ V'.Γ, ∀ (g : G E ε) (g' : G E ε') (k : G E ε''),
-      F (γ * g, δ * g', k) = F (g, g', k) :=
-  fun _ hγ _ hδ g g' k ↦ theta_tripleWeil_mul_mul_eq_of_mem_Gamma a b f hγ hδ g g' k
 
 end New.Seesaw
 

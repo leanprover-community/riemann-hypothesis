@@ -131,7 +131,7 @@ lemma New.SiegelWeil.zeroTerm_shearSplitting {E κ : Type} [Field E] [CMType E] 
   -- those for `D` by the character.
   set D : (hyperbolicSpace E Unit).Splitting (stdSpace E Empty) Unit := hyperbolicSplitting E Unit
   have h_kCoord :
-      kCoord (shearSplitting β).symm = D.kCoord + star (toAdele (j⁻¹ * β.1)) • D.lCoord := by
+      kCoord (shearSplitting β).symm = D.kCoord + star (toAdele (j⁻¹ * β.val)) • D.lCoord := by
     simp [kCoord, lCoord, lAdelic, kAdelic, shearSplitting, D, Splitting.symm, Matrix.add_mul,
       (hyperbolicSplitting E Unit).l.map_add, Matrix.map_smulₛₗ _ toAdele]
   -- The opposite splitting has the first frame `k` of `D`, so the two have the same zero term.
@@ -252,7 +252,7 @@ lemma New.exists_fundamentalDomain_real {E : Type} [Field E] [CMType E] [WeilDat
     refine ⟨Algebra.trace R E a, fun x hx ↦ ψf_eq_one_of_mem (mul_mem ?_ hx)⟩
     simpa [← add_mul, ← map_add, sub_add_sub_comm, ← trace_maximalRealSubfield_eq_add_star, ι_snd,
       R,
-      z.2.star_eq] using add_mem ha (star_mem_Ô ha)
+      z.property.star_eq] using add_mem ha (star_mem_Ô ha)
   obtain ⟨e, he, h_re⟩ := exists_mixedEquiv_maximalRealSubfield (E := E)
   obtain ⟨Ω, hΩ, h_bdd, h_vol, h_unique⟩ :=
     exists_fundDomain_prod ι (selfAdjointCodifferent E 1) J h_meet
@@ -289,12 +289,12 @@ lemma New.exists_isAddFundamentalDomain_realAdele (E : Type) [Field E] [CMType E
   -- `r` passes from the self-adjoint adeles of `E` to pairs.
   let R : Subfield E := maximalRealSubfield E
   let r (x : selfAdjoint (𝔸 E)) : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E) :=
-    (fun v ↦ ((x : 𝔸 E).1 v).re, ⟨(x : 𝔸 E).2, congrArg Prod.snd x.2.star_eq⟩)
+    (fun v ↦ ((x : 𝔸 E).1 v).re, ⟨(x : 𝔸 E).2, congrArg Prod.snd x.property.star_eq⟩)
   have realAdele_add (x : selfAdjoint (𝔸 E))
       (z : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) :
       realAdele (r x + z) = x + realAdele z := by
     ext v
-    · simp [realAdele, r, conj_eq_iff_re.1 (congrFun (congrArg Prod.fst x.2.star_eq) v)]
+    · simp [realAdele, r, conj_eq_iff_re.1 (congrFun (congrArg Prod.fst x.property.star_eq) v)]
     · simp [realAdele, r]
   let ι : R →+ (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E) :=
     .mk' (fun a ↦ r ⟨toAdele a, (star_toAdele _).trans (by simp [star])⟩) (by simp [r, funext_iff])
@@ -485,10 +485,10 @@ lemma New.SiegelWeil.siegel_weil_fourierCoeff {E κ : Type} [Field E] [CMType E]
 `ψ_f(z (x* x - α) / 2)`, integrated over the self-adjoint finite adeles `z`. The measure of `z`
 gives the codifferent the volume `1`, and that of each coordinate of `x` gives `Ô` the volume
 `volÔ E`. -/
-noncomputable def New.normDensity {E κ : Type} [Field E] [CMType E] [WeilData E] [Fintype κ]
+noncomputable def New.normDensity {E κ : Type} [Field E] [CMType E] [Fintype κ]
     (Φ₀ : (κ → 𝔸f E) → NNReal) (α : 𝔸f E) : ℂ :=
   ∫ z : selfAdjoint (𝔸f E), ∫ x : κ → 𝔸f E,
-    (ψf E ((2⁻¹ : E) * (z.1 * (star x ⬝ᵥ x - α))) : ℂ) ∂volume.withDensity fun x ↦ Φ₀ x
+    (ψf E ((2⁻¹ : E) * (z.val * (star x ⬝ᵥ x - α))) : ℂ) ∂volume.withDensity fun x ↦ Φ₀ x
 
 /-- For every Schwartz–Bruhat function `Φ₀` on the finite vectors there is a test function `f` on
 `Hom` from the hyperbolic plane to `stdSpace E κ` (the space with form x*x) with the following
@@ -517,7 +517,7 @@ lemma New.SiegelWeil.exists_mixedValue_eq_gaussian_mul {E κ : Type} [Field E] [
   -- A coset comes from a translate of `ω g vacElem` with `g` adapted to `star t` for a scalar `t`,
   -- which is `u⁻¹` up to `WeilData.α` at the finite places and scales the vacuum to `γ` at
   -- infinity.
-  obtain ⟨t, ht⟩ : IsUnit ((fun w ↦ √(2 * π * (Φ w j).im)⁻¹, (WeilData.α * u⁻¹).1) : 𝔸 E) := by
+  obtain ⟨t, ht⟩ : IsUnit ((fun w ↦ √(2 * π * (Φ w j).im)⁻¹, (WeilData.α * u⁻¹).val) : 𝔸 E) := by
     simp [Prod.isUnit_iff, Pi.isUnit_iff, ne_of_gt, im_pos, pi_pos]
   let D := (hyperbolicSplitting E Unit).homSource (stdSpace E κ)
   obtain ⟨g, hg, -⟩ := D.exists_isAdapted_and_frame_eq (star t • 1)
@@ -611,7 +611,7 @@ lemma New.integral_gaussian_mul_stdAddChar {E κ : Type} [Field E] [CMType E]
         stdAddChar E ((2⁻¹ : E) * (realAdele z * (star x ⬝ᵥ x - α))) =
       (∏ v : InfinitePlace E, 𝐞 ((Φ v α).re * z.1 v) *
           (∫ w : ℂ, cexp (-(1 + 2 * π * Complex.I * z.1 v) * ‖w‖ ^ 2)) ^ card κ) *
-        ∫ x : κ → 𝔸f E, (ψf E ((2⁻¹ : E) * (z.2.1 * (star x ⬝ᵥ x - α))) : ℂ)
+        ∫ x : κ → 𝔸f E, (ψf E ((2⁻¹ : E) * (z.2.val * (star x ⬝ᵥ x - α))) : ℂ)
           ∂volume.withDensity fun x : κ → 𝔸f E ↦ Φ₀ x := by
   -- Both sides are one integral over the vectors of pairs (infinite part, finite part).
   have h_infinite : ∏ v : InfinitePlace E, 𝐞 ((Φ v α).re * z.1 v) *
@@ -697,7 +697,7 @@ lemma New.classSum_eq_mul_normDensity {E κ : Type} [Field E] [CMType E] [WeilDa
     exists_mixedValue_eq_gaussian_mul hΦ₀_sb
   -- The integral over `x` is the product `P` of real factors `gauss v` and of `F`.
   let F (z : selfAdjoint (𝔸f E)) : ℂ := ∫ x : κ → 𝔸f E,
-    (ψf E ((2⁻¹ : E) * (z.1 * (star x ⬝ᵥ x - α))) : ℂ) ∂volume.withDensity fun x ↦ Φ₀ x
+    (ψf E ((2⁻¹ : E) * (z.val * (star x ⬝ᵥ x - α))) : ℂ) ∂volume.withDensity fun x ↦ Φ₀ x
   let gauss (v : InfinitePlace E) (t : ℝ) : ℂ :=
     𝐞 ((Φ v α).re * t) * (∫ w : ℂ, cexp (-(1 + 2 * π * .I * t) * ‖w‖ ^ 2)) ^ card κ
   let P (z : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) : ℂ := (∏ v, gauss v (z.1 v)) * F z.2
@@ -806,7 +806,7 @@ lemma New.norm_sub_one_le_of_normDensity_eq {E n : Type} [Field E] [CMType E] [W
     ‖x - 1‖ ≤ (2 ^ (u + 1))⁻¹ := by
   -- The density is `∫ F`, where `F z` is the Gauss sum of `L` at `z`.
   let F (z : selfAdjoint (𝔸f E)) : ℂ := ∫ y in (stdLattice E n : Set (n → 𝔸f E)),
-    (ψf E ((2⁻¹ : E) * (z.1 * (star y ⬝ᵥ y - 1))) : ℂ)
+    (ψf E ((2⁻¹ : E) * (z.val * (star y ⬝ᵥ y - 1))) : ℂ)
   have h_integral : ∫ z, F z = x * volÔ E ^ Fintype.card n := by
     rw [← hx, normDensity]
     have h_density : (fun y : n → 𝔸f E ↦
@@ -875,11 +875,7 @@ lemma New.abs_log_mass_ratio_sub_le (E : Type) [Field E] [CMType E] [WeilData E]
   -- difference in the claim is `-log ‖x‖`.
   have h_diff : log (mass E (j + 1)) - log (mass E j) - Core.numInfPlaces E *
       ((j + 1 / 2) * log (rootDiscr E) + log j.factorial - (j + 1) * log (2 * π)) = -log ‖x‖ := by
-    have h_log : log ‖(mass E j : ℂ)‖ = log ‖(mass E (j + 1) : ℂ) *
-        √√((rootDiscr E ^ Core.numInfPlaces E) ^ 2) *
-        (π ^ (j + 1) / j.factorial) ^ Core.numInfPlaces E *
-        (x * volÔ E ^ Fintype.card (Fin j ⊕ Unit))‖ := by
-      rw [← siegel]
+    have h_log := congrArg (fun z : ℂ ↦ log ‖z‖) siegel
     simp (disch := positivity) [volÔ_eq, abs_of_pos, log_mul, log_div, log_sqrt] at h_log ⊢
     linarith
   -- Finally `|log ‖x‖| ≤ 3 / 2 * ‖x - 1‖`, as `‖x - 1‖ ≤ 1 / 2`.

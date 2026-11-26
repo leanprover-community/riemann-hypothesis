@@ -358,7 +358,6 @@ over `B₃` the comparison map `locConstClass` is injective in degree `0` and su
 degree below `n`. Then a class `y` of degree `n` (coefficients `Λ`) over `B` whose restrictions to
 `B₁` and `B₂` come from locally constant functions comes from a locally constant function itself. -/
 private lemma New.Variety.ResiduePlace.exists_locConstClass_eq_of_isSplitting
-    [IsAlgClosed q.ResidueField]
     {v : ∀ B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
       (baseRingMap s ξ).hom),
       (placesFiniteOn z J B.val).toFunctor ⟶ reprBy ((quotientFunctor J _).obj B)}
@@ -423,8 +422,8 @@ private lemma New.Variety.ResiduePlace.exists_locConstClass_eq_of_isSplitting
     (h_nat n l₁.hom f).trans (hff₁.trans hf₁)
   have h_res₂ : (Coh n).map l₂.hom (locConstClass (σ B) n f) = (Coh n).map l₂.hom y :=
     (h_nat n l₂.hom f).trans (hff₂.trans hf₂)
-  refine ⟨f, (TestCohomology.mayer_vietoris_injective (h_anti l₁) (h_anti l₂) ?_ n
-    (T := placesFiniteOn z J B₃.val) ?_).left ?_ (Prod.ext h_res₁ h_res₂)⟩
+  refine ⟨f, TestCohomology.mayer_vietoris_injective (h_anti l₁) (h_anti l₂) ?_ n
+    (T := placesFiniteOn z J B₃.val) ?_ ?_ (Prod.ext h_res₁ h_res₂)⟩
   · exact isCohomDense_placesFiniteOn_sup_of_isSplitting h_split
   · exact placesFiniteOn_eq_inf_of_isSplitting h_split
   · -- In lower degrees a class over `B₃` comes from a function, which is a difference.
@@ -571,8 +570,7 @@ lemma New.Variety.ResiduePlace.isTestCohomEquiv_closedFibre_killingPlaces {ℓ :
     · rintro ⟨hx_zero, -⟩
       exact ⟨⟨⟨x.val, hx_zero⟩, x.prop⟩, rfl⟩
   · -- The inclusion of `T (maximalIdeal A)` factors through `T ⊥`; both factors are equivalences.
-    rw [← homOfLe_ι h_le, Functor.map_comp]
-    exact h_eqv.comp_iff.mpr h_top
+    simpa only [← homOfLe_ι h_le, Functor.map_comp] using h_eqv.comp_iff.mpr h_top
 
 /-- The places that give the value `0` to all elements of an ideal behave like its zero locus. -/
 lemma New.Variety.ResiduePlace.isZeroLocusFamily_killingPlaces {Y : PointFunctor}
@@ -1077,10 +1075,10 @@ lemma isProperOver_projLinePow (ι : Type) :
 
 /-- For a test `c` over `A` and a prime `P` of `c`, the residue field of `c` at `P` as a test over
 `A`, together with the canonical map from `c` to it. -/
-def residueTest (P : PrimeSpectrum c.1) : Under c :=
+def residueTest (P : PrimeSpectrum c.obj) : Under c :=
   -- the residue field at `P` is a test, being that of an absolutely integrally closed local domain
-  have := (c.2.exists_valuationSubring_atPrime P).1
-  Under.mk (Y := ⟨CommAlgCat.of A P.1.ResidueField, isTest_of_preValuationRing⟩)
+  have := (c.property.exists_valuationSubring_atPrime P).1
+  Under.mk (Y := ⟨CommAlgCat.of A P.asIdeal.ResidueField, isTest_of_preValuationRing⟩)
     ⟨CommAlg.homOfRingHom (algebraMap ..) (by tauto)⟩
 
 /-- Classes are detected at points, for a functor `g` from `D` to tests over `A` and a coefficient
@@ -1107,17 +1105,17 @@ def IdealFamily.pullToTests : IdealFamily (ringOf (testOfPoint A X)) :=
   -- `reprBy (of A)`, and a morphism `f` respects both.
   I.whisker
     (sectionLift (ringOf (testOfPoint A X))
-      ⟨fun a ↦ (a.2, ⟨ofHom (algebraMap A a.1.1)⟩), fun f ↦
-        congr(⟨$(f.2), ⟨ofHom $(f.1.1.1.comp_algebraMap)⟩⟩)⟩)
+      ⟨fun a ↦ (a.val, ⟨ofHom (algebraMap A a.obj.obj)⟩), fun f ↦
+        congr(⟨$(f.map_val), ⟨ofHom $(f.hom.hom.hom'.comp_algebraMap)⟩⟩)⟩)
 
 /-- For a family `I` of ideals on the points of `X × Spec A` and `p : X ⟶ reprBy ℤ`, the subfunctor
 of the base change `X_A` of the points at which `I` is zero. -/
 private def botLocusBaseChange (p : X ⟶ reprBy (CommRingCat.of ℤ)) :
     Subfunctor (baseChangeOf p (zIsInitial.to (of A))) :=
   ⟨fun C ↦ {x : (baseChangeOf p (zIsInitial.to (CommRingCat.of A))).obj C | I.ideal
-    (Functor.elementsMk _ C x.1) = ⊥},
-    fun {C C'} f x ↦ @I.botLocus.map (Functor.elementsMk _ C x.1)
-      (Functor.elementsMk _ C' ((baseChangeOf p (zIsInitial.to (of A))).map f x).1) ⟨f, rfl⟩ ⟨⟩⟩
+    (Functor.elementsMk _ C x.val) = ⊥},
+    fun {C C'} f x ↦ @I.botLocus.map (Functor.elementsMk _ C x.val)
+      (Functor.elementsMk _ C' ((baseChangeOf p (zIsInitial.to (of A))).map f x).val) ⟨f, rfl⟩ ⟨⟩⟩
 
 /-- If `X` is proper over `ℤ`, the locus `botLocusBaseChange I p` in `X_A` where the family of
 ideals `I` is zero is proper over `A`: a universal point `a` of `X_A`, taken modulo the ideal of
@@ -1191,14 +1189,14 @@ lemma IdealFamily.isDetectedAtPoints_of_proper [InvertsPrime A ℓ]
     let hT_algebra : Algebra A T.obj := α.hom.toAlgebra
     let B : (ringOf (𝟭 (TestOver A)) ⋙ X).Elements :=
       Functor.elementsMk _ ⟨.of A T.obj, T.property⟩ x
-    let γA : c ⟶ B.1 := ⟨CommAlgCat.ofHom ⟨γ.hom, fun a ↦ congr($(hγ.symm).1.1 a)⟩⟩
+    let γA : c ⟶ B.obj := ⟨CommAlgCat.ofHom ⟨γ.hom, fun a ↦ congr($(hγ.symm).down.hom' a)⟩⟩
     refine ⟨B, ⟨⟨γA⟩, hI⟩, 𝟙 T, ((baseChangeOf ..).map_id_apply ..).symm, fun D z f hf ↦ ?_,
       .comp (hβ B hI) bijective_id⟩
     -- The components of `hf` say that `f` is `A`-linear, sends `x` to the point of `D`, and
     -- carries `γ` to `z`.
     let fA : B.1 ⟶ D.1 := ⟨CommAlgCat.ofHom ⟨f.1.hom, fun a ↦ congr($hf.1.1.1.1.2.1.1 a).symm⟩⟩
     refine ⟨⟨fA, congr($hf.1.1.1.1.1).symm⟩, ⟨?_, rfl⟩, ?_⟩
-    · exact congr(⟨⟨⟨CommAlgCat.ofHom ⟨$(hf.symm).1.2.1.1, _⟩⟩⟩, _⟩)
+    · exact congr(⟨⟨⟨CommAlgCat.ofHom ⟨$(hf.symm).val.2.down.hom', _⟩⟩⟩, _⟩)
     · -- Uniqueness: a map `y` with `κ.functor.map y = f` is `fA`.
       rintro y ⟨-, rfl⟩
       rfl

@@ -1,5 +1,10 @@
 module
 
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+public import Mathlib.Dynamics.FixedPoints.Topology
+public import Mathlib.Order.CompletePartialOrder
+public import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.Tactic.Linter.Style
 public import Lib.Adelic.Adeles.Basic
 public import Lib.Adelic.QuotientMeasure.Basic
 public import Lib.General.Groups.CongruenceSubgroups
@@ -137,11 +142,6 @@ lemma mk_algebraMap_surjective :
   rintro ⟨x⟩
   exact (exists_sub_mem_Ô x).imp fun a ha ↦ (eq_iff_sub_mem.mpr ha).symm
 
-/-- For an algebraic integer `a` of `E`, the value `𝐞 (tr a) = exp (2πi Tr_{E/ℚ} a)` is one. -/
-lemma fourierChar_trace_eq_one {a : E} (ha : IsIntegral ℤ a) : 𝐞 (trace ℚ E a) = 1 :=
-  -- the trace of an algebraic integer is an integer
-  fourierChar_eq_one_iff.mpr ⟨trace ℤ (𝓞 E) ⟨a, ha⟩, mod_cast (coe_trace_int ⟨a, ha⟩).symm⟩
-
 /-- The standard additive character of the finite adeles: ψ_f(x) = exp(2πi Tr_{E/ℚ}(a)) for any
 a in E with x − a integral. -/
 def ψf : AddChar (𝔸f E) Circle :=
@@ -152,7 +152,9 @@ def ψf : AddChar (𝔸f E) Circle :=
       (((mk' (Ô E).toAddSubgroup).comp (algebraMap E (𝔸f E))).liftOfSurjective
         (mk_algebraMap_surjective E)
         ⟨AddMonoidHom.mk' (fun a : E ↦ 𝐞 (trace ℚ E a)) (by aesop (add simp map_add_eq_mul)),
-          fun a ha ↦ fourierChar_trace_eq_one E (algebraMap_mem_Ô.1 (by aesop))⟩)
+          fun a ha ↦ fourierChar_eq_one_iff.mpr
+            ⟨trace ℤ (𝓞 E) ⟨a, algebraMap_mem_Ô.1 (by aesop)⟩,
+              mod_cast (coe_trace_int ⟨a, algebraMap_mem_Ô.1 (by aesop)⟩).symm⟩⟩)
       (mk' (Ô E).toAddSubgroup)
 
 /-- The standard additive character of `New.𝔸 E` (the adele ring when E is totally complex): the
@@ -217,7 +219,9 @@ lemma ψf_eq_one_of_mem {x : 𝔸f E} (h : x ∈ Ô E) : ψf E x = 1 := by
 
 instance : SigmaFinite (volume (α := 𝔸f E)) := inferInstance
 
-deriving instance SecondCountableTopology, T2Space for 𝔸f E, 𝔸 E
+deriving instance T2Space for 𝔸f E
+
+deriving instance SecondCountableTopology, T2Space for 𝔸 E
 
 deriving instance PolishSpace, LocallyCompactSpace, BorelSpace, IsTopologicalRing,
   MeasurableSingletonClass for 𝔸 E
@@ -363,31 +367,20 @@ infinite place `v`. Some volume-preserving ℝ-linear isomorphism from the Minko
 lemma exists_mixedEquiv :
     ∃ e : mixedEmbedding.mixedSpace E ≃ₗ[ℝ] (InfinitePlace E → ℂ),
       MeasurePreserving e ∧ ∀ x : E, e (mixedEmbedding E x) = fun v : InfinitePlace E ↦ Φ v x := by
-  -- There is no real place, so Minkowski space is its complex factor (`e₀`), and all places are
-  -- complex (`e₁`). At each place apply the identity or complex conjugation, to turn Mathlib's
-  -- embedding `v.embedding` into `Φ v` (`e₂`).
-  have h_no_real : IsEmpty {v : InfinitePlace E // v.IsReal} := ⟨by simp [isComplex]⟩
+  -- No real places, so Minkowski space is its complex factor; conjugate at places where needed.
+  have : IsEmpty {v : InfinitePlace E // v.IsReal} := ⟨by simp [isComplex]⟩
   let σ (v : InfinitePlace E) : ℂ ≃ₗᵢ[ℝ] ℂ := if v.embedding = Φ v then 1 else Complex.conjLIE
   let ι : {v : InfinitePlace E // v.IsComplex} ≃ InfinitePlace E := .subtypeUnivEquiv isComplex
-  let e₀ : mixedEmbedding.mixedSpace E ≃ₗ[ℝ] ({v : InfinitePlace E // v.IsComplex} → ℂ) :=
-    .uniqueProd
-  let e₁ : ({v : InfinitePlace E // v.IsComplex} → ℂ) ≃ₗ[ℝ] (InfinitePlace E → ℂ) :=
-    .funCongrLeft ℝ ℂ ι.symm
-  let e₂ : (InfinitePlace E → ℂ) ≃ₗ[ℝ] (InfinitePlace E → ℂ) :=
-    .piCongrRight fun v ↦ (σ v).toLinearEquiv
-  have h_e₀ : MeasurePreserving e₀ := by
-    change MeasurePreserving
-      (Prod.snd : mixedEmbedding.mixedSpace E → ({v : InfinitePlace E // v.IsComplex} → ℂ))
-    exact ⟨measurable_snd, by simp [volume]⟩
-  have h_e₁ : MeasurePreserving e₁ := volume_preserving_arrowCongr' ι (.refl ℂ) (.id _)
-  have h_e₂ : MeasurePreserving e₂ := volume_preserving_pi fun v ↦ (σ v).measurePreserving
-  have h_σ (v : InfinitePlace E) (x : E) : σ v (v.embedding x) = Φ v x := by
-    by_cases hv : v.embedding = Φ v
-    · simp [σ, hv]
-    · have h_conj : v.embedding = ComplexEmbedding.conjugate (Φ v) := by
-        simpa [mk_Φ, hv] using embedding_mk_eq (Φ v)
-      simp [σ, ite_eq_right hv, h_conj]
-  exact ⟨e₀ ≪≫ₗ e₁ ≪≫ₗ e₂, h_e₂.comp (h_e₁.comp h_e₀), fun x ↦ funext fun v ↦ h_σ v x⟩
+  refine ⟨.uniqueProd ≪≫ₗ .funCongrLeft ℝ ℂ ι.symm ≪≫ₗ .piCongrRight fun v ↦ (σ v).toLinearEquiv,
+    (volume_preserving_pi fun v ↦ (σ v).measurePreserving).comp <|
+      (volume_preserving_arrowCongr' ι (.refl ℂ) (.id _)).comp ⟨measurable_snd, by simp [volume]⟩,
+    fun x ↦ funext fun v ↦ ?_⟩
+  by_cases hv : v.embedding = Φ v
+  · simp [σ, ι, hv]
+  · have h_conj : v.embedding = ComplexEmbedding.conjugate (Φ v) := by
+      simpa [mk_Φ, hv] using embedding_mk_eq (Φ v)
+    simp [σ, ι, hv]
+    simp [h_conj]
 
 open scoped Classical in
 /-- Let `K` be a number field and `φ : K → V` a ring homomorphism. Let `e` be a volume-preserving
@@ -454,13 +447,14 @@ instance isCovolOneLattice_ratMatrices [Fintype m] : IsCovolOneLattice (ratMatri
 /-- An injective additive map `f` into a Hausdorff topological group, with discrete image, sends
 only finitely many points into a given compact set. -/
 lemma finite_preimage_of_discreteTopology_range {B I : Type*} [AddCommGroup B] [AddCommGroup I]
-    [TopologicalSpace B] [IsTopologicalAddGroup B] [T2Space B] {f : I →+ B} {C : Set B}
+    [TopologicalSpace B] [IsTopologicalAddGroup B] {f : I →+ B} {C : Set B}
     (hf_inj : Function.Injective f) (h_disc : DiscreteTopology f.range) (hC : IsCompact C) :
     (f ⁻¹' C).Finite := by
   -- `f` tends to infinity along the cofinite filter
   simpa using f.tendsto_coe_cofinite_of_isDiscrete hf_inj ⟨h_disc⟩ hC.compl_mem_cocompact
 
-omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure] in
+omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
+    [T2Space B] in
 /-- Let `f : I →+ B` be an injective additive map whose image is a lattice of covolume one in `B`
 (discrete, with compact quotient of measure one). Then for every compact set `C`, only finitely many
 `a` in `I` have `f a ∈ C`. -/

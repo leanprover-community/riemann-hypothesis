@@ -1,8 +1,10 @@
 module
 
+public import Mathlib.RingTheory.Polynomial.Chebyshev
 public import Lib.Shimura.AbelianScheme.TangentCoordinates
 public import Lib.Shimura.ThetaGroup
 public import Lib.Shimura.ThetaModuli.PELThetaTori
+public import Lib.Shimura.AbelianScheme.Pairings
 
 /-!
 # Theta objects of PEL moduli problems, their pull-backs, and rigidity over local rings
@@ -139,7 +141,7 @@ lemma isGroupBaseChange : IsGroupBaseChange x x.toFamily := isGroupBaseChange_co
 instance smoothOfRelativeDimension :
     SmoothOfRelativeDimension (abelianDim E D.Index) x.groupScheme.hom := by
   -- `simp` writes the structure map of the pull-back as `pullback.snd`, which has the instance
-  simp [groupScheme]
+  simp only [groupScheme, pullback_obj_left, pullback_obj_hom]
   infer_instance
 
 attribute [irreducible] groupScheme toFamily
@@ -167,10 +169,16 @@ lemma hasClassLaws : D.HasClassLaws x.lineBundle.picClass := by
   -- The class of `x.lineBundle` at a point is that of `X.lineBundle` at its image under the linear
   -- map `x.isGroupBaseChange.pointEquiv`.
   refine ⟨fun T u v ↦ ?_, fun T u v ↦ ?_⟩
-  · simpa [lineBundle, x.isGroupBaseChange.atPoint_picClass_pull] using
+  · have h :=
       X.class_laws.left (x.isGroupBaseChange.pointEquiv u) (x.isGroupBaseChange.pointEquiv v)
-  · simpa [pairing, lineBundle, x.isGroupBaseChange.atPoint_picClass_pull] using
+    simp only [lineBundle, x.isGroupBaseChange.atPoint_picClass_pull, LinearEquiv.map_add,
+      map_sub x.isGroupBaseChange.pointEquiv, LinearEquiv.map_zero]
+    exact h
+  · have h :=
       X.class_laws.right (x.isGroupBaseChange.pointEquiv u) (x.isGroupBaseChange.pointEquiv v)
+    simp only [pairing, lineBundle, x.isGroupBaseChange.atPoint_picClass_pull, LinearEquiv.map_add,
+      LinearEquiv.map_smul, LinearEquiv.map_zero]
+    exact h
 
 /-- For the class of the line bundle of an object, `(β - b) ^ k` is adjoint to `(β̄ - b) ^ k`,
 where `β̄ = star β`: `⟨(β - b) ^ k • y, z⟩ = ⟨y, (β̄ - b) ^ k • z⟩` for the pairing of the class. -/
@@ -215,8 +223,14 @@ lemma pairing_pow_smul_adjoint (b : ℤ) (k : ℕ) {T : Over S} :
       | zero => exact h_F0
       | one => exact h_F1
       | add_two n h_succ h_n =>
-        simpa [add_assoc, one_add_one_eq_two, h_n, h_succ] using h_rec (n + 1)
-      | neg_add_one n h_n h_succ => simpa [h_n, h_succ] using h_rec (-n)
+        have h := h_rec (n + 1)
+        rw [add_sub_cancel_right, add_assoc, one_add_one_eq_two, h_n, h_succ, zero_add, smul_zero]
+          at h
+        exact h
+      | neg_add_one n h_n h_succ =>
+        have h := h_rec (-n)
+        rw [h_n, h_succ, add_zero, smul_zero] at h
+        exact h
     exact sub_eq_zero.mp (h_all b)
   intro y z
   induction k generalizing y z with
@@ -252,14 +266,14 @@ lemma isGroupBaseChange : IsGroupBaseChange b h.schemeMap := by
   have h_eq : b ≫ x = x' := h
   subst h_eq
   refine ⟨.of_right h_square h.schemeMap.w x.isGroupBaseChange.isPullback, fun {T} ↦ ?_⟩
-  -- On points, `h.schemeMap` is the composite of two linear bijections through the points of
-  -- `X.total`. (`convert`: the composite is `(· ≫ h.schemeMap)` only by the equation proved next.)
-  convert
-    (hx'_baseChange.pointEquiv ≪≫ₗ (x.isGroupBaseChange.pointEquiv (T := map b T)).symm).isLinear
-  exact x.isGroupBaseChange.pointEquiv.eq_symm_apply.mpr (ext (_ ≫= h.comp_toFamily))
+  -- On points, `h.schemeMap` is the composite of two linear bijections through `X.total`.
+  let e := hx'_baseChange.pointEquiv ≪≫ₗ (x.isGroupBaseChange.pointEquiv (T := map b T)).symm
+  have he u : (Over.map b).map u ≫ h.schemeMap = e u :=
+    x.isGroupBaseChange.pointEquiv.eq_symm_apply.mpr (ext (u.left ≫= h.comp_toFamily))
+  exact ⟨fun u v ↦ by rw [he, he, he, e.map_add], fun c u ↦ by rw [he, he, e.map_smul]⟩
 
 lemma lineBundle_eq_pull : x'.lineBundle = x.lineBundle.pull h.schemeMap.left :=
-  congrArg _ h.comp_toFamily.symm
+  (congrArg X.lineBundle.pull h.comp_toFamily.symm).trans (LineBundle.pull_comp _ _ _)
 
 lemma lineBundle_pow_eq_pull (m : ℕ) :
     x'.lineBundle.pow m = (x.lineBundle.pow m).pull h.schemeMap.left :=
@@ -367,7 +381,15 @@ lemma exists_isTangentLog {b : ℤ} (hb : y.baseHom (D.β - b) = 0) :
     y.isGroupBaseChange.pointEquiv
   refine ⟨fun _ t x ↦ tangentCoords z (p t ((star D.β - b) • x)) k, fun C C' ψ _ t x hx ↦ ?_⟩
   -- `IsInfinitesimal ψ x` unfolds to an equation `… = 0`, which the linear equivalence `p t` keeps.
-  have h_tiny_p {x} : IsInfinitesimal ψ x → IsInfinitesimal ψ (p t x) := (p _).map_eq_zero_iff.2
+  have h_tiny_p {x : Over.mk t ⟶ y.groupScheme} (hx : IsInfinitesimal ψ x) :
+      IsInfinitesimal ψ (p t x) := by
+    have h_eq :
+        (homMk (Spec.map ψ) : Over.mk (Spec.map ψ ≫ (t ≫ y)) ⟶ Over.mk (t ≫ y)) ≫ p t x =
+        p (Spec.map ψ ≫ t) ((homMk (Spec.map ψ) : Over.mk (Spec.map ψ ≫ t) ⟶ Over.mk t) ≫ x) := by
+      ext
+      simp [p, IsGroupBaseChange.pointEquiv]
+    rw [IsInfinitesimal, h_eq, hx]
+    exact LinearEquiv.map_zero _
   -- `0` lies in the chart; on infinitesimal points `tangentCoords z` is additive and turns `a • ·`
   -- into the matrix `m a` (`h_linear`).
   obtain ⟨h_zero_mem, h_linear⟩ := h_jac (map_preimage t =≫ _)
@@ -392,13 +414,18 @@ lemma exists_isTangentLog {b : ℤ} (hb : y.baseHom (D.β - b) = 0) :
   · -- `Y k` is a unit, so all coordinates vanish, and an infinitesimal point is determined by them.
     have h_k : preimage t (Y k) * s = 0 := by simpa [h_on_line] using h_log_zero
     have hs : s = 0 := (hY_unit.map _).mul_right_eq_zero.mp h_k
-    simp [h_chart.eq_zero_of_tangentCoords_eq_zero h_zero_mem h_tiny, h_on_line, hs, funext_iff]
+    rw [LinearEquiv.map_smul, LinearEquiv.map_zero]
+    exact h_chart.eq_zero_of_tangentCoords_eq_zero h_zero_mem h_tiny <|
+      funext fun i ↦ by rw [h_on_line, hs, mul_zero]; rfl
   · -- the tangent coordinates commute with the change of rings `χ`
     have h_comp : tangentCoords z ((map y).map a ≫ ((star D.β - b) • p t x)) =
         χ ∘ tangentCoords z ((star D.β - b) • p t x) :=
       IsEtaleChart.tangentCoords_comp h_zero_mem h_tiny ((map y).map a) ha
-    -- `using!`: the two sides agree only after unfolding `Over.map` and `pointEquiv`
-    simpa using! congrFun h_comp k
+    have h_arg : p t₁ ((star D.β - b) • (a ≫ x)) = (map y).map a ≫ ((star D.β - b) • p t x) := by
+      rw [LinearEquiv.map_smul, ModuleObj.comp_smul]
+      congr 1
+    rw [h_arg, LinearEquiv.map_smul]
+    exact congrFun h_comp k
 
 /-- The five properties of a logarithm (`New.ThetaObject.exists_isTangentLog`) as one conjunction:
 (a) equivariance, (b) kernel, (c) additivity, (d) infinitesimal values, (e) naturality. -/
@@ -476,8 +503,15 @@ lemma FullLevelStructure.exists_pullback {φ : R →+* ℂ}
   have h_lin₀ : (y.lineBundle.pow m).IsLinearSystem := .pi fun _ ↦ y.isProjEmbedding.isLinearSystem
   have h_coord : P (coordSection h_lin₀ i) = coordSection h_lin i := pullSections_coordSection ..
   -- Both sides are `a * b * φ c` times `P (Ψ₀ (Φ₀ (coordSection h_lin₀ i)))`.
-  simp only [← h_coord, ha, hb, map_smul, h_comm Φ₀ Ψ₀ hΦ₀ hΨ₀, map_smulₛₗ]
-  module
+  calc Φ (Ψ (coordSection h_lin i))
+    _ = Φ (b • P (Ψ₀ (coordSection h_lin₀ i))) := by rw [← h_coord, hb]
+    _ = (b * a) • P (Φ₀ (Ψ₀ (coordSection h_lin₀ i))) := by rw [Φ.map_smul, ha, smul_smul]
+    _ = (b * a * φ c) • P (Ψ₀ (Φ₀ (coordSection h_lin₀ i))) := by
+      rw [h_comm Φ₀ Ψ₀ hΦ₀ hΨ₀, P.map_smulₛₗ, smul_smul]
+    _ = φ c • Ψ (Φ (coordSection h_lin i)) := by
+      rw [← h_coord, ha, Ψ.map_smul, hb, smul_smul, smul_smul]
+      congr 1
+      ring
 
 end ThetaObject
 
@@ -560,8 +594,18 @@ lemma eq_zero_of_pairing_eq_zero (hx : x.HasSpanningCoords) {l : ℕ} [hl : Fact
   -- `z` pairs to zero with the universal point, so its translation lifts to `x'.lineBundle`.
   have h_pair : x'.lineBundle.picClass.pairing
       (SemiCartesianMonoidalCategory.toUnit x'.groupScheme ≫ z) (𝟙 x'.groupScheme) = 0 := by
-    simpa [hp.lineBundle_eq_pull, Pic.pairing, hp.isGroupBaseChange.atPoint_picClass_pull] using!
-      h_ker (homMk _ rfl) hp.schemeMap
+    have h0 := h_ker (homMk x'.groupScheme.hom rfl) hp.schemeMap
+    have h_eq1 : hp.isGroupBaseChange.pointEquiv
+        (SemiCartesianMonoidalCategory.toUnit x'.groupScheme ≫ z) =
+        (homMk x'.groupScheme.hom rfl : (Over.map t).obj x'.groupScheme ⟶ .mk t) ≫
+          hp.isGroupBaseChange.pointEquiv z :=
+      OverMorphism.ext (assoc _ _ _)
+    have h_eq2 : hp.isGroupBaseChange.pointEquiv (𝟙 x'.groupScheme) = hp.schemeMap :=
+      OverMorphism.ext (id_comp _)
+    rw [hp.lineBundle_eq_pull]
+    simp only [Pic.pairing, hp.isGroupBaseChange.atPoint_picClass_pull, LinearEquiv.map_add,
+      LinearEquiv.map_zero, h_eq1, h_eq2]
+    exact h0
   obtain ⟨Φ, hΦ⟩ := exists_isTranslationLift_iff.mpr h_pair
   -- For a rigid theta structure such a section is killed by the order of the index group.
   have h_pb : x'.IsPullbackAlong (t ≫ b) x := by rw [IsPullbackAlong, assoc, hb, hp]
@@ -576,14 +620,18 @@ lemma eq_zero_of_pairing_eq_zero (hx : x.HasSpanningCoords) {l : ℕ} [hl : Fact
   have h_card_fibre : Nat.card D.dualTorsion • z₀ = 0 := by simp [z₀, ← comp_nsmul, h_card]
   have h_pow_fibre : l ^ m • z₀ = 0 := by
     apply hp.isGroupBaseChange.pointEquiv.injective
-    -- closes with `h_pow_zero`, once simp has put the goal in its form
-    simpa [z₀]
+    have h_z0 : hp.isGroupBaseChange.pointEquiv z₀ =
+        (homMk a : Over.mk (a ≫ t) ⟶ Over.mk t) ≫ hp.isGroupBaseChange.pointEquiv z :=
+      OverMorphism.ext (assoc _ _ _)
+    rw [map_nsmul, LinearEquiv.map_zero, h_z0]
+    exact h_pow_zero
   have h_fibre : z₀ = 0 :=
     (nsmul_eq_zero_iff_of_coprime (hl.out.coprime_pow_of_not_dvd h_not_dvd)).mp
       ⟨h_card_fibre, h_pow_fibre⟩
   -- A section of invertible order that vanishes on a nonempty affine scheme is zero.
-  exact EmbeddingLike.map_eq_zero_iff.mpr <| eq_zero_of_nsmul_eq_zero_of_comp_eq_zero
-    x'.smoothOfRelativeDimension x'.isThetaStructure.isUnit_card h_card h_fibre
+  exact hp.isGroupBaseChange.pointEquiv.map_eq_zero_iff.mpr <|
+    eq_zero_of_nsmul_eq_zero_of_comp_eq_zero
+      x'.smoothOfRelativeDimension x'.isThetaStructure.isUnit_card h_card h_fibre
 
 /-- Rigidity. Let x be a rigid object (`New.ThetaObject.HasSpanningCoords`) over the field k, x₁ its
 pull-back along b to a local noetherian ring B, and x₂ another object over B. Let j : x₁ → x₂ be an
@@ -618,8 +666,18 @@ lemma eq_and_comp_toFamily_eq_of_hom (hx : x.HasSpanningCoords) {x₁ x₂ : The
   have h_base : x₁ = x₂ := by
     have h_base_pt : x₁ ≫ τ = x₂ ≫ τ := by simpa [baseHom, specMap] using congrArg specMap h_baseHom
     refine X.eq_of_level_coords_eq _ _ h_base_pt fun l ↦ ?_
-    simp [← levelPoints_comp_toFamily, ← h_levelPoints l, ← lineBundle.eq_1, h_pull]
-  exact ⟨h_base, X.embeds.ext h_pull (by aesop)⟩
+    have h_coord (y : ThetaObject X (Spec ⟨B⟩)) :
+        X.lineBundle.pull (y ≫ (X.levelPoints l).left) =
+          y.lineBundle.pull (y.levelPoints l).left := by
+      rw [← y.levelPoints_comp_toFamily l, LineBundle.pull_comp]
+      rfl
+    rw [h_coord x₁, h_coord x₂, ← h_pull, ← LineBundle.pull_comp, ← Over.comp_left, h_levelPoints l]
+  have h_w : (j.left ≫ x₂.toFamily.left) ≫ X.total.hom = x₁.toFamily.left ≫ X.total.hom := by
+    rw [assoc, x₂.toFamily.w]
+    dsimp only [Over.map_obj_hom]
+    rw [← assoc, j.w, ← h_base]
+    exact x₁.toFamily.w.symm
+  exact ⟨h_base, X.embeds.ext ((LineBundle.pull_comp _ _ _).trans h_pull) h_w⟩
 
 end New.ThetaObject.HasSpanningCoords
 

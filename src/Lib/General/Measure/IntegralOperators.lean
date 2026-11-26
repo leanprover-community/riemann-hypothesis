@@ -1,5 +1,9 @@
 module
 
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.SpecialFunctions.Pow.Integral
+public import Mathlib.MeasureTheory.Integral.Pi
+public import Mathlib.Topology.Algebra.IsOpenUnits
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -235,37 +239,6 @@ namespace New
 
 variable {V Y X I A : Type*} [MeasurableSpace Y] {μ : Measure Y} [NormedAddCommGroup V]
   [NormedSpace ℝ V] [MeasurableSpace X] [Monoid A]
-
-/-- Tonelli's theorem for a finite product: the integral of `∏ i, f i (x i)` over the product
-measure is the product of the integrals, for σ-finite measures and measurable `f i` with values
-in `[0, ∞]`. -/
-lemma lintegral_pi_prod {ι : Type*} [Fintype ι] {X : ι → Type*} [∀ i : ι, MeasurableSpace (X i)]
-    (μ : ∀ i : ι, Measure (X i)) [∀ i : ι, SigmaFinite (μ i)] {f : ∀ i : ι, X i → ENNReal}
-    (hf : ∀ i : ι, Measurable (f i)) :
-    ∫⁻ x : (i : ι) → X i, ∏ i : ι, f i (x i) ∂Measure.pi μ = ∏ i : ι, ∫⁻ x : X i, f i x ∂μ i := by
-  classical
-  rcases isEmpty_or_nonempty ((i : ι) → X i) with h_empty | ⟨⟨x₀⟩⟩
-  · -- some factor `X i` is empty, and both sides vanish
-    obtain ⟨i, hi⟩ := isEmpty_pi.1 h_empty
-    rw [lintegral_of_isEmpty, Finset.prod_eq_zero (Finset.mem_univ i) (lintegral_of_isEmpty _ _)]
-  -- Integrate out one coordinate at a time: induction on the set `s` of factors. The coordinates
-  -- outside `s` are held at the point `x₀`.
-  have h_marginal (s : Finset ι) :
-      (∫⋯∫⁻_s, (fun x : (j : ι) → X j ↦ ∏ i ∈ s, f i (x i)) ∂μ) x₀ =
-        ∏ i ∈ s, ∫⁻ x : X i, f i x ∂μ i := by
-    induction s using Finset.induction_on with
-    | empty => simp
-    | insert i s hi ih =>
-      -- integrate over `x i` first: the other factors do not depend on it and come out
-      have h_inner (x : (j : ι) → X j) :
-          ∫⁻ t : X i, ∏ j ∈ insert i s, f j (Function.update x i t j) ∂μ i =
-            (∫⁻ t : X i, f i t ∂μ i) * ∏ j ∈ s, f j (x j) := by
-        simp +contextual [Finset.prod_insert hi, Function.update_of_ne,
-          ne_of_mem_of_not_mem _ hi, lintegral_mul_const _ (hf i)]
-      rw [lmarginal_insert' _ (by fun_prop) hi, Finset.prod_insert hi, ← ih]
-      simp only [h_inner]
-      exact lintegral_const_mul _ (by fun_prop)
-  rw [lintegral_eq_lmarginal_univ x₀, h_marginal]
 
 /-- The bound `‖x.toReal • v‖ₑ ≤ x * ‖v‖ₑ`; for `x = ∞` the left side is `0`. -/
 lemma enorm_toReal_smul_le (x : ENNReal) (v : V) : ‖x.toReal • v‖ₑ ≤ x * ‖v‖ₑ := by

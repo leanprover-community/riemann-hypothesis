@@ -1,8 +1,11 @@
 module
 
-public import Lib.General.Geometry.GeometricPoints
-public import Lib.General.Geometry.PointsOfProperSchemes
 import TauCeti.AlgebraicGeometry.Morphisms.Flat.Descent
+public import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
+public import Mathlib.CategoryTheory.Limits.Shapes.Connected
+public import Mathlib.RingTheory.Etale.Weakly
+public import TauCeti.AlgebraicGeometry.Morphisms.Smooth.GeometricallyReduced
+public import Lib.General.Geometry.PointsOfProperSchemes
 
 /-!
 # Isogenies: factorisation of homomorphisms, finiteness and flatness

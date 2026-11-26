@@ -223,16 +223,16 @@ private lemma isBijective_restrict_restrictScalars_iff {A : ClosurePlace} {p : �
   let u : TestOver.restrictScalars A Ω ⋙ X ⟶ κ.functor ⋙ (offClosedFibre X).toFunctor :=
     { app c := ↾fun x ↦
         ⟨x, eq_top_of_isUnit_mem _ (mem_map_of_mem _ ((A.valuation_lt_one_iff p).2 hp))
-          ((NeZero.ne (p : Ω)).isUnit.map (algebraMap Ω c.1))⟩ }
+          ((NeZero.ne (p : Ω)).isUnit.map (algebraMap Ω c.obj))⟩ }
   -- Conversely, if a test `c` carries a point of `offClosedFibre X`, nonzero elements of `A` are
   -- units in `c` (rank one), so `A → c` extends to `Ω` in exactly one way;
   -- `hasUniversalPoints_structurePt` gives the test `B` over `Ω` that is universal under `c`.
   have h_univ : κ.HasUniversalPoints u := fun c y ↦ by
-    have h_unit (a : A⁰) : IsUnit (algebraMap A c.1 a) := by
+    have h_unit (a : A⁰) : IsUnit (algebraMap A c.obj a) := by
       -- (the ring of `c` appears once as `c` and once as `(TestOver.toTest A).obj c`)
       have h := radical_eq_top.1 (eq_top_mono
-        ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) y.2)
-      rw [← span_singleton_eq_top, ← Set.image_singleton (f := algebraMap A c.1), ← map_span]
+        ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) y.property)
+      rw [← span_singleton_eq_top, ← Set.image_singleton (f := algebraMap A c.obj), ← map_span]
       exact h
     obtain ⟨B, x, s, -, h_uniq, h_bij⟩ :=
       hasUniversalPoints_structurePt A Ω c

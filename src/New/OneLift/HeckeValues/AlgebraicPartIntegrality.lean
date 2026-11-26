@@ -65,7 +65,7 @@ def TameChar.IsIntegralMeasure (F : D.TameChar → ℂ) : Prop :=
     -- (a) the coefficients are integral at every prime that does not divide the norm `ϑ.normQ`
     (∀ a : α, c a ∈ Seesaw.integralAway ϑ.normQ) ∧
     -- (b) on characters of the same modulus, `F` is evaluation on `∑ a, c a [u a]`
-    ∀ ϑ' : D.TameChar, ϑ'.Q = ϑ.Q → F ϑ' = ∑ a : α, c a * ϑ'.toAutChar.1 (u a)
+    ∀ ϑ' : D.TameChar, ϑ'.Q = ϑ.Q → F ϑ' = ∑ a : α, c a * ϑ'.toAutChar.val (u a)
 
 /-- If `F` is an integral measure at the modulus `Q` of the tame character `ϑ`, that is, given on
 the characters of modulus `Q` by an element of the group ring of `U(1)(𝔸)` that is integral away
@@ -80,8 +80,8 @@ lemma TameChar.IsIntegralMeasure.norm_sq {F : D.TameChar → ℂ} (hF : ϑ.IsInt
     fun (x, y) ↦ mul_mem (h_int x) fun l _ hl j ↦ h_int y l hl (j.comp (starRingEnd ℂ)),
     fun ϑ' hQ ↦ ?_⟩
   calc (‖F ϑ'‖ : ℂ) ^ 2 = F ϑ' * starRingEnd ℂ (F ϑ') := (mul_conj' _).symm
-    _ = ∑ x : α, ∑ y : α, c x * ϑ'.toAutChar.1 (u x) *
-          starRingEnd ℂ (c y * ϑ'.toAutChar.1 (u y)) := by
+    _ = ∑ x : α, ∑ y : α, c x * ϑ'.toAutChar.val (u x) *
+          starRingEnd ℂ (c y * ϑ'.toAutChar.val (u y)) := by
       rw [eq_sum ϑ' hQ, map_sum, univ.sum_mul_sum]
     _ = _ := by
       simp only [sum_prod_type, map_mul, map_inv, Circle.coe_mul, coe_inv_eq_conj, RCLike.star_def]
@@ -190,7 +190,7 @@ lemma weylGauge_denomBound_smul_pointKernel_le_one (H : p.HasLiftRank n) (ϑ : D
   -- gauge one.
   let X : LValueData D.E n := lValueData H ϑ
   let datumDenom : ℕ := (D.M ^ 1) ^ (2 * Core.numInfPlaces (P.E D.towerExp) * card (n × Unit))
-  have h_std : (datumDenom : ℂ) • (pointDatum H ϑ).1 ∈ Parameters.standardData _ (D.M ^ 1 : ℕ) :=
+  have h_std : (datumDenom : ℂ) • (pointDatum H ϑ).val ∈ Parameters.standardData _ (D.M ^ 1 : ℕ) :=
     smul_vacuumDatum_mem_standardData normQ_mul_M_pow_mem_modulus
       (by grind [DescentPair.identityBlockIndicator, one_mem, zero_mem]) hl
   have h_den : datumDenom * (D.M ^ 1 * P.d) ^ boxes X.descentPair.columnCount (card n) ∣
@@ -284,7 +284,7 @@ the adelic point with component `1` at the infinite places and finite part `g`. 
 lemma trivialLift_apply_eq_sum_smul (H : p.HasLiftRank n) (ϑ : D.TameChar) {ϑ' : D.TameChar}
     (hQ : ϑ'.Q = ϑ.Q) (h : Gf D.E n) :
     trivialLift H ϑ' h = ∑ a : TrivialLiftIndex ϑ,
-      (ϑ'.toAutChar.1 (G.det (s := 1) (1, liftPoint ϑ a)) : ℂ)⁻¹ •
+      (ϑ'.toAutChar.val (G.det (s := 1) (1, liftPoint ϑ a)) : ℂ)⁻¹ •
         pointKernel H (ϑ.pow 0) (liftPoint ϑ a) h := by
   obtain ⟨χ, Q, ψ, hasWeight, ψ_eq_one, star_notMem, coprime⟩ := ϑ'
   obtain rfl : Q = ϑ.Q := hQ
@@ -315,7 +315,7 @@ lemma norm_sq_trivialLift_eq_sum (H : p.HasLiftRank n) (ϑ : D.TameChar) {ϑ' : 
     (hQ : ϑ'.Q = ϑ.Q) :
     (‖trivialLift H ϑ'‖ : ℂ) ^ 2 =
       ∑ a : TrivialLiftIndex ϑ, ∑ b : TrivialLiftIndex ϑ,
-        ϑ'.toAutChar.1 (G.det (s := 1) ((1, liftPoint ϑ b) / (1, liftPoint ϑ a))) *
+        ϑ'.toAutChar.val (G.det (s := 1) ((1, liftPoint ϑ b) / (1, liftPoint ϑ a))) *
           kernelPairing H ϑ a b := by
   -- the level depends on the modulus only
   have levelGroup_eq : (lValueData H ϑ').descentPair.levelGroup =
@@ -323,7 +323,7 @@ lemma norm_sq_trivialLift_eq_sum (H : p.HasLiftRank n) (ϑ : D.TameChar) {ϑ' : 
     obtain ⟨⟩ := ϑ'
     cases hQ
     rfl
-  let c (a : TrivialLiftIndex ϑ) : Circle := ϑ'.toAutChar.1 (G.det (s := 1) (1, liftPoint ϑ a))
+  let c (a : TrivialLiftIndex ϑ) : Circle := ϑ'.toAutChar.val (G.det (s := 1) (1, liftPoint ϑ a))
   calc (‖trivialLift H ϑ'‖ : ℂ) ^ 2
       = classSum stdRatPoints (lValueData H ϑ).descentPair.levelGroup fun k : Gf D.E n ↦
           gramForm (trivialLift H ϑ' k) (trivialLift H ϑ' k) := by

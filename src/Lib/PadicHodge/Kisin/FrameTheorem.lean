@@ -376,35 +376,24 @@ private lemma phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms (F : Frame L) (m
     phiInvToBdR 0 (k.frobE m ^ (L.jumpBound + L.jumpBound) * t i) ∈ W := by
   -- Test with the forms `σ ν` given by the rows of `φ ^ m M⁻¹`; their coordinates are the unit
   -- vectors. Then combine the values with row `i` of `φ ^ m Y` and use `Y * Z = E ^ (a + a)`.
-  have h_ext (ν : Fin (finrank ℤ_[p] L.Carrier)) : ∃ σ : L.Functional,
-      ∀ s : Rep.of (overZp L.ρ), σ (DiagTensor.mk 1 s) =
-        ((algHom ℤ_[p] Bmax BdR).toLinearMap ∘ₗ
-          (finBasis ℤ_[p] L.Carrier).constr ℕ (frobEnd^[m] ∘ F.M.inv ν)) s :=
-    exists_functional_extend _
-  choose σ hσ using h_ext
-  have h_unit (ν : Fin (finrank ℤ_[p] L.Carrier)) :
-      basisValues (σ ν) ᵥ* (frobPowToBdR m).mapMatrix F.M = (1 : Matrix _ _ BdR) ν := by
+  choose σ hσ using fun ν ↦ exists_functional_extend (L := L)
+    ((algHom ℤ_[p] Bmax BdR).toLinearMap ∘ₗ
+      (finBasis ℤ_[p] L.Carrier).constr ℕ (frobEnd^[m] ∘ F.M.inv ν))
+  have h_unit (ν) : basisValues (σ ν) ᵥ* (frobPowToBdR m).mapMatrix F.M =
+      (1 : Matrix _ _ BdR) ν := by
     funext l
-    have h_inv_entry := congrArg (fun X ↦ frobPowToBdR m (X ν l)) F.M.inv_val
     -- `using!`: `algHom ℤ_[p] Bmax BdR` and `algebraMap Bmax BdR` agree only by definition.
     simpa [frobPowToBdR, FrobGal.smul_def, hσ, Matrix.mul_apply, vecMul, dotProduct, basisValues,
-      Matrix.one_apply] using! h_inv_entry
-  have hσ_forms (ν : Fin (finrank ℤ_[p] L.Carrier)) : σ ν ∈ L.forms := by
-    simp [F.mem_forms_iff m, ↓h_unit, Matrix.one_apply]
-  have hσ_mem (ν : Fin (finrank ℤ_[p] L.Carrier)) : σ ν ∈ L.crysForms :=
-    ⟨hσ_forms ν, _, hσ ν⟩
-  have h_sum : ∑ ν, F.Y.map frobEnd^[m] i ν • (k.frobE m).val ^ L.jumpBound • σ ν (F.comb m t) ∈
-      W :=
-    sum_smul_mem W (F.Y.map frobEnd^[m] i) fun ν _ ↦
-      W.smul_of_tower_mem ((k.frobE m).val ^ L.jumpBound) (hW (σ ν) (hσ_mem ν))
-  suffices h_eq : phiInvToBdR 0 (k.frobE m ^ (L.jumpBound + L.jumpBound) * t i) =
-      ∑ ν, F.Y.map frobEnd^[m] i ν • (k.frobE m).val ^ L.jumpBound • σ ν (F.comb m t) by
-    rw [h_eq]
-    exact h_sum
-  simpa [↓F.frobE_pow_smul_apply_comb, ↓h_unit, ↓map_mul, ← mulVec_mulVec, val_frobE,
-    algebraMap_eq_diagonal, phi_pow_smul, ↓mulVec.eq_1 (F.Y.map _), smul_def', phiInvToBdR,
-    dotProduct, Matrix.one_apply, ← IsScalarTower.algebraMap_apply] using
-    congr(algebraMap _ BdR (((frobEnd ^ m).mapMatrix $F.Y_mul_Z.symm *ᵥ ainfToBPlus ∘ t) i))
+      Matrix.one_apply] using! congrArg (fun X ↦ frobPowToBdR m (X ν l)) F.M.inv_val
+  have h_eq : phiInvToBdR 0 (k.frobE m ^ (L.jumpBound + L.jumpBound) * t i) =
+      ∑ ν, F.Y.map frobEnd^[m] i ν • (k.frobE m).val ^ L.jumpBound • σ ν (F.comb m t) := by
+    simpa [↓F.frobE_pow_smul_apply_comb, ↓h_unit, ↓map_mul, ← mulVec_mulVec, val_frobE,
+      algebraMap_eq_diagonal, phi_pow_smul, ↓mulVec.eq_1 (F.Y.map _), smul_def', phiInvToBdR,
+      dotProduct, Matrix.one_apply, ← IsScalarTower.algebraMap_apply] using
+      congr(algebraMap _ BdR (((frobEnd ^ m).mapMatrix $F.Y_mul_Z.symm *ᵥ ainfToBPlus ∘ t) i))
+  refine h_eq ▸ sum_smul_mem W (F.Y.map frobEnd^[m] i) fun ν _ ↦
+    W.smul_of_tower_mem _ (hW (σ ν) ⟨?_, _, hσ ν⟩)
+  simp [F.mem_forms_iff m, ↓h_unit, Matrix.one_apply]
 
 /-- For `x ∈ L.ainfLattice` and `a = L.jumpBound`, `τ ^ a • x` is a combination `F.comb 0 t` of
 the `F.n i`. -/
@@ -433,7 +422,7 @@ private lemma sum_map_smul_eq_zero_of_sum_smul_eq_zero (F : Frame L) (f : Ainf �
     rintro μ ⟨hμ, -⟩
     have h_rel : ∑ i, phiInvToBdR 0 (c i) * μ (v i) ∈ (⊥ : Submodule BPlus BdR) := by
       simpa [smul_def', phiInvToBdR] using congrArg μ hc
-    have h_zero : ∑ i, algebraMap Ainf BdR (f (c i)).1 * μ (v i) = 0 := by
+    have h_zero : ∑ i, algebraMap Ainf BdR (f (c i)).val * μ (v i) = 0 := by
       simpa [phiInvToBdR] using
         sum_phiInvToBdR_map_mul_mem_of_mem_valueField f _ c (fun i ↦ hv_val i μ hμ) (W := ⊥) h_rel
     simp [ht, smul_def', h_zero]
@@ -451,12 +440,6 @@ private lemma exists_smul_comb_eq_of_dvd (F : Frame L) (w : Ainf)
   obtain ⟨u, rfl⟩ : (fun _ : Fin (finrank ℤ_[p] L.Carrier) ↦ w) ∣ t := pi_dvd_iff.mpr hw
   exact ⟨u, (map_smul (F.comb 0) w u).symm⟩
 
-/-- Applying `φ ^ m` to `F.comb 0 t` gives the combination of the `φ ^ m • F.n i` with the
-coefficients `φ ^ m • t i`. -/
-private lemma comb_phi_pow_smul (F : Frame L) (m : ℕ) (t : Fin (finrank ℤ_[p] L.Carrier) → Ainf) :
-    F.comb m (fun i : Fin (finrank ℤ_[p] L.Carrier) ↦ φ ^ m • t i) = φ ^ m • F.comb 0 t := by
-  simp [comb, smul_iterate, smul_sum, Fintype.linearCombination_apply, frobGroup_smul_smul]
-
 /-- The test for `τ`: if every crystalline form sends `φ ^ (m + 1) • F.comb 0 t` into `hodgeFil 1`,
 for every `m`, then `τ` divides every coefficient `t i`. -/
 private lemma tau_dvd_of_forall_crysForms (F : Frame L) (t : Fin (finrank ℤ_[p] L.Carrier) → Ainf)
@@ -467,7 +450,9 @@ private lemma tau_dvd_of_forall_crysForms (F : Frame L) (t : Fin (finrank ℤ_[p
   refine tau_dvd_of_theta_frobEnd fun m ↦ ?_
   have h_forms : ∀ μ ∈ L.crysForms, μ (F.comb (m + 1) fun j ↦ φ ^ (m + 1) • t j) ∈
       (hodgeFil 1).restrictScalars BPlus := by
-    simpa [F.comb_phi_pow_smul] using ht m
+    simpa [comb, smul_iterate, smul_sum, Fintype.linearCombination_apply, frobGroup_smul_smul,
+      pow_succ, mul_smul]
+      using ht m
   have h_fil : phiInvToBdR 0 (k.frobE (m + 1) ^ (L.jumpBound + L.jumpBound) * φ ^ (m + 1) • t i) ∈
       hodgeFil 1 :=
     F.phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms (m + 1) _ _ h_forms i
@@ -515,6 +500,9 @@ private lemma span_n_eq_kisinAinf (F : Frame L) : span Ainf (Set.range F.n) = L.
   simpa [mem_span_range_iff_exists_fun, comb, Fintype.linearCombination_apply] using
     F.exists_comb_eq_of_exists_comb_eq_tau_pow_smul hx (L.jumpBound + N) h_comb
 
+private lemma range_comb_zero (F : Frame L) : (F.comb 0).range = L.kisinAinf := by
+  simpa [comb, Fintype.range_linearCombination] using F.span_n_eq_kisinAinf
+
 /-- The vectors `φ ^ l • F.n i` span `L.valueFieldPoints (L.frobKisinAinf l)` over `S`. -/
 private lemma span_phi_pow_smul_n_eq_valueFieldPoints (F : Frame L) (l : ℕ) :
     span k.S (Set.range fun i : Fin (finrank ℤ_[p] L.Carrier) ↦ φ ^ l • F.n i) =
@@ -547,10 +535,6 @@ private lemma linearIndependent_n (F : Frame L) : LinearIndependent Ainf F.n := 
   have h_kill : ∀ μ ∈ L.crysForms, μ (F.comb 0 t) ∈ (⊥ : Submodule BPlus BdR) := by
     simp [comb, ht, Fintype.linearCombination_apply]
   simpa using F.phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms 0 ⊥ t h_kill i
-
-private lemma comb_zero_apply (F : Frame L) (t : Fin (finrank ℤ_[p] L.Carrier) → Ainf) :
-    F.comb 0 t = ∑ i : Fin (finrank ℤ_[p] L.Carrier), t i • F.n i := by
-  simp [comb, Fintype.linearCombination_apply]
 
 /-- The frame vectors `F.n i` span the Kisin module over `S`. -/
 private lemma span_n_eq_kisinModule (F : Frame L) : span k.S (Set.range F.n) = L.kisinModule := by
@@ -619,7 +603,8 @@ private lemma exists_mem_bicommutant_of_mem_kisinModule (F : Frame L) {μ : L.Fu
       (b := ∑ i, l (finBasis ℤ_[p] L.Carrier i) * F.M i ν) (h_fixed ν)
   refine ⟨b ⬝ᵥ F.Z *ᵥ ainfToBPlus ∘ fun i ↦ (c i : Ainf), ?_, ?_⟩
   · simp (maxDischargeDepth := 4) [sum_mem, mul_mem, hb_mem, F.Z_mem, dotProduct, mulVec]
-  · simpa [hl, frobPowToBdR, ← map_mul, ← map_sum, ← hb, F.comb_zero_apply, frobE, smul_eq_val_smul,
+  · simpa [hl, frobPowToBdR, ← map_mul, ← map_sum, ← hb, comb, Fintype.linearCombination_apply,
+      frobE, smul_eq_val_smul,
       dotProduct, vecMul, basisValues, Prod.mk_one_one, ← IsScalarTower.algebraMap_apply] using
       F.frobE_pow_smul_apply_comb μ 0 fun i ↦ (c i : Ainf)
 
@@ -632,11 +617,11 @@ private lemma mem_smul_kisinAinf_of_forall_crysForms (F : Frame L) (d : Ainf)
     (h_forms : ∀ μ ∈ L.crysForms, k.E.val ^ n • μ x ∈ BPlus ∙ algebraMap Ainf BdR d) :
     x ∈ d • L.kisinAinf := by
   -- Read off the coefficients of `x` modulo `d`; the two powers of `E` are dropped by `hd`.
-  obtain ⟨t, rfl⟩ := (mem_span_range_iff_exists_fun Ainf).mp (F.span_n_eq_kisinAinf.ge hx)
+  obtain ⟨t, rfl⟩ := F.range_comb_zero.ge hx
   have h_dvd (i : Fin (finrank ℤ_[p] L.Carrier)) : d ∣ t i := by
     have h_forms' (μ : L.Functional) (hμ : μ ∈ L.crysForms) :
         μ (F.comb 0 (k.E.val ^ n • t)) ∈ BPlus ∙ algebraMap Ainf BdR d := by
-      rw [map_smul, map_smul, F.comb_zero_apply]
+      rw [map_smul, map_smul]
       exact h_forms μ hμ
     obtain ⟨y, hy⟩ := mem_span_singleton.mp
       (F.phiInvToBdR_frobE_pow_mul_mem_of_forall_crysForms 0 _ (k.E.val ^ n • t) h_forms' i)
@@ -647,8 +632,8 @@ private lemma mem_smul_kisinAinf_of_forall_crysForms (F : Frame L) (d : Ainf)
         hy.symm
     exact hd (map_dvd ainfToBPlus (hd h_dvd_E))
   obtain ⟨u, hu⟩ := F.exists_smul_comb_eq_of_dvd d t h_dvd
-  rw [← F.comb_zero_apply t, ← hu, F.comb_zero_apply, ← F.span_n_eq_kisinAinf]
-  exact smul_mem_pointwise_smul _ d _ ((mem_span_range_iff_exists_fun Ainf).mpr ⟨u, rfl⟩)
+  rw [← hu]
+  exact smul_mem_pointwise_smul _ d _ (F.range_comb_zero.le ⟨u, rfl⟩)
 
 /-- Clause (f) of `frame_theorem`: `τ ^ a`, with `a = L.jumpBound`, carries `L.kisinAinf` into
 `L.ainfLattice`. -/
@@ -662,8 +647,7 @@ private lemma tau_pow_smul_mem_ainfLattice_of_mem_kisinAinf (F : Frame L) {x : L
 private lemma tau_pow_smul_mem_kisinAinf_of_mem_ainfLattice (F : Frame L) {x : L.Ambient}
     (hx : x ∈ L.ainfLattice) : tau ^ L.jumpBound • x ∈ L.kisinAinf := by
   obtain ⟨t, ht⟩ := F.exists_comb_eq_tau_pow_smul_of_mem_ainfLattice hx
-  rw [← ht, ← F.span_n_eq_kisinAinf, F.comb_zero_apply]
-  exact (mem_span_range_iff_exists_fun Ainf).mpr ⟨t, rfl⟩
+  exact F.range_comb_zero.le ⟨t, ht⟩
 
 /-- Clause (h) of `frame_theorem`: `E ^ a • φ`, with `a = L.jumpBound` and `E` the unit
 `k.frobEUnit 0` of `W(C♭)`, maps the Kisin module into itself. -/
@@ -808,11 +792,6 @@ private lemma mem_kisinAinf_of_mem_kisinModule {x : L.Ambient} (hx : x ∈ L.kis
     x ∈ L.kisinAinf :=
   hx.left
 
-/-- Some power of `tau` multiplies a vector of `kisinAinf` into `ainfLattice`. -/
-private lemma mem_saturateBy_of_mem_kisinAinf {x : L.Ambient} (hx : x ∈ L.kisinAinf) :
-    x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice :=
-  hx.left
-
 /-- After inverting `tau`, the `Ainf`-span of the Kisin module and `ainfLattice` agree: they have
 the same saturation by the powers of `tau`. This is a case of the comparison over `A_inf[1/μ]` for
 Breuil–Kisin–Fargues modules (Bhatt–Morrow–Scholze 2018, Lemma 4.26), before the Frobenius twist. -/
@@ -835,31 +814,18 @@ and only if two conditions hold. First, some power of `tau` = [ε^{1/p}] − 1 m
 in `crysForms`, `E ^ n • μ x` is the image in `BdR` of an element of `BPlus`; here `crysForms` are
 the invariant forms whose restriction to 1 ⊗ L comes from a Z_p-linear map L → `Bmax`, and `E` is
 `k.E`. -/
-theorem mem_kisinAinf_iff_crysForms {x : L.Ambient} :
-    x ∈ L.kisinAinf ↔ x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice ∧
-      ∃ n : ℕ, ∀ μ ∈ L.crysForms, ∃ s : BPlus, k.E.val ^ n • μ x = algebraMap BPlus BdR s := by
-  -- Forwards: expand `x` in a family `v` that spans `kisinAinf` and bound the values on each `v i`.
-  -- Backwards: some `tau ^ N • x` lies in `kisinAinf`, and the crystalline forms show that it is
-  -- divisible by `tau ^ N` there.
-  obtain ⟨v, h_span_S, h_span_A, -⟩ := exists_span_eq_kisinModule_linearIndependent (L := L)
-  constructor
-  · intro hx
-    refine ⟨mem_saturateBy_of_mem_kisinAinf hx, L.jumpBound, fun μ hμ ↦ ?_⟩
-    obtain ⟨u, rfl⟩ := (mem_span_range_iff_exists_fun Ainf).mp (h_span_A.ge hx)
-    choose q _ hq using fun i : Fin (finrank ℤ_[p] L.Carrier) ↦
-      exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule hμ (h_span_S.le (subset_span ⟨i, rfl⟩))
-    refine ⟨∑ i, u i • q i, ?_⟩
-    simp only [map_sum, map_smul, Finset.smul_sum, smul_comm _ (u _), hq, algebraMap.smul]
-  rintro ⟨hx_sat, n, h_val⟩
+theorem mem_kisinAinf_of_crysForms {x : L.Ambient}
+    (hx_sat : x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice) {n : ℕ}
+    (h_val : ∀ μ ∈ L.crysForms, ∃ s : BPlus, k.E.val ^ n • μ x = algebraMap BPlus BdR s) :
+    x ∈ L.kisinAinf := by
+  -- Some `tau ^ N • x` lies in `kisinAinf`, and the crystalline forms show that it is divisible by
+  -- `tau ^ N` there.
   rw [← saturateBy_tau_span_kisinModule, ← kisinAinf_eq_span_kisinModule] at hx_sat
-  obtain ⟨r, ⟨N, rfl⟩, hx_tau : tau ^ N • x ∈ L.kisinAinf⟩ := hx_sat
-  have h_dvd : tau ^ N • x ∈ tau ^ N • L.kisinAinf := by
-    refine mem_smul_kisinAinf_of_crysForms tau_pow_dvd_of_dvd_E_pow_mul hx_tau (n := n)
-      fun μ hμ ↦ ?_
-    obtain ⟨s, hs⟩ := h_val μ hμ
-    refine mem_span_singleton.mpr ⟨s, ?_⟩
-    rw [map_smul, smul_comm (k.E.val ^ n), hs, Algebra.smul_def, Algebra.smul_def, mul_comm]
-  obtain ⟨w, hw, hw_eq⟩ := (mem_smul_pointwise_iff_exists _ (tau ^ N) L.kisinAinf).mp h_dvd
+  obtain ⟨_, ⟨N, rfl⟩, hx_tau⟩ := hx_sat
+  obtain ⟨w, hw, hw_eq⟩ := (mem_smul_pointwise_iff_exists _ (tau ^ N) L.kisinAinf).mp <|
+    mem_smul_kisinAinf_of_crysForms tau_pow_dvd_of_dvd_E_pow_mul hx_tau (n := n) fun μ hμ ↦
+      (h_val μ hμ).elim fun s hs ↦ mem_span_singleton.mpr ⟨s, by
+        rw [map_smul, smul_comm (k.E.val ^ n), hs, Algebra.smul_def, Algebra.smul_def, mul_comm]⟩
   rwa [← smul_right_injective L.Ambient (pow_ne_zero N tau_ne_zero) hw_eq]
 
 /-- Let the vectors `v i` lie in the Kisin module of `L`, and let `u i ∈ Ainf`. Suppose that for
@@ -919,40 +885,30 @@ theorem mem_kisinModule_iff_crysForms {x : L.Ambient} :
     x ∈ L.kisinModule ↔ x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice ∧
       ∃ n : ℕ, ∀ μ ∈ L.crysForms, ∃ s ∈ k.bicommutant,
         k.E.val ^ n • μ x = algebraMap BPlus BdR s := by
-  -- Forwards: the values of crystalline forms on the Kisin module. Backwards: `x` lies in
-  -- `kisinAinf`, so it is a combination `∑ i, u i • v i` of a family `v` that spans it. Replacing
-  -- each `u i` by its coordinate at `1` changes `x` by a vector on which every crystalline form
-  -- vanishes, and that vector is `0` by the divisibility test with `d = 0`.
+  -- Forwards: crystalline forms on the Kisin module. Backwards: `x` lies in `kisinAinf`, so it is
+  -- `∑ i, u i • v i` for a spanning family `v`. Replacing each `u i` by `coord₀ (u i)` changes `x`
+  -- by a vector annihilated by every crystalline form, which is `0` by the `d = 0` divisibility
+  -- test.
   obtain ⟨v, h_span_S, h_span_A, -⟩ := exists_span_eq_kisinModule_linearIndependent (L := L)
-  constructor
-  · intro hx
-    exact ⟨mem_saturateBy_of_mem_kisinAinf (mem_kisinAinf_of_mem_kisinModule hx), L.jumpBound,
-      fun μ hμ ↦ exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule hμ hx⟩
+  refine ⟨fun hx ↦ ⟨(mem_kisinAinf_of_mem_kisinModule hx).left,
+    L.jumpBound, fun μ hμ ↦ exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule hμ hx⟩, ?_⟩
   rintro ⟨hx_sat, n, h_val⟩
-  have hx_A : x ∈ L.kisinAinf := by
-    refine mem_kisinAinf_iff_crysForms.mpr ⟨hx_sat, n, fun μ hμ ↦ ?_⟩
-    obtain ⟨s, -, hs⟩ := h_val μ hμ
-    exact ⟨s, hs⟩
-  obtain ⟨u, rfl⟩ := (mem_span_range_iff_exists_fun Ainf).mp (h_span_A.ge hx_A)
-  have hv_mem (i : Fin (finrank ℤ_[p] L.Carrier)) : v i ∈ L.kisinModule :=
-    h_span_S.le (subset_span ⟨i, rfl⟩)
-  -- `d = 0` passes the hypothesis of the divisibility test, as `E ≠ 0`.
-  have h_zero_cancel {m : ℕ} {r : Ainf}
-      (h_dvd : ainfToBPlus (0 : Ainf) ∣ ainfToBPlus (k.E.val ^ m * r)) : (0 : Ainf) ∣ r := by
-    simpa only [map_zero, zero_dvd_iff, map_eq_zero_iff _ (algebraMap_injective Ainf BPlus),
-      mul_eq_zero, pow_ne_zero m k.chart.E_ne_zero, false_or] using h_dvd
-  have h_diff_mem : ∑ i, (u i - algebraMap k.S Ainf (k.coord₀ (u i))) • v i ∈ L.kisinAinf :=
-    sum_mem fun i _ ↦ L.kisinAinf.smul_mem _ (mem_kisinAinf_of_mem_kisinModule (hv_mem i))
+  obtain ⟨u, rfl⟩ := (mem_span_range_iff_exists_fun Ainf).mp <| h_span_A.ge <|
+    mem_kisinAinf_of_crysForms hx_sat fun μ hμ ↦ (h_val μ hμ).imp fun _ h ↦ h.2
+  have hv_mem i : v i ∈ L.kisinModule := h_span_S.le (subset_span ⟨i, rfl⟩)
   have h_diff : ∑ i, (u i - algebraMap k.S Ainf (k.coord₀ (u i))) • v i ∈
       (0 : Ainf) • L.kisinAinf := by
-    refine mem_smul_kisinAinf_of_crysForms h_zero_cancel h_diff_mem (n := 0) fun μ hμ ↦ ?_
-    simp only [apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms hv_mem h_val hμ, smul_zero,
-      zero_mem]
-  have hx_coord : ∑ i, u i • v i = ∑ i, k.coord₀ (u i) • v i := by
-    obtain ⟨y, -, hy⟩ := (mem_smul_pointwise_iff_exists _ (0 : Ainf) L.kisinAinf).mp h_diff
+    refine mem_smul_kisinAinf_of_crysForms (fun {m r} h ↦ ?_)
+      (sum_mem fun i _ ↦ L.kisinAinf.smul_mem _ (mem_kisinAinf_of_mem_kisinModule (hv_mem i)))
+      (n := 0) fun μ hμ ↦ ?_
+    · simpa only [map_zero, zero_dvd_iff, map_eq_zero_iff _ (algebraMap_injective Ainf BPlus),
+        mul_eq_zero, pow_ne_zero m k.chart.E_ne_zero, false_or] using h
+    · simp only [apply_sum_sub_coord₀_smul_eq_zero_of_mem_crysForms hv_mem h_val hμ, smul_zero,
+        zero_mem]
+  obtain ⟨y, -, hy⟩ := (mem_smul_pointwise_iff_exists _ (0 : Ainf) L.kisinAinf).mp h_diff
+  rw [show ∑ i, u i • v i = ∑ i, k.coord₀ (u i) • v i by
     simpa only [zero_smul, sub_smul, Finset.sum_sub_distrib, algebraMap_smul, sub_eq_zero]
-      using hy.symm
-  rw [hx_coord]
+      using hy.symm]
   exact sum_mem fun i _ ↦ L.kisinModule.smul_mem (k.coord₀ (u i)) (hv_mem i)
 
 end New.Lift.KummerChart.JumpLattice

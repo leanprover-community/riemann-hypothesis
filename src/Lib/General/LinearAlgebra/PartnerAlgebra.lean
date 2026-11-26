@@ -156,11 +156,14 @@ lemma invLastRows_mul_firstCols : invLastRows e k * firstCols e k = 0 := by
 
 variable [Fintype a] [Fintype b]
 
+omit [Fintype a] in
 /-- Complete the rows `invLastRows e k` by rows `s` to a square matrix. Its determinant times
 `det k` is the determinant of `s * firstCols e k`. -/
-lemma det_fromRows_invLastRows [DecidableEq a] [DecidableEq b] (s : Matrix b n R) :
+lemma det_fromRows_invLastRows [Finite a] [DecidableEq b] (s : Matrix b n R) :
     ((fromRows s (invLastRows e k)).submatrix e.symm id).det * k.val.det =
       (s * firstCols e k).det := by
+  classical
+  have := Fintype.ofFinite a
   -- In the blocks given by `e`, the product with `k` is upper triangular with diagonal blocks
   -- `s * firstCols e k` and `1`, since the rows `invLastRows e k` are rows of `k⁻¹`.
   let lastCols : Matrix n a R := k.val.submatrix id (e ∘ Sum.inr)
@@ -174,10 +177,12 @@ lemma det_fromRows_invLastRows [DecidableEq a] [DecidableEq b] (s : Matrix b n R
       invLastRows_mul_firstCols, h_one]
   rw [← det_mul, ← det_submatrix_equiv_self e, h_blocks, det_fromBlocks_zero₂₁, det_one, mul_one]
 
+omit [Fintype a] in
 /-- A matrix `y` that is killed by `invLastRows e k` is a combination of the columns
 `firstCols e k`, with coefficients `invFirstRows e k * y`. -/
-lemma firstCols_mul_invFirstRows_mul (h_kill : invLastRows e k * y = 0) :
+lemma firstCols_mul_invFirstRows_mul [Finite a] (h_kill : invLastRows e k * y = 0) :
     firstCols e k * (invFirstRows e k * y) = y := by
+  have := Fintype.ofFinite a
   let lastCols : Matrix n a R := k.val.submatrix id (e ∘ Sum.inr)
   -- Cut the product `k * k⁻¹ = 1` along `e`.
   have h_sum : firstCols e k * invFirstRows e k + lastCols * invLastRows e k = 1 := by
@@ -202,21 +207,25 @@ lemma exists_firstCols_eq_mul (O : Subring R) (g : GL b R) (hg : g ∈ intGL b O
   refine ⟨k * d, mul_mem hk hd, ?_, ?_, by simp [d, mul_assoc, Ring.inverse_mul_cancel]⟩ <;>
     simp [d, Matrix.mul_apply, reindex_equiv e, ← map_inv, ← ext_iff]
 
+omit [Fintype b] [DecidableEq b] in
 /-- The set of the matrices `invLastRows e k` (rows `a` of `k⁻¹`) with `k ∈ GL n O` is stable under
 left multiplication by `GL a O`. -/
-lemma exists_mul_eq_invLastRows_iff {f : GL a R} (hf : f ∈ intGL a O) {x : Matrix a n R} :
-    (∃ k ∈ intGL n O, f.val * x = invLastRows e k) ↔ ∃ k ∈ intGL n O, x = invLastRows e k := by
-  refine ⟨fun ⟨k, hk, hx⟩ ↦ ?_, ?_⟩
-  · obtain ⟨j, hj, -, hj_rows, -⟩ := exists_firstCols_eq_mul e k O 1 (one_mem _) _ (inv_mem hf) hk
-    exact ⟨j, hj, by simp [hj_rows, ← hx]⟩
-  · rintro ⟨k, hk, rfl⟩
-    obtain ⟨j, hj, -, hj_rows, -⟩ := exists_firstCols_eq_mul e k O 1 (one_mem _) f hf hk
-    exact ⟨j, hj, hj_rows.symm⟩
+lemma exists_eq_invLastRows_of_mul_eq [Finite b] {f : GL a R} (hf : f ∈ intGL a O)
+    {x : Matrix a n R} (h : ∃ k ∈ intGL n O, f.val * x = invLastRows e k) :
+    ∃ k ∈ intGL n O, x = invLastRows e k := by
+  classical
+  have := Fintype.ofFinite b
+  obtain ⟨k, hk, hx⟩ := h
+  obtain ⟨j, hj, -, hj_rows, -⟩ := exists_firstCols_eq_mul e k O 1 (one_mem _) _ (inv_mem hf) hk
+  exact ⟨j, hj, by simp [hj_rows, ← hx]⟩
 
+omit [Fintype a] [DecidableEq a] in
 /-- The set of the matrices `firstCols e k` (columns `b` of `k`) with `k ∈ GL n O` is stable under
 right multiplication by `GL b O`. -/
-lemma exists_mul_eq_firstCols_iff {g : GL b R} (hg : g ∈ intGL b O) :
+lemma exists_mul_eq_firstCols_iff [Finite a] {g : GL b R} (hg : g ∈ intGL b O) :
     (∃ k ∈ intGL n O, y * g.val = firstCols e k) ↔ ∃ k ∈ intGL n O, y = firstCols e k := by
+  classical
+  have := Fintype.ofFinite a
   refine ⟨fun ⟨k, hk, hy⟩ ↦ ?_, ?_⟩
   · obtain ⟨j, hj, hj_cols, -⟩ := exists_firstCols_eq_mul e k O g⁻¹ (inv_mem hg) 1 (one_mem _) hk
     exact ⟨j, hj, by simp [hj_cols, ← hy]⟩
@@ -224,12 +233,16 @@ lemma exists_mul_eq_firstCols_iff {g : GL b R} (hg : g ∈ intGL b O) :
     obtain ⟨j, hj, hj_cols, -⟩ := exists_firstCols_eq_mul e k O g hg 1 (one_mem _) hk
     exact ⟨j, hj, hj_cols.symm⟩
 
+omit [Fintype a] [Fintype b] [DecidableEq a] in
 /-- If the subring `O` of `R` satisfies `New.IsValuationPair` (any two elements `u`, `v` of `R` are
 `O`-multiples of `(1 - ε) u + ε v` for an idempotent `ε` of `O`), then an `n × b` matrix `y` is the
 block of the columns `b` of an element of `GL n O` exactly when `y` has entries in `O` and a left
 inverse over `O`. -/
-lemma _root_.New.IsValuationPair.exists_firstCols_iff (hO : IsValuationPair O) :
+lemma _root_.New.IsValuationPair.exists_firstCols_iff [Finite a] [Finite b]
+    (hO : IsValuationPair O) :
     (∃ k ∈ intGL n O, y = firstCols e k) ↔ IsPrimitiveMatrix O y := by
+  classical
+  have := Fintype.ofFinite b
   refine ⟨?_, fun hy ↦ ?_⟩
   · rintro ⟨k, hk, rfl⟩
     exact isPrimitiveMatrix_firstCols e hk
@@ -328,11 +341,15 @@ variable [DecidableEq a] [DecidableEq b]
 
 variable {O : Subring R} {e : b ⊕ a ≃ n} {χ : MulChar R ℂ} {Φ : Matrix a n R → ℂ}
   {Ψ : Matrix n b R → ℂ}
+omit [Fintype b] [DecidableEq b] in
 /-- If `Φ`, `Ψ` are partners for `χ` over `O` (supported on the rows `a` of `k⁻¹` and the columns
 `b` of `k` for `k ∈ GL n O`, with values differing by the factor `χ (det k)`), then
 `χ (det g) * Φ (g * x) = Φ x` for all `g ∈ GL a O` and all `a × n` matrices `x`. -/
-lemma left_mul (h : AreMatched O e χ Φ Ψ) {g : GL a R} {x : Matrix a n R} (hg : g ∈ intGL a O) :
+lemma left_mul [Finite b] (h : AreMatched O e χ Φ Ψ) {g : GL a R} {x : Matrix a n R}
+    (hg : g ∈ intGL a O) :
     χ g.val.det * Φ (g.val * x) = Φ x := by
+  classical
+  have := Fintype.ofFinite b
   by_cases hx : ∃ k ∈ intGL n O, x = invLastRows e k
   · -- `g * invLastRows e k = invLastRows e j`, where `j` has the same columns `firstCols` as `k`
     -- and `det j * det g = det k`
@@ -345,14 +362,18 @@ lemma left_mul (h : AreMatched O e χ Φ Ψ) {g : GL a R} {x : Matrix a n R} (hg
       _ = Φ (invLastRows e k) := (h.apply_eq k hk).symm
   · -- `g * x` is not of the form `invLastRows e k` either, so both sides vanish
     have h_left : Φ (g.val * x) = 0 := by_contra fun h_ne ↦
-      hx ((exists_mul_eq_invLastRows_iff e hg).1 (h.supp_left (g.val * x) h_ne))
+      hx (exists_eq_invLastRows_of_mul_eq e hg (h.supp_left (g.val * x) h_ne))
     rw [h_left, by_contra fun h_ne ↦ hx (h.supp_left x h_ne), mul_zero]
 
+omit [Fintype a] [DecidableEq a] in
 /-- If `Φ`, `Ψ` are partners for `χ` over `O` (supported on the rows `a` of `k⁻¹` and the columns
 `b` of `k` for `k ∈ GL n O`, with values differing by the factor `χ (det k)`), then
 `Ψ (y * g) * χ (det g) = Ψ y` for all `g ∈ GL b O` and all `n × b` matrices `y`. -/
-lemma right_mul (h : AreMatched O e χ Φ Ψ) (g : GL b R) (hg : g ∈ intGL b O) (y : Matrix n b R) :
+lemma right_mul [Finite a] (h : AreMatched O e χ Φ Ψ) (g : GL b R) (hg : g ∈ intGL b O)
+    (y : Matrix n b R) :
     Ψ (y * g.val) * χ g.val.det = Ψ y := by
+  classical
+  have := Fintype.ofFinite a
   by_cases hy : ∃ k ∈ intGL n O, y = firstCols e k
   · -- `y * g = firstCols e j` for some `j` with the rows `invLastRows e k` and determinant
     -- `det k * det g`; compare `h.apply_eq` at `j` and at `k`, and cancel `χ (det k) ≠ 0`

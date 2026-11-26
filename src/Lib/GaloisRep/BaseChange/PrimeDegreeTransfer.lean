@@ -528,13 +528,9 @@ private lemma exists_isTransferLevel [hμ : IsStep (E := E) E' μ]
   have X_eq_Kw (w : FinPlace E) : w ∈ X → ∀ u ∈ placesAbove E' {w}, m u = localIntGL n u :=
     fun ⟨_hw_off, hw_max, _hw_split, _hw_matched⟩ ↦ hw_max
   let N : Subgroup (Gf E' n) := localLevel n (placesAbove E' Z)ᶜ m
-  obtain ⟨Y, idem_XY, on_X_le, XY_eq, idem_sum, N_eq⟩ : ∃ Y : Set (FinPlace E),
-      idem (placesAbove E' X) * idem (placesAbove E' Y) = 0 ∧
-      supportedOn n (placesAbove E' X) ≤ localLevel n (placesAbove E' Y) m ∧
-      placesAbove E' (X ∪ Y) = (placesAbove E' Z)ᶜ ∧
-      idem (placesAbove E' X) + idem (placesAbove E' Y) = 1 - idem (placesAbove E' Z) ∧
-      N = localLevel n (placesAbove E' X) ⊓ localLevel n (placesAbove E' Y) m :=
+  obtain ⟨Y, idem_XY, on_X_le, XY_eq, idem_sum, h_level_eq⟩ :=
     exists_remaining_places (fun w hw ↦ not_or.mp (X_notMem w hw)) fun x ↦ X_eq_Kw x x.property
+  have N_eq : N = _ := h_level_eq
   have N_level : IsMatchingLevel σ μ (X ∪ Y) N := by
     simpa [N, ← XY_eq] using hm.isMatchingLevel (X ∪ Y)
   have N_coh : CocyclesSplit (finrank E E') (idem (placesAbove E' Z)ᶜ) N (galoisGf σ) := by
@@ -589,32 +585,6 @@ section TransferLevel
 
 variable {σ : Gal(E'/E)} {κ : Weight E} {f : (stdSpace E n).forms κ} {Z X : Set (FinPlace E)}
   {K L₁ K₁ C 𝓛 : Subgroup (Gf E' n)}
-
-/-- A place of `E'` above a place of `X` is split. -/
-private lemma IsTransferLevel.isSplit_of_below_mem
-    (h_level : IsTransferLevel σ μ f Z X K L₁ K₁ C 𝓛) {u : FinPlace E'} (hu : u.below E ∈ X) :
-    u.IsSplit := by
-  refine ne_of_apply_ne (FinPlace.below E) ?_
-  simpa only [below_star] using h_level.isSplit (u.below E) hu
-
-/-- At a place of `E'` above a place of `X`, `𝓛` contains the maximal compact subgroup. -/
-private lemma IsTransferLevel.maxCompactAt_le_of_below_mem
-    (h_level : IsTransferLevel σ μ f Z X K L₁ K₁ C 𝓛) {u : FinPlace E'} (hu : u.below E ∈ X) :
-    maxCompactAt n u ≤ 𝓛 := by
-  exact h_level.kf_inf_supportedOn_le (u.below E) hu (by simp [placesAbove])
-
-/-- The elements over `E` supported at a place of `X` and its conjugate map into `C`. -/
-private lemma IsTransferLevel.supportedOn_le_comap
-    (h_level : IsTransferLevel σ μ f Z X K L₁ K₁ C 𝓛) {w : FinPlace E} (hw : w ∈ X) :
-    supportedOn n {w} ≤ C.comap baseChangeGf := by
-  exact fun g hg ↦ h_level.supportedOn_placesAbove_le
-    (baseChangeGf_mem_supportedOn (supportedOn_mono (singleton_subset_iff.mpr hw) hg))
-
-/-- The elements supported at a place of `E'` above `X` and at its conjugate lie in `C`. -/
-private lemma IsTransferLevel.supportedOn_le_of_below_mem
-    (h_level : IsTransferLevel σ μ f Z X K L₁ K₁ C 𝓛) {u : FinPlace E'} (hu : u.below E ∈ X) :
-    supportedOn n {u} ≤ C := by
-  exact (supportedOn_mono (by simp [placesAbove, hu])).trans h_level.supportedOn_placesAbove_le
 
 /-- Let `G` be a retract at `Z` whose level `L` has preimage the pull-back of `L₁` to `E`, and let
 `F j` be `L`-bi-invariant functions with commuting operators. At the pull-back of `𝓛` to `E`, the
@@ -744,8 +714,10 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
     simpa using x.property.right.left
   have X'_max (x : X') : maxCompactAt n x.val ≤ 𝓛 := x.property.right.right
   let above (u : FinPlace E') (hu : u.below E ∈ X) : X' :=
-    ⟨u, h_level.isSplit_of_below_mem hu, h_level.notMem_conjClosure (u.below E) hu,
-      h_level.maxCompactAt_le_of_below_mem hu⟩
+    ⟨u, ne_of_apply_ne (FinPlace.below E)
+      (by simpa only [below_star] using h_level.isSplit (u.below E) hu),
+      h_level.notMem_conjClosure (u.below E) hu,
+      h_level.kf_inf_supportedOn_le (u.below E) hu (by simp [placesAbove])⟩
   have X_split (x : X) : x.val.IsSplit := h_level.isSplit x x.property
   -- The commuting operators over `E` and `E'`. `R k t φ` implies that `t` is the operator of the
   -- product of `F k ∘ r`, of `φ` (above `X`) and of the indicator of `C.comap baseChangeGf`.
@@ -804,8 +776,11 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
       -- elements.
       let u' : X' := above (U w) (U_mem w)
       exact ⟨k, hk, _, D_stable w d hd (X_split w) (X'_split u') j,
-        hR.spherical_mul hq w j (h_level.supportedOn_le_comap w.property),
-        hR'.spherical_mul hq' u' j (h_level.supportedOn_le_of_below_mem (U_mem w))⟩
+        hR.spherical_mul hq w j (fun g hg ↦ h_level.supportedOn_placesAbove_le
+          (baseChangeGf_mem_supportedOn (supportedOn_mono (singleton_subset_iff.mpr w.property) hg))),
+        hR'.spherical_mul hq' u' j
+          ((supportedOn_mono (by simp [u', above, placesAbove, U_mem w])).trans
+            h_level.supportedOn_placesAbove_le)⟩
   -- `Y`: the joint generalised eigenspace of the generators at the pulled-back level. The operator
   -- of `F j₀` preserves it and has non-zero trace on it.
   let Y : Submodule ℂ ((stdSpace E n).forms κ) := levelSpace π (𝓛.comap baseChangeGf) ⊓

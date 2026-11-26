@@ -144,7 +144,7 @@ lemma descendsTo_comp_reindexGL {n' : Type*} [Fintype n'] [DecidableEq n'] (e : 
 /-- If (F, F') is a lift with coefficients in Z, then for every finite index set n some
 Z-combination of characters of GL_n(k')⋊Gal(k'/k) descends (`New.DescendsTo`) to F over k and to F'
 over k'. -/
-lemma Lift.hasCommonLift [Finite k'] (h : Lift Z F F') (n : Type*) [Fintype n] [DecidableEq n] :
+lemma Lift.hasCommonLift (h : Lift Z F F') (n : Type*) [Fintype n] [DecidableEq n] :
     HasCommonLift Z F F' n := by
   -- Take the lift in rank `card n` and renumber `n` as `Fin (card n)`.
   obtain ⟨Φ, hΦ, hF, hF'⟩ := h (card n)
@@ -241,7 +241,7 @@ lemma DescendsTo.iff_comp_inl_eq_evalGL :
 
 /-- If in every rank some Z-combination of characters descends to F, then F lifts to some class
 function G over k'. -/
-lemma Lift.exists_lift_of_descendsTo [Finite k']
+lemma Lift.exists_lift_of_descendsTo
     (h : ∀ m : ℕ, ∃ Φ ∈ virtualChars Z (GalSemidirect k k' (Fin m)), DescendsTo Φ F) :
     ∃ G : Hall k', Lift Z F G := by
   choose Φ h_virt h_desc using h
@@ -258,7 +258,7 @@ lemma Lift.exists_lift_of_descendsTo [Finite k']
 /-- Suppose Gal(k'/k) is trivial, F' on GL_n(k') is a Z-combination of characters, and F' agrees
 with F on GL_n(k). Then some Z-combination of characters of GL_n(k') ⋊ Gal(k'/k) descends
 (`New.DescendsTo`) to both F and F'. -/
-lemma hasCommonLift_of_gal_trivial [Finite k'] (h_triv : ∀ σ : Gal(k'/k), σ = 1)
+lemma hasCommonLift_of_gal_trivial (h_triv : ∀ σ : Gal(k'/k), σ = 1)
     (h : F'.evalGL ∈ virtualChars Z (GL n k'))
     (h_ev : ∀ g : GL n k, F'.evalGL (g.map (algebraMap k k')) = F.evalGL g) :
     HasCommonLift Z F F' n := by
@@ -295,6 +295,7 @@ lemma Lift.one : Lift (k := k) (k' := k') Z 1 1 := rankPart_of_hasCommonLift (li
 
 variable [Finite k] [Finite k']
 
+omit [Finite k] in
 /-- If `F` lifts to `G` with coefficients in `Z` (`New.Lift`, here with both functions over
 `k`, so along the trivial extension `k/k`), then the restriction of `F` to `GL_n(k)` is a
 `Z`-combination of characters of `GL_n(k)`. -/
@@ -390,11 +391,9 @@ lemma Lift.mul (h : Lift Z F F') (h' : Lift Z G G') : Lift Z (F * G) (F' * G') :
   -- two lifts back along the blocks, induce from the parabolic subgroup, and sum over `a`.
   intro m
   let b (a : ℕ) (j : Fin m) : Bool := decide (j.val < a)
-  have hblock : ∀ i : Bool, Lift Z (cond i F G) (cond i F' G') := Bool.forall_bool.mpr ⟨h', h⟩
-  have h_lifts (a : ℕ) (i : Bool) :
-      HasCommonLift Z (cond i F G) (cond i F' G') {j // b a j = i} :=
-    (hblock i).hasCommonLift _
-  choose Φ hΦ hΦ_k hΦ_k' using h_lifts
+  choose Φ hΦ hΦ_k hΦ_k' using fun (a : ℕ) (i : Bool) ↦
+    (show Lift Z (cond i F G) (cond i F' G') by cases i <;> assumption).hasCommonLift
+      {j // b a j = i}
   -- `P a`: the elements whose matrix part is block upper triangular for the levels `b a`.
   let P (a : ℕ) : Subgroup (GalSemidirect k k' (Fin m)) :=
     { carrier := {s | s.left ∈ parabolic (b a)}
@@ -403,24 +402,13 @@ lemma Lift.mul (h : Lift Z F F') (h' : Lift Z G G') : Lift Z (F * G) (F' * G') :
       inv_mem' := fun {x} hx ↦ .map x.right⁻¹ ((parabolic _).inv_mem hx) }
   -- `β a i`: the diagonal block of level `i`, with the same Galois part.
   let β (a : ℕ) (i : Bool) : P a →* GalSemidirect k k' {j // b a j = i} :=
-    .mk' (fun s ↦ ⟨blockHom (b a) i ⟨(s : GalSemidirect k k' (Fin m)).left, s.property⟩,
-        (s : GalSemidirect k k' (Fin m)).right⟩) fun x y ↦ by
-      refine SemidirectProduct.ext ?_ rfl
-      -- Taking a diagonal block is multiplicative and commutes with the Galois action on entries.
-      exact (blockHom (b a) i).map_mul ⟨(x : GalSemidirect k k' (Fin m)).left, x.property⟩
-        ⟨galActionGL k k' _ (x : GalSemidirect k k' (Fin m)).right
-            (y : GalSemidirect k k' (Fin m)).left,
-          y.property.map (x : GalSemidirect k k' (Fin m)).right⟩
-  -- `P a` meets the coset of `GL_m(k')` over each `σ` in the Galois group, in `inr σ`.
-  have h_surj (a : ℕ) : Surjective (rightHom.comp (P a).subtype) :=
-    fun σ ↦ ⟨⟨inr σ, blockTriangular_one⟩, rfl⟩
-  have h_virt (a : ℕ) :
-      induceClassFn rightHom (P a).subtype (∏ i, Φ a i ∘ β a i) ∈
-        virtualChars Z (GalSemidirect k k' (Fin m)) :=
-    induceClassFn_mem_virtualChars (h_surj a)
-      (prod_mem fun i _ ↦ comp_mem_virtualChars (hΦ a i) _)
+    .mk' (fun s ↦ ⟨blockHom (b a) i ⟨s.1.left, s.2⟩, s.1.right⟩) fun x y ↦
+      SemidirectProduct.ext ((blockHom (b a) i).map_mul ⟨x.1.left, x.2⟩
+        ⟨galActionGL k k' _ x.1.right y.1.left, y.2.map x.1.right⟩) rfl
   refine ⟨∑ a ∈ Iic m, induceClassFn rightHom (P a).subtype (∏ i, Φ a i ∘ β a i),
-    sum_mem fun a _ ↦ h_virt a, fun σ hσ s γ hs hpow ↦ ?_, fun σ hσ s γ hs hpow ↦ ?_⟩
+    sum_mem fun a _ ↦ induceClassFn_mem_virtualChars (fun σ ↦ ⟨⟨inr σ, blockTriangular_one⟩, rfl⟩)
+      (prod_mem fun i _ ↦ comp_mem_virtualChars (hΦ a i) _),
+    fun σ hσ s γ hs hpow ↦ ?_, fun σ hσ s γ hs hpow ↦ ?_⟩
   -- Over `k` and over `k'` alike, `sum_evalGL_prod_rankPart` splits the product by `a`, and each
   -- term is `DescendsTo.induceClassFn_parabolic` for the blocks of `b a`.
   all_goals
@@ -435,30 +423,22 @@ lemma Lift.mul (h : Lift Z F F') (h' : Lift Z G G') : Lift Z (F * G) (F' * G') :
 /-- If F lifts to F' with coefficients in a commutative ring R, then F·μ lifts to F'·μ. Here μ is
 the inverse of the constant function 1 for the parabolic-induction product. -/
 lemma Lift.mulMoebius (h : Lift R F F') : Lift R F.mulMoebius F'.mulMoebius := by
-  -- Iterating `J ↦ J - (constOne * J - 1)` from `J = 0` gives these lifts.
-  have hJ (N : ℕ) :
-      Lift (k := k) (k' := k') R (moebius + (1 - constOne) ^ N * -moebius)
-        (moebius + (1 - constOne) ^ N * -moebius) := by
-    induction N with
-    | zero => simpa using one.sub one
-    | succ N ih =>
-      rw [moebius_add_one_sub_constOne_pow_succ_mul, moebius_add_one_sub_constOne_pow_succ_mul]
-      exact ih.sub ((lift_constOne.mul ih).sub one)
-  -- The `N`-th one agrees with `moebius` in dimension less than `N`, where `(1 - constOne) ^ N`
-  -- vanishes.
-  have hμ : Lift (k := k) (k' := k') R moebius moebius := by
-    intro m
-    obtain ⟨Φ, hΦ, hΦ_k, hΦ_k'⟩ := hJ (m + 1) m
-    exact ⟨Φ, hΦ, hΦ_k.of_evalGL_eq evalGL_moebius_add_one_sub_constOne_pow_mul,
-      hΦ_k'.of_evalGL_eq evalGL_moebius_add_one_sub_constOne_pow_mul⟩
-  -- `F.mulMoebius` is the pointwise product of `F` and `moebius`, so `Φ * Ψ` takes the value
-  -- `F γ * moebius γ` on the coset of each `σ`.
+  -- Iterating `J ↦ J - (constOne * J - 1)` from `J = 0` gives lifts agreeing with `moebius`
+  -- in dimension `< N`, where `(1 - constOne) ^ N` vanishes.
+  have hJ (N : ℕ) : Lift (k := k) (k' := k') R (moebius + (1 - constOne) ^ N * -moebius)
+      (moebius + (1 - constOne) ^ N * -moebius) :=
+    Nat.rec (by simpa using one.sub one) (fun _ ih ↦ by
+      simp only [moebius_add_one_sub_constOne_pow_succ_mul]
+      exact ih.sub ((lift_constOne.mul ih).sub one)) N
+  -- `F.mulMoebius` is the pointwise product of `F` and `moebius`, so `Φ * Ψ` descends to it.
   intro m
   obtain ⟨Φ, hΦ, hΦ_F, hΦ_F'⟩ := h m
-  obtain ⟨Ψ, hΨ, hΨ_k, hΨ_k'⟩ := hμ m
+  obtain ⟨Ψ, hΨ, hΨ_k, hΨ_k'⟩ := hJ (m + 1) m
   refine ⟨Φ * Ψ, mul_mem hΦ hΨ, fun σ hσ s γ hs hγ ↦ ?_, fun σ hσ s γ hs hγ ↦ ?_⟩
-  · rw [Pi.mul_apply, hΦ_F σ hσ s γ hs hγ, hΨ_k σ hσ s γ hs hγ, evalGL_mulMoebius]
-  · rw [Pi.mul_apply, hΦ_F' σ hσ s γ hs hγ, hΨ_k' σ hσ s γ hs hγ, evalGL_mulMoebius]
+  · rw [Pi.mul_apply, hΦ_F σ hσ s γ hs hγ, hΨ_k σ hσ s γ hs hγ,
+      evalGL_moebius_add_one_sub_constOne_pow_mul, evalGL_mulMoebius]
+  · rw [Pi.mul_apply, hΦ_F' σ hσ s γ hs hγ, hΨ_k' σ hσ s γ hs hγ,
+      evalGL_moebius_add_one_sub_constOne_pow_mul, evalGL_mulMoebius]
 
 /-- If F lifts to F', then (−1)^m times the dimension m part of `F.mulMoebius * constOne` lifts to
 the same expression for F'. Here `F.mulMoebius` is the pointwise product F·μ, with μ the inverse of
@@ -569,21 +549,14 @@ private lemma mem_range_unitsMap_includeRight_iff {σ : Gal(k'/k)} (hσ : HasFix
     (x : (k' ⊗[k] L)ˣ) :
     x ∈ (Units.map (includeRight : L →ₐ[k] k' ⊗[k] L).toRingHom.toMonoidHom).range ↔
       Algebra.TensorProduct.congr σ (1 : Gal(L/k)) x.val = x.val := by
-  let b : Basis (Fin (finrank k L)) k L := Module.finBasis k L
-  let B : Basis (Fin (finrank k L)) k' (k' ⊗[k] L) := basis k' b
-  constructor
-  · rintro ⟨y, rfl⟩
-    simp
-  intro hx
-  -- the coordinates of `x` in `B` are fixed by `σ`, so they lie in `k`
-  have h_coord_mem (j : Fin (finrank k L)) : ∃ c : k, algebraMap k k' c = B.repr x j :=
-    hσ.ge <| show σ (B.repr x j) = B.repr x j by
-      rw [← basis_repr_congr_one_apply k k' b σ x j, hx]
-  choose c hc using h_coord_mem
-  have h_tmul_eq : (1 : k') ⊗ₜ[k] b.equivFun.symm c = x.val :=
-    B.ext_elem fun j ↦ by simp [B, hc, Finsupp.single_apply]
-  have h_ne : b.equivFun.symm c ≠ 0 := fun h_zero ↦ x.ne_zero (by simp [← h_tmul_eq, h_zero])
-  exact ⟨Units.mk0 _ h_ne, Units.ext h_tmul_eq⟩
+  let b := Module.finBasis k L
+  refine ⟨fun ⟨y, hy⟩ ↦ by simp [← hy], fun hx ↦ ?_⟩
+  -- the coordinates of `x` in `basis k' b` are fixed by `σ`, so they lie in `k`
+  obtain ⟨c, hc⟩ := Classical.axiomOfChoice fun j ↦
+    hσ.ge (hx ▸ (basis_repr_congr_one_apply k k' b σ x j).symm)
+  have h_eq : (1 : k') ⊗ₜ[k] b.equivFun.symm c = x.val :=
+    (basis k' b).ext_elem fun j ↦ by simp [hc, Finsupp.single_apply]
+  exact ⟨Units.mk0 _ fun h0 ↦ x.ne_zero (by simp [← h_eq, h0]), Units.ext h_eq⟩
 
 omit [IsAlgClosed K] in
 /-- Let `L` be an extension of `k` of degree `m` with basis `b`. Let `β` be the action of
@@ -770,18 +743,15 @@ over `k` to the sum of `θ` over the roots of its characteristic polynomial, wit
 some class function `B : Hall k'` lifts `β_θ` over `ℤ` (`New.Lift`). That is, for each `m` one
 ℤ-combination of characters of `GL_m(k') ⋊ Gal(k'/k)` descends to both. -/
 lemma exists_lift_brauerLift : ∃ B : Hall k', Lift ℤ (brauerLift k θ) B := by
-  -- `(greenCuspidal k θ).mulMoebius` has a lift `I`, by `exists_torus_induced_descendsTo` in each
-  -- positive dimension.
-  obtain ⟨I, hI⟩ : ∃ I : Hall k', Lift ℤ (greenCuspidal k θ).mulMoebius I := by
-    refine Lift.exists_lift_of_descendsTo ?_
-    rintro (_ | m)
-    · -- in dimension `0` the function `greenCuspidal k θ` vanishes, and `0` descends to it
-      exact ⟨0, zero_mem _,
-        by simp [greenCuspidal_eq_zero_of_dim_lt_one, DescendsTo, DescendsOnCoset, evalGL]⟩
-    · -- in dimension `m + 1`, use the extension of `k` of degree `m + 1`
-      obtain ⟨Φ, hΦ_char, hΦ_descends, -⟩ := exists_torus_induced_descendsTo k k' θ
-        (finrank_extension k (ringChar k) (m + 1)) (AlgHom.liftEquiv k k' _ K IsAlgClosed.lift)
-      exact ⟨Φ, hΦ_char.mem_virtualChars, hΦ_descends⟩
+  -- `(greenCuspidal k θ).mulMoebius` has a lift `I` by `exists_torus_induced_descendsTo`.
+  obtain ⟨I, hI⟩ : ∃ I : Hall k', Lift ℤ (greenCuspidal k θ).mulMoebius I :=
+    Lift.exists_lift_of_descendsTo fun
+      | 0 => ⟨0, zero_mem _,
+          by simp [greenCuspidal_eq_zero_of_dim_lt_one, DescendsTo, DescendsOnCoset, evalGL]⟩
+      | m + 1 =>
+          let ⟨Φ, hΦ, hΦ_desc, _⟩ := exists_torus_induced_descendsTo k k' θ
+            (finrank_extension k (ringChar k) (m + 1)) (AlgHom.liftEquiv k k' _ K IsAlgClosed.lift)
+          ⟨Φ, hΦ.mem_virtualChars, hΦ_desc⟩
   -- Recursion on the dimension: liftable `J` that agree with `-greenCuspidal k θ` below `N`.
   have h_approx (N : ℕ) : ∃ (J : Hall k) (J' : Hall k'),
       Lift ℤ J J' ∧ ∀ c : SimClass k, c.dim < N → (greenCuspidal k θ + J : Hall k) c = 0 := by
@@ -793,40 +763,24 @@ lemma exists_lift_brauerLift : ∃ B : Hall k', Lift ℤ (brauerLift k θ) B := 
         (I - (J' * constOne - J').mulMoebius) * constOne,
         (hI.sub ((hJ.mul .lift_constOne).sub hJ).mulMoebius).mul .lift_constOne, ?_⟩
       -- `(greenCuspidal k θ + J) * (1 - constOne)` vanishes one dimension further, and
-      -- `greenCuspidal k θ * constOne` is `-brauerLift k θ`.
-      have hstep (c : SimClass k) (hc : c.dim < N + 1) :
-          greenCuspidal k θ c + J c = (J * constOne : Hall k) c - brauerLift k θ c := by
-        have h_prod_zero : ((greenCuspidal k θ + J) * (1 - constOne) ^ 1 : Hall k) c = 0 :=
-          Hall.mul_apply_eq_zero_of_dim_lt hJ_vanish (one_sub_constOne_pow_apply_eq_zero 1) c hc
-        have h_expand : ((greenCuspidal k θ + J) * (1 - constOne) ^ 1 : Hall k) =
-            greenCuspidal k θ + J + brauerLift k θ - J * constOne := by
-          rw [pow_one, mul_sub, mul_one, add_mul, greenCuspidal_mul_constOne]
-          abel
-        rw [h_expand] at h_prod_zero
-        simp only [sub_eq_add_neg, Hall.add_apply, Hall.neg_apply] at h_prod_zero
-        linear_combination h_prod_zero
-      -- So `(brauerLift k θ + greenCuspidal k θ - (J * constOne - J)).mulMoebius` vanishes below
-      -- `N + 1`, and its product with `constOne` is `greenCuspidal k θ` plus the next function.
+      -- `greenCuspidal k θ * constOne = -brauerLift k θ`.
       nth_rw 1 [greenCuspidal, ← add_mul]
       refine Hall.mul_apply_eq_zero_of_dim_lt (n := 0) (fun c hc ↦ ?_) nofun
-      simp only [sub_eq_add_neg, Hall.add_apply, Hall.neg_apply, mulMoebius]
-      linear_combination moebius c * hstep c hc
-  obtain ⟨C, hC⟩ : ∃ C : Hall k', Lift ℤ (-greenCuspidal k θ) C := by
-    refine Lift.exists_lift_of_descendsTo fun m ↦ ?_
-    obtain ⟨J, J', hJ, hJ_vanish⟩ := h_approx (m + 1)
-    obtain ⟨Φ, hΦ_virt, hΦ_J, -⟩ := hJ m
-    refine ⟨Φ, hΦ_virt, hΦ_J.of_evalGL_eq fun γ ↦ ?_⟩
-    -- `J` agrees with `-greenCuspidal k θ` at the class of `γ`, whose dimension is `m < m + 1`
-    have h_sum_zero :
-        greenCuspidal k θ (simClassOf (Matrix.toLin' γ.val)) +
-          J (simClassOf (Matrix.toLin' γ.val)) = 0 :=
-      hJ_vanish _ (by simp)
-    rw [Hall.evalGL, Hall.evalGL, Hall.neg_apply]
-    linear_combination h_sum_zero
-  -- `brauerLift k θ = -greenCuspidal k θ * constOne`
-  have h_brauer : brauerLift k θ = -greenCuspidal k θ * constOne := by
-    rw [neg_mul, greenCuspidal_mul_constOne, neg_neg]
-  exact ⟨C * constOne, by simpa only [h_brauer] using hC.mul .lift_constOne⟩
+      have h0 : ((greenCuspidal k θ + J) * (1 - constOne) ^ 1 : Hall k) c = 0 :=
+        Hall.mul_apply_eq_zero_of_dim_lt hJ_vanish (one_sub_constOne_pow_apply_eq_zero 1) c hc
+      rw [pow_one, mul_sub, mul_one, add_mul, greenCuspidal_mul_constOne] at h0
+      simp only [sub_eq_add_neg, Hall.add_apply, Hall.neg_apply, mulMoebius] at h0 ⊢
+      linear_combination moebius c * h0
+  obtain ⟨C, hC⟩ : ∃ C : Hall k', Lift ℤ (-greenCuspidal k θ) C :=
+    Lift.exists_lift_of_descendsTo fun m ↦ by
+      obtain ⟨J, _, hJ, hJ0⟩ := h_approx (m + 1)
+      obtain ⟨Φ, hΦ, hΦ_J, -⟩ := hJ m
+      refine ⟨Φ, hΦ, hΦ_J.of_evalGL_eq fun γ ↦ ?_⟩
+      have h0 := hJ0 (simClassOf (Matrix.toLin' γ.val)) (by simp)
+      simp only [Hall.evalGL, Hall.add_apply, Hall.neg_apply] at h0 ⊢
+      linear_combination h0
+  exact ⟨C * constOne, by
+    simpa only [neg_mul, greenCuspidal_mul_constOne, neg_neg] using hC.mul .lift_constOne⟩
 
 end GreenLift
 

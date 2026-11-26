@@ -1,5 +1,9 @@
 module
 
+public import TauCeti.LinearAlgebra.Matrix.Range
+public import Mathlib.Algebra.Module.StablyFree.Basic
+public import Mathlib.LinearAlgebra.Matrix.Swap
+public import Mathlib.RingTheory.PiTensorProduct
 public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Groups.BesselGroups
 
@@ -81,13 +85,6 @@ lemma New.exists_generalized_inverse {M N : Type*} [AddCommGroup M] [AddCommGrou
   obtain ⟨s, rfl⟩ := g.exists_extend
   exact ⟨s, fun x ↦ congrArg Subtype.val (LinearMap.congr_fun hg ⟨f x, x, rfl⟩)⟩
 
-/-- Let `x` and `y` be matrices over a field. If every column of `y` lies in the column space of
-`x`, then y = x * s for some matrix s. -/
-lemma New.Filling.exists_mul_eq_of_col_mem_range {y : Matrix m l k}
-    (h_col : ∀ b : l, y.col b ∈ x.mulVecLin.range) : ∃ s : Matrix n l k, x * s = y := by
-  choose c hc using h_col
-  exact ⟨of fun i b ↦ c b i, ext_col hc⟩
-
 /-- Let `x` and `y` be matrices over a field. If the kernel of `x` lies in the column space of `y`,
 then `y * e + b * x = 1` for some matrices `e` and `b`. -/
 lemma New.exists_mul_add_mul_eq_one [Fintype l] [Fintype m] [DecidableEq n] {y : Matrix n l k}
@@ -100,7 +97,7 @@ lemma New.exists_mul_add_mul_eq_one [Fintype l] [Fintype m] [DecidableEq n] {y :
     exists_generalized_inverse x.toLin'
   have h_ker (v : n → k) : v - b (x *ᵥ v) ∈ x.mulVecLin.ker := by simp [mulVec_sub, hb]
   obtain ⟨e, he⟩ : ∃ e : Matrix l n k, y * e = 1 - b.toMatrix' * x := by
-    refine Filling.exists_mul_eq_of_col_mem_range fun j ↦ ?_
+    refine exists_mul_eq_of_range_le fun j ↦ ?_
     rw [← mulVec_single_one, sub_mulVec, one_mulVec, ← mulVec_mulVec, LinearMap.toMatrix'_mulVec]
     exact h_range (h_ker (Pi.single j 1))
   exact ⟨e, b.toMatrix', add_eq_of_eq_sub he⟩
@@ -264,7 +261,7 @@ matrix `y` over `A` is `k * diagonal d * k'`, where `d : n → A` and `k`, `k'` 
 have entries in `R`. No divisibility among the entries of `d` is stated. -/
 lemma New.IsValuationPair.smith_normal_form {A n : Type*} [CommRing A] {R : Subring A} [Fintype n]
     [DecidableEq n] (hR : IsValuationPair R) (y : Matrix n n A) :
-    ∃ᵉ (k ∈ intGL n R) (k' ∈ intGL n R) (d : n → A), y = k.val * diagonal d * k'.val := by
+    ∃ k ∈ intGL n R, ∃ k' ∈ intGL n R, ∃ d : n → A, y = k.val * diagonal d * k'.val := by
   -- Elimination, by induction on the size: bring a pivot that divides all entries to the place
   -- `(p, p)`, clear its row and column, and diagonalize the smaller block that is left.
   suffices ∃ (k k' : GL n R) (d : n → A),
@@ -366,7 +363,7 @@ lemma IsHeckeFunction.heckeFun_adjoint (hf : IsHeckeFunction (intGL n O.toSubrin
       simpa using mem_levelSpace.1 hv ⟨_, inv_mem hk'⟩
     have fix_v' : π' k v' = v' := by simpa using mem_levelSpace.1 hv' ⟨k, hk⟩
     exact ⟨by simp [hg, hf_inv, hk, hk'],
-      by simp only [hg, map_mul, Module.End.mul_apply, fix_v', move, fix_v, inv_inv]⟩
+      by simp only [hg, map_mul, mul_apply_eq_comp, fix_v', move, fix_v, inv_inv]⟩
   obtain ⟨adjoint_finite, sum_eq⟩ : HasFiniteCosets K (fun g : GL n F ↦ σ (f g⁻¹)) ∧
       heckeFun π' K (fun g : GL n F ↦ σ (f g⁻¹)) v' = ∑ q ∈ hf_fin.toFinset,
         σ (f (invTransposeGL q.out)⁻¹) • π' (invTransposeGL q.out) v' :=

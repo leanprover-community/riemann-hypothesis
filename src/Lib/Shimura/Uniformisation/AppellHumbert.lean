@@ -1,7 +1,9 @@
 module
 
+public import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 public import Lib.General.Analysis.HolomorphicIntegrals
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Existence in Appell–Humbert: projective embeddings are given by theta functions
@@ -58,35 +60,26 @@ lemma New.exists_analyticAt_double_eq {V : Type*} [NormedAddCommGroup V] [Normed
     {f : V → ℂ} (hf : AnalyticAt ℂ f 0) :
     ∃ (g : V → ℂ) (q : V →L[ℂ] V →L[ℂ] ℂ),
       AnalyticAt ℂ g 0 ∧ ∀ᶠ z : V in nhds 0, g (z + z) = 4 * g z + f z + q z z := by
-  obtain ⟨P, hP⟩ : ∃ P : FormalMultilinearSeries ℂ V ℂ, HasFPowerSeriesAt f P 0 := hf
-  -- In degree `n` the equation reads `(2 ^ n - 4) G n = P n`. For `n = 2` the factor vanishes, so
-  -- `G 2 = 0` and `q` cancels `P 2`.
+  obtain ⟨P, hP⟩ := hf
+  -- In degree `n` the equation reads `(2 ^ n - 4) G n = P n`; for `n = 2`, `G 2 = 0` and `q`
+  -- cancels `P 2`.
   let G : FormalMultilinearSeries ℂ V ℂ := fun n ↦ (2 ^ n - 4 : ℝ)⁻¹ • P n
-  -- The inverse of an integer has absolute value at most `1`, so `G` converges where `P` does.
-  have h_norm (n : ℕ) : ‖G n‖ ≤ ‖P n‖ := by
-    simpa [G, norm_smul] using
-      mul_le_of_le_one_left (norm_nonneg _) (2 ^ n - 4 : ℤ).natAbs.cast_inv_le_one
   have h_ball : ∀ᶠ z : V in nhds 0, z ∈ Metric.eball 0 G.radius :=
-    Metric.eball_mem_nhds _ (hP.radius_pos.trans_le (G.radius_le_of_le h_norm))
-  have h_ball₂ : ∀ᶠ z : V in nhds 0, z + z ∈ Metric.eball 0 G.radius :=
-    ((continuous_id.add continuous_id).tendsto' 0 0 (add_zero 0)).eventually h_ball
+    Metric.eball_mem_nhds _ <| hP.radius_pos.trans_le <| G.radius_le_of_le fun n ↦ by
+      simpa [G, norm_smul] using
+        mul_le_of_le_one_left (norm_nonneg _) (2 ^ n - 4 : ℤ).natAbs.cast_inv_le_one
   refine ⟨G.sum, -continuousMultilinearCurryFin1 ℂ V _ (P 2).curryRight,
     G.analyticOnNhd _ h_ball.self_of_nhds, ?_⟩
-  filter_upwards [h_ball, h_ball₂, hP.eventually_hasSum] with z hz hz₂ hfz
-  have h_term (n : ℕ) (hn : n ≠ 2) :
-      (G n fun _ ↦ z + z) - (4 * (G n fun _ ↦ z) + P n fun _ ↦ z) = 0 := by
-    -- The factor `2 ^ n - 4` is not zero, so it cancels against its inverse in `G n`.
-    have h_ne : (2 : ℂ) ^ n ≠ 4 := mod_cast (Nat.pow_right_injective le_rfl).ne hn
-    simp [← two_smul ℂ, (P _).map_smul_univ, G, fieldEq]
-  -- Summing over `n`, only the term of degree `2` is left.
-  have h_sum : G.sum (z + z) - (4 * G.sum z + f (0 + z)) =
-      (G 2 fun _ ↦ z + z) - (4 * (G 2 fun _ ↦ z) + P 2 fun _ ↦ z) :=
-    ((G.hasSum hz₂).sub (((G.hasSum hz).mul_left 4).add hfz)).unique (hasSum_single 2 h_term)
-  -- The two-variable tuple `(z, z)` built by `Fin.snoc` is the constant tuple.
-  have h_snoc : (Fin.snoc (Fin.snoc 0 z) z : Fin 2 → V) = fun _ ↦ z := by
-    simp [funext_iff, Fin.forall_fin_two]
-  rw [eq_add_of_sub_eq h_sum]
-  norm_num [G, h_snoc, add_comm]
+  filter_upwards [h_ball,
+    ((by fun_prop : Continuous fun z : V ↦ z + z).tendsto' 0 0 (add_zero 0)).eventually h_ball,
+    hP.eventually_hasSum] with z hz hz₂ hfz
+  -- Summing over `n`, all terms except `n = 2` cancel against the inverse in `G n`.
+  rw [eq_add_of_sub_eq <| ((G.hasSum hz₂).sub (((G.hasSum hz).mul_left 4).add hfz)).unique
+    (hasSum_single 2 fun n hn ↦ by
+      have h_ne : (2 : ℂ) ^ n ≠ 4 := mod_cast (Nat.pow_right_injective le_rfl).ne hn
+      simp [← two_smul ℂ, (P _).map_smul_univ, G, fieldEq])]
+  norm_num [G, add_comm,
+    (by simp [funext_iff, Fin.forall_fin_two] : Fin.snoc (Fin.snoc 0 z) z = fun _ : Fin 2 ↦ z)]
 
 /-- For `r > 0` and `‖z‖ ≥ r`, halving `z` lowers `⌊‖z‖ / r⌋₊`. -/
 lemma New.floor_norm_half_div_lt {V : Type*} [NormedAddCommGroup V] [NormedSpace ℂ V] {r : ℝ}

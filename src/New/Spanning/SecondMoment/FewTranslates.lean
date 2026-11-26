@@ -1,7 +1,10 @@
 module
 
+public import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Analysis.InnerProductSpace.Trace
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
 public import New.Spanning.SecondMoment.PositiveType
+public import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Few translates fill
@@ -211,7 +214,7 @@ omit [FiniteDimensional ℂ T] in
 lemma norm_sq_eq_add_of_isSymmetricProjection {pr : T →ₗ[ℂ] T} (hpr : pr.IsSymmetricProjection)
     (y : T) : ‖y‖ ^ 2 = ‖pr y‖ ^ 2 + ‖(1 - pr) y‖ ^ 2 := by
   have h_orth : ⟪pr y, (1 - pr) y⟫_ℂ = 0 := by
-    rw [hpr.isSymmetric, ← End.mul_apply, hpr.isIdempotentElem.mul_one_sub_self,
+    rw [hpr.isSymmetric, ← mul_apply_eq_comp, hpr.isIdempotentElem.mul_one_sub_self,
       LinearMap.zero_apply, inner_zero_right]
   simpa [sq] using norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _ h_orth
 
@@ -230,8 +233,8 @@ lemma hilbertSchmidtNorm_one_sub_mul_comp_sq_le {p : T →ₗ[ℂ] T} (hp : p.Is
   have h_ker : (1 - p) * (1 - p * q) = 1 - p := by
     simp [mul_sub, ← mul_assoc, hp.isIdempotentElem.one_sub_mul_self]
   have h_split : ‖(1 - p * q) y‖ ^ 2 = ‖p ((1 - q) y)‖ ^ 2 + ‖(1 - p) y‖ ^ 2 := by
-    rw [norm_sq_eq_add_of_isSymmetricProjection hp, ← End.mul_apply, ← End.mul_apply (1 - p),
-      h_range, h_ker, End.mul_apply]
+    rw [norm_sq_eq_add_of_isSymmetricProjection hp, ← mul_apply_eq_comp,
+      ← mul_apply_eq_comp (1 - p), h_range, h_ker, mul_apply_eq_comp]
   have h_contract : ‖p ((1 - q) y)‖ ^ 2 ≤ ‖(1 - q) y‖ ^ 2 := by
     linarith [norm_sq_eq_add_of_isSymmetricProjection hp ((1 - q) y),
       sq_nonneg ‖(1 - p) ((1 - q) y)‖]
@@ -333,7 +336,6 @@ theorem isSpread_of_second_moment [Fintype Γ]
   -- dimension of that preimage. Here `W₀` is `W` inside `T₀`, and `α = dim W / dim T₀`.
   intro W₀ α
   set W : Submodule ℂ T := W₀.map (range pr₀).subtype
-  have hα : 0 ≤ α := by positivity
   have h_dim : (finrank ℂ W : ℝ) = α * finrank ℂ (range pr₀) := by
     rw [Submodule.finrank_map_subtype_eq]
     have h_zero (h : (finrank ℂ (range pr₀) : ℝ) = 0) : (finrank ℂ W₀ : ℝ) = 0 :=
@@ -366,8 +368,8 @@ theorem isSpread_of_second_moment [Fintype Γ]
       Submodule.mem_map_of_mem (f := (range pr₀).subtype) hx
     have h_orth (w : T) (hw : w ∈ W) : ⟪ρ s (B x) - pr₀ (ρ s (B x)), w⟫_ℂ = 0 := by
       obtain ⟨y, rfl⟩ : w ∈ range pr₀ := Submodule.map_subtype_le _ W₀ hw
-      simp [← hpr₀.isSymmetric _ y, ← End.mul_apply pr₀ pr₀, hpr₀.isIdempotentElem.eq]
-    rw [← End.mul_apply, ← (h_comm s).eq, End.mul_apply]
+      simp [← hpr₀.isSymmetric _ y, ← mul_apply_eq_comp pr₀ pr₀, hpr₀.isIdempotentElem.eq]
+    rw [← mul_apply_eq_comp, ← (h_comm s).eq, mul_apply_eq_comp]
     exact (Submodule.eq_starProjection_of_mem_of_inner_eq_zero h_mem h_orth).symm
   have h_preimage : hilbertSchmidtNorm ((pr₀ ∘ₗ B) ∘ₗ orthoProj W') ≤ hilbertSchmidtNorm
     (orthoProj W ∘ₗ ρ s ∘ₗ B) := by
@@ -419,18 +421,24 @@ lemma IsSpread.exists_codim_le (h_spread : IsSpread B (3 / 2 * ε)) (F : Submodu
   have hα : (finrank ℂ F : ℝ) = α * finrank ℂ W := (div_mul_cancel₀ _ hW'.ne').symm
   have hα_le : α ≤ 1 := (div_le_one hW').2 (by exact_mod_cast F.finrank_le)
   have h_share : 16 * ε < 1 - α := lt_of_mul_lt_mul_right (by linarith) hW'.le
-  have h_added : (finrank ℂ ↥(F ⊔ range (B s)) : ℝ) + finrank ℂ (F.comap (B s)) =
+  have h_dimension_identity : (finrank ℂ ↥(F ⊔ range (B s)) : ℝ) + finrank ℂ (F.comap (B s)) =
       finrank ℂ F + finrank ℂ V := by exact_mod_cast finrank_sup_range_add_finrank_comap (B s) F
   -- The image adds at least `(1/2 - 3/32) (1 - α) dim V ≥ (2/5) (1 - α) dim V` dimensions.
-  have h_gain : ((1 + α) / 2 + 3 / 2 * ε) * finrank ℂ V ≤ (1 - 2 / 5 * (1 - α)) * finrank ℂ V := by
+  have h_preimage_estimate :
+      ((1 + α) / 2 + 3 / 2 * ε) * finrank ℂ V ≤ (1 - 2 / 5 * (1 - α)) * finrank ℂ V := by
     gcongr
     linarith
-  have h_factor : (1 - 2 * finrank ℂ V / (5 * finrank ℂ W)) * (finrank ℂ W - finrank ℂ F : ℝ) =
+  have h_preimage_bound : (finrank ℂ (F.comap (B s)) : ℝ) ≤
+      (1 - 2 / 5 * (1 - α)) * finrank ℂ V :=
+    hs.trans h_preimage_estimate
+  -- Subtract the preimage dimension from `dim V` to get the gain in the span.
+  have h_codim_expansion :
+      (1 - 2 * finrank ℂ V / (5 * finrank ℂ W)) * (finrank ℂ W - finrank ℂ F : ℝ) =
       finrank ℂ W - finrank ℂ F - 2 / 5 * (1 - α) * finrank ℂ V := by
     rw [hα]
     field
-  rw [h_factor]
-  linarith
+  rw [h_codim_expansion]
+  linarith only [h_dimension_identity, h_preimage_bound]
 
 /-- The greedy choice after `l` steps. Let `W` be nonzero and let the maps `B s : V → W` spread with
 the error `3 ε / 2`. Then the span of the images of at most `l` of them misses at most a share
@@ -453,13 +461,14 @@ lemma IsSpread.exists_codim_le_max (h_spread : IsSpread B (3 / 2 * ε)) (hW : 0 
           le_mul_of_one_le_left hW'.le (le_max_of_le_right (by simp))
   | succ l ih =>
     obtain ⟨t, h_card, h_codim⟩ := ih
-    obtain h_done | h_more := le_or_gt (codim t) (16 * ε * finrank ℂ W)
+    -- If the target is already reached, retain the same family; otherwise take a greedy step.
+    obtain h_below_threshold | h_above_threshold := le_or_gt (codim t) (16 * ε * finrank ℂ W)
     · exact ⟨t, h_card.trans l.le_succ,
-        h_done.trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hW'.le)⟩
-    obtain ⟨s, h_step⟩ := h_spread.exists_codim_le _ hW h_more
-    have h_exp : codim t ≤ exp (-(l * rate)) * finrank ℂ W := by
+        h_below_threshold.trans (mul_le_mul_of_nonneg_right (le_max_left _ _) hW'.le)⟩
+    obtain ⟨s, h_step⟩ := h_spread.exists_codim_le _ hW h_above_threshold
+    have h_exponential_bound : codim t ≤ exp (-(l * rate)) * finrank ℂ W := by
       rw [max_mul_of_nonneg _ _ hW'.le, le_max_iff] at h_codim
-      exact h_codim.resolve_left h_more.not_ge
+      exact h_codim.resolve_left h_above_threshold.not_ge
     refine ⟨insert s t, (card_insert_le s t).trans (by omega), ?_⟩
     have h_insert : ⨆ i ∈ insert s t, range (B i) = (⨆ i ∈ t, range (B i)) ⊔ range (B s) := by
       rw [Finset.iSup_insert, sup_comm]
@@ -504,8 +513,8 @@ theorem IsSpread.exists_few_le_finrank_iSup_range [Nontrivial V] (h_spread : IsS
   have h_log : 0 ≤ log (16 * ε)⁻¹ :=
     log_nonneg ((one_le_inv₀ (by positivity)).2 (by linarith))
   set l : ℕ := ⌈log (16 * ε)⁻¹ / rate⌉₊
-  have hl_ge : log (16 * ε)⁻¹ ≤ l * rate := (div_le_iff₀ h_rate_pos).1 (Nat.le_ceil _)
-  have hl_le : l * rate ≤ 1 + log (16 * ε)⁻¹ :=
+  have h_steps_suffice : log (16 * ε)⁻¹ ≤ l * rate := (div_le_iff₀ h_rate_pos).1 (Nat.le_ceil _)
+  have h_steps_budget : l * rate ≤ 1 + log (16 * ε)⁻¹ :=
     calc l * rate ≤ (log (16 * ε)⁻¹ / rate + 1) * rate := by
           gcongr
           exact (Nat.ceil_lt_add_one (by positivity)).le
@@ -514,9 +523,9 @@ theorem IsSpread.exists_few_le_finrank_iSup_range [Nontrivial V] (h_spread : IsS
   obtain ⟨t, h_card, h_codim⟩ : ∃ t : Finset Θ, #t ≤ l ∧
       (finrank ℂ W - finrank ℂ ↥(⨆ s ∈ t, range (B s)) : ℝ) ≤
         max (16 * ε) (exp (-(l * rate))) * finrank ℂ W := h_spread.exists_codim_le_max hW l
-  have h_exp : exp (-(l * rate)) ≤ 16 * ε := by
+  have h_decay_below_threshold : exp (-(l * rate)) ≤ 16 * ε := by
     rwa [← le_log_iff_exp_le (by positivity), _root_.neg_le, ← log_inv]
-  rw [max_eq_left h_exp] at h_codim
+  rw [max_eq_left h_decay_below_threshold] at h_codim
   refine ⟨t, ?_, by linarith⟩
   calc (#t * finrank ℂ V : ℝ) ≤ l * finrank ℂ V := by gcongr
     _ = 5 / 2 * (l * rate) * finrank ℂ W := by rw [h_rate]; field

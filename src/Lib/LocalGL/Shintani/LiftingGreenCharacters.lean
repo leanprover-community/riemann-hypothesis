@@ -443,11 +443,9 @@ private lemma lift_brauerLift_pow_of_forall_eq_one [Algebra k' k']
     (η : K → ℂ) : Lift ℂ (brauerLift k' fun y : K ↦ η (y ^ a)) (brauerLift k' η) := by
   intro m
   have h_span : (brauerLift k' η).evalGL ∈ virtualChars ℂ (GL (Fin m) k') := by
-    -- part (b) of `isIrreducibleChar_and_mem_virtualChars_and_exists_mul`: every inner product with
-    -- a character is a complex number
-    obtain ⟨-, h_crit, -⟩ := isIrreducibleChar_and_mem_virtualChars_and_exists_mul ℂ
-      (isClassFunction_evalGL (F := brauerLift k' η) (n := Fin m))
-    exact h_crit fun χ _ ↦ ⟨_, rfl⟩
+    -- `IsClassFunction.mem_virtualChars`: every inner product with a character is a complex number
+    exact (isClassFunction_evalGL (F := brauerLift k' η) (n := Fin m)).mem_virtualChars
+      fun χ _ ↦ ⟨_, rfl⟩
   refine hasCommonLift_of_gal_trivial h_gal h_span fun g ↦ ?_
   simp [Hall.evalGL, charpoly_map, h_roots]
 
@@ -480,6 +478,7 @@ private lemma lift_labelChar_map_of_forall_eq_one [Algebra k' k']
     exact (lift_brauerLift_pow_of_forall_eq_one T h_gal h_roots _).rankPart_mulMoebius_mul_constOne
   simpa using h_lift_P.mul h_lift_c
 
+omit [Finite k'] in
 /-- Let `k'` be an algebra over itself with surjective structure map `s` (`h_surj`), and let `F`
 lift to `F'` over it. Then `F'` at `s(g)` is `F` at `g`: a common lift `Φ` is `F'` on `GL n k'`
 and descends to `F` on the coset of `1`, whose fixed field is `k'`. -/
@@ -500,27 +499,14 @@ degree `r` over `k'` (monic, squarefree, of degree `r`, with nonzero constant te
 `g ∈ GL_n(k')`, we have Ξ_c(σ(g)) = Ξ_{σ(c)}(g). -/
 lemma evalGL_labelChar_map (σ : Gal(k'/k)) {c : k'[X]} (hc : IsLabel r c) (g : GL n k') :
     (labelChar T c).evalGL (g.map σ) = (labelChar T (c.map σ)).evalGL g := by
-  -- View `k'` as an extension of itself through `σ`; its Galois group is trivial. For this
-  -- extension `labelChar T (c.map σ)` lifts to `labelChar T c`, by induction on the irreducible
-  -- factors of `c`. Evaluating the common combination of characters at `g.map σ` gives the claim.
+  -- View `k'` as an extension of itself via `σ`; its Galois group is trivial, so
+  -- `labelChar T (c.map σ)` lifts to `labelChar T c`, and evaluating at `g.map σ` gives the claim.
   let twist : Algebra k' k' := σ.toRingEquiv.toRingHom.toAlgebra
-  have h_gal (τ : Gal(k'/k')) : τ = 1 := by
-    ext y
-    obtain ⟨z, rfl⟩ := σ.surjective y
-    exact τ.commutes z
-  -- `σ` is the power map `y ↦ y ^ a`, so it raises the roots of a polynomial to the power `a`.
-  obtain ⟨i, hσ_pow⟩ : ∃ i : ℕ, ∀ y : k', σ y = y ^ Nat.card k ^ i :=
-    exists_forall_apply_eq_pow k _ k' σ
-  set a : ℕ := Nat.card k ^ i
-  have h_roots (P : k'[X]) :
-      (P.map (algebraMap k' k')).aroots K = (P.aroots K).map fun y ↦ y ^ a :=
-    aroots_map_frobenius_pow _ hσ_pow P
-  -- `σ` keeps irreducible polynomials irreducible; the lemmas above give the lift.
-  have h_irr (P : k'[X]) (hP : Irreducible P) : Irreducible (P.map (algebraMap k' k')) :=
-    hP.map (mapEquiv σ.toRingEquiv)
-  have h_lift : Lift ℂ (labelChar T (c.map (algebraMap k' k'))) (labelChar T c) :=
-    lift_labelChar_map_of_forall_eq_one T h_gal h_roots h_irr hc
-  -- Evaluate the common lift at `g.map σ`; the structure map of the twisted algebra is `σ`.
+  obtain ⟨i, hσ_pow⟩ := exists_forall_apply_eq_pow k _ k' σ
+  have h_lift := lift_labelChar_map_of_forall_eq_one T
+    (fun τ ↦ AlgEquiv.ext (σ.surjective.forall.2 τ.commutes))
+    (aroots_map_frobenius_pow _ hσ_pow)
+    (fun _ hP ↦ hP.map (mapEquiv σ.toRingEquiv)) hc
   have h_alg : algebraMap k' k' = (σ : k' →+* k') := RingHom.ext fun _ ↦ rfl
   simpa [h_alg] using evalGL_map_eq_of_lift h_lift σ.surjective g
 
@@ -544,22 +530,14 @@ lemma lift_detChar [IsScalarTower k k' K] {χ : MulChar k ℂ} {χ' : MulChar k'
   · -- over `σ` with fixed field `k`, `ϑ` descends to `θ_x ∘ det`, which is `χ ∘ det` on `GL m k`
     simp +contextual [DescendsOnCoset, hϑ_lifts σ hσ _, ν, RingHom.map_det, ← thetaChar_charName T,
       algebraMap_apply k k' K]
-  · -- on `GL m k'`: `θ_x` for `#k` at the norm of `z` is `θ_x` for `#k'` at `z`
-    set x : K := algebraMap k K (charName T χ)
-    set z : K := algebraMap k' K g.val.det
+  · -- on `GL m k'`: `θ_x` for `#k` at the norm of `det g` is `θ_x` for `#k'` at `det g`
     have h_det (τ : Gal(k'/k)) : (galActionGL k k' (Fin m) τ g).val.det = τ g.val.det :=
       (τ.map_det _).symm
-    calc ϑ (inl g)
-      _ = thetaChar T (Nat.card k) x (algebraMap k' K (∏ τ : Gal(k'/k), τ g.val.det)) := by
-        simp [hϑ, ν, h_det, x]
-      _ = thetaChar T (Nat.card k) x (z ^ ∑ i ∈ range (finrank k k'), Nat.card k ^ i) := by
-        rw [← Algebra.norm_eq_prod_automorphisms, algebraMap_norm_eq_pow_sum, map_pow]
-      _ = thetaChar T (Nat.card k') x z := by
-        simpa using (thetaChar_eq_apply_norm_pow T one_lt_card
-          (algebraMap_pow_card_pred_eq_one (charName T χ)) one_lt_card natCard_eq_pow_finrank
-          (pow_one _) (algebraMap_pow_card_pred_eq_one g.det)).symm
-      _ = (detChar χ').evalGL g := by
-        simp [← thetaChar_charName T χ', h_name, ← IsScalarTower.algebraMap_apply, x, z]
+    simpa [hϑ, ν, h_det, ← map_pow, ← algebraMap_norm_eq_pow_sum,
+      Algebra.norm_eq_prod_automorphisms, ← thetaChar_charName T χ', h_name,
+      ← IsScalarTower.algebraMap_apply] using
+      (thetaChar_eq_apply_norm_pow T one_lt_card (algebraMap_pow_card_pred_eq_one (charName T χ))
+        one_lt_card natCard_eq_pow_finrank (pow_one _) (algebraMap_pow_card_pred_eq_one g.det)).symm
 
 /-- Let `P` be a label of degree `m` over `k` with `P(1) ≠ 0`, and suppose that `Ξ_P` is `(-1) ^ m`
 times the rank-`m` part of `greenCuspidal k θ`. Then the inner product in rank `m` of

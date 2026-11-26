@@ -209,7 +209,7 @@ theorem exists_derivative_kernels (h_gap : l.HasLargeGap A)
       exists_mem_filtration_smear_word (p := p) h_gap hL hβ w
     have norm_sq : ‖x‖ ^ 2 = (∫ g : 𝔰.G₁, ‖X w g‖ ^ 2) / l.formalDegree := by
       rw [h_gap.norm_sq_eq_formalDegree_mul_integral, ← integral_comp_frameEquiv (J := 𝔰.J₁)]
-      simp [X, π, x_eq, field, mul_pow, integral_const_mul]
+      simp [X, x_eq, field, mul_pow, integral_const_mul]
     grw [← norm_sq, x_le, pow_mul']
   · -- `F * X w = F * bump w`; differentiate the bump and expand `Z` in matrix units.
     rw [X_nil] at F_conv

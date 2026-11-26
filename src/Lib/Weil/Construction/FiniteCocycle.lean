@@ -218,7 +218,7 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
     congr 1
   -- Invariance: for `x`, `y` in `M` with `y - x` in `L × L`, the difference `F y - F x` is
   -- integral.
-  have h_inv (x y : M.toAddSubgroup) (h : -x.1 + y ∈ (L.prod L).toAddSubgroup) :
+  have h_inv (x y : M.toAddSubgroup) (h : -x.val + y ∈ (L.prod L).toAddSubgroup) :
       (selfDualAddChar E ∘ F) y = (selfDualAddChar E ∘ F) x := by
     obtain ⟨⟨x₁, x₂⟩, hx_sum, hx₁, hx₂⟩ := x
     obtain ⟨⟨y₁, y₂⟩, hy_sum, hy₁, hy₂⟩ := y
@@ -237,7 +237,7 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
             ∂latticeMeasure E ι ∂latticeMeasure E ι =
           ν.real ((L.prod L).toAddSubgroup ∩ M.toAddSubgroup) •
             ∑ q : M.toAddSubgroup ⧸ (L.prod L).toAddSubgroup.addSubgroupOf M.toAddSubgroup,
-              selfDualAddChar E (F q.out.1) := by
+              selfDualAddChar E (F q.out.val) := by
       rw [← integral_prod _ (h_int.integrable_indicator hM.measurableSet),
         integral_indicator hM.measurableSet, setIntegral_eq_finsum hM hL h_inv,
         finsum_eq_sum_of_fintype]
@@ -251,12 +251,12 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
     have h_sesq (p : (ι → 𝔸f E) × (ι → 𝔸f E)) : F (t • p) = star t.val * t * F p := by
       simp [F, Subring.smul_def]
       ring
-    exact congrArg (selfDualAddChar E) (h_sesq q.out.1)
+    exact congrArg (selfDualAddChar E) (h_sesq q.out.val)
   · -- For `(x₁, x₂)` in `M`, `t • x₁ = (t • s⁻¹) (s x₁)` and `t • (x₁ + x₂)` lie in `L`.
     refine q.inductionOn fun x ht ↦ ?_
-    have h_sx : s.val.val *ᵥ x.1.1 ∈ stdLattice E ι := x.2.2.1
-    have h_fst : (t • x).1.1 ∈ L := by simpa [smul_mulVec] using! IsIntMatrix.mulVec ht h_sx
-    have h_sum : (t • x).1.1 + (t • x).1.2 ∈ L := (t • x).property.1
+    have h_sx : s.val.val *ᵥ x.val.1 ∈ stdLattice E ι := x.property.2.1
+    have h_fst : (t • x).val.1 ∈ L := by simpa [smul_mulVec] using! IsIntMatrix.mulVec ht h_sx
+    have h_sum : (t • x).val.1 + (t • x).val.2 ∈ L := (t • x).property.1
     exact (Submodule.Quotient.mk_eq_zero _).2 ⟨h_fst, (add_mem_cancel_left h_fst).1 h_sum⟩
 
 end FiniteCocycle
@@ -415,7 +415,7 @@ lemma mem_cocycleRadical ⦃s : Gf E ι⦄ :
   refine s.mem_of_stdLevel_le_of_supportedOn_le finProjAction_cocycle_eq_one_of_mem fun w s hs ↦ ?_
   -- At a split place we may assume `s⁻¹` integral at `w`: with `u` and `s⁻¹ u` integral at `w` and
   -- `b = ofSplitPlace hw u⁻¹`, both `b` and `b * s` are of this kind.
-  wlog! h_int : w.IsSplit → (s⁻¹.atPlace w).1 ∈ (LocInt w).matrix generalizing s with h_gen
+  wlog! h_int : w.IsSplit → (s⁻¹.atPlace w).val ∈ (LocInt w).matrix generalizing s with h_gen
   · obtain ⟨hw, -⟩ := h_int
     obtain ⟨u, hu, hsu, -⟩ : ∃ u : GL ι (LocField w),
         IsSaturating (LocInt w).matrix (s⁻¹.atPlace w) u :=
@@ -439,13 +439,13 @@ lemma mem_cocycleRadical ⦃s : Gf E ι⦄ :
   let t : Ô E := ⟨idem (star {w})ᶜ, idem_mem_Ô _⟩
   have h_kill (q : Q) : t • q = 0 := by
     refine (h_smul t q).2 fun i j ↦ idem_mul_mem_Ô.2 fun u hu ↦ ?_
-    suffices h_entries : (s⁻¹.atPlace u).1 ∈ (LocInt u).matrix from h_entries i j
+    suffices h_entries : (s⁻¹.atPlace u).val ∈ (LocInt u).matrix from h_entries i j
     obtain rfl | huw := eq_or_ne u w
     · exact h_int (by simpa using hu)
     · simp [mem_supportedOn.1 hs _ huw hu]
   by_cases! hw : w.IsSplit
   · -- Split place: `1 - t` acts as the identity and has norm `0`, so every term of the sum is `1`.
-    have h_idem : (1 - star t.1) * (1 - t) = 0 := by
+    have h_idem : (1 - star t.val) * (1 - t) = 0 := by
       ext1 u
       by_cases hu : u = w <;> simp [t, star_idem, hu, hw]
     have h_one (q : Q) : selfDualAddChar E (γ q) = 1 := by
