@@ -570,10 +570,9 @@ lemma exists_slope_totalTiedLength_lt [Fintype ι] [DecidableEq ι] {ϖ : O} {e 
   have h_lt : length O ((T i).tiedSelmer (insert P J) (insert P J) (x' u) i (ϖ ^ k)) <
       length O ((T i).tiedSelmer J J x i (ϖ ^ k)) := by
     refine (h_row k hk).trans_lt ?_
-    rw [← relLength_add_length_inf ((T i).tiedSelmer J J x i (ϖ ^ k))
-      ((T i).frobInTameImage J x i (ϖ ^ k) P l)]
-    exact ENat.lt_add_left (ne_top_of_le_ne_top (h_fin i k hk) (length_mono inf_le_left))
-      (pos_iff_ne_zero.2 (mt relLength_eq_zero.1 h_fail))
+    have := (T i).finite_tiedSelmer (h_dvd k hk) J J x i
+    rw [← (Submodule.submoduleOfEquivInf _ _).length_eq]
+    exact Submodule.length_lt (mt Submodule.submoduleOf_eq_top.mp h_fail)
   exact ⟨u⁻¹, sum_lt_sum_of_ne_top (fun (j, m) h_mem ↦ h_le j m (mem_product.1 h_mem).2)
     (fun (j, m) h_mem ↦ h_fin j m (mem_product.1 h_mem).2) (mk_mem_product (mem_univ i) hk) h_lt⟩
 
