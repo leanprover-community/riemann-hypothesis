@@ -2,6 +2,7 @@ module
 
 public import Lib.General.Analysis.MeanValueAndTaylor
 public import Lib.General.NumberTheory.SUnitsAndClassNumber
+import TauCeti.Analysis.SpecialFunctions.Elliptic.AdditionTheorem
 
 /-!
 # Theta functions of a CM elliptic curve: Weierstrass equation and spanning monomials
@@ -922,7 +923,8 @@ variable [CharZero K]
 lemma derivative_taylorVia_translatedX :
     d⁄dX (taylorVia ι C.translatedX) =
       2 * taylorVia ι C.translatedY + PowerSeries.C (ι C.a₁) * taylorVia ι C.translatedX := by
-  simp (disch := fun_prop) [funext C.deriv_translatedX, taylorVia, derivative_taylorVia, map_ofNat]
+  rw [derivative_taylorVia]
+  simp (disch := fun_prop) [funext C.deriv_translatedX, taylorVia, map_ofNat]
 
 /-- The Taylor series at `0` of `x = C.translatedX` and `y = C.translatedY`, moved to `K` along
 `ι`, satisfy `y' = 1 + 3 x² - a₁ y`. -/

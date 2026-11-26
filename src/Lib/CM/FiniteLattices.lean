@@ -1,6 +1,7 @@
 module
 
 public import Lib.CM.GoodReduction
+import TauCeti.Analysis.SpecialFunctions.Elliptic.AdditionTheorem
 
 /-!
 # Finitely many CM lattices

@@ -562,8 +562,6 @@ end SigmaFunction
 
 /-!
 ## Points of the Weierstrass cubic and derivatives of ℘
-
-* `New.deriv_derivWeierstrassP`: `℘'' = 6 ℘² - g₂/2` off the lattice.
 -/
 
 section WeierstrassP
@@ -625,32 +623,6 @@ lemma New.derivWeierstrassP_eq_zero_iff (L : PeriodPair) {z : ℂ} (hz : z ∉ L
     ℘'[L] z = 0 ↔ z + z ∈ L.lattice := by
   rw [← sigma_eq_zero_iff (L := L), ← two_mul, sigma_two_mul L hz]
   simp [hz]
-
-/-- The second derivative of the Weierstrass function ℘ of L: for z outside the lattice,
-℘′′(z) = 6℘(z)² − g₂/2. -/
-lemma New.deriv_derivWeierstrassP (L : PeriodPair) {z : ℂ} (hz : z ∉ L.lattice) :
-    deriv ℘'[L] z = 6 * ℘[L] z ^ 2 - L.g₂ / 2 := by
-  have h_open : IsOpen (L.lattice : Set ℂ)ᶜ := L.isClosed_lattice.isOpen_compl
-  -- Differentiate `℘' ^ 2 = 4 ℘ ^ 3 - g₂ ℘ - g₃`; where `℘'` is not zero, divide by `2 ℘'`.
-  have h_first (w : ℂ) (hw : w ∉ L.lattice) :
-      2 * ℘'[L] w * deriv ℘'[L] w = 4 * (3 * ℘[L] w ^ 2 * ℘'[L] w) - L.g₂ * ℘'[L] w := by
-    simpa (disch := fun_prop) using EqOn.deriv (fun w ↦ L.derivWeierstrassP_sq w) h_open hw
-  rcases ne_or_eq (℘'[L] z) 0 with h_ne | h_zero
-  · apply mul_left_cancel₀ (mul_ne_zero two_ne_zero h_ne)
-    linear_combination h_first z hz
-  -- At a zero of `℘'`, differentiate once more; only the terms free of `℘'` remain.
-  have h_second : 2 * deriv ℘'[L] z * deriv ℘'[L] z =
-      4 * (3 * ℘[L] z ^ 2 * deriv ℘'[L] z) - L.g₂ * deriv ℘'[L] z := by
-    simpa (disch := fun_prop) [h_zero] using EqOn.deriv (fun w ↦ h_first w) h_open hz
-  -- There `℘''` is not zero: `2 z` is a lattice point, a simple zero of `σ`, and the derivative of
-  -- the duplication formula reads `2 σ' (2 z) = -℘'' z σ z ^ 4`.
-  have h_simple : deriv L.σ (2 * z) ≠ 0 :=
-    deriv_sigma_ne_zero (by simpa [two_mul] using (derivWeierstrassP_eq_zero_iff L hz).1 h_zero)
-  have h_sigma : 2 * deriv L.σ (2 * z) = -(deriv ℘'[L] z * L.σ z ^ 4) := by
-    simpa (disch := fun_prop) [deriv_comp_mul_left, h_zero] using
-      EqOn.deriv (fun w hw ↦ sigma_two_mul L hw) h_open hz
-  apply mul_left_cancel₀ (fun h_eq ↦ h_simple (by simpa [h_eq] using h_sigma) : deriv ℘'[L] z ≠ 0)
-  linear_combination h_second / 2
 
 end WeierstrassP
 
@@ -862,104 +834,6 @@ lemma weierstrass_disc_ne_zero (L : PeriodPair) : g₂ L ^ 3 - 27 * g₃ L ^ 2 �
   obtain ⟨a, τ, e, h_enum, ha, -⟩ := exists_lattice_eq_mul_tau L
   rw [g₂_pow_three_sub_g₃_sq_eq_discriminant h_enum]
   simp [ha, discriminant_ne_zero]
-
-/-- For τ in the upper half plane and w ≠ 0 some period lattice has the invariants
-g₂ = w⁴E₄(τ)/12 and g₃ = w⁶E₆(τ)/216. The proof uses the lattice (2π/w)(ℤτ + ℤ). -/
-lemma exists_g₂_g₃_eq_pow_mul_eisenstein (τ : ℍ) {w : ℂ} (hw : w ≠ 0) :
-    ∃ L : PeriodPair, g₂ L = w ^ 4 * E₄ τ / 12 ∧ g₃ L = w ^ 6 * E₆ τ / 216 := by
-  have h_indep : LinearIndependent ℝ ![(τ : ℂ) * (2 * π / w), 2 * π / w] := by
-    -- A relation `s τ c + t c = 0` with `c ≠ 0` gives `s τ + t = 0`; take imaginary parts.
-    refine LinearIndependent.pair_iff.2 fun s t h_rel ↦ ?_
-    have h_comb : s * (τ : ℂ) + t = 0 := by
-      apply mul_right_cancel₀ (show (2 * π / w : ℂ) ≠ 0 by simp [hw])
-      simp only [real_smul] at h_rel
-      linear_combination h_rel
-    have hs : s = 0 := by simpa [τ.im_ne_zero] using congrArg Complex.im h_comb
-    exact ⟨hs, by simpa [hs] using h_comb⟩
-  let L : PeriodPair := ⟨τ * (2 * π / w), 2 * π / w, h_indep⟩
-  have h_enum (p : ℤ × ℤ) :
-      (L.latticeEquivProd.symm.toEquiv p : ℂ) = 2 * π / w * (p.1 * τ + p.2) := by
-    simp [L, latticeEquiv_symm_apply, field]
-  exact ⟨L, by simp [g₂_eq_eisenstein h_enum, field], by simp [g₃_eq_eisenstein h_enum, field]⟩
-
-/-- If a³ − 27b² ≠ 0 and E₄(τ)³·(a³ − 27b²) = (12a)³·Δ(τ) at a point τ of the upper half plane,
-then some period lattice has g₂ = a and g₃ = b. -/
-lemma exists_lattice_of_E₄_cube_mul_eq {a b : ℂ} {τ : ℍ} (h_ne : a ^ 3 - 27 * b ^ 2 ≠ 0)
-    (h_disc : E₄ τ ^ 3 * (a ^ 3 - 27 * b ^ 2) = (12 * a) ^ 3 * discriminant τ) :
-    ∃ L : PeriodPair, g₂ L = a ∧ g₃ L = b := by
-  have hΔ : discriminant τ = (E₄ τ ^ 3 - E₆ τ ^ 2) / 1728 := discriminant_eq_E₄_cube_sub_E₆_sq τ
-  by_cases hE : E₄ τ = 0
-  · -- Then `a = 0`; scale so that `g₃ = b`.
-    have ha : a = 0 := by simpa [hE, discriminant_ne_zero] using h_disc.symm
-    have hb : b ≠ 0 := by simpa [ha] using h_ne
-    have hE₆ : E₆ τ ≠ 0 := fun h_six ↦ discriminant_ne_zero τ (by simp [hΔ, hE, h_six])
-    obtain ⟨w, hw⟩ : ∃ w : ℂ, w ^ 6 = 216 * b / E₆ τ := IsSepClosed.exists_pow_nat_eq _ 6
-    have hw_ne : w ≠ 0 := ne_zero_pow (n := 6) (by norm_num) (by simp [hw, hb, hE₆])
-    obtain ⟨L, h₂, h₃⟩ := exists_g₂_g₃_eq_pow_mul_eisenstein τ hw_ne
-    exact ⟨L, by simp [h₂, hE, ha], by simp [h₃, hw, field]⟩
-  · -- Scale by `c` so that `g₂ = a`; then `g₃ = ± b`, and `c * I` changes the sign of `g₃` only.
-    have ha : a ≠ 0 := fun ha_zero ↦
-      mul_ne_zero (pow_ne_zero 3 hE) h_ne (by simpa [ha_zero] using h_disc)
-    obtain ⟨c, hc⟩ : ∃ c : ℂ, c ^ 4 = 12 * a / E₄ τ := IsSepClosed.exists_pow_nat_eq _ 4
-    have hc_ne : c ≠ 0 := ne_zero_pow (n := 4) (by norm_num) (by simp [hc, ha, hE])
-    have h_g₂ : c ^ 4 * E₄ τ / 12 = a := by simp [hc, field]
-    -- Both `(g₂, g₃)` and `(a, b)` satisfy `g₂³ : (g₂³ - 27 g₃²) = E₄³ : 12³ Δ`, so the two `g₃`
-    -- have equal squares.
-    have h_sq : (c ^ 6 * E₆ τ / 216) ^ 2 = b ^ 2 := by
-      have h_twelve : (c ^ 4) ^ 3 * E₄ τ ^ 3 = (12 * a) ^ 3 := by simp [hc, field]
-      apply mul_right_cancel₀ (pow_ne_zero 3 hE)
-      linear_combination (E₆ τ ^ 2 / 216 ^ 2) * h_twelve +
-        (1728 * (12 * a) ^ 3 / 216 ^ 2) * hΔ + (1728 / 216 ^ 2) * h_disc
-    rcases sq_eq_sq_iff_eq_or_eq_neg.1 h_sq with h_pos | h_neg
-    · obtain ⟨L, h₂, h₃⟩ := exists_g₂_g₃_eq_pow_mul_eisenstein τ hc_ne
-      exact ⟨L, h₂.trans h_g₂, h₃.trans h_pos⟩
-    · obtain ⟨L, h₂, h₃⟩ :=
-        exists_g₂_g₃_eq_pow_mul_eisenstein τ (mul_ne_zero hc_ne Complex.I_ne_zero)
-      refine ⟨L, by simpa [mul_pow, h_g₂] using h₂, ?_⟩
-      rw [h₃, mul_pow, show Complex.I ^ 6 = -1 by norm_num [pow_succ]]
-      linear_combination -h_neg
-
-/-- A modular form `g` of weight 12 for the full modular group (`𝒮ℒ`, the image of SL₂(ℤ) in
-GL₂(ℝ)) that tends to 1 at the cusp `i∞` has a zero in the upper half plane. -/
-lemma exists_eq_zero_of_weight_twelve_of_tendsto_one (g : ModularForm 𝒮ℒ 12)
-    (h_lim : Filter.Tendsto g atImInfty (nhds 1)) : ∃ τ : ℍ, g τ = 0 := by
-  -- Otherwise `g⁻¹` is a modular form of weight `-12`, hence zero: absurd.
-  by_contra! h_ne
-  have h_slash (γ : SL(2, ℤ)) :
-      (fun τ ↦ (g τ)⁻¹) ∣[(-12 : ℤ)] Matrix.SpecialLinearGroup.mapGL ℝ γ = fun τ ↦ (g τ)⁻¹ := by
-    simp [slash_def, UpperHalfPlane.σ, SlashInvariantForm.slash_action_eqn'' g]
-  have h_bdd : IsBoundedAtImInfty fun τ ↦ (g τ)⁻¹ := (h_lim.inv₀ one_ne_zero).isBigO_one ℝ
-  let g_inv : ModularForm 𝒮ℒ (-12) :=
-    { toFun := fun τ ↦ (g τ)⁻¹
-      slash_action_eq' := Set.forall_mem_range.2 h_slash
-      holo' := g.holo'.inv h_ne
-      bdd_at_cusps' := fun hc ↦
-        (OnePoint.isBoundedAt_iff_forall_SL2Z hc).2 fun γ _ ↦ by rwa [← h_slash γ] at h_bdd }
-  exact inv_ne_zero (h_ne UpperHalfPlane.I)
-    (congrFun (levelOne_neg_weight_eq_zero (by norm_num) g_inv) UpperHalfPlane.I)
-
-/-- The Eisenstein series E₄ tends to 1 at the cusp i∞. -/
-lemma tendsto_E₄_atImInfty : Filter.Tendsto E₄ atImInfty (nhds 1) :=
-  tendsto_E_atImInfty
-
-/-- For complex numbers a, b with a³ − 27b² ≠ 0 there is a period lattice L with Weierstrass
-invariants g₂(L) = a and g₃(L) = b.
-This is the existence part of the uniformisation theorem for elliptic curves over ℂ. -/
-lemma exists_lattice_of_g₂_g₃ {a b : ℂ} (h_ne : a ^ 3 - 27 * b ^ 2 ≠ 0) :
-    ∃ L : PeriodPair, g₂ L = a ∧ g₃ L = b := by
-  -- The form `g = E₄³ - c Δ` of weight 12, with `c = (12 a)³ / (a³ - 27 b²)`, tends to 1 at the
-  -- cusp, so it has a zero `τ`; a suitable multiple of `ℤ τ + ℤ` then has both invariants.
-  let c : ℂ := (12 * a) ^ 3 / (a ^ 3 - 27 * b ^ 2)
-  let E₄_cube : ModularForm 𝒮ℒ 12 := E₄.pow 3
-  let g : ModularForm 𝒮ℒ 12 := E₄_cube - c • modularForm CuspForm.discriminant
-  have g_apply (τ : ℍ) : g τ = E₄ τ ^ 3 - c * discriminant τ := by simp [g, E₄_cube, (coe_pow)]
-  obtain ⟨τ, h_zero⟩ : ∃ τ : ℍ, g τ = 0 := exists_eq_zero_of_weight_twelve_of_tendsto_one g <| by
-    simpa [funext g_apply] using
-      (tendsto_E₄_atImInfty.pow 3).sub (discriminant_isZeroAtImInfty.const_mul c)
-  have h_disc : E₄ τ ^ 3 * (a ^ 3 - 27 * b ^ 2) = (12 * a) ^ 3 * discriminant τ := by
-    rw [g_apply, sub_eq_zero] at h_zero
-    rw [h_zero, mul_right_comm, div_mul_cancel₀ _ h_ne]
-  exact exists_lattice_of_E₄_cube_mul_eq h_ne h_disc
 
 end New
 

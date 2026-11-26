@@ -175,8 +175,9 @@ lemma derivative_taylorVia_theta :
 /-- The linear coefficient of `g = -log θ` vanishes, since `θ'(0) = 0`. -/
 lemma coeff_one_negLogTheta : coeff 1 C.negLogTheta = 0 := by
   have h_deriv : coeff 0 (d⁄dX C.negLogTheta) = 0 := by
-    simpa [derivative_taylorVia, C.deriv_theta_zero, C.constantCoeff_taylorVia_theta] using
-      congrArg constantCoeff C.derivative_taylorVia_theta
+    have h := congrArg constantCoeff C.derivative_taylorVia_theta
+    rw [derivative_taylorVia] at h
+    simpa [C.deriv_theta_zero, C.constantCoeff_taylorVia_theta] using h
   simpa [coeff_derivative] using h_deriv
 
 /-- The Taylor series `θ` satisfies `θ'² = θ θ'' + (g''(0) + x) θ²`, with `g''(0) = -θ''(0)` and

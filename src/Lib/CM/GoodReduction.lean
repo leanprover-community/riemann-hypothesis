@@ -1,6 +1,7 @@
 module
 
 public import Lib.CM.Sigma.ThetaSections
+import TauCeti.Analysis.SpecialFunctions.Elliptic.AdditionTheorem
 
 /-!
 # CM lattices as multiples of fractional ideals, and good reduction of CM curves
