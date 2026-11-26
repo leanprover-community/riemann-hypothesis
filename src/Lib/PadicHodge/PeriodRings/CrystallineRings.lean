@@ -907,8 +907,10 @@ lemma BdRPlus.isUnit_iff : IsUnit x ↔ thetaBdR x ≠ 0 := by
   exact AdicCompletion.isUnit_iff_not_dvd_of_isMaximal_span x
 
 /-- Every nonzero element of `B_dR⁺` is a power of `ξ` times a unit. -/
-lemma BdRPlus.exists_associated_xi_pow (hx : x ≠ 0) : ∃ n : ℕ, Associated (xi ^ n : BdRPlus) x :=
-  AdicCompletion.exists_associated_pow_of_isMaximal_span hx
+lemma BdRPlus.exists_associated_xi_pow (hx : x ≠ 0) : ∃ n : ℕ, Associated (xi ^ n : BdRPlus) x := by
+  rw [Algebra.cast, IsScalarTower.algebraMap_apply Ainf BPlus BdRPlus]
+  exact AdicCompletion.exists_associated_pow_of_isMaximal_span (R := BPlus)
+    (r := algebraMap Ainf BPlus xi) hx
 
 open scoped Classical in
 instance [FaithfulSMul R BPlus] : FaithfulSMul R BdRPlus := by
