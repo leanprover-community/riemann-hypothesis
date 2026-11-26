@@ -221,8 +221,6 @@ def ratPlace {p : ℕ} (hp : p.Prime) : FinPlace ℚ :=
     apply (irreducible_of_irreducible_absNorm ?_).prime
     rwa [absNorm_span_natCast_rat])
 
-lemma q_ratPlace {p : ℕ} (hp : p.Prime) : (ratPlace hp).q = p := absNorm_span_natCast_rat
-
 /-- `p` is a unit at every place of `ℚ` other than the place at `p`. -/
 lemma valuation_eq_one_of_ne_ratPlace {p : ℕ} (hp : p.Prime) {w : FinPlace ℚ}
     (hw : w ≠ ratPlace hp) : w.valuation ℚ p = 1 := by
@@ -256,7 +254,7 @@ lemma exists_rat_place_of_prime {p : ℕ} (hp : p.Prime) :
       v.valuation ℚ p = exp (-1) ∧
       -- (c)
       ∀ A : ClosurePlace, A.valuation p < 1 → IsPlaceOver A v :=
-  ⟨ratPlace hp, ⟨q_ratPlace hp, fun _ hw ↦ valuation_eq_one_of_ne_ratPlace hp hw⟩,
+  ⟨ratPlace hp, ⟨absNorm_span_natCast_rat, fun _ hw ↦ valuation_eq_one_of_ne_ratPlace hp hw⟩,
     valuation_ratPlace hp, fun _ hA ↦ isPlaceOver_ratPlace_of_valuation_lt_one hp hA⟩
 
 variable [NumberField K] [NumberField L]
