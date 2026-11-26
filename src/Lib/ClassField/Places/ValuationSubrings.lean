@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.Normed.Ring.Ultra
 import TauCeti.NumberTheory.NumberField.Ideal.DegreeOne
 public import Mathlib.RingTheory.Valuation.Extension
 import Mathlib.NumberTheory.RamificationInertia.Galois
@@ -396,14 +397,10 @@ namespace New
 variable {E : Type*} [Field E] [NumberField E] {p : ℕ} [Fact p.Prime]
   {F : Type*} [NormedField F] [IsUltrametricDist F] [CharZero F] [PadicField F p] (σ : E →+* F)
 
-omit [Fact p.Prime] [CharZero F] [PadicField F p] in
-lemma norm_le_one_of_isIntegral {R : Type*} [CommRing R] (ι : R →+* F) {x : R}
-    (hx : IsIntegral ℤ x) : ‖ι x‖ ≤ 1 :=
-  -- The valuation ring of `‖ι ·‖` is integrally closed in `R`.
-  (integer.integers (valuation.comap ι)).mem_of_integral hx.tower_top
-
 omit [NumberField E] [CharZero F] in
-lemma norm_ringOfIntegers_le (x : 𝓞 E) : ‖σ x‖ ≤ 1 := norm_le_one_of_isIntegral σ x.prop
+lemma norm_ringOfIntegers_le (x : 𝓞 E) : ‖σ x‖ ≤ 1 :=
+  IsUltrametricDist.norm_le_one_of_isIntegral (fun x n _ ↦ norm_pow x n)
+    (map_isIntegral_int σ x.prop)
 
 /-! ### The prime induced by an embedding -/
 

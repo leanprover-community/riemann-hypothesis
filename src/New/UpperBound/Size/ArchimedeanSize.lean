@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.Normed.Ring.Ultra
 import Mathlib.Analysis.SpecialFunctions.Stirling
 import Mathlib.Data.Rat.Cast.OfScientific
 public import New.Reduction.PrimeSums
@@ -522,8 +523,9 @@ lemma goodProjTranslate_mem_integralForms {P : Parameters} {D : Data P} {l : ℕ
     D.isCentralProj_e₀.isChar_card_mul_coeff.isIntegral _
   rw [weylGauge_smul, ← weylGauge_mul_of_mem_integralAbove
     (hk := stdLevel_le_localLevel (firstBlockLift ϑ (t * s)).property)]
-  exact (mul_le_of_le_one_left (norm_nonneg _) (norm_le_one_of_isIntegral _ h_int)).trans
-    (h_integral _)
+  refine (mul_le_of_le_one_left (norm_nonneg _) ?_).trans (h_integral _)
+  exact IsUltrametricDist.norm_le_one_of_isIntegral (fun x n _ ↦ norm_pow x n)
+    (map_isIntegral_int _ h_int)
 
 /-- Size of the good part, for the trivial twist, `σ ∈ Aut ℂ` and `s ∈ 𝖦`. The map `lowerChain` is
 the composite of the `m` lifts from forms of principal level on `Y₀` to algebraic forms on `Y_m`. If

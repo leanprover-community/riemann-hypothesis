@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.Normed.Ring.Ultra
 import Mathlib.Analysis.CStarAlgebra.CStarMatrix
 public import New.UpperBound.Divisibility.MarkedPrimes
 public import New.UpperBound.Kernels.ThetaLiftGauge
@@ -274,7 +275,8 @@ lemma IsWeakChainDatum.gaugeLe_chain (h_weak : IsWeakChainDatum ϑ Ψ) (hQ : p.C
     h_raise hφ
 
 lemma norm_star_piMBar_le_one : ‖ιₚ (star D.piMBar)‖ ≤ 1 :=
-  norm_le_one_of_isIntegral (ιₚ.comp (starRingEnd _)) D.piMBar.prop.algebraMap
+  IsUltrametricDist.norm_le_one_of_isIntegral (fun x n _ ↦ norm_pow x n)
+    (map_isIntegral_int (ιₚ.comp (starRingEnd _)) D.piMBar.prop.algebraMap)
 
 end ChainValuation
 

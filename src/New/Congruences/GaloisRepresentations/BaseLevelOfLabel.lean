@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.Normed.Ring.Ultra
 import Mathlib.Data.Rat.Cast.OfScientific
 public import Lib.GaloisRep.TaylorWiles
 public import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
@@ -243,8 +244,9 @@ lemma chosenGroupOrder_nsmul_typeProjection_mem_ellIntegralForms {ϑ : D.Twist}
     rw [h_lift.toLevelPlaces_eq]
     exact D.card_GL_dvd_chosenGroupOrder (h_lift.rank_le.left.trans D.nat_le_of_hasLogBound)
   have h_coef (g : O.ChosenGL r) : ‖ιℓ (Nat.card (O.ChosenGL r) * (tupleIdem r c).coeff g)‖ ≤ 1 :=
-    norm_le_one_of_isIntegral ιℓ.toRingHom
-      ((isCentralProj_tupleIdem c).isChar_card_mul_coeff.isIntegral g)
+    IsUltrametricDist.norm_le_one_of_isIntegral (fun x n _ ↦ norm_pow x n)
+      (map_isIntegral_int ιℓ.toRingHom
+        ((isCentralProj_tupleIdem c).isChar_card_mul_coeff.isIntegral g))
   have h_root (g : O.ChosenGL r) : ‖ιℓ (∏ j, O.tamePart (O.chosenPlace j) (g j).val.det)‖ ≤ 1 :=
     (ιℓ.toRingHom.isOfFinOrder (O.isOfFinOrder_prod_tamePart_det g)).norm_eq_one.le
   -- `val g` is the value at `x`, `i` of the translate of `y` by the components of `g`.
