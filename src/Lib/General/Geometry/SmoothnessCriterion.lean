@@ -241,18 +241,6 @@ lemma New.Variety.eq_zero_of_fderiv_ofSection_eq_zero {A : Type*} [CommRing A] {
   conv_lhs => rw [θ_eq]
   simp [specMap, Spec.map_comp]
 
-/-- Let `Q` be a polynomial over a ring embedded in `ℂ` by `u`, and `Z` a map that is strictly
-differentiable with surjective derivative at `b`. If `Q(Z w) = 0` for `w` near `b`, then
-`Q = 0`. -/
-lemma New.Variety.eq_zero_of_eventually_eval_eq_zero {R : Type*} [CommRing R] {d : ℕ}
-    {Z : (Fin d → ℂ) → Fin d → ℂ} {Z' : (Fin d → ℂ) →L[ℂ] Fin d → ℂ} {b : Fin d → ℂ} {u : R →+* ℂ}
-    (hu : Function.Injective u) (hZ : HasStrictFDerivAt Z Z' b) (hZ' : Z'.range = ⊤)
-    {Q : MvPolynomial (Fin d) R}
-    (hQ : ∀ᶠ w : Fin d → ℂ in nhds b, MvPolynomial.eval (Z w) (Q.map u) = 0) : Q = 0 := by
-  have poly_zero : ∀ y : Fin d → ℂ, MvPolynomial.eval y (Q.map u) = 0 :=
-    eq_zero_of_submersion (.eval_mvPolynomial _) hZ hZ' hQ
-  exact MvPolynomial.map_injective _ hu (MvPolynomial.funext (by simpa using poly_zero))
-
 /-- In an affine chart `W`, let `A = R[X₁, …, X_d]` act, let `u : R → ℂ` be injective, and let
 the function coming from each `P` in `A` have the value `P(Z w)` at `φ w` for `w` near `b`, with
 coefficients moved by `u`, where `Z` is analytic. Let `Γ(X, W)[1/f]` be formally unramified over
@@ -281,8 +269,10 @@ lemma New.Variety.eq_zero_of_eventually_ofSection_eq_zero {R : Type*} [CommRing 
     rw [(h_eval P).fderiv_eq, fderiv_comp b
       (AnalyticOnNhd.eval_mvPolynomial _ _ ⟨⟩).differentiableAt hZ.differentiableAt]
     simp [hv]
-  refine eq_zero_of_eventually_eval_eq_zero hu hZ.hasStrictFDerivAt
-    (ker_eq_bot_iff_range_eq_top.1 (bot_unique Z_imm)) ?_
+  suffices ∀ᶠ w : Fin d → ℂ in nhds b, MvPolynomial.eval (Z w) (Q.map u) = 0 from
+    MvPolynomial.map_injective _ hu (MvPolynomial.funext (by
+      simpa using eq_zero_of_submersion (.eval_mvPolynomial _) hZ.hasStrictFDerivAt
+        (ker_eq_bot_iff_range_eq_top.1 (bot_unique Z_imm)) this))
   filter_upwards [h_eval Q, hQ] with w hev hw using hev.symm.trans hw
 
 /-- If a section over `U` vanishes at a complex point `x` in `U`, it vanishes at every complex
