@@ -195,9 +195,7 @@ lemma weylGauge_denomBound_smul_pointKernel_le_one (H : p.HasLiftRank n) (ϑ : D
   let datumDenom : ℕ := (D.M ^ 1) ^ (2 * Core.numInfPlaces (P.E D.towerExp) * card (n × Unit))
   have h_std : (datumDenom : ℂ) • (pointDatum H ϑ).val ∈ Parameters.standardData _ (D.M ^ 1 : ℕ) :=
     smul_vacuumDatum_mem_standardData normQ_mul_M_pow_mem_modulus
-      (fun _ ↦ by
-        dsimp only [DescentPair.identityBlockIndicator]
-        split <;> simp only [one_mem, zero_mem]) hl
+      (by grind [DescentPair.identityBlockIndicator, one_mem, zero_mem]) hl
   have h_den : datumDenom * (D.M ^ 1 * P.d) ^ boxes X.descentPair.columnCount (card n) ∣
       p.denomBound := by
     simp [X, datumDenom, denomBound, boxes, DescentPair.columnCount, mixedWeight,
