@@ -198,8 +198,9 @@ lemma zeroTerm_omega_of_inclMatrix [WeilData E] (D : U.Splitting V₀ {i // 0 < 
     sub_eq_zero.1 (hC i l (by simpa))
   have h_one (i l : n) (hi : wt i ≤ 0) (hil : wt i ≤ wt l) : C i l = (1 : Matrix n n (𝔸 E)) i l :=
     sub_eq_zero.1 (h_uni i l (Int.lt_add_one_of_le (le_inf hi hil)))
-  have h_zero (i l : n) (hi : wt i < 1) (hl : 0 < wt l) : C i l = 0 := by
-    rw [h_one i l (by omega) (by omega), one_apply_ne (ne_of_apply_ne wt (by omega))]
+  have h_zero (i l : n) (hi : wt i ≤ 0) (hl : 0 < wt l) : C i l = 0 := by
+    have hil : wt i < wt l := hi.trans_lt hl
+    rw [h_one i l hi hil.le, one_apply_ne (ne_of_apply_ne wt hil.ne)]
   -- `C` is block triangular, with a unitriangular block in weights `≤ 0`.
   have h_low : (C.toSquareBlockProp fun i ↦ ¬0 < wt i).det = 1 :=
     det_eq_one_of_unitriangular (lev := fun i ↦ -wt i.val) fun a b hab ↦ by
@@ -210,7 +211,8 @@ lemma zeroTerm_omega_of_inclMatrix [WeilData E] (D : U.Splitting V₀ {i // 0 < 
       _ = (C.toSquareBlockProp fun i ↦ 0 < wt i).det :=
         congrArg det (Matrix.ext fun i l ↦ h_col i l l.property)
       _ = C.det := by
-        rw [twoBlockTriangular_det C (0 < wt ·) fun i hi l ↦ h_zero i l (by omega), h_low, mul_one]
+        rw [twoBlockTriangular_det C (0 < wt ·) fun i hi l ↦ h_zero i l (le_of_not_gt hi),
+          h_low, mul_one]
       _ = u.val := hu
   -- The defect `Δ` has nonzero rows only in positive weight, so `U.x⁻¹ * Δ` is `D.kAdelic` times a
   -- matrix and has no `V₀`-coordinate.
@@ -228,7 +230,7 @@ lemma zeroTerm_omega_of_inclMatrix [WeilData E] (D : U.Splitting V₀ {i // 0 < 
       ratCoordMatrix_eq] using congrArg (· * V₀.x.val) hΔ
   have h_acts : D.ActsOnFrame g M :=
     actsOnFrame_submatrix_ratCoordMatrix D hD fun i l hi hl ↦
-      (h_col i l hl).trans (h_zero i l hi hl)
+      (h_col i l hl).trans (h_zero i l (Order.lt_one_iff_nonpos.mp hi) hl)
   simpa using D.zeroTerm_omega g₀ h_mid h_acts (Unitary.toUnits u) h_det f
 
 end New.Seesaw
