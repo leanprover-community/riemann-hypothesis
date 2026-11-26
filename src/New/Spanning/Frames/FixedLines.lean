@@ -485,15 +485,13 @@ lemma forall_placeFiber {E : Type} [Field E] {T : Finset (FinPlace E)} {ι : Typ
 projections to each fibre of `blk` are equal. -/
 lemma eq_iff_evalFiber_eq {x y : LocProd T} :
     x = y ↔ ∀ i : ι, evalFiber T blk i x = evalFiber T blk i y := by
-  simp only [funext_iff, evalFiber_apply]
-  exact forall_placeFiber blk
+  simpa only [funext_iff, evalFiber_apply] using (forall_placeFiber blk)
 
 /-- An element of the product of the completions at `T` is integral if and only if its projection
 to each fibre of `blk` is integral. -/
 lemma mem_O_iff_evalFiber_mem {x : LocProd T} :
     x ∈ SemilocalField.O ↔ ∀ i : ι, evalFiber T blk i x ∈ SemilocalField.O := by
-  simp only [mem_O_locProd, evalFiber_apply]
-  exact forall_placeFiber blk
+  simpa only [mem_O_locProd, evalFiber_apply] using (forall_placeFiber blk)
 
 /-- When `T` is cut into the fibres of a map `blk`, the additive character `S.charOnPlaces T` of the
 product of the completions at `T`, which is the character of the finite adeles of `S` after
