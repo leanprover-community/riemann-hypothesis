@@ -744,14 +744,6 @@ private lemma map_rowDet (p p' : projLine B) :
   simp only [rowDet, map_sub, map_mul, h_fst, h_snd, h_add]
   ring
 
-/-- Two points of the projective line are equal exactly when their rows have determinant zero. -/
-lemma eq_iff_unimodularRow_fst_mul_snd_eq {p p' : projLine B} :
-    p = p' ↔ (unimodularRow p).fst * (unimodularRow p').snd =
-      (unimodularRow p).snd * (unimodularRow p').fst := by
-  refine ⟨?_, fun h_det ↦ ULift.down_injective (Quotient.out_equiv_out.mp h_det)⟩
-  rintro rfl
-  exact mul_comm _ _
-
 end projLine
 
 open projLine
@@ -914,7 +906,7 @@ lemma exists_etaClass_supported_diagonal (q q' : (projLineAlong g).sections) :
     rw [map_span, Set.image_singleton, h_gen f, span_singleton_mul_left_unit u.isUnit]⟩
   refine ⟨J, fun c h_bot ↦
     -- Where `J c` is zero the determinant is zero, so the points agree.
-    eq_iff_unimodularRow_fst_mul_snd_eq.mpr (sub_eq_zero.mp (span_singleton_eq_bot.mp h_bot)), ?_⟩
+    ULift.down_injective (Quotient.out_equiv_out.mp (sub_eq_zero.mp (span_singleton_eq_bot.mp h_bot))), ?_⟩
   have h_dies : H.map (tateModule g)
       (freeAb.map J.topLocus.ι ≫ (freeAbSectionMap q + freeAbSectionMap q')) 2
       (etaClass g) = 0 :=
