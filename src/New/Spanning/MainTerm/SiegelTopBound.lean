@@ -443,9 +443,10 @@ lemma IsFillingData.enorm_normDensity_le_mul_lintegral_normFiberMeasure
   -- the exponent of the ideal zeta sum is `μ = 3ϱ + 4`, and `2 (μ + 1) ≤ k`
   have h_degree : 1 * Module.finrank ℚ E ≤ 2 ^ (2 * 𝔰.ϱ) :=
     S.mul_finrank_le_pow.trans' (by gcongr; lia)
+  have h_zeta_pow := idealZeta_intAdeles_pow_le 𝔰.ϱ h_degree
   have h_zeta : idealZeta (Ô E) (𝔰.ϱ + 2 * 𝔰.ϱ + 4) ≤ .ofReal (1 + S.b⁻¹ ^ 6) := by
     grw [← S.half_pow_le_inv_pow_six]
-    simpa using idealZeta_intAdeles_pow_le 𝔰.ϱ h_degree
+    simpa using h_zeta_pow
   have h_card : 2 * (𝔰.ϱ + 2 * 𝔰.ϱ + 4 + 1) ≤ card 𝔰.κ := by
     simpa using show 2 * (𝔰.ϱ + 2 * 𝔰.ϱ + 4 + 1) ≤ 𝔰.k by omega
   rw [normDensity_indicator_eq_mul hF.psi_eq hΨ hβ, eNorm_mul]
@@ -453,7 +454,7 @@ lemma IsFillingData.enorm_normDensity_le_mul_lintegral_normFiberMeasure
   · -- the integral of Gauss sums off `T`
     grw [eNorm_integral_le_lintegral_eNorm, setLIntegral_le_lintegral, ← h_zeta]
     exact lintegral_gauss_sum_le_idealZeta
-      (le_two_of_pow_le_ofReal (idealZeta_intAdeles_pow_le 𝔰.ϱ h_degree)) h_card _
+      (le_two_of_pow_le_ofReal h_zeta_pow) h_card _
   · simpa only [one_mulVec, hδβ] using enorm_localDensity_le
       (P.isDisintegration_normFiberMeasure F.two_le_card) conjTranspose_one hF.psi_add_star hΨ
         h_supp δβ
