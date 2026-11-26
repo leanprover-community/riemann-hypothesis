@@ -67,7 +67,7 @@ The parameters are a multiple q₀ of 18480 and a prime d ≡ q₀/2 − 1 mod q
 | cut | `Floors.PlaceData.IsCut` | truncated Bessel function |
 | lift | `Space.lift`, `Kernel.lift`, `D.lowerChain`, `D.goodLift` | theta lift: adelic, by class sums, the chain Y₀ → Y_m, and W_j → V_j. The folder `New/Congruences/Lifting` is p-adic Hodge theory, and the predicate `Lift` is Shintani lifting |
 | string | `Grading`, `Selmer.HasLiftTrace` | the m − 1 − j vectors added to X_j to give Y_j, j < m: hyperbolic pairs, and a middle vector if their number is odd. Also the sum of consecutive powers of the inverse cyclotomic character in the representation of a lift |
-| jet | `jet`, `schurJet` | P(∂)F(0), a Taylor coefficient of a theta function |
+| jet | `jet`, `schurJet` | P(∂)F(0) for a theta series F. For a monomial P = X^α, this is α! times the coefficient of X^α in F, where α! is the product of the factorials of the exponents. |
 | seesaw | `D.seesaw_identity` | on ramified source forms, `D.lowerChain` ∘ (Poincaré series) is c times `D.compositeLift` for a chain datum of the twist, with one c ≠ 0 for all twists; the right side is a finite combination of chains X₀ → X_m restricted to Y_m, and the theorem does not say that it is nonzero; an iterated seesaw identity |
 | filling | `Filling`, `D.isSpread_goodPoincare` | translates of Poincaré series (`D.poincare`) spread over the target forms; a Petersson-type second moment |
 | floor | `Shape.Form.floorGroup` | step of the tower of subgroups fixing the first hyperbolic pairs |
@@ -80,7 +80,7 @@ The parameters are a multiple q₀ of 18480 and a prime d ≡ q₀/2 − 1 mod q
 | type | `typeKernel`, `Space.IsForm` | kernel at infinity that reproduces a form (its discrete series). Also local types (`HasParahoricType`) |
 | gauge | `weylGauge`, `GaugeLe` | p-adic norm of the values of a form; integral means gauge ≤ 1. Unrelated: `Floors.Gauge`, `Filling.maxGauge` |
 | denominator, regular | `Selmer.DenominatorLe`, `D.IsRegularFamily` | ℓ-adic size of the projections to the lifts of integral forms orthogonal to the false lifts (a congruence number); twists of modulus prime to ℓ whose j-th power makes it small for W_j → V_j and for the lifts from U(1) of the main pairs for j (`D.HasDenominatorsLe`), and whose first m powers and their inverses have, for ramified pairs, inverse ratios of L-values of height at most x₁ (`D.HasSmallRatios`) |
-| size | `D.jetSize`, `LevelPlaces.LevelForm.normSqAt` | logarithm of a squared norm, bounded at every conjugate σ; s_∞(j) = log j! + j log(M/Ω) is what a derivative of order j is charged |
+| size | `D.jetSize`, `LevelPlaces.LevelForm.normSqAt` | A derivative of order j has logarithmic cost s_∞(j) = log(j!) + j log(M/Ω). A logarithmic size bound B for a form φ means its squared norm satisfies `φ.normSqAt σ ≤ exp B` at every conjugate σ. |
 | pair, ramified pair, main pair | `D.CriticalPair`, `Data.CriticalPair.ratio` | a point 1 ≤ z ≤ t and a character ν of U(1) of weight −c, z ≤ c ≤ 4b; its ratio is ‖L(z, (νϑ)⁻¹)‖ / ‖L(z, ν⁻¹)‖ without the factors at the level; ramified: exactly at the chosen places; main for j: m < z ≤ r, tame part that of lift j, weight near κ_j |
 | normalisation | `D.invGainFactor`, `D.normalizedPoincare` | c_B = ∏ ℓ^(−g_ℓ) with g_ℓ = ⌊gain − error⌋ (`D.gainExponent`); 𝔭 = c_B c_ss⁻¹ #Ḡ·e₀𝒫 with Ḡ = `D.chosenGL` and 𝒫 = `D.poincare` |
 | determinant | `D.chainDeterminant`, `D.liftDeterminant` | det(u*u), for the chain u on the target forms, or for the lift W_j → V_j on the good forms; `D.liftDeterminant ϑ j` takes the twist ϑ^j |
