@@ -784,7 +784,11 @@ lemma linearIndependent_algHom_coord (h_inj : ∀ x : T', (∀ i : ι, f i x = 0
   refine le_of_hodgeTate_stable le_top 0 _ ⊥ (fun a ha g ↦ ?_) ?_
   · -- Apply `g` to the relation at the embedding `g⁻¹ ∘ γ`.
     ext ⟨⟨i, γ⟩, l⟩
-    simpa [smul_sum] using congrArg (fun y : ℂ_[p] ↦ g • y)
+    simpa only [Basis.coord_apply, lsum_apply, Pi.zero_apply, zpow_ofNat, pow_zero, Units.val_one,
+      one_smul, LinearMap.coe_sum, coe_comp, coe_smulRight, id_coe, id_eq, coe_proj,
+      Finset.sum_apply, Function.comp_apply, Function.eval, Pi.smul_apply, smul_eq_mul,
+      AlgHom.coe_comp, MulSemiringAction.toAlgHom_apply, smul_sum, smul_mul', smul_inv_smul,
+      smul_zero] using congrArg (fun y : ℂ_[p] ↦ g • y)
       (congrFun ha ⟨(i, (MulSemiringAction.toAlgHom _ _ g⁻¹).comp γ), l⟩)
   intro a _ h_rel h_norm _ _ h_fix
   obtain ⟨b, rfl⟩ : ∃ b : κ → ℚ_[p], (fun k ↦ algebraMap ℚ_[p] (PadicAlgCl p) (b k)) = a := by
