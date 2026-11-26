@@ -331,9 +331,8 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
       -- let `ℚ̄_ℓ` act on `ℂ_ℓ` through `γ`, so that a `γ`-semilinear form is linear
       let := γ.toModule
       have h_eig (i : ι) (s : σ) (x : V i) : (f i).val (T i s x) = γ (θ s) * (f i).val x := by
-        have h_f_apply : ((Φ u [s] f) i).val x = (((a ∘ θ) s • f) i).val x := by rw [hf s]
         simpa only [ha, Function.comp_apply, Pi.smul_apply, SetLike.val_smul, LinearMap.smul_apply,
-          Algebra.smul_def] using! h_f_apply
+          Algebra.smul_def] using! congrArg (fun g ↦ (g i).val x) (hf s)
       -- the instances are passed by hand, since `ℂ_ℓ` carries another action of `ℚ̄_ℓ`
       obtain ⟨φ, hφ⟩ := @h_univ ℂ_[ℓ] _ _ _ (.of_algHom (γ.extendScalarsOfIsLocalization _ _⁰))
         (fun i ↦ ⟨(f i).val.toAddHom, by
