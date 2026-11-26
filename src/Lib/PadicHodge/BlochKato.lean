@@ -880,7 +880,8 @@ lemma crysCocycles.finrank_eq (h : IsPotentiallyCrystalline ρ) {J : Multiset �
         have h_x : algebraMap BdRPlus BdR (toGp g • x j) = toGp g • algebraMap BdRPlus BdR (x j) :=
           (smul_algebraMap_eq_algebraMap_smul (toGp g) (x j)).symm
         rw [map_mul, ← IsScalarTower.algebraMap_apply, h_x]
-      exact h_lhs.symm.trans ((congrArg (fun b : ι → BdR ↦ toGp g • b - b) hx.symm).trans h_rhs)
+      change N ((↑) ∘ x) = u y - w a at hx
+      rw [← h_lhs, ← h_rhs, ← hx]
     have hD (g : Γ) (i : ι) : (D y g i : BdR) = coboundaryMap (coordAction ρ ε) x g i :=
       congrFun (N.injective (h_eq g)) i
     have h_fixed (g : Γ) (i : ι) : frobEnd (D y g i) = D y g i :=
