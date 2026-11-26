@@ -378,17 +378,6 @@ lemma exists_ev_eq_frobEnd_pow (ht_fixes : c.FixesThetaZ t)
         Subalgebra.algebraMap_def, -RingHom.coe_pow] using h_ring
     ring
 
-/-- For `3 * e ≤ p ^ l` there is an `S`-algebra map `ev₀ : S⟦X⟧ → Amax` with
-`z ^ (p ^ l) = p ^ 2 * ev₀ X` in `BPlus`: it evaluates at `X = p * T`, where
-`z ^ (p ^ l) = p ^ 3 * T` with `T` in the `p`-adically complete ring `Amax`. -/
-private lemma exists_algHom_z_pow_eq_p_pow_two_mul {l : ℕ} (hl : 3 * c.e ≤ p ^ l) :
-    ∃ ev₀ : c.S⟦X⟧ →ₐ[c.S] Amax,
-      ainfToBPlus c.z ^ p ^ l = p ^ 2 * algebraMap Amax BPlus (ev₀ X) := by
-  obtain ⟨T, hT⟩ := exists_z_pow_eq ((mul_comm c.e 3).trans_le hl)
-  obtain ⟨ev₀, h₀⟩ : ∃ ev₀ : c.S⟦X⟧ →ₐ[c.S] Amax, ev₀ X = p * T :=
-    exists_algHom_X_eq c.S (mem_span_singleton.mpr (dvd_mul_right (p : Amax) T))
-  exact ⟨ev₀, by simp [h₀, hT, pow_succ, mul_assoc]⟩
-
 /-- Let `Z` be a matrix over `S_B` with `Z' * Z = E ^ h`. Then there are a matrix `B` over `BPlus`
 whose entries are fixed by every `g` that fixes the constants Λ, and a matrix `W` over `S_B`, with
 `B * Z = 1 + z • W`. -/
@@ -462,9 +451,12 @@ lemma radius_lemma (ht_fixes : c.FixesThetaZ t)
   -- `exists_ev_eq_frobEnd_pow`, `φ ^ l (B Z)` is the value at `X = φ ^ l (z) / p ^ 2` of a unit
   -- `1 + X F` over `S⟦X⟧`; likewise `φ ^ l (E)` is `p` times the value of a unit `ε`.
   -- Write `1 + X F = ε ^ b V` and take `C = (p ^ b φ ^ l (B))⁻¹`.
-  obtain ⟨ev₀, h₀⟩ := exists_algHom_z_pow_eq_p_pow_two_mul hl
+  obtain ⟨T, hT⟩ := exists_z_pow_eq ((mul_comm c.e 3).trans_le hl)
+  obtain ⟨ev₀, h₀⟩ : ∃ ev₀ : c.S⟦X⟧ →ₐ[c.S] Amax, ev₀ X = p * T :=
+    exists_algHom_X_eq c.S (mem_span_singleton.mpr (dvd_mul_right (p : Amax) T))
   let ev : c.S⟦X⟧ →ₐ[c.S] BPlus := (IsScalarTower.toAlgHom _ _ BPlus).comp ev₀
-  have hX : ainfToBPlus c.z ^ p ^ l = p ^ 2 * ev X := by simpa [ev] using h₀
+  have hX : ainfToBPlus c.z ^ p ^ l = p ^ 2 * ev X := by
+    simp [ev, h₀, hT, pow_succ, mul_assoc]
   have hz : ainfToBPlus c.z ∣ ev X := by
     simpa [hX, (isUnit_p.pow 2).dvd_mul_left, -isUnit_map_iff] using
       dvd_pow_self (ainfToBPlus c.z) (NeZero.ne (p ^ l))
