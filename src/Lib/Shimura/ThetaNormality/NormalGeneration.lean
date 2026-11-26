@@ -185,7 +185,7 @@ lemma IsAppellHumbert.exists_proportional_orbit_lattice {O : Type*} [CommRing O]
   -- `G`, the dual lattice modulo `L`, is finite, and its order divides a power of `N`.
   let G : Type := B.dualLattice ⧸ H
   have h_finite : Finite G := hB.finite_dualLattice_quotient
-  have h_fintype : Fintype G := Fintype.ofFinite G
+  let h_fintype : Fintype G := Fintype.ofFinite G
   have card_unit : IsUnit (Nat.card G : O) :=
     hB.isUnit_natCard_dualLattice_quotient_of_nsmul_mem hN hN_kills
   let A (s : G) : End ℂ (B.thetaSpace χ) := c (-s.out) • hB.thetaShiftEnd (-s.out)

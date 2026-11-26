@@ -508,7 +508,7 @@ theorem nonempty_universalFamily {M : Submonoid (𝓞 E)} [IsLocalization M R]
   -- Finitely many generic points are dense in it, so it carries a family `X`. It is smooth near
   -- each of the arcs `α z`, and these neighbourhoods cover it.
   have : Finite D.levelTorsion := finite_torsionBy ⟨_, by simp [D.level_ne_zero]⟩
-  have := Fintype.ofFinite D.levelTorsion
+  let := Fintype.ofFinite D.levelTorsion
   have := IsLocalization.isDedekindDomain (𝓞 E) hM_le R
   obtain ⟨C⟩ : Nonempty (ThetaClosure (D := D) R id) := inferInstance
   obtain ⟨ι, hι, a, h_generic, h_dense⟩ := C.exists_finite_isDenseFamily M hR_good

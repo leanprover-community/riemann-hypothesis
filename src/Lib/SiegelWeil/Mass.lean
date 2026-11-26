@@ -382,7 +382,7 @@ lemma lintegral_gauss_sum_le_idealZeta (hμ : idealZeta (Ô E) μ ≤ 2) [Fintyp
   refine (setLIntegral_univ _).ge.trans (lintegral_le_idealZeta_mul hμ S (.of_forall fun b _ ↦ ?_))
   let I : Ideal (Ô E) := conductorIdeal b.val
   have index_ne : I.cardQuot ≠ 0 := isCompact_Ô.relIndex_ne_zero_add (isOpen_characterKernel b.val)
-  have : Fintype (Ô E ⧸ I.toAddSubgroup) := fintypeOfIndexNeZero index_ne
+  let : Fintype (Ô E ⧸ I.toAddSubgroup) := fintypeOfIndexNeZero index_ne
   have mem_S : b ∈ S I := by
     -- `ξ b` is trivial on `I`, so it descends to a character of `Ô ⧸ I`
     let ξb : Ô E →+ Additive ℂ := (coeHom.compAddChar (ψf E)).toAddMonoidHom.comp
