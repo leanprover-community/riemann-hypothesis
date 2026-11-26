@@ -625,7 +625,8 @@ lemma isDisintegration_quadricMeasure (hT : Tᴴ = T) :
   · -- The disintegration formula, in coordinates `x = (s, t, w)`, for fixed `w` and unit `t`.
     let Φ (x : Fin 2 ⊕ ι → A) := f (star x ⬝ᵥ planeSumGram T *ᵥ x, x)
     exact (measurePreserving_pair_sumElim.lintegral_comp (by fun_prop)).symm.trans <|
-      (lintegral_prod_symm' (fun r ↦ Φ (![r.1, r.2.1] ⊕ᵥ r.2.2)) (by fun_prop)).trans <|
+      (lintegral_prod_symm' (fun r : A × A × (ι → A) ↦ Φ (![r.1, r.2.1] ⊕ᵥ r.2.2))
+        (by fun_prop)).trans <|
       (lintegral_congr_of_ae_imp h_unit fun p hp ↦
         lintegral_form_eq_lintegral_flatChart hT hf hp.unit p.2).trans <|
       lintegral_lintegral_swap (by fun_prop)
