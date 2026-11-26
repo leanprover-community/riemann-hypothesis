@@ -62,12 +62,6 @@ lemma chosenRatio_apply_of_N_mem {w : FinPlace D.E} (hw : ↑D.N ∈ w.asIdeal) 
   simp [chosenRatio, idele_inv_apply_and_ne_zero, D.chosenIdele_apply_of_not_isChosen, h_self,
     h_conj]
 
-/-- The integer `D.piM`, whose prime divisors are the chosen places, is a unit at the places
-above the prime `D.N`. -/
-lemma v_piM_eq_one_of_N_mem {w : FinPlace D.E} (hw : ↑D.N ∈ w.asIdeal) :
-    Valued.v ((algebraMap (𝓞 D.E) (Ô D.E) D.piM : 𝔸f D.E) w) = 1 := by
-  rw [← v_chosenIdele, D.chosenIdele_apply_of_not_isChosen (D.not_isChosen_of_N_mem hw).1, map_one]
-
 /-- For `β = D.piM` and `δ = D.chosenRatio`, the adeles `β̄ δ` and `β` have the same valuation
 at every finite place: `δ = c / c̄` for an idele `c` with the valuations of `β`. -/
 lemma v_star_piM_mul_chosenRatio (w : FinPlace D.E) :
@@ -124,7 +118,8 @@ lemma isScalingAtM_of_eq_one_or_eq {κ : PairIndex X X'' → 𝔸f D.E}
   exact
     { mul_star_self_eq_one := D.chosenRatio_mul_star
       apply_eq_one := fun _ ↦ D.chosenRatio_apply_of_N_mem
-      v_eq_one := fun _ ↦ D.v_piM_eq_one_of_N_mem
+      v_eq_one := fun _ hw ↦ by
+        rw [← v_chosenIdele, D.chosenIdele_apply_of_not_isChosen (D.not_isChosen_of_N_mem hw).1, map_one]
       eq_one_or_eq := hκ
       star_mul_mem := h_star
       selfOrConj_mul_mem := h_selfOrConj }
