@@ -74,14 +74,6 @@ lemma val_ideleAt_principalIdele (v : FinPlace K) (x : Kˣ) :
     ((ideleAt v (principalIdele x) : (LocField v)ˣ) : LocField v) = algebraMap K (LocField v) x :=
   rfl
 
-/-- As a rational number, the index `New.cokerKerIndex` of multiplication by `n` on `Additive Y` is
-`[Y : Y ^ n] / #Y[n]`. -/
-private lemma cokerKerIndex_natCast_eq_index_range_powMonoidHom_div {Y : Type} [CommGroup Y]
-    (n : ℕ) :
-    cokerKerIndex (n : End ℤ (Additive Y)) =
-      ((powMonoidHom n : Y →* Y).range.index : ℚ) / Nat.card (powMonoidHom n : Y →* Y).ker :=
-  rfl
-
 /-- Let `Y` be a commutative group and let `q = #(Y / Y ^ n) / #Y[n]` be the index
 (`New.cokerKerIndex`) of multiplication by `n` on `Y` written additively. If `q ≠ 0` and `q = t`,
 then the `n`-th powers have finite index `t * #Y[n]` in `Y`. -/
@@ -92,8 +84,8 @@ lemma index_range_pow_eq {Y : Type} [CommGroup Y] {n t : ℕ}
     let f := (powMonoidHom n : Y →* Y)
     f.range.index ≠ 0 ∧ f.range.index = t * Nat.card f.ker := by
   intro f
+  change (let q : ℚ := f.range.index / Nat.card f.ker; q ≠ 0 ∧ q = t) at h_coker
   obtain ⟨h_coker_ne, h_coker_eq⟩ := h_coker
-  rw [cokerKerIndex_natCast_eq_index_range_powMonoidHom_div] at h_coker_ne h_coker_eq
   obtain ⟨h_index_ne, h_ker_ne⟩ := div_ne_zero_iff.1 h_coker_ne
   exact ⟨Nat.cast_ne_zero.1 h_index_ne, mod_cast (div_eq_iff h_ker_ne).1 h_coker_eq⟩
 
