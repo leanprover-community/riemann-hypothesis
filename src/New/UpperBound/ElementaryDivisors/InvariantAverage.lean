@@ -100,7 +100,9 @@ lemma cast_multinomial_dvd_pow {O : Type} [CommRing O] [IsDomain O] [ValuationRi
   | empty => simp
   | cons a s ha ih =>
     rw [multinomial_cons, cast_mul, card_cons, Nat.add_one_mul, pow_add, mul_comm]
-    exact mul_dvd_mul (ih (by grind)) (cast_choose_dvd_pow hp_prime hp (by simpa using h_lt))
+    rw [sum_cons ha] at h_lt
+    exact mul_dvd_mul (ih ((Nat.le_add_left _ _).trans_lt h_lt))
+      (cast_choose_dvd_pow hp_prime hp h_lt)
 
 /-- Give the polynomials in the variables `σ` the bilinear form for which monomials are orthogonal
 and `⟨x ^ α, x ^ α⟩ = η α`. The weights `η` are adjoint weights if, for every matrix `A`, the linear
