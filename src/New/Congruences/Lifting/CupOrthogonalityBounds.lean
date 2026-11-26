@@ -177,19 +177,6 @@ lemma lcm_pow_sub_one_le {q : ℕ} (hq : 1 < q) (r : ℕ) :
     _ = q ^ r ^ 2 := by simp [← pow_mul, sq]
 
 open scoped Classical in
-/-- Let the sets of the filter `F` contain the subgroup `k.subgroup` (`hF`), and let `L` lie in the
-class `InClass F ⊥ U` (`h`). Suppose that at each embedding `g` the jumps of `L` in `J`, counted
-with multiplicity, number at most `n`. Then the jumps in `J` of the side `k.universalSide ζ hF h` at
-the letter `i`, counted with multiplicity, number at most `n` times the number of embeddings `g`
-with `g ζ = theta (k.letterTeich i)`. -/
-lemma KummerChart.sum_jumpMultiplicity_le {F : Filter Γ}
-    (hF : Filter.map k.subgroup.subtype ⊤ ≤ F) (h : InClass F ⊥ U L) {J : Finset ℤ} {n : ℕ}
-    (hn : ∀ g : O →ₐ[ℤ_[p]] ℂ_[p], ∑ u ∈ J, jump L.ρ g u ≤ n) (i : k.Letter) :
-    ∑ u ∈ J, (k.universalSide ζ hF h).jumpMultiplicity i u ≤
-      #{g : O →ₐ[ℤ_[p]] ℂ_[p] | g ζ = (theta (k.letterTeich i) : ℂ_[p])} * n := by
-  rw [sum_comm, ← smul_eq_mul]
-  exact sum_le_card_nsmul _ _ _ fun g _ ↦ hn g
-
 /-- Let `Γ → Gp p = Gal(ℚ̄_p / ℚ_p)` be an open embedding and `F` a filter on `Γ` whose sets contain
 the subgroup `k.subgroup` of the chart. Let the lattices `Y` with property `Q` lie in
 `InClass F ⊥ U` and `L` in `InClass F ⊥ U'`. Let `x` be a crystalline cocycle of `L` such that, for
@@ -299,7 +286,10 @@ lemma KummerChart.dualDefect_le_of_few_low_weights [TopologicalSpace Γ] (k : Ku
   let d (i : k.Letter) : ℕ := #{g : O →ₐ[ℤ_[p]] ℂ_[p] | g ζ = (theta (k.letterTeich i) : ℂ_[p])}
   have sum_le {J : Finset ℤ} {n : ℕ} (hn : ∀ g : O →ₐ[ℤ_[p]] ℂ_[p], ∑ u ∈ J, jump L.ρ g u ≤ n)
       (i : k.Letter) : ∑ u ∈ J, k.f * S.jumpMultiplicity i u ≤ k.f * (d i * n) := by
-    grw [← mul_sum, k.sum_jumpMultiplicity_le ζ le_top hL hn i]
+    rw [← mul_sum]
+    gcongr
+    rw [sum_comm, ← smul_eq_mul]
+    exact sum_le_card_nsmul _ _ _ fun g _ ↦ hn g
   obtain ⟨V, V_length, V_cup⟩ :=
     S.exists_relLength_le_and_isScaledCupCoboundary hk hp h_height h_far h_gap hU'
       (n := fun i ↦ k.f * (d i * m)) (r := fun i ↦ k.f * (d i * finrank O L))
