@@ -112,7 +112,8 @@ lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
     _ = ENNReal.ofReal (K ^ d * c) * V := by
         rw [← mul_assoc, ← ENNReal.ofReal_mul hc_nonneg, mul_comm c]
 
-/-- Let `u ≥ 1` be measurable and suppose that `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, and `V` is finite.
+/-- Let `u ≥ 1` be measurable and suppose that `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`,
+and `V` is finite.
 Then `u^(-A)` is integrable for `A > e d`. -/
 lemma New.integrable_rpow_neg_of_measure_sublevel_le (hu_meas : Measurable u)
     (hu : ∀ s : S, 1 ≤ u s) (hV : V ≠ ⊤)
