@@ -4,6 +4,7 @@ import Mathlib.NumberTheory.MulChar.Lemmas
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
 import TauCeti.Algebra.Group.AddChar.Basic
+import TauCeti.InformationTheory.Coding.CharacterSum
 public import Lib.Speed
 
 /-!
@@ -92,12 +93,7 @@ and a vector `z` in `R^a`, the sum of `ψ (z ⬝ᵥ x)` over all `x` in `R^a` is
 if `z = 0` and `0` otherwise. -/
 lemma sum_addChar_dotProduct (hψ : ψ.IsPrimitive) (z : a → R) :
     ∑ x : a → R, ψ (z ⬝ᵥ x) = if z = 0 then Fintype.card (a → R) else 0 := by
-  -- The sum splits into a product over the coordinates; by primitivity the factor at `i` is
-  -- `card R` if `z i = 0` and `0` otherwise.
-  calc ∑ x, ψ (z ⬝ᵥ x)
-    _ = ∑ x : a → R, ∏ i, ψ (z i * x i) := by simp only [dotProduct, AddChar.map_sum_eq_prod]
-    _ = ∏ i, ∑ t, ψ (z i * t) := (Fintype.prod_sum fun i t ↦ ψ (z i * t)).symm
-    _ = _ := by simp [mul_comm, sum_mulShift, hψ, Fintype.prod_ite_zero, funext_iff]
+  simpa [Fintype.card_fun] using AddChar.sum_apply_dotProduct hψ z
 
 /-- Orthogonality of characters on matrices: for a primitive additive character `ψ` of `R` and an
 `a × N` matrix `ρ`, the sum of `ψ (tr (ρ v))` over all `N × a` matrices `v` is the number of such
