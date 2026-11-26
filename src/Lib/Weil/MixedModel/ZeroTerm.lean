@@ -426,10 +426,7 @@ lemma IsMixedLaw.apply_omega_rho_finFrameVector
       (stdAddChar E (toAdele (WeilData.j / 2 : E) * star (finVec b) ⬝ᵥ finVec z) : ℂ) =
         selfDualAddChar E (half * star b ⬝ᵥ z) := by
     simp [finVec, stdAddChar, selfDualAddChar_apply, half, dotProduct, mul_sum, fst_sum, snd_sum]
-    congr 2
-    refine Finset.sum_congr rfl fun i _ ↦ ?_
-    rw [div_eq_mul_inv, map_mul]
-    ring
+    grind
   have h_phase :
       (adelicHeisenberg E 1).β (t.val⁻¹ᴴ *ᵥ finVec x +
         (t.val⁻¹ᴴ *ᵥ finVec x + t.val⁻¹ᴴ *ᵥ finVec a))
@@ -650,9 +647,7 @@ lemma IsAdapted.omega_schrodingerOp_of_isMixedLaw
     -- The phases differ by a trace `τ + star τ`, which `selfDualAddChar` does not see.
     apply selfDualAddChar_congr (half * idem S * star (x + x + a) ⬝ᵥ b) (zero_mem _)
     simp [mul_add]
-    simp only [idem_conjClosure_eq_add_star hS, star_half, ← star_dotProduct]
-    linear_combination (-(idem S * star a ⬝ᵥ b' + idem S * star x ⬝ᵥ b + idem S * star a ⬝ᵥ b)) *
-      two_mul_half (E := E)
+    grind [star_dotProduct, idem_mul_self, idem_conjClosure_eq_add_star, idem_mul_star]
   have h_off (a : p → 𝔸f E) :
       idem S.conjClosureᶜ • (x + idem S.conjClosure • a) = idem S.conjClosureᶜ • x := by
     have h_zero : idem S.conjClosureᶜ * idem S.conjClosure = 0 := by
