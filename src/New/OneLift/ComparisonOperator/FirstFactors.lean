@@ -409,16 +409,6 @@ lemma norm_map_addedDatum_le (j : D.LiftIndex)
   · simpa using! norm_sum_le_of_le univ fun _ _ ↦ ((σ.toRingHom.compAddChar _).norm_apply _).le
   · simp
 
-/-- The ranks of the five spaces in the three kernels are at most the gap `Δ = D.gap`. -/
-lemma card_le_gap (j : D.LiftIndex) :
-    card (Fin D.m) ≤ D.gap ∧
-    card D.CarrierIndex ≤ D.gap ∧
-    card (Fin j) ≤ D.gap ∧
-    card (FirstFactorIndex j) ≤ D.gap ∧
-    card (AddedIndex j) ≤ D.gap := by
-  have h_gap : 40 * D.k ≤ D.gap := mod_cast (D.le_of_hasLogBound : (40 * D.k : ℝ) ≤ D.gap)
-  grind [card_sum, card_rowIndex, Fintype.card_fin]
-
 /-- Let ζ = `stackedDetProdCoords j i (D.shortRows i)` be the vector of coordinates of the product
 of determinants, polynomials in variables indexed by an infinite place in `D.Φ`, a row in
 `FirstFactorIndex j` and a column in `AddedIndex j`. Evaluate `H • ζ` at a point `z` whose
@@ -769,7 +759,10 @@ lemma exists_isIntegralAndSmall_leftSideSeries (j : D.LiftIndex) :
     let σ : ℂ ≃+* ℂ := starRingAut.trans φ
     have h_level : ϑ.normQ = 1 := by simp [hQ_empty]
     rw [h_level, one_mul] at h𝔪
-    obtain ⟨hm, h_carrier, hj, h_first, h_added⟩ := card_le_gap j
+    obtain ⟨hm, h_carrier, hj, h_first, h_added⟩ : card (Fin D.m) ≤ D.gap ∧ card D.CarrierIndex ≤ D.gap ∧
+        card (Fin j) ≤ D.gap ∧ card (FirstFactorIndex j) ≤ D.gap ∧ card (AddedIndex j) ≤ D.gap := by
+      have h_gap : 40 * D.k ≤ D.gap := mod_cast (D.le_of_hasLogBound : (40 * D.k : ℝ) ≤ D.gap)
+      grind [card_sum, card_rowIndex, Fintype.card_fin]
     have size₀ (v : Gf D.E (Fin D.m)) (w : Gf D.E D.CarrierIndex) : ‖σ (k₀ v w)‖ ≤ rexp D.x₁ := by
       simpa [k₀] using K₀.norm_map_le hm h_carrier (Nat.zero_le _) (twistedChiMPow_hasWeight ϑ j)
         .one
