@@ -92,7 +92,8 @@ variable {n R : Type*} [Fintype n] [DecidableEq n] [CommRing R] (σ : Perm n) {O
 to e_{σ(i)}. -/
 abbrev permGL : Perm n →* GL n R := permMatrixHom.toHomUnits
 
-lemma permGL_mem_intGL : permGL σ ∈ intGL n O := ⟨permGL σ, by aesop⟩
+lemma permGL_mem_intGL : permGL σ ∈ intGL n O :=
+  ⟨permGL σ, Units.ext <| Matrix.ext fun i j ↦ by simp⟩
 
 lemma diagGL_mul_permGL (t : n → Rˣ) (σ : Perm n) :
     diagGL t * permGL σ = permGL σ * diagGL (t ∘ σ) := by
@@ -102,8 +103,9 @@ variable {i j : n} (hij : i ≠ j) {F : Type*} [Field F] [Valued F ℤᵐ⁰]
 
 lemma permGL_mul_transvectionGL (hij : i ≠ j) (a : R) :
     permGL σ * transvectionGL hij a = transvectionGL (σ.injective.ne hij) a * permGL σ := by
-  aesop (add simp [Perm.inv_def, transvection, Matrix.single, toMatrix_mul_apply, Matrix.one_apply,
-    mul_toMatrix_toPEquiv])
+  refine Units.ext <| Matrix.ext fun r c ↦ ?_
+  simp [Perm.inv_def, transvection, Matrix.single, toMatrix_mul_apply, Matrix.one_apply,
+    mul_toMatrix_toPEquiv, Equiv.eq_symm_apply, eq_comm]
 
 @[simp high]
 lemma residue_eq_zero_iff_valuation_lt_one {a : 𝒪[F]} : residue 𝒪[F] a = 0 ↔ v a.val < 1 :=
@@ -132,7 +134,9 @@ def residuePreimage (H : Subgroup (GL n (IsLocalRing.ResidueField 𝒪[F])))
     OpenSubgroup (GL n F) where
   toSubgroup :=
     ((H.comap (intGL.map (residue 𝒪[F]))).map (intGL n 𝒪[F]).subtype).copy {g ∈ intGL n 𝒪[F] | P g}
-      (by aesop)
+      (Set.ext fun g ↦
+        ⟨fun ⟨hg, hP⟩ ↦ ⟨⟨g, hg⟩, (e ⟨g, hg⟩).2 hP, rfl⟩,
+          fun ⟨k, hk, hkg⟩ ↦ hkg ▸ ⟨k.2, (e k).1 hk⟩⟩)
   isOpen' := by
     -- It contains the open subgroup of integral matrices congruent to `1`, whose residue `1`
     -- lies in `H`.
@@ -349,7 +353,8 @@ lemma exists_row_reduction (g : GL n F) (s : Finset n) :
     obtain ⟨j, hj⟩ : ∃ j : n, ∀ l : n, v (m a l) < v (m a j) ∨ v (m a l) = v (m a j) ∧ j ≤ l := by
       have h_nonempty : Nonempty n := ⟨a⟩
       simpa [Prod.Lex.le_iff] using Finite.exists_max fun l ↦ toLex (v (m a l), OrderDual.toDual l)
-    have h_max (l : n) : v (m a l) ≤ v (m a j) := by grind
+    have h_max (l : n) : v (m a l) ≤ v (m a j) :=
+      (hj l).elim le_of_lt fun ⟨h_eq, _⟩ ↦ h_eq.le
     -- The pivot is non-zero, as otherwise row `a` vanishes.
     have h_pivot : m a j ≠ 0 := fun h_zero ↦
       m.det_ne_zero (det_eq_zero_of_row_eq_zero a fun l ↦ by simpa [h_zero] using h_max l)
