@@ -130,11 +130,6 @@ lemma sum_trace_coordProj_mul (hw : ∀ i : n, a ≤ w i ∧ w i ≤ b) (X : Mat
     ← sum_sub_distrib, ← sub_mul]
   exact sum_congr rfl fun i _ ↦ by simp [sum_ite, ← Int.cast_sub, ← h_card]
 
-/-- An element of `K = maxCompactU ε` is a unitary matrix. -/
-lemma maxCompactU_conjTranspose_mul_self (k : maxCompactU ε) :
-    (k : Matrix n n ℂ)ᴴ * (k : Matrix n n ℂ) = 1 :=
-  Matrix.mem_unitaryGroup_iff'.1 (U_one_mem_unitaryGroup ⟨_, k.property⟩)
-
 /-- On `K = maxCompactU ε`, the product of principal minors `weightMinors w` decays like a Gaussian:
 its squared modulus at `k` is at most `exp (-Q_w (k) / 2)`. -/
 lemma norm_weightMinors_sq_le_exp (w : n → ℤ) (k : maxCompactU ε) :
@@ -148,7 +143,7 @@ lemma norm_weightMinors_sq_le_exp (w : n → ℤ) (k : maxCompactU ε) :
           norm_zpow, U.norm_det, _root_.one_zpow, one_mul, norm_prod, prod_pow]
     _ ≤ ∏ t ∈ Ioc (-M) M, Real.exp (-(‖⁅coordProj (t ≤ w ·), (k : Matrix n n ℂ)⁆‖ ^ 2 / 2)) :=
         prod_le_prod₀ (fun t _ ↦ sq_nonneg _) fun t _ ↦
-          norm_principalMinor_sq_le_exp _ (maxCompactU_conjTranspose_mul_self k)
+          norm_principalMinor_sq_le_exp _ (Matrix.mem_unitaryGroup_iff'.1 (U_one_mem_unitaryGroup ⟨_, k.property⟩))
     _ = Real.exp (-(gapWeightedNormSq w k / 2)) := by
         rw [← Real.exp_sum, sum_neg_distrib, ← sum_div, sum_norm_lie_coordProj_sq hw]
 
@@ -170,9 +165,10 @@ lemma norm_trace_paramAddRho_sub_trace_lowestKType_le (l : HCParam ε) (Z : Matr
 is the sum of the compact roots (`ε i = ε j`) positive for `l`. -/
 lemma gapWeightedNormSq_neg_paramAddRho_le (l : HCParam ε) (k : maxCompactU ε) :
     gapWeightedNormSq (-paramAddRho l) k ≤ gapWeightedNormSq l.lowestKType k + 2 * card n ^ 2 := by
+  have hk : (k : Matrix n n ℂ)ᴴ * (k : Matrix n n ℂ) = 1 :=
+    Matrix.mem_unitaryGroup_iff'.1 (U_one_mem_unitaryGroup ⟨_, k.property⟩)
   have h_norm : ‖(k : Matrix n n ℂ)‖ ^ 2 = card n := by
-    rw [← ofReal_inj, ← trace_star_mul_self_eq_norm_sq, maxCompactU_conjTranspose_mul_self,
-      trace_one, ofReal_natCast]
+    rw [← ofReal_inj, ← trace_star_mul_self_eq_norm_sq, hk, trace_one, ofReal_natCast]
   have h_diff (i j : n) : |(-paramAddRho l) i - (-paramAddRho l) j| ≤
       |l.lowestKType i - l.lowestKType j| + 2 * card n := by
     simp only [Pi.neg_apply, lowestKType]
