@@ -173,14 +173,6 @@ private lemma evalGL_moebius_add_one_sub_constOne_pow_mul {m : ℕ} (γ : GL (Fi
       (by simp [dim_simClassOf])
   rw [evalGL, evalGL, Hall.add_apply, h_zero, add_zero]
 
-/-- One step `J ↦ J - (constOne * J - 1)` of the iteration that approaches `moebius` takes
-`moebius + (1 - constOne) ^ N * -moebius` to the same expression with exponent `N + 1`. -/
-private lemma moebius_add_one_sub_constOne_pow_succ_mul (N : ℕ) :
-    (moebius + (1 - constOne) ^ (N + 1) * -moebius : Hall k₀) =
-      (moebius + (1 - constOne) ^ N * -moebius) -
-        (constOne * (moebius + (1 - constOne) ^ N * -moebius) - 1) := by
-  grind [isUnit_constOne]
-
 /-! ### First properties and examples of lifts -/
 
 /-- Let σ have fixed field k₀. Then the matrices γ in GL_n(k₀) have (a) a natural choice of
@@ -420,8 +412,7 @@ lemma Lift.mulMoebius (h : Lift R F F') : Lift R F.mulMoebius F'.mulMoebius := b
   have hJ (N : ℕ) : Lift (k := k) (k' := k') R (moebius + (1 - constOne) ^ N * -moebius)
       (moebius + (1 - constOne) ^ N * -moebius) :=
     Nat.rec (by simpa using one.sub one) (fun _ ih ↦ by
-      simp only [moebius_add_one_sub_constOne_pow_succ_mul]
-      exact ih.sub ((lift_constOne.mul ih).sub one)) N
+      convert ih.sub ((lift_constOne.mul ih).sub one) using 1 <;> grind [isUnit_constOne]) N
   -- `F.mulMoebius` is the pointwise product of `F` and `moebius`, so `Φ * Ψ` descends to it.
   intro m
   obtain ⟨Φ, hΦ, hΦ_F, hΦ_F'⟩ := h m
