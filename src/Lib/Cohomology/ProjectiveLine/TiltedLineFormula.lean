@@ -821,17 +821,23 @@ lemma hasLineFormula_of_isTodaCancellation {B K : AbFunctor C} {i : W' ⟶ W} {�
       comp (TotalH.map Φ ω) s := by
     have h_eta : comp (TotalH.map Φ (etaClass g).toTotalH) m =
         comp (TotalH.map (restrictAlong π) x) Θ.cupClass.toTotalH := by
-      -- `erw`: the left side is the product by `η` of `hx` only up to unfolding `Φ` and `m`.
-      erw [← TotalH.map_map, map_restrictAlong_etaClass, hx]
+      let tensor := abTensor (π ⋙ S)
+      have h_map := (TotalH.map_map (Φ := restrictAlong π) tensor (etaClass g).toTotalH).symm.trans
+        (congrArg (TotalH.map tensor) (map_restrictAlong_etaClass (g := g) (φ := π)))
+      exact (congrArg (fun η ↦ comp η m) h_map).trans hx
     have h_restrict :
         comp (TotalH.map (restrictAlong π) (pullbackAlong ((abTensor S).map j) x))
           Θ.cupClass.toTotalH =
         comp (TotalH.map (restrictAlong π) (comp (TotalH.map (abTensor S) ω) w))
           Θ.cupClass.toTotalH := by rw [hw]
-    rw [h_eta]
-    -- `using!`: restriction along the points of `ℙ¹` matches `Φ` only up to unfolding.
-    erw [map_pullbackAlong, comp_assoc, map_comp_assoc, TotalH.map_map] at h_restrict
-    exact h_restrict
+    let R : AbFunctor C ⥤ AbFunctor (projLineAlong g).Elements := restrictAlong π
+    let η : TotalH (R.obj Θ.functor) (R.obj Θ.functor) := Θ.cupClass.toTotalH
+    have h_pull :=
+      congrArg (fun u ↦ comp u η) (map_pullbackAlong (Φ := R) (x := x) (f := (abTensor S).map j))
+    have h_product := (map_comp_assoc (x := TotalH.map (abTensor S) ω) (y := w) R η).trans
+      (congrArg (fun u ↦ comp u s) (TotalH.map_map (Φ := abTensor S) R ω))
+    refine (congrArg (pullbackAlong (Φ.map j)) h_eta).trans ?_
+    exact (comp_assoc ..).symm.trans (h_pull.symm.trans (h_restrict.trans h_product))
   -- Acyclicity over the points of `ℙ¹` is that of `h_c × ℙ¹`, after swapping two tensor factors.
   have h_acyclic_Φ (n : ℕ) : Subsingleton (H (Φ (cokernel i)) Θ.onElements.functor n) := by
     let swap : abTensor (abTensor S L) (cokernel i) ≅
@@ -853,8 +859,10 @@ lemma hasLineFormula_of_isTodaCancellation {B K : AbFunctor C} {i : W' ⟶ W} {�
   have h_first :
       sliceEquiv (Θ.mulClass (S := S) (etaClass g).toTotalH (pullbackAlong (tensorPoint y S) w)) =
         pullbackAlong (tensorPoint (𝟙 _) (π ⋙ S) ≫ Φ.map y) s := by
-    erw [Θ.sliceEquiv_mulClass, map_pullbackAlong, comp_assoc]
-    rfl
+    refine (Θ.sliceEquiv_mulClass _).trans ?_
+    refine (congrArg (fun z ↦ comp z Θ.cupClass.toTotalH)
+      (map_pullbackAlong (Φ := restrictAlong π) (x := w) (f := tensorPoint y S))).trans ?_
+    exact (comp_assoc ..).trans rfl
   exact h_first.trans ((h_toda.pullbackAlong_comp_map_eq Φ h_acyclic_Φ _ m s h_eq).symm.trans
     (Θ.onElements.pullbackAlong_tensorPoint_comp_tateAction (S := π ⋙ S) _))
 
