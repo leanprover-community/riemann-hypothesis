@@ -383,17 +383,8 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
     simp only [Pi.inv_apply, mulSingle_eq_same, h_inv_val]
   have h_exp1 : (exp (-1) : ℤᵐ⁰) * exp 1 = 1 := by rw [← exp_add, neg_add_cancel, exp_zero]
   have h_le1 : (1 : ℤᵐ⁰) ≤ exp 1 := by rw [← exp_zero]; exact exp_le_exp.mpr (by decide)
-  have h_mul_exp_le_one (x : ℤᵐ⁰) : x * exp 1 ≤ 1 ↔ x < 1 := by
-    constructor
-    · intro h
-      calc x = x * exp 1 * exp (-1) := by rw [mul_assoc, mul_comm (exp 1), h_exp1, mul_one]
-        _ ≤ 1 * exp (-1) := mul_le_mul' h le_rfl
-        _ = exp (-1) := one_mul _
-        _ < 1 := by rw [← exp_zero]; exact exp_lt_exp.mpr (by decide)
-    · intro h
-      have h' : x ≤ exp (-1) :=
-        (lt_mul_exp_iff_le exp_ne_zero).mp (h.trans_eq h_exp1.symm)
-      exact (mul_le_mul' h' le_rfl).trans_eq h_exp1
+  have h_mul_exp_le_one (x : ℤᵐ⁰) : exp 1 * x ≤ 1 ↔ x < 1 := by
+    rw [mul_comm (exp 1), ← lt_mul_exp_iff_le one_ne_zero, mul_lt_mul_iff_left₀ exp_pos]
   constructor
   · rintro ⟨⟨h1, h2, h3⟩, h4⟩
     have hg1 : ∀ a b : Fin N, v (g.val a b) ≤ 1 := fun a b ↦ by
@@ -402,7 +393,6 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
       by_cases har : a = r
       · subst har
         simp only [↓reduceIte, h_inv_val] at ha
-        rw [mul_comm] at ha
         exact ((h_mul_exp_le_one _).mp ha).le
       · simpa [har] using ha
     have hg2 : ∀ a b : Fin N, v (g⁻¹.val a b) ≤ exp 1 := fun a b ↦ by
@@ -428,7 +418,6 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
     rw [Matrix.map_apply, Pi.zero_apply, residueOrZero_eq_zero_iff_lt (hg1 r b)]
     have hr := h1 r b
     simp only [h_mul, ↓reduceIte, map_mul, h_inv_val] at hr
-    rw [mul_comm] at hr
     exact (h_mul_exp_le_one _).mp hr
   · rintro ⟨⟨⟨hg1, hg2, hg3⟩, hg4⟩, hrow⟩
     refine ⟨⟨fun a b ↦ ?_, fun a b ↦ ?_, ?_⟩, fun b a hb ↦ ?_⟩
@@ -436,7 +425,6 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
       by_cases har : a = r
       · subst har
         simp only [↓reduceIte, h_inv_val]
-        rw [mul_comm]
         exact (h_mul_exp_le_one _).mpr
           ((residueOrZero_eq_zero_iff_lt (hg1 a b)).mp (congrFun hrow b))
       · simpa [har] using hg1 a b
