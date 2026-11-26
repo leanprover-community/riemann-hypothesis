@@ -501,8 +501,7 @@ lemma hodgeTateMap_scale {q h : ℕ} (t : k) (x : HodgeH N q) :
   rw [← h_nat]
   -- the push-forward along the scaling commutes with the pull-back to pairs, and is then
   -- composition with its class
-  change comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N) q
-    (H.push _ (HodgeTest.scaleModule t hodgeCoeff) q x)).toTotalH (contractionPow h) = _
+  show comp ((Comparison.restrict _ _).pull _ q (H.push _ _ q x)).toTotalH (contractionPow h) = _
   rw [Comparison.pull_push (Comparison.restrict toHodgeTest hodgeCoeff) (𝟙 _) _
       (toHodgeTest.whiskerLeft (HodgeTest.scaleModule t hodgeCoeff)) rfl, Ext.toTotalH,
     Ext.toTotalH, ← of_comp_homClass, comp_assoc]
