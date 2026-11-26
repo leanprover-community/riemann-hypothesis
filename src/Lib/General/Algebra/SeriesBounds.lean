@@ -167,7 +167,8 @@ lemma norm_coeff_subst_le {σ : Type} {g : MvPowerSeries σ ℂ_[p]} {l : ℕ} {
 is integral in these degrees.
 
 A consequence of the upper bound `v(j!) ≤ j / (p - 1)` given by Legendre's formula, applied to the
-terms `g ^ j / j!` of the exponential series: the case of radius `1` of Tau Ceti's weighted bound. -/
+terms `g ^ j / j!` of the exponential series: the case of radius `1` of Tau Ceti's weighted bound.
+-/
 lemma norm_coeff_expSubst_le_one {σ : Type} {g : MvPowerSeries σ ℂ_[p]}
     (hg_zero : g.constantCoeff = 0) {l : ℕ}
     (hg : ∀ m : σ →₀ ℕ, m.degree ≤ l → ‖g.coeff m‖ ≤ p ^ (-(1 / (p - 1)) : ℝ))

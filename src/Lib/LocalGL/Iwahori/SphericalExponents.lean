@@ -85,7 +85,8 @@ lemma exists_v_entry_eq_one_of_mem_intGL {k : GL (Fin N) F} (hk : k ∈ intGL (F
   have h_term_lt (r : Fin N) : v (k⁻¹ m r * k r m) < 1 := by
     grind [mem_intGL, mul_lt_of_lt_of_le_one, v.mem_integer_iff]
   have h_lt : v (∑ r, k⁻¹ m r * k r m) < 1 := v.map_sum_lt' one_pos fun r _ ↦ h_term_lt r
-  have h_sum : ∑ r, k⁻¹ m r * k r m = 1 := by rw [← Matrix.mul_apply, k.inv_mul, Matrix.one_apply_eq]
+  have h_sum : ∑ r, k⁻¹ m r * k r m = 1 := by
+    rw [← Matrix.mul_apply, k.inv_mul, Matrix.one_apply_eq]
   rw [h_sum, map_one] at h_lt
   exact lt_irrefl 1 h_lt
 

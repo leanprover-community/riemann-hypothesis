@@ -406,7 +406,8 @@ the Heisenberg bicharacter β up to `σ`, where A keeps the Gaussian and B keeps
 indicator. -/
 @[simp]
 lemma map_vacElem : D.map V₁.vacElem = V.vacElem :=
-  ext (map_integral_and_map_vacuum (adelicHeisenberg E s₁) (adelicHeisenberg E s) D.vacuumFn_apply).2
+  ext (map_integral_and_map_vacuum (adelicHeisenberg E s₁) (adelicHeisenberg E s)
+      D.vacuumFn_apply).2
 
 /-- Let φ be a vacuum-preserving change of coordinates with twist σ. If φ(gx) = g₁φ(x) for all x and
 σ(Δ(g₁)) = c·Δ(g), then (ω(g₁)f)^φ = c·ω(g)(f^φ) for all f in 𝒮(V₁), where f^φ = `D.map f` and

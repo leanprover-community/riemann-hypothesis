@@ -196,7 +196,8 @@ private noncomputable def sqrtSign (hc : c ^ 2 = algebraMap E Ω x) (hc_ne : c �
     by_cases h : g c = c
     · simp [ε, h]
     · dsimp only [ε]; rw [ite_eq_right h]; simp [(apply_sqrt_eq_or_eq_neg g hc).resolve_left h]
-  MonoidHom.mk' ε fun g h ↦ Units.ext <| Int.cast_injective (α := Ω) <| mul_right_cancel₀ hc_ne <| by
+  MonoidHom.mk' ε fun g h ↦
+      Units.ext <| Int.cast_injective (α := Ω) <| mul_right_cancel₀ hc_ne <| by
     calc ((ε (g * h) : ℤ) : Ω) * c = g (h c) := hε (g * h)
       _ = g (((ε h : ℤ) : Ω) * c) := by rw [hε h]
       _ = ((ε h : ℤ) : Ω) * (((ε g : ℤ) : Ω) * c) := by simp [hε g]
@@ -368,7 +369,8 @@ lemma exists_real_twist {E : Type*} [Field E] [NumberField E] [IsCMField E] [Has
   let π := Ideal.Quotient.mk (w.asIdeal ^ k)
   have hπα : π α * π (star α) = -1 := by
     rw [← _root_.map_mul, hα]
-    exact eq_neg_of_add_eq_zero_left (by simpa [π] using Ideal.Quotient.eq_zero_iff_mem.mpr (hD w hw))
+    exact eq_neg_of_add_eq_zero_left
+        (by simpa [π] using Ideal.Quotient.eq_zero_iff_mem.mpr (hD w hw))
   have hπs : π s = π (if star w < w then α else 1) := Ideal.Quotient.eq.mpr (h_mod w hw)
   have hπs' : π (star s) = π (if w < star w then star α else 1) :=
     Ideal.Quotient.eq.mpr (h_mod_star w hw)

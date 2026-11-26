@@ -413,12 +413,12 @@ lemma IsMatchingPair.mul {A : Type*} {j : A → U (1 : Matrix n n R)}
         conjTranspose_smul, he_star]
       have h_lhs : e • (r.val * (aeval γ.val.val ((u + v) • (z * w)))ᴴ) =
           r.val * (e • (aeval γ.val.val (z * w))ᴴ) := by
-        rw [smul_eq_C_mul, map_mul, aeval_C, Algebra.algebraMap_eq_smul_one, smul_mul_assoc, one_mul,
-          conjTranspose_smul, star_add, hu_star, hv_star, mul_smul_comm, smul_smul, he,
+        rw [smul_eq_C_mul, map_mul, aeval_C, Algebra.algebraMap_eq_smul_one, smul_mul_assoc,
+          one_mul, conjTranspose_smul, star_add, hu_star, hv_star, mul_smul_comm, smul_smul, he,
           mul_smul_comm]
       have h_rhs : e • aeval γ.val.val ((u + v) • (z * w)) = e • aeval γ.val.val (z * w) := by
-        rw [smul_eq_C_mul, map_mul, aeval_C, Algebra.algebraMap_eq_smul_one, smul_mul_assoc, one_mul,
-          smul_smul, he]
+        rw [smul_eq_C_mul, map_mul, aeval_C, Algebra.algebraMap_eq_smul_one, smul_mul_assoc,
+          one_mul, smul_smul, he]
       rw [h_lhs, h_rhs] at h_e
       exact h_e
     have hu_sum : u * (u + v) = u := by rw [mul_add, hu_idem, huv, add_zero]
@@ -469,7 +469,8 @@ lemma IsRootQuotient.twistedNorm_eq_mul
       · rw [map_mul]
         have h_unit' : IsUnit (aeval γ.val.val ((twistedNorm (.map σ) q z).map σ)) := by
           have h_conj_eq : aeval γ.val.val ((twistedNorm (.map σ) q z).map σ) =
-              c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (.map σ) q z)) * c.val⁻¹.val := by
+              c.val.val * σ.mapMatrix (aeval γ.val.val (twistedNorm (.map σ) q z)) *
+                c.val⁻¹.val := by
             rw [RingHom.mapMatrix_apply, map_aeval_matrix, aeval_semiconj h_semiconj,
               mul_assoc, Units.mul_inv, mul_one]
           rw [h_conj_eq]

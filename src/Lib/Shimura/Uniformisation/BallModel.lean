@@ -148,8 +148,8 @@ A theta torus (`New.ThetaTori.ThetaTorus`) has a period map Q onto V, a form B a
 `New.ThetaTori.PeriodMap.latticeOver` S. Its theta functions for the lattice over S = `D.lagrangian`
 are the multiples of one function, chosen for each b with no regularity in b, and
 `New.ThetaTori.PeriodMap.thetaCoord` lists its normalised translates by t ∈ T. The factor c(b)
-replaces the chosen function by a Poincaré series (`New.ThetaTori.LatticeForm.poincareSeries`), which does
-depend analytically on b.
+replaces the chosen function by a Poincaré series (`New.ThetaTori.LatticeForm.poincareSeries`),
+which does depend analytically on b.
 -/
 
 namespace New.Variety

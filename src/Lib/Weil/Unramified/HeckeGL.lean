@@ -319,7 +319,8 @@ lemma mul_inv_mem_localIntGL_iff (hg : g ∈ basicDoubleCoset n w j)
       v_mul_inv_le_one_iff hk' (z := k.val)
   -- Entries in the local integers are those of valuation at most `1`. `coe_units_inv` is left out
   -- so that `h_integral` apply as stated.
-  simp [mem_intGL, mem_LocInt, -coe_units_inv, h_integral hg hg', h_integral hg' hg, le_antisymm_iff, and_comm]
+  simp [mem_intGL, mem_LocInt, -coe_units_inv, h_integral hg hg', h_integral hg' hg,
+    le_antisymm_iff, and_comm]
 
 /-- Let g lie in `New.basicDoubleCoset` n w j and let U have the same dimension as the kernel of g
 mod w. Then some k in the same double coset has kernel U mod w and lies in g GL_n(O_w). -/

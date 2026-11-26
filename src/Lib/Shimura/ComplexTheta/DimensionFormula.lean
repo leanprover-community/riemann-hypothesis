@@ -215,7 +215,8 @@ lemma IsAppellHumbert.poincareSeries_mem_thetaSpace_and_quotMean
       -- The exponents differ by `(B m l - B l m) / 2 + π I E(l, m)`, which is zero.
       congr 1
       linear_combination (-1 / 2 : ℂ) * hB.sub_eq_riemannForm (l : V) m
-    rw [ThetaTori.LatticeForm.poincareSeries, tsum_congr shift, tsum_mul_left, Equiv.tsum_eq, ThetaTori.LatticeForm.poincareSeries]
+    rw [ThetaTori.LatticeForm.poincareSeries, tsum_congr shift, tsum_mul_left, Equiv.tsum_eq,
+      ThetaTori.LatticeForm.poincareSeries]
   · -- A function with nonzero mean is not identically zero.
     contrapose! mean
     simp [mean, hB.ne_zero, eq_comm]

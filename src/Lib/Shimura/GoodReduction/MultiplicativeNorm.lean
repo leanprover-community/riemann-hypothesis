@@ -370,14 +370,15 @@ lemma sum_normShift_eq_zero (hd : star c = d) (hd_dual : ∀ a ∈ B.dualLattice
   -- `z = a (c z) + b (star c z)` lies in `L`
   obtain ⟨a, b, hab⟩ : ∃ a b : R, a * c + b * star c = 1 := hc
   have comb : F (a * c + b * star c) z.out ∈ L := by
-    simpa using add_mem (h.map_mem a _ cz_mem) (h.map_mem b _ (map_divLattice_mem (L := L) (F := F) _ z.out))
+    simpa using add_mem (h.map_mem a _ cz_mem)
+        (h.map_mem b _ (map_divLattice_mem (L := L) (F := F) _ z.out))
   have z_mem : (z.out : V) ∈ L := by simpa [hab] using comb
   exact hz ((h.out_mem_iff_eq_zero _ z).mp z_mem)
 
 omit [IsDomain R] [IsFullRankLattice L] [Module.Finite ℤ R] in
-/-- The Poincaré kernel `K` of the canonical multiplier (`ThetaTori.LatticeForm.poincareSeries`, a sum of `ThetaTori.LatticeForm.poincareTerm`
-over the lattice) at `(c x, star c x)` is the complex conjugate of its value at
-`(star c x, c x)`. -/
+/-- The Poincaré kernel `K` of the canonical multiplier (`ThetaTori.LatticeForm.poincareSeries`, a
+sum of `ThetaTori.LatticeForm.poincareTerm` over the lattice) at `(c x, star c x)` is the complex
+conjugate of its value at `(star c x, c x)`. -/
 lemma poincareSeries_eq_conj_poincareSeries_star (c : R) (x : V) :
     B.poincareSeries h.multiplier (F c x) (F (star c) x) =
       starRingEnd ℂ (B.poincareSeries h.multiplier (F (star c) x) (F c x)) := by

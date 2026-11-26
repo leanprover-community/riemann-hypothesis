@@ -625,7 +625,8 @@ lemma TorsionCoeff.sliceEquiv_mulClass (v : TotalH S M.functor) :
   -- Restricting and then evaluating at the tautological point is the definition of `sliceEquiv`.
   change pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S))
     (TotalH.map (restrictAlong π) (M.mulClass (etaClass g).toTotalH v)) = _
-  refine (congrArg (pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S))) h_res).trans ?_
+  refine (congrArg (pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S)))
+      h_res).trans ?_
   exact M.onElements.mulClass_eq_comp_etaAt (S := π ⋙ S) η _ rfl _
 
 

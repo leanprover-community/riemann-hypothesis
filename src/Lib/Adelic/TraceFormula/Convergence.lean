@@ -419,7 +419,8 @@ theorem exists_norm_partialKernel_spanStabilizer_le {B : ℕ} {k : GInf E s → 
     ν * γ ∈ Z ↔ γ ∈ Z := by
     rw [Set.mem_ofPred_eq, Set.mem_ofPred_eq,
       mul_mem_cancel_left (mem_spanStabilizer_of_mem_dilationGroup hν)]
-    exact and_congr_right fun hγ ↦ by rw [A.isIsotropicFrame.charpoly_radical_mul hν hγ]; exact Iff.rfl
+    exact and_congr_right fun hγ ↦ by
+        rw [A.isIsotropicFrame.charpoly_radical_mul hν hγ]; exact Iff.rfl
   -- As a function of `g`, the partial kernel is bounded, of level `J` and fixed by `k`, hence
   -- continuous.
   let F (g : G E s) : ℂ := V.partialKernel k φ Z g x

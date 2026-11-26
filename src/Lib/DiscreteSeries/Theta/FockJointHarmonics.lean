@@ -190,7 +190,8 @@ theorem IsMatch.sign_mul_relWeight_nonneg (hm : IsMatch T l l') (r : R) (s : ℤ
   let F (j : R) : ℤ := s * (ε r * ε j * (l j - l r).sign) + (if v j ∈ S then 2 else 0) - 1
   let G (c : C) : ℤ := s * T.varSign (r, c) - 1
   have matched (j : R) (c : C) (hjc : T.IsMatchedPair l l' j c) : G c ≤ F j := by
-    have j_large : |(card R - card C : ℤ)| < T.globalSign * ε j * ε' c * T.centeredParam l j := hjc.2
+    have j_large : |(card R - card C : ℤ)| < T.globalSign * ε j * ε' c * T.centeredParam l j :=
+        hjc.2
     have sign_rc : (T.varSign (r, c) : ℤ) = T.globalSign * ε r * ε' c := by simp [pairSign]
     grind
   have free_row (j : R) (hj : |T.centeredParam l j| < card R - card C) : 0 ≤ F j := by
