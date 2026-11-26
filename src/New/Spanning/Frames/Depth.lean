@@ -704,7 +704,6 @@ lemma lintegral_depthWeight_le (hj : j ≤ 𝔰.ϱ) (g y : T.G) (h_near : F.IsNe
       ∂ascConv heisenbergMeasure j ≤ ∏ l ∈ Finset.range j, Γ.floorConst l := by
   -- Move both points by the element `γ * n` of `R^(j)` that takes `g` into the box `F.boxSet`,
   -- then use induction on the length.
-  have h_meas : MeasurableSet Γ.positionsOfSize := Γ.measurableSet_positionsOfSize
   obtain ⟨ξ, hξ, hg⟩ : ∃ ξ ∈ partialUnitriangularGroup j, ξ * g ∈ F.boxSet := h_near
   obtain ⟨γ, hγ, n, hn, rfl⟩ : ∃ γ ∈ floorGroup j, ∃ n ∈ unipotentBelow j, ξ = γ * n :=
     exists_floorGroup_mul_unipotentBelow hξ
@@ -796,13 +795,13 @@ lemma hasShortDual_of_mem_stableProducts {c : Aˣ} (hc : ↑c ∈ F.stableProduc
   · simpa only [mulVec_smul, ← smul_sub, smul_comm F.levelUnit⁻¹.val] using
       mem_vecsOfSize_mono (smul_mem_vecsOfSize hc_size h_agree)
 
-/-- Let u x and v y lie in the box `F.boxSet`, with u, v in the Bessel unipotent group `T.besselU`,
+/-- Let v y lie in the box `F.boxSet`, with u, v in the Bessel unipotent group `T.besselU`,
 and let (v y - u x) / `F.levelUnit` have size 2 for Γ (`Γ.HasMatrixSize`). Then the lengths read at
 x and y differ by at most size 9 modulo the level `F.levelUnit` (`Γ.GaugesDifferLe`): if ω is
 orthogonal to all e_b, b < ϱ, and x⁻¹ ω has size i, then (x⁻¹ ω - y⁻¹ ω') / `F.levelUnit` has size
 i + 9 for some ω' congruent to ω modulo the e_b. -/
 lemma gaugesDifferLe_last_quotient_of_close {u v : T.G} (hu : u ∈ T.besselU) (hv : v ∈ T.besselU)
-    (_hx : u * x ∈ F.boxSet) (hy : v * y ∈ F.boxSet)
+    (hy : v * y ∈ F.boxSet)
     (h_close : Γ.HasMatrixSize 2 (F.levelUnit⁻¹.val • ((v * y).val.val - (u * x).val.val))) :
     Γ.GaugesDifferLe F.levelUnit x y 𝔰.ϱ 9 := by
   -- The lift is `v⁻¹ u ω`, and `x⁻¹ ω - y⁻¹ v⁻¹ u ω = (v y)⁻¹ (v y - u x) x⁻¹ ω`.
@@ -837,7 +836,7 @@ lemma hasMatrixSize_sub_one_of_forall_stableProducts
     obtain ⟨c, hc, hc_size⟩ : ∃ c : Aˣ, ↑c ∈ F.stableProducts a x y ∧ ↑c⁻¹ ∈ Γ.ofSize 1 := h_unit a
     exact hasShortDual_of_mem_stableProducts hc hc_size
   have h_top : Γ.GaugesDifferLe F.levelUnit x (x * y) 𝔰.ϱ 9 :=
-    gaugesDifferLe_last_quotient_of_close hu hv hx hy h_close
+    gaugesDifferLe_last_quotient_of_close hu hv hy h_close
   -- Each floor costs `4 * 5 + 12`, and `9 + 32 ϱ` leaves room below `99 n`.
   have h_differ : Γ.GaugesDifferLe F.levelUnit x (x * y) 0 (9 + (4 * 5 + 12) * 𝔰.ϱ) :=
     h_top.on_whole_space_of_hasShortDual F.star_levelUnit Γ.levelUnit_mem_ofSize le_rfl

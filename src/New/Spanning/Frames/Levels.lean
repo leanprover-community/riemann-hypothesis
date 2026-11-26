@@ -459,7 +459,7 @@ lemma measurePreserving_mulVec_orbitPoint {s : T.G} {F : PlaceData ι T m} (b : 
   have h_vol : MeasurePreserving (M *ᵥ ·) (floorVolume b) (floorVolume b) :=
     h_incl.of_semiconj (measurePreserving_floor_block_mulVec hs)
       (inclMatrix_mulVec_floor_block b.is_le hs) (by fun_prop)
-  have h_form : Mᴴ * T.splitGram * M = T.splitGram := s.prop
+  have h_form : Mᴴ * T.splitGram * M = T.splitGram := mem_unitaryGroupOf_iff.1 s.prop
   have h_inv : s⁻¹.val.val * M = 1 := s.val.inv_mul
   have h_image : IsDisintegration ((floorVolume b).map (M *ᵥ ·)) T.splitGram
       fun β : skewAdjoint A ↦ (F.floorQuadricMeasure b β).map (M *ᵥ ·) :=

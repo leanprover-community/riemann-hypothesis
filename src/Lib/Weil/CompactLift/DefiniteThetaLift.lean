@@ -140,7 +140,7 @@ Here a parameter is twice the Harish-Chandra parameter, and `schurCoeffPoly A ξ
 lemma New.exists_smul_schurCoeffPoly_eq_jointHarmonic {E : Type} [Field E] [CMType E]
     {κ : InfinitePlace E → ℕ → ℕ} {l : InfinitePlace E → n → ℤ} {l' : InfinitePlace E → n' → ℤ}
     {ea eb ec : InfinitePlace E → ℤ} [DecidableEq n'] [DecidableEq n]
-    [WeilData E] (hl : IsHCParam κ ec l) (hl' : IsHCParam κ ea l')
+    (hl : IsHCParam κ ec l) (hl' : IsHCParam κ ea l')
     (hκ : IsLiftWeight n n' κ eb ec) :
     ∃ β : ℂ, β • schurCoeffPoly (highestVector κ l' ᵥ* weylGramOver) (highestVector κ l) =
       jointHarmonic ea eb l l' 1 1 := by

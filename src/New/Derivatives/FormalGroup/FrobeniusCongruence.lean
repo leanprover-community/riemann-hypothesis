@@ -115,15 +115,11 @@ lemma norm_piPrime_le_norm_natCast {n : ℕ} (hn_ne : n ≠ 0) (hn : n < primeNo
       rintro rfl
       simp [chiK, ZMod.natCast_self] at h_inert
     have hn_lt : n < p ^ 2 := by rwa [primeNorm, ite_eq_left h_inert] at hn
-    have h_pow_le : p ^ padicValNat p n ≤ n := Nat.le_of_dvd hn_ne.bot_lt
-      (by rw [Nat.padicValNat_def]; exact pow_multiplicity_dvd p n)
-    have h_val : padicValNat p n ≤ 1 :=
-      Nat.le_of_lt_succ ((Nat.pow_lt_pow_iff_right hp.one_lt).1 (h_pow_le.trans_lt hn_lt))
+    have h_val : padicValNat p n ≤ 1 := Nat.padicValNat_def ▸
+      Nat.le_of_lt_succ ((multiplicity_le_nat_log n).trans_lt (Nat.log_lt_of_lt_pow hn_ne hn_lt))
     rw [piPrime, ite_eq_right hd, map_natCast, norm_p_eq_inv,
       norm_natCast_eq_inv_pow_padicValNat hn_ne]
-    calc (p : ℝ)⁻¹ = (p : ℝ)⁻¹ ^ 1 := (pow_one _).symm
-      _ ≤ (p : ℝ)⁻¹ ^ padicValNat p n :=
-        pow_le_pow_of_le_one (by positivity) p.cast_inv_le_one h_val
+    exact (pow_one _).symm.trans_le (pow_le_pow_of_le_one (by positivity) p.cast_inv_le_one h_val)
   · have hn_lt : n < p := by rwa [primeNorm, ite_eq_right h_inert] at hn
     rw [(Nat.coprime_of_lt_prime hn_ne hn_lt hp).norm_natCast_eq_one]
     exact (norm_piPrime_lt_one d).le
@@ -365,7 +361,7 @@ lemma norm_coeff_pow_taylorVia_translatedX_recursion_lt_one (hp : chiK d p = -1)
         simp only [hx, C.derivative_pow_mul_derivative_taylorVia_translatedX ιₚ n, map_add,
           coeff_smul, smul_eq_mul]
     _ = ‖coeff p (x ^ n * d⁄dX x)‖ * ‖(p : ℂ_[p])‖ := by rw [h_deriv, norm_mul]
-    _ < 1 := (mul_le_of_le_one_left (norm_nonneg _) h_int).trans_lt norm_p_lt_one
+    _ < 1 := (mul_le_of_le_one_left (norm_nonneg _) h_int).trans_lt (PadicComplex.norm_p_lt_one p)
 
 omit [PrimeSevenModEight d] in
 /-- The coefficient of `z ^ (2 m)` in `x ^ m` is `1`, as the Taylor series `x` of

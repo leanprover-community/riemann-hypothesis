@@ -319,7 +319,6 @@ lemma New.GaloisRep.Attached.isLabelledAt_one {ℓ : ℕ} [ThePrime ℓ] [PadicI
   -- The names of the `ψ i` and the `χ l` are the roots of a separable polynomial, so are distinct.
   have h_inj : Injective (append ψ χ) := .of_comp (f := fun η ↦ (charName T η).val) <| by
     simpa [Function.comp_def, ← separable_prod_X_sub_C_iff, prod_univ_add] using h_sep
-
   -- The span of the translates of `f` contains an Iwahori eigenvector `z` with a sorted `ξ`,
   -- whose values on units are those of the `ψ i` (once each) and the `χ l` (`t l` times).
   obtain ⟨z, hz, ξ, lab, h_eig, h_sorted, h_card, h_val⟩ :

@@ -88,15 +88,6 @@ lemma dataInner_integrated :
     (h_product Fock.vacVector Fock.vacVector).trans (by rw [h_vac, one_mul])
   rw [h_product, h_proj]
 
-/-- If v ⊗ f = 0 for v in the Fock space and f in 𝒮(V) with Pf ≠ 0, then v = 0. Here
-v ⊗ f = ∫ v(y) ϱ(y) f dy over real vectors y and P is the real vacuum projection. -/
-lemma eq_zero_of_integrated_eq_zero (hf : V.projReal f ≠ 0) (h_zero : V.integrated v f = 0) :
-    v = 0 := by
-  have h_norm : fockInner v v * V.dataInner (V.projReal f) (V.projReal f) = 0 := by
-    rw [← dataInner_integrated, h_zero, map_zero]
-  exact IsVacuum.eq_zero_of_modelInner_self
-    ((mul_eq_zero_iff_right fun h_self ↦ hf (V.eq_zero_of_dataInner_self h_self)).1 h_norm)
-
 /-- For `v` in the Fock space and `f` in 𝒮(V), `θ(v ⊗ f) = ∫ v(y) f(realVec y) dy`, where
 `v ⊗ f = ∫ v(y) ϱ(y)f dy` is `New.Space.integrated` and `f(x) = θ(ϱ(x)f)`. Here `y` runs over
 complex vectors indexed by (infinite place, coordinate) with the measure
@@ -215,35 +206,6 @@ lemma differentiable_entireTheta (hs : s = 1) (h_projReal : V.projReal f = f) :
   exact (eventually_differentiableAt_integral ((integrable_exp_mul_realVac C).mul_const _)
     (fun z ↦ by fun_prop [realVac]) h_dominated).self_of_nhds
 
-/-- Let all signs be +1, let `P` be a complex polynomial in the Fock coordinates, and let `f` be an
-element of 𝒮(V). Then `θ(v_P ⊗ f) = ∫ P(conj y) Θ_f(y) exp(−|y|²) dy`, where
-`v_P(x) = P(ζ(x))·exp(−|x|²/2)`, with ζ the holomorphic coordinates (`holomorphicCoord`), here
-ζ(x) = conj x since all signs are +1, is the polynomial vector (`New.Fock.polyVector`) and
-`v ⊗ f = ∫ v(y) ϱ(y)f dy` (`New.Space.integrated`). Here `Θ_f(y) = θ(ϱ(y)f)·exp(|y|²/2)`
-(`entireTheta`), and `y` runs over complex vectors indexed by (infinite place, coordinate) with the
-measure `New.Fock.normalizedVolume`. -/
-lemma theta_integrated_polyVector_eq_integral_entireTheta (hs : s = 1)
-    (P : MvPolynomial (NumberField.InfinitePlace E × n) ℂ) (f : 𝒮 V) :
-    V.θ (V.integrated (polyVector (realSigns E s) P) f) = ∫ y : NumberField.InfinitePlace E × n → ℂ,
-      MvPolynomial.eval (star y) P * entireTheta f y * Complex.exp (-(star y ⬝ᵥ y))
-        ∂normalizedVolume (NumberField.InfinitePlace E × n) := by
-  -- By `theta_integrated` the theta value is ∫ v_P(y) f(y) dy; compare the integrands.
-  rw [theta_integrated]
-  refine integral_congr_ae (Filter.Eventually.of_forall fun y ↦ ?_)
-  -- With all signs +1 the polynomial is evaluated at the conjugate vector.
-  have h_hol : holomorphicCoord (realSigns E s) y = star y := by
-    simp [funext_iff, hs, holomorphicCoord_eq, realSigns]
-  have h_value : f (realVec y) = entireTheta f y * realVac y := by
-    rw [entireTheta, realVac, div_mul_cancel₀ _ (Complex.exp_ne_zero _)]
-  have h_square : realVac y * realVac y = Complex.exp (-(star y ⬝ᵥ y)) := by
-    rw [realVac, ← Complex.exp_add]
-    ring_nf
-  calc polyVector (realSigns E s) P y * f (realVec y)
-      = MvPolynomial.eval (star y) P * realVac y * (entireTheta f y * realVac y) := by
-        rw [polyVector_apply, h_hol, h_value]
-    _ = _ := by
-        simp only [← h_square]
-        ring
 end EntireTheta
 
 end New.Space
@@ -425,7 +387,7 @@ lemma IsAdapted.omega_projReal_of_isMixedLaw (hT : D.IsMixedLaw T) {g : G E s}
     rw [← h_char]
     simp [hT, N, coord, h_vec, realVec_realMatrix_mulVec, frameAt, ← g.adeleMatrix.mul_assoc,
       adelicHeisenberg, ← G.adeleMatrix_mul, star_mulVec_dotProduct, ← conjTranspose_mul, mul_add,
-      realVec_realCoordSum, omega_rho, mulVec_add, AddChar.map_add_eq_mul]
+      omega_rho, mulVec_add, AddChar.map_add_eq_mul]
   have h_vac_coord (c b : InfinitePlace E × p → ℂ) (w : InfinitePlace E × n₀ → ℂ) :
       realVac (coord c b w) = realVac c * realVac b * realVac w := by
     simp only [coord, h_vac, OrthogonalSum.vac_equiv]
@@ -518,43 +480,5 @@ lemma IsAdapted.exists_apply_zero_omega_integrated_eq (hT : D.IsMixedLaw T) {g :
       _ = T 0 (V.ω g (V.integrated (realHeisenbergOp y Fock.vacVector) f)) := by
           rw [integrated_realHeisenbergOp, omega_rho]
   exact (hL (V₀.integrated.flip (T 0 u)) (T 0 ∘L V.ω g ∘L V.integrated.flip f) h_translate v).symm
-
-/-- Let `D` split `V` as `(l E^p ⊕ k E^p) ⊥ i V₀`, and let the maps `T x : 𝒮 V → 𝒮 V₀` (`x` in
-`𝔸^p`) obey the law of the mixed Schrödinger model (`IsMixedLaw`). Let `g` in `G E s`, acting on
-𝒮(V) by `ω` with ω(g)ϱ(y) = ϱ(g y)ω(g), be adapted to `t` (`D.frameAt g t` is orthonormal at
-infinity and integral) in `GL_p(𝔸)`. Then there is a bounded map `L` from the Fock space of `V` to
-that of `V₀` that sends the vacuum (Gaussian) to the vacuum and satisfies
-`T 0 (ω(g)(v ⊗ f)) = L v ⊗ T 0 (ω(g)(P f))` for all `v` and `f`, where `v ⊗ f = ∫ v(y) ϱ(y)f dy` is
-`New.Space.integrated` and `P` is the real vacuum projection `projReal`. -/
-lemma IsAdapted.exists_map_vacVector_apply_zero_omega_eq (hT : D.IsMixedLaw T) {g : G E s}
-    {t : GL p (𝔸 E)} (hg : D.IsAdapted g t) :
-    ∃ L : Model (realHeisenberg (realSigns E s)) →L[ℂ] Model (realHeisenberg (realSigns E s₀)),
-      L Fock.vacVector = Fock.vacVector ∧
-      ∀ (v : Model (realHeisenberg (realSigns E s))) (f : 𝒮 V),
-        T 0 (V.ω g (V.integrated v f)) = V₀.integrated (L v) (T 0 (V.ω g (V.projReal f))) := by
-  -- Take `L` from `exists_apply_zero_omega_integrated_eq` and put u = T₀ ω(g) P f. Then L vac ⊗ u =
-  -- u = vac ⊗ u, which gives L vac = vac as soon as some u is nonzero.
-  obtain ⟨L, hL⟩ :
-      ∃ L : Model (realHeisenberg (realSigns E s)) →L[ℂ] Model (realHeisenberg (realSigns E s₀)),
-        ∀ (v : Model (realHeisenberg (realSigns E s))) (f : 𝒮 V),
-          T 0 (V.ω g (V.integrated v f)) = V₀.integrated (L v) (T 0 (V.ω g (V.projReal f))) :=
-    hg.exists_apply_zero_omega_integrated_eq hT
-  by_cases h_all : ∀ f : 𝒮 V, T 0 (V.ω g (V.projReal f)) = 0
-  · -- Both sides of the identity vanish for every map; take v ↦ ⟨vac, v⟩ vac.
-    have h_inner : fockInner (Fock.vacVector : fockSpace (realSigns E s)) Fock.vacVector = 1 := by
-      simp [realVac]
-    refine ⟨(fockInner Fock.vacVector).smulRight Fock.vacVector, ?_, fun v f ↦ ?_⟩
-    · rw [ContinuousLinearMap.smulRight_apply, h_inner, one_smul]
-    · rw [hL v f, h_all f, map_zero, map_zero]
-  · obtain ⟨f, hf⟩ := not_forall.mp h_all
-    set u : 𝒮 V₀ := T 0 (V.ω g (V.projReal f))
-    have h_fix : V₀.projReal u = u := by
-      simpa using (hg.omega_projReal_of_isMixedLaw hT 0 f).symm
-    have h_L : V₀.integrated (L Fock.vacVector) u = u := (hL Fock.vacVector f).symm
-    have h_vac : V₀.integrated Fock.vacVector u = u := h_fix
-    have h_kill : V₀.integrated (L Fock.vacVector - Fock.vacVector) u = 0 := by
-      rw [map_sub, _root_.sub_apply, h_L, h_vac, sub_self]
-    exact ⟨L, sub_eq_zero.1
-      (V₀.eq_zero_of_integrated_eq_zero _ u (by rwa [h_fix]) h_kill), hL⟩
 
 end New.Space.Splitting

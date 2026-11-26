@@ -148,7 +148,7 @@ lemma skewMeasure_setOf_mul_mem (u : Aˣ) (h : star u.val = u) :
     exact (map_apply (by fun_prop) isOpen_O.preimage_val.measurableSet).symm
   have h_part (b : skewAdjoint A) : P.element * u * b.1 - star (P.element * u * b.1) = u * b.1 := by
     simp [h, ← add_mul, skewAdjoint.star_val_eq]
-  simpa only [preimage, mem_ofPred_eq, SetLike.mem_coe, h_part, Measure.smul_apply,
+  simpa only [preimage, mem_ofPred_eq, SetLike.mem_coe, h_part, smul_apply,
     skewMeasure_setOf_mem, smul_eq_mul, mul_one] using h_scale
 
 variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ]
@@ -185,7 +185,7 @@ theorem unitaryLevel_open_compact {J : Matrix ι ι A} :
   refine ⟨(isOpen_intGL isOpen_O).preimage_val.and isOpen_O.matrix.preimage_of_continuous, ?_⟩
   -- At level 1 the group is the trace of the compact `GL(O)` on the closed subgroup `U J`.
   rw [unitaryLevel_one]
-  exact (isCompact_intGL isCompact_O).preimage_val (isClosed_U J)
+  exact (isCompact_intGL isCompact_O).preimage_val (isClosed_unitaryGroupOf J)
 
 /-- The determinant of a matrix in `GL(R)` has modulus `1`. -/
 theorem modulus_det_eq_one {V : GL ι A} (hV : V ∈ intGL ι P.integers) : modulus V.val.det = 1 := by
@@ -513,7 +513,7 @@ lemma IntegralPlace.setIntegral_eq_slab (hJ : Jᴴ = J) (hψ : ∀ x : A, P.ψ (
   let M : AddSubgroup (skewAdjoint A) :=
     P.integers.toAddSubgroup.comap ((AddMonoidHom.mulLeft u.1).comp (skewAdjoint A).subtype)
   have M_open : IsOpen (M : Set (skewAdjoint A)) :=
-    isOpen_O.preimage (continuous_subtype_val.const_mul _)
+    isOpen_O.preimage (continuous_subtypeVal.const_mul _)
   have coe_M : (M : Set (skewAdjoint A)) = {b : skewAdjoint A | u.1 * b.1 ∈ O} := rfl
   have M_fin : P.skewMeasure M ≠ ∞ := by simp [coe_M, P.skewMeasure_setOf_mul_mem u hu]
   have : IsFiniteMeasure (P.skewMeasure.restrict M) := isFiniteMeasure_restrict.2 M_fin

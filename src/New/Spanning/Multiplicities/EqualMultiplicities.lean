@@ -90,7 +90,7 @@ lemma exists_heckeAlgebra_inner_eq_inner_translate {γ : Gf D.E D.RowIndex}
     h_closed.isClosedEmbedding_subtypeVal.isCompact_preimage isCompact_stdLevel
   have h_open : IsOpen (K.comap (MulAut.conj g⁻¹).toMonoidHom : Set D.offLevelGroup) :=
     (IsTopologicalGroup.continuous_conj g⁻¹).isOpen_preimage _
-      (isOpen_stdLevel.preimage continuous_subtype_val)
+      (isOpen_stdLevel.preimage continuous_subtypeVal)
   have h_fin := H.fintypeOfIndexNeZero (h_compact.relIndex_ne_zero h_open)
   let a : ℂ[D.offLevelGroup] := ∑ q : K ⧸ H, .single (q.out * g) 1
   have h_act {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ D.offLevelGroup M)
@@ -195,7 +195,7 @@ lemma exists_heckeAlgebra_eq_mul_inner_of_hasSum_rallisTerm
   have h_sum : HasSum (fun i ↦ (fun z y ↦ a * D.rallisTerm ϑ j V z y i,
       fun z y ↦ a' * D.rallisTerm ϑ j V' z y i)) (B, B') :=
     (Pi.hasSum.2 fun z ↦ Pi.hasSum.2 (hB z)).prodMk (Pi.hasSum.2 fun z ↦ Pi.hasSum.2 (hB' z))
-  have h_mem : (B, B') ∈ N := N.closed_of_finiteDimensional.mem_of_tendsto h_sum
+  have h_mem : (B, B') ∈ N := N.isClosed_of_finiteDimensional.mem_of_tendsto h_sum
     (.of_forall fun t ↦ sum_mem fun i _ ↦ h_term i)
   obtain ⟨T, h_hecke, h_image⟩ := h_mem
   obtain ⟨p, hp⟩ : ∃ p : D.heckeAlgebra, (ev V).prod (ev V') p = T := mem_range.1 h_hecke

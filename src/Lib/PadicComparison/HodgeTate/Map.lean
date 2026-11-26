@@ -431,7 +431,7 @@ lemma restrictToPairs_map {n : ℕ} (α : N' ⟶ N) (x : H (genericOver ⋙ N) g
         restrictToPairs (N := N')
           (((Ext.mk₀ α).mapExactFunctor (restrictAlong genericOver)).comp x (zero_add n)) :=
     Comparison.pull_comp_restrictAlong (.mk₀ α) x (zero_add n)
-  show restrictToPairs ((Ext.mk₀ (genericOver.whiskerLeft α)).comp x (zero_add n)) =
+  change restrictToPairs ((Ext.mk₀ (genericOver.whiskerLeft α)).comp x (zero_add n)) =
     comp (Ext.mk₀ (pairAlg.whiskerLeft α)).toTotalH (restrictToPairs x)
   simpa [Ext.mapExactFunctor_mk₀] using h_nat.symm
 
@@ -451,7 +451,8 @@ lemma hodgeTateMap_map {q h : ℕ} (α : N' ⟶ N) (x : HodgeH N q) :
             (zero_add q))).toTotalH (contractionPow h) :=
     comp_assoc_of_eq (Comparison.pull_comp_restrictAlong (.mk₀ α) x (zero_add q)) (contractionPow h)
   -- both sides, written as precompositions with the classes of `α`
-  show comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N') q
+  change comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull
+        (Functor.whiskerRight toSqZero N') q
         ((Ext.mk₀ (HodgeTest.sqZeroExt.whiskerLeft α)).comp x (zero_add q))).toTotalH
       (contractionPow h) =
     comp (Ext.mk₀ (pairAlg.whiskerLeft α)).toTotalH

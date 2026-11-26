@@ -442,29 +442,16 @@ lemma mem_triangleBase_of_inner_eq_inner_triangleFirstLift {P : Parameters} (D :
       simp [h_fixed, mul_comm _ (conj c), ← mul_assoc, conj_mul', hc]
     _ = ⟪v, π u x⟫ := (hv _).symm
 
-/-- For `i < D.m`, the first lift of row `i` is injective on `New.Data.triangleBase`. -/
-lemma eq_zero_of_triangleFirstLift_eq_zero {P : Parameters} (D : Data P) (z : Bool)
-    (ϑ : D.MFoldTwist) (i : ℕ) (hi : i < D.m) (y : D.triangleBase z)
-    (hy : D.triangleFirstLift z ϑ i y = 0) : y = 0 := by
-  -- The point datum `pointDatum` is sharp for a level that fixes the copy of `y`.
-  obtain ⟨C, -, h_rallis⟩ :=
-    rallis_inner_product_cosetTerm (S := D.gridSpace i z 0 0) (T := D.gridSpace i z 0 (0 + 1))
-      (D.paramsCorrespond_grid_succ_right z i 0 0 D.m.zero_le (by omega)
-        (.inr rfl)).isEdge_jointHarmonic
-      (D.two_mul_card_gridIndex_zero_lt z)
-  have h_copy : D.triangleNegEquiv z i y = 0 :=
-    (h_rallis _ _ (D.isSharp_pointDatum z ϑ i) _ (D.hasLevel_triangleNegEquiv z ϑ i y)).1 hy
-  simpa using h_copy
-
 /-- The inner product formula for `a = triangleFirstLift z ϑ i`, which copies a form from the corner
 `(0, 0)` of the triangle `z` to `(i, 0)` and lifts it to `(i, 1)`. Here `i < D.m`, the number of
-lifts of the data `D`. There is a constant `C` such that for every twist `ϑ`, every form `y` at the
-corner fixed by the base level (`triangleBase`) and every form `x` at the corner, the series of the
-terms `C * triangleRallisTerm` converges to `triangleGLCard z ϑ 0 * ⟪a x, a y⟫`; the first factor is
+lifts of the data `D`. There is a constant `C` such that for every twist `ϑ` and every form `y` at the
+corner fixed by the base level (`triangleBase`), the lift vanishes only if `y = 0`. For each form
+`x` at the corner, the series of the terms `C * triangleRallisTerm` converges to `triangleGLCard z ϑ 0 * ⟪a x, a y⟫`; the first factor is
 the order of the general linear group of the corner modulo `𝔪 = triangleModulus z ϑ`. -/
 lemma exists_hasSum_triangleRallisTerm {P : Parameters} (D : Data P) (z : Bool) (i : ℕ)
     (hi : i < D.m) :
-    ∃ C : ℂ, ∀ (ϑ : D.MFoldTwist) (y : D.triangleBase z) (x : D.TriangleForm z 0 0),
+    ∃ C : ℂ, ∀ (ϑ : D.MFoldTwist) (y : D.triangleBase z),
+      (D.triangleFirstLift z ϑ i y = 0 → y = 0) ∧ ∀ x : D.TriangleForm z 0 0,
       HasSum (fun γ : D.TriangleCoset z ϑ ↦ C * D.triangleRallisTerm z ϑ i x y γ)
         (triangleGLCard z ϑ 0 * ⟪D.triangleFirstLift z ϑ i x, D.triangleFirstLift z ϑ i y⟫) := by
   -- Apply Rallis' inner product formula to the first edge of row `i` with the point datum
@@ -474,19 +461,24 @@ lemma exists_hasSum_triangleRallisTerm {P : Parameters} (D : Data P) (z : Bool) 
       (D.paramsCorrespond_grid_succ_right z i 0 0 D.m.zero_le (by omega)
         (.inr rfl)).isEdge_jointHarmonic
       (D.two_mul_card_gridIndex_zero_lt z)
-  refine ⟨C, fun ϑ y x ↦ ?_⟩
-  let term (γ : D.TriangleCoset z ϑ) : ℂ :=
-    cosetTerm (card (D.GridIndex z 0 (0 + 1))) (D.gridChar ϑ (!z) (0 + i) (D.GridIndex z 0 (0 + 1)))
-      (triangleModulus z ϑ).places.conjClosureᶜ (D.triangleNegEquiv z i x)
-        (D.triangleNegEquiv z i y) γ
-  have h_sum : HasSum
-      (fun γ : D.TriangleCoset z ϑ ↦ C * (1 / card (D.GridIndex z 0 (0 + 1) × D.GridIndex z 0 0 →
-        (triangleModulus z ϑ).ResidueRing) / triangleGLCard z ϑ 0) * term γ)
-      ⟪D.triangleFirstLift z ϑ i x, D.triangleFirstLift z ϑ i y⟫ :=
-    (h_rallis _ _ (D.isSharp_pointDatum z ϑ i) _ (D.hasLevel_triangleNegEquiv z ϑ i y)).2 _
-  -- multiply by `triangleGLCard z ϑ 0`, which cancels against the mass of the datum
-  refine (h_sum.mul_left (triangleGLCard z ϑ 0 : ℂ)).congr_fun fun γ ↦ ?_
-  simp [term, cosetTerm, ← triangleNegEquiv_triangleRep, field, -Bool.cond_eq_ite]
+  refine ⟨C, fun ϑ y ↦ ?_⟩
+  obtain ⟨h_inj, h_series⟩ :=
+    h_rallis (D.gridChar ϑ (!z) (0 + i) (D.GridIndex z 0 0)) _ (D.isSharp_pointDatum z ϑ i) _ (D.hasLevel_triangleNegEquiv z ϑ i y)
+  refine ⟨fun hy ↦ ?_, fun x ↦ ?_⟩
+  · have h_copy : D.triangleNegEquiv z i y = 0 := h_inj hy
+    simpa using h_copy
+  · let term (γ : D.TriangleCoset z ϑ) : ℂ :=
+      cosetTerm (card (D.GridIndex z 0 (0 + 1))) (D.gridChar ϑ (!z) (0 + i) (D.GridIndex z 0 (0 + 1)))
+        (triangleModulus z ϑ).places.conjClosureᶜ (D.triangleNegEquiv z i x)
+          (D.triangleNegEquiv z i y) γ
+    have h_sum : HasSum
+        (fun γ : D.TriangleCoset z ϑ ↦ C * (1 / card (D.GridIndex z 0 (0 + 1) × D.GridIndex z 0 0 →
+          (triangleModulus z ϑ).ResidueRing) / triangleGLCard z ϑ 0) * term γ)
+        ⟪D.triangleFirstLift z ϑ i x, D.triangleFirstLift z ϑ i y⟫ :=
+      h_series _
+    -- multiply by `triangleGLCard z ϑ 0`, which cancels against the mass of the datum
+    refine (h_sum.mul_left (triangleGLCard z ϑ 0 : ℂ)).congr_fun fun γ ↦ ?_
+    simp [term, cosetTerm, ← triangleNegEquiv_triangleRep, field, -Bool.cond_eq_ite]
 
 /-- Injectivity and inner product formula for `a = triangleFirstLift z ϑ i`, which copies a form
 from the corner `(0, 0)` of the triangle `z` to `(i, 0)` and lifts it to `(i, 1)`. Here `i < D.m`,
@@ -508,11 +500,11 @@ theorem exists_hasSum_inner_triangleFirstLift {P : Parameters} (D : Data P) (z :
       ∀ x : D.TriangleForm z 0 0,
         HasSum (fun γ : D.TriangleCoset z ϑ ↦ C * D.triangleRallisTerm z ϑ i x y γ)
           (triangleGLCard z ϑ 0 * ⟪D.triangleFirstLift z ϑ i x, D.triangleFirstLift z ϑ i y⟫) := by
-  obtain ⟨C, h_sum⟩ := D.exists_hasSum_triangleRallisTerm z i hi
-  refine ⟨C, fun ϑ y ↦ ⟨fun v hv ↦ ⟨?_, fun hv_zero ↦ ?_⟩, h_sum ϑ y⟩⟩
+  obtain ⟨C, h_rallis⟩ := D.exists_hasSum_triangleRallisTerm z i hi
+  refine ⟨C, fun ϑ y ↦ ⟨fun v hv ↦ ⟨?_, fun hv_zero ↦ ?_⟩, (h_rallis ϑ y).2⟩⟩
   · exact D.mem_triangleBase_of_inner_eq_inner_triangleFirstLift z ϑ i hi y hv
   · -- if `v = 0` then the lift of `y` has norm zero
-    apply D.eq_zero_of_triangleFirstLift_eq_zero z ϑ i hi y
+    apply (h_rallis ϑ y).1
     rw [← inner_self_eq_zero (𝕜 := ℂ), ← hv, hv_zero, inner_zero_left]
 
 -- The index type of the node `(i, n + 1)` unfolds to a sum type, and `kernelPair l s false` to

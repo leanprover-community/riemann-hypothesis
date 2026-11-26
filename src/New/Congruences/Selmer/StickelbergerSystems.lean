@@ -262,7 +262,7 @@ def β : ℝ≥0∞ :=
 /-- The values of the character `Y.twistChar` (written `ϑ`), read in `PadicAlgCl ℓ`, have norm one,
 as `ϑ` is continuous on a compact group. -/
 lemma norm_twistChar (g : Gal(Ω/E)) : ‖(Y.twistChar g : PadicAlgCl ℓ)‖ = 1 :=
-  norm_eq_one_of_continuous Y.continuous_twistChar g
+  ContinuousMonoidHom.norm_apply_eq_one_of_compactSpace ⟨_, Y.continuous_twistChar⟩ g
 
 /-- Let `Y` be a Stickelberger system, so `Θ_Q = Y.element Q` is an element of the group ring over
 `ℤ̄_ℓ` of the group `Cl_Q` of norm-one idele classes. The value of the trivial character at `Θ_Q`

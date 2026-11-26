@@ -77,10 +77,6 @@ open CategoryTheory MonoidalCategory Abelian.Ext FreeAddCommGroup QuotientAddGro
 
 variable {C : Type _} [Category C] {m n : ℕ} {V L : C ⥤ Type _} (R : Subfunctor (V ⊗ L))
 
--- Needed: without it, instance search fails on the quotient groups in
--- `shortExact_boundaryFromCoker` and several later steps fail.
-set_option backward.isDefEq.respectTransparency false
-
 /-! ### The complex of points with witnesses -/
 
 /-- The functor of points with `m` witnesses: a point `x` of `V` together with `m` points `l i`
@@ -132,6 +128,13 @@ def noWitness : witnessed R 0 ≅ V :=
 
 variable {R}
 
+private lemma boundary_apply {A : C} (t : (witnessed R (m + 1)).obj A) :
+    (boundary R m).app A (of t) =
+      ∑ j : Fin (m + 1), (-1 : ℤ) ^ j.val • of ((reindexWitness R j.succAbove).app A t) := by
+  unfold boundary
+  erw [sum_app_apply]
+  exact Finset.sum_congr rfl fun _ _ ↦ rfl
+
 /-- A point of `V` that has a witness is a boundary, as a chain without witnesses. -/
 lemma proj_boundary_of_eq_zero {A : C} {t : (witnessed R 0).obj A}
     (h_wit : ∃ l : L.obj A, (t.val.fst, l) ∈ R.obj A) :
@@ -139,7 +142,9 @@ lemma proj_boundary_of_eq_zero {A : C} {t : (witnessed R 0).obj A}
   obtain ⟨l, hl⟩ := h_wit
   -- `t` is the boundary of the same point with the one witness `l`.
   refine (eq_zero_iff _).2 ⟨of ⟨(t.val.fst, fun _ ↦ l), fun _ ↦ hl⟩, ?_⟩
-  simp [boundary, reindexWitness, Subsingleton.elim _ t.val.snd]
+  erw [boundary_apply]
+  apply congrArg of
+  exact Subtype.ext (Prod.ext rfl (Subsingleton.elim _ _))
 
 /-- With `Cₘ` the chains on points with `m` witnesses, the sequence
 `0 → Cₘ₊₁/∂Cₘ₊₂ → Cₘ → Cₘ/∂Cₘ₊₁ → 0` is short exact. -/
@@ -149,16 +154,51 @@ lemma shortExact_boundaryFromCoker :
   refine shortExact_of_app (fun A ↦ ?_) (fun A x ↦ ?_) fun _ ↦ mk_surjective
   · -- Injectivity. Let `c` put a chosen witness (if there is one) in front of the others. It is a
     -- contraction, `c ∂ t + ∂ c t = t`, so `c` induces a left inverse of `boundaryFromCoker`.
-    let c m := lift fun t : (witnessed R m).obj A ↦ ∑ᶠ h : ∃ l, (t.1.1, l) ∈ R.obj A,
-      @of ((witnessed R (m + 1)).obj A) ⟨(t.1.1, cons h.choose t.1.2), cases h.choose_spec t.2⟩
+    let prepend (m : ℕ) (t : (witnessed R m).obj A) (h : ∃ l, (t.1.1, l) ∈ R.obj A) :
+        (witnessed R (m + 1)).obj A :=
+      ⟨(t.1.1, cons h.choose t.1.2), cases h.choose_spec t.2⟩
+    let c m := lift fun t : (witnessed R m).obj A ↦
+      ∑ᶠ h : ∃ l, (t.1.1, l) ∈ R.obj A, of (prepend m t h)
+    have hc (m : ℕ) (t : (witnessed R m).obj A) (h : ∃ l, (t.1.1, l) ∈ R.obj A) :
+        c m (of t) = of (prepend m t h) := by
+      simp only [c, FreeAddCommGroup.lift_apply_of]
+      exact finsum_eq_single _ h fun g hne ↦ (hne (Subsingleton.elim g h)).elim
     have h_contr (t : (witnessed R (m + 1)).obj A) :
         (boundary R (m + 1)).app A (-c _ (of t)) = c m ((boundary R m).app A (of t)) - of t := by
       have h_wit : ∃ l, (t.1.1, l) ∈ R.obj A := ⟨_, t.2 0⟩
-      simp [c, h_wit, boundary, sum_app_apply, -NatTrans.app_sum, reindexWitness]
-      simp [pow_succ, sum_univ_succ]
-      rfl
-    have h_inv : AddMonoidHom.mk' (mk' _ ∘ c m ∘ (boundary R m).app A) (by simp) =
-        mk' ((boundary R (m + 1)).app A).hom.range :=
+      have h_zero :
+          (reindexWitness R (0 : Fin (m + 2)).succAbove).app A (prepend (m + 1) t h_wit) = t := by
+        apply Subtype.ext
+        refine Prod.ext rfl ?_
+        funext i
+        change cons (α := fun _ ↦ L.obj A) h_wit.choose t.1.2
+          ((0 : Fin (m + 2)).succAbove i) = t.1.2 i
+        simp
+      have h_succ (j : Fin (m + 1)) :
+          (reindexWitness R j.succ.succAbove).app A (prepend (m + 1) t h_wit) =
+            prepend m ((reindexWitness R j.succAbove).app A t) h_wit := by
+        apply Subtype.ext
+        refine Prod.ext rfl ?_
+        funext i
+        change cons (α := fun _ ↦ L.obj A) h_wit.choose t.1.2 (j.succ.succAbove i) =
+          cons (α := fun _ ↦ L.obj A) h_wit.choose (t.1.2 ∘ j.succAbove) i
+        refine Fin.cases ?_ (fun a ↦ ?_) i
+        · simp
+        · simp
+      have h_c (j : Fin (m + 1)) :
+          c m (of ((reindexWitness R j.succAbove).app A t)) =
+            of (prepend m ((reindexWitness R j.succAbove).app A t) h_wit) :=
+        hc m _ h_wit
+      erw [hc (m + 1) t h_wit, map_neg, boundary_apply, boundary_apply, map_sum]
+      rw [Fin.sum_univ_succ]
+      simp only [map_zsmul, h_c, h_zero, h_succ, Fin.val_zero, pow_zero, one_smul, Fin.val_succ,
+        pow_succ, mul_neg_one, neg_zsmul, Finset.sum_neg_distrib]
+      abel
+    let d₁ : FreeAddCommGroup ((witnessed R (m + 2)).obj A) →+
+        FreeAddCommGroup ((witnessed R (m + 1)).obj A) := ((boundary R (m + 1)).app A).hom
+    let d₀ : FreeAddCommGroup ((witnessed R (m + 1)).obj A) →+
+        FreeAddCommGroup ((witnessed R m).obj A) := ((boundary R m).app A).hom
+    have h_inv : (mk' d₁.range).comp ((c m).comp d₀) = mk' d₁.range :=
       lift_ext _ _ fun t ↦ eq_iff_sub_mem.2 ⟨_, h_contr t⟩
     exact Function.HasLeftInverse.injective ⟨fun x ↦ ⟦c m x⟧, Quot.ind (DFunLike.congr_fun h_inv)⟩
   · -- Exactness in the middle: `boundaryFromCoker` has the same image as `boundary`.
@@ -183,7 +223,8 @@ variable {U : Subfunctor V} (hU : ∀ A : C, ∀ x ∈ U.obj A, ∃ l : L.obj A,
 well defined because every point of `U` has a witness. -/
 def fromRel : relFreeAb U ⟶ abCoker (boundary R 0) :=
   desc (freeAb.map (noWitness R).inv ≫ π (boundary R 0))
-    (freeAb.hom_ext fun A x ↦ proj_boundary_of_eq_zero (hU A x.val x.property))
+    (freeAb.hom_ext fun A x ↦ proj_boundary_of_eq_zero
+      (R := R) (A := A) (t := (noWitness R).inv.app A x.val) (hU A x.val x.property))
 
 /-- The universal class in degree `n`, with coefficients in the chains with `n` witnesses modulo
 boundaries. In degree `0` it is the map `fromRel hU`; each further degree composes with the

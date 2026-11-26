@@ -116,7 +116,7 @@ lemma thetaGeneric_algebraMap_ainf (a : Ainf) :
 /-- `θ` kills the element `μ = [ε] - 1` of `A_inf`. -/
 lemma thetaGeneric_mu :
     c.thetaGeneric (algebraMap Ainf (Localization.Away (p : WittVector p c.TiltRing)) mu) = 0 := by
-  simp [thetaGeneric_algebraMap_ainf, mu]
+  simp [thetaGeneric_algebraMap_ainf, mu_eq]
 
 /-- For a p-adic test with ring R, the quotient B = W(R^♭)[1/p]/(ker θ)², where
 θ: W(R^♭)[1/p] → R[1/p]. -/
@@ -401,10 +401,11 @@ lemma proj_mulMu : ∀ t : genericOver.obj c, proj c (mulMu c t) = 0 := by
 lemma mulMu_proj_mul (b : thickeningOver.obj c) :
     ∀ t : genericOver.obj c, mulMu c (proj c b * t) = b * mulMu c t := by
   refine c.thickeningProj_surjective_and_ker_thetaGeneric.left.forall.mpr fun b' ↦ ?_
-  -- `erw`: `b` lives in `thickeningOver.obj c`, and `proj c b` is `c.thickeningProj b` only up to
-  -- unfolding.
-  erw [← map_mul, mulMu_thickeningProj, mulMu_thickeningProj, mul_left_comm]
-  rfl
+  -- `b` lives in `thickeningOver.obj c`, and `proj c b` is `c.thickeningProj b` up to unfolding.
+  refine (congrArg (mulMu c) (map_mul c.thickeningProj b b').symm).trans <|
+    (mulMu_thickeningProj ..).trans ?_
+  rw [mulMu_thickeningProj]
+  exact mul_left_comm ..
 
 /-- `mulMu` commutes with the maps induced by a morphism `f` of tests. -/
 lemma map_mulMu (d : PadicTest) (f : c ⟶ d) :
@@ -433,7 +434,7 @@ lemma isLeftRegular_xi {p : ℕ} [ThePrime p] (c : PadicTest) :
       (algebraMap Ainf (WittVector p c.TiltRing) xi).coeff 0 ^ p ^ j * y.coeff 0 = 0 := by
     simpa [← smul_eq_mul, hx] using
       (iterate_verschiebung_mul_coeff (algebraMap Ainf (WittVector p c.TiltRing) xi) y 0 j).symm
-  show tiltMap c.structureMap pFlat ^ p ^ j * y.coeff 0 = tiltMap c.structureMap pFlat ^ p ^ j * 0
+  change tiltMap c.structureMap pFlat ^ p ^ j * y.coeff 0 = tiltMap c.structureMap pFlat ^ p ^ j * 0
   rw [mul_zero]
   -- The zeroth coordinate of `ξ` in `W(R♭)` is the image of `pFlat`.
   have h_xi_coeff : (algebraMap Ainf (WittVector p c.TiltRing) xi).coeff 0 =

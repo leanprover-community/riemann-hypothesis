@@ -245,7 +245,7 @@ lemma ne_one (hψ : IsHeckeOfType ψ n) [IsCMField K] (hn : n ≠ 0) : ψ ≠ 1 
   have h_val_neg : F y₀ = -1 := calc
     F y₀ = (y₀ w / ‖y₀ w‖ : ℂ) ^ n w := Fintype.prod_eq_single w fun u hu ↦ by simp [y₀, hu]
     -- The factor at `w` is `exp (π i / n w) ^ n w = exp (π i) = -1`.
-    _ = -1 := by simp [y₀, log, norm_exp, ← exp_int_mul, mul_div_cancel₀, hw]
+    _ = -1 := by simp [y₀, log, norm_exp, ← exp_intCast_mul, mul_div_cancel₀, hw]
   norm_num [h_val_one] at h_val_neg
 
 open HeightOneSpectrum UniqueFactorizationMonoid in
@@ -303,7 +303,7 @@ lemma integral_mul_finIdeleAbs_rpow_eq_eulerProd_mul (hψ : IsHeckeOfType ψ n)
   -- nonnegative, the kernel is `Ô^×`, and a uniformiser at `w` goes to the prime `w`.
   obtain ⟨d, hd_count, hd_ker, hd_unif, -⟩ := exists_idele_divisor_hom (K := K)
   have h_integral {x : (𝔸f K)ˣ} {I : Ideal (𝓞 K)} (hx : (d x).val = I) : x.val ∈ Ô K :=
-    mem_Ô.mpr fun w ↦ (hd_count x w).mpr (by simp [hx, count_coe_nonneg])
+    mem_Ô.mpr fun w ↦ (hd_count x w).mpr (by simp [hx, count_coeIdeal_nonneg])
   set W : Set (𝔸f K)ˣ := (idelesUnitOff ∅ : Subgroup (𝔸f K)ˣ) ∩ V with hW
   have hW_vol : μ.real W ≠ 0 := measureReal_idelesUnitOff_empty_inter_ne_zero μ hV hV_one
   intro s hs
@@ -338,7 +338,7 @@ lemma integral_mul_finIdeleAbs_rpow_eq_eulerProd_mul (hψ : IsHeckeOfType ψ n)
       obtain ⟨x, rfl⟩ := mul_left_surjective (locIdele w (uniformizer w)) y
       have h_coeff : χ (w.asIdeal * J) * ((w.asIdeal * J).absNorm : ℂ) ^ (-s : ℂ) =
           χ w.asIdeal * (w.asIdeal.absNorm : ℂ) ^ (-s : ℂ) * (χ J * J.absNorm ^ (-s : ℂ)) := by
-        rw [map_mul, map_mul, Nat.cast_mul, natCast_mul_natCast_cpow, mul_mul_mul_comm]
+        rw [map_mul, map_mul, Nat.cast_mul, natCast_mul_cpow, mul_mul_mul_comm]
       -- With `u = locIdele w (uniformizer w)`, the divisor of `u * x` is `w` times that of `x`, and
       -- `(t / u) * (u * x) = t * x`; so `ht` gives the part of divisor `J` on the right, and
       -- `h_unif` compares the two sides.
@@ -528,7 +528,7 @@ lemma exists_radius_tent_integral_ne_zero {χ : (mixedEmbedding.mixedSpace K)ˣ 
           positivity [ideleModule_pos (t, 1)]
       _ = (A ρ 1 t).re := by simp [A]
   have h_pos : 0 < ∫ t, (A ρ 1 t).re ∂.haar :=
-    integral_pos_of_integrable_nonneg_nonzero (x := 1) (by fun_prop) (hA_int 1).re h_nonneg
+    integral_pos_of_integrable_nonneg_ne_zero (x := 1) (by fun_prop) (hA_int 1).re h_nonneg
       (by simpa [A, hχ_one, Prod.mk_one_one, hρ_pos.le] using hρ_pos.ne')
   exact ne_zero_of_re_pos (h_pos.trans_eq (integral_re (hA_int 1)))
 
@@ -882,7 +882,7 @@ lemma exists_hasPrimeDensity_neg_natCast (h : IsHeckeOfType ψ n) (hS : S.Finite
     exact h_ne_zero hs ((h_eq hs).symm.trans hs_zero)
   obtain ⟨m, f, hf, hf_ne, hF_fac⟩ : ∃ (m : ℕ) (f : ℝ → ℂ), AnalyticAt ℝ f 1 ∧ f 1 ≠ 0 ∧
       ∀ᶠ s : ℝ in nhds 1, F s = (s - 1) ^ m • f s :=
-    hF.exists_eventuallyEq_pow_smul_nonzero_iff.mpr hF_ne
+    hF.exists_eventuallyEq_pow_smul_ne_zero_iff.mpr hF_ne
   -- The mean is `-m` once `(s - 1) ^ (-m)` times the `L`-function has a nonzero limit at `1⁺`.
   refine ⟨m, ?_, hasPrimeDensity_of_tendsto h.norm_heckeCoeff_le hf_ne ?_⟩
   · rintro rfl s hs

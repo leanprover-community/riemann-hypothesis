@@ -155,13 +155,21 @@ theorem sq_le_norm_det_blockDiagPart (g : USign ε) [Nonempty n] :
     -- the excluded simp lemmas would rewrite the conjugation and casts before `det` is evaluated
     simp [← mem_maxCompactU, h_block, IsHermitian.cfc, -conjStarAlgAut_apply, -ofReal_mul, ev]
   have h_spec : spectrum ℝ z.val.val = Set.range ev := hz_herm.spectrum_real_eq_range_eigenvalues
-  obtain ⟨i, hi⟩ : ‖z.val.val‖ ∈ Set.range ev := h_spec.le (norm_mem_spectrum_of_nonneg _)
+  -- stated once, so that the default `cfc_tac` does not search for it twice below
+  have hz_nonneg : (0 : Matrix n n ℂ) ≤ z.val.val := by
+    open ComplexOrder in exact hz.posSemidef.nonneg
+  obtain ⟨i, hi⟩ : ‖z.val.val‖ ∈ Set.range ev :=
+    h_spec.le (norm_mem_spectrum_of_nonneg _ hz_nonneg)
   -- `‖z⁻¹‖ = ‖z‖` lies in the spectrum of `z⁻¹`
   obtain ⟨j, hj⟩ : ‖z.val.val‖⁻¹ ∈ Set.range ev := by
     rw [← h_spec, ← norm_inv z]
-    exact spectrum.inv₀_mem (norm_mem_spectrum_of_nonneg _ (CFC.inv_nonneg_of_nonneg _))
+    exact spectrum.inv₀_mem
+      (norm_mem_spectrum_of_nonneg _ (CFC.inv_nonneg_of_nonneg _ hz_nonneg))
   have h_factor (x : n) : 1 ≤ 2⁻¹ * |ev x + (ev x)⁻¹| := by
-    grind [one_le_cosh (log (ev x)), cosh_log (hz.eigenvalues_pos x)]
+    -- `(x + x⁻¹) / 2 = cosh (log x) ≥ 1` for the positive eigenvalue `x`
+    have h_cosh := one_le_cosh (log (ev x))
+    rw [cosh_log (hz.eigenvalues_pos x)] at h_cosh
+    rwa [abs_of_nonneg (by linarith), inv_mul_eq_div]
   rw [h_norm, h_det]
   calc
     (‖z.val.val‖ / 2) ^ 2 ≤ ((‖z.val.val‖ + ‖z.val.val‖⁻¹) / 2) ^ 2 := by bound
@@ -374,7 +382,7 @@ theorem isKHighest_dsGenerator (hg : l.HasGap h) :
   -- `x ∈ blockDiagAlg ε`; differentiate in `x`.
   refine .of_E_eq_smul fun a b (h_sign : ε a = ε b) h_le ↦ ?_
   ext g
-  show (rightDeriv ε ℂ (single a b 1) l.dsCoeffSmooth).val g =
+  change (rightDeriv ε ℂ (single a b 1) l.dsCoeffSmooth).val g =
     (if a = b then (l.lowestKType a : ℂ) else 0) * l.dsCoeff g
   let F (y : Matrix n n ℂ) : ℂ := (-l).dsCoeff y⁻¹
   have h_ext (u : USign ε) : F u = l.dsCoeff u := by simpa [F] using dsCoeff_inv hg.neg u
@@ -475,7 +483,7 @@ theorem exists_smear_dsCoeffSmooth_eq (hg : l.HasLargeGap A) (f : l.DsModule) :
   -- the factor is the integral of `b(…)² |c_λ(g)|² ≥ 0`, which is positive at `g = 1`
   have h_factor : ∫ g, β.1.1 g⁻¹ * l.dsCoeff g ≠ 0 := by
     have h_pos : 0 < ∫ g : USign ε, ‖β.1.1 g⁻¹ • l.dsCoeff g‖ :=
-      integral_pos_of_integrable_nonneg_nonzero (x := 1) (by fun_prop)
+      integral_pos_of_integrable_nonneg_ne_zero (x := 1) (by fun_prop)
         (integrable_bump_inv_smul _ β).norm (fun _ ↦ norm_nonneg _)
         (by simp [hβ, b, ContDiffBump.one_of_mem_closedBall, default])
     simpa [hβ, ↓dsCoeff_inv hg, ← ofReal_pow, ← ofReal_mul, mul_assoc, conj_mul',
@@ -548,7 +556,7 @@ Haar measure `haarU`. -/
 @[simp]
 lemma _root_.New.formalDegree_pos (hg : l.HasLargeGap A) : 0 < l.formalDegree := by
   -- the inverse is the integral of `|c_λ|²`, which is continuous, nonnegative and `1` at `1`
-  exact inv_pos.2 (integral_pos_of_integrable_nonneg_nonzero (x := 1) (by fun_prop)
+  exact inv_pos.2 (integral_pos_of_integrable_nonneg_ne_zero (x := 1) (by fun_prop)
     (hg.memLp l.dsGenerator).norm.integrable_sq (fun _ ↦ sq_nonneg _) (by simp))
 
 /-- Let `l = 2λ` be a parameter for the signs `ε` with gap `500 n³ + A` (`HasLargeGap`), and let
@@ -589,11 +597,16 @@ def toL2 (hg : l.HasLargeGap A) : l.DsModule →ₗ[ℂ] USign ε →₂[volume]
   √l.formalDegree •
     IsLinearMap.mk' (R := ℂ) (fun f : l.DsModule ↦ (hg.memLp f).toLp) ⟨by tauto, by tauto⟩
 
+-- The measure `volume` of `hw` and `hz` is written out. Left to the default `by volume_tac`, it is
+-- filled in only after the whole statement is elaborated, and until then every unification with
+-- `MemLp _ 2 ?μ` fails slowly. The instance given for `hw` is the one elaboration chose before, so
+-- the statement is the same term.
 omit [Nonempty n] in
 /-- For square integrable functions `w` and `z` on `U(diag ε)`, the inner product in `L²` of `w`
 with the right translate of `z` by `x` is `∫ g, z (g * x) * conj (w g)`. -/
-theorem _root_.New.inner_toLp_rightRegularL2_toLp {w z : USign ε → ℂ} (hw : MemLp w 2)
-    (hz : MemLp z 2) (x : USign ε) :
+theorem _root_.New.inner_toLp_rightRegularL2_toLp {w z : USign ε → ℂ}
+    (hw : MemLp (m0 := Subtype.instMeasurableSpace) w 2 volume) (hz : MemLp z 2 volume)
+    (x : USign ε) :
     ⟪hw.toLp w, rightRegularL2 x (hz.toLp z)⟫_ℂ = ∫ g : USign ε, z (g * x) * conj (w g) :=
   integral_congr_ae (hw.coeFn_toLp.comp₂ _ (AEEqFun.coeFn_mk ..))
 
@@ -731,20 +744,6 @@ theorem isUnitaryCasimirGe (hg : l.HasLargeGap A) : IsUnitaryCasimirGe l l.dsAct
   -- the Casimir operator is central, so it acts on the whole module by its eigenvalue on `c_λ`
   simp [dsAction, casimirK_generatedModule casimir_dsCoeffSmooth, sq]
 
-/-- The three properties of the inner product that `U(𝔤) c_λ` inherits from `L²`: it is invariant
-and the Casimir operator Ω = ∑ E_ab E_ba is at least `l.casimirValue`, the scalar by which Ω acts on
-`c_λ` (`isUnitaryCasimirGe`); the generator is a unit vector (`norm_dsGenerator`); the values of a
-function are bounded by its norm (`norm_apply_le_norm`).
-
-A step in Flensted-Jensen's construction of Harish-Chandra's discrete series of U(p,q), for
-parameters of large gap. `IsUnitaryCasimirGe` records only the inequality for Ω, although Ω acts on
-the whole module by exactly `l.casimirValue`. -/
-theorem isUnitaryCasimirGe_dsAction (hg : l.HasLargeGap A) :
-    IsUnitaryCasimirGe l l.dsAction ∧
-    ‖l.dsGenerator‖ = 1 ∧
-    ∀ (y : l.DsModule) (g : USign ε), ‖y.val.val g‖ ≤ ‖y‖ :=
-  ⟨hg.isUnitaryCasimirGe, hg.norm_dsGenerator, hg.norm_apply_le_norm⟩
-
 end HCParam.HasLargeGap
 
 end New
@@ -796,7 +795,8 @@ theorem conjTranspose_mul_signMatrix_mul_curve (g : USign ε) (t : ℝ) :
   · have factor : 1 + t • A * u⁻¹ʳ = (u + t • A) * hu.unit⁻¹ := by
       simp [add_mul, ← inverse_unit, mul_inverse_cancel _ hu]
     rw [factor, gram_mul, gram_inv_of_gram_eq]
-    simp [u, A, mem_U.1, Matrix.sub_mul, Matrix.mul_sub, Matrix.add_mul, Matrix.mul_add]
+    simp [u, A, show g.1.1ᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 g.2, Matrix.sub_mul,
+        Matrix.mul_sub, Matrix.add_mul, Matrix.mul_add]
     module
   · simp [inverse_non_unit _ hu]
 
@@ -825,7 +825,7 @@ theorem norm_dsCoeff_sub_le [hg : l.HasLargeGap B] (hL : ∀ a : n, |l a| ≤ L)
     let w : (Matrix n n ℂ)ˣ := Units.oneSub _ (small.trans_lt two_inv_lt_one)
     have hγ : (γ t).1.1 = 1 + t • (A * w⁻¹) := by simp [γ, ← inverse_unit, u, w]
     have norm_inv_le : ‖w⁻¹.1‖ ≤ 2 := by
-      refine (tsum_geometric_le_of_norm_lt_one _ (by grind)).trans ?_
+      refine (tsum_geometric_le_of_norm_lt_one _ (small.trans_lt two_inv_lt_one)).trans ?_
       grw [small]
       bound
     -- The derivative of `γ` at `t`, from that of the inverse at the unit `w`.
@@ -837,8 +837,10 @@ theorem norm_dsCoeff_sub_le [hg : l.HasLargeGap B] (hL : ∀ a : n, |l a| ≤ L)
       have h_inv : HasDerivAt (fun s ↦ (u s)⁻¹ʳ) ((2 : ℝ)⁻¹ • (w⁻¹.1 * (A * w⁻¹.1))) t := by
         simpa [Function.comp_def, mul_assoc] using
           (hasFDerivAt_ringInverse (𝕜 := ℝ) w).comp_hasDerivAt_of_eq t h_u hw.symm
-      simpa [γ, γ', hw, mul_add, mul_assoc, smul_comm t (2 : ℝ)⁻¹, add_comm] using
-        ((((hasDerivAt_id t).smul_const A).mul h_inv).const_add 1).const_mul x.1.1
+      -- the product rule, then the derivative is rearranged into `x * γ'`
+      refine
+        (((((hasDerivAt_id t).smul_const A).mul h_inv).const_add 1).const_mul x.1.1).congr_deriv ?_
+      rw [hw, inverse_unit, one_smul, id, smul_mul_assoc, mul_smul_comm, add_comm]
     have norm_γ : ‖(γ t).1.1‖ ≤ 3 := by
       grw [hγ, norm_add_le, norm_smul, norm_mul_le, norm_inv_le, hA, norm_of_nonneg ht₀, ht₁]
       norm_num

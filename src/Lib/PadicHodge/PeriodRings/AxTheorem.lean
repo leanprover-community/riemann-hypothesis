@@ -3,7 +3,7 @@ module
 public import Lib.ClassField.Places.ProfiniteGalois
 public import Lib.General.Algebra.AbsIntegrallyClosed
 public import Lib.General.Algebra.AdicCompletion
-public import TauCeti.Topology.Algebra.Valued.NormedValued
+public import TauCeti.NumberTheory.Padics.Complex.FixedPoints
 
 /-!
 # Tilting, Fontaine's θ, the ring O_C and Ax's theorem on Galois invariants in ℂ_p
@@ -23,11 +23,13 @@ elements fixed by `J`.
   (`New.Variety.fontaineTheta_surjective_of_isAbsIntegrallyClosed`). The tilt of a `p`-adically
   complete valuation ring is a valuation ring.
 * The Galois group `New.Gp` of `ℚ̄_p / ℚ_p` and its cyclotomic character `New.cyclotomicGp`.
-* The continuous isometric action of `New.Gp` on `ℂ_p` (`New.completionAction`), which restricts
-  to an action by ring automorphisms on the ring of integers `New.OC`.
-* `O_C` is `p`-adically complete and absolutely integrally closed, with `O_C[1/p] = ℂ_p`.
+* The continuous isometric action of `New.Gp` on `ℂ_p` (Tau Ceti's
+  `UniformSpace.Completion.instMulSemiringAction`), which restricts to an action by ring
+  automorphisms on the ring of integers `New.OC`.
+* `O_C` is absolutely integrally closed, with `O_C[1/p] = ℂ_p`.
 * `New.Period.ax_mem_closure_fixedField`: Ax's theorem; an element fixed by a subgroup `J` is a
-  limit of algebraic elements fixed by `J`.
+  limit of algebraic elements fixed by `J` (Tau Ceti's
+  `PadicComplex.fixedPoints_eq_closure_fixedField`).
 * `New.Period.exists_algebraic_of_fixed_near_one`: an element fixed by a neighbourhood of `1` is
   algebraic.
 
@@ -234,35 +236,8 @@ lemma Selmer.valuation_intQpBar_le_iff (x y : PadicAlgCl p) :
 lemma Selmer.valuation_intQpBar_lt_one_iff {z : PadicAlgCl p} : intQpBar p z < 1 ↔ ‖z‖ < 1 := by
   simpa using (valuation_intQpBar_le_iff 1 z).not
 
-instance : IsIsometricSMul (Gp p) (PadicAlgCl p) where
-  isometry_smul g :=
-    AddMonoidHomClass.isometry_of_norm g fun x ↦ (spectralNorm_eq_of_equiv g x).symm
-
-instance : UniformContinuousConstSMul (Gp p) (PadicAlgCl p) :=
-  ⟨fun g ↦ (isometry_smul _ g).uniformContinuous⟩
-
-instance : IsIsometricSMul (Gp p) ℂ_[p] := ⟨fun g ↦ (isometry_smul _ g).completion_map⟩
-
-@[simp]
-lemma smul_coe_Cp (x : PadicAlgCl p) : g • x = (g x : ℂ_[p]) := mod_cast rfl
-
-instance : ContinuousSMul (Gp p) ℂ_[p] := by
-  -- each `g` is an isometry, and `g ↦ g • x` is locally constant for `x` in the dense subset `ℚ̄_p`
-  refine ⟨continuous_prod_of_dense_continuous_lipschitzWith' _ 1 denseRange_coe
-    (fun g ↦ (isometry_smul _ g).lipschitzWith) ?_⟩
-  rintro _ ⟨x, rfl⟩
-  have h_cont : Continuous fun g : Gp p ↦ ((g x : PadicAlgCl p) : ℂ_[p]) :=
-    ((isLocallyConstant_smul x).comp coe').continuous
-  simpa using h_cont
-
-/-- The action of `Gp p` on `PadicAlgCl p` extends to an action by ring homomorphisms on its
-completion `ℂ_p`. -/
-instance completionAction : MulSemiringAction (Gp p) ℂ_[p] :=
-  let f (g : Gp p) := mapRingHom (MulSemiringAction.toRingHom ..) (continuous_const_smul g)
-  ⟨fun g ↦ (f g).map_one, fun g ↦ (f g).map_mul⟩
-
-@[simp]
-lemma norm_smul_Cp (x : ℂ_[p]) : ‖g • x‖ = ‖x‖ := by simpa using dist_smul g x 0
+/-! The isometric, jointly continuous action of `Gp p` on `ℚ̄_p` and `ℂ_p` by ring automorphisms is
+Tau Ceti's (`TauCeti.NumberTheory.Padics.Complex.GaloisAction`). -/
 
 instance : UniformContinuousConstSMul ℤ_[p] (PadicAlgCl p) :=
   ⟨fun a ↦ uniformContinuous_const_smul a.val⟩
@@ -280,7 +255,7 @@ abbrev cyclotomicGp : Gp p →* ℤ_[p]ˣ := cyclotomicChar (Γ := Gp p) (PadicA
 
 /-- `p` is not a unit in `O_C`, as `‖p‖ < 1`. -/
 instance : Fact ¬IsUnit (p : OC) :=
-  ⟨by simp [isUnit_iff_dvd_one, valRingCp.dvd_iff_norm_le, norm_p_lt_one]⟩
+  ⟨by simpa [isUnit_iff_dvd_one, valRingCp.dvd_iff_norm_le] using PadicComplex.norm_p_lt_one p⟩
 
 /-- In `O_C`, a nonzero element `t` divides some power of any non-unit `s`. -/
 lemma OC.exists_dvd_pow {s t : OC} (hs_nonunit : ¬IsUnit s) (ht_ne_zero : t ≠ 0) :
@@ -302,11 +277,6 @@ instance : Away (p : OC) ℂ_[p] := by
     (div_le_one (pow_pos (zero_lt_one.trans hp_one_lt) n)).mpr hz_lt.le
   simpa [norm_p_eq_inv] using h_norm_le
 
-/-- `O_C` is `p`-adically complete. -/
-instance : IsAdicComplete (span {(p : OC)}) OC :=
-  (Valuation.integer.integers (NormedField.valuation (K := ℂ_[p]))).isAdicComplete_span_singleton
-    (by change ‖(p : ℂ_[p])‖ < 1; exact norm_p_lt_one)
-
 /-- `O_C` is absolutely integrally closed: every monic polynomial of positive degree over `O_C`
 has a root in `O_C`. -/
 instance : IsAbsIntegrallyClosed OC := .of_isIntegrallyClosedIn ℂ_[p]
@@ -318,9 +288,8 @@ end CpIntegers
 /-!
 ## Ax's theorem on invariants of subgroups of the Galois group
 
-For Ax's theorem one halves a bound on the number of points of a `J`-stable set at each step,
-replacing the set by the roots of `∑ t, (X - t) ^ 2 ^ k`, where `t` runs over some of its points.
-The losses in distance multiply to at most a factor `16`.
+Ax's theorem is Tau Ceti's Ax–Sen–Tate theorem `PadicComplex.fixedPoints_eq_closure_fixedField`.
+The norm estimates below are used elsewhere.
 -/
 
 section AxTheorem
@@ -370,144 +339,15 @@ lemma pow_le_norm_aeval {K L : Type*} [Field K] [IsAlgClosed K] [NormedField L] 
     simpa using prod_map_le_prod_map₀ (fun _ ↦ r) _ (fun _ _ ↦ hr_nonneg) h_roots_far
   grw [h_norm_aeval, ← card_roots_eq_natDegree, h_prod]
 
-/-- The radii in the proof of Ax's theorem: `axRadius ε k = ε / 16 * 2 ^ ((2 * k + 4) / 2 ^ k)`.
-Let `x ∈ ℂ_p` be fixed by a subgroup `J` of `G_p`, and let every point of `ℚ̄_p` fixed by `J` be
-at distance at least `ε` from `x`. Then every point of a `J`-stable set with at most `2 ^ k`
-elements is at distance at least `axRadius ε k` from `x` (`axRadius_le_norm_sub_of_mem`). -/
-private def axRadius (ε : ℝ) (k : ℕ) : ℝ := ε / 16 * 2 ^ ((2 * k + 4) / 2 ^ k : ℝ)
-
-private lemma axRadius_zero (ε : ℝ) : axRadius ε 0 = ε := by norm_num [axRadius]
-
-/-- The radii satisfy `axRadius ε (k + 1) ^ 2 ^ k = (2 ^ (k + 1))⁻¹ * axRadius ε k ^ 2 ^ k`: both
-sides are `(ε / 16) ^ 2 ^ k * 2 ^ (k + 3)`. -/
-private lemma axRadius_succ_pow (ε : ℝ) (k : ℕ) :
-    axRadius ε (k + 1) ^ 2 ^ k = (2 ^ (k + 1))⁻¹ * axRadius ε k ^ 2 ^ k := by
-  have h_succ : axRadius ε (k + 1) ^ 2 ^ k = (ε / 16) ^ 2 ^ k * 2 ^ (k + 3) := by
-    rw [axRadius, mul_pow, ← rpow_mul_natCast zero_le_two, ← rpow_natCast 2 (k + 3)]
-    congr 2
-    push_cast
-    field
-  have h_k : axRadius ε k ^ 2 ^ k = (ε / 16) ^ 2 ^ k * 2 ^ (2 * k + 4) := by
-    rw [axRadius, mul_pow, ← rpow_mul_natCast zero_le_two, ← rpow_natCast 2 (2 * k + 4)]
-    simp
-  rw [h_succ, h_k]
-  field
-
-private lemma div_le_axRadius {ε : ℝ} (hε : 0 < ε) (k : ℕ) : ε / 16 ≤ axRadius ε k :=
-  le_mul_of_one_le_right (by positivity) (one_le_rpow one_le_two (by positivity))
-
-private lemma axRadius_nonneg {ε : ℝ} (hε : 0 < ε) (k : ℕ) : 0 ≤ axRadius ε k :=
-  le_trans (by positivity) (div_le_axRadius hε k)
-
-/-- A positive integer `n ≤ m` has `p`-adic norm at least `1 / m`. -/
-private lemma inv_le_norm_natCast_padic {n m : ℕ} (hn_pos : 0 < n) (h_le : n ≤ m) :
-    (m : ℝ)⁻¹ ≤ ‖(n : ℚ_[p])‖ := by
-  -- `‖n‖ = p ^ (-v_p(n))`, and `p ^ v_p(n)` divides `n`
-  have h_pow_le : (p : ℝ) ^ multiplicity p n ≤ m :=
-    mod_cast (le_of_dvd hn_pos (pow_multiplicity_dvd p n)).trans h_le
-  simpa [norm_eq_zpow_neg_valuation, hn_pos.ne'] using
-    inv_anti₀ (pow_pos (Nat.cast_pos.mpr (NeZero.pos p)) _) h_pow_le
-
-/-- The induction step of Ax's theorem. Let `x ∈ ℂ_p` be fixed by a subgroup `J` of `G_p`, and let
-`ε > 0`. If every point of a `J`-stable multiset of points of `ℚ̄_p` with at most `2 ^ k` distinct
-elements is at distance at least `axRadius ε k` from `x`, then every point `z` of a `J`-stable
-multiset `S` with at most `2 ^ (k + 1)` distinct elements is at distance at least
-`axRadius ε (k + 1)` from `x`. -/
-private lemma axRadius_succ_le_norm_sub_of_mem [DecidableEq (PadicAlgCl p)]
-    {J : Subgroup (Gp p)} {x : ℂ_[p]} (hx : ∀ g ∈ J, g • x = x) {ε : ℝ} (hε : 0 < ε) {k : ℕ}
-    (ih : ∀ S : Multiset (PadicAlgCl p), #S.toFinset ≤ 2 ^ k →
-      (∀ g ∈ J, ∀ z : PadicAlgCl p, z ∈ S ↔ g z ∈ S) → ∀ z ∈ S, axRadius ε k ≤ ‖x - z‖)
-    {S : Multiset (PadicAlgCl p)} (card_S : #S.toFinset ≤ 2 ^ (k + 1))
-    (hS : ∀ g ∈ J, ∀ z : PadicAlgCl p, z ∈ S ↔ g z ∈ S) {z : PadicAlgCl p} (hz : z ∈ S) :
-    axRadius ε (k + 1) ≤ ‖x - z‖ := by
-  -- Take the set `T` of points of `S` as far from `x` as `z`: the roots of
-  -- `f = ∑ t ∈ T, (X - t) ^ 2 ^ k` form a `J`-stable set of at most `2 ^ k` points.
-  classical
-  let T : Finset (PadicAlgCl p) := S.toFinset.filter (‖x - coe' ·‖ = ‖x - z‖)
-  let f : (PadicAlgCl p)[X] := ∑ t ∈ T, (X + C (-t)) ^ 2 ^ k
-  have hT : T.Nonempty := ⟨z, by simp [T, hz]⟩
-  -- `f` has degree `2 ^ k` and leading coefficient `#T` (`-map_neg` keeps the factors in the form
-  -- `X + C a` of `coeff_X_add_C_pow`)
-  have coeff_f : f.coeff (2 ^ k) = (#T : ℚ_[p]) := by simp [f, coeff_X_add_C_pow, -map_neg]
-  have deg_f_le : f.natDegree ≤ 2 ^ k := by simp [f, -map_neg, natDegree_sum_le_of_forall_le]
-  have deg_f : f.natDegree = 2 ^ k :=
-    natDegree_eq_of_le_of_coeff_ne_zero deg_f_le (by simp [coeff_f, hT.ne_empty])
-  -- `J` fixes `x` and acts by isometries, so it permutes `T`, hence the roots of `f`
-  have T_stable (g : Gp p) (hg : g ∈ J) (t : PadicAlgCl p) : t ∈ T ↔ g t ∈ T := by
-    have h_norm : ‖x - (g t : ℂ_[p])‖ = ‖x - (t : ℂ_[p])‖ := by
-      rw [← norm_smul_Cp g (x - t), smul_sub, hx g hg, smul_coe_Cp]
-    simp only [T, Finset.mem_filter, Multiset.mem_toFinset, ← hS g hg t, h_norm]
-  have eval_f (g : Gp p) (hg : g ∈ J) (w : PadicAlgCl p) : f.eval (g w) = g (f.eval w) := by
-    simp only [f, eval_finsetSum, map_sum]
-    exact (sum_bijective _ g.bijective (T_stable g hg) (by simp)).symm
-  have card_roots : #f.roots.toFinset ≤ 2 ^ k := by grw [toFinset_card_le, card_roots', deg_f]
-  have roots_stable : ∀ g ∈ J, ∀ w : PadicAlgCl p, w ∈ f.roots ↔ g w ∈ f.roots := by
-    simp +contextual [eval_f]
-  have roots_far : ∀ w ∈ f.roots, axRadius ε k ≤ ‖x - w‖ := ih f.roots card_roots roots_stable
-  -- the leading coefficient `#T` of `f` is a positive integer that is at most `2 ^ (k + 1)`
-  have norm_lead : (2 ^ (k + 1))⁻¹ ≤ ‖algebraMap _ ℂ_[p] f.leadingCoeff‖ := by
-    have card_T : #T ≤ 2 ^ (k + 1) := (card_filter_le _ _).trans card_S
-    -- the norm of `ℂ_p` extends the norm of `ℚ_p`; `-map_natCast` keeps `#T` in `ℚ_p`
-    have h_norm_lead : ‖algebraMap _ ℂ_[p] f.leadingCoeff‖ = ‖(#T : ℚ_[p])‖ := by
-      simp [leadingCoeff, deg_f, coeff_f, -map_natCast]
-    rw [h_norm_lead]
-    exact_mod_cast inv_le_norm_natCast_padic hT.card_pos card_T
-  -- every term `(x - t) ^ 2 ^ k` of `f(x)` has norm `‖x - z‖ ^ 2 ^ k`, and the norm is ultrametric
-  have norm_aeval_le : ‖aeval x f‖ ≤ ‖x - z‖ ^ 2 ^ k := by
-    have h_aeval : aeval x f = ∑ t ∈ T, (x - (t : ℂ_[p])) ^ 2 ^ k := by
-      simp [f, ← coe_eq, ← sub_eq_add_neg]
-    rw [h_aeval]
-    exact norm_sum_le_of_forall_le_of_nonneg (by positivity) (by simp +contextual [T])
-  -- Compare `2 ^ k`-th powers: `‖f(x)‖` is large as `x` is far from the roots of `f`.
-  refine le_of_pow_le_pow_left₀ k.two_pow_pos.ne' (norm_nonneg _) ?_
-  calc axRadius ε (k + 1) ^ 2 ^ k
-    _ = (2 ^ (k + 1))⁻¹ * axRadius ε k ^ f.natDegree := by rw [axRadius_succ_pow, deg_f]
-    _ ≤ ‖algebraMap _ ℂ_[p] f.leadingCoeff‖ * axRadius ε k ^ f.natDegree :=
-      mul_le_mul_of_nonneg_right norm_lead (pow_nonneg (axRadius_nonneg hε k) _)
-    _ ≤ ‖aeval x f‖ := pow_le_norm_aeval f x (axRadius_nonneg hε k) roots_far
-    _ ≤ ‖x - z‖ ^ 2 ^ k := norm_aeval_le
-
-/-- The claim in the proof of Ax's theorem. Let `x ∈ ℂ_p` be fixed by a subgroup `J` of `G_p`, let
-`ε > 0`, and let every point of `ℚ̄_p` fixed by `J` be at distance at least `ε` from `x`. Then every
-point of a `J`-stable multiset `S` of points of `ℚ̄_p` with at most `2 ^ k` distinct elements is at
-distance at least `axRadius ε k` from `x`. -/
-private lemma axRadius_le_norm_sub_of_mem [DecidableEq (PadicAlgCl p)] {J : Subgroup (Gp p)}
-    {x : ℂ_[p]} (hx : ∀ g ∈ J, g • x = x) {ε : ℝ} (hε : 0 < ε)
-    (h_far : ∀ y : PadicAlgCl p, (∀ g ∈ J, g y = y) → ε ≤ ‖x - y‖) (k : ℕ)
-    (S : Multiset (PadicAlgCl p)) (card_S : #S.toFinset ≤ 2 ^ k)
-    (hS : ∀ g ∈ J, ∀ z : PadicAlgCl p, z ∈ S ↔ g z ∈ S) (z : PadicAlgCl p) (hz : z ∈ S) :
-    axRadius ε k ≤ ‖x - z‖ := by
-  induction k generalizing S z with
-  | zero =>
-    -- `S` has at most one point, so its point `z` is fixed by `J`
-    have hz_fixed (g : Gp p) (hg : g ∈ J) : g z = z :=
-      Finset.card_le_one.mp card_S (g z) (by simpa using (hS g hg z).mp hz) z (by simpa using hz)
-    rw [axRadius_zero]
-    exact h_far z hz_fixed
-  | succ k ih => exact axRadius_succ_le_norm_sub_of_mem hx hε ih card_S hS hz
-
 /-- Ax's theorem (a known result), the nontrivial inclusion of the Ax–Sen–Tate theorem: let `J` be
 a subgroup of `G_p`. Every `x ∈ ℂ_p` fixed by `J` lies in the closure of the image, under the
 inclusion `coe'` of `ℚ̄_p` into its completion `ℂ_p`, of the fixed field of `J` in `ℚ̄_p`. -/
 lemma ax_mem_closure_fixedField (J : Subgroup (Gp p)) {x : ℂ_[p]} (hx : ∀ g ∈ J, g • x = x) :
     x ∈ closure (coe' '' fixedField J) := by
-  classical
-  -- Suppose that every point fixed by `J` is at distance at least `ε` from `x`. Take `z ∈ ℚ̄_p` at
-  -- distance less than `ε / 16` from `x`. Its conjugates form a finite `J`-stable set, so by the
-  -- claim `axRadius_le_norm_sub_of_mem` they are all at distance at least `ε / 16` from `x`.
-  refine SeminormedAddCommGroup.mem_closure_iff.mpr fun ε hε ↦ by_contra fun h_not ↦ ?_
-  have far (y : PadicAlgCl p) (hy : ∀ g ∈ J, g y = y) : ε ≤ ‖x - y‖ :=
-    not_lt.mp fun h_lt ↦ h_not ⟨y, ⟨y, (mem_fixedField_iff J y).mpr hy, rfl⟩, h_lt⟩
-  obtain ⟨z, hz⟩ : ∃ z : PadicAlgCl p, ‖x - z‖ < ε / 16 := by
-    simpa [dist_eq_norm] using denseRange_coe.exists_dist_lt x (ε := ε / 16) (by positivity)
-  -- the conjugates of `z` are the roots of its minimal polynomial over `ℚ_p`
-  let conj : Multiset (PadicAlgCl p) := (minpoly ℚ_[p] z).aroots (PadicAlgCl p)
-  have conj_stable : ∀ g ∈ J, ∀ w : PadicAlgCl p, w ∈ conj ↔ g w ∈ conj := by
-    simp [conj, aeval_algEquiv]
-  have hz_conj : z ∈ conj := by simp [conj, minpoly.ne_zero_iff, IsGalois.integral]
-  have conj_far : axRadius ε (Nat.log2 #conj.toFinset + 1) ≤ ‖x - z‖ :=
-    axRadius_le_norm_sub_of_mem hx hε far _ conj lt_log2_self.le conj_stable z hz_conj
-  exact hz.not_ge ((div_le_axRadius hε _).trans conj_far)
+  -- this is Tau Ceti's `PadicComplex.fixedPoints_eq_closure_fixedField`
+  have hx_fixed : x ∈ MulAction.fixedPoints J ℂ_[p] := fun g ↦ hx g g.2
+  rw [PadicComplex.fixedPoints_eq_closure_fixedField] at hx_fixed
+  simpa [Set.image_eq_range] using hx_fixed
 
 /-- If `x ∈ ℂ_p` is fixed by every `g` in some neighbourhood of the identity of `G_p`, then `x` is
 the image `coe' y` of an element `y` of `ℚ̄_p` under the inclusion of `ℚ̄_p` into `ℂ_p`. -/
@@ -519,9 +359,10 @@ lemma exists_algebraic_of_fixed_near_one {x : ℂ_[p]} (hx : ∀ᶠ g : Gp p in 
       FiniteDimensional ℚ_[p] E ∧ (E.fixingSubgroup : Set (Gp p)) ⊆ {g : Gp p | g • x = x} :=
     (krullTopology_mem_nhds_one_iff ℚ_[p] (PadicAlgCl p) {g : Gp p | g • x = x}).mp hx
   have h_closure : x ∈ closure (coe' '' (E : Set (PadicAlgCl p))) := by
-    simpa only [fixedField_fixingSubgroup] using ax_mem_closure_fixedField E.fixingSubgroup hE
+    simpa only [InfiniteGalois.fixedField_fixingSubgroup] using
+      ax_mem_closure_fixedField E.fixingSubgroup hE
   obtain ⟨y, -, hy⟩ : ∃ y ∈ E.toSubmodule, (toComplL y : ℂ_[p]) = x :=
-    (E.toSubmodule.map toComplL.toLinearMap).closed_of_finiteDimensional.closure_subset h_closure
+    (E.toSubmodule.map toComplL.toLinearMap).isClosed_of_finiteDimensional.closure_subset h_closure
   exact ⟨y, hy.symm⟩
 
 end New.Period

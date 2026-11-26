@@ -309,27 +309,20 @@ lemma covolumeLe_of_normSqAt_le {n : ℕ} {z : Fin n → V} {h : ℝ}
     L.CovolumeLe z (n * h) :=
   fun σ ↦ norm_det_formGram_le L.posDef_gramMatrix.posSemidef fun i ↦ hz i σ
 
-/-- **Gram determinants, adjoining vectors.** Let `L` be a twisted lattice on `V`, with map
-`Θ₁ = L.lift 1` for the trivial twist. For an automorphism `σ` of `ℂ`, write `σ Θ₁ v` for the
-coordinate vector of `Θ₁ v` with `σ` applied to each coordinate (`conjCoord`); such vectors are
-paired by the rational matrix `L.gramMatrix` of the inner product. If `y` has covolume at most `c`,
-that is, `|det ⟨σ Θ₁ y_i, σ Θ₁ y_k⟩| ≤ exp c` for all `σ`, and
-`L.normSqAt (z i) σ = ⟨σ Θ₁ z_i, σ Θ₁ z_i⟩ ≤ exp h` for all `i` and `σ`, then the family `y`
-together with `z_1, …, z_n` has covolume at most `c + n h`. This is Fischer's inequality together
-with Hadamard's. -/
-lemma CovolumeLe.sumElim {y : S → V} {n : ℕ} {z : Fin n → V} {c h : ℝ} (hy : L.CovolumeLe y c)
-    (hz : ∀ (i : Fin n) (σ : ℂ ≃+* ℂ), L.normSqAt (z i) σ ≤ exp h) :
-    L.CovolumeLe (Sum.elim y z) (c + n * h) := by
+/-- **Gram determinants, adjoining vectors.** If two families have covolume at most `c` and
+`c'`, their union has covolume at most `c + c'` by Fischer's inequality. -/
+lemma CovolumeLe.sumElim {S' : Type} [Fintype S'] [DecidableEq S']
+    {y : S → V} {z : S' → V} {c c' : ℝ} (hy : L.CovolumeLe y c) (hz : L.CovolumeLe z c') :
+    L.CovolumeLe (Sum.elim y z) (c + c') := by
   -- Apply Fischer's inequality to the Gram matrix `M` of the union at `σ`.
   intro σ
   rw [Sum.comp_elim]
-  set M : Matrix (S ⊕ Fin n) (S ⊕ Fin n) ℂ :=
+  set M : Matrix (S ⊕ S') (S ⊕ S') ℂ :=
     formGram (L.gramMatrix.map (↑)) (Sum.elim (L.conjCoord σ ∘ y) (L.conjCoord σ ∘ z))
   calc ‖M.det‖ ≤ ‖M.toBlocks₁₁.det‖ * ‖M.toBlocks₂₂.det‖ :=
         fischer_det_inequality (posSemidef_formGram L.posDef_gramMatrix.posSemidef _)
-    _ ≤ exp c * exp (n * h) :=
-        mul_le_mul (hy σ) (covolumeLe_of_normSqAt_le hz σ) (norm_nonneg _) (exp_nonneg c)
-    _ = exp (c + n * h) := (Real.exp_add _ _).symm
+    _ ≤ exp c * exp c' := mul_le_mul (hy σ) (hz σ) (norm_nonneg _) (exp_nonneg c)
+    _ = exp (c + c') := (Real.exp_add _ _).symm
 
 end Covolume
 
@@ -488,7 +481,7 @@ theorem covolume_add_index_nonneg {n n' : ℕ} {y : Fin n → V} {z : Fin n' →
   have h_ne : Gram 1 ≠ 0 :=
     det_gram_ne_zero_iff_linearIndependent.2 (h_indep.map_injOn _ (h_inj 1).injOn)
   have h_conj (σ : ℂ ≃+* ℂ) : ‖σ (Gram 1)‖ ≤ exp (c + n' * b_short) :=
-    (hc.sumElim hz_short).norm_map_det_gram_le σ
+    (hc.sumElim (covolumeLe_of_normSqAt_le hz_short)).norm_map_det_gram_le σ
   linarith [h_height.neg_le_of_norm_map_le h_ne h_conj]
 
 end Twist

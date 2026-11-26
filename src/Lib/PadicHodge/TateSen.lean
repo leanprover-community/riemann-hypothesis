@@ -1,7 +1,6 @@
 module
 
 public import Lib.ClassField.Places.TameInertia
-public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Tate's vanishing theorem, Hodge–Tate elimination and the filtration of B_dR
@@ -89,7 +88,7 @@ private lemma New.Period.exists_sum_smul_sub_one_pow_eq {p : ℕ} [ThePrime p] {
     ∃ a : ℕ → ℚ_[p], ∑ i ∈ .range (p ^ (n + 1)).totient, a i • (ζ - 1) ^ i = z := by
   classical
   have h_mem : z ∈ ℚ_[p]⟮ζ - 1⟯ := by
-    refine (fixedField_fixingSubgroup _).le fun g ↦ h_fix g ?_
+    refine (InfiniteGalois.fixedField_fixingSubgroup _).le fun g ↦ h_fix g ?_
     -- `g` fixes `ζ - 1`, hence `ζ`
     simpa using g.property (gen ℚ_[p] (ζ - 1))
   have h_poly : aeval (ζ - 1) ((cyclotomic (p ^ (n + 1)) ℚ_[p]).comp (X + .C 1)) = 0 := by
@@ -138,7 +137,8 @@ lemma New.Period.exists_norm_normalizedTrace_le (p : ℕ) [ThePrime p] :
   have hπ_pos : 0 < ‖ζ - 1‖ := norm_sub_pos_iff.mpr (hζ.ne_one (by simp [Fact.out]))
   have hπ_lt : ‖ζ - 1‖ < 1 := by
     by_contra! h_ge
-    exact (one_le_pow₀ h_ge).not_gt ((norm_zeta_sub_one_pow hζ).trans_lt norm_p_lt_one)
+    exact (one_le_pow₀ h_ge).not_gt
+      ((norm_zeta_sub_one_pow hζ).trans_lt (PadicAlgCl.norm_p_lt_one p))
   obtain ⟨a, rfl⟩ : ∃ a : ℕ → ℚ_[p], ∑ i ∈ .range e, a i • (ζ - 1) ^ i = z :=
     New.Period.exists_sum_smul_sub_one_pow_eq hζ h_fix
   -- Each nonzero term has norm a power of `‖π‖`, as `‖a i‖ = p ^ (-v(a i))` and `p = ‖π‖ ^ (-e)`;
@@ -226,7 +226,7 @@ lemma New.Period.eq_zero_of_smul_eq_cyclotomicGp_zpow_smul {p : ℕ} [ThePrime p
     -- `1` is a cluster point of the powers of `γ`, and the stabilizer of `w` is open.
     obtain ⟨N, hN, h_stab⟩ : ∃ N ≥ (1 : ℕ), (γ ^ N) w = w :=
       ((mapClusterPt_one_atTop_pow γ).frequently
-        ((stabilizer_isOpen_of_isIntegral w).mem_nhds rfl)).forall_exists_of_atTop 1
+        ((_root_.stabilizer_isOpen_of_isIntegral w).mem_nhds rfl)).forall_exists_of_atTop 1
     refine ⟨γ ^ N, h_stab, fun h ↦ ?_⟩
     have h_unit : cyclotomicGp (γ ^ N) ^ n.natAbs = 1 :=
       pow_natAbs_eq_one.mpr (Units.ext (PadicInt.ext h))
@@ -240,7 +240,8 @@ lemma New.Period.eq_zero_of_smul_eq_cyclotomicGp_zpow_smul {p : ℕ} [ThePrime p
     simp +contextual [z, hy, (mem_fixedField_iff (H := cyclotomicGp.ker) (x := w)).mp hw,
       smul_comm _ _⁻¹]
   have h_diff : γ • z - z = y * w := by
-    simp only [z, smul_mul_assoc, smul_comm _ _⁻¹, smul_mul', hy, Units.smul_def, smul_coe_Cp, hγw]
+    simp only [z, smul_mul_assoc, smul_comm _ _⁻¹, smul_mul', hy, Units.smul_def,
+      UniformSpace.Completion.algEquiv_smul_coe, hγw]
     match_scalars
     simp [field]
   simpa only [h_diff] using h_trace γ z hz
@@ -394,7 +395,7 @@ lemma New.Period.le_of_hodgeTate_stable {p : ℕ} [ThePrime p] {ι : Type*} [Fin
   have ha_mem : ((↑) ∘ a : ι → ℂ_[p]) ∈ W := by
     simpa only [funext ha, Function.comp_def] using h_mem
   have ha_fixed (i : ι) : ∀ᶠ g : Gp p in F, g (a i) = a i := by
-    simpa only [ha, smul_coe_Cp, coe_inj] using h_fixed i
+    simpa only [ha, algEquiv_smul_coe, coe_inj] using h_fixed i
   have h_one : a k = 1 := coe_inj.mp (by simp [← ha, w, hk, coe_one])
   have h_norm (i : ι) : ‖a i‖ ≤ 1 := by simp [← norm_coe (a i), ← ha, w, field, h_max]
   have h_weight (i : ι) : u i = u k ∨ a i = 0 :=
@@ -426,9 +427,9 @@ lemma forall_smul_eq_iff_mem_localFieldOf {x : ℂ_[p]} :
     -- by Ax's theorem `x` is algebraic
     have h_near : ∀ᶠ g : Gp p in Filter.map toGp (nearOne Γ), g • x = x := by simp [hx]
     obtain ⟨a, rfl⟩ := exists_algebraic_of_fixed_near_one (nhds_one_le_map_nearOne Γ h_near)
-    exact ⟨a, by simpa [smul_coe_Cp] using hx, rfl⟩
+    exact ⟨a, by simpa using hx, rfl⟩
   · rintro ⟨a, ha, rfl⟩
-    simpa [smul_coe_Cp] using ha
+    simpa using ha
 
 open BdRPlus Algebra IsDiscreteValuationRing IsFractionRing Submodule algebraMap
 

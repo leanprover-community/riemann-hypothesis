@@ -88,7 +88,7 @@ lemma enorm_besselKernel (y : InfinitePlace E → 𝔰.G₁) :
 the norm of its integrand. -/
 lemma enorm_amplitude_le (c c' : S.Classes) :
     ‖S.amplitude side c c' γ‖ₑ ≤ S.amplitudeMajorant side c c' γ := by
-  grw [amplitude, MeasureTheory.enorm_integral_le_lintegral_enorm, enorm_toReal_smul_le,
+  grw [amplitude, MeasureTheory.eNorm_integral_le_lintegral_eNorm, enorm_toReal_smul_le,
     amplitudeMajorant]
 
 end New.Filling
@@ -196,7 +196,9 @@ lemma exists_classBasis_eq_fromBlocks {E : Type} [Field E] [CMType E] [HasPrimit
   -- roots.
   have h_unitary : genIndex c.out.val.val.det = 1 := by
     have h_sq : genIndex c.out.val.val.det ^ 2 = 1 := by
-      simpa [← sq] using congrArg (fun A ↦ genIndex (det A)) c.out.2
+      simpa [← sq] using congrArg (fun A ↦ genIndex (det A))
+          (show c.out.val.valᴴ * 1 * c.out.val.val = 1 from
+        mem_unitaryGroupOf_iff.1 c.out.2)
     exact (pow_eq_one_iff_of_nonneg (genIndex_pos c.out.val.det).le two_ne_zero).1 h_sq
   have h_norm : genIndex (S.piN : 𝔸f E) = S.N ^ numInfPlaces E := by
     have h_sq : genIndex (S.piN * star S.piN.val : 𝔸f E) = genIndex (S.N : 𝔸f E) :=

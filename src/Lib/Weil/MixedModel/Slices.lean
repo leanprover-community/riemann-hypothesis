@@ -382,8 +382,6 @@ lemma ReadsAt.sliceDatum_eq_prod_setIntegral_smul (h : ReadsAt S π)
     have hψ_cont : Continuous h.ψ := h.hasIntegralConductor_psi.1
     simp only [g, vecToMatrix, mulVec, dotProduct, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr]
     fun_prop
-  have hψ_sum (z : p → F) : h.ψ (∑ i, z i) = ∏ i, h.ψ (z i) :=
-    map_prod h.ψ.toMonoidHom (fun i ↦ Multiplicative.ofAdd (z i)) Finset.univ
   have h_factor (z : p → F) : g z = (∏ i, Set.indicator (V.O : Set F)
       (fun t ↦ h.ψ (c i * t) * f i t) (z i)) * Ψ ((vecToMatrix y).map π) := by
     simp [g, h_prod, Set.indicator_apply, ← mul_assoc, ← Finset.prod_mul_distrib]
@@ -392,7 +390,7 @@ lemma ReadsAt.sliceDatum_eq_prod_setIntegral_smul (h : ReadsAt S π)
       = ∫ b : p → 𝔸f E in (integralBox p Sᶜ : Set (p → 𝔸f E)),
           g (π ∘ b) ∂latticeMeasure E p := by
         simp [g, c, sliceDatum, finFrameVector, ← h.psi_apply, ↓dotProduct_smul, vecToMatrix,
-          Matrix.map, dotProduct, mulVec, hψ_sum, matrixToVec]
+          Matrix.map, dotProduct, mulVec, AddChar.map_sum_eq_prod, matrixToVec]
     _ = ∫ z, g z := h.measurePreserving_comp.hasLaw.integral_comp hg.aestronglyMeasurable
     _ = (∏ i, ∫ t : F in V.O, h.ψ (c i * t) * f i t) * Ψ ((vecToMatrix y).map π) := by
       simp only [h_factor, integral_mul_const, integral_fintype_prod_volume_eq_prod,

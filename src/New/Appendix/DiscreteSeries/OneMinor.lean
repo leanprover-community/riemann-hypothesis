@@ -205,7 +205,6 @@ lemma det_reducedExp : (reducedExp ε o Z).det = cexp Z.trace := by
 
 /-- If `X` and `Y` are within `ρ` and `σ` of the identity in the Frobenius norm, then their product
 is within `ρ σ + ρ + σ` of it. -/
-
 lemma norm_mul_sub_one_le {ρ σ : ℝ} (hX : ‖X - 1‖ ≤ ρ) (hY : ‖Y - 1‖ ≤ σ) :
     ‖X * Y - 1‖ ≤ ρ * σ + ρ + σ := by
   rw [show X * Y - 1 = (X - 1) * (Y - 1) + (X - 1) + (Y - 1) by noncomm_ring]
@@ -252,13 +251,6 @@ lemma flenstedJensen_reducedExp {ε : n → ℤˣ} {Z : Matrix n n ℂ} {h : ℕ
   rw [reducedExp, flenstedJensen_triangular_mul_mul_triangular hl hb'_mem hb'_tri hb_mem hb_tri
     (accretive (near_exp.trans (by norm_num))) (accretive near_both), hb'_char, hb_char, one_mul,
     one_mul]
-
-/-- The absolute value of an entry of a matrix is at most the Frobenius norm of the matrix. -/
-
-lemma norm_apply_le (X : Matrix n n ℂ) (i j : n) : ‖X i j‖ ≤ ‖X‖ := by
-  rw [← sq_le_sq₀ (norm_nonneg _) (norm_nonneg _), frobenius_norm_sq_eq_sum]
-  exact (single_le_sum (fun b _ ↦ sq_nonneg ‖X i b‖) (mem_univ j)).trans
-    (single_le_sum (fun a _ ↦ sum_nonneg fun b _ ↦ sq_nonneg ‖X a b‖) (mem_univ i))
 
 /-- The entry `(i, j)` of the commutator of `X` with the diagonal projection to the indices
 satisfying `p` has the norm of `X i j` if exactly one of `p i`, `p j` holds, else it is `0`. -/
@@ -345,14 +337,13 @@ lemma norm_trace_conj_coordProj_mul_sub_le (ho : o.Injective) (hZ_le : ‖Z‖ �
         simp only [trace_Q, trace_P, ← sum_sub_distrib, Matrix.sub_apply, sub_mul]
     _ ≤ ∑ a, ‖(Q - coordProj p) a a‖ * δ :=
         norm_sum_le_of_le _ fun a _ ↦
-          norm_mul_le_of_le le_rfl ((norm_apply_le Z a a).trans hZ_le)
+          norm_mul_le_of_le le_rfl ((norm_apply_le_frobenius_norm Z a a).trans hZ_le)
     _ ≤ δ * ‖⁅coordProj p, k⁆‖ ^ 2 := by
         grw [← sum_mul, sum_norm_conj_coordProj_sub_le hk, mul_comm]
         exact (norm_nonneg _).trans hZ_le
 
 /-- Multiplication on the right by an orthogonal projection does not increase the Frobenius
 norm. -/
-
 lemma norm_mul_proj_le {ρ : ℝ} (hP : IsStarProjection P) (hX : ‖X‖ ≤ ρ) : ‖X * P‖ ≤ ρ := by
   rw [← norm_star, star_mul, hP.isSelfAdjoint.star_eq]
   exact norm_proj_mul_le hP (by rwa [norm_star])

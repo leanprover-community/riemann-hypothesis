@@ -212,19 +212,6 @@ namespace HasClassLaws
 variable {D : PEL E} {S : AlgebraicGeometry.Scheme} {A : CategoryTheory.Over S} [AddObj (S := S) A]
   [ModuleObj (𝓞 E) A] {c : Pic A.left}
 
-lemma parallelogramLaw (h_laws : D.HasClassLaws c) : c.ParallelogramLaw := h_laws.1
-
-/-- For a class with the laws `New.PEL.HasClassLaws`, `1 - β` is adjoint to `β` for the pairing. -/
-lemma pairing_smul_beta (h_laws : D.HasClassLaws c) {T : CategoryTheory.Over S} (x y : T ⟶ A) :
-    c.pairing (D.β • x) y = c.pairing x ((1 - D.β) • y) :=
-  (h_laws.right x y).left
-
-/-- For a class with the laws `New.PEL.HasClassLaws`, the pull-back along `y` is `⟨β y, y⟩` plus the
-pull-back along `0`. -/
-lemma atPoint_eq (h_laws : D.HasClassLaws c) {T : CategoryTheory.Over S} (y : T ⟶ A) :
-    c.atPoint y = c.pairing (D.β • y) y + c.atPoint 0 :=
-  (h_laws.right y y).right
-
 end HasClassLaws
 
 end PEL
@@ -756,7 +743,7 @@ lemma mem_lagrangian_of_bicharacter_sq
     refine fourierChar_eq_one_iff.mp (Circle.coe_eq_one.mp ?_)
     calc (Real.fourierChar (2 * τ * x.automorphyForm.riemannForm l (x.torsionLift s)) : ℂ)
         = x.automorphyForm.riemannPhase l (τ • x.torsionLift s) ^ 2 := by
-          simp [RealComplexForm.riemannPhase, ← Complex.exp_nat_mul, mul_assoc, mul_left_comm]
+          simp [RealComplexForm.riemannPhase, ← Complex.exp_natCast_mul, mul_assoc, mul_left_comm]
       _ = 1 := h_sq_phase
   -- `(2 τ + 1) r = m` and `2 τ r = n` for `r = riemannForm l (x.torsionLift s)`; subtract.
   have h_odd : (2 * τ + 1) * x.automorphyForm.riemannForm l (x.torsionLift s) = m := by
@@ -1040,7 +1027,7 @@ lemma hasGoodReduction_one :
     exact hf_ne (eq_zero_of_torsionPoints hf h_torsion_zero)
   -- The three sup norms are `0` or `1`.
   rw [← sizeAt_mul]
-  show (B + C).thetaNorm 1 (f * f') = B.thetaNorm 1 f * C.thetaNorm 1 f'
+  change (B + C).thetaNorm 1 (f * f') = B.thetaNorm 1 f * C.thetaNorm 1 f'
   by_cases hf_zero : f = 0
   · simp [hf_zero, thetaNorm_zero]
   by_cases hf'_zero : f' = 0

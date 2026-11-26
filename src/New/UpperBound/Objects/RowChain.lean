@@ -399,7 +399,7 @@ lemma lowerChain_mem_levelSpace (ϑ : D.TameChar) (y : D.principalForms (D.space
     simp only [lastLevelChar, MonoidHom.finsetProd_apply]
     rfl
   refine (algFormRep_lowerChain ϑ 1 y ⟨k.val, hk⟩ g rfl h_tri h_first).trans ?_
-  rw [← h_scalar, map_one, Module.End.one_apply]
+  rw [← h_scalar, map_one, one_apply_eq_self]
   rfl
 
 /-- The map ι_μ with its target restricted to the space of algebraic forms on Y_m with level J_m

@@ -389,24 +389,6 @@ lemma mem_stdOrdersPart_iff :
   · have h_std := mem_withOrders_stdOrders_iff.2 ⟨h_frob, h_letter⟩
     exact ⟨⟨withOrders_le_kisinLocAinf h_std, h_value⟩, h_std⟩
 
-/-- Let `F = ∏_{b ∈ s} p_b ^ r b` be a product of integer powers of the units `p_b = φ^b E`
-(`k.frobEUnit b`), and put `r a = 0` for `a ∉ s`. Then `F • x` lies in `L.kisinLoc`, the Kisin
-module with all `p_a` inverted, and has at the letter `i` the exponents `r a` at the levels `a < l`
-and `r a - u` at the levels `a ≥ l`, if and only if `x` lies in `L.letterPart i` (where `ζ` acts by
-the Teichmüller lift of `i`) and in the `k.S`-span of the image of the Kisin module `L.kisinModule`
-under `φ ^ l`. To have exponents `c` at `i` means to lie in `L.kisinLocAinf` and `L.letterPart i`
-and to be sent by `μ ∘ φ^(-a)` into `t^(c a u) B_dR⁺` for every level `a`, every `u` in
-`L.jumpSet (i.stepBack a)` and every form `μ` of type `u` at `i.stepBack a`. -/
-lemma prod_frobEUnit_zpow_smul_mem_kisinLoc_and_withOrders_iff (s : Finset ℕ) (r : ℕ → ℤ) :
-    (∏ b ∈ s, k.frobEUnit b ^ r b) • x ∈ L.kisinLoc ∧
-        (∏ b ∈ s, k.frobEUnit b ^ r b) • x ∈ L.withOrders i
-          (fun (a : ℕ) (u : ℤ) ↦ stdOrders l a u + if a ∈ s then r a else 0) ↔
-      x ∈ span k.S ((fun y : L.Ambient ↦ φ ^ l • y) '' (L.kisinModule : Set L.Ambient)) ∧
-        x ∈ L.letterPart i := by
-  rw [prod_frobEUnit_zpow_smul_mem_kisinLoc_iff, prod_frobEUnit_zpow_smul_mem_withOrders_add_iff,
-    ← valueFieldPoints_frobKisinAinf_eq_span, ← mem_stdOrdersPart_iff, mem_inf,
-    restrictScalars_mem]
-
 /-- The projection to the letter `i` of an element of `L.frobKisinAinf l` has the standard
 exponents `stdOrders l` at `i`. -/
 lemma letterProj_mem_withOrders (hx : x ∈ L.frobKisinAinf l) :

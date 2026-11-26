@@ -1,5 +1,6 @@
 module
 
+public import Lib.General.Measure.HaarModulus
 public import Lib.PadicHodge.Crystalline.HodgeTateForms
 
 /-!
@@ -535,7 +536,7 @@ lemma jump_twist_of_period (a : Γ → R) {v : ℤ} {y : ℂ_[p]} (hy : y ≠ 0)
   have h_iff (F : T →ₛₗ[toRingHom γ] ℂ_[p]) :
       y • F ∈ hodgeTateMaps ρ' γ (u + v) ↔ F ∈ hodgeTateMaps ρ γ u := by
     refine forall_congr' fun x ↦ eventually_congr (h_period.mono fun g hg ↦ ?_)
-    show (y • F) (ρ' g x) = (χ g ^ (-(u + v))).val • toGp g • (y • F) x ↔
+    change (y • F) (ρ' g x) = (χ g ^ (-(u + v))).val • toGp g • (y • F) x ↔
       F (ρ g x) = (χ g ^ (-u)).val • toGp g • F x
     -- With `c = χ(g) ^ (-v) • g • y ≠ 0`, the condition for `y • F` is `c` times the one for `F`.
     set c : ℂ_[p] := (χ g ^ (-v)).val • toGp g • y with hc

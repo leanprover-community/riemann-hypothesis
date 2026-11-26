@@ -167,11 +167,6 @@ def cyclotomicInv : Gal(Ω/E) →* Λ :=
 def tateTwist : Gal(Ω/E) →* Matrix Unit Unit Λ :=
   (Matrix.scalar Unit).toMonoidHom.comp (cyclotomicInv ℓ E Λ ^ e)
 
-/-- The single entry of the matrix `tateTwist ℓ E Λ e g` is `cyclotomicInv ℓ E Λ g ^ e`. -/
-lemma tateTwist_apply (ℓ : ℕ) [Fact ℓ.Prime] (E : Type) [Field E] [EmbeddedNumberField E]
-    (Λ : Type) [CommRing Λ] [Algebra ℤ_[ℓ] Λ] (e : ℕ) (g : Gal(Ω/E)) :
-    tateTwist ℓ E Λ e g () () = cyclotomicInv ℓ E Λ g ^ e := by
-  simp [tateTwist]
 /-- The elements of `Gal(Ω/E)` on which the local condition above `ℓ` is imposed. For `e = 0` they
 form the union of the inertia groups at the places `A` of `Ω` above `ℓ`. For `e ≠ 0` they are the
 elements of the decomposition groups at these places with trivial cyclotomic character. -/

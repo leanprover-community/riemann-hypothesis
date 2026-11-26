@@ -4,6 +4,7 @@ public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
 public import Lib.GLn.SchurModule.Basic
 public import Lib.General.Algebra.MultivariatePolynomials
 public import Lib.Weil.Fock.Basic
+import TauCeti.Algebra.Lie.GeneralLinear.Oscillator.Basic
 
 /-!
 # Fock space oscillator actions, joint harmonics and Fischer decomposition
@@ -62,38 +63,41 @@ section OscillatorDefs
 
 open Matrix Fintype Fock MvPolynomial Finset GlModule
 
-variable {R C ι : Type} [DecidableEq R] [Fintype C] [DecidableEq C] [Fintype ι]
+variable {R C ι : Type} [Fintype C] [DecidableEq C] [Fintype ι]
+
+private theorem oscRaise_eq (η : R → ℤˣ) (a : R) :
+    TauCeti.oscRaise ℂ (fun i ↦ η i = 1) a = raiseOp η a := by
+  ext P
+  by_cases h : η a = 1 <;> simp [raiseOp, h]
+
+private theorem oscLower_eq (η : R → ℤˣ) (a : R) :
+    TauCeti.oscLower ℂ (fun i ↦ η i = 1) a = lowerOp η a := by
+  ext P
+  by_cases h : η a = 1 <;> simp [lowerOp, h]
 
 /-- The raising operators of the Fock model for the signs `η` commute: `raiseOp η a` is
 multiplication by `X a` if `η a = 1` and `-∂ a` otherwise. -/
 theorem Fock.raiseOp_comm (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     raiseOp η a (raiseOp η b P) = raiseOp η b (raiseOp η a P) := by
-  rcases eq_or_ne a b with rfl | hab
-  · rfl
-  -- For `a ≠ b`, each of `X a`, `∂ a` commutes with each of `X b`, `∂ b`.
-  by_cases ha : η a = 1 <;> by_cases hb : η b = 1 <;>
-    simp [raiseOp, ha, hb, hab, hab.symm, mul_left_comm, pderiv_comm a]
+  simpa only [oscRaise_eq, mul_apply_eq_comp] using
+    DFunLike.congr_fun (TauCeti.commute_oscRaise (K := ℂ) (p := fun i ↦ η i = 1) a b).eq P
 
 /-- The lowering operators of the Fock model for the signs `η` commute: `lowerOp η a` is `∂ a` if
 `η a = 1` and multiplication by `X a` otherwise. -/
 theorem Fock.lowerOp_comm (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     lowerOp η a (lowerOp η b P) = lowerOp η b (lowerOp η a P) := by
-  rcases eq_or_ne a b with rfl | hab
-  · rfl
-  -- For `a ≠ b`, each of `X a`, `∂ a` commutes with each of `X b`, `∂ b`.
-  by_cases ha : η a = 1 <;> by_cases hb : η b = 1 <;>
-    simp [lowerOp, ha, hb, hab, hab.symm, mul_left_comm, pderiv_comm a]
+  simpa only [oscLower_eq, mul_apply_eq_comp] using
+    DFunLike.congr_fun (TauCeti.commute_oscLower (K := ℂ) (p := fun i ↦ η i = 1) a b).eq P
+
+variable [DecidableEq R]
 
 /-- The commutator of the lowering operator `lowerOp η a` (`∂ a` or `X a`, by the sign `η a`) with
 the raising operator `raiseOp η b` (`X b` or `-∂ b`) is the identity if `a = b`, and zero if not. -/
 theorem Fock.lowerOp_raiseOp (η : R → ℤˣ) (a b : R) (P : MvPolynomial R ℂ) :
     lowerOp η a (raiseOp η b P) = raiseOp η b (lowerOp η a P) + if a = b then P else 0 := by
-  rcases eq_or_ne a b with rfl | hab
-  · -- This is Leibniz's rule `∂ (X * P) = X * ∂ P + P`, whatever the sign of `a`.
-    by_cases ha : η a = 1 <;> simp [raiseOp, lowerOp, ha, add_comm]
-  -- Operators in different variables commute.
-  by_cases ha : η a = 1 <;> by_cases hb : η b = 1 <;>
-    simp [raiseOp, lowerOp, ha, hb, hab, hab.symm, mul_left_comm, pderiv_comm a]
+  simpa only [oscRaise_eq, oscLower_eq, mul_apply_eq_comp, LinearMap.add_apply,
+    DFunLike.ite_apply, one_apply_eq_self, LinearMap.zero_apply] using DFunLike.congr_fun
+      (TauCeti.oscLower_mul_oscRaise (K := ℂ) (p := fun i ↦ η i = 1) a b) P
 
 /-- The canonical commutation relations of the Fock model for the signs `η`: raising operators
 commute, lowering operators commute, and the commutator of `lowerOp η a` with `raiseOp η b` is
@@ -186,15 +190,8 @@ are `X i` and `∂ i` if the sign `η i` is `1`, and `-∂ i` and `X i` otherwis
 theorem _root_.New.Fock.glOp_commutator [DecidableEq ι] (η : ι → ℤˣ) (i j k m : ι) :
     glOp η i j * glOp η k m - glOp η k m * glOp η i j =
       (if j = k then glOp η i m else 0) - if i = m then glOp η k j else 0 := by
-  refine LinearMap.ext fun P ↦ ?_
-  -- Move the raising operators to the left; the terms of degree four then cancel.
-  have h_order (p q r s : ι) : glOp η p q (glOp η r s P) =
-      raiseOp η p (raiseOp η r (lowerOp η q (lowerOp η s P))) +
-        if q = r then glOp η p s P else 0 := by
-    simp [glOp, lowerOp_raiseOp, apply_ite (raiseOp η p)]
-  rw [LinearMap.sub_apply, Module.End.mul_apply, Module.End.mul_apply, h_order, h_order,
-    raiseOp_comm η i k, lowerOp_comm η j m, add_sub_add_left_eq_sub]
-  simp [DFunLike.ite_apply, eq_comm]
+  simpa only [glOp, oscRaise_eq, oscLower_eq] using
+    TauCeti.oscRaise_mul_oscLower_commutator (K := ℂ) (p := fun a ↦ η a = 1) i j k m
 
 /-- Reversing all signs exchanges raising and lowering operators up to sign, so
 `glOp (-η) i j = raiseOp (-η) i * lowerOp (-η) j` is `∓ lowerOp η i * raiseOp η j`, with the minus
@@ -308,10 +305,6 @@ def oscRows : GlModule R (MvPolynomial ι ℂ) where
 section
 
 omit [Fintype ι]
-
-theorem oscRows_apply (X : Matrix R R ℂ) :
-    T.oscRows X = ∑ a : R, ∑ b : R, X a b • T.oscRowsUnit a b := by
-  simp [oscRows, liftLinear_apply]
 
 theorem oscRows_E (a b : R) : T.oscRows.E a b = T.oscRowsUnit a b := by
   simp [oscRows, E]

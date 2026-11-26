@@ -251,7 +251,7 @@ lemma exists_openNormalSubgroup_forall_apply_eq_apply_one (G' : OpenSubgroup Gal
   have h_nhds : {u : G'.toSubgroup | ∀ y ∈ Y, y u = y 1} ∈ nhds 1 :=
     hY.eventually_all.2 fun y hy ↦ (hY_const y hy).eventually_eq 1
   obtain ⟨W, hW_sub, hW_open, hW_one⟩ :=
-    mem_nhds_iff.1 (G'.isOpen.isOpenMap_subtype_val.image_mem_nhds h_nhds)
+    mem_nhds_iff.1 (G'.isOpen.isOpenMap_subtypeVal.image_mem_nhds h_nhds)
   obtain ⟨G'', hG''⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one hW_open hW_one
   refine ⟨G'', fun g hg ↦ ?_⟩
   obtain ⟨u, hu, rfl⟩ := hW_sub (hG'' hg)
@@ -291,7 +291,7 @@ lemma exists_openNormalSubgroup_forall_eq_zero (G' : OpenSubgroup Gal(Ω/E)) (m 
   -- The homomorphisms `χ : B → ℤ / m` separate the points of `B`, and `χ ∘ z` lies in `Y`.
   refine eq_zero_of_forall_hom_zmod_eq_zero hm fun χ ↦ ?_
   have h_cocycle : (fun u : H ↦ χ (z u)) ∈ Z1 V.ρ := by
-    refine ⟨(hz_const.comp χ).continuous.comp continuous_subtype_val, fun u u' ↦ ?_⟩
+    refine ⟨(hz_const.comp χ).continuous.comp continuous_subtypeVal, fun u u' ↦ ?_⟩
     simp [V, hz_add u u.property u' u'.property]
   have h_mem : (fun u : H ↦ χ (z u)) ∈ Y := by
     refine ⟨h_cocycle, fun w hw A hA u hu ↦ ?_⟩

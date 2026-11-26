@@ -469,7 +469,7 @@ diagonal, and let `b = diag (1, …, ϖ⁻¹, …, 1)` with `ϖ⁻¹` at `m`, fo
 `b⁻¹ p b` lies in the parahoric subgroup `blockParahoric (update (min m) m N)`, whose row `m` lies
 in `𝔭` off the diagonal. -/
 lemma New.conj_diagGL_mulSingle_mem_blockParahoric {F : Type*} [Field F] [Valued F ℤᵐ⁰]
-    [CompactSpace 𝒪[F]] {N : ℕ} {m : Fin N} {ϖ : Fˣ} (hϖ : v ϖ.val = exp (-1))
+    {N : ℕ} {m : Fin N} {ϖ : Fˣ} (hϖ : v ϖ.val = exp (-1))
     {p : GL (Fin N) F} (hp : p ∈ blockParahoric (min (m : ℕ)))
     (hp_col : ∀ r ≠ m, v (p r m) < 1) :
     (diagGL (mulSingle m ϖ⁻¹))⁻¹ * p * diagGL (mulSingle m ϖ⁻¹) ∈
@@ -511,7 +511,7 @@ lemma New.IsExponent.apply_swap_diagGL_mulSingle {F : Type*} [Field F] [Valued F
     simp [t, σ, diagGL_mul_permGL, mulSingle_comp_equiv]
   have h_char : (torusChar θ t : ℂ) = (θ i ϖ).val⁻¹ * (Nat.card 𝓀[F] : ℂ) ^ i.rev.val := by
     simp [t, hϖ, normAbsChar]
-  rw [← Module.End.mul_apply, ← map_mul, h_prod, ← h_char]
+  rw [← mul_apply_eq_comp, ← map_mul, h_prod, ← h_char]
   exact hl.apply_monomial_translate hϖ hz And.left σ h_val_le
 
 /-- The descent step, for an exponent `(torusChar θ, l)` with `‖θ_i(ϖ)‖` non-increasing in `i`. Let
@@ -582,7 +582,7 @@ lemma New.IsExponent.eq_zero_of_apply_permGL_swap_eq_zero {F : Type*} [Field F] 
     -- Both sides of `hx'_zero` are now multiples of `q ^ N * (1 - 1 / q) * l x ≠ 0`.
     have h_root : θ j ϖ = q * θ m ϖ := by
       rw [h_shift, hz_m] at hx'_zero
-      simp only [a, swap_self, ← Perm.one_def, map_one, Module.End.one_apply] at hx'_zero
+      simp only [a, swap_self, ← Perm.one_def, map_one, one_apply_eq_self] at hx'_zero
       field_simp at hx'_zero
       grind
     simpa [h_root, hq, hq_lt.not_ge] using hθ_anti hmj
@@ -621,7 +621,7 @@ lemma New.IsExponent.eq_zero_of_eq_zero_on_spherical {F : Type*} [Field F] [Valu
       simp [d, torusChar, monoidHomMulEquiv, hθ_unit, h_val_diag, normAbsChar]
     calc l (ρ k z) = l (ρ (diagGL d) (ρ k z)) := by
           rw [hl.apply_diagGL_unit (by simp [d, h_val_diag]), h_char_d, one_mul]
-      _ = l (ρ (diagGL d * k) z) := by rw [map_mul, Module.End.mul_apply]
+      _ = l (ρ (diagGL d * k) z) := by rw [map_mul, mul_apply_eq_comp]
       _ = l z := hl.apply_proIwahori _ h_dk_mem z
   -- By induction on `m`, `l` vanishes on the averages over each parahoric `blockParahoric (min m)`.
   have h_mean_eq_zero (m : Fin (N + 1)) (y : ρ) :

@@ -112,7 +112,7 @@ lemma arrowProduct_integrated_polyVector (P : MvPolynomial (NumberField.Infinite
           (rename (fun (v, j, i) ↦ (v, Sum.inl i, j)) P *
             rename (fun (v, i, j) ↦ (v, Sum.inr i, j)) Q))
         (arrowTensor (Φ ⊗ₜ Φ')) := by
-  simp [arrowProduct, flipPoly, pairSign, rename_eq_aeval, bind₁_bind₁, aeval_bind₁, map_integrated,
+  simp [arrowProduct, flipPoly, pairSign, rename_eq_aeval, aeval_bind₁, map_integrated,
     realMap_flipCoords_polyVector, boxProd_integrated, realBoxProd_polyVector]
   -- the two descriptions of the renamed variables of `P` and `Q` agree by definition
   rfl
@@ -199,7 +199,7 @@ lemma integral_theta_tripleWeil_eq_lift_comp {κ : NumberField.InfinitePlace E �
     rw [← h_eq, hJ, integral_prod _ (hF _)]
     simp [F, integral_const_mul]
   refine isClosed_property denseRange_polyVector
-    (Λ.range.closed_of_finiteDimensional.preimage_of_continuous (f := J)) fun R ↦ ?_
+    (Λ.range.isClosed_of_finiteDimensional.preimage_of_continuous (f := J)) fun R ↦ ?_
   -- `R` is a sum of products of a polynomial on `Hom(X, X')` and one on `Hom(X', X'')`.
   let inl : NumberField.InfinitePlace E × X' × X → NumberField.InfinitePlace E × (X ⊕ X'') × X' :=
     fun (v, j, i) ↦ (v, Sum.inl i, j)
@@ -599,7 +599,7 @@ lemma twistedPairWeil_movedDatum (k : ℕ) (g : New.G D.E (D.signsY k))
 /-- In the constant term `constTermAtStringMap` of the moved datum at `(g, g' * a)`, the point `a`
 may be moved into the datum: it is the constant term at `(g, g')` of `datumY` acted on by
 `(g_k, a)`, where `g_k = (ξ k, y k)`. -/
-lemma constTermAtStringMap_movedDatum {k : ℕ} {hk : k ≤ 2 * D.ϱ + 1} {X : Type} {s : ℕ} [Fintype X]
+lemma constTermAtStringMap_movedDatum {k : ℕ} {hk : k ≤ 2 * D.ϱ + 1} {X : Type} {s : ℕ}
     [DecidableEq X] (Y' : Grading (D.spaceY (k + 1)) D.N X s) (g : New.G D.E (D.signsY k))
     (g' a : New.G D.E (D.signsY (k + 1))) :
     (D.gradingY k hk).constTermAtStringMap Y' (rankTwist (D.chainChar ϑ (k + 1)))
@@ -704,7 +704,14 @@ lemma integral_unfoldStageOn (ϑ : D.TameChar)
     using integral_besselGroup_unfold Y' (rankTwist (D.chainChar ϑ (k + 1))) (movedDatum ϑ ξ y k)
       (isEquivariant_unfoldStageOn ϑ t φ ξ y k hk) hz_aut hz_rapid
 
-set_option synthInstance.maxSize 512 in
+noncomputable local instance instDecidableEqDoubleLiftSplitting (i : ℕ) (hi : 2 * i < 2 * D.ϱ + 1)
+    {X q : Type} {s : ℕ} [Fintype X] [DecidableEq X] [Fintype q] [DecidableEq q]
+    {Y : Grading (D.spaceY (2 * i + 2)) D.N X s} :
+    DecidableEq ({ i_1 : (D.Y (2 * i) ⊕ D.Y (2 * i + 2)) × D.Y (2 * i + 1) //
+        0 < Sum.elim (D.gradingY (2 * i) hi.le).gradeOf Y.gradeOf i_1.1 -
+          (D.gradingY (2 * i + 1) hi).gradeOf i_1.2 } ⊕ q × D.X (2 * i + 1)) :=
+  @instDecidableEqSum _ _ Subtype.instDecidableEq instDecidableEqProd
+
 /-- Let `R` be data for the two lifts `Y_{2i} → Y_{2i+1} → Y_{2i+2}`, the last space with the
 grading `Y`. Suppose that the linear map `D.doubleLiftEvalY i` on finite data is `R.finEval`, the
 finite analogue of the translation and zero term below. Fix archimedean points `ξ k` of U(Y_k) and
@@ -826,7 +833,6 @@ lemma exists_unfoldStageOn_even_eq_sourceFn (t : (WeylIndex (D.X 0) D.columnCoun
 
 -- Without this, comparing the index types of neighbouring stages unfolds `Finset.univ`.
 seal Finset.univ in
-set_option synthInstance.maxSize 512 in
 /-- Let `R` be data for the two lifts `Y_{2i} → Y_{2i+1} → Y_{2i+2}`, the last space with a grading
 `Y` of definite part `X`. Suppose that `D.doubleLiftEvalY i`, the linear map that turns finite data
 for the spaces `Y_k` into finite data for their definite parts `X_k`, is the map `R.finEval` of `R`.

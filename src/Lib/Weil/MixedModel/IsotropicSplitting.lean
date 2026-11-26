@@ -92,19 +92,38 @@ noncomputable def hyperbolicSpace : Space E (p ⊕ p) (hyperbolicSigns p) :=
         { val := fromBlocks 1 (-c • 1) (ϵ • 1) ((c * star ϵ) • 1)
           inv := fromBlocks (star ϵ • 1) 1 ((star c * ϵ) • 1) (-star c • 1)
           val_inv := by
-            simp [fromBlocks_multiply, ← ext_iff, Matrix.one_apply, ← mul_assoc]
-            grind [star_normNegOne_mul_self]
+            -- Block by block the product is a scalar matrix; compare the scalars.
+            have hc : star c * c = -1 := star_normNegOne_mul_self
+            have hϵ : ϵ + star ϵ = 1 := traceOneAdele_add_star
+            simp only [fromBlocks_multiply, Matrix.mul_one, Matrix.mul_smul, ← fromBlocks_one]
+            congr 1 <;> match_scalars
+            · linear_combination hϵ - ϵ * hc
+            · linear_combination hc
+            · linear_combination ϵ * star ϵ * hc
+            · linear_combination hϵ - star ϵ * hc
           inv_val := by
-            simp [fromBlocks_multiply, ← ext_iff, Matrix.one_apply, ← mul_assoc]
-            grind [star_normNegOne_mul_self] })
+            -- Block by block, as for `val_inv`.
+            have hc : star c * c = -1 := star_normNegOne_mul_self
+            have hϵ : ϵ + star ϵ = 1 := traceOneAdele_add_star
+            simp only [fromBlocks_multiply, Matrix.mul_one, Matrix.mul_smul, ← fromBlocks_one]
+            congr 1 <;> match_scalars
+            · linear_combination hϵ
+            · ring
+            · ring
+            · linear_combination hϵ - (ϵ + star ϵ) * hc })
     gram_point := by
       refine gram_mkAdelicGL ?_ ?_
       · simp [signMatrix, fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply, ← ext_iff,
           ← mul_assoc, ← mul_inv, ← Complex.ofReal_mul, diagonal_apply, Matrix.one_apply]
         grind
-      · simp [fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply, ← ext_iff,
-          Matrix.one_apply, ← mul_assoc]
-        grind [star_normNegOne_mul_self] }
+      · -- With `b` the finite part of the frame, `bᴴ * J` is the inverse of `b` given above, so
+        -- the claim is `b⁻¹ * b = 1`.
+        have h_inv : (fromBlocks 1 (-c • 1) (ϵ • 1) ((c * star ϵ) • 1) :
+            Matrix (p ⊕ p) (p ⊕ p) (𝔸f E))ᴴ *
+              (fromBlocks 0 1 1 0 : Matrix (p ⊕ p) (p ⊕ p) E).map (algebraMap E (𝔸f E)) =
+            fromBlocks (star ϵ • 1) 1 ((star c * ϵ) • 1) (-star c • 1) := by
+          simp [fromBlocks_conjTranspose, fromBlocks_map, fromBlocks_multiply]
+        exact (congrArg (· * _) h_inv).trans (Units.inv_mul ⟨_, _, _, _⟩) }
 
 variable {E p}
 
@@ -239,7 +258,8 @@ variable {E : Type*} [Field E] [NumberField E] [IsCMField E] {n n₁ : Type*} [F
 /-- An element `g` of the adelic unitary group preserves the standard form: `gᴴ S g = S`, with
 `S = stdForm E s`. -/
 lemma G.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix :
-    g.adeleMatrixᴴ * stdForm E s * g.adeleMatrix = stdForm E s := g.toUnitary.prop
+    g.adeleMatrixᴴ * stdForm E s * g.adeleMatrix = stdForm E s :=
+  mem_unitaryGroupOf_iff.1 g.toUnitary.prop
 
 omit [IsCMField E] in
 /-- The standard form `S = stdForm E s` is its own inverse: `S (S a) = a`. -/
@@ -625,6 +645,8 @@ def levi : GL p (𝔸 E) × G E s₀ →* G E s :=
       simp [↓conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix, Matrix.mul_assoc,
         eq_sub_of_add_eq' D.sum_frame_mul_coord_eq_one, Matrix.mul_sub, Matrix.mul_add])
     fun x y ↦ ext_adeleMatrix <| by
+      -- Pass to the matrices first, so that `simp` does not rewrite inside `ofMatrix`.
+      simp only [G.adeleMatrix_mul, adeleMatrix_ofMatrix]
       simp [Matrix.mul_assoc, conjTranspose_nonsing_inv, Matrix.mul_add, Matrix.add_mul]
 
 section
@@ -634,15 +656,19 @@ omit [WeilData E]
 /-- The Levi element of `(a, g)` sends the adelic frame `l` to `l (a⁻¹)ᴴ`. -/
 lemma levi_mul_lAdelic (a : GL p (𝔸 E)) (g : G E s₀) :
     (D.levi (a, g)).adeleMatrix * D.lAdelic = D.lAdelic * a⁻¹.valᴴ := by
+  -- Unfold the Levi element to its matrix first, so that `simp` does not rewrite inside `levi`.
+  simp only [levi, MonoidHom.mk'_apply, adeleMatrix_ofMatrix]
   simp [Matrix.mul_assoc, Matrix.add_mul]
 
 /-- The Levi element of `(a, g)` sends the embedded copy `ι` of `V₀` to `ι g`. -/
 lemma levi_mul_iAdelic (a : GL p (𝔸 E)) (g : G E s₀) :
     (D.levi (a, g)).adeleMatrix * D.iAdelic = D.iAdelic * g.adeleMatrix := by
+  simp only [levi, MonoidHom.mk'_apply, adeleMatrix_ofMatrix]
   simp [Matrix.mul_assoc, Matrix.add_mul]
 
 /-- The Levi element of `(a, g)` acts on the adelic frame `k` by `a`. -/
 lemma actsOnFrame_levi (a : GL p (𝔸 E)) (g : G E s₀) : D.ActsOnFrame (D.levi (a, g)) a.val := by
+  simp only [ActsOnFrame, levi, MonoidHom.mk'_apply, adeleMatrix_ofMatrix]
   simp [Matrix.mul_assoc, Matrix.add_mul]
 
 end
@@ -685,7 +711,10 @@ def radicalElement : G E s :=
     -- `cᴴ * c` as `2⁻¹ + 2⁻¹ = 1`.
     simp [↓coord_mul_frame_mul, iCoord, lCoord, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul,
       Matrix.sub_mul, Matrix.mul_sub]
-    match_scalars <;> grind
+    have h_half : toAdele (2⁻¹ : E) + toAdele (2⁻¹ : E) = 1 := by
+      rw [← toAdele.map_add, ← two_mul, mul_inv_cancel₀ two_ne_zero, toAdele.map_one]
+    -- Each coefficient identity is a ring identity, except the one for `cᴴ * c`.
+    match_scalars <;> first | ring1 | linear_combination -h_half
 
 /-- The unipotent element `radicalElement c b` depends continuously on the pair `(c, b)`. -/
 @[fun_prop]
@@ -718,7 +747,12 @@ lemma radicalElement_mul (c' : Matrix n₀ p (𝔸 E)) (b' : Matrix p p (𝔸 E)
   -- Expand both sides in the frames and coordinates, then compare the scalar coefficients of each
   -- term.
   simp [Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul]
-  match_scalars <;> grind
+  -- The coefficients agree by `j⁻¹ j = 1` and `2⁻¹ + 2⁻¹ = 1`.
+  have hj : toAdele (j⁻¹ : E) * toAdele (j : E) = 1 := by
+    rw [← toAdele.map_mul, inv_mul_cancel₀ j_ne_zero, toAdele.map_one]
+  have h_half : toAdele (2⁻¹ : E) + toAdele (2⁻¹ : E) = 1 := by
+    rw [← toAdele.map_add, ← two_mul, mul_inv_cancel₀ two_ne_zero, toAdele.map_one]
+  match_scalars <;> simp only [hj, mul_one, h_half, neg_add_cancel, neg_zero]
 
 lemma radicalElement_inv : (D.radicalElement c b)⁻¹ = D.radicalElement (-c) (-b) :=
   inv_eq_of_mul_eq_one_right (ext_adeleMatrix (by simp [Matrix.mul_assoc]))
@@ -729,9 +763,16 @@ lemma levi_conj_radicalElement (a : GL p (𝔸 E)) (g : G E s₀) :
     D.levi (a, g) * D.radicalElement c b =
       D.radicalElement (g.adeleMatrix * c * a.valᴴ) (a.val * b * a.valᴴ) * D.levi (a, g) := by
   refine ext_adeleMatrix ?_
+  -- `g` preserves the standard form of `V₀`; this removes `gᴴ ε₀ g` from the right side.
+  have h_pres (X : Matrix n₀ n (𝔸 E)) :
+      g.adeleMatrixᴴ * (stdForm E s₀ * (g.adeleMatrix * X)) = stdForm E s₀ * X := by
+    rw [← Matrix.mul_assoc, ← Matrix.mul_assoc,
+      g.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix]
+  -- Unfold both elements to their matrices first, so that `simp` does not rewrite inside `levi`.
+  simp only [levi, radicalElement, MonoidHom.mk'_apply, G.adeleMatrix_mul, adeleMatrix_ofMatrix]
   -- Both sides expand to the same sum of products of frames and coordinates.
-  simp [adeleMatrix, ofMatrix, ← U.form_mul_inv_eq, Matrix.mul_assoc, Matrix.mul_add,
-    Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, conjTranspose_nonsing_inv]
+  simp [h_pres, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul,
+    conjTranspose_nonsing_inv]
   abel
 
 /-- Every `radicalElement c b` is a commutator of a Levi element `m = levi (a, 1)` with a unipotent
@@ -748,11 +789,14 @@ lemma exists_levi_mul_radicalElement_eq :
   refine ⟨two, toAdele (3⁻¹ : E) • b, ?_⟩
   rw [levi_conj_radicalElement, radicalElement_mul]
   -- Both sides are a unipotent element times `levi (two, 1)`; compare the unipotent factors.
-  congr 1
-  refine ext_adeleMatrix ?_
+  refine congrArg (· * D.levi (two, 1)) (ext_adeleMatrix ?_)
   -- Expand both matrices and compare the scalar coefficients of each term.
   simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, two]
-  match_scalars <;> norm_num [mul_two, ← map_add, ← map_mul] <;> ring_nf
+  -- The coefficients of `b` and of `bᴴ` agree as `3 * 3⁻¹ = 1`; the others are ring identities.
+  have h_third : 3 * toAdele (3⁻¹ : E) = 1 := by
+    rw [← map_ofNat toAdele 3, ← toAdele.map_mul, mul_inv_cancel₀ three_ne_zero, toAdele.map_one]
+  match_scalars <;>
+    first | ring1 | linear_combination toAdele (2⁻¹ : E) * toAdele (j⁻¹ : E) * h_third
 
 /-- For two unipotent elements, the first with `c = 0`, the product adds the parameters `b`. -/
 lemma radicalElement_zero_mul (b' : Matrix p p (𝔸 E)) :
@@ -805,20 +849,30 @@ lemma exists_eq_radicalElement_mul_levi (hk : D.ActsOnFrame g a) :
     ofMatrix (Y * D.iAdelic) (by simp [h_form_i, Matrix.mul_assoc, Matrix.mul_sub])
   refine ⟨-Y * D.lAdelic * a.valᴴ, -toAdele (j : E) • X * D.lAdelic * a.valᴴ, a, g₀,
     ext_adeleMatrix ?_, rfl, ?_⟩
-  · -- Compare both sides on the frames `k`, `i` and `l`.
+  · -- Compare both sides on the frames `k`, `i` and `l`. On each frame the Levi factor acts
+    -- first, by `actsOnFrame_levi`, `levi_mul_iAdelic` and `levi_mul_lAdelic`.
+    rw [G.adeleMatrix_mul]
     refine D.eq_of_mul_kAdelic_of_mul_iAdelic_of_mul_lAdelic ?_ ?_ ?_
     · -- On `k` both act by `a`.
-      simp [hk, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.sub_mul]
+      rw [Matrix.mul_assoc, D.actsOnFrame_levi, ← Matrix.mul_assoc, D.actsOnFrame_radicalElement,
+        Matrix.mul_one]
+      exact hk
     · -- On `i`: by `h_form_i`, the `k`-part of the right side is `X i`, as on the left.
-      simp [hg, g₀, h_form_i, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul,
-        Matrix.mul_sub]
+      rw [Matrix.mul_assoc, D.levi_mul_iAdelic, ← Matrix.mul_assoc, D.radicalElement_mul_iAdelic]
+      simp [hg, g₀, h_form_i, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_sub]
       abel
     · -- On `l`: `h_form_l` removes `Xᴴ`, which enters the right side through `bᴴ`.
-      simp [hg, g₀, h_form_l, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul,
+      rw [Matrix.mul_assoc, D.levi_mul_lAdelic, ← Matrix.mul_assoc]
+      simp [hg, h_form_l, Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul,
         Matrix.mul_sub, conjTranspose_nonsing_inv]
       -- The coefficients of `k X l` and `k a lᴴ Yᴴ ε₀ Y l` agree as `j⁻¹ j = 1` and
       -- `2⁻¹ + 2⁻¹ = 1`.
-      match_scalars <;> grind
+      have hj : toAdele (j⁻¹ : E) * toAdele (j : E) = 1 := by
+        rw [← toAdele.map_mul, inv_mul_cancel₀ j_ne_zero, toAdele.map_one]
+      have h_half : toAdele (2⁻¹ : E) + toAdele (2⁻¹ : E) = 1 := by
+        rw [← toAdele.map_add, ← two_mul, mul_inv_cancel₀ two_ne_zero, toAdele.map_one]
+      match_scalars <;>
+        simp only [hj, mul_one, ← neg_add, neg_neg, h_half, neg_add_cancel, neg_zero]
   · -- The matrix of `g₀` is the `V₀`-block of `g`.
     simp [g₀, hg, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_add]
 

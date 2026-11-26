@@ -1,8 +1,9 @@
 """The labels the batch and review workflows give pull requests, and which pull requests hold a
 batch, in one place.
 
-`inbox-sync.py` reads the names from here, and uses `holds_batch`. The batch workflows of branch
-alpoge are not restored, but the inbox still keeps out pull requests that carry their labels.
+`inbox-sync.py` and `batch-building.py` read the names from here, and use `holds_batch`. The batch
+workflows of branch alpoge are not restored, but the inbox still keeps out pull requests that carry
+their labels.
 A workflow's `if:` cannot read this file, so the workflows in `.github/workflows` name some of them
 too, in `if:` and `env:`: rename a label there as well, and on GitHub before either change lands.
 `tests/test_label_names.py` checks that every label name a workflow writes is one of these or
@@ -19,6 +20,10 @@ BUILDING = "building"
 # On the pull request of a batch assembled by hand that is being built and that no other such
 # batch is stacked on: the outermost batch of its stack.
 LATEST = "latest batch"
+# On each open pull request whose head commit is in a batch being built: a `batch/...` branch of
+# this repository that has commits main does not have (see `batch-building.py`). Only
+# `batch-building.yml` puts it on and takes it off.
+MEMBER = "batch-building"
 # Handed back to the pull request's author.
 WAITING = "awaiting-author"
 

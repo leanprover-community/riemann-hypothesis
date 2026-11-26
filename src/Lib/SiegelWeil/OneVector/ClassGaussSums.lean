@@ -173,8 +173,8 @@ lemma enorm_classGaussSum_sq_le (hJ : IsUnimodular P.integers J)
     refine setIntegral_congr_fun M_open.measurableSet fun y hy ↦ ?_
     rw [integral_const_mul, setIntegral_add_left_eq_self_of_mem F hy]
   calc ‖classGaussSum J g x₀ α b‖ₑ ^ 2
-    _ = ‖∫ d in M, corr d‖ₑ := by rw [← h_sq, enorm_mul, RCLike.enorm_conj, sq, classGaussSum]
-    _ ≤ ∫⁻ d in M, ‖corr d‖ₑ := enorm_integral_le_lintegral_enorm _
+    _ = ‖∫ d in M, corr d‖ₑ := by rw [← h_sq, eNorm_mul, RCLike.eNorm_conj, sq, classGaussSum]
+    _ ≤ ∫⁻ d in M, ‖corr d‖ₑ := eNorm_integral_le_lintegral_eNorm _
     _ ≤ ∫⁻ d in M, N.indicator (fun _ ↦ volume (M : Set (κ → A))) d :=
       setLIntegral_mono' M_open.measurableSet h_corr
     _ ≤ ∫⁻ d, N.indicator (fun _ ↦ volume (M : Set (κ → A))) d := setLIntegral_le_lintegral _ _
@@ -255,6 +255,6 @@ lemma measure_residueClass_le_lintegral (h : P.IsDisintegration volume J l) (hJ 
     _ = ‖∫ b : skewAdjoint A, classGaussSum J g x₀ α b ∂P.skewMeasure‖ₑ := by
       rw [integral_classGaussSum h hJ hψ g x₀ t h_int]
       simp [← ofReal_norm, h_fin]
-    _ ≤ _ := enorm_integral_le_lintegral_enorm _
+    _ ≤ _ := eNorm_integral_le_lintegral_eNorm _
 
 end New.Floors.IntegralPlace

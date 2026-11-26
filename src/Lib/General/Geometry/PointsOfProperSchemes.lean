@@ -3,6 +3,8 @@ module
 public import Lib.Cohomology.ProperBaseChange.PlaceSpace
 public import Lib.General.Geometry.EtaleCharts
 public import Lib.Shimura.AbelianScheme.Basic
+import TauCeti.AlgebraicGeometry.Morphisms.Separated
+import TauCeti.AlgebraicGeometry.Morphisms.Smooth.StandardSmooth
 
 /-!
 # Functors of points of proper schemes: closed loci, atlases and descent of relations
@@ -192,14 +194,10 @@ lemma New.Variety.exists_locallyOfFiniteType_forall_factors [IsProper s] :
   let piece (x : t) : Opens.toScheme (D x).toOpens ⟶ 𝒰.X (i x) :=
     lift (𝒰.f (i x)) (Opens.ι _ ≫ z) (range_subset_iff.2 fun y ↦ hC x y.1 (hD_le x y.2))
   let glued : Spec O ⟶ ∐ 𝒰.X := desc c fun x ↦ piece x ≫ Sigma.ι 𝒰.X (i x)
-  have h_glued : glued ≫ Sigma.desc 𝒰.f = z := by
-    refine hom_ext c _ _ fun x ↦ ?_
-    -- On `D x` the glued map is `piece x`, and this lifts `z` to the member `i x` of the cover.
-    have h_piece : Cofan.inj (Cofan.mk (Spec O) fun x ↦ Opens.ι (D x).toOpens) x ≫ glued =
-        piece x ≫ Sigma.ι 𝒰.X (i x) := by
-      simp [glued, -cofan_mk_inj]
-    rw [reassoc_of% h_piece]
-    simp [piece]
+  have h_glued : glued ≫ Sigma.desc 𝒰.f = z :=
+    hom_ext c _ _ fun x ↦ by
+      rw [reassoc_of% (Cofan.IsColimit.fac c (fun x ↦ piece x ≫ Sigma.ι 𝒰.X (i x)) x)]
+      simp [piece]
   exact ⟨preimage (glued ≫ toSpecΓ _), by simpa using h_glued⟩
 
 /-- If `s : X ⟶ Spec R` is a proper morphism of schemes, then the functor of points `A ↦ X(A)` with
@@ -208,9 +206,7 @@ two points agree is cut out by an ideal. There are a ring `T` and a point `a ∈
 point of `X` in an algebraically closed field `K` that maps `R` into a valuation ring `O` of `K` is
 the image of `a` under some `T → O ⊆ K`. -/
 lemma New.Variety.isProperOver_pointsToBase [IsProper s] : IsProperOver (pointsToBase s) := by
-  have : X.IsSeparated := by
-    rw [X.isSeparated_iff, ← comp_from s]
-    infer_instance
+  have : X.IsSeparated := Scheme.IsSeparated.of_isSeparated s
   refine ⟨fun C ⟨x⟩ ⟨y⟩ ↦ ?_, ?_⟩
   · -- Two points agree exactly where the pair factors through the closed diagonal, and
     -- `exists_ideal_le_ker_iff_factors` cuts that locus out by an ideal `I`.
@@ -222,24 +218,14 @@ lemma New.Variety.isProperOver_pointsToBase [IsProper s] : IsProperOver (pointsT
     -- as a valuation ring is a comparable ring.
     obtain ⟨T, a, -, ha⟩ := exists_locallyOfFiniteType_forall_factors s
     refine ⟨T, ⟨a⟩, fun {K} _ _ O z hz ↦ ?_⟩
-    -- A proper morphism is universally closed, so valuative squares have liftings.
-    have h_val : ValuativeCriterion.Existence s :=
-      (UniversallyClosed.eq_valuativeCriterion.le X (Spec R) s inferInstance).left
-    -- The ring map `ρ : R ⟶ K` under `z` factors through `ρ₀ : R → O`, which gives a square.
     let ρ₀ : R →+* O := (baseRingMap (pointsToBase s) z).hom.codRestrict O hz
-    have hρ : Spec.map (baseRingMap (pointsToBase s) z) = z.down ≫ s := map_preimage _
-    have h_comm : z.down ≫ s = Spec.map (ofHom (algebraMap O K)) ≫ Spec.map (ofHom ρ₀) := by
-      rw [← hρ, ← Spec.map_comp]
-      rfl
-    let sq : ValuativeCommSq s :=
-      { R := O, K := K, i₁ := z.down, i₂ := Spec.map (ofHom ρ₀), commSq := ⟨h_comm⟩ }
-    obtain ⟨l, hl⟩ : ∃ l : Spec (of O) ⟶ X, Spec.map (ofHom O.subtype) ≫ l = z.down := by
-      obtain ⟨⟨lifting⟩⟩ := h_val sq
-      exact ⟨lifting.l, lifting.fac_left⟩
+    obtain ⟨⟨⟨l, hl, -⟩⟩⟩ := (UniversallyClosed.eq_valuativeCriterion.le X (Spec R) s
+      inferInstance).1 ⟨O, K, z.down, Spec.map (ofHom ρ₀),
+        ⟨by rw [← map_preimage (z.down ≫ s), ← Spec.map_comp]; rfl⟩⟩
     obtain ⟨u, hu⟩ := ha (of O) isTest_of_preValuationRing.isComparableRing l
-    refine ⟨u, congrArg ULift.up ?_⟩
-    change Spec.map (u ≫ ofHom O.subtype) ≫ a = z.down
-    rw [Spec.map_comp, Category.assoc, hu, hl]
+    exact ⟨u, congrArg ULift.up <| by
+      change Spec.map (u ≫ ofHom (algebraMap O K)) ≫ a = z.down
+      rw [Spec.map_comp, Category.assoc, hu, hl]⟩
 
 end ProperSchemes
 
@@ -342,20 +328,18 @@ lemma exists_etale_coordinates_of_smooth (d : ℕ) {Y : Scheme} (f : Y ⟶ Spec 
       z ∈ j.opensRange ∧
       j ≫ f = specMap (algebraMap k A) ∧
       (MvPolynomial.aeval (R := k) coord).toRingHom.Etale := by
-  -- Affine opens `z ∈ V ⊆ Y` over `U ⊆ Spec k` with `Γ(U) → Γ(V)` standard smooth.
-  obtain ⟨U, hU, V, hV, hz, hVU, h_smooth⟩ := hf.exists_isStandardSmoothOfRelativeDimension z
-  obtain ⟨ρ, hρ⟩ : ∃ ρ : .of k ⟶ Γ(Spec (.of k), U), Spec.map ρ = hU.fromSpec := map_surjective _
-  let σ : .of k ⟶ Γ(Y, V) := ρ ≫ f.appLE U V hVU
+  obtain ⟨⟨V, (hV : IsAffineOpen V)⟩, hz, h_smooth⟩ :=
+    SmoothOfRelativeDimension.exists_isStandardSmoothOfRelativeDimension_appLE_top f d z
+  let σ : CommRingCat.of k ⟶ Γ(Y, V) := (Scheme.ΓSpecIso (.of k)).inv ≫ f.appLE ⊤ V le_top
   let : Algebra k Γ(Y, V) := σ.hom.toAlgebra
-  -- `Γ(U)` is étale over `k`, so `Γ(V)` is standard smooth over `k` and has étale coordinates.
-  have hρ_etale : Etale (Spec.map ρ) := by rw [hρ]; infer_instance
-  have hσ_smooth : σ.hom.IsStandardSmoothOfRelativeDimension d := by
-    simpa [σ] using h_smooth.comp
-      (etale_iff_isStandardSmoothOfRelativeDimension_zero.1 (Spec_iff.1 hρ_etale))
+  have hσ_smooth : σ.hom.IsStandardSmoothOfRelativeDimension d :=
+    (isStandardSmoothOfRelativeDimension_respectsIso (n := d)).right _
+      (Scheme.ΓSpecIso (.of k)).symm.commRingCatIsoToRingEquiv h_smooth
   obtain ⟨g, hg⟩ : ∃ g : MvPolynomial (Fin d) k →ₐ[k] Γ(Y, V), g.Etale :=
     hσ_smooth.toAlgebra.exists_etale_mvPolynomial
   have h_struct : hV.fromSpec ≫ f = Spec.map σ := by
-    rw [Spec.map_comp, hρ, hU.SpecMap_appLE_fromSpec f hV hVU]
+    rw [Spec.map_comp, ← Scheme.isoSpec_Spec_inv, ← IsAffineOpen.fromSpec_top,
+      (isAffineOpen_top _).SpecMap_appLE_fromSpec f hV le_top]
   refine ⟨.of k Γ(Y, V), hV.fromSpec, inferInstance, fun i ↦ g (MvPolynomial.X i),
     by rwa [hV.opensRange_fromSpec], h_struct, ?_⟩
   rwa [MvPolynomial.aeval_unique g] at hg
@@ -382,11 +366,7 @@ lemma exists_etaleChart_of_smooth (d : ℕ)
       ∃ a : EtaleChart d (algPointsOf k R W),
         ∀ (A : CommAlg k) (x : PointsIn W A), x ∈ a.locus.obj A ↔ LandsIn (t x) V := by
   let b : Spec (.of k) ⟶ Spec R := specMap (algebraMap R k)
-  obtain ⟨B, j, _, coord, hz, hj, h_etale⟩ :
-      ∃ (B : CommAlg k) (j : Spec (.of B) ⟶ Limits.pullback W.hom b) (_ : IsOpenImmersion j)
-        (coord : Fin d → B), z ∈ j.opensRange ∧ j ≫ snd W.hom b = specMap (algebraMap k B) ∧
-          (MvPolynomial.aeval (R := k) coord).toRingHom.Etale :=
-    exists_etale_coordinates_of_smooth d (snd W.hom b) z
+  obtain ⟨B, j, _, coord, hz, hj, h_etale⟩ := exists_etale_coordinates_of_smooth d (snd W.hom b) z
   -- The point `y` of the chart is the open immersion `j : Spec B ⟶ Wₖ`, read in `W`.
   have h_w : (j ≫ fst W.hom b) ≫ W.hom = specMap (algebraMap k B) ≫ b := by
     rw [assoc, condition, reassoc_of% hj]

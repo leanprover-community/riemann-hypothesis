@@ -88,7 +88,8 @@ open New NumberField IsCyclotomicExtension.Rat Selmer Ideal NeZero Nat Function
 lemma New.ncard_placesDividing_le_finrank (K : Type) [Field K] [EmbeddedNumberField K] (l : ℕ)
     [ThePrime l] : (placesDividing K l).ncard ≤ Module.finrank ℚ K := by
   have hl : span {(l : ℤ)} ≠ ⊥ := by simp [NeZero.ne l]
-  grw [← ncard_primesOver_le_finrank (span {(l : ℤ)})]
+  grw [← RingOfIntegers.rank,
+    ← TauCeti.RamificationInertia.ncard_primesOver_le_finrank (span {(l : ℤ)})]
   refine (Set.ncard_congr' (.trans (.subtypeEquivRight fun P ↦ ?_) (equivPrimesOver _ hl))).le
   simp [placesDividing, map_span]
 
@@ -208,7 +209,6 @@ lemma New.OddPart.exists_detecting_points_cocycles {N : ℕ} {E : Type} [NeZero 
   let K : IntermediateField ℚ Ω := cycloField M
   have hM_gt : 2 < M := by nlinarith [pos N, (Fact.out : 1 < l)]
   have hK_complex : IsTotallyComplex K := isTotallyComplex K hM_gt
-
   obtain ⟨ι, _, b, m, hm, h_dvd, h_detect⟩ := exists_detecting_points_hom (cycloGalGroup M)
     (placesDividing K l) M (index_idelesPowAt_ne_zero_and_le M (placesDividing K l)).left
   -- `G_K` is the kernel of `cyclotomicCharMod` on `G_E`, so a section of it gives coset
@@ -374,7 +374,7 @@ private lemma four_mul_totient_smul_eq_zero_of_sum_eq {E : Type} [Field E] [Numb
 `shaLocalSet l E e`, where `e ≠ 0`. Let `g` lie in an inertia group at a place prime to `l`, or in
 `shaLocalSet l ℚ 1` (a decomposition group above `l`, with trivial cyclotomic character). Then `x`
 vanishes at each `w` whose image in `Gal(Ω/ℚ)` is the conjugate `u g u⁻¹`. -/
-private lemma apply_eq_zero_of_toAlgAut_eq_conj {E : Type} [Field E] [NumberField E] [IsCMField E]
+private lemma apply_eq_zero_of_toAlgAut_eq_conj {E : Type} [Field E] [NumberField E]
     [Algebra E Ω] {l e : ℕ} [ThePrime l] (he : e ≠ 0) {V : Type} [Zero V] {x : Gal(Ω/E) → V}
     (h_above : ∀ g ∈ shaLocalSet l E e, x g = 0)
     (h_unram : ∀ g ∈ inertiaAbove (placesDividing E l)ᶜ, x g = 0) {g : Gal(Ω/ℚ)}
@@ -467,7 +467,7 @@ lemma New.exists_character_components {N : ℕ} [NeZero N] {E : Type} [Field E] 
           (hw : w / v ∈ cycloGalGroup N) : T ψ w k = T ψ v k := by
         obtain ⟨u, rfl⟩ : ∃ a : Gal(Ω/E), ι a * v = w := (h_lift _ hw).imp fun _ ↦ mul_eq_of_eq_div
         -- With `T` unfolded; `h_add` relates `x (b (ι u * v) k)` to `x (b v k)`.
-        show (cyclotomicPowDirichlet l e ψ (ι u * v)).val • x (b (ι u * v) k) () =
+        change (cyclotomicPowDirichlet l e ψ (ι u * v)).val • x (b (ι u * v) k) () =
           (cyclotomicPowDirichlet l e ψ v).val • x (b v k) ()
         simp_all [cyclotomicPowDirichlet, h_add v k u⁻¹ (u⁻¹ * b (ι u * v) k), mul_assoc, tateTwist,
           cyclotomicInv, smul_smul, mul_pow, mul_comm, mul_left_comm]

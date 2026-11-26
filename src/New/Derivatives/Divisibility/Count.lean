@@ -73,24 +73,16 @@ lemma norm_prod_factorial_le (d : σ →₀ ℕ) :
     ‖d.prod fun (_ : σ) (k : ℕ) ↦ (k.factorial : ℂ_[p])‖ ≤
       p ^ (card σ * (p.log d.degree + 1) - d.degree / (p - 1) : ℝ) := by
   have hp : 1 < p := Nat.Prime.one_lt Fact.out
-  have h_legendre (x : σ) :
-      (d x / (p - 1) - padicValNat p (d x).factorial : ℝ) ≤ p.log d.degree + 1 := by
-    have h_mem : (d x / (p - 1) - (p.log d.degree + 1 : ℕ) : ℝ) ≤ padicValNat p (d x).factorial :=
-      (padicValNat_factorial_mem_Icc
-        ((d.le_degree x).trans_lt (p.lt_pow_succ_log_self hp _))).1
-    push_cast at h_mem
-    linarith
-  have h_sum : ∑ x, (d x / (p - 1) - padicValNat p (d x).factorial : ℝ) ≤
-      card σ • (p.log d.degree + 1 : ℝ) := sum_le_card_nsmul univ _ _ fun x _ ↦ h_legendre x
-  rw [sum_sub_distrib, ← sum_div, ← Nat.cast_sum, ← d.degree_eq_sum, nsmul_eq_mul] at h_sum
-  calc
-    _ = ∏ x, (p : ℝ)⁻¹ ^ padicValNat p (d x).factorial := by
-      rw [d.prod_fintype _ (by simp), norm_prod]
-      exact prod_congr rfl fun x _ ↦ norm_natCast_eq_inv_pow_padicValNat (d x).factorial_ne_zero
-    _ = (p : ℝ) ^ (-∑ x, (padicValNat p (d x).factorial : ℝ)) := by
-      rw [← Nat.cast_sum, Real.rpow_neg (by positivity), Real.rpow_natCast, ← inv_pow,
-        prod_pow_eq_pow_sum]
-    _ ≤ _ := Real.rpow_le_rpow_of_exponent_le (mod_cast hp.le) (by linarith)
+  have h_sum : (∑ x : σ, (d x / (p - 1) - (p.log d.degree + 1 : ℕ) : ℝ)) ≤
+      ∑ x : σ, (padicValNat p (d x).factorial : ℝ) :=
+    sum_le_sum fun x _ ↦ (padicValNat_factorial_mem_Icc
+      ((d.le_degree x).trans_lt (p.lt_pow_succ_log_self hp _))).1
+  rw [sum_sub_distrib, ← sum_div, ← Nat.cast_sum, ← d.degree_eq_sum,
+    sum_const, Finset.card_univ, nsmul_eq_mul] at h_sum
+  push_cast at h_sum
+  rw [d.prod_fintype _ (by simp),
+    norm_prod_natCast_eq_rpow_neg_sum (p := p) (fun x : σ ↦ (d x).factorial_ne_zero)]
+  exact Real.rpow_le_rpow_of_exponent_le (mod_cast hp.le) (by linarith)
 
 /-- If the coefficients of degree `l` of the series `G` are integral and `Q` is a homogeneous
 polynomial of degree `l` with integral coefficients, then the jet `(Q(∂) G)(0)` has valuation at

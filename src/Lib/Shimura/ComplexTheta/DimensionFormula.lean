@@ -738,8 +738,9 @@ lemma ThetaTori.mem_thetaSpace_iff_normalizedShift :
       Differentiable ℂ f ∧ ∀ l ∈ L, normalizedShift B b l f = f := by
   refine Iff.and Iff.rfl ?_
   -- Both sides say `f (z + l) = exp (π i E(b l, l)) * exp (B l z + B l l / 2) * f z`.
-  simp [mul_right_comm, canonicalMultiplier, exp_add, normalizedShift, funext_iff,
-    thetaShift_apply, exp_neg, fieldEq]
+  simp [canonicalMultiplier, exp_add, normalizedShift, funext_iff, thetaShift_apply, exp_neg,
+    fieldEq]
+  exact forall₂_congr fun l _ ↦ forall_congr' fun z ↦ by rw [mul_right_comm (cexp _) (cexp (B l z))]
 
 /-- Let E be the Riemann form of `B`. If b + b* = 1 for E, that is E(bu, w) + E(u, bw) = E(u, w)
 (hypothesis `adj`), the real part of `B` is symmetric and E(b L, L) is integral, then `B` and the

@@ -149,7 +149,7 @@ lemma New.IsCutPair.integrable_cut {𝔰 : Shape} {I : Type} [Fintype I] [Decida
     exact (le_mul_of_one_le_left' h_one_le_weight).trans (hA.pow_mul_enorm_le .cut y)
   have h_fin : ∫⁻ y, A y ∂besselQuotMeasure < ⊤ := by
     obtain rfl | ha := eq_or_ne a 0
-    · have h_zero (y : 𝔰.G₁) : A y = 0 := le_zero_iff.1 (hA.le_bound y)
+    · have h_zero (y : 𝔰.G₁) : A y = 0 := nonpos_iff_eq_zero.1 (hA.le_bound y)
       simp [h_zero]
     · have h_mul : a * ∫⁻ y, A y ∂besselQuotMeasure < ⊤ :=
         hA.bound_mul_lintegral_le.trans_lt (by finiteness)

@@ -110,7 +110,6 @@ lemma twistedTranslate_t_sigma_zero_pow_four : C.twistedTranslate 1 C.t C.σ 0 ^
   have hztt : z + C.t + C.t ∉ C.Λ := by rwa [add_assoc, add_mem_cancel_right C.two_t_mem]
   set e : ℂ := exp (C.hermitianForm C.t z + C.hermitianForm C.t C.t / 2)
   have h_translate : C.translatedX (z + C.t) * C.σ z ^ 2 = c₀ ^ 4 * C.θ z ^ 2 := by
-
     have h_sq : C.σ (z + C.t) ^ 2 = C.translatedX (z + C.t) * C.θ (z + C.t) ^ 2 :=
       C.sigma_sq_eq_translatedX_mul_theta_sq hztt
     have hσ : C.σ (z + C.t) = e * (c₀ * C.θ z) := C.sigma_add_t z
@@ -158,7 +157,7 @@ lemma sigma_two_mul_eq {z : ℂ} (hz : z + C.t ∉ C.Λ) :
       rw [two_mul z, map_add]
       push_cast
       ring
-    rw [mul_add, two_mul C.t, C.sigma_add_two_t, h_exponent, exp_nat_mul]
+    rw [mul_add, two_mul C.t, C.sigma_add_two_t, h_exponent, exp_natCast_mul]
   have h_fourth : C.σ (z + C.t) ^ 4 = e ^ 4 * C.θ z ^ 4 := by
     rw [C.sigma_add_t, mul_pow, mul_pow, C.twistedTranslate_t_sigma_zero_pow_four, one_mul]
   have h_deriv : deriv C.translatedX z = ℘'[C.periodPair] (z + C.t) := by
@@ -336,7 +335,6 @@ lemma norm_det_eq_one_of_iterate_doublingForms {c : ℂ_[p]} (hc : ‖c‖ ≤ 1
     (h_fst : ((doublingForms c)^[j] w).1 = 0) (h_snd : ((doublingForms c)^[j] w').2 = 0) :
     ‖w.1 * w'.2 - w.2 * w'.1‖ = 1 := by
   lift c to valRingCp p using hc
-
   let red : valRingCp p × valRingCp p → ResidueField (valRingCp p) × ResidueField (valRingCp p) :=
     Prod.map (residue (valRingCp p)) (residue (valRingCp p))
   -- Both pairs and their iterates come from pairs over the valuation ring.

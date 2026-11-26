@@ -1,7 +1,6 @@
 module
 
 public import Lib.Adelic.TraceFormula.TestFunction
-public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # Integration over the fibres of a conjugation map
@@ -143,14 +142,14 @@ lemma exists_isCompact_isOpen_superset_subset {G : Type} [Group G] [TopologicalS
 /-- A compact open subset of a closed subset `C` of a locally compact Hausdorff non-archimedean
 group is cut out by a compact open subset of the group. -/
 lemma exists_isCompact_isOpen_preimage_eq {G : Type} [Group G] [TopologicalSpace G]
-    [NonarchimedeanGroup G] [T2Space G] [WeaklyLocallyCompactSpace G] {C : Set G} (hC : IsClosed C)
+    [NonarchimedeanGroup G] [WeaklyLocallyCompactSpace G] {C : Set G} (hC : IsClosed C)
     {A : Set C} (hA_open : IsOpen A) (hA_compact : IsCompact A) :
     ∃ V : Set G, IsOpen V ∧ IsCompact V ∧ ∀ x : C, (x : G) ∈ V ↔ x ∈ A := by
-  have h_rest : IsClosed (Subtype.val '' Aᶜ) := hC.isClosedMap_subtype_val _ hA_open.isClosed_compl
+  have h_rest : IsClosed (Subtype.val '' Aᶜ) := hC.isClosedMap_subtypeVal _ hA_open.isClosed_compl
   have h_disjoint : Disjoint (Subtype.val '' A) (Subtype.val '' Aᶜ) :=
     disjoint_image_of_injective Subtype.val_injective disjoint_compl_right
   obtain ⟨V, hV_open, hV_compact, h_subset_V, hV_subset⟩ :=
-    exists_isCompact_isOpen_superset_subset (hA_compact.image continuous_subtype_val)
+    exists_isCompact_isOpen_superset_subset (hA_compact.image continuous_subtypeVal)
       h_rest.isOpen_compl h_disjoint.subset_compl_right
   exact ⟨V, hV_open, hV_compact, fun x ↦
     ⟨fun hx ↦ by_contra fun h_notMem ↦ hV_subset hx ⟨x, h_notMem, rfl⟩,
@@ -450,7 +449,7 @@ lemma TestFunction.integrable_mul_conj [IsTopologicalGroup G] [T2Space G]
       (fun h : Γ ↦ Ψ.1 (g * h, (j h)⁻¹ * y * j h)) ∈ TestFunction Γ :=
     schwartzBruhat.comp Ψ.2 (fun p : Γ × G ↦ g⁻¹ * p.1) (fun h ↦ inv_mul_cancel_left g h)
       (mapsTo_univ _ _) (by fun_prop) (by fun_prop)
-  exact (h_const.continuous.comp continuous_subtype_val).integrable_of_hasCompactSupport
+  exact (h_const.continuous.comp continuous_subtypeVal).integrable_of_hasCompactSupport
     (h_compact.comp_isClosedEmbedding hH.isClosedEmbedding_subtypeVal)
 
 /-- Let `H` be closed, and let `f` and `f'` be images of `Ψ` and `Ψ'` (their values at `g y g⁻¹`,

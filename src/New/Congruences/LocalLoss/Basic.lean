@@ -310,7 +310,7 @@ lemma cmSign_eq_of_mem_bPlaces {e : D.E →+* PadicAlgCl ℓ} {g g' : Gp ℓ}
           congrArg (fun w : ℂ ↦ g (ιℓ w)) sqrt_sum
       linear_combination h_padic / 2
     -- the Galois group acts on `PadicAlgCl ℓ` by isometries
-    have norm_eq : ‖1 - x‖ = ‖x‖ := by simpa [← x_conj] using dist_smul (g * g'⁻¹) x 0
+    have norm_eq : ‖1 - x‖ = ‖x‖ := by simp [← x_conj]
     have x_mul : x * (1 - x) = ((P.d + 1) / 4 : ℕ) := by
       simpa [map_ofNat] using congrArg
         (fun w : NumberField.RingOfIntegers (P.E D.towerExp) ↦ e w)
@@ -632,8 +632,8 @@ lemma eq_of_complexEmbeddingOf_localChart_eq [CMFieldWithRoot5040 E] {v w : plac
       ‖(ιℓ (complexEmbeddingOf ((localChart ℓ E w).e.comp (algebraMap E Ω)) g' x) : ℂ_[ℓ])‖ <
         1 := by
     rw [h_eq]
-  simpa [← h_over v x, ← h_over w x, comap_apply_lt_one_iff, complexEmbeddingOf, ← smul_coe_Cp]
-    using h_norm
+  simpa [← h_over v x, ← h_over w x, comap_apply_lt_one_iff, complexEmbeddingOf,
+    ← UniformSpace.Completion.algEquiv_smul_coe] using h_norm
 
 open scoped Classical in
 /-- Let `E` be a CM field in the algebraic closure `Ω` of `ℚ` with a primitive `5040`-th root of

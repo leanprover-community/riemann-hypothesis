@@ -1,6 +1,7 @@
 module
 
 public import New.Congruences.Selmer.Count
+public import TauCeti.Algebra.Module.CharacterModule
 
 /-!
 # Reciprocity at conjugate primes
@@ -71,9 +72,6 @@ lemma isTameGeneratorFor_conjGal_inv {E : Type} [Field E]
 lemma characterModule_add_apply {X : Type*} [AddCommGroup X] (f f' : CharacterModule X) (u : X) :
     (f + f') u = f u + f' u := rfl
 
-lemma characterModule_zero_apply {X : Type*} [AddCommGroup X] (u : X) :
-    (0 : CharacterModule X) u = 0 := rfl
-
 /-- A character `f : X → ℚ/ℤ` of an `O`-module `X` that kills all scalar multiples of the members of
 a spanning set is zero. -/
 lemma characterModule_eq_zero_of_span {O X : Type*} [CommRing O] [AddCommGroup X] [Module O X]
@@ -85,7 +83,7 @@ lemma characterModule_eq_zero_of_span {O X : Type*} [CommRing O] [AddCommGroup X
     | zero => simp
     | add u u' _ _ hu hu' => simp [hu, hu']
     | smul r u _ hu => simp [smul_smul, hu]
-  exact DFunLike.ext f 0 fun u ↦ by simpa [characterModule_zero_apply] using h_all u 1
+  exact DFunLike.ext f 0 fun u ↦ by simpa using h_all u 1
 
 namespace SelmerDatum
 
@@ -339,7 +337,7 @@ lemma eq_zero_of_mem_dualSelmer_of_forall_sahGroup {hp : IsTiedPrimes ℓ S₀ V
     refine DFunLike.ext _ _ fun b ↦ ?_
     obtain ⟨m, rfl⟩ : ∃ m : n → QuotSpan a, T.ρ T.γ • m - m = b :=
       T.bijective_γ_smul_sub.surjective b
-    rw [map_sub, h_val, sub_self, Pi.zero_apply, characterModule_zero_apply]
+    rw [map_sub, h_val, sub_self, Pi.zero_apply, TauCeti.CharacterModule.zero_apply]
   · exact hy.eq_zero_of_notMem g hg
 
 /-! ### First step: `Ψ(h, h) = 0` -/
@@ -610,7 +608,7 @@ lemma exists_linearMap_apply_eq_dualSelmer_conj {hp : IsTiedPrimes ℓ S₀ V W 
   have h_pair (α : T.sahGroup →₀ O) (t : O) {h' : Gal(Ω/E)} (hh' : h' ∈ T.sahGroup) :
       θ α (t • z (conjGal h')) = y h' (t • π α) := by
     induction α using Finsupp.induction_linear with
-    | zero => simp [characterModule_zero_apply]
+    | zero => simp
     | add α β hα hβ => simp [characterModule_add_apply, hα, hβ]
     | single h s =>
       have h_form := mirrorForm_eq_zero hy hz hz_frobInTameImage (t * s) h.property hh'
@@ -654,7 +652,7 @@ lemma mem_conjDualHom_of_apply_eq {hp : IsTiedPrimes ℓ S₀ V W N P₀ J x}
         rw [apply_conj_of_mem_dualSelmer hy _
           (T.mem_reductionKer_of_mem_sahGroup (conjGal_mem_sahGroup hh)),
           hη h hh]
-  | zero => simp [characterModule_zero_apply]
+  | zero => simp
   | add u u' _ _ hu hu' => simp [characterModule_add_apply, hu, hu']
   | smul t u _ hu => simp [smul_comm _ t, hu]
 

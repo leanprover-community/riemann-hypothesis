@@ -249,7 +249,7 @@ theorem exists_integral_big_cell_decomp [IsHermitianUnit T.splitGram]
     (hT : IsUnimodular R T.splitGram) (hγ : γ.val ∈ intGL 𝔰.BesselIndex R)
     (h_minor : ∀ l : Fin 𝔰.ϱ, ∃ d ∈ R, leadingMinor (T.frameGram γ) l.succ.castSucc * d = 1)
     (j : Fin 𝔰.n) :
-    ∃ᵉ (u ∈ T.besselU) (u' ∈ T.besselU) (p : ℕ → Aˣ) (σ ∈ T.floorGroup j),
+    ∃ u ∈ T.besselU, ∃ u' ∈ T.besselU, ∃ p : ℕ → Aˣ, ∃ σ ∈ T.floorGroup j,
       γ = u⁻¹ * (weylElem j p * σ) * u' ∧
       u.val ∈ intGL 𝔰.BesselIndex R ∧
       u'.val ∈ intGL 𝔰.BesselIndex R ∧
@@ -293,7 +293,7 @@ sends e_a ↦ p_a e*_a and e*_a ↦ e_a/p̄_a for a < ϱ and fixes the other bas
 theorem exists_big_cell_decomp {A : Type} [Field A] [StarRing A] [TraceOne A] {T : 𝔰.Form A}
     [hT : IsHermitianUnit T.splitGram] {γ : T.G}
     (h_minor : ∀ l : Fin 𝔰.n, leadingMinor (T.frameGram γ) l.castSucc ≠ 0) :
-    ∃ᵉ (u ∈ T.besselU) (u' ∈ T.besselU) (p : ℕ → Aˣ) (σ ∈ T.floorGroup 𝔰.ϱ),
+    ∃ u ∈ T.besselU, ∃ u' ∈ T.besselU, ∃ p : ℕ → Aˣ, ∃ σ ∈ T.floorGroup 𝔰.ϱ,
       γ = u⁻¹ * (weylElem 𝔰.ϱ p * σ) * u' := by
   -- Apply the integral normal form to the subring `R = A`, where nonzero minors are invertible.
   have : IsStarStable (⊤ : Subring A) := ⟨fun _ ↦ trivial⟩

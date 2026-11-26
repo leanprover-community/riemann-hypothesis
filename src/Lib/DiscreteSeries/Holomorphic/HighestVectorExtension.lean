@@ -126,15 +126,10 @@ noncomputable def lowerLiePart (c : ℂ) : Matrix n n ℂ →L[ℝ] Matrix n n �
 lemma lowerLiePart_mem_unitaryLie (c : ℂ) (Z : Matrix n n ℂ) :
     lowerLiePart ε ε' o c Z ∈ unitaryLie (signMatrix ε) := by
   let N : Matrix n n ℂ := lowerMask ε' o Z + c • entryMask Eq Z
-  let J : Matrix n n ℂ := signMatrix ε
-  have J_sq : J * J = 1 := IsHermitianInvolution.mul_self
-  have J_herm : Jᴴ = J := IsHermitianInvolution.isHermitian.eq
-  have h_left : (N - J * Nᴴ * J)ᴴ * J = Nᴴ * J - J * N := by
-    simp [sub_mul, mul_assoc, J_sq, J_herm]
-  have h_right : J * (N - J * Nᴴ * J) = J * N - Nᴴ * J := by
-    simp [mul_sub, ← mul_assoc, J_sq]
-  change (N - J * Nᴴ * J)ᴴ * J + J * (N - J * Nᴴ * J) = 0
-  rw [h_left, h_right, sub_add_sub_cancel, sub_self]
+  convert (unitaryLie (signMatrix ε)).smul_mem (2 : ℝ) (unitaryLiePart ε N).2 using 1
+  change N - signMatrix ε * Nᴴ * signMatrix ε =
+    (2 : ℝ) • (2⁻¹ : ℝ) • (N - (signMatrix ε)⁻¹ * Nᴴ * signMatrix ε)
+  rw [smul_smul, mul_inv_cancel₀ two_ne_zero, one_smul, inv_eq_left_inv (signMatrix_mul_self ε)]
 
 /-- A chart at `1` adapted to the triangular matrices. Let `E` send `0` to `1` with strict
 derivative the identity. Let `L` be real linear, with every `E (L Z)` block diagonal for `ε`, and
@@ -220,7 +215,7 @@ theorem kTypeNormSq_pos (w : HCParam ε) : 0 < w.kTypeNormSq := by
   have h_cont : Continuous fun k : maxCompactU ε ↦ ‖weightMinors w (k : USign ε)‖ ^ 2 := by
     fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])
   unfold HCParam.kTypeNormSq
-  exact integral_pos_of_integrable_nonneg_nonzero (x := 1) h_cont
+  exact integral_pos_of_integrable_nonneg_ne_zero (x := 1) h_cont
     (h_cont.integrable_of_hasCompactSupport (.of_compactSpace _)) (fun k ↦ sq_nonneg _) (by simp)
 
 /-- For `|s| = 1` the matrix `diag (s ^ o)` is invertible and triangular for the order `o`. -/
@@ -367,7 +362,7 @@ theorem HCParam.IsKHighest.coef_mul_triangular (ho : o.Injective) {ρ : GlModule
     exact (factor.smul (hc h Y x s)).congr_deriv (by rw [act_Y, map_smul]; module)
   have f_const : f 1 = f 0 := is_const_of_deriv_eq_zero
     (fun s ↦ (deriv_zero s).differentiableAt) (fun s ↦ (deriv_zero s).deriv) 1 0
-  simpa [f, lam, exp_Y, hθ, exp_sum, exp_int_mul, diagChar] using f_const
+  simpa [f, lam, exp_Y, hθ, exp_sum, Complex.exp_intCast_mul, diagChar] using f_const
 
 /-- Under the hypotheses of `New.HCParam.IsKHighest.coef_mul_triangular` (`x` highest of weight
 `u`, `c` a coefficient map), the vector `diagChar u b • c h x` depends only on the product `h * b`

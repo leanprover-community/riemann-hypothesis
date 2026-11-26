@@ -84,7 +84,7 @@ under `ψ b` is at most the fibre measure `dμ / dν` of `π` over `b`, in the s
 `LeFibreMeasure`: a bound `C ν(S)` on the integrals over small `π ⁻¹' S` of a lower semicontinuous
 `K ≥ 0` bounds its integral for this image by `C`. -/
 theorem of_coordinates [OpensMeasurableSpace X] [OpensMeasurableSpace B] [FirstCountableTopology B]
-    [ν.IsOpenPosMeasure] [IsLocallyFiniteMeasure ν] {ρ : Measure P} [SFinite ρ]
+    [ν.IsOpenPosMeasure] [IsLocallyFiniteMeasure ν] {ρ : Measure P}
     {ψ : B → P → X} {w : B → P → ℝ≥0∞} {V : Set B} (hπ : Measurable π)
     (hψ : Measurable ψ.uncurry) (hw : Measurable w.uncurry) (hV : V ∈ 𝓝 b)
     (h_fibre : ∀ t ∈ V, ∀ᵐ p : P ∂ρ, w t p ≠ 0 → π (ψ t p) = t)
@@ -106,7 +106,7 @@ theorem of_coordinates [OpensMeasurableSpace X] [OpensMeasurableSpace B] [FirstC
       _ ≤ liminf (fun t ↦ w t p * K (ψ t p)) (𝓝 b) := ENNReal.le_liminf_mul
   rw [lintegral_map hK_meas hψ.of_uncurry_left,
     lintegral_withDensity_eq_lintegral_mul _ hw.of_uncurry_left (by fun_prop)]
-  show A b ≤ C
+  change A b ≤ C
   refine le_of_setLIntegral_le (ν := ν) hA ?_
   filter_upwards [hC, eventually_smallSets_subset.2 hV] with S hS hS_sub hS_open
   have hπS : MeasurableSet (π ⁻¹' S) := hπ hS_open.measurableSet
@@ -138,28 +138,11 @@ theorem of_measurePreserving [OpensMeasurableSpace X] [OpensMeasurableSpace B]
       simpa [← hφ.lintegral_comp hK] using
         (lintegral_prod _ (hK.comp hφ.measurable).aemeasurable).ge
 
-/-- If `l` is at most the fibre measure `dμ / dν` of `π` over `b` (see `LeFibreMeasure`), then so is
-every smaller measure `l'` for every larger measure `μ'`. -/
-theorem mono (hl : LeFibreMeasure μ ν π b l) (hμ_le : μ ≤ μ') (hl_le : l' ≤ l) :
-    LeFibreMeasure μ' ν π b l' := fun K hK C hC ↦
-  (lintegral_mono' hl_le le_rfl).trans <| hl K hK C <| hC.mono fun _ hS hS_open ↦
-    (lintegral_mono' (restrict_mono subset_rfl hμ_le) le_rfl).trans (hS hS_open)
-
 /-- The relation `LeFibreMeasure`, of being at most the fibre measure, is kept when `π` is changed
 on a `μ`-null set. -/
 theorem congr (hl : LeFibreMeasure μ ν π b l) (hπ : π =ᵐ[μ] π') : LeFibreMeasure μ ν π' b l :=
   fun K hK C hC ↦ hl K hK C <| hC.mono fun S hS hS_open ↦
     (setLIntegral_congr (hπ.preimage S)).trans_le (hS hS_open)
-
-/-- If `l` is at most the fibre measure `dμ / dν` of `π` over `b` (see `LeFibreMeasure`) and `c` is
-finite, then `c • l` is at most the fibre measure `d(c • μ) / dν`. -/
-theorem smul (hl : LeFibreMeasure μ ν π b l) {c : ℝ≥0∞} (hc : c ≠ ∞) :
-    LeFibreMeasure (c • μ) ν π b (c • l) := by
-  intro K hK C hC
-  have h_scale (σ : Measure X) : ∫⁻ x, K x ∂c • σ = ∫⁻ x, c * K x ∂σ := by
-    simp [lintegral_smul_measure, lintegral_const_mul' _ _ hc]
-  simp only [restrict_smul, h_scale] at hC ⊢
-  exact hl _ ((ENNReal.continuous_const_mul hc).comp_lowerSemicontinuous hK mul_right_mono) C hC
 
 /-- If `l` is at most the fibre measure `dμ / dν` of `π` over `b` (see `LeFibreMeasure`) and the
 homeomorphism `e` of the base carries `ν` to `ν'`, then `l` is at most the fibre measure

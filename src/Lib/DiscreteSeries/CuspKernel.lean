@@ -244,7 +244,7 @@ lemma eq_zero_of_mem_fixed_invariant {G : Type*} [Group G] [TopologicalSpace G]
     simp [hU, hS, hT, ← integral_const_mul, hχ_shift, mul_left_comm, mul_assoc]
   have h_anti : U * S ^ n = -(S ^ n * U) := by
     have h_exp : exp (1 / n * Real.pi * I) ^ n = -1 := by
-      simp [← exp_nat_mul, hn_pos.ne', field, mul_assoc]
+      simp [← exp_natCast_mul, hn_pos.ne', field, mul_assoc]
     rw [(h_semi.pow_right n).eq, smul_pow, h_exp, neg_one_smul, neg_mul]
   have h_nil : S ^ n = 0 :=
     eq_zero_of_anticommute (norm_one_sub_left_translation_le he hT hV ha hb hb_dist hU) h_anti
@@ -387,10 +387,12 @@ theorem New.DiscreteSeries.exists_conj_mem_dilationGroup {n m : Type} [Fintype n
       simp [q, isStarProjection_iff', star, hJ_herm, mul_assoc, hJ_cancel, hp_herm,
         hp.isIdempotentElem.mul_self_mul]
     have h_norm : ‖p - (1 + c)⁻¹ • q‖ ≤ 1 := by
-      grw [hp.isSelfAdjoint.norm_sub_eq_max, norm_smul, hq.norm_le, hp.norm_le]
-      · simp [abs_of_pos, inv_le_one₀, add_pos, hc, hc.le]
-      · exact (IsSelfAdjoint.all (1 + c)⁻¹).smul hq.isSelfAdjoint
-      · simp [q, mul_assoc, h_isotropic_mul]
+      have h_ortho : IsStarOrtho p ((1 + c)⁻¹ • q) := by
+        refine (hp.isSelfAdjoint.isStarOrtho_iff_mul_eq_zero ?_).mpr ?_
+        · exact (IsSelfAdjoint.all (1 + c)⁻¹).smul hq.isSelfAdjoint
+        · simp [q, mul_assoc, h_isotropic_mul]
+      grw [h_ortho.norm_sub, norm_smul, hq.norm_le, hp.norm_le]
+      simp [abs_of_pos, inv_le_one₀, add_pos, hc, hc.le]
     simpa [y, norm_smul, hc, abs_of_pos] using h_norm
   · -- On `x⁻¹ * A` the projection `p` is the identity and `q` vanishes.
     simp [y, q, X, Matrix.mul_assoc, Matrix.add_mul, Matrix.sub_mul, Matrix.mul_add, h_fix,

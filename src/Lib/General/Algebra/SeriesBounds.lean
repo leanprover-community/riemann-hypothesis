@@ -85,7 +85,7 @@ lemma New.exists_val_coeff_le_val_eval {K σ : Type*} {n : ℕ} [Field K] [IsAlg
       obtain rfl | hkd := eq_or_ne k d <;> simp [g, coeff_monomial, eq_comm, *]
     refine ⟨q.coeff k, g, ne_of_apply_ne (·.coeff k) (by simp [coeff_map, h_coeff]), ?_⟩
     ext d
-    rw [MvPolynomial.coeff_smul, coeff_map, h_coeff]
+    rw [AddMonoidAlgebra.coeff_smul_apply, coeff_map, h_coeff]
     split_ifs with hkd hd
     · simp [hkd]
     · simp [← hw d hd, mul_comm]
@@ -107,8 +107,8 @@ lemma New.exists_val_coeff_le_val_eval {K σ : Type*} {n : ℕ} [Field K] [IsAlg
   -- The factor `c i` is common, and the unit `eval y (g i)` divides every coefficient of `g i`.
   have h_le : v (algebraMap V K ((g i).coeff m)) ≤ v (algebraMap V K (eval y (g i))) :=
     (Valuation.integer.integers v).le_of_dvd (h_unit i).dvd
-  grw [hfg i, MvPolynomial.coeff_smul, coeff_map, smul_eval, eval_map, ← eval₂_comp, smul_eq_mul,
-    map_mul, map_mul, h_le]
+  grw [hfg i, AddMonoidAlgebra.coeff_smul_apply, coeff_map, smul_eval, eval_map, ← eval₂_comp,
+    smul_eq_mul, map_mul, map_mul, h_le]
 
 end IntegralityPrinciple
 
@@ -125,10 +125,6 @@ open PowerSeries IsUltrametricDist
 namespace New
 variable {p : ℕ} [Fact p.Prime]
 
-/-- If `g(0) = 0`, then `(exp g)' = exp g * g'`, where `exp g` is `expSubst g`. -/
-lemma derivative_expSubst {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoeff g = 0) :
-    d⁄dX (expSubst g) = expSubst g * d⁄dX g := by
-  rw [expSubst, derivative_subst (.of_constantCoeff_zero' hg_zero), derivative_exp]
 
 /-- If `g(0) = 0`, then `exp g` has constant term `1`. -/
 lemma constantCoeff_expSubst {g : ℂ_[p]⟦X⟧} (hg_zero : constantCoeff g = 0) :
@@ -267,7 +263,7 @@ lemma norm_pow_le_norm_factorial_succ {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 /
   have hp : (1 : ℝ) < p := Nat.one_lt_cast.2 (Fact.out : p.Prime).one_lt
   have h_val : (p - 1) * padicValNat p (j + 1).factorial ≤ j := by
     rw [Nat.padicValNat_def]
-    exact Nat.le_of_lt_succ (sub_one_mul_padicValNat_factorial_lt_of_ne_zero p j.succ_ne_zero)
+    exact Nat.le_of_lt_succ (sub_one_mul_multiplicity_factorial_lt_of_ne_zero p j.succ_ne_zero)
   have h_real : (padicValNat p (j + 1).factorial : ℝ) ≤ j / (p - 1) := by
     rw [le_div_iff₀' (sub_pos.2 hp), ← Nat.cast_pred (Fact.out : p.Prime).pos]
     exact_mod_cast h_val
@@ -354,17 +350,11 @@ series in `T`), let `f` be a series with integral coefficients (an element of th
 lemma subst_mem {B : Subring ℂ_[p]⟦X⟧} {T : ℂ_[p]⟦X⟧} (hB : IsSeriesGenerator B T)
     {f h : ℂ_[p]⟦X⟧} (hf : f ∈ seriesToCp.range) (hh : h ∈ B) (hh_zero : constantCoeff h = 0) :
     f.subst h ∈ B := by
-  -- With `Z` inverse to `T`, a series lies in `B` if and only if its value at `Z` is integral.
-  obtain ⟨Z, hZ_zero, -, -, h_mem⟩ : ∃ Z : ℂ_[p]⟦X⟧, constantCoeff Z = 0 ∧ T.subst Z = X ∧
-      Z.subst T = X ∧ ∀ {u : ℂ_[p]⟦X⟧}, u ∈ B ↔ u.subst Z ∈ seriesToCp.range :=
-    hB.exists_subst_inverse
-  have hZh_zero : constantCoeff (h.subst Z) = 0 := (constantCoeff_subst_eq hZ_zero).trans hh_zero
-  have hZh_int (k : ℕ) : ‖coeff k (h.subst Z)‖ ≤ 1 := mem_range_seriesToCp.1 (h_mem.1 hh) k
-  have hf_int (j : ℕ) : ‖coeff j f‖ * 1 ^ j ≤ 1 := by simpa using mem_range_seriesToCp.1 hf j
-  rw [h_mem, subst_comp_subst_apply (.of_constantCoeff_zero' hh_zero)
-    (.of_constantCoeff_zero' hZ_zero), mem_range_seriesToCp]
-  exact fun n ↦ norm_coeff_subst_le_of_lt hZh_zero zero_le_one (fun k _ ↦ hZh_int k) hf_int
-    n.lt_succ_self
+  obtain ⟨G, rfl⟩ : ∃ G : (valRingCp p)⟦X⟧, seriesToCp G = f := hf
+  obtain ⟨F, rfl⟩ := (hB.mem_iff h).1 hh
+  have hF : constantCoeff F = 0 := by
+    simpa [hB.constantCoeff_eq_zero, constantCoeff_seriesToCp] using hh_zero
+  exact (hB.mem_iff _).2 ⟨G.subst F, (subst_seriesToCp_subst hB.constantCoeff_eq_zero hF G).symm⟩
 
 /-- Let `B = 𝒪[[T]]` (`IsSeriesGenerator B T`), `c ≠ 0`, `v(c) ≥ 1 / (p - 1)`, that is,
 `‖c‖ ≤ p ^ (-1 / (p - 1))`, and `g(0) = 0`. If `exp (c g) = 1 + c H` with `H ∈ B`, where `exp` is

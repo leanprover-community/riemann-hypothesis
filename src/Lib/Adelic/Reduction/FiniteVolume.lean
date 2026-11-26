@@ -600,7 +600,8 @@ lemma Space.encard_profileBases_mul_le_lintegral {N : Set (GL n (𝔸 E))} {x : 
   let F (T : 𝒯) : G E s → ℝ≥0∞ := ((fun h ↦ (A T)⁻¹ * h) ⁻¹' B).indicator fun _ ↦ w
   let T (Z : Bases) : 𝒯 := ⟨(Z : GL n E).valᴴ * V.J * (Z : GL n E), h_gram g Z Z.property⟩
   have h_unitary (Z : Bases) : r (T Z) * (Z : GL n E)⁻¹ ∈ U V.J :=
-    gram_mul_of_gram_eq (h_gram_basis g Z Z.property) (gram_inv_of_gram_eq rfl)
+    mem_unitaryGroupOf_iff.2 <| gram_mul_of_gram_eq (h_gram_basis g Z Z.property)
+        (gram_inv_of_gram_eq rfl)
   let γ (Z : Bases) : V.Γ := ⟨V.ratEmbed ⟨r (T Z) * (Z : GL n E)⁻¹, h_unitary Z⟩, _, rfl⟩
   have h_inj : Injective fun Z ↦ (T Z, γ Z) := by
     simp +contextual [Injective, Subtype.ext_iff, V.ratEmbed_injective.eq_iff, γ]

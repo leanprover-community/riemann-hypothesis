@@ -153,7 +153,7 @@ lemma frameImage_inr_eq_of_frameProducts_eq {g : S.G E} {a : Fin (𝔰.ϱ + 1)}
   have h_unitary :
       ((g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E)ᴴ * (S.ratMiddle E).splitGram * g).diag
         (𝔰.besselFrame a) = (S.ratMiddle E).splitGram.diag (𝔰.besselFrame a) :=
-    congr_fun₂ g.prop (𝔰.besselFrame a) (𝔰.besselFrame a)
+    congr_fun₂ (mem_unitaryGroupOf_iff.1 g.prop) (𝔰.besselFrame a) (𝔰.besselFrame a)
   have h_isotropic : star (w ∘ Sum.inl) ⬝ᵥ S.ratMiddle E *ᵥ (w ∘ Sum.inl) = 0 := by
     -- Expand `h_unitary`; the terms pairing `e_i` with `e*_i` vanish by `h_dual`.
     cases a using lastCases with

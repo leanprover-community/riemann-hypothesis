@@ -1,6 +1,7 @@
 module
 
 public import Lib.Adelic.Witt.WittTheorem
+import TauCeti.MeasureTheory.Measure.Disintegration.Continuous
 
 /-!
 # Measures on hermitian quadrics: existence and uniqueness of disintegrations
@@ -344,7 +345,7 @@ lemma map_skewMeasure_hermitianMul (hu : star u.val = u) :
           rw [map_mul_volume, (h_split.smul_measure _).map_eq]
   refine Measure.ext fun S _ ↦ (ENNReal.pow_right_strictMono two_ne_zero).injective ?_
   calc skewMeasure.map mul S ^ 2 = (P.modulus u)⁻¹ * skewMeasure S ^ 2 := by
-        rw [sq, ← prod_prod, h_prod, Measure.smul_apply, prod_prod, _root_.smul_eq_mul, sq]
+        rw [sq, ← prod_prod, h_prod, smul_apply, prod_prod, _root_.smul_eq_mul, sq]
     _ = (P.modulus u ^ (-(1 / 2) : ℝ) • skewMeasure) S ^ 2 := by
         simp [mul_pow, ← rpow_mul_natCast, rpow_neg_one]
 
@@ -437,31 +438,21 @@ for measurable f. The continuity in b is why equality holds at every b rather th
 everywhere. -/
 lemma IsDisintegration.unique {l l' : skewAdjoint A → Measure (ι → A)}
     (hl : IsDisintegration μ T l) (hl' : IsDisintegration μ T l') : l b = l' b := by
-  classical
-  -- Test against `f ≥ 0` continuous of compact support. The functions `b ↦ ∫⁻ f ∂l b` and
-  -- `b ↦ ∫⁻ f ∂l' b` are continuous and have the same integral over every measurable set.
-  have h_fin : IsFiniteMeasureOnCompacts (l b) := hl.isFiniteMeasureOnCompacts b
-  have h_fin' : IsFiniteMeasureOnCompacts (l' b) := hl'.isFiniteMeasureOnCompacts b
-  refine ext_of_integral_eq_on_compactlySupported_nnreal fun f ↦ ?_
-  obtain ⟨h_cont, -⟩ := hl.continuous_and_lt_top f.continuous f.hasCompactSupport
-  obtain ⟨h_cont', -⟩ := hl'.continuous_and_lt_top f.continuous f.hasCompactSupport
-  have h_setLIntegral : ∀ S : Set (skewAdjoint A), MeasurableSet S → skewMeasure S < ∞ →
-      ∫⁻ β in S, ∫⁻ x, f x ∂l β ∂skewMeasure = ∫⁻ β in S, ∫⁻ x, f x ∂l' β ∂skewMeasure := by
-    rintro _ ⟨s, hs, rfl⟩ -
-    -- Both sides equal `∫⁻ x, Φ (h(x, x), x) ∂μ`.
-    let Φ (p : A × (ι → A)) : ℝ≥0∞ := f p.2 * s.indicator 1 (skewUnit.1 * p.1)
-    have hΦ : Measurable Φ := by fun_prop (disch := assumption)
-    have h_both : ∫⁻ β : skewAdjoint A, (∫⁻ x, f x ∂l β) * s.indicator 1 β.val ∂skewMeasure =
-        ∫⁻ β : skewAdjoint A, (∫⁻ x, f x ∂l' β) * s.indicator 1 β.val ∂skewMeasure := by
-      simpa (disch := fun_prop) [Φ, lintegral_mul_const] using
-        (hl.lintegral_eq Φ hΦ).symm.trans (hl'.lintegral_eq Φ hΦ)
-    simpa [indicator, ← lintegral_indicator (measurable_subtype_coe hs)] using h_both
-  have h_eq : (∫⁻ x, f x ∂l ·) = (∫⁻ x, f x ∂l' ·) :=
-    eq_of_ae_eq (ae_eq_of_forall_setLIntegral_eq_of_sigmaFinite h_cont.measurable
-      h_cont'.measurable h_setLIntegral) h_cont h_cont'
-  have h_toReal (m : Measure (ι → A)) : ∫ x, (f x : ℝ) ∂m = (∫⁻ x, f x ∂m).toReal :=
-    (f.toBoundedContinuousFunction.toReal_lintegral_coe_eq_integral m).symm
-  rw [h_toReal, h_toReal, congrFun h_eq b]
+  let : ∀ b, IsFiniteMeasureOnCompacts (l b) := hl.isFiniteMeasureOnCompacts
+  let : ∀ b, IsFiniteMeasureOnCompacts (l' b) := hl'.isFiniteMeasureOnCompacts
+  -- Retract the ambient ring onto its skew elements so both formulas have the same base.
+  obtain ⟨proj, hproj, hfix⟩ := (isClosed_skewAdjoint (A := A)).measurableSet.exists_measurable_proj
+    ⟨0, (skewAdjoint A).zero_mem⟩
+  have disintegrates {m : skewAdjoint A → Measure (ι → A)} (hm : IsDisintegration μ T m)
+      (F : skewAdjoint A × (ι → A) → ℝ≥0∞) (hF : Measurable F) :
+      ∫⁻ x, F (proj (skewUnit.val * (star x ⬝ᵥ T *ᵥ x)), x) ∂μ =
+        ∫⁻ b, ∫⁻ x, F (b, x) ∂m b ∂skewMeasure := by
+    simpa [← mul_assoc, hfix] using
+      hm.lintegral_eq (fun p ↦ F (proj (skewUnit.val * p.1), p.2)) (by fun_prop)
+  exact congrFun (TauCeti.eq_of_continuous_lintegral_of_disintegration
+    (fun f ↦ (hl.continuous_and_lt_top f.continuous f.hasCompactSupport).1)
+    (fun f ↦ (hl'.continuous_and_lt_top f.continuous f.hasCompactSupport).1)
+    (disintegrates hl) (disintegrates hl')) b
 
 /-- Let l disintegrate μ along the form with matrix T: measurable f satisfy ∫ f(x̄ᵀTx, x) dμ = ∬
 f(δ⁻¹b, x) dl_b dν(b), and ∫ f dl_b is finite and continuous in b for continuous compactly

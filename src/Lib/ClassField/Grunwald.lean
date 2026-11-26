@@ -128,7 +128,7 @@ private lemma exists_nsmul_eq_zero_abelianLift_artinMap_eq_of_apply_principalIde
   -- the principal ideles; by the existence theorem `θ` comes from a Galois character.
   have h_kill (a : U) (ha : U.subtype a ∈ principalIdele.range) : ψ.domRestrict U a = 1 := by
     obtain ⟨x, hx : principalIdele x = a⟩ := ha
-    show ψ a = 1
+    change ψ a = 1
     simpa [hx] using h_principal x (by simp [hx])
   obtain ⟨θ, hθ_rat : principalIdele.range ≤ θ.ker, hθ : ∀ a : U, θ a = ψ a⟩ :=
     -- the instance `DivisibleBy QZ ℤ` is not found for `Additive (Multiplicative QZ)`: pass it
@@ -266,7 +266,7 @@ lemma grunwald [IsTotallyComplex E] {p : ℕ} {S : Set (FinPlace E)} (hp : p.Pri
     · exact hu_not_prime (hw_prime q)
   refine ⟨locIdele_mem_idelesUnitOff_of_mem_or_v_eq_one (hu.imp (fun hu_S ↦ hST hu_S) And.right),
     mem_iInf.mpr fun q ↦ ?_⟩
-  show ideleAt (w q) (locIdele u x) ∈ (powMonoidHom p).range
+  change ideleAt (w q) (locIdele u x) ∈ (powMonoidHom p).range
   rw [ideleAt_locIdele_of_ne (h_ne q) x]
   exact one_mem _
 
@@ -328,12 +328,12 @@ instance : IsCMField (stepField χ) := by
   · -- `cmConj y` is fixed by `g`, since `y` is fixed by `conjGal g`, which is again in the kernel
     have h_conj : conjGal g.val ∈ ker (symmetrise χ) := by
       have hg_ker : χ.val g.val + χ.val (conjGal g.val) = 0 := g.prop
-      show χ.val (conjGal g.val) + χ.val (conjGal (conjGal g.val)) = 0
+      change χ.val (conjGal g.val) + χ.val (conjGal (conjGal g.val)) = 0
       rwa [conjGal_conjGal, add_comm]
     have h_fix : conjGal g.val • (y : Ω) = y := y.prop ⟨conjGal g.val, h_conj⟩
     -- `conjGal g` acts as `cmConj ∘ g ∘ cmConj`
     have h_conjGal_smul : conjGal g.val • (y : Ω) = cmConj (g.val • cmConj (y : Ω)) := rfl
-    show g.val • cmConj (y : Ω) = cmConj (y : Ω)
+    change g.val • cmConj (y : Ω) = cmConj (y : Ω)
     rw [← cmConj_cmConj (g.val • cmConj (y : Ω)), ← h_conjGal_smul, h_fix]
   · -- Extend `φ` to `J` on `Ω`. Then `J ∘ cmConj` and the conjugate of `J` agree on `E`, so they
     -- differ by some `g`. As `conjGal g * g = 1`, this `g` lies in the kernel and fixes `y`.
@@ -423,7 +423,7 @@ private lemma range_intTrace_stepField_eq_top {p : ℕ} (h_rank : Module.finrank
   have hu_ne : u ≠ 0 := coeIdeal_ne_zero.mpr (P.below E).ne_bot
   suffices h_div : trace E (stepField χ) x ∈ u / u by
     rw [div_self hu_ne] at h_div
-    exact coe_one.le h_div
+    exact coeToSubmodule_one.le h_div
   -- for `a ∈ u ⊆ P`, `x * a` is an integer `z`, and `tr z = tr x * a` lies in `u`
   refine (mem_div_iff_of_ne_zero hu_ne).mpr ?_
   rintro _ ⟨a, ha, rfl⟩
@@ -432,7 +432,7 @@ private lemma range_intTrace_stepField_eq_top {p : ℕ} (h_rank : Module.finrank
     (mem_inv_iff (coeIdeal_ne_zero.mpr P.ne_bot)).mp hx _ ⟨_, ha, rfl⟩
   refine ⟨_, hu ⟨z, rfl⟩, ?_⟩
   -- `z = x * a`, so `tr z = tr x * a`
-  show algebraMap (𝓞 E) E (intTrace (𝓞 E) (𝓞 (stepField χ)) z) =
+  change algebraMap (𝓞 E) E (intTrace (𝓞 E) (𝓞 (stepField χ)) z) =
     trace E (stepField χ) x * algebraMap (𝓞 E) E a
   rw [algebraMap_intTrace (L := stepField χ), hz]
   simp [algebraMap_eq_smul_one]
@@ -732,12 +732,12 @@ lemma New.nonempty_weilData_of_not_dvd_differentIdeal {E L : Type} [Field E] [CM
   have h_halves : halfOrder u + halfOrder (star u) = -(v (s.val u)).log := by
     simp only [halfOrder, star_star, hs_star]
     rcases lt_trichotomy u (star u) with h | h | h
-    · rw [if_pos h, if_neg (lt_asymm h)]
+    · rw [ite_eq_left h, ite_eq_right (lt_asymm h)]
       omega
     · have := hs_even u h.symm
-      rw [← h, if_neg (lt_irrefl u)]
+      rw [← h, ite_eq_right (lt_irrefl u)]
       omega
-    · rw [if_neg (lt_asymm h), if_pos h]
+    · rw [ite_eq_right (lt_asymm h), ite_eq_left h]
       omega
   rw [h_log_eq]
   linarith [h_halves, hs_ord u]
@@ -823,7 +823,6 @@ private lemma New.GaloisRep.exists_isGrunwaldChar {E : Type} [Field E] [Embedded
   -- Grunwald's theorem for the character `ψ : b ↦ χ ((star b) w)` and the places `w`, `star w` and
   -- those above `p` gives `ν`. As `ψ` only sees the place `star w`, `ν` is trivial at `w`, and at
   -- the places `u = star u` (whose norm is not prime) and above `p` it kills the local units.
-  have h_fact : Fact p.Prime := ⟨hp⟩
   have h_neZero : NeZero p := ⟨hp.ne_zero⟩
   let ψ : (𝔸f E)ˣ →* Multiplicative QZ := .mk' (fun b ↦ χ (ideleAt w (star b))) (by simp)
   have hχ_open : χ.ker.IsOpen :=

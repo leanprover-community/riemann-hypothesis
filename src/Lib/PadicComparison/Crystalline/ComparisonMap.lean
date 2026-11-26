@@ -126,6 +126,7 @@ lemma integersToPdQuotient_untilt [h : CrysPeriodAlgebra] (t : OFlat) :
   rw [← theta_teichmuller t]
   exact theta.liftOfSurjective_comp_apply ..
 
+open TauCeti.Perfectoid.IsIntegralPerfectoid in
 /-- For every N and every y in O_C with p dividing y^N, there is an A_inf-algebra structure on
 A_max, satisfying `New.Variety.CrysPeriodAlgebra`, such that (a) ℤ_p acts on A_max through A_inf as
 it does directly, (b) the structure map commutes with the action of the monoid
@@ -146,9 +147,9 @@ lemma exists_crysPeriodAlgebra {N : ℕ} {y : OC} (hy : ↑p ∣ y ^ N) :
     simpa using p_pow_dvd_of_mem_pow (n := 1) (by rwa [pow_one])
   let σ : FrobGal := (.ofAdd (N ⊔ 3), 1)
   -- `σ μ = [ε] ^ p ^ max N 3 - 1` lies in `(p, ξ) ^ max N 3`, as `[ε] ≡ 1` modulo `ξ`.
-  have h_xi_dvd : xi ∣ teichmuller p epsTilt - 1 := Dvd.intro tau xi_mul_tau
+  have h_xi_dvd : xi ∣ teichmuller p epsTilt - 1 := Dvd.intro tau (xi_mul_tau.trans mu_eq)
   have hmu : σ • mu ∈ span {↑p, xi} ^ (N ⊔ 3) := by
-    simpa [σ, mu, FrobGal.smul_def] using pow_p_pow_sub_mem_of_xi_dvd h_xi_dvd (N ⊔ 3)
+    simpa [σ, mu_eq, FrobGal.smul_def] using pow_p_pow_sub_mem_of_xi_dvd h_xi_dvd (N ⊔ 3)
   let twisted : Algebra Ainf Amax := compHom Amax (MulSemiringAction.toRingHom FrobGal Ainf σ)
   -- Both `τ` and `μ` divide `μ`, so their images under `σ` become units of B_max.
   let h : CrysPeriodAlgebra :=
@@ -169,7 +170,9 @@ lemma exists_crysPeriodAlgebra {N : ℕ} {y : OC} (hy : ↑p ∣ y ^ N) :
     obtain ⟨t, rfl⟩ := untilt_surjective_of_isAbsIntegrallyClosed (p := p) y
     have hσt : σ • (teichmuller p t : Ainf) ∈ span {↑p, xi} := by
       -- Compare constant coefficients, then their untilts; that of `ξ` divides `p`.
-      grw [Witt.mem_span_pair_iff, ← untilt_dvd_iff, untilt_constantCoeff_xi_dvd_p, hy]
+      have h_xi : (constantCoeff xi).untilt ∣ (p : OC) :=
+        (associated_untilt_coeff_zero ker_theta_eq_span_xi).dvd
+      grw [Witt.mem_span_pair_iff, ← untilt_dvd_iff, h_xi, hy]
       simp [σ, untilt_frobGal_smul, smul_teichmuller, pow_dvd_pow,
         (Nat.lt_pow_self Fact.out).le.trans']
     rw [integersToPdQuotient_untilt t]
@@ -325,7 +328,7 @@ lemma hasCrysComparison_of_witt (b : FullSubcategory IsPerfectTorsionFree)
       ((algBaseChangeAdj.homEquiv _ _).bijective.comp
         (bij_cpl.comp InducedCategory.homEquiv.bijective))))
     -- `p = 0` in `E / 𝔡`, so the `p`-adic topology there is discrete.
-    show IsAdicComplete (span {(p : E.obj ⧸ pdIdeal E.obj)}) (E.obj ⧸ pdIdeal E.obj)
+    change IsAdicComplete (span {(p : E.obj ⧸ pdIdeal E.obj)}) (E.obj ⧸ pdIdeal E.obj)
     rw [E.p_eq_zero_mod_pdIdeal, span_singleton_zero]
     infer_instance
   · -- `Hom(b, S^♭) = Hom(OC ⊗ W b, S) = Hom(W b, S) = Hom(T, S)`.
@@ -360,7 +363,7 @@ open AddMonoidAlgebra Algebra TensorProduct AlgebraMonoidAlgebra in
 algebra A_inf[G] (and an A_inf-algebra through it), and b = O^♭[G] ⊗_{A_inf[G]} T, assumed perfect.
 Then there is an A_inf-algebra map k : T → W(b) that induces a bijection of p-adic completions. -/
 private lemma exists_isCompletionBijective_witt_tensor (G : Type) [AddCommMonoid.{0} G]
-    [Module ℚ≥0 G] (T : CommAlg Ainf[G]) [Etale Ainf[G] T] [Algebra Ainf T]
+    (T : CommAlg Ainf[G]) [Etale Ainf[G] T] [Algebra Ainf T]
     [IsScalarTower Ainf Ainf[G] T]
     (h_perf : PerfectRing (CommAlgCat.of OFlat (OFlat[G] ⊗[Ainf[G]] T)) p) :
     ∃ k : CommAlgCat.of Ainf T ⟶ wittFunctor.obj (CommAlgCat.of OFlat (OFlat[G] ⊗[Ainf[G]] T)),
@@ -470,7 +473,7 @@ lemma hasCrysComparison_of_etale (G : Type) [AddCommMonoid.{0} G] [Module ℚ≥
     exists_isCompletionBijective_witt_tensor G T h_perf
   -- `B ≅ OC ⊗ T`, so `Hom(B, -)` on `OC`-algebras is `Hom(T, -)` over `Ainf`.
   let iso : reprBy B ≅ restrictAlg Ainf OC ⋙ reprBy (.of Ainf T) :=
-    reprFunctor.mapIso (isoMk ((bc _).symm.trans (liftIso.restrictScalars _))).op ≪≫
+    reprFunctor.mapIso (CommAlgCat.isoMk ((bc OC).symm.trans (liftIso.restrictScalars OC))).op ≪≫
       isoOfAppBijective _ (pointMap_algBaseChange_unit_bijective (.of Ainf T))
   have h_witt : HasCrysComparison (restrictAlg Ainf OC ⋙ reprBy (.of Ainf T)) :=
     hasCrysComparison_of_witt ⟨b, h_perf, h_reg⟩ k hk
@@ -523,7 +526,7 @@ lemma CrysPeriodAlgebra.p_mul_teichmuller_sub_one_dvd {p : ℕ} [ThePrime p] [h 
   have h_pow_num : ι x ^ a.num = ι (teichmuller p (epsPowNNRat (.ofAdd a))) := by
     simp [x, ι, ← map_pow, ← ofAdd_nsmul, ← cast_def, ← division_def]
   have h_pow_den : ι x ^ a.den - 1 = ι mu := by
-    simp [x, ι, ← epsPow_one, ← map_pow, ← ofAdd_nsmul, mu]
+    simp [x, ι, ← epsPow_one, ← map_pow, ← ofAdd_nsmul, mu_eq]
   rwa [h_pow_num, h_pow_den] at h_dvd_pow
 
 /-- The split of c ∈ ℚ≥0 into its fractional part c − ⌊c⌋, in [0, 1), and its integral part ⌊c⌋. -/
@@ -657,7 +660,7 @@ private lemma koszulExact_lineEnvelope {p : ℕ} [ThePrime p] [h : CrysPeriodAlg
   · -- `hγv`: `γ v = (μ + 1) • v`, as `[ε] = μ + 1`
     have h_one : γ' (v (.ofAdd 1)) = algebraMap Amax E (e (.ofAdd 1)) * v (.ofAdd 1) :=
       DFunLike.congr_fun hγ_v _
-    simpa [e, ← epsPow_one, mu, Algebra.smul_def] using h_one
+    simpa [e, ← epsPow_one, mu_eq, Algebra.smul_def] using h_one
   · -- `hγu`: `γ (v ^ a) = (η + 1) • v ^ a` with `η = [ε ^ a] - 1`
     have h_a : γ' (v (.ofAdd (a : ℚ≥0))) =
         algebraMap Amax E (e (.ofAdd (a : ℚ≥0))) * v (.ofAdd (a : ℚ≥0)) :=
@@ -1207,8 +1210,7 @@ lemma span_range_crysComparison_pull_eq_top (hi_iso : IsIso i) [IsDomain S]
   have h_torsionFree : IsTorsionFree S Amax := by
     -- `p` is regular on `Amax`, and every nonzero element of `S` divides a power of `p`.
     refine isTorsionFree_of_dvd_pow h.isSMulRegular_natCast fun ht ↦ ?_
-    obtain ⟨k, hk⟩ := associated_pow_irreducible ht hp
-    exact ⟨k, hk.dvd⟩
+    exact (associated_pow_irreducible ht hp).imp fun _ hk ↦ hk.dvd
   algebraize [r, (algebraMap Amax Bmax).comp (algebraMap S Amax)]
   let N : CrysTest S ⥤ Ab := freeAb.obj (pdReduction r ⋙ V.toFunctor)
   -- Completed base change `L` along `S → Amax` is left adjoint to restriction of scalars.

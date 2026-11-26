@@ -358,7 +358,7 @@ lemma New.Rows.norm_I_le_of_periodic {f : ℍ → ℂ} {M : ℝ} (f_per : Period
     intro q _
     obtain hq | rfl : q ≠ 0 ∨ q = 0 := ne_or_eq q 0
     · rw [f_zero.cuspFunction_apply_zero one_pos, mem_closedBall_zero_iff, cuspFunction,
-        Periodic.cuspFunction_eq_of_nonzero _ _ hq]
+        Periodic.cuspFunction_eq_of_ne_zero _ _ hq]
       exact f_bdd _
     · exact Metric.mem_closedBall_self ((norm_nonneg _).trans (f_bdd .I))
   -- the point `z = i` corresponds to `q = exp (-2 π)`

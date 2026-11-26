@@ -318,7 +318,7 @@ lemma gauss_sum_sq_le [Fintype n] (b : selfAdjoint (𝔸f E)) (Γ : 𝔸f E) :
   -- Weyl differencing: the squared modulus of `∫ F` is the integral of the autocorrelation `corr`.
   let L : Set (n → 𝔸f E) := ↑(stdLattice E n)
   let F (w : n → 𝔸f E) : ℂ := ψf E ((2⁻¹ : E) * (b.1 * (star w ⬝ᵥ w - Γ)))
-  have F_cont : Continuous F := continuous_ψf.subtype_val.comp (by fun_prop)
+  have F_cont : Continuous F := continuous_ψf.subtypeVal.comp (by fun_prop)
   let corr (d : n → 𝔸f E) : ℂ := ∫ w in L, starRingEnd ℂ (F w) * F (w + d)
   -- Translating `w` by `star v` in the entry `i` multiplies `corr d` by `ψf E (b * d i * v)`
   -- and keeps `L`; so `corr d = 0` unless all `d i` are in `K`.
@@ -350,11 +350,11 @@ lemma gauss_sum_sq_le [Fintype n] (b : selfAdjoint (𝔸f E)) (Γ : 𝔸f E) :
   -- As `‖F‖ = 1` and `corr` vanishes off `K ^ n`, the square is at most a product of volumes.
   have h_sq : ‖∫ w in L, F w‖ₑ ^ 2 ≤ (volume (K ∩ Ô E : Set (𝔸f E)) * volÔ E) ^ card n := calc
       _ = ‖∫ d in Kn, corr d ∂volume.restrict L‖ₑ := by
-        rw [setIntegral_eq_integral_of_forall_compl_eq_zero corr_eq_zero, ← sq_eq, enorm_mul,
-          RCLike.enorm_conj, sq]
+        rw [setIntegral_eq_integral_of_forall_compl_eq_zero corr_eq_zero, ← sq_eq, eNorm_mul,
+          RCLike.eNorm_conj, sq]
       _ ≤ ∫⁻ d in Kn, (∫⁻ w in L, ‖starRingEnd ℂ (F w) * F (w + d)‖ₑ) ∂volume.restrict L :=
-        (enorm_integral_le_lintegral_enorm _).trans
-          (lintegral_mono fun _ ↦ enorm_integral_le_lintegral_enorm _)
+        (eNorm_integral_le_lintegral_eNorm _).trans
+          (lintegral_mono fun _ ↦ eNorm_integral_le_lintegral_eNorm _)
       _ = volume (Kn ∩ L) * volume L := by
         simp [Kn, F, ← ofReal_norm, Circle.norm_coe, MeasurableSet.univ_pi, K_open.measurableSet,
           mul_comm, Set.univ_inter]
@@ -389,7 +389,6 @@ lemma lintegral_gauss_sum_le_idealZeta (hμ : idealZeta (Ô E) μ ≤ 2) [Fintyp
       ((AddMonoidHom.mulLeft b.1).comp (Ô E).subtype.toAddMonoidHom)
     have h_trivial (r : Ô E) (hr : r ∈ I.toAddSubgroup) : ξb r = 0 := by
       simp [ξb, show ψf E (b.1 * r) = 1 by simpa using hr 1]
-
     let χ : AddChar (Ô E ⧸ I.toAddSubgroup) ℂ :=
       toAddMonoidHomEquiv.symm (QuotientAddGroup.lift I.toAddSubgroup ξb h_trivial)
     -- The chosen representative `a` of that character differs from `b` by the codifferent.

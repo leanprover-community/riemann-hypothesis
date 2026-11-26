@@ -66,12 +66,9 @@ lemma addVal_ell_le_finrank (O : CoeffRing ℓ) (K : IntermediateField ℚ_[ℓ]
 lemma natDegree_minpoly_le_of_pow_eq_one {k : ℕ} [NeZero k] {ζ : PadicAlgCl ℓ}
     (hζ : ζ ^ (ℓ ^ k - 1) = 1) : (minpoly ℚ_[ℓ] ζ).natDegree ≤ k := by
   -- The conjugates of `ζ` are among the `ζ ^ ℓ ^ j`, which depend only on `j` modulo `k`.
-  have h_frob : ζ ^ ℓ ^ k = ζ := by
+  have h_frob : Function.IsPeriodicPt (· ^ ℓ) k ζ := by
+    simp only [Function.IsPeriodicPt, Function.IsFixedPt, pow_iterate]
     rw [← Nat.sub_add_cancel (Nat.one_le_pow k ℓ (NeZero.pos ℓ)), pow_succ, hζ, one_mul]
-  have h_iter (q : ℕ) : ζ ^ (ℓ ^ k) ^ q = ζ := by
-    induction q with
-    | zero => simp
-    | succ q ih => rw [pow_succ, pow_mul, ih, h_frob]
   have h_roots : (minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ) ⊆
       Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.1 := by
     intro y hy
@@ -79,9 +76,7 @@ lemma natDegree_minpoly_le_of_pow_eq_one {k : ℕ} [NeZero k] {ζ : PadicAlgCl �
       (Algebra.IsAlgebraic.isAlgebraic ζ) (aeval_eq_zero_of_mem_rootSet hy)
     obtain ⟨j, hj⟩ : ∃ j : ℕ, σ ζ = ζ ^ ℓ ^ j := exists_apply_eq_pow not_dvd_pow_sub_one hζ σ
     refine ⟨⟨j % k, Nat.mod_lt j (NeZero.pos k)⟩, ?_⟩
-    calc ζ ^ ℓ ^ (j % k) = (ζ ^ (ℓ ^ k) ^ (j / k)) ^ ℓ ^ (j % k) := by rw [h_iter]
-      _ = ζ ^ ℓ ^ j := by rw [← pow_mul ℓ, ← pow_mul, ← pow_add, Nat.div_add_mod]
-      _ = σ ζ := hj.symm
+    simpa [pow_iterate, hj] using h_frob.iterate_mod_apply j
   calc (minpoly ℚ_[ℓ] ζ).natDegree = ((minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ)).ncard := by
         rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card,
           card_rootSet_eq_natDegree (Algebra.IsSeparable.isSeparable _ ζ) (IsAlgClosed.splits _)]
@@ -141,7 +136,6 @@ lemma frequently_lt_card_residueField (c : ℕ) :
   have hζ_int : IsIntegral ℚ_[ℓ] ζ := Algebra.IsIntegral.isIntegral ζ
   have : IsCyclotomicExtension {ℓ ^ k - 1} ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ :=
     hζ.intermediateField_adjoin_isCyclotomicExtension ℚ_[ℓ]
-
   have : FiniteDimensional ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ := adjoin.finiteDimensional hζ_int
   have : IsGalois ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ := IsCyclotomicExtension.isGalois {ℓ ^ k - 1} _ _
   let K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) := ⟨K₀.1 ⊔ ℚ_[ℓ]⟮ζ⟯⟩

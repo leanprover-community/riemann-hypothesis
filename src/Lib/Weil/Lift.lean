@@ -105,7 +105,7 @@ theorem New.sum_sigma_filter_eq_sum_mul_sum_Ioo (N : ℕ) (k : ℤˣ → ℕ →
 
 /-- For injective `l`, number the columns `c` of sign `η` by decreasing `η * l c`: the number `o c`
 of columns of the same sign that come before `c` is a bijection onto an initial segment of `ℕ`. -/
-theorem New.exists_equiv_fin_eq_card_filter_lt {r : Type} [Fintype r] [DecidableEq r] {s : r → ℤˣ}
+theorem New.exists_equiv_fin_eq_card_filter_lt {r : Type} [Fintype r] {s : r → ℤˣ}
     {l : r → ℤ} (hl : Injective l) {o : r → ℕ}
     (ho : ∀ c : r, o c = #{d : r | s d = s c ∧ s c * l c < s c * l d}) (η : ℤˣ) :
     ∃ f : {c : r // s c = η} ≃ Fin (card {c : r // s c = η}),
@@ -118,7 +118,7 @@ theorem New.exists_equiv_fin_eq_card_filter_lt {r : Type} [Fintype r] [Decidable
 
 /-- For injective `l` and a sign `η`, the position of a row in the decreasing order of `η • l` is a
 bijection onto `Fin (card n)`, and the position for `-η` is the reversed one. -/
-theorem New.exists_equiv_decreasingPosition_smul {n : Type} [Fintype n] [DecidableEq n] {l : n → ℤ}
+theorem New.exists_equiv_decreasingPosition_smul {n : Type} [Fintype n] {l : n → ℤ}
     (hl : Injective l) (η : ℤˣ) :
     ∃ u : n ≃ Fin (Fintype.card n), ∀ a : n,
       decreasingPosition (η.val • l) a = u a ∧ decreasingPosition ((-η).val • l) a = (u a).rev := by
@@ -257,9 +257,6 @@ abbrev negIf {α : Type*} [Neg α] (d : Bool) (l : α) : α := match d with
   | true => -l
   | false => l
 
-theorem negIf_true {α : Type*} [Neg α] (l : α) : negIf true l = -l := rfl
-
-
 /-- The doubled parameters l for the signs s : n → ℤˣ and l' for the signs t : n' → ℤˣ correspond:
 at each infinite place w they satisfy the block rule (`New.IsBlockRule`) for the weights γ w and γ'
 w. -/
@@ -318,24 +315,6 @@ theorem isJointHarmonic_jointHarmonicAt {w : InfinitePlace E}
   Classical.epsilon_spec h_match.exists_isJointHarmonic
 
 end Correspond
-
-variable {E : Type} [Field E] [NumberField E] {γ γ' : InfinitePlace E → ℤ}
-  {l : InfinitePlace E → n → ℤ} {l' : InfinitePlace E → n' → ℤ} in
-/-- Let the doubled parameters `l` (for the signs `s`) and `l'` (for the signs `t`) correspond for
-the weights `γ`, `γ'`. For each infinite place w, let `P w` be a joint harmonic for the standard
-dual pair `.std t s (γ w) (-γ' w)` with parameters `l' w` and `-l w`. Then the product over w of the
-`P w`, with the variables of `P w` renamed to those of the place w, is a scalar multiple of
-`jointHarmonic γ γ' l l' s t`. -/
-theorem ParamsCorrespond.prod_eq_smul_jointHarmonic (h_corr : ParamsCorrespond γ γ' l l' s t)
-    (P : InfinitePlace E → MvPolynomial (n' × n) ℂ)
-    (hP : ∀ w : InfinitePlace E, IsJointHarmonic (.std t s (γ w) (-γ' w)) (l' w) (-l w) (P w)) :
-    ∃ c : ℂ, ∏ w : InfinitePlace E, rename (Prod.mk w) (P w) = c • jointHarmonic γ γ' l l' s t := by
-  have h_local (w : InfinitePlace E) : ∃ c : ℂ, P w = c • jointHarmonicAt γ γ' l l' s t w := by
-    obtain ⟨-, ⟨-, h_cols⟩, h_harm, h_rows, h_harm_swap⟩ := (hP w).isJointHighest
-    exact (isJointHarmonic_jointHarmonicAt (h_corr.isMatch w)).exists_eq_smul_of_row_weight h_harm
-      h_harm_swap h_rows h_cols
-  choose c hc using h_local
-  exact ⟨∏ w, c w, by simp [jointHarmonic, hc, map_smul, Finset.prod_smul]⟩
 
 /-- The real points of the two groups act through `Ω` on the real vector `v` of a datum
 `V.integrated v f` and leave its finite part `f` alone. -/
@@ -534,7 +513,9 @@ theorem lift_piTensor_integratedRep {T : InfinitePlace E → FockDualPair s t ι
         simp only [Space.lift, integral_const_mul]
     _ = ∫ a : G E s, (∫ x : GInf E s, F x a) ∂S.quotMeasure := integral_integral_swap h_int
     _ = S.lift Θ φ (realConv e y) g := by
-        simp only [F, Space.lift, realConv, ← integral_const_mul, mul_left_comm]
+        simp only [F, Space.lift, realConv, ← integral_const_mul]
+        exact integral_congr_ae (.of_forall fun _ ↦ integral_congr_ae (.of_forall fun _ ↦
+          mul_left_comm ..))
     _ = S.lift Θ φ y g := by rw [hy.realConv_eq cusp.integrable]
 
 variable [Nonempty n']

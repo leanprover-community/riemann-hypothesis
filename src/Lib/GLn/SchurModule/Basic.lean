@@ -384,32 +384,6 @@ def weylGram : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ :=
   of (invFun (GL.nablaCombination (R := ℤ) κ) ∘
     invFun (GL.nablaCombination (R := MatrixPoly (Σ τ : Φ, n τ) ℤ) κ) (weylKernel n κ X))
 
-/-- Let `n τ` be the finite row type and `κ τ h` the number of columns of height `h` at the place
-`τ`, let `y` be the array of variables `X` with rows `(τ, a)`, and let `b = nablaBasis`. If `b` is
-linearly independent over the polynomial ring `ℤ[y]` and the generic kernel `weylKernel n κ X` is an
-integer combination of the products `b_i(x) * b_j(y)`, then `weylGram` gives the coefficients of
-such a combination. -/
-lemma sum_weylGram_smul_eq_weylKernel_of_exists {Φ : Type} [Fintype Φ] [DecidableEq Φ]
-    (n : Φ → Type) [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] (κ : Φ → ℕ → ℕ)
-    (h_indep : LinearIndependent (MatrixPoly (Σ τ : Φ, n τ) ℤ)
-      (nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ))
-    (h_coords : ∃ G : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ,
-      ∑ i : WeylIndexFamily n κ, (∑ j : WeylIndexFamily n κ, G i j • nablaBasis ℤ n κ j) •
-        nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ i = weylKernel n κ X) :
-    ∑ i : WeylIndexFamily n κ, (∑ j : WeylIndexFamily n κ, weylGram n κ i j • nablaBasis ℤ n κ j) •
-        nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ i = weylKernel n κ X := by
-  obtain ⟨G, hG⟩ := h_coords
-  -- By independence the coordinates in the `b_i(x)` are unique, so they are those given by `G`.
-  have h_outer : invFun (GL.nablaCombination κ) (weylKernel n κ X) =
-      fun i ↦ ∑ j, G i j • nablaBasis ℤ n κ j :=
-    h_indep.fintypeLinearCombination_injective <|
-      (invFun_eq (f := GL.nablaCombination κ) ⟨_, hG⟩).trans hG.symm
-  have h_row (i : WeylIndexFamily n κ) :
-      ∑ j, weylGram n κ i j • nablaBasis ℤ n κ j = ∑ j, G i j • nablaBasis ℤ n κ j := by
-    rw [weylGram, h_outer]
-    exact invFun_eq (f := GL.nablaCombination κ) ⟨G i, rfl⟩
-  simp only [h_row, hG]
-
 variable {n} in
 /-- The integer Gram matrix `New.weylGram` for the row type n and column counts κ, with its entries
 mapped into R. -/
@@ -438,7 +412,7 @@ def linSubst : MvPolynomial σ R →ₐ[R] MvPolynomial m R := aeval fun s ↦ �
 /-- The chain rule for a linear substitution: the derivative of `p(zᵀx)` in `x_i` is
 `Σ_a z_{ia} (∂p/∂x_a)(zᵀx)`. -/
 lemma pderiv_linSubst {σ m R : Type} [CommRing R] [Fintype m] (z : Matrix m σ R) [Fintype σ]
-    [DecidableEq σ] (p : MvPolynomial σ R) (i : m) :
+    (p : MvPolynomial σ R) (i : m) :
     (linSubst z p).pderiv i = ∑ a : σ, z i a • linSubst z (p.pderiv a) := by
   classical
   -- By induction from the variables; the step for `p * X j` is the Leibniz rule.
@@ -453,13 +427,13 @@ lemma pderiv_linSubst {σ m R : Type} [CommRing R] [Fintype m] (z : Matrix m σ 
 /-- For an `m × σ` matrix `z` over the commutative ring `R`, the substitutions by `z` and by `zᵀ`
 (`New.linSubst`) are adjoint for the Fock form `⟨p, q⟩ = p(∂) q (0)`. -/
 lemma fockPairing_linSubst {σ m R : Type} [CommRing R] [Fintype m] (z : Matrix m σ R) [Fintype σ]
-    [DecidableEq σ] (f : MvPolynomial m R) (g : MvPolynomial σ R) :
+    (f : MvPolynomial m R) (g : MvPolynomial σ R) :
     fockPairing R f (linSubst z g) = fockPairing R (linSubst zᵀ f) g := by
   classical
   -- A factor `X i` of `f` moves across the Fock form as `pderiv i` (`fockPairing_mul_X`), and
   -- both sides then agree by the chain rule; for constants only the constant terms matter.
   induction f using MvPolynomial.induction_on generalizing g with
-  | C c => simp [linSubst, fockPairing_C, hom_bind₁, -fockPairing]
+  | C c => simp [linSubst, fockPairing_C, -fockPairing]
   | add p q hp hq => simp [hp, hq, -fockPairing]
   | mul_X p i hp =>
     have h_subst : linSubst zᵀ (p * X i) = ∑ a : σ, z i a • (linSubst zᵀ p * X a) := by
@@ -518,7 +492,7 @@ def symPowMatrix (a : ℕ) : Matrix σ σ R →* Matrix (Monomials σ a) (Monomi
   map_mul' A B := by
     ext β α
     -- Expand `linSubst B (monomial α 1)` in the monomials of degree `a`, then apply `linSubst A`.
-    show (linSubst (A * B) (monomial α.1 1)).coeff β.1 = _
+    change (linSubst (A * B) (monomial α.1 1)).coeff β.1 = _
     rw [linSubst_mul, ← sum_monomials_eq_of_isHomogeneous (α.isHomogeneous_linSubst B)]
     simp [mul_comm, Matrix.mul_apply]
 
@@ -710,12 +684,12 @@ lemma fockPairing_rowSubst [∀ τ : Φ, DecidableEq (n τ)] (p : MatrixPoly ((�
       simp [h_q, mul_sum (ι := n _), apply_ite, sum_add_distrib, Pi.single_apply, smul_add, h_X]
       -- Both sides are `z τ b a' • w q` if `τ' = τ` and `k' = k`, and `0` otherwise; `aesop`
       -- matches the dependent pairs.
-      show (w q * ∑ x : n' τ', if (τ' = τ ∧ x ≍ b) ∧ k' = k then z τ' x a' • 1 else 0) =
+      change (w q * ∑ x : n' τ', if (τ' = τ ∧ x ≍ b) ∧ k' = k then z τ' x a' • 1 else 0) =
           ∑ x : n τ, if (τ' = τ ∧ a' ≍ x) ∧ k' = k then z τ b x • w q else 0
       aesop (add simp ite_and)
   -- Induction on `p`: multiplication by a variable is adjoint to the partial derivative.
   induction p using MvPolynomial.induction_on with
-  | C a => simp [w, fockPairing_C, hom_bind₁, rowSubst]
+  | C a => simp [w, fockPairing_C, rowSubst]
   | add p₁ p₂ h₁ h₂ => simp [h₁, h₂]
   | mul_X p j h_p =>
     intro q

@@ -96,17 +96,6 @@ lemma isCutoff_chosenCutoff [h_cutoff : HasCutoff ν X] :
     IsCutoff ν (chosenCutoff ν : X → ENNReal) :=
   Classical.epsilon_spec h_cutoff.out
 
-/-- If the action has a cutoff, the chosen weight is measurable. -/
-@[to_additive measurable_chosenAddCutoff]
-lemma measurable_chosenCutoff [HasCutoff ν X] : Measurable (chosenCutoff ν : X → ENNReal) :=
-  (isCutoff_chosenCutoff ν).1
-
-/-- If the action has a cutoff, the chosen weight has integral one over each orbit. -/
-@[to_additive lintegral_chosenAddCutoff_vadd]
-lemma lintegral_chosenCutoff_smul [HasCutoff ν X] (x : X) :
-    ∫⁻ h : H, chosenCutoff ν (h • x) ∂ν = 1 :=
-  (isCutoff_chosenCutoff ν).2 x
-
 /-- Shortcut: the `MulAction` instance of a subgroup `N` on its ambient group `G`. -/
 @[to_additive]
 instance (priority := high) mulActionSubgroupSelf : MulAction N G := inferInstance
@@ -155,7 +144,7 @@ cutoff) as `F ∘ T` under `m`. -/
 lemma identDistrib_orbitMeasure_of_unfold [SMul H X] [MeasurableSMul₂ H X] {ν : Measure H}
     {μ : Measure X} {Z L : Type*} [MeasurableSpace Z] [MeasurableSpace L] {ρ : Measure L}
     [SFinite ρ] [c : HasCutoff ν X] {σ : L → H} (hσ_pres : MeasurePreserving σ ρ ν) {T : Z → X}
-    {m : Measure Z} [SFinite m]
+    {m : Measure Z}
     (h_unfold : MeasurePreserving (fun p : Z × L ↦ σ p.2 • T p.1) (m.prod ρ) μ) (hF : Measurable F)
     (hT : Measurable T) (h_inv : ∀ (h : H) (x : X), F (h • x) = F x) :
     IdentDistrib F (F ∘ T) (orbitMeasure ν μ) m := by
@@ -408,24 +397,8 @@ noncomputable abbrev cosetProdEquiv : (G ⧸ N) × N ≃ G where
   left_inv x := by aesop
   right_inv x := by aesop
 
-omit [TopologicalSpace G] in
-lemma cosetProdEquiv_apply (q : G ⧸ N) (u : N) :
-    cosetProdEquiv N (q, u) = (u : G) * q.out⁻¹ := rfl
-
-omit [TopologicalSpace G] in
-/-- The coset component of `γ` is the left coset of `γ⁻¹`. -/
-lemma cosetProdEquiv_symm_apply_fst (γ : G) :
-    ((cosetProdEquiv N).symm γ).1 = ((γ⁻¹ : G) : G ⧸ N) := rfl
-
-omit [TopologicalSpace G] in
-/-- The `N`-component of `γ` is `γ` times the chosen representative of the left coset of
-`γ⁻¹`. -/
-lemma cosetProdEquiv_symm_apply_snd (γ : G) :
-    (((cosetProdEquiv N).symm γ).2 : G) = γ * ((γ⁻¹ : G) : G ⧸ N).out := by
-  simp [cosetProdEquiv]
-
 instance : DiscreteTopology (Γ.subgroupOf N) :=
-  have h_cont : Continuous (Subtype.val : N → G) := continuous_subtype_val
+  have h_cont : Continuous (Subtype.val : N → G) := continuous_subtypeVal
   .preimage_of_continuous_injective Γ.carrier h_cont Subtype.val_injective
 
 instance : DiscreteTopology ↥(Γ ⊓ N) :=

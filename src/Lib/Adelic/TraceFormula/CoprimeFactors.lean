@@ -389,7 +389,7 @@ lemma isClosed_setOf_charpoly_eq [CommRing F] [TopologicalSpace F] [IsTopologica
     charpoly.univ_coeff_eval₂Hom n (RingHom.id F) (fun p : n × n ↦ M p.1 p.2) i
   have h_coeff (i : ℕ) : Continuous fun M : Matrix n n F ↦ M.charpoly.coeff i :=
     ((MvPolynomial.continuous_eval _).comp (by fun_prop)).congr (h_eval i)
-  simp only [Polynomial.ext_iff, Set.ofPred_forall]
+  simp only [AddMonoidAlgebra.ext_iff, Finsupp.ext_iff, Set.ofPred_forall]
   exact isClosed_iInter fun i ↦ isClosed_eq (h_coeff i) continuous_const
 
 variable [NormedField F]

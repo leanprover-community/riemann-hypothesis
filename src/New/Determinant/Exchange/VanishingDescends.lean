@@ -66,12 +66,6 @@ lemma ThetaLargeVanishes.congr_spaces {W : Space E n s} {V : Space E r t} {σ : 
   intro v hv y hy g
   rw [h_eq_mul, h_zero v hv y hy, mul_zero]
 
-/-- Adding a hyperbolic plane, with signs `hyperbolicSigns Unit` (one `+1` and one `-1`), to signs
-`ε` adds one negative sign. -/
-lemma negCount_sumElim_hyperbolicSigns_unit {m : Type} [Fintype m] (ε : m → ℤˣ) :
-    negCount (Sum.elim (hyperbolicSigns Unit) ε) = negCount ε + 1 := by
-  simp +arith [negCount_sumElim, negCount_one_and_neg_one]
-
 /-- Descent along one hyperbolic plane `H`. Let `A` and `X` be adapted splittings (orthonormal at
 the infinite and integral at the finite places) `W' = W ⊕ H` and `V' = V ⊕ H` of hermitian spaces.
 Let `W` be of even rank and `-k ≤ rk V - rk W / 2`, with `k ≤ μ w` at every infinite place `w`,
@@ -138,7 +132,7 @@ theorem ThetaLargeVanishes.of_add_plane {k : ℕ} {W : Space E n s} {W' : Space 
   have hε_ne : ε true ≠ 0 := norm_pos_iff.1 ((ha_pos true).trans_eq (hε_norm true).symm)
   have hP_pos : 0 < P (e + 1 : ℤ) := mul_pos (Real.rpow_pos_of_pos ideleAbs_pos _)
     (Finset.prod_pos fun w _ ↦ Real.rpow_pos_of_pos (by simp [FinPlace.q_bounds]) _)
-  show I = 0
+  change I = 0
   simpa only [R, mul_eq_zero, Complex.ofReal_eq_zero, hε_ne, hP_pos.ne', hΛ_ne _ h_lower,
     (hB_pos _).ne', false_or] using h_R_zero
 
@@ -177,10 +171,10 @@ theorem ThetaLargeVanishes.of_add_planes {k : ℕ} {W' : Space E n' s'} {V' : Sp
     -- One plane raises each rank by two and each number of negative signs by one.
     have h_card_W : card ((Unit ⊕ Unit) ⊕ n) = card n + 2 := by simp +arith
     have h_card_V : card ((Unit ⊕ Unit) ⊕ r) = card r + 2 := by simp +arith
-    have h_neg_W : negCount (Sum.elim (hyperbolicSigns Unit) s) = negCount s + 1 :=
-      negCount_sumElim_hyperbolicSigns_unit s
-    have h_neg_V : negCount (Sum.elim (hyperbolicSigns Unit) t) = negCount t + 1 :=
-      negCount_sumElim_hyperbolicSigns_unit t
+    have h_neg_W : negCount (Sum.elim (hyperbolicSigns Unit) s) = 1 + negCount s := by
+      simpa using negCount_sumElim_hyperbolicSigns (ι := Unit) s
+    have h_neg_V : negCount (Sum.elim (hyperbolicSigns Unit) t) = 1 + negCount t := by
+      simpa using negCount_sumElim_hyperbolicSigns (ι := Unit) t
     have h_above : ThetaLargeVanishes 𝔠 (hyperbolicSum Unit W) (hyperbolicSum Unit V) τ :=
       ih (hyperbolicSum Unit W) (hyperbolicSum Unit V) τ (by omega) (by omega) (by omega)
         (by omega) (by omega)

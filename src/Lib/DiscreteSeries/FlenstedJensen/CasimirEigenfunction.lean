@@ -498,13 +498,6 @@ theorem eventually_isAccretive_inv_mul {a g : Matrix n n ℂ} (h_acc : (a⁻¹ *
     ∀ᶠ x : Matrix n n ℂ in nhds g, (a⁻¹ * x).IsAccretive :=
   (continuous_const_mul a⁻¹).continuousAt.eventually h_acc.setOf_mem_nhds
 
-/-- The set `splittable ε` is open in `Matrix n n ℂ`. This is the set of complex matrices `g` with
-`a⁻¹ g` accretive (`z + zᴴ > 0`) for some block diagonal `a`, that is, the products `p z qᴴ` with
-`p`, `q` invertible block diagonal and `z` accretive. -/
-theorem isOpen_splittable : IsOpen (splittable ε) :=
-  isOpen_iff_eventually.2 fun _ ⟨a, ha, ha_acc⟩ ↦
-    (eventually_isAccretive_inv_mul ha_acc).mono fun _ hx ↦ ⟨a, ha, hx⟩
-
 open scoped Classical in
 /-- The coefficient on the set `New.splittable ε` of products: Flensted-Jensen's integral at
 `(a, a⁻¹ g)` for a chosen block diagonal `a` with `a⁻¹ g` accretive, and `0` off this set. -/
@@ -570,23 +563,6 @@ theorem dsCoeff_eq_integral_of_eq_mul_mul_conjTranspose {m : ℕ} (hl : l.HasGap
     simpa [h_split, hz.det_ne_zero] using GeneralLinearGroup.det_ne_zero (g : GL n ℂ)
   rw [← splitCoeff_eq_dsCoeff hl, h_split]
   exact splitCoeff_mul_mul_conjTranspose hl hp hq hp_det hq_det hz
-
-/-- For a parameter `l` of gap `h`, the coefficient `l.splitCoeff` is holomorphic on the open set
-`New.splittable ε` of the products `p z qᴴ` with `p`, `q` invertible and block diagonal and `z`
-accretive (`z + zᴴ > 0`). On this set, `l.splitCoeff g` is Flensted-Jensen's integral at
-`(a, a⁻¹ g)` for a block diagonal `a` with `a⁻¹ g` accretive. This is a corollary of the
-independence of the splitting; on the group itself the later proofs use
-`New.HCParam.analyticAt_dsCoeff`. -/
-theorem analyticOnNhd_splitCoeff {h : ℕ} (hl : l.HasGap h) :
-    AnalyticOnNhd ℂ l.splitCoeff (splittable ε) := by
-  -- Near `g` one factor `a` serves for all points, and for fixed `a` the integral is analytic.
-  rintro g ⟨a, ha, ha_acc⟩
-  refine AnalyticAt.congr (f := fun x : Matrix n n ℂ ↦ l.flenstedJensen a (a⁻¹ * x)) ?_
-    ((eventually_isAccretive_inv_mul ha_acc).mono fun x hx ↦
-      (splitCoeff_eq_flenstedJensen hl ha hx).symm)
-  unfold HCParam.flenstedJensen
-  exact ((isAnalyticFamily_flenstedJensen l (a := fun _ ↦ a) analyticAt_const
-    ha_acc).analyticAt_integral (haarK ε)).div_const
 
 end New
 

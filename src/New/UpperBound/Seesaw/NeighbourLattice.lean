@@ -245,14 +245,14 @@ lemma IsScalingAtM.apply_mul_star_eq_one (hκ : IsScalingAtM N β δ κ) (i : Pa
 
 /-- If the places above `N` are `P` and its conjugate, the scaling adele `δ`, which is `1` above
 `N`, is `1` at `P`. -/
-lemma IsScalingAtM.idem_mul [Fact N.Prime] (hκ : IsScalingAtM N β δ κ)
+lemma IsScalingAtM.idem_mul (hκ : IsScalingAtM N β δ κ)
     (hP : IsSplitLevel P N) : idem P * δ = idem P := by
   ext w
   by_cases hw : w ∈ P <;> simp [hw, hκ.apply_eq_one, hP.natCast_mem_iff]
 
 /-- If the places above `N` are `P` and its conjugate, the scaling adele `δ`, which is `1` above
 `N`, is `1` at the places conjugate to `P`. -/
-lemma IsScalingAtM.star_idem_mul [Fact N.Prime] (hκ : IsScalingAtM N β δ κ)
+lemma IsScalingAtM.star_idem_mul (hκ : IsScalingAtM N β δ κ)
     (hP : IsSplitLevel P N) : star (idem P) * δ = star (idem P) := by
   rw [star_idem]
   ext w

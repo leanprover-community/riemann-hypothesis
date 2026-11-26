@@ -69,24 +69,11 @@ abbrev absIntegrallyClosedSubrings.extendedIdeal (B : absIntegrallyClosedSubring
     Ideal B.val :=
   J.map (γ.codRestrict B.val fun d ↦ B.prop.1 ⟨d, rfl⟩)
 
-/-- `J B` is the extension of `J` along `absIntegrallyClosedSubrings.toRingHom B : D → B`. -/
-lemma absIntegrallyClosedSubrings.extendedIdeal_eq_map_toRingHom
-    (B : absIntegrallyClosedSubrings γ) : extendedIdeal J γ B = J.map (toRingHom B) :=
-  rfl
-
 /-- The functor `B ↦ B / J B` on `absIntegrallyClosedSubrings γ`, ordered by inclusion. -/
 def absIntegrallyClosedSubrings.quotientFunctor : absIntegrallyClosedSubrings γ ⥤ CommRingCat where
   obj B := of (B.val ⧸ extendedIdeal J γ B)
   map {B B'} l :=
     ofHom (quotientMap (extendedIdeal J γ B') (inclusion l.le) (map_le_of_le_comap le_comap_map))
-
-/-- On classes, the map of `quotientFunctor J γ` along `B ≤ B'` sends the class of `x ∈ B` to the
-class of `x` in `B'`. -/
-lemma absIntegrallyClosedSubrings.quotientFunctor_map_mk {B B' : absIntegrallyClosedSubrings γ}
-    (l : B ⟶ B') (x : B.val) :
-    ((quotientFunctor J γ).map l).hom (Ideal.Quotient.mk (extendedIdeal J γ B) x) =
-      Ideal.Quotient.mk (extendedIdeal J γ B') (inclusion l.le x) :=
-  rfl
 
 /-- For `B ≤ B'` in `absIntegrallyClosedSubrings γ`, the ideal `J B` extends along the inclusion
 `B → B'` to `J B'`. -/

@@ -1,6 +1,6 @@
 module
 
-public import Lib.Adelic.Witt.WittTheorem
+public import Lib.General.LinearAlgebra.IntegralLattices
 
 /-!
 # Hermite forms over valuation pairs and integral matrices over valued fields

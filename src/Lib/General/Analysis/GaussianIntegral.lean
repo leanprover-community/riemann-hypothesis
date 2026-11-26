@@ -1,6 +1,7 @@
 module
 
 public import Lib.Base
+import TauCeti.Analysis.Matrix.L2OpNorm
 
 /-!
 # Matrix norm estimates, the Ostrowski–Taussky inequality, and the complex Gaussian integral
@@ -53,9 +54,7 @@ lemma l2_opNorm_le_of_apply {M : ℝ} (h_apply : ∀ (i : m) (j : n), ‖A i j�
   simp [field]
 
 lemma norm_apply_le_l2_opNorm (i : m) (j : n) : ‖A i j‖ ≤ ‖A‖ :=
-  calc ‖A i j‖ = ‖WithLp.toLp 2 (A *ᵥ Pi.single j 1) i‖ := by simp
-    _ ≤ ‖WithLp.toLp 2 (A *ᵥ Pi.single j 1)‖ := PiLp.norm_apply_le _ i
-    _ ≤ ‖A‖ := by simpa using A.l2_opNorm_mulVec (EuclideanSpace.single j 1)
+  Matrix.norm_apply_le_l2_opNorm A i j
 
 /-- If `H` is positive definite and `Θ + Θᴴ - H` is positive semidefinite, then every eigenvalue
 `l` of `H⁻¹ (Θ + Θ)` has real part at least `1`. -/
@@ -192,22 +191,14 @@ lemma exists_eq_conjTranspose_mul_diagonal_mul [DecidableEq ι] (hA : A.IsAccret
 integral `π / d` over `ℂ`. -/
 lemma integral_cexp_neg_star_mul {d : ℂ} (hd : 0 < d.re) (a : ℂ) :
     ∫ z : ℂ, exp (-(star z * (d * (z - a)))) = Real.pi / d := by
-  -- With `z = v 0 + i v 1` the linear part `star z * (d a)` has the coefficients `d a` of `v 0`
-  -- and `-i d a` of `v 1`; apply the Gaussian integral on `ℝ²`.
   let c : Fin 2 → ℂ := (d * a) • ![1, -I]
-  let g (v : Fin 2 → ℝ) : ℂ := exp (-d * ∑ i : Fin 2, (v i : ℂ) ^ 2 + ∑ i : Fin 2, c i * v i)
-  have h_exponent (z : ℂ) : -(star z * (d * (z - a))) =
-      -d * ((z.re : ℂ) ^ 2 + (z.im : ℂ) ^ 2) + (d * a * z.re - I * (d * a) * z.im) := by
-    rw [show star z = z.re - z.im * I by simp [Complex.ext_iff]]
-    linear_combination (z.re - z.im * I) * d * re_add_im z + d * z.im ^ 2 * I_sq
-  have h_coeff : ∑ i : Fin 2, c i ^ 2 = 0 := by simp [c, mul_pow]
-  calc
-    _ = ∫ z : ℂ, g (measurableEquivPi z) := by
-      simp only [h_exponent]
-      simp [g, c, sub_eq_add_neg, mul_comm]
-    _ = ∫ v : Fin 2 → ℝ, g v := volume_preserving_equiv_pi.integral_comp' g
-    _ = Real.pi / d := by
-      simpa [h_coeff, g] using GaussianFourier.integral_cexp_neg_mul_sum_add hd c
+  rw [← volume_preserving_equiv_pi.symm.integral_comp']
+  simpa [c, mul_pow] using Eq.trans (by
+    congr 1; ext v; congr 1
+    simp only [c, Fin.sum_univ_two, Pi.smul_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      smul_eq_mul]
+    linear_combination d * (v 1 : ℂ) ^ 2 * I_sq)
+    (GaussianFourier.integral_cexp_neg_mul_sum_add hd c)
 
 /-- The complex Gaussian integral: if `A` is accretive (that is, `A + Aᴴ` is positive definite),
 then `exp (-x* A (x - a))` has integral `(det A)⁻¹` for `normalizedVolume ι`, Lebesgue measure on

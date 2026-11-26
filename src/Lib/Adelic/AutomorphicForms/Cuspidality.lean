@@ -2,7 +2,6 @@ module
 
 public import Lib.Adelic.Adeles.SemilocalProducts
 public import Lib.Adelic.AutomorphicForms.UnipotentRadical
-public import Lib.Weil.Construction.AdelicRepresentation
 public import Lib.Weil.Unramified.HeckeGL
 
 /-!
@@ -225,7 +224,7 @@ lemma rank_of_apply_min {K ι : Type*} [Field K] [Fintype ι] {k : ℕ} (e : ι 
     refine Set.Subset.antisymm (Set.range_subset_iff.2 fun a ↦ ?_) (Set.image_subset_iff.2 ?_)
     · exact ⟨min (e a) j, min_le_right (e a) j, rfl⟩
     · exact fun l hl ↦ ⟨e.symm l, funext fun i ↦ by simp [min_eq_left (Set.mem_Iic.1 hl)]⟩
-  rw [rank_eq_finrank_span_row, h_rows, Set.image_eq_range,
+  rw [← finrank_span_range_row, h_rows, Set.image_eq_range,
     finrank_span_eq_card (b := fun l : Set.Iic j ↦ y l) (hy.comp _ Subtype.val_injective)]
   simp
 
@@ -739,8 +738,7 @@ lemma exists_norm_sub_le_half (he : IsCuspKernel B e) (j : ℕ) : ∃ δ₀ : �
     · exact ⟨1, Metric.mem_closedBall_self zero_le_one, v, subset_closure h_right, one_mul v⟩
   calc ‖f (g * (u, 1)) - f g‖ = ‖realConv α f (g * (u, 1)) - realConv α f g‖ := by rw [h_fix_α]
     _ ≤ (∫ x : GInf E s, ‖α (u⁻¹ * x) - α x‖) * (C * c ^ j) :=
-        norm_realConv_mul_sub_le (.of_continuous ⟨T, h_bound⟩ h_cont) α.integrable g u
-          (by positivity) h_le
+        norm_realConv_mul_sub_le (.of_continuous ⟨T, h_bound⟩ h_cont) α.integrable g u h_le
     _ ≤ (c ^ j)⁻¹ / 2 * (C * c ^ j) := by grw [h_translate (h_near.trans inf_le_left)]
     _ = C / 2 := by field_simp
 
@@ -943,7 +941,7 @@ theorem isForm_realConv (he : IsCuspKernel B e) (hF : V.IsAutomorphic F)
     refine (h_cover.integral_tendsto_of_countably_generated (h_int g)).congr fun t ↦ ?_
     simp [trunc, realConv, indicator, ← integral_indicator (h_cover.measurableSet t)]
   obtain ⟨⟨⟨Φ, hΦ_form⟩, hΦ_level⟩, rfl : Φ = realConv e F⟩ : realConv e F ∈ W :=
-    W.closed_of_finiteDimensional.mem_of_tendsto tendsto_avg (.of_forall trunc_mem)
+    W.isClosed_of_finiteDimensional.mem_of_tendsto tendsto_avg (.of_forall trunc_mem)
   exact hΦ_form
 
 end New.Space

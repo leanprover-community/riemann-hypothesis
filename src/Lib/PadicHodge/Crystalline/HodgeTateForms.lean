@@ -80,7 +80,7 @@ lemma mem_hodgeTateMaps_of_span [Algebra.IsAlgebraic ℤ_[p] R] {ι : Sort*} {s 
     (h_gen : ∀ i : ι,
       ∀ᶠ g : Γ in nearOne Γ, f (ρ g (s i)) = (χ g ^ (-u)).val • toGp g • f (s i)) :
     f ∈ hodgeTateMaps ρ γ u := by
-  show ∀ x : T, ∀ᶠ g : Γ in nearOne Γ, f (ρ g x) = (χ g ^ (-u)).val • toGp g • f x
+  change ∀ x : T, ∀ᶠ g : Γ in nearOne Γ, f (ρ g x) = (χ g ^ (-u)).val • toGp g • f x
   intro x
   obtain ⟨δ, hδ⟩ := exists_algHom_lift γ
   induction eq_top_iff'.mp hs x using span_induction with
@@ -92,7 +92,7 @@ lemma mem_hodgeTateMaps_of_span [Algebra.IsAlgebraic ℤ_[p] R] {ι : Sort*} {s 
   | smul r y _ hy =>
     -- the scalar `γ r = δ r` is algebraic, so it is fixed by `toGp g` for `g` near 1
     filter_upwards [hy, eventually_nearOne_apply_eq Γ (δ r)] with g hgy h_fix
-    simp [hgy, hδ, smul_coe_Cp, h_fix]
+    simp [hgy, hδ, h_fix]
 
 variable [F : Module.Finite R T]
 

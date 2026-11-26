@@ -1,8 +1,8 @@
 module
 
+public import New.Reduction.Data.AdmissibleData
 public import New.Spanning.MainTerm.FiniteSieveSystem
 public import New.Spanning.RemainingTerms.Size
-public import New.UpperBound.Objects.LabelsAndIndexTypes
 
 /-!
 # Main-term bound for the second moment over open reductions fixing given vectors
@@ -110,7 +110,7 @@ lemma one_add_inv_pow_ten_pow_le [S.IsAdmissible] :
   have h_exp : |rexp u - 1| ≤ 2 * |u| := abs_exp_sub_one_le (abs_le.2 ⟨by linarith, by linarith⟩)
   calc (1 + S.b⁻¹ ^ 10) ^ Core.numInfPlaces E
       ≤ rexp (S.b⁻¹ ^ 10) ^ Core.numInfPlaces E := by grw [add_comm, add_one_le_exp]
-    _ = rexp (Core.numInfPlaces E * S.b⁻¹ ^ 10) := (Real.exp_nat_mul _ _).symm
+    _ = rexp (Core.numInfPlaces E * S.b⁻¹ ^ 10) := (Real.exp_natCast_mul _ _).symm
     _ ≤ rexp (S.b / 1000 * S.b⁻¹ ^ 10) := by grw [S.numInfPlaces_le_div]
     _ = rexp u := by simp [u, field]
     _ ≤ 1 + S.b⁻¹ ^ 9 := by linarith [le_abs_self (rexp u - 1), abs_of_nonneg hu]
@@ -372,7 +372,7 @@ N²))^(𝔰.k - 1). By the product formula the powers of `p` cancel; the constan
 lemma gramScalar_mul_headDensity [WeilData E]
     [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable] {P : Floors.IntegralPlace (LocProd T)}
     {G : Floors.PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T))
-      (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)} (_hG : S.IsFillingData T G) {kPred : ℕ} (hk : 𝔰.k = kPred + 1)
+      (𝔰.ϱ + 1 + 2 * 𝔰.ϱ + 5)} {kPred : ℕ} (hk : 𝔰.k = kPred + 1)
     {T₀ : Finset Eˣ} (hT₀ : ∀ x ∈ T₀, x.val ∈ ratIntegralOff T ∧ x⁻¹.val ∈ ratIntegralOff T)
     {t : Eˣ} (h_large : ∀ v : NumberField.InfinitePlace E, S.N ^ 2 < ‖Φ v t.val‖ ^ 2)
     (p : Fin 𝔰.ϱ → T₀) :
@@ -523,7 +523,7 @@ lemma IsFillingData.mul_sum_norm_sum_cosetAmplitude_sq_le [S.IsAdmissible] {T : 
   have h_weight (i : ι) (p : Fin 𝔰.ϱ → T₀) :
       ρ (t i) p * (G.headDensity 𝔰.ϱ (y p (t i)) 1).toReal =
         r * √((∏ v, (‖Φ v (t i).1‖ ^ 2 - S.N ^ 2)) ^ (𝔰.k - 1)) :=
-    gramScalar_mul_headDensity hG hk hT₀ (h_large i) p
+    gramScalar_mul_headDensity hk hT₀ (h_large i) p
   -- the classes with the last entry of `i`
   have h_top (i : ι) :
       ∑ j : {j // t j = t i}, r ^ 2 * ‖∑ p : Fin 𝔰.ϱ → T₀, S.cosetAmplitude .cut (c j)

@@ -335,70 +335,6 @@ lemma normalizedShift_realImage
     normalizedShift (fockForm (InfinitePlace E × n)) b (realImage γ) = signedShift γ := by
   rw [normalizedShift, canonicalMultiplier_realImage hb, inv_inv, signedShift, ratShift]
 
-omit [Fintype n] [DecidableEq n] in
-/-- For the entry `u` of the real image of `γ` at `x = (w, i)`, one has
-`Im (Φ w c₀) |u|² = π |Φ w (γ i)|²`, where `c₀ = traceOne = (1 - ȷ⁻¹) / 2`. -/
-lemma im_traceOne_mul_normSq_realImage (γ : n → E) (x : InfinitePlace E × n) :
-    (Φ x.1 (traceOne : E)).im * normSq (realImage γ x) = Real.pi * normSq (Φ x.1 (γ x.2)) := by
-  -- As `Φ w ȷ` is purely imaginary, `Im (Φ w c₀) = 1 / (2 Im (Φ w ȷ))`.
-  have h_pos : 0 < (Φ x.1 (j : E)).im := im_pos x.1
-  have h_conj : conj (Φ x.1 (j : E)) = -Φ x.1 (j : E) := by
-    rw [← map_neg, ← star_j, map_star_complex, starRingEnd_apply]
-  have h_re : (Φ x.1 (j : E)).re = 0 := by simpa [self_eq_neg] using congrArg re h_conj
-  have h_im : (Φ x.1 (traceOne : E)).im = (2 * (Φ x.1 (j : E)).im)⁻¹ := by
-    simp [traceOne, map_ofNat, normSq_apply, h_re, field]
-  have h_scale : normSq ((scaleIdele E : 𝔸 E).1 x.1) = (2 * Real.pi * (Φ x.1 (j : E)).im)⁻¹ := by
-    refine eq_inv_of_mul_eq_one_left (ofReal_injective ?_)
-    simpa [normSq_eq_conj_mul_self] using conj_scaleIdele_mul E x.1
-  rw [realImage_apply, map_div₀, h_im, h_scale]
-  field
-
-/-- The semicharacter at the finite image of a rational vector `γ` is `exp (-π i |γ|²)`, where
-`|γ|² = ∑ |Φ w (γ i)|²` is summed over the infinite places `w` and the coordinates `i`. -/
-lemma semichar_finiteImage_eq_exp (γ : n → E) :
-    semichar (finiteImage γ) =
-      exp (-(Real.pi * I * (∑ x : InfinitePlace E × n, normSq (Φ x.1 (γ x.2)) : ℝ))) := by
-  -- By the product formula it is the inverse of the canonical multiplier `exp (π i R (b u, u))` at
-  -- the real image `u` of `γ`, and `R (b u, u) = |γ|²`.
-  let b : (InfinitePlace E × n → ℂ) →L[ℂ] InfinitePlace E × n → ℂ :=
-    .pi fun x ↦ conj (Φ x.1 (traceOne : E)) • .proj x
-  have hb (u : InfinitePlace E × n → ℂ) (x : InfinitePlace E × n) :
-      b u x = conj (Φ x.1 (traceOne : E)) * u x := rfl
-  have h_form : (fockForm (InfinitePlace E × n)).riemannForm (b (realImage γ)) (realImage γ) =
-      ∑ x : InfinitePlace E × n, normSq (Φ x.1 (γ x.2)) := by
-    have h_sum : (fockForm (InfinitePlace E × n)).riemannForm (b (realImage γ)) (realImage γ) =
-        ∑ x : InfinitePlace E × n,
-          (Φ x.1 (traceOne : E)).im * normSq (realImage γ x) / Real.pi := by
-      simp only [riemannForm_def, fockForm_apply, dotProduct, ← Finset.sum_sub_distrib, im_sum,
-        Finset.sum_div]
-      refine Finset.sum_congr rfl fun x _ ↦ ?_
-      simp [hb, normSq_apply, field]
-      ring
-    simp only [h_sum, im_traceOne_mul_normSq_realImage, mul_div_cancel_left₀ _ Real.pi_ne_zero]
-  rw [exp_neg, ← h_form, ← canonicalMultiplier, canonicalMultiplier_realImage hb, inv_inv]
-
-/-- Let `E` be a CM field with Weil data, and let `Φ w` be the chosen complex embedding at each
-infinite place `w`. For `γ` in the lattice `𝔞₀ⁿ`, the vectors of `Eⁿ` whose finite image `α⁻¹ γ`
-lies in `Ôⁿ` (with `α` the idele of the Weil data), the number `|γ|² = ∑ |Φ w (γ i)|²` is an
-integer. The semicharacter `semichar x = ψ₀(c₀ x* x / 2)` at `x = finiteImage γ` is the sign
-`(-1) ^ |γ|²`. -/
-lemma exists_semichar_finiteImage_eq_neg_one_zpow {γ : n → E} (hγ : γ ∈ idealLattice E n) :
-    ∃ k : ℤ, ∑ x : InfinitePlace E × n, normSq (Φ x.1 (γ x.2)) = k ∧
-      semichar (finiteImage γ) = (-1) ^ k := by
-  -- The law of the semicharacter for `γ` and `-γ` shows that `exp (-π i |γ|²)` has square `1`.
-  set r : ℝ := ∑ x : InfinitePlace E × n, normSq (Φ x.1 (γ x.2))
-  have h_exp : semichar (finiteImage γ) = exp (-(Real.pi * I * r)) := semichar_finiteImage_eq_exp γ
-  have h_sq : semichar (finiteImage γ) * semichar (finiteImage γ) = 1 := by
-    simpa [semichar_neg, ratRiemannForm, realImage_neg, semichar_eq_one_of_dotProduct_self_eq_zero]
-      using (semichar_finiteImage_add hγ (neg_mem hγ)).symm
-  obtain ⟨k, hk⟩ : ∃ k : ℤ, -(Real.pi * I * r) + -(Real.pi * I * r) = k * (2 * Real.pi * I) := by
-    rwa [h_exp, ← exp_add, exp_eq_one_iff] at h_sq
-  have h_r : (r : ℂ) = (-k : ℤ) := mul_right_cancel₀ two_pi_I_ne_zero <| by
-    simp only [Int.cast_neg]
-    linear_combination -hk
-  refine ⟨-k, mod_cast h_r, ?_⟩
-  rw [h_exp, h_r, exp_neg, mul_comm, exp_int_mul, exp_pi_mul_I, ← inv_zpow, inv_neg_one]
-
 variable (E n) in
 /-- The image of `𝔞₀ⁿ` in `ℂ^(Φ × n)`. -/
 noncomputable def realLattice : Submodule ℤ (InfinitePlace E × n → ℂ) :=
@@ -550,7 +486,7 @@ lemma isAppellHumbert_realLattice
   intro l hl m hm
   obtain ⟨γ, hγ, rfl⟩ := mem_realLattice.1 hl
   obtain ⟨γ', hγ', rfl⟩ := mem_realLattice.1 hm
-  show canonicalMultiplier (fockForm _) b (realImage γ + realImage γ') =
+  change canonicalMultiplier (fockForm _) b (realImage γ + realImage γ') =
     _ * _ * exp (Real.pi * I * ratRiemannForm γ' γ)
   -- The canonical multiplier is the inverse of the semicharacter.
   simp only [← realImage_add, canonicalMultiplier_realImage hb, semichar_finiteImage_add hγ hγ',
@@ -620,7 +556,7 @@ theorem Space.isThetaFunction_iff :
   · let θ : B.thetaSpace (canonicalMultiplier B b) := ⟨entireTheta V.vacElem, h_vac⟩
     have hθ : θ ≠ 0 := fun h ↦ V.entireTheta_vacElem_ne_zero (congrArg Subtype.val h)
     obtain ⟨c, hc⟩ : ∃ c : ℂ, c • θ = ⟨F, (mem_thetaSpace_iff_isThetaFunction hb).2 hF⟩ :=
-      (finrank_eq_one_iff_of_nonzero' θ hθ).1 h_dim _
+      (finrank_eq_one_iff_of_ne_zero' θ hθ).1 h_dim _
     exact ⟨c, congrArg Subtype.val hc⟩
   · rintro ⟨c, rfl⟩
     exact (mem_thetaSpace_iff_isThetaFunction hb).1 (Submodule.smul_mem _ c h_vac)

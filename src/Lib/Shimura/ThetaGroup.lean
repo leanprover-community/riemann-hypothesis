@@ -338,7 +338,7 @@ translation by `z + w`. -/
 lemma IsTranslationLift.mul {w : 𝟙_ (Over (Spec (CommRingCat.of R))) ⟶ A}
     {Ψ : Module.End R ↥(L.H0 R)} (hΦ : IsTranslationLift L z Φ) (hΨ : IsTranslationLift L w Ψ) :
     IsTranslationLift L (z + w) (Φ * Ψ) := by
-  simpa [← comp_left, add_assoc, IsTranslationLift, comp_add, Module.End.coe_mul] using hΦ.comp hΨ
+  simpa [← comp_left, add_assoc, IsTranslationLift, comp_add, FunLike.coe_mul_eq_comp] using hΦ.comp hΨ
 
 lemma IsTranslationLift.pow (hΦ : IsTranslationLift L z Φ) (k : ℕ) :
     IsTranslationLift L (k • z) (Φ ^ k) := by
@@ -487,7 +487,7 @@ lemma IsThetaStructure.pull_eq_of_picClass_eq (h : IsThetaStructure Lg η hN c) 
       T (U' 1 s (U' (-1) 0 v)) = U 1 (s + s) (T (U' (-1) 0 (U' 1 s v))) := by
     have h_rel_T : (b 1 s * b (-1) 0) • U 1 s (U (-1) 0 (T v)) =
         (b 1 s * b (-1) 0) • U 1 (s + s) (U (-1) 0 (U 1 s (T v))) := by
-      rw [← Module.End.mul_apply, ← h_rel s]
+      rw [← mul_apply_eq_comp, ← h_rel s]
       rfl
     simpa only [hb, map_smul, smul_smul, mul_comm] using h_rel_T
   have hU_one (s t : H) : U 1 s (coordSection hN t) = c s t • coordSection hN (s + t) := by

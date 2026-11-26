@@ -430,7 +430,7 @@ lemma IsVacuum.wiener_bound [LocallyCompactSpace W] [LocallyCompactSpace W₁]
   obtain ⟨B, hB, mem_B⟩ : ∃ B : Set W₁, IsCompact B ∧ ∀ a ∈ K, ∀ b ∈ K, -a + b ∈ B :=
     ⟨_, hK.neg.add hK, fun a ha b hb ↦ add_mem_add (neg_mem_neg.mpr ha) hb⟩
   have u_cont : Continuous fun s : W₁ ↦ ‖u (-κ s)‖ₑ :=
-    (continuous u).enorm.comp (map_continuous κ).neg
+    (continuous u).eNorm.comp (map_continuous κ).neg
   -- `u (-κ s) ≠ 0` for `s` near `0`, so the integral of its norm over `K` is positive.
   obtain ⟨r, hr⟩ : ∃ r : ℕ, 1 < r * ∫⁻ s in K, ‖u (-κ s)‖ₑ ∂μ₁ := by
     refine exists_nat_mul_gt ((setLIntegral_pos_iff u_cont.measurable).mpr ?_).ne' one_ne_top
@@ -460,14 +460,14 @@ lemma IsVacuum.wiener_bound [LocallyCompactSpace W] [LocallyCompactSpace W₁]
     have h_inner (z : W) :
         ∫⁻ s : W₁, ‖v z‖ₑ * ‖T (heisenbergOp (z + κ s) u)‖ₑ ∂μ₁ = M * ‖v z‖ₑ := by
       simp_rw [h_enorm_eq]
-      rw [lintegral_const_mul' _ _ enorm_ne_top, lintegral_add_left_eq_self (‖g ·‖ₑ), hM, mul_comm]
+      rw [lintegral_const_mul' _ _ eNorm_ne_top, lintegral_add_left_eq_self (‖g ·‖ₑ), hM, mul_comm]
     calc ∫⁻ s : W₁, G s ∂μ₁
       _ = ∫⁻ z : W, ∫⁻ s : W₁, ‖v z‖ₑ * ‖T (heisenbergOp (z + κ s) u)‖ₑ ∂μ₁ ∂μ :=
         (lintegral_lintegral_swap (by fun_prop)).symm
       _ = M * ∫⁻ z : W, ‖v z‖ₑ ∂μ := by
         simp_rw [h_inner]
         exact lintegral_const_mul' _ _ coe_ne_top
-      _ = M * ‖v‖ₑ := by rw [← h_norm_toL1, Integrable.enorm_toL1]
+      _ = M * ‖v‖ₑ := by rw [← h_norm_toL1, Integrable.eNorm_toL1]
   -- By `integrated_eq_smul`, `∫ v z • heisenbergOp(z) heisenbergOp(κ s) u dz` is `v` times the
   -- value of `heisenbergOp(κ s) u` at `0`, which has norm `‖u (-κ s)‖`; apply
   -- `T ∘ heisenbergOp(κ x)`.
@@ -477,7 +477,7 @@ lemma IsVacuum.wiener_bound [LocallyCompactSpace W] [LocallyCompactSpace W₁]
           ∫⁻ z : W,
             ‖v z • (T ∘L heisenbergOp (κ x)) (heisenbergOp z (heisenbergOp (κ s) u))‖ₑ ∂μ := by
       rw [heisenbergRep.map_integrated_eq_integral (T ∘L heisenbergOp (κ x))]
-      exact enorm_integral_le_lintegral_enorm _
+      exact eNorm_integral_le_lintegral_eNorm _
     simpa [G, norm_smul, ← ofReal_norm, add_left_comm, mul, norm_eq_one] using h_bound
   -- Multiply `G_ge` by `r`, integrate over `s ∈ K` and use `hr`.
   have h_enorm_le_setLIntegral (i : I) :
@@ -624,19 +624,6 @@ lemma OrthogonalSum.modelInner_tmul [LocallyCompactSpace W] [LocallyCompactSpace
       integral_prod_mul (fun x₁ : W₁ ↦ conj (v x₁) * v' x₁) fun x₂ : W₂ ↦ conj (w x₂) * w' x₂
     _ = modelInner v v' * modelInner w w' := by
       rw [modelInner_apply, modelInner_apply]
-
-/-- Let `S` present `W` as the orthogonal sum of `W₁` and `W₂`, with `H` and the vacuum `e` being
-the products of the data on the factors. For model vectors `v` of `e₁` and `w` of `e₂`, the tensor
-product `S.tmul v w` (the function `S.equiv (x₁, x₂) ↦ v x₁ * w x₂`) has L¹ norm ‖v‖ · ‖w‖. -/
-lemma OrthogonalSum.norm_tmul [LocallyCompactSpace W] [LocallyCompactSpace W₁]
-    [LocallyCompactSpace W₂] : ‖S.tmul v w‖ = ‖v‖ * ‖w‖ := by
-  calc ‖S.tmul v w‖ = ∫ x : W₁ × W₂, ‖S.tmul v w (S.equiv x)‖ ∂μ₁.prod μ₂ := by
-        rw [norm_eq_integral_norm, ← S.measurePreserving_equiv.integral_comp
-          S.equiv.measurableEmbedding]
-    _ = ∫ x : W₁ × W₂, ‖v x.1‖ * ‖w x.2‖ ∂μ₁.prod μ₂ := by simp [S.tmul_apply]
-    _ = ‖v‖ * ‖w‖ := by
-      rw [norm_eq_integral_norm v, norm_eq_integral_norm w]
-      exact integral_prod_mul (fun x₁ : W₁ ↦ ‖v x₁‖) fun x₂ : W₂ ↦ ‖w x₂‖
 
 /-- The product rule for the Weil representation of an orthogonal sum. Identify `W` with
 `W₁ × W₂` by `S.equiv`, and let `A`, `A₁`, `A₂` be actions with cocycle 1 of groups `G`, `G₁`,
@@ -833,11 +820,10 @@ lemma map_vacuum_comp_equiv (hφ : ∀ x : W', e (φ x) = e' x) (x : W') : σ (e
   · simp [hφ]
   · simp [hφ, he'.conj_apply]
 
-/-- Change of variables along an isometric ring map `σ` of `ℂ` (the identity or the conjugation)
-and an isomorphism `φ : W' ≃ W` that matches the vacua and, up to `σ`, the cocycles:
-`σ (∫ f dμ) = ∫ σ ∘ f ∘ φ dμ'` for every `f`, and `σ ∘ e ∘ φ = e'`. The two parts are
-`map_integral_eq_integral_comp_equiv` and `map_vacuum_comp_equiv`, which do not need `hβ`. -/
-lemma map_integral_and_map_vacuum (_hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β x y)
+variable (H H') in
+/-- Change of variables along an isometric ring map `σ` and a topological group isomorphism
+`φ : W' ≃ W` that matches the vacua. -/
+lemma map_integral_and_map_vacuum
     (hφ : ∀ x : W', e (φ x) = e' x) :
     (∀ f : W → ℂ, σ (integral μ f) = ∫ x : W', σ (f (φ x)) ∂μ') ∧
       ∀ x : W', σ (e (φ x)) = e' x :=
@@ -856,7 +842,7 @@ noncomputable def transport (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β
         ⟨fun x ↦ σL ((v.1 ∘ φ) x), σL.integrable_comp (h_pres.integrable_comp_of_integrable v.2.1),
           -- Apply `σ` to the reproducing formula of `v` at `φ x` and substitute `φ`.
           fun x ↦ by
-            simpa [σL, map_integral_and_map_vacuum hβ hφ, ← map_sub, hβ] using
+            simpa [σL, map_integral_and_map_vacuum H H' hφ, ← map_sub, hβ] using
               congrArg σ (v.2.2 (φ x))⟩
       map_add' := by aesop
       map_smul' := by aesop }
@@ -871,12 +857,6 @@ noncomputable def transport (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β
 lemma transport_apply (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β x y)
     (hφ : ∀ x : W', e (φ x) = e' x) (v : Model H) (x : W') :
     transport hβ hφ v x = σ (v (φ x)) := rfl
-
-/-- Transport keeps the `L¹` norm, as `σ` is isometric and `φ` preserves the measure. -/
-lemma norm_transport (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β x y)
-    (hφ : ∀ x : W', e (φ x) = e' x) (v : Model H) : ‖transport hβ hφ v‖ = ‖v‖ := by
-  simp only [norm_eq_integral_norm, transport_apply, RingHomIsometric.norm_map]
-  exact (measurePreserving_equiv H H' hφ).integral_comp φ.measurableEmbedding fun x ↦ ‖v x‖
 
 end New.Heisenberg.IsVacuum
 

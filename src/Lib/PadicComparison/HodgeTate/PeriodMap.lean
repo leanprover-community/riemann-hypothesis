@@ -238,7 +238,7 @@ lemma exists_period_map [Algebra ℤ_[p] S] [IsScalarTower ℤ_[p] Ainf S] [IsSc
         · exact congrArg ULift.up (Spec.map_comp_assoc (𝟙 _) ..)
         · -- `genericStructureMap_twist` matches the structure map of the twisted test only up to
           -- instances
-          erw [eq_comm, genericStructureMap_twist, smul_coe_Cp, hj]
+          erw [eq_comm, genericStructureMap_twist, UniformSpace.Completion.algEquiv_smul_coe, hj]
           rfl
   · -- For `Y` proper and charted each of the three factors is bijective: `E Y` as a linear
     -- equivalence, `baseChangeMap` by flat base change, the pull-back by

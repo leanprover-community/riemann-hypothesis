@@ -136,7 +136,7 @@ lemma le_pow_mul_of_le {β : ℝ} {N : ℕ} {V W I : ℝ} (hβ : 16 ≤ β) (hN 
           linarith
       _ = 8 * β ^ (16 * N) * I + β ^ (16 * N) * (24 * β⁻¹ ^ (50 * N) * 16 ^ (9 * N)) * V := by ring
       _ ≤ 8 * β ^ (16 * N) * I + 1 / 2 * V := by gcongr
-  nlinarith [mul_le_mul_of_nonneg_right h_main hI]
+  linarith [mul_le_mul_of_nonneg_right h_main hI]
 
 /-- If `N ≥ 1`, `t ≥ 1` and `h ≥ 10³⁰ (N t)³`, then `h ≥ 18 N`. -/
 lemma eighteen_mul_le_of_mul_pow_three_le {N h : ℕ} {t : ℝ} (hN : 1 ≤ N) (ht : 1 ≤ t)
@@ -180,7 +180,7 @@ lemma IsLaplaceDatum.norm_laplaceIntegrand_le_of_far (h_datum : IsLaplaceDatum l
     _ ≤ (1 + ρ ^ 2)⁻¹ ^ h := by
         rw [← mul_pow, ← mul_inv]
         gcongr
-        nlinarith [mul_nonneg (sq_nonneg y) (sq_nonneg y')]
+        linarith [mul_nonneg (sq_nonneg y) (sq_nonneg y')]
     _ ≤ rexp (-100 * T) ^ 4 := inv_one_add_sq_pow_le_exp_pow_four hT hρ hh
 
 /-- The matrix of the block sum `U.sum (signMatrix_sum ε η) g` of `g.1` in `U(ε)` and `g.2` in
@@ -406,7 +406,7 @@ lemma IsLaplaceDatum.norm_laplaceIntegrand_le_two_mul_re_add_mul_pow
   have h_gap : 18 * N ≤ h := eighteen_mul_le_of_mul_pow_three_le
     (Nat.one_le_pow _ _ (Nat.add_pos_left card_pos _)) hβ (by rwa [hN_cast])
   have h_err : rexp (-100 * ((card n + card m : ℝ) ^ 2 * β.log)) = (β⁻¹ ^ (50 * N)) ^ 2 := by
-    rw [← hN_cast, ← pow_mul, ← exp_log (inv_pos.2 hβ_pos), ← Real.exp_nat_mul, Real.log_inv]
+    rw [← hN_cast, ← pow_mul, ← exp_log (inv_pos.2 hβ_pos), ← Real.exp_natCast_mul, Real.log_inv]
     push_cast
     ring_nf
   have h_cone : ‖l.laplaceIntegrand k j φ s‖ ≤
@@ -465,11 +465,10 @@ variable [MeasurableSpace S] [MeasurableMul S] (ν : Measure S) [ν.IsMulRightIn
 /-- The covering bound for two radii, for a right invariant measure `ν` on `S` and the `L²` operator
 norm: for `J : S →* U(ζ)` with `ζ` indexed by `ι` and `β ≥ 10¹²`, the volume of `{‖J s‖ ≤ β + 1}` is
 at most `β ^ (16 (card ι)²)` times that of `{‖J s - 1‖ ≤ (200 β⁵)⁻¹}`. -/
-lemma measure_large_ball_le_pow_mul_small_ball {ι : Type} [Fintype ι] [DecidableEq ι] [Nonempty ι]
+lemma measure_large_ball_le_pow_mul_small_ball {ι : Type} [Fintype ι] [DecidableEq ι]
     {ζ : ι → ℤˣ} (J : S →* USign ζ) (hβ : 10 ^ 12 ≤ β) :
     ν {s : S | ‖(J s : Matrix ι ι ℂ)‖ ≤ β + 1} ≤ ENNReal.ofReal (β ^ (16 * card ι ^ 2)) *
       ν {s : S | ‖(J s : Matrix ι ι ℂ) - 1‖ ≤ (200 * β ^ 5)⁻¹} := by
-  have hβ16 : 16 ≤ β := le_trans (by norm_num) hβ
   have h_radii : 3 * (200 * β ^ 5) * (β + 1) ^ 2 ≤ β ^ 8 := by
     field_simp
     nlinarith

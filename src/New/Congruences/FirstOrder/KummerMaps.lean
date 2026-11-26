@@ -350,7 +350,7 @@ lemma mem_familyPrimes [Finite I] {x : I → FrobeniusDatum E}
 prime of `F` off `ℓ` below a member of `x`. Then the decomposition group of `familyPlace x u`, the
 chosen place above `u`, lies in the kernel of `cyc⁺` modulo `ℓ ^ ν`, because inertia and a Frobenius
 element do. -/
-lemma cyclotomicPlusMod_eq_one_of_mem_decompGroup [Finite I] {x : I → FrobeniusDatum E}
+lemma cyclotomicPlusMod_eq_one_of_mem_decompGroup {x : I → FrobeniusDatum E}
     (hx : ∀ i : I, IsNuSplitPlace ν (x i)) {u : FinPlace (maximalRealSubfield E)}
     (hu : ∃ i : I, primeBelowPlus (x i).place = u)
     (hℓ : (ℓ : 𝓞 (maximalRealSubfield E)) ∉ u.asIdeal) {g : Gal(Ω/maximalRealSubfield E)}

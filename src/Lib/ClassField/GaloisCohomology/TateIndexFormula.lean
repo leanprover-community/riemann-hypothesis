@@ -457,7 +457,7 @@ lemma New.tate_index_formula_norm {K L : Type} [Field K] [Field L] [Algebra K L]
       refine ⟨.ofMul ⟨_, hx⟩, Subtype.ext (Units.ext ?_)⟩
       -- With `a` the image of `x`, `(σ g - 1) w` is `g • w / w` in `Lˣ` for `w = a / z`.
       let w : Lˣ := x.map (algebraMap K L) / z
-      show ((g • w / w : Lˣ) : L) = val y
+      change ((g • w / w : Lˣ) : L) = val y
       rw [← hz]
       simp [w, field]
   have norm_incl : N.toAdditive.toIntLinearMap ∘ₗ j.toAdditive.toIntLinearMap = finrank K L :=

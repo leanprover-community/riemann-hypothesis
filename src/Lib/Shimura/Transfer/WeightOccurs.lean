@@ -529,7 +529,7 @@ lemma New.Variety.weightRep_entryConj_eq_twistedWeylRep {E : Type} [Field E] [CM
     (stdSpace E (Fin a)).weightRep κ.1 κ.2 (entryConj y) = twistedWeylRep κ p m y.val := by
   -- The determinant has norm one, and both branches of the embedding at `v` are `Φ v y`; on the
   -- other side `entryConj` and `stdSpace_weightRep_apply` each conjugate the entries once.
-  have h_unitary : y.val.valᴴ * 1 * y.val.val = 1 := y.prop
+  have h_unitary : y.val.valᴴ * 1 * y.val.val = 1 := mem_unitaryGroupOf_iff.1 y.prop
   have h_norm (v : InfinitePlace E) :
       Φ v y.val.val.det * starRingEnd ℂ (Φ v y.val.val.det) = 1 := by
     simpa [mul_comm] using congrArg (fun M : Matrix (Fin a) (Fin a) E ↦ Φ v M.det) h_unitary
@@ -537,7 +537,7 @@ lemma New.Variety.weightRep_entryConj_eq_twistedWeylRep {E : Type} [Field E] [CM
       fun v ↦ .map ((Φ v).comp (starRingEnd E)) (entryConj y).val := by
     ext v
     simp [extendedEmbedding, entryConj, invTransposeGL, transposeGL, starRingEnd_apply (R := E),
-      apply_ite, Matrix.ite_apply, ← map_inv, inv_eq_left_inv y.prop]
+      apply_ite, Matrix.ite_apply, ← map_inv, inv_eq_left_inv h_unitary]
   refine LinearMap.ext fun w ↦ (stdSpace_weightRep_apply (entryConj y) w).trans ?_
   simp [twistedWeylRep, twistedWeylMatrix, prod_embeddings_eq_prod_pairs, h_norm, h_embedding]
 

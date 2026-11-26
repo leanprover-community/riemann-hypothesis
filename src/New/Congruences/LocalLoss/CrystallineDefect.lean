@@ -19,7 +19,7 @@ loss `New.Selmer.defectBound`.
   `K`, `U` are the data of a class `New.Lift.InClass F K U` adapted to them. The summand `L none` is
   the main summand, of rank `r` and with jumps `J g` at `coefficientEmbedding O g`; the summand
   `L (some c)` has the single jump `c < t`.
-* `New.Selmer.summand_defect_le_at_place`: let `D` be the data, take the coefficient ring `O`
+* `New.Selmer.normLength_dualDefect_le_of_isSummandClass`: let `D` be the data, take the coefficient ring `O`
   sufficiently large, and consider summands consisting of one lattice of rank r, the main summand,
   and further lattices with a single jump each. If a summand lies in a tame or crystalline class
   adapted to the summands, then the defect of its dual is at most [G_ℓ :
@@ -490,7 +490,7 @@ product of the two level primes, and `λ = crystallineLoss h₂ b ℓ` is the `�
 `(2 b)! (∏ a) ^ h₂³`, with `a` over the positive integers in `(b - 30 h₂³, b + 30 h₂³]` and
 `h₂ = D.halfGap = D.r ^ 8`. -/
 lemma New.Selmer.normLength_dualDefect_le_defectBound_of_isTameType {P : Parameters} {D : Data P}
-    {n : Fin 2} [ThePrime (D.levelPrime n)] [PadicIso (D.levelPrime n)] {Γ : Type} [Group Γ]
+    {n : Fin 2} [ThePrime (D.levelPrime n)] {Γ : Type} [Group Γ]
     [𝒥 : OverGp Γ (D.levelPrime n)] [TopologicalSpace Γ]
     {e : D.E →+* PadicAlgCl (D.levelPrime n)} (h_group : IsCompletionGroup e 𝒥.toGp)
     {O : CoeffRing (D.levelPrime n)} {L : GalLattice O Γ} {F : Filter Γ}
@@ -623,52 +623,5 @@ lemma New.Selmer.normLength_dualDefect_le_of_isSummandClass {P : Parameters} {�
         (c.2.trans_le hJ.t_le) (h_count (some c)) (hU' γ)
   · simpa only [finrank_linearMap_self] using
       crystalline_bound_le_defectBound D ℓ (finrank O (L c)) hx_pos hx_le
-
-/-- The bound of `New.Selmer.normLength_dualDefect_le_of_isSummandClass`, with the clauses of
-`New.Selmer.IsSummandClass` as separate hypotheses. Let `𝒥.toGp : Γ → G_ℓ` be an open embedding onto
-the elements of `G_ℓ = Gal(ℚ̄_ℓ / ℚ_ℓ)` that fix `e E`, where `E = D.E`. Let the multisets `J σ`,
-for the complex embeddings `σ` of `E`, be the weights of a main summand (`IsMainSummandWeights`):
-`1 ≤ r ≤ D.r`, `t ≤ D.t = 5 D.r`, each member `u` of `J σ` has `h₂ / 2 ≤ |u| ≤ 4 m h₂` or lies
-within `D.t` of `∓ w_i(σ)` for one lift weight `w_i = D.liftWeight i` with `i ≤ m`, at most
-`r m / k` members have `|u| ≤ 2 h₂²`, and at most `r` members of `J σ` and `J σ̄` together are
-negative. Let the coefficient ring `O` be large. The class `InClass F K U` of lattices (given by
-admissibility along `F`, polynomial conditions `K s` on inertia and allowed Hodge–Tate jumps `U γ`)
-is crystalline without condition on inertia, or tame: `ℓ` is one of the two level primes
-`D.levelPrime n`, and for each `s` in inertia (`IsWeilPair (𝒥.toGp s) 0`) the condition `K s` on
-polynomials holds for `X ^ e' - 1`, with `e'` the least common multiple of the `ℓ ^ a - 1` for
-`1 ≤ a ≤ D.r`, and for a monic polynomial over `ℤ_ℓ` of degree at most `(D.r + D.t) D.r`
-(`IsTameType`). Each member of `U γ` is a jump of a summand `L i`. At the embedding
-`coefficientEmbedding O g : a ↦ g a` of `O`, the main summand `L none`, of rank `r`, has the jumps
-`J σ` for the complex embedding `σ = complexEmbeddingOf e g` given by `g`, and `L (some c)` has the
-single jump `c`. If `L c` lies in the class, the defect of its Tate dual, the length of the
-crystalline cocycles modulo those orthogonal, under cup products, to the crystalline cocycles of the
-lattices in the class, normalised so that `O / ℓ` has length `1`, is at most
-`[G_ℓ : Γ] · rank (L c) · defectBound D ℓ / x`, where `x = 1` for the main summand and `x = D.t`
-otherwise. Here `defectBound D ℓ = 10⁶ (m / k) (b v_ℓ(M) + λ)` in the nonnegative reals, where
-`m = D.m`, `k = D.k = D.r + 1 - m`, `b = D.natB` is the weight at the b-places, `M = D.M` is the
-product of the two level primes, and `λ = crystallineLoss h₂ b ℓ` is the `ℓ`-adic valuation of
-`(2 b)! (∏ a) ^ h₂³`, with `a` over the positive integers in `(b - 30 h₂³, b + 30 h₂³]` and
-`h₂ = D.halfGap = D.r ^ 8`. -/
-lemma New.Selmer.summand_defect_le_at_place {P : Parameters} {ℓ : ℕ} {Γ : Type} {D : Data P}
-    [hp : ThePrime ℓ] [PadicIso ℓ] [Group Γ] [𝒥 : OverGp Γ ℓ] [TopologicalSpace Γ]
-    {e : D.E →+* PadicAlgCl ℓ} {r t : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ}
-    (h_weights : IsMainSummandWeights D r t J) (h_group : IsCompletionGroup e 𝒥.toGp) :
-    ∀ᶠ O : CoeffRing ℓ in Filter.atTop,
-      ∀ {L : Option (Fin t) → GalLattice O Γ} {F : Filter Γ} {K : Γ → Polynomial O → Prop}
-        {U : (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ}
-        (_h_tame_or_crystalline : (∃ n : Fin 2, ℓ = D.levelPrime n ∧
-            ∀ s : Γ, IsWeilPair (𝒥.toGp s) 0 → IsTameType ℓ D.r ((D.r + D.t) * D.r) (K s)) ∨
-          (F = ⊤ ∧ K = ⊥))
-        (_h_class_jump : ∀ γ : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ], ∀ u ∈ U γ,
-          ∃ i : Option (Fin t), jump (L i).ρ γ u ≠ 0)
-        (_h_jumps : ∀ (i : Option (Fin t)) (g : Gp ℓ), HasJumps (L i).ρ (coefficientEmbedding O g)
-          (i.elim (J (complexEmbeddingOf e g)) fun c : Fin t ↦ {↑c}))
-        (_h_rank : finrank O (L none) = r) (c : Option (Fin t)) (_h_mem : InClass F K U (L c)),
-        O.normLength (dualDefect (InClass F K U) (L c).tateDual) ≤
-          𝒥.toGp.range.index *
-            ↑(finrank O (L c) * (defectBound D ℓ / (if c = none then 1 else D.t : ℕ))) := by
-  filter_upwards [normLength_dualDefect_le_of_isSummandClass h_weights h_group] with
-    O h_bound L F K U h_type h_jump h_jumps h_rank
-  exact h_bound ⟨h_type, h_jump, h_jumps none, fun c ↦ h_jumps (some c), h_rank⟩
 
 end OnePlaceDefect

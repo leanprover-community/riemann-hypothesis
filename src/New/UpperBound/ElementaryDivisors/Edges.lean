@@ -1,7 +1,6 @@
 module
 
 public import Lib.General.LinearAlgebra.HermiteForm
-public import Lib.LocalGL.Green.HallAlgebra
 public import New.UpperBound.ElementaryDivisors.InvariantAverage
 public import New.UpperBound.ElementaryDivisors.RootLemma
 

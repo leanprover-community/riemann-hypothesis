@@ -367,16 +367,8 @@ lemma Comparison.pull_hom_contravariant (hS : S.ShortExact) (hS' : S'.ShortExact
     (c : Comparison F F') (τ : S' ⟶ S.map (restrictAlong c.functor)) :
     (contravariant hS F).Hom (contravariant hS' F') (c.pull τ.τ₃) (c.pull τ.τ₂) (c.pull τ.τ₁) := by
   constructor
-  · -- τ commutes with the second maps of the complexes
-    intro n (x : H S.X₃ F n)
-    change c.pull (N := S.X₂) τ.τ₂ n (H.map F S.g n x) =
-      H.map F' S'.g n (c.pull (N := S.X₃) τ.τ₃ n x)
-    simp [pull_apply, H.map, mapExactFunctor_comp, mapExactFunctor_mk₀, ← τ.comm₂₃]
-  · -- τ commutes with the first maps of the complexes
-    intro n (x : H S.X₂ F n)
-    change c.pull (N := S.X₁) τ.τ₁ n (H.map F S.f n x) =
-      H.map F' S'.f n (c.pull (N := S.X₂) τ.τ₂ n x)
-    simp [pull_apply, H.map, mapExactFunctor_comp, mapExactFunctor_mk₀, ← τ.comm₁₂]
+  · exact fun n x ↦ (map_pull_eq_pull_map (c := c) (α := S.g) τ.comm₂₃.symm n x).symm
+  · exact fun n x ↦ (map_pull_eq_pull_map (c := c) (α := S.f) τ.comm₁₂.symm n x).symm
   · -- the extension class is natural
     intro n (x : H S.X₁ F n)
     change c.pull (N := S.X₃) τ.τ₃ (n + 1) (hS.extClass.precomp F (add_comm 1 n) x) =
@@ -392,18 +384,8 @@ lemma Comparison.pull_hom_covariant (hS : S.ShortExact) (hS' : S'.ShortExact) {�
     LongExactSeq.Hom (LongExactSeq.covariant hS N) (LongExactSeq.covariant hS' N')
       (pull ⟨φ, τ.τ₁⟩ α) (pull ⟨φ, τ.τ₂⟩ α) (pull ⟨φ, τ.τ₃⟩ α) := by
   constructor
-  · -- τ commutes with the first maps of the complexes
-    intro n (x : H N S.X₁ n)
-    change pull (N := N) ⟨φ, τ.τ₂⟩ α n (H.push N S.f n x) =
-      H.push N' S'.f n (pull ⟨φ, τ.τ₁⟩ α n x)
-    simp [pull_apply, H.push, mapExactFunctor_comp, mapExactFunctor_mk₀, comp_assoc (h₂₃ := rfl),
-      τ.comm₁₂]
-  · -- τ commutes with the second maps of the complexes
-    intro n (x : H N S.X₂ n)
-    change pull (N := N) ⟨φ, τ.τ₃⟩ α n (H.push N S.g n x) =
-      H.push N' S'.g n (pull ⟨φ, τ.τ₂⟩ α n x)
-    simp [pull_apply, H.push, mapExactFunctor_comp, mapExactFunctor_mk₀, comp_assoc (h₂₃ := rfl),
-      τ.comm₂₃]
+  · exact fun _ x ↦ pull_push ⟨φ, τ.τ₁⟩ τ.τ₂ S.f S'.f τ.comm₁₂.symm α x
+  · exact fun _ x ↦ pull_push ⟨φ, τ.τ₂⟩ τ.τ₃ S.g S'.g τ.comm₂₃.symm α x
   · -- the extension class is natural
     intro n (x : H N S.X₃ n)
     change pull (N := N) ⟨φ, τ.τ₁⟩ α (n + 1) (hS.extClass.postcomp N (by lia) x) =
@@ -471,7 +453,7 @@ lemma New.Variety.H.sigma_bijective {C : Type 1} [Category C] {ι : Type 1} (X :
     -- Under `e`, pull-back along `sigma.ι X i` is composition with it.
     refine (bijective_iff_of_comm_sq (fun f ↦ funext fun i ↦ ?_) (e _).bijective
       (.piMap fun _ ↦ (e _).bijective)).1 h_bij
-    show map F (freeAb.map (sigma.ι X i)) 0 (e (sigma X) f) = e (X i) (sigma.ι X i ≫ f)
+    change map F (freeAb.map (sigma.ι X i)) 0 (e (sigma X) f) = e (X i) (sigma.ι X i ≫ f)
     simp +instances [e, Adjunction.homEquiv, map, freeAb]
   | succ n ih =>
     -- Embed `F` in the injective `Injective.under F` and compare the long exact sequences of
@@ -575,7 +557,7 @@ lemma H.pi_bijective (n : ℕ) :
     refine (bijective_iff_of_comm_sq (fun x ↦ funext fun i ↦ ?_)
       (mk₀_bijective N (piAbFunctor F)) (.piMap fun i ↦ mk₀_bijective N (F i))).1 h_hom
     -- pushing forward a class of degree 0 is composition with the projection
-    show pull (⟨𝟭 C, π F i⟩ : Comparison (piAbFunctor F) (F i)) (𝟙 N) 0 (mk₀ x) = mk₀ (x ≫ π F i)
+    change pull (⟨𝟭 C, π F i⟩ : Comparison (piAbFunctor F) (F i)) (𝟙 N) 0 (mk₀ x) = mk₀ (x ≫ π F i)
     simp [pull_apply, mapExactFunctor_mk₀, show (𝟭 C).whiskerLeft x = x from rfl]
   | succ n ih =>
     -- for 0 → K → ℤ[⊔ h_c] → N → 0 with onto connecting maps, degree n + 1 for N follows from

@@ -1,6 +1,5 @@
 module
 
-public import Lib.Adelic.Unitary.Defs
 public import Lib.Cohomology.Hodge.DiagonalClass
 public import Lib.Cohomology.Hodge.Kunneth
 public import Lib.General.Algebra.MultivariatePolynomials
@@ -248,7 +247,8 @@ lemma EtaleChart.tangent_mem_range_of_jet {X : CommAlg E ⥤ Type 1} (A : EtaleC
   let L : T →ₗ[k] Fin d → k := .pi fun i ↦ (γ (A.coordinate i)).snd
   have hL_coord (φ : T) : (fun i : Fin d ↦ (g φ (A.coordinate i)).snd) = L φ := by
     ext i
-    show (TrivSqZeroExt.map (Dual.eval k T φ) (γ (A.coordinate i))).snd = (γ (A.coordinate i)).snd φ
+    change (TrivSqZeroExt.map (Dual.eval k T φ) (γ (A.coordinate i))).snd =
+      (γ (A.coordinate i)).snd φ
     exact snd_map (Dual.eval k T φ) _
   have hL : Function.Injective L := by
     intro φ ψ h_eq
@@ -266,7 +266,7 @@ lemma EtaleChart.tangent_mem_range_of_jet {X : CommAlg E ⥤ Type 1} (A : EtaleC
     obtain ⟨φ, hφ⟩ := D.surjective fun i : Fin d ↦ (α (A.coordinate i)).snd
     have h_base_eq : α ≫ (restrictAlg E k).map fst = γ ≫ (restrictAlg E k).map fst := by
       apply A.injective
-      show X.map (α ≫ (restrictAlg E k).map fst) A.point =
+      change X.map (α ≫ (restrictAlg E k).map fst) A.point =
         X.map (γ ≫ (restrictAlg E k).map fst) A.point
       rw [X.map_comp_apply, X.map_comp_apply]
       exact hw
@@ -393,7 +393,7 @@ lemma IsTangentPoly.constIfCoincident {c u : W ⟶ X} {w : W.obj (CommAlgCat.of 
   have h_map : ofHom (TrivSqZeroExt.map (Dual.eval k T 0)) =
       ofHom (TrivSqZeroExt.map (Dual.eval k T 0)) ≫ SqZeroExt.fst ≫ structureMap := by
     ext r <;> simp
-  show W.map (ofHom (TrivSqZeroExt.map (Dual.eval k T 0))) v =
+  change W.map (ofHom (TrivSqZeroExt.map (Dual.eval k T 0))) v =
     W.map (SqZeroExt.fst ≫ structureMap) (W.map (ofHom (TrivSqZeroExt.map (Dual.eval k T 0))) v)
   rw [← W.map_comp_apply, ← h_map]
 
@@ -430,7 +430,7 @@ omit [CharZero k] in
 /-- The universal symbol `symbolClass` in degree `d` is compatible with a change of the base
 field: for a field `E` of characteristic `0` over `k`, the base change to `E` of the symbol over
 `k` is the symbol over `E`. -/
-lemma symbolClass_baseChange {E : Type} [Field E] [CharZero E] [Algebra k E] :
+lemma symbolClass_baseChange {E : Type} [Field E] [Algebra k E] :
     (symbolClass (k := k) (d := d)).baseChange (k := E) = symbolClass := by
   -- Both classes are given by the same determinant cocycle on the same relation; the three
   -- compatibilities hold by unfolding the identity maps.
@@ -456,7 +456,7 @@ lemma preimage_lift_le_preimage_scaledGraph (t : k) (u c : W ⟶ X) {U : Subfunc
   have base_eq : (X ⊗ X).map C.baseProj ((scaledGraph t u c).app C x) =
       (X ⊗ X).map C.baseProj ((CartesianMonoidalCategory.lift u c).app (sqZeroExt.obj C) x) := by
     refine Prod.ext ?_ rfl
-    show X.map C.baseProj (u.app _ (W.map ((scaleModule t sqZeroExt).app C) x)) = _
+    change X.map C.baseProj (u.app _ (W.map ((scaleModule t sqZeroExt).app C) x)) = _
     rw [u.naturality_apply]
     exact (X.map_comp_apply ((scaleModule t sqZeroExt).app C) C.baseProj _).symm
   refine hU.mem_of_isSquareZero C.baseProj fst_surjective_and_kerIdeal_sq_eq_bot _ ?_
@@ -519,7 +519,7 @@ of `u` and `c` come from a point of the finite set `s`. Then `scaledGraph t u c`
 square-zero points of the complement `offPoints s` of `s` into the complement `offDiagonal X` of
 the diagonal. -/
 private lemma offPoints_whisker_le_preimage_scaledGraph [IsSeparatedFunctor X] {E : Type} [Field E]
-    [CharZero E] [Algebra k E] {W : CommAlg E ⥤ Type 1} (u c : W ⟶ restrictAlg k E ⋙ X)
+    [Algebra k E] {W : CommAlg E ⥤ Type 1} (u c : W ⟶ restrictAlg k E ⋙ X)
     (s : Finset (W.obj (of E E))) (t : E)
     (h_field : ∀ K : CommAlg E, IsField K → ∀ x : W.obj K, c.app K x = u.app K x →
       ∃ w ∈ s, x = W.map structureMap w) :
@@ -581,7 +581,7 @@ diagonal) is the symbol of the coordinate differences of the chart `A`; `lift u 
 out `w = W.map ζ a.point` and generates `ker ζ`; `m` is the Jacobian ratio at `w`. Then on `a`,
 relative to the complement of `w`, `δ.baseChange` (`δ` read on `E`-algebras through
 `restrictAlg k E`) pulls back along `scaledGraph t u c` to `m • [df / f]`. -/
-private lemma map_pointMap_map_scaledGraph_eq_smul_symbolClass [IsSeparatedFunctor X] {E : Type}
+private lemma map_pointMap_map_scaledGraph_eq_smul_symbolClass {E : Type}
     [Field E] [CharZero E] [Algebra k E] {W : CommAlg E ⥤ Type 1} {u c : W ⟶ restrictAlg k E ⋙ X}
     {s : Finset (W.obj (of E E))} {t m : E} {δ : HodgeH (relFreeAb (offDiagonal X)) d}
     {A : EtaleChart d X} {O : Subfunctor (X ⊗ X)} (hO : IsOpenSubfunctor O)
@@ -954,7 +954,6 @@ section PointClassProduct
 
 open CategoryTheory MonoidalCategory CartesianMonoidalCategory Functor New.Variety.relFreeAb
 
-set_option backward.isDefEq.respectTransparency false
 
 /-- Let `x` be a class of degree `d` on `X` relative to `U`, `y` a class of degree `1` on `Y`
 relative to `W`, and `s`, `t` points of `X` and `Y` with values in `R` that map `T` into `U` and
@@ -970,7 +969,7 @@ lemma New.Variety.pull_cup_along_pair {k : Type} [Field k] [CharZero k] {d : ℕ
       HodgeH.map (relFreeAb.map (lift (𝟙 (reprBy R)) (𝟙 (reprBy R))) le_rfl ≫ relFreeAb.prod T S)
         (cup exteriorAlg.mulPairing (x.map (relFreeAb.map (pointMap s) hT))
           (y.map (relFreeAb.map (pointMap t) hS)) (add_comm 1 d) :) := by
-  rw [← HodgeH.map_comp]
+  erw [← HodgeH.map_comp]
   exact cup_map _ x y _ (whiskerLeft _ (relFreeAb.map _ hT)) (whiskerLeft _ (relFreeAb.map _ hS))
     (hom_ext (U := (T ⊔ S).whisker _))
 
@@ -1001,10 +1000,24 @@ lemma New.Variety.IsPointSum.cup_pointClass {k : Type} [Field k] [CharZero k] {d
   obtain ⟨b, g', hb, hy⟩ := y_pt z.2 rfl
   let G : Fin (d + 1) → (a.prod b).coordRing := Fin.snoc (g · ⊗ₜ 1) (1 ⊗ₜ g' 0)
   -- The equations `g` and `g'` together cut out `z` in the product chart.
-  have cut : CutsOutLocus (X ⊗ Y) (ComesFromPoints {z}) (a.prod b).point G := fun _ α ↦ by
+  have cut : CutsOutLocus (X ⊗ Y) (ComesFromPoints {z}) (a.prod b).point G := fun K α ↦ by
     refine .symm (exists_eq_left.trans (Prod.ext_iff.trans ?_))
-    simpa -dsimp [G, ComesFromPoints, Ideal.span_le, Set.subset_def, and_comm] using!
-      ((hx.1 _ (_ ≫ α)).and (hy.1 _ (_ ≫ α))).symm
+    change (X.map α (X.map tensorInl a.point) = X.map (CommAlgCat.ofHom (Algebra.ofId k K)) z.1 ∧
+      Y.map α (Y.map tensorInr b.point) = Y.map (CommAlgCat.ofHom (Algebra.ofId k K)) z.2) ↔
+      Ideal.span (Set.range G) ≤ RingHom.ker α.hom
+    erw [← X.map_comp_apply tensorInl α a.point, ← Y.map_comp_apply tensorInr α b.point]
+    simp only [Ideal.span_le, Set.range_subset_iff, Fin.forall_fin_succ']
+    have h_cut := ((hx.1 K (tensorInl ≫ α)).and (hy.1 K (tensorInr ≫ α))).symm
+    simp only [ComesFromPoints, Set.mem_singleton_iff, exists_eq_left, Ideal.span_le,
+      Set.range_subset_iff, Fin.forall_fin_one] at h_cut
+    convert h_cut using 2
+    · refine forall_congr' fun i ↦ ?_
+      change α.hom (G i.castSucc) = 0 ↔ α.hom (g i ⊗ₜ[k] 1) = 0
+      have hG : G i.castSucc = g i ⊗ₜ[k] 1 := Fin.snoc_castSucc _ _ _
+      rw [hG]
+    · change α.hom (G (Fin.last d)) = 0 ↔ α.hom (1 ⊗ₜ[k] g' 0) = 0
+      have hG : G (Fin.last d) = 1 ⊗ₜ[k] g' 0 := Fin.snoc_last _ _
+      rw [hG]
   obtain ⟨ξ, ξ_local, ξ_pt⟩ :=
     (a.prod b).exists_isLocalSymbol cut ((range_pointMap_prod ..).ge _ ⟨ha, hb⟩)
   let U : Subfunctor (X ⊗ Y) :=
@@ -1034,12 +1047,45 @@ lemma New.Variety.IsPointSum.cup_pointClass {k : Type} [Field k] [CharZero k] {d
     -- product of the universal symbols on `𝔸^d × 𝔸^1`.
     erw [one_smul, one_smul, ← pull_cup_along_pair]
     -- `symbolClass_succ` turns the product into `[dG / G]`, the pull-back of `ξ` by `ξ_local`.
-    simpa -dsimp [G, (symbolClass_succ ..).2, ← HodgeH.map_comp, pointMap_comp] using!
-      congr($(ξ_local.2.2).map (relFreeAb.map (𝟙 (reprBy _)) fun K _ h ↦ hU K h)).symm
+    erw [(symbolClass_succ k d).2]
+    let p := pointMap (a.prod b).point
+    let Q := U.preimage p
+    let Z := (offPoints {z}).preimage p
+    let restrict : relFreeAb Q ⟶ relFreeAb Z :=
+      relFreeAb.map (𝟙 (reprBy _)) fun K _ h ↦ hU K h
+    let toPoint : relFreeAb Z ⟶ relFreeAb (offPoints {z}) := relFreeAb.map p ξ_local.2.1
+    let toSymbol : relFreeAb Z ⟶ relFreeAb (unimodular (k := k) (d := d + 1)) :=
+      relFreeAb.map (pointMap ⟨G⟩) ξ_local.1.preimage_fieldLocus_not.le
+    have h_local : ξ.map toPoint = symbolClass.map toSymbol :=
+      ξ_local.2.2.trans (one_smul _ _)
+    have h_comp : ξ.map (restrict ≫ toPoint) = symbolClass.map (restrict ≫ toSymbol) :=
+      (HodgeH.map_comp restrict toPoint ξ).trans
+        ((congrArg (fun w : HodgeH (relFreeAb Z) (d + 1) ↦ w.map restrict) h_local).trans
+          (HodgeH.map_comp restrict toSymbol symbolClass).symm)
+    have map_congr {A B : CommAlg k ⥤ Type 1} {S : Subfunctor A} {T : Subfunctor B}
+        {f g : A ⟶ B} (h : f = g) (hf : S ≤ T.preimage f) (hg : S ≤ T.preimage g) :
+        relFreeAb.map f hf = relFreeAb.map g hg := by
+      subst g
+      rfl
+    refine (HodgeH.map_comp _ _ _).symm.trans ?_
+    refine Eq.trans ?_ (HodgeH.map_comp _ _ _)
+    refine (congrArg (fun f ↦ symbolClass.map f) ?_).trans
+      (h_comp.symm.trans (congrArg (fun f ↦ ξ.map f) ?_))
+    · unfold restrict toSymbol
+      erw [relFreeAb.map_comp_map, relFreeAb.map_comp_map]
+      apply map_congr
+      rw [Category.id_comp]
+      erw [pointMap_comp]
+      rfl
+    · unfold restrict toPoint p
+      erw [relFreeAb.map_comp_map, relFreeAb.map_comp_map]
+      apply map_congr
+      rw [Category.id_comp, Category.comp_id]
   rw [cl_fst, cl_snd]
   -- The left side is the image of `η`, hence of `ξ`, in the cohomology of `X ⊗ Y`.
   refine (cup_map _ _ _ _ (whiskerLeft _ (π _)) (whiskerLeft _ (π _)) rfl).symm.trans
     ((HodgeH.map_comp (π U) (relFreeAb.prod ..) _).trans ((congrArg _ η_eq).trans ?_))
-  simp [← HodgeH.map_comp, π_map, ξ_pt.map_eq_smul_pointClass]
+  erw [← HodgeH.map_comp, π_map, freeAb.map_id, Category.id_comp]
+  exact ξ_pt.map_eq_pointClass
 
 end PointClassProduct

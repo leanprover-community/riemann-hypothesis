@@ -269,10 +269,12 @@ lemma lerayHirsch.devissage :
   -- a map between groups with one element is bijective
   aesop
 
+omit [DecidableEq I] in
 /-- The functors `S` at which `θ` is a Leray–Hirsch basis form a closed class
 (`New.Variety.IsClosedClass`): the class contains the zero functors, and along a short exact
 sequence whose subobject is in it, the middle term is in it exactly when the quotient is. -/
 lemma isClosedClass_isLerayHirschBasis : IsClosedClass fun S : A ⥤ Ab ↦ IsLerayHirschBasis θ S := by
+  classical
   simp [isLerayHirschBasis_iff_allBijective_truncMap, lerayHirsch.devissage.isClosedClass]
 
 /-! ### Dévissage from representable functors -/
@@ -296,6 +298,7 @@ lemma Devissage.allBijective_of_allBijective_sigma_reprBy {A B : C ⥤ Ab → �
     exact hf.bijectiveUpTo_quotient h_exact
       (allBijective_iff_forall_bijectiveUpTo.mp (h_sum ι c) (r + 1)) (ih _)
 
+omit [DecidableEq I] in
 /-- Let θ be a finite family of classes in Ext(G∘φ, F), for a functor φ. If the Leray–Hirsch map
 `New.Variety.lerayHirsch` is bijective at ℤ[h_c], the free abelian functor on h_c = Hom(c, −), for
 every object c of the target of φ, it is bijective at every S. Here `S`, `G` are functors `A ⥤ Ab`,
@@ -304,6 +307,7 @@ lemma isLerayHirschBasis_of_reprBy [Finite I] {φ : C ⥤ A}
     {θ : ∀ i : I, H (restrictAlong φ G) F (d i)}
     (h_repr : ∀ c : A, IsLerayHirschBasis θ (freeAb (reprBy c))) (S : AbFunctor A) :
     IsLerayHirschBasis θ S := by
+  classical
   -- By dévissage it suffices to treat a disjoint union of representable functors `reprBy (X c)`.
   -- Restriction to the summands turns both sides into products, where `h_repr` applies factorwise.
   refine isLerayHirschBasis_iff_allBijective_truncMap.mpr

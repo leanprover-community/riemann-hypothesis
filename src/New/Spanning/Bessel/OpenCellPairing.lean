@@ -199,8 +199,8 @@ lemma hasCompactSupport_and_enorm_integral_piKernel_le (X : ι → BesselSystem 
   have h_diff : ‖∫ z in A, F .full (t * z) - F .cut (t * z)‖ₑ ≤
       ∫⁻ z, ‖φ z‖ₑ * ‖piKernel X .full γ z - piKernel X .cut γ z‖ₑ := by
     rw [← lintegral_mul_left_eq_self _ t]
-    refine ((enorm_integral_le_lintegral_enorm _).trans (setLIntegral_le_lintegral A _)).trans_eq ?_
-    simp only [F, ← smul_sub, enorm_smul]
+    refine ((eNorm_integral_le_lintegral_eNorm _).trans (setLIntegral_le_lintegral A _)).trans_eq ?_
+    simp only [F, ← smul_sub, eNorm_smul]
   refine ⟨.intro (hA.image (continuous_const_mul t)) fun z hz ↦ ?_, ?_⟩
   · simpa [F] using h_supp (t⁻¹ * z) fun h_memA ↦ hz ⟨t⁻¹ * z, h_memA, mul_inv_cancel_left t z⟩
   · have h_translate : ∫ z, F .cut z = ∫ z in A, F .cut (t * z) := by
@@ -209,7 +209,7 @@ lemma hasCompactSupport_and_enorm_integral_piKernel_le (X : ι → BesselSystem 
     calc ‖∫ z, F .cut z‖ₑ
       _ = ‖(∫ z in A, F .full (t * z)) - ∫ z in A, F .full (t * z) - F .cut (t * z)‖ₑ := by
         rw [h_translate, integral_sub (h_int .full) (h_int .cut), _root_.sub_sub_cancel]
-      _ ≤ _ := enorm_sub_le.trans (add_le_add h_full h_diff)
+      _ ≤ _ := eNorm_sub_le.trans (add_le_add h_full h_diff)
 
 /-- The matrix of the operator `W (y) ⊗ W (γ⁻¹ y)^*`, as a vector with the Hilbert–Schmidt norm.
 Here `W` is the tensor product, over a finite family `X` of Bessel systems, of the Bessel functions
@@ -271,8 +271,8 @@ theorem enorm_integral_pairKernel_cut_le (X : ι → BesselSystem 𝔰 b f)
     fun y hy ↦ hφ_box y (by rwa [h_adjoint, map_ne_zero_iff T T.injective])
   simp only [h_adjoint]
   refine ⟨h_support.comp_left (map_zero T), ?_⟩
-  rw [T.integral_comp_comm, T.enorm_map]
-  simpa only [h_kernel, ← map_sub, T.enorm_map, pairingBoundSq, h_disc_inv,
-    RCLike.enorm_conj] using h_bound
+  rw [T.integral_comp_comm, T.eNorm_map]
+  simpa only [h_kernel, ← map_sub, T.eNorm_map, pairingBoundSq, h_disc_inv,
+    RCLike.eNorm_conj] using h_bound
 
 end New.BesselSystem

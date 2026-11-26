@@ -206,8 +206,8 @@ theorem PlaceData.enorm_floorForm_le (ω : T.G → ℂ) :
   have h_integral : ‖∫ z : T.G × T.G, F.formIntegrand j p q W z.1 ω z.2
       ∂F.groupMeasure.prod (F.partialGroupMeasure 0 j)‖ₑ ≤
       ∫⁻ x : T.G, F.formIntegrandL1Norm j p q W x ω ∂F.groupMeasure :=
-    (enorm_integral_le_lintegral_enorm _).trans (lintegral_prod_le _)
-  rw [floorForm, enorm_mul]
+    (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_prod_le _)
+  rw [floorForm, eNorm_mul]
   exact mul_le_mul' h_density h_integral
 
 /-- The partial group measure of the last two floors, `ϱ` and `ϱ + 1`, is the convolution of the
@@ -252,15 +252,15 @@ theorem PlaceData.IsCut.formIntegrandL1Norm_le_formMajorant {W : T.G → Euclide
     have hω : ‖ω (σ * τ⁻¹)‖ₑ ≤ 1 := by
       rw [← ofReal_norm]
       exact ofReal_le_one.2 (hω_le _)
-    grw [enorm_mul, hω, one_mul]
+    grw [eNorm_mul, hω, one_mul]
     simp [partialCorrelationProduct, plain, twisted, mul_assoc]
   have h_plain_meas : Measurable plain := by fun_prop [partialCorrelation]
   calc ‖F.formIntegrand j p q W x ω g‖ₑ
     _ ≤ ∫⁻ σ : T.G, ∫⁻ τ : T.G, plain σ * twisted τ ∂F.floorMeasure j ∂F.floorMeasure j :=
-      (enorm_integral_le_lintegral_enorm _).trans <| lintegral_mono fun σ ↦
-        (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono (h_integrand σ))
+      (eNorm_integral_le_lintegral_eNorm _).trans <| lintegral_mono fun σ ↦
+        (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_mono (h_integrand σ))
     _ = ∫⁻ σ : T.G, plain σ * ∫⁻ τ : T.G, twisted τ ∂F.floorMeasure j ∂F.floorMeasure j :=
-      lintegral_congr fun σ ↦ lintegral_const_mul' _ _ enorm_ne_top
+      lintegral_congr fun σ ↦ lintegral_const_mul' _ _ eNorm_ne_top
     _ = (∫⁻ σ : T.G, plain σ ∂F.floorMeasure j) * ∫⁻ τ : T.G, twisted τ ∂F.floorMeasure j :=
       lintegral_mul_const _ h_plain_meas
     _ = F.pivotL1Norm j (frameCorrelation W 1) g (g * x) *
@@ -566,10 +566,10 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
       exact ofReal_le_one.2 (hφ_le _)
     simp (disch := with_unfolding_all fun_prop) only [μ_form, lintegral_prod]
     refine lintegral_mono fun x ↦ lintegral_mono fun g ↦ ?_
-    simp only [formTerm, enorm_mul]
+    simp only [formTerm, eNorm_mul]
     grw [hχ_le]
     -- The remaining double integral over floor `b` splits into the two factors `pivotL1Norm`.
-    simp only [one_mul, pivotL1Norm, partialCorrelationProduct, enorm_mul, enorm_conj,
+    simp only [one_mul, pivotL1Norm, partialCorrelationProduct, eNorm_mul, eNorm_conj,
       _root_.mul_inv_rev,
       inv_inv, mul_assoc, inv_mul_cancel_left]
     exact (lintegral_lintegral_mul (by fun_prop) (by fun_prop)).le

@@ -75,11 +75,9 @@ lemma isTameType_of_roots {N r : ℕ} {K : O[X] → Prop} {M : Multiset (PadicAl
   let q : ℤ_[ℓ][X] := (M.map (minpoly ℤ_[ℓ])).prod
   have hq_monic : q.Monic := monic_multiset_prod_of_monic _ _ fun y hy ↦ (h_minpoly y hy).1
   have hq_natDegree : q.natDegree ≤ N * r :=
-    calc
-      q.natDegree ≤ ((M.map (minpoly ℤ_[ℓ])).map natDegree).sum := natDegree_multiset_prod_le _
-      _ ≤ card M * r := by
-        simpa using sum_map_le_sum_map _ (fun _ ↦ r) fun y hy ↦ (h_minpoly y hy).2
-      _ ≤ N * r := by gcongr
+    (natDegree_multiset_prod_le _).trans <|
+      (sum_le_card_nsmul _ r (by simpa using fun y hy ↦ (h_minpoly y hy).2)).trans <| by
+        simpa using Nat.mul_le_mul_right r h_card
   refine ⟨hK _ fun y hy ↦ ?_, q, hq_monic, hq_natDegree, hK _ fun y hy ↦ ?_⟩
   · obtain ⟨a, ha, hya⟩ := h_root y hy
     obtain ⟨c, hc⟩ : ℓ ^ a - 1 ∣ (Finset.Icc 1 r).lcm fun i : ℕ ↦ ℓ ^ i - 1 :=

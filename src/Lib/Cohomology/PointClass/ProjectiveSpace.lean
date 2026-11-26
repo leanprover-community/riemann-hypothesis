@@ -190,28 +190,15 @@ lemma exists_eq_map_affinePoint_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u :
   obtain ⟨j, hj, hu0, hu1, h_zero⟩ := exists_isUnit_coord_of_mul_eq_zero hv hu h_mul_eq_zero
   refine ⟨j, Prod.ext ?_ ?_⟩
   · -- `v` is `v j` times the `j`-th coordinate vector, as its other entries vanish.
-    show mk v hv = (projSpace k d).map structureMap (affinePoint j 0)
+    change mk v hv = (projSpace k d).map structureMap (affinePoint j 0)
     rw [map_mk]
     refine (mk_eq_mk_iff_exists_unit.mpr ⟨hj.unit, ?_⟩).symm
     simp [_root_.funext_iff, j.forall_iff_succAbove, h_zero]
   · -- `u` is `u 0` times `(1, j)`.
-    show mk u hu = (projSpace k 1).map structureMap (affinePoint 0 ![j])
+    change mk u hu = (projSpace k 1).map structureMap (affinePoint 0 ![j])
     rw [map_mk]
     refine (mk_eq_mk_iff_exists_unit.mpr ⟨hu0.unit, ?_⟩).symm
     simp [_root_.funext_iff, ← hu1, mul_comm]
-
-/-- Let `v`, `u` be unimodular vectors over a local algebra over a field of characteristic `0`, with
-`(u 1 - i * u 0) * v i = 0` for all `i`. Then `u 0 * ∑ i, v i` is a unit, and for some `j` the point
-`[v]` is the `j`-th coordinate point and `[u] = [1 : j]`. -/
-lemma isUnit_and_exists_eq_affinePoint_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u : Fin 2 → A}
-    (hv : span (Set.range v) = ⊤) (hu : span (Set.range u) = ⊤)
-    (h_mul_eq_zero : ∀ i : Fin (d + 1), (u 1 - i * u 0) * v i = 0) :
-    IsUnit (u 0 * ∑ i : Fin (d + 1), v i) ∧
-    ∃ j : Fin (d + 1),
-      (mk v hv, mk u hu) =
-        (projSpace k d ⊗ projSpace k 1).map structureMap (affinePoint j 0, affinePoint 0 ![j]) :=
-  ⟨isUnit_mul_sum_of_mul_eq_zero hv hu h_mul_eq_zero,
-    exists_eq_map_affinePoint_of_mul_eq_zero hv hu h_mul_eq_zero⟩
 
 variable (k d)
 

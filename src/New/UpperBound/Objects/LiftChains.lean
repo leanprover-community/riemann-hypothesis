@@ -79,7 +79,7 @@ first `m` lifts in turn to a form `φ`, using the factors of a tensor `t` of dat
 `Gf E (n j)` for every `j`, and move each factor `j` of `t` by `(k j).ω (a j, a (j + 1))`. The chain
 with the moved data, applied to the right translate of `φ` by `a 0`, is the right translate by `a m`
 of the chain with the data `t` applied to `φ`. -/
-theorem TensorChain.lift_kernelLift_map_omega [WeilData E] (a : ∀ j : ℕ, Gf E (n j))
+theorem TensorChain.lift_kernelLift_map_omega (a : ∀ j : ℕ, Gf E (n j))
     (φ : AlgForm (n 0) κ (e 0)) (m : ℕ) (t : TensorChain S m) :
     lift (fun i : ℕ ↦ (k i).lift) (algFormRep κ (e 0) (a 0) φ) m
         (map (fun i : ℕ ↦ (k i).ω (a i, a (i + 1))) m t) =

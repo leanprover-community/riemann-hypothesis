@@ -351,7 +351,7 @@ theorem IsStationary.isLaplaceDatum [Fintype X] [DecidableEq X] {l : HCParam ε}
     rw [← formAdjoint_inclMatrix (τ := e' ∘ Sum.inl) h_sign_inl, ← formAdjoint_mul, h_inc,
       formAdjoint_inclMatrix (τ := e ∘ Sum.inl) h_steep.sign_inl]
   refine ⟨g, Prod.ext ?_ hy⟩
-  show (g : Matrix n n ℂ) - 1 =
+  change (g : Matrix n n ℂ) - 1 =
     inclMatrix ℂ (e ∘ Sum.inl) * (u - 1) * (inclMatrix ℂ (e ∘ Sum.inl))ᴴ
   rw [hg, hy, Matrix.mul_assoc, Matrix.mul_assoc, h_inc_adj, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
     h_inc]
@@ -460,7 +460,7 @@ theorem IsStationary.period_lower_bound_of_surjective [Fintype X] [DecidableEq X
     simp (disch := fun_prop) only [Measure.map_map, Function.comp_def, map_mul]⟩
   have : IsFiniteMeasureOnCompacts (ν.map f) := ⟨fun K hK ↦ by
     rw [Measure.map_apply hf hK.measurableSet, ← Set.preimage_image_eq K Subtype.val_injective]
-    exact (h_proper.isCompact_preimage (hK.image continuous_subtype_val)).measure_lt_top⟩
+    exact (h_proper.isCompact_preimage (hK.image continuous_subtypeVal)).measure_lt_top⟩
   obtain ⟨h_int, h_vol⟩ := hP.integrable_periodIntegrand_and_measure_le h_steep hB h_sign_inl
     h_weight_inl
     h_weight_nonneg h_weight_le hl_gap hk_gap hl_le hk_le hβ h_card hh (ν.map f)

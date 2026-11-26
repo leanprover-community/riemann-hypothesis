@@ -67,7 +67,7 @@ lemma exists_norm_gal_torsion_value_le (P : Parameters) : ∃ M : ℝ, ∀ (σ :
   -- By complex multiplication they are torsion values for the conjugate lattices.
   obtain ⟨M, hM⟩ := exists_norm_twistedTranslate_theta_le P.d
   refine ⟨M, fun σ x ↦ ?_⟩
-  obtain ⟨Ω, -, β, -, -, -, -, hβ⟩ := complex_multiplication_theta P.cmCurve σ latticeModule_cmCurve
+  obtain ⟨Ω, β, -, -, hβ⟩ := complex_multiplication_theta P.cmCurve σ latticeModule_cmCurve
   -- For `x'` near `β x`, `σ` maps the Taylor series of the translate by `x cmPeriod` to that of the
   -- translate by `x' Ω`; compare the constant terms.
   obtain ⟨U, hU, h_translate⟩ := hβ x
@@ -276,7 +276,7 @@ lemma exists_mul_vacElem_integral_bounded (P : Parameters) : ∃ C : ℕ, ∀ s 
       _ ≤ rexp N ^ (2 * N) * rexp ⌈M⌉₊ ^ (N * N) := by
         grw [h_card, sq_q₁_pow_card_infinitePlace_le P s, ← Nat.le_ceil M]
       _ = rexp ((⌈M⌉₊ + 2 : ℕ) * N ^ 2) := by
-        simp only [← exp_nat_mul, ← exp_add]
+        simp only [← exp_natCast_mul, ← exp_add]
         grind
 
 /-- The constant `C` in the bound `exp (C q₁²)` for the conjugates of the values of the integral
@@ -614,7 +614,7 @@ lemma exists_isJetConjugate_translates (P : Parameters) (s : ℕ) :
       ∀ x : P.K, ∃ U ∈ nhds (β * x), ∀ x' : P.K, ↑x' ∈ U →
         taylorVia σ (P.cmCurve.twistedTranslate 1 (x * P.cmPeriod) P.cmCurve.θ) =
           taylorAtZero ((C σ).twistedTranslate 1 (x' * Ω) (C σ).θ) := by
-    obtain ⟨Ω, -, β, -, -, h_area, h_multiple, h_translate⟩ :=
+    obtain ⟨Ω, β, h_area, h_multiple, h_translate⟩ :=
       complex_multiplication_theta P.cmCurve σ latticeModule_cmCurve
     exact ⟨Ω, β, h_area, h_multiple, h_translate⟩
   choose Ω β h_area h_multiple U hU h_translate using h_cm

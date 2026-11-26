@@ -81,39 +81,22 @@ open Nat PowerSeries
 
 namespace New
 
-/-- Let `0 < b ≤ 1`, and let `c` be a submultiplicative sequence in `[0, 1]` with `c 0 = 1`. If
-`b ^ q ≤ c q` for arbitrarily large `q`, then `b ^ n ≤ c n` for all `n` (a form of Fekete's
-lemma). -/
-lemma pow_le_of_submultiplicative {c : ℕ → ℝ} {b : ℝ} (hb_pos : 0 < b) (hb_le : b ≤ 1)
-    (hc_zero : c 0 = 1) (hc_nonneg : ∀ n : ℕ, 0 ≤ c n) (hc_le : ∀ n : ℕ, c n ≤ 1)
-    (hc_add : ∀ m n : ℕ, c (m + n) ≤ c m * c n) (h_large : ∀ M : ℕ, ∃ q ≥ M, b ^ q ≤ c q)
+/-- If a nonnegative submultiplicative sequence dominates `b ^ q` for arbitrarily large `q`,
+where `0 < b`, then it dominates `b ^ n` for every `n` (Fekete's lemma). -/
+lemma pow_le_of_submultiplicative {c : ℕ → ℝ} {b : ℝ} (hb : 0 < b) (hc : ∀ n, 0 ≤ c n)
+    (hsub : Submultiplicative c) (h_large : ∀ M : ℕ, ∃ q ≥ M, b ^ q ≤ c q)
     (n : ℕ) : b ^ n ≤ c n := by
   obtain rfl | hn := n.eq_zero_or_pos
-  · simp [hc_zero]
-  have hc_mul (k : ℕ) : c (n * k) ≤ c n ^ k := by
-    induction k with
-    | zero => simp [hc_zero]
-    | succ k ih => grw [mul_add_one, hc_add, pow_succ, mul_le_mul_of_nonneg_right ih (hc_nonneg n)]
-  -- Write `q = n * (q / n) + q % n`.
-  have h_div (q : ℕ) (hq : b ^ q ≤ c q) : b ^ n * (b ^ n) ^ (q / n) ≤ c n ^ (q / n) :=
-    calc b ^ n * (b ^ n) ^ (q / n) = b ^ (n * (q / n + 1)) := by ring
-      _ ≤ b ^ q := pow_le_pow_of_le_one hb_pos.le hb_le (Nat.lt_mul_div_succ q hn).le
-      _ ≤ c (n * (q / n) + q % n) := by rwa [Nat.div_add_mod]
-      _ ≤ c (n * (q / n)) * c (q % n) := hc_add _ _
-      _ ≤ c (n * (q / n)) := mul_le_of_le_one_right (hc_nonneg _) (hc_le _)
-      _ ≤ c n ^ (q / n) := hc_mul _
-  -- If `c n / b ^ n` were less than `1`, its powers would fall below `b ^ n` as `q → ∞`.
-  by_contra! h_lt
-  have hbn : 0 < b ^ n := pow_pos hb_pos n
-  have h_ratio : c n / b ^ n < 1 := (div_lt_one hbn).2 h_lt
-  obtain ⟨k, hk⟩ := exists_pow_lt_of_lt_one hbn h_ratio
-  obtain ⟨q, hq_ge, hq⟩ := h_large (k * n)
-  refine hk.not_ge ?_
-  calc b ^ n ≤ (c n / b ^ n) ^ (q / n) := by
-        rw [div_pow, le_div_iff₀ (pow_pos hbn _)]
-        exact h_div q hq
-    _ ≤ (c n / b ^ n) ^ k := pow_le_pow_of_le_one (div_nonneg (hc_nonneg n) hbn.le) h_ratio.le
-        ((Nat.le_div_iff_mul_le hn).2 hq_ge)
+  · obtain ⟨q, -, hq⟩ := h_large 0
+    simpa using one_le_of_le_mul_left₀ ((pow_pos hb q).trans_le hq) (by simpa using hsub q 0)
+  have hroot {k : ℕ} (hk : 0 < k) : c k ^ (k : ℝ)⁻¹ < b ↔ c k < b ^ k := by
+    simpa only [Real.rpow_natCast] using
+      Real.rpow_inv_lt_iff_of_pos (hc k) hb.le (Nat.cast_pos.mpr hk : (0 : ℝ) < k)
+  by_contra! h
+  obtain ⟨M, hM⟩ := Filter.eventually_atTop.1
+    (hsub.eventually_rpow_lt_of_rpow_lt hc hn.ne' ((hroot hn).2 h))
+  obtain ⟨q, hq, h_large_q⟩ := h_large (max M 1)
+  exact h_large_q.not_gt ((hroot (by omega : 0 < q)).1 (hM q (by omega)))
 
 variable {p : ℕ} [Fact p.Prime]
 
@@ -197,33 +180,6 @@ lemma norm_deriv_le_maxDerivNorm {g : ℂ_[p]⟦X⟧} (hg : g ∈ C.integralSeri
 lemma maxDerivNorm_nonneg (n : ℕ) : 0 ≤ C.maxDerivNorm (p := p) n :=
   (norm_nonneg _).trans (norm_deriv_le_maxDerivNorm (zero_mem C.integralSeriesRing) n)
 
-variable [PrimeSevenModEight d]
-
-variable {C} in
-/-- If `g` lies in `C.integralSeriesRing`, the power series in `y` over the valuation ring of `ℂ_p`,
-then `g⁽ⁿ⁾(0) = n! · coeff n g` has norm at most `1`, as this ring is stable under
-differentiation. -/
-lemma norm_deriv_le_one {g : ℂ_[p]⟦X⟧} (hg : g ∈ C.integralSeriesRing) (n : ℕ) :
-    ‖n ! * coeff n g‖ ≤ 1 := by
-  induction n generalizing g with
-  | zero =>
-    simpa using (C.isSeriesGenerator_translatedY.norm_constantCoeff_le_one_and_norm_coeff_one_le_one
-      hg).1
-  | succ n ih =>
-    have h_deriv : ((n + 1)! : ℂ_[p]) * coeff (n + 1) g = n ! * coeff n (d⁄dX g) := by
-      simp [coeff_derivative, factorial_succ, mul_assoc, mul_comm]
-    simpa [h_deriv] using ih (C.derivative_mem_integralSeriesRing hg)
-
-lemma maxDerivNorm_le_one (n : ℕ) : C.maxDerivNorm (p := p) n ≤ 1 :=
-  (C.exists_norm_deriv_eq_maxDerivNorm n).elim fun _g ⟨hg, h_eq⟩ ↦
-    h_eq.ge.trans (norm_deriv_le_one hg n)
-
-/-- The greatest norm `C.maxDerivNorm 0` of `g(0)`, for `g` in `𝒪[[y]] = C.integralSeriesRing`, is
-`1`, attained by the series `1`. -/
-lemma maxDerivNorm_zero : C.maxDerivNorm (p := p) 0 = 1 :=
-  (C.maxDerivNorm_le_one 0).antisymm (by simpa using norm_deriv_le_maxDerivNorm (one_mem _) 0)
-
-omit [PrimeSevenModEight d] in
 /-- Let `μ_i z = linearSeries (μ i)` be the linear form with coefficients `μ i`. For some monomial
 `∏ y(μ_i z) ^ e i`, the norm of its coefficient at `α` bounds that of every element of
 `C.multiSeriesRing μ`, the ring of power series in the `y(μ_i z)` over the valuation ring of
@@ -236,6 +192,8 @@ lemma exists_norm_coeff_le_norm_coeff_prod_pow {I σ : Type} [Fintype I] [Fintyp
   refine ⟨e, fun g hg ↦ ?_⟩
   obtain ⟨G, rfl⟩ := C.mem_multiSeriesRing_iff.1 hg
   simpa only [mul_one] using he G
+
+variable [PrimeSevenModEight d]
 
 /-- Substituting `linearSeries ![1, 1]` replaces `z` by `z₀ + z₁`. The coefficient of
 `z₀ ^ m z₁ ^ n` in `y(z₀ + z₁) ^ j` has norm at most that of `coeff m (y ^ a) * coeff n (y ^ b)` for
@@ -347,8 +305,7 @@ lemma katz_divisibility_limit (n : ℕ) : ∃ f ∈ C.integralSeriesRing (p := p
     calc b ^ (m + 1) ≤ b ^ m := pow_le_pow_of_le_one hb_pos.le hb_le m.le_succ
       _ ≤ C.maxDerivNorm (m + 1) := C.pow_le_maxDerivNorm_of_eq_primeNorm_pow hm
   have h_le : b ^ n ≤ C.maxDerivNorm n :=
-    pow_le_of_submultiplicative hb_pos hb_le C.maxDerivNorm_zero C.maxDerivNorm_nonneg
-      C.maxDerivNorm_le_one C.maxDerivNorm_add_le h_large n
+    pow_le_of_submultiplicative hb_pos C.maxDerivNorm_nonneg C.maxDerivNorm_add_le h_large n
   obtain ⟨f, hf, h_eq⟩ : ∃ f ∈ C.integralSeriesRing (p := p),
       ‖n ! * coeff n f‖ = C.maxDerivNorm n := C.exists_norm_deriv_eq_maxDerivNorm n
   exact ⟨f, hf, h_le.trans h_eq.ge⟩

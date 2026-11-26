@@ -46,7 +46,7 @@ lemma cardQuot_comap_of_surjective {f : N →ₗ[R] N'} (hf : Function.Surjectiv
   M.toAddSubgroup.index_comap_of_surjective (f := f.toAddMonoidHom) hf
 
 lemma submoduleZeta_anti {s t : ℕ} (hst : s ≤ t) : submoduleZeta R N t ≤ submoduleZeta R N s := by
-  refine ENNReal.tsum_le_tsum fun M ↦ pow_le_pow_of_le_one zero_le ?_ hst
+  refine tsum_le_tsum fun M ↦ pow_le_pow_of_le_one zero_le ?_ hst
   exact ENNReal.inv_le_one.2 (Nat.one_le_cast.2 (Nat.pos_of_ne_zero M.2))
 
 /-- The sum of `[range f : M] ^ (-s)` over the submodules `M` of finite index in the range of a
@@ -167,7 +167,7 @@ lemma submoduleZeta_prod_le (h_principal : ∀ I : Ideal R, I.cardQuot ≠ 0 →
     _ = ∑' M, weight (data M) := tsum_congr fun M ↦ (h_weight M).symm
     _ ≤ ∑' d, weight d := tsum_comp_le_tsum_of_injective h_inj weight
     _ = submoduleZeta R R (s + 1) * submoduleZeta R N s := by
-      simp only [Data, weight, ENNReal.tsum_sigma', ENNReal.tsum_mul_left, ENNReal.tsum_mul_right,
+      simp only [Data, weight, tsum_sigma', ENNReal.tsum_mul_left, ENNReal.tsum_mul_right,
         submoduleZeta, h_classes]
 
 /-- If the ideals of finite index of `R` are principal, then the sum of `[R ^ r : M] ^ (-(r + μ))`
@@ -677,7 +677,7 @@ lemma IsLatticeOfRank.exists_eq_colLattice_sublatticeBasis_mul {L : Submodule (�
     rw [← hW, LinearMap.finrank_range_of_inj hx.injective_mulVec, Module.finrank_fin_fun]
   obtain ⟨y, b, -, hy_span, h_basis⟩ := exists_sublatticeBasis_eq_finAdeleMatrix_mul h_left_inv W
   set S : Matrix κ (Fin (finrank E W)) (𝔸f E) := (sublatticeBasis h_left_inv W).val with hS
-  obtain ⟨T, hT : y * T = x⟩ := exists_mul_eq_of_col_mem_range fun i ↦
+  obtain ⟨T, hT : y * T = x⟩ := exists_mul_eq_of_range_le fun i ↦
     hy_span.ge (hW.le ⟨Pi.single i 1, x.mulVec_single_one i⟩)
   have ⟨xInv, hxInv⟩ := hx
   have hT_unit : IsUnit T := .of_mul_eq_one_right (xInv * y) (by rw [Matrix.mul_assoc, hT, hxInv])

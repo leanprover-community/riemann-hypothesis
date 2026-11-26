@@ -108,7 +108,7 @@ lemma star_matrixToVec_dotProduct_matrixToVec [Semiring R] [StarRing R] [Fintype
     (x y : Matrix m' m R) :
     star (matrixToVec x) ⬝ᵥ matrixToVec y = trace (xᴴ * y) := by
   -- both sides are `∑ j, ∑ i, star (x i j) * y i j`
-  simp only [dotProduct, trace, diag_apply, mul_apply, conjTranspose_apply, Pi.star_apply,
+  simp only [dotProduct, trace, diag_apply, Pi.star_apply,
     matrixToVec]
   exact Fintype.sum_prod_type_right _
 
@@ -398,72 +398,10 @@ depends on `y` only through `star y ⬝ᵥ y`. -/
 lemma Fock.realVac_mulVec_of_mem_blockDiagAlg {ι : Type} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
     {u : USign ε} (hu : (u : Matrix ι ι ℂ) ∈ blockDiagAlg ε) (y : ι → ℂ) :
     realVac ((u : Matrix ι ι ℂ) *ᵥ y) = realVac y := by
-  have h_unitary : (u : Matrix ι ι ℂ)ᴴ * 1 * (u : Matrix ι ι ℂ) = 1 := mem_maxCompactU.2 hu
+  have h_unitary : (u : Matrix ι ι ℂ)ᴴ * 1 * (u : Matrix ι ι ℂ) = 1 :=
+    mem_unitaryGroupOf_iff.1 (Subgroup.mem_subgroupOf.1 (mem_maxCompactU.2 hu))
   rw [mul_one] at h_unitary
   rw [realVac, realVac, star_mulVec, dotProduct_mulVec, vecMul_vecMul, h_unitary, vecMul_one]
-
-/-- An element `k` of the maximal compact subgroup (unitary matrices at the infinite places,
-integral at the finite places) preserves the vacuum function. -/
-lemma vacuumFn_mulVec_of_mem_maxCompact {E : Type} [Field E] [CMType E]
-    [WeilData E] {k : G E s} (hk : k ∈ maxCompact E s) (x : n → 𝔸 E) :
-    vacuumFn (k.adeleMatrix *ᵥ x) = vacuumFn x := by
-  -- In real and finite coordinates the vacuum is a Gaussian times the finite vacuum.
-  obtain ⟨h_real, h_fin⟩ : (∀ w ∈ Set.univ, k.1 w ∈ maxCompactU s) ∧ k.2 ∈ stdLevel E n := hk
-  obtain ⟨⟨y, z⟩, rfl⟩ := (adelicSum E s).equiv.surjective x
-  have h_block : (blockU k.1).val.val ∈ blockDiagAlg (realSigns E s) := by
-    refine mem_blockDiagAlg.2 fun ⟨w, i⟩ ⟨w', j⟩ h_sign ↦ ?_
-    have h_zero : (k.1 w).val.val i j = 0 :=
-      mem_blockDiagAlg.1 (mem_maxCompactU.1 (h_real w (Set.mem_univ w))) i j h_sign
-    simp [blockDiagonal_apply, h_zero]
-  have h_lattice : k.2.val.val *ᵥ z ∈ stdLattice E n ↔ z ∈ stdLattice E n := by
-    refine ⟨fun hz ↦ ?_, IsIntMatrix.mulVec (mem_stdLevel.1 h_fin)⟩
-    have h_inv : k.2⁻¹.val.val *ᵥ k.2.val.val *ᵥ z ∈ stdLattice E n :=
-      IsIntMatrix.mulVec (mem_stdLevel.1 (inv_mem h_fin)) hz
-    simpa using h_inv
-  rw [adeleMatrix_mulVec_adelicSum, (adelicSum E s).vac_equiv, (adelicSum E s).vac_equiv,
-    realVac_mulVec_of_mem_blockDiagAlg h_block]
-  -- The finite vacuum depends only on membership in the lattice.
-  rw [stdLattice.finVac, stdLattice.finVac, stdLattice.star_mulVec_dotProduct_mulVec, h_lattice]
-
-/-- The multiplier `Δ` of the Weil representation (`New.weilMultiplier`) is multiplicative for
-factors from the maximal compact subgroup: `Δ(k g k') = Δ(k) Δ(g) Δ(k')` for `k`, `k'` in it. -/
-lemma weilMultiplier_mul_of_mem_maxCompact {E : Type} [Field E] [CMType E] [WeilData E]
-    {k k' : G E s} (hk : k ∈ maxCompact E s) (g : G E s) (hk' : k' ∈ maxCompact E s) :
-    weilMultiplier (k * g * k') = weilMultiplier k * weilMultiplier g * weilMultiplier k' := by
-  obtain ⟨hk_real, hk_fin⟩ : (∀ w ∈ Set.univ, k.1 w ∈ maxCompactU s) ∧ k.2 ∈ stdLevel E n := hk
-  obtain ⟨hk'_real, hk'_fin⟩ := hk'
-  -- At an infinite place `k` and `k'` are block diagonal, so the negative minors multiply.
-  have h_real (w : NumberField.InfinitePlace E) : realMultiplier (k.1 w * g.1 w * k'.1 w) =
-      realMultiplier (k.1 w) * realMultiplier (g.1 w) * realMultiplier (k'.1 w) := by
-    have h_zero {x : USign s} (hx : x ∈ maxCompactU s) {i j : n} (hij : s i ≠ s j) :
-        x.val.val i j = 0 :=
-      mem_blockDiagAlg.1 (mem_maxCompactU.1 hx) i j hij
-    have h_left (y : Matrix n n ℂ) : principalMinor ((k.1 w).val.val * y) (s · = -1) =
-        principalMinor (k.1 w).val.val (s · = -1) * principalMinor y (s · = -1) :=
-      principalMinor_mul fun i j _ hi hj _ ↦
-        .inl (h_zero (hk_real w (Set.mem_univ w)) fun h_sign ↦ hj (h_sign.symm.trans hi))
-    have h_right (y : Matrix n n ℂ) : principalMinor (y * (k'.1 w).val.val) (s · = -1) =
-        principalMinor y (s · = -1) * principalMinor (k'.1 w).val.val (s · = -1) :=
-      principalMinor_mul fun _ j l _ hj hl ↦
-        .inr (h_zero (hk'_real w (Set.mem_univ w)) fun h_sign ↦ hj (h_sign.trans hl))
-    simp only [realMultiplier, Subgroup.coe_mul, Units.val_mul, h_left, h_right, map_mul]
-  -- The finite multiplier is bi-invariant under integral points and `1` on them.
-  have h_fin : finMultiplier (k.2 * g.2 * k'.2) = finMultiplier g.2 :=
-    glMultiplier_mul_of_mem g.2.val hk_fin hk'_fin
-  simp only [weilMultiplier, Prod.fst_mul, Prod.snd_mul, Pi.mul_apply, h_real, h_fin,
-    finMultiplier_eq_one_of_mem hk_fin, finMultiplier_eq_one_of_mem hk'_fin,
-    Finset.prod_mul_distrib]
-  ring
-
-/-- The maximal compact subgroup acts on data by substitution: for `k` in it, the coefficient
-`⟨ϱ(x) vac, ω(k) f⟩` is the multiplier of `k` times the coefficient `⟨ϱ(k⁻¹ x) vac, f⟩`. These
-coefficients are the values at `x` and `k⁻¹ x` of the functions underlying `ω(k) f` and `f`. -/
-lemma Space.dataInner_omega_of_mem_maxCompact {E : Type} [Field E] [CMType E] [WeilData E]
-    (V : Space E n s) {k : G E s} (hk : k ∈ maxCompact E s) (f : 𝒮 V) (x : n → 𝔸 E) :
-    V.dataInner (V.ϱ x V.vacElem) (V.ω k f) =
-      weilMultiplier k * V.dataInner (V.ϱ (k⁻¹.adeleMatrix *ᵥ x) V.vacElem) f := by
-  rw [← V.val_eq_dataInner_rho_vacElem, ← V.val_eq_dataInner_rho_vacElem]
-  exact weilRep_apply_of_vacuum_smul adelicAction k f (vacuumFn_mulVec_of_mem_maxCompact hk) x
 
 /-- Let `u = diag(γ, z)` be a block diagonal isometry of the form with signs `ε`, with `γ` on the
 positive and `z` on the negative coordinates. The real Weil representation of `u` acts on the Fock
@@ -593,20 +531,6 @@ lemma realPairWeil_polyVector {x : GInf E s} {y : GInf E s'}
     -- and of its inverse.
     rw [← map_inv]
     simp [pairHom, pairHomInf, pairSign, blockDiagonal_apply, sum_prod_type, mul_eq_one_iff_eq_inv]
-
-/-- Block diagonal points `x` of the source (signs `s`) and `y` of the target (signs `s'`) act on
-the real vacuum by a character. At the place `w`, the determinant of the block of sign `σ` of `y`
-has the exponent `γ w` minus the number of signs `-σ` in `s`; that of `x` has the number of signs
-`-σ` in `s'` minus `γ' w`. This is the case `P = 1` of `New.realPairWeil_polyVector`. -/
-lemma realPairWeil_vacVector {x : GInf E s} {y : GInf E s'}
-    (hx : ∀ w : NumberField.InfinitePlace E, (x w : Matrix n n ℂ) ∈ blockDiagAlg s)
-    (hy : ∀ w : NumberField.InfinitePlace E, (y w : Matrix n' n' ℂ) ∈ blockDiagAlg s') :
-    realPairWeil γ γ' (x, y) vacVector =
-      (∏ w : NumberField.InfinitePlace E, ∏ σ ∈ ({1, -1} : Finset ℤˣ),
-        principalMinor (y w) (s' · = σ) ^ (γ w - Nat.card {i : n // s i = -σ}) *
-          principalMinor (x w) (s · = σ) ^ (Nat.card {i : n' // s' i = -σ} - γ' w)) •
-        (vacVector : PairFock E s s') := by
-  rw [← polyVector_one, realPairWeil_polyVector γ γ' hx hy, map_one]
 
 end
 

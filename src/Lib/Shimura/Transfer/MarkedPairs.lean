@@ -175,13 +175,6 @@ lemma isReflection_markedReflection_and_exists_eq_iff (hy_sep : y.val.charpoly.S
   ⟨isReflection_markedReflection hy_sep, fun _ hJ h_fix ↦
     exists_eq_markedReflection_iff_of_ratConj_eq hy_sep hJ h_fix⟩
 
-/-- Under the permutation representation of a group `G` on `k[H]`, the coefficient of `g • v` at
-`g • q` is the coefficient of `v` at `q`. -/
-private lemma _root_.Representation.coeff_ofMulAction_smul {G H k : Type*} [Group G] [MulAction G H]
-    [Semiring k] (g : G) (v : MonoidAlgebra k H) (q : H) :
-    (Representation.ofMulAction k G H g v).coeff (g • q) = v.coeff q := by
-  simp
-
 /-- For `x` in the level `K = levelGU n 𝔑`, the function `heckeCosetFn f` of an element `f` of the
 Hecke algebra takes the same value at the cosets of `x⁻¹ g x` and of `g`. -/
 lemma heckeAlgebra.heckeCosetFn_conj (hx_level : x ∈ levelGU n 𝔑) :
@@ -194,8 +187,8 @@ lemma heckeAlgebra.heckeCosetFn_conj (hx_level : x ∈ levelGU n 𝔑) :
   have h_fixed : π x v = v := by simpa using f.2.2 single_one_mem_levelSpace ⟨x, hx_level⟩
   calc heckeCosetFn f ↑(x⁻¹ * g * x) = v.coeff (x⁻¹ • ↑g) := by
         simp [v, π, cosetFn, QuotientGroup.mk_mul_of_mem _ hx_level]
-    _ = (π x v).coeff (x • x⁻¹ • ↑g) := (Representation.coeff_ofMulAction_smul x v _).symm
-    _ = heckeCosetFn f ↑g := by rw [h_fixed, smul_inv_smul, heckeCosetFn, cosetFn]
+    _ = (π x v).coeff ↑g := (Representation.coeff_ofMulAction x v _).symm
+    _ = heckeCosetFn f ↑g := by rw [h_fixed, heckeCosetFn, cosetFn]
 
 /-- If the function `heckeCosetFn f` of an element `f` of the Hecke algebra does not vanish at the
 coset of `g`, then `g` lies in `GUPlus E n`, the similitudes whose inverse has integral

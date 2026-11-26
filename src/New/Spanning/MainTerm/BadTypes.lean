@@ -1,7 +1,6 @@
 module
 
 public import Lib.Analytic.Primes
-public import New.Spanning.RemainingTerms.Size
 public import New.UpperBound.Objects.LabelsAndIndexTypes
 
 /-!

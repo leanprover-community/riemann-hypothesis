@@ -206,9 +206,7 @@ lemma exists_polynomial_eulerFactor (ρ : ℚ≥0) (exps : List ℤ) {α : Padic
       ∀ ζ : intQpBar ℓ, ζ ≠ 0 → ((R.eval (ζ - 1) : intQpBar ℓ) : PadicAlgCl ℓ) =
         (ζ : PadicAlgCl ℓ) ^ exps.length * eulerFactor exps (α * (ζ : PadicAlgCl ℓ)) q := by
   induction exps with
-  | nil =>
-    refine ⟨1, ?_, fun ζ _ ↦ by simp [eulerFactor_nil]⟩
-    simpa using gaussVal_le_of_isUnit_coeff (ρ := ρ) (g := (1 : (intQpBar ℓ)[X])) (d := 0) (by simp)
+  | nil => exact ⟨1, by simp [gaussVal_one], fun ζ _ ↦ by simp [eulerFactor_nil]⟩
   | cons e exps ih =>
     obtain ⟨R, hR_le, hR_eval⟩ := ih
     obtain ⟨S, hS_le, hS_eval⟩ :=
@@ -257,9 +255,7 @@ lemma exists_ellVal_eval_le_gaussVal {ρ : ℚ≥0} (hρ : ρ ≤ 1) {N j : ℕ}
     (h_congr : (1 + X) ^ ℓ ^ N - 1 ∣ (1 + X) ^ j * P - R) (hR : gaussVal ρ R < N * (ρ : ℝ≥0)) :
     ∃ y : intQpBar ℓ, (ρ : ℝ≥0) ≤ ellVal (y : PadicAlgCl ℓ) ∧
       ellVal (P.eval y).val ≤ gaussVal ρ R := by
-  obtain ⟨y, hy, h_generic⟩ : ∃ y : intQpBar ℓ, (ρ : ℝ≥0) ≤ ellVal (y : PadicAlgCl ℓ) ∧
-      ellVal (R.eval y).val = gaussVal ρ R := by
-    simpa only [forall_const] using exists_forall_ellVal_eval_eq_gaussVal ρ fun _ : Unit ↦ R
+  obtain ⟨y, hy, h_generic⟩ := exists_ellVal_eval_eq_gaussVal ρ R
   have h_dvd : (1 + y) ^ ℓ ^ N - 1 ∣ (1 + y) ^ j * P.eval y - R.eval y := by
     simpa using eval_dvd (x := y) h_congr
   have h_lt : ellVal (R.eval y).val < ellVal ((1 + y) ^ j * P.eval y - R.eval y).val :=

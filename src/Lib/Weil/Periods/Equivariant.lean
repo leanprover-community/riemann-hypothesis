@@ -191,7 +191,7 @@ vector to a multiple of the next one, so that it lowers grades by `2`. Then for 
 entries `(b, a)` with `gradeOf b = gradeOf a + 2`. -/
 lemma trace_shift_mul (A : Matrix ι ι (𝔸 E)) :
     (Y.shift * A).trace = (Y.shift * Y.degreePart 2 A).trace := by
-  simp only [trace, diag_apply, mul_apply]
+  simp only [trace, diag_apply]
   refine Finset.sum_congr rfl fun a _ ↦ Finset.sum_congr rfl fun b _ ↦ ?_
   by_cases hab : Y.gradeOf b = Y.gradeOf a + 2 <;>
     simp [degreePart_apply, hab, Y.shift_apply_eq_zero]
@@ -228,7 +228,7 @@ omit [Fintype X] in
 @[fun_prop]
 lemma continuous_unipotentChar : Continuous Y.unipotentChar := by
   have h_mat : Continuous V.ratCoordMatrix := V.isEmbedding_ratCoordMatrix.continuous
-  exact continuous_subtype_val.comp (continuous_stdAddChar.comp (by fun_prop))
+  exact continuous_subtypeVal.comp (continuous_stdAddChar.comp (by fun_prop))
 
 omit [Fintype X] in
 /-- For a grading `Y` presenting `V` as `X ⊕ J_s`, and Weil data on `E`, consider
@@ -309,23 +309,6 @@ lemma sourceFn_mul {u : G E ε} (hu : u ∈ Y.unipotent) (a : G E (1 : X → ℤ
         mul_mem (Y.unipotent_le_besselGroup hu) (Y.inclX_mem_besselGroup a)⟩ =
       Y.unipotentChar u * algFormCoeff 1 t φ a := by
   rw [sourceFn, Y.leviPart_mul_inclX hu a, mul_inv_cancel_right]
-
-/-- This is the case `t = gramForm v` of `New.Grading.sourceFn_mul`, where `v` stands for the
-complex conjugate of `v_*` and `gramForm` is the Gram pairing `(ξ, η) ↦ ξ* G η`. Let `u` lie in the
-unipotent subgroup `Y.unipotent`, and let `a` lie in the adelic unitary group of the standard
-definite space on `X`, embedded by `inclX`. Then the source function of the algebraic form `φ`
-satisfies `Y.sourceFn (gramForm v) φ (u a) = ψ_U (u) · gramForm (conjWeylRep κ e a.1 v) (φ.1 a.2)`,
-where `a.1` is the infinite (real) part of `a` and `a.2` is its finite part. -/
-lemma sourceFn_gramForm_mul_inclX (v : WeylIndex X κ → ℂ) {u : G E ε} (hu : u ∈ Y.unipotent)
-    (a : G E (1 : X → ℤˣ)) :
-    Y.sourceFn (gramForm v) φ ⟨u * Y.inclX a,
-        mul_mem (Y.unipotent_le_besselGroup hu) (Y.inclX_mem_besselGroup a)⟩ =
-      Y.unipotentChar u * gramForm (conjWeylRep κ e a.1 v) (φ.1 a.2) := by
-  have h_invariant : gramForm (conjWeylRep κ e a.1 v) (φ.1 a.2) =
-      gramForm v (conjWeylRep κ e a.1⁻¹ (φ.1 a.2)) := by
-    -- `conjWeylRep κ e a.1` preserves the Gram product and undoes `conjWeylRep κ e a.1⁻¹`.
-    rw [← gramForm_conjWeylRep (e := e) a.1 v, Representation.self_inv_apply]
-  rw [Y.sourceFn_mul (gramForm v) φ hu, algFormCoeff_apply, h_invariant]
 
 /-- On `H`, the function `𝒲_φ` is the coefficient function `algFormCoeff 1 t φ` of `φ`. -/
 lemma sourceFn_inclX (a : G E (1 : X → ℤˣ)) :

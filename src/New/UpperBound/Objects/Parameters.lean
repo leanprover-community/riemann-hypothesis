@@ -303,11 +303,6 @@ lemma max_min_succ_sub_max_min_mem_Icc (x : ℤ) {n c low high : ℤ} (hn : 0 �
       Icc (if x < low then 1 else 0 : ℤ) (if x < high then 1 else 0) := by
   grind
 
-/-- The entry `D.k - 1 + a` of `D.targetParameter τ` is `D.halfGap - D.liftWeight (a + 1) τ`. -/
-lemma targetParameter_sub_one_add (a : ℕ) :
-    D.targetParameter τ (D.k - 1 + a) = D.halfGap - D.liftWeight (a + 1) τ := by
-  grind [targetParameter_eq, D.k_pos]
-
 /-- The base case of `gridParam_interlace`. Let `λ_n = D.targetParameter τ n` be the entries of the
 target parameter and `s = 2 λ_(k-1)`. The number of `n < k` with `x < -2 λ_n - 1`, less the number
 of `n < k - 1` with `x < 2 λ_n`, is `1` if `x < s`, is `0` if `-s - 1 ≤ x`, and is always `0` or
@@ -642,8 +637,6 @@ lemma gap_le_abs_targetParameter_sub {n n' : ℕ} (hne : n + 1 - D.k ≠ n' + 1 
   -- The later entry is `halfGap - w_(a+1)` with `a = n' + 1 - k` positive.
   have h_step : D.liftWeight (n + 1 - D.k + 1) τ + D.gap ≤ D.liftWeight (n' + 1 - D.k + 1) τ :=
     D.liftWeight_succ_add_gap_le τ h_lt
-  have h_centre : D.gap ≤ D.liftWeight (n + 1 - D.k + 1) τ :=
-    D.gap_le_liftWeight_succ τ (n + 1 - D.k)
   have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
   grind [targetParameter_eq]
 
@@ -906,25 +899,6 @@ lemma paramsCorrespond_grid_succ_right (z : Bool) (o i j : ℕ) (hi : i ≤ D.m)
     (gridBlocks_succ_right o i j) (D.isSeparated_gridCentres τ z)
     (D.gridBlocks_subset τ z hi (by omega)) h_centre (by simp [gridBlocks, add_comm])
     (D.mul_card_gridIndex_add_pow_three_le hi (by omega) hi (by omega)) rfl
-
-/-- Both kinds of step in one statement, for arguments that treat them together: `isLeft = true` is
-`paramsCorrespond_grid_succ_left` and `isLeft = false` is `paramsCorrespond_grid_succ_right`. The
-equation `h_step` fixes the target `(i', j')` and the weights: at a node of rank `N` the weight
-`D.gridWeight weightGrid weightIdx` is `N / 2`, rounded down if `weightGrid` is true and up
-otherwise, less `w_(weightIdx+1)`. The target satisfies `i' ≤ m` and `j' + o ≤ m`, and it lies in a
-grid (`o = 0`) or in a triangle (`i' = 0`). -/
-lemma paramsCorrespond_grid (isLeft z : Bool) (o i j : ℕ) {weightGrid : Bool} {weightIdx i' j' : ℕ}
-    (h_step : (weightGrid, weightIdx, i', j') =
-      bif isLeft then (z, i, i + 1, j) else (!z, j + o, i, j + 1))
-    (hi : i' ≤ D.m) (hj : j' + o ≤ D.m) (h_zero : o = 0 ∨ i' = 0) :
-    ParamsCorrespond (D.gridWeight weightGrid weightIdx (D.GridIndex z i j))
-      (D.gridWeight weightGrid weightIdx (D.GridIndex z i' j'))
-      (negIf isLeft (D.gridParam z o i j)) (negIf isLeft (D.gridParam z o i' j'))
-      (D.gridSigns z o i j) (D.gridSigns z o i' j') := by
-  cases isLeft <;> cases h_step
-  · exact D.paramsCorrespond_grid_succ_right z o i j hi hj h_zero
-  · obtain rfl : o = 0 := h_zero.resolve_right i.succ_ne_zero
-    exact D.paramsCorrespond_grid_succ_left z i j hi hj
 
 end Steps
 

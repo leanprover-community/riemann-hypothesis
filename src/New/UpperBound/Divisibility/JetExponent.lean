@@ -511,7 +511,6 @@ lemma le_divisibilityBound (hj : j < D.m) (hp : D.IsSmallNonsplit p) (S : Finset
   set u : ℝ := D.a / p / D.m with hu
   set γ : ℝ := gammaPrime P.d p
   set v : ℝ := piPrimeValuation P.d p
-  have hv_pos : 0 < v := piPrimeValuation_pos P.d p
   have hv_le : v ≤ 1 := piPrimeValuation_le_one P.d p
   have h_err : v * (clog p ⌈D.x₁⌉₊ * (2 * D.x ^ 60)) ≤ u := by
     grw [hv_le, one_mul, clog_le_of_le_pow (Nat.lt_pow_self q.out.one_lt).le,

@@ -157,22 +157,8 @@ where υ is restricted to the norm-one ideles (`upsilonU1`). -/
 def rankTwist (n : Type*) [Fintype n] : AutChar E := a * upsilonU1 ^ (Fintype.card n / 2)
 
 /-- The standard character of a space with signs s: the character υ^{n₋} of [U(1)], where υ is
-restricted to the norm-one ideles (`upsilonU1`) and n₋ is the number of signs −1. Its Hecke
-character `spaceChar` at the rank n₊ + n₋ of the space is υ^{−(n₊ − n₋)}, the power of υ by minus
-the signature (`New.AutChar.spaceChar_stdChar`). -/
+restricted to the norm-one ideles (`upsilonU1`) and n₋ is the number of signs −1. -/
 def stdChar {n : Type*} [Fintype n] (s : n → ℤˣ) : AutChar E := upsilonU1 ^ Exchange.negCount s
-
-/-- The standard character of a sum of spaces is the product of their standard characters. -/
-lemma stdChar_sum {n₁ n₂ : Type*} [Fintype n₁] [Fintype n₂] (s₁ : n₁ → ℤˣ) (s₂ : n₂ → ℤˣ) :
-    (stdChar (s₁ ⊕ᵥ s₂) : AutChar E) = stdChar s₁ * stdChar s₂ := by
-  simp [stdChar, Exchange.negCount_sumElim, pow_add]
-
-/-- The standard character of the negated space is the inverse of the standard character times
-υⁿ, where υ is restricted to the norm-one ideles (`upsilonU1`) and n is the rank: negation
-exchanges the numbers of signs 1 and −1, which add up to n. -/
-lemma stdChar_neg {n : Type*} [Fintype n] (s : n → ℤˣ) :
-    (stdChar (-s) : AutChar E) = (stdChar s)⁻¹ * upsilonU1 ^ Fintype.card n := by
-  rw [stdChar, stdChar, ← Exchange.negCount_neg_add s, add_comm, pow_add, inv_mul_cancel_left]
 
 /-- For characters a, b of [U(1)], the complex character (g, h) ↦ a(det h) b(det g)⁻¹ of
 G(s) × G(s′). -/

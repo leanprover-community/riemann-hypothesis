@@ -2,6 +2,7 @@ module
 
 public import Lib.CM.FormalGroup.PrimeNotation
 public import Lib.CM.Integrality.IsogenyIntegrality
+public import TauCeti.RingTheory.PowerSeries.Substitution
 
 /-!
 # The inseparable degree
@@ -39,24 +40,6 @@ open PowerSeries IsLocalRing ComplexConjugate
 
 namespace New
 
-/-- Over a field, the order of `f(g)` is the product of the orders of `f` and `g`, for a power
-series `g` without constant term. -/
-lemma order_subst {k : Type*} [Field k] {g : k⟦X⟧} (hg : constantCoeff g = 0) (f : k⟦X⟧) :
-    order (subst g f : k⟦X⟧) = f.order * g.order := by
-  have hg_subst : HasSubst g := .of_constantCoeff_zero' hg
-  obtain rfl | hf := eq_or_ne f 0
-  · rw [← coe_substAlgHom hg_subst, map_zero, order_zero,
-      ENat.top_mul (order_ne_zero_iff_constCoeff_eq_zero.2 hg)]
-  -- Write `f = X ^ n * u` with `u(0) ≠ 0`; then `f(g) = g ^ n * u(g)`, and `u(g)` is a unit.
-  have hu : IsUnit (divXPowOrder f) :=
-    isUnit_iff_constantCoeff.2 (Ne.isUnit (mt constantCoeff_divXPowOrder_eq_zero_iff.1 hf))
-  have hu_subst : order (subst g (divXPowOrder f) : k⟦X⟧) = 0 := by
-    simpa only [← coe_substAlgHom hg_subst] using order_zero_of_isUnit (hu.map _)
-  have h_eq : (subst g f : k⟦X⟧) = g ^ f.order.toNat * subst g (divXPowOrder f) := by
-    conv_lhs => rw [← X_pow_order_mul_divXPowOrder (f := f)]
-    rw [subst_mul hg_subst, subst_pow hg_subst, subst_X hg_subst]
-  rw [h_eq, order_mul, order_pow, hu_subst, add_zero, nsmul_eq_mul, coe_toNat_order hf]
-
 variable {p : ℕ} [Fact p.Prime]
 
 namespace CMLattice
@@ -76,11 +59,6 @@ lemma constantCoeff_taylorVia_translatedY : constantCoeff (taylorVia ιₚ C.tra
 lemma coeff_one_taylorVia_translatedY : coeff 1 (taylorVia ιₚ C.translatedY) = 1 :=
   C.isSeriesGenerator_translatedY.coeff_one
 
-/-- Every element of `C.integralSeriesRing = 𝒪[[y]]` is `g(y)` for an integral series `g`. -/
-lemma exists_eq_subst_of_mem_integralSeriesRing {f : ℂ_[p]⟦X⟧} (hf : f ∈ C.integralSeriesRing) :
-    ∃ g : (valRingCp p)⟦X⟧, f = subst (taylorVia ιₚ C.translatedY) (seriesToCp g) :=
-  (C.isSeriesGenerator_translatedY.mem_iff f).1 hf
-
 /-- For an integral series `g ∈ 𝒪[[X]]`, viewed in `ℂ_[p][[X]]` by `seriesToCp`, the reduced order
 of `g(y)` is the order of the reduction of `g` modulo the maximal ideal of `𝒪`, where `y` is the
 Taylor series of `C.translatedY`. -/
@@ -97,8 +75,8 @@ lemma reducedOrder_subst_translatedY (g : (valRingCp p)⟦X⟧) :
 lemma reducedOrder_mul {f g : ℂ_[p]⟦X⟧} (hf : f ∈ C.integralSeriesRing)
     (hg : g ∈ C.integralSeriesRing) :
     C.reducedOrder (f * g) = C.reducedOrder f + C.reducedOrder g := by
-  obtain ⟨u, rfl⟩ := C.exists_eq_subst_of_mem_integralSeriesRing hf
-  obtain ⟨v, rfl⟩ := C.exists_eq_subst_of_mem_integralSeriesRing hg
+  obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hf
+  obtain ⟨v, rfl⟩ := C.mem_integralSeriesRing.1 hg
   rw [← subst_mul (.of_constantCoeff_zero' C.constantCoeff_taylorVia_translatedY), ← map_mul,
     reducedOrder_subst_translatedY, map_mul, order_mul, reducedOrder_subst_translatedY,
     reducedOrder_subst_translatedY]
@@ -111,7 +89,7 @@ lemma reducedOrder_subst {T : ℂ_[p]⟦X⟧} (hT : T ∈ C.integralSeriesRing) 
     C.reducedOrder (subst T (seriesToCp g)) =
       (g.map (residue (valRingCp p))).order * C.reducedOrder T := by
   -- With `T = u(y)` we have `g(T) = g(u)(y)`, and reduction commutes with substitution.
-  obtain ⟨u, rfl⟩ := C.exists_eq_subst_of_mem_integralSeriesRing hT
+  obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hT
   set y : ℂ_[p]⟦X⟧ := taylorVia ιₚ C.translatedY
   have hy₀ : constantCoeff y = 0 := C.constantCoeff_taylorVia_translatedY
   have hu₀ : constantCoeff u = 0 := Subtype.ext (by rwa [constantCoeff_subst_eq hy₀] at hT₀)
@@ -123,13 +101,13 @@ lemma reducedOrder_subst {T : ℂ_[p]⟦X⟧} (hT : T ∈ C.integralSeriesRing) 
         (.of_constantCoeff_zero' hy₀)]
   rw [h_comp, reducedOrder_subst_translatedY, reducedOrder_subst_translatedY,
     show map (residue (valRingCp p)) (subst u g) = subst (u.map _) (g.map _) from map_subst hu g,
-    order_subst (by simp [← coeff_zero_eq_constantCoeff_apply, hu₀])]
+    PowerSeries.order_subst (by simp [← coeff_zero_eq_constantCoeff_apply, hu₀]), mul_comm]
 
 /-- A series in `C.integralSeriesRing = 𝒪[[y]]` whose constant coefficient has norm one has the
 reduced order (the order in `y` modulo the maximal ideal) zero. -/
 lemma reducedOrder_eq_zero {f : ℂ_[p]⟦X⟧} (hf : f ∈ C.integralSeriesRing)
     (hf₀ : ‖constantCoeff f‖ = 1) : C.reducedOrder f = 0 := by
-  obtain ⟨u, rfl⟩ := C.exists_eq_subst_of_mem_integralSeriesRing hf
+  obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hf
   rw [constantCoeff_subst_eq C.constantCoeff_taylorVia_translatedY] at hf₀
   have hu : IsUnit u := isUnit_iff_constantCoeff.2 (isUnit_integer_iff_norm_eq_one.2 hf₀)
   rw [reducedOrder_subst_translatedY, order_zero_of_isUnit (hu.map _)]
@@ -138,10 +116,10 @@ lemma reducedOrder_eq_zero {f : ℂ_[p]⟦X⟧} (hf : f ∈ C.integralSeriesRing
 norm one has the reduced order (the order in `y` modulo the maximal ideal) one. -/
 lemma reducedOrder_eq_one {T : ℂ_[p]⟦X⟧} (hT : T ∈ C.integralSeriesRing) (hT₀ : constantCoeff T = 0)
     (hT₁ : ‖coeff 1 T‖ = 1) : C.reducedOrder T = 1 := by
-  obtain ⟨u, rfl⟩ := C.exists_eq_subst_of_mem_integralSeriesRing hT
+  obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hT
   rw [constantCoeff_subst_eq C.constantCoeff_taylorVia_translatedY] at hT₀
   rw [coeff_one_subst C.constantCoeff_taylorVia_translatedY, coeff_one_taylorVia_translatedY,
-    mul_one] at hT₁
+    mul_one, Algebra.algebraMap_self_apply] at hT₁
   rw [reducedOrder_subst_translatedY, ← Nat.cast_one, order_eq_nat]
   have hu₁ : IsUnit (coeff 1 u) := isUnit_integer_iff_norm_eq_one.2 hT₁
   simp [show constantCoeff u = 0 from Subtype.ext hT₀, hu₁]
@@ -187,7 +165,7 @@ order of `f(α z)` is the reduced order of `f` times `o(α) = C.insepDegree α`.
 lemma reducedOrder_rescale {α : ℂ} (hα : α ∈ quadInt d) {f : ℂ_[p]⟦X⟧}
     (hf : f ∈ C.integralSeriesRing) :
     C.reducedOrder (rescale (ιₚ α) f) = C.reducedOrder f * C.insepDegree α := by
-  obtain ⟨g, rfl⟩ := C.exists_eq_subst_of_mem_integralSeriesRing hf
+  obtain ⟨g, rfl⟩ := C.mem_integralSeriesRing.1 hf
   have hy₀ := C.constantCoeff_taylorVia_translatedY (p := p)
   rw [rescale_subst hy₀, reducedOrder_subst_translatedY, insepDegree,
     C.reducedOrder_subst (C.rescale_translatedY_mem_of_mem_quadInt hα)

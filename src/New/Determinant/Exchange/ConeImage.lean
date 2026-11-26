@@ -123,7 +123,8 @@ lemma sum_norm_sq_conePoint (κ : maxCompact E t') (a : (InfinitePlace E → ℂ
   let K : Matrix r' r' ℂ := ↑(maxCompactInf κ w)⁻¹
   let y : r' → ℂ := a.val w • lineVector X w
   have h_unitary : Kᴴ * K = 1 := by
-    simpa [K] using mem_U.1 (inv_mem (maxCompact_fst_mem_maxCompactU κ w))
+    simpa [K, star_eq_conjTranspose] using
+      mem_unitaryGroupOf_iff.1 (inv_mem (maxCompact_fst_mem_maxCompactU κ w))
   have h_dot : star (K *ᵥ y) ⬝ᵥ K *ᵥ y = star y ⬝ᵥ y := by
     rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, h_unitary, one_mulVec]
   calc ∑ i, ‖(K *ᵥ y) i‖ ^ 2 = ∑ i, ‖y i‖ ^ 2 := by
@@ -215,7 +216,7 @@ lemma hasPosMellinTransform_comp_conePoint {β : (InfinitePlace E × r' × Unit 
       mul_le_mul_iff_left₀ (sum_norm_sq_lineVector_pos X w)] using
       hβ_shell (conePoint X (κ, a)) (left_ne_zero_of_mul h_ne) w
   refine ⟨fun z ↦ (hρ_cont z).integrable_of_hasCompactSupport (hρ_supp z), fun z ↦ ?_⟩
-  exact (hρ_cont z).integral_pos_of_hasCompactSupport_nonneg_nonzero (x := 1) (hρ_supp z)
+  exact (hρ_cont z).integral_pos_of_hasCompactSupport_nonneg_ne_zero (x := 1) (hρ_supp z)
     (fun _ ↦ mul_nonneg (hβ_nonneg _) (Real.rpow_nonneg ideleAbs_pos.le z))
     (by simpa [ρ] using hβ_ne_zero)
 
@@ -282,7 +283,9 @@ lemma exists_hasPosMellinTransform_mulVec_eq_smul :
   have h_back : (κw : Matrix r' r' ℂ) *ᵥ y = a.val w • lineVector X w := by
     rw [hy, mulVec_mulVec, Subgroup.coe_inv, Units.mul_inv, one_mulVec]
   have h_iso : star y ⬝ᵥ signMatrix t' *ᵥ y = 0 := by
-    rw [← mem_U.1 κw.prop, ← mulVec_mulVec, ← mulVec_mulVec, ← star_mulVec_dotProduct, h_back]
+    rw [← show κw.val.valᴴ * signMatrix t' * κw.val.val = signMatrix t' from
+        mem_unitaryGroupOf_iff.1 κw.prop,
+      ← mulVec_mulVec, ← mulVec_mulVec, ← star_mulVec_dotProduct, h_back]
     simp [mulVec_smul, lineVector_isotropic X w]
   have h_image : (k w y : Matrix r' r' ℂ) *ᵥ lineVector X w = y := h_carry _ h_ne w h_iso
   rw [Subgroup.coe_mul, Units.val_mul, ← mulVec_mulVec, h_image, h_back]
@@ -406,7 +409,7 @@ a Schwartz vector `v'` for `(W', V')` with this property: for all `z > 0`, the t
 ramified exactly at a non-empty set of split places, containing no place together with its
 conjugate, and for every standard datum `stdRowDatum σ 𝔠.semilocalChar y` at these places. -/
 theorem exists_thetaLarge_cone_eq_mul [IsBaseAdapted A] [IsBaseAdapted X]
-    (μ : InfinitePlace E → ℤ) {b : Type} [Fintype b] [DecidableEq b] (σ : b ⊕ r ≃ n)
+    (μ : InfinitePlace E → ℤ) {b : Type} (σ : b ⊕ r ≃ n)
     (hn : 2 ∣ card n) :
     ∃ B : ℝ → ℝ, (∀ z : ℝ, 0 < B z) ∧ AnalyticOnNhd ℝ (fun z : ℝ ↦ (B z : ℂ)) Set.univ ∧
       ∀ v : PairFock E s t, IsSchwartzVector v → ∃ v' : PairFock E s' t', IsSchwartzVector v' ∧
@@ -465,7 +468,7 @@ theorem exists_thetaLarge_cone_eq [IsBaseAdapted A] [IsBaseAdapted X] (μ : Infi
   obtain ⟨B, hB, -, h_image⟩ := exists_thetaLarge_cone_eq_mul A X μ σ hn
   have hB_ne : (B z : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 (hB z).ne'
   have h_schwartz : IsSchwartzVector ((B z : ℂ)⁻¹ • v) := fun N ↦ by
-    simpa only [fockMoment_smul] using ENNReal.mul_ne_top enorm_ne_top (hv N)
+    simpa only [fockMoment_smul] using ENNReal.mul_ne_top eNorm_ne_top (hv N)
   obtain ⟨v', hv', h_cone⟩ := h_image ((B z : ℂ)⁻¹ • v) h_schwartz
   refine ⟨v', hv', fun 𝔠 y g ↦ ?_⟩
   calc _ = B z * thetaLarge W V 𝔠 ((B z : ℂ)⁻¹ • v) (stdRowDatum σ 𝔠.semilocalChar y) g :=

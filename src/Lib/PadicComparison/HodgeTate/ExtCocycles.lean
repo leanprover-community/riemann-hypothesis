@@ -49,7 +49,6 @@ open CategoryTheory Limits Abelian.Ext AddCommGrpCat ShortComplex LinearMap Tota
 
 variable {C : Type 1} [Category C] {F G F' G' : AbFunctor C}
 
-set_option backward.isDefEq.respectTransparency false
 
 /-! ### The sign rule for connecting classes -/
 
@@ -250,12 +249,21 @@ lemma cohomClass_comp_eq_extClass {S : ShortComplex (AbFunctor C)} (hS : ShortEx
       naturality c d f := by simp [AddCommGrpCat.ext_iff, add_assoc, elementwise_of% h_cocycle] }
   have h_left : β ≫ S.f = D.extension.f ≫ τ := by aesop
   have h_right : τ ≫ S.g = D.extension.g ≫ α := by
-    ext
-    simp [τ, ← h_lift, ← S.f.comp_app_apply]
+    ext c x
+    have h0 : S.g.app c (S.f.app c (β.app c x.1)) = 0 := by
+      change (S.f ≫ S.g).app c (β.app c x.1) = 0
+      rw [S.zero]
+      rfl
+    change S.g.app c (S.f.app c (β.app c x.1) + σ c x.2) = α.app c x.2
+    rw [map_add, h0, zero_add, ← h_lift c]
+    rfl
   have h_nat : D.shortExact_extension.extClass.comp (mk₀ β) (add_zero 1) =
       (mk₀ α).comp hS.extClass (zero_add 1) :=
     D.shortExact_extension.extClass_naturality hS ⟨β, τ, α, h_left, h_right⟩
-  simp [comp_of, h_nat]
+  change TotalH.comp (DirectSum.of _ 1 D.shortExact_extension.extClass) (DirectSum.of _ 0 (mk₀ β)) =
+    TotalH.comp (DirectSum.of _ 0 (mk₀ α)) (DirectSum.of _ 1 hS.extClass)
+  rw [comp_of (h := add_zero 1), comp_of (h := zero_add 1), h_nat]
+  rfl
 
 /-- If `α : F ⟶ F'` and `β : G ⟶ G'` intertwine the cocycles `D` and `D'`, the class of `D`
 followed by `β` is `α` followed by the class of `D'`. -/
@@ -268,7 +276,13 @@ lemma cohomClass_naturality (D' : Cocycle F' G') (α : F ⟶ F') (β : G ⟶ G')
   -- on `G'` this is `h_comm`, on `F'` the naturality of `α`
   have h_cd (x : F.obj c) : D'.component f (α.app c x) = β.app d (D.component f x) :=
     AddCommGrpCat.ext_iff.mp (h_comm c d f) x
-  simp [σ, AddCommGrpCat.ext_iff, h_cd]
+  ext x
+  refine Prod.ext ?_ ?_
+  · change G'.map f 0 + D'.component f (α.app c x) = β.app d (D.component f x) + 0
+    rw [map_zero, zero_add, add_zero, h_cd]
+  · change F'.map f (α.app c x) = 0 + α.app d (F.map f x)
+    rw [zero_add]
+    exact (AddCommGrpCat.ext_iff.mp (α.naturality f) x).symm
 
 /-- Restricting the class of `D` along a functor `φ : C ⥤ C` gives the class of the cocycle
 `f ↦ D(φ f)`. -/

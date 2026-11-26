@@ -149,7 +149,7 @@ lemma hasPartitions_periodAlg (θ : asModules (tilt ⋙ periodAlg S) ⋙ tensorW
     HasPartitions ringFunctor (moduleCoeff Ψ) := by
   refine ⟨exists_isQuotientByElem, fun {A B₁ B₂ : PadicTest} f g hfg ↦ ?_⟩
   -- Tilting keeps the product, and so do Witt vectors, which are sequences of coordinates.
-  let e {R : Type} : WittVector p R ≃ (ℕ → R) := mk WittVector.coeff .mk'
+  let e {R : Type} : WittVector p R ≃ (ℕ → R) := mk WittVector.coeff (.mk p)
   let W : PadicTest ⥤ ModuleCat Ainf := asModules (tilt ⋙ wittFunctor)
   have h_witt : Function.Bijective fun x : W.obj A ↦ (W.map f x, W.map g x) :=
     ((arrowProdEquivProdArrow ℕ (fun _ ↦ tilt.obj B₁) (fun _ ↦ tilt.obj B₂)).trans
@@ -198,7 +198,7 @@ open CategoryTheory TensorProduct Function Functor Module LinearMap AlgebraTenso
 `p ≠ 0`. -/
 private lemma mem_wittOfMaxIdeal_of_natCast_mul_mem {p : ℕ} [ThePrime p] {y : Ainf}
     (h : (p : Ainf) * y ∈ wittOfMaxIdeal) : y ∈ wittOfMaxIdeal := by
-  aesop (add simp [wittOfMaxIdeal, p_nonzero])
+  aesop (add simp [wittOfMaxIdeal, p_ne_zero])
 
 /-- There is a linear map `W(𝔪) → 𝔪` that is onto with kernel `p W(𝔪)`: the zeroth coordinate.
 Here `𝔪` is the maximal ideal of `O♭` and `W(𝔪) = wittOfMaxIdeal`. -/
@@ -324,7 +324,7 @@ private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' 
     have h_rep_zero : y.val 1 = 0 ↔ x ∈ nsmulRange p _ := by
       rw [← hx, mkQ_apply, Submodule.Quotient.mk_eq_zero, nsmulRange.mem_span_pow_smul_top_iff,
         pow_one]
-    show redCompl.app b y = 0 ↔ ∃ z, p • z = y
+    change redCompl.app b y = 0 ↔ ∃ z, p • z = y
     rw [hxy, (h_red_mod b).right x]
     exact h_rep_zero.symm.trans h_ker
   -- So on values with `IsPerfectTorsionFree` the sequence of `p` and `redCompl` is short exact.
@@ -421,13 +421,17 @@ lemma CoeffCompBijective.periodAlg_of_almostCoeff {C C' : Type 1} [Category C] [
   obtain ⟨U⟩ : Nonempty (P ⋙ G ≅ asModules B ⋙ G) := nonempty_completion_wittOfMaxIdeal_iso hK
   -- Transport along `U` and along `moduleCompletionIso`, which compares the completions of
   -- modules and of algebras.
-  let V : P ⋙ G ≅ B ⋙ asModules (algCompletion S p) ⋙ tensorWith K K :=
+  let V : P ⋙ G ≅ asModules (periodAlg S) ⋙ tensorWith K K :=
     U ≪≫ B.isoWhiskerLeft (isoWhiskerRight (moduleCompletionIso S p) _)
-  let γ := isoWhiskerRight V (moduleCoeff (𝟭 (ModuleCat K)))
-  refine (isBijective_iff_of_coeff_iso (c := ⟨φ, _⟩) (ψ.whiskerLeft γ.hom) _
-    (whiskerLeft_comp_whiskerRight β γ.hom)).mp ?_
+  let γ {D : Type 1} [Category.{0} D] (χ : D ⥤ CommAlg OFlat) :
+      moduleCoeff (χ ⋙ P ⋙ G) ≅ moduleCoeff (χ ⋙ asModules (periodAlg S) ⋙ tensorWith K K) :=
+    isoWhiskerRight (isoWhiskerRight (χ.isoWhiskerLeft V) (forget₂ _ Ab)) uliftFunctor
   -- By `hN` and `hN'`, `K ⊗ –` carries `h_cpl` to the coefficients `P ⋙ G`.
-  exact (IsBijective.baseChangeMap_bijective_iff h_cpl hN).mp (hN' _)
+  refine (isBijective_iff_of_coeff_iso
+    (c := ofModuleHom φ (Φ := ψ ⋙ P ⋙ G) (whiskerRight β (P ⋙ G))) (γ ψ).hom (γ ψ').hom ?_).mp
+    ((IsBijective.baseChangeMap_bijective_iff h_cpl hN).mp (hN' _))
+  ext A x
+  exact congrArg ULift.up (ConcreteCategory.congr_hom (V.hom.naturality (β.app A)).symm x.down)
 
 end PeriodLifting
 

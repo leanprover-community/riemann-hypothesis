@@ -191,7 +191,7 @@ lemma exists_add_two_primes [NeZero ℓ] [NeZero N]
       φ := Sum.elim s.φ φ
       isFrob := Sum.forall.2 ⟨fun i ↦ ⟨(s.isFrob i).1, hUO (s.isFrob i).2⟩,
         fun j ↦ ⟨hφ j, (mul_mem_cancel_left (x j).2).1 (hUO (hφU j))⟩⟩
-      mem_inertia_iff _ := Iff.of_eq Set.mem_setOf_eq
+      mem_inertia_iff _ := Iff.of_eq Set.mem_ofPred_eq
       inertiaGroup_le hv hB := (s.inertiaGroup_le hv hB).trans hUO
       principal_sup_idelesUnitOff F _ h :=
         s.principal_sup_idelesUnitOff F fun y hy g ↦ h hy (inclusion hUO g) }

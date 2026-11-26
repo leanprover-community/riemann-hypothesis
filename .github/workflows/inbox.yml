@@ -4,9 +4,10 @@ name: inbox
 # A pull request goes into the inbox when it is opened, reopened or marked ready for review, and
 # when `awaiting-author` comes off it again. It comes out as soon as someone with triage access
 # comments on it (`aa` included), reviews it or changes its labels, and when it is turned back
-# into a draft, labelled `awaiting-author` or closed. The batch labels `batch queue` and `building`
-# keep a pull request out as well, and batches never go in: a batch is a pull request from a
-# `batch/...` branch of this repository, not of a fork. `scripts/inbox-sync.py` has the exact rules.
+# into a draft, labelled `awaiting-author` or closed. The batch labels `batch queue`, `building` and
+# `batch-building` keep a pull request out as well, and batches never go in: a batch is a pull
+# request from a `batch/...` branch of this repository, not of a fork. `scripts/inbox-sync.py` has
+# the exact rules.
 #
 # Pull requests based on `alpoge` have an inbox of their own, `alpoge-inbox`, and are all labelled
 # `alpoge`. That branch's future is undecided and it may be phased out; see `scripts/inbox-sync.py`.

@@ -125,17 +125,6 @@ lemma exists_zeroTermFin_ne_zero (D : V.Splitting V₀ p) :
   have h_vac : V₀.vacElem = 0 := (smul_eq_zero.1 (h_value.symm.trans h_zero)).resolve_left hc_ne
   simpa [h_vac] using V₀.dataInner_vacElem_vacElem
 
-/-- The law of the zero term on the parabolic subgroup holds for its finite part and finite points:
-if `g k = k a` for the isotropic frame `k` of `D`, with `det a = d`, and `g` acts on `V₀` as `g₀`,
-then `zeroTermFin D` carries `ω g` to `(chiAdelic d)⁻¹ • ω g₀`. Here
-`chiAdelic d = υ(d) |d| ^ (-1 / 2)`, with `υ` the splitting character of `New.WeilData` and `|d|`
-the idele norm. This is a corollary of `New.Space.Splitting.zeroTerm_omega`. -/
-lemma zeroTermFin_omega (D : V.Splitting V₀ p) {g : Gf E n} {g₀ : G E s₀} {a : Matrix p p (𝔸 E)}
-    (hi : D.iCoord * (G.adeleMatrix (s := s) (1, g) * D.iAdelic) = g₀.adeleMatrix)
-    (hk : D.ActsOnFrame (1, g) a) {d : (𝔸 E)ˣ} (hd : a.det = d.val) (f : 𝒮 V) :
-    zeroTermFin D (V.ω (1, g) f) = (chiAdelic d)⁻¹ • V₀.ω g₀ (zeroTermFin D f) := by
-  simp [zeroTermFin, ← D.zeroTerm_omega g₀ hi hk d hd, omega_integrated]
-
 unseal finitePart in
 /-- Let `D` be a splitting of `V` over `V₀`, with isotropic frame `k` indexed by `p`. The finite
 part `zeroTermFin D : 𝒮 V → 𝒮 V₀` of the zero term along `k` sends `V.finitePart`, the span of the
@@ -175,7 +164,7 @@ lemma exists_zeroTerm_rho_integrated_eq (D : V.Splitting V₀ p) (y : n → 𝔸
   set g : G E s := (D.exists_isAdapted_and_frame_eq 1).choose with hg_def
   have hg : D.IsAdapted g 1 := (D.exists_isAdapted_and_frame_eq 1).choose_spec.1
   obtain ⟨w, hw⟩ := V.exists_rho_integrated_eq y v
-  obtain ⟨L, -, hL⟩ := hg.exists_map_vacVector_apply_zero_omega_eq D.isMixedLaw_slice
+  obtain ⟨L, hL⟩ := hg.exists_apply_zero_omega_integrated_eq D.isMixedLaw_slice
   refine ⟨L (realWeil (blockU g⁻¹.1) w), fun f ↦ ?_⟩
   have h_integrated_eq_omega (f : 𝒮 V) :
       V.integrated w f = V.ω g (V.integrated (realWeil (blockU g⁻¹.1) w) (V.ω (1, g⁻¹.2) f)) := by

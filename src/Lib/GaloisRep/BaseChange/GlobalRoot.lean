@@ -281,7 +281,7 @@ lemma U.isRootQuotient_map {f : R →+* S} (hf : ∀ x : R, f (star x) = star (f
       (map f hf (one_map_ringHom f) a : U (1 : Matrix n n S)) := by
   have h_map : (a.val.val * (aeval γ.val.val z)ᴴ).map f = (aeval γ.val.val z).map f :=
     congrArg (fun M : Matrix n n R ↦ M.map f) h_root
-  show (a.val.val).map f * (aeval ((γ.val.val).map f) (z.map f))ᴴ =
+  change (a.val.val).map f * (aeval ((γ.val.val).map f) (z.map f))ᴴ =
     aeval ((γ.val.val).map f) (z.map f)
   simpa [conjTranspose_map _ hf, map_aeval_matrix] using h_map
 
@@ -445,7 +445,8 @@ lemma New.U.conjTranspose_aeval {R n : Type} [CommRing R] [StarRing R] [Fintype 
     (hv : aeval (γ : Matrix n n R) v * (γ : Matrix n n R) = 1) (f : R[X]) :
     (aeval (γ : Matrix n n R) f)ᴴ = aeval (γ : Matrix n n R) ((f.map conj).comp v) := by
   have h_inv : (γ : Matrix n n R)ᴴ = aeval (γ : Matrix n n R) v := by
-    simpa using left_inv_eq_left_inv γ.property hv
+    simpa [star_eq_conjTranspose] using left_inv_eq_left_inv
+        (mem_unitaryGroupOf_iff.1 γ.property) hv
   calc (aeval (γ : Matrix n n R) f)ᴴ = aeval (γ : Matrix n n R)ᴴ (f.map conj) :=
         star_aeval (R := R) (γ : Matrix n n R) f
     _ = aeval (γ : Matrix n n R) ((f.map conj).comp v) := by rw [h_inv, aeval_comp]
@@ -701,12 +702,10 @@ theorem exists_mem_coe_eq_norm_aeval_of_forall_det_aeval_mem {R A : Type*} [Comm
 
 /-- The `i`-th power of `Polynomial.mapRingHom f` maps the coefficients by `f ^ i`. -/
 theorem Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ)
-    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) := by
-  induction i with
-  | zero => simp [RingHom.one_def]
-  | succ i ih =>
-    rw [pow_succ', RingHom.mul_def, RingHom.comp_apply, ih, coe_mapRingHom, Polynomial.map_map,
-      pow_succ', RingHom.mul_def]
+    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) :=
+  let F : (R →+* R) →* R[X] →+* R[X] :=
+    ⟨⟨mapRingHom, mapRingHom_id⟩, fun f g ↦ (mapRingHom_comp f g).symm⟩
+  DFunLike.congr_fun (map_pow F f i).symm p
 
 /-- The finite idele of `y` in `Lˣ` is the image of `y` in the finite adeles. -/
 private lemma New.coe_principalIdele {L : Type*} [Field L] [NumberField L] (y : Lˣ) :
@@ -806,7 +805,7 @@ some unit `y` and `c` with `θ q c` a unit make `star (θ q c) * (y * θ q (T^[p
 self-adjoint, then some `y q`, `c₀ q` make `y q * θ q (T c)` a unit and `star (θ q c)` times it
 self-adjoint at all `q`, for every `c` with `θ q c = θ q (c₀ q)` for all `q`. -/
 private lemma New.exists_isSelfAdjoint_principalIdele_of_forall_minimalPeriod {E E' : Type}
-    [Field E] [Field E'] [NumberField E'] [IsCMField E'] [Algebra E E'] {P : E'[X]}
+    [Field E] [Field E'] [NumberField E'] [Algebra E E'] {P : E'[X]}
     [∀ q : primeFactors P, Fact (Irreducible q.val)]
     [∀ q : primeFactors P, IsCMField (AdjoinRoot q.val)]
     (θ : ∀ q : primeFactors P, (𝔸f E')[X] →ₐ[𝔸f E'] 𝔸f (AdjoinRoot q.val))

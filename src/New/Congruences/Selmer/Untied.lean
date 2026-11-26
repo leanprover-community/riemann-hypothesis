@@ -58,9 +58,6 @@ open Matrix.Module
 variable {E O n B : Type} [Field E] [EmbeddedNumberField E] [CommRing O] [Fintype n] [DecidableEq n]
   [AddCommGroup B] [Module O B] {ρ : Gal(Ω/E) →* Matrix n n O} {c : Gal(Ω/E) → n → B}
 
-lemma affineAction_apply (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) (g : Gal(Ω/E))
-    (u : n → B) : affineAction hc g u = c g + ρ g • u := rfl
-
 /-- If `g` acts through `ρ` by the scalar `α`, then the affine action `u ↦ c(g) + g u` of the
 cocycle `c` has `k`-th iterate `u ↦ α ^ k u + ∑ i < k, α ^ i c(g)` at `g`. At `u = 0` this says
 `c(g ^ k) = ∑ i < k, α ^ i c(g)`. -/
@@ -430,7 +427,7 @@ lemma IsTiedPrimes.frob_sub_one_smul_tie_eq_zero_of_selmerOnLine [ThePrime ℓ]
     · simp [hs]
     · simp [Φ, sub_smul, add_smul, mul_smul,
         h_trivial (h_triv_of_V φ (hp.apply_idOrConjInv_of_slope_ne_zero v.2 hs b))]
-  show (Φ - 1) • (z γ - e ((d v).2 i) • z φ) = 0
+  change (Φ - 1) • (z γ - e ((d v).2 i) • z φ) = 0
   rw [smul_sub, h_commute, smul_comm, h_slope, sub_self]
 
 /-- Let `J` be a finite set of primes of the CM field `E` that lie, with their conjugates, outside
@@ -452,7 +449,7 @@ lemma IsTiedPrimes.relLength_tied_le_sum_ker [ThePrime ℓ]
     (hp : IsTiedPrimes ℓ S₀ V W N P₀ J d) (hN : N ≠ 0)
     (i : ι) (h_unr : ∀ g ∈ inertiaAbove S₀ᶜ, reduceModPow ℓ M ρ g = 1)
     (h_triv_of_V : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M ρ g = 1) {O' : Type} [CommRing O']
-    [DVR O'] (e : O →+* O') {y : O'}
+    (e : O →+* O') {y : O'}
     (h_geom_sum : ∀ α : O', y ∣ α - 1 → (ℓ ^ M : O') ∣ ∑ j ∈ range (ℓ ^ N), α ^ j)
     (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
     {I : Finset (FinPlace E)} (hI : I ⊆ J) (hy_zero_of_first_mem : P₀ ∈ I → y = 0) :

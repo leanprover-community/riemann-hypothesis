@@ -262,7 +262,8 @@ theorem realFrameGram_eq_inner (γ y : 𝔰.G₁) (a b : Fin (𝔰.ϱ + 1)) :
   -- `y⁻¹` preserves the form, so `J γ = (y⁻¹)ᴴ J (y⁻¹ γ)`; read off the entry `(a, b)`.
   have h_entry : realFrameGram γ a b = (y⁻¹.val.valᴴ * (𝔰.J₁ * (y⁻¹.val.val * γ.val.val)))
       (𝔰.besselFrame a) (𝔰.besselFrame b) := by
-    simp only [← mul_assoc, mem_U.1 y⁻¹.property]
+    simp only [← mul_assoc,
+        show y⁻¹.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 y⁻¹.property]
     rfl
   rw [h_entry]
   -- both sides are the same dot product of the two frame vectors
@@ -370,11 +371,9 @@ subgroup `besselS`, the group of the elements of `𝔰.G₁` that map each vecto
 e_ϱ, z) to itself plus a combination of the earlier ones. -/
 theorem orthoFrame_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s ∈ besselS) :
     orthoFrame (s * y) = orthoFrame y := by
-  obtain ⟨u, hu, k, rfl⟩ : ∃ u ∈ besselU, ∃ k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
-      s = u * toBesselH 𝔰 1 k :=
-    exists_besselU_mul_toBesselH hs isUnit_one
-  have h_fix : frameVector (embedH k * y) = frameVector y :=
-    frameVector_mul_of_mem_besselFixer (mem_besselFixer_of_mem_besselH (toBesselH_mem k))
+  obtain ⟨u, hu, h, hh, rfl⟩ := mem_besselS.1 hs
+  have h_fix : frameVector (h * y) = frameVector y :=
+    frameVector_mul_of_mem_besselFixer (mem_besselFixer_of_mem_besselH hh)
   rw [orthoFrame, orthoFrame, ← h_fix, mul_assoc]
   refine (gramSchmidt_eq_of_sub_mem_span fun a ↦ ?_).symm
   -- `u` acts on the frame by a unitriangular matrix
@@ -442,17 +441,15 @@ theorem gramSchmidtMatrix_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s �
     gramSchmidtMatrix (s * y) * frameMatrix s = gramSchmidtMatrix y := by
   -- Both matrices express the frame at `y` in the same orthogonal family of nonzero vectors.
   have h_orth : orthoFrame (s * y) = orthoFrame y := orthoFrame_besselS_mul y hs
-  obtain ⟨u, hu, k, rfl⟩ : ∃ u ∈ besselU, ∃ k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
-      s = u * toBesselH 𝔰 1 k :=
-    exists_besselU_mul_toBesselH hs isUnit_one
-  have h_fix : frameVector (embedH k * y) = frameVector y :=
-    frameVector_mul_of_mem_besselFixer (mem_besselFixer_of_mem_besselH (toBesselH_mem k))
+  obtain ⟨u, hu, h, hh, rfl⟩ := mem_besselS.1 hs
+  have h_fix : frameVector (h * y) = frameVector y :=
+    frameVector_mul_of_mem_besselFixer (mem_besselFixer_of_mem_besselH hh)
   set C : 𝔰.FrameMatrix :=
-    gramSchmidtMatrix (u * toBesselH 𝔰 1 k * y) * frameMatrix (u * toBesselH 𝔰 1 k) with hC
+    gramSchmidtMatrix (u * h * y) * frameMatrix (u * h) with hC
   have h_same_expansion (b : Fin (𝔰.ϱ + 1)) : ∑ a : Fin (𝔰.ϱ + 1), C a b • orthoFrame y a =
       ∑ a : Fin (𝔰.ϱ + 1), gramSchmidtMatrix y a b • orthoFrame y a := by
     rw [← frameVector_eq_sum_orthoFrame, ← h_fix, frameVector_eq_sum b hu, ← mul_assoc, hC,
-      frameMatrix_mul_besselH u (toBesselH_mem k)]
+      frameMatrix_mul_besselH u hh]
     simp only [frameVector_eq_sum_orthoFrame, h_orth, Matrix.mul_apply, sum_smul, smul_sum,
       smul_smul, mul_comm]
     exact sum_comm
@@ -777,7 +774,8 @@ lemma gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
       (frameImage x)ᴴ * (𝔰.middleGram N).splitGram * frameImage y =
         (xᴴ * (𝔰.middleGram N).splitGram * y).submatrix 𝔰.besselFrame 𝔰.besselFrame := rfl
   rw [conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul, fromRows_mul_fromCols,
-    h_block, h_block, h_block, h_block, mem_U.1 γ.property]
+    h_block, h_block, h_block, h_block,
+    show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.property]
   simp [h_frame, h_herm, Shape.Form.frameGram]
 
 /-- Let `N` be self-adjoint in the commutative star ring `R`, let h be the form of ϱ hyperbolic

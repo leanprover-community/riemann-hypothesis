@@ -70,7 +70,7 @@ lemma denseRange_conjColumnsAtInfinity : DenseRange (conjColumnsAtInfinity E �
     fun y ↦ ⟨fun a l v ↦ star (y v l a), by simp [conjSwap]⟩
   have h_dense : DenseRange (Pi.map fun _ : 𝔰.κ ↦ Pi.map fun _ : ι ↦ RingHom.pi (Φ (E := E))) :=
     .piMap fun _ ↦ .piMap fun _ ↦ denseRange_Φ
-  show DenseRange (conjSwap ∘ Pi.map fun _ : 𝔰.κ ↦ Pi.map fun _ : ι ↦ RingHom.pi (Φ (E := E)))
+  change DenseRange (conjSwap ∘ Pi.map fun _ : 𝔰.κ ↦ Pi.map fun _ : ι ↦ RingHom.pi (Φ (E := E)))
   exact h_surjective.denseRange.comp h_dense (by fun_prop)
 
 variable (ι) in
@@ -104,8 +104,8 @@ instance {S : Filling E 𝔰} {c : S.Classes} : Countable (S.columnLattice ι c)
 omit [Fintype ι] in
 /-- If `q` and `q'` are matrices whose columns lie in `Λ ∩ X₀`, for the lattice `Λ` of the class
 `c`, then the hermitian products of their columns, the entries of `qᴴ * q'`, are algebraic
-integers. Here `E` contains a primitive root of unity of order `5040`. -/
-lemma isIntegral_conjTranspose_mul {S : Filling E 𝔰} {c : S.Classes} [HasPrimitiveRoot5040 E]
+integers. -/
+lemma isIntegral_conjTranspose_mul {S : Filling E 𝔰} {c : S.Classes}
     {q q' : Matrix 𝔰.κ ι E} (hq : IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix q))
     (hq' : IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix q')) (l l' : ι) :
     IsIntegral ℤ ((qᴴ * q') l l') := by
@@ -133,7 +133,7 @@ instance {S : Filling E 𝔰} {c : S.Classes} [HasPrimitiveRoot5040 E] [S.IsAdmi
     isOpen_lt (by fun_prop) continuous_const
   suffices h_zero : ({0} : Set (S.columnLattice ι c)) = Subtype.val ⁻¹' U by
     rw [h_zero]
-    exact hU.preimage continuous_subtype_val
+    exact hU.preimage continuous_subtypeVal
   ext ⟨x, hx⟩
   obtain ⟨q, hq, rfl⟩ := mem_columnLattice.1 hx
   refine ⟨fun h_eq ↦ ?_, fun h_short ↦ Subtype.ext ?_⟩
@@ -180,7 +180,7 @@ lemma span_columnLattice {E : Type} [Field E] [CMType E] {𝔰 : Shape} {ι : Ty
         Set (InfinitePlace E → ι → 𝔰.κ → ℂ)) :=
     denseRange_conjColumnsAtInfinity.mono h_range
   rw [← Submodule.dense_iff_topologicalClosure_eq_top.1 h_dense,
-    (Submodule.closed_of_finiteDimensional _).submodule_topologicalClosure_eq]
+    (Submodule.isClosed_of_finiteDimensional _).submodule_topologicalClosure_eq]
 
 /-- Let the CM field `E` contain a primitive root of unity of order `5040`, hence a square root of
 `-1`. For an algebraic integer `x` of `E`, the sum over the infinite places `v` of the real parts of

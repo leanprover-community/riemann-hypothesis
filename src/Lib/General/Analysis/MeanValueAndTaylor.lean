@@ -1,6 +1,6 @@
 module
 
-public import Lib.CM.Sigma.Basic
+public import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Circle means, Taylor series at zero, a power bound, and smooth matrix operations
@@ -10,7 +10,7 @@ develops the algebra of Taylor series at 0 of analytic functions and proves an e
 x^l by a factorial and exponentials. It also gives smoothness rules for matrix operations and
 extends analytic germs to globally smooth maps.
 
-The imported notion `New.taylorAtZero f` is the formal power series whose `n`-th coefficient is
+The definition `New.taylorAtZero f` is the formal power series whose `n`-th coefficient is
 `iteratedDeriv n f 0 / n !`, the Taylor series of `f : ℂ → ℂ` at 0.
 
 ## Main definitions and results
@@ -102,6 +102,10 @@ open PowerSeries Finset Nat AnalyticAt Complex
 attribute [fun_prop] Differentiable.analyticAt
 
 namespace New
+
+/-- The Taylor series ∑ f⁽ⁿ⁾(0) zⁿ/n! at 0 of a function f : ℂ → ℂ, as a formal power series. -/
+noncomputable def taylorAtZero (f : ℂ → ℂ) : PowerSeries ℂ :=
+  PowerSeries.mk fun n ↦ iteratedDeriv n f 0 / n.factorial
 
 @[simp]
 lemma coeff_taylorAtZero {f : ℂ → ℂ} (n : ℕ) :
@@ -199,7 +203,7 @@ lemma New.pow_le_exp_log_factorial_add (l : ℕ) (x : NNReal) (v : ℝ) :
         gcongr
         exact pow_div_factorial_le_exp _ (by positivity) l
     _ = exp (log l.factorial + l * v + x / exp v) := by
-        simp [exp_add, exp_log, l.factorial_pos, exp_nat_mul]
+        simp [exp_add, exp_log, l.factorial_pos, exp_natCast_mul]
 
 end PowerExpBound
 

@@ -640,7 +640,7 @@ theorem tendsto_jump (h : IsTraceLimit r A F a ρ) [PadicPlaceEmbedding E A ℓ]
     (hL η).factors o y
   have h_iso {x : PadicAlgCl ℓ} : ‖γ x‖ = ‖x‖ := by
     obtain ⟨g, hg⟩ := exists_gp_eq_algHom γ
-    simp [hg, ← smul_coe_Cp]
+    simp [hg, ← UniformSpace.Completion.algEquiv_smul_coe]
   -- In the twist the jump w is w - (-d).
   obtain ⟨t, ht⟩ := exists_uniform_trace_sum_eq_jump Δ (2 * d) (w - -d)
   choose z hz h_proj using fun θ ↦ ht (finBasis ℤ_[ℓ] (L θ)) 1 ((hL θ).isCrystallineUpTo (h_in θ))

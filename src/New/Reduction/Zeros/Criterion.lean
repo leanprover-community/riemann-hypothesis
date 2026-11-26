@@ -87,10 +87,4 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
     simpa [hρ_ne_zero, sub_ne_zero.2 hρ_ne.symm, NeZero.ne] using h_landau
   have h_entire : entireL ψ ρ ≠ 0 := (analyticOrderNatAt_entireL_eq_zero_iff ψ ρ).1
     (Finset.sum_eq_zero_iff.1 h_count ψ (Finset.mem_univ ψ))
-  -- Away from `s = 1`, `entireL ψ` is `L(s, ψ)` or `(s - 1) L(s, ψ)`.
-  rw [entireL] at h_entire
-  split_ifs at h_entire with hψ
-  · subst hψ
-    rw [DirichletCharacter.LFunctionTrivChar₁, Function.update_of_ne hρ_ne] at h_entire
-    exact right_ne_zero_of_mul h_entire
-  · exact h_entire
+  exact (entireL_ne_zero_iff ψ hρ_ne).1 h_entire

@@ -1,6 +1,7 @@
 module
 
 public import Lib.Adelic.Hecke.ClassSums
+public import Lib.Adelic.Unitary.Defs
 public import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
@@ -469,7 +470,7 @@ lemma exists_unipotent_conj_mem_proIwahori (ht : t ∈ dominantTorus) (hg : g �
   -- As `t` is dominant, the lower triangular `u⁻¹ * g` is block triangular for the valuations
   -- of `t⁻¹`.
   have h_tri : (u⁻¹ * g).val.BlockTriangular fun i : n ↦ v ((t⁻¹ i : Fˣ) : F) := fun i j hij ↦ by
-    have h_lt : v (t i : F) < v (t j : F) := by simpa [inv_lt_inv₀, zero_lt_iff] using hij
+    have h_lt : v (t i : F) < v (t j : F) := by simpa [inv_lt_inv₀, pos_iff_ne_zero] using hij
     exact h_lower i j (ht.reflect_lt h_lt)
   have h_conj : diagGL t⁻¹ * (u⁻¹ * g) * (diagGL t⁻¹)⁻¹ ∈ proIwahori :=
     diagGL_conj_mem_proIwahori (mul_mem (inv_mem huK) hg) h_tri
@@ -660,7 +661,7 @@ lemma eventually_v_mul_pow_le_one (ht : StrictMono fun i : Fin N ↦ v (t i : F)
   simp_rw [eventually_all, ← div_pow]
   intro i j hij
   -- The powers of `t i / t j` tend to `0`, and `𝒪[F]` is a neighbourhood of `0`.
-  have h_lt : v (t i / t j : F) < 1 := by simp [ht hij, div_lt_one₀, zero_lt_iff]
+  have h_lt : v (t i / t j : F) < 1 := by simp [ht hij, div_lt_one₀, pos_iff_ne_zero]
   exact (tendsto_zero_pow_of_v_lt_one h_lt).mul_const (a i j)
     ((isOpen_integer F).mem_nhds (by simp))
 
@@ -670,7 +671,7 @@ lemma eventually_pow_mul_mem_dominantTorus (ht : StrictMono fun i : Fin N ↦ v 
     (s : Fin N → Fˣ) :
     ∀ᶠ k : ℕ in atTop, t ^ k * s ∈ dominantTorus := by
   filter_upwards [eventually_v_mul_pow_le_one ht fun i j ↦ s i / s j] with k hk
-  simpa [dominantTorus, monotone_iff_forall_lt, field, zero_lt_iff] using hk
+  simpa [dominantTorus, monotone_iff_forall_lt, field, pos_iff_ne_zero] using hk
 
 /-- For a diagonal `t` and an integer `j`, the subgroup `diag(t)⁻ʲ I₁ diag(t)ʲ` of the `x` with
 `diag(t) ^ j * x * diag(t) ^ (-j)` in the pro-`p` Iwahori subgroup `I₁`. -/

@@ -217,7 +217,7 @@ lemma norm_onBlock_gram_sub_one_le (e : X ⊕ Fin M ≃ n) (hε : ∀ x : X, ε 
   -- The block on `X` of `gᴴ ε g = ε` reads `aᴴ a + onBlock e (Wᴴ ε W) = 1`, where `W` consists of
   -- the rows of `g - 1` off `X`.
   have h_form : (g : Matrix n n ℂ)ᴴ * signMatrix ε * (g : Matrix n n ℂ) = signMatrix ε :=
-    mem_U.1 g.2
+    mem_unitaryGroupOf_iff.1 g.2
   generalize (g : Matrix n n ℂ) = A at h_form ⊢
   set W : Matrix n n ℂ := intDiagonal (offBlockIndicator e) * (A - 1) with hW
   have hW_on (x : X) (i : n) : W (e (.inl x)) i = 0 := by simp [hW, offBlockIndicator]
@@ -240,7 +240,7 @@ lemma norm_onBlock_gram_sub_one_le (e : X ⊕ Fin M ≃ n) (hε : ∀ x : X, ε 
 then `u`, extended by `1` on the coordinates from `Y`, is an element `s` of `USign ε`: `s -
 1 = inclMatrix ℂ (f ∘ .inl) * (u - 1) * (inclMatrix ℂ (f ∘ .inl))ᴴ`. Here `inclMatrix ℂ (f ∘ .inl)`
 is the matrix of the inclusion of `X` in `n`. -/
-lemma exists_unitary_sub_one_eq_inclMatrix {u : Matrix X X ℂ} {Y : Type} [Fintype Y]
+lemma exists_unitary_sub_one_eq_inclMatrix {u : Matrix X X ℂ} {Y : Type}
     (f : X ⊕ Y ≃ n) (hε : ∀ x : X, ε (f (.inl x)) = 1) (hu : uᴴ * u = 1) :
     ∃ s : USign ε, (s : Matrix n n ℂ) - 1 =
       inclMatrix ℂ (f ∘ .inl) * (u - 1) * (inclMatrix ℂ (f ∘ .inl))ᴴ := by
@@ -259,7 +259,8 @@ lemma exists_unitary_sub_one_eq_inclMatrix {u : Matrix X X ℂ} {Y : Type} [Fint
   calc (1 + Q * (u - 1) * Qᴴ)ᴴ * signMatrix ε * (1 + Q * (u - 1) * Qᴴ)
       = signMatrix ε + Q * (uᴴ - 1) * (Qᴴ * signMatrix ε) + signMatrix ε * Q * (u - 1) * Qᴴ +
           Q * (uᴴ - 1) * (Qᴴ * (signMatrix ε * Q)) * (u - 1) * Qᴴ := by
-        simp [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc, add_assoc, add_left_comm]
+        simp [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]
+        abel
     _ = signMatrix ε + Q * ((uᴴ - 1) + (u - 1) + (uᴴ - 1) * (u - 1)) * Qᴴ := by
         simp [hQ_sgn, hQ_sgn', hQ_iso, Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc, add_assoc]
     _ = signMatrix ε := by simp [h_expand, hu]
@@ -512,7 +513,8 @@ lemma conjTranspose_blockDiagPart_mul_blockDiagPart (g : USign ε) :
   -- With `g' = ε g ε` one has `a = (g + g') / 2`, `y = (g - g') / 2` and `gᴴ g' = g'ᴴ g = 1`.
   set g' : Matrix n n ℂ := signMatrix ε * g * signMatrix ε with hg'
   have h_right : (g : Matrix n n ℂ)ᴴ * g' = 1 := by
-    rw [hg', ← mul_assoc, ← mul_assoc, mem_U.1 g.2, signMatrix_mul_self]
+    rw [hg', ← mul_assoc, ← mul_assoc, ← star_eq_conjTranspose, mem_unitaryGroupOf_iff.1 g.2,
+      signMatrix_mul_self]
   have h_left : g'ᴴ * (g : Matrix n n ℂ) = 1 := by simpa using congrArg conjTranspose h_right
   simp only [noncompactPart, blockDiagPart_eq, ← hg', conjTranspose_sub, conjTranspose_smul,
     conjTranspose_add, star_inv₀, star_ofNat, mul_add, add_mul, mul_sub, sub_mul, smul_add,

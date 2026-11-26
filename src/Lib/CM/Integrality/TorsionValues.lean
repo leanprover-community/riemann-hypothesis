@@ -50,8 +50,6 @@ namespace New.CMLattice
 
 variable {d : ℕ} [PrimeSevenModEight d] (C : CMLattice d) {p : ℕ} [Fact p.Prime]
 
-lemma mem_valRingCp_iff_norm_le_one {x : ℂ_[p]} : x ∈ valRingCp p ↔ ‖x‖ ≤ 1 := Iff.rfl
-
 /-- If `g ^ 2 + u g = v` in `ℂ_p` and `‖u‖, ‖v‖ ≤ 1`, then `‖g‖ ≤ 1`: a root of a monic quadratic
 with integral coefficients is integral. -/
 lemma norm_le_one_of_sq_add_mul_eq {g u v : ℂ_[p]} (hu : ‖u‖ ≤ 1) (hv : ‖v‖ ≤ 1)
@@ -69,8 +67,8 @@ lemma norm_le_one_of_sq_add_mul_eq {g u v : ℂ_[p]} (hu : ‖u‖ ≤ 1) (hv : 
 lemma norm_a₁_le_one [PadicPlace p] : ‖ιₚ C.a₁‖ ≤ 1 := by
   -- `a₁ ^ 4 = (a₁ ^ 4 - 64) + 64` is a sum of two integral elements.
   have h_pow : ιₚ C.a₁ ^ 4 - 64 + 64 ∈ valRingCp p :=
-    add_mem (mem_valRingCp_iff_norm_le_one.2 (C.norm_disc_eq_one ιₚ).le) (ofNat_mem _ 64)
-  rwa [sub_add_cancel, mem_valRingCp_iff_norm_le_one, norm_pow,
+    add_mem (mem_valRingCp.2 (C.norm_disc_eq_one ιₚ).le) (ofNat_mem _ 64)
+  rwa [sub_add_cancel, mem_valRingCp, norm_pow,
     pow_le_one_iff_of_nonneg (norm_nonneg _) four_ne_zero] at h_pow
 
 end New.CMLattice
@@ -136,8 +134,8 @@ lemma torsionValue_eq (n : ℕ) (G : ℂ → ℂ) (u : ℂ) :
     change -(n • C.hermitianForm u u / 2) = _
     rw [nsmul_eq_mul, hermitianForm_apply, mul_conj']
     ring
-  simp only [torsionValue, thetaShift_apply, zero_add, neg_zero, add_zero, map_zero, ← exp_nat_mul,
-    ← h_exponent, mul_comm (G u)]
+  simp only [torsionValue, thetaShift_apply, zero_add, neg_zero, add_zero, map_zero,
+    ← exp_natCast_mul, ← h_exponent, mul_comm (G u)]
 
 /-- Products: degrees add and torsion values multiply. -/
 lemma torsionValue_mul (m n : ℕ) (F G : ℂ → ℂ) (u : ℂ) :
@@ -293,7 +291,7 @@ lemma torsionValue_two_mul (G : ℂ → ℂ) (u : ℂ) :
 
 /-- For a prime `d ≡ 7 (mod 8)` the doubling formula for `θ` holds for torsion values:
 `θ[2 u] = θ[u] ^ 4 - σ[u] ^ 4`. -/
-lemma torsionValue_theta_two_mul [PrimeSevenModEight d] (u : ℂ) :
+lemma torsionValue_theta_two_mul (u : ℂ) :
     C.torsionValue 1 C.θ (2 * u) = C.torsionValue 1 C.θ u ^ 4 - C.torsionValue 1 C.σ u ^ 4 := by
   rw [torsionValue_two_mul]
   simp only [torsionValue_eq, theta_two_mul]
@@ -301,7 +299,7 @@ lemma torsionValue_theta_two_mul [PrimeSevenModEight d] (u : ℂ) :
 
 /-- For a prime `d ≡ 7 (mod 8)` the doubling formula for `σ²` holds for torsion values:
 `σ[2 u]² = θ[u]² σ[u]² (4 θ[u] ^ 4 + a₁² θ[u]² σ[u]² + 4 σ[u] ^ 4)`. -/
-lemma torsionValue_sigma_two_mul_sq [PrimeSevenModEight d] (u : ℂ) :
+lemma torsionValue_sigma_two_mul_sq (u : ℂ) :
     C.torsionValue 1 C.σ (2 * u) ^ 2 =
       C.torsionValue 1 C.θ u ^ 2 * C.torsionValue 1 C.σ u ^ 2 *
         (4 * C.torsionValue 1 C.θ u ^ 4 +
@@ -398,7 +396,7 @@ lemma hasIntegralValues_theta [PrimeSevenModEight d] : C.HasIntegralValues (p :=
 
 /-- For a prime `d ≡ 7 (mod 8)` the torsion values of `y θ³` (`translatedYThetaCube`) satisfy the
 monic quadratic equation that the cubic gives after multiplication by `θ ^ 6`. -/
-lemma torsionValue_translatedYThetaCube_sq_add [PrimeSevenModEight d] (u : ℂ) :
+lemma torsionValue_translatedYThetaCube_sq_add (u : ℂ) :
     C.torsionValue 3 C.translatedYThetaCube u ^ 2 +
       C.a₁ * C.torsionValue 1 C.θ u * C.torsionValue 1 C.σ u ^ 2 *
         C.torsionValue 3 C.translatedYThetaCube u =

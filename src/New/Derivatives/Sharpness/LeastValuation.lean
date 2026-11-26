@@ -88,7 +88,7 @@ end LowestTerm
 
 /-- If each factor `f i` has lowest term `c i * z ^ α i` for the weights `w`, then the product of
 the `f i` has lowest term `(∏ c i) * z ^ (∑ α i)`. -/
-lemma IsLowestTerm.prod {X R ι : Type} [Fintype X] [CommRing R] {w : X → ℕ} {s : Finset ι}
+lemma IsLowestTerm.prod {X R ι : Type} [CommRing R] {w : X → ℕ} {s : Finset ι}
     {f : ι → MvPowerSeries X R} {α : ι → X →₀ ℕ} {c : ι → R}
     (hf : ∀ i ∈ s, IsLowestTerm w (f i) (α i) (c i)) :
     IsLowestTerm w (∏ i ∈ s, f i) (∑ i ∈ s, α i) (∏ i ∈ s, c i) := by
@@ -99,7 +99,7 @@ lemma IsLowestTerm.prod {X R ι : Type} [Fintype X] [CommRing R] {w : X → ℕ}
     exact (hf i (mem_cons_self i s)).mul (ih fun j hj ↦ hf j (mem_cons_of_mem hj))
 
 /-- If `f` has lowest term `c * z ^ α`, then `f ^ k` has lowest term `c ^ k * z ^ (k • α)`. -/
-lemma IsLowestTerm.pow {X R : Type} [Fintype X] [CommRing R] {w : X → ℕ} {f : MvPowerSeries X R}
+lemma IsLowestTerm.pow {X R : Type} [CommRing R] {w : X → ℕ} {f : MvPowerSeries X R}
     {α : X →₀ ℕ} {c : R} (hf : IsLowestTerm w f α c) (k : ℕ) :
     IsLowestTerm w (f ^ k) (k • α) (c ^ k) := by
   simpa using IsLowestTerm.prod (s := range k) fun _ _ ↦ hf
@@ -269,7 +269,7 @@ def LeastValLE (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) (n :
 /-- The series `Θ = ∏ θ(μ_j z) ^ m j` has constant term `1`, because `θ(0) = 1`. -/
 lemma constantCoeff_thetaProd {C : CMLattice d} {μ : J → X → ℂ_[p]} {m : J → ℕ} :
     constantCoeff (C.thetaProd μ m) = 1 := by
-  simp [thetaProd]
+  simp [thetaProd, PowerSeries.constantCoeff_subst_of_constantCoeff_zero]
 
 /-- The series `Θ = ∏ θ(μ_j z) ^ m j` has lowest term `1` for the total degree. -/
 lemma isLowestTerm_thetaProd (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J → ℕ) :
@@ -544,6 +544,7 @@ lemma leastValLE_of_unit_coefficients (C : CMLattice d) {μ : J → X → ℂ_[p
           norm_natCast_eq_inv_pow_padicValNat, factorial_ne_zero, prod_pow_eq_pow_sum, ← cast_sum,
           div_eq_mul_inv]
 
+omit [PrimeSevenModEight d] in
 /-- If each coordinate `z_x`, up to a unit `s`, is a combination `∑ a x j • μ_j z` with coefficients
 in the ring `valRingCp p` of integers of `ℂ_p`, then `val₆(ν) ≤ 0` in every degree `ν`: some
 coefficient of degree `ν` in some product `∏ (H_c Θ)(z_c)` over six copies `z_c` of the variables,
@@ -602,13 +603,15 @@ lemma rescale_mem_range_seriesToCp_of_mem_multiSeriesRing (C : CMLattice d) {μ 
     rw [rescale_subst_linearSeries, ← hy₀, PowerSeries.map_subst (hasSubst_linearSeries _)]
     simp [linearSeries, smul_eq_C_mul, PowerSeries.map]
   have hY₀ (i : J) : constantCoeff (Y i) = 0 := Subtype.ext <|
-    show constantCoeff (seriesToCp (Y i)) = 0 by simp [hY, rescale_subst_linearSeries]
+    show constantCoeff (seriesToCp (Y i)) = 0 by
+      simp [hY, rescale_subst_linearSeries, PowerSeries.constantCoeff_subst_of_constantCoeff_zero]
   refine ⟨g.subst Y, ?_⟩
   -- both sides substitute the series `y(μ_i ϖ z)` into `g`
   rw [map_subst (hasSubst_of_constantCoeff_zero hY₀), RingHom.comp_apply]
   simp only [hY, rescale_eq_subst, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, coe_substAlgHom]
   -- the two substituted families agree by definition of composition
-  exact (subst_comp_subst_apply (hasSubst_of_constantCoeff_zero fun i ↦ by simp) (.smul_X _) _).symm
+  exact (subst_comp_subst_apply (hasSubst_of_constantCoeff_zero fun i ↦ by
+    simp [PowerSeries.constantCoeff_subst_of_constantCoeff_zero]) (.smul_X _) _).symm
 
 end CMLattice
 

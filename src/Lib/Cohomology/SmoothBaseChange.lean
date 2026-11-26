@@ -96,9 +96,7 @@ lemma isBijective_algToBaseChange (F : AbFunctor TestRing) :
     refine ⟨g, ⟨congrArg _ (Over.OverMorphism.ext congr($(hzf).val.1.down).symm), rfl⟩, ?_⟩
     bound
   · -- On coefficients the comparison is the identity of `F c`.
-    change Bijective (F.map (𝟙 c))
-    rw [F.map_id]
-    exact bijective_id
+    exact ConcreteCategory.bijective_of_isIso (F.map (𝟙 c))
 
 end BaseChange
 

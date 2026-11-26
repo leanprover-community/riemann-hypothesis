@@ -229,7 +229,7 @@ lemma pairing_mem_smoothInvariants
   obtain ⟨ψ, hψ_smooth, hψ_equivariant⟩ := ψ
   refine ⟨Set.forall_mem_range.2 ?_, ?_⟩
   · -- Both forms transform under `V.weightRep`, which preserves `B`.
-    show ∀ (γ : U V.J) (g : Gf E n), B (φ (V.embFin γ * g)) (ψ (V.embFin γ * g)) = B (φ g) (ψ g)
+    change ∀ (γ : U V.J) (g : Gf E n), B (φ (V.embFin γ * g)) (ψ (V.embFin γ * g)) = B (φ g) (ψ g)
     simp [hφ_equivariant _, hψ_equivariant _, hB]
   · -- The pairing is fixed by every translation that fixes both forms.
     have h_open : (rightStabilizer φ ⊓ rightStabilizer ψ).IsOpen := .inter hφ_smooth hψ_smooth
@@ -301,7 +301,7 @@ lemma hcParameter_strictAnti {w : Φ} : StrictAnti (hcParameter κ e N w) :=
 
 /-- Index the entries of the decreasing sequence `hcParameter κ e (card n) w` by `n` through the
 enumeration `Fintype.equivFin n`. The resulting vector satisfies `IsHCParam κ e`. -/
-lemma isHCParam_hcParameter [DecidableEq Φ] (n : Type) [Fintype n] (κ : Φ → ℕ → ℕ) (e : Φ → ℤ) :
+lemma isHCParam_hcParameter (n : Type) [Fintype n] (κ : Φ → ℕ → ℕ) (e : Φ → ℤ) :
     IsHCParam κ e fun (w : Φ) (i : n) ↦
       hcParameter κ e (Fintype.card n) w (Fintype.equivFin n i) := by
   simp [IsHCParam, Function.Injective, hcParameter_strictAnti.injective.eq_iff, Fin.val_inj]

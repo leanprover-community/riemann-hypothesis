@@ -465,7 +465,7 @@ lemma exists_dvd_dvd_mul_adeleMap_eq {a b : 𝔸f L} (ha : u * adeleMap (σ : L 
     have h_choice : v (b w) ≤ v (a w) ↔
         v (b (FinPlace.comap (σ : L →+* L) w)) ≤ v (a (FinPlace.comap (σ : L →+* L) w)) := by
       rw [← haw, ← hbw]
-      simp [zero_lt_iff, hw, v_locMap_eq_of_surjective (σ : L →+* L) rfl σ.surjective]
+      simp [pos_iff_ne_zero, hw, v_locMap_eq_of_surjective (σ : L →+* L) rfl σ.surjective]
     rw [c_apply, c_apply, if_congr h_choice rfl rfl]
     split_ifs
     exacts [haw, hbw]

@@ -58,9 +58,6 @@ section Orbits
 
 variable {Γ X : Type*} [Group Γ] [MulAction Γ X]
 
-lemma orbit_mk_smul (z : Γ) (p : X) : (⟦z • p⟧ : orbitRel.Quotient Γ X) = ⟦p⟧ :=
-  Quotient.sound (mem_orbit p z)
-
 /-- Let `Γ` permute the blocks `π p` of a partition of `X`. If the stabiliser of `p` is trivial,
 the points of its block that lie in its orbit are as many as the elements of the stabiliser of
 the block. -/
@@ -74,7 +71,7 @@ lemma card_block_inter_orbit {π : X → Set X} (h_block : ∀ p q : X, p ∈ π
       {s ∈ π p | (⟦s⟧ : orbitRel.Quotient Γ X) = ⟦p⟧} := by
     refine subset_antisymm ?_ fun s ⟨hs, h_orbit⟩ ↦ ?_
     · rintro _ ⟨z, hz, rfl⟩
-      exact ⟨(h_block _ p).2 ((h_smul z p).trans hz), orbit_mk_smul z p⟩
+      exact ⟨(h_block _ p).2 ((h_smul z p).trans hz), orbitRel.Quotient.quotient_smul_eq⟩
     · obtain ⟨z, rfl⟩ : s ∈ orbit Γ p := Quotient.exact h_orbit
       exact ⟨z, (h_smul z p).symm.trans ((h_block _ p).1 hs), rfl⟩
   rw [← h_image, Nat.card_image_of_injective h_inj, SetLike.coe_sort_coe]

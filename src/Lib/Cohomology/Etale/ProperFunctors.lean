@@ -95,8 +95,8 @@ lemma TestCohomology.isCohomEquiv_sup_of_isCohomDense
     (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl))
     (h_le : U.whisker testIncl ⊔ V.whisker testIncl ≤ W.whisker testIncl) :
     IsCohomEquiv (locConstCoeff Λ) (freeAb.map (homOfLe h_le)) := by
-  have h_range : Subfunctor.range (homOfLe h_le) = ((U ⊔ V).preimage W.ι).whisker testIncl := by
-    aesop (add simp [homOfLe, toFunctor])
+  have h_range : Subfunctor.range (homOfLe h_le) = ((U ⊔ V).preimage W.ι).whisker testIncl :=
+    range_homOfLe_eq_preimage_of_inf_eq (inf_of_le_left h_le)
   exact (isCohomEquiv_iff_range h_range).2 h_dense.isCohomEquiv
 
 /-- The restriction `Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` on test rings is the restriction to `U ⊔ V`, followed by
@@ -433,7 +433,7 @@ lemma IsTestCohomEquiv.of_connected (hX : IsCohomContinuous Λ X)
   let G : Ideal R ⥤ AddCommGrpCat := TestCohomology.antitoneFamily hU.antitone Λ n
   let K : Ideal R ⥤ AddCommGrpCat := TestCohomology.antitoneFamily (hU.antitone_preimage u) Λ n
   let π (a : Ideal R) : G.obj a →+ K.obj a := TestCohomology.map Λ (fromPreimage (U a) u) n
-  show Bijective (π ⊥)
+  change Bijective (π ⊥)
   have h_nat {a b : Ideal R} (f : a ⟶ b) (x : G.obj a) : K.map f (π a x) = π b (G.map f x) :=
     -- both sides are the pull-back along the composite `u⁻¹(U b) → U a`
     calc K.map f (π a x)

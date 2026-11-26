@@ -148,7 +148,7 @@ lemma HCParam.HasLargeGap.norm_sq_eq_formalDegree_mul_integral (h_gap : l.HasLar
       ∫ g : USign ε, (x : USign ε → ℂ) (g * 1) * starRingEnd ℂ ((x : USign ε → ℂ) g) :=
     h_gap.inner_toL2_rightRegularL2 x x 1
   -- The norm of `U(𝔤) c_λ` is by definition that of the image in `L²`.
-  show ‖h_gap.toL2 x‖ ^ 2 = _
+  change ‖h_gap.toL2 x‖ ^ 2 = _
   simpa [Complex.mul_conj', ← Complex.ofReal_pow, integral_complex_ofReal] using
     congrArg Complex.re h_inner
 
@@ -224,7 +224,7 @@ theorem exists_derivative_kernels (h_gap : l.HasLargeGap A)
     · simpa [π, frameEquiv, U.conj, mul_assoc] using (hZ.const_mul p.matrix⁻¹.val).mul_const
         p.matrix.val
     · -- Conjugating by the frame twists the action; the letter `(a, b)` acts by a matrix unit.
-      show smear _ F_cont (bumpDeriv.adTwist p.matrix⁻¹ Z (bump w)) (π (γ t)) = _
+      change smear _ F_cont (bumpDeriv.adTwist p.matrix⁻¹ Z (bump w)) (π (γ t)) = _
       rw [(bumpDeriv.adTwist p.matrix⁻¹).apply_eq_sum Z]
       simp only [FX_eq, Function.comp_apply, LinearMap.sum_apply, LinearMap.smul_apply, map_sum,
         map_smul, Finset.sum_apply, Pi.smul_apply]
@@ -264,7 +264,7 @@ theorem IsBesselFunction.lintegral_enorm_sq_integral_inner_translate
       HCParam.formalDegree, inv_inv, ← integral_comp_frameEquiv (J := 𝔰.J₁)]
     -- `formalDegree` is the inverse of the integral of `‖dsCoeff‖ ^ 2`.
     rfl
-  simp_rw [h_coeff, enorm_mul, mul_pow, lintegral_mul_const' _ _ (pow_ne_top enorm_ne_top)]
+  simp_rw [h_coeff, eNorm_mul, mul_pow, lintegral_mul_const' _ _ (pow_ne_top eNorm_ne_top)]
   rw [h_norm, lintegral_enorm_sq F_int hF.memLp_top, ← ofReal_norm,
     Complex.norm_of_nonneg (integral_nonneg fun _ ↦ sq_nonneg _)]
 

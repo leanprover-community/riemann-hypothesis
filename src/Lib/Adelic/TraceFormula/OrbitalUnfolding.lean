@@ -173,9 +173,10 @@ lemma mem_U_one_iff_gram_eq {y : GL n (𝔸f E)} {z : GL n E} {β : Matrix n n E
   · -- The three factors of `toFinGL z = V.xFin * (V.xFin⁻¹ * toFinGL z * y) * y⁻¹` carry `V.J` to
     -- `1`, `1` to `1`, and `1` to `β`.
     simpa [mul_assoc] using
-      gram_mul_of_gram_eq (gram_mul_of_gram_eq V.gram_xFin hz) (gram_inv_of_gram_eq hy)
+      gram_mul_of_gram_eq (gram_mul_of_gram_eq V.gram_xFin (mem_unitaryGroupOf_iff.1 hz))
+          (gram_inv_of_gram_eq hy)
   · -- The factors of `V.xFin⁻¹ * toFinGL z * y` carry `1` to `V.J`, to `β`, then to `1`.
-    exact gram_mul_of_gram_eq
+    exact mem_unitaryGroupOf_iff.2 <| gram_mul_of_gram_eq
       (gram_mul_of_gram_eq (gram_inv_of_gram_eq V.gram_xFin) (by rw [← h_map, hz])) hy
 
 /-- For a space `V = (J, x)`, let `V.xFin` be the finite part of `x`. Pairs of a finite adelic frame
@@ -187,7 +188,8 @@ lemma frameClass_eq_iff_mem_orbit (γ δ : U V.J) :
       γ ∈ orbit (ConjAct (U V.J)) δ := by
   refine frameClass_eq_iff.trans ?_
   simp only [V.mem_U_one_iff_gram_eq gram_xFin, mem_orbit_conjAct, isConj_iff, Subtype.ext_iff,
-    Subgroup.coe_mul, Subgroup.coe_inv, Subtype.exists, mem_U, exists_prop]
+    Subgroup.coe_mul, Subgroup.coe_inv, Subtype.exists,
+        mem_unitaryGroupOf_iff, star_eq_conjTranspose, exists_prop]
 
 /-- The component of a rational point `γ` at an infinite place `w` is the image of the matrix `γ`
 under the embedding at `w`, read in the frame `V.x` of the space. -/
@@ -458,7 +460,7 @@ lemma row_mul_eq_smul_of_commute {A t : Matrix n n ℂ} {k : (Matrix n n ℂ)ˣ}
 omit [CMType E] in
 /-- For a nonzero matrix `Q` and points `a`, `b` of the real group, multiplying `a` by `b` on the
 right moves `log ‖Q a_w‖` by at most `‖b_w‖`, in the operator norm. -/
-lemma abs_log_norm_mul_sub_le [Nonempty n] {Q : Matrix n n ℂ} (hQ : Q ≠ 0) (w : InfinitePlace E)
+lemma abs_log_norm_mul_sub_le {Q : Matrix n n ℂ} (hQ : Q ≠ 0) (w : InfinitePlace E)
     (a b : GInf E s) :
     |‖Q * ((a * b) w : Matrix n n ℂ)‖.log - ‖Q * (a w : Matrix n n ℂ)‖.log| ≤
       ‖(b w : Matrix n n ℂ)‖ := by

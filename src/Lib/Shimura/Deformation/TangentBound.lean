@@ -147,7 +147,7 @@ lemma AgreeModEps.ringChar_smul_and_smul_eq_zero (hq : IsPullbackAlong (sqZeroRe
     have h_tiny : IsInfinitesimal ψ (τ ≫ y) := by
       simpa [IsInfinitesimal, eq_zero_iff_factors_zero_section] using
         h_agree B b (homMk _ h_over ≫ τ)
-    show (τ ≫ y').left = (τ ≫ 0).left
+    change (τ ≫ y').left = (τ ≫ 0).left
     rw [hy' _ ψ τ h_tiny, AddMonObj.comp_zero]
   constructor
   · refine h_test fun {C B} s ψ _ τ h_tiny ↦ ?_
@@ -227,7 +227,9 @@ lemma drinfeld_lift (hq : IsPullbackAlong (sqZeroReduction k k) x₀ x)
     fun B b t ↦ h_agree B b (t ≫ g)
   have h_cover : Presieve.ofArrows (fun a ↦ Spec (C a)) j ∈
       Scheme.fpqcPrecoverage x.groupScheme.left :=
-    zariskiPrecoverage_le_fpqcPrecoverage _ (by aesop)
+    -- each `j a` is an open immersion (`hj_open`) and `a` lies in its range (`hj_mem`)
+    zariskiPrecoverage_le_fpqcPrecoverage _
+      ((Scheme.ofArrows_mem_precoverage_iff _).mpr ⟨fun a ↦ ⟨a, hj_mem a⟩, hj_open⟩)
   obtain ⟨F, hF_add, hF⟩ := exists_hom_of_rel (c • 𝟙 _) (AgreeModEps hq' hq _) h_nat h_sub h_ker
     (.ofArrows _ j) h_cover fun _ _ ⟨a⟩ ↦ h_local a
   have h_val (T : Over (Spec (of (TrivSqZeroExt k k)))) (y' : T ⟶ x'.groupScheme)
@@ -287,8 +289,16 @@ lemma isLinear_and_pairing_eq_of_reduction :
       x'.lineBundle.picClass.atPoint (v ≫ f) = x.lineBundle.picClass.atPoint (a • v) := by
     obtain ⟨w, rfl⟩ := hq.isGroupBaseChange.pointEquiv.surjective v
     rw [← map_smul, LinearEquiv.symm_apply_apply]
-    simp [pointEquiv_apply, ← (IsPullbackAlong.isGroupBaseChange _).linear.map_smul, Pic.atPoint,
-      ← IsPullbackAlong.lineBundle_eq_pull, hf]
+    have h_fst : hq.isGroupBaseChange.pointEquiv w ≫ f =
+        hq'.isGroupBaseChange.pointEquiv (a • w) := by
+      simp [pointEquiv_apply, ← (IsPullbackAlong.isGroupBaseChange _).linear.map_smul, hf]
+    refine ⟨h_fst, ?_⟩
+    -- Both classes are the class of `x₀.lineBundle` at `a • w`. (Rewriting with
+    -- `atPoint_picClass_pull` instead of unfolding `Pic.atPoint` by `simp` keeps the kernel check
+    -- short.)
+    rw [h_fst, ← hq'.isGroupBaseChange.atPoint_picClass_pull,
+      ← hq.isGroupBaseChange.atPoint_picClass_pull, ← hq'.lineBundle_eq_pull,
+      ← hq.lineBundle_eq_pull]
   have h_isog_char : IsIsogeny (ringChar k • 𝟙 x.groupScheme) :=
     mod_cast x.isIsogeny_smul_id (a := ringChar k) NeZero.out
   -- For the pairing, `pairing_eq_of_fpqc_cover` lets us assume that the first point is a multiple
@@ -316,16 +326,17 @@ lemma isLinear_and_pairing_eq_of_reduction :
       homMk (absFrobenius 1 X) <| by
         rw [absFrobenius_comm 1 X (specOver ..), ← id_comp (absFrobenius ..), comp_absFrobenius]
         -- On `k[ε]` the Frobenius kills `ε`, so it factors through `k`.
-        simpa [X] using _ ≫= homEquiv.injective (by aesop (add simp CharP.cast_eq_zero))
+        simpa [X] using _ ≫= homEquiv.injective (by
+          -- compare the two ring maps `k[ε] → k[ε]` on `k` and on `ε`, component by component
+          simp only [homEquiv_apply, preimage_map, preimage_comp, assoc]
+          ext : 2
+          · ext : 2 <;> simp
+          · ext : 1 <;> simp [CharP.cast_eq_zero])
     have h_frob {x : ThetaObject Y _} (y : T ⟶ x.groupScheme) :
         ringChar k • x.lineBundle.picClass.atPoint y = x.lineBundle.picClass.atPoint (Fr ≫ y) := by
-      have h_lin_sys : x.lineBundle.IsLinearSystem := x.isProjEmbedding.isLinearSystem
-      have h_pull : ringChar k ^ 1 • (x.lineBundle.pull y.left).picClass =
-          ((x.lineBundle.pull y.left).pull (absFrobenius 1 X)).picClass :=
-        picClass_pull_absFrobenius 1 X (h_lin_sys.pull y.left)
-      rw [pow_one] at h_pull
+      have h_pull := picClass_pull_absFrobenius 1 X (x.isProjEmbedding.isLinearSystem.pull y.left)
       -- Both sides are pull-backs of the line bundle of `x`; they match the lemma up to unfolding.
-      exact h_pull
+      rwa [pow_one] at h_pull
     suffices h_mul : ringChar k • x'.lineBundle.picClass.pairing (y ≫ f) (z ≫ f) =
         ringChar k • x.lineBundle.picClass.pairing (a • y) (a • z) by
       simpa [(ThetaObject.hasClassLaws _).1.pairing_nsmul_left, nsmul_comp, comp_nsmul] using h_mul
@@ -752,14 +763,17 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   -- `ω (d ≫ c • Y v)`, which is `θ (ω (c • Y v))`, is zero.
   refine (G_agree _ y' y h_agree).trans (hz.isGroupBaseChange.pointEquiv.injective ?_)
   have v_tiny : IsInfinitesimal (ofHom (fstHom C C _).1) (c • Y v) :=
-    isInfinitesimal_of_comp_eq_zero _ (by simp [hY, hv, ← map_smul])
+    isInfinitesimal_of_comp_eq_zero _
+      (by rw [ModuleObj.comp_smul, hY, ← LinearEquiv.map_smul, hv, map_zero])
   -- `t • v` is killed by `𝔭`, and `t ≡ 1` modulo `𝔭`, so `hl` for `t • v` computes `ω (c • Y v)`.
   have htv : t • v ∈ placeTorsion x₀ C := by
     simpa [← smul_smul] using fun a ha ↦
       (Ideal.torsionOf _ _ v).span_singleton_le_iff_mem.mpr hv (hct ⟨a, ha, mul_comm ..⟩)
+  have h_lift : toSqZeroSpec C ≫ (t • Y v) = hp.isGroupBaseChange.pointEquiv (t • v) := by
+    rw [ModuleObj.comp_smul, hY, map_smul]
   have h_snd : snd (ω (c • Y v)) l = 0 := by
     simpa [smul_comm c, ω_smul v_tiny, (sub_mem_ker_iff _).mp ht] using
-      congr(snd $(ω_lift ⟨t • v, htv⟩ (t • Y v) (by simp [hY])) l).symm.trans (hl C _)
+      congr(snd $(ω_lift ⟨t • v, htv⟩ (t • Y v) h_lift) l).symm.trans (hl C _)
   -- the first component of `ω (c • Y v)` vanishes by `ω_red`, the second at `l` by `h_snd`
   have h_log : ω (d ≫ (c • Y v)) = 0 := by
     simpa [↓ω_comp v_tiny d rfl, h_snd, θ, ↓ lift_def] using ω_red v_tiny
@@ -800,7 +814,9 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
   -- the kernel of `ψ` (`ω_red`), turns the action of `a` into multiplication by
   -- `x₀.baseHom a` (`ω_smul`), and `ω y = 0` forces `(star D.β - b) • y = 0` (`ω_ker`).
   choose ω ω_smul ω_ker ω_add ω_red ω_comp using by
-    simpa [hρ, ↓ algebraMap_eq_inl'] using x.exists_tangent_log (b := b) (by simp [hρ, hb])
+    simpa only [hρ, coe_comp, Function.comp_apply, ↓algebraMap_eq_inl', algebraMap_self,
+      RingHomCompTriple.comp_apply, mk_left] using
+      x.exists_tangent_log (b := b) (by simp [hρ, hb])
   have h_lifts : ∀ ⦃C : Type⦄ [CommRing C] [Algebra k C] [IsLocalRing C]
       (y : specOver k C ⟶ x₀.groupScheme),
       ∃ Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme,
@@ -809,9 +825,11 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
   choose Y hY using h_lifts
   have c_Y_infinitesimal {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C]
       (y : placeTorsion x₀ C) : IsInfinitesimal (ofHom (fstHom C C _).1) (c • Y y.1) := by
-    obtain ⟨y, hy⟩ := y
-    have h_torsion : c • y = 0 := by simp_all
-    exact isInfinitesimal_of_comp_eq_zero _ (by simp [hY, h_torsion, ← map_smul])
+    -- `c` lies in `𝔭`, which kills `y`
+    have h_torsion : c • y.1 = 0 :=
+      (Submodule.mem_torsionBySet_iff ..).mp y.2 ⟨c, RingHom.mem_ker.mpr hc⟩
+    exact isInfinitesimal_of_comp_eq_zero _
+      (by rw [ModuleObj.comp_smul, hY, ← LinearEquiv.map_smul, h_torsion, map_zero])
   -- `ω (c • Z)` is the same for all lifts `Z` of `y`: their difference is infinitesimal, and
   -- `x₀.baseHom c = 0`.
   have ω_lift {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (y : placeTorsion x₀ C)
@@ -826,10 +844,11 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
       placeTorsion x₀ C →ₛₗ[x₀.baseHom] M →ₗ[k] C :=
     { toFun y := snd (ω (c • Y y.1))
       map_add' y z := by
-        simp [↓ω_lift (y + z) (Y y + Y z) (by simp [hY, comp_add]),
+        simp [↓ω_lift (y + z) (Y y + Y z) (by rw [comp_add, hY, hY, Submodule.coe_add, map_add]),
           ω_add (c_Y_infinitesimal y) (c_Y_infinitesimal z)]
       map_smul' a y := by
-        simp [↓ω_lift (a • y) (a • Y y) (by simp [hY]), smul_comm c,
+        simp [↓ω_lift (a • y) (a • Y y)
+            (by rw [ModuleObj.comp_smul, hY, Submodule.coe_smul, map_smul]), smul_comm c,
           ω_smul (c_Y_infinitesimal y)] }
   refine finrank_le_of_placeTorsion hw h_spec h_full f (fun φ y ↦ ?_) (fun y hy ↦ ?_) fun l hl ↦ ?_
   · -- Naturality: `sqZeroSpecMap φ ≫ Y y` is a lift of `placeTorsionMap φ y`.

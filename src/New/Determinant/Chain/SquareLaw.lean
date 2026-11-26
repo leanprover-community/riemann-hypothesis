@@ -244,18 +244,15 @@ lemma exists_firstCols_eq_mul_of_invLastRows_eq {γ γ' : GL n R}
     ∃ h : GL b R, firstCols e γ' = firstCols e γ * h.val ∧ γ'.val.det = γ.val.det * h.val.det := by
   have h_cols : firstCols e γ * (invFirstRows e γ * firstCols e γ') = firstCols e γ' :=
     firstCols_mul_invFirstRows_mul e γ (by rw [h_eq, invLastRows_mul_firstCols])
-  have h_cols' : firstCols e γ' * (invFirstRows e γ' * firstCols e γ) = firstCols e γ :=
-    firstCols_mul_invFirstRows_mul e γ' (by rw [← h_eq, invLastRows_mul_firstCols])
-  let h : GL b R :=
-    { val := invFirstRows e γ * firstCols e γ'
-      inv := invFirstRows e γ' * firstCols e γ
-      val_inv := by rw [Matrix.mul_assoc, h_cols', invFirstRows_mul_firstCols]
-      inv_val := by rw [Matrix.mul_assoc, h_cols, invFirstRows_mul_firstCols] }
+  let h : GL b R := .mk'' (invFirstRows e γ * firstCols e γ') <|
+    isUnit_det_of_left_inverse (B := invFirstRows e γ' * firstCols e γ) <| by
+      rw [Matrix.mul_assoc, h_cols, invFirstRows_mul_firstCols]
   refine ⟨h, h_cols.symm, ?_⟩
   let d : R := ((fromRows (invFirstRows e γ) (invLastRows e γ)).submatrix e.symm id).det
   have h_one : d * γ.val.det = 1 := by
     rw [det_fromRows_invLastRows, invFirstRows_mul_firstCols, det_one]
-  have h_mixed : d * γ'.val.det = h.val.det := by simp only [d, h, h_eq, det_fromRows_invLastRows]
+  have h_mixed : d * γ'.val.det = h.val.det := by
+    simp only [d, h, h_eq, det_fromRows_invLastRows, GeneralLinearGroup.val_mk'']
   linear_combination γ.val.det * h_mixed - γ'.val.det * h_one
 
 omit [Fintype R] in

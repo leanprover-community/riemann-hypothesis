@@ -134,7 +134,7 @@ lemma pow_mul_identitySecondMoment_le_mul_mainSecondMoment [hS : S.IsAdmissible]
 frame modulo `w`. If its Boolean is `true`, it is taken modulo the conjugate of `w` instead. Let `s`
 fix all of them. So `meetNorm s`, the product of the norms of the places at which `s` meets, is at
 least `levelPrime 0 ^ numInfPlaces E`. -/
-lemma levelPrime_pow_le_meetNorm_of_mem_fixer [S.IsAdmissible]
+lemma levelPrime_pow_le_meetNorm_of_mem_fixer
     {vectors : ∀ w : S.chosenPlaces 0, S.FrameVector w} {s : S.ResidueGL}
     (hs : s ∈ S.fixer univ vectors) : S.levelPrime 0 ^ Core.numInfPlaces E ≤ S.meetNorm s := by
   classical
@@ -147,12 +147,11 @@ lemma levelPrime_pow_le_meetNorm_of_mem_fixer [S.IsAdmissible]
   simp [φ, S.card_chosenPlaces]
 
 open scoped Classical in
-/-- Let `E` contain a primitive `5040`-th root of unity and let the filling data `S` be admissible
-(`IsAdmissible`). For `s` in `ResidueGL`, write `‖P_s‖²` for the `secondMoment` at `s` of the
-amplitude sums of all terms. If `‖P_s‖² ≤ 2 D_X` for all `s`, with `D_X = sourceDim`, then the sum
+/-- For `s` in `ResidueGL`, write `‖P_s‖²` for the `secondMoment` at `s` of the amplitude sums
+of all terms. If `‖P_s‖² ≤ 2 D_X` for all `s`, with `D_X = sourceDim`, then the sum
 of `‖P_s‖²` over the cosets of the reduction `R̄₀` of the Bessel subgroup by integral scalars
 (`InScalarCoset`) is at most `2 M ^ f 𝒟_id`. -/
-lemma sum_secondMoment_inScalarCoset_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+lemma sum_secondMoment_inScalarCoset_le
     (h_le : ∀ s : S.ResidueGL, secondMoment (S.amplitudeSum .full Set.univ) {s} ≤ 2 * S.sourceDim) :
     ∑ s : S.ResidueGL with ∃ ζ : Ô E, S.InScalarCoset ζ s,
         secondMoment (S.amplitudeSum .full Set.univ) {s} ≤
@@ -178,9 +177,9 @@ lemma eight_mul_M_pow_mul_identitySecondMoment_le [S.IsAdmissible] :
       grw [← pow_mul, ← pow_succ', pow_le_pow_right₀ S.one_le_b h_exp]
     _ ≤ _ := pow_mul_identitySecondMoment_le_mul_mainSecondMoment univ
 
-/-- Let the filling `S` be admissible (`IsAdmissible`). The bound `(b^(2f) / p₀^f)^k 𝒟_main` on sums
-over links is at most an eighth of `b^(-6kf) 𝒟_main`, as `b¹⁰ ≤ p₀` (`le_levelPrime`). -/
-lemma div_levelPrime_pow_mul_mainSecondMoment_le [S.IsAdmissible] :
+/-- The bound `(b^(2f) / p₀^f)^k 𝒟_main` on sums over links is at most an eighth of
+`b^(-6kf) 𝒟_main`, as `b¹⁰ ≤ p₀` (`le_levelPrime`). -/
+lemma div_levelPrime_pow_mul_mainSecondMoment_le :
     (S.b ^ (2 * Core.numInfPlaces E) / (S.levelPrime 0 ^ Core.numInfPlaces E : ℕ)) ^ 𝔰.k *
         S.mainSecondMoment ≤
       (S.b ^ (6 * 𝔰.k))⁻¹ ^ #(univ : Finset (S.chosenPlaces 0)) * S.mainSecondMoment / 8 := by
@@ -306,10 +305,9 @@ lemma secondMoment_fixer_isOpenElement_le [S.IsAdmissible] [WeilData E]
       rw [div_eq_mul_inv]
       nlinarith
 
-/-- Let the filling `S` be admissible (`IsAdmissible`). For `l < n = ϱ + 1` we have
-`p₀ ^ (l + r / 2) ≤ b ^ (6 k)`. Here `p₀ = levelPrime 0`, `b = S.b`, `k = |κ|`, and `r` is the rank
-of the space, that is, the number of indices in `𝔰.BesselIndex`. -/
-lemma levelPrime_pow_mul_sqrt_le [S.IsAdmissible] (l : Fin 𝔰.n) :
+/-- For `l < n = ϱ + 1` we have `p₀ ^ (l + r / 2) ≤ b ^ (6 k)`. Here `p₀ = levelPrime 0`,
+`b = S.b`, `k = |κ|`, and `r` is the rank of the space, the number of indices in `𝔰.BesselIndex`. -/
+lemma levelPrime_pow_mul_sqrt_le (l : Fin 𝔰.n) :
     (S.levelPrime 0 : ℝ) ^ l.val * √(S.levelPrime 0 ^ card 𝔰.BesselIndex) ≤ S.b ^ (6 * 𝔰.k) := by
   -- Square, and use `p₀ ≤ b¹¹`, `r = k + 2 n - 1` and `2000 n ≤ k`.
   have hb : 1 ≤ S.b := S.one_le_b

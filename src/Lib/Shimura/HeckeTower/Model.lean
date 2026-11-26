@@ -188,15 +188,16 @@ def entryConj {R : Type*} [CommRing R] [StarRing R] :
     U (1 : Matrix n n R) →* U (1 : Matrix n n R) :=
   (invTransposeGL.toMonoidHom.comp (U 1).subtype).codRestrict (U (1 : Matrix n n R)) fun g ↦
     -- transpose the equation that makes `g⁻¹` unitary
-    mul_eq_one_comm.1 (by
-      show g⁻¹.1.1ᵀ * (g⁻¹.1.1ᵀᴴ * 1) = 1
-      simpa [U, -coe_units_inv, conjTranspose, transpose_map] using
-        congrArg Matrix.transpose g⁻¹.2)
+    mem_unitaryGroupOf_iff.2 <| mul_eq_one_comm.1 (by
+      change g⁻¹.1.1ᵀ * (g⁻¹.1.1ᵀᴴ * 1) = 1
+      simpa [star_eq_conjTranspose, -coe_units_inv, conjTranspose, transpose_map] using
+        congrArg Matrix.transpose (mem_unitaryGroupOf_iff.1 g⁻¹.2))
 
 @[simp]
 lemma conjAtSplit_unitary : (conjAtSplit w g).1ᴴ * conjAtSplit w g = 1 := by
-  simpa [U] using show conjAtSplit w g ∈ U (1 : Matrix n n (𝔸f E)) from
-    (entryConj (ofSplitPlace w.2 g)).property
+  have h := mem_unitaryGroupOf_iff.1 (entryConj (ofSplitPlace w.2 g)).property
+  rw [Matrix.mul_one, star_eq_conjTranspose] at h
+  exact h
 
 /-- `conjAtSplit w g` is a unitary similitude (with multiplier `1`). -/
 @[simp]
@@ -204,7 +205,7 @@ lemma conjAtSplit_mem_GU : conjAtSplit w g ∈ GU E n := ⟨1, rfl, 1, by simp�
 
 @[simp]
 lemma evalAt_conjAtSplit : (conjAtSplit w g).map (evalAt w.1) = invTransposeGL g := by
-  show invTransposeGL ((ofSplitPlace w.2 g).atPlace w.1) = invTransposeGL g
+  change invTransposeGL ((ofSplitPlace w.2 g).atPlace w.1) = invTransposeGL g
   rw [atPlace_ofSplitPlace]
 
 /-- At a place `u` other than `w` and its conjugate, the component of `conjAtSplit w g` is `1`. -/
@@ -223,11 +224,16 @@ lemma conj_conjAtSplit {g : GL n (𝔸f E)} (hg : g ∈ GU E n) (m : GL n (LocFi
   -- `gᴴ * g` is a scalar matrix, so every unitary matrix preserves this form too.
   have h_scalar : g.1ᴴ * g.1 = (c⁻¹ : E) • finAdeleIncl ℚ E ε • 1 := by
     simpa [hc.ne', map_smul'] using congrArg (fun M : Matrix n n (𝔸f E) ↦ (c⁻¹ : E) • M) hframe
-  have h_mem : conjAtSplit w m ∈ U (g.1ᴴ * 1 * g.1) := by simp [U, h_scalar]
+  have h_mem : conjAtSplit w m ∈ U (g.1ᴴ * 1 * g.1) := by
+    simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose, h_scalar]
   -- Hence both sides are unitary. They are trivial off `w` and its conjugate, and they have the
   -- same component at `w`.
+  have h_mem' : conjAtSplit w (dualComponent w g * m * (dualComponent w g)⁻¹) ∈
+      U (1 : Matrix n n (𝔸f E)) := by
+    rw [mem_unitaryGroupOf_iff, Matrix.mul_one, star_eq_conjTranspose]
+    exact conjAtSplit_unitary (w := w) (dualComponent w g * m * (dualComponent w g)⁻¹)
   have h_conj_eq : U.conj g rfl ⟨conjAtSplit w m, h_mem⟩ =
-      ⟨conjAtSplit w (dualComponent w g * m * (dualComponent w g)⁻¹), (entryConj _).property⟩ := by
+      ⟨conjAtSplit w (dualComponent w g * m * (dualComponent w g)⁻¹), h_mem'⟩ := by
     refine Gf.eq_of_supportedOn (S := {w.1}) ?_ ?_ ?_ <;>
       simp_all [Gf.atPlace, dualComponent, evalAt_conjAtSplit_of_ne]
   exact congrArg Subtype.val h_conj_eq
@@ -246,7 +252,7 @@ lemma commute_conjAtSplit {g : GL n (𝔸f E)} (hg : g ∈ GU E n ⊓ (dualCompo
 `localIntGL n w` of `GL_n(E_w)`. -/
 lemma conjAtSplit_mem_intGL_iff {g : GL n (LocField (w : FinPlace E))} :
     conjAtSplit w g ∈ intGL n (Ô E) ↔ g ∈ localIntGL n w.1 := by
-  show invTransposeGL (ofSplitPlace w.2 g).val ∈ intGL n (Ô E) ↔ g ∈ localIntGL n w.1
+  change invTransposeGL (ofSplitPlace w.2 g).val ∈ intGL n (Ô E) ↔ g ∈ localIntGL n w.1
   rw [invTransposeGL_mem_intGL]
   exact ofSplitPlace_mem_stdLevel w.2 g
 
@@ -276,7 +282,7 @@ lemma mem_levelGU_of_map_evalAt_eq {g : GL n (𝔸f E)} (hGU : g ∈ GU E n) (hi
 lemma isOpen_comap_conjAtSplit (h𝔑 : 𝔑 ≠ 0) :
     IsOpen ((levelGU n 𝔑).comap (conjAtSplit w)).carrier := by
   have h_cont : Continuous (conjAtSplit (n := n) w) := .of_coeHom_comp
-    (Units.continuous_coe_inv.comp (continuous_ofSplitPlace w.2).subtype_val).matrix_transpose
+    (Units.continuous_coe_inv.comp (continuous_ofSplitPlace w.2).subtypeVal).matrix_transpose
   exact .and (by simp) ((isOpen_congruenceGL_span h𝔑).preimage h_cont)
 
 /-- Let w be split with 𝔑 ∉ w̄, and let κ ∈ K(𝔑). Then `conjAtSplit w (dualComponent w κ)`, the

@@ -67,13 +67,10 @@ Lebesgue measure divided by π^|ι|. -/
 noncomputable def fockMoment : ENNReal := ∫⁻ y : ι → ℂ,
   (1 + ‖y‖ₑ) ^ N * ‖v y‖ₑ ∂normalizedVolume ι
 
-private lemma integrable_fockVector (f : fockSpace ε) : Integrable (⇑f) (normalizedVolume ι) :=
-  f.prop.1
-
 private lemma enorm_eq_lintegral_enorm (f : fockSpace ε) :
     ‖f‖ₑ = ∫⁻ x : ι → ℂ, ‖f x‖ₑ ∂normalizedVolume ι := by
   rw [← ofReal_norm, Heisenberg.IsVacuum.norm_eq_integral_norm f,
-    ofReal_integral_norm_eq_lintegral_enorm (integrable_fockVector f)]
+    ofReal_integral_norm_eq_lintegral_eNorm (Model.integrable f)]
 
 /-- The moment of order 0 is the L¹ norm of the Fock vector `v`. -/
 lemma fockMoment_zero : fockMoment 0 v = ‖v‖ₑ := by
@@ -94,7 +91,7 @@ lemma fockMoment_realHeisenbergOp_le (y : ι → ℂ) :
   -- Substitute `x + y`: then `‖realHeisenbergOp y v (x + y)‖ = ‖v x‖`, and the weight is
   -- submultiplicative.
   have h_weight (x : ι → ℂ) : 1 + ‖x + y‖ₑ ≤ (1 + ‖y‖ₑ) * (1 + ‖x‖ₑ) := by
-    grw [enorm_add_le]
+    grw [eNorm_add_le]
     exact le_self_add.trans_eq (b := 1 + (‖x‖ₑ + ‖y‖ₑ) + ‖y‖ₑ * ‖x‖ₑ) (by ring)
   calc
     fockMoment N (realHeisenbergOp y v) = ∫⁻ x,
@@ -125,7 +122,7 @@ lemma enorm_le_mul_fockMoment {S : ℝ} {ℓ : fockSpace ε →L[ℂ] ℂ}
     (div_le_iff₀ (by positivity)).mp (h_bound z)
   calc
     ‖ℓ v‖ₑ ≤ ∫⁻ z, .ofReal ‖v z‖ * .ofReal (S * (1 + ‖z‖) ^ N) ∂normalizedVolume ι := by
-      grw [map_eq_integral, enorm_integral_le_lintegral_enorm, ← h_le]
+      grw [map_eq_integral, eNorm_integral_le_lintegral_eNorm, ← h_le]
       simp
     _ = .ofReal S * fockMoment N v := by
       rw [fockMoment_eq, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
@@ -152,7 +149,7 @@ lemma fockMoment_polyVector_ne_top (P : MvPolynomial ι ℂ) :
     _ ≤ Real.exp ‖y‖ ^ N * (|C| * Real.exp (k * ‖holomorphicCoord ε y‖)) * ‖realVac y‖ := by
       grw [h_eval, add_comm, add_one_le_exp]
     _ = |C| * (Real.exp ((N + k) * ‖y‖) * ‖realVac y‖) := by
-      simp only [norm_holomorphicCoord, add_mul, Real.exp_add, Real.exp_nat_mul]
+      simp only [norm_holomorphicCoord, add_mul, Real.exp_add, Real.exp_natCast_mul]
       ring
 
 lemma isSchwartzVector_vacVector : Exchange.IsSchwartzVector (vacVector : fockSpace ε) := fun N ↦ by
@@ -181,7 +178,7 @@ lemma fockMoment_integral_le :
     calc
       _ ≤ ∫⁻ y, (1 + ‖y‖ₑ) ^ N * ∫⁻ t, ‖F t y‖ₑ ∂ν ∂normalizedVolume ι := by
         simp only [fockMoment, h_apply]
-        grw [enorm_integral_le_lintegral_enorm]
+        grw [eNorm_integral_le_lintegral_eNorm]
       _ = ∫⁻ y, ∫⁻ t, (1 + ‖y‖ₑ) ^ N * ‖F t y‖ₑ ∂ν ∂normalizedVolume ι :=
         lintegral_congr fun y ↦ (lintegral_const_mul' _ _ (by finiteness)).symm
       _ = _ := (lintegral_lintegral_swap (by measurability)).symm
@@ -194,7 +191,7 @@ lemma isSchwartzVector_integral (hF_meas : AEStronglyMeasurable F ν)
     Integrable F ν ∧ Exchange.IsSchwartzVector (integral ν F) := by
   -- The moment of order 0 is the L¹ norm, so order 0 gives integrability.
   have h_int : Integrable F ν :=
-    ⟨hF_meas, hasFiniteIntegral_iff_enorm.mpr (by simpa [fockMoment_zero] using (h_fin 0).lt_top)⟩
+    ⟨hF_meas, hasFiniteIntegral_iff_eNorm.mpr (by simpa [fockMoment_zero] using (h_fin 0).lt_top)⟩
   exact ⟨h_int, fun N ↦ ne_top_of_le_ne_top (h_fin N) (fockMoment_integral_le N)⟩
 
 /-- Let `F y` be Fock vectors (for signs `η` on `κ`) whose moment of order `N'` is at most
@@ -408,7 +405,7 @@ omit [DecidableEq ι] in
 `1 + ‖A y‖ ≤ (1 + ‖A‖) (1 + ‖y‖)`. -/
 lemma one_add_enorm_mulVec_le {p : Type*} [Fintype p] (A : Matrix ι p ℂ) (y : p → ℂ) :
     1 + ‖A *ᵥ y‖ₑ ≤ (1 + ‖A‖ₑ) * (1 + ‖y‖ₑ) := by
-  grw [enorm_eq_nnnorm, linfty_opNNNorm_mulVec, mul_one_add, ENNReal.coe_mul]
+  grw [eNorm_eq_nnNorm, linfty_opNNNorm_mulVec, mul_one_add, ENNReal.coe_mul]
   bound
 
 /-- The Weil operator of `u` as an integral: `realWeil u v` is `realMultiplier u` times

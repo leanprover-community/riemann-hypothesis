@@ -172,8 +172,7 @@ lemma reduction_levelModulus_eq_zero_iff {c : ℕ} {x : Ô E} :
     have h_mult : multiplicity w.asIdeal (O.levelModulus c false).ideal =
         c * multiplicity w.asIdeal (O.levelModulus 1 false).ideal := by
       have := (O.levelModulus 1).ne_bot
-      simp_all [levelModulus, FiniteMultiplicity.multiplicity_pow,
-        FiniteMultiplicity.of_prime_left, w.prime]
+      simp_all [levelModulus, multiplicity_pow, w.prime]
     simp [DescentPair.genIdele, idele_inv_apply_and_ne_zero, valued_generator, h_mult]
   simp [h_reduction, mem_Ô, h_val]
 
@@ -189,7 +188,7 @@ and let `inclMatrix _ u` be the matrix whose `j`-th column is the basis vector `
 `ϖ • inclMatrix _ u` agree modulo `ϖ²` if and only if `T` reduces to that inclusion matrix in the
 residue field of every chosen place, the place of index `inl i` among the chosen and the twist
 places. -/
-lemma genResidue_smul_eq_inclMatrix_iff (V : DividedSplitting N m a O z) [DecidableEq n]
+lemma genResidue_smul_eq_inclMatrix_iff (V : DividedSplitting N m a O z)
     {k c : Type} [DecidableEq k] (T : Matrix k c (O.levelModulus 2).ResidueRing) (u : c → k) :
     V.genResidue • T.map reduceToChosenModulusSq =
         V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing u ↔
@@ -396,7 +395,7 @@ lemma DividedLattice.exists_reducedInverse_eq (C G : Matrix n n (Ô E))
     -- Since `e * star e = 0`, both products are the same combination of `C`, `Cᴴ` and `1`.
     simp [c, cutGL, mul_add, add_mul, smul_smul, h_disj, mul_comm, ← he]
     ac_rfl
-  let γ : Gf E n := ⟨star c⁻¹ * c, val_inj.2 <|
+  let γ : Gf E n := ⟨star c⁻¹ * c, mem_unitaryGroupOf_iff.2 <| val_inj.2 <|
     show star (star c⁻¹ * c) * 1 * (star c⁻¹ * c) = 1 by simp [h_comm.inv_right.eq]⟩
   -- `ϖ γ⁻¹` is `G` at the chosen places, `ϖ Cᴴ` at their conjugates and `ϖ` elsewhere.
   have h_entry (a b : n) : O.genIdele * γ⁻¹.1.1 a b =
@@ -428,7 +427,7 @@ def DividedSplitting.stackOverGenScalar (V : DividedSplitting N m a O z)
     Matrix (a ⊕ N) N O.chosenModulusSq.ResidueRing :=
   fromRows s (V.genResidue • 1 : Matrix N N O.chosenModulusSq.ResidueRing)
 
-omit [DecidableEq m] [Fintype a] in
+omit [DecidableEq m] [Fintype a] [DecidableEq n] in
 /-- Let `V` split the indices `n` as `N ⊕ m`, with the embedding `V.fixedEmb : r ↪ N`, and let `s`
 be an `a × N` matrix modulo `ϖ²`. Consider the integral unitary `N × N` matrices whose reduction
 fixes the rows `V.stackOverGenScalar s` modulo `ϖ²` and has the columns of the identity off
@@ -471,7 +470,7 @@ lemma mem_congruenceGroup_iff (V : DividedSplitting N m a O z)
     A ∈ V.congruenceGroup ↔ V.genResidue • A.val = V.genResidue • 1 := by
   simp [congruenceGroup, MulAction.mem_stabilizer_iff, Units.smul_def]
 
-omit [DecidableEq N] [DecidableEq m] [Fintype a] in
+omit [DecidableEq N] [DecidableEq m] [Fintype a] [DecidableEq n] in
 /-- The lift of an element of the congruence group (the matrices that are `1` modulo `ϖ`) reduces to
 `1` at every chosen place. -/
 lemma reduceAt_liftMod_congruenceGroup (V : DividedSplitting N m a O z) (Y : V.congruenceGroup)
@@ -812,7 +811,6 @@ lemma exists_isGlued (V : DividedSplitting N m a O z)
     (V.ε.injective.comp (inr_injective.comp z.injective)) O.incl.injective
   let ε' : N ⊕ m ≃ n := V.ε.trans σ
   have hε' : ∀ i : r, ε' (inr (z i)) = O.incl i := hσ
-
   obtain ⟨L, hL⟩ : ∃ L : DividedLattice O,
       L.reducedInverse = (reindex ε' V.ε G).map O.chosenModulusSq.reduction :=
     DividedLattice.exists_reducedInverse_eq (reindex V.ε ε' C) _ (by simp [hCG, submatrix_smul])

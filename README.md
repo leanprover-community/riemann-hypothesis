@@ -29,7 +29,7 @@ It keeps the published Lean source unchanged and provides a prebuilt cache for i
 
 ## Theorem Statements
 
-`src/Main.lean` proves the following theorems:
+[`src/Main.lean`](src/Main.lean) proves the following theorems:
 
 | Theorem | Statement |
 |---|---|
@@ -39,8 +39,11 @@ It keeps the published Lean source unchanged and provides a prebuilt cache for i
 | `LFunction_eq_zero_re` | every zero of L(χ, s) with 0 < Re s < 1 has Re s = 1/2 |
 | `LFunction_eq_zero_re_of_isPrimitive` | the special case of `LFunction_eq_zero_re` for primitive characters |
 
-[`Challenge.lean`](Challenge.lean) states the same five with `sorry` in place of the
-proofs, in a file that imports only Mathlib. Comparator checks that `Main.lean` proves exactly those statements, that it uses no axioms other than `propext`, `Quot.sound` and
+[`src/Statements.lean`](src/Statements.lean) provides the statements of all of these theorems, and only imports Mathlib to state them. It is imported by both [`src/Main.lean`](src/Main.lean) and [`Challenge.lean`](Challenge.lean)
+
+[`Challenge.lean`](Challenge.lean) imports *only* [`src/Statements.lean`](src/Statements.lean), and declares the same five theorems with `sorry` in place of the proofs.
+
+Comparator checks that `Main.lean` proves exactly those statements, that it uses no axioms other than `propext`, `Quot.sound` and
 `Classical.choice`, and that Lean's kernel and nanoda both accept the proof.
 
 ## Cache

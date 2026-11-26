@@ -172,7 +172,7 @@ lemma coeff_charpoly_map_polyAction_single (ρ : G →* Matrix σ σ O) (g : G) 
 lie in `S` when `S` holds the variables and the coefficients of the characteristic polynomials of
 the `u x g`. Here `z g` are coordinates of `u · g - 1` in the `u · (gen i) - 1`
 (`AreCoordinates`). -/
-lemma C_det_linearCombination_mem [Fintype J]
+lemma C_det_linearCombination_mem
     (hS_X : ∀ j : J, (fun _ : Y ↦ MvPolynomial.X j) ∈ S)
     (hS_charpoly : ∀ (g : G) (k : ℕ),
       (fun x : Y ↦ MvPolynomial.C (algebraMap O L ((u x g).charpoly.coeff k))) ∈ S)
@@ -197,7 +197,7 @@ lemma det_linearCombination_sub_one_eq_zero {r : Type} {t : ℕ} [NeZero t]
   have h_column (g : G) (i : σ) :
       u x g i (blockEquiv (inr 0)) = (1 : Matrix σ σ O) i (blockEquiv (inr 0)) := by
     obtain ⟨i | i, rfl⟩ := blockEquiv.surjective i
-    · simp [hu, Matrix.one_apply]
+    · simp [hu]
     · simp +contextual [hu, hξ₀, Matrix.one_apply, diagonal_apply]
   refine det_eq_zero_of_column_eq_zero (blockEquiv (inr 0)) fun i ↦ ?_
   simp [Finsupp.linearCombination_apply, Finsupp.sum, Matrix.sum_apply, h_column]
@@ -219,7 +219,7 @@ combinations `∑ ω g (u x g - 1)` into `𝒥`, and its value at `x ∈ 𝓧` i
 elements that every `u x` kills, by `p I`, by the ties `τ l - 1 - X j * (ε j)(φ l) * (φ l - 1)` for
 `l = (j, b)`, and by `I ρ₀`; here `p : O`, the `τ l` and `φ l` are elements of `G`, the `ε j` are
 polynomials over `O`, and `I` is the augmentation ideal. -/
-lemma exists_traceIdeal_multiplier_eq_sum_det [Fintype J] {r : Type} [Fintype r] [DecidableEq r]
+lemma exists_traceIdeal_multiplier_eq_sum_det {r : Type} [Fintype r] [DecidableEq r]
     {t : ℕ} [NeZero t] (blockEquiv : r ⊕ Fin t ≃ σ) {𝓧 : Set Y} (ρ : 𝓧 → G →* Matrix r r O)
     {ξ : Fin t → G →* O} (hξ₀ : ξ 0 = 1)
     (hu_block : ∀ (x : 𝓧) (g : G),
@@ -297,7 +297,7 @@ lemma exists_traceIdeal_multiplier_eq_sum_det [Fintype J] {r : Type} [Fintype r]
 /-- The projector to the characters: if every block `ρ x` has an element `γ x` acting by a scalar
 `y x` with `y x - 1` a unit, on which every character is `1`, then some element of `O[X j][G]` is
 `1` on every character and `0` on every block. -/
-lemma exists_character_projector [Fintype J] {r : Type} [Fintype r] [DecidableEq r] {t : ℕ}
+lemma exists_character_projector {r : Type} [Fintype r] [DecidableEq r] {t : ℕ}
     {𝓧 : Type} [Fintype 𝓧] (ρ : 𝓧 → G →* Matrix r r O) {ξ : Fin t → G →* O} {γ : 𝓧 → G} {y : 𝓧 → O}
     (hργ : ∀ x : 𝓧, ρ x (γ x) = y x • 1) (hy_unit : ∀ x : 𝓧, IsUnit (y x - 1))
     (hξγ : ∀ (x : 𝓧) (e : Fin t), ξ e (γ x) = 1) :

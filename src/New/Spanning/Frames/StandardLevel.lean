@@ -207,7 +207,7 @@ lemma IntegralPlace.exists_right_invariant_measure_besselH :
   let H : Subgroup T.G := T.besselH
   have h_closed : IsClosed (H : Set T.G) := isClosed_of_entries_eq_one mem_floorGroup
   have h_emb : MeasurableEmbedding (Subtype.val : H → T.G) :=
-    .subtype_coe h_closed.measurableSet
+    .subtypeVal h_closed.measurableSet
   have h_open : IsOpen (K : Set T.G)⁻¹ := IsOpen.inv unitaryLevel_open_compact.1
   let K₀ : TopologicalSpace.PositiveCompacts H :=
     ⟨⟨Subtype.val ⁻¹' (K : Set T.G)⁻¹, unitaryLevel_open_compact.2.inv.preimage_val h_closed⟩,
@@ -753,7 +753,6 @@ def gauge (α : Aˣ := 1) (hα : α.1 ∈ integers := by simp)
                    (h_mass β (α ^ j)).trans
                      (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))⟩
   exists_commonBound _ hx _ hz := h.exists_isCommonBound hα (fun _ ↦ rfl) hx hz
-
 
 include h in
 /-- At a large lattice datum `F`, let `g` be an integral self-conjugate unit of `A`, `a < 𝔰.ϱ`, and

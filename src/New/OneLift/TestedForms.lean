@@ -308,7 +308,7 @@ namespace New
 of a pairing `B` of all smooth forms of the same weight, semilinear for σ⁻¹ ∘ conj ∘ σ in the first
 variable, that is invariant under right translation `New.Space.formTranslation`. -/
 lemma DescentPair.exists_invariant_pairing_eq_innerAt {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair E r n)
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair E r n)
     (σ : ℂ ≃+* ℂ) :
     ∃ B : (stdSpace E n).forms (O.columnCount, O.detExp)
         →ₛₗ[(↑σ⁻¹ : ℂ →+* ℂ).comp ((starRingEnd ℂ).comp (σ : ℂ →+* ℂ))]
@@ -433,6 +433,7 @@ lemma isOfFinOrder_prod_tamePart_det (g : O.ChosenGL r) :
   (CommMonoid.torsion ℂ).prod_mem fun i _ ↦
     isOfFinOrder (O.tamePart (O.chosenPlace i)).toMonoidHom (g i).det.isUnit.isOfFinOrder
 
+omit [WeilData E] in
 /-- Let M = `O.ChosenIndex` be the set of chosen places w of the pair, with residue fields k_w, and
 ψ_w = `O.tamePart w` the tame part at w of the character μ of `O`, a character of k_w. In the
 action `O.formAction` of ∏_{w ∈ M} GL_r(k_w) on forms on V, an element g acts as ∏_w ψ_w(det g_w)
@@ -496,6 +497,7 @@ lemma heckePolyOnForms_comm {w : FinPlace E} (hw : star w ≠ w) (hw_off : w ∉
   simpa [heckePolyOp, heckePolyEval, Finset.smul_sum, smul_smul, h_comm, mul_comm] using
     Finset.sum_comm
 
+omit [WeilData E] in
 /-- A central idempotent e₀ of the group algebra of ∏_{w ∈ M} GL_r(k_w) acts on forms on V
 self-adjointly for the pairing `innerAt σ`, for every σ: ⟨e₀x, y⟩_σ = ⟨x, e₀y⟩_σ. -/
 lemma innerAt_groupAlgAction {e₀ : MonoidAlgebra ℂ (O.ChosenGL r)} (he : IsCentralProj e₀)

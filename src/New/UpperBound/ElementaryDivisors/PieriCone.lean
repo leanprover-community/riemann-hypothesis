@@ -1,6 +1,16 @@
 module
 
-public import Lib.Base
+public import Mathlib.Data.Fin.Tuple.Sort
+public import Mathlib.Data.ZMod.Basic
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+public import Mathlib.LinearAlgebra.Matrix.SchurComplement
+public import Mathlib.MeasureTheory.Integral.Bochner.Set
+public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+public import Mathlib.Tactic.CongrExclamation
+public import Mathlib.Tactic.Field
+public import Mathlib.Tactic.FunProp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.LinearCombination
 
 /-!
 # The Pieri cone, the step map and the slab: interlacing and volume of the cone
@@ -377,7 +387,7 @@ lemma volume_real_inter_degreeSlab_eq_signed_sum {v : Fin (m + 1) → Bool} (hP 
   -- Integrate the pointwise count `sum_indicator_positiveStepSet` over `ν`: each set is a linear
   -- preimage of a part of the slab, and the determinants are known up to a common constant.
   let Δ (τ : Perm (Fin k)) : ℝ := |detOneSubPerm (P ^ (m + 1)) τ|
-  show _ = Δ 1 / k.factorial * (∑ τ : Perm (Fin k), τ.sign / Δ τ) * volume.real (degreeSlab k D)
+  change _ = Δ 1 / k.factorial * (∑ τ : Perm (Fin k), τ.sign / Δ τ) * volume.real (degreeSlab k D)
   obtain ⟨c, hc⟩ := exists_det_permStep_eq (k := k) P v hP
   obtain ⟨hc_ne, hΔ_ne⟩ : c ≠ 0 ∧ Δ 1 ≠ 0 := by
     simpa [hc, Δ] using det_permStep_ne_zero (k := k) P v hP 1

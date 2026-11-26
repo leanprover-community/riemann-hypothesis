@@ -126,7 +126,7 @@ lemma isSemisimple_of_moebius_ne_zero (h_mu_ne : moebius (simClassOf g) ≠ 0) :
           F (comap (X : Submodule k V).subtype h_subtype U) else 0 := by
       simpa [sum_filter] using sum_comap (g := endOnSub X) (X : Submodule k V).subtype h_subtype F
     -- The sum of the statement, over `g.invtSubmodule`, is the same sum over `StableSubspace g`.
-    show ∑ U ∈ univ.filter fun U : StableSubspace g ↦ U.val ≤ X.val,
+    change ∑ U ∈ univ.filter fun U : StableSubspace g ↦ U.val ≤ X.val,
       moebius (simClassOf U.endOnSub) = 0
     simpa +contextual [hX, h_reindex, sum_filter] using sum_moebius_simClassOf_endOnSub
       (g := endOnSub X)
@@ -144,7 +144,7 @@ product on similarity classes over the finite field k. For any class function `B
 the pointwise product `B μ` over the block triangular endomorphisms with diagonal blocks `a`, `b` is
 `μ a * μ b * B (b ⊕ a)`. Here `b ⊕ a` is the block diagonal map of the chosen representatives of `b`
 and `a`. -/
-@[simp ↓]
+@[simp↓]
 lemma blockAverage_mulMoebius (a b : SimClass k) :
     B.mulMoebius.blockAverage a b =
       moebius a * moebius b * B (simClassOf (b.out.snd.prodMap a.out.snd)) := by
@@ -451,7 +451,7 @@ lemma card_GL_eq_prod {n R : Type*} [Fintype n] [DecidableEq n] [Field R] :
 open Classical in
 /-- Let `g` be an endomorphism of a finite space `V` and `U ≠ V` a `g`-stable subspace. The sum of
 μ at the classes of `g` on `V/W`, over the `g`-stable subspaces `W ⊇ U`, is `0`. -/
-private lemma sum_moebius_endOnQuot_eq_zero_of_ne_top [Finite V] {g : Module.End k V}
+private lemma sum_moebius_endOnQuot_eq_zero_of_ne_top {g : Module.End k V}
     (U : StableSubspace g) (hU : (U : Submodule k V) ≠ ⊤) :
     ∑ W : StableSubspace g with (U : Submodule k V) ≤ W.1,
       moebius (simClassOf W.endOnQuot) = 0 := by

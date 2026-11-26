@@ -81,8 +81,6 @@ Arnold Math. J. (2022); SGA5 III 6.12.
 open CategoryTheory AlgebraicGeometry Polynomial Finset CartesianMonoidalCategory Functor
   MonoidalCategory
 
-set_option backward.isDefEq.respectTransparency false
-
 /-- Let `k` be an infinite field and `h` a natural number. Some linear form `L` on the functions
 `k → k` reads off the coefficient of `X ^ h` on polynomial functions: for every polynomial `Q` and
 `a` in `k`, `L` sends `t ↦ Q(t) * a` to the coefficient of `X ^ h` in `Q`, times `a`. -/
@@ -143,7 +141,7 @@ Here `Φ t i z` is `z` pulled back along `(u i ∘ s_t, c)` (`New.Variety.scaled
 `s_t : (a, m) ↦ (a, t m)` on the square-zero extension `B ⊕ M` of a `k`-algebra `B`. -/
 lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_eq_zero {p : ℕ} {A : Type*} {E k : Type}
     {d h : ℕ} {I : Type} [CommRing A] [Field E] [CharZero E] [Algebra A E] [Field k]
-    [IsAlgClosed k] [EmbeddedInQpBar p k] [Algebra E k] {R : Subalgebra A E}
+    [EmbeddedInQpBar p k] [Algebra E k] {R : Subalgebra A E}
     {W Y : Over (Spec (CommRingCat.of R))} {u : I → (W ⟶ Y)} {b : I →₀ k}
     (hY_atlas : HasAtlas d (algPointsOf E (CommRingCat.of R) Y))
     (h_null : h ≤ d → ∀ q : ℕ, q ≤ d →
@@ -168,9 +166,12 @@ lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_eq_zero {p : ℕ} {A : Type*}
   -- restate the goal with `Φ`, and `φ`, `z` in terms of `XW`, `XY`
   revert φ z
   intro (φ : Module.Dual k (PairH (freeAb XW))) (z : HodgeH (freeAb.obj (XY ⊗ XY)) d)
-  show ∑ i : b.support, b i * L (fun t : k ↦ φ (hodgeTateMap d (Φ t i z))) = 0
+  change ∑ i : b.support, b i * L (fun t : k ↦ φ (hodgeTateMap d (Φ t i z))) = 0
   -- the diagonal of `W`, followed by the map to the tensor square
   let diag := freeAb.map (lift (𝟙 _) (𝟙 _)) ≫ freeAb.prod XW XW
+  -- `diag` as a linear map on `PairH`, so that `simp` can use its linearity
+  let Δ : PairH ((abTensor.obj (freeAb.obj XW)).obj (freeAb.obj XW)) →ₗ[k] PairH (freeAb.obj XW) :=
+    PairH.map diag
   -- `z` is a finite sum of cross products (`kunneth`); on each, `L` keeps the part of weight `h`.
   induction kunneth z using AddSubmonoid.closure_induction_left with
   | zero => simp [← Pi.zero_def]
@@ -181,28 +182,32 @@ lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_eq_zero {p : ℕ} {A : Type*}
     have h_lam (t : k) (i : b.support) :
         hodgeTateMap d
             (Φ t i (HodgeH.map (freeAb.prod XY XY) (cup exteriorAlg.mulPairing x y e :))) =
-          PairH.map diag (∑ j ∈ range (d + 1),
-            (d.choose j • (-1 : k) ^ ((q + j) * (d - j)) • HodgeTatePair.cross
+          ∑ j ∈ range (d + 1), t ^ j • Δ
+            ((d.choose j • (-1 : k) ^ ((q + j) * (d - j)) • HodgeTatePair.cross
               (hodgeTateMap (d - j) (.map (freeAbMap (D c)) y.baseChange)))
-              (hodgeTateMap j (.scale t (.map (freeAbMap (D (u i))) x.baseChange)))) := by
+              (hodgeTateMap j (.map (freeAbMap (D (u i))) x.baseChange))) := by
       -- `refine` sees through `Φ`, which `rw` does not
       refine (congrArg (hodgeTateMap d)
         (map_scaledGraph_baseChange_cross (D (u i)) (D c) t e x y)).trans ?_
-      rw [hodgeTateMap_map, hodgeTateMap_cup]
+      refine (hodgeTateMap_map _ _).trans ?_
+      rw [hodgeTateMap_cup]
+      refine (map_sum Δ _ _).trans (sum_congr rfl fun j _ ↦ ?_)
+      rw [hodgeTateMap_scale]
+      exact (congrArg Δ (map_smul _ _ _)).trans (map_smul _ _ _)
     -- the sum of `h_null`, read through the pull-backs along `D (u i)`
     have h_wt (hd : h ≤ d) :
         ∑ i : b.support, b i • hodgeTateMap h (.map (freeAbMap (D (u i))) x.baseChange) = 0 := by
       -- `using!`: `h_null` pulls back along `algPoints E` then restricts, `D` along `algPoints k`;
       -- the two agree only by unfolding
       simpa using! (sum_attach b.support _).trans (h_null hd q (by omega) x)
-    -- By `hodgeTateMap_scale` the term of weight `j` carries `t ^ j`, so `L` keeps the term of
+    -- By `h_lam` the term of weight `j` carries `t ^ j`, so `L` keeps the term of
     -- weight `h` of the sum over `i` (none if `h > d`): the image under `M` of the sum in `h_wt`,
     -- with `M = φ ∘ diag ∘ (cross with λ_{d - h} (c^* y))` scaled as in `hodgeTateMap_cup`
-    let M : PairH (freeAb XW) →ₗ[k] k := φ ∘ₗ PairH.map diag ∘ₗ
+    let M : PairH (freeAb XW) →ₗ[k] k := φ ∘ₗ Δ ∘ₗ
       (d.choose h • (-1 : k) ^ ((q + h) * (d - h)) • HodgeTatePair.cross
         (hodgeTateMap (d - h) (HodgeH.map (freeAbMap (D c)) y.baseChange)))
     -- `using!`: the two sides agree only up to unfolding in implicit arguments
-    simpa [M, h_lam, ih, hL, hodgeTateMap_scale, ← Pi.add_def, ← sum_fn, mul_add, sum_add_distrib,
+    simpa [M, h_lam, ih, hL, ← Pi.add_def, ← sum_fn, mul_add, sum_add_distrib,
       -univ_eq_attach, -LinearMap.smul_apply, -LinearMap.coe_smul, ← eval_X_pow (R := k),
       -eval_pow] using! fun hd ↦ congrArg M (h_wt hd)
 

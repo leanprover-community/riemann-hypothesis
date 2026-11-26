@@ -2,6 +2,7 @@ module
 
 public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Groups.BesselGroups
+public import TauCeti.LinearAlgebra.Matrix.Range
 
 /-!
 # Integral matrices over subrings: Smith normal form, Gelfand's condition and lattices
@@ -25,6 +26,9 @@ unitary groups.
   the denominator of `a`. An infinite index is read as `0`.
 * `New.colLattice`, `New.preimageLattice`: the span of the columns of `M`, and the vectors `M` makes
   integral.
+* `New.HasLeftInv`, `New.IsPrimitiveMatrix`: a matrix has a left inverse, or has both its entries
+  and those of a left inverse in a specified subring.
+* `New.colSpan`: the submodule spanned by the columns of a matrix.
 * `New.unitaryLevel`: the principal congruence subgroup of the unitary group `New.U J`.
 
 Notions from other files:
@@ -78,13 +82,6 @@ lemma New.exists_generalized_inverse {M N : Type*} [AddCommGroup M] [AddCommGrou
   obtain ⟨s, rfl⟩ := g.exists_extend
   exact ⟨s, fun x ↦ congrArg Subtype.val (LinearMap.congr_fun hg ⟨f x, x, rfl⟩)⟩
 
-/-- Let `x` and `y` be matrices over a field. If every column of `y` lies in the column space of
-`x`, then y = x * s for some matrix s. -/
-lemma New.Filling.exists_mul_eq_of_col_mem_range {y : Matrix m l k}
-    (h_col : ∀ b : l, y.col b ∈ x.mulVecLin.range) : ∃ s : Matrix n l k, x * s = y := by
-  choose c hc using h_col
-  exact ⟨of fun i b ↦ c b i, ext_col hc⟩
-
 /-- Let `x` and `y` be matrices over a field. If the kernel of `x` lies in the column space of `y`,
 then `y * e + b * x = 1` for some matrices `e` and `b`. -/
 lemma New.exists_mul_add_mul_eq_one [Fintype l] [Fintype m] [DecidableEq n] {y : Matrix n l k}
@@ -97,7 +94,7 @@ lemma New.exists_mul_add_mul_eq_one [Fintype l] [Fintype m] [DecidableEq n] {y :
     exists_generalized_inverse x.toLin'
   have h_ker (v : n → k) : v - b (x *ᵥ v) ∈ x.mulVecLin.ker := by simp [mulVec_sub, hb]
   obtain ⟨e, he⟩ : ∃ e : Matrix l n k, y * e = 1 - b.toMatrix' * x := by
-    refine Filling.exists_mul_eq_of_col_mem_range fun j ↦ ?_
+    refine exists_mul_eq_of_range_le fun j ↦ ?_
     rw [← mulVec_single_one, sub_mulVec, one_mulVec, ← mulVec_mulVec, LinearMap.toMatrix'_mulVec]
     exact h_range (h_ker (Pi.single j 1))
   exact ⟨e, b.toMatrix', add_eq_of_eq_sub he⟩
@@ -157,7 +154,8 @@ the identity form, the g in GL_n(A) with gᴴg = 1. -/
 def U.cutAt (he : IsIdempotentElem e) [StarRing A] (hs : star e = e) :
     U (1 : Matrix n n A) →* U (1 : Matrix n n A) :=
   ((cutGL he).comp (U 1).subtype).codRestrict (U 1) <| by
-    simp_all [mem_U, cutGL, he.eq, mul_add, add_mul, smul_smul, mul_sub]
+    simp_all [Matrix.mem_unitaryGroupOf_iff, Matrix.star_eq_conjTranspose,
+      cutGL, he.eq, mul_add, add_mul, smul_smul, mul_sub]
 
 end New
 
@@ -558,6 +556,30 @@ class Floors.IsHermitianUnit (J : Matrix n n A) : Prop where
 end New
 
 end AdelicRingDefs
+
+/-! ## Left invertible and primitive matrices -/
+
+section PrimitiveMatrices
+
+open Matrix
+
+namespace New
+
+variable {R n k : Type*} [DecidableEq k] [CommRing R] [Fintype n]
+  (O : Subring R) (X : Matrix n k R)
+
+/-- The n × k matrix X over R has a left inverse over R. -/
+abbrev HasLeftInv : Prop := ∃ L : Matrix k n R, L * X = 1
+
+/-- The submodule of R^n spanned by the columns of the matrix X. -/
+abbrev colSpan [Fintype k] : Submodule R (n → R) := X.mulVecLin.range
+
+/-- The matrix X has entries in the subring O and a left inverse with entries in O. -/
+def IsPrimitiveMatrix : Prop := IsIntMatrix O X ∧ ∃ L : Matrix k n R, IsIntMatrix O L ∧ L * X = 1
+
+end New
+
+end PrimitiveMatrices
 
 namespace New
 

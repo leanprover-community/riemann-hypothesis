@@ -322,14 +322,12 @@ noncomputable def selmerCocycles {O : CoeffRing ℓ} (ρ : AbsGal D →* Matrix 
 
 section SelmerLength
 
-variable (γ : AbsGal D) (ζ : intQpBar ℓ)
+variable (γ : AbsGal D)
 
-/-- `u`, `ψ'` and `ζ'` are models over `O` of `R`, `ψ` and `ζ`, and on the twisted lattice `ψ' u`
-the element `γ` is the scalar `ζ'`. -/
+/-- `u` and `ψ'` are models over `O` of `R` and `ψ`, and on the twisted lattice `ψ' u` the element
+`γ` is a scalar `ζ'` with `ζ' - 1` a unit. -/
 structure IsTwistedLattice {O : CoeffRing ℓ} (u : AbsGal D →* Matrix n n O) (ψ' : AbsGal D →* O)
     (ζ' : ↑O) : Prop where
-  /-- `ζ'` is `ζ`. -/
-  scalar_eq : ζ'.1 = ζ
   /-- `u` is a lattice in `R`. -/
   isLatticeIn : IsLatticeIn R u
   /-- `ψ'` is `ψ`. -/
@@ -341,20 +339,20 @@ structure IsTwistedLattice {O : CoeffRing ℓ} (u : AbsGal D →* Matrix n n O) 
   /-- `γ` lies in an inertia group above a place that does not divide `ℓ`. -/
   mem_inertiaAbove : γ ∈ inertiaAbove (placesDividing D.E ℓ)ᶜ
 
-variable {ψ R γ ζ} in
+variable {ψ R γ} in
 omit [PadicIso ℓ] in
 /-- The cyclotomic character is `1` at `γ`, which lies in inertia at a place not above `ℓ`. -/
 lemma IsTwistedLattice.cyclotomicChar_eq_one {O : CoeffRing ℓ} {u : AbsGal D →* Matrix n n O}
-    {ψ' : AbsGal D →* O} {ζ' : ↑O} (h : IsTwistedLattice ψ R γ ζ u ψ' ζ') :
+    {ψ' : AbsGal D →* O} {ζ' : ↑O} (h : IsTwistedLattice ψ R γ u ψ' ζ') :
     cyclotomicChar Ω ℓ γ = 1 :=
   cyclotomicChar_eq_one_of_mem_inertiaAbove h.mem_inertiaAbove
 
-/-- Over all large coefficient rings, `R`, `ψ` and `ζ` have models `u`, `ψ'`, `ζ'` on whose twisted
-lattice `γ` acts by the scalar `ζ'` (`IsTwistedLattice`). -/
+/-- Over all large coefficient rings, `R` and `ψ` have models `u` and `ψ'` on whose twisted lattice
+`γ` acts by a scalar `ζ'` (`IsTwistedLattice`). -/
 def HasTwistedLattice : Prop :=
   ∀ᶠ O : CoeffRing ℓ in Filter.atTop,
     ∃ (u : AbsGal D →* Matrix n n O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
-      IsTwistedLattice ψ R γ ζ u ψ' ζ'
+      IsTwistedLattice ψ R γ u ψ' ζ'
 
 end SelmerLength
 
@@ -366,16 +364,16 @@ noncomputable def crystallineSelmerLength {n : Type} [Fintype n] [DecidableEq n]
   divisibleSelmerLength ρ (placesDividing D.E ℓ ∪ placesAboveM D ∪ .conjClosure Q)
     (crysRelations ρ ∪ {Finsupp.single γ 1})
 
-/-- Over all large coefficient rings `O` there are models `u`, `ψ'` and `ζ'` of `R`, `ψ` and `ζ`
-such that `γ` acts on the twisted lattice `ψ' u` by the scalar `ζ'` (see `IsTwistedLattice`) and the
+/-- Over all large coefficient rings `O` there are models `u` and `ψ'` of `R` and `ψ` such that `γ`
+acts on the twisted lattice `ψ' u` by a scalar `ζ'` (see `IsTwistedLattice`) and the
 Selmer group of `ψ' u` with coefficients in `Frac(O) / O` has length at most `sel`, normalised by
 `len O / ℓ = 1`. -/
 def HasDivisibleSelmerLengthLe {n : Type} [Fintype n] [DecidableEq n]
     (ψ : AbsGal D →* PadicAlgCl ℓ) (R : GalRep ℓ D.E n) (Q : Finset (FinPlace D.E)) (γ : AbsGal D)
-    (ζ : intQpBar ℓ) (sel : ENNReal) : Prop :=
+    (sel : ENNReal) : Prop :=
   ∀ᶠ O : CoeffRing ℓ in Filter.atTop,
     ∃ (u : AbsGal D →* Matrix n n O) (ψ' : AbsGal D →* O) (ζ' : ↑O),
-      IsTwistedLattice ψ R γ ζ u ψ' ζ' ∧
+      IsTwistedLattice ψ R γ u ψ' ζ' ∧
       O.normLength (crystallineSelmerLength (twistRep (.id O) ψ' u) Q γ) ≤ sel
 
 omit [PadicIso ℓ] in
@@ -404,16 +402,16 @@ omit [PadicIso ℓ] in
 /-- A bound for the Selmer group with divisible coefficients comes with a twisted lattice. -/
 lemma HasDivisibleSelmerLengthLe.hasTwistedLattice {n : Type} [Fintype n] [DecidableEq n]
     {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E n} {Q : Finset (FinPlace D.E)} {γ : AbsGal D}
-    {ζ : intQpBar ℓ} {sel : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ ζ sel) :
-    HasTwistedLattice ψ R γ ζ :=
+    {sel : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ sel) :
+    HasTwistedLattice ψ R γ :=
   Filter.Eventually.mono h fun _ ⟨u, ψ', ζ', h_lattice, _⟩ ↦ ⟨u, ψ', ζ', h_lattice⟩
 
 omit [PadicIso ℓ] in
 /-- A bound for the Selmer group with divisible coefficients holds for every larger bound. -/
 lemma HasDivisibleSelmerLengthLe.mono {n : Type} [Fintype n] [DecidableEq n]
     {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalRep ℓ D.E n} {Q : Finset (FinPlace D.E)} {γ : AbsGal D}
-    {ζ : intQpBar ℓ} {sel sel' : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ ζ sel)
-    (h_le : sel ≤ sel') : HasDivisibleSelmerLengthLe ψ R Q γ ζ sel' :=
+    {sel sel' : ENNReal} (h : HasDivisibleSelmerLengthLe ψ R Q γ sel)
+    (h_le : sel ≤ sel') : HasDivisibleSelmerLengthLe ψ R Q γ sel' :=
   Filter.Eventually.mono h fun _ ⟨u, ψ', ζ', h_lattice, h_len⟩ ↦
     ⟨u, ψ', ζ', h_lattice, h_len.trans h_le⟩
 

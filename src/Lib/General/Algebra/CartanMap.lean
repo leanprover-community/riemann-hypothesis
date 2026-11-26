@@ -61,25 +61,6 @@ def IsHigmanProjective (Q : Subgroup G) [Finite (G ⧸ Q)] (A : DiscreteModule R
 /-- The subgroup `Q` of `G` acts trivially on the discrete `G`-module `A`. -/
 abbrev TrivialOn (Q : Subgroup G) (A : DiscreteModule R G) : Prop := ∀ g ∈ Q, ∀ m : A.V, A.ρ g m = m
 
-/-- If `Q` acts trivially on `A`, the conjugate `g τ g⁻¹` of an additive map `τ` depends only on
-the coset of `g` in `G ⧸ Q`. -/
-lemma TrivialOn.conj_apply_eq_of_mk_eq {Q : Subgroup G} {A : DiscreteModule R G}
-    (hA : A.TrivialOn Q) (τ : A →+ A) {g g' : G} (h_coset : (g : G ⧸ Q) = (g' : G ⧸ Q)) (a : A.V) :
-    A.ρ g (τ (A.ρ g⁻¹ a)) = A.ρ g' (τ (A.ρ g'⁻¹ a)) := by
-  obtain ⟨q, hq, rfl⟩ : ∃ q ∈ Q, g' = g * q := ⟨g⁻¹ * g', QuotientGroup.eq.1 h_coset, by simp⟩
-  simp only [mul_inv_rev, map_mul, Module.End.mul_apply, hA q hq, hA q⁻¹ (Q.inv_mem hq)]
-
-/-- If `Q` has finite index and acts trivially on `A`, Higman's criterion may be checked with any
-system `s` of representatives of the cosets in `G ⧸ Q`. -/
-lemma TrivialOn.isHigmanProjective_iff {Q : Subgroup G} [Finite (G ⧸ Q)] {A : DiscreteModule R G}
-    (hA : A.TrivialOn Q) (s : G ⧸ Q → G) (hs : ∀ x : G ⧸ Q, (s x : G ⧸ Q) = x) :
-    A.IsHigmanProjective Q ↔
-      ∃ τ : A →+ A, ∀ a : A.V, ∑ x : G ⧸ Q, A.ρ (s x) (τ (A.ρ (s x)⁻¹ a)) = a := by
-  have h_term (τ : A →+ A) (a : A.V) (x : G ⧸ Q) :
-      A.ρ x.out (τ (A.ρ x.out⁻¹ a)) = A.ρ (s x) (τ (A.ρ (s x)⁻¹ a)) :=
-    hA.conj_apply_eq_of_mk_eq τ ((QuotientGroup.out_eq' x).trans (hs x).symm) a
-  simp only [IsHigmanProjective, h_term]
-
 /-- For a discrete `G`-module `A` and a finite set `Y` with an action of a discrete group `Δ`, the
 `G × Δ`-module of functions `f : Y → A`, with `((g, δ) f) x = g (f (δ⁻¹ x))`. -/
 abbrev permModule (A : DiscreteModule R G) {Δ : Type} [Group Δ] [TopologicalSpace Δ]
@@ -223,7 +204,7 @@ lemma exists_open_sylow (l : ℕ) [hl : Fact l.Prime] (U : OpenNormalSubgroup G)
   have hU_le : (U : Subgroup G) ≤ P := le_comap_mk' (U : Subgroup G) T.toSubgroup
   refine ⟨⟨P, isOpen_mono hU_le U.toOpenSubgroup.isOpen⟩, hU_le, ?_, fun g hg ↦ ?_⟩
   · simp [P, T.not_dvd_index, T.index_comap, hl.out.coprime_iff_not_dvd]
-  · obtain ⟨k, hk⟩ := T.isPGroup' ⟨g, hg⟩
+  · obtain ⟨k, hk⟩ := T.isPGroup ⟨g, hg⟩
     exact ⟨k, (eq_one_iff _).1 (by simpa [Subtype.ext_iff] using hk)⟩
 
 /-! ### Function modules and multiplicative functions -/

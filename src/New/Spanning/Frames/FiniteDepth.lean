@@ -58,6 +58,14 @@ variable {F : PlaceData ι T (m + 1)} {x y : T.G} (Z : F.IntermediateGroup)
 
 namespace IntegralPlace.IsLargeLatticeData
 
+private lemma exists_ne_zero_of_formMajorant_ne_zero (Z : F.IntermediateGroup)
+    {j : ℕ} {p q : ℕ → Aˣ} {x : T.G} (hx : F.formMajorant j p q Z.besselVector x ≠ 0) :
+    ∃ y ∈ floorGroup 0,
+      F.pivotL1Norm j (frameCorrelation Z.besselVector 1) y (y * x) *
+        F.pivotL1Norm j (frameCorrelation Z.besselVector (weylRatio j p q))
+          ((weylElem j p)⁻¹ * y) ((weylElem j p)⁻¹ * y * x) ≠ 0 :=
+  exists_ne_zero_of_ae ae_partialGroupMeasure_mem hx
+
 variable [h : IsLargeLatticeData F]
 
 /-- Let `F` be a large lattice datum, `R = integers` the ring of integers of `A` and `P.intUnits`
@@ -78,7 +86,7 @@ theorem inv_two_pow_le_groupMeasure {B : ℝ≥0∞}
       _ ≤ volume (P.integers \ (P.integers \ P.intUnits)) := le_measure_sdiff
       _ ≤ volume P.intUnits := measure_mono sdiff_sdiff_le
   -- The integral group is the box, of measure at least `volume P.intUnits ^ 𝔰.n`.
-  grw [h_units, ← h.box_eq]
+  grw [h_units, ← h.boxSet_eq]
   exact h.le_partialGroupMeasure_boxSet 𝔰.ϱ 0 (zero_add _)
 
 /-- For a large lattice datum, the set 𝔡_a = `F.stableProducts a x y` (the coordinates at the dual
@@ -142,28 +150,10 @@ theorem stableProducts_subset {a : Fin 𝔰.ϱ} (h_near : F.IsNear (a + 1) x) :
   rintro _ ⟨w, ⟨h_orth, w', -, hw⟩, rfl⟩
   rw [closePairs_eq] at hw
   have hw_int : x⁻¹.val.val *ᵥ w ∈ intVectors integers 𝔰.BesselIndex := hw.left
-  obtain ⟨hξx_int, -⟩ : ξ * x ∈ unitaryLevel integers 1 T.splitGram := box_eq.le h_box
+  obtain ⟨hξx_int, -⟩ : ξ * x ∈ unitaryLevel integers 1 T.splitGram := boxSet_eq.le h_box
   have h_int : (ξ.val.val *ᵥ w) (eStar a) ∈ integers := by
     simpa [mul_assoc] using hξx_int.isIntMatrix.mulVec hw_int (eStar a)
   rwa [partialUnitriangularGroup_mulVec_eStar hξ a.val.lt_succ_self h_orth] at h_int
-
-/-- **Depth at the finite places.** For a large lattice datum, let x be near at a + 1. Then the set
-𝔡_a = `F.stableProducts a x y`, the coordinates at the dual of e_a of the vectors that are stable at
-x and x y, is an ideal of the ring of integers, and the depth of e_a, the inverse of the volume of
-this set, is the index of this ideal. -/
-theorem exists_ideal_depth_eq {a : Fin 𝔰.ϱ} (h_near : F.IsNear (a + 1) x) (y : T.G) :
-    ∃ I : Ideal P.integers,
-      (∀ t : P.integers, t ∈ I ↔ ↑t ∈ F.stableProducts a x y) ∧ F.depth a x y = I.cardQuot := by
-  obtain ⟨c, hc⟩ : ∃ c : Aˣ, F.stableProducts a x y = {t : A | c⁻¹.val * t ∈ integers} :=
-    exists_stableProducts_eq_unit_mul_integers a x y
-  have hc_mem : c.val ∈ P.integers := stableProducts_subset h_near (hc.ge (by simp))
-  obtain ⟨I, -, hI_image, hI_card⟩ : ∃ I : Ideal P.integers, I.cardQuot ≠ 0 ∧
-      integers.subtype '' I = {t : A | c⁻¹.val * t ∈ integers} ∧ I.cardQuot = (P.modulus c)⁻¹ :=
-    exists_ideal_cardQuot_eq c hc_mem
-  refine ⟨I, fun t ↦ ?_, ?_⟩
-  · rw [hc, ← hI_image]
-    exact integers.subtype_injective.mem_set_image.symm
-  · rw [depth, hc, volume_setOf_mul_mem, modulus_inv, inv_inv, hI_card]
 
 /-- For a large lattice datum and a group Z between the congruence subgroup K(g) and the integral
 group K, if the finite Bessel vectors `Z.besselVector` at two points x and z are not orthogonal,
@@ -179,7 +169,7 @@ theorem exists_unit_mem_stableProducts (a : Fin 𝔰.ϱ) {z : T.G} (y : T.G)
       u * x ∈ unitaryLevel integers 1 T.splitGram ∧ (u * x)⁻¹ * (v * z) ∈ F.congruenceSubgroup :=
     exists_mem_congruenceSubgroup_of_inner_ne_zero Z h_inner
   have h_near : F.IsNear (a + 1) x := ⟨u, mem_partialUnitriangularGroup_of_mem_besselU hu,
-    box_eq.ge hux⟩
+    boxSet_eq.ge hux⟩
   have hc_mem : c.val ∈ F.stableProducts a x y := hc.ge (by simp)
   have h_volume : volume (F.stableProducts a x y) = P.modulus c := by
     rw [hc, volume_setOf_mul_mem, modulus_inv, inv_inv]
@@ -214,7 +204,7 @@ theorem exists_mem_boxSet_hasMatrixSize_of_inner_ne_zero {Γ : Gauge F}
       ω ∈ Γ.vecsOfSize 1 := by
     have h_pair : (ω, ω) ∈ F.closePairs := closePairs_eq.ge ⟨hω, by simp⟩
     exact (Γ.mem_vecsOfSize_of_mem_closePairs h_pair).1
-  exact ⟨u, hu, v, hv, box_eq.ge hux, box_eq.ge hvy,
+  exact ⟨u, hu, v, hv, boxSet_eq.ge hux, boxSet_eq.ge hvy,
     fun i j ↦ mem_ofSize_mono (h_size _ (fun k ↦ h_int k j) i)⟩
 
 /-- Let `F` be a large lattice datum, `Z` a group between the congruence subgroup K(g) and the
@@ -228,12 +218,7 @@ theorem prod_mem_of_formMajorant_ne_zero (Z : F.IntermediateGroup) {j : ℕ}
     (∏ a ∈ Finset.range l, p a).val ∈ integers ∧ (∏ a ∈ Finset.range l, q a).val ∈ integers := by
   -- Where the integrand is not zero, the frames `y`, `y * x` and their translates by the inverses
   -- of the Weyl elements of `p` and of `q` respectively are near at `j`.
-  obtain ⟨y, -, hy⟩ :
-      ∃ y ∈ floorGroup 0,
-        F.pivotL1Norm j (frameCorrelation Z.besselVector 1) y (y * x) *
-          F.pivotL1Norm j (frameCorrelation Z.besselVector (weylRatio j p q))
-            ((weylElem j p)⁻¹ * y) ((weylElem j p)⁻¹ * y * x) ≠ 0 :=
-    exists_ne_zero_of_ae ae_partialGroupMeasure_mem hx
+  obtain ⟨y, -, hy⟩ := exists_ne_zero_of_formMajorant_ne_zero Z hx
   obtain ⟨σ, hσ, h_first⟩ : ∃ σ ∈ floorGroup j,
       ⟪Z.besselVector (σ * y), Z.besselVector (1 * (σ * (y * x)))⟫_ℂ ≠ 0 :=
     exists_ne_zero_of_pivotL1Norm_ne_zero (left_ne_zero_of_mul hy)
@@ -420,12 +405,7 @@ theorem mem_positions_of_formMajorant_ne_zero {F : PlaceData ι T (m + 1)} {x : 
   -- `PlaceData.exists_mem_congruenceSubgroup_of_inner_ne_zero`, `x` is then a conjugate by `σ * y`
   -- of an element of `besselU`, times an element of `F.congruenceSubgroup`, which is the form of a
   -- position.
-  obtain ⟨y, -, hy⟩ :
-      ∃ y ∈ floorGroup 0,
-        F.pivotL1Norm j (frameCorrelation Z.besselVector 1) y (y * x) *
-          F.pivotL1Norm j (frameCorrelation Z.besselVector (weylRatio j p q))
-            ((weylElem j p)⁻¹ * y) ((weylElem j p)⁻¹ * y * x) ≠ 0 :=
-    exists_ne_zero_of_ae ae_partialGroupMeasure_mem hx
+  obtain ⟨y, -, hy⟩ := exists_ne_zero_of_formMajorant_ne_zero Z hx
   obtain ⟨σ, -, h_pair⟩ :
       ∃ σ ∈ floorGroup j, ⟪Z.besselVector (σ * y), Z.besselVector (1 * (σ * (y * x)))⟫_ℂ ≠ 0 :=
     exists_ne_zero_of_pivotL1Norm_ne_zero (left_ne_zero_of_mul hy)

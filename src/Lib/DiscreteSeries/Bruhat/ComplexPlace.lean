@@ -60,7 +60,7 @@ instance complexPlace : Place ℂ := by
   have integrable := Integrable.of_integral_ne_zero (gauss.trans_ne (by simp))
   -- its Fourier transform, and the mass of `π exp (-‖x‖²)` as a Lebesgue integral
   have fourier (z : ℂ) := integral_cexp_neg_mul_sq_norm_add (b := 1) one_pos (2 * I) (z / I)
-  have mass := ofReal_integral_norm_eq_lintegral_enorm (integrable.const_mul π)
+  have mass := ofReal_integral_norm_eq_lintegral_eNorm (integrable.const_mul π)
   refine .mk (toTraceOne := ⟨2⁻¹, by norm_num⟩) (skewUnit := .mk0 (I / 2) (by norm_num))
     (skewMeasure := volume.map fun r : ℝ ↦ ⟨r * I, by simp [skewAdjoint.mem_iff]⟩)
     (modulus := ⟨⟨(‖·‖ₑ ^ 2), by norm_num⟩, by norm_num [mul_pow]⟩)
@@ -143,10 +143,10 @@ lemma lintegral_eq_polar (k : κ) {g : (κ → ℂ) → ENNReal} (hg : Measurabl
       rw [← lintegral_mul_right_eq_self _ u]
       simp [← mulVec_mulVec, hu]
     _ = _ := by
-      -- pass from `ω` to `r = |ω|²` (`erw`: the integrand is a product and a composite up to defeq)
-      erw [← lintegral_withDensity_eq_lintegral_mul,
-          ← measurePreserving_normSq_sphereDensity.lintegral_comp] <;>
-        fun_prop
+      -- pass from `ω` to `r = |ω|²`
+      refine ((measurePreserving_normSq_sphereDensity (κ := κ)).lintegral_comp
+        (f := fun r : ℝ ↦ ∫⁻ h : U 1, g (h.1.1 *ᵥ √r • Pi.single k 1)) (by fun_prop)).trans ?_
+      exact lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)
 
 /-- The boost in the plane of k₀ and z with parameter a, for 1 ≤ |a|. With s = √(|a|² - 1) it acts
 on that plane by the matrix with rows (conj a, s) and (-s, -a), and it fixes the other basis
@@ -262,7 +262,7 @@ lemma cartan_decomposition {c : ℂ} {σ : (𝔰.middleGram (1 : ℂ)).G} (hσ :
     simp [apply_eq_one_apply_of_mem_floorGroup hσ, ← hZ, middleGram, frameGram, splitGram,
       Matrix.mul_apply]
   have h_gram : (σ.1.1ᴴ * (𝔰.middleGram (1 : ℂ)).splitGram * σ.1.1) 𝔰.z 𝔰.z =
-      (𝔰.middleGram (1 : ℂ)).splitGram 𝔰.z 𝔰.z := congr_fun₂ σ.2 𝔰.z 𝔰.z
+      (𝔰.middleGram (1 : ℂ)).splitGram 𝔰.z 𝔰.z := congr_fun₂ (mem_unitaryGroupOf_iff.1 σ.2) 𝔰.z 𝔰.z
   have h_col : ∑ i : 𝔰.κ, (‖v i‖ : ℂ) ^ 2 = ‖c‖ ^ 2 - 1 := by
     simpa [apply_eq_one_apply_of_mem_floorGroup hσ, h_entry, add_neg_eq_iff_eq_add, middleGram,
       splitGram,
@@ -313,7 +313,7 @@ lemma star_dotProduct_hyperboloidPoint {Γ : ℝ} {c : ℂ} (hΓ : 0 ≤ Γ + �
       (𝔰.middleGram (1 : ℂ)).splitGram *ᵥ hyperboloidPoint Γ (c, u) = Γ := by
   -- the column of `u` at `k₀` has norm one
   have h_col : ∑ i, (‖u.val.val i 𝔰.k₀‖ : ℂ) ^ 2 = 1 := by
-    simpa [Matrix.mul_apply, conj_mul'] using congr_fun₂ u.2 𝔰.k₀ 𝔰.k₀
+    simpa [Matrix.mul_apply, conj_mul'] using congr_fun₂ (mem_unitaryGroupOf_iff.1 u.2) 𝔰.k₀ 𝔰.k₀
   -- the part in X₀ has squared norm `Γ + ‖c‖²` and the entry at z contributes `-‖c‖²`
   suffices ((√(Γ + ‖c‖ ^ 2) ^ 2 : ℝ) : ℂ) + -(‖c‖ : ℂ) ^ 2 = Γ by
     simpa [apply_ite conj, -map_mul, ← Finset.sum_mul, ← Finset.mul_sum, h_col,
@@ -417,7 +417,7 @@ lemma map_orbitPoint_cellLaw_top (hk : 1 < 𝔰.k) :
   rw [h_quadric, lintegral_hyperboloidMeasure _ hf]
   simp (disch := with_unfolding_all fun_prop) only [lintegral_map, lintegral_mconv,
     lintegral_withDensity_eq_lintegral_mul, Pi.mul_apply]
-  show ∫⁻ c : ℂ, cellDensity 𝔰 𝔰.ϱ c *
+  change ∫⁻ c : ℂ, cellDensity 𝔰 𝔰.ϱ c *
       ∫⁻ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), f (orbitPoint 𝔰.top ((cellChart 𝔰 𝔰.ϱ c)⁻¹ * embedH h)) =
     ∫⁻ c : ℂ, .ofReal (sphereDensity 𝔰.k (-1 + ‖c‖ ^ 2)⁺) *
       ∫⁻ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), f (hyperboloidPoint (-1) (c, h))

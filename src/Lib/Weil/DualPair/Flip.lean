@@ -112,7 +112,7 @@ def flipCoords : CoordChange E (.id ℂ) (homSigns t s) (homSigns s t') where
       mul_comm, starCoordEquiv, sum_prod_type]
   finEquiv_mem x := by
     -- Both the unit `c` and conjugation preserve `Ô E`.
-    erw [Submodule.smul_mem_iff' _ c]
+    refine (Submodule.smul_mem_iff' _ c).trans ?_
     simp [intVectors, stdLattice]
     grind [star_star, star_mem_Ô]
 

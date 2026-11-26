@@ -252,7 +252,7 @@ lemma range_arrowTensor : arrowTensor.range = (V'.hom (flipSum V V'')).finitePar
   simp [← map₂_eq_range_lift_comp_mapIncl, finitePart, map₂_span_span, ← arrowProduct_vacElem,
     finHeisenbergOp_arrowProduct, le_antisymm_iff, span_le, smul_mem, mem_span_of_mem,
     arrowTensor, Set.range_subset_iff]
-  show ∀ (x : ι' × ι → 𝔸f E) (x' : ι'' × ι' → 𝔸f E),
+  change ∀ (x : ι' × ι → 𝔸f E) (x' : ι'' × ι' → 𝔸f E),
     arrowProduct ((V.hom V').finHeisenbergOp x (V.hom V').vacElem)
         ((V'.hom V'').finHeisenbergOp x' (V'.hom V'').vacElem) ∈
       span ℂ (Set.range fun z : (ι ⊕ ι'') × ι' → 𝔸f E ↦

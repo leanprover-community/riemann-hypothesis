@@ -78,7 +78,8 @@ lemma add_conjGal_mem_evenClasses {e ν : ℕ} {S : Set (FinPlace E)}
     h_locConst.add (h_locConst.comp_continuous continuous_conjGal)⟩,
     fun g ↦ by simp [add_comm], fun g hg ↦ ?_⟩
   · -- the cocycle identity: `g` and `conjGal g` act alike on the twist
-    simp [h_cocycle, add_add_add_comm, tateTwist, cyclotomicInv]
+    simp [h_cocycle, tateTwist, cyclotomicInv]
+    exact add_add_add_comm ..
   · -- `conjGal g` lies in the inertia group of the conjugate place, which is again outside
     have ⟨v, hv, A, hA, hgA⟩ := hg
     have hv_star : star v ∉ placesDividing E ℓ ∪ S.conjClosure := by

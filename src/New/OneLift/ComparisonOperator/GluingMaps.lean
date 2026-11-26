@@ -108,7 +108,6 @@ lemma card_rowIndex_sum_fin_le_two_mul_n : card (D.RowIndex ⊕ Fin D.t) ≤ 2 *
 lemma nonempty_carrierIndex_embedding_firstFactorIndex :
     Nonempty (D.CarrierIndex ↪ FirstFactorIndex j) := by
   have r_add_one : D.r + 1 = D.k + D.m := D.r_add_one
-  have k_large : 100 * D.m + 9 < D.k := D.hundred_mul_m_add_nine_lt_k
   refine nonempty_of_card_le ?_
   rw [card_firstFactorIndex, Fintype.card_sum, Fintype.card_fin, Fintype.card_fin]
   omega
@@ -258,15 +257,16 @@ def firstFactorPairing (i : ChoiceIndex j) (g : G D.E (D.signsW j)) : ℂ :=
 the class sum over `U(V″)` whose multiple by a number is the twist-free function `choiceFn`. -/
 lemma firstFactorPairing_eq_mul_thirdExchangeLeftSide (i : ChoiceIndex j) (g : G D.E (D.signsW j)) :
     firstFactorPairing j ϑ i g = firstFactorScale j * thirdExchangeLeftSide ϑ j i g := by
-  have h_rows : Matrix.fromCols 1 0 * (splittingV j ϑ).stackOverGenScalar i.1 = i.1 := by
-    -- `erw`, since `stackOverGenScalar` is a `fromRows` only up to unfolding
-    erw [Matrix.fromCols_mul_fromRows, Matrix.zero_mul, Matrix.one_mul, add_zero]
   have h_star : (fun h : Gf D.E (FirstFactorIndex j) ↦ star (firstFactor j ϑ i h)) =
       fun h ↦ firstFactorScale j • leftSideSeries ϑ j i h := funext fun h ↦ star_star _
-  rw [thirdExchangeLeftSide_eq_kernelClassSum ϑ j h_rows, firstFactorPairing]
+  rw [firstFactorPairing]
   -- rewrite by `h_star` with `congrArg`, as the motive of `rw` is not type correct
-  exact (congrArg (kernelClassSum (D.descentPair ϑ j) (firstFactorChar ϑ j) _ _ · g) h_star).trans
-    (kernelClassSum_smul (O := D.descentPair ϑ j) ..)
+  refine ((congrArg (kernelClassSum (D.descentPair ϑ j) (firstFactorChar ϑ j) _ _ · g) h_star).trans
+    (kernelClassSum_smul (O := D.descentPair ϑ j) ..)).trans
+    (congrArg (firstFactorScale j * ·)
+      (thirdExchangeLeftSide_eq_kernelClassSum ϑ j (u := Matrix.fromCols 1 0) ?_ g).symm)
+  -- `erw`, since `stackOverGenScalar` is a `fromRows` only up to unfolding
+  erw [Matrix.fromCols_mul_fromRows, Matrix.zero_mul, Matrix.one_mul, add_zero]
 
 /-- Let `y` be a good form on the hermitian space `W_j = D.spaceW j`. The theta series
 `firstFactorPairing j ϑ i` on `U(W_j)` of a twist `ϑ` and a choice `i` is a finite combination of

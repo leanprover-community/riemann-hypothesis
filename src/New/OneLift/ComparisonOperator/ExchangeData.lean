@@ -347,8 +347,6 @@ lemma New.Data.card_detIndex_add_firstFactorCharExp {P : Parameters} {D : Data P
       ∑ h ∈ Finset.range (D.posRank j), (untwistedDescentPair j).colsPlus τ h +
         D.reducedHalfGap := by
     simp [Finset.sum_range]
-  -- `k` is even and positive
-  have h_half : (D.t + D.k - 1) / 2 = (D.t + 1) / 2 + D.k / 2 - 1 := by grind
   zify [h_card]
   rw [Finset.sum_congr rfl h_diff, Finset.sum_range_sub', h_first, h_last]
   grind [reducedHalfGap]

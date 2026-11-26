@@ -84,8 +84,8 @@ lemma TameChar.IsIntegralMeasure.norm_sq {F : D.TameChar → ℂ} (hF : ϑ.IsInt
           starRingEnd ℂ (c y * ϑ'.toAutChar.1 (u y)) := by
       rw [eq_sum ϑ' hQ, map_sum, univ.sum_mul_sum]
     _ = _ := by
-      simp only [sum_prod_type, map_mul, map_inv, Circle.coe_mul, coe_inv_eq_conj,
-        mul_mul_mul_comm, RCLike.star_def]
+      simp only [sum_prod_type, map_mul, map_inv, Circle.coe_mul, coe_inv_eq_conj, RCLike.star_def]
+      exact sum_congr rfl fun _ _ ↦ sum_congr rfl fun _ _ ↦ mul_mul_mul_comm ..
 
 namespace CriticalPair
 

@@ -183,7 +183,7 @@ lemma exists_weightMinors_conj_reducedExp_eq_cexp (hl : Function.Injective l)
         ← ofReal_sum, ← sum_div, sum_norm_lie_coordProj_sq h_range,
         sum_trace_coordProj_mul h_range, Int.cast_neg, neg_mul, sub_neg_eq_add]
     rw [weightMinors_eq_det_zpow_mul_prod (h_det.trans_ne (exp_ne_zero _)) _ _ h_range, h_det,
-      h_prod, ← exp_int_mul, ← exp_add, Int.cast_neg]
+      h_prod, ← exp_intCast_mul, ← exp_add, Int.cast_neg]
     exact congrArg cexp (by ring)
   · refine (norm_sum_le_of_le _ fun t _ ↦ hr_le t).trans_eq ?_
     simp only [← mul_sum, sum_add_distrib, sum_norm_lie_coordProj_sq h_range]
@@ -198,7 +198,7 @@ lemma norm_trace_paramAddRho_sub_trace_lowestKType_le (l : HCParam ε) (Z : Matr
     (norm_intCast _).trans_le (mod_cast abs_twoRho_le (ε · = ε ·) i l)
   calc _ = ‖∑ i : n, twoRho l (ε · = ε ·) i * Z i i‖ := by simp [trace, lowestKType, sub_mul]
     _ ≤ ∑ _i : n, card n * ‖Z‖ :=
-        norm_sum_le_of_le _ fun i _ ↦ norm_mul_le_of_le (h_rho i) (norm_apply_le Z i i)
+        norm_sum_le_of_le _ fun i _ ↦ norm_mul_le_of_le (h_rho i) (norm_apply_le_frobenius_norm ..)
     _ = card n ^ 2 * ‖Z‖ := by simp [sq, mul_assoc]
 
 /-- For `k ∈ K = maxCompactU ε` we have `Q_{-λ^ρ} (k) ≤ Q_μ (k) + 2 n ^ 2`. This holds because

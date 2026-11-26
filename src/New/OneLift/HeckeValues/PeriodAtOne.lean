@@ -82,7 +82,7 @@ lemma prod_range_corank_one_sub_q_pow (v : FinPlace E) (x : Matrix n n (ResField
   by_cases hx : IsUnit x
   · simp [rank_of_isUnit, hx, MulChar.one_apply ((isUnit_iff_isUnit_det x).1 hx)]
   · have h_corank : 0 < card n - x.rank := by
-      simp [card_sub_rank_eq_finrank_ker, zero_lt_iff, coe_mulVecLin, LinearMap.ker_eq_bot, hx,
+      simp [card_sub_rank_eq_finrank_ker, pos_iff_ne_zero, coe_mulVecLin, LinearMap.ker_eq_bot, hx,
         mulVec_injective_iff_isUnit]
     rw [MulChar.map_nonunit _ (mt (isUnit_iff_isUnit_det x).2 hx)]
     -- the factor at `l = 0` vanishes

@@ -385,7 +385,7 @@ lemma exists_quadraticIdeleChar_eq_neg_one {w : FinPlace E} (hw : star w = w) :
       induction σ using gal_maximalReal_induction
       · exact hu rfl
       · exact hu hw
-    show finAdeleIncl K E (locIdele (w.below K) x).val u = 1
+    change finAdeleIncl K E (locIdele (w.below K) x).val u = 1
     rw [adeleMap_apply _ rfl, locIdele_apply_of_ne h_below, map_one]
   -- If `t = a z z̄`, then `a` is positive at infinity, and `χ` kills the symbol of `x`: that of
   -- `a` by the sign law, and that of a norm.
@@ -500,7 +500,7 @@ lemma isRealTimesNorm_of_finPart_eq_one [SplittingChar E] {r : (𝔸 E)ˣ} (hr :
     nth_rw 1 [← h_real w, ← h_b_real w]
     rw [← ofReal_mul, mul_div_cancel₀ _ h_ne_b]
   refine ⟨b, hv.unit, hb, Units.ext (Prod.ext (funext h_inf) ?_)⟩
-  show (r : 𝔸 E).2 = algebraMap E (𝔸f E) b * ((u : 𝔸f E) * star (u : 𝔸f E))
+  change (r : 𝔸 E).2 = algebraMap E (𝔸f E) b * ((u : 𝔸f E) * star (u : 𝔸f E))
   rw [hr_fin]
   exact congrArg Units.val h_u.symm
 

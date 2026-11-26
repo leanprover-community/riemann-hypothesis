@@ -349,7 +349,7 @@ lemma exists_norm_pairWeil_schrodingerOp_mul_pow_le {S : Space E n s} {T : Space
           gcongr
           exact le_add_of_nonneg_right (norm_nonneg J)
     · have h_moment : ‖v‖ ≤ m := by
-        rw [← toReal_enorm, ← fockMoment_zero]
+        rw [← toReal_eNorm, ← fockMoment_zero]
         refine toReal_mono hv (lintegral_mono fun y ↦ ?_)
         gcongr <;> simp
       have h_one : 1 ≤ (ρ * (2 / H)) ^ (N + A) :=

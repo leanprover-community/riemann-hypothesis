@@ -301,7 +301,7 @@ lemma mem_of_cosets (P : Submodule ℂ ((n → 𝔸f E) → ℂ))
   -- that points that differ by an element of `N` times the lattice are `W`-close.
   let uniformSpace : UniformSpace (n → 𝔸f E) := IsTopologicalAddGroup.rightUniformSpace (n → 𝔸f E)
   obtain ⟨W, hW, h_ball_subset⟩ : ∃ W ∈ uniformity (n → 𝔸f E), ∀ x ∈ C, ∃ y : n → 𝔸f E,
-      UniformSpace.ball x W ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} := by
+      SetRel.ball (SetRel.inv W) x ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} := by
     obtain ⟨V, hV, h_ball⟩ := lebesgue_number_lemma_nhds hC fun y _ ↦ h_nhds y
     exact ⟨SetRel.inv V, tendsto_swap_uniformity hV, h_ball⟩
   obtain ⟨N, hN, h_smul_mem⟩ : ∃ N : ℕ, N ≠ 0 ∧ ∀ x ∈ (stdLattice E n).carrier,
@@ -312,7 +312,7 @@ lemma mem_of_cosets (P : Submodule ℂ ((n → 𝔸f E) → ℂ))
       t⁻¹.val • (x - q) ∈ integralBox n S →
         Ψ (idem S • x) = Ψ y ∧ (Ψ y ≠ 0 → idem S • x ∈ U y) := by
     obtain ⟨y, hy⟩ : ∃ y : n → 𝔸f E,
-        UniformSpace.ball (idem S • q) W ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} :=
+        SetRel.ball (SetRel.inv W) (idem S • q) ⊆ {z | Ψ z = Ψ y ∧ (Ψ y ≠ 0 → z ∈ U y)} :=
       h_ball_subset _ (h_supp q hq)
     refine ⟨y, fun x hx ↦ hy (h_smul_mem _ hx ?_)⟩
     simp [← ht, mul_left_comm (t : 𝔸f E), sub_eq_add_neg, smul_smul]

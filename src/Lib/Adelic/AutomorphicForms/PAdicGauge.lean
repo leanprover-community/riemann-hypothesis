@@ -619,7 +619,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {S : LevelPlaces E}
 instance : Fact (χ.comp (levelOf.reduction S.placeAt H) =ᶠ[nhds 1] 1) := by
   -- The character is trivial on the open level of the trivial subgroup.
   refine ⟨.mono (((isOpen_levelOf (w := S.placeAt) (H := ⊥)).preimage
-    continuous_subtype_val).mem_nhds (by simp)) fun k hk ↦ ?_⟩
+    continuous_subtypeVal).mem_nhds (by simp)) fun k hk ↦ ?_⟩
   simp [show levelOf.reduction S.placeAt H k = 1 from Subtype.ext (mem_levelOf.mp hk).2]
 
 /-- Let φ, ψ be forms of the level cut out by H, σ ∈ Aut ℂ, p a permutation of the infinite places
@@ -679,7 +679,7 @@ lemma norm_map_inner_le :
 
 /-- Let `ρ` be the representation `New.weylRep κ e` and `G` the Gram matrix of weight `κ`. Then
 `G ρ(a) = ρ(aᵀ)ᵀ G`: the matrices of `a` and of its transpose are adjoint for `G`. -/
-lemma _root_.New.weylGramOver_mul_weylRep {Φ R : Type} [CommRing R] [IsDomain R] [CharZero R]
+lemma _root_.New.weylGramOver_mul_weylRep {Φ R : Type} [CommRing R]
     [Fintype Φ] [DecidableEq Φ] {κ : Φ → ℕ → ℕ} (e : Φ → ℤ) (a : Φ → GL n R) :
     (weylGramOver : Matrix (WeylIndex n κ) (WeylIndex n κ) R) * weylRep κ e a =
       (weylRep κ e fun τ : Φ ↦ transposeGL (a τ))ᵀ * weylGramOver := by

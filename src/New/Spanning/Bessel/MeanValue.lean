@@ -70,7 +70,7 @@ theorem lintegral_fixerHaar {φ : 𝔰.G₁ → ℝ≥0∞} (hφ : Measurable φ
     ∫⁻ s : 𝔰.G₁, φ s ∂fixerHaar 𝔰 =
       ∫⁻ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), ∫⁻ u : besselU0, φ (u.val * embedH h) ∂𝔰.besselHaar₀ := by
   rw [fixerHaar, Floors.lintegral_mconv_symm hφ, lintegral_map (by fun_prop) (by fun_prop)]
-  exact lintegral_congr fun h ↦ lintegral_map (by fun_prop) measurable_subtype_coe
+  exact lintegral_congr fun h ↦ lintegral_map (by fun_prop) measurable_subtypeVal
 
 /-- The integral for `fixerHaar 𝔰`, the measure on the fixer of the frame, in coordinates: the
 iterated integral of the value at `unipotentOf q * embedH h`, for Lebesgue measure in the parameter

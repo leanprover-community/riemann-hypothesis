@@ -65,13 +65,6 @@ def frobEnd : U ⟶ U where
     congr 3
     aesop
 
-/-- The value of `New.Variety.ellAdicCohom.frobEnd` at a point x ∈ U(B): the image of x under the
-ring map b ↦ b^(p^j) of B. -/
-lemma frobEnd_app (hU_char : ∀ B : CommRingCat, U B → (p : B) = 0) (j : ℕ) (B : CommRingCat)
-    (x : U B) :
-    (frobEnd hU_char j).app B x = U.map (ofHom (frobPow (hU_char B x) j)) x :=
-  rfl
-
 /-- The absolute Frobenius acts trivially on ℓ-adic cohomology. Let p = 0 in every ring B in which
 U has a point (`hU_char`). Then the endomorphism `New.Variety.ellAdicCohom.frobEnd` of U, which
 moves a point x ∈ U(B) along the ring map b ↦ b^(p^j) of B, pulls back to the identity of
@@ -91,7 +84,7 @@ lemma ellAdicPull_frobEnd (hU_char : ∀ B : CommRingCat, U B → (p : B) = 0) (
     ext A ⟨⟨y⟩⟩
     -- the coefficients at `A` are functions on `Spec A`, moved along `comap` of `η`
     congrm ⟨WittVector.mk _ fun i ↦ ⟨_ ∘ ?_, _⟩⟩
-    show PrimeSpectrum.comap (Hom.hom (testIncl.map (η.app A))) = fun q ↦ q
+    change PrimeSpectrum.comap (Hom.hom (testIncl.map (η.app A))) = fun q ↦ q
     ext q
     simp [η, q.isPrime.pow_mem_iff_mem, NeZero.pos]
   -- pulling back to the category of points along the tautological point is injective
@@ -191,7 +184,7 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
       have h_val : A.valuation ((a : Ω) - (σ i a : Ω) ^ (p ^ f) ^ e i) < 1 := by
         simpa [σ] using (hg.pow (e i)).right (σ i a) (by simp)
       have h_zero : ω (a - σ i a ^ (p ^ f) ^ e i) = 0 := z.property _ <| by
-        show A.valuation ((a : Ω) - ((σ i a ^ (p ^ f) ^ e i : A) : Ω)) < 1
+        change A.valuation ((a : Ω) - ((σ i a ^ (p ^ f) ^ e i : A) : Ω)) < 1
         simpa using h_val
       simpa [sub_eq_zero, ← pow_mul'] using h_zero
     -- so `F i z = (Frob (u i w), ω)`, and these points cancel by the congruence relation
@@ -203,7 +196,7 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
     refine h_cancel.mono fun i i' hij ↦
       h_coinc i i' (baseChangeOf.ext (congrArg ULift.up hij) fun a ↦ ?_)
     -- the ring map of `F i z` is `ω ∘ σ i` followed by the Frobenius of exponent `p ^ (e i * f)`
-    show ω (σ i a) ^ p ^ (e i * f) = ω (σ i' a) ^ p ^ (e i' * f)
+    change ω (σ i a) ^ p ^ (e i * f) = ω (σ i' a) ^ p ^ (e i' * f)
     rw [← h_frob i, ← h_frob i']
 
 /-- Inertia acts trivially. Let Ω be an algebraic closure of ℚ and an R-algebra, A ⊂ Ω a valuation

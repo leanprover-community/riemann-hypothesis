@@ -166,10 +166,6 @@ omit [Fintype n] [DecidableEq n'] [DecidableEq r] [Fintype p] in
 conjugate `Bᴴᵀ` of `B`. -/
 lemma IsOrthoIntegral.kronecker {B : Matrix r p (𝔸 E)} (hM : IsOrthoIntegral M)
     (hB : IsOrthoIntegral B) : IsOrthoIntegral (M ⊗ₖ Bᴴᵀ) := by
-  have hM_inf (w : NumberField.InfinitePlace E) : (M.map (evalInf w))ᴴ * M.map (evalInf w) = 1 :=
-    hM.left w
-  have hB_inf (w : NumberField.InfinitePlace E) : (B.map (evalInf w))ᴴ * B.map (evalInf w) = 1 :=
-    hB.left w
   -- Evaluation at an infinite place commutes with `ᴴ`.
   have h_conj (w : NumberField.InfinitePlace E) : Bᴴ.map (evalInf w) = (B.map (evalInf w))ᴴ :=
     B.conjTranspose_map (evalInf w) fun _ ↦ rfl
@@ -177,7 +173,7 @@ lemma IsOrthoIntegral.kronecker {B : Matrix r p (𝔸 E)} (hM : IsOrthoIntegral 
   · -- Evaluation at `w` commutes with `⊗ₖ`, so the product is `MᴴM ⊗ₖ (BᴴB)ᵀ = 1 ⊗ₖ 1`.
     simp [map_kronecker, h_conj, transpose_map, conjTranspose_kronecker,
       conjTranspose_transpose_eq_transpose_conjTranspose, ← mul_kronecker_mul, ← transpose_mul,
-      hM_inf w, hB_inf w]
+      hM.conjTranspose_map_mul_map w, hB.conjTranspose_map_mul_map w]
   · -- Each entry is an entry of `M` times the conjugate of an entry of `B`.
     simp [mul_mem, star_mem_Ô, hM.right, hB.right]
 
@@ -215,7 +211,7 @@ lemma isAdapted_homSource [h : IsBaseAdapted A] :
         mul_left_comm]
     · -- The `ι` block `1 ⊗ₖ A.iCoordᵀ`: both sides are `δ i a * star (A.iAdelic j b)` times signs.
       simp [F, e, ε, iCoord, stdForm, Matrix.one_apply, mul_comm, mul_left_comm]
-  show IsOrthoIntegral ((A.homSource T).frameAt 1 (adaptedHomBasis p T))
+  change IsOrthoIntegral ((A.homSource T).frameAt 1 (adaptedHomBasis p T))
   exact h_kron.of_eq_submatrix_mul e (.of_stdForm ε) h_frame (by simp [e, Function.Injective])
 
 end AdaptedHom
@@ -252,11 +248,9 @@ lemma isIntMatrix_kAdelic_and_lCoord [hD : IsBaseAdapted D] :
     let O := (Ô E).comap (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E))
     IsIntMatrix O D.kAdelic ∧ IsIntMatrix O D.lCoord := by
   intro O
-  have h_int : ∀ (i : m) (j : (p ⊕ p) ⊕ n),
-      (((D.lAdelic.fromCols D.kAdelic).fromCols D.iAdelic) i j).2 ∈ Ô E :=
-    hD.isOrthoIntegral.right
   -- The columns of `D.kAdelic` are among those of the adapted frame.
-  have h_k (i : m) (j : p) : (D.kAdelic i j).2 ∈ Ô E := by simpa using h_int i (.inl (.inr j))
+  have h_k (i : m) (j : p) : (D.kAdelic i j).2 ∈ Ô E := by
+    simpa using hD.isOrthoIntegral.snd_mem_Ô i (.inl (.inr j))
   -- `D.lCoord` is `D.kAdelicᴴ` times the diagonal matrix of signs; `star` keeps integrality.
   exact ⟨fun i j ↦ by simpa [O] using h_k i j,
     fun i j ↦ by simpa [O, lCoord, stdForm] using star_mem_Ô (h_k j i)⟩

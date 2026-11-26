@@ -176,7 +176,7 @@ private lemma weilMatrixCoeff_finHeisenbergOp_eq_zero {m : Type} [Fintype m] [De
   -- `simp` leaves a product of scalars and an inner product; it is enough that the last vanishes:
   -- the inner product of the vacuum with a translate of `ω(g) P ω(g⁻¹)` of the vacuum.
   refine .inr (.inr (.inr ?_))
-  show dataInner _ (vacElem _)
+  change dataInner _ (vacElem _)
       (finHeisenbergOp _ (-(z • matrixToVec x) + _) (ω _ _ (projOn _ univ (ω _ _ (vacElem _))))) = 0
   -- The inner projection is a mean over integral `u`, so it is enough that each term vanishes
   -- (`map_projOn_eq_const`). The projection that fixes the left vacuum, moved to the right, kills
@@ -189,7 +189,7 @@ private lemma weilMatrixCoeff_finHeisenbergOp_eq_zero {m : Type} [Fintype m] [De
   simp [rep_apply_apply, stdLattice.mem_stdLattice, onHom_snd, Prod.mk_one_one,
     finHeisenbergOp_finHeisenbergOp, matrixToVec, projOn_finHeisenbergOp, mem_integralBox,
     Set.conjClosure, idem_univ]
-  show ∀ u : m × n → 𝔸f E, (∀ (a : m) (b : n), u (a, b) ∈ Ô E) →
+  change ∀ u : m × n → 𝔸f E, (∀ (a : m) (b : n), u (a, b) ∈ Ô E) →
     (∀ (a : m) (b : n),
       -(z * x a b) +
           z * (kroneckerMap (fun y₁ y₂ ↦ y₁ * y₂) 1 (g.val.val)⁻¹ᵀ *ᵥ matrixToVec x) (a, b) +

@@ -176,10 +176,6 @@ def relations (T : Finset (FinPlace K)) : Submodule R (Gal(Ω/K) → CharacterMo
       sum_eq_zero := fun p hp hT z hz ↦ by
         simpa using hy.sum_eq_zero p hp hT (r • z) (Submodule.smul_mem _ r hz) }
 
-/-- Membership in `relations T` is the predicate `IsRelation T`. -/
-@[simp] lemma mem_relations {T : Finset (FinPlace K)} {y : Gal(Ω/K) → CharacterModule M} :
-    y ∈ D.relations T ↔ D.IsRelation T y := Iff.rfl
-
 /-- There are finitely many relations off `T`, by the finiteness of cocycles with bounded
 ramification for the group `U`. -/
 instance finite_relations [Finite M] (T : Finset (FinPlace K)) : Finite (D.relations T) := by
@@ -198,7 +194,7 @@ instance finite_relations [Finite M] (T : Finset (FinPlace K)) : Finite (D.relat
     (f := fun (y : Gal(Ω/K) → CharacterModule M) (u : D.subgroup.toSubgroup) ↦ y u)
     (fun y hy ↦ ?_) (fun y hy y' hy' h ↦ funext fun g ↦ ?_)
     (finite_cocycles_unramified_outside V h_above)
-  · exact ⟨⟨hy.isLocallyConstant.continuous.comp continuous_subtype_val,
+  · exact ⟨⟨hy.isLocallyConstant.continuous.comp continuous_subtypeVal,
       fun a b ↦ hy.map_mul a a.2 b b.2⟩,
       fun w hw A hA τ hτ ↦ hy.unramified τ ⟨w.below K, hw, A, hA.isPlaceOver_below, hτ⟩⟩
   · by_cases hg : g ∈ D.subgroup
@@ -372,7 +368,7 @@ lemma form_sum_eq_zero (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
       isPlaceOver := Sum.forall.2 ⟨s.isPlaceOver, fun j ↦ (p j).isPlaceOver⟩
       φ := Sum.elim s.φ fun j ↦ (p j).frob
       isFrob := Sum.forall.2 ⟨s.isFrob, fun j ↦ ⟨(p j).isFrob, (p j).frob_mem⟩⟩
-      mem_inertia_iff _ := Iff.of_eq Set.mem_setOf_eq }
+      mem_inertia_iff _ := Iff.of_eq Set.mem_ofPred_eq }
   have hγ' : ∀ n : (Gal(Ω/K) ⧸ O.toSubgroup) ⊕ J,
       IsTameGeneratorFor (K := K) m (s'.valuationSubring n)
         (Sum.elim γ (fun j ↦ (p j).tameGenerator) n) :=

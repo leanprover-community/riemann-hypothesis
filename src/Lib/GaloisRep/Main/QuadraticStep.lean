@@ -423,7 +423,7 @@ lemma four_notMem_pow_absNorm_span_four {E : Type*} [Field E] [NumberField E] (w
 /-- Let `x ≠ 0` in `𝓞 E` be a uniformiser at the place `P`, and let `y ^ 2 = x`. Then some `σ` in
 the inertia group at `placeOver P` (a place of `Ω` over `P`) sends `y` to `-y`. -/
 lemma exists_mem_inertiaGroup_smul_eq_neg {E : Type} [Field E] [EmbeddedNumberField E]
-    [IsCMField E] {P : FinPlace E} {x : 𝓞 E} (hx_ne : (x : E) ≠ 0)
+    {P : FinPlace E} {x : 𝓞 E} (hx_ne : (x : E) ≠ 0)
     (hP : P.valuation E ↑x = WithZero.exp (-1)) {y : Ω} (hy : y ^ 2 = algebraMap E Ω ↑x) :
     ∃ σ ∈ inertiaGroup (decompGroup Gal(Ω/E) (placeOver P)) (placeOver P), σ • y = -y := by
   -- `x` stays a uniformiser of the decomposition field, and inertia is transitive on the square

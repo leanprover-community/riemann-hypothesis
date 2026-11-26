@@ -490,7 +490,6 @@ of row `a` is above `card C - card R`. -/
 theorem New.IsMatch.centredParam_lt_or_lt (hm : IsMatch T l l') {a b : R} (h_le : l b ≤ l a) :
     (Fintype.card C - Fintype.card R : ℤ) < -T.centredParam l b ∨
       (Fintype.card C - Fintype.card R : ℤ) < T.centredParam l a := by
-  have h_centred_le : T.centredParam l b ≤ T.centredParam l a := by simpa using h_le
   have h_abs := neg_le_abs (Fintype.card R - Fintype.card C : ℤ)
   obtain ⟨c, -, h_large⟩ | h_free := hm.left a
   · -- Row `a` is matched: its centred parameter, times the sign of the variable, is large.
@@ -558,7 +557,8 @@ theorem New.IsJointHarmonic.howe_argument [DecidableEq C] [DecidableEq R] {Φ : 
     simp [polyDegreeLE, restrictSupport_eq_span, h_empty]
   by_contra hj
   obtain ⟨-, Q, hQ, hQ_ne, -, h_col⟩ := l'.exists_highest_vector (ρ := T.swap.oscRows)
-    (perpInDegree j G) (perpInDegree_ne_bot hj) fun _ _ hcd ↦ mapsTo_perpInDegree hcd (hG_cols _)
+    (perpInDegree j G) (perpInDegree_ne_bot hj) fun _ _ hcd ↦
+      (Module.End.mem_invtSubmodule_iff_mapsTo _).2 (mapsTo_perpInDegree hcd (hG_cols _))
   -- `Q` is highest of weight `Λ` for the rows: take adjoints in `h_diag` and `h_lower`. If
   -- `E b a` maps `N` into `G`, then `E a b` maps the complement of `G` into that of `N`
   -- (`mapsTo_perpInDegree`).

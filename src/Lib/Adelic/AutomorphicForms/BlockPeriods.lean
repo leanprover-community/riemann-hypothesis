@@ -57,7 +57,7 @@ lemma val_fst_blockEmb_one {σ : ι ⊕ Unit ≃ X} (hσ : (1 : X → ℤˣ) ∘
 lemma fst_blockEmb_one_one {σ : ι ⊕ Unit ≃ X}
     (hσ : (1 : X → ℤˣ) ∘ σ = (1 : ι → ℤˣ) ⊕ᵥ 1) (k : Gf E ι) :
     (G.blockEmb hσ ((1, k), (1 : G E (1 : Unit → ℤˣ)))).1 = 1 := by
-  ext τ : 3
+  ext τ : 2
   simp [val_fst_blockEmb_one, GL.blockScalar]
 
 /-- `conjWeylMatrix κ e y` is `weylRep κ e` at the entrywise complex conjugate of `y`;
@@ -72,7 +72,8 @@ lemma conjWeylMatrix_eq_weylRep_map_conj {E X : Type} [Field E] [CMType E] [Fint
 /-- The entrywise complex conjugate of a unitary matrix is unitary. -/
 lemma map_conj_mem_uSign_one {g : GL X ℂ} (hg : g.valᴴ * g.val = 1) :
     g.map (starRingEnd ℂ) ∈ USign (1 : X → ℤˣ) := by
-  simp [U, ← conjTranspose_map (⇑(starRingEnd ℂ)) fun _ ↦ rfl, ← Matrix.map_mul, hg]
+  simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose,
+      ← conjTranspose_map (⇑(starRingEnd ℂ)) fun _ ↦ rfl, ← Matrix.map_mul, hg]
 
 variable {κ : InfinitePlace E → ℕ → ℕ} {e : InfinitePlace E → ℤ}
   {κ₀ : InfinitePlace E → ℕ → ℕ} {e₀ : InfinitePlace E → ℤ}

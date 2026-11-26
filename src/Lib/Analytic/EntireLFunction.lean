@@ -132,15 +132,23 @@ lemma analyticAt_entireL (s : ℂ) : AnalyticAt ℂ (entireL χ) s := by
   split_ifs with hχ
   exacts [differentiable_LFunctionTrivChar₁ N, differentiable_LFunction hχ]
 
-/-- `entireL χ` has no zero in `re s ≥ 1`. -/
-lemma entireL_ne_zero (hs : 1 ≤ s.re) : entireL χ s ≠ 0 := by
+/-- Away from `s = 1`, removing the possible pole preserves nonvanishing. -/
+lemma entireL_ne_zero_iff (hs : s ≠ 1) : entireL χ s ≠ 0 ↔ χ.LFunction s ≠ 0 := by
   rw [entireL]
   split_ifs with hχ
-  · obtain rfl | hs_ne := eq_or_ne s 1
+  · subst χ
+    rw [LFunctionTrivChar₁, Function.update_of_ne hs, mul_ne_zero_iff]
+    exact and_iff_right (sub_ne_zero.2 hs)
+  · rfl
+
+/-- `entireL χ` has no zero in `re s ≥ 1`. -/
+lemma entireL_ne_zero (hs : 1 ≤ s.re) : entireL χ s ≠ 0 := by
+  obtain rfl | hs_ne := eq_or_ne s 1
+  · rw [entireL]
+    split_ifs with hχ
     · exact LFunctionTrivChar₁_apply_one_ne_zero N
-    · rw [LFunctionTrivChar₁, Function.update_of_ne hs_ne]
-      exact mul_ne_zero (sub_ne_zero.2 hs_ne) (LFunction_ne_zero_of_one_le_re 1 (.inr hs_ne) hs)
-  · exact LFunction_ne_zero_of_one_le_re χ (.inl hχ) hs
+    · exact LFunction_ne_zero_of_one_le_re χ (.inl hχ) hs
+  · exact (entireL_ne_zero_iff χ hs_ne).2 (LFunction_ne_zero_of_one_le_re χ (.inr hs_ne) hs)
 
 /-- For `re s > 1`, the series `∑ χ(n) Λ(n) n^{-s}` has the sum `-L'/L(s, χ)`, written through
 `entireL χ`, which is `L(s, χ)`, or `(s - 1) L(s, χ)` for principal `χ`. The term `1 / (s - 1)` is

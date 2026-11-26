@@ -80,7 +80,8 @@ lemma isForm_neg_iff_and_integral_neg (W : Space E n s) (S : Space E n (-s))
     ∀ F : G E (-s) → ℂ,
       ∫ g : G E (-s), F g ∂S.quotMeasure = ∫ g : G E s, F (G.neg g) ∂W.quotMeasure := by
   -- `U (signMatrix (-s))` is the same subgroup as `U (signMatrix s)`, with the same Haar measure.
-  have h_group : U (signMatrix s : Matrix n n ℂ) = U (signMatrix (-s)) := by simp [U]
+  have h_group : U (signMatrix s : Matrix n n ℂ) = U (signMatrix (-s)) := by
+    ext; simp [mem_unitaryGroupOf_iff]
   -- This is stated for any proof `h_mem` that the subgroups agree, as that proof changes below.
   have h_haar (h_mem : ∀ g : GL n ℂ, g ∈ U (signMatrix s) ↔ g ∈ U (signMatrix (-s))) :
       MeasurePreserving (Equiv.subtypeEquivRight h_mem : USign s ≃ USign (-s)) :=
@@ -241,6 +242,11 @@ variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' p b : Type} [Fi
   [DecidableEq r'] [Fintype p] [DecidableEq p] [Fintype b] [DecidableEq b] {s : n → ℤˣ}
   {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {u : b → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
 
+/-- Adding hyperbolic planes contributes one negative sign per plane. -/
+lemma negCount_sumElim_hyperbolicSigns {ι m : Type} [Fintype ι] [Fintype m]
+    (ε : m → ℤˣ) : negCount (Sum.elim (hyperbolicSigns ι) ε) = card ι + negCount ε := by
+  simp [negCount_sumElim, negCount_one_and_neg_one]
+
 variable (p W) in
 /-- Let the signs `t` have the rank and the number of minus signs (`negCount`) of `W` plus `card p`
 hyperbolic planes. Then there is a space `W'` with signs `t` and a splitting of `W'` over `W` with
@@ -252,7 +258,7 @@ lemma exists_isBaseAdapted (t : r → ℤˣ) (h_rank : card r = card n + 2 * car
   -- Relabel `hyperbolicSum p W` along a bijection of index sets that matches the signs.
   obtain ⟨ε, hε⟩ : ∃ ε : r ≃ (p ⊕ p) ⊕ n, (hyperbolicSigns p ⊕ᵥ s) ∘ ε = t :=
     exists_equiv_comp_eq_of_negCount_eq (by simpa +arith)
-      (by simpa [negCount_sumElim, negCount_one_and_neg_one])
+      (by simpa only [negCount_sumElim_hyperbolicSigns] using h_neg)
   let W' : Space E r t := (hyperbolicSum p W).reindex ε.symm hε
   let A : W'.Splitting W p := splittingOfGram (submatrix 1 ε id) (by simp [W']) h_rank
   -- The frame of `A` is that of `removePlanes` with the rows permuted.
@@ -558,6 +564,32 @@ lemma RowColExchangeIdentity.of_planeConstantTerm_eq (U : Space E b u) {V' : Spa
         rw [Pi.smul_apply, smul_eq_mul]
         field
 
+-- Both sides of Poisson's formula descend by the same constant-term argument.
+private theorem RowColExchangeIdentity.descendCone (U : Space E b u) {V' : Space E r' t'}
+    (A : W'.Splitting W Unit) [IsBaseAdapted A] {μ : NumberField.InfinitePlace E → ℤ}
+    {ℓ : SplitTameChar E μ → ℝ} {V : Space E r t} (X : V'.Splitting V Unit) [IsBaseAdapted X]
+    (σ : b ⊕ r ≃ n) {σ' : b ⊕ r' ≃ n'} (hn : 2 ∣ card n) (β : Bool) {z : ℕ}
+    (hz : (card r - card n / 2 : ℤ) = cond β (z : ℤ) (-(z + 1)))
+    {x : PairFock E s' t'} {y : PairFock E s' u} (h : RowColExchangeIdentity W' V' U μ σ' x y ℓ) :
+    RowColExchangeIdentity W V U μ σ
+      (∫ q : maxCompact E t' × (NumberField.InfinitePlace E → ℂ)ˣ,
+        coneIntegrand A X μ β (z + 1) x q ∂.prod .haar .haar) (realSlice A U 0 y) ℓ := by
+  have h_scale (𝔠 : SplitTameChar E μ) (C : ℝ) :
+      (C * lSharp 𝔠 (z + 1)) ^ 2 * lValueProdInt 𝔠 (card r - card n / 2) =
+        C ^ 2 * lValueProdInt 𝔠 (card r - card n / 2 + 1) := by
+    rw [hz]
+    cases β <;> simp only [Bool.cond_true, Bool.cond_false]
+    · rw [show -(↑z + 1 : ℤ) + 1 = -z by ring, lValueProdInt_neg]
+      ring
+    · rw [lValueProdInt_succ]
+      ring
+  obtain ⟨C, hC, h_plane⟩ := exists_planeConstantTerm_eq_thetaLarge A X σ' σ hn μ β (z := z)
+    (by rw [hz]; cases β <;> simp)
+  refine h.of_planeConstantTerm_eq U A X σ (by positivity) (C := C ^ 2) fun 𝔠 ↦ ?_
+  obtain ⟨γ, hγ, h_term⟩ := h_plane 𝔠
+  have hγ_pos : 0 < ‖γ‖ := (mul_pos hC (lSharp_pos 𝔠 (by simp))).trans_eq hγ.symm
+  exact ⟨γ, norm_pos_iff.1 hγ_pos, hγ.symm ▸ h_scale 𝔠 C, fun w hw g ↦ h_term x h.left w hw 1 g (.inl rfl)⟩
+
 /-- Removing a plane by the cone integral. Let `W` have even rank, let `A` and `X` be splittings
 `W' = W ⊕ H` and `V' = V ⊕ H` with a hyperbolic plane `H`, both adapted, and let
 `rk V - rk W / 2 = z` be a natural number. The identity for `(W', V', U)` at `x`, `y` gives the
@@ -569,22 +601,8 @@ theorem RowColExchangeIdentity.cone (U : Space E b u) {V' : Space E r' t'} (A : 
     {σ' : b ⊕ r' ≃ n'} (hn_even : 2 ∣ card n) {z : ℕ} (h_rank : (card r - card n / 2 : ℤ) = z)
     {x : PairFock E s' t'} {y : PairFock E s' u}
     (h_rel : RowColExchangeIdentity W' V' U μ σ' x y ℓ) :
-    RowColExchangeIdentity W V U μ σ (cone A X μ (z + 1) x) (realSlice A U 0 y) ℓ := by
-  obtain ⟨C, hC_pos, h_plane⟩ :=
-    exists_planeConstantTerm_eq_thetaLarge_cone A X σ' σ hn_even μ h_rank
-  -- `cone` is the integral of `coneIntegrand` on the side `β = true`.
-  unfold Exchange.cone
-  refine h_rel.of_planeConstantTerm_eq U A X σ (β := true) (by positivity) (C := C ^ 2) fun 𝔠 ↦ ?_
-  obtain ⟨γ, hγ : ‖γ‖ = C * lSharp 𝔠 (z + 1), h_term⟩ := h_plane 𝔠
-  have h_const (w : Matrix b n (LocProd 𝔠.ramifiedPlaces)) (hw : IsIntMatrix SemilocalField.O w)
-      (g : G E s) :
-      planeConstantTerm 𝔠 V' A σ' x w 1 g =
-        γ * thetaLarge W V 𝔠 (Exchange.cone A X μ (z + 1) x) (stdRowDatum σ 𝔠.semilocalChar w) g :=
-    h_term x h_rel.left w hw 1 g (.inl rfl)
-  have hγ_pos : 0 < ‖γ‖ := (mul_pos hC_pos (lSharp_pos 𝔠 (by simp))).trans_eq hγ.symm
-  refine ⟨γ, norm_pos_iff.1 hγ_pos, ?_, h_const⟩
-  rw [h_rank, hγ, lValueProdInt_succ]
-  ring
+    RowColExchangeIdentity W V U μ σ (cone A X μ (z + 1) x) (realSlice A U 0 y) ℓ :=
+  h_rel.descendCone U A X σ hn_even true h_rank
 
 /-- Removing a plane by the cone integral on the other side of Poisson's formula. Let `W` have even
 rank, let `A`, `X` be splittings `W' = W ⊕ H`, `V' = V ⊕ H` with a hyperbolic plane `H`, both
@@ -597,24 +615,8 @@ theorem RowColExchangeIdentity.dualCone (U : Space E b u) {V' : Space E r' t'}
     (σ : b ⊕ r ≃ n) {σ' : b ⊕ r' ≃ n'} (hn_even : 2 ∣ card n) {z : ℕ}
     (h_rank : (card r - card n / 2 : ℤ) = -(z + 1)) {x : PairFock E s' t'} {y : PairFock E s' u}
     (h_rel : RowColExchangeIdentity W' V' U μ σ' x y ℓ) :
-    RowColExchangeIdentity W V U μ σ (dualCone A X μ (z + 1) x) (realSlice A U 0 y) ℓ := by
-  obtain ⟨C, hC_pos, h_plane⟩ :=
-    exists_planeConstantTerm_eq_thetaLarge_dualCone A X σ' σ hn_even μ h_rank
-  -- `dualCone` is the integral of `coneIntegrand` on the side `β = false`.
-  refine h_rel.of_planeConstantTerm_eq U A X σ (β := false) (by positivity) (C := C ^ 2) fun 𝔠 ↦ ?_
-  obtain ⟨γ, hγ : ‖γ‖ = C * lSharp 𝔠 (z + 1), h_term⟩ := h_plane 𝔠
-  have h_const (w : Matrix b n (LocProd 𝔠.ramifiedPlaces)) (hw : IsIntMatrix SemilocalField.O w)
-      (g : G E s) :
-      planeConstantTerm 𝔠 V' A σ' x w 1 g =
-        γ * thetaLarge W V 𝔠 (Exchange.dualCone A X μ (z + 1) x) (stdRowDatum σ 𝔠.semilocalChar w)
-          g :=
-    h_term x h_rel.left w hw 1 g (.inl rfl)
-  have hγ_pos : 0 < ‖γ‖ := (mul_pos hC_pos (lSharp_pos 𝔠 (by simp))).trans_eq hγ.symm
-  refine ⟨γ, norm_pos_iff.1 hγ_pos, ?_, h_const⟩
-  have h_ratio : ‖γ‖ ^ 2 * lValueProdInt 𝔠 (-(z + 1)) = C ^ 2 * lValueProdInt 𝔠 (-z) := by
-    rw [hγ, lValueProdInt_neg]
-    ring
-  simpa [h_rank] using h_ratio
+    RowColExchangeIdentity W V U μ σ (dualCone A X μ (z + 1) x) (realSlice A U 0 y) ℓ :=
+  h_rel.descendCone U A X σ hn_even false h_rank
 
 /-- Removing a plane. Let `W` have even rank, let `A` be a splitting `W' = W ⊕ H` with a hyperbolic
 plane `H` that is adapted, let `V'` have one negative sign more than `V`, and let the bijections
@@ -673,8 +675,8 @@ lemma exists_rowColExchangeIdentity_removing_planes (U : Space E b u) (V' : Spac
     let Y := hyperbolicSum (Fin 1) V
     let τ : b ⊕ (Fin 1 ⊕ Fin 1) ⊕ r ≃ (Fin 1 ⊕ Fin 1) ⊕ n :=
       equivOfCardEq (by simp +arith [← card_congr σ])
-    have h_neg : negCount (hyperbolicSigns (Fin 1) ⊕ᵥ t) = card (Fin 1) + negCount t := by
-      simp [negCount_sumElim, negCount_one_and_neg_one]
+    have h_neg : negCount (hyperbolicSigns (Fin 1) ⊕ᵥ t) = card (Fin 1) + negCount t :=
+      negCount_sumElim_hyperbolicSigns t
     obtain ⟨x₁, h_above⟩ : ∃ x₁ : PairFock E (hyperbolicSigns (Fin 1) ⊕ᵥ s)
       (hyperbolicSigns (Fin 1) ⊕ᵥ t),
         RowColExchangeIdentity (hyperbolicSum (Fin 1) W) Y U μ τ x₁ (realSlice B U 0 y) ℓ :=

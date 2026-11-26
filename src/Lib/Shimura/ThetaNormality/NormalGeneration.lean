@@ -380,7 +380,6 @@ lemma exists_smul_thetaNorm_eq (h_le : L ≤ L₀) [IsFullRankLattice L₀]
   obtain ⟨n, hn_val, hn_kills⟩ := G.dual_torsion
   have hn_unit : IsUnit (n : v.valuationSubring) :=
     (valuationSubring.integers v).isUnit_of_one' hn_val
-
   obtain ⟨γ, γ0, h_scale⟩ := hAH.exists_proportional_orbit_lattice ![⟨g, hg_L₀⟩] ![⟨f, hf_L₀⟩]
     0 0 1 hn_unit (fun u hu ↦ h_le (hn_kills u (h_dual hu))) (by simpa using g0)
     (by simpa using hf_ne) (by simp)
@@ -688,7 +687,6 @@ lemma thetaNorm_lt_iff_coords (h_range : ballMap.range = G.normBall f) {I : Sort
           χ l * Complex.exp (B l (pt b + u) + B l l / 2) * ballMap i (pt b + u) := by
       simpa only [hl, add_sub_cancel] using
         (G.mem_normBall.mp (h_ball_mem i)).left.2 l hd (pt b + u)
-
     have h_shift_val (i : W) :
         B.thetaShift u (ballMap i) (pt b) =
           Complex.exp (-(B u (pt b) + B u u / 2)) * ballMap i (pt b + u) := by simp [thetaShift]

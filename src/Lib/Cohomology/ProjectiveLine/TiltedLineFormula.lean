@@ -94,14 +94,6 @@ lemma IsDetectedAtPoints.eq_zero_of_setOf_map_eq_zero_eq_univ {F : AbFunctor D}
     x = 0 :=
   (h_detect.1 c n x).2 h_univ
 
-/-- For a coefficient `F` that satisfies `New.Variety.IsDetectedAtPoints`, a map `φ : V ⟶ k` of
-tests that are fields induces bijections on cohomology with coefficients in `F`. -/
-lemma IsDetectedAtPoints.isCohomEquiv_of_isField {F : AbFunctor D}
-    (h_detect : IsDetectedAtPoints g F) (V k : TestOver A) (φ : V ⟶ k) (hV : IsField V.obj)
-    (hk : IsField k.obj) :
-    IsCohomEquiv F (freeAb.map (g.whiskerLeft (reprMap φ))) :=
-  h_detect.2 V k φ hV hk
-
 /-- The Yoneda isomorphism `sectionEquiv` is natural: for `φ : e ⟶ e'`, pulling the class of a
 section `t ∈ G(e)` back along `ℤ[h_e'] → ℤ[h_e]` gives the class of the image of `t` in `G(e')`. -/
 lemma TotalH.comp_homClass_sectionEquiv (G : AbFunctor D) {e e' : D} (φ : e ⟶ e') (t : G e) :
@@ -286,7 +278,7 @@ lemma exists_isLerayHirschBasis_of_isCohomDense [InvertsPrime A ℓ] (M : Torsio
   let α : freeAb (g ⋙ reprBy k) ⟶ freeAb (onePointFunctor D) :=
     freeAb.map (g.whiskerLeft (reprMap ψ)) ≫ freeAb.map (toUnit (g ⋙ reprBy k₀))
   have hpt : IsCohomEquiv M.functor α :=
-    (h_detect.isCohomEquiv_of_isField k₀ k ψ (Field.toIsField _) hk).comp_iff.2 hk₀
+    (h_detect.isCohomEquiv_map_of_isField k₀ k ψ (Field.toIsField _) hk).comp_iff.2 hk₀
   -- The locally constant functions on a point are the constants.
   have h_domain : IsDomain (testIncl.obj ((TestOver.toTest A).obj ((𝟭 (TestOver A)).obj k))) :=
     hk.isDomain
@@ -659,7 +651,7 @@ lemma etaAt_swap (x : TotalH (abTensor S (freeAb (projLineAlong g))) Θ.functor)
     rw [h_cut r fun _ _ ↦ rfl]
     refine h_cut q fun c hc ↦ ?_
     ext s
-    show _ ⊗ₜ FreeAddCommGroup.of (q.val c) = _ ⊗ₜ FreeAddCommGroup.of (r.val c)
+    change _ ⊗ₜ FreeAddCommGroup.of (q.val c) = _ ⊗ₜ FreeAddCommGroup.of (r.val c)
     rw [hJ c hc]
   -- Taking `r` to be the base point, where both `x` and `η` vanish, kills the diagonal terms.
   have h_diag (q : (projLineAlong g).sections) : o q q = 0 := by

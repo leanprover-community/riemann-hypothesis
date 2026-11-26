@@ -184,7 +184,7 @@ adelic vector with finite part `α x` and real part zero. If `δ x` is integral 
 `F` as the translation by a rational vector `γ` with `δ γ` in `𝔞₀ⁿ ⊗ ℤ_(p)`: for a number `m` prime
 to `p`, the vector `m δ γ` lies in the lattice `𝔞₀ⁿ` (its finite image is integral). -/
 lemma exists_rho_finiteImage_eq_and_coprime_mul_mem [DecidableEq n]
-    {ε : n → ℤˣ} {V : Space (E P s) n ε} [V.IsStd] {F : 𝒮 V} (hF : F ∈ V.finitePart) {δ : 𝓞 P.K}
+    {ε : n → ℤˣ} {V : Space (E P s) n ε} {F : 𝒮 V} (hF : F ∈ V.finitePart) {δ : 𝓞 P.K}
     {x : n → 𝔸f (P.E s)} (hx : x ∈ integralAfter δ fun u : FinPlace (P.E s) ↦ ↑p ∈ u.asIdeal) :
     ∃ (γ : n → P.E s) (m : ℕ),
       V.ϱ (finVec (finiteImage γ)) F = V.ϱ (finVec x) F ∧

@@ -564,12 +564,12 @@ lemma integrable_unfoldedPairing {F : PlaceData ι T (m + 1)} (Z : F.Intermediat
     obtain ⟨k, hk, h_ne⟩ : ∃ k ∈ T.floorGroup i, ‖Φ k (y₁, y₂)‖ₑ ≠ 0 :=
       exists_ne_zero_of_ae (ae_descConv_mem ae_floorMeasure_mem) hy
     exact hasMatrixSize_of_unfoldedPairing_ne_zero Z hp.self_of_nhds hq.self_of_nhds
-      (mul_mem (floorGroup_anti hi hk) hl) (enorm_ne_zero.1 h_ne)
+      (mul_mem (floorGroup_anti hi hk) hl) (eNorm_ne_zero.1 h_ne)
   have hB_int : IntegrableOn B (S ×ˢ S) M₂ := hB.continuousOn.integrableOn_compact (hS.prod hS)
   refine ⟨hΦ.aestronglyMeasurable, ?_⟩
   calc ∫⁻ z, ‖uncurry Φ z‖ₑ ∂(F.quotientMeasureFrom i).prod M₂
     _ = ∫⁻ y, ∫⁻ k, ‖Φ k y‖ₑ ∂F.quotientMeasureFrom i ∂M₂ :=
-      lintegral_prod_symm _ hΦ.enorm.aemeasurable
+      lintegral_prod_symm _ hΦ.eNorm.aemeasurable
     _ = ∫⁻ y in S ×ˢ S, ∫⁻ k, ‖Φ k y‖ₑ ∂F.quotientMeasureFrom i ∂M₂ :=
       (setLIntegral_eq_of_support_subset h_supp).symm
     _ ≤ ∫⁻ y in S ×ˢ S, ‖B y‖ₑ * C ∂M₂ := lintegral_mono h_le

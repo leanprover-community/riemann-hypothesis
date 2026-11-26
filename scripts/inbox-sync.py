@@ -9,10 +9,13 @@ Everything is read from GitHub's API, and the only things written are labels.
 Each branch that pull requests are based on has an inbox label of its own (`INBOXES`): `inbox` for
 `main`, and `alpoge-inbox` for `alpoge` (see below). A pull request based on another branch is in
 no inbox. A pull request can be in its branch's inbox when it is open, is not a draft, is not a
-batch, and carries none of `batch queue`, `building` and `awaiting-author` (named in `batch-labels.py`). A batch is a
-pull request from a branch of this repository named `batch/...`. One from a `batch/...` branch of a
-fork is not a batch, and can be in the inbox like any other pull request (see `holds_batch` in
-`batch-labels.py`).
+batch, and carries none of `batch queue`, `building`, `batch-building` and `awaiting-author` (named
+in `batch-labels.py`). A batch is a pull request from a branch of this repository named
+`batch/...`. One from a `batch/...` branch of a fork is not a batch, and can be in the inbox like
+any other pull request (see `holds_batch` in `batch-labels.py`). When `batch-building`
+comes off an open pull request, it goes back in the inbox unless someone has responded since it
+entered review: that label's changes, and the inbox taking it out meanwhile, are a bot's and do
+not count.
 
 A pull request enters review when it is opened, reopened or marked ready, and again when
 `awaiting-author` comes off it: its author commented `ready` (see review-commands.yml), or a
@@ -72,7 +75,7 @@ CHANGES = 100
 # Handed back to the author. Taking it off hands the pull request back to the maintainers.
 WAITING = _labels.WAITING
 # Labels that mean a maintainer has already decided what happens next.
-DECIDED = (_labels.QUEUED, _labels.BUILDING, WAITING)
+DECIDED = (_labels.QUEUED, _labels.BUILDING, _labels.MEMBER, WAITING)
 # Labels that label-pr.yml keeps up to date from the files a pull request changes and its size.
 # Someone adding or removing one of these by hand has not responded to the pull request: they were
 # all put on by hand once, before that workflow existed.

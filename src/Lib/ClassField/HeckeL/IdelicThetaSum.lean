@@ -298,7 +298,7 @@ lemma volume_preimage_idele_mul_adelicBox {t ρ : ℝ} (ht : 0 < t) (b : (mixedS
     volume ((b.map val val * ·) ⁻¹' adelicBox d (t * ρ)) =
       ENNReal.ofReal ((ideleModule b)⁻¹ * t ^ finrank ℚ K) * volume (adelicBox d ρ) := by
   rw [(measurePreserving_idele_mul b).measure_preimage (isOpen_adelicBox d _).nullMeasurableSet,
-    Measure.smul_apply, _root_.smul_eq_mul, ENNReal.ofReal_mul (by simp [le_of_lt]), mul_assoc]
+    smul_apply, _root_.smul_eq_mul, ENNReal.ofReal_mul (by simp [le_of_lt]), mul_assoc]
   simp only [adelicBox, Measure.volume_eq_prod (mixedSpace K) (𝔸f K), Measure.prod_prod,
     addHaar_ball_mul_of_pos volume (0 : mixedSpace K) ht ρ, mixedEmbedding.finrank, mul_assoc]
 

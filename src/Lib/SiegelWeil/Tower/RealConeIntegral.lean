@@ -143,7 +143,7 @@ lemma exists_fockMoment_lineTermReal_le (β : Bool) (N M : ℕ) :
   refine ⟨C, hC, fun a v ↦ ?_⟩
   let y : InfinitePlace E × LineIndex n r → ℂ := fun p ↦ a p.1 * p.2.isRight.toNat
   have h_norm : ‖a‖ₑ ≤ ‖y‖ₑ :=
-    enorm_le_iff_norm_le.2 <| (pi_norm_le_iff_of_nonneg (norm_nonneg y)).mpr fun w ↦ by
+    eNorm_le_iff_norm_le.2 <| (pi_norm_le_iff_of_nonneg (norm_nonneg y)).mpr fun w ↦ by
       simpa [y] using norm_le_pi_norm y (w, .inr 0)
   calc (1 + ‖a‖ₑ) ^ M * fockMoment N (lineTermReal A X β a v)
       ≤ (1 + ‖y‖ₑ) ^ M * fockMoment N (lineTermReal A X β a v) := by grw [h_norm]
@@ -164,7 +164,7 @@ lemma fockMoment_coneIntegrand (β : Bool) (z : ℝ) (v : PairFock E s' t') (N :
   simp only [coneIntegrand, realPairWeil_apply_apply, map_smul, smul_smul, fockMoment_smul,
     ideleAbs_realIdele_eq_prod]
   congr 1
-  exact enorm_eq_iff_norm_eq.2 (by simp)
+  exact eNorm_eq_iff_norm_eq.2 (by simp)
 
 /-- Let `A` and `X` be base-adapted splittings, by one hyperbolic plane, of `W'` over `W` and of
 `V'` over `V`. For `p = (k, a)`, with `k` in the maximal compact subgroup of `U(V')` and
@@ -211,7 +211,7 @@ lemma exists_integrable_fockMoment_coneIntegrand_le (β : Bool) {z : ℝ} (hz : 
         ‖L a‖ₑ := by grw [h_enorm, mul_right_comm]
     _ ≤ C * fockMoment (N + M) (realWeil (u k) v) * ‖L a‖ₑ := by grw [h_decay]
     _ ≤ K k * ‖L a‖ₑ := by grw [fockMoment_realWeil_le]
-    _ = ‖(K k).toReal * L a‖ₑ := by rw [enorm_mul (K k).toReal, enorm_toReal (hK k)]
+    _ = ‖(K k).toReal * L a‖ₑ := by rw [eNorm_mul (K k).toReal, eNorm_toReal (hK k)]
 
 /-- For `z > 0` the cone integrand is continuous in `p = (k, a)`. -/
 lemma continuous_coneIntegrand (β : Bool) {z : ℝ} (hz : 0 < z) (v : PairFock E s' t') :

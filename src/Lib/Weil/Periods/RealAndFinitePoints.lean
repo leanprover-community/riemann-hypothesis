@@ -146,7 +146,7 @@ lemma exists_integral_eq_mul_integral_besselReal (K : Subgroup (Gf E ι)) [hK : 
   have h_emb : MeasurableEmbedding Y.besselProdEquiv :=
     Y.besselProdEquiv.toHomeomorph.measurableEmbedding
   let J : Set Y.besselFin := Subtype.val ⁻¹' K
-  have hJ_open : IsOpen J := hK.isOpen.preimage continuous_subtype_val
+  have hJ_open : IsOpen J := hK.isOpen.preimage continuous_subtypeVal
   have hJ_compact : IsCompact J :=
     (IsClosed.isClosedEmbedding_subtypeVal inferInstance).isCompact_preimage hK.isCompact
   have hJ_pos : haar J ≠ 0 := hJ_open.measure_ne_zero haar ⟨1, one_mem K⟩

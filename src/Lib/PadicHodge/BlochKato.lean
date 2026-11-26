@@ -233,7 +233,7 @@ lemma IsPotentiallyCrystalline.exists_hodge_basis {ι : Type*} [Fintype ι] [Dec
     refine hW.smul_bijective.surjective.exists.trans ?_
     simp [L.symm_apply_eq, mem_hodgeFil, Classical.skolem, ← funext_iff,
       ← h_unit.smul_left_cancel (y := b)]
-    show (∃ x : ι → BdRPlus, (fun i ↦ ((W *ᵥ x) i : BdR)) = L b) ↔
+    change (∃ x : ι → BdRPlus, (fun i ↦ ((W *ᵥ x) i : BdR)) = L b) ↔
       ∃ f : ι → BdRPlus,
         (hodgeMatrix W k *ᵥ fun i ↦ (f i : BdR) * ((tUnit : BdR) ^ k i)⁻¹) = hodgeMatrix W k *ᵥ b
     simp [hL, funext_iff, hodgeMatrix, mulVec_apply_eq_sum]
@@ -653,7 +653,7 @@ inclusion of vectors over `K = localFieldOf Γ` into `ι → BdR`. For a ℤ_p-s
 `ι → Bmax`, the preimage of `Z × (range of w mod P)` under `Φ y = (φ y - y, u y mod P)`, with `φ`
 the Frobenius acting entrywise, has ℤ_p-rank `rk Z + rk (K ^ d⁻) + rk (ℚ_p ^ ι)`, where `d⁻` is the
 number of `i` with `k i < 0`. -/
-lemma rank_comap_frob_sub_prod_eq {ι : Type} [Fintype ι] [DecidableEq ι] {k : ι → ℤ}
+lemma rank_comap_frob_sub_prod_eq {ι : Type} {k : ι → ℤ}
     {N : (ι → BdR) ≃ₗ[ℤ_[p]] ι → BdR}
     (hP : ∀ b : ι → BdR, (∃ x : ι → BdRPlus, N ((↑) ∘ x) = b) ↔ ∀ i : ι, b i ∈ hodgeFil (-k i))
     (Z : Submodule ℤ_[p] (ι → Bmax)) :
@@ -867,7 +867,7 @@ lemma crysCocycles.apply_eq_zero_of_cyclotomicGp {a : ℕ}
     -- `y` is invariant modulo `BdRPlus`, so `y = z + b` with `z` in `BdRPlus` and `b` algebraic.
     obtain ⟨b, z, hz⟩ : ∃ (b : PadicAlgCl p) (z : BdRPlus), (y : BdR) = z + b := by
       obtain ⟨b, z, hz⟩ := BdR.exists_sub_mem_of_smul_sub_mem Γ 1 (x := y) fun g ↦
-        ⟨l (c g), by simp [← hy, Algebra.smul_def, ← IsScalarTower.algebraMap_apply]⟩
+        ⟨l (c g), by simp [← hy, ← IsScalarTower.algebraMap_apply]⟩
       exact ⟨b, z, eq_add_of_sub_eq (by simpa [eq_comm, Algebra.smul_def] using hz)⟩
     -- Thus `p ^ n * y - x` is fixed by `φ` and lies in `BdRPlus`: it is a `p`-adic number `r`.
     have h_phi : frobEnd (p ^ n * y - x : Bmax) = p ^ n * y - x := by

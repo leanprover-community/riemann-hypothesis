@@ -239,19 +239,6 @@ lemma adjoin_betaKInE_zetaInt_eq_top : adjoin ℤ {P.betaKInE s, P.zetaInt s} = 
   simpa [adjoin_eq_top_of_isPrimitiveRoot isPrimitiveRoot_zetaInt, Set.pair_comm] using
     (adjoin_eq_adjoin_union ℤ {betaK P.d} {P.zetaInt s} h_quad).symm
 
-/-! ### Summary for a primitive root of unity -/
-
-/-- Let `z` be a primitive `q₁`-th root of unity in `𝓞 E`, and `y` the derivative at `z` of the
-cyclotomic polynomial of level `q₁`. Then `y` divides `q₁`, `y` generates the different of `E/K`,
-and `z` generates `𝓞 E` over `𝓞 K`. -/
-lemma relDifferent_spec (hz : IsPrimitiveRoot z (P.q₁ s)) :
-    (cyclotomic (P.q₁ s) (𝓞 (P.E s))).derivative.eval z ∣ P.q₁ s ∧
-    span {(cyclotomic (P.q₁ s) (𝓞 (P.E s))).derivative.eval z} =
-      differentIdeal (𝓞 P.K) (𝓞 (P.E s)) ∧
-    (𝓞 P.K)[z] = ⊤ :=
-  ⟨eval_derivative_cyclotomic_dvd_q₁ hz, (differentIdeal_eq_span_derivative_cyclotomic hz).symm,
-    adjoin_eq_top_of_isPrimitiveRoot hz⟩
-
 /-! ### The generator P'(ζ) and the different of `E` -/
 
 /-- The value at `ζ` of the derivative of the `q₁`-th cyclotomic polynomial, as an element of `𝓞 E`.
@@ -776,71 +763,6 @@ lemma natCast_dvd_pow_sub_galOfPlaceInt_star (hp_inert : chiK P.d p = -1) {n : �
       ⟨by rw [neg_one_mul], by rw [h_sign, one_mul]⟩ (star y)
   rw [starRingAut_apply, star_star, ← map_pow] at h_frob
   exact Ideal.mem_span_singleton.1 (Ideal.Quotient.eq.1 h_frob.symm)
-
-/-- A finite place of `E` that is its own complex conjugate does not contain `β_K β̄_K`, where
-`β_K = betaKInE = (1 + √-d) / 2`. -/
-lemma betaKInE_mul_star_notMem_of_star_eq (h_star : star w = w) :
-    P.betaKInE s * star (P.betaKInE s) ∉ w.asIdeal := by
-  -- otherwise `w` contains both factors, and their sum is `1`
-  intro h_norm
-  have h_iff : star (P.betaKInE s) ∈ w.asIdeal ↔ P.betaKInE s ∈ w.asIdeal := by
-    rw [← mem_star_place, h_star]
-  have h_mem : P.betaKInE s ∈ w.asIdeal := by simpa [h_iff] using w.isPrime.mem_or_mem h_norm
-  exact w.isPrime.one_notMem (by simpa [star_betaKInE] using add_mem (h_iff.2 h_mem) h_mem)
-
-/-- A prime `p` below a finite place of `E` that is its own complex conjugate does not divide
-`q₁`. -/
-lemma not_dvd_q₁_of_star_eq (hp_mem : (p : 𝓞 (P.E s)) ∈ w.asIdeal) (h_star : star w = w) :
-    ¬p ∣ P.q₁ s := by
-  -- a prime that divides `q₁` divides `(d + 1) / 4 = betaKInE * star betaKInE`
-  refine fun h_dvd ↦ betaKInE_mul_star_notMem_of_star_eq h_star ?_
-  rw [star_betaKInE, betaKInE_mul_one_sub, w.natCast_mem_iff_dvd hp_mem]
-  exact P.dvd_d_add_one_div_four_of_dvd_q₁ hp.out h_dvd
-
-/-- Let `w` be a finite place of `E = P.E s` above the prime `p`, i.e. `p ∈ w.asIdeal`. If `w`
-equals its complex conjugate `star w`, then `p ≡ -1` modulo `2 ^ (s + 1)`. -/
-lemma natCast_eq_neg_one_of_star_eq (hp_mem : (p : 𝓞 (P.E s)) ∈ w.asIdeal) (h_star : star w = w) :
-    (p : ZMod (2 ^ (s + 1))) = -1 := by
-  have : CharP (𝓞 (P.E s) ⧸ w.asIdeal) p := w.charP_quotient hp_mem
-  have h_one : (1 : P.Φ s) • w = star w := by
-    simp [HeightOneSpectrum.ext_iff, Ideal.ext_iff, h_star, galOfPlaceInt]
-  have hp_not_dvd_q₁ : ¬p ∣ P.q₁ s := not_dvd_q₁_of_star_eq hp_mem h_star
-  rcases chiK_cases P.d p with ⟨rfl, -⟩ | ⟨hp_ne_d, h_split | h_inert⟩
-  · -- For `p = d` conjugation is a power of Frobenius on `ζ`, so some `-d ^ n` is `1` modulo `q₀`.
-    let π : 𝓞 (P.E s) →+* 𝓞 (P.E s) ⧸ w.asIdeal := Ideal.Quotient.mk w.asIdeal
-    obtain ⟨n, h_frob⟩ :
-        ∃ n : ℕ, ∀ x : 𝓞 (P.E s), π (galOfPlaceInt 1 x) = π (starRingAut x) ^ P.d ^ n :=
-      exists_mk_galOfPlaceInt_eq_pow_of_smul_eq hp_mem h_one
-    have h_zeta : π (galOfPlaceInt 1 (P.zetaInt s)) =
-        π (galOfPlaceInt (P.placeOfInt s (-1 * P.d ^ n)) (P.zetaInt s)) :=
-      ((forall_map_galOfPlaceInt_eq_pow_iff hp_not_dvd_q₁ π n isIdOrConjWithSign_star).1
-        h_frob).1
-    have h_place : 1 = P.placeOfInt s (-P.d ^ n) := by
-      simpa using (map_galOfPlaceInt_zetaInt_inj π hp_not_dvd_q₁ _).1 h_zeta
-    have h_class : ((-P.d ^ n : ℤ) : ZMod P.q₀) = 1 := by
-      rw [← placeClass_placeOfInt (isCoprime_q₀_of_not_dvd hp_not_dvd_q₁).pow_left.neg_left
-        (h_dvd := P.q₀.dvd_mul_right (towerDeg s)), ← h_place, map_one, Units.val_one]
-    have h_pow : (P.d : ZMod P.q₀) ^ n = -1 := by simpa [neg_eq_iff_eq_neg] using h_class
-    exact absurd h_pow (P.d_pow_ne_neg_one n)
-  · -- For split `p` the Frobenius element has sign `1`.
-    have h_not_dvd : ¬p ∣ P.q₁ s * P.d :=
-      hp.out.not_dvd_mul hp_not_dvd_q₁ (by rwa [Nat.prime_dvd_prime_iff_eq hp.out P.d_prime])
-    obtain ⟨n, hn⟩ : ∃ n : ℕ, ((1 : P.Φ s), (-1 : ℤ)) = P.frobElem s p ^ n :=
-      (smul_eq_star_iff_exists_frobElem_pow hp_mem h_not_dvd).1 h_one
-    have h_sign : (-1 : ℤ) = chiK P.d p ^ n := congrArg Prod.snd hn
-    simp [h_split] at h_sign
-  · -- For inert `p` an odd power of `-p` is `1`, and `(ℤ / 2 ^ (s + 1))ˣ` has order `2 ^ s`.
-    obtain ⟨n, hn, h_odd⟩ : ∃ n : ℕ, 1 = P.placeOfInt s (-p) ^ n ∧ Odd n :=
-      (smul_eq_star_iff_of_inert hp_mem h_inert).1 h_one
-    set u : (ZMod (2 ^ (s + 1)))ˣ := P.placeClass two_pow_dvd_q₁ (P.placeOfInt s (-p)) with hu
-    have h_pow : u ^ n = 1 := by rw [hu, ← map_pow, ← hn, map_one]
-    have h_card : u ^ 2 ^ s = 1 := by
-      simpa [Nat.totient_prime_pow_succ Nat.prime_two] using ZMod.pow_totient u
-    have h_unit : u = 1 :=
-      (pow_eq_one_iff_of_coprime (h_odd.coprime_two_right.pow_right s)).1 ⟨h_pow, h_card⟩
-    have h_val : (u : ZMod (2 ^ (s + 1))) = (-p : ℤ) :=
-      placeClass_placeOfInt (isCoprime_q₀_of_not_dvd hp_not_dvd_q₁).neg_left
-    simpa [h_unit, eq_neg_iff_add_eq_zero, add_comm] using h_val
 
 /-- Let `p` be a prime with Legendre symbol `(p/d) = -1` and `w` a place of `E` above `p`. Then the
 norm `w.q` of `w` is `p ^ lcm o 2`, where `o` is the order of the infinite place named by `-p`, that

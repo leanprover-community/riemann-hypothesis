@@ -301,7 +301,8 @@ lemma apply_comp_perm_of_conj_invariant {w : Perm n} (x : n → Circle) (hw : ε
     simp [g, ← Matrix.ext_iff, signMatrix, diagonal, Matrix.mul_apply, sum_ite, hw_apply]
   have h_unitary : (g : Matrix n n ℂ)ᴴ * 1 * g = 1 := by
     simp [g, ← Matrix.ext_iff, Matrix.mul_apply, sum_ite, Matrix.one_apply]
-  let y : maxCompactU ε := ⟨⟨g, h_form⟩, h_unitary⟩
+  let y : maxCompactU ε :=
+    ⟨⟨g, mem_unitaryGroupOf_iff.2 h_form⟩, mem_unitaryGroupOf_iff.2 h_unitary⟩
   have h_conj : y * diagTorusK (x ∘ w) * y⁻¹ = diagTorusK x := by
     ext
     simp [y, g, diagTorus, ← map_inv, diagonal, Matrix.mul_apply, sum_ite]
@@ -897,7 +898,7 @@ lemma New.weyl_dimension_formula {n : Type} [Fintype n] [DecidableEq n] {l : HCP
       simpa using (((hasDerivAt_id 0).ofReal_comp.mul_const Complex.I).const_mul c).cexp
     have h_slope (i j : n) : Filter.Tendsto (fun t : ℝ ↦ (t : ℂ)⁻¹ * (x a t i - x a t j))
         (nhdsWithin 0 {0}ᶜ) (nhds (Complex.I * (a i - a j))) := by
-      simpa [exp_int_mul, mul_comm _ Complex.I, ← mul_sub, x] using
+      simpa [exp_intCast_mul, mul_comm _ Complex.I, ← mul_sub, x] using
         ((h_exp (a i)).sub (h_exp (a j))).tendsto_slope_zero
     simpa [Δ, prod_mul_distrib] using
       tendsto_finsetProd univ fun i _ ↦ tendsto_finsetProd {j | l j < l i} fun j _ ↦ h_slope i j

@@ -214,7 +214,7 @@ lemma exists_eq_mul_of_forall_polyVector {J : Type*} {Λ : J → fockSpace s →
   have h_span (v : fockSpace s) :
       (fun j : J ↦ Λ j v) ∈ Submodule.span ℂ {ρ} ↔ ∃ r : ℂ, ∀ j : J, Λ j v = r * ρ j := by
     simp [Submodule.mem_span_singleton, funext_iff, eq_comm]
-  exact (h_span x).1 ((Submodule.closed_of_finiteDimensional _).isSeqClosed
+  exact (h_span x).1 ((Submodule.isClosed_of_finiteDimensional _).isSeqClosed
     (fun m ↦ (h_span _).2 (h_poly (P m))) (tendsto_pi_nhds.2 h_tendsto))
 
 /-! ### The kernels multiply -/
@@ -563,7 +563,7 @@ lemma pairTransposedLift_comp_pairLift_mul (h₁ : IsPairEdge a₁ b₁ e₁ e P
   let k : Gf E n' := liftMod g
   let lifted : A.Form e := pairLift U₁ A (a₁ i) (b₁ i) P₁ (Pi.single (g.val * x.toCols₁) 1) e₁ e f
   have h_char : χ g.val.det = (a₂ i)⁻¹.val (detFin s' k) * (a₁ i)⁻¹.val (detFin s' k) := by
-    simpa [mul_comm] using (h_tame.apply_det (s := s') (liftMod g)).symm
+    simpa using (h_tame.apply_det (s := s') (liftMod g)).symm
   have h_first : A.formRep e k⁻¹ lifted = ((a₁ i)⁻¹.val (detFin s' k) : ℂ) •
       pairLift U₁ A (a₁ i) (b₁ i) P₁ (Pi.single x.toCols₁ 1) e₁ e f := by
     simpa only [map_one, Module.End.one_apply] using (h₁.isArrow i).left.formRep_formLift_of_eq_smul
@@ -603,7 +603,7 @@ lemma pairLift_comp_pairTransposedLift_mul (h₁ : IsPairEdge b₁' a₁' (star 
   let lifted : A'.Form e' :=
     pairTransposedLift A' U₁ (b₁' i) (a₁' i) P₁' (Pi.single (y.toRows₁ * g.val) 1) e₁ e' f
   have h_char : χ g.val.det = (a₂' i)⁻¹.val (detFin s k) * (a₁' i)⁻¹.val (detFin s k) := by
-    simpa [mul_comm] using (h_tame.apply_det (s := s) (liftMod g)).symm
+    simpa using (h_tame.apply_det (s := s) (liftMod g)).symm
   have h_first : A'.formRep e' k lifted = ((a₁' i)⁻¹.val (detFin s k) : ℂ) •
       pairTransposedLift A' U₁ (b₁' i) (a₁' i) P₁' (Pi.single y.toRows₁ 1) e₁ e' f := by
     simpa only [map_one, Module.End.one_apply] using (h₁.isArrow_swap i).formRep_formLift_of_eq_smul

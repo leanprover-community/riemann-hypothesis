@@ -259,7 +259,7 @@ lemma cupProduct_flip {R R' S Γ : Type} [CommRing R] [CommRing R'] [CommRing S]
     simp only [hx_mul, hy_mul, map_add, AddMonoidHom.add_apply, h_equivariant]
     abel
   -- the coboundary condition at `(g, h)`, with both cup products written out
-  show b.flip (y g) (M.ρ g (x h)) - -b (x g) (N.ρ g (y h))
+  change b.flip (y g) (M.ρ g (x h)) - -b (x g) (N.ρ g (y h))
       = W.ρ g (-b (x h) (y h)) - -b (x (g * h)) (y (g * h)) + -b (x g) (y g)
   rw [AddMonoidHom.flip_apply, h_expand, map_neg]
   abel
@@ -490,7 +490,7 @@ lemma IsProGalois.of_fixingSubgroup_eq {U : Subgroup Γ}
   refine { tower_top_of_isGalois K L Ω, h_fix with
     commutes.smul_comm := ?_, isInvariant.isInvariant := ?_ }
   · -- Elements of `U` fix `L`, so they commute with multiplication by elements of `L`.
-    show ∀ (u : fixingSubgroup Γ (Set.range (algebraMap L Ω))) (l : L) (y : Ω),
+    change ∀ (u : fixingSubgroup Γ (Set.range (algebraMap L Ω))) (l : L) (y : Ω),
       u • l • y = l • u • y
     simp_all [smul_def, mem_fixingSubgroup_iff]
   · exact (fixedFieldOf_fixingSubgroup (IsScalarTower.toAlgHom K L Ω).fieldRange).le
@@ -515,6 +515,13 @@ lemma exists_carry_eq_one_sub_ite {Q : Type*} [Group Q] [Finite Q] [DecidableEq 
     sub_eq_zero.mp (Int.abs_lt_one_iff.mp h_abs)
   qify
   grind [mul_eq_right, QZ.fracRep, Equiv.injective, toAdd_mul]
+
+private lemma carry_mul_right {Q : Type*} [Group Q] (f : Q →* Multiplicative QZ) (p q r : Q) :
+    carry (f p).toAdd (f (q * r)).toAdd =
+      carry (f p).toAdd (f q).toAdd - (carry (f q).toAdd (f r).toAdd -
+        carry (f (p * q)).toAdd (f r).toAdd) := by
+  simp only [map_mul, toAdd_mul]
+  linarith only [QZ.carry_add_add_carry (f p).toAdd (f q).toAdd (f r).toAdd]
 
 include K in
 /-- Hilbert 90 for functions on cosets: for an open subgroup `U` of `Γ`, every continuous
@@ -551,9 +558,8 @@ lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (
       ∃ γ : Γ ⧸ U.toSubgroup, ∀ q : Γ ⧸ U.toSubgroup, c q γ = 1 - if q = 1 then 1 else 0 :=
     exists_carry_eq_one_sub_ite _ (kerLift_injective (toHom χ))
   have carry_cocycle (p q r : Γ ⧸ U.toSubgroup) :
-      c p (q * r) = c p q - (c q r - c (p * q) r) := by
-    qify [c]
-    grind [toAdd_mul]
+      c p (q * r) = c p q - (c q r - c (p * q) r) :=
+    carry_mul_right (kerLift (toHom χ)) p q r
   let M : DiscreteModule ℤ Γ := unitsModule Γ
   let N : DiscreteModule ℤ Γ := M.funModule U.toSubgroup
   -- `D F q = F (q * γ) - F q`
@@ -636,9 +642,8 @@ lemma QZChar.exists_corestrictH0_eq_of_cyclicClass_eq_zero (χ : ↥(QZChar Γ))
   have sum_shift (F : Γ ⧸ U.toSubgroup → M) : ∑ q, F (q * γ) = ∑ q, F q :=
     (mulRight_bijective γ).sum_comp F
   have carry_cocycle (p q r : Γ ⧸ U.toSubgroup) :
-      c p (q * r) = c p q - (c q r - c (p * q) r) := by
-    qify [c]
-    grind [toAdd_mul]
+      c p (q * r) = c p q - (c q r - c (p * q) r) :=
+    carry_mul_right (kerLift (toHom χ)) p q r
   obtain ⟨a, a_cont : Continuous a,
       ha : ∀ g l : Γ, c g l • w.val = M.ρ g (a l) - a (g * l) + a g⟩ :=
     (ker_mkQ _).le hw
@@ -668,7 +673,7 @@ lemma QZChar.exists_corestrictH0_eq_of_cyclicClass_eq_zero (χ : ↥(QZChar Γ))
     shapiro_H0 U ⟨_, h_invariant⟩
   -- Summing `hy` over the cosets: the left side is the norm of `y`, the right side is `w`.
   refine ⟨y, ?_⟩
-  show M.sum U (fun q ↦ M.ρ q.out y) = w.val
+  change M.sum U (fun q ↦ M.ρ q.out y) = w.val
   rw [hy]
   simp [U, D, carry_max, sum_shift, sum, sub_smul]
 

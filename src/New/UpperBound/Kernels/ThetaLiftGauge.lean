@@ -173,6 +173,11 @@ lemma pairWeil_mem_standardData {a b : AutChar (E P s)}
   rw [onHom_fin g h]
   exact omega_mem_standardData h_int hf
 
+variable {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
+  {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
+  {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
+  {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+
 /-- Let `E = P.E s` (a CM field) and `Gf` its finite adelic unitary group. Take the theta kernel
 (`thetaKernel`) of scale `c` and level `K`, for the standard definite spaces of ranks `n`, `n'` over
 `E`. Its characters `a`, `b` have exponents `ea`, `eb`, and its weight `(κ, e)` has `κ τ h` columns
@@ -187,10 +192,7 @@ to the diagonal matrix `u τ`, and that for every standard `f` and entry `(i', i
 Then the translate `ω (1, x * d * y) Ψ` lies in `raises 1 1 B`: for all finite points `g`, `h`,
 applying it after translation by `(g, h)` to a vector `ξ` gives a vector of gauge at `h` at most
 `max B 0` times the gauge of `ξ` at `g`. -/
-lemma omega_mem_raises_of_schurJet_le {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma omega_mem_raises_of_schurJet_le
     {Ψ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     {δ : NumberField.RingOfIntegers P.K}
     (hΨ : Ψ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) δ)
@@ -261,10 +263,7 @@ entries `b` of the filling.
 
 Then the translate of `Ψ` by `(1, x * d * y)` multiplies the `p`-adic gauge `New.weylGauge` by at
 most `max B 0`. -/
-lemma omega_mem_raises_of_jet_minorProd_le {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma omega_mem_raises_of_jet_minorProd_le
     {Ψ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     {δ : NumberField.RingOfIntegers P.K}
     (hΨ : Ψ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) δ)
@@ -299,10 +298,7 @@ above `p`. Such a `Φ` lies in `raises 1 1` of `(‖ιₚ c‖ / ‖ιₚ (star 
 `L = boxes κ (card n')` counts the boxes in columns of height below `card n'`: for all finite points
 `g`, `h`, its kernel translated by `(g, h)` multiplies the `p`-adic gauge (`New.weylGauge`) from
 `g` to `h` by at most this factor. -/
-lemma mem_raises_of_standardData {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma mem_raises_of_standardData
     {Φ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     {δ : NumberField.RingOfIntegers P.K} (hδ : δ ≠ 0)
     (hΦ : Φ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) δ) :
@@ -336,10 +332,7 @@ any level `K`. A standard datum `Φ` for `δ = 1` multiplies the `p`-adic gauge 
 `κ` in columns of height below `N`.
 
 The term `D` is `New.predictedDivisibility`. -/
-lemma mem_raises_predictedDivisibility {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e}
+lemma mem_raises_predictedDivisibility
     (hp : chiK P.d p ≠ 1) (hc : ‖ιₚ c‖ ≤ 1)
     {Φ : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart}
     (hΦ : Φ.val ∈ standardData ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) 1) :
@@ -363,10 +356,7 @@ of theta functions and `‖ιₚ c‖ ≤ 1` for the chosen embedding `ιₚ : �
 such that `d • f` is standard for the natural number `N ≠ 0`. If `d * (N * P.d) ^ L` divides `M`,
 where `L` is the number of boxes of `κ` in columns of height below `card n'`, then `M • f` does not
 increase the `p`-adic gauge `New.weylGauge` (`New.Kernel.raises` with bound `1`). -/
-lemma smul_mem_raises_of_dvd {c : ℂ} {K : Subgroup (Gf (P.E s) n)}
-    {a b : AutChar (E P s)} {ψ ψ' : (w : FinPlace (P.E s)) → MulChar (ResField w) ℂ}
-    {ha : a.HasWeight ea ψ} {hb : b.HasWeight eb ψ'}
-    {p : ℕ} [Fact p.Prime] [PadicPlace p] {hκ : IsLiftWeight n n' κ eb e} {N d M : ℕ} [NeZero N]
+lemma smul_mem_raises_of_dvd {N d M : ℕ} [NeZero N]
     (f : ↥((stdSpace (P.E s) n).hom (stdSpace (P.E s) n')).finitePart)
     (hf : (d : ℂ) • f.val ∈
       standardData (p := p) ((stdSpace (E P s) n).hom (stdSpace (E P s) n')) N)

@@ -108,22 +108,6 @@ lemma rescale_translatedY_mem_integralSeriesRing {C' : CMLattice d} {a : ℂ} {N
   rw [hy]
   exact mul_mem hR₃ (pow_mem hS 3)
 
-/-- Let `d` be a prime that is 7 modulo 8 and `ιₚ : ℂ → ℂ_[p]` a `p`-adic place. Let `C`, `C'` have
-lattices `Λ`, `Λ'`, and suppose multiplication by `a` maps `Λ` into `Λ'` with
-`a ā area(Λ) = N area(Λ')`; for `a ≠ 0` this makes it an isogeny of degree `N`. Write
-`y = translatedY`, that is `y(z) = ½(℘′(z + t) − a₁x(z))` with `x(z) = ℘(z + t) − ℘(t)`, and
-`𝒪[[y_Λ]] = C.integralSeriesRing` for the ring of integral power series over `ℂ_[p]` in the Taylor
-series of `y_Λ`. Then the Taylor series at `0` of `y_Λ'(a z)`, with coefficients mapped by `ιₚ`,
-lies in `𝒪[[y_Λ]]`, and that of the theta function `θ_Λ'(a z)` is the `N`-th power of that of `θ_Λ`
-times an element of `𝒪[[y_Λ]]`. This corollary collects `rescale_translatedY_mem_integralSeriesRing`
-and `exists_rescale_theta_eq_theta_pow_mul`. -/
-lemma rescale_translatedY_mem_and_rescale_theta_eq {C' : CMLattice d} {a : ℂ} {N : ℕ}
-    (h_isog : C.IsIsogeny C'.periodPair a N) :
-    (taylorVia ιₚ C'.translatedY).rescale (ιₚ a) ∈ C.integralSeriesRing ∧
-      ∃ v ∈ C.integralSeriesRing, (taylorVia ιₚ C'.θ).rescale (ιₚ a) = taylorVia ιₚ C.θ ^ N * v :=
-  ⟨C.rescale_translatedY_mem_integralSeriesRing h_isog,
-    C.exists_rescale_theta_eq_theta_pow_mul h_isog⟩
-
 /-- If multiplication by `a` maps the lattice `Λ` of `C` into the lattice `Λ'` of `C'`, then `a` is
 integral at `p`: its image under the embedding `ιₚ : ℂ →+* ℂ_[p]` has norm at most `1`. This relies
 on both lattices carrying the normalisation of `CMLattice`, namely `℘''(t) = 2` at the chosen point

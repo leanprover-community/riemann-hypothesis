@@ -244,7 +244,8 @@ lemma exists_eval_smul_paddedMinorProd : ∃ d : ℕ, d ≤ D.b * √D.b ∧
         (row : p → D.RowIndex ⊕ PadIndex j) (col : p → D.CarrierIndex) :
         (variableMinor τ row col).eval (r • y) =
           r ^ card p * (variableMinor τ row col).eval y := by
-      simp [variableMinor, det_apply', mul_sum, prod_mul_distrib, mul_left_comm]
+      simp [variableMinor, det_apply', mul_sum, prod_mul_distrib]
+      exact sum_congr rfl fun _ _ ↦ mul_left_comm ..
     simp only [paddedMinorProd, map_prod, ← prod_pow_eq_pow_sum, ← prod_mul_distrib]
     refine prod_congr rfl fun w _ ↦ ?_
     simp only [deg, map_mul, map_pow, map_prod, h_minor, Fintype.card_fin, mul_pow,

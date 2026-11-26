@@ -1,9 +1,7 @@
 module
 
-public import Lib.Adelic.Unitary.Defs
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.Geometry.ProjectiveSpace
-public import Lib.General.NumberTheory.EmbeddingsAndDifferent
 public import Lib.Shimura.AbelianScheme.Basic
 
 /-!
@@ -102,7 +100,7 @@ lemma Variety.locallyQuasiFinite_of_pull_picClass [IsSeparated B.hom] {ι : Type
       ← Category.assoc] at ha hi hj ⊢
     have h_one : PointFn.ofSection (a i) R (t ≫ y) * u i R (t ≫ y) = 1 := by
       rw [← ha i i R (t ≫ y) hi, (N.pow m).transition_self i R _ hi]
-    show (N.pow m).transition j k R ((t ≫ x) ≫ p) =
+    change (N.pow m).transition j k R ((t ≫ x) ≫ p) =
       (N.pow m).transition j i R ((t ≫ x) ≫ p) * (N.pow m).transition i k R ((t ≫ y) ≫ p)
     rw [ha k j R (t ≫ x) hj, ha i j R (t ≫ x) hj, ha k i R (t ≫ y) hi, h_val k, h_val i]
     linear_combination -(PointFn.ofSection (a k) R (t ≫ y) * u j R (t ≫ x)) * h_one
@@ -196,16 +194,6 @@ noncomputable instance [i : IsAbelianScheme B] : IsAbelianScheme (pullback b B) 
 variable {R : CommRingCat} {A : Over (Spec R)} [IsLocalRing R] [AddObj A] {c : Pic A.left}
 
 /-! ### Group schemes over a local ring -/
-
-omit [AddObj A] in
-/-- Over a local ring, a class pulls back to zero along a point that comes from a section. -/
-@[simp]
-lemma atPoint_toUnit_comp_eq_zero {T : Over (Spec R)} (z : 𝟙_ (Over (Spec R)) ⟶ A) :
-    c.atPoint (toUnit T ≫ z) = 0 := by
-  simp [Pic.atPoint, c.pull_comp, eq_zero_of_isLocalRing]
-
-@[simp]
-lemma atPoint_zero {T : Over (Spec R)} : c.atPoint (T := T) 0 = 0 := atPoint_toUnit_comp_eq_zero _
 
 /-- Let `A` be a commutative group scheme over a local ring and `c` a class in `Pic A` that
 satisfies the parallelogram law `New.Pic.ParallelogramLaw`. Then the pull-back of `c` under

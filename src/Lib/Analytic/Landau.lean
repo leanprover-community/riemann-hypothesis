@@ -73,13 +73,13 @@ lemma mem_integrableExpSet_of_summable_taylor {μ : Measure ℝ} {X : ℝ → �
       simp_rw [taylor, hg_eq.iteratedDeriv_eq, iteratedDeriv_complexMGF (z := z) hz, term_eq,
         integral_const_mul, smul_eq_mul, ← ofReal_natCast]
       norm_cast
-    simp_rw [← ofReal_integral_norm_eq_lintegral_enorm integrable,
+    simp_rw [← ofReal_integral_norm_eq_lintegral_eNorm integrable,
       Real.norm_of_nonneg (term_nonneg _ _), taylor_eq]
   change Integrable (fun y : ℝ ↦ (σ * X y).exp) μ
   refine ⟨by fun_prop, ?_⟩
   calc
     ∫⁻ y, ‖(σ * X y).exp‖ₑ ∂μ = ∫⁻ y, ‖∑' k, term k y‖ₑ ∂μ := by simp only [tsum_term]
-    _ ≤ ∫⁻ y, ∑' k, ‖term k y‖ₑ ∂μ := lintegral_mono fun y ↦ enorm_tsum_le_tsum_enorm
+    _ ≤ ∫⁻ y, ∑' k, ‖term k y‖ₑ ∂μ := lintegral_mono fun y ↦ eNorm_tsum_le_tsum_eNorm
     _ = ∑' k, .ofReal (taylor k) := by rw [lintegral_tsum (by fun_prop), tsum_congr lintegral_term]
     _ < ⊤ := (hasSum_re hg.hasSum).summable.tsum_ofReal_lt_top
 
@@ -210,7 +210,7 @@ lemma exists_Ioi_subset_integrableExpSet {μ : Measure ℝ} {X : ℝ → ℝ} (h
   obtain ⟨p, hp⟩ : AnalyticAt ℂ G a :=
     MeromorphicAt.analyticAt (by fun_prop) (by simpa [continuousAt_iff_punctured_nhds, G])
   refine exists_Ioi_subset_integrableExpSet_of_analyticAt hX hX_nonpos ha
-    hp.has_fpower_series_dslope_fslope.analyticAt ?_
+    hp.dslope_fslope.analyticAt ?_
   filter_upwards [eq_near, self_mem_nhdsWithin] with x hΨx (hx : a < x) using
     ((eqOn_dslope_sub_smul Ψ a).eventuallyEq_of_mem
       (isOpen_ne.mem_nhds (ofReal_injective.ne hx.ne'))).trans hΨx

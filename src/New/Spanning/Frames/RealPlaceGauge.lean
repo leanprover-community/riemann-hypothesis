@@ -1,10 +1,9 @@
 module
 
-public import Lib.CM.Sigma.Basic
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
 public import Lib.DiscreteSeries.Bessel.FrameFibre
 public import Lib.DiscreteSeries.Bruhat.FloorFibre
 public import Lib.DiscreteSeries.Bruhat.SphereFibres
-public import Lib.Weil.Construction.HeisenbergModel
 public import New.Spanning.Bessel.Basic
 public import New.Spanning.Frames.Correlations
 
@@ -143,7 +142,7 @@ lemma dualColumnGaussian_succ_mul_heisenbergElem {a : Fin 𝔰.ϱ} {ν : 𝔰.G�
       ({b : Fin 𝔰.ϱ | b.val < a} : Finset (Fin 𝔰.ϱ)) := by grind
   push_cast [dualColumnGaussian, ← mulVec_mulVec]
   -- Split off the term of column `e*_a` and compare the summands.
-  rw [← add_sum_erase (a := a) _ _ (by simp), h_erase, mul_add, exp_add, enorm_mul,
+  rw [← add_sum_erase (a := a) _ _ (by simp), h_erase, mul_add, exp_add, eNorm_mul,
     ← sum_subtype_eq_sum_filter, subtype_univ]
   congr 4
   · congr 1
@@ -537,7 +536,7 @@ lemma RealPlaceSizes.lintegral_quotientMeasureFrom_eq_haarRatio_mul (hF : RealPl
   have h_incl : MeasurePreserving (fun p : 𝔰.G₁ × besselU ↦ ((p.2 : 𝔰.G₁), p.1))
       (θ.prod 𝔰.besselHaar) ((𝔰.besselHaar.map .val).prod θ) := by
     have h_val : MeasurePreserving Subtype.val 𝔰.besselHaar (𝔰.besselHaar.map .val) :=
-      measurable_subtype_coe.measurePreserving _
+      measurable_subtypeVal.measurePreserving _
     exact (h_val.prod (.id θ)).comp measurePreserving_swap
   have h_mul : MeasurePreserving (fun p : 𝔰.G₁ × 𝔰.G₁ ↦ p.1 * p.2)
       ((𝔰.besselHaar.map .val).prod θ) (hF.haarRatio • volume) := ⟨measurable_mul, h_conv⟩
@@ -946,47 +945,6 @@ lemma RealPlaceSizes.exists_rank_le_and_fixed_of_mulVec_eq_zero (hF : RealPlaceS
     refine ⟨hv, ?_⟩
     rintro g (rfl | rfl)
     exacts [hN _ hx, hN _ hxy]
-
-/-- Let `e = orthonormalPart` embed the span `X'` of the free orthonormal basis vectors of the place
-datum at `ℂ` into the space, let `x` and `y` be in `G₁`, and let `v` be a matrix with at most `n`
-rows. For every `d` up to the rank of `X'` less `3 n` there are `d` orthonormal vectors of `X'`, the
-columns of `O`, that are killed by `v` and carried by `x⁻¹ e` and by `(x y)⁻¹ e` into the space on
-which `J₁` is the identity. -/
-theorem RealPlaceSizes.exists_orthonormal_mul_eq_zero_and_fixed (hF : RealPlaceSizes 𝔰 ρ s b)
-    (x y : 𝔰.G₁) {m : Type} [Fintype m] (v : Matrix m hF.complexData.FreeIndex ℂ)
-    (hm : card m ≤ 𝔰.n) {d : ℕ} (hd : d + 3 * 𝔰.n ≤ card hF.complexData.FreeIndex) :
-    ∃ O : Matrix hF.complexData.FreeIndex (Fin d) ℂ,
-      Oᴴ * O = 1 ∧
-      v * O = 0 ∧
-      ∀ g ∈ ({x⁻¹, (x * y)⁻¹} : Set 𝔰.G₁),
-        𝔰.J₁ * (g.val.val * hF.complexData.orthonormalPart * O) =
-          g.val.val * hF.complexData.orthonormalPart * O := by
-  -- Take `d` columns of a unitary matrix in the kernel of the matrix `C` of the conditions.
-  set e : Matrix 𝔰.BesselIndex hF.complexData.FreeIndex ℂ := hF.complexData.orthonormalPart
-  obtain ⟨C, rank_le, hC⟩ :
-      ∃ C : Matrix (m ⊕ (Fin 𝔰.ϱ ⊕ Unit) ⊕ Fin 𝔰.ϱ ⊕ Unit) hF.complexData.FreeIndex ℂ,
-        C.rank ≤ 3 * 𝔰.n ∧ ∀ w : hF.complexData.FreeIndex → ℂ, C *ᵥ w = 0 →
-          v *ᵥ w = 0 ∧ ∀ g ∈ ({x⁻¹, (x * y)⁻¹} : Set 𝔰.G₁),
-            𝔰.J₁ *ᵥ g.val.val *ᵥ e *ᵥ w = g.val.val *ᵥ e *ᵥ w :=
-    hF.exists_rank_le_and_fixed_of_mulVec_eq_zero x y v hm
-  obtain ⟨Q, D, D_card, hCQ⟩ :
-      ∃ (Q : unitaryGroup hF.complexData.FreeIndex ℂ) (D : Finset hF.complexData.FreeIndex),
-        D.card = d ∧ C * Q.val.submatrix id ((↑) : D → hF.complexData.FreeIndex) = 0 :=
-    exists_unitary_mul_submatrix_eq_zero C (by lia)
-  let σ : Fin d ≃ D := (D.equivFinOfCardEq D_card).symm
-  let O : Matrix hF.complexData.FreeIndex (Fin d) ℂ := Q.val.submatrix id fun j ↦ σ j
-  have hCO : C * O = 0 := by
-    ext i j
-    exact congrFun₂ hCQ i (σ j)
-  have h_ker (t : Fin d → ℂ) : C *ᵥ O *ᵥ t = 0 := by rw [mulVec_mulVec, hCO, zero_mulVec]
-  refine ⟨O, ?_, ?_, fun g hg ↦ ?_⟩
-  · have hQ : Q.valᴴ * Q.val = 1 := Unitary.star_mul_self_of_mem Q.2
-    rw [conjTranspose_submatrix, ← submatrix_mul _ _ _ _ _ Function.bijective_id, hQ]
-    exact submatrix_one _ (Subtype.val_injective.comp σ.injective)
-  · refine Matrix.ext_iff_mulVec.2 fun t ↦ ?_
-    rw [← mulVec_mulVec, (hC _ (h_ker t)).1, zero_mulVec]
-  · refine Matrix.ext_iff_mulVec.2 fun t ↦ ?_
-    simpa only [← mulVec_mulVec] using (hC _ (h_ker t)).2 g hg
 
 /-- Let `L ≥ ρ`, and let `S` be the size in which size `j` means modulus at most `L ^ j`. Let
 `W = commonVectors x y v` be the set of the `w` with `v w = 0` and `|x⁻¹ w|² + |(x y)⁻¹ w|² < 1`.

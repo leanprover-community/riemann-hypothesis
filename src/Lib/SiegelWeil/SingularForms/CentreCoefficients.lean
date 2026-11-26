@@ -117,7 +117,7 @@ lemma continuous_centreCoeff : Continuous (H.centreCoeff T D) := by
   -- by periodicity the choice of coset representatives does not matter
   simp only [Function.uncurry_apply_pair,
     (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD _) T).apply_out_mk]
-  exact (continuous_stdAddChar.subtype_val.comp (by fun_prop)).mul (hD.1.comp (by fun_prop))
+  exact (continuous_stdAddChar.subtypeVal.comp (by fun_prop)).mul (hD.1.comp (by fun_prop))
 
 /-- For D continuous and left invariant under the rational points, left translation by
 z(M) = `H.radicalCentre M` divides the coefficient at T by ψ(tr TM), ψ the standard additive

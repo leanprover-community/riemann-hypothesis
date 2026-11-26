@@ -188,7 +188,7 @@ lemma coe_mem_saturatedLattice (h_inv : H' * H = 1) {V : Submodule E (κ → E)}
   -- since `H m` has an integral left inverse `p`.
   let m : Matrix κ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis h_inv V).val
   obtain ⟨⟨-, p, hp_int, hp⟩, y, a, -, hy, hm⟩ : IsPrimitiveMatrix (Ô E) (H * m) ∧
-      ∃ᵉ (y : Matrix κ (Fin (finrank E V)) E) (a : GL (Fin (finrank E V)) (𝔸f E)),
+      ∃ y : Matrix κ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
         HasLeftInv y ∧ colSpan y = V ∧ m = finAdeleMatrix y * a.val :=
     (sublatticeBasis h_inv V).property
   obtain ⟨t, rfl⟩ : ∃ t : Fin (finrank E V) → E, y *ᵥ t = v := hy.ge hv

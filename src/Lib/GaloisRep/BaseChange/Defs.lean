@@ -100,12 +100,9 @@ lemma twistedNorm_conj (τ : G →* G) (p : ℕ) {y : G} (hy : τ^[p] y = y) (δ
 
 /-- If `τ` maps the subgroup `K` into itself, then the twisted norm of every `δ ∈ K` lies in `K`. -/
 lemma twistedNorm_mem {K : Subgroup G} (τ : G → G) (p : ℕ) (hK : ∀ k ∈ K, τ k ∈ K) {δ : G}
-    (hδ : δ ∈ K) : twistedNorm τ p δ ∈ K := by
+    (hδ : δ ∈ K) : twistedNorm τ p δ ∈ K :=
   -- Every factor `τ^[i] δ` of the product lies in `K`, as `τ` and its iterates map `K` into `K`.
-  show ((List.range p).map fun i ↦ τ^[i] δ).prod ∈ K
-  refine Subgroup.list_prod_mem _ fun x hx ↦ ?_
-  obtain ⟨i, -, rfl⟩ := List.mem_map.mp hx
-  exact Set.MapsTo.iterate hK i hδ
+  Subgroup.list_prod_mem _ (List.forall_mem_map.2 fun i _ ↦ Set.MapsTo.iterate hK i hδ)
 
 /-- A monoid homomorphism `e` that intertwines `τ` on `Γ` with `σ` on `M` (`e (τ δ) = σ (e δ)`)
 carries twisted norms for `τ` to twisted norms for `σ`. -/
@@ -205,7 +202,7 @@ below it. -/
 lemma below_comap (u : FinPlace E') : (u.comap σ : FinPlace E').below E = u.below E := by
   -- Restricting along `σ` and then to `E` is, by definition, restricting along the composite,
   -- and `σ` fixes `E`.
-  show u.comap ((σ : E' →+* E').comp (algebraMap E E')) = u.comap (algebraMap E E')
+  change u.comap ((σ : E' →+* E').comp (algebraMap E E')) = u.comap (algebraMap E E')
   exact congrArg u.comap σ.toAlgHom.comp_algebraMap
 
 omit [IsCMField E'] in

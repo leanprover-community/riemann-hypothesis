@@ -129,7 +129,7 @@ lemma New.HasWeightNormSqLeIf.prod {p : Prop} {ι : Type*} {s : Finset ι} {κ :
 open Matrix in
 /-- For the weight with one column of height `h < card N` at `τ`, the kernel `weylKernel` at `y`
 (the highest weight polynomial at `yᵀ x`) is the leading `h × h` minor of `yᵀ x` in block `τ`. -/
-lemma New.eval_weylKernel_single_eq_det {N : Type} [Fintype N] [DecidableEq N] (τ : Φ) {h : ℕ}
+lemma New.eval_weylKernel_single_eq_det {N : Type} [Fintype N] (τ : Φ) {h : ℕ}
     (h_lt : h < Fintype.card N) (y x : (Σ _ : Φ, N) × ℕ → ℂ) :
     (weylKernel (fun _ : Φ ↦ N) (Pi.single τ (Pi.single h 1)) y).eval x =
       (of fun a b : Fin h ↦ ∑ u : N, y (⟨τ, u⟩, a) * x (⟨τ, u⟩, b)).det := by

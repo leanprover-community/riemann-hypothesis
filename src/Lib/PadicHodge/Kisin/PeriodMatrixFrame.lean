@@ -249,6 +249,7 @@ lemma not_dvd_det_of_frobenius {Q ρ : Matrix d d Ainf} {B : Matrix d d c.S}
   rw [h_zero, zero_dvd_iff, h_pow] at h_map
   exact h_map.trans (map_zero _).symm
 
+omit [DecidableEq d] in
 /-- Apply `m` to `U Z = E ^ h Q`, given `ρ m(U) = U F` and `w m(E) = E r`: then
 `U w ^ h F m(Z) = E ^ h r ^ h ρ m(Q)`. Here `m` in `FrobGal` acts entrywise on matrices. -/
 lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
@@ -256,6 +257,7 @@ lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matr
     (F : Matrix d d BPlus) (w : BPlus) (r : Ainf) (hU : ρ.map ainfToBPlus * m • U = U * F)
     (hE : w * ainfToBPlus (m • c.E.val) = ainfToBPlus (c.E.val * r)) :
     U * w ^ h • (F * m • Z) = c.E.val ^ h • (r ^ h • ρ * m • Q).map ainfToBPlus := by
+  classical
   rw [mul_smul_comm, ← mul_assoc, ← hU, mul_assoc]
   -- `m` acts on matrices entrywise, through the ring map `(toRingHom _ _ m).mapMatrix`
   change w ^ h • (ρ.map ainfToBPlus * ((toRingHom FrobGal BPlus m).mapMatrix U *

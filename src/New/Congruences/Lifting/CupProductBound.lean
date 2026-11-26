@@ -252,7 +252,7 @@ lemma Pairing.isCupCoboundary_of_eq_coboundary [TopologicalSpace Γ]
   -- Near `1` both `κ h` and `b (g, h)` vanish, so `κ` is locally constant.
   have h_cont : Continuous (zmodPowToUnits P.exponent ∘ κ) := by
     refine (isLocallyConstant_of_eventually_mul
-      (.mono (hκ_near.and (continuousAt_subtype_val (h_dvd ha'))) ?_)).continuous
+      (.mono (hκ_near.and (continuousAt_subtypeVal (h_dvd ha'))) ?_)).continuous
     rintro h ⟨hκ_zero, z', hz'⟩ g
     have h_eq : κ (g * h) = κ g := by
       simpa [hz', ↓nsmul_quot_eq_zero, hκ_zero, eq_neg_add_iff_add_eq] using h_coboundary g h
@@ -454,7 +454,7 @@ lemma Pairing.IsScaledCupCoboundary.of_isSafePath {e₁ e₂ e₃ : ℕ} {c : S.
     TateTwist.eventually_map_smul_sub_mem_smallPart (fun y ↦ h_dvd (coboundary_mem y)) (B x) _
   have h_restrict {Q : Γ → Prop} (hQ : ∀ᶠ g in nearOne Γ, Q g) :
       ∀ᶠ h : k.subgroup in 𝓝 1, Q h :=
-    continuousAt_subtype_val ((nearOne_eq_nhds_one hj).ge hQ)
+    continuousAt_subtypeVal ((nearOne_eq_nhds_one hj).ge hQ)
   -- Near `1` the cochain `f` is small, so `κ` vanishes.
   have hκ_near : ∀ᶠ h : k.subgroup in 𝓝 1, (r • κ) h = 0 := by
     filter_upwards [h_restrict (h_dvd (S.cocycleMap c).property),

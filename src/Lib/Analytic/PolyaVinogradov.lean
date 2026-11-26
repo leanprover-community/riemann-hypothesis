@@ -6,11 +6,9 @@ public import TauCeti.NumberTheory.DirichletCharacter.GaussSum
 /-!
 # Gauss sums of primitive characters and the Pólya–Vinogradov bound
 
-The Gauss sum of a primitive Dirichlet character mod `q` has absolute value `√q`. For a
-non-principal character mod `q`, every partial sum of its values is at most `2 √q (1 + log q)` in
-absolute value.
+For a non-principal character mod `q`, every partial sum of its values is at most
+`2 √q (1 + log q)` in absolute value.
 
-* `New.norm_gaussSum_of_isPrimitive`: the modulus of the Gauss sum.
 * `New.polya_vinogradov`: the Pólya–Vinogradov inequality.
 
 ## Relation to the literature
@@ -28,16 +26,6 @@ open Complex Finset DirichletCharacter Real ZMod ArithmeticFunction Moebius NeZe
 namespace New
 
 variable {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
-
-/-- The Gauss sum of a primitive Dirichlet character mod `q`, taken with the standard additive
-character `x ↦ exp (2 π i x / q)` of `ZMod q`, has absolute value `√q`. -/
-lemma norm_gaussSum_of_isPrimitive (hχ : χ.IsPrimitive) : ‖gaussSum χ stdAddChar‖ = √q := by
-  have h_prod := gaussSum_mul_gaussSum_inv_eq_card_of_isPrimitive hχ (isPrimitive_stdAddChar q)
-  have h_conj : gaussSum χ⁻¹ stdAddChar⁻¹ = star (gaussSum χ stdAddChar) := by
-    rw [star_gaussSum_eq, AddChar.inv_mulShift, ← Units.coe_neg_one, gaussSum_mulShift_eq, inv_inv]
-  have h_sq : ‖gaussSum χ stdAddChar‖ * ‖gaussSum χ stdAddChar‖ = q := by
-    simpa [h_conj] using congrArg norm h_prod
-  rw [← h_sq, Real.sqrt_mul_self (norm_nonneg _)]
 
 /-- The chord from `1` to the root of unity `stdAddChar k = exp (2 π i x)`, where `x = k / q` lies
 in `[0, 1]`, has length at least `4 x (1 - x)`. -/
@@ -98,7 +86,7 @@ lemma norm_sum_le_of_isPrimitive (hχ : χ.IsPrimitive) (hq : q ≠ 1) (X : ℕ)
   let f (n : ℕ) : ℝ := √q * q / 2 * ((n : ℝ)⁻¹ + ((q - n : ℕ) : ℝ)⁻¹)
   have h_term (k : ZMod q) (hk : k ∈ univ.erase 0) :
       ‖(∑ v ∈ Ioc 0 X, stdAddChar k ^ v) * (χ⁻¹ (-k) * gaussSum χ stdAddChar)‖ ≤ f k.val := by
-    grw [norm_mul, norm_mul, norm_le_one, norm_gaussSum_of_isPrimitive hχ,
+    grw [norm_mul, norm_mul, norm_le_one, norm_gaussSum_stdAddChar hχ,
       norm_sum_stdAddChar_pow_le (ne_of_mem_erase hk)]
     exact le_of_eq (by ring)
   have h_subset : ((univ : Finset (ZMod q)).erase 0).image ZMod.val ⊆ range (q + 1) :=
@@ -140,7 +128,7 @@ lemma apply_eq_sum_moebius_smul_of_changeLevel_eq {M r : ℕ} {ψ : DirichletCha
     χ v = ∑ d ∈ (v.gcd r).divisors, μ d • ψ v := by
   -- The sum of `μ` over the divisors of `n` is `1` for `n = 1` and `0` otherwise.
   rw [← sum_smul, ← coe_mul_zeta_apply, moebius_mul_coe_zeta, ArithmeticFunction.one_apply]
-  show χ v = (if v.gcd r = 1 then 1 else 0 : ℤ) • ψ v
+  change χ v = (if v.gcd r = 1 then 1 else 0 : ℤ) • ψ v
   have h_coprime : IsCoprime (v : ℤ) q ↔ IsCoprime (v : ℤ) M ∧ v.gcd r = 1 := by
     simp only [isCoprime_iff_coprime, hr, coprime_mul_iff_right, ← coprime_iff_gcd_eq_one]
   by_cases hv : IsCoprime (v : ℤ) q

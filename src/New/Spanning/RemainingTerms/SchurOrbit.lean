@@ -234,7 +234,6 @@ def IsLatticeTranslate (c : S.Classes) (γ p₀ p : S.G E) (l : Matrix 𝔰.κ (
 
 @[fun_prop]
 lemma measurable_eichlerShift : Measurable (S.eichlerShift j) := by
-  have h_of : Continuous fun A : Fin (min 𝔰.ϱ j) → 𝔰.κ → ℂ ↦ of A := continuous_id
   unfold eichlerShift
   exact Continuous.measurable (by fun_prop)
 
@@ -560,8 +559,7 @@ lemma HasCellRank.exists_majorant_lintegral_le_kernelBound (h_rank : S.HasCellRa
   -- takes.
   refine ⟨fun A ↦ φ₀ ((S.shiftScaling j v)ᴴ * of A + 0), h_meas.comp (Continuous.measurable ?_),
     ?_, fun g A hg_gram hg_pair hg_part ↦ h_le g _ hg_gram hg_pair ?_⟩
-  · have h_of : Continuous fun A : Fin (min 𝔰.ϱ j) → 𝔰.κ → ℂ ↦ of A := continuous_id
-    show Continuous fun A : Fin (min 𝔰.ϱ j) → 𝔰.κ → ℂ ↦ (S.shiftScaling j v)ᴴ * of A + 0
+  · change Continuous fun A : Fin (min 𝔰.ϱ j) → 𝔰.κ → ℂ ↦ (S.shiftScaling j v)ᴴ * of A + 0
     fun_prop
   · -- The change of variables brings in the Jacobian that `kernelBound` carries.
     have h_det : (S.shiftScaling j v)ᴴ.det ≠ 0 := by
@@ -609,7 +607,7 @@ lemma exists_tsum_schurWeight_le {B : Set (S.G E)}
       (realFrameGram_inv_mul_ratToInf (hu v) (hZ hp₀)) (h_pair hp₀ v (hu v))
   refine ⟨fun x ↦ ∏ v : InfinitePlace E, φ₀ v (x v),
     Finset.measurable_prod _ fun v _ ↦ (hφ₀_meas v).comp (measurable_pi_apply v), ?_, fun x ↦ ?_⟩
-  · rw [volume_pi, lintegral_pi_prod _ hφ₀_meas]
+  · rw [volume_pi, TauCeti.lintegral_fintype_prod_eq_prod _ hφ₀_meas]
     exact Finset.prod_le_prod fun v _ ↦ hφ₀_int v
   -- The kernel at the shifted lattice point of `p` bounds the ratio of the volumes of `p`.
   have h_ratio {p : S.G E} (hp : p ∈ B) (v : InfinitePlace E) :

@@ -341,15 +341,11 @@ variable {σ ι : Type*}
 lemma le_add_of_sum_le_sum_add [Fintype ι] {a b : ι → ℝ≥0∞} {c : ℝ≥0∞}
     (hba : ∀ i : ι, b i ≤ a i) (hb : ∑ i : ι, b i ≠ ⊤) (h_sum : ∑ i : ι, a i ≤ ∑ i : ι, b i + c)
     (i : ι) : a i ≤ b i + c := by
-  classical
-  refine ENNReal.le_of_add_le_add_right
-    (ne_top_of_le_ne_top hb (sum_le_sum_of_subset (subset_univ (univ.erase i)))) ?_
-  calc a i + ∑ k ∈ univ.erase i, b k
-      ≤ a i + ∑ k ∈ univ.erase i, a k := add_le_add_right (sum_le_sum fun k _ ↦ hba k) _
-    _ = ∑ k : ι, a k := add_sum_erase univ a (mem_univ i)
-    _ ≤ ∑ k : ι, b k + c := h_sum
-    _ = b i + c + ∑ k ∈ univ.erase i, b k := by
-        rw [← add_sum_erase univ b (mem_univ i), add_right_comm]
+  -- The excesses `a k - b k` add up to at most `c`.
+  have h_excess : ∑ k : ι, (a k - b k) ≤ c := by
+    rwa [← ENNReal.add_le_add_iff_left hb, ← sum_add_distrib,
+      sum_congr rfl fun k _ ↦ add_tsub_cancel_of_le (hba k)]
+  exact tsub_le_iff_left.1 ((single_le_sum_of_canonicallyOrdered (mem_univ i)).trans h_excess)
 
 /-- For a point `x` with coordinates in `ℤ̄_ℓ = intQpBar ℓ` and a coordinate index `j`, the
 polynomial `P` at `x` with one variable `Y` in place of `x j`. -/
@@ -362,14 +358,10 @@ coordinate `x j` replaced by `y`. -/
 lemma eval_freeCoordinate [DecidableEq σ] (x : σ → intQpBar ℓ) (j : σ)
     (P : MvPolynomial σ (intQpBar ℓ)) (y : intQpBar ℓ) :
     (freeCoordinate x j P).eval y = MvPolynomial.eval (Function.update x j y) P := by
-  have h_point : (fun k : σ ↦ (Function.update (fun k : σ ↦ C (x k)) j X k).eval y) =
-      Function.update x j y := by
-    funext k
-    by_cases hk : k = j <;> simp [hk]
-  have h_const : (evalRingHom y).comp (algebraMap (intQpBar ℓ) (intQpBar ℓ)[X]) =
-      RingHom.id (intQpBar ℓ) := RingHom.ext fun _ ↦ by simp
-  rw [freeCoordinate, MvPolynomial.aeval_def, MvPolynomial.polynomial_eval_eval₂, h_point, h_const,
-    MvPolynomial.eval₂_id]
+  rw [freeCoordinate, ← coe_aeval_eq_eval, MvPolynomial.comp_aeval_apply,
+    MvPolynomial.aeval_eq_eval]
+  refine congrArg (MvPolynomial.eval · P) (funext fun k ↦ ?_)
+  by_cases hk : k = j <;> simp [hk]
 
 /-- Moving one coordinate `j`. Let `δ < 1`, and let `δ` times the sum of `1 / (h + 1)` over the
 exponents `1 ≤ h ≤ h₀` with `1 / φ(ℓ ^ h) ≤ ρ` exceed `B`. Let `P i` be polynomials and `x i` points

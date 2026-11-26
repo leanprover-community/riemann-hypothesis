@@ -1,6 +1,7 @@
 module
 
 public import Lib.Adelic.Hecke.Basic
+public import TauCeti.RepresentationTheory.AsAlgebraHom
 
 /-!
 # The elements of a group algebra that keep a level
@@ -39,15 +40,6 @@ lemma asAlgebraHom_mapDomain {H : Type*} [Group H] (f : H →* G) (a : ℂ[H]) :
   | add a b ha hb => simp [mapDomain_add, ha, hb]
   | single h c => simp
 
-variable {ρ} in
-/-- An operator that commutes with the group commutes with the group algebra. -/
-lemma commute_asAlgebraHom {T : Module.End ℂ M} (hT : ∀ g : G, Commute T (ρ g)) (a : ℂ[G]) :
-    Commute T (ρ.asAlgebraHom a) := by
-  induction a using induction_linear with
-  | zero => simp
-  | add a b ha hb => simpa using ha.add_right hb
-  | single g c => simpa using (hT g).smul_right c
-
 /-- The elements of the group algebra that map `K`-fixed vectors of `ρ` to `K`-fixed vectors. -/
 def levelAlgebra : Subalgebra ℂ ℂ[G] where
   carrier := {a : ℂ[G] | ∀ y ∈ levelSpace ρ K, ρ.asAlgebraHom a y ∈ levelSpace ρ K}
@@ -77,12 +69,6 @@ def levelAction : levelAlgebra ρ K →ₐ[ℂ] Module.End ℂ (levelSpace ρ K)
   commutes' c := by
     ext y
     simp
-
-variable {ρ K} in
-/-- The operator `levelAction ρ K a` sends a `K`-fixed vector `y` to `ρ.asAlgebraHom a y`. -/
-@[simp] lemma coe_levelAction_apply (a : levelAlgebra ρ K) (y : levelSpace ρ K) :
-    (levelAction ρ K a y : M) = ρ.asAlgebraHom a y :=
-  rfl
 
 /-- The elements of the group algebra that keep the `K`-fixed vectors in every representation of
 `G` on a complex vector space in `Type`. -/

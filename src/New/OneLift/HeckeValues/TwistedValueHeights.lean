@@ -181,7 +181,7 @@ largest `l`-adic norm of a coordinate of `h⁻¹ v`, in the representation of we
 twisted by the determinant powers `O.detExp`, with coordinates indexed by
 `WeylIndex n O.columnCount`. -/
 theorem pointForm_mem_integralForms {l : ℕ} [Fact l.Prime] {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r]
+    [Fintype r]
     [DecidableEq r] [Fintype n] [DecidableEq n] (j : PadicPlace l) {O : DescentPair E r n}
     {h : Gf E n} {Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (.inl i)))}
     {hY : ∀ i : O.ChosenIndex, (Y i).mulVec.Injective} {e : r ↪ n}
@@ -760,7 +760,10 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
   let χ₀ : AutChar D.E :=
     (lValueData hp.hasLiftRank ϑ).descentPair.charV / (lValueData hq₂.2 ϑ).descentPair.charV
   obtain ⟨α, x₀, hα, h_coeff⟩ :=
-    h_depth (D.twistModulus ϑ 1 false) (D.ideal_untwistedModulus_eq_span.trans (by simp)) l
+    h_depth (D.twistModulus ϑ 1 false) (by
+      have h := D.ideal_untwistedModulus_eq_span (c := 1)
+      rw [LevelPlaces.ideal_levelModulus_one_false, pow_one] at h
+      rwa [LevelPlaces.ideal_levelModulus_one_false]) l
   let s (g : Gf D.E Unit) : ℂ :=
     modKernel (stdSpace ..) (stdSpace ..) 1 χ₀ _ (Pi.single x₀ 1) (.monomial α 1) (1, g) 1
   -- Averaging: a character `ψ` whose twisted mean of `s` is as large as `s 1`, and a
@@ -786,7 +789,7 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
     ((starRingEnd ℂ D.piMBar.1.1 * P.jetScale D.towerExp) ^ α.degree / α.prod fun _ k ↦
       (k.factorial : ℂ))
   have h_lower : (l : ℝ) ^ (-D.localPrimeSumTotal l) ≤ ‖ιₚ c‖ * ‖ιₚ (s 1)‖ := by
-    simpa [c, s, MvPowerSeries.coeff_apply, Space.jetSeries_apply, modKernel, pairTheta, pairWeil,
+    simpa [c, s, MvPowerSeries.coeff_apply, Space.jetSeries_apply, modKernel, pairTheta,
       modDatum, mul_assoc, Prod.mk_one_one] using! h_coeff
   set W : ℂ := (q₃ ψ₃).integralAlgebraicPart (hq₃ ψ₃).2 .one * (q₁ ψ₁).integralAlgebraicPart
     (hq₁ ψ₁).2 .one
@@ -1088,7 +1091,8 @@ theorem heightLe_inv_heckeValueProd_div {θ : PrimePadicIso → D.MFoldTwist}
   · have h_one : heckeValueProd j 1 ≠ 0 := fun h ↦ h_ne (by simp [h])
     rw [h_eq, mul_div_cancel_right₀ _ h_one,
       show ((θ ι).powTwist j).normQ = (θ ι).normQ from rfl]
-    simp [mul_pow, mul_comm]
+    simp [mul_pow]
+    ring
 
 end New.Data
 

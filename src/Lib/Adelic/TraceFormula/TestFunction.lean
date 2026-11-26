@@ -217,7 +217,7 @@ def HasSimpleZero (g : GL n (LocField w)) : Prop :=
 
 /-- If a monic polynomial over an integrally closed domain is a `j`-th power over the fraction
 field, with `j ≠ 0`, then it is the `j`-th power of a polynomial over the domain. -/
-lemma exists_eq_pow_of_monic_of_map_eq_pow {R K : Type} [CommRing R] [IsDomain R]
+lemma exists_eq_pow_of_monic_of_map_eq_pow {R K : Type} [CommRing R]
     [IsIntegrallyClosed R] [Field K] [Algebra R K] [IsFractionRing R K] {p : R[X]}
     (hp : p.Monic) {Q : K[X]} {j : ℕ} (hj : j ≠ 0) (h_map : p.map (algebraMap R K) = Q ^ j) :
     ∃ P : R[X], p = P ^ j := by

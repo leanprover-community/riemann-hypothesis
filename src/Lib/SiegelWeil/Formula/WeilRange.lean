@@ -492,7 +492,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
         Continuous.tendsto (by fun_prop (disch := order)) 0
     simpa [Φ, modulus_zero] using tendsto_lintegral_filter_of_dominated_convergence _
       (.of_forall h_meas) (.of_forall fun a ↦ .of_forall (h_bound a)) h_integrable h_pointwise
-  refine tendsto_zero_iff_enorm_tendsto_zero.mpr (ENNReal.tendsto_nhds_zero.mpr fun ε hε ↦ ?_)
+  refine tendsto_zero_iff_eNorm_tendsto_zero.mpr (ENNReal.tendsto_nhds_zero.mpr fun ε hε ↦ ?_)
   -- The scalar that is `M` at the finite places and `M / 2 ^ j` at infinity is small for a
   -- suitable integer `M` and large `j`.
   obtain ⟨M, hM, h_small⟩ : ∃ M : ℕ, M ≠ 0 ∧
@@ -502,7 +502,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
   let z (j : ℕ) : NumberField.InfinitePlace E → ℂ := (1 / 2 : ℝ) ^ j • ↑M
   have hz : Tendsto z atTop (nhds 0) := (summable_geometric_two.smul_const _).tendsto_atTop_zero
   filter_upwards [(hz.comp tendsto_comap).eventually (h_small 1 (one_mem _))] with ⟨x, f⟩ hx
-  grw [enorm_integral_le_lintegral_enorm]
+  grw [eNorm_integral_le_lintegral_eNorm]
   refine le_trans (lintegral_mono fun h ↦ ?_) hx
   -- The torus element scales the row `D₁.lCoord`, and `h` commutes with the zero term.
   have h_torus := lCoord_mul_levi_dyadicDiag P D₁ hk x
@@ -511,7 +511,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
     simpa [splitWeil, D₁.card_eq, pow_succ, Prod.mk_one_one] using
       (D₁.homSlice_levi T _ 1 1 1 h 0 g).symm
   let F : 𝒮 (S.hom T) := splitWeil S T (1, h) (normalisedTorus T P x f)
-  rw [h_comm, theta_apply, Splitting.zeroTerm_apply, ← edist_eq_enorm_sub]
+  rw [h_comm, theta_apply, Splitting.zeroTerm_apply, ← eDist_eq_eNorm_sub]
   -- A mean lies in a closed ball if all values do.
   refine (convex_closedEBall ..).integral_mem isClosed_closedEBall (.of_forall fun q ↦ ?_)
     (isContPeriodic_along_k ..).integrable_out
@@ -535,7 +535,7 @@ lemma New.SiegelWeil.tendsto_integral_theta_zeroTerm_sub
       simp only [along, F, translate, y]
       simp [normalisedTorus, rho_pairWeil, -theta_apply, h_torus, ← mul_sub, ← theta_rho,
         splitWeil, ↓mulVec_smul, kronecker_mulVec_eq_matrixToVec, homSource_kAdelic,
-        edist_eq_enorm_sub, Matrix.mul_assoc]
+        eDist_eq_eNorm_sub, Matrix.mul_assoc]
     _ ≤ B h * ‖translate h y f - f‖ₑ := h_theta h x _
     _ ≤ B h * modulus (Prod.swap (M * 1, z (x ι)), h) := mul_right_mono h_mem
 

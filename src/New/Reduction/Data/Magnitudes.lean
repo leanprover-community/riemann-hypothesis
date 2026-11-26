@@ -67,7 +67,6 @@ lemma le_constantBound :
   have hφ : (φ P.q₀ : ℝ) ≤ P.q₀ := mod_cast totient_le P.q₀
   -- `P.constantBound` is `q₀ + 2 d + 6` plus nonnegative terms
   have h_le : P.q₀ + (2 * P.d + 6) ≤ P.constantBound := by
-    have h_const : (0 : ℝ) ≤ P.vacuumBoundConst := P.vacuumBoundConst.cast_nonneg
     have h_sum : 0 ≤ ∑ w ∈ primitiveRoots P.q₀ ℂ,
         |Real.log ‖(Polynomial.cyclotomic P.q₀ ℂ).derivative.eval w‖| :=
       sum_nonneg fun w _ ↦ abs_nonneg _
@@ -399,7 +398,7 @@ protected lemma lt_of_hasLogBound
       clear_aux_decl
       clear * - D
       repeat clear ‹_›
-      grind (splits := 99) [D.scale_inequalities]) :
+      grind [D.scale_inequalities]) :
     F < G :=
   calc F ≤ |F| := le_abs_self F
     _ ≤ exp l := D.hasLogUpper_iff.1 inferInstance
@@ -412,7 +411,7 @@ protected lemma le_of_hasLogBound
       clear_aux_decl
       clear * - D
       repeat clear ‹_›
-      grind (splits := 99) [D.scale_inequalities]) :
+      grind [D.scale_inequalities]) :
     F ≤ G := (D.lt_of_hasLogBound h_exp).le
 
 /-- If natural numbers `A`, `B` satisfy `A ≤ exp l`, `exp l' ≤ B` and `l < l'`, then `A < B`. -/
@@ -421,7 +420,7 @@ lemma nat_lt_of_hasLogBound
       clear_aux_decl
       clear * - D
       repeat clear ‹_›
-      grind (splits := 99) [D.scale_inequalities]) :
+      grind [D.scale_inequalities]) :
     A < B := cast_lt.mp (D.lt_of_hasLogBound h_exp)
 
 /-- If natural numbers `A`, `B` satisfy `A ≤ exp l`, `exp l' ≤ B` and `l < l'`, then `A ≤ B`. -/
@@ -430,7 +429,7 @@ lemma nat_le_of_hasLogBound
       clear_aux_decl
       clear * - D
       repeat clear ‹_›
-      grind (splits := 99) [D.scale_inequalities]) :
+      grind [D.scale_inequalities]) :
     A ≤ B := (D.nat_lt_of_hasLogBound h_exp).le
 
 end

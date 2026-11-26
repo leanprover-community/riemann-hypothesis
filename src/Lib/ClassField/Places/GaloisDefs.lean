@@ -1,6 +1,7 @@
 module
 
 public import Lib.Base
+public import TauCeti.RingTheory.Valuation.ValuationSubring
 
 /-!
 # Vocabulary of Galois theory: places, decomposition, Frobenius elements and inertia
@@ -141,9 +142,6 @@ lemma IsFrob.valuation_sub_pow_lt_one (h : IsFrob A q σ) {x : Ω} (hx : A.valua
 lemma mem_decompGroup_iff : σ ∈ decompGroup Γ A ↔ ∀ x : Ω, σ • x ∈ A ↔ x ∈ A :=
   ext'_iff.trans mem_stabilizer_set
 
-lemma smul_eq_comap : g • A = A.comap (toRingHom Γ Ω g⁻¹) :=
-  ext' (Set.preimage_smul_inv g _).symm
-
 lemma conj_mem_decompGroup_smul (hσ : σ ∈ decompGroup Γ A) :
     g * σ * g⁻¹ ∈ decompGroup Γ (g • A) := by
   simp [mem_stabilizer_iff, mul_smul, mem_stabilizer_iff.mp hσ]
@@ -156,7 +154,7 @@ lemma comap_apply_lt_one_iff {x : Ω} : (comap A' j) x < 1 ↔ A' (j x) < 1 :=
   isEquiv_comap.lt_one_iff_lt_one
 
 lemma smul_apply_smul_lt_one_iff (g : Γ) {x : Ω} : (g • A) (g • x) < 1 ↔ A x < 1 := by
-  rw [smul_eq_comap, comap_apply_lt_one_iff]
+  rw [pointwise_smul_eq_comap, comap_apply_lt_one_iff]
   simp
 
 /-- Let `j : Ω → Ω'` be a ring map and `φ : Γ' → Γ` a map with `j (φ g • x) = g • j x`

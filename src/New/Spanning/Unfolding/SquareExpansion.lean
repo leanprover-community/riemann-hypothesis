@@ -1,6 +1,7 @@
 module
 
 public import New.Spanning.RemainingTerms.Sum
+public import TauCeti.Analysis.Real.Sqrt
 
 /-!
 # The expansion of the squares and the second moment near the Bessel subgroup
@@ -42,7 +43,7 @@ variable {R n : Type} [CommRing R] [StarRing R] [Fintype n] [DecidableEq n] (J :
 /-- A scalar `ζ` with `ζ ζ̄ = 1` as an isometry of the form `J`. -/
 noncomputable def scalarIsometry (ζ : R) (hζ : ζ * star ζ = 1) : U J :=
   ⟨⟨ζ • 1, star ζ • 1, by simp [smul_smul, mul_comm, hζ], by simp [smul_smul, hζ]⟩,
-    show (ζ • 1)ᴴ * J * (ζ • 1) = J by simp [smul_smul, hζ]⟩
+    mem_unitaryGroupOf_iff.2 <| show (ζ • 1)ᴴ * J * (ζ • 1) = J by simp [smul_smul, hζ]⟩
 
 lemma scalarIsometry_one (h : (1 : R) * star 1 = 1) : scalarIsometry J 1 h = 1 := by
   ext : 2
@@ -70,10 +71,6 @@ lemma leadingMinor_frameGram_eq_zero {R : Type} [CommRing R] {𝔰 : Shape} (T :
       Fintype.sum_eq_single (𝔰.besselFrame 0)
       fun j hj ↦ by rw [hg j hj, mul_zero], h_orth, zero_mul]
   exact det_eq_zero_of_column_eq_zero ⟨0, hl⟩ fun a ↦ h_col (Fin.castLE l.is_le a)
-
-lemma sqrt_add_le_sqrt_add_sqrt {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) : √(x + y) ≤ √x + √y := by
-  rw [Real.sqrt_le_left (by positivity), add_sq, Real.sq_sqrt hx, Real.sq_sqrt hy]
-  linarith [mul_nonneg x.sqrt_nonneg y.sqrt_nonneg]
 
 /-- A real function `β` of positive type on a group, that is, with `β (a⁻¹ b) = ⟪u a, u b⟫` for
 vectors `u a` of an inner product space, is largest at `1`. -/
@@ -219,7 +216,7 @@ lemma exists_scalar_mul_besselS {γ : S.G E} {c c' : S.Classes} {s : S.ResidueGL
     mem_intGL.2 ⟨IsIntMatrix.smul h_int .one, IsIntMatrix.smul (star_mem_Ô h_int) .one⟩⟩
   let k₀ : S.latticeStabilizer := z⁻¹ * k
   have hk₀ : (k₀ : S.GFin) = S.translateByClassReps c c' γ₀ := by
-    ext : 2
+    refine Subtype.ext (Units.ext ?_)
     have hk₀_val : ((k₀ : S.GFin) : GL 𝔰.BesselIndex (𝔸f E)).val =
         star (ζ : 𝔸f E) • ((k : S.GFin) : GL 𝔰.BesselIndex (𝔸f E)).val :=
       val_scalarIsometry_inv_mul _ hζ_fin (k : S.GFin)
@@ -302,7 +299,7 @@ lemma amplitudeSum_besselS_eq_zero {side : FullOrCut} {s : S.ResidueGL}
 
 /-- The complement of the Bessel subgroup is stable under multiplication by the unipotent group
 `besselU` on both sides. -/
-lemma isStable_compl_besselS [HasPrimitiveRoot5040 E] :
+lemma isStable_compl_besselS :
     S.IsStable ((S.ratMiddle E).besselS : Set (S.G E))ᶜ :=
   fun u hu u' hu' γ ↦ (S.isStable_besselS u hu u' hu' γ).not
 
@@ -508,7 +505,8 @@ lemma amplitudeSum_mul_inv_apply [HasPrimitiveRoot5040 E] [S.IsAdmissible] {T : 
   have h_kernel (γ : S.G E) (y : NumberField.InfinitePlace E → 𝔰.G₁) :
       S.besselKernel .full (1 * γ * δ⁻¹) (S.ratToInf 1 * y) = L (S.besselKernel .full γ y) := by
     ext ⟨a, b⟩
-    simp [hL, besselKernel, mul_assoc, hN, mulVec, dotProduct, mul_sum, mul_left_comm]
+    simp [hL, besselKernel, mul_assoc, hN, mulVec, dotProduct, mul_sum]
+    exact Finset.sum_congr rfl fun _ _ ↦ mul_left_comm ..
   have h_move : S.amplitudeSum .full T c (s * t⁻¹) d = L (S.amplitudeSum .full T c s d') := by
     simpa using amplitudeSum_mul_mul_inv hT (one_mem _) (S.classUnipotent c).one_mem.2 hδ hδ_over
       (by simpa using hT_mul_inv) L h_kernel s
@@ -592,16 +590,15 @@ theorem sqrt_secondMoment_compl_besselS_le [HasPrimitiveRoot5040 E] [S.IsAdmissi
         grw [h_blocks, ← sqrt_secondMoment_add_le, sub_add_cancel]
     -- Passing to the cut function costs `b⁻²⁰ 𝒟_id^(1/2)`.
     _ ≤ (S.b ^ 20)⁻¹ * √S.identitySecondMoment + (√C + (S.b ^ 20)⁻¹ * √S.identitySecondMoment) := by
-      grw [secondMoment_sub_cut_le, h_pairs, sqrt_add_le_sqrt_add_sqrt hC (by positivity), h_sqrt]
+      grw [secondMoment_sub_cut_le, h_pairs, Real.sqrt_add_le_add_sqrt, h_sqrt]
     _ = √C + 2 * (S.b ^ 5)⁻¹ * ((S.b ^ 15)⁻¹ * √S.identitySecondMoment) := by ring
     _ ≤ √C + (S.b ^ 15)⁻¹ * √S.identitySecondMoment := by grw [h_small, one_mul]
 
-/-- Let `E` contain a primitive `5040`-th root of unity and let the filling `S` be admissible
-(`IsAdmissible`). Let `s` coincide, at the chosen places above `p_i = levelPrime i`, with an element
-`t` of `reducedImage besselS`, the reduction of the Bessel subgroup. Then the product of the norms
+/-- Let `s` coincide at the chosen places above `p_i = levelPrime i` with an element `t` of
+`reducedImage besselS`, the reduction of the Bessel subgroup. Then the product of the norms
 `p_i` of these places and their conjugates is at most `meetNorm s`, the product of the norms of the
 places at which `s` meets, as `s` meets at each of them. -/
-lemma prod_levelPrime_le_meetNorm_of_eq [HasPrimitiveRoot5040 E] [S.IsAdmissible]
+lemma prod_levelPrime_le_meetNorm_of_eq
     {s t : S.ResidueGL} (ht : t ∈ S.reducedImage besselS) {i : Fin 2} (hs : s i = t i) :
     ∏ _ : S.chosenPlaces i × Bool, S.levelPrime i ≤ S.meetNorm s := by
   classical

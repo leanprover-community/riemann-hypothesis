@@ -160,7 +160,7 @@ lemma IsFillingData.enorm_floorForm_zero_mul_le {E : Type} {𝔰 : Shape} [Field
     F.partialCorrelation 0 (frameCorrelation Z.besselVector 1) 1 z
   have h_form : ‖F.floorForm 0 p q Z.besselVector 1‖ₑ ≤ ∫⁻ z, ‖k₀ z‖ₑ ^ 2 ∂F.groupMeasure := by
     rw [floorForm_zero_eq_integral hF.gauge (isCut_besselVector Z), ← integral_complex_ofReal]
-    exact (enorm_integral_le_lintegral_enorm _).trans_eq (by simp [k₀, ← ofReal_norm])
+    exact (eNorm_integral_le_lintegral_eNorm _).trans_eq (by simp [k₀, ← ofReal_norm])
   have h_floorZeroForm_eq :
       F.massIntegral Z = ∫⁻ z, ‖k₀ z‖ₑ ^ 2 * F.unipotentMass ^ 2 ∂F.groupMeasure := by
     simp only [massIntegral, enorm_integral_extendedBesselChar_eq_enorm_mul, mul_pow, k₀]

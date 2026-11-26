@@ -81,7 +81,9 @@ lemma integral_mul_conj_kTypeChar {f : maxCompactU ε → ℂ} (hf : Continuous 
 otherwise. -/
 lemma integral_conj_kTypeChar :
     ∫ k : maxCompactU ε, 1 * conj (ν.kTypeChar k) ∂haarK ε = if ν = 0 then 1 else 0 := by
-  refine .trans integral_mul_conj_kTypeChar ?_
+  -- `hf` is passed explicitly: filling in the default argument makes the elaborator wait for the
+  -- proof of `integral_mul_conj_kTypeChar`
+  refine .trans (integral_mul_conj_kTypeChar (hf := by fun_prop)) ?_
   split_ifs with hν
   · simp [hν, kTypeNormSq, Pi.zero_def, GeneralLinearGroup.det_ne_zero]
   -- Left invariance under the torus gives `t ^ ν * I = I` for all `t`, which forces `I = 0`.
@@ -178,7 +180,10 @@ lemma exists_isKHighest_inner_eq_mean_coefficient [Nonempty n] [hg : l.HasLargeG
     mem_orthogonal_filtration_of_casimirK (θ := l.casimirKValue ν) s h_inv h_high _
       (by simp [(z_high _).casimirK_eq_smul, smul_sub]) (sub_le_iff_le_add'.1 hs)
       (fun y' hy' ↦ inner_eq_zero_symm.mpr (by simp [hz hy', inner_sub_left])) t
-  simpa [hz hy, sub_eq_zero, inner_sub_left] using congrArg conj (h_perp y hy)
+  -- so `⟪z (s ⊔ t) - z s, y⟫ = 0`, and `⟪z (s ⊔ t), y⟫ = φ (ι y)` by `hz`
+  have h_zero : ⟪(z (s ⊔ t)).val - (z s).val, y⟫_ℂ = 0 := inner_eq_zero_symm.1 (h_perp y hy)
+  rw [inner_sub_left, hz hy le_sup_right, sub_eq_zero] at h_zero
+  exact h_zero
 
 /-- Let `n` be nonempty, let `l = 2λ` have a large gap (`hg : l.HasLargeGap A`), and let `ν` be
 `K`-dominant in the order of `-l`. Let `s` bound the excess of the `K`-Casimir eigenvalue of `ν`
@@ -219,14 +224,20 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
   obtain ⟨v, v_mem, v_high, v_rep⟩ := exists_isKHighest_inner_eq_mean_coefficient hν hs hφ
   have norm_eq (g : USign ε) (y : l.DsModule) : ‖rightRegularL2 g (hg.toL2 y)‖ = ‖y‖ :=
     -- the norm of `y` is by definition that of `hg.toL2 y`
-    show _ = ‖hg.toL2 y‖ by simp [rightRegularL2]
+    show _ = ‖hg.toL2 y‖ by
+      simp only [rightRegularL2, Function.comp_apply, MonoidHom.coe_mk, OneHom.coe_mk,
+        _root_.smul_apply, one_apply_eq_self, DomMulAct.norm_smul_Lp]
   -- `u` is an analytic vector: a bounded coefficient map that kills all steps of the filtration at
   -- `1` kills `u` at every group element. So `v` also represents `φ` at the translate of `u`.
   have h_rep : (φ - innerSL ℂ (hg.toL2 v)) (rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)) = 0 :=
     (isKHighest_dsGenerator hg).coeffMap_eq_zero hg.isUnitaryCasimirGe
       (hd.isCoeffMap (φ - innerSL ℂ (hg.toL2 v)))
       (fun g y ↦ (φ - _).le_opNorm_of_le (norm_eq g y).le)
-      (fun t y hy ↦ by simpa [sub_eq_zero] using! v_rep t y hy) x⁻¹
+      (fun t y hy ↦ by
+        -- at `1` the coefficient map is `y ↦ φ (ι y) - ⟪ι v, ι y⟫`
+        change (φ - innerSL ℂ (hg.toL2 v)) (rightRegularL2 1 (hg.toL2 y)) = 0
+        rw [map_one]
+        exact sub_eq_zero.2 (v_rep t y hy)) x⁻¹
   -- Compute both terms; for the second expand `v` in the basis `b`.
   have φ_u : φ (rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)) = ∫ k : maxCompactU ε,
       conj (weightMinors ν k) * l.dsCoeff (x * k.val * x⁻¹ :) ∂haarK ε := by
@@ -242,9 +253,17 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
       conj ((b i).val.val.val x) := by
     simpa [← h_coef] using isUnitaryRep_rightRegularL2.form_apply_eq_form_inv_apply x⁻¹
       (hg.toL2 (b i)) (hg.toL2 l.dsGenerator)
-  have v_sum : hg.toL2 v = ∑ i : I, ⟪(b i).val, v⟫_ℂ • hg.toL2 (b i) := by
-    simpa using (congrArg (fun w : V ↦ hg.toL2 w) (b.sum_repr' ⟨v, (hV v).2 ⟨v_high, v_mem⟩⟩)).symm
-  simpa [φ_u, v_sum, v_b, b_u, ← mul_sum, sub_eq_zero, ← inv_mul_eq_iff_eq_mul₀, mul_assoc,
+  -- Apply `ι` to the expansion of `v` in the basis `b`; by `v_b` the coefficient `⟪b i, v⟫` is the
+  -- conjugate of `ν.kTypeNormSq * b i x`. (Direct terms: `simp` is slow on inner products of the
+  -- module.)
+  have v_sum : hg.toL2 v =
+      ∑ i : I, conj (ν.kTypeNormSq * (b i).val.val.val x) • hg.toL2 (b i) := by
+    have h := congrArg (hg.toL2 ∘ₗ V.subtype) (b.sum_repr' ⟨v, (hV v).2 ⟨v_high, v_mem⟩⟩)
+    rw [map_sum] at h
+    refine h.symm.trans (sum_congr rfl fun i _ ↦ ?_)
+    exact (LinearMap.map_smul _ _ _).trans (congrArg (· • hg.toL2 (b i))
+      ((inner_conj_symm (b i).val v).symm.trans (congrArg conj (v_b i))))
+  simpa [φ_u, v_sum, b_u, ← mul_sum, sub_eq_zero, ← inv_mul_eq_iff_eq_mul₀, mul_assoc,
     ne_of_gt] using h_rep
 
 /-- Let `n` be nonempty, let `l = 2λ` have a large gap (`New.HCParam.HasLargeGap` with constant `A`)
@@ -265,8 +284,12 @@ lemma exists_kType_multiplicity [Nonempty n] [hg : l.HasLargeGap A] (hν : IsKDo
   obtain ⟨s, hs⟩ := exists_nat_ge (l.casimirKValue ν - l.casimirKValue l.lowestKType : ℝ)
   have h_fin := (isKHighest_dsGenerator hg).finite_filtration hg.isUnitaryCasimirGe s
   let V : Submodule ℂ l.DsModule :=
-    .ofLinearComb {v | l.IsKHighest l.dsAction ν v} ⟨0, by simp [IsKHighest]⟩ (by simp +contextual
-      [smul_smul, mul_comm, IsKHighest]) ⊓ l.dsAction.filtration ε l.dsGenerator s
+    .ofLinearComb {v | l.IsKHighest l.dsAction ν v}
+      ⟨0, by simp only [IsKHighest, IsCompactPrimitive, Set.mem_ofPred_eq, map_zero, smul_zero,
+        implies_true, and_self]⟩
+      (by simp +contextual only [IsKHighest, IsCompactPrimitive, Set.mem_ofPred_eq, map_add,
+        map_smul, smul_smul, smul_add, mul_comm, implies_true, smul_zero, add_zero, and_self]) ⊓
+      l.dsAction.filtration ε l.dsGenerator s
   let b : OrthonormalBasis (Fin (Module.finrank ℂ V)) ℂ V := stdOrthonormalBasis ℂ V
   let S (g : USign ε) : ℂ := ∑ i, (b i).val.val.val g * conj ((b i).val.val.val g)
   have key (x : USign ε) : (ν.kTypeNormSq : ℂ)⁻¹ * ∫ k : maxCompactU ε,
@@ -283,8 +306,11 @@ lemma exists_kType_multiplicity [Nonempty n] [hg : l.HasLargeGap A] (hν : IsKDo
   intro R
   -- `ν.kTypeChar` is the mean of `weightMinors ν / ν.kTypeNormSq` under conjugation by `y ∈ K`;
   -- this mean is absorbed by the invariance of the measure under `g ↦ g⁻¹ * y`.
+  -- (`hf` is passed explicitly: filling in the default argument makes the elaborator wait for all
+  -- earlier proofs of this file.)
   have hR : R = fun g ↦ ∫ y : maxCompactU ε, S (g⁻¹ * y) ∂haarK ε :=
-    funext fun g ↦ .trans integral_mul_conj_kTypeChar (by simp [← key, div_eq_inv_mul, mul_assoc])
+    funext fun g ↦ .trans (integral_mul_conj_kTypeChar (hf := by fun_prop))
+      (by simp [← key, div_eq_inv_mul, mul_assoc])
   have S_int : Integrable S := integrable_finsetSum univ fun i _ ↦ h_int (b i)
   obtain ⟨R_int, R_eq⟩ := integral_skew_product
     (fun y : maxCompactU ε ↦ ((Measure.measurePreserving_inv _).mul_right _ y.val).map_eq)
@@ -391,7 +417,8 @@ lemma New.Orbital.integrable_mul_dsCoeff_conj [Nonempty n] (hg : l.HasLargeGap (
   -- the decay |l.dsCoeff g| ≤ (2 / ‖g‖)^(mN) of `norm_dsCoeff_le_pow`.
   set N : ℕ := 4 * card n ^ 2 + 1
   refine ((DiscreteSeries.integral_decay_le _ .monoidHom_id (c := 2 * N) (by omega) 1).1.const_mul
-    (2 ^ (#(oppositePairs ε) * N * 2))).mono' (by fun_prop)
+    (2 ^ (#(oppositePairs ε) * N * 2))).mono'
+    (continuous_const.mul ψ.continuous).aestronglyMeasurable
     (.of_forall fun x ↦ (norm_le_of_nonempty _).2 fun k ↦ ?_)
   obtain ⟨y, t, rfl⟩ := exists_conj_diagTorusK k
   let u : USign ε := y⁻¹ * x
@@ -417,7 +444,7 @@ lemma New.Orbital.integrable_mul_dsCoeff_conj [Nonempty n] (hg : l.HasLargeGap (
     _ ≤ ((2 * ‖g.val.val‖) ^ #(oppositePairs ε) / (‖u.val.val‖ / 2) ^ 2) ^ N *
         (2 / ‖g.val.val‖) ^ (#(oppositePairs ε) * N) := by
       grw [minor, DiscreteSeries.norm_dsCoeff_le_pow hg gap]
-    _ = _ := by simp [norm_u, div_pow, field, mul_pow, ← pow_mul, mul_comm]
+    _ = _ := by simp [norm_u, div_pow, field, mul_pow, ← pow_mul]
 
 /-- If all coefficients of a vector against an orthonormal family are integers, only finitely many
 are not zero: they tend to zero by Bessel's inequality. -/
@@ -595,7 +622,8 @@ lemma inner_toLp_mul (hXY : IsWeylFamily l X Y) (hl : l.Injective) {d : C(maxCom
       congr with k
       obtain ⟨y, x, rfl⟩ := exists_conj_diagTorusK k
       rw [S_apply, ContinuousMap.mul_apply, hd, hXY.apply_conj]
-      simp [hS, mul_left_comm, mul_assoc]
+      rw [map_mul (torusEval x) S, hS, map_mul (starRingEnd ℂ), Complex.star_def,
+        Complex.conj_conj, mul_comm (torusEval x D), mul_assoc]
     _ = _ := by simp [S, sum_mul, sum_inner, Finsupp.sum, inner_smul_left]
 
 /-- Completeness. Let `X`, `Y` satisfy Weyl's formula, let `l` be injective and let `e` be an
@@ -776,13 +804,20 @@ lemma New.Orbital.inner_virtualChar_formalDegree_smul_integral (hl : l.Injective
   simp only [L, hXY.inner_toLp_mul hl hd, Finsupp.sum] at inner_ψ ⊢
   simp only [inner_ψ]
   rw [integral_finsetSum _ fun β _ ↦ ((int_m _).const_mul _).const_mul _]
-  simp [← hm, integral_const_mul, mul_sum, mul_left_comm]
+  -- termwise: pull the constants out of the integral and insert `hm`
+  rw [Complex.real_smul, mul_sum]
+  refine sum_congr rfl fun β _ ↦ ?_
+  rw [integral_const_mul, integral_const_mul, ← hm, mul_left_comm,
+    mul_left_comm (l.formalDegree : ℂ)]
 
 /-- The powers of `l.rootProd r` have integer coefficients. -/
 lemma New.Orbital.exists_int_rootProd_pow (r : ℤˣ → ℤˣ → Prop) [DecidableRel r] (N : ℕ) :
     ∃ Z : ℤ[n → ℤ], mapRingHom (n → ℤ) (castRingHom ℂ) Z = l.rootProd r ^ N :=
+  -- `AddMonoidAlgebra.single` is written out: `.single`, whose expected type is not known at first,
+  -- makes the elaborator wait for all earlier proofs of this file
   ⟨(∏ a, ∏ b with r (ε a) (ε b) ∧ l b < l a,
-    (.single (Pi.single a 1) 1 - .single (Pi.single b 1) 1)) ^ N, by simp [HCParam.rootProd]⟩
+    (AddMonoidAlgebra.single (Pi.single a 1) 1 - AddMonoidAlgebra.single (Pi.single b 1) 1)) ^ N,
+    by simp [HCParam.rootProd]⟩
 
 /-- The Laurent polynomial `P` is `Vc D Θ`. Here Θ(x) = deg ∫ ψ(g⁻¹ x g) dg is the normalised
 orbital integral of ψ = `l.dsCoeff` on the diagonal torus, `Vc = l.rootProd Eq` is the Weyl

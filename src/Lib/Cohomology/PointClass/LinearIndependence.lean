@@ -323,7 +323,7 @@ lemma New.Variety.exists_etale_projection {k : Type} [Field k] [CharZero k] {R :
   have h_dim : n = d := equiv_iff_eq.mp ⟨b_U.indexEquiv b_c⟩
   -- Algebraicity over `S` puts the fibre over a general point `[1 : q]` into `U`.
   have h_root (r : c.coordRing) (hr : r ≠ 0) : ∃ P : Polynomial S, P.coeff 0 ≠ 0 ∧ P.aeval r = 0 :=
-    (h_alg.isAlgebraic r).exists_nonzero_coeff_and_aeval_eq_zero (mem_nonZeroDivisors_of_ne_zero hr)
+    (h_alg.isAlgebraic r).exists_coeff_ne_zero_and_aeval_eq_zero (mem_nonZeroDivisors_of_ne_zero hr)
   have h_memU : PointsIn.map κ c.point ∈ U.locus.obj (of k F) := ⟨⟨χ⟩, hχ⟩
   obtain ⟨q, h_fibre⟩ :=
     exists_fibre_mem_of_isOpenSubfunctor hκ hw₁ h_root (hw.comp κ) U.isOpenSubfunctor h_memU
@@ -361,25 +361,13 @@ lemma New.Variety.pointClass_eq_of_isHomogeneousSolution {k : Type} [Field k] [C
     simpa using! h_const hy hv
   exact (structureMap (A := K)).hom'.injective h_y
 
-/-- Let `W` be separated and covered by charts of dimension `d`. If `s` is the finite reduced fibre
-of `u : W ⟶ X` over the `k`-point `x` (`IsCoincidenceSet` of `u` and the constant map at `x`: the
-points of `s` lie over `x`, every field point over `x` comes from `s`, and every `k[ε]`-point over
-`x` comes from its `k`-point), then `u` pulls the class of `x` back to the sum of the classes of the
-points of `s`. -/
-lemma New.Variety.map_pointClass_eq_sum {k : Type} [Field k] [CharZero k] {d : ℕ}
-    {W X : CommAlg k ⥤ Type 1} [IsSeparatedFunctor W] [IsChartCovered d W] [HasAtlas d X]
-    (x : X.obj (of k k)) (u : W ⟶ X) (s : Finset (W.obj (of k k)))
-    (hs : IsCoincidenceSet (constMap x) u s) :
-    HodgeH.map (freeAb.map u) (pointClass d x) = ∑ y ∈ s, pointClass d y :=
-  map_pointClass_eq_sum_of_isCoincidenceSet u s hs
-
 /-- Let `Γ` be the graph of the projection of `Y` to projective space by the linear forms `Λ`:
 the pairs `(x, [Λ(v)])` where `v` are coordinates of `x` with a unit entry and the values `Λ(v)`
 generate the unit ideal (`hΓ`). If the first projection `Γ → Y` is a monomorphism, then `Γ` is
 covered by charts of the dimension `d` of `Y`. -/
-lemma New.Variety.isChartCovered_graph_projection {k : Type} [Field k] [CharZero k]
+lemma New.Variety.isChartCovered_graph_projection {k : Type} [Field k]
     {R : CommRingCat} [Algebra R.carrier k] {Y : Over (AlgebraicGeometry.Spec R)} {d n : ℕ}
-    [HasAtlas d (algPointsOf k R Y)] {ι : Type} [Finite ι] {L : LineBundle Y.left ι}
+    [HasAtlas d (algPointsOf k R Y)] {ι : Type} {L : LineBundle Y.left ι}
     [Fact (L.IsProjEmbedding Y.hom)] {Λ : Fin (n + 1) → homogeneousSubmodule ι k 1}
     {Γ : Subfunctor (algPointsOf k R Y ⊗ projSpace k n)}
     (hΓ : ∀ (A : CommAlg k) (x : (algPointsOf k R Y ⊗ projSpace k n).obj A),
@@ -462,7 +450,7 @@ lemma New.Variety.map_pointClass_eq_sum_of_injective {k : Type} [Field k] [CharZ
       u.app K y = (constMap x).app K y → ∃ y₀ ∈ s, y = W.map structureMap y₀) :
     HodgeH.map (freeAb.map u) (pointClass d x) = ∑ y ∈ s, pointClass d y := by
   -- The fibres of `u` are reduced, as `u` is injective on `k[ε]`-points.
-  refine map_pointClass_eq_sum x u s ⟨fun y h_coin ↦ hu _ ?_, hs_mem, hs_all⟩
+  refine map_pointClass_eq_sum_of_isCoincidenceSet u s ⟨fun y h_coin ↦ hu _ ?_, hs_mem, hs_all⟩
   rw [u.naturality_apply, h_coin]
   exact (map_map_structureMap _ x).symm
 
@@ -513,8 +501,8 @@ lemma New.Variety.hodgeTateMap_ne_zero_of_isCoincidenceSet {p : ℕ} {k : Type} 
     simp [sum_congr rfl h_class, h_zero]
   have hη₀ : η = 0 := by
     refine h_inj (IsChartCovered.pairRestrictBijective.injective_restrictToPairs ?_)
-    rw [restrictToPairs_map, ← hη, ← hodgeTateMap_map, map_pointClass_eq_sum Q proj t ht, h_sum,
-      map_zero, map_zero]
+    rw [restrictToPairs_map, ← hη, ← hodgeTateMap_map,
+      map_pointClass_eq_sum_of_isCoincidenceSet proj t ht, h_sum, map_zero, map_zero]
   exact hodgeTateMap_pointClass_ne_zero Q (by rw [hη, hη₀, map_zero])
 
 /-- A functor with a map `j` to a separated functor `X` that is injective on points is separated. -/

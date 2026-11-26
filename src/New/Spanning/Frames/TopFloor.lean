@@ -72,7 +72,7 @@ def PlaceData.fiberPairing (e : 𝔰.BesselIndex → A) : ℂ :=
 /-- Two elements `l`, `l'` of the floor group G^(ϱ) with `l'⁻¹ z = l⁻¹ z` differ on the left by an
 element of `besselH`, the fixer in G^(ϱ) of the last frame vector `z`. -/
 lemma mul_inv_mem_besselH_of_orbitPoint_eq {A : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
-    {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] {l l' : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ)
+    {T : 𝔰.Form A} {l l' : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ)
     (hl' : l' ∈ T.floorGroup 𝔰.ϱ) (h_point : orbitPoint 𝔰.top l' = orbitPoint 𝔰.top l) :
     l' * l⁻¹ ∈ T.besselH := by
   simpa only [inv_inv] using partialUnitriangularGroup_inf_floorGroup_last.le
@@ -107,7 +107,7 @@ lemma PlaceData.fiberPairing_orbitPoint {F : PlaceData ι T (m + 1)} (Z : F.Inte
 the norm of the last frame vector `z`. -/
 lemma mulVec_mem_lastVectorQuadric {A : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
     {T : 𝔰.Form A}
-    [IsHermitianUnit T.splitGram] {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) {e : 𝔰.BesselIndex → A}
+    {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) {e : 𝔰.BesselIndex → A}
     (he : e ∈ lastVectorQuadric T) : (l : GL 𝔰.BesselIndex A).val *ᵥ e ∈ lastVectorQuadric T := by
   obtain ⟨h_floor, h_norm⟩ : (∀ i : 𝔰.BesselIndex, floorOf i < 𝔰.ϱ → e i = 0) ∧
       star e ⬝ᵥ T.splitGram *ᵥ e = T.splitGram 𝔰.z 𝔰.z := he
@@ -161,14 +161,13 @@ lemma orbitPoint_mem_lastVectorQuadric {A : Type} {𝔰 : Shape} [SemilocalField
     simp at hi
   exact mulVec_mem_lastVectorQuadric (inv_mem hl) hz
 
-namespace IntegralPlace.IsLargeLatticeData
-
-/-- If the form `T` of shape `𝔰` has a large lattice datum `F`, the index set `𝔰.κ` of the basis
-vectors outside the hyperbolic pairs and the last frame vector has at least two elements. -/
-lemma two_le_card {F : PlaceData ι T (m + 1)} [_h : P.IsLargeLatticeData F] :
-    2 ≤ Fintype.card 𝔰.κ := by
+/-- For a place datum `F`, the index set `𝔰.κ` of the basis vectors outside the hyperbolic pairs
+and the last frame vector has at least two elements. -/
+lemma PlaceData.two_le_card (F : PlaceData ι T (m + 1)) : 2 ≤ Fintype.card 𝔰.κ := by
   have h_rank : Fintype.card 𝔰.κ + 1 = Fintype.card ι + 2 * (m + 1) + 2 := F.card_eq
   omega
+
+namespace IntegralPlace.IsLargeLatticeData
 
 /-- Let `F` be a large lattice datum, `R` a positive semidefinite matrix, and `l` in the floor group
 G^(ϱ). Let `headSumNormSq Z R ω (g * l)`, the nonnegative sum against `R` of the pairings of scaled
@@ -180,12 +179,10 @@ lemma lintegral_headSumNormSq_eq {F : PlaceData ι T (m + 1)} (Z : F.Intermediat
     ∫⁻ g : T.G, ENNReal.ofReal (headSumNormSq Z R ω (g * l)).re ∂F.measureH =
       ENNReal.ofReal
         (∑ a : j, ∑ b : j, R a b * fiberPairing Z (ω a) (ω b) (orbitPoint 𝔰.top l)).re := by
-  have h_int (a b : j) : Integrable
-      (fun g : T.G ↦ ⟪scaledOrbitalIntegral Z (ω a) (g * l),
-        scaledOrbitalIntegral Z (ω b) (g * l)⟫_ℂ) F.measureH :=
-    integrable_inner_scaledOrbitalIntegral Z (ω a) (ω b) hl
   simpa only [fiberPairing_orbitPoint Z _ _ hl, headSumNormSq] using
-    lintegral_ofReal_re_sum_sum_mul (R := R) h_int fun g ↦ headSumNormSq_nonneg Z hR ω (g * l)
+    lintegral_ofReal_re_sum_sum_mul (R := R)
+      (fun a b ↦ integrable_inner_scaledOrbitalIntegral Z (ω a) (ω b) hl)
+      fun g ↦ headSumNormSq_nonneg Z hR ω (g * l)
 
 /-- If `F` is a large lattice datum (`P.IsLargeLatticeData F`) and `R` is positive semidefinite,
 then for every vector `e` the sum `∑ a b, R a b * fiberPairing Z (ω a) (ω b) e` is a nonnegative
@@ -196,12 +193,10 @@ lemma sum_fiberPairing_nonneg {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGr
   by_cases h_orbit : ∃ l ∈ T.floorGroup 𝔰.ϱ, orbitPoint 𝔰.top l = e
   · -- At `l⁻¹ z` the sum is the integral over `besselH` of `headSumNormSq Z R ω (g * l) ≥ 0`.
     obtain ⟨l, hl, rfl⟩ : ∃ l ∈ T.floorGroup 𝔰.ϱ, orbitPoint 𝔰.top l = e := h_orbit
-    have h_int (a b : j) : Integrable
-        (fun g : T.G ↦ ⟪scaledOrbitalIntegral Z (ω a) (g * l),
-          scaledOrbitalIntegral Z (ω b) (g * l)⟫_ℂ) F.measureH :=
-      integrable_inner_scaledOrbitalIntegral Z (ω a) (ω b) hl
     simpa only [fiberPairing_orbitPoint Z _ _ hl] using
-      sum_sum_mul_integral_nonneg (R := R) h_int fun g ↦ headSumNormSq_nonneg Z hR ω (g * l)
+      sum_sum_mul_integral_nonneg (R := R)
+        (fun a b ↦ integrable_inner_scaledOrbitalIntegral Z (ω a) (ω b) hl)
+        fun g ↦ headSumNormSq_nonneg Z hR ω (g * l)
   · simp [fiberPairing, h_orbit]
 
 /-- The scaled orbital integral of the finite Bessel vector of `Z` with head `r` does not change
@@ -564,7 +559,7 @@ lemma integral_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (m 
       (lastEntrySphereIndex π t)
   obtain ⟨slice_int, slice_eq⟩ :
       Integrable slice ∧ ∫ t, slice t = ∫ e, g e ∂F.floorQuadricMeasure 𝔰.top :=
-    F.integral_floorQuadricMeasure_top hN h.two_le_card g_cont Φ_supp.mul_left
+    F.integral_floorQuadricMeasure_top hN F.two_le_card g_cont Φ_supp.mul_left
   -- Almost every `t` is a unit, and the fiber pairing does not see the entry `𝔰.ϱ` of the heads.
   have f_eq : slice =ᵐ[volume] f := by
     filter_upwards [P.ae_isUnit] with _ ⟨t, ht⟩
@@ -576,7 +571,7 @@ lemma integral_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (m 
       (lastEntrySphereIndex π t) =
         ∫ x, fiberPairing Z p q (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
           (lastEntrySphereIndex π t) :=
-      integral_congr_ae ((ae_vectorOfLastEntry_mem_lastVectorQuadric hN h.two_le_card _).mono
+      integral_congr_ae ((ae_vectorOfLastEntry_mem_lastVectorQuadric hN F.two_le_card _).mono
         fun _ ↦ Φ_eq _)
     have h_last (x : 𝔰.κ → A) :
         ((latticeMiddleGram 𝔰 N).splitGram *ᵥ vectorOfLastEntry π (t : A) x) 𝔰.z = t :=
@@ -605,7 +600,7 @@ lemma continuous_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (
     isClosedEmbedding_vectorOfLastEntry
   have h_weak : Continuous fun b ↦ ∫ x, Φ (vectorOfLastEntry π (p 𝔰.ϱ) x) ∂P.normFiberMeasure 𝔰.κ
     b :=
-    (isDisintegration_normFiberMeasure h.two_le_card).continuous_integral
+    (isDisintegration_normFiberMeasure F.two_le_card).continuous_integral
       (Φ_cont.comp h_emb.continuous)
       (Φ_supp.comp_isClosedEmbedding h_emb)
   have h_level : Continuous fun z : (ℕ → Aˣ) × (ℕ → Aˣ) ↦ lastEntrySphereIndex π (z.1 𝔰.ϱ : A) := by
@@ -641,7 +636,7 @@ lemma continuous_lastEntryDensity {F : PlaceData ι (latticeMiddleGram 𝔰 N) (
   change (P.modulus π)⁻¹.toReal * ∫ x, Φ (vectorOfLastEntry π (p 𝔰.ϱ) x)
       ∂P.normFiberMeasure 𝔰.κ (lastEntrySphereIndex π (z.1 𝔰.ϱ : A)) = lastEntryDensity π Z z.1 z.2
   refine congrArg _ (integral_congr_ae ?_)
-  filter_upwards [ae_vectorOfLastEntry_mem_lastVectorQuadric hN h.two_le_card _] with x hx
+  filter_upwards [ae_vectorOfLastEntry_mem_lastVectorQuadric hN F.two_le_card _] with x hx
   rw [h_pairing, ← Φ_eq _ hx, ← h_add, hΦ]
 
 /-- Let `π * star π = N`, and let `F` be a large lattice datum of `latticeMiddleGram 𝔰 N`. The fiber
@@ -656,7 +651,7 @@ lemma integrable_fiberPairing_vectorOfLastEntry {F : PlaceData ι (latticeMiddle
   -- On the sphere the pairing agrees with a continuous function of compact support.
   let μ : Measure (𝔰.κ → A) := P.normFiberMeasure 𝔰.κ (lastEntrySphereIndex π t)
   have : IsFiniteMeasureOnCompacts μ :=
-    (isDisintegration_normFiberMeasure h.two_le_card).isFiniteMeasureOnCompacts _
+    (isDisintegration_normFiberMeasure F.two_le_card).isFiniteMeasureOnCompacts _
   have h_emb : Topology.IsClosedEmbedding (vectorOfLastEntry π t : (𝔰.κ → A) → 𝔰.BesselIndex → A) :=
     isClosedEmbedding_vectorOfLastEntry
   obtain ⟨Φ, Φ_supp, Φ_unif, -, Φ_eq⟩ := exists_step_function_eqOn_fiberPairing Z p q
@@ -664,7 +659,7 @@ lemma integrable_fiberPairing_vectorOfLastEntry {F : PlaceData ι (latticeMiddle
   have Φ_int : Integrable (Φ ∘ vectorOfLastEntry π t) μ :=
     (Φ_cont.comp h_emb.continuous).integrable_of_hasCompactSupport
       (Φ_supp.comp_isClosedEmbedding h_emb)
-  exact Φ_int.congr ((ae_vectorOfLastEntry_mem_lastVectorQuadric hN h.two_le_card _).mono fun _ ↦
+  exact Φ_int.congr ((ae_vectorOfLastEntry_mem_lastVectorQuadric hN F.two_le_card _).mono fun _ ↦
     Φ_eq _)
 
 /-- For heads `ω a` with a common last entry `t`, the sum of the densities against a matrix `R` is

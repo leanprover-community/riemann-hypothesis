@@ -130,7 +130,7 @@ lemma New.Exchange.exists_mem_maxCompactU_eq_rotation {r : n → ℂ}
       h_left, h_right, P_sq]
     linear_combination (norm := module) hη • ε • P
   exact ⟨U.of IsHermitianInvolution.isUnit _ (h_form (-1) (by simp [sign_P]) (by simp [P_sign])),
-    h_form 1 (by simp) (by simp), rfl⟩
+    mem_unitaryGroupOf_iff.2 (h_form 1 (by simp) (by simp)), rfl⟩
 
 open NumberField (InfinitePlace)
 
@@ -233,7 +233,7 @@ subspace of finite dimension in which only `0` is fixed. Then an invariant bound
 vanishes at every vector of `W` with continuous orbit: the mean of the orbit is a fixed vector of
 `W`. -/
 lemma New.Exchange.apply_eq_zero_of_forall_fixed_eq_zero {G V : Type*} [Group G]
-    [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [T2Space G] [NormedAddCommGroup V]
+    [TopologicalSpace G] [IsTopologicalGroup G] [CompactSpace G] [NormedAddCommGroup V]
     [NormedSpace ℂ V] [CompleteSpace V] (ρ : G →* V →L[ℂ] V) {W : Submodule ℂ V}
     [FiniteDimensional ℂ W] (h_stable : ∀ g : G, ∀ w ∈ W, ρ g w ∈ W)
     (h_fixed : ∀ w ∈ W, (∀ g : G, ρ g w = w) → w = 0) {l : V →L[ℂ] ℂ}
@@ -244,7 +244,7 @@ lemma New.Exchange.apply_eq_zero_of_forall_fixed_eq_zero {G V : Type*} [Group G]
   have : IsProbabilityMeasure κ := ⟨haarMeasure_self⟩
   have h_int : Integrable (fun g : G ↦ ρ g v) κ := integrable_of_compactSpace h_cont
   have mean_mem : ∫ g : G, ρ g v ∂κ ∈ W :=
-    (W.restrictScalars ℝ).convex.integral_mem W.closed_of_finiteDimensional
+    (W.restrictScalars ℝ).convex.integral_mem W.isClosed_of_finiteDimensional
       (.of_forall fun g ↦ h_stable g v hv) h_int
   have mean_fixed (k : G) : ρ k (∫ g : G, ρ g v ∂κ) = ∫ g : G, ρ g v ∂κ := by
     simpa [← (ρ k).integral_comp_comm h_int] using integral_mul_left_eq_self (ρ · v) k
@@ -347,7 +347,7 @@ open NumberField (InfinitePlace)
 /-- Right translation by an element of a compact subgroup preserves the left Haar measure of a
 locally compact group: the modular function is `1` on compact subgroups. -/
 lemma New.Exchange.haar_map_mul_right_of_isCompact {H : Type*} [Group H] [TopologicalSpace H]
-    [IsTopologicalGroup H] [LocallyCompactSpace H] [SecondCountableTopology H] [T2Space H]
+    [IsTopologicalGroup H] [LocallyCompactSpace H] [SecondCountableTopology H]
     [MeasurableSpace H] [BorelSpace H] {C : Subgroup H} (hC : IsCompact (C : Set H)) (k : C) :
     (haar : Measure H).map (· * (k : H)) = haar := by
   -- both sides are Haar measures, and they agree on the compact neighbourhood `A * C`, which is
@@ -512,7 +512,7 @@ lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {�
   -- translation by `C` scales the measure by `d = 1`, while the mean is `a = 0` times the term
   exact integral_quotMeasure_eq_zero_of_mean volume
     (D.fixesLeft_thetaTerm_mul h_fixesLeft_one x) (by fun_prop [Splitting.thetaTerm]) hΓS κ
-    (translator := fun _ c ↦ (c : S)) (fun _ ↦ measurable_subtype_coe) (d := 1) (a := 0)
+    (translator := fun _ c ↦ (c : S)) (fun _ ↦ measurable_subtypeVal) (d := 1) (a := 0)
     (h_scale := fun _ ↦ h_scale) zero_ne_one (h_mean := by simpa using h_mean)
 
 end NonnegativeVanishing

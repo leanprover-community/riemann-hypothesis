@@ -107,12 +107,12 @@ lemma exists_isCompact_of_bounded_frame {C : Set (Matrix n n (𝔸 E))} (hC : Is
     unfold c
     rw [U.gram_invariant]
     simp [gram]
-  let γ : U V.J := ⟨(rep (gram r)).val * r.val⁻¹,
+  let γ : U V.J := ⟨(rep (gram r)).val * r.val⁻¹, mem_unitaryGroupOf_iff.2 <|
     gram_mul_of_gram_eq (gram.invFun_eq ⟨r, rfl⟩) (gram_inv_of_gram_eq rfl)⟩
   refine ⟨γ, ?_, (rep (gram r) * r⁻¹).prop⟩
   have h_mat : (V.x⁻¹.val • c) * rightFactor (gram r) = (V.ratEmbed γ * g)⁻¹.adeleMatrix := by
     simp [c, γ, rep, rightFactor, ratEmbed, toRatCoords, G.adeleMatrix, mul_assoc, U.map]
-  show (V.ratEmbed γ * g)⁻¹.adeleMatrix ∈ (V.x⁻¹.val • C) * rightFactor '' gramValues
+  change (V.ratEmbed γ * g)⁻¹.adeleMatrix ∈ (V.x⁻¹.val • C) * rightFactor '' gramValues
   rw [← h_mat]
   exact Set.mul_mem_mul (Set.smul_mem_smul_set hr) (Set.mem_image_of_mem _ ⟨c, hr, h_gram_map⟩)
 

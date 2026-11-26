@@ -168,7 +168,7 @@ lemma norm_selfDualAddChar (z : 𝔸f E) : ‖selfDualAddChar E z‖ = 1 := norm
 
 @[fun_prop]
 lemma continuous_selfDualAddChar : Continuous (selfDualAddChar E) :=
-  continuous_ψf.subtype_val.comp (continuous_const_mul _)
+  continuous_ψf.subtypeVal.comp (continuous_const_mul _)
 
 /-- Let E be a CM field with Weil data (ȷ = −ȷ̄, finite idele α). Let ψ₀ = `selfDualAddChar E` be
 the complex character z ↦ ψ_f(ȷαᾱz) of the finite adeles. Then ψ₀(z̄) = ψ₀(−z) for every finite
@@ -227,26 +227,6 @@ lemma selfDualAddChar_congr {a b o : 𝔸f E} (t : 𝔸f E) (ho : o ∈ Ô E)
 /-- For a finite adelic vector x, the complex number ψ₀(c₀ x* x / 2). It equals ψ_f(−y* y / 4) at
 y = αx (`New.stdLattice.semichar_eq_ψf`) and is a sign on the lattice Ô^ι. -/
 def semichar (x : ι → 𝔸f E) : ℂ := selfDualAddChar E (traceOneAdele * half * star x ⬝ᵥ x)
-
-/-- Let E be a CM field with Weil data and x a finite adelic vector indexed by ι. Then `semichar x`,
-defined as ψ₀(c₀ x* x / 2), equals `ψf (-y* y / 4)` at the rescaled vector `y = α x`. Here `ψf` is
-the standard additive character of the finite adeles, α is the finite idele from the Weil data, and
-¼ is written as `half * half`. -/
-lemma semichar_eq_ψf (x : ι → 𝔸f E) :
-    semichar x = ψf E (-(half * half * star ((α.val : 𝔸f E) • x) ⬝ᵥ ((α.val : 𝔸f E) • x))) := by
-  set N : 𝔸f E := half * half * star ((α.val : 𝔸f E) • x) ⬝ᵥ ((α.val : 𝔸f E) • x) with hN
-  set J : 𝔸f E := algebraMap E (𝔸f E) j with hJ
-  have h_field : (j : E) * WeilData.traceOne = 2⁻¹ * (j - 1) := by grind [WeilData.traceOne]
-  have h_traceOne : J * traceOneAdele = half * (J - 1) := by
-    simpa [traceOneAdele, half] using congrArg (algebraMap E (𝔸f E)) h_field
-  have h_arg : J * α.val * star α.val * (traceOneAdele * half * star x ⬝ᵥ x) = -N + J * N := by
-    rw [hN, star_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul]
-    linear_combination (α.val * star α.val * half * star x ⬝ᵥ x) * h_traceOne
-  have h_real : star N = N := by rw [hN, star_mul', star_mul', star_half, ← star_dotProduct]
-  have h_imaginary : ψf E (J * N) = 1 := by
-    rw [← ψf_inv_two_mul_add_star]
-    simp [hJ, h_real]
-  rw [semichar, selfDualAddChar_apply, h_arg, map_add_eq_mul, h_imaginary, mul_one]
 
 lemma isOfFinOrder_semichar (x : ι → 𝔸f E) : IsOfFinOrder (semichar x) := by
   simpa only [semichar, selfDualAddChar_apply] using isOfFinOrder_ψf _
@@ -608,21 +588,6 @@ lemma isSaturating_diagGL (d : ι → (𝔸f E)ˣ) :
   · rw [← map_inv, coe_diagGL, coe_diagGL, diagonal_mul_diagonal, diagonal_add]
     exact congrArg diagonal (funext fun i ↦ coe_inv_denominatorIdele (d i))
 
-/-- If `u` saturates `k * diag(d) * k'` over integral matrices, with `k`, `k'` in `GL_ι(Ô)`, then
-the valuation of `det u` at `w` is the product of the inverses of `max 1 |(d i)_w|`, which are the
-valuations of the denominators of the `d i`. -/
-lemma IsSaturating.v_det_eq_prod (hk : k ∈ intGL ι (Ô E)) (hk' : k' ∈ intGL ι (Ô E))
-    {d : ι → (𝔸f E)ˣ} (h : IsSaturating (Ô E).matrix (k * diagGL d * k') u) (w : FinPlace E) :
-    v (u.val.det w) = ∏ i : ι, (max 1 (v ((d i).val w)))⁻¹ := by
-  have h_unit : v (k'⁻¹.map (evalAt w)).val.det = 1 :=
-    (mem_intGL_iff_det.1 (mem_intGL_Ô.1 (inv_mem hk') w)).2
-  calc v (u.val.det w) = v (u.map (evalAt w)).val.det := congrArg v ((evalAt w).map_det u.val)
-    _ = v ((k'⁻¹ * diagGL fun i : ι ↦ denominatorIdele (d i)).map (evalAt w)).val.det :=
-      (h.map_evalAt w).v_det_eq (((isSaturating_diagGL d).mul_of_mem_intGL hk hk').map_evalAt w)
-    _ = ∏ i : ι, (max 1 (v ((d i).val w)))⁻¹ := by
-      rw [map_mul, Units.val_mul, det_mul, map_mul, h_unit, one_mul]
-      simp [← RingHom.mapMatrix_apply, ← RingHom.map_det, v_denominatorIdele]
-
 /-! ### The chosen saturating matrix -/
 
 /-- Let `g` be an invertible `ι × ι` matrix over the finite adeles of the number field `E`. Some
@@ -630,9 +595,21 @@ invertible `u` saturates `g` over the matrices with entries in `Ô E` (`New.IsSa
 `g * u` are integral and `u⁻¹ = l + m * g` for integral `l`, `m`. Thus `u Ô^ι = Ô^ι ∩ g⁻¹ Ô^ι`. -/
 lemma IsSaturating.exists_isSaturating :
     ∃ u : (Matrix ι ι (𝔸f E))ˣ, IsSaturating (Ô E).matrix g u := by
-  -- For `g = k * diag(d) * k'` take `k'⁻¹` times the diagonal matrix of the denominators.
-  obtain ⟨k, hk, k', hk', d, rfl⟩ := exists_eq_mul_diagGL_mul g
-  exact ⟨_, (isSaturating_diagGL d).mul_of_mem_intGL hk hk'⟩
+  -- Make the stacked matrix (1, g) primitive. Its integral left inverse supplies
+  -- the relation u⁻¹ = l + m * g, so no elementary divisors need to be chosen.
+  obtain ⟨u, -, hu, L, hL, hLu⟩ := isValuationPair_Ô.exists_isPrimitiveMatrix_mul
+    (X := (1 : Matrix ι ι (𝔸f E)).fromRows g.val) ⟨fromCols 1 0, by simp [fromCols_mul_fromRows]⟩
+  refine ⟨u, ?_, ?_, L.toCols₁, ?_, L.toCols₂, ?_, ?_⟩
+  · simpa [IsIntMatrix] using fun i j ↦ hu (Sum.inl i) j
+  · simpa [IsIntMatrix] using fun i j ↦ hu (Sum.inr i) j
+  · exact fun i j ↦ hL i (Sum.inl j)
+  · exact fun i j ↦ hL i (Sum.inr j)
+  · apply u.inv_eq_of_mul_eq_one_left
+    have h_split : L * (1 : Matrix ι ι (𝔸f E)).fromRows g.val =
+        L.toCols₁ + L.toCols₂ * g.val := by
+      conv_lhs => rw [← fromCols_toCols L, fromCols_mul_fromRows]
+      simp
+    simpa only [← Matrix.mul_assoc, h_split] using hLu
 
 /-- For g in GL_ι(𝔸_f), a chosen u in GL_ι(𝔸_f) that saturates g over integral matrices
 (`New.IsSaturating`): u and gu are integral, and u⁻¹ = l + mg for some integral matrices l, m. -/
@@ -720,18 +697,6 @@ theorem glMultiplier_mul_diagGL_mul (hk : k ∈ intGL ι (Ô E)) (hk' : k' ∈ i
     Units.ext (by simp)
   rw [glMultiplier_mul_of_mem _ hk hk', (isSaturating_diagGL d).glMultiplier_eq, h_det, map_prod]
 
-/-- Let `den x` be the denominator of a finite idele `x` (`New.denominatorIdele`). Then
-`χ_f (den x⁻¹) = χ_f x * χ_f (den x)` for `χ_f = υ |·|^(-1/2)`: this is the identity
-`max 0 μ = μ + max 0 (-μ)` for the orders `μ` of `x`. -/
-lemma chiFin_denominatorIdele_inv (x : (𝔸f E)ˣ) :
-    chiFin (denominatorIdele x⁻¹) = chiFin x * chiFin (denominatorIdele x) := by
-  refine (chiFin_congr fun w ↦ ?_).trans (chiFin.map_mul x (denominatorIdele x))
-  have h_inv : x⁻¹.val w = (x.val w)⁻¹ := map_units_inv (evalAt w) x
-  have h_ne : v (x.val w) ≠ 0 := by simpa using (x.isUnit.map (evalAt w)).ne_zero
-  have h_max : max 1 (v (x.val w))⁻¹ = (v (x.val w))⁻¹ * max 1 (v (x.val w)) := by
-    rw [mul_max, mul_one, inv_mul_cancel₀ h_ne, max_comm]
-  simp [v_denominatorIdele, h_inv, h_max, mul_comm]
-
 /-- The character `χ_f = υ |·|^(-1/2)` of the finite ideles turns the conjugation of `E` into
 complex conjugation, as `υ (star x)` is the inverse of `υ x` on the unit circle. -/
 lemma chiFin_star (x : (𝔸f E)ˣ) : chiFin (star x) = conj (chiFin x) := by
@@ -739,36 +704,22 @@ lemma chiFin_star (x : (𝔸f E)ˣ) : chiFin (star x) = conj (chiFin x) := by
     Units.ext (Prod.ext (star_one _).symm rfl)
   simp [chiFin, h_incl, chiAdelic, ← Circle.coe_inv_eq_conj, ← υ_star]
 
-/-- For a finite idele `x`, the value of `χ_f = υ |·|^(-1/2)` at the denominator
-(`New.denominatorIdele`) of `star x` is the complex conjugate of its value at the denominator of
-`x`. -/
-lemma chiFin_denominatorIdele_star (x : (𝔸f E)ˣ) :
-    chiFin (denominatorIdele (star x)) = conj (chiFin (denominatorIdele x)) := by
-  rw [← chiFin_star]
-  exact chiFin_congr fun w ↦ by simp only [v_denominatorIdele, Units.coe_star, v_star_apply]
-
 /-- For an invertible matrix `g` over the finite adeles of `E`, Δ_f(g⁻¹) = υ(det g)|det g|^(−1/2)
 Δ_f(g), where `chiFin` is the character x ↦ υ(x)|x|^(−1/2) with υ the splitting character of the
 Weil data. Here Δ_f(g) = χ_f(det u) (`New.glMultiplier`), where `u` is the chosen matrix with
 uÔ^ι = Ô^ι ∩ g⁻¹Ô^ι. -/
 lemma glMultiplier_inv : glMultiplier g⁻¹ = chiFin g.det * glMultiplier g := by
-  obtain ⟨k, hk, k', hk', d, rfl⟩ := exists_eq_mul_diagGL_mul g
-  have h_inv : (k * diagGL d * k')⁻¹ = k'⁻¹ * diagGL d⁻¹ * k⁻¹ := by simp [map_inv, mul_assoc]
-  have h_det : chiFin (k * diagGL d * k').det = ∏ i : ι, chiFin (d i) := by
-    have h_diag : (diagGL d).det = ∏ i : ι, d i := Units.ext (by simp)
-    simp [chiFin_det_eq_one_of_mem hk, chiFin_det_eq_one_of_mem hk', h_diag]
-  rw [h_inv, glMultiplier_mul_diagGL_mul (inv_mem hk') (inv_mem hk), h_det,
-    glMultiplier_mul_diagGL_mul hk hk', ← Finset.prod_mul_distrib]
-  exact Finset.prod_congr rfl fun i _ ↦ chiFin_denominatorIdele_inv (d i)
+  -- Multiplication by g carries Λ ∩ g⁻¹Λ onto Λ ∩ gΛ.
+  obtain ⟨u, hu⟩ := IsSaturating.exists_isSaturating g
+  rw [hu.inv.glMultiplier_eq, hu.glMultiplier_eq, map_mul, map_mul]
 
 /-- An invertible matrix `g` over the finite adeles and its transpose have the same elementary
 divisors, hence the same multiplier `Δ_f` (`New.glMultiplier`). -/
 lemma glMultiplier_transposeGL : glMultiplier (transposeGL g) = glMultiplier g := by
-  obtain ⟨k, hk, k', hk', d, rfl⟩ := exists_eq_mul_diagGL_mul g
-  have h_transpose : transposeGL (k * diagGL d * k') = transposeGL k' * diagGL d * transposeGL k :=
-    Units.ext (by simp [mul_assoc])
-  rw [h_transpose, glMultiplier_mul_diagGL_mul hk hk', glMultiplier_mul_diagGL_mul
-    ((transposeGL_mem_intGL_iff k').2 hk') ((transposeGL_mem_intGL_iff k).2 hk)]
+  obtain ⟨k, hk, h_transpose⟩ := exists_invTransposeGL_inv_eq isValuationPair_Ô g
+  have h_eq : transposeGL g = invTransposeGL k * g * k := by
+    simpa [invTransposeGL_apply] using h_transpose
+  rw [h_eq, glMultiplier_mul_of_mem _ ((invTransposeGL_mem_intGL k).2 hk) hk]
 
 /-- If `u` saturates `b`, then `New.glMultiplier` of the transpose of `b` is also `χ_f (det u)`. -/
 lemma IsSaturating.glMultiplier_transpose (h : IsSaturating (Ô E).matrix b u)
@@ -782,15 +733,16 @@ entrywise to `γ` replaces its multiplier Δ_f(γ) (`New.glMultiplier`) by the c
 uÔ^ι = Ô^ι ∩ γ⁻¹Ô^ι. -/
 lemma glMultiplier_map_star (γ : GL ι (𝔸f E)) :
     glMultiplier (γ.map (starRingEnd (𝔸f E))) = conj (glMultiplier γ) := by
-  obtain ⟨k, hk, k', hk', d, rfl⟩ := exists_eq_mul_diagGL_mul γ
-  have h_mem {x : GL ι (𝔸f E)} (hx : x ∈ intGL ι (Ô E)) :
-      x.map (starRingEnd (𝔸f E)) ∈ intGL ι (Ô E) :=
-    mem_intGL.2 ⟨fun i j ↦ star_mem_Ô ((mem_intGL.1 hx).1 i j),
-      fun i j ↦ star_mem_Ô ((mem_intGL.1 hx).2 i j)⟩
-  have h_diag : (diagGL d).map (starRingEnd (𝔸f E)) = diagGL fun i : ι ↦ star (d i) :=
-    Units.ext (diagonal_map (star_zero _))
-  rw [map_mul, map_mul, h_diag, glMultiplier_mul_diagGL_mul (h_mem hk) (h_mem hk')]
-  simp [glMultiplier_mul_diagGL_mul hk hk', chiFin_denominatorIdele_star]
+  -- Entrywise conjugation carries a saturating matrix to a saturating matrix.
+  obtain ⟨u, hu⟩ := IsSaturating.exists_isSaturating γ
+  have h_star := hu.map_of_le_comap (starRingEnd (𝔸f E)).mapMatrix
+    (S' := (Ô E).matrix) (fun _ hx i j ↦ star_mem_Ô (hx i j))
+  change IsSaturating (Ô E).matrix (γ.map (starRingEnd (𝔸f E)))
+    (GeneralLinearGroup.map (starRingEnd (𝔸f E)) u) at h_star
+  rw [h_star.glMultiplier_eq, hu.glMultiplier_eq, ← chiFin_star]
+  congr 1
+  rw [GeneralLinearGroup.map_det]
+  rfl
 
 /-- Let E be a CM field with Weil data and `b` an element of `GL_ι(𝔸_f)`. The multiplier `Δ_f`
 (`New.glMultiplier`) of the conjugate transpose `star b` is the complex conjugate of `Δ_f b`. Here
@@ -953,31 +905,6 @@ lemma finMultiplier_inv (g : Gf E ι) : finMultiplier g⁻¹ = conj (finMultipli
   -- The inverse of a unitary matrix is its conjugate transpose.
   have h_inv : g⁻¹.val = star g.val := Units.ext (U.inv_val_eq_conjTranspose g)
   rw [finMultiplier, h_inv, glMultiplier_star, finMultiplier]
-
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E] in
-/-- Let `γ` be in the group `New.Gf E ι` of unitary `ι × ι` matrices over the finite adeles of the
-CM field `E` and let `y` saturate `γ` over integral matrices. At every finite place `w` the
-valuation of `det γ * det y` is that of the conjugate of `det y`: the elementary divisors of
-`γ⁻¹ = γ*` are the conjugates of those of `γ`. -/
-lemma IsSaturating.v_det_mul_v_det (γ : Gf E ι) {y : GL ι (𝔸f E)}
-    (hy : IsSaturating (Ô E).matrix γ.val y) (w : FinPlace E) :
-    v (γ.val.val.det w) * v (y.val.det w) = v (y.val.det (star w)) := by
-  obtain ⟨k, hk, k', hk', d, hγ⟩ := exists_eq_mul_diagGL_mul γ.val
-  have h_mem {x : GL ι (𝔸f E)} (hx : x ∈ intGL ι (Ô E)) : star x ∈ intGL ι (Ô E) :=
-    mem_intGL.2 ⟨fun i j ↦ star_mem_Ô ((mem_intGL.1 hx).1 j i),
-      fun i j ↦ star_mem_Ô ((mem_intGL.1 hx).2 j i)⟩
-  have h_inv : γ.val⁻¹ = star k' * diagGL (star d) * star k := by
-    have h_star : γ.val⁻¹ = star γ.val := Units.ext (U.inv_val_eq_conjTranspose γ)
-    have h_diag : star (diagGL d) = diagGL (star d) := Units.ext (diagonal_conjTranspose _)
-    rw [h_star, hγ, star_mul, star_mul, h_diag, mul_assoc]
-  -- As `y` saturates `γ`, the product `γ * y` saturates `γ⁻¹`.
-  have hy_inv : IsSaturating (Ô E).matrix (star k' * diagGL (star d) * star k) (γ.val * y) := by
-    simpa only [h_inv] using hy.inv
-  have hy_diag : IsSaturating (Ô E).matrix (k * diagGL d * k') y := by rwa [← hγ]
-  calc v (γ.val.val.det w) * v (y.val.det w) = v ((γ.val * y).val.det w) := by simp
-    _ = ∏ i : ι, (max 1 (v ((star (d i)).val w)))⁻¹ := hy_inv.v_det_eq_prod (h_mem hk') (h_mem hk) w
-    _ = ∏ i : ι, (max 1 (v ((d i).val (star w))))⁻¹ := by simp only [Units.coe_star, v_star_apply]
-    _ = v (y.val.det (star w)) := (hy_diag.v_det_eq_prod hk hk' (star w)).symm
 
 /-- The multiplier is `1` on the stabiliser `stdLevel E ι` of the standard lattice. -/
 lemma finMultiplier_eq_one_of_mem {k : Gf E ι} (hk : k ∈ stdLevel E ι) : finMultiplier k = 1 := by

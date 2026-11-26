@@ -210,11 +210,9 @@ noncomputable def firstColumnExponent (α : ∀ τ : Φ, n τ → ℕ) : ((τ : 
   (Finsupp.equivFunOnFinite.symm fun x : (τ : Φ) × n τ ↦ α x.1 x.2).embDomain
     (Function.Embedding.sectL ((τ : Φ) × n τ) 0)
 
-lemma firstColumnExponent_injective : Function.Injective (firstColumnExponent (n := n)) := by
-  intro α β h_eq
-  funext τ b
-  exact congrFun (Finsupp.equivFunOnFinite.symm.injective (Finsupp.embDomain_injective _ h_eq))
-    ⟨τ, b⟩
+lemma firstColumnExponent_injective : Function.Injective (firstColumnExponent (n := n)) :=
+  (Finsupp.embDomain_injective _).comp <| Finsupp.equivFunOnFinite.symm.injective.comp
+    (Equiv.piCurry fun τ (_ : n τ) ↦ ℕ).symm.injective
 
 /-- A product over the exponent `firstColumnExponent α` runs over the variables in the first
 columns. -/
@@ -224,12 +222,6 @@ lemma prod_firstColumnExponent {M : Type} [CommMonoid M] (α : ∀ τ : Φ, n τ
   rw [firstColumnExponent, Finsupp.prod_embDomain, Finsupp.prod_fintype _ _ fun x ↦ hf _,
     Fintype.prod_sigma]
   rfl
-
-/-- The polynomial `∏_τ (|α_τ|! / α_τ!) z_τ ^ α_τ` in the first columns `z_τ` of variables, where
-`|α_τ|` is the sum of the exponents at `τ` and `α_τ!` the product of their factorials. -/
-noncomputable def multinomialMonomial (R : Type) [CommRing R] (α : ∀ τ : Φ, n τ → ℕ) :
-    MatrixPoly ((τ : Φ) × n τ) R :=
-  monomial (firstColumnExponent α) (∏ τ : Φ, multinomial univ (α τ) : ℕ)
 
 variable [∀ τ : Φ, DecidableEq (n τ)]
 
@@ -267,94 +259,6 @@ lemma hookNumber_one_row [DecidableEq Φ] {N : Φ → ℕ} (hN : ∀ τ : Φ, 1 
   simp
 
 variable [DecidableEq Φ] [Field R] [CharZero R]
-
-/-- Over a field `R` of characteristic zero, assume every row type `n τ` has more than one element
-(`1 < rankAt n τ`) and `κ τ h = 0` for `1 < h < rankAt n τ`, so the weight is one row of length
-`κ τ 1` at each place. Then there is an injective assignment `α` from basis indices
-`i : WeylIndexFamily n κ` to exponent families, with `∑ b, α i τ b = κ τ 1` for every τ. For every
-vector ξ, its polynomial `toPoly n κ ξ = Σ_i (Gξ)_i b_i` (G the Gram matrix, b_i the basis minor
-products) equals `∑ i, ξ i • multinomialMonomial R (α i)`, where `multinomialMonomial R α = ∏_τ
-(|α_τ|!/α_τ!) z_τ^{α_τ}` in the first columns `z_τ` of the variables. -/
-lemma exists_toPoly_eq_sum_multinomialMonomial (h_card : ∀ τ : Φ, 1 < rankAt n τ)
-    (hκ : ∀ (τ : Φ) (h : ℕ), 1 < h → h < rankAt n τ → κ τ h = 0) :
-    ∃ α : WeylIndexFamily n κ → ∀ τ : Φ, n τ → ℕ,
-      Function.Injective α ∧
-      (∀ (i : WeylIndexFamily n κ) (τ : Φ), ∑ b : n τ, α i τ b = κ τ 1) ∧
-      ∀ ξ : WeylIndexFamily n κ → R,
-        toPoly n κ ξ = ∑ i : WeylIndexFamily n κ, ξ i • multinomialMonomial R (α i) := by
-  -- The basis products are distinct monomials. The Fock pairing with them gives the coefficients
-  -- of `toPoly n κ ξ`.
-  let α (i : WeylIndexFamily n κ) (τ : Φ) (b : n τ) : ℕ :=
-    #{j | (i τ).1 ⟨1, h_card τ⟩ j (0 : Fin 1) = b}
-  have h_basis (i : WeylIndexFamily n κ) :
-      nablaBasis R n κ i = monomial (firstColumnExponent (α i)) 1 :=
-    prod_tableauPoly_one_row h_card hκ fun τ ↦ (i τ).1
-  have h_inj : Function.Injective α := fun i j hij ↦
-    (linearIndependent_nablaBasis (R := R)).injective (by rw [h_basis, h_basis, hij])
-  have h_sum (i : WeylIndexFamily n κ) (τ : Φ) : ∑ b : n τ, α i τ b = κ τ 1 := by
-    rw [← card_eq_sum_card_fiberwise fun _ _ ↦ mem_coe.2 (mem_univ _), Finset.card_fin]
-  refine ⟨α, h_inj, h_sum, fun ξ ↦ ?_⟩
-  obtain ⟨c, h_expand⟩ : ∃ c : WeylIndexFamily n κ → R, toPoly n κ ξ =
-      ∑ i : WeylIndexFamily n κ, c i • monomial (firstColumnExponent (α i)) (1 : R) :=
-    ⟨weylGramOver *ᵥ ξ, by simp [toPoly, Fintype.linearCombination_apply, h_basis]⟩
-  -- Pairing with a basis monomial gives `α! * c i = (∏ (κ τ 1)!) * ξ i`.
-  have h_coeff (i : WeylIndexFamily n κ) :
-      c i = ξ i * (∏ τ : Φ, multinomial univ (α i τ) : ℕ) := by
-    let d : R := ∏ τ : Φ, ∏ b : n τ, ((α i τ b)! : R)
-    have h_value : (toPoly n κ ξ).coeff (firstColumnExponent (α i)) = c i := by
-      simp [h_expand, firstColumnExponent_injective.eq_iff, h_inj.eq_iff]
-    have h_factorial : (∏ τ : Φ, (κ τ 1)!) =
-        (∏ τ : Φ, ∏ b : n τ, (α i τ b)!) * ∏ τ : Φ, multinomial univ (α i τ) := by
-      simp only [← prod_mul_distrib, multinomial_spec, h_sum]
-    refine mul_left_cancel₀ (a := d) (by simp [d, prod_ne_zero_iff, factorial_ne_zero]) ?_
-    calc d * c i = fockPairing R (toPoly n κ ξ) (nablaBasis R n κ i) := by
-          rw [fockPairing_comm, h_basis, fockPairing_monomial,
-            prod_firstColumnExponent _ _ fun _ ↦ by simp]
-          simp [d, h_value]
-      _ = (∏ τ : Φ, (κ τ 1)! : ℕ) * ξ i := by
-          rw [fockPairing_toPoly_nablaBasis, hookNumber_one_row h_card hκ, Int.cast_natCast]
-      _ = d * (ξ i * (∏ τ : Φ, multinomial univ (α i τ) : ℕ)) := by
-          simp only [h_factorial, d, cast_mul, cast_prod]
-          ring
-  simp [h_expand, h_coeff, multinomialMonomial, smul_monomial]
-
-/-- Over a field `R` of characteristic zero, assume every row type `n τ` has more than one element
-(`1 < rankAt n τ`) and `κ τ h = 0` for `1 < h < rankAt n τ`, so the weight is one row of length
-`κ τ 1` at each place. Let `A` be a subring of `R`. A vector ξ has all coordinates `ξ i` in `A` if
-and only if its polynomial `toPoly n κ ξ = Σ_i (Gξ)_i b_i` (G the Gram matrix, b_i the basis minor
-products) lies in the `A`-span of the `multinomialMonomial R α` with `∑ b, α τ b = κ τ 1` for all τ.
-Here `multinomialMonomial R α = ∏_τ (|α_τ|!/α_τ!) z_τ^{α_τ}` in the first columns `z_τ` of the
-variables. -/
-lemma toPoly_mem_span_multinomialMonomial_iff (h_card : ∀ τ : Φ, 1 < rankAt n τ)
-    (hκ : ∀ (τ : Φ) (h : ℕ), 1 < h → h < rankAt n τ → κ τ h = 0) (A : Subring R)
-    (ξ : WeylIndexFamily n κ → R) :
-    toPoly n κ ξ ∈ Submodule.span A
-        (multinomialMonomial R '' {α | ∀ τ : Φ, ∑ b : n τ, α τ b = κ τ 1}) ↔
-      ∀ i : WeylIndexFamily n κ, ξ i ∈ A := by
-  obtain ⟨α, h_inj, h_sum, h_eq⟩ := exists_toPoly_eq_sum_multinomialMonomial (R := R) h_card hκ
-  rw [h_eq]
-  refine ⟨fun h_mem i ↦ ?_, fun h_int ↦ Submodule.sum_mem _ fun i _ ↦
-    Submodule.smul_mem _ (⟨ξ i, h_int i⟩ : A) (Submodule.subset_span ⟨α i, h_sum i, rfl⟩)⟩
-  let w : R := (∏ τ : Φ, multinomial univ (α i τ) : ℕ)
-  have hw_ne : w ≠ 0 := cast_ne_zero.2 (prod_ne_zero_iff.2 fun τ _ ↦ (multinomial_pos _ _).ne')
-  -- On the span, the coefficient at the exponent `α i` lies in `A * w`.
-  have h_coeff {f : MatrixPoly ((τ : Φ) × n τ) R} (hf : f ∈ Submodule.span A
-      (multinomialMonomial R '' {α | ∀ τ : Φ, ∑ b : n τ, α τ b = κ τ 1})) :
-      f.coeff (firstColumnExponent (α i)) / w ∈ A := by
-    induction hf using Submodule.span_induction with
-    | mem f hf =>
-      obtain ⟨β, -, rfl⟩ := hf
-      rw [multinomialMonomial, coeff_monomial]
-      split_ifs with hβ
-      · simp only [firstColumnExponent_injective hβ, w, div_self hw_ne, A.one_mem]
-      · simp
-    | zero => simp
-    | add f g _ _ hf hg => simpa [add_div] using A.add_mem hf hg
-    | smul a f _ hf => simpa [mul_div_assoc, Subring.smul_def] using A.mul_mem a.prop hf
-  have h_value : (∑ j : WeylIndexFamily n κ, ξ j • multinomialMonomial R (α j)).coeff
-      (firstColumnExponent (α i)) = ξ i * w := by
-    simp [multinomialMonomial, firstColumnExponent_injective.eq_iff, h_inj.eq_iff, w]
-  simpa only [h_value, mul_div_cancel_right₀ _ hw_ne] using h_coeff h_mem
 
 end New
 
@@ -406,12 +310,10 @@ lemma posDef_cauchy_schwarz {ι : Type*} [Fintype ι] {M : Matrix ι ι ℂ} (h_
     (x y : ι → ℂ) :
     ‖star x ⬝ᵥ M *ᵥ y‖ ^ 2 ≤ (star y ⬝ᵥ M *ᵥ y).re * (star x ⬝ᵥ M *ᵥ x).re := by
   -- the Cauchy–Schwarz inequality of the inner product `⟪u, v⟫ = u* M v` that `M` defines
-  let _ : SeminormedAddCommGroup (ι → ℂ) := M.toSeminormedAddCommGroup h_posDef.posSemidef
-  let _ : InnerProductSpace ℂ (ι → ℂ) := M.toInnerProductSpace h_posDef.posSemidef
-  have h_inner (u v : ι → ℂ) : inner ℂ u v = star u ⬝ᵥ M *ᵥ v := dotProduct_comm _ _
-  have h_cs : ‖inner ℂ y x‖ * ‖inner ℂ x y‖ ≤ re (inner ℂ y y) * re (inner ℂ x x) :=
-    inner_mul_inner_self_le y x
-  rwa [norm_inner_symm y x, ← sq, h_inner, h_inner, h_inner] at h_cs
+  have h_cs := h_posDef.star_dotProduct_mulVec_mul_le x y
+  rw [eq_re_of_ofReal_le (h_posDef.posSemidef.dotProduct_mulVec_nonneg x),
+    eq_re_of_ofReal_le (h_posDef.posSemidef.dotProduct_mulVec_nonneg y)] at h_cs
+  simpa [mul_conj', mul_comm, ← ofReal_pow, ← ofReal_mul, real_le_real] using h_cs
 
 /-- As a complex number, the squared Gram norm `weylNormSq ξ` is `ξ* G ξ` itself: its imaginary part
 is zero because G is positive semidefinite. -/
@@ -442,7 +344,7 @@ lemma weylNormSq_weylEval_permArray (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ)
   have h_form : star (weylEval n κ y) ⬝ᵥ weylGramOver *ᵥ weylEval n κ y = 1 := by
     rw [h_star, ← eval_toPoly, toPoly_weylEval]
     exact eval_weylKernel_permArray e
-  show re (star (weylEval n κ y) ⬝ᵥ weylGramOver *ᵥ weylEval n κ y) = 1
+  change re (star (weylEval n κ y) ⬝ᵥ weylGramOver *ᵥ weylEval n κ y) = 1
   rw [h_form, one_re]
 
 /-- A tight frame of integral vectors. Let `hk` be the hook number and `⟨ξ, ξ'⟩ = ξ* G ξ'` the form
@@ -623,18 +525,6 @@ lemma comulMatrix_equivariant (g : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
   simp [comulMatrix_mulVec_weylEval, schur_mulVec_weylEval_of_schurDetExp_eq_zero,
     kronecker_mulVec_vec,
     mul_vecMulVec, vecMulVec_mul, vecMul_transpose]
-
-/-- Over an infinite domain, let `C` be the multiplication matrix.
-(a) `Cᵀ (G κ ⊗ G κ') C = G (κ + κ')` for the Gram matrices `G`; this part does not involve `g`.
-(b) `(S κ g ⊗ S κ' g) C = C * S (κ + κ') g` for the Schur matrices `S` of any family `g` of square
-matrices. -/
-lemma comulMatrix_isometry_and_equivariant (g : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
-    let C := comulMatrix R n κ κ'
-    -- (a) the matrix is an isometry for the Gram forms
-    Cᵀ * ((weylGram n κ).map (↑) ⊗ₖ (weylGram n κ').map (Int.cast : ℤ → R) * C) = weylGramOver ∧
-    -- (b) the matrix is equivariant
-    schur κ g ⊗ₖ schur κ' g * C = C * schur (κ + κ') g :=
-  ⟨comulMatrix_isometry, comulMatrix_equivariant g⟩
 
 /-- The integer matrix whose row (p, q) lists the coordinates of the product of the basis minor
 products b_p for κ and b_q for κ', in the basis for κ + κ', has an integer left inverse. -/

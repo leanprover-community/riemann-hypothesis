@@ -76,13 +76,13 @@ lemma inCut_of_besselKernel_ne_zero {γ : S.G E} {y : NumberField.InfinitePlace 
     (h_kernel : S.besselKernel .cut γ y ≠ 0) (v : NumberField.InfinitePlace E) :
     InCut (y v) S.b ∧ InCut (((S.ratToInf γ)⁻¹ * y) v) S.b := by
   -- All local factors at `y` and at `γ⁻¹ y` are nonzero, and each vanishes outside the cut.
-  rw [← enorm_ne_zero, enorm_besselKernel, mul_ne_zero_iff, Finset.prod_ne_zero_iff,
+  rw [← eNorm_ne_zero, enorm_besselKernel, mul_ne_zero_iff, Finset.prod_ne_zero_iff,
     Finset.prod_ne_zero_iff] at h_kernel
   obtain ⟨h_at_y, h_at_γy⟩ := h_kernel
   have h_factors : (S.besselSystem v).besselFn .cut (y v) ≠ 0 ∧
       (S.besselSystem v).besselFn .cut (((S.ratToInf γ)⁻¹ * y) v) ≠ 0 :=
-    ⟨enorm_ne_zero.1 (h_at_y v (Finset.mem_univ v)),
-      enorm_ne_zero.1 (h_at_γy v (Finset.mem_univ v))⟩
+    ⟨eNorm_ne_zero.1 (h_at_y v (Finset.mem_univ v)),
+      eNorm_ne_zero.1 (h_at_γy v (Finset.mem_univ v))⟩
   exact h_factors.imp ((S.besselSystem v).isCutPair.inCut_of_ne_zero _)
     ((S.besselSystem v).isCutPair.inCut_of_ne_zero _)
 
@@ -117,7 +117,7 @@ lemma amplitudeMajorant_sq_le {c c' : S.Classes} {γ : S.G E} [S.IsAdmissible] (
   by_cases h_zero :
       S.classCutoff c y * S.classCutoff c' ((S.ratToInf γ)⁻¹ * y) * ‖S.besselKernel .cut γ y‖ₑ = 0
   · simp [h_zero]
-  simp only [mul_eq_zero, enorm_eq_zero, not_or] at h_zero
+  simp only [mul_eq_zero, eNorm_eq_zero, not_or] at h_zero
   obtain ⟨⟨h_cutoff, h_cutoff'⟩, h_ker⟩ := h_zero
   -- Where the integrand is nonzero, `y` and `γ⁻¹y` lie in `S.boxedPoints`, so there `boxCutoff`
   -- equals `classCutoff`.

@@ -130,7 +130,7 @@ theorem Gauge.IsShell.setLIntegral_le {S : Set T.G} {height : ℝ≥0∞}
           ∫⁻ x in S ∩ Γ'.val.positionsOfSize, f x ∂F.groupMeasure := by
         grw [lintegral_mono_set h_cover, lintegral_iUnion_le, ENNReal.tsum_mul_left]
     _ ≤ #𝒢 * B := by
-        grw [ENNReal.tsum_le_tsum h_piece]
+        grw [tsum_le_tsum h_piece]
         simp
     _ ≤ e * Γ.loss ^ (2 * 10 ^ 6 * 𝔰.n ^ 3) * height ^ (10 ^ 5 * 𝔰.n ^ 2) * F.shellNormalization
       W := by
@@ -273,7 +273,7 @@ theorem Gauge.lintegral_le_of_shells {S : ℕ → Set T.G}
         rw [setLIntegral_eq_of_support_subset h_cover]
     _ ≤ ∑' i : ℕ, F.headDensity j p q * ∫⁻ x in S i, f x ∂F.groupMeasure := by
         grw [lintegral_iUnion_le, ENNReal.tsum_mul_left]
-    _ ≤ ∑' i : ℕ, (2 ^ i)⁻¹ * B := ENNReal.tsum_le_tsum h_shell
+    _ ≤ ∑' i : ℕ, (2 ^ i)⁻¹ * B := tsum_le_tsum h_shell
     _ ≤ Γ.loss ^ (10 ^ 8 * 𝔰.n ^ 4) * B := by
         have h_two : (2 : ℝ≥0∞) ≤ Γ.loss ^ (10 ^ 8 * 𝔰.n ^ 4) :=
           Γ.two_le_loss.trans (le_self_pow₀ Γ.one_le_loss (by positivity))

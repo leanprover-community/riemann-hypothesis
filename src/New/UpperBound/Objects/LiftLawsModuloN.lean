@@ -137,7 +137,7 @@ abbrev reductionGL : GL n (O (F := LocProd P)) →* GL n (P → ZMod N) := map �
 
 /-- A section of `reductionGL`. -/
 abbrev liftGL : GL n (P → ZMod N) → GL n (O (F := LocProd P)) :=
-  surjInv (GL_map_surjective Λ.reduction reduction_surjective)
+  surjInv (Matrix.GeneralLinearGroup.map_surjective Λ.reduction reduction_surjective)
 
 lemma reductionGL_liftGL (k : GL n (P → ZMod N)) : reductionGL (Λ.liftGL k) = k := surjInv_eq _ k
 
@@ -505,7 +505,7 @@ lemma mirabolic_fix_upOperator
       rw [map_mul, map_mul, map_inv, mul_smul, mul_smul, inv_smul_eq_iff,
         lastRowColGL_smul_lastBasisVector hy,
         lastRowColGL_smul_lastBasisVector (by rwa [h_last])]
-    rw [← π.ρ.inv_apply_eq_iff, ← Module.End.mul_apply, ← Module.End.mul_apply, ← map_mul,
+    rw [← π.ρ.inv_apply_eq_iff, ← mul_apply_eq_comp, ← mul_apply_eq_comp, ← map_mul,
       ← map_mul]
     exact hφ _ h_mem
   -- So `g` permutes the terms of the sum that defines `Up`, by `y ↦ k y`.
@@ -521,9 +521,10 @@ lemma commute_upOperator {T : Module.End ℂ π}
   (hT _).mul_right (Commute.sum_right _ _ _ fun _ _ ↦ (hT _).smul_right _)
 
 lemma scalar_commute_upOperator (x : (O (F := LocProd P))ˣ) :
-    Commute (π.ρ (inclGL (scalar (n ⊕ Unit) x))) (upOperator π) := by
-  simp [upOperator, commute_iff_eq, mul_sum, sum_mul, ← map_mul, map_scalar,
-    GeneralLinearGroup.scalar_commute]
+    Commute (π.ρ (inclGL (scalar (n ⊕ Unit) x))) (upOperator π) :=
+  commute_upOperator fun g ↦ by
+    rw [map_scalar]
+    exact (show Commute _ g from GeneralLinearGroup.scalar_commute _ g).map π.ρ
 
 omit [WeilData E] in
 /-- A linear map `T` from `π` to `π'` that commutes with integral unit scalars sends ramified
@@ -640,7 +641,7 @@ lemma inclGL_lastColDatum (H : LiftLaw π π' L γ) (k : GL (n' ⊕ Unit) (O (F 
     change reductionGL k • Tᵀ (.inr ()) = reductionGL k • y ↔ _
     rw [smul_left_cancel_iff]
   refine .trans ?_ (H.integral_equivariant 1 k _ φ)
-  simp only [lastColDatum, map_one, Units.val_one, Matrix.mul_one, h_col, Module.End.one_apply]
+  simp only [lastColDatum, map_one, Units.val_one, Matrix.mul_one, h_col, one_apply_eq_self]
 
 end
 
@@ -657,7 +658,7 @@ lemma charDatum_inclGL (H : LiftLaw π π' L γ) (k : GL (n ⊕ Unit) (O (F := L
       (T * (reductionGL k).val) (.inr ()) ⬝ᵥ y = T (.inr ()) ⬝ᵥ reductionGL k • y :=
     (dotProduct_mulVec (T (.inr ())) (reductionGL k).val y).symm
   refine .trans ?_ (H.integral_equivariant k 1 _ φ)
-  simp only [charDatum, map_one, Units.val_one, Matrix.one_mul, h_pair, Module.End.one_apply]
+  simp only [charDatum, map_one, Units.val_one, Matrix.one_mul, h_pair, one_apply_eq_self]
 
 open scoped Classical in
 /-- Let the lift `L Ψ : π → π'` be linear in its datum `Ψ` and obey the lift law; in particular
@@ -697,7 +698,7 @@ lemma mirror_eq_upOperator_direct (H : LiftLaw π π' L γ) (hφ : φ ∈ ramifi
       (if IsUnit (y (.inr ())) then psiN (y (.inr ())) else 0) • L (lastColDatum y) φ :=
     (H.mirrorDatum_eq_unitCorner hφ).trans (liftFn_comp_eq_sum_smul (fun T ↦ Tᵀ (.inr ()))
       fun y ↦ if IsUnit (y (.inr ())) then psiN (y (.inr ())) else 0)
-  rw [h_sort, upOperator, Module.End.mul_apply]
+  rw [h_sort, upOperator, mul_apply_eq_comp]
   congr 1
   simp only [ite_smul, zero_smul, ← sum_filter, LinearMap.sum_apply, LinearMap.smul_apply]
   exact sum_congr rfl fun y hy ↦ by rw [h_term y (mem_filter.1 hy).2]
@@ -721,13 +722,13 @@ lemma mirror_eq_direct_upOperator (H : LiftLaw π π' L γ) (hφ : φ ∈ ramifi
       (vecMul_injective_of_isUnit (reductionGL (lastRowColGL y)).isUnit).eq_iff'
         (lastBasisVector_vecMul_lastRowColGL hy)
     rw [← H.integral_equivariant (lastRowColGL y) 1]
-    simp only [lastRowDatum, map_one, Units.val_one, Matrix.one_mul, h_row, Module.End.one_apply]
+    simp only [lastRowDatum, map_one, Units.val_one, Matrix.one_mul, h_row, one_apply_eq_self]
   have h_sort : L mirrorDatum φ = ∑ y : n ⊕ Unit → P → ZMod N,
       (if IsUnit (y (.inr ())) then psiN (y (.inr ())) else 0) •
         L (liftFn fun T ↦ if T (.inr ()) = y then 1 else 0) φ :=
     (H.mirrorDatum_eq_unitCorner hφ).trans (liftFn_comp_eq_sum_smul (fun T ↦ T (.inr ()))
       fun y ↦ if IsUnit (y (.inr ())) then psiN (y (.inr ())) else 0)
-  rw [h_sort, upOperator, Module.End.mul_apply, ← H.diagNInv_lastRowDatum]
+  rw [h_sort, upOperator, mul_apply_eq_comp, ← H.diagNInv_lastRowDatum]
   congr 1
   simp only [ite_smul, zero_smul, ← sum_filter, LinearMap.sum_apply, LinearMap.smul_apply,
     map_sum, map_smul]
@@ -883,7 +884,7 @@ lemma compUpTo_gluedLift_eq_smul (law : ∀ j : ℕ, LiftLaw (π j) (π (j + 1))
     -- Move the `Up` of the last double lift through the earlier lifts to the source.
     have h_up : upOperator (π (2 * q)) (directLifts (2 * q)) = (∏ l ∈ range (2 * q), γ l) •
         compUpTo (fun l ↦ L l directDatum) (2 * q) ((upOperator (π 0) ^ (q + 1)) φ) := by
-      rw [pow_succ', Module.End.mul_apply]
+      rw [pow_succ', mul_apply_eq_comp]
       exact upOperator_compUpTo_direct π law (upOperator_pow_mem_ramified hφ q) (2 * q)
     -- The scalar of the last double lift, with the cost of moving its `Up` to the source.
     have h_scalar : (d q * #(primitiveVectors (P := P) (N := N) (X (2 * q + 1) ⊕ Unit)) •

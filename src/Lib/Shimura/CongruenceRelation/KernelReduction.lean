@@ -319,11 +319,8 @@ lemma ker_factors_of_torsionPoint {A : Over (Spec (.of V))} [IsAbelianScheme A]
     hx_gen.isGroupBaseChange.pointEquiv (T := Over.mk (𝟙 _))
   have h_inj : Function.Injective (hx_gen.isGroupBaseChange.pullSection ∘ₗ e.torsionPoint) :=
     p.symm.injective.comp (bijective_restrict_genericPt.injective.comp e.injective)
-  obtain ⟨m, hm, hms⟩ := hs_tors.exists_nsmul_eq_zero
-  have h_tors : m • p.symm s = 0 :=
-    calc m • p.symm s = p.symm (m • s) := (map_nsmul p.symm m s).symm
-      _ = p.symm 0 := congrArg p.symm hms
-      _ = 0 := map_zero p.symm
+  obtain ⟨m, hm, h_tors⟩ :=
+    (p.symm.toAddEquiv.toAddMonoidHom.isOfFinAddOrder hs_tors).exists_nsmul_eq_zero
   obtain ⟨t, ht⟩ := x_gen.exists_apply_eq_of_torsion h_inj (p.symm s) ⟨m, hm.ne', h_tors⟩
   -- `p.symm` is injective, so `s` is the section `e.torsionPoint t` read over `ℂ`
   obtain rfl : toUnit _ ≫ e.torsionPoint t = s := p.symm.injective ht
@@ -404,7 +401,7 @@ lemma exists_isLieLine {R : Type} [CommRing R] [IsLocalRing R] [Algebra R k]
     refine ⟨∑ j, ξ j • snd (tangentCoords z (p v) j),
       hZ_uniq _ _ (by simp [r, hv]) (funext fun i ↦ ?_)⟩
     have h_fst : ∀ j, fst (tangentCoords z (p v) j) = 0 :=
-      h_chart.map_tangentCoords_eq_zero h_zero (h_tiny.2 hv)
+      IsEtaleChart.map_tangentCoords_eq_zero h_zero (h_tiny.2 hv)
     have hb_zero : algebraMap R k ((Spec.preimage (x ≫ τ)).hom (D.β - b)) = 0 := by
       simpa only [hρ, ThetaObject.baseHom] using! hb
     simp [h_lin (h_tiny.2 hv), map_smul, smul_sum, h_fst, eq_add_of_sub_eq h_rank,
@@ -439,11 +436,8 @@ lemma IsLieLine.exists_detects_tangent {R : Type} [CommRing R] [Algebra R k]
     specOver.map_bijective.surjective.exists.mp
       (h_lift (L 1 + p) (by simp [p, hL.smul_apply, hd, h_tors]))
   -- `T` is any function with nonzero derivative along `v₀`, if there is one
-  obtain ⟨T, hT⟩ : ∃ T : S, (v₀ T).snd = 0 → ∀ a : S, (v₀ a).snd = 0 := by
-    by_cases h_all : ∀ a : S, (v₀ a).snd = 0
-    · exact ⟨0, fun _ ↦ h_all⟩
-    · obtain ⟨T, hT_ne⟩ := not_forall.mp h_all
-      exact ⟨T, fun hT_zero ↦ absurd hT_zero hT_ne⟩
+  obtain ⟨T, hT⟩ : ∃ T : S, (v₀ T).snd = 0 → ∀ a : S, (v₀ a).snd = 0 :=
+    forall_imp_iff_exists_imp.mp id
   refine ⟨T, fun v hv hvT a ↦ ?_⟩
   -- As `c * (star β - b) = 1` on points of `Spec S`, `v - p = L m` for some `m`: `v = m • v₀`.
   -- (The calls below leave out `Spec.map_comp`: with `← Spec.map_comp_assoc` it makes simp loop.)
@@ -663,7 +657,7 @@ tangent vector at the `k`-point `o`, and let `γ : S → B` give `z'`, invert th
 and `G` kills `t ^ N`, `N` the number of `θ i` through `o`, then `ψ (ι z')` vanishes along `G`. -/
 private lemma vanishesAlong_of_map_pow_card_eq_zero [Algebra V k] {J : Type} [Finite J]
     {κ : J → AdelicTorsion E D.Index} {S : CommAlgCat V} [Module.Finite V S]
-    {ι : specOver V S ⟶ y.groupScheme} [IsClosedImmersion ι.left] {θ : J → S →ₐ[V] V}
+    {ι : specOver V S ⟶ y.groupScheme} {θ : J → S →ₐ[V] V}
     (hθ : ∀ i : J, Spec.map (ofHom (θ i)) ≫ ι.left = (e.torsionPoint (κ i)).left)
     (θ_inj : θ.Injective) {o : S →ₐ[V] k} {T : S}
     (hT : ∀ v : S →ₐ[V] k[ε], (∀ a : S, (v a).fst = o a) → (v T).snd = 0 → ∀ a : S, (v a).snd = 0)

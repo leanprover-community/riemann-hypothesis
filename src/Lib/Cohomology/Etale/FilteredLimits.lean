@@ -323,35 +323,25 @@ needed. -/
 lemma IsAcyclicOver.isCohomEquiv (hB : IsDomain B) (hB' : IsDomain B') (u : T' ⟶ T)
     (hT : IsAcyclicOver q Λ) (hT' : IsAcyclicOver q' Λ) :
     IsCohomEquiv (locConstCoeff Λ) (freeAb.map u) := by
-  obtain ⟨h_inj, h_onto⟩ : Function.Injective (locConstClass (Λ := Λ) q 0) ∧
-      ∀ n : ℕ, Surjective (locConstClass (Λ := Λ) q n) := hT
-  obtain ⟨h_inj', h_onto'⟩ : Function.Injective (locConstClass (Λ := Λ) q' 0) ∧
-      ∀ n : ℕ, Surjective (locConstClass (Λ := Λ) q' n) := hT'
+  obtain ⟨h_inj, h_onto⟩ := hT
+  obtain ⟨h_inj', h_onto'⟩ := hT'
   rintro (_ | n)
   · -- the spectra are connected, so the constants give all of `H⁰` on both sides
     have h_const : Bijective fun x : Λ ↦ locConstClass q 0 (.const _ x) :=
       .comp ⟨h_inj, h_onto 0⟩ (down_bijective.comp bijective_const_of_isDomain)
     have h_const' : Bijective fun x : Λ ↦ locConstClass q' 0 (.const _ x) :=
       .comp ⟨h_inj', h_onto' 0⟩ (down_bijective.comp bijective_const_of_isDomain)
-    have h_sq (x : Λ) :
-        H.map (locConstCoeff Λ) (freeAb.map u) 0 (locConstClass q 0 (.const _ x)) =
-          locConstClass q' 0 (.const _ x) := by
-      -- constants pull back to constants along any ring map
-      have h_pull (c : TestRing) (y : T'.obj c) :
-          (locConstSpec Λ).map (q c (u c y)).down (.const _ x) =
-            (locConstSpec Λ).map (q' c y).down (.const _ x) := by
-        tauto
-      exact map_locConstClass h_pull 0
-    exact (bijective_iff_of_comm_sq (f := id) h_sq h_const h_const').mp bijective_id
+    refine (bijective_iff_of_comm_sq (f := id) ?_ h_const h_const').mp bijective_id
+    exact fun x ↦ map_locConstClass (fun _ _ ↦ by tauto) 0
   · -- in positive degree `locConstClass` is zero and onto, so both groups vanish
-    have h_triv (x : H (freeAb T) (locConstCoeff Λ) (n + 1)) : x = 0 := by
-      obtain ⟨f, rfl⟩ := h_onto (n + 1) x
+    constructor
+    · intro x₁ x₂ _
+      obtain ⟨_, rfl⟩ := h_onto (n + 1) x₁
+      obtain ⟨_, rfl⟩ := h_onto (n + 1) x₂
       simp [locConstClass]
-    have h_triv' (y : H (freeAb T') (locConstCoeff Λ) (n + 1)) : y = 0 := by
-      obtain ⟨f, rfl⟩ := h_onto' (n + 1) y
-      simp [locConstClass]
-    exact ⟨fun x₁ x₂ _ ↦ (h_triv x₁).trans (h_triv x₂).symm,
-      fun y ↦ ⟨0, (map_zero _).trans (h_triv' y).symm⟩⟩
+    · intro y
+      obtain ⟨_, rfl⟩ := h_onto' (n + 1) y
+      exact ⟨0, by simp [locConstClass]⟩
 
 /-- A filtered colimit of test rings, taken in commutative rings, is a test ring: absolutely
 integrally closed, comparable for divisibility after splitting by an idempotent, and reduced. -/
@@ -523,31 +513,21 @@ admit an idempotent `e` with `a ∣ e b` and `b ∣ (1 − e) a`), then `W` is a
 that roots of monic polynomials, the idempotents that compare two elements, and reducedness all pull
 back along `g`. -/
 lemma IsSolutionClosed.isTest (h : IsSolutionClosed g) (hV : IsTest V) : IsTest W := by
-  have h_dvd_iff {a b : W} : g a ∣ g b ↔ a ∣ b := h.map_dvd_iff
-  obtain ⟨hg_inj, hg_closed⟩ := h
-  have hV_reduced : IsReduced V := hV.isReduced
+  have := hV.isReduced
   refine { toIsAbsIntegrallyClosed := ⟨fun P h_monic h_deg ↦ ?_⟩, isComparableRing := fun x y ↦ ?_,
-           isReduced := isReduced_of_injective g hg_inj }
+           isReduced := isReduced_of_injective g h.1 }
   · -- `P(x) = 0` is equation number `n + 2` for the `n = P.natDegree + 1` coefficients of `P`
     obtain ⟨x, hx⟩ := hV.toIsAbsIntegrallyClosed.exists_eval₂_eq_zero g h_monic h_deg
-    have h_sol : ∃ x : V, IsSolution (g ∘ P.coeff) x (P.natDegree + 3) :=
-      ⟨x, show ∑ k ∈ Finset.range (P.natDegree + 1), (g ∘ P.coeff) k * x ^ k = 0 by
-        simpa [P.eval₂_eq_sum_range] using hx⟩
-    obtain ⟨x, hx⟩ := hg_closed (P.natDegree + 3) P.coeff h_sol
-    change ∑ k ∈ Finset.range (P.natDegree + 1), (g ∘ P.coeff) k * g x ^ k = 0 at hx
-    have h_sum : g (∑ k ∈ Finset.range (P.natDegree + 1), P.coeff k * x ^ k) = g 0 := by
-      simpa using hx
-    exact ⟨x, (P.eval_eq_sum_range x).trans (hg_inj h_sum)⟩
+    obtain ⟨x, hx⟩ := h.2 (P.natDegree + 3) P.coeff
+      ⟨x, by simpa [IsSolution, P.eval₂_eq_sum_range] using hx⟩
+    refine ⟨x, (P.eval_eq_sum_range x).trans (h.1 ?_)⟩
+    simpa [IsSolution] using hx
   · -- equation `0` for the coefficients `x, y`; divisibility descends along `g`
-    have h_sol : ∃ e : V, IsSolution (g ∘ fun k ↦ [x].getD k y) e 0 :=
-      hV.isComparableRing (g x) (g y)
-    obtain ⟨e, he_sol⟩ := hg_closed 0 (fun k ↦ [x].getD k y) h_sol
-    change IsIdempotentElem (g e) ∧ g x ∣ g e * g y ∧ g y ∣ (1 - g e) * g x at he_sol
-    obtain ⟨he_idem, h_dvd_x, h_dvd_y⟩ := he_sol
-    refine ⟨e, ?_, ?_, ?_⟩
-    · exact hg_inj ((map_mul g e e).trans he_idem.eq)
-    · rwa [← h_dvd_iff, map_mul]
-    · rwa [← h_dvd_iff, map_mul, map_sub, map_one]
+    obtain ⟨e, he_idem, h_dvd_x, h_dvd_y⟩ :=
+      h.2 0 (fun k ↦ [x].getD k y) (hV.isComparableRing (g x) (g y))
+    exact ⟨e, h.1 ((map_mul g e e).trans he_idem.eq),
+      by simpa [← h.map_dvd_iff] using h_dvd_x,
+      by simpa [← h.map_dvd_iff] using h_dvd_y⟩
 
 /-- For any family of commutative rings R o there are an endofunctor E of commutative rings and a
 natural map θ : A → E(A) such that (a) every E(A) is a test ring, and (b) every ring map φ from
@@ -716,23 +696,40 @@ lemma baseChangeOf.ext {A R : CommRingCat} {s : X ⟶ reprBy R} {φ : R ⟶ A} {
   exact Subtype.ext
     (Prod.ext h_pt (ULift.down_injective (CommRingCat.hom_ext (RingHom.ext h_hom))))
 
-set_option backward.isDefEq.respectTransparency false
 
 /-- For s: X → Y, the base change functor from functors over Y to functors over X, sending E → Y
 to X ×_Y E → X. -/
 def pullbackOver : Over Y ⥤ Over X where
   obj Z := Over.mk (fibreProd.fst s Z.hom)
-  map f :=
+  map {Z Z'} f :=
     homMk
       { app B := ↾fun x ↦ ⟨(x.1.1, f.left.app B x.1.2), congr(($f.w) B _) ▸ x.2⟩
-        naturality := by aesop_cat (add simp fibreProd) }
+        naturality B B' g := by
+          ext x
+          apply Subtype.ext
+          refine Prod.ext rfl ?_
+          change f.left.app B' (Z.left.map g x.1.2) = Z'.left.map g (f.left.app B x.1.2)
+          exact ConcreteCategory.congr_hom (f.left.naturality g) x.1.2 }
 
-instance : (pullbackOver s).IsRightAdjoint where
+instance pullbackOver_isRightAdjoint : (pullbackOver s).IsRightAdjoint where
   exists_leftAdjoint :=
     ⟨_,
       ⟨(mapPullbackAdj s).ofNatIsoRight
-        (NatIso.ofComponents (fun _ ↦ isoMk isPullback_fibreProd.isoPullback)
-          fun f ↦ OverMorphism.ext (by cat_disch)).symm⟩⟩
+        (NatIso.ofComponents (fun Z ↦
+          let h := isPullback_fibreProd (u := s) (p := Z.hom)
+          isoMk h.isoPullback h.isoPullback_hom_snd)
+          fun {Z Z'} f ↦ OverMorphism.ext (by
+            change ((pullbackOver s).map f).left ≫
+                (isPullback_fibreProd (u := s) (p := Z'.hom)).isoPullback.hom =
+              (isPullback_fibreProd (u := s) (p := Z.hom)).isoPullback.hom ≫
+                pullback.lift (pullback.fst Z.hom s ≫ f.left) (pullback.snd Z.hom s) _
+            apply pullback.hom_ext
+            · erw [Category.assoc, IsPullback.isoPullback_hom_fst, Category.assoc,
+                pullback.lift_fst, ← Category.assoc, IsPullback.isoPullback_hom_fst]
+              rfl
+            · erw [Category.assoc, IsPullback.isoPullback_hom_snd, Category.assoc,
+                pullback.lift_snd, IsPullback.isoPullback_hom_snd]
+              rfl)).symm⟩⟩
 
 /-! ### Continuity and its first consequences -/
 
@@ -794,8 +791,10 @@ def baseChangeFunctor : (Under R)ᵒᵖ ⥤ PointFunctor :=
 /-- For X over h_R and a homomorphism f: S → T of R-algebras, the induced map of base changes
 X_T → X_S. -/
 abbrev baseChangeTransition {a : R ⟶ S} {b : R ⟶ T} (f : S ⟶ T) (h : a ≫ f = b) :
-    baseChangeOf s b ⟶ baseChangeOf s a :=
-  (baseChangeFunctor s).map (Under.homMk f h : Under.mk a ⟶ Under.mk b).op
+    baseChangeOf s b ⟶ baseChangeOf s a := by
+  change (baseChangeFunctor s).obj (Opposite.op (Under.mk b)) ⟶
+    (baseChangeFunctor s).obj (Opposite.op (Under.mk a))
+  exact (baseChangeFunctor s).map (Under.homMk f h : Under.mk a ⟶ Under.mk b).op
 
 /-- Let s : X → h_R, let Λ-cohomology be continuous over X (`New.Variety.IsCohomContinuous`), let a
 : R → S be a ring map and T an S-algebra. Then in each degree the cohomology of the base change X_T
@@ -816,16 +815,30 @@ lemma IsCohomContinuous.isFilteredColimit_adjoin (h : IsCohomContinuous Λ X) (T
           ⟨_, NatTrans.mk fun _ ↦ (val _).toUnder⟩)) := by
   -- the base changes of `X` form a system that is affine over `X`, and base change preserves
   -- limits: `h` applies once `T` is the colimit of the subalgebras, which is checked on sets
-  refine isFilteredColimit_iff_bijective.mpr (allBijective_iff_forall_bijectiveUpTo.mpr (h
-    (isLimitOfPreserves _ (isLimitOfPreserves
-      ((opEquivOpUnder R).inverse ⋙ Over.post uliftCoyoneda ⋙ pullbackOver s) (IsColimit.op ?_)))
-    fun _ ↦ .baseChange (.map uliftCoyoneda _) isPullback_fibreProd) n)
-  refine
-    ((reflectsColimit_of_reflectsIsomorphisms _
+  let D : Finset T ⥤ Under S :=
+    CategoryTheory.Functor.mk (fun t ↦ S.mkUnder (adjoin S (A := T) t)) fun g ↦
+      (Subalgebra.inclusion (adjoin_mono g.le)).toUnder
+  let w : Cocone D := ⟨_, NatTrans.mk fun _ ↦ (val _).toUnder⟩
+  let wR := (Under.map a).mapCocone w
+  have h_colimit : IsColimit wR := by
+    refine ((reflectsColimit_of_reflectsIsomorphisms _
       (Under.forget R ⋙ forget CommRingCat)).reflects ?_).some
-  -- `x` lies in the subalgebra generated by `{x}`, and the maps to `T` are injective
-  exact isColimitOf' _ _ (fun x ↦ ⟨{x}, ⟨x, by simp⟩, rfl⟩)
-    fun i x y h_eq ↦ ⟨i, 𝟙 _, Subtype.ext h_eq⟩
+    -- `x` lies in the subalgebra generated by `{x}`, and the maps to `T` are injective.
+    exact isColimitOf' _ _ (fun x ↦ ⟨{x}, ⟨x, by simp⟩, rfl⟩)
+      fun i x y h_eq ↦ ⟨i, 𝟙 _, Subtype.ext h_eq⟩
+  let : (pullbackOver s).IsRightAdjoint := pullbackOver_isRightAdjoint s
+  have h_preserves : PreservesLimitsOfShape (Finset T)ᵒᵖ (pullbackOver s) :=
+    (Adjunction.ofIsRightAdjoint (pullbackOver s)).rightAdjoint_preservesLimits.preservesLimitsOfShape
+  let D' := ((D ⋙ Under.map a).op ⋙ (opEquivOpUnder R).inverse) ⋙
+    Over.post (X := Opposite.op R) uliftCoyoneda
+  have h_pullback : PreservesLimit D' (pullbackOver s) := h_preserves.preservesLimit
+  have h_limit := isLimitOfPreserves (Over.forget X)
+    (h_pullback.preserves
+      (isLimitOfPreserves (Over.post (X := Opposite.op R) uliftCoyoneda)
+        (isLimitOfPreserves (opEquivOpUnder R).inverse h_colimit.op))).some
+  exact isFilteredColimit_iff_bijective.mpr
+    (allBijective_iff_forall_bijectiveUpTo.mpr
+      (h h_limit (fun _ ↦ .baseChange (.map uliftCoyoneda _) isPullback_fibreProd)) n)
 
 /-- The `(m + 1)`-fold fibre power, as a functor on maps of sets, is corepresented by the map from
 `m + 1` points to one point; in particular it preserves limits. -/
@@ -906,26 +919,32 @@ lemma IsCohomContinuous.of_hasCohomDenseImage {T : CommRingCat} {q : reprBy T �
         have h_nat : ε.app c.pt ≫ ((Over.forget Y).mapCone c).π.app j =
             ((pullbackOver q ⋙ Over.forget (reprBy T)).mapCone c).π.app j ≫ ε.app (D.obj j) :=
           (ε.naturality (c.π.app j)).symm
-        rw [h_nat, IsLimit.conePointsIsoOfNatIso_hom_comp_assoc]
+        rw [h_nat]
+        erw [IsLimit.conePointsIsoOfNatIso_hom_comp_assoc]
         simp only [Functor.mapCone_π_app, Over.forget_map]
         -- `erw`: `reprMap` and the maps of `a` match these lemmas only after unfolding definitions
-        erw [fac, ← map_comp_assoc, ← op_comp, θ.naturality, ← ι_post]
+        erw [Category.assoc, fac, ← map_comp_assoc, ← op_comp, θ.naturality, ← ι_post]
         rfl
       have h_dense_colim :
           HasCohomDenseImage Λ (reprMap (θ.app (colimit B)) ≫ e'.hom ≫ ε.app c.pt) :=
         h_dense none e'
       refine (h_dense_colim.mono ?_).isCohomEquiv
-      rw [h_fac, mapOnTests, whiskerLeft_comp]
-      apply range_comp_le
+      rw [h_fac]
+      change Subfunctor.range (whiskerLeft testIncl (reprMap (post B E) ≫ a.pt.hom)) ≤
+        Subfunctor.range (whiskerLeft testIncl a.pt.hom)
+      erw [whiskerLeft_comp]
+      exact range_comp_le (whiskerLeft testIncl (reprMap (post B E))) (whiskerLeft testIncl a.pt.hom)
     · -- the induction hypothesis applies to the system of the fibre powers of the `p j`, over `Y`
       let toY : toArrowFunctor.obj (.mk p) ⋙ cechFunctor m ⟶ (const _).obj Y :=
         { app j := cech.proj (p.app j) m 0 } ≫ p ≫ { app j := (D.obj j).hom }
       refine ih (D := Over.lift _ toY) (c := raiseCone ((cechFunctor m).mapCone a)) ?_ fun j ↦ ?_
       · -- fibre powers commute with limits, pointwise
-        have := isCorepresentable_cech m
+        letI : (cech (D := Arrow (Type 1)) Arrow.leftToRight m).IsCorepresentable :=
+          isCorepresentable_cech m
         refine evaluationJointlyReflectsLimits _ fun A ↦ ?_
         let v : (CommRingCat ⥤ Type 1) ⥤ Type 1 := (evaluation _ (Type 1)).obj A
-        exact isLimitOfPreserves (cech ..) (fstSndJointlyReflectLimit (c := v.mapArrow.mapCone a)
+        exact isLimitOfPreserves (cech (D := Arrow (Type 1)) Arrow.leftToRight m)
+          (fstSndJointlyReflectLimit (c := v.mapArrow.mapCone a)
           (isLimitOfPreserves (uliftCoyoneda ⋙ v) (isColimit _).op) (isLimitOfPreserves v hc))
       · -- the projections of the fibre powers are affine, by induction on `m`
         have h_pr (k : ℕ) : IsRelAffine (cech.proj (p.app j) k 0) := by

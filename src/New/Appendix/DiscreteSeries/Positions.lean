@@ -142,7 +142,7 @@ lemma formAdjoint_inclMatrix [Fintype X] [DecidableEq X] {τ : X → n} (hτ : �
   ext x i
   rcases eq_or_ne i (τ x) with rfl | hi
   · simp [formAdjoint, signMatrix, inclMatrix, Matrix.one_apply, hτ]
-  · simp [formAdjoint, signMatrix, inclMatrix, Matrix.one_apply, hi, hi.symm]
+  · simp [formAdjoint, signMatrix, inclMatrix, hi, hi.symm]
 
 end Adjoint
 
@@ -195,7 +195,7 @@ lemma exists_mul_eq_zero_and_mul_initCols_eq_one (hP : IsPosition ε η d v i₀
     ∃ Z : Matrix (Fin d) n ℂ, Z * i₀ = 0 ∧ Z * initCols v = 1 := by
   obtain ⟨Z, hZ_zero, hZ_one⟩ := hP.exists_mul_eq_zero_and_mul_eq_one
   refine ⟨Z.submatrix Fin.castSucc id, congrArg (·.submatrix Fin.castSucc id) hZ_zero, ?_⟩
-  show (Z * v).submatrix Fin.castSucc Fin.castSucc = 1
+  change (Z * v).submatrix Fin.castSucc Fin.castSucc = 1
   rw [hZ_one, submatrix_one _ (Fin.castSucc_injective d)]
 
 /-- The columns of `i₀` and the vectors `v₁, …, v_{j₀}` of a position are independent. -/

@@ -109,7 +109,7 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
   have norm_v (x : ι → ℂ) :
       ‖v x‖ = ‖v_scaled (c⁻¹ • x)‖ / exp (‖toLp 2 x‖ ^ 2 / (n + A) / 2) ^ n := by
     simp (disch := positivity) [v_scaled, *, realVac, star_dotProduct_self_eq_norm_sq, sq, c,
-      ← exp_nat_mul, mul_assoc, ← exp_add, field, star_trivial, Complex.norm_exp]
+      ← exp_natCast_mul, mul_assoc, ← exp_add, field, star_trivial, Complex.norm_exp]
   have G_int : Integrable G (normalizedVolume ι) :=
     (integrable_norm_sq v_scaled).comp_smul (by positivity)
   have preserving : MeasurePreserving (σ • · + y) (normalizedVolume ι) (normalizedVolume ι) :=
@@ -120,7 +120,7 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
       grw [add_comm, hA]
       simp [field]
     have c_pow : (c ^ 2) ^ (card ι + d) ≤ exp n := by
-      grw [sq_sqrt (by positivity), add_one_le_exp, ← exp_nat_mul, exponent_le]
+      grw [sq_sqrt (by positivity), add_one_le_exp, ← exp_natCast_mul, exponent_le]
     calc _ = (c ^ 2) ^ card ι * ((c ^ 2) ^ d * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι) := by
           -- ↓ changes variables before simp rewrites inside the integral.
           simp [G, ↓(normalizedVolume ι).integral_comp_inv_smul (‖v_scaled ·‖ ^ 2), v_scaled,
@@ -211,7 +211,7 @@ theorem firstMinimum_mul_le_hom [Nonempty n] [Nonempty n']
   · -- both minima are at most `1` and the denominator is a natural number
     grw [firstMinimum_le_one, firstMinimum_le_one]
     · simp [Nat.cast_inv_le_one, ← Nat.cast_mul]
-    all_goals simp [firstMinimum_pos, le_of_lt]
+    simp [firstMinimum_pos, le_of_lt]
   choose Y Y_mem Y_short using S.exists_short_basis hN_mem
   -- `k`, the matrix of `z` in adelic coordinates, takes the coordinates of `y` to those of `z y`
   let k : Matrix n' n (𝔸 E) := vecToMatrix ((S.hom T).vecAtPoint z)
@@ -620,7 +620,7 @@ namespace New.Rows
 
 /-- A point of the archimedean unitary group has operator norm at least `1` at every place, so the
 largest of these norms is at least `1`. -/
-@[bound] theorem one_le_maxOpNorm {E n : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n]
+@[bound] theorem one_le_maxOpNorm {E n : Type} [Field E] [NumberField E] [Fintype n]
     [DecidableEq n] [Nonempty n] {s : n → ℤˣ} (h : GInf E s) : 1 ≤ maxOpNorm h := by
   obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
   exact (U.one_le_norm (h w)).trans (norm_le_pi_norm (fun w ↦ (h w : Matrix n n ℂ)) w)

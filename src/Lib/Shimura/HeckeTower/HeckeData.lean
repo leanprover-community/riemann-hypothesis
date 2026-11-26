@@ -199,26 +199,6 @@ lemma New.GaloisRep.IsSplitPrimeToDisc.isSplit_and_prime_q {w : FinPlace (QuadFi
     · exact h_norm
   exact ⟨h_ne, hp, fun u ↦ (h_over u).symm⟩
 
-/-- A place satisfying `New.GaloisRep.IsSplitPrimeToDisc` differs from its conjugate. -/
-lemma New.GaloisRep.IsSplitPrimeToDisc.isSplit {w : FinPlace (QuadField d)}
-    (h_split : IsSplitPrimeToDisc w) : w.IsSplit :=
-  h_split.isSplit_and_prime_q.1
-
-/-- The order `w.q` of the residue field of a place satisfying
-`New.GaloisRep.IsSplitPrimeToDisc` is prime. -/
-lemma New.GaloisRep.IsSplitPrimeToDisc.prime_q {w : FinPlace (QuadField d)}
-    (h_split : IsSplitPrimeToDisc w) : w.q.Prime := by
-  obtain ⟨-, h_prime, -⟩ := h_split.isSplit_and_prime_q
-  exact h_prime
-
-/-- If `w` satisfies `New.GaloisRep.IsSplitPrimeToDisc`, the places that contain `w.q` are `w` and
-its conjugate. -/
-lemma New.GaloisRep.IsSplitPrimeToDisc.q_mem_asIdeal_iff {w : FinPlace (QuadField d)}
-    (h_split : IsSplitPrimeToDisc w) (u : FinPlace (QuadField d)) :
-    ↑w.q ∈ u.asIdeal ↔ u = w ∨ u = star w := by
-  obtain ⟨-, -, h_places⟩ := h_split.isSplit_and_prime_q
-  exact (h_places u).symm
-
 /-- The number d is 3 mod 4, and the field E is an algebra over the imaginary quadratic field
 ℚ(i√d). -/
 class New.HasQuadSubfield (d : outParam ℕ) (E : semiOutParam Type)
@@ -275,12 +255,6 @@ lemma markedReflection_eq_aeval (y : GL n E) (i : n) :
       (Lagrange.interpolate Finset.univ (numberedRoots (Φ v₀) y.val.charpoly)
         fun j : n ↦ if j = i then 1 else -1) := by
   simp [markedReflection, eigenReflection]
-
-open scoped Classical in
-/-- The matrix `eigenReflection ε y i` is `markedReflection y i` if ε holds and `1` otherwise. -/
-lemma eigenReflection_eq_ite (ε : Prop) (y : GL n E) (i : n) :
-    eigenReflection ε y i = if ε then markedReflection y i else 1 := by
-  by_cases hε : ε <;> simp [markedReflection, eigenReflection, hε]
 
 section
 
@@ -361,25 +335,6 @@ section
 
 omit [CMBase E]
 
-/-- A safe place lies over a place of K₀ that satisfies `New.GaloisRep.IsSplitPrimeToDisc`. -/
-lemma IsSafe.isSplitPrimeToDisc_below {𝔑 : 𝓞 E} {w : FinPlace E} (h_safe : IsSafe 𝔑 w) :
-    GaloisRep.IsSplitPrimeToDisc (w.below (QuadField d₀)) :=
-  h_safe.1
-
-/-- If `w` is safe for 𝔑, then 𝔑 is prime to `w`. -/
-lemma IsSafe.level_notMem_asIdeal {𝔑 : 𝓞 E} {w : FinPlace E} (h_safe : IsSafe 𝔑 w) :
-    𝔑 ∉ w.asIdeal := by
-  obtain ⟨-, h_level, -⟩ := h_safe
-  exact h_level
-
-/-- If `w` is safe for 𝔑, then 𝔑 is prime to every place `v` above the conjugate of the place of
-K₀ below `w`. -/
-lemma IsSafe.level_notMem_asIdeal_of_below_eq_star {𝔑 : 𝓞 E} {w : FinPlace E} (h_safe : IsSafe 𝔑 w)
-    {v : FinPlace E} (hv : v.below (QuadField d₀) = star (w.below (QuadField d₀))) :
-    𝔑 ∉ v.asIdeal := by
-  obtain ⟨-, -, h_conj⟩ := h_safe
-  exact h_conj v hv
-
 end
 
 /-- For a subspace U of k_vⁿ (k_v the residue field) of dimension r, the scalar matrix of the
@@ -426,18 +381,6 @@ variable {n 𝔑}
 /-- The principal level consists of similitudes. -/
 lemma levelGU_le_GU {𝔑 : 𝓞 E} : levelGU n 𝔑 ≤ GU E n :=
   inf_le_left
-
-/-- An element of the Hecke algebra is supported on `GUPlus E n`. -/
-lemma heckeAlgebra.val_mem_spanOn {𝔑 : 𝓞 E} {k : Type*} [CommRing k] (f : heckeAlgebra n k 𝔑) :
-    f.val ∈ spanOn k (GUPlus E n) :=
-  f.property.1
-
-/-- An element of the Hecke algebra sends the vectors fixed by `levelGU n 𝔑` to vectors fixed by
-it, in every representation. -/
-lemma heckeAlgebra.val_mem_fixedToEigen {𝔑 : 𝓞 E} {k : Type*} [CommRing k]
-    (f : heckeAlgebra n k 𝔑) :
-    f.val ∈ fixedToEigen (levelGU n 𝔑) (MonoidHom.id (GL n (𝔸f E))) (levelGU n 𝔑) :=
-  f.property.2
 
 /-- For an element f = ∑ a_g [g] of the Hecke algebra of level 𝔑, the function ∑ a_g 1_{gK} on
 cosets of the principal level subgroup K. -/
@@ -604,7 +547,8 @@ omit [Nonempty n] in
 /-- A point `g` of the finite adelic unitary group `Gf E n` (so `gᴴ g = 1`) is a signed frame for
 the identity form, with `ℓ = 1` at the base place. -/
 lemma isSignedFrameFor_one (g : Gf E n) : IsSignedFrameFor g.val 1 1 :=
-  ⟨⟨1, by simpa [U] using g.property⟩, by simp [PosDef.one]⟩
+  ⟨⟨1, by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.property⟩,
+      by simp [PosDef.one]⟩
 
 /-- If `x` is a similitude whose inverse has integral entries (`x ∈ GUPlus E n`) and `x` is a frame
 for the scalar form `c • 1`, then the rational number `c` is an integer. -/
@@ -938,7 +882,7 @@ places, and let the `w i` be distinct finite places whose norms have product abo
 `g⁻¹ γ g` (with γ embedded in G_f) lies in the integral level `stdLevel E n`, which is
 G_f ∩ GL_n(Ô E) (hypothesis `hk`), and reduces to `1` modulo every `w i`, then `γ = 1`. -/
 lemma eq_one_of_reduceAt_eq_one {E : Type} [Field.{0} E] [CMType E] {w : ι → FinPlace E}
-    [Nontrivial (InfinitePlace E)] (hw : w.Injective)
+    (hw : w.Injective)
     (h_large : (2 * card n) ^ finrank ℚ E < ∏ i : ι, (w i).q)
     {γ : U (stdSpace E n).J} {g : Gf E n}
     (hk : g⁻¹ * (stdSpace E n).embFin γ * g ∈ stdLevel E n)
@@ -948,7 +892,7 @@ lemma eq_one_of_reduceAt_eq_one {E : Type} [Field.{0} E] [CMType E] {w : ι → 
   -- have modulus at most `2 * card n`. Comparing norms shows that it is `0`, and then
   -- `tr (γ - 1)ᴴ (γ - 1) = 0`.
   let y : GL n E := γ
-  have h_isom : y.valᴴ * (1 : Matrix n n E) * y.val = 1 := mem_U.1 γ.property
+  have h_isom : y.valᴴ * (1 : Matrix n n E) * y.val = 1 := mem_unitaryGroupOf_iff.1 γ.property
   have h_conj_le (v : InfinitePlace E) : ‖Φ v (y.val - 1).trace‖ ≤ 2 * card n := by
     -- The image of `y` under `Φ v` is unitary, so its entries have modulus at most `1`.
     have h_unitary : y.val.map (Φ v) ∈ unitaryGroup n ℂ := by

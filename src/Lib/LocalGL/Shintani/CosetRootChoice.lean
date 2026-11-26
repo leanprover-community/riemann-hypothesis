@@ -455,7 +455,7 @@ lemma IsRootChoice.descendsOnCoset_comp (R : IsRootChoice π σ j r)
       _ = j γ := by rw [h_s_eq, h_pow]
   have h_comm : j γ * x = x * j γ := mem_centralizer_iff.mp hx (j γ) rfl
   have h_j_eq : j δ = j γ := mul_left_cancel <| by rwa [← h_comm, ← mul_inv_eq_iff_eq_mul]
-  show g s = g (r γ)
+  change g s = g (r γ)
   rw [← h_s_eq, h_inv (r δ) x h_ker, R.injective h_j_eq]
 
 omit [Finite G] in

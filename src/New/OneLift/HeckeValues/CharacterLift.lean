@@ -551,7 +551,12 @@ lemma DescentPair.heckePolyOnForms_liftHeckeRoot_eq_zero {O : DescentPair E r n}
   have h_zero : SiegelWeil.qPochhammer w.q O.rankDiff (O.charW.frobValue r w * O.liftHeckeRoot w) =
     0 := by
     simp [liftHeckeRoot, rankDiff, hk, Finset.prod_range_succ, add_assoc, AutChar.frobValue,
-      HeckeChar.atUniformizer, field, w.ne_bot]
+      HeckeChar.atUniformizer, field]
+    right
+    have hq : 0 < w.q := zero_lt_one.trans w.one_lt_q
+    have hsqrt : 0 < Real.sqrt (w.q : ℝ) := Real.sqrt_pos.2 (by exact_mod_cast hq)
+    rw [div_self (mul_ne_zero (pow_ne_zero _ (Nat.cast_ne_zero.mpr hq.ne'))
+      (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hsqrt.ne'))), sub_self]
   rw [O.heckePolyOnForms_eq_smul _ _ (h_lifts w hw hw_level), h_zero, zero_mul, zero_smul]
 
 end DescentPairHecke

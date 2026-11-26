@@ -104,9 +104,17 @@ lemma finite_setOf_valued_val_ne_one : {v : FinPlace K | Valued.v (a.val v) ≠ 
 
 /-- The ideles that are units at every place are the units of the ring of integral adeles. -/
 lemma idelesUnitOff_empty : idelesUnitOff ∅ = (Ô K).units := by
-  -- both sides consist of the ideles whose components are all units of the local integers
-  aesop (add simp [idelesUnitOff, val_inj.symm, forall_and, Submonoid.mem_units_iff, Ô,
-    HeightOneSpectrum.adicCompletionIntegers.mem_units_iff_valued_eq_one.symm])
+  -- both sides consist of the ideles whose components all have valuation one
+  ext a
+  have h_mem : a ∈ idelesUnitOff ∅ ↔ ∀ w : FinPlace K, Valued.v (a.val w) = 1 := by
+    simp [idelesUnitOff, ← val_inj, ideleAt]
+  simp only [h_mem, Submonoid.mem_units_iff, Subring.mem_toSubmonoid, mem_Ô]
+  refine ⟨fun h ↦ ⟨fun w ↦ (h w).le, fun w ↦ ?_⟩, fun ⟨h, h_inv⟩ w ↦ ?_⟩ <;>
+    obtain ⟨h_eq, h_ne⟩ := idele_inv_apply_and_ne_zero w a
+  · simp [h_eq, h w]
+  · have h_le := h_inv w
+    rw [h_eq, map_inv₀, inv_le_one₀ ((Valuation.pos_iff _).2 h_ne)] at h_le
+    exact le_antisymm (h w) h_le
 
 lemma isOpen_idelesUnitOff : (idelesUnitOff S).IsOpen := by
   -- It contains the open subgroup `idelesUnitOff ∅`, the units of `Ô K`.

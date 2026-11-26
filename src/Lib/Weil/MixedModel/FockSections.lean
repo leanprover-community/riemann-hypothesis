@@ -1,5 +1,6 @@
 module
 
+public import Lib.General.Analysis.FourierTransforms
 public import Lib.General.Analysis.MeanValueAndTaylor
 public import Lib.Weil.Fock.WeightedNorms
 
@@ -179,7 +180,7 @@ lemma exists_smooth_exponent_coherent {A : EuclideanSpace ℂ p → (ι → ℂ)
   let e (a w : ι' → ℂ) : ℂ := (star w ⬝ᵥ signMatrix ε' *ᵥ a - star a ⬝ᵥ signMatrix ε' *ᵥ w) / 2 +
     -(star (w - a) ⬝ᵥ (w - a)) / 2
   refine ⟨fun ((y, w), x) ↦ e (A x y) w, fun y w x ↦ ?_, ?_, ?_⟩
-  · show cexp (e (A x y) w) = realHeisenbergOp (A x y) vacVector w
+  · change cexp (e (A x y) w) = realHeisenbergOp (A x y) vacVector w
     rw [realHeisenbergOp_vacVector_apply, ← Complex.exp_add]
   · simp only [e, dotProduct, Pi.star_apply, RCLike.star_def, mulVec, Pi.sub_apply, star_sub]
     fun_prop
@@ -317,7 +318,7 @@ lemma lintegral_fockMoment_realHeisenbergOp_fourier_ne_top {d : EuclideanSpace �
   refine (h_dom.hasFiniteIntegral.trans_le' ?_).ne
   -- `fockMoment N (realHeisenbergOp y v) ≤ (1 + ‖y‖) ^ N * fockMoment N v`, then compare the
   -- integrands.
-  grw [lintegral_prod _ h_dom.aestronglyMeasurable.enorm, fockMoment_realHeisenbergOp_le,
+  grw [lintegral_prod _ h_dom.aestronglyMeasurable.eNorm, fockMoment_realHeisenbergOp_le,
     (fockMoment_eq ..).le, lintegral_const_mul_le]
   gcongr with ⟨y, b⟩ w
   -- (`↓` moves the comparison to real numbers, where `h_point` lives, before the other lemmas)
@@ -329,7 +330,8 @@ are `exp (π i ∑ₖ (xₖ b̄ₖ + x̄ₖ bₖ))`. -/
 private lemma realHeisenberg_β_eq_fourierChar (x : p → ℂ) (b : EuclideanSpace ℂ p) :
     ((realHeisenberg 1).β (x + x) ((-↑π * Complex.I) • b.ofLp) : ℂ) =
       (fourierChar (inner ℝ b (.toLp 2 x)) : ℂ) := by
-  simp [realHeisenberg, PiLp.inner_apply, -neg_mul, dotProduct, mul_sum,
+  rw [Real.fourierChar_apply]
+  simp [realHeisenberg, PiLp.inner_apply, -neg_mul, dotProduct, mul_sum, sum_mul,
     ← sum_sub_distrib, -mul_re, re_eq_add_conj]
   simp only [Finset.sum_div]
   exact congrArg _ (sum_congr rfl fun i _ ↦ by ring)

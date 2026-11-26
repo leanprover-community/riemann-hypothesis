@@ -249,7 +249,8 @@ lemma isEllipticSimilitude_of_norm_eq_one {γ : U V.J} (hγ : Irreducible (γ : 
     (h_norm : ∀ (w : InfinitePlace E) (i : n),
       ‖numberedRoots (Φ w) (γ : GL n E).val.charpoly i‖ = 1) :
     IsEllipticSimilitude 1 γ V.J := by
-  refine ⟨hγ, one_ne_zero, by simp [← mem_U], fun w r hr ↦ ?_⟩
+  refine ⟨hγ, one_ne_zero, by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 γ.2,
+    fun w r hr ↦ ?_⟩
   rw [roots_eq_map_numberedRoots hγ.separable] at hr
   obtain ⟨i, -, rfl⟩ := Multiset.mem_map.1 hr
   simp [mul_conj', h_norm]
@@ -304,7 +305,8 @@ lemma exists_ratEmbed_eq_diagTorus {x : GL n (𝔸f E)} {y : GL n E} {σ : Infin
     { J := β
       x := mkAdelicGL (k, x)
       gram_point := gram_mkAdelicGL h_gram h_frame }
-  have hy : y ∈ U β := by simpa [mem_U] using h_ell.conjTranspose_mul_mul
+  have hy : y ∈ U β := by
+    simpa [mem_unitaryGroupOf_iff, star_eq_conjTranspose] using h_ell.conjTranspose_mul_mul
   refine ⟨W, rfl, hy, fun w ↦ ?_⟩
   have h_point : W.x.map (evalInf w) = k w := rfl
   have h_torus : (diagTorus s (z w ∘ σ w)).1.1 =
@@ -325,8 +327,10 @@ lemma map_embFin_centralizer_le {s' : n → ℤˣ} (W : Space E n s') {y : GL n 
   have h_comm : Commute y a := (Subtype.ext_iff.1 (mem_centralizer_singleton_iff.1 h_cent)).symm
   -- `a` is an isometry of `V` or `W` exactly if its conjugate by the frame is unitary.
   have ha' : a ∈ U W.J := by
-    rwa [mem_U, ← W.mem_U_one_iff_gram_eq gram_xFin, ← h_conj a h_comm,
+    rw [mem_unitaryGroupOf_iff, star_eq_conjTranspose, ← W.mem_U_one_iff_gram_eq gram_xFin,
+        ← h_conj a h_comm,
       V.mem_U_one_iff_gram_eq gram_xFin]
+    exact mem_unitaryGroupOf_iff.1 ha
   refine ⟨⟨a, ha'⟩, mem_centralizer_singleton_iff.2 (Subtype.ext h_comm.symm), ?_⟩
   simp [Gf.val_ext_iff, coe_embFin, h_conj a h_comm]
 
@@ -427,7 +431,7 @@ rational matrix) that carries those with polynomial `R` and signs `ε` onto thos
 on its eigenlines, of a form with orthonormal frame `u`), then `f` sends its class to the class of
 a pair `(x, y)` with signs `ε'` such that `u` and `x` conjugate the rational centraliser of `y` in
 the same way. -/
-theorem exists_perm_signedClasses [HasPrimitiveRoot5040 E] {ε ε' : InfinitePlace E → n → ℤˣ}
+theorem exists_perm_signedClasses {ε ε' : InfinitePlace E → n → ℤˣ}
     (hε : ∏ w : InfinitePlace E, ∏ i : n, ε w i = 1)
     (hε' : ∏ w : InfinitePlace E, ∏ i : n, ε' w i = 1) (R : E[X]) :
     ∃ f : Perm (FrameClass E n), f '' signedClasses R ε = signedClasses R ε' ∧

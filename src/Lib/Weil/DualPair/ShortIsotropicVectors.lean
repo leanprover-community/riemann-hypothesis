@@ -532,7 +532,7 @@ lemma Space.exists_norm_le_of_differences {E n : Type} [Field E] [CMType E] [Wei
     h_fock _ (L ∘L J) (by positivity) fun _ ↦ h_diff
   calc ‖(L ∘L J) v‖
     _ ≤ C * ‖L ∘L J‖ * (C₀ * δ) ^ l * (fockMoment l v).toReal := by
-      rw [← toReal_enorm, ← toReal_ofReal_mul _ _ (by positivity)]
+      rw [← toReal_eNorm, ← toReal_ofReal_mul _ _ (by positivity)]
       exact toReal_mono (mul_ne_top ofReal_ne_top hv) h_enorm
     _ ≤ C * (‖L‖ * ‖J‖) * (C₀ * δ) ^ l * (fockMoment l v).toReal := by grw [L.opNorm_comp_le]
     _ = _ := by ring

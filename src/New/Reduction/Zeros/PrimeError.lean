@@ -166,11 +166,23 @@ lemma re_logDerivMean_one : (logDerivMean d 1 1).re = -1 - chowlaSelbergConst d 
   rw [re_logDerivMean_one_eq_add_re_logDeriv, chowlaSelbergConst]
   ring
 
+variable {d q} in
+/-- For a character `ψ` mod `q` let `L_ψ = entireL ψ` be `L(s, ψ)`, times `s - 1` if `ψ` is
+principal, and let `ψ' = quadTwist ψ d` be `ψ (·/d)`. The function `logDerivMean d q`, that is
+`(∑_ψ (logDeriv L_ψ' - logDeriv L_ψ) - 1) / φ(q)`, is analytic at every point where no `L_ψ` and no
+`L_ψ'` vanishes. -/
+lemma analyticAt_logDerivMean {s : ℂ} (h_char : ∀ ψ : DirichletCharacter ℂ q, entireL ψ s ≠ 0)
+    (h_twist : ∀ ψ : DirichletCharacter ℂ q, entireL (quadTwist ψ d) s ≠ 0) :
+    AnalyticAt ℂ (logDerivMean d q) s := by
+  unfold logDerivMean
+  fun_prop (disch := simp only [h_char, h_twist, ne_eq, not_false_eq_true]) [logDeriv]
+
 /-- The function `G_q = logDerivMean d q` is analytic in `re s ≥ 1`, where no `entireL χ`
 vanishes. -/
 lemma analyticAt_logDerivMean_of_one_le_re {s : ℂ} (hs : 1 ≤ s.re) :
-    AnalyticAt ℂ (logDerivMean d q) s := by
-  fun_prop (disch := exact entireL_ne_zero _ hs) [logDerivMean, logDeriv]
+    AnalyticAt ℂ (logDerivMean d q) s :=
+  analyticAt_logDerivMean (fun ψ ↦ entireL_ne_zero ψ hs)
+    (fun ψ ↦ entireL_ne_zero (quadTwist ψ d) hs)
 
 /-- Growth of the remainder: for a prime `d`, `q ≥ 1` and `v ≥ 0`,
 `|R_q(e ^ v)| ≤ (|re G_q(1)| + 5) e ^ v`. -/

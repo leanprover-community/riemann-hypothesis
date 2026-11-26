@@ -321,7 +321,7 @@ def Modulus.charOfTamePart (𝔪 : Modulus E) (ψ : ∀ w : FinPlace E, MulChar 
       let w : places 𝔪 := ⟨⟨M.under _, inferInstance, NeZero.out⟩, le_comap_of_map_le (by simp)⟩
       refine finprod_eq_zero _ w ?_ (toFinite _)
       -- The residue of `x` at `w` is `0`, as `x` lies in the maximal ideal `M` over `w`.
-      show ψ w.val (algebraMap (𝓞 E) (ResField w.val) x) = 0
+      change ψ w.val (algebraMap (𝓞 E) (ResField w.val) x) = 0
       rw [algebraMap_ResField_eq_zero.mpr hM, MulChar.map_zero])
 
 /-- ν is tame for 𝔪 with weight e and character χ: 𝔪 ≠ (1), ν has weight e and a tame part (ψ_w)

@@ -475,7 +475,7 @@ lemma exists_tsum_enorm_classTerm_mul_le (hW : Y.IsEquivariant W) {y : G E ε' �
   set ρ : 𝒮 (V.hom V') →L[ℂ] 𝒮 (V.hom V') := pairWeil V V' (α ι) (α ι') (1, δ * h)
   have absorb : ‖y h‖ * ‖ρ‖ ≤ 2 ^ B * C := by grw [hδ, mul_left_comm, decay]
   calc _ = (∑' w : S, ‖classTerm α Φ W w.1 h r‖ₑ) * ‖y h‖ₑ := by
-        simp only [enorm_mul, ENNReal.tsum_mul_right]
+        simp only [eNorm_mul, ENNReal.tsum_mul_right]
     _ ≤ ‖ρ‖ₑ * a * ‖y h‖ₑ := by grw [ha h ⟨δ, δ_rat, nofun⟩ S r]
     _ = .ofReal (‖y h‖ * ‖ρ‖) * a := by
         rw [ofReal_mul (norm_nonneg _), ofReal_norm, ofReal_norm, mul_right_comm, mul_comm ‖ρ‖ₑ]
@@ -500,13 +500,13 @@ lemma exists_tsum_enorm_unfoldStep_mul_le (hW : Y.IsEquivariant W) {y : G E ε' 
           ‖∫ r, classTerm α Φ W (e (q, w)).1 h r * y h ∂Y.besselMeasure‖ₑ := by
         simp only [he, ← tsum_integral_classTerm_agreeingClasses Y' α Φ hW, ← tsum_mul_right,
           integral_mul_const]
-        exact ENNReal.tsum_le_tsum fun q ↦ enorm_tsum_le_tsum_enorm
+        exact ENNReal.tsum_le_tsum fun q ↦ eNorm_tsum_le_tsum_eNorm
     _ = ∑' w : Y.agreeingTranslates Y',
           ‖∫ r, classTerm α Φ W w.1 h r * y h ∂Y.besselMeasure‖ₑ := by
         rw [← e.tsum_eq, ENNReal.tsum_prod']
     _ ≤ ∑' w : Y.agreeingTranslates Y',
           ∫⁻ r, ‖classTerm α Φ W w.1 h r * y h‖ₑ ∂Y.besselMeasure :=
-        ENNReal.tsum_le_tsum fun w ↦ enorm_integral_le_lintegral_enorm _
+        ENNReal.tsum_le_tsum fun w ↦ eNorm_integral_le_lintegral_eNorm _
     _ = ∫⁻ r, ∑' w : Y.agreeingTranslates Y',
           ‖classTerm α Φ W w.1 h r * y h‖ₑ ∂Y.besselMeasure := by
         rw [lintegral_tsum (by fun_prop)]
@@ -570,9 +570,9 @@ lemma integral_besselGroup_unfold (hW : Y.IsEquivariant W) {y : G E ε' → ℂ}
     have W_cont : Continuous W := hW.continuous
     obtain ⟨c, bound⟩ := exists_tsum_enorm_classTerm_mul_le Y' α Φ hW hy_rapid
     refine ⟨(Continuous.measurable (by fun_prop)).aestronglyMeasurable,
-      .of_bounded_enorm (C := c) coe_ne_top (.of_forall fun ⟨h, r⟩ ↦ ?_)⟩
+      .of_bounded_eNorm (C := c) coe_ne_top (.of_forall fun ⟨h, r⟩ ↦ ?_)⟩
     rw [Function.uncurry_apply_pair, ← tsum_classTerm Y' α Φ, ← tsum_mul_right]
-    exact enorm_tsum_le_tsum_enorm.trans (bound h univ r)
+    exact eNorm_tsum_le_tsum_eNorm.trans (bound h univ r)
   have fubini : ∫ r : Y.besselGroup, W r * ∫ h : G E ε',
         θ (V.hom V') (twistedPairWeil α (r.1, h) Φ) * y h ∂V'.quotMeasure ∂Y.besselMeasure =
       ∫ h : G E ε', (∫ r : Y.besselGroup, W r * θ (V.hom V') (twistedPairWeil α (r.1, h) Φ)

@@ -186,10 +186,14 @@ lemma exists_squareLaw_triangleTransposedLift {P : Parameters} (D : Data P) (z :
     (D.t - z.toNat) ?rank ?range (fun τ ↦ ?weight) h_tame ?chars
   case signs => rw [negCount_sumElim, negCount_gridSigns_add]
   case rank => simp +arith [card_gridIndex, add_mul]
-  case range => grind [negCount_sumElim, card_sum, D.negCount_gridSigns_add_lt z (i := i) (n := n)]
+  case range =>
+    rw [negCount_sumElim, card_sum]
+    have := D.negCount_gridSigns_add_lt z (i := i) (n := n)
+    lia
   case weight =>
-    grind [card_sum, D.card_gridIndex_le_quotientPair_negWeight z ⟨n + 1, hn⟩ τ,
-      D.card_gridIndex_add_card_gridIndex z n]
+    rw [card_sum]
+    have := D.card_gridIndex_le_quotientPair_negWeight z ⟨n + 1, hn⟩ τ
+    lia
   case chars =>
     intro ϑ p q _ _ h_card
     rw [inv_inv]
@@ -562,7 +566,8 @@ theorem exists_triangleTransposedLift_adjoint_comm {P : Parameters} (D : Data P)
   obtain ⟨c₁, hc₁, h_ascent⟩ := D.exists_inner_triangleReversedLift_eq h_pair₁ h_rev₁
   obtain ⟨γ, hγ, h_comm⟩ := D.exists_triangleLift_triangleReversedLift_comm h_lt h_rev₀ h_rev₁
   choose η hη h_shift using fun ϑ : D.MFoldTwist ↦
-    D.exists_triangleLift_reversalScalar_eq (i := i + 1) (n := n) false ϑ (by lia)
+    D.exists_triangleLift_reversalScalar_eq (i := i + 1) (n := n) false ϑ
+      (lt_of_eq_of_lt (Nat.add_right_comm i 1 n) h_lt)
   have hη' : D.HasAbsUpToNormPower η 1 := ⟨1, 0, by simp [hη]⟩
   refine ⟨c₀ * γ * η * c₁, by simpa using ((hc₀.mul hγ).mul hη').mul hc₁,
     fun ϑ Ψ x x' h_adj y ↦ ?_⟩
@@ -682,7 +687,8 @@ lemma index_rangeParabolic_inl_eq {P : Parameters} (D : Data P) (R : Type) [Comm
   rw [index_rangeParabolic]
   congr 1
   -- both groups consist of the matrices with the same vanishing block
-  exact ext fun _ ↦ forall₂_congr (by simp! [lt_iff_le_and_ne])
+  exact ext fun _ ↦ forall₂_congr fun a b ↦
+    imp_congr_left (by cases a <;> cases b <;> simp! [lt_iff_le_and_ne])
 
 /-- The index of the level `New.Data.lastLevel` ϑ in K₀ is the product of the orders of the full
 `GL (D.Y D.m)` over the residue fields at the chosen places and of the indices of the block upper
@@ -754,7 +760,6 @@ lemma exists_stdLevelIndex_lastLevel_eq {P : Parameters} (D : Data P) :
   -- `GL (D.GridIndex false 0 1)` and `GL (D.GridIndex false 0 D.m)` at `w ∈ TwistIndex` by the flag
   -- count, and clear denominators. The index that enters `DescentPair.gramFactor` is that of the
   -- flag group of `D.GridIndex false 0 1`.
-  let := Prop.linearOrder
   simp +instances [κ, index_rangeParabolic_inl_eq, no_places, ← card_GL_eq 1, ← card_GL_eq D.m,
     DescentPair.gramFactor, descentPair, DescentPair.rankDiff, descentResidueLevel,
     card_levelModulus_residueRing, card_ResField, relIndex_levelOf, Nat.card_pi,

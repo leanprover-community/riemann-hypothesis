@@ -836,7 +836,7 @@ lemma volume_sum_mem_Icc_le {n : ℕ} {d D : ℝ} (hd : d ≤ D) :
       _ ≤ ∫⁻ x in .uIoc D 0, ‖(D - x) ^ n / n !‖ₑ := lintegral_mono fun x ↦
         (measure_mono fun y hy ↦ ((mem_slice x y).1 hy).right).trans (ih (sub_le_sub_right hd x))
       _ = ‖D ^ (n + 1) / (n + 1)!‖ₑ := by
-        rw [← ofReal_integral_norm_eq_lintegral_enorm (Continuous.integrableOn_uIoc (by fun_prop))]
+        rw [← ofReal_integral_norm_eq_lintegral_eNorm (Continuous.integrableOn_uIoc (by fun_prop))]
         simp [← ofReal_norm, integral_div, abs_sub_comm D, integral_pow_abs_sub_uIoc, factorial,
           abs_of_nonneg (show (0 : ℝ) ≤ n + 1 by positivity), div_div]
 
@@ -978,9 +978,9 @@ lemma FrobeniusCycle.index_mul_finrank_defectConditions_le (T : FrobeniusCycle N
     _ ≤ rexp x * (n ^ k' / k' !) ^ N := by
         refine (ENNReal.toReal_le_of_le_ofReal (b := ((rexp (E / n) * n) ^ k' / k' !) ^ N)
           (by positivity) ?_).trans_eq ?_
-        · rw [ENNReal.ofReal_pow (by positivity), ← enorm_of_nonneg (by positivity)]
+        · rw [ENNReal.ofReal_pow (by positivity), ← eNorm_of_nonneg (by positivity)]
           exact volume_degreeSlab_le h_deg
-        · rw [mul_pow, mul_div_assoc, mul_pow, ← exp_nat_mul, ← exp_nat_mul]
+        · rw [mul_pow, mul_div_assoc, mul_pow, ← exp_natCast_mul, ← exp_natCast_mul]
     _ ≤ (1 + θ) * Fintype.card (Monomials (Fin (k' + 1)) n) ^ N := by
         gcongr
         · exact (exp_pos _).le.trans h_exp

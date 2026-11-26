@@ -435,7 +435,7 @@ lemma New.Parameters.norm_omega_vac_le {P : Parameters} {s : ℕ} {n : Type} [Fi
     grw [← Core.numInfPlaces, numInfPlaces_E, Nat.totient_le, mul_comm (towerDeg s)]
   rw [show V.ω g V.vacElem y = V.θ f from (theta_rho ..).symm]
   refine le_of_sq_le_sq (h_theta.trans ?_) (exp_nonneg _)
-  rw [← exp_nat_mul, ← exp_add, ← exp_add, ← exp_nat_mul, exp_le_exp]
+  rw [← exp_natCast_mul, ← exp_add, ← exp_add, ← exp_natCast_mul, exp_le_exp]
   simpa [D] using sqrt_mul_sq_add_le_of_le (d := P.d) h_dim
 
 namespace New.Parameters.IsJetConjugation
@@ -487,7 +487,7 @@ theorem norm_map_intVacuum_le {P : Parameters} {s : ℕ} {n : Type} [Fintype n] 
     _ ≤ exp (C * P.q₁ s ^ 2) ^ card n * exp ((2 * P.d + 6) * (P.q₁ s * card n + 1) ^ 2) := by
         grw [ha, norm_omega_vac_le]
     _ ≤ exp ((C + (2 * P.d + 6)) * (P.q₁ s * card n + 1) ^ 2) := by
-        grw [← exp_nat_mul, ← exp_add, add_mul (C : ℝ), mul_left_comm, h_rank]
+        grw [← exp_natCast_mul, ← exp_add, add_mul (C : ℝ), mul_left_comm, h_rank]
     _ ≤ exp (P.constantBound * (P.q₁ s * card n + 1) ^ 2) := by
         gcongr
         -- the remaining summand of `P.constantBound` is nonnegative
@@ -513,8 +513,8 @@ open Matrix Fintype Finset Real MvPolynomial MeasureTheory Space Fock NumberFiel
 `card n'` (`New.FitsRanks`: no column has height strictly between them), then the row lengths
 `diagramWeight` of the diagram formed by the columns of height below `card n'`, summed over all
 places and the first `card n` rows, add up to the number of boxes of that diagram. -/
-lemma FitsRanks.sum_diagramWeight_eq_boxes {n n' Φ : Type} [Fintype n] [DecidableEq n] [Fintype n']
-    [DecidableEq n'] [Fintype Φ] {κ : Φ → ℕ → ℕ}
+lemma FitsRanks.sum_diagramWeight_eq_boxes {n n' Φ : Type} [Fintype n] [Fintype n']
+    [Fintype Φ] {κ : Φ → ℕ → ℕ}
     (hκ : FitsRanks (fun _ : Φ ↦ n) (fun _ : Φ ↦ n') κ) :
     ∑ x : Φ × Fin (Fintype.card n), diagramWeight (rankAt fun _ : Φ ↦ n') κ (x.1, x.2) =
       boxes κ (Fintype.card n') := by
@@ -543,7 +543,7 @@ def HasConjugateGrowth {ι : Type*} [Fintype ι] (σ : ℂ → ℂ) (Q : MvPolyn
 
 /-- Against `normalizedVolume ι`, which is Lebesgue measure on `ι → ℂ` divided by `π ^ card ι`, the
 Gaussian `exp (-|y|² / a)` has integral `a ^ card ι`. -/
-lemma integral_exp_neg_inv_mul_normalizedVolume {ι : Type} [Fintype ι] [DecidableEq ι] {a : ℝ}
+lemma integral_exp_neg_inv_mul_normalizedVolume {ι : Type} [Fintype ι] {a : ℝ}
     (ha : 0 < a) :
     ∫ y : ι → ℂ, exp (-a⁻¹ * ∑ i : ι, ‖y i‖ ^ 2) ∂normalizedVolume ι = a ^ card ι := by
   rw [normalizedVolume, integral_smul_nnreal_measure,
@@ -563,7 +563,7 @@ lemma norm_integral_normalizedVolume_le {ι : Type} [Fintype ι] [DecidableEq ι
     (by positivity))
 
 /-- The vacuum `realVac y` has modulus `exp (-|y|² / 2)`. -/
-lemma norm_realVac {ι : Type} [Fintype ι] [DecidableEq ι] (y : ι → ℂ) :
+lemma norm_realVac {ι : Type} [Fintype ι] (y : ι → ℂ) :
     ‖realVac y‖ = exp (-(∑ i : ι, ‖y i‖ ^ 2) / 2) := by
   rw [realVac, star_dotProduct_self_eq_sum, Complex.norm_exp]
   norm_cast
@@ -613,13 +613,13 @@ lemma Parameters.map_jet_eq_integral {V : Space (P.E s) (n' × n) (homSigns 1 1)
 
 /-- Cauchy's estimate for the jets of one finite translate `ϱ(x) ω(g) (intVacuum V)` of the integral
 vacuum `intVacuum V` of a standard space `V` (all signs `+1`, the point the identity matrix), at
-scale `c * P.jetScale s`. If `0 ≤ A`, `‖σ c‖ ^ 2 / P.bigOmega s ≤ T`, and
+scale `c * P.jetScale s`. If `‖σ c‖ ^ 2 / P.bigOmega s ≤ T` and
 `‖σ Q(z)‖ ≤ A * exp (w + L R)` whenever `∑ ‖σ z_i‖ ^ 2 ≤ T (2 L + 2) R`, then the conjugate by `σ`
 of the jet along `Q` has norm at most `exp (P.constantBound * (P.q₁ s * card (n' × n) + 1) ^ 2 +
 w) * (2 L + 2) ^ card (P.Φ s × n' × n)` times `A`. -/
 lemma Parameters.norm_jet_translate_le (V : Space (P.E s) (n' × n) (homSigns 1 1)) [V.IsStd]
     (σ : Gal(ℂ/P.K)) {c : ℂ} {Q : MvPolynomial (P.Φ s × n' × n) ℂ} {L : ℕ} {w A T : ℝ}
-    (_hA : 0 ≤ A) (hT : ‖σ c‖ ^ 2 / P.bigOmega s ≤ T) (hQ : HasConjugateGrowth σ Q T L w A)
+    (hT : ‖σ c‖ ^ 2 / P.bigOmega s ≤ T) (hQ : HasConjugateGrowth σ Q T L w A)
     (x : n' × n → 𝔸f (P.E s)) (g : Gf (P.E s) (n' × n)) :
     ‖σ (jet ℂ Q (V.jetSeries (c * P.jetScale s) (V.ϱ (finVec x) (V.ω (1, g) (intVacuum V)))))‖ ≤
       exp (P.constantBound * (P.q₁ s * card (n' × n) + 1) ^ 2 + w) *
@@ -710,7 +710,8 @@ lemma Parameters.jetSizeBound_eq (B : ℝ) (L : ℕ) (w : ℝ) :
     P.jetSizeBound s n n' B L w =
       B * (exp (P.constantBound * (P.q₁ s * card (n' × n) + 1) ^ 2 + w) *
         (2 * L + 2) ^ card (P.Φ s × n' × n)) := by
-  simp only [jetSizeBound, exp_add, exp_nat_mul, exp_log (show 0 < (2 * L + 2 : ℝ) by positivity)]
+  simp only [jetSizeBound, exp_add, exp_natCast_mul,
+    exp_log (show 0 < (2 * L + 2 : ℝ) by positivity)]
   ring
 
 /-- Let `a` and `b` be automorphic characters of the norm-one adeles that have a weight: on points
@@ -771,7 +772,7 @@ lemma Parameters.norm_jet_le_of_isVacuumCombination
       rw [map_mul, norm_mul, P.norm_map_pairChar σ' g h, one_mul]
       exact (MonoidHom.isOfFinOrder (σ' : ℂ →* ℂ) hζ).norm_eq_one
     rw [hσ', h_move, map_smul, map_smul, smul_eq_mul, map_mul, norm_mul, h_unit, one_mul]
-    exact P.norm_jet_translate_le V σ' hA hT' hQ' _ k
+    exact P.norm_jet_translate_le V σ' hT' hQ' _ k
   calc _ = ‖∑ x ∈ r.support, σ (r x) *
           σ (jet ℂ Q (V.jetSeries (c * P.jetScale s)
             (W (V.finHeisenbergOp x (intVacuum V)))))‖ := by

@@ -143,8 +143,8 @@ of V, acting on X and fixing the string vectors. -/
 def inclX : G E (1 : X → ℤˣ) →* G E ε :=
   ((U.reindex Y.indexEquiv (by
         -- The Gram matrix in the adeles is block diagonal with the standard form on X; the block of
-        -- the string is given explicitly. The rewrite has to unfold `gradedGram`, hence `erw`.
-        erw [Y.gram_eq, ← submatrix_map]
+        -- the string is given explicitly.
+        rw [Y.gram_eq, gradedGram, gradedBlocks, ← submatrix_map]
         aesop (add simp fromBlocks_map))).trans V.toRatCoords.symm).toMonoidHom.comp
     ((U.sum (J' := (of fun a b : Fin s ↦
         if a = b.rev then (if a = b then -N else 1) else 0).map toAdele) rfl).comp
@@ -244,7 +244,7 @@ lemma Space.mem_Gamma_iff_ratCoordMatrix {g : G E ε} :
 lemma ratCoordMatrix_stdSpace (g : G E (1 : X → ℤˣ)) :
     (stdSpace E X).ratCoordMatrix g = g.adeleMatrix := by
   -- The point of the standard space is the identity.
-  show (1 : Matrix X X (𝔸 E)) * g.adeleMatrix * 1 = g.adeleMatrix
+  change (1 : Matrix X X (𝔸 E)) * g.adeleMatrix * 1 = g.adeleMatrix
   rw [one_mul, mul_one]
 
 namespace Grading
@@ -536,7 +536,7 @@ lemma submatrix_inl_ratCoordMatrix_unitary {g : G E ε} (hg : g ∈ Y.besselGrou
       grind -funext [star_zero, sum_eq_zero]
     _ = _ := by
       rw [show (V.ratCoordMatrix g)ᴴ * V.J.map toAdele * V.ratCoordMatrix g = V.J.map toAdele from
-        (V.toRatCoords g).2, Y.submatrix_inl_map_J]
+        mem_unitaryGroupOf_iff.1 (V.toRatCoords g).2, Y.submatrix_inl_map_J]
 
 /-- On `New.Grading.besselGroup`, the X-block of the matrix in rational coordinates is
 multiplicative. -/
@@ -760,8 +760,8 @@ variable {ε : n → ℤˣ} {A : ℕ} {J : Matrix n n ℂ}
 `New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε). -/
 def DiscreteSeries.frameEquiv : U J ≃ₜ* USign ε :=
   ContinuousMulEquiv.mk (U.conj p.matrix p.gram_eq).symm
-    (continuous_induced_rng.2 ((continuous_const.mul continuous_subtype_val).mul continuous_const))
-    (continuous_induced_rng.2 ((continuous_const.mul continuous_subtype_val).mul continuous_const))
+    (continuous_induced_rng.2 ((continuous_const.mul continuous_subtypeVal).mul continuous_const))
+    (continuous_induced_rng.2 ((continuous_const.mul continuous_subtypeVal).mul continuous_const))
 
 /-- The function g ↦ c_λ(p⁻¹gp) on U(J), for l = 2λ and the frame p of
 `New.DiscreteSeries.SignFrame J ε`, so that pᴴJp = diag(ε). -/

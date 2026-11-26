@@ -80,12 +80,6 @@ section TeichmullerLimits
 open NumberField Complex IsLocalRing PadicInt QuadField AddChar ComplexConjugate
 variable {p : ℕ} [hp : Fact p.Prime]
 
-/-- The residue field of the valuation ring of `ℂ_[p]` has characteristic `p`, since `‖p‖ < 1`. -/
-instance : CharP (ResidueField (valRingCp p)) p := by
-  refine (CharP.charP_iff_prime_eq_zero hp.out).2 (residue_eq_iff_valuation_sub_lt_one.2 ?_)
-  change ‖(p : valRingCp p).val - 0‖₊ < 1
-  simpa [← NNReal.coe_lt_coe] using norm_p_lt_one
-
 /-- If `‖u - 1‖ < 1` in `ℂ_p` and `p ∣ q`, then `u ^ q ^ n` tends to `1` as `n → ∞`. -/
 lemma tendsto_pow_pow_of_norm_sub_one_lt {u : ℂ_[p]} (hu : ‖u - 1‖ < 1) {q : ℕ} (hq : p ∣ q) :
     Filter.Tendsto (fun n : ℕ ↦ u ^ q ^ n) Filter.atTop (nhds 1) := by
@@ -337,12 +331,6 @@ lemma normLength_addVal (x : ↑O) : O.normLength (addVal O x) = ellVal x.val :=
       n * ENNReal.ofReal (-logb ℓ ‖O.uniformizer.val‖) := by
     simp [← mul_neg, hϖ.ne_zero, hu_norm, ellVal, logb_pow]
   rw [addVal_def' u hϖ n, h_ellVal, normLength_natCast]
-
-/-- The normalised length of `n` is `n v(ϖ)` for every uniformiser `ϖ` of `O`, where v = `ellVal`
-is the normalised valuation on ℚ̄_ℓ. -/
-lemma normLength_natCast_of_irreducible {ϖ : ↑O} (hϖ : Irreducible ϖ) (n : ℕ) :
-    O.normLength n = n * ellVal ϖ.val := by
-  rw [← hϖ.addVal_pow n, normLength_addVal, SubmonoidClass.coe_pow, ellVal_pow]
 
 @[simp]
 lemma normLength_natCast_mul (k : ℕ) (g : ℕ∞) : O.normLength (k * g) = k * O.normLength g := by

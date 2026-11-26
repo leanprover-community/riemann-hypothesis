@@ -139,7 +139,7 @@ lemma polyMatrixCoeff_eq_holMinorsPi_mul_conj (s : n → ℤˣ) (s' : n' → ℤ
     have h_neg {k : InfinitePlace E × n' × n} (hk : σ k ≠ 1) : pderiv k P = 0 :=
       pderiv_eq_zero_of_notMem_vars fun hk' ↦ hk (mem_supported.1 hP hk')
     by_cases hj : σ j = 1
-    · rw [New.pderiv_comm, h_neg (h.trans_eq hj), map_zero]
+    · rw [MvPolynomial.pderiv_comm, h_neg (h.trans_eq hj), map_zero]
     · rw [h_neg hj, map_zero]
   let t : ℂ := ∏ w : InfinitePlace E, principalMinor (u⁻¹ w) (fun k : n ↦ s k = 1) ^ ν w *
     principalMinor (u⁻¹ w) (fun k : n ↦ s k = -1) ^ c w
@@ -297,7 +297,7 @@ its lift by the datum (`modDatum`) of `Q₀` and of the indicator of the matrix 
 `𝔪` vanishes, then `realConv (holMinorsPi s u) ψ`, the convolution of `ψ` with it over the real
 points, vanishes. -/
 lemma realConv_holMinorsPi_eq_zero_of_lift_eq_zero (ho : IsPosFirstOrder s O) {E : Type} [Field E]
-    [CMType E] [WeilData E] {𝔪 : Modulus E} {N : 𝓞 E} [Fact (N ≠ 0)]
+    [CMType E] [WeilData E] {𝔪 : Modulus E} {N : 𝓞 E}
     (hN : 𝔪.ideal = Ideal.span {N}) (h𝔪 : Nonempty 𝔪.places) (S : Space E n s) {c b : AutChar E}
     {γ' γ : InfinitePlace E → ℤ} {u : InfinitePlace E → n → ℤ} (hb : b.HasWeight γ 1)
     (h_dom : ∀ w : InfinitePlace E, IsKDominant s O (u w)) (h_int : Integrable (holMinorsPi s u))
@@ -345,7 +345,7 @@ indicator of the matrix of the inclusion `e` modulo `𝔪` (the datum `modDatum`
 paired by `integrated` with the Schrödinger operator of that indicator on the vacuum), vanishes,
 then the lift by `Q₀` vanishes everywhere. -/
 lemma lift_modDatum_eq_zero_of_mem_span {E : Type} [Field E] [CMType E] [WeilData E]
-    {𝔪 : Modulus E} {N : 𝓞 E} [Fact (N ≠ 0)] (hN : 𝔪.ideal = Ideal.span {N}) (S : Space E n s)
+    {𝔪 : Modulus E} {N : 𝓞 E} (hN : 𝔪.ideal = Ideal.span {N}) (S : Space E n s)
     {c b : AutChar E} {γ' : InfinitePlace E → ℤ} (hc : c.HasWeight γ' 1) (e : n ↪ n')
     {Q₀ : MvPolynomial (InfinitePlace E × n' × n) ℂ} {ι : Type*}
     (Q : StdClasses (principalLevel n' N) → ι → MvPolynomial (InfinitePlace E × n' × n) ℂ)

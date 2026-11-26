@@ -239,7 +239,7 @@ lemma exists_move_kernel_of_eq_imp_eq (K : TorsionCoeff g)
   -- the sections `s` and `s'` agree where `J` is zero, and so do `L s` and `L s'`
   have hs_eq (c : C) (hc : J.ideal c = ⊥) : s.val c = s'.val c := h_agree c (hJ c hc)
   have h_L_eq (c : C) (hc : J.ideal c = ⊥) : (L s).ideal c = (L s').ideal c := by
-    show I.ideal (X.elementsMk (g.obj c) (s.val c)) = I.ideal (X.elementsMk (g.obj c) (s'.val c))
+    change I.ideal (X.elementsMk (g.obj c) (s.val c)) = I.ideal (X.elementsMk (g.obj c) (s'.val c))
     rw [hs_eq c hc]
   -- Where `L s'` is the unit ideal, locally `L s` or `J` is the unit ideal too.
   have h_loc :
@@ -361,8 +361,6 @@ section IntegrationOverLine
 
 open CategoryTheory Fin TotalH Functor.Elements Finsupp
 open Function hiding comp comp_id id_comp
-
-set_option backward.isDefEq.respectTransparency false
 
 variable {C : Type 1}
   {C' D : Type _} [Category C] [Category C'] [Category D] {ℓ : ℕ}
@@ -501,8 +499,6 @@ section ComparedTheories
 
 open CategoryTheory Fin TotalH Functor.Elements Finsupp
 open Function hiding comp comp_id id_comp
-
-set_option backward.isDefEq.respectTransparency false
 
 variable {C : Type 1} [Category C] {ℓ : ℕ} {A : Type} [CommRing A] [InvertsPrime A ℓ]
   {g : C ⥤ TestOver A} {N N' : AbFunctor (TestOver A)} {d : ℕ} {ι : Type*} [Fintype ι]
@@ -765,10 +761,10 @@ lemma isFiniteLerayHirsch_of_retract [HasFlatValues N] (r : ι → NaturalOp 0 (
         hN'_inj h_image
       -- Evaluate at `m`; `Finsupp.mapRange_apply` holds by definition.
       exact DFunLike.congr_fun h_eq m
-    calc π (w m)
-      _ = ∑ i, (ρ i).app stL ((r i).app stL (δ (u m))) := by simp only [h_r, hπ_sum]
-      _ = π (δ (u m)) := hπ_sum _
-      _ = 0 := h_exact.apply_apply_eq_zero _
+    rw [Finsupp.mapRange_apply, Finsupp.zero_apply, ← hπ_sum (w m),
+      ← h_exact.apply_apply_eq_zero (u m), ← hπ_sum (δ (u m))]
+    simp only [h_r]
+    rfl
   -- Finite: the cohomology of `N` is the image of a finite product of copies of that of `N'`.
   have h_onto : Surjective fun v : ι → TotalH N' L ↦ ∑ i, (ρ i).app stL (v i) := by
     intro y
@@ -955,9 +951,9 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
           (I.extendToZeros t.theory t.points w) := by
     simp_rw [show lerayHirsch θ _ β = _ from (β.1.sum_coe_sort _).symm, map_sum,
       AddMonoidHom.finsetSum_apply]
-    congr! 1
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
     exact (mapThenComp_comp
-      (map_restrictAlong_restrictAlong (elementsProj X) (sectionLift _ t.points) (β _))).symm
+      (map_restrictAlong_restrictAlong (elementsProj X) (sectionLift _ t.points) (β i))).symm
   -- Specialise `hβ` to the pair `(t.points, q')`; its hypothesis is `h_ext`.
   let s : t.Base ⥤ E :=
     sectionLift (X := (elementsProj X ⋙ 𝟭 (TestOver A)) ⋙ X)

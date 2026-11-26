@@ -338,7 +338,7 @@ lemma mem_frameBox_of_mem_boxedPoints [S.IsAdmissible] {y : InfinitePlace E → 
 lemma measurableSet_boxedPoints [S.IsAdmissible] : MeasurableSet S.boxedPoints := by
   have hD : S.IsResidueDomain (Classical.epsilon S.IsResidueDomain) :=
     Classical.epsilon_spec S.exists_isResidueDomain
-  show MeasurableSet (S.reducedPoints (Classical.epsilon S.IsResidueDomain) ∩
+  change MeasurableSet (S.reducedPoints (Classical.epsilon S.IsResidueDomain) ∩
     {y : InfinitePlace E → 𝔰.G₁ | ∀ v, InCut (y v) S.b})
   refine hD.measurableSet_reducedPoints.inter ?_
   change MeasurableSet {y : InfinitePlace E → 𝔰.G₁ | ∀ v, besselLength (y v) ≤ S.b ^ (6 * 𝔰.n + 2)}

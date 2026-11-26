@@ -250,7 +250,7 @@ lemma besselCut_apply (y : 𝔰.G₁) :
 `‖F y‖`. -/
 lemma enorm_besselCut_le (y : 𝔰.G₁) : ‖besselCut b F y‖ₑ ≤ ‖F y‖ₑ := by
   obtain ⟨h_nonneg, h_le⟩ := besselCutoff_mem_Icc (b ^ (6 * 𝔰.n + 2)) (besselLength y)
-  rw [besselCut_apply, enorm_le_iff_norm_le, norm_smul, Real.norm_of_nonneg h_nonneg]
+  rw [besselCut_apply, eNorm_le_iff_norm_le, norm_smul, Real.norm_of_nonneg h_nonneg]
   exact mul_le_of_le_one_left (norm_nonneg _) h_le
 
 /-- `besselCut b F y` is `F y` multiplied by a number in `[0, 1]` (a cutoff evaluated at
@@ -258,7 +258,7 @@ lemma enorm_besselCut_le (y : 𝔰.G₁) : ‖besselCut b F y‖ₑ ≤ ‖F y�
 lemma enorm_besselCut_sub_le (y : 𝔰.G₁) : ‖besselCut b F y - F y‖ₑ ≤ ‖F y‖ₑ := by
   obtain ⟨h_nonneg, h_le⟩ := besselCutoff_mem_Icc (b ^ (6 * 𝔰.n + 2)) (besselLength y)
   nth_rw 1 [← one_smul ℝ (F y)]
-  rw [besselCut_apply, ← sub_smul, enorm_le_iff_norm_le, norm_smul]
+  rw [besselCut_apply, ← sub_smul, eNorm_le_iff_norm_le, norm_smul]
   exact mul_le_of_le_one_left (norm_nonneg _) (abs_le.2 ⟨by linarith, by linarith⟩)
 
 /-- Where the cut of `F` is nonzero, the length is at most `b ^ (6 n + 2)` (`InCut`). -/
@@ -371,14 +371,14 @@ lemma exists_isDecayMajorant_besselAverage {f m : ℕ} {b : ℝ} {x : 𝔰.G₁}
   let a : ℝ≥0∞ := ‖c‖ₑ * (.ofReal (16 ^ M) * besselBallVolume (ε := ε) x)
   have h_decay (y : 𝔰.G₁) :
       .ofReal (scaledBesselLength y b ^ (3 * 𝔰.r ^ 3 * f)) * ‖F y‖ₑ ≤ ‖c‖ₑ * Φ y := by
-    grw [hF, enorm_smul, mul_left_comm,
+    grw [hF, eNorm_smul, mul_left_comm,
       scaledBesselLength_pow_mul_enorm_besselAverage_le h_gap hv hb_two hx hf]
   have h_bound (y : 𝔰.G₁) : Φ y ≤ .ofReal (16 ^ M) * besselBallVolume (ε := ε) x := by
     simpa only [norm_frameEquiv] using lintegral_decay_le_besselBallVolume x y
   have h_integral : a * ∫⁻ y, ‖c‖ₑ * Φ y ∂besselQuotMeasure ≤
       .ofReal (b ^ (400 * 𝔰.r ^ 2)) * card I :=
     calc _ = ‖c‖ₑ ^ 2 * (.ofReal (16 ^ M) * besselBallVolume (ε := ε) x) * ∫⁻ g, φ g := by
-          rw [lintegral_const_mul' _ _ enorm_ne_top,
+          rw [lintegral_const_mul' _ _ eNorm_ne_top,
             lintegral_unfold_besselGraphMeasure (x := x⁻¹) φ (by fun_prop)]
           simp only [a]
           ring
@@ -443,7 +443,7 @@ lemma exists_isCutPair_besselAverage {m : ℕ} {b : ℝ} {x : 𝔰.G₁} {v : Eu
   have hF : IsBesselFunction rep F :=
     hW.smul_of_invariant hW_cont continuous_const (K := |c|) (fun _ ↦ le_rfl) fun _ _ _ ↦ rfl
   have hF_norm : ∫⁻ y, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure = card I := by
-    simp [F, enorm_smul, mul_pow, lintegral_const_mul', ← hc]
+    simp [F, eNorm_smul, mul_pow, lintegral_const_mul', ← hc]
   have hF_repr : convolve F e = F := by
     funext y
     calc convolve F e y = c • convolve W e y := by

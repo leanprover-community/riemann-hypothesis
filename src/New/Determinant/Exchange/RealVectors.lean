@@ -67,7 +67,7 @@ lemma exists_isSchwartzVector_realSlice_eq (D : X.Splitting W₁ b) [IsBaseAdapt
   -- Choose `κ` so that `τ κ` and the Gaussian slices of the vacuum have the same integral. The
   -- slice at `0` for `D.symm` is the integral of all slices, so the section `τ κ • v` gives `v`.
   have hpos : 0 < ∫ x, τ x ∂normalizedVolume _ :=
-    hτ.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hsupp hτ₀ hy
+    hτ.continuous.integral_pos_of_hasCompactSupport_nonneg_ne_zero hsupp hτ₀ hy
   set 𝓜 := (isAdapted_homSource D V').mixedModel
   obtain ⟨κ, hκ⟩ : ∃ κ : ℂ,
       ∫ x, 𝓜.slice x Fock.vacVector 0 ∂normalizedVolume _ = (∫ x, τ x ∂normalizedVolume _ : ℝ) *

@@ -630,7 +630,7 @@ lemma hasIntegrableTerms_hyperbolicSplitting_of_isRapid {Y : G E (1 : n → ℤ�
         ‖(hyperbolicSplitting E n₁).thetaTerm (stdSpace E n) a 1 f g x h * Y h‖ₑ
       = (∑' x : Matrix n n₁ E,
           ‖(hyperbolicSplitting E n₁).thetaTerm (stdSpace E n) a 1 f g x h‖ₑ) * ‖Y h‖ₑ := by
-        simp_rw [enorm_mul, ENNReal.tsum_mul_right]
+        simp_rw [eNorm_mul, ENNReal.tsum_mul_right]
     _ ≤ ENNReal.ofReal (|C| * ‖f‖ * (stdSpace E n).height h ^ N) * ‖Y h‖ₑ := by grw [h_growth f h]
     _ = ENNReal.ofReal (|C| * ‖f‖ * (‖Y h‖ * (stdSpace E n).height h ^ N)) := by
         rw [← ofReal_norm, ← ENNReal.ofReal_mul' (norm_nonneg _), mul_right_comm, mul_assoc]
@@ -788,7 +788,7 @@ lemma DescentsVanish.integral_frameChar_mul_blockPeriod_eq_zero {T : Set (FinPla
   obtain ⟨F_int, F_zero⟩ : Integrable F ν ∧ ∫ g, F g ∂ν = 0 :=
     hkill.integral_frameChar_eq_zero o hs hY_cont hY_inv h₁ u
   have F_cont : Continuous F :=
-    (continuous_subtype_val.comp <| (continuous_apply u).comp <|
+    (continuous_subtypeVal.comp <| (continuous_apply u).comp <|
       (continuous_frameChar T).comp (by fun_prop)).mul (by fun_prop)
   have F_inv : ((stdSpace E n₂).Γ.map (secondBlock o hs)).FixesLeft F := by
     rintro _ ⟨v, hv, rfl⟩ g
@@ -850,20 +850,16 @@ lemma exists_continuousMap_eq_conj_blockPeriod (o : n₁ ⊕ n₂ ≃ n)
         χ (frameChar T (movedFrame o h)) = star (blockPeriod o hs Y h₁ h) := by
   -- On the compact set `K` of points with integral finite part the period depends only on the
   -- values of the characters, and every frame of nonzero weight comes from a point of `K`.
-  let K : Set (G E (1 : n → ℤˣ)) := Set.univ ×ˢ (stdLevel E n : Set (Gf E n))
-  have mem_K (a : G E (1 : n → ℤˣ)) : a ∈ K ↔ a.2 ∈ stdLevel E n :=
-    and_iff_right (Set.mem_univ a.1)
+  let K : Set (G E (1 : n → ℤˣ)) := Prod.snd ⁻¹' (stdLevel E n : Set (Gf E n))
   have K_compact : CompactSpace K :=
-    isCompact_iff_compactSpace.1 (isCompact_univ.prod isCompact_stdLevel)
+    isCompact_iff_compactSpace.1 (Set.univ_prod ▸ isCompact_univ.prod isCompact_stdLevel :
+      IsCompact (Prod.snd ⁻¹' (stdLevel E n : Set (Gf E n))))
   have I_cont : Continuous (blockPeriod o hs Y h₁) := continuous_blockPeriod o hs hY_cont hY_inv h₁
   let chars : C(K, (n × n₁ → 𝔸 E) → Circle) :=
     ⟨fun a ↦ frameChar T (movedFrame o (a : G E (1 : n → ℤˣ))), by fun_prop⟩
   let conjPeriod : C(K, ℂ) := ⟨fun a ↦ star (blockPeriod o hs Y h₁ a), by fun_prop⟩
-  have h_fibre (a b : K) (hab : chars a = chars b) : conjPeriod a = conjPeriod b := by
-    have h_period : blockPeriod o hs Y h₁ a = blockPeriod o hs Y h₁ b :=
-      blockPeriod_eq_of_frameChar_eq o hs hY_cont hY_inv h₁ hY_level
-        ((mem_K a).1 a.property) ((mem_K b).1 b.property) hab
-    exact congrArg star h_period
+  have h_fibre (a b : K) (hab : chars a = chars b) : conjPeriod a = conjPeriod b :=
+    congrArg star (blockPeriod_eq_of_frameChar_eq o hs hY_cont hY_inv h₁ hY_level a.2 b.2 hab)
   obtain ⟨χ, hχ⟩ : ∃ χ : C((n × n₁ → 𝔸 E) → Circle, ℂ), ∀ a : K, χ (chars a) = conjPeriod a :=
     exists_continuousMap_comp_eq chars conjPeriod h_fibre
   refine ⟨χ, fun h h_weight ↦ ?_⟩
@@ -871,7 +867,7 @@ lemma exists_continuousMap_eq_conj_blockPeriod (o : n₁ ⊕ n₂ ≃ n)
       ∃ γ : G E (1 : n → ℤˣ), γ.2 ∈ stdLevel E n ∧ movedFrame o γ = movedFrame o h :=
     exists_movedFrame_eq o h_weight
   calc χ (frameChar T (movedFrame o h)) = χ (frameChar T (movedFrame o γ)) := by rw [h_frame]
-    _ = star (blockPeriod o hs Y h₁ γ) := hχ ⟨γ, (mem_K γ).2 hγ⟩
+    _ = star (blockPeriod o hs Y h₁ γ) := hχ ⟨γ, hγ⟩
     _ = star (blockPeriod o hs Y h₁ h) := by
         rw [blockPeriod_eq_of_movedFrame_eq o hs hY_cont hY_inv h₁ h_frame]
 

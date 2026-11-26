@@ -811,7 +811,7 @@ lemma exists_baseChange_isIwahoriEigen
     intro s t ht
     refine ⟨s * t, ?_, fun x hx ↦ ?_,
       heckeFun_iwahoriDoubleCoset_mul (localFormRep (stdSpace E' m) κ.baseChange hu) s.prop t.prop⟩
-    · simpa [Pi.mul_def] using s.prop.mul_strictMono ht (by simp [zero_lt_iff]) (by simp)
+    · simpa [Pi.mul_def] using s.prop.mul_strictMono ht (by simp [pos_iff_ne_zero]) (by simp)
     · rw [id_eq, heckeFun_iwahoriDoubleCoset_mul (localFormRep (stdSpace E m) κ hw)
         ((h_dom _ s.val).mpr s.prop) ((h_dom _ t.val).mpr t.prop) x hx]
       simp [Function.comp_def, Pi.mul_def]

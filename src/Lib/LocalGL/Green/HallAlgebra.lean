@@ -1102,7 +1102,8 @@ lemma classInner_evalGL_prod [Finite k] {s : Finset ι} (hs : ∀ i : n, b i ∈
       left_inv := by aesop_cat
       right_inv := by aesop_cat }
   apply finMean_equiv blocks
-  simp_intro g [blocks, mul_left_comm, ← mul_assoc, h_notMem]
+  simp_intro g [blocks, ← mul_assoc, h_notMem]
+  rw [mul_comm (∏ x ∈ s, _)]
   symm
   congr!
   · -- The blocks of the levels in `s` agree up to a bijection of their index sets.

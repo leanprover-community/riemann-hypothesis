@@ -135,11 +135,11 @@ lemma AddObj.property_of_isOpenImmersion {k : Type} {X : Scheme} [Field k] [IsAl
       exists_point_mem (Over.mk s) U.isOpen.isClosed_compl.isLocallyClosed ⟨x, hx⟩
     refine hz (TopologicalSpace.Opens.mem_iSup.2 ⟨z - y, a, ?_⟩)
     have h_yz : y ≫ translation (z - y) = z := by simp [Pt, comp_add]
-    show (translation (z - y)).left (i a) = z.left c
+    change (translation (z - y)).left (i a) = z.left c
     rw [ha, ← Hom.comp_apply, ← comp_left, h_yz]
   refine IsZariskiLocalAtSource.of_openCover (.mkOfCovers _ _ t h_cover) fun z ↦ ?_
   -- Translations are morphisms over `k`.
-  show P ((i ≫ (translation z).left) ≫ (Over.mk s).hom)
+  change P ((i ≫ (translation z).left) ≫ (Over.mk s).hom)
   rwa [Category.assoc, (translation z).w]
 
 /-- A standard smooth ring map is standard smooth of some relative dimension. -/
@@ -206,7 +206,7 @@ end GeometricPoints
 ## Geometric reducedness of smooth morphisms and integral abelian varieties
 
 Two instances. A smooth morphism of schemes is geometrically reduced (locally it is étale over a
-polynomial ring, `New.Variety.isReduced_of_algebra_etale`). An abelian scheme over an algebraically
+polynomial ring, `New.Variety.isReduced_of_etale`). An abelian scheme over an algebraically
 closed field is integral. Here `New.IsAbelianScheme` asks a commutative group scheme to be smooth,
 proper and divisible (multiplication by each `m ≠ 0` is onto); divisibility takes the place of the
 usual connectedness of the fibres, and the second instance recovers it.
@@ -218,20 +218,15 @@ open CategoryTheory AlgebraicGeometry Algebra MorphismProperty TensorProduct Set
 
 namespace New.Variety
 
-/-- An étale algebra over an integral domain is reduced. -/
+/-- An étale algebra over an integral domain is reduced. Étaleness of `B` over the domain `A` is
+an explicit hypothesis, from which the algebra structure is inferred. -/
 @[stacks 033B "for an étale algebra over a domain"]
-lemma isReduced_of_algebra_etale (A B : Type*) [CommRing A] [CommRing B] [IsDomain A]
-    [Algebra A B] [Algebra.Etale A B] : IsReduced B := by
+lemma isReduced_of_etale {A B : Type*} [CommRing A] [CommRing B] [IsDomain A] {alg : Algebra A B}
+    (h_etale : Algebra.Etale A B) : IsReduced B := by
   -- `B` is flat over `A`, so it embeds in `K ⊗[A] B`, which is unramified over the field `K`.
   let K : Type _ := FractionRing A
   have : IsReduced (K ⊗[A] B) := FormallyUnramified.isReduced_of_field K _
   exact isReduced_of_injective _ (includeRight_injective (IsFractionRing.injective A K))
-
-/-- The form of `New.Variety.isReduced_of_algebra_etale` in which étaleness of `B` over the domain
-`A` is an explicit hypothesis, from which the algebra structure is inferred. -/
-lemma isReduced_of_etale {A B : Type*} [CommRing A] [CommRing B] [IsDomain A] {alg : Algebra A B}
-    (h_etale : Algebra.Etale A B) : IsReduced B :=
-  isReduced_of_algebra_etale A B
 
 /-- A smooth morphism of schemes is geometrically reduced. -/
 instance {X Y : Scheme.{0}} (s : X ⟶ Y) [hs : Smooth s] : GeometricallyReduced s := by
@@ -363,7 +358,7 @@ with dense images and with finitely many composites `x w ≫ z`. Consider the pa
 and a map `ψ` from the stalk `𝒪_{S,s}` to `ℂ` such that `x w ≫ z` factors through `Spec 𝒪_{S,s}`
 via `Spec.map ψ`. The points `(x w, Spec.map ψ)` of `A ×_S Spec 𝒪_{S,s}` form a separating family:
 this scheme is reduced and the images of these points are dense. -/
-lemma isSeparatingFamily_stalk {S : Scheme} [IsReduced S] {W : Type} {A : Scheme} {z : A ⟶ S}
+lemma isSeparatingFamily_stalk {S : Scheme} {W : Type} {A : Scheme} {z : A ⟶ S}
     {x : W → (Spec (.of ℂ) ⟶ A)} [IsReduced A] (h_dense : IsDenseFamily x)
     (h_finite : (range fun w : W ↦ x w ≫ z).Finite) (s : S) :
     IsSeparatingFamily
@@ -439,7 +434,7 @@ noetherian scheme S with finitely many complex points whose images are dense. Th
 locus of X over S is dense in X. -/
 lemma dense_smoothLocus_of_isDenseFamily {S : Scheme} [IsReduced S] [IsLocallyNoetherian S]
     {J : Type} [Finite J] {ξ : J → (Spec (.of ℂ) ⟶ S)} (hξ : IsDenseFamily ξ) {X : Scheme}
-    (f : X ⟶ S) [LocallyOfFiniteType f] [Flat f] [IsReduced X] [IsLocallyNoetherian X] :
+    (f : X ⟶ S) [LocallyOfFiniteType f] [Flat f] [IsReduced X] :
     Dense (f.smoothLocus : Set X) := by
   -- At a generic point `a` of `X` the stalks of `X` and `S` are fields. The second maps to `ℂ`,
   -- so it has characteristic zero and is perfect, and the extension is formally smooth.
@@ -482,7 +477,7 @@ lemma IsSeparatingFamily.prod {S : Scheme} [IsReduced S] {A B : Over S} {V W J :
   let j : A.hom.smoothLocus.toScheme ⟶ A.left := A.hom.smoothLocus.ι
   have : Smooth (j ≫ A.hom) := by
     simp [j, ← Hom.smoothLocus_eq_top_iff, ← j.preimage_smoothLocus_eq]
-  have : IsDominant j := ⟨(dense_smoothLocus_of_isDenseFamily hξ A.hom).denseRange_val⟩
+  have : IsDominant j := ⟨(dense_smoothLocus_of_isDenseFamily hξ A.hom).denseRange_subtypeVal⟩
   have : IsSchemeTheoreticallyDominant j := of_isDominant j
   -- Hence `A ×_S B` is reduced: the flat base change `j'` of `j` is scheme-theoretically dominant,
   -- and its source is smooth over the reduced `B`.

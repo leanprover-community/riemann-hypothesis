@@ -77,12 +77,6 @@ def IsTameGeneratorFamily (ν : ℕ) (w : J → FinPlace E) (τ φ : J → Gal(�
 noncomputable abbrev withConjInv (τ : J → Gal(Ω/E)) (k : J × Bool) : Gal(Ω/E) :=
   idOrConjInv k.2 (τ k.1)
 
-lemma withConjInv_true (τ : J → Gal(Ω/E)) (j : J) : withConjInv τ (j, true) = τ j := rfl
-
-lemma withConjInv_false (τ : J → Gal(Ω/E)) (j : J) :
-    withConjInv τ (j, false) = (conjGal (τ j))⁻¹ :=
-  rfl
-
 /-- A triangle of primes: places `w j` off `ℓ`, with elements `τ j` and `φ j`, indexed by a finite
 linear order `J`. The place `w j` serves the exponent `ty j`, where `0 < ty j < t` and `ty` is
 monotone, and `a` is a fixed element of `Gal(Ω/E)`. In the application `a` generates this group

@@ -166,7 +166,7 @@ action of `G ⧸ U` on `V`. -/
 private noncomputable def symbolIntertwiningMap {G K R : Type} [Group G] [TopologicalSpace G]
     [Field K] [EmbeddedNumberField K] [MulSemiringAction G Ω] [IsProGalois G K Ω] [CommRing R]
     {l N : ℕ} [Fact l.Prime] {V : DiscreteModule R G} {U : OpenNormalSubgroup G}
-    [Module (ZMod l) V] [NeZero N] {ι : Type} [Fintype ι]
+    [Module (ZMod l) V] {ι : Type} [Fintype ι]
     (W : Representation ℤ (G ⧸ U.toOpenSubgroup.toSubgroup) V) (hW : ∀ g : G, ⇑(V.ρ g) = W g)
     (b : fixedSUnits N U →+ ι → ZMod l) :
     (ι → V) × (coboundaryMap V.ρ).toAddMonoidHom.ker →+
@@ -194,7 +194,7 @@ private noncomputable def symbolIntertwiningMap {G K R : Type} [Group G] [Topolo
 private lemma mem_range_symbolIntertwiningMap {G K R : Type} [Group G] [TopologicalSpace G]
     [Field K] [EmbeddedNumberField K] [MulSemiringAction G Ω] [IsProGalois G K Ω] [CommRing R]
     {l N : ℕ} [Fact l.Prime] {V : DiscreteModule R G} {U : OpenNormalSubgroup G}
-    [Module (ZMod l) V] [NeZero N] {ι : Type} [Fintype ι]
+    [Module (ZMod l) V] {ι : Type} [Fintype ι]
     (W : Representation ℤ (G ⧸ U.toOpenSubgroup.toSubgroup) V) (hW : ∀ g : G, ⇑(V.ρ g) = W g)
     (h_tors : ∀ a : V, l • a = 0) {z : G} {n : ℕ} (h_inj_sub : Function.Injective ⇑(V.ρ z - n))
     (τ : V →+ V) (hτ : ∀ a : V, ∑ δ : G ⧸ (U.toOpenSubgroup : Subgroup G), W δ (τ (W δ⁻¹ a)) = a)
@@ -275,7 +275,7 @@ value `a i` at each `γ i`. -/
 private lemma exists_mem_trivialisedCocycles_of_mem_ker {G K R : Type} [Group G]
     [TopologicalSpace G] [Field K] [EmbeddedNumberField K] [MulSemiringAction G Ω]
     [IsProGalois G K Ω] [CommRing R] {l N : ℕ} [Fact l.Prime] {V : DiscreteModule R G}
-    {U : OpenNormalSubgroup G} [Module (ZMod l) V] [NeZero N] [Finite V] {ι : Type}
+    {U : OpenNormalSubgroup G} [Module (ZMod l) V] [Finite V] {ι : Type}
     [Fintype ι] {I : Set G}
     (W : Representation ℤ (G ⧸ U.toOpenSubgroup.toSubgroup) V) (hW : ∀ g : G, ⇑(V.ρ g) = W g)
     (τ : V →+ V) (hτ : ∀ a : V, ∑ δ : G ⧸ (U.toOpenSubgroup : Subgroup G), W δ (τ (W δ⁻¹ a)) = a)
@@ -748,7 +748,7 @@ theorem New.IsLargeLevel.SplitPlaces.hasFewCocycles_of_central {K R ι : Type} [
       (hW.isHigmanProjective_of_coprime hcopP)).1
     -- A power `g ^ l ^ i` lies in `U`, and `t ^ l ^ i = t` in `ZMod l`.
     obtain ⟨i, hi⟩ : ∃ i : ℕ, (g : Gal(Ω/K)) ^ l ^ i ∈ U := hP g hg
-    show cyclotomicCharMod Ω l (g : Gal(Ω/K)) = 1
+    change cyclotomicCharMod Ω l (g : Gal(Ω/K)) = 1
     simpa [← Units.val_eq_one] using S.cyclotomicCharMod_eq_one _ hi
   -- Modules that are projective over `B/U` attain the bound.
   have hproj (F : DiscreteModule R B.1) (hF : F.FiniteKilledFixedInj l U' z' 1)

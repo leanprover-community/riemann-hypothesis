@@ -122,7 +122,7 @@ Bochner integral of `‖F‖ ^ 2`. -/
 lemma lintegral_enorm_sq (hF_int : Integrable F ν) (h_top : MemLp F ∞ ν) :
     ∫⁻ y : G, ‖F y‖ₑ ^ 2 ∂ν = ENNReal.ofReal (∫ y : G, ‖F y‖ ^ 2 ∂ν) := by
   have h_sq_int := hF_int.norm.mul_of_top_left h_top.norm
-  simpa [sq] using (ofReal_integral_norm_eq_lintegral_enorm h_sq_int).symm
+  simpa [sq] using (ofReal_integral_norm_eq_lintegral_eNorm h_sq_int).symm
 
 /-- Schur's orthogonality relation for an idempotent kernel `ψ`:
 `∫ ψ a⁻¹ * ψ (g * (a * y)) da = ψ g / ψ 1 * ψ y`, where `ψ a⁻¹ = conj (ψ a)`. -/
@@ -525,9 +525,9 @@ theorem IsIdempotentKernel.enorm_integral_convolve_sq_le (hx : Integrable x)
         hψ.integral_inner_convolve_mul hx hψ_one hψ_bdd hx_conv hw hu hu
     calc
       _ ≤ (∫⁻ g, ‖z g * ⟪u, convolve w x g⟫_ℂ‖ₑ) ^ 2 := by
-        grw [inner_V, enorm_integral_le_lintegral_enorm]
+        grw [inner_V, eNorm_integral_le_lintegral_eNorm]
       _ ≤ (∫⁻ g, ‖z g‖ₑ ^ 2) * ∫⁻ g, ‖⟪u, convolve w x g⟫_ℂ‖ₑ ^ 2 :=
-        sq_lintegral_le (hz.1.enorm.pow_const 2) (coef_int.1.enorm.pow_const 2) (by simp [mul_pow])
+        sq_lintegral_le (hz.1.eNorm.pow_const 2) (coef_int.1.eNorm.pow_const 2) (by simp [mul_pow])
       _ = B * ‖u‖ₑ ^ 2 := by
         rw [lintegral_enorm_sq coef_int coef_bdd.memLp_top, orth, ofReal_mul' (by positivity),
           ofReal_pow (norm_nonneg u), ofReal_norm, hB]
@@ -665,7 +665,7 @@ lemma enorm_integral_besselS_mul (hW : IsBesselFunction rep W) {s : 𝔰.G₁} (
     _ = ‖wave (simpleRootSum u) • ∫ y : 𝔰.G₁, A (β y • W (g * y)) ∂μ‖ₑ := by
       simp only [h_transl, map_smul, smul_comm (β _), integral_smul]
     _ = ‖∫ y : 𝔰.G₁, A (β y • W (g * y)) ∂μ‖ₑ := by simp [← ofReal_norm, norm_smul]
-    _ = ‖∫ y : 𝔰.G₁, β y • W (g * y) ∂μ‖ₑ := by rw [A.integral_comp_comm, A.enorm_map]
+    _ = ‖∫ y : 𝔰.G₁, β y • W (g * y) ∂μ‖ₑ := by rw [A.integral_comp_comm, A.eNorm_map]
 
 /-- The norm of a Bessel function `W` is invariant under left multiplication by the Bessel
 subgroup. -/

@@ -87,13 +87,15 @@ lemma apply_eq_offRep_localRep (g : Gf E n) (y : M) :
 /-- The action of an element off `w` commutes with the action of the group algebra at `w`. -/
 lemma commute_offRep_localRep (g : Gf E n) (u : ℂ[GL n (LocField w)]) :
     Commute (offRep hw ρ g) ((localRep hw ρ).asAlgebraHom u) :=
-  commute_asAlgebraHom (fun x ↦ (commute_offPlace_ofSplitPlace hw g x).map ρ) u
+  Representation.commute_asAlgebraHom_of_forall_commute _
+      (fun x ↦ (commute_offPlace_ofSplitPlace hw g x).map ρ) u
 
 /-- The action of an element at `w` commutes with the action of the group algebra through the parts
 off `w`. -/
 lemma commute_localRep_offRep (x : GL n (LocField w)) (a : ℂ[Gf E n]) :
     Commute (localRep hw ρ x) ((offRep hw ρ).asAlgebraHom a) :=
-  commute_asAlgebraHom (fun g ↦ (commute_offPlace_ofSplitPlace hw g x).symm.map ρ) a
+  Representation.commute_asAlgebraHom_of_forall_commute _
+      (fun g ↦ (commute_offPlace_ofSplitPlace hw g x).symm.map ρ) a
 
 /-- Let `a` be a combination of group elements whose components at the split place `w` lie in
 `GL_n(𝒪_w)`. On vectors that are spherical at `w` (fixed by the maximal compact subgroup there),
@@ -193,7 +195,8 @@ lemma commute_offAction_localAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ lo
     (a : levelAlgebra (offRep hw ρ) K) (u : levelAlgebra (localRep hw ρ) J) :
     Commute (offAction hw ρ hK hJ a) (localAction hw ρ hK hJ u) := by
   have h_comm : Commute ((offRep hw ρ).asAlgebraHom a) ((localRep hw ρ).asAlgebraHom u) :=
-    commute_asAlgebraHom (fun x ↦ (commute_localRep_offRep hw ρ x a).symm) u
+    Representation.commute_asAlgebraHom_of_forall_commute _
+        (fun x ↦ (commute_localRep_offRep hw ρ x a).symm) u
   ext y
   simpa [coe_offAction_apply, coe_localAction_apply] using LinearMap.congr_fun h_comm.eq y
 

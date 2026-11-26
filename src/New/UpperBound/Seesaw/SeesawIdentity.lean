@@ -1,5 +1,6 @@
 module
 
+public import Lib.Adelic.AutomorphicForms.BlockPeriods
 public import Lib.DiscreteSeries.Bruhat.ComplexPlace
 public import New.UpperBound.Divisibility.ChainValuation
 public import New.UpperBound.Objects.PoincareMap

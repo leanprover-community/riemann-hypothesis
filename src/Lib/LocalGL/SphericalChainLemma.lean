@@ -265,7 +265,7 @@ private lemma New.Patching.heckePoly_succ (q m : ℕ) :
       X * heckePoly q m t + ((-1) ^ (m + 1) * q ^ (m + 1).choose 2 * t (m + 1)) • 1 := by
   ext k
   cases k with
-  | zero => simp [coeff_one]
+  | zero => simp
   | succ k => simp [coeff_one]
 
 omit [NeZero N] [IsSmoothRep ρ.ρ] in

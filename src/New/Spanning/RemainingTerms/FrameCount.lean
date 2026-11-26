@@ -1,6 +1,5 @@
 module
 
-public import Lib.GLn.SchurModule.Basic
 public import New.Spanning.Unfolding.ReducedPoints
 
 /-!
@@ -411,7 +410,6 @@ lemma HasCellRank.norm_sharedVectors_le [S.IsAdmissible] [HasPrimitiveRoot5040 E
     h_near.norm_adjugate_paddedLeading_le j v i k
   obtain ⟨y, hy, hγy⟩ := h_near
   have h_box : y v ∈ frameBox S.frameBoxRadius := mem_frameBox_of_mem_boxedPoints hy v
-  have h_cut : InCut (y v) S.b := inCut_of_mem_boxedPoints hy v
   set z : 𝔰.G₁ := ((S.ratToInf γ)⁻¹ * y) v
   have hz_box : z ∈ frameBox S.frameBoxRadius := mem_frameBox_of_mem_boxedPoints hγy v
   obtain ⟨w, hw⟩ : ∃ w : Fin (𝔰.ϱ + 1) → E,
@@ -520,7 +518,7 @@ variable {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {Z : Matrix (Fin (𝔰.ϱ 
 
 /-- The elements of `E` that are integral at every finite place, the preimage of the ring `Ô E` of
 integral finite adeles, form a subring stable under conjugation. -/
-lemma isStarStable_comap_Ô [HasPrimitiveRoot5040 E] :
+lemma isStarStable_comap_Ô :
     IsStarStable ((Ô E).comap (algebraMap E (𝔸f E))) :=
   ⟨fun hx ↦ by simpa using star_mem_Ô hx⟩
 
@@ -532,7 +530,7 @@ lemma frameModulus_ne_zero (h_minor : leadingMinor Z j ≠ 0) : S.frameModulus j
 
 /-- If the entries of `Z` are algebraic integers, then its first `j` rows completed by rows of `1`
 have entries that are integral at every finite place. -/
-lemma isIntMatrix_paddedLeading [HasPrimitiveRoot5040 E] {𝔰 : Shape} {j : Fin (𝔰.ϱ + 2)}
+lemma isIntMatrix_paddedLeading {𝔰 : Shape} {j : Fin (𝔰.ϱ + 2)}
     {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E}
     (hZ : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (Z a b)) :
     IsIntMatrix ((Ô E).comap (algebraMap E (𝔸f E))) (paddedLeading j Z) := by
@@ -617,7 +615,7 @@ lemma conjTranspose_mul_isotropicRows_eq_neg {γ γ' : S.G E} {ξ : Matrix (Fin 
   set D : Matrix 𝔰.BesselIndex (Fin (𝔰.ϱ + 1)) E := fromRows ξ 0 with hD
   have h_gram : (F + D)ᴴ * S.ratGram * (F + D) = Fᴴ * S.ratGram * F := by
     have h_unitary : γ'.val.valᴴ * S.ratGram * γ'.val.val = γ.val.valᴴ * S.ratGram * γ.val.val :=
-      γ'.prop.trans γ.prop.symm
+      (mem_unitaryGroupOf_iff.1 γ'.prop).trans (mem_unitaryGroupOf_iff.1 γ.prop).symm
     rw [← h_add]
     exact congrArg (submatrix · 𝔰.besselFrame 𝔰.besselFrame) h_unitary
   have h_left : Dᴴ * S.ratGram * F = ξᴴ * isotropicRows (S.frameProducts γ) := by

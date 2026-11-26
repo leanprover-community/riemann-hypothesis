@@ -252,7 +252,6 @@ lemma isometryScale_mul_alternatingSignForm (h : AreOppositeNodes μ μ') (hL : 
   -- `P = p (μ' j)` is positive and `Q = q' (μ' j)` has the sign `(-1) ^ (L' - 1 - j)`.
   set P : ℝ := (nodal univ μ).eval (μ' j) with hP
   set Q : ℝ := (derivative (nodal univ μ')).eval (μ' j) with hQ
-
   have hP_pos : 0 < P := h.eval_nodal_pos j
   have hQ_sign : 0 < (-1) ^ (L' - 1 - (j : ℕ)) * Q :=
     derivative_nodal_sign_of_strictMono h.strictMono j

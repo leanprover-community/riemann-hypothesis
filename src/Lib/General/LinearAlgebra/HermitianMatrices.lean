@@ -2,6 +2,9 @@ module
 
 public import Lib.General.Analysis.GaussianIntegral
 public import Lib.General.Groups.CongruenceSubgroups
+import TauCeti.Analysis.Matrix.LDL
+import TauCeti.Analysis.Matrix.PosSemidef.Determinant
+import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
 
 /-!
 # Determinants of positive semidefinite matrices, principal minors and hermitian involutions
@@ -42,11 +45,11 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι] {P Q : Matrix ι ι ℂ}
 the Loewner order, then `|det P| ≤ |det Q|`. -/
 lemma New.norm_det_le_norm_det_of_posSemidef (hP : P.PosSemidef) (h_le : (Q - P).PosSemidef) :
     ‖P.det‖ ≤ ‖Q.det‖ := by
-  -- The Ostrowski–Taussky bound `|det H| ≤ 2 ^ card ι * |det Θ|` (for `0 ≤ H ≤ Θ + Θᴴ`) at
-  -- `H = 2 P` and `Θ = Q`; the factors `2 ^ card ι` cancel.
-  have h_sum : (Q + Qᴴ - (P + P)).PosSemidef := by
-    simpa [hP.1.eq, sub_add_sub_comm] using h_le.add h_le.conjTranspose
-  simpa [← two_smul ℂ P] using ostrowski_taussky (hP.add hP) h_sum
+  have h_det : P.det ≤ Q.det := hP.det_le_det h_le
+  have hnorm {z : ℂ} (hz : 0 ≤ z) : ‖z‖ = z.re := by
+    simpa using congrArg Complex.re (RCLike.norm_of_nonneg' hz)
+  rw [hnorm hP.det_nonneg, hnorm (hP.det_nonneg.trans h_det)]
+  exact (Complex.le_def.1 h_det).1
 
 /-- Cauchy–Schwarz inequality for determinants: if the complex block matrix with rows `(P, A)` and
 `(B, Q)`, all blocks square of the same size, is positive semidefinite, then
@@ -54,13 +57,8 @@ lemma New.norm_det_le_norm_det_of_posSemidef (hP : P.PosSemidef) (h_le : (Q - P)
 lemma New.norm_det_sq_le_of_posSemidef {A B : Matrix ι ι ℂ} (h : (fromBlocks P A B Q).PosSemidef) :
     ‖A.det‖ ^ 2 ≤ ‖P.det‖ * ‖Q.det‖ := by
   by_cases hQ : Q.det = 0
-  · -- A vector `v` killed by `Q` makes `(0, v)` isotropic for the block matrix, hence killed by it;
-    -- so `A v = 0` and `det A = 0`.
-    obtain ⟨v, hv, hQv⟩ := exists_mulVec_eq_zero_iff.2 hQ
-    have h_kernel : fromBlocks P A B Q *ᵥ (0 ⊕ᵥ v) = 0 :=
-      (h.dotProduct_mulVec_zero_iff (x := 0 ⊕ᵥ v)).1
-        (by simp [fromBlocks_mulVec, hQv, dotProduct])
-    have hAv : A *ᵥ v = 0 := by simpa [fromBlocks_mulVec, hQv, funext_iff] using h_kernel
+  · obtain ⟨v, hv, hQv⟩ := exists_mulVec_eq_zero_iff.2 hQ
+    have hAv : A *ᵥ v = 0 := by simpa using h.toBlocks₁₂_mulVec_eq_zero hQv
     simp [hQ, exists_mulVec_eq_zero_iff.1 ⟨v, hv, hAv⟩]
   -- Otherwise `Q` is positive definite and the Schur complement `P - A Q⁻¹ Aᴴ` is semidefinite.
   have hQ_pos : Q.PosDef := (h.submatrix Sum.inr).posDef_iff_det_ne_zero.2 hQ
@@ -76,31 +74,8 @@ lemma New.norm_det_sq_le_of_posSemidef {A B : Matrix ι ι ℂ} (h : (fromBlocks
 columns are orthonormal for `G`. -/
 lemma New.exists_lowerTriangular_conjTranspose_mul_mul_eq_one {m : ℕ}
     {G : Matrix (Fin m) (Fin m) ℂ} (hG : G.PosDef) :
-    ∃ Γ : Matrix (Fin m) (Fin m) ℂ, (∀ a b : Fin m, a < b → Γ a b = 0) ∧ Γᴴ * G * Γ = 1 := by
-  -- Orthogonalise the standard basis from the last vector to the first, then normalise.
-  let H : Matrix (Fin m) (Fin m) ℂ := G.submatrix Fin.revPerm Fin.revPerm
-  have hH : H.PosDef := hG.submatrix Fin.revPerm.injective
-  let L : Matrix (Fin m) (Fin m) ℂ := LDL.lowerInv hH
-  let d : Fin m → ℂ := LDL.diagEntries hH
-  have h_diag : diagonal d = L * H * Lᴴ := by simpa [LDL.diag] using LDL.diag_eq_lowerInv_conj hH
-  have hd_pos (a : Fin m) : 0 < d a := by
-    have h_pos : (diagonal d).PosDef := by
-      simpa [h_diag] using hH.mul_mul_conjTranspose_same
-        (vecMul_injective_of_isUnit (isUnit_of_invertible (LDL.lowerInv hH)))
-    exact posDef_diagonal_iff.1 h_pos a
-  let r (a : Fin m) : ℂ := (√(d a).re : ℝ)⁻¹
-  have h_scale (a : Fin m) : star (r a) * d a * r a = 1 := by
-    obtain ⟨h_re, h_im⟩ := Complex.pos_iff.1 (hd_pos a)
-    simp [r, Complex.ext_iff, ← h_im, field, Real.sq_sqrt h_re.le]
-  refine ⟨(Lᴴ * diagonal r).submatrix Fin.revPerm Fin.revPerm, fun a b hab ↦ ?_, ?_⟩
-  · have hL_lower : L b.rev a.rev = 0 := LDL.isLowerTriangular_lowerInv hH (Fin.rev_lt_rev.2 hab)
-    simp [mul_diagonal, hL_lower]
-  · have h_rev : (Lᴴ * diagonal r)ᴴ * H * (Lᴴ * diagonal r) = 1 :=
-      calc
-        _ = (diagonal r)ᴴ * (L * H * Lᴴ) * diagonal r := by simp [Matrix.mul_assoc]
-        _ = 1 := by simpa [← h_diag, funext_iff] using h_scale
-    have hG_eq : G = H.submatrix Fin.revPerm Fin.revPerm := by simp [H, ← Matrix.ext_iff]
-    simp only [hG_eq, conjTranspose_submatrix, submatrix_mul_equiv, h_rev, submatrix_one_equiv]
+    ∃ Γ : Matrix (Fin m) (Fin m) ℂ, (∀ a b : Fin m, a < b → Γ a b = 0) ∧ Γᴴ * G * Γ = 1 :=
+  PosDef.exists_isUpperTriangular_conjTranspose_mul_mul_eq_one (n := OrderDual (Fin m)) hG
 
 end PosSemidefDet
 
@@ -203,15 +178,10 @@ principal minor of `x⁻¹` on the indices satisfying `p` equals the principal m
 complementary indices divided by `det x`. -/
 theorem jacobi_complementary_minor (hx : x.det ≠ 0) :
     principalMinor x⁻¹ p = principalMinor x (fun i : n ↦ ¬p i) / x.det := by
-  -- With `D` the projection onto `p`, write both minors by `principalMinor_eq_det` and clear
-  -- `x.det`: `(1 - D (1 - x⁻¹)) x = x - D x + D = 1 - (1 - D) (1 - x)`.
-  set D : Matrix n n ℂ := diagonal (fun i : n ↦ if p i then 1 else 0) with hD
-  have h_compl : diagonal (fun i : n ↦ if ¬p i then (1 : ℂ) else 0) = 1 - D := by
-    aesop (add simp [Matrix.one_apply, Matrix.ext_iff.symm])
-  have h_mat : (1 - D * (1 - x⁻¹)) * x = 1 - (1 - D) * (1 - x) := by
-    simp [sub_mul, mul_sub, mul_assoc, nonsing_inv_mul _ hx.isUnit]
-    abel
-  rw [eq_div_iff hx, principalMinor_eq_det, principalMinor_eq_det, ← det_mul, h_compl, ← hD, h_mat]
+  have h := det_submatrix_comp_inr_eq_sign_mul_det_mul_det_submatrix_comp_inl_nonsing_inv
+    x hx.isUnit (Equiv.sumCompl p) 1 1
+  rw [eq_div_iff hx, mul_comm]
+  simpa [principalMinor, toSquareBlockProp, toBlock, Function.comp_def] using h.symm
 
 @[fun_prop]
 theorem continuous_principalMinor : Continuous fun y : Matrix n n ℂ ↦ principalMinor y p := by

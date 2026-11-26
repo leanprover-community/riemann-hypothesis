@@ -9,7 +9,6 @@ The orthogonal complement of `X` in a graded space with a string of `s` vectors 
 `E[𝔢] / (𝔢 ^ s)`: the vector called `𝔢 ^ i` is `New.Grading.stringPower`, a multiple of the string
 vector with number `i`. That vector has grade `s - 1 - 2 * i`.
 
-* `New.Grading.shift_mulVec_stringPower`: `New.Grading.shift` is the multiplication by `𝔢`.
 * `New.Grading.stringMap_mulVec_stringPower`: the map `New.Grading.stringMap` between neighbouring
   spaces is the projection `E[𝔢] / (𝔢 ^ s) → E[𝔢] / (𝔢 ^ (s - 1))`.
 * `New.Grading.exists_stringSum_eq`, `New.Grading.stringMapFin_stringSum`: over the finite adeles
@@ -22,9 +21,6 @@ Notions from other files:
 * `New.Grading V N X s`: an identification `X ⊕ Fin s ≃ ι` under which string vector `i` pairs only
   with string vector `s - 1 - i`, to `1` (to `-N` in the middle), a constant `c = star c ≠ 0`, and
   the fact `N = star N ≠ 0`;
-* `New.Grading.shift`: the matrix, with entries in `E` seen as adeles by the diagonal embedding
-  `toAdele`, that kills `X` and the last string vector and raises the number of any other string
-  vector by one, up to a factor;
 * `New.Grading.stringMap`, `New.Grading.stringMapFin`: the map that kills `X` and the string vector
   `s - 1` and keeps the number of any other string vector, up to a factor, and its part at the
   finite adeles;
@@ -85,49 +81,6 @@ lemma stringPower_eq_zero {i : ℕ} (hi : s ≤ i) : Y.stringPower i = 0 := by
   · simp [stringPower]
   · simp [stringPower, show b.val ≠ i by omega]
 
-/-- The factor by which `Y.shift` takes the string vector `i` to the next one (the `if` below,
-times `c`), times the coefficient `Y.powerCoeff i` of `𝔢 ^ i`, is the coefficient of
-`𝔢 ^ (i + 1)`. -/
-lemma shift_factor_mul_powerCoeff (i : ℕ) :
-    Y.genericConst * (if 2 * i + 1 = s then -N else if 2 * (i + 1) = s then -N * Y.genericConst else
-      1) *
-      Y.powerCoeff i = Y.powerCoeff (i + 1) := by
-  have hc : Y.genericConst.val ≠ 0 := Y.genericConst.property.left
-  have h_nonneg (hi : 2 * i < s) : Y.powerCoeff i = Y.genericConst.val ^ (i - s / 2 : ℤ) :=
-    Y.powerCoeff_of_lt hi rfl
-  -- The grade `s - 1 - 2 * i` of `𝔢 ^ i` is `0`, `1`, at least `2`, or negative.
-  obtain h | h | h | h :
-      2 * i + 1 = s ∨ 2 * (i + 1) = s ∨ 2 * (i + 1) < s ∨ s ≤ 2 * i := by omega
-  · have h_next : Y.powerCoeff (i + 1) = -N * Y.genericConst.val ^ (i - s / 2 + 1 : ℤ) :=
-      Y.powerCoeff_of_le (by omega) (by omega)
-    grind [zpow_add_one₀]
-  · have h_next : Y.powerCoeff (i + 1) = -N * Y.genericConst.val ^ (i - s / 2 + 2 : ℤ) :=
-      Y.powerCoeff_of_le (by omega) (by omega)
-    rw [ite_eq_right (by omega), ite_eq_left h, h_nonneg (by omega), h_next, zpow_add₀ hc, zpow_two]
-    ring
-  · have h_next : Y.powerCoeff (i + 1) = Y.genericConst.val ^ (i - s / 2 + 1 : ℤ) :=
-      Y.powerCoeff_of_lt h (by omega)
-    grind [zpow_add_one₀]
-  · have h_cur : Y.powerCoeff i = -N * Y.genericConst.val ^ (i - (s - 1) / 2 : ℤ) :=
-      Y.powerCoeff_of_le h rfl
-    have h_next : Y.powerCoeff (i + 1) = -N * Y.genericConst.val ^ (i - (s - 1) / 2 + 1 : ℤ) :=
-      Y.powerCoeff_of_le (by omega) (by omega)
-    grind [zpow_add_one₀]
-
-/-- For a grading `Y` of `V` as `X` plus a string of length `s`, write `𝔢 ^ i` for
-`Y.stringPower i`: the vector of the complement `E[𝔢] / (𝔢 ^ s)` of `X` that is a fixed multiple of
-the `i`-th string vector, and `0` for `s ≤ i`. The matrix `Y.shift`, which kills `X` and acts on
-this complement as multiplication by `𝔢`, sends `𝔢 ^ i` (seen over the adeles by the diagonal
-embedding `toAdele`) to `𝔢 ^ (i + 1)`, for every `i < s`. For `i + 1 = s` the image is `0`. -/
-lemma shift_mulVec_stringPower (i : Fin s) :
-    Y.shift *ᵥ toAdele ∘ Y.stringPower i = toAdele ∘ Y.stringPower (i + 1) := by
-  funext k
-  rw [shift, ← RingHom.map_mulVec, stringPower_eq_single, mulVec_single]
-  obtain ⟨a | b, rfl⟩ := Y.indexEquiv.surjective k
-  · simp [stringPower]
-  · -- At the string index `b` both sides are `Y.powerCoeff (i + 1)` if `b = i + 1`, else `0`.
-    by_cases hb : b.val = i + 1 <;> simp [stringPower, hb, ← Y.shift_factor_mul_powerCoeff i]
-
 /-- For gradings `Y` and `Y'` of string lengths `s` and `s - 1` with the same constant `c`, the
 factor of `Y.stringMap Y'` at the string vector `i` (the two `if`s below) times the coefficient of
 `𝔢 ^ i` in `Y` is its coefficient in `Y'`. -/
@@ -182,7 +135,7 @@ def stringSum (t : ℕ → 𝔸f E) : ι → 𝔸f E :=
 
 variable {Y}
 
-lemma stringProj_stringSum [Fintype X] (t : ℕ → 𝔸f E) :
+lemma stringProj_stringSum (t : ℕ → 𝔸f E) :
     Y.stringProj (Y.stringSum t) = Y.stringSum t :=
   stringProj_eq_self_iff.2 (by simp [stringSum, stringPower])
 

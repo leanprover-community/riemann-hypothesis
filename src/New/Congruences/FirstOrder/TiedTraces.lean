@@ -167,8 +167,8 @@ noncomputable def lineRep (j : J) :
 omit [Nonempty n] in
 /-- If the auxiliary places `w j = Q.place j` are off the base level, the Hecke algebra commutes
 with `D.residueRep Q`, the action of `∏ GL_n(𝔽_{w j})` on the forms of principal level. -/
-lemma commute_heckeAction_residueRep (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [V.IsStd]
-    [WeilData E] (s : D.heckeAlgebra Q.place)
+lemma commute_heckeAction_residueRep (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+    (s : D.heckeAlgebra Q.place)
       (g : ∀ j : J, GL (Fin (card n)) (ResField (Q.place j))) :
     Commute (heckeAction s) (D.residueRep Q g) := by
   -- The elements that commute with `s` form a submonoid that contains each factor.
@@ -186,8 +186,8 @@ variable {Q}
 of the line in `GL_n(E_w)`, `w = Q.place j` (blocks of sizes `1` and `n - 1`), acts on forms of
 principal level through its reduction, which stabilises the line. On the left, `localFormRep` is
 the action of `GL_n(E_w)` on all forms; on the right, `lineRep` is that of the stabiliser. -/
-lemma localFormRep_apply_eq_lineRep (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j)) [V.IsStd]
-    [WeilData E] {j : J} {k : GL (Fin (card n)) (LocField (Q.place j))}
+lemma localFormRep_apply_eq_lineRep (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j))
+    {j : J} {k : GL (Fin (card n)) (LocField (Q.place j))}
     (hk : k ∈ blockParahoric (min 1)) (y : D.formsOfLevel Q.place) :
     localFormRep V κ (Q.apart.star_ne j j) k y =
       (D.lineRep Q j ⟨reduceGL ⟨k, hk.1⟩, reduceGL_mem_residueLineStabilizer_iff.2 hk⟩).1 y :=

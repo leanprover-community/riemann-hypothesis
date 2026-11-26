@@ -89,7 +89,7 @@ lemma det_sum_smul_X (τ : Φ) {h : ℕ} (c : Matrix (Fin h) (n τ) R) :
           of fun (a : Fin (rankAt n τ)) (t : Fin h) ↦
             X (R := R) ((⟨τ, (rowEquivFin n τ).symm a⟩ : Σ τ, n τ), (t : ℕ)) := by
     ext s t : 1
-    simp only [mul_apply, map_apply, submatrix_apply, of_apply, id_eq, smul_eq_C_mul]
+    simp only [of_apply, smul_eq_C_mul]
     exact (Equiv.sum_comp (rowEquivFin n τ).symm _).symm
   rw [hproduct, det_mul_eq_sum_increasing]
   -- Both sides are products of the same minors, by the definition of the matrix of variables.
@@ -230,14 +230,6 @@ lemma nablaCombination_transpose_mulVec (v : ColumnFilling n κ → R) :
   -- The transposed matrix sends `v` to the combination of the rows with coefficients `v`.
   simp only [mulVec_transpose, vecMul_eq_sum, map_sum, map_smul, nablaCombination_fillingMatrixOver]
 
-/-- For a family `z` of square matrices, `nablaCombination`, which takes coordinates to the
-combination of the standard basis, sends row `i` of the Schur matrix `schur κ z` to the basis
-polynomial `nablaBasis R n κ i` with `z y` substituted for the variables `y`. -/
-lemma nablaCombination_schur_row (z : ∀ τ : Φ, Matrix (n τ) (n τ) R) (i : WeylIndexFamily n κ) :
-    nablaCombination κ (schur κ z i) = rowSubst z (nablaBasis R n κ i) := by
-  -- For equal ranks no power of a determinant occurs in the expansion.
-  simp [← sum_schur_smul_nablaBasis FitsRanks.refl z i, Fintype.linearCombination_apply, detPow]
-
 /-- For a family `z` of square matrices, the embedding `fillingMatrixOver` of the Weyl module into
 tensors intertwines the Schur matrix `schur κ z`, the action of `z` on the Weyl module, with
 `minorsMatrix κ z`, the action of `z` on tensors by products of minors. -/
@@ -295,54 +287,6 @@ lemma exists_fillingMatrix_leftInverse :
     rfl
   rw [h_row, nablaCombination_transpose_mulVec, hv]
   simp [Matrix.one_apply, Fintype.linearCombination_apply]
-
-variable (n κ) in
-/-- Over an infinite field `K`, the image of the Weyl module in tensors under `fillingMatrixOver`
-is the span of the tensors of the arrays `y` over `K`. The coordinate of the tensor of `y` at a
-column filling `T` is the value at `y` of the product of minors `fillingPoly K T`. -/
-lemma range_fillingMatrixOver_eq_span (K : Type) [Field K] [Infinite K] :
-    LinearMap.range (fillingMatrixOver K n κ).mulVecLin =
-      Submodule.span K (Set.range fun (y : (Σ τ : Φ, n τ) × ℕ → K) (T : ColumnFilling n κ) ↦
-        eval y (fillingPoly K T)) := by
-  apply le_antisymm
-  · -- A tensor `c` orthogonal to the tensors of all arrays gives the zero combination of products
-    -- of minors, so it is orthogonal to the image.
-    rintro _ ⟨ξ, rfl⟩
-    refine (Subspace.forall_mem_dualAnnihilator_apply_eq_zero_iff _ _).mp fun φ hφ ↦ ?_
-    obtain ⟨c, rfl⟩ := (dotProductEquiv K (ColumnFilling n κ)).surjective φ
-    have h_poly : ∑ T : ColumnFilling n κ, c T • fillingPoly K T = 0 :=
-      MvPolynomial.funext fun y ↦ by
-        simpa [dotProduct, smul_eval] using
-          (Submodule.mem_dualAnnihilator _).mp hφ _ (Submodule.subset_span ⟨y, rfl⟩)
-    have h_ker : (fillingMatrixOver K n κ)ᵀ *ᵥ c = 0 :=
-      nablaCombination_injective (by simp [nablaCombination_transpose_mulVec, h_poly])
-    simp [dotProduct_mulVec, ← mulVec_transpose, h_ker]
-  · rw [Submodule.span_le, Set.range_subset_iff]
-    exact fun y ↦ ⟨weylEval n κ y, funext (fillingMatrixOver_mulVec_weylEval y)⟩
-
-/-- The Weyl lattice inside the tensors. An integral tensor `v` is the image of an integral vector
-of the Weyl module under the embedding `fillingMatrix` if and only if it lies in the span over `ℚ`
-of the tensors of rational arrays `y`, whose coordinates are the values at `y` of the products of
-minors `fillingPoly`. -/
-lemma exists_fillingMatrix_mulVec_eq_iff_mem_span (v : ColumnFilling n κ → ℤ) :
-    (∃ ξ : WeylIndexFamily n κ → ℤ, fillingMatrix n κ *ᵥ ξ = v) ↔
-      (fun T : ColumnFilling n κ ↦ (v T : ℚ)) ∈
-        Submodule.span ℚ (Set.range fun (y : (Σ τ : Φ, n τ) × ℕ → ℚ) (T : ColumnFilling n κ) ↦
-          eval y (fillingPoly ℚ T)) := by
-  rw [← range_fillingMatrixOver_eq_span]
-  constructor
-  · rintro ⟨ξ, rfl⟩
-    exact ⟨fun i ↦ ξ i, funext fun T ↦ by simp [mulVec, dotProduct]⟩
-  · -- A rational preimage `η` is `Q v` for an integral left inverse `Q`, hence integral.
-    rintro ⟨η, hη : fillingMatrixOver ℚ n κ *ᵥ η = _⟩
-    obtain ⟨Q, hQ⟩ := exists_fillingMatrix_leftInverse (n := n) (κ := κ)
-    have hQ_rat : Q.map (Int.cast : ℤ → ℚ) * fillingMatrixOver ℚ n κ = 1 :=
-      (Matrix.map_mul (f := Int.castRingHom ℚ)).symm.trans (by simp [hQ])
-    have h_integral : η = fun i : WeylIndexFamily n κ ↦ ((Q *ᵥ v) i : ℚ) := by
-      rw [← one_mulVec η, ← hQ_rat, ← mulVec_mulVec, hη]
-      simp [funext_iff, mulVec, dotProduct]
-    exact ⟨Q *ᵥ v, funext fun T ↦ Int.cast_injective (α := ℚ) <|
-      by simp [← congrFun hη T, h_integral, mulVec, dotProduct]⟩
 
 end Embedding
 

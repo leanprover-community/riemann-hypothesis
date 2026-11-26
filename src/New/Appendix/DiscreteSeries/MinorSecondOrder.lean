@@ -173,7 +173,7 @@ lemma IsExpansion.mul (hQ : IsStarProjection Q) (h : IsExpansion Q (Y - 1) L S �
   · calc ‖Y * Y' - 1 - (L + L')‖ ≤ ρ ^ 2 + ρ' ^ 2 + 4 / 3 * ρ * (4 / 3 * ρ') := by
           grw [h_second, norm_add₃_le, h.norm_sub_linear_le, h'.norm_sub_linear_le,
             norm_mul_le_of_le (h.norm_le hρ) (h'.norm_le hρ')]
-      _ ≤ (ρ + ρ') ^ 2 := by nlinarith [mul_nonneg h.nonneg h'.nonneg]
+      _ ≤ (ρ + ρ') ^ 2 := by linarith [mul_nonneg h.nonneg h'.nonneg]
   · calc ‖(Q * (Y * Y' - 1 - (L + L') - (S + S' + L * L'))).trace‖
         ≤ ρ ^ 3 + ρ' ^ 3 + ρ ^ 2 * (4 / 3 * ρ') + ρ * ρ' ^ 2 := by
           grw [h_third, trace_add, trace_add, trace_add, norm_add_le, norm_add₃_le,
@@ -181,7 +181,7 @@ lemma IsExpansion.mul (hQ : IsStarProjection Q) (h : IsExpansion Q (Y - 1) L S �
             norm_trace_mul_le (norm_proj_mul_le hQ h.norm_sub_linear_le) (h'.norm_le hρ'),
             norm_trace_mul_le (norm_proj_mul_le hQ h.norm_linear_le) h'.norm_sub_linear_le]
       _ ≤ (ρ + ρ') ^ 3 := by
-          nlinarith [mul_nonneg (sq_nonneg ρ) h'.nonneg, mul_nonneg h.nonneg (sq_nonneg ρ')]
+          linarith [mul_nonneg (sq_nonneg ρ) h'.nonneg, mul_nonneg h.nonneg (sq_nonneg ρ')]
 
 /-- Let `Q` be an orthogonal projection and `Y = L + S + ⋯` an expansion in `ρ ≤ 1 / 3`. Then
 `det (1 + Q Y)` is the exponential of `tr Q L + tr Q S - tr (Q L)² / 2 + r` with `‖r‖ ≤ 8 ρ³`. -/
@@ -213,7 +213,7 @@ lemma IsExpansion.exists_det_one_add_mul_eq_exp (hQ : IsStarProjection Q)
         ≤ 2 * (4 / 3 * ρ) ^ 3 + ρ ^ 3 + (ρ ^ 2 * (4 / 3 * ρ) + ρ * ρ ^ 2) / 2 := by
           grw [norm_sub_le, norm_add_le, norm_div, Complex.norm_ofNat, h_log,
             h.norm_trace_rest_le, h_rSquare]
-      _ ≤ 8 * ρ ^ 3 := by nlinarith [pow_nonneg h.nonneg 3]
+      _ ≤ 8 * ρ ^ 3 := by linarith [pow_nonneg h.nonneg 3]
 
 /-- The trace of `Q A (1 - Q) B`. For a projection `Q` it involves only the blocks of `A` and `B`
 that cross `Q`, that is, that map the range of `Q` to its kernel or the kernel to the range. -/
@@ -360,12 +360,8 @@ lemma logMinorRemainder_conj {U : Matrix n n ℂ} (hU : U * U = 1) (hUQ : Commut
   have hQ : U * Q * U = Q := by rw [hUQ.eq, mul_assoc, hU, mul_one]
   have h_mul (X Y : Matrix n n ℂ) : U * X * U * (U * Y * U) = U * (X * Y) * U := by
     linear_combination (norm := noncomm_ring) U * X * hU * Y * U
-  have h_exp (X : Matrix n n ℂ) : NormedSpace.exp (U * X * U) = U * NormedSpace.exp X * U := by
-    have h_semiconj : SemiconjBy U X (U * X * U) := by
-      rw [SemiconjBy, mul_assoc (U * X), hU, mul_one]
-    have h_exp_semiconj : U * NormedSpace.exp X = NormedSpace.exp (U * X * U) * U :=
-      h_semiconj.exp_right.eq
-    rw [h_exp_semiconj, mul_assoc _ U U, hU, mul_one]
+  have h_exp (X : Matrix n n ℂ) : NormedSpace.exp (U * X * U) = U * NormedSpace.exp X * U :=
+    Matrix.exp_units_conj ⟨U, U, hU, hU⟩ X
   have h_det (X : Matrix n n ℂ) : (1 + Q * (U * X * U - 1)).det = (1 + Q * (X - 1)).det := by
     have h_conj : 1 + Q * (U * X * U - 1) = U * (1 + Q * (X - 1)) * U := by
       linear_combination (norm := noncomm_ring) hQ - hU - hUQ.eq * X * U
@@ -466,8 +462,6 @@ lemma norm_scaleCross_le (hQ : IsStarProjection Q) (hA : ‖A‖ ≤ δ) (hζ : 
 
 lemma differentiable_matrix_det : Differentiable ℂ (det : Matrix n n ℂ → ℂ) := by
   -- The Leibniz formula makes it a polynomial in the entries.
-  have h_entry (i j : n) : Differentiable ℂ fun X : Matrix n n ℂ ↦ X i j :=
-    (entryLinearMap ℂ ℂ i j).toContinuousLinearMap.differentiable
   rw [funext (det_apply' (n := n) (R := ℂ))]
   fun_prop
 
@@ -582,7 +576,7 @@ theorem exists_det_one_add_proj_mul_eq_exp (hQ : IsStarProjection Q) (hδ : δ �
       _ = 1728 * δ * ζ ^ 2 := by
           field_simp [(hζ.trans hζδ).ne']
           norm_num
-      _ ≤ 10 ^ 4 * δ * ζ ^ 2 := by nlinarith [mul_nonneg hδ_nonneg (sq_nonneg ζ)]
+      _ ≤ 10 ^ 4 * δ * ζ ^ 2 := by linarith [mul_nonneg hδ_nonneg (sq_nonneg ζ)]
 
 end New.DiscreteSeries
 

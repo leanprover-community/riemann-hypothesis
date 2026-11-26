@@ -270,7 +270,7 @@ lemma norm_coeff_comp_sub_charpoly_smul_lt_one {n : Type*} [Fintype n] [Decidabl
 one, then χ(s) = ι(X₀⁻¹), where X₀ = `O.charW.frobValue r w` and ι = `ιℓ` is the fixed isomorphism
 from ℂ to ℚ̄_ℓ. -/
 lemma normalizingAvatar_eq_of_isFrob [PadicIso ℓ] {P : Parameters} {D : Data P} {r n : Type}
-    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] (O : DescentPair D.E r n)
+    [Fintype r] [DecidableEq r] [Fintype n] (O : DescentPair D.E r n)
     {w : FinPlace D.E} {A : ClosurePlace} (hA : IsPlaceOver A w) (hℓ : ↑ℓ ∉ w.asIdeal)
     {s : AbsGal D} (hs_inv : IsFrob A w.q s⁻¹) :
     (normalizingAvatar O s).val = ιℓ (O.charW.frobValue r w)⁻¹ := by
@@ -394,7 +394,8 @@ lemma eventually_exists_hasRootChain {O : DescentPair D.E r n}
   have hT_map : T.map ιℓ.toRingHom * B = H.comp (C χ⁻¹ * X) := by
     rw [mul_comm, ← hB, ← Polynomial.map_mul, ← hT, Polynomial.map_comp]
     simp [H, χ]
-  have hχ : ‖χ‖ = 1 := norm_eq_one_of_continuous (AlgHeckeChar.continuous_avatar _) _
+  have hχ : ‖χ‖ = 1 := ContinuousMonoidHom.norm_apply_eq_one_of_compactSpace
+    ⟨_, AlgHeckeChar.continuous_avatar _⟩ _
   have h_twist : (normalisedRep O x.galRep y.frob).val = χ • (x.galRep y.frob).val := by
     simp [χ, Units.smul_def]
   have h_near (i : ℕ) : ‖(C (χ ^ card n) * T.map ιℓ.toRingHom * B -

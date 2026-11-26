@@ -138,7 +138,7 @@ lemma descendsTo_comp_reindexGL {n' : Type*} [Fintype n'] [DecidableEq n'] (e : 
     rfl
   calc Ψ (ρ s) = X.evalGL (reindexGL e γ) := hΨ σ hσ (ρ s) (reindexGL e γ) hs h_pow
     _ = X.evalGL γ := by
-      show X (simClassOf (γ.val.submatrix e.symm e.symm).toLin') = X (simClassOf γ.val.toLin')
+      change X (simClassOf (γ.val.submatrix e.symm e.symm).toLin') = X (simClassOf γ.val.toLin')
       rw [simClassOf_submatrix]
 
 /-- If (F, F') is a lift with coefficients in Z, then for every finite index set n some
@@ -479,7 +479,7 @@ omit [Finite k] in
 homomorphism. Then there is a function ϑ on Sˣ ⋊ Gal(k'/k) such that (a) ϑ is a character, (b)
 ϑ(s) = ∏_τ ν(α(τ) s₁), with s₁ the component of s in Sˣ, and (c) for σ with fixed field k,
 ϑ(s) = ν(γ) whenever s lies over σ and s^{ord σ} = γ. -/
-lemma exists_norm_char_semidirect {S : Type*} [Monoid S] [Finite S] (α : Gal(k'/k) →* MulAut Sˣ)
+lemma exists_norm_char_semidirect {S : Type*} [Monoid S] (α : Gal(k'/k) →* MulAut Sˣ)
     (ν : S →* ℂ) :
     ∃ ϑ : Sˣ ⋊[α] Gal(k'/k) → ℂ,
       -- (a) `ϑ` is a character

@@ -375,13 +375,6 @@ lemma HasCellRank.linkedX₀_eq_top {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellR
   rw [mem_linkedX₀, h_link]
   exact (mul_eq_zero_iff_left (right_ne_zero_of_mul_eq_one hζ)).1 hγy_z
 
-/-- Let `E` contain a primitive root of unity of order `5040`. If `γ` agrees and
-`gr(γ) = S.termDisc γ` vanishes, then the link of `γ` maps all of `X₀` into `X₀`, that is,
-`X₀^γ = X₀`. -/
-theorem CharsAgree.linkedX₀_eq_top [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ)
-    (h_disc : S.termDisc γ = 0) : linkedX₀ γ = ⊤ :=
-  h_agree.exists_hasCellRank h_disc |>.elim fun _ h_rank ↦ h_rank.linkedX₀_eq_top h_disc
-
 /-- If `gr(γ) = S.termDisc γ` is not zero, then the span `A⁺` of the frame `e_1, …, e_ϱ, z_N` and
 the span `γ A⁺` of its image have the intersection `0`. -/
 theorem disjoint_colSpan_frameImage (h_disc : S.termDisc γ ≠ 0) :
@@ -408,7 +401,7 @@ lemma finrank_frameSum_add_finrank_framePerp (γ : S.G E) :
     finrank E (frameSum γ) + finrank E (framePerp γ) = 𝔰.r := by
   have h_unit : IsUnit S.ratGram.det := (isUnit_iff_isUnit_det _).1 Floors.IsHermitianUnit.isUnit
   have h_rank : ((framePair γ)ᴴ * S.ratGram).rank = finrank E (frameSum γ) := by
-    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_eq, ← colSpan_framePair,
+    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_of_field, ← colSpan_framePair,
       ← finrank_range_mulVecLin]
   rw [← h_rank, Shape.r, ← finrank_fintype_fun_eq_card E, framePerp, ← finrank_range_mulVecLin]
   exact ((framePair γ)ᴴ * S.ratGram).mulVecLin.finrank_range_add_finrank_ker
@@ -441,7 +434,6 @@ theorem finrank_linkedX₀_add_one (h_disc : S.termDisc γ ≠ 0) :
   have h_perp : 𝔰.n + 𝔰.n + finrank E (framePerp γ) = 𝔰.r := by
     rw [← finrank_frameSum_of_termDisc_ne_zero h_disc, finrank_frameSum_add_finrank_framePerp]
   have h_r : 𝔰.r = 𝔰.ϱ + (𝔰.k + 1 + 𝔰.ϱ) := by simp [Shape.r]
-  have h_n : 𝔰.n = 𝔰.ϱ + 1 := rfl
   lia
 
 /-- If `γ` has the cell rank `j`, then `finrank E (linkedX₀ γ) + (j - ϱ) = 𝔰.k`, the dimension of
@@ -599,14 +591,14 @@ lemma HasCellRank.isLeast_normOnePairOccursFrom {j : Fin (𝔰.ϱ + 2)} (h_rank 
     (h_above b (Fin.lt_def.2 (hij.trans_le hb))).right
   exact h_minor (leadingMinor_eq_zero_of_mulVec_eq_zero hx'_ne h_products hx'_above)
 
-/-- Let `E` contain a primitive root of unity of order `5040`. Let `γ` satisfy `S.CharsAgree γ`: the
-character `unipotentChar` takes the same value at `u` and at `γ⁻¹uγ` for every rational `u` in
+/-- Assume `S.CharsAgree γ`, so `unipotentChar` takes the same value at `u` and at `γ⁻¹uγ`
+for every rational `u` in
 `U₀ ∩ γU₀γ⁻¹`. Let `j` be least with `NormOnePairOccursFrom j γ`: for one `ζ` with `ζ ζ̄ = 1`, at
 every index from `j` on, the flags of the frame `e_1, …, e_ϱ, z_N` and of its image under `γ` share
 a vector with leading coefficients `ζ` and `1`. Then `flagSpan γ j`, the span of the images under
 `γ` of the first `j` frame vectors, meets the span `colSpan (frameImage 1)` of the frame only in
 `0`. -/
-lemma CharsAgree.disjoint_flagSpan_coe {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot5040 E]
+lemma CharsAgree.disjoint_flagSpan_coe {j : Fin (𝔰.ϱ + 2)}
     (h_agree : S.CharsAgree γ) (h_least : IsLeast {i : ℕ | NormOnePairOccursFrom i γ} j.val) :
     Disjoint (flagSpan (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) j) (colSpan (frameImage 1)) := by
   refine Submodule.disjoint_def.2 fun w hw hw' ↦ ?_
@@ -618,14 +610,6 @@ lemma CharsAgree.disjoint_flagSpan_coe {j : Fin (𝔰.ϱ + 2)} [HasPrimitiveRoot
     hx_ne
   exact hx'l (hx' l hl)
 
-/-- Let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then `A = A_{≤j} + I_γ`,
-where `A = ⟨e_1, …, e_ϱ⟩`, `A_{≤j} = ⟨e_1, …, e_j⟩` and `I_γ = A ∩ γ A`. -/
-theorem HasCellRank.flagSpan_one_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    (h_rank : S.HasCellRank j γ) (h_disc : S.termDisc γ = 0) :
-    flagSpan 1 j ⊔ commonIsotropic γ = isotropicSpan 1 :=
-  h_rank.normOnePairOccursFrom.flagSpan_one_sup_commonIsotropic
-    (h_rank.le_of_termDisc_eq_zero h_disc)
-
 /-- Let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
 `γ A = γ A_{≤j} + I_γ`, where `A = ⟨e_1, …, e_ϱ⟩`, `A_{≤j} = ⟨e_1, …, e_j⟩` and `I_γ = A ∩ γ A`. -/
 theorem HasCellRank.flagSpan_coe_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
@@ -634,11 +618,10 @@ theorem HasCellRank.flagSpan_coe_sup_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
   h_rank.normOnePairOccursFrom.flagSpan_coe_sup_commonIsotropic
     (h_rank.le_of_termDisc_eq_zero h_disc)
 
-/-- Let `E` contain a primitive root of unity of order `5040`, let `γ` agree, let
-`gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
+/-- Let `γ` agree, let `gr(γ) = S.termDisc γ` vanish and let `γ` have the cell rank `j`. Then
 `γ A_{≤j} = ⟨γ e_1, …, γ e_j⟩` meets `I_γ = A ∩ γ A` only in `0`. -/
 theorem CharsAgree.disjoint_flagSpan_coe_commonIsotropic {j : Fin (𝔰.ϱ + 2)}
-    [HasPrimitiveRoot5040 E] (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
+    (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0)
     (h_rank : S.HasCellRank j γ) : Disjoint (flagSpan γ j) (commonIsotropic γ) :=
   (h_agree.disjoint_flagSpan_coe (h_rank.isLeast_normOnePairOccursFrom h_disc)).mono_right
     (commonIsotropic_le_colSpan_frameImage_one γ)

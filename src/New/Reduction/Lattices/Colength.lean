@@ -55,11 +55,12 @@ lemma ColengthDvd.trans (hMN : ColengthDvd M N z) (hNP : ColengthDvd N P a) :
   intro n Φ hΦ
   -- combine `Φ` by `m` into `N`, then combine the results by `m'` into `P`
   obtain ⟨m, hm_det, hm_mem⟩ := hMN n Φ hΦ
-  obtain ⟨m', hm'_det, hm'_mem⟩ := hNP n (fun i : Fin n ↦ ∑ k, m i k • Φ k) hm_mem
-  have h_assoc (i : Fin n) : ∑ k, (m' * m) i k • Φ k = ∑ j, m' i j • ∑ k, m j k • Φ k := by
-    simpa [Matrix.mul_apply, Finset.sum_smul, Finset.smul_sum, mul_smul] using Finset.sum_comm
-  refine ⟨m' * m, ?_, fun i ↦ by simpa only [h_assoc] using hm'_mem i⟩
-  simpa [mul_comm z] using mul_dvd_mul hm'_det hm_det
+  obtain ⟨m', hm'_det, hm'_mem⟩ := hNP n (m • Φ) hm_mem
+  refine ⟨m' * m, ?_, ?_⟩
+  · simpa [mul_comm z] using mul_dvd_mul hm'_det hm_det
+  · change ∀ i, ((m' * m) • Φ) i ∈ P
+    rw [mul_smul]
+    exact hm'_mem
 
 /-- Colength bounds pull back along a linear map `f : U → V`. Let every finite family in `M` be
 carried into `N` by a square matrix whose determinant divides `z` (this is `ColengthDvd M N z`). If
@@ -212,57 +213,5 @@ lemma colengthDvd_sup_span [IsDomain O] [ValuationRing O] (N : Submodule O V) (s
   grw [map_pointwise_smul, le_top (a := Submodule.map comb ⊤), ← le_sup_right]
 
 /-! ### Comparison with lengths -/
-
-/-- Over a discrete valuation ring `O`, `ColengthDvd` bounds a length. Let `M`, `N` be submodules of
-`V` with `M` finitely generated; `N` need not lie in `M`. If every finite family in `M` is carried
-into `N` by a square matrix whose determinant divides `z`, then `relLength M N`, the length of
-`M / (M ∩ N)`, is at most the length of `O / z`. -/
-lemma ColengthDvd.relLength_le [IsDomain O] [IsDiscreteValuationRing O]
-    (hMN : ColengthDvd M N z) (hM : M.FG) :
-    relLength M N ≤ length O (O ⧸ Ideal.span {z}) := by
-  -- For generators `Φ` of `M` the hypothesis gives a matrix `m` with `det m ∣ z` and `m Φ` in `N`.
-  -- Write `m = Q * diagonal a * P` in Smith normal form. The vectors `Ψ = P Φ` still generate `M`
-  -- and `a j • Ψ j ∈ N`, so the quotient is an image of the product of the `O / a j`.
-  -- `DVR O` bundles the two instances above; it is assumed by the imported lemmas on lengths.
-  have : DVR O := {}
-  obtain ⟨n, Φ, rfl⟩ := fg_iff_exists_fin_generating_family.1 hM
-  obtain ⟨m, hm_det, hm_mem⟩ := hMN n Φ fun i ↦ subset_span ⟨i, rfl⟩
-  obtain ⟨Q, -, P, -, a, rfl⟩ := isValuationPair_top.smith_normal_form m
-  let Ψ : Fin n → V := P.val • Φ
-  have h_comb : diagonal a • Ψ = Q⁻¹.val • (Q.val * diagonal a * P.val) • Φ := by
-    simp only [Ψ, smul_smul, mul_assoc, Units.inv_mul_cancel_left]
-  have h_kill (j : Fin n) : a j • N.mkQ (Ψ j) = 0 := by
-    rw [← map_smul, mkQ_apply, Quotient.mk_eq_zero,
-      show a j • Ψ j = (diagonal a • Ψ) j by simp [diagonal], h_comb]
-    exact N.sum_mem fun i _ ↦ N.smul_mem (Q⁻¹.val j i) (hm_mem i)
-  let π : (∀ j : Fin n, O ⧸ Ideal.span {a j}) →ₗ[O] V ⧸ N :=
-    ∑ j, liftQSpanSingleton (a j) (.toSpanSingleton O _ (N.mkQ (Ψ j))) (h_kill j) ∘ₗ .proj j
-  have h_onto : (span O (Set.range Φ)).map N.mkQ ≤ .map π ⊤ := by
-    rw [map_le_iff_le_comap, span_le]
-    rintro _ ⟨i, rfl⟩
-    refine ⟨fun j ↦ Submodule.Quotient.mk (P⁻¹.val i j), mem_top, ?_⟩
-    have h_back : P⁻¹.val • Ψ = Φ := by simp [Ψ, smul_smul]
-    -- The classes stay `Submodule.Quotient.mk`, the form on which `π` evaluates.
-    simp [π, ← h_back, -Ideal.Quotient.mk_eq_mk]
-  have h_dvd : ∏ j, a j ∣ z := .trans (by simp) hm_det
-  calc relLength (span O (Set.range Φ)) N
-    _ ≤ length O (⊤ : Submodule O (∀ j : Fin n, O ⧸ Ideal.span {a j})) :=
-      (relLength_eq_length_map_mkQ _ _).trans_le (length_le_of_le_map π ⊤ h_onto)
-    _ = IsDiscreteValuationRing.addVal O (∏ j, a j) := by simp [addVal_prod]
-    _ ≤ IsDiscreteValuationRing.addVal O z := IsDiscreteValuationRing.addVal_le_iff_dvd.2 h_dvd
-    _ = length O (O ⧸ Ideal.span {z}) := length_quot_span_eq_addVal.symm
-
-/-- Let `M` be a finitely generated submodule of `V` over a discrete valuation ring `O`, and let
-`IsOntoUpToColength p M n y c` hold: the endomorphism `y` keeps `M` and, for some natural number
-`l ≤ c`, every finite family in `M` is carried into `y (M) + p ^ n • M` by a square matrix whose
-determinant divides `p ^ l`. Then, for some natural number `l ≤ c`, the length
-`relLength M (y (M) + p ^ n • M)` of `M / (y (M) + p ^ n • M)` is at most `l` times the length of
-`O / p`. -/
-lemma IsOntoUpToColength.exists_relLength_le [IsDomain O] [IsDiscreteValuationRing O] {p : O}
-    {n : ℕ} {y : End O V} {c : ℝ} (h_onto : IsOntoUpToColength p M n y c) (hM : M.FG) :
-    ∃ l : ℕ, l ≤ c ∧ relLength M (M.map y ⊔ p ^ n • M) ≤ l * length O (O ⧸ Ideal.span {p}) := by
-  have : DVR O := {}
-  obtain ⟨-, l, hl, h_colength⟩ := h_onto
-  exact ⟨l, hl, (h_colength.relLength_le hM).trans_eq (by simp [length_quot_span_eq_addVal])⟩
 
 end New

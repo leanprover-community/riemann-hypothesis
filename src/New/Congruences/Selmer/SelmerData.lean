@@ -71,7 +71,7 @@ def conjDualHom (a : O) :
     η (ρ g • u) m = η u ((cyclotomicCharIn O Ω ℓ (conjGal g) : O) • ρ (conjGal g)⁻¹ • m)}
   zero_mem' _ _ _ := rfl
   add_mem' {η η'} hη hη' g u m := by
-    show η (ρ g • u) m + η' (ρ g • u) m = η u _ + η' u _
+    change η (ρ g • u) m + η' (ρ g • u) m = η u _ + η' u _
     rw [hη g u m, hη' g u m]
   smul_mem' t η hη g u m := by simpa [smul_comm t] using hη g u (t • m)
 

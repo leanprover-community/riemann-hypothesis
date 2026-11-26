@@ -510,7 +510,6 @@ noncomputable def filling : Filling D.E D.shape where
              rify [finrank_eq_two_mul_card_infinitePlace, pow_mul']
              exact D.le_of_hasLogBound
   pow_le_k := D.nat_le_of_hasLogBound.trans D.card_X₀.ge
-  thousand_mul_le_k := D.nat_le_of_hasLogBound.trans D.card_X₀.ge
   k_le_f := D.card_X₀.trans_le D.nat_le_of_hasLogBound
   mul_rootDiscr_pow_le := by
                  rify [Shape.k, card_X₀]
@@ -524,8 +523,6 @@ noncomputable def filling : Filling D.E D.shape where
   M_le_b_pow := D.le_of_hasLogBound
   le_M := D.le_of_hasLogBound
   five_le_N := D.le_of_hasLogBound
-  pow_chain := ⟨D.nat_le_of_hasLogBound, D.nat_le_of_hasLogBound,
-    D.nat_le_of_hasLogBound.trans D.card_X₀.ge⟩
 
 /-- The Bessel system of `D.filling` at the infinite place `v` has type
 `(D.paramW v, D.columnCount v)`: its full function is the Bessel function of the discrete series of

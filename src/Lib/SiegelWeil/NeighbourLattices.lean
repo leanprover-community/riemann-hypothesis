@@ -78,7 +78,7 @@ lemma singleAdele_one_mul (s : 𝔸f E) : singleAdele w 1 * s = singleAdele w (s
   rcases eq_or_ne u w with rfl | hu <;> simp [singleAdele_of_ne, *]
 
 /-- The standard lattice contains the vectors with one integral coordinate and all others zero. -/
-lemma single_mem_stdLattice [Fintype n] [DecidableEq n] {a : 𝔸f E} (ha : a ∈ Ô E) (k : n) :
+lemma single_mem_stdLattice [DecidableEq n] {a : 𝔸f E} (ha : a ∈ Ô E) (k : n) :
     Pi.single k a ∈ stdLattice E n := by
   intro j
   rcases eq_or_ne j k with rfl | hj <;> simp [*]

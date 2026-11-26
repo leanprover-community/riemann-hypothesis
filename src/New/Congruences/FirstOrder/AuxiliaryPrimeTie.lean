@@ -293,7 +293,7 @@ theorem exists_deformed_norm_family (hQ : ∀ j : J, D.IsOffLevel ![] (Q.place j
   | mem z hz =>
     obtain ⟨g, rfl | ⟨j, rfl⟩⟩ := hz
     · -- The multiples of `ℓ ^ ν` are killed by `σ`.
-      simp only [mul_smul_comm, MvPolynomial.coeff_smul, map_nsmul, ← smul_sum]
+      simp only [mul_smul_comm, AddMonoidAlgebra.coeff_smul_apply, map_nsmul, ← smul_sum]
       rw [nsmul_eq_mul, hσ.natCast_eq_zero, zero_mul]
     · -- The tie at `w j` cancels the two terms of a tied relation.
       exact map_top_coeff_mul_C_sub_X_mul_C_eq_zero (heckeAction (D := D) (L := Q.place)).toRingHom

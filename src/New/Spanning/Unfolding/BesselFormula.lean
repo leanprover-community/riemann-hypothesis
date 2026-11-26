@@ -68,8 +68,8 @@ the one written with the unit matrix, by the identity on matrices. -/
 def unitSignEquiv (n : Type) [Fintype n] [DecidableEq n] :
     USign (1 : n → ℤˣ) ≃ₜ* U (1 : Matrix n n ℂ) where
   __ := MulEquiv.subgroupCongr (congrArg U signMatrix_one)
-  continuous_toFun := continuous_subtype_val.subtype_mk _
-  continuous_invFun := continuous_subtype_val.subtype_mk _
+  continuous_toFun := continuous_subtypeVal.subtype_mk _
+  continuous_invFun := continuous_subtypeVal.subtype_mk _
 
 /-- The isomorphism `unitSignEquiv` does not change the matrix. -/
 lemma coe_unitSignEquiv {n : Type} [Fintype n] [DecidableEq n] (u : USign (1 : n → ℤˣ)) :

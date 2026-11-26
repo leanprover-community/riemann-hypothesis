@@ -44,7 +44,7 @@ namespace New
 modulus of the sum. -/
 lemma norm_tsum_le_of_tsum_enorm_le {I : Type*} {f : I → ℂ} {T : ℝ} (hT : 0 ≤ T)
     (h : ∑' i : I, ‖f i‖ₑ ≤ ENNReal.ofReal T) : ‖∑' i : I, f i‖ ≤ T :=
-  ENNReal.toReal_le_of_le_ofReal hT (enorm_tsum_le_tsum_enorm.trans h)
+  ENNReal.toReal_le_of_le_ofReal hT (eNorm_tsum_le_tsum_eNorm.trans h)
 
 /-- An order of decay of `13 n³` leaves `4 n³` to spare over the order `8 n² + 1` that the bound for
 the kernel needs. -/
@@ -106,8 +106,6 @@ lemma partialKernel_ratEmbed_mul {k : GInf E s → ℂ} (φ : Gf E n → ℂ) {Z
     (hν : ∀ γ : U V.J, ν * γ ∈ Z ↔ γ ∈ Z) (g x : G E s) :
     V.partialKernel k φ Z (V.ratEmbed ν * g) x = V.partialKernel k φ Z g x := by
   classical
-  have h_point (γ : U V.J) :
-      (V.ratEmbed ν * g)⁻¹ * V.ratEmbed (ν * γ) * x = g⁻¹ * V.ratEmbed γ * x := by simp [mul_assoc]
   calc V.partialKernel k φ Z (V.ratEmbed ν * g) x
       = ∑' γ : U V.J, V.kernelTerm k φ (Z.indicator 1) (V.ratEmbed ν * g) (ν * γ) x :=
         ((Equiv.mulLeft ν).tsum_eq _).symm
@@ -160,7 +158,7 @@ lemma realConv_partialKernel {k : GInf E s → ℂ} (φ : TestFunction (Gf E n))
     k h * V.kernelTerm k φ (Z.indicator 1) (g * (h, 1)) γ x
   have h_finite : ∫⁻ h : GInf E s, ∑' γ : U V.J, ‖term γ h‖ₑ < ⊤ :=
     calc _ ≤ ∫⁻ h : GInf E s, ‖k h‖ₑ * ENNReal.ofReal T := by
-          simp only [term, enorm_mul, ENNReal.tsum_mul_left]
+          simp only [term, eNorm_mul, ENNReal.tsum_mul_left]
           exact lintegral_mono fun h ↦ mul_le_mul_right (hT _) _
       _ < ⊤ := by
         rw [lintegral_mul_const' _ _ ENNReal.ofReal_ne_top]
@@ -283,7 +281,7 @@ theorem summable_kernelTerm {B : ℕ} {k : GInf E s → ℂ} (hB : 13 * card n ^
     Summable fun γ : U V.J ↦ V.kernelTerm k φ (Z.indicator 1) g γ x := by
   obtain ⟨C, -, h_bound⟩ := V.exists_tsum_enorm_kernelTerm_le_height
     (eight_mul_sq_lt_of_thirteen_mul_cube_le card_pos hB) φ hk
-  exact Summable.of_enorm ((h_bound Z g x).trans_lt ENNReal.ofReal_lt_top).ne
+  exact Summable.of_eNorm ((h_bound Z g x).trans_lt ENNReal.ofReal_lt_top).ne
 
 /-- If `k` has decay of order at least `13 (card n)³`, then the values of `k ⊗ φ` at `x⁻¹ γ x`,
 for the rational points `γ` with characteristic polynomial in `S`, are summable. -/

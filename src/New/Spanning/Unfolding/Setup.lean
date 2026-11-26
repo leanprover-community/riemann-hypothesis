@@ -121,8 +121,6 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   mul_finrank_le_pow : (𝔰.ϱ + 1) * Module.finrank ℚ E ≤ 2 ^ (2 * 𝔰.ϱ)
   /-- 1000 (2ϱ + 2)⁹ ≤ k. -/
   pow_le_k : 1000 * (2 * 𝔰.ϱ + 2) ^ 9 ≤ 𝔰.k
-  /-- 1000 (2ϱ + 2) ≤ k. -/
-  thousand_mul_le_k : 1000 * (2 * 𝔰.ϱ + 2) ≤ 𝔰.k
   /-- k is at most the number f of infinite places of E. -/
   k_le_f : 𝔰.k ≤ Core.numInfPlaces E
   /-- (200 f k rd)¹⁰⁰⁰ ≤ b, with f the number of infinite places and rd the root discriminant of
@@ -146,8 +144,6 @@ structure Filling (E : Type) [Field E] [CMType E] (𝔰 : Shape) where
   le_M : b ^ 19 ≤ ↑(levelPrime 0 * levelPrime 1)
   /-- 5 ≤ N. -/
   five_le_N : (5 : ℝ) ≤ N
-  /-- With n = ϱ + 1: 10¹⁰ n⁴ ≤ n⁶, 3 n⁶ + 12 ≤ n⁷ and n⁷ ≤ k. -/
-  pow_chain : 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 6 ∧ 3 * 𝔰.n ^ 6 + 12 ≤ 𝔰.n ^ 7 ∧ 𝔰.n ^ 7 ≤ 𝔰.k
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
 
@@ -158,6 +154,26 @@ export Core (numInfPlaces)
 attribute [instance] fintypeChosen isLevel_sourceLevel
 
 attribute [scoped simp] N_prime levelPrime_prime_and_ne
+
+/-- 1000 (2ϱ + 2) ≤ k. -/
+lemma thousand_mul_le_k (S : Filling E 𝔰) : 1000 * (2 * 𝔰.ϱ + 2) ≤ 𝔰.k :=
+  Nat.le_trans (Nat.mul_le_mul_left 1000 (Nat.le_self_pow (by decide : 9 ≠ 0) _)) S.pow_le_k
+
+/-- With n = ϱ + 1: 10¹⁰ n⁴ ≤ n⁶, 3 n⁶ + 12 ≤ n⁷ and n⁷ ≤ k. -/
+lemma pow_chain (S : Filling E 𝔰) :
+    10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 6 ∧ 3 * 𝔰.n ^ 6 + 12 ≤ 𝔰.n ^ 7 ∧ 𝔰.n ^ 7 ≤ 𝔰.k := by
+  have hn : 10 ^ 5 ≤ 𝔰.n := Nat.le_trans S.ten_pow_five_le_varrho (Nat.le_succ _)
+  refine ⟨?_, ?_, ?_⟩
+  · calc 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 2 * 𝔰.n ^ 4 :=
+          Nat.mul_le_mul_right _ (Nat.pow_le_pow_left hn 2)
+        _ = 𝔰.n ^ 6 := (Nat.pow_add 𝔰.n 2 4).symm
+  · have hpos : 1 ≤ 𝔰.n ^ 6 := Nat.one_le_pow _ _ 𝔰.ϱ.succ_pos
+    calc 3 * 𝔰.n ^ 6 + 12 ≤ 𝔰.n ^ 6 * 15 := by omega
+         _ ≤ 𝔰.n ^ 6 * 𝔰.n := Nat.mul_le_mul_left _ (by omega)
+         _ = 𝔰.n ^ 7 := (Nat.pow_succ 𝔰.n 6).symm
+  · calc 𝔰.n ^ 7 ≤ 𝔰.n ^ 9 := Nat.pow_le_pow_right 𝔰.ϱ.succ_pos (by decide)
+         _ ≤ (2 * 𝔰.ϱ + 2) ^ 9 := Nat.pow_le_pow_left (by unfold Shape.n; omega) _
+         _ ≤ 𝔰.k := by have := S.pow_le_k; omega
 
 /-! ### Groups, classes and reduction -/
 
@@ -609,7 +625,7 @@ lemma discreteTopology_map_ratToInf {c : S.Classes} (K : Subgroup (S.classUnipot
   have h_inj : Function.Injective toMatrices := fun γ γ' h ↦
     Subtype.ext (funext fun v ↦ Subtype.ext (Units.ext (congrFun h v)))
   have h_cont : Continuous toMatrices := continuous_pi fun v ↦ Units.continuous_val.comp
-    (continuous_subtype_val.comp ((continuous_apply v).comp continuous_subtype_val))
+    (continuous_subtypeVal.comp ((continuous_apply v).comp continuous_subtypeVal))
   refine h_cont.discrete_of_tendsto_cofinite_cocompact
     (tendsto_cofinite_cocompact_iff.2 fun C hC ↦ ?_)
   -- The matrices of `Γ` are among those of 𝖴_c(M), of which only finitely many lie in `C`.

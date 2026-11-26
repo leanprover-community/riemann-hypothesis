@@ -138,7 +138,7 @@ lemma IsStep.isNormRoot_of_one_side {μ : (𝔸f E)ˣ →* ℂˣ} (hμ : IsStep 
     have ha_u : ((a : Matrix n n (𝔸f E')) * (aeval (γ : Matrix n n (𝔸f E')) (idem B • z))ᴴ).map
           (evalAt u) = (aeval (γ : Matrix n n (𝔸f E')) (idem B • z)).map (evalAt u) :=
       congrArg (Matrix.map · (evalAt u)) ha
-    show (a : Matrix n n (𝔸f E')).map (evalAt u) =
+    change (a : Matrix n n (𝔸f E')).map (evalAt u) =
       aeval ((γ : Matrix n n (𝔸f E')).map (evalAt u)) (z.map (evalAt u))
     simpa [hB, mem_B, ev_idem, hz, hT, hu, h_adj, placesAbove, star_idem, map_smul', below_star,
       map_aeval_matrix] using ha_u
@@ -167,10 +167,10 @@ lemma heckeSplit_comp_baseChangeGf (hu : u.IsSplit) (hw : (u.below E).IsSplit)
     φ g ∈ localIntGL n u ↔ g ∈ localIntGL n (u.below E) :=
     map_locMap_mem_intGL_iff rfl
   refine heckeFun_comp φ h_right_inv ((mem_sphericalAt_iff _).1 hx) h_finite
-    (GL_map_surjective _ h_surj) h_preimage (fun g ↦ ?_) fun g ↦ ?_
+    (Matrix.GeneralLinearGroup.map_surjective _ h_surj) h_preimage (fun g ↦ ?_) fun g ↦ ?_
   · -- the two elements differ by one supported at the other places above `w` and their
     -- conjugates, and such an element fixes `x`
-    show π (baseChangeGf (ofSplitPlace hw g)) x = π (ofSplitPlace hu (φ g)) x
+    change π (baseChangeGf (ofSplitPlace hw g)) x = π (ofSplitPlace hu (φ g)) x
     have h_supp : (ofSplitPlace hu (φ g))⁻¹ * baseChangeGf (ofSplitPlace hw g) ∈
         supportedOn n (FinPlace.below E ⁻¹' {u.below E} \ {u}) := by
       -- the two elements have the same component at `u`
@@ -268,10 +268,8 @@ lemma exists_places_above_one_side {S : Set (FinPlace E)} (h_split : ∀ w ∈ S
     rcases Sym2.eq_iff.1 h_pair with ⟨h_eq, -⟩ | ⟨h_eq, -⟩
     · exact ⟨v, hv, .inl h_eq⟩
     · exact ⟨v, hv, .inr h_eq⟩
-  have hV_inj : InjOn (FinPlace.below E) V := by
-    intro u hu v hv h_below
-    have h_pair_eq : belowPair E u = belowPair E v := by simp [belowPair, h_below]
-    exact hV_inj_pair hu hv h_pair_eq
+  have hV_inj : InjOn (FinPlace.below E) V :=
+    InjOn.of_comp (g := fun w : FinPlace E ↦ s(w, star w)) hV_inj_pair
   refine ⟨V, hV, hV_inj, ?_, subset_antisymm ?_ ?_⟩
   · rintro _ ⟨u, hu, rfl⟩ ⟨v, hv, hvu⟩
     have h_pair_eq : belowPair E u = belowPair E v := by simp [belowPair, hvu, Sym2.eq_swap]
@@ -412,10 +410,8 @@ lemma isMatchingPairAbove_of_mem_biInvariantPairs {μ : (𝔸f E)ˣ →* ℂˣ} 
       ((localLevel n A : Set (Gf E' n)).indicator 1 * F : Gf E' n → ℂ) δ
     simp_all [IsBiInvariantAt, indicator, leftTranslation, funext_iff, mul_mem_cancel_left,
       mul_mem_cancel_right]
-  have hμ_loc : ∀ w ∈ FinPlace.below E '' V, ∀ x : (LocField w)ˣ, μ (locIdele w x) = 1 := by
-    rintro _ ⟨v, hv, rfl⟩
-    obtain ⟨h_trivial, -⟩ := h_matched v hv
-    exact h_trivial
+  have hμ_loc : ∀ w ∈ FinPlace.below E '' V, ∀ x : (LocField w)ˣ, μ (locIdele w x) = 1 :=
+    forall_mem_image.2 fun v hv ↦ (h_matched v hv).1
   have h_one (u : FinPlace E') (hu : u.below E ∉ FinPlace.below E '' V) :
       (1 + idem V • (X - 1) : (𝔸f E')[X]).map (evalAt u) = 1 := by
     have huV : u ∉ V := fun huV ↦ hu ⟨u, huV, rfl⟩

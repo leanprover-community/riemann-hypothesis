@@ -62,7 +62,6 @@ open Real Matrix Complex Fintype Metric Norms.L2Operator
 `M ^ 4`. -/
 lemma l2_opNorm_le_pow_four {l : ℕ} {M : ℝ} (hl : l ≤ M) {A : Matrix (Fin l) (Fin l) ℂ}
     (hA : ∀ a b : Fin l, ‖A a b‖ ≤ M ^ 2) : ‖A‖ ≤ M ^ 4 := by
-  have hM : 0 ≤ M := (Nat.cast_nonneg l).trans hl
   grw [l2_opNorm_le_of_apply hA, card_fin, ← sq, hl, ← pow_add]
 
 lemma oneSubNormSqInvCorner_le_one {𝔰 : Shape} (Z : 𝔰.FrameMatrix) : oneSubNormSqInvCorner Z ≤ 1 :=
@@ -117,7 +116,6 @@ lemma gramDiscReal_div_two_le_and_isBoundedInCell {𝔰 : Shape} {M P : ℝ} {Z 
     (hZ' : Z' ∈ ball Z (P ^ 6)⁻¹) :
     gramDiscReal Z / 2 ≤ gramDiscReal Z' ∧ IsBoundedInCell Z' P := by
   -- The number `P / 2` bounds the sizes at `Z`, and `Z'` is a small perturbation of `Z`.
-  have hϱ : (0 : ℝ) ≤ 𝔰.ϱ := Nat.cast_nonneg 𝔰.ϱ
   have hnM : 𝔰.n ≤ M := (Nat.cast_succ 𝔰.ϱ).trans_le (by linarith)
   have hM_one : 1 ≤ M := by linarith
   have h_pow : M ^ (8 * 𝔰.n) ≤ P / 2 := by
@@ -240,7 +238,6 @@ lemma New.norm_le_of_besselLength_gramSection_mul_le {𝔰 : Shape} {M R : ℝ} 
   -- Move `gramSection Z * z` by a unipotent `w` to a point `y` of norm at most `M`. The columns of
   -- `z⁻¹` at the dual vectors are combinations of the frames at `y` and at `z` with bounded
   -- coefficients.
-  have hϱ : (0 : ℝ) ≤ 𝔰.ϱ := Nat.cast_nonneg 𝔰.ϱ
   have hM : 1 ≤ M := by linarith
   have hnM : 𝔰.n ≤ M := (Nat.cast_succ 𝔰.ϱ).trans_le (by linarith)
   have hMR : M ≤ R := (le_self_pow₀ hM (by lia)).trans h_pow_le
@@ -311,7 +308,7 @@ lemma New.sum_enorm_sq_integral_mul_star {𝔰 : Shape} {I : Type*} [Fintype I] 
       Complex.conjCLE.integrable_comp_iff.mpr ((hW.integrable_smul hψ (s * g)).eval_piLp i)
     have h_conj : ∑ j, ‖∫ y, conj (star (ψ y * W (s * g * y) i) * W (t * 1 * y) j)‖ₑ ^ 2 =
         ∑ j, ‖∫ y, conj (star (ψ y * W (s * g * y) i) * W (1 * y) j)‖ₑ ^ 2 := by
-      simp only [integral_conj, RCLike.enorm_conj, h_invariant h_int ht 1]
+      simp only [integral_conj, RCLike.eNorm_conj, h_invariant h_int ht 1]
     simpa [mul_assoc, mul_comm, mul_left_comm] using h_conj
   -- each column: remove `s`
   have h_int (j : I) : Integrable fun y ↦ ψ y * star (W y j) :=
@@ -375,7 +372,7 @@ lemma New.BesselSystem.lintegral_indicator_mul_enorm_sq_le {𝔰 : Shape} {B : �
   have h_invariant : besselS.FixesLeft fun y : 𝔰.G₁ ↦ ‖X.besselFn .full y‖ₑ ^ 2 := by
     simp +contextual [hW.enorm_besselS_mul]
   -- unfold along `besselU0` (`h_fibre`), then along the frame entries, which lie in discs
-  grw [lintegral_mul_le_of_frameMatrix_le (hW.stronglyMeasurable.enorm.pow_const 2)
+  grw [lintegral_mul_le_of_frameMatrix_le (hW.stronglyMeasurable.eNorm.pow_const 2)
     (measurable_one.indicator hA) h_invariant h_fibre h_frame (by bound),
     X.isCutPair.lintegral_sq_full_eq]
 
@@ -413,7 +410,7 @@ lemma New.isL2Contraction_of_columns {𝔰 : Shape} {I : Type*} [Fintype I] [Dec
       Set.mem_of_indicator_ne_zero (left_ne_zero_of_mul hy)
   have h_weight : ∑ j, ∫⁻ y, ‖β j y‖ₑ ^ 2 =
       ∫⁻ y, ‖φ y‖ₑ ^ 2 ∂volume.withDensity fun y ↦ A.indicator 1 y * ‖W y‖ₑ ^ 2 := by
-    rw [← lintegral_finsetSum' _ fun j _ ↦ (hβ j).aestronglyMeasurable.enorm.pow_const 2,
+    rw [← lintegral_finsetSum' _ fun j _ ↦ (hβ j).aestronglyMeasurable.eNorm.pow_const 2,
       lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)]
     simp [β, Set.indicator, apply_ite, mul_comm, mul_pow, euclidean_enorm_sq_eq_sum, mul_sum]
   refine (lintegral_congr h_columns).trans_le ?_
@@ -481,7 +478,7 @@ lemma New.scale_mul_le_pow {M M₀ P : ℝ} {n : ℕ} (hM : 1 ≤ M) (hM₀ : M�
     P ^ (2000 * n ^ 2) * (M₀ ^ 5 * (M * (P ^ 20 * P ^ 20)) ^ (2 * n ^ 2)) ≤
       M ^ (10 ^ 5 * n ^ 4) := by
   have h_le_pow_four : n ≤ n ^ 4 := Nat.le_self_pow four_ne_zero n
-  have h_sq_le_pow_four : n ^ 2 ≤ n ^ 4 := by nlinarith [Nat.le_self_pow two_ne_zero (n ^ 2)]
+  have h_sq_le_pow_four : n ^ 2 ≤ n ^ 4 := by linarith [Nat.le_self_pow two_ne_zero (n ^ 2)]
   subst hM₀ hP
   calc _ = M ^ (93600 * n ^ 4 + 2 * n ^ 2 + 45 * n) := by ring
     _ ≤ M ^ (10 ^ 5 * n ^ 4) := pow_le_pow_right₀ hM (by lia)
@@ -626,7 +623,6 @@ lemma New.BesselSystem.exists_isKernelBound_gramSection {𝔰 : Shape} {B M : �
   -- for `ν` a multiple of `‖W‖²` on `A`; Schur's bound gives the contraction.
   have hB : 8 * 𝔰.r ≤ B := X.eight_mul_rank_le
   have h_rank : (𝔰.r : ℝ) = 𝔰.ϱ + (card 𝔰.κ + 1 + 𝔰.ϱ) := by simp
-  have hϱ : (0 : ℝ) ≤ 𝔰.ϱ := Nat.cast_nonneg 𝔰.ϱ
   have hM_eight : 8 * (𝔰.ϱ + 1) ≤ M := by linarith [Nat.cast_nonneg (α := ℝ) (card 𝔰.κ)]
   have hM_two : 2 ≤ M := by linarith
   have h_disc_half : 0 < gramDiscReal Z / 2 := half_pos (h_disc.trans_lt' (by positivity))

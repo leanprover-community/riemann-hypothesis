@@ -190,13 +190,13 @@ abbrev rightPath (q : Bool → GridPath 0 D.m j (j + 1)) : TwoGridPath D.m :=
 of the `Y`) and the old edges of the corner, from `Y^j_j` and `Ỹ^j_j` to the nodes that it keeps. -/
 lemma edges_downPath (q : Bool → GridPath 0 D.m j (j + 1)) : (downPath q).edges =
     (D.diagonalCorner j).oldEdges ((q false).edges false ∪ (q true).edges true) := by
-  simp [TwoGridPath.edges, GridPath.edges, insert_comm]
+  simp [TwoGridPath.edges, GridPath.edges]
 
 /-- The path through `(j + 1, j + 1)` has the edges of the halves `q b` in the grids `b` and the new
 edges of the corner, from the nodes that it keeps to `Y^(j+1)_(j+1)` and `Ỹ^(j+1)_(j+1)`. -/
 lemma edges_rightPath (q : Bool → GridPath 0 D.m j (j + 1)) : (rightPath q).edges =
     (D.diagonalCorner j).newEdges ((q false).edges false ∪ (q true).edges true) := by
-  simp [TwoGridPath.edges, GridPath.edges, insert_comm]
+  simp [TwoGridPath.edges, GridPath.edges]
 
 /-- The integral `I^S(Ψ; z, p)` over the group of `S = Y^(j+1)_j`, on the path through `(j, j)`. The
 halves `q b` are monotone paths from `(0, m)` to `(j, j + 1)`, and `formMap` carries a form along
@@ -585,7 +585,8 @@ lemma columnPeriod_eq_mul_rowPeriod (hj : j < D.m) (q : Bool → GridPath 0 D.m 
       (fun i : D.GridForm false j (j + 1) × (D.GridForm false (j + 1) j →ₗ[ℂ] ℂ) ↦ h_law i.1 i.2)
       h_dep
   rw [columnPeriod, ← h_square, mul_sum]
-  simp only [f, periodPairing_columnLineKernel_eq hj (h_line _), mul_left_comm]
+  simp only [f, periodPairing_columnLineKernel_eq hj (h_line _)]
+  exact sum_congr rfl fun _ _ ↦ mul_left_comm ..
 
 /-- One turn on the diagonal, at `j < m`. There are numbers `c ϑ ≠ 0` of absolute value
 `turnRatio j j ϑ` up to a constant and a power of `Nm Q`, with `Q` the modulus of the twist `ϑ`,

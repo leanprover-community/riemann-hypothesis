@@ -257,7 +257,8 @@ lemma sign_mul_orbital_eq_integral_weightMinors_div (hg : l.HasGap h) (x : n →
       ← integral_div, ← integral_const_mul]
     congr with k
     -- the numerator of `F (g * k)` is constant, as `(g * k)ᴴ J (g * k) = J`
-    simp only [w, F, mem_U.1 (g * k).2]
+    simp only [w, F, show ((g * k : U (signMatrix ε)) : Matrix n n ℂ)ᴴ * signMatrix ε *
+      (g * k : U (signMatrix ε)) = signMatrix ε from mem_unitaryGroupOf_iff.1 (g * k).2]
     push_cast
     simp [U.inv_coe_eq_mul_conjTranspose_mul, mul_assoc, signMatrix, field, mul_conj', zpow_sub₀,
       prod_eq_zero_iff,
@@ -425,7 +426,7 @@ lemma orbital_eq_char_sub_offOrbitIntegral (hg : l.HasGap h) :
     MonoidHom.measurePreserving (by fun_prop) (by simp [mem_maxCompactU, Function.Surjective])
       (by simp)
   have K_eq_U : ∫ k : maxCompactU (1 : n → ℤˣ), F k ∂haarK 1 = ∫ k : USign (1 : n → ℤˣ), F k :=
-    h_meas.hasLaw.integral_comp (F_cont.comp continuous_subtype_val).aestronglyMeasurable
+    h_meas.hasLaw.integral_comp (F_cont.comp continuous_subtypeVal).aestronglyMeasurable
   rw [sign_mul_orbital_eq_integral_weightMinors_div hg x hx F_int,
     kTypeNormSq_mul_kTypeChar_eq_integral hg x hx, F_orbit, K_eq_U]
 
@@ -508,8 +509,10 @@ lemma exists_entry_large_outside_orbit (l : HCParam (n := n) ε) (h : ℕ) :
   obtain ⟨i, j, hij, hne⟩ : ∃ i j : n, ε i ≠ ε j ∧ (k : Matrix n n ℂ) i j ≠ 0 := by
     by_contra! h_block
     rw [← mem_blockDiagAlg, mem_blockDiagAlg_iff_commute] at h_block
-    have h_unitary : (k : Matrix n n ℂ)ᴴ * k = 1 := by simpa using mem_U.mp k.prop
-    exact hk ⟨⟨k, by simp [mem_U, h_block.right_comm, h_unitary]⟩, 1,
+    have h_unitary : (k : Matrix n n ℂ)ᴴ * k = 1 := by
+      simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.mp k.prop
+    exact hk ⟨⟨k, by simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose, h_block.right_comm,
+        h_unitary]⟩, 1,
       by simp [IsBorelMatrix, blockTriangular_one]⟩
   -- at `r = 0` the left side vanishes and the right side does not
   refine (ContinuousAt.eventually_lt ?_ (by fun_prop) (by simp [hne])).mono

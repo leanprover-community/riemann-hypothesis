@@ -230,11 +230,8 @@ lemma eq_of_aeval_eq_of_isUnit_topBlock (h_rank : ∀ τ : Φ, q τ + rankAt m �
     change IsUnit (φ.mapMatrix (topBlock h_rank X τ)).det
     rw [← RingHom.map_det, isUnit_iff_ne_zero, map_ne_zero_iff φ h_inj]
     exact h_generic τ
-  have h_value : eval₂Hom (Int.castRingHom _) (φ ∘ X) = φ :=
-    MvPolynomial.ringHom_ext (by simp) (by simp)
   exact h_inj (by
-    simpa only [aeval_def, algebraMap_int_eq, ← coe_eval₂Hom, h_value] using
-      h_agree _ (φ ∘ X) h_unit)
+    simpa only [A, φ, aeval_algebraMap_apply, aeval_X_left_apply] using h_agree _ (φ ∘ X) h_unit)
 
 
 /-- The Schur complement of the top block: with `y = (A, B; C, D)` and `A` the top block, the array

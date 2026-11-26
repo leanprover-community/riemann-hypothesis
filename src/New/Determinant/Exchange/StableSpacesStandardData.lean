@@ -189,7 +189,7 @@ lemma match_mem_of_stdColDatum
     simp [hd, hp_eq, hsx, hx, hr, invOnUnits, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
       stdColDatum]
   have h_pos : 0 < I x :=
-    (h_translates.comp fun f ↦ ‖f x‖).continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero
+    (h_translates.comp fun f ↦ ‖f x‖).continuous.integral_pos_of_hasCompactSupport_nonneg_ne_zero
       (.of_compactSpace _) (fun _ ↦ norm_nonneg _) (norm_ne_zero_iff.2 h_one)
   -- The weighted translate is a nonnegative multiple of `Ψ`, point by point.
   have key_eq (k : intGL n V.O) (y : Matrix n b F) :
@@ -493,7 +493,7 @@ the idempotent adele `idemAdele S.conjClosure`, which is `1` on `S` and `0` else
 integral at the places of `S` and their conjugates and the hermitian `Q` is integral at
 `𝔠.ramifiedPlaces`, then `e • P + (1 - e) • Q` has integral finite part. -/
 lemma New.Exchange.SplitTameChar.isIntMatrix_glue_hermitian {E : Type} [Field E] [CMType E]
-    {μ : NumberField.InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ) {ι : Type*} [Fintype ι]
+    {μ : NumberField.InfinitePlace E → ℤ} (𝔠 : SplitTameChar E μ) {ι : Type*}
     {S : Set (FinPlace E)} (hS : S = (𝔠.ramifiedPlaces : Set (FinPlace E)).conjClosureᶜ)
     {P Q : Matrix ι ι (𝔸 E)} (hQ : Qᴴ = Q) (P_int : IsIntMatrix (closureIntegers S) P)
     (Q_int : IsIntMatrix O (Q.map (componentsAt 𝔠))) :

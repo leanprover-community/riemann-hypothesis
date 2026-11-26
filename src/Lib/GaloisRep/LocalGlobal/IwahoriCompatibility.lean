@@ -714,8 +714,8 @@ lemma hecke_eq_frob_on_parahoricEigenspace (hA : IsPlaceOver A w)
       have l_diag : l (ρ.ρ (diagGL (mulSingle 0 ϖ)) y) = torusChar θ (mulSingle 0 ϖ) * l y := by
         simpa only [compactMean_eq_self (ρ := ρ.ρ) y hy_type.1] using hl dominant y
       rw [U_eq, map_smul, hl.apply_compactMean, l_diag]
-      simp [coe_normAbsChar_locField, norm_locField_eq_q_zpow, hϖ, field,
-        (zero_lt_one.trans w.one_lt_q).ne']
+      simp [coe_normAbsChar_locField, norm_locField_eq_q_zpow, hϖ, field]
+      exact mul_div_cancel_left₀ _ (pow_ne_zero _ (by exact_mod_cast (zero_lt_one.trans w.one_lt_q).ne'))
     have F_mul_T : F * T = ιℓ (θ 0 ϖ) • T :=
       mul_sub_one_eq_smul_sub_one (α := fun i ↦ ιℓ (θ i ϖ))
         (fun i hi ↦ by simp only [(χ_slot i).2 hi, map_one])

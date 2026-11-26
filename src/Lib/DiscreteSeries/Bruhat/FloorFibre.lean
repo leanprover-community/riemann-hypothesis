@@ -91,12 +91,10 @@ lemma involutive_oppositeIndex : (oppositeIndex (𝔰 := 𝔰)).Involutive :=
 exchanges `e_a` with `e*_a`, consists of the indices whose opposite has property `p`. -/
 lemma range_oppositeIndex_val (p : 𝔰.BesselIndex → Prop) :
     (Set.range fun i : Subtype p ↦ oppositeIndex i.1) =
-      {i : 𝔰.BesselIndex | p (oppositeIndex i)} := by
-  ext i
-  constructor
-  · rintro ⟨j, rfl⟩
-    simpa [involutive_oppositeIndex j.1] using j.2
-  · exact fun hi ↦ ⟨⟨oppositeIndex i, hi⟩, involutive_oppositeIndex i⟩
+      {i : 𝔰.BesselIndex | p (oppositeIndex i)} :=
+  (Set.range_comp oppositeIndex Subtype.val).trans <| by
+    rw [Subtype.range_coe_subtype, involutive_oppositeIndex.image_eq_preimage_symm]
+    rfl
 
 /-- The skew element `i t / 2`, which indexes the quadric `h(v, v) = t` at the place `ℂ`. -/
 noncomputable def skewOfLevel (t : ℝ) : skewAdjoint ℂ :=
@@ -379,7 +377,6 @@ lemma leFibreMeasure_heisenbergMeasure (a : Fin 𝔰.ϱ) :
     rw [Function.comp_apply, heisenbergElem_mulVec, h_orth]
     simp [ψ, q, dualPoint]
   have h_norm (t : ℝ) (p : (S → ℂ) × skewAdjoint ℂ) : (star (ψ t p) ⬝ᵥ 𝔰.J₁ *ᵥ ψ t p).re = t := by
-
     have h_re : (t / 2 + p.2 - q p.1 : ℂ).re = t / 2 -
         (star (inclMatrix ℂ Subtype.val *ᵥ p.1) ⬝ᵥ
           𝔰.J₁ *ᵥ inclMatrix ℂ Subtype.val *ᵥ p.1).re / 2 := by

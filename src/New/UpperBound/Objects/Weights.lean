@@ -387,14 +387,6 @@ lemma two_mul_targetParameter_of_lt (τ : D.Φ) {p : ℕ} (hp : p + 1 < D.k) :
   rw [targetParameter, ite_eq_left hp, twiceBlockEntry]
   omega
 
-/-- The entry `k - 1 + i` (with `k = D.k`) of the parameter `λ^Y = D.targetParameter τ` is
-`-κ_{i + 1/2} = Δ / 2 - κ_{i+1}`, where `Δ / 2 = D.halfGap` and
-`κ_{i+1} = D.liftWeight (i + 1) τ`. -/
-lemma targetParameter_k_sub_one_add (τ : D.Φ) (i : ℕ) :
-    D.targetParameter τ (D.k - 1 + i) = D.halfGap - D.liftWeight (i + 1) τ := by
-  have hk : 0 < D.k := D.k_pos
-  rw [targetParameter_eq, ite_eq_right (by omega), show D.k - 1 + i + 2 - D.k = i + 1 by omega]
-
 /-- Twice the Harish-Chandra parameter of `Y_m` at the place `τ`, in decreasing order: first
 `[k - 1]`, then for `i = 1, 2, …` the entry `-κ_{i - 1/2}` followed by the block `-κ_i + [t]`. Here
 `[n] = ((n - 1) / 2, …, (1 - n) / 2)` is the block of `twiceBlockEntry`, `κ_i = D.liftWeight i τ`
@@ -463,10 +455,9 @@ lemma sortedParamY_sub_paramX (τ : D.Φ) (p : ℕ) :
   · -- `λ'_p` is an entry `-κ_{i - 1/2}`.
     have h_kept : D.k ≤ p + 1 ∧ D.t + 1 ∣ p + 1 - D.k := ⟨not_lt.1 h_head, h_dvd⟩
     simp only [ite_eq_right h_head, ite_eq_left h_dvd, ite_eq_left h_kept,
-      targetParameter_k_sub_one_add, Nat.mod_eq_zero_of_dvd h_dvd, twiceBlockEntry, reducedHalfGap]
+      targetParameter_sub_one_add, Nat.mod_eq_zero_of_dvd h_dvd, twiceBlockEntry, reducedHalfGap]
     omega
   · -- `λ'_p` lies in a block `-κ_i + [t]`.
-    have h_mod : (p + 1 - D.k) % (D.t + 1) ≠ 0 := mt Nat.dvd_of_mod_eq_zero h_dvd
     simp only [ite_eq_right h_head, h_dvd, and_false, ite_false, twiceBlockEntry]
     omega
 
@@ -612,7 +603,7 @@ lemma sum_sortedParamY (j : ℕ) (τ : D.Φ) :
       rw [sum_congr rfl fun b hb ↦ D.sortedParamY_block j τ (mem_range.1 hb), sum_sub_distrib,
         sum_twiceBlockEntry, sum_const, card_range, nsmul_eq_mul]
       ring
-    rw [h_rank, sum_range_add, h_first, ih, sortedParamY_n_sub_one, targetParameter_k_sub_one_add,
+    rw [h_rank, sum_range_add, h_first, ih, sortedParamY_n_sub_one, targetParameter_sub_one_add,
       h_block, sum_range_succ, sum_range_succ]
     ring
 

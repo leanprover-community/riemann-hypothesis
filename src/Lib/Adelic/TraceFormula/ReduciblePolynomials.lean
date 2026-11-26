@@ -166,7 +166,7 @@ theorem hasSum_geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKe
   classical
   -- Let `F` increase through the finite sets of polynomials. The sums over the `γ` with
   -- polynomial in `F` converge at each point and are uniformly bounded.
-  have : Countable E[X] := (AddMonoidAlgebra.coeff_injective.comp toFinsupp_injective).countable
+  have : Countable E[X] := (AddMonoidAlgebra.coeff_injective.comp Function.injective_id).countable
   have h_pointwise (x : G E s) :
       Tendsto (fun F : Finset E[X] ↦ ∑' γ : U V.J, V.polyTerm k φ F γ x) atTop
         (𝓝 (∑' γ : U V.J, V.polyTerm k φ .univ γ x)) := by

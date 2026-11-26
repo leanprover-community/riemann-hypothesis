@@ -98,7 +98,7 @@ lemma ModuliPoint.isLevelIso_act_of_inv_eq {a a' : ModuliPoint E D.Index ν} {g 
       (a.act g).IsLevelIso K z a' := by
   refine ⟨?_, by simpa [act] using h_refl, fun j ↦ by simp [act, h_P]⟩
   -- The level part `a'.frame⁻¹ * z * (a.frame * g)` is `g⁻¹ * g = 1`.
-  show a'.frame⁻¹ * toFinGL z * (a.frame * g.val) ∈ K
+  change a'.frame⁻¹ * toFinGL z * (a.frame * g.val) ∈ K
   simp [← mul_assoc, ← h_x]
 
 /-- Balls immerse. Let `f` be an analytic family of theta tori over `f.domain`, and `X` a theta
@@ -144,8 +144,6 @@ lemma AnalyticFamily.isHolomorphicImmersionAt_of_holomorphicAt {f : AnalyticFami
     -- So the `k`-th multiple of the section is the zero section over `x b'`.
     have h_mul_eq (b' : BallBase D.Index) :
         ψ (b', (k : ℂ)⁻¹ • T l b') ≫ (k • 𝟙 X.total).left = x b' ≫ (X.levelPoints 0).left := by
-      have h_exp_zero : (m b').uniformisation.expMap (T l b') = 0 :=
-        ((m b').uniformisation.eq_zero_iff (T l b')).mp (h_lattice b')
       simp_all [← (x _).isGroupBaseChange.nsmul_id_comp, ← comp_left_assoc, ← map_nsmul,
         ← Nat.cast_smul_eq_nsmul ℂ, ψ, ← (x _).isGroupBaseChange.pullSection_comp, comp_nsmul]
     have h_still :
@@ -423,11 +421,7 @@ lemma point_surjective (C : U.GraphClosure γ ν)
   -- Pull objects and full structures back to the centre; there `y` is modelled on some `(g, ℓ)`.
   choose x h_pb using fun y' : ThetaObject U.family (Spec (CommRingCat.of V)) ↦
     exists_isPullbackAlong (X := U.family) (specMap (φ.comp (residue V))) y'
-  have h_full (y' : ThetaObject U.family (Spec (CommRingCat.of V))) (e' : y'.FullLevelStructure) :
-      ∃ f' : (x y').FullLevelStructure,
-        f'.torsionPoint = (h_pb y').isGroupBaseChange.pullSection ∘ₗ e'.torsionPoint :=
-    FullLevelStructure.exists_pullback (h_pb y') e'
-  choose f hf using h_full
+  choose f hf using fun y' e' ↦ FullLevelStructure.exists_pullback (h_pb y') e'
   -- The structure map of `x y` on `𝓞 E` is that of `R` followed by the embedding `Φ v₀` in `ℂ`.
   have h_struct (r : 𝓞 E) : (x y).baseHom r = Φ v₀ r.val := by
     calc (x y).baseHom r = algebraMap R ℂ (algebraMap (𝓞 E) R r) := by
@@ -437,10 +431,8 @@ lemma point_surjective (C : U.GraphClosure γ ν)
       _ = Φ v₀ r.val := rfl
   obtain ⟨g, ℓ, d, Y, m, hm, h_refl⟩ := exists_torusModel (f y e.fullStructure) h_struct
   have h_onto : m.π.Surjective := m.uniformisation.surjective.comp Y.realEquiv.surjective
-  have h_lift (w : RealVectors E D.Index) :
-      ∃ P' : RealVectors E D.Index, m.π P' = (h_pb y).isGroupBaseChange.pullSection (e.π w) :=
-    h_onto _
-  choose P hP using h_lift
+  choose P hP using fun w : RealVectors E D.Index ↦
+    h_onto ((h_pb y).isGroupBaseChange.pullSection (e.π w))
   -- The candidate is `(g, ℓ, P ∘ b.markedPoint)`; compare it with `t` on each component `i`.
   refine ⟨{ frame := g, reflection := ℓ, markedPoint := P ∘ b.markedPoint,
             isSignedFrame := ⟨_, Y.isSignedFrameFor⟩, isReflection := h_refl },

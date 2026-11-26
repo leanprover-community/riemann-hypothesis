@@ -99,7 +99,7 @@ structure IsKernelExtension (A : Matrix σ P k) (x : Matrix P σ k) (L : Submodu
 extend to a basis of `L` by the columns of a matrix `y`, a basis of `L ⊓ ker A`. -/
 lemma exists_isKernelExtension {A : Matrix σ P k} {x : Matrix P σ k} (h_det : (A * x).det ≠ 0)
     {L : Submodule k (P → k)} (hL : colSpan x ≤ L) :
-    ∃ᵉ (s : ℕ) (y : Matrix P (Fin s) k), IsKernelExtension A x L y := by
+    ∃ s : ℕ, ∃ y : Matrix P (Fin s) k, IsKernelExtension A x L y := by
   classical
   -- Take for `y` a basis of `L ⊓ ker A`, with left inverse `l`. As `A * y = 0`, the matrix
   -- `C = (A * x)⁻¹ * A` reads off the `x`-coordinates of a combination of the columns of `x` and
@@ -142,7 +142,7 @@ columns of a left invertible matrix over `E`) and an `a ∈ GL_s(𝔸_f)` such t
 primitive: it has entries in `Ô` and a left inverse with entries in `Ô`. -/
 lemma exists_isPrimitiveMatrix_mul_finAdeleMatrix (hLH : L * H = 1) (V : Submodule E (σ → E))
     {s : ℕ} (hs : finrank E V = s) :
-    ∃ᵉ (y : Matrix σ (Fin s) E) (a : GL (Fin s) (𝔸f E)),
+    ∃ y : Matrix σ (Fin s) E, ∃ a : GL (Fin s) (𝔸f E),
       HasLeftInv y ∧ colSpan y = V ∧ IsPrimitiveMatrix (Ô E) (H * (finAdeleMatrix y * a.val)) := by
   classical
   subst hs
@@ -160,7 +160,7 @@ integral left inverse); it exists by `exists_isPrimitiveMatrix_mul_finAdeleMatri
 def sublatticeBasis (hLH : L * H = 1) (V : Submodule E (σ → E)) :
     {m : Matrix σ (Fin (finrank E V)) (𝔸f E) //
       IsPrimitiveMatrix (Ô E) (H * m) ∧
-      ∃ᵉ (y : Matrix σ (Fin (finrank E V)) E) (a : GL (Fin (finrank E V)) (𝔸f E)),
+      ∃ y : Matrix σ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
         HasLeftInv y ∧ colSpan y = V ∧ m = finAdeleMatrix y * a.val} :=
   Nonempty.some <| by
     obtain ⟨y, a, hy_inv, hy_span, h_prim⟩ := exists_isPrimitiveMatrix_mul_finAdeleMatrix hLH V rfl
@@ -173,7 +173,7 @@ lemma isPrimitiveMatrix_mul_sublatticeBasis (hLH : L * H = 1) (V : Submodule E (
 /-- The chosen basis is `y a`, with the columns of `y` a basis of `V` over `E` and `a` invertible
 over `𝔸_f`. -/
 lemma exists_sublatticeBasis_eq_finAdeleMatrix_mul (hLH : L * H = 1) (V : Submodule E (σ → E)) :
-    ∃ᵉ (y : Matrix σ (Fin (finrank E V)) E) (a : GL (Fin (finrank E V)) (𝔸f E)),
+    ∃ y : Matrix σ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
       HasLeftInv y ∧ colSpan y = V ∧ (sublatticeBasis hLH V).val = finAdeleMatrix y * a.val :=
   (sublatticeBasis hLH V).property.right
 
@@ -202,13 +202,13 @@ lemma exists_finAdeleMatrix_mul_eq_sublatticeBasis_mul (hLH : L * H = 1) {V : Su
     ∃ A : GL (Fin (finrank E V)) (𝔸f E),
       finAdeleMatrix x * w.val = (sublatticeBasis hLH V).val * A.val := by
   classical
-  obtain ⟨y, a, -, hy, hm⟩ : ∃ᵉ (y : Matrix σ (Fin (finrank E V)) E)
-      (a : GL (Fin (finrank E V)) (𝔸f E)),
+  obtain ⟨y, a, -, hy, hm⟩ : ∃ y : Matrix σ (Fin (finrank E V)) E,
+      ∃ a : GL (Fin (finrank E V)) (𝔸f E),
       HasLeftInv y ∧ colSpan y = V ∧ (sublatticeBasis hLH V).val = finAdeleMatrix y * a.val :=
     exists_sublatticeBasis_eq_finAdeleMatrix_mul hLH V
   -- The columns of `x` lie in `V`, the span of those of `y`.
   obtain ⟨B, rfl⟩ : ∃ B : Matrix (Fin (finrank E V)) (Fin (finrank E V)) E, y * B = x :=
-    exists_mul_eq_of_col_mem_range fun i ↦ hy.ge (hx ⟨Pi.single i 1, x.mulVec_single_one i⟩)
+    exists_mul_eq_of_range_le fun i ↦ hy.ge (hx ⟨Pi.single i 1, x.mulVec_single_one i⟩)
   have h_gram : (y * B)ᴴ * (y * B) = Bᴴ * (yᴴ * y) * B := by simp [Matrix.mul_assoc]
   have hB_det : B.det ≠ 0 := fun h_zero ↦ hx_det (by rw [h_gram, det_mul, h_zero, mul_zero])
   obtain ⟨b, hb⟩ : IsUnit (finAdeleMatrix B) :=
@@ -536,10 +536,10 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
   have hm_prim : IsPrimitiveMatrix (Ô E) (u.val.inv * m) :=
     isPrimitiveMatrix_mul_sublatticeBasis u.val.val_inv T
   obtain ⟨x, b, hx_inv, hx, hm⟩ :
-      ∃ᵉ (x : Matrix κ (Fin (Module.finrank E T)) E) (b : GL (Fin (Module.finrank E T)) (𝔸f E)),
+      ∃ x : Matrix κ (Fin (Module.finrank E T)) E, ∃ b : GL (Fin (Module.finrank E T)) (𝔸f E),
         HasLeftInv x ∧ colSpan x = T ∧ m = finAdeleMatrix x * b.val :=
     exists_sublatticeBasis_eq_finAdeleMatrix_mul u.val.val_inv T
-  obtain ⟨y, a, ⟨l, hl⟩, hy, hy_prim⟩ : ∃ᵉ (y : Matrix κ (Fin s) E) (a : GL (Fin s) (𝔸f E)),
+  obtain ⟨y, a, ⟨l, hl⟩, hy, hy_prim⟩ : ∃ y : Matrix κ (Fin s) E, ∃ a : GL (Fin s) (𝔸f E),
       HasLeftInv y ∧ colSpan y = xᴴ.mulVecLin.ker ∧
         IsPrimitiveMatrix (Ô E) (u.val.inv * (finAdeleMatrix y * a.val)) :=
     exists_isPrimitiveMatrix_mul_finAdeleMatrix u.val.val_inv _

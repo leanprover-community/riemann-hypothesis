@@ -314,11 +314,11 @@ lemma upOperator_mem_sourceForm {φ : D.FormX 0} (hφ : φ ∈ D.SourceForm) :
       (commute_supportedOn_trivialOn (D.conjEmbedGL_mem_supportedOn 0 g) hb_away).symm.map _
   have hb_fix : algFormRep D.columnCount (D.lastEntry 0) b (upOperator (D.formRepAtN 0) φ) =
       upOperator (D.formRepAtN 0) φ := by
-    rw [← Module.End.mul_apply, h_commute.eq, Module.End.mul_apply,
+    rw [← mul_apply_eq_comp, h_commute.eq, mul_apply_eq_comp,
       h_fix (mul_mem (inv_mem (D.conjEmbedGL_mem_levelX ha)) k.prop)]
   -- The character of the level in the definition of `D.SourceForm` is trivial.
   rw [show k.val = D.conjEmbedGL 0 a * b from (mul_inv_cancel_left _ _).symm, map_mul,
-    Module.End.mul_apply, hb_fix, MonoidHom.one_apply, one_smul]
+    mul_apply_eq_comp, hb_fix, MonoidHom.one_apply, one_smul]
   exact mirabolic_fix_upOperator (π := D.formRepAtN 0)
     (fun _ hg ↦ h_fix (D.conjEmbedGL_mem_levelX hg)) ha
 

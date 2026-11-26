@@ -269,7 +269,7 @@ lemma prod_embeddings_eq_prod_pairs {E : Type*} [Field E] [IsTotallyComplex E] [
 
 /-- For a polynomial `P` over a totally complex field, the roots of `P` under the conjugate of an
 embedding `σ` are the complex conjugates of its roots under `σ`, with multiplicity. -/
-lemma roots_map_conjugate {E : Type*} [Field E] [IsTotallyComplex E] (P : E[X]) (σ : E →+* ℂ) :
+lemma roots_map_conjugate {E : Type*} [Field E] (P : E[X]) (σ : E →+* ℂ) :
     (P.map (conjugate σ)).roots = (P.map σ).roots.map star := by
   -- Conjugating the coefficients of a split polynomial conjugates its roots.
   have h_conj : conjugate σ = (starRingEnd ℂ).comp σ := RingHom.ext (conjugate_coe_eq σ)

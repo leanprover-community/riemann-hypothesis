@@ -1,7 +1,9 @@
 module
 
+public import Lib.General.Analysis.MeanValueAndTaylor
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 public import Lib.Shimura.ComplexTheta.DimensionFormula
+import TauCeti.Analysis.SpecialFunctions.Elliptic.LatticeClassification
 
 /-!
 # Sigma and Weierstrass functions, lattice invariants and lattices with complex multiplication
@@ -27,11 +29,9 @@ of σ and the classical facts on ℘.
   square root `a₁` of `12 ℘(t)`. For `d ≠ 0` the lattice is also stable under multiplication by
   `New.quadInt d`, and neither `ω t` nor `ω̄ t` lies in it, where `ω = New.quadGen d`.
 * `New.exists_lattice_eq_mul_tau`: every lattice is a(ℤτ + ℤ) with τ in the upper half plane.
-* `New.g₂_eq_eisenstein`, `New.g₃_eq_eisenstein`, `New.g₂_pow_three_sub_g₃_sq_eq_discriminant`: g₂,
-  g₃ and g₂³ − 27 g₃² of that lattice in terms of E₄(τ), E₆(τ) and Δ(τ).
+* `New.g₂_pow_three_sub_g₃_sq_eq_discriminant`: g₂³ − 27 g₃² of that lattice in terms of Δ(τ).
 * `New.exists_lattice_of_g₂_g₃`: conversely, every pair (a, b) with a³ − 27 b² ≠ 0 is (g₂, g₃) of a
-  lattice (uniformization). The proof finds τ as a zero of a form of weight 12 that tends to 1 at
-  the cusp: without a zero, its inverse would be a nonzero modular form of negative weight.
+  lattice (uniformization, via `PeriodPair.exists_g₂_g₃_eq`).
 
 Notions from other files:
 * `New.RealComplexForm.thetaSpace` Λ B χ: the entire f with f(z + l) = χ(l)·exp(B(l, z) + B(l,
@@ -166,7 +166,7 @@ instance isAppellHumbert_hermitianForm : IsAppellHumbert L.hermitianForm (sigmaS
         (if Even a ∧ Even b then 1 else -1) * (if Even c ∧ Even d then 1 else -1) *
           (if Even ((c * b - d * a) * k) then 1 else -1) := by
       grind [Int.even_add, Int.even_sub]
-    rw [h_det, ofReal_intCast, mul_comm (_ * I), exp_int_mul, exp_pi_mul_I]
+    rw [h_det, ofReal_intCast, mul_comm (_ * I), exp_intCast_mul, exp_pi_mul_I]
     simpa only [sigmaSign, h_sum, half_mem_lattice_iff_even, neg_one_zpow_eq_ite] using h_parity
 
 /-- If multiplication by the complex number a maps the lattice of L into the lattice of M, then
@@ -278,7 +278,7 @@ lemma differentiable_weierstrassPMulSq (f_diff : Differentiable ℂ f)
     -- as `f z = 0`.
     have slope_analytic : AnalyticAt ℂ (dslope f z) z :=
       let ⟨_, hp⟩ := f_diff.analyticAt z
-      hp.has_fpower_series_dslope_fslope.analyticAt
+      hp.dslope_fslope.analyticAt
     have near : L.weierstrassPMulSq f =ᶠ[nhds z]
         dslope f z ^ 2 - (z⁻¹ • f) ^ 2 + ℘[L - z] * f ^ 2 := by
       filter_upwards [L.compl_lattice_sdiff_singleton_mem_nhds z] with w hw
@@ -315,7 +315,7 @@ lemma weierstrassPMulSq_mem_thetaSpace (hf : f ∈ L.hermitianForm.thetaSpace χ
   have periodic : ℘[L] (z + l) = ℘[L] z := L.weierstrassP_add_coe z ⟨l, hl⟩
   have factor_sq : exp (L.hermitianForm l z + L.hermitianForm l l / 2) ^ 2 =
       exp ((2 • L.hermitianForm) l z + (2 • L.hermitianForm) l l / 2) := by
-    simp only [two_nsmul_hermitianForm_apply, ← exp_nat_mul]
+    simp only [two_nsmul_hermitianForm_apply, ← exp_natCast_mul]
     ring_nf
   rw [weierstrassPMulSq_of_notMem (by rwa [add_mem_cancel_right hl]), periodic, hf.2 l hl z,
     weierstrassPMulSq_of_notMem hz, Pi.pow_apply, ← factor_sq]
@@ -388,18 +388,6 @@ lemma IsAppellHumbert.deriv_theta_ne_zero [IsAppellHumbert L.hermitianForm χ]
     (hz : z ∈ L.lattice) : deriv f z ≠ 0 := by
   simpa [weierstrassPMulSq_of_mem hz] using
     weierstrassPMulSq_ne_zero hf hf_ne hf_zero (theta_eq_zero_of_mem_lattice hf hf_zero hz)
-
-/-- Let `(H, χ)` be Appell–Humbert data with `H = L.hermitianForm` (see `New.IsAppellHumbert`) and
-`f ≠ 0` a theta function for them with `f 0 = 0`. The theorem combines three facts: the zeros of `f`
-are the lattice points, they are simple, and `℘ f²` and `f²` span the theta functions for
-`(2 H, χ²)`. -/
-lemma IsAppellHumbert.thetaSpace_two_eq_span [IsAppellHumbert L.hermitianForm χ]
-    (hf : f ∈ L.hermitianForm.thetaSpace χ) (hf_ne : f ≠ 0) (hf_zero : f 0 = 0) :
-    (∀ z : ℂ, f z = 0 ↔ z ∈ L.lattice) ∧
-    (∀ z ∈ L.lattice, deriv f z ≠ 0) ∧
-    (2 • L.hermitianForm).thetaSpace (χ ^ 2) = span ℂ {L.weierstrassPMulSq f, f ^ 2} :=
-  ⟨fun _ ↦ theta_eq_zero_iff_mem_lattice hf hf_ne hf_zero,
-    fun _ ↦ deriv_theta_ne_zero hf hf_ne hf_zero, thetaSpace_two_eq_span_pair hf hf_ne hf_zero⟩
 
 /-- If `f` is a theta function for `L.hermitianForm` and `sigmaSign L`, then so is `z ↦ f (-z)`. -/
 lemma comp_neg_mem_thetaSpace (hf : f ∈ L.hermitianForm.thetaSpace (sigmaSign L)) :
@@ -575,23 +563,7 @@ lattice of L. -/
 lemma PeriodPair.exists_weierstrassP_eq_of_cubic (L : PeriodPair) (x y : ℂ)
     (h_cubic : y ^ 2 = 4 * x ^ 3 - L.g₂ * x - L.g₃) :
     ∃ z : ℂ, z ∉ L.lattice ∧ ℘[L] z = x ∧ ℘'[L] z = y := by
-  -- The theta function `(℘ - x) σ²` for `2 • L.hermitianForm` has a zero, since otherwise the
-  -- Riemann form would vanish. Its zero `z` is off the lattice and has `℘ z = x`; then
-  -- `℘' z = ± y` by the differential equation of `℘`, and replacing `z` by `-z` fixes the sign.
-  have h_theta : L.weierstrassPMulSq L.σ - x • L.σ ^ 2 ∈
-      (2 • L.hermitianForm).thetaSpace (sigmaSign L ^ 2) :=
-    thetaSpace_two_eq_span_sigma.ge (mem_span_pair.2 ⟨1, -x, by module⟩)
-  obtain ⟨z, h_zero⟩ : ∃ z : ℂ, (L.weierstrassPMulSq L.σ - x • L.σ ^ 2) z = 0 := by
-    by_contra! h_ne
-    -- The Riemann form would then vanish, but it is positive, hence nondegenerate.
-    exact IsPosRiemann.nondegenerate.ne_zero (eq_exp_of_ne_zero h_theta h_ne).1
-  -- On the lattice `σ z = 0`, so the value there is `σ' z ^ 2 ≠ 0`.
-  have hz : z ∉ L.lattice := by
-    intro hz_mem
-    simp [weierstrassPMulSq_of_mem hz_mem, sigma_eq_zero_iff.2 hz_mem,
-      deriv_sigma_ne_zero hz_mem] at h_zero
-  have h_wp : ℘[L] z = x := by
-    simpa [weierstrassPMulSq_of_notMem hz, hz, sub_eq_zero] using h_zero
+  obtain ⟨z, hz, h_wp⟩ := L.exists_weierstrassP_eq x
   have h_sq : ℘'[L] z ^ 2 = y ^ 2 := by rw [L.derivWeierstrassP_sq z hz, h_wp, h_cubic]
   rcases sq_eq_sq_iff_eq_or_eq_neg.1 h_sq with h_pos | h_neg
   · exact ⟨z, hz, h_wp, h_pos⟩
@@ -629,28 +601,8 @@ lemma New.derivWeierstrassP_eq_zero_iff (L : PeriodPair) {z : ℂ} (hz : z ∉ L
 /-- The second derivative of the Weierstrass function ℘ of L: for z outside the lattice,
 ℘′′(z) = 6℘(z)² − g₂/2. -/
 lemma New.deriv_derivWeierstrassP (L : PeriodPair) {z : ℂ} (hz : z ∉ L.lattice) :
-    deriv ℘'[L] z = 6 * ℘[L] z ^ 2 - L.g₂ / 2 := by
-  have h_open : IsOpen (L.lattice : Set ℂ)ᶜ := L.isClosed_lattice.isOpen_compl
-  -- Differentiate `℘' ^ 2 = 4 ℘ ^ 3 - g₂ ℘ - g₃`; where `℘'` is not zero, divide by `2 ℘'`.
-  have h_first (w : ℂ) (hw : w ∉ L.lattice) :
-      2 * ℘'[L] w * deriv ℘'[L] w = 4 * (3 * ℘[L] w ^ 2 * ℘'[L] w) - L.g₂ * ℘'[L] w := by
-    simpa (disch := fun_prop) using EqOn.deriv (fun w ↦ L.derivWeierstrassP_sq w) h_open hw
-  rcases ne_or_eq (℘'[L] z) 0 with h_ne | h_zero
-  · apply mul_left_cancel₀ (mul_ne_zero two_ne_zero h_ne)
-    linear_combination h_first z hz
-  -- At a zero of `℘'`, differentiate once more; only the terms free of `℘'` remain.
-  have h_second : 2 * deriv ℘'[L] z * deriv ℘'[L] z =
-      4 * (3 * ℘[L] z ^ 2 * deriv ℘'[L] z) - L.g₂ * deriv ℘'[L] z := by
-    simpa (disch := fun_prop) [h_zero] using EqOn.deriv (fun w ↦ h_first w) h_open hz
-  -- There `℘''` is not zero: `2 z` is a lattice point, a simple zero of `σ`, and the derivative of
-  -- the duplication formula reads `2 σ' (2 z) = -℘'' z σ z ^ 4`.
-  have h_simple : deriv L.σ (2 * z) ≠ 0 :=
-    deriv_sigma_ne_zero (by simpa [two_mul] using (derivWeierstrassP_eq_zero_iff L hz).1 h_zero)
-  have h_sigma : 2 * deriv L.σ (2 * z) = -(deriv ℘'[L] z * L.σ z ^ 4) := by
-    simpa (disch := fun_prop) [deriv_comp_mul_left, h_zero] using
-      EqOn.deriv (fun w hw ↦ sigma_two_mul L hw) h_open hz
-  apply mul_left_cancel₀ (fun h_eq ↦ h_simple (by simpa [h_eq] using h_sigma) : deriv ℘'[L] z ≠ 0)
-  linear_combination h_second / 2
+    deriv ℘'[L] z = 6 * ℘[L] z ^ 2 - L.g₂ / 2 :=
+  L.deriv_derivWeierstrassP hz
 
 end WeierstrassP
 
@@ -668,10 +620,6 @@ open Complex PeriodPair ComplexConjugate NumberField
 namespace New
 
 /-! ### Taylor series -/
-
-/-- The Taylor series ∑ f⁽ⁿ⁾(0) zⁿ/n! at 0 of a function f : ℂ → ℂ, as a formal power series. -/
-def taylorAtZero (f : ℂ → ℂ) : PowerSeries ℂ :=
-  PowerSeries.mk fun n ↦ iteratedDeriv n f 0 / n.factorial
 
 /-- The Taylor series of f at 0 with the ring homomorphism ι : ℂ → K applied to its
 coefficients. -/
@@ -773,8 +721,7 @@ end CMLatticeDefs
 
 section LatticeInvariants
 
-open UpperHalfPlane ModularForm ModularFormClass EisensteinSeries PeriodPair Real Complex
-open scoped MatrixGroups
+open UpperHalfPlane ModularForm PeriodPair Real Complex
 
 namespace New
 
@@ -786,13 +733,6 @@ lemma area_eq_norm_sq_mul_abs_im (L : PeriodPair) :
     simp only [mul_im, conj_re, conj_im, inv_re, inv_im]
     field
   rw [area, ← abs_neg, h_im, abs_mul, abs_of_nonneg (normSq_nonneg L.ω₂), normSq_eq_norm_sq]
-
-/-- The special value ζ(6) = π⁶/945. -/
-lemma riemannZeta_six_eq : riemannZeta 6 = π ^ 6 / 945 := by
-  have h_bernoulli : bernoulli 6 = 42⁻¹ := by cbv
-  have h_value := riemannZeta_two_mul_nat (k := 3) three_ne_zero
-  norm_num [h_bernoulli, Nat.factorial] at h_value
-  linear_combination h_value
 
 /-- Every period lattice is a(ℤτ + ℤ) with a ≠ 0 and τ in the upper half plane: e enumerates it by
 (m, n) ↦ a(mτ + n). The area of its period parallelogram (`PeriodPair.area`) is then |a|² Im τ. -/
@@ -816,150 +756,48 @@ lemma exists_lattice_eq_mul_tau (L : PeriodPair) :
   calc (e p : ℂ) = (k : ℤˣ) * p.1 * L.ω₁ + p.2 * L.ω₂ := by simp [e, latticeEquiv_symm_apply]
     _ = L.ω₂ * (p.1 * ratio + p.2) := by simp [ratio, field]
 
-/-- If the lattice of L is a(ℤτ + ℤ), enumerated by e, then for k ≥ 3 the lattice sum `L.G k` of the
-k-th inverse powers is 2ζ(k)E_k(τ)/aᵏ, where E_k is the normalised Eisenstein series of weight k. -/
-lemma G_eq_riemannZeta_mul_eisenstein {L : PeriodPair} {a : ℂ} {τ : ℍ} {e : ℤ × ℤ ≃ L.lattice}
-    (h_enum : ∀ p : ℤ × ℤ, (e p : ℂ) = a * (p.1 * τ + p.2)) {k : ℕ} (hk : 3 ≤ k) :
-    L.G k = 2 * riemannZeta k * E hk τ / a ^ k := by
-  -- The sum over all pairs is `ζ(k)` times the sum over coprime pairs, which is `2 E_k`.
-  have h_scale : L.G k = (a ^ k)⁻¹ * ∑' v : Fin 2 → ℤ, eisSummand k v τ := by
-    simp [G, ← ((finTwoArrowEquiv ℤ).trans e).tsum_eq, h_enum, eisSummand, mul_pow, tsum_mul_left,
-      mul_comm]
-  rw [h_scale, tsum_eisSummand_eq_riemannZeta_mul_eisensteinSeries hk,
-    show E hk τ = 1 / 2 * eisensteinSeries (N := 1) 0 k τ from rfl]
-  ring
-
-/-- If the lattice of L is a(ℤτ + ℤ), enumerated by e, then g₂ = (2π/a)⁴ E₄(τ)/12, where E₄ is the
-normalised Eisenstein series of weight 4. -/
-lemma g₂_eq_eisenstein {L : PeriodPair} {a : ℂ} {τ : ℍ} {e : ℤ × ℤ ≃ L.lattice}
-    (h_enum : ∀ p : ℤ × ℤ, (e p : ℂ) = a * (p.1 * τ + p.2)) :
-    L.g₂ = (2 * π / a) ^ 4 * E₄ τ / 12 := by
-  have h_G : L.G 4 = 2 * riemannZeta 4 * E₄ τ / a ^ 4 :=
-    G_eq_riemannZeta_mul_eisenstein h_enum (show 3 ≤ 4 by norm_num)
-  rw [g₂, h_G, riemannZeta_four]
-  ring
-
-/-- If the lattice of L is a(ℤτ + ℤ), enumerated by e, then g₃ = (2π/a)⁶ E₆(τ)/216, where E₆ is the
-normalised Eisenstein series of weight 6. -/
-lemma g₃_eq_eisenstein {L : PeriodPair} {a : ℂ} {τ : ℍ} {e : ℤ × ℤ ≃ L.lattice}
-    (h_enum : ∀ p : ℤ × ℤ, (e p : ℂ) = a * (p.1 * τ + p.2)) :
-    L.g₃ = (2 * π / a) ^ 6 * E₆ τ / 216 := by
-  have h_G : L.G 6 = 2 * riemannZeta 6 * E₆ τ / a ^ 6 :=
-    G_eq_riemannZeta_mul_eisenstein h_enum (show 3 ≤ 6 by norm_num)
-  rw [g₃, h_G, riemannZeta_six_eq]
-  ring
-
 /-- If the lattice of L is a(ℤτ + ℤ), enumerated by e, then g₂³ − 27 g₃² = (2π/a)¹² Δ(τ), where Δ
 is the modular discriminant. -/
 lemma g₂_pow_three_sub_g₃_sq_eq_discriminant {L : PeriodPair} {a : ℂ} {τ : ℍ}
     {e : ℤ × ℤ ≃ L.lattice} (h_enum : ∀ p : ℤ × ℤ, (e p : ℂ) = a * (p.1 * τ + p.2)) :
     L.g₂ ^ 3 - 27 * L.g₃ ^ 2 = (2 * π / a) ^ 12 * discriminant τ := by
-  -- The discriminant is `(E₄³ - E₆²) / 1728`.
-  rw [g₂_eq_eisenstein h_enum, g₃_eq_eisenstein h_enum, discriminant_eq_E₄_cube_sub_E₆_sq]
-  ring
+  have ha : a ≠ 0 := by
+    rintro rfl
+    have h0 : L.ω₁ = 0 := by simpa using h_enum (e.symm ⟨L.ω₁, L.ω₁_mem_lattice⟩)
+    exact L.indep.ne_zero 0 h0
+  let c : ℂˣ := Units.mk0 a ha
+  have hlat : L.lattice = (c • τ.periodPair).lattice := by
+    ext z
+    constructor
+    · intro hz
+      obtain ⟨p, hp⟩ := e.surjective ⟨z, hz⟩
+      have hzp : z = (c : ℂ) * (p.1 * τ + p.2) := by simpa [c, hp] using h_enum p
+      rw [hzp, PeriodPair.mul_mem_lattice_smul_iff]
+      exact τ.intCast_mul_add_intCast_mem_lattice_periodPair p.1 p.2
+    · intro hz
+      rw [PeriodPair.lattice_smul, Submodule.mem_map] at hz
+      obtain ⟨w, hw, rfl⟩ := hz
+      obtain ⟨m, n, rfl⟩ := mem_lattice.1 hw
+      simpa [c, h_enum (m, n)] using (e (m, n)).property
+  calc L.g₂ ^ 3 - 27 * L.g₃ ^ 2
+    _ = L.weierstrassCurve.Δ := L.weierstrassCurve_Δ.symm
+    _ = (a ^ 12)⁻¹ * τ.periodPair.weierstrassCurve.Δ := by
+          rw [PeriodPair.weierstrassCurve_eq_smul_of_lattice_eq hlat,
+            WeierstrassCurve.variableChange_Δ]
+          simp [c]
+    _ = (2 * π / a) ^ 12 * discriminant τ := by
+          rw [UpperHalfPlane.weierstrassCurve_Δ_periodPair]
+          ring
 
-lemma weierstrass_disc_ne_zero (L : PeriodPair) : g₂ L ^ 3 - 27 * g₃ L ^ 2 ≠ 0 := by
-  obtain ⟨a, τ, e, h_enum, ha, -⟩ := exists_lattice_eq_mul_tau L
-  rw [g₂_pow_three_sub_g₃_sq_eq_discriminant h_enum]
-  simp [ha, discriminant_ne_zero]
-
-/-- For τ in the upper half plane and w ≠ 0 some period lattice has the invariants
-g₂ = w⁴E₄(τ)/12 and g₃ = w⁶E₆(τ)/216. The proof uses the lattice (2π/w)(ℤτ + ℤ). -/
-lemma exists_g₂_g₃_eq_pow_mul_eisenstein (τ : ℍ) {w : ℂ} (hw : w ≠ 0) :
-    ∃ L : PeriodPair, g₂ L = w ^ 4 * E₄ τ / 12 ∧ g₃ L = w ^ 6 * E₆ τ / 216 := by
-  have h_indep : LinearIndependent ℝ ![(τ : ℂ) * (2 * π / w), 2 * π / w] := by
-    -- A relation `s τ c + t c = 0` with `c ≠ 0` gives `s τ + t = 0`; take imaginary parts.
-    refine LinearIndependent.pair_iff.2 fun s t h_rel ↦ ?_
-    have h_comb : s * (τ : ℂ) + t = 0 := by
-      apply mul_right_cancel₀ (show (2 * π / w : ℂ) ≠ 0 by simp [hw])
-      simp only [real_smul] at h_rel
-      linear_combination h_rel
-    have hs : s = 0 := by simpa [τ.im_ne_zero] using congrArg Complex.im h_comb
-    exact ⟨hs, by simpa [hs] using h_comb⟩
-  let L : PeriodPair := ⟨τ * (2 * π / w), 2 * π / w, h_indep⟩
-  have h_enum (p : ℤ × ℤ) :
-      (L.latticeEquivProd.symm.toEquiv p : ℂ) = 2 * π / w * (p.1 * τ + p.2) := by
-    simp [L, latticeEquiv_symm_apply, field]
-  exact ⟨L, by simp [g₂_eq_eisenstein h_enum, field], by simp [g₃_eq_eisenstein h_enum, field]⟩
-
-/-- If a³ − 27b² ≠ 0 and E₄(τ)³·(a³ − 27b²) = (12a)³·Δ(τ) at a point τ of the upper half plane,
-then some period lattice has g₂ = a and g₃ = b. -/
-lemma exists_lattice_of_E₄_cube_mul_eq {a b : ℂ} {τ : ℍ} (h_ne : a ^ 3 - 27 * b ^ 2 ≠ 0)
-    (h_disc : E₄ τ ^ 3 * (a ^ 3 - 27 * b ^ 2) = (12 * a) ^ 3 * discriminant τ) :
-    ∃ L : PeriodPair, g₂ L = a ∧ g₃ L = b := by
-  have hΔ : discriminant τ = (E₄ τ ^ 3 - E₆ τ ^ 2) / 1728 := discriminant_eq_E₄_cube_sub_E₆_sq τ
-  by_cases hE : E₄ τ = 0
-  · -- Then `a = 0`; scale so that `g₃ = b`.
-    have ha : a = 0 := by simpa [hE, discriminant_ne_zero] using h_disc.symm
-    have hb : b ≠ 0 := by simpa [ha] using h_ne
-    have hE₆ : E₆ τ ≠ 0 := fun h_six ↦ discriminant_ne_zero τ (by simp [hΔ, hE, h_six])
-    obtain ⟨w, hw⟩ : ∃ w : ℂ, w ^ 6 = 216 * b / E₆ τ := IsSepClosed.exists_pow_nat_eq _ 6
-    have hw_ne : w ≠ 0 := ne_zero_pow (n := 6) (by norm_num) (by simp [hw, hb, hE₆])
-    obtain ⟨L, h₂, h₃⟩ := exists_g₂_g₃_eq_pow_mul_eisenstein τ hw_ne
-    exact ⟨L, by simp [h₂, hE, ha], by simp [h₃, hw, field]⟩
-  · -- Scale by `c` so that `g₂ = a`; then `g₃ = ± b`, and `c * I` changes the sign of `g₃` only.
-    have ha : a ≠ 0 := fun ha_zero ↦
-      mul_ne_zero (pow_ne_zero 3 hE) h_ne (by simpa [ha_zero] using h_disc)
-    obtain ⟨c, hc⟩ : ∃ c : ℂ, c ^ 4 = 12 * a / E₄ τ := IsSepClosed.exists_pow_nat_eq _ 4
-    have hc_ne : c ≠ 0 := ne_zero_pow (n := 4) (by norm_num) (by simp [hc, ha, hE])
-    have h_g₂ : c ^ 4 * E₄ τ / 12 = a := by simp [hc, field]
-    -- Both `(g₂, g₃)` and `(a, b)` satisfy `g₂³ : (g₂³ - 27 g₃²) = E₄³ : 12³ Δ`, so the two `g₃`
-    -- have equal squares.
-    have h_sq : (c ^ 6 * E₆ τ / 216) ^ 2 = b ^ 2 := by
-      have h_twelve : (c ^ 4) ^ 3 * E₄ τ ^ 3 = (12 * a) ^ 3 := by simp [hc, field]
-      apply mul_right_cancel₀ (pow_ne_zero 3 hE)
-      linear_combination (E₆ τ ^ 2 / 216 ^ 2) * h_twelve +
-        (1728 * (12 * a) ^ 3 / 216 ^ 2) * hΔ + (1728 / 216 ^ 2) * h_disc
-    rcases sq_eq_sq_iff_eq_or_eq_neg.1 h_sq with h_pos | h_neg
-    · obtain ⟨L, h₂, h₃⟩ := exists_g₂_g₃_eq_pow_mul_eisenstein τ hc_ne
-      exact ⟨L, h₂.trans h_g₂, h₃.trans h_pos⟩
-    · obtain ⟨L, h₂, h₃⟩ :=
-        exists_g₂_g₃_eq_pow_mul_eisenstein τ (mul_ne_zero hc_ne Complex.I_ne_zero)
-      refine ⟨L, by simpa [mul_pow, h_g₂] using h₂, ?_⟩
-      rw [h₃, mul_pow, show Complex.I ^ 6 = -1 by norm_num [pow_succ]]
-      linear_combination -h_neg
-
-/-- A modular form `g` of weight 12 for the full modular group (`𝒮ℒ`, the image of SL₂(ℤ) in
-GL₂(ℝ)) that tends to 1 at the cusp `i∞` has a zero in the upper half plane. -/
-lemma exists_eq_zero_of_weight_twelve_of_tendsto_one (g : ModularForm 𝒮ℒ 12)
-    (h_lim : Filter.Tendsto g atImInfty (nhds 1)) : ∃ τ : ℍ, g τ = 0 := by
-  -- Otherwise `g⁻¹` is a modular form of weight `-12`, hence zero: absurd.
-  by_contra! h_ne
-  have h_slash (γ : SL(2, ℤ)) :
-      (fun τ ↦ (g τ)⁻¹) ∣[(-12 : ℤ)] Matrix.SpecialLinearGroup.mapGL ℝ γ = fun τ ↦ (g τ)⁻¹ := by
-    simp [slash_def, UpperHalfPlane.σ, SlashInvariantForm.slash_action_eqn'' g]
-  have h_bdd : IsBoundedAtImInfty fun τ ↦ (g τ)⁻¹ := (h_lim.inv₀ one_ne_zero).isBigO_one ℝ
-  let g_inv : ModularForm 𝒮ℒ (-12) :=
-    { toFun := fun τ ↦ (g τ)⁻¹
-      slash_action_eq' := Set.forall_mem_range.2 h_slash
-      holo' := g.holo'.inv h_ne
-      bdd_at_cusps' := fun hc ↦
-        (OnePoint.isBoundedAt_iff_forall_SL2Z hc).2 fun γ _ ↦ by rwa [← h_slash γ] at h_bdd }
-  exact inv_ne_zero (h_ne UpperHalfPlane.I)
-    (congrFun (levelOne_neg_weight_eq_zero (by norm_num) g_inv) UpperHalfPlane.I)
-
-/-- The Eisenstein series E₄ tends to 1 at the cusp i∞. -/
-lemma tendsto_E₄_atImInfty : Filter.Tendsto E₄ atImInfty (nhds 1) :=
-  tendsto_E_atImInfty
+lemma weierstrass_disc_ne_zero (L : PeriodPair) : g₂ L ^ 3 - 27 * g₃ L ^ 2 ≠ 0 :=
+  L.weierstrassCurve_Δ ▸ L.weierstrassCurve_Δ_ne_zero
 
 /-- For complex numbers a, b with a³ − 27b² ≠ 0 there is a period lattice L with Weierstrass
 invariants g₂(L) = a and g₃(L) = b.
 This is the existence part of the uniformisation theorem for elliptic curves over ℂ. -/
 lemma exists_lattice_of_g₂_g₃ {a b : ℂ} (h_ne : a ^ 3 - 27 * b ^ 2 ≠ 0) :
-    ∃ L : PeriodPair, g₂ L = a ∧ g₃ L = b := by
-  -- The form `g = E₄³ - c Δ` of weight 12, with `c = (12 a)³ / (a³ - 27 b²)`, tends to 1 at the
-  -- cusp, so it has a zero `τ`; a suitable multiple of `ℤ τ + ℤ` then has both invariants.
-  let c : ℂ := (12 * a) ^ 3 / (a ^ 3 - 27 * b ^ 2)
-  let E₄_cube : ModularForm 𝒮ℒ 12 := E₄.pow 3
-  let g : ModularForm 𝒮ℒ 12 := E₄_cube - c • modularForm CuspForm.discriminant
-  have g_apply (τ : ℍ) : g τ = E₄ τ ^ 3 - c * discriminant τ := by simp [g, E₄_cube, (coe_pow)]
-  obtain ⟨τ, h_zero⟩ : ∃ τ : ℍ, g τ = 0 := exists_eq_zero_of_weight_twelve_of_tendsto_one g <| by
-    simpa [funext g_apply] using
-      (tendsto_E₄_atImInfty.pow 3).sub (discriminant_isZeroAtImInfty.const_mul c)
-  have h_disc : E₄ τ ^ 3 * (a ^ 3 - 27 * b ^ 2) = (12 * a) ^ 3 * discriminant τ := by
-    rw [g_apply, sub_eq_zero] at h_zero
-    rw [h_zero, mul_right_comm, div_mul_cancel₀ _ h_ne]
-  exact exists_lattice_of_E₄_cube_mul_eq h_ne h_disc
+    ∃ L : PeriodPair, g₂ L = a ∧ g₃ L = b :=
+  PeriodPair.exists_g₂_g₃_eq h_ne
 
 end New
 

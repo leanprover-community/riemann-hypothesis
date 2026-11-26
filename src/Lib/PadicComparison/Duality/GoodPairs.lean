@@ -52,8 +52,6 @@ open CategoryTheory MonoidalCategory CartesianMonoidalCategory Finset IsLocalRin
   projLine Ideal Subfunctor relFreeAb
 open Polynomial hiding comp
 
-set_option backward.isDefEq.respectTransparency false
-
 variable {Γ : Type 1} [Category Γ] {ℓ d : ℕ} {A B R T : Type} [CommRing A]
   {g : Γ ⥤ TestOver A} [CommRing B] [CommRing R] {E Y : TestOver A ⥤ Type 1}
   {U V : Subfunctor Y} [CommRing T] [Algebra A T] (e : MvPolynomial (Fin d) A ≃ₐ[A] T)
@@ -171,8 +169,12 @@ lemma multihomogeneousIdeal_eq_top_iff {a : T} {c : TestOver A}
         (MvPolynomial.X i, 1).map χ χ = ε.val • unimodularRow ((affineToLines e).app c ψ i) := by
       refine (exists_unit_smul_unimodularRow (B := (ringOf (𝟭 (TestOver A))).obj c)
         ((χ (.X i) - 1 : c.obj), 1)).imp fun ε hε ↦ ?_
-      rw [show (affineToLines e).app c ψ i = affinePt (χ (.X i)) from rfl, affinePt]
-      simpa using hε
+      change (MvPolynomial.X i, 1).map χ χ =
+        ε.val • unimodularRow (affinePt (B := (ringOf (𝟭 (TestOver A))).obj c) (χ (.X i)))
+      dsimp only [affinePt]
+      rw [Prod.map_apply, map_one]
+      refine Eq.trans ?_ hε
+      exact Prod.ext (by change (χ (.X i) : c.obj) = 1 + (χ (.X i) - 1) * 1; ring) rfl
     choose ε hε using h_row
     have h_alg : χ.comp (algebraMap A (MvPolynomial (Fin d) A)) = algebraMap A c.obj :=
       ((testSpec.asAlgHom ψ).comp e.toAlgHom).comp_algebraMap
@@ -184,15 +186,20 @@ lemma multihomogeneousIdeal_eq_top_iff {a : T} {c : TestOver A}
     -- The ideal is spanned by one element, which is then a unit. The second entries of the rows
     -- divide it, so they are units, and every `q i` is an affine point `affinePt (x i)`.
     have h_snd (i : Fin d) : IsUnit (unimodularRow (q i)).2 := by
-      rw [multihomogeneousIdeal, Ideal.map_bot, sup_bot_eq, Ideal.span_singleton_eq_top] at h_top
+      unfold multihomogeneousIdeal at h_top
+      rw [Ideal.map_bot, sup_bot_eq, Ideal.span_singleton_eq_top] at h_top
       exact isUnit_of_dvd_unit (dvd_mul_of_dvd_right
         (dvd_prod_of_mem (fun j ↦ (unimodularRow (q j)).2) (mem_univ i)) _) h_top
     have h_affine (i : Fin d) :
-        ∃ x : (ringOf (𝟭 (TestOver A))).obj c, affinePt x = projLine.map (𝟙 _) (q i) :=
+        ∃ x : c.obj, affinePt (B := (ringOf (𝟭 (TestOver A))).obj c) x = projLine.map (𝟙 _) (q i) :=
       (h_snd i).dvd.imp (affinePt_eq_map (𝟙 _) (q := q i))
     choose x hx using h_affine
     have h_pt : (affineToLines e).app c ⟨ofHom (.comp (MvPolynomial.aeval x) e.symm)⟩ = q := by
-      simp [affineToLines, testSpec.asAlgHom, hx]
+      funext i
+      change affinePt (B := (ringOf (𝟭 (TestOver A))).obj c)
+        (MvPolynomial.aeval x (e.symm (e (.X i)))) = q i
+      rw [AlgEquiv.symm_apply_apply, MvPolynomial.aeval_X]
+      simpa using hx i
     subst h_pt
     exact ⟨⟨_, (h_aff _).mp h_top⟩, rfl⟩
   · rintro ⟨⟨ψ, hψ⟩, rfl⟩
@@ -338,8 +345,8 @@ lemma isFiniteLerayHirsch_of_prod_projLine
       map_pullbackAlong]
   refine TotalH.comp_assoc_of_sq ?_ _
   -- What remains is a square of morphisms of functors, which commutes on generators.
-  rw [← homClass_comp, ← homClass_comp]
-  exact congrArg homClass (relFreeAb.hom_ext (U := .whisker ..))
+  exact (homClass_comp ..).symm.trans
+    ((congrArg homClass (relFreeAb.hom_ext (U := .whisker ..))).trans (homClass_comp ..))
 
 variable [Algebra A R] (P : StandardEtalePair R)
 
@@ -356,13 +363,13 @@ def rootPairs :
       ((testUnitLocus (A := A) (AdjoinRoot.mk P.f P.g)).toFunctor ⊗
         (testUnitLocus P.g).toFunctor) where
   obj _ :=
-    setOf fun (w, ψ) ↦
+    Set.ofPred fun (w, ψ) ↦
       Associated (asAlgHom ψ.val P.f) (asAlgHom ψ.val X - asAlgHom w.val (root P.f)) ∧
       ∀ r : R, asAlgHom w.val (AdjoinRoot.of P.f r) = asAlgHom ψ.val (C r)
   map f := by
     rintro ⟨w, ψ⟩ ⟨h_assoc, h_const⟩
     refine ⟨?_, fun r ↦ congrArg f.hom.hom (h_const r)⟩
-    show Associated (f.hom.hom (asAlgHom ψ.val P.f))
+    change Associated (f.hom.hom (asAlgHom ψ.val P.f))
       (f.hom.hom (asAlgHom ψ.val X) - f.hom.hom (asAlgHom w.val (root P.f)))
     simpa only [map_sub] using h_assoc.map f.hom.hom
 
@@ -418,8 +425,10 @@ lemma exists_notMem_of_rootPairs {P : StandardEtalePair R} {c : TestOver A} {t :
     -- else `ψ (derivative P.f) ∈ m` and `ψ P.f = r * t ∈ m` would put `ψ P.g ^ N` in `m`.
     have h_g_sub : ψ P.g - w (AdjoinRoot.mk P.f P.g) ∈ m := by
       simpa [h_g_taylor] using m.mul_mem_left r' ht
-    obtain ⟨h_wg, h_ψg⟩ : w (AdjoinRoot.mk P.f P.g) ∉ m ∧ ψ P.g ∉ m := by
-      grind [m.sub_mem_iff_left, m.sub_mem_iff_right]
+    obtain ⟨h_wg, h_ψg⟩ : w (AdjoinRoot.mk P.f P.g) ∉ m ∧ ψ P.g ∉ m :=
+      hg_notMem.elim
+        (fun h ↦ ⟨h, fun h' ↦ h ((m.sub_mem_iff_right h').mp h_g_sub)⟩)
+        (fun h ↦ ⟨fun h' ↦ h ((m.sub_mem_iff_left h').mp h_g_sub), h⟩)
     have h_r : r ∉ m := fun h_r ↦ h_ψg <| IsPrime.mem_of_pow_mem inferInstance N <| by
       have h_deriv : ψ (derivative P.f) ∈ m := (m.sub_mem_iff_right h_r).mp h_r_slope
       have h_f : ψ P.f ∈ m := by simpa [h_f_taylor] using m.mul_mem_left r ht
@@ -456,7 +465,8 @@ private lemma rootPairsToProdLine_app_injective (c : TestOver A) :
   obtain rfl : w = w' := congrArg Prod.fst h
   congr
   -- `ψ` and `χ` agree on `R`, and on `X` since `x - y` and `y` determine `x`.
-  have h_X : asAlgHom ψ X = asAlgHom χ X := by simpa using affinePt_injective (congrArg Prod.snd h)
+  have h_X : asAlgHom ψ X = asAlgHom χ X :=
+    sub_left_inj.mp (affinePt_injective (congrArg Prod.snd h))
   exact ULift.down_injective
     (CommAlgCat.hom_ext (algHom_ext' (AlgHom.ext fun r ↦ (hψ r).symm.trans (hχ r)) h_X))
 
@@ -470,17 +480,25 @@ private lemma isZariskiLocallyTop_range_rootPairsToProdLine_sup :
             (fst ..) ⊔
           (affineChart.whisker (ringOf (𝟭 (TestOver A)))).preimage (snd ..))) := by
   rintro c ⟨w, q : projLine (.of c.obj)⟩ m hm
-  obtain h_fst | h_fst := em' ((unimodularRow q).1 ∈ m)
+  let m' : Ideal c.obj := m
+  have hm' : m'.IsMaximal := hm
+  have : m'.IsPrime := hm'.isPrime
+  obtain h_fst | h_fst := em' ((unimodularRow q).1 ∈ m')
   · exact ⟨_, h_fst, fun _ _ h ↦ .inr (.inr (isUnit_fst_unimodularRow_map _ _ h))⟩
   -- Otherwise `q = (t : 1)` with `t ∈ m` where an idempotent `ε ∉ m` is a unit; take `x = y + t`.
-  have h_snd : (unimodularRow q).2 ∉ m := fun _ ↦ by simp_all [unimodularRow, ← eq_zero_iff_mem]
+  have h_snd : (unimodularRow q).2 ∉ m' := fun h₂ ↦ hm'.ne_top <|
+    (Ideal.eq_top_iff_one m').mpr <| by
+      have h1 : (1 : c.obj) = (unimodularRow q).1 - q.down.out.1 * (unimodularRow q).2 := by
+        simp [unimodularRow]
+      rw [h1]
+      exact m'.sub_mem h_fst (m'.mul_mem_left _ h₂)
   obtain ⟨ε, hε, h_idem, z, hz⟩ :=
-    exists_dvd_idempotent_of_notMem c.property.isComparableRing hm h_snd
+    exists_dvd_idempotent_of_notMem c.property.isComparableRing hm' h_snd
   let ψ : R[X] →ₐ[A] c.obj :=
     aevalTower ((asAlgHom w.1).comp (ofAlgHom ..))
       (asAlgHom w.1 (root _) + z * (unimodularRow q).1)
   have hψ_X : ψ X = asAlgHom w.1 (root P.f) + z * (unimodularRow q).1 := by simp [ψ]
-  refine exists_notMem_of_rootPairs _ ψ (.inl w.2) hε (m.mul_mem_left z h_fst)
+  refine exists_notMem_of_rootPairs _ ψ (.inl w.2) hε (m'.mul_mem_left z h_fst)
     (fun _d f _hw _hψ h_unit h_mem ↦ ?_) hψ_X (by simp [ψ])
   -- Where `ε` is a unit, `f q₁ = f q₂ * (x - y)`, so `(x - y : 1)` is the image of `q`.
   have h_one : f.hom.hom ε = 1 := h_unit.mul_eq_left.mp (h_idem.map _)
@@ -636,15 +654,23 @@ lemma isFiniteLerayHirsch_offClosedFibre_sup_testUnitLocus_preimage
   let W (x : R[X]) : Subfunctor (ringOf (𝟭 (TestOver A)) ⋙ projLinePow (Fin d)) :=
     Subfunctor.range (j x) ⊔ offClosedFibre (ringOf (𝟭 _) ⋙ projLinePow (Fin d))
   have h_sup : Subfunctor.range (j P.g) ⊔ W (P.g * P.f) = W P.g := by
-    ext
+    ext c q
     simp [W, j, range_comp, testUnitLocus]
-    grind
+    exact ⟨fun h ↦ h.elim .inl fun h ↦ h.elim (fun ⟨ψ, ⟨hg, _⟩, hq⟩ ↦ .inl ⟨ψ, hg, hq⟩) .inr,
+      fun h ↦ h.elim .inl (.inr ∘ .inr)⟩
   have h_pre : (W (P.g * P.f)).preimage (j P.g) =
       (offClosedFibre (testSpec A R[X]) ⊔ testUnitLocus P.f).preimage
         (testUnitLocus (A := A) P.g).ι := by
-    ext
-    simp [W, j, range_comp, (injective_of_mono _).eq_iff, testUnitLocus]
-    grind
+    ext c ⟨ψ, hψg⟩
+    simp [W, j, range_comp, testUnitLocus]
+    constructor
+    · rintro (⟨ψ', ⟨_, hψ'f⟩, h_eq⟩ | h)
+      · have hψ_eq : ψ' = ψ := injective_of_mono ((affineToLines e).app c) h_eq
+        exact .inr (hψ_eq ▸ hψ'f)
+      · exact .inl h
+    · rintro (h | hψf)
+      · exact .inr h
+      · exact .inl ⟨ψ, ⟨hψg, hψf⟩, rfl⟩
   rw [← h_pre]
   exact D.isFiniteLerayHirsch_of_shortExact (relFreeAb.shortExact_triple (j P.g) (W (P.g * P.f))).2
     (D.isFiniteLerayHirsch_principal_open e L (P.g * P.f))
@@ -676,18 +702,25 @@ lemma isFiniteLerayHirsch_standard_etale
   let v : (rootPairs P).toFunctor ⟶ Y ⊗ projLineAlong (𝟭 _) := rootPairsToProdLine P
   have u_surj : IsZariskiLocallyTop (ringOf (𝟭 _)) (.range u ⊔ U) := by
     intro c ψ m hm
-    obtain hf | hf := em' (asAlgHom ψ.1 P.f ∈ m)
+    let m' : Ideal c.obj := m
+    have hm' : m'.IsMaximal := hm
+    have : m'.IsPrime := hm'.isPrime
+    obtain hf | hf := em' (asAlgHom ψ.1 P.f ∈ m')
     · exact ⟨_, hf, fun _ _ h_unit ↦ .inr (.inr h_unit)⟩
     -- Otherwise `x` is a root of `f` modulo `m`, and it lifts to a root `y` in the test ring.
     have h_root_mod : (P.f.map ((asAlgHom ψ.1).comp CAlgHom).toRingHom).eval₂
-        (Ideal.Quotient.mk m) ⟦asAlgHom ψ.1 X⟧ = 0 := by
-      -- `erw`: the class `⟦x⟧` is `Ideal.Quotient.mk m x` only up to unfolding.
-      erw [eval₂_map, ← hom_eval₂, ← hom_eval₂, eval₂_C_X, eq_zero_iff_mem.mpr hf]
-    obtain ⟨y, hy, h_lift⟩ := c.property.exists_root_map_eq (f := Ideal.Quotient.mk m)
-      (x := ⟦asAlgHom ψ.1 X⟧) (P.monic_f.map ((asAlgHom ψ.1).comp CAlgHom).toRingHom) h_root_mod
+        (Ideal.Quotient.mk m') (Ideal.Quotient.mk m' (asAlgHom ψ.1 X)) = 0 := by
+      rw [eval₂_map, ← hom_eval₂]
+      change Ideal.Quotient.mk m'
+          (P.f.eval₂ ((asAlgHom ψ.1).toRingHom.comp C) ((asAlgHom ψ.1).toRingHom X)) = 0
+      rw [← hom_eval₂, eval₂_C_X]
+      exact eq_zero_iff_mem.mpr hf
+    obtain ⟨y, hy, h_lift⟩ := c.property.exists_root_map_eq (f := Ideal.Quotient.mk m')
+      (x := Ideal.Quotient.mk m' (asAlgHom ψ.1 X))
+      (P.monic_f.map ((asAlgHom ψ.1).comp CAlgHom).toRingHom) h_root_mod
     let w := liftAlgHom P.f ((asAlgHom ψ.1).comp CAlgHom) y ((eval₂_eq_eval_map _).trans hy)
-    exact exists_notMem_of_rootPairs w (asAlgHom ψ.1) (.inr ψ.2) m.one_notMem
-      (Ideal.Quotient.eq.mp h_lift.symm)
+    exact exists_notMem_of_rootPairs w (asAlgHom ψ.1) (.inr ψ.2) m'.one_notMem
+      ((Ideal.Quotient.eq (I := m')).mp h_lift.symm)
       (fun _d _f _hw _hψ _h_unit h_mem ↦ .inl ⟨⟨_, h_mem⟩, rfl⟩) (by simp [w]) (by simp [w])
   -- On `rootPairs P`, `f x` is a unit exactly when `x - y` is.
   have h_preimage : V.preimage v = U.preimage u := by
@@ -699,14 +732,17 @@ lemma isFiniteLerayHirsch_standard_etale
     -- `f x ∉ m`, when both pairs are locally in `U`.
     refine D.isFiniteLerayHirsch_iff_of_locally_bijective u u_surj fun c
       ⟨⟨⟨(w, ψ), hw, hw_C⟩, (χ, _), hχ, hχ_C⟩, rfl⟩ m hm ↦ ?_
-    obtain hf | hf := em' (asAlgHom ψ.1 P.f ∈ m)
+    let m' : Ideal c.obj := m
+    have hm' : m'.IsMaximal := hm
+    have : m'.IsPrime := hm'.isPrime
+    obtain hf | hf := em' (asAlgHom ψ.1 P.f ∈ m')
     · exact ⟨_, hf, fun _ _ h ↦
         .trans (relFreeAb.mk_eq_zero (.inr h)) (.symm (relFreeAb.mk_eq_zero (.inr h)))⟩
-    have h_diff : asAlgHom w.1 (root _) - asAlgHom (c := c) χ.1 (root _) ∈ m := by
+    have h_diff : asAlgHom w.1 (root _) - asAlgHom (c := c) χ.1 (root _) ∈ m' := by
       -- `f x` divides both `x - y` and `x - y'`, and `f x ∈ m`.
-      simpa using m.mem_of_dvd (hχ.dvd.sub hw.dvd) hf
+      simpa using m'.mem_of_dvd (hχ.dvd.sub hw.dvd) hf
     refine exists_notMem_of_rootPairs (asAlgHom χ.1)
-      ((asAlgHom w.1).comp ((mkₐ P.f).restrictScalars A)) (.inl χ.2) m.one_notMem h_diff
+      ((asAlgHom w.1).comp ((mkₐ P.f).restrictScalars A)) (.inl χ.2) m'.one_notMem h_diff
       (fun _d f _hw _hψ _h_unit ⟨h_assoc, h_const⟩ ↦ ?_)
       (by simp) (fun r ↦ by simpa using (hχ_C r).trans (hw_C r).symm)
     -- `(y', y)` is locally in `rootPairs P`, so `f y = 0` divides `y - y'`: after `f` the roots

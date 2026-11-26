@@ -67,7 +67,7 @@ lemma log_product_formula {M : ℕ} {q : ℚ} (h_num_lt : q.num.natAbs < M) (h_d
   have log_q : log q = log q.num.natAbs - log q.den := by simp [q.cast_def, log_div, hq]
   have log_norm (p : ℕ) :
       log (padicNorm p q) = (padicValNat p q.den - padicValNat p q.num.natAbs) * log p := by
-    simp [padicNorm.eq_zpow_of_nonzero hq, padicValRat, padicValInt, Nat.padicValNat_def]
+    simp [padicNorm.eq_zpow_of_ne_zero hq, padicValRat, padicValInt, Nat.padicValNat_def]
   rw [log_q, log_nat (by simpa using hq) h_num_lt, log_nat q.den_nz h_den_lt]
   simp [log_norm, sub_mul]
 

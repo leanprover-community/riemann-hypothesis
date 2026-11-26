@@ -1,6 +1,12 @@
 module
 
-public import Lib.Base
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.InnerProductSpace.NormDet
+import Mathlib.Algebra.DirectSum.LinearMap
+import Mathlib.LinearAlgebra.Charpoly.BaseChange
+import Mathlib.LinearAlgebra.Eigenspace.Triangularizable
+import Mathlib.LinearAlgebra.Eigenspace.Zero
 
 /-!
 # Traces on the range of an idempotent from traces of a raising operator

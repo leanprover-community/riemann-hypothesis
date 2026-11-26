@@ -336,12 +336,9 @@ lemma exists_tensor_twist {C : Type*} {A S : Type} [Category C] [CommRing A] [Co
 root of the nonzero polynomial `X ^ q - X`. -/
 lemma finite_of_forall_pow_eq {k : Type*} [CommRing k] [IsDomain k] {q : ℕ} (hq : 1 < q)
     (h_pow_eq : ∀ z : k, z ^ q = z) :
-    Finite k := by
-  -- Otherwise the monic polynomial `X ^ q - X` would be zero.
-  refine .of_not_infinite fun _ ↦ ?_
-  have h_ne : (.X ^ q - .X : Polynomial k) ≠ 0 :=
-    (Polynomial.monic_X_pow_sub (by simpa using hq)).ne_zero
-  exact h_ne (Polynomial.funext fun z ↦ by simp [h_pow_eq z])
+    Finite k :=
+  Set.finite_univ_iff.mp ((Polynomial.finite_setOfPred_isRoot (Polynomial.monic_X_pow_sub
+    (p := .X) (by simpa using hq)).ne_zero).subset fun z _ ↦ by simp [h_pow_eq z])
 
 /-- Suppose the structure map `hP.algebraMap : Ainf → Amax` commutes with the action of
 `(a, σ) ∈ FrobGal`. Then there is a natural transformation `τ` from the σ-twisted period sheaf to
@@ -367,8 +364,9 @@ lemma exists_period_twist {p : ℕ} [ThePrime p] [hP : CrysPeriodAlgebra] (a : �
   let F : Amax →+* Amax := toRingHom FrobGal Amax (.ofAdd a, σ)
   obtain ⟨t, ht⟩ := exists_tensor_twist (ψ := PadicTest.twist σ) (Θ := tilt ⋙ wittFunctor) F h_smul
     ⟨fun c ↦ CommRingCat.ofHom (WittVector.map (iterateFrobenius c.TiltRing p a)),
-      fun _ _ _ ↦ ext_apply fun _ ↦ ext fun _ ↦ (map_pow ..).symm⟩
-    fun _ _ ↦ ext fun _ ↦ (congrArg (fun x ↦ x ^ p ^ a) (tiltMap_comp ..)).trans (map_pow ..).symm
+      fun _ _ _ ↦ ext_apply fun _ ↦ WittVector.ext fun _ ↦ (map_pow ..).symm⟩
+    fun _ _ ↦ WittVector.ext fun _ ↦
+      (congrArg (fun x ↦ x ^ p ^ a) (tiltMap_comp ..)).trans (map_pow ..).symm
   let τ :
       PadicTest.twist σ ⋙ (tilt ⋙ periodAlg Amax) ⋙ forget₂ .. ⟶
         (tilt ⋙ periodAlg Amax) ⋙ forget₂ .. :=
@@ -556,12 +554,13 @@ private lemma map_J_tensorAction_eq_pull {p : ℕ} [ThePrime p] {R : CommRingCat
   let F : Amax →+* Amax := toRingHom FrobGal Amax μ
   -- `μ` acts on the period sheaves: by `τ` over `Amax` and by `β` over `Bmax`.
   obtain ⟨τ, hτ, h_eta⟩ := exists_period_twist a (toGp s) (h_smul μ)
-  obtain ⟨β, hβ⟩ := exists_tensor_twist (τ := F) (toRingHom FrobGal Bmax μ) (by simp [F]) τ
+  obtain ⟨β, hβ⟩ := exists_tensor_twist (τ := F) (toRingHom FrobGal Bmax μ)
+    (by simp only [toRingHom_apply, smul_algebraMap_eq_algebraMap_smul, implies_true, F]) τ
     fun _ _ ↦ hτ rfl (map_one _)
   let cmp : Comparison Ψ Ψ := ⟨PadicTest.twist (toGp s),
     (Functor.whiskerRight β (liftCoeff (forget₂ _ RingCat ⋙ forget₂ ..)) :)⟩
   -- `F` fixes the image of `W(k)` (`h_witt_fixed`), so `τ` is a map `κ` of algebras over `W(k)`.
-  let κ : PadicTest.twist (toGp s) ⋙ crysComparison.functor ⟶ crysComparison.functor :=
+  let κ : (crysComparison.trans cmp).functor ⟶ crysComparison.functor :=
     { app c := ⟨ofHom ⟨(τ.app c).hom, fun _ ↦ hτ (h_witt_fixed a ha s _) (map_one _)⟩⟩
       naturality _ _ _ := by
         ext
@@ -569,12 +568,19 @@ private lemma map_J_tensorAction_eq_pull {p : ℕ} [ThePrime p] {R : CommRingCat
   -- `incl` includes the points of `V`, `δ` twists them by `s`, and `red a ha` reduces them and
   -- composes with `Frob ^ a`.
   let incl := freeAb.map (V.whisker (algFunctor ⋙ restrictAlg R OC)).ι
-  let δ := Functor.whiskerRight (toTwistAlg he_algebraMap he_smul s) (freeAb V.toFunctor)
+  let δ := freeAbMap (Y := algFunctor ⋙ restrictAlg R OC ⋙ V.toFunctor)
+    (Functor.whiskerRight (toTwistAlg he_algebraMap he_smul s) V.toFunctor)
   let red (a : ℕ) (ha : ∀ z : k, z ^ p ^ a = z) :=
     freeAbMap (toCrysPoints V (frobPowHom πk h_teichmuller a ha))
   let Zcr := freeAb (pdReduction (teichReduction (p := p) πk) ⋙ V.toFunctor)
-  let α : _ ⟶ (crysComparison.trans cmp).functor ⋙ Zcr :=
-    δ ≫ (PadicTest.twist (toGp s)).whiskerLeft (red 0 pow_one)
+  -- `twistComp` composes with the target in the form `(twist ⋙ G) ⋙ Z` used by `pull_trans`. The
+  -- reassociation is checked once for variable `G` and `Z`; unfolding it for the concrete functors
+  -- (through `freeAb`) is slow, in the elaborator and in the kernel.
+  let twistComp {X Y : AbFunctor PadicTest} {G : PadicTest ⥤ CrysTest (WittVector p k)}
+      {Z : AbFunctor (CrysTest (WittVector p k))} (d : X ⟶ PadicTest.twist (toGp s) ⋙ Y)
+      (r : Y ⟶ G ⋙ Z) : X ⟶ (PadicTest.twist (toGp s) ⋙ G) ⋙ Z :=
+    d ≫ (PadicTest.twist (toGp s)).whiskerLeft r
+  let α : _ ⟶ (crysComparison.trans cmp).functor ⋙ Zcr := twistComp δ (red 0 pow_one)
   -- Moving the reduced points by `κ` is composing them with `Frob ^ a`.
   have h_points : α ≫ Functor.whiskerRight κ Zcr = red a ha := by
     ext c : 2
@@ -606,10 +612,13 @@ private lemma map_J_tensorAction_eq_pull {p : ℕ} [ThePrime p] {R : CommRingCat
   have h_square : incl ≫ freeAbMap (toTwistPoints he_algebraMap he_smul s Y) =
       δ ≫ cmp.functor.whiskerLeft incl :=
     freeAb.hom_ext fun _ _ ↦ rfl
-  refine .trans ?_ ((pull_trans z).trans (DFunLike.congr_fun h_pull z))
+  refine .trans ?_ ((pull_trans (c := crysComparison) (c' := cmp) (a := red 0 pow_one) (α' := δ)
+    z).trans (DFunLike.congr_fun h_pull z))
   calc
     _ = cmp.pull δ n (H.map Ψ incl n (J Y (C z))) :=
-      (congrArg (H.map Ψ incl n) h_twist).trans (map_pull_eq_pull_map h_square n _)
+      (congrArg (H.map Ψ incl n) h_twist).trans (map_pull_eq_pull_map (c := cmp) (a' := incl)
+        (a := freeAbMap (toTwistPoints he_algebraMap he_smul s Y)) (α := incl) (b := δ) h_square
+        n _)
     _ = cmp.pull δ n (crysComparison.pull (red 0 pow_one) n z) := congrArg _ (hC z)
 
 /-- The congruence relation of `ellAdicCohom.isCrystalline_and_linearFrob_rel` on one period `C z`.
@@ -670,8 +679,11 @@ private lemma sum_linearFrob_apply_eq_zero {p : ℕ} [ThePrime p] {R : CommRingC
   let y (i : ι) : H (freeAb.obj (testPoints.obj Y)) Ψ n :=
     J Y (tensorAction Bmax ((.ofAdd (a i), toGp (γ i)) : FrobGal)
       (ellAdicCohom.galoisAction R Ω Γ Y n (γ i)) (C z))
-  simp [linearFrob_apply h_crys.isPotentiallyCrystalline (hW _), h_fixed, hJ.natural, Ψ, H.map_map]
-  show ∑ i, m i • H.map Ψ (freeAb.map T.ι ≫ freeAb.map (testPoints.map (u i))) n (y i) = 0
+  simp only [LinearMap.coe_sum, LinearMap.coe_smul, LinearMap.coe_comp, Finset.sum_apply,
+    Pi.smul_apply, Function.comp_apply, h_fixed,
+    linearFrob_apply h_crys.isPotentiallyCrystalline (hW _), map_sum, hJ.natural, map_zsmul,
+    H.map_map, Functor.map_comp, map_zero, Ψ]
+  change ∑ i, m i • H.map Ψ (freeAb.map T.ι ≫ freeAb.map (testPoints.map (u i))) n (y i) = 0
   -- `δ i` takes a point `w` of `T` to `u i w`; `red i` takes it on to the point over the period
   -- ring modulo divided powers, composed with `Frob ^ a i`.
   let δ (i : ι) : T.toFunctor ⟶ V'.toFunctor := T.homOfLe (iInf_le _ i) ≫ Subfunctor.fromPreimage ..

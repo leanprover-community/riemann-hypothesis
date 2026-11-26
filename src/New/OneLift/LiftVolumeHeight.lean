@@ -90,7 +90,7 @@ lemma norm_map_det_le_pow {K L : Type} [NormedField K] [AddCommGroup L] [Module 
 /-- Multiplying a form on the space `V` of a descent pair `O` by `c` multiplies its squared norm
 `normSqAt` at an automorphism `σ` of `ℂ` by `‖σ c‖ ^ 2`. -/
 lemma _root_.New.LevelPlaces.LevelForm.normSqAt_smul {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
     (c : ℂ) (φ : O.FormV) (σ : ℂ ≃+* ℂ) :
     (c • φ).normSqAt σ = ‖σ c‖ ^ 2 * φ.normSqAt σ := by
   rw [normSqAt, normSqAt, mul_classSum]
@@ -99,7 +99,7 @@ lemma _root_.New.LevelPlaces.LevelForm.normSqAt_smul {E r n : Type} [Field E] [C
 /-- The squared norm `φ.normSqAt σ` of a form (the weighted sum over classes of the squared norms
 of the values after applying `σ`) is not negative. -/
 lemma _root_.New.LevelPlaces.LevelForm.normSqAt_nonneg {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
     (φ : O.FormV) (σ : ℂ ≃+* ℂ) :
     0 ≤ φ.normSqAt σ := by
   rw [normSqAt, classSum]
@@ -110,7 +110,7 @@ of a lift from a hermitian space `W` with basis indexed by `r` to the standard s
 indexed by `n`. For `φ ≠ 0` in `O.FormV`, the algebraic forms on `V` of the weight and level of `O`,
 the squared norm `φ.normSqAt σ` is positive at every automorphism `σ` of `ℂ`. -/
 lemma _root_.New.LevelPlaces.LevelForm.normSqAt_pos {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n] {O : DescentPair E r n}
     {φ : O.FormV} (hφ : φ ≠ 0) (σ : ℂ ≃+* ℂ) :
     0 < φ.normSqAt σ := by
   obtain ⟨c, hc⟩ : ∃ c : StdClasses (levelOf O.placeAt
@@ -126,7 +126,7 @@ field `E` can be scaled to valuation `0` at a place `ι` (an embedding `ι.ιₚ
 there is `c ≠ 0` such that `c • φ` is integral at `ι`, and `α • c • φ` is integral only if
 `‖ι.ιₚ α‖ ≤ 1`. -/
 lemma _root_.New.DescentPair.exists_smul_mem_integralForms_maximal {E r n : Type} [Field E]
-    [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    [CMType E] [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
     {O : DescentPair E r n} {φ : O.FormV} (hφ : φ ≠ 0) {l : ℕ} [Fact l.Prime] (ι : PadicPlace l) :
     ∃ c : ℂ, c ≠ 0 ∧ c • φ ∈ integralForms ι ∧
       ∀ α : ℂ, α • c • φ ∈ integralForms ι → ‖ι.ιₚ α‖ ≤ 1 := by
@@ -214,7 +214,7 @@ lemma heckeValueProd_div_eq (j : D.LiftIndex) (ϑ : D.Twist) :
   obtain ⟨C, hC⟩ : ∃ C : ℂ, ∀ ϑ : D.Twist,
       (‖Rows.twistFactor j ϑ‖ : ℂ) ^ 2 = C / heckeValueProd j ϑ := exists_norm_twistFactor_sq_eq j
   have hC_ne : C ≠ 0 := fun h ↦ by simpa [h, twistFactor_ne_zero] using hC 1
-  rw [hC, hC, div_div_div_cancel_left' _ _ hC_ne]
+  rw [hC, hC, div_div_div_cancel_left₀ _ _ hC_ne]
 
 /-- The adjoint of the gluing map `glue j ϑ` takes the lift of `y` at the twist `ϑ` to
 `c′_ϑ⁻¹ Θ° y`, where `c′_ϑ = twistFactor j ϑ` and `Θ° = periodLift j`. -/
@@ -465,7 +465,7 @@ lemma card_prod_mul_card_tightFrameIndex_mul_sq_le (j : D.LiftIndex) :
       _ ≤ exp A := M_pow_denominatorExponent_sq_mul_le_exp j
   have h_root : N * D.chosenGroupOrder ≤ exp (A / 2) := by
     refine le_of_sq_le_sq ?_ (exp_pos _).le
-    rwa [← exp_nat_mul, Nat.cast_two, mul_div_cancel₀ _ two_ne_zero]
+    rwa [← exp_natCast_mul, Nat.cast_two, mul_div_cancel₀ _ two_ne_zero]
   have h_card : N ≤ exp (A / 2) := (le_mul_of_one_le_right (Nat.cast_nonneg _) h_aut).trans h_root
   have h_pow_x_le : 6 * D.x ^ 999 ≤ A / 2 := by simpa [hA] using D.le_of_hasLogBound
   calc
@@ -476,7 +476,7 @@ lemma card_prod_mul_card_tightFrameIndex_mul_sq_le (j : D.LiftIndex) :
     _ ≤ exp (A / 2) * exp A * (exp (D.x ^ 999) * exp (D.x ^ 999) ^ 2) ^ 2 := by
       grw [h_classes, h_card, card_columnFilling_colsMinus_le, hookNumberMinus_le]
     _ = exp (A / 2 + A + 6 * D.x ^ 999) := by
-      simp only [← exp_nat_mul, ← exp_add]
+      simp only [← exp_natCast_mul, ← exp_add]
       ring_nf
     _ ≤ exp (2 * A) := exp_le_exp.2 (by linarith)
 
@@ -542,7 +542,7 @@ lemma normSqAt_comparisonOp_le (j : D.LiftIndex) (φ : (D.descentPair (1 : D.Twi
     _ ≤ exp (2 * A) * (exp (2 * A) * S) := by
       grw [normSqAt_glue_le, h_tupleNormSq, card_prod_mul_card_tightFrameIndex_mul_sq_le]
     _ = _ := by
-      simp only [S, ← exp_nat_mul, ← mul_assoc, ← exp_add]
+      simp only [S, ← exp_natCast_mul, ← mul_assoc, ← exp_add]
       ring_nf
 
 /-- The operators `U_ϑ = comparisonOp j ϑ = n_Aut hk² glue_ϑ glue_ϑ*` on the forms on `V_j`, one for
@@ -701,7 +701,7 @@ lemma IsComparisonOperator.norm_map_det_liftCompression_le {j : D.LiftIndex}
     (σ : ℂ ≃+* ℂ) :
     ‖σ (liftCompression U 1).det‖ ≤
       exp (finrank ℂ (D.goodForms (D.spaceW j)) * (3 * (D.f * D.m * D.b * D.logB ^ 2))) := by
-  rw [exp_nat_mul, ← finrank_range_goodLift j 1]
+  rw [exp_natCast_mul, ← finrank_range_goodLift j 1]
   refine norm_map_det_le_pow σ.toRingHom _ fun α z hz ↦ ?_
   have hz_pos : 0 < normSqAt z.1 σ := normSqAt_pos (Subtype.coe_ne_coe.2 hz.2) σ
   -- `U_1 z` is orthogonal to the false lifts, so projecting it does not raise its norm at `σ`.

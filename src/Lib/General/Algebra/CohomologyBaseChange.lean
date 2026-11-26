@@ -78,11 +78,6 @@ noncomputable def Comparison.pullₗ (n : ℕ) :
     ext
     apply_rules [ULift.ext, LinearMap.map_smul]
 
-/-- The linear comparison map `pullₗ` has the same values as the additive one. -/
-lemma Comparison.pullₗ_apply (x : H N (moduleCoeff Φ) n) :
-    pullₗ β α n x = (ofModuleHom φ β).pull α n x :=
-  rfl
-
 /-- For β: Φ∘φ → Φ' and m ∈ M, the maps of coefficients y ↦ m ⊗ y (`tensorWith.mk T m`) commute with
 β and M ⊗_S β, regarded as maps of coefficients in abelian groups (`coeffHom` of `ofModuleHom`):
 both composites send y to m ⊗ β y. -/

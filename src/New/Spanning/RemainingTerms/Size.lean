@@ -95,7 +95,7 @@ lemma amplitudeSum_eq_inter_compl_add_inter [HasPrimitiveRoot5040 E] [S.IsAdmiss
   have h_union : T ∩ S.termsOver c s c' =
       (T ∩ Uᶜ ∩ S.termsOver c s c') ∪ (T ∩ U ∩ S.termsOver c s c') := by grind
   simp only [Pi.add_apply, amplitudeSum, tsum_congr_set_coe _ h_union]
-  exact (summable_amplitude ..).tsum_union_disjoint (by grind) (summable_amplitude ..)
+  exact (summable_amplitude ..).tsum_union_of_disjoint (by grind) (summable_amplitude ..)
 
 lemma secondMoment_nonneg {A : S.Classes → S.ResidueGL → S.Classes → V} {Ω : Set S.ResidueGL} :
     0 ≤ secondMoment A Ω := by
@@ -146,7 +146,7 @@ lemma sum_norm_amplitudeSum_sub_cut_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
             ‖S.besselKernel .full γ y - S.besselKernel .cut γ y‖ₑ := by
     simp only [amplitudeSum, ← Summable.tsum_sub, summable_amplitude]
     simp only [amplitude, ← integral_sub, h_integrable, ← smul_sub]
-    grw [enorm_tsum_le_tsum_enorm, enorm_integral_le_lintegral_enorm, enorm_toReal_smul_le]
+    grw [eNorm_tsum_le_tsum_eNorm, eNorm_integral_le_lintegral_eNorm, enorm_toReal_smul_le]
   have hν : 0 < S.unipotentCovolume := S.unipotentCovolume_pos
   have hb : 1 ≤ S.b := S.one_le_b
   rw [← ofReal_le_ofReal_iff (by positivity), ofReal_sum_of_nonneg (by simp)]
@@ -519,7 +519,7 @@ lemma enorm_amplitudeSum_le_orbitBound_top (hT : S.IsStable T)
         φ γ y * ‖S.besselKernel .full γ y - S.besselKernel .cut γ y‖ₑ ≤
       ENNReal.ofReal (S.unipotentCovolume * (S.b ^ (𝔰.k ^ 3 * numInfPlaces E))⁻¹ / 2) :=
     (hasSum_amplitudeSum_of_cutoff (side := .full) hT c s c' φ φ_sum (by fun_prop)).2.2
-  grw [← h_cut_sum.tsum_eq, enorm_tsum_le_tsum_enorm]
+  grw [← h_cut_sum.tsum_eq, eNorm_tsum_le_tsum_eNorm]
   gcongr with γ
   obtain ⟨hγT, hγ_over⟩ := γ.2
   by_cases! h_rep : ρ ⟦γ⟧ ≠ γ
@@ -640,7 +640,7 @@ lemma enorm_amplitudeSum_le_of_termDiscNorm_le (hT : S.IsStable T) {j : Fin (�
       _ ≤ _ := tsum_amplitudeMajorant_orbit_le hδ_over (h_cell _ hδT) hj (h_disc_le _ hδT)
   calc
     _ ≤ ∑' γ : X, S.amplitudeMajorant .cut c c' γ :=
-      enorm_tsum_le_tsum_enorm.trans (ENNReal.tsum_le_tsum fun _ ↦ enorm_amplitude_le ..)
+      eNorm_tsum_le_tsum_eNorm.trans (ENNReal.tsum_le_tsum fun _ ↦ enorm_amplitude_le ..)
     _ = ∑' δ : X, ∑' γ : rep ⁻¹' {δ}, S.amplitudeMajorant .cut c c' γ := (tsum_fiberwise _ rep).symm
     _ ≤ _ := ENNReal.tsum_le_tsum fibre_le
 
@@ -697,8 +697,8 @@ lemma enorm_amplitudeSum_le_orbitBound (hT : S.IsStable T) {j : Fin (𝔰.ϱ + 2
   calc
     _ ≤ ∑' γ : ↥(T ∩ Kᶜ ∩ S.termsOver c s c' ∪ T ∩ K ∩ S.termsOver c s c'), bound γ := by
       rw [amplitudeSum_eq_inter_compl_add_inter T K,
-        ENNReal.summable.tsum_union_disjoint (by grind) ENNReal.summable]
-      exact (enorm_add_le ..).trans (add_le_add off_K on_K)
+        ENNReal.summable.tsum_union_of_disjoint (by grind) ENNReal.summable]
+      exact (eNorm_add_le ..).trans (add_le_add off_K on_K)
     _ ≤ ∑' γ : ↥(T ∩ S.termsOver c s c'), bound γ := tsum_mono_subtype bound (by grind)
     _ = _ := by
       rw [_root_.tsum_subtype _ bound,
@@ -727,7 +727,7 @@ the fibres `T ∩ f ⁻¹' {i}` at the same `c`, `s`, `c'`. -/
 lemma enorm_amplitudeSum_le_tsum_fibre {ι : Type} (f : S.G E → ι) (c : S.Classes) (s : S.ResidueGL)
     (c' : S.Classes) :
     ‖S.amplitudeSum .cut T c s c'‖ₑ ≤ ∑' i : ι, ‖S.amplitudeSum .cut (T ∩ f ⁻¹' {i}) c s c'‖ₑ := by
-  grw [← (hasSum_amplitudeSum_fibre f c s c').tsum_eq, enorm_tsum_le_tsum_enorm]
+  grw [← (hasSum_amplitudeSum_fibre f c s c').tsum_eq, eNorm_tsum_le_tsum_eNorm]
 
 omit [HasPrimitiveRoot5040 E] [S.IsAdmissible] in
 /-- Every element of `Γ* = S.remainingTerms` has a cell rank, namely `S.cellRank γ`. -/

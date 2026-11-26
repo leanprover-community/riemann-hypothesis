@@ -118,7 +118,7 @@ def pairWeilFinite : Gf E n × Gf E n' →* Module.End ℂ (V.hom T).finitePart 
     LinearMap.restrict (pairWeil V T a b ((1, p.1), 1, p.2)).1 fun f hf ↦ by
       -- Up to a scalar, `pairWeil` is `ω` at a point whose infinite part is trivial (`onHom_fin`).
       refine (finitePart _).smul_mem _ ?_
-      erw [onHom_fin]
+      rw [onHom_fin]
       exact omega_mem_finitePart _ hf
   map_one' := by
     ext

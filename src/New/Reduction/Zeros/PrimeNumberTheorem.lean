@@ -150,30 +150,20 @@ lemma abs_primeRemainder_exp_sub_le {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v) (
     _ ≤ 26 * (v - u) := by linarith
 
 /-- For a character `ψ` mod `q` let `L_ψ = entireL ψ` be `L(s, ψ)`, times `s - 1` if `ψ` is
-principal, and let `ψ' = quadTwist ψ d` be `ψ (·/d)`. The function `logDerivMean d q`, that is
-`(∑_ψ (logDeriv L_ψ' - logDeriv L_ψ) - 1) / φ(q)`, is analytic at every point where no `L_ψ` and no
-`L_ψ'` vanishes. -/
-lemma analyticAt_logDerivMean {s : ℂ} (h_char : ∀ ψ : DirichletCharacter ℂ q, entireL ψ s ≠ 0)
-    (h_twist : ∀ ψ : DirichletCharacter ℂ q, entireL (quadTwist ψ d) s ≠ 0) :
-    AnalyticAt ℂ (logDerivMean d q) s := by
-  unfold logDerivMean
-  fun_prop (disch := simp only [h_char, h_twist, ne_eq, not_false_eq_true]) [logDeriv]
-
-/-- For a character `ψ` mod `q` let `L_ψ = entireL ψ` be `L(s, ψ)`, times `s - 1` if `ψ` is
 principal, and let `ψ' = quadTwist ψ d` be `ψ (·/d)`. If all `logDeriv L_ψ` and `logDeriv L_ψ'` have
 norm at most `C` at `s`, then `logDerivMean d q = (∑_ψ (logDeriv L_ψ' - logDeriv L_ψ) - 1) / φ(q)`
-has norm at most `2 C N + 1` at `s`, where `N` is the number of characters mod `q`. -/
+has norm at most `2 C + 1` at `s`, since there are `φ(q)` characters mod `q`. -/
 lemma norm_logDerivMean_le {s : ℂ} {C : ℝ}
     (h_char : ∀ ψ : DirichletCharacter ℂ q, ‖logDeriv (entireL ψ) s‖ ≤ C)
     (h_twist : ∀ ψ : DirichletCharacter ℂ q, ‖logDeriv (entireL (quadTwist ψ d)) s‖ ≤ C) :
-    ‖logDerivMean d q s‖ ≤ Fintype.card (DirichletCharacter ℂ q) * (2 * C) + 1 := by
-  have h_sum : ‖∑ ψ : DirichletCharacter ℂ q, (logDeriv (entireL (quadTwist ψ d)) s -
-      logDeriv (entireL ψ) s)‖ ≤ Fintype.card (DirichletCharacter ℂ q) * (2 * C) :=
-    (norm_sum_le_of_le univ fun ψ _ ↦ norm_sub_le_of_le (h_twist ψ) (h_char ψ)).trans_eq
-      (by simp [← two_mul])
-  rw [logDerivMean, norm_div, Complex.norm_natCast]
-  exact (div_le_self (norm_nonneg _) (mod_cast totient_pos.2 (NeZero.pos q))).trans
-    (norm_sub_le_of_le h_sum norm_one.le)
+    ‖logDerivMean d q s‖ ≤ 2 * C + 1 := by
+  have hφ : (1 : ℝ) ≤ φ q := mod_cast totient_pos.2 (NeZero.pos q)
+  have h_sum := norm_sum_le_of_le univ fun ψ _ ↦ norm_sub_le_of_le (h_twist ψ) (h_char ψ)
+  rw [logDerivMean, norm_div, Complex.norm_natCast, div_le_iff₀ (zero_lt_one.trans_le hφ)]
+  refine (norm_sub_le_of_le h_sum norm_one.le).trans ?_
+  rw [sum_const, nsmul_eq_mul, Finset.card_univ, ← Nat.card_eq_fintype_card,
+    DirichletCharacter.card_eq_totient_of_hasEnoughRootsOfUnity]
+  linarith
 
 /-- Let `d` be a prime and `q ≠ 0`. Let `G_q = logDerivMean d q` be the mean over the characters `ψ`
 mod `q` of the logarithmic derivatives of `L(s, ψ (·/d)) / L(s, ψ)`, less `1 / φ(q)`; here the
@@ -185,7 +175,6 @@ lemma eventually_norm_logDerivMean_div_le : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ
         ‖logDerivMean d q s / s‖ ≤ l ^ 26 := by
   -- The region lies in the zero-free regions `re s ≥ 1 - l⁻²⁵` of the finitely many `L`-functions;
   -- the exponent `26` in place of `25` absorbs the constants.
-  set N : ℝ := (Fintype.card (DirichletCharacter ℂ q) : ℝ)
   have h_char : ∀ᶠ l : ℝ in atTop, ∀ (ψ : DirichletCharacter ℂ q) (s : ℂ),
       1 - 1 / l ^ 25 ≤ s.re → ‖s‖ ≤ rexp l →
         entireL ψ s ≠ 0 ∧ ‖logDeriv (entireL ψ) s‖ ≤ 2 * l ^ 25 :=
@@ -194,9 +183,9 @@ lemma eventually_norm_logDerivMean_div_le : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ
       1 - 1 / l ^ 25 ≤ s.re → ‖s‖ ≤ rexp l →
         entireL (quadTwist ψ d) s ≠ 0 ∧ ‖logDeriv (entireL (quadTwist ψ d)) s‖ ≤ 2 * l ^ 25 :=
     eventually_all.2 fun ψ ↦ eventually_norm_logDeriv_entireL_le (quadTwist ψ d)
-  filter_upwards [h_char, h_twist, eventually_ge_atTop (8 * N + 2)]
+  filter_upwards [h_char, h_twist, eventually_ge_atTop (10 : ℝ)]
     with l hl_char hl_twist hl s h_re h_norm
-  have hl_two : 2 ≤ l := by linarith [show 0 ≤ N from Nat.cast_nonneg _]
+  have hl_two : 2 ≤ l := by linarith
   have hl_one : 1 ≤ l := one_le_two.trans hl_two
   have h_re' : 1 - 1 / l ^ 25 ≤ s.re := by
     linarith [one_div_pow_le_one_div_pow_of_le hl_one (show 25 ≤ 26 by norm_num)]
@@ -208,9 +197,9 @@ lemma eventually_norm_logDerivMean_div_le : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ
   constructor
   · exact (analyticAt_logDerivMean h_char_ne h_twist_ne).differentiableAt.fun_div
       differentiableAt_id (ne_zero_of_re_pos (by linarith))
-  · calc ‖logDerivMean d q s / s‖ ≤ (N * (2 * (2 * l ^ 25)) + 1) / (1 / 2) := by
+  · calc ‖logDerivMean d q s / s‖ ≤ (2 * (2 * l ^ 25) + 1) / (1 / 2) := by
           grw [norm_div, norm_logDerivMean_le h_char_le h_twist_le, ← re_le_norm s, ← h_half]
-      _ ≤ (8 * N + 2) * l ^ 25 := by linarith [one_le_pow₀ hl_one (n := 25)]
+      _ ≤ 10 * l ^ 25 := by linarith [one_le_pow₀ hl_one (n := 25)]
       _ ≤ l ^ 26 := by grw [hl, pow_succ' l 25]
 
 /-- **Prime number theorem** in the class `1` mod `q`, with weights `λ(n) = Λ(n) (1 - (n/d))`. Let
@@ -230,14 +219,5 @@ theorem eventually_abs_primeRemainder_le (hd : d ≠ 2) (h_cop : q.Coprime d) (B
       (fun u v ↦ abs_primeRemainder_exp_sub_le) h_transform eventually_norm_logDerivMean_div_le B
   filter_upwards [tendsto_log_atTop.eventually h_bound, eventually_gt_atTop 0] with y hy hy_pos
   rwa [Real.exp_log hy_pos] at hy
-
-/-- For an odd prime `d` and `q` prime to `d` the remainder `primeRemainder d q` tends to `0` at
-infinity. Thus the constant `c_q = re (logDerivMean d q 1)` subtracted in it is the limit of
-`∑_{n ≤ y, n ≡ 1 mod q} Λ(n) (1 - (n/d)) (1/n - 1/y) - log y / φ(q)`. -/
-theorem tendsto_primeRemainder (hd : d ≠ 2) (h_cop : q.Coprime d) :
-    Tendsto (primeRemainder d q) atTop (𝓝 0) := by
-  have h_le : ∀ᶠ y : ℝ in atTop, ‖primeRemainder d q y‖ ≤ 1 / y.log := by
-    simpa only [pow_one, Real.norm_eq_abs] using eventually_abs_primeRemainder_le hd h_cop 1
-  exact squeeze_zero_norm' h_le (tendsto_log_atTop.const_div_atTop 1)
 
 end New

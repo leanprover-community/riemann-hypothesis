@@ -148,7 +148,7 @@ lemma triple_class_eq_iff {p p' : ModuliPoint E n ν} {t t' : GL n E × n}
 /-- At a neat level, let the vectors of `p` run through representatives `u` of the groups `L j`
 modulo the lattice of `p.frame`, and let `δ` run through the deck group. The points so obtained on
 level `i` are distinct. -/
-lemma Model.point_comp_deck_injective [Nonempty n] (h_neat : IsNeat n 𝔑)
+lemma Model.point_comp_deck_injective (h_neat : IsNeat n 𝔑)
     (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) (p : ModuliPoint E n ν)
     (L : Fin ν → AddSubgroup (RealVectors E n)) :
     Function.Injective fun u : (∀ j : Fin ν, L j ⧸ (frameLattice p.frame).addSubgroupOf (L j)) ×

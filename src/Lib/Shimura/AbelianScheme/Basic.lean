@@ -1,7 +1,6 @@
 module
 
 public import Lib.General.Geometry.LineBundles
-public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
 # Abelian schemes: base change, finite kernels and constant functions
@@ -209,6 +208,24 @@ def ParallelogramLaw : Prop :=
     c.atPoint (x + y) + c.atPoint (x - y) + 2 • c.atPoint 0 = 2 • (c.atPoint x + c.atPoint y)
 
 end Pic
+
+namespace Variety
+
+open Pic
+
+variable {R : CommRingCat} {A : Over (Spec R)} [IsLocalRing R] [AddObj A] {c : Pic A.left}
+
+omit [AddObj A] in
+/-- Over a local ring, a class pulls back to zero along a point that comes from a section. -/
+@[simp]
+lemma atPoint_toUnit_comp_eq_zero {T : Over (Spec R)} (z : 𝟙_ (Over (Spec R)) ⟶ A) :
+    c.atPoint (toUnit T ≫ z) = 0 := by
+  simp [Pic.atPoint, c.pull_comp, eq_zero_of_isLocalRing]
+
+@[simp]
+lemma atPoint_zero {T : Over (Spec R)} : c.atPoint (T := T) 0 = 0 := atPoint_toUnit_comp_eq_zero _
+
+end Variety
 
 end New
 

@@ -253,49 +253,21 @@ lemma card_stdClasses_le_exp_mul_log {n : Type} [Fintype n] [DecidableEq n]
     {K : Subgroup (Gf D.E n)} (G : ℕ) [NeZero G] (hn : Fintype.card n ≤ 2 * D.n D.m)
     (hK : principalLevel n (G : 𝓞 D.E) ≤ K) :
     Nat.card (StdClasses K) ≤ exp (D.x ^ 29 * (1 + Real.log G)) := by
-  -- The number of classes is at most the class number of the maximal level `K₀ = stdLevel` times
-  -- the index of `K ∩ K₀` in `K₀`; both are bounded explicitly.
   have : Fact ((G : 𝓞 D.E) ≠ 0) := ⟨NeZero.out⟩
   have h_index_ne : (principalLevel n (G : 𝓞 D.E)).relIndex (stdLevel D.E n) ≠ 0 :=
     relIndex_ne_zero_of_isLevel _
   have : (K.subgroupOf (stdLevel D.E n)).FiniteIndex :=
     ⟨fun h_zero ↦ h_index_ne (relIndex_eq_zero_of_le_left hK h_zero)⟩
-  let f : ℕ := Core.numInfPlaces D.E
-  let r : ℕ := 2 * D.n D.m
-  have h_index : K.relIndex (stdLevel D.E n) ≤ G ^ (2 * f * r ^ 2) := calc
-    _ ≤ (principalLevel n (G : 𝓞 D.E)).relIndex (stdLevel D.E n) :=
-      relIndex_le_of_le_left hK h_index_ne
-    _ ≤ Ideal.absNorm (Ideal.span {(G : 𝓞 D.E)}) ^ Fintype.card n ^ 2 :=
-      relIndex_principalLevel_le NeZero.out
-    _ = G ^ (2 * f * Fintype.card n ^ 2) := by
-      rw [Ideal.absNorm_span_natCast, RingOfIntegers.rank, finrank_eq_two_mul_card_infinitePlace,
-        ← pow_mul]
-    _ ≤ G ^ (2 * f * r ^ 2) := by
-      gcongr
-      exact NeZero.one_le
-  -- Apply `Space.card_stdClasses_le` to the number `q₁ * d`, which lies in the different of `E`.
-  let c : ℕ := 1 + 2 * (6 * (P.q₁ D.towerExp * P.d) * (f * r) ^ 2) ^ 3
-  have h_class : Nat.card (StdClasses (stdLevel D.E n)) ≤ c ^ (4 * f * r ^ 2) := by
-    refine (card_stdClasses_le P.conductor_mem_differentIdeal).trans ?_
-    simp only [shortBasisConst, c, f, r]
-    gcongr
-    simp
-  have h_log_c : 4 * f * (r : ℝ) ^ 2 * Real.log c ≤ D.x ^ 29 := by
-    simpa only [r, c, f, cast_mul, cast_ofNat] using D.le_of_hasLogBound
-  have h_exponent : 2 * f * (r : ℝ) ^ 2 ≤ D.x ^ 29 := by
-    simpa only [r, f, cast_mul, cast_ofNat] using D.le_of_hasLogBound
-  calc (Nat.card (StdClasses K) : ℝ)
-    _ ≤ ↑(Nat.card (StdClasses (stdLevel D.E n)) * K.relIndex (stdLevel D.E n)) := by
-      -- Every class for `K` is a class for the maximal level times a coset of `K ∩ K₀` in `K₀`.
-      grw [card_le_card_of_surjective _ (surjective_doubleCoset_mk_mul _ (stdLevel D.E n) K),
-        card_prod, ← index, ← relIndex]
-    _ ≤ c ^ (4 * f * r ^ 2) * G ^ (2 * f * r ^ 2) := mod_cast mul_le_mul' h_class h_index
-    _ = exp ((4 * f * r ^ 2 : ℕ) * Real.log c + (2 * f * r ^ 2 : ℕ) * Real.log G) := by
-      rw [exp_add, exp_nat_mul, exp_nat_mul, exp_log (by positivity),
-        exp_log (cast_pos.2 (NeZero.pos G))]
-    _ ≤ exp (D.x ^ 29 * (1 + .log G)) := by
-      push_cast
-      grw [h_log_c, h_exponent, mul_add, mul_one]
+  -- Bound the classes by the standard-level class number times the relative index,
+  -- then insert the principal-level index and class-number bounds and take logarithms.
+  grw [card_le_card_of_surjective _ (surjective_doubleCoset_mk_mul _ (stdLevel D.E n) K),
+    card_prod, ← index, ← relIndex, relIndex_le_of_le_left hK h_index_ne,
+    relIndex_principalLevel_le NeZero.out, Ideal.absNorm_span_natCast, RingOfIntegers.rank,
+    finrank_eq_two_mul_card_infinitePlace, card_stdClasses_le P.conductor_mem_differentIdeal,
+    shortBasisConst, hn, hn, ← le_exp_of_log_le] <;>
+    simp [-cast_add, NeZero.pos, ne, log_mul, mul_add, ← mul_assoc]
+  -- The remaining logarithmic terms are controlled by the admissible data.
+  gcongr <;> exact D.le_of_hasLogBound
 
 /-- The admissible data `D` give a CM field `E = D.E`, the length `x = D.x` of the prime sum, the
 level primes with product `M = D.M`, a further prime level `N = D.N`, and integers `D.piM`, `D.piN`

@@ -190,7 +190,7 @@ strict derivative `(v, w) ↦ v + w` at `0`. If `x` is an exponential limit of a
 lies in the chart and `φ x = v` up to a relative error `ε`. -/
 private lemma New.eventually_norm_sub_le_of_isExpLimit {G V : Type*} [AddCommGroup G]
     [TopologicalSpace G]
-    [IsTopologicalAddGroup G] [FinComplexSpace V] {φ : G → V} {ψ : V → G} (h0 : φ 0 = 0)
+    [FinComplexSpace V] {φ : G → V} {ψ : V → G} (h0 : φ 0 = 0)
     (ψ_zero : ψ 0 = 0) {C : Set G} (zero_mem : (0 : G) ∈ C) (C_closed : IsClosed C)
     (hC_inv : ∀ x ∈ C, ψ (φ x) = x) (hC_cont : ∀ x ∈ C, ContinuousAt φ x)
     (add_mem_C : ∀ᶠ p : V × V in 𝓝 0, ψ p.1 + ψ p.2 ∈ C)
@@ -450,7 +450,7 @@ lemma exists_zero_set_chart {ι σ : Type} [Finite ι] [Finite σ] {d : ℕ} {F 
 a complex point `y` of `U`, a polynomial `q` in the generators takes the value of the polynomial
 function of `q` (constants evaluated at the base point) at the coordinates of `y`. -/
 private lemma ofSection_aeval_eq_eval {V : (Spec (CommRingCat.of ℂ)).Opens} {U : A.left.Opens}
-    (e : U ≤ A.hom ⁻¹ᵁ V) {ι σ : Type} [Finite ι] [Finite σ]
+    (e : U ≤ A.hom ⁻¹ᵁ V) {ι σ : Type} [Finite σ]
     [Algebra Γ(Spec (CommRingCat.of ℂ), V) Γ(A.left, U)]
     (h_alg : algebraMap Γ(Spec (CommRingCat.of ℂ), V) Γ(A.left, U) = (A.hom.appLE V U e).hom)
     (P : Algebra.SubmersivePresentation Γ(Spec (CommRingCat.of ℂ), V) Γ(A.left, U) ι σ)
@@ -500,7 +500,7 @@ affine opens `U` and `V`. Every zero `p` of the relations of `P`, read as polyno
 `ℂ^ι`, is the vector of coordinates of a complex point of `U`. -/
 private lemma exists_point_of_relations_eq_zero {V : (Spec (CommRingCat.of ℂ)).Opens}
     {U : A.left.Opens} (hV : IsAffineOpen V) (hU : IsAffineOpen U) (e : U ≤ A.hom ⁻¹ᵁ V)
-    {ι σ : Type} [Finite ι] [Finite σ] [Algebra Γ(Spec (CommRingCat.of ℂ), V) Γ(A.left, U)]
+    {ι σ : Type} [Finite σ] [Algebra Γ(Spec (CommRingCat.of ℂ), V) Γ(A.left, U)]
     (h_alg : algebraMap Γ(Spec (CommRingCat.of ℂ), V) Γ(A.left, U) = (A.hom.appLE V U e).hom)
     (P : Algebra.SubmersivePresentation Γ(Spec (CommRingCat.of ℂ), V) Γ(A.left, U) ι σ)
     (hV1 : LandsIn (𝟙 (Spec (CommRingCat.of ℂ))) V) (p : ι → ℂ)
@@ -535,7 +535,7 @@ private lemma exists_point_of_relations_eq_zero {V : (Spec (CommRingCat.of ℂ))
 `γ` through `x` the map `φ ∘ γ` is analytic, with derivative zero in each direction in which `γ`
 is constant to first order. -/
 lemma exists_holomorphic_chart (hd : SmoothOfRelativeDimension d A.hom) (x : ComplexPoint A) :
-    ∃ᵉ (φ : ComplexPoint A → Fin d → ℂ) (ψ : (Fin d → ℂ) → ComplexPoint A),
+    ∃ φ : ComplexPoint A → Fin d → ℂ, ∃ ψ : (Fin d → ℂ) → ComplexPoint A,
       φ x = 0 ∧
       -- (a) `ψ` is a left inverse of `φ` near `x`, where `φ` is continuous
       (∀ᶠ y : ComplexPoint A in 𝓝 x, ψ (φ y) = y ∧ ContinuousAt φ y) ∧

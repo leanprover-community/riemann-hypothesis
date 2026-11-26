@@ -233,7 +233,7 @@ lemma carry_smul_mem_Z2 (χ : QZChar G) (w : ρ.invariants) :
   have hχ_cont : Continuous (χ : G → QZ) := χ.prop.left
   refine ⟨by fun_prop, fun g h k ↦ ?_⟩
   set f : G → QZ := (χ : G → QZ)
-  show (f (g * h)).carry (f k) • (w : M) =
+  change (f (g * h)).carry (f k) • (w : M) =
     (f g).carry (f (h * k)) • (w : M) - (f g).carry (f h) • (w : M) +
       ρ g ((f h).carry (f k) • (w : M))
   -- `w` is invariant, so this is the cocycle identity of the carry, times `w`
@@ -256,7 +256,7 @@ def cyclicClass : QZChar G →+ ρ.invariants →+ H2 ρ :=
       refine AddMonoidHom.ext fun w ↦ (Submodule.Quotient.eq _).mpr
         ⟨fun g ↦ (χ g).carry (ψ g) • -w, by fun_prop, fun g h ↦ ?_⟩
       have hw_inv : ρ g (w : M) = w := w.prop g
-      show (χ g + ψ g).carry (χ h + ψ h) • (w : M) -
+      change (χ g + ψ g).carry (χ h + ψ h) • (w : M) -
           ((χ g).carry (χ h) • (w : M) + (ψ g).carry (ψ h) • (w : M)) =
         ρ g ((χ h).carry (ψ h) • -(w : M)) - (χ (g * h)).carry (ψ (g * h)) • -(w : M) +
           (χ g).carry (ψ g) • -(w : M)
@@ -321,10 +321,6 @@ abbrev QZChar.ker : Subgroup Γ := (toHom χ).ker
 /-- `QZChar.toHom χ` sends `g` to `χ g`, written multiplicatively. -/
 lemma QZChar.toHom_apply (g : Γ) : toHom χ g = Multiplicative.ofAdd ((χ : Γ → QZ) g) := rfl
 
-/-- An element `g` lies in the kernel of the character `χ` exactly when `χ g = 0`. -/
-lemma QZChar.mem_ker_iff {g : Γ} : g ∈ QZChar.ker χ ↔ (χ : Γ → QZ) g = 0 := by
-  rw [QZChar.ker, MonoidHom.mem_ker, toHom_apply, ofAdd_eq_one]
-
 /-- The kernel of a continuous character `χ : Γ → ℚ/ℤ` is closed in `Γ`. -/
 lemma QZChar.isClosed_ker : IsClosed (QZChar.ker χ : Set Γ) :=
   (isClosed_discrete {0}).preimage χ.prop.left
@@ -335,7 +331,7 @@ def QZChar.abelianLift [IsTopologicalGroup Γ] (χ : QZChar Γ) :
     TopologicalAbelianization Γ →* Multiplicative QZ :=
   -- the kernel is closed and contains the commutators
   QuotientGroup.lift (commutator Γ).topologicalClosure (toHom χ)
-    (closure_minimal (Abelianization.commutator_subset_ker (toHom χ)) (QZChar.isClosed_ker χ))
+    (closure_minimal (Group.Abelianization.commutator_le_ker (toHom χ)) (QZChar.isClosed_ker χ))
 
 variable (Γ)
 
@@ -575,10 +571,6 @@ lemma IsShortExact.restrictAlong (h_exact : IsShortExact ι π) :
 /-- A Γ-stable R-submodule W of a discrete Γ-module A, as a discrete Γ-module with the
 restricted action. -/
 abbrev submodule : DiscreteModule R Γ := of (A.ρ.subrepresentation W h)
-
-private lemma discreteTopology_quotient : DiscreteTopology (A.V ⧸ W) :=
-  discreteTopology_iff_forall_isOpen.mpr fun s ↦
-    (W.isOpenQuotientMap_mkQ.isQuotientMap.isOpen_preimage (s := s)).mp (isOpen_discrete _)
 
 /-- For a Γ-stable R-submodule W of a discrete Γ-module A, the quotient A ⧸ W as a discrete
 Γ-module, with the action induced on cosets. -/

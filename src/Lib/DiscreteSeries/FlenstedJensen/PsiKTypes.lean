@@ -213,13 +213,10 @@ injective, and `o i < o j` holds only if `l j < l i`. -/
 private theorem New.injective_and_lt_of_reverses_order (hg : l.HasGap h) {o : n → ℤ}
     (ho : ∀ i j : n, l j < l i → o i < o j) :
     o.Injective ∧ ∀ i j : n, o i < o j → l j < l i := by
-  have h_order (i j : n) (hij : o i < o j) : l j < l i := by
-    by_contra! h_le
-    rcases h_le.lt_or_eq with h_lt | h_eq
-    exacts [(ho j i h_lt).not_gt hij, hij.ne (congrArg o (hg.injective h_eq))]
-  refine ⟨fun i j hij ↦ hg.injective ?_, h_order⟩
-  exact le_antisymm (not_lt.1 fun h_lt ↦ (ho i j h_lt).ne hij)
-    (not_lt.1 fun h_lt ↦ (ho j i h_lt).ne' hij)
+  -- For the order on the indices pulled back along `l`, `o` is strictly antitone.
+  let _ : LinearOrder n := .lift' l hg.injective
+  have h_anti : StrictAnti o := fun i j hij ↦ ho j i hij
+  exact ⟨h_anti.injective, fun i j hij ↦ h_anti.lt_iff_gt.1 hij⟩
 
 variable [DecidableEq n]
 

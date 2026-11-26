@@ -122,7 +122,7 @@ lemma mem_smoothFunctions_of_eigen [IsTopologicalGroup G] (hK : IsOpen (K : Set 
   have h_fix : ∀ᶠ k : K in nhds 1, (k : G) ∈ rightStabilizer f := by
     filter_upwards [o.out] with k (hk : χ k = 1) g
     simpa [hk] using congrFun (hf k) g
-  exact (rightStabilizer f).isOpen_of_mem_nhds (hK.isOpenMap_subtype_val.nhds_le 1 h_fix)
+  exact (rightStabilizer f).isOpen_of_mem_nhds (hK.isOpenMap_subtypeVal.nhds_le 1 h_fix)
 
 /-! ### Forms supported on one class -/
 
@@ -251,24 +251,6 @@ noncomputable def freeLevelEquiv (h_free : ∀ g : G, classAut e.range K g = ⊥
     levelSpace_ext_doubleCosets hr (sum_deltaForm_apply_rep e ρ χ h_free hr
       (evalClassReps e ρ χ r φ))
   right_inv f := funext (sum_deltaForm_apply_rep e ρ χ h_free hr f)
-
-/-- `freeLevelEquiv` sends a form to its values at the representatives `r c`. -/
-lemma freeLevelEquiv_apply (h_free : ∀ g : G, classAut e.range K g = ⊥)
-    {r : DoubleCosets e.range K → G}
-    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c)
-    (φ : levelSpace (smoothFormRep e ρ) K χ) (c : DoubleCosets e.range K) :
-    freeLevelEquiv e ρ χ h_free hr φ c = φ.val.val (r c) :=
-  rfl
-
-/-- The inverse of `freeLevelEquiv` sends `f` to the sum over the classes `c` of the forms
-`deltaForm e ρ χ (r c) (f c)`. -/
-lemma freeLevelEquiv_symm_apply (h_free : ∀ g : G, classAut e.range K g = ⊥)
-    {r : DoubleCosets e.range K → G}
-    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c)
-    (f : DoubleCosets e.range K → W) :
-    (freeLevelEquiv e ρ χ h_free hr).symm f =
-      ∑ c : DoubleCosets e.range K, deltaForm e ρ χ (r c) (f c) :=
-  rfl
 
 variable {e ρ χ}
 

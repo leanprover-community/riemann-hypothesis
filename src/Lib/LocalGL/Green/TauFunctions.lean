@@ -299,7 +299,7 @@ noncomputable def charName : MulChar k ℂ ≃* kˣ :=
         by simp⟩)
       (fun a b ↦ MulChar.ext fun y ↦ by
         -- At `y`, this is θ_{ab} = θ_a θ_b on the (|k| - 1)-th roots of unity.
-        show thetaChar T (Nat.card k) (algebraMap k K ↑(a * b)) (algebraMap k K y) =
+        change thetaChar T (Nat.card k) (algebraMap k K ↑(a * b)) (algebraMap k K y) =
           thetaChar T (Nat.card k) (algebraMap k K a) (algebraMap k K y) *
             thetaChar T (Nat.card k) (algebraMap k K b) (algebraMap k K y)
         simp [thetaChar_mul T one_lt_card, algebraMap_pow_card_pred_eq_one])
@@ -471,7 +471,7 @@ private lemma finMean_conj_mul_eq_ite {L : Type*} [Field L] [Finite L] (χ ξ : 
 /-- Let `L` be a finite extension of `k` with an embedding `φ` into `K`, and `q = |k|`. The roots in
 `K` of the characteristic polynomial of multiplication by `u` on `L` are the conjugates
 `φ(u) ^ q ^ i`, `i < [L : k]`. -/
-private lemma aroots_charpoly_mulLeft {L : Type*} [Field L] [Finite L] [Algebra k L]
+private lemma aroots_charpoly_mulLeft {L : Type*} [Field L] [Algebra k L]
     [FiniteDimensional k L] (φ : L →ₐ[k] K) (u : L) :
     (mulLeft k u).charpoly.aroots K =
       Multiset.map (fun i : ℕ ↦ φ u ^ Nat.card k ^ i) (Multiset.range (finrank k L)) := by

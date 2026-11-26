@@ -75,6 +75,7 @@ lemma span_conjWeylRep_eq_top (e : Φ → ℤ) {v : WeylIndex n κ → ℂ} (hv 
     simp [-card_pi, ← schur_orthogonality e f v w v, h_kill]
   simp [-card_pi, h_norm, hf_ne] at h_zero
 
+omit [DecidableEq Φ] in
 /-- The module `New.nablaFamily` of Borel semi-invariant polynomials of weight `κ` is irreducible
 under U(n)^Φ: if `f` is a non-zero member (a polynomial in `MatrixPoly (Σ _ : Φ, n) ℂ`, whose
 variables are `X (⟨τ, i⟩, t)` with row `(τ, i)` and column `t : ℕ`), each member `g` is a linear
@@ -88,6 +89,7 @@ lemma mem_span_rowSubst_unitary {f g : MatrixPoly (Σ _ : Φ, n) ℂ}
     (hg : g ∈ nablaFamily ℂ (fun _ : Φ ↦ n) κ) :
     g ∈ span ℂ (Set.range fun u : Φ → USign (1 : n → ℤˣ) ↦
       rowSubst (fun τ : Φ ↦ (u τ).val.valᵀ) f) := by
+  classical
   -- `toPoly` maps the coordinate vectors onto `nablaFamily` and turns the action of `x` into
   -- substitution of the transpose of the conjugate of `x`, which is again unitary.
   rw [← range_toPoly] at hf hg
@@ -163,6 +165,7 @@ lemma rowSubst_pairedDetProd_X (z : Φ → Matrix n n ℂ) (η : (τ : Φ) → �
   ext : 2
   simp [rowSubst, Matrix.mul_apply, smul_eq_C_mul]
 
+omit [DecidableEq Φ] in
 /-- Polarisation. Let `card p < card n`, and let `η₀` be the `p × n` matrix whose row `k` is the
 standard basis vector at `r k`, for an injective `r`. For all complex `p × n` matrices `η τ k`, the
 product `pairedDetProd Y η` of the `det (η τ k * Y τ)` is a finite combination of the products
@@ -175,6 +178,7 @@ theorem exists_pairedDetProd_eq_sum_unitary (hp : card p < card n) {r : p → n}
         pairedDetProd Y η =
           c.sum fun (u : Φ → USign (1 : n → ℤˣ)) (z : ℂ) ↦ z • pairedDetProd Y
             fun (τ : Φ) (_ : ι τ) ↦ (1 : Matrix n n ℂ).submatrix r id * (u τ).val.valᵀ := by
+  classical
   -- Prove the identity for matrices of variables, in the irreducible module `nablaFamily`; then put
   -- `Y` in for the variables.
   let P (ξ : (τ : Φ) → ι τ → Matrix p n ℂ) : MatrixPoly (Σ _ : Φ, n) ℂ :=

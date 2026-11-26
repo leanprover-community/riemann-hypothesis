@@ -94,16 +94,6 @@ private lemma apply_eq_zero_of_mem_vanishingCocycles (hz : z ∈ vanishingCocycl
     {g : Gal(Ω/ℚ)} (hg : g ∈ s) : z g = 0 :=
   hz.2.2 g hg
 
-/-- A Frobenius element `σ` at the place `A` lies in the decomposition group of `A`. -/
-private lemma mem_decompGroup_of_isFrob {A : ClosurePlace} {q : ℕ} {σ : Gal(Ω/ℚ)}
-    (hσ : IsFrob A q σ) : σ ∈ decompGroup Gal(Ω/ℚ) A :=
-  hσ.1
-
-/-- The inertia group of the place `A` lies in its decomposition group. -/
-private lemma mem_decompGroup_of_mem_inertiaGroup {A : ClosurePlace} {i : Gal(Ω/ℚ)}
-    (hi : i ∈ inertiaGroup Gal(Ω/ℚ) A) : i ∈ decompGroup Gal(Ω/ℚ) A :=
-  hi.1
-
 /-- Let `g` fix the `N m`-th roots of unity (`g ∈ cycloGalGroup (N * m)`) and let `m • y = 0`.
 Then `cyc^e ψ (g)` and its inverse fix `y`. -/
 lemma cyclotomicPowDirichlet_smul_eq_self (hg : g ∈ cycloGalGroup (N * m)) {y : M}
@@ -151,7 +141,7 @@ lemma finite_vanishingCocycles [Finite M] {n : ℕ}
     fun z ⟨z_lc, z_cocycle, z_zero⟩ ↦
       ⟨⟨z_lc.continuous, z_cocycle⟩, Submodule.mem_pi.2 fun g hg ↦ z_zero g ?_⟩
   -- Inertia at a place prime to `N l` fixes the `N`-th roots of unity, so `g ∈ s`.
-  show g ∈ s
+  change g ∈ s
   simp_all [inertiaAbove, Set.subset_def]
   grind [valuation_natCast_eq_one_iff, cyclotomicCharMod_eq_one_of_mem_inertiaGroup]
 
@@ -196,7 +186,7 @@ private lemma pow_sub_one_smul_apply_eq_zero_of_mem_decompGroup {a : ℕ} (ha : 
   -- the commutator of `δ⁻¹` and `g`, so Sah's lemma gives `(Υ δ - 1) • x g = ((Υ g)⁻¹ - 1) • x δ⁻¹`
   -- for `Υ = cyc^e ψ`, and the right side is `0` because `g` acts trivially.
   obtain ⟨δ, hδ_inertia, hδ⟩ := exists_inertia_cyclotomicPowDirichlet_eq (ψ := ψ) ha ha_one hA e
-  have hδ_dec : δ ∈ decompGroup Gal(Ω/ℚ) A := mem_decompGroup_of_mem_inertiaGroup hδ_inertia
+  have hδ_dec : δ ∈ decompGroup Gal(Ω/ℚ) A := IsFrob.mem_decompGroup hδ_inertia
   have h_comm_mem : (δ⁻¹ * g)⁻¹ * (g * δ⁻¹) ∈
       ↑(cycloGalGroup N) ∩ (inertiaAbove (placesDividing ℚ l)ᶜ ∪ Selmer.shaLocalSet l ℚ 1) :=
     ⟨by simp [mul_comm], .inr ⟨A, by simp_all [mul_comm, mul_mem]⟩⟩
@@ -321,12 +311,12 @@ lemma artin_reciprocity_of_mem_component {a : ℕ} (ha : l.Coprime a) (ha_one : 
       (decompGroup_le_cycloGalGroup (conj_over u).valuation_q_lt_one hq_one)
   refine ⟨fun u ↦ -((w u).valuation F y).log, fun u ↦ ?_,
     eq_zero_of_forall_hom_eq_zero fun lam ↦ ?_⟩
-  · show ordRat ℚ B (unitsRep (s u) (ofBase G Ω (Additive.ofMul y) : DiscreteUnits Ω)) =
+  · change ordRat ℚ B (unitsRep (s u) (ofBase G Ω (Additive.ofMul y) : DiscreteUnits Ω)) =
       -((w u).valuation F y).log
     simpa [split, ← (conj_over u).ordRat_smul (s u)] using (hw u).ordRat_ofBase (Γ := G) y
   have h_lc : IsLocallyConstant fun g : Gal(Ω/ℚ) ↦ lam (d • x g) :=
     (isLocallyConstant_of_mem_vanishingCocycles hx).comp fun z ↦ lam (d • z)
-  let χ : QZChar G := ⟨fun g ↦ lam (d • x g), h_lc.continuous.comp continuous_subtype_val,
+  let χ : QZChar G := ⟨fun g ↦ lam (d • x g), h_lc.continuous.comp continuous_subtypeVal,
     fun g h ↦ by simp [apply_mul_of_mem_vanishingCocycles hx,
       cyclotomicPowDirichlet_smul_eq_self g.prop, hx_tors]⟩
   have torsion : m • χ = 0 := by
@@ -347,11 +337,11 @@ lemma artin_reciprocity_of_mem_component {a : ℕ} (ha : l.Coprime a) (ha_one : 
       (hg : g ∈ inertiaGroup G A) : χ.1 g = 0 := by
     rcases (A.valuation_le_one l).eq_or_lt with h | h
     · simp [χ, apply_eq_zero_of_mem_inertiaGroup_of_valuation_eq_one hx hA h g.prop hg]
-    · exact dec_zero A h g (mem_decompGroup_of_mem_inertiaGroup hg)
+    · exact dec_zero A h g (IsFrob.mem_decompGroup hg)
   -- The places `w u` are all the places of `F` above `q`.
   have unit_q (t : FinPlace F) (ht : t ∉ Set.range w) : (placeOver t).valuation v.q = 1 :=
     eq_of_le_of_not_lt (by simp) fun h ↦ ht (mem_range_of_valuation_lt_one over_v hB hs hw h)
-  have hφ_G : φ ∈ G := dec_B (mem_decompGroup_of_isFrob hφ)
+  have hφ_G : φ ∈ G := dec_B hφ.mem_decompGroup
   let frob u : G := ⟨(s u)⁻¹ * φ * (s u)⁻¹⁻¹, (normal_ker _).conj_mem _ hφ_G _⟩
   -- The conjugate `frob u` of `φ` is a Frobenius element at `(s u)⁻¹ • B`, above `w u`.
   have frob_isFrob (u : (ZMod (N * m))ˣ) : IsFrob ((s u)⁻¹ • B) (w u).q (frob u) := by
@@ -386,9 +376,9 @@ private lemma exists_apply_eq_galUnitsRep_sub {κ : Gal(Ω/ℚ) → M} {s : Set 
     (hκ_tors : ∀ g : Gal(Ω/ℚ), l • κ g = 0) (L : M →+ DiscreteUnits Ω) :
     ∃ r : DiscreteUnits Ω, ∀ g : cycloGalGroup (N * l), L (κ g) = galUnitsRep g r - r := by
   have h_lc : IsLocallyConstant (L ∘ κ) := (isLocallyConstant_of_mem_vanishingCocycles hκ).comp L
-  refine hilbert90_unitsRep ⟨_, h_lc.continuous.comp continuous_subtype_val, fun g h ↦ ?_⟩
+  refine hilbert90_unitsRep ⟨_, h_lc.continuous.comp continuous_subtypeVal, fun g h ↦ ?_⟩
   -- `g` fixes the root of unity `L (κ h)` and acts trivially on `κ h`.
-  show L (κ (g * h)) = L (κ g) + unitsRep (g : Gal(Ω/ℚ)) (L (κ h))
+  change L (κ (g * h)) = L (κ g) + unitsRep (g : Gal(Ω/ℚ)) (L (κ h))
   rw [cyclotomicCharMod_eq_one_iff.1 g.2]
   · simp [hκ_tors, apply_mul_of_mem_vanishingCocycles hκ, cyclotomicPowDirichlet_smul_eq_self g.2]
   · simp [mul_smul, ← map_nsmul, hκ_tors]
@@ -449,7 +439,7 @@ lemma reciprocity_mod_ell {a : ℕ} (ha : l.Coprime a) (ha_one : a ≡ 1 [MOD N]
     AddCommGroup.zmodModule (by simp [mem_span_singleton, smul_comm, hκ_tors])
   have b := Module.finBasis (ZMod l) (O ∙ κ τ)
   have τ_fix : cyclotomicCharMod Ω (N * l) τ = 1 :=
-    mem_ker.1 (decompGroup_le_cycloGalGroup hB hq_one (mem_decompGroup_of_mem_inertiaGroup hτ))
+    mem_ker.1 (decompGroup_le_cycloGalGroup hB hq_one (IsFrob.mem_decompGroup hτ))
   obtain ⟨v, hv, -, ord_q⟩ := exists_isPlaceOver_prime hB
   choose σ hσ using cyclotomicCharMod_surjective (N * l)
   -- `μ` identifies `ℤ/l` with the `l`-th roots of unity; `τ` moves an `l`-th root `π` of `q`
@@ -797,7 +787,7 @@ conclusion has the form of the membership condition of `inertiaOff`. -/
 lemma mem_cycloGalGroup_and_valuation_eq_one {r : Primes} {A : ClosurePlace} {i : Gal(Ω/ℚ)}
     (hr : r ≡ 1 [MOD N * l]) (hA : A.valuation (r : Ω) < 1) (hi : i ∈ inertiaGroup Gal(Ω/ℚ) A) :
     i ∈ cycloGalGroup N ∧ A.valuation (l : Ω) = 1 ∧ i ∈ inertiaGroup Gal(Ω/ℚ) A :=
-  ⟨decompGroup_le_cycloGalGroup hA hr.of_mul_right (mem_decompGroup_of_mem_inertiaGroup hi),
+  ⟨decompGroup_le_cycloGalGroup hA hr.of_mul_right (IsFrob.mem_decompGroup hi),
     hr.of_mul_left.coprime_of_modEq_one.valuation_eq_one hA, hi⟩
 
 /-- Let `O` be the integer ring of a finite extension of ℚ_l, `ψ` a Dirichlet character mod `N` with
@@ -831,7 +821,7 @@ lemma exists_isFrob_forall_isTrivialAbove {r : Primes} {A : ClosurePlace} (hr : 
   -- `σ` fixes the `N l`-th roots of unity, so it fixes the values of `x`, which `l` kills.
   have h_conj : x (ρ * σ * ρ⁻¹) = 0 := by
     have h_fix : σ ∈ cycloGalGroup (N * l) :=
-      decompGroup_le_cycloGalGroup hA hr (mem_decompGroup_of_isFrob hσ)
+      decompGroup_le_cycloGalGroup hA hr hσ.mem_decompGroup
     have h_inv_fix : (cyclotomicPowDirichlet l e ψ σ)⁻¹.val • x ρ⁻¹ = x ρ⁻¹ :=
       (cyclotomicPowDirichlet_smul_eq_self h_fix (congrFun h_tors ρ⁻¹)).right
     rw [cocycle_conj_eq_smul (apply_mul_of_mem_vanishingCocycles hx) h_inv_fix, hxσ, smul_zero]
@@ -1081,7 +1071,7 @@ private lemma nsmul_mem_vanishingCocycles_of_isTight {a m : ℕ} [NeZero a] (ha 
     have h_level : N * l ∣ N * l ^ m := mul_dvd_mul_left N (dvd_pow_self l (Nat.ne_zero_of_lt hi))
     have hr : r ≡ 1 [MOD N * l] := (hQ_mod r hrQ).of_dvd (h_level.mul_left a)
     have hwr : ¬IsTrivialAbove w r := fun h_triv ↦
-      hwσ (h_triv A hA σ (mem_decompGroup_of_isFrob hσ))
+      hwσ (h_triv A hA σ hσ.mem_decompGroup)
     have hrS : r ∉ S := fun hrS ↦ hwr (hw_triv r (mem_insert_of_mem hrS))
     have h_tight_next : IsTight l e ψ m (insert p (insert r S)) := by
       rw [insert_comm]
@@ -1142,7 +1132,7 @@ lemma exists_detecting_points_component (h_bound : IsStickelbergerBound N e X)
   have h_tight_empty : IsTight l e ψ m ∅ := ⟨by simp, fun y hy _hy_tors ↦ hy⟩
   have hp_tight : IsTight l e ψ m (insert p ∅) :=
     h_tight_empty.insert ha hla h_two h_totient h_pow hp_split hz hz_tors (by simp)
-      fun h_triv ↦ hzτ (h_triv B hB τ (mem_decompGroup_of_isFrob hτ))
+      fun h_triv ↦ hzτ (h_triv B hB τ hτ.mem_decompGroup)
   -- Kolyvagin's cocycles `κ S` for `S ⊆ Q`; if `κ ∅` is unramified at `B`, then
   -- `cyc ^ (e + 1) ψ (γ) - 1` kills the Stickelberger sum (`h_value`).
   obtain ⟨κ, hκ : IsKolyvaginSystem (cyclotomicPowDirichlet l (e + 1) ψ) γ N l p Q κ, h_value⟩ :=

@@ -674,7 +674,7 @@ noncomputable instance : TraceOne (𝔸f E) where
 function of its parameter `p`, a pair of a vector and a skew element. -/
 lemma New.continuous_heisenbergElem_finAdele {T : 𝔰.Form (𝔸f E)} [IsHermitianUnit T.splitGram]
     (a : Fin 𝔰.ϱ) : Continuous (heisenbergElem (T := T) a) := by
-  rw [(U.isClosedEmbedding_coe isUnit).continuous_iff]
+  rw [(Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit).continuous_iff]
   simp [comp_def, heisenbergElem, eichlerMap]
   fun_prop
 
@@ -817,20 +817,6 @@ lemma mem_termsOver_reduction_iff {c d : S.Classes} {γ : S.G E} {k : S.latticeS
   · rintro ⟨k', h_kernel, h_position⟩
     exact ⟨k * k', by simp [MonoidHom.mem_ker.1 h_kernel], eq_inv_mul_iff_mul_eq.1 h_position⟩
 
-/-- Let `γ` be a rational point of `𝖴 = besselU` with `h_c⁻¹ γ h_c` integral, where `h_c` represents
-the class `c`, and let `k` be an integral point of `𝖴(𝔸_f)` with the same reduction at the chosen
-places as `h_c⁻¹ γ h_c`. Let `σ = simpleRootSum` be the sum of the entries just above the diagonal
-on the frame e₁, …, e_ϱ, z, and `γ_v = S.ratToInf γ v` the image of `γ` at the infinite place `v`,
-in the rescaled basis. With `wave x = exp (x - x̄)`, the product of the numbers `wave (σ γ_v)` over
-all `v` is the complex conjugate of `S.unipotentChar k = ψ_f(-σ(k) / (M ϖ))`. Here `ψ_f` is the
-standard character of the finite adeles, `M = S.M` is the level and `ϖ` generates the different. -/
-theorem prod_wave_eq_star_unipotentChar {c : S.Classes} {γ : S.G E} (hγ : γ ∈ besselU)
-    {k : S.latticeStabilizer} (hk : (k : S.GFin) ∈ besselU)
-    (h_over : γ ∈ S.termsOver c (S.reduction k) c) :
-    ∏ v : InfinitePlace E, wave (simpleRootSum (S.ratToInf γ v)) = star (S.unipotentChar k) := by
-  rw [prod_wave_simpleRootSum_ratToInf, unipotentChar_eq_of_mem_principalLevel hk
-    (ratToFin_mem_besselU_iff.2 hγ) c.out (mem_termsOver_reduction_iff.1 h_over)]
-
 /-- Let `c`, `d` be classes, that is, double cosets in U(X₀)(E⁺) \ U(X₀)(𝔸_f) / `S.sourceLevel`,
 with chosen representatives `h_c = S.classRep c` and `h_d`. Let `S` satisfy the standing hypotheses
 `S.IsAdmissible`; they include that `S.sourceLevel` is the preimage in U(X₀)(𝔸_f) of the principal
@@ -861,12 +847,12 @@ lemma eq_and_mem_classUnipotent_of_besselS [hS : S.IsAdmissible] {c d : S.Classe
     eq_and_eq_one_of_doubleCoset_rep Quotient.out_eq h_free η h_level
   exact ⟨rfl, by simpa using hu, by simpa [translateByClassReps] using hγ_level⟩
 
-/-- Let `S` be admissible (`S.IsAdmissible`), `c` a class in `S.Classes` with representative `h_c`,
-and `u` in `𝖴(𝔸_f)`. There is a rational `u₀ ∈ 𝖴` such that
+/-- Let `c` be a class in `S.Classes` with representative `h_c`, and let `u` belong to `𝖴(𝔸_f)`.
+There is a rational `u₀ ∈ 𝖴` such that
 `S.translateByClassReps c c u₀ = h_c⁻¹ u₀ h_c` lies in `u K(M)`, with `K(M) = S.principalLevel`.
 Moreover `S.unipotentChar`, the character u ↦ ψ_f(−σ(u)/(Mϖ)), takes the same value at
 `S.ratToFin u₀` and at `u`. -/
-lemma exists_rat_approx_unipotentChar_eq [_hS : S.IsAdmissible] (c : S.Classes) {u : S.GFin}
+lemma exists_rat_approx_unipotentChar_eq (c : S.Classes) {u : S.GFin}
     (hu : u ∈ besselU) :
     ∃ u₀ : S.G E, u₀ ∈ besselU ∧
       u⁻¹ * S.translateByClassReps c c u₀ ∈ S.principalLevel ∧
@@ -879,21 +865,6 @@ lemma exists_rat_approx_unipotentChar_eq [_hS : S.IsAdmissible] (c : S.Classes) 
     simpa [translateByClassReps, mul_assoc] using h_approx
   exact ⟨u₀, hu₀, h_level,
     unipotentChar_eq_of_mem_principalLevel hu (ratToFin_mem_besselU_iff.2 hu₀) c.out h_level⟩
-
-/-- Let `S` be admissible. For each class `c` with representative `h_c`, the rational points `γ` of
-`𝖴 = besselU` with `h_c⁻¹ γ h_c` integral map onto `S.reducedImage besselU`, the reduction of the
-integral points of `𝖴(𝔸_f)`: an element `s` lies in this group if and only if it is the reduction of
-some `h_c⁻¹ γ h_c`. -/
-theorem mem_reducedImage_besselU_iff_exists_termsOver [hS : S.IsAdmissible] (c : S.Classes)
-    {s : S.ResidueGL} :
-    s ∈ S.reducedImage besselU ↔ ∃ γ : S.G E, γ ∈ besselU ∧ γ ∈ S.termsOver c s c := by
-  constructor
-  · rintro ⟨k, hk, rfl⟩
-    obtain ⟨γ, hγ, h_level, -⟩ := exists_rat_approx_unipotentChar_eq c hk
-    exact ⟨γ, hγ, mem_termsOver_reduction_iff.2 h_level⟩
-  · rintro ⟨γ, hγ, k, rfl, h_position⟩
-    exact ⟨k, by simpa [mem_subgroupOf, h_position] using hγ.translateByClassReps_mem_besselU c,
-                   rfl⟩
 
 /-- Let `S` satisfy the standing hypotheses `S.IsAdmissible`. They include that `S.sourceLevel` is
 the preimage in U(X₀)(𝔸_f) of `S.principalLevel`, the kernel of reduction at the chosen places. Let
@@ -926,12 +897,12 @@ lemma exists_besselS_mem_termsOver [hS : S.IsAdmissible] (c : S.Classes) {s : S.
   exact mul_mem h_approx (inv_mem (hS.sourceLevel_eq.le a.property))
 
 /-- Freeness in rank at most `𝔰.k`, the rank of the definite space X₀. Let `E` be a CM field that
-contains a primitive 5040th root of unity, and let the filling data `S` over `E` satisfy the
-standing hypotheses `S.IsAdmissible`. For `i = 0, 1`, `S.chosenPlaces i` is the chosen set of finite
-places of `E` of norm the prime `S.levelPrime i`. Let `γ` be a rational point of the standard
-unitary group in `n` variables, `|n| ≤ 𝔰.k`, and `g` a finite adelic point. If `g⁻¹ γ g` is integral
-(lies in `stdLevel E n`) and reduces to `1` at every place of `S.chosenPlaces i`, then `γ = 1`. -/
-lemma eq_one_of_reduceAt_eq_one [_hS : S.IsAdmissible] [HasPrimitiveRoot5040 E] {n : Type}
+contains a primitive 5040th root of unity, and let `S` be filling data over `E`. For `i = 0, 1`,
+`S.chosenPlaces i` is the chosen set of finite places of `E` of norm the prime `S.levelPrime i`.
+Let `γ` be a rational point of the standard unitary group in `n` variables, `|n| ≤ 𝔰.k`, and `g` a
+finite adelic point. If `g⁻¹ γ g` is integral (lies in `stdLevel E n`) and reduces to `1` at every
+place of `S.chosenPlaces i`, then `γ = 1`. -/
+lemma eq_one_of_reduceAt_eq_one [HasPrimitiveRoot5040 E] {n : Type}
     [Fintype n] [DecidableEq n] (hn : card n ≤ 𝔰.k) (i : Fin 2) {γ : U (stdSpace E n).J}
     {g : Gf E n} (h_int : g⁻¹ * (stdSpace E n).embFin γ * g ∈ stdLevel E n)
     (h_red : ∀ w : S.chosenPlaces i,

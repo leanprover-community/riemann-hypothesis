@@ -148,20 +148,6 @@ lemma card_classAut_mul_mul {γ k : G} (hγ : γ ∈ Γ) (hk : k ∈ K) (g : G) 
   rw [inv_inv, mem_classAut, mem_classAut, h_left, h_conj, mul_mem_cancel_right hk,
     mul_mem_cancel_left (inv_mem hk)]
 
-/-- For f left invariant under Γ and right invariant under K, the class sum can be computed with
-any system of representatives r of Γ\G/K. -/
-lemma classSum_eq_finsum_of_rep [Module ℚ W] {f : G → W}
-    (hf_left : ∀ γ ∈ Γ, ∀ g : G, f (γ * g) = f g) (hf_right : ∀ k ∈ K, ∀ g : G, f (g * k) = f g)
-    {r : DoubleCoset.Quotient (Γ : Set G) K → G}
-    (hr : ∀ c : DoubleCoset.Quotient (Γ : Set G) K, DoubleCoset.mk Γ K (r c) = c) :
-    classSum Γ K f = ∑ᶠ c : DoubleCoset.Quotient (Γ : Set G) K,
-      (Nat.card (classAut Γ K (r c)) : ℚ)⁻¹ • f (r c) := by
-  refine finsum_congr fun c ↦ ?_
-  -- The chosen representative of `c` lies in the double coset of `r c`.
-  obtain ⟨γ, hγ, k, hk, h_out⟩ : ∃ γ ∈ Γ, ∃ k ∈ K, c.out = γ * r c * k :=
-    (DoubleCoset.eq ..).1 (by rw [hr c, out_eq'])
-  rw [h_out, card_classAut_mul_mul hγ hk, hf_right k hk, hf_left γ hγ]
-
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
 /-! ### Open and compact subgroups of a topological group -/
@@ -200,7 +186,7 @@ lemma relIndex_mul_measure_inf (hK : IsCompact (K : Set G)) (hH : IsOpen (H : Se
     H.relIndex K * μ ↑(H ⊓ K) = μ K := by
   -- Pull `μ` back to the group `K`; there `H ⊓ K` is a measurable subgroup of finite index,
   -- and its cosets, all of the same measure, partition `K`.
-  have h_emb : MeasurableEmbedding K.subtype := .subtype_coe hK.measurableSet
+  have h_emb : MeasurableEmbedding K.subtype := .subtypeVal hK.measurableSet
   have : (H.subgroupOf K).FiniteIndex := ⟨hK.relIndex_ne_zero hH⟩
   have : (μ.comap K.subtype).IsMulLeftInvariant := .comap _ h_emb
   have h_index :
@@ -385,7 +371,6 @@ lemma heckeFun_heckeFun (hf_fin : HasFiniteCosets K f) (hf : ∀ (g : G) (k : K)
       heckeFun π K (fun x : G ↦ ∑ q ∈ h'.toFinset, f' q.out * f (q.out⁻¹ * x)) v := by
   -- Each `π q.out (heckeFun π K f v)` is the operator of a left translate of `f` applied to `v`;
   -- then exchange the two sums.
-
   have h_linear : heckeFun π K (fun x : G ↦ ∑ q ∈ h'.toFinset, f' q.out * f (q.out⁻¹ * x)) =
       ∑ q ∈ h'.toFinset, f' q.out • heckeFun π K (fun x : G ↦ f (q.out⁻¹ * x)) := by
     simp [heckeFun, sum_smul, finsum_sum_comm, fun_smul_left (hf_fin.comp_inv_mul hf _),

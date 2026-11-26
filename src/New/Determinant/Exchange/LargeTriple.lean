@@ -505,7 +505,8 @@ lemma exists_blockSumOne_mul_mem_stdLevel {Y : GL b (𝔸 E)} {k : GL b (𝔸f E
     simpa [Z, w, Yk, G.sum, U.sum, blockGL, IsIntMatrix, ← fromCols_fromRows_eq_fromBlocks,
       Matrix.mul_assoc, fromRows_map, fromCols_mul_fromRows] using h_int.mul hk.isIntMatrix
   have hZ_orth : Zᴴ * (1 : Matrix (b ⊕ n) (b ⊕ n) (𝔸f E)) * Z = 1 :=
-    (congrArg toBlocks₁₁ (u⁻¹ * U.blockSumOne w).prop).trans (by simp [← fromBlocks_one])
+    (congrArg toBlocks₁₁ (mem_unitaryGroupOf_iff.1 (u⁻¹ * U.blockSumOne w).prop)).trans
+        (by simp [← fromBlocks_one])
   have hZ₀_int : IsIntMatrix (Ô E) Z₀ := by simp [Z₀, IsIntMatrix, ite_mem, Matrix.one_apply]
   have hZ₀_orth : Z₀ᴴ * (1 : Matrix (b ⊕ n) (b ⊕ n) (𝔸f E)) * Z₀ = 1 := by
     simp [Z₀, conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromRows]
@@ -761,7 +762,7 @@ lemma det_eq_realIdele_mul_finIdeleIncl {B : GL b (𝔸 E)} {x : GL b (𝔸f E)}
     (hx : B.val.map Prod.snd = x.val) : B.det = realIdele (infiniteDet B) * finIdeleIncl x.det := by
   ext : 2
   · simp [infiniteDet]
-  · simpa [← hx] using (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)).map_det B.val
+  · simp [← hx]
 
 /-- The identity of periods over `[U W₁]` for a tame character `𝔠` of weight `μ` (an integer for
 each infinite place) and real data `v` of `(X, V' ⊕ W₁)` and `v'` of `(X, V')`, with weight function

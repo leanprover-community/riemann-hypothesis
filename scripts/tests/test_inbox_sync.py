@@ -179,7 +179,8 @@ class Sweep(unittest.TestCase):
     def test_drafts_batches_and_decided_pull_requests_stay_out(self):
         gh = Fake([node(1, draft=True), node(2, ref="batch/citations"),
                    node(3, labels=["batch queue"]), node(4, labels=["building"]),
-                   node(5, labels=["awaiting-author"]), node(6, state="CLOSED")])
+                   node(5, labels=["awaiting-author"]), node(6, state="CLOSED"),
+                   node(7, labels=["batch-building"])])
         sweep(gh)
         self.assertEqual(gh.writes, [])
 
@@ -252,9 +253,9 @@ class Sweep(unittest.TestCase):
 
     def test_drafts_batches_and_decided_pull_requests_come_out(self):
         gh = Fake([waiting(1, draft=True), waiting(2, ref="batch/x"),
-                   waiting(3, labels=["batch queue"])])
+                   waiting(3, labels=["batch queue"]), waiting(4, labels=["batch-building"])])
         sweep(gh)
-        self.assertEqual(gh.writes, [("remove", 1), ("remove", 2), ("remove", 3)])
+        self.assertEqual(gh.writes, [("remove", 1), ("remove", 2), ("remove", 3), ("remove", 4)])
 
     def test_a_comment_takes_it_out(self):
         gh = Fake([waiting(1, comments=[("maint", 2)])], roles=MAINT)
@@ -399,6 +400,19 @@ class Sweep(unittest.TestCase):
             {"__typename": "LabeledEvent", "createdAt": at(12), "label": {"name": "awaiting-author"},
              "actor": user("maint")})
         gh = Fake([handed], roles=MAINT)
+        sweep(gh)
+        self.assertEqual(gh.writes, [])
+
+    def test_back_in_when_batch_building_comes_off_without_a_response(self):
+        # The batch workflow put `batch-building` on, the inbox took itself off, and the batch
+        # stopped being built. All three label changes were a bot's.
+        events = [("on", INBOX, 1, BOT), ("on", "batch-building", 2, BOT), ("off", INBOX, 3, BOT),
+                  ("off", "batch-building", 4, BOT)]
+        gh = Fake([node(1, events=events)], roles=MAINT)
+        sweep(gh)
+        self.assertEqual(gh.writes, [("add", 1)])
+        # A response meanwhile keeps it out.
+        gh = Fake([node(1, events=events, comments=[("maint", 3)])], roles=MAINT)
         sweep(gh)
         self.assertEqual(gh.writes, [])
 

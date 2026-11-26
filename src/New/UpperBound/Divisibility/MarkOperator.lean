@@ -56,7 +56,7 @@ let `N` be at most the number of infinite places, and let `D.m ≤ T.frobExp * N
 `a = D.a` and `θ = 1 / (m ^ 2 f)` for the numerical parameters `m = D.m`, `f = D.f` of the data, the
 size conditions `IsLargeDegree` then hold: `0 < r`, `2 r ≤ k`, `0 < θ ≤ 1`, `a ^ 4 ≤ q` and
 `(N k log q / θ) ^ 5 P ^ (3 r) ≤ a`. -/
-theorem isLargeDegree_of_le_card {P : Parameters} (D : Data P) {N : ℕ} [NeZero N] {W O : Type}
+theorem isLargeDegree_of_le_card {P : Parameters} (D : Data P) {N : ℕ} {W O : Type}
     [CommRing W] [IsLocalRing W] [CommRing O] (T : FrobeniusCycle N W O) (h13 : 13 ≤ T.p)
     (hp : T.p < D.x₁) (hfrobExp_pos : 0 < T.frobExp)
     (hfrobExp_le : T.frobExp ≤ D.ceilLogLifts T.p)
@@ -110,7 +110,7 @@ theorem isLargeDegree_of_le_card {P : Parameters} (D : Data P) {N : ℕ} [NeZero
 `0 < T.frobExp ≤ r` and `r = D.ceilLogLifts p` is the least natural number with `D.m ≤ p ^ r`, the
 divisor constant `c = T.divisorConstant D.k a r = N a (P ^ (-2 r) + r ^ 2 / (k P))` for `k = D.k`
 and `a = D.a` satisfies `3 c ≤ 12 a ℓ / (m p)`, with `m = D.m`. -/
-theorem three_mul_divisorConstant_le {P : Parameters} (D : Data P) {N ℓ : ℕ} [NeZero N] {W O : Type}
+theorem three_mul_divisorConstant_le {P : Parameters} (D : Data P) {N ℓ : ℕ} {W O : Type}
     [CommRing W] [IsLocalRing W] [CommRing O] (T : FrobeniusCycle N W O)
     (hfrobExp_pos : 0 < T.frobExp) (hfrobExp_le : T.frobExp ≤ D.ceilLogLifts T.p) (hℓ : ℓ + ℓ = N) :
     3 * T.divisorConstant D.k D.a (D.ceilLogLifts T.p) ≤ 12 * (D.a * ℓ : ℕ) / (D.m * T.p) := by
@@ -223,7 +223,7 @@ lemma coe_letterEmbedding (σ : D.Φ) (hσ : inducedPlace σ = l ∨ inducedPlac
 lemma not_isUnit_natCast_embValRing : ¬IsUnit (p : embValRing) := by
   rw [← mem_nonunits_iff, ← IsLocalRing.mem_maximalIdeal, Valuation.mem_maximalIdeal_iff]
   change ‖ιₚ (p : ℂ)‖ < 1
-  simpa using norm_p_lt_one
+  simpa using PadicComplex.norm_p_lt_one p
 
 /-- Let `D` be data for the parameters `P`, let `p` be inert in the imaginary quadratic field, let
 `l` be a split finite place of `D.E` and let `e` be odd. The infinite places form a group `(ℤ/q₁)ˣ`,

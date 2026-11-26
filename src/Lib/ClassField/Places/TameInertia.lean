@@ -162,7 +162,7 @@ lemma Cohomology.exists_inertia_smul_eq_of_orbit_subset {x y : Ω} {T : Finset �
     -- `A x ^ index = A x ^ (n * d)`; as `A x` is neither `0` nor `1`, `index = n * d`.
     have h_index : ((orbit (inertiaGroup Γ A) x).ncard : ℤ) = n * d := by
       rw [← index_stabilizer]
-      refine zpow_right_injective₀ (zero_lt_iff.2 (by simpa using x_ne)) val_ne ?_
+      refine zpow_right_injective₀ (pos_iff_ne_zero.2 (by simpa using x_ne)) val_ne ?_
       simp only [zpow_natCast, hd, hx, zpow_mul]
     exact Int.ofNat_dvd.1 ⟨d, h_index⟩
   have card_le : (T : Set Ω).ncard ≤ (orbit (inertiaGroup Γ A) x).ncard :=
@@ -203,7 +203,6 @@ private lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq {P : Type*} [Monoid P] {
   have h_fact : Fact f.ker.IsOpen := ⟨hf⟩
   obtain ⟨y₁_ne, ⟨N_ne⟩⟩ :=
     ne_zero_of_tame_root (A := A) (n := n ^ M * n) (by aesop) hy
-  have hn_ne : NeZero n := ⟨right_ne_zero_of_mul N_ne⟩
   -- By Galois theory it is enough that an `r` fixing `y₁` fixes the fixed field of `f.ker`.
   intro r hr
   refine (fixingSubgroup_fixedFieldOf f.ker).le fun ⟨x, hx⟩ ↦ ?_
@@ -287,7 +286,7 @@ lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq_one (hπ : IsUniformiser A π.va
     -- `t ^ n` multiplies `y₁` by `(t y₁ / y₁) ^ n = ξ ^ n = r y₁ / y₁`, as `r` does.
     have h_ratio : (t ^ n) • y₁ / y₁ = r • y₁ / y₁ := by
       rw [inertia_pow_smul_div t_ine hN hy n, ht, mul_div_cancel_right₀ ξ y₁_ne, hξ]
-    simpa [mul_smul, inv_smul_eq_iff] using ((div_left_inj' y₁_ne).mp h_ratio).symm
+    simpa [mul_smul, inv_smul_eq_iff] using ((div_left_inj₀ y₁_ne).mp h_ratio).symm
   rw [MonoidHom.mem_ker, same, map_pow, hP]
 
 omit hπ in

@@ -402,7 +402,6 @@ lemma _root_.New.IsPadicAt.below {k : Type} [Field k] [EmbeddedNumberField k] [A
       ((algebraMap (LocField w) (PadicAlgCl p)).comp (locMap (algebraMap k K) rfl)).toAlgebra
     IsPadicAt (w.below k) p (A.comap j) (i.comp j) := by
   let ι : LocField (w.below k) →+* LocField w := locMap (algebraMap k K) rfl
-
   have ι_comm (x : k) : i (j (algebraMap k Ω x)) =
       algebraMap (LocField w) (PadicAlgCl p) (ι (algebraMap k (LocField (w.below k)) x)) := by
     simp [hj, h_at.map_algebraMap, ι]
@@ -746,13 +745,13 @@ lemma artinAt_eq_of_localArtin_eq {x : (IsDedekindDomain.HeightOneSpectrum.adicC
   -- The chosen place above `w` is a conjugate of `A`: `ht : t • A = placeOver w`.
   obtain ⟨t, ht⟩ := h.exists_smul Γ w.isPlaceOver_placeOver
   -- `rw!` because the place occurs in the type of the decomposition group.
-  rw! [New.artinAt, ← ht, smul_eq_comap]
+  rw! [New.artinAt, ← ht, ValuationSubring.pointwise_smul_eq_comap]
   -- The local norm from `K_w` to itself is the identity, as the idele norm of `K / K` is.
   have h_at_w : adeleNorm K K (finAdeleIncl K K (locIdele w x).val) w =
       ((locIdele w x).val ^ finrank K K) w :=
     congrArg (fun a : 𝔸f K ↦ a w) (adeleNorm_finAdeleIncl K K (locIdele w x).val)
   have norm_self : x = localNorm K w x := by
-    show x = ideleAt w (Units.map (adeleNorm K K) (locIdele w x))
+    change x = ideleAt w (Units.map (adeleNorm K K) (locIdele w x))
     refine Units.ext ?_
     simpa [finAdeleIncl, ideleAt] using h_at_w.symm
   -- Transport of the local symbol along `t` is the case `k = K` of norm compatibility: the symbol
@@ -992,7 +991,7 @@ lemma exists_tameGenerator :
     have h_move : s • y n = s • y N ^ k / y N ^ k * y n :=
       smul_root_eq_ratio_mul hs n.property (by rw [← pow_mul, ← hk, hy]) (hy n)
     have h_ratio : s • y n / y n = ζ ^ k := by simp [h_move, hs_root, mul_pow, hy_ne]
-    show IsPrimitiveRoot (s • y n / y n) n.val
+    change IsPrimitiveRoot (s • y n / y n) n.val
     simpa only [h_ratio] using hζ.pow (h_pos N) hk
   obtain ⟨g, hg, hgood⟩ :=
     isClosed_inertiaGroup.isCompact.inter_iInter_nonempty good h_closed h_finite
@@ -1034,7 +1033,7 @@ lemma exists_eq_pow_and_apply_conj_eq_pow {γ : inertiaGroup Gal(Ω/K) A} (hγ :
   let f' : inertiaGroup D A →* P := (f.domRestrict D).domRestrict _
   let incl (g : inertiaGroup Gal(Ω/K) A) : inertiaGroup D A := ⟨⟨g, g.property.left⟩, g.property⟩
   have h_open : IsOpen (SetLike.coe f'.ker) := isOpen_of_mem_nhds _ <|
-    mem_of_superset (continuous_subtype_val.subtype_val.tendsto 1 hf) fun g hg ↦ hg g.property
+    mem_of_superset (continuous_subtypeVal.subtypeVal.tendsto 1 hf) fun g hg ↦ hg g.property
   obtain ⟨h_galois, -, h_unif⟩ := h.isLocalGalois_and_residueCard_eq_and_isUniformiser Gal(Ω/K)
   have h_local : ∀ s : inertiaGroup D A,
       (IsPrimitiveRoot (s • y / y) n → ∀ g : inertiaGroup D A, ∃ i : ℕ, f' g = f' s ^ i) ∧

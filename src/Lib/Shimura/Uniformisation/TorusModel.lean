@@ -283,7 +283,7 @@ lemma ThetaTori.PeriodMap.exists_uniformisation_of_isSeparatingFamily
             eq_zero_iff := fun z ↦ ⟨h_kill z, h_ker z⟩
             immersive := fun z ↦ ⟨hY.holomorphicAt hN z, h_imm z⟩
             universal := fun γ hγ ↦ ?_ }, hY, rfl, rfl,
-    by simp [← Y.isPeriodMap.finrank_eq_abelianDim, F_equiv.finrank_eq]⟩
+    by simp [← finrank_eq_abelianDim Y.realEquiv, F_equiv.finrank_eq]⟩
   obtain ⟨F', hF'⟩ := u.universal γ hγ
   refine ⟨F_equiv.symm.toContinuousLinearEquiv ∘L F', fun w ↦ ?_⟩
   simp [he, hF']
@@ -329,7 +329,7 @@ lemma exists_unit_on_roots_of_unity (φ : O →+* ℂ) :
     {p : 𝔸f ℚ × 𝔸f ℚ |
       φ (ζ (ψf E t)) = ψf E (t * ι p.fst) ∧ ψf E (t * ι (p.fst * p.snd)) = ψf E t}
   have hC_closed (t : 𝔸f E) : IsClosed (C t) := by
-    apply (isClosed_eq _ (.subtype_val _)).and (isClosed_eq ..) <;> fun_prop
+    apply (isClosed_eq _ (.subtypeVal _)).and (isClosed_eq ..) <;> fun_prop
   have h_fin (U : Finset (𝔸f E)) : ((Ô ℚ : Set _) ×ˢ (Ô ℚ : Set _) ∩ ⋂ t ∈ U, C t).Nonempty := by
     -- All `ψf E t`, `t ∈ U`, are `N`-th roots of unity.
     obtain ⟨N, hN, hU⟩ := exists_forall_mul_mem_Ô fun t : U ↦ (t : 𝔸f E)
@@ -380,9 +380,15 @@ the class. -/
 noncomputable def fullStructure : y.FullLevelStructure where
   torsionPoint :=
     { toFun x := m.uniformisation.expMap (Y.periodPoint (ratLift g x))
-      map_add' := by simp [m.expMap_periodPoint_eq_iff, ← map_add, map_add (frameTorsionClass g)]
-      map_smul' := by simp [← equivariant, ← toRealVectors_smul, m.expMap_periodPoint_eq_iff] }
-  injective _ := by simp [m.expMap_periodPoint_eq_iff]
+      map_add' := by
+        simp only [← map_add, m.expMap_periodPoint_eq_iff, frameTorsionClass_ratLift,
+          map_add (frameTorsionClass g), implies_true]
+      map_smul' := by
+        simp only [RingHom.id_apply, ← equivariant, ← toRealVectors_smul,
+          m.expMap_periodPoint_eq_iff, frameTorsionClass_ratLift, map_smul, implies_true] }
+  injective _ := by
+    simp only [LinearMap.coe_mk, AddHom.coe_mk, m.expMap_periodPoint_eq_iff,
+      frameTorsionClass_ratLift, imp_self, implies_true]
   levelPoints_eq := m.level_eq
   weil_pairing ι := by
     -- The frame `g` scales the form by a unit `a`, and `ι` acts on roots of unity through `ε`.
@@ -390,8 +396,8 @@ noncomputable def fullStructure : y.FullLevelStructure where
     obtain ⟨ε, hε⟩ := exists_unit_on_roots_of_unity (E := E) ι
     refine ⟨a * ε, fun k s t hs ht ↦ ?_⟩
     obtain ⟨c, hc, hιc⟩ := hε (finAdeleIncl ℚ E a * (k * xiForm D.ξ s t))
-    refine ⟨c, by simpa [mul_right_comm] using hιc, fun Φ Ψ hΦ hΨ ↦
-      (lift_commutator_iff_weil_pairing _ m.hasThetaCoords hΦ hΨ).2 ?_⟩
+    refine ⟨c, by simpa only [Units.val_mul, Subring.coe_mul, map_mul, mul_right_comm] using hιc,
+      fun Φ Ψ hΦ hΨ ↦ (lift_commutator_iff_weil_pairing _ m.hasThetaCoords hΦ hΨ).2 ?_⟩
     -- It remains to see that `c` is `Real.fourierChar` of `polarisationForm` at `s'` and `k • t'`,
     -- where `s'`, `t'` are rational lifts of the classes of `s` and `t`.
     -- `fourierChar_polarisationForm` rewrites this through `ψf`.
@@ -407,10 +413,14 @@ noncomputable def fullStructure : y.FullLevelStructure where
     have h_form (ξ : E) (v : D.Index → E) (w : D.Index → 𝔸f E) :
         xiForm ξ (frameCoords g v) (k • w) =
           k * xiForm ξ s t + xiForm ξ (k • s) (w - t) + xiForm ξ (frameCoords g v - s) (k • w) := by
-      simp [star_trivial, xiForm, -nsmul_eq_mul]
-      grind
-    simpa [hc, hs, ht, hs', ht', h_form, mul_add, map_add_eq_mul, (ψf_unit_mul_eq_one_iff _).2,
-      (D.mem_dualTorsion _).1, Y.riemannForm_eq, -nsmul_eq_mul, ← frameTorsionClass_apply,
+      -- Expand the form by bilinearity; the identity is then one of the commutative ring `𝔸f E`.
+      simp only [xiForm, star_sub, star_smul, star_trivial, dotProduct_sub, sub_dotProduct,
+        smul_dotProduct, dotProduct_smul]
+      ring
+    simpa only [hc, hs', ht', coe_fourierChar_eq_exp, map_nsmul, LinearMap.smul_apply,
+      Y.riemannForm_eq, polarisationForm_toRealVectors, map_smul_of_tower, h_form, mul_add,
+      map_add_eq_mul, hs, zero_mem, map_sub, ← frameTorsionClass_apply, frameTorsionClass_ratLift,
+      sub_self, (D.mem_dualTorsion _).1, (ψf_unit_mul_eq_one_iff _).2, mul_one, ht,
       Circle.ext_iff] using h_repr
 
 /-- The torsion point of a class under `New.ThetaObject.TorusModel.fullStructure` is the section at
@@ -651,7 +661,7 @@ lemma exists_matrix_of_hom (m : x.TorusModel Y) (m' : x'.TorusModel Y')
   intro y w
   calc
     _ = RealComplexForm.riemannForm (μ • Y.automorphyForm) (Y.realEquiv y) (Y.realEquiv w) := by
-      simp [Y.riemannForm_eq]
+      rw [map_nsmul, LinearMap.smul_apply, LinearMap.smul_apply, Y.riemannForm_eq, nsmul_eq_mul]
     _ = RealComplexForm.riemannForm (Y'.automorphyForm.pullForm F) (Y.realEquiv y)
       (Y.realEquiv w) := by rw [h_riem]
     _ = _ := by
@@ -721,19 +731,31 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
     -- At `Y.realEquiv y`, `Y.realEquiv w` the left side is the polarisation form of `Y'.formMatrix`
     -- at `z y`, `z w`.
     refine LinearMap.ext₂ (hQ.forall.mpr fun y ↦ hQ.forall.mpr fun w ↦ ?_)
-    rw [riemannForm_pullForm, hF_Q, hF_Q, Y'.riemannForm_eq]
-    -- The sums over the infinite places after `conjTranspose_mul_mul_eq_smul` are matched by
-    -- `grind`.
-    simp [PeriodMap.riemannForm_eq, ← map_conjTranspose_mul_mul, vecMul_smul, map_smul',
-      Finset.mul_sum, Y.isSignedFrameFor.conjTranspose_mul_mul_eq_smul Y'.isSignedFrameFor hμ,
-        polarisationForm,
+    -- `map_nsmul` is rewritten by name: `simp` first tries `map_smul` on `μ • Y.automorphyForm`
+    -- and is slow to fail.
+    rw [riemannForm_pullForm, hF_Q, hF_Q, Y'.riemannForm_eq, map_nsmul, LinearMap.smul_apply,
+      LinearMap.smul_apply, Y.riemannForm_eq, nsmul_eq_mul]
+    -- After `conjTranspose_mul_mul_eq_smul` both sides are sums over the infinite places, equal
+    -- term by term.
+    simp [← map_conjTranspose_mul_mul, vecMul_smul, map_smul', Finset.mul_sum,
+      Y.isSignedFrameFor.conjTranspose_mul_mul_eq_smul Y'.isSignedFrameFor hμ, polarisationForm,
       dotProduct_mulVec, star_mulVec]
-    grind
+    exact Finset.sum_congr rfl fun v _ ↦ by ring
   -- Both multipliers are canonical, `χ l = exp (π i e(β l, l))` with `e` the Riemann form and
   -- `β = D.β`, so `h_riem` compares them.
   have h_char : ∀ l ∈ m.uniformisation.lattice, (m'.χ ∘ F) l = (m.χ ^ μ) l := by
-    simp_all [multiplier_eq_canonicalMultiplier, canonicalMultiplier, mul_left_comm, hQ.forall, F,
-      ← Complex.exp_nat_mul, ← mulVec_smul, ext_iff₂, riemannForm_pullForm, PeriodMap.intAction]
+    intro l hl
+    -- `F` commutes with the action of `D.β`, since `z` acts linearly over `E ⊗ ℝ`.
+    have h_comm : Y'.intAction D.β (F l) = F (Y.intAction D.β l) := by
+      obtain ⟨w, rfl⟩ := hQ l
+      simp [PeriodMap.intAction, hF_Q]
+    -- So `h_riem` at `β l`, `l` compares the two exponents.
+    have h_form := LinearMap.congr_fun₂ h_riem (Y.intAction D.β l) l
+    rw [riemannForm_pullForm, ← h_comm, map_nsmul, LinearMap.smul_apply, LinearMap.smul_apply,
+      nsmul_eq_mul] at h_form
+    simp [multiplier_eq_canonicalMultiplier _ _ hl,
+      multiplier_eq_canonicalMultiplier _ _ (h_lat l hl), canonicalMultiplier, h_form,
+      ← Complex.exp_natCast_mul, mul_left_comm]
   -- Pull the theta coordinates of `x'` back along `F`.
   have h_pull :
       HasThetaCoords m.uniformisation.lattice (fun v : V ↦ atGeneric m'.uniformisation.expMap (F v))
@@ -756,20 +778,23 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
   have h_kill : ∀ l ∈ m.uniformisation.lattice, m'.uniformisation.expMap (F l) = 0 :=
     fun l hl ↦ (m'.uniformisation.eq_zero_iff (F l)).mp (h_lat l hl)
   -- Translations by the dual lattice lift to `x.lineBundle`, so the theta coordinates give `ψ`.
+  -- (Of `exists_isTranslationLift_of_dualLattice` only the lift is used, not its invariant span.)
   obtain ⟨ψ, h_add, hψ, h_cls⟩ :
       ∃ ψ : x.groupScheme ⟶ x'.groupScheme,
         IsAdditive ψ ∧
         (∀ v : V, m.uniformisation.expMap v ≫ ψ = m'.uniformisation.expMap (F v)) ∧
         x'.lineBundle.picClass.pull ψ.left = μ • x.lineBundle.picClass :=
     exists_hom_of_hasThetaCoords _ m.hasThetaCoords h_kill x.isThetaStructure.isUnit_card
-      (by grind [exists_isTranslationLift_of_dualLattice]) x'.isProjEmbedding
+      (fun b hb ↦ (m.exists_isTranslationLift_of_dualLattice b hb).imp_right
+        fun ⟨Φ, hΦ, _⟩ ↦ ⟨Φ, hΦ⟩) x'.isProjEmbedding
       x.isProjEmbedding x.hasClassLaws.1 x'.hasClassLaws.1 h_coords
-  have hψ_π (w : RealVectors E D.Index) : m.π w ≫ ψ = m'.π (realVecAction z w) := by simp [F, hψ, π]
+  have hψ_π (w : RealVectors E D.Index) : m.π w ≫ ψ = m'.π (realVecAction z w) := by
+    simp [hF_Q, hψ, π]
   -- The image of `ψ` contains the dense set of sections of `x'`.
   have h_surj : AlgebraicGeometry.Surjective ψ.left :=
     (isSeparatingFamily_atGeneric_of_surjective m'.uniformisation.surjective).2.surjective _
       (atGeneric m.π ∘ realVecAction z⁻¹ ∘ Y'.realEquiv.symm)
-      (by simp [atGeneric, ← Over.comp_left, F, hψ, π])
+      (by simp [atGeneric, ← Over.comp_left, hF_Q, hψ, π])
   have h_isog : IsIsogeny ψ := isIsogeny_of_locallyQuasiFinite ψ
     (locallyQuasiFinite_of_pull_picClass x.isProjEmbedding (Nat.cast_pos.mp hμ.left).ne' h_cls)
     h_surj
@@ -777,7 +802,7 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
   have h_lin : IsLinear ψ := by
     refine ⟨fun c ↦ (isSeparatingFamily_atGeneric_of_surjective
       (m.uniformisation.surjective.comp hQ)).hom_ext ?_⟩
-    simp [← assoc (m.uniformisation.expMap _), ← equivariant, F, hψ]
+    simp [← assoc (m.uniformisation.expMap _), ← equivariant, hF_Q, hψ]
   exact ⟨ψ, h_isog, h_lin, h_cls, m.torsionPoint_comp m' hψ_π, hψ_π⟩
 
 /-- Let `z ∈ GL_n(E)` satisfy `z ℓ z⁻¹ = ℓ'` (`hz`), and let `k = g'⁻¹ z g` have integral entries

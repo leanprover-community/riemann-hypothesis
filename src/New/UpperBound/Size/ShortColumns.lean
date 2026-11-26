@@ -190,7 +190,7 @@ lemma IsShort.sub_translate {B : ℝ} {k : Gf E n} {φ : AlgForm n κ e} (hφ : 
 /-- Let y be an array over ℂ_p with entries of absolute value at most 1. The evaluation vector
 `New.weylEval` at y has norm at most 1: its coordinates are the values at y of the products of
 minors `New.nablaBasis`, which are polynomials with integer coefficients. -/
-lemma norm_weylEval_le_one_of_integral {p : ℕ} [Fact p.Prime] [PadicPlace p]
+lemma norm_weylEval_le_one_of_integral {p : ℕ} [Fact p.Prime]
     {y : (Σ _ : InfinitePlace E, n) × ℕ → ℂ_[p]}
     (hy : ∀ x : (Σ _ : InfinitePlace E, n) × ℕ, ‖y x‖ ≤ 1) :
     ‖weylEval (fun _ : InfinitePlace E ↦ n) κ y‖ ≤ 1 := by
@@ -502,8 +502,8 @@ lemma iInf_ker_sum_pow_eq_range {G V ι : Type*} [CommGroup G] [AddCommGroup V] 
       have h_sum : ↑r - σ w = ∑ i ∈ range r, (1 - y w ^ i) := by simp [σ]
       rw [h_sum]
       exact dvd_sum fun i _ ↦ one_sub_dvd_one_sub_pow (y w) i
-    obtain ⟨q, hq⟩ : ∏ w, (1 - y w) ∣ ∏ w, (↑r - σ w) :=
-      prod_dvd_prod_of_dvd _ _ fun w _ ↦ h_dvd w
+    have h_dvd' : ∀ w ∈ (univ : Finset ι), 1 - y w ∣ ↑r - σ w := fun w _ ↦ h_dvd w
+    obtain ⟨q, hq⟩ := prod_dvd_prod_of_dvd _ _ h_dvd'
     rw [← smul_mem_iff _ (pow_ne_zero _ hr), ← h_scalar univ, hq, map_mul]
     exact ⟨ρ q φ, (Module.End.mul_apply _ _ φ).symm⟩
   · -- `σ w * (1 - z w) = 1 - z w ^ r` acts as `0`.
@@ -938,8 +938,8 @@ lemma finrank_ker_ramifyingOp_le {P : Parameters} (D : Data P) (s : Finset D.piN
     have h_ker : finrank ℂ (D.ramifyingOp (cons w s hw)).ker ≤
         finrank ℂ (1 - D.centralRep (D.scalingGenerator w)).ker +
           finrank ℂ (D.ramifyingOp s).ker := by
-      rw [D.ramifyingOp_cons w hw]
-      exact finrank_ker_mul_le _ _
+      exact (congrArg (fun f : Module.End ℂ D.SourceForm ↦ finrank ℂ f.ker)
+        (D.ramifyingOp_cons w hw)).trans_le (finrank_ker_mul_le _ _)
     calc (finrank ℂ (D.ramifyingOp (cons w s hw)).ker : ℝ)
         ≤ finrank ℂ (1 - D.centralRep (D.scalingGenerator w)).ker +
             finrank ℂ (D.ramifyingOp s).ker := by exact_mod_cast h_ker
@@ -963,7 +963,6 @@ lemma le_finrank_ramifiedSourceForms {P : Parameters} (D : Data P) :
 
 /-- The proportion `f / (N - 1)` is at most `b⁻⁸`, because `f ≤ b` and `b⁹ + 1 ≤ N`. -/
 lemma f_div_N_sub_one_le {P : Parameters} (D : Data P) : D.f / (D.N - 1 : ℝ) ≤ (D.b ^ 8)⁻¹ := by
-  have hb : 0 < D.b := HasLogBound.pos D
   have hf : D.f ≤ D.b := D.le_of_hasLogBound
   have hN : D.b ^ 9 ≤ D.N - 1 := le_sub_iff_add_le.2 D.le_of_hasLogBound
   calc D.f / (D.N - 1 : ℝ) ≤ D.b / D.b ^ 9 := by gcongr
@@ -1017,8 +1016,8 @@ lemma span_isShort_ramifiedSourceForms_eq_top {P : Parameters} (D : Data P) :
       {φ : D.SourceForm | IsShort D.errorUnit.exp φ.val} := by
     intro φ hφ
     simpa [Z, card_piNPlaces, mul_div_cancel₀] using D.isShort_ramifyingOp univ hφ
-  exact span_setOf_mem_eq_top_of_eq_range D.ramifiedSourceForms_eq_range D.span_isShort_eq_top
-    h_maps
+  exact span_setOf_mem_eq_top_of_eq_range (T := {φ : D.SourceForm | IsShort D.errorUnit.exp φ.val})
+    D.ramifiedSourceForms_eq_range D.span_isShort_eq_top h_maps
 
 end Data
 

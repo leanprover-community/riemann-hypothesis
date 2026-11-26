@@ -2,7 +2,6 @@ module
 
 public import Lib.General.Algebra.SeriesBounds
 public import Lib.General.Algebra.SeriesCongruences
-public import Lib.General.NumberTheory.PadicLimitsValuation
 
 /-!
 # Couplings and the normal form
@@ -202,29 +201,6 @@ lemma HasNormalForm.rescale (hF : HasNormalForm S pr ϖ l F) (α : valRingCp p) 
   unfold HasNormalForm
   rw [h_subst, ← rescale_couplingSum, rescale_eq_subst _ (couplingSum S pr l)]
   exact hF.exists_subst_eq_mul_expSubst fun x ↦ by simp [Z]
-
-/-- Let `F` have the normal form `F(ϖ z) = W exp (c_ϖ ∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j)` with `W`
-integral. The existence of such a form depends only on the valuation of `ϖ`: if `ϖ ≠ 0` and
-`‖ϖ'‖ = ‖ϖ‖`, then `F` has it for `ϖ'`, with other numbers `λ'_{e j} = l' e j` in place of the
-`λ_{e j}`. -/
-lemma HasNormalForm.exists_of_norm_eq (hF : HasNormalForm S pr ϖ l F) (hϖ : ϖ ≠ 0) {ϖ' : ℂ_[p]}
-    (h_norm : ‖ϖ'‖ = ‖ϖ‖) : ∃ l' : ℕ → ℕ → valRingCp p, HasNormalForm S pr ϖ' l' F := by
-  -- Scale by the unit `ϖ' / ϖ`, and move the unit `c_ϖ / c_ϖ'` into the numbers `λ_{e j}`.
-  have hϖ' : ϖ' ≠ 0 := by rwa [← norm_ne_zero_iff, h_norm, norm_ne_zero_iff]
-  let α : valRingCp p := ⟨ϖ' / ϖ, (norm_div ϖ' ϖ).trans_le (by simp [h_norm, hϖ])⟩
-  let β : valRingCp p := ⟨ϖ / ϖ', (norm_div ϖ ϖ').trans_le (by simp [h_norm, hϖ])⟩
-  let l₁ (e j : ℕ) : valRingCp p := α ^ ((p ^ e + 1) * p ^ j) * l e j
-  have h_sum : (couplingSum S pr fun e j ↦ β ^ (p + 1) * l₁ e j :
-      MvPowerSeries (Φ × c) (valRingCp p)) = β ^ (p + 1) • couplingSum S pr l₁ :=
-    hasSum_couplingSum.unique <| by
-      simpa only [mul_smul, smul_eq_C_mul] using hasSum_couplingSum.mul_left (C (β ^ (p + 1)))
-  have h_scale : (fun _ : Φ × c ↦ ϖ') = (fun _ ↦ (α : ℂ_[p])) * fun _ ↦ ϖ :=
-    funext fun _ ↦ (div_mul_cancel₀ ϖ' hϖ).symm
-  have h_const : ϖ' ^ (p + 1) / p * (β ^ (p + 1) : valRingCp p) = ϖ ^ (p + 1) / p := by
-    simp [β, div_mul_eq_mul_div, ← mul_pow, mul_div_cancel₀ ϖ hϖ']
-  obtain ⟨W, hW⟩ : HasNormalForm S pr ϖ l₁ (F.rescale fun _ ↦ (α : ℂ_[p])) := hF.rescale α
-  refine ⟨fun e j ↦ β ^ (p + 1) * l₁ e j, W, ?_⟩
-  rw [h_sum, seriesToCp_smul, smul_smul, h_const, ← hW, rescale_rescale, h_scale]
 
 /-- Let `Γ_e = coupling pr e` be the coupling `∑ z_(τ,i) ^ p ^ e * z_(pr e τ, i)`, homogeneous of
 degree `p ^ e + 1`. A substitution of series `Z_x` without constant term does not lower orders, so

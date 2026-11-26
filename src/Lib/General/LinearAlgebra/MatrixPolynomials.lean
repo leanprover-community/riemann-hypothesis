@@ -1,6 +1,8 @@
 module
 
 public import Lib.GaloisRep.BaseChange.Defs
+import TauCeti.LinearAlgebra.Matrix.Charpoly.Resultant
+import TauCeti.LinearAlgebra.Matrix.Polynomial
 
 /-!
 # Minors, polynomials of matrices and twisted norms
@@ -126,11 +128,8 @@ lemma star_aeval {A : Type*} [StarRing R] [Ring A] [StarRing A] [Algebra R A] [S
 /-- Applying the ring map `ψ` to the entries of `z(Y)` gives the value at the matrix `Y.map ψ` of
 the polynomial `z.map ψ`. -/
 lemma map_aeval_matrix (ψ : R →+* S) (Y : Matrix n n R) (z : R[X]) :
-    (aeval Y z).map ψ = aeval (Y.map ψ) (z.map ψ) := by
-  induction z using recOnHorner with
-  | M0 => simp
-  | MC p a _ _ ih => simp [algebraMap_eq_diagonal, Matrix.map_add, ih]
-  | MX p _ ih => simp [ih]
+    (aeval Y z).map ψ = aeval (Y.map ψ) (z.map ψ) :=
+  (aeval_map Y ψ z).symm
 
 /-- The twisted norm `z · σ(z) ⋯ σ^(p-1)(z)` of a polynomial `z`, with `σ` acting on coefficients,
 is the product of the polynomials `z.map (σ ^ i)` for `i < p`. -/
@@ -148,11 +147,8 @@ lemma twistedNorm_map_eq_prod {σ : R →+* R} (p : ℕ) (z : R[X]) :
 
 /-- If `c` intertwines the square matrices `x` and `y`, then it intertwines `q(x)` and `q(y)`. -/
 lemma aeval_semiconj [DecidableEq m] {y : Matrix m m R} (h_semiconj : c * x = y * c) (q : R[X]) :
-    c * aeval x q = aeval y q * c := by
-  induction q using recOnHorner with
-  | M0 => simp
-  | MC p a _ _ ih => simp [algebraMap_eq_smul_one, Matrix.mul_add, Matrix.add_mul, ih]
-  | MX p _ ih => simp [← Matrix.mul_assoc c, ih, Matrix.mul_assoc, h_semiconj]
+    c * aeval x q = aeval y q * c :=
+  (aeval_mul_eq_mul_aeval h_semiconj.symm q).symm
 
 /-- For a normal matrix `x`, the conjugate transpose of `w(x)` commutes with `z(x)`. -/
 lemma commute_conjTranspose_aeval [StarRing R] (x : Matrix n n R) [IsStarNormal x] {w z : R[X]} :
@@ -170,7 +166,7 @@ lemma charpoly_dvd_charpoly_aeval_comp (q : R[X]) : Y.charpoly ∣ (aeval Y q).c
   have h_poly : (C X - X : R[X][X]) ∣ C q - q.map C := by
     simpa [eval_map] using ((q.map C).map C).sub_dvd_eval_sub (C X) X
   have h_mat : charmatrix Y ∣ scalar n q - (aeval Y q).map C := by
-    simpa [charmatrix, map_aeval_matrix, algebraMap_eq_diagonal, Pi.algebraMap_def] using
+    simpa [charmatrix, algebraMap_eq_diagonal, Pi.algebraMap_def] using
       aeval_dvd (Y.map C) h_poly
   have h_det : det (scalar n q - (aeval Y q).map C) = (aeval Y q).charpoly.comp q := by
     rw [← eval_charpoly, charpoly_map, eval_map, Polynomial.comp]
@@ -179,21 +175,10 @@ lemma charpoly_dvd_charpoly_aeval_comp (q : R[X]) : Y.charpoly ∣ (aeval Y q).c
 /-- The matrix `z(Y)` is invertible if and only if the polynomial `z` is coprime to the
 characteristic polynomial of `Y`. -/
 lemma isUnit_aeval_iff_isCoprime {z : R[X]} : IsUnit (aeval Y z) ↔ IsCoprime Y.charpoly z := by
-  refine ⟨fun h_unit ↦ ?_, fun ⟨a, b, hab⟩ ↦ .of_mul_eq_one_right (aeval Y b) ?_⟩
-  · -- `charpoly Y` divides `q ∘ z` for `q = charpoly (z(Y))`, and `q ∘ z` is congruent modulo `z`
-    -- to the unit `q(0) = ± det z(Y)`.
-    set q : R[X] := (aeval Y z).charpoly
-    have h_coeff : IsUnit (q.coeff 0) := by
-      rw [isUnit_iff_isUnit_det, det_eq_sign_charpoly_coeff] at h_unit
-      exact isUnit_of_mul_isUnit_right h_unit
-    have h_comp : q.comp z = C (q.coeff 0) + z * q.divX.comp z := by
-      conv_lhs => rw [← q.divX_mul_X_add]
-      simp [add_comm, mul_comm]
-    refine .of_isCoprime_of_dvd_left ?_ (charpoly_dvd_charpoly_aeval_comp z)
-    rw [h_comp, IsCoprime.add_mul_left_left_iff]
-    exact isCoprime_one_left.of_isCoprime_of_dvd_left (h_coeff.map C).dvd
-  · -- Evaluate the Bézout relation at `Y` and use the Cayley-Hamilton theorem.
-    simpa [aeval_self_charpoly] using congrArg (aeval Y) hab
+  rcases subsingleton_or_nontrivial R with _ | _
+  · exact iff_of_true (isUnit_of_subsingleton _) ⟨0, 0, Subsingleton.elim _ _⟩
+  · rw [isUnit_iff_isUnit_det, det_aeval_eq_resultant Y z le_rfl,
+      ← charpoly_natDegree_eq_dim Y, isUnit_resultant_iff_isCoprime Y.charpoly_monic]
 
 /-- Let `σ` be a ring endomorphism of `S` and `ψ : R →+* S` an injective ring homomorphism whose
 image contains every element fixed by `σ`. If applying `σ` to the entries of `g : GL n S` leaves

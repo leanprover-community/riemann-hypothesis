@@ -47,14 +47,16 @@ baseline. `python3 -I scripts/tests/test_ci_cache_baseline.py` tests the selecti
 Pull requests land through GitHub's merge queue. `.github/workflows/build.yml` has one job,
 `lake build`, the queue's required check. It builds every pull request to `main` from a fork on
 a GitHub-hosted runner (or on the runner named by the repository variable `PR_RUNS_ON`, a JSON
-`runs-on` value such as `["self-hosted","rh-pr"]`; without it, `ubuntu-latest`), and every pull
-request from a branch of this repository, merge queue group (`merge_group`), push to `main` and
-manual run on the self-hosted runner described below, with the exact record if there is one and
-the baseline otherwise. It fails if `lake build` fails, if the build log contains `` declaration uses
-`sorry` ``, or if `scripts/PrintAxioms.lean` reports any axiom other than `propext`,
-`Classical.choice` and `Quot.sound` for the five theorems. It never publishes anything.
+`runs-on` value such as `["self-hosted","rh-pr"]`; without it, `ubuntu-latest`), every pull
+request from a branch of this repository not starting with `batch/` on the self-hosted
+`rh-pr-trusted` runners, and every merge queue group (`merge_group`), push to `main`, manual run
+and pull request from a `batch/` branch of this repository on the self-hosted `rh-big` runner
+(both described below), with the exact record if there is one and the baseline otherwise. It
+fails if `lake build` fails, if the build log contains `` declaration uses `sorry` ``, or if
+`scripts/PrintAxioms.lean` reports any axiom other than `propext`, `Classical.choice` and
+`Quot.sound` for the five theorems. It never publishes anything.
 
-On the self-hosted runner, except for pull requests, which upload nothing, the job builds with
+On the `rh-big` runner, except for pull requests, which upload nothing, the job builds with
 `lake build -o`, then `scripts/ci-cache-stage.py` writes the map, the module manifest and the
 artifacts that the public cache does not have yet, and the job uploads them as the Actions
 artifact `cache-<commit>`. The push build of a commit
@@ -80,40 +82,63 @@ for `scripts/cache-baseline.json`, which is only needed if the history to the ne
 longer than 200 commits.
 
 The publisher cannot check that an artifact is what a module's input hash produces: that would
-need building it. So the cache trusts the self-hosted runner's builds, as it trusted the hand
+need building it. So the cache trusts the `rh-big` runner's builds, as it trusted the hand
 publisher's builds before.
 
-## Self-hosted merge queue runner
+## Self-hosted runners
 
-The runner host holds no credential of the project, and builds only code that is queued to land
-on `main` or already on it, or that someone with write access has pushed to a branch of this
-repository (a pull request from such a branch, or a manual run). Its setup is in `scripts/runner/`:
+There are two kinds of self-hosted runner, so that the merge queue never waits behind other pull
+requests:
 
-- `setup-host.sh` (run as root, idempotent) creates the unprivileged user `ghrunner` (no sudo,
-  no other groups), installs a pinned, checksummed copy of the GitHub Actions runner owned by
-  root, blocks the metadata service and private address ranges for `ghrunner`'s uid on IPv4 and
-  IPv6 (`ghrunner-firewall.service`, iptables owner rules), sets `kernel.yama.ptrace_scope=1`, and
-  installs `rh-runner.service`.
+- `rh-big`, one runner on a 64-vCPU host, runs the merge queue (`merge_group`), pushes to
+  `main`, manual runs and pull requests from a branch of this repository whose name starts with
+  `batch/` (the batcher's batch pull requests). Only its builds are published (see above).
+- `rh-pr-trusted`, several runners on a shared host, run every other pull request from a branch
+  of this repository. Each is confined to its own CPUs and memory, and uploads nothing.
+
+The runner hosts hold no credential of the project, and build only code that is queued to land on
+`main` or already on it, or that someone with write access has pushed to a branch of this
+repository (a pull request from such a branch, or a manual run). Their setup is in
+`scripts/runner/`:
+
+- `setup-host.sh` (run as root, idempotent) creates the unprivileged runner user (no sudo, no
+  other groups), installs a pinned, checksummed copy of the GitHub Actions runner owned by root,
+  blocks the metadata service and private address ranges for that user's uid on IPv4 and IPv6
+  (a `ghrunner-firewall` service, iptables owner rules), sets `kernel.yama.ptrace_scope=1`, and
+  installs the runner's service. `bash setup-host.sh` sets up the `rh-big` runner: user
+  `ghrunner`, `rh-runner.service`. `bash setup-host.sh <instance> <label> <cpus> <memory-max>`
+  sets up one of several runners on a shared host: user `ghrunner-<instance>`,
+  `rh-runner@<instance>.service`, `ghrunner-firewall-<instance>.service`, and the label, cpuset
+  and memory limit in `/etc/rh-runner/<instance>.env`. The `rh-pr-trusted` runners are
+  `bash setup-host.sh pr1 rh-pr-trusted 0-37 150G`, `pr2 rh-pr-trusted 38-74 150G` and
+  `pr3 rh-pr-trusted 75-111 150G` on a 192-vCPU host whose CPUs 112 to 191 run other builds.
 - `loop.sh` (that service) runs one ephemeral just-in-time runner per job. For each job it gives
-  `ghrunner` a new, empty home directory with a fresh copy of the runner, runs it in a transient
-  systemd unit (read-only system, other home directories and `/srv` hidden, private `/tmp`, no new
-  privileges, and the same addresses denied to the unit's cgroup), and after the job kills
-  whatever is left and deletes the home directory, workspace included.
-- `job-started.sh` is the runner's job-started hook. Pull requests can change the workflow they
-  run, so one from a fork could ask for this runner; the hook fails every job before it starts
-  unless it is `build.yml` of this repository for a `merge_group` on `main`'s queue, a push to
-  `main`, a `workflow_dispatch` (which needs write access), or a `pull_request` whose
+  the runner user a new, empty home directory with a fresh copy of the runner, runs it in a
+  transient systemd unit (read-only system, other home directories, `/srv` and `/etc/rh-buildq`
+  hidden, private `/tmp`, no new privileges, the same addresses denied to the unit's cgroup, and
+  for an instance its cpuset and memory limit, with `LEAN_NUM_THREADS` set to its CPU count),
+  and after the job kills whatever is left and deletes the home directory, workspace included.
+  Each instance has its own user, so this never touches another instance's job.
+- `job-started.sh` is the runners' job-started hook. Pull requests can change the workflow they
+  run, so one could ask for any runner; the hook fails every job before it starts unless it is
+  `build.yml` of this repository and one of the jobs `build.yml` sends to the runner's label
+  (which `loop.sh` passes in `RH_RUNNER_LABEL`). On `rh-big`: a `merge_group` on `main`'s queue, a
+  push to `main`, a `workflow_dispatch` (which needs write access), or a `pull_request` whose
   `pull_request.head.repo.full_name` in the event payload (`$GITHUB_EVENT_PATH`, written by
-  GitHub) is this repository. A pull request from a fork, or one whose payload has no head
-  repository, is refused. After a change to the hook, `setup-host.sh` must be run again to
-  install it.
+  GitHub) is this repository and whose `pull_request.head.ref` starts with `batch/`. On
+  `rh-pr-trusted`: a `pull_request` whose head repository is this repository. A pull request
+  from a fork, or one whose payload has no head repository, is refused by both. After a change
+  to the hook it must be installed again (`setup-host.sh` does that, or `install -m 0755
+  job-started.sh /opt/rh-runner/job-started.sh`, which leaves a running job alone).
 - `mint-jit.sh` runs every minute on a trusted workstation whose `gh` is logged in as a
-  repository admin (a systemd user timer). It keeps four one-time runner configurations from
-  `POST /repos/{owner}/{repo}/actions/runners/generate-jitconfig` (labels `self-hosted`, `linux`,
-  `rh-big`) in the host's root-only spool, and deletes those older than 20 hours with their
-  registrations. Each configuration can register one runner for one job, and is good for nothing
-  else, so the host never holds a GitHub token. If the workstation stops, the host runs the jobs
-  its spool still allows (four, within 20 hours), then waits.
+  repository admin (systemd user timers): `mint-jit.sh <host> 4` for `rh-big`, and
+  `mint-jit.sh <host> 2 <instance> rh-pr-trusted` for each `rh-pr-trusted` instance. It keeps
+  that many one-time runner configurations from
+  `POST /repos/{owner}/{repo}/actions/runners/generate-jitconfig` (labels `self-hosted`, `linux`
+  and the runner's label) in the runner's root-only spool, and deletes those older than 20 hours
+  with their registrations. Each configuration can register one runner for one job, and is good
+  for nothing else, so the hosts never hold a GitHub token. If the workstation stops, each runner
+  runs the jobs its spool still allows (within 20 hours), then waits.
 
 ## Tau Ceti
 
@@ -137,6 +162,11 @@ compiles that module and its Tau Ceti dependencies from source. The Tau Ceti and
 together: pick the Tau Ceti tag (or cached main commit) for the new Lean release, and check that its manifest pins the
 Mathlib commit chosen here. A change of either pin changes the build inputs of every module that
 imports Tau Ceti, directly or not.
+
+Tau Ceti is the one dependency from outside leanprover-community and leanprover. The
+challenge-files check trusts it by its exact address, `TRUSTED_REPOS` in
+`.github/workflows/challenge-files.yml`; moving it to another address fails that check. Another
+such dependency needs its address added there first, by a maintainer, in a pull request of its own.
 
 For a con-leche `--compare` run, Tau Ceti's `.lake/packages/TauCeti/.lake/build/lib/lean` belongs
 on the untrusted `--search-path`, with the project's, so that its declarations are checked rather

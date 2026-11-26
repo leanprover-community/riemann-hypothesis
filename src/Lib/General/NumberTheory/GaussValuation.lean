@@ -1,6 +1,7 @@
 module
 
 public import Lib.General.NumberTheory.PadicLimitsValuation
+public import TauCeti.Algebra.Ring.GeomSum
 
 /-!
 # The Gauss valuation of a polynomial over the ring of integers of ℚ̄_ℓ
@@ -413,15 +414,6 @@ lemma exists_one_add_pow_eq {m j : ℕ} (hj : j ∈ Set.Icc 1 m) {x : intQpBar �
   · rw [NNRat.cast_div, NNRat.cast_natCast, ENNReal.coe_div (Nat.cast_ne_zero.2 (by omega))]
     exact ENNReal.div_le_of_le_mul h_le
 
-/-- The geometric sum of length `a b` is the geometric sum of length `a` times the geometric sum of
-length `b` in `α ^ a`. -/
-lemma geom_sum_range_mul {R : Type*} [CommSemiring R] (α : R) (a b : ℕ) :
-    ∑ i ∈ range (a * b), α ^ i = (∑ i ∈ range a, α ^ i) * ∑ k ∈ range b, (α ^ a) ^ k := by
-  induction b with
-  | zero => simp
-  | succ b ih => simp [sum_range_add, ih, pow_add, ← sum_mul, pow_mul, mul_add,
-      sum_range_succ, mul_comm]
-
 /-- If `v(α - 1) ≥ ρ` with `ρ ≤ 1`, where `v` is the valuation `ellVal`, then `∑_{i < ℓ ^ n} α ^ i`
 has valuation at least `n ρ`: it is the product of the factors `∑_{i < ℓ} α ^ (i ℓ ^ h)` for
 `h < n`, each congruent to `ℓ` modulo `α - 1`, and `v(ℓ) = 1 ≥ ρ`. -/
@@ -436,8 +428,8 @@ lemma le_ellVal_geom_sum (hρ : ρ ≤ 1) {α : intQpBar ℓ} (hα : (ρ : ℝ�
     exact (le_min (hα.trans (dvd_iff_ellVal_le.1 h_dvd)) hℓ).trans (min_ellVal_le_ellVal_add _ _)
   induction n with
   | zero => simp
-  | succ n ih => grw [pow_succ, geom_sum_range_mul, ellVal_val_mul, Nat.cast_succ, add_one_mul,
-      ih, h_factor n]
+  | succ n ih => grw [pow_succ, TauCeti.geom_sum_range_mul, ellVal_val_mul, Nat.cast_succ,
+      add_one_mul, ih, h_factor n]
 
 /-- A root of unity `ζ` of order `ℓ ^ (h + 1)` has `v(ζ - 1) = 1 / φ(ℓ ^ (h + 1))`, where `φ` is
 Euler's function. -/
@@ -461,7 +453,7 @@ lemma ellVal_pow_sub_one_of_isPrimitiveRoot {h j : ℕ} {ζ : intQpBar ℓ}
   obtain ⟨t, j', hj', rfl⟩ := Nat.exists_eq_pow_mul_and_not_dvd hj ℓ hℓ.ne_one
   have ht : padicValNat ℓ (ℓ ^ t * j') = t := by
     simp [Nat.padicValNat_def, Nat.multiplicity_mul, hℓ.ne_zero, right_ne_zero_of_mul hj,
-      Nat.multiplicity_prime_pow, multiplicity_eq_zero_of_not_dvd hj']
+      multiplicity_eq_zero_of_not_dvd hj']
   rw [ht] at hjh ⊢
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hjh
   have h_order : IsPrimitiveRoot ((ζ ^ ℓ ^ t) ^ j') (ℓ ^ (k + 1)) :=

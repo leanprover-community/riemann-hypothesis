@@ -216,12 +216,6 @@ def BlockIndex.equivSum (ν : S ≃ α) : (j : ℕ) → BlockIndex S T j ≃ α 
   | 0 => ν.trans (Equiv.sumEmpty α (Fin 0 × T)).symm
   | j + 1 => (nonempty_equiv_sum ν (j + 1)).some
 
-/-- For `j = 0` the bijection `equivSum ν 0` from `BlockIndex S T 0` to `α ⊕ Fin 0 × T` sends `x` to
-`Sum.inl (ν x)`, that is, it is `ν` followed by the left inclusion. -/
-lemma BlockIndex.equivSum_zero_apply (ν : S ≃ α) (x : S) :
-    (equivSum ν 0 : BlockIndex S T 0 ≃ α ⊕ Fin 0 × T) x = Sum.inl (ν x) :=
-  rfl
-
 variable [Fintype S] [Fintype T]
 
 /-- The index type `BlockIndex S T j` is finite. -/

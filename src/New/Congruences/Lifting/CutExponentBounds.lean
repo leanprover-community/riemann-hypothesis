@@ -910,7 +910,6 @@ lemma _root_.New.Lift.KummerChart.Letter.isLongGap_two_zero {ε : k.Letter → �
     i.IsLongGap ε s β η V 1 (b / p + 12 * K) (G + W) 2 0 := by
   -- The left side is at most `(p + 2) (b / p) - (6 p - 6) K`, which is less than `b`.
   have h_lt_pivot : b / p + 12 * K + (G + W) * (1 + p) < b := by
-    have hK_seven : K * 7 ≤ K * p := mul_le_mul_right hp K
     have h_div_le : b / p * p ≤ b := b.div_mul_le_self p
     have h_div_lt : b / p < K * p := Nat.div_lt_of_lt_mul (by lia)
     have h_mul : (G + W + 6 * K) * (1 + p) ≤ b / p * (1 + p) := Nat.mul_le_mul_right _ (by omega)

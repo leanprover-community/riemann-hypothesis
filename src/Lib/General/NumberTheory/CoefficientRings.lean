@@ -2,6 +2,7 @@ module
 
 public import Lib.General.Algebra.AdicCompletion
 public import Lib.General.Algebra.FittingIdealsAndLengths
+public import TauCeti.RingTheory.Length
 
 /-!
 # Coefficient rings of ℓ-adic lattices, and length versus cardinality of modules
@@ -9,8 +10,6 @@ public import Lib.General.Algebra.FittingIdealsAndLengths
 The coefficient rings over which ℓ-adic lattices are taken, and, for modules over an ℓ-adic
 integer ring, a comparison of length with cardinality.
 
-* `New.card_eq_pow_length`: over an ℓ-adic integer ring R with residue field k, a module of finite
-  length has #k ^ length elements.
 * `New.length_le_of_card_le`, `New.length_le_of_card_dvd`: an inequality of cardinalities (the
   smaller module being finite) or a divisibility of cardinalities gives an inequality of lengths.
 * `New.CoeffRing ℓ`: the rings of integers O of finite Galois extensions of ℚ_ℓ inside ℚ̄_ℓ. Each is
@@ -40,26 +39,6 @@ open PadicInt IsDiscreteValuationRing NeZero IsLocalRing Module IntermediateFiel
 
 variable {R : Type*} (ℓ : ℕ) [ThePrime ℓ] {X Y : Type} [CommRing R]
 
-/-- Let R be an ℓ-adic integer ring (`New.PadicIntegerRing R ℓ`: a discrete valuation ring of
-characteristic 0, finite and free over ℤ_ℓ, with finite quotients by nonzero ideals) with residue
-field k. An R-module X of finite length has #k ^ length X elements. -/
-lemma card_eq_pow_length [PadicIntegerRing R ℓ] [AddCommGroup X] [Module R X]
-    (hX : length R X < ⊤) :
-    Nat.card X = Nat.card (ResidueField R) ^ (length R X).lift hX := by
-  -- induction on a composition series: each simple quotient is a copy of the residue field
-  induction length_ne_top_iff.1 hX.ne with
-  | of_subsingleton => simp [card_unique]
-  | @of_simple_quotient M _ _ N h_simple hN ih =>
-    obtain ⟨I, hI, ⟨e⟩⟩ := isSimpleModule_iff_quot_maximal.1 h_simple
-    obtain rfl : I = IsLocalRing.maximalIdeal R := eq_maximalIdeal hI
-    have h_card : Nat.card (M ⧸ N) = Nat.card (ResidueField R) := card_congr e.toEquiv
-    have h_length : length R M = length R N + 1 := by
-      rw [length_eq_add_of_exact N.subtype N.mkQ N.injective_subtype N.mkQ_surjective
-        (LinearMap.exact_subtype_mkQ N), length_eq_one R (M ⧸ N)]
-    -- #M = #(M ⧸ N) * #N, and the induction hypothesis gives #N
-    rw [N.card_eq_card_quotient_mul_card, h_card, ih (length_ne_top_iff.2 hN).lt_top]
-    simp [h_length, pow_succ, mul_comm]
-
 /-- The residue field of an ℓ-adic integer ring R is finite: it is the quotient of R by a nonzero
 ideal. -/
 lemma PadicIntegerRing.finite_residueField [PadicIntegerRing R ℓ] : Finite (ResidueField R) :=
@@ -73,7 +52,8 @@ lemma length_eq_top_of_infinite [PadicIntegerRing R ℓ] [AddCommGroup Y] [Modul
   by_contra h_length
   -- the cardinality of `Y` would be a power of the size of the residue field, hence not `0`
   have h_card : Nat.card Y ≠ 0 := by
-    rw [card_eq_pow_length ℓ (lt_top_iff_ne_top.2 h_length)]
+    obtain ⟨n, hn⟩ := ENat.ne_top_iff_exists.1 h_length
+    rw [TauCeti.natCard_eq_pow_of_length_eq hn.symm]
     exact pow_ne_zero _ Nat.card_pos.ne'
   exact h_card Nat.card_eq_zero_of_infinite
 
@@ -85,13 +65,13 @@ lemma length_le_of_card_le [PadicIntegerRing R ℓ] [AddCommGroup X] [Module R X
     length R X ≤ length R Y := by
   have : Finite (ResidueField R) := PadicIntegerRing.finite_residueField ℓ
   have : Finite Y := Nat.finite_of_card_ne_zero (Nat.card_pos.trans_le h_card).ne'
-  have hX : length R X < ⊤ := length_ne_top.lt_top
-  have hY : length R Y < ⊤ := length_ne_top.lt_top
   -- both cardinalities are powers of the size of the residue field: compare the exponents
-  have h_exponent : (length R X).lift hX ≤ (length R Y).lift hY := by
-    rwa [card_eq_pow_length ℓ hX, card_eq_pow_length ℓ hY,
-      pow_le_pow_iff_right₀ Finite.one_lt_card] at h_card
-  simpa using h_exponent
+  rw [TauCeti.natCard_eq_pow_length_toNat (A := R) (M := X),
+    TauCeti.natCard_eq_pow_length_toNat (A := R) (M := Y),
+    pow_le_pow_iff_right₀ Finite.one_lt_card] at h_card
+  rw [← ENat.natCast_toNat (length_ne_top (R := R) (M := X)),
+    ← ENat.natCast_toNat (length_ne_top (R := R) (M := Y))]
+  exact_mod_cast h_card
 
 /-- Let R be an ℓ-adic integer ring, and let X and Y be R-modules. If `Nat.card X` divides
 `Nat.card Y`, then length X ≤ length Y. Since `Nat.card` is 0 for an infinite type, the hypothesis

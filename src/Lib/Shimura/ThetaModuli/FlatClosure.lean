@@ -617,7 +617,7 @@ lemma isDenseFamily_of_isChartPresentation {J W : Type} {X : Scheme} {L : LineBu
     IsDenseFamily x := by
   -- Otherwise a basic open set of some `u c f` contains a point `y` and misses all the `x v`.
   -- Then `f` vanishes at the `θ v`, so `u c f = 0` and the basic open set is empty.
-  show ∀ y : X, y ∈ closure (Set.range fun v : W ↦ x v (IsLocalRing.closedPoint ℂ))
+  change ∀ y : X, y ∈ closure (Set.range fun v : W ↦ x v (IsLocalRing.closedPoint ℂ))
   intro y
   by_contra hy
   obtain ⟨c, hc⟩ := TopologicalSpace.IsOpenCover.exists_mem (cover L) y

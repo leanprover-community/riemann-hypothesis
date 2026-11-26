@@ -1,6 +1,7 @@
 module
 
 public import Lib.GLn.SchurModule.LeadingRows
+public import TauCeti.Data.Fin.Basic
 
 /-!
 # Branching from GL(n+1) to GL(n) × GL(1): the branching vector and the norm bound
@@ -153,12 +154,6 @@ lemma frontPermutation_val {N p : ℕ} (hp : p < N) (i : Fin N) :
   · rw [Fin.cycleRange_of_eq (show i = ⟨p, hp⟩ from Fin.ext h_eq), Fin.val_zero]
   · rw [Fin.cycleRange_of_gt (show ⟨p, hp⟩ < i by grind)]
 
-/-- The rotation of `Fin N` sends each position other than the last to the next one. -/
-lemma finRotate_val {N : ℕ} (i : Fin N) (hi : (i : ℕ) + 1 < N) :
-    (finRotate N i : ℕ) = i + 1 := by
-  obtain ⟨M, rfl⟩ : ∃ M : ℕ, N = M + 1 := ⟨N - 1, by omega⟩
-  exact coe_finRotate_of_ne_last fun h_last ↦ by simp [h_last] at hi
-
 variable (n) in
 /-- The renaming of the rows `n τ` that moves the row at position `p τ` to the front and each
 earlier row to the next position. -/
@@ -259,7 +254,7 @@ lemma exists_minor_extremalRows_eq_smul {τ : Φ} {p : Φ → ℕ} {h : Fin (ran
     have h_rows : extremalRows k h j = frontRenaming n p τ ∘ (rowEquivFin n τ).symm ∘ f := by
       funext s
       have h_rotate : (finRotate (rankAt n τ) (Fin.castLE h.is_le' s) : ℕ) = s + 1 :=
-        finRotate_val _ (show (s : ℕ) + 1 < rankAt n τ by omega)
+        Fin.coe_finRotate_of_add_one_lt (show (s : ℕ) + 1 < rankAt n τ by omega)
       have h_front : (frontPermutation (rankAt n τ) (p τ) (f s) : ℕ) = s + 1 := by
         grind [frontPermutation_val]
       simpa [extremalRows, frontRenaming, Fin.ext_iff, hj] using h_rotate.trans h_front.symm

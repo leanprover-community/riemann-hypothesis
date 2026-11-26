@@ -1,6 +1,5 @@
 module
 
-public import New.Determinant.AuxiliaryForms.GridPaths
 public import New.OneLift.ComparisonOperator.ExchangeData
 public import New.OneLift.HeckeValues.TwistedRatio
 
@@ -68,15 +67,6 @@ lemma CriticalPair.L_inv (p : D.CriticalPair) :
     p.character⁻¹.L {w : FinPlace D.E | D.IsChosen w} =
       p.character.L {w : FinPlace D.E | D.IsChosen w} :=
   p.hasWeight.L_inv p.tamePart_eq_one
-
-/-- For the character `ν` of a critical pair and a tame character `ϑ` of modulus `Q`, the character
-`ν ϑ` and its inverse have the same `L`-function away from the chosen places, the places of `Q` and
-their conjugates. -/
-lemma CriticalPair.L_mul_inv (p : D.CriticalPair) (ϑ : D.TameChar) :
-    (p.character * ϑ.toAutChar)⁻¹.L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) =
-      (p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) := by
-  refine (p.hasWeight.mul ϑ.hasWeight).L_inv fun w hw ↦ ?_
-  simp [p.tamePart_eq_one w (fun h ↦ hw (.inl h)), ϑ.tamePart_eq_one w (fun h ↦ hw (.inr h))]
 
 lemma lRatioProd_nonneg (ν : AutChar D.E) (s : ℕ) (ϑ : D.TameChar) : 0 ≤ D.lRatioProd ν s ϑ :=
   prod_nonneg fun _ _ ↦ div_nonneg (norm_nonneg _) (norm_nonneg _)

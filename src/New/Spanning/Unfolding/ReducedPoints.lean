@@ -411,7 +411,7 @@ lemma tsum_le_of_encard_range_le {A : Set α} {R : α → α → Prop} {N x : �
     exact h_rel a a' (congrArg Subtype.val (ha.trans ha'.symm))
   calc
     _ = ∑' (c : range φ) (a : rangeFactorization φ ⁻¹' {c}), w a := (tsum_fiberwise ..).symm
-    _ ≤ ∑' _ : range φ, x := ENNReal.tsum_le_tsum h_fibre
+    _ ≤ ∑' _ : range φ, x := tsum_le_tsum h_fibre
     _ ≤ N * x := by grw [tsum_set_const, h_colours]
 
 /-- Colouring by residue classes. Let `f a`, for `a ∈ A`, be a vector with entries in `K'`, and let

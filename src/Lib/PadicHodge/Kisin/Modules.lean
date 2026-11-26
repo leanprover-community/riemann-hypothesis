@@ -413,7 +413,7 @@ lemma letterOp_pow_mk (n : ℕ) (a : WittCFlat) (t : Rep.of (overZp L.ρ)) :
   induction n with
   | zero => simp
   | succ n ih =>
-    rw [pow_succ', Module.End.mul_apply, ih]
+    rw [pow_succ', mul_apply_eq_comp, ih]
     simp [letterOp, pow_succ', mulZeta, smul_smul, mul_comm]
 
 /-- x lies in the part at the letter i exactly when ζ acts on it as the Teichmüller lift ω(i). -/
@@ -477,7 +477,7 @@ lemma mem_letterPart_iff_letterProj : x ∈ letterPart i ↔ L.letterProj i x = 
   constructor
   · -- if `letterOp i` fixes `x`, so do its powers, and `letterProj i` is their average
     intro hx
-    simp_all [letterProj, End.pow_apply, letterPart, Function.iterate_fixed, sub_eq_zero,
+    simp_all [letterProj, pow_apply_eq_iterate, letterPart, Function.iterate_fixed, sub_eq_zero,
       invOf_smul_eq_iff, Nat.cast_smul_eq_nsmul]
   · intro h_fixed
     simpa [h_fixed] using (letterProj_mem_letterPart : L.letterProj i x ∈ letterPart i)
@@ -644,8 +644,9 @@ lemma sum_letterProj (x : L.Ambient) : ∑ i : Letter, L.letterProj i x = x := b
   -- After exchanging the two sums only the term `n = 0` survives, and it equals `q • x`.
   rw [sum_comm, sum_eq_single 0 (fun n hn hn₀ ↦ ?_) (by simp)]
   · simp
-  · -- Elaborator: `erw`, as the scalar `0` of `S` acts here through A_inf only up to unfolding.
-    erw [← sum_smul, h_orth n hn hn₀, zero_smul]
+  · -- The scalar `0` of `S` acts here through A_inf only up to unfolding.
+    rw [← sum_smul, h_orth n hn hn₀]
+    exact zero_smul ..
 
 /-! ### Functionals of given type and Hodge–Tate jumps -/
 

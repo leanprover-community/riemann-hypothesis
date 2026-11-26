@@ -370,16 +370,24 @@ variable {C : Type _} [Category C]
 abbrev relFreeAb.restrict : relFreeAb (U.preimage A.ι) ⟶ relFreeAb (U.preimage B.ι) :=
   map (homOfLe h) (id le_rfl)
 
+/-- Inside `B`, the image of the inclusion of `A ⊓ B` is the preimage of `A`. -/
+lemma range_homOfLe_eq_preimage_of_inf_eq {A B D : Subfunctor V} (hD : A ⊓ B = D) :
+    range (homOfLe (hD.ge.trans inf_le_right)) = A.preimage B.ι := by
+  subst D
+  ext c x
+  constructor
+  · rintro ⟨y, rfl⟩
+    exact y.property.1
+  · intro hx
+    exact ⟨⟨x.val, hx, x.property⟩, rfl⟩
+
 /-- For subfunctors `A`, `B` of `V` with `A ⊓ B = D`, the restriction and quotient maps form a short
 exact sequence `0 → ℤ[D]/ℤ[U ∩ D] → ℤ[B]/ℤ[U ∩ B] → ℤ[B]/ℤ[(A ∪ U) ∩ B] → 0`. -/
 lemma relFreeAb.shortExact_restrict_of_inf_eq {A B D : Subfunctor V} (hD : A ⊓ B = D) :
     ∃ w, ShortComplex.ShortExact ⟨restrict U (hD.ge.trans inf_le_right),
       map (𝟙 B.toFunctor) (U := A.preimage B.ι ⊔ U.preimage B.ι) le_sup_right, w⟩ := by
   -- This is `shortExact_triple` for the inclusion of `D` in `B`, whose image is `A ∩ B`.
-  have h_range : range (homOfLe (hD.ge.trans inf_le_right)) = A.preimage B.ι := by
-    delta toFunctor homOfLe
-    aesop
-  rw [← h_range]
+  rw [← range_homOfLe_eq_preimage_of_inf_eq hD]
   exact shortExact_triple ..
 
 /-- The inclusion of `A` in `B` followed by that of `B` in `D` is the inclusion of `A` in `D`. -/

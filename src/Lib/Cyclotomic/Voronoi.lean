@@ -1,6 +1,12 @@
 module
 
 public import Lib.Analytic.ZeroSymmetry
+public import Lib.Base
+public import TauCeti.LinearAlgebra.Matrix.GroupMatrix
+public import TauCeti.NumberTheory.Bernoulli.Basic
+public import TauCeti.NumberTheory.DirichletCharacter.LFunction.TrivialZeros
+public import TauCeti.NumberTheory.MulChar.Basic
+public import TauCeti.NumberTheory.MulChar.Orthogonality
 
 /-!
 # A small nonzero integer in all Stickelberger ideals via Voronoi's congruence
@@ -14,8 +20,9 @@ that, times c ^ (e + 1) - 1, lies in all the Stickelberger ideals for N and e.
 
 The idea: the generalised Bernoulli numbers of all characters mod N, corrected where they vanish for
 reasons of parity, are the eigenvalues of one integer matrix. Its determinant is nonzero
-(`New.OddPart.sum_mul_bernoulli_ne_zero`), is divisible by each eigenvalue, and is bounded by
-the Fourier series of the Bernoulli polynomial. Voronoi's congruence
+(`New.OddPart.det_ne_zero_of_forall_sum_mul_ne_zero` and
+`DirichletCharacter.generalizedBernoulli_ne_zero`), is divisible by each eigenvalue, and is bounded
+by the Fourier series of the Bernoulli polynomial. Voronoi's congruence
 (`New.OddPart.voronoi_congruence_bernoulli`) links the Bernoulli numbers to the Stickelberger sums;
 it rests on a congruence for power sums along an arithmetic progression
 (`New.OddPart.exists_sq_dvd_factorial_mul_sum_pow_sub`).
@@ -44,28 +51,19 @@ namespace New.OddPart
 
 variable (N e : ℕ) [NeZero N]
 
+/-- The primorial `primorial n` divides `n !`. -/
+lemma primorial_dvd_factorial (n : ℕ) : primorial n ∣ n ! :=
+  prod_primes_dvd _ (fun _ hp ↦ (mem_filter.1 hp).2.prime) fun _ hp ↦
+    dvd_factorial (mem_filter.1 hp).2.pos (Nat.lt_succ_iff.1 (mem_range.1 (mem_filter.1 hp).1))
+
 /-- For every `i`, the number `(i + 1)! Bᵢ` is an integer. -/
 lemma exists_intCast_eq_factorial_mul_bernoulli (i : ℕ) :
     ∃ c : ℤ, (c : ℚ) = (i + 1)! * _root_.bernoulli i := by
-  -- Strong induction through `(i + 1) Bᵢ = -∑ k < i, (i + 1).choose k * Bₖ`, multiplied by `i !`.
-  induction i using Nat.strong_induction_on with
-  | _ i ih => ?_
-  obtain rfl | hi_pos : i = 0 ∨ 0 < i := i.eq_zero_or_pos
-  · exact ⟨1, by simp⟩
-  choose! c hc using ih
-  have h_rec : (i + 1 : ℚ) * _root_.bernoulli i =
-      -∑ k ∈ range i, ((i + 1).choose k : ℚ) * _root_.bernoulli k := by
-    have h_sum := _root_.sum_bernoulli (i + 1)
-    rw [ite_eq_right (by omega), sum_range_succ, choose_succ_self_right, cast_succ] at h_sum
-    linear_combination h_sum
-  refine ⟨-∑ k ∈ range i, (i ! / (k + 1)! : ℕ) * (i + 1).choose k * c k, ?_⟩
-  rw [factorial_succ, Nat.cast_mul, cast_succ, mul_comm (i + 1 : ℚ), mul_assoc, h_rec, mul_neg,
-    mul_sum, Int.cast_neg, Int.cast_sum]
-  refine congr_arg Neg.neg (sum_congr rfl fun k hk ↦ ?_)
-  have h_fact : ((i ! / (k + 1)! : ℕ) : ℚ) * (k + 1)! = i ! :=
-    mod_cast Nat.div_mul_cancel (factorial_dvd_factorial (mem_range.mp hk))
-  rw [← h_fact, Int.cast_mul, Int.cast_mul, hc k (mem_range.mp hk), Int.cast_natCast,
-    Int.cast_natCast]
+  -- `primorial (i + 1) Bᵢ` is an integer, by von Staudt–Clausen.
+  obtain ⟨z, hz⟩ := TauCeti.exists_intCast_eq_primorial_mul_bernoulli (le_refl i)
+  obtain ⟨d, hd⟩ := primorial_dvd_factorial (i + 1)
+  refine ⟨z * d, ?_⟩
+  rw [hd, Nat.cast_mul, Int.cast_mul, hz, Int.cast_natCast]
   ring
 
 /-- The polynomial `(e + 1)! N ^ (e + 2) (B_{e+2}(X / N) - B_{e+2}(0))` has integer coefficients. -/
@@ -152,59 +150,21 @@ structure IsStickelbergerBound (X : ℕ) : Prop where
       (m : O) ∣
         (c ^ (e + 1) - 1) * X - 2 * w * ∑ a ∈ range (N * m), ↑(c * a / (N * m)) * (a ^ e * ψ a)
 
-/-- Trivial zeros: for a complex Dirichlet character χ mod N, not necessarily primitive, and
-e ≥ 1, L(χ, −e) = 0 exactly when χ(−1) = (−1)^e. -/
-lemma LFunction_neg_nat_eq_zero_iff (χ : DirichletCharacter ℂ N) (he : e ≠ 0) :
-    χ.LFunction (-e) = 0 ↔ χ (-1) = (-1) ^ e := by
-  -- As `L(χ⁻¹, 1 + e) ≠ 0`, the symmetry of the zeros leaves only the poles of the gamma factor;
-  -- `-e` is one exactly when `e` has the parity of `χ`. Conversely, at a pole `gammaFactor` has
-  -- the value `0`, so the quotient of the completed `L`-function by it is `0`.
-  have h_symmetry := gammaFactor_eq_zero_or_LFunction_one_sub_eq_zero χ (-e)
-  simp_all [LFunction_ne_zero_of_one_le_re, LFunction_eq_completed_div_gammaFactor, gammaFactor,
-    ite_eq_iff, Gammaℝ_eq_zero_iff]
-  norm_cast at *
-  grind [e.even_or_odd', χ.even_or_odd, neg_one_pow_eq_ite, Even.eval_neg, Odd.eval_neg]
-
-/-- Hurwitz's formula for the twisted Bernoulli sums. Let `χ` be a complex Dirichlet character
-mod `N`, let `e ≥ 1`, and let `β a` be the integer `(e + 2)! N ^ (e + 1) B_{e+1}(a / N)`. Then
-`∑ χ(a) β a = -(e + 2)! (e + 1) N L(χ, -e)`, the sum over `0 ≤ a < N`. -/
-theorem sum_mul_bernoulli_eq_neg_mul_LFunction (χ : DirichletCharacter ℂ N) (he : e ≠ 0)
-    (β : ℕ → ℤ) (hβ : ∀ a : ℕ,
+/-- The twisted Bernoulli sums are generalised Bernoulli numbers. Let `χ` be a Dirichlet character
+mod `N` with values in a `ℚ`-algebra, let `e ≥ 1`, and let `β a` be the integer
+`(e + 2)! N ^ (e + 1) B_{e+1}(a / N)`. Then `∑ χ(a) β a = (e + 2)! N B_{e+1,χ}`, the sum over
+`0 ≤ a < N`. -/
+lemma sum_mul_bernoulli_eq_generalizedBernoulli {R : Type*} [CommRing R] [Algebra ℚ R]
+    (χ : DirichletCharacter R N) (he : e ≠ 0) (β : ℕ → ℤ) (hβ : ∀ a : ℕ,
       (β a : ℚ) = (e + 2)! * N ^ (e + 1) * (Polynomial.bernoulli (e + 1)).eval ((a : ℚ) / N)) :
-    ∑ a : ZMod N, χ a * β a.val = -((e + 2)! * (e + 1) * N * χ.LFunction (-e)) := by
-  -- `L(χ, -e) = N ^ e ∑ χ(a) ζ(a / N, -e)`, and `ζ(x, -e) = -B_{e+1}(x) / (e + 1)`.
-  have h_term (a : ZMod N) : (β a.val : ℂ) =
-      -((e + 2)! * (e + 1) * N ^ (e + 1) * HurwitzZeta.hurwitzZeta (toAddCircle a) (-e)) := by
-    have h_mem : ((a.val : ℝ) / N) ∈ Set.Icc (0 : ℝ) 1 :=
-      ⟨by positivity, div_le_one_of_le₀ (mod_cast a.val_le) (by positivity)⟩
-    have h_cast : (β a.val : ℂ) =
-        (e + 2)! * N ^ (e + 1) * aeval ((a.val : ℂ) / N) (Polynomial.bernoulli (e + 1)) := by
-      simpa only [map_mul, ← aeval_algebraMap_apply_eq_algebraMap_eval, map_intCast, map_natCast,
-        map_pow, map_div₀] using congr_arg (algebraMap ℚ ℂ) (hβ a.val)
-    have h_succ : (e + 1 : ℂ) ≠ 0 := cast_add_one_ne_zero e
-    rw [h_cast, toAddCircle_apply, HurwitzZeta.hurwitzZeta_neg_nat he h_mem, eval_map_algebraMap]
-    push_cast
-    field
-  have h_LFunction : χ.LFunction (-e) =
-      N ^ e * ∑ a : ZMod N, χ a * HurwitzZeta.hurwitzZeta (toAddCircle a) (-e) := by
-    simp [DirichletCharacter.LFunction, ZMod.LFunction]
-  rw [h_LFunction, mul_sum, mul_sum, ← sum_neg_distrib]
+    ∑ a : ZMod N, χ a * β a.val = (e + 2)! * N * χ.generalizedBernoulli (e + 1) := by
+  rw [generalizedBernoulli_eq_pow_mul_sum_bernoulli_eval χ (by omega), add_tsub_cancel_right,
+    mul_sum, mul_sum]
   refine sum_congr rfl fun a _ ↦ ?_
-  rw [h_term]
+  have h := congr_arg (algebraMap ℚ R) (hβ a.val)
+  simp only [map_intCast, map_mul, map_pow, map_natCast] at h
+  rw [h]
   ring
-
-/-- The twisted Bernoulli sums of the right parity are nonzero. Let `χ` be a complex Dirichlet
-character mod `N` with `χ(-1) = -(-1) ^ e`, let `e ≥ 1`, and let `β a` be the integer
-`(e + 2)! N ^ (e + 1) B_{e+1}(a / N)`. Then `∑ χ(a) β a ≠ 0`, the sum over `0 ≤ a < N`. -/
-theorem sum_mul_bernoulli_ne_zero (χ : DirichletCharacter ℂ N) (he : e ≠ 0)
-    (hχ : χ (-1) = -(-1) ^ e) (β : ℕ → ℤ) (hβ : ∀ a : ℕ,
-      (β a : ℚ) = (e + 2)! * N ^ (e + 1) * (Polynomial.bernoulli (e + 1)).eval ((a : ℚ) / N)) :
-    ∑ a : ZMod N, χ a * β a.val ≠ 0 := by
-  have h_LFunction_ne : χ.LFunction (-e) ≠ 0 := by
-    rw [Ne, LFunction_neg_nat_eq_zero_iff N e χ he, hχ, neg_eq_self]
-    simp
-  simp [sum_mul_bernoulli_eq_neg_mul_LFunction N e χ he β hβ, h_LFunction_ne, factorial_ne_zero,
-    cast_add_one_ne_zero, ne N]
 
 omit [NeZero N] in
 /-- Voronoi's congruence, twisted by a Dirichlet character χ mod N. For f = N m and c ≡ 1 mod N
@@ -286,44 +246,27 @@ theorem voronoi_congruence_bernoulli {O : Type*} [CommRing O] [HasUniqueDiv O]
   simp only [h_range, natCast_zmod_val, nsmul_eq_mul, Nat.cast_mul, mul_comm _ (χ _)] at hw hv ⊢
   linear_combination (c ^ (e + 1) - 1) * hw - (e + 2)! * hv
 
-/-- A matrix whose entry at `(s, t)` depends only on `t / s` has every character as an
-eigenvector. -/
-lemma mulVec_mulChar_eq_sum_smul (g : ZMod N → ℤ) (O : Type) [CommRing O] (ψ : MulChar (ZMod N) O) :
-    (of fun s t : (ZMod N)ˣ ↦ g (t / s).val).map (↑) *ᵥ (fun t : (ZMod N)ˣ ↦ ψ t.val) =
-      (∑ t : ZMod N, ψ t * g t) • fun t : (ZMod N)ˣ ↦ ψ t.val := by
-  ext s
-  rw [mulVec, dotProduct, ← Equiv.sum_comp (.mulLeft s), Pi.smul_apply, smul_eq_mul, sum_mul]
-  -- Sum over the units only: `ψ` vanishes on the other residues.
-  apply sum_of_injOn (↑) Units.val_injective.injOn
-  · exact fun u _ ↦ mem_coe.mpr (mem_univ (u : ZMod N))
-  · intro i _ hi
-    have h_not_unit : ¬IsUnit i := fun ⟨u, hu⟩ ↦ hi ⟨u, by simp, hu⟩
-    simp [ψ.map_nonunit h_not_unit]
-  · -- The term at `s i` is the term at `i` once `s` cancels in `(s i) / s`.
-    intro i _
-    simp [mul_div_cancel_left s i]
-    ring
-
-/-- Such a matrix has nonzero determinant if no complex eigenvalue `∑ χ t * g t` is zero. -/
-lemma det_ne_zero_of_forall_sum_mul_ne_zero (g : ZMod N → ℤ)
-    (hg : ∀ χ : DirichletCharacter ℂ N, ∑ t : ZMod N, χ t * g t ≠ 0) :
-    (of fun s t : (ZMod N)ˣ ↦ g (t / s).val).det ≠ 0 := by
-  -- A vector in the left kernel is orthogonal to all characters, so it is zero.
-  have h_eigen := mulVec_mulChar_eq_sum_smul N g ℂ
-  set T : Matrix (ZMod N)ˣ (ZMod N)ˣ ℤ := of fun s t ↦ g (t / s).val
-  intro h_det
-  obtain ⟨w, hw_ne, hw⟩ :
-      ∃ w ≠ (0 : (ZMod N)ˣ → ℂ), w ᵥ* (T.map (↑) : Matrix (ZMod N)ˣ (ZMod N)ˣ ℂ) = 0 :=
-    exists_vecMul_eq_zero_iff.mpr ((Int.cast_det T).symm.trans (by simp [h_det]))
-  have h_orth (χ : DirichletCharacter ℂ N) : w ⬝ᵥ (fun t : (ZMod N)ˣ ↦ χ t.val) = 0 := by
-    simpa [dotProduct_mulVec, hw, hg] using congr_arg (dotProduct w) (h_eigen χ)
-  refine hw_ne (funext fun a ↦ ?_)
-  -- Sum the orthogonality relations against `χ a⁻¹`; by orthogonality of characters this is
-  -- `φ N * w a`.
-  have h_sum : ∑ χ : DirichletCharacter ℂ N, (w ⬝ᵥ fun t : (ZMod N)ˣ ↦ χ t.val) * χ a⁻¹ = 0 := by
-    simp [h_orth]
-  simpa [dotProduct, sum_mul, sum_comm, ← mul_sum, mul_assoc, ← map_mul, NeZero.ne N,
-    sum_characters_eq, -map_units_inv, Units.val_inj] using h_sum
+/-- A group matrix `(g(t / s))_{s,t}` of `(ZMod N)ˣ` over `ℂ` has nonzero determinant if no
+eigenvalue `∑ χ(u) g(u)` is zero. This is one direction of `TauCeti.det_of_div_ne_zero_iff`, proved
+here to avoid the import closure of its module. -/
+lemma det_ne_zero_of_forall_sum_mul_ne_zero (g : (ZMod N)ˣ → ℂ)
+    (hg : ∀ χ : DirichletCharacter ℂ N, ∑ u : (ZMod N)ˣ, χ u * g u ≠ 0) :
+    (of fun s t : (ZMod N)ˣ ↦ g (t / s)).det ≠ 0 := by
+  -- A vector in the left kernel is orthogonal to all characters, so it is zero by Fourier
+  -- inversion on the units.
+  intro hA
+  obtain ⟨w, hw0, hw⟩ := exists_vecMul_eq_zero_iff.2 hA
+  have h_orth (χ : DirichletCharacter ℂ N) : w ⬝ᵥ (fun t ↦ χ t) = 0 := by
+    have h := congr_arg (dotProduct w)
+      (TauCeti.Matrix.of_div_mulVec_monoidHom g ((χ : ZMod N →* ℂ).comp (Units.coeHom _)))
+    rw [dotProduct_mulVec, hw, zero_dotProduct, dotProduct_smul, smul_eq_mul] at h
+    simp only [MulChar.coe_comp_coeHom_apply] at h
+    exact (mul_eq_zero.1 h.symm).resolve_left (hg χ)
+  simp only [dotProduct] at h_orth
+  refine hw0 (funext fun a ↦ ?_)
+  have h := TauCeti.card_units_mul_apply_eq_sum_mulChar_units w a
+  rw [sum_eq_zero fun χ _ ↦ by rw [h_orth χ⁻¹, mul_zero]] at h
+  exact (mul_eq_zero.1 h).resolve_left (Nat.cast_ne_zero.2 Nat.card_pos.ne')
 
 /-- For `e ≥ 1` and `0 ≤ x ≤ 1`, the Bernoulli function satisfies `|B_{e+1}(x)| < 17 (e + 1)!`,
 by its Fourier series. -/
@@ -414,22 +357,33 @@ lemma exists_isStickelbergerBound (he : e ≠ 0) :
   let g (t : ZMod N) : ℤ :=
     2 * b t.val + (if t = 1 then (-1) ^ e else 0) + if t = -1 then 1 else 0
   let T : Matrix (ZMod N)ˣ (ZMod N)ˣ ℤ := of fun s t ↦ g (t / s).val
-  -- No complex eigenvalue is zero: the sum `∑ χ t * b t`, a nonzero multiple of `L(χ, -e)`,
+  have hT_cast (S : Type) [CommRing S] :
+      (T.det : S) = (of fun s t : (ZMod N)ˣ ↦ (g (t / s).val : S)).det := by
+    rw [← eq_intCast (Int.castRingHom S), RingHom.map_det]
+    rfl
+  -- No complex eigenvalue is zero: the sum `∑ χ t * b t` is `(e + 2)! N B_{e+1,χ}`, which
   -- vanishes exactly when `χ (-1) = (-1) ^ e`, that is, when `(-1) ^ e + χ (-1)` is `±2`, not `0`.
   have h_eigen_ne (χ : DirichletCharacter ℂ N) : ∑ t, χ t * g t ≠ 0 := by
     have h_value : ∑ t, χ t * g t = 2 * ∑ t : ZMod N, χ t * b t.val + ((-1) ^ e + χ (-1)) := by
       simp [g, mul_add, sum_add_distrib, mul_sum, mul_left_comm, add_assoc]
-    obtain hχ | hχ : χ (-1) = -(-1) ^ e ∨ χ (-1) = (-1) ^ e := by
-      grind [even_or_odd χ, neg_one_pow_eq_ite, Even.eval_neg, Odd.eval_neg]
-    · simpa [h_value, hχ] using sum_mul_bernoulli_ne_zero N e χ he hχ b hb_rat
-    · have h_zero : χ.LFunction (-e) = 0 := (LFunction_neg_nat_eq_zero_iff N e χ he).mpr hχ
-      simp [h_value, sum_mul_bernoulli_eq_neg_mul_LFunction N e χ he b hb_rat, h_zero, hχ,
-        ← two_mul]
+    rw [h_value, sum_mul_bernoulli_eq_generalizedBernoulli N e χ he b hb_rat]
+    rcases χ.apply_neg_one_eq_neg_one_pow_or e with hχ | hχ
+    · rw [generalizedBernoulli_eq_zero_of_apply_neg_one_eq_neg (.inl (by omega))
+        (by rw [hχ, pow_succ]; ring), hχ]
+      simp [← two_mul]
+    · rw [hχ, add_neg_cancel, add_zero]
+      refine mul_ne_zero two_ne_zero (mul_ne_zero (by simp [factorial_ne_zero, hN]) ?_)
+      exact generalizedBernoulli_ne_zero (by omega) (by rw [hχ, pow_succ]; ring)
+  have hT_ne : T.det ≠ 0 := by
+    have h := det_ne_zero_of_forall_sum_mul_ne_zero N (fun u : (ZMod N)ˣ ↦ (g u.val : ℂ)) fun χ ↦ by
+      rw [← χ.sum_mul_eq_sum_units fun t ↦ (g t : ℂ)]
+      exact h_eigen_ne χ
+    rw [← hT_cast] at h
+    exact_mod_cast h
   let X : ℕ := ((1 + N) ^ e - 1) * ((1 + N) ^ (e + 1) - 1) *
     (((1 + N + N) ^ e - 1) * ((1 + N + N) ^ (e + 1) - 1) * T.det.natAbs)
   refine ⟨X, ?_, ?_, fun {l} hl ↦ ?_, fun {c} hc_mod O _ _ _ χ hχ ↦ ?_⟩
-  · simpa [X, tsub_eq_zero_iff_le, add_assoc, hN, he] using det_ne_zero_of_forall_sum_mul_ne_zero N
-      g h_eigen_ne
+  · simpa [X, tsub_eq_zero_iff_le, add_assoc, hN, he] using hT_ne
   · have hb_lt (t : ℕ) (ht : t ≤ N) : |b t| < M * 17 := by
       have h_bound : |bernoulliFun (e + 1) (t / N)| < (e + 1)! * 17 :=
         abs_bernoulliFun_lt e he ⟨by positivity, div_le_one_of_le₀ (mod_cast ht) (by positivity)⟩
@@ -442,12 +396,11 @@ lemma exists_isStickelbergerBound (he : e ≠ 0) :
     refine mul_sub_one_mul_le_two_pow_of_le N e ?_
     simpa [← Int.ofNat_le, M] using T.det_le (abv := .abs) h_entry
   · exact exists_modEq_one_coprime_dvd_of_prime N e hl T.det.natAbs
-  -- The eigenvalue divides `det T` (apply the adjugate), hence `X`.
-  have h_eigen : T.map (↑) *ᵥ (fun t ↦ χ t.val) = (∑ t, χ t * g t) • fun t ↦ χ t.val :=
-    mulVec_mulChar_eq_sum_smul N g O χ
-  have h_adj := congr_arg (adjugate (T.map (↑)) *ᵥ ·) h_eigen
-  have h_dvd : ∑ t, χ t * g t ∣ (T.det : O) := ⟨_, by
-    simpa [adjugate_mul, mulVec_smul, ← Int.cast_det, smul_mulVec] using congr_fun h_adj 1⟩
+  -- The eigenvalue divides `det T`, hence `X`.
+  have h_dvd : ∑ t, χ t * g t ∣ (T.det : O) := by
+    rw [χ.sum_mul_eq_sum_units fun t ↦ (g t : O), hT_cast]
+    simpa using TauCeti.Matrix.sum_mul_dvd_det_of_div (fun u : (ZMod N)ˣ ↦ (g u.val : O))
+      ((χ : ZMod N →* O).comp (Units.coeHom _))
   obtain ⟨u, hu⟩ : ∑ t, χ t * g t ∣ (X : O) :=
     h_dvd.trans (by simp [X, ← mul_assoc, ← sign_mul_self])
   -- By the parity `hχ` the eigenvalue is `2 ∑ χ t * b t`; apply Voronoi's congruence.

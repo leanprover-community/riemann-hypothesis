@@ -106,7 +106,7 @@ lemma IsCutBessel.continuous_normalizedCellIntegral (hF : IsCutBessel F rep ρ s
         {c | Γ.IsHead 𝔰.ϱ c} := by
     refine (PiLp.continuous_toLp ..).comp_continuousOn (continuousOn_pi.2 fun i ↦
       continuousOn_integral_of_compact_support (Γ.isCompact_hasMatrixSize (j := 60 * 𝔰.n ^ 2))
-        (by fun_prop) fun c y hc y_large ↦ ?_)
+        (Continuous.continuousOn (by fun_prop)) fun c y hc y_large ↦ ?_)
     -- Off the compact set one of the two values of `F` in the integrand is zero.
     have h_zero : F y = 0 ∨ F ((weylElem 𝔰.ϱ c * cellChart 𝔰 𝔰.ϱ (c 𝔰.ϱ))⁻¹ * y) = 0 := by
       by_contra! ⟨hy, hy'⟩
@@ -291,7 +291,7 @@ lemma sq_lintegral_enorm_inner_le {A B : 𝔰.G₁ → EuclideanSpace ℂ I} (hA
   rw [← h_translate]
   refine sq_lintegral_le (by fun_prop) (by fun_prop) fun y ↦ ?_
   rw [← mul_pow]
-  exact pow_le_pow_left' (coe_mono (nnnorm_inner_le_nnnorm ..)) 2
+  exact pow_le_pow_left' (coe_mono (nnNorm_inner_le_nnNorm ..)) 2
 
 /-!
 ## The mass on the bottom floor, decay, and the local bounds
@@ -346,7 +346,7 @@ lemma IsCutBessel.enorm_quotientPairing_sub_le (hF : IsCutBessel F rep ρ s b W 
         quotientPairing]
     _ ≤ ∫⁻ y, ‖⟪F y - W y, F (y * x)⟫_ℂ‖ₑ + ‖⟪W y, F (y * x) - W (y * x)⟫_ℂ‖ₑ
         ∂besselQuotMeasure :=
-      (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono fun y ↦ enorm_add_le _ _)
+      (eNorm_integral_le_lintegral_eNorm _).trans (lintegral_mono fun y ↦ eNorm_add_le _ _)
     _ ≤ 2 * (ε * card I) := by grw [lintegral_add_left (by fun_prop), first_le, second_le, two_mul]
 
 /-- For a cut Bessel function `F` and `x` in G₁, the number `formIntegrandL1Norm` that bounds the
@@ -391,7 +391,7 @@ lemma IsCutBessel.formIntegrandL1Norm_zero_eq (hF : IsCutBessel F rep ρ s b W f
     simp [formIntegrandL1Norm, descConv, ← partialCorrelationProduct_eq hF.gauge
       hF.isCut_complexData,
       partialCorrelationProduct, sq, weylRatio]
-  rw [h_square, h_pairing, enorm_smul, mul_pow, Real.enorm_of_nonneg toReal_nonneg,
+  rw [h_square, h_pairing, eNorm_smul, mul_pow, Real.eNorm_of_nonneg toReal_nonneg,
     ofReal_toReal ratio_ne_top]
 
 /-- Minkowski's inequality in `L²`: if `g` and `h` have `L²` norms at most `α` and `β`, then `g + h`
@@ -520,7 +520,7 @@ lemma IsCutBessel.setLIntegral_quotientPairing_sq_le (hF : IsCutBessel F rep ρ 
   calc
     _ ≤ ∫⁻ x in C, (‖quotientPairing W W x‖ₑ + 2 * (ε * card I)) ^ 2 := by
       refine lintegral_mono fun x ↦ pow_le_pow_left' ?_ 2
-      grw [← hF.enorm_quotientPairing_sub_le x, ← enorm_add_le, add_sub_cancel]
+      grw [← hF.enorm_quotientPairing_sub_le x, ← eNorm_add_le, add_sub_cancel]
     _ ≤ (α + .ofReal (b⁻¹ ^ 12) * α) ^ 2 :=
       lintegral_add_sq_le (by fun_prop) aemeasurable_const h_schur h_change
     _ = (1 + .ofReal (b⁻¹ ^ 12)) ^ 2 * (.ofReal deg⁻¹ * card I ^ 2) := by
@@ -634,7 +634,7 @@ lemma IsCutBessel.norm_floorForm_zero_le (hF : IsCutBessel F rep ρ s b W f) {de
             (ofReal_le_ofReal (hF.scaledVolumeRatio_mul_pow_div_pow_le deg_pos deg_le))
   rw [← ofReal_le_ofReal_iff (by positivity)]
   calc
-    _ = c * ‖hF.complexData.floorForm 0 p q F 1‖ₑ := by rw [ofReal_norm, enorm_mul]
+    _ = c * ‖hF.complexData.floorForm 0 p q F 1‖ₑ := by rw [ofReal_norm, eNorm_mul]
     _ ≤ c * ∫⁻ x, Φ x ∂μ := by grw [enorm_floorForm_le, density_eq, one_mul]
     _ = c * ∫⁻ x in C, Φ x ∂μ + c * ∫⁻ x in Cᶜ, Φ x ∂μ := by
       rw [← mul_add, lintegral_add_compl _ (measurableSet_positionBall _)]

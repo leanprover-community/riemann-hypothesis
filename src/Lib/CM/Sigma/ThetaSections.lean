@@ -527,7 +527,7 @@ theorem exists_int_twistedTranslate_theta_eq_neg_one_zpow {l : ℂ} (hl : l ∈ 
   have h_mult : C.multiplier l = (-1 : ℂ) ^ n :=
     calc _ = cexp (Real.pi * I * C.hermitianForm.riemannForm (conj (quadGen d) * l) l) := by
           simp [C.multiplier_eq_canonicalMultiplier hl, ThetaTori.canonicalMultiplier]
-      _ = (-1 : ℂ) ^ n := by rw [hn, ofReal_intCast, mul_comm, exp_int_mul, exp_pi_mul_I]
+      _ = (-1 : ℂ) ^ n := by rw [hn, ofReal_intCast, mul_comm, exp_intCast_mul, exp_pi_mul_I]
   exact ⟨n, h_value, by rw [C.twistedTranslate_theta_of_mem hl, h_mult]⟩
 
 /-- Let C, C′ be CM data for a prime d ≡ 7 mod 8, with aΛ ⊂ Λ′ and a·ā·area(Λ) = N·area(Λ′), N
@@ -877,7 +877,7 @@ namespace New.CMLattice
 
 variable {d : ℕ} (C : CMLattice d) {K : Type*} [Field K] (ι : ℂ →+* K)
 
-@[simp ↓]
+@[simp↓]
 lemma constantCoeff_taylorVia (f : ℂ → ℂ) : constantCoeff (taylorVia ι f) = ι (f 0) := by
   simp [taylorVia, ← coeff_zero_eq_constantCoeff_apply, taylorAtZero]
 

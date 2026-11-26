@@ -16,14 +16,20 @@ name: challenge files
 #   `lean_exe` entries and the `[cache]` block: the libraries, `srcDir`, Lean's arguments and the
 #   rest stay as they are;
 # - changes the settings of `lake-manifest.json` other than its packages, changes the address of
-#   Mathlib there, or adds a package, or changes one in more than its revision, unless the package
-#   is then a Git repository of leanprover-community or leanprover on GitHub. A package that the
-#   base branch had where the pull request branched off may stay as it is: Tau Ceti is one;
+#   Mathlib there, or lists a package that is not a Git repository of leanprover-community or
+#   leanprover on GitHub, nor one of the repositories in `TRUSTED_REPOS` below (Tau Ceti);
 # - names a toolchain in `lean-toolchain` other than a release of leanprover/lean4;
 # - adds files under `.lake/`.
 #
 # A Mathlib or toolchain bump passes: it changes `rev`, the packages' revisions and
 # `lean-toolchain`. label-pr.yml labels it `changes-lake`.
+#
+# A dependency from anywhere else is trusted by its exact address, not by its organisation, and not
+# because the base branch lists it: a pull request picks its base branch and its history, so a check
+# relative to the base would accept whatever some branch of this repository lists. Adding one is a
+# maintainer's decision, made in a pull request of its own that adds the address to `TRUSTED_REPOS`
+# and nothing else. GitHub runs main's copy of this workflow, so the pull request that adds the
+# dependency passes only after that one has landed.
 #
 # GitHub runs the default branch's copy of this workflow for every pull request, whatever branch
 # it is based on, and nothing from the pull request: the job fetches commits and trees, without
@@ -48,6 +54,13 @@ on:
 permissions:
   contents: read
   pull-requests: read
+
+# Only the result for a pull request's newest head matters, and the job reads the pull request's
+# current base and head from the API, so a newer run, whether from a push or a dispatch, makes an
+# older one for the same pull request redundant.
+concurrency:
+  group: challenge-files-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: true
 
 jobs:
   frozen:
@@ -120,6 +133,9 @@ jobs:
           # What a pull request may change in lakefile.toml, besides the `rev` of a `require`.
           FREE = {"leanOptions", "defaultTargets", "lean_exe", "cache"}
           TRUSTED = ("https://github.com/leanprover-community/", "https://github.com/leanprover/")
+          # Repositories outside those two that a maintainer has agreed to depend on, each by its
+          # exact address as it appears in lake-manifest.json. See the note at the top of this file.
+          TRUSTED_REPOS = {"https://github.com/TauCetiProject/TauCeti"}
           errors = []
 
           def error(path, message):
@@ -149,10 +165,6 @@ jobs:
               packages = {package.get("name"): package for package in data.get("packages", [])}
               return {key: value for key, value in data.items() if key != "packages"}, packages
 
-          def source(package):
-              """A manifest entry without its revision: where Lake gets the package and how it reads it."""
-              return {key: value for key, value in package.items() if key not in ("rev", "inputRev")}
-
           try:
               if any(read(fork, "lakefile.lean") != read(head, "lakefile.lean") for fork in forks):
                   error("lakefile.lean", "This pull request adds or changes lakefile.lean, which Lake reads instead of lakefile.toml.")
@@ -160,22 +172,16 @@ jobs:
               if any(lakefile(read(fork, "lakefile.toml") or "") != new for fork in forks):
                   error("lakefile.toml", "This pull request changes lakefile.toml other than in Mathlib's rev, leanOptions, defaultTargets, lean_exe or [cache].")
               settings, packages = manifest(read(head, "lake-manifest.json") or "{}")
-              before = []
               for fork in forks:
                   old_settings, old_packages = manifest(read(fork, "lake-manifest.json") or "{}")
-                  before.append(old_packages)
                   if old_settings != settings:
                       error("lake-manifest.json", "This pull request changes the settings of lake-manifest.json.")
                   if (old_packages.get("mathlib") or {}).get("url") != (packages.get("mathlib") or {}).get("url"):
                       error("lake-manifest.json", "This pull request changes where Mathlib comes from.")
               for name, package in packages.items():
-                  # The base branch may have a package from elsewhere, as main has Tau Ceti, and then
-                  # every pull request branched off it lists that package too. Only a package that
-                  # the pull request adds, or changes in more than its revision, has to be trusted.
-                  if before and all(name in old and source(old[name]) == source(package) for old in before):
-                      continue
-                  if package.get("type") != "git" or not str(package.get("url")).startswith(TRUSTED):
-                      error("lake-manifest.json", f"The package {name}, which this pull request adds or changes, is not a Git repository of leanprover-community or leanprover on GitHub.")
+                  url = str(package.get("url"))
+                  if package.get("type") != "git" or not (url.startswith(TRUSTED) or url in TRUSTED_REPOS):
+                      error("lake-manifest.json", f"The package {name} is not a Git repository of leanprover-community or leanprover on GitHub, nor one listed in TRUSTED_REPOS in challenge-files.yml.")
               toolchain = (read(head, "lean-toolchain") or "").strip()
               if not re.fullmatch(r"leanprover/lean4:v[0-9][0-9A-Za-z.+-]*", toolchain):
                   error("lean-toolchain", f"The toolchain {toolchain!r} is not a release of leanprover/lean4.")

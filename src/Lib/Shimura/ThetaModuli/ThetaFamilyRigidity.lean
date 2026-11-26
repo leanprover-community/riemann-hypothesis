@@ -381,7 +381,7 @@ lemma exists_isTangentLog {b : ℤ} (hb : y.baseHom (D.β - b) = 0) :
     { map_smul := fun c ↦ ?_
       smul_eq_zero_of_eq_zero := fun h_log_zero ↦ (p t).injective ?_
       map_add := fun x' hx' ↦ by simp [h_linear h_tiny, (h_tiny_p hx').smul]
-      infinitesimal := by simp [h_chart.map_tangentCoords_eq_zero h_zero_mem h_tiny]
+      infinitesimal := by simp [IsEtaleChart.map_tangentCoords_eq_zero h_zero_mem h_tiny]
       naturality := fun C₁ χ t₁ a ha ↦ ?_ }
   · -- `c` acts on the line of `Y` by `baseHom c`
     have h_eigen_k :

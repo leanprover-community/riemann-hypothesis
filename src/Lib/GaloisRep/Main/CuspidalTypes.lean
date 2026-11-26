@@ -351,7 +351,7 @@ lemma New.diagonal_mem_span_range_blockDiagonal {k G : Type} [Field k] [Monoid G
 continuous representation `σ` with non-degenerate trace form has as trace the sum of the traces of
 the `ρ τ`; it acts on the rows `Σ τ, (ρ τ).Index` of their block diagonal sum. -/
 lemma New.GaloisRep.exists_continuous_isTraceNondeg_trace_eq_sum {ℓ : ℕ} [ThePrime ℓ]
-    [PadicIso ℓ] {E ι : Type} [Field E] [EmbeddedNumberField E] [Fintype ι] [DecidableEq ι]
+    {E ι : Type} [Field E] [EmbeddedNumberField E] [Fintype ι] [DecidableEq ι]
     (ρ : ι → PadicRep Gal(Ω/E) ℓ) (ρ_cont : ∀ τ : ι, Continuous (ρ τ).rep) :
     ∃ σ : GalRep ℓ E (Σ τ : ι, (ρ τ).Index),
       Continuous σ ∧
@@ -376,7 +376,7 @@ in square matrices of size `∑ i, d i`. Suppose each `f' (piMatrixUnit i)` has 
 `piMatrixUnit i` is the matrix unit `E₀₀` in factor `i` and zero elsewhere. If `u` is not a
 Hodge–Tate jump at `γ` of the representation `f' ∘ s` restricted to the decomposition group of `A`,
 then it is not a jump at `γ` of `σ` restricted to that group. -/
-lemma New.GaloisRep.jump_eq_zero_of_jump_eq_zero_of_trace_eq_one {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+lemma New.GaloisRep.jump_eq_zero_of_jump_eq_zero_of_trace_eq_one {ℓ : ℕ} [ThePrime ℓ]
     {E m : Type} [Field E] [EmbeddedNumberField E] [Fintype m] [DecidableEq m] {b : ℕ}
     {d : Fin b → ℕ} [∀ i : Fin b, NeZero (d i)] {σ : GalRep ℓ E m}
     {s : Gal(Ω/E) →* PiMatrix (PadicAlgCl ℓ) d}

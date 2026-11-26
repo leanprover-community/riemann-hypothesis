@@ -436,7 +436,8 @@ lemma mem_lineStabilizer_iff (g : G E t') :
       rw [← span_singleton_eq_span_singleton, eq_comm]
       simp [splittingLine, Subgroup.smul_def, Units.smul_def, smul_span]
     simp only [h_span, h_frame, ← V'.vecAtPoint_injective.eq_iff, ← ratEmbed_mulVec_vecAtPoint]
-    simp [Units.smul_def, funext_iff, mul_comm (toAdele _), eq_comm]
+    simp [Units.smul_def, funext_iff]
+    exact exists_congr fun _ ↦ forall_congr' fun _ ↦ by rw [mul_comm, eq_comm]
   simp only [lineStabilizer, Space.Γ, Subgroup.mem_map, MonoidHom.mem_range, h_rat]
   grind
 

@@ -72,7 +72,7 @@ both lifts reduce to the structure map, and the lift is unique (`PadicTest.eq_un
 lemma PadicTest.uniqueLift_comp_eq_uniqueLift_twist [ThePrime p] (g : Gp p) (c : PadicTest) :
     c.uniqueLift.comp (g.toAlgHom.restrictScalars ℤ_[p]) = (PadicTest.twist g c).uniqueLift := by
   refine (PadicTest.twist g c).eq_uniqueLift _ fun z ↦ ?_
-  rw [c.genericStructureMap_twist, smul_coe_Cp]
+  rw [c.genericStructureMap_twist, UniformSpace.Completion.algEquiv_smul_coe]
   exact c.thickeningProj_uniqueLift (g z)
 
 /-- For a `p`-adic test `c` with ring `R`, let `ι = mulMu` be the additive map from `K = R[1/p]` to
@@ -94,7 +94,7 @@ lemma thickeningOver.mulMu_twist [EmbeddedInQpBar p k] (g : Gp p) (c : PadicTest
   have h_tw (a : Ainf) :
       algebraMap Ainf c.Thickening (g • a) = algebraMap Ainf c'.Thickening a := by
     refine congrArg (algebraMap (WittVector p c.TiltRing) c.Thickening) ?_
-    ext
+    ext : 1
     exact (congrArg _ (pow_one _)).trans (tiltMap_comp ..).symm
   have h_mu : mu = g • ((cyclotomicGp g⁻¹).val • mu + mu ^ 2 * a) :=
     inv_smul_eq_iff.mp (eq_add_of_sub_eq' ha)
@@ -187,7 +187,7 @@ theorem hodgeTateMap_galois_twist
       .mk fun (c : PadicTest) ↦
       CommAlg.homOfRingHom (.id c.GenericRing) fun (z : E) ↦ by
         symm
-        erw [c.genericStructureMap_twist, smul_coe_Cp, hg]
+        erw [c.genericStructureMap_twist, UniformSpace.Completion.algEquiv_smul_coe, hg]
         rfl
     restrictToPairs
         ((Comparison.of (PadicTest.twist g) (twistGenericCoeff g)).pull (whiskerRight τ N) n ξ :
@@ -236,7 +236,6 @@ theorem hodgeTateMap_galois_twist
   let u : TotalH (galTwist g ⋙ formCoeff) scalarCoeff :=
     TotalH.comp (TotalH.map (restrictAlong (galTwist g)) (contractionPow h)) β
   let s : formCoeff ⟶ formCoeff := toHodgeTest.whiskerLeft (HodgeTest.scaleModule t hodgeCoeff)
-
   have h_tw : pullbackAlong (twistForms g) u = contractionPow h := contractionPow_galTwist g h
   -- The class `y` comes from the Hodge class `x` over `E`, so its twist along `T` is its scaling
   -- by `t`.

@@ -2,6 +2,8 @@ module
 
 public import Lib.General.Algebra.MultivariatePolynomials
 public import New.UpperBound.ElementaryDivisors.TwistingData
+import TauCeti.Algebra.BigOperators.Finset.LayerCake
+import TauCeti.RingTheory.MvPolynomial.Symmetric.Alternant
 
 /-!
 # Few forms have only deep translates
@@ -220,26 +222,16 @@ lemma _root_.New.det_X_pow_ne_zero {ι σ R : Type*} [Fintype ι] [DecidableEq �
     {e : ι → ℕ} (he_inj : Function.Injective e) (he_pos : ∀ u : ι, e u ≠ 0) :
     (of fun u b : ι ↦ (X (v u b) : MvPolynomial σ R) ^ e u).det ≠ 0 := by
   classical
-  -- `d π` is the exponent of the monomial of the permutation `π`.
-  let d (π : Equiv.Perm ι) : σ →₀ ℕ := ∑ b : ι, Finsupp.single (v (π b) b) (e (π b))
-  have d_apply (π : Equiv.Perm ι) (b : ι) :
-      d π (v b b) = if v (π b) b = v b b then e (π b) else 0 := by
-    simp only [d, Finsupp.finsetSum_apply, Finsupp.single_apply]
-    exact Finset.sum_eq_single b (fun b' _ hb' ↦ ite_eq_right (mt (hv_index (π b') b b' b) hb'))
-      (by simp)
-  have h_distinct (π : Equiv.Perm ι) (hπ : d π = d 1) : π = 1 := by
-    ext b
-    have h_exponent : (if v (π b) b = v b b then e (π b) else 0) = e b := by
-      simpa [d_apply] using DFunLike.congr_fun hπ (v b b)
-    grind [he_inj.eq_iff]
-  have h_coeff : (of fun u b : ι ↦ (X (v u b) : MvPolynomial σ R) ^ e u).det.coeff (d 1) = 1 := by
-    have h_expand : (of fun u b : ι ↦ (X (v u b) : MvPolynomial σ R) ^ e u).det =
-        ∑ π : Equiv.Perm ι, π.sign • monomial (d π) 1 := by
-      simp [det_apply, d, X_pow_eq_monomial, monomial_sum_one]
-    rw [h_expand, coeff_sum, Finset.sum_eq_single 1 (fun π _ hπ ↦ by
-      simp [coeff_monomial, mt (h_distinct π) hπ]) (by simp)]
-    simp
-  exact fun h_zero ↦ by simp [h_zero] at h_coeff
+  have _ := he_pos
+  -- Collapse each column's variables `X (v u b)` to `X b` to get the alternant `det (X b ^ e u)`.
+  let φ : MvPolynomial σ R →ₐ[R] MvPolynomial ι R :=
+    aeval fun s ↦ if h : ∃ b u, v u b = s then X h.choose else 0
+  have hφ (u b : ι) : φ (X (v u b)) = X b := by
+    have h : ∃ b' u', v u' b' = v u b := ⟨b, u, rfl⟩
+    simpa [φ, h] using congrArg (X (R := R)) (hv_index _ _ _ _ h.choose_spec.choose_spec)
+  refine fun h_zero ↦ TauCeti.alternant_ne_zero_of_injective (R := R) he_inj ?_
+  rw [TauCeti.alternant_def, ← det_transpose, ← map_zero φ, ← h_zero, AlgHom.map_det]
+  exact congrArg det (Matrix.ext fun b u ↦ by simp [hφ])
 
 end DeepForms
 
@@ -774,21 +766,17 @@ lemma New.FrobeniusCycle.sum_finrank_deepForms_le (T : FrobeniusCycle N W K) [Ch
     obtain ⟨β, hβ, h_cost⟩ : ∃ β : Exponents N k n, F β ≠ 0 ∧ (d + 1 : ℕ) ≤ cost β :=
       T.exists_le_weight_of_mem_deepForms hk hF hF_ne
     exact ⟨β, mem_filter.2 ⟨mem_univ β, le_floor h_cost⟩, hβ⟩
-  have h_count (β : Exponents N k n) : (#{d ∈ range M | d < ⌊cost β⌋₊} : ℝ) ≤ cost β := by
-    have h_nonneg : 0 ≤ cost β := by
-      simp only [cost, weight_eq_sum]
-      positivity
-    have h_subset : {d ∈ range M | d < ⌊cost β⌋₊} ⊆ range ⌊cost β⌋₊ := by grind
-    exact (cast_le.2 ((card_le_card h_subset).trans_eq (card_range _))).trans (floor_le h_nonneg)
   have h_mean (x : Fin k × ZMod N) :
       ∑ β : Exponents N k n, (exponentOf β x : ℝ) = total * n / k := by
     rw [eq_div_iff hk_pos.ne', mul_comm, mul_sum_exponentOf]
   calc (∑ d ∈ range M, finrank K (T.deepForms k n r (d + 1)) : ℝ)
-      ≤ ∑ d ∈ range M, (#{β : Exponents N k n | d < ⌊cost β⌋₊} : ℝ) :=
-        sum_le_sum fun d _ ↦ cast_le.2 (h_rank d)
-    _ = ∑ β : Exponents N k n, (#{d ∈ range M | d < ⌊cost β⌋₊} : ℝ) := by
-        simp only [card_filter, cast_sum, Finset.sum_comm (s := range M)]
-    _ ≤ ∑ β : Exponents N k n, cost β := sum_le_sum fun β _ ↦ h_count β
+      ≤ ∑ β : Exponents N k n, (⌊cost β⌋₊ : ℝ) := by
+        exact_mod_cast (sum_le_sum fun d _ ↦ h_rank d).trans <|
+          (sum_le_sum_of_subset (range_mono (le_max_left M _))).trans_eq <|
+            sum_range_card_filter_lt univ _ fun β _ ↦
+              le_max_of_le_right (le_sup (f := fun β ↦ ⌊cost β⌋₊) (mem_univ β))
+    _ ≤ ∑ β : Exponents N k n, cost β :=
+        sum_le_sum fun β _ ↦ floor_le (by simp only [cost, weight_eq_sum]; positivity)
     _ = total * n / k * ∑ x : Fin k × ZMod N, c x := by
         simp only [cost, weight_eq_sum, nsmul_eq_mul, Finset.sum_comm (γ := Exponents N k n),
           ← Finset.sum_mul, h_mean, ← Finset.mul_sum]

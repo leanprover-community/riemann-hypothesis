@@ -112,7 +112,7 @@ lemma injective_pow_add_one_mul_pow (hp : p ≠ 2) :
     · simpa [Nat.dvd_add_right (dvd_pow_self p he.ne')] using h_prime.ne_one
   have h_val (e j : ℕ) : padicValNat p ((p ^ e + 1) * p ^ j) = j := by
     simp [Nat.padicValNat_def, Nat.multiplicity_mul, multiplicity_eq_zero_of_not_dvd (h_not_dvd e),
-      h_prime.ne_zero, Nat.multiplicity_prime_pow]
+      h_prime.ne_zero]
   rintro ⟨e, j⟩ ⟨e', j'⟩ (h : (p ^ e + 1) * p ^ j = (p ^ e' + 1) * p ^ j')
   obtain rfl : j = j' := by rw [← h_val e j, h, h_val]
   have h_pow : p ^ e = p ^ e' := by simpa [h_prime.ne_zero] using h
@@ -343,7 +343,7 @@ multiple of `π`. -/
 lemma dvd_of_hasSum {π a : valRingCp p} {f : ι → valRingCp p} (h_sum : HasSum f a)
     (hf : ∀ i : ι, π ∣ f i) : π ∣ a := by
   have h_closed : IsClosed {y : valRingCp p | π ∣ y} := by
-    simpa only [dvd_iff_norm_le] using isClosed_le continuous_subtype_val.norm continuous_const
+    simpa only [dvd_iff_norm_le] using isClosed_le continuous_subtypeVal.norm continuous_const
   exact h_closed.mem_of_tendsto h_sum (.of_forall fun t ↦ Finset.dvd_sum fun i _ ↦ hf i)
 
 /-- A convergent sum of power series over the valuation ring `valRingCp p` of `ℂ_[p]`, each

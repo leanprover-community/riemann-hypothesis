@@ -14,8 +14,6 @@ projection `Λ⁺` to this span are sums of lines.
 * `New.Grading.SpansLattice.isGraded`: `Λ` is graded.
 * `New.Grading.SpansLattice.mem_latticeMinus_iff`, `New.Grading.SpansLattice.mem_latticePlus_iff`:
   the generators of the lines; they differ only by `N⁻¹` at the middle vector of the string.
-* `New.Grading.SpansLattice.mem_lattice_and_stringProj_eq_zero_iff`: for odd `s`, the
-  intersection of `Λ` with the span of `X ⊕ Unit`.
 * `New.Grading.SpansLattice.stringSum_mem_latticeMinus_iff`,
   `New.Grading.SpansLattice.stringSum_mem_latticePlus_iff`: the generators on the lines of the
   vectors `𝔢 ^ i`, for the scale `u = (a / ā) ^ ⌊(s + 2) / 2⌋` and when the constant `c` of `Y`
@@ -27,8 +25,7 @@ projection `Λ⁺` to this span are sums of lines.
 * `New.Grading.SpansLattice.exists_place_generates_of_notMem_latticeMinus`: such a vector
   generates `Λ⁺` over `Λ⁻` at some place above `N`.
 
-The results on `Λ⁺` and on the span of `X ⊕ Unit` assume that `N` is split and squarefree
-(`IsSplitSquarefree P N π`).
+The results on `Λ⁺` assume that `N` is split and squarefree (`IsSplitSquarefree P N π`).
 
 Notions from other files:
 * `Y.SpansLattice a π u`: the lattice `Λ = V.lattice 1` has the standard basis
@@ -350,35 +347,6 @@ lemma mem_latticePlus_iff {y : ι → 𝔸f E} (hL : Y.SpansLattice a π u)
     obtain ⟨i | b, rfl⟩ := Y.indexEquiv.surjective i <;>
       simp [z, stringProj_apply_inl, stringProj_apply_inr, hy_zero]
 
-/-- The grading `Y` indexes the basis of the hermitian space `V`, through `Y.indexEquiv`, by
-`X ⊕ Unit` and a string of `s` vectors, here with `s` odd. Let `Λ = V.lattice 1` have the standard
-basis for the ideles `a`, `π` and any unitary scale `u`, in which the last vector `e₀` of
-`X ⊕ Unit` is replaced by `e₀ / π̄ + u z / (π π̄)`, with `z` the middle vector of the string, and
-let `N = π π̄` be split and squarefree. The intersection of `Λ` with the span of `X ⊕ Unit`, the
-kernel of the projection `Y.stringProj` to the span of the string, consists of the vectors whose
-coordinates on `X` are integral and whose last coordinate lies in `π Ô E`. -/
-lemma mem_lattice_and_stringProj_eq_zero_iff {y : ι → 𝔸f E} (hL : Y.SpansLattice a π u)
-    (hπ : IsSplitSquarefree P N π) (hs : Odd s) :
-    y ∈ V.lattice 1 ∧ Y.stringProj y = 0 ↔ Y.stringProj y = 0 ∧
-      (∀ i : X, y (Y.indexEquiv (.inl (.inl i))) ∈ Ô E) ∧
-      π⁻¹.val * y (Y.indexEquiv (.inl (.inr ()))) ∈ Ô E := by
-  rw [and_comm, hL.mem_lattice_iff, ite_eq_left hs]
-  refine and_congr_right fun hy ↦ and_congr_right fun _ ↦ ?_
-  have hy_string (b : Fin s) : y (Y.indexEquiv (.inr b)) = 0 := by
-    simp [← stringProj_apply_inr y b, hy]
-  simp only [hy_string, mul_zero, zero_sub, neg_mem_iff]
-  set y₀ : 𝔸f E := y (Y.indexEquiv (.inl (.inr ())))
-  refine ⟨?_, fun h_glue ↦ ⟨?_, fun b ↦ ite_mem.2 ⟨fun _ ↦ h_glue, fun _ ↦ zero_mem _⟩⟩⟩
-  · -- The glue condition at the middle vector of the string says that `π⁻¹ y₀` is integral.
-    rintro ⟨-, h_line⟩
-    obtain ⟨k, hk⟩ := hs
-    let m : Fin s := ⟨k, by omega⟩
-    have hm : m = m.rev := (eq_rev_iff m).2 hk.symm
-    simpa only [ite_eq_left hm] using h_line m
-  · -- The last condition is `N` times the glue condition, as `N = π π̄`.
-    simpa [hπ.algebraMap_eq_mul_star, mul_assoc, mul_left_comm π.val] using
-      mul_mem hπ.algebraMap_mem_Ô h_glue
-
 /-- The grading `Y` of the hermitian space `V` has a string of `s` basis vectors; `𝔢 ^ i` is a
 multiple of the string vector `i` by an element of `E` and has grade `s - 1 - 2 i`, and `N` is the
 element of `E` in the Gram matrix. Let the lattice `Λ = V.lattice 1` have the standard basis of
@@ -543,7 +511,7 @@ lemma exists_place_generates_of_notMem_latticeMinus {y : ι → 𝔸f E} (hL : Y
     refine exists_eq_mul_iff_v_le.2 fun w' ↦ ?_
     obtain rfl | hw' := eq_or_ne w' w
     · simpa [finAdele_mul_apply] using h_le_pole
-    · simp [finAdele_mul_apply, hw']
+    · simp [hw']
   refine ⟨c, hc, hL.mem_latticeMinus_iff.2 ⟨by simp [hy_string, hz_string], fun b ↦ ?_⟩⟩
   suffices idem {w} * (coord z b - c * coord y b) ∈ Ô E by
     simpa [coord, mul_sub, mul_left_comm] using this

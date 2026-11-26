@@ -1,6 +1,7 @@
 module
 
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+public import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
 
 /-!
 # Principal levels and levels defined by reductions in the finite adelic unitary group
@@ -90,22 +91,14 @@ variable {n ι R S E : Type*} [Fintype n] [DecidableEq n] [CommRing R] [CommRing
 
 /-! ### Reduction of GL_n and divisibility in the integral finite adeles -/
 
-/-- Entrywise application of a surjective local ring homomorphism gives a surjective map on
-GL_n. -/
-lemma GL_map_surjective (f : R →+* S) [IsLocalHom f] (hf : Surjective f) :
-    Surjective (GeneralLinearGroup.map (n := n) f) := by
-  -- The entrywise map on matrices is surjective, and local because `f` commutes with `det`.
-  refine surjective_units_map_of_local_ringHom _ hf.comp_left.comp_left ⟨fun M hM ↦ ?_⟩
-  rw [isUnit_iff_isUnit_det, ← f.map_det] at hM
-  exact (isUnit_iff_isUnit_det M).2 ((isUnit_map_iff f M.det).1 hM)
-
 /-- The reduction homomorphism from GL_n(O_w) to GL_n of the residue field at w. -/
 def reduceGL : intGL n (Valued.v (R := LocField w)).integer →* GL n (ResField w) :=
   intGL.map (n := n) (O := v.integer) (S := ResField w) (residue (LocInt w))
 
 /-- Reduction GL_n(O_w) → GL_n(k_w) to the residue field k_w at the place w is surjective. -/
 lemma reduceGL_surjective : Surjective (reduceGL (n := n) (w := w)) := fun s ↦ by
-  obtain ⟨g, rfl⟩ := GL_map_surjective (residue (LocInt w)) residue_surjective s
+  obtain ⟨g, rfl⟩ :=
+    Matrix.GeneralLinearGroup.map_surjective (residue (LocInt w)) residue_surjective s
   -- The matrix `g`, read in GL_n(E_w), is integral, and its reduction is by definition that of `g`.
   exact ⟨⟨GeneralLinearGroup.map (LocInt w).subtype g, g, rfl⟩, rfl⟩
 
@@ -319,7 +312,7 @@ lemma relIndex_ne_zero_of_isLevel (K : Subgroup (Gf E n)) [IsLevel K] :
 says that `w i` is split), a matrix `k` in `localIntGL n (w i)` = GL_n(O_{w i}) put at the split
 place `w i` by `New.ofSplitPlace` reduces to `reduceGL k`, the reduction of `k` modulo `w i`, at
 `w i` and to `1` at the other places of the family. -/
-lemma reduceFamily_ofSplitPlace [Finite ι] [IsConjApart w] [DecidableEq ι] (i : ι)
+lemma reduceFamily_ofSplitPlace [IsConjApart w] [DecidableEq ι] (i : ι)
     (k : localIntGL n (w i)) :
     reduceFamily w ⟨ofSplitPlace (IsConjApart.star_ne (w := w) i i) k, by simp⟩ =
       Pi.mulSingle i (reduceGL k) := by

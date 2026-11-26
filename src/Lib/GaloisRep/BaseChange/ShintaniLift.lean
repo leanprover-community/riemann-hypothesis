@@ -158,8 +158,8 @@ include h_unique hμ_trivial h_residue h_degree
 
 omit h_unique hμ_trivial h_residue h_degree in
 /-- The Galois action on `GL n` of the residue field applies the automorphism to the entries. -/
-private lemma galActionGL_apply {k k' : Type} [Field k] [Field k'] [Algebra k k'] [Finite k]
-    [Finite k'] (φ : Gal(k'/k)) (x : GL n k') :
+private lemma galActionGL_apply {k k' : Type} [Field k] [Field k'] [Algebra k k']
+    (φ : Gal(k'/k)) (x : GL n k') :
     galActionGL k k' n φ x = Matrix.GeneralLinearGroup.map (φ : k' →+* k') x :=
   rfl
 
@@ -280,11 +280,12 @@ lemma isLocalMatching_shintani {S : GalSemidirect (ResField w) (ResField u) n �
     ⟨fun _ ↦ ?_, h_retr, h_retr', Set.finite_singleton _, ?_⟩, ?_,
     isOpen_localCongruence.preimage_of_continuous, K, ⟨fun _ hk ↦ hk.1, h_level.ge⟩, h_coh,
     fun _ _ ↦ ⟨fun (k : Gf E' n) hk (δ : Gf E' n) ↦ ?_, fun P hP hPσ ↦ ?_⟩⟩
-  · -- Inflated functions are bi-invariant under the principal level, with compact support.
+  · -- Inflated functions are bi-invariant under the principal level, with compact support:
+    -- `inflateConj` vanishes off the integral matrices.
     constructor <;>
       exact ⟨(finite_quotient_image_of_isCompact isOpen_localCongruence
         (isCompact_localIntGL _)).subset
-        fun q _ ↦ ⟨_, by aesop (add simp inflateConj), q.out_eq⟩,
+        fun q hq ↦ ⟨_, by by_contra h; exact hq (dif_neg h), q.out_eq⟩,
         by simp +contextual [mem_localCongruence_zero, inflateConj,
           mul_mem_cancel_right, ← MulMemClass.mk_mul_mk, mul_mem_cancel_left]⟩
   · -- The principal level at `u` is stable under `σ`,

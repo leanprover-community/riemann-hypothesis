@@ -34,8 +34,7 @@ The basic facts on the field `E` are proved in `Lib` or in
 * the ring of integers: `New.Parameters.adjoin_betaKInE_zetaInt_eq_top`, in the latter file;
 * the different of `E` over its real subfield and the places fixed by conjugation:
   `New.differentIdeal_eq_top_of_add_star_eq_one`, `New.two_notMem_of_star_eq` and
-  `New.exists_sq_eq_q_of_star_eq` in `Lib`, `New.Parameters.natCast_eq_neg_one_of_star_eq` in the
-  latter file.
+  `New.exists_sq_eq_q_of_star_eq` in `Lib`.
 
 Notions from other files:
 * `New.chiK d` is the Legendre symbol `(· / d)`, the character of `ℚ(√-d)` for `d ≡ 3 mod 4`.
@@ -413,7 +412,7 @@ lemma placeMulEquiv_placeOfInt {ν : ℤ} (h_cop : IsCoprime ν P.q₀) :
   have h_two : IsCoprime 2 ν := h_cop.symm.mono (mod_cast P.two_dvd_q₀) dvd_rfl
   have h_three : IsCoprime 3 ν := h_cop.symm.mono (mod_cast P.three_dvd_q₀) dvd_rfl
   have h_unit : IsUnit (ν : ZMod (P.q₁ s)) := by
-    simp [towerDeg, coe_int_isUnit_iff_isCoprime, IsCoprime.mul_left_iff, IsCoprime.pow_left,
+    simp [towerDeg, isUnit_intCast_iff_isCoprime, IsCoprime.mul_left_iff, IsCoprime.pow_left,
       h_cop.symm, h_two, h_three]
   simp [placeOfInt, h_unit]
 
@@ -468,7 +467,7 @@ lemma placeClass_placeOfInt_eq_neg_one_iff {ν : ℤ} (h_dvd : P.q₀ ∣ P.q₁
     split_ifs at h_val
     · exact h_val
     · exact absurd h_val (by simpa using P.d_pow_ne_neg_one 0)
-  · have h_cop : IsCoprime ν P.q₀ := ((coe_int_isUnit_iff_isCoprime ..).1 (by simp [h])).symm
+  · have h_cop : IsCoprime ν P.q₀ := ((isUnit_intCast_iff_isCoprime ..).1 (by simp [h])).symm
     simp [Units.ext_iff, placeClass_placeOfInt h_cop, h]
 
 end New.Parameters

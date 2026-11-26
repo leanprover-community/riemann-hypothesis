@@ -117,7 +117,7 @@ theorem card_mul_pow_le (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, 
   have h_coc (y : Y) : y.1 ∈ Z1 M.ρ := y.2.1.1
   have h_loc (y : Y) (v : FinPlace K) (hv : v ∈ S) :
       (fun g : decompGroup Gal(Ω/K) (A v) ↦ y.1 g) ∈ J v :=
-    ⟨y.2.2.1 v hv, (h_coc y).1.comp continuous_subtype_val, fun g h ↦ (h_coc y).2 g h⟩
+    ⟨y.2.2.1 v hv, (h_coc y).1.comp continuous_subtypeVal, fun g h ↦ (h_coc y).2 g h⟩
   have h_cob (v : FinPlace K) (hv : v ∈ S) (a : M) :
       coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ a ∈ J v :=
     ⟨hL v hv ⟨a, rfl⟩, ((M.restrictTo _).coboundary a).2⟩
@@ -258,7 +258,7 @@ lemma exists_fix_roots_of_units {m : ℕ} [NeZero m] (U : OpenNormalSubgroup Gal
   obtain ⟨t, ht⟩ : roots.FG := fg_of_fg_map_of_fg_inf_ker mul h_image h_ker
   -- An open normal subgroup `O` fixes the finitely many generators.
   have h_cont : Continuous fun p : Gal(Ω/K) × t ↦ (unitsModule Gal(Ω/K)).ρ p.1 p.2.1 :=
-    (unitsModule Gal(Ω/K)).continuous.comp (continuous_id.prodMap continuous_subtype_val)
+    (unitsModule Gal(Ω/K)).continuous.comp (continuous_id.prodMap continuous_subtypeVal)
   obtain ⟨O, hO⟩ := exists_openNormalSubgroup_apply_eq h_cont
   refine ⟨O, fun g h hgh y hy ↦ LinearMap.eqOn_span (fun x hx ↦ ?_) (ht.ge hy)⟩
   have h_fix : unitsRep (g⁻¹ * h) x = x := by

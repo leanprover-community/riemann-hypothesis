@@ -154,13 +154,13 @@ lemma IsWeakBaseChange.attached_comp_stepKerInclusion
   -- polynomial, so the estimate for `r'` above such a place is the estimate wanted.
   let res : Gal(Ω/stepField χ) →* Gal(Ω/E) := AlgEquiv.restrictScalarsHom E
   have h_res : Topology.IsOpenEmbedding res := isOpenEmbedding_galois_restrict res (by simp [res])
-  have h_cont : Continuous (stepKerInclusion χ) := h_res.continuous_iff.2 continuous_subtype_val
+  have h_cont : Continuous (stepKerInclusion χ) := h_res.continuous_iff.2 continuous_subtypeVal
   have h_normal : (stepKerInclusion χ).range.Normal := by
     rw [stepKerInclusion, MonoidHom.range_comp, inclusion_range]
     exact Normal.map inferInstance _ (stepField χ).fixingSubgroupEquiv.surjective
   have h_nondeg : IsTraceNondeg (r'.comp (stepKerInclusion χ)) :=
     hr'.isTraceNondeg.comp (stepKerInclusion χ) h_normal
-  refine ⟨hr'.continuous.comp h_cont, h_nondeg, (isOpen_stepKer χ).isOpenMap_subtype_val,
+  refine ⟨hr'.continuous.comp h_cont, h_nondeg, (isOpen_stepKer χ).isOpenMap_subtypeVal,
     fun η hη ↦ ?_⟩
   -- At most Frobenius data of `L`, `f'` has the polynomial given by `P'`.
   have h_most' : ∀ᶠ y : FrobeniusDatum (stepField χ) in mostFrobenii (stepField χ),
@@ -331,7 +331,7 @@ conjugate of an element of `I` lies in every `N T` and is killed by `ρ T`. If e
 Frobenius element at a place `A` of `Ω` over a place `y` of prime norm lies in some `N T`, then a
 representation of `Gal(Ω/E)` is attached to `P`. -/
 lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
-    {E n : Type} [Field E] [EmbeddedNumberField E] [CMType E] [Fintype n] [DecidableEq n]
+    {E n : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
     {P : FinPlace E → Polynomial ℂ} {N₀ : Subgroup Gal(Ω/E)} [N₀.Normal]
     {ρ₀ : N₀ →* GL n (PadicAlgCl ℓ)} (hρ₀ : Attached P ρ₀ N₀.subtype)
     {N : ℕ → Subgroup Gal(Ω/E)} [∀ T : ℕ, (N T).Normal] (N_open : ∀ T : ℕ, (N T).IsOpen)
@@ -413,7 +413,6 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
   simpa [h_charpoly] using hv B g hv_prime hB g_frob hg ⟨g, g_mem⟩ rfl
 
 open scoped Pointwise in
-
 /-- Let `a` be odd, `E` a CM field containing a primitive 5040th root of unity, and `w` any finite
 place. Then eigenforms of any weight on the standard definite unitary group of rank `a` satisfy
 `New.GaloisRep.SphericalCompat` at `w`: each has an attached representation. If the form is

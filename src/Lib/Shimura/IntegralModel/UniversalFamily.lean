@@ -693,10 +693,11 @@ lemma ThetaFamily.IsPointOf.of_generic (h_generic : IsPointOf 𝔪 a (genericPt 
 /-- A matrix over the finite adeles that sends every vector with entries in Ô to a vector with
 entries in Ô has its entries in Ô. Vectors with entries in Ô are those whose class in the torsion
 module (𝔸f / Ô)ⁿ is zero. -/
-lemma mem_Ô_of_torsionClass_mulVec_eq_zero {n : Type} [Fintype n] [DecidableEq n]
+lemma mem_Ô_of_torsionClass_mulVec_eq_zero {n : Type} [Fintype n]
     {l : Matrix n n (𝔸f E)}
     (h_zero : ∀ y : n → 𝔸f E, torsionClass y = 0 → torsionClass (l *ᵥ y) = 0) (i j : n) :
     l i j ∈ Ô E := by
+  classical
   -- Apply `l` to the `j`-th standard basis vector.
   simpa using torsionClass_eq_zero.mp (h_zero (Pi.single j 1)
     (torsionClass_eq_zero.mpr fun k ↦ by simp [Pi.single_apply, ite_mem])) i

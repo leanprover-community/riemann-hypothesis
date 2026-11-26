@@ -1013,7 +1013,7 @@ lemma Variety.exists_isLieChart_hasSignature (j : ι → κ) (hη : IsDenseFamil
   · rintro ⟨i, ψ, hψ⟩
     exact ((u _).hasSignature_iff (F := (x (j i)).intAction) (by simp [hu_e, ← he_smul])
       (h_jac hψ) (isGroupBaseChange_counit (O := 𝓞 E) (A := A) (η (j i)))
-      (x (j i)).isPeriodMap.finrank_eq_abelianDim).2
+      (finrank_eq_abelianDim (x (j i)).realEquiv)).2
       ((x (j i)).exists_eigenline b fun d ↦ by simpa [← hψ] using hη_base (j i) d)
   · simpa [← assoc] using hβ.map (preimage (S.fromSpecStalk (s (closedPoint _)) ≫ π)).hom
 

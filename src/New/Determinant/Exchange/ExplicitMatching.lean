@@ -529,7 +529,7 @@ lemma exists_clm_eq_thetaIntegral_modDatum {s : n → ℤˣ} (S : Space E n s) (
   let φ : 𝒮 (S.hom (stdSpace E a)) :=
     schrodingerOp (S.hom (stdSpace E a)) 𝔪.places (𝔪.liftFn (Φ ∘ vecToMatrix)) (vacElem _)
   refine ⟨fun g ↦ L g ∘L (integrated (S.hom (stdSpace E a))).flip φ, fun g w ↦ ?_⟩
-  show L g (integrated _ w φ) = thetaIntegral S (stdSpace E a) α β (integrated _ w φ) g
+  change L g (integrated _ w φ) = thetaIntegral S (stdSpace E a) α β (integrated _ w φ) g
   simp [← hL, lift, thetaIntegral, pairTheta]
 
 omit [Fintype a] [DecidableEq a] in
@@ -667,7 +667,7 @@ lemma exists_stdClassSum_eq_of_exchange (f : p ⊕ l ≃ b) (V' : Space E b (blo
     have h_translate (x : G E (blockSigns f)) :
         modKernel V' W α α 𝔪 Ψ Q₀ x (g * (y, 1)) = modKernel V' W α α 𝔪 Ψ Q x g := by
       simp [modKernel, modDatum, ← hQ, ← pairWeil_integrated_right α α, ← pairTheta_mul]
-    show L (g * (y, 1)) v = c * ℓ' Q
+    change L (g * (y, 1)) v = c * ℓ' Q
     rw [hL, h_exchange, hℓ']
     simp only [h_translate]
   rw [← integral_modKernel_stackedDetProd j W σ e h_tame η h_matched g, ← hℓ']
@@ -908,9 +908,6 @@ lemma modKernel_one_of_isEmpty [IsEmpty b] {t : b → ℤˣ} {s : n → ℤˣ} (
     modKernel V' W α β 𝔪 1 1 x g = α.val g.det := by
   obtain rfl : x = 1 := Subsingleton.eq_one x
   have h_triv : G.onHom ((1 : G E t), g) = 1 := Subsingleton.eq_one _
-  have h_coe (z : Circle) : Circle.coeHom z = (z : ℂ) := rfl
-  have h_char : pairChar α β ((1 : G E t), g) = (α.val g.det : ℂ) := by
-    simp [pairChar, h_coe]
   -- The datum is the vacuum, and the only lattice vector is `0`.
   have h_vac : (V'.hom W).vacElem 0 = 1 := by
     simp [vacElem_apply_eq_prod_lineTheta, funext_iff, Fintype.prod_empty]

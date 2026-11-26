@@ -218,10 +218,10 @@ lemma exists_faithfullyFlat_padicTest (V : CommAlg OFlat) [IsDomain V] [Valuatio
   have hp_reg : IsSMulRegular (OC ⊗[Ainf] wittFunctor.obj V) p :=
     isSMulRegular_tensor_witt (.of_ne_zero (NeZero.ne p))
       ⟨inferInstance, (isSMulRegular_algebraMap_iff _).mp (.of_ne_zero h_ne)⟩
-  have hp_mem : (p : OC ⊗[Ainf] wittFunctor.obj V) ∈ ker π := by
-    simp [natCast_eq_zero_of_algebra_oFlat]
+  have hp_mem : (p : OC ⊗[Ainf] wittFunctor.obj V) ∈ RingHom.ker π := by
+    simp only [RingHom.mem_ker, map_natCast, natCast_eq_zero_of_algebra_oFlat]
   obtain ⟨W, hW_ring, hW_cell, ρ, hρ⟩ : ∃ (W : Type) (_ : CommRing W) (_ : IsCell p W)
-      (ρ : OC ⊗[Ainf] wittFunctor.obj V →+* W), ∀ x ∈ ker π, ¬IsUnit (ρ x) :=
+      (ρ : OC ⊗[Ainf] wittFunctor.obj V →+* W), ∀ x ∈ RingHom.ker π, ¬IsUnit (ρ x) :=
     exists_cell_over (ker_isPrime π) hp_reg hp_mem
   -- `c.fst` is the test with the one cell `W` and `c.snd` the point `ρ`. By `homTiltIso` this
   -- point is induced by `θ ∘ W(φ)` for an algebra map `φ` from `V` to the tilt.
@@ -236,16 +236,17 @@ lemma exists_faithfullyFlat_padicTest (V : CommAlg OFlat) [IsDomain V] [Valuatio
   have h_prod_domain : IsDomain c.fst.ProdRing := e_prod.injective.isDomain
   have h_prod_valuationRing : ValuationRing c.fst.ProdRing :=
     e_prod.symm.surjective.valuationRing e_prod.symm.toRingHom
-  have h_ker_prime : (ker φ).IsPrime := ker_isPrime φ
-  have h_quot_valuationRing : ValuationRing (V ⧸ ker φ) := (mkₐ_surjective V (ker φ)).valuationRing
+  have h_ker_prime : (RingHom.ker φ).IsPrime := ker_isPrime φ
+  have h_quot_valuationRing : ValuationRing (V ⧸ RingHom.ker φ) :=
+    (mkₐ_surjective V (RingHom.ker φ)).valuationRing
   algebraize [φ.kerLift]
-  have h_torsionFree : IsTorsionFree (V ⧸ ker φ) c.fst.TiltRing :=
+  have h_torsionFree : IsTorsionFree (V ⧸ RingHom.ker φ) c.fst.TiltRing :=
     isTorsionFree_iff_algebraMap_injective.mpr φ.kerLift_injective
   -- `φ` is local: if `φ v` is a unit then so is `ρ (1 ⊗ [v])`, its untilt, and by `hρ` the element
   -- `1 ⊗ [v]` is not in the kernel of `π`.
   have h_local (v : V) (hv : IsUnit (φ v)) : IsUnit v := by
     by_contra hv_nonunit
-    have h_mem : (1 ⊗ₜ teichmuller p v : OC ⊗[Ainf] wittFunctor.obj V) ∈ ker π :=
+    have h_mem : (1 ⊗ₜ teichmuller p v : OC ⊗[Ainf] wittFunctor.obj V) ∈ RingHom.ker π :=
       eq_zero_iff_mem.mpr (mul_mem_left _ _ hv_nonunit)
     apply hρ (1 ⊗ₜ teichmuller p v) h_mem
     -- The equation `hφ` of points, evaluated at `1 ⊗ [v]`.
@@ -392,9 +393,12 @@ lemma one_tmul_eq_zero_of_tensorPush {Φ : PerfectAlg S ⥤ ModuleCat S} [Algebr
   let r (D : PerfectAlg S) := (cancelBaseChange S V V A (Φ.obj D)).symm.toLinearMap
   let ρ : Φ ⋙ tensorWith V A ⟶ Φ ⋙ tensorWith V V ⋙ tensorWith V A :=
     { app D := ↟(r D)
-      naturality := by
+      naturality D D' _ := by
         delta tensorWith
-        aesop }
+        refine ModuleCat.hom_ext ?_
+        change r D' ∘ₗ _ = _ ∘ₗ r D
+        ext
+        rfl }
   have h_factor (D : PerfectAlg S) :
       mk V A (V ⊗[S] Φ.obj D) 1 = r D ∘ₗ rTensor _ _ (Algebra.linearMap V A) := by
     ext
@@ -456,16 +460,19 @@ private lemma exists_tensorPush_ne_zero_of_isChain {c : Set (a.obj → a.obj →
     fun h_zero ↦ ?_, fun s hs f g hfg ↦ ?_⟩
   · -- If `z` died, then by flat base change some `s ∈ M` would kill its image over the product;
     -- project to a factor where `s t = 1`.
+    have h1 := one_tmul_eq_zero_of_tensorPush (Φ := perfectAlmostCoeff N)
+      (V := ∀ t, (B t).obj) (A := Localization M) φ (tensorPush Ψ.toLinearMap z)
+      (tensorPush_comp.symm.trans h_zero)
     obtain ⟨s, hs : tensorPush (mulLeft S s.val) (tensorPush Ψ.toLinearMap z) = 0⟩ :=
-      (IsLocalizedModule.eq_zero_iff M (TensorProduct.mk (∀ t, (B t).obj) (Localization M) _ 1)).mp
-        (one_tmul_eq_zero_of_tensorPush φ (tensorPush Ψ.toLinearMap z)
-          (tensorPush_comp.symm.trans h_zero))
+      (IsLocalizedModule.eq_zero_iff M
+        (TensorProduct.mk (∀ t, (B t).obj) (Localization M) _ 1)).mp h1
     have h_neBot : (atTop : Filter c).NeBot :=
       atTop_neBot_iff.mpr ⟨hc_nonempty.to_subtype, hc_chain.directedOn.isDirectedOrder⟩
     obtain ⟨t, ht : s.val t = 1⟩ := h_neBot.nonempty_of_mem s.property
     have h_factor : (ψ t).toLinearMap = proj t ∘ₗ mulLeft S s.val ∘ₗ Ψ.toLinearMap := by
       ext x
-      simp [Ψ, ht]
+      simp only [Ψ, LinearMap.comp_apply, AlgHom.toLinearMap_apply, AlgHom.pi_apply,
+        LinearMap.mulLeft_apply, LinearMap.proj_apply, Pi.mul_apply, ht, one_mul]
     apply h_ne t
     rw [h_factor, tensorPush_comp, tensorPush_comp, hs, map_zero]
   · -- As `ψ t f ∣ ψ t g` for `t ≥ s`, the indicator `e` of the `t` where this holds lies in `M`.
@@ -518,21 +525,28 @@ lemma exists_perfect_valuationRing_factor {ψ : a.obj →ₐ[S] d.obj} {k : d.ob
   -- `d ⧸ ker k` is a perfect domain. Inside it, `V` is the saturation of the image of `a`: the
   -- `y` with `v * y` in the image for some `v ≠ 0` in the image.
   have hb_reduced : IsReduced b.obj := isReduced_of_perfectRing b.property
-  have h_prime : (ker k).IsPrime := by
-    refine ⟨fun h_top ↦ hk (LinearMap.ext fun x ↦ (eq_top_iff.mp h_top trivial : x ∈ ker k)),
+  have h_prime : (RingHom.ker k).IsPrime := by
+    refine ⟨fun h_top ↦ hk (LinearMap.ext fun x ↦
+      (eq_top_iff.mp h_top trivial : x ∈ RingHom.ker k)),
       fun {x y} hxy ↦ ?_⟩
     -- If `k (x * y) = 0` and `k y ∣ k x`, then `k x ^ 2 = 0`; and symmetrically.
-    have h_mul : k x * k y = 0 := by simpa using hxy
+    have h_mul : k x * k y = 0 := (map_mul k x y).symm.trans hxy
     rcases hk_total y x with ⟨w, hw⟩ | ⟨w, hw⟩
-    · exact .inl (IsReduced.eq_zero (k x) ⟨2, by grind⟩)
-    · exact .inr (IsReduced.eq_zero (k y) ⟨2, by grind⟩)
-  have h_perf : PerfectRing (d.obj ⧸ ker k) p := by
+    · refine .inl (IsReduced.eq_zero (k x) ⟨2, ?_⟩)
+      rw [sq]
+      nth_rw 2 [hw]
+      rw [← mul_assoc, h_mul, zero_mul]
+    · refine .inr (IsReduced.eq_zero (k y) ⟨2, ?_⟩)
+      rw [sq]
+      nth_rw 1 [hw]
+      rw [mul_right_comm, h_mul, zero_mul]
+  have h_perf : PerfectRing (d.obj ⧸ RingHom.ker k) p := by
     refine perfectRing_of_pow_surjective natCast_eq_zero_of_algebra_oFlat fun y ↦ ?_
     obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y
     obtain ⟨x, rfl⟩ := d.property.bijective_frobenius.surjective y
     exact ⟨mkₐ S _ x, rfl⟩
-  let f : a.obj →ₐ[S] d.obj ⧸ ker k := (mkₐ S (ker k)).comp ψ
-  let V : Subalgebra S (d.obj ⧸ ker k) :=
+  let f : a.obj →ₐ[S] d.obj ⧸ RingHom.ker k := (mkₐ S (RingHom.ker k)).comp ψ
+  let V : Subalgebra S (d.obj ⧸ RingHom.ker k) :=
     f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors _) inf_le_left
   -- `V` is perfect: if `v * y ^ p` is in the image, so is `(v * y) ^ p`, say `f x ^ p`; then
   -- `v * y = f x`.
@@ -546,23 +560,25 @@ lemma exists_perfect_valuationRing_factor {ψ : a.obj →ₐ[S] d.obj} {k : d.ob
       rw [← map_pow, hx, ← mul_assoc, pow_sub_one_mul out, mul_pow]
     exact ⟨⟨y, v, ⟨hv_range, hv_nzd⟩, x, h_perf.bijective_frobenius.injective h_pow⟩, rfl⟩
   -- Divisibility in the domain passes to `V`: a quotient of two elements of `V` lies in `V`.
-  have h_dvd {y z : V} (h_yz : (y : d.obj ⧸ ker k) ∣ z) : y ∣ z := by
+  have h_dvd {y z : V} (h_yz : (y : d.obj ⧸ RingHom.ker k) ∣ z) : y ∣ z := by
     obtain ⟨w, hw⟩ := h_yz
     obtain rfl | hy := eq_or_ne y 0
-    · exact ⟨0, Subtype.ext (by simpa using hw)⟩
+    · refine ⟨0, Subtype.ext ?_⟩
+      simp only [ZeroMemClass.coe_zero, zero_mul] at hw ⊢
+      exact hw
     obtain ⟨v, ⟨hv_range, hv_nzd⟩, hvy⟩ := y.property
     have h_mem : v * y * w ∈ V := by
       rw [mul_assoc, ← hw]
       exact mul_mem (f.range.le_saturation hv_range) z.property
     have hw_mem : w ∈ V := f.range.mem_saturation_of_mul_mem_left h_mem
-      ⟨hvy, mul_mem hv_nzd (mem_nonZeroDivisors_of_ne_zero (by simpa using hy))⟩
+      ⟨hvy, mul_mem hv_nzd (mem_nonZeroDivisors_of_ne_zero (Subtype.coe_ne_coe.mpr hy))⟩
     exact ⟨⟨w, hw_mem⟩, Subtype.ext hw⟩
   -- If `f u = v' * v * y` and `f u' = v * v' * z` with `v' * v` a nonzerodivisor, then `ψ u ∣ ψ u'`
   -- gives `f u ∣ f u'` in `d ⧸ ker k`, hence `y ∣ z` after cancelling `v' * v`.
-  have h_dvd_of_image {y z v v' : d.obj ⧸ ker k} {u u' : a.obj}
+  have h_dvd_of_image {y z v v' : d.obj ⧸ RingHom.ker k} {u u' : a.obj}
       (h_nzd : v' * v ∈ nonZeroDivisors _) (hu : f u = v' * (v * y)) (hu' : f u' = v * (v' * z))
       (huu' : ψ u ∣ ψ u') : y ∣ z := by
-    have h_image : f u ∣ f u' := map_dvd (mkₐ S (ker k)) huu'
+    have h_image : f u ∣ f u' := map_dvd (mkₐ S (RingHom.ker k)) huu'
     rwa [hu, hu', ← mul_assoc, ← mul_assoc, mul_comm v v',
       dvd_cancel_left_mem_nonZeroDivisors h_nzd] at h_image
   -- Given `y, z ∈ V`, the multiples `v' * v * y` and `v * v' * z` are images of `u`, `u'` in `a`,
@@ -651,7 +667,7 @@ lemma faithfullyFlat_descent [hS : PerfectRing S p] [Algebra S V] (ρ : V →ₐ
     { app D := ↟(r D)
       naturality D D' _ := by
         refine ModuleCat.hom_ext ?_
-        show r D' ∘ₗ _ = _ ∘ₗ r D
+        change r D' ∘ₗ _ = _ ∘ₗ r D
         ext
         rfl }
   have h_factor (D : PerfectAlg S) : rTensor S _ (Algebra.linearMap V a.obj) =
@@ -816,12 +832,12 @@ lemma isCover_of_points (hN : ∀ x : N, pFlat • x = 0) {b b' : PerfectAlg OFl
       h_rad (by rw [h_zero, zero_isRadical_iff]; infer_instance)
     -- a test `c` and `φ : V → c.TiltRing`, faithfully flat over `V ⧸ ker φ`, with `ker φ ⊆ p^♭ V`
     obtain ⟨c, φ, hφ_flat, hφ_ker⟩ := exists_faithfullyFlat_padicTest (CommAlgCat.of OFlat V.obj)
-      h_ne fun h_unit ↦ h_rad h_unit.squarefree.isRadical
+      h_ne fun h_unit ↦ h_rad fun _ _ _ ↦ h_unit.dvd
     -- The point `b → V → c.TiltRing` lifts to `g : b' → c.TiltRing`. The class survives in
     -- `V ⧸ ker φ`, and it vanishes there by descent along the faithfully flat map
     -- `V ⧸ ker φ → c.TiltRing`, where `c.TiltRing` is a `b`-algebra through `y ≫ g`.
     obtain ⟨⟨g⟩, hg⟩ := hy c ⟨⟨ofHom (φ.comp (algHom ..))⟩⟩
-    refine tensorPush_quotient_ne_zero i hN hα (ker φ) (.inl hφ_ker) ?_
+    refine tensorPush_quotient_ne_zero i hN hα (RingHom.ker φ) (.inl hφ_ker) ?_
     -- `φ` on `V ⧸ ker φ`, and `g` on `b'`, as maps of `b`-algebras
     exact faithfullyFlat_descent (a := perfectAlgAlong (y ≫ g))
       ⟨φ.kerLift, fun s ↦ congr($(hg.symm).down.hom s)⟩ hφ_flat i

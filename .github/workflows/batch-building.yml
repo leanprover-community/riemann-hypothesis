@@ -1,0 +1,113 @@
+name: batch building
+
+# Keeps the `batch-building` label on the open pull requests that are in a batch being built, so
+# that reviewers can see that a pull request is already being landed. `scripts/batch-building.py`
+# has the exact rules.
+#
+# A batch is assembled by hand on a branch of this repository named `batch/...`, built from `main`,
+# with one merge commit for each pull request, and its own pull request lands it through the merge
+# queue. A `batch/...` branch is being built when it has commits that `main` does not have and its
+# latest pull request is open. A batch is pushed some minutes before its pull request is opened, so
+# a branch with no pull request yet counts too, unless a batch's pull request was opened after its
+# tip commit: a batch is often pushed again under another name, such as `batch/m11b-on-main` after
+# `batch/m11-on-main`, and only the last gets a pull request, which supersedes the others. It
+# counts for an hour after its tip commit at most. A branch that shares no history with `main`,
+# such as those from before `main` was replaced, is not a batch.
+#
+# An open pull request is in a batch being built when its head commit is one of the commits that
+# the batch has and `main` does not, and it does not hold a batch itself. Every such pull request
+# gets the label, and every other pull request that carries it, open or closed, loses it. Each run
+# works all of this out again from GitHub, and keeps no record of its own. Only `batch-building`
+# is changed: the labels of the batch workflows of branch `alpoge`, such as `building` and
+# `batch queue`, are left as they are.
+#
+# It runs when a `batch/...` branch is pushed (through `batch-pushed.yml`, see below) or deleted,
+# when `main` is pushed to, which is how a batch lands, every half hour, and when started by hand.
+# Started by hand, it only says what it would change, unless `dry_run` is turned off.
+#
+# The inbox keeps pull requests labelled `batch-building` out (see `scripts/inbox-sync.py`). Label
+# changes made with this job's token start no run of the inbox workflow, so this workflow starts
+# one for each open pull request whose label it changed.
+#
+# What it does not do: a pull request pushed to after the batch took it loses the label, although
+# the batch still lands the commit it took. Closing a batch's pull request without merging it
+# starts no run: the label comes off at the next half-hourly run, or when the branch is deleted.
+# A batch branch that nobody opens a pull request for, and that no later batch supersedes, still
+# counts for an hour after its tip commit, so the pull requests in it keep the label until then.
+# One that is superseded counts until the next run after the later batch's pull request is opened,
+# which starts no run itself: until the next half-hourly run or push.
+#
+# A push to a `batch/...` branch runs that branch's copy of a workflow, and a batch can hold pull
+# requests that change workflows, so no workflow with write access runs on that push. The relay
+# `batch-pushed.yml` runs on it with no permissions and does nothing, and this workflow follows
+# that run: GitHub runs the default branch's copy of a `workflow_run`, `delete` or `schedule`
+# workflow, and a push to `main` runs `main`'s. Only the scripts are checked out, from that same
+# commit, and nothing from a pull request or a batch branch is checked out or run: everything else
+# is read from GitHub's API. A pull request from a fork that adds a workflow named `batch pushed`
+# can start runs of this one too, which only work everything out again.
+
+on:
+  workflow_run:
+    workflows: [batch pushed]
+    types: [completed]
+  push:
+    branches: [main]
+  delete:
+  schedule:
+    - cron: '11,41 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Only say what would change
+        type: boolean
+        default: true
+
+permissions: {}
+
+# One run at a time. A run that waits behind another can be dropped for a newer one, and nothing is
+# lost: every run works everything out again from GitHub.
+concurrency:
+  group: batch-building
+  cancel-in-progress: false
+
+jobs:
+  label:
+    name: Label the pull requests in a batch being built
+    # Forks with Actions turned on would otherwise run against themselves. A deleted branch only
+    # matters when it was a batch.
+    if: >-
+      ${{ github.repository == 'leanprover-community/riemann-hypothesis' &&
+          (github.event_name != 'delete' ||
+           (github.event.ref_type == 'branch' && startsWith(github.event.ref, 'batch/'))) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # `actions: write` is for starting the inbox workflow.
+    permissions:
+      actions: write
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check out this workflow's own copy of the scripts
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts
+      - name: Put the label on and take it off
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: |
+          dry=()
+          if [ "$DRY_RUN" = true ]; then dry=(--dry-run); fi
+          changed=$(mktemp)
+          status=0
+          python3 scripts/batch-building.py --repo "$REPO" "${dry[@]}" --changed "$changed" \
+            --summary "$GITHUB_STEP_SUMMARY" || status=$?
+          # The inbox takes pull requests labelled `batch-building` out and puts them back when the
+          # label comes off. These label changes start no run of it, so this asks for one.
+          while read -r pr; do
+            gh workflow run inbox.yml --repo "$REPO" -f "pr=$pr" ||
+              echo "::warning::Could not start the inbox workflow for pull request $pr."
+          done < "$changed"
+          exit "$status"

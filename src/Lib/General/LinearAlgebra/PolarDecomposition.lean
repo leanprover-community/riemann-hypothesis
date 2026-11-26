@@ -2,6 +2,7 @@ module
 
 public import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 public import Lib.Weil.Construction.WeilData
+import TauCeti.Analysis.Matrix.LDL
 
 /-!
 # Gram–Schmidt, tight frames, polar decomposition in U(p,q), forms representing one
@@ -39,7 +40,7 @@ Notions from other files:
 
 section GramSchmidt
 
-open Matrix InnerProductSpace
+open Matrix InnerProductSpace ComplexOrder
 
 /-- Gram–Schmidt: if the complex n × k matrix X has a left inverse and wt is a weight on its
 columns with values in a linear order, then there is an invertible matrix b, block upper triangular
@@ -47,35 +48,19 @@ for wt, such that the columns of X b are orthonormal. -/
 lemma New.exists_orthonormal_mul {n k α : Type*} [Fintype n] [Fintype k] [DecidableEq k]
     [LinearOrder α] (wt : k → α) {X : Matrix n k ℂ} (hX : HasLeftInv X) :
     ∃ b : GL k ℂ, b.val.BlockTriangular wt ∧ (X * b.val)ᴴ * (X * b.val) = 1 := by
-  -- Run Gram–Schmidt on the standard basis of `ℂ^k` for the inner product `⟪X u, X v⟫`, with the
-  -- basis vectors ordered by increasing weight. The resulting vectors are the columns of `b`.
-  obtain ⟨L, hL⟩ : ∃ L : Matrix k n ℂ, L * X = 1 := hX
-  let B : Module.Basis k ℂ (EuclideanSpace ℂ k) := PiLp.basisFun 2 ℂ k
-  -- A linear order on `k` refining `wt`: ties are broken by a fixed embedding into the cardinals.
-  let order : LinearOrder k :=
+  -- Refine `wt` to a linear order on `k` and normalise the positive-definite Gram matrix `Xᴴ * X`
+  -- by an upper-triangular change of basis.
+  obtain ⟨L, hL⟩ := hX
+  let _ : LinearOrder k :=
     .lift' (fun i : k ↦ toLex (wt i, embeddingToCardinal i)) (fun _ _ _ ↦ by simp_all)
-  let finiteOrder : LocallyFiniteOrderBot k := (monoEquivOfFin k rfl).symm.locallyFiniteOrderBot
-  -- `X` is injective as it has a left inverse, so the norm and inner product pull back along it.
-  have hX_inj : Function.Injective X.toEuclideanLin := Function.LeftInverse.injective
-    (g := fun v : EuclideanSpace ℂ n ↦ WithLp.toLp 2 (L *ᵥ v.ofLp)) fun v ↦ by simp [hL]
-  let pulledNorm : NormedAddCommGroup (EuclideanSpace ℂ k) := .induced _ _ X.toEuclideanLin hX_inj
-  -- No type is written: it would refer to the standard norm instead of `pulledNorm`.
-  let pulledInner := induced X.toEuclideanLin
-  let G : Matrix k k ℂ := of fun i j ↦ gramSchmidtNormed ℂ B j i
-  -- Both entries pair a column of `X * G` with a conjugated column; only the order differs.
-  have h_gram : (X * G)ᴴ * (X * G) = gram ℂ (gramSchmidtNormed ℂ B) :=
-    Matrix.ext fun _ _ ↦ dotProduct_comm _ _
-  have h_orth : (X * G)ᴴ * (X * G) = 1 :=
-    h_gram.trans (gram_eq_one_iff_orthonormal.2 (gramSchmidtNormed_orthonormal B.linearIndependent))
-  -- If `wt j < wt i` then `j < i` in the refined order, so coordinate `i` of vector `j` vanishes.
-  have h_tri : G.BlockTriangular wt := by
-    intro i j hij
-    have h_lt : j < i := Prod.Lex.toLex_lt_toLex.2 (Or.inl hij)
-    have h_zero : gramSchmidt ℂ B j i = 0 := gramSchmidt_triangular h_lt B
-    simp [G, gramSchmidtNormed, h_zero]
-  -- `(X * G)ᴴ * X` is a left inverse of the square matrix `G`, so `G` is invertible.
-  have h_inv : (X * G)ᴴ * X * G = 1 := by rw [Matrix.mul_assoc, h_orth]
-  exact ⟨(Units.mkOfMulEqOne _ G h_inv)⁻¹, h_tri, h_orth⟩
+  have hS : (Xᴴ * X).PosDef := PosDef.conjTranspose_mul_self X
+    (Function.LeftInverse.injective (g := (L *ᵥ ·)) fun v ↦ by simp [hL])
+  obtain ⟨G, hG_tri, hG_orth⟩ := hS.exists_isUpperTriangular_conjTranspose_mul_mul_eq_one
+  have h_orth : (X * G)ᴴ * (X * G) = 1 := by
+    simpa only [conjTranspose_mul, Matrix.mul_assoc] using
+      (show Gᴴ * (Xᴴ * X) * G = 1 by convert hG_orth)
+  have h_tri : G.BlockTriangular wt := fun _ _ hij ↦ hG_tri (Prod.Lex.toLex_lt_toLex.2 (.inl hij))
+  exact ⟨(Units.mkOfMulEqOne ((X * G)ᴴ * X) G (by rw [Matrix.mul_assoc, h_orth]))⁻¹, h_tri, h_orth⟩
 
 end GramSchmidt
 
@@ -157,7 +142,8 @@ theorem New.exists_polar {ε : n → ℤˣ} (g : USign ε) :
   -- `z² = gᴴ g` and `z` is hermitian, so `g z⁻¹` is unitary.
   have g_adj : g.val.valᴴ = z * z * g⁻¹ := by simp [z_sq, P]
   have k_mem : g * z⁻¹ ∈ maxCompactU ε :=
-    mem_U.2 (by simp [z_pos.inv.isHermitian.eq, g_adj, mul_assoc])
+    mem_unitaryGroupOf_iff.2 (by simp [star_eq_conjTranspose, z_pos.inv.isHermitian.eq, g_adj,
+        mul_assoc])
   exact ⟨⟨g * z⁻¹, k_mem⟩, z, z_pos, by simp, Set.mem_range_self _⟩
 
 /-- The accretive matrices, those with `z + zᴴ` positive definite, form a neighbourhood of each

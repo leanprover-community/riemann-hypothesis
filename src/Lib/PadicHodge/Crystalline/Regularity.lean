@@ -474,7 +474,7 @@ lemma linearFrob_twist_cyclotomicGp (d : ℕ)
         tensorAction Bmax (ofAdd m, toGp s) (ρ s) y :=
     (linearFrob_apply (h.tate_twist _ hσ) hs h_mem).trans (hu m s y)
   -- Cancel the unit `u` on both sides; `Bmax.pUnit` is `p`.
-  show linearFrob σ s m y = (p : Bmax) ^ (m * d) • linearFrob ρ s m y
+  change linearFrob σ s m y = (p : Bmax) ^ (m * d) • linearFrob ρ s m y
   simpa [mul_smul, zpow_mul, pow_mul, Bmax.coe_pUnit, h, hs, hy] using h_beta
 
 end
@@ -567,7 +567,7 @@ lemma IsPotentiallyCrystalline.eventually_linearFrob_eq_one [Module.Finite R T] 
   ext x
   have h_expand : (1 : Bmax) ⊗ₜ[ℤ_[p]] x = ∑ l, coeffEnd R T (v.repr x l) (1 ⊗ₜ v l) := by
     simp [← tmul_sum, v.sum_repr]
-  show linearFrob ρ g 0 ((1 : Bmax) ⊗ₜ[ℤ_[p]] x) = (1 : Bmax) ⊗ₜ[ℤ_[p]] x
+  change linearFrob ρ g 0 ((1 : Bmax) ⊗ₜ[ℤ_[p]] x) = (1 : Bmax) ⊗ₜ[ℤ_[p]] x
   simp only [h_expand, map_sum, h_term]
 
 include hB_equiv
@@ -766,7 +766,7 @@ lemma New.Period.IsPotentiallyCrystalline.isCrystalline_of_inertia_fixes {p : �
     -- `g / t` lies in inertia, where `linearFrob ρ (g / t) 0 = 1` by `hI`.
     have h_gt : tensorAction Bmax (toGp (g / t)) (ρ (g / t)) y = y := by
       rw [← linearFrob_zero_apply h h_weil hy, hI _ h_weil, Module.End.one_apply]
-    show tensorAction Bmax (toGp g) (ρ g) y = y
+    change tensorAction Bmax (toGp g) (ρ g) y = y
     rw [← div_mul_cancel g t, map_mul, map_mul, ← tensorAction_tensorAction, h_t, h_gt]
   -- The constants are integral over `ℤ_[p]` and fixed by `U`, so `s` fixes them.
   have h_const : Lift.FixesLambda c.f s := by

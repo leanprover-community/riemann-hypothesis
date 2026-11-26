@@ -181,6 +181,11 @@ lemma targetParameter_eq (v : D.Φ) (i : ℕ) :
     push_cast
     ring
 
+/-- The entry `D.k - 1 + a` of `D.targetParameter τ` is `D.halfGap - D.liftWeight (a + 1) τ`. -/
+lemma targetParameter_sub_one_add (τ : D.Φ) (a : ℕ) :
+    D.targetParameter τ (D.k - 1 + a) = D.halfGap - D.liftWeight (a + 1) τ := by
+  grind [targetParameter_eq, D.k_pos]
+
 /-- The size of `Ω = exp (γ - Re L'/L(1, χ_K)) * (2 π / rd_E)`: one has `x⁻¹³ ≤ Ω ≤ 1` (upper bound
 for `u` true, lower for `u` false). Here `γ` is Euler's constant, `χ_K` is the quadratic character
 of `K = ℚ(√-d)` for the prime `d = P.d`, and `rd_E` is the root discriminant of the field
@@ -200,14 +205,7 @@ for the level. Here `κ̄` is the geometric mean of the weights at the `f = D.f`
 `E`, the principal level `M = D.M` is the product of the two primes `D.levelPrime 0` and
 `D.levelPrime 1`, and `rd_E = D.rootDisc` is the root discriminant of `E`. -/
 def logLevelTarget : ℝ :=
-  D.m * ((∑ v : D.Φ, Real.log (D.weight v)) / D.f) +
-    (D.m - 1) * Real.log (D.M * D.rootDisc / (2 * Real.pi)) - 15 / 2 * D.logB
-
-/-- The number `D.logLevelTarget` is `New.Parameters.logLevelMin` at the values given by the
-data. -/
-lemma logLevelTarget_eq_logLevelMin :
-    D.logLevelTarget = P.logLevelMin D.towerExp D.m D.weight D.M D.logB :=
-  rfl
+  P.logLevelMin D.towerExp D.m D.weight D.M D.logB
 
 /-- The prime level `N` of the data is chosen with `log N₋ ≤ log N ≤ log N₋ + √(log b)`, where
 `log N₋ = D.logLevelTarget` is the logarithm of `κ̄ ^ m (M rd_E / 2π) ^ (m - 1) b ^ (-15 / 2)`. This
@@ -216,7 +214,6 @@ lower end satisfies `m log b ≤ log N₋ ≤ 24 m log b`, for the number `m = D
 lemma logLevelTarget_mem_Icc : D.logLevelTarget ∈ Icc (D.m * D.logB) (24 * D.m * D.logB) := by
   have h_one_le_weight (τ : D.Φ) : (1 : ℝ) ≤ D.weight τ := D.le_of_hasLogBound
   have h_two_le_m : 2 ≤ D.m := by linarith [D.ten_thousand_le_m]
-  rw [logLevelTarget_eq_logLevelMin]
   exact P.logLevelMin_mem_Icc h_two_le_m D.le_of_hasLogBound
     (fun τ ↦ ⟨h_one_le_weight τ, D.weight_le_b τ⟩) D.M_mem_Icc D.le_of_hasLogBound
 
@@ -230,9 +227,8 @@ lemma N_modEq_one : D.N ≡ 1 [MOD D.cyclotomicConductor] :=
 /-- The level `N` satisfies `log N₋ ≤ log N ≤ log N₋ + √(log b)`, where
 `log N₋ = D.logLevelTarget`. -/
 lemma log_N_mem_Icc_logLevelTarget :
-    Real.log D.N ∈ Icc D.logLevelTarget (D.logLevelTarget + √D.logB) := by
-  rw [logLevelTarget_eq_logLevelMin, M]
-  exact D.log_N_mem
+    Real.log D.N ∈ Icc D.logLevelTarget (D.logLevelTarget + √D.logB) :=
+  D.log_N_mem
 
 /-- The level `N` satisfies `m log b ≤ log N ≤ 30 m log b`. -/
 lemma log_N_mem_Icc : Real.log D.N ∈ Icc (D.m * D.logB) (30 * D.m * D.logB) := by

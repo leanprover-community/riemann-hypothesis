@@ -85,11 +85,8 @@ lemma selmerModuleMapOfInjective_apply {f : B →ₗ[O] B'} (hf : Function.Injec
 
 /-- An injective map of coefficient modules induces an injective map of Selmer modules. -/
 lemma selmerModuleMapOfInjective_injective {f : B →ₗ[O] B'} (hf : Function.Injective f) :
-    Function.Injective (selmerModuleMapOfInjective ρ S L hf) := by
-  intro z w h_eq
-  ext g i
-  apply hf
-  rw [← selmerModuleMapOfInjective_apply ρ S L hf z, h_eq, selmerModuleMapOfInjective_apply]
+    Function.Injective (selmerModuleMapOfInjective ρ S L hf) :=
+  fun _ _ h ↦ Subtype.ext (hf.comp_left.comp_left (congrArg Subtype.val h))
 
 /-- If `f` identifies `O / a` (that is, `QuotSpan a`) with the `a`-torsion of `B`, then composition
 with `f` maps the Selmer module (cocycles for `ρ` unramified outside `S` that obey the relations

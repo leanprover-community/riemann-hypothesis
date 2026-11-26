@@ -101,7 +101,8 @@ lemma framePoint_eq_mulVec (h : D.IsAdapted 1 b) (a : InfinitePlace E × r → �
         (vecToMatrix a w ⊕ᵥ vecToMatrix c w ⊕ᵥ vecToMatrix z w) i := by
   ext ⟨w, i⟩
   simp [vecToMatrix, framePoint, IsAdapted.mixedModel, mulVec, dotProduct, sum_prod_type,
-    Splitting.frameAt, realMatrix, blockDiagonal, G.adeleMatrix_one, add_right_comm]
+    Splitting.frameAt, realMatrix, blockDiagonal, G.adeleMatrix_one]
+  exact add_right_comm ..
 
 /-- At the infinite place `w`, the point `framePoint h a z c`, which is `L a + I z + K c`, is the
 image under the component at `w` of the adapted frame `D.frameAt 1 b` of the three blocks of
@@ -213,7 +214,7 @@ lemma realBoxProd_realHeisenbergOp_vacVector {ι ι₁ ι₂ : Type} [Fintype ι
     {ε₂ : ι₂ → ℤˣ} {e : ι₁ ⊕ ι₂ ≃ ι} (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) (y : ι₁ → ℂ) :
     realBoxProd he (realHeisenbergOp y vacVector) vacVector =
       realHeisenbergOp ((realCoordSum he).equiv (y, 0)) vacVector := by
-  show (realCoordSum he).tmul (heisenbergOp y vacElem) vacElem =
+  change (realCoordSum he).tmul (heisenbergOp y vacElem) vacElem =
     heisenbergOp ((realCoordSum he).equiv (y, 0)) vacElem
   simp [← OrthogonalSum.tmul_vacElem (realCoordSum he), OrthogonalSum.heisenbergOp_tmul]
 

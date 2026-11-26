@@ -135,7 +135,7 @@ lemma measurable_volumeRatio : Measurable (volumeRatio γ) := by fun_prop [volum
 /-- For `γ ∈ G₁`, the form `J₁` is negative semidefinite on the span of the frame `γ f`, where
 `f = (e₁, …, e_ϱ, z)` is given by the columns of `frameCols`: for any matrix `a` of coefficients,
 minus the Gram matrix for `J₁` of the columns of `γ f a` is positive semidefinite. -/
-lemma RealPlace.posSemidef_neg_gram_mul_frameCols (γ : 𝔰.G₁) {m : Type} [Fintype m]
+lemma RealPlace.posSemidef_neg_gram_mul_frameCols (γ : 𝔰.G₁) {m : Type}
     (a : Matrix (Fin 𝔰.n) m ℂ) :
     (-((γ.val.val * (𝔰.frameCols * a))ᴴ * 𝔰.J₁ *
       (γ.val.val * (𝔰.frameCols * a)))).PosSemidef := by

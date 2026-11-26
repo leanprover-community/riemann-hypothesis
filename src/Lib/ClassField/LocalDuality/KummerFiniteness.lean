@@ -371,7 +371,7 @@ lemma finite_Z1 [IsLocalGalois Γ k A] ⦃R : Type⦄ [CommRing R] (M : Discrete
   have e := equivFinOfCardPos h_card_pos.ne'
   let res (z : Z1 M.ρ) (f : M →+ DiscreteUnits Ω) :=
     e ⟨⟨fun u ↦ f (z.val u),
-      continuous_of_discreteTopology.comp (z.property.left.comp continuous_subtype_val),
+      continuous_of_discreteTopology.comp (z.property.left.comp continuous_subtypeVal),
       fun g g' ↦ by simpa [hz_mul z] using! h_equiv f g _⟩,
       by simp [Subtype.ext_iff, funext_iff, ← map_nsmul]⟩
   refine .of_injective (fun z ↦ (fun q : Γ ⧸ U.1 ↦ z.val q.out, res z)) fun y z hyz ↦ ?_

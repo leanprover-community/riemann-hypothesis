@@ -143,7 +143,7 @@ by the coefficients of `P` and of the `Q i`, with the sign changed. If `P` is mo
 and these coefficients of `P` in degree `a - 1` lie in a complete set, some `R` is attached to `P`,
 and the pairs of the traces of `R` and of the `r i` lie in `N`. -/
 lemma New.GaloisRep.exists_attached_of_isApproximatingMonoid {ℓ : ℕ} {E : Type} {a : ℕ} [ThePrime ℓ]
-    [PadicIso ℓ] [Field E] [CMType E] [EmbeddedNumberField E] [NeZero a] {s : Set.Ioi (0 : ℝ) → ℕ}
+    [PadicIso ℓ] [Field E] [EmbeddedNumberField E] [NeZero a] {s : Set.Ioi (0 : ℝ) → ℕ}
     {t : (η : Set.Ioi 0) → Fin (s η) → PadicAlgCl ℓ}
     {N : Submonoid (PadicAlgCl ℓ × ((η : Set.Ioi 0) × Fin (s η) → PadicAlgCl ℓ))}
     (apx : IsApproximatingMonoid s t N)
@@ -288,7 +288,7 @@ lemma New.GaloisRep.exists_isLevel_of_localCongruence_hom {E : Type} {a : ℕ} [
     ϑ.comp (.mk' (fun k ↦ ⟨atPlace v k, ((mem_K k).1 k.2).left⟩) (by simp))
   have χ_near : χ =ᶠ[nhds 1] 1 :=
     .mono (((isOpen_localCongruence (m := 1)).preimage_of_continuous
-      ((continuous_atPlace v).comp continuous_subtype_val)).mem_nhds (by simp)) fun k hk ↦
+      ((continuous_atPlace v).comp continuous_subtypeVal)).mem_nhds (by simp)) fun k hk ↦
       show χ k = 1 from ϑ_one ⟨_, ((mem_K k).1 k.2).left⟩ hk
   have K_off (k : Gf E (Fin a)) (k_int : k ∈ stdLevel E (Fin a)) (k_v : atPlace v k = 1) :
       k ∈ K.1 ↔ k ∈ V := by simp [mem_K, k_v, k_int]
@@ -559,7 +559,7 @@ private lemma New.GaloisRep.exists_attached_of_coeff_mem {ℓ : ℕ} {E : Type} 
     exact ⟨by simpa using p_hecke.isMonicOfDegree hf_ne, neg_mem (p_hecke.coeff_pred_mem hL hf₀),
       fun j ↦ hd p j (coeff_mem p.place p_split _ j p_off star_off p_prime p_hecke)⟩
   exact exists_attached_of_isApproximatingMonoid apx r_cont r_frob
-    L.toSubmodule.complete_of_finiteDimensional d
+    L.toSubmodule.isComplete_of_finiteDimensional d
     most_frob
 
 -- Keeps definitional checks from unfolding the finite sums.

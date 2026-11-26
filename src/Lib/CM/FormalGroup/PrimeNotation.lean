@@ -144,7 +144,6 @@ lemma gammaPrime_of_inert {d p : ℕ} [Fact d.Prime] [Fact p.Prime] (h_inert : c
   grind [gammaPrime, varpiValuation_of_inert h_inert]
 
 lemma gammaPrime_self (d : ℕ) [Fact d.Prime] : gammaPrime d d = 1 / (2 * d - 2) := by
-  have hd : (1 : ℝ) < d := mod_cast (Fact.out : d.Prime).one_lt
   grind [gammaPrime, varpiValuation_self d]
 
 lemma gammaPrime_nonneg (d p : ℕ) [Fact d.Prime] [Fact p.Prime] : 0 ≤ gammaPrime d p :=

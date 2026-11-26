@@ -1,6 +1,5 @@
 module
 
-public import Lib.Adelic.Unitary.Defs
 public import Lib.GLn.SchurModule.TensorModel
 public import Lib.Shimura.ComplexTheta.AppellHumbertData
 
@@ -368,12 +367,25 @@ lemma GL.weylGram_eq_submatrix {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] (κ : �
   -- `nablaCombination κ`. For `Φ` this gives the kernel at `y` (`toPoly_weylEval`); for `Ψ` the
   -- same after renaming the variables.
   let e : (Σ σ, n (p.symm σ)) × ℕ → (Σ τ, n τ) × ℕ := Prod.map p.symm.sigmaCongrLeft id
+  -- Renaming the variables by `e` sends each basis product for `Ψ` to the one for `Φ`.
+  have h_basis (i : WeylIndexFamily (fun σ ↦ n (p.symm σ)) fun σ ↦ κ (p.symm σ)) :
+      rename e (nablaBasis ℤ (fun σ ↦ n (p.symm σ)) (fun σ ↦ κ (p.symm σ)) i) =
+        nablaBasis ℤ n κ
+          ((p.piCongrLeft' fun τ ↦ BasisTableau (n τ) (rankAt n τ) (κ τ)).symm i) := by
+    simp [nablaBasis, tableauPoly, minor, e, AlgHom.map_det, Matrix.map, reindex_equiv p.symm]
   refine toLin'.injective (ext_weylEval 0 (fun y _ _ ↦ ?_) Set.infinite_univ)
   refine nablaCombination_injective ((toPoly_weylEval y).trans ?_)
-  simpa [toPoly, rowSubst, nablaBasis, e, weylKernel, highestPoly, reindex_equiv p.symm,
+  have h_eval (i : WeylIndexFamily (fun σ ↦ n (p.symm σ)) fun σ ↦ κ (p.symm σ)) :
+      eval (y ∘ e) (nablaBasis ℤ (fun σ ↦ n (p.symm σ)) (fun σ ↦ κ (p.symm σ)) i) =
+        eval y (nablaBasis ℤ n κ
+          ((p.piCongrLeft' fun τ ↦ BasisTableau (n τ) (rankAt n τ) (κ τ)).symm i)) := by
+    rw [← eval_rename, h_basis]
+  have h := congrArg (rename (R := ℤ) e)
+    (toPoly_weylEval (κ := fun σ ↦ κ (p.symm σ)) (y ∘ e)).symm
+  simp [toPoly, rowSubst, e, weylKernel, highestPoly, reindex_equiv p.symm,
     reindex_equiv (p.piCongrLeft' _).symm, tableauPoly, minor, AlgHom.map_det, Matrix.map,
-    linearCombination_apply, mulVec, dotProduct, weylEval, RingHom.map_det] using
-    congrArg (rename (R := ℤ) e) (toPoly_weylEval (y ∘ e)).symm
+    linearCombination_apply, mulVec, dotProduct, weylEval, h_basis, h_eval] at h ⊢
+  exact h
 
 @[simp]
 lemma map_toPoly : MvPolynomial.map φ (toPoly n κ ξ) = toPoly n κ (φ ∘ ξ) := by

@@ -506,7 +506,7 @@ lemma IsReductionMod.surjective {R A B : Type*} [SMul R A] [Zero B] {m : R} {g :
 lemma IsReductionMod.exact {R A B : Type*} [SMul R A] [Zero B] {m : R} {g : A → B}
     (h_red : IsReductionMod m g) : Exact (m • ·) g := h_red.right
 
-private lemma subsingleton_wittVector {q : ℕ} {R : Type*} [CommRing R] [Subsingleton R] :
+private lemma subsingleton_wittVector {q : ℕ} {R : Type*} [Subsingleton R] :
     Subsingleton (WittVector q R) :=
   ⟨fun x y ↦ WittVector.ext fun n ↦ Subsingleton.elim (x.coeff n) (y.coeff n)⟩
 

@@ -904,7 +904,8 @@ lemma HasBoundedIncrements.weight_zeroOrder_mul_card_le [NeZero N]
     exact pow_dvd_coeff_mergedCoeff _ h_cross h_merge_weight (by linarith)
   have Φ_ne : Φ ≠ 0 := by
     refine fun hΦ ↦ h_not_dvd ((dvd_sub_right ?_).1 h_top)
-    simpa [Φ, eq_zero_iff_dvd] using Polynomial.ext_iff.1 hΦ (weight D.poleOrder α)
+    simpa [Φ, eq_zero_iff_dvd] using
+      Finsupp.ext_iff.1 (AddMonoidAlgebra.ext_iff.1 hΦ) (weight D.poleOrder α)
   have Φ_deg : Φ.natDegree ≤ weight D.poleOrder α := by
     refine Polynomial.natDegree_le_iff_coeff_eq_zero.2 fun j hj ↦ ?_
     have h_gap : weight D.poleOrder α * D.slope c < j * D.slope c := by gcongr

@@ -3,6 +3,7 @@ module
 public import Lib.GLn.SchurModule.SchurNorm
 public import Lib.General.LinearAlgebra.BlockEmbeddings
 public import Lib.General.LinearAlgebra.MatrixNormBounds
+public import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
 
 /-!
 # Duality of integral GL(n) representations, mixed weights and the Cartan product
@@ -79,35 +80,6 @@ open ComplexOrder Finset Matrix MvPolynomial «GL» SetLike Equiv
 variable {Φ : Type} {n : Φ → Type} [Fintype Φ] [∀ τ, Fintype (n τ)]
   [∀ τ, DecidableEq (n τ)] {κ κ' : Φ → ℕ → ℕ}
 
-/-- Jacobi's formula for complementary minors: split the indices by `ρ` and permute the rows by
-`π`; for invertible `A`, the minor of `A` on the second part is, up to the sign of `π`,
-`det A` times the minor of `A⁻¹ᵀ` on the first part. -/
-lemma GL.sign_mul_det_complementary_minor {R m a b : Type*} [CommRing R] [Fintype m] [DecidableEq m]
-    [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] {A : Matrix m m R} (hA : IsUnit A.det)
-    (ρ : a ⊕ b ≃ m) (π : Equiv.Perm m) :
-    π.sign * (A.submatrix (π ∘ ρ ∘ Sum.inr) (ρ ∘ Sum.inr)).det =
-      A.det * (A⁻¹ᵀ.submatrix (π ∘ ρ ∘ Sum.inl) (ρ ∘ Sum.inl)).det := by
-  -- Multiply `B`, the rearranged `A`, by `M`, whose columns are columns of `B⁻¹` on the first part
-  -- and unit vectors on the second; `M` and `B * M` are block triangular.
-  let B : Matrix (a ⊕ b) (a ⊕ b) R := (A.submatrix π id).submatrix ρ ρ
-  let M : Matrix (a ⊕ b) (a ⊕ b) R := ((A⁻¹ᵀ.submatrix (π ∘ ρ ∘ .inl) ρ).fromRows (fromCols 0 1))ᵀ
-  have hB : B.det = π.sign * A.det := by rw [det_submatrix_equiv_self, det_permute]
-  have hM : M.det = (A⁻¹ᵀ.submatrix (π ∘ ρ ∘ Sum.inl) (ρ ∘ Sum.inl)).det := by
-    rw [det_transpose, ← (submatrix _ _ ρ).fromCols_toCols, fromRows_fromCols_eq_fromBlocks,
-      det_fromBlocks_zero₂₁, det_one, mul_one]
-    rfl
-  have hBM : B * M = fromBlocks 1 B.toBlocks₁₂ 0 (A.submatrix (π ∘ ρ ∘ Sum.inr) (ρ ∘ Sum.inr)) := by
-    ext (s | s) (t | t)
-    · simp [B, M, transpose_fromRows, hA, Matrix.one_apply]
-    · simp [B, M, Matrix.mul_apply, toBlocks₁₂, Matrix.one_apply]
-    · simp [B, M, transpose_fromRows, hA]
-    · simp [B, M, Matrix.mul_apply, toBlocks₁₂, Matrix.one_apply]
-  have h_det : (A.submatrix (π ∘ ρ ∘ Sum.inr) (ρ ∘ Sum.inr)).det = B.det * M.det := by
-    rw [← det_mul, hBM, det_fromBlocks_zero₂₁, det_one, one_mul]
-  -- The sign of `π` squares to `1`.
-  rw [h_det, hB, hM, ← mul_assoc, ← mul_assoc, ← Int.cast_mul, Int.units_coe_mul_self, Int.cast_one,
-    one_mul]
-
 omit [Fintype Φ] in
 /-- For an enumeration `e` of the rows, every family `A` of square matrices is the square part
 `New.GL.squarePart e y` of some array `y`, the family whose matrix at `τ` has the entry
@@ -129,11 +101,6 @@ lemma GL.diagramWeight_zero_eq_sum_min_mul (N : Φ → ℕ) (κ : Φ → ℕ →
   rintro ⟨_ | h, -⟩ - <;> simp
 
 variable [DecidableEq Φ]
-
-lemma GL.map_intCast_mul {R a b c : Type*} [CommRing R] [Fintype b] (A : Matrix a b ℤ)
-    (B : Matrix b c ℤ) :
-    (A * B).map (Int.cast : ℤ → R) = A.map (Int.cast : ℤ → R) * B.map (Int.cast : ℤ → R) :=
-  Matrix.map_mul (f := Int.castRingHom R)
 
 /-- If `c'` counts the columns of the diagram complementary to that of `c`, then `c` counts those
 of the diagram complementary to that of `c'`. -/
@@ -211,10 +178,14 @@ lemma GL.exists_sign_minor_columnComplement {m : Type*} [Fintype m] [DecidableEq
   let π : Equiv.Perm m := ρ.symm.trans σ
   have h_rows (s : Fin a ⊕ Fin b) : π (ρ s) = pos.symm (Sum.elim I.val I'.val s) := by simp [π, σ]
   refine ⟨π.sign, fun {R} _ {A} hA ↦ ?_⟩
-  have h_jacobi : π.sign * (A.submatrix (pos.symm ∘ I'.val) (ρ ∘ Sum.inr)).det =
-      A.det * (A⁻¹ᵀ.submatrix (pos.symm ∘ I.val) (ρ ∘ Sum.inl)).det := by
-    simpa [Function.comp_def, h_rows] using sign_mul_det_complementary_minor hA ρ π
-  simpa only [Function.comp_def, h_inl, h_inr] using h_jacobi
+  have h_jacobi := det_submatrix_comp_inr_eq_sign_mul_det_mul_det_submatrix_comp_inl_nonsing_inv
+    A hA ρ 1 π
+  simp only [Function.comp_def, h_rows, Sum.elim_inl, Sum.elim_inr] at h_jacobi
+  simp only [Perm.coe_one, id_eq, h_inl, h_inr, Perm.sign_one, Units.val_one, Int.cast_one, one_mul,
+    ← det_transpose (A⁻¹.submatrix _ _), transpose_submatrix] at h_jacobi
+  simp only [Function.comp_def]
+  rw [h_jacobi, ← mul_assoc, ← mul_assoc, ← Int.cast_mul, Int.units_coe_mul_self, Int.cast_one,
+    one_mul]
 
 /-- For complementary diagrams `κ`, `κ'`, the filling of `κ'` whose column of height `h' > 0` is the
 complement of the matching column of `T`, of height `|n_τ| - h'`. Columns of height `0` are
@@ -367,7 +338,7 @@ lemma GL.exists_int_duality_matrix (e e' : ∀ τ : Φ, n τ ≃ Fin (rankAt n �
       Q * fillingMatrix n κ = 1 := exists_fillingMatrix_leftInverse
   have h_left (R : Type) [CommRing R] (v : WeylIndexFamily n κ → R) :
       Q.map (Int.cast : ℤ → R) *ᵥ fillingMatrixOver R n κ *ᵥ v = v := by
-    simp [← map_intCast_mul, hQ]
+    simp [← map_mul_intCast, hQ]
   have h_tensor (R : Type) [CommRing R] (g : ∀ τ : Φ, Matrix (n τ) (n τ) R)
       (hg : ∀ τ : Φ, IsUnit (g τ).det) :
       P.map (Int.cast : ℤ → R) *ᵥ
@@ -384,8 +355,8 @@ lemma GL.exists_int_duality_matrix (e e' : ∀ τ : Φ, n τ ≃ Fin (rankAt n �
   · -- Compare both sides over `ℂ` on the vectors `S(g) ev_e`, which span the Weyl module.
     refine toLin'.injective (ext_schur_weylEval e fun g ↦ ?_)
     have hg (τ : Φ) : IsUnit (g τ).val.det := (isUnit_iff_isUnit_det _).1 (g τ).isUnit
-    simp only [toLin'_apply, map_intCast_mul, ← mulVec_mulVec, h_tensor ℂ _ hg, mulVec_smul, h_left]
-  · simp only [map_intCast_mul, ← mulVec_mulVec, h_tensor R g hg, mulVec_smul, h_left]
+    simp only [toLin'_apply, map_mul_intCast, ← mulVec_mulVec, h_tensor ℂ _ hg, mulVec_smul, h_left]
+  · simp only [map_mul_intCast, ← mulVec_mulVec, h_tensor R g hg, mulVec_smul, h_left]
 
 /-- For an enumeration `e` of the rows, the integer matrix `J`, from coordinates of weight `κ'` to
 those of weight `κ`, identifies the lattice of weight `κ'` with that of weight `κ` composed with
@@ -436,11 +407,11 @@ lemma exists_isDualIsometry (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ))
   -- Identities of integer matrices are checked over `ℂ`.
   have hJK : J * K = 1 := by
     refine map_injective (Int.cast_injective (α := ℂ)) (toLin'.injective (ext_schur_weylEval e' ?_))
-    simp +contextual [map_intCast_mul, hJ, hK, h_exp, h_exp',
+    simp +contextual [map_mul_intCast, hJ, hK, h_exp, h_exp',
       GeneralLinearGroup.det_ne_zero, transpose_nonsing_inv, prod_eq_zero_iff]
   have hKJ : K * J = 1 := by
     refine map_injective (Int.cast_injective (α := ℂ)) (toLin'.injective (ext_schur_weylEval e ?_))
-    simp +contextual [map_intCast_mul, hJ, hK, h_exp, h_exp',
+    simp +contextual [map_mul_intCast, hJ, hK, h_exp, h_exp',
       GeneralLinearGroup.det_ne_zero, transpose_nonsing_inv, prod_eq_zero_iff]
   have h_ev (R : Type) [Field R] :
       J.map (Int.cast : ℤ → R) *ᵥ weylEval n κ' (permArray e) = weylEval n κ (permArray e') := by
@@ -1068,12 +1039,6 @@ structure IsDualPairing (A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ) : Pr
   exists_eq_gramForm (v : WeylIndex n κ → ℂ) :
     ∃ v' : WeylIndex n κ' → ℂ, weylNormSq v' = weylNormSq v ∧
       ∀ u : WeylIndex n κ' → ℂ, u ⬝ᵥ A.map (↑) *ᵥ v = gramForm v' u
-
-lemma IsDualPairing.ofAlgForm_apply {A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ}
-    (hA : IsDualPairing κ κ' e e' l A) (s : n → ℤˣ) (η : AlgForm n κ' e') (x : GInf E s)
-    (g : Gf E n) :
-    ofAlgForm (-l) s η (x, g) = η.val g ⬝ᵥ A.map (↑) *ᵥ conjWeylRep κ e x (highestVector κ l) :=
-  hA.ofAlgForm_eq_bilin s η x g
 
 /-- Let `l` list twice the Harish-Chandra parameter of `(κ, e)`, and `-l` that of `(κ', e')`, in the
 sense of `New.IsHCParam`: at each place the entries are distinct values of `hcParameter` at

@@ -1,6 +1,7 @@
 module
 
 public import Lib.Base
+public import TauCeti.Algebra.Group.AddChar.Basic
 
 /-!
 # Orthogonality, Fourier inversion and matrix Gauss sums over a finite ring
@@ -8,7 +9,7 @@ public import Lib.Base
 Finite Fourier analysis on matrices over a finite commutative ring `R`, for a primitive additive
 character `ψ` (no multiple `ψ (r * ·)` with `r ≠ 0` is trivial).
 
-* `New.exists_isPrimitive_apply_eq_of_surjective`, `New.exists_primitive_residue_addChar`: a
+* `New.exists_primitive_residue_addChar`: a
   character of a ring `F` for which the subring `O` is self-dual induces a primitive character of a
   suitable quotient ring of `O`.
 * `New.sum_addChar_dotProduct`, `New.sum_addChar_trace_mul`: orthogonality; the sum of `ψ` along
@@ -30,27 +31,19 @@ Known; see `Lib.Weil.TameGaussSum` for sources.
 
 open Matrix Finset Fintype AddChar Function
 
-/-- An additive character `ψ` sends a finite sum to the product of its values on the terms. -/
-lemma AddChar.map_sum_eq_prod {ι A M : Type*} [AddCommMonoid A] [CommMonoid M]
-    (ψ : AddChar A M) (s : Finset ι) (f : ι → A) :
-    ψ (∑ i ∈ s, f i) = ∏ i ∈ s, ψ (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi ih => rw [sum_insert hi, prod_insert hi, map_add_eq_mul, ih]
-
 namespace New
 
 variable {R F a N : Type*} [CommRing R]
 
-/-- Let `O` be a subring of `F`, `π : O → R` a surjective ring homomorphism (`hπ_surj`) with kernel
-`{x | g * x ∈ O}` (`hπ_ker`), and `ψ` an additive character of `F` such that `ψ (t * ·)` is
+/-- Let `O` be a subring of `F`, `π : O → R` a surjective ring homomorphism with kernel
+`{x | g * x ∈ O}` (`hπ`), and `ψ` an additive character of `F` such that `ψ (t * ·)` is
 trivial on `O` exactly when `t ∈ O` (`hψ`). Then `π x ↦ ψ (g * x)` is a well-defined primitive
 character of `R`. -/
-lemma exists_isPrimitive_apply_eq_of_surjective [CommRing F] {O : Subring F} {π : O →+* R}
-    {g : F} {ψ : AddChar F ℂ} (hπ_surj : Surjective π) (hπ_ker : ∀ x : O, π x = 0 ↔ g * x.val ∈ O)
+lemma exists_primitive_residue_addChar [CommRing F] {O : Subring F} {π : O →+* R} {g : F}
+    {ψ : AddChar F ℂ} (hπ : Surjective π ∧ ∀ x : O, π x = 0 ↔ g * x.val ∈ O)
     (hψ : ∀ t : F, (∀ s ∈ O, ψ (t * s) = 1) ↔ t ∈ O) :
     ∃ φ : AddChar R ℂ, φ.IsPrimitive ∧ ∀ x : O, φ (π x) = ψ (g * x) := by
+  obtain ⟨hπ_surj, hπ_ker⟩ := hπ
   -- `x ↦ ψ (g * x)` is constant on the fibres of `π`, since `π x = π y` puts `g * (x - y)` in `O`.
   have h_factors : Function.FactorsThrough (fun x : O ↦ ψ (g * x)) π := by
     intro x y hxy
@@ -71,15 +64,6 @@ lemma exists_isPrimitive_apply_eq_of_surjective [CommRing F] {O : Subring F} {π
   have h_triv_O : ∀ s ∈ O, ψ (g * x * s) = 1 := fun s hs ↦ by
     simpa [← map_mul, hφ, φ', mul_assoc] using DFunLike.congr_fun h_triv (π ⟨s, hs⟩)
   exact hr_ne ((hπ_ker x).mpr ((hψ _).mp h_triv_O))
-
-/-- `New.exists_isPrimitive_apply_eq_of_surjective` with its two conditions on `π` joined in
-one hypothesis `hπ`: `π` is surjective, and its kernel is `{x | g * x ∈ O}`. Then `π x ↦ ψ (g * x)`
-is a well-defined primitive character of `R`. -/
-lemma exists_primitive_residue_addChar [CommRing F] {O : Subring F} {π : O →+* R} {g : F}
-    {ψ : AddChar F ℂ} (hπ : Surjective π ∧ ∀ x : O, π x = 0 ↔ g * x.val ∈ O)
-    (hψ : ∀ t : F, (∀ s ∈ O, ψ (t * s) = 1) ↔ t ∈ O) :
-    ∃ φ : AddChar R ℂ, φ.IsPrimitive ∧ ∀ x : O, φ (π x) = ψ (g * x) :=
-  exists_isPrimitive_apply_eq_of_surjective hπ.left hπ.right hψ
 
 variable [Fintype R] [DecidableEq R] [Fintype a] [DecidableEq a] [Fintype N] [DecidableEq N]
 

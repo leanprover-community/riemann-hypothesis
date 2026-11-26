@@ -236,7 +236,7 @@ private lemma IsExponent.swap_compactMean_apply_diagGL_of_apply_eq_zero
   let U (t : Fin N → Fˣ) : Module.End ℂ ρ := ρ (diagGL t) * compactMean ρ.ρ proIwahori
   let w : Fin N → Fˣ := stepTorus ϖ j
   have hw : w ∈ dominantTorus := stepTorus_mem_dominantTorus hϖ j
-  show l_mean (U t z) = torusChar (θ ∘ Equiv.swap i j) t * l_mean z
+  change l_mean (U t z) = torusChar (θ ∘ Equiv.swap i j) t * l_mean z
   induction h_gap : (v (t j / t i).val).log.toNat generalizing t z with
   | zero =>
     -- Order `0`: `t i` and `t j` have the same valuation, so the transvections at `(i, j)` fix
@@ -500,7 +500,7 @@ lemma IsIwahoriEigen.exists_isExponent {B : ρ →ₗ⋆[ℂ] ρ →ₗ[ℂ] ℂ
       ev ((iwahoriHeckeHom ρ t).dualMap φ) = ξ t * ev φ := by
     have h_U : iwahoriHeckeHom ρ t ⟨y, hy_fix⟩ = (ξ t : ℂ) • ⟨y, hy_fix⟩ :=
       Subtype.ext (hy_eig _ t.prop)
-    show φ (iwahoriHeckeHom ρ t ⟨y, hy_fix⟩) = ξ t * φ ⟨y, hy_fix⟩
+    change φ (iwahoriHeckeHom ρ t ⟨y, hy_fix⟩) = ξ t * φ ⟨y, hy_fix⟩
     rw [h_U, map_smul, _root_.smul_eq_mul]
   -- the operators `iwahoriHeckeHom ρ t` commute, and so do their duals
   have h_comm (s t : dominantTorus) (φ : Dual ℂ W) (_ : φ ∈ S) :
@@ -726,7 +726,7 @@ private lemma New.exists_reindexGL_apply_eq_smul_of_finsum_ne_zero {F : Type*} [
 less than `1` whenever `c (e⁻¹ j) < c (e⁻¹ i)`. Then `g`, read as a matrix indexed by `n` and
 reduced modulo the maximal ideal, is block upper triangular for `c`. -/
 private lemma New.blockTriangular_intGL_map_reindexGL_symm_of_valuation_lt_one {F : Type*}
-    [Field F] [Valued F ℤᵐ⁰] [CompactSpace 𝒪[F]] {N : ℕ} {n : Type*} [Fintype n] [DecidableEq n]
+    [Field F] [Valued F ℤᵐ⁰] {N : ℕ} {n : Type*} [Fintype n] [DecidableEq n]
     (e : n ≃ Fin N) {k : ℕ} (c : n → Fin k) (g : GL (Fin N) F) (hg : g ∈ intGL (Fin N) 𝒪[F])
     (h_low : ∀ i j : Fin N, c (e.symm j) < c (e.symm i) → v (g i j) < 1) :
     BlockTriangular (intGL.map (residue 𝒪[F])
@@ -741,7 +741,7 @@ lies in `parabolic b` act on `y` by the product of the `χ a` of the determinant
 blocks. Then each integral `g` whose reduction is upper triangular for the order `e` acts on `y` by
 the product of the `χ (b i)` of the diagonal entries of its reduction. -/
 private lemma New.reindexGL_apply_eq_prod_smul_of_blockTriangular {F : Type*} [Field F]
-    [Valued F ℤᵐ⁰] [CompactSpace 𝒪[F]] {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)} {y : ρ}
+    [Valued F ℤᵐ⁰] {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)} {y : ρ}
     {n : Type*} [Fintype n] [DecidableEq n] (e : n ≃ Fin N) {r : ℕ}
     {χ : Fin r → MulChar (IsLocalRing.ResidueField 𝒪[F]) ℂ} {b : n → Fin r} (hb : Monovary e b)
     (h_block : ∀ (g : intGL n 𝒪[F]) (hg : intGL.map (residue 𝒪[F]) g ∈ parabolic b),
@@ -768,7 +768,7 @@ private lemma New.reindexGL_apply_eq_prod_smul_of_blockTriangular {F : Type*} [F
 product of the `f i` of the residues of its diagonal entries, where `R : F → 𝓀[F]` extends the
 residue map. Then `y` is fixed by `New.proIwahori`. -/
 private lemma New.mem_levelSpace_proIwahori_of_forall_apply_eq_prod_smul {F : Type*} [Field F]
-    [Valued F ℤᵐ⁰] [CompactSpace 𝒪[F]] {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)} {y : ρ}
+    [Valued F ℤᵐ⁰] {N : ℕ} {ρ : Rep ℂ (GL (Fin N) F)} {y : ρ}
     {R : F → 𝓀[F]} (hR : ∀ a : 𝒪[F], R a = residue 𝒪[F] a)
     (f : Fin N → MulChar (IsLocalRing.ResidueField 𝒪[F]) ℂ)
     (h_upper : ∀ g : GL (Fin N) F, g ∈ intGL (Fin N) 𝒪[F] → (∀ i j : Fin N, j < i → v (g i j) < 1) →
@@ -815,7 +815,7 @@ private lemma New.apply_eq_prod_smul_of_valuation_lt_one {F : Type*} [Field F] [
 /-- If `χ` is injective and the characters `χ a` and `χ a'` of the residue field agree at the
 residue of every unit of the valuation ring, then `a = a'`. -/
 private lemma New.eq_of_forall_mulChar_residue_eq {F : Type*} [Field F] [Valued F ℤᵐ⁰]
-    [CompactSpace 𝒪[F]] {r : ℕ} {χ : Fin r → MulChar (IsLocalRing.ResidueField 𝒪[F]) ℂ}
+    {r : ℕ} {χ : Fin r → MulChar (IsLocalRing.ResidueField 𝒪[F]) ℂ}
     (hχ : Injective χ) {a a' : Fin r}
     (h_eq : ∀ u : 𝒪[F]ˣ, χ a (residue 𝒪[F] u) = χ a' (residue 𝒪[F] u)) : a = a' := by
   refine hχ (ext fun w ↦ ?_)

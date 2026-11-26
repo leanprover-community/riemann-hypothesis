@@ -320,7 +320,6 @@ lemma exists_analyticOnNhd_eq_L_mul_gammaIntegral (m : InfinitePlace E → ℕ) 
   -- Take the test vector, the empty matrix, the idele `1` and the identity of the group.
   obtain ⟨𝒵, h_analytic, -, h_value⟩ :=
     h_continuation (tateVector s m) (isSchwartzVector_tateVector s m) 0 nofun 1 1 (.inl rfl)
-
   let Φ : Matrix Empty Empty (LocProd 𝔠.ramifiedPlaces) → ℂ := stdColDatum 𝔠.semilocalChar 1
   -- There is only one empty matrix.
   have h_datum : stdRowDatum (Equiv.emptySum Empty Empty) 𝔠.semilocalChar 0 = Φ :=

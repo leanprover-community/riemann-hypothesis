@@ -24,7 +24,7 @@ degree two through the class group. This shows that the discriminant of a CM lat
   identities for the discriminants `s(u)` of a lattice scaled to `℘''(u) = 2` at the points `u` of
   order two.
 * `New.CMLattice.norm_scaledDisc_le_one`, `New.CMLattice.prod_scaledDisc_t`: for a family of data,
-  one in each ideal class, the numbers `s(u)` are integral, and those at the points `t` have the
+  one in each ideal class, the numbers `s(t)` at the points `t` are integral and have the
   product `±1`.
 * `New.CMLattice.norm_disc_eq_one`: the discriminant `a₁⁴ - 64` of a CM lattice is a unit at every
   prime.
@@ -724,15 +724,14 @@ variable {D : ClassGroup (𝓞 (QuadField d)) → CMLattice d}
 
 /-- Let `d` be a prime `≡ 7 mod 8`, `ι : ℂ →+* ℂ_[p]` an embedding for a prime `p`, and `D 𝒞` a CM
 lattice in each ideal class `𝒞`, with its point `t` of order two. Then
-`scaledDisc u = 288 ℘(u)² / ℘''(u) - 64` for the lattice of `D 𝒞` satisfies `‖ι (scaledDisc u)‖ ≤ 1`
-at the three points `u = ω t, ω̄ t, t` of order two, where `ω = (1 + √-d) / 2`. At a point of order
-two, `scaledDisc` is the discriminant of the lattice after rescaling so that `℘''(u) = 2`. -/
+`scaledDisc u = 288 ℘(u)² / ℘''(u) - 64` for the lattice of `D 𝒞` has `‖ι (scaledDisc t)‖ ≤ 1`. The
+proof first bounds it at the other points `ω t, ω̄ t` of order two, where `ω = (1 + √-d) / 2`. At a
+point of order two, `scaledDisc` is the discriminant of the lattice after rescaling so that
+`℘''(u) = 2`. -/
 lemma norm_scaledDisc_le_one {p : ℕ} [Fact p.Prime] {d : ℕ} [PrimeSevenModEight d]
     {D : ClassGroup (𝓞 (QuadField d)) → CMLattice d}
     (hD : ∀ 𝒞 : ClassGroup (𝓞 (QuadField d)), (D 𝒞).IsInClass 𝒞)
     (ι : ℂ →+* ℂ_[p]) (𝒞 : ClassGroup (𝓞 (QuadField d))) :
-    (∀ b : ℂ, b = quadGen d ∨ b = conj (quadGen d) →
-      ‖ι ((D 𝒞).scaledDisc (b * (D 𝒞).t))‖ ≤ 1) ∧
     ‖ι ((D 𝒞).scaledDisc (D 𝒞).t)‖ ≤ 1 := by
   have h48 : ‖ι (-48)‖ ≤ 1 := by
     simpa [map_ofNat] using IsUltrametricDist.norm_natCast_le_one ℂ_[p] 48
@@ -752,7 +751,6 @@ lemma norm_scaledDisc_le_one {p : ℕ} [Fact p.Prime] {d : ℕ} [PrimeSevenModEi
     have h_step (𝒞') : s b (𝔤 * 𝒞') * s₀ (𝔤 * 𝒞') = -s b 𝒞' := by
       simp only [s, s₀, ← map_mul, (h𝔤 (hD 𝒞') (hD _)).2, map_neg]
     exact norm_le_one_of_cycle 𝔤 h_sum h_dual h_step 𝒞
-  refine ⟨h_int, ?_⟩
   have hω : quadGen d = quadGen d ∨ quadGen d = conj (quadGen d) := .inl rfl
   -- `s(t) = -48 - s(ω t) - s((1 - ω) t)`
   rw [eq_sub_of_add_eq' ((D 𝒞).scaledDisc_sum_prod hω).1, ← sub_sub, map_sub, map_sub]
@@ -798,13 +796,13 @@ lemma norm_disc_eq_one {p : ℕ} [Fact p.Prime] {d : ℕ} (C : CMLattice d) [Pri
   -- The discriminants of a family of CM lattices, one in each ideal class, are integral and have
   -- the product `±1`.
   obtain ⟨D, hD, 𝒞₀, rfl⟩ := C.exists_forall_isInClass
-  have h_le (𝒞) : ‖ι ((D 𝒞).scaledDisc (D 𝒞).t)‖₊ ≤ 1 := (norm_scaledDisc_le_one hD ι 𝒞).2
+  have h_le (𝒞) : ‖ι ((D 𝒞).scaledDisc (D 𝒞).t)‖₊ ≤ 1 := norm_scaledDisc_le_one hD ι 𝒞
   have h_prod : ∏ 𝒞, ‖ι ((D 𝒞).scaledDisc (D 𝒞).t)‖₊ = 1 := by
-    simp [← nnnorm_prod, ← map_prod, prod_scaledDisc_t hD]
+    simp [← nnNorm_prod, ← map_prod, prod_scaledDisc_t hD]
   have h_unit : ‖ι ((D 𝒞₀).scaledDisc (D 𝒞₀).t)‖₊ = 1 :=
     (prod_eq_one_iff_of_le_one fun 𝒞 _ ↦ h_le 𝒞).1 h_prod 𝒞₀ (mem_univ _)
   rw [scaledDisc_t, map_sub, map_pow, map_ofNat] at h_unit
-  rw [← coe_nnnorm, h_unit, NNReal.coe_one]
+  rw [← coe_nnNorm, h_unit, NNReal.coe_one]
 
 end CMLattice
 

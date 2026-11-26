@@ -75,7 +75,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 /-- Minkowski's bound. If the nonzero vectors of the lattice spanned by a basis `b` of a Euclidean
 space of dimension `m ≥ 1` have length at least `ρ > 0`, then its covolume `|det b|`, in the
 coordinates of an orthonormal basis `o`, is at least `(ρ / √m) ^ m`. -/
-lemma minkowski_pow_le_abs_det [Module.Finite ℝ E] {ρ : ℝ} (hρ : 0 < ρ) {m : ℕ} (hm : 0 < m)
+lemma minkowski_pow_le_abs_det {ρ : ℝ} (hρ : 0 < ρ) {m : ℕ} (hm : 0 < m)
     {o : OrthonormalBasis (Fin m) ℝ E} {b : Basis (Fin m) ℝ E}
     (h_long : ∀ y ∈ span ℤ (Set.range b), y ≠ 0 → ρ ≤ ‖y‖) :
     (ρ / √m) ^ m ≤ |det (of fun i : Fin m ↦ o.repr (b i))| := by

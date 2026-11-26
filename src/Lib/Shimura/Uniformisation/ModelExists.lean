@@ -143,7 +143,7 @@ lemma exists_map_eq_and_eq_polarisationForm_of_fourierChar_eq
   -- is `0`.
   have hR : R = polarisationForm D (of β) := by
     refine ext (isClosed_property denseRange_toRealVectors
-      (R.eqLocus _).closed_of_finiteDimensional fun y ↦ ?_)
+      (R.eqLocus _).isClosed_of_finiteDimensional fun y ↦ ?_)
     refine sub_eq_zero.mp (eq_zero_of_forall_fourierChar_eq_one _ (denseRange_toRealVectors.eq ?_))
     simp [h_weil, ← hβ, 𝐞.map_sub_eq_div, ← ψf_coe, xiForm, frameCoords, dotProduct, mulVec]
   exact ⟨β, hβ, hR⟩

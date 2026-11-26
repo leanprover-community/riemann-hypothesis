@@ -2,6 +2,7 @@ module
 
 public import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
 public import Lib.DiscreteSeries.Theta.FockDualPair
+public import TauCeti.Algebra.Lie.GeneralLinear.Oscillator.Casimir
 
 /-!
 # The Casimir elements of an oscillator pair
@@ -210,22 +211,6 @@ theorem IsMatch.three_mul_sum_sq_sub [DecidableEq C] {T : FockDualPair ε ε' ι
 
 variable [DecidableEq C] {A : Type*} [Ring A] [Algebra ℂ A]
 
-/-- For a square array `F` in a complex algebra, adding a scalar `t` to the diagonal adds
-`2t ∑ F_aa + n t²` to `∑ F_ab F_ba`, where `n = card R`. -/
-theorem sum_add_scalar_mul_add_scalar (F : R → R → A) (t : ℂ) :
-    ∑ a : R, ∑ b : R, (F a b + if a = b then t • 1 else 0) * (F b a + if b = a then t • 1 else 0) =
-      ∑ a : R, ∑ b : R, F a b * F b a + (2 * t) • ∑ a : R, F a a + (card R * t ^ 2) • (1 : A) := by
-  have h_term (a b : R) :
-      (F a b + if a = b then t • 1 else 0) * (F b a + if b = a then t • 1 else 0) =
-        F a b * F b a + if a = b then (2 * t) • F a a + t ^ 2 • (1 : A) else 0 := by
-    obtain rfl | hab := eq_or_ne a b
-    · simp only [ite_true, add_mul, mul_add, mul_smul_comm, smul_mul_assoc, mul_one, one_mul]
-      module
-    · simp [hab, hab.symm]
-  simp only [h_term, sum_add_distrib, sum_ite_eq, mem_univ, ite_true, ← smul_sum, sum_const,
-    card_univ, ← Nat.cast_smul_eq_nsmul ℂ]
-  module
-
 /-- Normal ordering. Let `x`, `d` be arrays in a complex algebra with
 `d_rc x_rc' = x_rc' d_rc + δ_cc'`. With `n = card R` and `n' = card C`, the Casimir sum of the
 elements `∑ c, x_ac d_bc + (n'/2) δ_ab` is `D₄ + (n + n') D₂ + n n'² / 4`, where
@@ -237,18 +222,7 @@ theorem sum_mul_eq_normal_order (x d : R → C → A)
       ∑ a : R, ∑ b : R, ∑ c : C, ∑ c' : C, x a c * x b c' * d b c * d a c' +
         (card R + card C : ℂ) • ∑ r : R, ∑ c : C, x r c * d r c +
           (card R * card C ^ 2 / 4 : ℂ) • (1 : A) := by
-  -- The commutators give `n D₂`.
-  have h_move (a b : R) (c c' : C) : x a c * d b c * (x b c' * d a c') =
-      x a c * x b c' * d b c * d a c' + if c = c' then x a c * d a c' else 0 := by
-    rw [mul_assoc, ← mul_assoc (d b c), h_comm]
-    split_ifs <;> noncomm_ring
-  have h_quartic : ∑ a, ∑ b, (∑ c, x a c * d b c) * ∑ c, x b c * d a c =
-      ∑ a, ∑ b, ∑ c, ∑ c', x a c * x b c' * d b c * d a c' +
-        (card R : ℂ) • ∑ r, ∑ c, x r c * d r c := by
-    simp only [sum_mul_sum, h_move, sum_add_distrib, sum_ite_eq, mem_univ, ite_true, sum_const,
-      card_univ, Nat.cast_smul_eq_nsmul, smul_sum]
-  -- The scalar `n'/2` gives `n' D₂` and a constant.
-  rw [sum_add_scalar_mul_add_scalar fun a b ↦ ∑ c, x a c * d b c, h_quartic]
+  rw [TauCeti.sum_mul_eq_normal_order x d _ h_comm]
   module
 
 /-- The Casimir element with the centre `w` removed: it is formed with `E_ab - w δ_ab` in place of
@@ -268,7 +242,7 @@ theorem GlModule.centredCasimir_apply {M : Type*} [AddCommGroup M] [Module ℂ M
       ρ.casimirK 1 + (2 * -w) • ∑ a, ρ.E a a + (card R * (-w) ^ 2) • 1 := by
     have h_casimir : ρ.casimirK 1 = ∑ a, ∑ b, ρ.E a b * ρ.E b a := by
       simp [GlModule.casimir]
-    rw [h_casimir, ← sum_add_scalar_mul_add_scalar]
+    rw [h_casimir, ← TauCeti.sum_add_scalar_mul_add_scalar]
     simp only [centredCasimir, sub_eq_add_neg, neg_ite, neg_zero, neg_smul]
   simp [h_expand, hv, ← sum_smul]
   module
@@ -323,23 +297,17 @@ exchanged. -/
 theorem sum_columns_eq_quarticOp :
     ∑ c : C, ∑ c' : C, ∑ a : R, ∑ b : R,
       T.raise a c * T.raise b c' * T.lower a c' * T.lower b c = T.quarticOp := by
-  calc
-    _ = ∑ p : C × C, ∑ q : R × R,
-          T.raise q.1 p.1 * T.raise q.2 p.2 * T.lower q.2 p.1 * T.lower q.1 p.2 := by
-      simp only [Fintype.sum_prod_type, mul_assoc, T.lower_mul_lower]
-    _ = ∑ q : R × R, ∑ p : C × C,
-          T.raise q.1 p.1 * T.raise q.2 p.2 * T.lower q.2 p.1 * T.lower q.1 p.2 := sum_comm
-    _ = T.quarticOp := by simp only [quarticOp, Fintype.sum_prod_type]
+  rw [quarticOp]
+  refine sum_comm_cycle.trans (sum_congr rfl fun a _ ↦ sum_comm_cycle.trans
+    (sum_congr rfl fun b _ ↦ sum_congr rfl fun c _ ↦ sum_congr rfl fun c' _ ↦ ?_))
+  rw [mul_assoc, T.lower_mul_lower, ← mul_assoc]
 
 /-- For signs `δ` and a sign `s` (read in `ℂ`), the factor that is `1` if `δ a = δ b` and `s`
 otherwise, times the same factor for `(b, a)`, is `1`. So these factors drop out of a Casimir
 element. -/
 theorem sign_mul_sign {n : Type*} (δ : n → ℤˣ) (s : ℤˣ) (a b : n) :
-    (if δ a = δ b then 1 else s : ℂ) * (if δ b = δ a then 1 else s : ℂ) = 1 := by
-  obtain hab | hab := eq_or_ne (δ a) (δ b)
-  · simp [hab]
-  · rw [ite_eq_right hab, ite_eq_right hab.symm, ← Int.cast_mul, Int.units_coe_mul_self,
-      Int.cast_one]
+    (if δ a = δ b then 1 else s : ℂ) * (if δ b = δ a then 1 else s : ℂ) = 1 :=
+  (ite_units_eq_mul_ite_units_eq s _ _ _).trans (ite_eq_left rfl)
 
 /-- The row action of the matrix unit `(a, b)` less `T.centre = T.rowShift - n'/2` on the diagonal
 is `∑ c, x_ac d_bc + (n'/2) δ_ab`, times the sign `T.globalSign` of the pair where the signs `ε a`,

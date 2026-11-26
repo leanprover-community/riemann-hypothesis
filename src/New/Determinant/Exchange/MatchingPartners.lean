@@ -564,37 +564,28 @@ lemma isLocallyConstant_comp_transpose (hχ : TameLocalChar χ) (hΦΨ : AreMatc
   let G : GL n F → ℂ := fun k ↦ Ψ (firstCols e k) / invOnUnits χ k.val.det
   have hG : IsLocallyConstant G := (hΨ.comp_continuous (by fun_prop)).div
     (hχ.isLocallyConstant_invOnUnits.comp_continuous Units.continuous_val.matrix_det)
-  have hΦG (k : GL n F) (hk : k ∈ intGL n O) : Φ (invLastRows e k) = G k := by
-    obtain ⟨-, h_unit⟩ :=
-      isPrimitiveMatrix_iff_int_and_unit_det.1 ((isPrimitiveMatrix_iff_mem_intGL k).2 hk)
-    have h_inv : invOnUnits χ k.val.det = (χ k.val.det)⁻¹ := by rw [invOnUnits, ite_eq_left h_unit]
-    simp only [G, h_inv, hΦΨ.apply_eq k hk, div_inv_eq_mul, mul_comm]
-  -- The preimage of `s` is the open set `U` less the closed set `C` of primitive matrices at which
+  have hΦG {k : GL n F} (hk : k ∈ intGL n O) : Φ (invLastRows e k) = G k := by
+    have h_unit := (isPrimitiveMatrix_iff_int_and_unit_det.1
+      ((isPrimitiveMatrix_iff_mem_intGL k).2 hk)).2
+    simp [G, invOnUnits, ite_eq_left h_unit, hΦΨ.apply_eq k hk, mul_comm]
+  -- The preimage of `s` is an open set less the closed set `C` of primitive matrices at which
   -- the value lies outside `s`.
-  let U : Set (Matrix n a F) := {y | IsPrimitiveMatrix O y} ∪ (fun _ ↦ (0 : ℂ)) ⁻¹' s
   let C : Set (Matrix n a F) := (fun k ↦ (invLastRows e k)ᵀ) '' ({k | k ∈ intGL n O} \ G ⁻¹' s)
-  have hU : IsOpen U := isClopen_setOf_isPrimitiveMatrix.isOpen.union (IsLocallyConstant.zero s)
-  have h_compact : IsCompact ({k : GL n F | k ∈ intGL n O} \ G ⁻¹' s) :=
-    (isCompact_intGL isCompact_O).diff (hG s)
-  have hC : IsClosed C := (h_compact.image_of_continuous fun k ↦ (invLastRows e k)ᵀ).isClosed
+  have hC : IsClosed C :=
+    (((isCompact_intGL isCompact_O).diff (hG s)).image_of_continuous _).isClosed
   have mem_C (y : Matrix n a F) : y ∈ C ↔ IsPrimitiveMatrix O y ∧ Φ yᵀ ∉ s := by
-    constructor
+    refine ⟨?_, fun ⟨hy, hys⟩ ↦ ?_⟩
     · rintro ⟨k, ⟨hk, hks⟩, rfl⟩
-      refine ⟨(exists_eq_invLastRows_iff_isPrimitiveMatrix e _).1 ⟨k, hk, rfl⟩, ?_⟩
-      rwa [transpose_transpose, hΦG k hk]
-    · rintro ⟨hy, hys⟩
-      obtain ⟨k, hk, hyk⟩ : ∃ k ∈ intGL n O, yᵀ = invLastRows e k :=
-        (exists_eq_invLastRows_iff_isPrimitiveMatrix e yᵀ).2 hy
-      refine ⟨k, ⟨hk, ?_⟩, by simp only [← hyk, transpose_transpose]⟩
-      rwa [hyk, hΦG k hk] at hys
-  have h_preimage : (fun y : Matrix n a F ↦ Φ yᵀ) ⁻¹' s = U \ C := by
-    ext y
-    by_cases hy : IsPrimitiveMatrix O y
-    · simp [U, mem_C, hy]
-    · have h_zero : Φ yᵀ = 0 :=
-        not_not.1 (mt (hΦΨ.isPrimitiveMatrix_of_apply_transpose_ne_zero y) hy)
-      simp [U, mem_C, hy, h_zero]
-  simpa only [h_preimage] using hU.sdiff hC
+      exact ⟨(exists_eq_invLastRows_iff_isPrimitiveMatrix e _).1 ⟨k, hk, rfl⟩,
+        by rwa [transpose_transpose, hΦG hk]⟩
+    · obtain ⟨k, hk, hyk⟩ := (exists_eq_invLastRows_iff_isPrimitiveMatrix e yᵀ).2 hy
+      exact ⟨k, ⟨hk, by rwa [hyk, hΦG hk] at hys⟩, by simp [← hyk]⟩
+  convert (isClopen_setOf_isPrimitiveMatrix.isOpen.union (IsLocallyConstant.zero s)).sdiff hC
+    using 1
+  ext y
+  by_cases hy : IsPrimitiveMatrix O y
+  · simp [mem_C, hy]
+  · simp [mem_C, hy, not_not.1 (mt (hΦΨ.isPrimitiveMatrix_of_apply_transpose_ne_zero y) hy)]
 
 /-- Let `F` be a semilocal field with ring of integers `O` (`SemilocalField.O`) and `χ` a tame
 character of `F`. Let `Φ`, on `a × n` matrices, and a locally constant `Ψ`, on `n × b` matrices, be
@@ -604,39 +595,26 @@ functions are Schwartz–Bruhat, and for every `k` in `GL n F` the coset sum `lo
 lemma mem_sameSectionPairs (hχ : TameLocalChar χ) (hΦΨ : AreMatched (O : Subring F) e χ Φ Ψ)
     (hΨ : IsLocallyConstant Ψ) : (Φ, Ψ) ∈ sameSectionPairs χ e := by
   -- Both functions are locally constant and vanish off the primitive matrices.
-  have hΦ_prim : ∀ y : Matrix n a F, Φ yᵀ ≠ 0 → IsPrimitiveMatrix O y :=
-    hΦΨ.isPrimitiveMatrix_of_apply_transpose_ne_zero
-  have hΨ_prim (y : Matrix n b F) (hy : Ψ y ≠ 0) : IsPrimitiveMatrix O y :=
-    (isValuationPair.exists_firstCols_iff e).1 (hΦΨ.supp_right y hy)
+  have hΦ_prim := hΦΨ.isPrimitiveMatrix_of_apply_transpose_ne_zero
+  have hΨ_prim y hy := (isValuationPair.exists_firstCols_iff e).1 (hΦΨ.supp_right y hy)
   refine mem_sameSectionPairs_iff.2 ⟨(mem_of_support_isPrimitiveMatrix
     (hΦΨ.isLocallyConstant_comp_transpose hχ hΨ) hΦ_prim).transpose_mem_schwartzBruhat,
     mem_of_support_isPrimitiveMatrix hΨ hΨ_prim, fun k ↦ ?_⟩
-  -- Each section is one value (`exists_isPrimitiveMatrix_localSection_eq`), at the primitive
-  -- matrices `(invLastRows e k)ᵀ * g` and `firstCols e k * u`. These are the blocks (the first
-  -- transposed) of one `j ∈ GL_n(F)` with `det j * det g = det k * det u`, and the rows
-  -- `invLastRows e j` are also those of an integral `i`.
+  -- Each section reduces to one value, and both matrices come from a single `j ∈ GL_n(F)`.
   obtain ⟨g, hg, section_left⟩ := exists_isPrimitiveMatrix_localSection_eq χ (invLastRows e k)ᵀ
     (hasLeftInv_invLastRows_transpose e k)
   obtain ⟨u, hu, section_right⟩ := exists_isPrimitiveMatrix_localSection_eq χ (firstCols e k)
     ⟨invFirstRows e k, invFirstRows_mul_firstCols e k⟩
-  -- Over the subring `⊤` every invertible matrix is integral.
-  obtain ⟨j, -, hj_cols, hj_rows, hj_det⟩ : ∃ j ∈ intGL n (⊤ : Subring F),
-      firstCols e j = firstCols e k * u.val ∧
-      invLastRows e j = (transposeGL g).val * invLastRows e k ∧
-      j.val.det * (transposeGL g).val.det = k.val.det * u.val.det :=
-    exists_firstCols_eq_mul e k ⊤ u (by simp [mem_intGL]) (transposeGL g) (by simp [mem_intGL])
-      (by simp [mem_intGL])
+  obtain ⟨j, -, hj_cols, hj_rows, hj_det⟩ := exists_firstCols_eq_mul e k ⊤ u (by simp [mem_intGL])
+    (transposeGL g) (by simp [mem_intGL]) (by simp [mem_intGL])
   have hj_rowsT : (invLastRows e j)ᵀ = (invLastRows e k)ᵀ * g.val := by simp [hj_rows]
   obtain ⟨i, hi, hji⟩ :=
     (exists_eq_invLastRows_iff_isPrimitiveMatrix e (invLastRows e j)).2 (by rwa [hj_rowsT])
-  calc localSection χ (invLastRows e k)ᵀ (fun y ↦ Φ yᵀ)
-    _ = χ g.val.det * Φ (invLastRows e j) := by
-      rw [section_left _ hΦ_prim, ← hj_rowsT, transpose_transpose]
-    _ = χ (j.val.det * (transposeGL g).val.det) * Ψ (firstCols e j) := by
-      simp [hΦΨ.apply_invLastRows_eq_of_isPrimitiveMatrix hi hji (by rwa [hj_cols]), mul_assoc,
-        mul_left_comm]
-    _ = χ k.val.det * localSection χ (firstCols e k) Ψ := by
-      rw [section_right Ψ hΨ_prim, hj_det, hj_cols, map_mul, mul_assoc]
+  rw [section_left _ hΦ_prim, section_right Ψ hΨ_prim, ← hj_rowsT, transpose_transpose,
+    hΦΨ.apply_invLastRows_eq_of_isPrimitiveMatrix hi hji (by rwa [hj_cols]), ← hj_cols]
+  have hdet : χ g.val.det * χ j.val.det = χ k.val.det * χ u.val.det := by
+    simpa [mul_comm] using congrArg χ hj_det
+  rw [← mul_assoc, hdet, mul_assoc]
 
 end New.AreMatched
 

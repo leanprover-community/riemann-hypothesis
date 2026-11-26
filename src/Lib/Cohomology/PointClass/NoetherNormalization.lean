@@ -82,15 +82,9 @@ lemma aeval_smul_of_isHomogeneous {n : ℕ} (hF : F.IsHomogeneous n) :
 /-- If `χ` kills the kernel of `φ` and `φ ∘ v` lies on the cone of `g`, then so does `χ ∘ v`. -/
 lemma IsHomogeneousSolution.of_ker {D : Type} [CommRing D] [Algebra k D] (χ : A →ₐ[k] D)
     (h_ker : ∀ r : A, φ r = 0 → χ r = 0) (h_sol : IsHomogeneousSolution k g (φ ∘ v)) :
-    IsHomogeneousSolution k g (χ ∘ v) := by
-  intro n F hF h_g
+    IsHomogeneousSolution k g (χ ∘ v) := fun _ F hF h_g ↦
   -- `F (χ ∘ v) = χ (F v)`, and `φ (F v) = F (φ ∘ v) = 0`
-  have h_φ : φ (aeval v F) = 0 := by
-    rw [comp_aeval_apply v φ F]
-    exact h_sol hF h_g
-  have h_χ : χ (aeval v F) = 0 := h_ker _ h_φ
-  rw [comp_aeval_apply v χ F] at h_χ
-  exact h_χ
+  (comp_aeval_apply v χ F).symm.trans (h_ker _ ((comp_aeval_apply v φ F).trans (h_sol hF h_g)))
 
 lemma IsHomogeneousSolution.map : IsHomogeneousSolution k g v → IsHomogeneousSolution k g (φ ∘ v) :=
   of_ker 1 φ (by simp)
@@ -379,7 +373,7 @@ private lemma ker_aeval_le_ker_aeval_smul_of_transcendental {κ B K Ω : Type} [
   have hwb : IsHomogeneousSolution k w b :=
     .of_ker j (AlgHom.id k B) (fun r hr ↦ by rw [hj_ker r hr, map_zero]) h_tw
   refine fun F hF ↦ (hwb.smul φ u).aeval_eq_zero_of_transcendental ht.integralClosure ?_
-  show aeval (t • toAlgHom k (integralClosure L Ω) Ω ∘ w) F = 0
+  change aeval (t • toAlgHom k (integralClosure L Ω) Ω ∘ w) F = 0
   rw [hw]
   exact (comp_aeval_apply b j F).symm.trans (by rw [RingHom.mem_ker.mp hF, map_zero])
 
@@ -397,7 +391,7 @@ private lemma isIntegral_aeval_of_evalForms_eq {G B : Type} [CommRing B] [Algebr
     simp only [θ, AlgHom.comp_apply, bind₁_X_right, aeval_rename]
     exact congrFun hΛb l
   refine .tower_top θ.toRingHom _ ?_
-  show ((aeval (R := k) ↿b).comp θ).toRingHom.IsIntegral
+  change ((aeval (R := k) ↿b).comp θ).toRingHom.IsIntegral
   rw [hfactor]
   exact hf_fin.to_isIntegral
 

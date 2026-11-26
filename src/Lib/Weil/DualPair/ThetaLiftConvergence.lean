@@ -69,7 +69,8 @@ lemma exists_norm_le_of_isCompact {K : Set (G E s × G E t)} (hK : IsCompact K) 
   -- Each orbit map is continuous, hence bounded on `K`; then apply the Banach–Steinhaus theorem.
   have orbit_bdd (φ : X) : ∃ C : ℝ, ∀ k : K, ‖Θ.ω k φ‖ ≤ C := by
     simpa only [Subtype.forall] using
-      hK.exists_bound_of_continuousOn (f := fun k ↦ Θ.ω k φ) (by fun_prop)
+      hK.exists_bound_of_continuousOn (f := fun k ↦ Θ.ω k φ)
+        (Θ.continuous.comp₂ continuous_id continuous_const).continuousOn
   simpa only [Subtype.forall] using banach_steinhaus orbit_bdd
 
 /-- One step of reduction: for `g` an adelic point of the unitary group of `V`, there is an
@@ -216,31 +217,6 @@ theorem eventually_exists_norm_omega_le_mul_height_pow (g₀ : G E s) :
   have h_le : ‖Θ.ω (g₀, γ * g)‖ ≤ 2 ^ a * (2 ^ a) ^ l.length := by
     simpa only [inv_mul_cancel_right] using h_prod h_mem l h_factors
   exact ⟨γ, hγ, by grw [h_le, pow_right_comm, h_length]⟩
-
-omit [CMType E] in
-/-- The real Weil representation of a pair of ranks `n`, `n'`, which depends on `γ`, `γ'` only
-through a scalar of modulus one, has at `(y, y')` operator norm at most the norm of the vacuum times
-`(‖y‖ ‖y'‖) ^ (n n')`, where the norm of a real point is the product of the operator norms of its
-components at the infinite places. -/
-theorem _root_.New.norm_realPairWeil_le [NumberField E] (γ γ' : InfinitePlace E → ℤ)
-    (y : GInf E s) (y' : GInf E t) :
-    ‖realPairWeil γ γ' (y, y')‖ ≤ ‖(Fock.vacVector : PairFock E s t)‖ *
-      ((∏ τ : InfinitePlace E, ‖((y τ : GL n ℂ) : Matrix n n ℂ)‖) *
-        ∏ τ : InfinitePlace E, ‖((y' τ : GL n' ℂ) : Matrix n' n' ℂ)‖) ^
-          (Fintype.card n * Fintype.card n') := by
-  -- The determinants have modulus one, and at each place the multiplier is a minor of size at most
-  -- `n n'` of the matrix of `x ↦ y' x y⁻¹`.
-  have h_det : ‖realPairWeil γ γ' (y, y')‖ = ‖Fock.realWeil (pairHomInf (y, y'))‖ := by
-    change ‖(_ : ℂ) • Fock.realWeil (pairHomInf (y, y'))‖ = _
-    simp [norm_smul]
-  have h_multiplier : Fock.realMultiplier (pairHomInf (y, y')) =
-      ∏ τ : InfinitePlace E, Fock.realMultiplier (Fock.pairHom t s (y τ, y' τ)) :=
-    Fock.realMultiplier_blockU _
-  rw [h_det, ← Finset.prod_mul_distrib, ← Finset.prod_pow]
-  grw [Fock.norm_realWeil_le, h_multiplier, norm_prod]
-  gcongr with τ
-  grw [Fock.norm_realMultiplier_le, Fock.norm_pairHom_le, Fintype.card_prod,
-    mul_comm (Fintype.card n')]
 
 /-- Let `S` and `T` be hermitian spaces of ranks `n` and `n'`, let `a` and `b` be automorphic
 characters, and let `pairWeil S T a b` be the resulting Weil representation of the product of the

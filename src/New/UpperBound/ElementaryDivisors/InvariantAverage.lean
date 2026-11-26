@@ -2,6 +2,7 @@ module
 
 public import Lib.GLn.SchurModule.Basic
 public import Lib.General.Groups.BesselGroups
+public import TauCeti.Algebra.BigOperators.ZPow
 
 /-!
 # An average on polynomials in the entries of a matrix
@@ -198,11 +199,6 @@ lemma evalAtOne_conjSubst {k : ℕ} {W O : Type} [CommRing W] [CommRing O] (ι :
       _ = _ := by simp [Matrix.one_apply, apply_ite ι, eq_comm]
   simpa [evalAtOne] using congrArg (c * ·) (AlgHom.congr_fun hev ψ)
 
-/-- A product of integer powers of one element of a commutative group adds the exponents. -/
-lemma prod_zpow_eq_zpow_sum {G κ : Type*} [CommGroup G] (x : G) (s : Finset κ) (e : κ → ℤ) :
-    ∏ i ∈ s, x ^ e i = x ^ ∑ i ∈ s, e i := by
-  induction s using Finset.cons_induction <;> simp [_root_.zpow_add, *]
-
 /-- Let `ι : W → O` be a map of commutative rings, `u` a unit of `W`, and `a` the diagonal matrix
 with entries `u ^ ρ i`. The substitution `conjSubst ι a : X ↦ ι(a⁻¹) * X * ι(a)` of the matrix of
 variables multiplies the monomial `α` by `ι u ^ e`, where `e` is the column weight
@@ -218,8 +214,8 @@ lemma conjSubst_diagGL_zpow_monomial {k : ℕ} {W O : Type} [CommRing W] [CommRi
   have h_factor (i j : Fin k) : ι ((u ^ ρ i)⁻¹ * u ^ ρ j : Wˣ) = (u' ^ (ρ j - ρ i) : Oˣ) := by
     simp [u', _root_.zpow_sub, mul_comm, ← map_zpow]
   have h_prod : ∏ v : Fin k × Fin k, (u' ^ (ρ v.2 - ρ v.1)) ^ α v = u' ^ e := by
-    simp [e, ← zpow_natCast, ← _root_.zpow_mul, prod_zpow_eq_zpow_sum, weight_eq_sum, sub_mul,
-      mul_comm (α _ : ℤ)]
+    simp [e, ← zpow_natCast, ← _root_.zpow_mul, Finset.prod_zpow_eq_zpow_sum, weight_eq_sum,
+      sub_mul, mul_comm (α _ : ℤ)]
   simp only [monomial_eq, C_1, one_mul, prod_fintype _ _ fun _ ↦ pow_zero _, map_prod, map_pow,
     conjSubst_diagGL_X, h_factor, smul_pow, prod_smul, ← h_prod, Units.coe_prod,
     Units.val_pow_eq_pow_val]

@@ -102,12 +102,6 @@ open New NumberField Matrix Polynomial Filter Fintype Finset AlgHeckeChar AutCha
   Units
 open scoped Classical
 
-/-- The character of the finite ideles of an algebraic Hecke character `ω = (θ, n)`: its first
-component `θ`. -/
-abbrev New.AlgHeckeChar.heckeChar {E : Type} [Field E] [NumberField E] (ω : AlgHeckeChar E) :
-    (𝔸f E)ˣ →* ℂˣ :=
-  ω.val.1
-
 /-- Let `E` be a CM field with Weil data, including a splitting character `υ`, and let `e` assign an
 integer to each infinite place. Then there are two characters `μ 0`, `μ 1` of `U(1)(𝔸)` (norm-one
 adeles, trivial on `E`) with trivial tame part and weights `c 0`, `c 1` such that: (a) `c i ≤ e` at
@@ -123,8 +117,8 @@ lemma New.AutChar.exists_pair_heckeCoeff_ne {E : Type} [Field E] [CMType E] [Wei
       (∀ {i : Fin 2} (v : InfinitePlace E), c i v ≤ e v) ∧
       -- (b)
       ∀ {w : FinPlace E} {k j j' : ℤ}, w.IsSplit →
-        heckeCoeff ((h 0).toAlgebraic k j).heckeChar ∅ w ≠
-          heckeCoeff ((h 1).toAlgebraic k j').heckeChar ∅ w := by
+        heckeCoeff ((h 0).toAlgebraic k j).character ∅ w ≠
+          heckeCoeff ((h 1).toAlgebraic k j').character ∅ w := by
   -- The weights are multiples of the number of roots of unity, so that the characters exist; they
   -- differ by this number at one infinite place.
   let c (i : Fin 2) (v : InfinitePlace E) : ℤ :=
@@ -305,7 +299,7 @@ continuous character `ψ i l` at the Frobenius element (`hψ_val`), and that no 
 `ψ 1 l'`. Then some representation of rank `card n` is attached to `P`, and every representation
 `r` attached to `P` has trace `tr ρ i - ∑ l, ψ i l` for both `i`. -/
 lemma New.GaloisRep.Attached.exists_attached_of_mul_prod {ℓ : ℕ} {E n m T : Type} [ThePrime ℓ]
-    [PadicIso ℓ] [Field E] [EmbeddedNumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
+    [PadicIso ℓ] [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
     [Nonempty n] [Fintype m] [DecidableEq m] [Nonempty m] [Fintype T] {P : FinPlace E → ℂ[X]}
     {c : Fin 2 → T → FinPlace E → ℂ} {ρ : Fin 2 → GalRep ℓ E m}
     {ψ : Fin 2 → T → Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ}
@@ -340,7 +334,7 @@ lemma New.GaloisRep.Attached.exists_attached_of_mul_prod {ℓ : ℕ} {E n m T : 
 `ν` takes the value `ιℓ (z w)`, `Q w` is monic of degree `card m`, and `Q w` with its roots
 multiplied by `z w` is `P w`. Then the twist of `σ` by `ν` is attached to `P`. -/
 lemma New.GaloisRep.Attached.twistByChar_of_scaleRoots_eq {ℓ : ℕ} {E m : Type} [ThePrime ℓ]
-    [PadicIso ℓ] [Field E] [EmbeddedNumberField E] [IsCMField E] [Fintype m] [DecidableEq m]
+    [PadicIso ℓ] [Field E] [EmbeddedNumberField E] [Fintype m] [DecidableEq m]
     {P Q : FinPlace E → ℂ[X]} {z : FinPlace E → ℂ} {σ : GalRep ℓ E m}
     {ν : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ} (hσ : Attached Q σ) (hν : Continuous ν)
     (hev : ∀ᶠ y : FrobeniusDatum E in mostFrobenii E, (ν y.frob).val = ιℓ (z y.place) ∧
@@ -353,7 +347,8 @@ lemma New.GaloisRep.Attached.twistByChar_of_scaleRoots_eq {ℓ : ℕ} {E m : Typ
   filter_upwards [hσ.eventually_norm_coeff_le hη, hev] with y hy ⟨hν_val, hQ_monic, hQ_scale⟩
   -- Twisting scales the roots by the value of `ν`, of norm one, so each coefficient of the
   -- difference keeps its norm.
-  have hν_norm : ‖(ν y.frob).val‖ = 1 := norm_eq_one_of_continuous hν y.frob
+  have hν_norm : ‖(ν y.frob).val‖ = 1 :=
+    ContinuousMonoidHom.norm_apply_eq_one_of_compactSpace ⟨ν, hν⟩ y.frob
   have hy_frob (i : ℕ) : ‖(σ y.frob).val.charpoly.coeff i - ιℓ ((Q y.place).coeff i)‖ ≤ η := by
     simpa [coeff_sub, coeff_map] using hy y.frob rfl i
   simpa [← hQ_scale, Units.smul_def, charpoly_smul_coeff, hQ_monic.natDegree_eq, ← hν_val,

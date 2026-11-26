@@ -134,9 +134,8 @@ noncomputable def affineAction (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g
     (by simp [Equiv.ext_iff, Units.smul_def, hc, mul_smul, add_assoc])
 
 /-- The affine action of a cocycle `c` sends `u` to `c g + ρ g • u`. -/
-private lemma affineAction_apply_eq (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h)
-    (g : Gal(Ω/E)) (u : n → B) : affineAction hc g u = c g + ρ g • u := by
-  simp [affineAction, Units.smul_def]
+lemma affineAction_apply (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) (g : Gal(Ω/E))
+    (u : n → B) : affineAction hc g u = c g + ρ g • u := rfl
 
 lemma cocycle_apply_inv (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) (g : Gal(Ω/E)) :
     c g⁻¹ = -(ρ g⁻¹ • c g) := by
@@ -159,7 +158,7 @@ lemma cocycle_eq_zero_on_inertia_of_tameGenerator (hB : ∀ b : B, ℓ ^ M • b
   have h_one : c 1 = 0 := by simpa using hc 1 1
   have h_near : ∀ᶠ g in nhds 1, g ∈ inertiaGroup Gal(Ω/E) A → affineAction hc g = 1 := by
     filter_upwards [hc_lc.eventually_eq 1, h_open] with g hg_const hg_triv hg_inertia
-    simp [Equiv.ext_iff, affineAction_apply_eq, hg_const, h_one, hg_triv hg_inertia]
+    simp [Equiv.ext_iff, affineAction_apply, hg_const, h_one, hg_triv hg_inertia]
   -- `g ^ m` acts as a translation, and translations are killed by `ℓ ^ M`.
   have h_pow (g : Gal(Ω/E)) (hg : g ∈ inertiaGroup Gal(Ω/E) A) :
       affineAction hc g ^ (m * ℓ ^ M) = 1 := by
@@ -169,7 +168,7 @@ lemma cocycle_eq_zero_on_inertia_of_tameGenerator (hB : ∀ b : B, ℓ ^ M • b
   obtain ⟨a, ha⟩ : ∃ a : ℕ, affineAction hc γ = affineAction hc hA.tameGenerator ^ a :=
     (hA.tame_inertia (affineAction hc) h_near h_prime h_pow γ).1
   -- `c g` is the image of `0` under `g`, and the tame generator fixes `0`.
-  have h_apply (g : Gal(Ω/E)) : affineAction hc g 0 = c g := by simp [affineAction_apply_eq]
+  have h_apply (g : Gal(Ω/E)) : affineAction hc g 0 = c g := by simp [affineAction_apply]
   rw [← h_apply γ, ha, coe_pow, Function.iterate_fixed ((h_apply _).trans h_zero)]
 
 /-- A locally constant cocycle `c` for `ρ` that vanishes on the inertia group of a place `A'` over

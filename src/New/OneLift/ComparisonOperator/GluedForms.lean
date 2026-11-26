@@ -114,7 +114,7 @@ lemma letterPoly_schur_inclMatrix_mulVec {Φ : Type} [Fintype Φ] [DecidableEq �
     rw [toPoly_schur hκ.fitsRanks, hκ.schurDetExp_eq_zero, detPow_zero, mul_one]
   -- This substitution sends the variable in row `i` to that in row `f i`.
   rw [letterPoly, letterPoly, LinearMap.comp_apply, LinearMap.comp_apply, h_toPoly]
-  simp [rowSubst, fockLetters, inclMatrix, rename_aeval, comp_aeval_apply, Matrix.one_apply]
+  simp [rowSubst, fockLetters, inclMatrix, comp_aeval_apply, Matrix.one_apply]
 
 /-- Let `ε : N ⊕ m ≃ n` split the indices of `V = V″ ⊕ V°`, and let `O.colsPlus` and `O.colsMinus`
 satisfy `HasColumnsBelow`: each column of height below the rank of `V` has height below the rank of
@@ -276,6 +276,7 @@ lemma normalizedDescent_classForm_mul [WeilData E]
   congr with x
   exact V.liftFn_datum_point_inv_mul x
 
+omit [DecidableEq n] in
 /-- Let `Y` be invertible modulo `ϖ²` and `1` modulo `ϖ`, let `k = liftMod Y` be its chosen lift to
 an integral unitary point, reduced at a place by `stdLevel.reduceAt`, and let `x` be a matrix modulo
 `ϖ² Q`. Suppose that the rows `S` of `x Y` in `N` satisfy `w S = w ι` modulo `ϖ²`, where

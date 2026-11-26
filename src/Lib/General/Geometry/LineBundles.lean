@@ -201,13 +201,6 @@ def H0 : Submodule R (ι → PointFn X) where
     simp [IsSection, PointFn.IsRegularOn, HSMul.hSMul, SMul.smul]
     grind
 
-variable {L R} in
-lemma mem_H0 {s : ι → PointFn X} :
-    s ∈ L.H0 R ↔
-      L.IsSection s ∧
-      ∀ (i : ι) (A : CommRingCat) (t : Spec A ⟶ X), ¬LandsIn t (L.opens i) → s i A t = 0 :=
-  Iff.rfl
-
 end LineBundle
 
 end New

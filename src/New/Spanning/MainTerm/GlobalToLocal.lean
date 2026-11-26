@@ -143,7 +143,8 @@ lemma mul_star_dotProduct_eq_last_frameProducts {σ : S.G E} (hσ : σ ∈ floor
   have h_last : S.frameProducts σ 𝔰.top 𝔰.top = -(S.N * a) := by
     simp [a, frameGram, middleGram, splitGram, Matrix.mul_apply]
   have h_form : (σ.val.valᴴ * (S.ratMiddle E).splitGram * σ.val.val) 𝔰.z 𝔰.z =
-      (S.ratMiddle E).splitGram 𝔰.z 𝔰.z := by rw [mem_U.1 σ.prop]
+      (S.ratMiddle E).splitGram 𝔰.z 𝔰.z := by
+    rw [show σ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 σ.prop]
   have h_norm : star ω ⬝ᵥ ω + -(star a * S.N * a) = -S.N := by
     simpa [apply_eq_one_apply_of_mem_floorGroup hσ, middleGram, splitGram, Matrix.mul_apply,
       dotProduct, Matrix.one_apply]
@@ -159,11 +160,12 @@ lemma translateByClassReps_weylElem_mul (c c' : S.Classes) (p : ℕ → Eˣ) (σ
   -- No `e*_a` has level below `ϱ`.
   have h_level (a : Fin 𝔰.ϱ) : ¬2 * 𝔰.ϱ - a < 𝔰.ϱ := by lia
   -- The Weyl element commutes with the change of basis, entry by entry.
-  simp +contextual [Subtype.ext_iff, ← mul_assoc, Units.ext_iff, ← ext_iff, Sum.forall, weylElem,
+  simp [Subtype.ext_iff, ← mul_assoc, Units.ext_iff, ← ext_iff, Sum.forall, weylElem,
     weylOn, coe_translateByClassReps, classBasis, toBesselH, besselLatticeBasis,
       fromBlocks_multiply,
     fromCols_mul_fromBlocks, Matrix.mul_apply, Matrix.one_apply, BesselIndex.level, h_level,
     apply_ite (algebraMap E (𝔸f E))]
+  simp +contextual
 
 end
 
@@ -479,7 +481,7 @@ lemma toPlaces_translateByClassReps_weylElem_mul {σ : (S.ratMiddle E).G} {p : �
   rw [translateByClassReps_weylElem_mul, map_mul]
   congr 1
   -- The name `q` keeps `simp` from unfolding the units on the right.
-  ext : 3
+  ext : 2
   simp [toPlaces, U.map, weylElem, weylOn, apply_ite (evalPlaces T), -star_algebraMap_finAdele,
     -Units.val_inv_eq_inv_val]
   rfl

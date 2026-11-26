@@ -317,7 +317,7 @@ lemma HasAmplitudeBlocks.adjoint_comp_rep_mul_right [HasPrimitiveRoot5040 E]
       rw [← Complex.star_def, ← amplitudeSum_besselS_inv, amplitudeSum_besselS_apply hδ hδ_over hN]
     by_cases h : d' = e
     · simp [besselTranslate, h_block, h, S.unipotentCovolume_pos.ne', Pi.single_apply,
-        Matrix.of_apply, Function.swap]
+        Function.swap]
     · simp [besselTranslate, h_block, h, Ne.symm h]
   -- The blocks of all terms transform in the same way, as the set of all terms is stable.
   have h_move : S.amplitudeSum .full .univ c (s * t) d (i, j) =
@@ -549,7 +549,6 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_adjoint_comp_sq_le [HasPrimitiveRoot
       gcongr
       norm_num
     exact (abs_le_of_sq_le_sq' h_sq (div_nonneg (hilbertSchmidtNorm_nonneg _) zero_le_three)).2
-  have h_le : hilbertSchmidtNorm (P.adjoint ∘ₗ P) ≤ 4 / 3 * hilbertSchmidtNorm one := by linarith
   rw [← hilbertSchmidtNorm_one_sq_eq_sourceDim]
   nlinarith [hilbertSchmidtNorm_nonneg (P.adjoint ∘ₗ P), hilbertSchmidtNorm_nonneg one]
 
@@ -926,13 +925,15 @@ lemma sum_sq_norm_integral_extendedBesselChar_conjugate_le {T : Finset (FinPlace
   have hC_meas (s : ι) : MeasurableSet (C s) := measurable_const_mul _ measurableSet_unitaryLevel
   have ha_const (s : ι) : ∀ z ∈ C s, a z = a (S.toPlaces T (σ s)) := fun z hz ↦
     setIntegral_congr_fun measurableSet_unitaryLevel fun y hy ↦ by
-      simpa using extendedBesselChar_mul_of_mem_unitaryLevel (y := y * S.toPlaces T (σ s) * y⁻¹)
-        (conj_mem_unitaryLevel hy hz)
+      simpa only [mul_assoc, inv_mul_cancel_left, mul_inv_cancel_left] using
+        extendedBesselChar_mul_of_mem_unitaryLevel (y := y * S.toPlaces T (σ s) * y⁻¹)
+          (conj_mem_unitaryLevel hy hz)
   -- The cosets are disjoint, since the `σ s` have different reductions.
   have hC_disj : Pairwise (Function.onFun Disjoint C) := by
     intro s t hst
-    refine Set.disjoint_left.mpr fun z hs ht ↦ hst <| hσ <| ?_
-    simpa [← hF.reduction_eq_iff, eq_comm] using div_mem hs.out ht.out
+    refine Set.disjoint_left.mpr fun z hs ht ↦ hst <| hσ <| (hF.reduction_eq_iff _ _).2 ?_
+    have h := mul_mem hs.out (inv_mem ht.out)
+    rwa [mul_inv_rev, inv_inv, mul_assoc, mul_inv_cancel_left] at h
   -- The integral of `|a|²` over these cosets is at most `massIntegral K = ∫ |a|²`; bound this by
   -- `IsLargeLatticeData.massIntegral_le_main_add_error` with `Q = 2`, and by
   -- `2⁻¹ ^ n ≤ groupMeasure(K)`.
@@ -942,9 +943,10 @@ lemma sum_sq_norm_integral_extendedBesselChar_conjugate_le {T : Finset (FinPlace
     have h_coset (s : ι) : ∫⁻ z in C s, ‖a z‖ₑ ^ 2 ∂F.groupMeasure =
         ‖a (S.toPlaces T (σ s))‖ₑ ^ 2 * F.groupMeasure F.congruenceSubgroup := by
       rw [setLIntegral_congr_fun (hC_meas s) fun z hz ↦ by rw [ha_const s z hz]]
-      simp [C, Set.univ_inter]
+      rw [setLIntegral_const, measure_preimage_mul]
     have h_rank : 𝔰.n + 2 * 10 ^ 9 * 𝔰.n ^ 4 ≤ 𝔰.k := by
-      grind [S.pow_chain, Nat.le_self_pow (n := 4) (by norm_num) 𝔰.n]
+      obtain ⟨h₁, h₂, h₃⟩ := S.pow_chain
+      linarith [Nat.le_self_pow (n := 4) (by norm_num) 𝔰.n]
     calc (∑ s : ι, ‖a (S.toPlaces T (σ s))‖ₑ ^ 2) * F.groupMeasure F.congruenceSubgroup
         = ∑' s : ι, ∫⁻ z in C s, ‖a z‖ₑ ^ 2 ∂F.groupMeasure := by
           simp only [h_coset, sum_mul, tsum_fintype]

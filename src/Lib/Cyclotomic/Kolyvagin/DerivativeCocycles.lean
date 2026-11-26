@@ -64,9 +64,6 @@ private lemma mem_principalUnits_iff {x : DiscreteUnits Ω} :
     x ∈ principalUnits B ↔ B.valuation ((x.toMul : Ω) - 1) < 1 :=
   Iff.rfl
 
-private lemma val_toMul_galUnitsRep : ((galUnitsRep g u).toMul : Ω) = g • (u.toMul : Ω) :=
-  rfl
-
 /-- Let `g` act as the `a`-th power modulo the maximal ideal of `B` (`IsFrob B a g`), and let
 the `m`-th power of `u` be a unit at `B`, where `m ≠ 0`. Then `g u / uᵃ` is a principal unit at
 `B`. -/
@@ -107,10 +104,10 @@ lemma mem_cycloGalGroup_of_mem_inertiaGroup [NeZero M] (hg : g ∈ inertiaGroup 
   refine cyclotomicCharMod_eq_one_iff.mpr fun z hz ↦ DiscreteUnits.ext ?_
   have h_fix : galUnitsRep g (a • z) = a • z :=
     cyclotomicCharMod_eq_one_iff.mp hgm (a • z) (by rwa [smul_smul, hM])
-  have h_fix_val : g • ((a • z).toMul : Ω) = (a • z).toMul := by rw [← val_toMul_galUnitsRep, h_fix]
+  have h_fix_val : g • ((a • z).toMul : Ω) = (a • z).toMul := by rw [← val_unitsRep, h_fix]
   have h_unit : B.valuation ((a • z).toMul : Ω) = 1 := by
     simpa [NeZero.ne, ← hM] using congr_arg (fun w : DiscreteUnits Ω ↦ B w.toMul) hz
-  rw [val_toMul_galUnitsRep]
+  rw [val_unitsRep]
   exact inertia_fixes_root_of_unit hg ha rfl h_unit h_fix_val
 
 /-- If `B` lies above the prime `l` and `a` is prime to `l`, some element of the inertia group of
@@ -292,7 +289,7 @@ lemma cyclotomicPowDirichlet_smul_derivativeSum (hM : N * l ^ n ∣ M) (hS : ∀
     have h_shift : (L q (v * u)).toAdd - f q = (L q u).toAdd - d q := by simp [hv_shift]
     have h_arg : a • (x + ofZMod q u) = a • x + ofZMod q (v * u : (ZMod q)ˣ) := by
       simp [← map_nsmul, hv]
-    show ((L q u).toAdd - d q) * G (x + ofZMod q u) =
+    change ((L q u).toAdd - d q) * G (x + ofZMod q u) =
       ((L q (v * u)).toAdd - f q) * G' (a • x + ofZMod q (v * u : (ZMod q)ˣ))
     rw [hG h_tors, h_arg, h_shift]
 
@@ -563,7 +560,7 @@ lemma derivative_sub_frob_mem_principalUnits (γ : Gal(Ω/ℚ)) (hq : B.valuatio
       telescoping_mem_principalUnits (hτ.conj δ) (hφ.conj δ) (h_unit _ hqδ) (h_cong _ hqδ) hlg
     -- `δ` carries `B` to `δ B` and `δ⁻¹ (W δ)` to `W δ`.
     rw [mem_principalUnits_iff, ← smul_apply_smul_lt_one_iff δ]
-    simpa [val_toMul_galUnitsRep, smul_sub] using mem_principalUnits_iff.mp W_conj
+    simpa [val_unitsRep, smul_sub] using mem_principalUnits_iff.mp W_conj
   -- `W 1` is a root of unity by the distribution relation, so `γ` acts on it by a power.
   obtain ⟨k, k_pos, hk⟩ := h_dist.exists_nsmul_eq_zero
   have hk_ne : NeZero k := NeZero.of_pos k_pos
@@ -773,7 +770,7 @@ private lemma derivativeSum_commutatorLog_mul_eq_of_isJacobiFamily
   -- `F (g g') (a x) = F g (a x) + a F g' x` (`nsmul_exponent_eq_sub`). Equivariance of the
   -- derivative sum carries this to `Λ`; it changes only the shifts, which do not matter.
   let F (h : Gal(Ω/ℚ)) (x : QZ) : ZMod (l ^ n) := commutatorLog (l ^ n) γ (y x) h
-  show derivativeSum e ψ L I 0 (F (g * g')) = derivativeSum e ψ L I 0 (F g) +
+  change derivativeSum e ψ L I 0 (F (g * g')) = derivativeSum e ψ L I 0 (F g) +
     (cyclotomicPowDirichlet l (e + 1) ψ g).val • derivativeSum e ψ L I 0 (F g')
   have killed {v : QuotSpan (l ^ n : O)} : l ^ n • v = 0 := nsmul_quot_eq_zero dvd_rfl v
   obtain ⟨a, ha⟩ : ∃ a : ℕ, (cyclotomicCharMod Ω M g).val = a := ⟨_, zmod_eq_natCast_val⟩

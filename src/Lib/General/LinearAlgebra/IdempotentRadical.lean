@@ -99,7 +99,7 @@ lemma coe_radicalHom_mul_idempotent (hε : IsIdempotentElem ε) (Y : Multiplicat
 lemma continuous_radicalHom [TopologicalSpace k] [IsTopologicalRing k] (hε : IsIdempotentElem ε) :
     Continuous (radicalHom hε) := by
   refine Continuous.of_coeHom_comp ?_
-  show Continuous fun Y : Multiplicative (Matrix n n k) ↦ 1 + ε * Y.toAdd * (1 - ε)
+  change Continuous fun Y : Multiplicative (Matrix n n k) ↦ 1 + ε * Y.toAdd * (1 - ε)
   exact continuous_const.add ((continuous_const.mul continuous_toAdd).mul continuous_const)
 
 /-- Let `ε g ε = g ε` and let `x - g` be an upper right block (a matrix `Z` with `ε Z = Z` and

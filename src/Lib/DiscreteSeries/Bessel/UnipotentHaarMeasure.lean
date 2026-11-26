@@ -299,8 +299,6 @@ theorem IsUnimodularHaar.of_freeEntries {S : Subgroup 𝔰.G₁}
   have := hν.sigmaFinite
   obtain ⟨c, rfl⟩ : ∃ c : ℝ≥0∞, ν = c • haar := exists_eq_smul_haar haar h_right
   -- A Gaussian in the coordinates has integral `1`, so `c` is neither `0` nor `∞`.
-  have : (volume (α := (Subtype p → ℂ) × (Fin 𝔰.ϱ → ℝ))).IsAddHaarMeasure :=
-    prod.instIsAddHaarMeasure ..
   have hc : c ≠ 0 ∧ c ≠ ∞ := by
     have h_int := (hν.lintegral_comp (by fun_prop)).trans
       (lintegral_gaussian_eq_one (V := (Subtype p → ℂ) × (Fin 𝔰.ϱ → ℝ)))
@@ -487,17 +485,6 @@ theorem measurePreserving_freeEntries_besselHaar₀ :
       freeEntries IsFreeEntry₀ (unipotentOf q).val.val :=
     (hE.comp h_shear).congr (by fun_prop) (.of_forall fun q ↦ (h_coord q).symm)
   exact .map_of_comp h_param (by fun_prop) (by fun_prop)
-
-open scoped Classical in
-/-- The free entries are coordinates on 𝖴⁰ in which `New.Shape.besselHaar₀` is Lebesgue measure:
-they are injective on 𝖴⁰ (`New.RealPlace.injective_freeEntries_besselU0`) and carry this measure
-to Lebesgue measure (`New.RealPlace.measurePreserving_freeEntries_besselHaar₀`). -/
-theorem injective_measurePreserving_freeEntries₀ :
-    (Injective fun u : (𝔰.middleGram (1 : ℂ)).besselU0 ↦
-      freeEntries IsFreeEntry₀ (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) ∧
-    MeasurePreserving (fun u : (𝔰.middleGram (1 : ℂ)).besselU0 ↦
-      freeEntries IsFreeEntry₀ (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) 𝔰.besselHaar₀ :=
-  ⟨injective_freeEntries_besselU0, measurePreserving_freeEntries_besselHaar₀⟩
 
 /-- `New.Shape.besselHaar₀` is a two-sided Haar measure on 𝖴⁰ with a cutoff for the action on G₁,
 in the sense of `New.RealPlace.IsUnimodularHaar`. -/
@@ -837,7 +824,7 @@ lemma besselHaar₀_homogeneousBall_add_le {t : ℝ} (ht : 0 < t) :
     nlinarith
   have h_factor : ((𝔰.r ^ 2 : ℝ)⁻¹ + 1) ^ d ≤ 3 :=
     calc ((𝔰.r ^ 2 : ℝ)⁻¹ + 1) ^ d ≤ Real.exp (d * (𝔰.r ^ 2 : ℝ)⁻¹) := by
-          grw [Real.add_one_le_exp, Real.exp_nat_mul]
+          grw [Real.add_one_le_exp, Real.exp_natCast_mul]
       _ ≤ Real.exp 1 := Real.exp_le_exp.2 (mul_inv_le_one_of_le₀ (mod_cast hd) (by positivity))
       _ ≤ 3 := Real.exp_one_lt_three.le
   rw [besselHaar₀_homogeneousBall (by positivity),

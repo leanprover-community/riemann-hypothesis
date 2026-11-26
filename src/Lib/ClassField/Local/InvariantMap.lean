@@ -123,8 +123,8 @@ lemma mem_zmultiples_of_resH2_eq_zero [V.Normal] {β x : (unitsModule Γ).H2}
   refine mem_of_prime_step _ hx fun U W hW_normal hVU hVW hW_prime s hs hxs ↦ ?_
   -- `V_U` and `V'` are `V` seen inside `U` and `W`. The class `β'` on `U` dies on `W`, because a
   -- class split by an open subgroup is killed by its index (`index_smul_eq_zero_of_resH2`).
-  let V_U : OpenSubgroup (U : Subgroup Γ) := V.comap (Subgroup.subtype _) continuous_subtype_val
-  let V' : OpenSubgroup (W : Subgroup U) := V_U.comap (Subgroup.subtype _) continuous_subtype_val
+  let V_U : OpenSubgroup (U : Subgroup Γ) := V.comap (Subgroup.subtype _) continuous_subtypeVal
+  let V' : OpenSubgroup (W : Subgroup U) := V_U.comap (Subgroup.subtype _) continuous_subtypeVal
   let β' : ((unitsModule Γ).restrictTo U).H2 := V'.index • (unitsModule Γ).resH2 U β
   -- `β` restricted to `U` is split by `V_U`, and then by `V'` inside `W`.
   have hβ_U : ((unitsModule Γ).restrictTo U).resH2 V_U ((unitsModule Γ).resH2 U β) = 0 :=

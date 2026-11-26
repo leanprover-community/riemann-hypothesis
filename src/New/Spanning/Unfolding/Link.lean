@@ -2,6 +2,7 @@ module
 
 public import Lib.DiscreteSeries.Bruhat.BigCell
 public import New.Spanning.Unfolding.Terms
+public import TauCeti.LinearAlgebra.Matrix.Rank
 
 /-!
 # Links of isometries, the link isometry Υ_γ, and invariance under `besselU`
@@ -79,7 +80,7 @@ lemma splitGram_mulVec (v : 𝔰.BesselIndex → F) :
   simp [funext_iff, splitGram, fromBlocks_mulVec, comp_def]
 
 /-- The matrix `linkMatrix γ` sends `t` to the pair of the middle blocks of `t` and of `γ⁻¹ t`. -/
-@[simp ↓]
+@[simp↓]
 lemma linkMatrix_mulVec {γ : T.G} (t : 𝔰.BesselIndex → F) :
     linkMatrix γ *ᵥ t = (fun b : 𝔰.MiddleIndex ↦ t (inr (inl b))) ⊕ᵥ
       fun b : 𝔰.MiddleIndex ↦ (γ⁻¹.val.val *ᵥ t) (inr (inl b)) := by
@@ -88,7 +89,7 @@ lemma linkMatrix_mulVec {γ : T.G} (t : 𝔰.BesselIndex → F) :
 /-- A vector `t` is orthogonal to `A = ⟨e₁, …, e_ϱ⟩` and to `γ A` (so to the span `A + γ A` of the
 columns of `isotropicFramePair γ`) iff the last `ϱ` coordinates, those at the `e*_a`, of both `t`
 and `γ⁻¹ t` vanish. -/
-@[simp ↓]
+@[simp↓]
 lemma orthogonal_isotropicFramePair_iff {γ : T.G} {t : 𝔰.BesselIndex → F} :
     t ∈ ((isotropicFramePair γ)ᴴ * T.splitGram).mulVecLin.ker ↔
       (∀ a : Fin 𝔰.ϱ, t (eStar a) = 0) ∧ ∀ a : Fin 𝔰.ϱ, (γ⁻¹.val.val *ᵥ t) (eStar a) = 0 := by
@@ -299,7 +300,7 @@ hyperbolic planes, and let `w_r = weylElem 𝔰.ϱ r` send `e_a` to `r a • e*_
 the graph of the middle block of `ρ`: a pair lies in it if and only if its first member is the image
 of the second under this block. -/
 lemma Filling.mem_link_weylElem_mul_iff {A : Type} [Field A] [StarRing A] {T : 𝔰.Form A}
-    [IsHermitianUnit T.splitGram] {ρ : T.G} (hρ : ρ ∈ floorGroup 𝔰.ϱ) (r : ℕ → Aˣ)
+    {ρ : T.G} (hρ : ρ ∈ floorGroup 𝔰.ϱ) (r : ℕ → Aˣ)
     {v : 𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → A} :
     v ∈ link (weylElem 𝔰.ϱ r * ρ) ↔ ρ.val.val.toBlocks₂₂.toBlocks₁₁ *ᵥ (v ∘ inr) = v ∘ inl := by
   -- `mem_link` asks for an `a` with one block of `w_r ρ` sending it to `0`: `a = 0` will do.
@@ -347,24 +348,6 @@ section LinkIsometry
 open Matrix Module Fin Sum Function
 
 namespace New
-
-/-- Over a field with involution a matrix and its conjugate transpose have the same rank. -/
-lemma rank_conjTranspose_eq {F m n : Type} [Field F] [StarRing F] [Fintype m] [Fintype n]
-    (A : Matrix m n F) : Aᴴ.rank = A.rank := by
-  -- `Aᴴ` is the transpose of `A.map star`, and `star` is a semilinear bijection that carries the
-  -- span of the columns of `A` onto the span of those of `A.map star`, so keeps its dimension.
-  let e : (m → F) ≃ₗ⋆[F] (m → F) := starLinearEquiv F
-  let W : Submodule F (m → F) := Submodule.span F (Set.range A.col)
-  have h_span : Submodule.span F (Set.range (A.map star).col) = W.map e.toLinearMap := by
-    rw [Submodule.map_span, ← Set.range_comp]
-    rfl
-  have h_rank : Module.rank F W = Module.rank F (W.map e.toLinearMap) :=
-    rank_eq_of_equiv_equiv star (e.submoduleMap W).toAddEquiv star_involutive.bijective
-      (e.submoduleMap W).map_smulₛₗ
-  calc Aᴴ.rank = (A.map star).rank := rank_transpose (A.map star)
-    _ = finrank F (W.map e.toLinearMap) := by rw [← finrank_span_range_col, h_span]
-    _ = finrank F W := (congrArg Cardinal.toNat h_rank).symm
-    _ = A.rank := finrank_span_range_col A
 
 /-- The columns of two matrices set side by side span the sum of the two column spaces. -/
 lemma colSpan_fromCols {K m n₁ n₂ : Type*} [CommRing K] [Fintype n₁] [Fintype n₂]
@@ -599,7 +582,7 @@ lemma rank_add_finrank_isotropicPerp (γ : S.G E) :
     (isotropicFramePair γ).rank + finrank E (isotropicPerp γ) = 𝔰.r := by
   have h_unit : IsUnit S.ratGram.det := (isUnit_iff_isUnit_det _).1 Floors.IsHermitianUnit.isUnit
   have h_rank : ((isotropicFramePair γ)ᴴ * S.ratGram).rank = (isotropicFramePair γ).rank := by
-    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_eq]
+    rw [rank_mul_eq_left_of_isUnit_det _ _ h_unit, rank_conjTranspose_of_field]
   rw [← h_rank, Shape.r, ← finrank_fintype_fun_eq_card E, ← finrank_range_mulVecLin]
   exact ((isotropicFramePair γ)ᴴ * S.ratGram).mulVecLin.finrank_range_add_finrank_ker
 

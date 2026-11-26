@@ -247,8 +247,6 @@ lemma mul_apply (a b : D.FormEnd L) (y : D.formsOfLevel L) : (a * b) y = a (b y)
 @[simp]
 lemma nsmul_apply (k : ℕ) (a : D.FormEnd L) (y : D.formsOfLevel L) : (k • a) y = k • a y := rfl
 
-@[simp]
-lemma zsmul_apply (k : ℤ) (a : D.FormEnd L) (y : D.formsOfLevel L) : (k • a) y = k • a y := rfl
 
 @[simp]
 lemma smul_apply (r : EllAdicIntegers) (a : D.FormEnd L) (y : D.formsOfLevel L) :

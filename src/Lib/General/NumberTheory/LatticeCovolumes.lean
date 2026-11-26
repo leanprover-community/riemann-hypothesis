@@ -439,8 +439,8 @@ end IsQuotientBasis
 isotropic space `I`, and let those of `(ι₀ | y)` be a basis of `I^⊥`: they have a left inverse, are
 orthogonal to `I` and are as many as the rank of `I^⊥`. Then for some invertible `a` the columns of
 `ι₀ a` lie in `Λ`, and the quotient `(Λ ∩ I^⊥)/(Λ ∩ I)` has a basis `B` with coordinates `q`. -/
-lemma exists_isQuotientBasis [TopologicalSpace A] [IsTopologicalRing A] [LocallyCompactSpace A]
-    [PolishSpace A] [IsAdelic R] {J : Matrix π π A} (hJ : IsUnimodular R J) {ι₀ : Matrix π σ A}
+lemma exists_isQuotientBasis [TopologicalSpace A]
+    [IsAdelic R] {J : Matrix π π A} (hJ : IsUnimodular R J) {ι₀ : Matrix π σ A}
     {y : Matrix π μ A} (h_inv : HasLeftInv (fromCols ι₀ y)) (h_orth : ι₀ᴴ * J * fromCols ι₀ y = 0)
     (h_card : card π = card (σ ⊕ μ) + card σ) :
     ∃ (a : GL σ A) (B : Matrix π μ A) (q : Matrix μ π A),
@@ -653,13 +653,6 @@ noncomputable def Filling.imSkewLattice (t : InfinitePlace E → ℝ) :
   (skewAdjoint (𝓞 E)).map
     (AddMonoidHom.mk' (fun (s : 𝓞 E) (v : InfinitePlace E) ↦ t v * (Φ v s.val).im)
       (by simp [funext_iff, mul_add]))
-
-/-- A vector lies in `imSkewLattice t` iff it is `(t v * Im Φ_v(s))_v` for an integer `s` of `E`
-with `star s = -s`. -/
-lemma Filling.mem_imSkewLattice {t l : InfinitePlace E → ℝ} :
-    l ∈ imSkewLattice t ↔
-      ∃ s : 𝓞 E, star s = -s ∧ (fun v : InfinitePlace E ↦ t v * (Φ v s.val).im) = l :=
-  Iff.rfl
 
 /-- If `ι² = -1`, `star ι = -ι` and all `Φ_v(ι)` are imaginary, the group `imSkewLattice t`
 consists of the vectors `(t v * Im Φ_v(ι) * Re Φ_v(a))_v`, `a` an integer of the maximal real
