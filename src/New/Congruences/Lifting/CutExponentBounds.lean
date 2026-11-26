@@ -572,14 +572,13 @@ lemma SidePairing.exists_stop_of_hasSignBefore {ε : k.Letter → ℤˣ} {β : k
 the pairing, with lattice `Hom(Y ⊗ Y', O(1))`, whose jumps are `0` and the `-(u + u') - 1` for jumps
 `u` of `S` and `u'` of `S'`. If at the letter `i` the jumps of the paired sides lie in the low
 window `[-η, η]` and in opposite far windows `∓ε i • [β i, β i + V]`, and `V + 4 η ≤ W`, then the
-jumps of all three sides at `i` are at most `β i + W`. -/
+jumps of the Tate dual side at `i` are at most `β i + W`. -/
 lemma SidePairing.jumps_le_of_fitsWindows {ε : k.Letter → ℤˣ} {β : k.Letter → ℕ} {η V W : ℕ}
     (h : S.SidePairing S') (hW : V + 4 * η ≤ W)
     {i : k.Letter} (h_left : FitsWindows η (-ε i) (β i) V (S.jumpSet i))
     (h_right : FitsWindows η (ε i) (β i) V (S'.jumpSet i)) :
-    (∀ w ∈ h.tateDualSide.jumpSet i, w ≤ β i + W) ∧
-      (∀ u ∈ S.jumpSet i, u ≤ β i + W) ∧ ∀ u' ∈ S'.jumpSet i, u' ≤ β i + W := by
-  refine ⟨fun w hw ↦ ?_, fun u ↦ h_left.le_add (by omega), fun u' ↦ h_right.le_add (by omega)⟩
+    ∀ w ∈ h.tateDualSide.jumpSet i, w ≤ β i + W := by
+  intro w hw
   -- The jumps of the Tate dual side are `0` and the `-(u + u') - 1`.
   obtain rfl | ⟨u, hu, u', hu', rfl⟩ :
       w = 0 ∨ ∃ u ∈ S.jumpSet i, ∃ u' ∈ S'.jumpSet i, -(u + u') - 1 = w := by
@@ -628,7 +627,7 @@ lemma SidePairing.isScaledCupCoboundary_of_cut_windows {cut : k.Letter → Prop}
       le_of_not_gt fun ha_lt ↦ (hl_nearest i).not_cut a ⟨ha_pos, ha_lt⟩ ha_cut⟩
   have h_kill (i : k.Letter) (hi : cut i) : h.tateDualSide.KillsCokernel i κ (s i) :=
     killsCokernel_of_isKillingCut h_sizes
-      (fun j ↦ (h.jumps_le_of_fitsWindows hW (hU j) (hU' j)).left) (h_killing i hi)
+      (fun j ↦ h.jumps_le_of_fitsWindows hW (hU j) (hU' j)) (h_killing i hi)
   -- The standard points of a side `R`; they also have the depth that a plain cut asks.
   have h_points {R : PairingSide O} {σ : k.Letter → ℤˣ}
       (hR : ∀ i : k.Letter, FitsWindows η (σ i) (β i) V (R.jumpSet i)) (d : R.paramLattice) :
