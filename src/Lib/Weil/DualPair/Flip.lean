@@ -474,13 +474,23 @@ private lemma Modulus.flipCoords_map_vacTranslate {c : (Ô E)ˣ}
   have h_vec : idem 𝔪.places • -(↑𝔪.generator⁻¹ : 𝔸f E) • Subtype.val ∘ matrixToVec v =
       (flipCoords (s := s) hc_neg (neg_neg t).symm).finEquiv
         (star (idem 𝔪.places • (↑𝔪.generator⁻¹ : 𝔸f E) • Subtype.val ∘ y)) := by
-    simp [y, flipCoords, starCoordEquiv, funext_iff, matrixToVec]
-    grind
+    simp only [neg_smul, smul_neg, flipCoords, starCoordEquiv, Function.comp_apply,
+      Equiv.prodComm_apply, Pi.star_apply, Equiv.prodComm_symm, Equiv.coe_prodComm, Units.coe_map,
+      MonoidHom.coe_ofClass, eq_intCast, Equiv.prodCongr_apply, Equiv.Perm.coe_one,
+      Complex.star_def, Units.val_inv_eq_inv_val, Equiv.prodCongr_symm, Units.map_neg,
+      Units.val_neg, Subring.subtype_apply, neg_mul, inv_neg, Units.coe_map_inv, star_smul,
+      ContinuousAddEquiv.coe_mk, AddEquiv.coe_mk, Equiv.coe_fn_mk, Pi.smul_apply, Pi.neg_apply,
+      matrixToVec, Prod.swap_swap, smul_eq_mul, NegMemClass.coe_neg, MulMemClass.coe_mul,
+      coe_star_Ô, star_neg, star_mul', star_star, mul_neg, neg_neg, funext_iff, Prod.forall, y]
+    intro i j
+    linear_combination (-(idem 𝔪.places * ((↑𝔪.generator⁻¹ : 𝔸f E) * (v i j : 𝔸f E)))) * hc
   rw [vacTranslate, h_vec, ← apply_finVec, map_rho, map_vacElem, ← projOn_vacElem (S := 𝔪.places),
     ← 𝔪.schrodingerOp_char_eq_translate_projOn, projOn_vacElem]
   congr with x
-  simp [y, vecToMatrix, trace, Matrix.mul_apply, dotProduct, sum_prod_type, mul_left_comm (x _),
-    ← Finset.mul_sum, matrixToVec]
+  simp only [dotProduct, neg_smul, Function.comp_apply, Pi.neg_apply, Pi.smul_apply, matrixToVec,
+    Prod.fst_swap, Prod.snd_swap, smul_eq_mul, map_neg, map_mul, mul_neg, mul_left_comm (x _),
+    Finset.sum_neg_distrib, ← Finset.mul_sum, sum_prod_type, Units.coe_star, trace, diag_apply,
+    Matrix.mul_apply, of_apply, AddChar.mulShift_apply, neg_mul, vecToMatrix, y]
 
 /-- Flip of a pair. Let c be a unit of Ô with c̄c = −1, T a space of rank m, V a space with the
 opposite signs whose point is (1, c) times that of T (hypothesis `hV`), and S a space of rank n.
