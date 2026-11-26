@@ -111,7 +111,11 @@ lemma isCohomEquiv (h : IsCohomDense F U) : IsCohomEquiv F (freeAb.map U.ι) := 
   have h_range : range (fiberProd.snd U.ι
         ((Comparison.id F).functor.whiskerLeft (pointMap (NatTrans.app (𝟙 Y) A y)))) =
       U.preimage (pointMap y) := by
-    aesop (add simp [toFunctor, fiberProd, fiberProd.snd])
+    ext B x
+    refine ⟨?_, fun hx ↦ ⟨⟨⟨⟨_, hx⟩, x⟩, rfl⟩, rfl⟩⟩
+    rintro ⟨⟨⟨u, x'⟩, hux⟩, rfl⟩
+    change (pointMap y).app B x' ∈ U.obj B
+    exact (hux : u.val = (pointMap y).app B x') ▸ u.prop
   -- the projection is a monomorphism as a pullback of `U.ι`
   exact (isCohomEquiv_iff_range (hg := isPullback_fiberProd.mono_fst_of_mono) h_range).mpr (h A y)
 
@@ -141,12 +145,21 @@ lemma trans (h : IsCohomDense F V) (k : IsCohomDense F (U.preimage V.ι)) : IsCo
           freeAb.map V_y.ι) :=
       (k.preimage (fromPreimage V (pointMap y))).isCohomEquiv.comp_iff.mpr (h A y)
     -- the composite of the two inclusions is injective with image `U_y ⊓ V_y`
-    rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
+    have h_rng : range (((U.preimage V.ι).preimage (V.fromPreimage (pointMap y))).ι ≫ V_y.ι) =
+        U_y ⊓ V_y := by
+      ext B x
+      exact ⟨fun ⟨u, hu⟩ ↦ hu ▸ ⟨u.prop, u.val.prop⟩,
+        fun ⟨hU, hV⟩ ↦ ⟨⟨⟨x, hV⟩, hU⟩, rfl⟩⟩
+    rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) h_rng]
       at h_comp
   -- `U_y ⊓ V_y ⊆ U_y` is an equivalence by `h`, so `U_y ⊆ h_A` is one by cancellation.
   refine (h.preimage (U_y.ι ≫ pointMap y)).isCohomEquiv.comp_iff.mp ?_
   -- again the composite of the two inclusions has image `U_y ⊓ V_y`
-  rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
+  have h_rng : range ((V.preimage (U_y.ι ≫ pointMap y)).ι ≫ U_y.ι) = U_y ⊓ V_y := by
+    ext B x
+    exact ⟨fun ⟨u, hu⟩ ↦ hu ▸ ⟨u.val.prop, u.prop⟩,
+      fun ⟨hU, hV⟩ ↦ ⟨⟨⟨x, hU⟩, hV⟩, rfl⟩⟩
+  rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) h_rng]
 
 /-- A subfunctor that contains a dense subfunctor is dense. -/
 lemma mono (h : IsCohomDense F U) (hU : U ≤ V) : IsCohomDense F V := by
@@ -254,8 +267,8 @@ variable {C : Type _} [Category C] {Y W : C ⥤ Type 1} {F} {n : ℕ} {ι : Type
 /-- For finitely many f_i: W → Y and integers c_i, the subfunctor of W of the points x ∈ W(A) with ∑
 c_i [f_i(x)] = 0 in ℤ[Y(A)], expressed by `New.Variety.Cancels`. -/
 def relationLocus : Subfunctor W :=
-  Subfunctor.mk (fun A ↦ {x : W.obj A | Cancels c fun i ↦ f i A x}) fun _ _ hx ↦
-    hx.mono fun _ ↦ by simp_all
+  Subfunctor.mk (fun A ↦ {x : W.obj A | Cancels c fun i ↦ f i A x}) fun g _ hx ↦
+    hx.mono fun i j h ↦ by simp only [NatTrans.naturality_apply]; exact congrArg _ h
 
 /-- On the relation locus, the sum `∑ c i • ℤ[f i]` vanishes. -/
 lemma relationLocus_sum_eq_zero :
@@ -345,9 +358,9 @@ lemma exists_dvd_idempotent_of_notMem {E B : Type*} [Mul E] [CommRing B] {f : E 
 (the maps out of `A`) of the maps `f : A ⟶ B` with `ι.map f e = 0`. -/
 abbrev elemKillingMaps : Subfunctor (reprBy A) where
   obj _ := {f | ι.map f.down e = 0}
-  map := by
-    delta reprBy reprFunctor
-    simp_all
+  map f x hx := by
+    change ι.map (x.down ≫ f) e = 0
+    rw [Functor.map_comp, ConcreteCategory.comp_apply, hx, map_zero]
 
 /-- The preimage of the maps that kill `e` or `1 - e` under the point `k : A ⟶ B` is the subfunctor
 of the maps out of `B` that kill `ι k e` or `1 - ι k e`. -/
@@ -395,8 +408,10 @@ lemma bijective_map_prod_map_of_idempotent {B E : C} {π : A ⟶ B} {ρ : A ⟶ 
     linear_combination (-(a + b)) * he.eq - e * hb - (1 - e) * ha
   · -- `x + e * (y - x)` goes to `x` under `π`, which kills `e`, and to `y` under `ρ`, which kills
     -- `1 - e`
-    refine (π_surj.prodMap ρ_surj).forall.mpr fun (x, y) ↦ ⟨x + e * (y - x), ?_⟩
-    grind
+    refine (π_surj.prodMap ρ_surj).forall.mpr fun (x, y) ↦ ⟨x + e * (y - x), Prod.ext ?_ ?_⟩
+    · simp [π_kill]
+    · rw [show x + e * (y - x) = y - (1 - e) * (y - x) by ring]
+      simp [ρ_kill]
 
 /-- Let F satisfy `New.Variety.HasPartitions` for the rings ι(A). For an idempotent e of ι(A), the
 maps out of A that kill e or kill 1 − e form a dense subfunctor of `reprBy A` for F. -/
@@ -412,7 +427,8 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
   intro A e he
   by_cases h_trivial : e = 1 ∨ e = 0
   · -- for `e = 1` or `e = 0` every map kills `e` or `1 - e`
-    exact isCohomEquiv (of_top_le (by aesop))
+    exact isCohomEquiv (of_top_le fun _ _ _ ↦
+      h_trivial.elim (fun h ↦ .inr (by simp [h])) (fun h ↦ .inl (by simp [h])))
   obtain ⟨he_ne_one, he_ne_zero⟩ := not_or.mp h_trivial
   -- The two pieces are represented by the cuts `π` and `ρ`: they give projective functors, and a
   -- section on a piece is determined by its value at the cut. Here `π` kills `e` (`π_kill`),
@@ -448,9 +464,10 @@ lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
     -- the sum of the two pieces maps onto the union, and a section on a piece is read at its cut
     refine h_mv.epi_g.left_cancellation _ _
       (Limits.biprod.hom_ext' _ _ (hπ_rep.injective ?_) (hρ_rep.injective ?_))
-    -- `aesop` reads `freeAb.map` of the inclusion on a generator and uses `h_π`, `h_ρ`
-    · aesop
-    · aesop
+    · simp only [← Category.assoc, Limits.biprod.inl_desc]
+      exact h_π
+    · simp only [← Category.assoc, Limits.biprod.inr_desc]
+      exact h_ρ
   -- `isBijective_reprBy_iff`: it suffices that `F A` be the sections on the union, and that the
   -- union have no cohomology in positive degrees.
   refine IsBijective.eqv
@@ -485,7 +502,8 @@ lemma HasPartitions.hasZariskiDescent (hF : HasPartitions ι F) {κ : C ⥤ Comm
   let U_y : Subfunctor (reprBy A) := U.preimage (pointMap y)
   -- The `a` in the ring `κ.obj A` such that `U_y` together with the maps that kill `a` is dense
   -- form an ideal, since density passes to intersections and larger subfunctors.
-  have h_zero_top : ⊤ ≤ elemKillingMaps (0 : κ.obj A) ⊔ U_y := by aesop
+  have h_zero_top : ⊤ ≤ elemKillingMaps (0 : κ.obj A) ⊔ U_y :=
+    fun _ _ _ ↦ .inl (map_zero _)
   let I : Ideal (κ.obj A) :=
     .ofLinearComb {a | IsCohomDense F (elemKillingMaps a ⊔ U_y)} ⟨0, of_top_le h_zero_top⟩
       fun a₁ ha₁ a₂ ha₂ c₁ c₂ ↦ (ha₁.inf ha₂).mono fun _ _ ↦ by simp +contextual [or_imp]
@@ -587,7 +605,14 @@ lemma hasPartitions_locConstCoeff {Λ : Ab} : HasPartitions testIncl (locConstCo
     refine ⟨⟨_, A.property.quotient (A.property.isRadical_span_idempotent he)⟩,
       ⟨ofHom (mk (span {e}))⟩, mk_singleton_self _, fun B f hf ↦ ?_, exists_rep, by simp⟩
     -- `f` kills `e`, hence the ideal `(e)`, so it factors through the quotient
-    exact ⟨⟨ofHom (lift _ f.hom.hom (by simp_all [mem_span_singleton']))⟩, by aesop⟩
+    refine ⟨⟨ofHom (lift _ f.hom.hom fun x hx ↦ ?_)⟩, ?_, fun g hg ↦ ?_⟩
+    · rcases mem_span_singleton'.mp hx with ⟨r, rfl⟩
+      have hfe : f.hom.hom e = 0 := hf
+      rw [map_mul, hfe, mul_zero]
+    · ext x
+      rfl
+    · ext x
+      exact congrArg (fun u : A ⟶ B ↦ u.hom.hom x) hg
   · -- the spectrum of `A ≃ B₁ × B₂` is the disjoint union of the two spectra
     let spec_sum : PrimeSpectrum A.obj ≃ₜ PrimeSpectrum B₁.obj ⊕ PrimeSpectrum B₂.obj :=
       (homeomorphOfRingEquiv (.ofBijective (RingHom.prod ..) h_bij)).trans primeSpectrumProdHomeo
