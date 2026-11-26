@@ -426,7 +426,10 @@ lemma IsMixedLaw.apply_omega_rho_finFrameVector
       (stdAddChar E (toAdele (WeilData.j / 2 : E) * star (finVec b) ⬝ᵥ finVec z) : ℂ) =
         selfDualAddChar E (half * star b ⬝ᵥ z) := by
     simp [finVec, stdAddChar, selfDualAddChar_apply, half, dotProduct, mul_sum, fst_sum, snd_sum]
-    grind
+    congr 2
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    rw [div_eq_mul_inv, map_mul]
+    ring
   have h_phase :
       (adelicHeisenberg E 1).β (t.val⁻¹ᴴ *ᵥ finVec x +
         (t.val⁻¹ᴴ *ᵥ finVec x + t.val⁻¹ᴴ *ᵥ finVec a))
