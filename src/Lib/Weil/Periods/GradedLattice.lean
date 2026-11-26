@@ -56,12 +56,6 @@ lemma hasDegreeGe_degreeZeroPart (A : Matrix ι' ι R) :
     HasDegreeGe w' w 0 (degreeZeroPart w' w A) :=
   fun i k h_lt ↦ by rw [degreeZeroPart_apply, ite_eq_right (by lia)]
 
-/-- If `A i k = 0` whenever `w' i < w k`, then removing the part of degree `0` from `A` leaves a
-matrix whose entries vanish whenever `w' i ≤ w k`. -/
-lemma HasDegreeGe.sub_degreeZeroPart {A : Matrix ι' ι R} (hA : HasDegreeGe w' w 0 A) :
-    HasDegreeGe w' w 1 (A - degreeZeroPart w' w A) := by
-  grind [HasDegreeGe, degreeZeroPart_apply, Matrix.sub_apply]
-
 lemma degreeZeroPart_one [DecidableEq ι] : degreeZeroPart w w (1 : Matrix ι ι R) = 1 := by
   ext i k
   grind [degreeZeroPart_apply, Matrix.one_apply_ne]
@@ -305,7 +299,8 @@ lemma exists_isGraded [Fintype X] [HasPrimitiveRoot5040 E] (x : Gf E ι) :
       simp [v, sub_mul, mul_sub, hd_inv]
     have hd'_deg : HasDegreeGe w w 0 d' := hasDegreeGe_degreeZeroPart _
     have h_left : HasDegreeGe w w 1 ((b.val - d) * d') :=
-      hb_deg.sub_degreeZeroPart.mul hd'_deg (add_zero 1).ge
+      (by grind [HasDegreeGe, degreeZeroPart_apply, Matrix.sub_apply] : HasDegreeGe w w 1 (b.val - d)).mul
+        hd'_deg (add_zero 1).ge
     have h_right : HasDegreeGe w w 1 (b.val * (n.val - 1) * d') :=
       (hb_deg.mul hn_deg (zero_add 1).ge).mul hd'_deg (add_zero 1).ge
     intro i k h_lt
