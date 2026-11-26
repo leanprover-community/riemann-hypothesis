@@ -287,8 +287,6 @@ open Matrix Finset Valued WithZero New IsSplitLevel Gf NeZero Fintype
 namespace New.Data
 
 variable {P : Parameters} (D : Data P) {p : ℕ} [Fact p.Prime] [PadicPlace p]
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 open scoped Classical in
 /-- Let `φ : D.FormX D.m` be an algebraic automorphic form on the unitary group of the hermitian
 space `X_m`, and `D.restrictToY φ` its restriction to the subspace `Y_m` orthogonal to the last
@@ -309,25 +307,21 @@ lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
     ‖D.branching.map (↑) *ᵥ ξ‖ ≤ ‖ξ‖ := by
     simpa using norm_mulVec_le (c := 1) (by simp [IsUltrametricDist.norm_intCast_le_one]) ξ
   intro g
+  let g' : Gf D.E (D.X D.m) := D.borderU g
   suffices h_eq : weylGauge D.columnsY (D.lastEntry D.m) (g * 1) ((D.restrictToY φ).val g) =
       ‖D.branching.map (↑) *ᵥ weylRep D.columnCount (D.lastEntry D.m) (fun τ ↦
-          GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (D.borderU g * d)⁻¹.val) *ᵥ
-        (ιₚ ∘ φ.val (D.borderU g))‖ from
-    h_eq.trans_le ((h_integral _).trans (hφ (D.borderU g)))
+          GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (g' * d)⁻¹.val) *ᵥ
+        (ιₚ ∘ φ.val g')‖ from
+    h_eq.trans_le ((h_integral _).trans (hφ g'))
   -- At `τ`, `(diag (g, 1) * d)⁻¹` is the block matrix `diag (g⁻¹, s τ)`.
   let s (τ : D.Φ) : ℂ_[p]ˣ := (d.val.map (adeleExtension (weightEmbedding ιₚ τ))).det⁻¹
-  have h_block (τ : D.Φ) : ((D.borderU g * d)⁻¹.1.map (adeleExtension (weightEmbedding ιₚ τ))).1 =
+  have h_block (τ : D.Φ) : ((g' * d)⁻¹.1.map (adeleExtension (weightEmbedding ιₚ τ))).1 =
       GL.blockScalar (fun _ ↦ D.lastIndexEquiv.sumCongr (.refl _))
         (fun τ ↦ ((g * 1)⁻¹.1.map (adeleExtension (weightEmbedding ιₚ τ))).1) (fun τ ↦ s τ) τ := by
-    simp [s, ← map_inv, ← ext_iff, borderU, GL.blockScalar, map_inv _ d.val, hd]
+    simp [g', s, ← map_inv, ← ext_iff, borderU, GL.blockScalar, map_inv _ d.val, hd]
   let a : ℂ := ∏ τ : D.Φ, Φ τ (star (D.piN : D.E)) ^ (-D.branchExponent τ)
-  have h_restrict : (D.restrictToY φ).val g = a • D.branching.map (↑) *ᵥ φ.val (D.borderU g) := rfl
-  have h_intertwine : D.branching.map (↑) * weylRep D.columnCount (D.lastEntry D.m) (fun τ ↦
-        GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (D.borderU g * d)⁻¹.val) =
-      (∏ τ, s τ ^ D.branchExponent τ) • (weylRep D.columnsY (D.lastEntry D.m) (fun τ ↦
-          GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) (g * 1)⁻¹.val) *
-        D.branching.map (↑)) :=
-    D.isBranchingMap_branching.mul_weylRep _ _ s _ h_block
+  have h_restrict : (D.restrictToY φ).val g = a • D.branching.map (↑) *ᵥ φ.val g' := rfl
+  have h_intertwine := D.isBranchingMap_branching.mul_weylRep ℂ_[p] _ s _ h_block
   -- The scalars: `weightEmbedding ιₚ τ π = ιₚ (Φ τ π̄)` has the absolute value of `N` if
   -- `star (inducedPlace τ)` divides `π`, and is a unit if not.
   have h_norm (τ : D.Φ) : NormedField.valuation.comap (weightEmbedding ιₚ τ) D.piN =
@@ -342,12 +336,10 @@ lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
           ^ D.branchExponent τ :=
       prod_congr rfl fun τ _ ↦ congrArg (· ^ D.branchExponent τ) (congrArg NNReal.toReal (h_norm τ))
     simpa [a, s, hd, apply_ite, starRingEnd_apply (R := D.E)] using h_prod
-  have h_comp : ιₚ ∘ (D.branching.map (↑) *ᵥ φ.val (D.borderU g)) =
-      D.branching.map (↑) *ᵥ (ιₚ ∘ φ.val (D.borderU g)) := funext (by simp [mulVec_eq_sum])
-  rw [h_restrict, weylGauge_smul, mulVec_mulVec]
-  -- `erw`, as `D.X D.m` and `InitIndex ⊕ Unit` agree only after unfolding
-  erw [h_intertwine, smul_mulVec, ← mulVec_mulVec, Units.smul_def, norm_smul]
-  rw [h_scalar, weylGauge, h_comp]
+  have h_comp : ιₚ ∘ (D.branching.map (↑) *ᵥ φ.val g') =
+      D.branching.map (↑) *ᵥ (ιₚ ∘ φ.val g') := funext (by simp [mulVec_eq_sum])
+  rw [h_restrict, weylGauge_smul, mulVec_mulVec, h_intertwine, smul_mulVec, ← mulVec_mulVec,
+    Units.smul_def, norm_smul, h_scalar, weylGauge, h_comp]
 
 /-- For `p ≠ N`, a form that has gauge at most `c` at every point has a restriction to `Y_m` with
 the same bound. -/
