@@ -388,8 +388,8 @@ lemma commonIsotropic_eq_bot (h_disc : S.termDisc γ ≠ 0) : commonIsotropic γ
 `n = ϱ + 1`. -/
 lemma finrank_colSpan_frameImage (γ : S.G E) :
     finrank E (colSpan (frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))) = 𝔰.n := by
-  rw [LinearMap.finrank_range_of_inj ((injective_iff_map_eq_zero _).2 fun _ ↦
-    frameImage_mulVec_eq_zero_iff.1), finrank_fin_fun]
+  rw [colSpan, range_mulVecLin, finrank_span_eq_card (linearIndependent_col_frameImage γ),
+    Fintype.card_fin]
 
 /-- The ranks of `frameSum γ` = `A⁺_γ = A⁺ + γ A⁺` (the span of the frame and of its image under
 `γ`) and of its orthogonal complement `framePerp γ` add up to `𝔰.r`, the rank of the whole space. -/
@@ -473,15 +473,8 @@ lemma mem_isotropicSpan {M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E} :
 `e_1, …, e_ϱ, z_N` has rank `j`. -/
 lemma finrank_flagSpan_coe (γ : S.G E) (j : Fin (𝔰.ϱ + 2)) :
     finrank E (flagSpan (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) j) = j := by
-  let g : GL 𝔰.BesselIndex E := γ
-  let e : Fin j → 𝔰.BesselIndex := 𝔰.besselFrame ∘ castLE j.is_le
-  have he : Injective e := besselFrame_injective.comp (castLE_injective j.is_le)
-  -- The rows of `γ⁻¹` at the indices `e` form a left inverse of the columns of `γ` at `e`.
-  have h_left : g⁻¹.val.submatrix e id * g.val.submatrix id e = 1 := by
-    rw [← submatrix_mul _ _ e id e bijective_id, g.inv_mul, submatrix_one e he]
-  rw [flagSpan, submatrix_submatrix, id_comp,
-    LinearMap.finrank_range_of_inj (HasLeftInv.injective_mulVec ⟨g⁻¹.val.submatrix e id, h_left⟩),
-    finrank_fin_fun]
+  rw [flagSpan, colSpan, range_mulVecLin, finrank_span_eq_card, Fintype.card_fin]
+  exact (linearIndependent_col_frameImage γ).comp _ (castLE_injective j.is_le)
 
 /-- A vector with the coefficients `x` in the frame `e_1, …, e_ϱ, z_N` and `x'` in its image under
 `γ` lies in `I_γ = A ∩ γ A` if one of its coefficients at `z_N` and `γ z_N` vanishes, because the
