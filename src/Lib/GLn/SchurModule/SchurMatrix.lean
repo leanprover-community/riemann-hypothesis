@@ -416,6 +416,7 @@ omit [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
 @[simp]
 lemma schurDetExp_self : schurDetExp n n κ = 0 := funext (by simp [schurDetExp])
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Let M be a matrix whose row i gives coordinates of b'_i(zy) in the family
 b_j(y)·∏_τ det(y_τ)^{d_τ}, with b, b' the basis products `New.nablaBasis` for the rows n and n' and
 d = `New.schurDetExp`. Then M is the Schur matrix S_κ(z): the family is linearly independent, so
@@ -508,6 +509,7 @@ lemma GL.diagramWeight_eq_of_fitsRanks (h : FitsRanks n n' κ) :
       rankAt n τ ≤ rankAt n' τ ∧ ∀ k ∈ Ioo (rankAt n τ) (rankAt n' τ), κ τ k = 0 := h τ
   grind [zero_smul, schurDetExp, sum_eq_ite (rankAt n τ), sum_range_add_sum_Ico _ h_le]
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Assume `FitsRanks n n' κ`: for every τ, |n_τ| ≤ |n'_τ| and κ_τ(h) = 0 for |n_τ| < h < |n'_τ|.
 Let b = `nablaBasis` for `n`, b' = `nablaBasis` for `n'`, and let d τ be κ_τ(|n_τ|) if
 |n_τ| < |n'_τ| and 0 otherwise. Then for matrices z_τ of size n'_τ × n_τ, row `i` of the Schur
@@ -827,6 +829,7 @@ lemma nablaBasis_eq_weylEval_smul_weylKernel_of_lt (e : ∀ τ : Φ, n τ ≃ Fi
   · -- the terms at the other positions are zero
     aesop
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 /-- Let e_τ enumerate the rows at each place τ, and let y be the permutation array of e
 (`New.permArray`). If, for a family i of chosen standard fillings, some entry of a column of height
 k of i_τ has position at least k in the enumeration e_τ, then the value b_i(y) of the basis vector
