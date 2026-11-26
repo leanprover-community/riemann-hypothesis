@@ -125,16 +125,14 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
     ({w : FinPlace D.E | D.IsChosen w} ∪ ↑Q).conjClosure
   simp_rw [hA, hχ, mul_assoc, AutChar.L]
   congr 1
+  -- Setting the coefficients at `{v, star v}` to zero multiplies the Euler product by the two
+  -- inverse Euler factors.
+  obtain ⟨-, -, h_erase⟩ := eulerProd_erase
+    (p.hasWeight.mul ϑ.hasWeight).inv.isHeckeOfType.norm_heckeCoeff_le {v, star v}
   have h_coeff : heckeCoeff φ (S ϑ'.Q) = Set.indicator {v, star v}ᶜ (heckeCoeff φ (S ϑ.Q)) := by
     -- The places removed for `ϑ'` are those for `ϑ` together with `v` and `star v`.
-    have h_S : S ϑ'.Q = {v, star v} ∪ S ϑ.Q := by
-      ext w
-      have h_star : star w = v ↔ w = star v :=
-        ⟨fun h ↦ by rw [← h, star_star], fun h ↦ by rw [h, star_star]⟩
-      simp only [S, hQ, Set.conjClosure, Set.mem_union, Set.mem_preimage, Set.mem_insert_iff,
-        Set.mem_ofPred_eq, Finset.coe_insert, Finset.mem_coe, Set.mem_singleton_iff, h_star,
-        or_assoc, or_left_comm]
-    simp only [heckeCoeff, Set.indicator_indicator, h_S, Set.compl_union]
+    simp [φ, funext_iff, heckeCoeff, Set.indicator, hQ]
+    grind [star_star]
   have h_factors :
       ∏ w ∈ {v, star v}, (1 - heckeCoeff φ (S ϑ.Q) w * (w.q : ℂ) ^ (-(p.z : ℂ))) =
         ∏ ε : ℤˣ, (1 - (p.character * ϑ.toAutChar).baseChange.atUniformizer v ^ ε.val / v.q ^
@@ -148,10 +146,6 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
       h_at (star v) (by simp [S, hv, hv_chosen, hv_star_chosen, hv_star]), at_star, inv_inv]
     simp [cpow_neg, q_star, div_eq_mul_inv]
     ring
-  -- Setting the coefficients at `{v, star v}` to zero multiplies the Euler product by the two
-  -- inverse Euler factors.
-  obtain ⟨-, -, h_erase⟩ := eulerProd_erase
-    (p.hasWeight.mul ϑ.hasWeight).inv.isHeckeOfType.norm_heckeCoeff_le {v, star v}
   rw [h_coeff, ← h_factors]
   simpa [φ] using h_erase p.z (mod_cast H.2)
 
