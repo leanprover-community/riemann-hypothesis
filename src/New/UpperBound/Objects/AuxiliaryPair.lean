@@ -798,9 +798,12 @@ lemma fockRowSubst_tensorPoly (O : DescentPair E r n) (y : GInf E (1 : n → ℤ
   -- Both sides are linear in `v`; on a basis tensor `O.tensorPoly` is a product of two
   -- polynomials, one in the letters of each sign.
   rw [pi_eq_sum_univ' v]
-  simp [fockRowSubst_fockLetters, mulVec_sum, sum_prod_type, ← vec_single,
-    single_eq_single_vecMulVec_single, letterPoly, -mulVec_single, mulVec_smul,
-    kronecker_mulVec_vec, mul_vecMulVec, vecMulVec_mul, vecMul_transpose]
+  simp only [sum_prod_type, ← vec_single, single_eq_single_vecMulVec_single, map_sum, map_smul,
+    tensorPoly_vecMulVec, letterPoly, LinearMap.coe_comp, AlgHom.coe_toLinearMap,
+    Function.comp_apply, map_mul, fockRowSubst_fockLetters, ↓reduceIte, neg_units_ne_self,
+    InvMemClass.coe_inv, coe_units_inv, mulVec_sum, mulVec_smul, kronecker_mulVec_vec,
+    mul_vecMulVec, vecMulVec_mul, vecMul_transpose, FitsRanks.refl, toPoly_schur, schurDetExp_self,
+    detPow_zero, mul_one, transpose_transpose]
 
 /-- In the real Weil representation `realPairWeil` of the descent pair `O`, with weight
 `negCount O.signs` at every place and any weight `γ'`, a real point `y` of U(V) sends the Fock
