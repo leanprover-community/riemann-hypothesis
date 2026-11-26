@@ -201,8 +201,7 @@ def IsGoodAt (w : Ideal (𝓞 E)) : Prop :=
 /-- The laws of a class `c` in the Picard group of `A`, for all points `x`, `y` of `A` with values
 in a scheme `T` over `S`: (a) the parallelogram law `New.Pic.ParallelogramLaw`; (b)
 `⟨β x, y⟩ = ⟨x, (1 - β) y⟩` for the pairing `New.Pic.pairing`, where `1 - β = star β`; (c) the
-pull-back of `c` along `y` is `⟨β y, y⟩` plus its pull-back along `0` (`x` plays no part here). The
-three laws are read with `HasClassLaws.parallelogramLaw`, `pairing_smul_beta` and `atPoint_eq`. -/
+pull-back of `c` along `y` is `⟨β y, y⟩` plus its pull-back along `0` (`x` plays no part here). -/
 def HasClassLaws {S : AlgebraicGeometry.Scheme} {A : CategoryTheory.Over S} [AddObj (S := S) A]
     [ModuleObj (𝓞 E) A] (c : Pic A.left) : Prop :=
   -- (a) the parallelogram law

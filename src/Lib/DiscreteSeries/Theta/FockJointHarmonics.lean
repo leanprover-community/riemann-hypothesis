@@ -22,9 +22,8 @@ The proof of uniqueness has three steps.
 
 ## Main definitions and results
 
-* `New.IsMatch.unique`, `New.IsJointHarmonic.exists_eq_smul_of_row_weight`,
-  `New.IsJointHarmonic.exists_eq_smul_of_column_weight`: the joint harmonic is unique up to a
-  scalar, and one of its two weights suffices for this.
+* `New.IsMatch.unique`, `New.IsJointHarmonic.exists_eq_smul_of_row_weight`: the joint harmonic is
+  unique up to a scalar, and its row weight suffices for this.
 * `New.IsMatch.eval_matchingPoint_ne_zero`: a pre-joint harmonic does not vanish at the point
   `New.FockDualPair.matchingPoint`, the 0-1 matrix of the matching.
 

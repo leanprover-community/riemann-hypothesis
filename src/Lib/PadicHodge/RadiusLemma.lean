@@ -17,7 +17,6 @@ The radius lemma for a chart (`New.Lift.Chart`): a subring S of A_inf, the image
 an associate of ξ. Further A = `New.Period.Amax`, B⁺ = A[1/p] = `New.Period.BPlus`, φ is the
 Frobenius, and t is a Galois element with `c.FixesThetaZ t`.
 
-* `New.Lift.Chart.exists_E_pow_mul_eq_tau_pow_mul_iff`: A_inf[1/τ] ∩ S_B[1/E] = S.
 * `New.Lift.Chart.tau_mul_z_dvd_smul_sub`: τz divides ty − y in B⁺ for every y in S_B.
 * `New.Lift.Chart.radius_lemma`: if tz = [ε]z, Z has entries in S_B with Z'·Z = E^h and tZ = Z·G for
   some G over A_inf, and 3e ≤ p^l, then φ^l(Z) = φ^l(E)^b·C·V with C constant and V invertible over
