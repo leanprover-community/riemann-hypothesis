@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Analysis.Matrix.Order
+import TauCeti.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Polar
 public import Lib.General.LinearAlgebra.MatricesNearIdentity
 
 /-!
@@ -48,16 +49,9 @@ matrix. -/
 lemma exists_unitary_mul_posSemidef {X : Type} [Fintype X] [DecidableEq X] {a : Matrix X X ℂ}
     (ha : IsUnit a) :
     ∃ k ∈ unitaryGroup X ℂ, ∃ z : Matrix X X ℂ, z.PosSemidef ∧ a = k * z := by
-  let z : Matrix X X ℂ := CFC.abs a
-  have hz : z.PosSemidef := (CFC.abs_nonneg a).posSemidef
-  have hz_sq : z * z = aᴴ * a := CFC.abs_mul_abs a
-  have hz_det : IsUnit z.det := (isUnit_iff_isUnit_det z).1
-    (isUnit_of_mul_isUnit_left (y := z) (by simpa [hz_sq] using ha.star.mul ha))
-  refine ⟨a * z⁻¹, mem_unitaryGroup_iff'.2 ?_, z, hz,
-    (nonsing_inv_mul_cancel_right _ _ hz_det).symm⟩
-  calc star (a * z⁻¹) * (a * z⁻¹) = z⁻¹ * (z * z) * z⁻¹ := by
-        simp [hz_sq, star_eq_conjTranspose, hz.isHermitian.inv.eq, mul_assoc]
-    _ = 1 := by rw [nonsing_inv_mul_cancel_left _ _ hz_det, mul_nonsing_inv _ hz_det]
+  obtain ⟨u, rfl⟩ := ha
+  exact ⟨u.polarUnitary, u.polarUnitary.property, CFC.abs (u : Matrix X X ℂ),
+    (CFC.abs_nonneg _).posSemidef, u.polarUnitary_mul_sqrt_star_mul.symm⟩
 
 open Norms.Frobenius
 
