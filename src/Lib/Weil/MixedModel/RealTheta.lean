@@ -313,7 +313,7 @@ lemma realVec_realMatrix_mulVec (y : InfinitePlace E × p → ℂ) :
     realVec (realMatrix A *ᵥ y) = A *ᵥ realVec y := by
   funext i
   refine Prod.ext (funext fun w ↦ ?_) ?_
-  · change (WeilData.scaleIdele E).1.1 w * (realMatrix A *ᵥ y) (w, i) = ((A *ᵥ realVec y) i).1 w
+  · change (WeilData.scaleIdele E).val.1 w * (realMatrix A *ᵥ y) (w, i) = ((A *ᵥ realVec y) i).1 w
     rw [mulVec, dotProduct, sum_prod_type_right, Finset.mul_sum,
       mulVec, dotProduct, fst_sum, Finset.sum_apply]
     refine Finset.sum_congr rfl fun j _ ↦ ?_
@@ -324,7 +324,7 @@ lemma realVec_realMatrix_mulVec (y : InfinitePlace E × p → ℂ) :
         Matrix.map_apply, ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
       rfl
     rw [h_inner]
-    exact mul_left_comm ((WeilData.scaleIdele E).1.1 w) ((A i j).1 w) (y (w, j))
+    exact mul_left_comm ((WeilData.scaleIdele E).val.1 w) ((A i j).1 w) (y (w, j))
   · change (0 : 𝔸f E) = ((A *ᵥ realVec y) i).2
     rw [mulVec, dotProduct, snd_sum]
     exact (Finset.sum_eq_zero fun j _ ↦ mul_zero ((A i j).2)).symm

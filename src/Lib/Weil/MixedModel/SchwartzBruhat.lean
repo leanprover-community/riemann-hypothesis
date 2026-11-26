@@ -530,7 +530,7 @@ lemma _root_.New.Space.mem_range_schrodingerCombination {S : Set (FinPlace E)}
   let B : OpenAddSubgroup (n → 𝔸f E) :=
     comap (smulAddHom (𝔸f E) (n → 𝔸f E) (star t⁻¹.val)) (continuous_const_smul _)
       ⟨stdLattice E n, isOpen_stdLattice⟩
-  have h_fintype : Fintype (stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) :=
+  let h_fintype : Fintype (stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) :=
     fintypeOfIndexNeZero (isCompact_stdLattice.relIndex_ne_zero_add B.isOpen)
   let f (q : stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) : (n → 𝔸f E) → ℂ :=
     schrodingerAct S (idem S • -z)
