@@ -2,10 +2,10 @@
 
 Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
-- compared, place confirmed: 66
+- compared, place confirmed: 68
 - not compared, no place given: 8
 - place confirmed at second hand: 35
-- work found, no place given: 119
+- work found, no place given: 117
 
 The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
 
@@ -171,7 +171,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Mumford, On the equations defining abelian varieties II, Invent. Math. 3 (1967) 75–135 | place confirmed at second hand | `Lib/Shimura/IntegralModel/UniversalFamily`, `Lib/Shimura/ThetaModuli/UniversalFamily` |
 | Mumford, Tata lectures on theta I | work found, no place given | `Lib/Weil/Construction/FourierInversion` |
 | Mumford, part I, Invent. Math. 1 (1966) | work found, no place given | `Lib/Shimura/IntegralModel/UniversalFamily`, `Lib/Shimura/ThetaModuli/UniversalFamily` |
-| N. Alon, Combinatorial Nullstellensatz | work found, no place given | `Lib/General/Algebra/MultivariatePolynomials` |
+| N. Alon, Combinatorial Nullstellensatz, [Theorem 1.2](https://web.math.princeton.edu/~nalon/PDFS/null2.pdf#page=2) | compared, place confirmed | `Lib/General/Algebra/MultivariatePolynomials` |
 | Neukirch, Algebraic Number Theory, 1999 | compared, place confirmed | `Lib/ClassField/Places/LocalFields` |
 | Neukirch-Schmidt-Wingberg, Cohomology of Number Fields (2nd ed. 2008) | compared, place confirmed | `Lib/ClassField/GaloisCohomology/KummerCyclicClasses` |
 | O'Meara, Introduction to Quadratic Forms | compared, place confirmed | `Lib/Weil/Periods/PointLattice` |
@@ -188,7 +188,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Robert (no title given) | work found, no place given | `Lib/CM/GoodReduction`, `Lib/CM/Integrality/TorsionValues` |
 | Robert, no title given | work found, no place given | `Lib/CM/GoodReduction`, `Lib/CM/Integrality/TorsionValues` |
 | Rubin, Euler Systems, 2000 | compared, place confirmed | `Lib/Cyclotomic/Kolyvagin/ReciprocityComponentBounds` |
-| S. Ball, O. Serra, Punctured combinatorial Nullstellensätze | work found, no place given | `Lib/General/Algebra/MultivariatePolynomials` |
+| S. Ball, O. Serra, Punctured combinatorial Nullstellensätze, [Corollary 3.2](https://web.mat.upc.edu/simeon.michael.ball/puncturedvii.pdf#page=4) | compared, place confirmed | `Lib/General/Algebra/MultivariatePolynomials` |
 | S. D. Miller and N. Stephens-Davidowitz, Kissing numbers and transference theorems from generalized tail bounds, SIAM J. Discrete Math. 33 (2019) | work found, no place given | `Lib/Adelic/Reduction/FirstMinimumShortBases` |
 | S. Helgason, Groups and Geometric Analysis | place confirmed at second hand | `Lib/DiscreteSeries/Bruhat/ComplexPlace` |
 | S. W. Shin, Galois representations arising from some compact Shimura varieties | work found, no place given | `Lib/GaloisRep/Main/AllRanks` |

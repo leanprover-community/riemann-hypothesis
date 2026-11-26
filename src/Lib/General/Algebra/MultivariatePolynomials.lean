@@ -51,8 +51,9 @@ All results are known. `New.exists_le_weight_of_mem_vanishingIdeal_pow` is a for
 Combinatorial Nullstellensatz with multiplicity, over any field. Each variable u has a positive
 integer κ(u) and the weight 1/κ(u). In place of a grid it uses a set of at least ∏κ(u) points at
 which each u^κ(u) agrees with a polynomial of lower weighted degree. A nonzero polynomial vanishing
-to order d at all these points then has a monomial of weighted degree at least d. Source: Alon,
-Combinatorial Nullstellensatz (1999); Ball–Serra, Punctured combinatorial Nullstellensätze (2009).
+to order d at all these points then has a monomial of weighted degree at least d. For Cartesian
+grids, see Alon, *Combinatorial Nullstellensatz* (1999), Theorem 1.2 for d = 1, and Ball–Serra,
+*Punctured combinatorial Nullstellensätze* (2009), Corollary 3.2 for higher multiplicity.
 -/
 
 @[expose] public section
