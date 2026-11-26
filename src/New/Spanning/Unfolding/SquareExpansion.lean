@@ -508,7 +508,8 @@ lemma amplitudeSum_mul_inv_apply [HasPrimitiveRoot5040 E] [S.IsAdmissible] {T : 
   have h_kernel (γ : S.G E) (y : NumberField.InfinitePlace E → 𝔰.G₁) :
       S.besselKernel .full (1 * γ * δ⁻¹) (S.ratToInf 1 * y) = L (S.besselKernel .full γ y) := by
     ext ⟨a, b⟩
-    simp [hL, besselKernel, mul_assoc, hN, mulVec, dotProduct, mul_sum, mul_left_comm]
+    simp [hL, besselKernel, mul_assoc, hN, mulVec, dotProduct, mul_sum,
+      mul_left_comm (S.besselFn .full y a)]
   have h_move : S.amplitudeSum .full T c (s * t⁻¹) d = L (S.amplitudeSum .full T c s d') := by
     simpa using amplitudeSum_mul_mul_inv hT (one_mem _) (S.classUnipotent c).one_mem.2 hδ hδ_over
       (by simpa using hT_mul_inv) L h_kernel s
