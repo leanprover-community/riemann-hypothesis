@@ -76,16 +76,6 @@ lemma continuous_rallisSeries (h_rank : 2 * card n < card m) (b : AutChar E)
   (tendstoUniformly_rallisSeries h_rank b A hy_bdd).continuous
     (.of_forall fun _ ↦ by fun_prop)
 
-/-- The series `rallisSeries M b A y` is `∑_q vacuumCoeff M b (cosetRep q) · R(cosetRep q) y`, a sum
-of right translates of a function `y` on the adelic points `G E s`. The sum runs over the cosets
-`q`, in the finite points, of the subgroup of points integral at `A`, with representatives supported
-on `A` and its conjugate. The series commutes with left translations with no convergence hypothesis:
-applied to `g' ↦ y (x * g')` and evaluated at `g`, it equals `rallisSeries M b A y` at `x * g`. -/
-lemma rallisSeries_comp_mul_left (M : ℕ) (b : AutChar E) (A : Set (FinPlace E)) (y : G E s → ℂ)
-    (x g : G E s) :
-    rallisSeries M b A (fun g' : G E s ↦ y (x * g')) g = rallisSeries M b A y (x * g) := by
-  simp only [rallisSeries, mul_assoc]
-
 /-- Let `b ∘ det` be trivial on the integral points supported on `A` and its conjugate, and let `y`
 be fixed by these points. A finite point `k` integral at `A` that fixes `y` also fixes
 `rallisSeries M b A y`, the series of translates of `y` weighted by the coefficients of the
@@ -208,7 +198,7 @@ lemma isAutomorphic_rallisSeries {S : Space E n s} (h_rank : 2 * card n < card m
     (h_level : HasLevel y (stdLevel E n ⊓ supportedOn n A)) :
     S.IsAutomorphic (rallisSeries (card m) b A y) where
   continuous := continuous_rallisSeries h_rank b A hy.continuous hy_bdd
-  rat_mul δ hδ g := by simp only [← rallisSeries_comp_mul_left, hy.rat_mul δ hδ]
+  rat_mul δ hδ g := by simp only [rallisSeries, mul_assoc, hy.rat_mul δ hδ]
   exists_level := by
     -- The points of a level `K` of `y` that are integral at `A` form a level of the series.
     obtain ⟨K, hK⟩ := hy.exists_level
