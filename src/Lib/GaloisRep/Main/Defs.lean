@@ -171,5 +171,4 @@ lemma New.Weight.nodup_jumps {E : Type} [Field E] [CMType E] (κ : Weight E) (N 
 
 end HeckePolyMonic
 
-
 end
