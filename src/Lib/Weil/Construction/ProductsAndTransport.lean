@@ -19,10 +19,9 @@ the insertion of a real vector, and the Weil representation up to a scalar.
 
 ## Main definitions and results
 
-* `New.Space.rho_boxProd`, `New.Space.boxProd_vacElem`, `New.Space.dataInner_boxProd`,
-  `New.Space.omega_boxProd`, `New.Space.boxProd_integrated`: the product respects the Heisenberg
-  operators, the vacua, the inner products, the Weil representation of block diagonal elements and
-  the insertion of real Fock vectors.
+* `New.Space.rho_boxProd`, `New.Space.boxProd_vacElem`, `New.Space.omega_boxProd`,
+  `New.Space.boxProd_integrated`: the product respects the Heisenberg operators, the vacua, the
+  Weil representation of block diagonal elements and the insertion of real Fock vectors.
 * `New.CoordChange.map_rho`, `New.CoordChange.map_vacElem`, `New.CoordChange.map_omega`,
   `New.CoordChange.map_integrated`: transport respects the Heisenberg operators, the vacuum, the
   Weil representation (up to a scalar) and the insertion of a real vector.

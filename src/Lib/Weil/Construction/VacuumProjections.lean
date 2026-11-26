@@ -34,9 +34,6 @@ above S. The finite part `New.Space.finitePart` is the span of the ϱ_f-translat
 * The finite part is stable under ϱ_f, under the projections `New.Space.projOn` and under the finite
   unitary group (`New.Space.omega_mem_finitePart`). The real vacuum projection `New.Space.projReal`
   fixes it.
-* `New.Space.dataInner_finHeisenbergOp_rep_vacElem`, `New.Space.span_finHeisenbergOp_rep_vacElem`:
-  the translates of vac by representatives of the classes modulo Ô^n are orthonormal and span the
-  finite part.
 * `New.Space.exists_eq_smul_omega_vacElem`: a vector of the finite part fixed by the lattice `g Ô^n`
   is a multiple of `ω(g) vacElem`.
 
