@@ -143,37 +143,24 @@ lemma mul_derivative_logOf {f : ℂ_[p]⟦X⟧} (hf : constantCoeff f = 1) :
 
 section Bounds
 
-/-- Let `g` be a series in any variables and `r ≥ 0`. If the coefficients of `g` in degrees `≤ l`
+/-- Let `g` be a series in any variables. If the coefficients of `g` in degrees `≤ l`
 have norm at most `r`, those of `g ^ j` in these degrees have norm at most `r ^ j`. -/
-lemma norm_coeff_pow_le {σ : Type} {g : MvPowerSeries σ ℂ_[p]} {l : ℕ} {r : ℝ} (hr : 0 ≤ r)
+lemma norm_coeff_pow_le {σ : Type} {g : MvPowerSeries σ ℂ_[p]} {l : ℕ} {r : ℝ}
     (hg : ∀ m : σ →₀ ℕ, m.degree ≤ l → ‖g.coeff m‖ ≤ r) (j : ℕ)
     {m : σ →₀ ℕ} (hm : m.degree ≤ l) : ‖(g ^ j).coeff m‖ ≤ r ^ j := by
-  classical
-  induction j generalizing m with
-  | zero => by_cases hm_zero : m = 0 <;> simp [MvPowerSeries.coeff_one, hm_zero]
-  | succ j ih =>
-    rw [pow_succ, pow_succ, MvPowerSeries.coeff_mul]
-    refine norm_sum_le_of_forall_le_of_nonneg (by positivity) fun x hx ↦ ?_
-    have h_deg : x.1.degree + x.2.degree ≤ l := by
-      rwa [← map_add, Finset.HasAntidiagonal.mem_antidiagonal.1 hx]
-    grw [norm_mul, ih (m := x.1) (by omega), hg x.2 (by omega)]
+  simpa using MvPowerSeries.norm_coeff_pow_mul_prod_le (c := fun _ ↦ 1)
+    (fun _ ↦ zero_le_one) (fun k hk ↦ by simpa using hg k ((Finsupp.degree_mono hk).trans hm)) j
 
 /-- Let `g` be a series in any variables with `g(0) = 0`, with coefficients in degrees `≤ l` of
-norm at most `r`, where `r ≥ 0`, and let `f = ∑ f_j X ^ j` satisfy `‖f_j‖ r ^ j ≤ s` for all `j`.
+norm at most `r`, and let `f = ∑ f_j X ^ j` satisfy `‖f_j‖ r ^ j ≤ s` for all `j`.
 Then the coefficients of `f(g)` in degrees `≤ l` have norm at most `s`. -/
 lemma norm_coeff_subst_le {σ : Type} {g : MvPowerSeries σ ℂ_[p]} {l : ℕ} {r s : ℝ}
-    {f : ℂ_[p]⟦X⟧} (hg_zero : g.constantCoeff = 0) (hr : 0 ≤ r)
+    {f : ℂ_[p]⟦X⟧} (hg_zero : g.constantCoeff = 0)
     (hg : ∀ m : σ →₀ ℕ, m.degree ≤ l → ‖g.coeff m‖ ≤ r) (hf : ∀ j : ℕ, ‖coeff j f‖ * r ^ j ≤ s)
     {m : σ →₀ ℕ} (hm : m.degree ≤ l) : ‖(f.subst g).coeff m‖ ≤ s := by
-  have hs : 0 ≤ s := le_trans (by positivity) (hf 0)
-  rw [coeff_subst (.of_constantCoeff_zero hg_zero)]
-  -- The norm is ultrametric, so it suffices to bound each term `f_j (g ^ j)_m`.
-  refine finsum_induction (‖·‖ ≤ s) (by rwa [norm_zero])
-    (fun x y hx hy ↦ (norm_add_le_max x y).trans (max_le hx hy)) fun j ↦ ?_
-  rw [smul_eq_mul, norm_mul]
-  calc ‖coeff j f‖ * ‖(g ^ j).coeff m‖ ≤ ‖coeff j f‖ * r ^ j := by
-        grw [norm_coeff_pow_le hr hg j hm]
-    _ ≤ s := hf j
+  simpa using PowerSeries.norm_coeff_subst_mul_prod_le (c := fun _ ↦ 1)
+    (fun _ ↦ zero_le_one) (.of_constantCoeff_zero hg_zero)
+    (fun k hk ↦ by simpa using hg k ((Finsupp.degree_mono hk).trans hm)) hf
 
 /-- Let `g(0) = 0`. If the coefficients of `g` in degrees `≤ l` have norm at most
 `p ^ (-1 / (p - 1))`, that is, valuation at least `1 / (p - 1)`, then `exp g`, written `expSubst g`,
@@ -192,20 +179,20 @@ lemma norm_coeff_expSubst_le_one {σ : Type} {g : MvPowerSeries σ ℂ_[p]}
 end Bounds
 
 /-- If the coefficients of the series `g` in one variable below the degree `l` have norm at most
-`r`, where `r ≥ 0`, those of `g ^ j` below the degree `l` have norm at most `r ^ j`. -/
-lemma norm_coeff_pow_le_of_lt {g : ℂ_[p]⟦X⟧} {l : ℕ} {r : ℝ} (hr : 0 ≤ r)
+`r`, those of `g ^ j` below the degree `l` have norm at most `r ^ j`. -/
+lemma norm_coeff_pow_le_of_lt {g : ℂ_[p]⟦X⟧} {l : ℕ} {r : ℝ}
     (hg : ∀ n < l, ‖coeff n g‖ ≤ r) (j : ℕ) {n : ℕ} (hn : n < l) : ‖coeff n (g ^ j)‖ ≤ r ^ j := by
-  refine norm_coeff_pow_le (l := n) hr (fun m hm ↦ ?_) j (Finsupp.degree_single () n).le
+  refine norm_coeff_pow_le (l := n) (fun m hm ↦ ?_) j (Finsupp.degree_single () n).le
   rw [Finsupp.unique_single m] at hm ⊢
   exact hg _ (by simpa using hm.trans_lt hn)
 
 /-- Let `g` be a series in one variable with `g(0) = 0`, with coefficients below the degree `l`
-of norm at most `r`, where `r ≥ 0`, and let `f = ∑ f_j X ^ j` satisfy `‖f_j‖ r ^ j ≤ s` for all
+of norm at most `r`, and let `f = ∑ f_j X ^ j` satisfy `‖f_j‖ r ^ j ≤ s` for all
 `j`. Then the coefficients of `f(g)` below the degree `l` have norm at most `s`. -/
 lemma norm_coeff_subst_le_of_lt {f g : ℂ_[p]⟦X⟧} {l : ℕ} {r s : ℝ}
-    (hg_zero : constantCoeff g = 0) (hr : 0 ≤ r) (hg : ∀ n < l, ‖coeff n g‖ ≤ r)
+    (hg_zero : constantCoeff g = 0) (hg : ∀ n < l, ‖coeff n g‖ ≤ r)
     (hf : ∀ j : ℕ, ‖coeff j f‖ * r ^ j ≤ s) {n : ℕ} (hn : n < l) : ‖coeff n (f.subst g)‖ ≤ s := by
-  refine norm_coeff_subst_le (l := n) hg_zero hr (fun m hm ↦ ?_) hf (Finsupp.degree_single () n).le
+  refine norm_coeff_subst_le (l := n) hg_zero (fun m hm ↦ ?_) hf (Finsupp.degree_single () n).le
   rw [Finsupp.unique_single m] at hm ⊢
   exact hg _ (by simpa using hm.trans_lt hn)
 
@@ -239,7 +226,7 @@ lemma norm_coeff_le_of_aeval {x : ℂ_[p]⟦X⟧} {l : ℕ} {s : ℝ} (h_dvd : X
     refine norm_sum_le_of_forall_le_of_nonneg ((norm_nonneg _).trans (hR _ hi)) fun j hj ↦ ?_
     have hj_lt : j < i := Finset.mem_range.1 hj
     have h_int : ‖coeff (2 * i) ((X ^ 2 * u) ^ j)‖ ≤ 1 :=
-      (norm_coeff_pow_le_of_lt zero_le_one hx j hi).trans_eq (one_pow j)
+      (norm_coeff_pow_le_of_lt hx j hi).trans_eq (one_pow j)
     grw [norm_mul, h_int, mul_one, ih j hj_lt (by omega)]
   rw [eq_sub_of_add_eq' h_sum.symm, sub_eq_add_neg]
   exact (norm_add_le_max _ _).trans (max_le (hR _ hi) (by rwa [norm_neg]))
@@ -281,7 +268,7 @@ lemma norm_coeff_expSubst_sub_one_le {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 / 
   have h_subst : expSubst g - 1 = (exp ℂ_[p] - 1).subst g := by
     rw [subst_sub hs, ← coe_substAlgHom hs, map_one, coe_substAlgHom]
   rw [h_subst]
-  refine norm_coeff_subst_le_of_lt hg_zero (norm_nonneg c) hg ?_ hn
+  refine norm_coeff_subst_le_of_lt hg_zero hg ?_ hn
   rintro (_ | j)
   · simp
   calc ‖coeff (j + 1) (exp ℂ_[p] - 1)‖ * ‖c‖ ^ (j + 1)
