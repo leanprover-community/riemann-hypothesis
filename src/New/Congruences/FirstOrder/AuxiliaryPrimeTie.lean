@@ -198,8 +198,8 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
           rw [map_aevalHecke_valMinAbs_mul_tameTrace hQ hN ha hB hσ]
           simp only [map_mul, mul_assoc, (comm _).eq]
       _ = -σ (weightedNorm ρ P.indDet ZMod.valMinAbs * heckeAction (tameTrace Q hN j p g)) := by
-          rw [lineRep, map_cosetNorm_mul_weightedNorm_mul_cosetNormInv ρ hσ_char, P.transfer_indLine,
-            map_mul]
+          rw [lineRep, map_cosetNorm_mul_weightedNorm_mul_cosetNormInv ρ hσ_char,
+            P.transfer_indLine, map_mul]
       _ = -(σ ((ρ P.diamond - 1) * weightedNorm ρ P.indDet ZMod.valMinAbs) *
             σ (heckeAction (traceElement hN p (Q.frobData j).frob g))) := by
           rw [weightedNorm_indDet_mul_tameTrace hQ hN ha, map_mul]
