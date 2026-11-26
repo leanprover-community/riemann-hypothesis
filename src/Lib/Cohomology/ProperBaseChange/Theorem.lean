@@ -115,34 +115,25 @@ lemma New.Variety.absIntegrallyClosedSubrings.exists_cocone_iSup {Λ : Ab} {F : 
       -- (b) locally constant functions on the spectrum modulo `J` turn it into a colimit
       IsFilteredColimit ((quotientFunctor J γ ⋙ locConstSpec Λ).mapCocone m) := by
   let φ (B : c) : Subring F := B.val.val
-  have h_mem (B : c) : γ.range ≤ φ B ∧ IsAbsIntegrallyClosed (φ B) := B.val.prop
-  -- An element of the union lies in all large members, hence so do finitely many elements.
   have h_ev (x : ↥(iSup φ)) : ∀ᶠ B : c in atTop, x.val ∈ φ B := by
     obtain ⟨B, hB⟩ := (mem_iSup_of_directed hc.directed).mp x.prop
-    exact eventually_atTop.mpr ⟨B, fun B' hBB' ↦ hBB' hB⟩
-  have h_aic : IsAbsIntegrallyClosed ↥(iSup φ) := by
-    refine ⟨fun p ↦ ?_⟩
-    obtain ⟨B, hB⟩ : ∃ B : c, ∀ y ∈ p.coeffs, (y : F) ∈ φ B :=
-      (p.coeffs.eventually_all.mpr fun y _ ↦ h_ev y).exists
-    exact (h_mem B).2.exists_root_of_coeffs_subset_range (f := inclusion (le_iSup φ B))
-      fun y hy ↦ ⟨⟨y, hB y hy⟩, rfl⟩
+    exact eventually_atTop.mpr ⟨B, fun _ hBB' ↦ hBB' hB⟩
   let S : absIntegrallyClosedSubrings γ :=
-    ⟨iSup φ, le_iSup_of_le hne.some (h_mem hne.some).1, h_aic⟩
-  -- It is enough that `S / J S` is the colimit of the rings `B / J B`; check this on elements.
+    ⟨iSup φ, le_iSup_of_le hne.some hne.some.val.prop.left, ⟨fun p ↦ by
+      obtain ⟨B, hB⟩ := (p.coeffs.eventually_all.mpr fun y _ ↦ h_ev y).exists
+      exact B.val.prop.right.exists_root_of_coeffs_subset_range (f := inclusion (le_iSup φ B))
+        fun y hy ↦ ⟨⟨y, hB y hy⟩, rfl⟩⟩⟩
   refine ⟨⟨S, .mk fun B ↦ ⟨⟨le_iSup φ B⟩⟩⟩, rfl,
     isFilteredColimit_locConstSpec (c := (quotientFunctor J γ).mapCocone _) ?_ ?_⟩
   · rintro ⟨x⟩
-    exact (h_ev x).exists.imp fun B hB ↦ ⟨⟦⟨x, hB⟩⟧, rfl⟩
-  · -- An element `x` of `B` that lies in `J S` is `γ a * f` with `a ∈ J` and `f ∈ S`, so it lies in
-    -- `J B'` for any member `B'` above `B` that contains `f`.
+    exact (h_ev x).exists.imp fun _ hB ↦ ⟨⟦⟨x, hB⟩⟧, rfl⟩
+  · -- `x ∈ J S` is `γ a * f` with `a ∈ J`, `f ∈ S`, so `x ∈ J B'` once `B' ≥ B` contains `f`.
     rintro B ⟨x⟩ hx
     obtain ⟨a, ha, f, hf⟩ := exists_map_dvd_of_mem_map (eq_zero_iff_mem.mp hx)
-    have hf_val : (x : F) = γ a * f := congrArg Subtype.val hf
-    obtain ⟨B', hfB', hBB'⟩ : ∃ B' : c, f.val ∈ φ B' ∧ B ≤ B' :=
-      ((h_ev f).and (eventually_ge_atTop B)).exists
-    let f' : φ B' := ⟨f.val, hfB'⟩
-    refine ⟨B', hBB'.hom, eq_zero_iff_mem.mpr (mem_of_dvd _ ⟨f', ?_⟩ (mem_map_of_mem _ ha))⟩
-    exact Subtype.ext hf_val
+    obtain ⟨B', hfB', hBB'⟩ := ((h_ev f).and (eventually_ge_atTop B)).exists
+    refine ⟨B', hBB'.hom, eq_zero_iff_mem.mpr
+      (mem_of_dvd _ ⟨⟨f.val, hfB'⟩, ?_⟩ (mem_map_of_mem _ ha))⟩
+    exact Subtype.ext (congrArg (Subtype.val : S.val → F) hf)
 
 section ValueMap
 
@@ -157,7 +148,7 @@ private def New.Variety.ResiduePlace.residueValue {C : CommRingCat} (y : killing
   .liftOfSurjective _ (rangeRestrict_surjective _)
     ⟨(snd P C).domRestrict (placeGraph y.val), fun w hw ↦
       placeGraph_unique w.prop
-        (y.prop w.val.1 ((ker_algebraMap_residueField q).le
+        (y.prop w.val.fst ((ker_algebraMap_residueField q).le
           (congrArg Subtype.val (RingHom.mem_ker.mp hw))))⟩
 
 /-- `residueValue y` sends the residue of `t` to `c` when `(t, c)` lies in the graph of `y`. -/
@@ -165,16 +156,6 @@ private lemma New.Variety.ResiduePlace.residueValue_apply {C : CommRingCat}
     {y : killingPlaces z q C} {t : P} {c : C} (h_graph : (t, c) ∈ placeGraph y.val) :
     residueValue y ⟨_, ⟨(t, c), h_graph⟩, rfl⟩ = c :=
   liftOfSurjective_comp_apply ..
-
-/-- For a place `x` that is finite on `B` and kills `J`, the restriction of `residueValue x` to `B`
-kills the ideal `J B`. -/
-private lemma New.Variety.ResiduePlace.extendedIdeal_le_ker_residueValue_comp
-    {B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom)}
-    {C : CommRingCat} (x : (placesFiniteOn z J B.val).toFunctor.obj C) :
-    extendedIdeal J ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom) B ≤
-      RingHom.ker ((residueValue x.val).comp (B.val.inclusion x.prop.right)) :=
-  map_le_of_le_comap (K := ker _) fun a ha ↦
-    (residueValue_apply (baseRingMap_mem_placeGraph a)).trans (x.prop.left a ha)
 
 /-- The value map. Let `s : Y → h_D`, let `z` be a valuative lift of `ξ ∈ Y(P)`, let `q` be a
 maximal ideal of `P`, `J` an ideal of `D`, and `B` a ring in `absIntegrallyClosedSubrings` for the
@@ -187,17 +168,13 @@ def New.Variety.ResiduePlace.valueMap {Y : PointFunctor} {D P : CommRingCat} {s 
     (B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom)) :
     (placesFiniteOn z J B.val).toFunctor ⟶ reprBy ((quotientFunctor J _).obj B) where
   app C := ↾fun x ↦ ⟨ofHom (lift _ ((residueValue x.val).comp (B.val.inclusion x.prop.right))
-    (extendedIdeal_le_ker_residueValue_comp x))⟩
+    (map_le_of_le_comap (K := ker _) fun a ha ↦
+      (residueValue_apply (baseRingMap_mem_placeGraph a)).trans (x.prop.left a ha)))⟩
   naturality C C' k := by
-    -- A map of rings of values carries the graph of `x` into that of its image.
-    ext x
-    congrm ⟨?_⟩
-    ext ⟨u, ht⟩
-    obtain ⟨w, rfl⟩ := x.prop.2 ht
-    -- For `w = (t, c)` it remains that `t` with the value of `residueValue x` at its residue lies
-    -- in `placeGraph x`: this pair is `w`.
+    ext x; congrm ⟨?_⟩; ext ⟨u, ht⟩
+    obtain ⟨w, rfl⟩ := x.prop.right ht
     have h_mem :
-        (w.val.1, residueValue x.val ⟨_, ⟨w.val, w.prop⟩, rfl⟩) ∈ placeGraph x.val.val := by
+        (w.val.fst, residueValue x.val ⟨_, ⟨w.val, w.prop⟩, rfl⟩) ∈ placeGraph x.val.val := by
       simpa only [residueValue_apply w.prop] using w.prop
     -- (`y` is given explicitly: found by unification, it costs most of the time of this proof)
     exact residueValue_apply (y := ((placesFiniteOn z J B.val).toFunctor.map k x).val)
@@ -237,211 +214,51 @@ lemma New.Variety.ResiduePlace.isAcyclicOver_of_mem_or_inv_mem {Λ : Ab} {Y : Po
     IsAcyclicOver (mapOnTests v) Λ := by
   have h_alg : ∀ (q' : Ideal P) [q'.IsPrime], IsAlgClosed _ := z.isAlgClosed_residueField
   let j : ResiduePlace (baseRingMap s ξ) :=
-    ⟨⟨q, hq.isPrime⟩, ⟨B.val, hB⟩, fun d ↦ B.prop.1 ⟨d, rfl⟩⟩
-  -- `J B` is radical: if `x ^ 2 ∈ J B`, then `x ^ 2` is divisible by the image of some `c ^ 2 ∈ J`,
-  -- so `x` is divisible by the image of `c`, and `c ∈ J`.
+    ⟨⟨q, hq.isPrime⟩, ⟨B.val, hB⟩, fun d ↦ B.prop.left ⟨d, rfl⟩⟩
+  -- `J B` is radical, so `B / J B` is a test ring.
   have h_rad : (extendedIdeal J _ B).IsRadical := by
     refine (Ideal.isRadical_iff_pow_one_lt 2 .refl).mpr fun x hx ↦ ?_
     obtain ⟨a, ha, hdvd⟩ := exists_map_dvd_of_mem_map hx
     obtain ⟨c, rfl⟩ : ∃ c : D, c ^ 2 = a := IsAbsIntegrallyClosed.exists_pow_eq 2 a
     rw [map_pow] at hdvd
-    refine mem_of_dvd _ ?_ (mem_map_of_mem _ (hJ.isRadical ⟨2, ha⟩))
-    exact (IsIntegrallyClosed.pow_dvd_pow_iff (R := j.valuationSubring) two_ne_zero).mp hdvd
-  -- So `B / J B` is a test ring, and it remains to see that it represents the functor on tests.
+    exact mem_of_dvd _
+      ((IsIntegrallyClosed.pow_dvd_pow_iff (R := j.valuationSubring) two_ne_zero).mp hdvd)
+      (mem_map_of_mem _ (hJ.isRadical ⟨2, ha⟩))
   refine .of_bijective ((isTest_of_preValuationRing (A := j.valuationSubring)).quotient h_rad)
     fun {C} ↦ ?_
   let π : CommRingCat.of B.val ⟶ .of (B.val ⧸ extendedIdeal J _ B) := ofHom (Ideal.Quotient.mk _)
   let T : CommRingCat ⥤ Type 1 := (placesFiniteOn z J B.val).toFunctor
-  -- The point given by the place `j` and a map `φ` on `B` has the values `φ` on `B`.
   have h_val {C : CommRingCat} {φ : CommRingCat.of j.valuationSubring ⟶ C} {x : T.obj C}
       (hx : x.val.val = ⟨⟦j.projHom ≫ φ⟧⟩) : π ≫ baseRingMap v x = φ := by
     ext ⟨y, hy⟩
     obtain ⟨t, rfl⟩ := q.algebraMap_residueField_surjective y
-    refine hv hy ?_
-    rw [hx]
-    exact j.mem_fractionGraph_projHom t hy
-  -- The inverse sends `φ : B / J B ⟶ C` to the image of the universal point `x₀`.
+    exact hv hy (hx ▸ j.mem_fractionGraph_projHom t hy)
+  -- The universal point `x₀` over `B / J B`.
   let x₀ : T.obj (.of (B.val ⧸ extendedIdeal J _ B)) := by
-    refine ⟨⟨⟨⟦j.projHom ≫ π⟧⟩, projHom_mem_killingPlaces j π⟩, fun a ha ↦ ?_, ?_⟩
-    · -- The value of the place at `a ∈ J` is the class of the image of `a` modulo `J B`, so `0`.
-      refine (placeGraph_unique (baseRingMap_mem_placeGraph a) ?_).trans
-        (mk_ker.ge (mem_map_of_mem _ ha))
-      apply mem_fractionGraph_projHom
-    · exact q.algebraMap_residueField_surjective.forall.mpr fun t ht ↦
-        ⟨⟨_, j.mem_fractionGraph_projHom t ht⟩, rfl⟩
+    refine ⟨⟨⟨⟦j.projHom ≫ π⟧⟩, projHom_mem_killingPlaces j π⟩, fun a ha ↦ ?_,
+      q.algebraMap_residueField_surjective.forall.mpr fun t ht ↦
+        ⟨⟨_, j.mem_fractionGraph_projHom t ht⟩, rfl⟩⟩
+    refine (placeGraph_unique (baseRingMap_mem_placeGraph a) ?_).trans
+      (mk_ker.ge (mem_map_of_mem _ ha))
+    apply mem_fractionGraph_projHom
   refine Function.bijective_iff_has_inverse.mpr
     ⟨fun φ ↦ T.map φ.down x₀, fun x ↦ Subtype.ext (Subtype.ext ?_), fun φ ↦ ?_⟩
-  · -- The space of places is separated: compare in each local ring of `C`, where the image `y`
-    -- of `x` is given by the place `j` and some `φ`.
-    let loc (m : MaximalSpectrum C.obj) :
-        CommRingCat.of C.obj ⟶ CommRingCat.of (Localization.AtPrime m.asIdeal) :=
-      ofHom (algebraMap C.obj (Localization.AtPrime m.asIdeal))
-    refine isProperOver_placeSpace.ext_of_jointly_injective loc
-      (fun c hc ↦ eq_zero_of_localization c fun m hm ↦ hc ⟨m, hm⟩) fun m ↦ ?_
-    let y := T.map (loc m) x
-    obtain ⟨φ, hφ⟩ : ∃ φ, y.val.val = ⟨⟦j.projHom ≫ φ⟧⟩ :=
-      exists_eq_projHom_comp_of_le_finiteValueSubring y.val.prop j.valuationSubring j.base_mem
-        y.prop.2
-    -- The rewrite is done in `hφ` rather than in the goal, where it is slow to elaborate.
-    rw [← h_val hφ, baseRingMap_map] at hφ
-    exact hφ.symm
-  · -- The image of `x₀` under `φ` has the values `π ≫ φ` on `B`, and `π` is surjective.
-    have h_comp : π ≫ baseRingMap v (T.map φ.down x₀) = π ≫ φ.down := h_val (φ := π ≫ φ.down) rfl
-    exact down_injective (hom_ext (ringHom_ext (congrArg Hom.hom h_comp :)))
-
-section ValueMaps
-
-variable {Λ : Ab} {Y : PointFunctor} {D P : CommRingCat} {s : Y ⟶ reprBy D} {ξ : Y.obj P}
-  {z : ValuativeLift s ξ} {q : Ideal P} [q.IsMaximal] {J : Ideal D}
-
-/-- Let `v B`, for every `B` in `absIntegrallyClosedSubrings`, be a map from the places that are
-finite on `B` and kill `J` to `h_{B / J B}` that sends the class of the residue of `t` to the value
-of the place at `t` (as `ResiduePlace.valueMap` does). Then the comparison maps `locConstClass`
-(from the locally constant functions on the spectrum of `B / J B` to the cohomology of the places;
-zero in positive degree) of the maps `v B` commute with enlarging `B`. Here
-`TestCohomology.antitoneFamily h_anti Λ n` sends `B` to the cohomology in degree `n` of the places
-for `B`, and `quotientFunctor J _ ⋙ locConstSpec Λ` sends `B` to the locally constant functions on
-the spectrum of `B / J B`. -/
-private lemma New.Variety.ResiduePlace.antitoneFamily_map_locConstClass_eq_of_baseRingMap_eq
-    {v : ∀ B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom),
-      (placesFiniteOn z J B.val).toFunctor ⟶ reprBy ((quotientFunctor J _).obj B)}
-    (hv : ∀ (B : absIntegrallyClosedSubrings
-      ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom))
-      {C : CommRingCat} {x : (placesFiniteOn z J B.val).toFunctor.obj C} {t : P} {c : C}
-      (ht : algebraMap P q.ResidueField t ∈ B.val), (t, c) ∈ placeGraph x.val.val →
-        baseRingMap (B := C) (v B) x
-          (Ideal.Quotient.mk _ ⟨algebraMap P q.ResidueField t, ht⟩) = c)
-    (h_anti : Antitone fun B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom) ↦ placesFiniteOn z J B.val)
-    (n : ℕ) {B B' : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom)}
-    (l : B ⟶ B') (f : (quotientFunctor J _ ⋙ locConstSpec Λ).obj B) :
-    (TestCohomology.antitoneFamily h_anti Λ n).map l (locConstClass (mapOnTests (v B)) n f) =
-      locConstClass (mapOnTests (v B')) n ((quotientFunctor J _ ⋙ locConstSpec Λ).map l f) := by
-  -- It remains that `v B` and `v B'` agree, at a place `x` for `B'`, on the class of each `y ∈ B`.
-  -- Write `y` as the residue of `t` for a pair `w = (t, c)` of the graph of `x`; both value
-  -- maps send it to `c`.
-  refine map_locConstClass (fun C x ↦ ?_) n
-  rw [Functor.comp_map, ← Functor.map_comp_apply]
-  congr 3 with ⟨y, hy⟩
-  obtain ⟨w, rfl⟩ := x.prop.2 (l.le hy)
-  exact (hv B hy w.prop).trans (hv B' _ w.prop).symm
-
-/-- If `B₃` is the ring generated by `B₁` and `B₂`, the places that are finite on `B₃` are those
-that are finite on both `B₁` and `B₂`. -/
-private lemma New.Variety.ResiduePlace.placesFiniteOn_eq_inf_of_isSplitting
-    {B B₁ B₂ B₃ : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom)}
-    (h_split : IsSplitting B B₁ B₂ B₃) :
-    placesFiniteOn z J B₃.val = placesFiniteOn z J B₁.val ⊓ placesFiniteOn z J B₂.val := by
-  -- After unfolding, both sides say that the place kills `J` and is finite on `B₁` and on `B₂`.
-  ext
-  simp [placesFiniteOn, h_split.eq_sup, and_assoc, and_left_comm]
-
-/-- If every valuation ring over `B` contains `B₁` or `B₂`, then among the places that are finite on
-`B` and kill `J`, those that are finite on `B₁` or on `B₂` are dense (coefficients `Λ`). -/
-private lemma New.Variety.ResiduePlace.isCohomDense_placesFiniteOn_sup_of_isSplitting
-    {B B₁ B₂ B₃ : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom)}
-    (h_split : IsSplitting B B₁ B₂ B₃) :
-    IsCohomDense (locConstCoeff Λ)
-      (((placesFiniteOn z J B₁.val ⊔ placesFiniteOn z J B₂.val).preimage
-        (placesFiniteOn z J B.val).ι).whisker testIncl) := by
-  -- A place on a valuation ring lies in the piece for `B₁` (`true`) or for `B₂` (`false`).
-  refine .of_affine_cover
-    (V := fun b ↦ (placesFiniteOn z J (cond b B₁.val B₂.val)).preimage (placesFiniteOn z J B.val).ι)
-    (fun _ ↦ isRelAffine_placesFiniteOn.preimage _) fun _C x ↦ ?_
-  obtain ⟨hx_zero, hx_finite⟩ := x.prop
-  obtain hx | hx := h_split.le_or_le ⟨_, finiteValueSubring_mem_or_inv_mem _⟩ hx_finite
-  exacts [⟨true, by tauto, hx_zero, hx⟩, ⟨false, by tauto, hx_zero, hx⟩]
-
-/-- The step of the downward induction in `ResiduePlace.exists_isAcyclicOver_placesFiniteOn` at a
-ring `B` that splits into `B₁` and `B₂` (`IsSplitting`: both strictly contain `B`, and every
-valuation ring containing `B` contains one of them), which generate `B₃`, such that the locally
-constant functions on the spectra modulo `J` form an exact Mayer–Vietoris sequence. Let `v` be value
-maps as in `ResiduePlace.antitoneFamily_map_locConstClass_eq_of_baseRingMap_eq`, and suppose that
-over `B₃` the comparison map `locConstClass` is injective in degree `0` and surjective in every
-degree below `n`. Then a class `y` of degree `n` (coefficients `Λ`) over `B` whose restrictions to
-`B₁` and `B₂` come from locally constant functions comes from a locally constant function itself. -/
-private lemma New.Variety.ResiduePlace.exists_locConstClass_eq_of_isSplitting
-    {v : ∀ B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom),
-      (placesFiniteOn z J B.val).toFunctor ⟶ reprBy ((quotientFunctor J _).obj B)}
-    (hv : ∀ (B : absIntegrallyClosedSubrings
-      ((algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom))
-      {C : CommRingCat} {x : (placesFiniteOn z J B.val).toFunctor.obj C} {t : P} {c : C}
-      (ht : algebraMap P q.ResidueField t ∈ B.val), (t, c) ∈ placeGraph x.val.val →
-        baseRingMap (B := C) (v B) x
-          (Ideal.Quotient.mk _ ⟨algebraMap P q.ResidueField t, ht⟩) = c)
-    (h_anti : Antitone fun B : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom) ↦ placesFiniteOn z J B.val)
-    {B B₁ B₂ B₃ : absIntegrallyClosedSubrings ((algebraMap P q.ResidueField).comp
-      (baseRingMap s ξ).hom)}
-    (h_split : IsSplitting B B₁ B₂ B₃)
-    (h_exact : IsMayerVietorisExact (quotientFunctor J _ ⋙ locConstSpec Λ)
-      h_split.lt_left.le h_split.lt_right.le h_split.left_le h_split.right_le)
-    (n : ℕ) (h_inj₃ : Function.Injective (locConstClass (Λ := Λ) (mapOnTests (v B₃)) 0))
-    (h_surj₃ : ∀ m < n, Function.Surjective (locConstClass (Λ := Λ) (mapOnTests (v B₃)) m))
-    (y : (TestCohomology.antitoneFamily h_anti Λ n).obj B)
-    (h_above₁ : ∃ f₁ : (quotientFunctor J _ ⋙ locConstSpec Λ).obj B₁,
-      locConstClass (mapOnTests (v B₁)) n f₁ =
-        (TestCohomology.antitoneFamily h_anti Λ n).map h_split.lt_left.le.hom y)
-    (h_above₂ : ∃ f₂ : (quotientFunctor J _ ⋙ locConstSpec Λ).obj B₂,
-      locConstClass (mapOnTests (v B₂)) n f₂ =
-        (TestCohomology.antitoneFamily h_anti Λ n).map h_split.lt_right.le.hom y) :
-    ∃ f : (quotientFunctor J _ ⋙ locConstSpec Λ).obj B,
-      locConstClass (mapOnTests (v B)) n f = y := by
-  -- Find `f` over `B` with the same classes over `B₁` and `B₂` as the restrictions of `y`; then
-  -- `y` and the class of `f` are equal by Mayer–Vietoris for the places finite on `B₁`, `B₂`.
-  let γ : D →+* q.ResidueField := (algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom
-  let LC : absIntegrallyClosedSubrings γ ⥤ Ab := quotientFunctor J γ ⋙ locConstSpec Λ
-  -- `σ B'` is the value map `v B'` on test rings.
-  let σ (B' : absIntegrallyClosedSubrings γ) := mapOnTests (v B')
-  let Coh := TestCohomology.antitoneFamily h_anti Λ
-  have h_nat (m : ℕ) {B' B'' : absIntegrallyClosedSubrings γ} (l : B' ⟶ B'') (f : LC.obj B') :
-      (Coh m).map l (locConstClass (σ B') m f) = locConstClass (σ B'') m (LC.map l f) :=
-    antitoneFamily_map_locConstClass_eq_of_baseRingMap_eq hv h_anti m l f
-  obtain ⟨l₁, l₂⟩ : B ≤ B₁ ∧ B ≤ B₂ := ⟨h_split.lt_left.le, h_split.lt_right.le⟩
-  obtain ⟨h₁, h₂⟩ : B₁ ≤ B₃ ∧ B₂ ≤ B₃ := ⟨h_split.left_le, h_split.right_le⟩
-  obtain ⟨f₁, hf₁⟩ := h_above₁
-  obtain ⟨f₂, hf₂⟩ := h_above₂
-  -- A function `f` over `B` with the same classes as `f₁`, `f₂`: in degree `0` they agree over `B₃`
-  -- by injectivity and glue; in higher degree `locConstClass` is zero.
-  obtain ⟨f, hff₁, hff₂⟩ : ∃ f : LC.obj B,
-      locConstClass (σ B₁) n (LC.map l₁.hom f) = locConstClass (σ B₁) n f₁ ∧
-        locConstClass (σ B₂) n (LC.map l₂.hom f) = locConstClass (σ B₂) n f₂ := by
-    cases n
-    · -- Both functions have the class of the restriction of `y` to `B₃`.
-      have h_agree : LC.map h₁.hom f₁ = LC.map h₂.hom f₂ := by
-        apply h_inj₃
-        calc locConstClass (σ B₃) 0 (LC.map h₁.hom f₁)
-            = (Coh 0).map h₁.hom (locConstClass (σ B₁) 0 f₁) := (h_nat 0 h₁.hom f₁).symm
-          _ = (Coh 0).map h₂.hom (locConstClass (σ B₂) 0 f₂) := by
-            rw [hf₁, hf₂, ← Functor.map_comp_apply, ← Functor.map_comp_apply]
-            rfl
-          _ = locConstClass (σ B₃) 0 (LC.map h₂.hom f₂) := h_nat 0 h₂.hom f₂
-      exact (h_exact.exists_glue f₁ f₂ h_agree).imp fun f hf ↦
-        ⟨congrArg _ hf.left, congrArg _ hf.right⟩
-    · exact ⟨0, rfl, rfl⟩
-  -- The class of `f` and `y` have the same restrictions, so they are equal by Mayer–Vietoris.
-  have h_res₁ : (Coh n).map l₁.hom (locConstClass (σ B) n f) = (Coh n).map l₁.hom y :=
-    (h_nat n l₁.hom f).trans (hff₁.trans hf₁)
-  have h_res₂ : (Coh n).map l₂.hom (locConstClass (σ B) n f) = (Coh n).map l₂.hom y :=
-    (h_nat n l₂.hom f).trans (hff₂.trans hf₂)
-  refine ⟨f, TestCohomology.mayer_vietoris_injective (h_anti l₁) (h_anti l₂) ?_ n
-    (T := placesFiniteOn z J B₃.val) ?_ ?_ (Prod.ext h_res₁ h_res₂)⟩
-  · exact isCohomDense_placesFiniteOn_sup_of_isSplitting h_split
-  · exact placesFiniteOn_eq_inf_of_isSplitting h_split
-  · -- In lower degrees a class over `B₃` comes from a function, which is a difference.
-    refine fun m hm ↦ (h_surj₃ m hm).forall.mpr fun g ↦ ?_
-    obtain ⟨g₁, g₂, hg⟩ : ∃ (g₁ : LC.obj B₁) (g₂ : LC.obj B₂),
-        g = LC.map h₁.hom g₁ - LC.map h₂.hom g₂ := h_exact.exists_eq_sub g
-    refine ⟨locConstClass (σ B₁) m g₁, locConstClass (σ B₂) m g₂, ?_⟩
-    rw [hg, _root_.map_sub, ← h_nat, ← h_nat]
-    rfl
-
-end ValueMaps
+  swap
+  · have h_comp : π ≫ baseRingMap v (T.map φ.down x₀) = π ≫ φ.down :=
+      h_val (φ := π ≫ φ.down) rfl
+    exact down_injective (hom_ext (ringHom_ext (congrArg Hom.hom h_comp)))
+  -- Compare in each local ring of `C`, where `x` is given by `j` and some `φ`.
+  let loc (m : MaximalSpectrum C.obj) :
+      CommRingCat.of C.obj ⟶ CommRingCat.of (Localization.AtPrime m.asIdeal) :=
+    ofHom (algebraMap C.obj (Localization.AtPrime m.asIdeal))
+  refine isProperOver_placeSpace.ext_of_jointly_injective loc
+    (fun c hc ↦ eq_zero_of_localization c fun m hm ↦ hc ⟨m, hm⟩) fun m ↦ ?_
+  obtain ⟨φ, hφ⟩ : ∃ φ, (T.map (loc m) x).val.val = ⟨⟦j.projHom ≫ φ⟧⟩ :=
+    exists_eq_projHom_comp_of_le_finiteValueSubring (T.map (loc m) x).val.prop
+      j.valuationSubring j.base_mem (T.map (loc m) x).prop.right
+  -- The rewrite is done in `hφ` rather than in the goal, where it is slow to elaborate.
+  rw [← h_val hφ, baseRingMap_map] at hφ
+  exact hφ.symm
 
 /-- Let `D` be absolutely integrally closed, with one of any two elements dividing the other and the
 prime `ℓ` invertible in `D`. Let `s : Y → h_D`, let `z` be a valuative lift of `ξ ∈ Y(P)`, let `q`
@@ -466,45 +283,39 @@ lemma New.Variety.ResiduePlace.exists_isAcyclicOver_placesFiniteOn {ℓ : ℕ} [
   have h_alg : ∀ (q : Ideal P) [q.IsPrime], IsAlgClosed q.ResidueField := z.isAlgClosed_residueField
   let γ : D →+* q.ResidueField := (algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom
   let LC : absIntegrallyClosedSubrings γ ⥤ Ab := quotientFunctor J γ ⋙ locConstSpec ⟨ZMod ℓ⟩
-  -- `v B` is the value map of `B`, with its values at residues given by `hv`.
-  let v (B : absIntegrallyClosedSubrings γ) := valueMap z J B
-  have hv : ∀ (B : absIntegrallyClosedSubrings γ) {C : CommRingCat}
-    {x : (placesFiniteOn z J B.val).toFunctor.obj C}
-      {t : P} {c : C} (ht : algebraMap P q.ResidueField t ∈ B.val), (t, c) ∈ placeGraph x.val.val →
-      baseRingMap (B := C) (v B) x (Ideal.Quotient.mk _ ⟨algebraMap P q.ResidueField t, ht⟩) = c :=
-    baseRingMap_valueMap_mk
   -- `σ B` is stated on `testIncl ⋙ _`, the form in which `Coh` and the lemmas used below have it;
   -- with the form `(_.whisker testIncl).toFunctor` of the statement, the kernel has to identify the
   -- cohomology groups of the two forms again and again, which is slow.
   let σ (B : absIntegrallyClosedSubrings γ) :
       testIncl ⋙ (placesFiniteOn z J B.val).toFunctor ⟶
         testIncl ⋙ reprBy ((quotientFunctor J γ).obj B) :=
-    mapOnTests (v B)
+    mapOnTests (valueMap z J B)
   suffices h_acyclic : IsAcyclicOver (σ B) ⟨ZMod ℓ⟩ from ⟨σ B, h_acyclic⟩
   have h_anti : Antitone fun B : absIntegrallyClosedSubrings γ ↦ placesFiniteOn z J B.val :=
-    -- A place that is finite on a ring is finite on every smaller ring.
-    antitone_const.inf fun B B' hBB' _C _y hy ↦ (show B.val ≤ B'.val from hBB').trans hy
+    antitone_const.inf fun B B' hBB' _ _ hy ↦ (show B.val ≤ B'.val from hBB').trans hy
   -- `Coh n` sends `B` to the cohomology in degree `n` of the places for `B`.
   let Coh := TestCohomology.antitoneFamily h_anti ⟨ZMod ℓ⟩
   have h_nat (n : ℕ) {B B' : absIntegrallyClosedSubrings γ} (l : B ⟶ B') (f : LC.obj B) :
-      (Coh n).map l (locConstClass (σ B) n f) = locConstClass (σ B') n (LC.map l f) :=
-    antitoneFamily_map_locConstClass_eq_of_baseRingMap_eq hv h_anti n l f
-  -- Both sides turn the union of a directed family into a colimit, so by
-  -- downward induction (`injective_of_isFilteredColimit_of_map_eq_zero` and
-  -- `surjective_of_isFilteredColimit_of_exists_lift`) it is enough to treat an element over `B`
-  -- whose images over all strictly larger rings vanish (injectivity) or lift (surjectivity).
+      (Coh n).map l (locConstClass (σ B) n f) = locConstClass (σ B') n (LC.map l f) := by
+    refine map_locConstClass (fun _ x ↦ ?_) n
+    rw [Functor.comp_map, ← Functor.map_comp_apply]
+    congr 3 with ⟨y, hy⟩
+    obtain ⟨w, rfl⟩ := x.prop.right (l.le hy)
+    exact (baseRingMap_valueMap_mk B (x := (homOfLe (h_anti l.le)).app _ x) hy w.prop).trans
+      (baseRingMap_valueMap_mk B' (x := x) (l.le hy) w.prop).symm
+  -- Both sides turn the union of a directed family into a colimit (the cocone point is the
+  -- union `hm_pt`), enabling downward induction by Zorn's lemma.
   have h_colim (n : ℕ) {c : Set (absIntegrallyClosedSubrings γ)} [IsDirectedOrder c]
-    [hne : Nonempty c] :
+      [hne : Nonempty c] :
       ∃ m : Limits.Cocone (Subtype.mono_coe fun B : absIntegrallyClosedSubrings γ ↦ B ∈ c).functor,
         IsFilteredColimit (LC.mapCocone m) ∧ IsFilteredColimit ((Coh n).mapCocone m) := by
-    -- The cocone point is the union of `c` (`hm_pt`).
     obtain ⟨m, hm_pt, hm_colim⟩ := exists_cocone_iSup (Λ := ⟨ZMod ℓ⟩) J c
     refine ⟨m, hm_colim, (isProperOver_placeSpace.isCohomContinuous.of_isRelAffine
       (isRelAffine_killingPlaces q)).isFilteredColimit_antitoneFamily h_anti
       (fun _ ↦ isRelAffine_placesFiniteOn) fun hx ↦ ?_⟩
-    exact ⟨(hx hne.some).1, hm_pt.trans_le (iSup_le fun B ↦ (hx B).2)⟩
+    exact ⟨(hx hne.some).left, hm_pt.trans_le (iSup_le fun B ↦ (hx B).right)⟩
   have h_inj : ∀ B : absIntegrallyClosedSubrings γ,
-    Function.Injective (locConstClass (Λ := ⟨ZMod ℓ⟩) (σ B) 0) := by
+      Function.Injective (locConstClass (Λ := ⟨ZMod ℓ⟩) (σ B) 0) := by
     -- Stated for abstract groups, so that the kernel need not unfold the group structure of `Ext`.
     have eq_zero_of_injective {M N : Type _} [AddCommGroup M] [AddCommGroup N] {g : M →+ N}
         (hg : Function.Injective g) (x : M) (hx : g x = 0) : x = 0 :=
@@ -512,10 +323,9 @@ lemma New.Variety.ResiduePlace.exists_isAcyclicOver_placesFiniteOn {ℓ : ℕ} [
     refine injective_of_isFilteredColimit_of_map_eq_zero (h_nat 0) (h_colim 0)
       fun B f hf h_above ↦ ?_
     by_cases hB : ∀ x : q.ResidueField, x ∈ B.val ∨ x⁻¹ ∈ B.val
-    · obtain ⟨h_inj_B, -⟩ : IsAcyclicOver (σ B) ⟨ZMod ℓ⟩ :=
-        isAcyclicOver_of_mem_or_inv_mem hB (hv B)
-      exact eq_zero_of_injective h_inj_B f hf
-    · obtain ⟨B₁, B₂, B₃, h_split, h_exact⟩ := exists_isSplitting_isMayerVietorisExact J γ hℓ B hB
+    · exact eq_zero_of_injective
+        (isAcyclicOver_of_mem_or_inv_mem hB (baseRingMap_valueMap_mk B)).left f hf
+    · obtain ⟨B₁, B₂, _, h_split, h_exact⟩ := exists_isSplitting_isMayerVietorisExact J γ hℓ B hB
       exact h_exact.eq_zero f (h_above B₁ h_split.lt_left) (h_above B₂ h_split.lt_right)
   -- Surjectivity, by strong induction on the degree.
   refine ⟨h_inj B, fun n ↦ ?_⟩
@@ -523,11 +333,41 @@ lemma New.Variety.ResiduePlace.exists_isAcyclicOver_placesFiniteOn {ℓ : ℕ} [
   refine surjective_of_isFilteredColimit_of_exists_lift (h_nat n) (h_colim n)
     (fun B y h_above ↦ ?_) B
   by_cases hB : ∀ x : q.ResidueField, x ∈ B.val ∨ x⁻¹ ∈ B.val
-  · obtain ⟨-, h_surj_B⟩ : IsAcyclicOver (σ B) ⟨ZMod ℓ⟩ := isAcyclicOver_of_mem_or_inv_mem hB (hv B)
-    exact h_surj_B n y
+  · exact (isAcyclicOver_of_mem_or_inv_mem hB (baseRingMap_valueMap_mk B)).right n y
   · obtain ⟨B₁, B₂, B₃, h_split, h_exact⟩ := exists_isSplitting_isMayerVietorisExact J γ hℓ B hB
-    exact exists_locConstClass_eq_of_isSplitting hv h_anti h_split h_exact n (h_inj B₃)
-      (fun m hm ↦ ih m hm B₃) y (h_above B₁ h_split.lt_left) (h_above B₂ h_split.lt_right)
+    obtain ⟨l₁, l₂, h₁, h₂⟩ : B ≤ B₁ ∧ B ≤ B₂ ∧ B₁ ≤ B₃ ∧ B₂ ≤ B₃ :=
+      ⟨h_split.lt_left.le, h_split.lt_right.le, h_split.left_le, h_split.right_le⟩
+    obtain ⟨f₁, hf₁⟩ := h_above B₁ h_split.lt_left
+    obtain ⟨f₂, hf₂⟩ := h_above B₂ h_split.lt_right
+    -- Glue `f₁`, `f₂` in degree `0` (where they agree over `B₃`); take `0` in positive degree.
+    obtain ⟨f, hff₁, hff₂⟩ : ∃ f : LC.obj B,
+        locConstClass (σ B₁) n (LC.map l₁.hom f) = locConstClass (σ B₁) n f₁ ∧
+          locConstClass (σ B₂) n (LC.map l₂.hom f) = locConstClass (σ B₂) n f₂ := by
+      cases n
+      · have h_agree : LC.map h₁.hom f₁ = LC.map h₂.hom f₂ := h_inj B₃ <|
+          calc locConstClass (σ B₃) 0 (LC.map h₁.hom f₁)
+              = (Coh 0).map h₁.hom (locConstClass (σ B₁) 0 f₁) := (h_nat 0 h₁.hom f₁).symm
+            _ = (Coh 0).map h₂.hom (locConstClass (σ B₂) 0 f₂) := by
+                rw [hf₁, hf₂, ← Functor.map_comp_apply, ← Functor.map_comp_apply]; rfl
+            _ = locConstClass (σ B₃) 0 (LC.map h₂.hom f₂) := h_nat 0 h₂.hom f₂
+        exact (h_exact.exists_glue f₁ f₂ h_agree).imp fun _ hf ↦
+          ⟨congrArg _ hf.left, congrArg _ hf.right⟩
+      · exact ⟨0, rfl, rfl⟩
+    -- The class of `f` and `y` have the same restrictions, so they are equal by Mayer–Vietoris.
+    refine ⟨f, TestCohomology.mayer_vietoris_injective (h_anti l₁) (h_anti l₂) ?_ n
+      (T := placesFiniteOn z J B₃.val)
+      (by ext; simp [placesFiniteOn, h_split.eq_sup, and_assoc, and_left_comm]) ?_
+      (Prod.ext ((h_nat n l₁.hom f).trans (hff₁.trans hf₁))
+        ((h_nat n l₂.hom f).trans (hff₂.trans hf₂)))⟩
+    · refine .of_affine_cover (V := fun b ↦
+          (placesFiniteOn z J (cond b B₁.val B₂.val)).preimage (placesFiniteOn z J B.val).ι)
+        (fun _ ↦ isRelAffine_placesFiniteOn.preimage _) fun _ x ↦ ?_
+      obtain hx | hx := h_split.le_or_le ⟨_, finiteValueSubring_mem_or_inv_mem _⟩ x.prop.right
+      exacts [⟨true, by tauto, x.prop.left, hx⟩, ⟨false, by tauto, x.prop.left, hx⟩]
+    · refine fun m hm ↦ (ih m hm B₃).forall.mpr fun g ↦ ?_
+      obtain ⟨g₁, g₂, hg⟩ := h_exact.exists_eq_sub g
+      refine ⟨locConstClass (σ B₁) m g₁, locConstClass (σ B₂) m g₂, ?_⟩
+      rw [hg, _root_.map_sub, ← h_nat, ← h_nat]; rfl
 
 /-- Proper base change for the places `killingPlaces z q` that vanish on a maximal ideal `q` of `P`.
 Let `A` be an absolutely integrally closed local domain in which of any two elements one divides the
@@ -543,41 +383,35 @@ lemma New.Variety.ResiduePlace.isTestCohomEquiv_closedFiber_killingPlaces {ℓ :
     IsTestCohomEquiv ⟨ZMod ℓ⟩
       ((killingPlaces z q).fromPreimage
         ((zeroPoints s (maximalIdeal A)).preimage (placeSpaceMap z)).ι) := by
-  -- Apply `exists_isAcyclicOver_placesFiniteOn` to the image `B` of `A` in the residue field, on
-  -- which every place is finite, with `J = ⊥` (all places) and `J` the maximal ideal (the closed
-  -- fibre).
+  -- Apply `exists_isAcyclicOver_placesFiniteOn` to the image `B` of `A` in `κ(q)`, for `J = ⊥` and
+  -- `J = maximalIdeal A`.
   let γ := (algebraMap P q.ResidueField).comp (baseRingMap s ξ).hom
-  have h_surj : Function.Surjective γ.rangeRestrict := γ.rangeRestrict_surjective
-  let B : absIntegrallyClosedSubrings γ := ⟨γ.range, le_rfl, .of_surjective h_surj⟩
+  let B : absIntegrallyClosedSubrings γ :=
+    ⟨γ.range, le_rfl, .of_surjective γ.rangeRestrict_surjective⟩
   let T (J : Ideal A) := (placesFiniteOn z J B.val).whisker testIncl
   have h_all (C : CommRingCat) (x : (killingPlaces z q).toFunctor.obj C) :
       x ∈ placesFiniteOn z ⊥ B.val C :=
     ⟨by simp [zeroPoints], fun _ ⟨d, hd⟩ ↦ ⟨⟨_, baseRingMap_mem_placeGraph d⟩, hd⟩⟩
-  obtain ⟨σ_bot, h_bot⟩ := exists_isAcyclicOver_placesFiniteOn z hℓ ⊥ B
-  obtain ⟨σ_max, h_max⟩ := exists_isAcyclicOver_placesFiniteOn z hℓ (maximalIdeal A) B
+  obtain ⟨_, h_bot⟩ := exists_isAcyclicOver_placesFiniteOn z hℓ ⊥ B
+  obtain ⟨_, h_max⟩ := exists_isAcyclicOver_placesFiniteOn z hℓ (maximalIdeal A) B
   -- Both quotients of `B` are domains, so both functors have the cohomology of a point.
-  have h_prime_bot : (extendedIdeal ⊥ γ B).IsPrime := by simp [isPrime_bot]
-  have h_prime_max : (extendedIdeal (maximalIdeal A) γ B).IsPrime :=
-    map_isPrime_of_surjective h_surj (le_maximalIdeal (ker_ne_top _))
-  have h_le : T (maximalIdeal A) ≤ T ⊥ := fun _C x _hx ↦ h_all _ x
-  have h_eqv : IsCohomEquiv (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (homOfLe h_le)) :=
-    h_bot.isCohomEquiv (isDomain _) (isDomain _) _ h_max
-  have h_top : IsCohomEquiv (locConstCoeff ⟨ZMod ℓ⟩) (freeAb.map (T ⊥).ι) :=
-    IsCohomDense.isCohomEquiv (.of_top_le fun _C x _hx ↦ h_all _ x)
+  have : (extendedIdeal ⊥ γ B).IsPrime := by simp [isPrime_bot]
+  have : (extendedIdeal (maximalIdeal A) γ B).IsPrime :=
+    map_isPrime_of_surjective γ.rangeRestrict_surjective (le_maximalIdeal (ker_ne_top _))
+  have h_le : T (maximalIdeal A) ≤ T ⊥ := fun _ x _ ↦ h_all _ x
   -- The map in question is injective with image `T (maximalIdeal A)`.
-  refine (isCohomEquiv_iff_range (hg := mono_of_app_injective ?_) (U := T (maximalIdeal A)) ?_).mpr
-    ?_
-  · -- A point of the preimage is a place with a property, so the inclusion is injective.
-    rintro _ ⟨⟨_⟩⟩ ⟨⟨_⟩⟩ ⟨⟩
-    rfl
+  refine (isCohomEquiv_iff_range (hg := mono_of_app_injective ?_)
+    (U := T (maximalIdeal A)) ?_).mpr ?_
+  · rintro _ ⟨⟨_⟩⟩ ⟨⟨_⟩⟩ ⟨⟩; rfl
   · ext C x
     constructor
     · rintro ⟨y, rfl⟩
       exact ⟨y.val.prop, (h_all _ _).right⟩
     · rintro ⟨hx_zero, -⟩
       exact ⟨⟨⟨x.val, hx_zero⟩, x.prop⟩, rfl⟩
-  · -- The inclusion of `T (maximalIdeal A)` factors through `T ⊥`; both factors are equivalences.
-    simpa only [← homOfLe_ι h_le, Functor.map_comp] using h_eqv.comp_iff.mpr h_top
+  · simpa only [← homOfLe_ι h_le, Functor.map_comp] using
+      (h_bot.isCohomEquiv (isDomain _) (isDomain _) _ h_max).comp_iff.mpr
+        (IsCohomDense.isCohomEquiv (.of_top_le fun _ x _ ↦ h_all _ x))
 
 /-- The places that give the value `0` to all elements of an ideal behave like its zero locus. -/
 lemma New.Variety.ResiduePlace.isZeroLocusFamily_killingPlaces {Y : PointFunctor}
@@ -603,34 +437,32 @@ lemma New.Variety.ResiduePlace.isTestCohomEquiv_closedFiber {ℓ : ℕ} [ThePrim
     [IsAbsIntegrallyClosedLocal A] [PreValuationRing A] {Y : PointFunctor} {P : CommRingCat}
     {s : Y ⟶ reprBy ⟨A⟩} {ξ : Y.obj P} (z : ValuativeLift s ξ) (hℓ : IsUnit (ℓ : A)) :
     IsTestCohomEquiv ⟨ZMod ℓ⟩ ((zeroPoints s (maximalIdeal A)).preimage (placeSpaceMap z)).ι := by
-  have hW : IsProperOver (placeSpaceMap z ≫ s) := isProperOver_placeSpace
-  -- The family `killingPlaces z a` behaves like zero loci, which leaves two claims: the pieces for
-  -- `e` and `1 - e`, `e` idempotent, are dense together, and the result holds over each proper
-  -- ideal `q` that contains `e` or `1 - e` for every such `e`.
+  -- The family `killingPlaces z a` behaves like zero loci, which leaves two claims: the pieces
+  -- for `e` and `1 - e`, `e` idempotent, are dense together, and the result holds over each
+  -- proper ideal `q` that contains `e` or `1 - e` for every such `e`.
   refine IsTestCohomEquiv.of_connected
-    (hW.isCohomContinuous.of_isRelAffine ((isRelAffine_zeroPoints s _).preimage _))
-    hW.isCohomContinuous _ (isZeroLocusFamily_killingPlaces z) (fun e he ↦ ?_) fun q hq_ne hq ↦ ?_
-  · -- A point in a valuation ring is given by a place `j`, whose prime contains `e` or `1 - e`.
-    refine .of_affine_cover (V := fun b ↦ killingPlaces z (span {cond b e (1 - e)}))
+    (isProperOver_placeSpace.isCohomContinuous.of_isRelAffine
+      ((isRelAffine_zeroPoints s _).preimage _))
+    isProperOver_placeSpace.isCohomContinuous _ (isZeroLocusFamily_killingPlaces z)
+    (fun e he ↦ ?_) fun q hq_ne hq ↦ ?_
+  · refine .of_affine_cover (V := fun b ↦ killingPlaces z (span {cond b e (1 - e)}))
       (fun _ ↦ isRelAffine_killingPlaces _) fun O x ↦ ?_
-    obtain ⟨j, φ, -, hx⟩ := exists_isLocalHom_eq_projHom_comp x
-    have hxj : x ∈ killingPlaces z j.prime.asIdeal ⟨O⟩ := by
-      rw [hx j.valuationSubring j.base_mem le_rfl]
-      exact projHom_mem_killingPlaces j _
+    obtain ⟨j, _, -, hx⟩ := exists_isLocalHom_eq_projHom_comp x
+    have hxj : x ∈ killingPlaces z j.prime.asIdeal ⟨O⟩ :=
+      hx j.valuationSubring j.base_mem le_rfl ▸ projHom_mem_killingPlaces j _
     obtain ⟨b, hle⟩ : ∃ b : Bool, span {cond b e (1 - e)} ≤ j.prime.asIdeal := by
       simpa [or_comm] using j.prime.isPrime.mem_or_mem (x := e) (y := 1 - e) (by simp [he])
     refine ⟨b, ?_, fun t ht ↦ hxj t (hle ht)⟩
     -- The piece for `b` is one of the two pieces of the union.
     cases b
-    exacts [fun _C _x hx ↦ Or.inr hx, fun _C _x hx ↦ Or.inl hx]
-  · -- Such a `q` is maximal: for `t ∉ q` and `y * t * t = t`, the idempotent `y * t` is not in `q`,
-    -- so `1 - y * t ∈ q`, and an ideal that contains `q` and `t` contains `1`.
-    have hq_max : q.IsMaximal := by
+    exacts [fun _ _ hx ↦ Or.inr hx, fun _ _ hx ↦ Or.inl hx]
+  · have hq_max : q.IsMaximal := by
       refine isMaximal_iff.mpr ⟨q.ne_top_iff_one.mp hq_ne, fun J t hqJ htq htJ ↦ ?_⟩
       obtain ⟨y, hy⟩ : ∃ y : P, y * t * t = t := z.absolutely_flat t
-      have h_notMem : y * t ∉ q := fun h ↦ htq (by simpa [hy] using q.mul_mem_right t h)
-      have h_idem : IsIdempotentElem (y * t) := by grind [IsIdempotentElem]
-      have h_compl : 1 - y * t ∈ q := (hq (y * t) h_idem).resolve_left h_notMem
+      -- `y * t` is idempotent, so `1 - y * t ∈ q`, and an ideal with `q` and `t` contains `1`.
+      have h_compl : 1 - y * t ∈ q :=
+        (hq (y * t) (by grind [IsIdempotentElem])).resolve_left
+          fun h ↦ htq (by simpa [hy] using q.mul_mem_right t h)
       simpa using J.add_mem (hqJ h_compl) (J.mul_mem_left y htJ)
     exact isTestCohomEquiv_closedFiber_killingPlaces z hℓ q
 
@@ -651,26 +483,25 @@ lemma New.Variety.IsProperOver.proper_base_change {ℓ : ℕ} [ThePrime ℓ] {Y 
   induction r generalizing Y with
   | zero =>
     -- Bijectivity up to degree `0` says nothing: no `n` has `2 * n < 0`.
-    exact fun n ↦ ⟨fun h ↦ absurd h (Nat.not_lt_zero _), fun h ↦ absurd h (Nat.not_lt_zero _)⟩
+    exact fun _ ↦ ⟨fun h ↦ absurd h (Nat.not_lt_zero _), fun h ↦ absurd h (Nat.not_lt_zero _)⟩
   | succ r ih =>
     -- The space of places of `z` has dense image in `Y`; `bijectiveUpTo_of_cech_pred` needs the
     -- claim for it in all degrees and the induction hypothesis for its fibre powers over `Y`.
-    obtain ⟨P, ξ, z, hdense⟩ := hs.exists_valuativeLift_hasCohomDenseImage (Λ := ⟨ZMod ℓ⟩)
-    have hW : IsProperOver (placeSpaceMap z ≫ s) := isProperOver_placeSpace
+    obtain ⟨_, _, z, hdense⟩ := hs.exists_valuativeLift_hasCohomDenseImage (Λ := ⟨ZMod ℓ⟩)
     refine bijectiveUpTo_of_cech_pred (p' := mapOnTests (fromPreimage _ (placeSpaceMap z)))
-      (v := mapOnTests (ι _)) rfl hdense.isCohomEquiv
-      (hdense.of_preimage_le (mapOnTests (ι _)) ?_).isCohomEquiv ?_ fun m ↦ ?_
-    · -- The cover stays dense on the closed fibre.
+      (v := mapOnTests (ι _)) rfl hdense.isCohomEquiv ?_ ?_ fun m ↦ ?_
+    · refine (hdense.of_preimage_le (mapOnTests (ι _)) ?_).isCohomEquiv
       rintro _ ⟨_, hy⟩ ⟨x, ⟨⟩⟩
       exact ⟨⟨x, hy⟩, rfl⟩
     · exact (isTestCohomEquiv_closedFiber z hℓ).bij
-    -- The fibre powers of the cover are proper, so the induction hypothesis applies to them.
-    -- `s'` is the structure map to `h_A` of the `m`-th fibre power of the cover.
+    -- `s'` is the structure map to `h_A` of the `m`-th fibre power of the cover, which is proper.
     let s' := cech.proj (placeSpaceMap z) m 0 ≫ placeSpaceMap z ≫ s
     have h_proper_pow : IsProperOver s' := by
       induction m with
-      | zero => exact hW.of_isPullback hW (.of_vert_isIso (g := 𝟙 _) ⟨rfl⟩) hW (𝟙 _) rfl
-      | succ m hm => exact hW.of_isPullback hs isPullback_cech hm (𝟙 _) rfl
+      | zero =>
+        exact isProperOver_placeSpace.of_isPullback isProperOver_placeSpace
+          (.of_vert_isIso (g := 𝟙 _) ⟨rfl⟩) isProperOver_placeSpace (𝟙 _) rfl
+      | succ m hm => exact isProperOver_placeSpace.of_isPullback hs isPullback_cech hm (𝟙 _) rfl
     -- The closed fibre of a fibre power is the fibre power of the cover of the closed fibre.
     refine (bijectiveUpTo_congr (p := 𝟙 _)
         (((zeroPoints s' (maximalIdeal A)).whisker testIncl).lift_ι _ ?_) (.of_isIso _)
@@ -679,7 +510,7 @@ lemma New.Variety.IsProperOver.proper_base_change {ℓ : ℕ} [ThePrime ℓ] {Y 
       exact (x.val 0).prop
     · refine Function.bijective_iff_has_inverse.mpr ⟨fun x ↦
         ⟨fun i ↦ ⟨x.val.val i, ?_⟩, fun i j ↦ Subtype.ext (x.val.prop i j)⟩,
-          fun _ ↦ rfl, fun _ ↦ rfl⟩
+        fun _ ↦ rfl, fun _ ↦ rfl⟩
       -- All coordinates of `x` have the same image in `Y`, and it lies in the closed fibre.
       have h_zero : (placeSpaceMap z).app _ (x.val.val 0) ∈ (zeroPoints s (maximalIdeal A)).obj _ :=
         x.prop
@@ -737,29 +568,21 @@ lemma IsProperOver.injective_map_residue {ℓ n : ℕ} {W : CommRingCat ⥤ Type
     Function.Injective
       (TestCohomology.map ⟨ZMod ℓ⟩ (baseChangeTransition s (ofHom (residue A)) (a := a) rfl)
         n) := by
-  -- By proper base change, restriction to the closed fibre `X₀` of `W_A` (the points that kill the
-  -- maximal ideal) is injective, and the inclusion of `X₀` factors through `res : W_κ ⟶ W_A`.
+  -- The inclusion of the closed fibre `X₀` of `W_A` factors through the residue fibre and is a
+  -- cohomology equivalence by `proper_base_change`.
   let pr : baseChangeOf s a ⟶ reprBy (of A) := fiberProd.snd s (reprMap a)
   let X₀ : Subfunctor (baseChangeOf s a) := zeroPoints pr (maximalIdeal A)
-  let res : baseChangeOf s (a ≫ ofHom (residue A)) ⟶ baseChangeOf s a :=
-    baseChangeTransition s (ofHom (residue A)) rfl
-  have h_proper : IsProperOver pr := hs.baseChange a
-  have hℓ_unit : IsUnit (ℓ : A) := by simpa using hℓ.map a.hom
-  have h_equiv : IsTestCohomEquiv ⟨ZMod ℓ⟩ X₀.ι := h_proper.proper_base_change hℓ_unit
-  have h_inj : Function.Injective (map ⟨ZMod ℓ⟩ X₀.ι n) := (h_equiv n).injective
   -- The ring map `A → B` of a point of `X₀` kills the maximal ideal, so it factors through `κ`.
-  let fromResidue {B : CommRingCat} (y : X₀.toFunctor.obj B) : of (ResidueField A) ⟶ B :=
-    ofHom (Ideal.Quotient.lift (maximalIdeal A) (baseRingMap pr y.val).hom y.property)
-  -- `w` keeps the point of `W` and replaces the ring map `A → B` by `fromResidue y`.
   let w : X₀.toFunctor ⟶ baseChangeOf s (a ≫ ofHom (residue A)) :=
     { app B := ↾fun y ↦
-        ⟨((fiberProd.fst s (reprMap a)).app B y.val, ⟨fromResidue y⟩), y.val.property⟩
-      naturality B B' f := by
-        -- Both sides have the same point of `W`, and their ring maps agree on each residue class.
-        ext y
-        exact baseChangeOf.ext rfl (residue_surjective.forall.mpr fun _ ↦ rfl) }
-  have h_fac : w ≫ res = X₀.ι := rfl
-  refine .of_comp (f := map ⟨ZMod ℓ⟩ w n) fun x y hxy ↦ h_inj ?_
+        ⟨((fiberProd.fst s (reprMap a)).app B y.val,
+          ⟨ofHom (Ideal.Quotient.lift (maximalIdeal A) (baseRingMap pr y.val).hom y.property)⟩),
+          y.val.property⟩
+      naturality _ _ _ := by
+        ext y; exact baseChangeOf.ext rfl (residue_surjective.forall.mpr fun _ ↦ rfl) }
+  refine .of_comp (f := map ⟨ZMod ℓ⟩ w n) fun x y hxy ↦
+    ((hs.baseChange a).proper_base_change (by simpa using hℓ.map a.hom) n).injective ?_
+  have h_fac : w ≫ baseChangeTransition s (ofHom (residue A)) (a := a) rfl = X₀.ι := rfl
   rwa [← h_fac, map_comp, map_comp]
 
 variable {ℓ n : ℕ} {W : CommRingCat ⥤ Type 1} [ThePrime ℓ] {R S T : CommRingCat} {s : W ⟶ reprBy R}
@@ -782,93 +605,71 @@ lemma IsProperOver.isTestCohomEquiv_field_extension (hs : IsProperOver s) (hℓ 
   algebraize [φ.hom]
   let hS_field : Field S := hS.toField
   let hT_field : Field T := hT.toField
-  have hS_closed : IsAlgClosed S := hS_aic.isAlgClosed
-  have hT_closed : IsAlgClosed T := hT_aic.isAlgClosed
+  have : IsAlgClosed S := hS_aic.isAlgClosed
+  have : IsAlgClosed T := hT_aic.isAlgClosed
   let A (t : Finset T) : Subalgebra S T := adjoin S t
   let α (t : Finset T) : S ⟶ of (A t) := ofHom (algebraMap S (A t))
   have (t : Finset T) : Algebra.FiniteType S (A t) := .adjoin_of_finite t.finite_toSet
-  have β (t : Finset T) : A t →ₐ[S] S := (nullstellensatz_exists_le_ker bot_ne_top).choose
-  -- The maps `W_T ⟶ W_(A t) ⟶ W_S`, and the section `W_S ⟶ W_(A t)` given by the point `β t`;
+  let β (t : Finset T) : A t →ₐ[S] S := (nullstellensatz_exists_le_ker bot_ne_top).choose
+  -- The maps `W_T ⟶ W_(A t) ⟶ W_S`, and the section `W_S ⟶ W_(A t)` given by `β t`;
   -- `fib b` is `W_B`.
   let fib {B : CommRingCat} (b : R ⟶ B) : CommRingCat ⥤ Type 1 := Variety.baseChangeOf s b
   let inc (t : Finset T) : fib (a ≫ φ) ⟶ fib (a ≫ α t) :=
     baseChangeTransition s (ofHom (A t).val.toRingHom) rfl
   let prj (t : Finset T) : fib (a ≫ α t) ⟶ fib a := baseChangeTransition s (α t) rfl
-  have h_section (t : Finset T) : (a ≫ α t) ≫ ofHom (β t).toRingHom = a :=
-    congr(a ≫ ofHom $((β t).comp_algebraMap))
   let sec (t : Finset T) : fib a ⟶ fib (a ≫ α t) :=
-    baseChangeTransition s (ofHom (β t).toRingHom) (h_section t)
-  -- Base change is a functor: transitions compose, along the composite `k` of the ring maps, and
-  -- the transition along an identity is the identity. Equalities of transitions below are reduced
-  -- by `h_tri` and `h_one` to equalities of ring maps, which the kernel checks far faster than
-  -- pointwise equalities of maps of functors.
+    baseChangeTransition s (ofHom (β t).toRingHom) congr(a ≫ ofHom $((β t).comp_algebraMap))
+  -- Equalities of transitions are reduced by `h_tri` and `h_one` to equalities of ring maps,
+  -- which the kernel checks far faster than pointwise equalities of maps of functors.
   have h_tri {B C E : CommRingCat} {b : R ⟶ B} {c : R ⟶ C} {e : R ⟶ E} {f : B ⟶ C} {g : C ⟶ E}
       {k : B ⟶ E} {hf : b ≫ f = c} {hg : c ≫ g = e} (h : f ≫ g = k) :
       baseChangeTransition s g hg ≫ baseChangeTransition s f hf =
         baseChangeTransition s k (by rw [← h, ← Category.assoc, hf, hg]) := by
-    subst h
-    exact ((baseChangeFunctor s).map_comp _ _).symm
+    subst h; exact ((baseChangeFunctor s).map_comp _ _).symm
   have h_one {B : CommRingCat} {b : R ⟶ B} {k : B ⟶ B} {hk : b ≫ k = b} (h : k = 𝟙 B) :
       baseChangeTransition s k hk = 𝟙 _ := by
-    subst h
-    exact (baseChangeFunctor s).map_id _
-  -- Continuity: the cohomology of `W_T` is the filtered colimit of that of the `W_(A t)`: a class
-  -- on `W_(A t)` that dies on `W_T` dies at a later stage, and each class comes from some stage.
+    subst h; exact (baseChangeFunctor s).map_id _
+  -- Continuity: the cohomology of `W_T` is the filtered colimit of that of the `W_(A t)`.
   obtain ⟨h_dies, h_comes⟩ :=
     (hs.isCohomContinuous (Λ := ⟨ZMod ℓ⟩)).isFilteredColimit_adjoin s T a n
   -- Stated for abstract groups, so that the kernel need not unfold the group structure of `Ext`.
   have injective_of_eq_zero {M N : Type 2} [AddCommGroup M] [AddCommGroup N] (g : M →+ N)
       (hg : ∀ x, g x = 0 → x = 0) : Function.Injective g := (injective_iff_map_eq_zero g).mpr hg
   refine ⟨injective_of_eq_zero _ fun x hx ↦ ?_, fun y ↦ ?_⟩
-  · -- A class that dies on `W_T` dies on some `W_(A t)`; pull back along the section.
-    have h_inc_prj : inc ∅ ≫ prj ∅ = baseChangeTransition s φ rfl := h_tri rfl
+  · -- A class dying on `W_T` dies on some `W_(A t)`; pull back along `sec t`.
     obtain ⟨t, f, ht⟩ := h_dies ∅ (map _ (prj ∅) n x) ((map_comp (inc ∅) (prj ∅) x).symm.trans
-      ((congrArg (fun u ↦ map _ u n x) h_inc_prj).trans hx))
+      ((congrArg (fun u ↦ map _ u n x) (h_tri (k := φ) rfl)).trans hx))
     -- `tr` is the transition `W_(A t) ⟶ W_(A ∅)`; `sec t` is a section of `prj t = tr ≫ prj ∅`.
     let tr : fib (a ≫ α t) ⟶ fib (a ≫ α ∅) :=
       baseChangeTransition s (ofHom (Subalgebra.inclusion (adjoin_mono f.le)).toRingHom) rfl
-    have h_tr : tr ≫ prj ∅ = prj t := h_tri rfl
-    have h_ret : α t ≫ ofHom (β t).toRingHom = 𝟙 S :=
-      CommRingCat.hom_ext (RingHom.ext (β t).commutes)
-    have h_sec : sec t ≫ prj t = 𝟙 (fib a) := (h_tri rfl).trans (h_one h_ret)
     rw [← TestCohomology.map_id_apply x]
     exact map_eq_zero_of_factors (w := sec t) (v := tr ≫ prj ∅)
-      ((congrArg (sec t ≫ ·) h_tr).trans h_sec) ((map_comp tr (prj ∅) x).trans ht)
-  · -- A class on `W_T` comes from some `x` on `W_(A t)`. Take a valuation ring `V ⊇ A t` of `T`
-    -- whose maximal ideal contains the kernel of `β t`.
+      ((congrArg (sec t ≫ ·) (h_tri rfl)).trans
+        ((h_tri rfl).trans (h_one (CommRingCat.hom_ext (RingHom.ext (β t).commutes)))))
+      ((map_comp tr (prj ∅) x).trans ht)
+  · -- A class on `W_T` comes from `W_(A t)`; compare via a valuation ring `V ⊇ A t` of `T`.
     obtain ⟨t, x, rfl⟩ : ∃ t x, map ⟨ZMod ℓ⟩ (inc t) n x = y := h_comes y
+    -- Choose a valuation ring `V ⊇ A t` of `T` whose maximal ideal contains `ker (β t)`.
     obtain ⟨V, hV, h_ker⟩ : ∃ V : ValuationSubring T, (A t).toSubring ≤ V.toSubring ∧
         (A t).toSubring.subtype '' RingHom.ker (β t) ⊆ V.nonunits :=
       image_subset_nonunits_valuationSubring _ (RingHom.ker_ne_top (β t))
     let i : of (A t) ⟶ of V := ofHom (Subring.inclusion hV)
     let toA : fib (a ≫ α t ≫ i) ⟶ fib (a ≫ α t) := baseChangeTransition s i rfl
     let toS : fib (a ≫ α t ≫ i) ⟶ fib a := baseChangeTransition s (α t ≫ i) rfl
-    -- As `c - β t c` lies in that kernel, `A t → V` and `A t → S → V` agree in the residue field of
-    -- `V`. So `x` and its pull-back along the section have the same image on the fibre over that
-    -- field, hence on `W_V` by `injective_map_residue`.
+    -- As `c - β t c ∈ ker (β t)`, `A t → V` and `A t → S → V` agree in `κ(V)`, so `x` and its
+    -- pull-back along `sec t` agree on `W_V` by `injective_map_residue`.
     have h_agree : map ⟨ZMod ℓ⟩ toS n (map _ (sec t) n x) = map _ toA n x := by
       apply hs.injective_map_residue hℓ
-      simp only [← map_comp]
-      congr 2
-      -- Both sides are transitions (`h_tri`), along the two ring maps `A t → κ(V)` in question.
+      rw [← map_comp, ← map_comp, ← map_comp]
       have h_res : ofHom (β t).toRingHom ≫ (α t ≫ i) ≫ ofHom (residue V) = i ≫ ofHom (residue V) :=
         CommRingCat.hom_ext (RingHom.ext fun c ↦ Ideal.Quotient.eq.mpr (V.coe_mem_nonunits_iff.mp
           (h_ker ⟨_, (RingHom.sub_mem_ker_iff _).mpr ((β t).commutes _), rfl⟩)))
-      exact ((Category.assoc ..).symm.trans (congrArg (· ≫ sec t) (h_tri rfl))).trans
-        ((h_tri h_res).trans (h_tri rfl).symm)
+      exact congrArg (fun u ↦ map _ u n x)
+        ((congrArg (· ≫ sec t) (h_tri rfl)).trans ((h_tri h_res).trans (h_tri rfl).symm))
     -- Pull this equality back to the generic fibre `W_T` of `W_V`.
     let gen : fib (a ≫ φ) ⟶ fib (a ≫ α t ≫ i) := baseChangeTransition s (ofHom V.subtype) rfl
-    refine ⟨map _ (sec t) n x, ?_⟩
-    calc _ = map _ gen n (map _ toS n (map _ (sec t) n x)) := map_comp gen toS _
-      _ = map _ gen n (map _ toA n x) := congrArg _ h_agree
-      _ = map _ (inc t) n x := (map_comp gen toA x).symm
-
-/-- If every element of `I` divides `b`, then the points at which `b` becomes a unit lie among
-the points at which every element of `I` becomes a unit. -/
-private lemma unitPoints_singleton_le_of_forall_dvd {X : PointFunctor} {B : CommRingCat}
-    (p : X ⟶ reprBy B) {I : Set B} {b : B} (hb : ∀ c ∈ I, c ∣ b) :
-    unitPoints p {b} ≤ unitPoints p I :=
-  fun _ _ hy c hc ↦ isUnit_of_dvd_unit (map_dvd _ (hb c hc)) (hy b rfl)
+    exact ⟨map _ (sec t) n x,
+      (map_comp gen toS _).trans ((congrArg _ h_agree).trans (map_comp gen toA x).symm)⟩
 
 /-- If a class vanishes on the points at which every element of `I` becomes a unit, and every
 element of `I` divides `d`, then it vanishes on the points at which `d` becomes a unit. -/
@@ -876,64 +677,8 @@ private lemma map_unitPoints_ι_eq_zero_of_forall_dvd {Λ : Ab} {X : PointFuncto
     {p : X ⟶ reprBy B} {x : H (freeAb.obj (testIncl ⋙ X)) (locConstCoeff Λ) n} {I : Set B} {d : B}
     (hd : ∀ c ∈ I, c ∣ d) (hI : map Λ (unitPoints p I).ι n x = 0) :
     map Λ (unitPoints p {d}).ι n x = 0 :=
-  map_eq_zero_of_factors (homOfLe_ι (unitPoints_singleton_le_of_forall_dvd p hd)) hI
-
-/-- Let `T` be a test ring with a ring map `a : R ⟶ T`, and `x` a class in `Hⁿ(W_T, ℤ/ℓ)`. If `x`
-vanishes on the points of `W_T` at which `b` becomes a unit and on those at which `c` becomes a
-unit, then it vanishes on the points at which `b + c` becomes a unit. -/
-private lemma map_unitPoints_ι_add_eq_zero {T : TestRing} {a : R ⟶ of T.obj}
-    {x : H (freeAb.obj (testIncl ⋙ baseChangeOf s a)) (locConstCoeff ⟨ZMod ℓ⟩) n} {b c : T.obj}
-    (hb : map ⟨ZMod ℓ⟩ (unitPoints (fiberProd.snd s (reprMap a)) {b}).ι n x = 0)
-    (hc : map ⟨ZMod ℓ⟩ (unitPoints (fiberProd.snd s (reprMap a)) {c}).ι n x = 0) :
-    map ⟨ZMod ℓ⟩ (unitPoints (fiberProd.snd s (reprMap a)) {b + c}).ι n x = 0 := by
-  -- An idempotent `e` with `b ∣ e * c` and `c ∣ (1 - e) * b` cuts the points where `b + c` is a
-  -- unit into two disjoint pieces, on one of which `c` is a unit and on the other `b`. By
-  -- Mayer–Vietoris a class there is determined by its restrictions to the two pieces.
-  let U : Set T.obj → Subfunctor (baseChangeOf s a) := unitPoints (fiberProd.snd s (reprMap a))
-  obtain ⟨e, he, h_bc, h_cb⟩ : ∃ e : T.obj, IsIdempotentElem e ∧ b ∣ e * c ∧ c ∣ (1 - e) * b :=
-    T.property.isComparableRing b c
-  -- `P d` is the set of points at which `(1 - d) * (b + c)` is a unit.
-  let P (d : T.obj) : Subfunctor (baseChangeOf s a) := U {(1 - d) * (b + c)}
-  have h_piece (d : T.obj) : P d ≤ U {b + c} := unitPoints_singleton_le_of_forall_dvd _ (by simp)
-  -- On the intersection `(1 - e) * (b + c)` and `e * (b + c)` are units, but their product is zero:
-  -- only the zero ring has such points.
-  have h_disj (B : CommRingCat) (k : (P e ⊓ P (1 - e)).toFunctor.obj B) : (0 : B) = 1 := by
-    obtain ⟨hk_e, hk_one_sub⟩ := k.property
-    have h_prod_eq : (1 - e) * (b + c) * ((1 - (1 - e)) * (b + c)) = 0 := by
-      have h_e : (1 - e) * e = 0 := by rw [sub_mul, one_mul, he.eq, sub_self]
-      rw [sub_sub_cancel, mul_mul_mul_comm, h_e, zero_mul]
-    have h_unit := (hk_e _ rfl).mul (hk_one_sub _ rfl)
-    rwa [← map_mul, h_prod_eq, map_zero, isUnit_zero_iff] at h_unit
-  -- A point of `U {b + c}` that kills `d` lies in `P d`, and the points that kill `e` or `1 - e`
-  -- are dense.
-  have h_mem_piece {B : CommRingCat} (y : (baseChangeOf s a).obj B) (d : T.obj)
-      (hy : IsUnit (baseRingMap (fiberProd.snd s (reprMap a)) y (b + c)))
-      (hd : baseRingMap (fiberProd.snd s (reprMap a)) y d = 0) : y ∈ (P d).obj B := by
-    rintro _ rfl
-    rwa [map_mul, map_sub, map_one, hd, sub_zero, one_mul]
-  have h_dense : IsCohomDense (locConstCoeff ⟨ZMod ℓ⟩)
-      (((P e ⊔ P (1 - e)).preimage (U {b + c}).ι).whisker testIncl) := by
-    -- the structure map `T → B` of a point, as a morphism of test rings
-    let toT : testIncl ⋙ (U {b + c}).toFunctor ⟶ reprBy T :=
-      .mk fun _ ↦ ↾fun y ↦ ⟨⟨baseRingMap (fiberProd.snd s (reprMap a)) y.val⟩⟩
-    refine .of_preimage_le (hasPartitions_locConstCoeff.isCohomDense_partition (A := T) _ he)
-      toT fun _ y k ↦ ?_
-    exact k.imp (h_mem_piece y.val e (y.property _ rfl))
-      (h_mem_piece y.val (1 - e) (y.property _ rfl))
-  -- `c` divides `(1 - e) * (b + c)`, and `b` divides `e * (b + c)`
-  have h_c_dvd : c ∣ (1 - e) * (b + c) := by simp [h_cb, mul_add, dvd_add]
-  have h_b_dvd : b ∣ (1 - (1 - e)) * (b + c) := by simp [h_bc, mul_add, dvd_add]
-  -- By Mayer–Vietoris it is enough that the restrictions of the class to both pieces vanish.
-  have h_restrict_inj := (mayer_vietoris_bijective (Λ := ⟨ZMod ℓ⟩) (h_piece e) (h_piece (1 - e))
-    h_dense n h_disj).injective
-  -- Stated for abstract groups, so that the kernel need not unfold the group structure of `Ext`.
-  have eq_zero_of_prod {M N₁ N₂ : Type 2} [AddCommGroup M] [AddCommGroup N₁] [AddCommGroup N₂]
-      {g₁ : M →+ N₁} {g₂ : M →+ N₂} (hg : Function.Injective (g₁.prod g₂)) {y : M}
-      (h₁ : g₁ y = 0) (h₂ : g₂ y = 0) : y = 0 :=
-    (map_eq_zero_iff _ hg).mp (Prod.ext h₁ h₂)
-  refine eq_zero_of_prod h_restrict_inj ?_ ?_
-  · exact (H.map_map ..).trans (map_unitPoints_ι_eq_zero_of_forall_dvd (by simpa using h_c_dvd) hc)
-  · exact (H.map_map ..).trans (map_unitPoints_ι_eq_zero_of_forall_dvd (by simpa using h_b_dvd) hb)
+  map_eq_zero_of_factors (homOfLe_ι (G := unitPoints p {d}) (G' := unitPoints p I) fun _ _ hy c hc ↦
+    isUnit_of_dvd_unit (map_dvd _ (hd c hc)) (hy d rfl)) hI
 
 /-- For a class `x` on `W_T`, the ideal of the `b ∈ T` such that `x` vanishes on the points of
 `W_T` at which `b` becomes a unit. -/
@@ -941,59 +686,49 @@ private def unitVanishingIdeal (T : TestRing) (a : R ⟶ of T.obj)
     (x : H (freeAb.obj (testIncl ⋙ baseChangeOf s a)) (locConstCoeff ⟨ZMod ℓ⟩) n) :
     Ideal T.obj where
   carrier := {b : T.obj | map ⟨ZMod ℓ⟩ (unitPoints (fiberProd.snd s (reprMap a)) {b}).ι n x = 0}
-  add_mem' hb hc := map_unitPoints_ι_add_eq_zero hb hc
   -- no point makes `0` a unit except over the zero ring
   zero_mem' := hasPartitions_locConstCoeff.eq_zero_of_zero_ring (by simp [unitPoints]) ..
   smul_mem' _ _ hb := map_unitPoints_ι_eq_zero_of_forall_dvd (by simp) hb
-
-/-- Let `W` be proper over `R`, `ℓ` a prime invertible in `R`, `T` a test ring with a ring map
-`a : R ⟶ T`, and `x` a class on `W_T` that restricts to zero on the base change to the residue
-field at a prime `P` of `T`. Then for some `b ∉ P` the class `x` vanishes on the points of `W_T`
-at which `b` becomes a unit. -/
-private lemma exists_notMem_map_unitPoints_ι_eq_zero_of_map_residue_eq_zero (hs : IsProperOver s)
-    (hℓ : IsUnit (ℓ : R)) {T : TestRing} {a : R ⟶ of T.obj}
-    {x : H (freeAb.obj (testIncl ⋙ baseChangeOf s a)) (locConstCoeff ⟨ZMod ℓ⟩) n}
-    (P : PrimeSpectrum T.obj)
-    (hP : map ⟨ZMod ℓ⟩
-      (baseChangeTransition s (ofHom (algebraMap T.obj P.asIdeal.ResidueField)) (a := a) rfl) n
-      x = 0) :
-    ∃ b ∉ P.asIdeal, map ⟨ZMod ℓ⟩ (unitPoints (fiberProd.snd s (reprMap a)) {b}).ι n x = 0 := by
-  -- The class vanishes over the local ring at `P` by `injective_map_residue`, so on `U M` for the
-  -- complement `M` of `P`; by continuity it vanishes on `U t` for a finite `t ⊆ M`; take
-  -- `b = ∏ t`.
-  let U : Set T.obj → Subfunctor (baseChangeOf s a) := unitPoints (fiberProd.snd s (reprMap a))
-  let M : Submonoid T.obj := P.asIdeal.primeCompl
-  obtain ⟨h_aic_local, h_valuation, -⟩ := T.property.exists_valuationSubring_atPrime P.asIdeal
-  let loc : baseChangeOf s (a ≫ ofHom (algebraMap T.obj (Localization M))) ⟶ baseChangeOf s a :=
-    baseChangeTransition s (ofHom (algebraMap T.obj (Localization M))) rfl
-  -- the residue field of the local ring at `P` is that of `P`
-  have h_loc : map ⟨ZMod ℓ⟩ loc n x = 0 := hs.injective_map_residue hℓ (by simpa [← map_comp])
-  -- `loc` is the pull-back of the localisation map, whose image holds the points inverting `M`.
-  obtain ⟨w, h_fac⟩ : ∃ w, w ≫ loc = (U M).ι := by
-    let pr : baseChangeOf s a ⟶ reprBy (of T.obj) := fiberProd.snd s (reprMap a)
-    have h_pb : IsPullback (fiberProd.snd ..) loc (reprMap (ofHom (algebraMap ..))) pr :=
-      isPullback_fiberProd.of_bot rfl isPullback_fiberProd
-    let toImage := fromPreimage _ pr ≫ homOfLe (unitPoints_le_range_reprMap (Localization M) M)
-    exact ⟨_, h_pb.lift_snd _ (U M).ι
-      ((Category.assoc ..).trans
-        (toImage ≫= IsIso.inv_hom_id_assoc (toRange (uliftCoyoneda.map _)) (ι _)))⟩
-  have h_rep (I : Set T.obj) : IsRelAffine (U I).ι :=
-    isRelAffine_ι_of_forall_map_mem_iff fun y ↦
-      ⟨∅, baseRingMap (fiberProd.snd s (reprMap a)) y '' I, by simp [U, unitPoints]⟩
-  have h_anti_U : Antitone U := fun _I _I' h_le _C _y hy c hc ↦ hy c (h_le hc)
-  -- `U M` is the intersection of the `U t`, so its cohomology is the filtered colimit of theirs
-  have h_cont := ((hs.baseChange a).isCohomContinuous
-    (Λ := ⟨ZMod ℓ⟩)).isFilteredColimit_antitoneFamily h_anti_U h_rep
-    (D := (monotone_image.comp (@Finset.coeEmb M).monotone).functor)
-    (m := ⟨M, .mk fun _ ↦ ⟨⟨image_val_subset⟩⟩⟩) (fun hy c hc ↦ hy {⟨c, hc⟩} c (by simp)) (n := n)
-  have h_M : map ⟨ZMod ℓ⟩ (U M).ι n x = 0 := map_eq_zero_of_factors h_fac h_loc
-  obtain ⟨t, _, ht⟩ := h_cont.1 ∅ (map _ (ι _) n x) ((map_comp ..).symm.trans h_M)
-  have h_fin : map ⟨ZMod ℓ⟩ (U (Subtype.val '' (t : Set M))).ι n x = 0 :=
-    ((map_comp _ (ι _) x).trans ht :)
-  have h_dvd_prod : ∀ d ∈ Subtype.val '' (t : Set M), d ∣ ∏ c ∈ t, (c : T.obj) :=
-    forall_mem_image.mpr fun _ ↦ t.dvd_prod_of_mem _
-  exact ⟨∏ c ∈ t, (c : T.obj), M.prod_mem fun c _ ↦ c.property,
-    map_unitPoints_ι_eq_zero_of_forall_dvd h_dvd_prod h_fin⟩
+  add_mem' {b c} hb hc := by
+    -- Split `U {b + c}` by an idempotent `e` with `b ∣ e * c` and `c ∣ (1 - e) * b`.
+    let pr := fiberProd.snd s (reprMap a)
+    let U : Set T.obj → Subfunctor (baseChangeOf s a) := unitPoints pr
+    obtain ⟨e, he, h_bc, h_cb⟩ := T.property.isComparableRing b c
+    -- `P d` is the set of points at which `(1 - d) * (b + c)` is a unit.
+    let P (d : T.obj) : Subfunctor (baseChangeOf s a) := U {(1 - d) * (b + c)}
+    have h_piece (d : T.obj) : P d ≤ U {b + c} := fun _ _ hy _ h ↦
+      isUnit_of_dvd_unit (map_dvd _ (h ▸ dvd_mul_left _ _)) (hy _ rfl)
+    -- On the intersection `(1 - e) * (b + c)` and `e * (b + c)` are units with product zero.
+    have h_disj (B : CommRingCat) (k : (P e ⊓ P (1 - e)).toFunctor.obj B) : (0 : B) = 1 := by
+      have h_prod : (1 - e) * (b + c) * ((1 - (1 - e)) * (b + c)) = 0 := by
+        rw [sub_sub_cancel, mul_mul_mul_comm, sub_mul, one_mul, he.eq, sub_self, zero_mul]
+      have h_unit := (k.property.left _ rfl).mul (k.property.right _ rfl)
+      rwa [← map_mul, h_prod, map_zero, isUnit_zero_iff] at h_unit
+    -- A point of `U {b + c}` that kills `d` lies in `P d`, and the points that kill `e` or
+    -- `1 - e` are dense.
+    have h_dense : IsCohomDense (locConstCoeff ⟨ZMod ℓ⟩)
+        (((P e ⊔ P (1 - e)).preimage (U {b + c}).ι).whisker testIncl) := by
+      let toT : testIncl ⋙ (U {b + c}).toFunctor ⟶ reprBy T :=
+        .mk fun _ ↦ ↾fun y ↦ ⟨⟨baseRingMap pr y.val⟩⟩
+      refine .of_preimage_le (hasPartitions_locConstCoeff.isCohomDense_partition (A := T) _ he)
+        toT fun _ y k ↦ ?_
+      have h_mem (d : T.obj) (hd : baseRingMap pr y.val d = 0) : y.val ∈ (P d).obj _ := by
+        rintro _ rfl; simpa [hd] using y.property _ rfl
+      exact k.imp (h_mem e) (h_mem (1 - e))
+    -- Stated for abstract groups, so that the kernel need not unfold the group structure of `Ext`.
+    have eq_zero_of_prod {M N₁ N₂ : Type 2} [AddCommGroup M] [AddCommGroup N₁] [AddCommGroup N₂]
+        {g₁ : M →+ N₁} {g₂ : M →+ N₂} (hg : Function.Injective (g₁.prod g₂)) {y : M}
+        (h₁ : g₁ y = 0) (h₂ : g₂ y = 0) : y = 0 :=
+      (map_eq_zero_iff _ hg).mp (Prod.ext h₁ h₂)
+    -- By Mayer–Vietoris it suffices that the restrictions to both pieces vanish, since
+    -- `c ∣ (1 - e) * (b + c)` and `b ∣ e * (b + c)`.
+    exact eq_zero_of_prod
+      (mayer_vietoris_bijective (Λ := ⟨ZMod ℓ⟩) (h_piece e) (h_piece (1 - e)) h_dense n
+        h_disj).injective
+      ((H.map_map ..).trans (map_unitPoints_ι_eq_zero_of_forall_dvd
+        (by rintro _ rfl; rw [mul_add]; exact dvd_add h_cb (dvd_mul_left _ _)) hc))
+      ((H.map_map ..).trans (map_unitPoints_ι_eq_zero_of_forall_dvd
+        (by rintro _ rfl; rw [sub_sub_cancel, mul_add]; exact dvd_add (dvd_mul_left _ _) h_bc) hb))
 
 /-- Let `W` be proper over `R` (`hs`), `ℓ` a prime invertible in `R` (`hℓ`), `T` a test ring
 (absolutely integrally closed and reduced, with any two elements comparable for divisibility after
@@ -1008,34 +743,59 @@ lemma IsProperOver.isOpen_zero_set_and_eq_zero (hs : IsProperOver s) (hℓ : IsU
       (baseChangeTransition s (ofHom (algebraMap T.obj P.asIdeal.ResidueField)) (a := a) rfl) n
         x = 0}
     IsOpen z ∧ (z = univ → x = 0) := by
-  -- The `b` such that `x` vanishes where `b` is invertible form an ideal `J` of `T`, and `z` is the
-  -- complement of the zero locus of `J`.
+  -- `z` is the complement of the zero locus of `J = unitVanishingIdeal T a x`.
   intro z
+  let pr : baseChangeOf s a ⟶ reprBy (of T.obj) := fiberProd.snd s (reprMap a)
+  let U : Set T.obj → Subfunctor (baseChangeOf s a) := unitPoints pr
   let J : Ideal T.obj := unitVanishingIdeal T a x
   have hz : z = (zeroLocus J)ᶜ := by
     ext P
     rw [mem_compl_iff, mem_zeroLocus, not_subset]
     constructor
-    · intro hP
-      obtain ⟨b, hbP, hb⟩ :=
-        exists_notMem_map_unitPoints_ι_eq_zero_of_map_residue_eq_zero hs hℓ P hP
-      exact ⟨b, hb, hbP⟩
-    · -- If `b ∉ P` then `b` is a unit in the residue field, so at every point of the fibre.
-      rintro ⟨b, hb, hbP⟩
+    · -- Vanishing at `κ(P)` gives vanishing on `W_{T_P}`, hence on `U M` and by continuity on `U t`
+      -- for a finite `t ⊆ M`; take `b = ∏ t`.
+      intro hP
+      let M : Submonoid T.obj := P.asIdeal.primeCompl
+      obtain ⟨h_aic_local, h_valuation, -⟩ := T.property.exists_valuationSubring_atPrime P.asIdeal
+      -- `loc` is the pull-back of the localisation map, whose image holds the points inverting `M`.
+      let loc : baseChangeOf s (a ≫ ofHom (algebraMap T.obj (Localization M))) ⟶ baseChangeOf s a :=
+        baseChangeTransition s (ofHom (algebraMap T.obj (Localization M))) rfl
+      have h_loc : map ⟨ZMod ℓ⟩ loc n x = 0 := hs.injective_map_residue hℓ (by simpa [← map_comp])
+      obtain ⟨_, h_fac⟩ : ∃ w, w ≫ loc = (U M).ι := by
+        have h_pb : IsPullback (fiberProd.snd ..) loc (reprMap (ofHom (algebraMap ..))) pr :=
+          isPullback_fiberProd.of_bot rfl isPullback_fiberProd
+        exact ⟨_, h_pb.lift_snd _ (U M).ι ((Category.assoc ..).trans
+          ((fromPreimage _ pr ≫ homOfLe (unitPoints_le_range_reprMap (Localization M) M)) ≫=
+            IsIso.inv_hom_id_assoc (toRange (uliftCoyoneda.map _)) (ι _)))⟩
+      have h_anti_U : Antitone U := fun _ _ h _ _ hy c hc ↦ hy c (h hc)
+      -- `U M` is the intersection of the `U t`, so its cohomology is the filtered colimit of
+      -- theirs.
+      have h_cont := ((hs.baseChange a).isCohomContinuous
+        (Λ := ⟨ZMod ℓ⟩)).isFilteredColimit_antitoneFamily h_anti_U
+        (fun I ↦ isRelAffine_ι_of_forall_map_mem_iff fun y ↦
+          ⟨∅, baseRingMap pr y '' I, by simp [U, unitPoints]⟩)
+        (D := (monotone_image.comp (@Finset.coeEmb M).monotone).functor)
+        (m := ⟨M, .mk fun _ ↦ ⟨⟨image_val_subset⟩⟩⟩)
+        (fun hy c hc ↦ hy {⟨c, hc⟩} c (by simp)) (n := n)
+      obtain ⟨t, _, ht⟩ := h_cont.left ∅ (map _ (ι _) n x)
+        ((map_comp ..).symm.trans (map_eq_zero_of_factors h_fac h_loc))
+      exact ⟨∏ c ∈ t, (c : T.obj),
+        map_unitPoints_ι_eq_zero_of_forall_dvd (forall_mem_image.mpr fun _ ↦ t.dvd_prod_of_mem _)
+          ((map_comp _ (ι _) x).trans ht :),
+        M.prod_mem fun c _ ↦ c.property⟩
+    · rintro ⟨b, hb, hbP⟩
+      -- The point `y` comes with a ring map out of the residue field, which keeps `b` a unit.
       have hb_unit : IsUnit (algebraMap T.obj P.asIdeal.ResidueField b) :=
         Ne.isUnit (algebraMap_residueField_eq_zero.not.mpr hbP)
       refine map_eq_zero_of_factors (lift_ι _ ?_) hb
       rintro _ _ ⟨y, rfl⟩ _ rfl
-      -- the point `y` comes with a ring map out of the residue field, which keeps `b` a unit
       exact hb_unit.map y.val.snd.down.hom
   refine ⟨by simpa only [hz] using (isClosed_zeroLocus _).isOpen_compl, fun h_univ ↦ ?_⟩
-  -- If `x` vanishes at every prime, the zero locus of `J` is empty, so `1 ∈ J`; and `1` is a
-  -- unit at every point.
-  have h_empty : zeroLocus (J : Set T.obj) = ∅ := compl_univ_iff.mp (hz.symm.trans h_univ)
-  have h_one : map ⟨ZMod ℓ⟩ (unitPoints (fiberProd.snd s (reprMap a)) {1}).ι n x = 0 :=
-    (eq_top_iff_one J).mp (zeroLocus_empty_iff_eq_top.mp h_empty)
+  -- If `x` vanishes at every prime, `zeroLocus J = ∅`, so `1 ∈ J`, and `1` is a unit everywhere.
+  have h_one : map ⟨ZMod ℓ⟩ (U {1}).ι n x = 0 :=
+    (eq_top_iff_one J).mp (zeroLocus_empty_iff_eq_top.mp (compl_univ_iff.mp (hz.symm.trans h_univ)))
   rw [← TestCohomology.map_id_apply x]
-  exact map_eq_zero_of_factors (lift_ι (𝟙 _) fun _ _ ↦ by simp [unitPoints]) h_one
+  exact map_eq_zero_of_factors (lift_ι (𝟙 _) fun _ _ ↦ by simp [U, unitPoints]) h_one
 
 end FieldExtension
 
@@ -1055,36 +815,33 @@ proper over `ℤ`, through its unique map to the terminal functor `reprBy ℤ`. 
 lemma isProperOver_projLinePow (ι : Type) :
     IsProperOver ((zIsInitial.op.isTerminalObj uliftCoyoneda (Opposite.op (CommRingCat.of ℤ))).from
       (projLinePow ι)) := by
-  -- The universal point is the family `(1 + u_i v_i : v_i)` over `ℤ[u_i, v_i]`.
   refine
-    { diagonal_closed := fun B x y ↦ ?_
+    { diagonal_closed := fun B x y ↦
+        ⟨⨆ i, span {(unimodularRow (x i)).fst * (unimodularRow (y i)).snd -
+          (unimodularRow (x i)).snd * (unimodularRow (y i)).fst}, fun B' f ↦ by
+          rw [iSup_le_iff]
+          refine funext_iff.trans (forall_congr' fun i ↦ ULift.up_inj.trans ?_)
+          rw [← (x i).down.out_eq, ← (y i).down.out_eq]
+          simp [Quotient.eq, projLineSetoid, unimodularRow, sub_eq_zero]⟩
       valuative_cover := ⟨of (FreeCommRing (ι ⊕ ι)), fun i ↦ ⟨⟦(.of (.inl i), .of (.inr i))⟧⟩,
         fun {K} _ _ O x _ ↦ ?_⟩ }
-  · -- Separated: two families agree exactly where the determinants of their rows vanish.
-    refine ⟨⨆ i, span {(unimodularRow (x i)).1 * (unimodularRow (y i)).2 -
-      (unimodularRow (x i)).2 * (unimodularRow (y i)).1}, fun B' f ↦ ?_⟩
-    rw [iSup_le_iff]
-    refine funext_iff.trans (forall_congr' fun i ↦ ULift.up_inj.trans ?_)
-    rw [← (x i).down.out_eq, ← (y i).down.out_eq]
-    simp [Quotient.eq, projLineSetoid, unimodularRow, sub_eq_zero]
-  · -- Valuative criterion: each point of the line over `K` is `(1 + u v : v)` with `u, v` in `O`,
-    -- since one of its two homogeneous coordinates is a multiple of the other by an element of `O`.
-    have h_point (a : K × K) : ∃ u v : O, (⟦(u, v)⟧ : Quotient (projLineSetoid K)) = ⟦a⟧ := by
-      rcases le_total (O.valuation a.2) (O.valuation (1 + a.1 * a.2)) with h_le | h_le
-      · obtain ⟨c, hc⟩ : ∃ c : O, (c : K) * (1 + a.1 * a.2) = a.2 :=
-          (O.valuation_le_iff _ _).mp h_le
-        exact ⟨0, c, by simp [Quotient.eq, projLineSetoid, hc]⟩
-      · obtain ⟨c, hc⟩ : ∃ c : O, (c : K) * a.2 = 1 + a.1 * a.2 := (O.valuation_le_iff _ _).mp h_le
-        exact ⟨c - 1, 1, by simp [Quotient.eq, projLineSetoid, hc]⟩
-    choose u v huv using fun i : ι ↦ h_point (x i).down.out
-    refine ⟨ofHom (FreeCommRing.lift (Sum.elim u v)), funext fun i ↦ congrArg ULift.up ?_⟩
-    simpa using huv i
+  -- Each point of `ℙ¹(K)` is `(1 + u v : v)` with `u, v ∈ O`.
+  have h_point (a : K × K) : ∃ u v : O, (⟦(u, v)⟧ : Quotient (projLineSetoid K)) = ⟦a⟧ := by
+    -- One of the two homogeneous coordinates is a multiple of the other by an element of `O`.
+    rcases le_total (O.valuation a.snd) (O.valuation (1 + a.fst * a.snd)) with h_le | h_le
+    · obtain ⟨c, hc⟩ := (O.valuation_le_iff _ _).mp h_le
+      exact ⟨0, c, by simp [Quotient.eq, projLineSetoid, hc]⟩
+    · obtain ⟨c, hc⟩ := (O.valuation_le_iff _ _).mp h_le
+      exact ⟨c - 1, 1, by simp [Quotient.eq, projLineSetoid, hc]⟩
+  choose u v huv using fun i : ι ↦ h_point (x i).down.out
+  exact ⟨ofHom (FreeCommRing.lift (Sum.elim u v)),
+    funext fun i ↦ congrArg ULift.up (by simpa using huv i)⟩
 
 /-- For a test `c` over `A` and a prime `P` of `c`, the residue field of `c` at `P` as a test over
 `A`, together with the canonical map from `c` to it. -/
 def residueTest (P : PrimeSpectrum c.obj) : Under c :=
   -- the residue field at `P` is a test, being that of an absolutely integrally closed local domain
-  have := (c.property.exists_valuationSubring_atPrime P).1
+  have := (c.property.exists_valuationSubring_atPrime P).left
   Under.mk (Y := ⟨CommAlgCat.of A P.asIdeal.ResidueField, isTest_of_preValuationRing⟩)
     ⟨CommAlg.homOfRingHom (algebraMap ..) (by tauto)⟩
 
@@ -1115,43 +872,6 @@ def IdealFamily.pullToTests : IdealFamily (ringOf (testOfPoint A X)) :=
       ⟨fun a ↦ (a.val, ⟨ofHom (algebraMap A a.obj.obj)⟩), fun f ↦
         congr(⟨$(f.map_val), ⟨ofHom $(f.hom.hom.hom'.comp_algebraMap)⟩⟩)⟩)
 
-/-- For a family `I` of ideals on the points of `X × Spec A` and `p : X ⟶ reprBy ℤ`, the subfunctor
-of the base change `X_A` of the points at which `I` is zero. -/
-private def botLocusBaseChange (p : X ⟶ reprBy (CommRingCat.of ℤ)) :
-    Subfunctor (baseChangeOf p (zIsInitial.to (of A))) :=
-  ⟨fun C ↦ {x : (baseChangeOf p (zIsInitial.to (CommRingCat.of A))).obj C | I.ideal
-    (Functor.elementsMk _ C x.val) = ⊥},
-    fun {C C'} f x ↦ @I.botLocus.map (Functor.elementsMk _ C x.val)
-      (Functor.elementsMk _ C' ((baseChangeOf p (zIsInitial.to (of A))).map f x).val) ⟨f, rfl⟩ ⟨⟩⟩
-
-/-- If `X` is proper over `ℤ`, the locus `botLocusBaseChange I p` in `X_A` where the family of
-ideals `I` is zero is proper over `A`: a universal point `a` of `X_A`, taken modulo the ideal of
-`I` at `a`, is a universal point of the locus. -/
-private lemma isProperOver_botLocusBaseChange {p : X ⟶ reprBy (CommRingCat.of ℤ)}
-    (hX : IsProperOver p) :
-    IsProperOver ((botLocusBaseChange I p).ι ≫
-      fiberProd.snd p (reprMap (zIsInitial.to (of A)))) := by
-  let XA : CommRingCat ⥤ Type 1 := baseChangeOf p (zIsInitial.to (of A))
-  let W : Subfunctor XA := botLocusBaseChange I p
-  obtain ⟨h_sep, T, a, ha⟩ := hX.baseChange (zIsInitial.to (of A))
-  let J : Ideal T := I.ideal (Functor.elementsMk _ T a.val)
-  -- The image under `f` of the universal point `a` lies in `W` exactly when `f` kills `J`.
-  have h_mem {C : CommRingCat} (f : T ⟶ C) : XA.map f a ∈ W.obj C ↔ J ≤ RingHom.ker f.hom := by
-    have h_map : J.map f.hom = I.ideal (Functor.elementsMk _ C (XA.map f a).val) :=
-      I.map_eq (a := Functor.elementsMk _ T a.val)
-        (b := Functor.elementsMk _ C (XA.map f a).val) ⟨f, rfl⟩
-    exact h_map.symm.congr_left.trans (map_eq_bot_iff_le_ker _)
-  -- So `a` modulo `J` is a universal point of `W`.
-  refine
-    { diagonal_closed := fun C x y ↦ ?_
-      valuative_cover := ⟨of (T ⧸ J), ⟨_, (h_mem _).mpr mk_ker.ge⟩, fun O z hz ↦ ?_⟩ }
-  · exact (h_sep C x.val y.val).imp fun _ h_iff C' f ↦ Subtype.ext_iff.trans (h_iff C' f)
-  · obtain ⟨f, hf⟩ : ∃ f : T ⟶ of O, XA.map (f ≫ ofHom O.subtype) a = z.val := ha O z.val hz
-    have h_ker : J ≤ RingHom.ker (f ≫ ofHom O.subtype).hom :=
-      (h_mem _).mp (by simpa only [hf] using z.property)
-    exact ⟨ofHom (Ideal.Quotient.lift J f.hom fun _ hb ↦ Subtype.ext (h_ker hb)),
-      Subtype.ext ((Functor.map_comp_apply ..).symm.trans hf)⟩
-
 /-- Proper base change for a coefficient that is `ℤ/ℓ` on the zero locus of a family of ideals.
 `InvertsPrime A ℓ`: `A` is an absolutely integrally closed local domain in which the prime `ℓ` is
 invertible. Let `X` be proper over `ℤ` (`hX`), and `I` a family of ideals on the points of
@@ -1169,13 +889,31 @@ lemma IdealFamily.isDetectedAtPoints_of_proper [InvertsPrime A ℓ]
     (hβ : ∀ a : (ringOf (𝟭 (TestOver A)) ⋙ X).Elements, I.pullToTests.ideal a = ⊥ → Bijective (β a))
     (h_dense : IsCohomDense F I.pullToTests.botLocus) :
     IsDetectedAtPoints (testOfPoint A X) F := by
-  -- The locus `W = {I = 0}` in `X_A` is proper over `A`. For a test `c` over `A`, the cohomology of
-  -- `h_c` with coefficients `F` is that of `W_c` with coefficients `ℤ/ℓ`, naturally in `c`; both
-  -- claims then come from `IsProperOver.isOpen_zero_set_and_eq_zero` and
-  -- `IsProperOver.isTestCohomEquiv_field_extension`.
-  let W : Subfunctor (baseChangeOf p (zIsInitial.to (of A))) := botLocusBaseChange I p
+  -- The locus `W = {I = 0}` in `X_A` is proper over `A`, and `H*(h_c, F) ≃ H*(W_c, ℤ/ℓ)` naturally.
+  let XA : CommRingCat ⥤ Type 1 := baseChangeOf p (zIsInitial.to (of A))
+  let W : Subfunctor XA :=
+    ⟨fun C ↦ {x : XA.obj C | I.ideal (Functor.elementsMk _ C x.val) = ⊥},
+      fun {C C'} f x ↦ @I.botLocus.map (Functor.elementsMk _ C x.val)
+        (Functor.elementsMk _ C' (XA.map f x).val) ⟨f, rfl⟩ ⟨⟩⟩
   let s : W.toFunctor ⟶ reprBy (of A) := W.ι ≫ fiberProd.snd p (reprMap (zIsInitial.to (of A)))
-  have hs : IsProperOver s := isProperOver_botLocusBaseChange I hX
+  have hs : IsProperOver s := by
+    obtain ⟨h_sep, T, a, ha⟩ := hX.baseChange (zIsInitial.to (of A))
+    let J : Ideal T := I.ideal (Functor.elementsMk _ T a.val)
+    -- The image under `f` of `a` lies in `W` iff `f` kills `J`, so `a` mod `J` is universal for
+    -- `W`.
+    have h_mem {C : CommRingCat} (f : T ⟶ C) : XA.map f a ∈ W.obj C ↔ J ≤ RingHom.ker f.hom :=
+      (I.map_eq (a := Functor.elementsMk _ T a.val)
+        (b := Functor.elementsMk _ C (XA.map f a).val) ⟨f, rfl⟩).symm.congr_left.trans
+          (map_eq_bot_iff_le_ker _)
+    refine
+      { diagonal_closed := fun C x y ↦
+          (h_sep C x.val y.val).imp fun _ h_iff C' f ↦ Subtype.ext_iff.trans (h_iff C' f)
+        valuative_cover := ⟨of (T ⧸ J), ⟨_, (h_mem _).mpr mk_ker.ge⟩, fun O z hz ↦ by
+          obtain ⟨f, hf⟩ : ∃ f : T ⟶ of O, XA.map (f ≫ ofHom O.subtype) a = z.val := ha O z.val hz
+          have h_ker : J ≤ RingHom.ker (f ≫ ofHom O.subtype).hom :=
+            (h_mem _).mp (by simpa only [hf] using z.property)
+          exact ⟨ofHom (Ideal.Quotient.lift J f.hom fun _ hb ↦ Subtype.ext (h_ker hb)),
+            Subtype.ext ((Functor.map_comp_apply ..).symm.trans hf)⟩⟩ }
   -- `κ` compares `ℤ/ℓ` on all tests with `F` through `β`; `Wc c = W_c`, and `U c` is the part of
   -- `h_c` where `I = 0`.
   let κ : Comparison (locConstCoeff ⟨ZMod ℓ⟩) F := ⟨testOfPoint A X ⋙ TestOver.toTest A, β⟩
@@ -1190,25 +928,22 @@ lemma IdealFamily.isDetectedAtPoints_of_proper [InvertsPrime A ℓ]
       naturality _ _ f := .symm congr(↾fun _ ↦ ⟨(⟨$(baseChangeOf.ext f.2 f.1.1.1.2), _⟩, _), _⟩) }
   -- `u c` is bijective on cohomology, because `β` is bijective where `I = 0`.
   have hu (c : TestOver A) : κ.IsBijective (freeAbMap (u c)) := by
-    -- A point of `W_c(T)` is `x ∈ X(T)`, an `A`-algebra structure `α` on `T` with `I = 0` at
-    -- `(x, α)`, and an `A`-algebra map `γ : c → T`; this point is its own universal point.
     refine Comparison.HasUniversalPoints.isBijective fun T ⟨⟨⟨⟨⟨x, ⟨α⟩⟩, _⟩, hI⟩, ⟨γ⟩⟩, hγ⟩ ↦ ?_
     let hT_algebra : Algebra A T.obj := α.hom.toAlgebra
+    -- A point of `W_c(T)` is `x ∈ X(T)`, an `A`-algebra structure `α` with `I = 0`, and
+    -- `γ : c → T`; this point is its own universal point.
     let B : (ringOf (𝟭 (TestOver A)) ⋙ X).Elements :=
       Functor.elementsMk _ ⟨.of A T.obj, T.property⟩ x
     let γA : c ⟶ B.obj := ⟨CommAlgCat.ofHom ⟨γ.hom, fun a ↦ congr($(hγ.symm).down.hom' a)⟩⟩
     refine ⟨B, ⟨⟨γA⟩, hI⟩, 𝟙 T, ((baseChangeOf ..).map_id_apply ..).symm, fun D z f hf ↦ ?_,
       .comp (hβ B hI) bijective_id⟩
-    -- The components of `hf` say that `f` is `A`-linear, sends `x` to the point of `D`, and
-    -- carries `γ` to `z`.
     let fA : B.1 ⟶ D.1 := ⟨CommAlgCat.ofHom ⟨f.1.hom, fun a ↦ congr($hf.1.1.1.1.2.1.1 a).symm⟩⟩
-    refine ⟨⟨fA, congr($hf.1.1.1.1.1).symm⟩, ⟨?_, rfl⟩, ?_⟩
-    · exact congr(⟨⟨⟨CommAlgCat.ofHom ⟨$(hf.symm).val.2.down.hom', _⟩⟩⟩, _⟩)
-    · -- Uniqueness: a map `y` with `κ.functor.map y = f` is `fA`.
-      rintro y ⟨-, rfl⟩
-      rfl
-  -- `I = 0` is dense for `F`, so `h_c` and `U c` have the same cohomology, which by `hu` is that of
-  -- `W_c`.
+    refine ⟨⟨fA, congr($hf.1.1.1.1.1).symm⟩,
+      ⟨congr(⟨⟨⟨CommAlgCat.ofHom ⟨$(hf.symm).val.2.down.hom', _⟩⟩⟩, _⟩), rfl⟩, ?_⟩
+    rintro y ⟨-, rfl⟩
+    rfl
+  -- `I = 0` is dense for `F`, so `h_c` and `U c` have the same cohomology, which by `hu` is that
+  -- of `W_c`.
   let e {c : TestOver A} {n : ℕ} :
       H (freeAb.obj (testOfPoint A X ⋙ reprBy c)) F n ≃+
         H (freeAb.obj (testIncl ⋙ Wc c)) (locConstCoeff ⟨ZMod ℓ⟩) n :=
@@ -1222,33 +957,28 @@ lemma IdealFamily.isDetectedAtPoints_of_proper [InvertsPrime A ℓ]
     refine (hu k n).injective (.trans (κ.map_pull_eq_pull_map (a := freeAbMap (u c))
       (a' := freeAb.map (Subfunctor.fromPreimage _ (Functor.whiskerLeft _ (reprMap φ))))
       (by exact freeAb.hom_ext fun _ _ ↦ rfl) n _).symm ?_)
-    -- `κ.pull (u d)` undoes the second half of `e`, so both sides pull `x` back along one map
+    -- `κ.pull (u d)` undoes the second half of `e`, so both sides pull `x` back along one map.
     have h_pull_e {d : TestOver A} (y : H (freeAb.obj (testOfPoint A X ⋙ reprBy d)) F n) :
         κ.pull (freeAbMap (u d)) n (e y) = H.map F (freeAb.map (U d).ι) n y :=
       (ofBijective _ (hu d n)).apply_symm_apply _
     refine (congrArg _ (h_pull_e x)).trans (Eq.trans ?_ (h_pull_e _).symm)
-    rw [H.map_map, H.map_map]
-    rfl
-  refine ⟨fun c n x ↦ ?_, fun V k φ hV hk n ↦ ?_⟩
-  · intro z
-    -- Stated for abstract groups: applied to the groups `H`, it lets the kernel match the zero
-    -- elements without unfolding the group structure of `Ext` (which made this step slow).
-    have zero_iff {M N : Type 2} [AddCommGroup M] [AddCommGroup N] (e : M ≃+ N) (x : M) :
-        e x = 0 ↔ x = 0 := e.map_eq_zero_iff
-    -- It suffices to prove the two claims for `e x` and a set `z'` with the same elements as `z`.
-    have h_transfer {z' : Set (PrimeSpectrum c.obj)}
-        (h : IsOpen z' ∧ (z' = Set.univ → e x = 0)) (hz : ∀ P, P ∈ z ↔ P ∈ z') :
-        IsOpen z ∧ (z = Set.univ → x = 0) := by
-      obtain rfl : z' = z := (Set.ext hz).symm
-      exact ⟨h.1, fun h_univ ↦ (zero_iff e x).mp (h.2 h_univ)⟩
-    refine h_transfer (hs.isOpen_zero_set_and_eq_zero isUnit_prime ⟨of _, c.property⟩) fun P ↦ ?_
-    -- `Iff.rfl`: the residue map of `residueTest c P` and the algebra map to the residue field at
-    -- `P` agree only after unfolding definitions.
-    exact (zero_iff e _).symm.trans ((Eq.congr_left (he (residueTest c P).hom n x).symm).trans
-      Iff.rfl)
-  · exact (Comparison.bijective_iff_of_comm_sq (he φ n) e.bijective e.bijective).mpr
+    rw [H.map_map, H.map_map]; rfl
+  refine ⟨fun c n x ↦ ?_, fun V k φ hV hk n ↦
+    (Comparison.bijective_iff_of_comm_sq (he φ n) e.bijective e.bijective).mpr
       (hs.isTestCohomEquiv_field_extension isUnit_prime _ hV hk V.property.toIsAbsIntegrallyClosed
-        k.property.toIsAbsIntegrallyClosed n)
+        k.property.toIsAbsIntegrallyClosed n)⟩
+  intro z
+  -- Stated for abstract groups: lets the kernel match zero without unfolding `Ext` (which is slow).
+  have zero_iff {M N : Type 2} [AddCommGroup M] [AddCommGroup N] (e : M ≃+ N) (x : M) :
+      e x = 0 ↔ x = 0 := e.map_eq_zero_iff
+  have h_transfer {z' : Set (PrimeSpectrum c.obj)}
+      (h : IsOpen z' ∧ (z' = Set.univ → e x = 0)) (hz : ∀ P, P ∈ z ↔ P ∈ z') :
+      IsOpen z ∧ (z = Set.univ → x = 0) := by
+    obtain rfl : z' = z := (Set.ext hz).symm
+    exact ⟨h.left, fun h_univ ↦ (zero_iff e x).mp (h.right h_univ)⟩
+  refine h_transfer (hs.isOpen_zero_set_and_eq_zero isUnit_prime ⟨of _, c.property⟩) fun P ↦
+    -- `Iff.rfl`: the residue map of `residueTest c P` and the algebra map agree after unfolding.
+    (zero_iff e _).symm.trans ((Eq.congr_left (he (residueTest c P).hom n x).symm).trans Iff.rfl)
 
 end ProperBaseChange
 
