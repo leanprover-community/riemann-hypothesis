@@ -913,9 +913,9 @@ lemma amplitudeSum_besselS_one_eq_ite {E : Type} [Field E] [CMType E] {𝔰 : Sh
     lift γ to S.classUnipotent c using (eq_and_mem_classUnipotent_of_besselS hγ hγ_over).2
     simp only [φ]
     norm_cast
-    -- The default instance size is too small for the two copies of `S.classUnipotent c`.
-    set_option synthInstance.maxSize 512 in
-      simp [ite_apply, ↓eq_mul_inv_iff_mul_eq, tsum_classCutoff_eq_one, ENNReal.tsum_prod']
+    let : DecidableEq (S.classUnipotent c) :=
+      inferInstanceAs (DecidableEq {u : S.G E // u ∈ S.classUnipotent c})
+    simp [ite_apply, ↓eq_mul_inv_iff_mul_eq, tsum_classCutoff_eq_one, tsum_prod']
   have φ_meas (γ : S.G E) : Measurable (φ γ) := by measurability
   obtain ⟨hasSum, integrable, -⟩ :=
     hasSum_amplitudeSum_of_cutoff (side := .full) isStable_besselS c 1 c φ φ_sum φ_meas
