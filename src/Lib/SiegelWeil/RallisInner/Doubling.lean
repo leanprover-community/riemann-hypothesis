@@ -90,6 +90,15 @@ def doubleDatum : 𝒮 (S.hom T) →L⋆[ℂ] 𝒮 (S.hom T) →L[ℂ] 𝒮 ((S.
   (Space.boxProd homSigns_sum_source).flip.comp
     (negSourceFactor S T • negSource.map (V := S.neg.hom T))
 
+omit [WeilData E] [DecidableEq n] in
+/-- The Gram pairing of two block matrices `fromRows A B` and `fromRows C D` for the block-diagonal
+form `fromBlocks J 0 0 (-J)` of `S ⊕ S⁻` is `Aᴴ * J * C - Bᴴ * J * D`. -/
+private lemma fromRows_gram_sum_neg {p q : Type} [Fintype p] [Fintype q]
+    (J : Matrix n n E) (A B : Matrix n p E) (C D : Matrix n q E) :
+    (fromRows A B)ᴴ * (fromBlocks J 0 0 (-J) * fromRows C D) = Aᴴ * J * C - Bᴴ * J * D := by
+  simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromBlocks_mul_fromRows,
+    fromCols_mul_fromRows, sub_eq_add_neg, Matrix.mul_assoc]
+
 /-- For a rational isometry `δ` of `S`, the splitting of `S ⊕ S⁻` into hyperbolic planes whose
 Lagrangian is the graph `{(δ y, -y)}`; the dual frame spans `{(δ y, y)}`. Here `k` is the isotropic
 frame, `l` the dual frame (`lᴴ J k = 1`), and the anisotropic part `i` is empty. -/
@@ -99,14 +108,12 @@ def graphSplitting (S : Space E n s) (δ : U S.J) : CompleteSplitting (S.sum S.n
   l := fromRows (δ : Matrix n n E) 1 * (2⁻¹ : E) • S.J⁻¹
   i := 0
   gram_kk := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows, ← U.form_mul_inv_eq, mul_assoc]
+    simp [Matrix.mul_assoc, fromRows_gram_sum_neg, ← U.form_mul_inv_eq]
   gram_ll := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows, ← U.form_mul_inv_eq, S.isHermitian_J.inv.eq, mul_assoc]
+    simp [Matrix.mul_assoc, fromRows_gram_sum_neg, ← U.form_mul_inv_eq]
   gram_lk := by
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromBlocks,
-      fromCols_mul_fromRows, ← U.form_mul_inv_eq, S.isHermitian_J.inv.eq, ← two_smul E, mul_assoc]
+    simp [Matrix.mul_assoc, fromRows_gram_sum_neg, ← U.form_mul_inv_eq, S.isHermitian_J.inv.eq,
+      ← two_smul E]
   gram_ii := by ext ⟨⟩
   gram_ik := by simp
   gram_il := by simp
@@ -302,10 +309,9 @@ lemma mul_eq_zero_of_zeroTerm_ne_zero {p : Type} [Fintype p] [DecidableEq p] {a 
   obtain hs | ⟨A, Ψ, w, f₀, hA, hΨ, hΨ_inj, rfl⟩ := hf
   · -- All signs agree: the columns of `K * c` are isotropic in an anisotropic space.
     have h_form : (K * c)ᴴ * (S.J * (K * c)) = 0 := calc
-      _ = cᴴ * (D.kᴴ * (S.sum S.neg).J * D.k) * c := by
-        simp [hk, hc, Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc, fromBlocks_mul_fromRows,
-          conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromRows]
-      _ = 0 := by rw [D.gram_kk, Matrix.mul_zero, Matrix.zero_mul]
+      _ = cᴴ * (D.kᴴ * ((S.sum S.neg).J * D.k)) * c := by
+        simp [hk, hc, fromRows_gram_sum_neg, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc]
+      _ = 0 := by rw [← Matrix.mul_assoc D.kᴴ, D.gram_kk, Matrix.mul_zero, Matrix.zero_mul]
     exact ext_col fun j ↦ S.eq_zero_of_isotropic_of_definite hs _ (congrFun₂ h_form j j)
   · -- Otherwise the term is a bounded functional `ℓ` of the datum that is invariant under the
     -- translations attached to `K * c ≠ 0`. No point of the support of `Ψ` is orthogonal to all
@@ -335,8 +341,7 @@ lemma exists_graph_eq_of_zeroTerm_ne_zero {a b : AutChar E} {f : 𝒮 (S.hom T)}
   obtain ⟨K, K', hk⟩ : ∃ K K' : Matrix n (Fin r) E, D.k = fromRows K K' :=
     ⟨D.k.toRows₁, D.k.toRows₂, D.k.fromRows_toRows.symm⟩
   have h_iso : Kᴴ * S.J * K = K'ᴴ * S.J * K' := by
-    simpa [hk, add_neg_eq_zero, Matrix.mul_assoc, fromBlocks_mul_fromRows,
-      conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromRows] using D.gram_kk
+    simpa [hk, Matrix.mul_assoc, fromRows_gram_sum_neg, sub_eq_zero] using D.gram_kk
   obtain rfl : card n = r := by simpa [← two_mul] using D.card_eq
   -- As the frame `D.k` has the left inverse `D.lᴴ * J`, multiplication by `K'` is injective, hence
   -- surjective by counting dimensions.
