@@ -197,11 +197,6 @@ variable {R : Type*} [CommRing R]
 def doublingForms (c : R) (w : R × R) : R × R :=
   ((w.1 ^ 2 - w.2 ^ 2) ^ 2, w.1 * w.2 * (4 * w.1 ^ 2 + c ^ 2 * w.1 * w.2 + 4 * w.2 ^ 2))
 
-/-- The forms `doublingForms c` are homogeneous of degree `4`. -/
-lemma doublingForms_smul (c a : R) (w : R × R) :
-    doublingForms c (a • w) = a ^ 4 • doublingForms c w := by
-  ext <;> simp only [doublingForms, Prod.smul_fst, Prod.smul_snd, smul_eq_mul] <;> ring
-
 end Forms
 
 variable {p : ℕ} [Fact p.Prime]
@@ -263,7 +258,10 @@ lemma norm_doublingForms {c : ℂ_[p]} (hc : ‖c‖ ≤ 1) (h_disc : ‖c ^ 4 -
     simp [doublingForms]
   · have h_unit : ‖a⁻¹ • w‖ = 1 := by simp [norm_smul, ha, ha_ne]
     calc ‖doublingForms c w‖ = ‖doublingForms c (a • a⁻¹ • w)‖ := by rw [smul_inv_smul₀ ha_ne]
-      _ = ‖a‖ ^ 4 * ‖doublingForms c (a⁻¹ • w)‖ := by rw [doublingForms_smul, norm_smul, norm_pow]
+      _ = ‖a‖ ^ 4 * ‖doublingForms c (a⁻¹ • w)‖ := by
+        rw [show doublingForms c (a • a⁻¹ • w) = a ^ 4 • doublingForms c (a⁻¹ • w) by
+          ext <;> simp only [doublingForms, Prod.smul_fst, Prod.smul_snd, smul_eq_mul] <;> ring,
+          norm_smul, norm_pow]
       _ = ‖w‖ ^ 4 := by rw [norm_doublingForms_eq_one hc h_disc h_unit, mul_one, ha]
 
 end New
