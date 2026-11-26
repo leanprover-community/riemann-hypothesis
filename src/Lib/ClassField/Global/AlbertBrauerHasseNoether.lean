@@ -205,13 +205,7 @@ lemma New.exists_mul_prod_eq_one {G ι : Type*} [Monoid G] [Fintype ι] (ψ : G 
   by_contra! hne
   have h_expand (x : G) : ∑ T : Finset ι, (T.prod c) x = ∏ i, (1 + c i x) := by
     simp [← powerset_univ, ← prod_one_add]
-  have hψ (x : G) : ∏ i, (1 + c i x) = ψ x * ∏ i, (1 + c i x) := by
-    by_cases hx : ∀ i : ι, c i x ≠ -1
-    · rw [h x hx, one_mul]
-    · rcases not_forall.mp hx with ⟨i, hi⟩
-      have h0 : ∏ j, (1 + c j x) = 0 :=
-        Finset.prod_eq_zero (Finset.mem_univ i) (by rw [not_ne_iff.mp hi, add_neg_cancel])
-      rw [h0, mul_zero]
+  have hψ (x : G) : ∏ i, (1 + c i x) = ψ x * ∏ i, (1 + c i x) := by grind [prod_eq_zero_iff]
   have h_coeffs : ∑ T : Finset ι, Finsupp.single (T.prod c) (1 : ℂ) =
       ∑ T : Finset ι, Finsupp.single (ψ * T.prod c) 1 :=
     linearIndependent_monoidHom G ℂ (funext fun x ↦ by simpa [← mul_sum, ← h_expand] using hψ x)
@@ -261,8 +255,7 @@ lemma New.exists_hasPrimeDensity_addChar_uniformizer (f : AddChar (Additive ((�
     -- `sgn w` with `w ∈ T` is `1` (`hT`).
     refine ⟨by simpa [ψ.ker_toHomUnits] using isOpen_mono hW hW_open, ?_⟩
     intro x
-    have hx := DFunLike.congr_fun hT x
-    simpa [sgn, piecewise, Finset.univ_inter] using hx
+    simpa [sgn, piecewise, Finset.univ_inter] using DFunLike.congr_fun hT x
   have h_ne : ψ.toHomUnits ≠ 1 := by
     refine fun h_one ↦ hf (AddChar.ext _ _ (Quot.ind fun a ↦ ?_))
     exact congrArg Units.val (DFunLike.congr_fun h_one a)
@@ -297,24 +290,14 @@ private lemma index_re_le_sum_of_hasPrimeDensity [FiniteIndex W]
   have h_mem : ∀ᶠ v in .cofinite, (D v).Nonempty → locIdele v (uniformizer v) ∈ W := by
     filter_upwards [eventually_unramified (mk' W) (by simpa)] with v h_unit ⟨w, hw, hq⟩
     subst hw
-    have h_div : locIdele (w.below K) (uniformizer _ / localNorm K w (uniformizer w)) ∈ W :=
-      (eq_one_iff _).mp (h_unit _ (by simp [v_localNorm (f := 1), hq]))
-    have h_eq : locIdele (w.below K) (uniformizer _) =
-        locIdele (w.below K) (uniformizer _ / localNorm K w (uniformizer w)) *
-          Units.map (adeleNorm K L) (locIdele w (uniformizer w)) := by
-      rw [adeleNorm_locIdele, ← map_mul, div_mul_cancel]
-    rw [h_eq]
-    exact mul_mem h_div (h_norm _)
+    specialize h_unit (uniformizer _ / localNorm K w (uniformizer w))
+    simp_all [v_localNorm (f := 1), ← adeleNorm_locIdele, (eq_one_iff _).mpr]
   -- For almost all `v`, `[W] * #(D v) ≤ [L : K] * ∑ f, f(ϖ_v)` with `[W]` the index: the sum is
   -- `[W]` if `ϖ_v ∈ W` and `0` otherwise. Compare the densities of the two sides.
   refine (hasPrimeDensity_card_degree_one L W.index).re_le_re (.sum (fun _ ↦ finrank K L) hd)
     (h_mem.mono fun v hv _ ↦ ?_)
   rcases (D v).eq_empty_or_nonempty with hD | hD
-  · dsimp [D] at hD
-    rw [hD, Set.ncard_empty]
-    simp only [Nat.cast_zero, mul_zero, Complex.zero_re, ← mul_sum, sum_apply_eq_ite,
-      Complex.mul_re, Complex.natCast_re, Complex.natCast_im, zero_mul, sub_zero]
-    split_ifs <;> simp [mul_nonneg]
+  · simp_all [D, ← mul_sum, sum_apply_eq_ite, apply_ite, mul_nonneg]
   · have h_mul : (W.index : ℝ) * (D v).ncard ≤ finrank K L * W.index := by grw [h_card, mul_comm]
     simpa [(eq_one_iff _).mpr (hv hD), index, mul_comm] using h_mul
 
@@ -338,14 +321,7 @@ private lemma hasPrimeDensity_addChar_uniformizer_of_adeleNorm_mem
   have h_pos : (0 : ℝ) < (∑ g, (finrank K L : ℂ) * ((if g = 0 then 1 else 0) - m g)).re :=
     (Nat.cast_pos.mpr Nat.card_pos).trans_le h_le
   have hm0 (g : AddChar (Additive ((𝔸f K)ˣ ⧸ W)) ℂ) : m g = 0 := by
-    have h_sum : (∑ g', m g') = 0 := by
-      simp only [← mul_sum, Finset.sum_sub_distrib, Finset.sum_ite_eq', Finset.mem_univ,
-        ↓reduceIte, ← Nat.cast_sum, Complex.mul_re, Complex.natCast_re, Complex.natCast_im,
-        zero_mul, sub_zero, Complex.sub_re, Complex.one_re] at h_pos
-      have h_lt : ((∑ g', m g' : ℕ) : ℝ) < 1 := by
-        linarith [(mul_pos_iff_of_pos_left (Nat.cast_pos.mpr finrank_pos)).mp h_pos]
-      exact Nat.lt_one_iff.mp (by exact_mod_cast h_lt)
-    exact Finset.sum_eq_zero_iff.mp h_sum g (Finset.mem_univ g)
+    simp_all [← Nat.cast_sum, ← mul_sum, finrank_pos]
   simpa [hm0 f] using hm f
 
 /-- Let `L / K` be Galois and `W` an open subgroup of the finite ideles of `K` (`hW_open`) that
@@ -424,7 +400,7 @@ lemma adeleNorm_mem_closure {y : 𝔸f L} {v : IsDedekindDomain.HeightOneSpectru
   -- norm.
   have h_cont : Continuous fun y ↦ adeleNorm K L y v := (continuous_evalAt v).comp (by fun_prop)
   have h_on_L (x : L) : adeleNorm K L (algebraMap L (𝔸f L) x) v =
-      algebraMap K (v.adicCompletion K) (Algebra.norm K x) := by simp; rfl
+      algebraMap K (v.adicCompletion K) (Algebra.norm K x) := by aesop
   exact map_mem_closure h_cont (denseRange_algebraMap_finAdele y)
     (Set.mapsTo_range_iff.mpr fun x ↦ ⟨x, (h_on_L x).symm⟩)
 
@@ -470,7 +446,8 @@ lemma exists_localNorm_of_abelianLift_artinAt {w : FinPlace L} {x : (LocField (w
   rw [w.isPlaceOver_placeOver.isPlaceOver_below.abelianLift_artinAt] at hx
   -- Inside the decomposition group, `χ` kills exactly the elements that come from `Gal(Ω/L)`.
   have h_ker (g : decompGroup Γ (placeOver w)) :
-      (χ : Γ → QZ) g = 0 ↔ ∃ g' : decompGroup (ker χ) (placeOver w), (ker χ).subtype g' = g :=
+      (χ : Γ → QZ) g = 0 ↔
+        ∃ g' : decompGroup (ker χ) (placeOver w), (ker χ).subtype g' = g :=
     ⟨fun h ↦ ⟨⟨⟨g.1, h⟩, g.2⟩, rfl⟩, fun ⟨g', hg'⟩ ↦ hg' ▸ g'.1.2⟩
   exact (w.isPlaceOver_placeOver.isNormCompatible (ker χ).subtype 1 (fun _ _ ↦ rfl)
     (IsScalarTower.algebraMap_apply K L Ω)).exists_localNorm_eq
@@ -627,9 +604,8 @@ private lemma relIndex_ker_localSymbols_pow_mul_pow [IsGalois K L]
     obtain ⟨y, hy⟩ : ∃ y, (abelianLift χ).comp (artinAt Γ v) y = a v := (a v).prop
     refine ⟨locIdele v.val y, ?_, eq_update_iff.mpr ?_⟩
     · simp +contextual [← and_forall_ne v.val]
-    · refine ⟨Subtype.ext ?_, fun w hw ↦ Subtype.ext ?_⟩
-      · simpa [localSymbols] using hy
-      · simp [localSymbols, hw]
+    · refine ⟨Subtype.ext (by simpa [localSymbols] using hy), fun w hw ↦ Subtype.ext ?_⟩
+      simp [localSymbols, hw]
   -- So the index of the kernel is the order of the product of the ranges.
   have h_index : (localSymbols χ S).ker.relIndex (idelesUnitOff S) =
       ∏ v ∈ S, Nat.card ((abelianLift χ).comp (artinAt Γ v)).range := by
