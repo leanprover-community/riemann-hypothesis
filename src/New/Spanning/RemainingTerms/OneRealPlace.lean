@@ -428,12 +428,6 @@ lemma RealPlace.inclMatrix_mul_dualProducts (hδ : (subframeBlock hi Z).det ≠ 
   congr 1
   simp [← Matrix.ext_iff, inclMatrix, Matrix.mul_apply, Matrix.one_apply]
 
-/-- If `Z` is the matrix of the products of the two frames, the products of the frame with the
-image under `γ` of the subframe `e₁, …, e_i, z` are the columns of `Z` at its indices. -/
-lemma RealPlace.frameCols_mul_mul_subframeCols (hZ : realFrameGram γ = Z) :
-    𝔰.frameColsᴴ * 𝔰.J₁ * (γ.val.val * subframeCols hi) = Z * inclMatrix ℂ (subframeIndex hi) := by
-  rw [← Matrix.mul_assoc γ.val.val, ← Matrix.mul_assoc, ← hZ, realFrameGram_eq_conjTranspose_mul]
-
 /-- The columns of `ω` are a basis with Gram matrix `-1` of a subspace of the negative space at `y`.
 Their products with the subframe `e₁, …, e_i, z` form the lower triangular matrix `L`, and those
 with the whole frame are the ones that orthogonality to `I = A ∩ γ A` dictates when the frames `f`
@@ -616,7 +610,8 @@ lemma conjTranspose_frameCols_mul_J₁_mul_sub_eq_zero (h : IsTriangularBasis hi
     (hZ : realFrameGram γ = Z) :
     𝔰.frameColsᴴ * 𝔰.J₁ * (imageBasis hi γ Z L - ω) = 0 := by
   rw [Matrix.mul_sub, h.products_eq, imageBasis, ← Matrix.mul_assoc, ← Matrix.mul_assoc,
-    frameCols_mul_mul_subframeCols hi hZ, dualProducts, sub_self]
+    ← Matrix.mul_assoc γ.val.val, ← Matrix.mul_assoc, ← hZ, realFrameGram_eq_conjTranspose_mul,
+    dualProducts, sub_self]
 
 /-- Let `γ, y ∈ G₁`, let `Z` be the matrix of products of the frames `f` and `γ f` and let `(ω, L)`
 be a triangular basis at `y`. Then the differences `imageBasis - ω` have the same Gram matrix as
