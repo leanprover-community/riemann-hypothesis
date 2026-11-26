@@ -264,7 +264,7 @@ theorem IsBesselFunction.lintegral_enorm_sq_integral_inner_translate
       HCParam.formalDegree, inv_inv, ← integral_comp_frameEquiv (J := 𝔰.J₁)]
     -- `formalDegree` is the inverse of the integral of `‖dsCoeff‖ ^ 2`.
     rfl
-  simp_rw [h_coeff, enorm_mul, mul_pow, lintegral_mul_const' _ _ (pow_ne_top enorm_ne_top)]
+  simp_rw [h_coeff, eNorm_mul, mul_pow, lintegral_mul_const' _ _ (pow_ne_top eNorm_ne_top)]
   rw [h_norm, lintegral_enorm_sq F_int hF.memLp_top, ← ofReal_norm,
     Complex.norm_of_nonneg (integral_nonneg fun _ ↦ sq_nonneg _)]
 

@@ -598,7 +598,7 @@ lemma isBesselFunction_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v�
   bounded :=
     have h_le (y : 𝔰.G₁) : ‖besselAverage l rep x v y‖ₑ ≤
         .ofReal (16 ^ (9 * 𝔰.r ^ 2)) * besselBallVolume (ε := ε) x :=
-      (enorm_integral_le_lintegral_enorm _).trans
+      (eNorm_integral_le_lintegral_eNorm _).trans
         (lintegral_enorm_besselIntegrand_le x hv_norm h_gap y)
     ⟨_, fun y ↦ toReal_mono (mul_ne_top ofReal_ne_top (besselBallVolume_ne_top x)) (h_le y)⟩
   map_unipotent_mul s hs y := by
@@ -645,7 +645,7 @@ lemma convolve_besselAverage (h_cont : Continuous rep) (hv_norm : ‖v‖ = 1)
           ∂𝔰.besselGraphMeasure
       _ ≤ ∫⁻ a : 𝔰.G₁, ‖l.formalDegree * l.dsCoeffInFrame a⁻¹‖ₑ *
           (.ofReal (16 ^ (9 * 𝔰.r ^ 2)) * besselBallVolume (ε := ε) x) := by
-        simp_rw [enorm_smul, lintegral_const_mul' _ _ enorm_ne_top]
+        simp_rw [eNorm_smul, lintegral_const_mul' _ _ eNorm_ne_top]
         grw [lintegral_enorm_besselIntegrand_le x hv_norm h_gap]
       _ < ∞ := by
         rw [lintegral_mul_const'' _ (by fun_prop)]
@@ -661,7 +661,7 @@ lemma enorm_besselAverage_le (hv_norm : ‖v‖ = 1) (y : 𝔰.G₁) :
       ∫⁻ s : 𝔰.besselGraph, ‖l.dsCoeffInFrame (x⁻¹ * (s.val.fst * y))‖ₑ
         ∂𝔰.besselGraphMeasure := by
   simp_rw [← enorm_besselIntegrand (rep := rep) x hv_norm]
-  exact enorm_integral_le_lintegral_enorm _
+  exact eNorm_integral_le_lintegral_eNorm _
 
 /-- Let `rep` be a continuous unitary representation of `H`, `v` a unit vector, and `l = 2λ` a
 parameter with coefficient `c_λ = l.dsCoeffInFrame` and large gap. Then

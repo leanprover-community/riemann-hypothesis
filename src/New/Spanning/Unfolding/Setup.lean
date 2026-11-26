@@ -609,7 +609,7 @@ lemma discreteTopology_map_ratToInf {c : S.Classes} (K : Subgroup (S.classUnipot
   have h_inj : Function.Injective toMatrices := fun γ γ' h ↦
     Subtype.ext (funext fun v ↦ Subtype.ext (Units.ext (congrFun h v)))
   have h_cont : Continuous toMatrices := continuous_pi fun v ↦ Units.continuous_val.comp
-    (continuous_subtype_val.comp ((continuous_apply v).comp continuous_subtype_val))
+    (continuous_subtypeVal.comp ((continuous_apply v).comp continuous_subtypeVal))
   refine h_cont.discrete_of_tendsto_cofinite_cocompact
     (tendsto_cofinite_cocompact_iff.2 fun C hC ↦ ?_)
   -- The matrices of `Γ` are among those of 𝖴_c(M), of which only finitely many lie in `C`.

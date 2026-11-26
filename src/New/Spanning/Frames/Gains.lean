@@ -509,7 +509,7 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
   -- `t` moves both to a bounded size.
   obtain ⟨σ, hσ, τ, hτ, hfσ, hfτ⟩ : ∃ σ ∈ floorGroup j, ∃ τ ∈ floorGroup j, f σ ≠ 0 ∧ f' τ ≠ 0 := by
     by_contra! h_zero
-    refine enorm_ne_zero.1 h_ne (integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun σ hσ ↦
+    refine eNorm_ne_zero.1 h_ne (integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun σ hσ ↦
       integral_eq_zero_of_ae (ae_floorMeasure_mem.mono fun τ hτ ↦ ?_)))
     exact mul_eq_zero_of_right _ (by simpa [or_iff_not_imp_left] using h_zero σ hσ τ hτ)
   obtain ⟨t, ht, h_size, h_size'⟩ : ∃ t ∈ floorGroup j,
@@ -577,7 +577,7 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_char (hk : F.IsCut W) (hj : j ≤ �
   rw [integral_congr_ae h_inner, ← setIntegral_eq_integral_of_ae_compl_eq_zero h_off]
   calc ‖∫ σ in S, f σ * conj (G (t *ᵥ orbitPoint j σ)) ∂F.floorMeasure j‖ₑ ^ 2
       ≤ (∫⁻ σ in S, ‖f σ * conj (G (t *ᵥ orbitPoint j σ))‖ₑ ∂F.floorMeasure j) ^ 2 := by
-        grw [enorm_integral_le_lintegral_enorm]
+        grw [eNorm_integral_le_lintegral_eNorm]
     _ ≤ (∫⁻ σ in S, ‖f σ‖ₑ ^ 2 ∂F.floorMeasure j) *
           ∫⁻ σ in S, ‖G (t *ᵥ orbitPoint j σ)‖ₑ ^ 2 ∂F.floorMeasure j :=
         sq_lintegral_le (by fun_prop) (by fun_prop) (by simp [mul_pow])
@@ -977,7 +977,7 @@ theorem Gauge.formIntegrandL1Norm_sq_le_of_heads (hk : F.IsCut W) (hj : j ≤ �
       φ₂, k₁, k₂]
   have hφ₂ : (floorGroup (i + 1)).FixesLeft φ₂ ∧ ∀ g : T.G, ¬F.IsNear (i + 1) g → φ₂ g = 0 :=
     ⟨fun σ hσ g ↦ by simp [φ₂, ker₂.partialCorrelation_mul_left, hσ, mul_assoc],
-      fun g hg ↦ enorm_eq_zero.2 (not_imp_comm.1 ker₂.isNear_of_partialCorrelation_ne_zero hg)⟩
+      fun g hg ↦ eNorm_eq_zero.2 (not_imp_comm.1 ker₂.isNear_of_partialCorrelation_ne_zero hg)⟩
   have h_section (g : T.G) :
       ∫⁻ n in {n | F.IsNear (i + 1) (weylElem (i + 1) p * (n * g))}, φ₂ (n * g) ^ 2
           ∂heisenbergMeasure i ≤

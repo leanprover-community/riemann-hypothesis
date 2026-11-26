@@ -645,7 +645,7 @@ theorem New.RealPlace.lintegral_gramSection_integral_le {𝔰 : Shape} {I : Type
       ∫⁻ g, ‖W i g‖ₑ ^ 2 ∂besselQuotMeasure ≤
         .ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2 := by
     grw [V_schur (i.map Prod.fst) (by simpa using hi) (ψ i) (ψ_int i), i.length_map, hi,
-      enorm_le_iff_norm_le.2 (norm_ψ_le i _)]
+      eNorm_le_iff_norm_le.2 (norm_ψ_le i _)]
   calc
     _ ≤ .ofReal (P ^ (550 * 𝔰.n ^ 2)) *
         (.ofReal (P ^ (2 * (2 * 𝔰.n ^ 2))) * D * ∫⁻ y, ‖φ y‖ₑ ^ 2) := by
