@@ -223,7 +223,8 @@ lemma atPlaces_conj_mem_mirabolic {j : ℕ} (k : D.levelX j) :
         h_row w⟩
   have h_ne_inv : directDatum
       (atPlaces D.nonInducedPlaces ((D.diagPointN j)⁻¹ * k.val * D.diagPointN j))⁻¹.val ≠ 0 := by
-    simpa [mul_assoc] using h_ne k⁻¹
+    simpa only [mul_assoc, map_mul, map_inv, atPlaces_embedGL, _root_.mul_inv_rev, inv_inv,
+      Units.val_mul, coe_units_inv, ne_eq, InvMemClass.coe_inv] using h_ne k⁻¹
   obtain ⟨a, h_col, ha⟩ := exists_inclGL_eq (h_ne k) h_ne_inv
   -- `h_col`: the indicator of "the last column is the last basis vector" is non-zero at `a`
   have h_last : (reductionGL a).valᵀ (.inr ()) = lastBasisVector := (ite_ne_right_iff.1 h_col).1
