@@ -547,7 +547,7 @@ lemma scalar_commute_upOperator (x : (O (F := LocProd P))ˣ) :
     Commute (π.ρ (inclGL (scalar (n ⊕ Unit) x))) (upOperator π) :=
   commute_upOperator fun g ↦ by
     rw [map_scalar]
-    exact (show Commute _ g from GeneralLinearGroup.scalar_commute _ g).map π.ρ
+    exact Commute.map (GeneralLinearGroup.scalar_commute _ g) π.ρ
 
 omit [WeilData E] in
 /-- A linear map `T` from `π` to `π'` that commutes with integral unit scalars sends ramified
