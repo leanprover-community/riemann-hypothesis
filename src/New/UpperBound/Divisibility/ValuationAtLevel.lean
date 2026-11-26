@@ -102,10 +102,10 @@ lemma norm_detCharAt_diagN_le {i : ℕ} (hi : i ≤ 2 * D.m) (k j : ℕ) (S : Fi
     simpa [detCharAt, -atPlaces_embedGL, -prod_ite_mem] using this
   have h_detFin :
       G.det (s := (1 : D.X j → ℤˣ)) (1, D.diagPoint j S) =
-        divStar (detOn D.nonInducedPlaces (D.diagPoint j S).1) :=
+        divStar (detOn D.nonInducedPlaces (D.diagPoint j S).val) :=
     G.detFin_of_mem_supportedOn isConjDisjoint (embedGL_mem_supportedOn _)
   change ‖ιₚ ((D.chainChar ϑ i).val
-    (divStar (detOn D.nonInducedPlaces (D.diagPoint j S).1)))‖ ≤ _
+    (divStar (detOn D.nonInducedPlaces (D.diagPoint j S).val)))‖ ≤ _
   rw [← h_detFin]
   have h_arch : (G.det (s := (1 : D.X j → ℤˣ)) (1, D.diagPoint j S) : 𝔸 D.E).fst = 1 := by
     ext w

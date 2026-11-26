@@ -697,8 +697,8 @@ lemma FrobeniusCycle.finrank_defectConditions_mul_pow_le (T : FrobeniusCycle N W
   have : NeZero m := ⟨hm_pos.ne'⟩
   obtain ⟨R, hR, -⟩ :=
     ((parahoric W Fin.val).subgroupOf (levi W (twoBlock k a'))).exists_isComplement_right 1
-  have : Fintype R := hR.finite_right.fintype
-  have : Fintype Λ := ((ZSpan.setFinite_inter _ (isBounded_inter_degreeSlab ..)).subset
+  let : Fintype R := hR.finite_right.fintype
+  let : Fintype Λ := ((ZSpan.setFinite_inter _ (isBounded_inter_degreeSlab ..)).subset
     (inf_le_inf_left _ (ZSpan.smul _ (NeZero.ne _)).le)).fintype
   let pack : ((Fin k × ZMod N → Fin m) → S) →ₗ[K] MvPolynomial (Fin k × ZMod N) K :=
     powerPacking a n m ∘ₗ S.subtype.compLeft _

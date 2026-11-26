@@ -73,7 +73,7 @@ lemma inv_xFin_mulVec_mem_of_spansLattice {E : Type} [Field E] [CMType E]
     (h_string : ∀ b : Fin m, vec (Y.indexEquiv (Sum.inr b)) =
       if 2 * b.val + 1 = m then u * (↑π⁻¹ * x (Sum.inr ()) + c) else 0) :
     V.xFin⁻¹.val *ᵥ vec ∈ stdLattice E n := by
-  have := Fintype.ofFinite n₀
+  let := Fintype.ofFinite n₀
   obtain ⟨k, hk, h_point⟩ : ∃ k ∈ intGL n (Ô E),
       V.xFin.val = gradedLatticeBasis Y.indexEquiv a π u * k.val := hL
   -- The coordinates of `vec` in `gradedLatticeBasis`: `x` on `n₀`, `π̄ * x e` at the glue vector,
@@ -170,7 +170,7 @@ this basis is the identity on `X' ⊕ Unit` and scales the string vectors by `u 
 the rows of the point at `X' ⊕ Unit` are integral. -/
 lemma _root_.New.Grading.isIntMatrix_gradeZeroRows [Finite X'] {a π : (𝔸f E)ˣ} {u : unitary (𝔸f E)}
     (hL : Y'.SpansLattice a π u) (h_even : ¬Odd m') : IsIntMatrix (Ô E) Y'.gradeZeroRows := by
-  have := Fintype.ofFinite X'
+  let := Fintype.ofFinite X'
   obtain ⟨k, hk, h_point⟩ : ∃ k ∈ intGL ι' (Ô E),
       V'.xFin.val = gradedLatticeBasis Y'.indexEquiv a π u * k.val := hL
   intro l j
@@ -188,7 +188,7 @@ inverse point at these basis vectors, since the form of `V'` is `1` on them. -/
 lemma _root_.New.Grading.conjTranspose_gradeZeroRows
     [Finite X'] (Y' : Grading V' N (X' ⊕ Unit) m') :
     Y'.gradeZeroRowsᴴ = V'.xFin⁻¹.val * inclMatrix (𝔸f E) (Y'.indexEquiv ∘ Sum.inl) := by
-  have := Fintype.ofFinite X'
+  let := Fintype.ofFinite X'
   -- The inverse of the point is its adjoint times the Gram matrix, which is `1` on `X' ⊕ Unit`.
   simp [gradeZeroRows, inv_eq_left_inv V'.gram_xFin, ← Matrix.ext_iff, Matrix.mul_apply, Y'.gram_eq,
     gradedGram, inclMatrix, Matrix.one_apply, reindex_equiv Y'.indexEquiv]
@@ -257,7 +257,7 @@ of the columns of `neighbourMatrix`, and `R` consists of the rows of the point o
 these maps only move vectors of the strings. -/
 lemma conjTranspose_latticeLift_mulVec_stackedStringMapFin [Finite X'] :
     (D.latticeLift P π u κ)ᴴ *ᵥ stackedStringMapFin Y Y' Y'' = 0 := by
-  have := Fintype.ofFinite X'
+  let := Fintype.ofFinite X'
   -- `Bᴴ` first restricts a map to `X' ⊕ Unit`. There the shift vanishes, as the two string maps
   -- only move vectors of the strings.
   have h_vanish : (stackedStringMap Y Y' Y'').map Prod.snd *

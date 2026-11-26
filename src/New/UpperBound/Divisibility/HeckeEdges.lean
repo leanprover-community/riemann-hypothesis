@@ -681,7 +681,7 @@ lemma exists_schur_eq_map {P : Parameters} {D : Data P} {p : ℕ} [Fact p.Prime]
       rw [← hm]
       rfl
     · -- In degree `0` the Schur matrix does not depend on its argument: take the scalar `0`.
-      have q : D.X 0 ≃ Fin D.k := Fintype.equivFinOfCardEq (by simp [D.card_X 0, Data.n])
+      let q : D.X 0 ≃ Fin D.k := Fintype.equivFinOfCardEq (by simp [D.card_X 0, Data.n])
       obtain ⟨ψ, hψ⟩ := exists_schur_eq_symPowMatrix q (ite_eq_right hτ)
       have h_const (z : Matrix (D.X 0) (D.X 0) ℂ)
         (i j : WeylIndex (D.X 0) fun _ : Unit ↦ D.columnCount τ) :
@@ -800,10 +800,10 @@ lemma isOntoUpToColength_scaledHeckeOperator_of_frobeniusCycle {P : Parameters} 
   have hp_val : l.valuation D.E p = exp (-1) := hΛ.valuation_natCast_eq_exp_neg_one hlΛ
   have hK : maxCompactAt (D.X 0) l ≤ D.levelX 0 := hΛ.maxCompactAt_le_levelX hlΛ
   have := T.finite_residueField
-  have : Fintype (ParahoricCosets (valuationRingAt l) D.k r) := .ofFinite _
+  let : Fintype (ParahoricCosets (valuationRingAt l) D.k r) := .ofFinite _
   -- The edges, the splitting `J` of the weight space, and the integral matrices `m e` by which the
   -- rational parts of the edges act outside `Q`.
-  have q : D.X 0 ≃ Fin D.k := Fintype.equivFinOfCardEq (by simp [D.card_X 0, Data.n])
+  let q : D.X 0 ≃ Fin D.k := Fintype.equivFinOfCardEq (by simp [D.card_X 0, Data.n])
   obtain ⟨C⟩ : Nonempty (HeckeEdges D.k p r (D.levelX 0) hl) :=
     nonempty_heckeEdges r (D.levelX 0) hl q (hΛ.natCast_mem_asIdeal hlΛ)
   have h_aPlace (i : ZMod N) : (t i).val ∈ D.aPlaces := ((hQ (t i)).1 (t i).property).1

@@ -736,7 +736,7 @@ theorem exists_le_weight_of_mem_deepForms [CharP K T.p] {n r τ : ℕ}
   -- `exists_le_weight_of_mem_vanishingIdeal_pow` turns these zeros into a costly monomial. The
   -- variables that are not deep are carried along with degree `1`.
   have : Finite (ResidueField W) := T.finite_residueField
-  have : Fintype (ResidueField W) := ofFinite (ResidueField W)
+  let : Fintype (ResidueField W) := ofFinite (ResidueField W)
   obtain ⟨m, hm⟩ : ∃ m : ℕ, 2 * r + m = k := hk.dest
   let L : Type := FractionRing (MvPolynomial (Fin k × ZMod N) K)
   let x : MvPolynomial (Fin k × ZMod N) K →+* L := algebraMap _ L
