@@ -741,8 +741,9 @@ private lemma exists_twistedConj_mem_conjProIwahori (ht : StrictMono fun i : Fin
       cases j with
       | zero =>
         -- for the index `-1`, membership is conjugation by `diag(t)⁻¹`, which is `hu_conj`
-        simpa only [Nat.cast_zero, zero_add, MulEquiv.comapSubgroup_apply, _root_.zpow_neg_one, Subgroup.mem_comap,
-          MonoidHom.coe_ofClass, MulAut.inv_apply, MulAut.conj_symm_apply] using hu_conj
+        simpa only [Nat.cast_zero, zero_add, MulEquiv.comapSubgroup_apply, _root_.zpow_neg_one,
+            Subgroup.mem_comap, MonoidHom.coe_ofClass, MulAut.inv_apply,
+            MulAut.conj_symm_apply] using hu_conj
       | succ j =>
         -- `σ(z) = u⁻¹ * twistedConj t g σ k` and both factors lie in `diag(t)⁻ʲ I₁ diag(t)ʲ`
         rw [Nat.cast_succ, add_neg_cancel_right]
@@ -750,10 +751,11 @@ private lemma exists_twistedConj_mem_conjProIwahori (ht : StrictMono fun i : Fin
     -- For `k' = k z⁻¹` one has `twistedConj t g σ k' = (t⁻¹ z t) u`.
     refine ⟨k * ⟨z, hz_mem 1 (by omega)⟩⁻¹, fun j hj₀ hj ↦ ?_⟩
     lift j to ℕ using hj₀
-    simpa only [MulEquiv.comapSubgroup_apply, zpow_natCast, Subgroup.mem_comap, MonoidHom.coe_ofClass, map_mul,
-      map_inv, Subgroup.coe_mul, InvMemClass.coe_inv, _root_.mul_inv_rev, inv_inv, mul_assoc, hz, mul_inv_cancel_left,
-      inv_mul_cancel_left, _root_.zpow_add, _root_.zpow_neg, zpow_ofNat, pow_one, MulAut.mul_apply,
-      MulAut.inv_apply, MulAut.conj_symm_apply] using proIwahori.mul_mem (hz_mem j (by omega)) (hu_mem j)
+    simpa only [MulEquiv.comapSubgroup_apply, zpow_natCast, Subgroup.mem_comap,
+        MonoidHom.coe_ofClass, map_mul, map_inv, Subgroup.coe_mul, InvMemClass.coe_inv,
+        _root_.mul_inv_rev, inv_inv, mul_assoc, hz, mul_inv_cancel_left, inv_mul_cancel_left,
+        _root_.zpow_add, _root_.zpow_neg, zpow_ofNat, pow_one, MulAut.mul_apply, MulAut.inv_apply,
+        MulAut.conj_symm_apply] using proIwahori.mul_mem (hz_mem j (by omega)) (hu_mem j)
   -- Shifting, from `[-a, b + 1]` to `[-a - 1, b]`: `y = t (twistedConj t g σ k) t⁻¹` lies in `I₁`,
   -- and `twistedConj t g σ (k y) = σ(y)`.
   have h_shift (a b : ℕ) (k : proIwahori)
@@ -764,11 +766,13 @@ private lemma exists_twistedConj_mem_conjProIwahori (ht : StrictMono fun i : Fin
       ⟨(MulAut.conj (diagGL t) ^ (1 : ℤ)) (twistedConj t g σ k), hk 1 (by omega) (by omega)⟩
     refine ⟨k * y, fun j hj₀ hj ↦ ?_⟩
     have hy : (y : GL (Fin N) F) ∈ conjProIwahori t j := by
-      simpa only [y, MulEquiv.comapSubgroup_apply, zpow_ofNat, pow_one, Subgroup.mem_comap, MonoidHom.coe_ofClass,
-        _root_.zpow_add, MulAut.mul_apply] using hk (j + 1) (by omega) (by omega)
-    simpa only [y, MulEquiv.comapSubgroup_apply, Subgroup.mem_comap, MonoidHom.coe_ofClass, zpow_ofNat, pow_one,
-      MulAut.conj_apply, mul_inv_cancel_left, mul_assoc, map_mul, map_inv,
-      Subgroup.coe_mul, _root_.mul_inv_rev, inv_inv, inv_mul_cancel, mul_one, inv_mul_cancel_left] using
+      simpa only [y, MulEquiv.comapSubgroup_apply, zpow_ofNat, pow_one, Subgroup.mem_comap,
+          MonoidHom.coe_ofClass, _root_.zpow_add, MulAut.mul_apply] using
+        hk (j + 1) (by omega) (by omega)
+    simpa only [y, MulEquiv.comapSubgroup_apply, Subgroup.mem_comap, MonoidHom.coe_ofClass,
+        zpow_ofNat, pow_one, MulAut.conj_apply, mul_inv_cancel_left, mul_assoc, map_mul, map_inv,
+        Subgroup.coe_mul, _root_.mul_inv_rev, inv_inv, inv_mul_cancel, mul_one,
+        inv_mul_cancel_left] using
       (map_mem_conjProIwahori_iff hσ).mpr hy
   induction a generalizing b with
   | succ a ih => exact (ih (b + 1)).elim (h_shift a b)
