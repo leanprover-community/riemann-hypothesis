@@ -290,12 +290,6 @@ lemma trace_restrict_ne_zero {p : Submodule ℂ V} [FiniteDimensional ℂ p] {b 
     simpa [sub_eq_zero] using isNilpotent_trace_of_isNilpotent h_nil
   simp [h_trace, hc, hp_ne]
 
-/-- If `s` intertwines `f` and `g`, that is `s * f = g * s`, and `u` commutes with `g`, then
-`f * (u * s)` and `g * (u * s)` have the same trace. -/
-lemma trace_mul_mul_eq_of_mul_eq_mul {f g s u : End ℂ V} (hs : s * f = g * s) (hu : Commute u g) :
-    trace ℂ V (f * (u * s)) = trace ℂ V (g * (u * s)) := by
-  rw [trace_mul_comm, mul_assoc, hs, ← mul_assoc, hu.eq, mul_assoc]
-
 /-- Let `G a` be commuting elements of a complex algebra `R`, and let `S` be a finite-dimensional
 subspace of `R` that is stable under left multiplication by the `G a`. If `τ` is a non-zero linear
 form on `S`, then `τ z ≠ 0` for some joint generalised eigenvector `z ∈ S` of these
@@ -432,8 +426,8 @@ lemma zero_sub_mul_mem_traceIdentityMultipliers (hA' : ∀ a b : J', Commute (A'
   obtain ⟨-, hy, -⟩ := hz
   refine ⟨by simp, fun b ↦ ((hA' a b).sub_left (hA' a' b)).mul_left (hy b),
     fun t _ ht_comm ↦ ?_⟩
-  have h_cycle : trace ℂ W' (A' a * (z.2 * t.2 * s)) = trace ℂ W' (A' a' * (z.2 * t.2 * s)) :=
-    trace_mul_mul_eq_of_mul_eq_mul h_twist ((hy a').mul_left (ht_comm a'))
+  have h_cycle : trace ℂ W' (A' a * (z.2 * t.2 * s)) = trace ℂ W' (A' a' * (z.2 * t.2 * s)) := by
+    rw [trace_mul_comm, mul_assoc, h_twist, ← mul_assoc, ((hy a').mul_left (ht_comm a')).eq, mul_assoc]
   change trace ℂ W' ((A' a - A' a') * z.2 * t.2 * s) = c * trace ℂ W (0 * z.1 * t.1)
   simpa [sub_mul, mul_assoc, sub_eq_zero] using h_cycle
 
