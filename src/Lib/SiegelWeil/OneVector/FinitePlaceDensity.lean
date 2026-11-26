@@ -314,7 +314,7 @@ noncomputable def topEichlerMatrix (T : 𝔰.Form A) (u e : 𝔰.BesselIndex →
   1 + inverse (e l) • (vecMulVec (e l • u) (star (e - z) ᵥ* T.splitGram) -
     vecMulVec (e - z + (h (e - z) e - P.element * (h e e - h z z)) • u) (star u ᵥ* T.splitGram))
 
-variable {T : 𝔰.Form A} {e : 𝔰.BesselIndex → A} [IsHermitianUnit T.splitGram]
+variable {T : 𝔰.Form A} {e : 𝔰.BesselIndex → A} [H : IsHermitianUnit T.splitGram]
 
 /-- If pairing with `u` under the Gram matrix `T.splitGram` reads the coordinate at the last frame
 vector `z` and this coordinate of `u` is zero, the scaled Eichler map attached to `e` along `u` is
@@ -402,7 +402,7 @@ lemma measurable_topEichler : Measurable (topEichler hu_dual hu_last) := by
 inversion is continuous at its entry at the last frame vector `z`. -/
 lemma continuousAt_topEichler (h_inv : ContinuousAt inverse (e (𝔰.besselFrame 𝔰.top))) :
     ContinuousAt (topEichler hu_dual hu_last) e := by
-  rw [isClosedEmbedding_unitary_coe.continuousAt_iff]
+  rw [(Matrix.unitaryGroupOf.isClosedEmbedding_val H.isUnit).continuousAt_iff]
   simp only [comp_def, coe_topEichler, topEichlerMatrix]
   exact continuousAt_const.add
     ((h_inv.comp_of_eq (continuousAt_apply _ e) rfl).smul (Continuous.continuousAt (by fun_prop)))

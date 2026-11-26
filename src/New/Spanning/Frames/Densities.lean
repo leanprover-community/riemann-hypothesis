@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.Topology.Algebra.Group.Units
@@ -61,7 +62,7 @@ open Matrix MeasureTheory Measure ENNReal Fintype FloorGroups ComplexConjugate I
 
 variable {A : Type} [CommRing A] [StarRing A] [TopologicalSpace A] [MeasureSpace A] [P : Place A]
   {ι : Type} [Fintype ι] [DecidableEq ι] {m : ℕ} {𝔰 : Shape} (j : ℕ)
-  {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
+  {T : 𝔰.Form A} [H : IsHermitianUnit T.splitGram]
   {F : PlaceData ι T m} (p q : ℕ → Aˣ) {I : Type} [Fintype I]
   (W : T.G → EuclideanSpace ℂ I) (x : T.G) (Γ : Gauge F)
 
@@ -227,7 +228,8 @@ theorem PlaceData.partialGroupMeasure_top :
 compact set. -/
 lemma Gauge.isCompact_hasMatrixSize {j : ℕ} (Γ : Gauge F) :
     IsCompact {y : T.G | Γ.HasMatrixSize j (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)} :=
-  isClosedEmbedding_unitary_coe.isCompact_preimage (Γ.isCompact_ofSize _).matrix
+  (Matrix.unitaryGroupOf.isClosedEmbedding_val H.isUnit).isCompact_preimage
+    (Γ.isCompact_ofSize _).matrix
 
 /-- A cut Bessel function `W` vanishes off the points near at `j`, for every `j`: if `W x ≠ 0`, then
 `u x` lies in the box `F.boxSet` for some `u` in `partialUnitriangularGroup j`. -/
