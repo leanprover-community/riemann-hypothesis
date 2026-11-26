@@ -254,7 +254,8 @@ lemma New.sobolev_trace_cube {Ω I L D : Type*} [MeasurableSpace Ω] {σ : Measu
     calc (∫⋯∫⁻_s, normSq i ∂μ) 0
       _ ≤ (∫⋯∫⁻_s, bound i d ∂μ) 0 := by
         simp_rw [lmarginal, μ, ← restrict_pi_pi]
-        refine setLIntegral_mono' (by measurability) fun y hy ↦ trace i d _ ?_ ?_
+        refine setLIntegral_mono' (.univ_pi fun _ ↦ measurableSet_Icc) fun y hy ↦
+          trace i d _ ?_ ?_
         · simp only [← pi_univ_Icc, mem_univ_pi] at hy ⊢
           intro j
           by_cases hj : j ∈ s <;> simp_all [updateFinset, hε.le]
@@ -266,7 +267,7 @@ lemma New.sobolev_trace_cube {Ω I L D : Type*} [MeasurableSpace Ω] {σ : Measu
           lintegral_add_left, lintegral_finsetSum]
       _ ≤ .ofReal (2 / ε) * (M + .ofReal (card L * Λ ^ 2) * ∑ l : L, M) := by
         gcongr with l
-        · exact hM i (by lia)
+        · exact hM i (hi.trans (Nat.le_succ _))
         · exact hM (l :: i) (by simpa)
       _ = .ofReal c * M := by simp (disch := positivity) [c, ofReal_add, ofReal_mul, mul_pow]; ring
 
