@@ -392,9 +392,14 @@ lemma smul_grothendieckSymbol_eq_fractionClass (hf : U ≤ unimodularLocus f)
     rwa [← dotProduct_mulVec, ← h_map]
   -- Read `a • H.map _ _ d` as a pull-back along the comparison given by the action of `a`.
   -- `pull_cocycleClass` reduces the claim to the witnesses, the cocycles and the points.
-  unfold grothendieckSymbol
-  -- (`erw`: the scalar action matches `smul_eq_push` only after unfolding instances)
-  erw [smul_eq_push, ← pull_id_eq_push, ← map_pull_eq_pull_map rfl, H.map_id]
+  let gPoint : (sqZeroExt ⋙ affineSpace k d).obj c := ⟨g⟩
+  let α := relFreeAb.map (U := unimodular.whisker sqZeroExt) (pointMap gPoint) hg
+  let z : H (relFreeAb ((unimodular (k := k) (d := d)).whisker sqZeroExt)) hodgeCoeff d :=
+    symbolClass
+  change a • H.map hodgeCoeff α d z = _
+  refine (H.smul_eq_push a _).trans ?_
+  rw [← pull_id_eq_push, ← map_pull_eq_pull_map rfl]
+  refine (H.map_id ..).trans ?_
   let x : ⋀[c.baseAlg]^d (c.Index → c.baseAlg) :=
     (algebraMap k c.baseAlg a * M.det) • ιMulti c.baseAlg d (snd ∘ g)
   refine pull_cocycleClass exists_jouanolouRel_of_unimodular
@@ -1068,7 +1073,7 @@ lemma EtaleChart.symbolClass_eq_of_cutsOutLocus {f g : Fin d → a.coordRing}
   -- induced by the tuples `μ ∘ f` and `μ ∘ g`.
   obtain ⟨h_le, h_bij⟩ := h_eqv hf.preimage_fieldLocus_not
   apply (h_bij d).injective
-  erw [← H.map_comp, ← H.map_comp]
+  refine (H.map_comp ..).symm.trans (Eq.trans ?_ (H.map_comp ..))
   refine (symbolClass_transformation (f := μ ∘ f) (g := μ ∘ g) (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
     (by simp [comp_def, μ_fst _]) M M 1 hf_eq h_leibniz (by simp)).trans (one_smul ..)
 
