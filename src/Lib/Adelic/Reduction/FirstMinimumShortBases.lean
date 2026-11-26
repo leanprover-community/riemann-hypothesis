@@ -399,12 +399,6 @@ lemma norm_archCoords_move_ratEmbed_mul_mulVec (γ : U V.J) (g : G E s) (y : n �
       ‖(V.move g).archCoords y‖ := by
   simp [archCoords, move_ratEmbed_mul_vecAtPoint_mulVec]
 
-/-- Every rational vector has a nonzero integer multiple in the lattice `V.baseLattice` of the
-vectors whose adelic coordinates are integral at the finite places. -/
-lemma exists_smul_mem_baseLattice (ξ : n → E) : ∃ N : ℕ, N ≠ 0 ∧ N • ξ ∈ V.baseLattice := by
-  simpa [← nsmul_eq_mul, baseLattice] using
-    exists_forall_mul_mem_Ô fun i : n ↦ (V.vecAtPoint ξ i).2
-
 /-! ### The first minimum and comparison of lengths -/
 
 /-- A number `l` is at most the first minimum of `V`, cut off at `1`, iff it is at most `1` and at
@@ -749,7 +743,9 @@ lemma firstMinimum_le_norm_of_inner_int {d : 𝓞 E} (hd : d ≠ 0)
   -- Every rational vector has a multiple in the lattice, so the coordinates of `t` pair rationally
   -- with `E`. Hence they come from `E`: `t` is `V.J *ᵥ a` at the infinite places.
   have h_rat (i : n) (b : E) : ∃ q : ℚ, ∑ w : InfinitePlace E, 2 * (Φ w b * (t i).1 w).re = q := by
-    obtain ⟨M, hM, h_mem⟩ := V.exists_smul_mem_baseLattice (Pi.single i (star b))
+    obtain ⟨M, hM, h_mem⟩ : ∃ N : ℕ, N ≠ 0 ∧ N • (Pi.single i (star b)) ∈ V.baseLattice := by
+      simpa [← nsmul_eq_mul, baseLattice] using
+        exists_forall_mul_mem_Ô fun j : n ↦ (V.vecAtPoint (Pi.single i (star b)) j).2
     obtain ⟨k, hk⟩ := h_int _ h_mem
     have h_eq : (M : ℝ) * ∑ w : InfinitePlace E, 2 * (Φ w b * (t i).1 w).re = k := by
       rw [smul_comm, map_nsmul, inner_smul_right_eq_smul, h_pair, nsmul_eq_mul] at hk
