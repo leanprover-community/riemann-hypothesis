@@ -13,6 +13,7 @@ import Lib.DiscreteSeries.Bruhat.ComplexPlace
 import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.General.Analysis.GaussianIntegral
 import Lib.Shimura.ComplexTheta.AppellHumbertData
+import New.Spanning.Bessel.MeanValue
 import New.Spanning.Unfolding.Link
 
 /-!
@@ -220,42 +221,21 @@ private lemma mul_dualFrameCols_conjTranspose_eStar {𝔰 : New.Shape} {l : Type
   simp only [snoc_castSucc, snoc_last, Sum.inr.injEq, reduceCtorEq, ↓reduceIte, add_zero,
     Finset.sum_ite_eq, mem_univ]
 
-/-- The matrix `sectionCoeff Zᴴ Z` is a coefficient matrix in the formula `sectionMatrix Z Zᴴ` for
-the section `γ_Z`. Outside the last row and column its entry at `(i, a)` is
-`-(Z⁻¹)_{i,last} (Zᴴ⁻¹)_{last,a} / 2`. -/
-lemma New.RealPlace.sectionCoeff_castSucc_castSucc {𝔰 : Shape} (Z : 𝔰.FrameMatrix) (i a : Fin 𝔰.ϱ) :
-    sectionCoeff Zᴴ Z i.castSucc a.castSucc =
-      -(2⁻¹ * Z⁻¹ i.castSucc (.last 𝔰.ϱ) * Zᴴ⁻¹ (.last 𝔰.ϱ) a.castSucc) := by
-  rw [sectionCoeff, Matrix.sub_apply, Matrix.sub_apply]
-  have h0 : (diagLast (𝔰 := 𝔰) 0) i.castSucc a.castSucc -
-      (1 : 𝔰.FrameMatrix) i.castSucc a.castSucc = 0 := by
-    simp only [diagLast, diagonal_apply, Matrix.one_apply, snoc_castSucc, Pi.one_apply, sub_self]
-  rw [h0, zero_sub, neg_inj]
-  dsimp only [diagLast]
-  rw [Matrix.mul_diagonal]
-  simp only [snoc_castSucc, Pi.one_apply, mul_one]
-  rw [Matrix.mul_assoc, Matrix.mul_assoc, Matrix.diagonal_mul]
-  simp only [snoc_castSucc, Pi.one_apply, one_mul]
-  rw [Matrix.mul_apply, sum_univ_castSucc, Finset.sum_eq_zero]
-  · rw [zero_add, Matrix.sub_mul, Matrix.one_mul, Matrix.sub_apply, Matrix.diagonal_mul]
-    simp only [snoc_last]
-    ring
-  · intro k _
-    rw [Matrix.sub_mul, Matrix.one_mul, Matrix.sub_apply, Matrix.diagonal_mul]
-    simp only [snoc_castSucc, Pi.one_apply, one_mul, sub_self, mul_zero]
-
-/-- The last row of `sectionCoeff Zᴴ Z`, a coefficient matrix in the formula `sectionMatrix Z Zᴴ`
-for the section `γ_Z`, vanishes outside the last column. -/
-lemma New.RealPlace.sectionCoeff_last_castSucc {𝔰 : Shape} (Z : 𝔰.FrameMatrix) (a : Fin 𝔰.ϱ) :
-    sectionCoeff Zᴴ Z (.last 𝔰.ϱ) a.castSucc = 0 := by
-  rw [sectionCoeff, Matrix.sub_apply, Matrix.sub_apply]
-  have h_ne : Fin.last 𝔰.ϱ ≠ a.castSucc := (castSucc_lt_last a).ne'
-  have h0 : (diagLast (𝔰 := 𝔰) 0) (.last 𝔰.ϱ) a.castSucc -
-      (1 : 𝔰.FrameMatrix) (.last 𝔰.ϱ) a.castSucc = 0 := by
-    simp only [diagLast, diagonal_apply_ne _ h_ne, Matrix.one_apply_ne h_ne, sub_self]
-  rw [h0, zero_sub, neg_eq_zero, Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_assoc,
-    diagLast, Matrix.diagonal_mul]
-  simp only [snoc_last, zero_mul]
+/-- In the columns before the last, the ordinary rows of `sectionCoeff Zᴴ Z` have coefficient
+`-1/2` and its last row vanishes. -/
+private lemma sectionCoeff_apply_castSucc {𝔰 : New.Shape} (Z : 𝔰.FrameMatrix)
+    (i : Fin (𝔰.ϱ + 1)) (a : Fin 𝔰.ϱ) :
+    sectionCoeff Zᴴ Z i a.castSucc =
+      -(snoc (α := fun _ ↦ ℂ) 1 0 i * (2⁻¹ * Z⁻¹ i 𝔰.top * Zᴴ⁻¹ 𝔰.top a.castSucc)) := by
+  induction i using Fin.lastCases with
+  | last =>
+    simpa [castSucc_ne_last] using sectionCoeff_conjTranspose_top_apply Zᴴ a.castSucc
+  | cast i =>
+    have h_conj : starRingEnd ℂ (Zᴴ⁻¹ 𝔰.top i.castSucc) = Z⁻¹ i.castSucc 𝔰.top := by
+      rw [← conjTranspose_nonsing_inv]
+      simp
+    simpa [castSucc_ne_last, h_conj, mul_neg, mul_assoc] using
+      sectionCoeff_conjTranspose_castSucc_apply Zᴴ i a.castSucc
 
 /-- Let `Z` lie in the open cell `𝔰.openCell`: `Z` is invertible and the last diagonal entry of
 `Z⁻¹` has absolute value less than 1. Let `γ_Z = gramSection Z`, an element of the unitary group
@@ -326,10 +306,11 @@ lemma New.inv_apply_eStar_eq_sum_frameVector {𝔰 : Shape} {Z : 𝔰.FrameMatri
   rw [h_col, mul_inclMatrix, mul_inclMatrix, Matrix.mul_apply, Matrix.mul_apply, sub_eq_add_neg]
   congr 1
   · exact sum_congr rfl fun i _ ↦ by rw [submatrix_apply, id_eq, mul_comm]
-  · rw [sum_univ_castSucc, sectionCoeff_last_castSucc, mul_zero, add_zero, ← sum_neg_distrib]
+  · rw [sum_univ_castSucc, sectionCoeff_apply_castSucc, snoc_last, zero_mul, neg_zero, mul_zero,
+      add_zero, ← sum_neg_distrib]
     refine sum_congr rfl fun i _ ↦ ?_
-    rw [submatrix_apply, id_eq, Shape.besselFrame, snoc_castSucc, sectionCoeff_castSucc_castSucc,
-      mul_neg, neg_neg, mul_comm]
+    rw [submatrix_apply, id_eq, Shape.besselFrame, snoc_castSucc, sectionCoeff_apply_castSucc,
+      snoc_castSucc, Pi.one_apply, one_mul, mul_neg, neg_neg, mul_comm]
 
 /-- A bound for `‖z‖` from the length of `γ_Z z`. Let `n = 𝔰.n = ϱ + 1`, `8 n ≤ M` and
 `M ^ (9 n) ≤ R`. Let `M⁻¹ ≤ gramDiscReal Z`, the number |det Z|² − |D_ϱ|² with D_ϱ the leading
