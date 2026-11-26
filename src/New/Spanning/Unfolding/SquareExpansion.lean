@@ -297,12 +297,6 @@ lemma amplitudeSum_besselS_eq_zero {side : FullOrCut} {s : S.ResidueGL}
     exact hs ⟨k, hk_mem, rfl⟩
   rw [amplitudeSum, tsum_empty]
 
-/-- The complement of the Bessel subgroup is stable under multiplication by the unipotent group
-`besselU` on both sides. -/
-lemma isStable_compl_besselS :
-    S.IsStable ((S.ratMiddle E).besselS : Set (S.G E))ᶜ :=
-  fun u hu u' hu' γ ↦ (S.isStable_besselS u hu u' hu' γ).not
-
 /-- Let `E` contain a primitive `5040`-th root of unity. An integral `ζ ∈ E`
 with `ζ ζ̄ = 1` that is `1` modulo every place of
 `chosenPlaces i`, the finite places of norm `p_i = levelPrime i` chosen in `S`, is `1`. -/
@@ -528,7 +522,8 @@ lemma AvoidsScalarCosets.amplitudeSum_compl_besselS_eq [HasPrimitiveRoot5040 E] 
       (normOnePairOccursFrom_zero_of_mem_besselS h_mem).notMem_remainingTerms hγ
   have h_stable : S.IsStable (offBessel ∩ S.remainingTermsᶜ ∩ agreeingᶜ) := fun u hu u' hu' γ ↦ by
     simp only [Set.mem_inter_iff, Set.mem_compl_iff S.remainingTerms, Set.mem_compl_iff agreeing]
-    rw [isStable_compl_besselS u hu u' hu' γ, isStable_remainingTerms u hu u' hu' γ]
+    rw [Set.mem_compl_iff, Set.mem_compl_iff, S.isStable_besselS u hu u' hu' γ,
+      isStable_remainingTerms u hu u' hu' γ]
     simp only [offBessel, agreeing, Set.mem_ofPred_eq,
       charsAgree_mul_mul_iff_of_mem_besselU (inv_mem hu) hu']
   have h_disagree : S.amplitudeSum side (offBessel ∩ S.remainingTermsᶜ ∩ agreeingᶜ) c s c' = 0 :=
