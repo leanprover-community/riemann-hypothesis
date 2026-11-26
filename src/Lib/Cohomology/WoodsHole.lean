@@ -81,8 +81,6 @@ Arnold Math. J. (2022); SGA5 III 6.12.
 open CategoryTheory AlgebraicGeometry Polynomial Finset CartesianMonoidalCategory Functor
   MonoidalCategory
 
-set_option backward.isDefEq.respectTransparency false
-
 /-- Let `k` be an infinite field and `h` a natural number. Some linear form `L` on the functions
 `k → k` reads off the coefficient of `X ^ h` on polynomial functions: for every polynomial `Q` and
 `a` in `k`, `L` sends `t ↦ Q(t) * a` to the coefficient of `X ^ h` in `Q`, times `a`. -/
@@ -176,11 +174,14 @@ lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_eq_zero {p : ℕ} {A : Type*}
   | zero => simp [← Pi.zero_def]
   | add_left g hg z _ ih =>
     obtain ⟨q, q', e, x, y, rfl⟩ := hg
+    let crossClass : HodgeH (freeAb.obj (XY ⊗ XY)) d :=
+      HodgeH.map (freeAb.prod XY XY) (cup exteriorAlg.mulPairing x y e :)
+    change ∑ i : b.support, b i * L (fun t : k ↦
+      φ (hodgeTateMap d (Φ t i (crossClass + z)))) = 0
     -- on a cross product `x × y` the pull-back is `s_t (u i)^* x × c^* y` restricted to the
     -- diagonal (`map_scaledGraph_baseChange_cross`), and `hodgeTateMap_cup` expands its `λ_d`
     have h_lam (t : k) (i : b.support) :
-        hodgeTateMap d
-            (Φ t i (HodgeH.map (freeAb.prod XY XY) (cup exteriorAlg.mulPairing x y e :))) =
+        hodgeTateMap d (Φ t i crossClass) =
           PairH.map diag (∑ j ∈ range (d + 1),
             (d.choose j • (-1 : k) ^ ((q + j) * (d - j)) • HodgeTatePair.cross
               (hodgeTateMap (d - j) (.map (freeAbMap (D c)) y.baseChange)))
@@ -188,7 +189,8 @@ lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_eq_zero {p : ℕ} {A : Type*}
       -- `refine` sees through `Φ`, which `rw` does not
       refine (congrArg (hodgeTateMap d)
         (map_scaledGraph_baseChange_cross (D (u i)) (D c) t e x y)).trans ?_
-      rw [hodgeTateMap_map, hodgeTateMap_cup]
+      refine (hodgeTateMap_map (h := d) diag _).trans ?_
+      exact congrArg (PairH.map diag) (hodgeTateMap_cup _ _ e d)
     -- the sum of `h_null`, read through the pull-backs along `D (u i)`
     have h_wt (hd : h ≤ d) :
         ∑ i : b.support, b i • hodgeTateMap h (.map (freeAbMap (D (u i))) x.baseChange) = 0 := by
@@ -198,13 +200,34 @@ lemma New.Variety.sum_mul_hodgeTateMap_scaledGraph_eq_zero {p : ℕ} {A : Type*}
     -- By `hodgeTateMap_scale` the term of weight `j` carries `t ^ j`, so `L` keeps the term of
     -- weight `h` of the sum over `i` (none if `h > d`): the image under `M` of the sum in `h_wt`,
     -- with `M = φ ∘ diag ∘ (cross with λ_{d - h} (c^* y))` scaled as in `hodgeTateMap_cup`
-    let M : PairH (freeAb XW) →ₗ[k] k := φ ∘ₗ PairH.map diag ∘ₗ
-      (d.choose h • (-1 : k) ^ ((q + h) * (d - h)) • HodgeTatePair.cross
-        (hodgeTateMap (d - h) (HodgeH.map (freeAbMap (D c)) y.baseChange)))
-    -- `using!`: the two sides agree only up to unfolding in implicit arguments
-    simpa [M, h_lam, ih, hL, hodgeTateMap_scale, ← Pi.add_def, ← sum_fn, mul_add, sum_add_distrib,
-      -univ_eq_attach, -LinearMap.smul_apply, -LinearMap.coe_smul, ← eval_X_pow (R := k),
-      -eval_pow] using! fun hd ↦ congrArg M (h_wt hd)
+    let M (j : ℕ) : PairH (freeAb XW) →ₗ[k] k := φ ∘ₗ PairH.map diag ∘ₗ
+      (d.choose j • (-1 : k) ^ ((q + j) * (d - j)) • HodgeTatePair.cross
+        (hodgeTateMap (d - j) (HodgeH.map (freeAbMap (D c)) y.baseChange)))
+    let K (i : b.support) (j : ℕ) : k :=
+      M j (hodgeTateMap j (HodgeH.map (freeAbMap (D (u i))) x.baseChange))
+    have h_eval (i : b.support) :
+        L (fun t ↦ φ (hodgeTateMap d (Φ t i crossClass))) = if h ≤ d then K i h else 0 := by
+      have h_fun : (fun t ↦ φ (hodgeTateMap d (Φ t i crossClass))) =
+          ∑ j ∈ range (d + 1), fun t ↦ (X ^ j : k[X]).eval t * K i j := by
+        funext t
+        rw [h_lam]
+        erw [_root_.map_sum (PairH.map diag), _root_.map_sum φ]
+        simp only [Finset.sum_apply, eval_pow, eval_X]
+        refine Finset.sum_congr rfl fun j _ ↦ ?_
+        rw [hodgeTateMap_scale]
+        change M j (t ^ j • hodgeTateMap j (HodgeH.map (freeAbMap (D (u i))) x.baseChange)) =
+          t ^ j * K i j
+        exact (M j).map_smul _ _
+      rw [h_fun, _root_.map_sum]
+      simp only [hL, coeff_X_pow, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
+        mem_range, Nat.lt_succ_iff]
+    have h_cross :
+        ∑ i : b.support, b i * L (fun t ↦ φ (hodgeTateMap d (Φ t i crossClass))) = 0 := by
+      simp only [h_eval]
+      split_ifs with hd
+      · simpa [K] using congrArg (M h) (h_wt hd)
+      · simp
+    simp only [_root_.map_add, ← Pi.add_def, mul_add, sum_add_distrib, h_cross, ih, add_zero]
 
 /-- Half of the Atiyah–Bott formula. Let `Y` be proper and `W` projective over `R`, a subalgebra of
 `E`; let `R → E → k → ℚ̄_p` with `E`, `k` fields of characteristic 0 and `k` algebraically closed
