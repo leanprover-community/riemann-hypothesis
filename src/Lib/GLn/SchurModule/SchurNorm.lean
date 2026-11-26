@@ -242,7 +242,7 @@ lemma prod_pow_diagramWeight_eq (hF : FitsRanks n n' κ) (ρ : Φ → ℕ → NN
     rw [hP_sum, ← Fin.prod_univ_eq_prod_range]
     refine prod_congr rfl fun h _ ↦ ?_
     rw [hP_smul, hP_sum]
-    exact congrArg (· ^ _) (prod_congr rfl fun i hi ↦ hP_single τ ((mem_range.mp hi).trans h.2))
+    exact congrArg (· ^ _) (prod_congr rfl fun i hi ↦ hP_single τ ((mem_range.mp hi).trans h.isLt))
 
 /-- Let `z τ` be complex `n' τ × n τ` matrices, and assume `FitsRanks n n' κ`: at each `τ`,
 `#(n τ) ≤ #(n' τ)` and `κ τ h = 0` for `#(n τ) < h < #(n' τ)`. There are numbers `ρ τ i ≥ 0` (in the
@@ -396,7 +396,7 @@ lemma gramForm_conjWeylRep {κ : T → ℕ → ℕ} {e : T → ℤ} (x : T → U
     simpa [mul_comm] using congrArg det (h_unitary τ)
   have h_rep (ζ : WeylIndex n κ → ℂ) :
       conjWeylRep κ e x ζ = (∏ τ, (g τ).det ^ e τ) • schur κ g *ᵥ ζ := by
-    change (((∏ τ, (GeneralLinearGroup.map conj (x τ).1).det ^ e τ : ℂˣ) : ℂ) •
+    change (((∏ τ, (GeneralLinearGroup.map conj (x τ).val).det ^ e τ : ℂˣ) : ℂ) •
         schur κ g) *ᵥ ζ = _
     rw [smul_mulVec]
     refine congrArg (· • _) ?_

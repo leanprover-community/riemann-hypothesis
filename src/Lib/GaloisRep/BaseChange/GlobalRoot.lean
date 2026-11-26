@@ -314,7 +314,7 @@ lemma U.isRootQuotient_map {f : R →+* S} (hf : ∀ x : R, f (star x) = star (f
 (`New.IsRootQuotient`), namely `z(γ) * (z(γ)ᴴ)⁻¹`. -/
 lemma U.existsUnique_isRootQuotient (h_unit : IsUnit (aeval γ.val.val z)) :
     ∃! a : U 1, IsRootQuotient γ z a.val.val := by
-  have h_invertible : Invertible (aeval γ.val.val z) := h_unit.invertible
+  let h_invertible : Invertible (aeval γ.val.val z) := h_unit.invertible
   -- The root is `z(γ) / z(γ)ᴴ`, which is unitary as `z(γ)` commutes with its adjoint.
   have h_unitary :
       (aeval γ.val.val z * ⅟(aeval γ.val.val z)ᴴ)ᴴ * 1 *
