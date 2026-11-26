@@ -263,7 +263,9 @@ theorem enorm_integral_pairKernel_cut_le (X : ι → BesselSystem 𝔰 b f)
   -- The kernel is the adjoint of `W (γ⁻¹ y) ⊗ W (y)^*`, and `γ⁻¹` has the same `gramDiscReal`.
   let T := adjointIsometry ((v : ι) → (X v).Index)
   have h_kernel (σ : FullOrCut) (y : ι → 𝔰.G₁) : pairKernel X σ γ y = T (piKernel X σ γ⁻¹ y) := by
-    ext; simp [T, adjointIsometry, pairKernel, piKernel, mul_comm]
+    ext
+    simp [T, adjointIsometry, pairKernel, piKernel]
+    exact Finset.prod_congr rfl fun _ _ ↦ mul_comm _ _
   have h_adjoint (y : ι → 𝔰.G₁) :
       φ y • pairKernel X .cut γ y = T (conj (φ y) • piKernel X .cut γ⁻¹ y) := by
     ext; simp [h_kernel, T, adjointIsometry]
@@ -276,7 +278,7 @@ theorem enorm_integral_pairKernel_cut_le (X : ι → BesselSystem 𝔰 b f)
     (φ := fun y ↦ conj (φ y)) (fun v ↦ by simpa only [h_disc_inv] using h_disc v) hγy_box
     (fun v ↦ by simpa using hy_box v) h_radius (Complex.continuous_conj.measurable.comp hφ_meas)
     (by simpa using hφ_le) (fun s y hs ↦ by rw [hφ_inv s y hs])
-    fun y hy ↦ hφ_box y (by rwa [h_adjoint, map_ne_zero_iff T T.injective])
+    fun y hy ↦ hφ_box y (by rwa [h_adjoint, _root_.map_ne_zero_iff T T.injective])
   simp only [h_adjoint]
   refine ⟨h_support.comp_left (map_zero T), ?_⟩
   rw [T.integral_comp_comm, T.eNorm_map]
