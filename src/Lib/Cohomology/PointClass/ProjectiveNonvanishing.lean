@@ -980,10 +980,15 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
       have hd : ((oneSub (discTwist epsPow)).app c).hom (.of u) = .of u - .of u' :=
         freeAb.desc_of ..
       change (f.app c).hom (((oneSub (discTwist epsPow)).app c).hom (.of u)) = 0
-      erw [hd, _root_.map_sub]
+      refine (congrArg (f.app c).hom hd).trans ((_root_.map_sub (f.app c).hom _ _).trans ?_)
       obtain ⟨⟨_ | _⟩, t⟩ := u
-      · erw [h_f_false, sub_zero]
-      · erw [h_f_true, h_f_true, ha_twist, sub_self]
+      · exact (congrArg₂ (· - ·) (h_f_false c t)
+          (h_f_false c ⟨discTwist epsPow ⟨false⟩ ≫ t.down⟩)).trans (sub_self 0)
+      · let t' : (tilt ⋙ reprBy (monoidAlg ℚ≥0)).obj c :=
+          ⟨discTwist epsPow ⟨true⟩ ≫ t.down⟩
+        refine (congrArg₂ (· - ·) (h_f_true c t) (h_f_true c t')).trans ?_
+        exact (congrArg (fun x ↦ FreeAddCommGroup.of (a c t) - FreeAddCommGroup.of x)
+          (ha_twist c ⟨true⟩ t)).trans (sub_self _)
     · -- With `μ = mulMu c 1`, which has square zero:
       -- `(1 - μ) * [ε * u] = (1 - μ) * (1 + μ) * [u] = [u]`.
       intro c u
