@@ -129,13 +129,6 @@ lemma polyActionAtZero_X_smul {n : Type} [Fintype n] [DecidableEq n] (ρ : G →
     polyActionAtZero J ρ ((MvPolynomial.X j : MvPolynomial J O) • c) = 0 := by
   simp [polyActionAtZero, Matrix.map_smul']
 
-/-- With all variables set to `0`, the entry `j` of the row of `m` acts as the scalar matrix
-`m j`. -/
-lemma polyActionAtZero_coordRows {n ι : Type} [Fintype n] [DecidableEq n] (ρ : G →* Matrix n n O)
-    (m : ι → O) (j : ι) :
-    polyActionAtZero J ρ (coordRows J ι m j) = m j • 1 := by
-  rw [coordRows_apply, map_smul, map_one]
-
 /-- The row `r` as the element `∑ r i (gen i - 1)` of `O[X j][G]`. -/
 noncomputable def rowValue (J : Type) {ι : Type} [Fintype ι] (gen : ι → G) :
     (ι → (MvPolynomial J O)[G]) →ₗ[(MvPolynomial J O)[G]] (MvPolynomial J O)[G] :=
@@ -535,7 +528,7 @@ lemma exists_tiedRows_addVal_det_le [DVR O] {r ι : Type} [Fintype r] [Decidable
       coordRows_tau_sub_mem_tiedRows u hz k, fun j ↦ ?_⟩
     rw [Pi.sub_apply, map_sub, Pi.smul_apply, polyActionAtZero_X_smul, sub_zero]
   exact exists_block_rows u ρ hρ_span (polyActionAtZero J ρ) (MonoidAlgebra.of (MvPolynomial J O) G)
-    (polyActionAtZero_single ρ) (coordRows J ι) (polyActionAtZero_coordRows ρ) gen z
+    (polyActionAtZero_single ρ) (coordRows J ι) (fun m j ↦ by rw [coordRows_apply, map_smul, map_one]) gen z
     (tiedRows u gen p τ φ ε (tiedNormaliser J γ a c₁)) τ γ hb₀
     (coordRows_cocycle_mem_tiedRows u hz) (coordRows_gen_sub_single_mem_tiedRows u hz)
       (coordRows_linearCombination_mem_tiedRows u hz) h_τ
