@@ -715,7 +715,8 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
     Gauge F where
   ofSize j := {x : A | α ^ j * x ∈ integers}
   loss := 2 / P.modulus α
-  mul_mem_ofSize hx hy := by grind [integers.mul_mem hx hy]
+  mul_mem_ofSize hx hy := by
+    simpa only [Set.mem_ofPred_eq, pow_add, mul_mul_mul_comm] using integers.mul_mem hx hy
   sum_mem_ofSize := by simp_all [pow_succ', mul_assoc, mul_sum, mul_mem, sum_mem]
   neg_mem_iff_and_star_mem_iff := by
              refine ⟨by simp, fun hx ↦ ?_, fun hx ↦ ?_⟩ <;> simpa [sα] using isAdelic.1.1 hx
