@@ -138,8 +138,6 @@ end -- clump:auto
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open AlgebraicGeometry CategoryTheory Limits Opposite

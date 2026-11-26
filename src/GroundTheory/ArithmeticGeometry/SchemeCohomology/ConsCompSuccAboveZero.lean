@@ -10,8 +10,6 @@ public import Mathlib.Algebra.BigOperators.Pi
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open CategoryTheory Opposite TopologicalSpace

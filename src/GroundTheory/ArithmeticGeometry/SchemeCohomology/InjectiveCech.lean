@@ -11,8 +11,6 @@ public import Mathlib.Topology.Sheaves.SheafOfFunctions
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open CategoryTheory Opposite TopologicalSpace Limits

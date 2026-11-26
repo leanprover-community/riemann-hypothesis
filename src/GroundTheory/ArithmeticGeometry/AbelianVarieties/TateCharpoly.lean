@@ -5,8 +5,6 @@ import Mathlib.NumberTheory.Padics.PadicIntegers
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.Abelian
 
 open Polynomial WeierstrassCurve PadicInt

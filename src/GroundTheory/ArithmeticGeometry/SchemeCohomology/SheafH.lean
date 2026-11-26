@@ -8,8 +8,6 @@ import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open CategoryTheory Limits Opposite Abelian

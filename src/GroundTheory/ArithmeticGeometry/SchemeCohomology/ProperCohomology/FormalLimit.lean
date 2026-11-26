@@ -6,8 +6,6 @@ public import Mathlib.RingTheory.Ideal.Defs
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 universe u

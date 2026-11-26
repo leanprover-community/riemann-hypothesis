@@ -7,8 +7,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Etale
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.Etale
 
 open CategoryTheory Limits Opposite AlgebraicGeometry

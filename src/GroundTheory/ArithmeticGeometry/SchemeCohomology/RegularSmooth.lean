@@ -14,8 +14,6 @@ public import Mathlib.RingTheory.Unramified.LocalRing
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open IsLocalRing

@@ -9,8 +9,6 @@ public import Mathlib.FieldTheory.IsSepClosed
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.Abelian
 
 open AddSubgroup

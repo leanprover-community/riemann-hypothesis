@@ -16,8 +16,6 @@ public import Mathlib.Algebra.Category.Ring.Limits
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open CategoryTheory MonoidalCategory Opposite TensorProduct
 
 universe u v₁ u₁

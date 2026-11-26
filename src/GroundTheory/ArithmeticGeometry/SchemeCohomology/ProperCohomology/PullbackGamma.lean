@@ -7,8 +7,6 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Affine
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open AlgebraicGeometry CategoryTheory Limits Opposite

@@ -13,8 +13,6 @@ public import Mathlib.RingTheory.Ideal.Height
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Arith.SchemeCoh
 
 open IsLocalRing Ideal

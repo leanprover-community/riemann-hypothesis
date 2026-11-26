@@ -8,8 +8,6 @@ public import Mathlib.Topology.Sheaves.LocallySurjective
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 -- Use `sheafIsAbelian`, the instance Mathlib's `Sheaf.H` API is stated for, instead of the
 -- definitionally equal `TopCat.Sheaf.instAbelian`: the kernel is slow to identify the two.
 attribute [-instance] TopCat.Sheaf.instAbelian
