@@ -55,6 +55,8 @@ See also `Lib.Adelic.Unitary.CongruenceLevels`.
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 noncomputable section
 
 /-!
@@ -250,7 +252,7 @@ lemma diagGL_ite_mem_basicDoubleCoset (hϖ : v ϖ.val = exp (-1)) (s : Finset n)
   classical
   -- Each condition is read off the diagonal entries. `coe_units_inv` is left out so that the
   -- inverse stays the image of a unit under `diagGL`.
-  simp +decide [basicDoubleCoset, -coe_units_inv, ← map_inv, diagonal_apply, apply_ite, hϖ,
+  simp +decide [basicDoubleCoset, -coe_units_inv, ← map_inv, apply_ite, hϖ,
     ite_apply, Finset.univ_inter]
 
 /-- For a uniformiser ϖ of E_w and a set s of indices, the kernel of the reduction modulo w of

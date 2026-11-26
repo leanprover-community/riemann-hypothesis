@@ -302,7 +302,7 @@ through its component at the conjugate place `w̄`. Suppose that this component 
 base point `1`. -/
 lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
     (hd : ∀ τ : D.Φ, GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) d.val =
-      diagGL fun i : D.X D.m ↦ if i.isLeft then 1 else
+      TauCeti.diagGL fun i : D.X D.m ↦ if i.isLeft then 1 else
         if star (inducedPlace τ) ∈ D.piNPlaces then Units.mk0 ↑D.N NeZero.out else 1)
     {c : ℝ} {φ : D.FormX D.m} (hφ : GaugeLe d c φ) : GaugeLe 1 c (D.restrictToY φ) := by
   -- The branching map turns the action of `d⁻¹` into a scalar with the absolute value of the scalar
@@ -345,7 +345,9 @@ lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
         ∏ τ, ‖weightEmbedding ιₚ τ (if star (inducedPlace τ) ∈ D.piNPlaces then (D.N : D.E) else 1)‖
           ^ D.branchExponent τ :=
       prod_congr rfl fun τ _ ↦ congrArg (· ^ D.branchExponent τ) (congrArg NNReal.toReal (h_norm τ))
-    simpa [a, s, hd, apply_ite, starRingEnd_apply (R := D.E)] using h_prod
+    simp [a, s, hd, apply_ite, starRingEnd_apply (R := D.E)] at h_prod ⊢
+    rw [h_prod, ← prod_inv_distrib]
+    exact prod_congr rfl fun τ _ ↦ by split_ifs <;> simp
   have h_comp : ιₚ ∘ (D.branching.map (↑) *ᵥ φ.val (D.borderU g)) =
       D.branching.map (↑) *ᵥ (ιₚ ∘ φ.val (D.borderU g)) := funext (by simp [mulVec_eq_sum])
   rw [h_restrict, weylGauge_smul, h_intertwine, Units.smul_def, norm_smul, h_scalar, weylGauge,
@@ -356,8 +358,7 @@ the same bound. -/
 lemma GaugeLe.restrictToY (hp : p ≠ D.N) {c : ℝ} {φ : D.FormX D.m} (hφ : GaugeLe 1 c φ) :
     GaugeLe 1 c (D.restrictToY φ) :=
   restrictToY_of_diag D
-    (by simp [D.natCast_notMem_and_star_notMem_piNPlaces_of_ne hp, p_mem_inducedPlace,
-      Units.ext_iff]) hφ
+    (by simp [D.natCast_notMem_and_star_notMem_piNPlaces_of_ne hp, p_mem_inducedPlace]) hφ
 
 /-- For every embedding `σ` of `ℂ`, the squared norm of `σ` of the value at `h` of the restriction
 of `φ` to `Y_m` is at most `exp (x ^ 70) N ^ (-∑ τ, n_τ)` times that of `σ` of the value of `φ` at

@@ -552,7 +552,7 @@ lemma exists_fundamental_domain_classLattice [DecidableEq n] (t : RealVectors E 
     exact ⟨fundamentalDomain b, fundamentalDomain_measurableSet b, h_span⟩
   refine ⟨F, h_meas, ?_, h_fund⟩
   let a : GL n (𝔸 E) :=
-    mkAdelicGL (fun w ↦ (diagGL fun j ↦ (ht.apply j).unit).map (Pi.evalRingHom _ w), m)
+    mkAdelicGL (fun w ↦ (TauCeti.diagGL fun j ↦ (ht.apply j).unit).map (Pi.evalRingHom _ w), m)
   -- `S = F × Ôⁿ`, as a set of adelic vectors
   let S : Set (n → 𝔸 E) :=
     arrowProdEquivProdArrow _ _ n ⁻¹' F ×ˢ Set.univ.pi fun _ ↦ (Ô E : Set (𝔸f E))
@@ -566,7 +566,7 @@ lemma exists_fundamental_domain_classLattice [DecidableEq n] (t : RealVectors E 
     -- the infinite part of `a (ξ + x)`
     have h_inf (ξ : n → E) : (fun i : n ↦ (q ξ i).1) = t * toRealVectors ξ + z := by
       ext
-      simp [q, a, z, diagonal, mulVec_eq_sum, mul_add, sum_add_distrib, ← prod_mk_sum]
+      simp [q, a, z, mulVec_eq_sum, mul_add, sum_add_distrib, ← prod_mk_sum]
     -- the finite part of `a (ξ + x)` is integral iff `ξ` has the class `w`
     have h_fin (ξ : n → E) : (∀ i : n, (q ξ i).2 ∈ Ô E) ↔ frameTorsionClass m⁻¹ ξ = w := by
       rw [show frameTorsionClass m⁻¹ ξ = torsionClass (m.val *ᵥ (algebraMap E (𝔸f E) ∘ ξ)) from rfl,

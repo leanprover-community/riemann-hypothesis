@@ -96,7 +96,7 @@ lemma integralFormsAt_one_le :
   let A (τ : D.Φ) : Matrix (D.X 0) (D.X 0) ℂ_[D.N] :=
     (GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) d.val).val
   have hA (τ : D.Φ) (i j : D.X 0) : ‖A τ i j‖ ≤ 1 := by
-    simp only [A, d, map_adeleExtension_diagPoint, coe_diagGL, diagonal_apply]
+    simp only [A, d, map_adeleExtension_diagPoint, TauCeti.diagGL_coe, diagonal_apply]
     split_ifs <;> simp [inv_le_one_of_one_le₀, (Fact.out : D.N.Prime).one_le]
   let ξ : WeylIndex (D.X 0) D.columnCount → ℂ_[D.N] :=
     weylRep D.columnCount (D.lastEntry 0) (fun τ : D.Φ ↦

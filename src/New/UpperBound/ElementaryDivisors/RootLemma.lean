@@ -63,6 +63,8 @@ G-zips, 2021; Bombieri, Counting points on curves over finite fields, Sém. Bour
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 namespace New
 
 open Polynomial IsLocalRing Function in
@@ -519,14 +521,14 @@ lemma swapTransvection_mem_rootSL {T : FrobeniusCycle N W R} (D : T.RootAt k) (r
     simp only [val_transvectionGL, transvection, Matrix.single, Matrix.add_apply,
       Matrix.one_apply, of_apply, h_off, ↓reduceIte, add_zero]
   · obtain rfl | h_ne := eq_or_ne i j
-    · simp only [coe_diagGL, diagonal_apply_eq, ne_eq, hij.elim And.left And.left,
+    · simp only [diagGL_coe, diagonal_apply_eq, ne_eq, hij.elim And.left And.left,
         not_false_eq_true, Function.update_of_ne, Pi.one_apply, Units.val_one,
         one_apply_eq]
-    · simp only [coe_diagGL, ne_eq, h_ne, not_false_eq_true, diagonal_apply_ne,
+    · simp only [diagGL_coe, ne_eq, h_ne, not_false_eq_true, diagonal_apply_ne,
         one_apply_ne]
   · change (D.swapTransvection r).val.det = 1
     have h_diag : (diagGL (Function.update 1 D.fst (-1)) : GL (Fin k) W).val.det = -1 := by
-      simp only [coe_diagGL, det_diagonal, ← Units.coe_prod, Finset.mem_univ,
+      simp only [diagGL_coe, det_diagonal, ← Units.coe_prod, Finset.mem_univ,
         Finset.prod_update_of_mem, Pi.one_apply, Finset.prod_const_one, mul_one,
         Units.val_neg, Units.val_one]
     rw [swapTransvection, Units.val_mul, det_mul, h_diag]
@@ -552,7 +554,7 @@ lemma polyAction_swapTransvection_X [NeZero N] {T : FrobeniusCycle N W R} (D : T
   let d : GL (Fin k) W := diagGL (Function.update 1 D.fst (-1))
   have h_diag : T.polyAction d (X z) = D.moveSign z • X z := by
     rw [polyAction_X, letterMatrix_apply, ← map_inv, ← Function.update_inv, inv_one, inv_neg_one]
-    simp only [coe_diagGL, Function.update_apply, Pi.one_apply, apply_ite Units.val,
+    simp only [diagGL_coe, Function.update_apply, Pi.one_apply, apply_ite Units.val,
       Units.val_neg, Units.val_one, diagonal_transpose, ite_self, map_apply,
       diagonal_apply, apply_ite (T.embedding _), map_neg, map_one, map_zero, apply_ite C,
       ite_mul, neg_mul, one_mul, zero_mul, Finset.sum_ite_eq',

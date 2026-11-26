@@ -149,7 +149,7 @@ lemma exists_eigenbasis_diag_form {ν : ℚ} {β : Matrix n n E} (h : IsElliptic
       CStarAlgebra.nonneg_iff_eq_star_mul_self.1 (ht i).le
     choose c hc using h_sq
     have hc_ne (i : n) : c i ≠ 0 := fun h_zero ↦ by simpa [hc, h_zero] using ht i
-    let s : GL n ℂ := diagGL fun i ↦ .mk0 (t i / c i) (by simp [hc_ne])
+    let s : GL n ℂ := TauCeti.diagGL fun i ↦ .mk0 (t i / c i) (by simp [hc_ne])
     refine ⟨k * s, gram_mul_of_gram_eq hd ?_, ?_⟩
     · -- entrywise `t / c̄ * (d * t / c) = t / c̄ * (c̄ * c / c) = t`
       simp [s, signMatrix, ← mul_div_assoc, hc, mul_assoc]

@@ -46,8 +46,8 @@ Notions from other files:
   whose inverse has entries in O.
 * `New.parabolic`: The subgroup of GL_n(R) of matrices that are block upper triangular for a given
   level function on the indices.
-* `New.diagGL`: The homomorphism sending a family of units of R to the diagonal matrix in GL_n(R)
-  with these entries.
+* `TauCeti.diagGL`: The homomorphism sending a family of units of R to the diagonal matrix in
+  GL_n(R) with these entries.
 * `New.unitriangular lev R`: the matrices in GL_n(R) that agree with the identity matrix at every
   entry `(i, j)` with `lev j ≤ lev i`; for `lev = id` these are the upper unitriangular matrices.
 
@@ -68,6 +68,8 @@ See also `Lib.LocalGL.Iwahori.HeckeDegrees`.
 -/
 
 @[expose] public section
+
+open TauCeti (diagGL diagGL_coe)
 
 noncomputable section
 
@@ -646,7 +648,7 @@ lemma diagGL_mem_proIwahori : diagGL t ∈ proIwahori ↔ ∀ i : Fin N, v ((t i
   -- Off the diagonal the entries are `0`. On it, `v (t i - 1) < 1 = v 1` forces `v (t i) = 1`, so
   -- the diagonal entries are integral.
   have h_entry (i j : Fin N) : (diagGL t : Matrix (Fin N) (Fin N) F) i j =
-      if i = j then (t i : F) else 0 := by simp [diagonal_apply]
+      if i = j then (t i : F) else 0 := by simp
   simp only [mem_proIwahori, h_entry, ite_true]
   constructor
   · rintro ⟨-, -, h_diag⟩
@@ -822,7 +824,7 @@ lemma exists_inv_mul_mul_map_eq_diagGL_mul [CompactSpace 𝒪[F]]
     v.pos_iff.mp (one_pos.trans_eq (v_diag_eq_one_of_mem_proIwahori hX_mem i).symm)
   let d (i : Fin N) : Fˣ := .mk0 (twistedConj t g σ k i i) (h_unit i)
   have hX : diagGL d = twistedConj t g σ k :=
-    Units.ext (isDiag_of_forall_mem_conjProIwahori ht h_all).diagonal_diag
+    Units.ext <| (diagGL_coe d).trans (isDiag_of_forall_mem_conjProIwahori ht h_all).diagonal_diag
   obtain ⟨-, -, hX_diag⟩ := mem_proIwahori.mp hX_mem
   refine ⟨k, k.prop, d, diagGL_mem_proIwahori.mpr hX_diag, ?_⟩
   rw [map_mul, hX, twistedConj, mul_inv_cancel_left]

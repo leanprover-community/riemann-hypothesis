@@ -67,6 +67,8 @@ Known; see `Lib.GaloisRep.LocalGlobal.LabelCompatibility` for sources.
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 /-!
 ## Compatibility for a sorted Iwahori eigencharacter
 

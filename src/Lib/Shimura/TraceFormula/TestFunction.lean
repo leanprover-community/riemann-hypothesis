@@ -42,6 +42,8 @@ Known; see `Lib.Shimura.TraceFormula.MarkedDefiniteSums` for sources.
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 open NumberField Matrix Polynomial Submodule Set Subgroup Valued
 
 namespace New.Variety

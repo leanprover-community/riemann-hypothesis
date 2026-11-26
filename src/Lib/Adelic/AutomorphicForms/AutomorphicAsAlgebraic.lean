@@ -72,7 +72,7 @@ variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 
 lemma isStd_signedSpace [HasPrimitiveRoot5040 E] (hs : s = 1) : (signedSpace E s).IsStd where
   signs_eq_one := hs
-  point_eq_one := by aesop
+  point_eq_one := by simp [signedSpace, hs]
 
 /-- The matrix `conjWeylMatrix κ e x` depends continuously on the archimedean point `x`. -/
 lemma continuous_conjWeylMatrix (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ)

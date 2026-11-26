@@ -537,7 +537,7 @@ diag(s). Its point is diagonal, with entry 1 where s_i = 1 and `normNegOneIdele 
 with finite part of norm −1) where s_i = −1. -/
 def signedSpace (s : n → ℤˣ) : Space E n s where
   J := diagonal fun i ↦ s i
-  x := diagGL fun i ↦ if s i = 1 then 1 else normNegOneIdele E
+  x := TauCeti.diagGL fun i ↦ if s i = 1 then 1 else normNegOneIdele E
   gram_point := by
     -- where `s i = -1` the norm `-1` of the finite part cancels the sign
     simp_all [apply_ite, ite_apply, normNegOneIdele, funext_iff, stdForm, Prod.ext_iff,

@@ -24,6 +24,8 @@ Notions from other files:
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 noncomputable section
 
 section PlacesAtLevel

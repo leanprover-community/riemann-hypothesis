@@ -53,6 +53,8 @@ Source: Casselman, The unramified principal series of p-adic groups I, Compositi
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 noncomputable section
 
 /-!

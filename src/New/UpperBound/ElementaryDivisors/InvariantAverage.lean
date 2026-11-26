@@ -66,6 +66,8 @@ Schur–Weyl duality over finite fields, 2009.
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 namespace New.Average
 
 open MvPolynomial Matrix IsLocalRing Finsupp Module LinearMap Submodule Finset Nat Fintype
@@ -181,7 +183,7 @@ lemma conjSubst_diagGL_X {k : ℕ} {W O : Type} [CommRing W] [CommRing O] (ι : 
     (u : Fin k → Wˣ) (v : Fin k × Fin k) :
     conjSubst ι (diagGL u) (X v) =
       ι ((u v.1)⁻¹ * u v.2 : Wˣ) • (X v : MvPolynomial (Fin k × Fin k) O) := by
-  rw [conjSubst, ← map_inv diagGL, coe_diagGL, coe_diagGL]
+  rw [conjSubst, ← map_inv diagGL, diagGL_coe, diagGL_coe]
   simp [linSubst, sum_prod_type, diagonal_apply, apply_ite ι]
 
 /-- The form `ψ ↦ c * ψ(1)`: evaluation at the identity matrix, times `c`. -/

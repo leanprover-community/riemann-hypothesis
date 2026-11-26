@@ -43,6 +43,8 @@ Notions from other files:
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 /-!
 ## Congruences, norms and the family
 -/
@@ -515,11 +517,11 @@ lemma transfer_firstEntry (g : GL (Fin N) F) :
   -- Both sides are characters of `GL_N(F)`, and they agree on diagonal matrices and transvections.
   set τ := (firstEntry (F := F) (N := N)).transfer
   have τ_diag : τ.comp diagGL = GeneralLinearGroup.det.comp diagGL := MonoidHom.pi_ext fun i x ↦
-    (transfer_firstEntry_diagGL_mulSingle i x).trans <| Units.ext (by simp [← Units.coe_prod])
+    (transfer_firstEntry_diagGL_mulSingle i x).trans <| Units.ext (by simp)
   let ⟨g', h, h'⟩ := diagonal_transvection_induction_of_det_ne_zero
     (fun M ↦ ∃ g' : GL (Fin N) F, (g' : Matrix _ _ F) = M ∧ τ g' = GeneralLinearGroup.det g')
     g g.det_ne_zero
-    (fun D hD ↦ ⟨diagGL fun i ↦ .mk0 (D i) (by simp_all [prod_ne_zero_iff]), rfl,
+    (fun D hD ↦ ⟨diagGL fun i ↦ .mk0 (D i) (by simp_all [prod_ne_zero_iff]), by simp,
       DFunLike.congr_fun τ_diag _⟩)
     (fun t ↦ ⟨toGL t.toSpecialLinearGroup, rfl, by simp [map_toGL_transvection_eq_one]⟩)
     (fun _ _ _ _ ⟨g₁, h₁, e₁⟩ ⟨g₂, h₂, e₂⟩ ↦ ⟨g₁ * g₂, by simp [h₁, h₂], by simp [e₁, e₂]⟩)

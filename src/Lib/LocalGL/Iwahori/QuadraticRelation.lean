@@ -38,6 +38,8 @@ Known; see `Lib.LocalGL.Iwahori.SphericalExponents` for sources.
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 /-!
 ## Monomial matrices and the quadratic relation
 

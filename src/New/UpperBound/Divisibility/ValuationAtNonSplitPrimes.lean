@@ -114,7 +114,7 @@ open scoped Classical in
 the others. -/
 noncomputable def neighborDiagonal (p : ℕ) [Fact p.Prime] {n' : Type} [Fintype n'] [DecidableEq n']
     (Λ : Finset (FinPlace D.E)) (J : FinPlace D.E → Finset n') (l : Λ) : GL n' (LocField l.val) :=
-  diagGL fun b : n' ↦ if b ∈ J l then .mk0 p NeZero.out else 1
+  TauCeti.diagGL fun b : n' ↦ if b ∈ J l then .mk0 p NeZero.out else 1
 
 open scoped Classical in
 /-- Let `T` be a filling by indices in `X_{j+1}` of the Young diagrams with `D.columnCount τ h`

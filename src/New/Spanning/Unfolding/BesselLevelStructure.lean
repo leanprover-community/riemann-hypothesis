@@ -319,7 +319,9 @@ lemma besselFn_adelicToInf_mul_eq_prod_wave_smul {x : S.G (𝔸 E)} {side : Full
   -- Each local Bessel function transforms by `wave c = exp (c - c̄)` under the unipotent group,
   -- which contains every component of `S.adelicToInf x`.
   have h_inf (v : InfinitePlace E) : S.adelicToInf x v ∈ besselU :=
-    conj_mem_unitriangular (blockTriangular_diagonal _) (hx.map_mem_agreeWithOneOn _)
+    conj_mem_unitriangular
+      (by simp only [basisScaleGL, TauCeti.diagGL_coe]; exact blockTriangular_diagonal _)
+      (hx.map_mem_agreeWithOneOn _)
   have h_loc (v : InfinitePlace E) (g : 𝔰.G₁) :
     (S.besselSystem v).besselFn side (S.adelicToInf x v * g) =
       wave (simpleRootSum (S.adelicToInf x v)) • (S.besselSystem v).besselFn side g :=

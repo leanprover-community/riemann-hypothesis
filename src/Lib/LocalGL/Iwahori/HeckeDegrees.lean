@@ -55,6 +55,8 @@ Known; see `Lib.LocalGL.Iwahori.SphericalExponents` for sources.
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 noncomputable section
 
 section HeckeCounts
@@ -170,7 +172,7 @@ private lemma existsUnique_inv_mul_mem_proIwahori {t : Fin N → (LocField w)ˣ}
       (k * diagGL t)⁻¹ * (r c * diagGL t) ∈ proIwahori ↔ Ψ c = 0 := by
     have h_conj_tri : (diagGL t)⁻¹ * (u⁻¹ * r c * diagGL t) ∈ unitriangular id (LocField w) := by
       rw [← mul_assoc]
-      exact conj_mem_unitriangular (blockTriangular_diagonal _)
+      exact conj_mem_unitriangular (diagGL_coe t ▸ blockTriangular_diagonal _)
         (mul_mem (inv_mem hu_tri) (hr_tri c))
     rw [← mul_mem_cancel_left huk]
     -- Conjugation by `t` divides the entry `(i, j)` by `t i / t j`.
@@ -181,7 +183,7 @@ private lemma existsUnique_inv_mul_mem_proIwahori {t : Fin N → (LocField w)ˣ}
       rw [Ideal.Quotient.eq_zero_iff_dvd, (Valuation.integer.integers v).dvd_iff_le]
       have h_val : ((diagGL t)⁻¹ * (u⁻¹ * r c * diagGL t)).val i j =
           (u⁻¹ * r c).val i j / (t i / t j).val := by
-        rw [Units.val_mul, Units.val_mul, ← map_inv, coe_diagGL, coe_diagGL, diagonal_mul,
+        rw [Units.val_mul, Units.val_mul, ← map_inv, diagGL_coe, diagGL_coe, diagonal_mul,
           mul_diagonal, Pi.inv_apply, Units.val_inv_eq_inv_val, Units.val_div_eq_div_val,
           div_div_eq_mul_div, div_eq_mul_inv]
         ring
@@ -370,15 +372,15 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
     rw [Units.val_inv_eq_inv_val, map_inv₀, hϖ, WithZero.exp_neg, inv_inv]
   have h_mul (a b : Fin N) :
       ((diagGL (mulSingle r ϖ))⁻¹ * g).val a b = (if a = r then ϖ⁻¹.val else 1) * g.val a b := by
-    rw [Units.val_mul, ← map_inv, coe_diagGL, diagonal_mul, Pi.inv_apply, mulSingle_apply]
+    rw [Units.val_mul, ← map_inv, diagGL_coe, diagonal_mul, Pi.inv_apply, mulSingle_apply]
     split_ifs <;> simp
   have h_im (a b : Fin N) :
       (((diagGL (mulSingle r ϖ))⁻¹ * g)⁻¹).val a b =
         g⁻¹.val a b * (if b = r then ϖ.val else 1) := by
-    rw [_root_.mul_inv_rev, inv_inv, Units.val_mul, coe_diagGL, mul_diagonal, mulSingle_apply]
+    rw [_root_.mul_inv_rev, inv_inv, Units.val_mul, diagGL_coe, mul_diagonal, mulSingle_apply]
     split_ifs <;> simp
   have h_det : v ((diagGL (mulSingle r ϖ))⁻¹ * g).val.det = exp 1 * v g.val.det := by
-    rw [Units.val_mul, Matrix.det_mul, map_mul, ← map_inv, coe_diagGL, Matrix.det_diagonal,
+    rw [Units.val_mul, Matrix.det_mul, map_mul, ← map_inv, diagGL_coe, Matrix.det_diagonal,
       map_prod, Finset.prod_eq_single r (fun i _ hi ↦ by simp [hi]) (by simp)]
     simp only [Pi.inv_apply, mulSingle_eq_same, h_inv_val]
   have h_exp1 : (exp (-1) : ℤᵐ⁰) * exp 1 = 1 := by rw [← exp_add, neg_add_cancel, exp_zero]
@@ -816,7 +818,7 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
       rw [Units.val_inv_eq_inv_val, map_inv₀, hϖ, WithZero.exp_neg, inv_inv]
     have h_mul (a b : Fin N) :
         (c⁻¹ * invTransposeGL g).val a b = (if a.val < m then 1 else ϖ.val) * g⁻¹.val b a := by
-      rw [Units.val_mul, hc, ← map_inv, coe_diagGL, diagonal_mul, Pi.inv_apply,
+      rw [Units.val_mul, hc, ← map_inv, diagGL_coe, diagonal_mul, Pi.inv_apply,
         invTransposeGL_apply]
       dsimp only [transposeGL]
       rw [transpose_apply]
@@ -824,7 +826,7 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
     have h_im (a b : Fin N) :
         ((c⁻¹ * invTransposeGL g)⁻¹).val a b =
           g.val b a * (if b.val < m then 1 else ϖ⁻¹.val) := by
-      rw [_root_.mul_inv_rev, inv_inv, ← map_inv, Units.val_mul, hc, coe_diagGL, mul_diagonal,
+      rw [_root_.mul_inv_rev, inv_inv, ← map_inv, Units.val_mul, hc, diagGL_coe, mul_diagonal,
         invTransposeGL_apply, inv_inv]
       dsimp only [transposeGL]
       rw [transpose_apply]
@@ -841,7 +843,7 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
         congrArg Units.val (map_inv Matrix.GeneralLinearGroup.det g)
     have h_det :
         v (c⁻¹ * invTransposeGL g).val.det = exp (-((i + j : ℕ) : ℤ)) * (v g.val.det)⁻¹ := by
-      rw [Units.val_mul, Matrix.det_mul, map_mul, hc, ← map_inv, coe_diagGL, Matrix.det_diagonal,
+      rw [Units.val_mul, Matrix.det_mul, map_mul, hc, ← map_inv, diagGL_coe, Matrix.det_diagonal,
         map_prod, invTransposeGL_apply]
       dsimp only [transposeGL]
       rw [Matrix.det_transpose, h_det_inv, map_inv₀]
@@ -869,7 +871,8 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
   have dual (g : GL (Fin N) (LocField w)) :
       g ∈ partialCosets m j ↔ c⁻¹ * invTransposeGL g ∈ partialCosets m i := by
     refine ⟨forward i j h_sum g, fun h ↦ ?_⟩
-    have hc_inv : invTransposeGL c = c⁻¹ := Units.ext (Matrix.diagonal_transpose _)
+    have hc_inv : invTransposeGL c = c⁻¹ := Units.ext <| by
+      simp [hc, invTransposeGL_apply, transposeGL, ← map_inv]
     have h_back := forward j i (by rwa [Nat.add_comm j i]) _ h
     rwa [map_mul, map_inv, hc_inv, inv_inv, ← mul_assoc, inv_mul_cancel, one_mul,
       show invTransposeGL (invTransposeGL g) = g from invTransposeGL.symm_apply_apply g] at h_back

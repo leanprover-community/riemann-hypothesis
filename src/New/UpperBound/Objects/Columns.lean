@@ -177,7 +177,7 @@ omit [WeilData E] in
 /-- At a place `w` of `P`, the component `atPlace w` of `embedGL (diagN (P := P) (N := N) n S)` is
 `diag (1, …, 1, N)` if `w` is in `S`, and `1` otherwise. -/
 lemma atPlace_embedGL_diagN (w : P) : (embedGL (diagN (P := P) (N := N) n S)).atPlace w =
-    diagGL fun i : n ⊕ Unit ↦
+    TauCeti.diagGL fun i : n ⊕ Unit ↦
       if i.isLeft then 1 else if ↑w ∈ S then .mk0 (N : LocField w.val) NeZero.out else 1 :=
   (atPlace_ofSplitPlaces star_notMem _ w).trans (by simp [diagN, Units.ext_iff])
 

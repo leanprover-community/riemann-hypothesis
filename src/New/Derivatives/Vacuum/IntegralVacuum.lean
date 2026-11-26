@@ -439,11 +439,12 @@ lemma intVacuum_finVec_eq_prod {x : n → 𝔸f (P.E s)} : intVacuum V (finVec x
     ∏ i : n, P.vacuumScale s * (stdSpace (P.E s) Unit).vacElem (finVec fun _ : Unit ↦ x i) := by
   have hx : (signedSpace (P.E s) ε).x = 1 := by
     simp only [signedSpace, IsStd.signs_eq_one V, Pi.one_apply, ↓reduceIte]
-    exact map_one diagGL
+    exact map_one TauCeti.diagGL
   have hV : ∀ y : n → P.E s, V.vecAtPoint y = (signedSpace (P.E s) ε).vecAtPoint y := fun y ↦ by
     rw [vecAtPoint, vecAtPoint, IsStd.point_eq_one, hx]
   have h1 : ∀ y : Unit → P.E s,
-      (stdSpace (P.E s) Unit).vecAtPoint y = (signedSpace (P.E s) 1).vecAtPoint y := fun _ ↦ rfl
+      (stdSpace (P.E s) Unit).vecAtPoint y = (signedSpace (P.E s) 1).vecAtPoint y := fun _ ↦ by
+    simp [vecAtPoint, stdSpace, signedSpace, ← Pi.one_def]
   rw [intVacuum, Space.smul_apply, V.vacElem_apply_eq_prod_lineTheta hV,
     Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ]
   congr 1

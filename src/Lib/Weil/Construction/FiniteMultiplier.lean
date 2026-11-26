@@ -47,6 +47,8 @@ Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 noncomputable section
 
 /-!
@@ -551,7 +553,7 @@ lemma exists_eq_mul_diagGL_mul :
     ∃ k ∈ intGL ι (Ô E), ∃ k' ∈ intGL ι (Ô E), ∃ d : ι → (𝔸f E)ˣ, g = k * diagGL d * k' := by
   obtain ⟨k, hk, k', hk', d, hg⟩ := isValuationPair_Ô.smith_normal_form g.val
   lift d to ι → (𝔸f E)ˣ using by simpa [hg] using g.det.isUnit
-  exact ⟨k, hk, k', hk', d, Units.ext hg⟩
+  exact ⟨k, hk, k', hk', d, Units.ext (by simpa using hg)⟩
 
 /-- The denominator of a finite idele `x`: the idele with component `1` where `x` is integral and
 `x⁻¹` elsewhere. If `x` has order `μ` at `w`, its denominator has order `max 0 (-μ)` there. -/
@@ -584,14 +586,14 @@ lemma isSaturating_diagGL (d : ι → (𝔸f E)ˣ) :
   let S (i : ι) : Set (FinPlace E) := {w : FinPlace E | v ((d i).val w) ≤ 1}
   have h_integral (i : ι) : (denominatorIdele (d i)).val ∈ Ô E :=
     mem_Ô.2 fun w ↦ (v_denominatorIdele (d i) w).trans_le (inv_le_one_of_one_le₀ (le_max_left _ _))
-  refine ⟨h_diag h_integral, ?_, _, h_diag fun i ↦ idem_mem_Ô (S i),
+  refine ⟨by rw [diagGL_coe]; exact h_diag h_integral, ?_, _, h_diag fun i ↦ idem_mem_Ô (S i),
     _, h_diag fun i ↦ idem_mem_Ô (S i)ᶜ, ?_⟩
-  · rw [coe_diagGL, coe_diagGL, diagonal_mul_diagonal]
+  · rw [diagGL_coe, diagGL_coe, diagonal_mul_diagonal]
     refine h_diag fun i ↦ mem_Ô.2 fun w ↦ ?_
     have h_le : v ((d i).val w) * (max 1 (v ((d i).val w)))⁻¹ ≤ 1 :=
       mul_inv_le_one_of_le₀ (le_max_right _ _) zero_le
     simpa [v_denominatorIdele] using h_le
-  · rw [← map_inv, coe_diagGL, coe_diagGL, diagonal_mul_diagonal, diagonal_add]
+  · rw [← map_inv, diagGL_coe, diagGL_coe, diagonal_mul_diagonal, diagonal_add]
     exact congrArg diagonal (funext fun i ↦ coe_inv_denominatorIdele (d i))
 
 /-! ### The chosen saturating matrix -/

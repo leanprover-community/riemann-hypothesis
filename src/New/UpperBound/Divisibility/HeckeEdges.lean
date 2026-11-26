@@ -52,6 +52,8 @@ See `New.UpperBound.Divisibility.MarkOperator` for related work.
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 noncomputable section TwistedHeckeType
 
 namespace New.Columns
