@@ -29,8 +29,8 @@ definite space V_j.
   pair `New.Data.descentPair` when 1 ≤ j ≤ m and 0 otherwise.
 * `New.DescentPair.inner_thetaLift`: `New.DescentPair.normalizedDescent` is adjoint to
   `New.DescentPair.thetaLift`, for the Petersson product on `W` and the class sum product on `V`.
-* `New.Data.coe_adjoint_singleLift`, `New.Data.normalizedDescent_eq_zero_of_inner_eq_zero`: the adjoint of
-  Θ_{j,ξ} is the descent θ, so θ kills exactly the forms orthogonal to the lifts.
+* `New.Data.coe_adjoint_singleLift`, `New.Data.normalizedDescent_eq_zero_of_inner_eq_zero`: the
+  adjoint of Θ_{j,ξ} is the descent θ, so θ kills exactly the forms orthogonal to the lifts.
 * `New.Data.singleLift_injective`, `New.Data.exists_hasSum_rallisTerm_inner_singleLift`: Θ_{j,ξ} is
   injective, and its Gram form is a constant `A` times the factor `New.DescentPair.gramFactor` of
   the pair times the sum of the terms `New.Data.rallisTerm`.

@@ -156,9 +156,10 @@ lemma IsNearPairOverAgreeingBlock.mem_boundedDiscNearPairs {E : Type} [Field E] 
     (Submodule.finrank_le _).trans (by simp)
   ⟨hq, Nat.add_sub_cancel' h_rank, hq.corank_le_and_pairDiscriminant_le.right⟩
 
-/-- Let `S` be data of the filling theorem and let `c`, `c'` be classes and `γ` a rational point of cell rank `j = S.cellRank γ` whose gauge
-`G = S.levelGauge j c c' γ` is positive. If the constant `S.cellRankSecondMoment j` is at most `D`,
-then the square of the size `S.termSize c c' γ` is at most `τ⁴ D / (n_p G ^ k)`. -/
+/-- Let `S` be data of the filling theorem and let `c`, `c'` be classes and `γ` a rational point of
+cell rank `j = S.cellRank γ` whose gauge `G = S.levelGauge j c c' γ` is positive. If the constant
+`S.cellRankSecondMoment j` is at most `D`, then the square of the size `S.termSize c c' γ` is at
+most `τ⁴ D / (n_p G ^ k)`. -/
 lemma termSize_sq_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
     {c c' : S.Classes} {γ : S.G E} {D : ℝ}
     (h_gauge_pos : 0 < S.levelGauge (S.cellRank γ) c c' γ)
@@ -431,7 +432,8 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
       h_cell'.lt_iff_termDisc_ne_zero.1 h_top (h_both.1 h_disc)
     have h_full : 𝔰.k - finrank E (commonLink γ γ') = 0 := by lia
     have h_one : (S.pairDiscriminant c c' γ γ' * 1) ^ 2 ≤
-        S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by simpa [show S.linkCorank γ γ' = 0 from hi] using h_gain
+        S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by
+      simpa [show S.linkCorank γ γ' = 0 from hi] using h_gain
     have h_moment : S.cellRankSecondMoment j = S.identitySecondMoment / S.tailScale ^ 16 :=
       ite_eq_right h_low
     have h_moment' : S.cellRankSecondMoment j' = S.identitySecondMoment / S.tailScale ^ 16 :=
@@ -794,7 +796,8 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
     rw [← tsum_prod]
     apply tsum_le_of_pair_blocks (size c c') (h_mem (c := c) (c' := c'))
     · rintro ⟨s, Λ⟩ ⟨s', Λ'⟩ q _ hq _ hq' _
-      refine Prod.ext (Subtype.ext (eq_of_mem_termsOver (mem_termsOver_of_mem_nearRepresentativesOver hq)
+      refine Prod.ext
+        (Subtype.ext (eq_of_mem_termsOver (mem_termsOver_of_mem_nearRepresentativesOver hq)
         (mem_termsOver_of_mem_nearRepresentativesOver hq'))) ?_
       exact ((mem_of_mem_nearRepresentativesOver hq).2 : link q = Λ).symm.trans
         (mem_of_mem_nearRepresentativesOver hq').2
