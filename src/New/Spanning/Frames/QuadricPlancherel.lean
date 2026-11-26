@@ -1,6 +1,14 @@
 module
 
-public import New.Spanning.Frames.QuadricVolumes
+import Mathlib.CategoryTheory.Countable
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Lib.DiscreteSeries.Bruhat.FourierKernels
+public import New.Spanning.Frames.Correlations
+import Lib.Base
+import Lib.General.Measure.IntegralOperators
+import New.Spanning.Frames.QuadricVolumes
 
 /-!
 # Plancherel's formula on quadrics
@@ -382,7 +390,7 @@ lemma parseval_heisenbergMeasure_le {S : Set T.G} {i : ℕ} {Φ : T.G → ℝ≥
       heisenbergElem_mul, partialCorrelation_heisenbergElem_eq_integral a hk h_twist]
     congr 3 with σ
     simp only [← add_assoc, ← form_mulVec_mulVec t _ (orbitPoint _ _), mulVec_add,
-      inclMatrix_mulVec_floor_block a.2, inv_mem, ht]
+      inclMatrix_mulVec_floor_block a.isLt, inv_mem, ht]
     simp [← inverse_star_unit, star_mulVec_dotProduct, mul_add, mul_assoc]
   -- the measure is invariant under the group on both sides and under conjugation by `t`
   have h_subst : ∫⁻ n, Φ n ∂heisenbergMeasure a =

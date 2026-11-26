@@ -1,5 +1,12 @@
 module
 
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.LinearAlgebra.Matrix.Swap
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 public import Lib.General.Groups.BesselGroups
 
 /-!
@@ -89,13 +96,8 @@ the hyperplane `z i = 0`, exactly when the `i`-th row of `h` is a multiple of th
 lemma mul_inv_mem_parabolic_eq :
     h * g⁻¹ ∈ parabolic (· = i) ↔
       ∃ c : F, (h : Matrix n n F).row i = c • (g : Matrix n n F).row i := by
-  have h_row (j : n) : (h * g⁻¹) i j = ((h : Matrix n n F).row i ᵥ* (g⁻¹ : GL n F)) j := by
-    simp [Matrix.mul_apply, vecMul, dotProduct]
-  simp only [mem_parabolic_eq, h_row, ← exists_eq_smul_single_iff]
-  refine exists_congr fun c ↦ ?_
-  rw [← single_one_vecMul i (g : Matrix n n F), ← smul_vecMul]
-  exact ⟨fun h_eq ↦ by simp [← h_eq, vecMul_vecMul],
-    fun h_eq ↦ by simp [h_eq, vecMul_vecMul]⟩
+  simpa [mem_parabolic_eq, mem_parabolic_ne, transposeGL, ← transpose_mul, Matrix.col, Matrix.row]
+    using (inv_mul_mem_parabolic_ne (i := i) (g := transposeGL g) (h := transposeGL h))
 
 /-- If the `i`-th column of an invertible `g` vanishes off the diagonal, then `g i i ≠ 0`. -/
 lemma diag_ne_zero_of_col (hg : ∀ j ≠ i, g j i = 0) : g i i ≠ 0 :=
@@ -103,7 +105,7 @@ lemma diag_ne_zero_of_col (hg : ∀ j ≠ i, g j i = 0) : g i i ≠ 0 :=
 
 /-- If the `i`-th row of an invertible `g` vanishes off the diagonal, then `g i i ≠ 0`. -/
 lemma diag_ne_zero_of_row (hg : ∀ j ≠ i, g i j = 0) : g i i ≠ 0 :=
-  fun h_zero ↦ g.det_ne_zero (det_eq_zero_of_row_eq_zero i fun j ↦ by grind)
+  diag_ne_zero_of_col (g := transposeGL g) hg
 
 /-- Replacing the `j`-th column of the identity matrix by `z` gives determinant `z j`. -/
 lemma det_updateCol_one (j : n) (z : n → F) : (updateCol 1 j z).det = z j := by
@@ -167,14 +169,6 @@ lemma card_line (i : n) : #{z : n → F | ∀ j ≠ i, z j = 0} = Fintype.card F
   rw [h_line, card_image_of_injective _
     (smul_left_injective F (Pi.single_ne_zero_iff.2 one_ne_zero)), card_univ]
 
-/-- For a vector `z` let `N z` be the number of forms `ξ` with `ξ e_i = 1` and `ξ z = 1`. The sum
-of `f z` over the pairs `(ξ, z)` with `ξ e_i = 1` and `ξ z = 1` is the sum of `N z • f z` over all
-vectors `z`. -/
-lemma sum_forms_sum_eq_sum_card_smul {W : Type} [AddCommMonoid W] (i : n) (f : (n → F) → W) :
-    ∑ ξ : n → F with ξ i = 1, ∑ z : n → F with ξ ⬝ᵥ z = 1, f z =
-      ∑ z : n → F, #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} • f z := by
-  simp [sum_comm' (t' := univ) (s' := fun z ↦ {ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1})]
-
 /-- A multiple `z ≠ e_i` of `e_i` has value `1` under no form `ξ` with `ξ e_i = 1`. -/
 lemma card_forms_eq_zero_of_ne_single {z : n → F} (hz : ∀ j ≠ i, z j = 0)
     (h_ne : z ≠ Pi.single i 1) : #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} = 0 := by
@@ -213,7 +207,10 @@ lemma sum_sum_dotProduct_eq_one_eq_smul {W : Type} [AddCommGroup W] [Module ℂ 
       (Fintype.card F : ℂ) ^ (Fintype.card n - 2 : ℤ) • (y + ∑ z : n → F with z ≠ 0, f z) := by
   -- Exchange the sums: a vector `z` occurs `N z` times. This is `q ^ (n - 1)` for `z = e_i`,
   -- zero for its other multiples and `q ^ (n - 2)` off the line `L` of `e_i`.
-  rw [sum_forms_sum_eq_sum_card_smul i f, sum_ne_zero_eq_smul_add_sum_compl_line hf]
+  rw [show ∑ ξ : n → F with ξ i = 1, ∑ z : n → F with ξ ⬝ᵥ z = 1, f z =
+      ∑ z : n → F, #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} • f z by
+      simp [sum_comm' (t' := univ) (s' := fun z ↦ {ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1})],
+    sum_ne_zero_eq_smul_add_sum_compl_line hf]
   set q : ℂ := (Fintype.card F : ℂ)
   have hq : q ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
   set d : ℂ := q ^ (Fintype.card n - 2 : ℤ)
@@ -221,7 +218,7 @@ lemma sum_sum_dotProduct_eq_one_eq_smul {W : Type} [AddCommGroup W] [Module ℂ 
   let L : Finset (n → F) := {z : n → F | ∀ j ≠ i, z j = 0}
   let N (z : n → F) : ℕ := #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1}
   have h_on : ∑ z ∈ L, N z • f z = (d * q) • y := by
-    rw [sum_eq_single_of_mem (Pi.single i 1) (by simp [L, Pi.single_eq_of_ne]) fun z hz hne ↦ by
+    rw [sum_eq_single_of_mem (Pi.single i 1) (by simp [L]) fun z hz hne ↦ by
         simp [N, card_forms_eq_zero_of_ne_single (by simpa [L] using hz) hne],
       hf _ (Pi.single_ne_zero_iff.2 one_ne_zero) (fun j hj ↦ Pi.single_eq_of_ne hj 1),
       ← Nat.cast_smul_eq_nsmul ℂ]
@@ -275,7 +272,7 @@ lemma KeepsLine.mul (hM : KeepsLine i M) (hN : KeepsLine i N) : KeepsLine i (M *
     have h_block : (M * N).toSquareBlockProp (· ≠ i) =
         M.toSquareBlockProp (· ≠ i) * N.toSquareBlockProp (· ≠ i) := by
       ext a b
-      have h_corner : M a i * N i b = 0 := mul_eq_zero_of_left (hM.col_eq_zero a a.2) _
+      have h_corner : M a i * N i b = 0 := mul_eq_zero_of_left (hM.col_eq_zero a a.property) _
       simp only [toSquareBlockProp_def, Matrix.mul_apply, of_apply]
       rw [← sum_subtype (univ.erase i) (by simp) fun l : n ↦ M a l * N l b,
         sum_erase univ (f := fun l : n ↦ M a l * N l b) h_corner]

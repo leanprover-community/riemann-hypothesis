@@ -1,6 +1,15 @@
 module
 
+import Mathlib.Algebra.AffineMonoid.Basic
+import Mathlib.LinearAlgebra.Matrix.Bilinear
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Linter.Style
 public import Lib.GLn.Branching.NormBound
+public import Lib.GLn.SchurModule.SchurMatrix
+import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
 # Branching from GL(n+1) to GL(n) × GL(1): integral equivariant branching maps
@@ -204,7 +213,7 @@ private lemma map_branchKernel {S T : Type} [CommRing S] [CommRing T] (φ : S �
     fromBlocks_apply₂₂, one_apply_eq, zero_add, apply_ite, map_eval, Function.comp_def, map_add,
     map_sum, map_zero, map_highestPoly]
 
-omit [∀ τ : Φ, DecidableEq (N τ)] [∀ τ : Φ, DecidableEq (n τ)] in
+omit [DecidableEq Φ] [∀ τ : Φ, DecidableEq (N τ)] [∀ τ : Φ, DecidableEq (n τ)] in
 /-- In `y`, `branchKernel` is a semi-invariant of the upper triangular group: replacing `y` by
 `borelMul Sigma.fst b y` multiplies it by the diagonal entries of `b` to the powers given by the
 weights of `γ` and `κ'`. -/
@@ -603,7 +612,7 @@ lemma _root_.New.exists_branching_matrix (κ₀ : Φ → ℕ → ℕ) (q : ℕ) 
       prod_mul_distrib, mul_assoc, mul_left_comm]
   · have hc_le : (c : ℝ) ≤ ((L : ℝ) ^ L) ^ 3 := by exact_mod_cast c_le L hL
     calc weylNormSq (B.map (Int.cast : ℤ → ℂ) *ᵥ ξ)
-      _ ≤ (c : ℝ) ^ 2 * weylNormSq ξ := weylNormSq_mulVec_le_of_equivariant ι hκ₀ B_top B_block ξ
+      _ ≤ (c : ℝ) ^ 2 * weylNormSq ξ := weylNormSq_mulVec_le_of_equivariant ι B_top B_block ξ
       _ ≤ (((L : ℝ) ^ L) ^ 3) ^ 2 * weylNormSq ξ := by
         gcongr
         exact weylNormSq_nonneg ξ

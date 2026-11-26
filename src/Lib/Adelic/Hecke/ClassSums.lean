@@ -1,5 +1,9 @@
 module
 
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.Adelic.Hecke.Basic
 public import Lib.Adelic.QuotientMeasure.Basic
 
@@ -91,9 +95,9 @@ class HasFiniteType : Prop where
   isCompact : IsCompact (K : Set G)
 
 -- `open New.HasFiniteType` turns the two finiteness fields into instances and gives every finite
--- type a `Fintype` instance.
+-- type a `Fintype` instance, at low priority so that a structural `Fintype` instance wins.
 scoped[New.HasFiniteType] attribute [instance] HasFiniteType.finite_classes HasFiniteType.finite_aut
-  Fintype.ofFinite
+scoped[New.HasFiniteType] attribute [instance low] Fintype.ofFinite
 
 open HasFiniteType
 
@@ -291,7 +295,7 @@ lemma classSum_eq_relIndex_smul [H : HasFiniteType Γ K] [J : HasFiniteType Γ K
         simp_rw [card_eq_sum_ones]
         refine sum_comm' fun γ q ↦ ?_
         have h_mem : q.out⁻¹ * (y⁻¹ * γ * (x * a)) ∈ L → γ ∈ Γ → y⁻¹ * γ * (x * a) ∈ K :=
-          fun h_mem_L _ ↦ (K.mul_mem_cancel_left (K.inv_mem q.out.2)).1 (hLK h_mem_L)
+          fun h_mem_L _ ↦ (K.mul_mem_cancel_left (K.inv_mem q.out.property)).1 (hLK h_mem_L)
         simpa [hT, hL, mul_assoc] using h_mem
   -- Only the class of `x * a` contributes to this class sum, and its weight cancels.
   have hF (x : G) : F x = classSum Γ K fun y ↦ (#(T K y (x * a)) : ℚ) • f y := by
@@ -756,7 +760,7 @@ the chosen representatives `q.out` of the cosets `q` equals the sum of `f (a * q
 /-- A sum over coset representatives of `G ⧸ H` of a right `H`-invariant function does not
 change under left translation. -/
 lemma New.sum_mul_out {G B : Type*} [Group G] [AddCommMonoid B] (H : Subgroup G) [Fintype (G ⧸ H)]
-    (f : G → B) (hf : ∀ᵉ (x : G) (y ∈ H), f (x * y) = f x) (a : G) :
+    (f : G → B) (hf : ∀ x : G, ∀ y ∈ H, f (x * y) = f x) (a : G) :
     ∑ q : G ⧸ H, f (a * q.out) = ∑ q : G ⧸ H, f q.out := by
   -- `q ↦ a • q` permutes the cosets, and `(a • q).out = a * q.out * y` for some `y ∈ H`.
   refine Fintype.sum_equiv (MulAction.toPerm a) _ _ fun q ↦ ?_

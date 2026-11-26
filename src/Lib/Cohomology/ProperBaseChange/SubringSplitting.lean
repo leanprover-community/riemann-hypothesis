@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Valuation.LocalSubring
 public import Lib.Cohomology.ProperBaseChange.LineCharts
 
 /-!
@@ -118,25 +121,18 @@ lemma IsAbsIntegrallyClosed.isLocalization_away {S T : Subring K} [h : Fact (S �
     (hS : IsAbsIntegrallyClosed S) (x : S) {y : K} (hy : y ∈ T) (h_inv : (x : K) * y = 1)
     (h_min : ∀ {U : Subring K}, IsAbsIntegrallyClosed U → S ≤ U → y ∈ U → T ≤ U) :
     IsLocalization.Away x T := by
-  have hx_unit : IsUnit (S.subtype x) := .of_mul_eq_one y h_inv
-  let φ : Localization.Away x →+* K := Localization.awayLift S.subtype x hx_unit
-  have φ_algebraMap (r : S) : φ (algebraMap S (Localization.Away x) r) = r := lift_eq x hx_unit r
-  have φ_invSelf : φ (invSelf x) = y := by
-    rw [eq_inv_of_mul_eq_one_right h_inv, ← φ_algebraMap]
-    exact eq_inv_of_mul_eq_one_right (by rw [← map_mul, mul_invSelf, map_one])
-  -- The image of `S[1/x]` in `K` is absolutely integrally closed and contains `S` and `y`.
-  have h_closed : IsAbsIntegrallyClosed φ.range :=
-    (hS.of_isLocalization (.powers x)).of_surjective φ.rangeRestrict_surjective
-  have h_le : T ≤ φ.range :=
-    h_min h_closed (fun r hr ↦ ⟨_, φ_algebraMap ⟨r, hr⟩⟩) ⟨invSelf x, φ_invSelf⟩
-  -- So every `z ∈ T` is `r / x ^ n` with `r ∈ S`; and `x` is a unit of `T`, with inverse `y`.
-  refine .mk x (.of_mul_eq_one ⟨y, hy⟩ (Subtype.ext h_inv)) (fun z ↦ ?_) fun a b hab ↦ ?_
-  · obtain ⟨u, hu⟩ : ∃ u : Localization.Away x, φ u = z := h_le z.prop
-    obtain ⟨n, r, hr⟩ := surj x u
-    have h_clear : (z : K) * (x : K) ^ n = r := by
-      rw [← hu, ← φ_algebraMap x, ← map_pow, ← map_mul, hr, φ_algebraMap]
-    exact ⟨n, r, Subtype.ext h_clear⟩
-  · exact ⟨0, by rw [inclusion_injective h.out hab]⟩
+  let φ := Localization.awayLift S.subtype x (.of_mul_eq_one y h_inv)
+  have hφ (r : S) : φ (algebraMap S _ r) = r := lift_eq x _ r
+  -- Every `z ∈ T` lies in `φ.range`, so `z = r / x ^ n` with `r ∈ S`; and `x` is a unit of `T`.
+  refine .mk x (.of_mul_eq_one ⟨y, hy⟩ (Subtype.ext h_inv)) (fun z ↦ ?_)
+    fun a b hab ↦ ⟨0, by rw [inclusion_injective h.out hab]⟩
+  obtain ⟨u, hu⟩ := h_min ((hS.of_isLocalization (.powers x)).of_surjective
+    φ.rangeRestrict_surjective) (fun r hr ↦ ⟨_, hφ ⟨r, hr⟩⟩)
+    ⟨invSelf x, mul_left_cancel₀ (left_ne_zero_of_mul_eq_one h_inv)
+      (by rw [h_inv, ← hφ x, ← map_mul, mul_invSelf, map_one])⟩ z.prop
+  obtain ⟨n, r, hr⟩ := surj x u
+  exact ⟨n, r, Subtype.ext (show (z : K) * (x : K) ^ n = r by
+    rw [← hu, ← hφ x, ← map_pow, ← map_mul, hr, hφ])⟩
 
 /-- An element `a` of a subring `S` of a field `F` with `a ≠ 0` and `a⁻¹ ∈ S` is a unit of `S`. -/
 lemma _root_.Subring.isUnit_of_inv_mem {F : Type*} [Field F] {S : Subring F} (a : S)
@@ -166,7 +162,7 @@ equation `ε + r * ε ^ 2 = 1` has a solution `ε ∈ S` for every `r ∈ I` (`I
 `S` is local (`IsAbsIntegrallyClosedLocal S`).
 
 These are the two cases that `exists_eq_locConstSpec_map_sub_map` allows. -/
-lemma IsAbsIntegrallyClosed.exists_notMem_and_inv_notMem [IsAlgClosed K]
+lemma IsAbsIntegrallyClosed.exists_notMem_and_inv_notMem
     (hS : IsAbsIntegrallyClosed S) (I : Ideal S) (h_not_val : ¬∀ x : K, x ∈ S ∨ x⁻¹ ∈ S) :
     ∃ t : K, t ∉ S ∧ t⁻¹ ∉ S ∧
       ((∃ b : S, b * (1 - t) = 1 ∧ IsLineChartCase I b) ∨ IsAbsIntegrallyClosedLocal S) := by
@@ -360,7 +356,7 @@ lemma absIntegrallyClosedSubrings.IsSplitting.right_le (h_split : IsSplitting B 
   Subtype.coe_le_coe.mp (le_sup_right.trans h_split.eq_sup.ge)
 
 /-- If `B` splits into `B₁` and `B₂` (`IsSplitting`), then `B₁ ⊓ B₂ = B`. -/
-lemma absIntegrallyClosedSubrings.IsSplitting.inf_eq [IsAlgClosed K]
+lemma absIntegrallyClosedSubrings.IsSplitting.inf_eq
     (h_split : IsSplitting B B₁ B₂ B₃) :
     B₁.val ⊓ B₂.val = B.val := by
   -- `B` is integrally closed, so it is the intersection of the valuation rings that contain it.

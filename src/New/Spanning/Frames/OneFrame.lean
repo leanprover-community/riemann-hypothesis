@@ -1,6 +1,11 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Frames.Densities
+import New.Spanning.Frames.QuadricPlancherel
 
 /-!
 # One frame
@@ -113,21 +118,14 @@ lemma fixesLeft_weightedSquare_and_eq_zero (hk : F.IsPairingKernel j k d) :
   refine ⟨fun s hs g ↦ ?_, fun g hg ↦ ?_⟩
   · -- Write `s = γ ν`: weight and kernel are invariant under `γ`; `ν` fixes the weight and
     -- multiplies the kernel by a character value, of modulus one.
-    have hs_low : s ∈ partialUnitriangularGroup j := partialUnitriangularGroup_anti le_self_add hs
-    obtain ⟨γ, hγ, ν, hν, rfl⟩ : ∃ γ ∈ floorGroup j, ∃ ν ∈ unipotentBelow j, s = γ * ν :=
-      exists_floorGroup_mul_unipotentBelow hs_low
-    have hγ_up : γ ∈ partialUnitriangularGroup (j + 1) :=
-      (mul_mem_cancel_right (unipotentBelow_le_partialUnitriangularGroup hν)).1 hs
-    have h_weight : F.depthWeight j (γ * ν * g) x = F.depthWeight j g x := by simp [hs_low]
-    have h_norm : ‖F.partialCorrelation (j + 1) k (γ * (ν * g)) (γ * (ν * (g * x)))‖ₑ =
-        ‖F.partialCorrelation (j + 1) k g (g * x)‖ₑ := by
-      rw [hk.partialCorrelation_mul_left j.le_succ ⟨hγ_up, hγ⟩, hk.equivariance hν hν]
-      simp [← ofReal_norm]
-    rw [weightedSquare, weightedSquare, h_weight, ← h_norm]
-    simp only [mul_assoc]
-  · have h_zero : F.partialCorrelation (j + 1) k g (g * x) = 0 :=
-      not_imp_comm.1 hk.isNear_of_partialCorrelation_ne_zero hg
-    simp [h_zero]
+    have hs_low := partialUnitriangularGroup_anti j.le_succ hs
+    obtain ⟨γ, hγ, ν, hν, rfl⟩ := exists_floorGroup_mul_unipotentBelow hs_low
+    have hγ_up := (mul_mem_cancel_right (unipotentBelow_le_partialUnitriangularGroup hν)).1 hs
+    simp only [weightedSquare]
+    rw [show F.depthWeight j (γ * ν * g) x = F.depthWeight j g x by simp [hs_low]]
+    simp [mul_assoc, hk.partialCorrelation_mul_left j.le_succ ⟨hγ_up, hγ⟩,
+      hk.equivariance hν hν, ← ofReal_norm]
+  · simp [not_imp_comm.1 hk.isNear_of_partialCorrelation_ne_zero hg]
 
 /-- Let `k` be a pairing kernel at floor `j`: it obeys the rules of a correlation ⟪W g, W (d y)⟫,
 `d` commuting with `floorGroup j`. The sum 𝖻_j = `F.weightedSquareSum k x j` of the integrated
@@ -136,37 +134,23 @@ R^(j) = `partialUnitriangularGroup j` and vanishes at the points g that are not 
 lemma fixesLeft_weightedSquareSum_and_eq_zero (hk : F.IsPairingKernel j k d) (x : T.G) :
     (partialUnitriangularGroup j).FixesLeft (F.weightedSquareSum k x j) ∧
     ∀ g : T.G, ¬F.IsNear j g → F.weightedSquareSum k x j g = 0 := by
-  -- Descending induction on the floor `j`, along the recursion of `weightedSquareSum`; from `𝔰.n`
-  -- on the function vanishes. The recursion is run at the point `g = 1`, which the statement does
-  -- not mention: it only fills the argument, here and in the induction hypothesis.
   fun_induction F.weightedSquareSum k x j 1 with
   | case2 j _ hj => simp [weightedSquareSum.eq_1 _ _ _ j, hj]
   | case1 j _ hj ih =>
-    obtain ⟨h_sum_inv, h_sum_far⟩ :
-        (partialUnitriangularGroup (j + 1)).FixesLeft (F.weightedSquareSum k x (j + 1)) ∧
-          ∀ g : T.G, ¬F.IsNear (j + 1) g → F.weightedSquareSum k x (j + 1) g = 0 :=
-      ih 1 (hk.mono j.le_succ)
-    obtain ⟨h_square_inv, h_square_far⟩ :
-        (partialUnitriangularGroup (j + 1)).FixesLeft (F.weightedSquare j k x) ∧
-          ∀ g : T.G, ¬F.IsNear (j + 1) g → F.weightedSquare j k x g = 0 :=
-      hk.fixesLeft_weightedSquare_and_eq_zero
+    obtain ⟨h_sum_inv, h_sum_far⟩ := ih 1 (hk.mono j.le_succ)
+    obtain ⟨h_square_inv, h_square_far⟩ := hk.fixesLeft_weightedSquare_and_eq_zero (x := x)
     simp only [Subgroup.FixesLeft, weightedSquareSum.eq_1 _ _ _ j, hj, ite_true]
     refine ⟨fun s hs g ↦ ?_, fun g hg ↦ ?_⟩
-    · -- The integrand is invariant under `partialUnitriangularGroup (j + 1)`, so
-      -- `lintegral_floorMeasure_mul_right` absorbs `s`.
-      have h_inv :
-          (partialUnitriangularGroup (j + 1) ⊓ ⊤).FixesLeft fun σ : T.G ↦
-            F.weightedSquare j k x (σ * g) + F.weightedSquareSum k x (j + 1) (σ * g) :=
+    · -- The integrand is invariant under `partialUnitriangularGroup (j + 1)`.
+      have h_inv : (partialUnitriangularGroup (j + 1) ⊓ ⊤).FixesLeft fun σ : T.G ↦
+          F.weightedSquare j k x (σ * g) + F.weightedSquareSum k x (j + 1) (σ * g) :=
         fun s ⟨hs, _⟩ σ ↦ by simp only [mul_assoc, h_square_inv s hs, h_sum_inv s hs]
       simpa only [mul_assoc] using lintegral_floorMeasure_mul_right le_top h_inv ⟨hs, ⟨⟩⟩
-    · -- For `σ` in `floorGroup j` the point `σ g` is not near at `j + 1`, so the integrand
-      -- vanishes.
+    · -- For `σ ∈ floorGroup j`, `σ * g` is not near at `j + 1`, so the integrand vanishes.
       by_contra h_ne
-      obtain ⟨σ, hσ, h_integrand⟩ : ∃ σ ∈ floorGroup j,
-          F.weightedSquare j k x (σ * g) + F.weightedSquareSum k x (j + 1) (σ * g) ≠ 0 :=
-        exists_ne_zero_of_ae F.ae_floorMeasure_mem h_ne
+      obtain ⟨σ, hσ, h_int⟩ := exists_ne_zero_of_ae F.ae_floorMeasure_mem h_ne
       have h_far : ¬F.IsNear (j + 1) (σ * g) := fun h_near ↦ hg (h_near.of_floorGroup_mul hσ)
-      exact h_integrand (by rw [h_square_far _ h_far, h_sum_far _ h_far, add_zero])
+      exact h_int (by rw [h_square_far _ h_far, h_sum_far _ h_far, add_zero])
 
 /-- Cauchy–Schwarz on floor `l` for a pairing kernel `k`. Suppose that for every point z the
 θ_l-integral of u(σz) over the σ with σz near at `l + 1` is at most `K`, and that ‖k_{l+1}(σg,
@@ -304,19 +288,11 @@ lemma Gauge.lintegral_invDepthWeight_descConv_le {x : T.G} (Γ : Gauge F) (hx : 
   induction i generalizing l g with
   | zero => simp [descConv]
   | succ i ih =>
-    let C : ℝ≥0∞ := Γ.loss ^ (10 ^ 4 * 𝔰.n)
     -- Integrate over floor `l` last, and apply the bound for the floors from `l + 1` on.
-    calc ∫⁻ σ, F.invDepthWeight (l + (i + 1)) x (σ * g) ∂descConv F.floorMeasure l (i + 1)
-        = ∫⁻ τ, ∫⁻ σ, F.invDepthWeight (l + 1 + i) x (σ * (τ * g))
-            ∂descConv F.floorMeasure (l + 1) i ∂F.floorMeasure l := by
-          rw [descConv, lintegral_mconv_symm (by fun_prop)]
-          simp only [mul_assoc, add_assoc, add_comm 1 i]
-      _ ≤ ∫⁻ τ, C ^ i * F.invDepthWeight (l + 1) x (τ * g) ∂F.floorMeasure l :=
-          lintegral_mono fun τ ↦ ih (by lia) (τ * g)
-      _ ≤ C ^ i * (C * F.invDepthWeight l x g) := by
-          rw [lintegral_const_mul _ (by fun_prop)]
-          grw [Γ.lintegral_invDepthWeight_floorMeasure_le hx ⟨l, by lia⟩]
-      _ = C ^ (i + 1) * F.invDepthWeight l x g := by rw [pow_succ, mul_assoc]
+    rw [descConv, lintegral_mconv_symm (by fun_prop), pow_succ, mul_assoc]
+    simp_rw [mul_assoc, add_comm i 1, ← add_assoc]
+    grw [lintegral_mono fun τ ↦ ih (by lia) (τ * g), lintegral_const_mul _ (by fun_prop),
+      Γ.lintegral_invDepthWeight_floorMeasure_le hx ⟨l, by lia⟩]
 
 /-- Let `k` be a pairing kernel at any floor `j`, `x` any point of the group and `l + i ≤ ϱ`. The
 weighted square of floor `l + i`, taken at the pair `σ g`, `σ g x`, has integral over `σ` against

@@ -1,6 +1,15 @@
 module
 
+import Mathlib.Analysis.Convex.Integral
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Periods.DescentVanishing
+import Lib.Adelic.Witt.WittTheorem
+import Lib.Cohomology.Etale.Basic
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.General.Analysis.MeanValueAndTaylor
 
 /-!
 # Theta coefficients vanish off negative forms
@@ -54,7 +63,7 @@ vector in the span of the columns to the positive basis vector `i`. -/
 lemma New.Exchange.exists_unitary_mulVec_eq_single {i : n} (hs_pos : s i = 1) {x : Matrix n b ℂ}
     (hx : ¬∃ c : Matrix b b ℂ, cᴴ * signMatrix (-1 : b → ℤˣ) * c = xᴴ * signMatrix s * x) :
     ∃ (u : U (signMatrix s)) (v : b → ℂ), (u.val.val * x) *ᵥ v = Pi.single i 1 := by
-  have hs_herm : (signMatrix s)ᴴ = signMatrix s := Fock.conjTranspose_signMatrix
+  have hs_herm : (signMatrix s)ᴴ = signMatrix s := conjTranspose_signMatrix
   have h_herm : (xᴴ * signMatrix s * x).IsHermitian := isHermitian_conjTranspose_mul_mul x hs_herm
   -- the Gram form is not negative semidefinite, so it represents `1`
   have h_not_nsd : ¬(-(xᴴ * signMatrix s * x)).PosSemidef := fun h_psd ↦ by
@@ -435,7 +444,7 @@ lemma New.Exchange.homSlice_pairWeil_stabilizer_mul {r : m → ℤˣ} {s : n →
     (k : stabilizer (G E s) x') (g : G E r) (h : G E s) (f : 𝒮 (X.hom Y)) :
     D.homSlice Y x' (pairWeil X Y δ δ (g, k * h) f) =
       pairWeil Z Y ν δ (1, k) (D.homSlice Y x' (pairWeil X Y δ δ (g, h) f)) := by
-  have hk : k.1⁻¹.adeleMatrix * x' = x' := k⁻¹.2
+  have hk : k.val⁻¹.adeleMatrix * x' = x' := k⁻¹.property
   simpa [← hδ, -coe_units_inv, hk, Prod.mk_one_one, rep_apply_apply] using
     D.homSlice_levi Y ν δ 1 1 k x' (pairWeil X Y δ δ (g, h) f)
 
@@ -449,7 +458,7 @@ place, not of the form `-cᴴ c` (`RepresentedBy` fails). (d) The sum over the r
 absolute values of the terms of the unfolded theta integral is integrable (`HasIntegrableTerms`).
 The theta integral `thetaIntegral X Y δ δ f` integrates the kernel of `f` over `[U(Y)]`, in the Weil
 representation of `(X, Y)` in which `δ` is the character of `U(1)` for both spaces: the first fixes
-the action of `U(Y)`, the second that of `U(X)`. Then `centreCoeff` at `H.j • T` of this function on
+the action of `U(Y)`, the second that of `U(X)`. Then `centerCoeff` at `H.j • T` of this function on
 `U(X)`, its Fourier coefficient along the centre of the unipotent radical of `D`, vanishes at `g`.
 -/
 lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {ν : AutChar E}
@@ -460,7 +469,7 @@ lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {�
     (h_negCount : Fintype.card b + negCount t = negCount s)
     (hδ : δ = ν * H.upsilonU1 ^ Fintype.card b) (hT_unit : IsUnit T)
     (hT_not_neg : ¬RepresentedBy (-1) (T.map toAdele)) (h_int : D.HasIntegrableTerms Y δ δ f g) :
-    D.centreCoeff (H.j • T) (thetaIntegral X Y δ δ f) g = 0 := by
+    D.centerCoeff (H.j • T) (thetaIntegral X Y δ δ f) g = 0 := by
   -- If no rational frame has Gram matrix `T` the coefficient is an empty sum. Otherwise it is the
   -- integral of the term of one frame `x` modulo the rational stabiliser of `x`. The mean of the
   -- term over a compact subgroup `C` of the adelic stabiliser `S` gives an invariant functional
@@ -504,7 +513,7 @@ lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {�
   have h_scale (k : C) : (haar : Measure S).map (· * (k : S)) = (1 : NNReal) • haar := by
     simp [haar_map_mul_right_of_isCompact hC]
   -- unfolding: the coefficient is the integral of the term modulo the rational stabiliser
-  have h_unfold : D.centreCoeff (H.j • (xᴴ * Y.J * x))
+  have h_unfold : D.centerCoeff (H.j • (xᴴ * Y.J * x))
         (fun k ↦ ∫ h, pairTheta X Y δ δ f (k, h) * 1 ∂Y.quotMeasure) g =
       ∫ h, D.thetaTerm Y δ δ f g x h * 1 ∂(Y.ratStabilizer x).quotMeasure :=
     (D.centreCoeff_eq_integral_ratStabilizer h_int continuous_const h_fixesLeft_one hT_unit).right

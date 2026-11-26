@@ -1,6 +1,16 @@
 module
 
-public import Lib.General.Analysis.FiniteGroupInnerProduct
+public import Aesop.BuiltinRules
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.InnerProductSpace.Trace
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+public import Lib.Speed
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.General.Analysis.FiniteGroupInnerProduct
 public import New.Spanning.SecondMoment.Spread
 
 /-!
@@ -308,7 +318,6 @@ theorem isSpread_of_second_moment [Fintype Γ]
   -- dimension of that preimage. Here `W₀` is `W` inside `T₀`, and `α = dim W / dim T₀`.
   intro W₀ α
   set W : Submodule ℂ T := W₀.map (range pr₀).subtype
-  have hα : 0 ≤ α := by positivity
   have h_dim : (finrank ℂ W : ℝ) = α * finrank ℂ (range pr₀) := by
     rw [Submodule.finrank_map_subtype_eq]
     have h_zero (h : (finrank ℂ (range pr₀) : ℝ) = 0) : (finrank ℂ W₀ : ℝ) = 0 :=

@@ -1,9 +1,10 @@
 module
 
-public import Lib.Base
-public import TauCeti.NumberTheory.DirichletCharacter.LFunction.ChangeLevel
-public import TauCeti.NumberTheory.DirichletCharacter.LFunction.TrivialZeros
-public import TauCeti.NumberTheory.DirichletCharacter.LFunction.ZeroReflection
+public import Mathlib.NumberTheory.LSeries.DirichletContinuation
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.ChangeLevel
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.TrivialZeros
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.ZeroReflection
+public import Lib.Speed
 
 /-!
 # Zeros of L(s, χ) and of L(1 − s, χ⁻¹)

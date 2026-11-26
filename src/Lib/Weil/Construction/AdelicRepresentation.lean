@@ -1,8 +1,23 @@
 module
 
-public import Lib.Adelic.Unitary.RationalPoints
-public import Lib.Weil.Construction.FiniteCocycle
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
+import Mathlib.Analysis.LocallyConvex.Barrelled
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
+import Mathlib.Data.Finset.Functor
+import Mathlib.Topology.Algebra.ProperConstSMul
+import TauCeti.Algebra.Group.AddChar.Basic
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Fock.Basic
+public import Lib.General.Analysis.FourierTransforms
+public import Lib.General.Analysis.HolomorphicIntegrals
+public import Lib.Weil.Construction.FiniteMultiplier
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.GramMatrix
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Base
+public import Lib.Weil.Construction.FiniteCocycle -- shake: keep (needed public by an exposed definition)
 
 /-!
 # The adelic Weil representation on 𝒮(V) and its theta functional
@@ -182,7 +197,7 @@ lemma smul_eq_adeleMatrix_mulVec (x : n → 𝔸 E) : g • x = g.adeleMatrix *�
 
 instance : ContinuousSMul (G E s) (n → 𝔸 E) := by
   refine ⟨?_⟩
-  simp
+  simp only [smul_eq_adeleMatrix_mulVec]
   fun_prop
 
 end
@@ -237,7 +252,6 @@ namespace New
 
 open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
   Complex
-open scoped Classical
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
@@ -275,7 +289,7 @@ end Space
 that multiplies the coordinates at τ by (2π Im τ(ȷ))^(−1/2), ȷ being the element `j` of the Weil
 data, and puts zero at the finite places. -/
 def realVec : (InfinitePlace E × n → ℂ) →+ n → 𝔸 E :=
-  AddMonoidHom.mk' (fun y i ↦ ((scaleIdele E).1.1 * fun w ↦ y (w, i), 0)) <| by
+  AddMonoidHom.mk' (fun y i ↦ ((scaleIdele E).val.1 * fun w ↦ y (w, i), 0)) <| by
     simp [mul_add, funext_iff]
 
 /-- The archimedean part of an adelic vector y in Fock coordinates: the complex numbers (2π Im
@@ -294,8 +308,7 @@ omit [Fintype n] [DecidableEq n] in
 /-- An adelic vector `y` is the real vector of its archimedean coordinates plus its finite part. -/
 lemma realVec_realCoord_add : realVec (realCoord y) + (fun i : n ↦ (0, (y i).2)) = y := by
   -- The real part is `κ * (y / κ)` with `κ = scaleIdele E`, and `κ ≠ 0` at every infinite place.
-  have h_ne (w : InfinitePlace E) : (scaleIdele E).val.1 w ≠ 0 := by
-    grind [conj_scaleIdele_mul]
+  have h_ne (w : InfinitePlace E) : (scaleIdele E).val.1 w ≠ 0 := Units.ne_zero _
   ext <;> simp [realVec, realCoord, mul_div_cancel₀ _ (h_ne _)]
 
 /-- Along `adelicSum`, real coordinates `y` with zero finite part give the adelic vector
@@ -325,6 +338,7 @@ omit [DecidableEq n] in
 /-- The vacuum function of `𝔸^n` is the product, over the coordinates, of the vacuum functions of
 the lines. -/
 lemma vacuumFn_eq_prod : vacuumFn x = ∏ i : n, vacuumFn fun _ : Unit ↦ x i := by
+  classical
   -- The indicator, the Gaussian and the character `ψf E` each factor over the coordinates.
   simp [vacuumFn, prod_ite_zero, ← Complex.exp_sum, mul_sum,
     prod_mul_distrib, AddChar.map_sum_eq_prod, Circle.coe_prod]
@@ -398,8 +412,7 @@ lemma dataInner_vacElem_omega_vacElem :
   -- Pairing with the vacuum evaluates `ω g vacElem` at `0`.
   have h_eval : V.dataInner V.vacElem (V.ω g V.vacElem) =
       weilRep adelicAction g Heisenberg.IsVacuum.vacElem 0 := modelInner_vacElem ..
-  rw [h_eval]
-  exact eq_inv_of_mul_eq_one_right (conj_delta_mul_weilRep_vacElem adelicAction g)
+  exact h_eval.trans (eq_inv_of_mul_eq_one_right (conj_delta_mul_weilRep_vacElem adelicAction g))
 
 /-- The operator norm of `ω g` is at most the norm of the vacuum times `|Δ g|`. -/
 lemma norm_omega_le : ‖V.ω g‖ ≤ ‖V.vacElem‖ * ‖weilMultiplier g‖ :=
@@ -799,7 +812,6 @@ namespace New
 
 open NumberField Matrix WeilData Filter Finset Heisenberg Fock IsVacuum Space Equiv Circle
   Complex
-open scoped Classical
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n] {s : n → ℤˣ} (V : Space E n s)
@@ -822,6 +834,7 @@ lemma exists_isThetaFunctional_signedSpace :
     ∃ θ : Model (adelicHeisenberg E s) →L[ℂ] ℂ,
       (signedSpace E s).IsThetaFunctional θ ∧
       ∀ x : n → 𝔸 E, θ (heisenbergOp x IsVacuum.vacElem) = ∏ i : n, lineTheta (s i) (x i) := by
+  classical
   -- Take any theta functional θ. The identity θ(f) conj θ(f') = ∑_γ ⟨f', ϱ(γ) f⟩
   -- (`hasSum_modelInner`) factors over the coordinates, so θ(ϱ(x) vac) is proportional to the
   -- product; rescale θ by a factor of modulus 1.
@@ -918,6 +931,7 @@ lemma IsThetaFunctional.comp {V₁ : Space E n' s'} {θ : Model (adelicHeisenber
 
 /-! ### The choice of the theta functional of `V` -/
 
+open scoped Classical in
 /-- The functional θ₀ = θ_s ∘ ω(g) on 𝒮(V), where θ_s is the theta functional of the standard space
 of signs s chosen in `New.exists_isThetaFunctional_signedSpace`, and g is a chosen element carrying
 the rational vectors of V to those of the standard space. Such a g exists by Landherr's theorem
@@ -940,6 +954,7 @@ lemma theta_eq_rawTheta : V.θ = V.rawTheta := by
 /-- The functional `V.rawTheta` is a theta functional of `V`: it is invariant under the rational
 points, and |θ(ϱ(x)vac)|² has mean 1 over adelic vectors x modulo these. -/
 lemma isThetaFunctional_rawTheta : V.IsThetaFunctional V.rawTheta := by
+  classical
   -- In the second branch of the definition, `rawTheta` is a theta functional by choice.
   refine dite_mem (s := {θ | V.IsThetaFunctional θ}).2
     ⟨fun h_move ↦ ?_, fun _ ↦ V.exists_isThetaFunctional.choose_spec⟩

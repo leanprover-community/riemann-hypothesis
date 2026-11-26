@@ -1,10 +1,18 @@
 module
 
-public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+import Mathlib.Algebra.Ring.IsFormallyReal
 public import Lib.Weil.CompactLift.ThetaKernelDefs
 public import Lib.Weil.DualPair.GaloisLaw
-public import New.Derivatives.Vacuum.ShortVectors
 public import New.UpperBound.Seesaw.AdmissibleCombinations
+public import Lib.GLn.SchurModule.GramMatrix
+public import New.Reduction.Data.AdmissibleData
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.ClassField.HeckeCharacter.AlgebraicValues
+import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+import Lib.GLn.SchurModule.SchurNorm
+import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.LinearAlgebra.MatrixNormBounds
+import New.Derivatives.Vacuum.ShortVectors
 
 /-!
 # Galois conjugates of jets of theta functions and archimedean bounds for jets
@@ -161,54 +169,41 @@ theorem New.Parameters.exists_isJetConjugation {P : Parameters} {s : ℕ} {n : T
   -- `f ∈ V.finitePart` to the vector whose jets are the conjugates of those of `f`.
   obtain ⟨B, hB⟩ := P.exists_isJetConjugate_translates s
   obtain ⟨F, -, -, h_span, hσ⟩ := hB V
-  obtain ⟨t, F', hF', ht, hJ⟩ : ∃ t : ℂ, ∃ F' ∈ V.finitePart, ‖t‖ ^ 2 = (P.bigOmega s)⁻¹ ∧
-      ∀ x : n → 𝔸f (E P s), IsJetConjugate σ (placePerm s σ) (P.jetScale s) t
-        (V.ϱ (finVec x) F) (V.ϱ (finVec (B σ • x)) F') := hσ σ
+  obtain ⟨t, F', hF', ht, hJ⟩ := hσ σ
   let renamedJet : V.finitePart →ₗ[ℂ] MvPowerSeries (P.Φ s × n) ℂ := domRestrict
     ((rename ((placePerm s σ).symm.prodCongr (.refl n))).toLinearMap ∘ₗ V.jetSeries t) V.finitePart
   let conjJet : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] MvPowerSeries (P.Φ s × n) ℂ :=
     { toFun := fun f ↦ MvPowerSeries.map σ (V.jetSeries (P.jetScale s) f)
-      map_add' := by simp
-      map_smul' := by simp [smul_eq_C_mul] }
+      map_add' := by simp, map_smul' := by simp [smul_eq_C_mul] }
   let L : 𝒮 V →ₛₗ[(σ : ℂ →+* ℂ)] V.finitePart := renamedJet.leftInverse ∘ₛₗ conjJet
   -- A vector of `V.finitePart` is determined by its jets, since `t ≠ 0`.
-  have ht_ne : t ≠ 0 := fun h_zero ↦ by simpa [h_zero, bigOmega_pos.ne'] using ht.symm
-  have h_inj : ker renamedJet = ⊥ := by
-    refine ker_eq_bot'.2 fun f hf ↦ Subtype.ext ?_
-    have h_series : V.jetSeries t f = 0 := (renameEquiv ..).map_eq_zero_iff.1 hf
-    exact eq_zero_of_jetSeries_eq_zero f.2 ht_ne h_series
+  have h_inj : ker renamedJet = ⊥ := ker_eq_bot'.2 fun f hf ↦ Subtype.ext <|
+    eq_zero_of_jetSeries_eq_zero f.property (fun h ↦ by simpa [h, bigOmega_pos.ne'] using ht.symm)
+      ((renameEquiv ..).map_eq_zero_iff.1 hf)
   have hL (x : n → 𝔸f (E P s)) : L (V.ϱ (finVec x) F) = V.ϱ (finVec (B σ • x)) F' := by
     have h_jet : conjJet (V.ϱ (finVec x) F) =
         renamedJet ⟨_, rho_finVec_mem_finitePart (B σ • x) hF'⟩ := by
       simpa [conjJet, renamedJet, IsJetConjugate] using hJ x
     simp [L, h_jet, leftInverse_apply_of_inj h_inj]
   -- The law for `selfDualAddChar` comes from the generator in rank one.
-  have hχ (z : 𝔸f (E P s)) : σ (selfDualAddChar _ z) = selfDualAddChar _
-    (B σ * star (B σ) * z) := by
-    obtain ⟨F₁, hF₁, hθ, -, hσ₁⟩ := hB (stdSpace _ Unit)
-    obtain ⟨t₁, F₁', hF₁', -, hJ₁⟩ := hσ₁ σ
-    have hF₁_ne : F₁ ≠ 0 := fun h_zero ↦ by simp [h_zero] at hθ
-    exact map_selfDualAddChar_of_isJetConjugate hF₁ hF₁' hF₁_ne jetScale_ne_zero hJ₁ z
+  obtain ⟨F₁, hF₁, hθ, -, hσ₁⟩ := hB (stdSpace _ Unit)
+  obtain ⟨_, _, hF₁', -, hJ₁⟩ := hσ₁ σ
+  have hχ := map_selfDualAddChar_of_isJetConjugate hF₁ hF₁' (fun h ↦ by simp [h] at hθ)
+    jetScale_ne_zero hJ₁
   -- The next two laws hold on translates of `F`, hence on their span.
-  have hϱ (f : 𝒮 V) (hf : f ∈ V.finitePart) :
-      ∀ x, L (V.ϱ (finVec x) f) = V.ϱ (finVec (B σ • x)) (L f) := by
-    refine Submodule.span_induction ?_ ?_ ?_ ?_ (h_span hf)
-    · rintro _ ⟨w, rfl⟩ x
-      simp [hL, hχ, rho_finVec_rho_finVec, mul_left_comm stdLattice.half, mul_assoc]
-    · simp
-    · simp +contextual
-    · simp +contextual
-  have hJC (f : 𝒮 V) (hf : f ∈ V.finitePart) :
-      IsJetConjugate σ (placePerm s σ) (P.jetScale s) t f (L f) := by
-    refine Submodule.span_induction ?_ ?_ ?_ ?_ (h_span hf)
-    · rintro _ ⟨w, rfl⟩
-      simpa [hL] using hJ w
-    · simp [IsJetConjugate]
-    · simp +contextual [IsJetConjugate]
-    · simp +contextual [IsJetConjugate, smul_eq_C_mul]
-  have h_scale : V.ScalesTranslations σ (B σ) (V.finitePart.subtype ∘ₛₗ L) :=
-    { map_selfDualAddChar := hχ, map_mem {f} _ := (L f).property, map_rho {f} hf := hϱ f hf }
-  exact ⟨t, B σ, V.finitePart.subtype ∘ₛₗ L, ht, h_scale, hJC⟩
+  refine ⟨t, B σ, V.finitePart.subtype ∘ₛₗ L, ht,
+    { map_selfDualAddChar := hχ, map_mem := fun _ ↦ (L _).property, map_rho := ?_ }, ?_⟩
+  · intro f hf
+    refine Submodule.span_induction ?_ (by simp) (by simp +contextual) (by simp +contextual)
+      (h_span hf)
+    rintro _ ⟨w, rfl⟩ x
+    simp [hL, hχ, rho_finVec_rho_finVec, mul_left_comm stdLattice.half, mul_assoc]
+  · intro f hf
+    refine Submodule.span_induction ?_ (by simp [IsJetConjugate])
+      (by simp +contextual [IsJetConjugate])
+      (by simp +contextual [IsJetConjugate, smul_eq_C_mul]) (h_span hf)
+    rintro _ ⟨w, rfl⟩
+    simpa [hL] using hJ w
 
 /-- For an automorphism `σ` of `ℂ` over `K` and a finite unitary matrix `g`, the number
 `multiplierRatio σ g = σ (Δ g) / Δ g` has modulus `1`. Here `Δ = New.finMultiplier` is the finite
@@ -399,7 +394,7 @@ lemma New.Parameters.norm_omega_vac_le {P : Parameters} {s : ℕ} {n : Type} [Fi
   let dim : ℕ := Module.finrank ℝ (EuclideanSpace ℂ (P.Φ s × n))
   let D : ℝ := dim + 1
   have h_sep : Pairwise fun γ δ : supp ↦ 1 ≤ ‖W.archCoords γ - W.archCoords δ‖ :=
-    fun γ δ h_ne ↦ one_le_norm_archCoords_sub W γ.2 δ.2 (coe_injective.ne h_ne)
+    fun γ δ h_ne ↦ one_le_norm_archCoords_sub W γ.property δ.property (coe_injective.ne h_ne)
   -- The packing bound in real dimension `dim`, with exponent `dim + 1`.
   obtain ⟨h_summable, h_pack⟩ : Summable (fun γ : supp ↦ exp ‖W.archCoords γ‖ ^ (-D)) ∧
       ∑' γ : supp, exp ‖W.archCoords γ‖ ^ (-D) ≤ (1 + 2 * 1 / 1) ^ dim * exp dim :=
@@ -553,7 +548,7 @@ lemma integral_exp_neg_inv_mul_normalizedVolume {ι : Type} [Fintype ι] {a : �
 /-- A function on `ι → ℂ` bounded by `C * exp (-|y|² / a)` has integral of norm at most
 `C * a ^ card ι` against `normalizedVolume ι`, for `a > 0`. This measure is Lebesgue measure
 divided by `π ^ card ι`, so that `exp (-|y|²)` has integral `1`. -/
-lemma norm_integral_normalizedVolume_le {ι : Type} [Fintype ι] [DecidableEq ι] {a C : ℝ}
+lemma norm_integral_normalizedVolume_le {ι : Type} [Fintype ι] {a C : ℝ}
     (ha : 0 < a) {f : (ι → ℂ) → ℂ} (hf : ∀ y : ι → ℂ, ‖f y‖ ≤ C * exp (-a⁻¹ * ∑ i : ι, ‖y i‖ ^ 2)) :
     ‖∫ y : ι → ℂ, f y ∂normalizedVolume ι‖ ≤ C * a ^ card ι := by
   rw [← integral_exp_neg_inv_mul_normalizedVolume ha, ← integral_const_mul]
@@ -758,9 +753,9 @@ lemma Parameters.norm_jet_le_of_isVacuumCombination
     (2 * L + 2) ^ card (P.Φ s × n' × n)
   have hT' : ‖σ' c‖ ^ 2 / P.bigOmega s ≤ T := by rwa [← hσ' c]
   have hQ' : HasConjugateGrowth σ' Q T L w A := by simpa only [HasConjugateGrowth, hσ'] using hQ
-  have h_term (x : n' × n → 𝔸f (P.E s)) :
-      ‖σ (jet ℂ Q (V.jetSeries (c * P.jetScale s) (W (V.finHeisenbergOp x (intVacuum V)))))‖ ≤
-        C * A := by
+  let J (x : n' × n → 𝔸f (P.E s)) : ℂ :=
+    jet ℂ Q (V.jetSeries (c * P.jetScale s) (W (V.finHeisenbergOp x (intVacuum V))))
+  have h_term (x : n' × n → 𝔸f (P.E s)) : ‖σ (J x)‖ ≤ C * A := by
     -- `W` is a scalar times `ω` at a finite point `k`, and `ω(k)` moves past the translation.
     -- The conjugates of the scalars have norm one.
     let k : Gf (P.E s) (n' × n) := (G.onHom p).2
@@ -772,12 +767,11 @@ lemma Parameters.norm_jet_le_of_isVacuumCombination
     have h_unit : ‖σ' (pairChar a b p * ζ)‖ = 1 := by
       rw [map_mul, norm_mul, P.norm_map_pairChar σ' g h, one_mul]
       exact (MonoidHom.isOfFinOrder (σ' : ℂ →* ℂ) hζ).norm_eq_one
+    dsimp only [J]
     rw [hσ', h_move, map_smul, map_smul, smul_eq_mul, map_mul, norm_mul, h_unit, one_mul]
     exact P.norm_jet_translate_le V σ' hT' hQ' _ k
-  calc _ = ‖∑ x ∈ r.support, σ (r x) *
-          σ (jet ℂ Q (V.jetSeries (c * P.jetScale s)
-            (W (V.finHeisenbergOp x (intVacuum V)))))‖ := by
-        simp only [map_sum, map_smul, smul_eq_mul, map_mul]
+  calc _ = ‖∑ x ∈ r.support, σ (r x) * σ (J x)‖ := by
+        simp only [J, map_sum, map_smul, smul_eq_mul, map_mul]
     _ ≤ ∑ x ∈ r.support, ‖σ (r x)‖ * (C * A) :=
         norm_sum_le_of_le _ fun x _ ↦ by grw [norm_mul, h_term]
     _ ≤ B * (C * A) := by grw [← sum_mul, h_size σ]

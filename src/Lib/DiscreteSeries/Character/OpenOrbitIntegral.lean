@@ -1,6 +1,23 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.Topology.Algebra.Group.Matrix
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Character.WeylCharacterFormula
+public import Lib.DiscreteSeries.FlenstedJensen.FlagDensities
+public import Lib.General.Analysis.GaussianIntegral
+import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.LinearAlgebra.PolarDecomposition
+import Lib.General.Measure.IdempotentKernel
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Orbital integrals of discrete series coefficients and Weyl characters of U(n)
@@ -70,29 +87,38 @@ noncomputable abbrev twoPowDiagConj : Matrix n n ℂ :=
 
 /-- For every invertible `u`, the matrix `u* diag(2^f) u` is positive semidefinite. -/
 lemma posSemidef_twoPowDiagConj : (twoPowDiagConj u f).PosSemidef := by
-  simp [zpow_nonneg, PosSemidef.conjTranspose_mul_mul_same]
+  simp only [twoPowDiagConj, posSemidef_diagonal_iff, Nat.ofNat_nonneg, zpow_nonneg,
+    implies_true, PosSemidef.conjTranspose_mul_mul_same]
 
 /-- The norms of the principal minors of `u* diag(2^f) u` increase with the exponents `f`. -/
 lemma norm_principalMinor_twoPowDiagConj_mono {f g : n → ℤ} (hfg : f ≤ g) (p : n → Prop)
     [DecidablePred p] :
     ‖principalMinor (twoPowDiagConj u f) p‖ ≤ ‖principalMinor (twoPowDiagConj u g) p‖ := by
   have h_diff : (twoPowDiagConj u g - twoPowDiagConj u f).PosSemidef := by
-    simp [← sub_mul, ← mul_sub, hfg _, PosSemidef.conjTranspose_mul_mul_same]
+    simp only [twoPowDiagConj, ← sub_mul, ← mul_sub, diagonal_sub, posSemidef_diagonal_iff,
+      sub_nonneg, Nat.one_lt_ofNat, zpow_le_zpow_iff_right₀, hfg _, implies_true,
+      PosSemidef.conjTranspose_mul_mul_same]
   exact norm_det_le_norm_det_of_posSemidef ((posSemidef_twoPowDiagConj u f).submatrix _)
     (h_diff.submatrix _)
 
 /-- For unitary `u`, the determinant of `u* diag(2^f) u` is that of `diag(2^f)`. -/
 lemma det_twoPowDiagConj (hu : uᴴ = u.val⁻¹) :
     (twoPowDiagConj u f).det = (twoPowDiagConj 1 f).det := by
-  simp [hu, det_conj', -det_mul]
+  simp only [twoPowDiagConj, hu, Units.isUnit, det_conj', det_diagonal, Units.val_one,
+    conjTranspose_one, one_mul, mul_one]
 
 /-- For unitary `u`, the inverse of `u* diag(2^f) u` is `u* diag(2^(-f)) u`. -/
 lemma inv_twoPowDiagConj (hu : uᴴ = u.val⁻¹) :
     (twoPowDiagConj u f)⁻¹ = twoPowDiagConj u (-f) :=
-  inv_eq_left_inv (by simp [mul_assoc, hu, ← mul_assoc (diagonal _), zpow_ne_zero])
+  inv_eq_left_inv (by simp only [twoPowDiagConj, hu, Pi.neg_apply, _root_.zpow_neg,
+    mul_assoc, mul_inv_cancel_left_of_invertible, ← mul_assoc (diagonal _),
+    diagonal_mul_diagonal, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zpow_ne_zero,
+    inv_mul_cancel₀, diagonal_one, one_mul, inv_mul_of_invertible])
 
 lemma det_twoPowDiagConj_ne_zero : (twoPowDiagConj u f).det ≠ 0 := by
-  simp [GeneralLinearGroup.det_ne_zero, prod_eq_zero_iff, zpow_ne_zero]
+  simp only [twoPowDiagConj, det_mul, det_conjTranspose, star_def, det_diagonal, ne_eq,
+    mul_eq_zero, map_eq_zero, GeneralLinearGroup.det_ne_zero, prod_eq_zero_iff, mem_univ,
+    OfNat.ofNat_ne_zero, not_false_eq_true, zpow_ne_zero, and_false, exists_false, or_self]
 
 /-- Let `u` be unitary, let `f a + |m| ≤ f c` whenever `l c < l a`, let `h ≤ |l i - l j|` and
 `l j ≤ l i`, and let `t` exceed some value of `l`. The minor of `u* diag(2^f) u` on `{k | t ≤ l k}`
@@ -105,7 +131,8 @@ lemma norm_principalMinor_mul_gain_le (h : ℕ) (u : GL n ℂ) (l f : n → ℤ)
         if t ∈ Ioc (l i - h) (l i) then ‖u i j‖ ^ 2 * 2 ^ m else 1) ≤
       ‖principalMinor (twoPowDiagConj u f) (t ≤ l ·)‖ := by
   -- truncate `f` at its least value `f c` outside the minor; inside it `f ≤ f c - |m|`
-  obtain ⟨c, hc⟩ := exists_min_image ({k | l k < t} : Finset n) f (ht.imp (by simp))
+  obtain ⟨c, hc⟩ := exists_min_image ({k | l k < t} : Finset n) f
+    (ht.imp (by simp only [mem_filter, mem_univ, true_and, imp_self, implies_true]))
   have inside (k : n) : l c < l k → f k + |m| ≤ f c := hf k c
   let g : n → ℤ := f ⊓ fun _ : n ↦ f c
   -- `q` is `{j}` if `l i - h < t ≤ l i` and empty otherwise; `p` is the rest outside the minor
@@ -120,21 +147,36 @@ lemma norm_principalMinor_mul_gain_le (h : ℕ) (u : GL n ℂ) (l f : n → ℤ)
       -- and `m ≤ f c - g i` because `i` lies inside the minor
       have h_entry : principalMinor (twoPowDiagConj u (-g)) (· = j) =
           ((∑ k : n, ‖u k j‖ ^ 2 * 2 ^ (-g k) : ℝ) : ℂ) := by
-        simp [principalMinor, default, toSquareBlockProp, Matrix.mul_apply, diagonal, ← conj_mul',
-          mul_right_comm]
-      have h_exp : m ≤ f c + -g i := by grind [Pi.inf_apply, inside i]
+        simp only [principalMinor, toSquareBlockProp, twoPowDiagConj, diagonal, Pi.neg_apply,
+          _root_.zpow_neg, det_unique, default, toBlock_apply, Matrix.mul_apply,
+          conjTranspose_apply, star_def, of_apply, mul_ite, mul_zero, sum_ite_eq', mem_univ,
+          ↓reduceIte, mul_right_comm, ofReal_sum, ofReal_mul, ofReal_pow, ← conj_mul',
+          ofReal_inv, ofReal_zpow, ofReal_ofNat]
+      have h_inside : f i + |m| ≤ f c :=
+        inside i ((mem_filter.1 hc.1).2.trans_le (mem_Ioc.1 hsep).2)
+      have h_exp : m ≤ f c + -g i := by
+        calc m ≤ |m| := le_abs_self m
+          _ ≤ f c - f i := le_sub_iff_add_le'.2 h_inside
+          _ ≤ f c - g i := sub_le_sub_left inf_le_left _
+          _ = f c + -g i := sub_eq_add_neg _ _
       simp only [q, hsep, true_and, Fintype.prod_ite_eq', h_entry, ofReal_re]
       grw [← single_le_sum (fun _ _ ↦ by positivity) (mem_univ i), mul_left_comm,
         ← zpow_add₀ two_ne_zero, ← zpow_le_zpow_right₀ one_le_two h_exp]
     · simp only [q, hsep, false_and, ite_false, prod_const_one, one_mul]
-      simp [principalMinor]
+      simp only [principalMinor, twoPowDiagConj, Pi.neg_apply, _root_.zpow_neg,
+        coe_det_isEmpty, Function.const_apply, one_re, Std.le_refl]
   -- Jacobi: the minor of the inverse on `q` is the minor on the complement over the determinant.
   -- Fischer: split the complement into `p` and `{k | t ≤ l k}`. Then use `g ≤ f c` and `g ≤ f`.
   have jacobi : ‖principalMinor (twoPowDiagConj u g)⁻¹ q‖ ≤
       ‖principalMinor (twoPowDiagConj u fun _ ↦ f c) p‖ *
         ‖principalMinor (twoPowDiagConj u f) (t ≤ l ·)‖ / ‖(twoPowDiagConj 1 g).det‖ := by
     grw [jacobi_complementary_minor (det_twoPowDiagConj_ne_zero u g), norm_div,
-      fischer_inequality (posSemidef_twoPowDiagConj u g) p (t ≤ l ·) (by grind) (by grind),
+      fischer_inequality (posSemidef_twoPowDiagConj u g) p (t ≤ l ·)
+        (fun k hk hle ↦ hk.1.not_ge hle)
+        (fun k ↦ ⟨fun hnq ↦ (lt_or_ge (l k) t).imp (fun hlt ↦ ⟨hlt, hnq⟩) id,
+          fun hk hq ↦ hk.elim (·.2 hq) fun hle ↦ by
+            have h_lt : (h : ℤ) ≤ l i - l j := by rwa [← abs_of_nonneg (sub_nonneg.2 hij)]
+            exact ((le_sub_comm.1 h_lt).trans_lt (mem_Ioc.1 hq.1).1).not_ge (hq.2 ▸ hle)⟩),
       norm_principalMinor_twoPowDiagConj_mono u (f := g) (g := fun _ ↦ f c) inf_le_right p,
       norm_principalMinor_twoPowDiagConj_mono u (f := g) (g := f) inf_le_left (t ≤ l ·),
       det_twoPowDiagConj u g hu]
@@ -145,10 +187,38 @@ lemma norm_principalMinor_mul_gain_le (h : ℕ) (u : GL n ℂ) (l f : n → ℤ)
       ‖principalMinor (twoPowDiagConj u fun _ ↦ f c) p‖ / ‖(twoPowDiagConj 1 g).det‖ = 1 :=
     calc _ = ∏ k : n, (if t ≤ l k then (2 : ℝ) ^ f k else 1) * (if q k then 2 ^ f c else 1) *
           (if p k then 2 ^ f c else 1) / 2 ^ g k := by
-          simp [g, principalMinor_eq_det, ← diagonal_one, ← smul_eq_mul_diagonal, hu,
-            ← diagonal_smul, div_eq_inv_mul, ← mul_assoc, ← prod_inv_distrib, ← prod_mul_distrib,
-            sub_ite, apply_ite norm]
-      _ = 1 := prod_eq_one (by grind [zpow_ne_zero, Pi.inf_apply])
+          simp only [twoPowDiagConj, Units.val_one, ← diagonal_one, diagonal_conjTranspose,
+            diagonal_mul_diagonal, Pi.star_apply, star_one, one_mul, ← smul_eq_mul_diagonal,
+            one_smul, principalMinor_eq_det, diagonal_sub, ite_mul, zero_mul, sub_ite,
+            sub_sub_cancel, sub_zero, det_diagonal, norm_prod, apply_ite norm, norm_zpow,
+            norm_ofNat, norm_one, ← prod_mul_distrib, mul_ite, mul_one, hu,
+            Algebra.smul_mul_assoc, inv_mul_of_invertible, ← diagonal_smul, Pi.smul_apply,
+            smul_eq_mul, mul_zero, Pi.inf_apply, div_eq_inv_mul, ← prod_inv_distrib,
+            ← mul_assoc, g]
+      _ = 1 := prod_eq_one fun k _ ↦ by
+          have h2 : (2 : ℝ) ≠ 0 := two_ne_zero
+          by_cases htl : t ≤ l k
+          · have h_lt : (h : ℤ) ≤ l i - l j := by rwa [← abs_of_nonneg (sub_nonneg.2 hij)]
+            have hqk : ¬q k := fun ⟨ht, hk⟩ ↦
+              ((le_sub_comm.1 h_lt).trans_lt (mem_Ioc.1 ht).1).not_ge (hk ▸ htl)
+            have hle : f k ≤ f c :=
+              le_of_add_le_of_nonneg_left (inside k ((mem_filter.1 hc.1).2.trans_le htl))
+                (abs_nonneg m)
+            rw [ite_eq_left htl, ite_eq_right hqk, ite_eq_right (fun hp ↦ hp.1.not_ge htl),
+              mul_one, mul_one]
+            dsimp only [g]
+            rw [Pi.inf_apply, inf_of_le_left hle, div_self (zpow_ne_zero _ h2)]
+          · have hlt : l k < t := not_le.1 htl
+            have hfc : f c ≤ f k := hc.2 k (mem_filter.2 ⟨mem_univ k, hlt⟩)
+            by_cases hqk : q k
+            · rw [ite_eq_right htl, ite_eq_left hqk, ite_eq_right (fun hp ↦ hp.2 hqk),
+                one_mul, mul_one]
+              dsimp only [g]
+              rw [Pi.inf_apply, inf_of_le_right hfc, div_self (zpow_ne_zero _ h2)]
+            · rw [ite_eq_right htl, ite_eq_right hqk, ite_eq_left ⟨hlt, hqk⟩,
+                one_mul, one_mul]
+              dsimp only [g]
+              rw [Pi.inf_apply, inf_of_le_right hfc, div_self (zpow_ne_zero _ h2)]
   grw [gain, jacobi]
   linear_combination ‖principalMinor (twoPowDiagConj u f) (t ≤ l ·)‖ * cancel
 
@@ -168,20 +238,30 @@ lemma le_norm_weightMinors_twoPowDiagConj (h : ℕ) (u : GL n ℂ) (l f : n → 
   · have h_neg (v : GL n ℂ) (hv : vᴴ = v.val⁻¹) :
         weightMinors (-l) (twoPowDiagConj v (-f)) = weightMinors l (twoPowDiagConj v f) := by
       rw [weightMinors_neg (det_twoPowDiagConj_ne_zero v _), inv_twoPowDiagConj v _ hv, neg_neg]
-    rw [← h_neg u hu, ← h_neg 1 (by simp)]
-    exact h_case (-l) (-f) (fun a c hac ↦ by grind [hf c a (neg_lt_neg_iff.1 hac), Pi.neg_apply])
-      (by grind [Pi.neg_apply]) (by grind [Pi.neg_apply])
+    rw [← h_neg u hu, ← h_neg 1 (by simp only [Units.val_one, conjTranspose_one, inv_one])]
+    exact h_case (-l) (-f)
+      (fun a c hac ↦ by have := hf c a (neg_lt_neg_iff.1 hac); simp only [Pi.neg_apply]; lia)
+      (by simpa only [Pi.neg_apply, neg_sub_neg, abs_sub_comm] using h_gap)
+      (neg_le_neg (not_le.1 hij).le)
   -- all values of `l` lie in `[l a, b]`
   obtain ⟨a, ha⟩ := exists_min_image univ l ⟨i, mem_univ i⟩
   obtain ⟨b, hb⟩ := Finite.exists_le l
-  have card_eq : h = #(Ioc (l a) b ∩ Ioc (l i - h) (l i)) := by grind [Ioc_inter_Ioc, Int.card_Ioc]
+  have card_eq : h = #(Ioc (l a) b ∩ Ioc (l i - h) (l i)) := by
+    have h_lt : (h : ℤ) ≤ l i - l j := by rwa [← abs_of_nonneg (sub_nonneg.2 hij)]
+    rw [Ioc_inter_Ioc, sup_eq_right.2 ((ha.2 j (mem_univ j)).trans (le_sub_comm.1 h_lt)),
+      inf_eq_right.2 (hb i), Int.card_Ioc, sub_sub_cancel, Int.toNat_natCast]
   have expand (v : GL n ℂ) (hv : vᴴ = v.val⁻¹) :
       ‖weightMinors l (twoPowDiagConj v f)‖ = ‖(twoPowDiagConj 1 f).det ^ l a‖ *
         ∏ t ∈ Ioc (l a) b, ‖principalMinor (twoPowDiagConj v f) (t ≤ l ·)‖ := by
-    simp (disch := simp [det_twoPowDiagConj v f hv, ha, hb, prod_eq_zero_iff, zpow_ne_zero]) only
-      [weightMinors_eq_det_zpow_mul_prod _ (l a) b, det_twoPowDiagConj v f hv, norm_mul, norm_prod]
+    simp (disch := simp only [twoPowDiagConj, det_twoPowDiagConj v f hv, Units.val_one,
+        conjTranspose_one, one_mul, mul_one, det_diagonal, ne_eq, prod_eq_zero_iff, mem_univ,
+        OfNat.ofNat_ne_zero, not_false_eq_true, zpow_ne_zero, and_false, exists_false,
+        ha, hb, and_self, implies_true])
+      only [weightMinors_eq_det_zpow_mul_prod _ (l a) b, det_twoPowDiagConj v f hv,
+        norm_mul, norm_prod]
   -- expand both sides; the powers of the determinant agree, so compare the minors for each `t`
-  rw [expand u hu, expand 1 (by simp), card_eq, ← prod_const, ← prod_ite_mem, mul_assoc,
+  rw [expand u hu, expand 1 (by simp only [Units.val_one, conjTranspose_one, inv_one]),
+    card_eq, ← prod_const, ← prod_ite_mem, mul_assoc,
     ← prod_mul_distrib]
   gcongr with t ht
   exact norm_principalMinor_mul_gain_le h u l f i j m hu hf h_gap hij ⟨a, (mem_Ioc.1 ht).1⟩
@@ -219,7 +299,7 @@ omit [DecidableEq n] in
 `l` increasing: it is antitone along `l`, as `IsKDominant` asks with all signs `1`. -/
 lemma isKDominant_neg_compactForm_lowestKType (hg : l.HasGap h) :
     IsKDominant 1 l (-l.compactForm.lowestKType) := by
-  simpa [lowestKType_neg hg.signs_one] using hg.signs_one.neg.isKDominant_lowestKType
+  simpa only [neg_neg, lowestKType_neg hg.signs_one] using hg.signs_one.neg.isKDominant_lowestKType
 
 /-- The orbital integral as an integral over `G = U(diag ε)`: let `l = 2λ` have gap `h` (distinct
 entries congruent to `card n - 1` mod 2, with `|λ i - λ j| ≥ h` whenever `ε i ≠ ε j`), and let `x`
@@ -250,7 +330,10 @@ lemma sign_mul_orbital_eq_integral_weightMinors_div (hg : l.HasGap h) (x : n →
       weightMinors (-l.compactForm.lowestKType - l.lowestKType) (signMatrix ε) *
         l.dsCoeff (g⁻¹ * diagTorus ε x * g :) = ∫ k, w k * F (g * k : USign ε) ∂haarK ε := by
     have h_acc : ((signMatrix ε)⁻¹ * (g⁻¹ * diagTorus ε x * g :)).IsAccretive := by
-      simpa [mul_assoc, U.inv_coe_eq_mul_conjTranspose_mul, IsHermitianInvolution.det_ne_zero] using
+      simpa only [mul_assoc, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul,
+        coe_units_inv, U.inv_coe_eq_mul_conjTranspose_mul, isUnit_iff_ne_zero, ne_eq,
+        IsHermitianInvolution.det_ne_zero, not_false_eq_true, nonsing_inv_mul_cancel_left]
+        using
         hA.conjTranspose_mul_mul (k := g) (GeneralLinearGroup.det_ne_zero _)
     -- `dsCoeff` may be computed with any block diagonal `a` (here `J`) making `a⁻¹ * g` accretive
     rw [dsCoeff_eq_flenstedJensen hg (mem_blockDiagAlg_iff_commute.2 rfl) h_acc, flenstedJensen,
@@ -258,23 +341,28 @@ lemma sign_mul_orbital_eq_integral_weightMinors_div (hg : l.HasGap h) (x : n →
     congr with k
     -- the numerator of `F (g * k)` is constant, as `(g * k)ᴴ J (g * k) = J`
     simp only [w, F, show ((g * k : U (signMatrix ε)) : Matrix n n ℂ)ᴴ * signMatrix ε *
-      (g * k : U (signMatrix ε)) = signMatrix ε from mem_unitaryGroupOf_iff.1 (g * k).2]
+      (g * k : U (signMatrix ε)) = signMatrix ε from mem_unitaryGroupOf_iff.1 (g * k).property]
     push_cast
-    simp [U.inv_coe_eq_mul_conjTranspose_mul, mul_assoc, signMatrix, field, mul_conj', zpow_sub₀,
-      prod_eq_zero_iff,
-      GeneralLinearGroup.det_ne_zero]
+    simp only [signMatrix, ne_eq, Int.cast_eq_zero, Units.ne_zero, not_false_eq_true,
+      implies_true, weightMinors_diagonal, Pi.sub_apply, Pi.neg_apply, zpow_sub₀,
+      _root_.zpow_neg, prod_div_distrib, prod_inv_distrib, GeneralLinearGroup.det_ne_zero,
+      weightMinors_diagonal_mul, mul_assoc, mul_conj', U.inv_coe_eq_mul_conjTranspose_mul,
+      det_diagonal, isUnit_iff_ne_zero, prod_eq_zero_iff, mem_univ, and_false, exists_false,
+      nonsing_inv_mul_cancel_left, conjTranspose_mul, fieldEq]
   calc _ = ∫ g : USign ε, ∫ k, w k * F (g * k : USign ε) ∂haarK ε := by
         simp_rw [← integral_const_mul, expand]
     -- exchange the integrals; right translation by `k` preserves the measure of `G`
     _ = ∫ k, ∫ g : USign ε, w k * F g ∂volume ∂haarK ε :=
         integral_integral_skew_product (T := fun (k : maxCompactU ε) (g : USign ε) ↦ g * k)
-          (f := fun z ↦ w z.1 * F z.2) (fun k ↦ map_mul_right_eq_self _ k.1)
-          ((integrable_of_compactSpace (f := w)
-            (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))).mul_prod h_int)
+          (f := fun z ↦ w z.1 * F z.2) (fun k ↦ map_mul_right_eq_self _ k.val)
+          ((integrable_of_compactSpace (f := w) (by
+            fun_prop (disch := simp only [GeneralLinearGroup.det_ne_zero, ne_eq,
+              not_false_eq_true, implies_true]))).mul_prod h_int)
     -- `w` has integral one
     _ = ∫ g : USign ε, F g := by
-        simp [-ofReal_pow, w, integral_complex_ofReal, (kTypeNormSq_pos _).ne',
-          integral_const_mul, integral_mul_const, integral_div]
+        simp only [ofReal_div, integral_const_mul, integral_mul_const, integral_div,
+          integral_complex_ofReal, ne_eq, ofReal_eq_zero, (kTypeNormSq_pos _).ne',
+          not_false_eq_true, div_self, one_mul, w]
 
 /-- Schur orthogonality for the coefficient `m_Λ = weightMinors Λ` on `U(n)`, where `l` has gap `h`
 and `Λ = l.compactForm.lowestKType = λ - ρ` (`l.compactForm` is `l` with all signs `1`; this is not
@@ -290,9 +378,15 @@ lemma integral_weightMinors_inv_mul_mul_weightMinors (hg : l.HasGap h) (a : Matr
   -- the function `g ↦ m_{-Λ}(a⁻¹ g)` is holomorphic of weight `-Λ`
   have h_hol : IsHolOfWeight 1 l (fun _ : Unit ↦ -l.compactForm.lowestKType)
       (fun g : Unit → USign 1 ↦ ∏ τ, weightMinors (-l.compactForm.lowestKType) (a⁻¹ * g τ)) 1 :=
-    isHolOfWeight_weightMinors hg.injective a⁻¹ (fun _ ↦ dom) (by simpa)
-  simpa [-ofReal_pow, weightMinors_unitary_inv, kTypeNormSq, weightMinors_neg, ha,
-    GeneralLinearGroup.det_ne_zero, Matrix.mul_inv_rev] using
+    isHolOfWeight_weightMinors hg.injective a⁻¹ (fun _ ↦ dom)
+      (by simpa only [det_nonsing_inv, Ring.inverse_eq_inv', ne_eq, inv_eq_zero])
+  simpa only [kTypeNormSq, univ_unique, PUnit.default_eq_unit, det_mul, det_nonsing_inv,
+    Ring.inverse_eq_inv', ne_eq, mul_eq_zero, inv_eq_zero, ha,
+    GeneralLinearGroup.det_ne_zero, or_self, not_false_eq_true, weightMinors_neg,
+    Matrix.mul_inv_rev, isUnit_iff_ne_zero, nonsing_inv_nonsing_inv, prod_const,
+    card_singleton, pow_one, weightMinors_unitary_inv, RingHomCompTriple.comp_apply,
+    RingHom.id_apply, RCLike.norm_conj, Pi.one_apply, OneMemClass.coe_one, Units.val_one,
+    mul_one] using
     h_hol.integral_mul_conj_weightMinors hg.injective dom h_hol.continuous
 
 /-- Let `l = 2λ` have gap `h` (distinct entries congruent to `card n - 1` mod 2, with
@@ -320,16 +414,21 @@ lemma kTypeNormSq_mul_kTypeChar_eq_integral (hg : l.HasGap h) (x : n → Circle)
     fun_prop (disch := simp (disch := simp [*, GeneralLinearGroup.det_ne_zero]) [A,
       maxCompactU.coe_inv, GeneralLinearGroup.det_ne_zero, IsHermitianInvolution.det_ne_zero])
   have expand (y : K) :
-      weightMinors Λ (y⁻¹ * diagTorusK x * y).1 = (∫ k, Φ (y, k) ∂haarK 1) / Λ.kTypeNormSq := by
+      weightMinors Λ (y⁻¹ * diagTorusK x * y).val = (∫ k, Φ (y, k) ∂haarK 1) / Λ.kTypeNormSq := by
     -- split `y⁻¹ x y = a * z` with `a = y⁻¹ J⁻¹ y` and `z = y⁻¹ A y` accretive
     let a : Matrix n n ℂ := y⁻¹ * (signMatrix ε)⁻¹ * y
     have split : a⁻¹ * ((y⁻¹ * diagTorusK x * y : K) : Matrix n n ℂ) = y⁻¹ * A * y := by
-      simp [a, A, diagTorus, mul_assoc, Matrix.mul_inv_rev, IsHermitianInvolution.det_ne_zero]
+      simp only [mul_assoc, InvMemClass.coe_inv, coe_units_inv, Matrix.mul_inv_rev,
+        isUnit_iff_ne_zero, ne_eq, IsHermitianInvolution.det_ne_zero, not_false_eq_true,
+        nonsing_inv_nonsing_inv, inv_inv_of_invertible, Subgroup.coe_mul, diagTorus,
+        Units.val_mul, IsUnit.unit_spec, mul_inv_cancel_left_of_invertible, a, A]
     have h_acc : (a⁻¹ * ((y⁻¹ * diagTorusK x * y : K) : Matrix n n ℂ)).IsAccretive := by
       rw [split]
-      simp [maxCompactU.coe_inv, hA, GeneralLinearGroup.det_ne_zero]
+      simp only [InvMemClass.coe_inv, coe_units_inv, maxCompactU.coe_inv, hA, ne_eq,
+        GeneralLinearGroup.det_ne_zero, not_false_eq_true, IsAccretive.conjTranspose_mul_mul]
     rw [← dsCoeff_of_mem_maxCompactU hg.signs_one (Subtype.prop _),
-      dsCoeff_eq_flenstedJensen hg.signs_one (by simp) h_acc, split, flenstedJensen]
+      dsCoeff_eq_flenstedJensen hg.signs_one (by simp only [mem_blockDiagAlg_one]) h_acc,
+      split, flenstedJensen]
   -- After the substitution `(y, k) = (v * u, u⁻¹)` the denominator no longer depends on `u`,
   -- and the integral over `u` is a Schur orthogonality relation.
   have inner (v : K) : ∫ u, Φ (v * u, u⁻¹) ∂haarK 1 = Λ.kTypeNormSq *
@@ -338,11 +437,16 @@ lemma kTypeNormSq_mul_kTypeChar_eq_integral (hg : l.HasGap h) (x : n → Circle)
     let a : Matrix n n ℂ := (v : Matrix n n ℂ)⁻¹ * (signMatrix ε)⁻¹ * v
     have h_Φ (u : K) : Φ (v * u, u⁻¹) = weightMinors Λ ((u : Matrix n n ℂ)⁻¹ * a) *
         weightMinors Λ u / weightMinors (-paramAddRho l) ((v : Matrix n n ℂ)ᴴ * A * v) := by
-      simp [Φ, a, weightMinors_unitary_inv, mul_assoc, ↓← maxCompactU.coe_inv,
-        GeneralLinearGroup.det_ne_zero, Matrix.mul_inv_rev]
-    simp [h_Φ, Λ, integral_weightMinors_inv_mul_mul_weightMinors hg, integral_div, a, mul_assoc,
-      weightMinors_neg, mul_div_assoc (ofReal _), GeneralLinearGroup.det_ne_zero,
-      IsHermitianInvolution.det_ne_zero, Matrix.mul_inv_rev, ↓← maxCompactU.coe_inv]
+      simp only [InvMemClass.coe_inv, coe_units_inv, mul_assoc, ↓← maxCompactU.coe_inv,
+        Subgroup.coe_mul, Units.val_mul, Matrix.mul_inv_rev, isUnit_iff_ne_zero, ne_eq,
+        GeneralLinearGroup.det_ne_zero, not_false_eq_true, mul_nonsing_inv, mul_one,
+        weightMinors_unitary_inv, RingHomCompTriple.comp_apply, RingHom.id_apply,
+        inv_inv_of_invertible, mul_nonsing_inv_cancel_left, Φ, a]
+    simp only [h_Φ, mul_assoc, ↓← maxCompactU.coe_inv, integral_div, det_mul, det_nonsing_inv,
+      Ring.inverse_eq_inv', ne_eq, mul_eq_zero, inv_eq_zero, GeneralLinearGroup.det_ne_zero,
+      IsHermitianInvolution.det_ne_zero, or_self, not_false_eq_true,
+      integral_weightMinors_inv_mul_mul_weightMinors hg, mul_div_assoc (ofReal _),
+      weightMinors_neg, Matrix.mul_inv_rev, inv_inv_of_invertible, Λ, a]
   -- the substitution is a shear followed by a swap, so it preserves the product measure
   have swap :
       ∫ y, ∫ k, Φ (y, k) ∂haarK 1 ∂haarK 1 = ∫ v, ∫ u, Φ (v * u, u⁻¹) ∂haarK 1 ∂haarK 1 :=
@@ -350,7 +454,8 @@ lemma kTypeNormSq_mul_kTypeChar_eq_integral (hg : l.HasGap h) (x : n → Circle)
       Measure.measurePreserving_swap).fubini Φ_int).2.symm
   simp only [HCParam.kTypeChar, ContinuousMap.coe_mk, expand, integral_div, swap, inner]
   -- cancel the squared norm `N` from `N * ((N * ∫ …) / N / N)`
-  have hN : (Λ.kTypeNormSq : ℂ) ≠ 0 := by simp [(kTypeNormSq_pos _).ne']
+  have hN : (Λ.kTypeNormSq : ℂ) ≠ 0 := by
+    simp only [ne_eq, ofReal_eq_zero, (kTypeNormSq_pos _).ne', not_false_eq_true]
   rw [integral_const_mul, mul_div_cancel_left₀ _ hN, mul_div_cancel₀ _ hN]
 
 /-- For injective `l`, a weight `w` antitone along `l` (`IsKDominant 1 l w`), an invertible `b`
@@ -361,12 +466,16 @@ lemma weightMinors_conjTranspose_mul_mul_borel (hl : l.Injective) {w : n → ℤ
     (hM_det : M.det ≠ 0) :
     weightMinors w (((y : Matrix n n ℂ) * b)ᴴ * M * (y * b)) =
       ‖diagChar w b‖ ^ 2 * weightMinors w ((y : Matrix n n ℂ)ᴴ * M * y) := by
-  have hb' : IsBorelMatrix (-l) bᴴ := by simp_all [IsBorelMatrix, BlockTriangular]
+  have hb' : IsBorelMatrix (-l) bᴴ :=
+    ⟨fun i j hij ↦ by rw [conjTranspose_apply, hb.1 (neg_lt_neg_iff.1 hij), star_zero],
+      by rw [det_conjTranspose]; exact star_ne_zero.2 hb.2⟩
   have h_conj : diagChar w bᴴ * diagChar w b = ‖diagChar w b‖ ^ 2 := by
-    simp [diagChar, ↓← conj_mul']
+    simp only [diagChar, conjTranspose_apply, star_def, ↓← conj_mul', map_prod, map_zpow₀]
   calc _ = diagChar w bᴴ * (weightMinors w ((y : Matrix n n ℂ)ᴴ * M * y) * diagChar w b) := by
-        simp [mul_assoc bᴴ, ← mul_assoc _ (y : Matrix n n ℂ), hb, hb', hM_det, hb.2,
-          GeneralLinearGroup.det_ne_zero, hw.weightMinors_oppBorel_mul (ε := 1) hl,
+        simp only [conjTranspose_mul, mul_assoc bᴴ, ← mul_assoc _ (y : Matrix n n ℂ), det_mul,
+          det_conjTranspose, star_def, ne_eq, mul_eq_zero, map_eq_zero,
+          GeneralLinearGroup.det_ne_zero, hM_det, or_self, hb.2, not_false_eq_true,
+          mem_blockDiagAlg_one, hb', hw.weightMinors_oppBorel_mul (ε := 1) hl, hb,
           hw.weightMinors_mul_borel (ε := 1) hl]
     _ = _ := by linear_combination weightMinors w ((y : Matrix n n ℂ)ᴴ * M * y) * h_conj
 
@@ -379,7 +488,8 @@ lemma diagChar_div_diagChar_eq_twoRho (hl : l.Injective) {b : Matrix n n ℂ}
     diagChar (-l.compactForm.lowestKType) b / diagChar (-paramAddRho l) b =
       diagChar (twoRho l ⊤) b := by
   simp only [diagChar, ← prod_div_distrib, ← zpow_sub₀ (hb.diag_ne_zero hl _)]
-  simp [HCParam.lowestKType, twoRho, paramAddRho]
+  simp only [Pi.neg_apply, lowestKType, paramAddRho, twoRho, Pi.top_apply, «Prop».top_eq_true,
+    true_and, Pi.one_apply, neg_sub, sub_neg_eq_add, sub_add_cancel]
 
 /-- The orbital integral is the part of Weyl's character over the open orbit. For `l = 2λ` of gap
 `h` there is `σ` of modulus one such that, at every point `x` of the torus with `J x` accretive
@@ -399,7 +509,10 @@ lemma orbital_eq_char_sub_offOrbitIntegral (hg : l.HasGap h) :
   -- it gives `σ` times the orbital integral, over `U(n)` it gives `Λ.kTypeNormSq * Λ.kTypeChar x`,
   -- and by `integral_eq_sub_setIntegral_compl_openOrbit` the two differ by `offOrbitIntegral`.
   refine ⟨weightMinors (-l.compactForm.lowestKType - l.lowestKType) (signMatrix ε),
-    by simp [signMatrix, abs_unit_intCast], fun x hx ↦ ?_⟩
+    by simp only [signMatrix, ne_eq, Int.cast_eq_zero, Units.ne_zero, not_false_eq_true,
+      implies_true, weightMinors_diagonal, Pi.sub_apply, Pi.neg_apply, norm_prod, norm_zpow,
+      norm_intCast, abs_unit_intCast, _root_.one_zpow, prod_const_one],
+    fun x hx ↦ ?_⟩
   let F (y : Matrix n n ℂ) : ℂ :=
     weightMinors (-l.compactForm.lowestKType) (yᴴ * signMatrix ε * y) /
       weightMinors (-paramAddRho l) (yᴴ * (signMatrix ε * diagTorus ε x) * y)
@@ -411,7 +524,7 @@ lemma orbital_eq_char_sub_offOrbitIntegral (hg : l.HasGap h) :
         (isKDominant_neg_compactForm_lowestKType hg) y hb (IsHermitianInvolution.det_ne_zero _),
       weightMinors_conjTranspose_mul_mul_borel hg.injective hg.isKDominant_neg_paramAddRho y hb
         hx.det_ne_zero, ← diagChar_div_diagChar_eq_twoRho hg.injective hb]
-    simp [div_pow, div_mul_div_comm]
+    simp only [Complex.norm_div, ofReal_div, div_pow, div_mul_div_comm]
   have F_cont : Continuous (F · : GL n ℂ → ℂ) := by
     -- both arguments are invertible, and the denominator is a minor of an accretive matrix
     unfold F
@@ -420,11 +533,12 @@ lemma orbital_eq_char_sub_offOrbitIntegral (hg : l.HasGap h) :
   obtain ⟨F_int, F_orbit⟩ : Integrable (fun g : USign ε ↦ F g) ∧ ∫ g : USign ε, F g =
       (∫ k : USign (1 : n → ℤˣ), F k) - offOrbitIntegral l (signMatrix ε * diagTorus ε x) :=
     integral_eq_sub_setIntegral_compl_openOrbit hg.injective ε
-      (fun y b hb ↦ by simpa using F_mul y b hb) F_cont
+      (fun y b hb ↦ by simpa only [real_smul, ofReal_pow] using F_mul y b hb) F_cont
   -- For the signs `1` the group `K` is all of `U(n)`, with the same measure.
   have h_meas : MeasurePreserving (maxCompactU (1 : n → ℤˣ)).subtype (haarK 1) volume :=
-    MonoidHom.measurePreserving (by fun_prop) (by simp [mem_maxCompactU, Function.Surjective])
-      (by simp)
+    MonoidHom.measurePreserving (by fun_prop)
+      (fun k ↦ ⟨⟨k, mem_maxCompactU.2 (by simp only [mem_blockDiagAlg_one])⟩, rfl⟩)
+      (by simp only [measure_univ])
   have K_eq_U : ∫ k : maxCompactU (1 : n → ℤˣ), F k ∂haarK 1 = ∫ k : USign (1 : n → ℤˣ), F k :=
     h_meas.hasLaw.integral_comp (F_cont.comp continuous_subtypeVal).aestronglyMeasurable
   rw [sign_mul_orbital_eq_integral_weightMinors_div hg x hx F_int,
@@ -465,21 +579,34 @@ lemma eq_mul_offOrbitIntegral_of_pos {P Q : ℂ[n → ℤ]}
   have on_circle (θ : ℝ) (hθ : (D (circleMap 0 1 θ)).IsAccretive) : T P (circleMap 0 1 θ) =
       T Q (circleMap 0 1 θ) * offOrbitIntegral l (D (circleMap 0 1 θ)) := by
     let x : n → Circle := fun i ↦
-      ⟨ε i * circleMap 0 1 θ ^ f i, by simp [Submonoid.unitSphere, abs_unit_intCast]⟩
+      ⟨ε i * circleMap 0 1 θ ^ f i, by
+        simp only [Submonoid.unitSphere, Submonoid.mem_mk, Subsemigroup.mem_mk,
+          mem_sphere_iff_norm, sub_zero, Complex.norm_mul, norm_intCast, abs_unit_intCast,
+          norm_zpow, norm_circleMap_zero, abs_one, _root_.one_zpow, mul_one]⟩
     have hD : signMatrix ε * diagTorus ε x = D (circleMap 0 1 θ) := by
-      simp [x, D, signMatrix, diagTorus, ← mul_assoc, ← Int.cast_mul]
+      simp only [signMatrix, diagTorus, IsUnit.unit_spec, diagonal_mul_diagonal, ← mul_assoc,
+        ← Int.cast_mul, Int.units_coe_mul_self, Int.cast_one, one_mul, D, x]
     have eval_eq (R : ℂ[n → ℤ]) : torusEval x R = T R (circleMap 0 1 θ) := by
-      simp [x, T, torusEval, signMatrix, dotProduct, lift_apply', mul_assoc, mul_zpow,
-        prod_mul_distrib, Finsupp.sum, zpow_sum_of_ne_zero, _root_.zpow_mul]
+      simp only [torusEval, mul_zpow, prod_mul_distrib, lift_apply', Finsupp.sum,
+        Algebra.algebraMap_self, RingHom.id_apply, MonoidHom.coe_mk, OneHom.coe_mk,
+        toAdd_ofAdd, signMatrix, ne_eq, Int.cast_eq_zero, Units.ne_zero,
+        not_false_eq_true, implies_true, weightMinors_diagonal, dotProduct, mul_assoc,
+        circleMap_eq_center_iff, one_ne_zero, zpow_sum_of_ne_zero, _root_.zpow_mul, T, x]
     simpa only [eval_eq, hD] using hP x (by rwa [hD])
-  have h_start : 0 < circleMap 0 1 0 := by simp [circleMap]
-  have D_cont : ContinuousWithinAt (D ∘ circleMap 0 1) {0}ᶜ 0 := by fun_prop (disch := simp)
+  have h_start : 0 < circleMap 0 1 0 := by
+    simp only [circleMap, ofReal_one, ofReal_zero, zero_mul, exp_zero, mul_one, zero_add,
+      zero_lt_one]
+  have D_cont : ContinuousWithinAt (D ∘ circleMap 0 1) {0}ᶜ 0 :=
+    by fun_prop (disch := simp only [ne_eq, circleMap_eq_center_iff, one_ne_zero,
+      not_false_eq_true, true_or])
   have acc_near : ∀ᶠ θ : ℝ in nhdsWithin 0 {0}ᶜ, (D (circleMap 0 1 θ)).IsAccretive :=
     D_cont.tendsto.eventually (D_acc h_start).setOf_mem_nhds
   -- the circle tends to `1` without meeting it, as its derivative there is not zero
   have near_one : ∃ᶠ z : ℂ in nhdsWithin (circleMap 0 1 0) {circleMap 0 1 0}ᶜ,
       T P z = T Q z * offOrbitIntegral l (D z) :=
-    ((hasDerivAt_circleMap 0 1 0).tendsto_nhdsNE (by simp)).frequently
+    ((hasDerivAt_circleMap 0 1 0).tendsto_nhdsNE
+      (by simp only [ne_eq, mul_eq_zero, circleMap_eq_center_iff, one_ne_zero, I_ne_zero,
+        or_self, not_false_eq_true])).frequently
       (acc_near.frequently.mono on_circle)
   have T_an (R : ℂ[n → ℤ]) : AnalyticOnNhd ℂ (T R) (Set.Ioi 0) := fun z (hz : 0 < z) ↦ by
     fun_prop (disch := simp [hz.ne'])
@@ -510,10 +637,12 @@ lemma exists_entry_large_outside_orbit (l : HCParam (n := n) ε) (h : ℕ) :
     by_contra! h_block
     rw [← mem_blockDiagAlg, mem_blockDiagAlg_iff_commute] at h_block
     have h_unitary : (k : Matrix n n ℂ)ᴴ * k = 1 := by
-      simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.mp k.prop
-    exact hk ⟨⟨k, by simp [mem_unitaryGroupOf_iff, star_eq_conjTranspose, h_block.right_comm,
-        h_unitary]⟩, 1,
-      by simp [IsBorelMatrix, blockTriangular_one]⟩
+      simpa only [star_eq_conjTranspose, signMatrix_one, mul_one] using
+        mem_unitaryGroupOf_iff.mp k.prop
+    exact hk ⟨⟨k, by simp only [mem_unitaryGroupOf_iff, star_eq_conjTranspose,
+        h_block.right_comm, h_unitary, one_mul]⟩, 1,
+      by simp only [IsBorelMatrix, blockTriangular_one, det_one, ne_eq, one_ne_zero,
+        not_false_eq_true, and_self, mul_one]⟩
   -- at `r = 0` the left side vanishes and the right side does not
   refine (ContinuousAt.eventually_lt ?_ (by fun_prop) (by simp [hne])).mono
     fun _ h_lt ↦ ⟨i, j, hij, h_lt⟩
@@ -548,26 +677,40 @@ lemma exists_norm_offOrbitIntegral_le (hg : l.HasGap h) {o : n → ℤ}
   obtain ⟨i, j, hij, entry⟩ := large k hk
   -- the entries of `s o` are at least `s` apart, and `e` changes each gap by at most `C`
   have steps (a c : n) (hac : (-μ) c < (-μ) a) : (-(s • o + e)) a + |s - C| ≤ (-(s • o + e)) c := by
-    have o_lt : o c + 1 ≤ o a := ho c a (by simpa [hμ, hg.paramAddRho_lt_iff] using hac)
+    have o_lt : o c + 1 ≤ o a :=
+      ho c a (by simpa only [hμ, Pi.neg_apply, neg_lt_neg_iff, hg.paramAddRho_lt_iff] using hac)
     have o_step : s * (o c + 1) ≤ s * o a := by gcongr
-    simp only [Pi.neg_apply, Pi.add_apply, Pi.smul_apply, Int.nsmul_eq_mul]
-    grind
+    have hsC : (0 : ℤ) ≤ ↑s - C := sub_nonneg.2 (Int.lt_of_toNat_lt hs).le
+    simp only [Pi.neg_apply, Pi.add_apply, Pi.smul_apply, Int.nsmul_eq_mul,
+      abs_of_nonneg hsC]
+    linarith [o_step, hC a, hC c, le_abs_self (e c), neg_le_abs (e a)]
   have apart : (h : ℤ) ≤ |(-μ) i - (-μ) j| := by grind [paramAddRho, hg.gap i j hij, Pi.neg_apply]
   have diag_eq : ‖weightMinors (-μ) (twoPowDiagConj 1 (-(s • o + e)))‖ =
       2 ^ (s * (o ⬝ᵥ μ) + e ⬝ᵥ μ) := by
-    simp [dotProduct, zpow_add₀, _root_.zpow_mul, mul_zpow, prod_mul_distrib, zpow_sum_of_ne_zero,
-      zpow_ne_zero]
+    simp only [twoPowDiagConj, Units.val_one, conjTranspose_one, nsmul_eq_mul, Pi.neg_apply,
+      Pi.add_apply, Pi.mul_apply, Pi.natCast_apply, neg_add_rev, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, zpow_add₀, _root_.zpow_neg, _root_.zpow_mul, zpow_natCast, one_mul,
+      mul_one, mul_eq_zero, inv_eq_zero, zpow_ne_zero, pow_eq_zero_iff', false_and,
+      or_self, implies_true, weightMinors_diagonal, mul_zpow, _root_.inv_zpow',
+      _root_.mul_inv_rev, inv_inv, prod_mul_distrib, Complex.norm_mul, norm_prod, norm_zpow,
+      norm_pow, norm_ofNat, dotProduct, zpow_sum_of_ne_zero]
   have denom : 2 ^ (s * (o ⬝ᵥ μ) + e ⬝ᵥ μ) * (‖(k : Matrix n n ℂ) i j‖ ^ 2 * 2 ^ (s - C)) ^ h ≤
       ‖weightMinors (-μ) ((k : Matrix n n ℂ)ᴴ * A * k)‖ := by
-    simpa [A, ← diag_eq] using le_norm_weightMinors_twoPowDiagConj h k (-μ) (-(s • o + e))
-      i j (s - C) (by simp [U.inv_coe_eq_mul_conjTranspose_mul]) steps apart
+    simpa only [← diag_eq, twoPowDiagConj, Units.val_one, conjTranspose_one, nsmul_eq_mul,
+      Pi.neg_apply, Pi.add_apply, Pi.mul_apply, Pi.natCast_apply, neg_add_rev, one_mul,
+      mul_one, _root_.inv_zpow', A] using
+      le_norm_weightMinors_twoPowDiagConj h k (-μ) (-(s • o + e)) i j (s - C)
+        (by simp only [U.inv_coe_eq_mul_conjTranspose_mul, signMatrix_one, one_mul, mul_one])
+        steps apart
   -- `entry` bounds the numerator above and `denom` bounds the denominator below
   refine (norm_div _ _).trans_le (div_le_of_le_mul₀ (by positivity) (by positivity) ?_)
   calc ‖weightMinors (-l.compactForm.lowestKType) ((k : Matrix n n ℂ)ᴴ * signMatrix ε * k)‖
       ≤ ‖(k : Matrix n n ℂ) i j‖ ^ (2 * h) / r := (le_div_iff₀' hr).2 entry.le
     _ = 2 ^ (C * h - e ⬝ᵥ μ) / r * 2⁻¹ ^ (s * (o ⬝ᵥ μ + h)) *
           (2 ^ (s * (o ⬝ᵥ μ) + e ⬝ᵥ μ) * (‖(k : Matrix n n ℂ) i j‖ ^ 2 * 2 ^ (s - C)) ^ h) := by
-        simp [field, pow_mul, mul_pow, div_pow, zpow_add₀, zpow_sub₀, _root_.zpow_mul]
+        simp only [pow_mul, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zpow_sub₀,
+          _root_.zpow_mul, zpow_natCast, inv_pow, inv_eq_zero, pow_eq_zero_iff', false_and,
+          zpow_add₀, _root_.inv_zpow', _root_.zpow_neg, mul_pow, div_pow, fieldEq]
     _ ≤ _ := by gcongr
 
 /-- Let `l = 2λ` have gap `h`: its entries are distinct, congruent to `card n - 1` mod 2, and
@@ -589,7 +732,7 @@ lemma coeff_eq_zero_of_low_level (hg : l.HasGap h) {P Q : ℂ[n → ℤ]}
   -- `t ^ (o ⬝ᵥ β)`, so the part of `P` of least level vanishes at `ε * 2⁻¹ ^ e`, for every `e`.
   by_contra hγ
   obtain ⟨β, hβ, β_min⟩ : ∃ β ∈ P.coeff.support, ∀ δ ∈ P.coeff.support, o ⬝ᵥ β ≤ o ⬝ᵥ δ :=
-    P.coeff.support.exists_min_image (o ⬝ᵥ ·) ⟨γ, by simpa⟩
+    P.coeff.support.exists_min_image (o ⬝ᵥ ·) ⟨γ, by simpa only [Finsupp.mem_support_iff, ne_eq]⟩
   let L : ℤ := o ⬝ᵥ paramAddRho l + h
   -- `S e R m t` is the value of `t ^ (m - o ⬝ᵥ β) * R` at `x = ε * t ^ o * 2⁻¹ ^ e`
   let S (e : n → ℤ) (R : ℂ[n → ℤ]) (m : ℤ) (t : ℂ) : ℂ := ∑ γ ∈ R.coeff.support,
@@ -604,35 +747,64 @@ lemma coeff_eq_zero_of_low_level (hg : l.HasGap h) {P Q : ℂ[n → ℤ]}
           ∑ γ ∈ R.coeff.support,
             R.coeff γ * weightMinors γ (signMatrix ε) * 2⁻¹ ^ ((s • o + e) ⬝ᵥ γ) := by
         -- the powers of `2⁻¹ ^ s` add up
-        simp [S, mul_sum, smul_dotProduct, -nsmul_eq_mul, Int.nsmul_eq_mul, zpow_sub₀,
-          _root_.zpow_mul, zpow_add₀]
-        grind
+        simp only [S, mul_sum, smul_dotProduct, Int.nsmul_eq_mul, add_dotProduct]
+        refine sum_congr rfl fun δ _ ↦ ?_
+        have h2 : (2⁻¹ : ℂ) ≠ 0 :=
+          by simp only [ne_eq, inv_eq_zero, OfNat.ofNat_ne_zero, not_false_eq_true]
+        rw [← zpow_natCast (2⁻¹ : ℂ) s, ← _root_.zpow_mul, mul_assoc (R.coeff δ * _),
+          ← zpow_add₀ h2, mul_left_comm (2⁻¹ ^ _), ← zpow_add₀ h2]
+        congr 2
+        ring
       have eq_mul : S e P 0 (2⁻¹ ^ s) = S e Q L (2⁻¹ ^ s) / 2⁻¹ ^ (s * L) *
           offOrbitIntegral l (diagonal (2⁻¹ ^ (s • o + e) ·)) := by
-        rw [S_eq, S_eq, eq_mul_offOrbitIntegral_of_pos hP _ (by simp)]
-        simp [field, _root_.zpow_mul, zpow_sub₀]
+        rw [S_eq, S_eq,
+          eq_mul_offOrbitIntegral_of_pos hP _ (by simp only [inv_pos, Nat.ofNat_pos])]
+        simp only [zero_sub, mul_neg, _root_.zpow_neg, _root_.zpow_mul, zpow_natCast,
+          inv_pow, _root_.inv_zpow', inv_inv, nsmul_eq_mul, add_dotProduct, neg_add_rev,
+          Pi.add_apply, Pi.mul_apply, Pi.natCast_apply, ne_eq, inv_eq_zero, pow_eq_zero_iff',
+          OfNat.ofNat_ne_zero, false_and, not_false_eq_true, zpow_sub₀, div_inv_eq_mul,
+          fieldEq]
       push_cast
       grw [one_div, eq_mul, norm_mul, hs]
-      simp [L, field]
+      simp only [inv_pow, _root_.inv_zpow', _root_.zpow_neg, div_inv_eq_mul, Complex.norm_mul,
+        norm_zpow, norm_ofNat, fieldLe, Std.le_refl, L]
     -- `o ⬝ᵥ β` is the least level in `P`, and by `hQ` the levels in `Q` exceed `o ⬝ᵥ β - L`: both
     -- sums are polynomials in `t`, so the inequality passes to `t = 0`, where that of `Q` vanishes
     have closed : IsClosed {t : ℝ | ‖S e P 0 t‖ ≤ ‖S e Q L t‖ * c} := by
       refine isClosed_le ?_ ?_ <;> fun_prop (disch := grind)
-    have Q_zero : S e Q L 0 = 0 := sum_eq_zero (by grind [_root_.zero_zpow_eq])
-    simpa [Q_zero] using closed.mem_of_tendsto summable_geometric_two.tendsto_atTop_zero le_small
+    have Q_zero : S e Q L 0 = 0 := sum_eq_zero fun δ hδ ↦ by
+      have h_pos : o ⬝ᵥ δ - (o ⬝ᵥ β - L) ≠ 0 := by
+        have h_lt := hQ δ (Finsupp.mem_support_iff.1 hδ)
+        have h_le : o ⬝ᵥ β ≤ o ⬝ᵥ γ := β_min γ (Finsupp.mem_support_iff.2 hγ)
+        lia
+      rw [_root_.zero_zpow _ h_pos, mul_zero, zero_mul]
+    simpa only [Set.mem_ofPred_eq, ofReal_zero, Q_zero, norm_zero, zero_mul, norm_le_zero_iff]
+      using closed.mem_of_tendsto summable_geometric_two.tendsto_atTop_zero le_small
   -- the characters `e ↦ 2⁻¹ ^ (e ⬝ᵥ γ)` are distinct, hence independent, so `P.coeff β = 0`
   let χ (γ : n → ℤ) : Multiplicative (n → ℤ) →* ℂ :=
-    { toFun e := 2⁻¹ ^ (e.toAdd ⬝ᵥ γ), map_one' := by simp, map_mul' := by simp [zpow_add₀] }
+    { toFun e := 2⁻¹ ^ (e.toAdd ⬝ᵥ γ)
+      map_one' := by simp only [toAdd_one, zero_dotProduct, zpow_ofNat, pow_zero]
+      map_mul' := by simp only [toAdd_mul, add_dotProduct, ne_eq, inv_eq_zero,
+        OfNat.ofNat_ne_zero, not_false_eq_true, zpow_add₀, _root_.inv_zpow', _root_.zpow_neg,
+        implies_true] }
   have χ_inj : χ.Injective := fun a b hab ↦ funext fun i ↦ by
-    simpa [χ] using congr_arg (fun φ ↦ ‖φ (.ofAdd (Pi.single i 1))‖) hab
+    simpa only [_root_.inv_zpow', _root_.zpow_neg, MonoidHom.coe_mk, OneHom.coe_mk,
+      toAdd_ofAdd, single_dotProduct, one_mul, norm_inv, norm_zpow, norm_ofNat, _root_.inv_inj,
+      Nat.ofNat_pos, ne_eq, OfNat.ofNat_ne_one, not_false_eq_true, zpow_right_inj₀, χ] using
+      congr_arg (fun φ ↦ ‖φ (.ofAdd (Pi.single i 1))‖) hab
   -- the surviving terms at `t = 0` are those of level `o ⬝ᵥ β`
   have sum_zero : ∑ γ ∈ P.coeff.support,
       (P.coeff γ * weightMinors γ (signMatrix ε) * 0 ^ (o ⬝ᵥ γ - o ⬝ᵥ β)) • ⇑(χ γ) = 0 :=
-    funext fun e ↦ by simpa [S, χ] using lowest_zero e.toAdd
+    funext fun e ↦ by
+      simpa only [_root_.inv_zpow', _root_.zpow_neg, MonoidHom.coe_mk, OneHom.coe_mk,
+        Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, sub_zero, χ, S] using
+        lowest_zero e.toAdd
   have coeff_zero : P.coeff β * weightMinors β (signMatrix ε) = 0 := by
-    simpa using linearIndependent_iff'.1 ((linearIndependent_monoidHom _ ℂ).comp χ χ_inj) _ _
-      sum_zero β hβ
-  simp [Finsupp.mem_support_iff.1 hβ, signMatrix, prod_eq_zero_iff, zpow_ne_zero] at coeff_zero
+    simpa only [mul_eq_zero, sub_self, zpow_ofNat, pow_zero, mul_one] using
+      linearIndependent_iff'.1 ((linearIndependent_monoidHom _ ℂ).comp χ χ_inj) _ _ sum_zero β hβ
+  simp only [signMatrix, ne_eq, Int.cast_eq_zero, Units.ne_zero, not_false_eq_true,
+    implies_true, weightMinors_diagonal, mul_eq_zero, Finsupp.mem_support_iff.1 hβ,
+    prod_eq_zero_iff, mem_univ, zpow_ne_zero, and_false, exists_false, or_self] at coeff_zero
 
 end New.Orbital
 

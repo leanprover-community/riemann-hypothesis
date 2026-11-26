@@ -1,7 +1,31 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.MeasureTheory.MeasurableSpace.NCard
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.LinearAlgebra.Matrix.Range
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.DualPair.MixedModel
-public import Lib.Weil.Unramified.HeckeTransfer
+public import Lib.Adelic.Reduction.FiniteVolume
+public import Lib.General.Combinatorics
+public import Lib.Weil.Unramified.HeckeGL
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.IwasawaDecomposition
+import Lib.Adelic.Witt.WittTheorem
+import Lib.Base
+import Lib.ClassField.Avatar.HeckeBaseChange
+import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.Weil.Construction.CanonicalTheta
+import Lib.Weil.DualPair.FiniteAction
+import Lib.Weil.MixedModel.ThetaInvariance
+import Lib.Weil.Unramified.HeckeTransfer
 
 /-!
 # Lagrangians, zero terms of the Weil representation and vanishing of dominated functionals
@@ -217,7 +241,7 @@ lemma zeroTerm_lagrangian_eq_theta (f : 𝒮 (S.hom T)) :
 complement is `S` itself, mapped in by `γ`. -/
 def isometrySplitting : S.Splitting S Empty := by
   use 0, 0, γ <;>
-    simp [show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.2, ← ext_iff]
+    simp [show γ.val.valᴴ * _ * _ = _ from mem_unitaryGroupOf_iff.1 γ.property, ← ext_iff]
 
 /-- For a rational isometry `γ` of `S`, the zero term on `Hom(S, T)` of the splitting without planes
 given by `γ` is the Weil operator of `(γ⁻¹, 1)`, where `S.ratEmbed` embeds the rational points. -/
@@ -843,7 +867,7 @@ lemma New.SiegelWeil.exists_zeroTerm_transferPoint_eq (hw : w.IsSplit) (L : Lagr
   have cancel : (υ.val δ : ℂ) =
       (υ.atUniformizer w ^ Fintype.card m) ^ Module.finrank (ResField w) U := by
     -- `υ` is unramified at `w`, and the determinant of `basicCosetRep U` has order `dim U`.
-    obtain ⟨⟨-, h_order⟩, -⟩ := basicCosetRep_mem_and_residueKer_eq U
+    obtain ⟨-, h_order⟩ := basicCosetRep_mem_basicDoubleCoset U
     simp [δ, κ, transferPoint, ← coe_singleton, detOn_eq_prod, det_kronecker, h_order,
       (charUnramifiedAt_upsilon _).apply_locFullIdele, atUniformizer, finPart, _root_.zpow_mul]
   have h_chi : (υ.val δ : ℂ) * starRingEnd ℂ (chiAdelic δ) = (√(ideleAbs δ))⁻¹ := by
@@ -927,7 +951,7 @@ lemma New.SiegelWeil.eq_zero_of_le_tsum_zeroTerm {E n m : Type} {p : ℕ} [Field
     have split : ∃ᶠ w : FinPlace E in Filter.cofinite, w.IsSplit :=
       frequently_prime_q.mono fun _ ↦ isSplit_of_q_prime
     have integral (i : m × n) :
-        ∀ᶠ w : FinPlace E in Filter.cofinite, z i w ∈ w.adicCompletionIntegers E := (z i).2
+        ∀ᶠ w : FinPlace E in Filter.cofinite, z i w ∈ w.adicCompletionIntegers E := (z i).property
     exact (split.and_eventually (Filter.eventually_all.2 fun i ↦ (integral i).and
       (star_injective.tendsto_cofinite.eventually (integral i)))).exists
   have hφ : (S.hom T).projOn {w} φ = φ := by

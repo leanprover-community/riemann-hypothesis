@@ -1,8 +1,21 @@
 module
 
+public import Mathlib.Topology.ContinuousMap.CompactlySupported
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Continuous
+import Mathlib.MeasureTheory.Integral.CompactlySupported
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.Tactic.Monotonicity.Lemmas
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.AutomorphicForms.Basic
-public import Lib.Adelic.QuotientMeasure.IwasawaUnfolding
-public import Lib.DiscreteSeries.Rigidity.KernelFixes
+public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.QuotientMeasure.IwasawaUnfolding
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Rigidity.KernelFixes
 
 /-!
 # Convolution over real points, cusp kernels, the Petersson product and Poincaré series
@@ -70,7 +83,7 @@ noncomputable def bumpProduct (α : NumberField.InfinitePlace E → DiscreteSeri
     C_c(GInf E s, ℂ) where
   toFun x := ∏ w : NumberField.InfinitePlace E, (α w).val.val (x w)⁻¹
   continuous_toFun := by fun_prop
-  hasCompactSupport' := HasCompactSupport.intro (isCompact_univ_pi fun w ↦ (α w).2.inv)
+  hasCompactSupport' := HasCompactSupport.intro (isCompact_univ_pi fun w ↦ (α w).property.inv)
     (fun x hx ↦ by
     obtain ⟨w, hw⟩ := not_forall.1 fun h ↦ hx (Set.mem_univ_pi.2 h)
     exact prod_eq_zero (mem_univ w) (image_eq_zero_of_notMem_tsupport hw))
@@ -242,7 +255,7 @@ lemma tendsto_integral_norm_translate_sub (hα : Integrable α) :
   let T (u : GInf E s) : Lp ℂ 1 (volume : Measure (GInf E s)) := DomMulAct.mk u⁻¹ • hα.toL1
   have h_cont : Continuous T :=
     -- `continuous_smul` for the action on L¹, whose instance is not found by unification here
-    Lp.instContinuousSMulDomMulAct.1.comp
+    Lp.instContinuousSMulDomMulAct.continuous_smul.comp
       (f := fun u : GInf E s ↦ (DomMulAct.mk u⁻¹, hα.toL1)) (by fun_prop)
   have h_norm (u : GInf E s) : ‖T u - T 1‖ = ∫ x : GInf E s, ‖α (u⁻¹ * x) - α (1⁻¹ * x)‖ :=
     L1.norm_of_fun_eq_integral_norm ((hα.comp_mul_left u⁻¹).sub (hα.comp_mul_left 1⁻¹))

@@ -1,7 +1,14 @@
 module
 
+import TauCeti.LinearAlgebra.Matrix.Determinant.FromBlocks
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.DiscreteSeries.Bessel.Basic
 public import New.Spanning.MainTerm.SieveSystem
+import Lib.DiscreteSeries.Bruhat.FloorMeasures
 
 /-!
 # Bessel systems at a real place: length and norm bounds, lattice basis, discriminant
@@ -137,7 +144,7 @@ lemma RealPlace.exists_norm_le_of_besselLength_le {T : ℝ} (hT : besselLength y
   -- The infimum gives `s` in `besselS` with `‖s * y‖ + 1 < T + 1`. Write `s⁻¹ = u * embedH w` with
   -- `u` in `besselU`; then `embedH w * s = u⁻¹`, and `embedH w` does not change the norm.
   obtain ⟨s, hs⟩ := exists_lt_of_ciInf_lt (hT.trans_lt (lt_add_one T))
-  obtain ⟨u, hu, w, hs_eq⟩ := exists_besselU_mul_toBesselH s⁻¹.2 isUnit_one
+  obtain ⟨u, hu, w, hs_eq⟩ := exists_besselU_mul_toBesselH s⁻¹.property isUnit_one
   have h_inv : embedH w * s.val = u⁻¹ := by simp_all [inv_eq_iff_eq_inv]
   refine ⟨u⁻¹, inv_mem hu, ?_⟩
   rw [← h_inv, mul_assoc, norm_embedH_mul]
@@ -320,8 +327,7 @@ lemma gramSchmidt_eq_of_sub_mem_span {ι V : Type*} [LinearOrder ι] [LocallyFin
         h_perp.ge (Submodule.mem_span_singleton_self _)
       refine Submodule.isOrtho_span.2 ?_
       rintro _ ⟨b, hb, rfl⟩ _ rfl
-      rw [← hx b hb]
-      exact gramSchmidt_orthogonal ℂ x (ne_of_lt hb)
+      simpa only [hx b hb] using gramSchmidt_orthogonal ℂ x (ne_of_lt hb)
   obtain ⟨hv_span, hv_orth⟩ := h_proj v ih
   obtain ⟨hw_span, hw_orth⟩ := h_proj w fun _ _ ↦ rfl
   have h_diff : v a - w a ∈ B := (span_gramSchmidt_Iio ℂ w a).ge (h_sub a)
@@ -428,10 +434,6 @@ theorem norm_orthoFrame_mem_Icc (h_size : besselLength y ≤ M) :
   · grw [inv_le_iff_one_le_mul₀' hM, ← h_norm, ← one_le_norm_mul_norm_orthoFrame]
   · grw [norm_orthoFrame_le, norm_frameVector_le, h_norm]
 
-lemma linearIndependent_orthoFrame : LinearIndependent ℂ (orthoFrame y) :=
-  linearIndependent_of_ne_zero_of_inner_eq_zero (orthoFrame_ne_zero y)
-    fun _ _ ↦ inner_orthoFrame_eq_zero_of_ne y
-
 /-- For `y` in the unitary group `𝔰.G₁`, let `gramSchmidtMatrix y` be the unitriangular matrix of
 the moved frame in its Gram–Schmidt vectors. Let `s` lie in the Bessel subgroup `besselS`, the group
 of the elements of `𝔰.G₁` that map each vector of the frame (e₁, …, e_ϱ, z) to itself plus a
@@ -455,7 +457,9 @@ theorem gramSchmidtMatrix_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s �
       smul_smul]
     exact sum_comm.trans (sum_congr rfl fun _ _ ↦ sum_congr rfl fun _ _ ↦ by rw [mul_comm])
   ext a b
-  exact Fintype.linearIndependent_iffₛ.1 (linearIndependent_orthoFrame y) (C · b)
+  exact Fintype.linearIndependent_iffₛ.1
+    (linearIndependent_of_ne_zero_of_inner_eq_zero (orthoFrame_ne_zero y)
+      fun _ _ ↦ inner_orthoFrame_eq_zero_of_ne y) (C · b)
     (gramSchmidtMatrix y · b) (h_same_expansion b) a
 
 /-- The Gram–Schmidt vectors `orthoFrame y a` of the moved frame (y⁻¹ e₁, …, y⁻¹ e_ϱ, y⁻¹ z) depend
@@ -606,7 +610,7 @@ def latticeMiddleGram : 𝔰.Form R :=
 /-- The matrix whose columns are the orthonormal basis vectors x_i of X₀ in the lattice basis (x_i
 for i ≠ k₀, v, z), where v = x_{k₀}/p̄ + z/(p p̄). -/
 def middleInclusionMatrix : Matrix (𝔰.κ ⊕ Unit) 𝔰.κ R :=
-  fromRows (scaleAt (star p.1) 𝔰.k₀) (of fun () j ↦ if j = 𝔰.k₀ then -p⁻¹ else 0)
+  fromRows (scaleAt (star p.val) 𝔰.k₀) (of fun () j ↦ if j = 𝔰.k₀ then -p⁻¹ else 0)
 
 /-- With the column of z appended, the inclusion matrix `middleInclusionMatrix` from the x_i to the
 lattice basis is block lower triangular: `scaleAt p̄ k₀` (diagonal, p̄ at k₀ and 1 elsewhere), `1`,
@@ -628,7 +632,15 @@ lemma fromBlocks_scaleAt_mul_eq_one {a a' c c' : R} (ha : a * a' = 1) (hc : c * 
       fromBlocks (scaleAt a' 𝔰.k₀) 0 (of fun (_ : Unit) (j : 𝔰.κ) ↦ if j = 𝔰.k₀ then c' else 0)
         (1 : Matrix Unit Unit R) = 1 := by
   rw [fromBlocks_multiply, ← fromBlocks_one]
-  congr 1 <;> ext i j <;> simp [Matrix.mul_apply, diagonal, Matrix.one_apply] <;> grind
+  simp only [Matrix.mul_zero, Matrix.zero_mul, zero_add, add_zero, mul_one]
+  congr 1
+  · ext i j
+    by_cases hij : i = j
+    · subst j
+      by_cases hi : i = 𝔰.k₀ <;> simp [scaleAt, hi, ha]
+    · simp [scaleAt, hij]
+  · ext i j
+    by_cases hj : j = 𝔰.k₀ <;> simp [scaleAt, hj, hc]
 
 omit [StarRing R] in
 /-- Two matrices that are the identity outside the middle block, where they are inverse to each
@@ -645,7 +657,7 @@ def besselLatticeBasis : GL 𝔰.BesselIndex R where
   val :=
     fromBlocks 1 0 0
       (fromBlocks
-        (fromBlocks (scaleAt (star p⁻¹.1) 𝔰.k₀) 0
+        (fromBlocks (scaleAt (star p⁻¹.val) 𝔰.k₀) 0
           (of fun _ j ↦ if j = 𝔰.k₀ then ↑(p * star p)⁻¹ else 0) 1)
         0 0 1)
   inv := fromBlocks 1 0 0 (fromBlocks (fromCols (middleInclusionMatrix 𝔰 p) (fromRows 0 1)) 0 0 1)
@@ -678,22 +690,13 @@ lemma gram_besselLatticeBasis (p : Rˣ) (N : R) (hN : p * star ↑p = N) :
     (besselLatticeBasis 𝔰 p).valᴴ * (𝔰.middleGram N).splitGram * besselLatticeBasis 𝔰 p =
       (latticeMiddleGram 𝔰 N).splitGram := by
   subst hN
-  have h_norm : (p : R) * star ↑p * (star (↑p⁻¹ : R) * ↑p⁻¹) = 1 := by
-    grind [p.mul_inv, star_mul, star_one]
-  let A : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex R :=
-    fromBlocks (scaleAt (star (↑p⁻¹ : R)) 𝔰.k₀) 0
-      (of fun _ j ↦ if j = 𝔰.k₀ then ↑(p * star p)⁻¹ else 0) 1
-  -- Outside the middle block the basis is standard. In it, the entries away from `k₀` agree at
-  -- once and those at `k₀` follow from `h_norm`.
-  have h_mid : Aᴴ * 𝔰.middleGram ((p : R) * star ↑p) * A =
-      latticeMiddleGram 𝔰 ((p : R) * star ↑p) := by
-    ext (i | i) (j | j) <;>
-      simp [A, Shape.middleGram, latticeMiddleGram, diagonal, fromBlocks_conjTranspose,
-        fromBlocks_multiply, Matrix.mul_apply] <;>
-      grind [star_star, star_mul, star_one, star_zero] -- uses `h_norm` at the entries of `k₀`
-  have h_basis : (besselLatticeBasis 𝔰 p).val = fromBlocks 1 0 0 (fromBlocks A 0 0 1) := rfl
-  simp [h_basis, Shape.Form.splitGram, Floors.hyperbolicGram, fromBlocks_conjTranspose,
-    fromBlocks_multiply, fromBlocks_mul_fromRows, fromCols_mul_fromBlocks, ← h_mid]
+  -- Outside the middle block the basis is standard; reduce to the middle block and check entries.
+  simp [besselLatticeBasis, Shape.Form.splitGram, Floors.hyperbolicGram, fromBlocks_conjTranspose,
+    fromBlocks_multiply, fromBlocks_mul_fromRows, fromCols_mul_fromBlocks]
+  ext (i | i) (j | j)
+  all_goals simp [Shape.middleGram, latticeMiddleGram, diagonal,
+    fromBlocks_multiply, Matrix.mul_apply]
+  all_goals grind [p.mul_inv, star_star, star_mul, star_one, star_zero]
 
 /-- For γ in the unitary group, the matrix (f | γf) of the frame f and its image under γ, side by
 side. -/
@@ -705,53 +708,6 @@ abbrev isotropicFramePair : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ
   (framePair γ).submatrix id (Sum.map castSucc castSucc)
 
 /-! ### The Gram determinant of two frames -/
-
-/-- The determinant of a square matrix whose row `i` is the sum of the rows `i` of two matrices
-that agree with it in all other rows is the sum of their determinants. -/
-lemma det_eq_add_of_row_eq_add {R m : Type*} [CommRing R] [Fintype m] [DecidableEq m]
-    {A B C : Matrix m m R} (i : m) (h_row : A i = B i + C i) (hB : ∀ j ≠ i, B j = A j)
-    (hC : ∀ j ≠ i, C j = A j) : A.det = B.det + C.det := by
-  have h_update (X : Matrix m m R) (hX : ∀ j ≠ i, X j = A j) : A.updateRow i (X i) = X := by
-    ext j k
-    by_cases hj : j = i <;> simp [updateRow_apply, hj, hX]
-  conv_lhs => rw [← updateRow_eq_self A i, h_row, det_updateRow_add, h_update B hB, h_update C hC]
-
-omit [StarRing R] in
-/-- For square matrices `Z`, `W` and a scalar `c`, the block matrix
-`fromBlocks Z (single i i c) (single i i c) W` (off-diagonal blocks have the single entry `c` at
-`(i, i)`) has determinant `Z.det * W.det - c ^ 2 * (Z.adjugate i i * W.adjugate i i)`. -/
-lemma det_fromBlocks_single {n : Type*} [Fintype n] [DecidableEq n] (Z W : Matrix n n R) (i : n)
-    (c : R) :
-    (fromBlocks Z (single i i c) (single i i c) W).det =
-      Z.det * W.det - c ^ 2 * (Z.adjugate i i * W.adjugate i i) := by
-  let C : Matrix n n R := single i i c
-  have h_zero (X : Matrix n n R) : (X.updateRow i 0).det = 0 :=
-    det_eq_zero_of_row_eq_zero i (by simp)
-  have h_minor (X : Matrix n n R) : (X.updateRow i (Pi.single i c)).det = c * X.adjugate i i := by
-    simp [adjugate_apply, ← det_updateRow_smul, ← Pi.single_smul']
-  -- split the row `inl i`, and then the row `inr i`
-  have h_split_inl : (fromBlocks Z C C W).det =
-      (fromBlocks Z 0 C W).det + (fromBlocks (Z.updateRow i 0) C C W).det := by
-    refine det_eq_add_of_row_eq_add (.inl i) (by ext (b | b) <;> simp [C, updateRow_apply]) ?_ ?_
-    all_goals rintro (a | a) ha <;> ext (b | b) <;>
-      simp_all [C, updateRow_apply, single_apply, eq_comm]
-  have h_split_inr : (fromBlocks (Z.updateRow i 0) C C W).det =
-      (fromBlocks (Z.updateRow i 0) C 0 W).det +
-        (fromBlocks (Z.updateRow i 0) C C (W.updateRow i 0)).det := by
-    refine det_eq_add_of_row_eq_add (.inr i) (by ext (b | b) <;> simp [C, updateRow_apply]) ?_ ?_
-    all_goals rintro (a | a) ha <;> ext (b | b) <;>
-      simp_all [C, updateRow_apply, single_apply, eq_comm]
-  -- in the last term exchange the two rows
-  have h_swap : fromBlocks (Z.updateRow i 0) C C (W.updateRow i 0) =
-      (fromBlocks (Z.updateRow i (Pi.single i c)) 0 0 (W.updateRow i (Pi.single i c))).submatrix
-        (Equiv.swap (.inl i) (.inr i)) id := by
-    ext (a | a) (b | b) <;> by_cases ha : a = i <;>
-      simp [C, updateRow_apply, single_apply, Pi.single_apply, ha, eq_comm (a := i),
-        Equiv.swap_apply_of_ne_of_ne]
-  rw [h_split_inl, h_split_inr, h_swap, det_permute, Equiv.Perm.sign_swap Sum.inl_ne_inr,
-    det_fromBlocks_zero₁₂, det_fromBlocks_zero₂₁, det_fromBlocks_zero₂₁, h_zero, h_minor, h_minor]
-  push_cast
-  ring
 
 /-- Let `N` be self-adjoint in the commutative star ring `R`, let h be the form of ϱ hyperbolic
 planes and the middle block diag(1, …, 1, −N), and let `γ` be an isometry of h. The Gram matrix of
@@ -770,9 +726,7 @@ lemma gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
         (castSucc_ne_last _).symm]
   have h_herm : (𝔰.middleGram N).splitGramᴴ = (𝔰.middleGram N).splitGram := by
     simp [Shape.Form.splitGram, Shape.middleGram, ← Matrix.ext_iff, hN, Matrix.one_apply,
-      apply_ite star]
-    exact ⟨fun _ _ ↦ if_congr eq_comm rfl rfl, fun _ _ ↦ if_congr eq_comm rfl rfl,
-      fun _ _ ↦ if_congr eq_comm rfl rfl⟩
+      apply_ite star, @eq_comm (Fin 𝔰.ϱ), @eq_comm 𝔰.κ]
   have h_block (x y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) :
       (frameImage x)ᴴ * (𝔰.middleGram N).splitGram * frameImage y =
         (xᴴ * (𝔰.middleGram N).splitGram * y).submatrix 𝔰.besselFrame 𝔰.besselFrame := rfl
@@ -790,23 +744,9 @@ Z|² − N²|D_ϱ|². -/
 theorem det_gram_framePair (N : R) (hN : star N = N) (γ : (𝔰.middleGram N).G) :
     ((framePair γ)ᴴ * (𝔰.middleGram N).splitGram * framePair γ).det =
       (-1) ^ 𝔰.n * frameDisc N ((𝔰.middleGram N).frameGram γ) := by
-  -- The Gram matrix is a block matrix with off-diagonal blocks `single top top (-N)`, times the
-  -- exchange of the two frames: apply `det_fromBlocks_single`.
-  set Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) R := (𝔰.middleGram N).frameGram γ
-  let C : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) R := single 𝔰.top 𝔰.top (-N)
-  have h_gram : (framePair γ)ᴴ * (𝔰.middleGram N).splitGram * framePair γ =
-      fromBlocks Z C C Zᴴ * fromBlocks 0 1 1 0 := by
-    simp [gram_framePair N hN, fromBlocks_multiply, Z, C]
-  have h_sign : (fromBlocks 0 1 1 0 : Matrix (Fin 𝔰.n ⊕ Fin 𝔰.n) (Fin 𝔰.n ⊕ Fin 𝔰.n) R).det =
-      (-1) ^ 𝔰.n := by
-    rw [show (fromBlocks 0 1 1 0 : Matrix (Fin 𝔰.n ⊕ Fin 𝔰.n) _ R) =
-      fromBlocks 1 (-1) 0 1 * fromBlocks 1 1 1 0 by simp [fromBlocks_multiply]]
-    simp [det_mul, det_fromBlocks_one₁₁, det_neg]
-  have h_corner : Z.adjugate 𝔰.top 𝔰.top = leadingMinor Z 𝔰.top.castSucc := by
-    simp [adjugate_fin_succ_eq_det_submatrix, leadingMinor,
-      show castLE (Nat.le_succ 𝔰.ϱ) = castSucc from rfl]
-  rw [h_gram, det_mul, h_sign, det_fromBlocks_single, ← adjugate_conjTranspose, conjTranspose_apply,
-    h_corner, det_conjTranspose, frameDisc, neg_sq, mul_comm]
+  rw [gram_framePair N hN, det_fromBlocks_single₁₁_single₂₂,
+    det_conjTranspose, ← conjTranspose_submatrix, det_conjTranspose, neg_mul_neg, ← pow_two]
+  rfl
 
 /-! ### The map to pairs of middle coordinates, and the link -/
 
@@ -944,7 +884,7 @@ at p and at q. -/
 def HasLocalBounds (b : ℝ) (W : 𝔰.G₁ → EuclideanSpace ℂ I) (deg : ℝ)
     (J : ℕ → (ℕ → ℂˣ) → (ℕ → ℂˣ) → ℂ) : Prop :=
   -- (a) `J` is a system over `ℂ` with the character `wave` and these bounds
-  SieveSystem unitOrOne (fun z ↦ z⁻¹.1) 𝔰.ϱ J wave ((1 + b⁻¹ ^ 10) / deg)
+  SieveSystem unitOrOne (fun z ↦ z⁻¹.val) 𝔰.ϱ J wave ((1 + b⁻¹ ^ 10) / deg)
     (headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6))
     (fun ξ ↦ 𝔰.scaledVolumeRatio * b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖ξ‖⁻¹) ∧
   -- (b) its top form is an inner product of values of `normalizedOrbitalIntegral σ`, if both last
@@ -1026,6 +966,7 @@ structure BesselSystem (b : ℝ) (f : ℕ) where
   Index : Type
   /-- π is finite-dimensional. -/
   [fintype : Fintype Index]
+  /-- Equality of indices is decidable. -/
   [decEq : DecidableEq Index]
   /-- π is not zero. -/
   [nonempty : Nonempty Index]
@@ -1042,7 +983,7 @@ structure BesselSystem (b : ℝ) (f : ℕ) where
   isCutPair : IsCutPair b f rep besselFn
   /-- Every matrix that commutes with all rep(h) is scalar. -/
   irreducible (M : Matrix Index Index ℂ) :
-    (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h).1) → M ∈ range (scalar Index)
+    (∀ h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), Commute M (rep h).val) → M ∈ range (scalar Index)
   /-- For every P ≥ b^5, W satisfies `New.RealPlace.HasSchurBound` with constants P and
   |Index|/deg. -/
   hasSchurBound : ∀ P ≥ b ^ 5, HasSchurBound (besselFn FullOrCut.full) rep P

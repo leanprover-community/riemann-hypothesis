@@ -1,6 +1,9 @@
 module
 
-public import New.UpperBound.Kernels.JetConjugatesAndBounds
+import Mathlib.Algebra.Order.Star.Int
+public import Lib.GLn.SchurModule.SchurOrthogonality
+public import Lib.Weil.Construction.ThetaJets
+import New.UpperBound.Kernels.JetConjugatesAndBounds
 
 /-!
 # Weights of regular parameters and bounds on boxes
@@ -63,19 +66,13 @@ lemma boxes_le_card_mul_of_isHCParam {κ : Φ → ℕ → ℕ} {e : Φ → ℤ} 
   classical
   -- The boxes are counted by rows. A row length is at most half the difference between an entry
   -- of `l w` and the smallest entry `2 e w + 1 - card n`, so at most `β`.
-  have h_row (w : Φ) (i : Fin (card n)) : diagramWeight (rankAt fun _ ↦ n) κ (w, i) ≤ β := by
-    have h_entry :
-        |2 * (e w + diagramWeight (rankAt fun _ ↦ n) κ (w, i)) + card n - 1 - 2 * (i : ℕ)| ≤ β :=
-      abs_hcParameter_le_of_isHCParam hl (hβ w) i.isLt
-    have h_last : |2 * e w + 1 - card n| ≤ β := by
-      simpa [hcParameter_sub_one κ e i.pos w] using
-        abs_hcParameter_le_of_isHCParam hl (hβ w) (Nat.sub_one_lt_of_lt i.isLt)
-    grind [abs_le]
-  calc boxes κ (card n)
-      = ∑ x : Φ × Fin (card n), diagramWeight (rankAt fun _ ↦ n) κ (x.1, x.2) :=
-        FitsRanks.refl.sum_diagramWeight_eq_boxes.symm
-    _ ≤ ∑ _x : Φ × Fin (card n), β := sum_le_sum fun x _ ↦ h_row x.1 x.2
-    _ = card Φ * card n * β := by simp
+  rw [← FitsRanks.refl.sum_diagramWeight_eq_boxes]
+  refine (sum_le_card_nsmul _ _ β fun ⟨w, i⟩ _ ↦ ?_).trans_eq (by simp)
+  have : |2 * (e w + diagramWeight (rankAt fun _ ↦ n) κ (w, i)) + card n - 1 - 2 * (i : ℕ)| ≤ β :=
+    abs_hcParameter_le_of_isHCParam hl (hβ w) i.isLt
+  have h2 := abs_hcParameter_le_of_isHCParam hl (hβ w) (Nat.sub_one_lt_of_lt i.isLt)
+  rw [hcParameter_sub_one κ e i.pos w] at h2
+  grind [abs_le]
 
 /-- Let `n` be nonempty. If `l` is twice the Harish-Chandra parameter of the weight `(κ, e)` and
 `|l w i| ≤ β` for all `i`, then the power of the determinant at `w` satisfies `|e w| ≤ β`. -/
@@ -105,19 +102,13 @@ lemma exists_eq_add_card_add_sum_Ioc {ι : Type} {v : ι → ℤ} (hv : v.Inject
   | empty => exact ⟨f, fun _ _ ↦ rfl, by simp⟩
   | insert a S ha h_min ih =>
     -- The index `a` of the smallest value takes the last position.
-    have h_gap (i : ι) (hi : i ∈ S) : v a + 1 ≤ v i :=
-      (h_min i hi).lt_of_ne (hv.ne (ne_of_mem_of_not_mem hi ha).symm)
-    have h_le : g ≤ v a := hg a (mem_insert_self a S)
-    obtain ⟨κ, h_high, h_position⟩ :=
-      ih (v a + 1) (Function.update f (#S + 1) (v a - g).toNat) h_gap
-    have h_new : (κ (#S + 1) : ℤ) = v a - g := by simp [h_high, Int.toNat_sub_of_le h_le]
+    obtain ⟨κ, h_high, h_pos⟩ := ih (v a + 1) (Function.update f (#S + 1) (v a - g).toNat)
+      fun i hi ↦ (h_min i hi).lt_of_ne (hv.ne fun h ↦ ha (h ▸ hi))
+    have h : (κ (#S + 1) : ℤ) = v a - g := by simp [h_high, Int.toNat_sub_of_le (hg a (by simp))]
     simp only [card_insert_of_notMem ha, forall_mem_insert]
-    refine ⟨κ, fun k hk ↦ ?_, ⟨#S, Nat.lt_succ_self _, ?_⟩, fun i hi ↦ ?_⟩
-    · rw [h_high k (by omega), Function.update_of_ne hk.ne']
-    · simp
-      omega
-    · obtain ⟨p, hp_lt, hp_eq⟩ := h_position i hi
-      exact ⟨p, by omega, by grind [sum_Ioc_succ_top]⟩
+    exact ⟨κ, fun k hk ↦ by simp [h_high k (by omega), hk.ne'],
+      ⟨#S, Nat.lt_succ_self _, by grind [Nat.Ioc_succ_singleton, sum_singleton]⟩,
+      fun i hi ↦ (h_pos i hi).imp fun p hp ↦ ⟨by omega, by grind [sum_Ioc_succ_top]⟩⟩
 
 /-- Let each `l w` be a parameter of gap `c` for the signs `s`, and let
 `e w ≤ l w i / 2 + card n / 2` for all `i` (integer divisions). Then `l` is twice the Harish-Chandra

@@ -1,8 +1,17 @@
 module
 
-public import Lib.General.Algebra.MultivariatePolynomials
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import TauCeti.AlgebraicGeometry.Scheme.AffinePoints
+import TauCeti.RingTheory.MvPolynomial.Homogeneous
 public import Lib.Shimura.ThetaGroup
 public import Lib.Shimura.ThetaNormality.NormalGeneration
+public import Lib.General.Algebra.AbsIntegrallyClosed
+import Lib.General.Algebra.MultivariatePolynomials
 
 /-!
 # Absolute Frobenius, Serre's theorem on sections of powers, and projective embeddings
@@ -66,22 +75,15 @@ lemma exists_absFrobenius :
     ∃ F : X.left ⟶ X.left, ∀ (B : CommRingCat) (t : Spec B ⟶ X.left),
       t ≫ F =
         specMap (frobPow (natCast_eq_zero_of_over_charP (l := l) (B := B) (t ≫ X.hom)) f) ≫ t := by
-  -- Glue the maps `Spec (x ↦ x ^ l ^ f) ≫ t` over all ring-valued points `t` of `X`.
-  let twist (B : CommRingCat) (t : Spec B ⟶ X.left) : Spec B ⟶ X.left :=
-    specMap (frobPow (natCast_eq_zero_of_over_charP (l := l) (B := B) (t ≫ X.hom)) f) ≫ t
-  -- Ring maps commute with `x ↦ x ^ l ^ f`.
-  have frob_comm {A B : CommRingCat} (φ : A ⟶ B) (hA : (l : A) = 0) (hB : (l : B) = 0) :
-      φ ≫ ofHom (frobPow hB f) = ofHom (frobPow hA f) ≫ φ := by
-    ext x
-    simp
-  have twist_comp (A B : CommRingCat) (φ : A ⟶ B) (t : Spec A ⟶ X.left) :
-      twist B (Spec.map φ ≫ t) = Spec.map φ ≫ twist A t := by
-    simp only [twist, ← map_comp_assoc]
-    rw [frob_comm]
-  -- Glue on the cover of `X` by the single open set `⊤`.
-  obtain ⟨F, hF⟩ := exists_hom_of_cover isOpenCover_top (fun (_ : Unit) B t _ ↦ twist B t)
-    fun _ _ A B φ t _ _ ↦ twist_comp A B φ t
-  exact ⟨F, fun B t ↦ hF () B t landsIn_top⟩
+  -- Glue the maps `Spec (x ↦ x ^ l ^ f) ≫ t` on the trivial open cover `⊤` of `X`.
+  refine (exists_hom_of_cover isOpenCover_top
+    (fun (_ : Unit) _ t _ ↦
+      specMap (frobPow (natCast_eq_zero_of_over_charP (l := l) (t ≫ X.hom)) f) ≫ t)
+    fun _ _ _ _ φ t _ _ ↦ ?_).imp fun F hF B t ↦ hF () B t landsIn_top
+  simp only [← map_comp_assoc]
+  congr 2
+  ext x
+  simp
 
 /-- For a scheme `X` over a field `k` of prime characteristic `l`, the absolute `l ^ f`-Frobenius of
 the underlying scheme. It acts on `B`-valued points through `x ↦ x ^ l ^ f` on `B`
@@ -97,7 +99,7 @@ lemma comp_absFrobenius {B : CommRingCat} (t : Spec B ⟶ X.left) :
 
 lemma absFrobenius_comm (g : X.left ⟶ Y.left) : absFrobenius f X ≫ g = g ≫ absFrobenius f Y :=
   -- Test on ring-valued points, where both sides are given by `comp_absFrobenius`.
-  hom_ext_of_points (by simp [← Category.assoc, comp_absFrobenius])
+  Scheme.hom_ext_of_forall_spec (by simp [← Category.assoc, comp_absFrobenius])
 
 lemma absFrobenius_apply (x : X.left) : absFrobenius f X x = x := by
   -- Test on the spectrum of the residue field at `x`, which has a single point.
@@ -185,7 +187,7 @@ lemma eventually_mem_formSpan_of_mul {k F : Type*} {ι : Type} [CommRing k] [IsN
     (map_homogeneousSubmodule_eq_formSpan k x (D + 1)).ge (by simpa [hr] using hf r)
   have hp : φ p = .X ^ (D + 1) * algebraMap F (Polynomial F) f := by
     rw [← hp_val, ← p.aeval_algebraMap_apply (Polynomial F)]
-    exact eval₂_mul_of_isHomogeneous hp_homog ..
+    exact hp_homog.eval₂_const_mul ..
   have hp_mem : p ∈ I (D + 1) := fun n ↦ by
     obtain rfl | hn := eq_or_ne n (D + 1) <;> simp [*, T]
   rw [← hc (D + 1) (by lia)] at hp_mem
@@ -261,7 +263,7 @@ lemma exists_mul_pow_mem_formSpan_of_isSection {k ι : Type} [CommRing k] [Finit
     exists_homogenization (N := m + P.totalDegree) (isHomogeneous_X k j) P le_add_self
   have hQ_val : aeval x Q = t (fun _ ↦ i) B ξ * x j ^ P.totalDegree :=
     calc aeval x Q = aeval (fun l ↦ x j * y l) Q := by rw [← h_cocycle]
-      _ = x j ^ (m + P.totalDegree) * aeval y Q := eval₂_mul_of_isHomogeneous hQ _ (x j) y
+      _ = x j ^ (m + P.totalDegree) * aeval y Q := hQ.eval₂_const_mul _ y (x j)
       _ = t (fun _ ↦ i) B ξ * x j ^ P.totalDegree := by
         rw [hQP (aeval y) (by simp [y, transition_self _ _ _ _ hj]), ht_i, pow_add, mul_right_comm]
   exact ⟨P.totalDegree, (map_homogeneousSubmodule_eq_formSpan k x _).le ⟨Q, hQ, hQ_val⟩⟩

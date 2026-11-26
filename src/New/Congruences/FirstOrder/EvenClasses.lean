@@ -1,8 +1,8 @@
 module
 
-public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 public import Lib.General.NumberTheory.PadicLimitsValuation
 public import New.Congruences.Selmer.AuxiliaryPrimes
+import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 
 /-!
 # Even classes and auxiliary places for Selmer cocycles
@@ -73,7 +73,7 @@ def IsTameGeneratorFamily (ν : ℕ) (w : J → FinPlace E) (τ φ : J → Gal(�
     ∃ A : ValuationSubring Ω, ∃ h : IsPlaceOver A (w j), h.tameGenerator = τ j
 
 /-- The family indexed by two copies `J × Bool` of `J`, with value `τ j` at `(j, true)` and
-`(conjGal (τ j))⁻¹` at `(j, false)`; see `withConjInv_true` and `withConjInv_false`. -/
+`(conjGal (τ j))⁻¹` at `(j, false)`. -/
 noncomputable abbrev withConjInv (τ : J → Gal(Ω/E)) (k : J × Bool) : Gal(Ω/E) :=
   idOrConjInv k.2 (τ k.1)
 
@@ -141,7 +141,7 @@ lemma four_dvd_cyclotomicChar_sub_one {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Fie
   obtain rfl | h_odd := (Fact.out : ℓ.Prime).eq_two_or_odd'
   · -- `E` contains a primitive `5040`-th root of unity, which `a` fixes, and `4 ∣ 5040`.
     obtain ⟨ζ, hζ⟩ := HasPrimitiveRoot5040.exists_primitive_root (E := E)
-    have h_fix : (cyclotomicCharMod Ω 5040 a).1 = (1 : ℕ) :=
+    have h_fix : (cyclotomicCharMod Ω 5040 a).val = (1 : ℕ) :=
       cyclotomicCharMod_eq_of_isPrimitiveRoot (hζ.map_of_injective (algebraMap E Ω).injective)
         (by simp)
     exact (pow_dvd_cyclotomicChar_sub_iff 2).2 (cyclotomicCharMod_eq_of_dvd (by norm_num) h_fix)
@@ -175,7 +175,7 @@ lemma IsTameGeneratorFamily.cyclotomicInv_withConjInv_eq_one_and_dvd {ℓ : ℕ}
       exact cyclotomicChar_eq_one_of_mem_inertiaAbove ⟨w k.1, h_off, A, hA, hA.tameGenerator.2⟩
     cases hk : k.2 <;> simp [idOrConjInv, cyclotomicInv, hk, h_cyc_τ]
   · -- `φ j` fixes the roots of unity of order `ℓ ^ ν`.
-    have h_mod : (cyclotomicCharMod Ω (ℓ ^ ν) ((withConjInv φ k)⁻¹ ^ e)).1 = (1 : ℕ) := by
+    have h_mod : (cyclotomicCharMod Ω (ℓ ^ ν) ((withConjInv φ k)⁻¹ ^ e)).val = (1 : ℕ) := by
       cases hk : k.2 <;> simp_all [idOrConjInv, cyclotomicCharMod_prime_pow_eq]
     have h_dvd : (ℓ : ℤ_[ℓ]) ^ ν ∣ (cyclotomicChar Ω ℓ ((withConjInv φ k)⁻¹ ^ e)).val - (1 : ℕ) :=
       (pow_dvd_cyclotomicChar_sub_iff ν).2 h_mod

@@ -1,7 +1,12 @@
 module
 
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Connected.Separation
 public import Lib.General.Algebra.SharpMinors
-public import New.Congruences.Selmer.SelmerData
+public import New.Congruences.Selmer.AuxiliaryPrimes
+import New.Congruences.Selmer.SelmerData
 
 /-!
 # The universal twist and one system of equations for all twists
@@ -14,8 +19,6 @@ other conditions are linear equations over `O[X]` for their values.
 * `New.Selmer.universalChar`, `New.Selmer.IsTiedPrimes.universalChar_frob`,
   `New.Selmer.IsTiedPrimes.universalChar_tame_gen`: the polynomial `ψ_X` and its values at the
   auxiliary primes.
-* `New.Selmer.finite_selmerModule`: for finite `S` and `ρ` locally constant modulo `ℓ ^ M`, the
-  Selmer module with coefficients in a finite `O / a`, `a ∣ ℓ ^ M`, is finite.
 * `New.Selmer.exists_matrix_selmerAtPoint_equiv`: there is one matrix `A` over `O[X]` such that each
   `Sel(x)` is isomorphic to the kernel of `A(x)` on a power of `O' / ℓ ^ M`.
 * `New.Selmer.exists_isLeast_length_selmerAtPoint`, `New.Selmer.exists_sharp_polynomial`: the
@@ -138,43 +141,10 @@ lemma IsTiedPrimes.universalChar_tame_gen (hJ : IsTiedPrimes ℓ S₀ V W N P₀
 
 end UniversalTwist
 
-section Finite
-
-variable {E n O : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n] [CommRing O]
-  {ℓ M : ℕ} {ρ : Gal(Ω/E) →* Matrix n n O} {S : Set (FinPlace E)}
-
-/-- Let `E` be a number field embedded in the algebraic closure `Ω` of `ℚ`, let `ρ` be a
-representation of `Gal(Ω/E)` by matrices over `O` that is locally constant modulo `ℓ ^ M`, and let
-`S` be a finite set of primes of `E`. Let `a ∣ ℓ ^ M` with `QuotSpan a = O / a` finite, and let `L`
-be a set of relations `∑ γ, f γ • c γ = 0` on functions `c`. Then the Selmer module of `ρ` with
-coefficients in `O / a` is finite. -/
-theorem finite_selmerModule {a : O} [Finite (QuotSpan a)] (ha : a ∣ ℓ ^ M)
-    (hρ : IsLocallyConstant (reduceModPow ℓ M ρ)) (hS : S.Finite)
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) : Finite (selmerModule ρ S L (QuotSpan a)) := by
-  let : TopologicalSpace (QuotSpan a) := ⊥
-  have : DiscreteTopology (QuotSpan a) := ⟨rfl⟩
-  -- The ring `O / ℓ ^ M` acts on `O / a`, so `ρ` acts through its reduction, hence continuously.
-  let : Module (QuotSpan (ℓ ^ M : O)) (QuotSpan a) :=
-    Module.IsTorsionBy.module (smul_quot_eq_zero_of_dvd ha)
-  have h_cont (b : n → QuotSpan a) : IsLocallyConstant fun g : Gal(Ω/E) ↦ ρ g • b :=
-    hρ.comp fun m : Matrix n n (QuotSpan (ℓ ^ M : O)) ↦ m • b
-  let V : DiscreteModule O Gal(Ω/E) := .of (actionRep O (n → QuotSpan a) ρ)
-    (continuous_prod_of_discrete_right.2 fun b ↦ (h_cont b).continuous)
-  -- The Selmer module lies in the finite set of cocycles in `V` unramified outside `S`.
-  change (selmerModule ρ S L (QuotSpan a) : Set (Gal(Ω/E) → n → QuotSpan a)).Finite
-  refine (finite_cocycles_unramified_outside V hS).subset fun z hz ↦ ?_
-  obtain ⟨h_cocycle, h_unr, -, h_const⟩ := mem_selmerModule_iff.1 hz
-  exact ⟨⟨h_const.continuous, h_cocycle⟩, fun v hv A hA g hg ↦ h_unr g ⟨v, hv, A, hA, hg⟩⟩
-
-end Finite
-
 section Relations
 
 variable {Γ 𝒢 n Λ O B : Type} [Fintype 𝒢] [Fintype n] [DecidableEq n] [CommRing Λ] [CommRing O]
   [AddCommGroup B] [Module O B]
-
-lemma mapRel_single (ev : Λ →+* O) (g : Γ) (m : Matrix n n Λ) :
-    mapRel ev (.single g m) = .single g (m.map ev) := Finsupp.mapRange_single
 
 /-- Mapping the entries of a relation by `e` and then by `ev` is mapping them by `ev ∘ e`. -/
 lemma mapRel_mapRel {Λ' : Type} [CommRing Λ'] (e : Λ' →+* Λ) (ev : Λ →+* O)
@@ -195,7 +165,7 @@ lemma mapRel_image_cocycleRelations [Mul Γ] (ev : Λ →+* O) (ρ : Γ → Matr
 through `π : Γ → 𝒢`. The unknowns are the coordinates of the values on `𝒢`, and there is one
 equation for each relation and each coordinate. -/
 def relationMatrix (π : Γ → 𝒢) (R : Set (Γ →₀ Matrix n n Λ)) : Matrix (R × n) (𝒢 × n) Λ :=
-  .of fun (f, i) (c, j) ↦ f.1.mapDomain π c i j
+  .of fun (f, i) (c, j) ↦ f.val.mapDomain π c i j
 
 lemma relationMatrix_apply {Γ 𝒢 n Λ : Type} [CommRing Λ] (π : Γ → 𝒢)
     (R : Set (Γ →₀ Matrix n n Λ)) (f : R) (i : n) (c : 𝒢 × n) :
@@ -295,11 +265,9 @@ lemma exists_openNormalSubgroup_forall_eq_zero (G' : OpenSubgroup Gal(Ω/E)) (m 
     simp [V, hz_add u u.property u' u'.property]
   have h_mem : (fun u : H ↦ χ (z u)) ∈ Y := by
     refine ⟨h_cocycle, fun w hw A hA u hu ↦ ?_⟩
-    have hz_zero : z u = 0 := hz_unr u ⟨w.below E, hw, A, hA.isPlaceOver_below, hu⟩
-    simp [hz_zero]
+    simp [hz_unr u ⟨w.below E, hw, A, hA.isPlaceOver_below, hu⟩]
   obtain ⟨hg_mem, h_const⟩ : ∃ hg : g ∈ H, ∀ y ∈ Y, y ⟨g, hg⟩ = y 1 := hG'' g hg
-  have h_value : χ (z g) = χ (z 1) := h_const _ h_mem
-  rw [h_value, hz_one, map_zero]
+  simpa only [Subgroup.coe_one, hz_one, map_zero] using h_const _ h_mem
 
 /-- Let `ρ` be a function from `Gal(Ω/E)` to matrices over a ring `Λ`, let `L` be a set of relations
 `∑ γ, f γ • c γ = 0` with matrix coefficients over `Λ`, let `G'` be an open subgroup, let `m ≠ 0`
@@ -343,7 +311,7 @@ theorem exists_matrix_selmerModule_equiv (ρ : Gal(Ω/E) → Matrix n n Λ)
   let pull : (𝒢 × n → B) →ₗ[O'] Gal(Ω/E) → n → B := .pi fun g ↦ .pi fun i ↦ .proj (π g, i)
   have h_rel : mapRel ev '' R = cocycleRelations (fun g ↦ (ρ g).map ev) ∪
       (fun g ↦ Finsupp.single g 1) '' inertiaAbove Sᶜ ∪ mapRel ev '' L := by
-    simp [R, Set.image_union, mapRel_image_cocycleRelations, Set.image_image, mapRel_single]
+    simp [R, Set.image_union, mapRel_image_cocycleRelations, Set.image_image, mapRel, Finsupp.mapRange_single]
   have h_mem (w : 𝒢 × n → B) : w ∈ Ker ↔ pull w ∈ Sel := by
     have h_const : IsLocallyConstant (pull w) :=
       (IsLocallyConstant.of_discrete w.curry).comp_continuous QuotientGroup.continuous_mk

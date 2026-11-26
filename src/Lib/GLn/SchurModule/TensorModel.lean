@@ -1,7 +1,9 @@
 module
 
-public import Lib.GLn.SchurModule.SchurMatrix
-public import Lib.General.LinearAlgebra.MinorProducts
+public import Aesop.BuiltinRules
+public import Lib.GLn.SchurModule.Basic
+import Lib.GLn.SchurModule.SchurMatrix
+import Lib.General.LinearAlgebra.MinorProducts
 
 /-!
 # The Weyl module inside the tensors of its diagram
@@ -18,8 +20,6 @@ a function on the column fillings `New.ColumnFilling`, which index the basis ten
   dual is the Weyl module.
 * `New.exists_fillingMatrix_leftInverse`: the Weyl module is a direct summand of the integral
   tensors.
-* `New.exists_fillingMatrix_mulVec_eq_iff_mem_span`: the Weyl module over `ℤ` consists of the
-  integral tensors in the span over `ℚ` of the tensors of rational matrices.
 
 Notions from other files:
 * A `Tableau` lists the entries of each column; `tableauPoly R e T` is the product, over the columns

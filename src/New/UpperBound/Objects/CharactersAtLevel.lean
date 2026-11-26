@@ -1,7 +1,9 @@
 module
 
-public import New.UpperBound.Divisibility.MarkedPrimes
-public import New.UpperBound.Objects.Rows
+public import New.UpperBound.Size.ShortColumns
+import Lib.ClassField.Avatar.HeckeBaseChange
+import Lib.ClassField.HeckeCharacter.TameModulus
+import New.UpperBound.Objects.Rows
 
 /-!
 # Characters of the lifts of the chain above the level N

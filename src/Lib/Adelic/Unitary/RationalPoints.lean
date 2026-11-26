@@ -1,6 +1,10 @@
 module
 
-public import Lib.Adelic.Unitary.WeakApproximation
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.Base
 
 /-!
 # Rational points and vectors of spaces under sums, moves and block embeddings
@@ -93,20 +97,6 @@ lemma U.mem_range_sum_right {R : Type*} [CommRing R] [StarRing R] {J : Matrix n 
   obtain ⟨a, ha⟩ := (mem_range_sum_left (g := swap g) rfl hJ).2 hc
   refine ⟨a, swap.injective (Eq.trans ?_ ha)⟩
   exact Subtype.ext (Units.ext (fromBlocks_submatrix_sum_swap_sum_swap _ _ _ _))
-
-/-- Let `J''` be the block diagonal sum of `J` and `J'`, and let `g` be in `U J''`. If `J'` is
-invertible, `g` is `diag(a, 1)` with `a` in `U J` if and only if its second block of columns is
-that of the identity matrix (`U.mem_range_sum_left`). If `J` is invertible, `g` is `diag(1, a)`
-with `a` in `U J'` if and only if its first block of columns is that of the identity matrix
-(`U.mem_range_sum_right`). -/
-lemma U.exists_sum_eq_iff_toCols_eq {R : Type*} [CommRing R] [StarRing R] {J : Matrix n n R}
-    {J' : Matrix m m R}
-    {J'' : Matrix (n ⊕ m) (n ⊕ m) R} (h : fromBlocks J 0 0 J' = J'') {g : U J''} :
-    (IsUnit J' → ((∃ a : U J, sum h (a, 1) = g) ↔
-      (g : Matrix (n ⊕ m) (n ⊕ m) R).toCols₂ = fromRows 0 1)) ∧
-    (IsUnit J → ((∃ a : U J', sum h (1, a) = g) ↔
-      (g : Matrix (n ⊕ m) (n ⊕ m) R).toCols₁ = fromRows 1 0)) :=
-  ⟨mem_range_sum_left h, mem_range_sum_right h⟩
 
 /-- The block diagonal embedding of the product of the adelic unitary groups for signs `s` and `t`
 into the one for the concatenated signs is a closed embedding. -/

@@ -1,9 +1,13 @@
 module
 
+import Std.Tactic.BVDecide.Normalize.Bool
 public import New.Determinant.AuxiliaryForms.PathData
-public import New.Determinant.Chain.Moduli
-public import New.OneLift.ComparisonOperator.GluedLattices
-public import New.UpperBound.Seesaw.LevelIdeles
+import Lib.Adelic.AutomorphicForms.Cuspidality
+import Lib.Adelic.Unitary.RationalPoints
+import New.Determinant.Chain.Moduli
+import New.OneLift.ComparisonOperator.ExchangeData
+import New.OneLift.ComparisonOperator.GluedLattices
+import New.UpperBound.Seesaw.LevelIdeles
 
 /-!
 # Periods on the diagonal and path data on the first path
@@ -134,7 +138,7 @@ lemma diagonalPeriodForm_formRep (D : Data P) (ϑ : D.MFoldTwist) {j : ℕ} {hj 
   let ι (x : New.G D.E (D.gridSigns false 0 j j)) : New.G D.E (D.gridSigns true 0 j j) :=
     .reindex (D.gridDiagEquiv j) (D.sumElim_gridSigns_comp_gridDiagEquiv_symm hj)
       (.sum (x, 1, (gridModulus ϑ).flipScalar ^ j))
-  let F (x : New.G D.E (D.gridSigns false 0 j j)) : ℂ := y.1 x * φ.1 (ι x * (g, 1))
+  let F (x : New.G D.E (D.gridSigns false 0 j j)) : ℂ := y.val x * φ.val (ι x * (g, 1))
   have h_rat : (gridSpace 0 false j j).Γ.FixesLeft F := fun γ hγ x ↦ by
     let γ' : New.G D.E (D.gridSigns true 0 j j) :=
       .reindex (D.gridDiagEquiv j) (D.sumElim_gridSigns_comp_gridDiagEquiv_symm hj) (.sum (γ, 1))
@@ -153,14 +157,14 @@ lemma diagonalPeriodForm_formRep (D : Data P) (ϑ : D.MFoldTwist) {j : ℕ} {hj 
         ((congrArg G.sum h_pair).trans (G.sum.map_mul _ _))).trans
         ((G.reindex (D.gridDiagEquiv j)
           (D.sumElim_gridSigns_comp_gridDiagEquiv_symm hj)).map_mul _ _)
-    simp only [F, h_mul, mul_assoc, y.2.rat_mul _ hγ, φ.2.rat_mul _ hγ']
+    simp only [F, h_mul, mul_assoc, y.property.rat_mul _ hγ, φ.property.rat_mul _ hγ']
   have h_cont : Continuous F :=
-    y.2.continuous.mul (φ.2.continuous.comp
+    y.property.continuous.mul (φ.property.continuous.comp
       (((G.continuous_reindex _ _).comp
         (G.isClosedEmbedding_sum.continuous.comp
           (continuous_id.prodMk continuous_const))).mul_const _))
   have h_int (y : D.GridForm false j j) (φ : D.GridForm true j j) : diagonalPeriodForm ϑ hj g y φ =
-      ∫ x, y.1 x * φ.1 (ι x * (g, 1)) ∂(D.gridSpace 0 false j j).quotMeasure := by
+      ∫ x, y.val x * φ.val (ι x * (g, 1)) ∂(D.gridSpace 0 false j j).quotMeasure := by
     simp [periodPairing, ι]
   have h_mul (x) : ι (x * (1, u)) = ι x * (1, U.block (D.gridDiagEquiv j) (u, 1)) := by
     refine Prod.ext ?_ ?_
@@ -193,7 +197,7 @@ lemma formRep_block_one_eq_self (D : Data P) (φ : D.gridLevelForms 0)
     · exact ⟨0, by simp⟩
     · exact ⟨0, by simp⟩
     · exact ⟨0, by simp⟩
-  exact (φ.2 ⟨_, h_mem⟩).trans (one_smul ℂ φ.1)
+  exact (φ.property ⟨_, h_mem⟩).trans (one_smul ℂ φ.val)
 
 /-- At the node `Y^0_0` of grid `Y`, the kernel `gridKernel false 0 0 true`, that of the conjugate
 forms `GridForm false 0 0`, is the complex conjugate (`star`) of `gridKernel false 0 0 false`, the
@@ -228,7 +232,7 @@ lemma exists_petersson_eq_diagonalPeriodForm (D : Data P)
   have he_star : D.gridKernel false 0 0 true = star (D.gridKernel false 0 0 false) :=
     D.gridKernel_zero_true_eq_star
   have : IsSmoothRep ρ := ⟨fun y ↦ by
-    obtain ⟨K, hK⟩ := y.2.exists_level
+    obtain ⟨K, hK⟩ := y.property.exists_level
     filter_upwards [K.mem_nhds_one] with k hk using Subtype.ext (funext (hK k hk))⟩
   have : Module.Finite ℂ (levelSpace ρ D.chosenLevel) :=
     finite_levelSpace he_cusp ⟨D.chosenLevel, isOpen_levelOf⟩
@@ -241,16 +245,16 @@ lemma exists_petersson_eq_diagonalPeriodForm (D : Data P)
       conjPeriod.domRestrict₁₂ (D.gridLevelForms 0) (levelSpace ρ D.chosenLevel)
   -- `periodRepr φ` is the value at `1` of the adjoint of the functional `conjPeriod φ`.
   have h_repr (φ : D.gridLevelForms 0) (y : levelSpace ρ D.chosenLevel) :
-      innerₛₗ ℂ (periodRepr φ).1 y = conjPeriod φ y :=
+      innerₛₗ ℂ (periodRepr φ).val y = conjPeriod φ y :=
     (((conjPeriod φ).domRestrict (levelSpace ρ D.chosenLevel)).adjoint_inner_left y 1).trans
       (by simp)
   refine ⟨periodRepr, fun φ ϑ y hy ↦ star_injective ?_⟩
   have h_petersson (u : Gf D.E (D.GridIndex false 0 0)) (hu : u ∈ D.chosenLevel) :
-      innerₛₗ ℂ (periodRepr φ).1 (ρ u y) =
+      innerₛₗ ℂ (periodRepr φ).val (ρ u y) =
         star ((D.gridSpace 0 false 0 0).petersson y (periodRepr φ)) := by
-    have h_fix : ρ u (periodRepr φ).1 = (periodRepr φ).1 :=
-      ((periodRepr φ).2 ⟨u, hu⟩).trans (one_smul ℂ (periodRepr φ).1)
-    simpa [ρ, h_fix] using! inner_formRep u (periodRepr φ).1 y
+    have h_fix : ρ u (periodRepr φ).val = (periodRepr φ).val :=
+      ((periodRepr φ).property ⟨u, hu⟩).trans (one_smul ℂ (periodRepr φ).val)
+    simpa [ρ, h_fix] using! inner_formRep u (periodRepr φ).val y
   -- Translation by `J_M` does not change the period of the conjugate of `y` and `φ`.
   have h_period (u : Gf D.E (D.GridIndex false 0 0)) (hu : u ∈ D.chosenLevel) :
       conjPeriod φ (ρ u y) = star (diagonalPeriodForm ϑ zero_le g (conjForm he_star y) φ) := by
@@ -259,38 +263,38 @@ lemma exists_petersson_eq_diagonalPeriodForm (D : Data P)
     -- Then `v` lies in `J_M` and is trivial at the places of `ϑ`, so it has level `𝔪₀` and fixes
     -- `y`, and `(u * v, 1)` fixes `φ`.
     obtain ⟨v, hv_supp, hv_red⟩ := exists_reductionGL_eq ((D.gridModulus 1).reductionGL u)⁻¹
-    have huv : (u * v).1 ∈ principalLevel (D.GridIndex false 0 0) D.gridLevelGen :=
+    have huv : (u * v).val ∈ principalLevel (D.GridIndex false 0 0) D.gridLevelGen :=
       (Modulus.mem_principalLevel_iff gridModulus_one_ideal (u * v)).2 (by simp [hv_red])
-    have hv_chosen : v.1 ∈ D.chosenLevel := (D.chosenLevel.mul_mem_cancel_left hu).1
+    have hv_chosen : v.val ∈ D.chosenLevel := (D.chosenLevel.mul_mem_cancel_left hu).1
       (D.principalLevel_le_chosenLevel piM_dvd_gridLevelGen huv)
-    have hv : v.1 ∈ levelOf (D.levelPlaces ϑ).placeAt ⊥ := by
+    have hv : v.val ∈ levelOf (D.levelPlaces ϑ).placeAt ⊥ := by
       refine D.chosenLevel_inf_trivialOn_le ϑ ⟨hv_chosen, ?_⟩
       -- At the primes of `ϑ` it is trivial: they are none of those on which it is supported.
       have h_notMem (w : FinPlace D.E) (hw : w ∈ ϑ.Q ∨ star w ∈ ϑ.Q) :
           w ∉ (D.gridModulus 1).places := by
         simp [places_twistModulus, IsChosen, toAutChar_one_and_toTwist_one_and_Q_one,
-          (normQ_mem_and_notMem_of_mem_Q D ϑ.1.1 hw).2]
+          (normQ_mem_and_notMem_of_mem_Q D ϑ.toTwist.toTameChar hw).2]
       simpa using fun w hw ↦ mem_supportedOn.1 hv_supp w (h_notMem w (.inl hw))
         (h_notMem (star w) (.inr (by simpa using hw)))
     calc conjPeriod φ (ρ u y)
       _ = star (diagonalPeriodForm ϑ zero_le g ((D.gridSpace 0 false 0 0).formRep
-            (D.gridKernel false 0 0 true) (u * v).1 (conjForm he_star y)) φ) := by
+            (D.gridKernel false 0 0 true) (u * v).val (conjForm he_star y)) φ) := by
         have h_form : conjForm he_star (ρ u y) =
-            (D.gridSpace 0 false 0 0).formRep (D.gridKernel false 0 0 true) (u * v).1
+            (D.gridSpace 0 false 0 0).formRep (D.gridKernel false 0 0 true) (u * v).val
               (conjForm he_star y) := by
           refine Subtype.ext (funext fun x ↦ ?_)
-          have h_g : (x * (1, u.1)) * (1, v.1) = x * (1, u.1 * v.1) := by
+          have h_g : (x * (1, u.val)) * (1, v.val) = x * (1, u.val * v.val) := by
             rw [mul_assoc]
             exact congrArg (x * ·) (Prod.ext (one_mul 1) rfl)
           exact congrArg star ((mem_levelSpace_formRep_iff.1 hy v.1 hv (x * (1, u.1))).symm.trans
-            (congrArg y.1 h_g))
+            (congrArg y.val h_g))
         have h_diag : diagonalPeriodForm 1 zero_le g = diagonalPeriodForm ϑ zero_le g := by
           simp only [diagonalPeriodForm, pow_zero]
         rw [conjPeriod_apply, h_diag, h_form]
-      _ = _ := by rw [← diagonalPeriodForm_formRep D ϑ (u * v).1 (conjForm he_star y),
+      _ = _ := by rw [← diagonalPeriodForm_formRep D ϑ (u * v).val (conjForm he_star y),
         formRep_block_one_eq_self D φ huv]
   calc
-    _ = innerₛₗ ℂ (periodRepr φ).1 (compactMean ρ D.chosenLevel y) :=
+    _ = innerₛₗ ℂ (periodRepr φ).val (compactMean ρ D.chosenLevel y) :=
       (map_compactMean_of_const _ h_petersson).symm
     _ = conjPeriod φ (compactMean ρ D.chosenLevel y) := h_repr φ ⟨_, compactMean_mem_levelSpace y⟩
     _ = _ := map_compactMean_of_const _ h_period
@@ -326,15 +330,15 @@ lemma formRep_formMap_column_tupleAction {D : Data P} {ϑ : D.MFoldTwist} {g : N
       · rw [h, hg_end, map_one]
       · exact (reductionGL_liftMod _).symm
     have h_edge (x : D.GridForm z 0 (b + 1)) :
-        (D.gridSpace 0 z 0 b).formRep (D.gridKernel z 0 b true) k.1
+        (D.gridSpace 0 z 0 b).formRep (D.gridKernel z 0 b true) k.val
             (transposedMove (tupleAction g S (columnEdge z 0 b)) x) =
           edgeCharProd g {columnEdge z 0 b} • transposedMove (S (columnEdge z 0 b))
-            ((D.gridSpace 0 z 0 (b + 1)).formRep (D.gridKernel z 0 (b + 1) true) u.1 x) := by
+            ((D.gridSpace 0 z 0 (b + 1)).formRep (D.gridKernel z 0 (b + 1) true) u.val x) := by
       simp only [tupleAction, hk, hu]
       -- The Weil representation moves the translations from the matrix to the two forms.
       refine ((D.isEdgeFamily_grid_succ_right (z := z) id zero_le hb).isArrow_modDatum.2
         |>.formRep_formLift_of_eq_smul (pairWeil_modDatum_single k u) _).trans ?_
-      simp [gridChar_det, edgeCharProd, edgeChar, hk, hu, div_eq_mul_inv]
+      simp [gridChar_det, edgeCharProd, hk, hu, div_eq_mul_inv]
       rfl -- Both sides are the transposed lift that defines `transposedMove`.
     have he : columnEdge z 0 b ∉ (GridPath.column hb).edges z := by
       intro h_mem
@@ -366,7 +370,7 @@ lemma diagonalPeriodForm_tupleAction {D : Data P} {ϑ : D.MFoldTwist} {g : NodeF
   have hu : (gridModulus ϑ).reductionGL u = g (false, 0, 0) := reductionGL_liftMod _
   obtain ⟨h_block, h_red⟩ := map_block_eq_blockGL (gridModulus ϑ).reduction (D.gridDiagEquiv 0) u 1
   let u' : stdLevel D.E (D.GridIndex true 0 0) :=
-    ⟨U.block (D.gridDiagEquiv 0) (u.1, 1), h_block⟩
+    ⟨U.block (D.gridDiagEquiv 0) (u.val, 1), h_block⟩
   have hu' : g (true, 0, 0) = (gridModulus ϑ).reductionGL u' := by
     refine hg_diag.trans (.trans ?_ h_red.symm)
     simp [← hu, Modulus.reductionGL]
@@ -375,16 +379,16 @@ lemma diagonalPeriodForm_tupleAction {D : Data P} {ϑ : D.MFoldTwist} {g : NodeF
   have h_char : edgeCharProd g (TwoGridPath.first D.m).edges =
       edgeCharProd g (p.edges false) * edgeCharProd g (p.edges true) :=
     prod_union (disjoint_edges_column _)
-  have h_false : (D.gridSpace 0 false 0 0).formRep (D.gridKernel false 0 0 true) u.1
+  have h_false : (D.gridSpace 0 false 0 0).formRep (D.gridKernel false 0 0 true) u.val
         (p.formMap (tupleAction g S) false y') =
       edgeCharProd g (p.edges false) • p.formMap S false y' :=
     formRep_formMap_column_tupleAction _ (hg_end false) S y' u hu.symm (absurd · hm)
   have h_true : (D.gridSpace 0 true 0 0).formRep (D.gridKernel true 0 0 true)
-        (U.block (D.gridDiagEquiv 0) (u.1, 1))
+        (U.block (D.gridDiagEquiv 0) (u.val, 1))
         (p.formMap (tupleAction g S) true φ) =
       edgeCharProd g (p.edges true) • p.formMap S true φ :=
     formRep_formMap_column_tupleAction _ (hg_end true) S φ u' hu' (absurd · hm)
-  rw [← diagonalPeriodForm_formRep D ϑ u.1, h_false, h_true, h_char,
+  rw [← diagonalPeriodForm_formRep D ϑ u.val, h_false, h_true, h_char,
     LinearMap.map_smul₂, map_smul, smul_smul, smul_eq_mul]
 
 end GridStart
@@ -658,9 +662,9 @@ lemma map_eq_one_and_edgeChar_eq_one_of_mem_nodeLevel {ϑ : D.MFoldTwist} {z : B
     (Units.ext Modulus.factor_reductionGL).symm.trans hk
   -- Both sides are the value at `k₀` of the adelic character `gridChar`, in which the twist
   -- does not enter.
-  have h_char : edgeChar ϑ (columnEdge true 0 b) ((gridModulus ϑ).reductionGL k₀).1.det =
+  have h_char : edgeChar ϑ (columnEdge true 0 b) ((gridModulus ϑ).reductionGL k₀).val.det =
       (D.gridModulus 1).charOfTamePart (gridTamePart 1 false b)
-        ((D.gridModulus 1).reductionGL k₀).1.det :=
+        ((D.gridModulus 1).reductionGL k₀).val.det :=
     (gridChar_det (ϑ := ϑ) false b Unit 1 k₀).symm.trans (gridChar_det (ϑ := 1) false b Unit 1 k₀)
   exact ⟨hk, by simp [h_char, hk₀]⟩
 
@@ -802,11 +806,11 @@ lemma isPathDatum_firstPathDatum (ϑ : D.MFoldTwist) :
       left_ne_zero_of_mul (right_ne_zero_of_mul hx)
     obtain ⟨L, hL⟩ : HasLeftInv (tupleAction x.family S (columnEdge false 0 i)) :=
       hasLeftInv_of_edgePointDatum_ne_zero (prod_ne_zero_iff.1 h_false i (by simpa))
-    refine ⟨(x.family (false, 0, i)).1 * L * (x.family (false, 0, i + 1))⁻¹.1, ?_⟩
+    refine ⟨(x.family (false, 0, i)).val * L * (x.family (false, 0, i + 1))⁻¹.val, ?_⟩
     -- Conjugate the equation of the left inverse `L` by the matrix at `(0, i)`.
     simpa only [tupleAction, Matrix.mul_assoc, Matrix.mul_one, ← Units.val_mul, mul_inv_cancel,
       Units.val_one] using congrArg
-      (fun M ↦ (x.family (false, 0, i)).1 * M * (x.family (false, 0, i))⁻¹.1) hL
+      (fun M ↦ (x.family (false, 0, i)).val * M * (x.family (false, 0, i))⁻¹.val) hL
   isSumOfRootsOfUnity S := by
     have h_sum : IsSumOfRootsOfUnity (card (LevelCosets ϑ) * 1) (firstPathDatum ϑ S) := .sum fun x ↦
       (isSumOfRootsOfUnity_firstPointDatum _).mul_left (isOfFinOrder_edgeCharProd _ _)
@@ -875,10 +879,7 @@ lemma exists_diagonalPeriodForm_transposedChain_eq :
   choose κ hκ using (D.exists_triangleGLCard_eq_mul_levelIndex :
     ∀ j : ℕ, ∃ C : ℂ, ∀ ϑ : D.MFoldTwist, D.triangleGLCard false ϑ j = C * levelIndex ϑ false 0 j)
   refine ⟨∏ i ∈ range D.m, κ i, fun ϑ g y' φ ↦ ?_⟩
-  have h_period : gridPeriod (.first D.m) firstPathDatum g (ϑ, y', φ) =
-      card (LevelCosets ϑ) * ∑ S ∈ tuplesOn ϑ (TwoGridPath.first D.m).edges, firstPointDatum S *
-        diagonalPeriodForm ϑ zero_le g ((GridPath.column D.m.zero_le).formMap S false y')
-          ((GridPath.column D.m.zero_le).formMap S true φ) :=
+  have h_period : gridPeriod (.first D.m) firstPathDatum g (ϑ, y', φ) = _ :=
     sum_firstPathDatum_mul g y' φ
   -- The period of `Ψ⁰` is the number of coset families times that of `Ψ¹`. This number is the
   -- product of the indices of the levels, and the orders for the `Y` are `κ i` times the indices.

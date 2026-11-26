@@ -1,8 +1,9 @@
 module
 
-public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
-public import Lib.General.Algebra.FittingIdealsAndLengths
 public import TauCeti.RepresentationTheory.Homological.ContCohomology.CohomologyComparison
+public import Aesop.BuiltinRules
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
 # Counting cocycles through their cohomology classes
@@ -14,7 +15,7 @@ infinite coefficient modules. This file relates the two. Let `π` be a map from 
 * `New.card_eq_card_map_mul_card_inf_B1`, `New.length_eq_length_map_add_length_inf_B1`: a group `W`
   of cocycles has `|W| = |π(W)| · |W ∩ B¹|`, and the same for lengths.
 * `New.card_B1_mul_card_invariants`: `|B¹| · |H⁰| = |M|` for a finite module `M`.
-* `New.inf_B1_eq_bot_of_apply_eq_zero`, `New.card_inf_vanishingAt_eq_card_map`,
+* `New.card_inf_vanishingAt_eq_card_map`,
   `New.length_inf_vanishingAt_eq_length_map`, `New.infVanishingAtEquivMap`: let `γ` act by a
   scalar `ζ` with `ζ - 1` a unit. Then cocycles that vanish at `γ` (`New.vanishingAt`) meet `B¹`
   trivially. In a group `W ⊇ B¹` of cocycles, those that vanish at `γ` are isomorphic to the
@@ -85,7 +86,7 @@ lemma range_coboundaryZ1 (hρ : ∀ m : M, Continuous fun g : G ↦ ρ g m) :
 
 /-- For a finite module `M` on which `G` acts with continuous orbit maps, the coboundaries number
 `|M| / |H⁰|`: `|B¹| · |M^G| = |M|`. -/
-theorem card_B1_mul_card_invariants [Finite M] (hρ : ∀ m : M, Continuous fun g : G ↦ ρ g m) :
+theorem card_B1_mul_card_invariants (hρ : ∀ m : M, Continuous fun g : G ↦ ρ g m) :
     Nat.card (B1 ρ) * Nat.card ρ.invariants = Nat.card M := by
   have h_ker : LinearMap.ker (coboundaryZ1 hρ) = ρ.invariants := by
     ext m
@@ -111,11 +112,6 @@ section Normalised
 variable {γ : G} {ζ : R} (hγ : ∀ m : M, ρ γ m = ζ • m) (hζ : IsUnit (ζ - 1))
 include hγ hζ
 
-omit [TopologicalSpace G] [TopologicalSpace M] [DiscreteTopology M] in
-/-- If `γ` acts by a scalar `ζ` with `ζ - 1` a unit, `ρ` has no nonzero invariants. -/
-theorem invariants_eq_bot_of_smul : ρ.invariants = ⊥ := by
-  refine (Submodule.eq_bot_iff _).2 fun m hm ↦ hζ.smul_left_cancel.1 ?_
-  rw [smul_zero, sub_smul, one_smul, ← hγ, hm γ, sub_self]
 
 /-- If `γ` acts by a scalar `ζ` with `ζ - 1` a unit, a coboundary that vanishes at `γ` is zero. -/
 theorem eq_zero_of_mem_B1_of_apply_eq_zero {z : Z1 ρ} (hz : z ∈ B1 ρ) (hzγ : (z : G → M) γ = 0) :
@@ -125,14 +121,6 @@ theorem eq_zero_of_mem_B1_of_apply_eq_zero {z : Z1 ρ} (hz : z ∈ B1 ρ) (hzγ 
     rw [smul_zero, sub_smul, one_smul, ← hγ, hm, hzγ]
   ext g
   simp [← hm, hm0]
-
-/-- If `γ` acts by a scalar `ζ` with `ζ - 1` a unit, a group `W` of cocycles that vanish at `γ`
-meets the coboundaries `B¹` only in `0`. -/
-theorem inf_B1_eq_bot_of_apply_eq_zero {W : AddSubgroup (Z1 ρ)}
-    (hW : ∀ z ∈ W, (z : G → M) γ = 0) : W ⊓ (B1 ρ).toAddSubgroup = ⊥ :=
-  (AddSubgroup.eq_bot_iff_forall _).2 fun z hz ↦
-    eq_zero_of_mem_B1_of_apply_eq_zero hγ hζ (AddSubgroup.mem_inf.1 hz).2
-      (hW z (AddSubgroup.mem_inf.1 hz).1)
 
 /-- If `γ` acts by a scalar `ζ` with `ζ - 1` a unit, every cocycle differs by a coboundary from one
 that vanishes at `γ`. -/
@@ -168,25 +156,12 @@ vanish at `γ` map onto the image of `W`. -/
 theorem map_inf_vanishingAt_eq_map_of_linear {H : Type*} [AddCommGroup H] [Module R H]
     (π : Z1 ρ →ₗ[R] H) (hπ : LinearMap.ker π = B1 ρ) {W : Submodule R (Z1 ρ)} (hBW : B1 ρ ≤ W) :
     (W ⊓ vanishingAt ρ γ).map π = W.map π := by
-  refine le_antisymm (Submodule.map_mono inf_le_left) ?_
-  rintro _ ⟨z, hz, rfl⟩
-  obtain ⟨b, hb, hzb⟩ := exists_sub_mem_B1_apply_eq_zero hγ hζ hρ z
-  have hπb : π b = 0 := LinearMap.mem_ker.1 (hπ ▸ hb)
-  exact ⟨z - b, Submodule.mem_inf.2 ⟨W.sub_mem hz (hBW hb), hzb⟩, by
-    rw [map_sub, hπb, sub_zero]⟩
+  apply Submodule.toAddSubgroup_injective
+  exact map_inf_vanishingAt_eq_map hγ hζ hρ π.toAddMonoidHom
+    (congrArg Submodule.toAddSubgroup hπ) ((Submodule.toAddSubgroup_le _ _).2 hBW)
 
 variable {H : Type*} [AddGroup H] (π : Z1 ρ →+ H) (hπ : π.ker = (B1 ρ).toAddSubgroup)
 include hπ
-
-/-- Let `γ` act by a scalar `ζ` with `ζ - 1` a unit, and let `π` be an additive map on the cocycles
-with kernel `B¹`. For a group `W` of cocycles containing `B¹`, the members of `W` that vanish at
-`γ` are as many as the classes `π(W)`. -/
-theorem card_inf_vanishingAt_eq_card_map {W : AddSubgroup (Z1 ρ)}
-    (hBW : (B1 ρ).toAddSubgroup ≤ W) :
-    Nat.card ↥(W ⊓ (vanishingAt ρ γ).toAddSubgroup) = Nat.card (W.map π) := by
-  rw [card_eq_card_map_mul_card_inf_B1 π hπ, map_inf_vanishingAt_eq_map hγ hζ hρ π hπ hBW,
-    inf_B1_eq_bot_of_apply_eq_zero hγ hζ fun z hz ↦ (AddSubgroup.mem_inf.1 hz).2,
-    AddSubgroup.card_bot, mul_one]
 
 /-- Let `γ` act by a scalar `ζ` with `ζ - 1` a unit, and let `π` be an additive map on the cocycles
 with kernel `B¹`. For a group `W` of cocycles containing `B¹`, `π` is an isomorphism from the
@@ -210,6 +185,14 @@ def infVanishingAtEquivMap {W : AddSubgroup (Z1 ρ)} (hBW : (B1 ρ).toAddSubgrou
       rw [← map_inf_vanishingAt_eq_map hγ hζ hρ π hπ hBW] at hy
       obtain ⟨z, hz, rfl⟩ := AddSubgroup.mem_map.1 hy
       exact ⟨⟨z, hz⟩, rfl⟩⟩
+
+/-- Let `γ` act by a scalar `ζ` with `ζ - 1` a unit, and let `π` be an additive map on the cocycles
+with kernel `B¹`. For a group `W` of cocycles containing `B¹`, the members of `W` that vanish at
+`γ` are as many as the classes `π(W)`. -/
+theorem card_inf_vanishingAt_eq_card_map {W : AddSubgroup (Z1 ρ)}
+    (hBW : (B1 ρ).toAddSubgroup ≤ W) :
+    Nat.card ↥(W ⊓ (vanishingAt ρ γ).toAddSubgroup) = Nat.card (W.map π) :=
+  Nat.card_congr (infVanishingAtEquivMap hγ hζ hρ π hπ hBW).toEquiv
 
 end Normalised
 
@@ -290,9 +273,6 @@ theorem ker_classMap : A.classMap.ker = (B1 A.ρ).toAddSubgroup := by
 def quotB1EquivH1 : (Z1 A.ρ ⧸ B1 A.ρ) ≃+ continuousCohomology 1 A.toTopRep :=
   QuotientAddGroup.liftEquiv (B1 A.ρ).toAddSubgroup A.classMap_surjective A.ker_classMap.symm
 
-@[simp]
-theorem quotB1EquivH1_mk (z : Z1 A.ρ) : A.quotB1EquivH1 (Submodule.Quotient.mk z) = A.classMap z :=
-  rfl
 
 end DiscreteModule
 

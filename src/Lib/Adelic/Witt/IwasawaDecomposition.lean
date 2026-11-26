@@ -1,9 +1,15 @@
 module
 
-public import Lib.Adelic.Landherr
-public import Lib.Cohomology.Etale.Basic
-public import Lib.General.LinearAlgebra.PolarDecomposition
+import Mathlib.RingTheory.PicardGroup
 public import Lib.Weil.MixedModel.IsotropicSplitting
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
+import Lib.Adelic.Landherr
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.Cohomology.Etale.Basic
+import Lib.General.LinearAlgebra.HermiteForm
+import Lib.General.LinearAlgebra.PolarDecomposition
 
 /-!
 # Maximal compact subgroup, splittings of isotropic frames and the Iwasawa decomposition
@@ -20,13 +26,12 @@ and further choices).
   splitting `V = range l ⊕ V₀ ⊕ range k` (`New.Space.Splitting`, a Witt decomposition). The proof
   compares `V` with the sum of a hyperbolic space and a standard space by Landherr's theorem
   (`New.Space.landherr`) and moves the frame by Witt's theorem (`New.Space.witt`).
-* `New.Space.Splitting.radicalCentre`: the centre of the radical, parametrised additively by adelic
+* `New.Space.Splitting.radicalCenter`: the centre of the radical, parametrised additively by adelic
   matrices M through M − M*; it sends rational matrices to rational points.
-* `New.Space.Splitting.centreCoeff`: the Fourier coefficients of a function along this centre.
+* `New.Space.Splitting.centerCoeff`: the Fourier coefficients of a function along this centre.
 * `New.Space.Splitting.iwasawa`: the Iwasawa decomposition for the maximal compact subgroup
   `New.maxCompact`, obtained at each infinite place and over the finite adeles from Witt's theorem
-  (`New.Space.Splitting.iwasawa_of_witt`). The compact factor can be taken trivial where the given
-  element is (`New.Space.Splitting.exists_mem_maxCompact_actsOnFrame_and_eq_one`).
+  (`New.Space.Splitting.iwasawa_of_witt`).
 * `New.Space.Splitting.exists_eq_radicalElement_mul_levi_mul_isAdapted`: every element is a product
   of an element of the radical, a Levi element and an element adapted to the splitting.
 
@@ -153,23 +158,16 @@ lemma New.Space.card_le_card_preimage_of_isotropic {E : Type*} [Field E] [CMType
     [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p] {s : n → ℤˣ} (V : Space E n s)
     {k : Matrix n p E} (hk : HasLeftInv k) (h_iso : kᴴ * V.J * k = 0) (ε : ℤˣ) :
     card p ≤ card (s ⁻¹' {ε}) := by
-  -- At an infinite place w, the frame k in standard coordinates gives a complex matrix X of full
-  -- rank that is isotropic for diag s.
+  -- At an infinite place `w`, `k` in standard coordinates gives a full-rank isotropic matrix `X`.
   let w : NumberField.InfinitePlace E := Classical.ofNonempty
   let X : Matrix n p ℂ := (V.x⁻¹.val * k.map toAdele).map (evalInf w)
-  obtain ⟨l, hl⟩ : ∃ l : Matrix p n E, l * k = 1 := hk
-  let L : Matrix p n ℂ := (l.map toAdele * V.x.val).map (evalInf w)
-  have hLX : L * X = 1 := by simp [L, X, ← Matrix.map_mul, Matrix.mul_assoc, hl]
-  have h_rank : card p ≤ X.rank := by simpa [hLX] using L.rank_mul_le_right X
-  have h_sign : (stdForm E s).map (evalInf w) = signMatrix s := by
-    simp [signMatrix, stdForm]
-  have hX : Xᴴ * signMatrix s * X = 0 :=
-    calc Xᴴ * signMatrix s * X
-        = ((V.x⁻¹.val * k.map toAdele)ᴴ * stdForm E s * (V.x⁻¹.val * k.map toAdele)).map
-            (evalInf w) := by
-          rw [Matrix.map_mul, Matrix.map_mul, h_sign, conjTranspose_map (evalInf w) fun _ ↦ rfl]
-      _ = 0 := by simp only [V.gram_at_point_eq_map, h_iso, Matrix.map_zero, map_zero]
-  exact h_rank.trans (rank_le_card_preimage_of_isotropic hX ε)
+  obtain ⟨l, hl⟩ := hk
+  refine le_trans ?_ (rank_le_card_preimage_of_isotropic (X := X) ?_ ε)
+  · simpa [X, ← Matrix.map_mul, Matrix.mul_assoc, hl] using
+      Matrix.rank_mul_le_right ((l.map toAdele * V.x.val).map (evalInf w)) X
+  · have h_sign : (stdForm E s).map (evalInf w) = signMatrix s := by simp [signMatrix, stdForm]
+    simp only [X, ← h_sign, ← conjTranspose_map (evalInf w) fun _ ↦ rfl, ← Matrix.map_mul,
+      V.gram_at_point_eq_map, h_iso, Matrix.map_zero, map_zero]
 
 /-- Let `k` be a left invertible `n × p` matrix over `E` whose columns span an isotropic subspace of
 `V`, that is, `kᴴ J k = 0` for the Gram matrix `J`. Then `k` is the frame `D.k` of a splitting `D`
@@ -241,24 +239,24 @@ lemma IsAdapted.mul_of_mem_maxCompact {h κ : G E s} {γ : GL p (𝔸 E)} (h_ada
 
 /-- For an adelic p×p matrix M, the element 1 + k(M − M*)k*ε (k*ε is `H.lCoord`) of the centre of
 the unipotent radical of the stabiliser of the span of the isotropic frame k. -/
-def radicalCentre : AddChar (Matrix p p (𝔸 E)) (G E s) where
+def radicalCenter : AddChar (Matrix p p (𝔸 E)) (G E s) where
   toFun M := H.radicalElement 0 (-toAdele (j * 2 : E) • M)
   map_zero_eq_one' := ext_adeleMatrix (by simp [radicalElement])
   map_add_eq_mul' := by simp [radicalElement_mul]
 
 @[simp]
-lemma adeleMatrix_radicalCentre (M : Matrix p p (𝔸 E)) :
-    (H.radicalCentre M).adeleMatrix = 1 + H.kAdelic * (M - Mᴴ) * H.lCoord := by
+lemma adeleMatrix_radicalCenter (M : Matrix p p (𝔸 E)) :
+    (H.radicalCenter M).adeleMatrix = 1 + H.kAdelic * (M - Mᴴ) * H.lCoord := by
   -- The scalars cancel because `star j = -j`.
-  simp [radicalCentre, radicalElement, smul_smul, ← map_mul, j_ne_zero, Matrix.mul_add,
-    Matrix.add_mul, Matrix.mul_assoc, sub_eq_add_neg, add_comm]
+  simp [radicalCenter, radicalElement, smul_smul, ← map_mul, j_ne_zero, Matrix.mul_add,
+    Matrix.add_mul, sub_eq_add_neg, add_comm]
 
 /-- If `g` acts on the isotropic frame k of the splitting by the matrix `c`, that is `g k = k c`,
 then conjugation by `g` carries the element 1 + k(M − Mᴴ)kᴴε of the centre of the radical to the
 element given by `c * M * cᴴ`. -/
-lemma mul_radicalCentre {g : G E s} {c : Matrix p p (𝔸 E)} (h : H.ActsOnFrame g c)
+lemma mul_radicalCenter {g : G E s} {c : Matrix p p (𝔸 E)} (h : H.ActsOnFrame g c)
     (M : Matrix p p (𝔸 E)) :
-    g * H.radicalCentre M = H.radicalCentre (c * M * cᴴ) * g := by
+    g * H.radicalCenter M = H.radicalCenter (c * M * cᴴ) * g := by
   -- As `g` preserves the form, `g k = k c` gives the adjoint relation `cᴴ lCoord g = lCoord`.
   have h_adj : cᴴ * (H.lCoord * g.adeleMatrix) = H.lCoord :=
     calc cᴴ * (H.lCoord * g.adeleMatrix)
@@ -268,29 +266,29 @@ lemma mul_radicalCentre {g : G E s} {c : Matrix p p (𝔸 E)} (h : H.ActsOnFrame
           rw [← h, conjTranspose_mul]
           simp only [Matrix.mul_assoc]
       _ = H.lCoord := by rw [g.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix, lCoord]
-  -- With `N = M - Mᴴ`, both sides have the matrix `g + k c N lCoord` (`adeleMatrix_radicalCentre`).
+  -- With `N = M - Mᴴ`, both sides have the matrix `g + k c N lCoord` (`adeleMatrix_radicalCenter`).
   apply G.ext_adeleMatrix
   simp [← g.adeleMatrix.mul_assoc, h, h_adj, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
     Matrix.mul_add, Matrix.add_mul]
 
 @[simp]
-lemma radicalCentre_mem {M : Matrix p p (𝔸 E)} (hM : M ∈ ratMatrices E p p) :
-    H.radicalCentre M ∈ W.Γ := by
+lemma radicalCenter_mem {M : Matrix p p (𝔸 E)} (hM : M ∈ ratMatrices E p p) :
+    H.radicalCenter M ∈ W.Γ := by
   obtain ⟨a, rfl⟩ := hM
   change H.radicalElement 0 (-toAdele (j * 2 : E) • a.map toAdele) ∈ W.Γ
   simpa only [Matrix.map_zero _ (map_zero _), Matrix.mul_zero] using
     H.radicalElement_mem_Gamma 0 ⟨-(j * 2 : E) • a, Matrix.ext fun i k ↦ by simp⟩
 
 @[fun_prop]
-lemma continuous_radicalCentre : Continuous H.radicalCentre := by
+lemma continuous_radicalCenter : Continuous H.radicalCenter := by
   change Continuous fun M : Matrix p p (𝔸 E) ↦ H.radicalElement 0 (-toAdele (j * 2 : E) • M)
   fun_prop
 
 /-- The Fourier coefficient at T of a function D at g: the mean of ψ(tr TM)·D(z(M)g) over adelic
-matrices M modulo rational ones, z = `New.Space.Splitting.radicalCentre`. -/
-def centreCoeff (T : Matrix p p E) (D : G E s → ℂ) (g : G E s) : ℂ :=
+matrices M modulo rational ones, z = `New.Space.Splitting.radicalCenter`. -/
+def centerCoeff (T : Matrix p p E) (D : G E s → ℂ) (g : G E s) : ℂ :=
   quotMean (ratMatrices E p p) fun M : Matrix p p (𝔸 E) ↦
-    stdAddChar E (T.map toAdele * M).trace * D (H.radicalCentre M * g)
+    stdAddChar E (T.map toAdele * M).trace * D (H.radicalCenter M * g)
 
 /-! ### The Iwasawa decomposition -/
 

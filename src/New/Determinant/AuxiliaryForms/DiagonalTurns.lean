@@ -1,6 +1,10 @@
 module
 
+import Std.Tactic.BVDecide.Normalize.BitVec
 public import New.Determinant.AuxiliaryForms.Turns
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.General.Algebra.MultivariatePolynomials
+import New.Determinant.Exchange.OneSquare
 
 /-!
 # Turns on the diagonal, and the transfer of periods from the first path to the last
@@ -477,15 +481,6 @@ lemma char_diagonalCorner (ϑ : D.MFoldTwist) : (D.diagonalCorner j).char ϑ =
     (edgeChar ϑ (columnEdge false j j) * edgeChar ϑ (rowEdge false j j))⁻¹ := by
   simp [Corner.char, edgeChar, IsVerticalEdge]
 
-/-- For `S = Y^(j+1)_j` the number of columns modulo `𝔪`, the modulus `gridModulus ϑ`, is at most
-`vectorCountBound ϑ`. -/
-lemma card_column_le_vectorCountBound (hj : j < D.m) (ϑ : D.MFoldTwist) :
-    card (Matrix (D.GridIndex false (j + 1) j) Unit (gridModulus ϑ).ResidueRing) ≤ vectorCountBound
-      ϑ :=
-  (card_congr Matrix.of.symm).trans_le <| by
-    simpa [vectorCountBound] using Nat.pow_le_pow_right Fintype.card_pos
-      (D.card_gridIndex_le hj hj.le)
-
 /-- If the kernel from the line with column `v` is `c` times the Fourier transform of the kernels to
 the line with rows `v'`, the same holds for their `periodPairing`, the integral of such a kernel
 against a form `φ` on `Ỹ^(j+1)_j` and a form `y` on `Y^(j+1)_j` translated by the point `z` of the
@@ -605,7 +600,9 @@ lemma exists_transfersPeriods_diagonal (hj : j < D.m) :
         ((D.diagonalCorner j).columnFourier (ψ ϑ) (Ψ' ϑ) S v') := by
     simp only [edges_downPath, edges_rightPath] at hΨ' ⊢
     obtain ⟨Ψ, hΨ, h_match⟩ := (isTurn_diagonalCorner hj q ϑ).exists_isPathDatum (hΨ' ϑ) σ (ψ ϑ)
-    exact ⟨Ψ, hΨ.mono (Nat.mul_le_mul_right _ (card_column_le_vectorCountBound hj ϑ)), h_match⟩
+    exact ⟨Ψ, hΨ.mono (Nat.mul_le_mul_right _ ((card_congr Matrix.of.symm).trans_le <| by
+      simpa [vectorCountBound] using Nat.pow_le_pow_right Fintype.card_pos
+        (D.card_gridIndex_le hj hj.le))), h_match⟩
   choose Ψ hΨ h_match using h_exists_matched
   refine ⟨Ψ, hΨ, fun Ξ hΞ ↦ isProportional_of_columnPeriod hj fun z p ↦ ?_⟩
   obtain ⟨β, hβ⟩ := hΞ.exists_rowPeriod_eq_mul hj z (τ p)
@@ -627,17 +624,13 @@ theorem exists_transfersPeriods_of_turn {j i : ℕ} (hi : i < D.m) (hj : j < D.m
   have h_one_le : (1 : D.MFoldTwist → ℕ) ≤ vectorCountBound := fun _ ↦ pow_pos Fintype.card_pos _
   obtain hij | rfl | hij := lt_trichotomy i j
   · obtain ⟨c, hc, h_transfer⟩ := exists_transfersPeriods_off_diagonal false hij hj
-    refine ⟨c, hc, fun Γ' Γ h_turn ↦ ?_⟩
-    obtain ⟨q, r, hΓ', rfl⟩ := h_turn.exists_corner_of_lt hij
-    exact (h_transfer Γ' q r hΓ').mono h_one_le
+    exact ⟨c, hc, fun Γ' Γ h_turn ↦ (h_transfer Γ' Γ h_turn).mono h_one_le⟩
   · obtain ⟨c, hc, h_transfer⟩ := exists_transfersPeriods_diagonal hj
     refine ⟨c, hc, fun Γ' Γ h_turn ↦ ?_⟩
     obtain ⟨q, rfl, rfl⟩ := h_turn.exists_eq_down_and_eq_right
     exact h_transfer q
   · obtain ⟨c, hc, h_transfer⟩ := exists_transfersPeriods_off_diagonal true hij hi
-    refine ⟨c, hc, fun Γ' Γ h_turn ↦ ?_⟩
-    obtain ⟨q, r, hΓ', rfl⟩ := h_turn.exists_half_true_eq_of_gt hij
-    exact (h_transfer Γ' q r hΓ').mono h_one_le
+    exact ⟨c, hc, fun Γ' Γ h_turn ↦ (h_transfer Γ' Γ h_turn).mono h_one_le⟩
 
 /-- There are numbers `c ϑ ≠ 0` whose absolute value is the product over `i, j < m` of
 `turnRatio i j ϑ`, up to a constant and a power of `Nm Q`, with `Q` the modulus of the twist `ϑ`,

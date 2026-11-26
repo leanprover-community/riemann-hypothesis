@@ -144,14 +144,14 @@ lemma IsValuationPair.hermite (hR : IsValuationPair R) (ι : k ↪ n) (y : Matri
   -- Treat the columns in order of increasing weight. In each column `j ∈ s` of a reduced `U * y`,
   -- only the rows `ι b` with `b ∈ s` and `wt b ≤ wt j` may be non-zero.
   let IsReduced (s : Finset k) (U : GL n A) : Prop :=
-    ∀ j ∈ s, ∀ i : n, (∀ b ∈ s, i = ι b → wt j < wt b) → (U.1 * y) i j = 0
+    ∀ j ∈ s, ∀ i : n, (∀ b ∈ s, i = ι b → wt j < wt b) → (U.val * y) i j = 0
   have exists_reduced (s : Finset k) : ∃ U ∈ intGL n R, IsReduced s U := by
     induction s using Finset.induction_on_max_value wt with
     | empty => exact ⟨1, one_mem _, by simp [IsReduced]⟩
     | insert a s ha hmax ih =>
       obtain ⟨U, hU, hs⟩ := ih
       -- in the new column `a`, clear the rows outside `ι (insert a s)`
-      obtain ⟨W, hW, hcol, hkeep⟩ := hR.exists_clear_col (U.1 * y) a (i₀ := ι a)
+      obtain ⟨W, hW, hcol, hkeep⟩ := hR.exists_clear_col (U.val * y) a (i₀ := ι a)
         (t := ((insert a s).map ι)ᶜ) (by simp)
       -- these rows and `ι a` vanish in the columns of `s`, so these columns do not change
       have s_cols : ∀ j ∈ s, ∀ r : n, (W.1 * (U.1 * y)) r j = (U.1 * y) r j := by grind [mem_compl]
@@ -162,13 +162,13 @@ lemma IsValuationPair.hermite (hR : IsValuationPair R) (ι : k ↪ n) (y : Matri
         exact hcol r (by grind [mem_compl])
       · exact (s_cols j hjs r).trans (hs j hjs r (by grind))
   obtain ⟨U, hU, hzero⟩ := exists_reduced univ
-  refine ⟨U⁻¹, inv_mem hU, (U.1 * y).submatrix ι id,
+  refine ⟨U⁻¹, inv_mem hU, (U.val * y).submatrix ι id,
     fun i j hij ↦ hzero j (mem_univ j) (ι i) (by simpa), ?_, rfl⟩
   -- only the rows at `ι` of `U * y` contribute to the product `y = U⁻¹ * (U * y)`
-  have hrows (i : n) (hi : i ∉ Set.range ι) (j : k) : (U.1 * y) i j = 0 :=
-    hzero j (mem_univ j) i (by grind)
-  calc y = U⁻¹.1 * (U.1 * y) := by simp [← Matrix.mul_assoc]
-    _ = U⁻¹.1.submatrix id ι * (U.1 * y).submatrix ι id := ext fun i j ↦
+  have hrows (i : n) (hi : i ∉ Set.range ι) (j : k) : (U.val * y) i j = 0 :=
+    hzero j (mem_univ j) i (by tauto)
+  calc y = U⁻¹.val * (U.val * y) := by simp [← Matrix.mul_assoc]
+    _ = U⁻¹.val.submatrix id ι * (U.val * y).submatrix ι id := ext fun i j ↦
       (Fintype.sum_of_injective ι ι.injective _ _ (by simp +contextual [hrows]) fun _ ↦ rfl).symm
 
 /-- If (A, R) satisfies `New.IsValuationPair` (any u, v in A are R-multiples of u - e(u - v) for
@@ -185,14 +185,14 @@ lemma IsValuationPair.exists_isPrimitiveMatrix_mul (hR : IsValuationPair R) [Dec
   obtain ⟨U, hU, D, hD, (h_form : X.fromRows 0 = U.val.submatrix id Sum.inr * D),
     (h_inv : U⁻¹.val.submatrix Sum.inr id * X.fromRows 0 = D)⟩ :=
     hR.hermite .inr (X.fromRows 0) wt
-  obtain rfl : X = U.1.toBlocks₁₂ * D :=
+  obtain rfl : X = U.val.toBlocks₁₂ * D :=
     ext fun i j ↦ by simpa [toBlocks₁₂, Matrix.mul_apply] using congrFun₂ h_form (.inl i) j
-  obtain ⟨b, rfl⟩ : IsUnit D := .of_mul_eq_one_right (L * U.1.toBlocks₁₂) (by rwa [L.mul_assoc])
+  obtain ⟨b, rfl⟩ : IsUnit D := .of_mul_eq_one_right (L * U.val.toBlocks₁₂) (by rwa [L.mul_assoc])
   obtain ⟨hU_int, hU_inv_int⟩ := mem_intGL.1 hU
   refine ⟨b⁻¹, by simpa using blockTriangular_inv_of_blockTriangular hD,
-    by simp [IsIntMatrix, toBlocks₁₂, hU_int], U⁻¹.1.toBlocks₂₁, fun i j ↦ hU_inv_int _ _, ?_⟩
+    by simp [IsIntMatrix, toBlocks₁₂, hU_int], U⁻¹.val.toBlocks₂₁, fun i j ↦ hU_inv_int _ _, ?_⟩
   -- of the product in `h_inv` only the lower left block of `U⁻¹` meets a non-zero row
-  have h_left : U⁻¹.1.toBlocks₂₁ * (U.1.toBlocks₁₂ * b.1) = b.1 :=
+  have h_left : U⁻¹.val.toBlocks₂₁ * (U.val.toBlocks₁₂ * b.val) = b.val :=
     ext fun i j ↦ by simpa [toBlocks₂₁, Matrix.mul_apply] using congrFun₂ h_inv i j
   rw [← Matrix.mul_assoc, h_left, Units.mul_inv]
 
@@ -207,7 +207,7 @@ lemma IsValuationPair.exists_mul_clear_cols (hR : IsValuationPair R) (M : Matrix
     ∃ V ∈ intGL n R, ∀ a : k, ∀ j ∉ Set.range ι, (M * V.val) a j = 0 := by
   -- The Hermite form of `Mᵀ` gives `U` such that `U⁻¹ * Mᵀ` vanishes off the rows `ι`; transpose.
   obtain ⟨U, hU, D, -, (h_form : Mᵀ = U.val.submatrix id ι * D), -⟩ := hR.hermite ι Mᵀ
-  have h_rows : U⁻¹.1 * Mᵀ = (1 : Matrix n n A).submatrix id ι * D := by
+  have h_rows : U⁻¹.val * Mᵀ = (1 : Matrix n n A).submatrix id ι * D := by
     rw [h_form, ← Matrix.mul_assoc, ← U.inv_mul, submatrix_mul _ _ id id ι Function.bijective_id,
       submatrix_id_id]
   refine ⟨transposeGL U⁻¹, by simp_all [mem_intGL, transposeGL], fun a j hj ↦ ?_⟩
@@ -249,7 +249,7 @@ lemma New.mem_intGL_iff_det {n F : Type*} [Field F] [Valued F ℤᵐ⁰] [Fintyp
     exact (Valuation.integer.integers v).isUnit_iff_valuation_eq_one
   refine ⟨?_, fun ⟨h_int, h_det⟩ ↦ ?_⟩
   · rintro ⟨u, rfl⟩
-    exact ⟨fun a b ↦ (u a b).prop, (unit_iff u.1).1 ((Matrix.isUnit_iff_isUnit_det _).1 u.isUnit)⟩
+    exact ⟨fun a b ↦ (u a b).prop, (unit_iff u.val).1 ((Matrix.isUnit_iff_isUnit_det _).1 u.isUnit)⟩
   · let A : Matrix n n 𝒪[F] := fun a b ↦ ⟨g a b, h_int a b⟩
     exact ⟨.mk'' A ((unit_iff A).2 h_det), Units.ext rfl⟩
 

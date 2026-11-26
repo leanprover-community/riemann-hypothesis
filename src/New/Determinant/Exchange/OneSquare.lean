@@ -1,8 +1,15 @@
 module
 
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Seesaw
 public import New.Determinant.Chain.SquareLaw
-public import New.Determinant.Exchange.TheoremForPartners
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.SiegelWeil.Tower.FiniteTateIntegral
+import Lib.Adelic.AutomorphicForms.Cuspidality
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.General.Algebra.MultivariatePolynomials
+import New.Determinant.Exchange.TheoremForPartners
 
 /-!
 # One square: up then down against down then up
@@ -296,13 +303,6 @@ lemma upIntegrand_add (f₁ : G E s₁ → ℂ) (f₂ : G E s₂ → ℂ) (x : M
   ext q
   simp [upIntegrand, pairTheta, modDatum, mul_add]
 
-/-- The function `upIntegrand` respects differences in its real datum, the Fock vector in
-`PairFock E (s₁ ⊕ᵥ s₂) s'`: its value at `v - w` is its value at `v` minus its value at `w`. -/
-lemma upIntegrand_sub (f₁ : G E s₁ → ℂ) (f₂ : G E s₂ → ℂ) (x : Matrix n' (n₁ ⊕ n₂) 𝔪.ResidueRing)
-    (v w : PairFock E (s₁ ⊕ᵥ s₂) s') : upIntegrand A U₁ U₂ ν₀ γ b f₁ f₂ x (v - w) =
-      upIntegrand A U₁ U₂ ν₀ γ b f₁ f₂ x v - upIntegrand A U₁ U₂ ν₀ γ b f₁ f₂ x w := by
-  rw [eq_sub_iff_add_eq, ← upIntegrand_add, sub_add_cancel]
-
 /-- Let `x` be onto modulo an ideal `𝔪` with at least one prime divisor (`𝔪 ≠ 1`), let `f₁`, `f₂`
 be automorphic functions of rapid decay for the hermitian spaces `U₁`, `U₂`, and let `ν₀`, `γ`, `b`
 be any characters of `[U(1)]`. At `((g₁, g₂), h)`, `upIntegrand` is `f₁ g₁ * f₂ g₂ * ν₀ (det g₂)`
@@ -362,7 +362,9 @@ lemma exists_norm_integral_upIntegrand_sub_le (h𝔪 : Nonempty 𝔪.places)
   refine ⟨N, D * μA.real .univ, fun v v' hv hv' hvv' ↦ ?_⟩
   rw [norm_sub_rev, ← integral_sub (h_bound v' hv').left (h_bound v hv).left, mul_right_comm]
   refine norm_integral_le_of_norm_le_const (.of_forall fun q ↦ ?_)
-  simpa only [upIntegrand_sub, Pi.sub_apply] using (h_bound (v' - v) hvv').right q
+  have h_sub := eq_sub_iff_add_eq.2
+    ((upIntegrand_add A U₁ U₂ ν₀ γ b f₁ f₂ x (v' - v) v).symm.trans (by rw [sub_add_cancel]))
+  simpa only [h_sub, Pi.sub_apply] using (h_bound (v' - v) hvv').right q
 
 /-- Let `y` be left invertible modulo `𝔪 ≠ 1`, let `f₁`, `f₂` be automorphic functions of rapid
 decay for `U₁`, `U₂`, and let `ν₀`, `γ`, `b` be any characters of `[U(1)]`. At `((g₁, g₂), h)`,
@@ -723,6 +725,10 @@ structure IsSquare (t : ℕ) (μ : InfinitePlace E → ℤ) (𝔪 : I → Modulu
 
 end Edges
 
+private lemma two_dvd_of_rank_difference {a b c t : ℕ}
+    (h_card : a = b + c) (h_rank : b = c + 2 * t) : 2 ∣ a :=
+  ⟨c + t, by omega⟩
+
 /-- On matched functions, a transposed lift followed by a lift is a multiple, possibly zero, of a
 lift followed by a transposed lift.
 
@@ -773,7 +779,7 @@ theorem exists_sum_pairLift_comp_pairTransposedLift_eq_smul
   obtain ⟨h_signs, h_rank, h_few_neg, hμ, h_tame, h₁, h₂, h₁', h₂', ha, ha', hb₁, hb₂⟩ := h_square
   -- All four products of characters of `[U(1)]` are the character `rankTwist ν⁻¹` of `W`.
   have h_card : card (n₁ ⊕ n₂) = card n' + card n := by simp [← card_congr σ, add_comm]
-  have h_even : 2 ∣ card (n₁ ⊕ n₂) := ⟨card n + t, by omega⟩
+  have h_even := two_dvd_of_rank_difference h_card h_rank
   replace ha (i : I) : a₁ i * a₂ i = rankTwist (ν i)⁻¹ (n₁ ⊕ n₂) :=
     (spaceChar_mul_spaceChar_eq_iff card_sum h_even).1 (ha i)
   replace ha' (i : I) : a₁' i * a₂' i = rankTwist (ν i)⁻¹ (n₁ ⊕ n₂) :=
@@ -932,7 +938,7 @@ theorem equivariant_and_exists_sum_eq_of_areMatched {E n n' n₁ n₂ : Type} [F
   -- inverse is tame for `(𝔪, χ)`.
   have h_card : card (n₁ ⊕ n₂) = card n' + card n := by simp [← card_congr σ, add_comm]
   have h_rank : card n' = card n + 2 * t := h_square.card_eq
-  have h_even : 2 ∣ card (n₁ ⊕ n₂) := ⟨card n + t, by omega⟩
+  have h_even := two_dvd_of_rank_difference h_card h_rank
   have h_tame_inv (i : I) {α₁ α₂ : AutChar E}
       (hα : α₁.spaceChar (card n₁) * α₂.spaceChar (card n₂) = (ν i).baseChange⁻¹) :
       ∃ μ' : InfinitePlace E → ℤ, IsTameFor (𝔪 i) (α₁ * α₂)⁻¹ μ' (χ i) := by
@@ -1004,7 +1010,7 @@ lemma one_square_identity_of_isEdgeFamily (A' : Space E n s) (A : Space E n' s')
   intro Θ Θ'
   have h_card : card (n₁ ⊕ n₂) = card n' + card n := by simp [← card_congr σ, add_comm]
   have h_card' : card n' + card n = card n₁ + card n₂ := h_card.symm.trans card_sum
-  have h_even : 2 ∣ card (n₁ ⊕ n₂) := ⟨card n + t, by omega⟩
+  have h_even := two_dvd_of_rank_difference h_card h_rank
   -- in each pair of ranks the two splitting characters multiply to the inverse base change of `ν`
   have h_ab (i : I) {p q : Type} [Fintype p] [Fintype q]
       (hpq : card p + card q = card n₁ + card n₂) :

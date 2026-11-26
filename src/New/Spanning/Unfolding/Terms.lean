@@ -1,8 +1,13 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import New.Spanning.RemainingTerms.Box
 public import New.Spanning.RemainingTerms.SiegelLemma
 public import New.Spanning.Unfolding.BesselLevelStructure
+import Lib.SiegelWeil.Mass
 
 /-!
 # Near terms in the filling theorem: frames, cell ranks, nearness and integrality
@@ -23,7 +28,7 @@ algebraic integers.
   the unipotent character, the vectors common to the two flags of a term, and its cell rank.
 * `New.Filling.IsNear`: `γ` is near if some boxed point `y` (`New.Filling.boxedPoints`) has `γ⁻¹ y`
   boxed.
-* `New.Filling.norm_sq_middle_part_eq`, `New.Filling.map_termDisc_eq_norm`: a norm identity, which
+* `New.Filling.map_termDisc_eq_norm`: a norm identity, which
   makes `S.termDisc γ` real and nonnegative at every infinite place. So `S.termDisc γ` is totally
   positive or zero (`New.Filling.termDisc_pos_or_eq_zero`).
 * `New.Filling.IsNear.norm_frameProducts_le`, `New.Filling.IsNear.norm_map_leadingMinor_sq_le`: for
@@ -137,7 +142,7 @@ def IsNear (γ : S.G E) : Prop :=
 /-- The finite character `New.Filling.unipotentChar` takes the same value at u and at γ⁻¹uγ for
 every rational u in 𝖴 ∩ γ𝖴γ⁻¹. -/
 def CharsAgree (γ : S.G E) : Prop :=
-  ∀ᵉ (u ∈ besselU) (u' ∈ besselU), u * γ = γ * u' →
+  ∀ u ∈ besselU, ∀ u' ∈ besselU, u * γ = γ * u' →
     S.unipotentChar (S.ratToFin u) = S.unipotentChar (S.ratToFin u')
 
 end Filling
@@ -392,7 +397,7 @@ lemma termsOver.isIntMatrix_translateByClassReps :
     γ ∈ S.termsOver c r c' → IsIntMatrix (Ô E) (S.translateByClassReps c c' γ).val.val := by
   rintro ⟨g, -, hg⟩
   rw [← hg]
-  exact g.2.isIntMatrix
+  exact g.property.isIntMatrix
 
 /-- For a class c, the matrix classCoord c, which takes rational coordinates to coordinates in the
 basis of the lattice h_cΛ₀, carries the form in rational coordinates to the form in lattice
@@ -482,10 +487,10 @@ lemma two_le_b : 2 ≤ S.b := by linarith [S.thousand_le_b]
 
 lemma b_pos : 0 < S.b := by linarith [S.thousand_le_b]
 
-lemma two_le_tailScale [S.IsAdmissible] : 2 ≤ S.tailScale :=
+lemma two_le_tailScale : 2 ≤ S.tailScale :=
   two_le_b.trans (by simpa using pow_le_tailScale (S := S) (e := 1) NeZero.one_le)
 
-lemma one_le_tailScale [S.IsAdmissible] : 1 ≤ S.tailScale := one_le_two.trans two_le_tailScale
+lemma one_le_tailScale : 1 ≤ S.tailScale := one_le_two.trans two_le_tailScale
 
 lemma identitySecondMoment_nonneg : 0 ≤ S.identitySecondMoment := by simp [identitySecondMoment]
 

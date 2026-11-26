@@ -1,6 +1,16 @@
 module
 
-public import Lib.Base
+public import Mathlib.NumberTheory.Padics.RingHoms
+import Mathlib.NumberTheory.Padics.ProperSpace
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.ZMod.UnitsCyclic
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Algebra.Module.Compact
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Topology.Separation.Connected
+public import Lib.Speed
 
 /-!
 # Open subgroups, a tube lemma, and procyclic images of ℓ-adic characters
@@ -24,7 +34,7 @@ principal ideal `(a)` by divisibility of the difference by `a`.
 /-! ## Open subgroups, a tube lemma, and congruence modulo a principal ideal -/
 
 /-- The subgroup U of G is an open subset of G. -/
-@[to_additive]
+@[to_additive /-- The additive subgroup U of G is an open subset of G. -/]
 protected abbrev Subgroup.IsOpen {G : Type*} [Group G] [TopologicalSpace G] (U : Subgroup G) :
     Prop := IsOpen (X := G) U
 

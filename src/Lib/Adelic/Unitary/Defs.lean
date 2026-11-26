@@ -1,8 +1,16 @@
 module
 
-public import Lib.Adelic.Adeles.AdditiveCharacter
+public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
+import Mathlib.RingTheory.PiTensorProduct
+public import Mathlib.Topology.Algebra.Group.Matrix -- shake: keep (needed public by an exposed definition)
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import TauCeti.Topology.Algebra.Group.Units
 public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Topology
+public import Lib.Adelic.Adeles.Basic
+public import Lib.General.Groups.CongruenceSubgroups
+import Lib.Adelic.Adeles.AdditiveCharacter
 
 /-!
 # Adelic unitary groups over a CM field: levels, hermitian spaces, lattices and mass
@@ -430,7 +438,7 @@ def G.toUnitary : G E s ≃* U (stdForm E s) where
   invFun g :=
     (fun v ↦ U.map (evalInf v) (by simp) (by simp [stdForm, signMatrix]) g,
       U.map (RingHom.snd ..) (by simp) (by simp [stdForm]) g)
-  map_mul' g k := Subtype.ext (mkAdelicGL.map_mul (_, g.2.1) (_, k.2.1))
+  map_mul' g k := Subtype.ext (mkAdelicGL.map_mul (_, g.2.val) (_, k.2.val))
 
 /-- The matrix over the adeles of an element g of the adelic unitary group G. -/
 @[local simp]
@@ -501,7 +509,7 @@ structure Space (n : Type*) [Fintype n] [DecidableEq n] (s : n → ℤˣ) where
   /-- The point, an invertible adelic matrix. -/
   x : GL n (𝔸 E)
   /-- In the basis `x` the form is `diag s` at the infinite places and `1` at the finite places. -/
-  gram_point : x.1ᴴ * J.map toAdele * x.1 = stdForm E s
+  gram_point : x.valᴴ * J.map toAdele * x.val = stdForm E s
 
 namespace Space
 
@@ -527,7 +535,7 @@ abbrev Γf : Subgroup (Gf E n) := V.embFin.range
 
 /-- For a space (J, x), the adelic vector x⁻¹y attached to a rational vector y in E^n. -/
 def vecAtPoint : (n → E) →ₛₗ[(toAdele : E →+* 𝔸 E)] n → 𝔸 E :=
-  V.x⁻¹.1.mulVecLin ∘ₛₗ LinearMap.mk (σ := toAdele) ⟨fun y ↦ toAdele ∘ y, by simp⟩
+  V.x⁻¹.val.mulVecLin ∘ₛₗ LinearMap.mk (σ := toAdele) ⟨fun y ↦ toAdele ∘ y, by simp⟩
     (by simp [funext_iff])
 
 /-- For a space (J, x), the lattice E^n ∩ x_f Ô^n, as an additive subgroup of E^n. It consists of

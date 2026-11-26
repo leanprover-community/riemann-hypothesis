@@ -1,6 +1,14 @@
 module
 
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Topology.Algebra.ProperAction.Torsor
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Periods.BesselIntegral
+import Lib.Adelic.QuotientMeasure.UnfoldingInStages
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 
 /-!
 # Integrals over a quotient as finite sums over cosets with controlled multiplicity
@@ -58,9 +66,15 @@ is constant on the `S`-orbit of the coset `t ∈ H ⧸ J`. -/
 lemma coverMultiplicity_smul (p : S) (t : H ⧸ J) :
     coverMultiplicity S A T (p • t) = coverMultiplicity S A T t := by
   -- Left translation by `p⁻¹` carries the classes counted at `p • t` to those counted at `t`.
+  let _ : MulAction S (S ⧸ A.subgroupOf S) := inferInstance
+  let _ : SMul S (S ⧸ A.subgroupOf S) := SemigroupAction.toSMul
+  let _ : HSMul S (S ⧸ A.subgroupOf S) (S ⧸ A.subgroupOf S) := instHSMul
   rw [coverMultiplicity, coverMultiplicity, ← ncard_smul_set p⁻¹,
-    ← image_smul_comm _ _ _ (by simp)]
-  simp [← preimage_smul, mul_smul]
+    ← image_smul_comm (QuotientGroup.mk (s := A.subgroupOf S)) p⁻¹ _ fun _ ↦ rfl]
+  congr 2
+  ext r
+  simp only [mem_smul_set_iff_inv_smul_mem, inv_inv, mem_ofPred_eq, smul_eq_mul, mul_inv_rev,
+    mul_smul, inv_smul_smul]
 
 /-- If the `q ^ n`-th power of every element lies in a subgroup `K` of finite index, then the index
 of `K` divides a power of `q`: in the finite quotient by the normal core of `K`, the order of every
@@ -83,6 +97,12 @@ lemma coverMultiplicity_eq_index_stabilizer {C : Set (H ⧸ J)} (hC : InjOn (orb
     (hT : ∀ t : H ⧸ J, t ∈ T ↔ ∃ p : S, ↑p ∈ A ∧ p⁻¹ • t ∈ C) {t : H ⧸ J} (ht : t ∈ C) :
     coverMultiplicity S A T t = ((A.subgroupOf S).subgroupOf (stabilizer S t)).index := by
   set Z : Subgroup S := stabilizer S t
+  let _ : MulAction S (H ⧸ J) := inferInstance
+  let _ : SMul S (H ⧸ J) := SemigroupAction.toSMul
+  let _ : HSMul S (H ⧸ J) (H ⧸ J) := instHSMul
+  let _ : MulAction Z (S ⧸ A.subgroupOf S) := inferInstance
+  let _ : SMul Z (S ⧸ A.subgroupOf S) := SemigroupAction.toSMul
+  let _ : HSMul Z (S ⧸ A.subgroupOf S) (S ⧸ A.subgroupOf S) := instHSMul
   -- The classes counted at `t` are the `Z`-orbit of the trivial class in `S ⧸ (S ⊓ A)`.
   have h_classes : mk '' {r : S | r⁻¹ • t ∈ T} = orbit Z ((1 : S) : S ⧸ A.subgroupOf S) := by
     refine Subset.antisymm ?_ ?_
@@ -92,11 +112,14 @@ lemma coverMultiplicity_eq_index_stabilizer {C : Set (H ⧸ J)} (hC : InjOn (orb
       have h_mem : (p⁻¹ * r⁻¹) • t ∈ C := by rwa [mul_smul]
       have h_fix : p⁻¹ * r⁻¹ ∈ Z := hC h_mem ht (orbit_smul (p⁻¹ * r⁻¹) t)
       have h_coset : (((p⁻¹ * r⁻¹)⁻¹ * 1 : S) : S ⧸ A.subgroupOf S) = r :=
-        QuotientGroup.eq.2 (by simpa [mem_subgroupOf] using hp)
+        QuotientGroup.eq.2 (by
+          simp only [mul_one, inv_inv, inv_mul_cancel_right, mem_subgroupOf, inv_mem_iff]
+          exact hp)
       exact ⟨⟨(p⁻¹ * r⁻¹)⁻¹, inv_mem h_fix⟩, h_coset⟩
     · rintro _ ⟨⟨z, hz⟩, rfl⟩
       have h_fix : z⁻¹ • t = t := mem_stabilizer_iff.1 (inv_mem hz)
-      have h_mem : z⁻¹ • t ∈ T := (hT _).2 ⟨1, one_mem _, by simpa [h_fix]⟩
+      have h_mem : z⁻¹ • t ∈ T :=
+        (hT _).2 ⟨1, one_mem _, by rw [inv_one, one_smul, h_fix]; exact ht⟩
       exact ⟨z, h_mem, congrArg QuotientGroup.mk (mul_one z).symm⟩
   have h_stab : stabilizer Z ((1 : S) : S ⧸ A.subgroupOf S) = (A.subgroupOf S).subgroupOf Z := by
     ext z
@@ -133,21 +156,25 @@ lemma exists_index_stabilizer_dvd_pow {S A J : Subgroup (Gf E ι)} [hA : IsLevel
   set Z : Subgroup S := stabilizer S (x : Gf E ι ⧸ J)
   have h_conj {z : S} (hz : z ∈ Z) : x⁻¹ * z * x ∈ J := by
     have h_coset : (x : Gf E ι ⧸ J) = (z * x : Gf E ι) := (mem_stabilizer_iff.1 hz).symm
-    simpa [mul_assoc] using QuotientGroup.eq.1 h_coset
+    rw [mul_assoc]
+    exact QuotientGroup.eq.1 h_coset
   -- The index is finite: `Z` lies in the compact group `A' = x A x⁻¹` and `A` is open.
   have h_finite : ((A.subgroupOf S).subgroupOf Z).FiniteIndex := by
     set A' : Subgroup (Gf E ι) := MulAut.conj x • A
     have hZ_le : Z ≤ A'.subgroupOf S := by
       intro z hz
-      rw [mem_subgroupOf, Subgroup.mem_pointwise_smul_iff_inv_smul_mem]
-      simpa using hJA (h_conj hz)
+      rw [mem_subgroupOf, Subgroup.mem_pointwise_smul_iff_inv_smul_mem, MulAut.smul_def,
+        ← map_inv, MulAut.conj_apply, inv_inv]
+      exact hJA (h_conj hz)
     have hA'_compact : IsCompact (A' : Set (Gf E ι)) := hA.isCompact.smul (ConjAct.toConjAct x)
     have h_relIndex : (A.subgroupOf S).relIndex (A'.subgroupOf S) ≠ 0 :=
       relIndex_comap_ne_zero S.subtype (hA'_compact.relIndex_ne_zero hA.isOpen)
     exact ⟨fun h_zero ↦ h_relIndex (relIndex_eq_zero_of_le_right hZ_le h_zero)⟩
   refine exists_index_dvd_pow_of_pow_mem (n := n) fun ⟨z, hz⟩ ↦ ?_
-  have h_pow : (z : Gf E ι) ^ q ^ n ∈ A := by simpa [mul_assoc] using hx _ (h_conj hz)
-  simpa [mem_subgroupOf] using h_pow
+  have h_pow : (z : Gf E ι) ^ q ^ n ∈ A := by
+    have h := hx _ (h_conj hz)
+    rwa [← mul_assoc, ← mul_assoc, mul_inv_cancel, one_mul, mul_inv_cancel_right] at h
+  exact h_pow
 
 /-- Let `S` and `J ≤ A ≤ B` be subgroups of the finite adelic unitary group `Gf E ι` with `J` and
 `A` levels, and `q` a natural number. Let `D` be compact, such that each `x ∈ D` lies in `B` and has
@@ -170,21 +197,24 @@ lemma exists_finset_coverMultiplicity_dvd_pow {S A J : Subgroup (Gf E ι)} [hA :
   -- Let `C` be a set of representatives of the `S`-orbits that meet the image of `D` modulo `J`,
   -- and `T` its saturation under `S ⊓ A`. At a coset `x J` in `C` the multiplicity is the index of
   -- `Z ⊓ A` in its stabiliser `Z` in `S`, and `hD_mem_pow` makes it divide a power of `q`.
+  let _ : MulAction S (Gf E ι ⧸ J) := inferInstance
+  let _ : SMul S (Gf E ι ⧸ J) := SemigroupAction.toSMul
+  let _ : HSMul S (Gf E ι ⧸ J) (Gf E ι ⧸ J) := instHSMul
   obtain ⟨C, hC, h_reps⟩ : ∃ C ⊆ mk (s := J) '' D, BijOn (orbit S) C (orbit S '' (mk '' D)) :=
     exists_subset_bijOn (mk '' D) (orbit S)
   -- `T` is finite: it lies in the image of the compact set `A * D` modulo the open subgroup `J`.
-  obtain ⟨T, mem_T⟩ : ∃ T : Finset (Gf E ι ⧸ J),
-      ∀ t : Gf E ι ⧸ J, t ∈ T ↔ ∃ p : S, ↑p ∈ A ∧ p⁻¹ • t ∈ C := by
-    refine Finite.exists_finset (s := {t | ∃ p : S, ↑p ∈ A ∧ p⁻¹ • t ∈ C})
-      ((finite_quotient_image_of_isCompact hJ.isOpen (hA.isCompact.mul hD_compact)).subset ?_)
-    intro t ⟨p, hp, hpt⟩
-    obtain ⟨d, hd, hd_eq⟩ := hC hpt
-    exact ⟨p * d, mul_mem_mul hp hd, eq_inv_smul_iff.1 hd_eq⟩
+  obtain ⟨T, mem_T⟩ := Finite.exists_finset
+    (s := {t : Gf E ι ⧸ J | ∃ p : S, ↑p ∈ A ∧ p⁻¹ • t ∈ C})
+    ((finite_quotient_image_of_isCompact hJ.isOpen (hA.isCompact.mul hD_compact)).subset
+      fun t ⟨p, hp, hpt⟩ ↦
+        let ⟨d, hd, hd_eq⟩ := hC hpt
+        ⟨p * d, mul_mem_mul hp hd, eq_inv_smul_iff.1 hd_eq⟩)
   refine ⟨T, fun p hp t ↦ ?_, fun x hx ↦ ?_, fun y hy ↦ ?_⟩
   · -- Substitute `r ↦ p * r` in the description of `T`.
     rw [mem_T, mem_T]
     refine (Equiv.mulLeft p).exists_congr fun r ↦ ?_
-    simp [mul_mem_cancel_left hp, mul_smul]
+    change ↑r ∈ A ∧ r⁻¹ • t ∈ C ↔ ↑(p * r) ∈ A ∧ (p * r)⁻¹ • p • t ∈ C
+    rw [coe_mul, mul_mem_cancel_left hp, mul_inv_rev, mul_smul, inv_smul_smul]
   · -- Here `x ∈ r * d * J` with `r ∈ A ≤ B`, `d ∈ D ⊆ B` and `J ≤ B`.
     obtain ⟨r, hr, hrx⟩ : ∃ r : S, ↑r ∈ A ∧ r⁻¹ • (x : Gf E ι ⧸ J) ∈ C := (mem_T x).1 hx
     obtain ⟨d, hd, hd_eq⟩ : ∃ d ∈ D, (d : Gf E ι ⧸ J) = ((r : Gf E ι)⁻¹ * x : Gf E ι) := hC hrx
@@ -219,26 +249,35 @@ lemma lintegral_indicator_inv_coverMultiplicity {S A J : Subgroup (Gf E ι)} [hA
       NNReal) ∂η =
       {x : Gf E ι ⧸ J | coverMultiplicity S A T x ≠ 0}.indicator 1 t := by
   have : DiscreteTopology (Gf E ι ⧸ J) := discreteTopology hJ.isOpen
+  let _ : MulAction S (Gf E ι ⧸ J) := inferInstance
+  let _ : SMul S (Gf E ι ⧸ J) := SemigroupAction.toSMul
+  let _ : HSMul S (Gf E ι ⧸ J) (Gf E ι ⧸ J) := instHSMul
   set R : Set S := {u | u⁻¹ • t ∈ T}
-  have hR_meas : MeasurableSet R := (T.finite_toSet.isClosed.preimage
+  have hR_meas : MeasurableSet R := ((isOpen_discrete (T : Set (Gf E ι ⧸ J))).preimage
     ((continuous_subtypeVal.comp continuous_inv).smul continuous_const)).measurableSet
   -- The multiplicity is constant on the orbit of `t`, so the integrand is the constant
   -- `1 / coverMultiplicity S A T t` on `R` and zero off `R`.
   trans ((coverMultiplicity S A T t : NNReal)⁻¹ : NNReal) * η R
   · rw [← lintegral_indicator_const hR_meas]
     refine lintegral_congr fun u ↦ ?_
-    by_cases hu : u⁻¹ • t ∈ T <;> simp [R, hu, coverMultiplicity_smul]
+    by_cases hu : u⁻¹ • t ∈ T
+    · rw [indicator_of_mem hu, indicator_of_mem (show u ∈ R from hu), coverMultiplicity_smul]
+    · rw [indicator_of_notMem hu, indicator_of_notMem (show u ∉ R from hu), ENNReal.coe_zero]
   by_cases h_ne : coverMultiplicity S A T t ≠ 0
   · -- `R` is a union of `coverMultiplicity S A T t` cosets of `S ⊓ A`, each of mass one.
     have hR_sat : R = QuotientGroup.mk (s := A.subgroupOf S) ⁻¹' (QuotientGroup.mk '' R) := by
       refine (subset_preimage_image _ R).antisymm fun r ⟨s, hs, hsr⟩ ↦ ?_
       have h_mem : r⁻¹ * s ∈ A.subgroupOf S := QuotientGroup.eq.mp hsr.symm
-      simpa [R, mul_smul] using (hT (r⁻¹ * s) h_mem _).mp hs
+      have hs' := (hT (r⁻¹ * s) h_mem (s⁻¹ • t)).mp hs
+      rwa [← mul_smul, mul_assoc, mul_inv_cancel, mul_one] at hs'
     have hR_mass : η R = coverMultiplicity S A T t := by
       rw [hR_sat, measure_union_cosets hA.isOpen.preimage_val.measurableSet h_ne, hη, mul_one,
         coverMultiplicity]
-    simp [hR_mass, h_ne, ENNReal.inv_mul_cancel]
-  · simp [not_not.mp h_ne]
+    rw [hR_mass, indicator_of_mem h_ne, Pi.one_apply, ENNReal.coe_inv (Nat.cast_ne_zero.2 h_ne),
+      ENNReal.coe_natCast,
+      ENNReal.inv_mul_cancel (Nat.cast_ne_zero.2 h_ne) (ENNReal.natCast_ne_top _)]
+  · rw [not_not.mp h_ne, Nat.cast_zero, inv_zero, ENNReal.coe_zero, zero_mul,
+      indicator_of_notMem h_ne]
 
 /-- Let `J` be a level in the finite adelic unitary group `Gf E ι` (an open subgroup of the group
 `stdLevel E ι` of integral points, which has volume one), `T` a finite set of cosets of `J`, and
@@ -249,6 +288,10 @@ lemma integral_indicator_smul_quotient {J : Subgroup (Gf E ι)} [hJ : IsLevel J]
     ∫ g : Gf E ι, indicator T c (g : Gf E ι ⧸ J) • b g =
       (stdLevelIndex J : ℂ)⁻¹ * ∑ t ∈ T, c t * b t := by
   have : DiscreteTopology (Gf E ι ⧸ J) := discreteTopology hJ.isOpen
+  have : OpensMeasurableSpace (Gf E ι ⧸ J) :=
+    ⟨MeasurableSpace.generateFrom_le fun s hs ↦
+      measurableSet_quotient.2 (QuotientGroup.continuous_mk.isOpen_preimage s hs).measurableSet⟩
+  have : MeasurableSingletonClass (Gf E ι ⧸ J) := ⟨fun t ↦ (isOpen_discrete {t}).measurableSet⟩
   have h_index : stdLevelIndex J ≠ 0 := isCompact_stdLevel.relIndex_ne_zero hJ.isOpen
   -- `stdLevel E ι` has volume one, so `J` has volume one over its index.
   have h_vol : volume (J : Set (Gf E ι)) = (↑(stdLevelIndex J))⁻¹ := by
@@ -257,20 +300,25 @@ lemma integral_indicator_smul_quotient {J : Subgroup (Gf E ι)} [hJ : IsLevel J]
   -- Push forward to `Gf E ι ⧸ J`, where each point has mass `volume J`.
   set μ : Measure (Gf E ι ⧸ J) := volume.map QuotientGroup.mk with hμ
   have h_mass (t : Gf E ι ⧸ J) : μ {t} = (↑(stdLevelIndex J))⁻¹ := by
-    simp [hμ, map_apply measurable_coe, measure_union_cosets hJ.isOpen.measurableSet, h_vol]
+    rw [hμ, map_apply measurable_coe (measurableSet_singleton t),
+      measure_union_cosets hJ.isOpen.measurableSet (ncard_singleton t ▸ one_ne_zero),
+      ncard_singleton, Nat.cast_one, one_mul, h_vol]
   have h_int : IntegrableOn (fun t : Gf E ι ⧸ J ↦ c t • b t) T μ := by
     rw [← biUnion_of_singleton (T : Set (Gf E ι ⧸ J))]
-    exact (integrableOn_finite_biUnion T.finite_toSet).2 fun t _ ↦
-      integrableOn_singleton (hx := by simp [h_mass, h_index.pos])
+    refine (integrableOn_finite_biUnion T.finite_toSet).2 fun t _ ↦
+      ⟨continuous_of_discreteTopology.aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral, lintegral_singleton, h_mass]
+    exact ENNReal.mul_lt_top eNorm_lt_top (ENNReal.inv_lt_top.2 (Nat.cast_pos.2 h_index.pos))
   calc
     _ = ∫ t : Gf E ι ⧸ J, indicator T c t • b t ∂μ :=
       (integral_map measurable_coe.aemeasurable
-        (Continuous.aestronglyMeasurable (by fun_prop))).symm
+        continuous_of_discreteTopology.aestronglyMeasurable).symm
     _ = ∫ t in T, c t • b t ∂μ := by
       simp only [← indicator_smul_apply_left, integral_indicator T.measurableSet]
     _ = _ := by
       rw [setIntegral_finset _ h_int, T.mul_sum]
-      simp [real_def, h_mass, NNReal.smul_def]
+      simp only [real_def, h_mass, ENNReal.toReal_inv, ENNReal.toReal_natCast, NNReal.smul_def,
+        Complex.real_smul, Complex.ofReal_inv, Complex.ofReal_natCast]
 
 end Levels
 
@@ -291,29 +339,51 @@ lemma lintegral_besselGroup_cutoff_mul {β : G E ε → ENNReal} (hβ_meas : Mea
     [SFinite η] [IsMulLeftInvariant η] {φ : Gf E ι → ENNReal} (hφ : Measurable φ) (t : G E ε) :
     ∫⁻ r : Y.besselGroup, (∫⁻ u : Y.besselFin, β ((r * t : G E ε).1, u) ∂η) * φ (r * t : G E ε).2
         ∂haar =
-      ∫⁻ u : Y.besselFin, φ ((u : Gf E ι)⁻¹ * t.2) ∂η :=
+      ∫⁻ u : Y.besselFin, φ ((u : Gf E ι)⁻¹ * t.2) ∂η := by
   -- Substitute `r ↦ (1, u⁻¹) * r`, then `u ↦ r.2 * u`: this moves `r` from `φ` to `β`, whose orbit
   -- integral is one.
+  have : SFinite (haar : Measure Y.besselGroup) := inferInstance
+  have h_mul : Measurable fun r : Y.besselGroup ↦ (r : G E ε) * t :=
+    measurable_subtypeVal.mul_const t
   calc
     _ = ∫⁻ u : Y.besselFin, ∫⁻ r : Y.besselGroup,
         β ((r * t : G E ε).1, u) * φ (r * t : G E ε).2 ∂haar ∂η := by
-      rw [← lintegral_lintegral_swap (by fun_prop)]
-      exact lintegral_congr fun r ↦ (lintegral_mul_const _ (by fun_prop)).symm
+      have h1 : Measurable fun p : Y.besselGroup × Y.besselFin ↦
+          β ((p.1.val * t).1, p.2.val) * φ (p.1.val * t).2 :=
+        (hβ_meas.comp ((measurable_fst.comp (h_mul.comp measurable_fst)).prodMk
+          (measurable_subtypeVal.comp measurable_snd))).mul
+          (hφ.comp (measurable_snd.comp (h_mul.comp measurable_fst)))
+      rw [← lintegral_lintegral_swap h1.aemeasurable]
+      exact lintegral_congr fun r ↦
+        (lintegral_mul_const _ (hβ_meas.comp (measurable_const.prodMk measurable_subtypeVal))).symm
     _ = ∫⁻ u : Y.besselFin, ∫⁻ r : Y.besselGroup,
         β ((r * t : G E ε).1, u) * φ ((u : Gf E ι)⁻¹ * (r * t : G E ε).2) ∂haar ∂η := by
       refine lintegral_congr fun ⟨u, hu⟩ ↦ ?_
       rw [← lintegral_mul_left_eq_self _ (⟨(1, u⁻¹), Y.besselFin.inv_mem hu⟩ : Y.besselGroup)]
-      simp [mul_assoc]
+      simp only [coe_mul, Prod.mul_def, one_mul, mul_assoc]
     _ = ∫⁻ r : Y.besselGroup, ∫⁻ u : Y.besselFin,
         β (r * (t.1, (u : Gf E ι))) * φ ((u : Gf E ι)⁻¹ * t.2) ∂η ∂haar := by
-      rw [lintegral_lintegral_swap (by fun_prop)]
+      have h3 : Measurable fun p : Y.besselFin × Y.besselGroup ↦
+          β ((p.2.val * t).1, p.1.val) * φ ((p.1 : Gf E ι)⁻¹ * (p.2.val * t).2) :=
+        (hβ_meas.comp ((measurable_fst.comp (h_mul.comp measurable_snd)).prodMk
+          (measurable_subtypeVal.comp measurable_fst))).mul
+          (hφ.comp ((measurable_subtypeVal.comp measurable_fst).inv.mul
+            (measurable_snd.comp (h_mul.comp measurable_snd))))
+      rw [lintegral_lintegral_swap h3.aemeasurable]
       refine lintegral_congr fun ⟨r, hr⟩ ↦ ?_
       rw [← lintegral_mul_left_eq_self _ (⟨r.2, Y.snd_mem_besselFin hr⟩ : Y.besselFin)]
-      simp [mul_assoc, Prod.mul_def]
+      simp only [coe_mul, Prod.mul_def, mul_inv_rev, mul_assoc, inv_mul_cancel_left]
     _ = _ := by
-      rw [lintegral_lintegral_swap (by fun_prop)]
+      have h4 : Measurable fun p : Y.besselGroup × Y.besselFin ↦
+          β (p.1.val * (t.1, (p.2 : Gf E ι))) * φ ((p.2 : Gf E ι)⁻¹ * t.2) :=
+        (hβ_meas.comp ((measurable_subtypeVal.comp measurable_fst).mul
+          (measurable_const.prodMk (measurable_subtypeVal.comp measurable_snd)))).mul
+          (hφ.comp ((measurable_subtypeVal.comp measurable_snd).inv.mul_const t.2))
+      rw [lintegral_lintegral_swap h4.aemeasurable]
       refine lintegral_congr fun u ↦ ?_
-      rw [lintegral_mul_const _ (by fun_prop), hβ, one_mul]
+      have hβ_r : Measurable fun r : Y.besselGroup ↦ β (r * (t.1, (u : Gf E ι))) :=
+        hβ_meas.comp (measurable_subtypeVal.mul_const _)
+      rw [lintegral_mul_const _ hβ_r, hβ, one_mul]
 
 /-- Let `Y` be a grading of the hermitian space `V`, `Y.besselGroup` its Bessel subgroup of the
 adelic unitary group `G E ε = GInf E ε × Gf E ι`, and `Y.ratBessel` the rational points of that
@@ -384,6 +454,15 @@ lemma _root_.New.Grading.exists_integral_eq_sum_over_cut (A : Subgroup (Gf E ι)
   -- Unfolding in stages turns the integral into the weighted integral of the period; this
   -- factors, and the finite part is a sum over `T`.
   -- `η` is the Haar measure on `Y.besselFin` that gives `Y.besselFin ⊓ A` mass one.
+  have : OpensMeasurableSpace (G E ε) := inferInstance
+  have : ContinuousMul Y.besselGroup :=
+    ⟨((continuous_subtypeVal.comp continuous_fst).mul
+      (continuous_subtypeVal.comp continuous_snd)).subtype_mk _⟩
+  have : ProperSMul (G E ε) (G E ε) := inferInstance
+  have : ProperSMul Y.besselGroup (G E ε) := inferInstance
+  have : NeZero (haar : Measure Y.besselGroup) :=
+    ⟨fun h ↦ isOpen_univ.measure_ne_zero (haar : Measure Y.besselGroup)
+      ⟨(1 : Y.besselGroup), trivial⟩ (by rw [h]; rfl)⟩
   let K : TopologicalSpace.PositiveCompacts Y.besselFin :=
     ⟨⟨A.subgroupOf Y.besselFin, hA.isCompact.preimage_val⟩,
       ⟨1, hA.isOpen.preimage_val.interior_eq.ge A.one_mem⟩⟩
@@ -392,16 +471,28 @@ lemma _root_.New.Grading.exists_integral_eq_sum_over_cut (A : Subgroup (Gf E ι)
       ∀ g : G E ε, ∫⁻ r : Y.besselGroup, β (r * g) ∂haar = 1 :=
     (hasCutoff_of_proper : HasCutoff (haar : Measure Y.besselGroup) (G E ε)).out
   let α (g : GInf E ε) : ENNReal := ∫⁻ u : Y.besselFin, β (g, u) ∂η
+  have hα_meas : Measurable α :=
+    (hβ_meas.comp (measurable_fst.prodMk (measurable_subtypeVal.comp measurable_snd))
+      ).lintegral_prod_right'
   refine ⟨∫ g, a g ∂volume.withDensity α, ?_⟩
   intro J hJ T f b hf_cont hf_rat hf_int hT_stable hf_supp h_period
   have : DiscreteTopology (Gf E ι ⧸ J) := discreteTopology hJ.isOpen
+  let _ : MulAction Y.besselFin (Gf E ι ⧸ J) := inferInstance
+  let _ : SMul Y.besselFin (Gf E ι ⧸ J) := SemigroupAction.toSMul
+  let _ : HSMul Y.besselFin (Gf E ι ⧸ J) (Gf E ι ⧸ J) := instHSMul
   let ψ : Gf E ι ⧸ J → NNReal :=
     indicator T fun t ↦ (coverMultiplicity Y.besselFin A T t : NNReal)⁻¹
-  have hψ_meas : Measurable fun g : Gf E ι ↦ ψ g := Continuous.measurable (by fun_prop)
+  have hψ_meas : Measurable fun g : Gf E ι ↦ ψ g :=
+    ((continuous_of_discreteTopology (f := ψ)).comp QuotientGroup.continuous_mk).measurable
   let w (g : G E ε) : ENNReal := α g.1 * ψ g.2
-  have hw_meas : Measurable w := by fun_prop
+  have hw_meas : Measurable w :=
+    (hα_meas.comp measurable_fst).mul (hψ_meas.coe_nnreal_ennreal.comp measurable_snd)
   let U : Set (G E ε) := {g | coverMultiplicity Y.besselFin A T g.2 ≠ 0}
-  have hU : MeasurableSet U := (isOpen_ne_fun (by fun_prop) continuous_const).measurableSet
+  have hU : MeasurableSet U :=
+    (isOpen_ne_fun
+      ((continuous_of_discreteTopology (f := coverMultiplicity Y.besselFin A T)).comp
+        (QuotientGroup.continuous_mk.comp continuous_snd))
+      continuous_const).measurableSet
   have h_orbit (t : G E ε) : ∫⁻ r : Y.besselGroup, w (r * t) ∂haar = U.indicator 1 t :=
     calc
       _ = ∫⁻ u : Y.besselFin, ψ (u⁻¹ • (t.2 : Gf E ι ⧸ J)) ∂η :=
@@ -410,7 +501,8 @@ lemma _root_.New.Grading.exists_integral_eq_sum_over_cut (A : Subgroup (Gf E ι)
   have h_index : stdLevelIndex J ≠ 0 := isCompact_stdLevel.relIndex_ne_zero hJ.isOpen
   have h_finite_part : ∫ g : Gf E ι, ψ g • b g = (stdLevelIndex J : ℂ)⁻¹ *
       ∑ t ∈ T, (coverMultiplicity Y.besselFin A T t : ℂ)⁻¹ * b t :=
-    (integral_indicator_smul_quotient T _ b).trans (by simp)
+    (integral_indicator_smul_quotient T _ b).trans (by
+      simp only [NNReal.coe_inv, NNReal.coe_natCast, Complex.ofReal_inv, Complex.ofReal_natCast])
   calc
     _ = ∫ t : G E ε, ∫ r : Y.besselGroup, f (r * t) ∂Y.besselMeasure ∂volume.withDensity w :=
       integral_quotMeasure_eq_integral_withDensity hw_meas hU h_orbit hf_cont.measurable hf_rat
@@ -418,12 +510,12 @@ lemma _root_.New.Grading.exists_integral_eq_sum_over_cut (A : Subgroup (Gf E ι)
     -- The weight vanishes unless `t.2 ∈ T`, where `h_period` gives the period.
     _ = ∫ t : G E ε, (stdLevelIndex J : ℂ) * (a t.1 * b t.2) ∂volume.withDensity w := by
       refine integral_congr_ae ((ae_withDensity_iff hw_meas).2 (.of_forall fun t ht ↦ ?_))
-      exact h_period t (by_contra fun h ↦ ht (by simp [w, ψ, h]))
+      exact h_period t (by_contra fun h ↦ ht (by
+        simp only [w, ψ, indicator_of_notMem h, ENNReal.coe_zero, mul_zero]))
     _ = stdLevelIndex J * ((∫ g, a g ∂volume.withDensity α) * ∫ g : Gf E ι, ψ g • b g) := by
-      rw [integral_const_mul, integral_withDensity_mul_eq_mul (by fun_prop) hψ_meas a fun g ↦ b g]
+      rw [integral_const_mul, integral_withDensity_mul_eq_mul hα_meas hψ_meas a fun g ↦ b g]
     _ = _ := by
-      rw [h_finite_part]
-      field_simp
+      rw [h_finite_part, mul_left_comm, mul_inv_cancel_left₀ (Nat.cast_ne_zero.2 h_index)]
 
 end Bessel
 

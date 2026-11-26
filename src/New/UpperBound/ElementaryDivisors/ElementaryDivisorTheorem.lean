@@ -1,9 +1,23 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Sheaves.Presheaf
+import Std.Tactic.BVDecide.Normalize.Bool
 public import New.Reduction.Lattices.Colength
-public import New.UpperBound.ElementaryDivisors.AveragingMap
-public import New.UpperBound.ElementaryDivisors.DefectCount
 public import New.UpperBound.ElementaryDivisors.Depth
+public import New.UpperBound.ElementaryDivisors.Edges
+import Lib.General.LinearAlgebra.HermiteForm
+import New.UpperBound.ElementaryDivisors.AveragingMap
+import New.UpperBound.ElementaryDivisors.DefectCount
 
 /-!
 # Elementary divisors of the edge Hecke operator
@@ -91,7 +105,7 @@ lemma exists_elementary_divisors_mod_summand {O E : Type*} [CommRing O] [IsDomai
     have h_sum : (U.val * diagonal t * (P.val * Q)) *ᵥ η =
         ∑ j : K, ((P.val * Q) *ᵥ η) j • t j • U.val.col j := by
       rw [← mulVec_mulVec, mulVec_eq_sum]
-      simp [funext_iff, mul_left_comm]
+      simp [funext_iff]
     rw [mulVecLin_apply, h_right, add_mulVec, h_sum, ← mulVec_mulVec]
     exact add_mem_sup ⟨_, rfl⟩ (Submodule.sum_mem _ fun j _ ↦ smul_mem _ _ (subset_span ⟨j, rfl⟩))
   · rw [span_le]
@@ -538,44 +552,6 @@ lemma mul_log_pow_mul_le (h_large : T.IsLargeDegree k n r θ) :
 
 /-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
 `q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
-`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `c₀ P ^ (2 r) ≤ n`, where
-`c₀ = T.multinomialExponent k = k ^ 2 log_p q` for the prime `p = T.p` of which `P` is a power. -/
-lemma multinomialExponent_mul_le_degree (h_large : T.IsLargeDegree k n r θ) :
-    (T.multinomialExponent k : ℝ) * T.P ^ (2 * r) ≤ n := by
-  set L : ℝ := Real.log T.q
-  have hL : 27 ≤ L := h_large.twenty_seven_le_log_q
-  have hN : (2 : ℝ) ≤ N := by exact_mod_cast T.two_le_card_letters
-  have hk : (2 : ℝ) ≤ k := by exact_mod_cast h_large.two_le_rank
-  have hP : (1 : ℝ) ≤ T.P := T.one_lt_P.le
-  have hNL : 2 ≤ N * L := by nlinarith
-  have h_one_le : 1 ≤ N * k * L := by nlinarith
-  have h_const : (3 / 2 : ℝ) ≤ N * (N * L) := by nlinarith
-  calc (T.multinomialExponent k : ℝ) * T.P ^ (2 * r)
-      ≤ 3 / 2 * k ^ 2 * L * T.P ^ (2 * r) := by grw [T.multinomialExponent_le_mul_log k]
-    _ ≤ N * (N * L) * k ^ 2 * L * T.P ^ (2 * r) := by gcongr
-    _ = (N * k * L) ^ 2 * T.P ^ (2 * r) := by ring
-    _ ≤ (N * k * L) ^ 5 * T.P ^ (3 * r) := by gcongr <;> norm_num
-    _ ≤ θ * n := h_large.mul_log_pow_mul_le
-    _ ≤ n := mul_le_of_le_one_left n.cast_nonneg h_large.proportion_le_one
-
-/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
-`q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
-`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `N c₀ ≤ c_div`, where
-`c₀ = T.multinomialExponent k = k ^ 2 log_p q` with `p = T.p`, and `c_div = T.divisorConstant k n
-r = N n (1 / P ^ (2 r) + r ^ 2 / (k P))`. -/
-lemma mul_multinomialExponent_le_divisorConstant (h_large : T.IsLargeDegree k n r θ) :
-    (N * T.multinomialExponent k : ℝ) ≤ T.divisorConstant k n r := by
-  have hP : (1 : ℝ) ≤ T.P := T.one_lt_P.le
-  have h_div : (T.multinomialExponent k : ℝ) ≤ n / (T.P : ℝ) ^ (2 * r) :=
-    (le_div_iff₀ (by positivity)).2 h_large.multinomialExponent_mul_le_degree
-  calc (N * T.multinomialExponent k : ℝ) ≤ N * (n / (T.P : ℝ) ^ (2 * r)) := by gcongr
-    _ = N * n * (1 / (T.P : ℝ) ^ (2 * r)) := by ring
-    _ ≤ N * n * (1 / (T.P : ℝ) ^ (2 * r) + r ^ 2 / (k * T.P)) :=
-        mul_le_mul_of_nonneg_left (le_add_of_nonneg_right (by positivity)) (by positivity)
-    _ = T.divisorConstant k n r := by rw [divisorConstant]
-
-/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
-`q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
 `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `8 N k c* P ^ (2 r) ≤ θ n`, where
 `c* = defectThreshold k c = 3 k c` for the precision
 `c = T.congruencePrecision k = 5 N k ^ 2 log_p q`, `p = T.p`. -/
@@ -608,6 +584,41 @@ lemma mul_defectThreshold_le_mul_degree (h_large : T.IsLargeDegree k n r θ) :
         exacts [T.one_lt_P.le, by norm_num]
     _ = u ^ 5 * T.P ^ (3 * r) := by ring
     _ ≤ θ * n := h_large.mul_log_pow_mul_le
+
+/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
+`q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
+`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `c₀ P ^ (2 r) ≤ n`, where
+`c₀ = T.multinomialExponent k = k ^ 2 log_p q` for the prime `p = T.p` of which `P` is a power. -/
+lemma multinomialExponent_mul_le_degree (h_large : T.IsLargeDegree k n r θ) :
+    (T.multinomialExponent k : ℝ) * T.P ^ (2 * r) ≤ n := by
+  have hN : 0 < N := NeZero.pos N
+  have hk : 0 < k := lt_of_lt_of_le (by decide : 0 < 2) h_large.two_le_rank
+  have h_coeff : T.multinomialExponent k ≤
+      8 * N * k * defectThreshold k (T.congruencePrecision k) := by
+    simp only [defectThreshold, congruencePrecision, ← Nat.mul_assoc]
+    exact Nat.le_mul_of_pos_left _ (by positivity)
+  calc (T.multinomialExponent k : ℝ) * T.P ^ (2 * r)
+      ≤ 8 * N * k * defectThreshold k (T.congruencePrecision k) * T.P ^ (2 * r) := by
+          gcongr
+          exact_mod_cast h_coeff
+    _ ≤ θ * n := h_large.mul_defectThreshold_le_mul_degree
+    _ ≤ n := mul_le_of_le_one_left n.cast_nonneg h_large.proportion_le_one
+
+/-- Let `T` be a Frobenius cycle with `N` letters and the prime power `P = T.P`, and let
+`q = P ^ N`. Let the degree `n` be large: `0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and
+`(N k log q / θ) ^ 5 P ^ (3 r) ≤ n`. Then `N c₀ ≤ c_div`, where
+`c₀ = T.multinomialExponent k = k ^ 2 log_p q` with `p = T.p`, and `c_div = T.divisorConstant k n
+r = N n (1 / P ^ (2 r) + r ^ 2 / (k P))`. -/
+lemma mul_multinomialExponent_le_divisorConstant (h_large : T.IsLargeDegree k n r θ) :
+    (N * T.multinomialExponent k : ℝ) ≤ T.divisorConstant k n r := by
+  have hP : (1 : ℝ) ≤ T.P := T.one_lt_P.le
+  have h_div : (T.multinomialExponent k : ℝ) ≤ n / (T.P : ℝ) ^ (2 * r) :=
+    (le_div_iff₀ (by positivity)).2 h_large.multinomialExponent_mul_le_degree
+  calc (N * T.multinomialExponent k : ℝ) ≤ N * (n / (T.P : ℝ) ^ (2 * r)) := by gcongr
+    _ = N * n * (1 / (T.P : ℝ) ^ (2 * r)) := by ring
+    _ ≤ N * n * (1 / (T.P : ℝ) ^ (2 * r) + r ^ 2 / (k * T.P)) :=
+        mul_le_mul_of_nonneg_left (le_add_of_nonneg_right (by positivity)) (by positivity)
+    _ = T.divisorConstant k n r := by rw [divisorConstant]
 
 end IsLargeDegree
 
@@ -698,11 +709,12 @@ theorem exists_isEdgeCondition (hp : ¬IsUnit (T.p : O)) {r : ℕ} {θ : ℝ}
   -- `Av` is the averaging map, and `dim S` is bounded by counting monomials of small defect.
   set c : ℕ := T.congruencePrecision k
   have hr_pos : 0 < r := h_large.block_pos
-  have h_two : 2 ≤ N * T.multinomialExponent k :=
-    T.two_le_mul_multinomialExponent h_large.two_le_rank
-  have hc : 0 < c := Nat.mul_pos (by norm_num) (zero_lt_two.trans_le h_two)
+  have hc : 0 < c :=
+    Nat.mul_pos (by decide)
+      (zero_lt_two.trans_le (T.two_le_mul_multinomialExponent h_large.two_le_rank))
   lift r to Fin k using by linarith [h_large.two_mul_block_le]
-  obtain ⟨a, ha⟩ : ∃ a : Fin k, a + 1 = r.val := ⟨⟨r - 1, by lia⟩, by lia⟩
+  obtain ⟨a, ha⟩ : ∃ a : Fin k, a + 1 = r.val :=
+    ⟨⟨r - 1, by lia⟩, Nat.sub_one_add_one_eq_of_pos hr_pos⟩
   have h_char : CharP (ResidueField O) (T.map (residue O)).p := T.charP_residueField hp
   let C : Submodule O (Exponents N k n → O) :=
     T.defectConditions n a r (span {T.sqrtPrime ^ c}) (3 * defectThreshold k c)
@@ -1100,7 +1112,7 @@ lemma exists_colengthDvd_range_pairingMap_mul_edgeRestriction {N k n : ℕ} {W O
   -- depend only on the origin, for the edges and for the dual edges. Between them lie few further
   -- generators, and the colengths add along `d'ᵀ * (pairingMap u b Q' * Q) * d`.
   let D : ℕ := ⌊T.divisorConstant k n r * Fintype.card (Exponents N k n)⌋₊
-  have hD : (D : ℝ) ≤ T.divisorConstant k n r * Fintype.card (Exponents N k n) :=
+  have h_end_budget : (D : ℝ) ≤ T.divisorConstant k n r * Fintype.card (Exponents N k n) :=
     Nat.floor_le (mul_nonneg (T.divisorConstant_nonneg k n r) (Nat.cast_nonneg _))
   obtain ⟨Q, R, d, hQ : Q.mulVecLin.range = T.originFunctions n r src g, hR : R * Q = 1,
       hQd : Q * d = T.edgeRestriction n r src g,
@@ -1108,14 +1120,17 @@ lemma exists_colengthDvd_range_pairingMap_mul_edgeRestriction {N k n : ℕ} {W O
   obtain ⟨Q', R', d', hQ' : Q'.mulVecLin.range = T.originFunctions n r src' g', hR' : R' * Q' = 1,
       hQd' : Q' * d' = T.edgeRestriction n r src' g',
       hd' : d'.det ∣ T.sqrtPrime ^ (Fintype.card V * D)⟩ := h_large.exists_basis_det_dvd hp h_dual
-  have h_ends : d'ᵀ.det * d.det ∣ (T.p : O) ^ (Fintype.card V * D) := by
+  have h_end_det_dvd : d'ᵀ.det * d.det ∣ (T.p : O) ^ (Fintype.card V * D) := by
     simpa only [← pow_add, ← two_mul, pow_mul T.sqrtPrime 2, T.sqrtPrime_sq, det_transpose] using
       mul_dvd_mul hd' hd
-  obtain ⟨s, hs : (#s : ℝ) ≤ θ * (Fintype.card V * Fintype.card (Exponents N k n)), hs_span⟩ :=
+  -- The defect count and near inverse give at most θ times the dimension extra generators.
+  -- Each such generator will cost at most m in the truncated colength.
+  obtain ⟨s, hs : (#s : ℝ) ≤ θ * (Fintype.card V * Fintype.card (Exponents N k n)),
+      h_extra_generators_span⟩ :=
     hC.exists_finset_smul_top_le_range_sup_span hp h_large.two_le_rank hb u hR hR'
       (fun ψ hψ ↦ mem_valuedIn.2 (T.apply_mem_allEdgesForms h_origin (hQ.le hψ)))
       (fun ψ hψ ↦ mem_valuedIn.2 (T.apply_mem_allEdgesForms h_dual (hQ'.le hψ))) h_card
-  have h_loss : (c₂ : ℝ) ≤ 2 * T.divisorConstant k n r := by
+  have h_middle_budget : (c₂ : ℝ) ≤ 2 * T.divisorConstant k n r := by
     simpa [c₂] using h_large.mul_multinomialExponent_le_divisorConstant
   refine ⟨Fintype.card V * D + (c₂ * Fintype.card (V × Exponents N k n) + m * #s), ?_, ?_⟩
   · push_cast [Fintype.card_prod]
@@ -1126,20 +1141,20 @@ lemma exists_colengthDvd_range_pairingMap_mul_edgeRestriction {N k n : ℕ} {W O
               m * (θ * (Fintype.card V * Fintype.card (Exponents N k n)))) := by gcongr
       _ = (3 * T.divisorConstant k n r + θ * m) *
             (Fintype.card V * Fintype.card (Exponents N k n)) := by ring
-  · have h_factor :
+  · have h_edge_factorization :
         pairingMap u b (T.edgeRestriction n r src' g') * T.edgeRestriction n r src g =
           d'ᵀ * (pairingMap u b Q' * Q) * d := by
       simp only [pairingMap, ← hQd, ← hQd', transpose_mul, Matrix.mul_assoc]
-    rw [h_factor]
-    refine (colengthDvd_mul_mul_of_smul_top_le d'ᵀ _ d hs_span (T.p ^ m)).of_dvd ?_
-    -- The bound is the product of two determinants, `p ^ c₂` for each dimension and `p ^ m` for
-    -- each element of `s`.
+    rw [h_edge_factorization]
+    refine (colengthDvd_mul_mul_of_smul_top_le d'ᵀ _ d h_extra_generators_span (T.p ^ m)).of_dvd ?_
+    -- The two end determinants, the middle scalar and the exceptional generators contribute
+    -- respectively the three terms in the exponent bound.
     rw [pow_add _ (Fintype.card V * D)]
     calc d'ᵀ.det * (((T.p : O) ^ c₂) ^ Fintype.card (V × Exponents N k n) *
           (d.det * ((T.p : O) ^ m) ^ #s))
         = d'ᵀ.det * d.det * (T.p : O) ^ (c₂ * Fintype.card (V × Exponents N k n) + m * #s) := by
           ring
-      _ ∣ _ := mul_dvd_mul_right h_ends _
+      _ ∣ _ := mul_dvd_mul_right h_end_det_dvd _
 
 /-! ### The theorem -/
 

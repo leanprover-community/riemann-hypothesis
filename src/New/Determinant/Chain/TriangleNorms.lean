@@ -246,20 +246,11 @@ lemma ChainAdjoint.succ {i n : ℕ} {κ κ' : I → ℂ} (h_chain : ChainAdjoint
     ChainAdjoint w a d j i (n + 1) (κ * κ') := by
   -- Move the last arrow to the other side of the inner product: `x` is its adjoint vector at `z`.
   intro t y z
-  obtain ⟨x, adjoint_a, adjoint_d⟩ : ∃ x : F i (n + 1),
-      (∀ v : F i (n + 1), ⟪a t i (n + 1) v, z⟫ = ⟪v, x⟫) ∧
-      ∀ v : F (i + 1) n, ⟪d t i n x, v⟫ = κ' t * ⟪d t i (n + 1) z, a t (i + 1) n v⟫ :=
-    h_square t z
-  rw [weightedChain_succ_apply, weightedChain_succ_apply]
-  set X : F i n := weightedChain w a t i n (j i y)
-  set Y : F (i + 1) n := weightedChain w a t (i + 1) n (j (i + 1) y)
-  calc
-    ⟪z, a t i (n + 1) ((w t n : ℂ) • a t i n X)⟫ = w t n * ⟪x, a t i n X⟫ := by
-      rw [← inner_conj_symm, adjoint_a, inner_conj_symm, inner_smul_right]
-    _ = w t n * (κ t * ⟪d t i n x, Y⟫) := by rw [h_chain]
-    _ = (κ * κ') t * ⟪d t i (n + 1) z, (w t n : ℂ) • a t (i + 1) n Y⟫ := by
-      rw [adjoint_d, inner_smul_right, Pi.mul_apply]
-      ring
+  obtain ⟨x, adjoint_a, adjoint_d⟩ := h_square t z
+  rw [weightedChain_succ_apply, weightedChain_succ_apply,
+    ← inner_conj_symm, adjoint_a, inner_conj_symm, inner_smul_right,
+    h_chain, adjoint_d, inner_smul_right, Pi.mul_apply]
+  ring
 
 /-- Take a triangle of size `m` (`IsTriangle`): spaces `F i n` with arrows `a` along the rows and
 maps `d : F i (n + 1) → F (i + 1) n`, such that `⟪v, a (j i y)⟫ = ⟪d v, j (i + 1) y⟫` on the
@@ -433,34 +424,41 @@ lemma IsTriangle.exists_inner_weightedChain_eq [∀ (t : I) (n : ℕ), NeZero (w
     have hin_lt : i + n < m := by lia
     have hi_lt : i < m := by lia
     have h_end : i + 1 + n = m := by lia
-    obtain ⟨κ, hκ, gram_next⟩ := ih (i + 1) h_end
-    obtain ⟨β, hβ, h_commutes⟩ : ∃ β : I → ℂ,
+    -- The shorter row contributes the inner triangle; commuting across the new strip adds
+    -- exactly the pairs with first index `i + 1`.
+    obtain ⟨κ, h_tail_modulus, h_tail_gram⟩ := ih (i + 1) h_end
+    obtain ⟨β, h_strip_modulus, h_commutes⟩ : ∃ β : I → ℂ,
         M β (∏ k ∈ Ioc (i + 1) m, L (i + 1) k) ∧ ChainCommutes w a d i n β := by
       simpa only [h_end] using h_moduli.exists_chainCommutes i n hin_lt
-    obtain ⟨κ', hκ', h_adjoint⟩ := h_tri.exists_chainAdjoint h_moduli i n hin_lt
+    obtain ⟨κ', h_adjoint_modulus, h_adjoint⟩ := h_tri.exists_chainAdjoint h_moduli i n hin_lt
     -- The squares between rows `i` and `i + 1` give the factors with `r = i + 1`.
-    have h_modulus : M (κ' * β * κ * C i) (∏ r ∈ Ioc i m, ∏ k ∈ Ioc r m, L r k) := by
+    have h_triangle_modulus : M (κ' * β * κ * C i) (∏ r ∈ Ioc i m, ∏ k ∈ Ioc r m, L r k) := by
       rw [← prod_Ioc_consecutive _ i.le_succ hi_lt, Nat.Ioc_succ_singleton, prod_singleton]
       simpa only [one_mul, mul_one] using
-        h_moduli.modulus_mul (h_moduli.modulus_mul (h_moduli.modulus_mul hκ' hβ) hκ) (hC i)
-    refine ⟨κ' * β * κ * C i, h_modulus, fun t x y ↦ ?_⟩
+        h_moduli.modulus_mul
+          (h_moduli.modulus_mul (h_moduli.modulus_mul h_adjoint_modulus h_strip_modulus)
+            h_tail_modulus) (hC i)
+    refine ⟨κ' * β * κ * C i, h_triangle_modulus, fun t x y ↦ ?_⟩
     rw [List.range'_succ, List.map_cons, List.prod_cons, mul_apply_eq_comp]
     obtain ⟨x', hx'⟩ : ∃ x' : V, j (i + 1) x' = d t i 0 (a t i 0 (j i x)) :=
       h_tri.comp_mem_range i hi_lt t x
+    -- Use the first-arrow Gram identity on the vector produced by the tail endomorphism.
     set T : End ℂ U := ((List.range' (i + 1) n).map (S t)).prod
-    have gram_first : w t 0 * ⟪x', s (T y)⟫ = C i t * ⟪x, s (S t i (T y))⟫ := by
+    have h_first_arrow_gram : w t 0 * ⟪x', s (T y)⟫ = C i t * ⟪x, s (S t i (T y))⟫ := by
       rw [← (j (i + 1)).inner_map_map, hx', ← h_tri.first_adjoint i hi_lt, hS i hi_lt]
     have hw (k : ℕ) : (w t k : ℂ) ≠ 0 := NeZero.ne _
+    -- Insert the tail formula, cancel the intermediate weight `w t n`, then apply the first-arrow
+    -- identity. The scalar modulus was already accounted for above.
     calc
       ⟪weightedChain w a t i (n + 1) (j i x), weightedChain w a t i (n + 1) (j i (s y))⟫ =
           κ' t * β t * (w t 0 * w t 1 * w t n / w t (n + 1)) *
             (κ t * (w t 0 * w t 1 ^ n / w t n) * ⟪x', s (T y)⟫) := by
-        rw [h_tri.inner_weightedChain_succ hin_lt h_commutes h_adjoint hx', gram_next]
+        rw [h_tri.inner_weightedChain_succ hin_lt h_commutes h_adjoint hx', h_tail_gram]
       _ = κ' t * β t * κ t * (w t 0 * w t 1 ^ (n + 1) / w t (n + 1)) * (w t 0 * ⟪x', s (T y)⟫) := by
         field [hw n, hw (n + 1)]
       _ = (κ' * β * κ * C i) t * (w t 0 * w t 1 ^ (n + 1) / w t (n + 1)) *
           ⟪x, s (S t i (T y))⟫ := by
-        rw [gram_first, Pi.mul_apply, Pi.mul_apply, Pi.mul_apply]
+        rw [h_first_arrow_gram, Pi.mul_apply, Pi.mul_apply, Pi.mul_apply]
         ring
 
 end New.Exchange

@@ -1,6 +1,11 @@
 module
 
-public import Lib.General.NumberTheory.PadicLimitsValuation
+import Mathlib.RingTheory.RootsOfUnity.CyclotomicUnits
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.NumberTheory.CoefficientRings
+import Lib.ClassField.Places.TameInertia
+import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Coefficient rings with a large residue field
@@ -50,13 +55,14 @@ lemma addVal_ell_le_finrank (O : CoeffRing ℓ) (K : IntermediateField ℚ_[ℓ]
     addVal O (ℓ : ↑O) ≤ finrank ℚ_[ℓ] K := by
   -- For a uniformiser `ϖ` of degree `d`, `ℓ` divides `ϖ ^ d`.
   obtain ⟨ϖ, hϖ⟩ := exists_irreducible O
-  let d : ℕ := (minpoly ℚ_[ℓ] ϖ.1).natDegree
+  let d : ℕ := (minpoly ℚ_[ℓ] ϖ.val).natDegree
   have h_norm : ‖(ϖ : PadicAlgCl ℓ)‖ < 1 :=
     (O.norm_le_one ϖ).lt_of_ne (mt (O.isUnit_iff_norm_eq_one ϖ).2 hϖ.not_isUnit)
   have h_dvd : (ℓ : ↑O) ∣ ϖ ^ d := by
     simpa [O.dvd_iff_norm_le] using norm_pow_natDegree_minpoly_le h_norm
   have h_deg : d ≤ finrank ℚ_[ℓ] K := by
-    simpa only [d, K.minpoly_eq] using minpoly.natDegree_le (A := ℚ_[ℓ]) (⟨ϖ.1, hK _ ϖ.2⟩ : K)
+    simpa only [d,
+      K.minpoly_eq] using minpoly.natDegree_le (A := ℚ_[ℓ]) (⟨ϖ.val, hK _ ϖ.property⟩ : K)
   calc addVal O (ℓ : ↑O) ≤ addVal O (ϖ ^ d) := addVal_le_iff_dvd.2 h_dvd
     _ = d := hϖ.addVal_pow _
     _ ≤ finrank ℚ_[ℓ] K := Nat.cast_le.2 h_deg
@@ -70,7 +76,7 @@ lemma natDegree_minpoly_le_of_pow_eq_one {k : ℕ} [NeZero k] {ζ : PadicAlgCl �
     simp only [Function.IsPeriodicPt, Function.IsFixedPt, pow_iterate]
     rw [← Nat.sub_add_cancel (Nat.one_le_pow k ℓ (NeZero.pos ℓ)), pow_succ, hζ, one_mul]
   have h_roots : (minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ) ⊆
-      Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.1 := by
+      Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.val := by
     intro y hy
     obtain ⟨σ, rfl⟩ : ∃ σ : Gp ℓ, σ ζ = y := minpoly.exists_algEquiv_of_root'
       (Algebra.IsAlgebraic.isAlgebraic ζ) (aeval_eq_zero_of_mem_rootSet hy)
@@ -80,8 +86,8 @@ lemma natDegree_minpoly_le_of_pow_eq_one {k : ℕ} [NeZero k] {ζ : PadicAlgCl �
   calc (minpoly ℚ_[ℓ] ζ).natDegree = ((minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ)).ncard := by
         rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card,
           card_rootSet_eq_natDegree (Algebra.IsSeparable.isSeparable _ ζ) (IsAlgClosed.splits _)]
-    _ ≤ (Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.1).ncard := Set.ncard_le_ncard h_roots
-    _ ≤ k := by simpa [Nat.card_coe_set_eq] using Finite.card_range_le fun j : Fin k ↦ ζ ^ ℓ ^ j.1
+    _ ≤ (Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.val).ncard := Set.ncard_le_ncard h_roots
+    _ ≤ k := by simpa [Nat.card_coe_set_eq] using Finite.card_range_le fun j : Fin k ↦ ζ ^ ℓ ^ j.val
 
 /-- If a coefficient ring `O`, the ring of integers of a finite Galois extension of `ℚ_ℓ`, holds a
 primitive `m`-th root of unity `ζ` of `ℚ̄_ℓ` and `m` is prime to `ℓ`, then the residue field of
@@ -138,19 +144,19 @@ lemma frequently_lt_card_residueField (c : ℕ) :
     hζ.intermediateField_adjoin_isCyclotomicExtension ℚ_[ℓ]
   have : FiniteDimensional ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ := adjoin.finiteDimensional hζ_int
   have : IsGalois ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ := IsCyclotomicExtension.isGalois {ℓ ^ k - 1} _ _
-  let K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) := ⟨K₀.1 ⊔ ℚ_[ℓ]⟮ζ⟯⟩
+  let K : FiniteGaloisIntermediateField ℚ_[ℓ] (PadicAlgCl ℓ) := ⟨K₀.toIntermediateField ⊔ ℚ_[ℓ]⟮ζ⟯⟩
   obtain ⟨O, hO⟩ : ∃ O : CoeffRing ℓ, ∀ x : PadicAlgCl ℓ,
-      x ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) ↔ ‖x‖ ≤ 1 ∧ x ∈ K.1 :=
+      x ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) ↔ ‖x‖ ≤ 1 ∧ x ∈ K.toIntermediateField :=
     ⟨⟨_, K, rfl⟩, fun x ↦ Iff.rfl⟩
   have hζ_mem : ζ ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) := (hO ζ).2
     ⟨(hζ.isOfFinOrder (NeZero.ne _)).norm_eq_one.le,
-      (le_sup_right : ℚ_[ℓ]⟮ζ⟯ ≤ K.1) (mem_adjoin_simple_self _ ζ)⟩
+      (le_sup_right : ℚ_[ℓ]⟮ζ⟯ ≤ K.toIntermediateField) (mem_adjoin_simple_self _ ζ)⟩
   have h_deg : finrank ℚ_[ℓ] K ≤ d * k :=
     (finrank_sup_le _ _).trans <| Nat.mul_le_mul_left d <|
       (adjoin.finrank hζ_int).trans_le (natDegree_minpoly_le_of_pow_eq_one hζ.pow_eq_one)
   refine ⟨O, ?_, ?_⟩
   · rintro x ⟨hx_norm, hx_mem⟩
-    exact (hO x).2 ⟨hx_norm, (le_sup_left : K₀.1 ≤ K.1) hx_mem⟩
+    exact (hO x).2 ⟨hx_norm, (le_sup_left : K₀.toIntermediateField ≤ K.toIntermediateField) hx_mem⟩
   have h_addVal : addVal O (ℓ : ↑O) ≤ (d * k : ℕ) :=
     (addVal_ell_le_finrank O K.1 fun x hx ↦ ((hO x).1 hx).2).trans (Nat.cast_le.2 h_deg)
   calc c * addVal O (ℓ : ↑O) + 1 ≤ c * (d * k : ℕ) + 1 := by gcongr

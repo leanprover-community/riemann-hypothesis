@@ -1,7 +1,11 @@
 module
 
+import Mathlib.CategoryTheory.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Bruhat.FloorMeasures
 public import New.Spanning.Frames.Lengths
+import Lib.Base
 
 /-!
 # Place data, floor measures and depth
@@ -103,7 +107,7 @@ structure PlaceData extends HyperbolicBasis ι T m where
       (∀ s ∈ besselH, measureH ∗ₘ dirac s = measureH) ∧
       ∀ g : T.G, measureH {h : T.G | ∃ u ∈ besselU, u * (h * g) ∈ boxSet} ≤ 1
   /-- The level is fixed by the involution. -/
-  star_levelUnit : star levelUnit.1 = levelUnit
+  star_levelUnit : star levelUnit.val = levelUnit
   /-- The set of close pairs is open, contains 0 and has compact closure. -/
   isOpen_closePairs_and_zero_mem_and_isCompact_closure :
     IsOpen closePairs ∧ 0 ∈ closePairs ∧ IsCompact (closure closePairs)
@@ -116,18 +120,6 @@ variable {ι T m} {ν ρ : Measure T.G} [SFinite ν] [SFinite ρ]
 namespace PlaceData
 
 attribute [instance] sFinite_topFloorMeasure sFinite_measureH neZero_measureH
-
-/-- The measure `F.topFloorMeasure` of the top floor is carried by G^(ϱ) = `floorGroup 𝔰.ϱ`. -/
-lemma ae_topFloorMeasure_mem_floorGroup (F : PlaceData ι T m) : ∀ᵐ x : T.G ∂F.topFloorMeasure,
-  x ∈ floorGroup 𝔰.ϱ :=
-  F.topFloorMeasure_mem_and_map_eq.left
-
-/-- The map `orbitPoint 𝔰.top`, σ ↦ σ⁻¹ f_ϱ with f_ϱ = z the last frame vector, carries
-`F.topFloorMeasure`, the measure of the top floor that is part of the place data `F`, to
-`F.floorQuadricMeasure 𝔰.top`, the measure on the top quadric. -/
-lemma map_orbitPoint_topFloorMeasure (F : PlaceData ι T m) :
-    F.topFloorMeasure.map (orbitPoint 𝔰.top) = F.floorQuadricMeasure 𝔰.top :=
-  F.topFloorMeasure_mem_and_map_eq.right
 
 /-- The measure `F.measureH` is carried by H = `besselH`, the fixer of the hyperbolic pairs and the
 last frame vector. -/
@@ -218,7 +210,7 @@ def stableProducts (a : Fin 𝔰.ϱ) (x y : T.G) : Set A :=
 
 /-- The depth of the vector e_a at the points x and x y: the inverse of the volume of 𝔡_a. In the
 place data that are used it is as follows. At the finite places it is the index of the ideal 𝔡_a if
-x is near at a + 1 (`New.Floors.IntegralPlace.IsLargeLatticeData.exists_ideal_depth_eq`). At a real
+x is near at a + 1. At a real
 place it is 1 / π times the infimum of |ζ|² at x plus |ζ|² at x y over the duals ζ of e_a in Y^(a)
 (`New.Floors.RealPlaceSizes.depth_eq`). -/
 def depth (a : Fin 𝔰.ϱ) (x y : T.G) : ℝ≥0∞ := (volume (F.stableProducts a x y))⁻¹
@@ -392,7 +384,7 @@ vectors of floor below b to the measure `F.floorQuadricMeasure b` on the quadric
 in the span of the other basis vectors. -/
 lemma measurePreserving_orbitPoint {F : PlaceData ι T m} (b : Fin 𝔰.n) :
     MeasurePreserving (orbitPoint b) (F.floorMeasure b) (F.floorQuadricMeasure b) := by
-  refine ⟨by fun_prop, b.lastCases (by simp [floorMeasure, map_orbitPoint_topFloorMeasure]) fun a ↦
+  refine ⟨by fun_prop, b.lastCases (by simp [floorMeasure, F.topFloorMeasure_mem_and_map_eq.right]) fun a ↦
                ?_⟩
   -- Below floor ϱ, integrate a test function `Φ` in the flat chart `χ` of the quadric. A chart
   -- point is the value of `orbitPoint` at a point of the big cell, the inverse of `floorWeyl a t`
@@ -407,16 +399,15 @@ lemma measurePreserving_orbitPoint {F : PlaceData ι T m} (b : Fin 𝔰.n) :
       ∫⁻ t : A, modulus t ^ d * ∫⁻ u : V, ∫⁻ β : skewAdjoint A,
         Φ (orbitPoint a.castSucc ((floorWeyl a t : T.G)⁻¹ * heisenbergElem a (u, β)))
           ∂P.skewMeasure := by
-    simp (disch := fun_prop) [floorMeasure, heisenbergMeasure, lintegral_map,
-      mconv, lintegral_prod, hd, V]
+    simp (disch := fun_prop) only [floorMeasure, Fin.val_castSucc, Fin.is_lt, ↓reduceIte, mconv,
+      heisenbergMeasure, ↓reduceDIte, lintegral_map, lintegral_prod, hd]
     rw [weylLaw, lintegral_map (by fun_prop) (by fun_prop),
       lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)]
     rfl
   have h_quadric : ∫⁻ v, Φ v ∂F.floorQuadricMeasure a.castSucc =
       ∫⁻ t : A, ∫⁻ u : V, ∫⁻ β : skewAdjoint A, Φ (χ t u β) ∂P.skewMeasure := by
     rw [floorQuadricMeasure_castSucc_eq_map]
-    simp (disch := fun_prop)
-      [lintegral_map, lintegral_prod, volume_eq_prod, χ, V]
+    simp (disch := fun_prop) only [lintegral_map, volume_eq_prod, lintegral_prod, V, χ]
     rw [lintegral_prod _ (by fun_prop)]
   rw [h_floor, h_quadric]
   refine lintegral_congr_of_ae_imp ae_isUnit ?_
@@ -487,7 +478,7 @@ lemma ae_floorMeasure_mem : ∀ᵐ x : T.G ∂F.floorMeasure l, x ∈ floorGroup
     exact ae_mem_mconv h_weyl h_heisenberg measurableSet_floorGroup
   -- floors ϱ and ϱ + 1 carry `F.topFloorMeasure` and `F.measureH`, the higher ones the Dirac
   -- measure at 1
-  case case2 h_floor => simp [ae_topFloorMeasure_mem_floorGroup, h_floor]
+  case case2 h_floor => simp [F.topFloorMeasure_mem_and_map_eq.left, h_floor]
   case case3 h_floor => simp [ae_measureH_mem_besselH, h_floor]
   case case4 => simp
 
@@ -604,9 +595,8 @@ lemma lintegral_floorMeasure_mul_right {s : T.G} {S : Subgroup T.G} {f : T.G →
     (hf_inv : (partialUnitriangularGroup (l + 1) ⊓ S).FixesLeft f)
     (hs : s ∈ partialUnitriangularGroup l ⊓ S) (hf : Measurable f := by fun_prop) :
     ∫⁻ x : T.G, f (x * s) ∂F.floorMeasure l = ∫⁻ x : T.G, f x ∂F.floorMeasure l := by
-  obtain ⟨hs_unitri, hsS⟩ : s ∈ partialUnitriangularGroup l ∧ s ∈ S := Subgroup.mem_inf.mp hs
-  obtain ⟨γ, hγ, ν, hν, rfl⟩ : ∃ γ ∈ floorGroup l, ∃ ν ∈ unipotentBelow l, s = γ * ν :=
-    exists_floorGroup_mul_unipotentBelow hs_unitri
+  obtain ⟨hs_unitri, hsS⟩ := Subgroup.mem_inf.mp hs
+  obtain ⟨γ, hγ, ν, hν, rfl⟩ := exists_floorGroup_mul_unipotentBelow hs_unitri
   -- The factor ν drops out: x γ ν = ((x γ) ν (x γ)⁻¹) x γ, and f is invariant under the conjugate.
   have h_drop (x : T.G) (hx : x ∈ floorGroup l) : f (x * (γ * ν)) = f (x * γ) := by
     have h_unitri : x * γ * ν * (x * γ)⁻¹ ∈ partialUnitriangularGroup (l + 1) :=
@@ -770,8 +760,7 @@ lemma lintegral_mul_left_eq_of_factor {ν ρ : Measure T.G} [SFinite ν] [SFinit
   -- Take `f > 0` integrable for `F.groupMeasure`. For any `μ` with `F.groupMeasure = ρ ∗ₘ μ`, the
   -- integral of `Φ` for `μ` is the integral for `F.groupMeasure` of `Φ * f` divided by the
   -- `ρ`-average of `f`, an expression that does not mention `μ`.
-  obtain ⟨f, hf_pos, hf, hf_int⟩ : ∃ f : T.G → NNReal,
-      (∀ x : T.G, 0 < f x) ∧ Measurable f ∧ ∫⁻ x : T.G, f x ∂F.groupMeasure < ∞ :=
+  obtain ⟨f, hf_pos, hf, hf_int⟩ :=
     exists_pos_lintegral_lt_of_sigmaFinite F.groupMeasure top_ne_zero
   let avg (g : T.G) : ℝ≥0∞ := ∫⁻ y : T.G, f (y * g) ∂ρ
   have h_avg (y : T.G) (hy : y ∈ S) (g : T.G) : avg (y * g) = avg g :=

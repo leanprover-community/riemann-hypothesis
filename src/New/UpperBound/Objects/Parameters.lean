@@ -1,5 +1,7 @@
 module
 
+import Mathlib.Data.Rat.Cast.OfScientific
+import Std.Tactic.BVDecide.Normalize.Bool
 public import Lib.Weil.Lift
 public import New.UpperBound.Objects.InsertBlock
 public import New.UpperBound.Objects.LabelsAndIndexTypes
@@ -22,8 +24,8 @@ one formula serves both grids. An offset `o` shifts the second kind of block; th
 * `New.Data.gridCentres`, `New.Data.isParam_gridParam`: the parameter of a node consists of a stem
   and the blocks of a set of centres (`New.CentreSystem`).
 * `New.Data.paramsCorrespond_grid_succ_left`, `New.Data.paramsCorrespond_grid_succ_right`,
-  `New.Data.paramsCorrespond_leftPair`: each step inserts a block, so the parameters correspond
-  (`New.ParamsCorrespond`).
+  `New.Data.paramsCorrespond_neg_gridParam_insert_first`: each step inserts a block, so the
+  parameters correspond (`New.ParamsCorrespond`).
 
 Notions from other files:
 * `New.Data`: the admissible data `D`, with `m` (even) lifts, the rank `r` (odd), `k = r + 1 - m`,
@@ -207,24 +209,15 @@ lemma exists_equiv_diagonal_signs (j : ℕ) :
       Sum.elim (D.gridSigns false 0 j j) (fun _ : Unit ↦ (-1) ^ min j D.m) ∘ e =
         D.gridSigns true 0 j j := by
   -- It suffices to compare the cardinalities and the numbers of negative signs.
-  have h_card :
-      Fintype.card (D.GridIndex true j j) = Fintype.card (D.GridIndex false j j ⊕ Unit) := by
-    have h_blocks : j * (D.t + 1) + j * (D.t - 1) = j * D.t + j * D.t := by
-      zify [D.t_odd.pos]
-      ring
-    simp only [card_sum, card_unit, card_gridIndex, Bool.toNat_true, Bool.toNat_false, add_zero,
-      tsub_zero]
-    omega
-  -- the extra point counts as negative exactly when `min j m` is odd
-  have h_extra : negCount (fun _ : Unit ↦ (-1) ^ min j D.m) = min j D.m % 2 := by
-    rcases Nat.even_or_odd (min j D.m) with h_even | h_odd
-    · simp [negCount, h_even.neg_one_pow, Nat.even_iff.1 h_even]
-    · simp [negCount, h_odd.neg_one_pow, Nat.odd_iff.1 h_odd]
-  have h_neg : negCount (D.gridSigns true 0 j j) =
-      negCount (Sum.elim (D.gridSigns false 0 j j) fun _ : Unit ↦ (-1) ^ min j D.m) := by
-    rw [negCount_sumElim, negCount_gridSigns, negCount_gridSigns, h_extra]
-    grind
-  exact exists_equiv_comp_eq_of_negCount_eq h_card h_neg
+  refine exists_equiv_comp_eq_of_negCount_eq ?_ ?_
+  · simp only [card_sum, card_unit, card_gridIndex, Bool.toNat_true, Bool.toNat_false]
+    zify [D.t_odd.pos]
+    ring
+  · rw [negCount_sumElim, negCount_gridSigns, negCount_gridSigns]
+    rcases Nat.even_or_odd (min j D.m) with h | h <;>
+      simp [negCount, h.neg_one_pow]
+    · grind
+    · grind
 
 /-- A bijection from the index set of `Y` at `(j, j)` plus one point to that of `Ỹ`. It is the
 identity for `j = 0`. Otherwise it is chosen to match the signs (`exists_equiv_diagonal_signs`). -/
@@ -448,19 +441,10 @@ lemma halfGap_le_targetParameter_add_liftWeight {p : ℕ} (hp : p < D.posRank j)
     D.halfGap ≤ D.targetParameter τ p + D.liftWeight j τ := by
   rw [posRank] at hp
   rw [targetParameter_eq]
-  split_ifs with h_first
-  · -- The entry is at least `-k`, small against `w_j ≥ D.gap = 2 halfGap`.
-    have h_large : D.gap ≤ D.liftWeight j τ := D.nat_le_of_hasLogBound
-    have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
-    have h_gap : D.gap = 2 * D.halfGap := rfl
-    omega
-  · -- The entry is `halfGap - w_a` with `a = p + 2 - k ≤ j`.
-    have h_index : p + 2 - D.k ≤ j := by omega
-    rcases h_index.eq_or_lt with h_eq | h_lt
-    · rw [h_eq, sub_add_cancel]
-    · have h_below : D.liftWeight (p + 2 - D.k) τ + (if p + 2 - D.k + 1 < j then 2 else 1) * D.gap ≤
-          D.liftWeight j τ := D.liftWeight_add_gap_le τ (p + 2 - D.k) j h_lt
-      split_ifs at h_below <;> omega
+  have h_large : D.gap ≤ D.liftWeight j τ := D.nat_le_of_hasLogBound
+  have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
+  have h_gap : D.gap = 2 * D.halfGap := rfl
+  grind
 
 /-- For `D.posRank j = D.k + j - 1 ≤ p`, the entry `p` of the target parameter lies at least
 `D.halfGap` below the centre `-D.liftWeight j τ`. -/
@@ -494,7 +478,7 @@ grid `Ỹ`. The stem is the parameter on the base. In grid `Ỹ` this is the neg
 the spaces `Ỹ^i_j`, whose up and down centres are exchanged. -/
 def gridCentres (z : Bool) : CentreSystem (ℕ ⊕ ℕ) where
   centres := (range D.m).disjSum (range D.m)
-  centre := Sum.elim (fun l : ℕ ↦ D.liftWeight (l + 1) τ) fun l : ℕ ↦ -D.liftWeight (l + 1) τ
+  center := Sum.elim (fun l : ℕ ↦ D.liftWeight (l + 1) τ) fun l : ℕ ↦ -D.liftWeight (l + 1) τ
   length := Sum.elim (fun _ : ℕ ↦ D.t + z.toNat) fun _ : ℕ ↦ D.t - z.toNat
   isUp := Sum.isLeft
   stem := (range (D.r + z.toNat)).image fun n : ℕ ↦ 2 * D.targetParameter τ n + z.toNat
@@ -555,17 +539,14 @@ private lemma isSeparated_gridCentres_on {P : Parameters} (D : Data P) (τ : D.�
       have h_centre : D.gap ≤ D.liftWeight (l + 1) τ := D.gap_le_liftWeight_succ τ l
       simp only [gridCentres, Sum.elim_inl, le_abs]
       omega
-    · have h_far : D.halfGap ≤ D.targetParameter τ n + D.liftWeight (l + 1) τ ∨
-          D.targetParameter τ n + D.liftWeight (l + 1) τ ≤ -D.halfGap :=
-        (lt_or_ge n (D.posRank (l + 1))).imp (D.halfGap_le_targetParameter_add_liftWeight τ)
-          (D.targetParameter_add_liftWeight_le_neg_halfGap τ)
+    · have h_far := D.targetParameter_add_liftWeight_gap (l + 1) τ n
       simp only [gridCentres, Sum.elim_inr, le_abs]
-      omega
+      split_ifs at h_far <;> omega
   case block_far =>
     -- in all four cases the two centres are at least `D.gap` apart
     rintro (l | l) - (l' | l') - hne y hy
     all_goals
-      obtain ⟨b, hb, rfl⟩ := mem_centredBlock.1 hy
+      obtain ⟨b, hb, rfl⟩ := mem_centeredBlock.1 hy
       have h_centre : D.gap ≤ D.liftWeight (l + 1) τ := D.gap_le_liftWeight_succ τ l
       have h_centre' : D.gap ≤ D.liftWeight (l' + 1) τ := D.gap_le_liftWeight_succ τ l'
       have h_lt : l < l' → D.liftWeight (l + 1) τ + D.gap ≤ D.liftWeight (l' + 1) τ :=
@@ -690,7 +671,7 @@ private lemma isParam_compactForm_gridParam {j : ℕ} {P : Parameters} (D : Data
     ext y
     simp only [gridParam_add_lowering, mem_image, mem_univ, true_and]
     rw [D.gridBlockEquiv.exists_congr_left]
-    simp [CentreSystem.entries, CentreSystem.block, gridCentres, gridBlocks, mem_centredBlock,
+    simp [CentreSystem.entries, CentreSystem.block, gridCentres, gridBlocks, mem_centeredBlock,
       Fin.exists_iff, h_shift, or_assoc, eq_comm (a := y)]
 
 private lemma hasGap_compactForm_gridParam {j : ℕ} {P : Parameters} (D : Data P) {o i : ℕ}
@@ -698,21 +679,9 @@ private lemma hasGap_compactForm_gridParam {j : ℕ} {P : Parameters} (D : Data 
     (D.gridParam z o i j τ).compactForm.HasGap (D.gap - D.t - 2) :=
   (D.isParam_compactForm_gridParam τ z).hasGap (D.isSeparated_gridCentres_on τ z _) (fun _ hx ↦ hx)
 
-/-- At an infinite place `τ` the doubled parameter of the node `(i, j)` of grid `z` with offset `o`
-takes distinct values at distinct indices. -/
-lemma gridParam_injective {j : ℕ} {P : Parameters} (D : Data P) {z : Bool} {o i : ℕ} (τ : D.Φ) :
-    Injective (D.gridParam z o i j τ) :=
-  (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).injective
-
 section Steps
 
 variable {j : ℕ} {P : Parameters} (D : Data P) {z : Bool} {o i : ℕ} (τ : D.Φ)
-
-/-- Each entry of the doubled parameter `D.gridParam z o i j τ` at the node `(i, j)` has the parity
-of `card (D.GridIndex z i j) - 1`, the size of the index set minus one. -/
-lemma even_gridParam_add_card_sub_one (x : D.GridIndex z i j) :
-    Even (D.gridParam z o i j τ x + card (D.GridIndex z i j) - 1) :=
-  (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).parity x
 
 /-- At the infinite place `τ`, two entries of the doubled parameter at a node whose signs differ
 are at least `2 * D.gap = 4 * D.halfGap` apart. -/
@@ -749,8 +718,8 @@ lemma two_mul_gap_le_abs_gridParam_sub {x y : D.GridIndex z i j}
 infinite place `τ`, the gap `D.gap` for the signs of the node (`HasGap`): its entries are distinct,
 have the parity of the rank minus one, and differ by at least `2 * D.gap` where the signs differ. -/
 lemma hasGap_gridParam (z : Bool) (o i j : ℕ) : (D.gridParam z o i j τ).HasGap D.gap where
-  injective := D.gridParam_injective τ
-  parity := D.even_gridParam_add_card_sub_one τ
+  injective := (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).injective
+  parity := (D.hasGap_compactForm_gridParam (o := o) (i := i) (j := j) τ z).parity
   gap _ _ := D.two_mul_gap_le_abs_gridParam_sub τ
 
 /-- Let `o + j ≤ m`, with `o = 0` (the grids) or `i = 0` (the triangles). For every infinite place
@@ -773,14 +742,9 @@ lemma gridSigns_eq_mul_sign (hj : o + j ≤ D.m) (h_zero : o = 0 ∨ i = 0) (x :
     · have h_stem : 2 * D.targetParameter τ n ≤ D.k := D.two_mul_targetParameter_le τ n
       have h_centre : D.gap ≤ D.liftWeight (l' + 1) τ := D.gap_le_liftWeight_succ τ l'
       omega
-    · have h_above : n < D.k + (l' + 1) - 1 → D.halfGap ≤ D.targetParameter τ n + D.liftWeight
-        (l' + 1)
-        τ :=
-        D.halfGap_le_targetParameter_add_liftWeight τ
-      have h_below : D.k + (l' + 1) - 1 ≤ n → D.targetParameter τ n + D.liftWeight (l' + 1) τ ≤
-        -D.halfGap :=
-        D.targetParameter_add_liftWeight_le_neg_halfGap τ
-      omega
+    · have h_far := D.targetParameter_add_liftWeight_gap (l' + 1) τ n
+      simp only [posRank] at h_far
+      split_ifs at h_far <;> omega
   · -- An up block lies above all down centres, and it occurs only for `o = 0`.
     obtain rfl : o = 0 := by omega
     have h_sign : entrySign 0 j 0 = 1 := by simp [entrySign_eq_neg_one_pow]
@@ -834,7 +798,7 @@ lemma paramsCorrespond_grid_succ_left (z : Bool) (i j : ℕ) (hi : i + 1 ≤ D.m
   intro τ
   -- In grid `Ỹ` (`z = true`) the ranks are even, so the two roundings of half the rank agree.
   have h_weight (a : ℕ) : D.gridWeight z i (D.GridIndex z a j) τ =
-      -(D.gridCentres τ z).centre (.inl i) + ((card (D.GridIndex z a j) : ℤ) + 1) / 2 := by
+      -(D.gridCentres τ z).center (.inl i) + ((card (D.GridIndex z a j) : ℤ) + 1) / 2 := by
     simp only [gridWeight, gridCentres, Sum.elim_inl]
     grind [D.card_gridIndex_mod_two z a j]
   have h_param (a : ℕ) :
@@ -850,7 +814,7 @@ lemma paramsCorrespond_grid_succ_left (z : Bool) (i j : ℕ) (hi : i + 1 ≤ D.m
 this centre plus half the rank of the node, rounded down. -/
 lemma gridWeight_not (z : Bool) (l i j : ℕ) :
     D.gridWeight (!z) l (D.GridIndex z i j) τ =
-      (D.gridCentres τ z).centre (.inr l) + (card (D.GridIndex z i j) : ℤ) / 2 := by
+      (D.gridCentres τ z).center (.inr l) + (card (D.GridIndex z i j) : ℤ) / 2 := by
   -- In grid `Ỹ` (`z = true`) the ranks are even, so the two roundings of half the rank agree.
   simp only [gridWeight, gridCentres, Sum.elim_inr]
   grind [D.card_gridIndex_mod_two z i j]
@@ -912,26 +876,6 @@ lemma paramsCorrespond_neg_gridParam_insert_first {j : ℕ} {P : Parameters} (D 
     (gridBlocks_succ_right_eq_insert_first i 0 j) (D.isSeparated_gridCentres τ z)
     (D.gridBlocks_subset τ z D.m.zero_le (by omega)) h_centre (by simp [gridBlocks])
     (D.mul_card_gridIndex_add_pow_three_le D.m.zero_le (by omega) D.m.zero_le (by omega)) rfl
-
-/-- Adding or removing the first block of an interval, for `i + j < m`: the negated parameters of
-the node `(0, j)` with offset `i + 1` and of the node `(0, j + 1)` with offset `i` correspond, in
-both directions. -/
-lemma paramsCorrespond_leftPair {j : ℕ} {P : Parameters} (D : Data P) {i : ℕ} (z : Bool)
-    (hij : i + j < D.m) :
-    ParamsCorrespond
-        (fun τ : D.Φ ↦ card (D.GridIndex z 0 j) - D.gridWeight (!z) i (D.GridIndex z 0 j) τ)
-        (fun τ : D.Φ ↦
-          card (D.GridIndex z 0 (j + 1)) - D.gridWeight (!z) i (D.GridIndex z 0 (j + 1)) τ)
-        (-D.gridParam z (i + 1) 0 j) (-D.gridParam z i 0 (j + 1))
-        (D.gridSigns z (i + 1) 0 j) (D.gridSigns z i 0 (j + 1)) ∧
-      ParamsCorrespond
-        (fun τ : D.Φ ↦
-          card (D.GridIndex z 0 (j + 1)) - D.gridWeight (!z) i (D.GridIndex z 0 (j + 1)) τ)
-        (fun τ : D.Φ ↦ card (D.GridIndex z 0 j) - D.gridWeight (!z) i (D.GridIndex z 0 j) τ)
-        (-D.gridParam z i 0 (j + 1)) (-D.gridParam z (i + 1) 0 j)
-        (D.gridSigns z i 0 (j + 1)) (D.gridSigns z (i + 1) 0 j) :=
-  ⟨D.paramsCorrespond_neg_gridParam_insert_first hij,
-    (D.paramsCorrespond_neg_gridParam_insert_first hij).symm⟩
 
 end New.Data
 

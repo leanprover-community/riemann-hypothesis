@@ -1,7 +1,7 @@
 module
 
-public import New.OneLift.ComparisonOperator.ExchangeData
 public import New.UpperBound.Seesaw.EdgePairEvaluation
+import New.OneLift.ComparisonOperator.ExchangeData
 
 /-!
 # Valuations of the chosen ideles, and lattices and levels at the chosen places

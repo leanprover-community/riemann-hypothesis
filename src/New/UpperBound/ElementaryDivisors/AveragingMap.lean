@@ -1,7 +1,9 @@
 module
 
+public import Mathlib.LinearAlgebra.PiTensorProduct.Dual
 public import New.UpperBound.ElementaryDivisors.Edges
 public import New.UpperBound.ElementaryDivisors.FrobeniusFactors
+public import New.UpperBound.ElementaryDivisors.InvariantAverage
 
 /-!
 # Averaging: removing the terms of large defect in all Levi translates at once
@@ -77,22 +79,50 @@ open MvPolynomial Matrix IsLocalRing Function Module PiTensorProduct Finset Fint
 
 section TensorDual
 
+private lemma algHom_map_sum {R A B κ : Type*} [CommSemiring R] [Semiring A] [Semiring B]
+    [Algebra R A] [Algebra R B] (f : A →ₐ[R] B) (s : Finset κ) (g : κ → A) :
+    f (∑ i ∈ s, g i) = ∑ i ∈ s, f (g i) :=
+  map_sum f.toRingHom.toAddMonoidHom g s
+
+private lemma algHom_map_prod {R A B κ : Type*} [CommSemiring R] [CommSemiring A] [CommSemiring B]
+    [Algebra R A] [Algebra R B] (f : A →ₐ[R] B) (s : Finset κ) (g : κ → A) :
+    f (∏ i ∈ s, g i) = ∏ i ∈ s, f (g i) :=
+  map_prod f.toRingHom.toMonoidHom g s
+
+private lemma algHom_map_pow {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B]
+    [Algebra R A] [Algebra R B] (f : A →ₐ[R] B) (a : A) (n : ℕ) :
+    f (a ^ n) = f a ^ n :=
+  map_pow f.toRingHom.toMonoidHom a n
+
+private lemma algHom_map_smul {R A B : Type*} [CommSemiring R] [Semiring A] [Semiring B]
+    [Algebra R A] [Algebra R B] (f : A →ₐ[R] B) (r : R) (a : A) :
+    f (r • a) = r • f a := by
+  rw [Algebra.smul_def, Algebra.smul_def, map_mul, f.commutes]
+
+private lemma linearMap_map_sum {R M N κ : Type*} [Semiring R] [AddCommMonoid M]
+    [AddCommMonoid N] [Module R M] [Module R N] (f : M →ₗ[R] N) (s : Finset κ) (g : κ → M) :
+    f (∑ i ∈ s, g i) = ∑ i ∈ s, f (g i) :=
+  map_sum f.toAddMonoidHom g s
+
 variable {ι σ R : Type*} [Fintype ι] [DecidableEq ι] [CommRing R]
 
 /-- A linear form on polynomials is determined by its values on the monomials. -/
 lemma map_eq_sum_coeff_mul (m : Dual R (MvPolynomial σ R)) (ψ : MvPolynomial σ R) :
     m ψ = ∑ α ∈ ψ.support, ψ.coeff α * m (monomial α 1) := by
-  conv_lhs => rw [ψ.as_sum, map_sum]
-  exact sum_congr rfl fun α _ ↦ by
-    rw [← smul_eq_mul, ← map_smul, smul_monomial, smul_eq_mul, mul_one]
+  refine (congrArg m ψ.as_sum).trans
+    ((linearMap_map_sum m _ _).trans (sum_congr rfl fun α _ ↦ ?_))
+  rw [← smul_eq_mul, ← LinearMap.map_smul, smul_monomial, smul_eq_mul, mul_one]
 
 /-- If for each exponent `α` either `z` divides the coefficient of `α` in `ψ` or the linear form `m`
 vanishes on the monomial of exponent `α`, then `z` divides `m ψ`. -/
 lemma dvd_map_of_forall_monomial {m : Dual R (MvPolynomial σ R)} {ψ : MvPolynomial σ R} {z : R}
     (h_all : ∀ α : σ →₀ ℕ, ¬z ∣ ψ.coeff α → m (monomial α 1) = 0) : z ∣ m ψ := by
   rw [map_eq_sum_coeff_mul]
-  exact dvd_sum fun α _ ↦ by
-    by_cases h_dvd : z ∣ ψ.coeff α <;> simp [h_all α, h_dvd, dvd_mul_of_dvd_left]
+  refine dvd_sum fun α _ ↦ ?_
+  by_cases h_dvd : z ∣ ψ.coeff α
+  · exact dvd_mul_of_dvd_left h_dvd _
+  · rw [h_all α h_dvd, mul_zero]
+    exact dvd_zero z
 
 /-- The tensor product of linear forms `l j` on polynomials in disjoint blocks of variables: the
 product of the forms on `⨂_ι R[X_σ]`, pulled back along `R[X_{ι × σ}] → ⨂_ι R[X_σ]`. -/
@@ -108,23 +138,37 @@ lemma tensorDual_prod_rename (l : ι → Dual R (MvPolynomial σ R)) (f : ι →
   let Ψ : MvPolynomial (ι × σ) R →ₐ[R] PiTensorProduct R fun _ : ι ↦ MvPolynomial σ R :=
     aeval fun v : ι × σ ↦ singleAlgHom v.1 (X v.2)
   have h_block (j : ι) : Ψ.comp (rename fun v : σ ↦ (j, v)) =
-      singleAlgHom (A := fun _ : ι ↦ MvPolynomial σ R) j := algHom_ext fun v ↦ by simp [Ψ]
+      singleAlgHom (A := fun _ : ι ↦ MvPolynomial σ R) j :=
+    algHom_ext fun v ↦ by rw [AlgHom.comp_apply, rename_X, aeval_X]
   have hΨ : Ψ (∏ j : ι, rename (fun v : σ ↦ (j, v)) (f j)) = tprod R f := by
-    simp [← Ψ.comp_apply, h_block, ← tprod_prod, univ_prod_mulSingle]
+    rw [algHom_map_prod]
+    have h_eq (j : ι) : Ψ (rename (fun v : σ ↦ (j, v)) (f j)) =
+        tprod R (MonoidHom.mulSingle (fun _ : ι ↦ MvPolynomial σ R) j (f j)) :=
+      (AlgHom.comp_apply Ψ _ _).symm.trans ((AlgHom.congr_fun (h_block j) (f j)).trans
+        (singleAlgHom_apply (R := R) (A := fun _ : ι ↦ MvPolynomial σ R) j (f j)))
+    rw [Finset.prod_congr rfl fun j _ ↦ h_eq j, ← tprod_prod]
+    exact congrArg (PiTensorProduct.tprod R) (univ_prod_mulSingle f)
   rw [tensorDual, LinearMap.comp_apply, AlgHom.toLinearMap_apply, hΨ, dualDistrib_apply]
 
 /-- On the monomial of exponent `ν`, the tensor product of the forms `l j` is the product of the
 values of `l j` at the monomials of exponent `ν.curry j`, the parts of `ν` in the blocks. -/
 lemma tensorDual_monomial [Fintype σ] (l : ι → Dual R (MvPolynomial σ R)) (ν : ι × σ →₀ ℕ) :
     tensorDual l (monomial ν 1) = ∏ j : ι, l j (monomial (ν.curry j) 1) := by
-  simp [← tensorDual_prod_rename, monomial_eq, prod_prod_type]
+  rw [← tensorDual_prod_rename]
+  refine congrArg (tensorDual l) ?_
+  rw [monomial_eq, C_1, one_mul, Finsupp.prod_fintype _ _ fun _ ↦ pow_zero _, prod_prod_type]
+  refine Finset.prod_congr rfl fun j _ ↦ ?_
+  rw [monomial_eq, C_1, one_mul, Finsupp.prod_fintype _ _ fun _ ↦ pow_zero _, algHom_map_prod]
+  refine Finset.prod_congr rfl fun v _ ↦ ?_
+  rw [algHom_map_pow, rename_X, Finsupp.curry_apply]
 
 /-- The value of the tensor product of the forms `l j` at `f` is the sum over the monomials of `f`
 of the coefficient times the product of the values of the `l j` at the parts of the monomial. -/
 lemma tensorDual_eq_sum [Fintype σ] (l : ι → Dual R (MvPolynomial σ R))
     (f : MvPolynomial (ι × σ) R) :
     tensorDual l f = ∑ ν ∈ f.support, f.coeff ν * ∏ j : ι, l j (monomial (ν.curry j) 1) := by
-  simp only [map_eq_sum_coeff_mul (tensorDual l) f, tensorDual_monomial]
+  rw [map_eq_sum_coeff_mul (tensorDual l) f]
+  exact sum_congr rfl fun ν _ ↦ congrArg (f.coeff ν * ·) (tensorDual_monomial l ν)
 
 /-- If the form in each block is `evalAtOne z`, that is `z` times the evaluation at the identity
 matrix, then the tensor product of the forms is `z` to the number of blocks times the evaluation at
@@ -135,7 +179,12 @@ lemma tensorDual_evalAtOne {k : ℕ} {A : Type} [CommRing A] (z : A)
       eval (fun v : ι × Fin k × Fin k ↦ vec (1 : Matrix (Fin k) (Fin k) A) v.2) f := by
   rw [tensorDual_eq_sum, eval_eq', mul_sum]
   refine sum_congr rfl fun ν _ ↦ ?_
-  simp [evalAtOne_apply, eval_monomial, prod_prod_type, prod_mul_distrib, mul_left_comm]
+  have h_term (j : ι) : evalAtOne z (monomial (ν.curry j) 1) =
+      z * ∏ v : Fin k × Fin k, vec (1 : Matrix (Fin k) (Fin k) A) v ^ ν (j, v) := by
+    rw [evalAtOne_apply, eval_monomial, one_mul, Finsupp.prod_fintype _ _ fun _ ↦ pow_zero _]
+    exact congrArg (z * ·) (Finset.prod_congr rfl fun v _ ↦ by rw [Finsupp.curry_apply])
+  rw [Finset.prod_congr rfl fun j _ ↦ h_term j, prod_mul_distrib, prod_const, card_univ,
+    prod_prod_type, mul_left_comm]
 
 /-- Apply the forms `l i` in all blocks `i ≠ j` of variables; a polynomial in the block `j`
 remains. A monomial of exponent `ν` gives the product of the values of the `l i` at its parts
@@ -151,11 +200,11 @@ of the forms with `l j` replaced by `m`. -/
 lemma map_tensorDualExcept [Fintype σ] (l : ι → Dual R (MvPolynomial σ R)) (j : ι)
     (m : Dual R (MvPolynomial σ R)) (f : MvPolynomial (ι × σ) R) :
     m (tensorDualExcept l j f) = tensorDual (update l j m) f := by
-  rw [tensorDual_eq_sum, tensorDualExcept, map_sum]
+  rw [tensorDual_eq_sum, tensorDualExcept, linearMap_map_sum]
   refine sum_congr rfl fun ν _ ↦ ?_
-  have h_rest : ∀ i ∈ univ.erase j, update l j m i = l i :=
-    fun i hi ↦ update_of_ne (ne_of_mem_erase hi) m l
-  simp +contextual [← prod_erase_mul _ _ (mem_univ j), h_rest, mul_assoc]
+  rw [LinearMap.map_smul, smul_eq_mul, mul_assoc, ← prod_erase_mul _ _ (mem_univ j), update_self]
+  refine congrArg (f.coeff ν * ·) (congrArg (· * m (monomial (ν.curry j) 1)) ?_)
+  exact Finset.prod_congr rfl fun i hi ↦ by rw [update_of_ne (ne_of_mem_erase hi)]
 
 /-- Let `f` be a polynomial in blocks of variables indexed by `ι`, and let `tensorDualExcept l j f`
 be the polynomial in the block `j` obtained by applying the linear forms `l i` in all blocks
@@ -169,17 +218,19 @@ lemma exists_of_not_dvd_coeff_tensorDualExcept {l : ι → Dual R (MvPolynomial 
       ∀ i ≠ j, l i (monomial (ν.curry i) 1) ≠ 0 := by
   classical
   contrapose! h_coeff with h_all
-  simp only [tensorDualExcept, coeff_sum, AddMonoidAlgebra.coeff_smul_apply, coeff_monomial,
-    smul_eq_mul]
+  rw [tensorDualExcept, coeff_sum]
   refine dvd_sum fun ν _ ↦ ?_
+  rw [AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, coeff_monomial]
   -- Each summand has `z` as a factor of its coefficient, or a factor `0`.
   by_cases h_part : ν.curry j = α
-  · by_cases h_dvd : z ∣ f.coeff ν
-    · simpa [h_part] using h_dvd.mul_right _
+  · rw [ite_eq_left h_part, mul_one]
+    by_cases h_dvd : z ∣ f.coeff ν
+    · exact h_dvd.mul_right _
     · obtain ⟨i, hi, h_zero⟩ := h_all ν h_part h_dvd
-      rw [prod_eq_zero (mem_erase.2 ⟨hi, mem_univ i⟩) h_zero]
-      simp
-  · simp [h_part]
+      rw [prod_eq_zero (mem_erase.2 ⟨hi, mem_univ i⟩) h_zero, mul_zero]
+      exact dvd_zero z
+  · rw [ite_eq_right h_part, mul_zero]
+    exact dvd_zero z
 
 /-- The polynomial in the block `j` that remains of `f` after the forms `l i` are applied in the
 blocks `i ≠ j` has at most the degree of `f` in the block `j`. -/
@@ -217,13 +268,27 @@ lemma frobContraction_evalAtOne (r ℓ : ℕ) (z : O) :
   -- At the identity matrices `substitutionOperator` is `1`.
   let ev : MvPolynomial (ZMod N × Fin k × Fin k) O →+* O :=
     eval fun v : ZMod N × Fin k × Fin k ↦ vec (1 : Matrix (Fin k) (Fin k) O) v.2
-  have h_factor (s : ZMod N) (d : ℕ) : (T.frobGenericMatrix s d).map ev = 1 :=
-    Matrix.ext fun b c ↦ by simp [ev, Matrix.one_apply, T.prime.ne_zero, eq_comm]
+  have h_factor (s : ZMod N) (d : ℕ) : (T.frobGenericMatrix s d).map ev = 1 := by
+    ext b c
+    rw [Matrix.map_apply, frobGenericMatrix, of_apply, map_pow, eval_X, Matrix.one_apply]
+    dsimp only [vec]
+    by_cases h : b = c
+    · subst h
+      rw [ite_eq_left rfl, Matrix.one_apply_eq, one_pow]
+    · rw [ite_eq_right h, Matrix.one_apply_ne (Ne.symm h),
+        zero_pow (pow_ne_zero d (pow_ne_zero _ T.prime.ne_zero))]
   have h_one : (T.substitutionOperator (k := k) r ℓ n T.frobGenericMatrix).map ev = 1 := by
     -- `substitutionOperator_map_eq_conj` at `g = 1` moves `ev` into the factors.
-    simp [T.substitutionOperator_map_eq_conj ev (one_mem _), h_factor, substitutionOperator_one]
+    rw [T.substitutionOperator_map_eq_conj ev (one_mem _), inv_one, MonoidHom.map_one,
+      Matrix.one_mul, Matrix.mul_one]
+    have h_fn : (fun s d ↦ T.letterConj 1 s ((T.frobGenericMatrix s d).map ev)) =
+        fun _ _ ↦ 1 := by
+      funext s d
+      rw [h_factor, MonoidHom.map_one]
+    rw [h_fn, substitutionOperator_one]
   ext β β'
-  simp [frobContraction, tensorDual_evalAtOne, ← h_one, ev]
+  rw [frobContraction, Matrix.map_apply, tensorDual_evalAtOne, ZMod.card, Matrix.smul_apply,
+    smul_eq_mul, ← h_one, Matrix.map_apply]
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
@@ -253,22 +318,43 @@ lemma letterRep_mul_frobContraction {r ℓ : ℕ} {g : GL (Fin k) W} (hg : g ∈
   have h_monomial (ν : ZMod N × Fin k × Fin k →₀ ℕ) : conj (monomial ν 1) = ∏ j : ZMod N,
       rename (fun u : Fin k × Fin k ↦ (j, u))
         (conjSubst (T.embedding j) g (monomial (ν.curry j) 1)) := by
-    simp [conj, monomial_eq, prod_prod_type]
+    rw [monomial_eq, C_1, one_mul, Finsupp.prod_fintype _ _ fun _ ↦ pow_zero _, algHom_map_prod,
+      prod_prod_type]
+    refine Finset.prod_congr rfl fun j _ ↦ ?_
+    rw [monomial_eq, C_1, one_mul, Finsupp.prod_fintype _ _ fun _ ↦ pow_zero _, algHom_map_prod,
+      algHom_map_prod]
+    refine Finset.prod_congr rfl fun u _ ↦ ?_
+    rw [algHom_map_pow, aeval_X, algHom_map_pow, algHom_map_pow, Finsupp.curry_apply]
   have h_forms : tensorDual m = tensorDual l ∘ₗ conj.toLinearMap :=
     linearMap_ext fun ν ↦ LinearMap.ext_ring <| by
-      simp [tensorDual_monomial, h_monomial, tensorDual_prod_rename, hm]
+      change tensorDual m (monomial ν 1) = tensorDual l (conj (monomial ν 1))
+      rw [tensorDual_monomial, h_monomial, tensorDual_prod_rename]
+      exact Finset.prod_congr rfl fun j _ ↦ hm j _
   let T' : FrobeniusCycle N W (MvPolynomial (ZMod N × Fin k × Fin k) O) := T.map C
   have h_entry (s : ZMod N) (b c : Fin k) :
       conj (X (s, b, c)) = T'.letterConj g⁻¹ s (of fun b' c' : Fin k ↦ X (s, b', c')) b c := by
-    simp [T', conj, letterConj, conjSubst, linSubst, ← C_mul', map, Matrix.mul_apply, mul_assoc,
-      mul_comm (X _), sum_prod_type, mul_sum]
+    have h_lhs : conj (X (s, b, c)) = ∑ b' : Fin k, ∑ c' : Fin k,
+        C (T.embedding s (g⁻¹.val b b')) * C (T.embedding s (g.val c' c)) * X (s, b', c') := by
+      rw [show conj (X (s, b, c)) =
+          rename (fun u : Fin k × Fin k ↦ (s, u)) (conjSubst (T.embedding s) g (X (b, c))) from
+          aeval_X _ _,
+        conjSubst, linSubst, aeval_X, algHom_map_sum, sum_prod_type]
+      refine sum_congr rfl fun b' _ ↦ sum_congr rfl fun c' _ ↦ ?_
+      rw [algHom_map_smul, rename_X, kroneckerMap_apply, transpose_apply, smul_eq_C_mul, C_mul]
+    rw [h_lhs, sum_comm, letterConj, MonoidHom.coe_mk, OneHom.coe_mk, inv_inv, Matrix.mul_apply]
+    refine sum_congr rfl fun c' _ ↦ ?_
+    rw [Matrix.mul_apply, sum_mul]
+    refine sum_congr rfl fun b' _ ↦ ?_
+    rw [Matrix.map_apply, Matrix.map_apply, of_apply, mul_right_comm]
+    rfl
   have h_frame : (fun (s : ZMod N) (d : ℕ) ↦
       T'.letterConj g s ((T.frobGenericMatrix s d).map conj.toRingHom)) =
         T.conjFrobGenericMatrix g := by
     funext s d
-    simp only [conjFrobGenericMatrix]
-    congr 1 with b c : 1
-    simp [h_entry, T']
+    rw [conjFrobGenericMatrix]
+    refine congrArg (T'.letterConj g s) (Matrix.ext fun b c ↦ ?_)
+    rw [Matrix.map_apply, frobGenericMatrix, of_apply, Matrix.map_apply,
+      AlgHom.toRingHom_eq_coe, RingHom.coe_coe, algHom_map_pow, h_entry]
   -- After `conj`, the operator is a conjugate of the operator `F` in the frame `g`.
   set F := T.substitutionOperator (k := k) r ℓ n (T.conjFrobGenericMatrix g)
   have h_op : (T.substitutionOperator r ℓ n T.frobGenericMatrix).map conj.toRingHom =
@@ -279,7 +365,8 @@ lemma letterRep_mul_frobContraction {r ℓ : ℕ} {g : GL (Fin k) W} (hg : g ∈
       T.letterRep n g⁻¹ * F.map (tensorDual l) * T.letterRep n g := by
     rw [← map_C_mul_mul_C, ← h_op, frobContraction, h_forms, Matrix.map_map, LinearMap.coe_comp,
       AlgHom.coe_toLinearMap, AlgHom.toRingHom_eq_coe, RingHom.coe_coe]
-  rw [h_contraction, ← mul_assoc, ← mul_assoc, ← map_mul, mul_inv_cancel, map_one, one_mul]
+  rw [h_contraction, ← Matrix.mul_assoc, ← Matrix.mul_assoc, ← MonoidHom.map_mul, mul_inv_cancel,
+    MonoidHom.map_one, Matrix.one_mul]
 
 /-! ### One copy at a time -/
 
@@ -309,15 +396,13 @@ lemma map_contractOtherCopies {r ℓ : ℕ} {l : ZMod N → Dual O (MvPolynomial
   have h_update (i : ZMod N) (ψ : MvPolynomial (Fin k × Fin k) O) :
       update l j (m ∘ₗ (conjSubst (T.embedding j) g).toLinearMap) i ψ =
         update l j m i (conjSubst (T.embedding i) g ψ) := by
-    obtain rfl | hi := eq_or_ne i j <;> simp [*]
-  calc m (T.contractOtherCopies r ℓ l j g h β)
-      = ∑ γ : Exponents N k n, (T.letterRep n g *ᵥ h) γ * tensorDual (update l j m)
-          (T.substitutionOperator r ℓ n (T.conjFrobGenericMatrix g) β γ) := by
-        simp only [contractOtherCopies, map_sum, map_smul, map_tensorDualExcept, smul_eq_mul]
-    _ = ((T.substitutionOperator r ℓ n (T.conjFrobGenericMatrix g)).map
-          (tensorDual (update l j m)) *ᵥ T.letterRep n g *ᵥ h) β := by
-        simp only [mulVec, dotProduct, Matrix.map_apply, mul_comm]
-    _ = _ := by rw [mulVec_mulVec, mulVec_mulVec, T.letterRep_mul_frobContraction hg h_update]
+    obtain rfl | hi := eq_or_ne i j
+    · rw [update_self, update_self, LinearMap.comp_apply, AlgHom.toLinearMap_apply]
+    · rw [update_of_ne hi, update_of_ne hi, hl i]
+  rw [mulVec_mulVec, T.letterRep_mul_frobContraction hg h_update, ← mulVec_mulVec,
+    contractOtherCopies, linearMap_map_sum, mulVec, dotProduct]
+  refine sum_congr rfl fun γ _ ↦ ?_
+  rw [LinearMap.map_smul, map_tensorDualExcept, smul_eq_mul, Matrix.map_apply, mul_comm]
 
 /-- The entries of `T.contractOtherCopies r ℓ l j 1 h` are the polynomials in the `j`-th generic
 matrix that are left when the forms `l i` are applied in the others. A form `m` applied to them
@@ -326,8 +411,10 @@ lemma map_contractOtherCopies_one {r ℓ : ℕ} {l : ZMod N → Dual O (MvPolyno
     {j : ZMod N} (m : Dual O (MvPolynomial (Fin k × Fin k) O)) (h : Exponents N k n → O)
     (β : Exponents N k n) :
     m (T.contractOtherCopies r ℓ l j 1 h β) = (T.frobContraction n r ℓ (update l j m) *ᵥ h) β := by
-  simp [contractOtherCopies, conjFrobGenericMatrix_one, frobContraction, mulVec_apply, dotProduct,
-    map_tensorDualExcept, Matrix.one_apply, mul_comm]
+  rw [contractOtherCopies, conjFrobGenericMatrix_one, MonoidHom.map_one, one_mulVec,
+    linearMap_map_sum, frobContraction, mulVec, dotProduct]
+  refine sum_congr rfl fun γ _ ↦ ?_
+  rw [LinearMap.map_smul, map_tensorDualExcept, smul_eq_mul, Matrix.map_apply, mul_comm]
 
 /-- Change of basis. Let `F_g = T.contractOtherCopies r ℓ l j g h` be the vector of polynomials in
 one generic matrix `X` that arises by substituting `N` generic matrices, in the basis given by `g`,
@@ -349,13 +436,13 @@ lemma conjSubst_contractOtherCopies_one {r ℓ : ℕ}
   have h_frame (β : Exponents N k n) :
       (T.contractOtherCopies r ℓ l j g h β).coeff α = (T.letterRep n g *ᵥ v) β :=
     T.map_contractOtherCopies hg hl (lcoeff O α) h β
-  calc (conjSubst (T.embedding j) g (T.contractOtherCopies r ℓ l j 1 h γ)).coeff α
-      = v γ := T.map_contractOtherCopies_one
-        (lcoeff O α ∘ₗ (conjSubst (T.embedding j) g).toLinearMap) h γ
-    _ = (T.letterRep n g⁻¹ *ᵥ T.letterRep n g *ᵥ v) γ := by simp [mulVec_mulVec, ← map_mul]
-    _ = (∑ β : Exponents N k n,
-          T.letterRep n g⁻¹ γ β • T.contractOtherCopies r ℓ l j g h β).coeff α := by
-      simp [mulVec_apply, dotProduct, h_frame]
+  have h_lhs : (conjSubst (T.embedding j) g (T.contractOtherCopies r ℓ l j 1 h γ)).coeff α = v γ :=
+    T.map_contractOtherCopies_one (lcoeff O α ∘ₗ (conjSubst (T.embedding j) g).toLinearMap) h γ
+  have h_mul : (T.letterRep n g⁻¹ *ᵥ T.letterRep n g *ᵥ v) γ = v γ := by
+    rw [mulVec_mulVec, ← MonoidHom.map_mul, inv_mul_cancel, MonoidHom.map_one, one_mulVec]
+  rw [h_lhs, ← h_mul, coeff_sum, mulVec, dotProduct]
+  refine sum_congr rfl fun β _ ↦ ?_
+  rw [AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, h_frame]
 
 /-- Each polynomial `T.contractOtherCopies r ℓ l j 1 h β`, which is left in the `j`-th generic
 matrix when the forms `l i` are applied in the others, has total degree at most
@@ -398,7 +485,10 @@ lemma abs_weight_div_sub_defect_le [IsDomain O] [CharZero O] {a r : Fin k} {ℓ 
   obtain ⟨γ, hγ⟩ : ∃ γ : Exponents N k n, ¬T.sqrtPrime ^ c ∣ (tensorDualExcept l j
       (T.substitutionOperator r ℓ n (T.conjFrobGenericMatrix g) β γ)).coeff α := by
     contrapose! h_coeff with h_all
-    simpa [contractOtherCopies, coeff_sum] using dvd_sum fun γ _ ↦ (h_all γ).mul_left _
+    rw [contractOtherCopies, coeff_sum]
+    refine dvd_sum fun γ _ ↦ ?_
+    rw [AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
+    exact (h_all γ).mul_left _
   obtain ⟨ν, rfl, hν, h_ne_zero⟩ : ∃ ν : ZMod N × Fin k × Fin k →₀ ℕ, ν.curry j = α ∧
       ¬T.sqrtPrime ^ c ∣ (T.substitutionOperator r ℓ n (T.conjFrobGenericMatrix g) β γ).coeff ν ∧
       ∀ i ≠ j, l i (monomial (ν.curry i) 1) ≠ 0 := exists_of_not_dvd_coeff_tensorDualExcept hγ
@@ -446,12 +536,20 @@ lemma lt_weight_and_lt_defect_of_not_dvd_coeff_contractOtherCopies [IsDomain O] 
   set wt : ℤ := α.weight fun v : Fin k × Fin k ↦ rootVector a r v.1
   have h_bad_iff : 2 * defectThreshold k c * (T.P : ℤ) ^ ℓ < wt ↔
       2 * defectThreshold k c < wt / (T.P : ℝ) ^ ℓ := by
-    rw [lt_div_iff₀ (pow_pos (zero_lt_one.trans T.one_lt_P) ℓ)]
-    norm_cast
+    rw [lt_div_iff₀ (pow_pos (zero_lt_one.trans T.one_lt_P) ℓ), ← Int.cast_lt (R := ℝ),
+      Int.cast_mul, Int.cast_mul, Int.cast_pow, Int.cast_natCast, Int.cast_natCast, Int.cast_ofNat]
   obtain ⟨h_lower, h_upper⟩ :=
     abs_le.1 (T.abs_weight_div_sub_defect_le hp ha h_size hℓ hl h_coeff)
   rw [h_bad_iff]
-  constructor <;> intro <;> linarith
+  have h3 : (3 : ℝ) * defectThreshold k c = 2 * defectThreshold k c + defectThreshold k c := by
+    rw [← Nat.cast_ofNat (n := 3), show (3 : ℕ) = 2 + 1 from rfl, Nat.cast_add, Nat.cast_ofNat,
+      Nat.cast_one, add_mul, one_mul]
+  refine ⟨fun h1 ↦ lt_of_add_lt_add_right (a := (defectThreshold k c : ℝ)) ?_,
+    fun h2 ↦ lt_of_add_lt_add_left (a := (defectThreshold k c : ℝ)) ?_⟩
+  · rw [← h3]
+    exact h1.trans_le (neg_le_sub_iff_le_add.1 h_lower)
+  · rw [← two_mul]
+    exact h2.trans_le (sub_le_iff_le_add.1 h_upper)
 
 /-! ### The averaging map -/
 
@@ -534,12 +632,17 @@ lemma pow_dvd_pairing_partialAverage_insert_sub [IsDomain O] [CharZero O] {a r :
   let l : ZMod N → Dual O (MvPolynomial (Fin k × Fin k) O) := J.piecewise I fun _ ↦ ev
   have hl (i : ZMod N) (u : GL (Fin k) W) (hu : u ∈ levi W (twoBlock k r))
       (φ : MvPolynomial (Fin k × Fin k) O) : l i (conjSubst (T.embedding i) u φ) = l i φ := by
-    by_cases hi : i ∈ J <;> simp [l, ev, hi, (hI i).map_conjSubst u hu, evalAtOne_conjSubst]
+    dsimp only [l]
+    by_cases hi : i ∈ J
+    · rw [piecewise_eq_of_mem J I _ hi, (hI i).map_conjSubst u hu]
+    · rw [piecewise_eq_of_notMem J I _ hi, evalAtOne_conjSubst]
   let ψ : MvPolynomial (Fin k × Fin k) O :=
     ∑ β : Exponents N k n, (h' β * b β) • T.contractOtherCopies r ℓ l j 1 h β
   have hψ (m : Dual O (MvPolynomial (Fin k × Fin k) O)) :
       m ψ = h' ⬝ᵥ (b * T.frobContraction n r ℓ (update l j m) *ᵥ h) := by
-    simp [ψ, T.map_contractOtherCopies_one, dotProduct, mul_assoc]
+    rw [linearMap_map_sum, dotProduct]
+    refine sum_congr rfl fun β _ ↦ ?_
+    rw [LinearMap.map_smul, smul_eq_mul, T.map_contractOtherCopies_one, Pi.mul_apply, mul_assoc]
   have h_degree : ψ.totalDegree ≤ N * n * k * (ℓ + 2) * T.P ^ ℓ := (mem_restrictTotalDegree ..).1 <|
     sum_mem fun β _ ↦ Submodule.smul_mem _ _ (T.contractOtherCopies_one_mem_restrictTotalDegree h β)
   have h_update_ev : update l j ev = l :=
@@ -553,10 +656,22 @@ lemma pow_dvd_pairing_partialAverage_insert_sub [IsDomain O] [CharZero O] {a r :
   have h_coeff : (conjSubst (T.embedding j) g ψ).coeff α = ∑ β : Exponents N k n,
       (T.contractOtherCopies r ℓ l j g h β).coeff α *
         h' ⬝ᵥ (b * T.letterRep n g⁻¹ *ᵥ Pi.single β 1) := by
-    simp only [ψ, map_sum, map_smul, T.conjSubst_contractOtherCopies_one hg fun i ↦ hl i g hg,
-      coeff_sum, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, mulVec_single_one, dotProduct,
-      Pi.mul_apply, col_apply, mul_sum]
-    exact sum_comm.trans (sum_congr rfl fun β _ ↦ sum_congr rfl fun γ _ ↦ by ring)
+    have h_lhs : (conjSubst (T.embedding j) g ψ).coeff α =
+        ∑ γ : Exponents N k n, ∑ β : Exponents N k n,
+          (h' γ * b γ) * (T.letterRep n g⁻¹ γ β *
+            (T.contractOtherCopies r ℓ l j g h β).coeff α) := by
+      rw [algHom_map_sum, coeff_sum]
+      refine sum_congr rfl fun γ _ ↦ ?_
+      rw [algHom_map_smul, T.conjSubst_contractOtherCopies_one hg fun i ↦ hl i g hg,
+        AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, coeff_sum, mul_sum]
+      refine sum_congr rfl fun β _ ↦ ?_
+      rw [AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
+    rw [h_lhs, sum_comm]
+    refine sum_congr rfl fun β _ ↦ ?_
+    rw [mulVec_single_one, dotProduct, mul_sum]
+    refine sum_congr rfl fun γ _ ↦ ?_
+    rw [Pi.mul_apply, col_apply, ← mul_assoc,
+      mul_comm _ ((T.contractOtherCopies r ℓ l j g h β).coeff α), mul_assoc]
   rw [mem_span_singleton, h_coeff]
   refine dvd_sum fun β _ ↦ ?_
   by_cases h_dvd : T.sqrtPrime ^ c ∣ (T.contractOtherCopies r ℓ l j g h β).coeff α
@@ -565,7 +680,7 @@ lemma pow_dvd_pairing_partialAverage_insert_sub [IsDomain O] [CharZero O] {a r :
     have h_defect : defectThreshold k c < (exponentOf β).weight (T.defectWeight (j + ℓ) a r) :=
       (T.lt_weight_and_lt_defect_of_not_dvd_coeff_contractOtherCopies hp ha h_size hℓ hl
         h_dvd).2 h_bad
-    have h_lt : a < r := Fin.lt_def.2 (by lia)
+    have h_lt : a < r := Fin.lt_def.2 (ha ▸ Nat.lt_succ_self a.val)
     exact (hb.pow_dvd_pairing_letterRep T h_lt hh' (inv_mem hg) h_defect).mul_left _
 
 /-- The averaging map. Let `T` be a Frobenius cycle (`P = T.P`, `w = T.sqrtPrime`, `w ^ 2 = p`)
@@ -591,16 +706,26 @@ theorem exists_average_mem_defectConditions_and_dvd_sub [IsDomain O] [CharZero O
       ∀ (h : Exponents N k n → O), ∀ h' ∈ T.allEdgesForms k n r,
         T.sqrtPrime ^ c ∣ h' ⬝ᵥ (b * Av *ᵥ h) -
           (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h) := by
-  obtain ⟨h_small, hℓ_le⟩ : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ ∧ ℓ ≤ N := by lia
+  have h_eq : N * n * k * (ℓ + 2) = N * k * (ℓ + 2) * n := by
+    rw [mul_right_comm N n k, mul_right_comm (N * k) n (ℓ + 2)]
+  have h_small : N * n * k * (ℓ + 2) ≤ T.P ^ ℓ := by
+    rw [h_eq]
+    exact ((Nat.le_add_right _ n).trans (Nat.le_add_right _ k)).trans h_size.le
+  have hℓ_le : ℓ ≤ N := hℓ ▸ Nat.le_add_right ℓ ℓ
   -- `D` bounds the degree in one copy; it is small against `P ^ N`, so the averages exist.
   let D : ℕ := N * n * k * (ℓ + 2) * T.P ^ ℓ
-  have hD : D + k < T.P ^ N :=
-    calc D + k < D + T.P ^ ℓ := by lia
-      _ = (N * k * (ℓ + 2) * n + 1) * T.P ^ ℓ := by ring
-      _ ≤ T.P ^ ℓ * T.P ^ ℓ := Nat.mul_le_mul_right _ (by lia)
-      _ = T.P ^ N := by rw [← pow_add, hℓ]
+  have hD : D + k < T.P ^ N := by
+    have h1 : D + k < (N * k * (ℓ + 2) * n + 1) * T.P ^ ℓ := by
+      rw [add_mul, one_mul, ← h_eq]
+      exact Nat.add_lt_add_left ((Nat.le_add_left k _).trans_lt h_size) D
+    have h2 : (N * k * (ℓ + 2) * n + 1) * T.P ^ ℓ ≤ T.P ^ N :=
+      (Nat.mul_le_mul_right _ (Nat.succ_le_of_lt
+        (((Nat.le_add_right _ n).trans (Nat.le_add_right _ k)).trans_lt h_size))).trans_eq
+        (by rw [← pow_add, hℓ])
+    exact h1.trans_le h2
   have hD_pow : D < T.p ^ (T.frobExp * N) := by
-    simpa only [pow_mul] using (Nat.le_add_right D k).trans_lt hD
+    rw [pow_mul]
+    exact (Nat.le_add_right D k).trans_lt hD
   have h_exists (j : ZMod N) : ∃ I : Dual O (MvPolynomial (Fin k × Fin k) O),
       IsAverage (twoBlock k r) (T.embedding j) (rootVector a r) (2 * defectThreshold k c * T.P ^ ℓ)
         ((T.p : O) ^ T.multinomialExponent k) D I :=
@@ -614,10 +739,14 @@ theorem exists_average_mem_defectConditions_and_dvd_sub [IsDomain O] [CharZero O
       T.sqrtPrime ^ c ∣ h' ⬝ᵥ (b * T.partialAverage n r ℓ I J *ᵥ h) -
         (T.p : O) ^ (N * T.multinomialExponent k) * h' ⬝ᵥ (b * h) := by
     induction J using Finset.induction_on with
-    | empty => simp [partialAverage_empty, smul_mulVec]
+    | empty =>
+      rw [partialAverage_empty, smul_mulVec, one_mulVec, mul_smul_comm, dotProduct_smul,
+        smul_eq_mul, sub_self]
+      exact dvd_zero _
     | insert j J hj ih =>
-      simpa only [sub_add_sub_cancel] using dvd_add
+      have h_add := dvd_add
         (T.pow_dvd_pairing_partialAverage_insert_sub hp ha h_small hℓ_le hI hb hj h hh') ih
+      rwa [sub_add_sub_cancel] at h_add
   exact h_chain univ
 
 end FrobeniusCycle

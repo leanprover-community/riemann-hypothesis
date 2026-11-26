@@ -1,6 +1,12 @@
 module
 
-public import Lib.Adelic.Witt.WittTheorem
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.Adelic.Unitary.Defs
+public import Lib.General.LinearAlgebra.IntegralLattices
+public import Lib.Adelic.Witt.WittTheorem -- shake: keep (needed public by an exposed definition)
 
 /-!
 # Components of unitary adelic points at places; sums and moves of hermitian spaces
@@ -505,7 +511,7 @@ variable [HasPrimitiveRoot5040 E]
 def Weil.normNegOne {E : Type*} [Field E] [NumberField E] [IsCMField E] [HasPrimitiveRoot5040 E] :
     (Ô E)ˣ :=
   have h_norm := exists_unit_star_mul_self_eq (u := -1) (by simp) (by simp)
-  Units.mkOfMulEqOne h_norm.choose (-star h_norm.choose.1) (by
+  Units.mkOfMulEqOne h_norm.choose (-star h_norm.choose.val) (by
     ext1
     rw [mul_neg]
     change -(h_norm.choose.val.val * star h_norm.choose.val.val) = (1 : 𝔸f E)
@@ -575,8 +581,8 @@ def neg : Space E n (-s) where
 /-- For a space (J, x) and g in G, the space (J, xg): the same matrix with the point moved by g. -/
 def move : Space E n s where
   J := V.J
-  x := V.x * g.toUnitary.1
-  gram_point := gram_mul_of_gram_eq V.gram_point (mem_unitaryGroupOf_iff.1 g.toUnitary.2)
+  x := V.x * g.toUnitary.val
+  gram_point := gram_mul_of_gram_eq V.gram_point (mem_unitaryGroupOf_iff.1 g.toUnitary.property)
 
 attribute [simps J] signedSpace sum reindex neg move
 

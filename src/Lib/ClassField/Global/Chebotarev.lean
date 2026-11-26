@@ -1,6 +1,16 @@
 module
 
-public import Lib.ClassField.Global.NormTheorems
+public import Aesop.BuiltinRules
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Topology.Algebra.ClopenNhdofOne
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Connected.Separation
+public import Lib.Adelic.Adeles.Basic
+public import Lib.ClassField.Places.GaloisDefs
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.ArtinReciprocity
+import Lib.ClassField.Global.NormTheorems
 
 /-!
 # Chebotarev: Frobenii at primes of degree one in every nonempty open set

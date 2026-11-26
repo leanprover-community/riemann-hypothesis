@@ -146,7 +146,7 @@ lemma stringSum_apply_inr (t : ℕ → 𝔸f E) (b : Fin s) :
 
 /-- The vectors `𝔢 ^ i` span the complement of `X` over the finite adeles: a vector `y` fixed by
 the projection `Y.stringProj` to the span of the string is a sum `∑ t i • 𝔢 ^ i`. -/
-lemma exists_stringSum_eq [Fintype X] {y : ι → 𝔸f E} (hy : Y.stringProj y = y) :
+lemma exists_stringSum_eq {y : ι → 𝔸f E} (hy : Y.stringProj y = y) :
     ∃ t : ℕ → 𝔸f E, Y.stringSum t = y := by
   -- The coefficient of `𝔢 ^ i` is the entry of `y` at the string index `i` over `Y.powerCoeff i`.
   let t (i : ℕ) : 𝔸f E := if hi : i < s then

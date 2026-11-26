@@ -1,8 +1,9 @@
 module
 
-public import Lib.GaloisRep.BaseChange.Defs
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Resultant
 import TauCeti.LinearAlgebra.Matrix.Polynomial
+import Mathlib.LinearAlgebra.PiTensorProduct.Generators
+public import Lib.GaloisRep.BaseChange.Defs
 
 /-!
 # Minors, polynomials of matrices and twisted norms
@@ -108,6 +109,14 @@ end TraceFormDefs
 with star, with ring maps and with intertwining matrices.
 -/
 
+open Polynomial in
+/-- The `i`-th power of `Polynomial.mapRingHom f` maps the coefficients by `f ^ i`. -/
+theorem Polynomial.mapRingHom_pow_apply {R : Type*} [Semiring R] (f : R →+* R) (i : ℕ)
+    (p : R[X]) : (mapRingHom f ^ i) p = p.map (f ^ i) :=
+  let F : (R →+* R) →* R[X] →+* R[X] :=
+    ⟨⟨mapRingHom, mapRingHom_id⟩, fun f g ↦ (mapRingHom_comp f g).symm⟩
+  DFunLike.congr_fun (map_pow F f i).symm p
+
 namespace New
 
 open Matrix Polynomial GeneralLinearGroup Finset Algebra
@@ -135,15 +144,8 @@ lemma map_aeval_matrix (ψ : R →+* S) (Y : Matrix n n R) (z : R[X]) :
 is the product of the polynomials `z.map (σ ^ i)` for `i < p`. -/
 lemma twistedNorm_map_eq_prod {σ : R →+* R} (p : ℕ) (z : R[X]) :
     twistedNorm (Polynomial.map σ) p z = ∏ i ∈ range p, z.map (σ ^ i) := by
-  induction p generalizing z with
-  | zero => simp [twistedNorm]
-  | succ p ih =>
-    have h_succ (i : ℕ) : z.map (σ ^ (i + 1)) = (z.map σ).map (σ ^ i) := by
-      rw [pow_succ, RingHom.mul_def, Polynomial.map_map]
-    calc twistedNorm (Polynomial.map σ) (p + 1) z
-        = z * twistedNorm (Polynomial.map σ) p (z.map σ) := by simp [twistedNorm]
-      _ = ∏ i ∈ range (p + 1), z.map (σ ^ i) := by
-        simp [ih, h_succ, prod_range_succ', RingHom.one_def, mul_comm]
+  rw [twistedNorm, ← List.prod_toFinset _ List.nodup_range, List.toFinset_range]
+  exact Finset.prod_congr rfl fun i _ ↦ Polynomial.mapRingHom_pow_apply σ i z
 
 /-- If `c` intertwines the square matrices `x` and `y`, then it intertwines `q(x)` and `q(y)`. -/
 lemma aeval_semiconj [DecidableEq m] {y : Matrix m m R} (h_semiconj : c * x = y * c) (q : R[X]) :

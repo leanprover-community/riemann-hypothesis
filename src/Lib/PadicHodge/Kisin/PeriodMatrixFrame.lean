@@ -1,5 +1,8 @@
 module
 
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
 public import Lib.PadicHodge.Kisin.PeriodMatrixBasis
 
 /-!
@@ -126,8 +129,8 @@ lemma exists_det_ne_zero_and_mulVec_eq_coord {Q : Matrix d d Ainf}
         π (t ⬝ᵥ x).val = 0) : ∀ i : d, π (t i).val = 0 := by
     -- `O^♭` is separated for the `π z`-adic topology, as `z = seriesMap X` is not a unit.
     have h_haus : IsHausdorff (span {π (c.seriesMap PowerSeries.X)}) OFlat :=
-      (OFlat.isHausdorff_and_shiftDiff_surjective
-        (mt Ainf.isUnit_iff_isUnit_constantCoeff.mpr c.not_isUnit_z)).left
+      OFlat.isHausdorff_span_singleton_of_not_isUnit
+        (mt Ainf.isUnit_iff_isUnit_constantCoeff.mpr c.not_isUnit_z)
     -- All coordinates of `(Q t) j` in the adic basis lie in the kernel of `π`.
     have h_coord (j : d) (i : c.adicBasis.Index) :
         π (c.adicBasis.coord i ((Q *ᵥ fun l : d ↦ (t l : Ainf)) j)).val = 0 := by
@@ -270,12 +273,12 @@ lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matr
 /-- Let `c` be a chart, let `E` be the image of its series X^e A + p (ξ times a unit),
 `τ = [ε^{1/p}] - 1`, and `B⁺ = A_max[1/p]`. Let `U`, `U'` over `B⁺` satisfy `U U' = (E τ) ^ h`. If
 every solution of `U Y = E ^ h X` with `X` over `A_inf` and `Y` over `B⁺` has `X = Q L` for some `L`
-over `A_inf`, then `U = Q Y` for some `Y` over `B⁺`. -/
-lemma map_dvd_of_forall_mul_eq_smul_map {U U' : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
+over `A_inf`, then `Q L = τ ^ h` for some `L` and `Q` divides `U` over `B⁺`. -/
+lemma exists_mul_eq_tau_pow_and_map_dvd {U U' : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
     (hUU' : U * U' = (c.E * tau) ^ h • 1)
     (hQ : ∀ {X : Matrix d d Ainf} {Y : Matrix d d BPlus},
       U * Y = c.E.val ^ h • X.map ainfToBPlus → ∃ L : Matrix d d Ainf, Q * L = X) :
-    Q.map ainfToBPlus ∣ U := by
+    ∃ L : Matrix d d Ainf, Q * L = tau ^ h • 1 ∧ Q.map ainfToBPlus ∣ U := by
   obtain ⟨t, ht⟩ : ∃ t : Ainf, mu = c.E * tau * t := c.associated_E_mul_tau_mu.dvd
   obtain ⟨q, -, hqp⟩ : ∃ q ∈ c.bicommutant, q * p = 1 := c.exists_bicommutant_mul_p_eq_one
   have hUU'_eq : U * U' = c.E.val ^ h • (tau ^ h • (1 : Matrix d d Ainf)).map ainfToBPlus := by
@@ -301,7 +304,7 @@ lemma map_dvd_of_forall_mul_eq_smul_map {U U' : Matrix d d BPlus} {Q : Matrix d 
     rw [hX, mul_smul_comm]
   obtain ⟨γ, hγ⟩ := hQ h_sol
   -- Divide by `p ^ n` and rewrite the error term using `Q L = τ ^ h`.
-  refine ⟨q ^ n • γ.map ainfToBPlus + (t * c.E) ^ h • L.map ainfToBPlus * U.map w, ?_⟩
+  refine ⟨L, hL, q ^ n • γ.map ainfToBPlus + (t * c.E) ^ h • L.map ainfToBPlus * U.map w, ?_⟩
   simp [mul_add, ← Matrix.map_mul, *, -map_pow, mul_sub, ← mul_assoc, smul_smul, ← mul_pow,
     map_smul']
 
@@ -490,10 +493,7 @@ lemma IsPeriodMatrix.exists_frame {U : Matrix d d BPlus} {h : ℕ} {v : Ainfˣ}
   have hQ {X : Matrix d d Ainf} {Y : Matrix d d BPlus}
       (hY : U * Y = c.E.val ^ h • X.map ainfToBPlus) : ∃ L : Matrix d d Ainf, Q * L = X :=
     exists_mul_eq_of_mul_eq_smul hQ₀ hdvd hp hY
-  have hUU'_eq : U * U' = c.E.val ^ h • (tau ^ h • (1 : Matrix d d Ainf)).map ainfToBPlus := by
-    simp [-map_pow, *, map_smul', smul_smul, ← mul_pow]
-  obtain ⟨L, hL⟩ := hQ hUU'_eq
-  obtain ⟨Y, rfl⟩ : Q.map ainfToBPlus ∣ U := map_dvd_of_forall_mul_eq_smul_map hUU' hQ
+  obtain ⟨L, hL, Y, rfl⟩ := exists_mul_eq_tau_pow_and_map_dvd hUU' hQ
   -- Cancel `Q` in `Q Y Z = E ^ h Q`, as `det Q ≠ 0`.
   have h_det_eq : (Q.map ainfToBPlus).det = ainfToBPlus Q.det := (ainfToBPlus.map_det Q).symm
   have h_regular : IsLeftRegular (Q.map ainfToBPlus).det := by

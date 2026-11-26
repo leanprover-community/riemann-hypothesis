@@ -1,7 +1,9 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
 public import New.Determinant.Chain.NormOfChain
 public import New.Reduction.Lattices.TwistedLattice
+import New.Determinant.Chain.ChainNorms
 
 /-!
 # The target forms as a twisted lattice

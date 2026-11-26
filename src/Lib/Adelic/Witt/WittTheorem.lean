@@ -1,8 +1,17 @@
 module
 
-public import Lib.Adelic.Adeles.IdeleModulus
-public import Lib.GaloisRep.Hilbert90.UnitaryGroups
 import TauCeti.LinearAlgebra.SesquilinearForm.SignedHermitianSpace.Witt
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+public import Lib.Adelic.Unitary.Defs
+public import Lib.General.LinearAlgebra.IntegralLattices
+import Lib.Adelic.Adeles.IdeleModulus
+import Lib.Base
+import Lib.GaloisRep.Hilbert90.TameActions
+import Lib.GaloisRep.Hilbert90.UnitaryGroups
 
 /-!
 # Witt's theorem over fields and over Ô; quasi-reflections, Eichler maps, frames
@@ -130,19 +139,6 @@ lemma HasLeftInv.of_ne_zero {x : n → R} (h_ne : x ≠ 0) : HasLeftInv (replica
   obtain ⟨i, hi⟩ : ∃ i : n, x i ≠ 0 := Function.ne_iff.1 h_ne
   exact ⟨single () i (x i)⁻¹, by aesop⟩
 
-omit [Fintype k] in
-/-- If `A` is invertible and `X` has a left inverse, then for each column index `j` some linear form
-`x ↦ a ⬝ᵥ A *ᵥ x` is `1` on column `j` of `X` and `0` on the other columns. -/
-lemma HasLeftInv.exists_dotProduct_mulVec_col_eq_ite (hX : HasLeftInv X) {A : Matrix n n R}
-    (hA : IsUnit A) (j : k) :
-    ∃ a : n → R, ∀ i : k, a ⬝ᵥ A *ᵥ X.col i = if j = i then 1 else 0 := by
-  obtain ⟨L, hL : L * X = 1⟩ := hX
-  obtain ⟨a, ha : a ᵥ* A = L j⟩ := vecMul_surjective_iff_isUnit.2 hA (L j)
-  refine ⟨a, fun i ↦ ?_⟩
-  calc a ⬝ᵥ A *ᵥ X.col i = L j ⬝ᵥ X.col i := by rw [dotProduct_mulVec, ha]
-    _ = (L * X) j i := rfl
-    _ = if j = i then 1 else 0 := by rw [hL, Matrix.one_apply]
-
 /-- A subspace `L` of `n → R` has a basis written as the columns of an `n × d` matrix `x`, where `d`
 is the dimension of `L`: `x` has a left inverse and its column space is `L`. -/
 lemma Filling.exists_hasLeftInv_colSpan_eq (L : Submodule R (n → R)) :
@@ -160,22 +156,6 @@ omit [DecidableEq n] in
 lemma HasLeftInv.of_isUnit_gram (h_gram : IsUnit (Xᴴ * J * X)) : HasLeftInv X :=
   ⟨h_gram.unit⁻¹.val * (Xᴴ * J), by rw [Matrix.mul_assoc, h_gram.val_inv_mul]⟩
 
-/-- Let `J` be hermitian and invertible, with form h(u, v) = uᴴ J v. If h(x, x) = h(y, y) and
-h(y, y − x) ≠ 0, then a quasi-reflection along `x − y` sends `x` to `y`. -/
-lemma exists_quasiReflection_mulVec_eq {J : Matrix n n R} (hJ : Jᴴ = J) (hJ' : IsUnit J)
-    {x y : n → R} (hxy : star x ⬝ᵥ J *ᵥ x = star y ⬝ᵥ J *ᵥ y)
-    (h_ne : star y ⬝ᵥ J *ᵥ (y - x) ≠ 0) :
-    ∃ (σ : Rˣ) (hσ : (σ : R) + star (σ : R) = star (x - y) ⬝ᵥ J *ᵥ (x - y)),
-      quasiReflection hJ hJ' (x - y) σ hσ *ᵥ x = y := by
-  -- Take `σ = h(y, y - x)`, which is also `h(x - y, x)`.
-  obtain ⟨σ, hσ : (σ : R) = star y ⬝ᵥ J *ᵥ (y - x)⟩ := h_ne.isUnit
-  have h_form : star (x - y) ⬝ᵥ J *ᵥ x = σ := by simp [hσ, mulVec_sub, hxy]
-  have h_trace : (σ : R) + star (σ : R) = star (x - y) ⬝ᵥ J *ᵥ (x - y) := by
-    simp only [hσ, star_dotProduct_mulVec_comm hJ, star_sub, sub_dotProduct, mulVec_sub,
-      dotProduct_sub, hxy]
-    ring
-  exact ⟨σ, h_trace, by rw [quasiReflection_mulVec, h_form, σ.inv_mul, one_smul, sub_sub_cancel]⟩
-
 /-- Witt's theorem by quasi-reflections: over a field with involution having some z ≠ z̄, for
 invertible hermitian J and a subgroup H of the unitary group U(J) containing all quasi-reflections
 x ↦ x − v σ⁻¹ vᴴJx, left invertible X, Y with XᴴJX = YᴴJY satisfy gX = Y for some g in H.
@@ -187,64 +167,37 @@ lemma witt_of_quasiReflection_mem (hz : ∃ z : R, IsUnit (z - star z)) {J : Mat
     (hH : ∀ (v : n → R) (σ : Rˣ) (hσ : (σ : R) + star (σ : R) = star v ⬝ᵥ J *ᵥ v),
       quasiReflection hJ hJ' v σ hσ ∈ H) :
     ∃ g ∈ H, (g : Matrix n n R) * X = Y := by
-  -- Match the columns one at a time. Write `h(u, v) = star u ⬝ᵥ J *ᵥ v`; the columns in `s` are
-  -- matched by `g`, and `g *ᵥ X.col j` is to be sent to `Y.col j` by quasi-reflections fixing them.
-  have h_col (i j : k) : star (X.col i) ⬝ᵥ J *ᵥ X.col j = star (Y.col i) ⬝ᵥ J *ᵥ Y.col j := by
-    rw [dotProduct_mulVec, dotProduct_mulVec]
+  classical
+  let B := Matrix.toLinearMapₛₗ₂' R (starRingEnd R) (RingHom.id R) J
+  have hB (v w : n → R) : B v w = star v ⬝ᵥ J *ᵥ w := by
+    simp [B, Matrix.toLinearMapₛₗ₂'_apply, starRingEnd_apply, dotProduct, mulVec, Finset.mul_sum,
+      mul_comm, mul_assoc]
+  let V : TauCeti.SignedHermitianSpace R (n → R) (starRingEnd R) 1 :=
+    { form := B
+      form_swap := fun v w ↦ by simpa [hB, starRingEnd_apply] using (star_dotProduct_mulVec_comm hJ v w).symm
+      separatingLeft := fun v hv ↦ funext fun i ↦ by
+        obtain ⟨w, hw⟩ := mulVec_surjective_iff_isUnit.2 hJ' (Pi.single i 1)
+        simpa [hB, hw] using hv w }
+  have form (v w : n → R) : V.form v w = star v ⬝ᵥ J *ᵥ w := hB v w
+  let act : U J →* ((n → R) ≃ₗ[R] (n → R)) :=
+    (Matrix.GeneralLinearGroup.toLin.trans
+      (LinearMap.GeneralLinearGroup.generalLinearEquiv R (n → R))).toMonoidHom.comp (U J).subtype
+  have act_apply (g : U J) (x : n → R) : act g x = (g : Matrix n n R) *ᵥ x := rfl
+  have h_sub : V.quasiReflectionSubgroup ≤ H.map act := V.quasiReflectionSubgroup_le_iff.2 <| by
+    intro v s hs
+    have h_trace : (s : R) + star (s : R) = star v ⬝ᵥ J *ᵥ v := by
+      simpa [form, starRingEnd_apply] using hs
+    refine ⟨quasiReflection hJ hJ' v s h_trace, hH v s h_trace, ?_⟩
+    ext x
+    simp [act_apply, quasiReflection_mulVec, TauCeti.SignedHermitianSpace.quasiReflection_apply, form]
+  have h_col (i j : k) : V.form (X.col i) (X.col j) = V.form (Y.col i) (Y.col j) := by
+    rw [form, form, dotProduct_mulVec, dotProduct_mulVec]
     exact congrFun₂ h_gram i j
-  have mul_act (g₁ g₂ : U J) (x : n → R) :
-      (g₁ * g₂ : U J) *ᵥ x = (g₁ : Matrix n n R) *ᵥ (g₂ : Matrix n n R) *ᵥ x := by simp
-  suffices h_cols : ∀ s : Finset k, ∃ g ∈ H, ∀ i ∈ s, g *ᵥ X.col i = Y.col i by
-    obtain ⟨g, hg, h_all⟩ := h_cols univ
-    exact ⟨g, hg, ext_col fun i ↦ h_all i (mem_univ i)⟩
-  intro s
-  induction s using Finset.induction with
-  | empty => exact ⟨1, by simp⟩
-  | insert j s hj ih => ?_
-  -- If `h(Y j, Y j - g X j) ≠ 0`, a quasi-reflection along `g X j - Y j` does it.
-  have reflect (g : U J) (hg : g ∈ H) (hs : ∀ i ∈ s, g *ᵥ X.col i = Y.col i)
-      (h_ne : star (Y.col j) ⬝ᵥ J *ᵥ (Y.col j - g *ᵥ X.col j) ≠ 0) :
-      ∃ g' ∈ H, ∀ i ∈ insert j s, g' *ᵥ X.col i = Y.col i := by
-    obtain ⟨σ, hσ, h_map⟩ :=
-      exists_quasiReflection_mulVec_eq hJ hJ' (by rw [U.form_mulVec_mulVec, h_col]) h_ne
-    refine ⟨quasiReflection hJ hJ' _ σ hσ * g, mul_mem (hH _ σ hσ) hg,
-      (forall_mem_insert ..).2 ⟨by rw [mul_act, h_map], fun i hi ↦ ?_⟩⟩
-    have h_orth : star (g *ᵥ X.col j - Y.col j) ⬝ᵥ J *ᵥ g *ᵥ X.col i = 0 := by
-      rw [star_sub, sub_dotProduct, U.form_mulVec_mulVec, h_col, hs i hi, sub_self]
-    rw [mul_act, quasiReflection_mulVec, h_orth, mul_zero, zero_smul, sub_zero, hs i hi]
-  obtain ⟨g, hg, hs⟩ := ih
-  by_cases! h_zero : star (Y.col j) ⬝ᵥ J *ᵥ (Y.col j - g *ᵥ X.col j) ≠ 0
-  · exact reflect g hg hs h_zero
-  -- Otherwise first apply a quasi-reflection along `star u`, where `h(star u, x) = u ⬝ᵥ J *ᵥ x`
-  -- kills the matched columns but neither `Y j` nor `g X j`. Left inverses give `a`, `b` with forms
-  -- dual to column `j` of `g X` and of `Y`, and one of `a`, `b`, `a + b` serves as `u`.
-  obtain ⟨a, ha⟩ : ∃ a : n → R, ∀ i : k, a ⬝ᵥ J *ᵥ g *ᵥ X.col i = if j = i then 1 else 0 := by
-    simpa using hX.exists_dotProduct_mulVec_col_eq_ite (hJ'.mul (g : GL n R).isUnit) j
-  obtain ⟨b, hb⟩ := hY.exists_dotProduct_mulVec_col_eq_ite hJ' j
-  obtain ⟨u, hu_s, hu_Y, hu_X⟩ : ∃ u : n → R, (∀ i ∈ s, u ⬝ᵥ J *ᵥ Y.col i = 0) ∧
-      u ⬝ᵥ J *ᵥ Y.col j ≠ 0 ∧ u ⬝ᵥ J *ᵥ g *ᵥ X.col j ≠ 0 := by
-    have ⟨ha_s, hb_s⟩ : (∀ i ∈ s, a ⬝ᵥ J *ᵥ Y.col i = 0) ∧ ∀ i ∈ s, b ⬝ᵥ J *ᵥ Y.col i = 0 := by
-      grind
-    by_cases! ha_j : a ⬝ᵥ J *ᵥ Y.col j ≠ 0
-    · exact ⟨a, ha_s, ha_j, by grind⟩
-    by_cases! hb_j : b ⬝ᵥ J *ᵥ g *ᵥ X.col j ≠ 0
-    · exact ⟨b, hb_s, by simp [hb], hb_j⟩
-    exact ⟨a + b, by grind [add_dotProduct]⟩
-  obtain ⟨σ, hσ⟩ := TauCeti.exists_units_add_eq (σ := starRingEnd R)
+  obtain ⟨g, hg, h_map⟩ := V.exists_mem_quasiReflectionSubgroup_apply_eq
     (hz.imp fun _ hz h ↦ hz.ne_zero (sub_eq_zero.2 h.symm))
-    (star_dotProduct_mulVec_comm hJ (star u) (star u))
-  have hρ (x : n → R) : quasiReflection hJ hJ' (star u) σ hσ *ᵥ x =
-      x - ((↑σ⁻¹ : R) * u ⬝ᵥ J *ᵥ x) • star u := by rw [quasiReflection_mulVec, star_star]
-  set ρ : U J := quasiReflection hJ hJ' (star u) σ hσ
-  refine reflect (ρ * g) (mul_mem (hH (star u) σ hσ) hg) (fun i hi ↦ ?_) ?_
-  · rw [mul_act, hs i hi, hρ, hu_s i hi, mul_zero, zero_smul, sub_zero]
-  · -- by `h_zero` only the term along `star u` is left
-    have h_value : star (Y.col j) ⬝ᵥ J *ᵥ (Y.col j - (ρ * g : U J) *ᵥ X.col j) =
-        ↑σ⁻¹ * u ⬝ᵥ J *ᵥ g *ᵥ X.col j * star (u ⬝ᵥ J *ᵥ Y.col j) := by
-      rw [mul_act, hρ, ← sub_add, mulVec_add, dotProduct_add, h_zero, zero_add, mulVec_smul,
-        dotProduct_smul, ← star_dotProduct_mulVec_comm hJ (star u), star_star, smul_eq_mul]
-    rw [h_value]
-    exact mul_ne_zero (mul_ne_zero σ⁻¹.ne_zero hu_X) (star_ne_zero.2 hu_Y)
+    (mulVec_injective_iff.1 hX.injective_mulVec) (mulVec_injective_iff.1 hY.injective_mulVec) h_col
+  obtain ⟨u, hu, rfl⟩ := h_sub hg
+  exact ⟨u, hu, ext_col fun i ↦ h_map i⟩
 
 /-- **Witt's theorem.** Let `R` be a field with an involution that is not the identity and let `J`
 be an invertible hermitian matrix. Left invertible `X`, `Y` with `Xᴴ * J * X = Yᴴ * J * Y` satisfy

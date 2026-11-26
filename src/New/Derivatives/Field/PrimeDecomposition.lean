@@ -1,7 +1,10 @@
 module
 
-public import Lib.ClassField.Places.ValuationSubrings
+public import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import New.Reduction.Data.FieldsAndPlaces
+import Lib.ClassField.Places.ProfiniteGalois
+import Lib.ClassField.Places.ValuationSubrings
 
 /-!
 # Different and prime decomposition of the CM field E = K(ζ)
@@ -556,25 +559,17 @@ lemma map_galOfPlaceInt_eq_pow_iff_eq_frobElem_pow [IsDomain R] (φ : 𝓞 (P.E 
       (v, e) = P.frobElem s p ^ n := by
   -- The first condition of `forall_map_galOfPlaceInt_eq_pow_iff` determines `v`; as
   -- `φ sqrtNegDInE ≠ 0`, the second one determines `e`.
-  obtain ⟨hp_not_dvd_q₁, hp_not_dvd_d⟩ : ¬p ∣ P.q₁ s ∧ ¬p ∣ P.d := by
-    rwa [hp.out.dvd_mul, not_or] at hp_not_dvd
-  have sqrt_sq : φ (P.sqrtNegDInE s) ^ 2 = -P.d :=
-    map_sqrtNegDInt_sq (φ.comp (algebraMap (𝓞 P.K) (𝓞 (P.E s))))
-  have sqrt_ne_zero : φ (P.sqrtNegDInE s) ≠ 0 := fun h_zero ↦ by
-    simp [h_zero, CharP.cast_eq_zero_iff R p, hp_not_dvd_d] at sqrt_sq
-  -- `chiK P.d p ^ n` and `e` are `1` or `-1`, which stay distinct in `R` because `p ≠ 2`
-  have neg_one_ne_one : (-1 : R) ≠ 1 := by
-    simpa [_root_.neg_one_eq_one_iff, ringChar.eq R p] using ne_two_of_not_dvd_q₁ hp_not_dvd_q₁
-  have sign_iff : chiK P.d p ^ n * e * φ (P.sqrtNegDInE s) = φ (P.sqrtNegDInE s) ↔
-      e = chiK P.d p ^ n := by
-    rw [mul_left_eq_self₀, or_iff_left sqrt_ne_zero, ← Int.cast_pow]
-    rcases chiK_pow_eq_one_or_neg_one hp_not_dvd_d n with h_pow | h_pow <;>
-      rcases h_sign.sign_eq_one_or_neg_one with rfl | rfl <;> simp [h_pow, neg_one_ne_one]
-  have frobElem_pow : P.frobElem s p ^ n =
-      (P.placeOfInt s (chiK P.d p ^ n * p ^ n), chiK P.d p ^ n) := by simp [placeOfInt_pow, mul_pow]
-  rw [forall_map_galOfPlaceInt_eq_pow_iff hp_not_dvd_q₁ φ n h_sign,
-    map_galOfPlaceInt_zetaInt_inj φ hp_not_dvd_q₁, sign_iff, frobElem_pow, Prod.mk.injEq]
-  exact and_congr_left fun he : e = chiK P.d p ^ n ↦ by rw [he]
+  obtain ⟨hq₁, hd⟩ : ¬p ∣ P.q₁ s ∧ ¬p ∣ P.d := by rwa [hp.out.dvd_mul, not_or] at hp_not_dvd
+  have hsq : φ (P.sqrtNegDInE s) ^ 2 = -P.d := map_sqrtNegDInt_sq (φ.comp (algebraMap _ _))
+  have hsqrt : φ (P.sqrtNegDInE s) ≠ 0 := fun h ↦ by
+    simp [h, CharP.cast_eq_zero_iff R p, hd] at hsq
+  have h2 : (-1 : R) ≠ 1 := by
+    simpa [_root_.neg_one_eq_one_iff, ringChar.eq R p] using ne_two_of_not_dvd_q₁ hq₁
+  rw [forall_map_galOfPlaceInt_eq_pow_iff hq₁ φ n h_sign,
+    map_galOfPlaceInt_zetaInt_inj φ hq₁, mul_left_eq_self₀, or_iff_left hsqrt, ← Int.cast_pow]
+  rcases h_sign.sign_eq_one_or_neg_one with rfl | rfl
+  · rcases chiK_pow_eq_one_or_neg_one hd n with h | h <;> simp [h, h2, placeOfInt_pow, mul_pow]
+  · rcases chiK_pow_eq_one_or_neg_one hd n with h | h <;> simp [h, h2, placeOfInt_pow, mul_pow]
 
 /-! ### Decomposition groups, norms and ramification -/
 

@@ -1,8 +1,29 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.Tietze
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.QuotientMeasure.UnfoldingInStages
 public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
 public import Lib.Weil.DualPair.ThetaIntegrals
+public import Lib.Weil.DualPair.ThetaLiftConvergence
+public import Lib.Weil.DualPair.WeilAction
+import Lib.Adelic.AutomorphicForms.RealConvolution
+import Lib.Adelic.QuotientMeasure.IwasawaUnfolding
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Weil.Construction.CanonicalTheta
+import Lib.Weil.DualPair.FiniteAction
 
 /-!
 # Vanishing theta descents for unitary groups: Fourier coefficients and periods
@@ -34,8 +55,8 @@ Notions from other files:
 * `New.pairTheta W V a b f`: the theta kernel on `U(W)(𝔸) × U(V)(𝔸)` of a datum `f` on `Hom(W, V)`,
   twisted by the characters `a`, `b` of `U(1)`. `New.pairThetaKer` bundles it, and `New.Space.lift`
   for `(pairThetaKer W V a b).swap` integrates a function on `U(V)(𝔸)` against it.
-* `New.Space.Splitting.radicalCentre`: the parametrisation of the centre of the unipotent radical by
-  adelic `p × p` matrices; `centreCoeff T F g` is the mean of `ψ (tr (T M)) * F (z M * g)` over the
+* `New.Space.Splitting.radicalCenter`: the parametrisation of the centre of the unipotent radical by
+  adelic `p × p` matrices; `centerCoeff T F g` is the mean of `ψ (tr (T M)) * F (z M * g)` over the
   `M` modulo rational matrices, `z` being this parametrisation.
 * `New.WeilData.upsilonU1`: the restriction of the splitting character υ to the norm-one ideles.
 
@@ -188,10 +209,10 @@ variable {E n n₀ m p : Type} [Field E] [CMType E] [H : WeilData E] [Fintype n]
   {s₀ : n₀ → ℤˣ} {t : m → ℤˣ} {W : Space E n s} {W₀ : Space E n₀ s₀} (D : W.Splitting W₀ p)
   {V : Space E m t} {a b : AutChar E} {f : 𝒮 (W.hom V)} {g : G E s} {y : G E t → ℂ}
 
-/-- By definition `radicalCentre z` is the element `radicalElement` of the unipotent radical with
+/-- By definition `radicalCenter z` is the element `radicalElement` of the unipotent radical with
 zero vector and central part `-2 j z`. -/
 lemma radicalCentre_apply (z : Matrix p p (𝔸 E)) :
-    D.radicalCentre z = D.radicalElement 0 (-toAdele (H.j * 2 : E) • z) :=
+    D.radicalCenter z = D.radicalElement 0 (-toAdele (H.j * 2 : E) • z) :=
   rfl
 
 /-- The theta kernel of the datum `f` at `(g, h)` is the sum of its terms `D.thetaTerm` over the
@@ -200,11 +221,11 @@ lemma hasSum_thetaTerm (h : G E t) :
     HasSum (fun x : Matrix m p E ↦ D.thetaTerm V a b f g x h) (pairTheta W V a b f (g, h)) :=
   D.hasSum_theta_homSlice V (pairWeil W V a b (g, h) f)
 
-/-- Multiplying `g` on the left by the central unipotent element `radicalCentre z` multiplies the
+/-- Multiplying `g` on the left by the central unipotent element `radicalCenter z` multiplies the
 term of the frame `x` in the theta kernel by `ψ (tr (-j β z))`, where `β` is the Gram matrix of `x`
 and `ψ` the standard additive character of the adeles. -/
 lemma thetaTerm_radicalCentre_mul (z : Matrix p p (𝔸 E)) (x : Matrix m p E) (h : G E t) :
-    D.thetaTerm V a b f (D.radicalCentre z * g) x h =
+    D.thetaTerm V a b f (D.radicalCenter z * g) x h =
       stdAddChar E ((-H.j • (xᴴ * V.J * x)).map toAdele * z).trace * D.thetaTerm V a b f g x h := by
   have h_scalar : toAdele (2⁻¹ : E) * -toAdele (H.j * 2 : E) = toAdele (-H.j) := by
     simp [← map_neg, ← map_mul, mul_comm H.j]
@@ -213,8 +234,8 @@ lemma thetaTerm_radicalCentre_mul (z : Matrix p p (𝔸 E)) (x : Matrix m p E) (
         ((-H.j • (xᴴ * V.J * x)).map toAdele * z).trace := by
     rw [Matrix.map_smul' _ _ _ (map_mul toAdele), Matrix.smul_mul, Matrix.smul_mul, trace_smul,
       trace_smul, trace_mul_comm z, smul_eq_mul, smul_eq_mul, ← mul_assoc, h_scalar]
-  have h_split : pairWeil W V a b (D.radicalCentre z * g, h) f =
-      pairWeil W V a b (D.radicalCentre z, 1) (pairWeil W V a b (g, h) f) := by
+  have h_split : pairWeil W V a b (D.radicalCenter z * g, h) f =
+      pairWeil W V a b (D.radicalCenter z, 1) (pairWeil W V a b (g, h) f) := by
     simp [rep_apply_apply]
   rw [thetaTerm, h_split, radicalCentre_apply, homSlice_radicalElement, gram_at_point_eq_map,
     h_phase]
@@ -238,18 +259,18 @@ lemma fixesLeft_thetaTerm_mul (hΓ : V.Γ.FixesLeft y) (x : Matrix m p E) :
   simpa only [hγ] using D.thetaTerm_mul_ratEmbed_mul hΓ γ x h
 
 /-- Let `y` be continuous on `U(V)(𝔸)`, and let the terms of the theta kernel at `g` be absolutely
-integrable against `y`. Then the theta lift of `y` at `radicalCentre z * g` is the sum over all
+integrable against `y`. Then the theta lift of `y` at `radicalCenter z * g` is the sum over all
 rational frames `x` of `ψ (tr (-j β(x) z))` times the integral over `[U(V)]` of the term of `x` at
 `g` against `y`, where `β(x)` is the Gram matrix of `x`. -/
 lemma integral_pairTheta_radicalCentre_mul (h_int : D.HasIntegrableTerms V a b f g y)
     (hy : Continuous y) (z : Matrix p p (𝔸 E)) :
-    ∫ h : G E t, pairTheta W V a b f (D.radicalCentre z * g, h) * y h ∂V.quotMeasure =
+    ∫ h : G E t, pairTheta W V a b f (D.radicalCenter z * g, h) * y h ∂V.quotMeasure =
       ∑' x : Matrix m p E, stdAddChar E ((-H.j • (xᴴ * V.J * x)).map toAdele * z).trace *
         ∫ h : G E t, D.thetaTerm V a b f g x h * y h ∂V.quotMeasure := by
   -- Expand the kernel into its terms, each the term at `g` times a number `χ x` of modulus one,
   -- and exchange sum and integral.
   let χ (x : Matrix m p E) : ℂ := stdAddChar E ((-H.j • (xᴴ * V.J * x)).map toAdele * z).trace
-  have h_expand (h : G E t) : pairTheta W V a b f (D.radicalCentre z * g, h) * y h =
+  have h_expand (h : G E t) : pairTheta W V a b f (D.radicalCenter z * g, h) * y h =
       ∑' x : Matrix m p E, χ x * (D.thetaTerm V a b f g x h * y h) := by
     simp_rw [← (D.hasSum_thetaTerm h).tsum_eq, D.thetaTerm_radicalCentre_mul, ← tsum_mul_right,
       mul_assoc, χ]
@@ -268,19 +289,19 @@ unipotent radical, at `j β` and `g`, of the theta lift of `y` is the sum, over 
 the imaginary element of `E` given by `WeilData`. -/
 lemma centreCoeff_integral_eq_tsum (h_int : D.HasIntegrableTerms V a b f g y)
     (hy : Continuous y) (β : Matrix p p E) :
-    D.centreCoeff (H.j • β)
+    D.centerCoeff (H.j • β)
         (fun k : G E s ↦ ∫ h : G E t, pairTheta W V a b f (k, h) * y h ∂V.quotMeasure) g =
       ∑' x : {x : Matrix m p E | xᴴ * V.J * x = β},
         ∫ h : G E t, D.thetaTerm V a b f g (x : Matrix m p E) h * y h ∂V.quotMeasure := by
   have h_summable :
       Summable fun x : Matrix m p E ↦ ∫ h, D.thetaTerm V a b f g x h * y h ∂V.quotMeasure :=
     (hasSum_integral_of_lintegral_tsum_lt_top h_int (by fun_prop [thetaTerm])).summable
-  -- With the character of `j • β` from `centreCoeff`, the frequency of `x` is zero exactly when
+  -- With the character of `j • β` from `centerCoeff`, the frequency of `x` is zero exactly when
   -- `x` has Gram matrix `β`. So the right side is the mean over `z` of a sum over all `x`.
   have h_freq (x : Matrix m p E) : -H.j • (xᴴ * V.J * x) + H.j • β = 0 ↔
       x ∈ {x : Matrix m p E | xᴴ * V.J * x = β} := by
     simp [neg_add_eq_zero, WeilData.j_ne_zero]
-  rw [isDualFamily_ratMatrices.tsum_coeff_eq_quotMean _ h_freq h_summable, centreCoeff]
+  rw [isDualFamily_ratMatrices.tsum_coeff_eq_quotMean _ h_freq h_summable, centerCoeff]
   congr with z
   -- The means over `z` have the same integrand: the characters of `j β` and of `x` multiply.
   simp_rw [D.integral_pairTheta_radicalCentre_mul h_int hy, ← tsum_mul_left,
@@ -295,7 +316,7 @@ lemma centreCoeff_eq_integral_ratStabilizer (h_int : D.HasIntegrableTerms V a b 
     (hy : Continuous y) (hΓ : V.Γ.FixesLeft y) {x : Matrix m p E}
     (h_gram : IsUnit (xᴴ * V.J * x)) :
     Integrable (fun h : G E t ↦ D.thetaTerm V a b f g x h * y h) (V.ratStabilizer x).quotMeasure ∧
-    D.centreCoeff (H.j • (xᴴ * V.J * x))
+    D.centerCoeff (H.j • (xᴴ * V.J * x))
         (fun k : G E s ↦ ∫ h : G E t, pairTheta W V a b f (k, h) * y h ∂V.quotMeasure) g =
       ∫ h : G E t, D.thetaTerm V a b f g x h * y h ∂(V.ratStabilizer x).quotMeasure := by
   -- By Witt's theorem the frames with the Gram matrix of `x` form one orbit of `U V.J`, and the
@@ -320,7 +341,7 @@ lemma centreCoeff_eq_integral_stabilizer (h_int : D.HasIntegrableTerms V a b f g
     (hS : ∀ k : G E t, k ∈ S ↔ ∃ γ : U V.J, (γ : Matrix m m E) * x₀ = x₀ ∧ V.ratEmbed γ = k) :
     (S.FixesLeft fun h : G E t ↦ D.thetaTerm V a b f g x₀ h * y h) ∧
     Integrable (fun h : G E t ↦ D.thetaTerm V a b f g x₀ h * y h) S.quotMeasure ∧
-    D.centreCoeff (H.j • (x₀ᴴ * V.J * x₀))
+    D.centerCoeff (H.j • (x₀ᴴ * V.J * x₀))
         (fun k : G E s ↦ ∫ h : G E t, pairTheta W V a b f (k, h) * y h ∂V.quotMeasure) g =
       ∫ h : G E t, D.thetaTerm V a b f g x₀ h * y h ∂S.quotMeasure := by
   obtain rfl : S = V.ratStabilizer x₀ := S.ext fun k ↦ (hS k).trans mem_ratStabilizer.symm
@@ -430,7 +451,7 @@ lemma mem_range_secondBlock {g : G E (1 : n → ℤˣ)} :
       cases i <;> simp [h_entry, Matrix.one_apply]
     obtain ⟨a, ha⟩ : ∃ a : U (stdForm E (1 : n₂ → ℤˣ)),
         U.sum stdForm_sum (1, a) = g'.toUnitary :=
-      ((U.exists_sum_eq_iff_toCols_eq stdForm_sum).right (by simp)).mpr h_cols
+      (U.mem_range_sum_right stdForm_sum (by simp)).mpr h_cols
     have ha_mat : g'.adeleMatrix = fromBlocks 1 0 0 (a : Matrix n₂ n₂ (𝔸 E)) :=
       (congrArg (fun k : U (stdForm E _) ↦ k.val.val) ha).symm
     have h_sum : G.sum (1, toUnitary.symm a) = g' := by
@@ -720,15 +741,12 @@ lemma DescentsVanish.integral_frameChar_eq_zero {T : Set (FinPlace E)} {Y : G E 
       (isRapid_of_isCocompact hY_cont hY_inv V.isCocompact_Gamma) υ f g₀
   have h_gram : IsUnit (x₀ᴴ * V.J * x₀) :=
     ⟨1, by simp [x₀, V, inclMatrix, Matrix.mul_apply, ← ext_iff, Matrix.one_apply]⟩
-  obtain ⟨h_int, h_coeff⟩ : Integrable (fun g ↦ A.thetaTerm V υ 1 f g₀ x₀ g * Y g) ν ∧
-      A.centreCoeff (j (E := E) • (x₀ᴴ * V.J * x₀))
-          (fun g ↦ ∫ h, pairTheta (hyperbolicSpace E n₁) V υ 1 f (g, h) * Y h ∂V.quotMeasure) g₀ =
-        ∫ g, A.thetaTerm V υ 1 f g₀ x₀ g * Y g ∂ν :=
+  obtain ⟨h_int, h_coeff⟩ :=
     (A.centreCoeff_eq_integral_stabilizer h_terms hY_cont hY_inv h_gram
       (mem_map_Gamma_secondBlock o hs)).right
   have h_zero : ∫ g, A.thetaTerm V υ 1 f g₀ x₀ g * Y g ∂ν = 0 := by
     rw [← h_coeff, h_killed]
-    simp [centreCoeff]
+    simp [centerCoeff]
   -- The term of `x₀` is `c · ψ_u(x) · vac[α₀ x]` with `c = c₁ c₂ ≠ 0`: the Levi element contributes
   -- the factor `c₁` and moves the frame to `α₀ x`.
   obtain ⟨c₂, hc₂_ne, h_theta⟩ : ∃ c₂ ≠ (0 : ℂ), ∀ y : Matrix n n₁ (𝔸 E),

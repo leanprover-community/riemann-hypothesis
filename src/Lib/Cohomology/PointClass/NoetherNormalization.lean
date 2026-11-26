@@ -1,9 +1,19 @@
 module
 
-public import Lib.General.Algebra.MultivariatePolynomials
-public import Lib.General.Geometry.PointsOfProperSchemes
+public import Aesop.BuiltinRules
+public import Mathlib.RingTheory.Invariant.Defs
+import Mathlib.FieldTheory.PurelyInseparable.Exponent
+import Mathlib.GroupTheory.CosetCover
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Invariant.Galois
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.RingTheory.MvPolynomial.Homogeneous
 public import Lib.General.Geometry.ProjectiveSpace
-public import Lib.PadicComparison.Descent.TestCategory
+public import Lib.General.Geometry.EtaleCharts
+import Lib.General.Algebra.MultivariatePolynomials
+import Lib.General.Geometry.PointsOfProperSchemes
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Projective Noether normalisation and homogeneous coordinates of embedded points
@@ -77,7 +87,7 @@ noncomputable abbrev evalForms (v : ι → A) (j : Fin (d + 1)) : A := ((Λ j).v
 @[grind =>]
 lemma aeval_smul_of_isHomogeneous {n : ℕ} (hF : F.IsHomogeneous n) :
     aeval (u • v) F = u ^ n * aeval v F :=
-  eval₂_mul_of_isHomogeneous hF (algebraMap k A) u v
+  hF.eval₂_const_mul (algebraMap k A) v u
 
 /-- If `χ` kills the kernel of `φ` and `φ ∘ v` lies on the cone of `g`, then so does `χ ∘ v`. -/
 lemma IsHomogeneousSolution.of_ker {D : Type} [CommRing D] [Algebra k D] (χ : A →ₐ[k] D)
@@ -184,7 +194,7 @@ domain `A` of characteristic zero, lie in a finite `A`-algebra `B` whose ring of
 lemma exists_galois_hull [Finite ι]
     [IsDomain A] [IsNoetherianRing A] [CharZero A] [IsIntegrallyClosed A]
     [IsAlgClosed L] [Algebra A L] [FaithfulSMul A L] (hg : ∀ i : ι, IsIntegral A (g i)) :
-    ∃ᵉ (B : CommAlgCat.{0} A) (_ : Fintype Gal(B/A)) (j : B →ₐ[A] L) (x : ι → B),
+    ∃ B : CommAlgCat.{0} A, ∃ _ : Fintype Gal(B/A), ∃ j : B →ₐ[A] L, ∃ x : ι → B,
       Algebra.IsInvariant A B Gal(B/A) ∧ (algebraMap A B).Finite ∧ Injective j ∧ j ∘ x = g := by
   -- `B` is the integral closure of `A` in a finite Galois extension `N` of `Frac A` in `L` that
   -- contains the `g i`.
@@ -385,10 +395,10 @@ private lemma isIntegral_aeval_of_evalForms_eq {G B : Type} [CommRing B] [Algebr
     (σ₀ : G) (hΛb : evalForms Λ (b σ₀) = f ∘ X) :
     (aeval (R := k) ↿b).IsIntegral := by
   let θ : MvPolynomial (Fin (d + 1)) k →ₐ[k] MvPolynomial (G × ι) k :=
-    bind₁ fun l ↦ rename (Prod.mk σ₀) (Λ l).val
+    aeval fun l ↦ rename (Prod.mk σ₀) (Λ l).val
   have hfactor : (aeval (R := k) ↿b).comp θ = f := by
     refine algHom_ext fun l ↦ ?_
-    simp only [θ, AlgHom.comp_apply, bind₁_X_right, aeval_rename]
+    simp only [θ, AlgHom.comp_apply, aeval_X, aeval_rename]
     exact congrFun hΛb l
   refine .tower_top θ.toRingHom _ ?_
   change ((aeval (R := k) ↿b).comp θ).toRingHom.IsIntegral
@@ -661,14 +671,20 @@ lemma IsCoordsWithUnit.exists_descend_of_injective (hξ : IsCoordsWithUnit L ξ 
   obtain ⟨j, _, hj, rfl⟩ := hL.out.exists_isClosedImmersion
   obtain ⟨t, ht_over, ht⟩ := exists_isHomogeneousCoords (Opposite.unop ((specAlg k R).obj A)).hom hv
   -- `ξ` and the image of `t` both have coordinates `g` and lie over the same point of `Spec R`.
-  -- (The two sides lie over `Spec R` only after unfolding the structure maps, hence `erw`.)
   have h_image : ξ.down.left ≫ j = Spec.map (CommRingCat.ofHom φ.hom.toRingHom) ≫ t := by
     have h_coords_image : LineBundle.IsHomogeneousCoords ((hyperplaneBundle ι).pull Limits.prod.fst)
         (Spec.map (CommRingCat.ofHom φ.hom.toRingHom) ≫ t) g :=
       h_coord ▸ (ht.map (isLinearSystem_hyperplaneBundle.pull _) hv _).smul hgi_unit
     refine isProjEmbedding_projSpace.eq_of_isHomogeneousCoords ?_ hξ.left h_coords_image
       (LineBundle.exists_landsIn _ _)
-    erw [assoc, hj, assoc, ht_over, w, w ((specAlg ..).map φ).1]
+    let u := ((specAlg k R).map φ).unop
+    change (ξ.down.left ≫ j) ≫ Limits.prod.snd = (u.left ≫ t) ≫ Limits.prod.snd
+    calc
+      _ = ξ.down.left ≫ Y.hom :=
+        (assoc ..).trans (congrArg (ξ.down.left ≫ ·) hj)
+      _ = u.left ≫ (t ≫ Limits.prod.snd) :=
+        ξ.down.w.trans (u.w.symm.trans (congrArg (u.left ≫ ·) ht_over).symm)
+      _ = _ := (assoc ..).symm
   -- The ideal `J` cutting out the locus where `t` lies in `Y` is killed by `φ`, hence is zero.
   obtain ⟨J, -, hJ⟩ := exists_ideal_le_ker_iff_factors j t
   have h_ker_le : RingHom.ker φ.hom.toRingHom ≤ RingHom.ker (RingHom.id A) :=
@@ -721,7 +737,7 @@ lemma IsCoordsWithUnit.exists_universal_chart (hξ : IsCoordsWithUnit L ξ g)
   have h_eval {C : CommAlg k} {w : ι → C} (u : IsUnit (w i)) :
       ∃ φ : MvPolynomial ι k →ₐ[k] C,
         w i • φ ∘ X = w ∧ ∀ P, Associated ((homog P).aeval w) (φ P) := by
-    refine ⟨aeval (u.unit⁻¹.1 • w), by simp [← mul_assoc, funext_iff], fun P ↦ ?_⟩
+    refine ⟨aeval (u.unit⁻¹.val • w), by simp [← mul_assoc, funext_iff], fun P ↦ ?_⟩
     simp [← h_chart P, aeval_smul_of_isHomogeneous (h_homog_deg _), associated_unit_mul_right,
       IsUnit.pow]
   -- (`@` keeps `C` and `w` implicit in the chosen functions)

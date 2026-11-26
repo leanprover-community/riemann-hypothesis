@@ -1,6 +1,9 @@
 module
 
+import TauCeti.LinearAlgebra.Matrix.Range
 public import New.Spanning.RemainingTerms.BorderedDeterminant
+public import Lib.General.NumberTheory.LatticeCovolumes
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Orthogonal lifts and the two isotropic lists of a link
@@ -48,7 +51,7 @@ variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {τ : Type}
 /-! ### A basis of `I` and lifts of a basis of the link -/
 
 /-- The indices `b ≥ j` of the basis vectors `e_b` of `A`. -/
-abbrev IndexNotBelow (j : Fin (𝔰.ϱ + 2)) : Type := {a : Fin 𝔰.ϱ // ¬a.1 < j}
+abbrev IndexNotBelow (j : Fin (𝔰.ϱ + 2)) : Type := {a : Fin 𝔰.ϱ // ¬a.val < j}
 
 /-- The vectors `z` and `k z`, as columns. -/
 abbrev lastPair {R : Type} [CommRing R] [StarRing R] {T : 𝔰.Form R} (k : T.G) :
@@ -58,7 +61,7 @@ abbrev lastPair {R : Type} [CommRing R] [StarRing R] {T : 𝔰.Form R} (k : T.G)
 /-- The matrix whose columns are the basis vectors `e*_b` with `b ≥ j`. -/
 noncomputable def eStarCols (R : Type) [CommRing R] (j : Fin (𝔰.ϱ + 2)) :
     Matrix 𝔰.BesselIndex (IndexNotBelow j) R :=
-  (diagonal 1).submatrix id (inr ∘ inr ∘ sumCompl (fun a : Fin 𝔰.ϱ ↦ a.1 < j) ∘ inr)
+  (diagonal 1).submatrix id (inr ∘ inr ∘ sumCompl (fun a : Fin 𝔰.ϱ ↦ a.val < j) ∘ inr)
 
 /-- An orthogonal lift of `v` at cell rank `j`. The columns of `u` are orthogonal to the isotropic
 space `A = ⟨e₁, …, e_ϱ⟩` and to `γ A`. The first ones, one for each index `b ≥ j`, are dual to the
@@ -104,7 +107,7 @@ are the columns of `(0 | v)`, and their products with the `e*_b`, `b ≥ j`, for
 lemma exists_orthogonal_lift [Fintype τ] [DecidableEq τ] (hj : S.HasCellRank j γ)
     {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E} (hL : colSpan v = link γ) :
     ∃ u : Matrix 𝔰.BesselIndex (IndexNotBelow j ⊕ τ) E, IsOrthogonalLift j γ v u := by
-  let r : IndexBelow j ⊕ IndexNotBelow j ≃ Fin 𝔰.ϱ := sumCompl fun a : Fin 𝔰.ϱ ↦ a.1 < j
+  let r : IndexBelow j ⊕ IndexNotBelow j ≃ Fin 𝔰.ϱ := sumCompl fun a : Fin 𝔰.ϱ ↦ a.val < j
   let m : Matrix 𝔰.BesselIndex (Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ) E := isotropicFramePair γ
   let s : Matrix 𝔰.BesselIndex (IndexNotBelow j) E := eStarCols E j
   -- The three conditions form one linear system, solved column by column.
@@ -147,7 +150,7 @@ lemma exists_orthogonal_lift [Fintype τ] [DecidableEq τ] (hj : S.HasCellRank j
       ext a
       -- The product with `e*_a` reads off the coordinate at `e_a`, where `x` is `target - t`.
       simpa [s, r, target, eStarCols, frameImage_one_mulVec, init, mulVec, dotProduct,
-        Matrix.mul_apply, Matrix.one_apply, eq_sub_iff_add_eq'] using hx a.1 (not_lt.1 a.2)
+        Matrix.mul_apply, Matrix.one_apply, eq_sub_iff_add_eq'] using hx a.val (not_lt.1 a.property)
     rw [mulVecLin_apply, fromRows_mulVec, fromRows_mulVec, h_orth,
       mulVec_add, h_link_zero, ht_link, add_zero, h_dual]
     ext ((a | a) | a) <;> rfl
@@ -168,15 +171,9 @@ variable {τ : Type} {v : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) τ E}
 
 /-- Let `u` be an orthogonal lift. In its row of the isotropic basis vector `e_i`, `i ≥ j`, it has
 the identity in its first block of columns and zero in the second. -/
-lemma IsOrthogonalLift.apply_inl (hu : IsOrthogonalLift j γ v u) (i : IndexNotBelow j) :
-    (∀ a : IndexNotBelow j, u (inl i.val) (inl a) = if i = a then 1 else 0) ∧
-      ∀ b : τ, u (inl i.val) (inr b) = 0 := by
-  have h_entry (x : IndexNotBelow j ⊕ τ) : u (inl i.val) x =
-      fromCols (1 : Matrix (IndexNotBelow j) (IndexNotBelow j) E) 0 i x := by
-    simpa [eStarCols, -Subtype.forall, Matrix.mul_apply, Matrix.one_apply] using
-      congrFun₂ hu.dual i x
-  exact ⟨fun a ↦ by simpa [Matrix.one_apply] using h_entry (inl a),
-    fun b ↦ by simpa using h_entry (inr b)⟩
+lemma IsOrthogonalLift.apply_inl (hu : IsOrthogonalLift j γ v u) (i : IndexNotBelow j)
+    (a : IndexNotBelow j) : u (inl i.val) (inl a) = if i = a then 1 else 0 := by
+  simpa [eStarCols, Matrix.mul_apply, Matrix.one_apply] using congrFun₂ hu.dual i (inl a)
 
 /-- If `u` is an orthogonal lift (`IsOrthogonalLift j γ v u`), its first columns `u.toCols₁` are
 orthogonal, for the form `S.ratGram`, to the columns of `isotropicFramePair γ`, which span `A` and
@@ -220,7 +217,7 @@ lemma IsOrthogonalLift.toCols₁_mul_framePair (hu : IsOrthogonalLift j γ v u) 
   rw [hu.toCols₁_eq_fromRows]
   ext a (b | b)
   · cases b using lastCases <;> simp [Matrix.mul_apply, Matrix.one_apply, splitGram]
-  · simpa [Matrix.mul_apply, Matrix.one_apply, frameGram, splitGram, mul_comm] using
+  · simpa [Matrix.mul_apply, Matrix.one_apply, frameGram, splitGram] using
       congrFun₂ h_image a b
 
 /-- The first columns of an orthogonal lift are orthogonal to all its columns. -/
@@ -278,14 +275,14 @@ lemma abs_norm_det_gram_eq_abs_norm_subframeMinor_sq :
     ((IndexBelow j ⊕ IndexBelow j) ⊕ Unit ⊕ Unit) E :=
     (fromCols (listPair j γ) (lastPair γ))ᴴ * S.ratGram *
     fromCols (listPair j γ) (lastPair γ) + fromBlocks 0 0 0 ((S.N : E) • 1)
-  let index : IndexBelow j ⊕ Unit → Fin (𝔰.ϱ + 1) := Sum.elim (·.1.castSucc) fun _ ↦ 𝔰.top
+  let index : IndexBelow j ⊕ Unit → Fin (𝔰.ϱ + 1) := Sum.elim (·.val.castSucc) fun _ ↦ 𝔰.top
   let position : (IndexBelow j ⊕ IndexBelow j) ⊕ Unit ⊕ Unit → Fin (𝔰.ϱ + 1) ⊕ Fin (𝔰.ϱ + 1) :=
-    Sum.elim (.map (·.1.castSucc) (·.1.castSucc)) (.map (fun _ ↦ 𝔰.top) fun _ ↦ 𝔰.top)
+    Sum.elim (.map (·.val.castSucc) (·.val.castSucc)) (.map (fun _ ↦ 𝔰.top) fun _ ↦ 𝔰.top)
   let C : Matrix (IndexBelow j ⊕ Unit) (IndexBelow j ⊕ Unit) E :=
     (S.frameProducts γ).submatrix index index
   have h_mem (x : IndexBelow j ⊕ Unit) : index x ∈ subframeIndices j := by
     rcases x with x | x
-    · simp [index, x.2]
+    · simp [index, x.property]
     · simp [index]
   have h_bijective : Function.Bijective fun x ↦ (⟨index x, h_mem x⟩ : subframeIndices j) := by
     refine ⟨?_, fun ⟨a, ha⟩ ↦ ?_⟩
@@ -359,7 +356,7 @@ lemma toRows₂_gram_framePair_isotropicFramePair (k : S.GFin) :
   rcases b with b | b
   · simp [frameGram, splitGram, Matrix.mul_apply, Matrix.one_apply, apply_ite star]
   · have h_form : k.val.valᴴ * (S.latticeMiddle (𝔸f E)).splitGram * k.val.val =
-        (S.latticeMiddle (𝔸f E)).splitGram := mem_unitaryGroupOf_iff.1 k.2
+        (S.latticeMiddle (𝔸f E)).splitGram := mem_unitaryGroupOf_iff.1 k.property
     refine (congrFun₂ h_form _ _).trans ?_
     cases a using lastCases <;> simp
 
@@ -461,10 +458,10 @@ lemma isotropicRowsIndex_mul_dvd_submoduleIndex
     refine submoduleIndex_dvd_of_le (mulVecBilin ℕ _ φ) (colLattice_le ?_)
       (colLattice_le fun a ↦ mem_sup_left ⟨_, col_mem_colLattice (inl a), h_col (inl a)⟩)
     rintro (a | a)
-    · change φ *ᵥ P.col (inl a.1) ∈ colLattice (Ô E) _
+    · change φ *ᵥ P.col (inl a.val) ∈ colLattice (Ô E) _
       rw [h_col]
       exact col_mem_colLattice a
-    · change φ *ᵥ P.col (inr a.1) ∈ colLattice (Ô E) _
+    · change φ *ᵥ P.col (inr a.val) ∈ colLattice (Ô E) _
       rw [h_col]
       exact zero_mem _
   have h_second : S.isotropicRowsIndex j k⁻¹ ∣ submoduleIndex L₂ L₃ := by
@@ -481,7 +478,7 @@ lemma isotropicRowsIndex_mul_dvd_submoduleIndex
     · change φ *ᵥ P.col (inl a) ∈ colLattice (Ô E) _
       rw [h_col]
       exact zero_mem _
-    · change φ *ᵥ P.col (inr a.1) ∈ colLattice (Ô E) _
+    · change φ *ᵥ P.col (inr a.val) ∈ colLattice (Ô E) _
       rw [h_col]
       exact col_mem_colLattice a
   have hk' : IsIntMatrix (Ô E) (isotropicFramePair k) := fun a b ↦ hk a _
@@ -489,7 +486,7 @@ lemma isotropicRowsIndex_mul_dvd_submoduleIndex
     torsionIndex_dvd_submoduleIndex hq hk' h_pair hι
   have h₁₂ : L₁ ≤ L₂ := colLattice_le fun x ↦ by
     rcases x with a | a
-    · exact col_mem_colLattice (inl a.1)
+    · exact col_mem_colLattice (inl a.val)
     · exact col_mem_colLattice (inr a)
   have h₂₃ : L₂ ≤ L₃ := colLattice_le fun x ↦ col_mem_colLattice _
   have h₃₄ : L₃ ≤ L₄ :=

@@ -1,7 +1,16 @@
 module
 
-public import Lib.LocalGL.Iwahori.QuadraticRelation
+public import TauCeti.Analysis.Normed.Ring.Ultra
+import Mathlib.Algebra.FiniteSupport.Basic
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.Tactic.Monotonicity.Lemmas
 public import Lib.Weil.Unramified.HeckeGL
+public import Lib.LocalGL.Iwahori.ParahoricStructure
+import Lib.Adelic.Adeles.IdeleModulus
+import Lib.General.LinearAlgebra.HermiteForm
+import Lib.LocalGL.Iwahori.QuadraticRelation
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Iwahori degrees, partial Hecke sums and Satake's formula
@@ -68,7 +77,7 @@ attribute [local simp] WithZero.exp_neg
 cosets in `K0 t K0 / K0`, the factor in `New.heckeFun_iwahoriDoubleCoset_eq_iwahoriDegree_smul`. -/
 @[simp]
 def iwahoriDegree (t : Fin N → (LocField w)ˣ) : ℂ :=
-  ∏ p : Fin N × Fin N with p.1 < p.2, ‖(t p.2 / t p.1).1‖
+  ∏ p : Fin N × Fin N with p.1 < p.2, ‖(t p.2 / t p.1).val‖
 
 /-- Multiplying on the left by an upper unitriangular `u` keeps the difference of the entries
 `(i, l)` of two matrices whose columns `l` agree below row `i`. -/
@@ -123,17 +132,12 @@ private lemma heckeFun_iwahoriDoubleCoset_eq_card_smul [IsSmoothRep ρ] {t : Fin
     _ = (Fintype.card C : ℂ) • compactMean ρ proIwahori (ρ (diagGL t) x) := by
         simp [Nat.cast_smul_eq_nsmul]
 
-/-- For dominant `t` and `i ≤ j`, the quotient `t i / t j` is integral. -/
-private lemma coe_div_mem_integer_of_mem_dominantTorus {t : Fin N → (LocField w)ˣ}
-    (ht : t ∈ dominantTorus) {i j : Fin N} (hij : i ≤ j) : (t i / t j).val ∈ 𝒪[LocField w] := by
-  simp [v.mem_integer_iff, ht hij, div_le_one_of_le₀]
-
 /-- For dominant `t`, the families `c` of classes `c (i, j)` in `𝒪 / (t i / t j)`, over the pairs
 `i < j`. -/
 private abbrev UnitriangularClasses (t : Fin N → (LocField w)ˣ) (ht : t ∈ dominantTorus) : Type _ :=
   ∀ p : {p : Fin N × Fin N // p.fst < p.snd}, 𝒪[LocField w] ⧸
     span {(⟨(t p.val.fst / t p.val.snd).val,
-      coe_div_mem_integer_of_mem_dominantTorus ht p.property.le⟩ : 𝒪[LocField w])}
+      by simp [v.mem_integer_iff, ht p.property.le, div_le_one_of_le₀]⟩ : 𝒪[LocField w])}
 
 /-- The upper unitriangular integral matrix whose entries above the diagonal are representatives of
 the classes `c`. -/
@@ -172,9 +176,19 @@ private lemma existsUnique_inv_mul_mem_proIwahori {t : Fin N → (LocField w)ˣ}
     -- Conjugation by `t` divides the entry `(i, j)` by `t i / t j`.
     simp only [mul_assoc, _root_.mul_inv_rev, mul_inv_cancel_left]
     rw [← mul_assoc u⁻¹, mem_proIwahori_iff_of_unitriangular h_conj_tri]
-    simp [Ψ, UnitriangularClasses, funext_iff, Quotient.eq_zero_iff_dvd, diagGL, inv_mul_le_iff₀,
-      le_div_iff₀, _root_.pos_iff_ne_zero, (Valuation.integer.integers v).dvd_iff_le,
-      Algebra.algebraMap_ofSubsemiring_apply]
+    have h_entry (i j : Fin N) (hij : i < j) :
+        v (((diagGL t)⁻¹ * (u⁻¹ * r c * diagGL t)).val i j) ≤ 1 ↔ Ψ c ⟨(i, j), hij⟩ = 0 := by
+      rw [Ideal.Quotient.eq_zero_iff_dvd, (Valuation.integer.integers v).dvd_iff_le]
+      have h_val : ((diagGL t)⁻¹ * (u⁻¹ * r c * diagGL t)).val i j =
+          (u⁻¹ * r c).val i j / (t i / t j).val := by
+        rw [Units.val_mul, Units.val_mul, ← map_inv, coe_diagGL, coe_diagGL, diagonal_mul,
+          mul_diagonal, Pi.inv_apply, Units.val_inv_eq_inv_val, Units.val_div_eq_div_val,
+          div_div_eq_mul_div, div_eq_mul_inv]
+        ring
+      rw [h_val, map_div₀, div_le_one₀ (v.pos_iff.mpr (t i / t j).ne_zero)]
+      rfl
+    exact ⟨fun h ↦ funext fun ⟨(i, j), hij⟩ ↦ (h_entry i j hij).mp (h i j hij),
+      fun h i j hij ↦ (h_entry i j hij).mpr (congrFun h ⟨(i, j), hij⟩)⟩
   -- `Ψ` is injective: in each column compare the entries from the bottom up.
   have h_inj : Ψ.Injective := by
     refine fun c d hcd ↦ funext fun ⟨(i, j), hij⟩ ↦ ?_
@@ -217,7 +231,10 @@ over `i < j`, the number of cosets in `K t K / K`. -/
     simp [↓genIndex_eq_inv_norm, ↓← genIndex_eq_card (isOpen_integer _) (isCompact_LocInt _),
       prod_subtype _ mem_filter_univ]
   have h_card_ne : Nat.card C ≠ 0 := by
-    have h_degree_ne : iwahoriDegree t ≠ 0 := by simp [prod_eq_zero_iff]
+    have h_degree_ne : iwahoriDegree t ≠ 0 :=
+      Finset.prod_ne_zero_iff.mpr fun p _ ↦ by
+        rw [Complex.ofReal_ne_zero, norm_ne_zero_iff]
+        exact (t p.2 / t p.1).ne_zero
     rw [h_card] at h_degree_ne
     exact_mod_cast h_degree_ne
   have : Finite C := Nat.finite_of_card_ne_zero h_card_ne
@@ -225,7 +242,11 @@ over `i < j`, the number of cosets in `K t K / K`. -/
   -- An element `r c` of `K` with the matrix `unitriangularOfClasses c`.
   have hM_tri (c : C) : (∀ i j : Fin N, j < i → v (unitriangularOfClasses c i j) < 1) ∧
       ∀ i : Fin N, v (unitriangularOfClasses c i i - 1) < 1 := by
-    simp +contextual [unitriangularOfClasses, lt_asymm, ne_of_gt]
+    refine ⟨fun i j hij ↦ ?_, fun i ↦ ?_⟩
+    · simp only [unitriangularOfClasses, of_apply, hij.asymm, ↓reduceDIte,
+        diagonal_apply_ne _ hij.ne', ZeroMemClass.coe_zero, map_zero, _root_.zero_lt_one]
+    · simp only [unitriangularOfClasses, of_apply, lt_irrefl i, ↓reduceDIte, diagonal_apply_eq,
+        Pi.one_apply, OneMemClass.coe_one, sub_self, map_zero, _root_.zero_lt_one]
   have h_lift (c : C) : ∃ g ∈ proIwahori, g.val = unitriangularOfClasses c :=
     exists_proIwahori_coe_eq (unitriangularOfClasses c)
       (fun i j ↦ (if h : i < j then (c ⟨(i, j), h⟩).out else diagonal 1 i j : 𝒪[LocField w]).2)
@@ -343,12 +364,98 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
     (g : GL (Fin N) (LocField w)) :
     (diagGL (mulSingle r ϖ))⁻¹ * g ∈ partialCosets (r + 1) j ↔
       g ∈ partialCosets r (j + 1) ∧ g.val.map residueOrZero r = 0 := by
-  simp [partialCosets, basicDoubleCoset, diagGL, apply_ite, funext_iff, hϖ, field,
-    ← @lt_mul_exp_iff_le (exp 1 * _), mulSingle_apply, ite_apply, -coe_units_inv]
   -- Row `r` of the product is row `r` of `g` divided by `ϖ`: it is integral iff row `r` of `g` lies
   -- in the maximal ideal. Column `r` of the inverse gains the factor `ϖ`, the determinant `ϖ⁻¹`.
-  have h_exp : (exp 1 : ℤᵐ⁰) ≤ exp 2 := exp_le_exp.mpr (by norm_num)
-  grind
+  have h_inv_val : v ϖ⁻¹.val = exp 1 := by
+    rw [Units.val_inv_eq_inv_val, map_inv₀, hϖ, WithZero.exp_neg, inv_inv]
+  have h_mul (a b : Fin N) :
+      ((diagGL (mulSingle r ϖ))⁻¹ * g).val a b = (if a = r then ϖ⁻¹.val else 1) * g.val a b := by
+    rw [Units.val_mul, ← map_inv, coe_diagGL, diagonal_mul, Pi.inv_apply, mulSingle_apply]
+    split_ifs <;> simp
+  have h_im (a b : Fin N) :
+      (((diagGL (mulSingle r ϖ))⁻¹ * g)⁻¹).val a b =
+        g⁻¹.val a b * (if b = r then ϖ.val else 1) := by
+    rw [_root_.mul_inv_rev, inv_inv, Units.val_mul, coe_diagGL, mul_diagonal, mulSingle_apply]
+    split_ifs <;> simp
+  have h_det : v ((diagGL (mulSingle r ϖ))⁻¹ * g).val.det = exp 1 * v g.val.det := by
+    rw [Units.val_mul, Matrix.det_mul, map_mul, ← map_inv, coe_diagGL, Matrix.det_diagonal,
+      map_prod, Finset.prod_eq_single r (fun i _ hi ↦ by simp [hi]) (by simp)]
+    simp only [Pi.inv_apply, mulSingle_eq_same, h_inv_val]
+  have h_exp1 : (exp (-1) : ℤᵐ⁰) * exp 1 = 1 := by rw [← exp_add, neg_add_cancel, exp_zero]
+  have h_le1 : (1 : ℤᵐ⁰) ≤ exp 1 := by rw [← exp_zero]; exact exp_le_exp.mpr (by decide)
+  have h_mul_exp_le_one (x : ℤᵐ⁰) : x * exp 1 ≤ 1 ↔ x < 1 := by
+    constructor
+    · intro h
+      calc x = x * exp 1 * exp (-1) := by rw [mul_assoc, mul_comm (exp 1), h_exp1, mul_one]
+        _ ≤ 1 * exp (-1) := mul_le_mul' h le_rfl
+        _ = exp (-1) := one_mul _
+        _ < 1 := by rw [← exp_zero]; exact exp_lt_exp.mpr (by decide)
+    · intro h
+      have h' : x ≤ exp (-1) :=
+        (lt_mul_exp_iff_le exp_ne_zero).mp (h.trans_eq h_exp1.symm)
+      exact (mul_le_mul' h' le_rfl).trans_eq h_exp1
+  constructor
+  · rintro ⟨⟨h1, h2, h3⟩, h4⟩
+    have hg1 : ∀ a b : Fin N, v (g.val a b) ≤ 1 := fun a b ↦ by
+      have ha := h1 a b
+      rw [h_mul, map_mul] at ha
+      by_cases har : a = r
+      · subst har
+        simp only [↓reduceIte, h_inv_val] at ha
+        rw [mul_comm] at ha
+        exact ((h_mul_exp_le_one _).mp ha).le
+      · simpa [har] using ha
+    have hg2 : ∀ a b : Fin N, v (g⁻¹.val a b) ≤ exp 1 := fun a b ↦ by
+      by_cases hbr : b = r
+      · subst hbr
+        have hb := h4 b a (Nat.lt_succ_self b.val)
+        simp only [h_im, ↓reduceIte, map_mul, hϖ] at hb
+        calc v (g⁻¹.val a b)
+            = v (g⁻¹.val a b) * exp (-1) * exp 1 := by rw [mul_assoc, h_exp1, mul_one]
+          _ ≤ 1 * exp 1 := mul_le_mul' hb le_rfl
+          _ = exp 1 := one_mul _
+      · simpa [h_im, hbr] using h2 a b
+    have hg3 : v g.val.det = exp (-(↑(j + 1) : ℤ)) := by
+      rw [h_det] at h3
+      calc v g.val.det
+          = exp (-1) * (exp 1 * v g.val.det) := by rw [← mul_assoc, h_exp1, one_mul]
+        _ = exp (-1) * exp (-↑j) := by rw [h3]
+        _ = exp (-(↑(j + 1) : ℤ)) := by rw [← exp_add]; congr 1; push_cast; ring
+    have hg4 : ∀ b a : Fin N, b.val < r.val → v (g⁻¹.val a b) ≤ 1 := fun b a hb ↦ by
+      have hne : b ≠ r := fun heq ↦ hb.ne (congrArg Fin.val heq)
+      simpa [h_im, hne] using h4 b a (hb.trans (Nat.lt_succ_self r.val))
+    refine ⟨⟨⟨hg1, hg2, hg3⟩, hg4⟩, funext fun b ↦ ?_⟩
+    rw [Matrix.map_apply, Pi.zero_apply, residueOrZero_eq_zero_iff_lt (hg1 r b)]
+    have hr := h1 r b
+    simp only [h_mul, ↓reduceIte, map_mul, h_inv_val] at hr
+    rw [mul_comm] at hr
+    exact (h_mul_exp_le_one _).mp hr
+  · rintro ⟨⟨⟨hg1, hg2, hg3⟩, hg4⟩, hrow⟩
+    refine ⟨⟨fun a b ↦ ?_, fun a b ↦ ?_, ?_⟩, fun b a hb ↦ ?_⟩
+    · rw [h_mul, map_mul]
+      by_cases har : a = r
+      · subst har
+        simp only [↓reduceIte, h_inv_val]
+        rw [mul_comm]
+        exact (h_mul_exp_le_one _).mpr
+          ((residueOrZero_eq_zero_iff_lt (hg1 a b)).mp (congrFun hrow b))
+      · simpa [har] using hg1 a b
+    · rw [h_im, map_mul]
+      by_cases hbr : b = r
+      · subst hbr
+        simp only [↓reduceIte, hϖ]
+        exact ((mul_le_mul' (hg2 a b) le_rfl).trans_eq (by rw [mul_comm, h_exp1])).trans h_le1
+      · simpa [hbr] using hg2 a b
+    · rw [h_det, hg3, ← exp_add]
+      congr 1; push_cast; ring
+    · rw [h_im, map_mul]
+      by_cases hbr : b = r
+      · subst hbr
+        simp only [↓reduceIte, hϖ]
+        exact (mul_le_mul' (hg2 a b) le_rfl).trans_eq (by rw [mul_comm, h_exp1])
+      · have hlt : b.val < r.val :=
+          Nat.lt_of_le_of_ne (Nat.lt_succ_iff.mp hb) (fun h ↦ hbr (Fin.ext h))
+        simpa [hbr] using hg4 b a hlt
 
 /-- Let `g` lie in `basicDoubleCoset (Fin N) w j`. The lattice of `g` contains the first `m` basis
 vectors iff the rows that kill `g` modulo the maximal ideal vanish at the indices below `m`. -/
@@ -361,8 +468,54 @@ lemma mem_partialCosets_iff_residueKer (hg : g ∈ basicDoubleCoset (Fin N) w j)
   have h_integral_iff : (∀ a b : Fin N, v ((z * (transposeGL g)⁻¹.val) a b) ≤ 1) ↔
       (∀ a b : Fin N, v (z a b) ≤ 1) ∧ residueKer (transposeGL g).val ≤ residueKer z :=
     v_mul_inv_le_one_iff (transposeGL_mem_basicDoubleCoset.mpr hg)
-  simpa [z, partialCosets, hg, IsConcreteLE.le_iff, funext_iff, mulVec_diagonal, apply_ite,
-    diagonal_apply, ite_apply, ← transpose_nonsing_inv] using h_integral_iff
+  have hz : ∀ a b : Fin N, v (z a b) ≤ 1 := fun a b ↦ by
+    dsimp only [z]
+    by_cases hab : a = b
+    · subst hab
+      rw [diagonal_apply_eq]
+      split_ifs <;> simp
+    · rw [diagonal_apply_ne _ hab, map_zero]
+      exact _root_.zero_le
+  have h_lhs :
+      g ∈ partialCosets m j ↔ ∀ a b : Fin N, v ((z * (transposeGL g)⁻¹.val) a b) ≤ 1 := by
+    refine ⟨fun h a b ↦ ?_, fun h ↦ ⟨hg, fun b a hb ↦ ?_⟩⟩
+    · dsimp only [z]
+      rw [diagonal_mul]
+      split_ifs with ha
+      · rw [one_mul]
+        exact h.2 a b ha
+      · rw [zero_mul, map_zero]
+        exact _root_.zero_le
+    · have hba := h b a
+      dsimp only [z] at hba
+      rw [diagonal_mul] at hba
+      simp only [hb, ↓reduceIte, one_mul] at hba
+      exact hba
+  have h_rhs (u : Fin N → ResField w) : u ∈ residueKer z ↔ ∀ i : Fin N, i.val < m → u i = 0 := by
+    have hz_map : z.map residueOrZero = diagonal fun i : Fin N ↦ if i.val < m then 1 else 0 := by
+      ext a b
+      rw [Matrix.map_apply]
+      dsimp only [z]
+      by_cases hab : a = b
+      · subst hab
+        rw [diagonal_apply_eq, diagonal_apply_eq]
+        split_ifs
+        · exact (residueOrZero_coe 1).trans (IsLocalRing.residue _).map_one
+        · exact (residueOrZero_coe 0).trans (IsLocalRing.residue _).map_zero
+      · rw [diagonal_apply_ne _ hab, diagonal_apply_ne _ hab]
+        exact (residueOrZero_coe 0).trans (IsLocalRing.residue _).map_zero
+    rw [LinearMap.mem_ker, mulVecLin_apply, hz_map, funext_iff]
+    refine ⟨fun h i hi ↦ ?_, fun h i ↦ ?_⟩
+    · have hi' := h i
+      rw [mulVec_diagonal, Pi.zero_apply] at hi'
+      simp only [hi, ↓reduceIte, one_mul] at hi'
+      exact hi'
+    · rw [mulVec_diagonal, Pi.zero_apply]
+      split_ifs with hi
+      · rw [one_mul, h i hi]
+      · exact zero_mul _
+  rw [h_lhs, h_integral_iff, and_iff_right hz]
+  exact ⟨fun h u hu ↦ (h_rhs u).mp (h hu), fun h u hu ↦ (h_rhs u).mpr (h u hu)⟩
 
 /-- The rows `(0, …, 0, 1, *, …, *)` over the residue field, with the entry `1` at the index `r`. -/
 def echelonRows : Finset (Fin N → ResField w) :=
@@ -380,12 +533,6 @@ lemma mem_echelonRows {u : Fin N → ResField w} :
     · simp [hi.asymm, hi.ne', h_zero i hi]
     · simp [h_one]
     · simp [hi]
-
-/-- There are `q ^ (N - 1 - r)` rows `(0, …, 0, 1, *, …, *)` with the entry `1` at `r`, where `q` is
-the order of the residue field. -/
-lemma card_echelonRows : #(echelonRows (w := w) r) = w.q ^ r.rev.val := by
-  simp [echelonRows, apply_ite card, prod_ite, card_ResField, filter_lt_eq_Ioi,
-    tsub_add_eq_tsub_tsub_swap, Fintype.card_eq_nat_card]
 
 open scoped Classical in
 /-- Let `g` lie in `partialCosets r (j + 1)`: it is in the basic double coset of colength `j + 1`
@@ -425,17 +572,26 @@ lemma card_echelonRows_mem_residueKer (hg : g ∈ partialCosets r (j + 1)) :
     rw [Nat.card_congr (p.toAddMonoidHom.fiberEquivKerOfSurjective (p.surjective hp_ne) 1)]
     exact (natCard_eq_pow_finrank (K := ResField w) (V := p.ker)).trans
       (by rw [card_ResField, h_dim])
-  -- `erw`: the count of the filter is that of the fibre of `p` over `1` only up to unfolding
-  -- `p` and the coercions of `L`.
-  erw [← card_subtype, ← Nat.subtype_card _ (p := fun u ↦ u.val r = 1) (by simpa using h_mem),
-    h_fibre]
+  have h_equiv :
+      {u : Fin N → ResField w // u ∈ {u ∈ echelonRows (w := w) r | u ∈ L}} ≃
+        (p.toAddMonoidHom ⁻¹' {1}) :=
+    { toFun u := ⟨⟨u.val, (mem_filter.mp u.prop).2⟩,
+        ((mem_echelonRows r).mp (mem_filter.mp u.prop).1).1⟩
+      invFun u := ⟨u.val.val, mem_filter.mpr ⟨(h_mem u.val).mpr u.prop, u.val.prop⟩⟩
+      left_inv _ := rfl
+      right_inv _ := rfl }
+  rw [← Fintype.card_coe, ← Nat.card_eq_fintype_card, Nat.card_congr h_equiv, h_fibre]
 
 /-- If `x` is fixed by `GL_N(𝒪)` (`hx`), then `partialHecke ρ m j x` is fixed by the parahoric
 subgroup whose blocks are given by the level function `i ↦ i + 1 - m` (truncated subtraction). -/
 lemma partialHecke_mem_levelSpace {x : V} (hx : x ∈ levelSpace ρ (localIntGL (Fin N) w)) :
     partialHecke ρ m j x ∈ levelSpace ρ (blockParahoric fun i : ℕ ↦ i + 1 - m) := by
   classical
-  simp_all [partialHecke, heckeFun_mem_levelSpace hasFiniteCosets_partialCosets, Set.indicator]
+  exact heckeFun_mem_levelSpace hasFiniteCosets_partialCosets
+    (fun g k ↦ by simp only [Set.indicator, mul_mem_partialCosets_iff.2 k.2, Pi.one_apply])
+    (fun g k ↦ by simp only [MonoidHom.one_apply, one_mul, Set.indicator,
+      mul_mem_partialCosets_iff.1 k.2, Pi.one_apply])
+    hx
 
 /-- Every lattice of colength `0` is `𝒪^N` and contains all basis vectors, so
 `partialHecke ρ m 0` fixes a vector `x` fixed by `GL_N(𝒪)`. -/
@@ -509,7 +665,11 @@ lemma partialHecke_hyperplane_count_of_invariant (hϖ : v ϖ.val = exp (-1)) {x 
     of fun i k ↦ (if k ≤ i ∨ i ≠ r then diagonal 1 i k else (u k).out : LocInt w).val
   have hM_tri (u : Fin N → ResField w) :
       (∀ i k : Fin N, k < i → v (M u i k) < 1) ∧ ∀ i : Fin N, v (M u i i - 1) < 1 := by
-    simp_all [M, le_of_lt, ne_of_gt]
+    refine ⟨fun i k hk ↦ ?_, fun i ↦ ?_⟩
+    · simp only [M, of_apply, hk.le, true_or, ↓reduceIte, diagonal_apply_ne _ hk.ne',
+        ZeroMemClass.coe_zero, map_zero, _root_.zero_lt_one]
+    · simp only [M, of_apply, le_refl, true_or, ↓reduceIte, diagonal_apply_eq, Pi.one_apply,
+        OneMemClass.coe_one, sub_self, map_zero, _root_.zero_lt_one]
   have h_lift (u : Fin N → ResField w) : ∃ g ∈ proIwahori, g.val = M u :=
     exists_proIwahori_coe_eq (M u)
       (fun i k ↦ (if k ≤ i ∨ i ≠ r then diagonal 1 i k else (u k).out : LocInt w).2) (hM_tri u)
@@ -519,9 +679,10 @@ lemma partialHecke_hyperplane_count_of_invariant (hϖ : v ϖ.val = exp (-1)) {x 
     obtain ⟨h_one, h_zero⟩ := (mem_echelonRows r).mp hu
     ext i
     simp only [hn_val, M, Matrix.map_apply, of_apply, residueOrZero_coe]
-    split
-    · have hi : u i = if r = i then 1 else 0 := by grind
-      simp [hi, apply_ite (IsLocalRing.residue _), diagonal_apply]
+    split_ifs with h
+    · rcases lt_or_eq_of_le (h.resolve_right (not_not.mpr rfl)) with hi | rfl
+      · rw [diagonal_apply_ne _ hi.ne', (IsLocalRing.residue _).map_zero, h_zero i hi]
+      · rw [diagonal_apply_eq, Pi.one_apply, (IsLocalRing.residue _).map_one, h_one]
     · exact (u i).out_eq
   have hψ_inv (u : Fin N → ResField w) (z : V) : ψ (ρ (n u)⁻¹ z) = ψ z := by
     have h_diag : ∀ i ≠ r, ∀ l ≠ i, (n u).val i l = 0 := by
@@ -557,7 +718,8 @@ lemma partialHecke_hyperplane_count_of_invariant (hϖ : v ϖ.val = exp (-1)) {x 
     rw [h_coeff, mul_smul, sub_smul]
   -- `ψ` does not see `(n u)⁻¹`, and there are `q ^ (N - 1 - r)` rows `u`.
   rw [← h_sum]
-  simp [hψ_inv, card_echelonRows, ← Nat.cast_smul_eq_nsmul ℂ]
+  simp [hψ_inv, echelonRows, apply_ite card, prod_ite, card_ResField, filter_lt_eq_Ioi,
+    tsub_add_eq_tsub_tsub_swap, Fintype.card_eq_nat_card, ← Nat.cast_smul_eq_nsmul ℂ]
 
 /-! ### The hyperplane count, Satake's formula and the duality of lattices -/
 
@@ -598,14 +760,28 @@ lemma IsExponent.apply_partialHecke (hϖ : v ϖ.val = exp (-1)) {x : V}
   | of_succ r hr ih =>
     obtain _ | j := j
     · simp [partialHecke_zero_right hx, esymm]
-    have hq : (w.q : ℂ) ≠ 0 := by grind [Nat.cast_ne_zero, w.q_bounds]
+    have hq : (w.q : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr w.q_ne_zero
     set t : Fin N → (LocField w)ˣ := mulSingle ⟨r, hr⟩ ϖ
     -- the valuations of the entries of `t`, against the levels `i + 1 - (r + 1)` of the
     -- parahoric subgroup that fixes `partialHecke ρ (r + 1) j x`
     have h_levels : ∀ a b : Fin N, b < a → v (t b).val ≤ v (t a).val ∨
         a.val + 1 - (r + 1) ≤ b.val + 1 - (r + 1) ∧ v (t b).val ≤ v (t a).val * exp 1 := by
-      simp_all +decide [t, apply_ite, mulSingle_apply, ite_apply]
-      lia
+      intro a b hba
+      by_cases hb : b = ⟨r, hr⟩
+      · left
+        have ha : a ≠ ⟨r, hr⟩ := by rintro rfl; exact hba.ne hb
+        dsimp only [t]
+        rw [hb, mulSingle_eq_same, mulSingle_eq_of_ne ha, hϖ, Units.val_one, map_one, ← exp_zero]
+        exact exp_le_exp.mpr (by decide)
+      · by_cases ha : a = ⟨r, hr⟩
+        · right
+          refine ⟨by rw [ha, Fin.val_mk, Nat.sub_self]; exact Nat.zero_le _, ?_⟩
+          dsimp only [t]
+          rw [ha, mulSingle_eq_same, mulSingle_eq_of_ne hb, hϖ, Units.val_one, map_one,
+            ← exp_add, neg_add_cancel, exp_zero]
+        · left
+          dsimp only [t]
+          rw [mulSingle_eq_of_ne ha, mulSingle_eq_of_ne hb]
     -- the eigenvalue of the diagonal matrix with `ϖ` at `r`, on a vector fixed by the parahoric
     have h_eigen : l (ρ (diagGL t) (partialHecke ρ (r + 1) j x)) =
         θ ⟨r, hr⟩ ϖ / w.q ^ (N - (r + 1)) * l (partialHecke ρ (r + 1) j x) := by
@@ -619,10 +795,15 @@ lemma IsExponent.apply_partialHecke (hϖ : v ϖ.val = exp (-1)) {x : V}
           l ((w.q : ℂ) ^ j • (partialHecke ρ r (j + 1) x - partialHecke ρ (r + 1) (j + 1) x)) :=
         partialHecke_hyperplane_count_of_invariant hϖ hx ⟨r, hr⟩
           (fun k hk _ ↦ hl.apply_proIwahori k hk) j
-      grind [pow_ne_zero, smul_eq_mul, map_smul]
+      rw [h_eigen, map_smul, map_sub, smul_eq_mul, smul_eq_mul, ← mul_assoc,
+        mul_div_cancel₀ _ (pow_ne_zero _ hq)] at h_count
+      have h_div := congrArg (· / (w.q : ℂ) ^ j) h_count
+      rw [mul_div_cancel_left₀ _ (pow_ne_zero _ hq), mul_div_right_comm] at h_div
+      exact eq_add_of_sub_eq' h_div.symm
     rw [h_rec, ih, ih, List.drop_eq_getElem_cons (i := r) (by simpa using hr)]
     -- `e_{j+1}(y_r ::ₘ s) = e_{j+1}(s) + y_r e_j(s)` and `(j + 1).choose 2 = j.choose 2 + j`
-    simp [esymm, sum_map_mul_left, Nat.choose, ← cons_coe, pow_add, field]
+    simp [esymm, sum_map_mul_left, Nat.choose, ← cons_coe, pow_add, div_eq_mul_inv]
+    ring
 
 /-- Duality of lattices. Let `ϖ` be a uniformiser, `x` a vector fixed by `GL N (𝒪)`, and
 `m + i + j = N`. The operator `partialHecke _ m j` of the representation `g ↦ ρ (gᵀ)⁻¹` sends `x`
@@ -632,24 +813,89 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
     partialHecke (ρ.comp invTransposeGL.toMonoidHom) m j x =
       ρ (diagGL fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹) (partialHecke ρ m i x) := by
   classical
-  set c := diagGL fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹
+  set c := diagGL (fun a : Fin N ↦ if a.val < m then 1 else ϖ⁻¹) with hc
   -- `g ↦ c⁻¹ * invTransposeGL g` matches the cosets of `partialCosets m j` with those of
   -- `partialCosets m i`: both conditions unfold to the same bounds on the entries of `g`, `g⁻¹` and
   -- the same valuation of `det g`.
+  have forward (i j : ℕ) (h_sum : m + (i + j) = N) (g : GL (Fin N) (LocField w)) :
+      g ∈ partialCosets m j → c⁻¹ * invTransposeGL g ∈ partialCosets m i := by
+    have h_inv_val : v ϖ⁻¹.val = exp 1 := by
+      rw [Units.val_inv_eq_inv_val, map_inv₀, hϖ, WithZero.exp_neg, inv_inv]
+    have h_mul (a b : Fin N) :
+        (c⁻¹ * invTransposeGL g).val a b = (if a.val < m then 1 else ϖ.val) * g⁻¹.val b a := by
+      rw [Units.val_mul, hc, ← map_inv, coe_diagGL, diagonal_mul, Pi.inv_apply,
+        invTransposeGL_apply]
+      dsimp only [transposeGL]
+      rw [transpose_apply]
+      split_ifs <;> simp
+    have h_im (a b : Fin N) :
+        ((c⁻¹ * invTransposeGL g)⁻¹).val a b =
+          g.val b a * (if b.val < m then 1 else ϖ⁻¹.val) := by
+      rw [_root_.mul_inv_rev, inv_inv, ← map_inv, Units.val_mul, hc, coe_diagGL, mul_diagonal,
+        invTransposeGL_apply, inv_inv]
+      dsimp only [transposeGL]
+      rw [transpose_apply]
+      split_ifs <;> simp
+    have h_prod_c :
+        ∏ a : Fin N, v (if a.val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val =
+          exp (-((i + j : ℕ) : ℤ)) := by
+      subst h_sum
+      rw [Fin.prod_univ_add]
+      have h1 : ∏ a : Fin m,
+          v (if (Fin.castAdd (i + j) a).val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val = 1 :=
+        Finset.prod_eq_one fun a _ ↦ by simp [a.isLt]
+      have h2 : ∏ a : Fin (i + j),
+          v (if (Fin.natAdd m a).val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val =
+            exp (-((i + j : ℕ) : ℤ)) := by
+        calc _ = ∏ _a : Fin (i + j), exp (-1) :=
+              Finset.prod_congr rfl fun a _ ↦ by simp [show ¬ m + a.val < m by omega, hϖ]
+          _ = exp (-1) ^ (i + j) := by simp
+          _ = exp (-((i + j : ℕ) : ℤ)) := by rw [← WithZero.exp_nsmul]; congr 1; simp
+      rw [h1, h2, one_mul]
+    have h_det_inv : g⁻¹.val.det = (g.val.det)⁻¹ :=
+      eq_inv_of_mul_eq_one_left (by
+        rw [← Matrix.det_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.det_one])
+    have h_det :
+        v (c⁻¹ * invTransposeGL g).val.det = exp (-((i + j : ℕ) : ℤ)) * (v g.val.det)⁻¹ := by
+      rw [Units.val_mul, Matrix.det_mul, map_mul, hc, ← map_inv, coe_diagGL, Matrix.det_diagonal,
+        map_prod, invTransposeGL_apply]
+      dsimp only [transposeGL]
+      rw [Matrix.det_transpose, h_det_inv, map_inv₀]
+      simp only [Pi.inv_apply, h_prod_c]
+    have h_exp1 : (exp (-1) : ℤᵐ⁰) * exp 1 = 1 := by rw [← exp_add, neg_add_cancel, exp_zero]
+    have h_le1 : (1 : ℤᵐ⁰) ≤ exp 1 := by rw [← exp_zero]; exact exp_le_exp.mpr (by decide)
+    have h_inv_exp (n : ℤ) : (exp (-n) : ℤᵐ⁰)⁻¹ = exp n := by rw [WithZero.exp_neg, inv_inv]
+    rintro ⟨⟨hg1, hg2, hg3⟩, hg4⟩
+    refine ⟨⟨fun a b ↦ ?_, fun a b ↦ ?_, ?_⟩, fun b a hb ↦ ?_⟩
+    · rw [h_mul, map_mul]
+      by_cases ha : a.val < m
+      · simpa [ha] using hg4 a b ha
+      · simp only [ha, ↓reduceIte, hϖ]
+        exact (mul_le_mul' le_rfl (hg2 b a)).trans_eq h_exp1
+    · rw [h_im, map_mul]
+      by_cases hb : b.val < m
+      · simp only [hb, ↓reduceIte, map_one, mul_one]
+        exact (hg1 b a).trans h_le1
+      · simp only [hb, ↓reduceIte, h_inv_val]
+        exact (mul_le_mul' (hg1 b a) le_rfl).trans_eq (one_mul _)
+    · rw [h_det, hg3, h_inv_exp, ← exp_add]
+      congr 1; push_cast; ring
+    · simp only [h_im, hb, ↓reduceIte, mul_one]; exact hg1 b a
+  -- Dualizing twice recovers the original lattice. For the converse, exchange the two indices.
   have dual (g : GL (Fin N) (LocField w)) :
       g ∈ partialCosets m j ↔ c⁻¹ * invTransposeGL g ∈ partialCosets m i := by
-    subst h_sum
-    have h_det : v g.val.det ≠ 0 := by simp [g.det_ne_zero]
-    simp [c, invTransposeGL, partialCosets, basicDoubleCoset, diagGL, apply_ite, hϖ,
-      Fin.prod_univ_add, field, ← g⁻¹.val_det_apply, transposeGL, ite_apply, -coe_units_inv]
-    grind [le_of_lt, lt_mul_exp_iff_le one_ne_zero]
+    refine ⟨forward i j h_sum g, fun h ↦ ?_⟩
+    have hc_inv : invTransposeGL c = c⁻¹ := Units.ext (Matrix.diagonal_transpose _)
+    have h_back := forward j i (by rwa [Nat.add_comm j i]) _ h
+    rwa [map_mul, map_inv, hc_inv, inv_inv, ← mul_assoc, inv_mul_cancel, one_mul,
+      show invTransposeGL (invTransposeGL g) = g from invTransposeGL.symm_apply_apply g] at h_back
   -- The two side conditions of `heckeFun_comp` are the right invariance of the translated
   -- indicator and `dual` read on indicators.
   calc
     _ = heckeFun ρ (localIntGL (Fin N) w) (fun g ↦ (partialCosets m i).indicator 1 (c⁻¹ * g)) x :=
       heckeFun_comp _ (by simp [← mul_assoc, Set.indicator]) hx hasFiniteCosets_partialCosets
         invTransposeGL.surjective invTransposeGL_mem_intGL (fun _ ↦ rfl)
-        (by simp [dual, Set.indicator_apply])
+        (fun g ↦ by simp only [Set.indicator_apply, MulEquiv.coe_toMonoidHom, dual, Pi.one_apply])
     _ = _ := heckeFun_comp_inv_mul hasFiniteCosets_partialCosets (by simp [Set.indicator]) hx c
 
 end New

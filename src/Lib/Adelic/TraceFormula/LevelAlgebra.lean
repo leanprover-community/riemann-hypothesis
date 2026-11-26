@@ -1,7 +1,6 @@
 module
 
 public import Lib.Adelic.Hecke.Basic
-public import TauCeti.RepresentationTheory.AsAlgebraHom
 
 /-!
 # The elements of a group algebra that keep a level
@@ -57,15 +56,15 @@ lemma mem_levelAlgebra {a : ℂ[G]} :
 
 /-- The action of `levelAlgebra ρ K` on the `K`-fixed vectors. -/
 def levelAction : levelAlgebra ρ K →ₐ[ℂ] Module.End ℂ (levelSpace ρ K) where
-  toFun a := (ρ.asAlgebraHom a).restrict a.2
+  toFun a := (ρ.asAlgebraHom a).restrict a.property
   map_one' := by simp [LinearMap.ext_iff, Subtype.ext_iff]
   map_mul' a b := by
     ext y
-    exact LinearMap.congr_fun (map_mul ρ.asAlgebraHom a.1 b.1) y
+    exact LinearMap.congr_fun (map_mul ρ.asAlgebraHom a.val b.val) y
   map_zero' := by simp [LinearMap.ext_iff, Subtype.ext_iff]
   map_add' a b := by
     ext y
-    exact LinearMap.congr_fun (map_add ρ.asAlgebraHom a.1 b.1) y
+    exact LinearMap.congr_fun (map_add ρ.asAlgebraHom a.val b.val) y
   commutes' c := by
     ext y
     simp

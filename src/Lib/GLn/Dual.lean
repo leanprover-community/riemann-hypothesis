@@ -1,9 +1,14 @@
 module
 
-public import Lib.GLn.SchurModule.SchurNorm
-public import Lib.General.LinearAlgebra.BlockEmbeddings
-public import Lib.General.LinearAlgebra.MatrixNormBounds
-public import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
+import Mathlib.LinearAlgebra.Matrix.Integer
+import TauCeti.LinearAlgebra.Matrix.Determinant.ComplementaryMinor
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.GLn.SchurModule.GramMatrix
+public import Lib.GLn.SchurModule.WeylKernel
+import Lib.Base
+import Lib.GLn.SchurModule.SchurNorm
+import Lib.General.LinearAlgebra.BlockEmbeddings
+import Lib.General.LinearAlgebra.MatrixNormBounds
 
 /-!
 # Duality of integral GL(n) representations, mixed weights and the Cartan product
@@ -825,7 +830,8 @@ lemma mixedCartan_mulVec_cartanProduct {Φ n N m : Type} [Fintype Φ] [Decidable
       inv_fromBlocks_zero₂₁_of_isUnit_iff, Matrix.one_apply, vecMulVec_apply, kronecker_mulVec_vec,
       mul_vecMulVec, vecMulVec_mul, vecMul_transpose, weylEvalAt]
     unfold weylEval nablaBasis tableauPoly minor
-    simp [RingHom.map_det, Matrix.map]
+    simp only [Function.comp_apply, map_prod, RingHom.map_det, RingHom.mapMatrix_apply, Matrix.map,
+      of_apply, MvPolynomial.eval_X]
     -- Each side is the product of the minors of the `N`-block and of the `m`-block, in the two
     -- orders; `congr!` matches them entry by entry, and each entry is closed by the case split on
     -- the block of `ε.symm`.
@@ -941,18 +947,6 @@ section Parameter
 
 variable {Φ n : Type} [Fintype Φ] [Fintype n] {κ κ' : Φ → ℕ → ℕ} {e e' : Φ → ℤ} {l : Φ → n → ℤ}
 
-/-- In rank `N`, for `p + 1 < N`, entries `p` and `p + 1` of the parameter `New.hcParameter`
-differ by twice the number `κ w (p + 1)` of columns of height `p + 1`, plus two. -/
-lemma hcParameter_sub_succ {N p : ℕ} (w : Φ) (hp : p + 1 < N) :
-    hcParameter κ e N w p - hcParameter κ e N w (p + 1) = 2 * κ w (p + 1) + 2 := by
-  classical
-  have h_row : diagramWeight (fun _ ↦ N) κ (w, p) =
-      diagramWeight (fun _ ↦ N) κ (w, p + 1) + κ w (p + 1) := by
-    rw [GL.diagramWeight_eq_succ_add, ite_eq_left hp]
-  simp only [hcParameter, h_row]
-  push_cast
-  ring
-
 /-- If `l` and `-l` list the parameters (`New.IsHCParam`) of `(κ, e)` and `(κ', e')`, then each
 parameter is the negative of the other read backwards: for `p + q + 1 = card n`, entry `p` of the
 parameter of `(κ', e')` is minus entry `q` of that of `(κ, e)`. -/
@@ -1025,8 +1019,7 @@ structure IsDualPairing (A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ) : Pr
     (v' : WeylIndex n κ' → R) (v : WeylIndex n κ → R) :
     weylRep κ' e' g *ᵥ v' ⬝ᵥ A.map (↑) *ᵥ weylRep κ e g *ᵥ v = v' ⬝ᵥ A.map (↑) *ᵥ v
   /-- The function of a form of weight `(κ', e')` is the pairing of its value with a translate of
-  the highest vector of `l`. Here the pairing is written as a bilinear map; see
-  `New.IsDualPairing.ofAlgForm_apply`. -/
+  the highest vector of `l`. Here the pairing is written as a bilinear map. -/
   ofAlgForm_eq_bilin (s : n → ℤˣ) (η : AlgForm n κ' e') (x : GInf E s) (g : Gf E n) :
     ofAlgForm (-l) s η (x, g) = (dotProductBilin ℂ ℂ).compl₂ (A.map (↑)).mulVecLin (η.val g)
       (conjWeylRep κ e x (highestVector κ l))
@@ -1050,10 +1043,7 @@ lemma exists_isDualPairing_of_isHCParam [Nonempty n] (hl : IsHCParam κ e l)
     ∃ A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ, IsDualPairing κ κ' e e' l A := by
   -- Numbering the indices by decreasing `l` numbers them backwards for `-l`, so `κ'` is dual to
   -- `κ`. The pairing is `A = G * J`, with `G` the Gram matrix and `J` the duality of frames.
-  have h_enum (w : InfinitePlace E) : ∃ f : n ≃ Fin (card n), ∀ a : n,
-      decreasingPosition (l w) a = f a ∧ decreasingPosition (-l w) a = (f a).rev :=
-    exists_equiv_decreasingPosition (hl w).left
-  choose p hp using h_enum
+  choose p hp using fun w : InfinitePlace E ↦ exists_equiv_decreasingPosition (hl w).left
   -- `J` is a unimodular isometry, and over a field it matches the evaluation vectors at the two
   -- numberings and intertwines `g` with its inverse transpose.
   obtain ⟨J, hJ⟩ : ∃ J : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ, GL.IsDualIsometry p J :=

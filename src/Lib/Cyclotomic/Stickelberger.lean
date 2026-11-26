@@ -1,7 +1,16 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.NumberTheory.MulChar.Lemmas
+import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
+import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.Algebra.Group.AddChar.Basic
 public import Lib.GaloisRep.Main.SelmerModules
-public import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.Adelic.Adeles.LocalFactors
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # A weak form of Stickelberger's theorem for Gauss sums, and a family of Jacobi-type quotients
@@ -20,7 +29,7 @@ Notions from other files:
 * `Ω` is `ℚ̄`, and `DiscreteUnits Ω` is `Ωˣ` written additively: a sum is a product, `c • u` is
   `u ^ c`. `galUnitsRep σ` is the action of `σ ∈ Gal(Ω/ℚ)` on it.
 * `ClosurePlace`: a valuation subring `B` of `Ω`; it lies above `p` when `B.valuation p < 1`, and
-  `centrePrime Ω B` is the prime ideal of `𝓞 Ω` that it defines; `principalUnits B` is the subgroup
+  `centerPrime Ω B` is the prime ideal of `𝓞 Ω` that it defines; `principalUnits B` is the subgroup
   of `DiscreteUnits Ω` of the `u` with `B.valuation (u - 1) < 1`, that is `u ≡ 1` at `B`.
 * `ordRat ℚ B u`: the order of `u` at `B`, normalised so that a prime `p` below `B` has order one.
 * `cyclotomicCharMod Ω N σ`: the cyclotomic character of `σ` modulo `N`, the unit `a` with
@@ -124,14 +133,14 @@ lemma exists_galUnitsRep_gaussSum_eq {ψ : AddChar (ZMod p) (𝓞 Ω)}
     using h_shift (cyclotomicCharMod Ω r σ * t)
 
 /-- Let `B` be a place of `Ω` above the prime `p`. An algebraic integer `x` with `x ^ p = 1` is
-congruent to `1` modulo the prime ideal `centrePrime Ω B` of `𝓞 Ω` that `B` defines. -/
+congruent to `1` modulo the prime ideal `centerPrime Ω B` of `𝓞 Ω` that `B` defines. -/
 lemma mk_centrePrime_eq_one_of_pow_eq_one (hB : B.valuation p < 1) {x : 𝓞 Ω} (hx : x ^ p = 1) :
-    ↑x = (1 : 𝓞 Ω ⧸ centrePrime Ω B) := by
+    ↑x = (1 : 𝓞 Ω ⧸ centerPrime Ω B) := by
   -- Otherwise the residue of `x` is a primitive `p`-th root of unity in a domain where `p = 0`.
   by_contra h_ne
-  have h_prim : IsPrimitiveRoot (x : 𝓞 Ω ⧸ centrePrime Ω B) p :=
+  have h_prim : IsPrimitiveRoot (x : 𝓞 Ω ⧸ centerPrime Ω B) p :=
     IsPrimitiveRoot.iff_orderOf.mpr (orderOf_eq_prime (congrArg _ hx) h_ne)
-  exact h_prim.neZero'.out (mk_ker.ge (mem_centrePrime.mpr hB))
+  exact h_prim.neZero'.out (mk_ker.ge (mem_centerPrime.mpr hB))
 
 /-- A weak form of Stickelberger's theorem for `𝔽_p`. Let `B` be a place of `Ω` above `p`, `ψ` a
 primitive additive character of `ZMod p`, `r` prime to `p`, `t ↦ χ t` a primitive (so injective)
@@ -166,10 +175,9 @@ lemma stickelberger (hB : B.valuation p < 1) {ψ : AddChar (ZMod p) (𝓞 Ω)}
   -- The Gauss sum of `χ' ≠ 1` has positive order: `ψ' ≡ 1` at `B`, so it is `≡ ∑ x, χ' x = 0`.
   have ord_pos (u : DiscreteUnits Ω) {χ' : MulChar (ZMod p) (𝓞 Ω)} {ψ' : AddChar (ZMod p) (𝓞 Ω)}
       (hu : u.toMul.val = gaussSum χ' ψ') (hχ' : χ' ≠ 1) : 0 < ordRat ℚ B u := by
-    have h_cen : gaussSum χ' ψ' - gaussSum χ' 1 ∈ centrePrime Ω B := by
-      simp [gaussSum, mk_centrePrime_eq_one_of_pow_eq_one hB, ← Submodule.Quotient.mk_eq_zero,
-        ← map_nsmul_eq_pow, natCast_self]
-    rw [gaussSum_one_right hχ', sub_zero, mem_centrePrime] at h_cen
+    have h_cen : gaussSum χ' ψ' - gaussSum χ' 1 ∈ centerPrime Ω B := by
+      simp [gaussSum, mk_centrePrime_eq_one_of_pow_eq_one hB, ← Submodule.Quotient.mk_eq_zero]
+    rw [gaussSum_one_right hχ', sub_zero, mem_centerPrime] at h_cen
     rw [lt_iff_le_and_ne, ne_comm, Ne, hv.ordRat_nonneg_iff, hv.ordRat_eq_zero_iff, hu]
     exact ⟨algebraMap_ringOfIntegers_mem B (gaussSum χ' ψ'), h_cen.ne⟩
   -- The order of `g t` lies in `[0, 1)`, so it is the representative of its class `S t`.
@@ -283,8 +291,8 @@ lemma valuation_gaussSum_eq_one_of_valuation_eq_one {A : ClosurePlace} (hA : A.v
   have h_le : A.valuation ((gaussSum χ₀ ψ : 𝓞 Ω) : Ω) ≤ 1 :=
     A.valuation_le_one ⟨_, algebraMap_ringOfIntegers_mem A (gaussSum χ₀ ψ)⟩
   refine h_le.eq_of_not_lt fun h_lt ↦ hA.not_lt ?_
-  exact mem_centrePrime.mp (mem_of_dvd _ (gaussSum_dvd_natCast_of_isPrimitive hψ χ₀)
-    (mem_centrePrime.mpr h_lt))
+  exact mem_centerPrime.mp (mem_of_dvd _ (gaussSum_dvd_natCast_of_isPrimitive hψ χ₀)
+    (mem_centerPrime.mpr h_lt))
 
 /-- An injective homomorphism `S : ℤ/r → ℚ/ℤ` maps the `m`-torsion onto the `m`-torsion, for
 `m ∣ r`. -/
@@ -319,11 +327,11 @@ lemma exists_addChar_isPrimitive_and_mulChar_isPrimitive :
 /-- Let `A` be a place of `Ω` above a prime `q`, let `ψ` be an additive character of `𝔽_p` and
 `t ↦ χ t` a homomorphism from `ZMod n` to the multiplicative characters of `𝔽_p`. If `q • u = 0`,
 the Gauss sums of `χ (w + u)` and of `χ w` with `ψ` are congruent modulo the prime ideal
-`centrePrime Ω A`: the values of `χ u` on units are `q`-th roots of unity, so `≡ 1` at `A`. -/
+`centerPrime Ω A`: the values of `χ u` on units are `q`-th roots of unity, so `≡ 1` at `A`. -/
 lemma gaussSum_add_sub_gaussSum_mem_centrePrime_of_nsmul_eq_zero {n q : ℕ} [Fact q.Prime]
     {A : ClosurePlace} (hA : A.valuation q < 1) (ψ : AddChar (ZMod p) (𝓞 Ω))
     (χ : AddChar (ZMod n) (MulChar (ZMod p) (𝓞 Ω))) (w u : ZMod n) (hu : q • u = 0) :
-    gaussSum (χ (w + u)) ψ - gaussSum (χ w) ψ ∈ centrePrime Ω A := by
+    gaussSum (χ (w + u)) ψ - gaussSum (χ w) ψ ∈ centerPrime Ω A := by
   simp [gaussSum, mk_centrePrime_eq_one_of_pow_eq_one hA, hu, sum_eq_add_sum_units,
     map_add_eq_mul, ← Submodule.Quotient.mk_eq_zero, ← pow_apply_coe, ← map_nsmul_eq_pow]
 
@@ -403,7 +411,7 @@ lemma exists_isJacobiFamily (hB : B.valuation p < 1) (c : ℕ) :
   have G_congr (w u : ZMod n) (hu : q • u = 0) :
       (G (w + u) : DiscreteUnits Ω ⧸ principalUnits A) = G w := by
     have h_val : valuationVia Ω A (gaussSum (χ (w + u)) ψ - gaussSum (χ w) ψ) < 1 :=
-      mem_centrePrime.mp (gaussSum_add_sub_gaussSum_mem_centrePrime_of_nsmul_eq_zero hA ψ χ w u hu)
+      mem_centerPrime.mp (gaussSum_add_sub_gaussSum_mem_centrePrime_of_nsmul_eq_zero hA ψ χ w u hu)
     refine eq_iff_sub_mem.mpr (show A.valuation (((G (w + u) - G w).toMul : Ω) - 1) < 1 from ?_)
     simpa [toMul_sub, valuationVia, div_sub_one, gauss_ne, map_div₀, hG,
       valuation_gaussSum_eq_one_of_valuation_eq_one hA_p hψ] using h_val

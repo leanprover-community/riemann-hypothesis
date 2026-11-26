@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.FieldTheory.Finite.Extension
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
 
 /-!
@@ -71,27 +74,21 @@ lemma New.card_selfAdjoint {k : Type*} [Field k] [StarRing k] [Finite k] {i : k}
     Nat.card (selfAdjoint k) ^ 2 = Nat.card k ∧ Nat.card (selfAdjoint k) % 4 = 3 := by
   -- `star i` is a square root of `-1` other than `i`, so it is `-i`, and `-i ≠ i` gives `2 ≠ 0`.
   have h_star : star i = -i := by grind [star_mul, star_neg, star_one, mul_self_eq_mul_self_iff]
-  have h_two : (2 : k) ≠ 0 := by grind
-  constructor
-  · -- `(x, y) ↦ (x - i * y) / 2` is a bijection from pairs of fixed points onto `k`;
-    -- its inverse sends `z` to the traces of `z` and of `i * z`.
-    rw [sq, ← card_prod]
-    refine card_congr
-      { toFun := fun (x, y) ↦ (x - i * y) / 2
-        invFun z := (⟨z + star z, .add_star_self z⟩, ⟨i * z + star (i * z), .add_star_self _⟩)
-        left_inv := ?_
-        right_inv z := by grind [star_mul'] }
-    rintro ⟨⟨x, hx : star x = x⟩, ⟨y, hy : star y = y⟩⟩
-    have h_conj : star ((x - i * y) / 2) = (x + i * y) / 2 := by simp [hx, hy, h_star]
-    simp only [Prod.mk.injEq, Subtype.ext_iff]
-    grind [star_mul']
-  · -- `-1` is not a square in the field of fixed points: its square roots `±i` are moved.
-    cases nonempty_fintype (selfAdjoint k)
-    have h_not_square : ¬IsSquare (-1 : selfAdjoint k) := by
-      rintro ⟨⟨x, hx : star x = x⟩, hx_sq⟩
-      have hx_eq : x * x = i * i := by simpa [hi_sq, Subtype.ext_iff] using hx_sq.symm
-      grind [mul_self_eq_mul_self_iff, star_neg]
-    rwa [isSquare_neg_one_iff, not_not, Fintype.card_eq_nat_card] at h_not_square
+  refine ⟨?_, ?_⟩
+  -- `(x, y) ↦ (x - i * y) / 2` is a bijection from pairs of fixed points onto `k`.
+  · rw [sq, ← card_prod]
+    refine card_congr ⟨fun (x, y) ↦ (x - i * y) / 2,
+      fun z ↦ (⟨z + star z, .add_star_self z⟩, ⟨i * z + star (i * z), .add_star_self _⟩),
+      fun ⟨⟨x, hx⟩, ⟨y, hy⟩⟩ ↦ by
+        simp [mem_iff.1 hx, mem_iff.1 hy, h_star]
+        grind,
+      fun z ↦ by grind [star_mul']⟩
+  -- `-1` is not a square in the field of fixed points: its square roots `±i` are moved.
+  · cases nonempty_fintype (selfAdjoint k)
+    by_contra h
+    obtain ⟨⟨x, hx⟩, hx_sq⟩ := isSquare_neg_one_iff.2 (by rwa [Fintype.card_eq_nat_card])
+    have : x * x = i * i := by simpa [hi_sq, Subtype.ext_iff] using hx_sq.symm
+    grind [mul_self_eq_mul_self_iff, star_neg, mem_iff.1 hx]
 
 section
 

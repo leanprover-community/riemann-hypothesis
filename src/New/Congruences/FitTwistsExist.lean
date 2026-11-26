@@ -1,10 +1,17 @@
 module
 
-public import New.Congruences.FirstOrder.DenominatorBound
-public import New.Congruences.GaloisRepresentations.RowsFromEigensystems
-public import New.Congruences.Selmer.TwistingTheorem
-public import New.Determinant.Chain.NormOfChain
-public import New.OneLift.HeckeValues.CentralAction
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Congruences.FirstOrder.TraceRelations
+public import New.Determinant.Twist.FitTwists
+import New.Congruences.FirstOrder.DenominatorBound
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
+import New.Congruences.GaloisRepresentations.RowsFromEigensystems
+import New.Congruences.Selmer.ClassSums
+import New.Congruences.Selmer.TwistingTheorem
+import New.Determinant.Chain.NormOfChain
+import New.OneLift.HeckeValues.CentralAction
+import New.Reduction.Data.Sizes
+import New.UpperBound.Size.Estimates
 
 /-!
 # All data have regular families of m-fold twists
@@ -285,7 +292,7 @@ lemma New.Selmer.isRepOfType_one {P : Parameters} {D : Data P} {ℓ : ℕ} [TheP
       trace_conj := by simp
       local_conditions v _ A _ :=
         ⟨h_finite A, h_jumps A, fun _ ↦ isGoodAt_iff.2 ⟨h_finite A, fun s _ ↦ h_kills A s⟩⟩
-      labelled i A s a _ := ?_ }
+      labeled i A s a _ := ?_ }
   -- the only root of the label `X - 1` is `1`
   rw [← C_1, aroots_X_sub_C]
   simpa using h_kills A s
@@ -522,14 +529,14 @@ one for each pair `κ` of a prime `ℓ` and an isomorphism `ℂ ≃ ℚ̄_ℓ`. 
 `ℓ`. -/
 lemma New.exists_isRegularFamily {P : Parameters} (D : Data P) :
     ∃ θ : PrimePadicIso → D.MFoldTwist, D.IsRegularFamily θ := by
-  have h_local_twist (κ : PrimePadicIso) : ∃ τ : D.MFoldTwist, Nat.Coprime κ.1 τ.normQ ∧
+  have h_local_twist (κ : PrimePadicIso) : ∃ τ : D.MFoldTwist, Nat.Coprime κ.prime τ.normQ ∧
       (∀ (j : D.LiftIndex) (p : D.CriticalPair) (s : ℤˣ), p.IsRamified →
-        ‖κ.2 (p.ratio (τ.powTwist j) s)⁻¹‖ ≤ exp (twistError κ.1 D * log (κ.1 : ℕ))) ∧
-      ∀ j : D.LiftIndex, D.HasDenominatorsLe κ.2 (τ.powTwist j) j
-        (clearingBound D κ.1 * log (κ.1 : ℕ) +
+        ‖κ.iso (p.ratio (τ.powTwist j) s)⁻¹‖ ≤ exp (twistError κ.prime D * log (κ.prime : ℕ))) ∧
+      ∀ j : D.LiftIndex, D.HasDenominatorsLe κ.iso (τ.powTwist j) j
+        (clearingBound D κ.prime * log (κ.prime : ℕ) +
           padicValNat κ.1 (Nat.card (StdClasses (n := Unit) D.chosenLevel)) * log (κ.1 : ℕ)) :=
-    have : ThePrime κ.1 := ⟨⟩
-    exists_mFoldTwist_hasDenominatorsLe D ⟨κ.2⟩
+    have : ThePrime κ.prime := ⟨⟩
+    exists_mFoldTwist_hasDenominatorsLe D ⟨κ.iso⟩
   choose θ h_coprime h_ratio h_denominators using h_local_twist
   -- Local choices need not agree at distinct embeddings. Their uniform prime-wise bounds
   -- give the global height and denominator budgets by summing over rational primes.

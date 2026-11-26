@@ -1,7 +1,13 @@
 module
 
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.PadicHodge.Kisin.Bicommutant
-public import Lib.PadicHodge.Kisin.KummerChartExistence
+public import Lib.General.NumberTheory.CoefficientRings
+public import Lib.PadicHodge.TateSen
+import Lib.General.Groups.ProfiniteCharacters
+import Lib.PadicHodge.Kisin.KummerChartExistence
 
 /-!
 # Bounded poles, φ-fixed elements of B_max, and ratios of periods fixed near 1
@@ -74,7 +80,7 @@ lemma pow_smul_mem_range_BPlus (y : Bmax) (a : ℕ) {ν : Ainf} (hν : mu ∣ ν
               (ν ^ a • y * algebraMap BPlus Bmax (mu : BPlus) ^ (N + 1)) : Bmax) : BdR) := by
           rw [hc]
         simpa [hs, hw, smul_def, ← algebraMap_apply, FrobGal.smul_def, pow_add, mul_pow,
-          mul_comm, mul_left_comm, mul_assoc] using hc_frob
+          mul_comm, mul_assoc] using hc_frob
       -- `ξ` divides `φ^n μ`, so `w ∈ hodgeFil (a + N + 1)`, while `φ^n y ∈ hodgeFil (-a)`
       have h_xi : xi ∣ frobEnd^[n] mu := theta_eq_zero_iff_xi_dvd.mp (theta_iterate_frobEnd_mu n)
       have hw_mem : (w : BdR) ∈ hodgeFil (a + (N + 1) : ℕ) :=

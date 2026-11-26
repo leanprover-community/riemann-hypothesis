@@ -1,8 +1,16 @@
 module
 
+import Mathlib.Order.CompletePartialOrder
+import TauCeti.RingTheory.PowerSeries.Rescale
+import TauCeti.RingTheory.PowerSeries.Substitution
 public import Lib.CM.FormalGroup.PrimeNotation
-public import Lib.CM.Integrality.IsogenyIntegrality
-public import TauCeti.RingTheory.PowerSeries.Substitution
+public import Lib.CM.FormalGroup.IntegralParameter
+public import Lib.CM.Integrality.TorsionValues
+import Lib.CM.Integrality.Doubling
+import Lib.CM.Integrality.IntegralSections
+import Lib.CM.Integrality.IsogenyIntegrality
+import Lib.Cohomology.Etale.Basic
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # The inseparable degree
@@ -55,9 +63,6 @@ noncomputable def reducedOrder (f : ℂ_[p]⟦X⟧) : ℕ∞ :=
 
 lemma constantCoeff_taylorVia_translatedY : constantCoeff (taylorVia ιₚ C.translatedY) = 0 :=
   C.isSeriesGenerator_translatedY.constantCoeff_eq_zero
-
-lemma coeff_one_taylorVia_translatedY : coeff 1 (taylorVia ιₚ C.translatedY) = 1 :=
-  C.isSeriesGenerator_translatedY.coeff_one
 
 /-- For an integral series `g ∈ 𝒪[[X]]`, viewed in `ℂ_[p][[X]]` by `seriesToCp`, the reduced order
 of `g(y)` is the order of the reduction of `g` modulo the maximal ideal of `𝒪`, where `y` is the
@@ -118,7 +123,7 @@ lemma reducedOrder_eq_one {T : ℂ_[p]⟦X⟧} (hT : T ∈ C.integralSeriesRing)
     (hT₁ : ‖coeff 1 T‖ = 1) : C.reducedOrder T = 1 := by
   obtain ⟨u, rfl⟩ := C.mem_integralSeriesRing.1 hT
   rw [constantCoeff_subst_eq C.constantCoeff_taylorVia_translatedY] at hT₀
-  rw [coeff_one_subst C.constantCoeff_taylorVia_translatedY, coeff_one_taylorVia_translatedY,
+  rw [coeff_one_subst C.constantCoeff_taylorVia_translatedY, C.isSeriesGenerator_translatedY.coeff_one,
     mul_one, Algebra.algebraMap_self_apply] at hT₁
   rw [reducedOrder_subst_translatedY, ← Nat.cast_one, order_eq_nat]
   have hu₁ : IsUnit (coeff 1 u) := isUnit_integer_iff_norm_eq_one.2 hT₁
@@ -169,7 +174,7 @@ lemma reducedOrder_rescale {α : ℂ} (hα : α ∈ quadInt d) {f : ℂ_[p]⟦X�
   have hy₀ := C.constantCoeff_taylorVia_translatedY (p := p)
   rw [rescale_subst hy₀, reducedOrder_subst_translatedY, insepDegree,
     C.reducedOrder_subst (C.rescale_translatedY_mem_of_mem_quadInt hα)
-      (constantCoeff_rescale.trans hy₀)]
+      ((constantCoeff_rescale ..).trans hy₀)]
 
 /-- The inseparable degree is multiplicative on the ring of integers `quadInt d`. -/
 lemma insepDegree_mul {α β : ℂ} (hα : α ∈ quadInt d) (hβ : β ∈ quadInt d) :
@@ -191,16 +196,16 @@ lemma insepDegree_pow {α : ℂ} (hα : α ∈ quadInt d) (n : ℕ) :
   | zero => simpa using C.insepDegree_eq_one (one_mem _) (by simp)
   | succ n ih => rw [pow_succ, C.insepDegree_mul (pow_mem hα n) hα, ih, pow_succ]
 
+omit [PrimeSevenModEight d] in
 /-- The torsion value (the value at `0` of the twisted translate) of the square of the sigma
 function `σ`, in degree two (the degree of `σ ^ 2` as a section: `σ ^ 2 ∈ C.sections 2`), at the
-point `t` of order two is a unit at the place `ιₚ`. Indeed the torsion value at `t` of `θ`, the
-normalised twisted translate of `σ` by `t`, vanishes. -/
+point `t` of order two is a unit at the place `ιₚ`. Indeed the torsion value of `σ` at `t` is a
+fourth root of unity. -/
 lemma norm_torsionValue_sigma_sq_t : ‖ιₚ (C.torsionValue 2 (C.σ ^ 2) C.t)‖ = 1 := by
-  have hθ : C.torsionValue 1 C.θ C.t = 0 := by
-    simp [torsionValue_eq, C.theta_eq_zero_iff.2 C.two_t_mem]
-  have hσ : ‖ιₚ (C.torsionValue 1 C.σ C.t)‖ = 1 := by
-    simpa [hθ] using C.max_norm_torsionValue (p := p)
-      (⟨2, two_ne_zero, by simpa [two_mul] using C.two_t_mem⟩ : C.IsTorsion C.t)
+  have h_root : IsOfFinOrder (C.torsionValue 1 C.σ C.t) :=
+    isOfFinOrder_iff_pow_eq_one.2 ⟨4, by norm_num, C.twistedTranslate_t_sigma_zero_pow_four⟩
+  have hσ : ‖ιₚ (C.torsionValue 1 C.σ C.t)‖ = 1 :=
+    ((ιₚ : ℂ →+* ℂ_[p]).toMonoidHom.isOfFinOrder h_root).norm_eq_one
   rw [C.torsionValue_pow 2 1, map_pow, norm_pow, hσ, one_pow]
 
 /-- If `α ≠ 0` lies in the ring of integers `quadInt d` and has the norm `ν`, then `t / α` is a
@@ -225,18 +230,19 @@ lemma exists_rescale_sigma_sq_eq {α : ℂ} (hα : α ∈ quadInt d) (hα₀ : �
       (∃ i ≤ ν, ‖ιₚ (R.coeff i)‖ = 1) ∧
       rescale (ιₚ α) (taylorVia ιₚ (C.σ ^ 2)) =
         taylorVia ιₚ C.θ ^ (2 * ν) * (R.map ιₚ).aeval (taylorVia ιₚ C.translatedX) := by
-  -- `σ(α z) ^ 2` is an even section of degree `2 ν` with integral torsion values; the monomial
-  -- section of `(a, b, 0)` is `θ ^ a (σ ^ 2) ^ b`.
+  -- `σ(α z) ^ 2` is an even section of degree `2 ν`, bounded by the `2 ν`-th power of the naive
+  -- height; the monomial section of `(a, b, 0)` is `θ ^ a (σ ^ 2) ^ b`.
   have h_isog : C.IsIsogeny C.periodPair α ν := ⟨C.mul_mem_of_quadInt hα, by rw [hν]⟩
   have h_sec : C.σ ^ 2 ∈ C.sections 2 := by
     simpa [monomialSection] using C.monomialSection_mem (0, 1, 0)
-  have h_int : C.HasIntegralValues 2 (C.σ ^ 2) := by
-    simpa [monomialSection] using C.hasIntegralValues_monomialSection (0, 1, 0)
+  have h_le (z : ℂ) : ‖ιₚ ((C.σ ^ 2) (α * z))‖ ≤ C.naiveHeight z ^ (2 * ν) := by
+    rw [Pi.pow_apply, map_pow, norm_pow, mul_comm 2 ν, pow_mul]
+    exact pow_le_pow_left₀ (norm_nonneg _)
+      ((C.norm_sigma_le_naiveHeight _).trans (C.naiveHeight_mul_le h_isog z)) 2
   have h_even : Function.Even fun z : ℂ ↦ (C.σ ^ 2) (α * z) := fun z ↦ by simp [sigma_neg]
   obtain ⟨R, hR⟩ : ∃ R : Polynomial ℂ,
       C.IsIntegralEvenExpansion (2 * ν) (fun z : ℂ ↦ (C.σ ^ 2) (α * z)) R :=
-    C.exists_polynomial_of_even (C.comp_mul_mem_sections h_isog h_sec) (h_int.comp_isogeny h_isog)
-      h_even
+    C.exists_polynomial_of_even (C.comp_mul_mem_sections h_isog h_sec) h_le h_even
   refine ⟨R, hR.norm_coeff_le_one, ?_,
     by rw [← hR.taylorVia_eq, taylorVia, taylorVia, taylorAtZero_comp_mul, rescale_map]⟩
   -- At `t / α` the torsion value of `σ(α z) ^ 2` is that of `σ ^ 2` at `t`, which is a unit.
@@ -250,7 +256,7 @@ lemma exists_rescale_sigma_sq_eq {α : ℂ} (hα : α ∈ quadInt d) (hα₀ : �
         Finset.sum_mul, mul_assoc]
   -- The monomials have integral torsion values, so the largest term has a unit coefficient.
   have hm (i : ℕ) (hi : i ≤ ν) : ‖ιₚ (m i)‖ ≤ 1 := by
-    have h_deg : monomialDeg (2 * ν - 2 * i, i, 0) = 2 * ν := by grind
+    have h_deg : monomialDeg (2 * ν - 2 * i, i, 0) = 2 * ν := by lia
     simpa only [h_deg] using C.hasIntegralValues_monomialSection (2 * ν - 2 * i, i, 0) _
       (C.isTorsion_t_div hα hα₀ hν)
   obtain ⟨i, hi, h_le⟩ : ∃ i ∈ Finset.range (ν + 1),

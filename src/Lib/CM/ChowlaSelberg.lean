@@ -1,11 +1,19 @@
 module
 
-public import Lib.Analytic.EntireLFunction
+public import Mathlib.NumberTheory.Harmonic.ZetaAsymp
+import Mathlib.Algebra.GroupWithZero.Torsion
+import Mathlib.Algebra.Order.Monoid.Unbundled.Units
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Topology.UniformSpace.Uniformizable
 public import Lib.CM.ConjugateCurve
-public import Lib.CM.Integrality.IsogenyIntegrality
-public import Lib.CM.KroneckerLimit
 public import Lib.ClassField.HeckeL.EulerProduct
-public import Lib.ClassField.Places.ValuationSubrings
+public import Lib.General.Algebra.AdicCompletion
+import Lib.Analytic.EntireLFunction
+import Lib.CM.Integrality.IsogenyIntegrality
+import Lib.CM.KroneckerLimit
+import Lib.ClassField.Places.ValuationSubrings
+import Lib.General.NumberTheory.EmbeddingsAndDifferent
 
 /-!
 # Odd class number, ζ_K = ζ·L(s, χ), theta functions with CM and Chowla–Selberg
@@ -231,7 +239,7 @@ lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
       ← h_above]
   -- The fibre over `p` is `{w, J}`.
   have h_fibre_prod : HasProd
-      (fun v : {v // below v = ⟨p, hp⟩} ↦ ((1 : ℂ) - v.1.q ^ (-s : ℂ))⁻¹)
+      (fun v : {v // below v = ⟨p, hp⟩} ↦ ((1 : ℂ) - v.val.q ^ (-s : ℂ))⁻¹)
       (∏ v ∈ {w, J}, ((1 : ℂ) - v.q ^ (-s : ℂ))⁻¹) :=
     (Equiv.subtypeEquivRight h_fibre).hasProd_iff.2 (Finset.hasProd {w, J} _)
   simpa [h_char, h_factor] using h_fibre_prod

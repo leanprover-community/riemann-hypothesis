@@ -1,6 +1,14 @@
 module
 
-public import New.UpperBound.Kernels.DefiniteKernelSize
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.RingTheory.Etale.Weakly
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.General.LinearAlgebra.MatrixPolynomials
+public import Lib.Weil.Unramified.HeckeTransfer
+import Lib.ClassField.Avatar.HeckeBaseChange
+import Lib.PadicComparison.Descent.TestCategory
+import New.UpperBound.Kernels.DefiniteKernelSize
 
 /-!
 # The period of a determinant theta kernel (used in rank two for the L-value at z = 1)
@@ -82,7 +90,7 @@ lemma prod_range_corank_one_sub_q_pow (v : FinPlace E) (x : Matrix n n (ResField
   by_cases hx : IsUnit x
   · simp [rank_of_isUnit, hx, MulChar.one_apply ((isUnit_iff_isUnit_det x).1 hx)]
   · have h_corank : 0 < card n - x.rank := by
-      simp [card_sub_rank_eq_finrank_ker, pos_iff_ne_zero, coe_mulVecLin, LinearMap.ker_eq_bot, hx,
+      simp [← finrank_ker_mulVecLin, pos_iff_ne_zero, coe_mulVecLin, LinearMap.ker_eq_bot, hx,
         mulVec_injective_iff_isUnit]
     rw [MulChar.map_nonunit _ (mt (isUnit_iff_isUnit_det x).2 hx)]
     -- the factor at `l = 0` vanishes
@@ -95,7 +103,7 @@ matrices of `x ↦ χ (det x)` sends a matrix integral at all primes `w` of `�
 lemma liftFn_charOfTamePart_det_eq_residueDatum {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
     (𝔫 : Modulus E) :
     𝔫.liftFn ((fun x : Matrix n n 𝔫.ResidueRing ↦ 𝔫.charOfTamePart ψ x.det) ∘ vecToMatrix) =
-      residueDatum Subtype.val fun S : (w : 𝔫.places) → Matrix n n (ResField w.1) ↦
+      residueDatum Subtype.val fun S : (w : 𝔫.places) → Matrix n n (ResField w.val) ↦
         ∏ᶠ w : 𝔫.places, ψ w (S w).det := by
   simpa [← mapMatrix_apply, ← map_det] using!
     liftFn_eq_residueDatum (𝔪 := 𝔫) Subtype.range_coe.symm
@@ -110,16 +118,16 @@ lemma residueDatum_singleton_mul {𝔪 𝔪' : Modulus E}
     {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ} {v : FinPlace E} (hv : v ∉ 𝔪.places)
     (h_places : 𝔪'.places = insert v 𝔪.places) :
     (residueDatum (fun _ : Unit ↦ v) (fun S : Unit → Matrix n n (ResField v) ↦ ψ v (S ()).det) *
-        residueDatum Subtype.val fun S : (w : 𝔪.places) → Matrix n n (ResField w.1) ↦
+        residueDatum Subtype.val fun S : (w : 𝔪.places) → Matrix n n (ResField w.val) ↦
           ∏ᶠ w : 𝔪.places, ψ w (S w).det) =
-      residueDatum Subtype.val fun S : (w : 𝔪'.places) → Matrix n n (ResField w.1) ↦
+      residueDatum Subtype.val fun S : (w : 𝔪'.places) → Matrix n n (ResField w.val) ↦
         ∏ᶠ w : 𝔪'.places, ψ w (S w).det := by
   classical
   ext x
   -- integral at the places of `𝔪'` means integral at those of `𝔪` and at `v`
-  have h_int : (∀ (w : 𝔪'.places) (p : n × n), x p w ∈ LocInt w.1) ↔
+  have h_int : (∀ (w : 𝔪'.places) (p : n × n), x p w ∈ LocInt w.val) ↔
       (Unit → ∀ p : n × n, x p v ∈ LocInt v) ∧
-        ∀ (w : 𝔪.places) (p : n × n), x p w ∈ LocInt w.1 := by
+        ∀ (w : 𝔪.places) (p : n × n), x p w ∈ LocInt w.val := by
     simp only [Subtype.forall, h_places, mem_insert_iff, forall_const]
     grind
   let ψDetAt (w : FinPlace E) : ℂ :=
@@ -140,22 +148,22 @@ lemma detKernel_stdEmbFin_mul [hα : α.HasWeight (fun τ : NumberField.Infinite
   set Q := ∏ τ : NumberField.InfinitePlace E, variableMinor (n := n) (n' := n) τ id id ^ c τ with hQ
   -- Substituting `γ⁻¹` multiplies `Q = ∏ det ^ c` by `∏ (det γ ^ c)⁻¹`: this is
   -- `twoSidedSubst_stackedDetProd` for determinants without constant rows.
-  have h_subst : twoSidedSubst (fun τ ↦ γ⁻¹.1.1.map (Φ τ)) 1 Q =
-      (∏ τ, (Φ τ γ.1.1.det ^ c τ)⁻¹) • Q := by
+  have h_subst : twoSidedSubst (fun τ ↦ γ⁻¹.val.val.map (Φ τ)) 1 Q =
+      (∏ τ, (Φ τ γ.val.val.det ^ c τ)⁻¹) • Q := by
     simpa [hQ, stackedDetProd, stackedDet, ← det_submatrix_equiv_self (.symm (.emptySum _ n)),
       ← map_det, ← mapMatrix_apply] using!
       twoSidedSubst_stackedDetProd (ι := fun τ ↦ Fin (c τ)) (.emptySum Empty n) 0
-        (fun τ ↦ γ⁻¹.1.1.map (Φ τ)) 1
+        (fun τ ↦ γ⁻¹.val.val.map (Φ τ)) 1
   -- Translating the kernel by `γ` gives the factor `∏ det γ ^ c`, which cancels it.
   have h_transl : modKernelStdSpace (stdSpace E n) α α 𝔪 Ψ Q 1 (stdEmbFin γ * g) =
-      (∏ τ, Φ τ γ.1.1.det ^ c τ) *
+      (∏ τ, Φ τ γ.val.val.det ^ c τ) *
         modKernelStdSpace (stdSpace E n) α α 𝔪 Ψ (twoSidedSubst (fun τ ↦ γ⁻¹.1.1.map (Φ τ)) 1 Q) 1
           g := by
     simpa [Prod.mk_one_one, ← Pi.one_def] using! modKernelStdSpace_embFin_mul hα hα 𝔪 Ψ Q 1 γ 1 g
   simp only [detKernel, ← hQ]
   rw [h_transl, h_subst]
   simp only [modKernelStdSpace, ← modKernelBilin_apply, map_smul, smul_eq_mul, prod_inv_distrib]
-  exact mul_inv_cancel_left₀ (by simp [prod_ne_zero_iff, γ.1.det_ne_zero]) _
+  exact mul_inv_cancel_left₀ (by simp [prod_ne_zero_iff, γ.val.det_ne_zero]) _
 
 /-- Let `α` have weight `-c` and tame part `ψ` trivial outside the primes of `𝔪`. Write
 `detKernel n α c 𝔪 Ψ` for the theta kernel of the pair `(I_n, I_n)` with characters `α`, datum `Ψ`

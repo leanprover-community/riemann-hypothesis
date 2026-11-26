@@ -1,7 +1,14 @@
 module
 
-public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import TauCeti.LinearAlgebra.Matrix.Triangular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.General.LinearAlgebra.MinorProducts
+public import Lib.Adelic.QuotientMeasure.Basic -- shake: keep (needed public by an exposed definition)
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.DiscreteSeries.Haar.TotalMass
 
 /-!
 # Maximal compact subgroup, block diagonal matrices and equivariance of minors

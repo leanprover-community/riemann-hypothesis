@@ -1,6 +1,12 @@
 module
 
-public import Lib.Cohomology.PointClass.LinearIndependence
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.Cohomology.Hodge.FixedPointFormula
+public import Lib.General.Geometry.ProjectiveSpace
+public import Lib.PadicComparison.HodgeTate.Map
+import Lib.Cohomology.Hodge.Kunneth
+import Lib.Cohomology.PointClass.LinearIndependence
+import Lib.General.Geometry.PointsOfProperSchemes
 
 /-!
 # Woods Hole (half of Atiyah–Bott): maps killed under λ_h on Hodge classes are h-null

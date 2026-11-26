@@ -1,7 +1,15 @@
 module
 
+public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Lib.PadicComparison.Crystalline.ComparisonMap
-public import Lib.PadicComparison.HodgeTate.PeriodMap
+public import Lib.Cohomology.Etale.EllAdicCohomology
+public import Lib.GaloisRep.Main.LocalConditions
+import Lib.Cohomology.Etale.DenseSubfunctors
+import Lib.General.Geometry.PointsOfProperSchemes
+import Lib.PadicComparison.Crystalline.DividedPowerEnvelope
+import Lib.PadicComparison.HodgeTate.PeriodMap
+import Lib.PadicComparison.Primitive.ComparisonTheorem
+import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # Crystallinity of p-adic cohomology of charted proper schemes and Frobenius congruences
@@ -581,24 +589,35 @@ private lemma map_J_tensorAction_eq_pull {p : ℕ} [ThePrime p] {R : CommRingCat
       (r : Y ⟶ G ⋙ Z) : X ⟶ (PadicTest.twist (toGp s) ⋙ G) ⋙ Z :=
     d ≫ (PadicTest.twist (toGp s)).whiskerLeft r
   let α : _ ⟶ (crysComparison.trans cmp).functor ⋙ Zcr := twistComp δ (red 0 pow_one)
+  -- A relation between maps of points gives the same relation between the maps of `freeAb`. Like
+  -- `twistComp`, this is stated for variable functors, here the functors of points.
+  have twistComp_whiskerRight {Y₀ Y₁ : PadicTest ⥤ Type 1}
+      {G : PadicTest ⥤ CrysTest (WittVector p k)} {Y₂ : CrysTest (WittVector p k) ⥤ Type 1}
+      {d : Y₀ ⟶ PadicTest.twist (toGp s) ⋙ Y₁} {r : Y₁ ⟶ G ⋙ Y₂} {r' : Y₀ ⟶ G ⋙ Y₂}
+      {η : PadicTest.twist (toGp s) ⋙ G ⟶ G}
+      (h : ∀ c, d.app c ≫ r.app ((PadicTest.twist (toGp s)).obj c) ≫ Y₂.map (η.app c) = r'.app c) :
+      twistComp (freeAbMap d) (freeAbMap r) ≫ Functor.whiskerRight η (freeAb Y₂) = freeAbMap r' :=
+    NatTrans.ext (funext fun c ↦ (Category.assoc ..).trans
+      (((AddCommGrpCat.free.map_comp ..).trans
+        (congrArg (_ ≫ ·) (AddCommGrpCat.free.map_comp ..))).symm.trans
+          (congrArg AddCommGrpCat.free.map (h c))))
   -- Moving the reduced points by `κ` is composing them with `Frob ^ a`.
-  have h_points : α ≫ Functor.whiskerRight κ Zcr = red a ha := by
-    ext c : 2
-    let ZV := freeAb V.toFunctor
-    refine ((ZV.map_comp ..).trans ((ZV.map_comp ..) =≫ _)).symm.trans
-      (congrArg _ (ext_apply fun y ↦ ?_))
-    -- `x ^ p ^ 0 = x`, then `h_eta`
-    exact (congrArg (pdQuotientMap (τ.app c).hom) (pow_one _)).trans (h_eta c y)
+  have h_points : α ≫ Functor.whiskerRight κ Zcr = red a ha :=
+    twistComp_whiskerRight fun c ↦
+      ((V.toFunctor.map_comp ..).trans (congrArg (_ ≫ ·) (V.toFunctor.map_comp ..))).symm.trans
+        (congrArg V.toFunctor.map (ext_apply fun y ↦
+          -- `x ^ p ^ 0 = x`, then `h_eta`
+          (congrArg (pdQuotientMap (τ.app c).hom) (pow_one _)).trans (h_eta c y)))
   -- Twisting the coefficients by `β` is moving the period ring by `κ`: both give `1 ⊗ τ x`.
   have h_coeff : (crysComparison.trans cmp).coeffHom =
       Functor.whiskerRight κ _ ≫ crysComparison.coeffHom := by
     ext
     -- `hβ` at `1 ⊗ x`, with `μ 1 = 1`.
     exact congrArg ULift.up ((hβ ..).trans (congrArg (· ⊗ₜ _) (toRingHom FrobGal Bmax μ).map_one))
-  have h_pull : (crysComparison.trans cmp).pull α n = crysComparison.pull (red a ha) n :=
-    (congrArg (pull ⟨_, ·⟩ _ n) h_coeff).trans
-      ((pull_whiskerRight κ crysComparison.coeffHom _).trans
-        (congrArg (crysComparison.pull · n) h_points))
+  have h_pull : (crysComparison.trans cmp).pull α n z = crysComparison.pull (red a ha) n z :=
+    (congrArg (pull ⟨_, ·⟩ _ n z) h_coeff).trans
+      ((DFunLike.congr_fun (pull_whiskerRight κ crysComparison.coeffHom _) z).trans
+        (congrArg (crysComparison.pull · n z) h_points))
   -- `J` turns the action of `μ` and `s` into the comparison `cmp`, because `β` acts by `μ` on
   -- `Bmax` and fixes the Witt vectors with coefficients in the prime field.
   have h_twist : J Y (tensorAction Bmax μ (ellAdicCohom.galoisAction R Ω Γ Y n s) (C z)) =
@@ -608,17 +627,14 @@ private lemma map_J_tensorAction_eq_pull {p : ℕ} [ThePrime p] {R : CommRingCat
       have h_frob_w : WittVector.map (iterateFrobenius c.TiltRing p a) w = w :=
         ext fun i ↦ (congrFun (pow_iterate ..) _).symm.trans (iterate_fixed (hw i) _)
       congrArg ULift.up ((hβ ..).trans (congrArg _ (hτ (map_one _) h_frob_w)))) _
-  -- Twisting points by `s` commutes with the inclusion of the points of `V`.
-  have h_square : incl ≫ freeAbMap (toTwistPoints he_algebraMap he_smul s Y) =
-      δ ≫ cmp.functor.whiskerLeft incl :=
-    freeAb.hom_ext fun _ _ ↦ rfl
   refine .trans ?_ ((pull_trans (c := crysComparison) (c' := cmp) (a := red 0 pow_one) (α' := δ)
-    z).trans (DFunLike.congr_fun h_pull z))
+    z).trans h_pull)
   calc
     _ = cmp.pull δ n (H.map Ψ incl n (J Y (C z))) :=
+      -- Twisting points by `s` commutes with the inclusion of the points of `V`.
       (congrArg (H.map Ψ incl n) h_twist).trans (map_pull_eq_pull_map (c := cmp) (a' := incl)
-        (a := freeAbMap (toTwistPoints he_algebraMap he_smul s Y)) (α := incl) (b := δ) h_square
-        n _)
+        (a := freeAbMap (toTwistPoints he_algebraMap he_smul s Y)) (α := incl) (b := δ)
+        (freeAb.hom_ext fun _ _ ↦ rfl) n _)
     _ = cmp.pull δ n (crysComparison.pull (red 0 pow_one) n z) := congrArg _ (hC z)
 
 /-- The congruence relation of `ellAdicCohom.isCrystalline_and_linearFrob_rel` on one period `C z`.
@@ -682,26 +698,33 @@ private lemma sum_linearFrob_apply_eq_zero {p : ℕ} [ThePrime p] {R : CommRingC
   simp only [LinearMap.coe_sum, LinearMap.coe_smul, LinearMap.coe_comp, Finset.sum_apply,
     Pi.smul_apply, Function.comp_apply, h_fixed,
     linearFrob_apply h_crys.isPotentiallyCrystalline (hW _), map_sum, hJ.natural, map_zsmul,
-    H.map_map, Functor.map_comp, map_zero, Ψ]
-  change ∑ i, m i • H.map Ψ (freeAb.map T.ι ≫ freeAb.map (testPoints.map (u i))) n (y i) = 0
+    map_zero]
+  change ∑ i, m i • H.map Ψ (freeAb.map T.ι) n
+    (H.map Ψ (freeAb.map (testPoints.map (u i))) n (y i)) = 0
   -- `δ i` takes a point `w` of `T` to `u i w`; `red i` takes it on to the point over the period
   -- ring modulo divided powers, composed with `Frob ^ a i`.
   let δ (i : ι) : T.toFunctor ⟶ V'.toFunctor := T.homOfLe (iInf_le _ i) ≫ Subfunctor.fromPreimage ..
   let red (i : ι) := toCrysPoints V (frobPowHom πk h_teichmuller (a i) (h_pow (hW i)))
   let v (i : ι) := δ i ≫ red i
-  -- On `T` the `i`-th term is the pull-back of the crystalline class `z` along `v i`.
-  have h_term (i : ι) : H.map Ψ (freeAb.map T.ι ≫ freeAb.map (testPoints.map (u i))) n (y i) =
-      crysComparison.pull (freeAbMap (v i)) n z :=
+  -- `crysComparison.pull α n z` is the pull-back along `α` of the class `ξ` of `z` on tests.
+  let ξ : H (freeAb.obj ((crysThickening ⋙ CrysTest.restrictScalars (WittVector p k)) ⋙
+      pdReduction (teichReduction (p := p) πk) ⋙ V.toFunctor)) Ψ n :=
+    (H.push _ crysComparison.coeffHom n).comp
+      ((restrictAlong crysComparison.functor).mapExtAddHom _ _ n) z
+  -- On `T` the `i`-th term is the pull-back of `ξ` along `v i`.
+  have h_term (i : ι) : H.map Ψ (freeAb.map T.ι) n
+      (H.map Ψ (freeAb.map (testPoints.map (u i))) n (y i)) = H.map Ψ (freeAb.map (v i)) n ξ :=
     calc
       _ = H.map Ψ (freeAb.map (δ i)) n (H.map Ψ (freeAb.map V'.ι) n (y i)) :=
-        (congrArg (H.map Ψ · n (y i)) freeAb.hom_ext).trans (H.map_comp ..)
-      _ = H.map Ψ (freeAb.map (δ i)) n (crysComparison.pull (freeAbMap (red i)) n z) :=
-        congrArg _ (h_action _ (h_pow (hW i)) _ z)
-      _ = _ := H.map_map (δ i) (red i) _
+        (H.map_comp ..).symm.trans
+          ((congrArg (H.map Ψ · n (y i)) freeAb.hom_ext).trans (H.map_comp ..))
+      _ = H.map Ψ (freeAb.map (δ i)) n (H.map Ψ (freeAb.map (red i)) n ξ) :=
+        congrArg _ ((h_action _ (h_pow (hW i)) _ z).trans (AddMonoidHom.comp_apply ..))
+      _ = _ := H.map_map (δ i) (red i) ξ
   -- So it remains to see that the locus where `∑ m i [v i w] = 0` is locally everything in `T`.
   suffices h_loc : IsZariskiLocallyTop PadicTest.ringFunctor (relationLocus m v) from
     (Finset.sum_congr rfl fun i _ ↦ congrArg (m i • ·) (h_term i)).trans
-      (H.sum_map_eq_zero_of_relationLocus m v (h_zar h_loc).isCohomEquiv _)
+      (H.sum_map_eq_zero_of_relationLocus m v (h_zar h_loc).isCohomEquiv ξ)
   intro c w 𝔪 h𝔪
   obtain ⟨b, hb, h_rel⟩ := h_rel_loc c (T.ι.app c w) 𝔪 h𝔪
   refine ⟨b, hb, fun B f hf ↦ ?_⟩
@@ -787,7 +810,8 @@ lemma ellAdicCohom.isCrystalline_and_linearFrob_rel {p : ℕ} [ThePrime p] {R : 
   -- `g : W(k) → Amax`.
   obtain ⟨hP, _, h_smul, hx_zero⟩ := exists_crysPeriodAlgebra hN
   have h_ker (r : R) (hr : r ∈ 𝔭) : integersToPdQuotient.comp σ r = 0 := by
-    simpa [hx_zero] using map_dvd integersToPdQuotient (hx_dvd r hr)
+    have h_dvd := map_dvd integersToPdQuotient (hx_dvd r hr)
+    rwa [map_pow, hx_zero, zero_pow M.succ_ne_zero, zero_dvd_iff] at h_dvd
   let ℓ : k →+* Amax ⧸ pdIdeal Amax := Ideal.Quotient.lift 𝔭 (integersToPdQuotient.comp σ) h_ker
   obtain ⟨g, hg, hg_unique⟩ := hP.existsUnique_witt_lift (cast_eq_zero k p) ℓ
   algebraize [g]

@@ -1,9 +1,15 @@
 module
 
+import Mathlib.MeasureTheory.Integral.Pi
+import TauCeti.Algebra.Group.AddChar.Basic
 public import Lib.SiegelWeil.Tower.LineTerms
-public import Lib.Weil.DualPair.ThetaIntegrals
 public import Lib.Weil.MixedModel.FockSections
 public import Lib.Weil.TameGaussSum
+public import Lib.Base
+public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+public import Lib.Weil.DualPair.WeilAction
+import Lib.Cohomology.Etale.Basic
+import Lib.Weil.DualPair.ThetaIntegrals
 
 /-!
 # Real, named and finite slices of data in the mixed model of an adapted splitting
@@ -125,12 +131,12 @@ noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapt
           D.zeroTerm (V.integrated v f) = V₀.integrated (T v) (D.zeroTerm (V.projReal f)) by
       simpa [↓ Splitting.slice] using h.exists_apply_zero_omega_integrated_eq isMixedLaw_slice
   refine
-    { L := realMatrix (D.lAdelic * t⁻¹.1ᴴ)
-      K := realMatrix (D.kAdelic * t.1)
+    { L := realMatrix (D.lAdelic * t⁻¹.valᴴ)
+      K := realMatrix (D.kAdelic * t.val)
       I := realMatrix D.iAdelic
-      slice a := T.comp (realHeisenbergOp (realMatrix (D.lAdelic * t⁻¹.1ᴴ) *ᵥ a))
+      slice a := T.comp (realHeisenbergOp (realMatrix (D.lAdelic * t⁻¹.valᴴ) *ᵥ a))
       exists_decomp :=
-        ⟨realMatrix (t.1ᴴ * D.lCoord), realMatrix D.iCoord, realMatrix (t⁻¹.1 * D.kCoord),
+        ⟨realMatrix (t.valᴴ * D.lCoord), realMatrix D.iCoord, realMatrix (t⁻¹.val * D.kCoord),
           fun y ↦ ?_⟩
       slice_realHeisenbergOp a a' w b v := eq_of_integrated_zeroTerm_eq h fun f ↦ ?_
       slice_vac a := eq_of_integrated_zeroTerm_eq h ?_ }
@@ -152,8 +158,8 @@ noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapt
     simpa [← hT, ↓ conjTranspose_nonsing_inv, ↓ integrated_realHeisenbergOp,
       ↓ realVec_realMatrix_mulVec, mulVec_add, ↓ Splitting.slice, ↓ adelicHeisenberg,
       ↓ star_mulVec_dotProduct] using
-      D.isMixedLaw_slice (t⁻¹.1ᴴ *ᵥ _)
-        (D.lAdelic *ᵥ t⁻¹.1ᴴ *ᵥ _ + D.iAdelic *ᵥ _ + D.kAdelic *ᵥ t.1 *ᵥ _) _
+      D.isMixedLaw_slice (t⁻¹.valᴴ *ᵥ _)
+        (D.lAdelic *ᵥ t⁻¹.valᴴ *ᵥ _ + D.iAdelic *ᵥ _ + D.kAdelic *ᵥ t.val *ᵥ _) _
   · -- The vacuum becomes the Gaussian.
     simpa [← hT, ↓ integrated_realHeisenbergOp, ↓ realVec_realMatrix_mulVec, ↓ Splitting.slice]
       using h.omega_projReal_of_isMixedLaw isMixedLaw_slice _
@@ -313,21 +319,14 @@ lemma ReadsAt.psi_apply (h : ReadsAt S π) (z : 𝔸f E) : h.ψ (π z) = selfDua
 of integers `O`: it is continuous, and `h.ψ (t * ·)` is trivial on `O` exactly for `t ∈ O`. -/
 lemma ReadsAt.hasIntegralConductor_psi (h : ReadsAt S π) : HasIntegralConductor h.ψ := by
   refine ⟨continuous_selfDualAddChar.comp h.continuous_lift, fun t ↦ ?_⟩
-  -- Write `t = π x`; the claim becomes the self-duality of `Ô E` for `idem S * x`.
-  have π_surj : Function.Surjective π := fun y ↦ ⟨h.lift y, h.apply_lift y⟩
-  obtain ⟨x, rfl⟩ := π_surj t
-  rw [h.mem_iff, ← forall_selfDualAddChar_mul_eq_one_iff]
-  constructor
-  · intro h_triv u hu
-    have hu_mem : π u ∈ O := (h.mem_iff u).2 (mul_mem (idem_mem_Ô S) hu)
-    calc selfDualAddChar E (idem S * x * u) = h.ψ (π x * π u) := by
-          rw [← map_mul, h.psi_apply, mul_assoc]
-      _ = 1 := h_triv (π u) hu_mem
-  · intro h_triv s hs
-    obtain ⟨u, rfl⟩ := π_surj s
-    calc h.ψ (π x * π u) = selfDualAddChar E (idem S * x * (idem S * u)) := by
-          rw [← map_mul, h.psi_apply, mul_mul_mul_comm, idem_mul_self]
-      _ = 1 := h_triv (idem S * u) ((h.mem_iff u).1 hs)
+  -- Write `t = π (h.lift t)`; this becomes self-duality of `Ô E` for `idem S * h.lift t`.
+  rw [← h.apply_lift t, h.mem_iff, ← forall_selfDualAddChar_mul_eq_one_iff]
+  refine ⟨fun h_triv u hu ↦ ?_, fun h_triv s hs ↦ ?_⟩
+  · rw [mul_assoc, ← h.psi_apply, map_mul]
+    exact h_triv (π u) ((h.mem_iff u).2 (mul_mem (idem_mem_Ô S) hu))
+  · rw [← h.apply_lift s] at hs ⊢
+    rw [← map_mul, h.psi_apply, ← idem_mul_self S, mul_mul_mul_comm]
+    exact h_triv (idem S * h.lift s) ((h.mem_iff _).1 hs)
 
 omit [WeilData E] [DecidableEq p] in
 /-- If `π : 𝔸f E →+* F` reads the components at `S`, then applying it coordinatewise carries the
@@ -428,11 +427,11 @@ lemma slice_localDatum (h : ReadsAt S π) {D : (W'.hom T').Splitting (W.hom T) p
     simp [funext_iff, realCoord, Units.smul_def]
   have h_fin : (fun i ↦ (0, ((scaleIdele E • x) i).2)) = finVec xf := rfl
   have h_vac :
-      D.slice (u.1⁻¹ᴴ *ᵥ finVec (idem S.conjClosureᶜ • xf))
+      D.slice (u.val⁻¹ᴴ *ᵥ finVec (idem S.conjClosureᶜ • xf))
           (ω (W'.hom T') 1 (W'.hom T').vacElem) =
         (if ∀ i, idem S.conjClosureᶜ * (x i).2 ∈ Ô E then (vacuumFactor hu : ℂ) else 0) •
           (W.hom T).vacElem := by
-    have h_norm : ‖vacuumFn (u.1ᴴ *ᵥ u.1⁻¹ᴴ *ᵥ finVec (idem S.conjClosureᶜ • xf))‖ =
+    have h_norm : ‖vacuumFn (u.valᴴ *ᵥ u.val⁻¹ᴴ *ᵥ finVec (idem S.conjClosureᶜ • xf))‖ =
         if ∀ i, idem S.conjClosureᶜ * (x i).2 ∈ Ô E then 1 else 0 := by
       simp [vacuumFn, finVec, ← conjTranspose_mul, xf, apply_ite norm, Circle.norm_coe]
     rw [map_one, one_apply_eq_self, slice_vacElem_eq_vacuumFactor_smul hu, h_norm]
@@ -441,7 +440,7 @@ lemma slice_localDatum (h : ReadsAt S π) {D : (W'.hom T').Splitting (W.hom T) p
       (∏ i, ∫ t in V.O, h.ψ (π (star (x i).2) * t) * f i t) • fun y ↦ Ψ ((vecToMatrix y).map π) :=
     h.sliceDatum_eq_prod_setIntegral_smul hΦ.1.continuous x f h_prod
   have h_name :
-      D.slice (u.1⁻¹ᴴ *ᵥ finVec xf) (ω (W'.hom T') 1
+      D.slice (u.val⁻¹ᴴ *ᵥ finVec xf) (ω (W'.hom T') 1
           ((W'.hom T').schrodingerOp S (fun y ↦ Φ ((vecToMatrix y).map π)) (W'.hom T').vacElem)) =
         (∏ i, ∫ t : F in V.O, h.ψ (π (star (x i).2) * t) * f i t) •
           (if ∀ i, idem S.conjClosureᶜ * (x i).2 ∈ Ô E then (vacuumFactor hu : ℂ) else 0) •
@@ -457,32 +456,26 @@ lemma slice_localDatum (h : ReadsAt S π) {D : (W'.hom T').Splitting (W.hom T) p
 /-- For a base-adapted splitting `A`, the images under `π` of the finite parts of the adelic frame
 `(k, ι, l)` and of its dual frame, as mutually inverse integral matrices over `F`. -/
 def adaptedFrame (h : ReadsAt S π) (A : W'.Splitting W p) [k : IsBaseAdapted A] :
-    IntegralFrame F n' n p where
-  K := A.kAdelic.map (π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)))
-  L := A.lAdelic.map (π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)))
-  I := A.iAdelic.map (π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)))
-  dualK := A.kCoord.map (π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)))
-  dualL := A.lCoord.map (π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)))
-  dualI := A.iCoord.map (π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)))
-  isIntMatrix_and_mul_eq_one := by
-                          -- The matrices are square by `A.card_eq`, so one of the two products
-                          -- suffices. Three claims remain: the frame and its dual are integral, and
-                          -- their product is one.
-                          simp +arith [↓mul_eq_one_comm_of_card_eq _ n', A.card_eq, ← add_assoc,
-                            fromCols_mul_fromRows]
-                          obtain ⟨-, h_int⟩ := k.isOrthoIntegral
-                          refine ⟨?_, ?_, ?_⟩
-                          · -- the frame is integral
-                            simp_all [IsIntMatrix, h.mem_iff, mul_mem]
-                          · -- so is the dual frame, which is made of conjugate transposes of the
-                            -- frame
-                            simp_all [IsIntMatrix, h.mem_iff, mul_mem, kCoord, iCoord, lCoord,
-                              star_mem_Ô, stdForm]
-                          · -- apply `π` to the finite part of the decomposition of the identity
-                            simpa [map_add, -RingHom.coe_comp] using! congrArg
-                              (π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ)
-                                (𝔸f E))).mapMatrix
-                              A.sum_frame_mul_coord_eq_one
+    IntegralFrame F n' n p :=
+  let read := π.comp (RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E))
+  { K := A.kAdelic.map read
+    L := A.lAdelic.map read
+    I := A.iAdelic.map read
+    dualK := A.kCoord.map read
+    dualL := A.lCoord.map read
+    dualI := A.iCoord.map read
+    isIntMatrix_and_mul_eq_one := by
+      -- The matrices are square by `A.card_eq`, so one of the two products suffices.
+      simp +arith [↓mul_eq_one_comm_of_card_eq _ n', A.card_eq, ← add_assoc,
+        fromCols_mul_fromRows]
+      obtain ⟨-, h_int⟩ := k.isOrthoIntegral
+      refine ⟨?_, ?_, ?_⟩
+      · simp_all [IsIntMatrix, h.mem_iff, mul_mem, read]
+      · simp_all [IsIntMatrix, h.mem_iff, mul_mem, kCoord, iCoord, lCoord,
+          star_mem_Ô, stdForm, read]
+      · simpa [map_add, -RingHom.coe_comp] using!
+          congrArg read.mapMatrix A.sum_frame_mul_coord_eq_one }
+
 
 end NamedSlices
 

@@ -1,8 +1,19 @@
 module
 
-public import Lib.General.Geometry.SerreTheorem
-public import Lib.Shimura.Deformation.TangentCount
-public import TauCeti.RingTheory.TrivSqZeroExt
+public import Mathlib.Algebra.DualNumber
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.RingTheory.TrivSqZeroExt
+public import Lib.General.Geometry.PointsOfProperSchemes
+public import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
+import Lib.General.Geometry.SerreTheorem
+import Lib.Shimura.AbelianScheme.IsogenyFlatness
+import Lib.Shimura.AbelianScheme.Pairings
+import Lib.Shimura.Deformation.TangentCount
+import Lib.Shimura.HeckeTower.Model
 
 /-!
 # Drinfeld lifting over k[ε] and a bound on the tangent space of the moduli scheme
@@ -553,39 +564,31 @@ lemma eq_of_lift_star_sub [IsAlgClosed k] [Fact (ringChar k).Prime] (h_rig : x�
   have h_ne : Star.star D.β - b ≠ 0 := fun h_zero ↦ by
     simpa [h_zero, hb] using congrArg x₀.baseHom huv
   -- The kernel of `f` is killed by `a = star β - b`, so `a • 𝟙` factors through `f`.
-  obtain ⟨μ, _, hμ⟩ :
-      ∃ μ : z.groupScheme ⟶ z₀.groupScheme,
-        IsAdditive μ ∧ hq.schemeMap ≫ μ = (1 : 𝓞 E) • hq₀.schemeMap := by
-    refine exists_isAdditive_schemeMap_comp_eq_smul f hf h_ne hq₀ ((star D.β - b) • 𝟙 _) 1 (by simp)
-      fun S _ _ _ _ _ y hy hyy ↦ ?_
-    -- `(β - b) a y` is killed by the characteristic and pairs to zero with every point, so it is
-    -- zero by rigidity; the adjoint of `β - b` for the pairing is `a`
-    have h_zero : (D.β - b) • (Star.star D.β - b) • y = 0 := by
-      refine h_rig.eq_zero_of_pairing_eq_zero hz₀ _ 1 (𝟙 _) ?_ fun T t y' ↦ ?_
-      · simp [smul_comm _ (D.β - _), AgreeModEps.ringChar_smul_and_smul_eq_zero hq₀,
-          isLinear_and_pairing_eq_of_reduction f hf, hy]
-      · calc
-          z₀.lineBundle.picClass.pairing (t ≫ ((D.β - b) • (star D.β - b) • y)) y'
-          _ = z₀.lineBundle.picClass.pairing ((star D.β - b) • t ≫ y) ((star D.β - b) • y') := by
-            simpa using z₀.pairing_pow_smul_adjoint b 1 ((star D.β - b) • t ≫ y) y'
-          _ = z.lineBundle.picClass.pairing ((t ≫ y) ≫ f) (y' ≫ f) := by
-            obtain ⟨-, -, f_pair⟩ := isLinear_and_pairing_eq_of_reduction f hf
-            simpa using (f_pair hz₀ (t ≫ y) y').symm
-          _ = 0 := by simp [hy, Pic.pairing.eq_1 _ 0]
-    -- now use `u (β - b) + v a = 1` and `a² y = 0`
-    suffices (1 : 𝓞 E) • (Star.star D.β - b) • y = 0 by simpa using this
-    simp [← huv, add_smul, h_zero, hyy, ← smul_smul]
+  obtain ⟨μ, _, hμ⟩ := exists_isAdditive_schemeMap_comp_eq_smul f hf h_ne hq₀
+    ((star D.β - b) • 𝟙 _) 1 (by simp) fun S _ _ _ _ _ y hy hyy ↦ by
+      -- `(β - b) a y` is killed by the characteristic and pairs to zero with every point, so it is
+      -- zero by rigidity; the adjoint of `β - b` for the pairing is `a`
+      have h_zero : (D.β - b) • (Star.star D.β - b) • y = 0 := by
+        refine h_rig.eq_zero_of_pairing_eq_zero hz₀ _ 1 (𝟙 _) ?_ fun T t y' ↦ ?_
+        · simp [smul_comm _ (D.β - _), AgreeModEps.ringChar_smul_and_smul_eq_zero hq₀,
+            isLinear_and_pairing_eq_of_reduction f hf, hy]
+        · calc
+            z₀.lineBundle.picClass.pairing (t ≫ ((D.β - b) • (star D.β - b) • y)) y'
+            _ = z₀.lineBundle.picClass.pairing ((star D.β - b) • t ≫ y) ((star D.β - b) • y') := by
+              simpa using z₀.pairing_pow_smul_adjoint b 1 ((star D.β - b) • t ≫ y) y'
+            _ = z.lineBundle.picClass.pairing ((t ≫ y) ≫ f) (y' ≫ f) := by
+              obtain ⟨-, -, f_pair⟩ := isLinear_and_pairing_eq_of_reduction f hf
+              simpa using (f_pair hz₀ (t ≫ y) y').symm
+            _ = 0 := by simp [hy, Pic.pairing.eq_1 _ 0]
+      -- now use `u (β - b) + v a = 1` and `a² y = 0`
+      suffices (1 : 𝓞 E) • (Star.star D.β - b) • y = 0 by simpa using this
+      simp [← huv, add_smul, h_zero, hyy, ← smul_smul]
   -- As `μ` reduces to `1`, the identity of `z.groupScheme` factors through it.
-  obtain ⟨ν, _, hν⟩ :
-      ∃ ν : z₀.groupScheme ⟶ z.groupScheme,
-        IsAdditive ν ∧ hq₀.schemeMap ≫ ν = (1 : 𝓞 E) • hq.schemeMap :=
+  obtain ⟨ν, _, hν⟩ :=
     exists_isAdditive_schemeMap_comp_eq_smul μ hμ one_ne_zero hq (𝟙 _) 1 (by simp) (by simp)
   obtain ⟨ν_lin, -, ν_pair⟩ := isLinear_and_pairing_eq_of_reduction ν hν
-  have h_base : z₀.baseHom = z.baseHom := hz₀.baseHom_eq_comp.trans hρ.symm
-  have h_pair : ∀ ⦃T : Over (Spec (of (TrivSqZeroExt k k)))⦄ (y y' : T ⟶ z₀.groupScheme),
-      z₀.lineBundle.picClass.pairing y y' = z.lineBundle.picClass.pairing (y ≫ ν) (y' ≫ ν) := by
-    simp [ν_pair hz₀]
-  refine (h_rig.eq_and_comp_toFamily_eq_of_hom hz₀ h_base ν h_pair fun l ↦ ?_).1
+  refine (h_rig.eq_and_comp_toFamily_eq_of_hom hz₀ (hz₀.baseHom_eq_comp.trans hρ.symm) ν
+    (fun ⦃_⦄ _ _ ↦ by simp [ν_pair hz₀]) fun l ↦ ?_).1
   -- The difference `d` of the level points is killed by `𝔑`; being infinitesimal, it is also killed
   -- by the second ideal of `h_level`. The two ideals are coprime, so `d = 0`.
   set d := z₀.levelPoints l ≫ ν - z.levelPoints l
@@ -597,9 +600,6 @@ lemma eq_of_lift_star_sub [IsAlgClosed k] [Fact (ringChar k).Prime] (h_rig : x�
       OverMorphism.ext_iff, h_t, ← hq.isGroupBaseChange.pullSection_comp,
       ← hq₀.isGroupBaseChange.pullSection_comp_assoc, ← comp_left _ _ _ hq₀.schemeMap,
       AddGrpObj.comp_sub, sub_eq_zero]
-  have d_char : ringChar k • d = 0 := d_inf.ringChar_smul_and_smul_eq_zero.left
-  have d_star {a : 𝓞 E} (ha : x₀.baseHom a = 0) : ((Star.star D.β - b) * a) • d = 0 :=
-    d_inf.ringChar_smul_and_smul_eq_zero.right hρ hb ha
   have h_lev : Ideal.span {D.level} ≤ Ideal.torsionOf (𝓞 E) _ d := by
     have h_torsion : D.level • l = 0 := Subtype.ext l.prop
     simp [d, smul_sub, ← IsLinear.smul_comp, h_torsion, ← map_smul]
@@ -607,99 +607,57 @@ lemma eq_of_lift_star_sub [IsAlgClosed k] [Fact (ringChar k).Prime] (h_rig : x�
       ker x₀.baseHom * Ideal.span {↑(ringChar k), Star.star D.β - b} ≤
         Ideal.torsionOf (𝓞 E) _ d := by
     simpa [mul_comm, Ideal.span_insert, Ideal.sup_mul, Ideal.span_singleton_mul_le_iff,
-      Nat.cast_smul_eq_nsmul, d_char, ← smul_smul] using fun _ ↦ d_star
+      Nat.cast_smul_eq_nsmul, d_inf.ringChar_smul_and_smul_eq_zero.left, ← smul_smul] using
+      fun _ ha ↦ d_inf.ringChar_smul_and_smul_eq_zero.right hρ hb ha
   exact eq_of_sub_eq_zero ((Ideal.torsionOf_eq_top_iff ..).mp (eq_top_mono (sup_le h_lev h_inf)
     h_level))
 
 open scoped Pointwise in
 open NumberField in
-/-- The data that the proof of the tangent bound fixes before its last step, for the lift `x` of
-`x₀` given by `hp`, with `𝔭 = ker x₀.baseHom`: the elements `generator`, `localizer`, `residueInt`
-with their conditions modulo `𝔭`, the `logarithm` of `New.ThetaObject.exists_tangent_log` (on points
-`z` with `IsInfinitesimal ψ z`: `z` restricts to `0` over `Spec C'`, for `ψ : C ⟶ C'` onto with
-square-zero kernel) with its properties, lifts `liftPoint y` of points of `x₀.groupScheme`
-(`exists_point_lift`), and the fact that `logarithm (generator • Z)` does not depend on the lift `Z`
-of a `𝔭`-torsion point. -/
-private structure TangentBoundData where
-  /-- An element of `𝔭` that generates it locally. -/
-  generator : 𝓞 E
-  /-- `generator` lies in `𝔭`. -/
-  map_generator : x₀.baseHom generator = 0
-  /-- `generator` is not zero. -/
-  generator_ne_zero : generator ≠ 0
-  /-- An element congruent to `1` modulo `𝔭` that multiplies `𝔭` into `(generator)`. -/
-  localizer : 𝓞 E
-  /-- `localizer ≡ 1` modulo `𝔭`. -/
-  sub_one_mem : localizer - 1 ∈ ker x₀.baseHom
-  /-- `localizer • 𝔭 ⊆ (generator)`. -/
-  smul_ker_le_span : localizer • ker x₀.baseHom ≤ Ideal.span {generator}
-  /-- An integer congruent to `D.β` modulo `𝔭`. -/
-  residueInt : ℤ
-  /-- `D.β - residueInt` lies in `𝔭`. -/
-  map_β_sub_int : x₀.baseHom (D.β - residueInt) = 0
-  /-- `D.β - residueInt` and `star D.β - residueInt` are coprime. -/
-  isCoprime : IsCoprime (D.β - residueInt) (star D.β - residueInt)
-  /-- The level condition: `(𝔑) + 𝔭 (p, star D.β - residueInt) = 𝓞 E`, `p` the characteristic
-  of `k`. -/
-  level_eq_top : Ideal.span {D.level} ⊔
-    ker x₀.baseHom * Ideal.span {↑(ringChar k), star D.β - residueInt} = ⊤
-  /-- The logarithm of a point of `x.groupScheme` with values in `C`. -/
-  logarithm : ∀ ⦃C : CommRingCat⦄ ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄,
-    (Over.mk s ⟶ x.groupScheme) → C
-  /-- On infinitesimal points, `a • z` has logarithm `x₀.baseHom a` times that of `z`. -/
-  logarithm_smul : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
-      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
-      IsInfinitesimal ψ z →
-    ∀ a : 𝓞 E, logarithm (a • z) = preimage s (inl (x₀.baseHom a)) * logarithm z
-  /-- An infinitesimal point with logarithm `0` is killed by `star D.β - residueInt`. -/
-  smul_eq_zero_of_logarithm : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
-      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
-      IsInfinitesimal ψ z →
-    logarithm z = 0 → (star D.β - residueInt) • z = 0
-  /-- The logarithm of an infinitesimal point lies in the kernel of `ψ`. -/
-  map_logarithm_eq_zero : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
-      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
-      IsInfinitesimal ψ z → ψ (logarithm z) = 0
-  /-- On infinitesimal points, the logarithm is natural in the ring of values. -/
-  logarithm_comp : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
-      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
-      IsInfinitesimal ψ z →
-    ∀ ⦃C₁ : CommRingCat⦄ ⦃χ : C ⟶ C₁⦄ ⦃s₁ : Spec C₁ ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄
-      (a : Over.mk s₁ ⟶ Over.mk s),
-      a.left = Spec.map χ → logarithm (a ≫ z) = χ (logarithm z)
-  /-- A lift of a point `y` of `x₀.groupScheme` to `x.groupScheme` over `C ⊕ Hom(M, C)`. -/
-  liftPoint : ∀ ⦃C : Type⦄ [CommRing C] [Algebra k C] [IsLocalRing C],
-    (specOver k C ⟶ x₀.groupScheme) →
-      (Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme)
-  /-- `liftPoint y` reduces to `y`. -/
-  comp_liftPoint_eq : ∀ ⦃C : Type⦄ [CommRing C] [Algebra k C] [IsLocalRing C]
-      (y : specOver k C ⟶ x₀.groupScheme),
-    toSqZeroSpec C ≫ liftPoint y = hp.isGroupBaseChange.pointEquiv y
-  /-- For a `𝔭`-torsion point `y`, `logarithm (generator • Z)` is the same for every lift `Z`
-  of `y`. -/
-  logarithm_smul_liftPoint_eq : ∀ {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C]
-      (y : placeTorsion x₀ C) (Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme),
-    toSqZeroSpec C ≫ Z = hp.isGroupBaseChange.pointEquiv y →
-      logarithm (generator • liftPoint y.val) = logarithm (generator • Z)
-
 /-- The last step of the tangent bound. Let `k` be algebraically closed of prime characteristic,
 `x₀` rigid (`h_rig`), `𝓞 E` map to `k ⊕ M*` through `k` (`hρ`), and let `l ∈ M` be `0` as soon as
 the pull-back of `x` along `(a, φ) ↦ a + φ(l) ε` is constant (`h_const`). If for every `𝔭`-torsion
 point `y` (`𝔭 = ker x₀.baseHom`) with values in a finite local `k`-algebra the logarithm of
-`S.generator • S.liftPoint y` has second component `0` at `l`, then `l = 0`. -/
+`c • Y y` has second component `0` at `l`, then `l = 0`. -/
 private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (ringChar k).Prime]
     (h_rig : x₀.HasSpanningCoords)
     (hρ : x.baseHom = (algebraMap k (TrivSqZeroExt k (M →ₗ[k] k))).comp x₀.baseHom)
-    (S : TangentBoundData hp) {l : M}
+    {c t : 𝓞 E} (hc : x₀.baseHom c = 0) (hc_ne : c ≠ 0) (ht : t - 1 ∈ ker x₀.baseHom)
+    (hct : t • ker x₀.baseHom ≤ Ideal.span {c}) {b : ℤ} (hb : x₀.baseHom (D.β - b) = 0)
+    (h_coprime : IsCoprime (D.β - b) (star D.β - b))
+    (h_level :
+      Ideal.span {D.level} ⊔ ker x₀.baseHom * Ideal.span {↑(ringChar k), star D.β - b} = ⊤)
+    (ω : ∀ ⦃C : CommRingCat⦄ ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄,
+      (Over.mk s ⟶ x.groupScheme) → C)
+    (ω_smul : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
+      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
+      IsInfinitesimal ψ z → ∀ a : 𝓞 E, ω (a • z) = preimage s (inl (x₀.baseHom a)) * ω z)
+    (ω_ker : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
+      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
+      IsInfinitesimal ψ z → ω z = 0 → (star D.β - b) • z = 0)
+    (ω_red : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
+      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
+      IsInfinitesimal ψ z → ψ (ω z) = 0)
+    (ω_comp : ∀ ⦃C C' : CommRingCat⦄ ⦃ψ : C ⟶ C'⦄ [IsSqZeroExt ψ]
+      ⦃s : Spec C ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄ ⦃z : Over.mk s ⟶ x.groupScheme⦄,
+      IsInfinitesimal ψ z →
+      ∀ ⦃C₁ : CommRingCat⦄ ⦃χ : C ⟶ C₁⦄ ⦃s₁ : Spec C₁ ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k)))⦄
+        (a : Over.mk s₁ ⟶ Over.mk s), a.left = Spec.map χ → ω (a ≫ z) = χ (ω z))
+    (Y : ∀ ⦃C : Type⦄ [CommRing C] [Algebra k C] [IsLocalRing C],
+      (specOver k C ⟶ x₀.groupScheme) →
+        (Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme))
+    (hY : ∀ ⦃C : Type⦄ [CommRing C] [Algebra k C] [IsLocalRing C]
+      (y : specOver k C ⟶ x₀.groupScheme),
+      toSqZeroSpec C ≫ Y y = hp.isGroupBaseChange.pointEquiv y)
+    (ω_lift : ∀ {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (y : placeTorsion x₀ C)
+      (Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme),
+      toSqZeroSpec C ≫ Z = hp.isGroupBaseChange.pointEquiv y → ω (c • Y y.val) = ω (c • Z))
+    {l : M}
     (h_const : specMap (TrivSqZeroExt.map (Dual.eval k M l)).toRingHom ≫ x =
       specMap (algebraMap k (TrivSqZeroExt k k)) ≫ x₀ → l = 0)
     (hl : ∀ (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C] [Module.Finite k C]
-      (y : placeTorsion x₀ C), snd (S.logarithm (S.generator • S.liftPoint y.val)) l = 0) :
+      (y : placeTorsion x₀ C), snd (ω (c • Y y.val)) l = 0) :
     l = 0 := by
-  -- Write `c`, `t`, `b`, `ω`, `Y` for the generator, localizer, residue integer, logarithm and
-  -- lifts of `S`.
-  obtain ⟨c, hc, hc_ne, t, ht, hct, b, hb, h_coprime, h_level, ω, ω_smul, ω_ker, ω_red, ω_comp, Y,
-    hY, ω_lift⟩ := S
   -- Let all `snd (ω (c • Y y))` kill `l` (`hl`). Compare the pull-back `z` of `x` along `l` with
   -- the constant deformation `z₀`, both over `k[ε]` and reducing to `x₀`.
   let m : Spec (of (TrivSqZeroExt k k)) ⟶ Spec (of (TrivSqZeroExt k (M →ₗ[k] k))) :=
@@ -743,7 +701,7 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   have hv : c • v = 0 := by simpa [map_smul] using congr(_ ≫ hz₀.isGroupBaseChange.pointEquiv $hy)
   let y' : specOver k[ε] C ⟶ z.groupScheme := hz.isGroupBaseChange.pointEquiv.symm (d ≫ Y v)
   obtain ⟨_, ψ, _, -, _, ψ_ker, ψ_univ⟩ := exists_isReductionModEps (specOver k[ε] C).hom
-  have θ_red : ofHom θ ≫ ψ = ofHom (fstHom C C _).1 ≫ ψ := by
+  have θ_red : ofHom θ ≫ ψ = ofHom (fstHom C C _).toRingHom ≫ ψ := by
     ext
     simp [θ, smul_def, ψ_ker, -map_mul, ↓ lift_def]
   have h_agree : AgreeModEps hq hq₀ _ y' y := by
@@ -756,7 +714,7 @@ private lemma eq_zero_of_forall_snd_logarithm_eq_zero [IsAlgClosed k] [Fact (rin
   -- So `y ≫ G = (β' - b) c • y'`, which by `ω_ker` is zero once
   -- `ω (d ≫ c • Y v)`, which is `θ (ω (c • Y v))`, is zero.
   refine (G_agree _ y' y h_agree).trans (hz.isGroupBaseChange.pointEquiv.injective ?_)
-  have v_tiny : IsInfinitesimal (ofHom (fstHom C C _).1) (c • Y v) :=
+  have v_tiny : IsInfinitesimal (ofHom (fstHom C C _).toRingHom) (c • Y v) :=
     isInfinitesimal_of_comp_eq_zero _
       (by rw [ModuleObj.comp_smul, hY, ← LinearEquiv.map_smul, hv, map_zero])
   -- `t • v` is killed by `𝔭`, and `t ≡ 1` modulo `𝔭`, so `hl` for `t • v` computes `ω (c • Y v)`.
@@ -811,17 +769,12 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
     simpa only [hρ, coe_comp, Function.comp_apply, ↓algebraMap_eq_inl', algebraMap_self,
       RingHomCompTriple.comp_apply, mk_left] using
       x.exists_tangent_log (b := b) (by simp [hρ, hb])
-  have h_lifts : ∀ ⦃C : Type⦄ [CommRing C] [Algebra k C] [IsLocalRing C]
-      (y : specOver k C ⟶ x₀.groupScheme),
-      ∃ Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme,
-        toSqZeroSpec C ≫ Z = hp.isGroupBaseChange.pointEquiv y :=
-    exists_point_lift hp
-  choose Y hY using h_lifts
+  choose Y hY using exists_point_lift hp
   have c_Y_infinitesimal {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C]
-      (y : placeTorsion x₀ C) : IsInfinitesimal (ofHom (fstHom C C _).1) (c • Y y.1) := by
+      (y : placeTorsion x₀ C) : IsInfinitesimal (ofHom (fstHom C C _).toRingHom) (c • Y y.val) := by
     -- `c` lies in `𝔭`, which kills `y`
-    have h_torsion : c • y.1 = 0 :=
-      (Submodule.mem_torsionBySet_iff ..).mp y.2 ⟨c, RingHom.mem_ker.mpr hc⟩
+    have h_torsion : c • y.val = 0 :=
+      (Submodule.mem_torsionBySet_iff ..).mp y.property ⟨c, RingHom.mem_ker.mpr hc⟩
     exact isInfinitesimal_of_comp_eq_zero _
       (by rw [ModuleObj.comp_smul, hY, ← LinearEquiv.map_smul, h_torsion, map_zero])
   -- `ω (c • Z)` is the same for all lifts `Z` of `y`: their difference is infinitesimal, and
@@ -829,14 +782,14 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
   have ω_lift {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (y : placeTorsion x₀ C)
       (Z : Over.mk (specMap (sqZeroMap (ofId k C))) ⟶ x.groupScheme)
       (hZ : toSqZeroSpec C ≫ Z = hp.isGroupBaseChange.pointEquiv y) :
-      ω (c • Y y.1) = ω (c • Z) := by
-    have h_diff : IsInfinitesimal (ofHom (fstHom C C _).1) (Z - Y y.1) :=
+      ω (c • Y y.val) = ω (c • Z) := by
+    have h_diff : IsInfinitesimal (ofHom (fstHom C C _).toRingHom) (Z - Y y.val) :=
       isInfinitesimal_of_comp_eq_zero _ (by simp [hY, hZ, AddGrpObj.comp_sub])
     simpa [← smul_add, ω_smul h_diff, hc] using
       (ω_add (h_diff.smul c) (c_Y_infinitesimal y)).symm
   let f (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C] :
       placeTorsion x₀ C →ₛₗ[x₀.baseHom] M →ₗ[k] C :=
-    { toFun y := snd (ω (c • Y y.1))
+    { toFun y := snd (ω (c • Y y.val))
       map_add' y z := by
         simp [↓ω_lift (y + z) (Y y + Y z) (by rw [comp_add, hY, hY, Submodule.coe_add, map_add]),
           ω_add (c_Y_infinitesimal y) (c_Y_infinitesimal z)]
@@ -850,7 +803,7 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
       ← ModuleObj.comp_smul, ω_comp (c_Y_infinitesimal y) (sqZeroSpecMap φ) rfl]
   · -- Tangent vectors: as `y` is `0` at `ε = 0`, the point `Z'` below also lifts `y`. It vanishes
     -- at `ε = 0`, so `ω (c • Z')` is `x₀.baseHom c = 0` times `ω Z'`.
-    let Z' := Y y.1 - sqZeroSpecMap ((ofId k k[ε]).comp (fstHom k k k)) ≫ Y y.1
+    let Z' := Y y.val - sqZeroSpecMap ((ofId k k[ε]).comp (fstHom k k k)) ≫ Y y.val
     have hZ' : toSqZeroSpec _ ≫ Z' = hp.isGroupBaseChange.pointEquiv y := by
       simp [Z', sqZeroSpecMap_point_lift hp, ← specOver.map_comp_assoc, hY, hy, AddGrpObj.comp_sub]
     have : IsSqZeroExt (ofHom (sqZeroMap (M := M) (fstHom k k k))) :=
@@ -863,14 +816,8 @@ lemma _root_.New.Variety.finrank_tangent_le_card_index_sub_one [IsAlgClosed k]
       ext <;> simp
     simp [f, (ω_lift y Z' hZ').trans (ω_smul Z'_infinitesimal c), hc]
   -- Let all `f C y` kill `l`; then `l = 0` by the last step.
-  exact eq_zero_of_forall_snd_logarithm_eq_zero hp h_rig hρ
-    { generator := c, map_generator := hc, generator_ne_zero := hc_ne
-      localizer := t, sub_one_mem := ht, smul_ker_le_span := hct
-      residueInt := b, map_β_sub_int := hb, isCoprime := h_coprime, level_eq_top := h_level
-      logarithm := ω, logarithm_smul := ω_smul, smul_eq_zero_of_logarithm := ω_ker
-      map_logarithm_eq_zero := ω_red, logarithm_comp := ω_comp
-      liftPoint := Y, comp_liftPoint_eq := hY, logarithm_smul_liftPoint_eq := ω_lift }
-    (h_const l) hl
+  exact eq_zero_of_forall_snd_logarithm_eq_zero hp h_rig hρ hc hc_ne ht hct hb h_coprime h_level
+    ω ω_smul ω_ker ω_red ω_comp Y hY ω_lift (h_const l) hl
 
 end New.Variety.TangentBound
 

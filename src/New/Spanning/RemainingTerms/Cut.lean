@@ -1,7 +1,12 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PicardGroup
 public import New.Spanning.RemainingTerms.LinkLattice
 public import New.Spanning.RemainingTerms.LinkVectors
+public import New.Spanning.RemainingTerms.Data
+public import New.Spanning.Unfolding.Climbing
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # The cut: from the lattice of a link to the vectors common to two links
@@ -455,6 +460,7 @@ discriminant of this lattice, times `x`, the torsion index of `γ` and the discr
 structure LinkSplitting (c c' : S.Classes) (j : Fin (𝔰.ϱ + 2)) (x : ℕ) (γ γ' : S.G E) (i : ℕ) where
   /-- The index set of a family that spans the intersection of the links. -/
   CommonIndex : Type
+  /-- The index set `CommonIndex` is finite. -/
   [fintypeCommonIndex : Fintype CommonIndex]
   /-- A family that spans the intersection of the links. -/
   commonCols : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) CommonIndex E

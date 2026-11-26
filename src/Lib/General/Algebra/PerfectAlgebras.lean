@@ -1,7 +1,12 @@
 module
 
-public import Lib.PadicComparison.Descent.TestCovers
 import TauCeti.RingTheory.Smooth.Lifting
+import TauCeti.AlgebraicGeometry.Frobenius.Perfect
+import Mathlib.CategoryTheory.Limits.Shapes.Connected
+import Mathlib.FieldTheory.IsPerfectClosure
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.PadicComparison.Descent.TestCategory
+public import Lib.PadicComparison.Descent.TestCovers -- shake: keep (needed public by an exposed definition)
 
 /-!
 # Perfect algebras, étale algebras over perfect rings, and constant Laurent polynomials
@@ -72,7 +77,7 @@ variable {p : ℕ}
 /-!
 ## Perfect algebras, tensor products and blow-up charts
 
-The category `New.Variety.PerfectAlg S` of perfect S-algebras, mostly for a ring S with p = 0. The
+The category `New.Variety.PerfectAlg p S` of perfect S-algebras, mostly for a ring S with p = 0. The
 tilt of a p-adic test (`New.Variety.PadicTest`) is a perfect O♭-algebra.
 -/
 
@@ -84,19 +89,19 @@ open CategoryTheory Limits PerfectClosure TensorProduct AlgHom Polynomial Fact I
 /-! ### Perfect algebras and Frobenius -/
 
 /-- The full subcategory of commutative S-algebras on which x ↦ x^p is bijective. -/
-abbrev PerfectAlg (S : Type) [CommRing S] [ThePrime p] : Type 1 :=
+abbrev PerfectAlg (p : ℕ) (S : Type) [CommRing S] : Type 1 :=
   FullSubcategory fun A : CommAlg S ↦ PerfectRing A p
 
 variable {S : Type} [CommRing S] [ThePrime p]
 
 /-- The underlying ring of a perfect S-algebra is perfect. -/
-instance (b : PerfectAlg S) : PerfectRing b.obj p := b.property
+instance (b : PerfectAlg p S) : PerfectRing b.obj p := b.property
 
 /-- The maximal ideal 𝔪 of the local ring O^♭. -/
 abbrev MaxIdealFlat : Type := ↥(IsLocalRing.maximalIdeal OFlat)
 
 /-- The functor from p-adic tests to perfect O^♭-algebras sending S to its tilt S^♭. -/
-def PadicTest.perfectTilt : PadicTest ⥤ PerfectAlg OFlat :=
+def PadicTest.perfectTilt : PadicTest ⥤ PerfectAlg p OFlat :=
   ObjectProperty.lift _ tilt fun c ↦ c.isPerfectTorsionFree_tilt.1
 
 /-- The prime p is zero in every O^♭-algebra, as O^♭ has characteristic p. -/
@@ -183,8 +188,8 @@ lemma PerfectAlg.isClosedUnderColimitsOfShape_widePushoutShape (hp : (p : S) = 0
 `e r = e s` implies `t ∣ r^{p^n} − s^{p^n}` for some `n`; (c) `e t = 0`; (d) every `y` in `c` has
 some power `y^{p^n}` in the image of `e`. -/
 lemma exists_perfection_quotient (hp : (p : S) = 0) (B : Type) [CommRing B] [Algebra S B] (t : B) :
-    ∃ (c : PerfectAlg S) (e : B →ₐ[S] c.obj),
-      (∀ {d : PerfectAlg S} (φ : B →ₐ[S] d.obj), φ t = 0 → ∃ ψ : c.obj →ₐ[S] d.obj, ψ.comp e = φ) ∧
+    ∃ (c : PerfectAlg p S) (e : B →ₐ[S] c.obj),
+      (∀ {d : PerfectAlg p S} (φ : B →ₐ[S] d.obj), φ t = 0 → ∃ ψ : c.obj →ₐ[S] d.obj, ψ.comp e = φ) ∧
       (∀ r s : B, e r = e s → ∃ n : ℕ, t ∣ r ^ p ^ n - s ^ p ^ n) ∧
       e t = 0 ∧
       ∀ y : c.obj, ∃ (n : ℕ) (r : B), e r = y ^ p ^ n := by
@@ -192,7 +197,7 @@ lemma exists_perfection_quotient (hp : (p : S) = 0) (B : Type) [CommRing B] [Alg
   let π : B →ₐ[S] Q := Ideal.Quotient.mkₐ S (span {t})
   have h_ker (r : B) : π r = 0 ↔ t ∣ r := Ideal.Quotient.eq_zero_iff_dvd t r
   -- A map that kills `t` descends to the quotient `Q`.
-  let descend {d : PerfectAlg S} (φ : B →ₐ[S] d.obj) (hφ : φ t = 0) : Q →ₐ[S] d.obj :=
+  let descend {d : PerfectAlg p S} (φ : B →ₐ[S] d.obj) (hφ : φ t = 0) : Q →ₐ[S] d.obj :=
     liftₐ (span {t}) φ ((RingHom.ker φ).span_singleton_le_iff_mem.2 hφ)
   obtain _ | _ := subsingleton_or_nontrivial Q
   · -- The zero ring is perfect, so `Q` itself will do, and `t` divides every element of `B`.
@@ -234,7 +239,7 @@ lemma perfectRing_of_pow_surjective (hp : (p : S) = 0) [IsReduced S]
 
 /-! ### Tensor products and blow-up charts -/
 
-lemma perfectRing_tensor (hp : (p : S) = 0) [PerfectRing S p] (B D : PerfectAlg S) :
+lemma perfectRing_tensor (hp : (p : S) = 0) [PerfectRing S p] (B D : PerfectAlg p S) :
     PerfectRing (B.obj ⊗[S] D.obj) p := by
   -- The tensor product is the pushout of `B` and `D` over `S`, and all three rings are perfect.
   have h_pushout :=
@@ -250,11 +255,11 @@ lemma perfectRing_tensor (hp : (p : S) = 0) [PerfectRing S p] (B D : PerfectAlg 
 that for every field k and every map a : B → k some injective map η from k to a perfect S-algebra
 makes η ∘ a factor through i. Then i is injective after tensoring with any perfect S-algebra. -/
 lemma injective_rTensor_of_field_maps_factor (hp : (p : S) = 0) [PerfectRing S p]
-    (B : PerfectAlg S) {A : Type} [CommRing A] [Algebra S A] (i : B.obj →ₐ[S] A)
+    (B : PerfectAlg p S) {A : Type} [CommRing A] [Algebra S A] (i : B.obj →ₐ[S] A)
     (h_factor : ∀ (k : Type) [Field k] [Algebra S k] (a : B.obj →ₐ[S] k),
-      ∃ (K : PerfectAlg S) (η : k →ₐ[S] K.obj) (ψ : A →ₐ[S] K.obj),
+      ∃ (K : PerfectAlg p S) (η : k →ₐ[S] K.obj) (ψ : A →ₐ[S] K.obj),
         Injective η ∧ ψ.comp i = η.comp a)
-    (D : PerfectAlg S) : Injective (i.toLinearMap.rTensor D.obj) := by
+    (D : PerfectAlg p S) : Injective (i.toLinearMap.rTensor D.obj) := by
   refine (injective_iff_map_eq_zero _).2 fun x hx ↦ ?_
   -- `B ⊗ D` is perfect, so reduced; it suffices that `x` lies in every prime `J`.
   have : IsReduced (B.obj ⊗[S] D.obj) := isReduced_of_perfectRing (perfectRing_tensor hp B D)
@@ -294,21 +299,21 @@ lemma exists_C_of_toLaurent_sub_invert_eq {R : Type} [CommRing R] (f g : R) (P Q
 
 /-- If p = 0 in S, every S-algebra k that is a field maps injectively to a perfect S-algebra. -/
 lemma exists_injective_algHom_perfect (hp : (p : S) = 0) (k : Type) [Field k] [Algebra S k] :
-    ∃ (K : PerfectAlg S) (η : k →ₐ[S] K.obj), Injective η := by
+    ∃ (K : PerfectAlg p S) (η : k →ₐ[S] K.obj), Injective η := by
   -- The perfection of `k = k/0` will do: an element of its kernel is nilpotent, so zero.
   obtain ⟨K, η, -, h_ker, -⟩ := exists_perfection_quotient hp k 0
   refine ⟨K, η, (injective_iff_map_eq_zero η).2 fun u hu ↦ ?_⟩
   obtain ⟨n, hn⟩ := h_ker u 0 (by rw [hu, map_zero])
   exact eq_zero_of_pow_eq_zero (n := p ^ n) (by simpa [ne] using hn)
 
-lemma bijective_pow_prime_pow (A : PerfectAlg S) (n : ℕ) : Bijective fun x : A.obj ↦ x ^ p ^ n :=
+lemma bijective_pow_prime_pow (A : PerfectAlg p S) (n : ℕ) : Bijective fun x : A.obj ↦ x ^ p ^ n :=
   (A.property.pow _ p n).bijective_frobenius
 
 /-- Let p = 0 in S and B, B₁, B₂, B₀ be perfect S-algebras. Let E₁, E₂ map B[X] to B₁, B₂, let E₀
 map B[T, T⁻¹] to B₀, and let j₁, j₂ map B₁, B₂ to B₀ with j₁ (E₁ P) = E₀ (P(T)) and
 j₂ (E₂ P) = E₀ (P(T⁻¹)). If every element of B₀ has a p^n-th power in the image of E₀, then
 (y, z) ↦ j₁ y - j₂ z maps onto B₀. -/
-lemma surjective_blowup_difference (hp : (p : S) = 0) {B B₁ B₂ B₀ : PerfectAlg S}
+lemma surjective_blowup_difference (hp : (p : S) = 0) {B B₁ B₂ B₀ : PerfectAlg p S}
     (E₁ : B.obj[X] →ₐ[S] B₁.obj) (E₂ : B.obj[X] →ₐ[S] B₂.obj)
     (E₀ : B.obj[T;T⁻¹] →ₐ[S] B₀.obj) (j₁ : B₁.obj →ₐ[S] B₀.obj) (j₂ : B₂.obj →ₐ[S] B₀.obj)
     (hj₁ : ∀ P : B.obj[X], j₁ (E₁ P) = E₀ P.toLaurent)
@@ -334,7 +339,7 @@ B₁, B₂, let E₀ map B[T, T⁻¹] to B₀, and let j₁, j₂ satisfy j₁ (
 power in the image of E₁, E₂, and elements with the same image under E₀ have p^n-th powers congruent
 modulo f - g T. Then y in B₁ and z in B₂ with j₁ y = j₂ z are E₁ r and E₂ r for one constant r in
 B. -/
-lemma exists_eq_of_blowup_glue_eq {B B₁ B₂ B₀ : PerfectAlg S} (f g : B.obj)
+lemma exists_eq_of_blowup_glue_eq {B B₁ B₂ B₀ : PerfectAlg p S} (f g : B.obj)
     (E₁ : B.obj[X] →ₐ[S] B₁.obj) (E₂ : B.obj[X] →ₐ[S] B₂.obj)
     (E₀ : B.obj[T;T⁻¹] →ₐ[S] B₀.obj) (j₁ : B₁.obj →ₐ[S] B₀.obj) (j₂ : B₂.obj →ₐ[S] B₀.obj)
     (hj₁ : ∀ P : B.obj[X], j₁ (E₁ P) = E₀ P.toLaurent)
@@ -372,14 +377,14 @@ lemma exists_eq_of_blowup_glue_eq {B B₁ B₂ B₀ : PerfectAlg S} (f g : B.obj
 E₁ : B[X] → B₁, and those that kill g - f X factor through E₂ : B[X] → B₂. Then every point
 a : B → k of B in a field becomes, after some injective map η from k to a perfect S-algebra, a
 point that factors through B → B₁ × B₂. -/
-lemma exists_factor_through_blowup_charts (hp : (p : S) = 0) {B B₁ B₂ : PerfectAlg S} (f g : B.obj)
+lemma exists_factor_through_blowup_charts (hp : (p : S) = 0) {B B₁ B₂ : PerfectAlg p S} (f g : B.obj)
     (E₁ : B.obj[X] →ₐ[S] B₁.obj) (E₂ : B.obj[X] →ₐ[S] B₂.obj)
-    (h_lift₁ : ∀ {K : PerfectAlg S} (φ : B.obj[X] →ₐ[S] K.obj), φ (C f - C g * X) = 0 →
+    (h_lift₁ : ∀ {K : PerfectAlg p S} (φ : B.obj[X] →ₐ[S] K.obj), φ (C f - C g * X) = 0 →
       ∃ ψ : B₁.obj →ₐ[S] K.obj, ψ.comp E₁ = φ)
-    (h_lift₂ : ∀ {K : PerfectAlg S} (φ : B.obj[X] →ₐ[S] K.obj), φ (C g - C f * X) = 0 →
+    (h_lift₂ : ∀ {K : PerfectAlg p S} (φ : B.obj[X] →ₐ[S] K.obj), φ (C g - C f * X) = 0 →
       ∃ ψ : B₂.obj →ₐ[S] K.obj, ψ.comp E₂ = φ)
     (k : Type) [Field k] [Algebra S k] (a : B.obj →ₐ[S] k) :
-    ∃ (K : PerfectAlg S) (η : k →ₐ[S] K.obj) (ψ : (B₁.obj × B₂.obj) →ₐ[S] K.obj),
+    ∃ (K : PerfectAlg p S) (η : k →ₐ[S] K.obj) (ψ : (B₁.obj × B₂.obj) →ₐ[S] K.obj),
       Injective η ∧ ψ.comp ((E₁.comp CAlgHom).prod (E₂.comp CAlgHom)) = η.comp a := by
   obtain ⟨K, η, hη⟩ := exists_injective_algHom_perfect hp k
   -- In `k` either `g ∣ f` or `f ∣ g`, so the point `η ∘ a` of `B` lifts to a chart.
@@ -395,13 +400,13 @@ lemma exists_factor_through_blowup_charts (hp : (p : S) = 0) {B B₁ B₂ : Perf
 perfect S-algebra B there are perfect S-algebras B₁, B₂ under B, and B₀, such that (a) g ∣ f in
 B₁ and f ∣ g in B₂; (b) B → B₁ × B₂ → B₀ → 0 is an exact sequence of S-modules; (c) the first
 map is injective after tensoring over S with any perfect S-algebra. -/
-lemma exists_perfect_blowup_charts (hp : (p : S) = 0) [PerfectRing S p] (B : PerfectAlg S)
+lemma exists_perfect_blowup_charts (hp : (p : S) = 0) [PerfectRing S p] (B : PerfectAlg p S)
     (f g : B.obj) :
-    ∃ (B₁ B₂ B₀ : PerfectAlg S) (i₁ : B.obj →ₐ[S] B₁.obj) (i₂ : B.obj →ₐ[S] B₂.obj)
+    ∃ (B₁ B₂ B₀ : PerfectAlg p S) (i₁ : B.obj →ₐ[S] B₁.obj) (i₂ : B.obj →ₐ[S] B₂.obj)
         (j : (B₁.obj × B₂.obj) →ₗ[S] B₀.obj),
       i₁ g ∣ i₁ f ∧ i₂ f ∣ i₂ g ∧
       Surjective j ∧ Exact (i₁.prod i₂) j ∧
-      ∀ D : PerfectAlg S, Injective ((i₁.prod i₂).toLinearMap.rTensor D.obj) := by
+      ∀ D : PerfectAlg p S, Injective ((i₁.prod i₂).toLinearMap.rTensor D.obj) := by
   -- The charts are the perfections `B₁` of `B[X] / (f - g X)`, `B₂` of `B[X] / (g - f X)` and `B₀`
   -- of `B[T, T⁻¹] / (f - g T)`, with `j₁ : X ↦ T`, `j₂ : X ↦ T⁻¹` and `j (y, z) = j₁ y - j₂ z`.
   obtain ⟨B₁, E₁, lift₁, -, rel₁, root₁⟩ := exists_perfection_quotient hp _ (C f - C g * X)
@@ -448,48 +453,17 @@ lemma exists_etale_lift (B : Type*) [CommRing B] [Algebra D B] [h_etale : Etale 
     Algebra.Etale.exists_tensorProduct_algEquiv_of_surjective C D B h_surj
   exact ⟨.of _ T, h_etale_T, e⟩
 
-/-- Let `D` be étale over `C` with `p = 0` in `D`, and `f : D → E` a ring map with `C → E` étale.
-If `s` is inverse to `f` up to the `p`-th power on both sides, then `f` is bijective. -/
-lemma bijective_of_etale_of_inverse_up_to_pow [Etale C D] {E : Type} [CommRing E] (f : D →+* E)
-    (hf : (f.comp (algebraMap C D)).Etale) (hp : (p : D) = 0) (s : E →+* D)
-    (hsf : ∀ x : D, s (f x) = x ^ p) (hfs : ∀ x : E, f (s x) = x ^ p) : Bijective f := by
-  -- `E` is étale and faithfully flat over `D`, so by descent it is enough to show
-  -- `y ⊗ 1 = 1 ⊗ y` in `E ⊗[D] E` for every `y`.
-  algebraize [f, f.comp (algebraMap C D)]
-  have : Algebra.Etale D E := .of_restrictScalars C D E
-  -- A prime `P` of `D` is the image of `P.comap s`, as `s (f x) = x ^ p`.
-  have : Module.FaithfullyFlat D E := .of_comap_surjective fun P ↦ ⟨P.comap s, by
-    ext
-    simp [algebraMap_toAlgebra, hsf, P.isPrime.pow_mem_iff_mem, pos]⟩
-  -- Frobenius of `E ⊗[D] E` factors through the multiplication map to `E` and `s`.
-  have h_frob : frobPow (natCast_eq_zero_of_algebra hp (E ⊗[D] E)) 1 =
-      (algebraMap D (E ⊗[D] E)).comp (s.comp (lmul' D).toRingHom) := by
-    ext y <;> simp [← hfs, ← algebraMap_toAlgebra f, tmul_one_eq_one_tmul]
-  -- The separability element `elem D E` multiplies to `1`, so its `p`-th power is `1`.
-  have h_pow : elem D E ^ p = 1 := by
-    calc elem D E ^ p = frobPow (natCast_eq_zero_of_algebra hp (E ⊗[D] E)) 1 (elem D E) := by simp
-      _ = algebraMap D (E ⊗[D] E) (s (lmul' D (elem D E))) := RingHom.congr_fun h_frob _
-      _ = 1 := by simp [lmul_elem, Algebra.TensorProduct.one_def]
-  have h_unit : IsUnit (elem D E) := .of_pow_eq_one h_pow out
-  refine ⟨FaithfulSMul.algebraMap_injective D E, fun y ↦ ?_⟩
-  -- `elem D E` equalises `y ⊗ 1` and `1 ⊗ y`, and it is a unit.
-  have h_eq : (y ⊗ₜ 1 : E ⊗[D] E) = 1 ⊗ₜ y := h_unit.mul_right_cancel (one_tmul_mul_elem y).symm
-  exact (IsEffective.of_faithfullyFlat D E y).mp (sub_eq_zero.mpr h_eq :)
-
+open AlgebraicGeometry in
 /-- An étale algebra over a perfect ring in which p = 0 is perfect. -/
 lemma perfectRing_of_etale [Etale C D] [k : PerfectRing C p] (hp : (p : C) = 0) :
     PerfectRing D p := by
-  have hD : (p : D) = 0 := natCast_eq_zero_of_algebra hp D
-  -- `C → D → D` (Frobenius last) is also Frobenius of `C`, a bijection, followed by `C → D`.
-  have h_comm : (frobPow hD 1).comp (algebraMap C D) = (algebraMap C D).comp (frobPow hp 1) :=
-    RingHom.ext fun _ ↦ by simp
-  have h_etale : ((frobPow hD 1).comp (algebraMap C D)).Etale := by
-    rw [h_comm]
-    exact RingHom.Etale.stableUnderComposition _ _ (.of_bijective (bijective_frobPow_one hp))
-      (etale_algebraMap.2 inferInstance)
-  -- The identity is inverse to Frobenius of `D` up to the `p`-th power.
-  exact perfectRing_of_bijective_frobPow hD
-    (bijective_of_etale_of_inverse_up_to_pow C D _ h_etale hD (.id D) (by simp) (by simp))
+  -- Perfect schemes are stable under étale morphisms; apply this to `Spec D → Spec C`.
+  have : Scheme.IsPerfect (Spec (.of C)) p := (Scheme.isPerfect_Spec_iff C).2 ⟨hp, k⟩
+  let f := Spec.map (CommRingCat.ofHom (algebraMap C D))
+  have : AlgebraicGeometry.Etale f :=
+    (HasRingHomProperty.Spec_iff (P := @AlgebraicGeometry.Etale)).2
+      (RingHom.etale_algebraMap.2 inferInstance)
+  exact ((Scheme.isPerfect_Spec_iff D).1 (Scheme.IsPerfect.of_etale f)).2
 
 end EtalePerfect
 

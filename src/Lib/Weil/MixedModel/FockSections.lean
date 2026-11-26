@@ -1,8 +1,16 @@
 module
 
-public import Lib.General.Analysis.FourierTransforms
-public import Lib.General.Analysis.MeanValueAndTaylor
+public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
+public import Mathlib.Analysis.Fourier.FourierTransform
+public import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.ContDiff.WithLp
+import Mathlib.Analysis.Distribution.TemperateGrowth
+import Mathlib.Analysis.Fourier.Inversion
+import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.Weil.Fock.WeightedNorms
+import Lib.General.Analysis.FourierTransforms
+import Lib.General.Analysis.MeanValueAndTaylor
 
 /-!
 # Mixed Schrödinger–Fock models and rapid sections with prescribed values
@@ -154,16 +162,6 @@ open MeasureTheory Function ContinuousLinearMap Real Complex Heisenberg IsVacuum
 variable {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {p : Type} [Fintype p] [DecidableEq p] (h : MixedModel ε' ε p)
 
-/-- The coherent state at `a`, the translate of the vacuum by `a`, takes at `w` the value of the
-bicharacter at `(a, w)` times the vacuum at `w - a`, both exponentials. -/
-private lemma realHeisenbergOp_vacVector_apply {ι' : Type} [Fintype ι'] [DecidableEq ι']
-    {ε' : ι' → ℤˣ} (a w : ι' → ℂ) :
-    (realHeisenbergOp a vacVector : fockSpace ε') w =
-      cexp ((star w ⬝ᵥ signMatrix ε' *ᵥ a - star a ⬝ᵥ signMatrix ε' *ᵥ w) / 2) *
-        cexp (-(star (w - a) ⬝ᵥ (w - a)) / 2) := by
-  rw [heisenbergOp_apply]
-  rfl
-
 omit [DecidableEq ι] [DecidableEq p] in
 /-- Let `A x` be a smooth family of real-linear maps from `ℂ ^ ι` to `ℂ ^ ι'`. The value at `w` of
 the coherent state at `A x y` (the translate `realHeisenbergOp (A x y) vacVector` of the vacuum) is
@@ -181,12 +179,13 @@ lemma exists_smooth_exponent_coherent {A : EuclideanSpace ℂ p → (ι → ℂ)
     -(star (w - a) ⬝ᵥ (w - a)) / 2
   refine ⟨fun ((y, w), x) ↦ e (A x y) w, fun y w x ↦ ?_, ?_, ?_⟩
   · change cexp (e (A x y) w) = realHeisenbergOp (A x y) vacVector w
-    rw [realHeisenbergOp_vacVector_apply, ← Complex.exp_add]
+    simp only [e, Complex.exp_add, heisenbergOp_apply]
+    rfl
   · simp only [e, dotProduct, Pi.star_apply, RCLike.star_def, mulVec, Pi.sub_apply, star_sub]
     fun_prop
   · intro r hr t x
     have hr_ne : (r : ℂ) ≠ 0 := mod_cast hr.ne'
-    simp [e, mulVec_smul, star_trivial, field]
+    simp [mulVec_smul, star_trivial, field]
 
 omit [DecidableEq ι] [DecidableEq p] in
 /-- For `d` smooth of compact support and `A x` a smooth family of real-linear maps, the Fourier
@@ -359,7 +358,8 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
     τ x * (star (principalMinor (S x) (ε · = -1)) * cexp (star x ⬝ᵥ x))
   have d_supp : HasCompactSupport d := (hτ_supp.comp_homeomorph (PiLp.homeomorph ..)).mul_right
   have d_smooth : ContDiff ℝ ∞ d := by
-    simp [d, principalMinor, dotProduct, det_apply, toSquareBlockProp]
+    simp only [d, principalMinor, dotProduct, det_apply, toSquareBlockProp, toBlock_apply,
+      Pi.star_apply, star_def]
     fun_prop
   -- `A x y = I (S x y)`.
   let A (x : EuclideanSpace ℂ p) : (ι → ℂ) →L[ℝ] ι' → ℂ :=

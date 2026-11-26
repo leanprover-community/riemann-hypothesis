@@ -1,7 +1,13 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
+import TauCeti.Topology.Algebra.Group.Units
 public import Lib.DiscreteSeries.Bruhat.FloorMeasures
 public import Lib.SiegelWeil.Mass
+public import Lib.Adelic.Adeles.LocalFactors
+import Lib.General.LinearAlgebra.HermiteForm
+import Lib.General.Measure.HaarNormalisation
 
 /-!
 # Local measure bounds and local densities at a finite place
@@ -115,7 +121,7 @@ theorem volume_setOf_mul_mem (u : Aˣ) : volume {x : A | u.val * x ∈ integers}
   (P.modulus u)⁻¹ := by
   calc volume {x : A | u.val * x ∈ integers} = Measure.map (u.val * ·) volume
          (P.integers : Set A) :=
-        (map_apply (measurable_const_mul u.1) isCompact_O.measurableSet).symm
+        (map_apply (measurable_const_mul u.val) isCompact_O.measurableSet).symm
     _ = (P.modulus u)⁻¹ := by simp [P.map_mul_volume, volume_O]
 
 /-- For a unit `c` of `A` that lies in `R`, the set `c R` is an ideal of `R` of finite index
@@ -127,7 +133,7 @@ theorem exists_ideal_cardQuot_eq (c : Aˣ) (hc_mem : ↑c ∈ P.integers) :
       I.cardQuot = (P.modulus c)⁻¹ := by
   -- Take `I = c R`. Its index is `genIndex c`, which is not zero and equals `(P.modulus c)⁻¹`.
   have h_index : (Submodule.cardQuot (Ideal.span {(⟨c, hc_mem⟩ : P.integers)}) : ℝ) = genIndex
-    c.1 := by
+    c.val := by
     simp [genIndex_eq_card isOpen_O, Submodule.cardQuot_apply, hc_mem, isCompact_O]
   refine ⟨.span {⟨c, hc_mem⟩}, mod_cast h_index.trans_ne (genIndex_pos c).ne', ?_, ?_⟩
   · simp [Set.ext_iff, ← range_comp, Submodule.span_singleton_eq_range, ← c.eq_mul_inv_iff_mul_eq,
@@ -143,7 +149,7 @@ lemma skewMeasure_setOf_mul_mem (u : Aˣ) (h : star u.val = u) :
   -- to `u * b`.
   have h_scale : P.skewMeasure ((fun b ↦ skewPart (P.element * u * b.1)) ⁻¹' {b | b.1 ∈ P.integers})
     =
-      ((P.modulus u ^ (2⁻¹ : ℝ))⁻¹ • P.skewMeasure) {b | b.1 ∈ P.integers} := by
+      ((P.modulus u ^ (2⁻¹ : ℝ))⁻¹ • P.skewMeasure) {b | b.val ∈ P.integers} := by
     rw [← map_skewMeasure_mul_unit u h]
     exact (map_apply (by fun_prop) isOpen_O.preimage_val.measurableSet).symm
   have h_part (b : skewAdjoint A) : P.element * u * b.1 - star (P.element * u * b.1) = u * b.1 := by
@@ -167,7 +173,7 @@ theorem isOpen_isCompact_volume_intVectors :
 /-- A set that contains `u R` has volume at least `modulus u`. -/
 theorem modulus_le_volume {u : Aˣ} {S : Set A} (h_mul_mem : ∀ r ∈ P.integers, u * r ∈ S) :
     P.modulus u ≤ volume S := by
-  calc P.modulus u = volume {x | u⁻¹.1 * x ∈ P.integers} := by simp [modulus_inv]
+  calc P.modulus u = volume {x | u⁻¹.val * x ∈ P.integers} := by simp [modulus_inv]
     _ ≤ volume S := measure_mono fun x hx ↦ by simpa using h_mul_mem _ hx
 
 /-- A unit of `A` that lies in `R` has modulus at most `1`. -/
@@ -204,18 +210,18 @@ theorem exists_content {p : ι → A} {i : ι} (h_unit : IsUnit (p i)) :
   obtain ⟨V, (hV : V ∈ intGL ι P.integers), _, -,
       (h_column : replicateCol Unit p = V.val.submatrix id (Embedding.punit i) * _), rfl⟩ :=
     P.isAdelic.isValuationPair.hermite (.punit i) (replicateCol Unit p)
-  have h_col (j : ι) : p j = V.1 j i * V⁻¹.1 i ⬝ᵥ p := by
+  have h_col (j : ι) : p j = V.val j i * V⁻¹.val i ⬝ᵥ p := by
     simpa [Matrix.mul_apply, dotProduct, Embedding.punit, -coe_units_inv] using
       congrFun₂ h_column j ()
   -- The scalar divides the unit `p i`, so it is a unit `t`.
-  have h_prod_unit : IsUnit (V.1 i i * V⁻¹.1 i ⬝ᵥ p) := by rwa [← h_col i]
-  obtain ⟨t, ht⟩ : IsUnit (V⁻¹.1 i ⬝ᵥ p) := isUnit_of_mul_isUnit_right h_prod_unit
-  refine ⟨t, V⁻¹.1 i, hV.isIntMatrix_inv i, ht.symm, fun c ↦ ⟨fun hc ↦ ?_, fun hc j ↦ ?_⟩⟩
-  · have h_apply : (V⁻¹.1 *ᵥ c • p) i = t * c := by
+  have h_prod_unit : IsUnit (V.val i i * V⁻¹.val i ⬝ᵥ p) := by rwa [← h_col i]
+  obtain ⟨t, ht⟩ : IsUnit (V⁻¹.val i ⬝ᵥ p) := isUnit_of_mul_isUnit_right h_prod_unit
+  refine ⟨t, V⁻¹.val i, hV.isIntMatrix_inv i, ht.symm, fun c ↦ ⟨fun hc ↦ ?_, fun hc j ↦ ?_⟩⟩
+  · have h_apply : (V⁻¹.val *ᵥ c • p) i = t * c := by
       simp [mulVec, ht, mul_comm c, -coe_units_inv]
     rw [← h_apply]
     exact hV.isIntMatrix_inv.mulVec (v := c • p) hc i
-  · have h_int : V.1 j i * (t * c) ∈ integers := mul_mem (hV.isIntMatrix j i) hc
+  · have h_int : V.val j i * (t * c) ∈ integers := mul_mem (hV.isIntMatrix j i) hc
     simpa [h_col j, ht, mul_comm c, mul_assoc] using h_int
 
 /-- The volume of the set of c in A with cp integral if the entry p_i is a unit of A, and ∞
@@ -233,7 +239,7 @@ theorem measurable_contentIndex {i : ι} : Measurable (P.contentIndex i) := by
   -- Where `p i` is a unit, the value is the volume of a fibre of the set of `(c, p)` with `c • p`
   -- integral; elsewhere it is constant.
   have h_units : MeasurableSet {p : ι → A | IsUnit (p i)} :=
-    measurableEmbedding_units_val.measurableSet_range.preimage (by fun_prop)
+    Units.measurableEmbedding_val.measurableSet_range.preimage (by fun_prop)
   have h_integral : MeasurableSet {q : A × (ι → A) | ∀ j, q.1 * q.2 j ∈ integers} :=
     measurable_smul isOpen_isCompact_volume_intVectors.1.measurableSet
   exact .ite h_units (measurable_measure_prodMk_right h_integral) measurable_const
@@ -255,24 +261,24 @@ theorem lintegral_contentIndex_pow_le {s μ : ℕ} (hμ : idealZeta P.integers �
   -- `lintegral_le_idealZeta_mul` it is enough to bound `[O : I] ^ μ` times the integrand times the
   -- volume of the box of `I`.
   obtain ⟨rfl, (hκ_card : card κ = s + k), (hμ_le : μ ≤ k)⟩ := hd
-  have h_vol : MeasurePreserving V.1ᴴ.mulVec :=
+  have h_vol : MeasurePreserving V.valᴴ.mulVec :=
     ⟨by fun_prop, by simp [P.map_mulVec_volume, modulus_det_eq_one, hV]⟩
   let box (I : Ideal P.integers) : Set (ι → A) :=
-    univ.pi fun i ↦ (β.1 * ·) ⁻¹' ite (σ.symm i).isLeft ↑P.integers (integers.subtype '' I)
-  refine lintegral_le_idealZeta_mul hμ (fun I ↦ V.1ᴴ.mulVec ⁻¹' box I) ?_
+    univ.pi fun i ↦ (β.val * ·) ⁻¹' ite (σ.symm i).isLeft ↑P.integers (integers.subtype '' I)
+  refine lintegral_le_idealZeta_mul hμ (fun I ↦ V.valᴴ.mulVec ⁻¹' box I) ?_
   filter_upwards [h_vol.quasiMeasurePreserving.ae (tendsto_eval_ae_ae.eventually ae_isUnit)]
-    with w (hw_unit : IsUnit ((V.1ᴴ *ᵥ w) (σ (inr i)))) hw_int
-  obtain ⟨t, -, -, -, (ht : ∀ c : A, (∀ j : κ, c * (V.1ᴴ *ᵥ w) (σ (inr j)) ∈ integers) ↔ t * c ∈
+    with w (hw_unit : IsUnit ((V.valᴴ *ᵥ w) (σ (inr i)))) hw_int
+  obtain ⟨t, -, -, -, (ht : ∀ c : A, (∀ j : κ, c * (V.valᴴ *ᵥ w) (σ (inr j)) ∈ integers) ↔ t * c ∈
     integers)⟩ :=
-    exists_content (p := fun j ↦ (V.1ᴴ *ᵥ w) (σ (inr j))) hw_unit
-  have hy_int (j : ι) : β.1 * (V.1ᴴ *ᵥ w) j ∈ P.integers := by
-    simpa [mulVec_smul] using hV.isIntMatrix.conjTranspose.mulVec (v := β.1 • w) hw_int j
+    exists_content (p := fun j ↦ (V.valᴴ *ᵥ w) (σ (inr j))) hw_unit
+  have hy_int (j : ι) : β.val * (V.valᴴ *ᵥ w) j ∈ P.integers := by
+    simpa [mulVec_smul] using hV.isIntMatrix.conjTranspose.mulVec (v := β.val • w) hw_int j
   obtain ⟨I, hI_ne, hI_eq, hI_card⟩ := exists_ideal_cardQuot_eq (t * β) (by simp [← ht, hy_int])
   have h_box_eq : box I = univ.pi fun j : ι ↦
-      (β.1 * ·) ⁻¹' ite (σ.symm j).isLeft ↑P.integers {x : A | (t * β)⁻¹.1 * x ∈ integers} := by
+      (β.val * ·) ⁻¹' ite (σ.symm j).isLeft ↑P.integers {x : A | (t * β)⁻¹.val * x ∈ integers} := by
     simp only [box, hI_eq]
   refine ⟨I, hI_ne, by simp [h_box_eq, reindex_equiv σ, mul_mul_mul_comm, hy_int, ht], ?_⟩
-  have h_index : contentIndex i (fun j ↦ (V.1ᴴ *ᵥ w) (σ (inr j))) = (P.modulus t)⁻¹ := by
+  have h_index : contentIndex i (fun j ↦ (V.valᴴ *ᵥ w) (σ (inr j))) = (P.modulus t)⁻¹ := by
     simp only [contentIndex, iInf_pos hw_unit, ht, volume_setOf_mul_mem]
   have h_box : volume (box I) = (P.modulus β)⁻¹ ^ card n * P.modulus t ^ (s + k) := by
     simp [h_box_eq, volume_pi_pi, ← σ.prod_comp, preimage, mul_mul_mul_comm, modulus_inv, hκ_card]
@@ -466,31 +472,31 @@ variable {A κ : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] [Fi
 traces. Then `b ↦ ψ (e b y)` is trivial on the skew `b` with `u b` integral if and only if `u⁻¹ δ y`
 is integral, that is, lies in the ring of integers `O` of the place. Here `e = P.element`,
 `e + ē = 1` and `δ = P.skewUnit`. -/
-lemma IntegralPlace.psi_skew_eq_one_iff {u : Aˣ} (hu : star u.1 = u) {y : A} (hy : star y = y)
+lemma IntegralPlace.psi_skew_eq_one_iff {u : Aˣ} (hu : star u.val = u) {y : A} (hy : star y = y)
     (hψ : ∀ x : A, P.ψ (x + star x) = 1) :
-    (∀ b : skewAdjoint A, u * b.1 ∈ O → P.ψ (P.element * b * y) = 1) ↔
-      u⁻¹.1 * (P.skewUnit * y) ∈ O := by
-  have hu' : star u⁻¹.1 = u⁻¹.1 := by simp [← Units.coe_star_inv, (Units.ext hu : star u = u)]
-  set v : A := u⁻¹.1 * (P.skewUnit * y) with hv
+    (∀ b : skewAdjoint A, u * b.val ∈ O → P.ψ (P.element * b * y) = 1) ↔
+      u⁻¹.val * (P.skewUnit * y) ∈ O := by
+  have hu' : star u⁻¹.val = u⁻¹.val := by simp [← Units.coe_star_inv, (Units.ext hu : star u = u)]
+  set v : A := u⁻¹.val * (P.skewUnit * y) with hv
   have v_skew : star v = -v := by simp [hv, hu', hy, P.star_skewUnit, mul_comm, mul_left_comm]
   refine ⟨fun h ↦ (P.self_dual v).1 fun r hr ↦ ?_, fun hv_int b hb ↦ ?_⟩
   · -- Take `b = u⁻¹ δ (r + r̄)`; then `r v` is `e b y` plus a trace.
-    let b : skewAdjoint A := skewPart (u⁻¹.1 * (r * P.skewUnit))
-    have hb : b.1 = u⁻¹.1 * ((r + star r) * P.skewUnit) := by
+    let b : skewAdjoint A := skewPart (u⁻¹.val * (r * P.skewUnit))
+    have hb : b.val = u⁻¹.val * ((r + star r) * P.skewUnit) := by
       simp only [b, star_mul', hu', P.star_skewUnit]
       ring
-    have b_int : u * b.1 ∈ O := by
+    have b_int : u * b.val ∈ O := by
       rw [hb, u.mul_inv_cancel_left]
       exact mul_mem (add_mem hr (P.isAdelic.star_mem hr)) P.skewUnit_mem
     have h_split : r * v = P.element * b * y +
       (star P.element * r * v + star (star P.element * r * v)) := by
       rw [hb, star_mul', star_mul', star_star, v_skew, hv]
-      linear_combination (-r * (u⁻¹.1 * (P.skewUnit * y))) * P.element_add_star
+      linear_combination (-r * (u⁻¹.val * (P.skewUnit * y))) * P.element_add_star
     rw [h_split, P.ψ.map_add_eq_mul, h b b_int, hψ, mul_one]
   · -- `e b y` is the integral element `e δ⁻¹ (u b)` times `v`.
-    have h_split : P.element * b * y = P.element * P.skewUnit⁻¹.1 * (u * b.1) * v := by
+    have h_split : P.element * b * y = P.element * P.skewUnit⁻¹.val * (u * b.val) * v := by
       rw [hv]
-      linear_combination (-P.element * b * y * (u * u⁻¹.1)) * P.skewUnit.inv_mul -
+      linear_combination (-P.element * b * y * (u * u⁻¹.val)) * P.skewUnit.inv_mul -
         P.element * b * y * u.mul_inv
     rw [h_split]
     exact (P.self_dual v).2 hv_int _ (mul_mem (mul_mem P.element_mem P.skewUnit_inv_mem) hb)
@@ -503,46 +509,46 @@ is continuous of compact support, `J`, `u` and `α` are hermitian, `ψ` is trivi
 in the ring of integers `O` of the place. -/
 lemma IntegralPlace.setIntegral_eq_slab (hJ : Jᴴ = J) (hψ : ∀ x : A, P.ψ (x + star x) = 1)
     {f : (κ → A) → ℝ≥0} (hf : Continuous f) (h_supp : HasCompactSupport f) {u : Aˣ}
-    (hu : star u.1 = u) {α : A} (hα : star α = α) :
-    ∫ b : skewAdjoint A in {b : skewAdjoint A | u * b.1 ∈ O},
-        ∫ x : κ → A, f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - α)) ∂volume ∂P.skewMeasure =
-      (P.skewMeasure {b : skewAdjoint A | u * b.1 ∈ O} *
-        ∫⁻ x : κ → A in {x : κ → A | u⁻¹.1 * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - α)) ∈ O},
+    (hu : star u.val = u) {α : A} (hα : star α = α) :
+    ∫ b : skewAdjoint A in {b : skewAdjoint A | u * b.val ∈ O},
+        ∫ x : κ → A, f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)) ∂volume ∂P.skewMeasure =
+      (P.skewMeasure {b : skewAdjoint A | u * b.val ∈ O} *
+        ∫⁻ x : κ → A in {x : κ → A | u⁻¹.val * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - α)) ∈ O},
           f x).toReal := by
   classical
   let M : AddSubgroup (skewAdjoint A) :=
-    P.integers.toAddSubgroup.comap ((AddMonoidHom.mulLeft u.1).comp (skewAdjoint A).subtype)
+    P.integers.toAddSubgroup.comap ((AddMonoidHom.mulLeft u.val).comp (skewAdjoint A).subtype)
   have M_open : IsOpen (M : Set (skewAdjoint A)) :=
     isOpen_O.preimage (continuous_subtypeVal.const_mul _)
-  have coe_M : (M : Set (skewAdjoint A)) = {b : skewAdjoint A | u.1 * b.1 ∈ O} := rfl
+  have coe_M : (M : Set (skewAdjoint A)) = {b : skewAdjoint A | u.val * b.val ∈ O} := rfl
   have M_fin : P.skewMeasure M ≠ ∞ := by simp [coe_M, P.skewMeasure_setOf_mul_mem u hu]
   have : IsFiniteMeasure (P.skewMeasure.restrict M) := isFiniteMeasure_restrict.2 M_fin
-  let slab : Set (κ → A) := {x | u⁻¹.1 * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - α)) ∈ O}
+  let slab : Set (κ → A) := {x | u⁻¹.val * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - α)) ∈ O}
   have slab_meas : MeasurableSet slab := isOpen_O.measurableSet.preimage (by fun_prop)
   have f_int : Integrable fun x ↦ (f x : ℝ) :=
     (NNReal.continuous_coe.comp hf).integrable_of_hasCompactSupport (h_supp.comp_left rfl)
   have h_int : Integrable (uncurry fun (b : skewAdjoint A) (x : κ → A) ↦
-      f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - α)))
+      f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)))
         ((P.skewMeasure.restrict M).prod volume) :=
     (f_int.comp_snd _).mono' (by fun_prop) (by simp [uncurry])
   -- For fixed `x` the character of `M` is trivial exactly on the slab.
   have inner (x : κ → A) :
-      ∫ b in M, f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - α)) ∂P.skewMeasure =
+      ∫ b in M, f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)) ∂P.skewMeasure =
       (P.skewMeasure.real M * slab.indicator (fun x ↦ (f x : ℝ)) x : ℝ) := by
     have hy : star (star x ⬝ᵥ J *ᵥ x - α) = star x ⬝ᵥ J *ᵥ x - α := by
       simp [star_dotProduct_mulVec_comm hJ, hα]
     have h_char (b b' : skewAdjoint A) :
         P.ψ (P.element * ↑(b + b') * (star x ⬝ᵥ J *ᵥ x - α)) =
-          P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - α)) *
-            P.ψ (P.element * b'.1 * (star x ⬝ᵥ J *ᵥ x - α)) := by
+          P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)) *
+            P.ψ (P.element * b'.val * (star x ⬝ᵥ J *ᵥ x - α)) := by
       rw [AddSubgroup.coe_add, mul_add, add_mul, P.ψ.map_add_eq_mul]
     rw [integral_const_mul, setIntegral_char M_open h_char]
-    have h_triv : (∀ b ∈ M, P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - α)) = 1) ↔ x ∈ slab :=
+    have h_triv : (∀ b ∈ M, P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)) = 1) ↔ x ∈ slab :=
       psi_skew_eq_one_iff hu hy hψ
     simp only [h_triv]
     by_cases hx : x ∈ slab <;> simp [hx, mul_comm (f x : ℂ)]
   calc
-    _ = ∫ x, ∫ b in M, f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - α)) ∂P.skewMeasure :=
+    _ = ∫ x, ∫ b in M, f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - α)) ∂P.skewMeasure :=
       integral_integral_swap h_int
     _ = (P.skewMeasure.real M * ∫ x in slab, (f x : ℝ) : ℝ) := by
       simp only [inner, integral_complex_ofReal, integral_const_mul, integral_indicator slab_meas]
@@ -557,52 +563,52 @@ mass of `f` on the slab where `c δ (x* J x - δ⁻¹ t)` is integral is the int
 `f` on the quadrics with index `t + b`, over the skew `b` with `c b` integral. -/
 lemma Place.IsDisintegration.setLIntegral_slab (h : P.IsDisintegration volume J l)
     {f : (κ → A) → ℝ≥0} (hf : Continuous f) (c : A) (t : skewAdjoint A) :
-    ∫⁻ x : κ → A in {x : κ → A | c * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.1 * t)) ∈ O},
+    ∫⁻ x : κ → A in {x : κ → A | c * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t)) ∈ O},
       f x =
-      ∫⁻ b : skewAdjoint A in {b : skewAdjoint A | c * b.1 ∈ O},
+      ∫⁻ b : skewAdjoint A in {b : skewAdjoint A | c * b.val ∈ O},
         ∫⁻ x : κ → A, f x ∂l (b + t) ∂P.skewMeasure := by
-  let W : Set A := {a | c * (P.skewUnit * (a - P.skewUnit⁻¹.1 * t)) ∈ O}
+  let W : Set A := {a | c * (P.skewUnit * (a - P.skewUnit⁻¹.val * t)) ∈ O}
   have W_meas : MeasurableSet W := isOpen_O.measurableSet.preimage (by fun_prop)
-  have mem_W (b : skewAdjoint A) : P.skewUnit⁻¹.1 * (b.1 + t.1) ∈ W ↔ c * b.1 ∈ O := by
+  have mem_W (b : skewAdjoint A) : P.skewUnit⁻¹.val * (b.val + t.val) ∈ W ↔ c * b.val ∈ O := by
     simp [W, ← mul_sub]
   -- Write both restrictions as indicators; both sets are preimages of the open set `O`.
   have slab_meas : MeasurableSet
-      {x : κ → A | c * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.1 * t)) ∈ O} :=
+      {x : κ → A | c * (P.skewUnit * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t)) ∈ O} :=
     isOpen_O.measurableSet.preimage (by fun_prop)
-  have cut_meas : MeasurableSet {b : skewAdjoint A | c * b.1 ∈ O} :=
+  have cut_meas : MeasurableSet {b : skewAdjoint A | c * b.val ∈ O} :=
     isOpen_O.measurableSet.preimage (by fun_prop)
   rw [← lintegral_indicator slab_meas, ← lintegral_indicator cut_meas]
   calc
     _ = ∫⁻ x, W.indicator 1 (star x ⬝ᵥ J *ᵥ x) * f x := by simp [W, indicator]
-    _ = ∫⁻ b, ∫⁻ x, W.indicator 1 (P.skewUnit⁻¹.1 * b.1) * f x ∂l b ∂P.skewMeasure :=
+    _ = ∫⁻ b, ∫⁻ x, W.indicator 1 (P.skewUnit⁻¹.val * b.val) * f x ∂l b ∂P.skewMeasure :=
       h.lintegral_eq (fun p ↦ W.indicator 1 p.1 * f p.2) (by fun_prop (disch := exact W_meas))
     _ = ∫⁻ b, ∫⁻ x, W.indicator 1 (P.skewUnit⁻¹.1 * (b + t).1) * f x ∂l (b + t) ∂P.skewMeasure :=
       (lintegral_add_right_eq_self _ t).symm
     _ = _ := lintegral_congr fun b ↦ by
-      by_cases hb : c * b.1 ∈ O <;> simp [indicator, mem_W, hb]
+      by_cases hb : c * b.val ∈ O <;> simp [indicator, mem_W, hb]
 
 /-- The mean of a continuous function over the skew elements `t + b` with `b ∈ y ȳ O` tends to its
 value at `t` as the unit `y` tends to zero. The factor, the measure of the `b` with `y ȳ b ∈ O`, is
 the inverse of the measure of the skew elements of `y ȳ O`. -/
 lemma IntegralPlace.tendsto_average_skew {g : skewAdjoint A → ℝ≥0∞} (hg : Continuous g)
     (t : skewAdjoint A) :
-    Tendsto (fun y : Aˣ ↦ P.skewMeasure {b : skewAdjoint A | (y * star y).1 * b.1 ∈ O} *
-        ∫⁻ b : skewAdjoint A in {b : skewAdjoint A | (y * star y)⁻¹.1 * b.1 ∈ O},
+    Tendsto (fun y : Aˣ ↦ P.skewMeasure {b : skewAdjoint A | (y * star y).val * b.val ∈ O} *
+        ∫⁻ b : skewAdjoint A in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O},
           g (b + t) ∂P.skewMeasure)
       (comap Units.val (𝓝 0)) (𝓝 (g t)) := by
-  have u_star (y : Aˣ) : star (y * star y).1 = (y * star y).1 := by simp [mul_comm]
-  have u_inv_star (y : Aˣ) : star (y * star y)⁻¹.1 = (y * star y)⁻¹.1 := by
+  have u_star (y : Aˣ) : star (y * star y).val = (y * star y).val := by simp [mul_comm]
+  have u_inv_star (y : Aˣ) : star (y * star y)⁻¹.val = (y * star y)⁻¹.val := by
     simp [← Units.coe_star_inv, mul_comm]
   -- The two sets have reciprocal measures, so the mean of a constant is that constant.
-  have mean_const (y : Aˣ) (a : ℝ≥0∞) : P.skewMeasure {b | (y * star y).1 * b.1 ∈ O} *
-      ∫⁻ _ in {b : skewAdjoint A | (y * star y)⁻¹.1 * b.1 ∈ O}, a ∂P.skewMeasure = a := by
+  have mean_const (y : Aˣ) (a : ℝ≥0∞) : P.skewMeasure {b | (y * star y).val * b.val ∈ O} *
+      ∫⁻ _ in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O}, a ∂P.skewMeasure = a := by
     rw [setLIntegral_const, P.skewMeasure_setOf_mul_mem _ (u_star y),
       P.skewMeasure_setOf_mul_mem _ (u_inv_star y), P.modulus_inv, ENNReal.inv_rpow, inv_inv]
     -- The goal is `r⁻¹ * (a * r) = a` with `r = modulus (y * star y) ^ (1 / 2)`.
     rw [mul_left_comm, ENNReal.inv_mul_cancel (by simp) (by simp [mul_eq_top]), mul_one]
   -- The values of `g` on these elements lie in any given neighbourhood of `g t` if `y` is small.
   have near {V : Set ℝ≥0∞} (hV : V ∈ 𝓝 (g t)) : ∀ᶠ y : Aˣ in comap Units.val (𝓝 0),
-      ∀ b : skewAdjoint A, (y * star y)⁻¹.1 * b.1 ∈ O → g (b + t) ∈ V := by
+      ∀ b : skewAdjoint A, (y * star y)⁻¹.val * b.val ∈ O → g (b + t) ∈ V := by
     have h_cont : Continuous fun z : A × A ↦
         g (skewPart (P.element * (z.1 * star z.1) * z.2) + t) := by fun_prop
     have small : ∀ᶠ y in 𝓝 (0 : A), ∀ r ∈ (P.integers : Set A),
@@ -611,13 +617,13 @@ lemma IntegralPlace.tendsto_average_skew {g : skewAdjoint A → ℝ≥0∞} (hg 
       -- At `y = 0` the argument of `g` is `t`.
       exact h_cont.tendsto' (0, r) (g t) (congrArg g (by ext; simp)) hV
     filter_upwards [tendsto_comap small] with y hy b hb
-    have b_eq : skewPart (P.element * (y * star y).1 * ((y * star y)⁻¹.1 * b.1)) = b := by
+    have b_eq : skewPart (P.element * (y * star y).val * ((y * star y)⁻¹.val * b.val)) = b := by
       ext
       rw [mul_assoc, Units.mul_inv_cancel_left]
       simp [skewAdjoint.star_val_eq, ← add_mul]
     rw [← b_eq]
     exact hy _ hb
-  have ball_meas (y : Aˣ) : MeasurableSet {b : skewAdjoint A | (y * star y)⁻¹.1 * b.1 ∈ O} :=
+  have ball_meas (y : Aˣ) : MeasurableSet {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O} :=
     isOpen_O.measurableSet.preimage (by fun_prop)
   refine tendsto_order.2 ⟨fun a ha ↦ ?_, fun a ha ↦ ?_⟩
   · obtain ⟨a', ha_lt, ha'_lt⟩ : ∃ a' : ℝ≥0∞, a < a' ∧ a' < g t := exists_between ha
@@ -641,9 +647,9 @@ theorem IntegralPlace.integral_skewMeasure_eq_toReal_lintegral (h : P.IsDisinteg
     (hJ : Jᴴ = J) (hψ : ∀ x : A, P.ψ (x + star x) = 1) {f : (κ → A) → ℝ≥0} (hf : Continuous f)
     (h_supp : HasCompactSupport f) (t : skewAdjoint A)
     (h_int : Integrable (fun b : skewAdjoint A ↦ ∫ x : κ → A,
-      f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.1 * t))) P.skewMeasure) :
+      f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))) P.skewMeasure) :
     ∫ b : skewAdjoint A, ∫ x : κ → A,
-      f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.1 * t))
+      f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))
       ∂volume ∂P.skewMeasure = (∫⁻ x : κ → A, f x ∂l t).toReal := by
   -- Cut the frequency to `y ȳ b ∈ O`. The cut integral is the mean of the masses of the quadrics
   -- with index in `t + y ȳ O`. Let the unit `y` tend to zero.
@@ -653,22 +659,22 @@ theorem IntegralPlace.integral_skewMeasure_eq_toReal_lintegral (h : P.IsDisinteg
   have units_neBot : (comap Units.val (𝓝 (0 : A))).NeBot := comap_neBot fun s hs ↦ by
     simpa [Set.Nonempty, IsUnit, and_comm] using
       (dense_of_ae P.ae_isUnit).inter_nhds_nonempty hs
-  let cut (y : Aˣ) : Set (skewAdjoint A) := {b | (y * star y).1 * b.1 ∈ O}
+  let cut (y : Aˣ) : Set (skewAdjoint A) := {b | (y * star y).val * b.val ∈ O}
   have cover : AECover P.skewMeasure (comap Units.val (𝓝 0)) cut := by
     refine ⟨.of_forall fun b ↦ ?_, fun _ ↦ isOpen_O.measurableSet.preimage (by fun_prop)⟩
-    have h_small : Tendsto (fun y : A ↦ y * star y * b.1) (𝓝 0) (𝓝 0) :=
+    have h_small : Tendsto (fun y : A ↦ y * star y * b.val) (𝓝 0) (𝓝 0) :=
       Continuous.tendsto' (by fun_prop) 0 0 (by simp)
     exact tendsto_comap.eventually (h_small.eventually (isOpen_O.mem_nhds (zero_mem O)))
   have h_cut (y : Aˣ) :
-      ∫ b in cut y, ∫ x, f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.1 * t))
+      ∫ b in cut y, ∫ x, f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))
           ∂volume ∂P.skewMeasure =
-        (P.skewMeasure (cut y) * ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.1 * b.1 ∈ O},
+        (P.skewMeasure (cut y) * ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O},
           ∫⁻ x, f x ∂l (b + t) ∂P.skewMeasure).toReal := by
     rw [← h.setLIntegral_slab hf]
     exact setIntegral_eq_slab hJ hψ hf h_supp (by simp [mul_comm])
       (by simp [skewAdjoint.star_val_eq])
   have h_mean : Tendsto (fun y : Aˣ ↦ (P.skewMeasure (cut y) *
-      ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.1 * b.1 ∈ O}, ∫⁻ x, f x ∂l (b + t)
+      ∫⁻ b in {b : skewAdjoint A | (y * star y)⁻¹.val * b.val ∈ O}, ∫⁻ x, f x ∂l (b + t)
         ∂P.skewMeasure).toReal) (comap Units.val (𝓝 0)) (𝓝 (∫⁻ x, f x ∂l t).toReal) :=
     (tendsto_toReal (mass_fin t).ne).comp (tendsto_average_skew mass_cont t)
   -- The cut integrals tend both to the full integral and to the mass of the quadric.
@@ -686,10 +692,10 @@ lemma IntegralPlace.enorm_localDensity_le (h : P.IsDisintegration volume J l) (h
     (hψ : ∀ x : A, P.ψ (x + star x) = 1) {f : (κ → A) → ℝ≥0} (hf : Continuous f)
     (h_supp : HasCompactSupport f) (t : skewAdjoint A) :
     ‖∫ b : skewAdjoint A, ∫ x : κ → A,
-      f x * P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.1 * t))
+      f x * P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))
       ∂volume ∂P.skewMeasure‖ₑ ≤ ∫⁻ x : κ → A, f x ∂l t := by
   by_cases h_int : Integrable (fun b : skewAdjoint A ↦ ∫ x, f x *
-      P.ψ (P.element * b.1 * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.1 * t))) P.skewMeasure
+      P.ψ (P.element * b.val * (star x ⬝ᵥ J *ᵥ x - P.skewUnit⁻¹.val * t))) P.skewMeasure
   · simp [integral_skewMeasure_eq_toReal_lintegral h hJ hψ hf h_supp t h_int, ← ofReal_norm,
     ofReal_toReal_le]
   · simp [integral_undef h_int]

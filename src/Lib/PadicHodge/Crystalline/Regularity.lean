@@ -1,6 +1,13 @@
 module
 
-public import Lib.PadicHodge.Crystalline.FixedRatios
+public import Aesop.BuiltinRules
+import Mathlib.FieldTheory.Galois.Profinite
+public import Lib.PadicHodge.Crystalline.Basic
+import Lib.Adelic.Hecke.ClassSums
+import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+import Lib.ClassField.Places.TameInertia
+import Lib.PadicHodge.Crystalline.FixedRatios
+import Lib.PadicHodge.Kisin.KummerChartExistence
 
 /-!
 # Regularity of B_max, closure of admissibility, and crystalline descent from inertia
@@ -357,13 +364,15 @@ include h hs in
 `Bmax` as `φ ^ m ∘ toGp s`, `φ` being Frobenius, and `ρ s` acts on `T`. -/
 @[local simp] lemma linearFrob_apply {d : Bmax ⊗[ℤ_[p]] T} (hd : d ∈ Dpcris ρ) :
     linearFrob ρ s m d = tensorAction Bmax ((ofAdd m, toGp s) : FrobGal) (ρ s) d := by
-  -- It suffices to find one linear map with the property that defines `linearFrob`: prescribe it on
-  -- a basis `v` of fixed elements.
+  -- Potential crystallinity supplies a basis of fixed periods. Prescribe the linear extension
+  -- on that basis, then prove agreement on every fixed period to justify the choice.
   obtain ⟨I, v, hv⟩ := h.exists_basis le_rfl
   let β : End Bmax (Bmax ⊗[ℤ_[p]] T) :=
     v.constr ℕ fun i ↦ tensorAction Bmax (ofAdd m, toGp s) (ρ s) (v i)
   refine linearFrob_eq_tensorAction_of_exists ρ s m ⟨β, fun y hy ↦ ?_⟩ d hd
-  -- The coordinates of `y` are fixed near `1`, so they are fixed by `(ofAdd m, toGp s)`.
+  -- Coordinates of a fixed period in the fixed basis are themselves fixed near `1`.
+  -- The Weil-pair condition makes the combined Frobenius and Galois action fix these
+  -- scalars, which is why the otherwise semilinear action agrees with the linear extension.
   have h_coef (i : I) : (ofAdd m, toGp s) • v.repr y i = v.repr y i := by
     refine hs.smul_eq_of_fixed_nearOne ?_
     filter_upwards [hy, eventually_tensorAction_eq hv (v.repr y)] with g y_fix hg

@@ -1,10 +1,19 @@
 module
 
-public import Lib.General.NumberTheory.LargeResidueField
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.Congruences.FirstOrder.EvenClasses
 public import New.Congruences.Selmer.GeneralTheorem
-public import New.Congruences.Selmer.LValueSystems
-public import New.Congruences.Selmer.MainSummands
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+public import New.Determinant.Twist.FitTwists
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.NormTheorems
+import Lib.General.NumberTheory.LargeResidueField
+import Lib.PadicHodge.BlochKato
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
+import New.Congruences.Selmer.LValueSystems
+import New.Congruences.Selmer.MainSummands
 
 /-!
 # The twisting theorem
@@ -99,13 +108,13 @@ lemma mapRel_crysRelations_subset [DecidableEq n] {O' : CoeffRing ℓ} (hO : O �
       l ((A.map (inclusion hO) *ᵥ x) j) = (A *ᵥ (l ∘ x)) j := by
     have h_linear (a : ↑O) (y : ↑O') : l (inclusion hO a * y) = a * l y := l.map_smul a y
     simp only [mulVec, dotProduct, Matrix.map_apply, map_sum, h_linear, Function.comp_apply]
-  let lz : decompGroup Gal(Ω/E) (placeOver v.1) → n → ↑O :=
+  let lz : decompGroup Gal(Ω/E) (placeOver v.val) → n → ↑O :=
     (l.restrictScalars ℤ_[ℓ]).compLeft n ∘ z
   -- `ψ` is trivial on the decomposition group, so `l` is equivariant there and `l ∘ z` is a
   -- crystalline cocycle of `u`.
   have h_mem : lz ∈ crysCocyclesAt v u := by
     refine Period.crysCocycles.comp_mem hz _ fun g x ↦ funext fun j ↦ ?_
-    have hψg : ψ g = 1 := hψ v v.2 g g.2
+    have hψg : ψ g = 1 := hψ v v.property g g.property
     have h_comp : (l.restrictScalars ℤ_[ℓ]).compLeft n x = l ∘ x := rfl
     simpa [twistRep, hψg, h_comp] using h_mulVec (u g) x j
   calc
@@ -133,10 +142,10 @@ lemma IsSmallTwist.isAuxTwist {S₀ Q : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} 
   classical
   let γ (w : FinPlace E) : Gal(Ω/E) := w.isPlaceOver_placeOver.tameGenerator
   refine ⟨hQ, hψ.isFromU1, fun v ↦ γ v, fun v ↦ ?_, ?_⟩
-  · have hvℓ : v.1 ∉ placesDividing E ℓ := fun hv ↦ by
-      obtain ⟨hvS, -⟩ := hQ v v.2
+  · have hvℓ : v.val ∉ placesDividing E ℓ := fun hv ↦ by
+      obtain ⟨hvS, -⟩ := hQ v v.property
       exact hvS (hS₀ hv)
-    exact ⟨hvℓ, map_one _, placeOver v.1, v.1.isPlaceOver_placeOver, rfl⟩
+    exact ⟨hvℓ, map_one _, placeOver v.val, v.val.isPlaceOver_placeOver, rfl⟩
   · calc
       ∑ v : Q, ellVal (ψ (γ v) - 1) = ∑ w ∈ Q, ellVal (ψ (γ w) - 1) :=
         Q.sum_coe_sort fun w ↦ ellVal (ψ (γ w) - 1)
@@ -148,14 +157,14 @@ end General
 
 /-- Let `T` be a Selmer datum over `O₀`: a Galois lattice `T.ρ` unramified outside the finite set
 `T.places ⊆ S₀`, with modules of local cocycles at the places above `ℓ` and an inertial element
-`T.γ` that acts by a scalar. Let `O` be a discrete valuation ring, `e : O₀ → O` a ring map, `ρ` the
+`T.γ` that acts by a scalar. Let `O` be a commutative ring, `e : O₀ → O` a ring map, `ρ` the
 twist by the `O`-valued character `ψ` of `T.ρ` extended along `e`, and `S = T.places ∪ Q ∪ Q̄`. The
 group `Sel_Q(T ψ)`, of length `T.divisibleLength Q e ψ`, consists of the cocycles for `ρ` unramified
 outside `S` that obey the images under `e` of the relations `T.classRelations`. If the set of linear
 relations `L` contains these images, then the module of cocycles for `ρ` unramified outside `S` that
 obey `L` is at most as long as `Sel_Q(T ψ)`, both with coefficients in `Frac(O) / O`. -/
 lemma divisibleSelmerLength_le_divisibleLength {ℓ : ℕ} [ThePrime ℓ] {E O n : Type} [Field E]
-    [CMFieldWithRoot5040 E] [CommRing O] [DVR O] [Fintype n] [DecidableEq n]
+    [CMFieldWithRoot5040 E] [CommRing O] [Fintype n] [DecidableEq n]
     {ρ : Gal(Ω/E) → Matrix n n O} {S : Set (FinPlace E)} {L : Set (Gal(Ω/E) →₀ Matrix n n O)}
     {O₀ : Type} [CommRing O₀] [PadicIntegerRing O₀ ℓ]
     {S₀ : Finset (FinPlace E)} {g₀ : Gal(Ω/E)} (T : SelmerDatum ℓ S₀ g₀ O₀ n)
@@ -246,17 +255,11 @@ valuation with `v(ℓ) = 1`. -/
 lemma four_mul_ellVal_levelPrime_sub_one_add_le_twistError {ℓ : ℕ} [ThePrime ℓ] {P : Parameters}
     {D : Data P} (i : Fin 2) :
     4 * ellVal (D.levelPrime i - 1 : PadicAlgCl ℓ) + ((1 / 2) ^ ℓ : ℝ≥0) ≤ twistError ℓ D := by
-  let v : ℕ := padicValNat ℓ D.chosenGroupOrder
-  have h_val : ellVal (D.levelPrime i - 1 : PadicAlgCl ℓ) ≤ v := by
-    simpa using ellVal_levelPrime_pow_sub_one_le D ℓ i ⟨le_rfl, D.nat_le_of_hasLogBound⟩
-  have h_four : 4 * v ≤ (4 * D.f + 3) * D.r * v :=
-    Nat.mul_le_mul_right v D.nat_le_of_hasLogBound
-  calc
-    _ ≤ 4 * v + (((1 / 2) ^ ℓ : ℝ≥0) : ℝ≥0∞) := by gcongr
-    _ ≤ ((4 * D.f + 3) * D.r * v : ℕ) + (((1 / 2) ^ ℓ : ℝ≥0) : ℝ≥0∞) := by
-      gcongr
-      exact_mod_cast h_four
-    _ = twistError ℓ D := by simp [twistError, v]
+  rw [twistError]
+  push_cast
+  gcongr
+  · exact_mod_cast D.nat_le_of_hasLogBound
+  · simpa using ellVal_levelPrime_pow_sub_one_le D ℓ i ⟨le_rfl, D.nat_le_of_hasLogBound⟩
 
 /-- For a tame character `τ` and `j : ℕ`, `(τ.pow j).invAvatar`, the `ℓ`-adic Galois character
 attached to the inverse of `τ ^ j`, is the `j`-th power of `τ.invAvatar`. -/
@@ -277,18 +280,12 @@ lemma tamePart_ne_one_of_invAvatar_ne_one {ℓ : ℕ} [ThePrime ℓ] {P : Parame
     [PadicIso ℓ] (τ : D.TameChar) {w : FinPlace D.E}
     (hw : w ∈ τ.Q) {g : AbsGal D} (hg : g ∈ inertiaAbove ({w} : Set (FinPlace D.E)))
     (h_ne : (τ.invAvatar : AbsGal D →* PadicAlgCl ℓ) g ≠ 1) : τ.tamePart w ≠ 1 := by
-  intro h_triv
-  obtain ⟨w', hw', A, hA, hgA⟩ := hg
-  obtain rfl : w' = w := hw'
+  obtain ⟨w', rfl, _, hA, hgA⟩ := hg
   -- The class of the inertial element `g` is the local Artin symbol of a unit `x` at `w'`.
-  obtain ⟨x, hx_unit, h_art⟩ : ∃ x : (LocField w')ˣ,
-      Valued.v x.val = 1 ∧ artinMap (AbsGal D) (locIdele w' x) = g := by
-    obtain ⟨x, hx_unit, hx_art⟩ := hA.exists_localArtin_eq_of_mem_inertiaGroup hgA
-    exact ⟨x, hx_unit, by simp [hA.artinAt_eq_of_localArtin_eq hx_art]⟩
-  have h_unr : CharUnramifiedAt τ.toAutChar.baseChange.finPart w' :=
-    τ.hasWeight.charUnramifiedAt h_triv (τ.tamePart_eq_one (star w') (τ.star_notMem w' hw))
-  apply h_ne
-  simp [invAvatar_eq_of_artinMap_eq h_art, h_unr x hx_unit]
+  obtain ⟨x, hx, h⟩ := hA.exists_localArtin_eq_of_mem_inertiaGroup hgA
+  have ha : artinMap (AbsGal D) (locIdele w' x) = g := by simp [hA.artinAt_eq_of_localArtin_eq h]
+  exact fun h_triv => h_ne <| by simp [invAvatar_eq_of_artinMap_eq ha,
+    τ.hasWeight.charUnramifiedAt h_triv (τ.tamePart_eq_one _ (τ.star_notMem w' hw)) x hx]
 
 open IsDiscreteValuationRing in
 /-- Let `D` be admissible data, with CM field `D.E` and primes `p₀, p₁`, and let `badPlaces D ℓ` be

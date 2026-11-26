@@ -1,6 +1,10 @@
 module
 
 public import Lib.Weil.Periods.Grading
+import Lib.Adelic.Adeles.IdeleModulus
+import Lib.Adelic.Unitary.GramMatrix
+import Lib.Adelic.Witt.WittTheorem
+import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # The lattice of a finite point of a graded space
@@ -98,7 +102,7 @@ lemma mulVec_mem_lattice : (V.xFin * x.val).val *ᵥ y ∈ V.lattice x ↔ ∀ i
 /-- For a finite point `x`, the frame `V.xFin * x` is orthonormal for the form of `V`. -/
 lemma gram_xFin_mul_eq_one (x : Gf E ι) :
     (V.xFin * x.val).valᴴ * V.J.map (algebraMap E (𝔸f E)) * (V.xFin * x.val).val = 1 :=
-  gram_mul_of_gram_eq V.gram_xFin (mem_unitaryGroupOf_iff.1 x.2)
+  gram_mul_of_gram_eq V.gram_xFin (mem_unitaryGroupOf_iff.1 x.property)
 
 /-- The Gram matrix of `V` is `g⁻¹ᴴ g⁻¹` for the orthonormal frame `g = V.xFin * x`. -/
 lemma gram_frame_inv (x : Gf E ι) :
@@ -158,13 +162,13 @@ lemma lattice_eq_iff : V.lattice x = V.lattice x' ↔ x⁻¹ * x' ∈ stdLevel E
   refine ⟨fun h ↦ lattice_le_iff.1 h.ge, fun h ↦ le_antisymm ?_ (lattice_le_iff.2 h)⟩
   simpa [lattice_le_iff] using inv_mem h
 
-/-- The conjugate `x⁻¹ g x` lies in the group `stdLevel E ι` of integral unitary matrices if and
-only if `g`, acting through its matrix `V.ratCoordMatrixFin g` in rational coordinates, maps the
-lattice of `x` into itself. -/
-lemma conj_mem_stdLevel_iff :
-    x⁻¹ * (g * x) ∈ stdLevel E ι ↔ ∀ y ∈ V.lattice x, V.ratCoordMatrixFin g *ᵥ y ∈ V.lattice x := by
-  rw [← lattice_le_iff (V := V)]
-  refine ⟨fun h y hy ↦ h (mulVec_mem_lattice_mul.2 hy), fun h z hz ↦ ?_⟩
+/-- If `g`, acting through its matrix `V.ratCoordMatrixFin g` in rational coordinates, maps the
+lattice of `x` into itself, then the conjugate `x⁻¹ g x` lies in the group `stdLevel E ι` of
+integral unitary matrices. -/
+lemma conj_mem_stdLevel_of_mapsTo_lattice
+    (h : ∀ y ∈ V.lattice x, V.ratCoordMatrixFin g *ᵥ y ∈ V.lattice x) :
+    x⁻¹ * (g * x) ∈ stdLevel E ι := by
+  refine (lattice_le_iff (V := V)).1 fun z hz ↦ ?_
   obtain ⟨y, rfl⟩ : ∃ y, V.ratCoordMatrixFin g *ᵥ y = z :=
     ⟨V.ratCoordMatrixFin g⁻¹ *ᵥ z, by simp [ratCoordMatrixFin, Gf.coe_inv, mul_assoc]⟩
   exact h y (mulVec_mem_lattice_mul.1 hz)
@@ -307,23 +311,18 @@ lemma exists_isPrimitiveMatrix_basis :
   -- The string vectors form a basis `S`. Some invertible `b` makes the coordinates of `S * b` in
   -- the frame of `x` primitive.
   let S : Matrix ι (Fin s) (𝔸f E) := inclMatrix (𝔸f E) fun b ↦ Y.indexEquiv (.inr b)
-  have h_left : Sᵀ * S = 1 := by
-    ext1 a b
-    simp [S, inclMatrix, Matrix.mul_apply, Matrix.one_apply, eq_comm]
-  have h_proj (y : ι → 𝔸f E) : Y.stringProj y = S *ᵥ Sᵀ *ᵥ y := by
-    ext1 i
+  have h_left : Sᵀ * S = 1 :=
+    Matrix.ext fun a b ↦ by simp [S, inclMatrix, Matrix.mul_apply, Matrix.one_apply, eq_comm]
+  have h_proj (y : ι → 𝔸f E) : Y.stringProj y = S *ᵥ Sᵀ *ᵥ y := funext fun i ↦ by
     obtain ⟨a | a, rfl⟩ := Y.indexEquiv.surjective i <;>
       simp [S, inclMatrix, mulVec, dotProduct, Matrix.one_apply, stringProj_apply_inl,
         stringProj_apply_inr]
   have h_inv : HasLeftInv ((V.xFin * x.val)⁻¹.val * S) :=
     ⟨Sᵀ * (V.xFin * x.val).val, by simpa [Matrix.mul_assoc] using h_left⟩
   obtain ⟨b, -, hb⟩ := isValuationPair_Ô.exists_isPrimitiveMatrix_mul h_inv
-  refine ⟨S * b.val, by rwa [← Matrix.mul_assoc], fun y ↦ ?_⟩
-  rw [h_proj, mulVec_mulVec]
-  refine ⟨fun hy ↦ ⟨(b⁻¹.val * Sᵀ) *ᵥ y, ?_⟩, ?_⟩
-  · simpa [Matrix.mul_assoc] using hy
-  · rintro ⟨c, rfl⟩
-    simp [← Matrix.mul_assoc, h_left, Matrix.mul_assoc S]
+  refine ⟨S * b.val, by rwa [← Matrix.mul_assoc], fun y ↦ ⟨fun hy ↦ ⟨(b⁻¹.val * Sᵀ) *ᵥ y,
+    by simpa [h_proj, mulVec_mulVec, Matrix.mul_assoc] using hy⟩, fun ⟨c, hc⟩ ↦ hc ▸ by
+    simp [h_proj, mulVec_mulVec, ← Matrix.mul_assoc, h_left]⟩⟩
 
 /-- A vector `z` of `X^⊥` lies in the projection `Λ'⁺` of the lattice of `x` to `X^⊥` if and only
 if its products with the intersection `Λ'⁻` of this lattice with `X^⊥` are integral. -/
@@ -413,7 +412,8 @@ lemma exists_inclXFin_eq_of_mulVec_eq {g : Gf E ι}
   have h_blocks : M = gradedBlocks Y.indexEquiv Y.indexEquiv A 1 := by
     ext1 i j
     obtain ⟨i' | i', rfl⟩ := Y.indexEquiv.surjective i <;>
-      obtain ⟨j' | j', rfl⟩ := Y.indexEquiv.surjective j <;> simp [A, h_row, h_col, Matrix.one_apply]
+      obtain ⟨j' | j', rfl⟩ := Y.indexEquiv.surjective j <;>
+      simp [A, h_row, h_col, Matrix.one_apply]
   have hA : Aᴴ * 1 * A = 1 := by
     have h_isom := Space.ratCoordMatrixFin_isometry (V := V) g
     rw [show V.ratCoordMatrixFin g = _ from h_blocks, Y.gram_eq] at h_isom

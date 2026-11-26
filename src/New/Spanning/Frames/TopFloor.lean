@@ -1,5 +1,7 @@
 module
 
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Frames.FiberMeasures
 public import New.Spanning.Frames.TopCorrelation
 
@@ -153,7 +155,7 @@ lemma PlaceData.headSumNormSq_nonneg {R : Matrix j j ℂ} (hR : R.PosSemidef) (�
 `lastVectorQuadric T`: it has no component along the hyperbolic pairs and has the norm of the last
 frame vector `z`. -/
 lemma orbitPoint_mem_lastVectorQuadric {A : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A]
-    {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) :
+    {T : 𝔰.Form A} {l : T.G} (hl : l ∈ T.floorGroup 𝔰.ϱ) :
     orbitPoint 𝔰.top l ∈ lastVectorQuadric T := by
   have hz : Pi.single (𝔰.besselFrame 𝔰.top) 1 ∈ lastVectorQuadric T := by
     refine ⟨fun i hi ↦ Pi.single_eq_of_ne ?_ 1, by simp⟩

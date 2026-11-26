@@ -1,8 +1,19 @@
 module
 
-public import Lib.General.Analysis.FiniteGroupInnerProduct
-public import Lib.General.Analysis.FiniteFourier
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.TensorProduct
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.NumberTheory.LegendreSymbol.Complex
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 public import Lib.General.LinearAlgebra.IntegralLattices
+import Lib.General.Analysis.FiniteFourier
+public import Lib.General.Analysis.FiniteGroupInnerProduct
 
 /-!
 # Functions of positive type and singular minors
@@ -52,13 +63,6 @@ lemma norm_sq_sum_tmul_eq_card_mul_sum [DecidableEq k] {E : Type*} [NormedAddCom
     simp [f, hu, orthonormal_iff_ite.1 hc, apply_ite ofReal, mul_smul, eq_inv_smul_iff]
   rw [norm_sq_eq_re_inner (𝕜 := ℂ), inner_sum_sum_eq_card_mul (fun s ↦ f s) h_inner, sum_filter]
   simp [f]
-
-/-- Orthogonality of characters as a mean: for a primitive additive character `ψ` of a finite field,
-the mean of `ψ (z ⬝ᵥ x)` over `x` is `1` if `z = 0` and `0` otherwise. -/
-lemma expect_addChar_dotProduct [DecidableEq m] [Fintype k] [DecidableEq k] {ψ : AddChar k ℂ}
-    (hψ : ψ.IsPrimitive) (z : m → k) :
-    𝔼 x : m → k, ψ (z ⬝ᵥ x) = if z = 0 then 1 else 0 := by
-  simp [Fintype.expect_eq_sum_div_card, sum_addChar_dotProduct hψ, ite_div]
 
 /-- For a primitive additive character `ψ` of a finite field with `q` elements, the functions
 `ζ ↦ ψ (-x ⬝ᵥ ζ) / √(q ^ |n|)`, one for each `x : kⁿ`, are orthonormal. -/
@@ -181,7 +185,8 @@ lemma card_mul_sum_det_eq_zero_le [DecidableEq m] [Fintype k] [DecidableEq k] (�
   -- kernel of `Z s`.
   have mean_eq (y : m → k) : 𝔼 v : m → k, (∑ s, W y v s).re = ∑ s with y ᵥ* Z s = 0, Θ s := by
     rw [← re_expect, expect_sum_comm]
-    simp [W, ← expect_mul, expect_addChar_dotProduct hψ, sum_filter, apply_ite Complex.re]
+    simp [W, ← expect_mul, Fintype.expect_eq_sum_div_card, sum_addChar_dotProduct hψ, ite_div,
+      sum_filter, apply_ite Complex.re]
   calc card k * ∑ s with (Z s).det = 0, Θ s
       ≤ ∑ s, #{y | y ᵥ* Z s = 0} * Θ s := by
         rw [mul_sum, sum_filter]

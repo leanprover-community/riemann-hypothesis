@@ -235,8 +235,8 @@ The citations of 122 other files were not part of this check, nor were further c
 | Weil, On a certain type of characters ... (1956) | work found, no place given | `Lib/ClassField/HeckeCharacter/AlgebraicValues` |
 | Weil, On a certain type of characters of the idèle-class group of an algebraic number-field | work found, no place given | `Lib/ClassField/Global/CMSplittingCharacters` |
 | Weil, Sur certains groupes d'opérateurs unitaires | work found, no place given | `Lib/Weil/Construction/ThetaJets` |
-| Welch 1974 | not compared, no place given | `New/Spanning/SecondMoment/FewTranslates` |
-| Wolsey, Greedy algorithm for the submodular set covering problem, 1982 | work found, no place given | `New/Spanning/SecondMoment/FewTranslates` |
+| Welch 1974 | not compared, no place given | `New/Spanning/SecondMoment/HilbertSchmidt` |
+| Wolsey, Greedy algorithm for the submodular set covering problem, 1982 | work found, no place given | `New/Spanning/SecondMoment/Spread` |
 | arXiv 2601.16141 | work found, no place given | `Lib/Weil/DualPair/GaloisLaw` |
 | van Frankenhuijsen, The Riemann hypothesis for function fields over a finite field, 2008 | work found, no place given | `New/Reduction/MainInequality` |
 

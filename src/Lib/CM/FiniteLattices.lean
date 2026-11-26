@@ -1,6 +1,9 @@
 module
 
+import Mathlib.RingTheory.PiTensorProduct
 public import Lib.CM.GoodReduction
+import Lib.CM.Sigma.ThetaSections
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Finitely many CM lattices
@@ -45,23 +48,17 @@ lemma sumInvPow_four_of_mul_mem_iff {L L' : PeriodPair} {c y z : ℂ} (hc : c �
     L'.sumInvPow z 4 = L.sumInvPow y 4 / c ^ 4 := by
   classical
   -- Write both sums as sums over `ℂ`, centred at the base point, and substitute `x ↦ c x`.
-  let term (M : PeriodPair) (w : ℂ) : ℂ → ℂ :=
-    (M.lattice : Set ℂ).indicator fun l : ℂ ↦ ((l - w) ^ 4)⁻¹
-  have h_sum (M : PeriodPair) (w : ℂ) :
-      HasSum (fun x : ℂ ↦ term M w (w + x)) (M.sumInvPow w 4) := by
-    have h_lattice : HasSum (term M w) (M.sumInvPow w 4) :=
+  let term (M : PeriodPair) (w : ℂ) := (M.lattice : Set ℂ).indicator fun l ↦ ((l - w) ^ 4)⁻¹
+  have h_sum (M : PeriodPair) (w : ℂ) : HasSum (fun x ↦ term M w (w + x)) (M.sumInvPow w 4) :=
+    (Equiv.addLeft w).hasSum_iff.2 <|
       hasSum_subtype_iff_indicator.1 (M.hasSum_sumInvPow w (by norm_num))
-    simpa only [Function.comp_def, Equiv.coe_addLeft]
-      using (Equiv.addLeft w).hasSum_iff.2 h_lattice
   have h_term (x : ℂ) : term L' z (z + c * x) = term L y (y + x) / c ^ 4 := by
     have h_mem : z + c * x ∈ L'.lattice ↔ y + x ∈ L.lattice := by
       rw [← hL', ← add_mem_cancel_left hz, ← add_assoc, sub_add_cancel, mul_add]
     simp only [term, Set.indicator, SetLike.mem_coe, h_mem, add_sub_cancel_left]
     split_ifs <;> ring
-  have h_left : HasSum (fun x : ℂ ↦ term L' z (z + c * x)) (L'.sumInvPow z 4) := by
-    simpa only [Function.comp_def, Equiv.mulLeft₀_apply]
-      using (Equiv.mulLeft₀ c hc).hasSum_iff.2 (h_sum L' z)
-  exact h_left.unique (by simpa only [h_term] using (h_sum L y).div_const (c ^ 4))
+  exact ((Equiv.mulLeft₀ c hc).hasSum_iff.2 (h_sum L' z)).unique <| by
+    simpa only [Function.comp_def, Equiv.mulLeft₀_apply, h_term] using (h_sum L y).div_const _
 
 namespace CMLattice
 
@@ -122,24 +119,17 @@ lemma IsInClass.exists_pow_four_eq_one_and_eq_scaledIdeal_mul {𝒞 : ClassGroup
 `C.latticeModule` of a CM lattice `C` for `K = ℚ(√-d)`. -/
 lemma finite_range_latticeModule :
     (Set.range fun C : CMLattice d ↦ C.latticeModule).Finite := by
-  -- Take a CM lattice `B 𝒞` in each ideal class `𝒞`. Every CM lattice is `c` times one of these,
-  -- and `c⁴ = 1`. The choice of `B` starts from any one CM lattice `C₀`.
+  -- Take a representative CM lattice `B 𝒞` in each ideal class `𝒞`; every CM lattice
+  -- is a 4th root of unity times one of these.
   obtain ⟨C₀, -⟩ := QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal (d := d) 1
-  obtain ⟨B, hB : ∀ 𝒞 : ClassGroup (𝓞 (QuadField d)), (B 𝒞).IsInClass 𝒞, -⟩ :=
-    C₀.exists_forall_isInClass
-  have h_roots : {c : ℂˣ | c ^ 4 = 1}.Finite :=
-    (Set.finite_coe_iff.1 (inferInstanceAs (Finite (rootsOfUnity 4 ℂ)))).subset
-      fun c hc ↦ (mem_rootsOfUnity 4 c).2 hc
-  let multiple (c : ℂˣ) (𝒞 : ClassGroup (𝓞 (QuadField d))) : Submodule (𝓞 (QuadField d)) ℂ :=
-    QuadField.scaledIdeal d (c, 1) * (B 𝒞).latticeModule
-  refine (h_roots.image2 multiple Set.finite_univ).subset ?_
+  obtain ⟨B, hB, -⟩ := C₀.exists_forall_isInClass
+  refine (Set.finite_range fun p : rootsOfUnity 4 ℂ × ClassGroup (𝓞 (QuadField d)) ↦
+    QuadField.scaledIdeal d (p.1.1, 1) * (B p.2).latticeModule).subset ?_
   rintro _ ⟨C, rfl⟩
-  obtain ⟨⟨u, 𝔟⟩, hC : C.latticeModule = QuadField.scaledIdeal d (u, 𝔟)⟩ :=
-    C.exists_latticeModule_eq_scaledIdeal
-  obtain ⟨c, hc_pow, hc⟩ : ∃ c : ℂˣ,
-      c ^ 4 = 1 ∧ C.latticeModule = multiple c (ClassGroup.mk (QuadField d) 𝔟) :=
+  obtain ⟨⟨u, 𝔟⟩, hC⟩ := C.exists_latticeModule_eq_scaledIdeal
+  obtain ⟨c, hc_pow, hc⟩ :=
     IsInClass.exists_pow_four_eq_one_and_eq_scaledIdeal_mul ⟨u, 𝔟, rfl, hC⟩ (hB _)
-  exact ⟨c, hc_pow, _, Set.mem_univ _, hc.symm⟩
+  exact ⟨⟨⟨c, (mem_rootsOfUnity 4 c).2 hc_pow⟩, _⟩, hc.symm⟩
 
 /-- Two CM lattices with the same underlying lattice have the same area of a period
 parallelogram. -/
@@ -171,22 +161,14 @@ lemma exists_norm_twistedTranslate_theta_le :
     ∃ M : ℝ, ∀ (C : CMLattice d) (u : ℂ), ‖C.twistedTranslate 1 u C.θ 0‖ ≤ M := by
   -- For one lattice the modulus is continuous and periodic in `u`, so bounded; it depends only
   -- on the lattice, and there are finitely many.
-  let values (C : CMLattice d) : Set ℝ := Set.range fun u : ℂ ↦ ‖C.twistedTranslate 1 u C.θ 0‖
-  have h_compact (C : CMLattice d) : IsCompact (values C) :=
-    IsAppellHumbert.isCompact_range_norm_thetaShift C.theta_mem
-  have h_congr (C D : CMLattice d) (h : C.latticeModule = D.latticeModule) :
-      values C = values D := by
-    simp [values, thetaShift_apply, hermitianForm_apply, theta_eq_of_latticeModule_eq h,
-      area_eq_of_latticeModule_eq h]
-  let lattices : Set (Submodule (𝓞 (QuadField d)) ℂ) :=
-    Set.range fun C : CMLattice d ↦ C.latticeModule
-  have : Finite lattices := finite_range_latticeModule.to_subtype
-  have h_rep (x : lattices) : ∃ C : CMLattice d, C.latticeModule = x := x.property
-  choose B hB using h_rep
-  obtain ⟨M, hM⟩ : BddAbove (⋃ x : lattices, values (B x)) :=
-    (isCompact_iUnion fun x ↦ h_compact (B x)).bddAbove
-  refine ⟨M, fun C u ↦ hM (Set.mem_iUnion.2 ⟨⟨C.latticeModule, C, rfl⟩, ?_⟩)⟩
-  exact (h_congr _ C (hB _)).ge ⟨u, rfl⟩
+  have : Finite (Set.range fun C : CMLattice d ↦ C.latticeModule) :=
+    finite_range_latticeModule.to_subtype
+  obtain ⟨M, hM⟩ := (isCompact_iUnion fun x : Set.range fun C : CMLattice d ↦ C.latticeModule ↦
+    IsAppellHumbert.isCompact_range_norm_thetaShift x.2.choose.theta_mem).bddAbove
+  refine ⟨M, fun C u ↦ hM (Set.mem_iUnion.2 ⟨⟨C.latticeModule, C, rfl⟩, u, ?_⟩)⟩
+  have h := (⟨C, rfl⟩ : ∃ D : CMLattice d, D.latticeModule = C.latticeModule).choose_spec
+  simp [thetaShift_apply, hermitianForm_apply, theta_eq_of_latticeModule_eq h,
+    area_eq_of_latticeModule_eq h]
 
 end CMLattice
 

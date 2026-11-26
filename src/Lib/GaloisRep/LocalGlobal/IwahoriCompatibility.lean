@@ -1,9 +1,25 @@
 module
 
-public import Lib.GaloisRep.BaseChange.IwahoriEigenforms
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import Lib.GaloisRep.Main.AllRanks
-public import Lib.LocalGL.Iwahori.SortedExponents
 public import Lib.LocalGL.Iwahori.SphericalExponents
+public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
+public import Lib.Weil.Unramified.HeckeGL
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.ExistenceTheorem
+import Lib.ClassField.Places.TameInertia
+import Lib.GaloisRep.BaseChange.IwahoriEigenforms
+import Lib.GaloisRep.Main.OddRank
+import Lib.General.Algebra.LevelModulus
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.LocalGL.Iwahori.HeckeDegrees
+import Lib.LocalGL.Iwahori.QuadraticRelation
+import Lib.LocalGL.Iwahori.SortedExponents
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # Local-global compatibility at split places for Iwahori eigencharacters and parahoric types
@@ -188,9 +204,9 @@ lemma IsIwahoriEigen.exists_hasHeckePolyAt
   let c : GL (Fin (card n)) (LocField w) → ℂ := (basicDoubleCoset (Fin (card n)) w j).indicator 1
   let T' : Module.End ℂ ρ := heckeFun ρ.ρ K fun a ↦ starRingEnd ℂ (c a⁻¹)
   have hbi : IsHeckeFunction K c := isHeckeFunction_basicDoubleCoset j
-  have hbi' : IsHeckeFunction K _ := (hbi.heckeFun_adjoint B hg hB.2 hg).1
+  have hbi' : IsHeckeFunction K _ := (hbi.heckeFun_adjoint B hg hB.map_map_eq hg).1
   have adjoint (y : ρ) (hy : y ∈ S) : B (T g) y = B g (T' y) :=
-    (hbi.heckeFun_adjoint B hg hB.2 hy).2
+    (hbi.heckeFun_adjoint B hg hB.map_map_eq hy).2
   have satake (y : ρ) (hy : y ∈ S) : B g (T y) = t j * B g y := by
     rw [B_g (T y) (hbi.heckeFun_mem hy), B_g y hy,
       show T = partialHecke ρ.ρ 0 j from partialHecke_zero_eq_heckeGL.symm]
@@ -200,7 +216,7 @@ lemma IsIwahoriEigen.exists_hasHeckePolyAt
     exact congrArg _ (hbi.heckeFun_comm hbi' hg).symm
   -- Hence `T g - t j • g` is orthogonal to `T g` and to `g`, so to itself.
   by_contra hne
-  refine (hB.1 _ (sub_ne_zero.mpr hne)).ne' ?_
+  refine (hB.pos _ (sub_ne_zero.mpr hne)).ne' ?_
   change B (T g - t j • g) (T g - t j • g) = 0
   simp [normal, satake g hg]
 
@@ -254,13 +270,13 @@ lemma IsIwahoriEigen.eq_of_localArtin_eq
     normAbsChar.prod (MonoidHom.pi ξ) y = normAbsChar.prod (MonoidHom.pi ξ) x := by
   -- Take a uniformiser `π` in `E` and `z` with `z ^ (q - 1) = π`. The symbol of the unit `y / x` is
   -- trivial, so by the tame symbol `y / x` is congruent to `z / z = 1`.
-  obtain ⟨π, hπ, -⟩ := hA.exists_uniformiser Gal(Ω/E)
+  obtain ⟨π, hπ, -⟩ := hA.exists_uniformizer Gal(Ω/E)
   obtain ⟨z, hz⟩ := IsAlgClosed.exists_pow_nat_eq (algebraMap E Ω π) w.q_sub_one_pos
   have hz_ne : z ≠ 0 := ne_zero_pow w.q_sub_one_pos.ne' (by simp [hz])
   have h_symb : localArtin Gal(Ω/E) A w (y / x) = 1 := (div_mem_ker_iff _).mpr hart
   have h_one : v ((y / x).val - 1) < 1 := by
     simpa [hz_ne] using
-      hA.valuation_sub_lt_one_iff_of_localArtin_eq (s := 1) (x := 1) (hA.isUniformiser_iff.mpr hπ)
+      hA.valuation_sub_lt_one_iff_of_localArtin_eq (s := 1) (x := 1) (hA.isUniformizer_iff.mpr hπ)
         hunit h_symb hz
   exact (div_mem_ker_iff _).mp (hf_iwahori.apply_eq_one_of_principal_unit h_one)
 
@@ -343,7 +359,7 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_unramified
       HasHeckePolyAt g.val w hw (∏ i : Fin (card n), (X - C (ξ i ϖ).val)) :=
     hf_iwahori.exists_hasHeckePolyAt he hϖ hunr hξ_antitone
   obtain ⟨hgood, hjump, hpoly⟩ : IsCompatibleAt g.val (card n) w r A :=
-    (sphericalCompat_std w g.2 hg).2 hr hgw.1 A hA
+    (sphericalCompat_std w g.property hg).2 hr hgw.1 A hA
   refine ⟨(isGoodAt_iff.1 hgood).1, hjump, ?_⟩
   simpa [Polynomial.map_prod] using hpoly hw _ hgw s hs_frob
 
@@ -387,8 +403,8 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_pos
   have h_tame (y : (LocField w)ˣ) (hy : v y.val = 1) : χ (y ^ (w.q - 1)) = 1 :=
     hχD _ (by simp [D, Subgroup.mem_comap, hf_iwahori.char_pow_q_sub_one_eq_one y hy, one_mem])
   -- As `χ` is tame, Grunwald's theorem gives a Galois character `μ` such that the field
-  -- `stepField μ` cut out by `symmetrise μ` has degree `p` and one place `u` above `w`. Under the
-  -- Artin map at `w`, `μ` is trivial (`hμw`) and `symmetrise μ` is `χ` (`hμχ`).
+  -- `stepField μ` cut out by `symmetrize μ` has degree `p` and one place `u` above `w`. Under the
+  -- Artin map at `w`, `μ` is trivial (`hμw`) and `symmetrize μ` is `χ` (`hμχ`).
   obtain ⟨μ, u, ⟨_inst⟩, _hstep, -, hu, hbelow, hAu, hμw, hμχ⟩ :=
     exists_step_of_local_char hw hA hp χ hχ₀ hχp h_tame
   obtain rfl : u.below E = w := (hbelow u).2 rfl
@@ -397,10 +413,10 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_pos
   let N : (LocField u)ˣ →* (LocField (u.below E))ˣ := localNorm E u
   obtain ⟨f', P', he', hsame, hf'_iwahori⟩ :=
     exists_baseChange_isIwahoriEigen hu hbelow (by simp [*]) hf_iwahori
-  obtain ⟨r', hr'⟩ := (sphericalCompat_std u f'.2 he').1
+  obtain ⟨r', hr'⟩ := (sphericalCompat_std u f'.property he').1
   have h_down : DescendsAt μ r' r A := hsame.descendsAt hr' he' he hr A
   -- As `χ x = 1`, `x` is a norm: the residue degree `e` divides `k`, and `s` fixes the step.
-  have hx_ker : abelianLift (symmetrise μ) (artinAt Gal(Ω/E) (u.below E) x) = 1 :=
+  have hx_ker : abelianLift (symmetrize μ) (artinAt Gal(Ω/E) (u.below E) x) = 1 :=
     (hμχ x).trans (hχD x (mem_zpowers _))
   let e : ℕ := u.asIdeal.inertiaDeg (NumberField.RingOfIntegers E)
   have hq : (u.below E).q ^ e = u.q := absNorm_pow_inertiaDeg ..
@@ -412,7 +428,7 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_pos
   rw [pow_mul, hq] at hs_frob
   have h_artin : artinAt Gal(Ω/E) (u.below E) x = s.val :=
     hA.artinAt_eq_of_localArtin_eq hx_artin
-  have hs_sym : s.val ∈ ker (symmetrise μ) := (h_artin ▸ hx_ker :)
+  have hs_sym : s.val ∈ ker (symmetrize μ) := (h_artin ▸ hx_ker :)
   have hs_μ : s.val ∈ ker μ := (h_artin ▸ hμw x :)
   let s' : Gal(Ω/stepField μ) := (stepField μ).fixingSubgroupEquiv ⟨s, fun z ↦ z.2 ⟨s, hs_sym⟩⟩
   have hs'_frob : IsFrob A (u.q ^ k') s'⁻¹ := hs_frob
@@ -421,7 +437,7 @@ lemma GaloisRep.Attached.local_global_of_eigencharacter_of_pos
   obtain ⟨y, hy_val, hy_artin⟩ := hAu.exists_localArtin_eq hs'_frob k'
   have hart : localArtin Gal(Ω/E) A (u.below E) (N y) = s :=
     (hAu.localArtin_localNorm (Γ := Gal(Ω/stepField μ))
-      (AlgEquiv.restrictScalarsHom E)).1 hy_artin
+      (AlgEquiv.restrictScalarsHom E)).localArtin_localNorm hy_artin
   have hNy : normAbsChar.prod (.pi ξ) (N y) = normAbsChar.prod (.pi ξ) x :=
     hf_iwahori.eq_of_localArtin_eq hA (by simp [v_norm, hx_val, hy_val]) (hart.trans hx_artin.symm)
   have hξy (i : Fin (card n)) : ξ i (N y) = ξ i x := congrFun (congrArg Prod.snd hNy) i
@@ -573,7 +589,7 @@ lemma isParahoricCompatible_galRep (hA : IsPlaceOver A w) (hϖ : v ϖ.val = With
       (fun t ht ↦ h_par _ ⟨ht, fun i j hij ↦ by simp [Fin.ext_iff, ne_of_apply_ne f hij.ne']⟩)
       (fun σ hσ ↦ ⟨c (permGL σ), h_par _ (h_perm σ fun i ↦ hσ i u hu)⟩) isUnitary_localFormRep hy_ne
   have z_form : IsEigenform z.val x.heckePolyAt :=
-    (x.isEigenform hy hy_ne).of_mem_cyclicSpan z_mem z_eig.1
+    (x.isEigenform hy hy_ne).of_mem_cyclicSpan z_mem z_eig.ne_zero
   -- if `g⁻¹` acts as the `w.q ^ k`-th power on the residue field and `g` is the local Artin symbol
   -- of `ε`, of order `k`, then `∏ i, (X - ιℓ (θ (σ i) ε))` kills `g`
   have h_poly (g : decompGroup Gal(Ω/E) A) (ε : (LocField w)ˣ) (k : ℕ)

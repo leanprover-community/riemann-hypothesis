@@ -1,8 +1,17 @@
 module
 
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.MvPolynomial.Coeff
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.Lattice
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.Algebra.BigOperators.ZPow
 public import Lib.GLn.SchurModule.Basic
 public import Lib.General.Groups.BesselGroups
-public import TauCeti.Algebra.BigOperators.ZPow
 
 /-!
 # An average on polynomials in the entries of a matrix
@@ -196,7 +205,7 @@ lemma evalAtOne_conjSubst {k : ℕ} {W O : Type} [CommRing W] [CommRing O] (ι :
     calc _ = ∑ s : Fin k, ι (a⁻¹.val i s) * ι (a.val s j) := by
           simp [conjSubst, linSubst, sum_prod_type, Matrix.one_apply]
       _ = ι ((a⁻¹ * a).val i j) := by simp only [Units.val_mul, Matrix.mul_apply, map_sum, map_mul]
-      _ = _ := by simp [Matrix.one_apply, apply_ite ι, eq_comm]
+      _ = _ := by simp [Matrix.one_apply, eq_comm]
   simpa [evalAtOne] using congrArg (c * ·) (AlgHom.congr_fun hev ψ)
 
 /-- Let `ι : W → O` be a map of commutative rings, `u` a unit of `W`, and `a` the diagonal matrix

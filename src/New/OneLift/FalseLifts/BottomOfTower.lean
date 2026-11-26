@@ -1,7 +1,14 @@
 module
 
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.NumberTheory.MulChar.Lemmas
+import Mathlib.Topology.Algebra.Group.Matrix
+public import Lib.LocalGL.Green.TauFunctions
 public import Lib.Weil.Periods.DescentVanishing
 public import New.UpperBound.Objects.AuxiliaryPair
+import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import Lib.ClassField.HeckeCharacter.TameModulus
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # The bottom of the tower: from the block datum to all data
@@ -203,9 +210,6 @@ def hyperplaneGroup (l : r → k) : Subgroup (GL r k) where
     refine ⟨-(s⁻¹.val *ᵥ v), ?_⟩
     rw [neg_vecMulVec, ← mul_vecMulVec, eq_add_neg_iff_add_eq, ← s.inv_mul, hv, mul_add, mul_one]
 
-lemma mem_hyperplaneGroup {l : r → k} {s : GL r k} :
-    s ∈ hyperplaneGroup l ↔ ∃ v : r → k, (s : Matrix r r k) = 1 + vecMulVec v l := .rfl
-
 /-- Over a finite field the group of the invertible `1 + v λ` is finite. -/
 instance [Finite k] (l : r → k) : Fintype (hyperplaneGroup l) := .ofFinite _
 
@@ -233,7 +237,7 @@ matrices `s = 1 + v λ` for the row `λ = l`, and `0` elsewhere. -/
 lemma coeff_hyperplaneSum_eq_ite [Finite k] (χ : MulChar k ℂ) (l : r → k) (s : GL r k) :
     (hyperplaneSum χ l).coeff s =
       if s ∈ hyperplaneGroup l then χ⁻¹ (s : Matrix r r k).det else 0 := by
-  simp [hyperplaneSum, mem_hyperplaneGroup]
+  simp [hyperplaneSum, hyperplaneGroup]
 
 /-- The hyperplane sum `∑ χ(det s)⁻¹ s` over the invertible `s = 1 + v λ` is `1` for the zero row
 `λ = 0`. -/
@@ -251,7 +255,8 @@ lemma asAlgebraHom_hyperplaneSum [Finite k] {V : Type*} [AddCommGroup V] [Module
       ∑ s : hyperplaneGroup l, χ⁻¹ ((s : GL r k) : Matrix r r k).det • σ (s : GL r k) y := by
   classical
   have : Fintype (GL r k) := .ofFinite _
-  calc _ = ∑ s : GL r k, (hyperplaneSum χ l).coeff s • σ s y := by simp [asAlgebraHom_eq_sum]
+  calc _ = ∑ s : GL r k, (hyperplaneSum χ l).coeff s • σ s y := by
+        simp [Representation.asAlgebraHom_eq_sum]
     _ = ∑ s : GL r k with s ∈ hyperplaneGroup l, χ⁻¹ (s : Matrix r r k).det • σ s y := by
       simp [coeff_hyperplaneSum_eq_ite, sum_filter]
     _ = _ := sum_subtype _ (fun s ↦ mem_filter_univ s) _
@@ -888,8 +893,7 @@ def levelTranslate (O : DescentPair E r n) :
   toFun h := star (O.levelChar h) • LinearMap.funLeft ℂ ℂ (leftMul E r n h.val⁻¹)
   map_one' := LinearMap.ext fun Ψ ↦ funext fun x ↦ by simp
   map_mul' h k := LinearMap.ext fun Ψ ↦ funext fun x ↦ by
-    simp [mul_assoc]
-    exact mul_left_comm ..
+    simpa [mul_assoc] using mul_left_comm (star (O.levelChar h)) (star (O.levelChar k)) _
 
 lemma levelTranslate_apply (h : O.levelGroup) (Ψ : (n × r → 𝔸f E) → ℂ) (x : n × r → 𝔸f E) :
     O.levelTranslate h Ψ x = star (O.levelChar h) * Ψ (leftMul E r n h.val⁻¹ x) := rfl

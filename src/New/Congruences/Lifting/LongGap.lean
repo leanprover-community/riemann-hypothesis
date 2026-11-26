@@ -1,6 +1,7 @@
 module
 
 public import New.Congruences.Lifting.SidePoints
+import Lib.PadicHodge.Kisin.FrameTheorem
 
 /-!
 # The long gap lemma for a side of a Kummer chart, by expansion in powers of E
@@ -243,7 +244,7 @@ lemma JumpLattice.exists_taylor_expansion_of_mem_stdOrdersPart (hl : 0 < l)
         p ^ (4 * δ) • x = ∑ n ∈ range N, k.E ^ n • ξ n + k.E ^ N • y := by
   -- The frame theorem writes `p ^ (4 * δ) • x` as `∑ a, r a • b a` with `r a` in `S` and `b a`
   -- constants modulo `E ^ A`. Expand each `r a` in powers of `E` and collect the terms.
-  obtain ⟨h_points, h_letter⟩ := mem_stdOrdersPart_iff.1 hx
+  obtain ⟨h_points, h_letter⟩ := mem_valueFieldPoints_and_letterPart_of_mem_stdOrdersPart hx
   have ⟨_, (he : k.e = 1), _⟩ := hk
   let almostFixed : Set L.Ambient :=
     {y ∈ L.valueFieldPoints (L.frobKisinAinf l) |

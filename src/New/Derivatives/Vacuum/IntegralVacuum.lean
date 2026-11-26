@@ -1,8 +1,14 @@
 module
 
-public import Lib.CM.FiniteLattices
-public import Lib.Weil.Construction.CanonicalTheta
+import Mathlib.Tactic.PNatToNat
+import TauCeti.Analysis.Normed.Ring.Ultra
 public import New.Derivatives.Vacuum.TightFrames
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.CM.ChowlaSelberg
+import Lib.CM.FiniteLattices
+import Lib.Cohomology.Etale.Basic
+import Lib.Weil.Construction.CanonicalTheta
+import Lib.Weil.Construction.FourierInversion
 
 /-!
 # The integral vacuum θ°: integrality and bounds of its values, standard data at p
@@ -108,11 +114,6 @@ lemma exists_smul_vac_eq_sum {E n : Type} [Field E] [CMType E] [WeilData E] [Fin
 noncomputable def zetaCoord (P : Parameters) (s : ℕ) (k : Fin (P.q₁ s)) (y : P.E s) : K P :=
   -Algebra.trace P.K (P.E s) (y * star (P.ζ s ^ k.val)) / P.q₁ s
 
-/-- The coordinate along a vector of the frame commutes with multiplication by elements of `K`. -/
-lemma zetaCoord_smul {P : Parameters} {s : ℕ} (k : Fin (P.q₁ s)) (a : K P) (y : P.E s) :
-    P.zetaCoord s k (a • y) = a * P.zetaCoord s k y := by
-  simp [zetaCoord, mul_div_assoc']
-
 section ThetaProduct
 
 variable {P : Parameters} {s : ℕ} {n : Type} [Fintype n] {ε : n → ℤˣ}
@@ -162,7 +163,18 @@ structure IsThetaProduct [DecidableEq n] (V : Space (P.E s) n ε) (C : CMLattice
 /-- The theta functional takes the value `1` at a theta product. -/
 lemma IsThetaProduct.theta_eq_one [DecidableEq n] {V : Space (P.E s) n ε} {C : CMLattice P.d}
     {Ω : ℂˣ} {e : ℕ+} {F : 𝒮 V} (hF : IsThetaProduct V C Ω e F) : V.θ F = 1 := by
-  simpa [zetaCoordThetaTranslate, zetaCoord] using hF.theta_translate 0
+  have h0 := hF.theta_translate 0
+  have h_fin0 : finVec (finiteImage (0 : n → P.E s)) = 0 := by
+    rw [map_zero]
+    ext i : 1
+    exact Prod.ext rfl (mul_zero _)
+  rw [h_fin0, Heisenberg.Rep.rho_zero_apply] at h0
+  rw [h0]
+  refine Finset.prod_eq_one fun k _ ↦ Finset.prod_eq_one fun j _ ↦ ?_
+  have h_coord0 : P.zetaCoord s k 0 = 0 := by
+    rw [zetaCoord, zero_mul, map_zero, neg_zero, zero_div]
+  rw [Pi.zero_apply, zetaCoordThetaTranslate, h_coord0, ZeroMemClass.coe_zero, zero_mul,
+    CMLattice.twistedTranslate, one_smul, thetaShift_zero, C.theta_zero, one_pow]
 
 /-- Let `V` be standard and let `C` be a CM lattice of area `|Ω|² √d / 2` that contains a multiple
 `Ω e`. Then `V` has a theta product for `C`, `Ω` and `e`. -/
@@ -172,22 +184,64 @@ lemma exists_isThetaProduct [DecidableEq n] (V : Space (P.E s) n ε) [V.IsStd] {
   -- Apply `exists_isResolutionProduct_of_isTightFrame` to `δ = q₁ e`, the frame of the repeated
   -- powers of `ζ` and the monomial `θ` of degree one.
   let δ : NumberField.RingOfIntegers P.K := P.q₁ s * e
+  have hδ_coe : (δ : ℂ) = (P.q₁ s : ℂ) * (e : ℂ) := by
+    dsimp only [δ]
+    push_cast
+    rfl
+  have hN : (δ : ℂ) * starRingEnd ℂ δ = (((P.q₁ s * e) ^ 2 : ℕ) : ℂ) := by
+    rw [hδ_coe, map_mul, map_natCast, map_natCast]
+    push_cast
+    ring
+  have h_area' : C.area =
+      ‖Ω.val * e‖ ^ 2 / (((P.q₁ s * e) ^ 2 : ℕ) : ℝ) * (P.q₁ s * P.q₁ s : ℕ) * √P.d / 2 := by
+    rw [h_area, norm_mul, Complex.norm_natCast, mul_pow, Nat.cast_pow, Nat.cast_mul (P.q₁ s) e,
+      Nat.cast_mul (P.q₁ s) (P.q₁ s), mul_pow]
+    have hq : (P.q₁ s : ℝ) ≠ 0 := Nat.cast_ne_zero.2 (ne _)
+    have he0 : (e : ℝ) ≠ 0 := Nat.cast_ne_zero.2 e.ne_zero
+    field_simp
   obtain ⟨F, hF, h_int, h_periods⟩ := exists_isResolutionProduct_of_isTightFrame V δ
-    (ne ((P.q₁ s * e) ^ 2)) (by simp [δ, sq]) (P.isTightFrame_zeta_pow s (P.q₁ s)).repeat_vectors
-    (fun _ ↦ (1, 0, 0)) (by simp) he (by simp [h_area, field, ne])
-  have h_scale : Ω.val * e / starRingEnd ℂ δ = Ω.val / P.q₁ s := by simp [δ, field]
+    (ne ((P.q₁ s * e) ^ 2)) hN (P.isTightFrame_zeta_pow s (P.q₁ s)).repeat_vectors
+    (fun _ ↦ (1, 0, 0)) (fun _ ↦ rfl) he h_area'
+  have h_scale : Ω.val * e / starRingEnd ℂ δ = Ω.val / P.q₁ s := by
+    rw [hδ_coe, map_mul, map_natCast, map_natCast,
+      mul_div_mul_right _ _ (Nat.cast_ne_zero.2 e.ne_zero)]
   have h_coord (k : Fin (P.q₁ s)) (y : P.E s) :
       Ω.val / P.q₁ s * -∑ τ, Φ τ y * starRingEnd ℂ (Φ τ (P.ζ s ^ k.val)) =
         P.zetaCoord s k y * Ω := by
-    simp [zetaCoord, coe_trace_eq_sum, starRingEnd_apply, ← map_star_complex, field]
+    have h_sum : (Algebra.trace P.K (P.E s) (y * star (P.ζ s ^ k.val)) : ℂ) =
+        ∑ τ : NumberField.InfinitePlace (P.E s),
+          Φ τ y * starRingEnd ℂ (Φ τ (P.ζ s ^ k.val)) := by
+      rw [coe_trace_eq_sum]
+      refine Finset.sum_congr rfl fun τ _ ↦ ?_
+      rw [map_mul, map_star_complex, ← starRingEnd_apply]
+    change _ = algebraMap P.K ℂ (P.zetaCoord s k y) * Ω
+    rw [zetaCoord, map_div₀ (algebraMap P.K ℂ), (algebraMap P.K ℂ).map_neg,
+      map_natCast (algebraMap P.K ℂ)]
+    change _ = -(Algebra.trace P.K (P.E s) (y * star (P.ζ s ^ k.val)) : ℂ) / P.q₁ s * Ω
+    rw [h_sum]
+    ring
+  have h_mon : C.monomialSection (1, 0, 0) = C.θ := by
+    ext z
+    simp only [monomialSection, Pi.mul_apply, pow_one, pow_zero, Pi.one_apply, mul_one]
+  have hδ_E : algebraMap P.K (P.E s) δ = (P.q₁ s * e : P.E s) := by
+    dsimp only [δ]
+    push_cast
+    rfl
   -- With these two identities the values and series of `hF` are those of a theta product; the
   -- repeated frame vectors give the powers.
-  refine ⟨F, hF.mem_finitePart, fun γ ↦ ?_, fun γ c ↦ ?_, h_int, by simpa [δ] using h_periods⟩
-  · simp [hF.theta_translate, h_scale, ← h_coord, resolutionShift, monomialSection,
-      Fintype.prod_prod_type, Fintype.prod_sigma, Finset.prod_pow, zetaCoordThetaTranslate]
-  · simp +unfoldPartialApp [hF.jetSeries_translate, h_scale, ← h_coord, resolutionShift,
-      monomialSection, resolutionFormCoeff, Fintype.prod_prod_type, Fintype.prod_sigma,
-      Finset.prod_pow, zetaCoordThetaTranslate, zetaLinearSeries]
+  refine ⟨F, hF.mem_finitePart, fun γ ↦ ?_, fun γ c ↦ ?_, h_int, by rwa [hδ_E] at h_periods⟩
+  all_goals
+    first
+    | rw [hF.theta_translate γ]
+    | rw [hF.jetSeries_translate γ c]
+    rw [Fintype.prod_prod_type, Fintype.prod_sigma]
+    refine Finset.prod_congr rfl fun k _ ↦ ?_
+    rw [Finset.prod_comm]
+    refine Finset.prod_congr rfl fun j _ ↦
+      (Finset.prod_congr rfl fun m _ ↦ ?_).trans
+        (by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin])
+    rw [Pi.one_apply, h_mon, resolutionShift, h_scale, h_coord]
+    rfl
 
 /-- A standard space has a theta product of level one for the lattice `cmPeriod 𝓞_K` of
 `cmCurve`. -/
@@ -260,24 +314,30 @@ lemma exists_mul_vacElem_integral_bounded (P : Parameters) : ∃ C : ℕ, ∀ s 
       rw [← entireTheta_zero, V.entireTheta_rho, neg_neg, hγ]
     calc ‖σ (F (finVec z))‖
       _ = ∏ k : Fin N, ‖σ (zetaCoordThetaTranslate P.cmCurve P.cmPeriod k (-γ ()) 0)‖ ^ N := by
-        rw [h_theta, hF.theta_translate]
-        simp [N]
+        rw [h_theta, hF.theta_translate, map_prod, norm_prod]
+        refine Finset.prod_congr rfl fun k _ ↦ ?_
+        rw [Fintype.prod_unique, map_pow, norm_pow]
+        rfl
       _ ≤ ∏ _k : Fin N, rexp M ^ N := by
         gcongr
         exact (hM σ _).trans (by linarith [add_one_le_exp M])
-      _ = rexp M ^ (N * N) := by simp [pow_mul]
+      _ = rexp M ^ (N * N) := by
+        rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin, ← pow_mul]
   refine ⟨c, hc_ne, fun p _ _ x ↦ ?_, fun σ x ↦ ?_⟩
   · exact V.norm_mul_vacElem_le_one_of_eq_sum (hF.norm_le_one p) hc x
   · calc ‖σ (c * V.vacElem (finVec x))‖
       _ ≤ ∑ k : Γ, ‖σ (F (finVec (y x k)))‖ := by
         grw [h_sum, map_sum, norm_sum_le]
-        simp [norm_map_selfDualAddChar]
-      _ ≤ card Γ * rexp M ^ (N * N) := (sum_le_sum fun k _ ↦ h_value σ _).trans_eq (by simp)
+        refine Finset.sum_le_sum fun k _ ↦ ?_
+        rw [map_mul, norm_mul, norm_map_selfDualAddChar, one_mul]
+      _ ≤ card Γ * rexp M ^ (N * N) :=
+        (sum_le_sum fun k _ ↦ h_value σ _).trans_eq (by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul])
       _ ≤ rexp N ^ (2 * N) * rexp ⌈M⌉₊ ^ (N * N) := by
         grw [h_card, sq_q₁_pow_card_infinitePlace_le P s, ← Nat.le_ceil M]
       _ = rexp ((⌈M⌉₊ + 2 : ℕ) * N ^ 2) := by
-        simp only [← exp_natCast_mul, ← exp_add]
-        grind
+        rw [← exp_natCast_mul, ← exp_natCast_mul, ← exp_add]
+        exact congrArg rexp (by push_cast; ring)
 
 /-- The constant `C` in the bound `exp (C q₁²)` for the conjugates of the values of the integral
 vacuum of rank one, chosen from `exists_mul_vacElem_integral_bounded`; see `IsVacuumScale`. -/
@@ -332,9 +392,15 @@ component at the place `w`, and `v` is the valuation of the completion at `w`. -
 def integralAfter (δ : 𝓞 P.K) (S : FinPlace (P.E s) → Prop) : AddSubgroup (n → 𝔸f (P.E s)) where
   carrier := {x : n → 𝔸f (P.E s) | ∀ (i : n) (w : FinPlace (P.E s)), S w →
     v (evalAt w (algebraMap P.K (P.E s) δ * x i)) ≤ 1}
-  zero_mem' := by simp
-  add_mem' hx hy i w hw := by simpa [mul_add] using v.map_add_le (hx i w hw) (hy i w hw)
-  neg_mem' hx i w hw := by simpa using hx i w hw
+  zero_mem' i w _ := by
+    rw [Pi.zero_apply, mul_zero, (evalAt w).map_zero, v.map_zero]
+    exact zero_le
+  add_mem' hx hy i w hw := by
+    rw [Pi.add_apply, mul_add, (evalAt w).map_add]
+    exact v.map_add_le (hx i w hw) (hy i w hw)
+  neg_mem' hx i w hw := by
+    rw [Pi.neg_apply, mul_neg, (evalAt w).map_neg, Valuation.map_neg]
+    exact hx i w hw
 
 /-- Standard data at `p`: the span over the ring `embValRing` (the complex numbers that the
 `p`-adic place sends to integers) of the translates of the integral vacuum by the points that `δ`
@@ -366,8 +432,20 @@ variable {P : Parameters} {s : ℕ} {n : Type} [Fintype n] [DecidableEq n] {ε :
 coordinates `x i` of the values of the scaled vacuum of rank one. -/
 lemma intVacuum_finVec_eq_prod {x : n → 𝔸f (P.E s)} : intVacuum V (finVec x) =
     ∏ i : n, P.vacuumScale s * (stdSpace (P.E s) Unit).vacElem (finVec fun _ : Unit ↦ x i) := by
-  simp [intVacuum, vacElem_apply_eq_prod_lineTheta, IsStd.signs_eq_one V, IsStd.point_eq_one,
-    finVec, signedSpace, vecAtPoint, Finset.prod_mul_distrib]
+  have hx : (signedSpace (P.E s) ε).x = 1 := by
+    simp only [signedSpace, IsStd.signs_eq_one V, Pi.one_apply, ↓reduceIte]
+    exact map_one diagGL
+  have hV : ∀ y : n → P.E s, V.vecAtPoint y = (signedSpace (P.E s) ε).vecAtPoint y := fun y ↦ by
+    rw [vecAtPoint, vecAtPoint, IsStd.point_eq_one, hx]
+  have h1 : ∀ y : Unit → P.E s,
+      (stdSpace (P.E s) Unit).vecAtPoint y = (signedSpace (P.E s) 1).vecAtPoint y := fun _ ↦ rfl
+  rw [intVacuum, Space.smul_apply, V.vacElem_apply_eq_prod_lineTheta hV,
+    Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ]
+  congr 1
+  refine Finset.prod_congr rfl fun i _ ↦ ?_
+  rw [(stdSpace (P.E s) Unit).vacElem_apply_eq_prod_lineTheta h1, Fintype.prod_unique,
+    IsStd.signs_eq_one V]
+  rfl
 
 /-- The values of the integral vacuum of rank `n` at the points `finVec x`, with archimedean part
 zero, are integral at every prime. -/
@@ -418,14 +496,30 @@ lemma norm_dataInner_self_le {f : 𝒮 V} {M : ℝ}
   suffices h_pointwise : ∀ y : n → 𝔸 (P.E s), ‖f y * starRingEnd ℂ (f y)‖ ≤ M ^ 2 by
     rw [V.dataInner_eq_quotMean]
     exact norm_quotMean_le _ h_pointwise
+  have hf : Continuous fun y : n → 𝔸 (P.E s) ↦ f y :=
+    continuous_eval.comp (continuous_const.prodMk continuous_id)
   refine isClosed_property (.piMap fun _ ↦ denseRange_Φ.prodMap denseRange_id)
-    (isClosed_le (by fun_prop) continuous_const) fun (p : n → P.E s × 𝔸f (P.E s)) ↦ ?_
+    (isClosed_le ((hf.mul (Complex.continuous_conj.comp hf)).norm) continuous_const)
+    fun (p : n → P.E s × 𝔸f (P.E s)) ↦ ?_
   let γ (i : n) : P.E s := -(p i).1
   let x : n → 𝔸f (P.E s) := finCoord fun i ↦ (0, (γ i : 𝔸f (P.E s)) + (p i).2)
   have h_point : V.vecAtPoint γ + Pi.map (fun _ ↦ Prod.map (RingHom.pi Φ) id) p = finVec x := by
-    simp [γ, x, vecAtPoint, IsStd.point_eq_one, finVec.eq_unfold, funext_iff, Prod.add_def]
-  rw [← V.apply_vecAtPoint_add _ γ, h_point]
-  simpa [sq, Heisenberg.norm_eq_one] using pow_le_pow_left₀ (norm_nonneg _) (h_bound x) 2
+    have hvec : V.vecAtPoint γ = toAdele ∘ γ := by
+      simp only [vecAtPoint, IsStd.point_eq_one, inv_one, Units.val_one,
+        LinearMap.comp_apply, Matrix.mulVecLin_apply, Matrix.one_mulVec]
+      rfl
+    rw [hvec]
+    ext i : 1
+    refine Prod.ext ?_ ?_
+    · change RingHom.pi Φ (-(p i).1) + RingHom.pi Φ (p i).1 = 0
+      rw [map_neg (RingHom.pi (Φ (E := P.E s))), neg_add_cancel]
+    · change (algebraMap (P.E s) (𝔸f (P.E s)) (γ i) + (p i).2) =
+        (WeilData.α (E := P.E s)).val * ((WeilData.α (E := P.E s))⁻¹.val *
+          (algebraMap (P.E s) (𝔸f (P.E s)) (γ i) + (p i).2))
+      rw [← mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mul]
+  rw [← V.apply_vecAtPoint_add _ γ, h_point, norm_mul, (starRingEnd ℂ).map_mul, norm_mul,
+    norm_mul, Complex.norm_conj, Complex.norm_conj, Heisenberg.norm_eq_one, one_mul, ← sq]
+  exact pow_le_pow_left₀ (norm_nonneg _) (h_bound x) 2
 
 /-- For a standard space `V`, there is a finite adelic vector `x` such that the integral vacuum
 `intVacuum V` is nonzero at the point `finVec x`. -/
@@ -461,10 +555,17 @@ functions are taken, is nonzero. -/
   -- `periodFactor` is the quotient of `vacuumRoot` by the unit `chowlaSelbergUnit` of the formula
   -- of Chowla and Selberg, and both are nonzero by their norms.
   have h_root : P.vacuumRoot s ≠ 0 := fun h_zero ↦ by
-    simpa [h_zero, ne_of_gt, rootDiscr_pos, ne] using (P.norm_gal_vacuumRoot s 1).symm
+    have h := P.norm_gal_vacuumRoot s 1
+    rw [h_zero, map_zero (1 : Gal(ℂ/K P)), norm_zero, zero_pow two_ne_zero] at h
+    exact (div_pos (rootDiscr_pos _)
+      (Real.sqrt_pos.2 (Nat.cast_pos.2 (Nat.pos_of_ne_zero (ne _))))).ne h
   have h_unit : P.chowlaSelbergUnit ≠ 0 := fun h_zero ↦ by
-    simpa [h_zero, pi_ne_zero, ne] using P.area_mul_norm_chowlaSelbergUnit_sq 1
-  simp [jetScale, periodFactor, h_root, h_unit]
+    have h := P.area_mul_norm_chowlaSelbergUnit_sq 1
+    rw [h_zero, map_zero (1 : Gal(ℂ/K P)), norm_zero, zero_pow two_ne_zero, mul_zero] at h
+    exact (mul_pos (mul_pos pi_pos (exp_pos _)) (div_pos (mul_pos two_pos pi_pos)
+      (Real.sqrt_pos.2 (Nat.cast_pos.2 (Nat.pos_of_ne_zero (ne _)))))).ne h
+  exact div_ne_zero (mul_ne_zero (div_ne_zero h_root h_unit) P.areaScale.ne_zero)
+    P.cmPeriod.ne_zero
 
 /-- Let `cmCurve` be the CM lattice `cmPeriod 𝓞_K` and `galConjugate σ` its conjugate by `σ`, with
 `E = P.E s`, `K = K P` and `d = P.d`. If the period parallelogram of the conjugate lattice has the
@@ -480,7 +581,13 @@ lemma norm_gal_periodFactor_div_mul_areaScale_sq (P : Parameters) (s : ℕ) {σ 
   calc ‖σ (P.periodFactor s) / Ω * P.areaScale‖ ^ 2
     _ = ‖σ (P.vacuumRoot s)‖ ^ 2 * π /
           ((P.cmCurve.galConjugate σ).area * ‖σ P.chowlaSelbergUnit‖ ^ 2) := by
-      simp [h_area, periodFactor, areaScale, pi_nonneg, field]
+      have h_as_sq : ‖(P.areaScale : ℂ)‖ ^ 2 = 2 * π / √P.d := by
+        change ‖(√(2 * π / √P.d) : ℂ)‖ ^ 2 = _
+        rw [Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _),
+          Real.sq_sqrt (by positivity)]
+      rw [h_area, periodFactor, map_div₀, norm_mul, norm_div, norm_div, mul_pow, div_pow, div_pow,
+        h_as_sq, div_div, div_mul_div_comm, div_mul_eq_mul_div, div_div_eq_mul_div]
+      congr 1 <;> ring
     _ = NumberField.rootDiscr (P.E s) / √P.d * π /
           (π * rexp (chowlaSelbergConst P.d) * (2 * π / √P.d)) := by
       rw [P.norm_gal_vacuumRoot s σ, P.area_mul_norm_chowlaSelbergUnit_sq σ]
@@ -525,13 +632,26 @@ lemma map_zetaLinearSeries (σ : Gal(ℂ/K P)) (Ω : ℂˣ) (k : Fin (P.q₁ s))
   -- embeddings `Φ`.
   have h_left :
       P.cmPeriod.val / P.q₁ s / P.areaScale * P.jetScale s = P.periodFactor s / P.q₁ s := by
-    simp [jetScale, field]
+    rw [jetScale]
+    have h1 : (P.cmPeriod : ℂ) ≠ 0 := P.cmPeriod.ne_zero
+    have h2 : (P.areaScale : ℂ) ≠ 0 := P.areaScale.ne_zero
+    field_simp
   have h_right : Ω.val / P.q₁ s / P.areaScale * (σ (P.periodFactor s) / Ω * P.areaScale) =
-      σ (P.periodFactor s) / P.q₁ s := by simp [field]
+      σ (P.periodFactor s) / P.q₁ s := by
+    have h1 : (Ω : ℂ) ≠ 0 := Ω.ne_zero
+    have h2 : (P.areaScale : ℂ) ≠ 0 := P.areaScale.ne_zero
+    field_simp
   simp only [zetaLinearSeries, h_left, h_right, linearSeries, map_sum, smul_eq_C_mul, map_mul,
     map_C, map_X, rename_C, rename_X]
   exact Fintype.sum_equiv ((placePerm s σ).prodCongr 1) _ _ fun ⟨w, i⟩ ↦ by
-    simp [← map_star_complex, apply_Phi_eq_Phi_placePerm, apply_ite σ, starRingEnd_apply]
+    rw [Equiv.prodCongr_apply, Prod.map_apply, Prod.map_apply, Equiv.Perm.one_apply, id_eq,
+      Equiv.symm_apply_apply]
+    split_ifs
+    · rw [(σ : ℂ →+* ℂ).map_mul, map_div₀ (σ : ℂ →+* ℂ), map_natCast (σ : ℂ →+* ℂ),
+        starRingEnd_apply, starRingEnd_apply, ← map_star_complex, ← map_star_complex]
+      change C (σ (P.periodFactor s) / P.q₁ s * σ (Φ w (star (P.ζ s ^ k.val)))) * X (w, i) = _
+      rw [apply_Phi_eq_Phi_placePerm]
+    · rw [(σ : ℂ →+* ℂ).map_zero]
 
 /-- Let `F` be a vector of the finite part, `β` a finite adele of `K` and, for each `x ∈ K`, `U x` a
 neighbourhood of `β x`. For a rational vector `γ` there is `a ∈ K` such that the translates of `F`
@@ -547,7 +667,8 @@ lemma exists_rational_translate_eq {V : Space (P.E s) n ε} {F : 𝒮 V} (hF_mem
   -- Both conditions hold on a neighbourhood of `β`, and `K` is dense in its finite adeles.
   have h_lc : IsLocallyConstant
       fun β' : 𝔸f P.K ↦ V.ϱ (finVec (finAdeleIncl P.K (P.E s) β' • finiteImage γ)) F :=
-    (isLocallyConstant_rho_finVec hF_mem).comp_continuous (by fun_prop)
+    (isLocallyConstant_rho_finVec hF_mem).comp_continuous
+      ((continuous_adeleMap (f := algebraMap P.K (P.E s))).smul continuous_const)
   have h_coord : ∀ᶠ β' in nhds β, ∀ (k : Fin (P.q₁ s)) (i : n),
       β' * algebraMap P.K (𝔸f P.K) (P.zetaCoord s k (γ i)) ∈ U (P.zetaCoord s k (γ i)) :=
     Filter.eventually_all.2 fun k ↦ Filter.eventually_all.2 fun i ↦
@@ -580,11 +701,13 @@ lemma IsThetaProduct.isJetConjugate_of_map_taylorAtZero_eq {V : Space (P.E s) n 
   simp only [IsJetConjugate, hF.jetSeries_translate, hF'.jetSeries_translate, map_prod, map_pow]
   refine prod_congr rfl fun k _ ↦ prod_congr rfl fun j _ ↦ congrArg (· ^ P.q₁ s) ?_
   have h_subst (Ω' : ℂˣ) (c : ℂ) : HasSubst fun _ : Unit ↦ zetaLinearSeries (s := s) Ω' c k j :=
-    hasSubst_of_constantCoeff_zero fun _ ↦ by simp [zetaLinearSeries]
+    hasSubst_of_constantCoeff_zero fun _ ↦ constantCoeff_linearSeries _
   rw [PowerSeries.subst, PowerSeries.subst, map_subst (h_subst _ _), h_series]
   -- The linear forms agree, up to the permutation of the places.
   simp only [map_zetaLinearSeries σ Ω k j, rename_eq_subst]
-  rw [subst_comp_subst_apply (h_subst _ _) (hasSubst_of_constantCoeff_zero fun _ ↦ by simp)]
+  rw [subst_comp_subst_apply (h_subst _ _)
+    (hasSubst_of_constantCoeff_zero (a := X ∘ Prod.map (placePerm s σ).symm id) fun _ ↦
+      constantCoeff_X _)]
 
 end FixedSpace
 
@@ -637,7 +760,7 @@ lemma exists_isJetConjugate_translates (P : Parameters) (s : ℕ) :
   have h_lc : IsLocallyConstant
       fun y : n → 𝔸f (P.E s) ↦ (V.ϱ (finVec y) F, V.ϱ (finVec (B • y)) F') :=
     (isLocallyConstant_rho_finVec hF.mem_finitePart).prodMk
-      ((isLocallyConstant_rho_finVec hF'.mem_finitePart).comp_continuous (by fun_prop))
+      ((isLocallyConstant_rho_finVec hF'.mem_finitePart).comp_continuous (continuous_const_smul B))
   refine denseRange_finiteImage.induction_on y
     ⟨h_lc {f | ¬IsJetConjugate σ (placePerm s σ) (P.jetScale s) t f.1 f.2}⟩ fun γ ↦ ?_
   -- Take `x₀ ∈ K` so near to `β σ` that translating `F'` by `B γ` or by `x₀ γ` is the same, and
@@ -650,7 +773,9 @@ lemma exists_isJetConjugate_translates (P : Parameters) (s : ℕ) :
   suffices IsJetConjugate σ (placePerm s σ) (P.jetScale s) t (V.ϱ (finVec (finiteImage γ)) F)
     (V.ϱ (finVec (finiteImage (x₀ • γ))) F') by rwa [h_rational]
   refine hF.isJetConjugate_of_map_taylorAtZero_eq hF' fun k j ↦ ?_
-  rw [zetaCoordThetaTranslate, zetaCoordThetaTranslate, Pi.smul_apply, zetaCoord_smul]
+  rw [zetaCoordThetaTranslate, zetaCoordThetaTranslate, Pi.smul_apply,
+    show ∀ (a : K P) (y : P.E s), P.zetaCoord s k (a • y) = a * P.zetaCoord s k y from
+      fun _ _ ↦ by simp [zetaCoord, mul_div_assoc']]
   exact h_translate σ _ _ (h_coord k j)
 
 end ConjugateTranslates

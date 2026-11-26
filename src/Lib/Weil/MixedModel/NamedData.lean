@@ -1,6 +1,9 @@
 module
 
+import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.Weil.Construction.ProductsAndTransport
+public import Lib.Weil.Construction.VacuumProjections
+import Lib.General.Measure.HaarNormalisation
 
 /-!
 # Data named by Schwartz–Bruhat functions: Heisenberg laws, transport, Weil action
@@ -124,16 +127,6 @@ lemma schrodingerOp_projOn (f : 𝒮 V) :
 lemma smul_schrodingerOp (c : ℂ) (f : 𝒮 V) :
   c • V.schrodingerOp S Ψ f = V.schrodingerOp S (c • Ψ) f := by simp
 
-omit [Fintype n] [DecidableEq n] in
-/-- The translation vector `finVec (idem U.conjClosure • y)` vanishes at every place of `T` and of
-its conjugate when `U ∪ Ū` is disjoint from `T`: there the idempotent of `U ∪ Ū` is `0`. -/
-private lemma finVec_idem_smul_snd_eq_zero_of_disjoint {U T : Set (FinPlace E)}
-    (hUT : Disjoint U.conjClosure T) (y : n → 𝔸f E) :
-    ∀ i : n, ∀ w ∈ T.conjClosure, (finVec (idem U.conjClosure • y) i).2 w = 0 := by
-  intro i w hw
-  have hw_not : w ∉ U.conjClosure := by grind [star_star]
-  simp [finVec, idem_of_notMem hw_not]
-
 /-- If the set T of finite places is disjoint from S ∪ S̄, then Ψ ⊗ vac, named at S, with
 vac = `V.vacElem` the vacuum vector of 𝒮(V), is fixed by the projection P^T. -/
 lemma projOn_schrodingerOp_vacElem {T : Set (FinPlace E)} (hT : Disjoint S.conjClosure T) :
@@ -143,7 +136,9 @@ lemma projOn_schrodingerOp_vacElem {T : Set (FinPlace E)} (hT : Disjoint S.conjC
   have h_comm (y : n → 𝔸f E) (f : 𝒮 V) :
       V.projOn T (V.ϱ (finVec (idem S.conjClosure • y)) f) =
         V.ϱ (finVec (idem S.conjClosure • y)) (V.projOn T f) :=
-    V.projOn_rho (finVec_idem_smul_snd_eq_zero_of_disjoint hT y) f
+    V.projOn_rho (fun i w hw ↦ by
+      have hw_not : w ∉ S.conjClosure := by grind [star_star]
+      simp [finVec, idem_of_notMem hw_not]) f
   simp [schrodingerOp, h_comm, heisenbergCombination, Finsupp.sum]
 
 /-- For g ∈ GL_n(𝔸_f), take `localInner S` (∫ conj(Ψ) Ψ′ over the finite adelic vectors integral off
@@ -158,7 +153,7 @@ lemma localInner_boxIndicator_mulVec (g : GL n (𝔸f E)) :
   -- Both sides are the volume of the set `A` of integral `x` with `g x` integral on `S`; for the
   -- right side this is `latticeMeasure_inter_eq_glMultiplier`.
   set A : Set (n → 𝔸f E) :=
-    {x | (cutGL (idem_mul_self S) g).1 *ᵥ x ∈ stdLattice E n ∧ x ∈ stdLattice E n} with hA
+    {x | (cutGL (idem_mul_self S) g).val *ᵥ x ∈ stdLattice E n ∧ x ∈ stdLattice E n} with hA
   have hA_open : IsOpen A := (isOpen_stdLattice.preimage (by fun_prop)).inter isOpen_stdLattice
   have h_volume : (((‖glMultiplier (cutGL (idem_mul_self S) g)‖ ^ 2)⁻¹ : ℝ) : ℂ) =
       ∫ x : n → 𝔸f E, ((A.indicator 1 x : ℝ) : ℂ) ∂latticeMeasure E n := by
@@ -492,13 +487,6 @@ lemma schrodingerOp_union {Ψ' : (n → 𝔸f E) → ℂ} {T : Set (FinPlace E)}
     simp [projOn_union, projOn_rho _ h_off, smul_smul, h_idem]
   simp [sum_mul, mul_sum, Finsupp.sum.eq_1, h_term]
 
-omit [WeilData E] in
-/-- The finite parts of the entries of `g.adeleMatrix` are the entries of the finite component
-`g.snd`. -/
-private lemma map_snd_adeleMatrix (g : G E s) :
-    g.adeleMatrix.map (fun a : 𝔸 E ↦ a.2) = ((↑g.snd : GL n (𝔸f E)) : Matrix n n (𝔸f E)) :=
-  Matrix.ext fun _ _ ↦ rfl
-
 include hS
 /-- Let S be disjoint from its conjugate, Ψ be Schwartz–Bruhat above S, g ∈ `G E s` with finite
 component g_f = `g.snd`, and f ∈ 𝒮(V), and write Φ⊗ = `V.schrodingerOp S Φ` for the operator ∑ c_y
@@ -523,7 +511,9 @@ lemma omega_schrodingerOp (g : G E s) (f : 𝒮 V) :
     -- The translation by the image of `y` is `g.adeleMatrix` applied to the translation by `y`.
     have h_vec : finVec (idem S.conjClosure • (M *ᵥ y)) =
         g.adeleMatrix *ᵥ finVec (idem S.conjClosure • y) := by
-      rw [mulVec_finVec, map_snd_adeleMatrix, mulVec_smul]
+      rw [mulVec_finVec]
+      change _ = finVec (M *ᵥ (idem S.conjClosure • y))
+      rw [mulVec_smul]
     rw [h_vec, ← omega_rho, rho_schrodingerOp hS]
     simp [T, M, schrodingerAct, LinearMap.pi, LinearMap.funLeft, Function.comp_def, mulVec_add]
   -- Integral translations, corrected by `semichar`, fix the box function, so their mean fixes `u`.

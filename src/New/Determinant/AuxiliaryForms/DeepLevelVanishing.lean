@@ -1,10 +1,16 @@
 module
 
-public import Lib.Adelic.TraceFormula.OrbitalUnfolding
-public import New.Appendix.DiscreteSeries.PositionGroup
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.MeasureTheory.Integral.Pi
 public import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
 public import New.Determinant.AuxiliaryForms.PathData
-public import New.UpperBound.Objects.RowChain
+public import Lib.Adelic.AutomorphicForms.Cuspidality
+import Lib.Adelic.TraceFormula.OrbitalUnfolding
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import New.Appendix.DiscreteSeries.PositionGroup
+import New.OneLift.ComparisonOperator.ExchangeData
+import New.UpperBound.Objects.RowChain
 
 /-!
 # Vanishing of forms on Y₀ orthogonal to the deep level on Ỹ^0_0

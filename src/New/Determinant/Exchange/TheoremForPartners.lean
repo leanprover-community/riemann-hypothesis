@@ -1,8 +1,21 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Topology.Connected.Separation
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.DualPair.Flip
-public import New.Determinant.Exchange.RealVectors
 public import New.Determinant.Exchange.VanishingDescends
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import New.Determinant.Exchange.LargeTriple
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.ClassField.HeckeCharacter.SplittingCharacters
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.Weil.DualPair.ThetaLiftConvergence
+import New.Determinant.Exchange.RealVectors
+import New.Determinant.Exchange.RemovingPlanes
 
 /-!
 # Exchange of theta integrals for matched functions and for data modulo an ideal
@@ -133,6 +146,7 @@ lemma neg_mem_flipSpace_Gamma_iff (U : Space E b u) (g : G E u) :
   simp [flipSpace, Space.mem_Gamma_iff_range, ← map_inv, ← smul_one_eq_diagonal, ← mul_assoc,
     ← star_mul]
 
+omit [DecidableEq r] in
 /-- Multiplying the argument by a unit `ε` of `O` divides the second of two matched functions by
 `χ ε ^ card b`, the value of `χ` at the determinant of the scalar matrix `ε` of size `b`. -/
 lemma _root_.New.AreMatched.right_eq_pow_mul_apply_smul {R : Type} [CommRing R] {O : Subring R}
@@ -143,6 +157,7 @@ lemma _root_.New.AreMatched.right_eq_pow_mul_apply_smul {R : Type} [CommRing R] 
   rw [h_smul, mul_comm]
   simpa [eq_comm] using h.right_mul _ ⟨.scalar b ε, rfl⟩ X
 
+omit [DecidableEq r] in
 /-- Let `σ` split `n` into `b` and `r`, let `𝔠` be a tame character: a character `ν = 𝔠.character`
 of `[U(1)]` of weight `μ`, tamely ramified exactly at a finite set `S = 𝔠.ramifiedPlaces` of split
 places, and let `y` lie in the real Fock space of `(U, W)`. There is a number `a` of modulus one
@@ -193,6 +208,7 @@ lemma exists_localDatum_adjointDatum_eq_smul (W : Space E n s) (U : Space E b u)
         ((vecToMatrix (f.finEquiv x)).map (evalPlaces 𝔠.ramifiedPlaces))) _)
   simp only [h_scale]
 
+omit [DecidableEq r] in
 /-- Let `W` have even rank, split by `σ` into `b` and `r`, let `𝔠` be a tame character: a character
 `ν = 𝔠.character` of `[U(1)]` of weight `μ`, tamely ramified exactly at a finite set
 `S = 𝔠.ramifiedPlaces` of split places, and put `γ = rankTwist ν⁻¹ n = ν⁻¹ υ ^ (rk W / 2)`. There is
@@ -275,9 +291,11 @@ lemma thetaLarge_eq_smul_of_areMatched (W : Space E n s) (V : Space E r t) (U : 
   obtain ⟨-, hΨ_value⟩ := h_diff hΨ hΦΨ
   exact ⟨h𝒟.le_schwartzBruhat hΨ_mem, sub_eq_zero.1 (hΨ_value.symm.trans hΨ_ker)⟩
 
-/-- Let `W₀ = H ⊕ W` with `H` a hyperbolic plane, and let `W` have even rank `rk U + rk V` (`σ`,
-`h_even`) and as many negative signs (`negCount`) as `V ⊕ U⁻`, with `U⁻` the opposite space
-(`h_signs`). For real Schwartz vectors `z` for `(W₀, W₀)` and `y` for `(W, U)` there is a vector `v`
+/-- Let `W₀ = H ⊕ X` with `H` a hyperbolic plane, and let `A` be an adapted splitting of `W₀` over
+`W` with `card p ≥ 1` hyperbolic planes (`h_planes` counts the negative signs); for `X = W` it is
+`removePlanes Unit W`. Let `W` have even rank `rk U + rk V` (`σ`, `h_even`) and as many negative
+signs (`negCount`) as `V ⊕ U⁻`, with `U⁻` the opposite space (`h_signs`). For real Schwartz vectors
+`z` for `(W₀, W₀)` and `y` for `(W, U)` there is a vector `v`
 for `(W, V)` with `RowColExchangeIdentity W V U μ σ v y`: `v` and `y` are Schwartz, and there is a
 real `C` such that each tame character `𝔠` of weight `μ` has a number `c` with (a) and (b). (a)
 `C |c| ^ 2` is `L_*(rk V - rk W / 2)` times the equal rank ratio `|I(z)(1)| ^ 2 / L_*(rk W₀ / 2)`,
@@ -286,32 +304,43 @@ On the standard functions `stdRowDatum σ χ`, `stdColDatum χ` of each integral
 determinant that it completes), `thetaLarge` over `[U(V)]` at `v` is `c` times `thetaSmall` over
 `[U(U)]` at `y`. -/
 lemma exists_rowColExchangeIdentity_of_even_rank (W : Space E n s) (U : Space E b u)
-    (μ : InfinitePlace E → ℤ) (V : Space E r t) (σ : b ⊕ r ≃ n)
-    {z : PairFock E (hyperbolicSigns Unit ⊕ᵥ s) (hyperbolicSigns Unit ⊕ᵥ s)} {y : PairFock E s u}
+    (μ : InfinitePlace E → ℤ) (V : Space E r t) (σ : b ⊕ r ≃ n) {n₁ p : Type} [Fintype n₁]
+    [DecidableEq n₁] [Fintype p] [DecidableEq p] [Nonempty p] {s₁ : n₁ → ℤˣ} (X : Space E n₁ s₁)
+    (A : (hyperbolicSum Unit X).Splitting W p) [IsBaseAdapted A]
+    {z : PairFock E (hyperbolicSigns Unit ⊕ᵥ s₁) (hyperbolicSigns Unit ⊕ᵥ s₁)} {y : PairFock E s u}
     (hz : IsSchwartzVector z) (hy : IsSchwartzVector y)
-    (h_signs : negCount u + negCount s = card b + negCount t) (h_even : 2 ∣ card n) :
+    (h_signs : negCount u + negCount s = card b + negCount t) (h_even : 2 ∣ card n)
+    (h_planes : 1 + negCount s₁ = card p + negCount s) :
     ∃ v : PairFock E s t, RowColExchangeIdentity W V U μ σ v y
-      fun 𝔠 : SplitTameChar E μ ↦ equalRankThetaRatio (hyperbolicSum Unit W) 𝔠 z := by
+      fun 𝔠 : SplitTameChar E μ ↦ equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 z := by
   -- The tower is `W`, `W₀`, `W₀ ⊕ H ^ rk U`. Take `w` on `W₀` with zero term `y`, and on top the
   -- vectors `x`, `x'` of the large triple, where `x'` has zero term `w`.
-  let A : (hyperbolicSum Unit W).Splitting W Unit := removePlanes Unit W
   obtain ⟨w, hw, hw_zero⟩ := exists_isSchwartzVector_realSlice_zero_eq A U hy
-  have h_even₀ : 2 ∣ card ((Unit ⊕ Unit) ⊕ n) := by simpa using h_even.add (dvd_refl 2)
-  let W₀ : Space E ((Unit ⊕ Unit) ⊕ n) (hyperbolicSigns Unit ⊕ᵥ s) := hyperbolicSum Unit W
-  let σ' := (Equiv.sumAssoc b b ((Unit ⊕ Unit) ⊕ n)).symm
+  have h_even₀ : 2 ∣ card ((Unit ⊕ Unit) ⊕ n₁) := by
+    rw [A.card_eq]
+    exact h_even.add (dvd_mul_right 2 _)
+  let W₀ : Space E ((Unit ⊕ Unit) ⊕ n₁) (hyperbolicSigns Unit ⊕ᵥ s₁) := hyperbolicSum Unit X
+  let σ' := (Equiv.sumAssoc b b ((Unit ⊕ Unit) ⊕ n₁)).symm
   obtain ⟨x, x', hx'_zero, h_top⟩ :=
-    exists_rowColExchangeIdentity_sum (removePlanes b W₀) A U σ' h_even₀ μ hw hz
-  -- Remove the `rk U + 1` planes; zero terms are taken in stages.
-  have h_signs₀ : negCount (u ⊕ᵥ (hyperbolicSigns Unit ⊕ᵥ s)) = card (b ⊕ Unit) + negCount t := by
-    simpa +arith [negCount_sumElim, negCount_one_and_neg_one] using h_signs
+    exists_rowColExchangeIdentity_sum (removePlanes b W₀) (removePlanes Unit X) U σ' h_even₀ μ hw hz
+  -- Remove the `rk U + card p` planes; zero terms are taken in stages.
+  have h_signs₀ : negCount (u ⊕ᵥ (hyperbolicSigns Unit ⊕ᵥ s₁)) = card (b ⊕ p) + negCount t := by
+    have h_count :
+        negCount (u ⊕ᵥ (hyperbolicSigns Unit ⊕ᵥ s₁)) = negCount u + (1 + negCount s₁) := by
+      simp +arith [negCount_sumElim, negCount_one_and_neg_one]
+    rw [h_count, card_sum]
+    omega
+  have : Nonempty (b ⊕ p) := ⟨.inr (Classical.arbitrary p)⟩
   have h_zero_term : realSlice ((removePlanes b W₀).symm.comp A) U 0 x' = y := by
     rw [realSlice_zero_comp U W (removePlanes b W₀).symm A x', hx'_zero, hw_zero]
   rw [← h_zero_term]
   exact exists_rowColExchangeIdentity_removing_planes U (U.sum W₀) ((removePlanes b W₀).symm.comp A)
     V σ h_signs₀ h_even h_top
 
-/-- Let `W₀ = H ⊕ W` with `H` a hyperbolic plane, and let `W` have even rank `rk U + rk V` (`σ`,
-`h_even`) and as many negative signs as `U` and `V` together (`h_signs`). Let `z` for `(W₀, W₀)` and
+/-- Let `W₀ = H ⊕ X` with `H` a hyperbolic plane, and let `A` be an adapted splitting of `W₀` over
+`W` with `card p ≥ 1` hyperbolic planes (`h_planes` counts the negative signs); for `X = W` it is
+`removePlanes Unit W`. Let `W` have even rank `rk U + rk V` (`σ`, `h_even`) and as many negative
+signs as `U` and `V` together (`h_signs`). Let `z` for `(W₀, W₀)` and
 `y` for `(U, W)` be real Schwartz vectors. There are `C` and a Schwartz vector `v` for `(W, V)` such
 that each tame character `𝔠` of weight `μ` has a number `c` with (a) and (b). Put `ν = 𝔠.character`,
 `S = 𝔠.ramifiedPlaces`, `χ = 𝔠.semilocalChar` and `γ = ν⁻¹ υ ^ (rk W / 2)`, where `υ` is the
@@ -323,16 +352,19 @@ functions `Φ`, `Ψ` with `Ψ` locally constant, the integral over `[U(V)]` of t
 `(W, V)` with characters `γ`, `1` at `(v, Φ)` is `c` times the integral over `[U(U)]` of the theta
 kernel of `(U, W)` with characters `γ`, `γ` at `(y, Ψ)`, as functions on `U(W) = G E s`. -/
 lemma exchange_of_matches (W : Space E n s) (U : Space E b u) (μ : InfinitePlace E → ℤ)
-    (V : Space E r t) (σ : b ⊕ r ≃ n)
-    {z : PairFock E (hyperbolicSigns Unit ⊕ᵥ s) (hyperbolicSigns Unit ⊕ᵥ s)} {y : PairFock E u s}
+    (V : Space E r t) (σ : b ⊕ r ≃ n) {n₁ p : Type} [Fintype n₁] [DecidableEq n₁] [Fintype p]
+    [DecidableEq p] [Nonempty p] {s₁ : n₁ → ℤˣ} (X : Space E n₁ s₁)
+    (A : (hyperbolicSum Unit X).Splitting W p) [IsBaseAdapted A]
+    {z : PairFock E (hyperbolicSigns Unit ⊕ᵥ s₁) (hyperbolicSigns Unit ⊕ᵥ s₁)} {y : PairFock E u s}
     (hz : IsSchwartzVector z) (hy : IsSchwartzVector y)
-    (h_signs : negCount s = negCount t + negCount u) (h_even : 2 ∣ card n) :
+    (h_signs : negCount s = negCount t + negCount u) (h_even : 2 ∣ card n)
+    (h_planes : 1 + negCount s₁ = card p + negCount s) :
     ∃ (C : ℝ) (v : PairFock E s t), IsSchwartzVector v ∧ ∀ 𝔠 : SplitTameChar E μ,
       let γ : AutChar E := rankTwist 𝔠.character⁻¹ n
       ∃ c : ℂ,
         -- (a) the modulus of the constant
         C * ‖c‖ ^ 2 =
-          lValueProdInt 𝔠 (card r - card n / 2) * equalRankThetaRatio (hyperbolicSum Unit W) 𝔠 z ∧
+          lValueProdInt 𝔠 (card r - card n / 2) * equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 z ∧
         -- (b) the identity of theta integrals, for all matched functions
         ∀ (Φ : Matrix r n (LocProd 𝔠.ramifiedPlaces) → ℂ)
           (Ψ : Matrix n b (LocProd 𝔠.ramifiedPlaces) → ℂ),
@@ -345,8 +377,8 @@ lemma exchange_of_matches (W : Space E n s) (U : Space E b u) (μ : InfinitePlac
   have h_signs_flip : negCount (-u) + negCount s = card b + negCount t := by
     linarith [negCount_neg_add u]
   obtain ⟨v, hv, -, C, h_std⟩ :=
-    exists_rowColExchangeIdentity_of_even_rank W (flipSpace U) μ V σ hz hy.adjointDatum h_signs_flip
-      h_even
+    exists_rowColExchangeIdentity_of_even_rank W (flipSpace U) μ V σ X A hz hy.adjointDatum
+      h_signs_flip h_even h_planes
   refine ⟨C, v, hv, fun 𝔠 ↦ ?_⟩
   obtain ⟨c, hc, h_std_data⟩ := h_std 𝔠
   obtain ⟨d, hd, h_form⟩ := exists_mul_thetaSmall_adjointDatum_eq_mul_integral W U σ h_even 𝔠 y
@@ -374,32 +406,32 @@ end ExchangeCore
 For `W₀ = H ⊕ W` of even rank and a Schwartz vector `v`, the theta integral of `(W₀, W₀)` on `v` and
 the datum `χ⁻¹(det)` is a constant `I₀(v)`. Let `rk W = 2 k + 2 q`, where `q` is the number of
 negative signs of `W`, and `k ≤ μ`. We find `v` with `|I₀(v)| ^ 2 = C L_*(rk W₀ / 2)`, where `C ≠ 0`
-does not depend on the character (`exists_equalRankThetaRatio_eq_const`). The value for the standard
-positive definite `W` (`exists_equalRankThetaRatio_const_ne_zero`) is carried up one hyperbolic
-plane at a time; the ratio depends only on the signs of `W₀` (`equalRankThetaRatio_eq_of_signs_eq`).
+does not depend on the character (`exists_equalRankThetaRatio_eq_const`). The value is found for a
+space `X` with the signs of `W` that splits adaptedly over a positive definite space
+(`exists_equalRankThetaRatio_const_ne_zero`); the ratio depends only on the signs of `W₀`
+(`equalRankThetaRatio_eq_of_signs_eq`).
 
-Let `J` be positive definite of rank `2 k`, `k ≤ μ`, and `Y = H ⊕ J`. For a space `X` write
-`r_X(v) = |I(v)(1)| ^ 2 / L_*(rk X / 2)` (`equalRankThetaRatio`), where `I(v)` is the theta integral
-of `(X, X)`. Put `L_*(-k) = L_*(k)⁻¹`.
+Let `J` be positive definite of rank `2 k`, `k ≤ μ`, let `X` be `J` plus `q` hyperbolic planes and
+`Y = H ⊕ X`, so that `Y` splits over `J` with `q + 1` planes. For a space `X'` write
+`r_X'(v) = |I(v)(1)| ^ 2 / L_*(rk X' / 2)` (`equalRankThetaRatio`), where `I(v)` is the theta
+integral of `(X', X')`. Put `L_*(-k) = L_*(k)⁻¹`.
 
 1. Non-vanishing (`exists_equalRankThetaRatio_ne_zero`). Fix the character, and suppose `r_Y(v) = 0`
    for all `v`. The periods that compute the Fourier coefficients for `(H ^ (2 k) ⊕ Y, J⁻ ⊕ Y)` are
    then zero, so this theta integral vanishes on standard data at every Schwartz vector
-   (`thetaLargeVanishes_of_equalRankThetaRatio_eq_zero`). Vanishing descends along the `2 k + 1`
-   planes to `(J, 0)` (`ThetaLargeVanishes.of_add_planes`, which uses the functional equation of
-   `L`). But there the integral of the vacuum is a volume, not zero.
+   (`thetaLargeVanishes_of_equalRankThetaRatio_eq_zero`). Vanishing on determinant vectors
+   descends along the `2 k + 1 + q` planes to `(J, 0)`
+   (`ThetaLargeVanishesOnDetVectors.of_add_planes`). But there the determinant vector is the
+   vacuum, and its integral is a volume, not zero.
 2. The identity used twice (`exists_equalRankThetaRatio_sq_eq`). Fix `v` for `(Y, Y)`. The identity
-   for `(J, J, 0)` gives `y` such that `I(y)` is a constant `c₁` times a volume, with
+   for `(J, J, 0)`, reached from `Y` by removing its `q + 1` planes, gives `y` such that `I(y)` is
+   a constant `c₁` times a volume, with
    `B |c₁| ^ 2 = L_*(k) r_Y(v)`. The identity for `(J, 0, J)`, with `y` on the right, gives a number
    `ξ` and `c₂` with `C |c₂| ^ 2 = L_*(-k) r_Y(v)`. Integrating the theta kernel of `y` over both
    groups, in both orders, gives `ξ = c₁ c₂`. So `r_Y(v) ^ 2 = B C |ξ| ^ 2`, where `B`, `C`, `ξ` do
    not depend on the character.
-3. The first floor (`exists_equalRankThetaRatio_const_ne_zero`). For the `v` that step 1 gives for
-   one character, `r_Y(v) ≥ 0` is one nonzero number for all characters.
-4. Adding a plane (`exists_equalRankThetaRatio_add_plane`). Let `W' = W ⊕ H` and `rk W = 2 d`. Given
-   `v` for `(W, W)`, choose `v'` for `(W', W')` whose cone integral has the theta integrals of `v`.
-   The constant function `I(v')` equals its constant term `κ I(v)(1)`, and `|κ| ^ 2` is a constant
-   times `L_*(d + 1) / L_*(d)`.
+3. The value (`exists_equalRankThetaRatio_const_ne_zero`). For the `v` that step 1 gives for one
+   character, `r_Y(v) ≥ 0` is one nonzero number for all characters.
 -/
 
 section EqualRankValue
@@ -492,75 +524,79 @@ lemma isSchwartzVector_realPairWeil {r : Type} [Fintype r] [DecidableEq r] {t : 
 
 variable {m : Type} [Fintype m] [DecidableEq m]
 
-/-- Let `J = stdSpace E m` be positive definite of even rank `2 k`,
-`Y = H ⊕ J = hyperbolicSum Unit J` with `H` a hyperbolic plane, and `𝔠` a tame character: a
-character `ν = 𝔠.character` of `[U(1)]` of weight `μ`, tamely ramified exactly at a finite set
-`S = 𝔠.ramifiedPlaces` of split places. Suppose that the equal rank ratio of `Y`, the normalised
-square of the theta integral of `(Y, Y)` at `1`, is zero at every Schwartz vector. Then the theta
-integral of the pair `(H ^ (2 k) ⊕ Y, J⁻ ⊕ Y)` vanishes at every Schwartz vector and every standard
-datum: `𝔠.semilocalChar⁻¹` of the determinant of an integral `m`-row matrix completed by a variable
+/-- Let `J = stdSpace E m` be positive definite, let `X` have even rank and at most half of its
+signs negative, `Y = H ⊕ X = hyperbolicSum Unit X` with `H` a hyperbolic plane, and `𝔠` a tame
+character: a character `ν = 𝔠.character` of `[U(1)]` of weight `μ`, tamely ramified exactly at a
+finite set `S = 𝔠.ramifiedPlaces` of split places. Suppose that the equal rank ratio of `Y`, the
+normalised square of the theta integral of `(Y, Y)` at `1`, is zero at every Schwartz vector. Then
+the theta integral of the pair `(H ^ rk J ⊕ Y, J⁻ ⊕ Y)` vanishes at every Schwartz vector and every
+standard datum: `𝔠.semilocalChar⁻¹` of the determinant of an integral `m`-row matrix completed by
+a variable
 one, the rows being ordered by `sumAssoc`. -/
 lemma thetaLargeVanishes_of_equalRankThetaRatio_eq_zero {μ : InfinitePlace E → ℤ}
-    (hm : 2 ∣ card m) {𝔠 : SplitTameChar E μ}
-    (h_zero : ∀ v : PairFock E (Sum.elim (hyperbolicSigns Unit) 1)
-      (Sum.elim (hyperbolicSigns Unit) 1),
-      IsSchwartzVector v → equalRankThetaRatio (hyperbolicSum Unit (stdSpace E m)) 𝔠 v = 0) :
-    ThetaLargeVanishes 𝔠 (hyperbolicSum m (hyperbolicSum Unit (stdSpace E m)))
-      ((stdSpace E m).neg.sum (hyperbolicSum Unit (stdSpace E m)))
-      (sumAssoc m m ((Unit ⊕ Unit) ⊕ m)).symm := by
+    (X : Space E n s) (hn : 2 ∣ card n) (h_neg : 2 * negCount s ≤ card n) {𝔠 : SplitTameChar E μ}
+    (h_zero : ∀ v : PairFock E (Sum.elim (hyperbolicSigns Unit) s)
+      (Sum.elim (hyperbolicSigns Unit) s),
+      IsSchwartzVector v → equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v = 0) :
+    ThetaLargeVanishes 𝔠 (hyperbolicSum m (hyperbolicSum Unit X))
+      ((stdSpace E m).neg.sum (hyperbolicSum Unit X))
+      (sumAssoc m m ((Unit ⊕ Unit) ⊕ n)).symm := by
   -- The periods over `[U(Y)]` of a Schwartz `v` are values of the equal rank integral, so they are
   -- zero. This is the identity of periods with period `0`, whose factor `C` is then zero.
-  let Y : Space E ((Unit ⊕ Unit) ⊕ m) (Sum.elim (hyperbolicSigns Unit) 1) :=
-    hyperbolicSum Unit (stdSpace E m)
-  have h_even : 2 ∣ card ((Unit ⊕ Unit) ⊕ m) := by simpa using hm.add (dvd_refl 2)
-  have h_theta (v : PairFock E (Sum.elim (hyperbolicSigns Unit) 1)
-    (Sum.elim (hyperbolicSigns Unit) 1))
-      (hv : IsSchwartzVector v) (g : G E (Sum.elim (hyperbolicSigns Unit) 1)) :
+  let Y : Space E ((Unit ⊕ Unit) ⊕ n) (Sum.elim (hyperbolicSigns Unit) s) := hyperbolicSum Unit X
+  have h_even : 2 ∣ card ((Unit ⊕ Unit) ⊕ n) := by simpa using hn.add (dvd_refl 2)
+  have h_theta (v : PairFock E (Sum.elim (hyperbolicSigns Unit) s)
+    (Sum.elim (hyperbolicSigns Unit) s))
+      (hv : IsSchwartzVector v) (g : G E (Sum.elim (hyperbolicSigns Unit) s)) :
       thetaLarge Y Y 𝔠 v (stdColDatum 𝔠.semilocalChar 1) g = 0 := by
-    rw [thetaLarge_eq_apply_one_of_even_rank (removePlanes Unit (stdSpace E m)) _ h_even hv]
+    rw [thetaLarge_eq_apply_one_of_even_rank (removePlanes Unit X) _ h_even hv]
     simpa [equalRankThetaRatio, (lValueProdInt_pos 𝔠 _).ne'] using h_zero v hv
   intro v hv z hz g
   have h_period : IsPeriodIdentity (hyperbolicSum m Y) (removePlanes m Y) (stdSpace E m).neg 𝔠
       v vacVector 1 0 := by
     refine fun h ↦ ⟨1, fun B β f x g y ↦ ?_⟩
     rw [mul_zero, zero_div, zero_mul]
-    let _ : DecidableEq ((m ⊕ (Unit ⊕ Unit) ⊕ m) × ((m ⊕ m) ⊕ (Unit ⊕ Unit) ⊕ m)) :=
+    let _ : DecidableEq ((m ⊕ (Unit ⊕ Unit) ⊕ n) × ((m ⊕ m) ⊕ (Unit ⊕ Unit) ⊕ n)) :=
       instDecidableEqProd
     exact integral_thetaOnRealData_eq_zero Y h_theta (stdSpace E m).neg
       (isSchwartzVector_realPairWeil _ _ _ (isSchwartzVector_slice _ _ hv)) β f x g y
   obtain ⟨K, -, h_identity⟩ :=
     exists_thetaLarge_eq_smul_of_isPeriodIdentity _ (removePlanes _ Y)
-      (removePlanes Unit (stdSpace E m))
-      (stdSpace E m).neg (σ' := (sumAssoc m m ((Unit ⊕ Unit) ⊕ m)).symm) h_even (ρ := 1)
+      (removePlanes Unit X)
+      (stdSpace E m).neg (σ' := (sumAssoc m m ((Unit ⊕ Unit) ⊕ n)).symm) h_even (ρ := 1)
       zero_le_one (by simp) hv isSchwartzVector_vacVector
-      (.inr (by simp +arith [negCount_sumElim, negCount_one_and_neg_one]))
+      (.inr (by simp +arith [negCount_sumElim, negCount_one_and_neg_one, h_neg]))
   obtain ⟨C, hC, h_eq⟩ := h_identity 𝔠 0 h_period
   obtain rfl : C = 0 := by simpa using hC
   rw [h_eq z hz, zero_smul, Pi.zero_apply]
 
-/-- Non-vanishing: let `J = stdSpace E m` be the positive definite space of rank `2 k` and let
-`k ≤ μ w` at every infinite place `w`. Let `𝔠` be a tame character: a character of `[U(1)]` of
-weight `μ`, tamely ramified exactly at a finite set of split places. There is a Schwartz vector `v`
-at which the equal rank ratio of `Y = H ⊕ J = hyperbolicSum Unit J`, the normalised square of the
-theta integral of `(Y, Y)` at `1`, is not zero. -/
+/-- Non-vanishing: let `X` have rank `2 k + 2 q`, where `q` is its number of negative signs, let
+`m` have `2 k` elements and let `k ≤ μ w` at every infinite place `w`. Let `𝔠` be a tame character:
+a character of `[U(1)]` of weight `μ`, tamely ramified exactly at a finite set of split places.
+There is a Schwartz vector `v` at which the equal rank ratio of `Y = H ⊕ X = hyperbolicSum Unit X`,
+the normalised square of the theta integral of `(Y, Y)` at `1`, is not zero. -/
 lemma exists_equalRankThetaRatio_ne_zero (μ : InfinitePlace E → ℤ) {k : ℕ}
-    (hm : card m = 2 * k) (hμ : ∀ w : InfinitePlace E, k ≤ μ w) (𝔠 : SplitTameChar E μ) :
-    ∃ v : PairFock E (Sum.elim (hyperbolicSigns Unit) 1) (Sum.elim (hyperbolicSigns Unit) 1),
-      IsSchwartzVector v ∧ equalRankThetaRatio (hyperbolicSum Unit (stdSpace E m)) 𝔠 v ≠ 0 := by
-  -- Otherwise the theta integral of `(H ^ (2 k) ⊕ Y, J⁻ ⊕ Y)`, `Y = H ⊕ J`, vanishes at every
-  -- Schwartz vector and standard datum. Vanishing descends to `(J, 0)`, but there the integral of
-  -- the vacuum is a volume, not zero.
+    (hm : card m = 2 * k) (hμ : ∀ w : InfinitePlace E, k ≤ μ w) (X : Space E n s)
+    (h_rank : card n = 2 * k + 2 * negCount s) (𝔠 : SplitTameChar E μ) :
+    ∃ v : PairFock E (Sum.elim (hyperbolicSigns Unit) s) (Sum.elim (hyperbolicSigns Unit) s),
+      IsSchwartzVector v ∧ equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v ≠ 0 := by
+  -- Otherwise the theta integral of `(H ^ (2 k) ⊕ Y, J⁻ ⊕ Y)`, `Y = H ⊕ X`, vanishes at every
+  -- Schwartz vector and standard datum. Vanishing on determinant vectors descends to `(J, 0)`, but
+  -- there the determinant vector is the vacuum, whose integral is a volume, not zero.
   by_contra! h_zero
-  have h_top : ThetaLargeVanishes 𝔠 (hyperbolicSum m (hyperbolicSum Unit (stdSpace E m)))
-      ((stdSpace E m).neg.sum (hyperbolicSum Unit (stdSpace E m)))
-      (sumAssoc m m ((Unit ⊕ Unit) ⊕ m)).symm :=
-    thetaLargeVanishes_of_equalRankThetaRatio_eq_zero ⟨k, hm⟩ h_zero
-  have h_bottom : ThetaLargeVanishes 𝔠 (stdSpace E m) (stdSpace E Empty) (sumEmpty m Empty) := by
-    refine h_top.of_add_planes hμ (j := 2 * k + 1) (by simp) _ _ _ ⟨k, hm⟩ ?_ ?_ ?_ ?_
-    all_goals simp +arith [hm, negCount_sumElim, negCount_one_and_neg_one]
+  have h_top : ThetaLargeVanishes 𝔠 (hyperbolicSum m (hyperbolicSum Unit X))
+      ((stdSpace E m).neg.sum (hyperbolicSum Unit X))
+      (sumAssoc m m ((Unit ⊕ Unit) ⊕ n)).symm :=
+    thetaLargeVanishes_of_equalRankThetaRatio_eq_zero X ⟨k + negCount s, by omega⟩ (by omega)
+      h_zero
+  have h_bottom : ThetaLargeVanishesOnDetVectors 𝔠 k (stdSpace E m) (stdSpace E Empty)
+      (sumEmpty m Empty) := by
+    refine (h_top.onDetVectors k).of_add_planes hμ (j := 2 * k + 1 + negCount s) (by omega) _ _ _
+      ?_ ?_ ?_ ?_
+    all_goals simp +arith [hm, h_rank, negCount_sumElim, negCount_one_and_neg_one]
   have h_vanish : thetaLarge (stdSpace E m) (stdSpace E Empty) 𝔠 vacVector
-      (stdRowDatum (sumEmpty m Empty) 𝔠.semilocalChar 1) 1 = 0 :=
-    h_bottom vacVector isSchwartzVector_vacVector 1 .one 1
+      (stdRowDatum (sumEmpty m Empty) 𝔠.semilocalChar 1) 1 = 0 := by
+    simpa [detVector_of_isEmpty] using h_bottom 1 0 1 .one 1
   have h_value : stdRowDatum (sumEmpty m Empty) 𝔠.semilocalChar 1 0 = 1 := stdColDatum_one_one 𝔠
   rw [thetaLarge_stdSpace_empty_vacVector_one, h_value, mul_one, Complex.ofReal_eq_zero] at h_vanish
   have : SecondCountableTopology (G E (1 : Empty → ℤˣ)) := inferInstance
@@ -591,27 +627,30 @@ lemma eq_mul_of_integral_pairTheta (J : Space E n 1) (γ : AutChar E) (f : 𝒮 
   exact mul_left_cancel₀ (Complex.ofReal_ne_zero.2 measureReal_univ_ne_zero)
     (by linear_combination h_mean)
 
-/-- The exchange identity for `(J, J, 0)`. Let `J` be positive definite of rank `2 k` and `v` a
-Schwartz vector for `(H ⊕ J, H ⊕ J)`, with `H` a hyperbolic plane. There are `B` and a Schwartz `y`
+/-- The exchange identity for `(J, J, 0)`. Let `J` be positive definite of rank `2 k`, let
+`Y = H ⊕ X`, with `H` a hyperbolic plane, split adaptedly over `J` with `1 + q` planes, where `q`
+is the number of negative signs of `X`, and let `v` be a Schwartz vector for `(Y, Y)`. There are
+`B` and a Schwartz `y`
 for `(J, J)` such that, for each tame character `𝔠` of weight `μ`, the theta integral of `y` and the
 finite datum `stdColDatum χ 1`, the function `χ⁻¹(det)` for `χ = 𝔠.semilocalChar`, is a constant `c`
 times the volume of `[U(0)]`, where `B |c| ^ 2` is `L_*(k)` times the equal rank ratio
-`|I(v)(1)| ^ 2 / L_*(k + 1)`. Here `I(v)` is the theta integral at `v` and `χ⁻¹(det)`, and
+`|I(v)(1)| ^ 2 / L_*(rk Y / 2)`. Here `I(v)` is the theta integral at `v` and `χ⁻¹(det)`, and
 `L_*(e) = ∏_{w ∈ S} q_w ^ (e ^ 2) ∏_{1 ≤ i ≤ e} |L^S(i, ν)| ^ 2` for `ν = 𝔠.character` and
 `S = 𝔠.ramifiedPlaces`. -/
 lemma exists_thetaLarge_eq_mul_quotMeasure (μ : InfinitePlace E → ℤ) {k : ℕ} (hm : card m = 2 * k)
-    (J : Space E m 1)
-    {v : PairFock E (Sum.elim (hyperbolicSigns Unit) (1 : m → ℤˣ))
-      (Sum.elim (hyperbolicSigns Unit) (1 : m → ℤˣ))}
+    (J : Space E m 1) {p : Type} [Fintype p] [DecidableEq p] [Nonempty p] (X : Space E n s)
+    (A : (hyperbolicSum Unit X).Splitting J p) [IsBaseAdapted A]
+    (h_planes : 1 + negCount s = card p)
+    {v : PairFock E (Sum.elim (hyperbolicSigns Unit) s) (Sum.elim (hyperbolicSigns Unit) s)}
     (hv : IsSchwartzVector v) :
     ∃ (B : ℝ) (y : PairFock E (1 : m → ℤˣ) 1), IsSchwartzVector y ∧
       ∀ 𝔠 : SplitTameChar E μ, ∃ c : ℂ,
-        B * ‖c‖ ^ 2 = lValueProdInt 𝔠 k * equalRankThetaRatio (hyperbolicSum Unit J) 𝔠 v ∧
+        B * ‖c‖ ^ 2 = lValueProdInt 𝔠 k * equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v ∧
         ∀ g : G E (1 : m → ℤˣ), thetaLarge J J 𝔠 y (stdColDatum 𝔠.semilocalChar 1) g =
           c * (stdSpace E Empty).quotMeasure.real Set.univ := by
   let Z : Space E Empty 1 := stdSpace E Empty
-  obtain ⟨B, y, hy, h_all⟩ := exchange_of_matches J Z μ J (emptySum Empty m) hv
-    isSchwartzVector_vacVector (by simp [negCount_one_and_neg_one]) ⟨k, hm⟩
+  obtain ⟨B, y, hy, h_all⟩ := exchange_of_matches J Z μ J (emptySum Empty m) X A hv
+    isSchwartzVector_vacVector (by simp [negCount_one_and_neg_one]) ⟨k, hm⟩ (by simp [h_planes])
   refine ⟨B, y, hy, fun 𝔠 ↦ ?_⟩
   obtain ⟨c, hc, h_exchange⟩ := h_all 𝔠
   have h_rank : (card m - card m / 2 : ℤ) = k := by omega
@@ -633,36 +672,40 @@ lemma exists_thetaLarge_eq_mul_quotMeasure (μ : InfinitePlace E → ℤ) {k : �
         simp [pairTheta_source_zero, stdColDatum, IsIntMatrix, invOnUnits, IsIntegralUnit, Z, γ,
           field]
 
-/-- The exchange identity for `(J, 0, J)`. Let `J` be positive definite of rank `2 k`, and let `v`
-for `(H ⊕ J, H ⊕ J)`, with `H` a hyperbolic plane, and `y` for `(J, J)` be Schwartz vectors. There
+/-- The exchange identity for `(J, 0, J)`. Let `J` be positive definite of rank `2 k`, let
+`Y = H ⊕ X`, with `H` a hyperbolic plane, split adaptedly over `J` with `1 + q` planes, where `q`
+is the number of negative signs of `X`, and let `v` for `(Y, Y)` and `y` for `(J, J)` be Schwartz
+vectors. There
 are `C` and a number `ξ` such that each tame character `𝔠` of weight `μ` has a number `c` as
 follows. The volume of `[U(0)]` times `ξ` is `c` times the integral over the first `[U(J)]` of the
 theta kernel of `(J, J)` with both characters `γ = ν⁻¹ υ ^ k` and datum `y` at the infinite places,
 `χ⁻¹(det)` (`stdColDatum χ 1`) at `S` and the vacuum elsewhere (`localDatum`), and `C |c| ^ 2` is
-`L_*(-k) = L_*(k)⁻¹` times the equal rank ratio `|I(v)(1)| ^ 2 / L_*(k + 1)`. Here
+`L_*(-k) = L_*(k)⁻¹` times the equal rank ratio `|I(v)(1)| ^ 2 / L_*(rk Y / 2)`. Here
 `ν = 𝔠.character`, `S = 𝔠.ramifiedPlaces`, `χ = 𝔠.semilocalChar`, `υ` is the splitting character of
 the Weil data on norm-one ideles, `I(v)` is the theta integral at `v` and `χ⁻¹(det)`, and
 `L_*(e) = ∏_{w ∈ S} q_w ^ (e ^ 2) ∏_{1 ≤ i ≤ e} |L^S(i, ν)| ^ 2`. -/
 lemma exists_quotMeasure_mul_eq_mul_integral_pairTheta (μ : InfinitePlace E → ℤ) {k : ℕ}
-    (hm : card m = 2 * k) (J : Space E m 1)
-    {v : PairFock E (Sum.elim (hyperbolicSigns Unit) (1 : m → ℤˣ))
-      (Sum.elim (hyperbolicSigns Unit) (1 : m → ℤˣ))}
+    (hm : card m = 2 * k) (J : Space E m 1) {p : Type} [Fintype p] [DecidableEq p] [Nonempty p]
+    (X : Space E n s)
+    (A : (hyperbolicSum Unit X).Splitting J p) [IsBaseAdapted A]
+    (h_planes : 1 + negCount s = card p)
+    {v : PairFock E (Sum.elim (hyperbolicSigns Unit) s) (Sum.elim (hyperbolicSigns Unit) s)}
     {y : PairFock E (1 : m → ℤˣ) 1} (hv : IsSchwartzVector v) (hy : IsSchwartzVector y) :
     ∃ (C : ℝ) (ξ : ℂ), ∀ 𝔠 : SplitTameChar E μ,
       let γ : AutChar E := rankTwist 𝔠.character⁻¹ m
       ∃ c : ℂ,
-        C * ‖c‖ ^ 2 = lValueProdInt 𝔠 (-k) * equalRankThetaRatio (hyperbolicSum Unit J) 𝔠 v ∧
+        C * ‖c‖ ^ 2 = lValueProdInt 𝔠 (-k) * equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v ∧
         ∀ g : G E (1 : m → ℤˣ), (stdSpace E Empty).quotMeasure.real Set.univ * ξ =
           c * ∫ h : G E (1 : m → ℤˣ), pairTheta J J γ γ
             (localDatum J J y (stdColDatum 𝔠.semilocalChar 1) 𝔠.readsAt) (h, g) ∂J.quotMeasure := by
   let Z : Space E Empty 1 := stdSpace E Empty
   obtain ⟨C, x, -, h_all⟩ := exchange_of_matches J J μ Z
-    (sumEmpty m Empty) hv hy (by simp [negCount_one_and_neg_one]) ⟨k, hm⟩
+    (sumEmpty m Empty) X A hv hy (by simp [negCount_one_and_neg_one]) ⟨k, hm⟩ (by simp [h_planes])
   -- The vector `x` lies in the Fock space `ℂ` of `(J, 0)`, and `ξ` is its value.
   refine ⟨C, θ (J.hom Z) (integrated (J.hom Z) x (J.hom Z).vacElem), fun 𝔠 ↦ ?_⟩
   obtain ⟨c, hc, h_exchange⟩ := h_all 𝔠
   have h_size :
-      C * ‖c‖ ^ 2 = lValueProdInt 𝔠 (-k) * equalRankThetaRatio (hyperbolicSum Unit J) 𝔠 v := by
+      C * ‖c‖ ^ 2 = lValueProdInt 𝔠 (-k) * equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v := by
     simpa [hm] using hc
   refine ⟨c, h_size, fun g ↦ ?_⟩
   let γ : AutChar E := rankTwist 𝔠.character⁻¹ m
@@ -681,24 +724,29 @@ lemma exists_quotMeasure_mul_eq_mul_integral_pairTheta (μ : InfinitePlace E →
   have h_value : Φ 0 = 1 := stdColDatum_one_one 𝔠
   simpa [thetaIntegral, pairTheta_target_zero, Z, h_value] using h_identity
 
-/-- The exchange identity used twice. Let `J` be positive definite of rank `2 k` and `v` a Schwartz
-vector for `(H ⊕ J, H ⊕ J)`, with `H` a hyperbolic plane. As `𝔠` runs through the tame characters of
-weight `μ`, the square of the equal rank ratio `|I(v)(1)| ^ 2 / L_*(k + 1)` is one number `D`. Here
+/-- The exchange identity used twice. Let `J` be positive definite of rank `2 k`, let `Y = H ⊕ X`,
+with `H` a hyperbolic plane, split adaptedly over `J` with `1 + q` planes, where `q` is the number
+of negative signs of `X`, and let `v` be a Schwartz vector for `(Y, Y)`. As `𝔠` runs through the
+tame characters of weight `μ`, the square of the equal rank ratio `|I(v)(1)| ^ 2 / L_*(rk Y / 2)`
+is one number `D`. Here
 `I(v)` is the theta integral `thetaLarge` with real part `v` and the function `χ⁻¹(det)` at the
 ramified places, `χ = 𝔠.semilocalChar`, and `L_*(e) = ∏_{w ∈ S} q_w ^ (e ^ 2) ∏_{1 ≤ i ≤ e} |L^S(i,
 ν)| ^ 2` for `ν = 𝔠.character` and `S = 𝔠.ramifiedPlaces`. -/
 lemma exists_equalRankThetaRatio_sq_eq (μ : InfinitePlace E → ℤ) {k : ℕ} (hm : card m = 2 * k)
-    (J : Space E m 1)
-    {v : PairFock E (Sum.elim (hyperbolicSigns Unit) (1 : m → ℤˣ))
-      (Sum.elim (hyperbolicSigns Unit) (1 : m → ℤˣ))}
+    (J : Space E m 1) {p : Type} [Fintype p] [DecidableEq p] [Nonempty p] (X : Space E n s)
+    (A : (hyperbolicSum Unit X).Splitting J p) [IsBaseAdapted A]
+    (h_planes : 1 + negCount s = card p)
+    {v : PairFock E (Sum.elim (hyperbolicSigns Unit) s) (Sum.elim (hyperbolicSigns Unit) s)}
     (hv : IsSchwartzVector v) :
-    ∃ D : ℝ, ∀ 𝔠 : SplitTameChar E μ, equalRankThetaRatio (hyperbolicSum Unit J) 𝔠 v ^ 2 = D := by
-  let ratio (𝔠 : SplitTameChar E μ) : ℝ := equalRankThetaRatio (hyperbolicSum Unit J) 𝔠 v
+    ∃ D : ℝ, ∀ 𝔠 : SplitTameChar E μ, equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v ^ 2 = D := by
+  let ratio (𝔠 : SplitTameChar E μ) : ℝ := equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v
   let vol : ℝ := (stdSpace E Empty).quotMeasure.real Set.univ
   have : SecondCountableTopology (G E (1 : Empty → ℤˣ)) := inferInstance
   have h_vol : (vol : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 measureReal_univ_ne_zero
-  obtain ⟨B, y, hy, h_forward_exchange⟩ := exists_thetaLarge_eq_mul_quotMeasure μ hm J hv
-  obtain ⟨C, ξ, h_reverse_exchange⟩ := exists_quotMeasure_mul_eq_mul_integral_pairTheta μ hm J hv hy
+  obtain ⟨B, y, hy, h_forward_exchange⟩ :=
+    exists_thetaLarge_eq_mul_quotMeasure μ hm J X A h_planes hv
+  obtain ⟨C, ξ, h_reverse_exchange⟩ :=
+    exists_quotMeasure_mul_eq_mul_integral_pairTheta μ hm J X A h_planes hv hy
   refine ⟨B * C * ‖ξ‖ ^ 2, fun 𝔠 ↦ ?_⟩
   -- Compare the two exchange constants by integrating the same theta kernel over both
   -- groups in opposite orders.
@@ -723,75 +771,29 @@ lemma exists_equalRankThetaRatio_sq_eq (μ : InfinitePlace E → ℤ) {k : ℕ} 
         simp only [ratio, ← hc₁, ← hc₂, h_exchange_product, norm_mul]
         ring
 
-/-- The value on the first floor. Let `J` be the standard positive definite space of rank `2 k` and
-`k ≤ μ` at every infinite place. Some Schwartz vector `v` for `(H ⊕ J, H ⊕ J)` has an equal rank
-ratio that is one number `C ≠ 0` for all tame characters of weight `μ`. -/
+/-- The value for a space that splits over a definite one. Let `J` be the standard positive
+definite space of rank `2 k`, with `k ≤ μ` at every infinite place, let `X` have rank
+`2 k + 2 q`, where `q` is its number of negative signs, and let `A` be an adapted splitting of
+`H ⊕ X` over `J` with `1 + q` hyperbolic planes. Some Schwartz vector `v` for `(H ⊕ X, H ⊕ X)` has
+an equal rank ratio that is one number `C ≠ 0` for all tame characters of weight `μ`. -/
 lemma exists_equalRankThetaRatio_const_ne_zero (μ : InfinitePlace E → ℤ) {k : ℕ}
-    (hm : card m = 2 * k) (hμ : ∀ w : InfinitePlace E, k ≤ μ w) :
-    ∃ v : PairFock E (Sum.elim (hyperbolicSigns Unit) (1 : m → ℤˣ))
-      (Sum.elim (hyperbolicSigns Unit) 1),
+    (hm : card m = 2 * k) (hμ : ∀ w : InfinitePlace E, k ≤ μ w) {p : Type} [Fintype p]
+    [DecidableEq p] [Nonempty p] (X : Space E n s)
+    (A : (hyperbolicSum Unit X).Splitting (stdSpace E m) p) [IsBaseAdapted A]
+    (h_planes : 1 + negCount s = card p) (h_rank : card n = 2 * k + 2 * negCount s) :
+    ∃ v : PairFock E (Sum.elim (hyperbolicSigns Unit) s) (Sum.elim (hyperbolicSigns Unit) s),
       IsSchwartzVector v ∧ ∃ C ≠ (0 : ℝ),
-        ∀ 𝔠 : SplitTameChar E μ, equalRankThetaRatio (hyperbolicSum Unit (stdSpace E m)) 𝔠 v =
-          C := by
+        ∀ 𝔠 : SplitTameChar E μ, equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v = C := by
   obtain h_empty | ⟨⟨𝔠₀⟩⟩ := isEmpty_or_nonempty (SplitTameChar E μ)
   · exact ⟨vacVector, isSchwartzVector_vacVector, 1, one_ne_zero, h_empty.elim⟩
-  obtain ⟨v, hv, h_ne⟩ := exists_equalRankThetaRatio_ne_zero μ hm hμ 𝔠₀
+  obtain ⟨v, hv, h_ne⟩ := exists_equalRankThetaRatio_ne_zero μ hm hμ X h_rank 𝔠₀
   -- The ratio of `v` is nonnegative and has constant square, so it is a nonzero constant.
-  obtain ⟨D, h_sq⟩ := exists_equalRankThetaRatio_sq_eq μ hm _ hv
+  obtain ⟨D, h_sq⟩ := exists_equalRankThetaRatio_sq_eq μ hm _ X A h_planes hv
   have h_nonneg (𝔠 : SplitTameChar E μ) :
-      0 ≤ equalRankThetaRatio (hyperbolicSum Unit (stdSpace E m)) 𝔠 v :=
+      0 ≤ equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v :=
     div_nonneg (sq_nonneg _) (lValueProdInt_pos 𝔠 _).le
   refine ⟨v, hv, _, h_ne, fun 𝔠 ↦ (sq_eq_sq₀ (h_nonneg 𝔠) (h_nonneg 𝔠₀)).1 ?_⟩
   rw [h_sq, h_sq]
-
-/-- Adding a plane. Let `W` have even rank and let `A` be an adapted splitting `W' = W ⊕ H` with `H`
-a hyperbolic plane (its frames are orthonormal at the infinite and integral at the finite places).
-Each Schwartz vector `v` for `(W, W)` has a Schwartz vector `v'` for `(W', W')` whose equal rank
-ratio is `C` times the ratio `|I(v)(1)| ^ 2 / L_*(rk W / 2)` of `v`. The constant `C > 0` is the
-same for all tame characters `𝔠` of weight `μ`. Here `I(v)` is the theta integral `thetaLarge` with
-real part `v` and the function `χ⁻¹(det)` at the ramified places, `χ = 𝔠.semilocalChar`, and
-`L_*(e) = ∏_{w ∈ S} q_w ^ (e ^ 2) ∏_{1 ≤ i ≤ e} |L^S(i, ν)| ^ 2` for `ν = 𝔠.character` and
-`S = 𝔠.ramifiedPlaces`. -/
-lemma exists_equalRankThetaRatio_add_plane {W : Space E n s} (μ : InfinitePlace E → ℤ)
-    {n' : Type} [Fintype n'] [DecidableEq n'] {s' : n' → ℤˣ}
-    {W' : Space E n' s'} (A : W'.Splitting W Unit) [IsBaseAdapted A] (h_even : 2 ∣ card n)
-    {v : PairFock E s s} (hv : IsSchwartzVector v) :
-    ∃ v' : PairFock E s' s', IsSchwartzVector v' ∧ ∃ C > (0 : ℝ), ∀ 𝔠 : SplitTameChar E μ,
-      equalRankThetaRatio W' 𝔠 v' = C * equalRankThetaRatio W 𝔠 v := by
-  -- Choose `v'` whose cone integral has the theta integrals of `v`. On `W'` the theta integral is
-  -- constant, so it equals its constant term.
-  obtain ⟨d, hd⟩ : ∃ d : ℕ, card n = 2 * d := exists_eq_mul_right_of_dvd h_even
-  have hd' : card n' = 2 * (d + 1) := by simp [A.card_eq, hd, mul_add, add_comm]
-  obtain ⟨C, hC, h_plane⟩ := exists_planeConstantTerm_eq_thetaLarge_cone A A (emptySum Empty n')
-    (emptySum Empty n) h_even μ (z := d) (by omega)
-  obtain ⟨v', hv', h_cone⟩ :=
-    exists_thetaLarge_cone_eq A A μ (emptySum Empty n) h_even (z := d + 1) (by positivity) hv
-  refine ⟨v', hv', C ^ 2, by positivity, fun 𝔠 ↦ ?_⟩
-  obtain ⟨κ, hκ, h_all⟩ := h_plane 𝔠
-  have h_term : planeConstantTerm 𝔠 W' A (emptySum Empty n') v' 0 1 1 =
-      κ * thetaLarge W W 𝔠 (cone A A μ (d + 1) v')
-        (stdRowDatum (emptySum Empty n) 𝔠.semilocalChar 0) 1 :=
-    h_all v' hv' 0 nofun 1 1 (.inl rfl)
-  have h_const (g : G E s') : thetaLarge W' W' 𝔠 v' (stdColDatum 𝔠.semilocalChar 1) g =
-      thetaLarge W' W' 𝔠 v' (stdColDatum 𝔠.semilocalChar 1) 1 :=
-    thetaLarge_eq_apply_one_of_even_rank A 𝔠 ⟨d + 1, hd'⟩ hv' g
-  -- With no extra rows, `stdRowDatum (emptySum Empty n) 𝔠.semilocalChar 0` unfolds to
-  -- `stdColDatum 𝔠.semilocalChar 1`.
-  have h_value : thetaLarge W' W' 𝔠 v' (stdColDatum 𝔠.semilocalChar 1) 1 =
-      κ * thetaLarge W W 𝔠 v (stdColDatum 𝔠.semilocalChar 1) 1 := calc
-    _ = ∫ q, thetaLarge W' W' 𝔠 v' (stdColDatum 𝔠.semilocalChar 1)
-          (lineRadical A q * A.levi (Matrix.GeneralLinearGroup.scalar Unit 1, 1))
-          ∂radicalMeasure := by
-        simp_rw [h_const (_ * _)]
-        simp
-    _ = κ * thetaLarge W W 𝔠 (cone A A μ (d + 1) v')
-          (stdRowDatum (emptySum Empty n) 𝔠.semilocalChar 0) 1 := h_term
-    _ = κ * thetaLarge W W 𝔠 v (stdRowDatum (emptySum Empty n) 𝔠.semilocalChar 0) 1 := by
-        rw [h_cone]
-  have h_sharp : lSharp 𝔠 (d + 1) ≠ 0 := (lSharp_pos 𝔠 (by simp)).ne'
-  rw [equalRankThetaRatio, equalRankThetaRatio, h_value, norm_mul, hκ,
-    show (card n / 2 : ℤ) = d by omega, show (card n' / 2 : ℤ) = d + 1 by omega, lValueProdInt_succ]
-  field_simp
 
 /-- Let `Y` have even rank and let `A` be an adapted splitting `Y = W ⊕ H` with `H` a hyperbolic
 plane (its frames are orthonormal at the infinite and integral at the finite places). Let `Y₁` be
@@ -824,32 +826,14 @@ lemma exists_equalRankThetaRatio_eq_const (W : Space E n s) (μ : InfinitePlace 
     ∃ v : PairFock E (Sum.elim (hyperbolicSigns Unit) s) (Sum.elim (hyperbolicSigns Unit) s),
       IsSchwartzVector v ∧ ∃ C ≠ (0 : ℝ),
         ∀ 𝔠 : SplitTameChar E μ, equalRankThetaRatio (hyperbolicSum Unit W) 𝔠 v = C := by
-  -- The space `H ⊕ W` has the signs of `E ^ (2 k) ⊕ H ^ (q + 1)`: climb from the first floor.
+  -- A space `X` with the signs of `W` splits over the definite space `J` of rank `2 k`.
   have h_even : 2 ∣ card ((Unit ⊕ Unit) ⊕ n) := ⟨1 + k + negCount s, by simp +arith [h_rank]⟩
-  induction hq : negCount s generalizing n with
-  | zero =>
-    obtain rfl : s = 1 := funext fun i ↦ (Int.units_eq_one_or (s i)).resolve_right fun h ↦
-      (card_eq_zero_iff.1 hq).false ⟨i, h⟩
-    obtain ⟨v, hv, C, hC, h_first⟩ :=
-      exists_equalRankThetaRatio_const_ne_zero μ (m := n) (by rw [h_rank, hq]; rfl) hμ
-    refine ⟨v, hv, C, hC, fun 𝔠 ↦ ?_⟩
-    rw [equalRankThetaRatio_eq_of_signs_eq (removePlanes Unit (stdSpace E n)) _ h_even 𝔠 hv,
-      h_first]
-  | succ q ih =>
-    let W₀ := hyperbolicSum (Fin q) (stdSpace E (Fin (2 * k)))
-    have h_neg : negCount (Sum.elim (hyperbolicSigns (Fin q)) (1 : Fin (2 * k) → ℤˣ)) = q := by
-      simp
-    have h_even₀ : 2 ∣ card ((Unit ⊕ Unit) ⊕ (Fin q ⊕ Fin q) ⊕ Fin (2 * k)) :=
-      ⟨1 + k + q, by simp +arith⟩
-    obtain ⟨v, hv, C, hC, h_below⟩ := ih W₀ (by simp +arith [h_neg]) h_even₀ h_neg
-    -- Add a plane to `H ⊕ W₀` so that the new space `Y` has the signs of `H ⊕ W`.
-    obtain ⟨Y, A, _⟩ : ∃ (Y : Space E ((Unit ⊕ Unit) ⊕ n) (Sum.elim (hyperbolicSigns Unit) s))
-        (A : Y.Splitting (hyperbolicSum Unit W₀) Unit), IsBaseAdapted A :=
-      exists_isBaseAdapted Unit _ _ (by simp +arith [h_rank, hq])
-        (by simp +arith [hq, negCount_sumElim, negCount_one_and_neg_one])
-    obtain ⟨v', hv', C', hC', h_up⟩ := exists_equalRankThetaRatio_add_plane μ A h_even₀ hv
-    refine ⟨v', hv', C' * C, mul_ne_zero hC'.ne' hC, fun 𝔠 ↦ ?_⟩
-    rw [equalRankThetaRatio_eq_of_signs_eq A _ h_even 𝔠 hv', h_up, h_below]
+  obtain ⟨X, A, _⟩ := exists_isBaseAdapted (Fin (negCount s)) (stdSpace E (Fin (2 * k))) s
+    (by simp [h_rank]) (by simp)
+  obtain ⟨v, hv, C, hC, h_const⟩ := exists_equalRankThetaRatio_const_ne_zero μ (m := Fin (2 * k))
+    (by simp) hμ X ((removePlanes Unit X).comp A) (by simp) h_rank
+  refine ⟨v, hv, C, hC, fun 𝔠 ↦ ?_⟩
+  rw [equalRankThetaRatio_eq_of_signs_eq (removePlanes Unit X) _ h_even 𝔠 hv, h_const]
 
 end EqualRankValue
 
@@ -921,8 +905,8 @@ lemma exists_areMatched_modDatum_eq (σ : b ⊕ a ≃ n) {μ : NumberField.Infin
   -- `π` is compatible with the residue maps, so it detects units; it is onto since
   -- `𝔪.reduction` is onto
   have π_res (i : 𝔠.ramifiedPlaces) (u : SemilocalField.O) :
-      modulusResidue 𝔪 (h_ramified.le i.2) (π u) = residueAt i u :=
-    (modulusResidue_reduction 𝔪 (h_ramified.le i.2) (sec u)).trans
+      modulusResidue 𝔪 (h_ramified.le i.property) (π u) = residueAt i u :=
+    (modulusResidue_reduction 𝔪 (h_ramified.le i.property) (sec u)).trans
       (congrArg (IsLocalRing.residue (LocInt i.val)) (Subtype.ext (congrFun (ev_ρ u) i)))
   have π_local : IsLocalHom π := by
     refine ⟨fun u hu ↦ isUnit_iff_residueAt_ne_zero.2 fun i ↦ ?_⟩
@@ -937,7 +921,7 @@ lemma exists_areMatched_modDatum_eq (σ : b ⊕ a ≃ n) {μ : NumberField.Infin
         𝔠.localChar_apply_of_isUnit _ u hu
     _ = ∏ᶠ i : 𝔠.ramifiedPlaces, 𝔠.tamePart i (modulusResidue 𝔪 (h_ramified.le i.2) (π u)) := by
         simp only [π_res, finprod_eq_prod_of_fintype]
-    _ = ∏ᶠ w : 𝔪.places, 𝔠.tamePart w (modulusResidue 𝔪 w.2 (π u)) :=
+    _ = ∏ᶠ w : 𝔪.places, 𝔠.tamePart w (modulusResidue 𝔪 w.property (π u)) :=
         finprod_comp_equiv (f := fun w : 𝔪.places ↦ 𝔠.tamePart w (modulusResidue 𝔪 w.2 (π u)))
           (.subtypeEquivRight (Set.ext_iff.1 h_ramified))
   -- lifting from `𝔪.ResidueRing` to adeles is lifting along `π`, then reading the components
@@ -1014,7 +998,8 @@ lemma exchange_theorem (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount t +
         IsSchwartzVector z ∧ ∃ C₀ ≠ (0 : ℝ),
           ∀ 𝔠 : SplitTameChar E μ, equalRankThetaRatio (hyperbolicSum Unit W) 𝔠 z = C₀ :=
     exists_equalRankThetaRatio_eq_const W μ (card n / 2 - negCount s) (by omega) h_weight
-  obtain ⟨C, x, hx, h_core⟩ := exchange_of_matches W V' μ V σ hz hv h_signs (by omega)
+  obtain ⟨C, x, hx, h_core⟩ := exchange_of_matches W V' μ V σ W (removePlanes Unit W) hz hv h_signs
+    (by omega) (by simp)
   refine ⟨C₀ / C, x, hx, fun 𝔪 ν χ ⟨h_ne, ψ, hν, h_ram, hχ⟩ ↦ ?_⟩
   -- the tame character ramified at the primes of `𝔪`
   have h_places : 𝔪.places.toFinite.toFinset = 𝔪.places := 𝔪.places.toFinite.coe_toFinset
@@ -1027,8 +1012,7 @@ lemma exchange_theorem (σ : b ⊕ a ≃ n) (h_signs : negCount s = negCount t +
   obtain ⟨c, hc, h_exch⟩ := h_core 𝔠
   -- the size of `c`: the right side below is not zero, so neither `C` nor `c` is
   have hL : lValueProdInt 𝔠 e = lValueProd 𝔪.places ν e := by
-    rw [lValueProdInt_natCast]
-    exact congrArg (fun S : Set (FinPlace E) ↦ lValueProd S ν e) h_places
+    rw [lValueProdInt_natCast, h_places]
   replace hc : C * ‖c‖ ^ 2 = lValueProd 𝔪.places ν e * C₀ := by
     rw [hc, show (card a - card n / 2 : ℤ) = e by omega, hL, h_value]
   have hL_ne : lValueProd 𝔪.places ν e ≠ 0 := hL.symm.trans_ne (lValueProdInt_pos 𝔠 e).ne'

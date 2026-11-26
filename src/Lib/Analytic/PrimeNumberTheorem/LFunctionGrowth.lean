@@ -1,7 +1,14 @@
 module
 
-public import Lib.Analytic.EntireLFunction
 import TauCeti.NumberTheory.DirichletCharacter.LFunction.Bounds
+import TauCeti.NumberTheory.LSeries.RiemannZeta.Basic
+import TauCeti.NumberTheory.LSeries.RiemannZeta.Bounds
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.Hadamard
+import Mathlib.Analysis.Complex.HalfPlane
+import Mathlib.Order.CompletePartialOrder
+public import Lib.General.NumberTheory.ImaginaryQuadraticField
+import Lib.Analytic.EntireLFunction
 
 /-!
 # Growth of Dirichlet L-functions near the line `re s = 1`
@@ -40,24 +47,18 @@ omit [NeZero N] in
 lemma norm_LSeries_char_le {A : ℝ} (hA : 0 < A) (hs : 1 + 1 / A ≤ s.re) :
     ‖LSeries (fun n : ℕ ↦ χ n) s‖ ≤ 1 + A := by
   have hs_one : 1 < s.re := by linarith [one_div_pos.2 hA]
-  have h_summable : Summable fun n : ℕ ↦ 1 / (n : ℝ) ^ s.re :=
-    Real.summable_one_div_nat_rpow.2 hs_one
+  have h_sum : HasSum (fun n : ℕ ↦ 1 / (n : ℝ) ^ s.re) (riemannZeta s.re).re := by
+    simpa only [Real.rpow_neg (Nat.cast_nonneg _), one_div] using
+      TauCeti.hasSum_nat_rpow_neg_riemannZeta_re hs_one
   have term_le (n : ℕ) : ‖LSeries.term (χ ·) s n‖ ≤ 1 / (n : ℝ) ^ s.re := by
     rw [LSeries.norm_term_eq]
     split_ifs
     · positivity
     · exact div_le_div_of_nonneg_right (χ.norm_le_one _) (by positivity)
-  -- `ζ(σ) - 1 / (σ - 1) = 1 - σ T` with `T ≥ 0`
-  have zeta_le : ∑' n : ℕ, 1 / (n + 1 : ℝ) ^ s.re ≤ 1 + 1 / (s.re - 1) := by
-    have h_nonneg : 0 ≤ s.re * ZetaAsymptotics.termTSum s.re :=
-      mul_nonneg (by linarith) (tsum_nonneg fun n ↦ ZetaAsymptotics.term_nonneg _ _)
-    linarith [ZetaAsymptotics.zeta_limit_aux1 hs_one]
   calc
-    _ ≤ ∑' n : ℕ, 1 / (n : ℝ) ^ s.re := tsum_of_norm_bounded h_summable.hasSum term_le
-    _ = ∑' n : ℕ, 1 / (n + 1 : ℝ) ^ s.re := by
-      rw [h_summable.tsum_eq_zero_add]
-      simp [Real.zero_rpow (one_pos.trans hs_one).ne']
-    _ ≤ 1 + 1 / (s.re - 1) := zeta_le
+    _ ≤ (riemannZeta s.re).re := tsum_of_norm_bounded h_sum term_le
+    _ ≤ 1 + 1 / (s.re - 1) :=
+      (TauCeti.riemannZeta_re_lt_one_add_one_div_sub_one (zero_lt_one.trans hs_one) hs_one.ne').le
     _ ≤ 1 + A := by linarith [(one_div_le hA (sub_pos.2 hs_one)).1 (by linarith)]
 
 /-- `𝖿_χ(s)` is `L(s, χ)`, times `(s - 1) / s` if `χ` is principal. The entire function `entireL χ`
@@ -103,7 +104,6 @@ lemma norm_regularL_le_linear (hs : 1 / 2 ≤ s.re) : ‖regularL χ s‖ ≤ 8 
       ‖regularL χ z‖ ≤ 8 * N * ‖z‖ := by
     have hz_pos : 0 < z.re := by linarith
     have hz_norm : 1 / 2 ≤ ‖z‖ := hz.trans (re_le_norm z)
-    have hN : (0 : ℝ) ≤ N := Nat.cast_nonneg N
     by_cases hχ : χ = 1
     · have h_eq : regularL χ z = (z - 1) / z * χ.LFunction z := by
         simp [regularL, entireL, hχ, LFunctionTrivChar₁, Function.update_of_ne hz1]
@@ -184,7 +184,19 @@ lemma norm_regularL_le_sq (hl : 10 ^ 10 ≤ l) (hN : N ≤ rexp l) (h_re : 1 - 1
   have g_le_exp_cube (z : ℂ) (hz : a ≤ z.re) : ‖g z‖ ≤ rexp l ^ 3 := by
     have h_denom : 1 ≤ ‖z - (s - 2)‖ := denom_ge z hz
     have hz_norm : ‖z‖ ≤ 4 * rexp l * ‖z - (s - 2)‖ := by
-      nlinarith [norm_le_norm_sub_add z (s - 2), norm_sub_le s 2, Complex.norm_two]
+      have h_exp : 3 ≤ rexp l := by linarith only [hl, exp_ge]
+      have h_center : ‖s - 2‖ ≤ 3 * rexp l + 2 := by
+        calc
+          ‖s - 2‖ ≤ ‖s‖ + ‖(2 : ℂ)‖ := norm_sub_le s 2
+          _ ≤ 3 * rexp l + 2 := by simpa only [Complex.norm_two] using add_le_add_left h_norm ‖(2 : ℂ)‖
+      calc
+        ‖z‖ ≤ ‖z - (s - 2)‖ + ‖s - 2‖ := norm_le_norm_sub_add z (s - 2)
+        _ ≤ ‖z - (s - 2)‖ + (3 * rexp l + 2) := add_le_add_right h_center _
+        _ ≤ ‖z - (s - 2)‖ + (3 * rexp l + 2) * ‖z - (s - 2)‖ := by
+          exact add_le_add_right (le_mul_of_one_le_right (show 0 ≤ 3 * rexp l + 2 by positivity) h_denom) _
+        _ = (3 * rexp l + 3) * ‖z - (s - 2)‖ := by ring
+        _ ≤ 4 * rexp l * ‖z - (s - 2)‖ :=
+          mul_le_mul_of_nonneg_right (by linarith only [h_exp]) (norm_nonneg _)
     rw [norm_div, div_le_iff₀ (by linarith)]
     calc
       ‖regularL χ z‖ ≤ 8 * N * ‖z‖ := norm_regularL_le_linear χ (by linarith)
@@ -239,21 +251,15 @@ for `re s ≥ 1 - 1 / (2 l)` and `|s| ≤ 2 e^l`. Here `𝖿_χ` (`regularL χ`)
 lemma norm_deriv_regularL_le (hl : 10 ^ 10 ≤ l) (hN : N ≤ rexp l) (h_re : 1 - 1 / l / 2 ≤ s.re)
     (h_norm : ‖s‖ ≤ 2 * rexp l) : ‖deriv (regularL χ) s‖ ≤ 2 * l ^ 3 := by
   have inv_le : 1 / l ≤ 1 / 6 := one_div_le_one_div_of_le (by norm_num) (by linarith)
-  have disc (z : ℂ) (hz : z ∈ closedBall s (1 / l / 2)) :
-      1 - 1 / l ≤ z.re ∧ ‖z‖ ≤ 3 * rexp l := by
-    rw [mem_closedBall_iff_norm] at hz
-    exact ⟨by linarith [neg_le_of_abs_le (abs_re_le_norm (z - s)), sub_re z s],
-      by linarith [norm_le_norm_sub_add z s, add_one_le_exp l]⟩
-  have h_diff : DiffContOnCl ℂ (regularL χ) (ball s (1 / l / 2)) :=
-    DifferentiableOn.diffContOnCl_ball (fun z hz ↦ (differentiableAt_regularL χ
-      (by linarith [(disc z hz).1])).differentiableWithinAt) subset_rfl
-  have h_sphere (z : ℂ) (hz : z ∈ sphere s (1 / l / 2)) : ‖regularL χ z‖ ≤ l ^ 2 := by
-    obtain ⟨hz_re, hz_norm⟩ := disc z (sphere_subset_closedBall hz)
-    exact norm_regularL_le_sq χ hl hN hz_re hz_norm
-  calc
-    _ ≤ l ^ 2 / (1 / l / 2) :=
-      norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity) h_diff h_sphere
-    _ = 2 * l ^ 3 := by field
+  have disc {z : ℂ} (hz : z ∈ closedBall s (1 / l / 2)) : 1 - 1 / l ≤ z.re ∧ ‖z‖ ≤ 3 * rexp l :=
+    ⟨by linarith [mem_closedBall_iff_norm.mp hz, neg_le_of_abs_le (abs_re_le_norm (z - s)),
+        sub_re z s],
+      by linarith [mem_closedBall_iff_norm.mp hz, norm_le_norm_sub_add z s, add_one_le_exp l]⟩
+  refine ((norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity)
+    (DifferentiableOn.diffContOnCl_ball (fun _ hz ↦ (differentiableAt_regularL χ
+      (by linarith [(disc hz).1])).differentiableWithinAt) subset_rfl)
+    fun _ hz ↦ norm_regularL_le_sq χ hl hN (disc (sphere_subset_closedBall hz)).1
+      (disc (sphere_subset_closedBall hz)).2 : _ ≤ l ^ 2 / (1 / l / 2))).trans_eq (by field)
 
 end New
 

@@ -1,6 +1,13 @@
 module
 
-public import Lib.PadicHodge.Kisin.PeriodMatrixBasis
+import Mathlib.RingTheory.AdicCompletion.Completeness
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Lib.General.NumberTheory.CoefficientRings
+public import Lib.PadicHodge.Kisin.Bicommutant
+import Lib.PadicHodge.Kisin.PeriodMatrixBasis
 
 /-!
 # The radius lemma: after Frobenius a frame is a constant basis times a unit over A
@@ -50,12 +57,6 @@ variable {p : ℕ} [ThePrime p] {c : Chart} {d : Type} [Fintype d] [DecidableEq 
 associates). -/
 private lemma exists_E_dvd_xi_sub_p_mul : ∃ b : Ainf, c.E.val ∣ xi - p * b :=
   ⟨0, by simp [associated_E_xi, Associated.dvd]⟩
-
-/-- The identity `n - v_p(n!) + 2 = (n + 1 - v_p((n + 1)!)) + v_p(n + 1) + 1` of `p`-adic
-valuations, from `v_p((n + 1)!) = v_p(n + 1) + v_p(n!)` and `v_p((n + 1)!) ≤ n + 1`. -/
-private lemma sub_padicValNat_factorial_add_two_eq (n : ℕ) :
-    n - padicValNat p n ! + 2 = n + 1 - padicValNat p (n + 1)! + padicValNat p (n + 1) + 1 := by
-  grind [Nat.padicValNat_def, multiplicity_factorial_le, factorial, Nat.multiplicity_mul]
 
 /-- If `tau` divides `E ^ h * a` in `BPlus`, for `a` in `Ainf`, then `tau` divides `a` in
 `Ainf`. -/
@@ -349,7 +350,14 @@ lemma exists_ev_eq_frobEnd_pow (ht_fixes : c.FixesThetaZ t)
   set v : ℕ := padicValNat p (n + 1)
   let a : ℕ := n + 1 - padicValNat p (n + 1)!
   -- The exponents match because `v_p (n + 1)! = v + v_p n! ≤ n + 1`.
-  have h_exp : n - padicValNat p n ! + 2 = a + v + 1 := sub_padicValNat_factorial_add_two_eq n
+  have h_exp : n - padicValNat p n ! + 2 = a + v + 1 := by
+    dsimp only [a, v]
+    simp only [Nat.padicValNat_def]
+    have h1 : multiplicity p (n + 1)! = multiplicity p (n + 1) + multiplicity p n ! := by
+      rw [Nat.factorial_succ, Nat.multiplicity_mul n.succ_ne_zero n.factorial_ne_zero]
+    have h2 : multiplicity p (n + 1)! ≤ n + 1 := multiplicity_factorial_le (p := p) (n + 1)
+    have h3 : multiplicity p n ! ≤ n := multiplicity_factorial_le (p := p) n
+    omega
   refine ⟨C (p ^ a * (c.φ ^ l) (s j)), ⟨(n + 1, W'), hW', p ^ (v + 1) * q,
     p ^ (v + 1) • A + fun j ↦ c.z.val ^ (n + 1) * s j, fun j ↦ ?_⟩, ?_⟩
   · -- The new row is `p ^ (v + 1) • A + z ^ (n + 1) * s`, and `p ^ (v + 1) * W_row - s = z * W'`.

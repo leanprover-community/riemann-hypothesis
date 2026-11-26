@@ -1,7 +1,23 @@
 module
 
+public import Mathlib.Topology.Algebra.Algebra.Rat
+public import Mathlib.Algebra.Azumaya.Basic
+public import Mathlib.RingTheory.PicardGroup
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Order.Ring.Opposite
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
 public import Lib.Shimura.ThetaModuli.PELThetaTori
-public import Lib.Shimura.Transfer.MarkedPairs
+public import Lib.Shimura.HeckeTower.HeckeData
+import Lib.Adelic.TraceFormula.ChangingSigns
+import Lib.Adelic.Witt.WittTheorem
+import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.Shimura.Transfer.MarkedPairs
 
 /-!
 # Period signatures, analytic families of theta tori and the ball chart of moduli points
@@ -132,7 +148,7 @@ A theta torus (`New.ThetaTori.ThetaTorus`) has a period map Q onto V, a form B a
 `New.ThetaTori.PeriodMap.latticeOver` S. Its theta functions for the lattice over S = `D.lagrangian`
 are the multiples of one function, chosen for each b with no regularity in b, and
 `New.ThetaTori.PeriodMap.thetaCoord` lists its normalised translates by t ∈ T. The factor c(b)
-replaces the chosen function by a Poincaré series (`New.IsAppellHumbert.poincareSeries`), which does
+replaces the chosen function by a Poincaré series (`New.ThetaTori.LatticeForm.poincareSeries`), which does
 depend analytically on b.
 -/
 
@@ -149,7 +165,7 @@ structure AnalyticFamily (D : PEL E) where
   /-- The parameter domain, an open subset of ℂⁿ⁻¹. -/
   domain : TopologicalSpace.Opens (BallBase D.Index)
   /-- The domain is non-empty and connected. -/
-  isConnected : IsConnected domain.1
+  isConnected : IsConnected domain.carrier
   /-- The adelic frame g, the same for all members of the family. -/
   frame : GL D.Index (𝔸f E)
   /-- The reflection J_b attached to the parameter b. -/
@@ -212,13 +228,15 @@ lemma AnalyticFamily.exists_analytic_thetaCoord (f : AnalyticFamily D) {b₀ : B
   let φ (b : BallBase D.Index) : BallFibre E D.Index → ℂ := (f.torus b).lagrangianTheta
   -- A point `w` where the Poincaré series of `b₀` does not vanish.
   obtain ⟨w, hw⟩ : ∃ w : BallFibre E D.Index,
-      (f.torus b₀).isAppellHumbert_latticeOver_lagrangian.poincareSeries w w ≠ 0 := by
+      (f.torus b₀).automorphyForm.poincareSeries
+          (L := (f.torus b₀).latticeOver D.lagrangian) (f.torus b₀).multiplier w w ≠ 0 := by
     obtain ⟨-, -, -, -, h_nonzero⟩ :=
       (f.torus b₀).isAppellHumbert_latticeOver_lagrangian.poincareSeries_mem_thetaSpace_and_quotMean
         (f.re_pos b₀)
     exact h_nonzero
   have h_mult (b : BallBase D.Index) : ∃ c : ℂ,
-      c • φ b = (f.torus b).isAppellHumbert_latticeOver_lagrangian.poincareSeries (Q b w) := by
+      c • φ b = (f.torus b).automorphyForm.poincareSeries
+          (L := (f.torus b).latticeOver D.lagrangian) (f.torus b).multiplier (Q b w) := by
     obtain ⟨-, -, h_theta, -⟩ :=
       (f.torus b).isAppellHumbert_latticeOver_lagrangian.poincareSeries_mem_thetaSpace_and_quotMean
         (f.re_pos b)
@@ -261,19 +279,21 @@ lemma AnalyticFamily.exists_analytic_thetaCoord (f : AnalyticFamily D) {b₀ : B
   have h_series_eq (p : BallBase D.Index × BallFibre E D.Index) :
       ∑' l, term p l = (c p.1 • φ p.1) p.2 := by
     have h_term : ∀ l : (f.torus b₀).latticeOver D.lagrangian, term p l =
-        (f.torus p.1).isAppellHumbert_latticeOver_lagrangian.poincareTerm (Q p.1 w) p.2
+        (f.torus p.1).automorphyForm.poincareTerm
+          (L := (f.torus p.1).latticeOver D.lagrangian) (f.torus p.1).multiplier (Q p.1 w) p.2
           ((Q p.1).toEquiv.subtypeEquiv (h_latt p.1) l) := by
       simp only [ne_eq, ContinuousLinearEquiv.trans_apply, map_add, map_sub, canonicalMultiplier,
         intAction, RingHom.coe_comp, Function.comp_apply, IsPeriodMap.complexMul_apply_apply,
-        poincareTerm, f.form_const b₀, ContinuousLinearEquiv.apply_symm_apply,
+        ThetaTori.LatticeForm.poincareTerm, f.form_const b₀, ContinuousLinearEquiv.apply_symm_apply,
         ContinuousLinearEquiv.trans_toLinearEquiv, ContinuousLinearEquiv.toLinearEquiv_symm,
         Equiv.subtypeEquiv_apply, LinearEquiv.coe_toEquiv, LinearEquiv.trans_apply,
         ContinuousLinearEquiv.coe_symm_toLinearEquiv, ContinuousLinearEquiv.coe_toLinearEquiv,
         ContinuousLinearEquiv.symm_apply_apply, riemannForm_eq, Subtype.forall, mem_classLattice,
         forall_exists_index, and_imp, forall_apply_eq_imp_iff₂, implies_true, term, Q]
     calc
-      _ = (f.torus p.1).isAppellHumbert_latticeOver_lagrangian.poincareSeries (Q p.1 w) p.2 := by
-        rw [tsum_congr h_term, Equiv.tsum_eq, poincareSeries]
+      _ = (f.torus p.1).automorphyForm.poincareSeries
+          (L := (f.torus p.1).latticeOver D.lagrangian) (f.torus p.1).multiplier (Q p.1 w) p.2 := by
+        rw [tsum_congr h_term, Equiv.tsum_eq, ThetaTori.LatticeForm.poincareSeries]
       _ = _ := by rw [hc]
   have h_lift_an (z : BallFibre E D.Index) : AnalyticAt ℂ (fun p ↦ (c p.1 • φ p.1) p.2) (b₀, z) :=
     (h_series_an z).congr (.of_forall h_series_eq)
@@ -529,17 +549,10 @@ lemma exists_form_along_ballPeriod (e : (D.Index → ℂ) ≃L[ℂ] ℂ × BallB
 /-- A nonempty set `S` is the range of a map `r` that fixes every point of `S`. -/
 lemma _root_.Set.Nonempty.exists_retraction {α : Type*} {S : Set α} (hS : S.Nonempty) :
     ∃ r : α → α, (∀ b : α, r b ∈ S) ∧ ∀ b ∈ S, r b = b := by
-  classical
-  obtain ⟨b₀, hb₀⟩ := hS
-  exact ⟨fun b ↦ if b ∈ S then b else b₀, fun b ↦ by grind, fun b hb ↦ ite_eq_left hb⟩
-
-/-- A real linear map `P` from (E ⊗ ℝ)ⁿ to the fibre `New.Variety.BallFibre` is injective if a form
-`A` has Re A(w, P w) > 0 for every w ≠ 0. -/
-private lemma injective_of_re_pos {P : RealVectors E D.Index →ₗ[ℝ] BallFibre E D.Index}
-    {A : RealVectors E D.Index →L[ℝ] BallFibre E D.Index →L[ℂ] ℂ}
-    (hA : ∀ w ≠ 0, 0 < (A w (P w)).re) : Function.Injective P := by
-  refine (injective_iff_map_eq_zero P).2 fun w hw ↦ by_contra fun hw_ne ↦ ?_
-  simpa [hw] using hA w hw_ne
+  let : Nonempty S := hS.to_subtype
+  obtain ⟨r, hr⟩ := (Subtype.val_injective (p := (· ∈ S))).hasLeftInverse
+  exact ⟨fun b ↦ (r b).val, fun b ↦ (r b).property,
+    fun b hb ↦ congrArg Subtype.val (hr ⟨b, hb⟩)⟩
 
 /-- If a form `A` has Re A(w, P w) > 0 for every w ≠ 0 and the real isomorphism `Q` agrees with
 `P`, then the form B = A ∘ Q⁻¹ on the fibre has Re B(u, u) > 0 for every u ≠ 0. -/
@@ -551,15 +564,6 @@ private lemma re_comp_symm_apply_self_pos {P : RealVectors E D.Index →ₗ[ℝ]
     ∀ u ≠ 0, 0 < ((A ∘L Q.symm) u u).re := by
   intro u hu
   simpa [← hQ] using hA (Q.symm u) (by simpa using hu)
-
-/-- The period b ↦ `ballPeriod E e H (1, b) w` is affine in b; its derivative is v ↦
-`ballPeriod E e H (0, v) w`. -/
-private lemma hasFDerivAt_ballPeriod (e : (D.Index → ℂ) ≃L[ℂ] ℂ × BallBase D.Index)
-    (H : Matrix D.Index D.Index ℂ) (w : RealVectors E D.Index) (b : BallBase D.Index) :
-    HasFDerivAt (fun b' : BallBase D.Index ↦ ballPeriod E e H (1, b') w)
-      (((ballPeriod E e H).flip w).toContinuousLinearMap ∘L .inr ℂ ℂ (BallBase D.Index)) b :=
-  (ContinuousLinearMap.hasFDerivAt ((ballPeriod E e H).flip w).toContinuousLinearMap).comp b
-    (hasFDerivAt_prodMk_right (1 : ℂ) b)
 
 /-- The real vector spaces (E ⊗ ℝ)ⁿ and `New.Variety.BallFibre E D.Index` have the same
 dimension. -/
@@ -614,7 +618,9 @@ lemma exists_analyticFamily_positiveBall (e : (D.Index → ℂ) ≃L[ℂ] ℂ ×
     ballPeriod E e H (1, r b)
   have hP_pos (b : BallBase D.Index) : ∀ w ≠ 0, 0 < (A w (P b w)).re := A_pos _ (hr b)
   -- By positivity of `A` the map `P b` is injective, so it is an isomorphism by dimension.
-  have P_inj (b : BallBase D.Index) : Function.Injective (P b) := injective_of_re_pos (hP_pos b)
+  have P_inj (b : BallBase D.Index) : Function.Injective (P b) := by
+    refine (injective_iff_map_eq_zero (P b)).2 fun w hw ↦ by_contra fun hw_ne ↦ ?_
+    simpa [hw] using hP_pos b w hw_ne
   let Q (b : BallBase D.Index) : RealVectors E D.Index ≃L[ℝ] BallFibre E D.Index :=
     ((P b).linearEquivOfInjective (P_inj b) finrank_realVectors_eq_finrank_ballFibre)
       |>.toContinuousLinearEquiv
@@ -625,7 +631,9 @@ lemma exists_analyticFamily_positiveBall (e : (D.Index → ℂ) ≃L[ℂ] ℂ ×
   have hderiv {w : RealVectors E D.Index} (b : BallBase D.Index) (hb : b ∈ positiveBall e H) :
       HasFDerivAt (fun b' : BallBase D.Index ↦ Q b' w)
         (((ballPeriod E e H).flip w).toContinuousLinearMap ∘L .inr ℂ ℂ (BallBase D.Index)) b := by
-    refine (hasFDerivAt_ballPeriod e H w b).congr_of_eventuallyEq ?_
+    have h_period := ((ballPeriod E e H).flip w).toContinuousLinearMap.hasFDerivAt.comp b
+      (hasFDerivAt_prodMk_right (1 : ℂ) b)
+    refine h_period.congr_of_eventuallyEq ?_
     filter_upwards [ball_open.mem_nhds hb] with b' hb'
     simp [hQ, P, hr_eq b' hb']
   have h_alt (b : BallBase D.Index) (y z : RealVectors E D.Index) :
@@ -783,6 +791,18 @@ def AnalyticFamily.heckeTranslate (f : AnalyticFamily D) (γ : GUPlus E D.Index)
   have h_similitude : ∃ c : ℚ, 0 < c ∧ IsFrameFor ((c : E) • 1) γ.val :=
     (mem_GUPlus_iff.1 γ.prop).left
   choose c hc hγ using h_similitude
+  -- Stated for any `B : RealComplexForm _` equal to the new form, so that the fields below match
+  -- them by `rfl`: unifying the `LatticeForm`s for the frames `f.frame` and `f.frame * γ` is slow.
+  have h_pos (b : BallBase D.Index) (B : RealComplexForm (BallFibre E D.Index))
+      (hB : B = c • (f.torus b).automorphyForm) (u : BallFibre E D.Index) (hu : u ≠ 0) :
+      0 < (B u u).re := by
+    rw [hB, _root_.smul_apply, _root_.smul_apply, re_qsmul]
+    exact smul_pos hc (f.re_pos b u hu)
+  have h_symm (b : BallBase D.Index) (B : RealComplexForm (BallFibre E D.Index))
+      (hB : B = c • (f.torus b).automorphyForm) (u v : BallFibre E D.Index) :
+      (B u v).re = (B v u).re := by
+    rw [hB, _root_.smul_apply, _root_.smul_apply, _root_.smul_apply, _root_.smul_apply, re_qsmul,
+      re_qsmul, (f.torus b).re_symm]
   exact
     { domain := f.domain
       isConnected := f.isConnected
@@ -796,16 +816,14 @@ def AnalyticFamily.heckeTranslate (f : AnalyticFamily D) (γ : GUPlus E D.Index)
           automorphyForm := c • x.automorphyForm
           isFrameFor := x.isFrameFor.mul_iff.2 hγ
           isPeriodMap := x.isPeriodMap
-          re_symm := by simp only [_root_.smul_apply, re_qsmul, x.re_symm, implies_true]
+          re_symm := h_symm b _ rfl
           riemannForm_eq := by
             simp only [map_rat_smul, LinearMap.smul_apply, x.riemannForm_eq, polarisationForm,
               mul_re, PEL.xi_im_pos_and_re_eq_zero, zero_mul, zero_sub, mul_neg, sum_neg_distrib,
               mk₂_apply, smul_neg, Rat.smul_def, mul_sum, mul_left_comm, map_mul, implies_true,
               map_smul', map_ratCast, smul_mulVec, dotProduct_smul, smul_eq_mul, ratCast_re,
               ratCast_im, mul_im, zero_add, sub_zero]
-          isPosRiemann := isPosRiemann_of_re_pos fun u hu ↦ by
-            rw [_root_.smul_apply, _root_.smul_apply, re_qsmul]
-            exact smul_pos hc (f.re_pos b u hu)
+          isPosRiemann := isPosRiemann_of_re_pos (h_pos b _ rfl)
           reflection := x.reflection
           adjoint a u v := by
             simpa only [ThetaTori.PeriodMap.intAction, RingHom.coe_comp, Function.comp_apply,
@@ -815,9 +833,7 @@ def AnalyticFamily.heckeTranslate (f : AnalyticFamily D) (γ : GUPlus E D.Index)
       analyticAt := f.analyticAt
       eq_zero_of_linear := f.eq_zero_of_linear
       form_const := by simp only [f.form_const 0, _root_.smul_apply, implies_true, and_self]
-      re_pos b u hu := by
-        rw [_root_.smul_apply, _root_.smul_apply, re_qsmul]
-        exact smul_pos hc (f.re_pos b u hu) }
+      re_pos b := h_pos b _ rfl }
 
 /-- Let `f` be an analytic family whose frame `f.frame` has the sign condition for the matrix `β`
 and some complex matrix `ℓ` (only `β` is used afterwards) (`hβ`), let `H = Φ_{v₀}(β)` be negative

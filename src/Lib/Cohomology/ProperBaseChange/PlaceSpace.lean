@@ -1,5 +1,10 @@
 module
 
+public import Aesop.BuiltinRules
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.Localization.Pi
+import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.Cohomology.Etale.FilteredLimits
 
 /-!
@@ -211,7 +216,7 @@ def placeSpace : PointFunctor where
       iseqv := by
         -- transitivity: the middle pair can be cancelled because it is coprime
         constructor <;> intros <;> grind [!isCoprime_denominator_numerator, IsCoprime] }
-  map k := ↾fun x ↦ ULift.up (x.1.map' (· ≫ k) (by simp_all [← map_mul]))
+  map k := ↾fun x ↦ ULift.up (x.down.map' (· ≫ k) (by simp_all [← map_mul]))
   map_id C := by
     ext ⟨⟨f⟩⟩
     rfl
@@ -221,7 +226,7 @@ def placeSpace : PointFunctor where
 
 /-- The map from the space of places of `z` to `Z` that sends the class of `f` to `f z ∈ Z(C)`. -/
 def placeSpaceMap : placeSpace z ⟶ Z where
-  app _ := ↾fun x ↦ x.1.lift (fun f ↦ Z.map f z.point) fun _ _ ↦ And.left
+  app _ := ↾fun x ↦ x.down.lift (fun f ↦ Z.map f z.point) fun _ _ ↦ And.left
   naturality _ _ _ := by
     ext ⟨⟨f⟩⟩
     apply Z.map_comp_apply
@@ -245,7 +250,7 @@ that `x` gives `t` the finite value `c`. For any representative `f` of `x`, thes
 `New.Variety.ResiduePlace.fractionGraph f`, that is, `f (numerator t) = f (denominator t) * c`. This
 does not depend on the choice of `f`. -/
 def placeGraph : Subring (P × C) :=
-  x.1.lift fractionGraph (by
+  x.down.lift fractionGraph (by
     -- equal values give the same graph, by `mem_fractionGraph` and coprimality
     rintro _ _ ⟨⟩
     grind +extAll [mem_fractionGraph, isCoprime_denominator_numerator, IsCoprime])

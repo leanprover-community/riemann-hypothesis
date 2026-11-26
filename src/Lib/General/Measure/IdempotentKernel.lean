@@ -1,6 +1,8 @@
 module
 
-public import Lib.Base
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Probability.HasLaw
+public import Lib.Speed
 
 /-!
 # Fubini and convolution lemmas; idempotent kernels

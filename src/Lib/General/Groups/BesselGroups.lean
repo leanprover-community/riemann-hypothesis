@@ -1,5 +1,7 @@
 module
 
+public import Aesop.BuiltinRules
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
@@ -48,6 +50,7 @@ structure Shape where
   κ : Type
   /-- The instance that κ is finite. -/
   [fintypeIndex : Fintype κ]
+  /-- The instance that κ has decidable equality. -/
   [decEqIndex : DecidableEq κ]
   /-- A distinguished index in κ. -/
   k₀ : κ

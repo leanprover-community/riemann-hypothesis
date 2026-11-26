@@ -1,13 +1,17 @@
 module
 
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.Witt.IwasawaDecomposition
 public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
-public import Lib.Weil.MixedModel.ZeroTerm
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Weil.MixedModel.ZeroTerm
 
 /-!
 # Fourier coefficients along the centre of a unipotent radical and their partial means
 
-This file studies the Fourier coefficients `New.Space.Splitting.centreCoeff` of a continuous
+This file studies the Fourier coefficients `New.Space.Splitting.centerCoeff` of a continuous
 function f on the adelic unitary group of W that is left invariant under the rational points. The
 coefficients are taken along the centre of the unipotent radical of the stabiliser of an isotropic
 frame. The splitting `A` splits off a hyperbolic plane with isotropic vectors u, u', `B` splits off
@@ -39,7 +43,7 @@ Notions from other files:
   diag(s) at the infinite places and 1 at the finite places; `W.Γ` is the group of rational points
   x⁻¹ U(J)(E) x in the adelic unitary group `New.G`.
 * `New.Space.Splitting`: a decomposition W = (lE^p ⊕ kE^p) ⊥ iW₀ with dual isotropic frames l, k.
-* `New.Space.Splitting.radicalCentre`: z(M) = 1 + k(M − M*)k*ε (ε the standard form), an element of
+* `New.Space.Splitting.radicalCenter`: z(M) = 1 + k(M − M*)k*ε (ε the standard form), an element of
   the centre of the unipotent radical of the stabiliser of the frame k.
 * `New.Exchange.SplitTameChar`: a character of [U(1)] of a given weight, positive at every infinite
   place, with tame part non-trivial exactly on a non-empty finite set S of places disjoint from its
@@ -73,21 +77,21 @@ variable {W : Space E n s} {D : G E s → ℂ} {s₀ : n₀ → ℤˣ} {W₀ : S
   (H : W.Splitting W₀ p)
 
 /-- If D is continuous and left invariant under the rational points, then M ↦ D (z(M) g) is
-continuous and periodic under rational matrices, z(M) being the element `H.radicalCentre M` of the
+continuous and periodic under rational matrices, z(M) being the element `H.radicalCenter M` of the
 centre of the radical. -/
 lemma isContPeriodic_radicalCentre (hD : IsAutFunction W D) (g : G E s) :
-    IsContPeriodic (ratMatrices E p p) fun M : Matrix p p (𝔸 E) ↦ D (H.radicalCentre M * g) := by
+    IsContPeriodic (ratMatrices E p p) fun M : Matrix p p (𝔸 E) ↦ D (H.radicalCenter M * g) := by
   refine ⟨hD.1.comp (by fun_prop), fun γ hγ M ↦ ?_⟩
-  simp [AddChar.map_add_eq_mul, mul_assoc, hD.2 (H.radicalCentre γ) (by simp [hγ])]
+  simp [AddChar.map_add_eq_mul, mul_assoc, hD.2 (H.radicalCenter γ) (by simp [hγ])]
 
 /-- Let D and D' be continuous and left invariant under the rational points. The coefficient at T
 of D(· Y) − c D' at the point g is that of D at g Y minus c times that of D' at g. -/
 lemma centreCoeff_mul_right_sub_smul {D' : G E s → ℂ} (hD : IsAutFunction W D)
     (hD' : IsAutFunction W D') (c : ℂ) (Y : G E s) (T : Matrix p p E) (g : G E s) :
-    H.centreCoeff T ((fun x : G E s ↦ D (x * Y)) - c • D') g =
-      H.centreCoeff T D (g * Y) - c * H.centreCoeff T D' g := by
+    H.centerCoeff T ((fun x : G E s ↦ D (x * Y)) - c • D') g =
+      H.centerCoeff T D (g * Y) - c * H.centerCoeff T D' g := by
   -- the mean is linear, both integrands being periodic and continuous, hence integrable
-  simp only [centreCoeff, Pi.sub_apply, mul_assoc, Pi.smul_apply, smul_eq_mul, mul_sub,
+  simp only [centerCoeff, Pi.sub_apply, mul_assoc, Pi.smul_apply, smul_eq_mul, mul_sub,
     mul_left_comm _ c, ← quotMean_const_mul]
   exact integral_sub
     (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD (g * Y)) T).integrable_out
@@ -97,7 +101,7 @@ lemma centreCoeff_mul_right_sub_smul {D' : G E s → ℂ} (hD : IsAutFunction W 
 rational points. -/
 lemma centreCoeff_add {D' : G E s → ℂ} (hD : IsAutFunction W D) (hD' : IsAutFunction W D')
     (T : Matrix p p E) (g : G E s) :
-    H.centreCoeff T (D + D') g = H.centreCoeff T D g + H.centreCoeff T D' g := by
+    H.centerCoeff T (D + D') g = H.centerCoeff T D g + H.centerCoeff T D' g := by
   simpa using H.centreCoeff_mul_right_sub_smul hD hD' (-1) 1 T g
 
 variable (hD : IsAutFunction W D) {T : Matrix p p E}
@@ -107,10 +111,10 @@ include hD
 along the centre of the radical, the mean of ψ(tr TM) D(z(M) g) over M modulo rational matrices, is
 a continuous function of g. -/
 @[fun_prop]
-lemma continuous_centreCoeff : Continuous (H.centreCoeff T D) := by
+lemma continuous_centreCoeff : Continuous (H.centerCoeff T D) := by
   -- The mean is an integral over a compact quotient, so it is enough that the integrand is jointly
   -- continuous; this can be tested before passing to the quotient.
-  unfold centreCoeff quotMean
+  unfold centerCoeff quotMean
   refine (continuous_parametric_integral_of_continuous
     ((isQuotientMap_mk _).continuous_lift_prod_right ?_) isCompact_univ).congr
       fun _ ↦ setIntegral_univ
@@ -120,15 +124,15 @@ lemma continuous_centreCoeff : Continuous (H.centreCoeff T D) := by
   exact (continuous_stdAddChar.subtypeVal.comp (by fun_prop)).mul (hD.1.comp (by fun_prop))
 
 /-- For D continuous and left invariant under the rational points, left translation by
-z(M) = `H.radicalCentre M` divides the coefficient at T by ψ(tr TM), ψ the standard additive
+z(M) = `H.radicalCenter M` divides the coefficient at T by ψ(tr TM), ψ the standard additive
 character. -/
 lemma centreCoeff_radicalCentre_mul (M : Matrix p p (𝔸 E)) (g : G E s) :
-    stdAddChar E (T.map toAdele * M).trace * H.centreCoeff T D (H.radicalCentre M * g) =
-      H.centreCoeff T D g := by
-  have h_translate : H.centreCoeff T D (H.radicalCentre M * g) =
+    stdAddChar E (T.map toAdele * M).trace * H.centerCoeff T D (H.radicalCenter M * g) =
+      H.centerCoeff T D g := by
+  have h_translate : H.centerCoeff T D (H.radicalCenter M * g) =
       quotMean (ratMatrices E p p) fun N : Matrix p p (𝔸 E) ↦
-        stdAddChar E (T.map toAdele * N).trace * D (H.radicalCentre (N + M) * g) := by
-    simp [centreCoeff, AddChar.map_add_eq_mul, mul_assoc]
+        stdAddChar E (T.map toAdele * N).trace * D (H.radicalCenter (N + M) * g) := by
+    simp [centerCoeff, AddChar.map_add_eq_mul, mul_assoc]
   rw [h_translate]
   exact mul_quotMean_translate (H.isContPeriodic_radicalCentre hD g) T M
 
@@ -137,7 +141,7 @@ the isotropic frame k of H through the rational matrix c (γ k = k c) carries th
 the coefficient at cᴴ T c. -/
 lemma centreCoeff_rat_mul (T : Matrix p p E) {γ : G E s} (hγ : γ ∈ W.Γ) (c : Matrix p p E)
     (h_frame : H.ActsOnFrame γ (c.map toAdele)) (g : G E s) :
-    H.centreCoeff T D (γ * g) = H.centreCoeff (cᴴ * T * c) D g := by
+    H.centerCoeff T D (γ * g) = H.centerCoeff (cᴴ * T * c) D g := by
   obtain ⟨a, ha⟩ : IsUnit (c.map toAdele) := h_frame.isUnit
   -- The substitution M ↦ a M aᴴ is onto and keeps rational matrices, so it keeps the mean.
   let φ : Matrix p p (𝔸 E) →+ Matrix p p (𝔸 E) := .comp (.mulLeft ↑a) (.mulRight aᴴ)
@@ -147,21 +151,23 @@ lemma centreCoeff_rat_mul (T : Matrix p p E) {γ : G E s} (hγ : γ ∈ W.Γ) (c
   have hsurj : Function.Surjective φ := fun M ↦ ⟨(a⁻¹).val * M * aᴴ⁻¹, by simp [φ, mul_assoc]⟩
   -- Move γ to the left (z(a M aᴴ) γ = γ z(M)), absorb it in D, and cycle the trace.
   have h_move (M : Matrix p p (𝔸 E)) :
-      D (H.radicalCentre (φ M) * (γ * g)) = D (H.radicalCentre M * g) := by
-    simp [φ, ha, ← mul_assoc, H.mul_radicalCentre h_frame, ← hD.2 γ hγ (H.radicalCentre M * g)]
+      D (H.radicalCenter (φ M) * (γ * g)) = D (H.radicalCenter M * g) := by
+    have hφ : φ M = c.map toAdele * M * (c.map toAdele)ᴴ := by
+      rw [← ha]; exact (Matrix.mul_assoc _ _ _).symm
+    rw [hφ, ← mul_assoc, ← H.mul_radicalCenter h_frame, mul_assoc, hD.2 γ hγ]
   have h_trace (M : Matrix p p (𝔸 E)) :
       (T.map toAdele * φ M).trace = ((cᴴ * T * c).map toAdele * M).trace := by
     simp [φ, ha, Matrix.map_mul, Matrix.mul_assoc, (cᴴ.map toAdele).trace_mul_comm]
-  rw [centreCoeff, ← quotMean_comp _ φ
+  rw [centerCoeff, ← quotMean_comp _ φ
     (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD (γ * g)) T) hrat hsurj
     ((continuous_const_mul _).comp (continuous_mul_const _))]
-  simp [centreCoeff, h_move, h_trace]
+  simp only [centerCoeff, h_move, h_trace]
 
 /-- For D continuous and left invariant under the rational points, a rational point that fixes the
 isotropic frame of H does not change the coefficient at T. -/
 lemma centreCoeff_rat_mul_of_actsOnFrame_one {γ : G E s} (hγ : γ ∈ W.Γ)
     (h_frame : H.ActsOnFrame γ 1) (g : G E s) :
-    H.centreCoeff T D (γ * g) = H.centreCoeff T D g := by
+    H.centerCoeff T D (γ * g) = H.centerCoeff T D g := by
   simpa using H.centreCoeff_rat_mul hD T hγ 1 (by simpa using h_frame) g
 
 end New.Space.Splitting
@@ -312,11 +318,13 @@ def frameStabilizer (D : W.Splitting W₁ p) (e : 𝔸 E) : Subgroup (G E s) whe
   mul_mem' {g h : G E s} hg hh := by
     change (g * h).adeleMatrix * e • D.kAdelic = e • D.kAdelic
     rw [G.adeleMatrix_mul, Matrix.mul_assoc, hh, hg]
-  one_mem' := by simp
+  one_mem' := by
+    change (1 : G E s).adeleMatrix * e • D.kAdelic = e • D.kAdelic
+    rw [G.adeleMatrix_one, Matrix.one_mul]
   inv_mem' {g : G E s} hg := by
     change g⁻¹.adeleMatrix * e • D.kAdelic = e • D.kAdelic
-    rw [← hg, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, inv_mul_cancel, hg]
-    simp
+    rw [← hg, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, inv_mul_cancel, G.adeleMatrix_one,
+      Matrix.one_mul, hg]
 
 lemma mem_frameStabilizer {D : W.Splitting W₁ p} {e : 𝔸 E} {g : G E s} :
     g ∈ D.frameStabilizer e ↔ g.adeleMatrix * e • D.kAdelic = e • D.kAdelic :=
@@ -337,7 +345,7 @@ variable [WeilData E] (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
 of B. Here a is an adelic row. It is a central element of the radical for the splitting
 `A.symm.comp B`. -/
 noncomputable def lineShift (a : Matrix Unit p (𝔸 E)) : G E s :=
-  (A.symm.comp B).radicalCentre (fromBlocks 0 a 0 0)
+  (A.symm.comp B).radicalCenter (fromBlocks 0 a 0 0)
 
 lemma lineShift_add (a b : Matrix Unit p (𝔸 E)) :
     A.lineShift B (a + b) = A.lineShift B a * A.lineShift B b := by
@@ -355,14 +363,34 @@ lemma lineShift_mem {a : Matrix Unit p (𝔸 E)} (ha : a ∈ ratMatrices E Unit 
   obtain ⟨a₀, rfl⟩ := ha
   simp [lineShift, mem_ratMatrices, ratAdeles]
 
+private noncomputable abbrev lineShiftTerm (a : Matrix Unit p (𝔸 E)) : Matrix n n (𝔸 E) :=
+  A.lAdelic * a * (B.lCoord * A.iCoord) - A.iAdelic * B.kAdelic * aᴴ * A.kCoord
+
+private lemma adeleMatrix_lineShift (a : Matrix Unit p (𝔸 E)) :
+    (A.lineShift B a).adeleMatrix =
+      1 + (A.lAdelic * a * (B.lCoord * A.iCoord) - A.iAdelic * B.kAdelic * aᴴ * A.kCoord) := by
+  rw [lineShift, adeleMatrix_radicalCenter, comp_kAdelic, comp_lCoord, symm_kAdelic,
+    symm_iAdelic, symm_lCoord, symm_iCoord, fromBlocks_conjTranspose, sub_eq_add_neg,
+    fromBlocks_neg, fromBlocks_add]
+  simp only [conjTranspose_zero, neg_zero, zero_add, add_zero]
+  rw [fromCols_mul_fromBlocks]
+  simp only [Matrix.mul_zero, zero_add, add_zero]
+  rw [fromCols_mul_fromRows, Matrix.mul_neg, Matrix.neg_mul, neg_add_eq_sub, Matrix.mul_assoc]
+
 /-- The shift n₊(a) carries the frame (u, k) of the composite of A and B, k the image in W of the
 frame of B, to (u − k aᴴ, k). -/
 lemma actsOnFrame_lineShift (a : Matrix Unit p (𝔸 E)) :
     (A.comp B).ActsOnFrame (A.lineShift B a) (fromBlocks 1 0 (-aᴴ) 1) := by
   -- compare the two sides on the column of `u` and on those of the frame of B
-  ext i (j | j) <;> simp [lineShift, comp_kAdelic, fromBlocks_conjTranspose, sub_eq_add_neg,
-    Matrix.mul_add, fromCols_mul_fromBlocks, Matrix.mul_assoc, Matrix.add_mul,
-    fromCols_mul_fromRows]
+  rw [ActsOnFrame, comp_kAdelic, Matrix.mul_fromCols, fromCols_mul_fromBlocks,
+    adeleMatrix_lineShift]
+  congr 1
+  · simp only [Matrix.add_mul, Matrix.one_mul, Matrix.mul_assoc,
+      A.iCoord_mul_kAdelic, A.kCoord_mul_kAdelic, Matrix.mul_zero, Matrix.mul_one,
+      Matrix.mul_neg, Matrix.neg_mul, zero_add, sub_eq_add_neg]
+  · simp only [Matrix.add_mul, Matrix.one_mul, Matrix.sub_mul, Matrix.mul_assoc,
+      A.iCoord_mul_iAdelic_mul, B.lCoord_mul_kAdelic, A.kCoord_mul_iAdelic_mul,
+      Matrix.mul_zero, Matrix.mul_one, sub_zero, add_zero, zero_add]
 
 variable (D : W.Splitting W₁ p) (T : Matrix p p E) (f : G E s → ℂ)
 
@@ -371,7 +399,7 @@ coefficient of f along D at T at the point n₋(b) g, where n₋(b) = `A.symm.li
 partial mean for `A.symm` is f⁻. -/
 noncomputable def partialMean (g : G E s) : ℂ :=
   quotMean (ratMatrices E Unit p) fun b : Matrix Unit p (𝔸 E) ↦
-    D.centreCoeff T f (A.symm.lineShift B b * g)
+    D.centerCoeff T f (A.symm.lineShift B b * g)
 
 /-- The function φ⁺_g(a) = f⁺(n₊(a) g) of an adelic row a, where f⁺ is the partial mean and
 n₊(a) = `A.lineShift B a`. The function for `A.symm` is φ⁻_g. -/
@@ -387,7 +415,7 @@ variable {A B D T f}
 /-- If the partial mean f⁺ is not zero at g, then the coefficient of f along D at T is not zero at
 some point n₋(b) g. -/
 lemma exists_centreCoeff_ne_zero {g : G E s} (h_ne : A.partialMean B D T f g ≠ 0) :
-    ∃ b : Matrix Unit p (𝔸 E), D.centreCoeff T f (A.symm.lineShift B b * g) ≠ 0 := by
+    ∃ b : Matrix Unit p (𝔸 E), D.centerCoeff T f (A.symm.lineShift B b * g) ≠ 0 := by
   by_contra! h_zero
   simp [partialMean, h_zero] at h_ne
 
@@ -401,31 +429,78 @@ lemma lCoord_eq_lCoord_mul_iCoord (hD : D.kAdelic = A.iAdelic * B.kAdelic) :
 /-- If the frame of D is the image of the frame of B, the shifts n₊(a) fix it. -/
 lemma actsOnFrame_lineShift_one (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (a : Matrix Unit p (𝔸 E)) : D.ActsOnFrame (A.lineShift B a) 1 := by
-  simp [lineShift, hD, Matrix.mul_assoc, Matrix.add_mul]
+  rw [ActsOnFrame, hD, adeleMatrix_lineShift]
+  simp only [Matrix.add_mul, Matrix.one_mul, Matrix.sub_mul, Matrix.mul_assoc,
+    A.iCoord_mul_iAdelic_mul, B.lCoord_mul_kAdelic, A.kCoord_mul_iAdelic_mul,
+    Matrix.mul_zero, Matrix.mul_one, sub_zero, add_zero]
+
+omit [WeilData E] in
+private lemma lineShiftTerm_mul_symm (a b : Matrix Unit p (𝔸 E)) :
+    A.lineShiftTerm B a * A.symm.lineShiftTerm B b =
+      -(A.iAdelic * B.kAdelic * (aᴴ * b) * (B.lCoord * A.iCoord)) := by
+  unfold lineShiftTerm
+  rw [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_sub]
+  simp only [Matrix.mul_assoc, symm_iAdelic, symm_iCoord,
+    show A.symm.lAdelic = A.kAdelic from rfl, show A.symm.kCoord = A.lCoord from rfl,
+    A.iCoord_mul_kAdelic_mul, A.iCoord_mul_iAdelic_mul, B.lCoord_mul_kAdelic_mul,
+    A.kCoord_mul_kAdelic_mul, A.kCoord_mul_iAdelic_mul, Matrix.mul_zero, sub_zero, zero_sub]
+
+omit [WeilData E] in
+private lemma radicalTerm_mul_lineShiftTerm (hD : D.kAdelic = A.iAdelic * B.kAdelic)
+    (M : Matrix p p (𝔸 E)) (a : Matrix Unit p (𝔸 E)) :
+    D.kAdelic * M * D.lCoord * A.lineShiftTerm B a = 0 := by
+  rw [lineShiftTerm, lCoord_eq_lCoord_mul_iCoord hD, Matrix.mul_sub]
+  simp only [Matrix.mul_assoc, A.iCoord_mul_lAdelic_mul, A.iCoord_mul_iAdelic_mul,
+    B.lCoord_mul_kAdelic_mul, Matrix.mul_zero, sub_self]
 
 /-- Let the frame of `D` be the image under `A` of the frame of `B` (`hD`), and for adelic rows a, b
 let n₊(a) = `A.lineShift B a` and n₋(b) = `A.symm.lineShift B b` be the shifts of the two isotropic
 vectors of `A` by the frame of `D`: n₊(a) is u ↦ u − k aᴴ on the vector u, and n₋(b) does the same
-for the other vector. Then n₊(a) n₋(b) = z(−aᴴ b) n₋(b) n₊(a), where z = `D.radicalCentre`
+for the other vector. Then n₊(a) n₋(b) = z(−aᴴ b) n₋(b) n₊(a), where z = `D.radicalCenter`
 parametrises the centre of the unipotent radical of the stabiliser of the frame of `D`. -/
 lemma lineShift_mul_lineShift_symm (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (a b : Matrix Unit p (𝔸 E)) :
     A.lineShift B a * A.symm.lineShift B b =
-      D.radicalCentre (-(aᴴ * b)) * (A.symm.lineShift B b * A.lineShift B a) := by
+      D.radicalCenter (-(aᴴ * b)) * (A.symm.lineShift B b * A.lineShift B a) := by
   refine G.ext_adeleMatrix ?_
   -- Both shifts are 1 plus terms of square zero; the cross terms differ by k (bᴴ a − aᴴ b) k*ε.
-  simp [lineShift, G.adeleMatrix_mul, hD, lCoord_eq_lCoord_mul_iCoord hD, sub_eq_add_neg,
-    Matrix.mul_add, Matrix.add_mul, comp_kAdelic, fromBlocks_conjTranspose, fromCols_mul_fromBlocks,
-    fromCols_mul_fromRows, Matrix.mul_assoc]
+  have hDl : D.lCoord = B.lCoord * A.iCoord := lCoord_eq_lCoord_mul_iCoord hD
+  have h_l : A.symm.lAdelic = A.kAdelic := rfl
+  have h_k : A.symm.kCoord = A.lCoord := rfl
+  let X := A.lineShiftTerm B a
+  let Y := A.symm.lineShiftTerm B b
+  set Z : Matrix n n (𝔸 E) := D.kAdelic * (-(aᴴ * b) - (-(aᴴ * b))ᴴ) * D.lCoord
+  have h_prod (P Q : Matrix n n (𝔸 E)) : (1 + P) * (1 + Q) = 1 + (P + Q + P * Q) := by
+    simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one]
+    abel
+  have hXY := lineShiftTerm_mul_symm (A := A) (B := B) a b
+  have hYX := lineShiftTerm_mul_symm (A := A.symm) (B := B) b a
+  simp only [symm_symm, symm_iAdelic, symm_iCoord] at hYX
+  have hZX : Z * X = 0 := radicalTerm_mul_lineShiftTerm hD _ a
+  have hZY : Z * Y = 0 := radicalTerm_mul_lineShiftTerm (A := A.symm) hD _ b
+  have hZ : Z = A.iAdelic * B.kAdelic * (bᴴ * a) * (B.lCoord * A.iCoord) -
+      A.iAdelic * B.kAdelic * (aᴴ * b) * (B.lCoord * A.iCoord) := by
+    dsimp only [Z]
+    rw [hD, hDl, conjTranspose_neg, conjTranspose_mul, conjTranspose_conjTranspose,
+      sub_neg_eq_add, neg_add_eq_sub, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
+      Matrix.mul_assoc]
+  rw [G.adeleMatrix_mul, G.adeleMatrix_mul, G.adeleMatrix_mul, adeleMatrix_radicalCenter,
+    adeleMatrix_lineShift, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+  change (1 + X) * (1 + Y) = (1 + Z) * ((1 + Y) * (1 + X))
+  rw [h_prod X Y, h_prod Y X, h_prod Z (Y + X + Y * X)]
+  have hZ_all : Z * (Y + X + Y * X) = 0 := by
+    rw [Matrix.mul_add, Matrix.mul_add, hZY, hZX, ← Matrix.mul_assoc, hZY, Matrix.zero_mul,
+      add_zero, add_zero]
+  rw [hZ_all, add_zero, hXY, hYX, hZ]
   abel
 
 /-- Let the frame of D be the image of the frame of B and let f be automorphic. The coefficient
 along D at T at the point n₋(b) n₊(a) g is ψ(−tr T aᴴ b) times that at n₊(a) n₋(b) g. -/
 lemma centreCoeff_lineShift_symm_mul_lineShift (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (a b : Matrix Unit p (𝔸 E)) (g : G E s) :
-    D.centreCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g)) =
+    D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g)) =
       stdAddChar E (T.map toAdele * -(aᴴ * b)).trace *
-        D.centreCoeff T f (A.lineShift B a * (A.symm.lineShift B b * g)) := by
+        D.centerCoeff T f (A.lineShift B a * (A.symm.lineShift B b * g)) := by
   rw [← mul_assoc (A.lineShift B a), lineShift_mul_lineShift_symm hD, mul_assoc, mul_assoc,
     D.centreCoeff_radicalCentre_mul hf]
 
@@ -434,7 +509,7 @@ along D at T at the point n₊(a) g is a continuous function of a, periodic unde
 lemma isContPeriodic_centreCoeff_lineShift (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (g : G E s) :
     IsContPeriodic (ratMatrices E Unit p)
-      fun a : Matrix Unit p (𝔸 E) ↦ D.centreCoeff T f (A.lineShift B a * g) := by
+      fun a : Matrix Unit p (𝔸 E) ↦ D.centerCoeff T f (A.lineShift B a * g) := by
   refine ⟨by fun_prop (disch := exact hf), fun γ hγ a ↦ ?_⟩
   simp only [lineShift_add, mul_assoc]
   exact D.centreCoeff_rat_mul_of_actsOnFrame_one hf (A.lineShift_mem B hγ)
@@ -475,11 +550,11 @@ lemma partialMean_lineShift_symm_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
 the element z(M) of the centre of the radical for D divides the partial mean f⁺ by ψ(tr TM). -/
 lemma partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (M : Matrix p p (𝔸 E)) (g : G E s) :
-    stdAddChar E (T.map toAdele * M).trace * A.partialMean B D T f (D.radicalCentre M * g) =
+    stdAddChar E (T.map toAdele * M).trace * A.partialMean B D T f (D.radicalCenter M * g) =
       A.partialMean B D T f g := by
   have h_comm (b : Matrix Unit p (𝔸 E)) :
-      A.symm.lineShift B b * D.radicalCentre M = D.radicalCentre M * A.symm.lineShift B b := by
-    simpa using D.mul_radicalCentre (actsOnFrame_lineShift_one (A := A.symm) hD b) M
+      A.symm.lineShift B b * D.radicalCenter M = D.radicalCenter M * A.symm.lineShift B b := by
+    simpa using D.mul_radicalCenter (actsOnFrame_lineShift_one (A := A.symm) hD b) M
   simp only [partialMean, ← quotMean_const_mul, ← mul_assoc (A.symm.lineShift B _), h_comm]
   simp only [mul_assoc, D.centreCoeff_radicalCentre_mul hf]
 
@@ -510,15 +585,16 @@ lemma shiftedMean_rat_add (hD : D.kAdelic = A.iAdelic * B.kAdelic) (hf : IsAutFu
     A.shiftedMean B D T f g (a₀.map toAdele + a) =
       quotMean (ratMatrices E Unit p) fun b : Matrix Unit p (𝔸 E) ↦
         stdAddChar E ((-(T * a₀ᴴ)).map toAdele * b).trace *
-          D.centreCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g)) := by
+          D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g)) := by
   -- Move n₊(a₀) to the left, where it fixes the coefficient along D.
   have h_rat (x : G E s) :
-      D.centreCoeff T f (A.lineShift B (a₀.map toAdele) * x) = D.centreCoeff T f x :=
+      D.centerCoeff T f (A.lineShift B (a₀.map toAdele) * x) = D.centerCoeff T f x :=
     D.centreCoeff_rat_mul_of_actsOnFrame_one hf (A.lineShift_mem B ⟨a₀, rfl⟩)
       (actsOnFrame_lineShift_one hD _) x
   have h_index (b : Matrix Unit p (𝔸 E)) :
       T.map toAdele * -((a₀.map toAdele)ᴴ * b) = (-(T * a₀ᴴ)).map toAdele * b := by
-    simp [Matrix.map_neg, Matrix.map_mul, Matrix.mul_assoc]
+    rw [Matrix.map_neg _ (map_neg toAdele), Matrix.map_mul, ← conjTranspose_map_toAdele,
+      Matrix.neg_mul, Matrix.mul_neg, Matrix.mul_assoc]
   simp only [shiftedMean, partialMean, lineShift_add, mul_assoc,
     centreCoeff_lineShift_symm_mul_lineShift hD hf (a₀.map toAdele), h_rat, h_index]
 
@@ -528,11 +604,11 @@ that at n₋(b) n₊(a) g. -/
 lemma centreCoeff_eq_mul_of_shiftedMean_eq_smul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (hT : T.det ≠ 0) {g g' : G E s} {c : ℂ}
     (h_eq : A.shiftedMean B D T f g' = c • A.shiftedMean B D T f g) (a b : Matrix Unit p (𝔸 E)) :
-    D.centreCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g')) =
-      c * D.centreCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g)) := by
+    D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g')) =
+      c * D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * g)) := by
   -- As T is invertible, the values φ⁺(a₀ + a) are all the Fourier coefficients in b.
   let F (x : G E s) (b : Matrix Unit p (𝔸 E)) : ℂ :=
-    D.centreCoeff T f (A.symm.lineShift B b * (A.lineShift B a * x))
+    D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * x))
   have hF (x : G E s) : IsContPeriodic (ratMatrices E Unit p) (F x) :=
     isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf _
   have h_sub : IsContPeriodic (ratMatrices E Unit p) fun b ↦ F g' b - c * F g b :=
@@ -560,11 +636,11 @@ lemma shiftedMean_symm_eq_smul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
   -- The order of the two shifts matters only by a character that does not depend on the point.
   funext b
   have h_point (a : Matrix Unit p (𝔸 E)) :
-      D.centreCoeff T f (A.lineShift B a * (A.symm.lineShift B b * g')) =
-        c * D.centreCoeff T f (A.lineShift B a * (A.symm.lineShift B b * g)) := by
-    have h_swap (x : G E s) : D.centreCoeff T f (A.lineShift B a * (A.symm.lineShift B b * x)) =
+      D.centerCoeff T f (A.lineShift B a * (A.symm.lineShift B b * g')) =
+        c * D.centerCoeff T f (A.lineShift B a * (A.symm.lineShift B b * g)) := by
+    have h_swap (x : G E s) : D.centerCoeff T f (A.lineShift B a * (A.symm.lineShift B b * x)) =
         stdAddChar E (T.map toAdele * -(bᴴ * a)).trace *
-          D.centreCoeff T f (A.symm.lineShift B b * (A.lineShift B a * x)) :=
+          D.centerCoeff T f (A.symm.lineShift B b * (A.lineShift B a * x)) :=
       centreCoeff_lineShift_symm_mul_lineShift (A := A.symm) hD hf b a x
     rw [h_swap, h_swap, centreCoeff_eq_mul_of_shiftedMean_eq_smul hD hf hT h_eq, mul_left_comm]
   simp [shiftedMean, partialMean, h_point]
@@ -573,7 +649,7 @@ lemma shiftedMean_symm_eq_smul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
 then the coefficient of f along D at T is zero at g. -/
 lemma centreCoeff_eq_zero_of_shiftedMean_eq_zero (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (hf : IsAutFunction W f) (hT : T.det ≠ 0) {g : G E s}
-    (h_zero : A.shiftedMean B D T f g = 0) : D.centreCoeff T f g = 0 := by
+    (h_zero : A.shiftedMean B D T f g = 0) : D.centerCoeff T f g = 0 := by
   simpa [lineShift_zero] using
     centreCoeff_eq_mul_of_shiftedMean_eq_smul (c := 0) (g := g) hD hf hT (by simp [h_zero]) 0 0
 
@@ -617,7 +693,7 @@ def ShearInvariant (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p) (D : 
 block diagonal matrix 0 ⊕ T. -/
 noncomputable abbrev borderedCentreCoeff (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
     (T : Matrix p p E) (f : G E s → ℂ) : G E s → ℂ :=
-  (A.comp B).centreCoeff (fromBlocks 0 0 0 T) f
+  (A.comp B).centerCoeff (fromBlocks 0 0 0 T) f
 
 variable {A : W.Splitting W₀ Unit} {B : W₀.Splitting W₂ p} {D : W.Splitting W₁ p}
 
@@ -627,12 +703,40 @@ the central element for A at z. -/
 lemma radicalCentre_comp_fromBlocks (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     (z : Matrix Unit Unit (𝔸 E)) (b : Matrix Unit p (𝔸 E)) (c : Matrix p Unit (𝔸 E))
     (N : Matrix p p (𝔸 E)) :
-    (A.comp B).radicalCentre (fromBlocks z b c N) =
-      D.radicalCentre N * (A.symm.lineShift B (b - cᴴ) * A.radicalCentre z) := by
+    (A.comp B).radicalCenter (fromBlocks z b c N) =
+      D.radicalCenter N * (A.symm.lineShift B (b - cᴴ) * A.radicalCenter z) := by
   refine G.ext_adeleMatrix ?_
-  simp [lineShift, G.adeleMatrix_mul, hD, lCoord_eq_lCoord_mul_iCoord hD, sub_eq_add_neg,
-    Matrix.mul_add, Matrix.add_mul, comp_kAdelic, fromBlocks_conjTranspose, fromBlocks_add,
-    fromBlocks_neg, fromCols_mul_fromBlocks, fromCols_mul_fromRows, Matrix.mul_assoc]
+  have hDl : D.lCoord = B.lCoord * A.iCoord := lCoord_eq_lCoord_mul_iCoord hD
+  have h_l : A.symm.lAdelic = A.kAdelic := rfl
+  have h_k : A.symm.kCoord = A.lCoord := rfl
+  set U : Matrix n n (𝔸 E) := D.kAdelic * (N - Nᴴ) * D.lCoord
+  set V : Matrix n n (𝔸 E) :=
+    A.kAdelic * (b - cᴴ) * (B.lCoord * A.iCoord) - A.iAdelic * B.kAdelic * (b - cᴴ)ᴴ * A.lCoord
+  set Z : Matrix n n (𝔸 E) := A.kAdelic * (z - zᴴ) * A.lCoord
+  have hVZ : V * Z = 0 := by
+    dsimp only [V, Z]
+    rw [Matrix.sub_mul]
+    simp only [Matrix.mul_assoc, A.iCoord_mul_kAdelic_mul, A.lCoord_mul_kAdelic_mul,
+      Matrix.mul_zero, sub_self]
+  have hUV : U * V = 0 := radicalTerm_mul_lineShiftTerm (A := A.symm) hD _ _
+  have hUZ : U * Z = 0 := by
+    dsimp only [U, Z]
+    rw [hDl]
+    simp only [Matrix.mul_assoc, A.iCoord_mul_kAdelic_mul, Matrix.mul_zero]
+  have h_rhs : (1 + U) * ((1 + V) * (1 + Z)) = 1 + U + V + Z := by
+    simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, hVZ, hUV, hUZ,
+      add_zero]
+  rw [G.adeleMatrix_mul, G.adeleMatrix_mul, adeleMatrix_radicalCenter, adeleMatrix_radicalCenter,
+    adeleMatrix_radicalCenter, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+  change 1 + (A.comp B).kAdelic * (fromBlocks z b c N - (fromBlocks z b c N)ᴴ) *
+      (A.comp B).lCoord = (1 + U) * ((1 + V) * (1 + Z))
+  rw [h_rhs, comp_kAdelic, comp_lCoord, fromBlocks_conjTranspose,
+    sub_eq_add_neg (fromBlocks z b c N), fromBlocks_neg, fromBlocks_add,
+    fromCols_mul_fromBlocks, fromCols_mul_fromRows]
+  dsimp only [U, V, Z]
+  rw [hD, hDl]
+  simp only [Matrix.add_mul, Matrix.mul_add, Matrix.sub_mul, Matrix.mul_sub, conjTranspose_sub,
+    conjTranspose_conjTranspose, Matrix.mul_neg, Matrix.neg_mul, Matrix.mul_assoc]
   abel
 
 /-- Let `A` split one hyperbolic plane off `W` over `W₀`, `B` split `p` planes off `W₀` over `W₂`,
@@ -645,19 +749,21 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
     (hf : IsAutFunction W f) (T : Matrix p p E) (g : G E s) :
     A.borderedCentreCoeff B T f g =
       quotMean (ratMatrices E Unit Unit) fun z : Matrix Unit Unit (𝔸 E) ↦
-        A.partialMean B D T f (A.radicalCentre z * g) := by
+        A.partialMean B D T f (A.radicalCenter z * g) := by
   -- The integrand `Φ M` depends only on M₁₁, on M₁₂ − M₂₁ᴴ and on M₂₂. Take the mean over M₂₂, then
   -- over M₁₂ and M₂₁, then over M₁₁.
   let Φ (M : Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E)) : ℂ :=
-    stdAddChar E ((fromBlocks 0 0 0 T).map toAdele * M).trace * f ((A.comp B).radicalCentre M * g)
+    stdAddChar E ((fromBlocks 0 0 0 T).map toAdele * M).trace * f ((A.comp B).radicalCenter M * g)
   have hΦ : IsContPeriodic (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) Φ :=
     isDualFamily_ratMatrices.isContPeriodic_mul (isContPeriodic_radicalCentre _ hf g) _
   have hΦ_eq (z : Matrix Unit Unit (𝔸 E)) (b : Matrix Unit p (𝔸 E)) (c : Matrix p Unit (𝔸 E))
       (N : Matrix p p (𝔸 E)) :
       Φ (fromBlocks z b c N) = stdAddChar E (T.map toAdele * N).trace *
-        f (D.radicalCentre N * (A.symm.lineShift B (b - cᴴ) * (A.radicalCentre z * g))) := by
-    simp [Φ, radicalCentre_comp_fromBlocks hD, mul_assoc, fromBlocks_map, fromBlocks_multiply,
-      trace]
+        f (D.radicalCenter N * (A.symm.lineShift B (b - cᴴ) * (A.radicalCenter z * g))) := by
+    dsimp only [Φ]
+    rw [radicalCentre_comp_fromBlocks hD, mul_assoc, mul_assoc]
+    simp only [fromBlocks_map, Matrix.map_zero _ (map_zero toAdele), fromBlocks_multiply,
+      Matrix.zero_mul, zero_add, add_zero, trace_fromBlocks, trace_zero]
   let φ₁ : Matrix Unit Unit (𝔸 E) × Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E) →+
       Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E) :=
     .mk' (fun (z, M) ↦ fromBlocks z M.toBlocks₁₂ M.toBlocks₂₁ M.toBlocks₂₂)
@@ -674,25 +780,36 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
     refine ⟨?_, ?_, ?_⟩ <;> fun_prop
   have hφ₁_rat : ∀ z ∈ ratMatrices E Unit Unit, ∀ M ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p),
       φ₁ (z, M) ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p) := by
-    simp +contextual [φ₁, mem_ratMatrices, toBlocks₁₂, toBlocks₂₁, toBlocks₂₂]
+    rintro _ ⟨z, rfl⟩ _ ⟨M, rfl⟩
+    refine ⟨fromBlocks z M.toBlocks₁₂ M.toBlocks₂₁ M.toBlocks₂₂, ?_⟩
+    refine Matrix.ext fun i j ↦ ?_
+    rcases i with i | i <;> rcases j with j | j <;> rfl
   have hφ₂_rat : ∀ M ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p), ∀ N ∈ ratMatrices E p p,
       φ₂ (M, N) ∈ ratMatrices E (Unit ⊕ p) (Unit ⊕ p) := by
-    simp +contextual [φ₂, mem_ratMatrices, toBlocks₁₁, toBlocks₁₂, toBlocks₂₁]
+    rintro _ ⟨M, rfl⟩ _ ⟨N, rfl⟩
+    refine ⟨fromBlocks M.toBlocks₁₁ M.toBlocks₁₂ M.toBlocks₂₁ N, ?_⟩
+    refine Matrix.ext fun i j ↦ ?_
+    rcases i with i | i <;> rcases j with j | j <;> rfl
   have h_inner (z : Matrix Unit Unit (𝔸 E)) :
       (quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦ Φ (φ₁ (z, M))) =
-        A.partialMean B D T f (A.radicalCentre z * g) := by
+        A.partialMean B D T f (A.radicalCenter z * g) := by
     have hΦz : IsContPeriodic (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦ Φ (φ₁ (z, M)) :=
-      ⟨hΦ.1.comp (by fun_prop), fun γ hγ M ↦ by
-        simpa [← map_add] using hΦ.2 _ (hφ₁_rat 0 (zero_mem _) γ hγ) (φ₁ (z, M))⟩
+      ⟨hΦ.1.comp (hφ₁.comp (continuous_const.prodMk continuous_id)), fun γ hγ M ↦ by
+        have h := hΦ.2 _ (hφ₁_rat 0 (zero_mem _) γ hγ) (φ₁ (z, M))
+        rwa [← map_add, Prod.mk_add_mk, zero_add] at h⟩
+    have hφ₁₂ (M : Matrix (Unit ⊕ p) (Unit ⊕ p) (𝔸 E)) (N : Matrix p p (𝔸 E)) :
+        φ₁ (z, φ₂ (M, N)) = fromBlocks z M.toBlocks₁₂ M.toBlocks₂₁ N := by
+      refine Matrix.ext fun i j ↦ ?_
+      rcases i with i | i <;> rcases j with j | j <;> rfl
     calc (quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦ Φ (φ₁ (z, M)))
       _ = quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦
             quotMean (ratMatrices E p p) fun N ↦ Φ (φ₁ (z, φ₂ (M, N))) :=
         (quotMean_quotMean _ hΦz _ φ₂ hφ₂ hφ₂_rat
           fun M ↦ ⟨(M, M.toBlocks₂₂), M.fromBlocks_toBlocks⟩).symm
       _ = quotMean (ratMatrices E (Unit ⊕ p) (Unit ⊕ p)) fun M ↦
-            D.centreCoeff T f (A.symm.lineShift B (π M) * (A.radicalCentre z * g)) := by
-        simp [φ₁, φ₂, π, hΦ_eq, centreCoeff]
-      _ = A.partialMean B D T f (A.radicalCentre z * g) := by
+            D.centerCoeff T f (A.symm.lineShift B (π M) * (A.radicalCenter z * g)) := by
+        simp only [hφ₁₂, hΦ_eq, centerCoeff, π, AddMonoidHom.mk'_apply]
+      _ = A.partialMean B D T f (A.radicalCenter z * g) := by
         refine quotMean_comp _ π (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf _) ?_
           (fun b ↦ ⟨fromBlocks 0 b 0 0, by simp [π]⟩) hπ
         rintro _ ⟨M, rfl⟩
@@ -703,7 +820,7 @@ lemma borderedCentreCoeff_eq_quotMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) {
 
 /-- If the frame of D is the image of the frame of B, the centre of the radical for A fixes it. -/
 lemma actsOnFrame_radicalCentre_one (hD : D.kAdelic = A.iAdelic * B.kAdelic)
-    (z : Matrix Unit Unit (𝔸 E)) : D.ActsOnFrame (A.radicalCentre z) 1 := by
+    (z : Matrix Unit Unit (𝔸 E)) : D.ActsOnFrame (A.radicalCenter z) 1 := by
   simp [hD, Matrix.add_mul, Matrix.mul_assoc]
 
 /-- Let the frame of `D` be the image under `A` of the frame of `B` (`hD`), let `f` be automorphic,
@@ -711,39 +828,51 @@ lemma actsOnFrame_radicalCentre_one (hD : D.kAdelic = A.iAdelic * B.kAdelic)
 adelic rows b modulo rational rows, of the Fourier coefficient of `f` along `D` at `T` at
 `A.symm.lineShift B b * x`. If f⁺ takes the same value at `g` and at νg for every shear
 ν = 1 + ē·uc − e·a (e the idempotent adele of `U`, u = `A.kAdelic`, cu = 0), then
-f⁺(`A.radicalCentre z * g`) = f⁺(g) for every adelic 1×1 matrix `z`. -/
+f⁺(`A.radicalCenter z * g`) = f⁺(g) for every adelic 1×1 matrix `z`. -/
 lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     {f : G E s → ℂ} (hf : IsAutFunction W f) {T : Matrix p p E} {U : Set (FinPlace E)}
     (hU : U.Nonempty) {g : G E s} (h_shear : A.ShearInvariant B D T f (idemAdele U) g) :
     ∀ z : Matrix Unit Unit (𝔸 E),
-      A.partialMean B D T f (A.radicalCentre z * g) = A.partialMean B D T f g := by
+      A.partialMean B D T f (A.radicalCenter z * g) = A.partialMean B D T f g := by
   -- The function of z is continuous and invariant under rational z and under z supported on U; the
   -- sums of these are dense.
   let e : 𝔸 E := idemAdele U
   suffices h_dense : ∀ (Y : Matrix Unit Unit E) (y : Matrix Unit Unit (𝔸 E)),
-      A.partialMean B D T f (A.radicalCentre (Y.map toAdele + e • y) * g) =
+      A.partialMean B D T f (A.radicalCenter (Y.map toAdele + e • y) * g) =
         A.partialMean B D T f g from
-    (denseRange_rat_matrix_add hU 1).eq (fun ⟨Y, y⟩ ↦ by simpa using h_dense Y y)
-      ((continuous_partialMean hD hf).comp (by fun_prop))
+    (denseRange_rat_matrix_add hU 1).eq
+      (fun ⟨Y, y⟩ ↦ by
+        dsimp only [Function.comp_apply]
+        rw [inv_one, Units.val_one, Matrix.one_mul]
+        exact h_dense Y y)
+      ((continuous_partialMean hD hf).comp (A.continuous_radicalCenter.mul continuous_const))
   intro Y y
   -- A rational point of the centre commutes with the shifts n₋(b) and fixes the frame of D.
   have h_rat (x : G E s) :
-      A.partialMean B D T f (A.radicalCentre (Y.map toAdele) * x) = A.partialMean B D T f x := by
+      A.partialMean B D T f (A.radicalCenter (Y.map toAdele) * x) = A.partialMean B D T f x := by
     have h_comm (b : Matrix Unit p (𝔸 E)) :
-        A.symm.lineShift B b * A.radicalCentre (Y.map toAdele) =
-          A.radicalCentre (Y.map toAdele) * A.symm.lineShift B b := by
+        A.symm.lineShift B b * A.radicalCenter (Y.map toAdele) =
+          A.radicalCenter (Y.map toAdele) * A.symm.lineShift B b := by
       have h_frame : A.ActsOnFrame (A.symm.lineShift B b) 1 := by
-        simp [lineShift, comp_kAdelic, Matrix.add_mul, Matrix.mul_assoc]
-      simpa using A.mul_radicalCentre h_frame (Y.map toAdele)
+        have h_l : A.symm.lAdelic = A.kAdelic := rfl
+        have h_k : A.symm.kCoord = A.lCoord := rfl
+        rw [ActsOnFrame, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+        simp only [Matrix.add_mul, Matrix.one_mul, Matrix.sub_mul, Matrix.mul_assoc,
+          A.iCoord_mul_kAdelic, A.lCoord_mul_kAdelic, Matrix.mul_zero, Matrix.mul_one,
+          sub_zero, add_zero]
+      have h := A.mul_radicalCenter h_frame (Y.map toAdele)
+      rwa [Matrix.one_mul, conjTranspose_one, Matrix.mul_one] at h
     simp only [partialMean, ← mul_assoc (A.symm.lineShift B _), h_comm]
-    have h_mem : A.radicalCentre (Y.map toAdele) ∈ W.Γ := A.radicalCentre_mem ⟨Y, rfl⟩
+    have h_mem : A.radicalCenter (Y.map toAdele) ∈ W.Γ := A.radicalCenter_mem ⟨Y, rfl⟩
     simp only [mul_assoc, D.centreCoeff_rat_mul_of_actsOnFrame_one hf h_mem
       (actsOnFrame_radicalCentre_one hD _)]
   -- A point of the centre supported on U ∪ Ū is a shear.
-  have h_mat : (A.radicalCentre (e • y)).adeleMatrix =
+  have h_mat : (A.radicalCenter (e • y)).adeleMatrix =
       1 + (star e • (A.kAdelic * -(yᴴ * A.lCoord) :) - e • -(A.kAdelic * y * A.lCoord)) := by
-    rw [adeleMatrix_radicalCentre]
-    simp [sub_eq_add_neg, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, add_comm]
+    rw [adeleMatrix_radicalCenter, conjTranspose_smul, Matrix.mul_sub, Matrix.sub_mul,
+      Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_smul, Matrix.smul_mul,
+      Matrix.mul_neg, smul_neg, smul_neg, Matrix.mul_assoc, Matrix.mul_assoc]
+    abel
   rw [AddChar.map_add_eq_mul, mul_assoc, h_rat, h_shear _ _ (by simp [Matrix.mul_assoc]) h_mat]
 
 /-- Let the frame of D be the image of the frame of B, let f be automorphic and U a nonempty set of
@@ -766,7 +895,7 @@ lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAd
   {f : G E s → ℂ}
     (hf : IsAutFunction W f) {T : Matrix p p E} {U : Set (FinPlace E)} (hU : U.Nonempty)
     {g : G E s} (h_shear : ∀ z : Matrix Unit Unit (𝔸 E),
-      A.ShearInvariant B D T f (idemAdele U) (A.radicalCentre z * g))
+      A.ShearInvariant B D T f (idemAdele U) (A.radicalCenter z * g))
     (z : Matrix Unit Unit (𝔸 E)) :
     ∀ c : Matrix ((p ⊕ p) ⊕ n₂) Unit (𝔸 E),
       A.borderedCentreCoeff B T f (A.radicalElement c z * g) = A.borderedCentreCoeff B T f g := by
@@ -778,21 +907,39 @@ lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAd
   let Y₀ : Matrix ((p ⊕ p) ⊕ n₂) Unit (𝔸 E) := W₀.x⁻¹.val * Y.map toAdele
   let u : Matrix (Unit ⊕ p) (Unit ⊕ p) E := fromBlocks 1 (Yᴴ * W₀.J * B.k) 0 1
   have h_frame : (A.comp B).ActsOnFrame (A.radicalElement Y₀ 0) (u.map toAdele) := by
-    have hB : B.kAdelic = W₀.x⁻¹.val * B.k.map toAdele := rfl
-    simp [Y₀, u, hB, ← Matrix.mul_assoc, add_comm, map_J, comp_kAdelic, actsOnFrame_radicalElement,
-      radicalElement_mul_iAdelic, Matrix.add_mul, fromBlocks_map, fromCols_mul_fromBlocks]
+    rw [ActsOnFrame, comp_kAdelic, Matrix.mul_fromCols]
+    simp only [u, fromBlocks_map, Matrix.map_one _ (map_zero toAdele) (map_one toAdele),
+      Matrix.map_zero _ (map_zero toAdele), fromCols_mul_fromBlocks,
+      Matrix.mul_one, Matrix.mul_zero, add_zero]
+    congr 1
+    · exact (A.actsOnFrame_radicalElement Y₀ 0).trans (Matrix.mul_one _)
+    · rw [← Matrix.mul_assoc, A.radicalElement_mul_iAdelic, Matrix.add_mul, add_comm]
+      congr 1
+      have hB : B.kAdelic = W₀.x⁻¹.val * B.k.map toAdele := rfl
+      rw [Matrix.mul_assoc, Matrix.mul_assoc]
+      congr 1
+      dsimp only [Y₀]
+      rw [hB, Matrix.map_mul, Matrix.map_mul, ← conjTranspose_map_toAdele, W₀.map_J,
+        conjTranspose_mul]
+      simp only [Matrix.mul_assoc]
   have h_rat (g' : G E s) :
       A.borderedCentreCoeff B T f (A.radicalElement Y₀ 0 * g') =
         A.borderedCentreCoeff B T f g' := by
     rw [borderedCentreCoeff,
       centreCoeff_rat_mul _ hf _ (A.radicalElement_mem_Gamma Y (by simp)) u h_frame]
-    simp [u, fromBlocks_conjTranspose, fromBlocks_multiply]
+    simp only [u, fromBlocks_conjTranspose, conjTranspose_one, conjTranspose_zero,
+      fromBlocks_multiply, Matrix.mul_zero, Matrix.zero_mul, Matrix.one_mul, Matrix.mul_one,
+      add_zero, zero_add]
   -- The centre of the radical for `A` pairs trivially with `0 ⊕ T`.
   have h_centre (M : Matrix Unit Unit (𝔸 E)) (g' : G E s) :
-      A.borderedCentreCoeff B T f (A.radicalCentre M * g') = A.borderedCentreCoeff B T f g' := by
-    simpa [radicalCentre_comp_fromBlocks hD, lineShift_zero, fromBlocks_map, fromBlocks_multiply]
-      using centreCoeff_radicalCentre_mul (A.comp B) hf (T := fromBlocks 0 0 0 T)
-        (fromBlocks M 0 0 0) g'
+      A.borderedCentreCoeff B T f (A.radicalCenter M * g') = A.borderedCentreCoeff B T f g' := by
+    have h := centreCoeff_radicalCentre_mul (A.comp B) hf (T := fromBlocks 0 0 0 T)
+      (fromBlocks M 0 0 0) g'
+    rw [radicalCentre_comp_fromBlocks hD] at h
+    simp only [conjTranspose_zero, sub_self, lineShift_zero, one_mul, AddChar.map_zero_eq_one,
+      fromBlocks_map, Matrix.map_zero _ (map_zero toAdele), fromBlocks_multiply, Matrix.zero_mul,
+      Matrix.mul_zero, add_zero, trace_fromBlocks, trace_zero, Circle.coe_one] at h
+    exact h
   -- The element `ν` of the radical is a shear, and it commutes with the centre.
   let ν : G E s := A.radicalElement (e • y) 0
   have h_local : A.borderedCentreCoeff B T f (ν * g) = A.borderedCentreCoeff B T f g := by
@@ -800,18 +947,29 @@ lemma borderedCentreCoeff_radicalElement_mul (hD : D.kAdelic = A.iAdelic * B.kAd
       (A.iCoord - toAdele (2⁻¹ : E) • e • y * A.lCoord)
     have h_mat : ν.adeleMatrix = 1 + (star e • (A.kAdelic * c₁ :) - e •
       (A.iAdelic * y * A.lCoord)) := by
-      simp [ν, c₁, Splitting.radicalElement, Matrix.mul_assoc, sub_eq_add_neg, Matrix.mul_add]
-      module
+      dsimp only [ν, Splitting.radicalElement]
+      rw [G.adeleMatrix_ofMatrix]
+      simp only [c₁, conjTranspose_zero, add_zero, smul_zero, zero_add, conjTranspose_smul,
+        Matrix.smul_mul, Matrix.mul_smul, Matrix.mul_sub, smul_sub, Matrix.mul_assoc]
+      have h_sc : toAdele (2⁻¹ : E) • e • star e •
+          (A.kAdelic * (yᴴ * (stdForm E (hyperbolicSigns p ⊕ᵥ s₂) * (y * A.lCoord)))) =
+          star e • toAdele (2⁻¹ : E) • e •
+            (A.kAdelic * (yᴴ * (stdForm E (hyperbolicSigns p ⊕ᵥ s₂) * (y * A.lCoord)))) := by
+        simp only [smul_smul]
+        congr 1
+        rw [mul_comm e, ← mul_assoc, mul_comm _ (star e), mul_assoc]
+      rw [h_sc]
+      abel
     have h_comm (w : Matrix Unit Unit (𝔸 E)) :
-        A.radicalCentre w * (ν * g) = ν * (A.radicalCentre w * g) := by
-      rw [← mul_assoc ν, A.mul_radicalCentre (A.actsOnFrame_radicalElement _ _), mul_assoc]
+        A.radicalCenter w * (ν * g) = ν * (A.radicalCenter w * g) := by
+      rw [← mul_assoc ν, A.mul_radicalCenter (A.actsOnFrame_radicalElement _ _), mul_assoc]
       simp [ν]
     simp only [borderedCentreCoeff_eq_quotMean hD hf, h_comm,
       h_shear _ c₁ _ (by simp [c₁, sub_eq_add_neg, Matrix.mul_assoc, Matrix.add_mul]) h_mat]
   -- The element is a product of a rational point, a point of the centre and the shear.
   let z' : Matrix Unit Unit (𝔸 E) :=
     z - toAdele (j : E) • Y₀ᴴ * stdForm E (hyperbolicSigns p ⊕ᵥ s₂) * (e • y)
-  have h_central : A.radicalCentre (-toAdele (j * 2 : E)⁻¹ • z') = A.radicalElement 0 z' := by
+  have h_central : A.radicalCenter (-toAdele (j * 2 : E)⁻¹ • z') = A.radicalElement 0 z' := by
     change A.radicalElement 0 (-toAdele (j * 2 : E) • -toAdele (j * 2 : E)⁻¹ • z') = _
     rw [smul_smul, neg_mul_neg, ← map_mul, mul_inv_cancel₀ (by simp [j_ne_zero]), map_one, one_smul]
   have h_split : A.radicalElement (Y₀ + e • y) z =

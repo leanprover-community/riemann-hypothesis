@@ -1,7 +1,11 @@
 module
 
-public import Lib.DiscreteSeries.Bruhat.FourierKernels
+import Mathlib.CategoryTheory.Countable
+import Mathlib.Topology.Algebra.Group.Units
 public import New.Spanning.Frames.Correlations
+public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+import Lib.DiscreteSeries.Bruhat.FourierKernels
+import New.Spanning.Frames.TwoGauges
 
 /-!
 # Volumes on quadrics and on sections
@@ -57,20 +61,13 @@ lemma mem_vecsOfSize_of_floorBasis_mulVec {x : Fin 2 ⊕ FloorPairs b m ⊕ ι �
     (h : F.floorBasis b *ᵥ x ∈ Γ.vecsOfSize j) :
     x ∈ Γ.vecsOfSize (j + 4) := by
   -- Each entry of the basis is zero, one or an entry of `F.basisMatrix`, and so has size 1.
-  have h_entry (k : 𝔰.BesselIndex) (i : Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m) :
-      F.floorBasis b k i ∈ Γ.ofSize 1 := by
+  have h_basis : Γ.HasMatrixSize 1 (F.floorBasis b)ᴴ := fun i k ↦ by
+    simp only [conjTranspose_apply, neg_mem_iff_and_star_mem_iff]
     revert k i
-    -- `sum_boole_mul` evaluates the products with `inclMatrix`; `ite_mul` would hide its pattern.
     simp [floorBasis, Matrix.mul_apply, inclMatrix, Matrix.one_apply, -ite_mul, sum_boole_mul,
       Γ.hasMatrixSize_basisMatrix _, zero_one_mem_ofSize, ite_mem]
-  have h_basis : Γ.HasMatrixSize 1 (F.floorBasis b)ᴴ := fun i k ↦ by
-    simpa [neg_mem_iff_and_star_mem_iff] using h_entry k i
-  have h_dual : Γ.HasMatrixSize 3 ((F.floorBasis b)ᴴ * T.splitGram) :=
-    h_basis.mul Γ.splitGram_and_inv_mem.1
-  have h_pair : planeSumGram (hyperbolicGram (FloorPairs b m) (1 : Matrix ι ι A)) *ᵥ x ∈
-      Γ.vecsOfSize (j + 4) := by
-    rw [← gram_floorBasis, ← mulVec_mulVec, show j + 4 = 3 + j + 1 by lia]
-    exact h_dual.mulVec h
+  have h_pair := (h_basis.mul Γ.splitGram_and_inv_mem.1).mulVec h
+  rw [mulVec_mulVec, gram_floorBasis, show 3 + j + 1 = j + 4 by lia] at h_pair
   -- The Gram matrix of the basis swaps the two entries of each pair and fixes the others.
   rintro (i | i | i | i)
   · fin_cases i
@@ -221,7 +218,8 @@ lemma skewMeasure_le_of_sub_mem_ofSize {S : Set (skewAdjoint A)} (u : Aˣ)
     push_cast
     ring
   · grw [volume_ofSize_le]
-    simp [mul_pow, ← rpow_mul_natCast, ← pow_mul]
+    simp only [modulus_inv, inv_inv, mul_pow, ← rpow_mul_natCast, Nat.cast_ofNat,
+      inv_mul_cancel₀ (two_ne_zero' ℝ), rpow_one, ← pow_mul]
     gcongr
     · exact Γ.one_le_loss
     · lia
@@ -464,20 +462,13 @@ lemma Gauge.sectionPoint_mem_vecsOfSize_of_isNear {y n ν : T.G} (hp : Γ.IsHead
     (hy : y ∈ F.boxSet) (hn : n ∈ floorUnipotent a) (hν : ν ∈ unipotentBelow a)
     (h_near : F.IsNear (a + 1) (weylElem (a + 1) p * (n * ν) * y)) :
     sectionPoint a (star (p a).val) n ∈ Γ.vecsOfSize (20 * 𝔰.n) := by
-  obtain ⟨hn_floor, hn_unip⟩ : n ∈ floorGroup a ∧ n ∈ unipotentBelow (a + 1) := hn
-  -- For the head `star p`, the entry `star (p a)` and `(n ν)⁻¹ e*_a` have size `10 * 𝔰.n`.
-  have h_mem : n * ν ∈ partialUnitriangularGroup (a + 1) :=
-    mul_mem (unipotentBelow_le_partialUnitriangularGroup hn_unip)
-      (unipotentBelow_le_partialUnitriangularGroup hν)
-  have h_box : (n * ν)⁻¹ * (n * ν * y) ∈ F.boxSet := by rwa [inv_mul_cancel_left]
-  obtain ⟨h_unit, -, h_col⟩ :
-      (star p a).val ∈ Γ.ofSize (10 * 𝔰.n) ∧ (star p a)⁻¹.val ∈ Γ.ofSize (10 * 𝔰.n) ∧
-        ∀ i : 𝔰.BesselIndex, (n * ν)⁻¹.val.val i (eStar a) ∈ Γ.ofSize (10 * 𝔰.n) :=
-    head_entries_mem_ofSize Γ.hasMatrixSize_boxSet a.isLt
-      (by simpa [IsNear, mul_assoc] using h_near)
-      ⟨inv_mem h_mem, h_box⟩ hp.star_head .refl
-  refine sectionPoint_mem_vecsOfSize hn_floor (congrBelow_sectionPoint_orbitPoint hn_floor hν)
-    fun k ↦ ?_
+  -- For the head `star p`, `star (p a)` and `(n ν)⁻¹ e*_a` have size `10 * 𝔰.n`.
+  obtain ⟨h_unit, -, h_col⟩ := head_entries_mem_ofSize Γ.hasMatrixSize_boxSet a.isLt
+    (by simpa [IsNear, mul_assoc] using h_near)
+    ⟨inv_mem (mul_mem (unipotentBelow_le_partialUnitriangularGroup hn.2)
+      (unipotentBelow_le_partialUnitriangularGroup hν)), by simpa [← mul_assoc] using hy⟩
+    hp.star_head .refl
+  refine sectionPoint_mem_vecsOfSize hn.1 (congrBelow_sectionPoint_orbitPoint hn.1 hν) fun k ↦ ?_
   rw [orbitPoint_weylElem_mul, mulVec_single_one]
   exact mem_ofSize_mono (Γ.mul_mem_ofSize h_unit (h_col k))
 

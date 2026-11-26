@@ -1,6 +1,7 @@
 module
 
-public import Lib.Base
+import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
+public import Lib.Speed
 
 /-!
 # Absolutely integrally closed rings and their stability properties; Frobenius powers

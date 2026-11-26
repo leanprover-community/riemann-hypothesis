@@ -1,10 +1,17 @@
 module
 
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Std.Tactic.BVDecide.Normalize.Bool
 public import Lib.Weil.DualPair.Flip
 public import New.Determinant.AuxiliaryForms.GridPaths
 public import New.Determinant.Chain.SquareLaw
-public import New.Determinant.Twist.FitTwists
-public import New.OneLift.ComparisonOperator.ExchangeData
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.Weil.Seesaw
+public import New.UpperBound.Objects.Rows
+public import Lib.Adelic.Unitary.RationalPoints -- shake: keep (needed public by an exposed definition)
+import Lib.Adelic.Unitary.WeakApproximation
+import New.OneLift.ComparisonOperator.ExchangeData
 
 /-!
 # Moduli, spaces, moves, path data and periods on the two grids
@@ -126,7 +133,7 @@ abbrev reduceToTriangle (z : Bool) :
       NumberField.RingOfIntegers D.E ⧸ (triangleModulus z ϑ).ideal :=
   factor (gridModulus_ideal_le_triangleModulus_ideal ϑ z)
 
-lemma piM_dvd_gridLevelGen : D.piM ∣ D.gridLevelGen := by simp [NeZero.ne]
+lemma piM_dvd_gridLevelGen : D.piM ∣ D.gridLevelGen := dvd_pow_self _ (NeZero.ne _)
 
 end GridModuli
 
@@ -286,7 +293,9 @@ lemma gridSpace_subdiag (j : ℕ) :
     lia
   have h_neg :
       negCount (D.gridSigns true 0 j (j + 1)) = negCount (D.gridSigns false 0 (j + 1) j) := by
-    grind [negCount_gridSigns]
+    rw [negCount_gridSigns, negCount_gridSigns]
+    simp only [Bool.toNat_true, Bool.toNat_false]
+    omega
   obtain ⟨τ, hτ⟩ := exists_equiv_comp_eq_of_negCount_eq (a := D.gridSigns true 0 j (j + 1))
     (b := D.gridSigns false 0 (j + 1) j) h_card h_neg
   -- both spaces are the diagonal forms `signedSpace` of their signs
@@ -543,7 +552,9 @@ lemma IsPathDatum.mono {N N' : ℕ} {Ψ : EdgeTuple ϑ → ℂ} (hΨ : IsPathDat
 invertible matrices. -/
 lemma edgeCharProd_mul (g g' : NodeFamily ϑ) (w : Finset (GridNode × GridNode)) :
     edgeCharProd (g * g') w = edgeCharProd g w * edgeCharProd g' w := by
-  simp [edgeCharProd, prod_mul_distrib, field]
+  simp only [edgeCharProd, ← prod_mul_distrib]
+  refine prod_congr rfl fun e _ ↦ ?_
+  simp only [Pi.mul_apply, MonoidHom.map_mul, mul_div_mul_comm, Units.val_mul]
 
 lemma isOfFinOrder_edgeCharProd (g : NodeFamily ϑ) (w : Finset (GridNode × GridNode)) :
     IsOfFinOrder (edgeCharProd g w) :=
@@ -587,10 +598,15 @@ lemma sum_tuplesOn_insert {edges : Finset (GridNode × GridNode)} {e : GridNode 
     (fun S hS ↦ ?_) (fun p hp ↦ ?_) (fun S _ ↦ by simp) (fun p hp ↦ ?_) fun S _ ↦ by simp
   · refine mem_product.2 ⟨mem_tuplesOn.2 fun e' he' ↦ ?_, mem_univ _⟩
     change update S e 0 e' = 0
-    grind [mem_tuplesOn]
+    by_cases h : e' = e
+    · rw [h]
+      exact update_self e 0 S
+    · rw [update_of_ne h]
+      exact mem_tuplesOn.1 hS e' fun h' ↦ (mem_insert.1 h').elim h he'
   · refine mem_tuplesOn.2 fun e' he' ↦ ?_
-    show update p.1 e p.2 e' = 0
-    grind [mem_tuplesOn]
+    have h : e' ≠ e := fun h' ↦ he' (h' ▸ mem_insert_self e edges)
+    rw [update_of_ne h]
+    exact mem_tuplesOn.1 (mem_product.1 hp).1 e' fun h' ↦ he' (mem_insert_of_mem h')
   · have h_zero : p.1 e = 0 := mem_tuplesOn.1 (mem_product.1 hp).1 e he
     simp [← h_zero]
 
@@ -730,11 +746,8 @@ subtraction. -/
 lemma card_edges_le (p : GridPath a₀ b₀ a b) : #(p.edges z) + a₀ + b ≤ a + b₀ := by
   induction p with
   | nil => simp [edges]
-  | @down a b p ih =>
-    have h_card : #((down p).edges z) ≤ #(p.edges z) + 1 := card_insert_le ..
-    omega
-  | @right a b p ih =>
-    have h_card : #((right p).edges z) ≤ #(p.edges z) + 1 := card_insert_le ..
+  | down p ih | right p ih =>
+    grw [edges, card_insert_le]
     omega
 
 end GridPath
@@ -751,21 +764,15 @@ namespace Data
 of `Γ` and are zero elsewhere. -/
 lemma card_tuplesOn_edges_le (Γ : TwoGridPath D.m) :
     #(tuplesOn ϑ Γ.edges) ≤ edgeMatrixCountBound ϑ ^ (2 * D.m) := by
-  have h_card : #Γ.edges ≤ 2 * D.m := by
-    have h_half (z : Bool) : #((Γ.half z).edges z) + 0 + Γ.diagonalIndex ≤ Γ.diagonalIndex + D.m :=
-      (Γ.half z).card_edges_le
-    have h_union : #Γ.edges ≤ #((Γ.half false).edges false) + #((Γ.half true).edges true) :=
-      card_union_le _ _
-    grind [TwoGridPath.diagonalIndex_le]
-  have h_ends (p q : GridNode) (hpq : (p, q) ∈ Γ.edges) :
-      p.2 ≤ (D.m, D.m) ∧ q.2 ≤ (D.m, D.m) := by
-    obtain ⟨z, hz⟩ : ∃ z : Bool, (p, q) ∈ (Γ.half z).edges z := by
-      simpa [TwoGridPath.edges] using hpq
-    obtain ⟨-, -, -, hp_le, hq_le⟩ := GridPath.eq_and_le_of_mem_edges hz
-    have hq : q.2 ≤ (D.m, D.m) := hq_le.trans ⟨Γ.diagonalIndex_le, le_rfl⟩
-    exact ⟨hp_le.trans hq, hq⟩
-  exact (card_tuplesOn_le h_ends).trans
-    (Nat.pow_le_pow_right (pow_pos Fintype.card_pos _) h_card)
+  refine (card_tuplesOn_le ?_).trans (Nat.pow_le_pow_right (pow_pos Fintype.card_pos _) ?_)
+  · intro p q hpq
+    obtain ⟨z, hz⟩ : ∃ z, (p, q) ∈ (Γ.half z).edges z := by simpa [TwoGridPath.edges] using hpq
+    obtain ⟨-, -, -, hp, hq⟩ := GridPath.eq_and_le_of_mem_edges hz
+    have hq' : q.2 ≤ (D.m, D.m) := hq.trans ⟨Γ.diagonalIndex_le, le_rfl⟩
+    exact ⟨hp.trans hq', hq'⟩
+  · have := (Γ.half false).card_edges_le (z := false)
+    have := (Γ.half true).card_edges_le (z := true)
+    exact (card_union_le _ _).trans (by omega)
 
 /-- The period of a conjugate form on `Y^j_j` and a form on `Ỹ^j_j` along `U(Y^j_j) → U(Ỹ^j_j)`. The
 second form is translated by a real point `g` of `U(Ỹ^j_j)` and, on the added line, by the `j`-th
@@ -778,7 +785,15 @@ idele generating `𝔪 = gridModulus ϑ`. -/
     { weightFn := 1
       comparisonMap := ⟨fun x ↦ .reindex (D.gridDiagEquiv j)
         (D.sumElim_gridSigns_comp_gridDiagEquiv_symm h)
-        (.sum (x, 1, (gridModulus ϑ).flipScalar ^ j)), by fun_prop⟩
+        (.sum (x, 1, (gridModulus ϑ).flipScalar ^ j)),
+        (G.continuous_reindex _ _).comp <| G.continuous_iff.2 <| continuous_pi fun i ↦
+          continuous_pi fun k ↦ by
+            simp only [G.adeleMatrix_sum]
+            rcases i with i | i <;> rcases k with k | k
+            · exact (continuous_apply k).comp ((continuous_apply i).comp G.continuous_adeleMatrix)
+            · exact continuous_const
+            · exact continuous_const
+            · exact continuous_const⟩
       isModerate := ⟨1, 0, by simp⟩
       -- the space at Ỹ^j_j is the sum with a line (gridSpace_diag), and the line contributes a
       -- constant factor to the height of the orthogonal sum

@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
 public import New.Spanning.Frames.Lengths
 
 /-!
@@ -350,19 +351,9 @@ lemma hasMatrixSize_weylElem_inv (hp : ∀ a : Fin 𝔰.ϱ, a < j → (p a : A) 
   intro k m
   obtain ⟨h_zero, h_one⟩ := S.zero_one_mem_ofSize i
   by_cases hm : floorOf m < j ∧ floorOf m < 𝔰.ϱ
-  · obtain ⟨hmj, hmϱ⟩ := hm
-    have h_entry : (weylElem j p : T.G)⁻¹.val.val k m =
-        if k = oppositeIndex m then
-          if level m < 𝔰.ϱ then star (p (floorOf m)).val else (p (floorOf m))⁻¹.val
-        else 0 := by
-      simp [weylElem, weylOn, hmj, hmϱ]
-    rw [h_entry]
-    split_ifs
-    exacts [star_mem_ofSize (hp ⟨_, hmϱ⟩ hmj), hp_inv ⟨_, hmϱ⟩ hmj, h_zero]
-  · rw [show (weylElem j p : T.G)⁻¹.val.val k m = if k = m then 1 else 0 by
-      simp [weylElem, weylOn, hm]]
-    split_ifs
-    exacts [h_one, h_zero]
+  · simp [weylElem, weylOn, hm.1, hm.2, apply_ite (· ∈ S.ofSize i), h_zero,
+      star_mem_ofSize (hp ⟨_, hm.2⟩ hm.1), hp_inv ⟨_, hm.2⟩ hm.1]
+  · simp [weylElem, weylOn, hm, apply_ite (· ∈ S.ofSize i), h_one, h_zero]
 
 /-- Let j ≤ ϱ and let the isometry s lie in R^(j) = `partialUnitriangularGroup j` and in
 `unipotentBelow j`. If the columns s e*_a, a < j, have size d, then s⁻¹ has size (4 (d + 1) + 12)

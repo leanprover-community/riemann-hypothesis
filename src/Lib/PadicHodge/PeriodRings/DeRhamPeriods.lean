@@ -1,7 +1,15 @@
 module
 
-public import Lib.ClassField.Places.DecompositionCyclotomic
+import Mathlib.LinearAlgebra.SModEq.Pow
+import Mathlib.NumberTheory.Multiplicity
+public import Mathlib.RingTheory.Etale.Field -- shake: keep (needed public by an exposed definition)
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.Smooth.AdicCompletion -- shake: keep (needed public by an exposed definition)
+import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.PadicHodge.PeriodRings.CrystallineRings
+import Lib.ClassField.Places.DecompositionCyclotomic
 
 /-!
 # The cyclotomic action on μ, the period t, and the de Rham field B_dR
@@ -60,9 +68,7 @@ variable {p : ℕ} [ThePrime p]
 @[simp]
 lemma iterate_frobEnd_teichmuller (x : OFlat) (n : ℕ) :
     frobEnd^[n] (teichmuller p x) = teichmuller p x ^ p ^ n := by
-  induction n with
-  | zero => simp
-  | succ n ih => simp [ih, pow_succ, pow_mul]
+  simpa only [map_pow] using Period.iterate_frobEnd_teichmuller n x
 
 /-- If `ξ` divides `x - y` in `A_inf`, then `x ^ p ^ m - y ^ p ^ m` lies in the `m`-th power of the
 ideal `(p, ξ)`. -/
@@ -103,7 +109,7 @@ lemma mu_sq_dvd_smul_mu_sub (g : Gp p) : mu ^ 2 ∣ g • mu - (cyclotomicGp g :
     rw [cyclotomicGp,
       cyclotomicChar_eq_of_equivariant p (j := algebraMap _ ℂ_[p])
         fun x ↦ (UniformSpace.Completion.algEquiv_smul_coe g x).symm]
-    exact (pow_dvd_cyclotomicChar_sub_iff m).mpr zmod_eq_natCast_val
+    exact (pow_dvd_cyclotomicChar_sub_iff m).mpr (ZMod.natCast_zmod_val _).symm
   have h_lin : (p : Ainf) ^ m ∣ (cyclotomicGp g : ℤ_[p]) • mu - a * mu := by
     simpa [sub_mul, Algebra.smul_def] using (map_dvd (algebraMap _ Ainf) h_chi).mul_right mu
   -- Binomial expansion: `(1 + μ) ^ a = 1 + a μ + μ² x`.
@@ -144,12 +150,6 @@ lemma Amax.exists_sub_mul_frobEnd_eq {u : Amax} (hp_dvd : (p : Amax) ∣ u) (w :
     exact ⟨v, y, by simp [f, ← hy]⟩
   simpa [f] using mem_range_of_approx f (map_zsmul f p) id h_step w
 
-/-- The Frobenius `frobEnd` of `Amax` is the action of the Frobenius element `(ofAdd 1, 1)` of
-`FrobGal`. -/
-private lemma frobEnd_eq_smul (x : Amax (p := p)) :
-    frobEnd x = ((Multiplicative.ofAdd 1, 1) : FrobGal) • x :=
-  rfl
-
 /-- There is an element `t` of Colmez's period ring `Amax` (the p-adic completion of
 `A_inf[X]/(pX − ξ)`) that is a unit multiple of `μ p`, where `μ = [ε] − 1` is the element `mu` of
 `A_inf`. It satisfies `φ t = p t` and `g t = χ(g) t` for all `g` in `G_p = Gal(Q̄_p/Q_p)`, where `χ`
@@ -189,7 +189,9 @@ lemma exists_tPeriod : ∃ t : Amax,
   set χ : ℤ_[p] := ↑(cyclotomicGp g)
   set δ : Amax := g • t - χ • t with hδ
   have phi_δ : frobEnd δ = p * δ := by
-    have phi_smul : frobEnd (χ • t) = χ • frobEnd t := by simp only [frobEnd_eq_smul, smul_comm]
+    have phi_smul : frobEnd (χ • t) = χ • frobEnd t := by
+      let φ : FrobGal := (Multiplicative.ofAdd 1, 1)
+      exact smul_comm φ χ t
     simp [hδ, ← smul_frobEnd, phi_smul, phi_t, mul_sub]
   have h_dvd (n : ℕ) : p ^ n * μ ^ 2 ∣ δ := by
     induction n with
@@ -213,12 +215,6 @@ lemma exists_tPeriod : ∃ t : Amax,
 /-- A chosen element `t` of `Amax` with the three properties of `exists_tPeriod`. These properties
 are unchanged when `t` is multiplied by a unit of `ℤ_[p]`, so they do not fix a normalisation. -/
 noncomputable def tPeriodAmax : Amax := exists_tPeriod.choose
-
-/-- In Colmez's ring `Amax` (A_max), the product of μ = [ε] − 1 (the Teichmüller lift of ε minus
-one) with p is associated to the chosen period `tPeriodAmax`. That is, `mu * p` equals `tPeriodAmax`
-times a unit of `Amax`. -/
-lemma associated_mu_mul_p_tPeriodAmax : Associated (mu * p : Amax) tPeriodAmax :=
-  exists_tPeriod.choose_spec.1
 
 /-- For every `g` in the absolute Galois group G_p of Q_p, `g` acts on the chosen period
 `tPeriodAmax` in `Amax` by multiplication by χ(`g`) ∈ ℤ_p, where χ = `cyclotomicGp` is the p-adic
@@ -309,13 +305,12 @@ instance : IsScalarTower ℤ_[p] (PadicAlgCl p) BdRPlus := to₁₃₄ _ ℚ_[p]
 This is Fontaine's result that the period t is a uniformiser of B_dR^+, in the form that t and ξ
 agree up to a unit. -/
 lemma BdRPlus.associated_xi_tPeriod : Associated (xi : BdRPlus) tPeriod := by
-  classical
   -- `tPeriod` is associated to `μ * p = ξ * τ * p`, and `τ`, `p` are units of `BdRPlus` since
   -- `thetaBdR` does not kill them.
   have h_xi : Associated (xi : BdRPlus) (algebraMap Amax BdRPlus (mu * p)) := by
     simp [associated_mul_isUnit_right_iff, ne, ← xi_mul_tau, ← IsScalarTower.algebraMap_apply,
       -p_mul_X]
-  exact h_xi.trans (associated_mu_mul_p_tPeriodAmax.map _)
+  exact h_xi.trans (exists_tPeriod.choose_spec.1.map _)
 
 /-- For every `g` in the absolute Galois group G_p of Q_p, `g` acts on `tPeriod` by multiplication
 by χ(`g`) ∈ ℤ_p, where χ = `cyclotomicGp` is the p-adic cyclotomic character. Here `tPeriod` is the

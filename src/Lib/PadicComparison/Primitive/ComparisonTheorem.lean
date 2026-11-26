@@ -1,6 +1,17 @@
 module
 
+import Mathlib.AlgebraicGeometry.PointsPi
+import Mathlib.AlgebraicGeometry.QuasiAffine
+import Mathlib.AlgebraicGeometry.ValuativeCriterion
+import Mathlib.NumberTheory.Padics.ProperSpace
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Algebra.Module.Compact
 public import Lib.Cohomology.SmoothBaseChange
+import Lib.Cohomology.Etale.DenseSubfunctors
+import Lib.General.Geometry.PointsOfProperSchemes
+import Lib.General.NumberTheory.CoefficientRings
+import Lib.PadicComparison.Descent.TestCovers
 
 /-!
 # The primitive comparison theorem and finiteness of p-adic cohomology
@@ -114,8 +125,7 @@ lemma PadicTest.bijective_generic_points {Y : Over (Spec R)} [IsProper Y.hom] (c
     exact ⟨l.l, l.fac_left, l.fac_right⟩
   choose l hl_left hl_right using lift
   -- `Y` is quasi-compact, so the points `l i` come from a point `x` in the product `c.ProdRing`.
-  -- The first argument of `pointsPi_surjective` is explicit: with `_` the search for `IsLocalRing`
-  -- times out.
+  have (i : c.Index) : IsLocalRing (of (c.Cell i)) := ValuationRing.isLocalRing (c.Cell i)
   obtain ⟨x, hx⟩ := pointsPi_surjective (of <| c.Cell ·) Y.left l
   have hx_eq (i : c.Index) : Spec.map (π i) ≫ x = l i := congrFun hx i
   have hx_over : x ≫ Y.hom = a := by
@@ -128,8 +138,12 @@ lemma PadicTest.bijective_generic_points {Y : Over (Spec R)} [IsProper Y.hom] (c
     down_injective (OverMorphism.ext (h_sep (fun i ↦ ofHom (φ i)) (fun t ht ↦ ?_) fun i ↦ ?_))⟩
   · -- The `φ i` are jointly injective: up to a unit, `t` comes from some `r : c.ProdRing`.
     obtain ⟨r, u, rfl⟩ := exists_associated_localization t
-    have hr : r = 0 := by simp_all [φ, π, j, funext_iff, (u.isUnit.map _).ne_zero]
-    simp [hr]
+    have hr : r = 0 := funext fun i ↦ by
+      have h0 : φ i (algebraMap c.ProdRing c.GenericRing r * u) = 0 := ht i
+      rw [map_mul, IsLocalization.Away.lift_eq, (u.isUnit.map (φ i)).mul_left_eq_zero] at h0
+      exact IsFractionRing.injective (c.Cell i) (FractionRing (c.Cell i))
+        (h0.trans (map_zero _).symm)
+    rw [hr, RingHom.map_zero, zero_mul]
   · -- after `Spec (φ i)`, the restriction of `x` to `c.GenericRing` is `x` on the cell, that is
     -- `l i`, which extends `z`
     change Spec.map (ofHom (φ i)) ≫ Spec.map (ofHom (algebraMap c.ProdRing c.GenericRing)) ≫ x =
@@ -154,28 +168,28 @@ noncomputable def toGenericPoints [Algebra R OC]
 /-- Let `Ω` be a field in which `ℓ` is invertible and `D` a compared theory on tests over `Ω`
 (`New.Variety.ComparedTheory`). Then `D.IsFiniteLerayHirsch` (the classes `D.comparison` form a
 Leray–Hirsch basis and the total cohomology is finite) holds for `ℤ[X] = freeAb X` iff it holds for
-`ℤ[X] / ℤ[U]` (`relFreeAb`), where `U = offClosedFibre X` is the part of `X` away from the special
+`ℤ[X] / ℤ[U]` (`relFreeAb`), where `U = offClosedFiber X` is the part of `X` away from the special
 fibre. Over a field `U` does not count: the maximal ideal of `Ω` is zero, so `U` has points only
 over the zero ring. -/
 lemma ComparedTheory.isFiniteLerayHirsch_freeAb_iff_relFreeAb {ℓ : ℕ} {Ω : Type} {C : Type 1}
     [Field Ω] [InvertsPrime Ω ℓ]
     [Category.{0, 1} C] {g : C ⥤ TestOver Ω} (D : ComparedTheory g) {X : TestOver Ω ⥤ Type 1} :
-    D.IsFiniteLerayHirsch (freeAb X) ↔ D.IsFiniteLerayHirsch (relFreeAb (offClosedFibre X)) := by
+    D.IsFiniteLerayHirsch (freeAb X) ↔ D.IsFiniteLerayHirsch (relFreeAb (offClosedFiber X)) := by
   -- `D.IsFiniteLerayHirsch` is a closed class: it holds at zero objects, and along a short exact
   -- sequence it passes between the middle and the quotient when it holds for the subobject
   obtain ⟨h_zero, h_ses⟩ := D.isClosedClass_isFiniteLerayHirsch
-  -- The maximal ideal of `Ω` is zero, so `offClosedFibre X` has points only over the zero ring and
+  -- The maximal ideal of `Ω` is zero, so `offClosedFiber X` has points only over the zero ring and
   -- does not count.
-  have h_sub : D.IsFiniteLerayHirsch (freeAb (offClosedFibre X).toFunctor) := by
+  have h_sub : D.IsFiniteLerayHirsch (freeAb (offClosedFiber X).toFunctor) := by
     -- The empty subfunctor is locally everything: a ring with a point `y` has no maximal ideal.
     refine (D.isFiniteLerayHirsch_iff_of_isCohomEquiv (freeAb.map (Subfunctor.ι ⊥))
       fun _ zar ↦ ?_).mp (h_zero _ (freeAb.hom_ext nofun))
-    refine (zar (U := .whisker (Y := (offClosedFibre X).toFunctor) ⊥ _)
+    refine (zar (U := .whisker (Y := (offClosedFiber X).toFunctor) ⊥ _)
       fun _ y _ hm ↦ ?_).isCohomEquiv
     refine (hm.ne_top (eq_top_mono ?_ y.prop)).elim
     simp only [IdealFamily.ofMaximalIdeal, IsLocalRing.maximalIdeal_eq_bot]
     exact Ideal.map_le_iff_le_comap.2 bot_le
-  obtain ⟨w, h_exact⟩ := relFreeAb.shortExact (offClosedFibre X)
+  obtain ⟨w, h_exact⟩ := relFreeAb.shortExact (offClosedFiber X)
   exact h_ses ⟨_, _, w⟩ h_exact h_sub
 
 omit [ThePrime p] [Algebra Ω ℂ_[p]] in
@@ -184,14 +198,14 @@ covered by affine pieces (`isAffinelyCovered_algPointsOf`). -/
 lemma hasFlatBaseChange_algPointsOf (Y : Over (Spec R)) [IsProper Y.hom] :
     HasFlatBaseChange
       (freeAb (ObjectProperty.ι _ ⋙ algPointsOf Ω R Y) : AbFunctor (TestOver Ω)) :=
-  (isAffinelyCovered_algPointsOf (·.2.2) Y).hasFlatBaseChange
+  (isAffinelyCovered_algPointsOf (·.property.isComparableRing) Y).hasFlatBaseChange
 
 omit [ThePrime p] [Algebra Ω ℂ_[p]] in
 /-- Flat base change for the points of `Y_Ω` on test rings, for `Y` proper over `R`. Restriction
 from all test rings to tests over `Ω` is bijective on cohomology (`isBijective_algToBaseChange`)
 and commutes with base change (`baseChangeMap_pull`), and on tests over `Ω` flat base change holds
 by `hasFlatBaseChange_algPointsOf`. -/
-lemma hasFlatBaseChange_geomPoints [InvertsPrime Ω p] (Y : Over (Spec R)) [IsProper Y.hom] :
+lemma hasFlatBaseChange_geomPoints (Y : Over (Spec R)) [IsProper Y.hom] :
     HasFlatBaseChange (freeAb (testIncl ⋙ geomPoints R Ω Y)) := by
   -- the eight instance arguments of `HasFlatBaseChange` stay anonymous
   intro S T L _ _ _ _ _ _ _ _ Φ n
@@ -256,7 +270,7 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
       (TestOver.toTest Ω ⋙ oFlatLocConst) ⋙ tensorCoeff M :=
     NatIso.ofComponents
       (fun _ ↦ ((cancelBaseChange ..).symm ≪≫ₗ TensorProduct.comm ..).toModuleIso)
-      fun _ ↦ ModuleCat.hom_ext (tmul_ext fun _ _ ↦ rfl)
+      fun _ ↦ ModuleCat.hom_ext (tmul_ext fun _ _ ↦ by rfl)
   let γ : moduleCoeff (asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg) ⋙ tensorWith _ M) ≅
       TestOver.toTest Ω ⋙ oFlatLocConst ⋙ moduleCoeff (tensorCoeff M) :=
     isoWhiskerRight γ₀ (moduleCoeff (𝟭 _))
@@ -268,6 +282,8 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
   -- constant theory satisfy the projective line formula.
   let θ (i : Module.Free.ChooseBasisIndex (ZMod p) M) :=
     mk₀ (whiskerLeft _ (tensorWith.mk _ (b i) _ ≫ γ.hom) ≫ c.coeffHom)
+  have : FaithfulSMul Ω ℂ_[p] :=
+    (faithfulSMul_iff_algebraMap_injective Ω ℂ_[p]).mpr (algebraMap Ω ℂ_[p]).injective
   let D : ComparedTheory (genericTestOver Ω) :=
     ⟨tiltTheory Ω M ac, _, θ, hasLineFormula_tiltTheory _ ac, hasLineFormula_locallyConstant Ω⟩
   have lh_iff {X : TestOver Ω ⥤ Type 1} {X' : PadicTest ⥤ Type 1}
@@ -275,7 +291,7 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
       IsLerayHirschBasis D.comparison (freeAb X) ↔ c.IsBijective (freeAbMap u.hom) := by
     -- By the basis `b`, flat base change and `γ`, the cohomology of `M ⊗ L` is a sum of copies
     -- of that of `L`.
-    let E : (_ →₀ TotalH (freeAb X) _) ≃+ TotalH (freeAb X) _ :=
+    let E₀ : (_ →₀ TotalH (freeAb X) _) ≃+ TotalH (freeAb X) _ :=
       ((equivFinsuppOfBasisLeft b).symm ≪≫ₗ directSumRight ..).toAddEquiv.trans
         (congrAddEquiv fun n ↦
           .trans (.ofBijective _ (hX ..))
@@ -284,15 +300,17 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
     have hE (i : Module.Free.ChooseBasisIndex (ZMod p) M) (n : ℕ)
         (x : H (freeAb X)
           (moduleCoeff (asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg))) n) :
-        E (.single i (.of _ n x)) =
+        E₀ (.single i (.of _ n x)) =
           TotalH.comp (.comp (.of _ n x) (.homClass (tensorWith.mk _ (b i) _)))
             (.homClass γ.hom) := by
-      simp [E, ← lof_eq_of (ZMod p)]
+      simp [E₀, ← lof_eq_of (ZMod p)]
       -- on the summand `n`: base change sends `b i ⊗ x` to the push of `x` along `x ↦ b i ⊗ x`,
       -- and pushing along a map is composing with its class (`of_comp_homClass`)
       simp only [lof_eq_of, of_comp_homClass, ← AddEquiv.coe_toAddMonoidHom, coe_congrAddEquiv,
         DirectSum.map_of]
       rfl
+    -- `E` is `E₀` with its source written as the source of the Leray–Hirsch map of `D`.
+    let E : (D.Index →₀ TotalH (freeAb X) Theory.locallyConstant.functor) ≃+ _ := E₀
     -- Under `E` the Leray–Hirsch map is restriction along `genericTestOver Ω` followed by
     -- `c.coeffHom`.
     have key : (lerayHirsch D.comparison (freeAb X)).toAddMonoidHom =
@@ -306,11 +324,12 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
       simp_rw [map_homClass, ← homClass_comp]
       rfl
     -- Pull-back along the isomorphism `u` is bijective, and so is `E`.
-    have : IsIso (freeAbMap u.hom) := inferInstanceAs (IsIso (freeAb.map u.hom))
-    erw [← bijective_totalH_iff_isBijective,
-      (IsCohomEquiv.of_isIso _).bijective_pullbackAlong.of_comp_iff',
-      ← E.bijective.of_comp_iff]
-    exact .of_eq (congrArg (fun f : _ →+ _ ↦ Bijective f) key)
+    have : IsIso (freeAbMap u.hom) := Functor.map_isIso freeAb u.hom
+    exact (Iff.of_eq (congrArg (fun f : _ →+ _ ↦ Bijective f) key)).trans <|
+      (E.bijective.of_comp_iff _).trans <|
+        ((IsCohomEquiv.of_isIso
+          (freeAbMap u.hom)).bijective_pullbackAlong.of_comp_iff' _).symm.trans
+          bijective_totalH_iff_isBijective
   -- The point satisfies `D.IsFiniteLerayHirsch` (Leray–Hirsch and finiteness): `OFlat` and `Ω` are
   -- both initial, `ac` holds at `OFlat`, and the values of the two coefficients agree because the
   -- locally constant functions on `Spec Ω` are constant.
@@ -319,11 +338,14 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
       tiltReprIsoGenericRepr Ω
     have h_bij : c.IsBijective (freeAbMap u.hom) := by
       refine .transfer (ac _)
-        (bijective_of_isIso ((moduleCoeff _).map (oFlatLocConstOfSelfIso Ω).hom)) fun _ _ _ ↦ ?_
+        (bijective_of_isIso ((moduleCoeff _).map (oFlatLocConstOfSelfIso Ω).hom)) fun A y x ↦ ?_
       -- Both sides are induced by a map of algebras out of the initial `OFlat`.
-      erw [← (moduleCoeff _).map_comp_apply, ← map_comp_apply,
-        CommAlgCat.isInitialSelf.hom_ext (_ ≫ _)]
-      rfl
+      let F := moduleCoeff (tensorCoeff M)
+      have h_hom : y.down = (oFlatLocConstOfSelfIso Ω).hom ≫
+          (TestOver.toTest Ω ⋙ oFlatLocConst).map (u.hom.app A y).down ≫ primitiveMap.app A :=
+        CommAlgCat.isInitialSelf.hom_ext _ _
+      exact (congrArg (fun f ↦ F.map f x) h_hom).trans
+        ((F.map_comp_apply _ _ x).trans (F.map_comp_apply _ _ _))
     -- The cohomology of the point with coefficients `L` consists of the constants `ZMod p`.
     exact ⟨(lh_iff (hasFlatBaseChange_freeAb_reprBy _) u).2 h_bij,
       .of_surjective _ ((sectionEquiv ..).surjective.comp
@@ -338,7 +360,8 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
   -- each claim.
   refine ⟨hasFlatBaseChange_geomPoints Ω Y, fun n ↦ ?_, fun he ↦ ?_⟩
   · -- Degree `n` embeds in the total cohomology, which is finite.
-    exact (isBijective_algToBaseChange ..).finite_iff.2 (h_fin.of_injective _ (of_injective n))
+    have h_fin_n := h_fin.of_injective _ (of_injective n)
+    exact (isBijective_algToBaseChange ..).finite_iff.2 h_fin_n
   · -- `toGenericPoints` is bijective by the valuative criterion.
     exact (isBijective_algToBaseChange Ω Y _).trans
       ((lh_iff (hasFlatBaseChange_algPointsOf Ω Y)
@@ -366,6 +389,7 @@ lemma finite_padic_cohomology (n : ℕ) :
   -- The primitive comparison, after a choice of embedding of `Ω` in `ℂ_p`, gives the finiteness of
   -- `Hⁿ(Y_Ω, 𝔽_p)` (its acyclicity hypothesis is supplied for the zero module); finiteness
   -- modulo `p` lifts to `ℤ_p` by `finite_H_ellAdicCoeff`.
+  have : Module.IsTorsionFree ℚ ℂ_[p] := DivisionSemiring.to_moduleIsTorsionFree
   let alg_Ω : Algebra Ω ℂ_[p] := (IsAlgClosed.lift : Ω →ₐ[ℚ] ℂ_[p]).toAlgebra
   obtain ⟨-, h_finite_mod_p, -⟩ :=
     finite_and_primitive_comparison Ω (isAcyclicOnPerfect_almostCoeff (N := Unit) (by simp)) Y
@@ -389,14 +413,18 @@ lemma ellAdicCohom.continuous_galoisAction (n : ℕ) (K : Type*) [Field K] [Alge
   -- `L` is compact, so `p ^ k` maps it into `U`; and `g t - t` is divisible by `p ^ k` as soon as
   -- `g` fixes the finitely many elements of `Ω` over which `t` modulo `p ^ k` is defined.
   let M := H (freeAb (testIncl ⋙ geomPoints R Ω Y)) ellAdicCoeff n
-  obtain ⟨S, rfl⟩ : ∃ S : Finset (ℚ_[p] × M), x = ∑ i ∈ S, i.1 ⊗ₜ[ℤ_[p]] i.2 := x.exists_finset
+  obtain ⟨S, hx⟩ : ∃ S : Finset (ℚ_[p] × M), x = ∑ i ∈ S, i.1 ⊗ₜ[ℤ_[p]] i.2 := x.exists_finset
   -- `l` after the action of `g` is additive, so the map is a sum of maps `g ↦ l (g (a ⊗ t))`.
-  -- `erw`: the sum lives in the tensor product, which is the cohomology only up to unfolding.
-  erw [funext fun _ ↦ map_sum (l ∘ₗ _) ..]
+  let toCohom : TensorProduct ℤ_[p] ℚ_[p] M →ₗ[ℚ_[p]] ellAdicCohom R Ω n ⟨Y⟩ := LinearMap.id
+  have hx' : x = ∑ i ∈ S, toCohom (i.1 ⊗ₜ[ℤ_[p]] i.2) :=
+    (congrArg toCohom hx).trans (map_sum toCohom _ S)
+  rw [hx']
+  simp_rw [map_sum]
   refine continuous_finsetSum S fun ⟨a, t⟩ _ ↦ continuous_iff_continuousAt.2 fun g₀ ↦ ?_
   refine tendsto_sub_nhds_zero_iff.1 fun U hU ↦ (map_mul_left_nhds_one _).ge (Filter.mem_map.2 ?_)
   let L : M →ₗ[ℤ_[p]] Fin N → PadicAlgCl p :=
-    (l ∘ₗ galoisAction R Ω Gal(Ω/K) Y n g₀).restrictScalars ℤ_[p] ∘ₗ TensorProduct.mk _ _ _ a
+    (l ∘ₗ galoisAction R Ω Gal(Ω/K) Y n g₀).restrictScalars ℤ_[p] ∘ₗ
+      TensorProduct.mk ℤ_[p] ℚ_[p] M a
   -- `M` is finitely generated, so `L M` is compact, hence bounded.
   have h_bounded : Bornology.IsVonNBounded ℚ_[p] (Submodule.map L ⊤ : Set (Fin N → PadicAlgCl p)) :=
     (Submodule.isCompact_of_fg (.map L (finite_padic_cohomology n).fg_top)).isVonNBounded ℚ_[p]
@@ -414,15 +442,29 @@ lemma ellAdicCohom.continuous_galoisAction (n : ℕ) (K : Type*) [Field K] [Alge
   filter_upwards [s.eventually_all.mpr fun b _ ↦ (G.isOpen_stabilizer b).mem_nhds rfl] with g hg
   simp only [Set.mem_preimage, map_mul]
   -- `gt` is the integral class `g t`: the pullback of `t` along the automorphism `g` of `Y_Ω`.
-  let gt : M := H.map _ (freeAb.map (mapOnTests (baseChangeTransition (pointsToBase Y.hom)
-    (CommRingCat.ofHom (MulSemiringAction.toAlgAut Gal(Ω/K) R Ω g : Ω →+* Ω)) (by aesop)))) n t
+  let g_hom : Under.mk (CommRingCat.ofHom (algebraMap R Ω)) ⟶
+      Under.mk (CommRingCat.ofHom (algebraMap R Ω)) :=
+    Under.homMk (CommRingCat.ofHom (MulSemiringAction.toAlgAut Gal(Ω/K) R Ω g : Ω →+* Ω))
+      (CommRingCat.hom_ext (MulSemiringAction.toAlgAut Gal(Ω/K) R Ω g).toAlgHom.comp_algebraMap)
+  let gt : M := H.map _ (freeAb.map (mapOnTests
+    (baseChangeTransition (pointsToBase Y.hom) g_hom.right g_hom.w))) n t
   change L gt - L t ∈ U
   -- Pullback commutes with reduction, and `g` is the identity on the subalgebra generated by `s`.
   have h_red : H.push _ q n (gt - t) = 0 := by
-    erw [map_sub, sub_eq_zero, ← H.map_push, ← hz, ← TestCohomology.map_comp, ← Functor.map_comp,
-      ← op_comp]
-    congr with b
-    exact (g.toAlgHom.restrictScalars R).adjoin_le_equalizer 1 hg b.2
+    let F := (baseChangeFunctor (pointsToBase Y.hom) ⋙ onTests).rightOp ⋙
+      cohomologyFunctor (locConstCoeff ⟨TruncatedWittVector p k (ZMod p)⟩) n ⟨freeAb⟩
+    let ι_s := (Under.map (𝟙 R)).map (Algebra.adjoin R (s : Set Ω)).val.toUnder
+    let g_hom' := (Under.map (𝟙 R)).map g_hom
+    have h_fix : ι_s ≫ g_hom' = ι_s := by
+      ext b
+      exact (g.toAlgHom.restrictScalars R).adjoin_le_equalizer 1 hg b.property
+    dsimp only [Functor.mapCocone_ι_app] at hz
+    have h1 : H.push _ q n gt = F.map g_hom' (F.map ι_s z) :=
+      (H.map_push _ q t).symm.trans (congrArg (F.map g_hom') hz.symm)
+    have h2 : F.map g_hom' (F.map ι_s z) = F.map ι_s z := by
+      rw [← ConcreteCategory.comp_apply, ← F.map_comp, h_fix]
+    rw [map_sub, sub_eq_zero]
+    exact (h1.trans h2).trans hz
   obtain ⟨y, hy⟩ : ∃ y : M, ((p ^ k : ℕ) : ℤ_[p]) • y = gt - t :=
     hq.exists_smul_eq_of_push_eq_zero _ h_red
   -- apply `L` to `hy`; the scalar `p ^ k` of `ℤ_p` and that of `ℚ_p` both act as `p ^ k • ·`

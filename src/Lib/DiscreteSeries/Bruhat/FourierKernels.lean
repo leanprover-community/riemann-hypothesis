@@ -1,7 +1,12 @@
 module
 
-public import Lib.DiscreteSeries.Bruhat.FloorMeasures
+import Mathlib.Probability.Kernel.Composition.IntegralCompProd
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Monotonicity.Lemmas
+import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.DiscreteSeries.Bruhat.QuadricBlocks
+import Lib.DiscreteSeries.Bruhat.FloorMeasures
+import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Fourier kernels between solved measures
@@ -243,13 +248,6 @@ lemma setLIntegral_le_of_le_comp_fst {Y Z : Type} [MeasurableSpace Y] [Measurabl
           setLIntegral_const]
 
 omit [Fintype n] in
-/-- The square of the transform of φ is a measurable function of its variable v. -/
-lemma measurable_enorm_integral_fourier_sq [SFinite ρ] {φ : (κ → A) → ℂ} (hφ : Measurable φ)
-    (J : Matrix κ κ A) (ξ : A) :
-    Measurable fun v : κ → A ↦ ‖∫ y : κ → A, P.ψ (ξ * star v ⬝ᵥ J *ᵥ y) * φ y ∂ρ‖ₑ ^ 2 :=
-  (StronglyMeasurable.integral_prod_right
-    (Measurable.stronglyMeasurable (by fun_prop))).measurable.eNorm.pow_const 2
-
 omit [Fintype κ] in
 /-- The square norm in y of the partial Fourier transform in w of the integral over z of a
 measurable f(y', y, w, z) is a measurable function of y' and w'. -/
@@ -356,7 +354,6 @@ lemma IsSolvedIn.exists_blockChart (h : IsSolvedIn blk ρ R M)
       e ∘ inl ∘ inr = inner ∧ e ∘ inr = blk ∧ card η = card κ - card ι - card B ∧
       MeasurePreserving (blockChart e) ((volume.prod volume) ⊗ₘ ζ) ρ ∧
       ∀ q : (η → A) × (ι → A), ζ q (coordinateBox B R) ≤ M := by
-  classical
   obtain ⟨η₀, _, e₀, ζ, rfl, _, h_chart, h_mass⟩ := h
   -- Each inner index is a free index `j i`, and `f` lists the free indices.
   have h_free (i : ι) : ∃ k : η₀, e₀ (inl k) = inner i := by
@@ -493,7 +490,8 @@ theorem IsSolvedIn.fourierSqNormLe [DecidableEq ι] [DecidableEq κ] (h' : IsSol
   have : SFinite ρ := by
     rw [← h_chart.map_eq]
     infer_instance
-  have h_transform : Measurable T := measurable_enorm_integral_fourier_sq hφ_meas J ξ
+  have h_transform : Measurable T := (StronglyMeasurable.integral_prod_right
+    (Measurable.stronglyMeasurable (by fun_prop))).measurable.eNorm.pow_const 2
   calc ∫⁻ v : κ → A in coordinateBox κ R', T v ∂ρ'
     _ = ∫⁻ p' : ((η' → A) × (ι → A)) × (B' → A) in
           (coordinateBox η' R' ×ˢ coordinateBox ι R') ×ˢ coordinateBox B' R',

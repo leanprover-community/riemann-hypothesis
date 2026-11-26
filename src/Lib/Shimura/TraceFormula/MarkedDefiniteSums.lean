@@ -1,9 +1,15 @@
 module
 
-public import Lib.General.Combinatorics
+import Mathlib.Algebra.Polynomial.Eval.Irreducible
+import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Analysis.Normed.Ring.Ultra
 public import Lib.General.LinearAlgebra.IdempotentRadical
-public import Lib.Shimura.HeckeTower.Model
-public import Lib.Shimura.Transfer.MarkedPairs
+public import Lib.Adelic.TraceFormula.ChangingSigns
+import Lib.General.Combinatorics
+import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.Shimura.HeckeTower.Model
+import Lib.Shimura.Transfer.MarkedPairs
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # For a function with a cuspidal type at one place, marked and definite orbit sums agree
@@ -221,7 +227,7 @@ def splittingIdempotent (g : GL n F) : Matrix n n F := aeval g.val (splittingPol
 /-- The matrix `splittingIdempotent g = p(g)` is idempotent, by the Cayley-Hamilton theorem. -/
 lemma isIdempotentElem_splittingIdempotent (g : GL n F) :
     IsIdempotentElem (splittingIdempotent g) := by
-  have h_dvd := aeval_dvd g.1 (exists_idempotent_mod g.1.charpoly).choose_spec.1
+  have h_dvd := aeval_dvd g.val (exists_idempotent_mod g.val.charpoly).choose_spec.1
   rwa [aeval_self_charpoly, zero_dvd_iff, map_sub, map_mul, sub_eq_zero] at h_dvd
 
 /-- If the characteristic polynomial of `g` is separable and not irreducible, the idempotent
@@ -229,18 +235,18 @@ lemma isIdempotentElem_splittingIdempotent (g : GL n F) :
 lemma splittingIdempotent_ne_zero_and_ne_one [Nonempty n] {g : GL n F}
     (h_sep : g.val.charpoly.Separable) (h_red : ¬Irreducible g.val.charpoly) :
     splittingIdempotent g ≠ 0 ∧ splittingIdempotent g ≠ 1 := by
-  have h_unit : ¬IsUnit g.1.charpoly := not_isUnit_of_natDegree_pos _ (by simp [Fintype.card_pos])
-  obtain ⟨h_one_sub, h_self⟩ : ¬IsCoprime g.1.charpoly (1 - splittingPoly g.1.charpoly) ∧
-      ¬IsCoprime g.1.charpoly (splittingPoly g.1.charpoly) :=
-    (exists_idempotent_mod g.1.charpoly).choose_spec.2 h_sep h_red h_unit
+  have h_unit : ¬IsUnit g.val.charpoly := not_isUnit_of_natDegree_pos _ (by simp [Fintype.card_pos])
+  obtain ⟨h_one_sub, h_self⟩ : ¬IsCoprime g.val.charpoly (1 - splittingPoly g.val.charpoly) ∧
+      ¬IsCoprime g.val.charpoly (splittingPoly g.val.charpoly) :=
+    (exists_idempotent_mod g.val.charpoly).choose_spec.2 h_sep h_red h_unit
   rw [splittingIdempotent]
   exact ⟨fun h ↦ h_one_sub (isUnit_aeval_iff_isCoprime.1 (by simp [h])),
     fun h ↦ h_self (isUnit_aeval_iff_isCoprime.1 (by simp [h]))⟩
 
 lemma aeval_units_conj (b g : GL n F) (p : F[X]) :
     aeval (b⁻¹ * g * b).val p = b⁻¹.val * aeval g.val p * b.val := by
-  have h_semiconj : b.1 * (b⁻¹ * g * b).1 = g.1 * b.1 := by simp [← mul_assoc]
-  rw [mul_assoc b⁻¹.1, ← aeval_semiconj h_semiconj p, Units.inv_mul_cancel_left]
+  have h_semiconj : b.val * (b⁻¹ * g * b).val = g.val * b.val := by simp [← mul_assoc]
+  rw [mul_assoc b⁻¹.val, ← aeval_semiconj h_semiconj p, Units.inv_mul_cancel_left]
 
 /-- Conjugating `g` conjugates its idempotent. -/
 lemma splittingIdempotent_conj (b g : GL n F) :
@@ -258,7 +264,7 @@ in the radical of `b⁻¹ g b`. -/
 lemma mem_range_splittingRadical_conj {b g a : GL n F} (ha : a ∈ (splittingRadical g).range) :
     b⁻¹ * a * b ∈ (splittingRadical (b⁻¹ * g * b)).range := by
   obtain ⟨Y, rfl⟩ := ha
-  refine ⟨ofAdd (b⁻¹.1 * Y.toAdd * b.1), Units.ext ?_⟩
+  refine ⟨ofAdd (b⁻¹.val * Y.toAdd * b.val), Units.ext ?_⟩
   simp only [splittingRadical, Units.val_mul, coe_radicalHom, splittingIdempotent_conj, toAdd_ofAdd]
   simp [mul_add, add_mul, mul_sub, sub_mul, mul_assoc]
 
@@ -288,9 +294,9 @@ lemma exists_splittingRadical_conj {g j : GL n F} (hj : j ∈ (splittingRadical 
   -- `semiconjBy_radicalHom_aeval_sub` for the factorisation `x = j g 1`.
   obtain ⟨Y, rfl⟩ := hj
   have he : IsIdempotentElem (splittingIdempotent g) := isIdempotentElem_splittingIdempotent g
-  set p : F[X] := splittingPoly g.1.charpoly
+  set p : F[X] := splittingPoly g.val.charpoly
   set x : GL n F := splittingRadical g Y * g
-  set D : Multiplicative (Matrix n n F) := ofAdd (aeval x.1 p - aeval g.1 p)
+  set D : Multiplicative (Matrix n n F) := ofAdd (aeval x.val p - aeval g.val p)
   have h_semiconj : SemiconjBy (splittingRadical g D) x g :=
     semiconjBy_radicalHom_aeval_sub he (h_range := he.eq) (h_fix := he.eq) Y 1
       (by simp [x, splittingRadical])
@@ -319,12 +325,12 @@ end Splitting
 has an element `j` in the radical of `g` with `χ j ≠ 1`. -/
 lemma IsCuspidalType.exists_mem_range_splittingRadical {F : Type*} {n : Type} [Field F]
     [Fintype n] [DecidableEq n] [Nonempty n] {J : Subgroup (GL n F)} {χ : J →* ℂ}
-    (hχ : IsCuspidalType J χ) {g : GL n F} (h_sep : g.1.charpoly.Separable)
-    (h_red : ¬Irreducible g.1.charpoly) :
-    ∃ j : J, j.1 ∈ (splittingRadical g).range ∧ χ j ≠ 1 := by
+    (hχ : IsCuspidalType J χ) {g : GL n F} (h_sep : g.val.charpoly.Separable)
+    (h_red : ¬Irreducible g.val.charpoly) :
+    ∃ j : J, j.val ∈ (splittingRadical g).range ∧ χ j ≠ 1 := by
   obtain ⟨h_ne_zero, h_ne_one⟩ := splittingIdempotent_ne_zero_and_ne_one h_sep h_red
   obtain ⟨j, Y, hj, hχj⟩ : ∃ (j : J) (Y : Matrix n n F),
-      1 + splittingIdempotent g * Y * (1 - splittingIdempotent g) = j.1 ∧ χ j ≠ 1 :=
+      1 + splittingIdempotent g * Y * (1 - splittingIdempotent g) = j.val ∧ χ j ≠ 1 :=
     hχ _ (isIdempotentElem_splittingIdempotent g) h_ne_zero h_ne_one
   exact ⟨j, ⟨ofAdd Y, Units.ext hj⟩, hχj⟩
 
@@ -364,7 +370,7 @@ lemma invAutInFrame_conj (z y : GL n E) (x : GL n (𝔸f E)) :
 
 /-- The automorphism `y` in the frame `x` at the split place `w₀`: the inverse transpose of the
 component of `x⁻¹ y⁻¹ x` at `w₀`. -/
-def localAut (y : GL n E) (x : GL n (𝔸f E)) : GL n (LocField w₀.1) :=
+def localAut (y : GL n E) (x : GL n (𝔸f E)) : GL n (LocField w₀.val) :=
   dualComponent w₀ (invAutInFrame y x)
 
 /-- Moving the frame `x` to `x k` conjugates `localAut w₀ y x` by the inverse transpose of the
@@ -374,19 +380,19 @@ lemma localAut_mul (y : GL n E) (x k : GL n (𝔸f E)) :
   simp [localAut, invAutInFrame_mul]
 
 /-- Moving the frame `x` by an element `a` placed at `w₀` conjugates `localAut w₀ y x` by `a`. -/
-lemma localAut_mul_conjAtSplit (y : GL n E) (x : GL n (𝔸f E)) (a : GL n (LocField w₀.1)) :
+lemma localAut_mul_conjAtSplit (y : GL n E) (x : GL n (𝔸f E)) (a : GL n (LocField w₀.val)) :
     localAut w₀ y (x * conjAtSplit w₀ a) = a⁻¹ * localAut w₀ y x * a := by
   rw [localAut_mul, dualComponent_conjAtSplit]
 
 /-- The matrix of `dualComponent w₀ a` is the transpose of the component of `a⁻¹` at `w₀`. -/
 lemma coe_dualComponent (a : GL n (𝔸f E)) :
-    (dualComponent w₀ a).val = (a⁻¹.val.map (evalAt w₀.1))ᵀ := rfl
+    (dualComponent w₀ a).val = (a⁻¹.val.map (evalAt w₀.val))ᵀ := rfl
 
 /-- The characteristic polynomial of `localAut w₀ y x` is that of `y`, read in the completion of
 `E` at `w₀`. -/
 lemma charpoly_localAut (y : GL n E) (x : GL n (𝔸f E)) :
     (localAut w₀ y x).val.charpoly =
-      y.val.charpoly.map ((evalAt w₀.1).comp (algebraMap E (𝔸f E))) := by
+      y.val.charpoly.map ((evalAt w₀.val).comp (algebraMap E (𝔸f E))) := by
   have h_inv : (invAutInFrame y x)⁻¹ = x⁻¹ * toFinGL y * x := by simp [invAutInFrame, mul_assoc]
   have h_conj :
       (x⁻¹ * toFinGL y * x).val.charpoly = y.val.charpoly.map (algebraMap E (𝔸f E)) := by
@@ -399,7 +405,7 @@ variable (K) in
 /-- The block of `(xK, y, μ)`: the triples `(x a K, y, μ)`, where `a` runs over the radical of
 `localAut w₀ y x`, placed at `w₀`. -/
 def tripleBlock (x : GL n (𝔸f E)) (y : GL n E) (μ : n) : Set (MarkedTriple K n) :=
-  range fun Y : Multiplicative (Matrix n n (LocField w₀.1)) ↦
+  range fun Y : Multiplicative (Matrix n n (LocField w₀.val)) ↦
     markedTriple K (x * conjAtSplit w₀ (splittingRadical (localAut w₀ y x) Y)) y μ
 
 /-- The points of the block of `(xK, y, μ)` are the triples `(x a K, y, μ)` with `a` in the radical
@@ -420,7 +426,7 @@ lemma tripleBlock_mul_of_mem (hK : K ≤ GU E n) (x : GL n (𝔸f E)) (y : GL n 
     simpa only [mul_inv_cancel_right] using h_subset (x * k) k⁻¹ (inv_mem hk)
   intro x k hk p hp
   obtain ⟨a, ha, rfl⟩ := (mem_tripleBlock w₀).1 hp
-  set b : GL n (LocField w₀.1) := dualComponent w₀ k with hb
+  set b : GL n (LocField w₀.val) := dualComponent w₀ k with hb
   have h_mem : b⁻¹ * a * b ∈ (splittingRadical (localAut w₀ y (x * k))).range := by
     simpa only [localAut_mul] using mem_range_splittingRadical_conj ha
   have h_conj : k * conjAtSplit w₀ (b⁻¹ * a * b) * k⁻¹ = conjAtSplit w₀ a := by
@@ -433,7 +439,7 @@ lemma tripleBlock_mul_of_mem (hK : K ≤ GU E n) (x : GL n (𝔸f E)) (y : GL n 
 /-- All points of a block have the same block: for `b` in the radical of `localAut w₀ y x`, the
 triples `(x b K, y, μ)` and `(xK, y, μ)` have the same block. -/
 lemma tripleBlock_mul_conjAtSplit (x : GL n (𝔸f E)) (y : GL n E) (μ : n)
-    {b : GL n (LocField w₀.1)} (hb : b ∈ (splittingRadical (localAut w₀ y x)).range) :
+    {b : GL n (LocField w₀.val)} (hb : b ∈ (splittingRadical (localAut w₀ y x)).range) :
     tripleBlock K w₀ (x * conjAtSplit w₀ b) y μ = tripleBlock K w₀ x y μ := by
   -- Both blocks have the same radical, which contains `b`; so `a ↦ b * a` is a change of parameter.
   ext p
@@ -461,7 +467,7 @@ lemma blockOf_markedTriple (hK : K ≤ GU E n) (x : GL n (𝔸f E)) (y : GL n E)
     blockOf w₀ (markedTriple K x y μ) = tripleBlock K w₀ x y μ := by
   obtain ⟨k, hk⟩ := QuotientGroup.mk_out_eq_mul K x
   change tripleBlock K w₀ (x : GL n (𝔸f E) ⧸ K).out y μ = tripleBlock K w₀ x y μ
-  rw [hk, tripleBlock_mul_of_mem w₀ hK x y μ k.2]
+  rw [hk, tripleBlock_mul_of_mem w₀ hK x y μ k.property]
 
 lemma mem_blockOf_self (p : MarkedTriple K n) : p ∈ blockOf w₀ p :=
   (mem_tripleBlock w₀).2 ⟨1, one_mem _, by rw [map_one, mul_one, markedTriple_out]⟩
@@ -501,7 +507,7 @@ lemma stabilizer_markedTriple (hN : IsNeat n 𝔑)
 /-- Let the Hecke function `f` have type `(J, χ)` at `w₀`: it sends vectors of level `𝔑` to
 `χ`-eigenvectors of `J`. Then left translation by `j ∈ J`, placed at `w₀`, multiplies the function
 `heckeCosetFn f` on cosets of the level by `χ j⁻¹`. -/
-lemma heckeCosetFn_conjAtSplit_mul {J : Subgroup (GL n (LocField w₀.1))} {χ : J →* ℂ}
+lemma heckeCosetFn_conjAtSplit_mul {J : Subgroup (GL n (LocField w₀.val))} {χ : J →* ℂ}
     (hJ : f.val ∈ fixedToEigen (levelGU n 𝔑) (conjAtSplit w₀) J χ) (j : J) (t : GL n (𝔸f E)) :
     heckeCosetFn f (conjAtSplit w₀ j * t : GL n (𝔸f E)) = χ j⁻¹ * heckeCosetFn f t := by
   -- The values of `heckeCosetFn f` are the coefficients of `v`, the image under `f` of the trivial
@@ -517,16 +523,10 @@ lemma heckeCosetFn_conjAtSplit_mul {J : Subgroup (GL n (LocField w₀.1))} {χ :
     _ = χ j⁻¹ * v.coeff t := by
         rw [h_eigen, MonoidAlgebra.coeff_smul, Finsupp.smul_apply, smul_eq_mul]
 
-/-- If the Hecke function `f` is not zero on the coset of `t`, the inverse transpose of the
-component of `t` at `w₀` is an integral matrix. -/
-lemma dualComponent_mem_matrix {t : GL n (𝔸f E)} (ht : heckeCosetFn f t ≠ 0) :
-    (dualComponent w₀ t).val ∈ (LocInt w₀.1 : Set (LocField w₀.1)).matrix :=
-  fun i j ↦ mem_Ô.1 ((heckeAlgebra.mem_GUPlus_of_ne_zero ht).2 j i) w₀.1
-
 /-- Moving a frame `x` that satisfies the sign condition by an element `a` at `w₀` keeps the sign
 condition and the weight, so the term of `(x a K, y, μ)` is the value of `f` times the weight. -/
 lemma countTerm_mul_conjAtSplit (h_sign : IsSignedFrame x (eigenReflection ε y μ))
-    (a : GL n (LocField w₀.1)) :
+    (a : GL n (LocField w₀.val)) :
     countTerm ε f u ⟦markedTriple (levelGU n 𝔑) (x * conjAtSplit w₀ a) y μ⟧ =
       heckeCosetFn f (invAutInFrame y (x * conjAtSplit w₀ a)) * u y.val.charpoly μ := by
   have h_sign' : IsSignedFrame (x * conjAtSplit w₀ a) (eigenReflection ε y μ) := by
@@ -536,7 +536,7 @@ lemma countTerm_mul_conjAtSplit (h_sign : IsSignedFrame x (eigenReflection ε y 
 /-- Let `x⁻¹ y⁻¹ x` be a unitary similitude. Moving the frame `x` by an element `a` at `w₀`
 conjugates its factor `localAut w₀ y x` at `w₀` by `a` and leaves the rest alone. -/
 lemma invAutInFrame_mul_conjAtSplit (h_mem : invAutInFrame y x ∈ GU E n)
-    (a : GL n (LocField w₀.1)) :
+    (a : GL n (LocField w₀.val)) :
     invAutInFrame y (x * conjAtSplit w₀ a) = conjAtSplit w₀ (a⁻¹ * localAut w₀ y x * a) *
       ((conjAtSplit w₀ (localAut w₀ y x))⁻¹ * invAutInFrame y x) := by
   have h_comm : invAutInFrame y x * conjAtSplit w₀ a =
@@ -548,7 +548,7 @@ lemma invAutInFrame_mul_conjAtSplit (h_mem : invAutInFrame y x ∈ GU E n)
 variable (𝔑 w₀ x y μ) in
 /-- The point of the block of `(xK, y, μ)` with parameter `Y`, for the principal level
 `K = levelGU n 𝔑`. -/
-abbrev blockPoint (Y : Multiplicative (Matrix n n (LocField w₀.1))) :
+abbrev blockPoint (Y : Multiplicative (Matrix n n (LocField w₀.val))) :
     MarkedTriple (levelGU n 𝔑) n :=
   markedTriple (levelGU n 𝔑) (x * conjAtSplit w₀ (splittingRadical (localAut w₀ y x) Y)) y μ
 
@@ -557,7 +557,7 @@ lemma tripleBlock_eq_range_blockPoint :
 
 /-- Two parameters `Y`, `Y'` give the same point of the block if and only if the element of the
 radical with parameter `Y⁻¹ * Y'`, placed at `w₀`, lies in the level `levelGU n 𝔑`. -/
-lemma blockPoint_eq_iff (Y Y' : Multiplicative (Matrix n n (LocField w₀.1))) :
+lemma blockPoint_eq_iff (Y Y' : Multiplicative (Matrix n n (LocField w₀.val))) :
     blockPoint 𝔑 w₀ x y μ Y = blockPoint 𝔑 w₀ x y μ Y' ↔ Y⁻¹ * Y' ∈
       ((levelGU n 𝔑).comap (conjAtSplit w₀)).comap (splittingRadical (localAut w₀ y x)) := by
   simp only [markedTriple_eq_iff, and_true, Subgroup.mem_comap, map_mul, map_inv,
@@ -575,22 +575,22 @@ lemma finite_tripleBlock_inter_support (h𝔑 : 𝔑 ≠ 0)
       {p : MarkedTriple (levelGU n 𝔑) n | countTerm ε f u ⟦p⟧ ≠ 0}).Finite := by
   -- Let `g = localAut w₀ y x` have idempotent `p(g)`. If the term at `a` is not zero then
   -- `a⁻¹ g a` is integral, and `p(a⁻¹ g a)` is a parameter of `a`; these lie in a compact set.
-  set g : GL n (LocField w₀.1) := localAut w₀ y x
-  set p : (LocField w₀.1)[X] := splittingPoly g.1.charpoly
-  have h_compact : IsCompact ((fun M : Matrix n n (LocField w₀.1) ↦ ofAdd (aeval M p)) ''
-      (LocInt w₀.1 : Set (LocField w₀.1)).matrix) :=
-    (isCompact_LocInt w₀.1).matrix.image (continuous_ofAdd.comp p.continuous_aeval)
+  set g : GL n (LocField w₀.val) := localAut w₀ y x
+  set p : (LocField w₀.val)[X] := splittingPoly g.val.charpoly
+  have h_compact : IsCompact ((fun M : Matrix n n (LocField w₀.val) ↦ ofAdd (aeval M p)) ''
+      (LocInt w₀.val : Set (LocField w₀.val)).matrix) :=
+    (isCompact_LocInt w₀.val).matrix.image (continuous_ofAdd.comp p.continuous_aeval)
   rw [tripleBlock_eq_range_blockPoint]
   refine finite_range_inter_support (F := fun q ↦ countTerm ε f u ⟦q⟧) ?_ blockPoint_eq_iff
     h_compact fun Y hY ↦ ?_
   · exact (isOpen_comap_conjAtSplit h𝔑).preimage (continuous_radicalHom _)
-  set a : GL n (LocField w₀.1) := splittingRadical g Y
-  have h_int : (a⁻¹ * g * a).1 ∈ (LocInt w₀.1 : Set (LocField w₀.1)).matrix := by
+  set a : GL n (LocField w₀.val) := splittingRadical g Y
+  have h_int : (a⁻¹ * g * a).val ∈ (LocInt w₀.val : Set (LocField w₀.val)).matrix := by
     rw [countTerm_mul_conjAtSplit h_sign] at hY
     rw [← localAut_mul_conjAtSplit]
-    exact dualComponent_mem_matrix (left_ne_zero_of_mul hY)
+    exact fun i j ↦ mem_Ô.1 ((heckeAlgebra.mem_GUPlus_of_ne_zero (left_ne_zero_of_mul hY)).2 j i) w₀.val
   -- This parameter gives the same element `a` of the radical, so the same point of the block.
-  exact ⟨ofAdd (aeval (a⁻¹ * g * a).1 p), mem_image_of_mem _ h_int,
+  exact ⟨ofAdd (aeval (a⁻¹ * g * a).val p), mem_image_of_mem _ h_int,
     by rw [blockPoint, splittingRadical_aeval_conj ⟨Y, rfl⟩]⟩
 
 /-- Let `f` have type `(J, χ)` at the split place `w₀` (it turns vectors fixed by the level into
@@ -598,21 +598,21 @@ lemma finite_tripleBlock_inter_support (h𝔑 : 𝔑 ≠ 0)
 unitary similitude. The block of `(xK, y, μ)` consists of the `(x a K, y, μ)` with `a` in the
 radical of `localAut w₀ y x`, placed at `w₀`. If `χ` is not trivial at some `j ∈ J` in this radical,
 the sum over the block of `countTerm ε f u` (the value of `f` times the weight `u`) is zero. -/
-lemma finsum_tripleBlock_eq_zero {J : Subgroup (GL n (LocField w₀.1))} {χ : J →* ℂ}
+lemma finsum_tripleBlock_eq_zero {J : Subgroup (GL n (LocField w₀.val))} {χ : J →* ℂ}
     (hJ : f.val ∈ fixedToEigen (levelGU n 𝔑) (conjAtSplit w₀) J χ)
     (h_sign : IsSignedFrame x (eigenReflection ε y μ)) (h_mem : invAutInFrame y x ∈ GU E n)
     {j : J} (hj : j.val ∈ (splittingRadical (localAut w₀ y x)).range) (hχ : χ j ≠ 1) :
     ∑ᶠ p ∈ tripleBlock (levelGU n 𝔑) w₀ x y μ, countTerm ε f u ⟦p⟧ = 0 := by
   -- Write `j g = d⁻¹ g d` with `d` in the radical. Translation by `d` permutes the block and
   -- multiplies each term by `χ j⁻¹ ≠ 1`.
-  set g : GL n (LocField w₀.1) := localAut w₀ y x
+  set g : GL n (LocField w₀.val) := localAut w₀ y x
   obtain ⟨D, hD⟩ := exists_splittingRadical_conj hj
   rw [tripleBlock_eq_range_blockPoint]
   refine finsum_mem_range_eq_zero_of_translate (F := fun p ↦ countTerm ε f u ⟦p⟧) (a := D)
     (c := χ j⁻¹) blockPoint_eq_iff (by simpa using hχ) fun Y ↦ ?_
-  set d : GL n (LocField w₀.1) := splittingRadical g D
-  set a : GL n (LocField w₀.1) := splittingRadical g Y
-  have h_comm : Commute a⁻¹ j.1 := by
+  set d : GL n (LocField w₀.val) := splittingRadical g D
+  set a : GL n (LocField w₀.val) := splittingRadical g Y
+  have h_comm : Commute a⁻¹ j.val := by
     obtain ⟨Z, hZ⟩ := hj
     simpa only [hZ] using ((Commute.all Y Z).map (splittingRadical g)).inv_left
   have h_conj : (d * a)⁻¹ * g * (d * a) = j * (a⁻¹ * g * a) :=
@@ -621,7 +621,7 @@ lemma finsum_tripleBlock_eq_zero {J : Subgroup (GL n (LocField w₀.1))} {χ : J
   have h_value : heckeCosetFn f (invAutInFrame y (x * conjAtSplit w₀ (d * a))) =
       χ j⁻¹ * heckeCosetFn f (invAutInFrame y (x * conjAtSplit w₀ a)) := by
     rw [invAutInFrame_mul_conjAtSplit h_mem, invAutInFrame_mul_conjAtSplit h_mem, h_conj, map_mul,
-      mul_assoc (conjAtSplit w₀ j.1), heckeCosetFn_conjAtSplit_mul hJ]
+      mul_assoc (conjAtSplit w₀ j.val), heckeCosetFn_conjAtSplit_mul hJ]
   rw [countTerm_mul_conjAtSplit h_sign, countTerm_mul_conjAtSplit h_sign,
     map_mul (splittingRadical g), h_value, mul_assoc]
 
@@ -634,7 +634,7 @@ characteristic polynomial contribute, then `countTerm ε f u` (the value of `f` 
 with the sign condition of `ε`) has sum zero over all classes, for the marked count (`ε` true) and
 for the definite count (`ε` false). -/
 lemma finsum_countTerm_eq_zero_of_reducible (hN : IsNeat n 𝔑) (h_regular : IsRegularHecke f)
-    {J : Subgroup (GL n (LocField w₀.1))} {χ : J →* ℂ} (hχ : IsCuspidalType J χ)
+    {J : Subgroup (GL n (LocField w₀.val))} {χ : J →* ℂ} (hχ : IsCuspidalType J χ)
     (hJ : f.val ∈ fixedToEigen (levelGU n 𝔑) (conjAtSplit w₀) J χ)
     (hu : ∀ P : E[X], Irreducible P → u P = 0) (ε : Prop) :
     ∑ᶠ c : orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n), countTerm ε f u c = 0 := by
@@ -706,7 +706,7 @@ lemma ite_eigenReflection_eq (ε : Prop) (y : GL n E) (μ : n) (v : InfinitePlac
   · -- All signs are `1`, and both sides are the identity matrix.
     have h_signs : (fun i : n ↦ (reflectionSigns ε μ v i : ℂ)) = 1 := by
       ext i; simp [reflectionSigns, ← and_assoc, h]
-    rw [h_signs, Lagrange.interpolate_one (numberedRoots (Φ v) y.1.charpoly).injective.injOn
+    rw [h_signs, Lagrange.interpolate_one (numberedRoots (Φ v) y.val.charpoly).injective.injOn
       ⟨μ, Finset.mem_univ μ⟩, map_one]
     refine ite_eq_right_iff.2 fun hv ↦ ?_
     rw [eigenReflection, ite_eq_right fun hε ↦ h ⟨hv, hε⟩, map_one]
@@ -764,11 +764,7 @@ lemma finsum_markedTerm_eq_of_irreducible (hn : Odd (Fintype.card n)) (f : hecke
   refine finsum_eq_of_bijective σ σ.bijective ?_
   rintro ⟨⟨x⟩, y, μ⟩
   -- `U` changes the signs, commutes with the centraliser of `y`, and induces `σ` on this orbit.
-  obtain ⟨U, hU_type, hU_comm, hU_move⟩ : ∃ U : GL n (𝔸f E),
-      (∀ (ν : ℚ) (η : InfinitePlace E → n → ℤˣ) (S : Set (Matrix n n (𝔸f E))) (x : GL n (𝔸f E)),
-        HasSignType (η * reflectionSigns True μ) ν y S x ↔ HasSignType η ν y S (U * x)) ∧
-      (∀ z : GL n E, Commute y z → Commute (toFinGL z) U) ∧
-      ∀ q : GL n (𝔸f E) ⧸ levelGU n 𝔑, σ ⟦(q, y, μ)⟧ = ⟦(U • q, y, μ)⟧ := hσ y μ
+  obtain ⟨U, hU_type, hU_comm, hU_move⟩ := hσ y μ
   have h_move : σ ⟦markedTriple (levelGU n 𝔑) x y μ⟧ =
       ⟦markedTriple (levelGU n 𝔑) (U * x) y μ⟧ := hU_move x
   -- The move keeps the argument of `f`; it remains to match the two sign conditions.
@@ -807,7 +803,7 @@ many a non-zero definite term. Then for every weight `w` the sums over all class
 of the definite terms are equal. -/
 lemma finsum_markedTerm_eq_finsum_definiteTerm (hN : IsNeat n 𝔑) (hn : Odd (Fintype.card n))
     {f : heckeAlgebra n ℂ 𝔑} (h_regular : IsRegularHecke f) {w₀ : SplitFinPlace E}
-    {J : Subgroup (GL n (LocField w₀.1))} {χ : J →* ℂ} (hχ : IsCuspidalType J χ)
+    {J : Subgroup (GL n (LocField w₀.val))} {χ : J →* ℂ} (hχ : IsCuspidalType J χ)
     (hJ : f.val ∈ fixedToEigen (levelGU n 𝔑) (conjAtSplit w₀) J χ) (w : E[X] → n → ℂ)
     (h_marked : (markedTerm f 1).support.Finite)
     (h_definite : (definiteTerm f 1).support.Finite) :
@@ -837,7 +833,7 @@ function (its terms vanish unless the characteristic polynomial is separable) of
 Known result: the comparison of orbit sums in the simple trace formula on a definite group. -/
 lemma finsum_countTerm_marked_eq_definite (hN : IsNeat n 𝔑) (hn : Odd (Fintype.card n))
     {f : heckeAlgebra n ℂ 𝔑} (h_regular : IsRegularHecke f) {w₀ : SplitFinPlace E}
-    {J : Subgroup (GL n (LocField w₀.1))} {χ : J →* ℂ} (hχ : IsCuspidalType J χ)
+    {J : Subgroup (GL n (LocField w₀.val))} {χ : J →* ℂ} (hχ : IsCuspidalType J χ)
     (hJ : f.val ∈ fixedToEigen (levelGU n 𝔑) (conjAtSplit w₀) J χ) (w : E[X] → n → ℂ)
     (h_finite : ∀ ε : Prop, (countTerm ε f 1).support.Finite) :
     ∑ᶠ c : orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n), countTerm True f w c =

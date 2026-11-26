@@ -1,6 +1,9 @@
 module
 
-public import New.Derivatives.FormalGroup.ThetaProducts
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+public import Lib.CM.FormalGroup.FormalParameter
+import Lib.General.Algebra.SeriesBounds
+import New.Derivatives.FormalGroup.ThetaProducts
 
 /-!
 # Derivatives of integral expansions
@@ -52,26 +55,18 @@ lemma exists_monomial_max_norm_coeff [Fintype I] {f : I → MvPowerSeries X ℂ_
       ‖coeff α ((seriesToCp G).subst f * s)‖ ≤ ‖coeff α ((∏ i : I, f i ^ m i) * s)‖ := by
   -- Only the monomials of degree at most `|α|` contribute to the coefficient at `α`. Take the one
   -- with the largest contribution; integral combinations are no larger (ultrametric inequality).
-  let a (d : I →₀ ℕ) : ℂ_[p] := coeff α ((∏ i : I, f i ^ d i) * s)
-  obtain ⟨m, hm_deg, hm_max⟩ : ∃ m ∈ {d : I →₀ ℕ | d.degree ≤ α.degree},
-      ∀ d ∈ {d : I →₀ ℕ | d.degree ≤ α.degree}, ‖a d‖ ≤ ‖a m‖ :=
-    Set.exists_max_image _ _ (finite_of_degree_le _) ⟨0, by simp⟩
+  obtain ⟨m, hm_deg, hm_max⟩ := Set.exists_max_image {d : I →₀ ℕ | d.degree ≤ α.degree}
+    (fun d ↦ ‖coeff α ((∏ i, f i ^ d i) * s)‖) (finite_of_degree_le _) ⟨0, by simp⟩
   refine ⟨m, hm_deg, fun G ↦ ?_⟩
-  have h_trunc (x : MvPowerSeries X ℂ_[p]) :
-      (truncTotal (α.degree + 1) x * truncTotal (α.degree + 1) s).coeff α = coeff α (x * s) :=
-    coeff_truncTotal_mul_truncTotal_eq_coeff_mul x s α.degree.lt_add_one
   -- As the `f i` have no constant term, `G` may be cut down to its terms of degree `≤ |α|`.
-  have h_sum : coeff α ((seriesToCp G).subst f * s) =
-      ∑ d ∈ (finite_of_degree_lt (α.degree + 1)).toFinset, coeff d (seriesToCp G) * a d := by
-    rw [← h_trunc, truncTotal_subst_eq_truncTotal_truncTotal_subst
-      fun i ↦ (hf.const_coeff i).eq_zero, h_trunc]
-    simp [a, subst_coe, truncTotal, truncFinset, Finset.sum_mul, MvPolynomial.aeval_monomial,
-      Finsupp.prod_pow, ← Algebra.smul_def]
-  rw [h_sum]
+  rw [← coeff_truncTotal_mul_truncTotal_eq_coeff_mul _ s α.degree.lt_add_one,
+    truncTotal_subst_eq_truncTotal_truncTotal_subst fun i ↦ (hf.const_coeff i).eq_zero,
+    coeff_truncTotal_mul_truncTotal_eq_coeff_mul _ s α.degree.lt_add_one]
+  simp [subst_coe, truncTotal, truncFinset, Finset.sum_mul, MvPolynomial.aeval_monomial,
+    Finsupp.prod_pow, ← Algebra.smul_def]
   refine norm_sum_le_of_forall_le_of_nonneg (norm_nonneg _) fun d hd ↦ ?_
-  have hd_deg : d.degree ≤ α.degree := by simpa [Nat.lt_succ_iff] using hd
-  have h_coeff : ‖coeff d (seriesToCp G)‖ ≤ 1 := (coeff d G).property
-  simpa only [one_mul] using norm_mul_le_of_le h_coeff (hm_max d hd_deg)
+  simpa using norm_mul_le_of_le (coeff d G).property
+    (hm_max d (by simpa [Nat.lt_succ_iff] using hd))
 
 end New
 
@@ -147,12 +142,6 @@ lemma exists_isGreatest_norm_deriv (n : ℕ) : ∃ i : ℕ, IsGreatest
   refine ⟨i, Set.mem_image_of_mem _ (pow_mem C.isSeriesGenerator_translatedY.generator_mem i),
     Set.forall_mem_image.2 fun g hg ↦ ?_⟩
   simpa [norm_mul] using mul_le_mul_of_nonneg_left (h_max g hg) (norm_nonneg _)
-
-/-- The greatest norm `C.maxDerivNorm n` of `g⁽ⁿ⁾(0) = n! · coeff n g` is attained by some `g` in
-`𝒪[[y]] = C.integralSeriesRing`. -/
-lemma exists_norm_deriv_eq_maxDerivNorm (n : ℕ) :
-    ∃ g ∈ C.integralSeriesRing, ‖n ! * coeff n g‖ = C.maxDerivNorm (p := p) n :=
-  (C.exists_isGreatest_norm_deriv n).elim fun _i hi ↦ hi.csSup_mem
 
 variable {C} in
 /-- For `g` in `𝒪[[y]] = C.integralSeriesRing`, the norm of `g⁽ⁿ⁾(0) = n! · coeff n g` is at most
@@ -292,7 +281,7 @@ lemma katz_divisibility_limit (n : ℕ) : ∃ f ∈ C.integralSeriesRing (p := p
   have h_le : b ^ n ≤ C.maxDerivNorm n :=
     pow_le_of_submultiplicative hb_pos C.maxDerivNorm_nonneg C.maxDerivNorm_add_le h_large n
   obtain ⟨f, hf, h_eq⟩ : ∃ f ∈ C.integralSeriesRing (p := p),
-      ‖n ! * coeff n f‖ = C.maxDerivNorm n := C.exists_norm_deriv_eq_maxDerivNorm n
+      ‖n ! * coeff n f‖ = C.maxDerivNorm n := (C.exists_isGreatest_norm_deriv n).elim fun _i hi ↦ hi.csSup_mem
   exact ⟨f, hf, h_le.trans h_eq.ge⟩
 
 end CMLattice

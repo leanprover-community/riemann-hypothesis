@@ -1,8 +1,17 @@
 module
 
-public import Lib.ClassField.Places.Ideles
-public import TauCeti.NumberTheory.RamificationInertia.Tower
 import TauCeti.NumberTheory.ArithmeticDirichletSeries.Convergence
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.CoveringMap
+import Mathlib.Analysis.Normed.Group.Tannery
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.Data.Finset.Functor
+import Mathlib.NumberTheory.NumberField.DedekindZeta
+import Mathlib.RingTheory.Ideal.Int
+import TauCeti.NumberTheory.RamificationInertia.Tower
+public import Lib.ClassField.Places.Ideles
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Euler products over primes of a number field and densities at primes of degree one
@@ -163,25 +172,18 @@ lemma norm_log_one_add_neg_mul_cpow_sub_ite_le_of_norm_le_one (ha : ∀ v : FinP
   set w : ℂ := -(a v * v.q ^ (-s : ℂ))
   have h_inv : ‖w‖ ≤ (v.q : ℝ)⁻¹ := norm_neg_mul_cpow_le_inv_of_norm_le_one ha hs v
   have h_half : ‖w‖ ≤ 2⁻¹ := h_inv.trans (inv_anti₀ two_pos (mod_cast v.one_lt_q))
-  have h_log : ‖log (1 + w)‖ ≤ 2 * ‖w‖ := by grind [norm_log_one_add_half_le_self, norm_nonneg]
   split_ifs with hq
   · -- `q` is its own least factor, and `‖log (1 + w) - w‖ ≤ ‖w‖ ^ 2 / (1 - ‖w‖) / 2 ≤ 1 / q ^ 2`.
-    calc ‖log (1 + w) - w‖ ≤ ((v.q : ℝ)⁻¹) ^ 2 * (1 - 2⁻¹)⁻¹ / 2 := by
-          grw [norm_log_one_add_sub_self_le (h_half.trans_lt (by norm_num)),
-            ← sub_le_sub_left h_half, h_inv]
-      _ = 1 / (v.q : ℝ) ^ 2 := by ring
-      _ ≤ 2 / v.q.minFac ^ 2 := by
-          rw [hq.minFac_eq]
-          gcongr
-          norm_num
+    grw [norm_log_one_add_sub_self_le (h_half.trans_lt (by norm_num)),
+      ← sub_le_sub_left h_half, h_inv, hq.minFac_eq]
+    ring_nf
+    linarith [sq_nonneg (v.q : ℝ)⁻¹]
   · -- Nothing is subtracted, `‖log (1 + w)‖ ≤ 2 / q` and `minFac q ^ 2 ≤ q`.
-    have h_sq_le : ((v.q.minFac : ℝ) ^ 2) ≤ v.q :=
+    have h_log : ‖log (1 + w)‖ ≤ 2 * ‖w‖ := by grind [norm_log_one_add_half_le_self, norm_nonneg]
+    have h_sq : ((v.q.minFac : ℝ) ^ 2) ≤ v.q :=
       mod_cast Nat.minFac_sq_le_self (zero_lt_one.trans v.one_lt_q) hq
-    have h_sq_pos : (0 : ℝ) < (v.q.minFac : ℝ) ^ 2 := pow_pos (mod_cast v.q.minFac_pos) 2
-    rw [sub_zero]
-    calc ‖log (1 + w)‖ ≤ 2 * (v.q : ℝ)⁻¹ := by grw [h_log, h_inv]
-      _ ≤ 2 * ((v.q.minFac : ℝ) ^ 2)⁻¹ := by grw [inv_anti₀ h_sq_pos h_sq_le]
-      _ = 2 / v.q.minFac ^ 2 := by rw [div_eq_mul_inv]
+    rw [sub_zero, div_eq_mul_inv]
+    grw [h_log, h_inv, inv_anti₀ (pow_pos (mod_cast v.q.minFac_pos) 2) h_sq]
 
 /-- For `‖a v‖ ≤ 1` and real `s ≥ 1`, the Euler factor `1 - a v * q ^ (-s)` lies in the slit plane,
 where the logarithm is continuous. -/
@@ -456,22 +458,13 @@ lemma HasPrimeDensity.sum {ι : Type*} [Fintype ι] {a : ι → FinPlace K → �
     (h : ∀ i : ι, HasPrimeDensity (a i) (l i)) :
     HasPrimeDensity (fun v : FinPlace K ↦ ∑ i : ι, w i * a i v) (∑ i : ι, w i * l i) := by
   -- Take the same combination of the bounded error terms.
-  choose x h_bdd h_sum using show ∀ i, ∃ x : ℝ → ℂ, x =O[𝓝[>] 1] (1 : ℝ → ℝ) ∧
-      ∀ᶠ s : ℝ in 𝓝[>] 1, HasSum (fun v : FinPlace K ↦ ite v.q.Prime (a i v) 0 * v.q ^ (-s : ℂ))
-        (x s - l i * Real.log (s - 1)) from h
+  choose x h_bdd h_sum using h
   refine ⟨∑ i, fun s ↦ w i * x i s, .sum fun i _ ↦ (h_bdd i).const_mul_left (w i), ?_⟩
   filter_upwards [eventually_all.mpr h_sum] with s hs
-  have h_each : HasSum (fun v : FinPlace K ↦ ∑ i, w i * (ite v.q.Prime (a i v) 0 * v.q ^ (-s : ℂ)))
-      (∑ i, w i * (x i s - l i * Real.log (s - 1))) :=
-    hasSum_sum fun i _ ↦ (hs i).mul_left (w i)
-  have h_terms (v : FinPlace K) : ite v.q.Prime (∑ i, w i * a i v) 0 * v.q ^ (-s : ℂ) =
-      ∑ i, w i * (ite v.q.Prime (a i v) 0 * v.q ^ (-s : ℂ)) := by
+  convert hasSum_sum (s := Finset.univ) fun i _ ↦ (hs i).mul_left (w i) using 1
+  · ext v
     by_cases hq : v.q.Prime <;> simp [hq, Finset.sum_mul, mul_assoc]
-  have h_value : ∑ i, w i * (x i s - l i * Real.log (s - 1)) =
-      (∑ i, fun s ↦ w i * x i s) s - (∑ i, w i * l i) * Real.log (s - 1) := by
-    simp [Finset.sum_apply, mul_sub, Finset.sum_sub_distrib, Finset.sum_mul, mul_assoc]
-  rw [h_value] at h_each
-  exact h_each.congr_fun h_terms
+  · simp [Finset.sum_apply, mul_sub, Finset.sum_sub_distrib, Finset.sum_mul, mul_assoc]
 
 /-- Suppose `a` has density `l` and `b` has density `l'` in the Dirichlet sense of
 `HasPrimeDensity`: over the primes `v` of degree one (prime norm `q_v`),
@@ -484,67 +477,48 @@ lemma HasPrimeDensity.re_le_re (ha : HasPrimeDensity a l) (hb : HasPrimeDensity 
   -- Subtract the two series. Outside a finite set `S` the terms `d s v` have real part `≥ 0`, so
   -- `∑ v ∈ S, re (d s v) + re (l' - l) log (s - 1) ≤ ‖y s - x s‖`, which is bounded as `s ↓ 1`.
   -- If `re l' < re l` the left side tends to `+∞`.
-  obtain ⟨x, hx_bdd, hx_sum⟩ : ∃ x : ℝ → ℂ, x =O[𝓝[>] 1] (1 : ℝ → ℝ) ∧ ∀ᶠ s : ℝ in 𝓝[>] 1,
-      HasSum (fun v : FinPlace K ↦ ite v.q.Prime (a v) 0 * v.q ^ (-s : ℂ))
-        (x s - l * Real.log (s - 1)) := ha
-  obtain ⟨y, hy_bdd, hy_sum⟩ : ∃ y : ℝ → ℂ, y =O[𝓝[>] 1] (1 : ℝ → ℝ) ∧ ∀ᶠ s : ℝ in 𝓝[>] 1,
-      HasSum (fun v : FinPlace K ↦ ite v.q.Prime (b v) 0 * v.q ^ (-s : ℂ))
-        (y s - l' * Real.log (s - 1)) := hb
-  by_contra! h_lt : l'.re < l.re
-  -- `S`: the finitely many primes where the hypothesis `h_le` fails.
-  let S : Finset (FinPlace K) := (eventually_cofinite.mp h_le).toFinset
+  obtain ⟨x, hx_bdd, hx_sum⟩ := ha
+  obtain ⟨y, hy_bdd, hy_sum⟩ := hb
+  by_contra! h_lt
+  let S := (eventually_cofinite.mp h_le).toFinset
   let d (s : ℝ) (v : FinPlace K) : ℂ :=
     ite v.q.Prime (b v) 0 * v.q ^ (-s : ℂ) - ite v.q.Prime (a v) 0 * v.q ^ (-s : ℂ)
-  have h_nonneg (s : ℝ) (v : FinPlace K) (hv : v ∉ S) : 0 ≤ (d s v).re := by
+  have h_nonneg s v (hv : v ∉ S) : 0 ≤ (d s v).re := by
     have h_real : (v.q : ℂ) ^ (-s : ℂ) = ((v.q : ℝ) ^ (-s) : ℝ) := by simp [ofReal_cpow]
-    have h_coeff_nonneg : 0 ≤ (ite v.q.Prime (b v) 0).re - (ite v.q.Prime (a v) 0).re := by
-      by_cases hq : v.q.Prime <;> simp_all [S]
     simp only [d, h_real, ← sub_mul, re_mul_ofReal, sub_re]
-    exact mul_nonneg h_coeff_nonneg (by positivity)
+    refine mul_nonneg ?_ (by positivity)
+    by_cases hq : v.q.Prime <;> simp_all [S]
   have h_bound : ∀ᶠ s : ℝ in 𝓝[>] 1,
       ∑ v ∈ S, (d s v).re + (l'.re - l.re) * (s - 1).log ≤ ‖y s - x s‖ := by
     filter_upwards [hx_sum, hy_sum] with s has hbs
-    calc
-      _ ≤ (y s - l' * (s - 1).log - (x s - l * (s - 1).log)).re + (l'.re - l.re) * (s - 1).log := by
-        grw [sum_le_hasSum S (h_nonneg s) (hasSum_re (hbs.sub has))]
-      _ = (y s - x s).re := by grind [sub_re, re_mul_ofReal]
-      _ ≤ ‖y s - x s‖ := re_le_norm _
+    refine le_trans ?_ (re_le_norm _)
+    grw [sum_le_hasSum S (h_nonneg s) (hasSum_re (hbs.sub has))]
+    grind [sub_re, re_mul_ofReal]
+  -- As `re l' < re l`, the left side of `h_bound` tends to `+∞`, but the right side is bounded.
   have h_cont : ContinuousAt (fun s ↦ ∑ v ∈ S, (d s v).re) 1 := by fun_prop (disch := simp)
   have h_log : Tendsto (fun s : ℝ ↦ (s - 1).log) (𝓝[>] 1) atBot :=
     tendsto_log_nhdsGT_zero.comp (by simp [Tendsto, map_subRight_nhdsGT])
-  -- As `re l' < re l`, the left side of `h_bound` tends to `+∞`, but the right side is bounded.
-  have h_lhs_top : Tendsto (fun s : ℝ ↦ ∑ v ∈ S, (d s v).re + (l'.re - l.re) * (s - 1).log)
-      (𝓝[>] 1) atTop :=
-    h_cont.continuousWithinAt.tendsto.add_atTop (h_log.const_mul_atBot_of_neg (sub_neg.mpr h_lt))
-  have h_rhs_bdd : IsBoundedUnder (· ≤ ·) (𝓝[>] 1) fun s : ℝ ↦ ‖y s - x s‖ :=
-    (hy_bdd.sub hx_bdd).isBoundedUnder_le
-  exact not_isBoundedUnder_of_tendsto_atTop h_lhs_top (h_rhs_bdd.mono_le h_bound)
+  exact not_isBoundedUnder_of_tendsto_atTop
+    (h_cont.continuousWithinAt.tendsto.add_atTop (h_log.const_mul_atBot_of_neg (sub_neg.mpr h_lt)))
+    ((hy_bdd.sub hx_bdd).isBoundedUnder_le.mono_le h_bound)
 
 /-- For `c ∈ ℂ` the constant family `v ↦ c` has density `c` over the primes of degree one of `K`, in
 the sense of `New.HasPrimeDensity`. -/
 lemma hasPrimeDensity_const (c : ℂ) : HasPrimeDensity (fun _ : FinPlace K ↦ c) c := by
-  -- For `s > 1` the Euler product with coefficients `1` is `ζ_K(s)`: group the ideals by norm.
-  have h_zeta (s : ℝ) (hs : 1 < s) : dedekindZeta K s = eulerProd (fun _ : FinPlace K ↦ 1) s := by
-    have h_sum := (hasSum_eulerProd (K := K) 1 (fun I ↦ by simp) hs).tsum_fiberwise absNorm
-    -- For each `n`: the term of `ζ_K` at `n` is the sum over the ideals of norm `n`.
-    refine (h_sum.congr_fun fun n ↦ ?_).tsum_eq
-    have h_fiber (I : absNorm ⁻¹' {n}) :
-        (1 : Ideal (𝓞 K) →* ℂ) I.val * ((absNorm I.val : ℕ) : ℂ) ^ (-s : ℂ) =
-          (n : ℂ) ^ (-s : ℂ) := by
-      rw [I.property, MonoidHom.one_apply, one_mul]
-    -- The `Nat.card` ideals of norm `n` each give `n ^ (-s)`; for `n = 0` both sides are `0`.
-    rw [tsum_congr h_fiber, tsum_const, nsmul_eq_mul]
-    rcases eq_or_ne n 0 with rfl | hn
-    · simp [zero_cpow (neg_ne_zero.mpr (ofReal_ne_zero.mpr (zero_lt_one.trans hs).ne'))]
-    · simp [LSeries.term_of_ne_zero hn, cpow_neg, div_eq_mul_inv,
-        Set.preimage, Set.coe_ofPred]
   -- The simple pole of `ζ_K` at `s = 1` gives the constant family `1` mean `1`; scale by `c`.
-  have h_one : HasPrimeDensity (fun _ : FinPlace K ↦ 1) 1 := by
-    refine hasPrimeDensity_of_tendsto (fun _ ↦ by simp)
-      (ofReal_ne_zero.mpr (dedekindZeta_residue_ne_zero K))
-      (tendsto_nhdsWithin_congr (fun s hs ↦ ?_) (tendsto_sub_one_mul_dedekindZeta_nhdsGT K))
-    rw [cpow_one, h_zeta s hs]
-  simpa using HasPrimeDensity.sum (ι := Unit) (fun _ ↦ c) fun _ ↦ h_one
+  suffices HasPrimeDensity (fun _ : FinPlace K ↦ 1) 1 by
+    simpa using HasPrimeDensity.sum (ι := Unit) (fun _ ↦ c) fun _ ↦ this
+  refine hasPrimeDensity_of_tendsto (fun _ ↦ by simp)
+    (ofReal_ne_zero.mpr (dedekindZeta_residue_ne_zero K))
+    (tendsto_nhdsWithin_congr (fun s hs ↦ ?_) (tendsto_sub_one_mul_dedekindZeta_nhdsGT K))
+  -- For `s > 1` the Euler product with coefficients `1` is `ζ_K(s)`: group the ideals by norm.
+  rw [cpow_one]
+  refine congrArg _ (((hasSum_eulerProd (K := K) 1 (fun _ ↦ by simp) hs).tsum_fiberwise
+    absNorm).congr_fun fun n ↦ ?_).tsum_eq
+  rw [tsum_congr fun I : absNorm ⁻¹' {n} ↦ by rw [I.property, MonoidHom.one_apply, one_mul],
+    tsum_const, nsmul_eq_mul]
+  rcases eq_or_ne n 0 with rfl | hn <;> simp [*, zero_cpow, (zero_lt_one.trans hs).ne',
+    LSeries.term_of_ne_zero, cpow_neg, div_eq_mul_inv, Set.preimage, Set.coe_ofPred]
 
 /-- A number field `K` has infinitely many primes of degree one, that is, finite places `w` whose
 absolute norm `w.q` is a prime number. -/

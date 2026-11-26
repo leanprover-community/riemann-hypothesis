@@ -1,6 +1,13 @@
 module
 
-public import New.Spanning.Frames.QuadricPlancherel
+import Mathlib.Algebra.Order.Star.Int
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import New.Spanning.Frames.Correlations
+import Lib.Base
+import New.Spanning.Frames.QuadricPlancherel
+import New.Spanning.Frames.QuadricVolumes
+import New.Spanning.Frames.TwoGauges
 
 /-!
 # Depth
@@ -60,26 +67,20 @@ lemma isOpen_setOf_mem_stableProducts : IsOpen
   {((x, y), c) : (T.G × T.G) × A | c ∈ F.stableProducts a x y} := by
   refine isOpen_iff_eventually.2 ?_
   rintro ⟨⟨x, y⟩, c⟩ ⟨w, ⟨h_orth, w', h_congr, h_close⟩, hc⟩
-  -- Keep both lifts but move their coordinate at `e*_a`: being close is an open condition.
+  -- Keep both lifts and vary their `e*_a` coordinate; closeness is an open condition.
   obtain ⟨h_open_pairs, -, -⟩ := F.isOpen_closePairs_and_zero_mem_and_isCompact_closure
   have h_open : IsOpen {r : (T.G × T.G) × A | ((r.1.1⁻¹ : T.G) *ᵥ update w (eStar a) r.2,
       ((r.1.1 * r.1.2)⁻¹ : T.G) *ᵥ update w' (eStar a) r.2) ∈ F.closePairs} :=
     h_open_pairs.preimage (by fun_prop)
-  have hc' : w' (eStar a) = c := (h_congr.apply_eStar a.is_lt.le a).trans hc
   have h_mem : ((x⁻¹ : T.G) *ᵥ update w (eStar a) c,
       ((x * y)⁻¹ : T.G) *ᵥ update w' (eStar a) c) ∈ F.closePairs := by
-    rwa [update_eq_self_iff.2 hc.symm, update_eq_self_iff.2 hc'.symm]
+    change w (eStar a) = c at hc
+    rwa [update_eq_self_iff.2 hc.symm,
+      update_eq_self_iff.2 ((h_congr.apply_eStar a.is_lt.le a).trans hc).symm]
   filter_upwards [h_open.mem_nhds h_mem] with r hr
-  have h_orth_update : IsOrthogonalBelow a (update w (eStar a) r.2) := by
-    intro b hb
-    have h_ne : (eStar b : 𝔰.BesselIndex) ≠ eStar a := by grind
-    rw [update_of_ne h_ne, h_orth b hb]
-  have h_congr_update : CongrBelow a (update w (eStar a) r.2) (update w' (eStar a) r.2) := by
-    intro k hk
-    by_cases h_eq : k = eStar a
-    · simp [h_eq]
-    · simp [h_eq, h_congr k hk]
-  exact ⟨update w (eStar a) r.2, ⟨h_orth_update, _, h_congr_update, hr⟩, by simp⟩
+  refine ⟨update w (eStar a) r.2, ⟨fun b hb ↦ ?_, _, fun k hk ↦ ?_, hr⟩, by simp⟩
+  · rw [update_of_ne (by grind), h_orth b hb]
+  · by_cases h_eq : k = eStar a <;> simp [h_eq, h_congr k hk]
 
 /-- The set 𝔡_a = `F.stableProducts a x y` of the points x and x y does not change when both points
 are moved by an element ξ of R^(a+1) = `partialUnitriangularGroup (a + 1)`. -/
@@ -410,8 +411,7 @@ lemma lintegral_invDepthWeight_le {g : T.G} (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead
       (∏ a ∈ Finset.range j, F.floorModulus a (p a)⁻¹) * Γ.floorsConst := by
   -- Move `g` into the box `F.boxSet`, then use induction on the length of the head.
   obtain ⟨ξ, hξ, h_box⟩ : ∃ ξ ∈ partialUnitriangularGroup j, ξ * g ∈ F.boxSet := h_near
-  obtain ⟨γ, hγ, n, hn, rfl⟩ : ∃ γ ∈ floorGroup j, ∃ n ∈ unipotentBelow j, ξ = γ * n :=
-    exists_floorGroup_mul_unipotentBelow hξ
+  obtain ⟨γ, hγ, n, hn, rfl⟩ := exists_floorGroup_mul_unipotentBelow hξ
   have h_floors (a : ℕ) (ha : a ≤ j) :
       ∫⁻ ν, F.invDepthWeight a x (weylElem a p * (ν * (γ * n * g))) ∂ascConv heisenbergMeasure a ≤
         (∏ l ∈ .range a, F.floorModulus l (p l)⁻¹) * Γ.loss ^ (10 ^ 6 * (𝔰.n * (𝔰.n * a))) := by
@@ -515,23 +515,14 @@ M = `F.levelUnit` is the level. -/
 lemma hasMatrixSize_mul_inv_sub_one {g x y : T.G} (hg : g ∈ F.boxSet) (hx : x ∈ Γ.positionsOfSize)
     (hy : y ∈ Γ.positionsOfSize) :
     Γ.HasMatrixSize 14 (F.levelUnit⁻¹.val • ((g * x * (g * y)⁻¹).val.val - 1)) := by
-  have hx_size : Γ.HasMatrixSize 1 (F.levelUnit⁻¹.val • (x.val.val - 1)) := hx.2
-  have hy_size : Γ.HasMatrixSize 1 (F.levelUnit⁻¹.val • (y.val.val - 1)) := hy.2
   -- `y = M ((y - 1) / M) - (-1)` has size `3`, so `g y` has size `5` and its inverse size `9`.
-  have hy_entries : Γ.HasMatrixSize 3 y.val.val := by
-    intro a b
-    have h_sub_one : F.levelUnit.val * (F.levelUnit⁻¹.val • (y.val.val - 1)) a b ∈ Γ.ofSize 2 :=
-      Γ.mul_mem_ofSize Γ.levelUnit_mem_ofSize (hy_size a b)
-    have h_neg_one : -(1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) a b ∈ Γ.ofSize 2 :=
-      Γ.neg_mem_iff_and_star_mem_iff.1.2 (HasMatrixSize.one a b)
-    simpa using sub_mem_ofSize h_sub_one h_neg_one
-  have h_inv : Γ.HasMatrixSize 9 (g * y)⁻¹.val.val :=
-    HasMatrixSize.inv (x := g * y) ((Γ.hasMatrixSize_boxSet hg).mul hy_entries)
-  have h_diff : Γ.HasMatrixSize 4
-      (g.val.val * (F.levelUnit⁻¹.val • (x.val.val - 1) - F.levelUnit⁻¹.val • (y.val.val - 1))) :=
-    (Γ.hasMatrixSize_boxSet hg).mul (hx_size.sub hy_size)
+  have hy_entries : Γ.HasMatrixSize 3 y.val.val := fun a b => by
+    simpa using sub_mem_ofSize (Γ.mul_mem_ofSize Γ.levelUnit_mem_ofSize (hy.2 a b))
+      (Γ.neg_mem_iff_and_star_mem_iff.1.2 (HasMatrixSize.one a b))
+  have hg_size := Γ.hasMatrixSize_boxSet hg
   -- The matrix is `g ((x - 1) / M - (y - 1) / M) (g y)⁻¹`, of size `4 + 9 + 1`.
-  simpa [mul_assoc, smul_sub, mul_sub, sub_mul] using h_diff.mul h_inv
+  simpa [mul_assoc, smul_sub, mul_sub, sub_mul] using
+    (hg_size.mul (hx.2.sub hy.2)).mul (HasMatrixSize.inv (x := g * y) (hg_size.mul hy_entries))
 
 /-- The range of the coordinates on a Heisenberg group. Let g lie in the box `F.boxSet` and let g⁻¹
 y lie in the position ball (`Γ.positionsOfSize`). Let n lie in the Heisenberg group
@@ -696,8 +687,7 @@ lemma lintegral_depthWeight_le (hj : j ≤ 𝔰.ϱ) (g y : T.G) (h_near : F.IsNe
   -- Move both points by the element `γ * n` of `R^(j)` that takes `g` into the box `F.boxSet`,
   -- then use induction on the length.
   obtain ⟨ξ, hξ, hg⟩ : ∃ ξ ∈ partialUnitriangularGroup j, ξ * g ∈ F.boxSet := h_near
-  obtain ⟨γ, hγ, n, hn, rfl⟩ : ∃ γ ∈ floorGroup j, ∃ n ∈ unipotentBelow j, ξ = γ * n :=
-    exists_floorGroup_mul_unipotentBelow hξ
+  obtain ⟨γ, hγ, n, hn, rfl⟩ := exists_floorGroup_mul_unipotentBelow hξ
   have h_floors (a : ℕ) (ha : a ≤ 𝔰.ϱ) (y : T.G) :
       ∫⁻ ν, Γ.positionsOfSize.indicator (F.depthWeight a (γ * n * g)) ((γ * n * g)⁻¹ * (ν * y))
         ∂ascConv heisenbergMeasure a ≤ ∏ l ∈ .range a,
@@ -756,8 +746,7 @@ lemma exists_hasMatrixSize_of_isNear (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p) (
       Γ.HasMatrixSize (60 * 𝔰.n ^ 2) (σ * g).val.val ∧
       Γ.HasMatrixSize (99 * 𝔰.n ^ 2) (σ * ((weylElem j p)⁻¹ * g)).val.val := by
   obtain ⟨ξ, hξ, h_box⟩ : ∃ ξ ∈ partialUnitriangularGroup j, ξ * g ∈ F.boxSet := hg
-  obtain ⟨σ, hσ, ν, hν, rfl⟩ : ∃ σ ∈ floorGroup j, ∃ ν ∈ unipotentBelow j, ξ = σ * ν :=
-    exists_floorGroup_mul_unipotentBelow hξ
+  obtain ⟨σ, hσ, ν, hν, rfl⟩ := exists_floorGroup_mul_unipotentBelow hξ
   -- Apply `hasMatrixSize_of_isHead` to `σ * g` and `σ * ν * σ⁻¹`; `σ` commutes with `weylElem j p`.
   have h_comm : σ * ((weylElem j p)⁻¹ * g) = (weylElem j p)⁻¹ * (σ * g) :=
     (weylElem_mul_left_comm hσ).right.symm

@@ -1,8 +1,9 @@
 module
 
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.Derivatives.Sharpness.Couplings
 public import New.Derivatives.Sharpness.NearPairs
-public import New.Derivatives.Vacuum.Scale
 
 /-!
 # The valuation bound `v(l!) + val₁₂(l) ≤ S_p + 2 ∑ v(B_τ)` for every prime
@@ -215,7 +216,7 @@ lemma leastValLE_six_zero_of_inert (D : Data P) {w : J → D.E} {c : J → ℕ}
           (New.Φ x.1 (D.resolutionVectors w i x.2) * dagger (D.resolutionVectors w i) y)) := by
         simp [a, resolutionForms_eq_smul, daggerForms, mul_sum, mul_assoc, mul_left_comm]
     _ = if x = y then D.taylorScale else 0 := by
-        simp [D.isResolution_resolutionVectors hw x y, apply_ite ιₚ]
+        simp [D.isResolution_resolutionVectors hw x y]
 
 /-- Let `D` be admissible data for the parameters `P` and `p` a prime that is inert in `K = ℚ(√-d)`.
 For a tight frame `w` of length `M = D.M` with multiplicities `c`, the theta product
@@ -479,11 +480,11 @@ lemma powerDegree_add_partnerDegree_le_of_isNearPair (D : Data P) {p : ℕ} [hp 
 lemma partner_bijective (D : Data P) (p e : ℕ) : Function.Bijective (P.partner D.towerExp p e) :=
   Group.mulLeft_bijective (P.placeOfInt D.towerExp (-p ^ e))
 
-/-- Let `p` be a prime greater than `k = D.k`, and `l` a degree between the weights
+/-- Let `p` be a natural number greater than `k = D.k`, and `l` a degree between the weights
 `κ(τ) = D.weight τ` and `κ(τ) + x ^ 42`, `x = D.x`. The couplings `z_τ ^ p * z_(-p τ)` at all places
 `τ` are used `j τ = min ⌊(l_τ - n♯)₊ / p⌋ l_(-p τ)` times each. Together they have total degree at
 most `l`. -/
-lemma powerDegree_add_partnerDegree_le_of_k_lt (D : Data P) {p : ℕ} [Fact p.Prime]
+lemma powerDegree_add_partnerDegree_le_of_k_lt (D : Data P) {p : ℕ}
     {l : D.Φ × Unit →₀ ℕ} (hl : D.IsNearWeights l) (hk : D.k < p) {j : D.Φ → ℕ}
     (hj : ∀ τ : D.Φ, j τ = min ((l (τ, ()) - D.lossFactorCount) / p)
       (l (P.partner D.towerExp p 1 τ, ()))) :

@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.RingTheory.MvPolynomial.Homogeneous
 public import Lib.Shimura.ThetaModuli.PELThetaTori
 
 /-!
@@ -212,7 +215,7 @@ lemma thetaShift_periodPoint_thetaProduct {y : D.Index → E}
       (((p k).1 • ⟨frameTorsionClass g y, hy⟩ : D.dualTorsion) : AdelicTorsion E D.Index) :=
         map_smul ..
   rw [h_act]
-  simpa [intAction, smul_comm (cmEmbedding (p k).1.val), add_comm, periodPoint, bicharacter] using
+  simpa [intAction, smul_comm (cmEmbedding (p k).1.val), add_comm, bicharacter] using
     x.thetaShift_thetaCoord h_class (μ k)
 
 /-- Riemann's theta relation in one variable. Here x is a theta torus on V for the PEL datum `D`.
@@ -522,7 +525,8 @@ private lemma range_aeval_thetaCoord_eq_normBall
     (c : D.dualTorsion) (j : ℕ) :
     ((aeval x.thetaCoord).toLinearMap.domRestrict
       (homogeneousSubmodule D.dualTorsion v.valuationSubring (D.paddedNorm ^ j))).range =
-      (h_good.pow j).normBall (x.thetaCoord c ^ D.paddedNorm ^ j) := by
+      HasGoodReduction.normBall (D.paddedNorm ^ j • x.automorphyForm) (x.multiplier ^ D.paddedNorm ^ j) v
+        (x.thetaCoord c ^ D.paddedNorm ^ j) := by
   rw [LinearMap.range_domRestrict, map_homogeneousSubmodule_eq_formSpan,
     x.formSpan_eq_normBall v h_good]
 
@@ -554,8 +558,10 @@ private lemma isSmallForm_iff_forall_eval_map_eq_zero [Field k] {φ : v.valuatio
         ∃ i : D.dualTorsion, v (p b i) = 1 := hp b
     refine ⟨s ^ D.paddedNorm ^ j, fun g ↦ ?_, ⟨_, isHomogeneous_X_pow i _⟩, by simp [hi_unit]⟩
     simpa [ev, eval_eq, aeval_def, eval₂_eq, hs_eq, div_eq_inv_mul] using
-      eval₂_mul_of_isHomogeneous g.property (algebraMap ..) s⁻¹ _
-  have h_ball : ev.range = (h_good.pow j).normBall (x.thetaCoord c ^ D.paddedNorm ^ j) :=
+      g.property.eval₂_const_mul (algebraMap ..) _ s⁻¹
+  have h_ball : ev.range =
+      HasGoodReduction.normBall (D.paddedNorm ^ j • x.automorphyForm) (x.multiplier ^ D.paddedNorm ^ j) v
+        (x.thetaCoord c ^ D.paddedNorm ^ j) :=
     x.range_aeval_thetaCoord_eq_normBall h_good c j
   change (D.paddedNorm ^ j • x.automorphyForm).thetaNorm v (ev f) < x.automorphyForm.thetaNorm v
     (x.thetaCoord c) ^ D.paddedNorm ^ j ↔ _
@@ -591,7 +597,8 @@ private lemma isSmallForm_iff_forall_eval_map_eq_zero_of_ne_zero [Field k]
       (D.paddedNorm ^ j • x.automorphyForm).thetaNorm v (aeval x.thetaCoord f.val) *
         x.automorphyForm.thetaNorm v (x.thetaCoord c) ^ e := by
     have h_mem_ball : aeval x.thetaCoord f.val ∈
-        (h_good.pow j).normBall (x.thetaCoord c ^ D.paddedNorm ^ j) :=
+        HasGoodReduction.normBall (D.paddedNorm ^ j • x.automorphyForm) (x.multiplier ^ D.paddedNorm ^ j) v
+        (x.thetaCoord c ^ D.paddedNorm ^ j) :=
       (x.range_aeval_thetaCoord_eq_normBall h_good c j).le ⟨f, rfl⟩
     rw [map_mul, map_pow, aeval_X, h_deg, add_smul, ← thetaNorm_pow, LatticeForm.thetaNorm,
       sizeAt_mul]
@@ -643,7 +650,7 @@ lemma isCutOutAt_reduction [Field k] {φ : v.valuationSubring →+* k} (hφ : Su
     (D.paddedNorm ^ j)) :
       f.val.map φ ∈ J ↔ x.IsSmallForm c j f := by
     simp +contextual [J, x.isSmallForm_iff_forall_eval_map_eq_zero_of_ne_zero hφ h_good hq_coords,
-      eval₂_mul_of_isHomogeneous f.property, div_eq_inv_mul]
+      f.property.eval₂_const_mul, div_eq_inv_mul]
   have h_lift (d : ℕ) : Surjective fun f : homogeneousSubmodule D.dualTorsion v.valuationSubring d ↦
       (⟨f.val.map φ, f.property.map φ⟩ : homogeneousSubmodule D.dualTorsion k d) :=
     surjective_map_homogeneous hφ d
@@ -671,7 +678,8 @@ lemma isCutOutAt_reduction [Field k] {φ : v.valuationSubring →+* k} (hφ : Su
     -- The rank is the dimension of the theta space of degree `r ^ j` ...
     have h_ball : ((aeval x.thetaCoord).toLinearMap.domRestrict
           (homogeneousSubmodule D.dualTorsion v.valuationSubring (D.paddedNorm ^ j))).range =
-        (h_good.pow j).normBall (x.thetaCoord c ^ D.paddedNorm ^ j) :=
+        HasGoodReduction.normBall (D.paddedNorm ^ j • x.automorphyForm) (x.multiplier ^ D.paddedNorm ^ j) v
+        (x.thetaCoord c ^ D.paddedNorm ^ j) :=
       x.range_aeval_thetaCoord_eq_normBall h_good c j
     change finrank k (imageMod J (homogeneousSubmodule D.dualTorsion k (D.paddedNorm ^ j))) =
       thetaRanks D.dualTorsion D.paddedNorm j
@@ -700,7 +708,7 @@ lemma isCutOutAt_reduction [Field k] {φ : v.valuationSubring →+* k} (hφ : Su
     -- chart `chart b`.
     have h_unit (b : D.levelTorsion) : φ (p b (chart b)) ≠ 0 :=
       ((hN_coords b (chart b)).left.mp (h_chart b)).ne_zero
-    simp [hN_coords _ _, h_unit, eval₂_mul_of_isHomogeneous f.property, comp_def, mul_comm (φ _)]
+    simp [hN_coords _ _, h_unit, f.property.eval₂_const_mul, comp_def, mul_comm (φ _)]
 
 /-- The family of coefficient pairs in `𝓞 E` consisting of `(1, 0)` twice (on the first copy of
 `Bool`), `(c, 1)` and `(1, −c̄)` (at `true` and `false` of the second copy), and `(a l, 0)` for

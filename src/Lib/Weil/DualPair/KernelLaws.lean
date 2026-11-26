@@ -1,6 +1,8 @@
 module
 
 public import Lib.Weil.DualPair.FiniteAction
+import Lib.Weil.Construction.CanonicalTheta
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Theta kernels of unitary pairs modulo an ideal: formal laws and seesaw identities
@@ -159,8 +161,8 @@ lemma pairWeil_modDatum_stdLevel (k : stdLevel E n) (k' : stdLevel E n')
   -- The pair is trivial at infinity, so it acts only on the finite datum: it replaces the lift of
   -- `Ψ` by its translate under `x ↦ k'⁻¹ x k` and scales the vacuum.
   rw [modDatum, pairWeil_integrated_fin,
-    pairWeil_schrodingerOp_of_mem 𝔪.isConjDisjoint_places k.2 k'.2, h_vac, map_smul, map_smul,
-    h_lift, modDatum]
+    pairWeil_schrodingerOp_of_mem 𝔪.isConjDisjoint_places k.property k'.property, h_vac, map_smul,
+    map_smul, h_lift, modDatum]
 
 /-- Let `modKernel S T a b 𝔪 Ψ P` be the theta kernel (g, h) ↦ θ(ω_{a,b}(g, h) f) on the adelic
 unitary groups of `S` and `T`, where the datum f is built from a function `Ψ` on n′ × n matrices

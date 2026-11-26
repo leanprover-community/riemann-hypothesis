@@ -1,7 +1,15 @@
 module
 
-public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+public import Aesop.BuiltinRules
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 public import Lib.PadicHodge.Crystalline.Basic
+public import Lib.General.Topology
+import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+import Lib.ClassField.Places.DecompositionCompletion
+import Lib.ClassField.Places.LocalFields
 
 /-!
 # Tame inertia, Frobenius on roots of unity over ℚ_p, the cyclotomic character, Weil pairs
@@ -34,7 +42,7 @@ determined by the Galois element.
 Notions from other files:
 * `New.IsLocalGalois`: Γ = Gal(Ω/k), with Ω algebraically closed of characteristic 0, stabilises A,
   and A ∩ k is a discrete valuation ring with finite residue field. So k is a henselian local field.
-* `New.IsUniformiser`: `π` is a uniformiser of `K` for `A`: an element of `K` lies in the maximal
+* `New.IsUniformizer`: `π` is a uniformiser of `K` for `A`: an element of `K` lies in the maximal
   ideal of `A` exactly when its valuation is at most that of `π`.
 * `New.IsFrob`: `σ` stabilises the valuation subring `A` and `σ • x ≡ x ^ q` modulo the maximal
   ideal for all `x ∈ A`.
@@ -59,7 +67,7 @@ namespace New
 open Polynomial IsSepClosed MulAction Subgroup Cohomology Set QuotientGroup Finset
 
 variable {Γ k Ω : Type*} [Group Γ] [Field k] [Field Ω] [Algebra k Ω] [MulSemiringAction Γ Ω]
-  {A : ValuationSubring Ω} {π : kˣ} (hπ : IsUniformiser A π.val) {s : Γ} (hs : s ∈ inertiaGroup Γ A)
+  {A : ValuationSubring Ω} {π : kˣ} (hπ : IsUniformizer A π.val) {s : Γ} (hs : s ∈ inertiaGroup Γ A)
   {n : ℕ} (hn : A.valuation n = 1) {y : Ω} (hy : y ^ n = algebraMap k Ω π)
 
 namespace Cohomology
@@ -123,7 +131,7 @@ variable [TopologicalSpace Γ] [G : IsLocalGalois Γ k A]
 
 /-- For `y ≠ 0` whose orbit under inertia has `m` elements (the index of its stabiliser), the
 valuation of `y ^ m` is an integral power of that of the uniformiser `π` (the section hypothesis
-`hπ : IsUniformiser A π`). -/
+`hπ : IsUniformizer A π`). -/
 lemma IsLocalGalois.exists_valuation_pow_inertia_index (hy_ne : y ≠ 0) :
     ∃ d : ℤ, A y ^ (stabilizer (inertiaGroup Γ A) y).index = valuationVia k A π ^ d := by
   -- The left side is the valuation of an element `c` of the fixed field of inertia
@@ -222,11 +230,11 @@ private lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq {P : Type*} [Monoid P] {
   -- Each `r ^ i • w / w` is `1` modulo the maximal ideal, but their sum over `i < n`
   -- telescopes to a multiple of `r ^ n • x - x = 0`. So `n` would not be a unit.
   have pow_fix : r ^ n • x = x := hx ⟨r ^ n, by simp [hP]⟩
-  have sum_eq : ∑ i ∈ range n, ((r ^ i).1 • w / w - 1) = -n := by
+  have sum_eq : ∑ i ∈ range n, ((r ^ i).val • w / w - 1) = -n := by
     -- `↓` rewrites the subgroup action before simp splits the sum
     simp [w, smul_div₀', ← sum_div, smul_sub, smul_smul, smul_eq_self_of_mem_zpowers _ hr,
       ← pow_succ, ↓← Subgroup.smul_def, sum_range_sub (r ^ · • x), pow_fix]
-  have h_sum_lt : A.valuation (∑ i ∈ range n, ((r ^ i).1 • w / w - 1)) < 1 :=
+  have h_sum_lt : A.valuation (∑ i ∈ range n, ((r ^ i).val • w / w - 1)) < 1 :=
     A.valuation.map_sum_lt' one_pos fun i _ ↦ valuation_smul_div_sub_one_lt_one (r ^ i).2 w_unit
   simp only [sum_eq, Valuation.map_neg, hn, lt_self_iff_false] at h_sum_lt
 
@@ -256,7 +264,7 @@ omit hπ in
 uniformiser of `k`, `n` a unit of `A` and `y ^ n = π`. A homomorphism `f` on inertia with open
 kernel and `f g ^ n = 1` for all `g` is trivial on the stabiliser of `y` in inertia, so `f g`
 depends only on `g y / y`. -/
-lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq_one (hπ : IsUniformiser A π.val)
+lemma IsLocalGalois.stabilizer_le_ker_of_pow_eq_one (hπ : IsUniformizer A π.val)
     (hn : A.valuation n = 1) (hy : y ^ n = algebraMap k Ω π) {P : Type*} [Monoid P]
     (f : inertiaGroup Γ A →* P) (hf : f.ker.IsOpen) (hP : ∀ g : inertiaGroup Γ A, f g ^ n = 1) :
     stabilizer (inertiaGroup Γ A) y ≤ f.ker := by
@@ -296,7 +304,7 @@ algebraically closed field `Ω` of characteristic 0 over `k`, it stabilises the 
 `k` for `A`, `n` a natural number that is a unit of `A`, `y ^ n = π`, and `f` a monoid homomorphism
 on the inertia group of `A` with open kernel and `f g ^ n = 1` for all `g`. If `s` is in inertia and
 `s • y / y` is a primitive `n`-th root of unity, then every value `f g` is a power `f s ^ i`. -/
-lemma IsLocalGalois.exists_map_eq_pow_of_isPrimitiveRoot (hπ : IsUniformiser A π.val)
+lemma IsLocalGalois.exists_map_eq_pow_of_isPrimitiveRoot (hπ : IsUniformizer A π.val)
     (hn : A.valuation n = 1) (hy : y ^ n = algebraMap k Ω π) {P : Type*} [Monoid P]
     (f : inertiaGroup Γ A →* P) (hf : f.ker.IsOpen) (hP : ∀ g : inertiaGroup Γ A, f g ^ n = 1)
     (s : inertiaGroup Γ A) (hs_prim : IsPrimitiveRoot (s • y / y) n) (g : inertiaGroup Γ A) :
@@ -316,7 +324,7 @@ algebraically closed field `Ω` of characteristic 0 over `k`, it stabilises the 
 on the inertia group of `A` with open kernel and `f g ^ n = 1` for all `g`. If `s` is in inertia and
 `φ` is a `q`-Frobenius (it stabilises `A` and `φ • x ≡ x ^ q` modulo the maximal ideal for all
 `x ∈ A`), then `φ s φ⁻¹` is in inertia and `f (φ s φ⁻¹) = f s ^ q`. -/
-lemma IsLocalGalois.map_conj_eq_pow_of_isFrob (hπ : IsUniformiser A π.val)
+lemma IsLocalGalois.map_conj_eq_pow_of_isFrob (hπ : IsUniformizer A π.val)
     (hn : A.valuation n = 1) (hy : y ^ n = algebraMap k Ω π) {P : Type*} [Monoid P]
     (f : inertiaGroup Γ A →* P) (hf : f.ker.IsOpen) (hP : ∀ g : inertiaGroup Γ A, f g ^ n = 1)
     (s : inertiaGroup Γ A) {q : ℕ} {φ : Γ} (hφ : IsFrob A q φ) :
@@ -374,7 +382,7 @@ variable {ℓ : ℕ} [Fact ℓ.Prime] {φ : Gp ℓ} {q M : ℕ} {z : PadicAlgCl 
 
 /-- `ℓ` is a uniformiser of `ℚ_ℓ` for the valuation ring `intQpBar ℓ` of `ℚ̄_ℓ`: an element of `ℚ_ℓ`
 has valuation below `1` exactly when its valuation is at most that of `ℓ`. -/
-lemma isUniformiser_ell : IsUniformiser (intQpBar ℓ) (Units.mk0 (ℓ : ℚ_[ℓ]) NeZero.out).val := by
+lemma isUniformizer_ell : IsUniformizer (intQpBar ℓ) (Units.mk0 (ℓ : ℚ_[ℓ]) NeZero.out).val := by
   -- In `ℚ_[ℓ]`, norm `< 1` means norm `≤ ℓ⁻¹`.
   intro x
   -- `-map_natCast`: `ℓ` must stay in `ℚ_ℓ`, where `simp` knows that its norm is `ℓ⁻¹`.
@@ -461,7 +469,7 @@ lemma exists_inertia_cyclotomicGp_eq (a : ℕ) (h_cop : p.Coprime a) :
   have mem_T : ξ ^ a - 1 ∈ T := by
     simpa [T, NeZero.pos] using hξ.pow_of_coprime a (h_cop.symm.pow_right _)
   suffices ∃ g ∈ inertiaGroup (Gp p) (intQpBar p), g • (ξ - 1) = ξ ^ a - 1 by simpa
-  refine exists_inertia_smul_eq_of_orbit_subset isUniformiser_ell card_T ?_ (fun g ↦ ?_) mem_T
+  refine exists_inertia_smul_eq_of_orbit_subset isUniformizer_ell card_T ?_ (fun g ↦ ?_) mem_T
   · simp [← map_pow, le_antisymm_iff, valuation_intQpBar_le_iff, norm_zeta_sub_one_pow hξ]
   · simp [T, hξ.map_of_injective, AlgEquiv.injective, NeZero.pos]
 

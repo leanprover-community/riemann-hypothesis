@@ -1,10 +1,17 @@
 module
 
-public import Lib.General.LinearAlgebra.BlockEmbeddings
-public import Lib.General.LinearAlgebra.TensorChains
-public import New.Spanning.Frames.FiniteShells
+import TauCeti.Algebra.Group.AddChar.Basic
+import TauCeti.MeasureTheory.Integral.Pi
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.MainTerm.FillingLevel
 public import New.Spanning.Unfolding.Climbing
+public import New.Spanning.Frames.BesselVector
+import Lib.General.LinearAlgebra.BlockEmbeddings
+import Lib.General.LinearAlgebra.TensorChains
+import New.Spanning.Frames.FiniteDepth
+import New.Spanning.Frames.FiniteShells
 
 /-!
 # Groups that fix given vectors at chosen places have a small mass integral
@@ -256,7 +263,7 @@ theorem IsFillingData.reduction_eq_one {T : Finset (FinPlace E)} [fT : T.StarSta
   have hy : y = x.map (evalPlaces T) := rfl
   have h_map : F.levelUnit⁻¹ • (y - 1) = (S.ideleM⁻¹ • (x - 1)).map (evalPlaces T) := by
     ext1 a b
-    simp [h.levelUnit_eq, hy, Units.smul_def, Matrix.one_apply, apply_ite (evalPlaces T)]
+    simp [h.levelUnit_eq, hy, Units.smul_def, Matrix.one_apply]
   have h_cong : IsIntMatrix integers (F.levelUnit⁻¹ • (y - 1)) := (mem_unitaryLevel_def.1 hk).right
   rw [h_map] at h_cong
   refine intGL.map_eq_one.2 fun a b ↦ reduceAt_eq_zero_of_inv_ideleM_smul w ?_
@@ -529,12 +536,6 @@ lemma toFibers_apply (x : U (S.latticeMiddle (LocProd T)).splitGram) (i : ι) (a
     (S.toFibers T blk x i).val a b = evalFiber T blk i (x.val a b) :=
   rfl
 
-/-- For an adelic unitary matrix `x`, restricting its components at `T` to a fibre of `blk` gives
-the components of `x` at that fibre. -/
-lemma toFibers_toPlaces (x : U (S.latticeMiddle (𝔸f E)).splitGram) (i : ι) :
-    S.toFibers T blk (S.toPlaces T x) i = S.toPlaces (placeFiber T blk i) x :=
-  rfl
-
 /-- Unitary matrices over the fibres of `blk` glue to a unitary matrix over `T`, that is, the map
 `S.toFibers T blk` to the product of the unitary groups over the fibres is onto. -/
 lemma toFibers_surjective : Function.Surjective (S.toFibers T blk) := by
@@ -609,7 +610,7 @@ lemma mem_besselU_iff_toFibers {x : U (S.latticeMiddle (LocProd T)).splitGram} :
         ∀ i : ι, (S.toFibers T blk x i).val a b =
           (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (LocProd (placeFiber T blk i))) a b := by
     rw [eq_iff_evalFiber_eq blk]
-    simp [toFibers_apply, Matrix.one_apply, apply_ite (evalFiber T blk _)]
+    simp [toFibers_apply, Matrix.one_apply]
   simp only [mem_besselU, h_entry]
   exact ⟨fun hx i a b hab ↦ hx a b hab i, fun hx a b hab i ↦ hx i a b hab⟩
 
@@ -711,7 +712,6 @@ lemma IsFillingData.exists_massIntegral_pi_eq (h : S.IsFillingData T F)
     (h' i).isHaarMeasure_groupMeasure.sigmaFinite
   have _ : LocallyCompactSpace (∀ i : ι, (S.latticeMiddle (LocProd (placeFiber T blk i))).G) :=
     Pi.locallyCompactSpace_of_finite
-  have _ (i : ι) : Nonempty (S.latticeMiddle (LocProd (placeFiber T blk i))).G := ⟨1⟩
   have h_inv : (F.groupMeasure.map (S.toFibers T blk)).IsMulRightInvariant := by
     refine ⟨(toFibers_surjective blk).forall.2 fun x ↦ ?_⟩
     have h_right : MeasurePreserving (· * x) F.groupMeasure F.groupMeasure :=
@@ -767,13 +767,7 @@ lemma IsFillingData.massIntegral_pi_mul_le (h : S.IsFillingData T F)
       F.massIntegral ((Subgroup.pi .univ W).comap (S.toFibers T blk)) *
         F.groupMeasure ((Subgroup.pi .univ Y).comap (S.toFibers T blk)) := by
   -- Mass integral and volume of a product are products, up to constants that agree on both sides.
-  obtain ⟨t, h_prod⟩ : ∃ t : ℝ≥0∞,
-      ∀ Z : ∀ i : ι, Subgroup (S.latticeMiddle (LocProd (placeFiber T blk i))).G,
-        F.massIntegral ((Subgroup.pi .univ Z).comap (S.toFibers T blk)) =
-          ‖t.toReal‖ₑ ^ 2 * t * ∏ i : ι, (F' i).massIntegral (Z i) ∧
-        F.groupMeasure ((Subgroup.pi .univ Z).comap (S.toFibers T blk)) =
-          t * ∏ i : ι, (F' i).groupMeasure (Z i) :=
-    h.exists_massIntegral_pi_eq blk h'
+  obtain ⟨t, h_prod⟩ := h.exists_massIntegral_pi_eq blk h'
   calc F.massIntegral ((Subgroup.pi .univ Y).comap (S.toFibers T blk)) *
         F.groupMeasure ((Subgroup.pi .univ W).comap (S.toFibers T blk)) * ∏ i : ι, c i
     _ = ‖t.toReal‖ₑ ^ 2 * t * t * ∏ i : ι,
@@ -889,8 +883,7 @@ theorem IsFillingData.exists_intermediateGroup_places [WeilData E] {S : Filling 
     rw [hK, h_cong]
     exact ⟨fun x hx i hi ↦ (Z i).prop.left (hx i hi), fun x hx i hi ↦ (Z i).prop.right (hx i hi)⟩
   refine ⟨⟨Q fun i ↦ Z i, h_between⟩, fun k hk i _ ↦ ?_, ?_⟩
-  · rw [toFibers_toPlaces]
-    exact hZ_mem i k hk
+  · exact hZ_mem i k hk
   -- Multiply the inequalities of the blocks: those of `Sg` give one factor `B` each, the rest `1`.
   have h_gain : ENNReal.ofReal (S.b ^ (6 * 𝔰.k)) ^ #Sg =
       ∏ i : Option Sg, i.elim 1 fun _ ↦ B := by simp [B]

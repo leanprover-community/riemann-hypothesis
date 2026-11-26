@@ -1,5 +1,6 @@
 module
 
+import TauCeti.RingTheory.MvPowerSeries.Derivative
 public import Lib.CM.Integrality.LogTheta
 public import Lib.Weil.Construction.ThetaJets
 

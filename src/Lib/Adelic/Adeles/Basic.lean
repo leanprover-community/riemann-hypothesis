@@ -1,12 +1,20 @@
 module
 
-public import Lib.Base
 public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.Basic
-public import TauCeti.NumberTheory.NumberField.Countable
-public import TauCeti.RingTheory.DedekindDomain.Countable
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.Completion
-public import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
-public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
+public import Mathlib.Algebra.Star.Subsemiring
+public import Mathlib.NumberTheory.NumberField.CMField
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
+import Mathlib.Topology.Algebra.Group.SubmonoidClosure
+import Mathlib.Topology.Algebra.Valued.LocallyCompact
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
+public import Lib.Speed
 
 /-!
 # Finite adeles of number fields: topology, idempotents, functoriality and base change
@@ -129,9 +137,6 @@ abbrev LocInt : ValuationSubring (adicCompletion E w) := w.adicCompletionInteger
 
 instance : CommSemiring (LocInt w) := CommRing.toCommSemiring
 
--- The local ring structure, for the semiring structure that comes from the commutative ring one.
-instance : @IsLocalRing (LocInt w) CommRing.toCommSemiring.toSemiring := inferInstance
-
 /-- The residue field of the completion E_w of E at the finite place w. -/
 @[instance_reducible]
 def ResField : Type _ := IsLocalRing.ResidueField (LocInt w)
@@ -197,7 +202,7 @@ lemma mem_Ô {x : 𝔸f E} : x ∈ Ô E ↔ ∀ w : HeightOneSpectrum (𝓞 E), 
 field at w. -/
 def reduceAt : Ô E →+* ResField w :=
   (residue (LocInt w)).comp
-    (((evalAt w).domRestrict (Ô E)).codRestrict (LocInt w) fun x ↦ mem_Ô.1 x.2 w)
+    (((evalAt w).domRestrict (Ô E)).codRestrict (LocInt w) fun x ↦ mem_Ô.1 x.property w)
 
 instance : MeasurableSpace (LocField w) := borel _
 
@@ -211,9 +216,6 @@ instance : BorelSpace (LocField w) := ⟨rfl⟩
 such as `(n → InfinitePlace E → ℂ) × (n → 𝔸f E)`, the instance term exceeds
 `synthInstance.maxSize`. -/
 instance : PolishSpace (𝔸f E) := inferInstance
-
-/-- Tau Ceti's local compactness, as a shortcut, for the same reason. -/
-instance : LocallyCompactSpace (𝔸f E) := inferInstance
 
 /-- Tau Ceti's second countability, as a shortcut, for the same reason. -/
 instance : SecondCountableTopology (𝔸f E) := inferInstance
@@ -283,7 +285,7 @@ variable {u : FinPlace K} {w : FinPlace L}
 `f : K → L` to a homomorphism of the completions at u and at w. -/
 def locMap (h : w.comap f = u) : adicCompletion K u →+* adicCompletion L w :=
   let := f.toAlgebra
-  have : w.1.LiesOver u.1 := .mk (congrArg HeightOneSpectrum.asIdeal h).symm
+  have : w.asIdeal.LiesOver u.asIdeal := .mk (congrArg HeightOneSpectrum.asIdeal h).symm
   -- `f` is uniformly continuous for the valuations at `u` and `w`, so it extends to the completions
   (equiv L w).symm.toRingHom.comp
     ((mapRingHom _ (uniformContinuous_algebraMap_liesOver K L u w).continuous).comp
@@ -639,9 +641,9 @@ lemma exists_natCast_smul_mem_of_isCompact {M : Type*} [AddCommMonoid M] [Module
   -- `N • 1` come close to `0` for arbitrarily large `N`.
   have : CompactSpace (Ô E) := isCompact_iff_compactSpace.1 isCompact_Ô
   have h_cont : Continuous fun p : Ô E × M ↦ (p.1 : 𝔸f E) • p.2 := by fun_prop
-  have h_small : ∀ᶠ a : Ô E in nhds 0, ∀ x ∈ K, a.1 • x ∈ U :=
+  have h_small : ∀ᶠ a : Ô E in nhds 0, ∀ x ∈ K, a.val • x ∈ U :=
     hK.eventually_forall_of_forall_eventually fun x _ ↦ h_cont.tendsto' (0, x) 0 (by simp) hU
-  have h_freq : ∃ᶠ N : ℕ in .atTop, ∀ x ∈ K, (N • (1 : Ô E)).1 • x ∈ U :=
+  have h_freq : ∃ᶠ N : ℕ in .atTop, ∀ x ∈ K, (N • (1 : Ô E)).val • x ∈ U :=
     (mapClusterPt_zero_atTop_nsmul _).frequently h_small
   obtain ⟨N, hN, hN_mem⟩ := h_freq.forall_exists_of_atTop 1
   exact ⟨N, one_le_iff_ne_zero.1 hN, fun x hx ↦ by simpa using hN_mem x hx⟩
@@ -675,9 +677,9 @@ lemma exists_mem_nhds_isIntegral_sub_div {E : Type*} [Field E] [NumberField E] (
     mem_nhds_zero_finAdele_iff.mpr ⟨c, hc, fun z hz ↦ ⟨z, hz, rfl⟩⟩
   have hU : U ∈ nhds y₀ := (continuous_sub_right y₀).tendsto' y₀ 0 (sub_self y₀) h_zero
   refine ⟨U, hU, fun x x' ⟨z, hz, hx⟩ ⟨z', hz', hx'⟩ ↦ algebraMap_mem_Ô.mp ?_⟩
-  have h_diff : algebraMap E (𝔸f E) (x - x') = c * (z - z') := by simp [mul_sub, ← hx, ← hx']
   have h_mul : (c : 𝔸f E) * algebraMap E (𝔸f E) ((x - x') / c) = c * (z - z') := by
-    rw [← h_diff, ← map_natCast (algebraMap E (𝔸f E)), ← map_mul, mul_div_cancel₀ _ (mod_cast hc)]
+    rw [← map_natCast (algebraMap E (𝔸f E)), ← map_mul, mul_div_cancel₀ _ (mod_cast hc)]
+    simp [mul_sub, ← hx, ← hx']
   rw [(isUnit_natCast_finAdele hc).mul_left_cancel h_mul]
   exact sub_mem hz hz'
 

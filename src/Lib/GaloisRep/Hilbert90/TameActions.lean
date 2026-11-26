@@ -1,6 +1,12 @@
 module
 
-public import Lib.General.LinearAlgebra.MatrixPolynomials
+import Mathlib.Algebra.Divisibility.Prod
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.GaloisRep.BaseChange.Defs
+import Lib.Adelic.Adeles.AdditiveCharacter
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Hilbert 90 for GL_n and units under tame actions on Artinian, finite or profinite rings

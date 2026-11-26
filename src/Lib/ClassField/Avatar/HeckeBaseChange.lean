@@ -1,9 +1,18 @@
 module
 
 public import Lib.ClassField.HeckeCharacter.AlgebraicValues
-public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
-public import Lib.PadicHodge.Characters
 public import Lib.PadicHodge.Limit.CrystallineLimit
+public import Lib.GaloisRep.Main.Defs
+public import Lib.GaloisRep.Main.LocalConditions
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+import Lib.ClassField.HeckeL.ContinuationAtOne
+import Lib.ClassField.Places.TameInertia
+import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+import Lib.PadicHodge.Characters
+import Lib.PadicHodge.Crystalline.HodgeTateJumps
+import Lib.PadicHodge.Crystalline.Regularity
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Base change of U(1) and Hecke characters, their L-functions and parallel twists
@@ -65,10 +74,6 @@ section AutCharLFunction
 open WeilData Finset Complex Real Variety
 
 variable {E : Type _} [Field E] [CMType E] {e : NumberField.InfinitePlace E → ℤ} (ν : AutChar E)
-
-lemma WeilData.charUnramifiedAt_upsilon [SplittingChar E] (v : FinPlace E) :
-    CharUnramifiedAt υ.finPart v := by
-  simp_all [CharUnramifiedAt, HeckeChar.finPart, upsilon_eq_atUniformizer_zpow v]
 
 /-- The Euler product of the character `x ↦ ν (x / x̄)` of `E`, without the factors at `S ∪ S̄`.
 It is the partial Hecke `L`-function if `S ∪ S̄` contains the ramified places. -/
@@ -156,13 +161,13 @@ theorem L_inv (hS : ∀ v : FinPlace E, v ∉ S → ψ v = 1) : ν⁻¹.L S = ν
   let c : FinPlace E → ℂ := heckeCoeff ν.baseChange.finPart S.conjClosure
   have h_coeff (v : FinPlace E) :
       heckeCoeff ν⁻¹.baseChange.finPart S.conjClosure v = c (star v) := by
-    have hv_star : star v ∈ S.conjClosure ↔ v ∈ S.conjClosure := by simp [Set.conjClosure, or_comm]
+    have hv_star : star v ∈ S.conjClosure ↔ v ∈ S.conjClosure := by simp [or_comm]
     unfold c heckeCoeff
     by_cases hv : v ∈ S.conjClosure
     · rw [Set.indicator_of_notMem (not_not.mpr hv),
         Set.indicator_of_notMem (not_not.mpr (hv_star.mpr hv))]
     · obtain ⟨hv_out, hv_star_out⟩ : v ∉ S ∧ star v ∉ S := by
-        simpa [Set.conjClosure, not_or] using hv
+        simpa [not_or] using hv
       rw [Set.indicator_of_mem hv, Set.indicator_of_mem (mt hv_star.mp hv)]
       simpa [HeckeChar.atUniformizer] using
         (h.atUniformizer_star (hS v hv_out) (hS (star v) hv_star_out)).symm
@@ -252,17 +257,17 @@ embedding `σ` of `E` is that of `ω` at `σ|K₀`. -/
 noncomputable def AlgHeckeChar.baseChange [Algebra K₀ E] (ω : AlgHeckeChar K₀) :
     AlgHeckeChar E where
   val :=
-    (ω.1.1.comp (Units.map (adeleNorm K₀ E)),
-      Multiplicative.ofAdd fun σ ↦ ω.1.2.toAdd (σ.comp (algebraMap K₀ E)))
+    (ω.val.1.comp (Units.map (adeleNorm K₀ E)),
+      Multiplicative.ofAdd fun σ ↦ ω.val.2.toAdd (σ.comp (algebraMap K₀ E)))
   property := by
-    refine ⟨ω.2.1.preimage (by fun_prop), fun x ↦ ?_⟩
+    refine ⟨ω.property.1.preimage (by fun_prop), fun x ↦ ?_⟩
     -- On a principal idele the norm of ideles is the norm of the fields.
     calc
-      (ω.1.1 (map (adeleNorm K₀ E) (principalIdele x)) : ℂ)
-      _ = ω.1.1 (principalIdele (x.map (Algebra.norm K₀))) :=
-        congrArg (fun y ↦ (ω.1.1 y : ℂ)) (map_adeleNorm_principalIdele x)
-      _ = ∏ s : K₀ →+* ℂ, s (Algebra.norm K₀ x.1) ^ (-ω.1.2.toAdd s) := ω.2.2 _
-      _ = _ := prod_norm_zpow x.1 _
+      (ω.val.1 (map (adeleNorm K₀ E) (principalIdele x)) : ℂ)
+      _ = ω.val.1 (principalIdele (x.map (Algebra.norm K₀))) :=
+        congrArg (fun y ↦ (ω.val.1 y : ℂ)) (map_adeleNorm_principalIdele x)
+      _ = ∏ s : K₀ →+* ℂ, s (Algebra.norm K₀ x.val) ^ (-ω.val.2.toAdd s) := ω.property.2 _
+      _ = _ := prod_norm_zpow x.val _
 
 @[fun_prop]
 lemma Selmer.continuous_cyclotomicCharIn :
@@ -288,7 +293,7 @@ private lemma decompRep_scalarRep_cyclotomicCharIn_pow_mul
 
 /-- In a chart at `A` above `ℓ`, the scalar representation of `μ` is the Tate twist by `-d` of its
 twist by the `d`-th power of the cyclotomic character. -/
-private lemma decompRep_scalarRep_eq_cyclotomicCharIn_pow_mul [PadicIso ℓ]
+private lemma decompRep_scalarRep_eq_cyclotomicCharIn_pow_mul
     (μ : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ) (A : ClosurePlace) (d : ℕ) [L : PadicPlaceEmbedding E A ℓ]
     (g : decompGroup Gal(Ω/E) A) (x : Fin 1 → PadicAlgCl ℓ) :
     decompRep (scalarRep μ) A g x =
@@ -299,7 +304,7 @@ private lemma decompRep_scalarRep_eq_cyclotomicCharIn_pow_mul [PadicIso ℓ]
 
 /-- Twisting a character by the `d`-th power of the cyclotomic character keeps it unramified or
 crystalline at `A`. -/
-lemma isGoodAt_scalarRep_cyclotomicCharIn_pow_mul [PadicIso ℓ] (μ : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ)
+lemma isGoodAt_scalarRep_cyclotomicCharIn_pow_mul (μ : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ)
     (A : ClosurePlace) (d : ℕ) (h : IsGoodAt (scalarRep μ) A) :
     IsGoodAt (scalarRep (cyclotomicCharIn (PadicAlgCl ℓ) Ω ℓ ^ d * μ)) A := by
   obtain ⟨h_inertia, h_crys⟩ := h
@@ -327,7 +332,7 @@ q ≠ 0. If X − q^d c kills s at A for the one-dimensional representation μ, 
 for χ_ℓ^d · μ, where χ_ℓ is the ℓ-adic cyclotomic character. "P kills s at A" (`PolyKillsAt`) means
 P(r(s)) = 0 when ℓ is a unit at A, and otherwise the Weil-pair condition `New.Period.IsKilledBy`
 along every local datum at A. -/
-lemma polyKillsAt_scalarRep_cyclotomicCharIn_pow_mul [PadicIso ℓ]
+lemma polyKillsAt_scalarRep_cyclotomicCharIn_pow_mul
     (μ : Gal(Ω/E) →* (PadicAlgCl ℓ)ˣ) (A : ClosurePlace) (d : ℕ) (s : Gal(Ω/E)) (q : ℕ)
     (c : PadicAlgCl ℓ) (hq : q ≠ 0) (hs : IsFrob A q s⁻¹)
     (h : PolyKillsAt (scalarRep μ) A s (X - C (q ^ d * c))) :
@@ -347,7 +352,6 @@ lemma polyKillsAt_scalarRep_cyclotomicCharIn_pow_mul [PadicIso ℓ]
     have h_cyc : (q : PadicAlgCl ℓ) = algebraMap ℤ_[ℓ] (PadicAlgCl ℓ) (cyclotomicChar Ω ℓ s⁻¹) := by
       rw [hs.cyclotomicChar_eq ℓ hℓ]
       simp
-    have h_val : aeval (scalarRep μ s).val (X - C (q ^ d * c)) = 0 := h_away hℓ
     -- `simp_all` unfolds the scalar representations and uses `h_cyc` and `h_val`.
     simp_all [sub_eq_zero, Matrix.algebraMap_eq_diagonal, scalarRep, Matrix.diagonal_pow,
       funext_iff]
@@ -427,7 +431,7 @@ lemma Variety.exists_twist_algHeckeChar [PadicIso ℓ] [CMType E] (ω : AlgHecke
   obtain ⟨ρ_unr, ρ_jump, ρ_frob⟩ := hρ_sph hA
   refine ⟨ρ_unr.twist h_twist (isGoodAt_scalarRep_cyclotomicCharIn_pow_mul μ A d μ_unr),
     ρ_jump.twist h_twist (hasJumpsAt_scalarRep_cyclotomicCharIn_pow_mul μ A d _ ?_), fun s hs ↦ ?_⟩
-  · simpa [μ, θ, IsHeckeOfType.toAlgebraic, neg_add_eq_sub] using μ_jump
+  · simpa [θ, IsHeckeOfType.toAlgebraic, neg_add_eq_sub] using μ_jump
   refine .twist (c := ιℓ c) ((ρ_frob s hs).of_dvd ⟨C (ιℓ c ^ a), ?_⟩) h_twist
     (polyKillsAt_scalarRep_cyclotomicCharIn_pow_mul μ A d s w.q _ w.one_lt_q.ne_zero hs ?_)
   · -- Substituting `ιℓ c * X` multiplies the term of `t j` by `ιℓ c ^ a / ιℓ c ^ j`.

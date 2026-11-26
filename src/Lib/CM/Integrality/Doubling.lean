@@ -1,7 +1,9 @@
 module
 
-public import Lib.CM.Sigma.ThetaSections
-public import Lib.General.Algebra.IntegralPowerSeries
+public import Mathlib.NumberTheory.Padics.Complex
+public import Lib.CM.Sigma.Basic
+import Lib.CM.Sigma.ThetaSections
+import Lib.General.Algebra.AdicCompletion
 
 /-!
 # Doubling formulas for θ and σ and the quartic forms of doubling
@@ -9,8 +11,8 @@ public import Lib.General.Algebra.IntegralPowerSeries
 The file expresses `θ(2 z)` and `σ(2 z) ^ 2` in `θ(z)` and `σ(z)`. The quartic forms of doubling,
 `doublingForms c`, are defined over any commutative ring; over `ℂ` with `c = a₁`, their values at
 `(θ², σ²)` are the square of the formula for `θ(2 z)` and the formula for `σ(2 z) ^ 2`. These facts
-serve to prove the cases of the theorem on Siegel units (integrality and units at torsion points)
-that are used; see `Lib.CM.Integrality.TorsionValues` and `Lib.CM.Integrality.IntegralSections`.
+serve to prove that doubling raises the naive height to the fourth power; see
+`Lib.CM.Integrality.TorsionValues`.
 
 Notions from other files:
 * `C : CMLattice d`: a lattice `Λ = C.Λ` in `ℂ` with a point `t = C.t` of order two modulo `Λ`,
@@ -29,8 +31,6 @@ Notions from other files:
   polynomials in `θ` and `σ`.
 * `New.norm_doublingForms`: if `c` is integral and `c ^ 4 - 64` is a unit, the forms raise the
   maximum norm of a pair to the fourth power.
-* `New.norm_det_eq_one_of_iterate_doublingForms`: a criterion for two pairs to reduce to distinct
-  points of the projective line over the residue field.
 
 ## Relation to the literature
 
@@ -58,12 +58,6 @@ open Complex ComplexConjugate PeriodPair
 
 namespace New.CMLattice
 variable {d : ℕ} (C : CMLattice d)
-
-/-- Multiplication by `2` is an isogeny of degree `4` from the lattice of `C` to itself: it maps
-`Λ` into `Λ`, and `2 * conj 2 = 4`. -/
-lemma isIsogeny_two : C.IsIsogeny C.periodPair 2 4 := by
-  refine ⟨fun x hx ↦ by simpa only [two_mul] using add_mem hx hx, ?_⟩
-  norm_num [map_ofNat]
 
 /-- For a CM lattice with point `t` of order two, the number `c₀ = (T_t σ)(0)` is nonzero. -/
 lemma twistedTranslate_t_sigma_zero_ne_zero : C.twistedTranslate 1 C.t C.σ 0 ≠ 0 := by
@@ -188,18 +182,17 @@ end Doubling
 /-!
 ## The quartic forms of doubling over ℂ_p
 
-If `c` is integral and `c ^ 4 - 64` is a unit, the two forms have no nontrivial common zero over
-the residue field of `ℂ_p`.
+If `c` is integral and `c ^ 4 - 64` is a unit, the two forms are not both of norm less than `1` at
+a pair of norm `1`: combinations of `w₀² - w₁²` and the second form with integral coefficients are
+`(c ^ 4 - 64) w₀ ^ 5` and `(c ^ 4 - 64) w₁ ^ 5`.
 -/
 
 section DoublingForms
 
-open IsLocalRing
-
 namespace New
 
 section Forms
-variable {R S : Type*} [CommRing R] [CommRing S]
+variable {R : Type*} [CommRing R]
 
 /-- The pair of quartic forms `B₀ = (w₀² - w₁²)²` and `B₁ = w₀ w₁ (4 w₀² + c² w₀ w₁ + 4 w₁²)` at
 `w = (w₀, w₁)`. -/
@@ -211,104 +204,54 @@ lemma doublingForms_smul (c a : R) (w : R × R) :
     doublingForms c (a • w) = a ^ 4 • doublingForms c w := by
   ext <;> simp only [doublingForms, Prod.smul_fst, Prod.smul_snd, smul_eq_mul] <;> ring
 
-/-- The `j`-th iterate of `doublingForms c` is homogeneous of degree `4 ^ j`. -/
-lemma iterate_doublingForms_smul (c a : R) (w : R × R) (j : ℕ) :
-    (doublingForms c)^[j] (a • w) = a ^ 4 ^ j • (doublingForms c)^[j] w := by
-  induction j with
-  | zero => simp
-  | succ j ih =>
-    rw [Function.iterate_succ_apply', Function.iterate_succ_apply', ih, doublingForms_smul,
-      ← pow_mul, pow_succ]
-
-/-- The forms `doublingForms` commute with ring homomorphisms. -/
-lemma map_doublingForms (f : R →+* S) (c : R) (w : R × R) :
-    Prod.map f f (doublingForms c w) = doublingForms (f c) (Prod.map f f w) := by
-  simp only [doublingForms, Prod.map, map_pow, map_sub, map_mul, map_add, map_ofNat]
-
-/-- The iterates of `doublingForms` commute with ring homomorphisms. -/
-lemma map_iterate_doublingForms (f : R →+* S) (c : R) (w : R × R) (j : ℕ) :
-    Prod.map f f ((doublingForms c)^[j] w) = (doublingForms (f c))^[j] (Prod.map f f w) :=
-  Function.Semiconj.iterate_right (map_doublingForms f c) j w
-
-/-- Over a field with `c ^ 4 ≠ 64`, the two quartic forms `doublingForms c` have no common zero
-other than `0`. -/
-lemma eq_zero_of_doublingForms_eq_zero {k : Type*} [Field k] {c : k} (hc : c ^ 4 - 64 ≠ 0)
-    {w : k × k} (h : doublingForms c w = 0) : w = 0 := by
-  obtain ⟨w₀, w₁⟩ := w
-  have hB₀ : (w₀ ^ 2 - w₁ ^ 2) ^ 2 = 0 := congrArg Prod.fst h
-  have hB₁ : w₀ * w₁ * (4 * w₀ ^ 2 + c ^ 2 * w₀ * w₁ + 4 * w₁ ^ 2) = 0 := congrArg Prod.snd h
-  have h_prod : (8 + c ^ 2) * (8 - c ^ 2) ≠ 0 := fun h₀ ↦ hc (by linear_combination -h₀)
-  obtain rfl | rfl : w₁ = w₀ ∨ w₁ = -w₀ :=
-    sq_eq_sq_iff_eq_or_eq_neg.1 (sub_eq_zero.1 (eq_zero_of_pow_eq_zero hB₀)).symm
-  · have h_four : (8 + c ^ 2) * w₁ ^ 4 = 0 := by linear_combination hB₁
-    simpa [left_ne_zero_of_mul h_prod] using h_four
-  · have h_four : (8 - c ^ 2) * w₀ ^ 4 = 0 := by linear_combination -hB₁
-    simpa [right_ne_zero_of_mul h_prod] using h_four
-
-/-- Over a field, if the determinant of the pairs `w`, `w'` vanishes and `w' ≠ 0`, then `w` is a
-multiple of `w'`. -/
-lemma exists_eq_smul_of_det_eq_zero {k : Type*} [Field k] {w w' : k × k} (hw' : w' ≠ 0)
-    (h_det : w.1 * w'.2 - w.2 * w'.1 = 0) : ∃ a : k, w = a • w' := by
-  by_cases h : w'.1 = 0
-  · have h₂ : w'.2 ≠ 0 := fun h₂ ↦ hw' (Prod.ext h h₂)
-    refine ⟨w.2 / w'.2, Prod.ext ?_ (div_mul_cancel₀ w.2 h₂).symm⟩
-    simpa [h, h₂] using h_det
-  · refine ⟨w.1 / w'.1, Prod.ext (div_mul_cancel₀ w.1 h).symm ?_⟩
-    rw [Prod.smul_snd, smul_eq_mul, div_mul_eq_mul_div, eq_div_iff h]
-    linear_combination -h_det
-
 end Forms
 
 variable {p : ℕ} [Fact p.Prime]
-
-lemma norm_coe_valRingCp_le_one (a : valRingCp p) : ‖(a : ℂ_[p])‖ ≤ 1 :=
-  a.property
-
-lemma residue_eq_zero_iff_norm_lt_one {a : valRingCp p} :
-    residue (valRingCp p) a = 0 ↔ ‖(a : ℂ_[p])‖ < 1 := by
-  rw [residue_eq_zero_iff, mem_maximalIdeal, mem_nonunits_iff,
-    isUnit_integer_iff_norm_eq_one, (norm_coe_valRingCp_le_one a).lt_iff_ne]
-
-/-- A pair over the valuation ring `valRingCp p` of `ℂ_p` reduces to `0` over the residue field if
-and only if its maximum norm in `ℂ_p × ℂ_p` is less than one. -/
-lemma map_residue_eq_zero_iff {v : valRingCp p × valRingCp p} :
-    Prod.map (residue (valRingCp p)) (residue (valRingCp p)) v = 0 ↔
-      ‖Prod.map (valRingCp p).subtype (valRingCp p).subtype v‖ < 1 := by
-  simp only [Prod.ext_iff, Prod.map_fst, Prod.map_snd, Prod.fst_zero, Prod.snd_zero,
-    residue_eq_zero_iff_norm_lt_one, Prod.norm_def, max_lt_iff, Subring.subtype_apply]
-
-/-- A pair in `ℂ_p × ℂ_p` of maximum norm at most one comes from a pair over the valuation ring. -/
-lemma exists_eq_map_subtype {w : ℂ_[p] × ℂ_[p]} (hw_le : ‖w‖ ≤ 1) :
-    ∃ v : valRingCp p × valRingCp p, w = Prod.map (valRingCp p).subtype (valRingCp p).subtype v :=
-  ⟨(⟨w.1, (norm_fst_le w).trans hw_le⟩, ⟨w.2, (norm_snd_le w).trans hw_le⟩), rfl⟩
-
-/-- A pair over the valuation ring of `ℂ_p` has maximum norm at most one. -/
-lemma norm_map_subtype_le_one (v : valRingCp p × valRingCp p) :
-    ‖Prod.map (valRingCp p).subtype (valRingCp p).subtype v‖ ≤ 1 :=
-  max_le (norm_coe_valRingCp_le_one v.1) (norm_coe_valRingCp_le_one v.2)
-
-/-- A pair over the valuation ring of `ℂ_p` has maximum norm `1` in `ℂ_p × ℂ_p` if and only if its
-reduction to the residue field is nonzero. -/
-lemma norm_map_subtype_eq_one_iff_map_residue_ne_zero {v : valRingCp p × valRingCp p} :
-    ‖Prod.map (valRingCp p).subtype (valRingCp p).subtype v‖ = 1 ↔
-      Prod.map (residue (valRingCp p)) (residue (valRingCp p)) v ≠ 0 := by
-  rw [Ne, map_residue_eq_zero_iff, (norm_map_subtype_le_one v).lt_iff_ne, not_not]
 
 /-- If `c ∈ ℂ_p` is integral and `c ^ 4 - 64` is a unit, the quartic forms `doublingForms c` take
 pairs of maximum norm `1` to pairs of maximum norm `1`. -/
 lemma norm_doublingForms_eq_one {c : ℂ_[p]} (hc : ‖c‖ ≤ 1) (h_disc : ‖c ^ 4 - 64‖ = 1)
     {w : ℂ_[p] × ℂ_[p]} (hw : ‖w‖ = 1) : ‖doublingForms c w‖ = 1 := by
-  lift c to valRingCp p using hc
-  have h_res : residue (valRingCp p) c ^ 4 - 64 ≠ 0 := by
-    have h_norm : ‖((c ^ 4 - 64 : valRingCp p) : ℂ_[p])‖ = 1 := by exact_mod_cast h_disc
-    simpa only [map_sub, map_pow, map_ofNat] using
-      mt residue_eq_zero_iff_norm_lt_one.1 h_norm.not_lt
-  -- A pair of norm `1` has a nonzero reduction, which is not a common zero of the reduced forms.
-  obtain ⟨v, rfl⟩ := exists_eq_map_subtype hw.le
-  rw [norm_map_subtype_eq_one_iff_map_residue_ne_zero] at hw
-  rw [← Subring.subtype_apply c, ← map_doublingForms,
-    norm_map_subtype_eq_one_iff_map_residue_ne_zero, map_doublingForms]
-  exact mt (eq_zero_of_doublingForms_eq_zero h_res) hw
+  have hc_mem : c ∈ valRingCp p := hc
+  -- If `u`, `v` are integral and `u² - v²` and the second form at `(u, v)` have norm less than
+  -- `1`, so has `u`: a combination of the two with integral coefficients is `(c ^ 4 - 64) u ^ 5`.
+  have h_small {u v : ℂ_[p]} (hu : u ∈ valRingCp p) (hv : v ∈ valRingCp p)
+      (h₀ : ‖u ^ 2 - v ^ 2‖ < 1)
+      (h₁ : ‖u * v * (4 * u ^ 2 + c ^ 2 * u * v + 4 * v ^ 2)‖ < 1) : ‖u‖ < 1 := by
+    let x : ℂ_[p] := c ^ 2 * u - 8 * v
+    let y : ℂ_[p] := (x * (c ^ 2 * u + 4 * v) - 64 * u ^ 2) * u
+    have hcu : c ^ 2 * u ∈ valRingCp p := mul_mem (pow_mem hc_mem 2) hu
+    have hx : x ∈ valRingCp p := sub_mem hcu (mul_mem (ofNat_mem _ 8) hv)
+    have hy : y ∈ valRingCp p :=
+      mul_mem (sub_mem (mul_mem hx (add_mem hcu (mul_mem (ofNat_mem _ 4) hv)))
+        (mul_mem (ofNat_mem _ 64) (pow_mem hu 2))) hu
+    have h_eq : (c ^ 4 - 64) * u ^ 5 =
+        x * (u * v * (4 * u ^ 2 + c ^ 2 * u * v + 4 * v ^ 2)) + y * (u ^ 2 - v ^ 2) := by
+      simp only [x, y]
+      ring
+    have h_lt : ‖(c ^ 4 - 64) * u ^ 5‖ < 1 := by
+      rw [h_eq]
+      refine (IsUltrametricDist.norm_add_le_max _ _).trans_lt (max_lt ?_ ?_)
+      · exact (norm_mul _ _).trans_lt ((mul_le_of_le_one_left (norm_nonneg _) hx).trans_lt h₁)
+      · exact (norm_mul _ _).trans_lt ((mul_le_of_le_one_left (norm_nonneg _) hy).trans_lt h₀)
+    rw [norm_mul, h_disc, one_mul, norm_pow] at h_lt
+    exact (pow_lt_one_iff_of_nonneg (norm_nonneg u) (by norm_num)).1 h_lt
+  obtain ⟨u, v⟩ := w
+  have hu : u ∈ valRingCp p := (norm_fst_le (u, v)).trans hw.le
+  have hv : v ∈ valRingCp p := (norm_snd_le (u, v)).trans hw.le
+  refine le_antisymm (max_le ?_ ?_) (not_lt.1 fun h_lt ↦ ?_)
+  · exact pow_mem (sub_mem (pow_mem hu 2) (pow_mem hv 2)) 2
+  · exact mul_mem (mul_mem hu hv) (add_mem (add_mem (mul_mem (ofNat_mem _ 4) (pow_mem hu 2))
+      (mul_mem (mul_mem (pow_mem hc_mem 2) hu) hv)) (mul_mem (ofNat_mem _ 4) (pow_mem hv 2)))
+  -- Otherwise both coordinates of the pair have norm less than `1`.
+  · obtain ⟨h₀, h₁⟩ : ‖(u ^ 2 - v ^ 2) ^ 2‖ < 1 ∧
+        ‖u * v * (4 * u ^ 2 + c ^ 2 * u * v + 4 * v ^ 2)‖ < 1 := max_lt_iff.1 h_lt
+    rw [norm_pow, pow_lt_one_iff_of_nonneg (norm_nonneg _) two_ne_zero] at h₀
+    have hu_lt : ‖u‖ < 1 := h_small hu hv h₀ h₁
+    have hv_lt : ‖v‖ < 1 := h_small hv hu (by rwa [norm_sub_rev]) (by
+      rwa [show v * u * (4 * v ^ 2 + c ^ 2 * v * u + 4 * u ^ 2) =
+        u * v * (4 * u ^ 2 + c ^ 2 * u * v + 4 * v ^ 2) by ring])
+    exact (max_lt hu_lt hv_lt).ne hw
 
 /-- If `c ∈ ℂ_p` is integral and `c ^ 4 - 64` is a unit, the quartic forms `doublingForms c` raise
 the maximum norm of a pair to the fourth power. -/
@@ -324,42 +267,6 @@ lemma norm_doublingForms {c : ℂ_[p]} (hc : ‖c‖ ≤ 1) (h_disc : ‖c ^ 4 -
     calc ‖doublingForms c w‖ = ‖doublingForms c (a • a⁻¹ • w)‖ := by rw [smul_inv_smul₀ ha_ne]
       _ = ‖a‖ ^ 4 * ‖doublingForms c (a⁻¹ • w)‖ := by rw [doublingForms_smul, norm_smul, norm_pow]
       _ = ‖w‖ ^ 4 := by rw [norm_doublingForms_eq_one hc h_disc h_unit, mul_one, ha]
-
-/-- Let `c ∈ ℂ_p` be integral and let `w`, `w'` be pairs of maximum norm `1`. Let `doublingForms c`
-send `(w₀, w₁)` to `((w₀² - w₁²)², w₀ w₁ (4 w₀² + c² w₀ w₁ + 4 w₁²))`. If `j` applications of this
-map take `w` to a pair `(0, *)` of norm `1` and `w'` to a pair `(*, 0)`, then `w` and `w'` reduce to
-distinct points of the projective line over the residue field, that is, their determinant
-`w.1 w'.2 - w.2 w'.1` is a unit. -/
-lemma norm_det_eq_one_of_iterate_doublingForms {c : ℂ_[p]} (hc : ‖c‖ ≤ 1) {w w' : ℂ_[p] × ℂ_[p]}
-    (hw : ‖w‖ = 1) (hw' : ‖w'‖ = 1) {j : ℕ} (h_norm : ‖(doublingForms c)^[j] w‖ = 1)
-    (h_fst : ((doublingForms c)^[j] w).1 = 0) (h_snd : ((doublingForms c)^[j] w').2 = 0) :
-    ‖w.1 * w'.2 - w.2 * w'.1‖ = 1 := by
-  lift c to valRingCp p using hc
-  let red : valRingCp p × valRingCp p → ResidueField (valRingCp p) × ResidueField (valRingCp p) :=
-    Prod.map (residue (valRingCp p)) (residue (valRingCp p))
-  -- Both pairs and their iterates come from pairs over the valuation ring.
-  obtain ⟨v, rfl⟩ := exists_eq_map_subtype hw.le
-  obtain ⟨v', rfl⟩ := exists_eq_map_subtype hw'.le
-  rw [← Subring.subtype_apply c, ← map_iterate_doublingForms] at h_norm h_fst h_snd
-  let det : valRingCp p := v.1 * v'.2 - v.2 * v'.1
-  change ‖(det : ℂ_[p])‖ = 1
-  refine le_antisymm (norm_coe_valRingCp_le_one det) (not_lt.1 fun h_lt ↦ ?_)
-  -- If the determinant is not a unit, the reduction of `w` is a multiple of that of `w'`.
-  obtain ⟨a, ha⟩ : ∃ a : ResidueField (valRingCp p), red v = a • red v' := by
-    refine exists_eq_smul_of_det_eq_zero
-      (norm_map_subtype_eq_one_iff_map_residue_ne_zero.1 hw') ?_
-    simpa [red, det] using residue_eq_zero_iff_norm_lt_one.2 h_lt
-  -- The same holds after `j` steps, so both coordinates of the image of `w` reduce to `0`.
-  have h_iter : red ((doublingForms c)^[j] v) = a ^ 4 ^ j • red ((doublingForms c)^[j] v') := by
-    simp only [red, map_iterate_doublingForms] at ha ⊢
-    rw [ha, iterate_doublingForms_smul]
-  have h_zero : red ((doublingForms c)^[j] v) = 0 := by
-    simp only [Prod.map_fst, Prod.map_snd, Subring.subtype_apply]
-      at h_fst h_snd
-    ext
-    · simp [red, h_fst]
-    · simp [h_iter, red, h_snd]
-  exact norm_map_subtype_eq_one_iff_map_residue_ne_zero.1 h_norm h_zero
 
 end New
 

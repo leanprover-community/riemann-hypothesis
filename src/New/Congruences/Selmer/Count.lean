@@ -2,6 +2,9 @@ module
 
 public import Lib.ClassField.GreenbergWiles.Relations
 public import New.Congruences.Selmer.SelmerData
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.Cyclotomic.Voronoi
+import Lib.General.NumberTheory.CoefficientRings
 
 /-!
 # The dual of a tied Selmer group and the count
@@ -78,7 +81,7 @@ abbrev reductionModule (ha : a ∣ ℓ ^ M) : DiscreteModule O Gal(Ω/E) :=
 /-- The kernel `U` of the action on `T / ℓ ^ M` and on the roots of unity of order `ℓ ^ N`. -/
 def reductionKer (M N : ℕ) : OpenNormalSubgroup Gal(Ω/E) where
   toSubgroup := (reduceModPow ℓ M T.ρ).ker ⊓ (cyclotomicCharMod Ω (ℓ ^ N)).ker
-  isOpen' := .inter (T.isLocallyConstant M {1}) isOpen_ker_cyclotomicCharMod.1
+  isOpen' := .inter (T.isLocallyConstant M {1}) isOpen_ker_cyclotomicCharMod.out
   isNormal' := inferInstanceAs (Subgroup.Normal (_ ⊓ _))
 
 lemma mem_reductionKer {g : Gal(Ω/E)} :
@@ -121,11 +124,11 @@ lemma mem_obeying_tieRelations_iff {q : ℕ} {x : FinPlace E → AuxPrimeData E 
   rw [mem_obeying, tieRelations, Set.forall_mem_range]
   simp [sub_eq_zero]
 
-/-- Let `J` be a set of tied primes, where `V i g` says that `g` acts trivially on `T / ℓ ^ M`, and
+/-- Let `J` be a set of tied primes, where each `g` with `V i g` acts trivially on `T / ℓ ^ M`, and
 let `a ∣ ℓ ^ M`. Then the coboundary of `b ∈ T / a` obeys the ties on `J`: the tame generators `γ_v`
 fix `T / a`, and so do the Frobenius elements `φ_v` at the primes whose slope `s_v` is not zero. -/
 lemma coboundary_mem_obeying_tieRelations (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
-    (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (ha : a ∣ ℓ ^ M)
+    (hV : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M T.ρ g = 1) (ha : a ∣ ℓ ^ M)
     (b : n → QuotSpan a) :
     (fun g : Gal(Ω/E) ↦ T.ρ g • b - b) ∈ obeying (tieRelations J x i) (QuotSpan a) := by
   refine mem_obeying_tieRelations_iff.2 fun v hvJ side ↦ ?_
@@ -140,14 +143,14 @@ lemma coboundary_mem_obeying_tieRelations (hp : IsTiedPrimes ℓ S₀ V W N P₀
   · simp [hγ, h_slope]
   · have hφ : T.ρ (idOrConjInv side (x v).1.frob) • b = b :=
       T.smul_eq_self_of_reduceModPow_eq_one ha
-        ((hV _).1 (hp.apply_idOrConjInv_of_slope_ne_zero hvJ h_slope side)) b
+        (hV _ (hp.apply_idOrConjInv_of_slope_ne_zero hvJ h_slope side)) b
     simp [hγ, hφ]
 
-/-- Let `J` be a set of tied primes, where `V i g` says that `g` acts trivially on `T / ℓ ^ M`, and
+/-- Let `J` be a set of tied primes, where each `g` with `V i g` acts trivially on `T / ℓ ^ M`, and
 let `a ∣ ℓ ^ M`. Then the coboundary of `b ∈ T / a` is a cocycle unramified outside `T.places` that
 obeys the local conditions `T.localRelations` and the ties on `J`. -/
 lemma coboundary_mem_selmerModule (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
-    (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) (ha : a ∣ ℓ ^ M)
+    (hV : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M T.ρ g = 1) (ha : a ∣ ℓ ^ M)
     (b : n → QuotSpan a) :
     (fun g : Gal(Ω/E) ↦ T.ρ g • b - b) ∈
       selmerModule T.ρ T.places (T.localRelations ∪ tieRelations J x i) (QuotSpan a) := by
@@ -226,7 +229,7 @@ def tiedSetting (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
   coboundary_le := by
     rintro v - z ⟨b, hb⟩
     exact ⟨fun g ↦ T.ρ g • b - b, mem_selmerModule_of_subset
-      (T.coboundary_mem_selmerModule hp hV ha b) .rfl (Set.subset_univ _), hb⟩
+      (T.coboundary_mem_selmerModule hp (fun g ↦ (hV g).mp) ha b) .rfl (Set.subset_univ _), hb⟩
 
 open scoped Classical in
 /-- Let `J` be a set of tied primes with first prime `P₀`, where `V i g` says that `g` acts
@@ -340,18 +343,15 @@ lemma length_add_length_tiedSelmer_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x
     refine Submodule.eq_top_iff'.2 fun y ↦ ?_
     obtain ⟨b, rfl⟩ := T.bijective_γ_smul_sub.surjective y
     exact Submodule.mem_map_of_mem (f := ev) <| T.mem_cocycles_tiedSetting hp hV hN ha A
-      (T.coboundary_mem_selmerModule hp hV ha b) .rfl fun _ hv ↦ .inl (mem_union_left _ hv)
+      (T.coboundary_mem_selmerModule hp (fun g ↦ (hV g).mp) ha b) .rfl
+      fun _ hv ↦ .inl (mem_union_left _ hv)
   -- A tied class is unramified at the first prime and its conjugate.
   have h_ker : T.tiedSelmer J J x i a ≤ Z ⊓ LinearMap.ker ev := fun c hc ↦
     ⟨T.mem_cocycles_tiedSetting hp hV hN ha A (T.mem_selmerModule_erase hp ha hc)
       (Set.union_subset_union_left _ Set.subset_union_left) Set.subset_union_left,
       T.apply_γ_eq_zero hc⟩
-  calc length O (n → QuotSpan a) + length O (T.tiedSelmer J J x i a)
-      ≤ length O (n → QuotSpan a) + length O ↥(Z ⊓ LinearMap.ker ev) :=
-        add_le_add_right (length_mono h_ker) _
-    _ = relLength Z (LinearMap.ker ev) + length O ↥(Z ⊓ LinearMap.ker ev) := by
-        rw [relLength_ker, h_onto, length_top]
-    _ = length O Z := relLength_add_length_inf Z (LinearMap.ker ev)
+  rw [← length_map_add_length_inf_ker Z ev, h_onto, length_top]
+  exact add_le_add_right (length_mono h_ker) _
 
 open scoped Classical in
 /-- A case of the Greenberg–Wiles inequality. Let `J` be a set of tied primes, where `V i g` says
@@ -391,7 +391,7 @@ lemma exists_length_cocycles_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
           ∏ v ∈ D.localPrimes, Nat.card (D.localCocycles v)⟩ :=
     D.exists_card_cocycles_le hN.ne_bot T.cyclotomicChar_γ h_comm h_fix
       (T.tiedSetting_avoids hp hV hN ha A)
-  have hP₀ : P₀ ∈ placesDividing E P₀.q := P₀.1.absNorm_mem
+  have hP₀ : P₀ ∈ placesDividing E P₀.q := P₀.asIdeal.absNorm_mem
   have hR : R \ {P₀, star P₀} = R := by
     simpa using And.intro (mt (h_avoid _) (not_not.2 hP₀))
       (mt (h_avoid _) (not_not.2 (star_mem_placesDividing.2 hP₀)))
@@ -421,11 +421,11 @@ places above `ℓ`, have total length at most `(#{w ∣ ℓ} + f) len (T / a)`, 
 infinite places. Indeed, the module at `w` has length at most `rk Z_w · len (O / a)` for the module
 `Z_w = T.Z w` of the datum, and the datum has `∑_w rk Z_w ≤ (#{w ∣ ℓ} + f) rk T`. -/
 lemma sum_length_localCocycles_placesDividing_le (a : O) :
-    ∑ w : placesDividing E ℓ, length O (localCocycles T.ρ T.localRelations (placeOver w.1)
+    ∑ w : placesDividing E ℓ, length O (localCocycles T.ρ T.localRelations (placeOver w.val)
       (QuotSpan a)) ≤
       (Fintype.card (placesDividing E ℓ) + Core.numInfPlaces E) • length O (n → QuotSpan a) :=
   calc ∑ w : placesDividing E ℓ, length O
-         (localCocycles T.ρ T.localRelations (placeOver w.1) (QuotSpan a))
+         (localCocycles T.ρ T.localRelations (placeOver w.val) (QuotSpan a))
       ≤ ∑ w : placesDividing E ℓ, finrank O (T.Z w) * length O (QuotSpan a) :=
         sum_le_sum fun w _ ↦ T.length_localCocycles_le_finrank_mul a w
     _ ≤ ((Fintype.card (placesDividing E ℓ) + Core.numInfPlaces E) * Fintype.card n : ℕ) *

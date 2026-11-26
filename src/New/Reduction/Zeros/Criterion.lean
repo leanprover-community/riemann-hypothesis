@@ -1,8 +1,8 @@
 module
 
-public import Lib.Analytic.Landau
-public import Lib.Analytic.QuadraticTwist
 public import New.Reduction.Zeros.PrimeError
+import Lib.Analytic.Landau
+import Lib.Analytic.QuadraticTwist
 
 /-!
 # The one-sided criterion for a zero-free half-plane

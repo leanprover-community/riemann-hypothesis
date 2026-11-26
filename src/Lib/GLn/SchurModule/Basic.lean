@@ -1,6 +1,9 @@
 module
 
-public import Lib.Base
+public import Mathlib.Algebra.Module.LinearMap.Polynomial
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import Mathlib.RingTheory.MvPowerSeries.Derivative
+public import Lib.Speed
 
 /-!
 # Schur modules: semi-invariants, minors, Fock pairing, Schur and Gram matrices
@@ -178,9 +181,14 @@ lemma IsTableauBasis.of_linearIndepOn_of_mem_span_of_character {s : Finset (Tabl
 /-- The standard fillings: the members of a chosen finite set of fillings that satisfies
 `IsTableauBasis` as soon as some set does. This is the case for a finite alphabet `m`
 (`isTableauBasis_epsilon`). They need not be semistandard tableaux. -/
-def BasisTableau (m : Type) [DecidableEq m] (N : ℕ) (k : ℕ → ℕ) : Type :=
+def BasisTableau (m : Type) (N : ℕ) (k : ℕ → ℕ) : Type :=
   {T : Tableau m N k // T ∈ (Classical.epsilon IsTableauBasis : Finset (Tableau m N k))}
-deriving Fintype, DecidableEq
+deriving Fintype
+
+instance {m : Type} [DecidableEq m] {N : ℕ} {k : ℕ → ℕ} :
+    DecidableEq (BasisTableau m N k) := by
+  unfold BasisTableau
+  infer_instance
 
 /-- The number of elements of the finite row type n_τ at the place τ. -/
 abbrev rankAt : ℕ := Fintype.card (n τ)
@@ -208,7 +216,7 @@ abbrev nablaFamily : Submodule R (MatrixPoly (Sigma n) R) :=
 /-- For a family i of chosen standard fillings, the polynomial that is the product over places τ
 of the minor product of i_τ in the rows of block τ. -/
 def nablaBasis (i : WeylIndexFamily n κ) : MatrixPoly ((τ : Φ) × n τ) R :=
-  ∏ τ : Φ, tableauPoly (m := Σ τ : Φ, n τ) R (Sigma.mk τ) (i τ).1
+  ∏ τ : Φ, tableauPoly (m := Σ τ : Φ, n τ) R (Sigma.mk τ) (i τ).val
 
 /-- The polynomial product over places τ and h<N_τ of the leading principal h×h minor of the
 variables in block τ raised to κ_τ(h). -/
@@ -295,16 +303,6 @@ lemma jet_monomial :
   classical
   aesop
 
-/-- Raising the exponent at `i` by one multiplies `d!` by `d i + 1`. -/
-private lemma prod_factorial_add_single (d : σ →₀ ℕ) (i : σ) :
-    ((d + Finsupp.single i 1).prod fun (_k : σ) (j : ℕ) ↦ (j ! : R)) =
-      ((d i : R) + 1) * d.prod fun (_k : σ) (j : ℕ) ↦ (j ! : R) := by
-  rw [← mul_prod_erase' (d + Finsupp.single i 1) i _ (by simp), ← mul_prod_erase' d i _ (by simp),
-    Finsupp.erase_add, Finsupp.erase_single, add_zero, Finsupp.add_apply, Finsupp.single_eq_same,
-    factorial_succ]
-  push_cast
-  ring
-
 /-- For the pairing `jet R f F = f(∂) F (0)` of a polynomial with a power series, multiplication of
 `f` by `X i` is adjoint to the derivative of `F` in `X i`. -/
 @[local simp↓]
@@ -313,7 +311,11 @@ lemma jet_mul_X : jet R (f * X i) F = jet R f (F.pderiv i) := by
   rw [jet_eq_sum, jet_eq_sum, support_mul_X, sum_map]
   refine sum_congr rfl fun x _ ↦ ?_
   -- At the exponent `x + single i 1`: `(x i + 1)! = (x i + 1) * (x i)!` matches the derivative.
-  rw [addRightEmbedding_apply, coeff_mul_X, prod_factorial_add_single, F.coeff_pderiv]
+  rw [addRightEmbedding_apply, coeff_mul_X, F.coeff_pderiv,
+    ← mul_prod_erase' (x + Finsupp.single i 1) i _ (by simp), ← mul_prod_erase' x i _ (by simp),
+    Finsupp.erase_add, Finsupp.erase_single, add_zero, Finsupp.add_apply, Finsupp.single_eq_same,
+    factorial_succ]
+  push_cast
   ring
 
 /-- The Fock pairing `⟨a * X ^ α, g⟩` is `α! * a * g.coeff α`, where `α!` is the product of the
@@ -346,6 +348,7 @@ def schur (z : ∀ τ : Φ, Matrix (n' τ) (n τ) R) :
     (Fintype.linearCombination R fun j ↦ nablaBasis R n κ j * detPow R n (schurDetExp n n' κ)) ∘
       rowSubst z ∘ nablaBasis R n' κ)
 
+omit [(τ : Φ) → DecidableEq (n τ)] [(τ : Φ) → DecidableEq (n' τ)] in
 /-- In the notation of `schur` (`n τ`, `n' τ` the finite row types and `κ τ h` the column counts at
 the place `τ`): if `b'_i(z y)` is a linear combination of the products
 `b_j(y) * ∏ τ, det(y_τ) ^ d τ`, then row `i` of the Schur matrix gives the coefficients of such a
@@ -391,8 +394,7 @@ abbrev weylGramOver {κ : Φ → ℕ → ℕ} : Matrix (WeylIndexFamily n κ) (W
   (weylGram n κ).map (Int.cast : ℤ → R)
 
 /-- The polynomial of a vector ξ of the Weyl module: Σ_i (Gξ)_i b_i, with G the Gram matrix and b_i
-the basis minor products. It is the pairing of the tensor of ξ with the tensor of the variables
-(`toPoly_eq_sum_fillingPoly`). -/
+the basis minor products. -/
 def toPoly : (WeylIndexFamily n κ → R) →ₗ[R] MatrixPoly ((τ : Φ) × n τ) R :=
   GL.nablaCombination κ ∘ₗ ((weylGram n κ).map (Int.cast : ℤ → R)).mulVecLin
 
@@ -487,19 +489,19 @@ lemma sum_monomials_eq_of_isHomogeneous (hf : f.IsHomogeneous a) :
 /-- The a-th symmetric power: the homomorphism sending a square matrix A to the matrix, in the
 monomial basis, of `New.linSubst` A on forms of degree a. -/
 def symPowMatrix (a : ℕ) : Matrix σ σ R →* Matrix (Monomials σ a) (Monomials σ a) R where
-  toFun A := of fun β α ↦ (linSubst A (monomial α.1 1)).coeff β.1
+  toFun A := of fun β α ↦ (linSubst A (monomial α.val 1)).coeff β.val
   map_one' := by simp [eq_comm, Matrix.one_apply, ← ext_iff]
   map_mul' A B := by
     ext β α
     -- Expand `linSubst B (monomial α 1)` in the monomials of degree `a`, then apply `linSubst A`.
-    change (linSubst (A * B) (monomial α.1 1)).coeff β.1 = _
+    change (linSubst (A * B) (monomial α.val 1)).coeff β.val = _
     rw [linSubst_mul, ← sum_monomials_eq_of_isHomogeneous (α.isHomogeneous_linSubst B)]
     simp [mul_comm, Matrix.mul_apply]
 
 /-- For a family `β` of degree-`a` exponent vectors indexed by `S`, the single exponent vector on
 the variables `(b, s)` whose value is `β_s(b)`. -/
 def exponentOf : (S → Monomials σ a) ↪ σ × S →₀ ℕ where
-  toFun β := equivFunOnFinite.symm fun x ↦ (β x.2).1 x.1
+  toFun β := equivFunOnFinite.symm fun x ↦ (β x.2).val x.1
   inj' :=
     id fun β β' h ↦ by
       ext s t
@@ -681,11 +683,12 @@ lemma fockPairing_rowSubst [∀ τ : Φ, DecidableEq (n τ)] (p : MatrixPoly ((�
       obtain ⟨⟨τ', a'⟩, k'⟩ := j
       have h_X : w (X (⟨τ', a'⟩, k')) = ∑ d : n' τ', z τ' d a' • X (⟨τ', d⟩, k') := by
         simp [w, rowSubst]
-      simp [h_q, mul_sum (ι := n _), apply_ite, sum_add_distrib, Pi.single_apply, smul_add, h_X]
       -- Both sides are `z τ b a' • w q` if `τ' = τ` and `k' = k`, and `0` otherwise; `aesop`
       -- matches the dependent pairs.
-      change (w q * ∑ x : n' τ', if (τ' = τ ∧ x ≍ b) ∧ k' = k then z τ' x a' • 1 else 0) =
-          ∑ x : n τ, if (τ' = τ ∧ a' ≍ x) ∧ k' = k then z τ b x • w q else 0
+      suffices h : (w q * ∑ x : n' τ', if (τ' = τ ∧ x ≍ b) ∧ k' = k then z τ' x a' • 1 else 0) =
+          ∑ x : n τ, if (τ' = τ ∧ a' ≍ x) ∧ k' = k then z τ b x • w q else 0 by
+        simpa [h_q, mul_sum (ι := n _), apply_ite, sum_add_distrib, Pi.single_apply, smul_add, h_X]
+          using h
       aesop (add simp ite_and)
   -- Induction on `p`: multiplication by a variable is adjoint to the partial derivative.
   induction p using MvPolynomial.induction_on with
@@ -727,18 +730,25 @@ lemma diagramWeight_apply (τ : Φ) (i : ℕ) : diagramWeight N κ (τ, i) = (Io
 lemma diagramWeight_add : diagramWeight N (κ + κ') = diagramWeight N κ + diagramWeight N κ' := by
   simp [diagramWeight, smul_sum, sum_add_distrib]
 
+private lemma map_minor {h : ℕ} (I : Fin h → m) :
+    MvPolynomial.map φ (minor R I) = minor S I := by
+  simp only [minor, RingHom.map_det]
+  congr 1
+  ext a b
+  simp
+
 @[simp]
 lemma map_nablaBasis [∀ τ : Φ, DecidableEq (n τ)] (i : WeylIndexFamily n κ) :
     MvPolynomial.map φ (nablaBasis R n κ i) = nablaBasis S n κ i := by
-  simp [nablaBasis, tableauPoly, minor, det_apply]
+  simp [nablaBasis, tableauPoly, map_minor]
 
 @[simp]
 lemma map_highestPoly : MvPolynomial.map φ (highestPoly R κ N) = highestPoly S κ N := by
-  simp [highestPoly, tableauPoly, minor, det_apply]
+  simp [highestPoly, tableauPoly, map_minor]
 
 @[simp]
 lemma map_detPow (e : Φ → ℕ) : MvPolynomial.map φ (detPow R n e) = detPow S n e := by
-  simp [detPow, minor, det_apply]
+  simp [detPow, map_minor]
 
 @[simp]
 lemma detPow_zero : detPow R n 0 = 1 := by simp [detPow]

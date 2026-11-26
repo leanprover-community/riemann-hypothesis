@@ -1,6 +1,17 @@
 module
 
+public import Mathlib.RingTheory.DualNumber
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.LinearAlgebra.FixedSubmodule
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.TotallySplit
 public import Lib.Shimura.CongruenceRelation.KernelReduction
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.AbelianScheme.Pairings
+import Lib.Shimura.HeckeTower.Model
 
 /-!
 # Counting w-torsion points bounds a space of natural semilinear functions by n − 1
@@ -133,56 +144,18 @@ lemma adjoin_eq_top_and_exists_algHom_eq_smul {B : Type*} [CommRing B] [Algebra 
     {τ : B} {N : ℕ} (hN : τ ^ N = 0) (h_dvd : ∀ b : B, z b = 0 → τ ∣ b) :
     k[τ] = ⊤ ∧ ∀ a : k, ∃ σ : B →ₐ[k] B, σ τ = a • τ := by
   -- Descending induction: write `b = τ * d + z b`.
-  have h_desc (m : ℕ) (h_mem : ∀ b : B, τ ^ m * b ∈ k[τ]) : k[τ] = ⊤ := by
-    induction m with
-    | zero => simpa [SetLike.ext_iff] using h_mem
-    | succ m ih =>
-      refine ih fun b ↦ ?_
-      obtain ⟨d, hd⟩ := h_dvd (b - z b • 1) (by simp)
-      rw [eq_add_of_sub_eq hd]
-      simp [mul_add, ← mul_assoc, ← pow_succ, add_mem_cancel_left, h_mem, Subalgebra.smul_mem,
-        pow_mem]
-  have h_top : k[τ] = ⊤ := h_desc N (by simp [hN])
+  have h_top : k[τ] = ⊤ :=
+    Nat.rec (motive := fun m ↦ (∀ b : B, τ ^ m * b ∈ k[τ]) → k[τ] = ⊤)
+      (fun h ↦ by simpa [SetLike.ext_iff] using h)
+      (fun m ih h ↦ ih fun b ↦ by
+        obtain ⟨d, hd⟩ := h_dvd (b - z b • 1) (by simp)
+        rw [eq_add_of_sub_eq hd, mul_add, ← mul_assoc, ← pow_succ]
+        exact add_mem (h d) (by simp [Subalgebra.smul_mem, pow_mem])) N (by simp [hN])
   -- The minimal polynomial of `τ` is a power of `X`, so it also kills `a • τ`.
   obtain ⟨m, -, hm⟩ := (dvd_prime_pow prime_X N).mp (dvd k τ (by simp [hN]))
-  have h_minpoly_ne : minpoly k τ ≠ 0 := by simp [hm.eq_zero_iff]
-  let pb : PowerBasis k B := PowerBasis.ofAdjoinEqTop (ne_zero_iff.mp h_minpoly_ne) h_top
-  have hτ : τ ^ m = 0 := by simpa [dvd_iff] using hm.dvd
-  refine ⟨h_top, fun a ↦ ?_⟩
-  have h_aeval : aeval (a • τ) (X ^ m : k[X]) = 0 := by simp [_root_.smul_pow, hτ]
-  exact ⟨pb.lift (a • τ) (aeval_eq_zero_of_dvd_aeval_eq_zero hm.dvd' h_aeval), pb.lift_gen _ _⟩
-
-omit [IsAlgClosed k] in
-/-- In a local `k`-algebra `B` with a `k`-point `z`, every `t ≠ 0` has a linear form `γ` with
-`γ (t * b) = z b` for all `b`. -/
-lemma exists_dual_mul_eq {B : Type*} [CommRing B] [Algebra k B] [IsLocalRing B] (z : B →ₐ[k] k)
-    {t : B} (ht : t ≠ 0) :
-    ∃ γ : Dual k B, ∀ b : B, γ (t * b) = z b := by
-  -- `z` kills the annihilator of `t`, so it factors through multiplication by `t`.
-  have hz_surj : Function.Surjective z.toRingHom := fun c ↦ ⟨algebraMap k B c, z.commutes' c⟩
-  have h_ann (a : B) (ha : t * a = 0) : z a = 0 :=
-    (ker_eq_maximalIdeal z.toRingHom hz_surj).ge fun ha_unit ↦ ht (ha_unit.mul_left_eq_zero.mp ha)
-  -- so `z` lies in the range of the dual of multiplication by `t`
-  have h_mem : z.toLinearMap ∈ LinearMap.range (mulLeft k t).dualMap :=
-    (mulLeft k t).range_dualMap_eq_dualAnnihilator_ker.ge
-      ((mem_dualAnnihilator z.toLinearMap).mpr h_ann)
-  obtain ⟨γ, hγ⟩ : ∃ γ : Dual k B, (mulLeft k t).dualMap γ = z.toLinearMap := h_mem
-  exact ⟨γ, fun b ↦ DFunLike.congr_fun hγ b⟩
-
-/-- Let `τ ^ N = 0`. If for every factorisation `b = τ ^ i * g` with `τ ^ i ≠ 0` the cofactor `g` is
-divisible by `τ`, then `b = 0`. -/
-lemma eq_zero_of_dvd_cofactor {B : Type*} [CommRing B] {τ b : B} {N : ℕ} (hN : τ ^ N = 0)
-    (h_dvd : ∀ (i : ℕ) (g : B), b = τ ^ i * g → τ ^ i ≠ 0 → τ ∣ g) :
-    b = 0 := by
-  have h_pow (i : ℕ) : τ ^ i ∣ b := by
-    induction i with
-    | zero => simp
-    | succ i ih =>
-      obtain ⟨g, hg⟩ := ih
-      by_cases hi : τ ^ i = 0
-      · simp [hg, hi]
-      · simpa only [hg, pow_succ] using mul_dvd_mul_left _ (h_dvd i g hg hi)
-  simpa [hN] using h_pow N
+  let pb := PowerBasis.ofAdjoinEqTop (ne_zero_iff.mp (by simp [hm.eq_zero_iff])) h_top
+  exact ⟨h_top, fun a ↦ ⟨pb.lift (a • τ) (aeval_eq_zero_of_dvd_aeval_eq_zero hm.dvd' <| by
+    simp [_root_.smul_pow, (by simpa [dvd_iff] using hm.dvd : τ ^ m = 0)]), pb.lift_gen _ _⟩⟩
 
 /-- Facts on a `k`-algebra `B` with a point `u` of `placeTorsion x`, a map `s : B → k[ε]` and
 an element `τ`, relative to a line `L` of tangent vectors of `x.groupScheme` at `0`: `u` is
@@ -277,74 +250,6 @@ lemma exists_isLocalParameter {p : NumberField.RingOfIntegers E} (hp : x.baseHom
       val_map_eq := hs_map, fst_eq_zero := hτ_fst, snd_ne_zero := hτ_snd, pow_eq_zero := hN,
       dvd_of_fst_eq_zero := h_dvd, exists_lift := h_lift }⟩
 
-/-- Let `u`, `s`, `τ` satisfy `IsLocalParameter` for the tangent line `L`, and let `f` be natural
-in `C` (`hf`). On a point `y` over `B` that `s` sends to the tangent vector `L a`, the coefficient
-of `τ ^ i` is multiplied by `a ^ i`: if `f B u l = τ ^ i * g`, `γ` reads the coefficient of
-`τ ^ i` (`hγ`) and `(s g).fst ≠ 0`, then `a ^ i = γ (f B y l) / (s g).fst`. -/
-lemma pow_eq_div_of_isLocalParameter {L : k →+ (specOver k (DualNumber k) ⟶ x.groupScheme)}
-    (hL_fst : ∀ m : k, specOver.map (fstHom k k k) ≫ L m = 0)
-    {N : ℕ} {B : Type} [CommRing B] [Algebra k B] [IsLocalRing B] {u : placeTorsion x B}
-    {s : B →ₐ[k] TrivSqZeroExt k k} {τ : B} (hT : IsLocalParameter L N u s τ) {i : ℕ}
-    {γ : Dual k B} (hγ : ∀ b : B, γ (τ ^ i * b) = (s b).fst)
-    {W : Type*} [AddCommGroup W] [Module k W]
-    (f : ∀ (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C],
-      placeTorsion x C →ₛₗ[x.baseHom] W →ₗ[k] C)
-    (hf : ∀ {C C' : Type} [CommRing C] [Algebra k C] [CommRing C'] [Algebra k C'] [IsLocalRing C]
-      [IsLocalRing C'] (ψ : C →ₐ[k] C') (z : ↥(placeTorsion x C)) (l : W),
-      f C' (placeTorsionMap ψ z) l = ψ (f C z l))
-    {l : W} {g : B} (h_factor : f B u l = τ ^ i * g) (hg : (s g).fst ≠ 0) {y : placeTorsion x B}
-    {a : k} (hy : (placeTorsionMap s y).val = L a) :
-    a ^ i = γ (f B y l) / (s g).fst := by
-  let z : B →ₐ[k] k := (fstHom k k k).comp s
-  have hy_fst : specOver.map (fstHom k k k) ≫ (placeTorsionMap s y).val = 0 := by rw [hy, hL_fst]
-  obtain ⟨ψ, rfl⟩ := hT.exists_map_eq z y ((placeTorsionMap_comp ..).trans (Subtype.ext hy_fst))
-  -- `ψ` scales `ε` by `a`.
-  have h_comp : s.comp ψ = (TrivSqZeroExt.map (a • .id)).comp s := by
-    simpa only [← placeTorsionMap_comp, ← hT.val_map_eq, SetLike.coe_eq_coe, hT.injective.eq_iff]
-      using hy
-  have hψ (b : B) : s (ψ b) = TrivSqZeroExt.map (a • .id) (s b) := AlgHom.congr_fun h_comp b
-  obtain ⟨b, hb⟩ : τ ∣ ψ τ := hT.dvd_of_fst_eq_zero _ (by simp [hψ, hT.fst_eq_zero])
-  have hb_fst : (s b).fst = a := by
-    simpa [hb, hT.fst_eq_zero, hT.snd_ne_zero, mul_comm] using congrArg TrivSqZeroExt.snd (hψ τ)
-  -- `ψ` sends `τ ^ i * g` to `τ ^ i * (b ^ i * ψ g)`, whose coefficient of `τ ^ i` is
-  -- `a ^ i * (s g).fst`.
-  have h_apply : f B (placeTorsionMap ψ u) l = τ ^ i * (b ^ i * ψ g) := by
-    rw [hf, h_factor, map_mul, map_pow, hb, mul_pow, mul_assoc]
-  rw [h_apply, hγ, eq_div_iff hg]
-  simp [hψ, hb_fst]
-
-/-- Let `u` be a point over the local `k`-algebra `B` through which every point that reduces to `0`
-factors (`h_fac`), and let `f` be natural in `C` (`hf`). If `f B u l = 0` and `l` gives `0` at every
-`k`-point, then `l` gives `0` at every point over a finite local `k`-algebra `C`: such a point is a
-constant point plus one that factors through `u`. -/
-lemma apply_eq_zero_of_apply_universal_eq_zero {B : Type} [CommRing B] [Algebra k B] [IsLocalRing B]
-    {u : placeTorsion x B}
-    (h_fac : ∀ {C : Type} [CommRing C] [Algebra k C] [IsLocalRing C] (π : C →ₐ[k] k)
-      (y : placeTorsion x C), placeTorsionMap π y = 0 → ∃ ψ : B →ₐ[k] C, placeTorsionMap ψ u = y)
-    {W : Type*} [AddCommGroup W] [Module k W]
-    (f : ∀ (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C],
-      placeTorsion x C →ₛₗ[x.baseHom] W →ₗ[k] C)
-    (hf : ∀ {C C' : Type} [CommRing C] [Algebra k C] [CommRing C'] [Algebra k C'] [IsLocalRing C]
-      [IsLocalRing C'] (ψ : C →ₐ[k] C') (z : ↥(placeTorsion x C)) (l : W),
-      f C' (placeTorsionMap ψ z) l = ψ (f C z l))
-    {l : W} (h_zero : f B u l = 0) (h_const : ∀ y : placeTorsion x k, f k y l = 0)
-    (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C] [Module.Finite k C]
-    (y : placeTorsion x C) :
-    f C y l = 0 := by
-  let π : C →ₐ[k] k := lift.comp (mkₐ k (maximalIdeal C))
-  have h_red : placeTorsionMap π (y - placeTorsionMap (ofId k C) (placeTorsionMap π y)) = 0 := by
-    -- `↓`: after `map_sub` splits the difference, simp must form `π ∘ ofId` before the inner
-    -- `ofId ∘ π`.
-    simp [↓map_sub, ↓← placeTorsionMap_comp]
-  obtain ⟨ψ, hψ⟩ := h_fac π _ h_red
-  -- `y` is the image of `u` plus a constant point, and `l` gives `0` at both.
-  have h_split : f C y l = f C (placeTorsionMap ψ u) l +
-      f C (placeTorsionMap (ofId k C) (placeTorsionMap π y)) l := by
-    rw [hψ, map_sub, LinearMap.sub_apply, sub_add_cancel]
-  have h_const_π : π (f C y l) = 0 := by rw [← hf π y l, h_const]
-  rw [h_split]
-  simp [hf, h_zero, h_const_π]
-
 /-- The main step of `finrank_le_of_placeTorsion`. Let `u`, `s`, `τ` satisfy `IsLocalParameter`
 for the tangent line `L`, let `γ i` read the coefficient of `τ ^ i` (`hγ`), and let `f` be as in
 `finrank_le_of_placeTorsion`. If `l` gives `0` at every `k`-point and the coefficient of
@@ -388,8 +293,22 @@ lemma eq_zero_of_isLocalParameter (h_ker : RingHom.ker x.baseHom ≠ ⊥)
     by_contra hg
     -- On a lift of `L a` the coefficient of `τ ^ i` is multiplied by `a ^ i`.
     have h_pow_eq_div (y : placeTorsion x B) (a : k) (hy : (placeTorsionMap s y).val = L a) :
-        a ^ i = γ i (f B y l) / (s g).fst :=
-      pow_eq_div_of_isLocalParameter hL_fst hT (hγ i hi) f hf h_factor hg hy
+        a ^ i = γ i (f B y l) / (s g).fst := by
+      have hy_fst : specOver.map (fstHom k k k) ≫ (placeTorsionMap s y).val = 0 := by
+        rw [hy, hL_fst]
+      obtain ⟨ψ, rfl⟩ := hT.exists_map_eq ((fstHom k k k).comp s) y
+        ((placeTorsionMap_comp ..).trans (Subtype.ext hy_fst))
+      have h_comp : s.comp ψ = (TrivSqZeroExt.map (a • .id)).comp s := by
+        simpa only [← placeTorsionMap_comp, ← hT.val_map_eq, SetLike.coe_eq_coe,
+          hT.injective.eq_iff] using hy
+      have hψ (b : B) : s (ψ b) = TrivSqZeroExt.map (a • .id) (s b) := AlgHom.congr_fun h_comp b
+      obtain ⟨b, hb⟩ : τ ∣ ψ τ := hT.dvd_of_fst_eq_zero _ (by simp [hψ, hT.fst_eq_zero])
+      have hb_fst : (s b).fst = a := by
+        simpa [hb, hT.fst_eq_zero, hT.snd_ne_zero, mul_comm] using congrArg TrivSqZeroExt.snd (hψ τ)
+      have h_apply : f B (placeTorsionMap ψ u) l = τ ^ i * (b ^ i * ψ g) := by
+        rw [hf, h_factor, map_mul, map_pow, hb, mul_pow, mul_assoc]
+      rw [h_apply, hγ i hi, eq_div_iff hg]
+      simp [hψ, hb_fst]
     -- `f` vanishes on tangent vectors, which excludes a linear term.
     have hi_ne : i ≠ 1 := by
       rintro rfl
@@ -411,11 +330,31 @@ lemma eq_zero_of_isLocalParameter (h_ker : RingHom.ker x.baseHom ≠ ⊥)
     have hj : 0 < j := j.pos_of_ne_zero fun hj_zero ↦ hi_ne (by simp [hj_zero])
     exact hg (by rw [← hγ _ hi, ← h_factor, h_coeff_zero j hj hi])
   -- As `τ` is nilpotent and generates the maximal ideal, `f B u l` vanishes.
-  have h_zero : f B u l = 0 :=
-    eq_zero_of_dvd_cofactor hT.pow_eq_zero fun i g hg hi ↦
-      hT.dvd_of_fst_eq_zero g (h_lowest i g hg hi)
+  have h_zero : f B u l = 0 := by
+    have h_pow (i : ℕ) : τ ^ i ∣ f B u l := by
+      induction i with
+      | zero => simp
+      | succ i ih =>
+        obtain ⟨g, hg⟩ := ih
+        by_cases hi : τ ^ i = 0
+        · simp [hg, hi]
+        · simpa only [hg, pow_succ] using
+            mul_dvd_mul_left _ (hT.dvd_of_fst_eq_zero g (h_lowest i g hg hi))
+    simpa [hT.pow_eq_zero] using h_pow N
   -- A point over a finite local `C` is a constant point plus one that factors through `u`.
-  exact h_sep l (apply_eq_zero_of_apply_universal_eq_zero hT.exists_map_eq f hf h_zero h_const)
+  refine h_sep l fun C _ _ _ _ y ↦ ?_
+  let π : C →ₐ[k] k := lift.comp (mkₐ k (maximalIdeal C))
+  have h_red : placeTorsionMap π (y - placeTorsionMap (ofId k C) (placeTorsionMap π y)) = 0 := by
+    -- `↓`: after `map_sub` splits the difference, simp must form `π ∘ ofId` before the inner
+    -- `ofId ∘ π`.
+    simp [↓map_sub, ↓← placeTorsionMap_comp]
+  obtain ⟨ψ, hψ⟩ := hT.exists_map_eq π _ h_red
+  have h_split : f C y l = f C (placeTorsionMap ψ u) l +
+      f C (placeTorsionMap (ofId k C) (placeTorsionMap π y)) l := by
+    rw [hψ, map_sub, LinearMap.sub_apply, sub_add_cancel]
+  have h_const_π : π (f C y l) = 0 := by rw [← hf π y l, h_const]
+  rw [h_split]
+  simp [hf, h_zero, h_const_π]
 
 /-- Let `x` over `k` be the reduction, at a good place `w = ker x.baseHom` (which gives some `p ≠ 0`
 in `w` and a tangent line at `0` on which `𝓞 E` acts through `x.baseHom`), of an object `y` over a
@@ -454,8 +393,15 @@ lemma finrank_le_of_placeTorsion (hw : D.IsGoodAt (RingHom.ker x.baseHom)) {V : 
   obtain ⟨B, _, _, _, u, s, τ, hT⟩ :=
     exists_isLocalParameter hp hp₀ hL_ne hL_fst hL_smul hL_map ν h_card
   -- For `τ ^ i ≠ 0` the functional `γ i` reads the coefficient of `τ ^ i` in a multiple of `τ ^ i`.
-  have h_coeff (i : ℕ) (hi : τ ^ i ≠ 0) : ∃ γ : Dual k B, ∀ b : B, γ (τ ^ i * b) = (s b).fst :=
-    exists_dual_mul_eq ((fstHom k k k).comp s) hi
+  have h_coeff (i : ℕ) (hi : τ ^ i ≠ 0) : ∃ γ : Dual k B, ∀ b : B, γ (τ ^ i * b) = (s b).fst := by
+    let z : B →ₐ[k] k := (fstHom k k k).comp s
+    have hz_surj : Function.Surjective z.toRingHom := fun c ↦ ⟨algebraMap k B c, z.commutes' c⟩
+    have h_ann (a : B) (ha : τ ^ i * a = 0) : z a = 0 :=
+      (ker_eq_maximalIdeal z.toRingHom hz_surj).ge fun ha_unit ↦ hi (ha_unit.mul_left_eq_zero.mp ha)
+    obtain ⟨γ, hγ⟩ : ∃ γ : Dual k B, (mulLeft k (τ ^ i)).dualMap γ = z.toLinearMap :=
+      (mulLeft k (τ ^ i)).range_dualMap_eq_dualAnnihilator_ker.ge
+        ((mem_dualAnnihilator z.toLinearMap).mpr h_ann)
+    exact ⟨γ, fun b ↦ DFunLike.congr_fun hγ b⟩
   choose! γ hγ using h_coeff
   -- `F` is the residue field at `w`, with `q` elements.
   let F : Type := NumberField.RingOfIntegers E ⧸ RingHom.ker x.baseHom

@@ -1,7 +1,14 @@
 module
 
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.TotallySplit
 public import Lib.Weil.MixedModel.NamedData
-public import Lib.Weil.MixedModel.RealTheta
+public import Lib.Weil.MixedModel.IsotropicSplitting
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Base
+import Lib.Cohomology.Etale.Basic
+import Lib.Weil.MixedModel.RealTheta
 
 /-!
 # Zero term and mixed model of the Weil representation: slices and θ as a sum of slices
@@ -191,7 +198,6 @@ variable {E n n₀ p n₁ q : Type*} [Field E] [CMType E] [Fintype n] [Decidable
 
 /-- The rational map of a matrix i carries the frame x₀⁻¹k of V₀, for a rational matrix k, to the
 frame x⁻¹(ik) of V, where x and x₀ are the points of V and V₀. -/
-@[simp]
 lemma ratMap_mul_toAdele (i : Matrix n n₀ E) (k : Matrix n₀ p E) :
     V.ratMap V₀ i * (V₀.x⁻¹.val * k.map toAdele) = V.x⁻¹.val * (i * k).map toAdele := by
   simp [ratMap, Matrix.mul_assoc]
@@ -227,18 +233,12 @@ lemma zeroTerm_comp [WeilData E]
   ext y
   let φ : (q → 𝔸 E) × (p → 𝔸 E) →+ (p ⊕ q → 𝔸 E) :=
     .mk' (fun a ↦ a.2 ⊕ᵥ a.1) (by simp [funext_iff])
-  have hφ : Continuous φ :=
-    Homeomorph.sumArrowHomeomorphProdArrow.continuous_invFun.comp continuous_swap
-  have h_rat : ∀ a ∈ New.ratVectors E q, ∀ b ∈ New.ratVectors E p,
-      φ (a, b) ∈ New.ratVectors E (p ⊕ q) := by simp_all [φ, mem_ratVectors]
-  have h_point (a : q → 𝔸 E) (b : p → 𝔸 E) :
-      (D.comp D').iAdelic *ᵥ y + (D.comp D').kAdelic *ᵥ φ (a, b) =
-        D.iAdelic *ᵥ (D'.iAdelic *ᵥ y + D'.kAdelic *ᵥ a) + D.kAdelic *ᵥ b := by
-    simp [φ, iAdelic, ratMap, comp, Matrix.mul_assoc, kAdelic, fromCols_map, mulVec_add,
-      add_right_comm, add_assoc]
   rw [zeroTerm_apply, ← quotMean_quotMean (New.ratVectors E q) (isContPeriodic_along_k f _)
-    (New.ratVectors E p) φ hφ h_rat fun b ↦ ⟨(b ∘ Sum.inr, b ∘ Sum.inl), Sum.elim_comp_inl_inr b⟩]
-  simp only [h_point, zeroTerm_apply]
+    (New.ratVectors E p) φ (Homeomorph.sumArrowHomeomorphProdArrow.continuous_invFun.comp
+      continuous_swap) (by simp_all [φ, mem_ratVectors])
+    fun b ↦ ⟨(b ∘ Sum.inr, b ∘ Sum.inl), Sum.elim_comp_inl_inr b⟩]
+  simp [φ, zeroTerm_apply, iAdelic, ratMap, comp, Matrix.mul_assoc, kAdelic, fromCols_map,
+    mulVec_add, add_right_comm, add_assoc]
 
 /-- If the frame k′ of a second splitting D′ of V over V₀ has no l-coordinate in D and both
 splittings read off the same V₀-coordinate, then k′ is spanned by k, with its k-coordinates in D as
@@ -418,7 +418,7 @@ lemma IsMixedLaw.apply_omega_rho_finFrameVector
     ext1 ((i | i) | i) <;> rfl
   obtain ⟨h_l, h_k, h_i⟩ : D.lCoord *ᵥ v = t.val⁻¹ᴴ *ᵥ finVec a ∧
       D.kCoord *ᵥ v = t.val *ᵥ finVec b ∧ D.iCoord *ᵥ v = finVec w := by
-    simp [hv, h_split, frameAt, G.adeleMatrix, mulVec_add, ← Matrix.mul_assoc]
+    simp [hv, h_split, frameAt, G.adeleMatrix, mulVec_add]
   have h_add : finVec (x + a) = finVec x + finVec a := by simp [finVec, funext_iff, mul_add]
   -- `finVec` scales by `α`, so `stdAddChar` with the factor `j / 2` becomes `selfDualAddChar` with
   -- `half`.
@@ -551,28 +551,30 @@ lemma IsAdapted.exists_omega_vacElem_of_isMixedLaw {E : Type u_1} {n : Type u_3}
   -- projections together project onto the line of the vacuum.
   let u : 𝒮 V := V.ω g V.vacElem
   refine ⟨V₀.dataInner V₀.vacElem (T 0 u), fun x ↦ ?_⟩
-  obtain ⟨⟨a, z⟩, haz⟩ := (adelicSum E 1).equiv.surjective (t.1ᴴ *ᵥ x)
-  have h_sum : realVec a + finVec z = t.1ᴴ *ᵥ x := by simpa [realVec, finVec, funext_iff] using! haz
-  have h_split : t.1⁻¹ᴴ *ᵥ realVec a + t.1⁻¹ᴴ *ᵥ finVec z = x := by
+  obtain ⟨⟨a, z⟩, haz⟩ := (adelicSum E 1).equiv.surjective (t.valᴴ *ᵥ x)
+  have h_sum : realVec a + finVec z = t.valᴴ *ᵥ x := by simpa [realVec, finVec,
+    funext_iff] using! haz
+  have h_split : t.val⁻¹ᴴ *ᵥ realVec a + t.val⁻¹ᴴ *ᵥ finVec z = x := by
     simp [h_sum, ← mulVec_add, ← conjTranspose_mul]
   -- The vector `D.finFrameVector g t z 0 0` lies in the first block of the frame, spanned by the
   -- columns of g⁻¹ `D.l` t*⁻¹. By the law, the finite Heisenberg operator along it translates the
   -- argument of `T`.
   have h_shift (y : p → 𝔸 E) :
       T y (V.ω g (V.projReal (V.finHeisenbergOp (D.finFrameVector g t z 0 0) V.vacElem))) =
-      T (y + t.1⁻¹ᴴ *ᵥ finVec z) u := by
+      T (y + t.val⁻¹ᴴ *ᵥ finVec z) u := by
     simp [u, hT, ↓integrated_finHeisenbergOp, finFrameVector, ↓star_dot_finFrameVector, omega_rho,
       finHeisenbergOp,
       semichar, frameAt, G.adeleMatrix, fromCols_map, ← mulVec_finVec]
   -- Real part: `omega_projReal_of_isMixedLaw` gives the Gaussian factor and the real vacuum
   -- projection.
-  have h_real : T x u = exp (-(star a ⬝ᵥ a)) • V₀.projReal (T (t.1⁻¹ᴴ *ᵥ finVec z) u) := by
+  have h_real : T x u = exp (-(star a ⬝ᵥ a)) • V₀.projReal (T (t.val⁻¹ᴴ *ᵥ finVec z) u) := by
     rw [← h_split, ← h_shift, h_adapted.omega_projReal_of_isMixedLaw hT, h_shift, zero_add]
   -- Finite part: `omega_projOn_of_isMixedLaw` at all finite places gives the indicator of
   -- integrality.
-  have h_fin : T (t.1⁻¹ᴴ *ᵥ finVec z) u =
+  have h_fin : T (t.val⁻¹ᴴ *ᵥ finVec z) u =
       boxIndicator p (⊤ : Set (FinPlace E)).conjClosure z • V₀.projOn ⊤ (T 0 u) := by
-    simpa [u, ↓idem_compl, Set.conjClosure] using h_adapted.omega_projOn_of_isMixedLaw hT z V.vacElem (S := ⊤)
+    simpa [u, ↓idem_compl, Set.conjClosure] using
+      h_adapted.omega_projOn_of_isMixedLaw hT z V.vacElem (S := ⊤)
   -- The two projections together land on the line of the vacuum; the vacuum function at
   -- `t.1ᴴ *ᵥ x` is the product of its real and finite factors.
   have h_line : V₀.projReal (V₀.projOn Set.univ (T 0 u)) =
@@ -617,7 +619,7 @@ lemma IsAdapted.omega_schrodingerOp_of_isMixedLaw
     -- Each integrand is a continuous function times a Schwartz–Bruhat function of `b`.
     simpa [finFrameVector, frameAt, fromCols_map, add_comm (_ *ᵥ x), add_assoc, mul_sum,
       mul_left_comm (selfDualAddChar E _), ← mul_assoc] using!
-      (IsSchwartzBruhat.comp ((t⁻¹.1 * D.kCoord * g.adeleMatrix).map snd)
+      (IsSchwartzBruhat.comp ((t⁻¹.val * D.kCoord * g.adeleMatrix).map snd)
         (by simp [← coe_snd, G.adeleMatrix, Matrix.mul_assoc, ← Matrix.map_mul]) _).integrableOn_mul
         (by fun_prop)
   -- The datum of one translate: its integral is the Fourier transform of the box moved by `b`.

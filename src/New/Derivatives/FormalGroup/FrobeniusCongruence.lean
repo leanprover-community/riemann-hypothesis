@@ -1,6 +1,13 @@
 module
 
-public import Lib.CM.FormalGroup.FormalParameter
+import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.NumberTheory.Padics.Complex.Basic
+public import Lib.CM.FormalGroup.PrimeNotation
+public import Lib.CM.Integrality.LogTheta
+import Lib.CM.FormalGroup.FormalParameter
+import Lib.CM.GoodReduction
+import Lib.CM.Integrality.IntegralSections
+import Lib.General.Algebra.SeriesBounds
 
 /-!
 # Frobenius congruence for `θ` and the coefficient of `z ^ (p - 1)` in `x`
@@ -149,17 +156,17 @@ lemma exists_rescale_theta_eq_pow_mul_aeval (hp : chiK d p ≠ 1) :
       2 * R.natDegree < primeNorm d p ∧
       rescale (ιₚ (piPrime d p)) (taylorVia ιₚ C.θ) =
         taylorVia ιₚ C.θ ^ primeNorm d p * R.aeval (taylorVia ιₚ C.translatedX) := by
-  -- `θ(π z)` is an even section of degree `q` with integral torsion values.
+  -- `θ(π z)` is an even section of degree `q`, bounded by the `q`-th power of the naive height.
   have h_isog : C.IsIsogeny C.periodPair (piPrime d p) (primeNorm d p) :=
     ⟨C.mul_mem_of_quadInt (piPrime_mem_quadInt d), by rw [piPrime_mul_conj d hp]⟩
   let f : ℂ → ℂ := fun z ↦ C.θ (piPrime d p * z)
   have h_mem : f ∈ C.sections (primeNorm d p) := by
     simpa only [one_mul] using C.comp_mul_mem_sections h_isog C.theta_mem
-  have h_int : C.HasIntegralValues (primeNorm d p) f := by
-    simpa only [one_mul] using C.hasIntegralValues_theta.comp_isogeny h_isog
+  have h_le (z : ℂ) : ‖ιₚ (f z)‖ ≤ C.naiveHeight z ^ primeNorm d p :=
+    (C.norm_theta_le_naiveHeight _).trans (C.naiveHeight_mul_le h_isog z)
   have h_even : f.Even := fun z ↦ by simp only [f, mul_neg, theta_neg]
   obtain ⟨R, hR⟩ : ∃ R : Polynomial ℂ, C.IsIntegralEvenExpansion (primeNorm d p) f R :=
-    C.exists_polynomial_of_even h_mem h_int h_even
+    C.exists_polynomial_of_even h_mem h_le h_even
   refine ⟨R.map ιₚ, ?_, ?_⟩
   · obtain ⟨k, hk⟩ : Odd (primeNorm d p) := odd_primeNorm hp
     have h_deg : 2 * R.natDegree ≤ primeNorm d p := hR.two_mul_natDegree_le
@@ -228,30 +235,34 @@ lemma exists_rescale_theta_eq_pow_mul_one_add_smul (hp : chiK d p ≠ 1) :
         taylorVia ιₚ C.θ ^ primeNorm d p * (1 + ιₚ (piPrime d p) • H) := by
   set π : ℂ_[p] := ιₚ (piPrime d p)
   set x : ℂ_[p]⟦X⟧ := taylorVia ιₚ C.translatedX
-  obtain ⟨R, h_deg, hR⟩ : ∃ R : Polynomial ℂ_[p], 2 * R.natDegree < primeNorm d p ∧
+  obtain ⟨R, h_degree_bound, h_theta_factorization⟩ : ∃ R : Polynomial ℂ_[p],
+      2 * R.natDegree < primeNorm d p ∧
       rescale π (taylorVia ιₚ C.θ) = taylorVia ιₚ C.θ ^ primeNorm d p * R.aeval x :=
     C.exists_rescale_theta_eq_pow_mul_aeval hp
   have hx : x ∈ C.integralSeriesRing := C.taylorVia_translatedX_mem_integralSeriesRing
   -- `R(x) = exp (q g(z) - g(π z))` is `1` modulo `π` below the degree `q`.
-  have h_low (n : ℕ) (hn : n < primeNorm d p) : ‖coeff n ((R - 1).aeval x)‖ ≤ ‖π‖ := by
-    rw [map_sub, map_one, ← C.expSubst_smul_negLogTheta_sub_rescale_eq hR]
+  have h_low_series_coeff (n : ℕ) (hn : n < primeNorm d p) : ‖coeff n ((R - 1).aeval x)‖ ≤ ‖π‖ := by
+    rw [map_sub, map_one, ← C.expSubst_smul_negLogTheta_sub_rescale_eq h_theta_factorization]
     exact norm_coeff_expSubst_sub_one_le (norm_piPrime_le_rpow hp)
       (constantCoeff_smul_sub_rescale C.constantCoeff_negLogTheta _ _)
       (fun k hk ↦ C.norm_coeff_smul_negLogTheta_sub_rescale_le hp hk) hn
-  -- Hence `π` divides the coefficients of `R - 1`, as `x = z ^ 2 + ⋯` is integral in these degrees.
-  have h_dvd (i : ℕ) (hi : 2 * i < primeNorm d p) : ‖(R - 1).coeff i‖ ≤ ‖π‖ :=
+  -- Recover the polynomial coefficients from the low series coefficients using `x = z² + ⋯`.
+  -- Since `2 * R.natDegree < q`, this accounts for every coefficient of `R - 1`.
+  have h_polynomial_coeff (i : ℕ) (hi : 2 * i < primeNorm d p) : ‖(R - 1).coeff i‖ ≤ ‖π‖ :=
     norm_coeff_le_of_aeval C.X_sq_dvd_taylorVia_translatedX C.coeff_two_taylorVia_translatedX
-      (fun k hk ↦ C.norm_coeff_le_one_of_lt hx hk) h_low hi
-  have h_deg_le : (R - 1).natDegree ≤ R.natDegree := by simpa using R.natDegree_sub_le 1
+      (fun k hk ↦ C.norm_coeff_le_one_of_lt hx hk) h_low_series_coeff hi
+  have h_sub_degree_bound : (R - 1).natDegree ≤ R.natDegree := by simpa using R.natDegree_sub_le 1
+  -- The quotient polynomial now has integral coefficients, so evaluation at the integral series
+  -- `x` gives an integral series in all degrees.
   refine ⟨π⁻¹ • (R - 1).aeval x, ?_, ?_⟩
   · rw [Polynomial.aeval_eq_sum_range, Finset.smul_sum]
     refine sum_mem fun i hi ↦ ?_
     rw [smul_smul]
     refine C.isSeriesGenerator_translatedY.smul_mem ?_ (pow_mem hx i)
     rw [norm_mul, norm_inv]
-    exact inv_mul_le_one_of_le₀ (h_dvd i (by grind)) (norm_nonneg π)
+    exact inv_mul_le_one_of_le₀ (h_polynomial_coeff i (by grind)) (norm_nonneg π)
   · rw [smul_inv_smul₀ ((map_ne_zero ιₚ).2 (piPrime_ne_zero d)), map_sub, map_one, add_sub_cancel,
-      hR]
+      h_theta_factorization]
 
 /-- The logarithm of the Frobenius congruence. Let `d ≡ 7` modulo `8` be a prime and `p` a prime
 that does not split in `ℚ(√-d)`. Then `q_p g(z) - g(π_p z) = π_p H` for some `H ∈ 𝒪[[y]]`. -/
@@ -260,19 +271,20 @@ lemma exists_negLogTheta_frobenius_congruence (hp : chiK d p ≠ 1) :
       (primeNorm d p : ℂ_[p]) • C.negLogTheta - rescale (ιₚ (piPrime d p)) C.negLogTheta =
         ιₚ (piPrime d p) • H := by
   set π : ℂ_[p] := ιₚ (piPrime d p)
-  obtain ⟨H, hH, h_eq⟩ : ∃ H : ℂ_[p]⟦X⟧, H ∈ C.integralSeriesRing ∧
+  obtain ⟨H, hH, h_theta_congruence⟩ : ∃ H : ℂ_[p]⟦X⟧, H ∈ C.integralSeriesRing ∧
       rescale π (taylorVia ιₚ C.θ) = taylorVia ιₚ C.θ ^ primeNorm d p * (1 + π • H) :=
     C.exists_rescale_theta_eq_pow_mul_one_add_smul hp
   have hπ : π ≠ 0 := (map_ne_zero ιₚ).2 (piPrime_ne_zero d)
   let G : ℂ_[p]⟦X⟧ := π⁻¹ • ((primeNorm d p : ℂ_[p]) • C.negLogTheta - rescale π C.negLogTheta)
-  have hG : π • G = (primeNorm d p : ℂ_[p]) • C.negLogTheta - rescale π C.negLogTheta :=
+  have h_log_factorization :
+      π • G = (primeNorm d p : ℂ_[p]) • C.negLogTheta - rescale π C.negLogTheta :=
     smul_inv_smul₀ hπ _
-  have hG_zero : constantCoeff G = 0 := by
+  have h_log_constant_zero : constantCoeff G = 0 := by
     rw [constantCoeff_smul, constantCoeff_smul_sub_rescale C.constantCoeff_negLogTheta, smul_zero]
-  have h_exp : expSubst (π • G) = 1 + π • H := by
-    rw [hG, C.expSubst_smul_negLogTheta_sub_rescale_eq h_eq]
+  have h_exp_congruence : expSubst (π • G) = 1 + π • H := by
+    rw [h_log_factorization, C.expSubst_smul_negLogTheta_sub_rescale_eq h_theta_congruence]
   exact ⟨G, C.isSeriesGenerator_translatedY.mem_of_expSubst_smul_eq hπ (norm_piPrime_le_rpow hp)
-    hG_zero hH h_exp, hG.symm⟩
+    h_log_constant_zero hH h_exp_congruence, h_log_factorization.symm⟩
 
 end CMLattice
 
@@ -389,13 +401,14 @@ lemma norm_coeff_pow_taylorVia_translatedX_lt_one (hp : chiK d p = -1) {m : ℕ}
     set c₀ : ℂ_[p] := coeff (p - 1) (taylorVia ιₚ C.translatedX ^ n)
     set c₁ : ℂ_[p] := coeff (p - 1) (taylorVia ιₚ C.translatedX ^ (n + 1))
     set c₂ : ℂ_[p] := coeff (p - 1) (taylorVia ιₚ C.translatedX ^ (n + 2))
-    have h_rec : ‖(4 * n + 6) * c₂ + (n + 1) * ιₚ C.a₁ ^ 2 * c₁ + (4 * n + 2) * c₀‖ < 1 :=
+    have h_recursion_small :
+        ‖(4 * n + 6) * c₂ + (n + 1) * ιₚ C.a₁ ^ 2 * c₁ + (4 * n + 2) * c₀‖ < 1 :=
       C.norm_coeff_pow_taylorVia_translatedX_recursion_lt_one hp n
     -- `4 n + 6 = 2 (2 n + 3)` with `p` odd and `2 n + 3 < p`.
     have h_coprime : p.Coprime (2 * (2 * n + 3)) :=
       .mul_right (Nat.coprime_two_right.2 ⟨m, hp_eq⟩)
         (Nat.coprime_of_lt_prime (Nat.succ_ne_zero _) (by omega) hp_prime)
-    have h_unit : ‖(4 * n + 6 : ℂ_[p])‖ = 1 := by
+    have h_leading_unit : ‖(4 * n + 6 : ℂ_[p])‖ = 1 := by
       rw [← h_coprime.norm_natCast_eq_one ℂ_[p]]
       norm_num [mul_add, ← mul_assoc]
     have h_factor₁ : ‖(n + 1) * ιₚ C.a₁ ^ 2‖ ≤ 1 := by
@@ -403,13 +416,14 @@ lemma norm_coeff_pow_taylorVia_translatedX_lt_one (hp : chiK d p = -1) {m : ℕ}
       refine (mul_le_of_le_one_left (by positivity) ?_).trans
         (pow_le_one₀ (norm_nonneg _) C.norm_a₁_le_one)
       exact_mod_cast norm_natCast_le_one ℂ_[p] (n + 1)
-    have h_lower : ‖(n + 1) * ιₚ C.a₁ ^ 2 * c₁ + (4 * n + 2) * c₀‖ < 1 :=
+    have h_previous_terms_small : ‖(n + 1) * ιₚ C.a₁ ^ 2 * c₁ + (4 * n + 2) * c₀‖ < 1 :=
       norm_lt_one_of_eq_mul_add_mul h_factor₁ (mod_cast norm_natCast_le_one ℂ_[p] (4 * n + 2))
         rfl (ih₁ (by omega)) (ih₀ (by omega))
-    calc ‖c₂‖ = ‖(4 * n + 6) * c₂‖ := by rw [norm_mul, h_unit, one_mul]
+    -- The leading coefficient is a unit, so the recursion propagates strict smallness to `c₂`.
+    calc ‖c₂‖ = ‖(4 * n + 6) * c₂‖ := by rw [norm_mul, h_leading_unit, one_mul]
       _ = ‖((4 * n + 6) * c₂ + (n + 1) * ιₚ C.a₁ ^ 2 * c₁ + (4 * n + 2) * c₀) +
             -((n + 1) * ιₚ C.a₁ ^ 2 * c₁ + (4 * n + 2) * c₀)‖ := by ring_nf
-      _ < 1 := (norm_add_le_max _ _).trans_lt (max_lt h_rec (by rwa [norm_neg]))
+      _ < 1 := (norm_add_le_max _ _).trans_lt (max_lt h_recursion_small (by rwa [norm_neg]))
 
 /-- Let `d ≡ 7` modulo `8` be a prime and `p` a prime that is inert in `ℚ(√-d)`. The coefficient of
 `z ^ (p - 1)` in the Taylor series `x` of `℘(z + t) - ℘(t)`, mapped by `ιₚ : ℂ →+* ℂ_[p]`, has norm

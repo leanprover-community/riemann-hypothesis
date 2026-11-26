@@ -1,6 +1,22 @@
 module
 
-public import Lib.PadicHodge.PeriodRings.DeRhamPeriods
+public import Mathlib.Algebra.CharP.Subring
+public import Mathlib.RingTheory.Polynomial.DegreeLT
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.RingTheory.AdicCompletion.Completeness
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.Expand
+import Mathlib.RingTheory.PowerSeries.Ideal
+import Mathlib.RingTheory.PowerSeries.WeierstrassPreparation
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import TauCeti.NumberTheory.Padics.Complex.Basic
+public import Lib.PadicHodge.PeriodRings.CrystallineRings
+import Lib.General.Topology
+import Lib.PadicHodge.PeriodRings.DeRhamPeriods
 
 /-!
 # Power series charts Λ⟦z⟧ in A_inf: Weierstrass division and fixed elements
@@ -194,7 +210,7 @@ lemma exists_chart_of_pow_mul_eq_neg (f : ℕ+) {x : OC} {e : ℕ} (v : OCˣ) (h
     exact hA_unit.mul_right_dvd.mpr ⟨-(v : OC), by simp [h]⟩
   -- An element of `ker θ` whose reduction modulo `p` has an untilt dividing `p` generates `ker θ`.
   have h_assoc : Associated (ev E₀) xi :=
-    associated_of_dvd_dvd ((theta_eq_zero_iff_dvd_of_untilt_dvd h_ker h_dvd).mp (by simp))
+    associated_of_dvd_dvd (dvd_of_theta_eq_zero_of_untilt_dvd h_ker h_dvd (by simp))
       (theta_eq_zero_iff_xi_dvd.mp h_ker)
   let chart : Chart :=
     { f := f, seriesMap := ev, unitSeries := A, not_isUnit_z := by rwa [hev]
@@ -500,7 +516,7 @@ lemma frobEnd_mem (s : c.S) : frobEnd s.val ∈ c.S := by
   exact ⟨expand p out G, hG⟩
 
 /-- For a chart, the ring endomorphism of S obtained by restricting the Frobenius φ of A_inf. -/
-def φ : c.S →+* c.S := (frobEnd.comp c.S.val.1).codRestrict c.S c.frobEnd_mem
+def φ : c.S →+* c.S := (frobEnd.comp c.S.val.toRingHom).codRestrict c.S c.frobEnd_mem
 
 /-- For a chart and n ≥ 0, the element φ^n(E) of its ring S, where E = `c.E` is the image of
 X^e A + p and φ = `c.φ` is the Frobenius of S. -/

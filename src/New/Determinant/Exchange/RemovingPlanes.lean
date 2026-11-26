@@ -1,6 +1,17 @@
 module
 
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.LinearAlgebra.Matrix.CharP
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Determinant.Exchange.LargeTriple
+public import Lib.SiegelWeil.Tower.LargeSideConstantTerm
+import Lib.Adelic.Landherr
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Witt.WittTheorem
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.Weil.Construction.CanonicalTheta
+import Lib.Weil.DualPair.ThetaLiftConvergence
 
 /-!
 # Change of point and sign, and descent of the exchange identity by removing hyperbolic planes
@@ -588,7 +599,8 @@ private theorem RowColExchangeIdentity.descendCone (U : Space E b u) {V' : Space
   refine h.of_planeConstantTerm_eq U A X σ (by positivity) (C := C ^ 2) fun 𝔠 ↦ ?_
   obtain ⟨γ, hγ, h_term⟩ := h_plane 𝔠
   have hγ_pos : 0 < ‖γ‖ := (mul_pos hC (lSharp_pos 𝔠 (by simp))).trans_eq hγ.symm
-  exact ⟨γ, norm_pos_iff.1 hγ_pos, hγ.symm ▸ h_scale 𝔠 C, fun w hw g ↦ h_term x h.left w hw 1 g (.inl rfl)⟩
+  exact ⟨γ, norm_pos_iff.1 hγ_pos, hγ.symm ▸ h_scale 𝔠 C,
+    fun w hw g ↦ h_term x h.left w hw 1 g (.inl rfl)⟩
 
 /-- Removing a plane by the cone integral. Let `W` have even rank, let `A` and `X` be splittings
 `W' = W ⊕ H` and `V' = V ⊕ H` with a hyperbolic plane `H`, both adapted, and let

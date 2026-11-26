@@ -1,5 +1,11 @@
 module
 
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.TotallySplit
 public import New.Congruences.Lifting.CupOrthogonalityBounds
 public import New.Congruences.LocalLoss.Basic
 
@@ -160,7 +166,7 @@ lemma normLength_dualDefect_le_of_hasCupExponent {k : ℕ} (hL : IsPotentiallyCr
   have h_sub : I • ⊤ ≤ (cupOrthogonal 𝒬 L).submoduleOf (crysCocycles L.ρ) := by
     rw [ideal_span_singleton_smul]
     rintro _ ⟨c, -, rfl⟩
-    exact h_exp _ c.2
+    exact h_exp _ c.property
   calc _ ≤ O.normLength (length O (crysCocycles L.ρ ⧸ I • (⊤ : Submodule O _))) := by
         grw [dualDefect, relLength, length_le_of_surjective _ (factor_surjective h_sub)]
     _ = finrank O (crysCocycles L.ρ) * k := by
@@ -204,13 +210,6 @@ lemma New.Selmer.two_mul_lt_mul_crystallineLoss_succ {ℓ : ℕ} [hp : ThePrime 
     exact Nat.le_add_left _ _
   calc 2 * b < ℓ * (2 * b / ℓ + 1) := lt_mul_div_succ _ hp.out.pos
     _ ≤ ℓ * (crystallineLoss h b ℓ + 1) := by grw [h_div, h_val]
-
-/-- If `ℓ` divides some positive integer in `(b - 30 h³, b + 30 h³]`, then the crystalline loss
-`crystallineLoss h b ℓ` is at least `h³`. -/
-lemma New.Selmer.cube_le_crystallineLoss_of_dvd {ℓ h b n : ℕ} [ThePrime ℓ]
-    (hn : n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3)) (hℓ : ℓ ∣ n) : h ^ 3 ≤ crystallineLoss h b ℓ :=
-  le_crystallineLoss_of_pow_dvd
-    ((pow_dvd_pow_of_dvd (hℓ.trans (dvd_prod_of_mem _ hn)) _).mul_left _)
 
 /-- If `H ≤ 4 b` and `2 log (4 b) < m`, then `⌊log_ℓ H⌋ < m`, because `log ℓ ≥ 1 / 2`. -/
 lemma New.Selmer.natLog_lt_of_two_mul_log_lt {ℓ H b m : ℕ} [hp : ThePrime ℓ]
@@ -521,21 +520,21 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
     split_ifs <;> omega
   -- The two bounds of `dualDefect_eq_zero_and_dualDefect_le`, for the length `2 (v + 1)`. The
   -- defect vanishes if `U` and `U'` avoid `[-2 (v + 1), 0)` or `U'` lies in `[-η, 0]`. If at most
-  -- `n` jumps lie in `[-η, η]`, it is at most `11 f (n (2 (v + 1) + 1) + rank L · (W + 1))` times
+  -- `n` jumps lie in `[-η, η]`, it is at most `f (n (16 (v + 1) + 1) + 3 rank L · (W + 1))` times
   -- the length of `O / ℓ`.
   obtain ⟨h_zero, h_defect_le⟩ :=
     k.dualDefect_eq_zero_and_dualDefect_le ζ h_open h_un (by omega) h_height (by omega) h_far h_gap
       hL hU hU'
   by_cases h_few : h / 5 ≤ v ∧ HasFewLowJumps L h μ η U U'
   · -- At most `μ` low jumps, and `⌊h / 5⌋ ≤ v`: the bound `h_defect_le` is at most
-    -- `11 f (6 μ v + rank L · K)` times the length of `O / ℓ`, and `f` is the index.
+    -- `f (33 μ v + 3 rank L · K)` times the length of `O / ℓ`, and `f` is the index.
     obtain ⟨hv_large, h_low⟩ := h_few
     have hW_lt_K : W + 1 ≤ K := Nat.le_of_mul_le_mul_right (by omega) hQ_pos
     have hm_pos : 1 ≤ m :=
       Nat.zero_lt_of_lt (natLog_lt_of_two_mul_log_lt (ℓ := ℓ) h_log (Nat.zero_le _))
-    have h_bound : 11 * (k.f * (μ * (2 * (v + 1) + 1) + finrank O L * (W + 1))) ≤
+    have h_bound : k.f * (μ * (8 * (2 * (v + 1)) + 1) + finrank O L * (3 * (W + 1))) ≤
         k.f * (10 ^ 5 * (finrank O L * (K * m) + μ * v)) := by
-      grw [show 2 * (v + 1) + 1 ≤ 6 * v by omega, ← hm_pos, hW_lt_K]
+      grw [show 8 * (2 * (v + 1)) + 1 ≤ 33 * v by omega, ← hm_pos, hW_lt_K]
       ring_nf
       omega
     -- The normalised length of `O / ℓ` is `1`.
@@ -604,7 +603,8 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
   -- Besides `hy`, only these facts about `v` and `K` are used below.
   have h_loss : 2 * b < ℓ * (crystallineLoss h b ℓ + 1) := two_mul_lt_mul_crystallineLoss_succ h b
   have h_cube {n : ℕ} (hn : n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3)) (h_dvd : ℓ ∣ n) :
-      h ^ 3 ≤ crystallineLoss h b ℓ := cube_le_crystallineLoss_of_dvd hn h_dvd
+      h ^ 3 ≤ crystallineLoss h b ℓ :=
+        le_crystallineLoss_of_pow_dvd ((pow_dvd_pow_of_dvd (h_dvd.trans (dvd_prod_of_mem _ hn)) _).mul_left _)
   have hK : 2 * crystallineLoss h b ℓ < 2 * crystallineLoss h b ℓ / Q * Q + Q :=
     lt_div_mul_add h_sizes.bound_pos
   generalize crystallineLoss h b ℓ = v at *

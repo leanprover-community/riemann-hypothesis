@@ -2,6 +2,9 @@ module
 
 public import Lib.Adelic.Adeles.SemilocalProducts
 public import Lib.Weil.DualPair.Defs
+public import Lib.Adelic.Reduction.FiniteVolume
+public import Lib.ClassField.HeckeL.EulerProduct
+import Lib.Adelic.Unitary.CongruenceLevels
 
 /-!
 # Splitting character on U(1), characters tamely ramified at split places, theta integrals
@@ -60,6 +63,10 @@ variable {E : Type*} [Field E] [CMType E]
   {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
 
 /-! ### Base change at local units -/
+
+lemma WeilData.charUnramifiedAt_upsilon [SplittingChar E] (v : FinPlace E) :
+    CharUnramifiedAt υ.finPart v := by
+  simp_all [CharUnramifiedAt, HeckeChar.finPart, upsilon_eq_atUniformizer_zpow v]
 
 lemma AutChar.HasWeight.of_weight_eq (h : μ.HasWeight e ψ) {e' : InfinitePlace E → ℤ}
     (he : e = e') : μ.HasWeight e' ψ := by
@@ -255,12 +262,12 @@ structure ReadsAt {E : Type} [Field E] [NumberField E] [IsCMField E] (A : Set (F
 
 /-- The multiplicative character of ∏_{w∈P} E_w that is t ↦ ξ(t)|t|^{k/2} on invertible
 elements, t read as an idele, and 0 on the others. -/
-def localChar (ξ : HeckeChar E) (k : ℤ) : MulChar (∀ i : P, LocField i.1) ℂ :=
+def localChar (ξ : HeckeChar E) (k : ℤ) : MulChar (∀ i : P, LocField i.val) ℂ :=
   MulChar.ofUnitHom <|
     ∏ i : P,
       (ξ.finPart.comp (locIdele i) *
           MonoidHom.toHomUnits
-            { toFun (t : (LocField i.1)ˣ) := (√‖t.1‖ : ℂ)
+            { toFun (t : (LocField i.val)ˣ) := (√‖t.val‖ : ℂ)
               map_one' := by simp
               map_mul' := by simp } ^ k).comp (Units.map (evalMonoidHom _ i))
 
@@ -293,9 +300,9 @@ lemma SplitTameChar.readsAt : ReadsAt 𝔠.ramifiedPlaces (evalPlaces 𝔠.ramif
 
 /-- The ring map from the integers of ∏_{w∈P} E_w to the residue field at the place i of P. -/
 def residueAt {E : Type} [Field E] [NumberField E] {P : Finset (FinPlace E)} (i : P) :
-    O (F := LocProd P) →+* ResField i.1 :=
-  (residue (LocInt i.1)).comp
-    ((evalRingHom (fun w : P ↦ LocField w.1) i).restrict O (LocInt i.1) (by aesop (add simp
+    O (F := LocProd P) →+* ResField i.val :=
+  (residue (LocInt i.val)).comp
+    ((evalRingHom (fun w : P ↦ LocField w.val) i).restrict O (LocInt i.val) (by aesop (add simp
       mem_O_locProd)))
 
 /-- The vector of 𝒮(Hom(S,T)) obtained from the vacuum by applying the operator
@@ -364,8 +371,10 @@ lemma localChar_apply_of_isUnit (k : ℤ) (u : O (F := LocProd 𝔠.ramifiedPlac
       𝔠.tamePart i (residueAt i u) := by
   have h_val : ∀ i : 𝔠.ramifiedPlaces, Valued.v (u.val i) = 1 :=
     isIntegralUnit_iff_v_eq_one.mp (isIntegralUnit_iff_isUnit.mpr hu)
-  -- `erw`: `u.val` is the value of the unit `(hu.map O.subtype).unit` only up to unfolding.
-  erw [ofUnitHom_coe _ (hu.map O.subtype).unit]
+  have h_unit : (↑(hu.map O.subtype).unit : LocProd 𝔠.ramifiedPlaces) = u.val :=
+    (hu.map O.subtype).unit_spec
+  unfold localChar
+  rw [← h_unit, ofUnitHom_coe]
   -- The components of `u` have absolute value one, so the factors `√‖u i‖ ^ k` drop out; it
   -- remains to compare the factors at each `i ∈ S`.
   simp [FinitePlace.norm_def, h_val]
@@ -391,12 +400,12 @@ lemma character_apply_of_integral (u : unitary (𝔸 E)) (hu : (u : 𝔸 E).2 �
   have hψ_off : ∀ w ∉ 𝔠.ramifiedPlaces, 𝔠.tamePart w = 1 := fun w ↦ (𝔠.ne_one_iff w).not_right.mpr
   -- `erw`: `𝔠.semilocalChar` at `evalPlaces 𝔠.ramifiedPlaces u.2` is `localChar … 0` at the value
   -- of the unit `⟨evalPlaces 𝔠.ramifiedPlaces u.2, h_mem⟩` only up to unfolding.
-  erw [𝔠.hasWeight.apply_eq u hu, finprod_tame_eq_prod_reduceU1 _ hψ_off,
+  rw [𝔠.hasWeight.apply_eq u hu, finprod_tame_eq_prod_reduceU1 _ hψ_off,
     ← 𝔠.ramifiedPlaces.prod_attach,
     localChar_apply_of_isUnit 𝔠 0 ⟨evalPlaces 𝔠.ramifiedPlaces (u : 𝔸 E).2, h_mem⟩ h_unit]
   -- The reductions of `u` at each `i` by `reduceU1` and by `residueAt` agree by definition.
   have h_red : ∀ i : 𝔠.ramifiedPlaces,
-      ((reduceU1 (i : FinPlace E) ⟨u, hu, nofun⟩ : (ResField i.1)ˣ) : ResField i.1) =
+      ((reduceU1 (i : FinPlace E) ⟨u, hu, nofun⟩ : (ResField i.val)ˣ) : ResField i.val) =
         residueAt i ⟨evalPlaces 𝔠.ramifiedPlaces (u : 𝔸 E).2, h_mem⟩ :=
     fun i ↦ rfl
   simp only [h_red, Finset.univ_eq_attach]
@@ -422,7 +431,7 @@ instance tameLocalChar (k := 0) : TameLocalChar
     · -- Primitivity: if `a i ≠ 0`, solve `1 + a y = x` at `i` for a unit `x` with `ψ i x ≠ 1`.
       intro a ha
       obtain ⟨i, hi⟩ := Function.ne_iff.1 ha
-      obtain ⟨x, hx⟩ := MulChar.ne_one_iff.1 ((𝔠.ne_one_iff i).2 i.2)
+      obtain ⟨x, hx⟩ := MulChar.ne_one_iff.1 ((𝔠.ne_one_iff i).2 i.property)
       exact ⟨(mulSingle i x - 1) / a, by
         simp_all [Finset.prod_eq_single i, inv_apply_eq_inv', apply_eq_zero_iff]⟩
     · -- On units this is `localChar_apply_of_isUnit`; a non-unit has residue `0` at some place, so
@@ -433,5 +442,66 @@ instance tameLocalChar (k := 0) : TameLocalChar
 end SplitTameChar
 
 end New.Exchange
+
+/-! ## Characters of given weight on determinants of integral unitary points -/
+
+namespace New.AutChar.HasWeight
+
+open Matrix Prod IsIntMatrix
+
+variable {E n : Type _} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+  {μ : AutChar E} {e : NumberField.InfinitePlace E → ℤ}
+  {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ} {s : n → ℤˣ}
+
+/-- Let `μ` have weight `e` and tame part `ψ` (`μ.HasWeight e ψ`, with `ψ u` a character of the
+residue field at `u`), and let `ψ` be trivial outside the distinct places `w i`. Then for `k` in the
+stabiliser `K₀ = stdLevel E n` of the standard lattice, `μ (det k) = ∏ i, ψ (w i) (det (k mod w
+i))`, where `detFin s k` is the determinant of `k` as a norm-one adele. -/
+lemma apply_det_eq_prod (h : μ.HasWeight e ψ) {ι : Type*} [Fintype ι] {w : ι → FinPlace E}
+    (hw : w.Injective) (hψ : ∀ u : FinPlace E, u ∉ Set.range w → ψ u = 1) (k : stdLevel E n) :
+    μ.val (detFin s k.val) = ∏ i : ι, ψ (w i) (stdLevel.reduceAt (w i) k).val.det := by
+  -- Reduction modulo a place is a ring homomorphism on `Ô E`, so it commutes with `det`.
+  have h_red (u : FinPlace E) (h_int : (G.adeleMatrix (s := s) (1, k.val)).det.snd ∈ Ô E) :
+      reduceAt u ⟨_, h_int⟩ = (stdLevel.reduceAt u k).val.det := by
+    -- `convert!` matches `RingHom.map_det` across the coercions between `Ô E`, `𝔸f E` and the
+    -- finite part of `(1, k)`; the remaining goal is the finite part of the determinant.
+    convert! RingHom.map_det ..
+    -- `simp` reduces both sides to the entries of `k`; they agree up to the coercion into `Ô E`.
+    simp [det_apply', snd_sum, snd_prod]
+    rfl
+  -- `μ (det k)` is the archimedean part, which is `1`, times the tame product, which is a product
+  -- over the places `w i` because `ψ` is trivial elsewhere.
+  have hψ_map : ∀ u : FinPlace E, u ∉ Finset.univ.map ⟨w, hw⟩ → ψ u = 1 := by simpa using hψ
+  have h_int : (detFin s k.val : 𝔸 E).snd ∈ Ô E := by simp [det_mem (mem_stdLevel.mp k.property)]
+  rw [h.apply_eq _ h_int, finprod_tame_eq_prod_reduceU1 (u := detFin s k.val) hψ_map h_int]
+  simp [reduceU1, -snd_det, h_red]
+
+/-- A character `μ` with trivial tame part (`μ.HasWeight e 1`) is trivial on the determinant
+`detFin s k` of every `k` in the stabiliser `stdLevel E n` of the standard lattice. -/
+lemma apply_det_eq_one (h : μ.HasWeight e 1) {k : Gf E n} (hk : k ∈ stdLevel E n) :
+    μ.val (detFin s k) = 1 := by
+  -- The archimedean part of `det (1, k)` is `1`, and the tame part is trivial at every place.
+  ext
+  -- `↓` turns the tame product into a product over `∅` before simp unfolds it; without it
+  -- `∏ᶠ w, 1 (reduceAt w (det k))` is left.
+  simp [h.apply_eq, det_mem (mem_stdLevel.mp hk), ↓finprod_tame_eq_prod_reduceU1 (S := ∅)]
+
+/-- Let `μ` have weight `e` and tame part `ψ`, trivial at the places of `A` and their conjugates.
+Then `μ` is trivial on `det k` for every integral point `k` supported on `A` and its conjugate. -/
+lemma apply_det_eq_one_of_supportedOn (h : μ.HasWeight e ψ) {A : Set (FinPlace E)}
+    (hψ : ∀ w ∈ A.conjClosure, ψ w = 1) {k : Gf E n} (hk : k ∈ stdLevel E n ⊓ Gf.supportedOn n A) :
+    μ.val (detFin s k) = 1 := by
+  -- `μ (det k)` is a product over the places where `ψ` is not trivial, and there `k` is `1`.
+  obtain ⟨k_int, k_supp⟩ := hk
+  have : Fintype {w : FinPlace E | ψ w ≠ 1} := h.finite_ramification.fintype
+  have h_red (w : FinPlace E) (hw : ψ w ≠ 1) : stdLevel.reduceAt w ⟨k, k_int⟩ = 1 := by
+    obtain ⟨h_not, h_star_not⟩ : w ∉ A ∧ star w ∉ A := not_or.1 fun h_mem ↦ hw (hψ w h_mem)
+    exact stdLevel.reduceAt_eq_one_of_atPlace (Gf.mem_supportedOn.1 k_supp w h_not h_star_not)
+  have h_prod : (μ.val (detFin s k) : ℂ) =
+      ∏ w : {w : FinPlace E | ψ w ≠ 1}, ψ w (stdLevel.reduceAt w.val ⟨k, k_int⟩).val.det :=
+    h.apply_det_eq_prod Subtype.val_injective (by simp) ⟨k, k_int⟩
+  exact Circle.ext (h_prod.trans (Finset.prod_eq_one fun w _ ↦ by simp [h_red w.val w.property]))
+
+end New.AutChar.HasWeight
 
 end

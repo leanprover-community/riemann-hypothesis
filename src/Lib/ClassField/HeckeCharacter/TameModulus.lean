@@ -1,9 +1,13 @@
 module
 
-public import Lib.ClassField.HeckeCharacter.SplittingCharacters
 public import Lib.SiegelWeil.SingularForms.CentreCoefficients
 public import Lib.Weil.DualPair.KernelDecay
 public import Lib.Weil.DualPair.KernelLaws
+public import Lib.Adelic.Unitary.CongruenceLevels
+import Lib.ClassField.HeckeCharacter.SplittingCharacters
+import Lib.ClassField.Local.ArtinMap
+import Lib.Cohomology.Etale.Basic
+import Lib.General.LinearAlgebra.PartnerAlgebra
 
 /-!
 # Characters on determinants, local values and characters tame for a modulus
@@ -47,67 +51,6 @@ Known; see `Lib.ClassField.Global.CMSplittingCharacters` for sources.
 @[expose] public section
 
 noncomputable section
-
-/-! ## Characters of given weight on determinants of integral unitary points -/
-
-namespace New.AutChar.HasWeight
-
-open Matrix Prod IsIntMatrix
-
-variable {E n : Type _} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-  {μ : AutChar E} {e : NumberField.InfinitePlace E → ℤ}
-  {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ} {s : n → ℤˣ}
-
-/-- Let `μ` have weight `e` and tame part `ψ` (`μ.HasWeight e ψ`, with `ψ u` a character of the
-residue field at `u`), and let `ψ` be trivial outside the distinct places `w i`. Then for `k` in the
-stabiliser `K₀ = stdLevel E n` of the standard lattice, `μ (det k) = ∏ i, ψ (w i) (det (k mod w
-i))`, where `detFin s k` is the determinant of `k` as a norm-one adele. -/
-lemma apply_det_eq_prod (h : μ.HasWeight e ψ) {ι : Type*} [Fintype ι] {w : ι → FinPlace E}
-    (hw : w.Injective) (hψ : ∀ u : FinPlace E, u ∉ Set.range w → ψ u = 1) (k : stdLevel E n) :
-    μ.val (detFin s k.val) = ∏ i : ι, ψ (w i) (stdLevel.reduceAt (w i) k).val.det := by
-  -- Reduction modulo a place is a ring homomorphism on `Ô E`, so it commutes with `det`.
-  have h_red (u : FinPlace E) (h_int : (G.adeleMatrix (s := s) (1, k.val)).det.snd ∈ Ô E) :
-      reduceAt u ⟨_, h_int⟩ = (stdLevel.reduceAt u k).val.det := by
-    -- `convert!` matches `RingHom.map_det` across the coercions between `Ô E`, `𝔸f E` and the
-    -- finite part of `(1, k)`; the remaining goal is the finite part of the determinant.
-    convert! RingHom.map_det ..
-    -- `simp` reduces both sides to the entries of `k`; they agree up to the coercion into `Ô E`.
-    simp [det_apply', snd_sum, snd_prod]
-    rfl
-  -- `μ (det k)` is the archimedean part, which is `1`, times the tame product, which is a product
-  -- over the places `w i` because `ψ` is trivial elsewhere.
-  have hψ_map : ∀ u : FinPlace E, u ∉ Finset.univ.map ⟨w, hw⟩ → ψ u = 1 := by simpa using hψ
-  have h_int : (detFin s k.val : 𝔸 E).snd ∈ Ô E := by simp [det_mem (mem_stdLevel.mp k.property)]
-  rw [h.apply_eq _ h_int, finprod_tame_eq_prod_reduceU1 (u := detFin s k.val) hψ_map h_int]
-  simp [reduceU1, -snd_det, h_red]
-
-/-- A character `μ` with trivial tame part (`μ.HasWeight e 1`) is trivial on the determinant
-`detFin s k` of every `k` in the stabiliser `stdLevel E n` of the standard lattice. -/
-lemma apply_det_eq_one (h : μ.HasWeight e 1) {k : Gf E n} (hk : k ∈ stdLevel E n) :
-    μ.val (detFin s k) = 1 := by
-  -- The archimedean part of `det (1, k)` is `1`, and the tame part is trivial at every place.
-  ext
-  -- `↓` turns the tame product into a product over `∅` before simp unfolds it; without it
-  -- `∏ᶠ w, 1 (reduceAt w (det k))` is left.
-  simp [h.apply_eq, det_mem (mem_stdLevel.mp hk), ↓finprod_tame_eq_prod_reduceU1 (S := ∅)]
-
-/-- Let `μ` have weight `e` and tame part `ψ`, trivial at the places of `A` and their conjugates.
-Then `μ` is trivial on `det k` for every integral point `k` supported on `A` and its conjugate. -/
-lemma apply_det_eq_one_of_supportedOn (h : μ.HasWeight e ψ) {A : Set (FinPlace E)}
-    (hψ : ∀ w ∈ A.conjClosure, ψ w = 1) {k : Gf E n} (hk : k ∈ stdLevel E n ⊓ Gf.supportedOn n A) :
-    μ.val (detFin s k) = 1 := by
-  -- `μ (det k)` is a product over the places where `ψ` is not trivial, and there `k` is `1`.
-  obtain ⟨k_int, k_supp⟩ := hk
-  have : Fintype {w : FinPlace E | ψ w ≠ 1} := h.finite_ramification.fintype
-  have h_red (w : FinPlace E) (hw : ψ w ≠ 1) : stdLevel.reduceAt w ⟨k, k_int⟩ = 1 := by
-    obtain ⟨h_not, h_star_not⟩ : w ∉ A ∧ star w ∉ A := not_or.1 fun h_mem ↦ hw (hψ w h_mem)
-    exact stdLevel.reduceAt_eq_one_of_atPlace (Gf.mem_supportedOn.1 k_supp w h_not h_star_not)
-  have h_prod : (μ.val (detFin s k) : ℂ) =
-      ∏ w : {w : FinPlace E | ψ w ≠ 1}, ψ w (stdLevel.reduceAt w.val ⟨k, k_int⟩).val.det :=
-    h.apply_det_eq_prod Subtype.val_injective (by simp) ⟨k, k_int⟩
-  exact Circle.ext (h_prod.trans (Finset.prod_eq_one fun w _ ↦ by simp [h_red w.val w.property]))
-
-end New.AutChar.HasWeight
 
 /-!
 ## Values of the local characters at determinants
@@ -217,40 +160,30 @@ can be chosen supported on the places dividing `𝔪` and their conjugates, mean
 at every other place. -/
 lemma Rows.exists_reductionGL_eq :
     ∃ k : stdLevel E n, k.val ∈ Gf.supportedOn n 𝔪.places ∧ 𝔪.reductionGL k = g := by
-  -- Lift the entries of `g` to `Ô`. At each place dividing `𝔪` the component of the lift is
-  -- invertible over the local integers; `ofSplitPlaces` glues these components to a unitary
-  -- element.
-  have h_lift (i j : n) : ∃ m : Ô E, 𝔪.reduction m = g i j := 𝔪.reduction_surjective (g i j)
-  choose M hM using h_lift
-  obtain ⟨S, hS⟩ : ∃ S : Finset (FinPlace E), ↑S = 𝔪.places := 𝔪.places.toFinite.exists_finset_coe
+  -- Lift the entries of `g` to `Ô` and glue their local components at `𝔪.places` via
+  -- `ofSplitPlaces`.
+  choose M hM using fun i j ↦ 𝔪.reduction_surjective (g i j)
+  obtain ⟨S, hS⟩ := 𝔪.places.toFinite.exists_finset_coe
   have h_split (w : FinPlace E) (hw : w ∈ S) : star w ∉ S :=
     fun hw' ↦ 𝔪.isConjDisjoint_places.le_compl_right (hS.le hw) (hS.le hw')
   let Mloc (w : S) : Matrix n n (LocInt w.val) :=
     fun i j ↦ ⟨(M i j).val w, mem_Ô.mp (M i j).property w⟩
   -- The residue of `Mloc w` is the invertible matrix `g` read modulo `w`.
-  have h_unit (w : S) : IsUnit (Mloc w) := by
-    refine isUnit_of_mapMatrix (IsLocalRing.residue _)
-      ⟨g.map (modulusResidue 𝔪 (hS.le w.property)), ?_⟩
-    -- Both sides are the residue at `w` of the entry `M i j`.
-    have h_res (i j : n) :
-        reduceAt w.val (M i j) = IsLocalRing.residue (LocInt w.val) (Mloc w i j) := rfl
-    ext i j
-    simp [← hM, h_res]
+  have h_unit (w : S) : IsUnit (Mloc w) :=
+    isUnit_of_mapMatrix (IsLocalRing.residue _)
+      ⟨g.map (modulusResidue 𝔪 (hS.le w.property)), by
+        ext i j
+        have h_res : reduceAt w.val (M i j) = IsLocalRing.residue _ (Mloc w i j) := rfl
+        simp [← hM, h_res]⟩
   let γ (w : S) : GL n (LocField w.val) := .map (LocInt w.val).subtype (h_unit w).unit
-  -- `ofSplitPlaces` glues the local components `γ w`, which are integral, into an element of `K₀`.
-  have h_int : ofSplitPlaces h_split γ ∈ stdLevel E n :=
-    (ofSplitPlaces_mem_stdLevel h_split γ).mpr fun w ↦ ⟨(h_unit w).unit, rfl⟩
-  refine ⟨⟨ofSplitPlaces h_split γ, h_int⟩, ?_, ?_⟩
-  · simpa only [← hS] using ofSplitPlaces_mem_supportedOn h_split γ
+  refine ⟨⟨ofSplitPlaces h_split γ,
+      (ofSplitPlaces_mem_stdLevel h_split γ).mpr fun w ↦ ⟨(h_unit w).unit, rfl⟩⟩,
+    by simpa only [← hS] using ofSplitPlaces_mem_supportedOn h_split γ, ?_⟩
   -- Reduction modulo `𝔪` only sees the components at `𝔪.places`, where the entries agree with `M`.
-  have h_comp (i j : n) (w : FinPlace E) (hw : w ∈ 𝔪.places) :
-      (ofSplitPlaces h_split γ).val.val i j w = (M i j).val w := by
-    have h_at : (ofSplitPlaces h_split γ).atPlace w = γ ⟨w, hS.ge hw⟩ :=
-      atPlace_ofSplitPlaces h_split γ ⟨w, hS.ge hw⟩
-    exact congrArg (fun A : GL n (LocField w) ↦ A i j) h_at
   ext i j
   rw [← hM]
-  exact reduction_congr 𝔪 (h_comp i j)
+  exact reduction_congr 𝔪 fun w hw ↦
+    congrArg (fun A : GL n (LocField w) ↦ A i j) (atPlace_ofSplitPlaces h_split γ ⟨w, hS.ge hw⟩)
 
 /-- A chosen lift of g ∈ GL_n(O_E/𝔪) to K₀, with component 1 outside the places dividing 𝔪 and their
 conjugates. -/
@@ -311,7 +244,7 @@ residue fields. -/
 def Modulus.charOfTamePart (𝔪 : Modulus E) (ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ) :
     MulChar 𝔪.ResidueRing ℂ :=
   MulChar.mk
-    { toFun x := ∏ᶠ w : places 𝔪, ψ w (modulusResidue 𝔪 w.2 x)
+    { toFun x := ∏ᶠ w : places 𝔪, ψ w (modulusResidue 𝔪 w.property x)
       map_one' := by simp
       map_mul' := by simp [finprod_eq_prod_of_fintype, Finset.prod_mul_distrib] }
     (by

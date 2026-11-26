@@ -1,6 +1,7 @@
 module
 
 public import Lib.Weil.DualPair.MixedModel
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Adapted splittings: hyperbolic polarisation, Hom spaces, composition and stages
@@ -139,7 +140,8 @@ variable {E : Type _} [Field E] [CMType E] {n n' r : Type _} {p : Type _}
 identity. -/
 noncomputable def adaptedHomBasis {E : Type*} [Field E] [CMType E] {r : Type*}
     (p : Type*) [Fintype r] [DecidableEq r] [Fintype p] [DecidableEq p] {t : r → ℤˣ}
-    (T : Space E r t) : GL (r × p) (𝔸 E) := kroneckerGL (n := p) (star T.x⁻¹) 1
+    (T : Space E r t) : GL (r × p) (𝔸 E) :=
+  Matrix.GeneralLinearGroup.kronecker (m := p) (star T.x⁻¹) 1
 
 variable {M : Matrix n' n (𝔸 E)}
 
@@ -150,8 +152,8 @@ lemma frameAt_homSource :
     (A.homSource T).frameAt 1 (adaptedHomBasis p T) =
       ((1 ⊗ₖ A.kCoordᵀ).fromCols (stdForm E t ⊗ₖ A.lCoordᵀ)).fromCols (1 ⊗ₖ A.iCoordᵀ) := by
   simp [Splitting.frameAt, homSource_iAdelic, mul_assoc, dualFrame, homSource_lAdelic,
-    adaptedHomBasis, kroneckerGL, star_eq_conjTranspose, conjTranspose_kronecker,
-    ← mul_kronecker_mul, homSource_kAdelic, ← conjTranspose_mul]
+    adaptedHomBasis, Matrix.GeneralLinearGroup.kronecker, star_eq_conjTranspose,
+    conjTranspose_kronecker, ← mul_kronecker_mul, homSource_kAdelic, ← conjTranspose_mul]
 
 /-- The term `A.homSlice T x` is the mixed term `slice` of the induced splitting
 `A.homSource T` at the vector of entries of `x` (`matrixToVec x`), after the change of basis
@@ -159,7 +161,8 @@ lemma frameAt_homSource :
 lemma homSlice_eq_adapted_slice [WeilData E] (x : Matrix r p (𝔸 E)) :
     A.homSlice T x = (A.homSource T).slice ((adaptedHomBasis p T)⁻¹.valᴴ *ᵥ matrixToVec x) := by
   simp [slice, homSlice, kronecker_mulVec_eq_matrixToVec, homSource_lAdelic, adaptedHomBasis,
-    kroneckerGL, star_eq_conjTranspose, conjTranspose_kronecker, ← mul_kronecker_mul]
+    Matrix.GeneralLinearGroup.kronecker, star_eq_conjTranspose, conjTranspose_kronecker,
+    ← mul_kronecker_mul]
 
 omit [Fintype n] [DecidableEq n'] [DecidableEq r] [Fintype p] in
 /-- If `M` and `B` are `IsOrthoIntegral`, so is the Kronecker product of `M` and the entrywise
@@ -196,7 +199,6 @@ lemma isAdapted_homSource [h : IsBaseAdapted A] :
   have h_kron : IsOrthoIntegral
       ((stdForm E fun x : r × n' ↦ s' x.2) * (1 : Matrix r r (𝔸 E)) ⊗ₖ Fᴴᵀ) :=
     .mul (.of_stdForm fun x : r × n' ↦ s' x.2) (.kronecker .one h.isOrthoIntegral)
-
   have h_frame : (A.homSource T).frameAt 1 (adaptedHomBasis p T) =
       ((stdForm E fun x : r × n' ↦ s' x.2) * (1 : Matrix r r (𝔸 E)) ⊗ₖ Fᴴᵀ).submatrix id e *
         stdForm E ε := by
@@ -204,11 +206,10 @@ lemma isAdapted_homSource [h : IsBaseAdapted A] :
     rw [frameAt_homSource]
     ext ⟨i, j⟩ ((⟨a, b⟩ | ⟨a, b⟩) | ⟨a, b⟩) : 1
     · -- The `l` block `1 ⊗ₖ A.kCoordᵀ`: both sides are `δ i a * star (A.lAdelic j b)` times a sign.
-      simp [F, e, ε, kCoord, stdForm, Matrix.one_apply, ← Pi.one_def, Prod.mk_one_one, mul_comm]
+      simp [F, e, ε, kCoord, stdForm, Matrix.one_apply, ← Pi.one_def, Prod.mk_one_one]
     · -- The `k` block `stdForm E t ⊗ₖ A.lCoordᵀ`: both sides are `δ i a * star (A.kAdelic j b)`
       -- times signs.
-      simp +contextual [F, e, ε, lCoord, stdForm, Matrix.one_apply, diagonal_apply, mul_comm,
-        mul_left_comm]
+      simp +contextual [F, e, ε, lCoord, stdForm, Matrix.one_apply, diagonal_apply, mul_comm]
     · -- The `ι` block `1 ⊗ₖ A.iCoordᵀ`: both sides are `δ i a * star (A.iAdelic j b)` times signs.
       simp [F, e, ε, iCoord, stdForm, Matrix.one_apply, mul_comm, mul_left_comm]
   change IsOrthoIntegral ((A.homSource T).frameAt 1 (adaptedHomBasis p T))

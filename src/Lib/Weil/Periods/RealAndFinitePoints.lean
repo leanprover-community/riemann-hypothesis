@@ -1,7 +1,9 @@
 module
 
-public import Lib.Weil.Periods.BesselIntegral
+public import TauCeti.Topology.Algebra.Group.Units
+public import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Periods.Equivariant
+import Lib.Weil.Periods.BesselIntegral
 
 /-!
 # Real and finite points of the Bessel group
@@ -94,8 +96,8 @@ lemma fst_mem_besselReal (r : Y.besselGroup) : (r : G E ε).1 ∈ Y.besselReal :
 times the finite points of the Bessel group to the Bessel group, as an isomorphism of
 topological groups. -/
 def besselProdEquiv : Y.besselReal × Y.besselFin ≃ₜ* Y.besselGroup where
-  toFun z := ⟨(z.1.1, z.2.1), Y.mk_mem_besselGroup z⟩
-  invFun r := (⟨r.1.1, Y.fst_mem_besselReal r⟩, ⟨r.1.2, Y.snd_mem_besselFin r.2⟩)
+  toFun z := ⟨(z.1.val, z.2.val), Y.mk_mem_besselGroup z⟩
+  invFun r := (⟨r.val.1, Y.fst_mem_besselReal r⟩, ⟨r.val.2, Y.snd_mem_besselFin r.property⟩)
   map_mul' _ _ := rfl
   continuous_toFun := by fun_prop
   continuous_invFun := by fun_prop
@@ -108,11 +110,10 @@ lemma isHaarMeasure_map_besselProdEquiv :
     prod.instIsHaarMeasure haar haar
   Y.besselProdEquiv.isHaarMeasure_map _
 
-/-- The groups `R(F_∞)` and `R(𝔸_fin)` of real and finite points of the Bessel subgroup `R` are
-unimodular: their left Haar measures are right invariant. -/
-theorem isMulRightInvariant_haar_besselReal_besselFin [Fintype X] :
-    (haar : Measure Y.besselReal).IsMulRightInvariant ∧
-    (haar : Measure Y.besselFin).IsMulRightInvariant := by
+/-- The group `R(F_∞)` of real points of the Bessel subgroup `R` is unimodular: its left Haar
+measure is right invariant. -/
+theorem isMulRightInvariant_haar_besselReal [Fintype X] :
+    (haar : Measure Y.besselReal).IsMulRightInvariant := by
   -- The group `R(𝔸)` is unimodular and is the product of the two groups.
   let ν : Measure Y.besselGroup := (haar.prod haar).map Y.besselProdEquiv
   have : ν.IsHaarMeasure := Y.isHaarMeasure_map_besselProdEquiv
@@ -125,7 +126,7 @@ theorem isMulRightInvariant_haar_besselReal_besselFin [Fintype X] :
   have h_prod : (haar.prod haar : Measure (Y.besselReal × Y.besselFin)).IsMulRightInvariant := by
     rw [← h_emb.comap_map (haar.prod haar)]
     exact IsMulRightInvariant.comap ν (f := Y.besselProdEquiv.toMulEquiv.toMonoidHom) h_emb
-  exact isMulRightInvariant_of_prod h_prod
+  exact (isMulRightInvariant_of_prod h_prod).1
 
 /-- Let `K` be a level and `J = R(𝔸_fin) ∩ K`. There is a constant `c ≠ 0`, the volume of `J`
 for compatible Haar measures, with this property. Let `t₀` be a point of `R(𝔸_fin)`, and let `f`
@@ -174,8 +175,8 @@ lemma exists_integral_eq_mul_integral_besselReal (K : Subgroup (Gf E ι)) [hK : 
         simp only [integral_smul_nnreal_measure, ν, h_emb.integral_map, h_prod, NNReal.smul_def,
           Complex.real_smul]
     _ = (c * haar.real J : ℝ) * ∫ s : Y.besselReal, a s ∂haar := by
-        simp [integral_prod_mul, integral_indicator hJ_open.measurableSet, Set.univ_inter, mul_assoc,
-          mul_comm]
+        simp [integral_prod_mul, integral_indicator hJ_open.measurableSet, Set.univ_inter,
+          mul_assoc, mul_comm]
 
 end New.Grading
 

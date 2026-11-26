@@ -1,6 +1,12 @@
 module
 
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
 public import Lib.Adelic.Unitary.GramMatrix
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Closed matrix embedding of adelic unitary groups, discrete rational points, weak approximation
@@ -173,12 +179,6 @@ lemma _root_.New.cayleyTransform_mul_eq_neg {K : Type*} [Field K] {A B J : Matri
         simp [cayleyTransform_eq_inv_mul, ← Matrix.mul_assoc, hA]
     _ = -(J * cayleyTransform A) := by simp [h_cross, cayleyTransform, Matrix.mul_assoc, hB]
 
-/-- Inversion of matrices commutes with maps of fields. -/
-lemma _root_.New.map_nonsing_inv {K L : Type*} [Field K] [Field L] (φ : K →+* L)
-    (A : Matrix n n K) : A⁻¹.map φ = (A.map φ)⁻¹ := by
-  have h_adj : A.adjugate.map φ = (A.map φ).adjugate := φ.map_adjugate A
-  simp [inv_def, map_smul' φ _ _ φ.map_mul, φ.map_det, h_adj]
-
 /-- The Cayley transform commutes with maps of fields. -/
 lemma _root_.New.cayleyTransform_map {K L : Type*} [Field K] [Field L] (φ : K →+* L)
     (A : Matrix n n K) : (cayleyTransform A).map φ = cayleyTransform (A.map φ) := by
@@ -208,13 +208,13 @@ lemma conjTranspose_formSkewPart_mul (C : Matrix n n E) :
 the Cayley transform of `u` is an isometry of `V`. -/
 lemma smul_cayleyTransform_isometry (c : unitary E) {u : Matrix n n E}
     (hu : uᴴ * V.J = -(V.J * u)) (h_det : (1 + u).det ≠ 0) :
-    (c.1⁻¹ • cayleyTransform u)ᴴ * V.J * (c.1⁻¹ • cayleyTransform u) = V.J := by
+    (c.val⁻¹ • cayleyTransform u)ᴴ * V.J * (c.val⁻¹ • cayleyTransform u) = V.J := by
   -- `(1 - u)ᴴ J (1 - u) = (1 + u)ᴴ J (1 + u)`; multiply by the inverse of `1 + u` on both sides.
   have h_gram : (1 - u)ᴴ * V.J * (1 - u) = (1 + u)ᴴ * V.J * (1 + u) := by
     simp only [conjTranspose_sub, conjTranspose_add, conjTranspose_one, sub_mul, add_mul, hu]
     noncomm_ring
-  have hc : c.1⁻¹ * star c.1⁻¹ = 1 := by simp [← mul_inv]
-  calc _ = (c.1⁻¹ * star c.1⁻¹) • ((1 + u)⁻¹ᴴ * ((1 - u)ᴴ * V.J * (1 - u)) * (1 + u)⁻¹) := by
+  have hc : c.val⁻¹ * star c.val⁻¹ = 1 := by simp [← mul_inv]
+  calc _ = (c.val⁻¹ * star c.val⁻¹) • ((1 + u)⁻¹ᴴ * ((1 - u)ᴴ * V.J * (1 - u)) * (1 + u)⁻¹) := by
         simp [cayleyTransform, smul_smul, Matrix.mul_assoc]
     _ = ((1 + u) * (1 + u)⁻¹)ᴴ * V.J * ((1 + u) * (1 + u)⁻¹) := by
         simp only [hc, h_gram, one_smul, conjTranspose_mul, Matrix.mul_assoc]
@@ -226,9 +226,9 @@ square matrix `A` over `E`, let `u` be the skew part of the Cayley transform of 
 the image under `V.ratEmbed` of the isometry `c⁻¹ (1 - u) (1 + u)⁻¹` of `V.J` if `1 + u` is
 invertible, and `1` otherwise. -/
 noncomputable def cayleyMap (c : unitary E) (A : Matrix n n E) : G E s :=
-  let u : Matrix n n E := V.formSkewPart (cayleyTransform (c.1 • A))
+  let u : Matrix n n E := V.formSkewPart (cayleyTransform (c.val • A))
   V.ratEmbed (if h : (1 + u).det ≠ 0 then
-    U.of V.isUnit_J (c.1⁻¹ • cayleyTransform u)
+    U.of V.isUnit_J (c.val⁻¹ • cayleyTransform u)
       (V.smul_cayleyTransform_isometry c (V.conjTranspose_formSkewPart_mul _) h)
   else 1)
 
@@ -257,7 +257,7 @@ lemma eventually_tendsto_cayleyMap (g : G E s) (e : 𝔸 E) {K : Type*} [NormedF
       (φ.injective.comp Subtype.val_injective)).tendsto_cofinite.eventually
       (γ.map f).finite_spectrum.eventually_cofinite_notMem
   filter_upwards [off_spectrum] with c hc
-  have h_norm : φ (star c.1) * φ c = 1 := by rw [← map_mul, c.prop.left, map_one]
+  have h_norm : φ (star c.val) * φ c = 1 := by rw [← map_mul, c.prop.left, map_one]
   have hc_ne : φ c ≠ 0 := right_ne_zero_of_mul_eq_one h_norm
   have h_two : (2 : K) ≠ 0 := by simpa only [map_ofNat] using (map_ne_zero φ).2 two_ne_zero
   let J : Matrix n n K := V.J.map φ
@@ -269,17 +269,17 @@ lemma eventually_tendsto_cayleyMap (g : G E s) (e : 𝔸 E) {K : Type*} [NormedF
     simpa [hc_ne, isUnit_iff_isUnit_det] using spectrum.notMem_iff.1 hc
   let C : Matrix n n K := cayleyTransform (φ c • γ.map f)
   -- `v A` is the rational skew matrix in the definition of `V.cayleyMap c A`.
-  let v (A : Matrix n n E) : Matrix n n E := V.formSkewPart (cayleyTransform (c.1 • A))
+  let v (A : Matrix n n E) : Matrix n n E := V.formSkewPart (cayleyTransform (c.val • A))
   -- As `f` need not respect conjugation, the images of `A` and `Aᴴ` are two variables `x`, `y`.
   let u (x y : Matrix n n K) : Matrix n n K :=
-    (2 : K)⁻¹ • (cayleyTransform (φ c • x) - J⁻¹ * cayleyTransform (φ (star c.1) • y) * J)
+    (2 : K)⁻¹ • (cayleyTransform (φ c • x) - J⁻¹ * cayleyTransform (φ (star c.val) • y) * J)
   have h_u (A : Matrix n n E) : (v A).map φ = u (A.map φ) (Aᴴ.map φ) := by
-    have h_star : (cayleyTransform (c.1 • A))ᴴ = cayleyTransform (star c.1 • Aᴴ) := by
-      rw [cayleyTransform_eq_inv_mul (star c.1 • Aᴴ)]
+    have h_star : (cayleyTransform (c.val • A))ᴴ = cayleyTransform (star c.val • Aᴴ) := by
+      rw [cayleyTransform_eq_inv_mul (star c.val • Aᴴ)]
       simp [cayleyTransform, conjTranspose_nonsing_inv]
     simp [u, v, J, formSkewPart, h_star, map_nonsing_inv, map_smul', Matrix.map_sub, Matrix.map_mul,
       cayleyTransform_map, map_ofNat]
-  have gram : φ (star c.1) • γᴴ.map f * J * φ c • γ.map f = J := by
+  have gram : φ (star c.val) • γᴴ.map f * J * φ c • γ.map f = J := by
     have h_gram : γᴴ.map f * J * γ.map f = J := by
       simpa [J, φ, γ, coe_comp, star_eq_conjTranspose] using
         congrArg (map · f) (mem_unitaryGroupOf_iff.1 (V.toRatCoords g).prop)
@@ -311,7 +311,7 @@ lemma eventually_tendsto_cayleyMap (g : G E s) (e : 𝔸 E) {K : Type*} [NormedF
   refine (Ψ_cont.tendsto.comp u_tendsto).congr' ((u_tendsto.eventually h_near).mono fun p hp ↦ ?_)
   have h_rat : (1 + v p.1).det ≠ 0 := by rwa [← map_ne_zero φ, φ.map_det, map_add, map_one]
   have h_map : (φ c)⁻¹ • cayleyTransform ((v p.1).map φ) =
-      (c.1⁻¹ • cayleyTransform (v p.1)).map φ := by simp [cayleyTransform_map, map_smul']
+      (c.val⁻¹ • cayleyTransform (v p.1)).map φ := by simp [cayleyTransform_map, map_smul']
   simp only [Function.comp_apply, Ψ, v, h_map, cayleyMap, dite_eq_left h_rat, adeleMatrix_ratEmbed,
     Matrix.map_mul]
   rfl
@@ -403,7 +403,7 @@ lemma weak_approximation {S : Set (FinPlace E)} (hS : S.Finite) :
   refine mem_closure_of_tendsto (h_tendsto.mul_const _) (.of_forall fun p ↦ ?_)
   set x : G E s := V.cayleyMap c p.1
   let h : Gf E n := (x⁻¹ * (π x * ((π g)⁻¹ * g))).2
-  have h_triv : h ∈ trivialOn n S := by simp +contextual [h, π, atPlace_componentOn, trivialOn]
+  have h_triv : h ∈ trivialOn n S := by simp +contextual [h, π, atPlace_componentOn]
   have h_eq : x * (1, h) = π x * ((π g)⁻¹ * g) := Prod.ext (by simp [π]) (by simp [h])
   -- `cayleyMap` is by definition in the range `V.Γ` of `V.ratEmbed`.
   exact ⟨(⟨x, _, rfl⟩, ⟨h, h_triv⟩), h_eq⟩

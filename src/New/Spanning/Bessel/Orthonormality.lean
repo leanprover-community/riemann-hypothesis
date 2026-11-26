@@ -1,8 +1,13 @@
 module
 
-public import Lib.DiscreteSeries.Bessel.SchurBound
-public import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.SpecificCodomains.WithLp
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Bessel.Basic
+import Lib.DiscreteSeries.Bessel.SchurBound
+import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
 
 /-!
 # Normalisation of a Bessel function and of its cut

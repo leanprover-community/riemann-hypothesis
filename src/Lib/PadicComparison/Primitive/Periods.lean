@@ -1,7 +1,9 @@
 module
 
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import Lib.Cohomology.Etale.EllAdicCohomology
 public import Lib.PadicComparison.Primitive.PeriodCoefficients
+import Lib.PadicComparison.Descent.TestCovers
 
 /-!
 # The primitive comparison with period coefficients

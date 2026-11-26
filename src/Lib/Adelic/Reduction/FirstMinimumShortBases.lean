@@ -1,7 +1,21 @@
 module
 
-public import Lib.Adelic.Unitary.RationalPoints
-public import Lib.General.NumberTheory.SUnitsAndClassNumber
+public import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.Group.GeometryOfNumbers
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.ProperConstSMul
+import Mathlib.Topology.Separation.Connected
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+public import Lib.General.NumberTheory.EmbeddingsAndDifferent
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.GramMatrix
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Base
+import Lib.General.Measure.HaarModulus
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Transference, first minima and short bases of lattices of hermitian spaces
@@ -110,7 +124,7 @@ lemma span_eq_top_of_le_norm_dual (Λ : Submodule ℤ E) [Module.Finite ℝ E] {
     span ℝ (Λ : Set E) = ⊤ := by
   -- The orthogonal complement lies in the dual, so it is discrete; being connected, it is zero.
   have h_mem (u : (span ℝ (Λ : Set E))ᗮ) : (u : E) ∈ dualSubmodule (innerₗ E) Λ :=
-    fun y hy ↦ by simp [real_inner_comm, u.2 y (subset_span hy)]
+    fun y hy ↦ by simp [real_inner_comm, u.property y (subset_span hy)]
   have : DiscreteTopology (span ℝ (Λ : Set E))ᗮ :=
     .of_forall_le_norm hρ fun u hu ↦ h_dual u (h_mem u) (by simpa using hu)
   exact orthogonal_eq_bot_iff.1 (subsingleton_iff_eq_bot.1 PreconnectedSpace.trivial_of_discrete)
@@ -498,13 +512,14 @@ lemma exists_smul_mulVec_mem_latticeBall {Ω : Set (Gf E n)} (hΩ : IsCompact Ω
     (isOpen_Ô.matrix.mem_nhds (Ô E).matrix.zero_mem)
   refine ⟨c, hc, fun {γ g g' R} h_mem h_norm y hy ↦ ?_⟩
   -- The matrix of `g⁻¹ γ g'` takes the coordinates of `y` at `g'` to those of `γ y` at `g`.
+  let k := (g⁻¹ * V.ratEmbed γ * g').adeleMatrix
   have h_crd : (V.move g).vecAtPoint ((c : E) • γ *ᵥ y) =
-      c • (g⁻¹ * V.ratEmbed γ * g').adeleMatrix *ᵥ (V.move g').vecAtPoint y := by
-    simp [vecAtPoint_move, ← ratEmbed_mulVec_vecAtPoint, ← G.adeleMatrix_mul, funext_iff]
-  have h_entries : ∀ i j : n, (c : 𝔸f E) * ((g⁻¹ * V.ratEmbed γ * g').adeleMatrix i j).2 ∈ Ô E :=
+      c • k *ᵥ (V.move g').vecAtPoint y := by
+    simp [k, vecAtPoint_move, ← ratEmbed_mulVec_vecAtPoint, ← G.adeleMatrix_mul, funext_iff]
+  have h_entries : ∀ i j : n, (c : 𝔸f E) * (k i j).2 ∈ Ô E :=
     h_integral _ ⟨_, h_mem, rfl⟩
-  exact ⟨mem_baseLattice_of_vecAtPoint_eq h_crd h_entries hy,
-    norm_archCoords_le_of_vecAtPoint_eq (k := (g⁻¹ * V.ratEmbed γ * g').adeleMatrix) h_norm h_crd⟩
+  obtain ⟨h_lattice, h_length⟩ := mem_and_norm_le_of_vecAtPoint _ _ _ k c h_norm h_crd
+  exact ⟨h_lattice h_entries hy, h_length⟩
 
 variable (V) in
 /-- The hermitian form `V.J` takes algebraic integer values on pairs of vectors of the lattice
@@ -736,7 +751,7 @@ lemma firstMinimum_le_norm_of_inner_int {d : 𝓞 E} (hd : d ≠ 0)
   -- With `t = (x_V⁻¹)ᴴ (x / star d)` at the infinite places (x_V the point of `V`), pairing with
   -- `x` becomes a dot product with `t`. It will turn out that `t = J a` at the infinite places,
   -- with `d • a` in the lattice and as long as `x`.
-  let t : n → 𝔸 E := V.x⁻¹.1ᴴ *ᵥ fun i : n ↦
+  let t : n → 𝔸 E := V.x⁻¹.valᴴ *ᵥ fun i : n ↦
     (fun w : InfinitePlace E ↦ x ⟨w, i⟩ / star (Φ w d), 0)
   have h_pair (ξ : n → E) :
       ⟪x, V.archCoords ((2 / d.val) • ξ)⟫ =
@@ -758,10 +773,10 @@ lemma firstMinimum_le_norm_of_inner_int {d : 𝓞 E} (hd : d ≠ 0)
   -- signs `s`.
   have h_abs (w : InfinitePlace E) (i : n) :
       ‖x ⟨w, i⟩‖ = ‖Φ w d.val * (V.vecAtPoint a i).1 w‖ := by
-    have h_left : ((V.x.1ᴴ *ᵥ t) i).1 w = x ⟨w, i⟩ / star (Φ w d) := by
+    have h_left : ((V.x.valᴴ *ᵥ t) i).1 w = x ⟨w, i⟩ / star (Φ w d) := by
       simp [t, ← conjTranspose_mul]
-    have h_right : ((V.x.1ᴴ *ᵥ t) i).1 w = (s i : ℤ) * (V.vecAtPoint a i).1 w := by
-      trans ((V.x.1ᴴ *ᵥ V.J.map toAdele *ᵥ toAdele ∘ a) i).1 w
+    have h_right : ((V.x.valᴴ *ᵥ t) i).1 w = (s i : ℤ) * (V.vecAtPoint a i).1 w := by
+      trans ((V.x.valᴴ *ᵥ V.J.map toAdele *ᵥ toAdele ∘ a) i).1 w
       · simp [mulVec, hc, dotProduct, fst_sum]
       · simp [map_J, ← mul_assoc, ← conjTranspose_mul, ← (diagonal _).mulVec_mulVec, vecAtPoint,
           stdForm, mulVec_diagonal]

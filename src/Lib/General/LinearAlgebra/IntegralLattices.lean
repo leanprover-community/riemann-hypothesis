@@ -1,8 +1,11 @@
 module
 
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.Swap
+import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.LinearAlgebra.Matrix.Range
 public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Groups.BesselGroups
-public import TauCeti.LinearAlgebra.Matrix.Range
 
 /-!
 # Integral matrices over subrings: Smith normal form, Gelfand's condition and lattices
@@ -258,7 +261,7 @@ matrix `y` over `A` is `k * diagonal d * k'`, where `d : n → A` and `k`, `k'` 
 have entries in `R`. No divisibility among the entries of `d` is stated. -/
 lemma New.IsValuationPair.smith_normal_form {A n : Type*} [CommRing A] {R : Subring A} [Fintype n]
     [DecidableEq n] (hR : IsValuationPair R) (y : Matrix n n A) :
-    ∃ᵉ (k ∈ intGL n R) (k' ∈ intGL n R) (d : n → A), y = k.val * diagonal d * k'.val := by
+    ∃ k ∈ intGL n R, ∃ k' ∈ intGL n R, ∃ d : n → A, y = k.val * diagonal d * k'.val := by
   -- Elimination, by induction on the size: bring a pivot that divides all entries to the place
   -- `(p, p)`, clear its row and column, and diagonalize the smaller block that is left.
   suffices ∃ (k k' : GL n R) (d : n → A),

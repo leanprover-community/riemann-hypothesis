@@ -1,8 +1,19 @@
 module
 
-public import Lib.General.LinearAlgebra.MatrixPolynomials
-public import Lib.General.NumberTheory.FrobeniusOrbits
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.LinearAlgebra.Semisimple
+public import Mathlib.RingTheory.Henselian
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
+import Mathlib.LinearAlgebra.Eigenspace.Zero
+import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
+import Mathlib.RingTheory.Artinian.Instances
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import Lib.LocalGL.Green.HallAlgebra
+import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # Cuspidal class functions on GL_n over a finite field: μ, supports, values, inner products
@@ -214,25 +225,15 @@ lemma conj_moebius : ∀ c : SimClass k, conj (moebius c) = moebius c := by
 @[simp]
 lemma greenCuspidal_mul_constOne : greenCuspidal k η * constOne = -brauerLift k η := by
   -- It suffices that `greenCuspidal k η = -(moebius * brauerLift k η)`; multiply by `constOne`.
-  suffices key : greenCuspidal k η + moebius * brauerLift k η = 0 by grind [moebius_mul_constOne]
+  suffices greenCuspidal k η + moebius * brauerLift k η = 0 by grind [moebius_mul_constOne]
   ext _ g
-  -- `β = brauerLift k η` is additive, `β (g|W) + β (g|V/W) = β g`, so the two sums over stable `W`
-  -- add up to `β g * ∑ W, moebius (g|W) = β g * 1 g`, which is `0` (in dimension `0` since
-  -- `β g = 0`).
-  calc
-    _ = brauerLift k η (simClassOf g) *
-        ∑ W : StableSubspace g, moebius (simClassOf W.endOnSub) := by
-      -- termwise: `β (g|W) μ (g|W) + μ (g|W) β (g|V/W) = β g μ (g|W)`
-      suffices h_terms : ∀ W : StableSubspace g,
-          (brauerLift k η).mulMoebius (simClassOf W.endOnSub) +
-              moebius (simClassOf W.endOnSub) * ((W.endOnQuot.charpoly.aroots K).map η).sum =
-            (((charpoly g).aroots K).map η).sum * moebius (simClassOf W.endOnSub) by
-        simpa [← sum_add_distrib, mul_sum, greenCuspidal, mul_simClassOf,
-          finsum_eq_sum_of_fintype] using sum_congr rfl fun W _ ↦ h_terms W
-      intro W
-      simp [← charpoly_endOnSub_mul_endOnQuot _ W, field, charpoly_monic, Monic.ne_zero, aroots_mul]
-    _ = 0 := by simp +contextual [← g.charpoly_natDegree, sum_moebius_simClassOf_endOnSub,
-      charpoly_monic]
+  -- `β = brauerLift k η` is additive, `β (g|W) + β (g|V/W) = β g`, so the sum factors as
+  -- `β g * ∑ W, moebius (g|W) = 0`.
+  trans brauerLift k η (simClassOf g) * ∑ W : StableSubspace g, moebius (simClassOf W.endOnSub)
+  · simp [← sum_add_distrib, mul_sum, greenCuspidal, mul_simClassOf, finsum_eq_sum_of_fintype]
+    refine sum_congr rfl fun W _ ↦ ?_
+    simp [← charpoly_endOnSub_mul_endOnQuot _ W, field, charpoly_monic, Monic.ne_zero, aroots_mul]
+  · simp +contextual [← g.charpoly_natDegree, sum_moebius_simClassOf_endOnSub, charpoly_monic]
 
 /-- The value of `New.Hall.greenCuspidal k η` in dimension zero is zero. -/
 lemma greenCuspidal_eq_zero_of_dim_lt_one (c : SimClass k) :
@@ -305,64 +306,45 @@ lemma Hall.IsCuspidal.exists_charpoly_eq_pow {F : Hall k} (h_cusp : IsCuspidal F
   -- conjugate to `g`. As `F` is cuspidal, `F g ≠ 0` forces a block to be empty; it is not `C`,
   -- since `P(g)` is not invertible, so `P(g) ^ N = 0`.
   by_cases h_unit : IsUnit (charpoly g)
-  · -- a monic unit is `1 = X ^ 0`
-    exact ⟨X, 0, irreducible_X, g.charpoly_monic.eq_one_of_isUnit h_unit⟩
-  obtain ⟨P, hP_monic, hP_irred, hdvd⟩ : ∃ P : k[X], P.Monic ∧ Irreducible P ∧
-      P ∣ (g.toMatrixAlgEquiv (Free.chooseBasis k V)).charpoly :=
-    (g.toMatrixAlgEquiv _).charpoly.exists_monic_irreducible_factor h_unit
+  · exact ⟨X, 0, irreducible_X, g.charpoly_monic.eq_one_of_isUnit h_unit⟩
+  obtain ⟨P, hP_monic, hP_irred, hdvd⟩ :=
+    (g.toMatrixAlgEquiv (Free.chooseBasis k V)).charpoly.exists_monic_irreducible_factor h_unit
   have not_unit : ¬IsUnit (aeval g P) := by
     simpa [aeval_algHom_apply] using fun h_inv ↦
       hP_irred.dvd_iff_not_isCoprime.mp hdvd (isUnit_aeval_iff_isCoprime.mp h_inv).symm
-  obtain ⟨N, hN, hN₀⟩ : ∃ N : ℕ, IsCompl (aeval g P ^ N).ker (aeval g P ^ N).range ∧ N ≠ 0 :=
+  obtain ⟨N, hN, hN₀⟩ :=
     ((aeval g P).eventually_isCompl_ker_pow_range_pow.and (Filter.eventually_ne_atTop 0)).exists
   have comm (Y : End k V) (hY : ∀ x : V, Y (g x) = g (Y x)) (x : V) :
       Y ((aeval g P ^ N) x) = (aeval g P ^ N) (Y x) :=
-    -- `Y` commutes with `g`, hence with the polynomial `P(g) ^ N` in `g`
     LinearMap.congr_fun ((Algebra.commute_of_mem_adjoin_singleton_of_commute
       (aeval_mem_adjoin_singleton k g) (LinearMap.ext hY : Commute Y g)).pow_right N).eq x
-  have ker_stable : ∀ x ∈ ker (aeval g P ^ N), g x ∈ ker (aeval g P ^ N) := by
-    simp +contextual [← comm g]
-  let C : StableSubspace g := ⟨ker (aeval g P ^ N), ker_stable⟩
+  let C : StableSubspace g := ⟨ker (aeval g P ^ N), by simp +contextual [← comm g]⟩
   -- The Sylvester map `y ↦ a y - y b` (`a = g|C`, `b = g|V/C`) is injective: an intertwiner `y`
-  -- commutes with `P(g) ^ N` and takes values in its kernel `C`, so it kills the range of
-  -- `P(g) ^ N`, a complement of `C`.
+  -- commutes with `P(g) ^ N` and takes values in `C`, so it kills `range (P(g) ^ N)`.
   let sylvester : End k ((_ ⧸ C.val) →ₗ[k] C.val) :=
     C.endOnSub.compRight k - lcomp k _ C.endOnQuot
   have sylvester_inj : Function.Injective sylvester := by
-    refine (injective_iff_map_eq_zero _).mpr fun y hy ↦
-      linearMap_qext _
-        (ext_on_codisjoint hN.codisjoint ((ker_mkQ _).ge.trans (ker_le_ker_comp _ y)) ?_)
+    refine (injective_iff_map_eq_zero _).mpr fun y hy ↦ linearMap_qext _ <|
+      ext_on_codisjoint hN.codisjoint ((ker_mkQ _).ge.trans (ker_le_ker_comp _ y)) ?_
     rintro _ ⟨v, rfl⟩
-    have intertwines (x : V) : ((y ⟦g x⟧ : C.val) : V) = g (y ⟦x⟧) := by
-      have h_at_x : (C.endOnSub.compRight k) y ⟦x⟧ = (lcomp k C.val C.endOnQuot) y ⟦x⟧ :=
-        LinearMap.congr_fun (sub_eq_zero.mp hy) ⟦x⟧
-      exact (congrArg Subtype.val h_at_x).symm
-    exact Subtype.ext ((comm (C.val.subtype ∘ₗ y ∘ₗ mkQ _) intertwines v).trans (y _).prop)
+    refine Subtype.ext ((comm (C.val.subtype ∘ₗ y ∘ₗ mkQ _) (fun x ↦ ?_) v).trans (y _).prop)
+    exact (congrArg Subtype.val (LinearMap.congr_fun (sub_eq_zero.mp hy) ⟦x⟧)).symm
   -- So it is surjective, and a solution `y` of `a y - y b = x` conjugates
   -- `blockTriangularEnd a b x` into `g`.
   have cls_blk (x : (V ⧸ C.val) →ₗ[k] C.val) :
       simClassOf (blockTriangularEnd C.endOnSub C.endOnQuot x) = simClassOf g := by
-    obtain ⟨y, rfl⟩ : ∃ y : (V ⧸ C.val) →ₗ[k] C.val, sylvester y = x :=
-      surjective_of_injective sylvester_inj x
+    obtain ⟨y, rfl⟩ := surjective_of_injective sylvester_inj x
     refine simClassOf_eq_of_equiv
       (.skewProd (quotKerEquivRange _) 1 y ≪≫ₗ prodEquivOfIsCompl _ _ hN.symm) ?_
-    suffices h_eq : ∀ v c : V, (aeval g P ^ N) c = 0 →
-        (aeval g P ^ N) (g v) + (g (y (Submodule.Quotient.mk v) : V) -
-            (y (Submodule.Quotient.mk (g v)) : V) + g c + (y (Submodule.Quotient.mk (g v)) : V)) =
-          g ((aeval g P ^ N) v) + (g c + g (y (Submodule.Quotient.mk v) : V)) by
-      simpa [Submodule.Quotient.forall, sylvester, endOnSub, endOnQuot, C] using h_eq
-    intro v c _
-    -- `P(g) ^ N` commutes with `g`
-    rw [comm g (fun _ ↦ rfl) v]
+    simp [Submodule.Quotient.forall, sylvester, endOnSub, endOnQuot, C, comm g (fun _ ↦ rfl)]
+    intros
     abel
-  -- The block average of `F` at `(a, b)` is thus `F g ≠ 0`, so `C = ⊥` (excluded by `not_unit`,
-  -- as `N ≠ 0`) or `C = ⊤`.
-  have nilp : aeval g P ^ N = 0 := by
-    -- `↓`: `finrank_eq_zero` has to act before the dimension facts are simplified further
-    simpa [C, cls_blk, hF_ne, not_unit, hN₀, blockAverage_simClassOf, ← isUnit_iff_ker_eq_bot,
-      finrank_zero_iff, ↓finrank_eq_zero] using
-      h_cusp (simClassOf C.endOnSub) (simClassOf C.endOnQuot)
-  exact ⟨P, _, hP_irred, charpoly_eq_pow_of_isNilpotent hP_irred hP_monic ⟨N, nilp⟩⟩
+  -- The block average of `F` at `(a, b)` is thus `F g ≠ 0`, forcing `C = ⊤` (`C = ⊥` is excluded).
+  refine ⟨P, _, hP_irred, charpoly_eq_pow_of_isNilpotent hP_irred hP_monic ⟨N, ?_⟩⟩
+  -- `↓`: `finrank_eq_zero` has to act before the dimension facts are simplified further
+  simpa [C, cls_blk, hF_ne, not_unit, hN₀, blockAverage_simClassOf, ← isUnit_iff_ker_eq_bot,
+    finrank_zero_iff, ↓finrank_eq_zero] using
+    h_cusp (simClassOf C.endOnSub) (simClassOf C.endOnQuot)
 
 /-- Let k be a finite field, `q = |k|`, `d = finrank k V`, and let `greenCuspidal k η` be the class
 function (β_η·μ) ∗ 𝟙, where β_η is the eigenvalue sum of η, μ is the inverse of the constant
@@ -453,13 +435,13 @@ open Classical in
 μ at the classes of `g` on `V/W`, over the `g`-stable subspaces `W ⊇ U`, is `0`. -/
 private lemma sum_moebius_endOnQuot_eq_zero_of_ne_top {g : Module.End k V}
     (U : StableSubspace g) (hU : (U : Submodule k V) ≠ ⊤) :
-    ∑ W : StableSubspace g with (U : Submodule k V) ≤ W.1,
+    ∑ W : StableSubspace g with (U : Submodule k V) ≤ W.val,
       moebius (simClassOf W.endOnQuot) = 0 := by
   -- The stable subspaces above `U` are those of `V/U`, so this sum is
   -- `(constOne * moebius)(V/U) = 0`.
   have h_mkQ_comm (x : V) :
       (U : Submodule k V).mkQ (g x) = U.endOnQuot ((U : Submodule k V).mkQ x) := rfl
-  have h_quo : ∑ W : StableSubspace g with (U : Submodule k V).mkQ.ker ≤ W.1,
+  have h_quo : ∑ W : StableSubspace g with (U : Submodule k V).mkQ.ker ≤ W.val,
       moebius (simClassOf W.endOnQuot) =
         (constOne * moebius : Hall k) (simClassOf U.endOnQuot) := by
     refine (sum_comap (U : Submodule k V).mkQ (g' := U.endOnQuot) h_mkQ_comm _).trans ?_
@@ -638,31 +620,23 @@ lemma exists_conj_mulLeft_eq {L : Type*} [Field L] [Finite L] [Algebra k L] {g :
     {j : ℕ} (hg : g.IsSemisimple) (hP : Irreducible P) (h_charpoly : g.charpoly = P ^ j) :
     ∃ (e : L ≃ₗ[k] L) (y : L), e.conjAlgEquiv k (Algebra.lmul k L y) = g := by
   -- The minimal polynomial is squarefree and divides `P ^ j`, so `P` kills `g`.
-  have h_minpoly_dvd : minpoly k g ∣ P :=
+  have h_aeval : Polynomial.aeval g P = 0 := dvd_iff.mp <|
     hg.minpoly_squarefree.isRadical j P ((minpoly_dvd_charpoly g).trans h_charpoly.dvd)
-  have h_aeval : Polynomial.aeval g P = 0 := dvd_iff.mp h_minpoly_dvd
-  -- `V` is `L` as a `k[X]`-module through `g`, hence a vector space over the field `k[X]/(P)`.
+  -- `V` is `L` as a `k[X]`-module through `g`, hence a vector space over `k[X]/(P)`.
   let V : Type _ := AEval' g
   have : Fact (Irreducible P) := ⟨hP⟩
   have : Module.Finite k (AdjoinRoot P) := (AdjoinRoot.powerBasis hP.ne_zero).finite
   have : Finite V := inferInstanceAs (Finite L)
-  let module_V : Module (AdjoinRoot P) V :=
-    IsTorsionBy.module fun x ↦ LinearMap.congr_fun h_aeval x
-  have h_tower_V : IsScalarTower k (AdjoinRoot P) V := IsTorsionBySet.isScalarTower _
-  have tower_V : finrank k (AdjoinRoot P) * finrank (AdjoinRoot P) V = finrank k L :=
-    finrank_mul_finrank k (AdjoinRoot P) V
-  -- So the degree of `P` divides that of `L`, and the finite field `k[X]/(P)` embeds in `L`.
-  let algebra_L : Algebra (AdjoinRoot P) L :=
+  let _ : Module (AdjoinRoot P) V := IsTorsionBy.module (LinearMap.congr_fun h_aeval)
+  have : IsScalarTower k (AdjoinRoot P) V := IsTorsionBySet.isScalarTower _
+  have tower_V := finrank_mul_finrank k (AdjoinRoot P) V
+  -- So `[k[X]/(P) : k] ∣ [L : k]`, giving an embedding `k[X]/(P) ↪ L` and an isomorphism `V ≃ L`.
+  let _ : Algebra (AdjoinRoot P) L :=
     (nonempty_algHom_of_finrank_dvd (L := L) ⟨_, tower_V.symm⟩).some.toAlgebra
-  have tower_L : finrank k (AdjoinRoot P) * finrank (AdjoinRoot P) L = finrank k L :=
-    finrank_mul_finrank k (AdjoinRoot P) L
-  -- The two structures on `L` have the same dimension; `t` carries `g` to the product by the root.
-  let t : V ≃ₗ[AdjoinRoot P] L :=
-    ofFinrankEq _ _ (mul_left_cancel₀ finrank_pos.ne' (tower_V.trans tower_L.symm))
-  refine ⟨t.symm.restrictScalars k, algebraMap _ L (AdjoinRoot.root P), ext fun x ↦ ?_⟩
-  have root_smul (x : V) : t.symm (AdjoinRoot.root P • t x) = AdjoinRoot.root P • x :=
-    t.symm_apply_eq.mpr (t.map_smul _ x).symm
-  exact (root_smul x).trans (AEval'.X_smul_of g x)
+  let t : V ≃ₗ[AdjoinRoot P] L := ofFinrankEq _ _ <|
+    mul_left_cancel₀ finrank_pos.ne' (tower_V.trans (finrank_mul_finrank k (AdjoinRoot P) L).symm)
+  exact ⟨t.symm.restrictScalars k, algebraMap _ L (AdjoinRoot.root P),
+    ext fun x ↦ (t.symm_apply_eq.mpr (t.map_smul _ x).symm).trans (AEval'.X_smul_of g x)⟩
 
 /-- Let k be a finite field, K a field over k, η : K → ℂ, and C_η = `greenCuspidal k η` = (β_η·μ)
 ∗ 𝟙. Here β_η is the eigenvalue sum of η, μ (`moebius`) is the inverse of the constant class

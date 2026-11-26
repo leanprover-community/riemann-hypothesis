@@ -1,8 +1,14 @@
 module
 
-public import Lib.Adelic.Unitary.GramMatrix
+public import Mathlib.Algebra.AffineMonoid.Basic
+public import Mathlib.RingTheory.DedekindDomain.Different
 public import Lib.ClassField.HeckeCharacter.Basic
 public import Lib.Weil.Construction.HeisenbergModel
+public import Lib.Adelic.Adeles.AdditiveCharacter
+public import Lib.Adelic.Unitary.Defs
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.GramMatrix
+import Lib.Base
 
 /-!
 # Splitting characters, Weil data, and the adelic Heisenberg cocycle and vacuum
@@ -66,9 +72,9 @@ class SplittingChar where
   places τ, where x_τ = `(x : 𝔸 E).fst τ` is the component of x at τ. -/
   υ_unit (x : (𝔸 E)ˣ) :
       x.map (MonoidHom.snd (InfinitePlace E → ℂ) (𝔸f E)) ∈ (Ô E).units →
-        υ.1 x = ∏ w : InfinitePlace E, (x : 𝔸 E).fst w / ‖(x : 𝔸 E).fst w‖
+        υ.val x = ∏ w : InfinitePlace E, (x : 𝔸 E).fst w / ‖(x : 𝔸 E).fst w‖
   /-- Complex conjugation inverts υ: υ(x̄) = υ(x)⁻¹. -/
-  υ_star (x : (𝔸 E)ˣ) : υ.1 (star x) = (υ.1 x)⁻¹
+  υ_star (x : (𝔸 E)ˣ) : υ.val (star x) = (υ.val x)⁻¹
 
 /-- Weil data on E, which contains a primitive 5040th root of unity (`New.HasPrimitiveRoot5040`;
 then E/E⁺ is unramified at the finite places): ȷ = −ȷ̄ in E with Im τȷ > 0 and (1 − ȷ⁻¹)/2 integral,
@@ -85,7 +91,7 @@ class WeilData extends HasPrimitiveRoot5040 E, SplittingChar E where
   α : (𝔸f E)ˣ
   /-- At every finite place w, the order of ȷαᾱ is minus the order of the different of E. -/
   self_dual (w : IsDedekindDomain.HeightOneSpectrum (𝓞 E)) :
-      v ((algebraMap E (𝔸f E) j * α.1 * star α.1) w) =
+      v ((algebraMap E (𝔸f E) j * α.val * star α.val) w) =
         .exp (multiplicity w.asIdeal (differentIdeal ℤ (𝓞 E)))
   /-- c₀ = (1 − ȷ⁻¹) / 2 is an algebraic integer. -/
   isIntegral_traceOne : IsIntegral ℤ ((1 - j⁻¹) / 2)
@@ -144,8 +150,8 @@ open scoped Classical in
 the finite part x_f lies in αÔ^n, and 0 otherwise. -/
 def vacuumFn (x : n → 𝔸 E) : ℂ :=
   Real.exp (-∑ i : n, ∑ w : InfinitePlace E, π * (Φ w j).im * ‖(x i).1 w‖ ^ 2) *
-    if ∀ i : n, α⁻¹.1 * (x i).2 ∈ Ô E then
-      (ψf E ((traceOne * j / 2 : E) * ∑ i : n, star (x i).2 * (x i).2)).1
+    if ∀ i : n, α⁻¹.val * (x i).2 ∈ Ô E then
+      (ψf E ((traceOne * j / 2 : E) * ∑ i : n, star (x i).2 * (x i).2)).val
     else
       0
 

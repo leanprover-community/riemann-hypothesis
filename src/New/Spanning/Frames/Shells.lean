@@ -1,6 +1,8 @@
 module
 
-public import New.Spanning.Frames.Gains
+public import New.Spanning.Frames.Densities
+import New.Spanning.Frames.Gains
+import New.Spanning.Frames.OneFrame
 
 /-!
 # The sum over the shells

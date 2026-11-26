@@ -1,7 +1,12 @@
 module
 
-public import Lib.ClassField.HeckeL.EulerProduct
-public import Lib.General.Analysis.PackingAndSobolev
+public import Aesop.BuiltinRules
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Sheaves.Presheaf
+public import Lib.General.NumberTheory.EmbeddingsAndDifferent
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.ClassField.HeckeL.EulerProduct
+import Lib.General.Analysis.PackingAndSobolev
 
 /-!
 # Sums over frequencies
@@ -50,21 +55,15 @@ lemma denominator_ne_bot (ν : E) : denominator ν ≠ ⊥ := by
 lemma exists_mem_algebraMap_eq_mul {a : 𝓞 E} {𝔟 𝔠 : Ideal (𝓞 E)} (h𝔟 : 𝔟 ≠ ⊥)
     (h𝔠 : Ideal.span {a} = 𝔟 * 𝔠) {ν : E} (hν : 𝔟 ≤ denominator ν) :
     ∃ x : 𝔠, algebraMap (𝓞 E) E (x : 𝓞 E) = algebraMap (𝓞 E) E a * ν := by
-  have h_lift (r : 𝓞 E) (hr : r ∈ 𝔟) :
-      ∃ y : 𝓞 E, algebraMap (𝓞 E) E y = algebraMap (𝓞 E) E r * ν :=
+  obtain ⟨x, hx⟩ : ∃ x : 𝓞 E, algebraMap (𝓞 E) E x = algebraMap (𝓞 E) E a * ν :=
+    ⟨⟨_, mem_denominator.1 (hν (Ideal.dvd_span_singleton.1 ⟨𝔠, h𝔠⟩))⟩, rfl⟩
+  refine ⟨⟨x, Ideal.dvd_span_singleton.1 <| (mul_dvd_mul_iff_left h𝔟).1 <|
+    Ideal.dvd_iff_le.2 (h𝔠 ▸ mul_comm _ 𝔟 ▸ Ideal.span_singleton_mul_le_iff.2 fun r hr => ?_)⟩,
+    hx⟩
+  obtain ⟨y, hy⟩ : ∃ y : 𝓞 E, algebraMap (𝓞 E) E y = algebraMap (𝓞 E) E r * ν :=
     ⟨⟨_, mem_denominator.1 (hν hr)⟩, rfl⟩
-  have ha : a ∈ 𝔟 := Ideal.dvd_span_singleton.1 ⟨𝔠, h𝔠⟩
-  obtain ⟨x, hx⟩ := h_lift a ha
-  have h_le : 𝔟 * Ideal.span {x} ≤ 𝔟 * 𝔠 := by
-    rw [← h𝔠, mul_comm, Ideal.span_singleton_mul_le_iff]
-    intro r hr
-    obtain ⟨y, hy⟩ := h_lift r hr
-    have h_eq : y * a = x * r := RingOfIntegers.coe_injective <| by
-      simp only [map_mul, hx, hy]
-      ring
-    exact Ideal.mem_span_singleton'.2 ⟨y, h_eq⟩
-  have h_dvd : 𝔠 ∣ Ideal.span {x} := (mul_dvd_mul_iff_left h𝔟).1 (Ideal.dvd_iff_le.2 h_le)
-  exact ⟨⟨x, Ideal.dvd_span_singleton.1 h_dvd⟩, hx⟩
+  exact Ideal.mem_span_singleton'.2 ⟨y, RingOfIntegers.coe_injective <| by
+    simp only [map_mul, hx, hy, mul_left_comm, mul_comm]⟩
 
 /-- For a nonzero ideal `𝔟`, the numbers `ν` whose denominator (the ideal of the integers `a`
 with `a ν` integral) contains `𝔟` can be given `N 𝔟` labels so that two numbers with the same

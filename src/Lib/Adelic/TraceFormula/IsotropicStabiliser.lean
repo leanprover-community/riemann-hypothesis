@@ -1,6 +1,9 @@
 module
 
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.RingTheory.PiTensorProduct
 public import Lib.Adelic.Reduction.FirstMinimumShortBases
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # The stabiliser of an isotropic subspace
@@ -74,7 +77,7 @@ def spanStabilizer (J X : Matrix n n E) : Subgroup (U J) where
     rintro γ ⟨r, hr⟩
     -- The inverse of `γ` is a polynomial in `γ`.
     obtain ⟨p, q, hpq⟩ : IsCoprime (γ : Matrix n n E).charpoly Polynomial.X :=
-      isUnit_aeval_iff_isCoprime.1 (by simpa only [aeval_X] using γ.1.isUnit)
+      isUnit_aeval_iff_isCoprime.1 (by simpa only [aeval_X] using γ.val.isUnit)
     have h_inv : aeval (γ : Matrix n n E) q * (γ : Matrix n n E) = 1 := by
       simpa [aeval_self_charpoly] using congrArg (aeval (γ : Matrix n n E)) hpq
     exact ⟨aeval r q,
@@ -147,7 +150,7 @@ lemma exists_mul_mul_eq_of_orthogonal_right (h : IsIsotropicFrame J X Y) :
     ∃ c : Matrix n n E, ∀ v : Matrix n n E, Yᴴ * (J * v) = 0 → X * (c * v) = v := by
   obtain ⟨e, b, h_one⟩ := h.spans
   have h_adjoint : eᴴ * Yᴴ + J * X * bᴴ = 1 := by
-    simpa [h.isHermitian.eq, mul_assoc] using congrArg conjTranspose h_one
+    simpa [h.isHermitian.eq] using congrArg conjTranspose h_one
   refine ⟨bᴴ * J, fun v hv ↦ h.isUnit.mul_left_cancel ?_⟩
   calc J * (X * (bᴴ * J * v)) = (eᴴ * Yᴴ + J * X * bᴴ) * (J * v) := by
         simp [add_mul, mul_assoc, hv]

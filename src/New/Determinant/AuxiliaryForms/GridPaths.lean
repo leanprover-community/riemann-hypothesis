@@ -1,7 +1,6 @@
 module
 
-public import Mathlib.Data.Finset.Prod
-public import Mathlib.Tactic.Choose
+public import Lib.Speed
 
 /-!
 # Monotone paths through two square grids, and their turns
@@ -265,43 +264,19 @@ lemma Turn.mem_product (h_turn : Γ.Turn s Γ') : s ∈ range m ×ˢ range m := 
   obtain ⟨-, h_eq⟩ := h_turn.squares_eq
   exact Γ'.squares_subset (by simp [h_eq])
 
-/-- Let `Γ'` arise from `Γ`, a path from `(m, 0)` to `(0, m)` by steps up or left, by replacing the
-node `(i, j)` by `(i + 1, j + 1)`, where `i < j`. The turn takes place in `Γ.half false`, the part
-of `Γ` after the diagonal node `(Γ.diagonalIndex, Γ.diagonalIndex)`, read backwards from `(0, m)`.
-This half splits as a path `q` to `(i, j + 1)`, a step down, a step right and a path `r` to the
-diagonal. The path `Γ'` has these two steps exchanged, and has the same diagonal node and the same
-other half. -/
-lemma Turn.exists_corner_of_lt {i j : ℕ} (h_turn : Γ.Turn (i, j) Γ') (hij : i < j) :
+/-- For `i < j`, a turn at `(i,j)` replaces a down-right corner in `Γ.half false`.
+In the reflected half the same corner is recorded at `(j,i)`. -/
+lemma Turn.exists_corner {i j : ℕ} {z : Bool}
+    (h_turn : Γ.Turn (bif z then (j, i) else (i, j)) Γ') (hij : i < j) :
     ∃ (q : GridPath 0 m i (j + 1)) (r : GridPath (i + 1) j Γ.diagonalIndex Γ.diagonalIndex),
-      Γ.half false = q.down.right.append r ∧
-      Γ' = ⟨Γ.diagonalIndex, Function.update Γ.half false (q.right.down.append r)⟩ := by
-  generalize hs : (i, j) = s at h_turn
+      Γ.half z = q.down.right.append r ∧
+      Γ' = ⟨Γ.diagonalIndex, Function.update Γ.half z (q.right.down.append r)⟩ := by
+  generalize hs : (bif z then (j, i) else (i, j)) = s at h_turn
   cases h_turn with
-  | @inner _ z a b q r hΓ =>
+  | @inner _ w a b q r hΓ =>
     have hab : a + 1 ≤ Γ.diagonalIndex ∧ Γ.diagonalIndex ≤ b := r.le_and_le
-    cases z <;> cases hs
-    · exact ⟨q, r, hΓ, rfl⟩
-    · omega
-  | diagonal q => grind
-
-/-- Let `Γ'` arise from `Γ`, a path from `(m, 0)` to `(0, m)` by steps up or left, by replacing the
-node `(i, j)` by `(i + 1, j + 1)`, where `j < i`. The turn takes place in `Γ.half true`, the part
-of `Γ` from `(m, 0)` to the diagonal node `(Γ.diagonalIndex, Γ.diagonalIndex)`, recorded with the
-two indices exchanged, so that the node `(i, j)` appears as `(j, i)`. This half splits as a path
-`q` to `(j, i + 1)`, a step down, a step right and a path `r` to the diagonal. The path `Γ'` has
-these two steps exchanged, and has the same diagonal node and the same other half. -/
-lemma Turn.exists_half_true_eq_of_gt {i j : ℕ} (h_turn : Γ.Turn (i, j) Γ') (hji : j < i) :
-    ∃ (q : GridPath 0 m j (i + 1)) (r : GridPath (j + 1) i Γ.diagonalIndex Γ.diagonalIndex),
-      Γ.half true = q.down.right.append r ∧
-      Γ' = ⟨Γ.diagonalIndex, Function.update Γ.half true (q.right.down.append r)⟩ := by
-  generalize hs : (i, j) = s at h_turn
-  cases h_turn with
-  | @inner _ z a b q r hΓ =>
-    have hab : a + 1 ≤ Γ.diagonalIndex ∧ Γ.diagonalIndex ≤ b := r.le_and_le
-    cases z <;> cases hs
-    · omega
-    · exact ⟨q, r, hΓ, rfl⟩
-  | diagonal q => grind
+    cases z <;> cases w <;> cases hs <;> first | exact ⟨q, r, hΓ, rfl⟩ | omega
+  | diagonal q => cases z <;> grind
 
 /-- A turn at `(j, j)` takes place on the diagonal: both halves reach `(j, j + 1)`, and their last
 step, down to `(j, j)`, is replaced by the step right to `(j + 1, j + 1)`. -/

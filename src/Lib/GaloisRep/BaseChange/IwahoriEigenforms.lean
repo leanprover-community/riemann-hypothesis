@@ -1,8 +1,18 @@
 module
 
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
 public import Lib.GaloisRep.LocalGlobal.LocalFormTypes
-public import Lib.LocalGL.Iwahori.HeckeDegrees
+import Lib.Adelic.Landherr
+import Lib.GaloisRep.BaseChange.StepMatchingPairs
+import Lib.GaloisRep.Hilbert90.TameActions
+import Lib.GaloisRep.Hilbert90.UnitaryGroups
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.LocalGL.Iwahori.HeckeDegrees
+import Lib.LocalGL.Iwahori.QuadraticRelation
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Hilbert 90 for the pro-p Iwahori group and base change of Iwahori eigenforms
@@ -88,44 +98,34 @@ lemma exists_coboundary_proIwahori (hv : ∀ x : F, v (σ x) = v x) (hσ : σ ^ 
     ∃ t ∈ proIwahori, s * t.map σ = t := by
   -- Take `t = ∑ l < p, σ ^ l c • n l`, where `n l` is the partial twisted norm of `s` of length
   -- `l`. Every `n l` lies in `proIwahori`, which gives three conditions on its entries.
-  have h_partial (l : ℕ) :
-      (∀ i j : Fin N, v (twistedNorm (.map σ) l s i j) ≤ 1) ∧
-      (∀ i : Fin N, ∀ j < i, v (twistedNorm (.map σ) l s i j) < 1) ∧
-      ∀ i : Fin N, v (twistedNorm (.map σ) l s i i - 1) < 1 :=
-    mem_proIwahori.mp <| twistedNorm_mem (GeneralLinearGroup.map σ) l
-      (fun _ ↦ (map_mem_proIwahori_iff_of_isometry hv).mpr) hs_mem
+  have hn (l : ℕ) := mem_proIwahori.mp <| twistedNorm_mem (GeneralLinearGroup.map σ) l
+    (fun _ ↦ (map_mem_proIwahori_iff_of_isometry hv).mpr) hs_mem
   let a (l : ℕ) : Matrix (Fin N) (Fin N) F := (σ ^ l) c • (twistedNorm (.map σ) l s).val
-  let M : Matrix (Fin N) (Fin N) F := ∑ l ∈ range p, a l
-  choose hn_int hn_below hn_diag using h_partial
+  let M := ∑ l ∈ range p, a l
   have hc_pow (l : ℕ) : v ((σ ^ l) c) ≤ 1 := by rwa [v_ringHom_pow_apply hv]
-  have h_int (i j : Fin N) : v (M i j) ≤ 1 := by
-    simp only [M, a, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul]
-    exact v.map_sum_le fun l _ ↦ (v.map_mul _ _).trans_le (mul_le_one' (hc_pow l) (hn_int l i j))
+  have hM (i j : Fin N) : M i j = ∑ l ∈ range p, (σ ^ l) c * twistedNorm (.map σ) l s i j := by
+    simp [M, a, Matrix.sum_apply]
   -- Modulo the maximal ideal `M` is upper triangular, with diagonal entries `∑ σ ^ l c = 1`.
-  have h_below (i j : Fin N) (hij : j < i) : v (M i j) < 1 := by
-    simp only [M, a, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul]
-    exact v.map_sum_lt one_ne_zero fun l _ ↦
-      (v.map_mul _ _).trans_lt (mul_lt_of_le_one_of_lt (hc_pow l) (hn_below l i j hij))
-  have h_diag (i : Fin N) : v (M i i - 1) < 1 := by
-    have h_sub : M i i - 1 = ∑ l ∈ range p, (σ ^ l) c * (twistedNorm (.map σ) l s i i - 1) := by
-      simp [M, a, Matrix.sum_apply, mul_sub_one, hc_trace, -RingHom.coe_pow]
-    rw [h_sub]
-    exact v.map_sum_lt one_ne_zero fun l _ ↦
-      (v.map_mul _ _).trans_lt (mul_lt_of_le_one_of_lt (hc_pow l) (hn_diag l i))
-  obtain ⟨t, ht, htM⟩ : ∃ t ∈ proIwahori, t.val = M :=
-    exists_proIwahori_coe_eq_of_residue_unitriangular M h_int h_below h_diag
-  -- The map `τ : m ↦ s * σ m` sends the term `a l` of `M` to `a (l + 1)`, and `a p = a 0` as
-  -- `σ ^ p = 1` and `s` has norm `1`; so `τ` fixes the sum `M`.
+  obtain ⟨t, ht, htM⟩ := exists_proIwahori_coe_eq_of_residue_unitriangular M
+    (fun i j ↦ hM i j ▸ v.map_sum_le fun l _ ↦
+      (v.map_mul _ _).trans_le (mul_le_one' (hc_pow l) ((hn l).1 i j)))
+    (fun i j hij ↦ hM i j ▸ v.map_sum_lt one_ne_zero fun l _ ↦
+      (v.map_mul _ _).trans_lt (mul_lt_of_le_one_of_lt (hc_pow l) ((hn l).2.1 i j hij)))
+    (fun i ↦ by
+      rw [show M i i - 1 = ∑ l ∈ range p, (σ ^ l) c * (twistedNorm (.map σ) l s i i - 1) by
+        simp [hM, mul_sub_one, hc_trace, -RingHom.coe_pow]]
+      exact v.map_sum_lt one_ne_zero fun l _ ↦
+        (v.map_mul _ _).trans_lt (mul_lt_of_le_one_of_lt (hc_pow l) ((hn l).2.2 i)))
+  -- The map `τ : m ↦ s * σ m` sends `a l` to `a (l + 1)` and `a p = a 0`, so `τ` fixes `M`.
   let τ : Matrix (Fin N) (Fin N) F →+ Matrix (Fin N) (Fin N) F :=
     (AddMonoidHom.mulLeft s.val).comp σ.mapMatrix.toAddMonoidHom
   have h_period : a p = a 0 := by
     simp only [a, hσ, hs_norm]
     simp [twistedNorm]
-  have h_succ (l : ℕ) : a (l + 1) = τ (a l) := by
-    simp [a, τ, pow_succ', twistedNorm_succ', map_smul', -RingHom.coe_pow]
   refine ⟨t, ht, Units.ext ?_⟩
   change τ t.val = t.val
-  rw [htM, fixed_sum τ a h_period h_succ]
+  rw [htM, fixed_sum τ a h_period fun l ↦ by
+    simp [a, τ, pow_succ', twistedNorm_succ', map_smul', -RingHom.coe_pow]]
 
 /-- Let `σ` be a continuous endomorphism of `F` that keeps the valuation, with `σ ^ p = 1` for some
 `p > 0`, and let `t` be diagonal with `v (t i)` strictly increasing. Let `K` be the pro-`p` Iwahori
@@ -681,7 +681,6 @@ lemma isLocalMatching_proIwahori
       {t : dominantTorus | StrictMono fun i : Fin (Fintype.card m) ↦ v (t.val i).val}
       (fun t : dominantTorus ↦ (iwahoriDoubleCoset (localNorm E u ∘ t)).indicator 1)
       fun t : dominantTorus ↦ (iwahoriDoubleCoset t.val).indicator 1 := by
-  classical
   -- Everything is read at `u`, where some `τ ≠ 1` acts by an isometry of order dividing `[E' : E]`
   -- whose fixed points come from the completion at `w`. The local results
   -- `cocyclesSplit_comap_proIwahori` and `isMatchingPairAbove_proIwahori` then give the splitting

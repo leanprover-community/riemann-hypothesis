@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Topology.Algebra.ProperAction.Torsor
+import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.Adelic.QuotientMeasure.Basic
 
 /-!
@@ -508,7 +511,7 @@ be infinite, for instance if `i` has noncompact kernel). Here `lam`, `ν`, `κ` 
 `N`, `M`, `K`. -/
 lemma New.lintegral_iwasawa [PolishSpace M] [LocallyCompactSpace M]
     (hN : IsClosed (N : Set G)) (hw_pos : ∀ m : M, 0 < w m) (hi : Continuous i)
-    (h_dec : ∀ g : G, ∃ᵉ (n : N) (m : M) (k : K), g = n * i m * k)
+    (h_dec : ∀ g : G, ∃ n : N, ∃ m : M, ∃ k : K, g = n * i m * k)
     (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
       ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
     [IsMulRightInvariant lam] :
@@ -603,7 +606,7 @@ that for measurable `F`, left invariant under `N` and `Γ` (`FixesLeft`): if
 `Γ.quotMeasure μ`), and its integral is `c` times the integral of `w m * F (i m * k)`. -/
 lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
     (hN : IsClosed (N : Set G)) (hw : Continuous w) (hw_pos : ∀ m : M, 0 < w m) (hi : Continuous i)
-    (h_dec : ∀ g : G, ∃ᵉ (n : N) (m : M) (k : K), g = n * i m * k)
+    (h_dec : ∀ g : G, ∃ n : N, ∃ m : M, ∃ k : K, g = n * i m * k)
     (h_conj : ∀ (m : M) (f : G → ℝ≥0∞), Measurable f →
       ∫⁻ n : N, f (i m * n * (i m)⁻¹) ∂lam = ENNReal.ofReal (w m) * ∫⁻ n : N, f n ∂lam)
     (h_triv : ∀ a : M, i a ∈ N → a = 1) {D : Type*}
@@ -656,7 +659,7 @@ lemma New.integral_quotMeasure_iwasawa [PolishSpace M] [LocallyCompactSpace M]
       (by fun_prop) fun γ x ↦ hFΓ γ γ.property x).trans ⟨by fun_prop, by fun_prop, ?_⟩
     simp (disch := fun_prop) only [hFτ, ← map_fst_prod, map_map, comp_def]
   have h_int : Integrable (fun p : M × K ↦ F (σ p)) ρ := by
-    simpa [ρ, σ, integrable_withDensity_iff_integrable_smul' hw_meas, hw_pos, le_of_lt]
+    simpa [ρ, integrable_withDensity_iff_integrable_smul' hw_meas, hw_pos, le_of_lt]
       using h_weighted
   refine h_div F _ hF (h_law.integrable_iff.2 (h_int.smul_measure (measure_ne_top lam' .univ))) ?_
   rw [h_law.integral_eq, integral_smul_measure,

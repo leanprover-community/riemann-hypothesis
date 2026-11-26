@@ -1,6 +1,17 @@
 module
 
+public import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.LeviCivita
+public import Mathlib.Analysis.Complex.UpperHalfPlane.FunctionsBoundedAtInfty
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.Schwarz
+import Mathlib.NumberTheory.ModularForms.QExpansion
+import TauCeti.LinearAlgebra.Matrix.Triangular
 public import Lib.Weil.DualPair.HolomorphicData
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 
 /-!
 # The peaks of a bounded holomorphic form lie away from the cusps
@@ -546,7 +557,7 @@ lemma New.Rows.ofMatrix_transvection_snd_mem_principalLevel {E n : Type} [Field 
     ⟨-((Y i).2 * star (Y j).2), neg_mem (h_int i j), ?_⟩⟩
   · rw [h_entry]
     exact sub_mem (by simp [Matrix.one_apply, ite_mem])
-      (mul_mem (algebraMap (𝓞 E) (Ô E) p).2 (h_int i j))
+      (mul_mem (algebraMap (𝓞 E) (Ô E) p).property (h_int i j))
   · simp [h_entry]
 
 /-- Peaks of a holomorphic form lie away from the cusp. The order `o` puts the signs `+1` first. Let

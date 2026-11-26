@@ -1,7 +1,15 @@
 module
 
-public import New.Congruences.GaloisRepresentations.AttachedRepresentations
+import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.Congruences.Selmer.AuxiliaryPrimes
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+import Lib.GaloisRep.Pseudocharacter.Pseudorepresentations
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.PadicComparison.ToricTower
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
 
 /-!
 # Main summands and conjugate self-dual representations from type polynomials
@@ -19,7 +27,7 @@ on representations attached to its eigenforms.
 * `New.Selmer.isFiniteTypeAt_and_polyKillsAt_of_mem_conjClosure`: a representation attached to an
   eigenform of parahoric type at the auxiliary places (`New.Selmer.HasTwistParahoricType`) has no
   monodromy above `ϑ.Q` and its conjugates, and a quadratic polynomial kills inertia there.
-* `New.Selmer.normalisedRep_quadratic_on_inertia`: its normalised representation satisfies the same
+* `New.Selmer.normalizedRep_quadratic_on_inertia`: its normalised representation satisfies the same
   quadratic relation on inertia above `ϑ.Q` and its conjugates.
 
 Notions from other files:
@@ -73,7 +81,8 @@ lemma norm_pow_sub_pow_eq_one {x : PadicAlgCl ℓ} (hx : IsOfFinOrder x) (a b : 
   let z : NormedField.valuation.integer := ⟨x, hx.norm_eq_one.le⟩
   refine le_antisymm (z ^ a - z ^ b).prop ?_
   calc 1 ≤ ‖(k : PadicAlgCl ℓ)‖ := by
-        simpa [← Padic.norm_natCast_lt_one_iff, ← PadicAlgCl.norm_extends] using hk
+        simpa only [← Padic.norm_natCast_lt_one_iff, ← PadicAlgCl.norm_extends, map_natCast,
+          not_lt] using hk
     _ ≤ ‖(x ^ a) ^ ℓ ^ u - (x ^ b) ^ ℓ ^ u‖ :=
       norm_natCast_le_norm_sub_of_pow_eq_one (h_root a) (h_root b) (h_ne u)
     _ ≤ ‖x ^ a - x ^ b‖ :=
@@ -90,20 +99,28 @@ lemma ellVal_det_sub_one_le_card_mul {i : Fin 2} {μ : Multiset (PadicAlgCl ℓ)
   -- so the valuation of `x - 1` is at most that of `D.levelPrime i ^ d - 1`.
   have h_root : ∀ x ∈ Z.charpoly.roots, ellVal (x - 1) ≤ padicValNat ℓ D.chosenGroupOrder := by
     intro x hx
-    have hxμ : x ∈ μ := by simpa [eval_multiset_prod, sub_eq_zero] using
-      isRoot_of_isRoot_charpoly h_kill (isRoot_of_mem_roots hx)
+    have hxμ : x ∈ μ := by
+      simpa only [IsRoot.def, eval_multiset_prod, Multiset.map_map, Function.comp_apply, eval_sub,
+        eval_X, eval_C, prod_eq_zero_iff, mem_map, sub_eq_zero,
+        exists_eq_right'] using isRoot_of_isRoot_charpoly h_kill (isRoot_of_mem_roots hx)
     obtain ⟨h_ne, d, ⟨hd_pos, hd_le⟩, hxd⟩ := hμ x hxμ
     have h_norm : ‖(D.levelPrime i ^ d - 1 : PadicAlgCl ℓ)‖ ≤ ‖x - 1‖ := by
-      simpa [NeZero.pos] using norm_natCast_le_norm_sub_of_pow_eq_one hxd (one_pow _) h_ne
+      simpa only [NeZero.pos, Nat.cast_pred,
+        Nat.cast_pow] using norm_natCast_le_norm_sub_of_pow_eq_one hxd (one_pow _) h_ne
     exact (ellVal_le_ellVal h_norm).trans
       (ellVal_levelPrime_pow_sub_one_le D ℓ i ⟨hd_pos, hd_le.trans D.nat_le_of_hasLogBound⟩)
   have h_det : (Z - 1).det = (Z.charpoly.roots.map (· - 1)).prod := by
-    simpa using (det_aeval_neg_eq_prod_roots Z (-X - 1) :)
+    simpa only [aeval_sub, aeval_neg, aeval_X, neg_neg, map_one, eval_sub, eval_neg, eval_X,
+      eval_one] using (det_aeval_neg_eq_prod_roots Z (-X - 1) :)
   rw [h_det]
   calc _ ≤ ((Z.charpoly.roots.map (· - 1)).map ellVal).sum :=
-        apply_prod_le_sum_map _ ellVal (by simp [ellVal]) fun _ _ ↦ ellVal_mul_le
+        apply_prod_le_sum_map _ ellVal (by
+          simp only [ellVal, norm_one, one_ne_zero, ↓reduceIte, Real.logb_one, neg_zero,
+            ENNReal.ofReal_zero, Std.le_refl]) fun _ _ ↦ ellVal_mul_le
     _ ≤ _ := sum_le_card_nsmul _ _ (by simpa only [forall_mem_map_iff] using h_root)
-    _ = card r * padicValNat ℓ D.chosenGroupOrder := by simp [card_roots_eq_natDegree]
+    _ = card r * padicValNat ℓ D.chosenGroupOrder := by
+      simp only [Multiset.map_map, Function.comp_apply, card_map, card_roots_eq_natDegree,
+        charpoly_natDegree_eq_dim, nsmul_eq_mul]
 
 /-- Let `D` be the data of the construction with parameters `P`, so that `D.m` is the number of
 lifts and `D.r` the rank of the target, and let `1 ≤ j ≤ D.m`, `1 ≤ t ≤ 4 * D.r + 2`. Let
@@ -174,7 +191,9 @@ lemma IsInertiaSpectrum.of_conjPlace {m : Type} [Fintype m] [DecidableEq m] {l :
     (hμ : IsInertiaSpectrum O c m l (conjPlace A) t (conjGal s⁻¹) μ) :
     IsInertiaSpectrum O c m l A t s μ :=
   { hμ with
-    polyKillsAt hR := by simpa using hμ.polyKillsAt_conjPlace hR
+    polyKillsAt hR := by
+      simpa only [conjPlace_conjPlace, map_inv, inv_inv,
+        conjGal_conjGal] using hμ.polyKillsAt_conjPlace hR
     polyKillsAt_conjPlace hR := hμ.polyKillsAt hR }
 
 /-- The eigenvalues of inertia at a chosen place. Let `O.chosenPlace i` divide `p = D.levelPrime l`,
@@ -203,7 +222,8 @@ lemma exists_isInertiaSpectrum_chosenPlace (m : Type) [Fintype m] [DecidableEq m
   let roots : Multiset K := (scaledTypePoly O c i * (X - 1) ^ t).aroots K
   let μ : Multiset (PadicAlgCl ℓ) := roots.map fun x ↦ ιℓ ((T ^ a) x)
   have h_roots (x : K) (hx : x ∈ roots) : aeval x (scaledTypePoly O c i) = 0 ∨ x = 1 ∧ t ≠ 0 := by
-    simpa [sub_eq_zero] using (mem_aroots.1 hx).2
+    simpa only [ne_eq, map_mul, map_pow, aeval_sub, aeval_X, map_one, mul_eq_zero, pow_eq_zero_iff',
+      sub_eq_zero] using (mem_aroots.1 hx).2
   -- every root is killed by `D.levelPrime l ^ (card r)! - 1` and by some `D.levelPrime l ^ d - 1`
   have h_order (x : K) (hx : x ∈ roots) : x ^ (D.levelPrime l ^ (card r).factorial - 1) = 1 ∧
       ∃ d ∈ Set.Icc 1 D.r, x ^ (D.levelPrime l ^ d - 1) = 1 := by
@@ -211,12 +231,13 @@ lemma exists_isInertiaSpectrum_chosenPlace (m : Type) [Fintype m] [DecidableEq m
     · grw [← hq, ← hc.rank_le.1]
       exact h_label.root_pow_eq_one h_root
     · exact ⟨one_pow _, 1, ⟨le_rfl, D.nat_le_of_hasLogBound⟩, one_pow _⟩
-  have h_image (x : K) (e : ℕ) (hx : x ^ e = 1) : ιℓ ((T ^ a) x) ^ e = 1 := by simp [← map_pow, hx]
+  have h_image (x : K) (e : ℕ) (hx : x ^ e = 1) : ιℓ ((T ^ a) x) ^ e = 1 := by
+    simp only [← map_pow, hx, map_one]
   -- the polynomial of the type polynomials kills `s`
   have h_kill {R : GalRep ℓ D.E m} {k : ℕ} {J : (D.E →+* ℂ) → Multiset ℤ} {S : Set (FinPlace D.E)}
       (hR : IsRepOfType (m := m) O k J (fun i ↦ scaledTypePoly O c i * (X - 1) ^ t) S R) :
       PolyKillsAt R A s (μ.map (X - C ·)).prod := by
-    simpa [μ, Multiset.map_map, Function.comp_def] using hR.labelled h_tame
+    simpa only [μ, Multiset.map_map, Function.comp_apply] using hR.labeled h_tame
   refine ⟨μ,
     { card_eq := ?_
       pow_factorial_eq_one := forall_mem_map_iff.2 fun x hx ↦ h_image x _ (h_order x hx).1
@@ -224,16 +245,19 @@ lemma exists_isInertiaSpectrum_chosenPlace (m : Type) [Fintype m] [DecidableEq m
       polyKillsAt := h_kill
       polyKillsAt_conjPlace := fun hR ↦ ?_ }, fun ht hs_gen h_one ↦ ?_⟩
   · obtain ⟨h_monic, -, h_deg, -⟩ := h_label
-    simp [μ, roots, card_aroots_eq_natDegree, ← C_1,
-      h_monic.natDegree_mul ((monic_X_sub_C 1).pow t), h_deg, -map_one]
+    simp only [← C_1, card_map, card_aroots_eq_natDegree,
+      h_monic.natDegree_mul ((monic_X_sub_C 1).pow t), h_deg, natDegree_pow, natDegree_sub_C,
+      natDegree_X, mul_one, μ, roots]
   · obtain ⟨-, d, hd, h_pow_d⟩ := h_order x hx
     exact ⟨d, hd, h_image x _ h_pow_d⟩
   · -- duality carries the relation to the conjugate place
     have h_above : O.chosenPlace i ∈ placesAboveM D := ⟨l, hv⟩
-    obtain ⟨h_fin, -⟩ := hR.local_conditions _ (by simp [h_above]) hA
+    obtain ⟨h_fin, -⟩ := hR.local_conditions _ (by
+      simp only [Set.mem_sdiff, Set.mem_union, h_above, or_true, not_true_eq_false, and_false,
+        not_false_eq_true]) hA
     obtain ⟨-, -, h_dual⟩ := isFiniteTypeAt_and_hasJumpsAt_of_conjPlace hR.toIsConjSelfDual
-      (A := conjPlace A) (by simpa using h_fin)
-    exact h_dual s (by simpa) _ (by simpa using h_kill hR)
+      (A := conjPlace A) (by simpa only [conjPlace_conjPlace] using h_fin)
+    exact h_dual s (by simpa) _ (by simpa only [conjPlace_conjPlace] using h_kill hR)
   · -- For the tame generator `a` is prime to the order of a root `x`, so `T x ^ a = 1` forces
     -- `x = 1`, which is not a root of the scaled type polynomial.
     obtain ⟨x, hx, hx_image⟩ : ∃ x ∈ roots, ιℓ ((T ^ a) x) = 1 := mem_map.1 h_one
@@ -241,10 +265,13 @@ lemma exists_isInertiaSpectrum_chosenPlace (m : Type) [Fintype m] [DecidableEq m
       obtain rfl | ha := eq_or_ne a 0
       · exact pow_zero x
       · apply IsFaithfulMulChar.injective (T := T)
-        simpa [← T.pow_apply' ha] using ιℓ.map_eq_one_iff.1 hx_image
+        simpa only [map_pow, ← T.pow_apply' ha, map_one] using ιℓ.map_eq_one_iff.1 hx_image
     obtain rfl : x = 1 :=
-      (pow_eq_one_iff_of_coprime (h_coprime hs_gen)).1 ⟨hxa, by simpa [hq] using (h_order x hx).1⟩
-    exact hc.not_isRoot_scaledTypePoly i (by simpa [aeval_def, ht] using h_roots 1 hx)
+      (pow_eq_one_iff_of_coprime (h_coprime hs_gen)).1 ⟨hxa, by
+        simpa only [hq] using (h_order x hx).1⟩
+    exact hc.not_isRoot_scaledTypePoly i (by
+      simpa only [IsRoot.def, aeval_def, eval₂_at_one, _root_.map_eq_zero, ht, ne_eq,
+        not_true_eq_false, and_false, or_false] using h_roots 1 hx)
 
 /-- The eigenvalues of inertia above the two primes `D.levelPrime l` of the level. Let `v` be a
 place of `D.E` dividing `p = D.levelPrime l` and `A` a place of `Ω = ℚ̄` over `v`. There is `γ` in
@@ -269,7 +296,8 @@ lemma exists_inertiaGroup_isInertiaSpectrum (m : Type) [Fintype m] [DecidableEq 
     use ⟨conjGal γ.val⁻¹, conjGal_mem_inertiaGroup_iff.1 (by simp)⟩, h_chosen.elim
     intro s hs
     obtain ⟨μ, hμ, h_one⟩ := hγ (conjGal s⁻¹) (inv_mem hs).conjPlace_conjGal
-    exact ⟨μ, hμ.of_conjPlace, fun ht hs_eq ↦ h_one ht (by simp [hs_eq])⟩
+    exact ⟨μ, hμ.of_conjPlace, fun ht hs_eq ↦ h_one ht (by
+      simp only [hs_eq, map_inv, inv_inv, conjGal_conjGal])⟩
   obtain ⟨i, rfl⟩ : ∃ i : O.ChosenIndex, O.chosenPlace i = v := by
     rw [hc.toLevelPlaces_eq]
     exact D.range_chosenPlace.ge h_chosen
@@ -300,31 +328,38 @@ lemma IsRepOfType.exists_map_pow_eq_one_and_ellVal_det_le (hc : IsLiftSetting O 
   have h_val : A.valuation ℓ = 1 := hA.valuation_natCast_eq_one_iff.mpr hℓ
   let N : ℕ := D.levelPrime l ^ (card r).factorial - 1
   have hR_zero : IsRepOfType (m := r) O k J
-      (fun j ↦ Selmer.scaledTypePoly O c j * (X - 1) ^ 0) ∅ R := by simpa using hR
+      (fun j ↦ Selmer.scaledTypePoly O c j * (X - 1) ^ 0) ∅ R := by
+        simpa only [pow_zero, mul_one] using hR
   -- `h_eigen s` gives a multiset `μ` containing the eigenvalues of `s` and of `(conjGal s)⁻¹`
   obtain ⟨γ, hγ, h_eigen⟩ := exists_inertiaGroup_isInertiaSpectrum (ℓ := ℓ) r hc hl hA 0
   refine ⟨γ, N, hγ, ?_, fun s hs ↦ ?_, ?_⟩
   · -- `D.levelPrime l` vanishes in the residue field, so `N` is `-1` there
     rw [hA.valuation_natCast_eq_one_iff]
-    simp [N, ← algebraMap_ResField_eq_zero, ← D.q_eq_levelPrime hl, ← card_ResField, NeZero.pos,
-      Nat.factorial_ne_zero]
+    simp only [← D.q_eq_levelPrime hl, ← card_ResField, Nat.card_eq_fintype_card, NeZero.pos,
+      Nat.cast_pred, Nat.cast_pow, ← algebraMap_ResField_eq_zero, map_sub, map_pow, map_natCast,
+      Nat.cast_card_eq_zero, ne_eq, Nat.factorial_ne_zero, not_false_eq_true, zero_pow, map_one,
+      zero_sub, neg_eq_zero, one_ne_zero, N]
   · -- the members of `μ` are roots of `X ^ N - 1`
     obtain ⟨μ, hμ, -⟩ := h_eigen s hs
     have h_pow : aeval (R s).val (X ^ N - 1 : (PadicAlgCl ℓ)[X]) = 0 :=
       (hR.local_conditions v (by simp) hA).1.aeval_eq_zero_of_roots h_val hs
         (hμ.polyKillsAt hR_zero) _
-        (by simpa [eval_multiset_prod, sub_eq_zero] using hμ.pow_factorial_eq_one)
-    simpa [Units.ext_iff, sub_eq_zero] using h_pow
+        (by
+          simpa only [IsRoot.def, eval_multiset_prod, Multiset.map_map, Function.comp_apply,
+            eval_sub, eval_X, eval_C, prod_eq_zero_iff, mem_map, sub_eq_zero, exists_eq_right',
+            eval_pow, eval_one] using hμ.pow_factorial_eq_one)
+    simpa only [map_pow, Units.ext_iff, Units.val_pow_eq_pow_val, Units.val_one, aeval_sub, aeval_X,
+      map_one, sub_eq_zero] using h_pow
   · -- both matrices are killed by the polynomial with roots `μ`
     obtain ⟨μ, hμ, h_one⟩ := h_eigen γ γ.prop
     have h_roots : ∀ y ∈ μ, y ≠ 1 ∧ ∃ d ∈ Set.Icc 1 D.r, y ^ (D.levelPrime l ^ d - 1) = 1 :=
       fun y hy ↦ ⟨ne_of_mem_of_not_mem hy (h_one rfl rfl), hμ.exists_pow_eq_one y hy⟩
     have h_val_conj : (conjPlace A).valuation ℓ = 1 := by
-      simpa [hA.conjPlace_star.valuation_natCast_eq_one_iff]
+      simpa only [hA.conjPlace_star.valuation_natCast_eq_one_iff, mem_star_place, star_natCast]
     constructor
     · exact ellVal_det_sub_one_le_card_mul h_roots ((hμ.polyKillsAt hR_zero).1 h_val)
     · apply ellVal_det_sub_one_le_card_mul h_roots
-      simpa using (hμ.polyKillsAt_conjPlace hR_zero).1 h_val_conj
+      simpa only [map_inv, coe_units_inv] using (hμ.polyKillsAt_conjPlace hR_zero).1 h_val_conj
 
 variable (ℓ O c) in
 /-- The roots of the scaled type polynomial `scaledTypePoly O c i`, taken in an algebraic closure of
@@ -376,7 +411,8 @@ lemma IsLiftSetting.exists_isCommonRootPower_of_isPrimitivePolynomial (hc : IsLi
   have h_tamePart_pow : O.tamePart (O.chosenPlace i) ^ P.q₂ D.towerExp = 1 := by
     rw [h_tamePart, D.chiMLocal_zpow_mul_pow_eq_one j (ϑ.tamePart_eq_one_of_isChosen h_chosen)]
   have h_twisted : IsPrimitivePolynomial (card r) (Selmer.scaledTypePoly O c i) :=
-    h_primitive.scaleRoots _ (charName_pow_eq_one (by simp [h_tamePart_pow])) h_Mω_sq
+    h_primitive.scaleRoots _ (charName_pow_eq_one (by
+      simp only [inv_pow, h_tamePart_pow, inv_one])) h_Mω_sq
   let K : Type := AlgebraicClosure (ResField (O.chosenPlace i))
   let roots : Multiset K := (Selmer.scaledTypePoly O c i).aroots K
   obtain ⟨h_prod, e, h_pow⟩ :
@@ -426,21 +462,25 @@ lemma IsLiftSetting.exists_isCommonRootPower_of_eq_X_sub_one (hc : IsLiftSetting
   have h_scaled_eq : Selmer.scaledTypePoly O c i = X - C z.val := by
     rw [Selmer.scaledTypePoly, h_eq, ← C_1, X_sub_C_scaleRoots, one_mul]
   have h_root (ξ : K) (hξ : ξ ∈ (Selmer.scaledTypePoly O c i).aroots K) : ξ = y := by
-    simpa [h_scaled_eq] using hξ
+    simpa only [h_scaled_eq, aroots_X_sub_C, mem_singleton] using hξ
   refine ⟨1, y,
     { pow_eq := fun ξ hξ ↦ by rw [pow_one, h_root ξ hξ]
       pow_q_pow_card_eq := fun ξ hξ ↦ ?_
       injOn_pow := fun ξ hξ u a ha b hb _ ↦ ?_
       dvd_of_pow_eq_one := fun x hx ↦ ?_ }⟩
-  · simp [h_root ξ hξ, h_card, y, ← card_ResField, ← map_pow, FiniteField.pow_card]
+  · simp only [h_root ξ hξ, ← card_ResField, Nat.card_eq_fintype_card, h_card, pow_one, ← map_pow,
+      FiniteField.pow_card, y]
   · -- the only index below `card r = 1` is `0`
     rw [h_card, Set.mem_Iio] at ha hb
     omega
-  · have hz : z ^ x = 1 := by simpa [y, K, ← map_pow, ← Units.val_pow_eq_pow_val] using hx
+  · have hz : z ^ x = 1 := by
+      simpa only [y, K, ← map_pow, ← Units.val_pow_eq_pow_val, FaithfulSMul.algebraMap_eq_one_iff,
+        Units.val_eq_one] using hx
     have hω : O.tamePart (O.chosenPlace i) = D.chiMLocal (O.chosenPlace i) ^ j := by
-      simp [h_tamePart, ϑ.toTameChar.tamePart_eq_one_of_isChosen h_chosen]
+      simp only [h_tamePart, zpow_natCast, Pi.mul_apply, Pi.pow_apply,
+        ϑ.toTameChar.tamePart_eq_one_of_isChosen h_chosen, mul_one]
     rw [← D.orderOf_chiMLocal h_chosen, orderOf_dvd_iff_pow_eq_one, pow_mul, ← hω]
-    simpa [z, ← map_pow, MulEquiv.map_eq_one_iff] using hz
+    simpa only [z, map_inv, inv_pow, ← map_pow, inv_eq_one, MulEquiv.map_eq_one_iff] using hz
 
 omit [PadicIso ℓ] in
 /-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, so that `c i` is a type
@@ -488,20 +528,26 @@ lemma IsRepOfType.exists_inertia_isRoot_charpoly (hc : IsLiftSetting O c ϑ) {R 
   let Z : Multiset K := (Selmer.scaledTypePoly O c i).aroots K
   obtain ⟨⟨s, hs⟩, -⟩ := GaloisRep.exists_isTameExponent T hA (card r)
   have h_poly : PolyKillsAt R A s (Z.map fun ξ ↦ X - C (τ ξ)).prod := by
-    simpa [τ] using hR.labelled hs
+    simpa only [τ, RingHom.toMonoidHom_eq_coe, RingEquiv.toRingHom_eq_coe, MonoidHom.coe_comp,
+      MonoidHom.coe_ofClass, RingHom.coe_coe, Function.comp_apply, pow_one] using hR.labeled hs
   have h_root (x : PadicAlgCl ℓ) (hx : (Z.map fun ξ ↦ X - C (τ ξ)).prod.IsRoot x) :
       ∃ ξ ∈ Z, x = τ ξ := by
-    simpa [eval_multiset_prod, sub_eq_zero] using hx
+    simpa only [IsRoot.def, eval_multiset_prod, Multiset.map_map, Function.comp_apply, eval_sub,
+      eval_X, eval_C, prod_eq_zero_iff, mem_map, sub_eq_zero] using hx
   refine ⟨s, τ, ιℓ.injective.comp IsFaithfulMulChar.injective, fun p hp_root ↦ ?_, ?_⟩
   · have h_fin : IsFiniteTypeAt R A := (hR.local_conditions _ (by simp) hA).1
     refine h_fin.aeval_eq_zero_of_roots h_val s.prop h_poly p fun x hx ↦ ?_
     obtain ⟨ξ, hξ, rfl⟩ := h_root x hx
     exact hp_root ξ hξ
-  · obtain ⟨ζ, hζ⟩ := exists_root (R s).val.charpoly (by simp [hc.odd.1.pos.ne'])
+  · obtain ⟨ζ, hζ⟩ := exists_root (R s).val.charpoly (by
+      simp only [charpoly_degree_eq_dim, ne_eq, Nat.cast_eq_zero, hc.odd.1.pos.ne',
+        not_false_eq_true])
     obtain ⟨ξ, hξ, rfl⟩ := h_root ζ (isRoot_of_isRoot_charpoly (h_poly.1 h_val) hζ)
     obtain ⟨h_pow, -⟩ := ((hc.isLabel i).scaleRoots _).root_pow_eq_one (mem_aroots'.1 hξ).2
     exact ⟨ξ, hξ, hζ, τ.isOfFinOrder
-      (isOfFinOrder_iff_pow_eq_one.2 ⟨_, by simp [FinPlace.one_lt_q, NeZero.ne], h_pow⟩)⟩
+      (isOfFinOrder_iff_pow_eq_one.2 ⟨_, by
+        simp only [tsub_pos_iff_lt, ne_eq, NeZero.ne, not_false_eq_true, Nat.one_lt_pow_iff,
+          FinPlace.one_lt_q], h_pow⟩)⟩
 
 omit [PadicIso ℓ] in
 /-- Let `A` be a place of `Ω = ℚ̄`, not over `ℓ`, over the place `w` dividing `D.levelPrime l`, with
@@ -526,14 +572,14 @@ lemma eventually_span_eq_top_and_exists_scalar_of_tame_pair {R : GalRep ℓ D.E 
   -- conjugation by a Frobenius `φ` raises `R s` to the `q`-th power
   obtain ⟨φ, hφ⟩ := hA.exists_isFrob (AbsGal D)
   have h_frob : R s ^ w.q = R (φ * s * φ⁻¹) :=
-    ((hA.tame_inertia R (h_fin.1 h_val) hN (by simpa using hRN) s).2 w.q φ hφ).symm
+    ((hA.tame_inertia R (h_fin.1 h_val) hN (by simpa only [map_pow] using hRN) s).2 w.q φ hφ).symm
   filter_upwards [CoeffRing.eventually_mem h_ord.norm_eq_one.le] with 𝒪 h_mem u hu
   -- the image of the lattice `u` spans all matrices over `𝒪`, and `φ ^ card r` acts by a scalar
   obtain ⟨h_span, α, hα⟩ :=
     hu.span_range_eq_top_of_map_pow_eq_map_conj (ζ := ⟨ζ, h_mem⟩) (φ := φ⁻¹) h_frob h_dist
       h_eigen h_fix
   refine ⟨h_span, φ ^ card r, l, α, ?_, by rwa [inv_inv] at hα⟩
-  simp [hφ.cyclotomicChar_eq ℓ h_val, D.q_eq_levelPrime hlw]
+  simp only [map_pow, Units.val_pow_eq_pow_val, hφ.cyclotomicChar_eq ℓ h_val, D.q_eq_levelPrime hlw]
 
 /-- Let `c` be a lift setting for the descent pair `O` and the twist `ϑ`, and let
 `M = D.levelPrime 0 * D.levelPrime 1`. Let `R` be a representation of a type of rank `card r` and
@@ -576,19 +622,23 @@ lemma IsRepOfType.isMainSummandLike (hc : IsLiftSetting O c ϑ) {R : GalRep ℓ 
     have h_aeval : aeval (R s).val (X ^ w.q ^ card r - X : (PadicAlgCl ℓ)[X]) = 0 := by
       refine h_kill _ fun η hη ↦ ?_
       rw [IsRoot, eval_sub, eval_X_pow, ← map_pow, hy.pow_q_pow_card_eq η hη, eval_X, sub_self]
-    simpa [Units.ext_iff, sub_eq_zero] using h_aeval
+    simpa only [map_pow, Units.ext_iff, Units.val_pow_eq_pow_val, aeval_sub, aeval_X,
+      sub_eq_zero] using h_aeval
   have h_dist (a : ℕ) (ha : a < card r) (b : ℕ) (hb : b < card r) (hab : a ≠ b) :
       ‖τ ξ ^ w.q ^ a - τ ξ ^ w.q ^ b‖ = 1 :=
     norm_pow_sub_pow_eq_one h_ord _ _ fun u hu ↦
-      hab (hy.injOn_pow ξ hξ u ha hb (hτ (by simpa using hu)))
+      hab (hy.injOn_pow ξ hξ u ha hb (hτ (by simpa only [map_pow] using hu)))
   obtain ⟨-, N, -, hN, hRN, -⟩ := hR.exists_map_pow_eq_one_and_ellVal_det_le hc hwM hwℓ hA
   have h_large := eventually_span_eq_top_and_exists_scalar_of_tame_pair hli hA h_val h_fin hN hRN
     h_ord h_eigen h_fix h_dist
   -- the scalar is `R (s ^ e) = τ y`, as `X ^ e - τ y` kills `R s`
   have h_scalar : (R ↑(s ^ e)).val = τ y • 1 := by
     have h_aeval : aeval (R s).val (X ^ e - C (τ y) : (PadicAlgCl ℓ)[X]) = 0 :=
-      h_kill _ fun η hη ↦ by simp [← map_pow, hy.pow_eq η hη]
-    simpa [Algebra.smul_def, sub_eq_zero] using h_aeval
+      h_kill _ fun η hη ↦ by
+        simp only [IsRoot.def, eval_sub, eval_pow, eval_X, ← map_pow, hy.pow_eq η hη, eval_C,
+          sub_self]
+    simpa only [SubmonoidClass.coe_pow, map_pow, Units.val_pow_eq_pow_val, Algebra.smul_def,
+      mul_one, aeval_sub, aeval_X, aeval_C, sub_eq_zero] using h_aeval
   -- `y ^ (ℓ ^ a * t)` does not have `ℓ`-power order, as `q₂` does not divide `j * ℓ ^ b * t`
   have h_unit (a t : ℕ) (ht : t ∈ Set.Icc 1 (4 * card r + 2)) :
       ‖τ y ^ (ℓ ^ a * t) - 1‖ = 1 := by
@@ -598,8 +648,9 @@ lemma IsRepOfType.isMainSummandLike (hc : IsLiftSetting O c ϑ) {R : GalRep ℓ 
     have hτy : τ y = τ ξ ^ e := by rw [← map_pow, hy.pow_eq ξ hξ]
     have h_norm : ‖τ ξ ^ (e * ℓ ^ a * t) - τ ξ ^ 0‖ = 1 := by
       refine norm_pow_sub_pow_eq_one h_ord _ _ fun u hu ↦ h_ne u (hτ ?_)
-      simpa [hτy, pow_mul, pow_add, pow_right_comm] using hu
-    simpa [hτy, pow_mul] using h_norm
+      simpa only [pow_add, pow_mul, pow_right_comm, map_pow, hτy, map_one, pow_zero,
+        one_pow] using hu
+    simpa only [hτy, pow_mul, pow_zero] using h_norm
   have h_inertia : (↑(s ^ e) : AbsGal D) ∈
       inertiaAbove (placesAboveM D \ placesDividing D.E ℓ) :=
     ⟨w, ⟨hwM, hwℓ⟩, A, hA, (s ^ e).prop⟩
@@ -627,7 +678,8 @@ lemma invAvatar_eq_of_isTameExponent {w : FinPlace D.E} (hw : w ∈ ϑ.Q) (h_spl
     ϑ.invAvatar (ℓ := ℓ) s = ιℓ ((faithfulChar (ResField w) ^ a)
       (algebraMap (ResField w) (AlgebraicClosure (ResField w))
         (charName (faithfulChar (ResField w)) (ϑ.tamePart w)).val)⁻¹) := by
-  have h_star : ϑ.tamePart⁻¹ (star w) = 1 := by simp [ϑ.tamePart_eq_one _ (ϑ.star_notMem w hw)]
+  have h_star : ϑ.tamePart⁻¹ (star w) = 1 := by
+    simp only [Pi.inv_apply, ϑ.tamePart_eq_one _ (ϑ.star_notMem w hw), inv_one]
   -- the avatar, as a one-dimensional representation, is labelled by `X - x⁻¹` at `w`
   have h_kill : aeval
       ((GeneralLinearGroup.scalar (Fin 1)).comp
@@ -635,9 +687,14 @@ lemma invAvatar_eq_of_isTameExponent {w : FinPlace D.E} (hw : w ∈ ϑ.Q) (h_spl
       ((((X - C (charName (faithfulChar (ResField w)) (ϑ.tamePart⁻¹ w)).val).aroots
         (AlgebraicClosure (ResField w))).map fun x ↦
           X - C (ιℓ ((faithfulChar (ResField w) ^ a) x))).prod : (PadicAlgCl ℓ)[X]) = 0 :=
-    (isLabelledAt_avatar (ℓ := ℓ) ϑ.hasWeight.inv 0 0 h_star h_split ha).1 h_val
+    (isLabeledAt_avatar (ℓ := ℓ) ϑ.hasWeight.inv 0 0 h_star h_split ha).1 h_val
   -- on `1 × 1` scalar matrices this says that the avatar takes the value `ιℓ ((T ^ a) x⁻¹)`
-  simpa [algebraMap_eq_diagonal, funext_iff, Data.TameChar.invAvatar, sub_eq_zero] using h_kill
+  simpa only [Data.TameChar.invAvatar, neg_zero, MonoidHom.coe_comp, Function.comp_apply,
+    Units.coeHom_apply, GeneralLinearGroup.coe_scalar, scalar_apply, Pi.inv_apply, map_inv,
+    Units.val_inv_eq_inv_val, aroots_X_sub_C, map_inv₀, map_singleton, prod_singleton, aeval_sub,
+    aeval_X, aeval_C, algebraMap_eq_diagonal, diagonal_sub, Pi.algebraMap_apply,
+    Algebra.algebraMap_self, RingHom.id_apply, diagonal_eq_zero, funext_iff, Pi.zero_apply,
+    sub_eq_zero, forall_const] using h_kill
 
 /-- Each place `O.twistPlace i` of the twist of the pair `O` differs from its conjugate. -/
 lemma isSplit_twistPlace (O : DescentPair D.E r n) (i : O.TwistIndex) : (O.twistPlace i).IsSplit :=
@@ -691,14 +748,17 @@ lemma isFiniteTypeAt_and_polyKillsAt_of_mem_conjClosure [DecidableEq n] [Nonempt
     obtain ⟨h_fin, -, h_dual⟩ :=
       isFiniteTypeAt_and_hasJumpsAt_of_conjPlace (isConjSelfDual_of_attached he hR) h_fin_conj
     refine ⟨h_fin, fun s hs ↦ ?_⟩
-    have hs_conj : conjGal s⁻¹ ∈ inertiaGroup (AbsGal D) (conjPlace A) := by simpa using hs
+    have hs_conj : conjGal s⁻¹ ∈ inertiaGroup (AbsGal D) (conjPlace A) := by
+      simpa only [map_inv, inv_mem_iff, conjGal_mem_inertiaGroup_iff] using hs
     have h_av : ϑ.invAvatar (ℓ := ℓ) (conjGal s⁻¹) = ϑ.invAvatar s := by
-      simp [eq_inv_of_mul_eq_one_left (avatar_conjGal_mul_avatar _ 0 0 s), Data.TameChar.invAvatar]
+      simp only [Data.TameChar.invAvatar, neg_zero, map_inv, MonoidHom.coe_comp,
+        Function.comp_apply, eq_inv_of_mul_eq_one_left (avatar_conjGal_mul_avatar _ 0 0 s), inv_inv,
+        Units.coeHom_apply]
     have h_kill : PolyKillsAt R (conjPlace A) (conjGal s⁻¹)
         ((X - C (ϑ.invAvatar s)) * (X - 1)) := by
       rw [← h_av]
       exact h_poly _ hs_conj
-    simpa using h_dual _ hs_conj _ h_kill
+    simpa only [map_inv, inv_inv, conjGal_conjGal] using h_dual _ hs_conj _ h_kill
   obtain ⟨i, rfl⟩ : ∃ i : O.TwistIndex, O.twistPlace i = w := by
     rw [hc.toLevelPlaces_eq]
     exact ⟨⟨w, hw⟩, rfl⟩
@@ -711,16 +771,27 @@ lemma isFiniteTypeAt_and_polyKillsAt_of_mem_conjClosure [DecidableEq n] [Nonempt
   have h_tamePart : O.tamePart (O.twistPlace i) = ϑ.tamePart (O.twistPlace i) := by
     obtain ⟨j, -, hj⟩ := hc.exists_tamePart_eq_chiMLocal_zpow_mul
     obtain ⟨-, h_not_chosen, -⟩ := D.normQ_mem_and_notMem_of_mem_Q _ hwQ
-    simp [hj, D.chiMLocal_eq_one_of_not_isChosen h_not_chosen]
+    simp only [hj, zpow_natCast, Pi.mul_apply, Pi.pow_apply,
+      D.chiMLocal_eq_one_of_not_isChosen h_not_chosen, one_pow, one_mul]
   have h_split : star (O.twistPlace i) ≠ O.twistPlace i := isSplit_twistPlace O i
   -- block `0` is empty, so its label is `1`, whose idempotent does not kill `f`
   obtain ⟨t, h_lab⟩ : ∃ t : Fin 2 → ℕ,
       HasProductLabel f.val h_split T (card Empty) 1 ![1, (ϑ.tamePart (O.twistPlace i))⁻¹] t := by
     have h_idem : (1 : Representation ℂ _ _).asAlgebraHom
         (labelIdem (k := ResField (O.twistPlace i)) Empty 1) f.val ≠ 0 := by
-      simp [he.1, labelIdem, IsLabel, asAlgebraHom_eq_sum, Hall.evalGL]
+      simp only [labelIdem, IsLabel, monic_one, isUnit_one, IsUnit.squarefree, natDegree_one,
+        Fintype.card_eq_zero, AddMonoidAlgebra.coeff_one_zero, ne_eq, one_ne_zero,
+        not_false_eq_true, and_self, ↓reduceIte, Hall.evalGL, Units.val_one, toLin'_one, map_one,
+        Hall.one_apply, dim_simClassOf, Module.finrank_fintype_fun_eq_card,
+        Nat.card_eq_fintype_card, card_unique, Nat.cast_one, div_self, mul_one,
+        Representation.asAlgebraHom_eq_sum,
+        Finset.univ_unique, coeff_groupAlgElem, Finsupp.equivFunOnFinite_symm_apply_apply,
+        MonoidHom.one_apply, one_smul, Finset.sum_const, Finset.card_singleton, one_apply_eq_self,
+        he.1]
     have h_lab := (h_type i).hasProductLabel 1 Function.injective_id h_idem
-      (by simp [h_tamePart, ϑ.tamePart_ne_one, hw]) (by simp)
+      (by
+        simp only [Nat.succ_eq_add_one, Nat.reduceAdd, h_tamePart, Matrix.injective_pair_iff_ne,
+          ne_eq, one_eq_inv, hw, ϑ.tamePart_ne_one, not_false_eq_true]) (by simp)
     exact ⟨_, by simpa only [scaleRoots_one, map_one, Units.val_one, h_tamePart] using h_lab⟩
   obtain ⟨h_fin, -, h_labelled⟩ := hR.isLabelledAt f.prop he h_lab hA
   refine ⟨h_fin, fun s hs ↦ ?_⟩
@@ -730,7 +801,15 @@ lemma isFiniteTypeAt_and_polyKillsAt_of_mem_conjClosure [DecidableEq n] [Nonempt
   · -- the roots of the label are `1` and the name of `(ϑ.tamePart)⁻¹`, whose images are the roots
     -- of the quadratic
     rw [invAvatar_eq_of_isTameExponent hw h_split h_val ha]
-    simp +contextual [or_imp, T, K, eval_multiset_prod, sub_eq_zero]
+    simp +contextual only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.prod_univ_two, Fin.isValue,
+      cons_val_zero, map_one, Units.val_one, cons_val_one, cons_val_fin_one, map_inv,
+      Units.val_inv_eq_inv_val, one_mul, IsRoot.def, eval_multiset_prod, Multiset.map_map,
+      Function.comp_apply, eval_sub, eval_X, eval_C, prod_eq_zero_iff, mem_map, mem_roots',
+      Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_sub, map_X, Polynomial.map_one, map_C,
+      map_inv₀, ne_eq, mul_eq_zero, pow_eq_zero_iff', sub_eq_zero, not_or, not_and,
+      Decidable.not_not, eval_mul, eval_pow, eval_one, forall_exists_index,
+      EmbeddingLike.apply_eq_iff_eq, and_imp, or_imp, or_true, implies_true, true_or, and_self, K,
+      T]
   · -- `A` is not above `ℓ`, so no embedding in `ℚ̄_ℓ` induces it
     obtain ⟨⟨h_comap, -⟩, -⟩ := L.inducesPlace
     rw [← h_comap] at h_val
@@ -743,16 +822,16 @@ bad. Let `f ≠ 0` have Hecke polynomial `H w` at almost all places `w` of prime
 and the parahoric type of `O` at each `O.twistPlace i`: block triangular integral matrices act
 through `O.tamePart⁻¹` of the determinant of the block indexed by `r`. Let `R` be attached to `H`:
 for each `η > 0` and most Frobenius elements, the coefficients of the characteristic polynomial are
-within `η` of those of `ιℓ (H w)`. Let `u = normalisedRep O R` be the twist of `R` by
+within `η` of those of `ιℓ (H w)`. Let `u = normalizedRep O R` be the twist of `R` by
 `normalizingAvatar O`, the avatar of a Hecke character made from the inverse of the character
 `O.charW` of the hermitian space of `O`. Then `(u g - a g) (u g - 1) = 0` for `g` in inertia above
 `ϑ.Q` and its conjugates, where `a = ϑ.invAvatar` is the `ℓ`-adic avatar of `ϑ⁻¹`. -/
-lemma normalisedRep_quadratic_on_inertia [DecidableEq n] [Nonempty n] (hc : IsLiftSetting O c ϑ)
+lemma normalizedRep_quadratic_on_inertia [DecidableEq n] [Nonempty n] (hc : IsLiftSetting O c ϑ)
     (hQ : IsAuxiliary (badPlaces D ℓ) ϑ.Q) {f : (stdSpace D.E n).forms (O.columnCount, O.detExp)}
     {H : FinPlace D.E → ℂ[X]} {R : Gal(Ω/D.E) →* GL n (PadicAlgCl ℓ)} (he : IsEigenform f.val H)
     (hR : Attached H R) (h_type : ∀ i : O.TwistIndex, HasTwistParahoricType O f.val i) :
     ∀ g ∈ inertiaAbove (Set.conjClosure ϑ.Q),
-      ((normalisedRep O R g).val - ϑ.invAvatar g • 1) * ((normalisedRep O R g).val - 1) = 0 := by
+      ((normalizedRep O R g).val - ϑ.invAvatar g • 1) * ((normalizedRep O R g).val - 1) = 0 := by
   -- On inertia away from `ℓ` the normalising character is trivial, so it is enough that
   -- `(X - ϑ.invAvatar s) * (X - 1)` kills `s` on `R`.
   rintro s ⟨w, hwQ, A, hA, hs⟩
@@ -760,7 +839,8 @@ lemma normalisedRep_quadratic_on_inertia [DecidableEq n] [Nonempty n] (hc : IsLi
   obtain ⟨-, h_kill⟩ := isFiniteTypeAt_and_polyKillsAt_of_mem_conjClosure hc hQ he hR h_type hwQ hA
   have h_aeval : aeval (R s).val ((X - C (ϑ.invAvatar s)) * (X - 1) : (PadicAlgCl ℓ)[X]) = 0 :=
     (h_kill s hs).1 (hA.valuation_natCast_eq_one_iff.2 hℓ)
-  simpa [Units.smul_def, normalizingAvatar_eq_of_isFrob_inv hA hℓ 0 (inv_mem hs), Algebra.smul_def]
-    using h_aeval
+  simpa only [MonoidHom.mk'_apply, Units.val_smul, Units.smul_def,
+    normalizingAvatar_eq_of_isFrob_inv hA hℓ 0 (inv_mem hs), map_inv₀, pow_zero, Algebra.smul_def,
+    map_one, one_mul, mul_one, map_mul, aeval_sub, aeval_X, aeval_C] using h_aeval
 
 end New.Selmer

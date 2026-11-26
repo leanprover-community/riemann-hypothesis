@@ -1,7 +1,11 @@
 module
 
-public import New.Spanning.Frames.FixedLines
+import TauCeti.Analysis.Normed.Ring.Ultra
 public import New.Spanning.MainTerm.SiegelTopBound
+public import New.Spanning.Unfolding.Climbing
+import New.Spanning.Frames.FiniteShells
+import New.Spanning.Frames.FixedLines
+import New.Spanning.MainTerm.GlobalToLocal
 
 /-!
 # The sieve system at the finite places
@@ -112,7 +116,7 @@ n⁷) / 2) / [O : O ∩ ξ⁻¹ O] ^ 3 * b ^ (n⁹ f)` times the weights `finHea
 `0` if some `D` is not integral. Here `n = 𝔰.n = ϱ + 1`, `k = 𝔰.k`, `b = S.b`, `f` is the number of
 infinite places, and `[O : ξ O]` is the generalised index `genIndex ξ`. -/
 lemma IsFillingData.norm_floorForm_div_massRatio_le {E : Type} {𝔰 : Shape} [Field E] [CMType E]
-    [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)} [T.StarStable]
+    {S : Filling E 𝔰} {T : Finset (FinPlace E)} [T.StarStable]
     {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -120,8 +124,8 @@ lemma IsFillingData.norm_floorForm_div_massRatio_le {E : Type} {𝔰 : Shape} [F
     {j : ℕ} {p q : ℕ → (LocProd T)ˣ}
     {ξ : LocProd T} {ω : (S.latticeMiddle (LocProd T)).G → ℂ} (hj : j ≤ 𝔰.ϱ) (hξ : IsUnit ξ)
     (hω : (ω = fun x : (S.latticeMiddle (LocProd T)).G ↦
-        P.ψ (ξ * ((S.latticeMiddle (LocProd T)).frameGram x.1.1).diag ⟨j, by lia⟩)) ∨
-      ∃ i : ℕ, j = i + 1 ∧ ω = 1 ∧ ξ = F.levelUnit⁻¹.1 * ((p i)⁻¹.1 - (q i)⁻¹.1)) :
+        P.ψ (ξ * ((S.latticeMiddle (LocProd T)).frameGram x.val.val).diag ⟨j, by lia⟩)) ∨
+      ∃ i : ℕ, j = i + 1 ∧ ω = 1 ∧ ξ = F.levelUnit⁻¹.val * ((p i)⁻¹.val - (q i)⁻¹.val)) :
     ‖F.floorForm j p q Z.besselVector ω / Z.massRatio.toReal‖ ≤
       S.frequencyDecay T ξ * (finHeadWeight (𝔰.n ^ 6) j p * finHeadWeight (𝔰.n ^ 6) j q) := by
   obtain ⟨pow_four_le, half_pow_le_inv_pow_six, pow_seven_le⟩ : 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.n ^ 6 ∧
@@ -138,8 +142,8 @@ lemma IsFillingData.norm_floorForm_div_massRatio_le {E : Type} {𝔰 : Shape} [F
   grw [norm_div_massRatio_le Z (by simp [denomIndex_ne_zero, mul_eq_top, div_eq_top]) h_bound]
   -- the factors agree one by one, except the power of `2 / modulus F.levelUnit = 2 (S.M ^ f) ^ 2`
   -- (`modulus_levelUnit`), which is bounded by `two_mul_M_pow_sq_pow_le`
-  simp (disch := positivity) [-Nat.cast_mul, modulus_levelUnit, frequencyDecay, finHeadWeight,
-    -map_prod]
+  simp (disch := positivity) only [modulus_levelUnit, frequencyDecay, finHeadWeight, toReal_mul,
+    toReal_pow, toReal_ofReal, toReal_inv, inv_pow, toReal_div, div_inv_eq_mul]
   gcongr _ * ?_ * _
   exact S.two_mul_M_pow_sq_pow_le
 
@@ -174,7 +178,7 @@ character, `b = S.b` for the size parameter and `k = 𝔰.k` for the rank of the
 `F.floorForm 0` of `Z.besselVector`, divided by `Z.massRatio = vol(Z) vol(K(g)) / F.unipotentMass ^
 2`, has norm at most `(1 + b⁻¹ ^ 6) / (b ^ (6 k)) ^ s`. -/
 lemma IsFillingData.norm_floorForm_zero_div_massRatio_le {E : Type} {𝔰 : Shape} [Field E]
-    [CMType E] [WeilData E] {S : Filling E 𝔰} [S.IsAdmissible] {T : Finset (FinPlace E)}
+    [CMType E] {S : Filling E 𝔰} {T : Finset (FinPlace E)}
     [T.StarStable] {P : IntegralPlace (LocProd T)}
     {F : PlaceData (Fin (𝔰.k - (6 * 𝔰.ϱ + 13))) (S.latticeMiddle (LocProd T)) (𝔰.ϱ + 1 + 2 * 𝔰.ϱ +
       5)}
@@ -201,7 +205,8 @@ lemma IsFillingData.norm_floorForm_zero_div_massRatio_le {E : Type} {𝔰 : Shap
   -- clear the denominators and multiply by `vol K`, which is finite and nonzero
   rwa [ofReal_div_of_pos (by positivity), IntermediateGroup.massRatio,
     ← ENNReal.mul_div_mul_comm (by simp) (by simp),
-    ENNReal.le_div_iff_mul_le (by simp; left; positivity) (by simp [mul_eq_top]),
+    ENNReal.le_div_iff_mul_le (.inl (mul_ne_zero (by simp) (ofReal_pos.2 (by positivity)).ne'))
+      (by simp [mul_eq_top]),
     ← ENNReal.mul_le_mul_iff_left (P.unitaryLevel_open_compact.1.measure_ne_zero _ (by simp))
       (hF.groupMeasure_ne_top le_rfl : vol K ≠ ∞), ← mul_assoc, ofReal_pow (by positivity)]
 
@@ -309,14 +314,14 @@ lemma IsFillingData.exists_intermediateGroup_sieveSystem {E : Type} {𝔰 : Shap
     -- floor `j` is the integral of floor `j + 1`
     simp_rw [← mul_div_assoc, integral_div, ite_eq_left hj]
     split_ifs with hj'
-    · obtain ⟨h_int, h_eq⟩ := hF.gauge.integral_psi_mul_floorForm_succ (p := p) (q := q)
+    case' pos =>
+      obtain ⟨h_int, h_eq⟩ := hF.gauge.integral_psi_mul_floorForm_succ (p := p) (q := q)
         (isCut_besselVector Z) ⟨j, hj'⟩ 1 ξ (hF.lintegral_formMajorant_ne_top Z 0 hj (by omega))
       simp only [one_mul] at h_int h_eq
-      rw [h_eq]
-      exact ⟨h_int.div_const _, fun hξ ↦ by simp [hξ, Pi.one_def],
-        fun hξ ↦ hF.norm_floorForm_div_massRatio_le Z hj hξ (.inl rfl)⟩
-    · obtain rfl : j = 𝔰.ϱ := by omega
+    case' neg =>
+      obtain rfl : j = 𝔰.ϱ := by omega
       obtain ⟨h_int, h_eq⟩ := integral_lastEntryDensity Z p q piNAt_mul_star ξ
+    all_goals
       rw [h_eq]
       exact ⟨h_int.div_const _, fun hξ ↦ by simp [hξ, Pi.one_def],
         fun hξ ↦ hF.norm_floorForm_div_massRatio_le Z hj hξ (.inl rfl)⟩

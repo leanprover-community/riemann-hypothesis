@@ -1,7 +1,12 @@
 module
 
+import Mathlib.RingTheory.Frobenius
+import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.RepresentationTheory.Subrepresentation
 public import Lib.GaloisRep.BaseChange.PrimeDegreeTransfer
-public import Lib.LocalGL.Shintani.LiftingGreenCharacters
+public import Lib.LocalGL.Shintani.CosetDescent
+import Lib.LocalGL.Shintani.LiftingGreenCharacters
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Base change at an inert place carries a label to its Shintani lift
@@ -80,20 +85,20 @@ lemma exists_representation_heckeFun_inflateConj (hw : w.IsSplit) {κ : Weight E
     aesop (add simp mem_localCongruence_zero)
   have h_stable (k : intGL n Valued.v.integer) : K ⊓ W.1 ≤ (K ⊓ W.1).comap (π₀ k) :=
     fun v ⟨hv_K, hv_W⟩ ↦ ⟨hK.ge (le_comap_invariants _ _ k (hK.le hv_K)), W.2 _ hv_W⟩
-  let π₁ : intGL n Valued.v.integer →* (↥(K ⊓ W.1) →ₗ[ℂ] ↥(K ⊓ W.1))ˣ :=
+  let π₁ : intGL n Valued.v.integer →* (↥(K ⊓ W.toSubmodule) →ₗ[ℂ] ↥(K ⊓ W.toSubmodule))ˣ :=
     (subrepresentation π₀ _ h_stable).asGroupHom
   -- the kernel of reduction acts trivially on `K`
   have h_ker : reduceGL.ker ≤ π₁.ker := fun k hk ↦ by
     ext v : 3
-    exact hK.le v.2.1 ⟨k, hk⟩
-  let ρ : Representation ℂ (GL n (ResField w)) ↥(K ⊓ W.1) :=
+    exact hK.le v.property.1 ⟨k, hk⟩
+  let ρ : Representation ℂ (GL n (ResField w)) ↥(K ⊓ W.toSubmodule) :=
     (Units.coeHom _).comp (reduceGL.liftOfSurjective reduceGL_surjective ⟨π₁, h_ker⟩)
   let lift : GL n (ResField w) → GL n (LocField w) := Subtype.val ∘ surjInv reduceGL_surjective
   refine ⟨ρ, fun χ v ↦ ?_⟩
   obtain ⟨hv_K, -⟩ := Submodule.mem_inf.mp v.prop
-  have h_sum : (ρ.asAlgebraHom (groupAlgElem fun g ↦ conj (χ g)) v).1 =
+  have h_sum : (ρ.asAlgebraHom (groupAlgElem fun g ↦ conj (χ g)) v).val =
       ∑ x, conj (χ x) • π (lift x) v := by
-    simp [asAlgebraHom_eq_sum, Subtype.ext_iff]
+    simp [asAlgebraHom_eq_sum]
     -- `ρ x v` is `π (lift x) v` by the definition of `ρ`
     rfl
   -- the kernel of reduction fixes `v`, so the first half of `HasLabel` holds
@@ -143,8 +148,9 @@ lemma reduceGL_map_locMap [CMType E'] {u : FinPlace E'} {ι : E →+* E'} (he : 
   have h_ψx : ψ (reduceGL ⟨g, (map_locMap_mem_intGL_iff he).1 hg⟩ i j) =
       ↑(RingOfIntegers.mapRingHom ι x : 𝓞 E') := (congrArg ψ hx).symm.trans (hψ x)
   refine (h_ψx.trans ?_).symm
-  erw [residue_eq_iff_valuation_sub_lt_one] at hx ⊢
-  simpa using! ((isEquiv_comap_locMap ι he).lt_one_iff_lt_one (x := (x : E) - _)).2 hx
+  have h_val := residue_eq_iff_valuation_sub_lt_one.mp hx
+  apply residue_eq_iff_valuation_sub_lt_one.mpr
+  simpa using! ((isEquiv_comap_locMap ι he).lt_one_iff_lt_one (x := (x : E) - _)).2 h_val
 
 variable [Algebra E E'] [CMTypeOver E E'] {u : FinPlace E'}
   {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : IsStep E' μ]
@@ -215,7 +221,7 @@ private lemma exists_ne_one_and_frobeniusAlgEquivOfAlgebraic_apply_eq
       ∀ x : 𝓞 E', φ (algebraMap (𝓞 E') (ResField u) x) =
         algebraMap (𝓞 E') (ResField u) (σ • x) := by
   obtain rfl : FinPlace.below E u = w := (h_unique u).2 rfl
-  obtain ⟨σ, h_frob⟩ := IsArithFrobAt.exists_of_isInvariant (𝓞 E) Gal(E'/E) u.1
+  obtain ⟨σ, h_frob⟩ := IsArithFrobAt.exists_of_isInvariant (𝓞 E) Gal(E'/E) u.asIdeal
   have hσ (x : 𝓞 E') : φ (algebraMap _ _ x) = algebraMap _ _ (σ • x) := by
     rw [hφ, eq_comm]
     simpa [card_ResField, ← Nat.card_eq_fintype_card, ← algebraMap_ResField_eq_zero,
@@ -279,7 +285,7 @@ lemma isLocalMatching_shintani {S : GalSemidirect (ResField w) (ResField u) n �
     constructor <;>
       exact ⟨(finite_quotient_image_of_isCompact isOpen_localCongruence
         (isCompact_localIntGL _)).subset
-        fun q hq ↦ ⟨_, by by_contra h; exact hq (dif_neg h), q.out_eq⟩,
+        fun q hq ↦ ⟨_, by by_contra h; exact hq (dite_eq_right h), q.out_eq⟩,
         by simp +contextual [mem_localCongruence_zero, inflateConj,
           mul_mem_cancel_right, ← MulMemClass.mk_mul_mk, mul_mem_cancel_left]⟩
   · -- The principal level at `u` is stable under `σ`,
@@ -364,11 +370,10 @@ lemma exists_baseChange_hasLabel [HasPrimitiveRoot5040 E'] {κ : Weight E}
       obtain ⟨hk_int, hk_red⟩ := mem_localCongruence_zero.mp k.prop
       obtain ⟨h_fix, -⟩ := h_label
       simpa [π, Subtype.ext_iff] using h_fix ⟨k, hk_int⟩ hk_red
-    have h_op : T.restrict h_maps = ρ.asAlgebraHom (groupAlgElem fun g ↦ conj (Ξ.evalGL g)) :=
+    have h_op : T.restrict h_maps = ρ.asAlgebraHom (groupAlgElem (conj ∘ Ξ.evalGL)) :=
       LinearMap.ext fun x ↦ Subtype.ext (hρ _ x).1
     have h_orth : classInner Ξ.evalGL ρ.character = 0 := by
-      simpa [h_op, classInner, character, asAlgebraHom_eq_sum, finMean,
-        ↓ finsum_eq_sum_of_fintype] using h_zero
+      rw [← trace_asAlgebraHom_groupAlgElem_conj Ξ.evalGL, ← h_op, h_zero, zero_div]
     have h_kill : ρ.asAlgebraHom (groupAlgElem (starRingEnd ℂ ∘ Ξ.evalGL)) = 0 :=
       hΞ.asAlgebraHom_groupAlgElem_eq_zero_iff.2 h_orth
     obtain ⟨-, h_label_iff⟩ := hρ _ ⟨_, hf_fixed, hV⟩
@@ -384,13 +389,10 @@ lemma exists_baseChange_hasLabel [HasPrimitiveRoot5040 E'] {κ : Weight E}
   refine ⟨_, x.val.prop, P, h_eig, h_same, h_label_iff.mpr fun h_zero ↦ h_eig.1 ?_⟩
   -- The group algebra element `a` of `conj (S ⟨·, φ⟩)` acts as zero in every representation whose
   -- character is orthogonal to `S ∘ inl`. So `a = c * b * a`, with `b` the element of
-  -- `conj (S ∘ inl) = conj Ξ'.evalGL` (third part of
-  -- `isIrreducibleChar_and_mem_virtualChars_and_exists_mul`). If `b` killed `x = a y`, then
-  -- `x = 0`.
-  obtain ⟨-, -, h_absorb⟩ :=
-    isIrreducibleChar_and_mem_virtualChars_and_exists_mul ℤ (hS_char.comp inl).star.isClassFunction
-  obtain ⟨c, hc⟩ := h_absorb _ fun _ hV ↦
-    hS_char.star.asAlgebraHom_groupAlgElem_eq_zero inl (inr φ)
+  -- `conj (S ∘ inl) = conj Ξ'.evalGL` (`IsClassFunction.exists_eq_mul_groupAlgElem_mul`). If `b`
+  -- killed `x = a y`, then `x = 0`.
+  obtain ⟨c, hc⟩ := (hS_char.comp inl).star.isClassFunction.exists_eq_mul_groupAlgElem_mul _
+    fun _ hV ↦ hS_char.star.asAlgebraHom_groupAlgElem_eq_zero inl (inr φ)
       ((hS_char.comp inl).asAlgebraHom_groupAlgElem_eq_zero_iff.1 hV)
   rw [← DescendsTo.iff_comp_inl_eq_evalGL.1 h_lift'] at h_zero
   simpa [x, ← mk_eq_inl_mul_inr, h_zero] using

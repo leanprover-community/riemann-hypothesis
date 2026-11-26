@@ -1,10 +1,14 @@
 module
 
-public import Lib.General.Geometry.SmoothnessCriterion
-public import Lib.Shimura.Deformation.TangentBound
-public import Lib.Shimura.GoodReduction.MultiplicativeNorm
-public import Lib.Shimura.IntegralModel.BallImmersion
+import Mathlib.Algebra.Order.Star.Real
+import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.Shimura.ThetaModuli.FamilyFromPoints
+public import Lib.Shimura.IntegralModel.UniversalFamily
+import Lib.General.Geometry.SerreTheorem
+import Lib.General.Geometry.SmoothnessCriterion
+import Lib.Shimura.Deformation.TangentBound
+import Lib.Shimura.GoodReduction.MultiplicativeNorm
+import Lib.Shimura.IntegralModel.BallImmersion
 
 /-!
 # Existence of the universal theta family over a smooth projective base
@@ -72,7 +76,7 @@ lemma isUnit_star_sub_and_card_of_isGoodOver {E : Type} [Field E] [CMBase E] {D 
   -- As `#T ∉ w`, the factor `β̄ - β` is in `m`; adding `β - b` puts `β̄ - b` in `w`, against
   -- coprimality.
   have h_diff : algebraMap (𝓞 E) R (star D.β - D.β) ∈ m :=
-    (hm.isPrime.mem_or_mem h_mem).resolve_right (by simpa using hT)
+    (hm.isPrime.mem_or_mem h_mem).resolve_right (hT)
   have h_conj : star D.β - b ∈ m.comap (algebraMap (𝓞 E) R) := by
     simpa using add_mem h_diff hβ
   exact notMem_of_isCoprime_of_mem h_coprime hβ h_conj
@@ -223,13 +227,6 @@ def levelPoint (R : Subalgebra (𝓞 E) E) (ω : D.levelTorsion) (a : FamilyPara
   homMk (exists_isHomogeneousCoords_levelCoords R ω a).choose
     (exists_isHomogeneousCoords_levelCoords R ω a).choose_spec.1
 
-/-- The theta coordinates of the level point `ω` at `a` are homogeneous coordinates of
-`levelPoint R ω a`. -/
-lemma isHomogeneousCoords_levelPoint (ω : D.levelTorsion) (a : FamilyParameter D) :
-    ((hyperplaneBundle D.dualTorsion).pull prod.fst).IsHomogeneousCoords (levelPoint R ω a).left
-      (a.levelCoords ω) :=
-  (exists_isHomogeneousCoords_levelCoords R ω a).choose_spec.2
-
 /-- The reduced closure, in a product of projective spaces over `R` indexed by the level torsion,
 of the theta coordinates of the level points at the parameters `y b`. -/
 abbrev ThetaClosure [Fintype D.levelTorsion] (R : Subalgebra (𝓞 E) E) {B : Type}
@@ -262,7 +259,7 @@ lemma isHomogeneousCoords_complexPoint (b : B) (ω : D.levelTorsion) :
   -- The bundle is pulled back along the projection to the factor `ω`, which sends the point at `b`
   -- to `levelPoint R ω (y b)`.
   rw [IsHomogeneousCoords.pull_iff, ← comp_left, C.point_comp_proj]
-  exact isHomogeneousCoords_levelPoint ω (y b)
+  exact (exists_isHomogeneousCoords_levelCoords R ω (y b)).choose_spec.2
 
 /-- The morphism `C.scheme.hom` has a projective embedding, obtained via `C.incl` into a product of
 projective spaces. -/
@@ -373,7 +370,7 @@ lemma holomorphicAt_complexPoint {F : AnalyticFamily D} ⦃b : BallBase D.Index�
     ∏ ω : D.levelTorsion, (u b' • FamilyParameter.levelCoords (F, b') ω) (k ω)
   have h_analytic (k : D.levelTorsion → D.dualTorsion) : AnalyticAt ℂ (fun b' ↦ coords b' k) b :=
     Finset.analyticAt_fun_prod _ fun ω _ ↦
-      (hu ..).comp₂ analyticAt_id (F.analyticAt _ hb (toRealVectors (ratLift F.frame ω.1)))
+      (hu ..).comp₂ analyticAt_id (F.analyticAt _ hb (toRealVectors (ratLift F.frame ω.val)))
   refine .of_isHomogeneousCoords C.isProjEmbedding_pi_coordBundle h_analytic
     (hu_ne.mono fun b' h_unit ↦ ?_) fun _ ↦ Over.w _
   exact .pi (w := (·)) fun ω ↦ (C.isHomogeneousCoords_complexPoint (F, b') ω).smul h_unit

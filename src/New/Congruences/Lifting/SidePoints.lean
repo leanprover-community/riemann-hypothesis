@@ -1,6 +1,12 @@
 module
 
+public import Mathlib.RingTheory.PicardGroup
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.Topology.Sheaves.Presheaf
 public import New.Congruences.Lifting.CupProductBound
+public import New.Congruences.Lifting.HodgeExpansion
+import Lib.PadicHodge.Kisin.FrameTheorem
 
 /-!
 # Jump windows, the gap condition and points of the sides of a Kummer chart
@@ -400,7 +406,7 @@ lemma exists_mem_form_cocycle_eq_coboundary (W : Submodule BdRPlus BdR) {μ : S.
     BdR.exists_sub_mem_of_smul_sub_mem k.subgroup W Λ_mem
   refine ⟨Λ v - Algebra.cast a, ha, fun g ↦ ?_⟩
   have a_fixed : toGp (g : Γ.G) • (Algebra.cast a : BdR) = Algebra.cast a :=
-    (BdR.smul_algebraMap_padicAlgCl _ _).trans (congrArg _ (mem_localFieldOf.1 a.2 g))
+    (BdR.smul_algebraMap_padicAlgCl _ _).trans (congrArg _ (mem_localFieldOf.1 a.property g))
   rw [Λ_cob, smul_sub, a_fixed, sub_sub_sub_cancel_right]
 
 /-- Let `S` be a side of the chart `k`, with lattice `Y` and with cocycles `S.cocycleMap c` indexed
@@ -446,7 +452,7 @@ lemma exists_extend_form (W : Submodule BdRPlus BdR) {μ : S.Functional} (hμ : 
       ν (DiagTensor.mk 1 (t, c)) = μ (DiagTensor.mk 1 t) + f c := by simp [ν, hμ']
   refine ⟨ν, fun (t, c) g ↦ ?_, span_le.2 ?_, ext fun y ↦ by simp [ν]⟩
   · -- invariance: the cocycle term of the action cancels the coboundary of `f c`
-    have h_act : S.extensionLattice.ρ g (t, c) = (S.ρ g t + (S.cocycleMap c).1 g, c) := rfl
+    have h_act : S.extensionLattice.ρ g (t, c) = (S.ρ g t + (S.cocycleMap c).val g, c) := rfl
     rw [h_act, ν_apply, ν_apply, map_add, map_add, hμ t g, f_cob, smul_add, add_assoc,
       sub_add_cancel]
   · rintro _ ⟨⟨t, c⟩, rfl⟩
@@ -502,7 +508,7 @@ lemma mem_kisinLocAinf_of_inclKer {y : S.Ambient}
   -- The condition on lattices passes to `y` by projecting to the first factor, the condition on
   -- invariant forms because such forms extend.
   obtain ⟨r, hr, ⟨t, ht, h_lattice⟩, h_values⟩ :
-      ∃ r ∈ Submonoid.closure (Set.range fun a : ℕ ↦ (k.frobE a).1),
+      ∃ r ∈ Submonoid.closure (Set.range fun a : ℕ ↦ (k.frobE a).val),
         (∃ t ∈ Submonoid.powers tau, t • r • S.inclKer.wittMap y ∈ S.extensionLattice.ainfLattice) ∧
         ∀ n : ℕ, ∀ ν ∈ S.extensionLattice.forms,
           ν (φ ^ (n + 1) • r • S.inclKer.wittMap y) ∈ hodgeFil 0 := hy
@@ -524,24 +530,17 @@ integer `u` among the jumps at the letter `i.stepBack a`, `a` steps before `i`, 
 `μ` of type `u` there has `μ (φ^{-a} y)` in `t ^ (o a u) B_dR⁺`. -/
 lemma mem_withOrders_of_inclKer {y : S.Ambient}
     (hy : S.inclKer.wittMap y ∈ S.extensionLattice.withOrders i o) : y ∈ S.withOrders i o := by
-  obtain ⟨⟨h_span, h_letter⟩, h_exp⟩ := hy
-  have y_letter : y ∈ S.letterPart i := mem_letterPart_of_inclKer h_letter
-  refine ⟨⟨mem_kisinLocAinf_of_inclKer h_span, y_letter⟩, fun a u hu μ ⟨μ_form, μ_pole⟩ ↦ ?_⟩
+  have y_letter := mem_letterPart_of_inclKer hy.1.2
+  refine ⟨⟨mem_kisinLocAinf_of_inclKer hy.1.1, y_letter⟩, fun a u hu μ ⟨μ_form, μ_pole⟩ ↦ ?_⟩
   -- extend the letter part of `μ` to a form `ν`, keeping the order of its pole
-  obtain ⟨ν, ν_form, ν_pole, ν_res⟩ : ∃ ν ∈ S.extensionLattice.forms,
-      S.extensionLattice.ainfLattice ≤ ((hodgeFil (-u)).restrictScalars Ainf).comap ν ∧
-      ν ∘ₗ S.inclKer.wittMap.restrictScalars Ainf =
-        μ ∘ₗ (S.letterProj (i.stepBack a)).restrictScalars Ainf :=
+  obtain ⟨ν, ν_form, ν_pole, ν_res⟩ :=
     exists_extend_form _ (comp_letterProj_mem_forms μ_form) μ_pole
-  have ν_type : ν ∈ S.extensionLattice.formsOfType (i.stepBack a) u :=
-    ⟨ν_form, fun t ↦ ν_pole (letterProj_mk_mem_ainfLattice t)⟩
   -- `φ ^ (-a) • y` lies at the letter `i.stepBack a`, where `ν` restricts to `μ`
   have h_value : valueAt a ν (S.inclKer.wittMap y) = valueAt a μ y := by
     rw [← valueAt_comp_wittMap, ν_res]
     simp [JumpLattice.valueAt, mem_letterPart_iff_letterProj.1, ← phi_pow_smul_mem_letterPart_iff,
       y_letter, -Equiv.Perm.coe_inv]
-  rw [← h_value]
-  exact h_exp a u hu ν ν_type
+  exact h_value ▸ hy.2 a u hu ν ⟨ν_form, fun t ↦ ν_pole (letterProj_mk_mem_ainfLattice t)⟩
 
 /-- Let `y` be a vector of `W(C^♭) ⊗ Y`, for the lattice `Y` of the side `S`. If the image of `y` in
 the extension of `C` by `Y` lies in `kisinLoc` of the extension, then `y` lies in `kisinLoc` of `Y`.
@@ -613,19 +612,19 @@ lemma depthOperator_apply (g : k.galMonoid) (υ : Ainf) (x : S.extensionLattice.
 does `S.depthOperator g υ x`, the retraction of `υ (g x - x) / (z τ)` to the Kisin module of the
 extension. -/
 lemma depthOperator_mem_withOrders (g : k.galMonoid) (υ : Ainf) {x : S.extensionLattice.kisinLoc}
-    (hx_deep : g • x.1 - x.1 ∈ S.extensionLattice.withOrders i o) :
-    (S.depthOperator g υ x).1 ∈ S.extensionLattice.withOrders i o := by
-  have h_quot : k.zTauUnit⁻¹ • (g • x.1 - x.1) ∈ S.extensionLattice.withOrders i o :=
-    zTauUnit_inv_smul_sub_mem_withOrders x.2 hx_deep
+    (hx_deep : g • x.val - x.val ∈ S.extensionLattice.withOrders i o) :
+    (S.depthOperator g υ x).val ∈ S.extensionLattice.withOrders i o := by
+  have h_quot : k.zTauUnit⁻¹ • (g • x.val - x.val) ∈ S.extensionLattice.withOrders i o :=
+    zTauUnit_inv_smul_sub_mem_withOrders x.property hx_deep
   exact coordRetract_mem_withOrders _ (smul_mem _ υ h_quot)
 
 /-- The operator `S.depthOperator g υ`, the retraction of `x ↦ υ (g x - x) / (z τ)`, sends a point
 over a constant at the letter `i` to a vector over `0`. -/
 lemma projTrivial_depthOperator_eq_zero (g : k.galMonoid) (υ : Ainf)
-    {x : S.extensionLattice.kisinLoc} (hx_over : S.projTrivial.wittMap x.1 = S.constantAt i c) :
-    S.projTrivial.wittMap (S.depthOperator g υ x).1 = 0 := by
+    {x : S.extensionLattice.kisinLoc} (hx_over : S.projTrivial.wittMap x.val = S.constantAt i c) :
+    S.projTrivial.wittMap (S.depthOperator g υ x).val = 0 := by
   -- `g` fixes the constant below `x`, and the projection commutes with the retraction
-  have h_quot : S.projTrivial.wittMap (υ • k.zTauUnit⁻¹ • (g • x.1 - x.1)) = 0 := by
+  have h_quot : S.projTrivial.wittMap (υ • k.zTauUnit⁻¹ • (g • x.val - x.val)) = 0 := by
     simp [hx_over, constantAt, gal_smul_letterProj, k.galMonoid.smul_def]
   rw [depthOperator_apply, S.projTrivial.wittMap_coordRetract _ 0 h_quot]
   simp
@@ -664,9 +663,7 @@ lemma exists_isOperatorOfCost_mem_hodgeFil_succ (S : PairingSide O) (a : ℕ) (n
   -- the value of `x` is invariant modulo `hodgeFil n`, hence a constant modulo `hodgeFil n`; so
   -- `step` gives a constant modulo `hodgeFil (n + 1)`, and the retraction keeps it
   have x_mem : x.val ∈ S.extensionLattice.kisinLocAinf := x.property.1
-  obtain ⟨const, h_const⟩ : ∃ const : localFieldOf k.subgroup,
-      valueAt a μ (S.extensionLattice.depthStepOperator (cost a n) υ γ x.val) -
-        Algebra.cast const ∈ hodgeFil (n + 1) :=
+  obtain ⟨const, h_const⟩ :=
     step x.val x.property μ hμ (exists_valueAt_sub_mem_hodgeFil x_mem hμ h_inv)
   let y : S.extensionLattice.kisinLocAinf := p ^ cost a n • ⟨x.val, x_mem⟩ +
     ∑ l : Fin m, υ • ⟨_, zTauUnit_inv_smul_sub_mem_kisinLocAinf (γ l) x.property⟩
@@ -757,10 +754,10 @@ lemma pointsOver_nonempty_of_costs {e e' : ℕ} {depth depth' orders : ℕ → �
   -- `A` keeps `orders`, as `y` is deep for them; the new depth then improves them
   have exp : A y ∈ locKisinPart (S.extensionLattice.withOrders i orders) :=
     A_cost.apply_mem_of_kerWithOrders_le (fun _ ⟨h_exp, _⟩ ↦ h_exp) (nsmul_mem x_exp _) y_own
-  refine ⟨A y, (A y).2, ?_, mem_withOrders_improvedOrders exp deep, deep⟩
+  refine ⟨A y, (A y).property, ?_, mem_withOrders_improvedOrders exp deep, deep⟩
   -- `A y` and `p ^ (∑ q ∈ I, cost q.1 q.2) • y` lie over the same constant
-  calc S.projTrivial.wittMap (A y).1
-      = S.projTrivial.wittMap (p ^ (∑ q ∈ I, cost q.1 q.2) • y).1 :=
+  calc S.projTrivial.wittMap (A y).val
+      = S.projTrivial.wittMap (p ^ (∑ q ∈ I, cost q.1 q.2) • y).val :=
         sub_mem_ker_iff.1 (A_cost y_own).2
     _ = p ^ (∑ q ∈ I, cost q.1 q.2) • p ^ s • p ^ e • S.constantAt i c := by simp [y, pr_x]
     _ = p ^ (e + ∑ q ∈ I, cost q.1 q.2 + s) • S.constantAt i c := by module
@@ -790,25 +787,19 @@ a point at `i` over the same constant, with orders `shiftedOrders l 0 o` and dep
 `shiftedOrders l 1 o'`. -/
 lemma phi_pow_smul_mem_pointsOver (hw : w ∈ S.pointsOver c (i.stepBack l) e o o') :
     φ ^ l • w ∈ S.pointsOver c i e (shiftedOrders l 0 o) (shiftedOrders l 1 o') := by
-  have ⟨w_mem, pr_w, w_exp, _⟩ := hw
-  refine ⟨phi_pow_smul_mem_kisinLoc w_mem, ?_, phi_pow_smul_mem_withOrders w_exp, fun g ↦ ?_⟩
-  · simp [pr_w, smul_comm, phi_pow_smul_constantAt, Perm.coe_inv]
+  refine ⟨phi_pow_smul_mem_kisinLoc hw.1,
+    by simp [hw.2.1, smul_comm, phi_pow_smul_constantAt, Perm.coe_inv],
+    phi_pow_smul_mem_withOrders hw.2.2.1, fun g ↦ ?_⟩
   -- `g • w - w` is divisible by `k.zTau`, and `φ ^ l • k.zTau` vanishes at the levels `a < l`,
   -- which raises the order there from `0` to `1`
-  have quot : φ ^ l • k.zTauUnit⁻¹ • (g • w - w) ∈
-      S.extensionLattice.withOrders i (shiftedOrders l 0 o') :=
-    phi_pow_smul_mem_withOrders (zTauUnit_inv_smul_sub_mem_kerWithOrders hw g).1
-  have factor : g • φ ^ l • w - φ ^ l • w =
-      (φ ^ l • k.zTau) • φ ^ l • k.zTauUnit⁻¹ • (g • w - w) := by
-    simp [← frobGroup_smul_smul, ← zTauUnit_smul, smul_sub, smul_phi_pow_comm]
-  rw [factor]
+  have quot := phi_pow_smul_mem_withOrders (zTauUnit_inv_smul_sub_mem_kerWithOrders hw g).1
+  rw [show g • φ ^ l • w - φ ^ l • w = (φ ^ l • k.zTau) • φ ^ l • k.zTauUnit⁻¹ • (g • w - w) by
+    simp [← frobGroup_smul_smul, ← zTauUnit_smul, smul_sub, smul_phi_pow_comm]]
   refine mem_withOrders_of_mem_hodgeFil (smul_mem _ _ quot) fun a u hu h_lt μ hμ ↦ ?_
   -- the order to reach differs from the order of the quotient only at the levels below `l`
   have ha : a < l := by lia
-  have h_zTau : phiInvToBdR a (φ ^ l • k.zTau) ∈ hodgeFil 1 := by
-    rw [phiInvToBdR_mem_hodgeFil_one_iff, zTau, smul_mul']
-    exact (frobE_dvd_phi_pow_tau ha).mul_right _
-  simpa [ha] using mul_mem_hodgeFil h_zTau (quot.2 a u hu μ hμ)
+  simpa [ha] using mul_mem_hodgeFil (phiInvToBdR_mem_hodgeFil_one_iff.2 <| by
+    simpa [zTau, smul_mul'] using (frobE_dvd_phi_pow_tau ha).mul_right _) (quot.2 a u hu μ hμ)
 
 /-- The constant `1` of the Tate dual side at the letter `i` acts on `S.Ambient` as the projector to
 the letter `i`. -/

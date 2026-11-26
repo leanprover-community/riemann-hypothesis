@@ -1,7 +1,9 @@
 module
 
+import Mathlib.Algebra.Order.Star.Rat
 public import New.Congruences.Selmer.Line
-public import New.Congruences.Selmer.RootsOfUnity
+import New.Congruences.Selmer.RootsOfUnity
+import New.Congruences.Selmer.StickelbergerLine
 
 /-!
 # Twisting, general form
@@ -45,7 +47,7 @@ open scoped NNReal ENNReal NNRat
 variable {ℓ : ℕ} [ThePrime ℓ] {E : Type} [Field E] [EmbeddedNumberField E] [NumberField.IsCMField E]
   {S₀ : Finset (FinPlace E)}
   {g₀ : Gal(Ω/E)} {ι κ : Type} {n : ι → Type} [∀ i : ι, Fintype (n i)] [∀ i : ι, DecidableEq (n i)]
-  {O : CoeffRing ℓ} (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.1 (n i))
+  {O : CoeffRing ℓ} (T : ∀ i : ι, SelmerDatum ℓ S₀ g₀ O.val (n i))
   (Y : κ → StickelbergerSystem ℓ S₀ g₀)
 
 open scoped Classical in
@@ -167,13 +169,6 @@ lemma coe_pow_apply_pow_eq_one (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl �
     (v : X.auxPrimes) : ((ζ ^ j) v : PadicAlgCl ℓ) ^ ℓ ^ N = 1 := by
   rw [Pi.pow_apply, SubmonoidClass.coe_pow, pow_right_comm, hζ v, one_pow]
 
-/-- The power `ψ ^ j` of the twist `ψ = ∏ ζ_𝔮 ^ λ_𝔮` by roots of unity `ζ_𝔮` of order dividing
-`ℓ ^ N` is the twist by the `ζ_𝔮 ^ j`, which again have order dividing `ℓ ^ N`. -/
-lemma twist_pow (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1) (j : ℕ) :
-    X.twist hζ ^ j = X.twist (ζ := ζ ^ j) (X.coe_pow_apply_pow_eq_one hζ j) := by
-  ext g
-  simp [← prod_pow, pow_right_comm]
-
 /-- The twist by roots of unity of order dividing `ℓ ^ N` has order dividing `ℓ ^ N`. -/
 lemma twist_pow_eq_one (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1) :
     X.twist hζ ^ ℓ ^ N = 1 := by
@@ -249,7 +244,7 @@ lemma ellVal_twist_tameGenerator_sub_one_le
     ‖(ζ v - 1).val‖ = ‖X.twist hζ γ ^ a - 1‖ := by
       rw [← ha, h_value, AddSubgroupClass.coe_sub, OneMemClass.coe_one]
     _ ≤ ‖X.twist hζ γ - 1‖ :=
-      Period.norm_pow_sub_one_le_norm_sub_one h_fin.norm_eq_one.le a
+      TauCeti.norm_pow_sub_one_le_norm_sub_one h_fin.norm_eq_one.le a
 
 open scoped Classical in
 /-- Let `X` be twist polynomials, with a set `X.auxPrimes` of at most `s₀ / 2` auxiliary primes and
@@ -448,7 +443,8 @@ theorem exists_anticyclotomic_twist [Finite ι] [Finite κ] (hS₀ : placesDivid
   refine ⟨X.auxPrimes, X.twist hζ_N, X.auxiliary, fun j hj ↦ ?_⟩
   have h_far : ∀ v : X.auxPrimes, ellVal ((ζ ^ j) v - 1).val ≤ (r : ℝ≥0) :=
     fun v ↦ ellVal_pow_sub_one_le hr_lt hj (hζ v) (hζ_far v)
-  rw [X.twist_pow hζ_N j]
+  rw [show X.twist hζ_N ^ j = X.twist (ζ := ζ ^ j) (X.coe_pow_apply_pow_eq_one hζ_N j) by
+    ext g; simp [← prod_pow, pow_right_comm]]
   exact X.isSmallTwist_twist _ hS₀ hε_one (hr_ε.trans (half_le_self hε.le)) h_far
     (fun i ↦ h_value (.inl i) hj) fun k ↦ h_value (.inr k) hj
 

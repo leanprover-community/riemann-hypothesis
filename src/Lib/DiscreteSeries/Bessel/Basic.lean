@@ -1,7 +1,12 @@
 module
 
-public import Lib.DiscreteSeries.Bruhat.FloorMeasures
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
 public import Lib.DiscreteSeries.Haar.CayleyChart
+public import Lib.Adelic.QuotientMeasure.Basic
+public import Lib.DiscreteSeries.Bruhat.FloorGroups
+public import Lib.General.Measure.IdempotentKernel
+public import Lib.General.Measure.QuadricDisintegration
+import Lib.DiscreteSeries.Bruhat.FloorMeasures
 
 /-!
 # The real unitary group G₁, unipotent coordinates and Bessel functions
@@ -280,7 +285,7 @@ variable {j : ℕ} {𝔰 : Shape}
 /-- For y in G₁, the a-th vector y⁻¹f_a of the frame moved by y⁻¹, as a vector of the standard
 Euclidean space. -/
 def frameVector (y : 𝔰.G₁) (a : Fin (𝔰.ϱ + 1)) : EuclideanSpace ℂ 𝔰.BesselIndex :=
-  WithLp.toLp 2 fun i : 𝔰.BesselIndex ↦ y⁻¹.1 i (𝔰.besselFrame a)
+  WithLp.toLp 2 fun i : 𝔰.BesselIndex ↦ y⁻¹.val i (𝔰.besselFrame a)
 
 /-- For y∈G₁, the (ϱ+1)×(ϱ+1) complex matrix Z(y) of products h(f_j, y f_l) of the frame with
 its translate. -/
@@ -484,7 +489,8 @@ attribute [simps (attr := local simp) (rhsMd := .default) -isSimp coe_val, irred
 complement. -/
 theorem coe_embedH (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
     (embedH h).val.val = actOnCols 𝔰.definiteCols h.val.val := by
-  simp [actOnCols, val_toBesselH_apply_coe, inclMatrix, ← ext_iff, Matrix.one_apply, Matrix.mul_apply]
+  simp [actOnCols, val_toBesselH_apply_coe, inclMatrix, ← ext_iff, Matrix.one_apply,
+    Matrix.mul_apply]
 
 /-- Each explicit isometry `unipotentOf q` lies in 𝖴⁰ = `besselU0`: it is block upper unitriangular
 for the levels `New.BesselIndex.level` and fixes the frame e_0, …, e_{ϱ-1}, z. -/
@@ -634,7 +640,7 @@ measure on `UpperEntries 𝔰.n` (the entries above the diagonal of a matrix of 
 `New.Shape.besselHaar₀`, under (x, u) ↦ u · `liftUnitriangular x`. -/
 def _root_.New.Shape.besselHaar : Measure (besselU (T := 𝔰.middleGram (1 : ℂ))) :=
   (volume.prod 𝔰.besselHaar₀).map (β := besselU) fun q ↦
-    ⟨q.2.1 * liftUnitriangular q.1, mul_mem q.2.2.1 (liftUnitriangular_mem_besselU q.1)⟩
+    ⟨q.2.val * liftUnitriangular q.1, mul_mem q.2.property.1 (liftUnitriangular_mem_besselU q.1)⟩
 
 /-- The measure on G₁ that computes integrals over 𝖴\G₁: Haar measure weighted by a cutoff for the
 measure `New.Shape.besselHaar` on 𝖴. -/

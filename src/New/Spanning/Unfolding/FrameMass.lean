@@ -1,7 +1,9 @@
 module
 
-public import Lib.SiegelWeil.OneVector.SiegelClassSum
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.Spanning.Bessel.FillingData
+import Lib.SiegelWeil.OneVector.SiegelClassSum
 
 /-!
 # Masses of spheres and of frames
@@ -72,20 +74,10 @@ lemma abs_sum_log_mass_ratio_sub_le :
     |∑ i ∈ Ico D.k D.r, (log (mass D.E (i + 1)) - log (mass D.E i) -
       D.f * ((i + 1 / 2) * log D.rootDisc + log i.factorial - (i + 1) * log (2 * π)))| ≤
       log (1 + D.b⁻¹ ^ 9) - 2 * (D.f * (2 / D.N)) := by
-  have h_places : 8 * D.f ≤ 2 ^ D.ϱ := D.nat_le_of_hasLogBound
-  have h_rank : 4 * D.ϱ + 12 ≤ D.k := D.nat_le_of_hasLogBound
-  have h_bound (i : ℕ) (hi : i ∈ Ico D.k D.r) :
-      |log (mass D.E (i + 1)) - log (mass D.E i) -
-        D.f * ((i + 1 / 2) * log D.rootDisc + log i.factorial - (i + 1) * log (2 * π))| ≤
-          2 / 2 ^ D.ϱ :=
-    abs_log_mass_ratio_sub_le D.E i D.ϱ h_places (h_rank.trans (mem_Ico.mp hi).1)
-  calc |∑ i ∈ Ico D.k D.r, (log (mass D.E (i + 1)) - log (mass D.E i) -
-        D.f * ((i + 1 / 2) * log D.rootDisc + log i.factorial - (i + 1) * log (2 * π)))|
-      ≤ ∑ i ∈ Ico D.k D.r, |log (mass D.E (i + 1)) - log (mass D.E i) -
-        D.f * ((i + 1 / 2) * log D.rootDisc + log i.factorial - (i + 1) * log (2 * π))| :=
-        abs_sum_le_sum_abs _ _
-    _ ≤ ∑ _i ∈ Ico D.k D.r, (2 / 2 ^ D.ϱ : ℝ) := sum_le_sum h_bound
-    _ ≤ log (1 + D.b⁻¹ ^ 9) - 2 * (D.f * (2 / D.N)) := D.sum_two_div_two_pow_le_log_sub
+  refine (abs_sum_le_sum_abs _ _).trans <|
+    (sum_le_sum fun i hi ↦ abs_log_mass_ratio_sub_le D.E i D.ϱ D.nat_le_of_hasLogBound
+      (le_trans D.nat_le_of_hasLogBound (mem_Ico.mp hi).1)).trans
+      D.sum_two_div_two_pow_le_log_sub
 
 /-- At every infinite place `v`, the generator `ϖ` of the different of `E` has `2 ≤ |ϖ|_v ≤ b`,
 where `b` is the weight of the data. -/
@@ -127,16 +119,11 @@ lemma cast_card_Ico_k_r : ((Ico D.k D.r).card : ℝ) = 2 * D.ϱ + 1 := by
 lemma log_prod_unitSphereMass (i : ℕ) :
     log (∏ v : D.Φ, D.unitSphereMass (i + 1) v) =
       -(D.f * ((i + 1 / 2) * log D.rootDisc + log i.factorial - (i + 1) * log (2 * π))) := by
-  have h_different : ∏ v : D.Φ, v (P.deltaE D.towerExp).val ^ ((i + 1 : ℕ) - 1 / 2 : ℝ) =
-      (D.rootDisc ^ D.f) ^ ((i + 1 : ℕ) - 1 / 2 : ℝ) := by
-    rw [Real.finsetProd_rpow _ _ fun v _ ↦ apply_nonneg v _, P.prod_deltaE_eq_rootDiscr_pow]
   have rd_pos : 0 < D.rootDisc := rootDiscr_pos D.E
-  have h_prod : ∏ v : D.Φ, D.unitSphereMass (i + 1) v = ((2 * π) ^ (i + 1)) ^ D.f /
-      ((D.rootDisc ^ D.f) ^ ((i + 1 : ℕ) - 1 / 2 : ℝ) * i.factorial ^ D.f) := by
-    simp only [unitSphereMass, prod_div_distrib, prod_mul_distrib, h_different, prod_const,
-      card_univ, Nat.add_sub_cancel]
-  simp (disch := positivity) only [h_prod, log_div, log_mul, log_rpow, log_pow]
-  push_cast
+  simp only [unitSphereMass, prod_div_distrib, prod_mul_distrib, prod_const, card_univ,
+    Nat.add_sub_cancel]
+  rw [Real.finsetProd_rpow _ _ fun v _ ↦ apply_nonneg v _, P.prod_deltaE_eq_rootDiscr_pow]
+  simp (disch := positivity) only [log_div, log_mul, log_rpow, log_pow, Nat.cast_add, Nat.cast_one]
   ring
 
 /-- The product of the sphere masses `sph_{i+1}` over the infinite places is `mass_i / mass_{i+1}`
@@ -217,15 +204,9 @@ lemma log_prod_frameMass :
   have N_pos : (0 : ℝ) < D.N := mod_cast D.N_prime.pos
   rw [prod_frameMass_eq_mul_prod, log_mul (by positivity) D.prod_prod_unitSphereMass_pos.ne',
     log_prod fun i _ ↦ (D.prod_unitSphereMass_pos (i + 1)).ne', log_pow, log_pow]
-  simp only [log_prod_unitSphereMass, sum_neg_distrib, ← mul_sum]
-  have h_sum : ∑ i ∈ Ico D.k D.r,
-      ((i + 1 / 2) * log D.rootDisc + log i.factorial - (i + 1) * log (2 * π)) =
-        ∑ i ∈ Ico D.k D.r, log i.factorial + (2 * D.ϱ + 1) *
-          ((D.k + D.ϱ + 1 / 2) * log D.rootDisc - (D.k + D.ϱ + 1) * log (2 * π)) := by
-    simp only [sum_sub_distrib, sum_add_distrib, ← sum_mul, sum_const, nsmul_eq_mul,
-      sum_Ico_k_r_cast, cast_card_Ico_k_r]
-    ring
-  rw [h_sum, log_mul two_ne_zero pi_ne_zero]
+  simp only [log_prod_unitSphereMass, sum_neg_distrib, ← mul_sum, sum_sub_distrib, sum_add_distrib,
+    ← sum_mul, sum_const, nsmul_eq_mul, sum_Ico_k_r_cast, cast_card_Ico_k_r,
+    log_mul two_ne_zero pi_ne_zero]
   ring
 
 /-- The logarithm of `c_G = vol U(k) (2 π ^ k / (k - 1)!) / vol U(r)`, the constant of the open

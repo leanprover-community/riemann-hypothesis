@@ -1,6 +1,15 @@
 module
 
+import Mathlib.Topology.Algebra.Group.Matrix
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.GLn.SchurModule.SchurOrthogonality
+public import Lib.GLn.SchurModule.GramMatrix
+public import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.GLn.SchurModule.WeylKernel
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Irreducibility under U(n)^Φ, polarisation and averaging of determinant polynomials
@@ -95,7 +104,6 @@ lemma mem_span_rowSubst_unitary {f g : MatrixPoly (Σ _ : Φ, n) ℂ}
   rw [← range_toPoly] at hf hg
   obtain ⟨v, rfl⟩ := hf
   obtain ⟨w, rfl⟩ := hg
-
   let bar : USign (1 : n → ℤˣ) →* USign (1 : n → ℤˣ) := U.map (starRingEnd ℂ)
   have h_translate (x : Φ → USign (1 : n → ℤˣ)) :
       toPoly (fun _ : Φ ↦ n) κ (conjWeylRep κ 0 x v) =

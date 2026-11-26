@@ -1,6 +1,21 @@
 module
 
-public import Lib.ClassField.Global.NormTheorems
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.GroupTheory.FiniteAbelian.Basic
+import Mathlib.Topology.Algebra.Group.OpenMapping
+import Mathlib.Topology.Baire.LocallyCompactRegular
+import TauCeti.Topology.Algebra.Group.Units
+public import Lib.ClassField.GaloisCohomology.TateIndexFormula
+public import Lib.ClassField.Local.ArtinMap
+import Lib.Adelic.Hecke.ClassSums
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.ArtinReciprocity
+import Lib.ClassField.Global.NormTheorems
+import Lib.ClassField.LocalDuality.KummerFiniteness
+import Lib.ClassField.Places.LocalFields
+import Lib.ClassField.Places.TameInertia
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Kummer characters, power indices and the existence theorem for totally complex fields
@@ -67,11 +82,6 @@ noncomputable abbrev idelesPowAt (n : ℕ) : Subgroup (𝔸f K)ˣ :=
 lemma idelesPowAt_one : idelesPowAt S 1 = ⊤ :=
   eq_top_iff.2 fun x _ ↦ mem_iInf.2 fun v ↦ ⟨ideleAt v.val x, pow_one _⟩
 
-/-- The component at `v` of the principal idele of `x ∈ Kˣ` is the image of `x` in `K_v`. -/
-lemma val_ideleAt_principalIdele (v : FinPlace K) (x : Kˣ) :
-    ((ideleAt v (principalIdele x) : (LocField v)ˣ) : LocField v) = algebraMap K (LocField v) x :=
-  rfl
-
 /-- As a rational number, the index `New.cokerKerIndex` of multiplication by `n` on `Additive Y` is
 `[Y : Y ^ n] / #Y[n]`. -/
 private lemma cokerKerIndex_natCast_eq_index_range_powMonoidHom_div {Y : Type} [CommGroup Y]
@@ -131,7 +141,7 @@ lemma index_pow_local_le (v : FinPlace K) :
         Nat.card (valRingBelow (LocField v) (intQpBar p) ⧸
           Ideal.span {(n : valRingBelow (LocField v) (intQpBar p))}) := by
     rw [map_pow, ← FinPlace.q, ← hF.residueCard_eq,
-      (hF.isUniformiser_iff.2 (v_uniformizer v)).card_quotient_span_eq_pow hF.toIsLocalGalois _
+      (hF.isUniformizer_iff.2 (v_uniformizer v)).card_quotient_span_eq_pow hF.toIsLocalGalois _
         h_val]
   rw [h_card, sq, mul_right_comm]
   intro i
@@ -321,7 +331,8 @@ lemma IsPlaceOver.smul_root_eq_of_local_pow {A : ClosurePlace} {v : FinPlace K}
       ∀ ζ : PadicAlgCl p, ζ ^ n = 1 → (⟨g, hg⟩ : decompGroup Γ A) • ζ = ζ ^ 1 := by
     rwa [← Units.val_eq_one, ← cast_one, cyclotomicCharMod_eq_iff] at h_cyc
   have hz_val : (z : LocField v) ^ n = algebraMap K (LocField v) x := by
-    simp [← val_ideleAt_principalIdele, ← hzx]
+    change (z : LocField v) ^ n = ((ideleAt v (principalIdele x) : (LocField v)ˣ) : LocField v)
+    simp [← hzx]
   have h_root : (j r / algebraMap (LocField v) (PadicAlgCl p) z) ^ n = 1 := by
     rw [div_pow, ← map_pow j, hr, ← map_pow (algebraMap (LocField v) (PadicAlgCl p)), hz_val,
       ← hj.map_algebraMap]
@@ -781,7 +792,7 @@ fixed field of `ker χ`, and let `ψ` be a continuous character of the finite id
 homomorphism `μ` on `ker χ` with `μ k = ψ (N z)` whenever the class of `k` is the Artin symbol over
 `L` of `z`, where `N` is the norm from `L` to `K`, is invariant under conjugation by `Γ`: the norm
 does not see the action of `Γ` on `L`. -/
-private lemma map_conjNormal_eq_of_forall_artinMap_eq (χ : QZChar Γ) [Finite (Γ ⧸ ker χ)]
+private lemma map_conjNormal_eq_of_forall_artinMap_eq (χ : QZChar Γ)
     (ψ : QZChar (𝔸f K)ˣ) (μ : ker χ →* Multiplicative QZ)
     (hμ : ∀ (z : (𝔸f (fixedFieldOf (K := K) (Ω := Ω) (ker χ)))ˣ) (k : ker χ),
       artinMap (ker χ) z = k →
@@ -996,12 +1007,12 @@ lemma OddPart.exists_detecting_points_hom [IsTotallyComplex K] (m : ℕ)
       abelianLift (χ f) a = 1 := by
     have h_conj (c : Γ) (hc : IsComplexConj c) : (χ f).val c = 0 :=
       (hc.false_of_isTotallyComplex (K := K)).elim
-    have h_decomp (w : FinPlace K) (_hw : w ∈ S) (g : Γ) (_hg : g ∈ decompGroup Γ (placeOver w)) :
+    have h_decomp (g : Γ) :
         m • (χ f).val g = 0 := by simp [χ, ← map_nsmul, hx.nsmul_eq_zero]
     have h_inertia (w : FinPlace K) (hw : w ∉ S) (g : Γ) (hg : g ∈ inertiaGroup Γ (placeOver w)) :
         (χ f).val g = 0 := by simp [χ, hx.unramified w hw g hg]
     have h_le : H ≤ (abelianLift (χ f)).ker := map_le_iff_le_comap.mpr
-      (sup_le_ker_abelianLift_artinMap S m (χ f) h_conj h_decomp h_inertia)
+      (sup_le_ker_abelianLift_artinMap S m (χ f) h_conj (fun _ _ g _ ↦ h_decomp g) h_inertia)
     exact h_le ((QuotientGroup.eq_one_iff a).mp (ε.map_eq_one_iff.mp ha))
   refine ⟨fun i ↦ eq_zero_of_forall_hom_eq_zero fun f ↦ ?_,
     fun h_zero ↦ funext fun g ↦ eq_zero_of_forall_hom_eq_zero fun f ↦ ?_⟩

@@ -1,7 +1,13 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import New.OneLift.ComparisonOperator.DeterminantProducts
 public import New.OneLift.ComparisonOperator.GluedLattices
+public import Lib.General.LinearAlgebra.MinorProducts
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # The polynomial map ζ, the datum Ψ^add and the series Υ; norm, degree and denominator of ζ
@@ -320,7 +326,7 @@ def addedDatum (u : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModul
   if z.submatrix id (Sum.map id Sum.inl) = inclMatrix (D.twistModulus ϑ 2).ResidueRing
     (.map (inr ∘ inr) id)
     then
-    ∑ g : GL D.CarrierIndex _, traceChar u (z.toCols₂.toCols₂.map (forgetTwist ϑ) * g.1)
+    ∑ g : GL D.CarrierIndex _, traceChar u (z.toCols₂.toCols₂.map (forgetTwist ϑ) * g.val)
   else 0
 
 /-- The coordinate l of the series Υ at h, for the choice `i`: the kernel of ((E^j)⁻, V″)
@@ -391,17 +397,8 @@ lemma card_detIndex_le (j : D.LiftIndex) (τ : NumberField.InfinitePlace D.E) :
     Fintype.card (DetIndex j τ) ≤ D.natB + D.offWeight + D.gap + D.m * D.gap := by
   -- By `card_detIndex_add_firstFactorCharExp` the count is at most the weight `D.liftWeight j τ`,
   -- and `j ≤ m`.
-  have h_mul : j * D.gap ≤ D.m * D.gap := mul_le_mul_left j.2.2 D.gap
+  have h_mul : j * D.gap ≤ D.m * D.gap := mul_le_mul_left j.property.2 D.gap
   grind [card_detIndex_add_firstFactorCharExp j τ, D.weight_le_natB_add_offWeight τ]
-
-/-- The number `card (DetIndex j τ)` of determinants at the infinite place `τ` is the number of
-columns of μ⁺. This is the sum of `(untwistedDescentPair j).colsPlus τ h` over heights
-`h < card (FirstFactorIndex j)`. It is at most `D.natB + D.offWeight + D.gap + D.m * D.gap`. -/
-lemma card_detIndex (j : D.LiftIndex) (τ : NumberField.InfinitePlace D.E) :
-    Fintype.card (DetIndex j τ) =
-        ∑ h ∈ range (Fintype.card (FirstFactorIndex j)), (untwistedDescentPair j).colsPlus τ h ∧
-      Fintype.card (DetIndex j τ) ≤ D.natB + D.offWeight + D.gap + D.m * D.gap :=
-  ⟨card_detIndex_eq_sum j τ, card_detIndex_le j τ⟩
 
 /-- Let `Z` have the `2 m + card (FirstFactorIndex j)` rows of a determinant det(𝖼; X z) at `j`, and
 as columns the last `D.posRank j - h ≤ j` of the `D.posRank j` positive indices of W_j and the
@@ -478,29 +475,33 @@ lemma hasWeightNormSqLeIf_stackedDet (j : D.LiftIndex) (i : D.RowChoice)
         (inFirstCols (stackedDet τ (constantRows j i Y τ l) (posEquiv j)))) =
       (((fromRows 0 (of fun u (c : Fin h) ↦ x (⟨τ, u⟩, c))).fromCols Z).submatrix id
         ((posEquiv j).trans colSplit)).det := by
-    simp [stackedDet, AlgHom.map_det, RingHom.map_det, ↓ constantRows, ↓ inclMatrix]
+    simp only [stackedDet, constantRows, inclMatrix, transpose_submatrix, transpose_one,
+      AlgHom.map_det, AlgHom.mapMatrix_apply, RingHom.map_det, RingHom.mapMatrix_apply,
+      Matrix.map_map, Equiv.coe_trans]
     -- The two matrices differ by the unipotent factor (1 0; T 1), where T holds the cleared
     -- variables: it adds multiples of the upper rows.
     let T : Matrix (FirstFactorIndex j) (Fin (2 * D.m)) ℂ :=
       of fun u a ↦ if h + a < D.posRank j then x (⟨τ, u⟩, h + a) else 0
     refine det_eq_of_eq_det_one_mul (fromBlocks 1 0 T 1) (by simp)
       (ext fun a ↦ ((posEquiv j).trans colSplit).forall_congr_left.mpr ?_)
-    -- Compare entries, by the kind of the factor and of the row.
-    cases l <;> cases a
-    all_goals
-      simp [T, Z, Matrix.one_apply, ↓ Matrix.mul_apply, ↓ constantRows, ↓ inclMatrix,
-        fromCols_map] at h_height ⊢
-      simp +contextual [colSplit, firstCols, inFirstCols, h_height, Fin.cast]
-    · -- an upper row vanishes in the first `h` columns
-      lia
-    · -- in a cleared column the sum over the upper rows has a single nonzero term
-      intro b
+    -- in a cleared column the sum over the upper rows has a single nonzero term
+    have h_single (u : FirstFactorIndex j) (b : Fin (D.posRank j - h)) :
+        ∑ a : Fin (2 * D.m), (if h + a < D.posRank j then
+          if (a : ℕ) = b then x (⟨τ, u⟩, h + b) else 0 else 0) = x (⟨τ, u⟩, h + b) := by
       have hb_lt : (b : ℕ) < 2 * D.m := by grind
       have hb_pos : h + b < D.posRank j := by lia
       rw [Fintype.sum_eq_single ⟨b, hb_lt⟩]
       · simp [hb_pos]
       · intro a ha
         simp [Fin.val_ne_of_ne ha]
+    -- Compare entries, by the kind of the factor and of the row.
+    cases l <;> cases a
+    all_goals
+      simp [T, Z, Matrix.one_apply, ↓ Matrix.mul_apply, ↓ constantRows, ↓ inclMatrix,
+        fromCols_map] at h_height ⊢
+      simp +contextual [colSplit, firstCols, inFirstCols, h_height, Fin.cast, h_single]
+    · -- an upper row vanishes in the first `h` columns
+      lia
     · -- if `h = posRank j` there is no cleared column
       lia
   obtain ⟨ξ, h_eval, h_norm⟩ := exists_toPoly_eq_det_and_weylNormSq_le τ h_lt

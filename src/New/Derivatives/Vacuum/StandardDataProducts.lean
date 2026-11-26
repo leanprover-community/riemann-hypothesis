@@ -1,7 +1,12 @@
 module
 
-public import New.Derivatives.Vacuum.JetIntegrality
-public import New.Derivatives.Vacuum.ShortVectors
+public import New.Derivatives.FormalGroup.Resolution
+public import New.Derivatives.Vacuum.IntegralVacuum
+import Lib.CM.Integrality.IsogenyIntegrality
+import Lib.General.NumberTheory.SUnitsAndClassNumber
+import Lib.Weil.Construction.FourierInversion
+import New.Derivatives.Vacuum.JetIntegrality
+import New.Derivatives.Vacuum.ShortVectors
 
 /-!
 # Standard data as products of theta functions of the curve
@@ -144,7 +149,7 @@ lemma mem_integralAfter_of_nsmul_mem {δ : 𝓞 P.K} {ν : ℕ} (hν : p.Coprime
     simpa using v_algebraMap_eq_one (u.isPrime.notMem_of_isCoprime_of_mem hν.cast hu)
   have h_int : ν • y ∈ integralAfter δ fun u : FinPlace (P.E s) ↦ ↑p ∈ u.asIdeal :=
     integralAfter.stdLattice_le hy
-  simpa [mul_left_comm, h_unit] using h_int c u hu
+  simpa [h_unit] using h_int c u hu
 
 /-- If the `w i` lie in the lattice `𝔞₀` (their finite images are integral) and `ν` is prime to
 `p`, the finite images of the vectors `w i / ν` of `Eⁿ` are integral at all places above `p`. -/
@@ -416,7 +421,7 @@ def thetaMultiples {J : Type} [Fintype J] (μ : J → InfinitePlace (P.E s) × n
     exact ⟨H + H', add_mem hH hH', by rw [map_add, map_add, hg, hg', mul_add]⟩
   smul_mem' := by
     rintro a g ⟨H, hH, hg⟩
-    refine ⟨ιₚ a • H, P.cmCurve.smul_mem_multiSeriesRing a.2 hH, ?_⟩
+    refine ⟨ιₚ a • H, P.cmCurve.smul_mem_multiSeriesRing a.property hH, ?_⟩
     rw [mul_smul_comm, ← hg]
     change MvPowerSeries.map ιₚ (V.jetSeries c ((a : ℂ) • g)) =
       ιₚ a • MvPowerSeries.map ιₚ (V.jetSeries c g)

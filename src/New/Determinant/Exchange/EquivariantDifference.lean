@@ -1,6 +1,10 @@
 module
 
 public import New.Determinant.Exchange.MatchingPartners
+public import Lib.Weil.DualPair.ThetaIntegrals
+public import Lib.Weil.DualPair.WeilAction
+import Lib.ClassField.HeckeCharacter.TameModulus
+import Lib.SiegelWeil.Tower.LineGaussSums
 
 /-!
 # The difference in the exchange identity as an equivariant lift

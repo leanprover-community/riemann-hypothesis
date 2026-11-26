@@ -1,9 +1,14 @@
 module
 
+public import Mathlib.RingTheory.MvPowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.PiTopology
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PowerSeries.Expand
+import TauCeti.RingTheory.MvPowerSeries.Dvd
+import TauCeti.RingTheory.MvPowerSeries.Order
 public import Lib.General.Algebra.AdicCompletion
-public import TauCeti.RingTheory.MvPowerSeries.Derivative
-public import TauCeti.RingTheory.MvPowerSeries.Dvd
-public import TauCeti.RingTheory.MvPowerSeries.Order
 
 /-!
 # Power series with prime power exponents, congruences and convergent sums
@@ -308,22 +313,13 @@ lemma summable_smul_pow_pow [TopologicalSpace R] {p : ℕ} (hp : 1 < p) {G : ℕ
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- In the valuation ring of `ℂ_[p]` the element `x` divides `y` exactly if `‖y‖ ≤ ‖x‖`. -/
-lemma dvd_iff_norm_le {x y : valRingCp p} : x ∣ y ↔ ‖(y : ℂ_[p])‖ ≤ ‖(x : ℂ_[p])‖ := by
-  refine ⟨?_, fun h ↦ ?_⟩
-  · rintro ⟨z, rfl⟩
-    simpa using mul_le_of_le_one_right (norm_nonneg _) z.property
-  obtain rfl | hx := eq_or_ne x 0
-  · simpa using h
-  have h_div : ‖(y / x : ℂ_[p])‖ ≤ 1 := by simpa using div_le_one_of_le₀ h (norm_nonneg _)
-  exact ⟨⟨y / x, h_div⟩, Subtype.ext (mul_div_cancel₀ _ (by simpa using hx)).symm⟩
-
 /-- In the valuation ring of `ℂ_[p]` the sum of a convergent family of multiples of `π` is a
 multiple of `π`. -/
 lemma dvd_of_hasSum {π a : valRingCp p} {f : ι → valRingCp p} (h_sum : HasSum f a)
     (hf : ∀ i : ι, π ∣ f i) : π ∣ a := by
   have h_closed : IsClosed {y : valRingCp p | π ∣ y} := by
-    simpa only [dvd_iff_norm_le] using isClosed_le continuous_subtypeVal.norm continuous_const
+    simpa only [valRingCp.dvd_iff_norm_le] using
+      isClosed_le continuous_subtypeVal.norm continuous_const
   exact h_closed.mem_of_tendsto h_sum (.of_forall fun t ↦ Finset.dvd_sum fun i _ ↦ hf i)
 
 /-- A convergent sum of power series over the valuation ring `valRingCp p` of `ℂ_[p]`, each

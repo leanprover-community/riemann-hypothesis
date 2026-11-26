@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.CategoryTheory.Limits.Final.Type
 public import Lib.Cohomology.ProjectiveLine.ChernClass
 
 /-!
@@ -407,16 +408,35 @@ lemma lineBasis_naturality (T : TotalH ((restrictAlong φ).obj M.functor) M'.fun
           x) := by
   -- Both sides are products of three factors, and the two restrictions of `x` agree; it remains
   -- to commute the restriction of `T` with the member of the family.
-  -- (erw: `mapThenComp` unfolds to these products only up to definitional equality)
-  erw [map_comp_assoc, map_comp_assoc, map_restrictAlong_restrictAlong,
+  let π := elementsProj (projLineAlong g)
+  let π' := elementsProj (projLineAlong (φ ⋙ g))
+  let ψ := precomp φ (projLineAlong g)
+  change comp (map (restrictAlong π') (comp (map (restrictAlong φ) x) T))
+        (M'.lineBasis i).toTotalH =
+      comp (map (restrictAlong ψ) (comp (map (restrictAlong π) x) (M.lineBasis i).toTotalH))
+        (map (restrictAlong π') T)
+  rw [map_comp_assoc, map_comp_assoc, map_restrictAlong_restrictAlong,
     map_restrictAlong_restrictAlong]
   cases i
   · -- `T` commutes with the class η by naturality of `TorsionCoeff.etaAt`.
-    erw [M.onElements.etaAt_naturality (precomp φ _) M'.onElements, TorsionCoeff.lineBasis_false]
-    rfl
+    rw [TorsionCoeff.lineBasis_false, TorsionCoeff.lineBasis_false]
+    refine congrArg (comp (map (restrictAlong (elementsProj (projLineAlong (φ ⋙ g)) ⋙ φ)) x)) ?_
+    exact (M.onElements.etaAt_naturality (precomp φ (projLineAlong g)) M'.onElements
+      (map (restrictAlong (elementsProj (projLineAlong (φ ⋙ g)))) T)
+      (freeAb.map (tautologicalSection (X := projLineAlong g)))).symm
   · -- the class `1` is the identity, so the products with it drop out
-    erw [map_homClass, comp_id, pullbackAlong_id]
-    rfl
+    have h_id : (M.lineBasis true).toTotalH =
+        homClass (𝟙 (elementsProj (projLineAlong g) ⋙ M.functor)) := rfl
+    have h_id' : (M'.lineBasis true).toTotalH =
+        homClass (𝟙 (elementsProj (projLineAlong (φ ⋙ g)) ⋙ M'.functor)) := rfl
+    rw [h_id, h_id', map_homClass]
+    have h_map := (restrictAlong (precomp φ (projLineAlong g))).map_id
+      (elementsProj (projLineAlong g) ⋙ M.functor)
+    rw [h_map]
+    exact (congrArg (comp (map (restrictAlong (elementsProj (projLineAlong (φ ⋙ g)) ⋙ φ)) x))
+      comp_id).trans
+      (congrArg (comp (map (restrictAlong (precomp φ (projLineAlong g) ⋙
+        elementsProj (projLineAlong g))) x)) pullbackAlong_id).symm
 
 namespace TorsionCoeff.HasLineFormula
 
@@ -483,12 +503,19 @@ lemma integrate_mul_cupClass (y : TotalH S M.functor) (ξ : TotalH M.functor M.f
       (comp (TotalH.map (restrictAlong (elementsProj (projLineAlong g))) y)
         (.of _ 2 M.cupClass +
           TotalH.map (restrictAlong (elementsProj (projLineAlong g))) ξ) :) = y := by
-  -- Expand the product: `y · cupClass` is `lerayHirsch` of `y` placed at the index of `cupClass`,
-  -- and the second term is restricted from the base, so it is `lerayHirsch` of a class placed at
-  -- the index of `1`. (erw: `lineBasis` unfolds to `cupClass` and `1` only definitionally)
-  erw [map_add, ← map_comp, ← lerayHirsch_single M.lineBasis false,
-    ← (lerayHirsch_single M.lineBasis true _).trans comp_id]
-  -- `integrate` reads off the coefficient of η: `y` for the first term, zero for the second.
+  let Φ : AbFunctor C ⥤ AbFunctor (projLineAlong g).Elements :=
+    restrictAlong (elementsProj (projLineAlong g))
+  have h_eta : lerayHirsch M.lineBasis S (.single false y) =
+      comp (TotalH.map Φ y) (.of _ 2 M.cupClass) :=
+    lerayHirsch_single M.lineBasis false y
+  have h_one : lerayHirsch M.lineBasis S (.single true (comp y ξ)) =
+      comp (TotalH.map Φ y) (TotalH.map Φ ξ) :=
+    ((lerayHirsch_single M.lineBasis true (comp y ξ)).trans comp_id).trans (map_comp ..)
+  have h_product := (map_add (comp (TotalH.map Φ y)) _ _).trans
+    (congrArg₂ (· + ·) h_eta.symm h_one.symm)
+  refine (congrArg (h.integrate (S := S)) h_product).trans ?_
+  refine (congrArg (h.integrate (S := S))
+    (map_add (lerayHirsch M.lineBasis S) (single false y) (single true (comp y ξ))).symm).trans ?_
   simp [integrate]
 
 end TorsionCoeff.HasLineFormula
@@ -564,7 +591,7 @@ def LineStage.consTautologicalPoint (t : LineStage A d) : LineStage A (d + 1) wh
   line_formula := t.line_formula.onElements
   points :=
     ⟨fun x ↦ Fin.cons x.2 (t.points.1 ((elementsProj (projLineAlong t.toTestOver)).obj x)), fun f ↦
-      funext (cases f.2 (congrFun (t.points.2
+      funext (cases f.map_val (congrFun (t.points.property
         ((elementsProj (projLineAlong t.toTestOver)).map f))))⟩
 
 /-- Integrating out the first parameter of r: pull back to the points of P¹, apply r with the
@@ -837,10 +864,10 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
       rw [map_sum]
       exact Finset.sum_congr rfl fun i _ ↦ (h_nat (ρ i) _).trans (congrArg _ (h_nat (T i) x))
     change comp _ (r _) = comp _ (r _)
-    -- `erw`: the target is well typed only after unfolding `Comparison.restrict`.
-    erw [h_sum_r, h_proj]
+    refine (congrArg (comp _) h_sum_r).trans ?_
+    refine Eq.trans ?_ (congrArg (comp _) h_proj).symm
     -- This is `h_sum_eq_foldr` at `t'` and the tautological section `a ↦ a.2` of `X`.
-    exact h_sum_eq_foldr t' ⟨fun a ↦ a.2, fun f ↦ f.2⟩ (r x)
+    exact h_sum_eq_foldr t' ⟨fun a ↦ a.val, fun f ↦ f.map_val⟩ (r x)
   | succ d ih =>
     -- Apply the induction hypothesis to the integrated operations.
     refine ih (fun j ↦ σ j.succ) (fun i ↦ (T i).integrate) fun t q' w ↦ ?_
@@ -903,10 +930,10 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
             (I.extendToZeros t.theory t.points w)) =
         pullbackAlong (I.atSection t.points)
           (pullbackAlong (t.toTestOver.whiskerLeft (abCoker.π _)) w) := by
-    erw [(congrArg _ (I.zerosEquiv_extendToZeros t.theory t.points w)).trans
-        (pullbackAlong_pullbackAlong ..),
-      pullbackAlong_pullbackAlong]
-    rfl
+    refine ((congrArg (pullbackAlong _) (I.zerosEquiv_extendToZeros t.theory t.points w)).trans
+      (pullbackAlong_pullbackAlong ..)).trans ?_
+    exact (pullbackAlong_pullbackAlong (f := I.atSection t.points)
+      (t.toTestOver.whiskerLeft (abCoker.π _)) w).symm
   let T (i : J) : NaturalOp m (abCoker (ℓ • 𝟙 (relFreeAb I.topPoints))) N :=
     { app t :=
         (comp (map (restrictAlong (sectionLift (X := X) t.toTestOver t.points)) (θ i).toTotalH
@@ -931,7 +958,7 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
   have h_chain :=
     I.exists_move_kernel
       (((Theory.locallyConstant.onElements (X := X)).onZeros I).onElements (X := _ ⋙ X)) h_max
-      (fun r ↦ ⟨_, fun f ↦ funext fun j ↦ (r j).2 f⟩) (fun _ hr ↦ funext hr)
+      (fun r ↦ ⟨_, fun f ↦ funext fun j ↦ (r j).property f⟩) (fun _ hr ↦ funext hr)
       (projLinePow.component ⟨_, fun f ↦ f.hom.map_val⟩) (projLinePow.component ⟨_, fun f ↦ f.2⟩)
       (pullbackAlong ((elementsProj _).whiskerLeft (abCoker.π _))
         (.homClass ((elementsProj _).whiskerLeft I.constToZeros)))
@@ -949,7 +976,7 @@ lemma isFiniteLerayHirsch_topPoints_of_surjective {J : Type*} {d : J → ℕ}
       ∑ i : β.support, mapThenComp (restrictAlong t.toTestOver) ((T i).app t w) (β i) =
         comp (TotalH.map (restrictAlong (sectionLift t.toTestOver t.points)) (lerayHirsch θ _ β) :)
           (I.extendToZeros t.theory t.points w) := by
-    simp_rw [show lerayHirsch θ _ β = _ from (β.1.sum_coe_sort _).symm, map_sum,
+    simp_rw [show lerayHirsch θ _ β = _ from (β.support.sum_coe_sort _).symm, map_sum,
       AddMonoidHom.finsetSum_apply]
     refine Finset.sum_congr rfl fun i _ ↦ ?_
     exact (mapThenComp_comp

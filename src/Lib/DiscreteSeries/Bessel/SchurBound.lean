@@ -1,5 +1,15 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.Function.Holder
+import Mathlib.MeasureTheory.Function.LpSpace.DomAct.Continuous
+import Mathlib.MeasureTheory.Measure.RegularityCompacts
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Topology.Algebra.Group.Units
 public import Lib.DiscreteSeries.Bessel.Basic
 
 /-!
@@ -214,7 +224,7 @@ theorem IsBoundedMeasurable.identDistrib_norm_translate (hν : orbitMeasure ρ v
   rw [← hν]
   refine identDistrib_orbitMeasure_mul_right g (fun (s : S) y ↦ ?_)
     hF.stronglyMeasurable.norm.measurable
-  rw [Subgroup.smul_def, smul_eq_mul, hF_left _ s.2, norm_smul, hc, one_mul]
+  rw [Subgroup.smul_def, smul_eq_mul, hF_left _ s.property, norm_smul, hc, one_mul]
 
 omit [CompleteSpace E] in
 /-- If `x` is integrable and `F` is bounded, transforms under `S` by factors `c s` of modulus one
@@ -276,7 +286,7 @@ theorem IsBoundedMeasurable.integral_inner_translate (hν : orbitMeasure ρ volu
   have shift (s t : G) : ∫ y : G, ⟪F (y * s), F (y * t)⟫_ℂ ∂ν = k (s⁻¹ * t) := by
     have h_inv (u : S) (y : G) :
         ⟪F (u • y), F (u • y * (s⁻¹ * t))⟫_ℂ = ⟪F y, F (y * (s⁻¹ * t))⟫_ℂ := by
-      simp [Subgroup.smul_def, mul_assoc, hF_left _ u.2,
+      simp [Subgroup.smul_def, mul_assoc, hF_left _ u.property,
         mul_left_comm (c (u : G)), Complex.mul_conj', hc]
     have h_meas : StronglyMeasurable fun y : G ↦ ⟪F y, F (y * (s⁻¹ * t))⟫_ℂ := by fun_prop
     simpa [k, hν, mul_assoc] using (identDistrib_orbitMeasure_mul_right (ν := ρ) (μ := volume)

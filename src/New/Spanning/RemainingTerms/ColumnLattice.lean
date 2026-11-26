@@ -1,6 +1,11 @@
 module
 
-public import New.Spanning.RemainingTerms.FrameCount
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import TauCeti.NumberTheory.NumberField.Countable
+public import New.Spanning.Unfolding.Terms
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.General.NumberTheory.LatticeCovolumes
+import New.Spanning.RemainingTerms.FrameCount
 
 /-!
 # The covolume of the lattice of columns
@@ -123,7 +128,7 @@ lemma isIntegral_conjTranspose_mul {S : Filling E 𝔰} {c : S.Classes}
 
 /-- A nonzero vector of `Λ ∩ X₀`, for the lattice `Λ` of the class `c`, has length at least `1` at
 some place, so the lattice of columns is discrete. -/
-instance {S : Filling E 𝔰} {c : S.Classes} [HasPrimitiveRoot5040 E] [S.IsAdmissible] :
+instance {S : Filling E 𝔰} {c : S.Classes} :
     DiscreteTopology (S.columnLattice ι c) := by
   refine discreteTopology_of_isOpen_singleton_zero ?_
   -- The tuples all of whose vectors are short at every place form a neighbourhood of zero.
@@ -201,7 +206,7 @@ lemma exists_int_eq_sum_re {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040
     exact ⟨n, by rw [← trace_eq_sum_Φ, ← hn, eq_intCast, Rat.cast_intCast]⟩
   obtain ⟨p, hp⟩ : ∃ p : ℤ, ∑ v : InfinitePlace E, 2 * (Φ v x).re = p := h_trace hx
   obtain ⟨q, hq⟩ : ∃ q : ℤ, ∑ v : InfinitePlace E, 2 * (Φ v (i * x)).re = q :=
-    h_trace (i.2.mul hx)
+    h_trace (i.property.mul hx)
   let t (v : InfinitePlace E) : ℂ := if Φ v i = Complex.I then Φ v x else star (Φ v x)
   have h_term (v : InfinitePlace E) : t v = (Φ v x).re - (Φ v (i * x)).re * Complex.I := by
     have h_sq : Φ v i ^ 2 = Complex.I ^ 2 := by
@@ -239,15 +244,13 @@ lemma exists_int_eq_sum_re {E : Type} [Field E] [CMType E] [HasPrimitiveRoot5040
   push_cast at hp
   exact ⟨n, by linarith⟩
 
-/-- Let `E` be a CM field that contains a primitive root of unity of order `5040`. Let `S` be
-admissible filling data over `E`: the level in `U(X₀)`, for `X₀ = E ^ 𝔰.κ`, is the preimage of the
-principal congruence subgroup of level `S.M`, reduction at the chosen places is onto, and size
-bounds in terms of `S.b` hold. The subgroup `S.columnLattice ι c` is the image of the `ι`-tuples of
+/-- Let `E` be a CM field containing a primitive root of unity of order `5040`, and let `S`
+be filling data over `E`. The subgroup `S.columnLattice ι c` is the image of the `ι`-tuples of
 vectors of `Λ ∩ X₀` under the conjugates of the chosen complex embeddings, one for each infinite
 place. It has a measurable fundamental domain whose Lebesgue measure is finite and at least `1`. -/
 theorem exists_isAddFundamentalDomain_columnLattice {E : Type} [Field E] [CMType E] {𝔰 : Shape}
     (ι : Type) [Fintype ι] (S : Filling E 𝔰) (c : S.Classes)
-    [HasPrimitiveRoot5040 E] [S.IsAdmissible] :
+    [HasPrimitiveRoot5040 E] :
     ∃ D : Set (InfinitePlace E → ι → 𝔰.κ → ℂ),
       MeasurableSet D ∧
       IsAddFundamentalDomain (S.columnLattice ι c) D volume ∧
@@ -273,6 +276,6 @@ theorem exists_isAddFundamentalDomain_columnLattice {E : Type} [Field E] [CMType
   obtain ⟨n, hn⟩ : ∃ n : ℤ, ∑ v : InfinitePlace E, (Φ v (∑ l : ι, (qᴴ * q') l l)).re = n :=
     exists_int_eq_sum_re h_int
   refine ⟨n, .trans ?_ hn⟩
-  simp [e, Fintype.sum_sigma, Matrix.mul_apply, Finset.sum_add_distrib]
+  simp [e, Fintype.sum_sigma, Matrix.mul_apply]
 
 end New.Filling

@@ -1,8 +1,20 @@
 module
 
-public import Lib.Base
-public import TauCeti.NumberTheory.Padics.Complex.Basic
 import TauCeti.RingTheory.AdicCompletion.Pi
+public import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.RingTheory.AdicCompletion.Algebra
+import Mathlib.RingTheory.AdicCompletion.LocalRing
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.Ideal.Finsupp
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.Valuation.Integral
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.NumberTheory.Padics.Complex.Basic
+public import Lib.Speed
 
 /-!
 # Adic completeness: p-adic tools, extension by continuity, topological bases
@@ -84,6 +96,11 @@ class PadicPlace (p : outParam ℕ) [Fact p.Prime] where
 
 export PadicPlace (ιₚ)
 
+/-- The valuation ring O_ι ⊂ ℂ of complex numbers whose image under ι : ℂ → ℂ_p has absolute
+value at most 1. -/
+noncomputable abbrev embValRing {p : ℕ} [Fact p.Prime] [ι : PadicPlace p] : ValuationSubring ℂ :=
+  ((NormedField.valuation (K := ℂ_[p])).comap ιₚ).valuationSubring
+
 variable {R : Type*} (N : Type*) [CommRing R] [AddCommGroup N] [Module R N] {π x y : R}
   {p n : ℕ} [Fact p.Prime] {F : Type*} [NormedField F] [PadicField F p] {S : Type*} [CommRing S]
 
@@ -105,7 +122,7 @@ lemma mem_valRingCp {x : ℂ_[p]} : x ∈ valRingCp p ↔ ‖x‖ ≤ 1 := Iff.r
 @[simp]
 lemma valRingCp.algebraMap_apply (x : valRingCp p) : algebraMap (valRingCp p) ℂ_[p] x = x := rfl
 
-lemma valRingCp.dvd_iff_norm_le (x y : valRingCp p) : x ∣ y ↔ ‖(y : ℂ_[p])‖ ≤ ‖(x : ℂ_[p])‖ :=
+lemma valRingCp.dvd_iff_norm_le {x y : valRingCp p} : x ∣ y ↔ ‖(y : ℂ_[p])‖ ≤ ‖(x : ℂ_[p])‖ :=
   (Valuation.integer.integers (NormedField.valuation (K := ℂ_[p]))).dvd_iff_le
 
 instance : ValuationRing (valRingCp p) :=
@@ -258,7 +275,7 @@ def adicMap (h : I ≤ comap f J) : AdicCompletion I R →+* AdicCompletion J S 
       -- these components are compatible because those of `x` are
       ext x
       obtain ⟨a, rfl⟩ := AdicCompletion.mk_surjective I R x
-      have h_sub : a n - a m ∈ I ^ m := by simpa using SModEq.sub_mem.1 (a.2 hmn).symm
+      have h_sub : a n - a m ∈ I ^ m := by simpa using SModEq.sub_mem.1 (a.property hmn).symm
       simpa [Quotient.factorPow, Ideal.Quotient.eq] using
         le_comap_pow f m (pow_right_mono h m h_sub)
 
@@ -428,12 +445,6 @@ lemma isHausdorff_of_injective_pi [IsHausdorff I F] {ι : Type*} (f : M →ₗ[S
     rw [← map_of, ← map_of, hxy]
   exact of_inj.mp h_coord
 
-/-- A finite free module over an `I`-adically complete ring is `I`-adically complete. -/
-lemma isAdicComplete_of_free [IsAdicComplete I S] [Free S M] [Module.Finite S M] :
-    IsAdicComplete I M :=
-  have := isHausdorff_of_injective_pi I _ (Free.chooseBasis S M).equivFun.injective
-  {}
-
 /-- Let C be I-adically complete, β: F → M have I-adically dense image, and g: F → C satisfy
 g(f) ∈ I^n C whenever β(f) ∈ I^{2n} M. Then g = G ∘ β for some S-linear G: M → C. -/
 lemma exists_adic_extension (I : Ideal S) [IsAdicComplete I C] (β : F →ₗ[S] M)
@@ -446,9 +457,9 @@ lemma exists_adic_extension (I : Ideal S) [IsAdicComplete I C] (β : F →ₗ[S]
   have hker : LinearMap.ker (AdicCompletion.map I β) ≤ LinearMap.ker (AdicCompletion.map I g) := by
     refine (mk_surjective I F).forall.2 fun a ha ↦ ext fun n ↦ ?_
     have hβ : β (a (n + n)) ∈ I ^ (n + n) • (⊤ : Submodule S M) :=
-      (Submodule.Quotient.mk_eq_zero _).1 (congrArg (·.1 (n + n)) ha)
+      (Submodule.Quotient.mk_eq_zero _).1 (congrArg (·.val (n + n)) ha)
     exact calc
-      g (a n) ≡ g (a (n + n)) [SMOD I ^ n • ⊤] := (a.map I g).2 le_add_self
+      g (a n) ≡ g (a (n + n)) [SMOD I ^ n • ⊤] := (a.map I g).property le_add_self
       _ ≡ 0 [SMOD I ^ n • ⊤] := zero.2 (mem_comap.1 (h_cont n hβ))
   -- `e` identifies the completion of `M` with a quotient of that of `F`; `G` is the induced map.
   let e : (AdicCompletion I F ⧸ LinearMap.ker (AdicCompletion.map I β)) ≃ₗ[AdicCompletion I S]
@@ -665,7 +676,7 @@ lemma eventually_sub_sum_mem (y : A) (n : ℕ) :
     (map_surjective_of_mkQ_comp_surjective c.dense).comp (mk_surjective I _) (of I A y)
   -- the `n`-th term `a n` of such a sequence approximates `y`
   have hf : y - linearCombination S c.b (a n) ∈ I ^ n • (⊤ : Submodule S A) :=
-    (Submodule.Quotient.eq _).1 (congrArg (fun z : AdicCompletion I A ↦ z.1 n) ha).symm
+    (Submodule.Quotient.eq _).1 (congrArg (fun z : AdicCompletion I A ↦ z.val n) ha).symm
   set f : c.Index →₀ S := a n
   -- every `F` that contains the support of the approximation `f` will do
   refine Filter.mem_atTop_sets.2 ⟨f.support, fun F hF ↦ (sub_mem_iff_right _ hf).1 ?_⟩

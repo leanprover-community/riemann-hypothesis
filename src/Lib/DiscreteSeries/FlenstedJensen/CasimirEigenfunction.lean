@@ -1,6 +1,24 @@
 module
 
-public import Lib.DiscreteSeries.FlenstedJensen.FlagDensities
+public import Mathlib.Geometry.Manifold.PartitionOfUnity
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Calculus.Deriv.Prod
+import Mathlib.Analysis.Calculus.LineDeriv.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
+import Mathlib.Topology.Germ
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+public import Lib.General.Analysis.GaussianIntegral
+public import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.DiscreteSeries.FlenstedJensen.FlagDensities
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Analysis.MeanValueAndTaylor
+import Lib.General.LinearAlgebra.PolarDecomposition
 
 /-!
 # Flensted-Jensen's integral, analyticity of c_λ and its Casimir eigenvalue
@@ -70,17 +88,6 @@ open Matrix MeasureTheory Finset ComplexConjugate ComplexOrder DiscreteSeries No
   ContinuousMap
 
 variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {l : HCParam ε}
-
-omit [DecidableEq n] in
-/-- For an integer vector `l`, the sum `2ρ = twoRho l ⊤` of all roots that are positive for `l` has
-its entries in the strict order of those of `l`. -/
-theorem twoRho_lt_twoRho {l : n → ℤ} {a b : n} (hab : l a < l b) : twoRho l ⊤ a < twoRho l ⊤ b := by
-  -- both sides are sums of signs of differences of entries of `l`; compare them term by term
-  have h_sum (i : n) : twoRho l ⊤ i =
-      ∑ j : n, ((if l j < l i then 1 else 0) - (if l i < l j then 1 else 0)) := by
-    simp [twoRho, ← sum_boole, sum_sub_distrib]
-  rw [h_sum, h_sum]
-  exact sum_lt_sum (fun j _ ↦ by split_ifs <;> lia) ⟨a, mem_univ a, by split_ifs <;> lia⟩
 
 @[fun_prop]
 theorem DiscreteSeries.analyticAt_matrix_inv {s : Matrix n n ℂ} (hs : s.det ≠ 0) :
@@ -493,11 +500,6 @@ theorem mem_splittable_iff {g : Matrix n n ℂ} :
     rw [h_left]
     exact hz.conjTranspose_mul_mul (by simp [hq_det])
 
-/-- If `a⁻¹ g` is accretive, then so is `a⁻¹ x` for all `x` near `g`. -/
-theorem eventually_isAccretive_inv_mul {a g : Matrix n n ℂ} (h_acc : (a⁻¹ * g).IsAccretive) :
-    ∀ᶠ x : Matrix n n ℂ in nhds g, (a⁻¹ * x).IsAccretive :=
-  (continuous_const_mul a⁻¹).continuousAt.eventually h_acc.setOf_mem_nhds
-
 open scoped Classical in
 /-- The coefficient on the set `New.splittable ε` of products: Flensted-Jensen's integral at
 `(a, a⁻¹ g)` for a chosen block diagonal `a` with `a⁻¹ g` accretive, and `0` off this set. -/
@@ -799,7 +801,7 @@ theorem casimir_dsCoeffSmooth [DecidableEq n] {l : HCParam (n := n) ε} [hl : l.
       AnalyticAt ℂ F y ∧ ((blockDiagPart ε g)⁻¹ * y).IsAccretive :=
     continuous_mat.tendsto g <| F_Φ.eventually_nhds.and <|
       (F₀_an.congr F_eq.symm).eventually_analyticAt.and <|
-        eventually_isAccretive_inv_mul (isAccretive_blockDiagPart_inv_mul g).2
+        (continuous_const_mul _).continuousAt.eventually (isAccretive_blockDiagPart_inv_mul g).2.setOf_mem_nhds
   -- `f` is the restriction of `F` to the group.
   let f : SmoothU ε C(maxCompactU ε, ℂ) := ⟨fun y : USign ε ↦ F y, ⟨F, F_smooth⟩, rfl⟩
   have f_eigen :

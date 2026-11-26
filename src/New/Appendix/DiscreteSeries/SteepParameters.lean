@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Analysis.Matrix.Order
 public import Lib.General.LinearAlgebra.MatricesNearIdentity
 
 /-!

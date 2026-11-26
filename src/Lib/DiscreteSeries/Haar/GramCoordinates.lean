@@ -1,6 +1,17 @@
 module
 
-public import Lib.DiscreteSeries.Haar.CayleyChart
+public import TauCeti.Analysis.Matrix.MeasurableSpace
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
+import Mathlib.Algebra.Order.Archimedean.Real.Hom
+import Mathlib.Analysis.Calculus.FDeriv.Star
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.Topology.Instances.Matrix
+public import Lib.General.LinearAlgebra.HermitianMatrices
+import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # Coordinates for the Gram map
@@ -161,11 +172,6 @@ theorem _root_.Measurable.matrix_mul [Fintype n] {X : Type} [MeasurableSpace X] 
 @[fun_prop]
 theorem measurable_matrix_det [Fintype n] : Measurable fun Z : Matrix n n ℂ ↦ Z.det :=
   continuous_id.matrix_det.measurable
-
-@[fun_prop]
-theorem measurable_matrix_inv [Fintype n] : Measurable fun Z : Matrix n n ℂ ↦ Z⁻¹ := by
-  simp only [Matrix.inv_def, Ring.inverse_eq_inv']
-  fun_prop
 
 /-- Substitution by an invertible real linear map `T` in an integral against an additive Haar
 measure: the Jacobian is `|det T|`. -/
@@ -438,7 +444,7 @@ theorem exists_measurePreserving_hermCorner [Fintype n] [Fintype n₁] [Decidabl
   obtain ⟨φ, φ_vol, φ_apply⟩ := exists_measurePreserving_hermBlocks e
   refine ⟨φ.trans ((Homeomorph.refl _).prodCongr (toCorner n₁).symm), ((MeasurePreserving.id _).prod
     (measurePreserving_toCorner.symm (toCorner n₁).toMeasurableEquiv)).comp φ_vol, fun t ↦ ?_⟩
-  simp [φ_apply] <;> rfl
+  simp [φ_apply]; rfl
 
 end New
 

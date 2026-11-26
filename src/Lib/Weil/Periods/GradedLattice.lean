@@ -1,6 +1,11 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
 public import Lib.Weil.Periods.PointLattice
+import Lib.Adelic.Adeles.IdeleModulus
+import Lib.Adelic.Unitary.GramMatrix
+import Lib.Adelic.Witt.WittTheorem
+import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # Iwasawa decomposition for the flag of the grades
@@ -182,7 +187,8 @@ lemma exists_gram_eq_degreeZeroPart [HasPrimitiveRoot5040 E] {w : ι → ℤ} {k
     calc (G * n.val) a j = (n.valᴴ * (G * n.val)) a j := by
           simp [Matrix.mul_apply (M := n.valᴴ), hn_col _ ha, Matrix.one_apply, apply_ite star]
       _ = G₀ a j := by rw [← mul_assoc, hn_gram]
-  rw [show n.val - 1 = G' * (G * n.val - G) by rw [mul_sub, ← mul_assoc, h_inv, one_mul], Matrix.mul_apply]
+  rw [show n.val - 1 = G' * (G * n.val - G) by rw [mul_sub, ← mul_assoc, h_inv, one_mul],
+    Matrix.mul_apply]
   refine Finset.sum_eq_zero fun a _ ↦ ?_
   obtain ha | ha := lt_or_ge (w i) (-w a)
   · rw [hG'_deg i a (by simpa using ha), zero_mul]

@@ -76,8 +76,8 @@ lemma convIndicator_mapDomain_offPlace {hK_open : IsOpen (K : Set (Gf E n))}
     {hK'_compact : IsCompact (↑(K ⊓ J.comap (Gf.atPlace v)) : Set (Gf E n))}
     (hv : v.IsSplit) (hK_max : maxCompactAt n v ≤ K) {a : ℂ[Gf E n]}
     (ha : a ∈ spanOn ℂ {x : Gf E n | x.atPlace v ∈ localIntGL n v}) (g : Gf E n) :
-    (convIndicator hK'_open hK'_compact (mapDomain (offPlace hv) a)).1 g =
-      if g.atPlace v ∈ J then (convIndicator hK_open hK_compact a).1 g else 0 := by
+    (convIndicator hK'_open hK'_compact (mapDomain (offPlace hv) a)).val g =
+      if g.atPlace v ∈ J then (convIndicator hK_open hK_compact a).val g else 0 := by
   -- By linearity we may take `a` to be a single element `x` that is integral at `v`. Its part at
   -- `v` then lies in `K`, so removing that part changes only the condition at `v`.
   induction ha using Submodule.span_induction with
@@ -131,7 +131,7 @@ lemma exists_atPlace_eq_of_convIndicator_ne_zero
     (hv : v.IsSplit) {S : Set (GL n (LocField v))}
     {u : ℂ[GL n (LocField v)]} (hu : u ∈ spanOn ℂ S) (b : ℂ[Gf E n]) {g : Gf E n}
     (hg : (convIndicator hK'_open hK'_compact
-      (mapDomain (ofSplitPlace hv) u * mapDomain (offPlace hv) b)).1 g ≠ 0) :
+      (mapDomain (ofSplitPlace hv) u * mapDomain (offPlace hv) b)).val g ≠ 0) :
     ∃ x ∈ S, ∃ k ∈ J, g.atPlace v = x * k := by
   contrapose! hg
   induction hu using Submodule.span_induction with

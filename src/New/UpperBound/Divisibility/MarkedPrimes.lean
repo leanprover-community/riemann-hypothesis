@@ -1,6 +1,8 @@
 module
 
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.UpperBound.Divisibility.JetExponent
+import New.Reduction.Data.Sizes
 
 /-!
 # Marked primes above `p`, full marks and the scaled Hecke operator
@@ -228,20 +230,14 @@ lemma exists_isFullMark (hp_lt : p < D.x₁) (h_exceptional : D.IsExceptional p)
   -- Take the primes induced by a-places that are smaller than their conjugates, for some linear
   -- order on the primes.
   obtain ⟨(_ : LinearOrder (FinPlace D.E)), -⟩ := exists_wellFoundedLT (FinPlace D.E)
-  refine ⟨{l ∈ D.aPlaces.image inducedPlace | l < star l}, ?_, fun τ hτ ↦ ?_⟩
-  · exact
-      { star_notMem := by grind [star_star]
-        isExceptional := h_exceptional
-        induced_by_aPlace := by grind
-        isSmallNonsplit := ⟨hp_lt, by simp [h_exceptional.chiK_eq_neg_one]⟩ }
+  refine ⟨{l ∈ D.aPlaces.image inducedPlace | l < star l},
+    { star_notMem := by grind [star_star], isExceptional := h_exceptional,
+      induced_by_aPlace := by grind,
+      isSmallNonsplit := ⟨hp_lt, by simp [h_exceptional.chiK_eq_neg_one]⟩ }, fun τ hτ ↦ ?_⟩
   -- As `o₀` is odd, `-p ^ o₀ * τ` is an a-place that induces the conjugate prime.
-  have h_aPlace : D.placeOfInt (-p ^ D.o₀ p) * τ ∈ D.aPlaces :=
-    (D.placeOfInt_mul_mem_aPlaces_iff h_exceptional.odd_o₀ τ hτ).2 dvd_rfl
-  have h_conj : inducedPlace (D.placeOfInt (-p ^ D.o₀ p) * τ) = star (inducedPlace τ) :=
-    D.inducedPlace_neg_pow_mul_of_odd h_exceptional.chiK_eq_neg_one h_exceptional.odd_o₀ τ
-  have h_star : star (inducedPlace τ) ≠ inducedPlace τ :=
-    h_exceptional.star_ne (D.p_mem_inducedPlace τ)
-  grind [star_star]
+  grind [star_star, (D.placeOfInt_mul_mem_aPlaces_iff h_exceptional.odd_o₀ τ hτ).2 dvd_rfl,
+    D.inducedPlace_neg_pow_mul_of_odd h_exceptional.chiK_eq_neg_one h_exceptional.odd_o₀ τ,
+    h_exceptional.star_ne (D.p_mem_inducedPlace τ)]
 
 variable {D} {Λ : Finset (FinPlace D.E)} {l : FinPlace D.E}
 
@@ -319,24 +315,16 @@ a-place, and `p` is exceptional, so it is inert in `K` and `-p` has odd order mo
 lemma IsMarked.notMem_bPlaces (h : D.IsMarked Λ) (σ : D.Φ)
     (hσ : inducedPlace σ ∈ Λ ∨ star (inducedPlace σ) ∈ Λ) : σ ∉ D.bPlaces := by
   intro h_bPlace
-  -- An a-place induces the prime of `σ` or its conjugate, so it lies on the orbit of `σ` under
-  -- `-p`.
-  obtain ⟨τ, h_aPlace, h_ind⟩ : ∃ τ ∈ D.aPlaces,
-      inducedPlace τ = inducedPlace σ ∨ inducedPlace τ = star (inducedPlace σ) := by
-    grind [h.induced_by_aPlace]
-  obtain ⟨i, rfl⟩ : ∃ i : ℕ, τ = D.placeOfInt (-p) ^ i * σ :=
-    (inducedPlace_eq_or_star_iff h.isExceptional.chiK_eq_neg_one τ σ).1 h_ind
-  -- Modulo `q₀` an a-place has class `1` and a b-place has class `-1`, so `(-p) ^ i ≡ -1`.
-  set c : (ZMod P.q₀)ˣ := P.placeClass (P.q₀.dvd_mul_right _) (D.placeOfInt (-p))
-  have h_neg : -c ^ i = 1 := by
-    simpa [aPlaces, placeClass_of_mem_bPlaces, h_bPlace, c] using h_aPlace
-  -- Raising this to the odd order `o₀` of `-p` gives `1 ≡ -1` modulo `q₀`.
-  have h_order : c ^ D.o₀ p = 1 := by rw [o₀, pow_orderOf_eq_one]
-  have h_eq : (1 : (ZMod P.q₀)ˣ) = -1 :=
-    calc (1 : (ZMod P.q₀)ˣ) = (-c ^ i) ^ D.o₀ p := by rw [h_neg, one_pow]
-      _ = -(c ^ D.o₀ p) ^ i := by rw [h.isExceptional.odd_o₀.neg_pow, pow_right_comm]
-      _ = -1 := by rw [h_order, one_pow]
-  exact P.d_pow_ne_neg_one 0 (by simpa using congrArg Units.val h_eq)
+  -- An a-place induces the prime of `σ` or its conjugate, so it lies on the `-p`-orbit of `σ`.
+  obtain ⟨τ, h_aPlace, h_ind⟩ : ∃ τ ∈ D.aPlaces, inducedPlace τ = inducedPlace σ ∨
+      inducedPlace τ = star (inducedPlace σ) := by grind [h.induced_by_aPlace]
+  obtain ⟨i, rfl⟩ := (inducedPlace_eq_or_star_iff h.isExceptional.chiK_eq_neg_one τ σ).1 h_ind
+  -- Modulo `q₀`, `(-p) ^ i ≡ -1`; raising to the odd order `o₀` of `-p` gives `-1 ≡ 1`.
+  have h_neg : -P.placeClass (P.q₀.dvd_mul_right _) (D.placeOfInt (-p)) ^ i = 1 := by
+    simpa [aPlaces, placeClass_of_mem_bPlaces, h_bPlace] using h_aPlace
+  have h_neg := congrArg (· ^ D.o₀ p) h_neg
+  rw [h.isExceptional.odd_o₀.neg_pow, pow_right_comm, o₀, pow_orderOf_eq_one] at h_neg
+  exact P.d_pow_ne_neg_one 0 (by simpa using congrArg Units.val h_neg.symm)
 
 /-- At a place whose induced prime, or its conjugate, lies in a marked set, the weight is `a / x₁`,
 because such a place is not a b-place. -/
@@ -445,14 +433,14 @@ preserves `D.SourceForm`. -/
 noncomputable def IsMarked.scaledHeckeOperator (h : D.IsMarked Λ) (l : Λ) :
     Module.End embValRing D.SourceForm :=
   LinearMap.restrictScalars embValRing <|
-    (p : ℂ) ^ heckeScalingExponent l.1 •
-      (heckeSplit (algFormRep D.columnCount (D.lastEntry 0)) (h.isSplit l.2)
+    (p : ℂ) ^ heckeScalingExponent l.val •
+      (heckeSplit (algFormRep D.columnCount (D.lastEntry 0)) (h.isSplit l.property)
         (D.ceilLogLifts p)).restrict
         fun _ hv ↦
           -- a vector of level `D.levelX 0` is spherical at `l`, by
           -- `maxCompactAt_le_levelX`
           heckeSplit_mem_levelSpace _ (D.ceilLogLifts p)
-            (levelSpace_anti (h.maxCompactAt_le_levelX l.2) hv) IsLevel.le hv
+            (levelSpace_anti (h.maxCompactAt_le_levelX l.property) hv) IsLevel.le hv
 
 /-! ### Collisions and full marks -/
 
@@ -500,7 +488,7 @@ lemma IsMarked.card_mul_transferExponent_add_sum_lowColumns_le (hj : j < D.m) [P
   -- The size of `p < x₁`, as an instance for `D.le_of_hasLogBound`.
   have hp_size : D.HasLogUpper p D.logX₁ :=
     D.hasLogUpper_of_le_of_nonneg hΛ.isSmallNonsplit.1.le p.cast_nonneg
-  have hp : 0 < p := q.1.pos
+  have hp : 0 < p := q.out.pos
   have h_place (σ : D.Φ) (hσ : σ ∈ placesInducing Λ) :
       D.ceilLogLifts p * (D.lowColumns j σ : ℝ) ≤ D.a / p / D.m + ite (σ ∈ D.aPlaces) (D.a / D.x₁)
         0 := by

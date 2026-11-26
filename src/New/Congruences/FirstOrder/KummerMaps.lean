@@ -1,8 +1,11 @@
 module
 
+import Mathlib.Topology.Algebra.Group.Units
 public import Lib.ClassField.GreenbergWiles.RelationsModL
 public import Lib.GaloisRep.Main.Defs
 public import New.Congruences.FirstOrder.EvenClasses
+import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
 
 /-!
 # Kummer maps
@@ -85,9 +88,8 @@ lemma isOpenEmbedding_toGalPlus : Topology.IsOpenEmbedding (toGalPlus E) :=
   isOpenEmbedding_galois_restrict (toGalPlus E) fun _ _ ↦ rfl
 
 lemma index_range_toGalPlus : (toGalPlus E).range.index = 2 := by
-  obtain ⟨-, -, h_index⟩ := isClosedEmbedding_galois_restrict (K := maximalRealSubfield E)
-    (L := E) (toGalPlus E) fun _ _ ↦ rfl
-  rw [h_index, Algebra.IsQuadraticExtension.finrank_eq_two]
+  rw [index_range_eq_finrank_of_smul_eq_smul (K := maximalRealSubfield E) (L := E)
+    (toGalPlus E) (fun _ _ ↦ rfl), Algebra.IsQuadraticExtension.finrank_eq_two]
 
 lemma isComplexConj_conjPlus : IsComplexConj (conjPlus E) := isComplexConj_cmConj
 
@@ -134,16 +136,12 @@ lemma toGalPlus_ofGalPlus (σ : Gal(Ω/maximalRealSubfield E)) :
     toGalPlus E (ofGalPlus σ) = if σ ∈ (toGalPlus E).range then σ else σ * conjPlus E :=
   (exists_toGalPlus_eq_ite σ).choose_spec
 
-lemma toGalPlus_ofGalPlus_of_mem {σ : Gal(Ω/maximalRealSubfield E)}
-    (hσ : σ ∈ (toGalPlus E).range) : toGalPlus E (ofGalPlus σ) = σ :=
-  (toGalPlus_ofGalPlus σ).trans (ite_eq_left hσ)
-
 lemma toGalPlus_ofGalPlus_of_notMem {σ : Gal(Ω/maximalRealSubfield E)}
     (hσ : σ ∉ (toGalPlus E).range) : toGalPlus E (ofGalPlus σ) = σ * conjPlus E :=
   (toGalPlus_ofGalPlus σ).trans (ite_eq_right hσ)
 
 @[simp] lemma ofGalPlus_toGalPlus (g : Gal(Ω/E)) : ofGalPlus (toGalPlus E g) = g :=
-  isOpenEmbedding_toGalPlus.injective (toGalPlus_ofGalPlus_of_mem ⟨g, rfl⟩)
+  isOpenEmbedding_toGalPlus.injective ((toGalPlus_ofGalPlus _).trans (ite_eq_left ⟨g, rfl⟩))
 
 /-- Let `F` be the maximal real subfield of the CM field `E`, let `Ω` be the algebraic closure of
 `ℚ` and `c` the chosen complex conjugation. The map `ofGalPlus : Gal(Ω/F) → Gal(Ω/E)`, which sends
@@ -526,23 +524,23 @@ lemma two_nsmul_comp_ofGalPlus_mem_cocycles {ν e : ℕ} {I : Type} [Finite I]
     2 • (z ∘ ofGalPlus) ∈ (kummerSetting e hx).cocycles P := by
   -- `X` is `z⁺` as a cocycle.
   let X : Z1 (tateTwistPlus ℓ E ν e).ρ := ⟨z ∘ ofGalPlus, comp_ofGalPlus_mem_Z1 hz h_even⟩
-  obtain ⟨-, h_coc⟩ := X.2
+  obtain ⟨-, h_coc⟩ := X.property
   have h_ine (g : Gal(Ω/maximalRealSubfield E))
-      (hg : g ∈ inertiaAbove (placesDividing _ ℓ ∪ P)ᶜ) : (2 • X).1 g = 0 := by
+      (hg : g ∈ inertiaAbove (placesDividing _ ℓ ∪ P)ᶜ) : (2 • X).val g = 0 := by
     simp [X, h_unr _ (ofGalPlus_mem_inertiaAbove hg)]
   -- For `g ∈ ker cyc⁺` we have `2 z⁺ g = z⁺ (g ^ 2)`.
   have h_sq (g : Gal(Ω/maximalRealSubfield E)) (hg : cyclotomicPlus ℓ E g = 1) :
-      (2 • X).1 g = X.1 (g * g) := by
+      (2 • X).val g = X.val (g * g) := by
     rw [h_coc g g, tateTwistPlus_ρ_eq_one e (cyclotomicPlusMod_eq_one ν hg)]
     exact two_nsmul _
-  have h_complex (c : Gal(Ω/maximalRealSubfield E)) (hc : IsComplexConj c) : (2 • X).1 c = 0 := by
+  have h_complex (c : Gal(Ω/maximalRealSubfield E)) (hc : IsComplexConj c) : (2 • X).val c = 0 := by
     rw [h_sq c (cyclotomicPlus_eq_one_of_isComplexConj hc), hc.mul_self]
     simpa using h_coc 1 1
   -- Above `ℓ`: `g ^ 2` lies in `G`, in the decomposition group and in the kernel of `cyc`.
   have h_above {u : FinPlace (maximalRealSubfield E)}
       (hℓ : (ℓ : 𝓞 (maximalRealSubfield E)) ∈ u.asIdeal) {g : Gal(Ω/maximalRealSubfield E)}
       (hg : g ∈ decompGroup Gal(Ω/maximalRealSubfield E) (familyPlace x u))
-      (hg_cyc : cyclotomicPlus ℓ E g = 1) : (2 • X).1 g = 0 := by
+      (hg_cyc : cyclotomicPlus ℓ E g = 1) : (2 • X).val g = 0 := by
     obtain ⟨s, hs⟩ := mul_self_mem_of_index_two index_range_toGalPlus g
     have hs_dec : toGalPlus E s ∈ decompGroup Gal(Ω/maximalRealSubfield E) (familyPlace x u) := by
       simpa only [hs] using mul_mem hg hg
@@ -556,14 +554,14 @@ lemma two_nsmul_comp_ofGalPlus_mem_cocycles {ν e : ℕ} {I : Type} [Finite I]
   have h_below {u : FinPlace (maximalRealSubfield E)} (hu : u ∈ familyPrimes ℓ x)
       (hℓ : (ℓ : 𝓞 (maximalRealSubfield E)) ∉ u.asIdeal) {g : Gal(Ω/maximalRealSubfield E)}
       (hg : g ∈ decompGroup Gal(Ω/maximalRealSubfield E) (familyPlace x u)) :
-      (2 • X).1 g = 0 := by
+      (2 • X).val g = 0 := by
     have h_place : IsPlaceOver (familyPlace x u) u := isPlaceOver_familyPlace u
     obtain ⟨i, hi⟩ := exists_isFrob_familyPlace ((mem_familyPrimes.1 hu).resolve_left hℓ)
     refine Z1.eq_zero_on_decompGroup (2 • X) h_place hi
       (fun a ha ↦ h_ine a ⟨u, not_or.2 ⟨hℓ, hP u hu⟩, _, h_place, ha⟩) ?_ g hg
     -- `map_inv` would move the inverse outside `toGalPlus`, hiding `ofGalPlus_toGalPlus`.
     simp [X, -map_inv, show z (x i).frob⁻¹ = 0 from (cocycleKer _ hz.2).inv_mem (h_frob i)]
-  refine ⟨⟨(2 • X).2, ?_⟩, ?_, h_complex⟩
+  refine ⟨⟨(2 • X).property, ?_⟩, ?_, h_complex⟩
   · -- Off `S₀ ∪ P` the prime lies in particular off `ℓ` and `P`.
     rintro g ⟨u, hu, hg⟩
     exact h_ine g ⟨u, fun h ↦ hu (h.imp_left fun hℓ ↦ mem_familyPrimes.2 (.inl hℓ)), hg⟩
@@ -794,12 +792,12 @@ lemma card_reductions_le {ν : ℕ} (e : ℕ) {I : Type} [Finite I]
   choose ψ hψ using exists_apply_toGalPlus_eq_ofZMod e hx T
   -- Choose a relation for each reduction; taking the reduction of its Kummer map is injective.
   have h_lift (f : (kummerSetting e hx).reductions ℓ T) :
-      ∃ y : (kummerSetting e hx).relations T, ∀ σ, Submodule.Quotient.mk (y.1 σ) = f.1 σ := by
-    obtain ⟨y, hy, h_red⟩ := Submodule.mem_map.1 f.2
+      ∃ y : (kummerSetting e hx).relations T, ∀ σ, Submodule.Quotient.mk (y.val σ) = f.val σ := by
+    obtain ⟨y, hy, h_red⟩ := Submodule.mem_map.1 f.property
     exact ⟨⟨y, hy⟩, congr_fun h_red⟩
   choose y h_red using h_lift
   have h_kummer (f : (kummerSetting e hx).reductions ℓ T) : IsKummerMap e hx T (ψ (y f)) :=
-    ⟨(y f).1, (y f).2, hψ (y f)⟩
+    ⟨(y f).val, (y f).property, hψ (y f)⟩
   let reduction (f : (kummerSetting e hx).reductions ℓ T) : kummerReductions e hx T :=
     ⟨reductionModL (ψ (y f)), Submodule.subset_span (Set.mem_image_of_mem _ (h_kummer f))⟩
   refine Nat.card_le_card_of_injective reduction fun f f' h ↦ Subtype.ext (funext fun σ ↦ ?_)
@@ -812,10 +810,10 @@ lemma card_reductions_le {ν : ℕ} (e : ℕ) {I : Type} [Finite I]
     obtain ⟨t, ht⟩ := natCast_dvd_sub_of_cast_eq h_cast
     refine (Submodule.mem_smul_pointwise_iff_exists _ _ _).2
       ⟨(ofZMod (ℓ ^ ν)).comp (.mulRight t), Submodule.mem_top, CharacterModule.ext _ fun a ↦ ?_⟩
-    change ofZMod (ℓ ^ ν) (ℓ * a * t) = (y f).1 (toGalPlus E g) a - (y f').1 (toGalPlus E g) a
+    change ofZMod (ℓ ^ ν) (ℓ * a * t) = (y f).val (toGalPlus E g) a - (y f').val (toGalPlus E g) a
     rw [hψ (y f), hψ (y f'), mul_comm _ a, mul_assoc, ← ht, mul_sub, map_sub]
     rfl
-  · simp [(y f).2.eq_zero_of_notMem σ hσ, (y f').2.eq_zero_of_notMem σ hσ]
+  · simp [(y f).property.eq_zero_of_notMem σ hσ, (y f').property.eq_zero_of_notMem σ hσ]
 
 /-- Let `ℓ` be a prime, `ν > 0`, `E` a CM field in the algebraic closure `Ω` of `ℚ` that contains a
 primitive `5040`-th root of unity, `F` its maximal real subfield and `G_ν` the subgroup of
@@ -846,15 +844,13 @@ theorem exists_card_lt_finrank_kummerReductions {ν : ℕ} (hν : 0 < ν) (e : �
   have h_torsion : Nat.card {a : tateTwistPlus ℓ E ν e // ℓ • a = 0} = ℓ :=
     (IsAddCyclic.card_nsmulAddMonoidHom_ker (ZMod (ℓ ^ ν)) ℓ).trans
       (by simp [Nat.gcd_eq_right hℓ_dvd])
-  obtain ⟨T, hT, h_count⟩ : ∃ T : Finset (FinPlace (maximalRealSubfield E)),
-      familyPrimes ℓ x ⊆ T ∧
-        ℓ ^ (#{u ∈ D.localPrimes | ↑ℓ ∉ u.1} + 1) ≤ Nat.card (D.reductions ℓ T) :=
-    -- The last argument is the definition of the local conditions above `ℓ` in `kummerSetting`.
+  -- The last argument is the definition of the local conditions above `ℓ` in `kummerSetting`.
+  obtain ⟨T, hT, h_count⟩ :=
     D.exists_pow_le_card_reductions hℓ_dvd (by rwa [card_infinitePlace_eq_card_infinitePlace E])
       continuous_cyclotomicPlus (fun g ↦ four_dvd_cyclotomicChar_sub_one _) h_ker h_torsion fun _ ↦
         rfl
   refine ⟨T, hT, ?_⟩
-  have h_primes : card I ≤ #{u ∈ D.localPrimes | ↑ℓ ∉ u.1} :=
+  have h_primes : card I ≤ #{u ∈ D.localPrimes | ↑ℓ ∉ u.asIdeal} :=
     card_le_card_of_injOn (fun i ↦ primeBelowPlus (x i).place)
       (by simp [D, kummerSetting, mem_familyPrimes, (hx _).1]) x_inj.injOn
   have h_pow : ℓ ^ (card I + 1) ≤ ℓ ^ Module.finrank (ZMod ℓ) (kummerReductions e hx T) := calc

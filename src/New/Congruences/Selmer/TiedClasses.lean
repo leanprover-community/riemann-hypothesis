@@ -1,6 +1,6 @@
 module
 
-public import Lib.ClassField.GaloisCohomology.ClassCounts
+public import Lib.ClassField.GaloisCohomology.Cohomology
 public import New.Congruences.Selmer.Count
 
 /-!
@@ -20,8 +20,9 @@ contains `B¹` when the ties are stable under coboundaries. So the count
   `New.Selmer.SelmerDatum.card_tiedSelmer_eq_card_classes`: the tied Selmer group is isomorphic to
   the group of classes of `T.tiedCocycles` in Mathlib's `continuousCohomology 1`.
 * `New.Selmer.SelmerDatum.length_tiedSelmer_eq_length_classes`,
+  `New.Selmer.SelmerDatum.length_tiedSelmer_eq_length_map_π₁`,
   `New.Selmer.SelmerDatum.exists_length_tiedClasses_le`: the same for lengths, with the classes
-  in the explicit `H¹ = Z¹ / B¹`, and the count `exists_length_tiedSelmer_le` restated for them.
+  as an `O`-module, and the count `exists_length_tiedSelmer_le` restated for them.
 
 Notions from other files:
 * `New.Selmer.SelmerDatum.reductionModule`: the discrete Galois module `T / a`, for `a ∣ ℓ ^ M`.
@@ -115,48 +116,69 @@ theorem tiedSelmer_inf_B1_eq_bot :
     (T.apply_γ_eq_zero (Submodule.mem_inf.1 hz).1)
 
 open scoped Classical in
+/-- Let `J` be a set of tied primes, where the elements with `V i` act trivially on `T / ℓ ^ M`,
+and let `J' ⊆ J`. Then the module `T.tiedCocycles R J' x i a` with the ties on `J'` contains the
+coboundaries: the tame generators `γ_v` act trivially, and so do the Frobenius elements `φ_v` with
+nonzero slope. -/
+lemma B1_le_tiedCocyclesZ1_of_subset {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
+    (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
+    (hV : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M T.ρ g = 1) {J' : Finset (FinPlace E)}
+    (hJ' : J' ⊆ J) : B1 (T.reductionModule ha).ρ ≤ T.tiedCocyclesZ1 ha R J' x i := fun z hz ↦ by
+  obtain ⟨b, hb⟩ := mem_B1_iff.1 hz
+  have h_eq : (z : Gal(Ω/E) → n → QuotSpan a) = fun g ↦ T.ρ g • b - b := (funext hb).symm
+  change (z : Gal(Ω/E) → n → QuotSpan a) ∈ T.tiedCocycles R J' x i a
+  rw [h_eq]
+  refine mem_selmerModule_of_subset (T.coboundary_mem_selmerModule hp hV ha b)
+    (Set.union_subset_union_right _ ?_) (fun _ hv ↦ Finset.mem_union_left _ hv)
+  rintro _ ⟨⟨⟨v, hv⟩, side⟩, rfl⟩
+  exact ⟨(⟨v, hJ' hv⟩, side), rfl⟩
+
+open scoped Classical in
 /-- If `V i g` says that `g` acts trivially on `T / ℓ ^ M`, the module `T.tiedCocycles` for tied
 primes `J` contains the coboundaries. -/
 lemma B1_le_tiedCocyclesZ1 {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
     (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
     (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1) :
-    B1 (T.reductionModule ha).ρ ≤ T.tiedCocyclesZ1 ha R J x i := fun z hz ↦ by
-  obtain ⟨b, hb⟩ := mem_B1_iff.1 hz
-  have h_eq : (z : Gal(Ω/E) → n → QuotSpan a) = fun g ↦ T.ρ g • b - b := (funext hb).symm
-  change (z : Gal(Ω/E) → n → QuotSpan a) ∈ T.tiedCocycles R J x i a
-  rw [h_eq]
-  exact mem_selmerModule_of_subset (T.coboundary_mem_selmerModule hp hV ha b) .rfl
-    fun v hv ↦ Finset.mem_union_left _ hv
+    B1 (T.reductionModule ha).ρ ≤ T.tiedCocyclesZ1 ha R J x i :=
+  T.B1_le_tiedCocyclesZ1_of_subset ha hp (fun g ↦ (hV g).mp) (fun _ hv ↦ hv)
+
+/-- Under the hypotheses of `B1_le_tiedCocyclesZ1_of_subset`, the tied Selmer group with the ties
+on `J' ⊆ J` has the length of the module of classes of `T.tiedCocycles R J' x i a` in
+`H¹(Gal(Ω/E), T / a)`. -/
+theorem length_tiedSelmer_eq_length_map_π₁ {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
+    (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x)
+    (hV : ∀ g : Gal(Ω/E), V i g → reduceModPow ℓ M T.ρ g = 1) {J' : Finset (FinPlace E)}
+    (hJ' : J' ⊆ J) :
+    length O (T.tiedSelmer R J' x i a) =
+      length O ((T.tiedCocyclesZ1 ha R J' x i).map (T.reductionModule ha).π₁) := by
+  rw [← (Submodule.comapSubtypeEquivOfLe (T.tiedSelmer_le_Z1 ha)).length_eq,
+    T.comap_tiedSelmer_eq ha]
+  exact length_inf_vanishingAt_eq_length_map (T.reductionModule_ρ_γ ha) T.isUnit_ζ_sub_one
+    (T.reductionModule ha).continuous_orbit _ (T.reductionModule ha).ker_π₁
+    (T.B1_le_tiedCocyclesZ1_of_subset ha hp hV hJ')
 
 variable {x : FinPlace E → AuxPrimeData E (ℓ ^ N) × (ι → O)}
   (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (hV : ∀ g : Gal(Ω/E), V i g ↔ reduceModPow ℓ M T.ρ g = 1)
 include hp hV
 
 /-- The tied Selmer group has the length of the module of classes of `T.tiedCocycles` in the
-explicit `H¹ = Z¹ / B¹` of `T / a`, which is `continuousCohomology 1` by
-`New.DiscreteModule.quotB1EquivH1`. -/
+cohomology `H¹(Gal(Ω/E), T / a)`. -/
 theorem length_tiedSelmer_eq_length_classes :
     length O (T.tiedSelmer R J x i a) =
-      length O ((T.tiedCocyclesZ1 ha R J x i).map (B1 (T.reductionModule ha).ρ).mkQ) := by
-  rw [← (Submodule.comapSubtypeEquivOfLe (T.tiedSelmer_le_Z1 ha)).length_eq,
-    T.comap_tiedSelmer_eq ha]
-  exact length_inf_vanishingAt_eq_length_map (T.reductionModule_ρ_γ ha) T.isUnit_ζ_sub_one
-    (T.reductionModule ha).continuous_orbit _ (Submodule.ker_mkQ _)
-    (T.B1_le_tiedCocyclesZ1 ha hp hV)
+      length O ((T.tiedCocyclesZ1 ha R J x i).map (T.reductionModule ha).π₁) :=
+  T.length_tiedSelmer_eq_length_map_π₁ ha hp (fun g ↦ (hV g).mp) (fun _ hv ↦ hv)
 
 /-- `New.Selmer.SelmerDatum.exists_length_tiedSelmer_le` for classes. Let `J` be a set of tied
 primes, where `V i g` says that `g` acts trivially on `T / ℓ ^ M`, and let `M < N` and
-`a ∣ ℓ ^ M`. The module of classes in `H¹ = Z¹ / B¹` of `T / a` of the cocycles unramified outside
+`a ∣ ℓ ^ M`. The module of classes in `H¹(Gal(Ω/E), T / a)` of the cocycles unramified outside
 `T.places ∪ J ∪ J̄` that obey the local conditions and the ties on `J` is no longer than the dual
 `T.dualSelmer`, up to the local terms `T.placesTerm`. -/
 theorem exists_length_tiedClasses_le (hN : M < N) :
     ∃ (A : ∀ v : FinPlace E, {A : ClosurePlace // IsPlaceOver A v}) (R : Finset (FinPlace E)),
-      length O ((T.tiedCocyclesZ1 ha J J x i).map (B1 (T.reductionModule ha).ρ).mkQ) ≤
+      length O ((T.tiedCocyclesZ1 ha J J x i).map (T.reductionModule ha).π₁) ≤
         length O (T.dualSelmer hp hV hN ha A R) + T.placesTerm := by
   rw [← T.length_tiedSelmer_eq_length_classes ha hp hV]
   exact T.exists_length_tiedSelmer_le hp hV hN ha
-
-variable [IsTopologicalGroup Gal(Ω/E)]
 
 /-- The tied Selmer group is isomorphic to the group of classes, in Mathlib's
 `continuousCohomology 1` of `T / a`, of the module `T.tiedCocycles` without the normalisation at

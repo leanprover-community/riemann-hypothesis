@@ -1,6 +1,15 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.NumberTheory.Padics.Complex.Basic
 public import New.Congruences.Lifting.CupProductBound
+public import Lib.PadicComparison.Descent.TestCategory
+import Lib.ClassField.Places.TameInertia
+import Lib.PadicHodge.Crystalline.Regularity
+import Lib.PadicHodge.Kisin.FrameTheorem
+import New.Congruences.Lifting.HodgeExpansion
 
 /-!
 # Tame Kummer charts and the power of p that kills cokernels of Kisin modules
@@ -350,8 +359,7 @@ lemma aeval_tameMultiplier_pow_mul_mem_liftIdeal {p : ℕ} [ThePrime p] [Γ : Gr
         d.tameGen_pow_smul_z j
     have h_scalar : toGp (d.tameGen ^ j) •
         (p ^ t * d.z ^ (k + 1) - r • (algebraMap (WittFq d.f) d.S w + d.z * v)).val = a j := by
-      simp [a, v', w', -map_pow, hz, fixesLambda_tameGen_pow, smul_sub, mul_assoc, mul_comm,
-        mul_left_comm]
+      simp [a, v', w', -map_pow, hz, fixesLambda_tameGen_pow, smul_sub, mul_assoc, mul_comm]
     have h_letter : S.trivialLattice.letterProj i (S.constantAt i c) = S.constantAt i c :=
       mem_letterPart_iff_letterProj.1 letterProj_mem_letterPart
     simp [hx_proj, frobGroup_smul_smul, h_fix, ← h_scalar, h_letter, -map_pow]
@@ -459,10 +467,10 @@ lemma exists_normal_fixer_index_coprime {p e : ℕ} [hp : ThePrime p] {f : ℕ+}
       (∀ g : Gp p, g ∈ U ↔ FixesLambda f g ∧ g ϖ = ϖ) ∧ U.Normal ∧ U.index.Coprime p := by
   -- `U` is the stabiliser of `ϖ` in the fixer `V` of the `N`-th roots of unity, `N = p ^ f - 1`.
   -- The exponent of `G_p / U` divides `f * N`, which is prime to `p`.
-  have hN : ¬p ∣ p ^ f.val - 1 := not_dvd_pow_sub_one
+  set N : ℕ := p ^ f.val - 1
+  have hN : ¬p ∣ N := not_dvd_pow_sub_one
   have ϖ_ne : ϖ ≠ 0 :=
     ne_zero_pow (ne_zero_of_dvd_ne_zero (NeZero.ne _) he) (hϖ.trans_ne (NeZero.ne _))
-  set N : ℕ := p ^ f.val - 1
   have quot_pow (g : Gp p) : (g ϖ / ϖ) ^ N = 1 := by
     obtain ⟨m, hm⟩ := he
     simp [hm, hϖ, pow_mul, div_pow, ← map_pow, hp.out.ne_zero]
@@ -474,43 +482,31 @@ lemma exists_normal_fixer_index_coprime {p e : ℕ} [hp : ThePrime p] {f : ℕ+}
     ⟨MulAction.stabilizer (Gp p) ϖ, isLocalGalois_padic.isOpen_stabilizer ϖ⟩
   have mem_U {g : Gp p} : g ∈ U ↔ g ∈ V ∧ g ϖ = ϖ := .rfl
   -- An element `n` of `U` fixes `ϖ` and the root of unity `g⁻¹ ϖ / ϖ`, so it fixes `g⁻¹ ϖ`.
-  have U_normal : U.Normal := by
-    refine ⟨fun n hn g ↦ ?_⟩
-    obtain ⟨hn_V, hn_ϖ⟩ := mem_U.mp hn
-    have h_fix : n (g.symm ϖ / ϖ) = g.symm ϖ / ϖ := mem_V.mp hn_V _ (quot_pow g.symm)
-    refine mem_U.mpr ⟨(MonoidHom.normal_ker _).conj_mem n hn_V g, ?_⟩
-    simpa [← g.eq_symm_apply, hn_ϖ, ϖ_ne] using h_fix
+  have U_normal : U.Normal := ⟨fun n hn g ↦ mem_U.mpr
+    ⟨(MonoidHom.normal_ker _).conj_mem n hn.1 g, by
+      simpa [← g.eq_symm_apply, (mem_U.mp hn).2, ϖ_ne] using
+        mem_V.mp hn.1 _ (quot_pow g.symm)⟩⟩
   -- An element of `V` multiplies `ϖ` by the root of unity `g ϖ / ϖ`, which it fixes.
   have pow_mem_U {g : Gp p} (hg : g ∈ V) : g ^ N ∈ U := by
-    have pow_apply_varpi (n : ℕ) : (g ^ n) ϖ = (g ϖ / ϖ) ^ n * ϖ := by
-      induction n with
-      | zero => simp
-      | succ n ih =>
-        rw [pow_succ', AlgEquiv.mul_apply, ih, map_mul, map_pow, mem_V.mp hg _ (quot_pow g),
-          pow_succ, mul_assoc, div_mul_cancel₀ _ ϖ_ne]
-    exact mem_U.mpr ⟨pow_mem hg N, by rw [pow_apply_varpi, quot_pow, one_mul]⟩
+    have hpow : ∀ n, (g ^ n) ϖ = (g ϖ / ϖ) ^ n * ϖ := Nat.rec (by simp) fun n ih ↦ by
+      rw [pow_succ', AlgEquiv.mul_apply, ih, map_mul, map_pow, mem_V.mp hg _ (quot_pow g),
+        pow_succ, mul_assoc, div_mul_cancel₀ _ ϖ_ne]
+    exact mem_U.mpr ⟨pow_mem hg N, by rw [hpow, quot_pow, one_mul]⟩
   -- Every `g` raises a root of unity `ζ` to some power `p ^ n`, and `p ^ f ≡ 1`, so `g ^ f ∈ V`.
-  have pow_mem_V (g : Gp p) : g ^ f.val ∈ V := by
-    refine mem_V.mpr fun ζ hζ ↦ ?_
-    obtain ⟨n, hn⟩ : ∃ n : ℕ, g ζ = ζ ^ p ^ n := exists_apply_eq_pow hN hζ g
-    have pow_apply (j : ℕ) : (g ^ j) ζ = ζ ^ (p ^ j) ^ n := by
-      induction j with
-      | zero => simp
-      | succ j ih =>
-        rw [pow_succ, AlgEquiv.mul_apply, hn, map_pow, ih, ← pow_mul, pow_succ, mul_pow]
-    have h_mod : (p ^ f.val) ^ n ≡ 1 ^ n [MOD N] := (Nat.modEq_sub one_le).pow n
-    rw [pow_apply, pow_eq_pow_of_modEq h_mod hζ, one_pow, pow_one]
+  have pow_mem_V (g : Gp p) : g ^ f.val ∈ V := mem_V.mpr fun ζ hζ ↦ by
+    obtain ⟨n, hn⟩ := exists_apply_eq_pow hN hζ g
+    have hpow : ∀ j, (g ^ j) ζ = ζ ^ (p ^ j) ^ n := Nat.rec (by simp) fun j ih ↦ by
+      rw [pow_succ, AlgEquiv.mul_apply, hn, map_pow, ih, ← pow_mul, pow_succ, mul_pow]
+    rw [hpow, pow_eq_pow_of_modEq ((Nat.modEq_sub one_le).pow n) hζ, one_pow, pow_one]
   -- `f * N` kills the finite group `G_p / U`, whose order then divides a power of `f * N`.
-  have h_exp (x : Gp p ⧸ U.toSubgroup) : x ^ (f.val * N) = 1 := by
+  have h_pgroup : IsPGroup (f * N) (Gp p ⧸ U.toSubgroup) := fun x ↦ ⟨1, by
     obtain ⟨g, rfl⟩ := mk_surjective x
-    rw [← mk_pow, eq_one_iff, pow_mul]
-    exact pow_mem_U (pow_mem_V g)
-  have h_pgroup : IsPGroup (f * N) (Gp p ⧸ U.toSubgroup) := fun x ↦ ⟨1, by simpa using h_exp x⟩
-  obtain ⟨m, hm⟩ : ∃ m : ℕ, U.index ∣ (f * N) ^ m := by
+    rw [pow_one, ← mk_pow, eq_one_iff, pow_mul]
+    exact pow_mem_U (pow_mem_V g)⟩
+  obtain ⟨m, hm⟩ : ∃ m, U.index ∣ (f * N) ^ m := by
     simpa [Subgroup.index_eq_card] using h_pgroup.exists_card_dvd_pow
-  have h_coprime : p.Coprime (f * N) := hp.out.coprime_iff_not_dvd.2 (hp.out.not_dvd_mul hf hN)
-  refine ⟨U, fun g ↦ ?_, U_normal, .of_dvd_left hm (h_coprime.symm.pow_left m)⟩
-  rw [mem_U, mem_V, fixes_roots_iff_fixesLambda]
+  exact ⟨U, fun g ↦ by rw [mem_U, mem_V, fixes_roots_iff_fixesLambda], U_normal, .of_dvd_left hm
+    ((hp.out.coprime_iff_not_dvd.2 (hp.out.not_dvd_mul hf hN)).symm.pow_left m)⟩
 
 /-- A chart is given by constants `W(𝔽_{p^f})`, an exponent `e` and an element `ϖ^♭` of the tilt of
 `O_{ℂ_p}`, with coordinate `z = [ϖ^♭]`. If `ϖ ^ e = p`, some chart with the given `f` and `e` has
@@ -529,7 +525,7 @@ lemma exists_inertia_smul_z_eq_teichmuller {p : ℕ} [ThePrime p] (c : Chart)
     ∃ s ∈ inertiaGroup (Gp p) (intQpBar p), s • c.z.val = teichmuller p x := by
   have h_trans {a b : PadicAlgCl p} {n : ℕ} (hn : 0 < n) (ha : a ^ n = p) (hb : b ^ n = a ^ n) :
       ∃ g ∈ inertiaGroup (Gp p) (intQpBar p), g • a = b :=
-    isLocalGalois_padic.exists_inertia_smul_eq_of_pow_eq isUniformiser_ell hn (by simpa) hb
+    isLocalGalois_padic.exists_inertia_smul_eq_of_pow_eq isUniformizer_ell hn (by simpa) hb
   rw [c.z_eq_teichmuller]
   exact exists_smul_teichmuller_eq _ h_trans c.varpiFlat x c.e (by simp [hc_untilt_pow])
     (hx_untilt_pow.trans hc_untilt_pow.symm)

@@ -1,7 +1,20 @@
 module
 
-public import Lib.General.Measure.HaarModulus
-public import Lib.PadicHodge.Crystalline.HodgeTateForms
+public import Aesop.BuiltinRules
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.LinearAlgebra.LinearIndependent.BaseChange
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Lib.Adelic.Hecke.ClassSums
+public import Lib.PadicHodge.TateSen
+import Lib.ClassField.Places.DecompositionCompletion
+import Lib.General.Measure.HaarModulus
+import Lib.General.NumberTheory.CoefficientRings
+import Lib.PadicHodge.Crystalline.HodgeTateForms
 
 /-!
 # Hodge frames and Hodge–Tate jumps under operations on representations
@@ -144,7 +157,7 @@ lemma isHodgeTateFrame_of_hodgeMatrix {W : Matrix ι ι BdRPlus} {k : ι → ℤ
   -- Apply `θ` and move the power of `χ(g)` to the other side.
   have h_theta : cyclotomicGp g ^ k l • ∑ m, ((N i m : PadicAlgCl p) : ℂ_[p]) *
       g • thetaBdR (W m l) = thetaBdR (W i l) := by
-    simp [← h_entry, Units.smul_def, mul_comm, mul_left_comm, PadicComplex.coe_eq, Algebra.cast,
+    simp [← h_entry, Units.smul_def, mul_comm, PadicComplex.coe_eq, Algebra.cast,
       smul_sum, Algebra.smul_def, sum_mul]
   rw [_root_.zpow_neg]
   exact eq_inv_smul_iff.2 h_theta
@@ -415,16 +428,10 @@ lemma IsPotentiallyCrystalline.exists_isHodgeTateFrame (h : IsPotentiallyCrystal
       ∃ b : Basis ι ℂ_[p] (T →ₛₗ[(γ : R →+* ℂ_[p])] ℂ_[p]),
         (∀ i : ι, b i ∈ hodgeTateMaps ρ γ (k i)) ∧ ∀ i l : ι, b i (e l) = P⁻¹ i l := by
   -- Lift `γ` to `δ` with algebraic values, and take a basis `U` of invariant vectors over `BdR`.
-  obtain ⟨δ, hδ⟩ : ∃ δ : R →ₐ[ℤ_[p]] PadicAlgCl p, ∀ r, γ r = δ r := exists_algHom_lift γ
-  obtain ⟨U, hU⟩ : ∃ U : GL ι BdR, ∀ i : ι, ∀ᶠ g : Γ in nearOne Γ,
-      (((ρ g).toMatrix e e).map δ).map (algebraMap (PadicAlgCl p) BdR) *ᵥ
-        toGp g • (U : Matrix ι ι BdR).col i = (U : Matrix ι ι BdR).col i :=
-    exists_GL_col_mem_of_span _ (h.top_le_span_fixed e δ)
+  obtain ⟨δ, hδ⟩ := exists_algHom_lift γ
+  obtain ⟨U, hU⟩ := exists_GL_col_mem_of_span _ (h.top_le_span_fixed e δ)
   -- The Hodge frame `hodgeMatrix W k` is still invariant, with `W` invertible over `BdRPlus`.
-  obtain ⟨Y, W, k, h_hodge⟩ : ∃ (Y : SpecialLinearGroup ι (PadicAlgCl p))
-      (W : Matrix ι ι BdRPlus) (k : ι → ℤ),
-      IsHodgeFrame (nearOne Γ) (fun g : Γ ↦ ((ρ g).toMatrix e e).map δ) (U : Matrix ι ι BdR)
-        Y W k :=
+  obtain ⟨Y, W, k, h_hodge⟩ :=
     exists_isHodgeFrame Γ le_rfl U.isUnit ((eventually_all.2 hU).mono fun _ ↦ ext_col)
   -- The image of `W` under `thetaBdR` is the required matrix.
   let P : GL ι ℂ_[p] := .map thetaBdR h_hodge.isUnit.unit
@@ -546,7 +553,7 @@ lemma jump_twist_of_period (a : Γ → R) {v : ℤ} {y : ℂ_[p]} (hy : y ≠ 0)
     have h_rhs : (χ g ^ (-(u + v))).val • toGp g • (y • F) x =
         c * ((χ g ^ (-u)).val • toGp g • F x) :=
       calc _ = ((χ g ^ (-v)).val * (χ g ^ (-u)).val) • (toGp g • y * toGp g • F x) := by
-            simp [_root_.zpow_add, smul_mul', mul_comm]
+            simp [_root_.zpow_add, smul_mul']
         _ = _ := (smul_mul_smul_comm _ _ _ _).symm
     rw [h_lhs, h_rhs, mul_right_inj' hc_ne]
   have h_comap : (hodgeTateMaps ρ' γ (u + v)).comap mul_y.toLinearMap = hodgeTateMaps ρ γ u :=

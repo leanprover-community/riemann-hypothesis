@@ -1,6 +1,11 @@
 module
 
-public import Lib.Adelic.Hecke.Basic
+import Mathlib.Analysis.SpecialFunctions.Gaussian.FourierTransform
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Speed
+import Lib.Adelic.Hecke.Basic
 
 /-!
 # Uniqueness of Haar measure, integrals over subgroups and Gaussian normalisation of volumes
@@ -172,29 +177,22 @@ lemma lintegral_inv_add_rpow [h : HasGaussianIntegral a q] {s c : ℝ} (hc : 0 <
   -- swap the integrals, integrate in `x` by `HasGaussianIntegral.integral_exp_eq`, and read the
   -- result as a Gamma integral.
   let F (x : V) (t : ℝ) : ℝ := (Gamma s)⁻¹ * (t ^ (s - 1) * rexp (-((c + q x) * t)))
-  have h_point (x : V) :
-      ENNReal.ofReal ((c + q x)⁻¹ ^ s) = ∫⁻ t : ℝ in Set.Ioi 0, ENNReal.ofReal (F x t) := by
-    have h_pos : 0 < c + q x := add_pos_of_pos_of_nonneg hc (hq_nonneg x)
-    have h_cancel : (c + q x)⁻¹ ^ s = (Gamma s)⁻¹ * ((1 / (c + q x)) ^ s * Gamma s) := by
-      field_simp
-    rw [h_cancel, lintegral_const_mul_rpow_mul_exp_neg_mul_Ioi hs h_pos (by positivity)]
-  have h_slice (t : ℝ) (ht : 0 < t) : ∫⁻ x : V, ENNReal.ofReal (F x t) =
-      ENNReal.ofReal (π ^ a / Gamma s * (t ^ (s - a - 1) * rexp (-(c * t)))) := by
-    refine lintegral_ofReal_eq_of_integral_eq ?_ (by positivity)
+  rw [← lintegral_const_mul_rpow_mul_exp_neg_mul_Ioi (sub_pos.2 ha) hc (by positivity),
+    lintegral_congr (g := fun x ↦ ∫⁻ t in Set.Ioi 0, ENNReal.ofReal (F x t)) fun x ↦ by
+      rw [lintegral_const_mul_rpow_mul_exp_neg_mul_Ioi hs
+        (add_pos_of_pos_of_nonneg hc (hq_nonneg x)) (by positivity)]
+      exact congrArg ENNReal.ofReal (by field_simp),
+    lintegral_lintegral_swap (by fun_prop)]
+  refine setLIntegral_congr_fun measurableSet_Ioi fun t (ht : 0 < t) ↦
+    lintegral_ofReal_eq_of_integral_eq ?_ (by positivity)
       (.of_forall fun x ↦ show 0 ≤ F x t by positivity)
-    have h_split (x : V) :
-        F x t = (Gamma s)⁻¹ * t ^ (s - 1) * rexp (-(c * t)) * rexp (-t * q x) := by
-      simp only [F, mul_assoc, ← exp_add]
-      ring_nf
-    calc ∫ x : V, F x t
-      _ = (Gamma s)⁻¹ * t ^ (s - 1) * rexp (-(c * t)) * (π / t) ^ a := by
-        simp only [h_split, integral_const_mul, h.integral_exp_eq ht]
-      _ = π ^ a / Gamma s * (t ^ (s - a - 1) * rexp (-(c * t))) := by
-        rw [div_rpow pi_pos.le ht.le, sub_right_comm, rpow_sub ht (s - 1) a]
-        ring
-  rw [lintegral_congr h_point, lintegral_lintegral_swap (by fun_prop),
-    setLIntegral_congr_fun measurableSet_Ioi fun t ht ↦ h_slice t (Set.mem_Ioi.1 ht),
-    lintegral_const_mul_rpow_mul_exp_neg_mul_Ioi (sub_pos.2 ha) hc (by positivity)]
+  have h_split (x : V) :
+      F x t = (Gamma s)⁻¹ * t ^ (s - 1) * rexp (-(c * t)) * rexp (-t * q x) := by
+    simp only [F, mul_assoc, ← exp_add]
+    ring_nf
+  simp only [h_split, integral_const_mul, h.integral_exp_eq ht]
+  rw [div_rpow pi_pos.le ht.le, sub_right_comm, rpow_sub ht (s - 1) a]
+  ring
 
 /-- The Gaussian integral on `ℝ`: the integral of `exp (-t x²)` is `(π / t) ^ (1 / 2)`. -/
 instance : HasGaussianIntegral (1 / 2) fun x : ℝ ↦ x ^ 2 where

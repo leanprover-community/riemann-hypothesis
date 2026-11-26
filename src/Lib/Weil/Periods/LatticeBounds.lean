@@ -161,30 +161,23 @@ lemma HasLatticeBounds.latticeMinus_componentOn {V : Space E ι ε} {Y : Grading
     Y.latticeMinus (Gf.componentOn ι Q x) = Y.latticeMinus x := by
   -- Split `y ∈ X^⊥` into its parts at `T = Q ∪ Q̄` and off `T`. Off `T` both `q` and its conjugate
   -- have valuation `1`, so the bounds say that `Λ'⁻` and `Λ⁻` agree there.
-  suffices h_iff : ∀ y : ι → 𝔸f E, Y.stringProj y = y →
-      (y ∈ V.lattice (Gf.componentOn ι Q x) ↔ y ∈ V.lattice x) by
-    ext y
-    rw [mem_latticeMinus, mem_latticeMinus]
-    exact and_congr_left (h_iff y)
-  intro y hy
-  let T : Set (FinPlace E) := Q.conjClosure
+  ext y
+  rw [mem_latticeMinus, mem_latticeMinus]
+  refine and_congr_left fun hy ↦ ?_
+  let T := Q.conjClosure
   have h_on : idem T • y ∈ V.lattice (Gf.componentOn ι Q x) ↔ idem T • y ∈ V.lattice x :=
     V.idem_smul_mem_lattice_congr fun w hw ↦ by rw [Gf.atPlace_componentOn, ite_eq_left hw]
   have h_off : idem Tᶜ • y ∈ V.lattice (Gf.componentOn ι Q x) ↔ idem Tᶜ • y ∈ V.lattice 1 :=
-    V.idem_smul_mem_lattice_congr fun w hw ↦ by rw [Gf.atPlace_componentOn, ite_eq_right hw,
-      map_one]
+    V.idem_smul_mem_lattice_congr fun w hw ↦ by
+      rw [Gf.atPlace_componentOn, ite_eq_right hw, map_one]
   have h_incl {c : 𝔸f E} {g g' : Gf E ι} (hc : ∀ w ∈ Tᶜ, v (c w) = 1)
       (h_le : c • Y.latticeMinus g ≤ Y.latticeMinus g') (hg : idem Tᶜ • y ∈ V.lattice g) :
-      idem Tᶜ • y ∈ V.lattice g' := by
-    have h_smul : c • idem Tᶜ • y ∈ Y.latticeMinus g' :=
+      idem Tᶜ • y ∈ V.lattice g' :=
+    (V.smul_idem_smul_mem_lattice hc).1 <| latticeMinus_le_lattice <|
       smul_le_iff_forall.1 h_le _ (mem_latticeMinus.2 ⟨hg, by rw [map_smul, hy]⟩)
-    exact (V.smul_idem_smul_mem_lattice hc).1 (latticeMinus_le_lattice h_smul)
-  have hq_pow : ∀ w ∈ Tᶜ, v ((q ^ k) w) = 1 := by
-    simp +contextual [T, finAdele_pow_apply, hq]
-  have hq_star_pow : ∀ w ∈ Tᶜ, v ((star q ^ k) w) = 1 := by
-    simp +contextual [T, finAdele_pow_apply, hq]
   have h_agree : idem Tᶜ • y ∈ V.lattice 1 ↔ idem Tᶜ • y ∈ V.lattice x :=
-    ⟨h_incl hq_star_pow h_bounds.lower, h_incl hq_pow h_bounds.upper⟩
+    ⟨h_incl (by simp +contextual [T, finAdele_pow_apply, hq]) h_bounds.lower,
+      h_incl (by simp +contextual [T, finAdele_pow_apply, hq]) h_bounds.upper⟩
   rw [V.mem_lattice_iff_idem_smul T, V.mem_lattice_iff_idem_smul (x := x) T, h_on, h_off, h_agree]
 
 variable (Y) in

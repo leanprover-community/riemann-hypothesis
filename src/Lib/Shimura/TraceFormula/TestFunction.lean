@@ -1,7 +1,12 @@
 module
 
-public import Lib.LocalGL.Iwahori.QuadraticRelation
-public import Lib.Shimura.HeckeTower.Model
+import Mathlib.Algebra.Order.Star.Rat
+public import Lib.LocalGL.Iwahori.ParahoricStructure
+public import Lib.Shimura.HeckeTower.HeckeData
+import Lib.LocalGL.Iwahori.QuadraticRelation
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.HeckeTower.Model
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Test vectors, and the regular Hecke element that does not kill them
@@ -310,7 +315,8 @@ lemma exists_iwahori_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E
     have hg_one : dualComponent w g = 1 := MonoidHom.mem_ker.mp hg.2
     -- `dualComponent w (j z t g)` is `j · N t`, since `dualComponent` inverts the scalar `z`; `N t`
     -- is strictly dominant like `t`
-    refine ⟨fun i ↦ .mk0 N (mod_cast hN) * t i, by simpa [StrictMono, zero_lt_iff, hN], j, 1, ?_⟩
+    refine ⟨fun i ↦ .mk0 N (mod_cast hN) * t i,
+      by simpa [StrictMono, pos_iff_ne_zero, hN], j, 1, ?_⟩
     rw [map_mul, map_mul, map_mul, dualComponent_conjAtSplit, dualComponent_conjAtSplit, hg_one]
     simp [z, dualComponent, invTransposeGL, Equiv.symm, Units.ext_iff, Matrix.map_natCast,
       map_zero]

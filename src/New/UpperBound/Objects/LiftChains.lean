@@ -1,11 +1,13 @@
 module
 
-public import Lib.General.LinearAlgebra.BlockEmbeddings
-public import Lib.Shimura.HeckeTower.HeckeData
+import Mathlib.Data.Rat.Cast.OfScientific
+public import Lib.Adelic.Reduction.DefiniteClassSums
 public import Lib.Weil.CompactLift.ThetaKernelDefs
-public import New.Reduction.Data.Sizes
 public import New.UpperBound.Objects.LabelsAndIndexTypes
-public import New.UpperBound.Objects.LiftLawsModuloN
+public import Lib.General.LinearAlgebra.TensorChains
+import Lib.General.LinearAlgebra.BlockEmbeddings
+import Lib.Shimura.HeckeTower.HeckeData
+import New.Reduction.Data.Sizes
 
 /-!
 # Chains of theta lifts, jointly invariant combinations, and free levels
@@ -110,7 +112,7 @@ with `ω(z i, z (i + 1)) = 1` for every lift, let `t` be any tensor of the data 
 lifts, and let `j < m`. If `ω(1, z (j + 1))`, acting alone on the factor of the lift from stage
 `j` to stage `j + 1`, fixes `t`, then the chain with data `t` has the same value at `φ` and at
 the right translate of `φ` by `z 0`. -/
-theorem TensorChain.lift_algFormRep_of_map_eq [WeilData E] {z : ∀ i : ℕ, Gf E (n i)}
+theorem TensorChain.lift_algFormRep_of_map_eq {z : ∀ i : ℕ, Gf E (n i)}
     (hz : ∀ i : ℕ, (k i).ω (z i, z (i + 1)) = 1) {m j : ℕ} (hj : j < m) {t : TensorChain S m}
     (h_fix : map (fun i : ℕ ↦ if i = j then (k i).ω (1, z (i + 1)) else 1) m t = t)
     (φ : AlgForm (n 0) κ (e 0)) :
@@ -137,7 +139,7 @@ theorem TensorChain.lift_algFormRep_of_map_eq [WeilData E] {z : ∀ i : ℕ, Gf 
 /-- Let `φ` be fixed by the level `K 0`, and let each `a j` lie in `K j`. Acting on each datum `Φ i`
 by `(a i, a (i + 1))` and applying the chain to `φ` gives the right translate by `a j` of the chain
 applied to `φ`. -/
-lemma chain_equivariant [WeilData E] {φ : AlgForm (n 0) κ (e 0)}
+lemma chain_equivariant {φ : AlgForm (n 0) κ (e 0)}
     (hφ : φ ∈ levelSpace (algFormRep κ (e 0)) (K 0)) (a : ∀ j : ℕ, K j)
     (Φ : (j : ℕ) → S j) (j : ℕ) :
     chain k (fun i : ℕ ↦ (k i).ω (a i, (a (i + 1)).val) (Φ i)) j φ =
@@ -219,7 +221,7 @@ each datum `Φ x j` by `ω(a j, a (j + 1))`, with `a m = 1`. Let the levels `K j
 trivial stabilisers `classAut`. Then ∑_x L_x(value at `g m` of the chain with data `Φ x` applied to
 `φ`) is the sum, over tuples `c` of double cosets `StdClasses (K j)`, `j < m`, of ∑_x
 L_x(`kernelProduct`). -/
-theorem IsJointlyInvariant.sum_chain_eq_sum_kernelProduct [WeilData E]
+theorem IsJointlyInvariant.sum_chain_eq_sum_kernelProduct
     {X : Type*} {m : ℕ} {s : Finset X}
     {L : X → (WeylIndex (n m) κ → ℂ) →ₗ[ℂ] M} {Φ : X → ∀ j : ℕ, S j}
     (h_inv : IsJointlyInvariant k m s L Φ)
@@ -258,7 +260,7 @@ theorem IsJointlyInvariant.sum_chain_eq_sum_kernelProduct [WeilData E]
       obtain ⟨β, hβ⟩ := exists_linearMap_chain_eq_apply_pure k j φ a
       have h_eq := h_inv (Pi.mulSingle j ⟨b, hb⟩) (by simp +contextual [ne_of_gt]) (T a β)
       simp only [hT, ← hβ, chain_equivariant k hφ] at h_eq
-      simpa [F, integrand, omega_omega] using h_eq
+      simpa [integrand, omega_omega] using h_eq
     have h_classes : classIntegral stdRatPoints (K j) F = ∑ r : StdClasses (K j), F r.out := by
       rw [classIntegral_eq_classSum h_const, classSum, finsum_eq_sum_of_fintype]
       exact sum_congr rfl fun r _ ↦ by simp [h_free j]
@@ -317,7 +319,7 @@ lemma apply_kernelProduct_le_prod_mul (size : ∀ j : ℕ, Gf E (n j) → (WeylI
 pure tensors of the data `Φ x` under one linear map. Then the value at `p` of the combination of the
 chains applied to `φ` is a sum of elements of `A`, one for each tuple of double cosets in
 `StdClasses (K j)`, `j < m`. -/
-lemma IsJointlyInvariant.sum_chain_mem_nsmul [WeilData E] {X : Type*} {m : ℕ} {s : Finset X}
+lemma IsJointlyInvariant.sum_chain_mem_nsmul {X : Type*} {m : ℕ} {s : Finset X}
     {L : X → (WeylIndex (n m) κ → ℂ) →ₗ[ℂ] M} {Φ : X → ∀ j : ℕ, S j}
     (h_inv : IsJointlyInvariant k m s L Φ)
     (h_free : ∀ j < m, ∀ g : Gf E (n j), classAut stdRatPoints (K j) g = ⊥)
@@ -514,7 +516,7 @@ elements reduce to `1` at the chosen places above the prime `D.levelPrime i`. If
 `4 * D.n D.m` elements, four times the rank of the last stage, the stabiliser of each coset gK in
 the rational unitary group is trivial. -/
 theorem classAut_eq_bot_of_le_levelOf_chosenPlace (i : Fin 2)
-    (hK : K ≤ levelOf (n := n) (fun w : D.ChosenPlace i ↦ w.1) ⊥)
+    (hK : K ≤ levelOf (n := n) (fun w : D.ChosenPlace i ↦ w.val) ⊥)
     (hn : Fintype.card n ≤ 4 * D.n D.m) (g : Gf D.E n) : classAut stdRatPoints K g = ⊥ := by
   -- `Variety.classAut_eq_bot` asks that the norms of the places multiply to more than
   -- `(2 * card n) ^ [E : ℚ]`. The `f` places have norm p_i, and `[E : ℚ] = 2 * f`.
@@ -532,7 +534,7 @@ theorem classAut_eq_bot_of_le_levelOf_chosenPlace (i : Fin 2)
 sufficiently small: the stabiliser of each point gK in the rational unitary group is trivial. -/
 lemma classAut_eq_bot_of_le_chosenLevel (hK : K ≤ D.chosenLevel)
     (hn : Fintype.card n ≤ 2 * D.n D.m) : ∀ g : Gf D.E n, classAut stdRatPoints K g = ⊥ := by
-  have h_le : D.chosenLevel ≤ levelOf (n := n) (fun w : D.ChosenPlace 0 ↦ w.1) ⊥ := by
+  have h_le : D.chosenLevel ≤ levelOf (n := n) (fun w : D.ChosenPlace 0 ↦ w.val) ⊥ := by
     intro k hk
     obtain ⟨hk_int, hk_red⟩ := mem_levelOf.1 hk
     exact mem_levelOf.2 ⟨hk_int, mem_bot.2 (funext fun w ↦ congrFun (mem_bot.1 hk_red) ⟨0, w⟩)⟩

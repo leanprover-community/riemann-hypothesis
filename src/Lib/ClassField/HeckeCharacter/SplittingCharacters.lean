@@ -1,6 +1,7 @@
 module
 
-public import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+public import Lib.Weil.DualPair.Defs
+import Lib.ClassField.HeckeCharacter.SplitTameCharacters
 
 /-!
 # Splitting characters

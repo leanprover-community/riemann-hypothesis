@@ -1,6 +1,11 @@
 module
 
-public import Lib.Shimura.AbelianScheme.Pairings
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.General.Geometry.ProjectiveSpace
+public import Lib.Shimura.AbelianScheme.Basic
 
 /-!
 # Lifts of morphisms to sections of line bundles, and theta structures on abelian schemes
@@ -134,9 +139,9 @@ of global sections H⁰(L) → H⁰(M). -/
 @[simps! apply_coe]
 noncomputable def pullSections : L.H0 R →ₛₗ[φ] M.H0 R' where
   toFun s :=
-    ⟨fun i ↦ PointFn.pull f (s.1 i), by
+    ⟨fun i ↦ PointFn.pull f (s.val i), by
       subst e
-      exact ⟨s.2.1.pull f, fun i A t ht ↦ s.2.2 i A (t ≫ f) ht⟩⟩
+      exact ⟨s.property.1.pull f, fun i A t ht ↦ s.property.2 i A (t ≫ f) ht⟩⟩
   map_add' s s' := by
     ext
     simp
@@ -214,7 +219,7 @@ lemma exists_isSectionLift_coordSection {s : ι → N.H0 R}
   refine ⟨Φ, ⟨fun (i, a) ↦ (s a).val i, hΦ_frame, hΦ_eq⟩, fun j ↦ H0_ext fun {i} h₁ h₂ ↦
     h₁.ext_of_dominant (𝟙 _) h₂ (L.pull F.left) ?_⟩
   -- remove the identity and read the charts of `L.pull F.left` on `L`; then compare with `hs`
-  simp
+  simp only [Category.comp_id, pull_opens, landsIn_preimage]
   intro a B t ht hta
   rw [hΦ_eq (coordSection h j) i a B t ht hta, coordSection_val, ((hs i a B t ht hta).2 j).symm]
 
@@ -338,7 +343,8 @@ translation by `z + w`. -/
 lemma IsTranslationLift.mul {w : 𝟙_ (Over (Spec (CommRingCat.of R))) ⟶ A}
     {Ψ : Module.End R ↥(L.H0 R)} (hΦ : IsTranslationLift L z Φ) (hΨ : IsTranslationLift L w Ψ) :
     IsTranslationLift L (z + w) (Φ * Ψ) := by
-  simpa [← comp_left, add_assoc, IsTranslationLift, comp_add, FunLike.coe_mul_eq_comp] using hΦ.comp hΨ
+  simpa [← comp_left, add_assoc, IsTranslationLift, comp_add, FunLike.coe_mul_eq_comp] using
+    hΦ.comp hΨ
 
 lemma IsTranslationLift.pow (hΦ : IsTranslationLift L z Φ) (k : ℕ) :
     IsTranslationLift L (k • z) (Φ ^ k) := by

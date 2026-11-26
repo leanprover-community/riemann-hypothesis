@@ -1,9 +1,14 @@
 module
 
-public import Lib.ClassField.Global.CMSplittingCharacters
-public import Lib.General.LinearAlgebra.Eigenvalues
-public import Lib.General.NumberTheory.CMFields
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
+import Mathlib.LinearAlgebra.Matrix.IsDiag
+import Mathlib.RingTheory.PicardGroup
 public import Lib.Shimura.HeckeTower.HeckeData
+import Lib.ClassField.Global.CMSplittingCharacters
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.General.NumberTheory.CMFields
 
 /-!
 # Types of frames with a similitude, and the permutation of orbits that changes signs

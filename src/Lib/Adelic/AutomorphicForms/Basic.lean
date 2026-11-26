@@ -1,6 +1,19 @@
 module
 
-public import Lib.Adelic.Reduction.DefiniteClassSums
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.Reduction.FiniteVolume
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
+public import Lib.General.Measure.IdempotentKernel
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Reduction.DefiniteClassSums
 
 /-!
 # Automorphic forms on adelic unitary groups, the Petersson product and rapid decay
@@ -177,7 +190,7 @@ lemma IsAutomorphic.eq_zero_of_petersson_self (h : V.IsAutomorphic F)
       (integral_eq_zero_iff_of_nonneg (fun g ↦ sq_nonneg _) hF.norm.integrable_sq).1 h_int
   -- the zero set of `F` is stable under `V.Γ`, hence dense; and `F` is continuous
   have h_dense : Dense {g | F g = 0} :=
-    dense_of_ae_orbitMeasure (fun (γ : V.Γ) g hg ↦ (h.rat_mul γ γ.2 g).trans hg) h_ae
+    dense_of_ae_orbitMeasure (fun (γ : V.Γ) g hg ↦ (h.rat_mul γ γ.property g).trans hg) h_ae
   exact h.continuous.ext_on h_dense continuous_zero fun _ hg ↦ hg
 
 lemma IsForm.isBoundedMeasurable (hF : V.IsForm e F) : IsBoundedMeasurable F :=
@@ -198,35 +211,26 @@ lemma IsForm.comp_mul_right (hF : V.IsForm e F) (a : Gf E n) :
 
 variable (V e)
 
-lemma isForm_zero : V.IsForm e 0 where
-  toIsAutomorphic := V.isAutomorphic_const 0
-  bounded := ⟨0, by simp⟩
-  realConv_eq := by simp [funext_iff, realConv]
-
 /-- A linear combination aF + bF' of two forms F, F' of type e (bounded automorphic functions on G
 fixed by convolution with e if e is integrable) is a form of type e. -/
 lemma IsForm.smul_add_smul (hF : V.IsForm e F) (hF' : V.IsForm e F') (a b : ℂ) :
     V.IsForm e (a • F + b • F') := by
-  obtain ⟨C, hC⟩ := hF.bounded
-  obtain ⟨C', hC'⟩ := hF'.bounded
+  rcases hF.bounded, hF'.bounded with ⟨⟨C, hC⟩, ⟨C', hC'⟩⟩
   refine ⟨hF.toIsAutomorphic.map₂ hF'.toIsAutomorphic fun z w ↦ a * z + b * w,
-    ⟨‖a‖ * C + ‖b‖ * C', fun g ↦ ?_⟩, fun he ↦ funext fun g ↦ ?_⟩
-  · exact norm_add_le_of_le (norm_mul_le_of_le le_rfl (hC g)) (norm_mul_le_of_le le_rfl (hC' g))
-  · -- `e` is integrable and forms are bounded, so the integral `realConv e` is linear on them.
-    have h_int {H : G E s → ℂ} (hH : V.IsForm e H) (c : ℂ) :
-        Integrable fun x : GInf E s ↦ c • (e x * H (g * (x, 1))) :=
-      (hH.isBoundedMeasurable.integrable_mul_comp he fun x ↦ g * (x, 1)).fun_smul c
-    calc
-      realConv e (a • F + b • F') g
-          = ∫ x : GInf E s, a • (e x * F (g * (x, 1))) + b • (e x * F' (g * (x, 1))) := by
-        simp [realConv, mul_add, mul_left_comm]
-      _ = a • realConv e F g + b • realConv e F' g := by
-        simp only [realConv, integral_add (h_int hF a) (h_int hF' b), integral_smul]
-      _ = (a • F + b • F') g := by simp [hF.realConv_eq he, hF'.realConv_eq he]
+    ⟨‖a‖ * C + ‖b‖ * C', fun g ↦
+      norm_add_le_of_le (norm_mul_le_of_le le_rfl (hC g)) (norm_mul_le_of_le le_rfl (hC' g))⟩,
+    fun he ↦ funext fun g ↦ ?_⟩
+  -- `e` is integrable and forms are bounded, so the integral `realConv e` is linear on them.
+  have h_int {H : G E s → ℂ} (hH : V.IsForm e H) (c : ℂ) :=
+    (hH.isBoundedMeasurable.integrable_mul_comp he fun x ↦ g * (x, 1)).fun_smul c
+  simp only [realConv, Pi.add_apply, Pi.smul_apply, mul_add, mul_smul_comm,
+    integral_add (h_int hF a) (h_int hF' b), integral_smul]
+  rw [← realConv, ← realConv, hF.realConv_eq he, hF'.realConv_eq he]
 
 /-- The forms of type e for V, as a submodule of the complex functions on G. -/
 def formSubmodule : Submodule ℂ (G E s → ℂ) :=
-  ofLinearComb {F : G E s → ℂ | V.IsForm e F} ⟨0, isForm_zero V e⟩ fun F hF F' hF' a b ↦
+  ofLinearComb {F : G E s → ℂ | V.IsForm e F}
+    ⟨0, ⟨V.isAutomorphic_const 0, ⟨0, by simp⟩, by simp [funext_iff, realConv]⟩⟩ fun F hF F' hF' a b ↦
     show V.IsForm e (a • F + b • F') from hF.smul_add_smul V e hF' a b
 
 /-- The complex vector space of forms of type e for V, namely the type of elements of
@@ -336,7 +340,7 @@ theorem exists_height_le_mul (hK : IsCompact K) :
 above on the set of g that a point of Γ moves into K. Here ht is the height of V, the inverse of
 the first minimum cut off at 1. -/
 theorem exists_mul_height_pow_le (hK : IsCompact K) (C : ℝ) :
-    ∃ D : ℝ, ∀ᵉ (g : G E s) (γ ∈ V.Γ), γ * g ∈ K → C * V.height g ^ B ≤ D := by
+    ∃ D : ℝ, ∀ g : G E s, ∀ γ ∈ V.Γ, γ * g ∈ K → C * V.height g ^ B ≤ D := by
   obtain ⟨C', hC'_one, hC'⟩ := V.exists_height_le_mul hK
   refine ⟨|C| * (C' * V.height 1) ^ B, fun g _ ⟨γ, hγ⟩ hg ↦ ?_⟩
   -- As `γ * g ∈ K`, the height of `g` is comparable to the height of `1`.

@@ -1,8 +1,19 @@
 module
 
-public import Lib.Adelic.AutomorphicForms.RealConvolution
-public import Lib.DiscreteSeries.CuspKernel
-public import Lib.Weil.DualPair.WeilAction
+
+import TauCeti.RepresentationTheory.Continuous.StronglyContinuous
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.AutomorphicForms.Basic
+public import Lib.Weil.DualPair.Defs
+import Lib.Adelic.AutomorphicForms.RealConvolution
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.DiscreteSeries.CuspKernel
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Growth of theta kernels and convergence of theta lifts
@@ -65,13 +76,9 @@ variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Finty
 /-- The operator norms ‖ω(k)‖ of a theta kernel on a Banach space are bounded for k in a compact
 subset of the product of the two adelic groups (Banach–Steinhaus). -/
 lemma exists_norm_le_of_isCompact {K : Set (G E s × G E t)} (hK : IsCompact K) :
-    ∃ C : ℝ, ∀ k ∈ K, ‖Θ.ω k‖ ≤ C := by
-  -- Each orbit map is continuous, hence bounded on `K`; then apply the Banach–Steinhaus theorem.
-  have orbit_bdd (φ : X) : ∃ C : ℝ, ∀ k : K, ‖Θ.ω k φ‖ ≤ C := by
-    simpa only [Subtype.forall] using
-      hK.exists_bound_of_continuousOn (f := fun k ↦ Θ.ω k φ)
-        (Θ.continuous.comp₂ continuous_id continuous_const).continuousOn
-  simpa only [Subtype.forall] using banach_steinhaus orbit_bdd
+    ∃ C : ℝ, ∀ k ∈ K, ‖Θ.ω k‖ ≤ C :=
+  ContRepresentation.exists_norm_le_of_isCompact (π := .ofMonoidHom Θ.ω)
+    (fun _ ↦ Θ.continuous.comp₂ continuous_id continuous_const) hK
 
 /-- One step of reduction: for `g` an adelic point of the unitary group of `V`, there is an
 archimedean point `y` with operator norm at most `2` at every infinite place such that the height of
@@ -295,7 +302,8 @@ abbrev swap : ThetaKernel X T S where
   ω := K.ω.comp MulEquiv.prodComm.toMonoidHom
   θ := K.θ
   continuous := by
-    simp
+    simp only [MulEquiv.toMonoidHom_eq_coe, MonoidHom.coe_comp, MonoidHom.coe_ofClass,
+      MulEquiv.coe_prodComm, Function.comp_apply]
     fun_prop
   rat_mul := by simp_all [K.rat_mul]
 
@@ -407,7 +415,7 @@ include hr in
 /-- The theta lift (φ, y) ↦ `New.Space.lift` K φ y as a ℂ-bilinear map from X and rapidly
 decaying automorphic functions for S to functions on the group of T. The definition also takes an
 argument `hr : y ∈ S.rapidFunctions` for a function `y` that the map does not use. -/
-def liftBilin : X →ₗ[ℂ] S.rapidFunctions.1 →ₗ[ℂ] G E t → ℂ :=
+def liftBilin : X →ₗ[ℂ] S.rapidFunctions.toSubmodule →ₗ[ℂ] G E t → ℂ :=
   LinearMap.mk₂ ℂ (fun φ y ↦ lift K φ y)
     (by simp [add_mul, funext_iff, integral_add, integrable_theta_mul, lift])
     (by simp [funext_iff, lift, ← integral_const_mul, ← mul_assoc])

@@ -1,6 +1,8 @@
 module
 
+import Mathlib.Algebra.Ring.IsFormallyReal
 public import New.Spanning.Unfolding.Link
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Links, lifts and gauges of a term
@@ -132,7 +134,7 @@ lemma gram_linkMatrix_mul {S : Filling E 𝔰} {γ γ' : S.G E} {t : Matrix 𝔰
     a * star x ᵥ* S.ratGram ⬝ᵥ y - b * star x ᵥ* S.ratGram ⬝ᵥ (γ * γ'⁻¹).val.val *ᵥ y
   -- in the last term apply the isometry `γ⁻¹` to both vectors first
   have h_move : γ⁻¹.val.val *ᵥ ((γ * γ'⁻¹).val.val *ᵥ y) = γ'⁻¹.val.val *ᵥ y := by
-    simp [mulVec_mulVec, ← Matrix.mul_assoc]
+    simp [mulVec_mulVec]
   rw [← dotProduct_mulVec, ← dotProduct_mulVec, ← dotProduct_mulVec,
     ← U.form_mulVec_mulVec γ⁻¹ x ((γ * γ'⁻¹).val.val *ᵥ y), h_move,
     ratGram_form_of_eStar_eq_zero hx hy, ratGram_form_of_eStar_eq_zero hγx hγy]
@@ -375,7 +377,7 @@ abbrev isotropicRows : Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) R := Z.submatrix
 
 /-- The first `j` rows of `Z`, completed by rows of the identity matrix. -/
 def paddedLeading [CommRing R] : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) R :=
-  of fun a b ↦ if a.1 < ↑j then Z a b else if a = b then 1 else 0
+  of fun a b ↦ if a.val < ↑j then Z a b else if a = b then 1 else 0
 
 /-- The matrix `paddedLeading j Z` keeps the first `j` rows of `Z` and completes them by the
 remaining rows of the identity matrix. Its determinant is the leading minor `D_j` of `Z`. -/
@@ -546,51 +548,67 @@ lemma HasCellRank.exists_shared_frame_vector {S : Filling E 𝔰} {j : Fin (𝔰
     simp [← mulVec_single_one, ← h_col, h.leadingMinor_ne_zero]
   exact ⟨w, by rw [hx_col, hwx]⟩
 
+variable {S : Filling E 𝔰} {γ : S.G E} in
+/-- If `γ` has cell rank `j` (`S.HasCellRank j γ`), which includes that `j = ϱ + 1` exactly when
+`gr(γ) = S.termDisc γ ≠ 0`, and `S.termDisc γ = 0`, then `j ≤ ϱ`. -/
+lemma HasCellRank.le_of_termDisc_eq_zero {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellRank j γ)
+    (h_disc : S.termDisc γ = 0) : j.val ≤ 𝔰.ϱ :=
+  not_lt.1 fun h_lt ↦ h_rank.lt_iff_termDisc_ne_zero.1 h_lt h_disc
+
+omit [CMType E] in
+/-- If a square matrix `Z` kills a nonzero vector `x` whose coefficients vanish from the index `j`
+on, then the leading minor of order `j` of `Z` vanishes. -/
+lemma leadingMinor_eq_zero_of_mulVec_eq_zero {j : Fin (𝔰.ϱ + 2)}
+    {Z : Matrix (Fin (𝔰.ϱ + 1)) (Fin (𝔰.ϱ + 1)) E} {x : Fin (𝔰.ϱ + 1) → E} (hx_ne : x ≠ 0)
+    (hZx : Z *ᵥ x = 0) (h_above : ∀ b : Fin (𝔰.ϱ + 1), j.val ≤ b.val → x b = 0) :
+    leadingMinor Z j = 0 := by
+  have h_padded : paddedLeading j Z *ᵥ x = 0 := by
+    funext b
+    have hb_row : (Z *ᵥ x) b = 0 := congrFun hZx b
+    by_cases hb : b.val < j.val <;> simp_all [paddedLeading, mulVec, dotProduct]
+  rw [← det_paddedLeading]
+  exact exists_mulVec_eq_zero_iff.1 ⟨x, hx_ne, h_padded⟩
+
+variable {S : Filling E 𝔰} {γ : S.G E} in
+/-- Let `δ_i` be the leading minor of order `i` of the matrix `S.frameProducts γ` of the hermitian
+products of the frame `e_1, …, e_ϱ, z_N` with its image under `γ`, and let
+`gr(γ) = S.termDisc γ = |δ_n|² - N² |δ_{n-1}|²` vanish. Let `γ` have the cell rank `j`: a norm-one
+pair occurs from the index `j` on, `δ_j ≠ 0`, and `j = n` exactly when `gr(γ) ≠ 0`. Then `j` is the
+least index from which a norm-one pair occurs for `γ`, since a smaller index would give
+`δ_j = 0`. -/
+lemma HasCellRank.isLeast_normOnePairOccursFrom {j : Fin (𝔰.ϱ + 2)} (h_rank : S.HasCellRank j γ)
+    (h_disc : S.termDisc γ = 0) : IsLeast {i : ℕ | NormOnePairOccursFrom i γ} j.val := by
+  have hj_le : j.val ≤ 𝔰.ϱ := h_rank.le_of_termDisc_eq_zero h_disc
+  obtain ⟨h_occurs, h_minor, -⟩ := h_rank
+  refine ⟨h_occurs, ?_⟩
+  rintro i ⟨ζ, -, h_pairs⟩
+  by_contra! hij : i < j.val
+  -- The vector shared at the index `i < j` gives a nonzero `x'` in the kernel of the products.
+  let a : Fin (𝔰.ϱ + 1) := ⟨i, by lia⟩
+  obtain ⟨x, x', hxx', -, hx', h_above⟩ : ∃ x x' : Fin (𝔰.ϱ + 1) → E,
+      frameImage 1 *ᵥ x = frameImage γ *ᵥ x' ∧ x a = ζ ∧ x' a = 1 ∧
+        ∀ b > a, x b = 0 ∧ x' b = 0 :=
+      h_pairs a le_rfl
+  have hx_top : x 𝔰.top = 0 := (h_above 𝔰.top (Fin.lt_def.2 (hij.trans_le hj_le))).1
+  have h_products : S.frameProducts γ *ᵥ x' = 0 := by
+    rw [frameProducts_mulVec_of_frameImage_eq hxx', hx_top, mul_zero, Pi.single_zero]
+  have hx'_ne : x' ≠ 0 := fun h ↦ by simp [h] at hx'
+  have hx'_above (b : Fin (𝔰.ϱ + 1)) (hb : j.val ≤ b.val) : x' b = 0 :=
+    (h_above b (Fin.lt_def.2 (hij.trans_le hb))).right
+  exact h_minor (leadingMinor_eq_zero_of_mulVec_eq_zero hx'_ne h_products hx'_above)
+
 /-- A term has at most one cell rank: if `γ` has the cell ranks `j` and `j'`, then `j = j'`. With
 `D_l` the leading minors of `S.frameProducts γ`, cell rank `j` means that norm-one pairs occur from
 the index `j` on (`New.NormOnePairOccursFrom`), `D_j ≠ 0`, and that `𝗀(γ) = |D_{ϱ+1}|² - N² |D_ϱ|²`
 is nonzero exactly when `j = ϱ + 1`. -/
 lemma HasCellRank.unique {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
     (h : S.HasCellRank j γ) {j' : Fin (𝔰.ϱ + 2)} (h' : S.HasCellRank j' γ) : j = j' := by
-  -- Let `j < j'`. Then `j' ≤ ϱ`, as the top rank is decided by `𝗀 ≠ 0`. The shared vector at the
-  -- index `j' - 1` gives a relation between the columns of the leading block of order `j'`, whose
-  -- determinant is not zero.
-  wlog h_lt : j < j' generalizing j j' with h_symm
-  · obtain h_eq | h_gt := (not_lt.1 h_lt).eq_or_lt
-    exacts [h_eq.symm, (h_symm h' h h_gt).symm]
-  obtain ⟨ζ, -, h_flag⟩ : ∃ ζ : E, ζ * star ζ = 1 ∧
-      ∀ a : Fin (𝔰.ϱ + 1), j.val ≤ a.val → PairOccursAt γ ζ 1 a := h.normOnePairOccursFrom
-  have h_low : j'.val ≤ 𝔰.ϱ := by
-    by_contra! h_top
-    have hj_high : 𝔰.ϱ < j.val := h.lt_iff_termDisc_ne_zero.2 (h'.lt_iff_termDisc_ne_zero.1 h_top)
-    lia
-  obtain ⟨i, hi⟩ : ∃ i : Fin (𝔰.ϱ + 1), i.val + 1 = j'.val := ⟨⟨j'.val - 1, by lia⟩, by lia⟩
-  have hji : j.val ≤ i.val := by lia
-  obtain ⟨x, y, hxy, -, hy_lead, h_above⟩ : PairOccursAt γ ζ 1 i := h_flag i hji
-  have hZ : S.frameProducts γ *ᵥ y = Pi.single 𝔰.top (-↑S.N * x 𝔰.top) :=
-    frameProducts_mulVec_of_frameImage_eq hxy
-  let y' : Fin j'.val → E := y ∘ castLE j'.is_le
-  have hy'_ne : y' ≠ 0 := by
-    intro h_zero
-    have hy_zero : y i = 0 := congrFun h_zero ⟨i.val, by lia⟩
-    simp [hy_lead] at hy_zero
-  have h_kernel :
-      (S.frameProducts γ).submatrix (castLE j'.is_le) (castLE j'.is_le) *ᵥ y' = 0 := by
-    ext a
-    have ha_top : castLE j'.is_le a ≠ 𝔰.top := Fin.ne_of_val_ne (by simp; lia)
-    -- `y` vanishes outside the first `j'` indices, so the sum extends over all indices.
-    have hy_vanish (b : Fin (𝔰.ϱ + 1)) (hb : b ∉ Set.range (castLE j'.is_le)) : y b = 0 := by
-      have h_ge : j'.val ≤ b.val := by simpa using hb
-      have hib : i < b := by lia
-      exact (h_above b hib).2
-    calc ((S.frameProducts γ).submatrix (castLE j'.is_le) (castLE j'.is_le) *ᵥ y') a
-      _ = (S.frameProducts γ *ᵥ y) (castLE j'.is_le a) :=
-        Fintype.sum_of_injective _ (castLE_injective j'.is_le) _ _
-          (fun b hb ↦ by rw [hy_vanish b hb, mul_zero]) fun _ ↦ rfl
-      _ = 0 := by simp [hZ, ha_top]
-  have h_minor : leadingMinor (S.frameProducts γ) j' = 0 :=
-    exists_mulVec_eq_zero_iff.1 ⟨y', hy'_ne, h_kernel⟩
-  exact absurd h_minor h'.leadingMinor_ne_zero
+  apply Fin.ext
+  by_cases h_disc : S.termDisc γ = 0
+  · exact (h.isLeast_normOnePairOccursFrom h_disc).unique (h'.isLeast_normOnePairOccursFrom h_disc)
+  · have hj := h.lt_iff_termDisc_ne_zero.2 h_disc
+    have hj' := h'.lt_iff_termDisc_ne_zero.2 h_disc
+    omega
 
 end
 
@@ -719,7 +737,7 @@ the absolute norm of `S.subframeMinor j γ`, the minor of `Z` on the first `j` r
 the last one, is `N ^ (2 r) * S.minorNorm j γ`. Here `N = S.N` is the prime of the data `S`, and
 `S.minorNorm j γ` is the absolute norm of `D_j`, divided by `N ^ (2 r)` when `j = ϱ + 1`. -/
 lemma HasCellRank.abs_norm_subframeMinor {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
-    [HasPrimitiveRoot5040 E] (hγ : S.HasCellRank j γ) :
+    (hγ : S.HasCellRank j γ) :
     |(Algebra.norm ℚ (S.subframeMinor j γ) : ℝ)| = S.N ^ (2 * numInfPlaces E) * S.minorNorm j
       γ := by
   -- Completing the rows of the subframe by rows of the identity matrix keeps the determinant.
@@ -732,15 +750,15 @@ lemma HasCellRank.abs_norm_subframeMinor {S : Filling E 𝔰} {j : Fin (𝔰.ϱ 
   rw [subframeMinor, ← det_piecewise_one_eq_submatrix_det, h_rows,
     hγ.abs_norm_det_updateRow_paddedLeading]
 
-/-- Let the CM field `E` have `r` infinite places and contain a primitive `5040`-th root of unity,
-let `N = S.N` be the prime of the data `S`, and let `γ` have the cell rank `j`. Put
+/-- Let the CM field `E` have `r` infinite places. Let
+`N = S.N` be the prime of the data `S`, and let `γ` have the cell rank `j`. Put
 `k = S.translateByClassReps c c' γ = h_c⁻¹ γ h_c'`. Take the rows `a = 1, …, ϱ` of the matrix of
 products of the frame `f = (e₁, …, e_ϱ, z)` with `k f`; `S.isotropicRowsIndex j k` is the index, in
 the lattice that they span, of the lattice spanned by the first `j` of them. Then the gauge
 `𝗀♯ = S.minorGauge j c c' γ` is `N ^ r * S.minorNorm j γ` divided by the product of these indices at
 `k` and at `k⁻¹`. -/
 lemma HasCellRank.minorGauge_eq {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
-    [HasPrimitiveRoot5040 E] (hγ : S.HasCellRank j γ) (c c' : S.Classes) :
+    (hγ : S.HasCellRank j γ) (c c' : S.Classes) :
     S.minorGauge j c c' γ = S.N ^ numInfPlaces E * S.minorNorm j γ /
       (S.isotropicRowsIndex j (S.translateByClassReps c c' γ) *
         S.isotropicRowsIndex j (S.translateByClassReps c c' γ)⁻¹) := by
@@ -752,8 +770,8 @@ lemma HasCellRank.minorGauge_eq {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ
     ring
   rw [minorGauge, h_norm, mul_div_mul_right _ _ hN]
 
-/-- Let the CM field `E` have `r` infinite places and contain a primitive `5040`-th root of unity,
-let `N = S.N` be the prime of the data `S`, and let `γ` have the cell rank `j`. Let `m` be the
+/-- Let the CM field `E` have `r` infinite places. Let
+`N = S.N` be the prime of the data `S`, and let `γ` have the cell rank `j`. Let `m` be the
 larger of `N ^ r * S.minorNorm j γ` and `S.termDiscNorm γ`, the product of the absolute values of
 `𝗀(γ) = S.termDisc γ` at the infinite places. Put
 `k = S.translateByClassReps c c' γ = h_c⁻¹ γ h_c'`. Take the rows `a = 1, …, ϱ` of the matrix of
@@ -761,7 +779,7 @@ products of the frame `f = (e₁, …, e_ϱ, z)` with `k f`; `S.isotropicRowsInd
 the lattice that they span, of the lattice spanned by the first `j` of them. Then
 `S.maxGauge j c c' γ` is `m` divided by the product of these indices at `k` and at `k⁻¹`. -/
 lemma HasCellRank.maxGauge_eq {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ : S.G E}
-    [HasPrimitiveRoot5040 E] (hγ : S.HasCellRank j γ) (c c' : S.Classes) :
+    (hγ : S.HasCellRank j γ) (c c' : S.Classes) :
     S.maxGauge j c c' γ = (S.termDiscNorm γ ⊔ S.N ^ numInfPlaces E * S.minorNorm j γ) /
       (S.isotropicRowsIndex j (S.translateByClassReps c c' γ) *
         S.isotropicRowsIndex j (S.translateByClassReps c c' γ)⁻¹) := by

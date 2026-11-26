@@ -1,8 +1,23 @@
 module
 
-public import Lib.Adelic.Adeles.SemilocalProducts
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.Integral.CompactlySupported
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.AutomorphicForms.UnipotentRadical
-public import Lib.Weil.Unramified.HeckeGL
+public import Lib.Adelic.Unitary.CongruenceLevels
+public import Lib.Adelic.Unitary.GramMatrix
+public import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Adelic.Adeles.SemilocalProducts
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.General.Analysis.GaussianIntegral
+import Lib.General.Analysis.MeanValueAndTaylor
+import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Cuspidality bounds, unipotent reduction, rapid decay and finite dimension of forms
@@ -330,7 +345,7 @@ lemma Space.nonempty_cuspFrame (W : Space E n s) {θ κ : ℝ}
         (rank_of_apply_min e star_indep i.castSucc)
     have rank_right : (X i.rev).rank = i.rev + 1 :=
       (rank_transpose _).trans (rank_of_apply_min e hy_indep i.rev.castSucc)
-    rw [← card_sub_rank_eq_finrank_ker, rank_left, finrank_range_mulVecLin, rank_right, hk,
+    rw [finrank_ker_mulVecLin, rank_left, finrank_range_mulVecLin, rank_right, hk,
       Fin.val_rev]
     omega
   exact ⟨{
@@ -560,6 +575,12 @@ theorem Space.exists_cuspFrame (W : Space E n s) {N : ℕ} [NeZero N]
   exact ⟨{ A with length_mul_le := A.length_mul_le.trans h_le },
     A.radicalCovered hN_diff hM hδ_pos hδ_le⟩
 
+private lemma apply_mul_pair_of_mem_level {J : Subgroup (Gf E n)} (h_level : HasLevel F J)
+    (g : G E s) (z : GInf E s) {k : Gf E n} (hk : k ∈ J) :
+    F (g * (z, k)) = F (g * (z, 1)) := by
+  have h_split : g * (z, k) = g * (z, 1) * (1, k) := by simp [mul_assoc]
+  rw [h_split, h_level k hk]
+
 /-- Let `A ≠ 0` be the rational isotropic subspace spanned by the columns of `X`, let `J` be a
 compact open subgroup of `Gf E n` inside the standard level, called a level, and let
 `N_A g ⊆ (Γ ∩ N_A) g Z_δ J` (`New.Space.RadicalCovered`), with `Z_δ` the real ball of radius `δ`
@@ -585,8 +606,7 @@ theorem Space.norm_le_of_oscillation [Nonempty n] (he : IsCuspKernel B e) {X : M
     rw [h_move]
     exact h_inv ν (Space.mem_dilationGroup_of_ratEmbed_mem_radical (W := V.move g) hν) _
   · rintro ⟨z, k⟩ ⟨hz, hk⟩
-    have h_split : g * ((z, k) * (y, 1)) = g * (z * y, 1) * (1, k) := by simp [mul_assoc]
-    rw [h_split, h_level k hk, dist_eq_norm]
+    rw [Prod.mk_mul_mk z, mul_one, apply_mul_pair_of_mem_level h_level g (z * y) hk, dist_eq_norm]
     exact hD z hz
 
 /-- A continuous function `F` on `Γ \ G`, with `Γ = V.Γ` the group of rational points, is cuspidal
@@ -650,8 +670,7 @@ theorem Space.IsCuspidal.norm_le_of_firstMinimum_lt (hF : V.IsCuspidal F) {N : �
     (fun γ hγ ↦ fixesLeft_move hF.rat_mul g γ hγ.1)
     (hF.integral_eq_zero g A.isotropicCols A.ne_zero A.isotropic) ?_
   rintro ⟨z, k⟩ ⟨hz, hk⟩
-  have h_split : g * (z, k) = g * (z, 1) * (1, k) := by simp [mul_assoc]
-  rw [h_split, h_level k hk, dist_eq_norm]
+  rw [apply_mul_pair_of_mem_level h_level g z hk, dist_eq_norm]
   exact hC z hz
 
 /-- High in a cusp, a form is bounded by its oscillation. Let `F` be a form of type `e`, with `e` a
@@ -753,7 +772,7 @@ is the unipotent radical, `Γ` the group of rational points, `Z_δ` the real bal
 theorem exists_norm_le_of_radicalCovered (he : IsCuspKernel B e) [Nonempty n] (j : ℕ) :
     ∃ δ₀ : ℝ, 0 < δ₀ ∧
     ∀ (J : Subgroup (Gf E n)) [IsLevel J] (W : Space E n s) (g : G E s) (δ : ℝ) (X : Matrix n n E)
-      (_hδ : 0 ≤ δ) (_hX_ne : X ≠ 0) (_hX_iso : Xᴴ * (W.J * X) = 0)
+      (_hX_ne : X ≠ 0) (_hX_iso : Xᴴ * (W.J * X) = 0)
       (_h_cover : (W.move g).RadicalCovered X δ J) (f : G E s → ℂ) (T : ℝ) (_h_cont : Continuous f)
       (_h_bound : ∀ x : G E s, ‖f x‖ ≤ T) (_h_fix : realConv e f = f) (_h_level : HasLevel f J)
       (_h_inv : ∀ ν : U W.J, (ν, 1) ∈ dilationGroup (m := n) X →
@@ -767,7 +786,9 @@ theorem exists_norm_le_of_radicalCovered (he : IsCuspKernel B e) [Nonempty n] (j
   have size_mul_le (z v : GInf E s) : size (z * v) ≤ size z * size v := prod_opNorm_mul_le z v
   have weight_pos (z : GInf E s) : 0 < size z ^ (2 * j) := by positivity [one_le_size z]
   obtain ⟨δ₀, hδ₀, h_osc⟩ := exists_norm_sub_le_half he (2 * j)
-  refine ⟨δ₀, hδ₀, fun J _ W g δ X hδ hX_ne hX h_cover f T h_cont h_bound h_fix h_level h_inv ↦ ?_⟩
+  refine ⟨δ₀, hδ₀, fun J _ W g δ X hX_ne hX h_cover f T h_cont h_bound h_fix h_level h_inv ↦ ?_⟩
+  obtain ⟨γ, -, hγ, -⟩ := h_cover 1 ((W.move g).radical X).one_mem
+  have hδ : 0 ≤ δ := dist_nonneg.trans hγ
   have hT_nonneg : 0 ≤ T := (norm_nonneg _).trans (h_bound 1)
   suffices h_weighted : ∀ z : GInf E s, ‖f (g * (z, 1))‖ / size z ^ (2 * j) ≤ (δ / δ₀) ^ j * T by
     simpa [Prod.mk_one_one, size] using h_weighted 1
@@ -829,32 +850,25 @@ minimum, cut off at 1, of `V.move g`. -/
 theorem exists_norm_mul_height_pow_le (he : IsCuspKernel B e) (K : OpenSubgroup (Gf E n)) (A : ℕ) :
     ∃ R : ℝ, ∀ {F : G E s → ℂ} {c : ℝ} (_h_form : V.IsForm e F) (_h_level : HasLevel F K)
       (_h_bound : ∀ g : G E s, ‖F g‖ ≤ c) (g : G E s), ‖F g‖ * V.height g ^ A ≤ c * R := by
-  -- High in the cusp use rapid decay with `δ ^ n = κ / V.height g`; elsewhere the height is at most
-  -- `κ`.
+  -- High in the cusp use rapid decay with `δ ^ n = κ / V.height g`; elsewhere height is ≤ `κ`.
   cases isEmpty_or_nonempty n
-  · -- If `n` is empty the lattice has no nonzero vector, so the height is `1`.
-    exact ⟨1, by simp +contextual [height, firstMinimum, funext_iff]⟩
+  · exact ⟨1, by simp +contextual [height, firstMinimum, funext_iff]⟩
   let J : OpenSubgroup (Gf E n) := K ⊓ ⟨stdLevel E n, isOpen_stdLevel⟩
   have : IsLevel J.toSubgroup := ⟨inf_le_right, J.isOpen⟩
   obtain ⟨δ₀, hδ₀, h_decay⟩ := exists_norm_le_of_radicalCovered he (Fintype.card n * A)
   obtain ⟨κ, hκ, h_cusp⟩ := exists_cuspFrame_of_height (s := s) J
   refine ⟨(κ / (δ₀ ⊓ 1) ^ Fintype.card n) ^ A, fun {F c} hF h_level hc g ↦ ?_⟩
-  obtain ⟨δ, hδ_pos, hδ, h_frame⟩ := h_cusp V g
+  obtain ⟨δ, hδ_pos, rfl, h_frame⟩ := h_cusp V g
   have hc₀ : 0 ≤ c := (norm_nonneg _).trans (hc 1)
-  have h_bound : ‖F g‖ ≤ (δ / (δ₀ ⊓ 1)) ^ (Fintype.card n * A) * c := by
-    rcases le_total δ 1 with hδ_le | hδ_ge
-    · obtain ⟨cusp, h_cover⟩ := h_frame hδ_le
-      have h_cusp_bound : ‖F g‖ ≤ (δ / δ₀) ^ (Fintype.card n * A) * c :=
-        h_decay J V g δ cusp.isotropicCols hδ_pos.le cusp.ne_zero cusp.isotropic h_cover F c
-          hF.continuous hc
-          (hF.realConv_eq he.integrable) (fun k hk ↦ h_level k hk.1) fun ν _ ↦ hF.rat_mul _ ⟨ν, rfl⟩
-      grw [h_cusp_bound, (inf_le_left : δ₀ ⊓ 1 ≤ δ₀)]
-    · refine (hc g).trans (le_mul_of_one_le_left hc₀ (one_le_pow₀ ?_))
-      exact (one_le_div (by positivity)).2 (inf_le_right.trans hδ_ge)
-  calc ‖F g‖ * V.height g ^ A ≤ (δ / (δ₀ ⊓ 1)) ^ (Fintype.card n * A) * c * V.height g ^ A :=
-        mul_le_mul_of_nonneg_right h_bound (pow_nonneg (V.height_pos g).le A)
-    _ = c * ((δ ^ Fintype.card n * V.height g) / (δ₀ ⊓ 1) ^ Fintype.card n) ^ A := by ring
-    _ = c * (κ / (δ₀ ⊓ 1) ^ Fintype.card n) ^ A := by rw [hδ]
+  suffices ‖F g‖ ≤ (δ / (δ₀ ⊓ 1)) ^ (Fintype.card n * A) * c from
+    (mul_le_mul_of_nonneg_right this (pow_nonneg (V.height_pos g).le A)).trans_eq (by ring)
+  rcases le_total δ 1 with hδ_le | hδ_ge
+  · obtain ⟨cusp, h_cover⟩ := h_frame hδ_le
+    grw [h_decay J V g δ cusp.isotropicCols cusp.ne_zero cusp.isotropic h_cover F c
+      hF.continuous hc (hF.realConv_eq he.integrable) (fun k hk ↦ h_level k hk.1)
+      (fun ν _ ↦ hF.rat_mul _ ⟨ν, rfl⟩), (inf_le_left : δ₀ ⊓ 1 ≤ δ₀)]
+  · exact (hc g).trans (le_mul_of_one_le_left hc₀ (one_le_pow₀
+      ((one_le_div (by positivity)).2 (inf_le_right.trans hδ_ge))))
 
 /-- Let `V` be a hermitian space over the CM field `E`, and let `e` be a cusp kernel of order `B` on
 `G_∞`. Such a kernel is a minimal idempotent `e` such that (a) `‖x‖^(B+1) e(x)` is integrable, (b)
@@ -879,34 +893,25 @@ theorem finite_levelSpace (he : IsCuspKernel B e) (K : OpenSubgroup (Gf E n)) :
     Module.Finite ℂ (levelSpace (V.formRep e) K.toSubgroup) := by
   -- A form of level `K` exceeds half its bound only at height at most `2 * R`, so inside `Γ * C`
   -- with `C` compact (`mahler_criterion`). Cover `C` by neighbourhoods of finitely many
-  -- points `a⁻¹`, `a ∈ t`, on which such a form is within half its bound of `F a⁻¹`. If it
-  -- vanishes at all `a⁻¹`, every bound can be halved, so it is zero.
+  -- points `a⁻¹`, `a ∈ t`, so evaluation at `a⁻¹` (`a ∈ t`) is an injective linear map.
   obtain ⟨R, h_decay⟩ := V.exists_norm_mul_height_pow_le he K 1
   obtain ⟨C, C_compact, hC⟩ := V.mahler_criterion (2 * R)
   obtain ⟨t, ht⟩ := compact_covered_by_mul_left_translates C_compact
     ⟨1, mem_interior_iff_mem_nhds.2 (eventually_norm_realConv_sub_le K he.integrable one_half_pos)⟩
-  have h_vanish {F : G E s → ℂ} (hF : V.IsForm e F) (h_level : HasLevel F K)
-      (h_zero : ∀ a ∈ t, F a⁻¹ = 0) (g : G E s) : ‖F g‖ ≤ 0 := by
-    obtain ⟨M₀, hM₀⟩ := hF.bounded
-    refine le_of_halving hM₀ le_rfl (fun M hM_nonneg hM g ↦ .inl ?_) g
-    by_contra! h_big
-    -- From `M / 2 < ‖F g‖` and `‖F g‖ * V.height g ≤ M * R`.
-    have h_height : V.height g ≤ 2 * R := by nlinarith [V.height_pos g, h_decay hF h_level hM g]
-    obtain ⟨γ, hγ, hγg⟩ : ∃ γ ∈ V.Γ, γ * g ∈ C := hC g h_height
-    obtain ⟨a, ha, h_near⟩ := mem_iUnion₂.1 (ht hγg)
-    have h_close : ‖realConv e F (a⁻¹ * (a * (γ * g))) - realConv e F a⁻¹‖ ≤ 1 / 2 * ‖M‖ :=
-      h_near M hF.isBoundedMeasurable h_level a⁻¹ fun x _ ↦ hM _
-    rw [hF.realConv_eq he.integrable, inv_mul_cancel_left, hF.rat_mul γ hγ, h_zero a ha, sub_zero,
-      Real.norm_of_nonneg hM_nonneg] at h_close
-    linarith
-  -- So evaluation at the points `a⁻¹`, `a ∈ t`, is an injective linear map into `t → ℂ`.
   let ev : levelSpace (V.formRep e) K.toSubgroup →ₗ[ℂ] t → ℂ :=
     .pi fun a : t ↦ .proj (a : G E s)⁻¹ ∘ₗ (Submodule.subtype _).domRestrict _
   refine .of_injective ev ((injective_iff_map_eq_zero ev).2 ?_)
   rintro ⟨⟨F, hF⟩, h_level⟩ h_ev
-  obtain rfl : F = 0 := funext fun g ↦ norm_le_zero_iff.1
-    (h_vanish hF (mem_levelSpace_formRep_iff.1 h_level) (fun a ha ↦ congrFun h_ev ⟨a, ha⟩) g)
-  rfl
+  replace h_level : HasLevel F K := mem_levelSpace_formRep_iff.1 h_level
+  refine Subtype.ext (Subtype.ext (funext fun g ↦ norm_le_zero_iff.1
+    (le_of_halving hF.bounded.choose_spec le_rfl (fun M hM₀ hM g ↦ .inl ?_) g)))
+  by_contra! h_big
+  obtain ⟨γ, hγ, hγg⟩ := hC g (by nlinarith [V.height_pos g, h_decay hF h_level hM g])
+  obtain ⟨a, ha, h_near⟩ := mem_iUnion₂.1 (ht hγg)
+  have h_close := h_near M hF.isBoundedMeasurable h_level a⁻¹ fun _ _ ↦ hM _
+  rw [hF.realConv_eq he.integrable, inv_mul_cancel_left, hF.rat_mul γ hγ,
+    show F a⁻¹ = 0 from congrFun h_ev ⟨a, ha⟩, sub_zero, Real.norm_of_nonneg hM₀] at h_close
+  linarith
 
 /-- Let `e` be a cusp kernel of order `B` on `G_∞`: a minimal idempotent with ‖x‖^(B+1) e(x)
 integrable, ‖x‖^B e(x) bounded, and α ∗ e = e for some continuous compactly supported α. Let `F` be

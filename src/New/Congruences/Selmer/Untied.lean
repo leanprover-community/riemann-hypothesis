@@ -1,6 +1,7 @@
 module
 
 public import New.Congruences.Selmer.OneSystem
+public import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 
 /-!
 # The failure to be tied
@@ -220,15 +221,6 @@ lemma selmerAtPoint_zero {σ : Type} [Fintype σ] {q : ℕ}
     simp [pointTwist, universalChar]
   rw [selmerAtPoint, h_twist, show mapRel (.id O) '' L = L by simp [mapRel.eq_def]]
 
-/-- For the line with index `i` (the points `x_{P₀} = Y` and `x_v = s_v Y` for `v ≠ P₀`, with
-`s_v = (d v).2 i`), the point at `Y = 0` is `0`. So the Selmer module `selmerOnLine` at
-`Y = 0` is the Selmer module of `ρ` with values in `(O / ℓ ^ M) ^ n`. -/
-lemma selmerOnLine_zero {q : ℕ} (P₀ : FinPlace E) (J : Finset (FinPlace E))
-    (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) (S : Set (FinPlace E))
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) : selmerOnLine ℓ M ρ P₀ J d i (RingHom.id O) 0 S L =
-      selmerModule ρ S L (QuotSpan (ℓ ^ M : O)) := by
-  simp only [selmerOnLine, mul_zero, selmerAtPoint_zero]
-
 omit [NumberField.IsCMField E] in
 /-- If `ρ(g)` and `ρ(g')` agree modulo `ℓ ^ M`, then their images under `e : O →+* O'` act in the
 same way on `(O' / ℓ ^ M) ^ n`. -/
@@ -356,10 +348,10 @@ lemma IsTiedPrimes.frob_sub_one_smul_eq [ThePrime ℓ] (hp : IsTiedPrimes ℓ S�
   have h_scalar (g : Gal(Ω/E)) (hg : g ∈ inertiaAbove S₀ᶜ) :
       ∃ α : B, R g = α • 1 ∧ ∑ j ∈ range (ℓ ^ N), α ^ j = 0 :=
     ⟨_, hR_scalar g (h_unr g hg), h_sum (dvd_eval_universalChar_sub_one lam hx_dvd g)⟩
-  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.2
+  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.property
   -- Tame inertia at `v` or at its conjugate, both off `S₀`, gives the relation for `R`.
   simpa only [sub_smul, one_smul, hR_smul] using
-    sub_one_smul_eq_of_isAuxPrimeDataAt hc hz_lc h_open h_scalar (hp.isAuxPrimeDataAt v v.2)
+    sub_one_smul_eq_of_isAuxPrimeDataAt hc hz_lc h_open h_scalar (hp.isAuxPrimeDataAt v v.property)
       hv_off hv_star_off b
 
 /-- Let `J` be a finite set of primes of the CM field `E` that lie, with their conjugates, outside
@@ -402,13 +394,13 @@ lemma IsTiedPrimes.frob_sub_one_smul_tie_eq_zero_of_selmerOnLine [ThePrime ℓ]
   have hψφ : MvPolynomial.eval x (universalChar lam φ) = 1 + y := by
     by_cases hvP : ↑v = P₀
     · simp [universalChar, x, hy_zero_of_eq_first hvP]
-    · simp [φ, lam, hp.universalChar_frob hN v.2 hvP, x, lineDirection]
+    · simp [φ, lam, hp.universalChar_frob hN v.property hvP, x, lineDirection]
   have h_trivial {g : Gal(Ω/E)} (hg : reduceModPow ℓ M ρ g = 1) (u : n → QuotSpan (ℓ ^ M : O')) :
       (ρ g).map e • u = u := by
     simpa using map_smul_eq_of_reduceModPow_eq (hg.trans (map_one _).symm) e u
-  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.2
+  obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.property
   have hγ : reduceModPow ℓ M ρ γ = 1 :=
-    have hd : IsAuxPrimeDataAt (placesDividing E ℓ) v (d v).1 := hp.isAuxPrimeDataAt v v.2
+    have hd : IsAuxPrimeDataAt (placesDividing E ℓ) v (d v).1 := hp.isAuxPrimeDataAt v v.property
     h_unr γ (idOrConjInv_mem_inertiaAbove hd.isPlaceOver hd.tame_gen.left
       ⟨hv_off, hv_star_off⟩ b)
   let Φ : Matrix n n O' := (1 + y) • (ρ φ).map e
@@ -426,7 +418,7 @@ lemma IsTiedPrimes.frob_sub_one_smul_tie_eq_zero_of_selmerOnLine [ThePrime ℓ]
     by_cases hs : (d v).2 i = 0
     · simp [hs]
     · simp [Φ, sub_smul, add_smul, mul_smul,
-        h_trivial (h_triv_of_V φ (hp.apply_idOrConjInv_of_slope_ne_zero v.2 hs b))]
+        h_trivial (h_triv_of_V φ (hp.apply_idOrConjInv_of_slope_ne_zero v.property hs b))]
   change (Φ - 1) • (z γ - e ((d v).2 i) • z φ) = 0
   rw [smul_sub, h_commute, smul_comm, h_slope, sub_self]
 
@@ -565,7 +557,7 @@ lemma IsTiedPrimes.relLength_tieRelations_le_sum_addVal_det [ThePrime ℓ] [DVR 
     _ ≤ ∑ b : Bool, length O (K (Φ b)) := by
       -- At `y = 0`, where the point of the line is `0`, the two tie maps take their values in the
       -- kernels of `ρ(φ₀) - 1` and `ρ(φ₀^{-c}) - 1`.
-      simpa [K, Φ, selmerOnLine_zero] using
+      simpa [K, Φ, selmerOnLine, selmerAtPoint_zero] using
         hp.relLength_tied_le_sum_ker hN i h_unr h_triv_of_V (RingHom.id O) h_geom_sum S L
           (singleton_subset_iff.2 hp.first_mem) fun _ ↦ rfl
     _ ≤ ∑ b : Bool, length O (K (ρ (idOrConjInv b g₀))) :=

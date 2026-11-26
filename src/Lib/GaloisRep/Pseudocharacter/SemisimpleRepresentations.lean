@@ -1,11 +1,23 @@
 module
 
-public import Lib.ClassField.Places.DecompositionCompletion
-public import Lib.General.LinearAlgebra.Eigenvalues
-public import Lib.General.LinearAlgebra.MatrixNormBounds
+import Mathlib.Algebra.Algebra.Subalgebra.Matrix
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.SimpleModule.IsAlgClosed
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Algebra.Group.Matrix
+import Mathlib.Topology.Baire.LocallyCompactRegular
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.LinearAlgebra.Trace.Idempotent
 public import Lib.General.NumberTheory.CoefficientRings
-public import Lib.PadicComparison.Descent.TestCategory
-public import TauCeti.LinearAlgebra.Trace.Idempotent
+public import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.ClassField.Places.DecompositionCompletion
+import Lib.General.LinearAlgebra.MatrixNormBounds
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Semisimple representations: conjugacy, continuity, cancellation and stable lattices
@@ -161,7 +173,7 @@ value on `piMatrixUnit i` (the matrix unit E_00 in factor `i`, zero elsewhere) f
 with `τ 1 = card n`. Then there is a representation `r : G →* GL n k` with trace `τ ∘ s` whose trace
 form is non-degenerate on the span of the `r g`, meaning any `x` in that span with
 `tr (x * r g) = 0` for all `g` is zero. -/
-lemma exists_rep_of_trace [CharZero k] [IsAlgClosed k]
+lemma exists_rep_of_trace [CharZero k]
     {s : G →* PiMatrix k d} (h_span : span k (Set.range s) = ⊤)
     (τ : PiMatrix k d →ₗ[k] k) (h_comm : ∀ x y : PiMatrix k d, τ (x * y) = τ (y * x))
     (h_nat : ∀ i : Fin m, ∃ c : ℕ, τ (piMatrixUnit i) = c) (h_one : τ 1 = Fintype.card n) :
@@ -220,15 +232,6 @@ lemma map_piMatrixUnit_mul_intertwiner (U : Fin m → Matrix N n k) (i : Fin m) 
   -- Products of matrix units vanish unless block and index match, so one term of the sum is left.
   simp +contextual [intertwiner, ← map_mul, ← (f _).mul_assoc (f _), eq_comm, sum_eq_single i,
     sum_eq_single b, Matrix.mul_assoc, ← single_mul_left, Matrix.mul_sum]
-
-/-- Multiplying `intertwiner f f' U` by the image of the matrix unit E^i_{ab}, on the right under
-`f'` or on the left under `f`, gives the same matrix f(E^i_{a0}) U_i f'(E^i_{0b}). -/
-lemma intertwiner_mul_piMatrixUnit (U : Fin m → Matrix N n k) (i : Fin m) (a b : Fin (d i)) :
-    intertwiner f f' U * f' (piMatrixUnit i a b) =
-      f (piMatrixUnit i a) * U i * f' (piMatrixUnit i 0 b) ∧
-    f (piMatrixUnit i a b) * intertwiner f f' U =
-      f (piMatrixUnit i a) * U i * f' (piMatrixUnit i 0 b) :=
-  ⟨intertwiner_mul_map_piMatrixUnit f f' U i a b, map_piMatrixUnit_mul_intertwiner f f' U i a b⟩
 
 /-- `intertwiner f f' U` intertwines the two actions of the product of matrix algebras. -/
 lemma mul_intertwiner (U : Fin m → Matrix N n k) (z : PiMatrix k d) :
@@ -330,8 +333,9 @@ lemma IsTraceNondeg.hasSemiprimeSpan (h : IsTraceNondeg r) :
   -- If `x * r g * x = 0`, then `x * r g` has square zero, so its trace is zero.
   refine fun x hx h_zero ↦ h x hx fun g ↦ ?_
   have h_sandwich : x * (r g).val * x = 0 := h_zero g
-  have h_nilpotent : IsNilpotent (x * (r g).val) :=
-    ⟨2, by rw [sq, ← mul_assoc, h_sandwich, zero_mul]⟩
+  have h_square_zero : (x * (r g).val) ^ 2 = 0 := by
+    rw [sq, ← mul_assoc, h_sandwich, zero_mul]
+  have h_nilpotent : IsNilpotent (x * (r g).val) := ⟨2, h_square_zero⟩
   exact (Matrix.isNilpotent_trace_of_isNilpotent h_nilpotent).eq_zero
 
 /-- Clifford's theorem for the trace form. Let `k` be algebraically closed of characteristic zero.
@@ -368,8 +372,9 @@ lemma IsTraceNondeg.exists_conj_of_trace_eq [CharZero k]
   let F₂ : PiMatrix k d →ₐ[k] Matrix n n k := φ.comp ((AlgHom.snd k (Matrix n n k) B).comp F)
   have F₁_s (g : G) : F₁ (s g) = r g := congrArg Prod.fst (hF g)
   have F₂_s (g : G) : F₂ (s g) = φ (ρ g) := congrArg (fun z ↦ φ z.2) (hF g)
-  -- The traces agree on the spanning family `s`, hence everywhere; an idempotent has its rank as
-  -- trace.
+  -- Equal traces on the spanning family give equal traces on each matrix factor's
+  -- matrix-unit idempotent. In characteristic zero these traces recover the ranks,
+  -- which are the multiplicities used to construct the intertwiner.
   have trace_eq (y : PiMatrix k d) : (F₁ y).trace = (F₂ y).trace := by
     have h_lin :
         traceLinearMap n k k ∘ₗ F₁.toLinearMap = traceLinearMap n k k ∘ₗ F₂.toLinearMap :=

@@ -1,6 +1,5 @@
 module
 
-public import New.Spanning.Unfolding.Climbing
 public import New.UpperBound.Seesaw.AdmissibleCombinations
 
 /-!

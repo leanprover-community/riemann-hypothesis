@@ -1,7 +1,9 @@
 module
 
-public import New.OneLift.ComparisonOperator.ExchangeData
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.OneLift.HeckeValues.TwistedRatio
+import New.OneLift.ComparisonOperator.ExchangeData
 
 /-!
 # Ratios of Hecke values and heights of functions of the twist
@@ -145,7 +147,7 @@ lemma HasAbsUpToNormPower.const (a : ℂ) : D.HasAbsUpToNormPower (fun _ : D.MFo
 
 lemma HasAbsUpToNormPower.inv (h : D.HasAbsUpToNormPower c f) : D.HasAbsUpToNormPower c⁻¹ f⁻¹ := by
   obtain ⟨C, k, hc⟩ := h
-  exact ⟨C⁻¹, -k, fun ϑ ↦ by simp [hc, zpow_neg, mul_comm, mul_left_comm]⟩
+  exact ⟨C⁻¹, -k, fun ϑ ↦ by simp [hc, zpow_neg, mul_comm]⟩
 
 /-- If each `γ a` has absolute value `F a` up to a norm power, then the product of the `γ a` has as
 absolute value up to a norm power the product of the `F a`. -/
@@ -264,7 +266,7 @@ noncomputable def quotientPair (n : D.LiftIndex) : D.CriticalPair where
   z_mem := ⟨D.nat_le_of_hasLogBound, le_rfl⟩
   le_negWeight _ := (D.nat_le_of_hasLogBound : D.t ≤ D.gap).trans (Nat.le_mul_of_pos_left _ n.2.1)
   negWeight_le _ := by
-    grw [(Set.mem_Icc.1 n.2).2]
+    grw [(Set.mem_Icc.1 n.property).2]
     exact D.le_of_hasLogBound
 
 lemma quotientPair_character (n : D.LiftIndex) (i : ℕ) :
@@ -313,7 +315,7 @@ lemma isPrimitiveMulChar_of_isTameFor {ϑ : D.TameChar} {ν : AutChar D.E}
   -- that `1 + c * a` is `x` at `w` and `1` at the other places.
   intro a ha
   obtain ⟨-, ψ, -, hψ, hχ⟩ := h_tame
-  obtain ⟨w, hw, ha'⟩ : ∃ᵉ (w : FinPlace D.E) (hw : w ∈ (D.twistModulus ϑ 1).places),
+  obtain ⟨w, hw, ha'⟩ : ∃ w : FinPlace D.E, ∃ hw : w ∈ (D.twistModulus ϑ 1).places,
       modulusResidue (D.twistModulus ϑ 1) hw a ≠ 0 := by
     -- The modulus is a product of distinct primes: Chinese remainder theorem, for `a` as a
     -- `1 × 1` matrix.
@@ -332,8 +334,8 @@ lemma isPrimitiveMulChar_of_isTameFor {ϑ : D.TameChar} {ν : AutChar D.E}
       Ideal.Quotient.mk (D.twistModulus ϑ 1).ideal b
   have h_self : modulusResidue (D.twistModulus ϑ 1) hw (1 + c * a) = x := by simp [c, hb, ha']
   have h_other (v : (D.twistModulus ϑ 1).places) (hv : v ≠ ⟨w, hw⟩) :
-      modulusResidue (D.twistModulus ϑ 1) v.2 (1 + c * a) = 1 := by
-    have h_ne : v.1 ≠ w := fun h ↦ hv (Subtype.ext h)
+      modulusResidue (D.twistModulus ϑ 1) v.property (1 + c * a) = 1 := by
+    have h_ne : v.val ≠ w := fun h ↦ hv (Subtype.ext h)
     simp [c, h_ne]
   have h_apply : χ (1 + c * a) = ψ w x := by
     rw [hχ, charOfTamePart_apply, finprod_eq_single _ (Subtype.mk w hw), h_self]
@@ -351,15 +353,6 @@ lemma CriticalPair.isTameFor_mul (p : D.CriticalPair) (hp : p.IsRamified) (ξ : 
       (fun τ : NumberField.InfinitePlace D.E ↦ -p.negWeight τ)
       (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart)) := by
   exact isTameFor_of_hasWeight ξ (by simpa using p.hasWeight.mul ξ.hasWeight) hp
-
-/-- For a ramified critical pair with character `ν` of weight `-negWeight`, a twist `ξ` of modulus
-`Q` and `e ≠ 0`, the character `(ν ξ)⁻¹` is tame for `𝔪 = ϖᵉ Q` with weight `negWeight`. -/
-lemma CriticalPair.isTameFor_mul_inv (p : D.CriticalPair) (hp : p.IsRamified) (ξ : D.Twist) (e : ℕ)
-    [NeZero e] :
-    IsTameFor (D.twistModulus ξ.toTameChar e) (p.character * ξ.toAutChar)⁻¹
-      (fun τ : NumberField.InfinitePlace D.E ↦ p.negWeight τ)
-      (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart))⁻¹ := by
-  simpa [Pi.neg_def] using (p.isTameFor_mul hp ξ e).inv
 
 /-- For a critical pair `(ν, z)`, a twist `ξ` of modulus `Q`, `e ≠ 0` and a sign, the number
 `lValueProd` up to `z` for `(ν ξ) ^ sign` and the places of `𝔪 = ϖᵉ Q` equals the number for `ν` and
@@ -396,7 +389,8 @@ theorem CriticalPair.isTameFor_mul_and_lValueProd_eq (p : D.CriticalPair) (hp : 
         =
         lValueProd {w : FinPlace D.E | D.IsChosen w} p.character p.z *
           (ξ.normQ : ℝ) ^ p.z ^ 2 * D.lRatioProd p.character p.z ξ.toTameChar ^ 2 :=
-  ⟨p.isTameFor_mul hp ξ e, p.isTameFor_mul_inv hp ξ e, p.lValueProd_mul_zpow_eq ξ e⟩
+  ⟨p.isTameFor_mul hp ξ e, by simpa [Pi.neg_def] using (p.isTameFor_mul hp ξ e).inv,
+    p.lValueProd_mul_zpow_eq ξ e⟩
 
 /-- For a ramified critical pair `(ν, z)`, `1 ≤ n ≤ m` and `e ≠ 0`, the character `(ν ϑⁿ)⁻¹` is tame
 for the modulus `twistModulus ϑ e = ϖᵉ Q` ((ϖ) the product of the chosen places, Q the modulus of

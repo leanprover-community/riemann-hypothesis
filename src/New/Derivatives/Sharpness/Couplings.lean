@@ -1,6 +1,8 @@
 module
 
+import TauCeti.RingTheory.MvPowerSeries.Derivative
 public import New.Derivatives.Sharpness.LeastValuation
+public import New.Derivatives.Divisibility.NormalForm
 
 /-!
 # Least valuations along couplings
@@ -278,12 +280,6 @@ copies `z'`, `z''` of the variables. -/
 noncomputable def couplingSubst {R : Type} [CommRing R] {n : ℕ} (δ : Fin (n + 1) → R)
     (c : Fin (n + 1)) : Fin 2 → R :=
   ![δ c, if c = 0 then 1 else 0]
-
-/-- The coefficients of `couplingSubst δ` are integral if the `δ_c` are. -/
-lemma norm_couplingSubst_le_one {n : ℕ} {δ : Fin (n + 1) → ℂ_[p]}
-    (hδ : ∀ c : Fin (n + 1), ‖δ c‖ ≤ 1) (c : Fin (n + 1)) (k : Fin 2) :
-    ‖couplingSubst δ c k‖ ≤ 1 := by
-  fin_cases k <;> simp [couplingSubst, hδ, apply_ite (‖·‖), ite_le_one]
 
 /-- Let `δ 0 = 1` and let `G = ∏_c copySubst (couplingSubst δ c) F`, that is,
 `G(z', z'') = F(z' + z'') ∏_(c ≠ 0) F(δ_c z')` in two copies `z'`, `z''` of the variables. Only the
@@ -564,7 +560,8 @@ lemma leastValLE_partnerDegree_of_isCouplingFamily [PadicPlace p] {J Φ : Type}
     simp only [one_mul, ← hG, h_rpow]
     exact le_of_eq (by ring_nf)
   simpa only [mapDomain_fst_pairExponent] using
-    leastValLE_of_copySubst (norm_couplingSubst_le_one hδ_le) (fun _ ↦ one_mem _) h_le
+    leastValLE_of_copySubst (fun c k ↦ by fin_cases k <;> simp [couplingSubst, hδ_le, apply_ite (‖·‖), ite_le_one])
+      (fun _ ↦ one_mem _) h_le
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum Finset.prod Finset.univ in

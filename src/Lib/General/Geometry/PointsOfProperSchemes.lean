@@ -1,10 +1,18 @@
 module
 
+import TauCeti.AlgebraicGeometry.Morphisms.Separated
+import TauCeti.AlgebraicGeometry.Morphisms.Smooth.StandardSmooth
+public import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.AlgebraicGeometry.QuasiAffine
+import Mathlib.AlgebraicGeometry.ValuativeCriterion
+import Mathlib.CategoryTheory.Sites.SubcanonicalOver
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.TotallySplit
 public import Lib.Cohomology.ProperBaseChange.PlaceSpace
 public import Lib.General.Geometry.EtaleCharts
 public import Lib.Shimura.AbelianScheme.Basic
-import TauCeti.AlgebraicGeometry.Morphisms.Separated
-import TauCeti.AlgebraicGeometry.Morphisms.Smooth.StandardSmooth
+import Lib.Cohomology.Etale.DenseSubfunctors
 
 /-!
 # Functors of points of proper schemes: closed loci, atlases and descent of relations
@@ -192,7 +200,7 @@ lemma New.Variety.exists_locallyOfFiniteType_forall_factors [IsProper s] :
     nonempty_isColimit_cofanMk_of _ hD_cover (hD_disj.mono (by simp [← Opens.coe_disjoint]))
   -- Lift `z` on each piece and glue along the coproduct `c`; equality is checked piece by piece.
   let piece (x : t) : Opens.toScheme (D x).toOpens ⟶ 𝒰.X (i x) :=
-    lift (𝒰.f (i x)) (Opens.ι _ ≫ z) (range_subset_iff.2 fun y ↦ hC x y.1 (hD_le x y.2))
+    lift (𝒰.f (i x)) (Opens.ι _ ≫ z) (range_subset_iff.2 fun y ↦ hC x y.val (hD_le x y.property))
   let glued : Spec O ⟶ ∐ 𝒰.X := desc c fun x ↦ piece x ≫ Sigma.ι 𝒰.X (i x)
   have h_glued : glued ≫ Sigma.desc 𝒰.f = z :=
     hom_ext c _ _ fun x ↦ by
@@ -293,10 +301,6 @@ lemma left_comp_hom {A : CommAlg k} (x : PointsIn W A) :
 lemma PointsIn.eq_of_left_eq {A : CommAlg k} {x y : PointsIn W A}
     (h_left : x.down.left = y.down.left) : x = y :=
   ULift.down_injective (OverMorphism.ext h_left)
-
-/-- The image of a point `x` under `φ : A → B` has underlying morphism `Spec φ ≫ x`. -/
-lemma PointsIn.map_left {A B : CommAlg k} (φ : A ⟶ B) (x : PointsIn W A) :
-    (x.map φ).down.left = specMap φ.hom ≫ x.down.left := rfl
 
 /-- A ring map `u : A → B` of `k`-algebras whose spectrum commutes with the structure maps to
 `Spec k` induces the same morphism of spectra as some map of `k`-algebras `A → B`. -/
@@ -412,7 +416,7 @@ lemma hasAtlas_algPointsOf (d : ℕ) [IsProper W.hom]
   have t_map (A B : CommAlg k) (φ : A ⟶ B) (x : PointsIn W A) :
       t (x.map φ) = specMap φ.hom ≫ t x := by
     apply pullback.hom_ext
-    · rw [assoc, t_fst, t_fst, PointsIn.map_left]
+    · rw [assoc, t_fst, t_fst]; rfl
     · -- `φ` commutes with the structure maps from `k`.
       rw [assoc, t_snd, t_snd, ← φ.hom.comp_algebraMap]
       exact Spec.map_comp (CommRingCat.ofHom _) (CommRingCat.ofHom _)

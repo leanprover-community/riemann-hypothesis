@@ -1,8 +1,16 @@
 module
 
-public import Lib.DiscreteSeries.Haar.TotalMass
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Algebra.Algebra.Field
+import Mathlib.Analysis.Calculus.VectorField
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
-public import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.Adelic.Adeles.AdditiveCharacter
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
 # Right derivatives and bump convolution for smooth functions on U(p,q)
@@ -206,7 +214,7 @@ def rightDerivMatrix : GlModule n (smoothMatrixFunctions n E) where
           I • mulRightDeriv (n := n) E (unitaryLiePart ε (-I • X))
       map_add' X Y := by
         ext f
-        simp [mulRightDeriv, unitaryLiePart, smul_sub, mul_add, add_mul, mul_assoc]
+        simp [mulRightDeriv, unitaryLiePart, smul_sub, mul_add, add_mul]
         module
       map_smul' := fun ⟨a, b⟩ X ↦ by
         -- Write the scalar as `a + b * I` and expand.
@@ -287,7 +295,7 @@ theorem hasDerivAt_curve (f : SmoothU ε E) {γ : ℝ → USign ε} {t : ℝ} {X
   obtain ⟨F, rfl⟩ := (restrictU ε E).surjective_rangeRestrict f
   -- The curve stays in the group, so its logarithmic derivative `X` lies in the real Lie algebra.
   have h_γ : (γ t).val.valᴴ * signMatrix ε * (γ t).val.val = signMatrix ε :=
-    mem_unitaryGroupOf_iff.1 (γ t).2
+    mem_unitaryGroupOf_iff.1 (γ t).property
   have h_conj : Xᴴ * signMatrix ε = -(signMatrix ε * X) := by
     simpa [logDerivU, hγ.deriv, ← mul_assoc, h_γ, (isHermitian (J := signMatrix ε)).eq] using
       conjTranspose_logDerivU hγ.differentiableAt 1

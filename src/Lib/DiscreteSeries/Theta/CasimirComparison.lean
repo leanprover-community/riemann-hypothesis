@@ -1,8 +1,8 @@
 module
 
-public import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+import Mathlib.Data.Finset.Slice
+import TauCeti.Algebra.Lie.GeneralLinear.Oscillator.Casimir
 public import Lib.DiscreteSeries.Theta.FockDualPair
-public import TauCeti.Algebra.Lie.GeneralLinear.Oscillator.Casimir
 
 /-!
 # The Casimir elements of an oscillator pair
@@ -12,7 +12,7 @@ columns; the first group acts on the rows. This file proves that, with the centr
 the twisting characters) removed, the Casimir elements of the two groups differ by the constant
 `n n' (n - n') / 4`, and that for matching parameters the numbers `|u|² - |ρ|²` and `|u'|² - |ρ'|²`
 differ by the same constant, where `u`, `u'` are the centred parameters, that is, the entries
-shifted by the centres. By `HCParam.HasGap.casimirValue_sub_centre` these numbers are the centred
+shifted by the centres. By `HCParam.HasGap.casimirValue_sub_center` these numbers are the centred
 Casimir values.
 
 The notions that the statements use:
@@ -23,7 +23,7 @@ The notions that the statements use:
   so `twoRho l ⊤` is `2ρ`, and `l.casimirValue` is `|λ|² - |ρ|²`;
 * `T.oscRows` is the oscillator action of `gl R` on polynomials, and `T.swap` is the same pair with
   rows and columns exchanged;
-* `T.centredParam l r` is `2u_r = l r - 2γ + n'` with `γ = T.rowShift` the scalar on the diagonal of
+* `T.centeredParam l r` is `2u_r = l r - 2γ + n'` with `γ = T.rowShift` the scalar on the diagonal of
   the row action (`T.columnShift` is that of the column action `T.swap.oscRows`), and
   `IsMatch T l l'` says that `l` and `l'` have gap `500 (n + n')³`, that each row is matched with a
   column or has `|2u_r| < n - n'`, and that each column is matched with a row or has
@@ -121,7 +121,7 @@ theorem HCParam.HasGap.two_mul_sum_lowestKType {ε : n → ℤˣ} {l : HCParam �
 different signs far apart), with Casimir value `κ = |λ|² - |ρ|²` and lowest K-type `μ`. For any
 scalar `w`, the value with the centre `w` removed, `κ - 2w ∑ μ_a + n w²`, is
 `∑ (λ_a - w)² - n (n² - 1) / 12`, where `n` is the number of entries. -/
-theorem HCParam.HasGap.casimirValue_sub_centre {ε : n → ℤˣ} {l : HCParam ε} {h : ℕ}
+theorem HCParam.HasGap.casimirValue_sub_center {ε : n → ℤˣ} {l : HCParam ε} {h : ℕ}
     (hg : l.HasGap h) (w : ℂ) :
     l.casimirValue - 2 * w * ∑ a : n, (l.lowestKType a : ℂ) + card n * w ^ 2 =
       ∑ a : n, (l a / 2 - w) ^ 2 - (card n * (card n ^ 2 - 1) / 12 : ℂ) := by
@@ -148,9 +148,9 @@ variable {R C ι : Type} [Fintype R] [DecidableEq R] [Fintype C] {ε : R → ℤ
 omit [Fintype R] [DecidableEq R] in
 /-- The centred parameters `l r - 2γ + card C` of a vector `l` with distinct entries are
 distinct. -/
-theorem FockDualPair.centredParam_injective (T : FockDualPair ε ε' ι) {l : HCParam ε}
-    (hl : Function.Injective l) : Function.Injective (T.centredParam l) :=
-  fun a b hab ↦ hl (by simpa [FockDualPair.centredParam] using hab)
+theorem FockDualPair.centeredParam_injective (T : FockDualPair ε ε' ι) {l : HCParam ε}
+    (hl : Function.Injective l) : Function.Injective (T.centeredParam l) :=
+  fun a b hab ↦ hl (by simpa [FockDualPair.centeredParam] using hab)
 
 /-- Let `l`, `l'` be matching parameters of the pair `T`: they have a large gap, and each row and
 column is matched, with opposite centred parameters, or has a small one. Let `n' ≤ n` for
@@ -159,38 +159,38 @@ the rows and `l' c - 2 T.columnShift + n` of the columns (the rows of `T.swap`) 
 `d₀ (d₀² - 1) / 3` with `d₀ = n - n'`, the share of the unmatched rows. -/
 theorem IsMatch.three_mul_sum_sq_sub_of_le {T : FockDualPair ε ε' ι} {l : HCParam ε}
     {l' : HCParam ε'} (hm : IsMatch T l l') (h_le : card C ≤ card R) :
-    3 * (∑ r : R, T.centredParam l r ^ 2 - ∑ c : C, T.swap.centredParam l' c ^ 2) =
+    3 * (∑ r : R, T.centeredParam l r ^ 2 - ∑ c : C, T.swap.centeredParam l' c ^ 2) =
       (card R - card C) * ((card R - card C) ^ 2 - 1) := by
   -- Every index of the smaller group is matched, with one row `m c`.
-  have h_matched (c : C) : ∃ r : R, T.centredParam l r = -T.swap.centredParam l' c := by
+  have h_matched (c : C) : ∃ r : R, T.centeredParam l r = -T.swap.centeredParam l' c := by
     obtain ⟨r, h_eq, -⟩ | h_lt := hm.right c
     · exact ⟨r, h_eq⟩
     · grind [abs_nonneg]
   choose m h_opposite using h_matched
-  have h_row_inj : Function.Injective (T.centredParam l) :=
-    T.centredParam_injective hm.hasGap_row.injective
+  have h_row_inj : Function.Injective (T.centeredParam l) :=
+    T.centeredParam_injective hm.hasGap_row.injective
   have hm_inj : Function.Injective m := by
-    refine fun c c' hc ↦ T.swap.centredParam_injective hm.hasGap_column.injective (neg_injective ?_)
+    refine fun c c' hc ↦ T.swap.centeredParam_injective hm.hasGap_column.injective (neg_injective ?_)
     rw [← h_opposite c, ← h_opposite c', hc]
   -- So the larger group has `n - n'` unmatched entries.
   set free : Finset R := (univ.image m)ᶜ with h_free
   have h_card : (#free : ℤ) = card R - card C := by
     simp [h_free, card_compl, card_image_of_injective _ hm_inj, h_le]
-  have h_split : ∑ r, T.centredParam l r ^ 2 =
-      ∑ c, T.swap.centredParam l' c ^ 2 + ∑ r ∈ free, T.centredParam l r ^ 2 := by
+  have h_split : ∑ r, T.centeredParam l r ^ 2 =
+      ∑ c, T.swap.centeredParam l' c ^ 2 + ∑ r ∈ free, T.centeredParam l r ^ 2 := by
     rw [← sum_add_sum_compl (univ.image m), sum_image hm_inj.injOn]
     simp only [h_opposite, neg_sq, h_free]
   -- They are distinct, of the parity of `n - n' - 1` and of modulus below `n - n'`.
-  have h_small (r : R) (hr : r ∈ free) : |T.centredParam l r| < #free := by
+  have h_small (r : R) (hr : r ∈ free) : |T.centeredParam l r| < #free := by
     rw [h_card]
     refine (hm.left r).resolve_left ?_
     rintro ⟨c, hr_eq, -⟩
     have h_eq : m c = r := h_row_inj ((h_opposite c).trans hr_eq.symm)
     exact mem_compl.1 hr (mem_image.2 ⟨c, mem_univ c, h_eq⟩)
-  have h_parity (r : R) (_ : r ∈ free) : Even (T.centredParam l r + #free - 1) := by
+  have h_parity (r : R) (_ : r ∈ free) : Even (T.centeredParam l r + #free - 1) := by
     obtain ⟨k, hk⟩ : Even (l r + card R - 1) := hm.hasGap_row.parity r
     refine ⟨k - T.rowShift, ?_⟩
-    rw [h_card, FockDualPair.centredParam]
+    rw [h_card, FockDualPair.centeredParam]
     lia
   rw [h_split, add_sub_cancel_left, ← h_card]
   exact three_mul_sum_sq_of_injOn free _ h_row_inj.injOn h_parity h_small
@@ -200,11 +200,11 @@ theorem IsMatch.three_mul_sum_sq_sub_of_le {T : FockDualPair ε ε' ι} {l : HCP
 where `n = card R`, `n' = card C`, and `d₀ = n - n'` may have either sign. -/
 theorem IsMatch.three_mul_sum_sq_sub [DecidableEq C] {T : FockDualPair ε ε' ι} {l : HCParam ε}
     {l' : HCParam ε'} (hm : IsMatch T l l') :
-    3 * (∑ r : R, T.centredParam l r ^ 2 - ∑ c : C, T.swap.centredParam l' c ^ 2) =
+    3 * (∑ r : R, T.centeredParam l r ^ 2 - ∑ c : C, T.swap.centeredParam l' c ^ 2) =
       (card R - card C) * ((card R - card C) ^ 2 - 1) := by
   obtain h_le | h_le := le_total (card C) (card R)
   · exact hm.three_mul_sum_sq_sub_of_le h_le
-  · have h_swap : 3 * (∑ c, T.swap.centredParam l' c ^ 2 - ∑ r, T.centredParam l r ^ 2) =
+  · have h_swap : 3 * (∑ c, T.swap.centeredParam l' c ^ 2 - ∑ r, T.centeredParam l r ^ 2) =
         (card C - card R : ℤ) * ((card C - card R : ℤ) ^ 2 - 1) := by
       simpa only [T.swap_swap] using hm.swap.three_mul_sum_sq_sub_of_le h_le
     linear_combination -h_swap
@@ -227,23 +227,23 @@ theorem sum_mul_eq_normal_order (x d : R → C → A)
 
 /-- The Casimir element with the centre `w` removed: it is formed with `E_ab - w δ_ab` in place of
 `E_ab`. -/
-noncomputable def GlModule.centredCasimir {M : Type*} [AddCommGroup M] [Module ℂ M]
+noncomputable def GlModule.centeredCasimir {M : Type*} [AddCommGroup M] [Module ℂ M]
     (ρ : GlModule R M) (w : ℂ) : Module.End ℂ M :=
   ∑ a : R, ∑ b : R, (ρ.E a b - if a = b then w • 1 else 0) * (ρ.E b a - if b = a then w • 1 else 0)
 
 /-- On a vector of weight `ν`, the Casimir element with the centre `w` removed is
 `Ω - 2w ∑ ν_a + n w²`, where `n = card R`. Here `Ω = ρ.casimirK 1` is the full Casimir element
 `∑ E_ab E_ba`: all signs are `1`, so every pair of indices counts. -/
-theorem GlModule.centredCasimir_apply {M : Type*} [AddCommGroup M] [Module ℂ M]
+theorem GlModule.centeredCasimir_apply {M : Type*} [AddCommGroup M] [Module ℂ M]
     (ρ : GlModule R M) (w : ℂ) {ν : R → ℤ} {v : M} (hv : ∀ a : R, ρ.E a a v = (ν a : ℂ) • v) :
-    ρ.centredCasimir w v =
+    ρ.centeredCasimir w v =
       ρ.casimirK 1 v - (2 * w * ∑ a : R, (ν a : ℂ)) • v + (card R * w ^ 2) • v := by
-  have h_expand : ρ.centredCasimir w =
+  have h_expand : ρ.centeredCasimir w =
       ρ.casimirK 1 + (2 * -w) • ∑ a, ρ.E a a + (card R * (-w) ^ 2) • 1 := by
     have h_casimir : ρ.casimirK 1 = ∑ a, ∑ b, ρ.E a b * ρ.E b a := by
       simp [GlModule.casimir]
     rw [h_casimir, ← TauCeti.sum_add_scalar_mul_add_scalar]
-    simp only [centredCasimir, sub_eq_add_neg, neg_ite, neg_zero, neg_smul]
+    simp only [centeredCasimir, sub_eq_add_neg, neg_ite, neg_zero, neg_smul]
   simp [h_expand, hv, ← sum_smul]
   module
 
@@ -253,7 +253,7 @@ variable (T : FockDualPair ε ε' ι)
 
 /-- The centre `w` of the action on the rows: the scalar `T.rowShift` on the diagonal is `w + n'/2`.
 It is the weight of the character of the determinant by which the action is twisted. -/
-noncomputable def centre : ℂ := T.rowShift - card C / 2
+noncomputable def center : ℂ := T.rowShift - card C / 2
 
 /-- The operator `x_rc`: for the variable `T.varEquiv (r, c)` of `MvPolynomial ι ℂ` attached to the
 entry `(r, c)`, multiplication by the variable where its sign `T.indexSign` is `+`, minus the
@@ -312,8 +312,8 @@ theorem sign_mul_sign {n : Type*} (δ : n → ℤˣ) (s : ℤˣ) (a b : n) :
 /-- The row action of the matrix unit `(a, b)` less `T.centre = T.rowShift - n'/2` on the diagonal
 is `∑ c, x_ac d_bc + (n'/2) δ_ab`, times the sign `T.globalSign` of the pair where the signs `ε a`,
 `ε b` differ; here `n' = card C`, `x = T.raise` and `d = T.lower`. -/
-theorem oscRows_E_sub_centre (a b : R) :
-    (T.oscRows.E a b - if a = b then T.centre • 1 else 0) =
+theorem oscRows_E_sub_center (a b : R) :
+    (T.oscRows.E a b - if a = b then T.center • 1 else 0) =
       (if ε a = ε b then 1 else T.globalSign : ℂ) •
       (∑ c : C, T.raise a c * T.lower b c + if a = b then (card C / 2 : ℂ) • 1 else 0) := by
   have h_unit : T.oscRows.E a b = (if ε a = ε b then 1 else T.globalSign : ℂ) •
@@ -321,7 +321,7 @@ theorem oscRows_E_sub_centre (a b : R) :
     simp [oscRows_E, oscRowsUnit, glOp, Int.cast_smul_eq_zsmul]
   rw [h_unit]
   obtain rfl | hab := eq_or_ne a b
-  · simp only [ite_true, centre]
+  · simp only [ite_true, center]
     module
   · simp [hab]
 
@@ -329,40 +329,40 @@ theorem oscRows_E_sub_centre (a b : R) :
 diagonal is `-(∑ r, x_rb d_ra + (n/2) δ_ab)`, times the sign `T.globalSign` of the pair where the
 signs `ε' a`, `ε' b` differ; here `n = card R`, `x = T.raise`, `d = T.lower`, and `T.swap` is `T`
 with rows and columns exchanged. -/
-theorem swap_oscRows_E_sub_centre (a b : C) :
-    (T.swap.oscRows.E a b - if a = b then T.swap.centre • 1 else 0) =
+theorem swap_oscRows_E_sub_center (a b : C) :
+    (T.swap.oscRows.E a b - if a = b then T.swap.center • 1 else 0) =
       -(if ε' a = ε' b then 1 else T.globalSign : ℂ) •
         (∑ r : R, T.raise r b * T.lower r a + if b = a then (card R / 2 : ℂ) • 1 else 0) := by
   have h_unit : T.swap.oscRows.E a b = (if ε' a = ε' b then 1 else T.globalSign : ℂ) •
       -∑ r, T.lower r a * T.raise r b + if a = b then (T.columnShift : ℂ) • 1 else 0 := by
     simp [swap_oscRows_E, Int.cast_smul_eq_zsmul]
-  rw [h_unit, show T.swap.centre = T.columnShift - card R / 2 from rfl]
+  rw [h_unit, show T.swap.center = T.columnShift - card R / 2 from rfl]
   simp only [lower_mul_raise, true_and, sum_add_distrib, sum_const, card_univ]
   obtain rfl | hab := eq_or_ne a b
   · simp only [ite_true, ← Nat.cast_smul_eq_nsmul ℂ]
     module
   · simp [hab, hab.symm]
 
-/-- The Casimir element of the row action `T.oscRows` with the centre `T.centre` removed is
+/-- The Casimir element of the row action `T.oscRows` with the centre `T.center` removed is
 `D₄ + (n + n') D₂ + n n'² / 4`, where `D₄ = T.quarticOp`, `D₂ = T.quadraticOp`, `n = card R` and
 `n' = card C`. -/
-theorem centredCasimir_oscRows : T.oscRows.centredCasimir T.centre =
+theorem centeredCasimir_oscRows : T.oscRows.centeredCasimir T.center =
     T.quarticOp + (card R + card C : ℂ) • T.quadraticOp +
       (card R * card C ^ 2 / 4 : ℂ) • 1 := by
   have h_comm (r : R) (c c' : C) : T.lower r c * T.raise r c' =
       T.raise r c' * T.lower r c + if c = c' then 1 else 0 := by simp [lower_mul_raise]
   -- The sign factors cancel in the products.
-  have h_unsigned : T.oscRows.centredCasimir T.centre = ∑ a, ∑ b,
+  have h_unsigned : T.oscRows.centeredCasimir T.center = ∑ a, ∑ b,
       (∑ c, T.raise a c * T.lower b c + if a = b then (card C / 2 : ℂ) • 1 else 0) *
         (∑ c, T.raise b c * T.lower a c + if b = a then (card C / 2 : ℂ) • 1 else 0) := by
-    simp only [GlModule.centredCasimir, oscRows_E_sub_centre, smul_mul_smul_comm, sign_mul_sign,
+    simp only [GlModule.centeredCasimir, oscRows_E_sub_center, smul_mul_smul_comm, sign_mul_sign,
       one_smul]
   rw [h_unsigned, sum_mul_eq_normal_order T.raise T.lower h_comm, quarticOp, quadraticOp]
 
-/-- The Casimir element of the column action `T.swap.oscRows` with the centre `T.swap.centre`
+/-- The Casimir element of the column action `T.swap.oscRows` with the centre `T.swap.center`
 removed is `D₄ + (n + n') D₂ + n² n' / 4`, where `D₄ = T.quarticOp`, `D₂ = T.quadraticOp`,
 `n = card R` and `n' = card C`. -/
-theorem centredCasimir_swap_oscRows : T.swap.oscRows.centredCasimir T.swap.centre =
+theorem centeredCasimir_swap_oscRows : T.swap.oscRows.centeredCasimir T.swap.center =
     T.quarticOp + (card R + card C : ℂ) • T.quadraticOp +
       (card R ^ 2 * card C / 4 : ℂ) • 1 := by
   -- Normal ordering with the roles of rows and columns exchanged gives the same `D₄` and `D₂`.
@@ -370,10 +370,10 @@ theorem centredCasimir_swap_oscRows : T.swap.oscRows.centredCasimir T.swap.centr
       T.raise r' c * T.lower r c + if r = r' then 1 else 0 := by simp [lower_mul_raise]
   have h_quadratic : ∑ c, ∑ r, T.raise r c * T.lower r c = T.quadraticOp := sum_comm
   -- The sign factors cancel in the products.
-  have h_unsigned : T.swap.oscRows.centredCasimir T.swap.centre = ∑ a, ∑ b,
+  have h_unsigned : T.swap.oscRows.centeredCasimir T.swap.center = ∑ a, ∑ b,
       (∑ r, T.raise r b * T.lower r a + if b = a then (card R / 2 : ℂ) • 1 else 0) *
         (∑ r, T.raise r a * T.lower r b + if a = b then (card R / 2 : ℂ) • 1 else 0) := by
-    simp only [GlModule.centredCasimir, swap_oscRows_E_sub_centre, smul_mul_smul_comm,
+    simp only [GlModule.centeredCasimir, swap_oscRows_E_sub_center, smul_mul_smul_comm,
       neg_mul_neg, sign_mul_sign, one_smul]
   rw [h_unsigned, sum_comm,
     sum_mul_eq_normal_order (fun c r ↦ T.raise r c) (fun c r ↦ T.lower r c) h_comm,
@@ -382,40 +382,40 @@ theorem centredCasimir_swap_oscRows : T.swap.oscRows.centredCasimir T.swap.centr
 
 /-- The centred Casimir element of the column action `T.swap.oscRows` is that of the row action
 `T.oscRows` plus the constant `n n' d₀ / 4`, where `n = card R`, `n' = card C` and `d₀ = n - n'`. -/
-theorem centredCasimir_swap_oscRows_eq_add : T.swap.oscRows.centredCasimir T.swap.centre =
-    T.oscRows.centredCasimir T.centre + (card R * card C * (card R - card C) / 4 : ℂ) • 1 := by
-  rw [centredCasimir_swap_oscRows, centredCasimir_oscRows]
+theorem centeredCasimir_swap_oscRows_eq_add : T.swap.oscRows.centeredCasimir T.swap.center =
+    T.oscRows.centeredCasimir T.center + (card R * card C * (card R - card C) / 4 : ℂ) • 1 := by
+  rw [centeredCasimir_swap_oscRows, centeredCasimir_oscRows]
   module
 
 omit [DecidableEq R] [DecidableEq C] in
-/-- The squares of the centred parameters `T.centredParam l r = l r - 2γ + n'` (with
-`γ = T.rowShift`, `n' = card C`) sum to four times the sum of the squares of `λ_r - T.centre`, for
+/-- The squares of the centred parameters `T.centeredParam l r = l r - 2γ + n'` (with
+`γ = T.rowShift`, `n' = card C`) sum to four times the sum of the squares of `λ_r - T.center`, for
 `l = 2λ`. -/
-theorem sum_centredParam_sq (l : HCParam ε) :
-    ∑ r : R, (T.centredParam l r : ℂ) ^ 2 = 4 * ∑ r : R, (l r / 2 - T.centre) ^ 2 := by
+theorem sum_centeredParam_sq (l : HCParam ε) :
+    ∑ r : R, (T.centeredParam l r : ℂ) ^ 2 = 4 * ∑ r : R, (l r / 2 - T.center) ^ 2 := by
   rw [mul_sum]
   refine sum_congr rfl fun r _ ↦ ?_
-  push_cast [centre]
+  push_cast [center]
   ring
 
 end FockDualPair
 
 /-- For matching parameters `l = 2λ`, `l' = 2λ'` of the pair `T` (both of large gap, with centred
 parameters that are opposite or small), `|u|² - |ρ|² + n n' d₀ / 4 = |u'|² - |ρ'|²`. Here
-`u = λ - T.centre` and `u' = λ' - T.swap.centre`, with the centres `T.rowShift - n'/2` and
+`u = λ - T.center` and `u' = λ' - T.swap.center`, with the centres `T.rowShift - n'/2` and
 `T.columnShift - n/2` of the row and column actions; `|u|²` is the sum of squares, `n = card R`,
 `n' = card C`, `d₀ = n - n'`, and `n (n² - 1) / 12`, `n' (n'² - 1) / 12` are `|ρ|²`, `|ρ'|²`. -/
-theorem IsMatch.centred_casimirValue_eq {T : FockDualPair ε ε' ι} {l : HCParam ε}
+theorem IsMatch.centered_casimirValue_eq {T : FockDualPair ε ε' ι} {l : HCParam ε}
     {l' : HCParam ε'} (hm : IsMatch T l l') :
-    (∑ r : R, (l r / 2 - T.centre) ^ 2 - card R * (card R ^ 2 - 1) / 12 +
+    (∑ r : R, (l r / 2 - T.center) ^ 2 - card R * (card R ^ 2 - 1) / 12 +
         card R * card C * (card R - card C) / 4 : ℂ) =
-      (∑ c : C, (l' c / 2 - T.swap.centre) ^ 2 - card C * (card C ^ 2 - 1) / 12 : ℂ) := by
+      (∑ c : C, (l' c / 2 - T.swap.center) ^ 2 - card C * (card C ^ 2 - 1) / 12 : ℂ) := by
   have h_unmatched :
-      3 * (∑ r, (T.centredParam l r : ℂ) ^ 2 - ∑ c, (T.swap.centredParam l' c : ℂ) ^ 2) =
+      3 * (∑ r, (T.centeredParam l r : ℂ) ^ 2 - ∑ c, (T.swap.centeredParam l' c : ℂ) ^ 2) =
         (card R - card C) * ((card R - card C) ^ 2 - 1) :=
     mod_cast hm.three_mul_sum_sq_sub
   -- What remains is `n³ - n'³ - d₀³ = 3 n n' d₀`.
-  rw [T.sum_centredParam_sq, T.swap.sum_centredParam_sq] at h_unmatched
+  rw [T.sum_centeredParam_sq, T.swap.sum_centeredParam_sq] at h_unmatched
   linear_combination h_unmatched / 12
 
 end Casimir

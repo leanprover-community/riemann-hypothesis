@@ -1,8 +1,10 @@
 module
 
-public import Lib.Base
 import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.NonzeroVectors
 import TauCeti.LinearAlgebra.TensorProduct.Separation
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.Swap
+public import Lib.Speed
 
 /-!
 # Chains of linear maps, tensor products of their data, and separation by forms
@@ -52,9 +54,6 @@ section
 variable {M : ℕ → Type*} [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module R (M j)]
   (L : ∀ j : ℕ, M j →ₗ[R] M (j + 1))
 
-lemma New.compUpTo_zero_apply (x : M 0) : compUpTo L 0 x = x :=
-  rfl
-
 lemma New.compUpTo_succ_apply (j : ℕ) (x : M 0) : compUpTo L (j + 1) x = L j (compUpTo L j x) :=
   rfl
 
@@ -76,7 +75,8 @@ lemma New.exists_GL_smul_single {v : n → R} (hv : ∃ j : n, IsUnit (v j)) (i 
 `Nat.card F ^ Fintype.card n - 1`. For finite `F`, this counts the nonzero vectors. -/
 lemma New.index_stabilizer_GL_vector {F : Type*} [Field F] {u : n → F} (hu : u ≠ 0) :
     (stabilizer (GL n F) u).index = Nat.card F ^ Fintype.card n - 1 := by
-  rw [← SubMulAction.stabilizer_of_subMul (⟨u, TauCeti.mem_nonzeroVectors.2 hu⟩ : TauCeti.nonzeroVectors n F),
+  rw [← SubMulAction.stabilizer_of_subMul
+      (⟨u, TauCeti.mem_nonzeroVectors.2 hu⟩ : TauCeti.nonzeroVectors n F),
     index_stabilizer_of_transitive, TauCeti.natCard_nonzeroVectors,
     Nat.card_eq_fintype_card (α := n)]
 
@@ -146,7 +146,7 @@ lemma lift_succ_tmul (x : M 0) (j : ℕ) (s : S j) (z : TensorChain S j) :
 @[simp] lemma lift_pure (x : M 0) (j : ℕ) :
     lift b x j (pure f j) = compUpTo (fun i : ℕ ↦ b i (f i)) j x := by
   induction j with
-  | zero => rw [pure_zero, lift_zero_apply, one_smul, compUpTo_zero_apply]
+  | zero => rw [pure_zero, lift_zero_apply, one_smul]; rfl
   | succ j ih => rw [pure_succ, lift_succ_tmul, ih, compUpTo_succ_apply]
 
 /-- The lift is additive in the starting vector: at `x - y` it is the difference of the lifts at `x`

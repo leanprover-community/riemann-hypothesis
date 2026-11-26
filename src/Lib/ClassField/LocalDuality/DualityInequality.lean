@@ -1,7 +1,13 @@
 module
 
-public import Lib.ClassField.Local.InvariantMap
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.GroupTheory.Nilpotent
 public import Lib.General.Algebra.CartanMap
+public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
+public import Lib.ClassField.Places.ProfiniteGalois
+import Lib.ClassField.Local.InvariantMap
+import Lib.ClassField.LocalDuality.KummerFiniteness
+import Lib.ClassField.Places.LocalFields
 
 /-!
 # The inequality of local Tate duality for orthogonal groups of cocycles
@@ -206,7 +212,7 @@ lemma eq_zero_of_evalCup_eq_zero_of_trivialOn [Finite M] (h_kill : ∀ m : M, l 
         simp [ZMod.val_add, add_smul, ← nsmul_eq_mod_nsmul, smul_sub l, ← map_nsmul, ha,
           DiscreteUnits.ext_iff]),
       .congr (by
-        simp
+        simp only [AddMonoidHom.mk'_apply]
         fun_prop) (leftInverse_invFun coe_injective ∘' _),
       by simp [ext_iff, h_triv, smul_sub]⟩
   -- Its cup product with `y` is minus the symbol (`mk_eq_neg_cyclicClass_ofZModCocycle`).

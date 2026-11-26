@@ -2,8 +2,10 @@ module
 
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.ClassField.Local.ArtinMap
-public import Lib.Cohomology.Etale.Basic
 public import Lib.Weil.Construction.FiniteMultiplier
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.CongruenceLevels
+import Lib.Cohomology.Etale.Basic
 
 /-!
 # Values of algebraic Hecke characters
@@ -73,20 +75,14 @@ theorem exists_pow_eq_prod :
       y ^ N / principalIdele γ ∈ idelesUnitOff ∅ ∧
       (θ.val.fst y : ℂ) ^ N = ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ) := by
   -- The principal ideles and the units in the kernel generate an open subgroup `H` of finite index.
-  obtain ⟨h_open, (h_principal : ∀ x : Kˣ, (θ.val.fst (principalIdele x) : ℂ) =
-      ∏ τ : K →+* ℂ, τ x ^ (-θ.val.snd.toAdd τ))⟩ := θ.property
   let H : Subgroup (𝔸f K)ˣ := principalIdele.range ⊔ (θ.val.fst.ker ⊓ idelesUnitOff ∅)
-  have h_fin : H.FiniteIndex :=
-    finiteIndex_idele_subgroup_of_isOpen H
-      (Subgroup.isOpen_mono le_sup_right (h_open.inter (isOpen_idelesUnitOff ∅)))
-      fun x _ ↦ Subgroup.mem_sup_left ⟨x, rfl⟩
-  obtain ⟨_, ⟨γ, rfl⟩, u, ⟨hu_ker, hu_unit⟩, h_eq⟩ : ∃ a ∈ principalIdele.range,
-      ∃ u ∈ θ.val.fst.ker ⊓ idelesUnitOff ∅, a * u = y ^ H.index :=
-    Subgroup.mem_sup.1 (H.pow_index_mem y)
-  refine ⟨H.index, h_fin.index_ne_zero.pos, γ, ?_, ?_⟩
-  · rwa [← h_eq, mul_div_cancel_left]
-  · rw [← Units.val_pow_eq_pow_val, ← map_pow, ← h_eq, map_mul,
-      show θ.val.fst u = 1 from hu_ker, mul_one, h_principal]
+  have h_fin : H.FiniteIndex := finiteIndex_idele_subgroup_of_isOpen H
+    (Subgroup.isOpen_mono le_sup_right (θ.property.1.inter (isOpen_idelesUnitOff ∅)))
+    fun x _ ↦ Subgroup.mem_sup_left ⟨x, rfl⟩
+  obtain ⟨_, ⟨γ, rfl⟩, u, ⟨hu_ker, hu_unit⟩, h_eq⟩ := Subgroup.mem_sup.1 (H.pow_index_mem y)
+  refine ⟨H.index, h_fin.index_ne_zero.pos, γ, by rwa [← h_eq, mul_div_cancel_left], ?_⟩
+  simpa [← Units.val_pow_eq_pow_val, ← map_pow, ← h_eq, MonoidHom.mem_ker.1 hu_ker] using
+    θ.property.2 γ
 
 /-- Let `γ` in `Kˣ` and the finite idele `y` be such that `y ^ N / γ` is a unit at all finite
 places. Then the moduli of the conjugates `σ (τ γ)` have product `|y| ^ (-N)`, where `|y|` is the

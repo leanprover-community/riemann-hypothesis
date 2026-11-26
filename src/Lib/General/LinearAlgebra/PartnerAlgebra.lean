@@ -1,7 +1,9 @@
 module
 
-public import Lib.Adelic.Unitary.ComponentsAndBlockSums
-public import Lib.General.LinearAlgebra.HermiteForm
+public import Lib.General.LinearAlgebra.IntegralLattices
+import Lib.Adelic.Unitary.ComponentsAndBlockSums
+import Lib.Adelic.Witt.WittTheorem
+import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # Rows and columns of integral matrices, primitive matrices and the law of partners
@@ -104,14 +106,8 @@ lemma invLastRows_invTransposeGL :
     invLastRows e (invTransposeGL k) = (firstCols ((Equiv.sumComm a b).trans e) k)ᵀ :=
   rfl
 
-/-- The transposed rows `a` of `k⁻¹` are the columns `a` of `invTransposeGL k = (kᵀ)⁻¹`. -/
-lemma transpose_invLastRows :
-    (invLastRows e k)ᵀ = firstCols ((Equiv.sumComm a b).trans e) (invTransposeGL k) :=
-  rfl
-
 lemma hasLeftInv_invLastRows_transpose [DecidableEq a] : HasLeftInv (invLastRows e k)ᵀ := by
-  rw [transpose_invLastRows]
-  exact ⟨_, invFirstRows_mul_firstCols _ _⟩
+  exact ⟨_, invFirstRows_mul_firstCols ((Equiv.sumComm a b).trans e) (invTransposeGL k)⟩
 
 omit [DecidableEq n] in
 /-- Let `y` be primitive over `O`, that is, integral with an integral left inverse. Then `y * x` is
@@ -210,17 +206,14 @@ lemma exists_firstCols_eq_mul (O : Subring R) (g : GL b R) (hg : g ∈ intGL b O
 omit [Fintype b] [DecidableEq b] in
 /-- The set of the matrices `invLastRows e k` (rows `a` of `k⁻¹`) with `k ∈ GL n O` is stable under
 left multiplication by `GL a O`. -/
-lemma exists_mul_eq_invLastRows_iff [Finite b] {f : GL a R} (hf : f ∈ intGL a O)
-    {x : Matrix a n R} :
-    (∃ k ∈ intGL n O, f.val * x = invLastRows e k) ↔ ∃ k ∈ intGL n O, x = invLastRows e k := by
+lemma exists_eq_invLastRows_of_mul_eq [Finite b] {f : GL a R} (hf : f ∈ intGL a O)
+    {x : Matrix a n R} (h : ∃ k ∈ intGL n O, f.val * x = invLastRows e k) :
+    ∃ k ∈ intGL n O, x = invLastRows e k := by
   classical
   have := Fintype.ofFinite b
-  refine ⟨fun ⟨k, hk, hx⟩ ↦ ?_, ?_⟩
-  · obtain ⟨j, hj, -, hj_rows, -⟩ := exists_firstCols_eq_mul e k O 1 (one_mem _) _ (inv_mem hf) hk
-    exact ⟨j, hj, by simp [hj_rows, ← hx]⟩
-  · rintro ⟨k, hk, rfl⟩
-    obtain ⟨j, hj, -, hj_rows, -⟩ := exists_firstCols_eq_mul e k O 1 (one_mem _) f hf hk
-    exact ⟨j, hj, hj_rows.symm⟩
+  obtain ⟨k, hk, hx⟩ := h
+  obtain ⟨j, hj, -, hj_rows, -⟩ := exists_firstCols_eq_mul e k O 1 (one_mem _) _ (inv_mem hf) hk
+  exact ⟨j, hj, by simp [hj_rows, ← hx]⟩
 
 omit [Fintype a] [DecidableEq a] in
 /-- The set of the matrices `firstCols e k` (columns `b` of `k`) with `k ∈ GL n O` is stable under
@@ -245,7 +238,6 @@ lemma _root_.New.IsValuationPair.exists_firstCols_iff [Finite a] [Finite b]
     (hO : IsValuationPair O) :
     (∃ k ∈ intGL n O, y = firstCols e k) ↔ IsPrimitiveMatrix O y := by
   classical
-  have := Fintype.ofFinite a
   have := Fintype.ofFinite b
   refine ⟨?_, fun hy ↦ ?_⟩
   · rintro ⟨k, hk, rfl⟩
@@ -366,7 +358,7 @@ lemma left_mul [Finite b] (h : AreMatched O e χ Φ Ψ) {g : GL a R} {x : Matrix
       _ = Φ (invLastRows e k) := (h.apply_eq k hk).symm
   · -- `g * x` is not of the form `invLastRows e k` either, so both sides vanish
     have h_left : Φ (g.val * x) = 0 := by_contra fun h_ne ↦
-      hx ((exists_mul_eq_invLastRows_iff e hg).1 (h.supp_left (g.val * x) h_ne))
+      hx (exists_eq_invLastRows_of_mul_eq e hg (h.supp_left (g.val * x) h_ne))
     rw [h_left, by_contra fun h_ne ↦ hx (h.supp_left x h_ne), mul_zero]
 
 omit [Fintype a] [DecidableEq a] in

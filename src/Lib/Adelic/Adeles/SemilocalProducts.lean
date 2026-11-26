@@ -1,6 +1,13 @@
 module
 
+import Mathlib.MeasureTheory.Integral.Layercake
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.SiegelWeil.Mass
+public import Lib.Adelic.Adeles.LocalFactors
+import Lib.Adelic.Reduction.FirstMinimumShortBases
 
 /-!
 # Products of completions at finite sets of places and approximation of adeles by elements of E
@@ -101,7 +108,7 @@ variable {E : Type} [Field E] [NumberField E] (P : Finset (FinPlace E))
 /-- The ring homomorphism sending a finite adele to its components at the places of the finite
 set `P`. -/
 @[simps!]
-noncomputable def evalPlaces : 𝔸f E →+* LocProd P := RingHom.pi fun w ↦ evalAt w.1
+noncomputable def evalPlaces : 𝔸f E →+* LocProd P := RingHom.pi fun w ↦ evalAt w.val
 
 open scoped Classical in
 /-- Extension by zero: the additive and multiplicative map from the product of the completions

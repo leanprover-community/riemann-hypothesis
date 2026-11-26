@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
 public import New.UpperBound.ElementaryDivisors.RootLemma
 
 /-!
@@ -275,20 +278,15 @@ lemma _root_.New.adjugate_transpose_mem (G : ℝ → AddSubgroup R) [IsRealFiltr
     (hx_sum : ∑ b : Fin k, x b = 0) (hM : ∀ b c : Fin k, M b c ∈ G (x b - v)) (b c : Fin k) :
     M.adjugateᵀ b c ∈ G (-x b - k * v) := by
   -- A cofactor in row `b` is a sum of products of entries of the other rows.
-  let level : Fin k → ℝ := update (fun i : Fin k ↦ x i - v) b 0
-  have h_entry (i j : Fin k) : M.updateRow b (Pi.single c 1) i j ∈ G (level i) := by
-    obtain rfl | hi := eq_or_ne i b
-    · simp only [updateRow_self, Pi.single_apply, level, Function.update_self]
-      split_ifs
-      exacts [one_mem_graded G, zero_mem _]
-    · simpa [level, hi] using hM i j
-  have h_sum : ∑ i : Fin k, level i = -x b - k * v + v := by
-    simp [level, Finset.sum_update_of_mem, Finset.sum_sub_distrib, hx_sum, Finset.card_sdiff,
-      Finset.inter_univ, cast_pred b.pos]
-    ring
   rw [transpose_apply, adjugate_apply, ← det_transpose, det_apply]
-  exact sum_mem fun π _ ↦ zsmul_mem
-    (antitone (by linarith) (prod_mem_graded G level _ fun i _ ↦ h_entry i (π i))) _
+  refine sum_mem fun π _ ↦ zsmul_mem (antitone ?_ <|
+    prod_mem_graded G (update (fun i ↦ x i - v) b 0) _ fun i _ ↦ ?_) _
+  · simp [Finset.sum_update_of_mem, Finset.sum_sub_distrib, hx_sum, Finset.card_sdiff,
+      Finset.inter_univ, cast_pred b.pos]
+    linarith
+  · obtain rfl | hi := eq_or_ne i b
+    · by_cases hc : π i = c <;> simp [hc, one_mem_graded G]
+    · simpa [hi] using hM i (π i)
 
 /-- Let the entries of row `b` of `M` have level `y b` in the filtration `G`. Rows and columns of
 the `n`-th symmetric power of `M` are indexed by exponent vectors of degree `n`, and row `β` has
@@ -434,11 +432,9 @@ lemma mul_defectWeight_eq_indexWeight_mul (ha : (a : ℕ) + 1 = (a' : ℕ)) (i :
     field_simp
   -- Both sides vanish outside the rows `a`, `a'`. One of the variables `(a, s)`, `(a', s)` is deep
   -- and the other is not, which gives the two exponents in `defectWeight`.
-  obtain rfl | hb := eq_or_ne b a
-  · by_cases h_even : T.isEven s <;>
-      simp [rootVar, rootVector, deepIndicator, h_even, hlt.ne, hlt.not_ge]
-  obtain rfl | hb' := eq_or_ne b a' <;> by_cases h_even : T.isEven s <;>
-    simp [rootVar, rootVector, deepIndicator, *]
+  obtain rfl | rfl | ⟨hb, hb'⟩ : b = a ∨ b = a' ∨ (b ≠ a ∧ b ≠ a') := by tauto
+  all_goals by_cases h_even : T.isEven s <;>
+    simp [rootVar, rootVector, deepIndicator, hlt.ne, hlt.ne', hlt.not_ge, *]
 
 /-- A polynomial has level `t` in the Gauss filtration over the `w`-adic filtration if and only if
 its coefficient at each monomial `μ` is divisible by `w ^ ⌈t - weight ω μ⌉₊`. -/
@@ -582,23 +578,16 @@ let `P = T.P`, `q = P ^ N` and `ρ = rootVector a a' = e_{a'} - e_a`. The weight
 and over the column indices. -/
 lemma weight_entryWeight (i : ZMod N) (ν : ZMod N × Fin k × Fin k →₀ ℕ) :
     weight (T.entryWeight ℓ a a' i) ν = T.copyWeight ℓ a a' i ν := by
-  let row (j : ZMod N) : ℤ := weight (fun v : Fin k × Fin k ↦ rootVector a a' v.1) (ν.curry j)
-  let col (j : ZMod N) : ℤ := weight (fun v : Fin k × Fin k ↦ rootVector a a' v.2) (ν.curry j)
-  let copy (j : ZMod N) : ℝ := weight (fun v ↦ T.entryWeight ℓ a a' i (j, v)) (ν.curry j)
-  have h_self : copy i = row i / T.P ^ ℓ := by
-    simp [copy, row, entryWeight, indexWeight, weight_eq_sum, Finset.sum_div, mul_div_assoc]
-  have h_other (j : ZMod N) (hj : j ∈ Finset.univ.erase i) :
-      copy j = T.P ^ (j - i).val / T.q * (row j - col j) / T.P ^ ℓ := by
-    simp only [copy, row, col, entryWeight, scaledIndexWeight,
-      ite_eq_right (Finset.ne_of_mem_erase hj), indexWeight, weight_eq_sum, Int.cast_sum,
-      ← Finset.sum_sub_distrib, Finset.mul_sum, Finset.sum_div, nsmul_eq_mul, Int.cast_mul,
-        Int.cast_natCast]
+  rw [weight_eq_sum, sum_prod_type (α₁ := ZMod N), ← Finset.add_sum_erase _ _ (Finset.mem_univ i),
+    copyWeight, add_div, Finset.sum_div]
+  congr 1
+  · simp [entryWeight, indexWeight, weight_eq_sum, Finsupp.curry_apply, Finset.sum_div,
+      mul_div_assoc]
+  · refine Finset.sum_congr rfl fun j hj ↦ ?_
+    simp only [entryWeight, scaledIndexWeight, ite_eq_right (Finset.ne_of_mem_erase hj),
+      indexWeight, weight_eq_sum, Finsupp.curry_apply, Int.cast_sum, ← Finset.sum_sub_distrib,
+      Finset.mul_sum, Finset.sum_div, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast]
     exact Finset.sum_congr rfl fun v _ ↦ by ring
-  calc weight (T.entryWeight ℓ a a' i) ν = ∑ j : ZMod N, copy j := by
-        simp only [copy, weight_eq_sum, sum_prod_type (α₁ := ZMod N), Finsupp.curry_apply]
-    _ = T.copyWeight ℓ a a' i ν := by
-        rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i), h_self, Finset.sum_congr rfl h_other,
-          copyWeight, add_div, Finset.sum_div]
 
 /-- The scaled index weight of an index at an exponent `m ≤ N` has size at most `1 / P ^ ℓ`. -/
 lemma abs_scaledIndexWeight_le {m : ℕ} (hm : m ≤ N) (b : Fin k) :

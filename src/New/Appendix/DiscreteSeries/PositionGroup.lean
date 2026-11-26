@@ -1,7 +1,14 @@
 module
 
-public import New.Appendix.DiscreteSeries.Periods
-public import New.Appendix.DiscreteSeries.StationaryPosition
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+public import New.Appendix.DiscreteSeries.Positions
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.Shimura.ComplexTheta.AppellHumbertData
+import New.Appendix.DiscreteSeries.Periods
+import New.Appendix.DiscreteSeries.StationaryPosition
 
 /-!
 # The group of a position

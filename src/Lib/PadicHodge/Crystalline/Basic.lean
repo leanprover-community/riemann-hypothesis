@@ -1,7 +1,9 @@
 module
 
-public import Lib.ClassField.Places.DecompositionCompletion
-public import Lib.PadicHodge.PeriodRings.DeRhamPeriods
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+public import Lib.PadicHodge.PeriodRings.CrystallineRings
+public import Lib.ClassField.Places.DecompositionCompletion -- shake: keep (needed public by an exposed definition)
+import Lib.PadicHodge.PeriodRings.DeRhamPeriods
 
 /-!
 # Crystalline and potentially crystalline representations and admissibility
@@ -219,9 +221,10 @@ def HasJumps (J : Multiset ℤ) : Prop := ∀ u : ℤ, jump ρ γ u = Multiset.c
 
 /-- A chosen `Bmax`-linear endomorphism of `Bmax ⊗ T` that agrees on `Dpcris ρ` with the map
 `φ ^ m s ⊗ ρ s`, where `φ` is Frobenius, if one exists (`linearFrob_eq_tensorAction_of_exists`);
-otherwise the value is unspecified. If `ρ` is potentially crystalline, there is at most one such map
-(`IsPotentiallyCrystalline.linearFrob_eq`), and there is one when `toGp s` and `m` form a Weil pair
-(`linearFrob_apply`).
+otherwise the value is unspecified. Potential crystallinity makes `Dpcris ρ` span the tensor
+module, so there is at most one such map. Existence for Weil pairs is proved in
+`Lib.PadicHodge.Crystalline.Regularity` (`linearFrob_apply`). Thus in that case the chosen
+operator is determined by its action on the fixed periods.
 
 This operator plays the role of Fontaine's Weil–Deligne representation: it extends the action of a
 Weil pair on `Dpcris ρ` linearly to `Bmax ⊗ T`. -/
@@ -248,7 +251,8 @@ at `linearFrob ρ s m` with the coefficients acting on `T` through `coeffEnd`, i
 `Bmax ⊗ T`.
 
 This is the analogue, tested on `Bmax ⊗ T`, of the vanishing of a polynomial at an element acting on
-Fontaine's Weil–Deligne representation. -/
+Fontaine's Weil–Deligne representation. The Weil-pair condition is not a field of `IsKilledBy`;
+results that identify the chosen operator with the period action require it separately. -/
 def IsKilledBy (s : Γ) (m : ℕ) (P : Polynomial R) : Prop :=
   IsPotentiallyCrystalline ρ ∧ Polynomial.eval₂ (coeffEnd R T) (linearFrob ρ s m) P = 0
 
@@ -430,12 +434,6 @@ lemma tensorAction_tensorAction (x : B ⊗[ℤ_[p]] T) :
 
 /-! ### Criteria for admissibility and its stability -/
 
-/-- An element `x` of `B ⊗ T` lies in `fixedPeriods ρ B F` if and only if `j(g) ⊗ ρ(g)` fixes it
-for `F`-almost all `g`. -/
-lemma mem_fixedPeriods_iff [MulSemiringAction (Gp p) B] [SMulCommClass (Gp p) ℤ_[p] B]
-    {x : B ⊗[ℤ_[p]] T} :
-    x ∈ fixedPeriods ρ B F ↔ ∀ᶠ g : Γ in F, tensorAction B (toGp g) (ρ g) x = x := Iff.rfl
-
 /-- If `1 ⊗ x` lies in the `Bmax`-span of the periods fixed along `F` for every `x` in `T`, then
 `ρ` is admissible along `F`. -/
 lemma isAdmissible_of_one_tmul_mem_span
@@ -544,7 +542,7 @@ filter `F' ≤ F`, because an element fixed for `F`-almost all `g` is fixed for 
 `g`. -/
 lemma IsAdmissible.mono (h_adm : IsAdmissible ρ F) (h_le : F' ≤ F) : IsAdmissible ρ F' := by
   have h_subset : fixedPeriods ρ Bmax F ⊆ fixedPeriods ρ Bmax F' :=
-    fun y hy ↦ mem_fixedPeriods_iff.mpr ((mem_fixedPeriods_iff.mp hy).filter_mono h_le)
+    fun _ hy ↦ hy.filter_mono h_le
   exact eq_top_mono (span_mono h_subset) h_adm
 
 /-- Let `ρ` be admissible along `F` and let `f` intertwine `ρ g` and `ρ' g` for all `g` in a set of

@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
 public import Lib.DiscreteSeries.Theta.FockDualPair
 
 /-!
@@ -19,7 +20,7 @@ Notions from other files:
   s, row shift γ and column shift δ + n' for n' rows (the constants added on the diagonal).
 * `IsMatch`: both parameters have gap 500(n+n')³ and each row and each column is either matched,
   with a sign condition, or lies in the central range left by the difference of the ranks.
-* `centredParam`: the entry of a row less twice the row shift, plus the number of columns; `swap`
+* `centeredParam`: the entry of a row less twice the row shift, plus the number of columns; `swap`
   exchanges rows and columns.
 * `IsMatchedPair`: the centred entries of a row and a column are opposite, and their signs times the
   centred row entry exceed the absolute difference of the ranks.
@@ -45,7 +46,7 @@ def doubledBlock (d : ℕ) : Finset ℤ :=
   (range d).image fun b : ℕ ↦ (d : ℤ) - 1 - 2 * b
 
 /-- The block e + [d] of length d and centre e, with its entries doubled. -/
-def centredBlock (e : ℤ) (d : ℕ) : Finset ℤ :=
+def centeredBlock (e : ℤ) (d : ℕ) : Finset ℤ :=
   (doubledBlock d).image fun x : ℤ ↦ 2 * e + x
 
 /-- Twice the entries of a parameter λ, l = 2λ, shifted by minus the weight of the other space's
@@ -87,23 +88,23 @@ lemma mem_doubledBlock {d : ℕ} {x : ℤ} :
   rintro ⟨b, hb, rfl⟩
   omega
 
-lemma mem_centredBlock {e y : ℤ} {d : ℕ} :
-    y ∈ centredBlock e d ↔ ∃ b : ℕ, b < d ∧ y = 2 * e + d - 1 - 2 * b := by
-  simp only [centredBlock, doubledBlock, Finset.image_image, Finset.mem_image, Finset.mem_range,
+lemma mem_centeredBlock {e y : ℤ} {d : ℕ} :
+    y ∈ centeredBlock e d ↔ ∃ b : ℕ, b < d ∧ y = 2 * e + d - 1 - 2 * b := by
+  simp only [centeredBlock, doubledBlock, Finset.image_image, Finset.mem_image, Finset.mem_range,
     Function.comp_apply]
   exact exists_congr fun b ↦ and_congr_right fun _ ↦ by omega
 
 lemma card_doubledBlock (d : ℕ) : (doubledBlock d).card = d := by
   rw [doubledBlock, card_image_of_injective _ fun a b hab ↦ by simpa using hab, card_range]
 
-lemma card_centredBlock (e : ℤ) (d : ℕ) : (centredBlock e d).card = d := by
-  rw [centredBlock, Finset.card_image_of_injective _ (add_right_injective _), card_doubledBlock]
+lemma card_centeredBlock (e : ℤ) (d : ℕ) : (centeredBlock e d).card = d := by
+  rw [centeredBlock, Finset.card_image_of_injective _ (add_right_injective _), card_doubledBlock]
 
 /-- Negation sends the block e + [d] to the block −e + [d]. -/
-lemma image_neg_centredBlock (e : ℤ) (d : ℕ) :
-    (centredBlock e d).image Neg.neg = centredBlock (-e) d := by
+lemma image_neg_centeredBlock (e : ℤ) (d : ℕ) :
+    (centeredBlock e d).image Neg.neg = centeredBlock (-e) d := by
   ext y
-  simp only [Finset.mem_image, mem_centredBlock]
+  simp only [Finset.mem_image, mem_centeredBlock]
   constructor
   · rintro ⟨x, ⟨b, hb, rfl⟩, rfl⟩
     exact ⟨d - 1 - b, by omega, by omega⟩
@@ -200,10 +201,10 @@ lemma even_shiftedEntry_add_sub_one {g : ℕ} (hl : l.HasGap g) {m d : ℕ} (hd 
 
 omit [Fintype n] in
 /-- The centred column parameter of −λ for the oscillator pair is minus the shifted entry. -/
-lemma centredParam_swap_std (c : n) :
-    (FockDualPair.std t s γ (-γ')).swap.centredParam (-l) c =
+lemma centeredParam_swap_std (c : n) :
+    (FockDualPair.std t s γ (-γ')).swap.centeredParam (-l) c =
       -shiftedEntry γ' (card n') l c := by
-  simp only [shiftedEntry, FockDualPair.centredParam, Pi.neg_apply]
+  simp only [shiftedEntry, FockDualPair.centeredParam, Pi.neg_apply]
   ring
 
 /-- For the oscillator pair with rows for T and columns for S, a row r of λ' and a column c of −λ
@@ -213,8 +214,8 @@ lemma isMatchedPair_std_iff (r : n') (c : n) :
     IsMatchedPair (.std t s γ (-γ')) l' (-l) r c ↔
       shiftedEntry γ (card n) l' r = shiftedEntry γ' (card n') l c ∧
         |(card n' : ℤ) - card n| < (t r * s c : ℤˣ) * shiftedEntry γ (card n) l' r := by
-  rw [IsMatchedPair, centredParam_swap_std, neg_neg]
-  simp [FockDualPair.centredParam, pairSign, shiftedEntry]
+  rw [IsMatchedPair, centeredParam_swap_std, neg_neg]
+  simp [FockDualPair.centeredParam, pairSign, shiftedEntry]
 
 /-- λ' and −λ match for the oscillator pair (`IsMatch`) if and only if both have gap 500(n+n')³,
 each doubled shifted entry of λ' is matched with one of λ or has modulus below n'−n, and each
@@ -229,18 +230,18 @@ lemma isMatch_std_iff :
       ∀ c : n, (∃ r : n', shiftedEntry γ (card n) l' r = shiftedEntry γ' (card n') l c ∧
           |(card n' : ℤ) - card n| < (t r * s c : ℤˣ) * shiftedEntry γ (card n) l' r) ∨
         |shiftedEntry γ' (card n') l c| < (card n : ℤ) - card n' := by
-  have hrow (r : n') : FockDualPair.centredParam (.std t s γ (-γ')) l' r =
+  have hrow (r : n') : FockDualPair.centeredParam (.std t s γ (-γ')) l' r =
       shiftedEntry γ (card n) l' r := rfl
   constructor
   · intro h
     exact ⟨by simpa [neg_neg, add_comm] using h.hasGap_column.neg,
       by simpa [add_comm] using h.hasGap_row,
       fun r ↦ by simpa only [isMatchedPair_std_iff, hrow] using h.left r,
-      fun c ↦ by simpa only [isMatchedPair_std_iff, centredParam_swap_std, abs_neg] using h.right c⟩
+      fun c ↦ by simpa only [isMatchedPair_std_iff, centeredParam_swap_std, abs_neg] using h.right c⟩
   · intro ⟨hgap, hgap', hrows, hcols⟩
     exact ⟨by simpa [add_comm] using hgap', by simpa [add_comm] using hgap.neg,
       fun r ↦ by simpa only [isMatchedPair_std_iff, hrow] using hrows r,
-      fun c ↦ by simpa only [isMatchedPair_std_iff, centredParam_swap_std, abs_neg] using hcols c⟩
+      fun c ↦ by simpa only [isMatchedPair_std_iff, centeredParam_swap_std, abs_neg] using hcols c⟩
 
 /-- If λ', −λ match for the oscillator pair of (T, S), then λ, −λ' match for that of (S, T). -/
 lemma IsMatch.std_symm (h : IsMatch (.std t s γ (-γ')) l' (-l)) :
@@ -280,27 +281,21 @@ lemma isBlockRule_iff_isMatch_of_le (hle : card n ≤ card n') :
     IsBlockRule γ γ' l l' ↔ IsMatch (.std t s γ (-γ')) l' (-l) := by
   obtain ⟨d, hd⟩ := Nat.exists_eq_add_of_le hle
   have hdiff : (card n' : ℤ) - card n = d := by omega
-  constructor
-  · intro h
-    have hentries : univ.image (shiftedEntry γ (card n) l') =
-        univ.image (shiftedEntry γ' (card n') l) ∪ doubledBlock d := by
-      simpa [hd] using h.entries_of_le hle
-    obtain ⟨hrows, hcols⟩ :=
-      exists_matched_of_entries_eq hd (shiftedEntry_injective h.hasGap_left _)
-        (shiftedEntry_injective h.hasGap_right _) (even_shiftedEntry_add_sub_one h.hasGap_right hd)
-        hentries h.sign_of_pos h.sign_of_neg
-    exact isMatch_std_iff.2 ⟨h.hasGap_left, h.hasGap_right, fun r ↦ by simpa [hdiff] using hrows r,
-      fun c ↦ Or.inl (by simpa [hdiff] using hcols c)⟩
-  · intro h
-    obtain ⟨hgap, hgap', hrows, -⟩ := isMatch_std_iff.1 h
-    obtain ⟨hentries, hpos, hneg⟩ :=
-      entries_eq_of_exists_matched hd (shiftedEntry_injective hgap' _)
-        (even_shiftedEntry_add_sub_one hgap' hd) (fun r ↦ by simpa [hdiff] using hrows r)
-        (fun c ↦ by simpa [hdiff] using h.exists_row_of_le hle c)
+  refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
+  · obtain ⟨hrows, hcols⟩ := exists_matched_of_entries_eq hd
+      (shiftedEntry_injective h.hasGap_left _) (shiftedEntry_injective h.hasGap_right _)
+      (even_shiftedEntry_add_sub_one h.hasGap_right hd) (by simpa [hd] using h.entries_of_le hle)
+      h.sign_of_pos h.sign_of_neg
+    exact isMatch_std_iff.2 ⟨h.hasGap_left, h.hasGap_right,
+      fun r ↦ by simpa [hdiff] using hrows r, fun c ↦ .inl (by simpa [hdiff] using hcols c)⟩
+  · obtain ⟨hgap, hgap', hrows, -⟩ := isMatch_std_iff.1 h
+    obtain ⟨hentries, hpos, hneg⟩ := entries_eq_of_exists_matched hd
+      (shiftedEntry_injective hgap' _) (even_shiftedEntry_add_sub_one hgap' hd)
+      (fun r ↦ by simpa [hdiff] using hrows r)
+      (fun c ↦ by simpa [hdiff] using h.exists_row_of_le hle c)
     refine ⟨hgap, hgap', fun _ ↦ by simpa [hd] using hentries, fun hge ↦ ?_, hpos, hneg⟩
     -- For equal ranks the block is empty.
-    have hzero : d = 0 := by omega
-    simpa [hzero, Nat.sub_eq_zero_of_le hle, doubledBlock] using hentries.symm
+    simpa [show d = 0 by omega, Nat.sub_eq_zero_of_le hle, doubledBlock] using hentries.symm
 
 /-- Parameters λ, λ' on (S, T) satisfy the block rule for γ, γ' if and only if λ', −λ match for the
 oscillator pair with rows for T and columns for S. -/
@@ -325,7 +320,7 @@ theorem IsBlockRule.neg (h : IsBlockRule γ γ' l l') :
     funext i
     grind [shiftedEntry, Pi.neg_apply]
   have hblock (d : ℕ) : (doubledBlock d).image Neg.neg = doubledBlock d := by
-    simpa [centredBlock] using image_neg_centredBlock 0 d
+    simpa [centeredBlock] using image_neg_centeredBlock 0 d
   have hgap : (toHCParam (-s) (-l)).HasGap (500 * (card n + card n') ^ 3) :=
     { h.hasGap_left.neg with gap := fun i j hij ↦ h.hasGap_left.neg.gap i j fun hs ↦ hij (congrArg
       Neg.neg hs) }
@@ -378,7 +373,7 @@ theorem isBlockRule_iff_of_offsets {e p p' : ℤ} (hle : card n ≤ card n')
       l'.HasGap (500 * (card n + card n') ^ 3) ∧
       univ.image (fun r : n' ↦ l' r + p) =
         univ.image (fun c : n ↦ l c + p') ∪
-          centredBlock e (card n' - card n) ∧
+          centeredBlock e (card n' - card n) ∧
       ∀ (c : n) (r : n'), l c + p' = l' r + p → (s c ≠ t r ↔ l c + p' < 2 * e) := by
   have hrow (r : n') : l' r + p = 2 * e + shiftedEntry γ (card n) l' r := by grind [shiftedEntry]
   have hcol (c : n) : l c + p' = 2 * e + shiftedEntry γ' (card n') l c := by grind [shiftedEntry]
@@ -386,7 +381,7 @@ theorem isBlockRule_iff_of_offsets {e p p' : ℤ} (hle : card n ≤ card n')
       univ.image (fun i : ι ↦ 2 * e + f i) = (univ.image f).image (fun x : ℤ ↦ 2 * e + x) :=
     Finset.image_image.symm
   -- After a translation by 2e these are the conditions on the shifted entries.
-  simp only [hrow, hcol, himage, centredBlock, ← Finset.image_union, add_right_inj,
+  simp only [hrow, hcol, himage, centeredBlock, ← Finset.image_union, add_right_inj,
     add_lt_iff_neg_left, (Finset.image_injective (add_right_injective (2 * e))).eq_iff]
   constructor
   · intro h
@@ -404,7 +399,7 @@ theorem isBlockRule_iff_of_offsets {e p p' : ℤ} (hle : card n ≤ card n')
 characters whose weights for spaces of ranks n, n' are e less the fractional parts of n/2, n'/2. It
 holds iff four conditions hold. The doubled parameters l = 2λ, l' = 2λ' have gap 500(n+n')³
 (distinct entries ≡ card − 1 mod 2, |λ i − λ j| ≥ gap when signs differ). The entries l' + (n mod 2)
-are the l + (n' mod 2) together with `centredBlock e (n'−n)`, the doubled entries of the block of
+are the l + (n' mod 2) together with `centeredBlock e (n'−n)`, the doubled entries of the block of
 length n'−n centred at e. A column c and a row r with a common entry have s c ≠ t r exactly if it is
 below 2e. -/
 theorem isBlockRule_iff_of_character {e : ℤ} (hle : card n ≤ card n')
@@ -414,7 +409,7 @@ theorem isBlockRule_iff_of_character {e : ℤ} (hle : card n ≤ card n')
       l'.HasGap (500 * (card n + card n') ^ 3) ∧
       univ.image (fun r : n' ↦ l' r + (card n : ℤ) % 2) =
         univ.image (fun c : n ↦ l c + (card n' : ℤ) % 2) ∪
-          centredBlock e (card n' - card n) ∧
+          centeredBlock e (card n' - card n) ∧
       ∀ (c : n) (r : n'), l c + (card n' : ℤ) % 2 = l' r + (card n : ℤ) % 2 →
         (s c ≠ t r ↔ l c + (card n' : ℤ) % 2 < 2 * e) :=
   isBlockRule_iff_of_offsets hle (by omega) (by omega)
@@ -422,7 +417,7 @@ theorem isBlockRule_iff_of_character {e : ℤ} (hle : card n ≤ card n')
 /-- The block rule for n ≤ n' when γ = e + ⌈n/2⌉ and γ' = e + ⌈n'/2⌉, as for characters whose
 weights for spaces of ranks n, n' are e plus the fractional parts of n/2, n'/2. It holds iff three
 conditions hold. First, both parameters have gap 500(n+n')³. Second, the entries of l' − (n mod 2)
-are those of l − (n' mod 2) together with those of `centredBlock e (n'−n)` = {2e + d−1, 2e + d−3, …,
+are those of l − (n' mod 2) together with those of `centeredBlock e (n'−n)` = {2e + d−1, 2e + d−3, …,
 2e + 1−d} for d = n'−n (the block e + [d], doubled). Third, whenever l_c − (n' mod 2) = l'_r − (n
 mod 2), s_c ≠ t_r exactly if this common entry is below 2e. -/
 theorem isBlockRule_iff_of_character_conj {e : ℤ} (hle : card n ≤ card n')
@@ -432,7 +427,7 @@ theorem isBlockRule_iff_of_character_conj {e : ℤ} (hle : card n ≤ card n')
       l'.HasGap (500 * (card n + card n') ^ 3) ∧
       univ.image (fun r : n' ↦ l' r - (card n : ℤ) % 2) =
         univ.image (fun c : n ↦ l c - (card n' : ℤ) % 2) ∪
-          centredBlock e (card n' - card n) ∧
+          centeredBlock e (card n' - card n) ∧
       ∀ (c : n) (r : n'), l c - (card n' : ℤ) % 2 = l' r - (card n : ℤ) % 2 →
         (s c ≠ t r ↔ l c - (card n' : ℤ) % 2 < 2 * e) := by
   have hp : (card n : ℤ) - 2 * γ = -((card n : ℤ) % 2) - 2 * e := by omega

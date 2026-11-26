@@ -1,6 +1,11 @@
 module
 
-public import New.Determinant.Exchange.MatchingPartners
+import Mathlib.Algebra.Ring.IsFormallyReal
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+public import Lib.General.Analysis.FiniteFourier
+public import Lib.General.LinearAlgebra.PartnerAlgebra
+import Lib.Cohomology.Etale.Basic
+import New.Determinant.Exchange.MatchingPartners
 
 /-!
 # The finite square law for theta lifts: special data, matched functions and Fourier form
@@ -236,7 +241,7 @@ def matchOf (χ : MulChar R ℂ) (e : b ⊕ a ≃ n) (Ψ : Matrix n b R → ℂ)
 
 variable {χ : MulChar R ℂ} {e : b ⊕ a ≃ n} {Φ Φ' : Matrix a n R → ℂ} {Ψ : Matrix n b R → ℂ}
 
-omit [Fintype R] in
+omit [Fintype R] [DecidableEq a] in
 /-- If the rows `a` of `γ⁻¹` and `γ'⁻¹` agree, then the columns `b` of `γ'` are those of `γ`
 multiplied on the right by an invertible `h` with `det γ' = det γ * det h`. -/
 lemma exists_firstCols_eq_mul_of_invLastRows_eq {γ γ' : GL n R}
@@ -255,7 +260,7 @@ lemma exists_firstCols_eq_mul_of_invLastRows_eq {γ γ' : GL n R}
     simp only [d, h, h_eq, det_fromRows_invLastRows, GeneralLinearGroup.val_mk'']
   linear_combination γ.val.det * h_mixed - γ'.val.det * h_one
 
-omit [Fintype R] in
+omit [DecidableEq a] [Fintype R] in
 /-- If `Ψ` vanishes off the matrices `firstCols e γ` (the columns `b` of an invertible `γ`) and
 satisfies `χ (det h) Ψ (y h) = Ψ y` for invertible `b × b` matrices `h`, then `Φ = matchOf χ e Ψ` is
 matched with `Ψ`: it vanishes off the matrices `invLastRows e γ` (the rows `a` of `γ⁻¹`) and has
@@ -312,7 +317,7 @@ lemma _root_.New.AreMatched.translate
     rw [h_rows, h_cols, h_matched.apply_eq _ (h_mem_top _), h_det, map_mul]
     ring
 
-omit [Fintype N] in
+omit [Fintype N] [DecidableEq a] in
 /-- Let `k` be invertible. If `firstCols e k` has a left inverse `s` whose columns indexed by an
 injection `f` vanish, then the columns indexed by `f` of `invLastRows e k` form a matrix with a left
 inverse. -/
@@ -329,6 +334,7 @@ lemma hasLeftInv_submatrix_invLastRows (k : GL n R) {s : Matrix b n R}
   simpa [P, Matrix.mul_apply, ← e.sum_comp, h_entry, Matrix.one_apply, hf.eq_iff]
     using ext_iff.2 h_inv (f i) (f j)
 
+omit [DecidableEq a] in
 /-- Let `e` split the index set `N ⊕ n` into `b` and `a` and let `k` be invertible. Consider the
 columns `b` of `k` (`firstCols e k`) and the rows `a` of `k⁻¹` (`invLastRows e k`). If the rows `N`
 of the former have a left inverse, so have the columns `n` of the latter, and likewise with `N` and
@@ -350,7 +356,7 @@ lemma hasLeftInv_toCols_of_hasLeftInv_toRows (e : b ⊕ a ≃ N ⊕ n) (k : GL (
     have h_zero : (fromCols (0 : Matrix b N R) L).submatrix id Sum.inl = 0 := toCols₁_fromCols 0 L
     exact hasLeftInv_submatrix_invLastRows k h_ext Sum.inl_injective h_zero
 
-omit [Fintype R] in
+omit [Fintype R] [DecidableEq a] in
 /-- Let any two elements `r`, `s` of `R` be multiples of `(1 - ε) r + ε s` for some idempotent `ε`
 (the hypothesis `hR`), and let `e` split the index set `N ⊕ n` into `b` and `a`. If the rows `N` or
 the rows `n` of an `(N ⊕ n) × b` matrix `y` have a left inverse, then `y` is the block
@@ -401,7 +407,7 @@ lemma matrixFourier_nextDatum_fromBlocks {R a b n : Type} [CommRing R] [Fintype 
   have h_trace (η : Matrix n a R) (s : Matrix n b R) :
       (fromBlocks A B C D * fromBlocks η s (0 : Matrix b a R) (1 : Matrix b b R)).trace =
         (A * η).trace + (C * s).trace + D.trace := by
-    simp [fromBlocks_multiply, trace, sum_add_distrib, add_assoc]
+    simp [fromBlocks_multiply, add_assoc]
   have h_neg : ∑ η : Matrix n a R, p (-η) * ψ (A * η).trace = matrixFourier ψ p (-A) :=
     sum_bijective _ neg_bijective _ _ fun η ↦ by simp
   calc _ = ∑ s : Matrix n b R, ∑ η : Matrix n a R, p (-η) / card (Matrix n b R) *

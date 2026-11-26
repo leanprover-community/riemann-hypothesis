@@ -1,7 +1,13 @@
 module
 
-public import Lib.General.Analysis.MeanValueAndTaylor
-public import Lib.General.NumberTheory.SUnitsAndClassNumber
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+public import Lib.CM.Sigma.Basic
+public import Lib.Shimura.ComplexTheta.DimensionFormula
+import Lib.General.Groups.CongruenceSubgroups
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # Theta functions of a CM elliptic curve: Weierstrass equation and spanning monomials
@@ -408,8 +414,8 @@ lemma translatedYThetaCube_sq_add (z : ℂ) :
   -- G = yθ³.
   revert z
   refine C.eq_of_eq_off_lattice C.t (by fun_prop [translatedYThetaCube]) (by fun_prop) fun z hz ↦ ?_
-  rw [show C.σ z ^ 6 = (C.σ z ^ 2) ^ 3 by ring, C.sigma_sq_eq_translatedX_mul_theta_sq hz,
-    C.translatedYThetaCube_eq_translatedY_mul_theta_cube hz]
+  obtain ⟨hσ, hY⟩ := C.sigma_sq_eq_and_translatedYThetaCube_eq z hz
+  rw [show C.σ z ^ 6 = (C.σ z ^ 2) ^ 3 by ring, hσ, hY]
   linear_combination C.θ z ^ 6 * C.weierstrass_equation hz
 
 /-! ### Isogenies and the multiplier of θ -/
@@ -644,8 +650,8 @@ lemma monomialSection_eq (e : ℕ × ℕ × ℕ) (z : ℂ) (hz : z + C.t ∉ C.�
     C.monomialSection e z =
       C.θ z ^ monomialDeg e * (C.translatedX z ^ e.2.1 * C.translatedY z ^ e.2.2) := by
   simp only [monomialSection, Pi.mul_apply, Pi.pow_apply]
-  rw [C.sigma_sq_eq_translatedX_mul_theta_sq hz,
-    C.translatedYThetaCube_eq_translatedY_mul_theta_cube hz]
+  obtain ⟨hσ, hY⟩ := C.sigma_sq_eq_and_translatedYThetaCube_eq z hz
+  rw [hσ, hY]
   ring
 
 /-- For a triple e = (a, b, c), the monomial `C.monomialSection e` = θ^a(σ²)^b G^c is a section of
@@ -918,7 +924,6 @@ variable [CharZero K]
 
 /-- The Taylor series at `0` of `x = C.translatedX` and `y = C.translatedY`, moved to `K` along
 `ι`, satisfy `x' = 2 y + a₁ x`. -/
-@[simp]
 lemma derivative_taylorVia_translatedX :
     d⁄dX (taylorVia ι C.translatedX) =
       2 * taylorVia ι C.translatedY + PowerSeries.C (ι C.a₁) * taylorVia ι C.translatedX := by
@@ -926,7 +931,6 @@ lemma derivative_taylorVia_translatedX :
 
 /-- The Taylor series at `0` of `x = C.translatedX` and `y = C.translatedY`, moved to `K` along
 `ι`, satisfy `y' = 1 + 3 x² - a₁ y`. -/
-@[simp]
 lemma derivative_taylorVia_translatedY :
     d⁄dX (taylorVia ι C.translatedY) =
       1 + 3 * taylorVia ι C.translatedX ^ 2 -

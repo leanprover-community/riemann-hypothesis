@@ -1,8 +1,17 @@
 module
 
+import Mathlib.Algebra.Regular.Pi
+import Mathlib.CategoryTheory.Abelian.Exact
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.Data.List.Intervals
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.RingTheory.Perfectoid.Integral.Tilt
 public import Lib.Cohomology.Etale.FilteredLimits
 public import Lib.General.Algebra.CohomologyBaseChange
 public import Lib.General.Geometry.EtaleCharts
+import Lib.Cohomology.Etale.DenseSubfunctors
 
 /-!
 # p-adic tests: tilts, Fontaine's map, covers by tests and flat base change
@@ -77,7 +86,7 @@ variable {p : ℕ} [ThePrime p] (c : PadicTest)
 /-- For ring maps y_i from an O_C-algebra B to a non-empty family of cells W_i, this is the p-adic
 test ∏ W_i with structure map O_C → B → ∏ W_i, together with the point (y_i) : B → ∏ W_i. -/
 def cellPoint (B : CommAlg OC) {I : Type} [n : Nonempty I] {W : I → Type} [∀ i, CommRing (W i)]
-    [∀ i, IsCell p (W i)] (y : ∀ i : I, B.1 →+* W i) :
+    [∀ i, IsCell p (W i)] (y : ∀ i : I, B.carrier →+* W i) :
     Sigma (PadicTest.algFunctor ⋙ reprBy B) where
   fst := { Index := I, Cell := W, structureMap := (RingHom.pi y).comp (algebraMap OC B) }
   snd := ⟨ofHom { toRingHom := RingHom.pi y, commutes' := fun _ ↦ rfl }⟩
@@ -108,7 +117,7 @@ def tiltPiEquiv :
       let split : Perfection (∀ i : c.Index, c.Cell i) p ≃ ∀ i : c.Index, Perfection (c.Cell i) p :=
         ((Equiv.piComm fun _ ↦ c.Cell).subtypeEquiv
             (by simp [funext_iff, forall_comm (α := ℕ)])).trans Equiv.subtypePiEquivPi
-      (split.trans (Equiv.piCongrRight fun _ ↦ (quotientMulEquiv ..).1)).bijective
+      (split.trans (Equiv.piCongrRight fun _ ↦ (quotientMulEquiv ..).toEquiv)).bijective
 
 /-- Divisibility in the tilt of a test can be checked after untilting. -/
 lemma dvd_of_untilt_dvd {x y : c.TiltRing} (h : x.untilt ∣ y.untilt) : x ∣ y := by
@@ -281,9 +290,8 @@ noncomputable def homTiltIso {b : CommAlg OFlat} [PerfectRing b p] :
     fun c ↦ by
       -- By the adjunction `algBaseChangeAdj` a map from `OC ⊗ W(b)` is an algebra map
       -- `g : W(b) → c.ProdRing`; in these terms the transformation sends `f` to `θ ∘ W(f)`.
-      -- `erw`: the points of the base change match the adjunction's hom-set only after unfolding.
-      erw [← (Equiv.ulift.trans (algBaseChangeAdj.homEquiv ..)).comp_bijective,
-        bijective_iff_existsUnique]
+      refine ((Equiv.ulift.trans (algBaseChangeAdj.homEquiv ..)).comp_bijective _).mp ?_
+      refine (bijective_iff_existsUnique _).mpr ?_
       rintro ⟨g : WittVector p b →+* c.ProdRing, hg⟩
       -- `b` is not zero, as `W(b)` maps to the nonzero `c.ProdRing`, so it has characteristic `p`.
       have h_nontrivial : Nontrivial b :=

@@ -1,6 +1,14 @@
 module
 
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.LinearAlgebra.PiTensorProduct.Generators
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.GLn.SchurModule.GramMatrix
+import Lib.GLn.SchurModule.WeylKernel
 
 /-!
 # Auerbach's lemma, ultrametric matrix bounds and Gram norms

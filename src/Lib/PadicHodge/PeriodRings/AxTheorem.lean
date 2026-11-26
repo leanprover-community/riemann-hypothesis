@@ -1,11 +1,24 @@
 module
 
-public import Lib.ClassField.Places.ProfiniteGalois
 public import Lib.General.Algebra.AbsIntegrallyClosed
 public import Lib.General.Algebra.AdicCompletion
-public import TauCeti.NumberTheory.Padics.Complex.FixedPoints
+public import TauCeti.Analysis.Normed.Ring.Ultra
 
 import TauCeti.RingTheory.RootsOfUnity.Ultrametric
+public import Lib.ClassField.Places.GaloisDefs
+public import Mathlib.RingTheory.Perfectoid.FontaineTheta
+public import TauCeti.NumberTheory.Padics.AlgebraicClosure.Basic
+public import TauCeti.Topology.Algebra.UniformMulAction
+public import TauCeti.Topology.MetricSpace.IsometricSMul
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.Topology.Algebra.Nonarchimedean.Completion
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.NumberTheory.Padics.Complex.Basic
+import TauCeti.NumberTheory.Padics.Complex.FixedPoints
 
 /-!
 # Tilting, Fontaine's θ, the ring O_C and Ax's theorem on Galois invariants in ℂ_p
@@ -304,12 +317,6 @@ namespace New.Period
 variable {p : ℕ} [Fact p.Prime]
   {F : Type*} [NormedField F] [IsUltrametricDist F] {ζ : F}
 
-/-- In an ultrametric normed field, if `‖ζ‖ ≤ 1` then `‖ζ ^ a - 1‖ ≤ ‖ζ - 1‖` for every `a`. -/
-lemma norm_pow_sub_one_le_norm_sub_one (hζ_norm : ‖ζ‖ ≤ 1) (a : ℕ) : ‖ζ ^ a - 1‖ ≤ ‖ζ - 1‖ :=
-  -- `ζ - 1` divides `ζ ^ a - 1` in the ring of elements of norm at most one
-  (Valuation.integer.integers NormedField.valuation).le_of_dvd
-    (sub_one_dvd_pow_sub_one ⟨ζ, hζ_norm⟩ a)
-
 /-- If `ζ` is a primitive `p ^ (m + 1)`-th root of unity in an ultrametric normed field `F`, then
 `‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖p‖`, where `φ (p ^ (m + 1)) = p ^ m (p - 1)`. -/
 lemma norm_zeta_sub_one_pow {m : ℕ} (hζ : IsPrimitiveRoot ζ (p ^ (m + 1))) :
@@ -337,7 +344,7 @@ inclusion `coe'` of `ℚ̄_p` into its completion `ℂ_p`, of the fixed field of
 lemma ax_mem_closure_fixedField (J : Subgroup (Gp p)) {x : ℂ_[p]} (hx : ∀ g ∈ J, g • x = x) :
     x ∈ closure (coe' '' fixedField J) := by
   -- this is Tau Ceti's `PadicComplex.fixedPoints_eq_closure_fixedField`
-  have hx_fixed : x ∈ MulAction.fixedPoints J ℂ_[p] := fun g ↦ hx g g.2
+  have hx_fixed : x ∈ MulAction.fixedPoints J ℂ_[p] := fun g ↦ hx g g.property
   rw [PadicComplex.fixedPoints_eq_closure_fixedField] at hx_fixed
   simpa [Set.image_eq_range] using hx_fixed
 

@@ -1,7 +1,15 @@
 module
 
-public import Lib.General.LinearAlgebra.PolarDecomposition
-public import Lib.General.NumberTheory.FrobeniusOrbits
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Data.Int.Log
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.RingTheory.PicardGroup
+public import Lib.Adelic.Adeles.IdeleModulus
+public import Lib.Adelic.Unitary.Defs
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.General.LinearAlgebra.PolarDecomposition
+import Lib.General.NumberTheory.FrobeniusOrbits
 
 /-!
 # Adelic Minkowski theorems and counts of rational points in boxes
@@ -69,7 +77,7 @@ lemma lintegral_encard_rat_points {S : Set (n → 𝔸 E)} (hS : MeasurableSet S
   -- measure of the preimage of `S` is the left side, and by Fubini it is also the right side.
   have h_scale : MeasurePreserving (y⁻¹.1 *ᵥ ·) volume (ENNReal.ofReal (ideleAbs y.det) • volume) :=
     ⟨by fun_prop, (volume_map_mulVec_adele y⁻¹).trans (by simp)⟩
-  have h_unfold : MeasurePreserving (fun p : (n → 𝔸 E) × ratVectors E n ↦ y⁻¹.1 *ᵥ (p.2 +ᵥ p.1))
+  have h_unfold : MeasurePreserving (fun p : (n → 𝔸 E) × ratVectors E n ↦ y⁻¹.val *ᵥ (p.2 +ᵥ p.1))
       ((ratVectors E n).quotMeasure.prod count) (ENNReal.ofReal (ideleAbs y.det) • volume) :=
     h_scale.comp measurePreserving_addOrbitMeasure
   rw [← smul_eq_mul, ← smul_apply, ← h_unfold.measure_preimage hS.nullMeasurableSet,
@@ -111,9 +119,9 @@ lemma minkowski_first :
   -- `y S` differ by a point of `y` times the box of radius `1`.
   let box : Set (𝔸 E) := ball 0 2⁻¹ ×ˢ Ô E
   let S : Set (n → 𝔸 E) := univ.pi fun _ ↦ box
-  set N : ℕ∞ := {ξ : n → E | ∀ i : n, (y⁻¹.1 *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard
-  have h_count (x : n → 𝔸 E) : {ξ : n → E | y⁻¹.1 *ᵥ (toAdele ∘ ξ + x) ∈ S}.encard ≤ N := by
-    obtain h_empty | ⟨ξ₀, hξ₀⟩ := {ξ | y⁻¹.1 *ᵥ (toAdele ∘ ξ + x) ∈ S}.eq_empty_or_nonempty
+  set N : ℕ∞ := {ξ : n → E | ∀ i : n, (y⁻¹.val *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard
+  have h_count (x : n → 𝔸 E) : {ξ : n → E | y⁻¹.val *ᵥ (toAdele ∘ ξ + x) ∈ S}.encard ≤ N := by
+    obtain h_empty | ⟨ξ₀, hξ₀⟩ := {ξ | y⁻¹.val *ᵥ (toAdele ∘ ξ + x) ∈ S}.eq_empty_or_nonempty
     · simp only [h_empty, encard_empty, zero_le]
     refine encard_le_encard_of_injOn (f := (· - ξ₀)) (fun ξ hξ i ↦ ?_) sub_left_injective.injOn
     simpa [box, mulVec_add, mulVec_sub, ← two_mul] using
@@ -142,7 +150,7 @@ lemma exists_ne_zero_inv_mulVec_mem
     (h_det : ((2 * rootDiscr E) ^ Core.numInfPlaces E) ^ card n < ideleAbs y.det) :
     ∃ ξ : n → E, (∀ i : n, (y⁻¹.val *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E) ∧ ξ ≠ 0 := by
   -- more than one rational `ξ` has `y⁻¹ ξ` in the box, so one of them is not zero
-  have h_count : 1 < {ξ : n → E | ∀ i : n, (y⁻¹.1 *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard :=
+  have h_count : 1 < {ξ : n → E | ∀ i : n, (y⁻¹.val *ᵥ toAdele ∘ ξ) i ∈ ball 0 1 ×ˢ Ô E}.encard :=
     mod_cast one_lt_of_lt_mul_right (α := ℝ≥0∞)
       (((ofReal_lt_ofReal_iff ideleAbs_pos).2 h_det).trans_le (minkowski_first y))
   exact exists_ne_of_one_lt_encard h_count 0
@@ -417,13 +425,6 @@ lemma norm_det_eq_of_orthonormal_inv_mul {A b : GL n ℂ}
     CStarRing.norm_of_mem_unitary (det_of_mem_unitary (mem_unitaryGroup_iff'.2 h_orth))
   rw [← A.mul_inv_cancel_left b.val, det_mul, norm_mul, h_norm, mul_one]
 
-/-- If the columns of `A⁻¹ * b` are orthonormal, then `det A` and `det b` have the same squared
-absolute value. -/
-lemma norm_det_sq_eq_of_orthonormal_inv_mul {A b : GL n ℂ}
-    (h_orth : (A⁻¹.val * b.val)ᴴ * (A⁻¹.val * b.val) = 1) :
-    ‖A.val.det‖ ^ 2 = ‖b.val.det‖ ^ 2 := by
-  rw [norm_det_eq_of_orthonormal_inv_mul h_orth]
-
 /-- Let `b w` make the columns of `g_w⁻¹ * b w` orthonormal at each infinite place `w`, with `g_w`
 the component of `g` at `w`, and let `c ^ n * ‖det D‖ ^ 2 = ∏ j, α j ^ 2`. Then
 `|det g| * ∏ j, α j ^ (2 f)` is `c ^ (f n)` times the adelic absolute value of the determinant of
@@ -442,7 +443,7 @@ lemma ideleAbs_det_mul_prod_eq (g : GL n (𝔸 E)) {b : InfinitePlace E → GL n
   have g_eq_mk : g = mkAdelicGL (g_inf, g_fin) := Units.ext (Matrix.ext fun i j ↦ rfl)
   have abs_det_g : ideleAbs g.det =
       (∏ w : InfinitePlace E, ‖(b w).val.det‖ ^ 2) * finIdeleAbs g_fin.det := by
-    rw [← prod_congr rfl fun w _ ↦ norm_det_sq_eq_of_orthonormal_inv_mul (h_orth w),
+    rw [← prod_congr rfl fun w _ ↦ congrArg (· ^ 2) (norm_det_eq_of_orthonormal_inv_mul (h_orth w)),
       ← ideleAbs_det_mkAdelicGL g_inf g_fin, ← g_eq_mk]
   have abs_det_mul_D : ideleAbs (mkAdelicGL (fun w ↦ b w * D, g_fin)).det =
       (∏ w : InfinitePlace E, ‖(b w).val.det‖ ^ 2) *

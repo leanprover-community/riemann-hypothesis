@@ -1,8 +1,24 @@
 module
 
-public import Lib.General.Algebra.LevelModulus
-public import Lib.SiegelWeil.RallisInner.Doubling
+import Mathlib.Data.Finset.Functor
+import Mathlib.Order.Interval.Finset.Box
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.ClassField.HeckeCharacter.TameModulus
 public import Lib.SiegelWeil.UnramifiedSeries.RallisSeries
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.SiegelWeil.RallisInner.Doubling
+public import Lib.Weil.Lift
+import Lib.ClassField.HeckeL.ContinuationAtOne
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.General.Algebra.LevelModulus
+import Lib.General.LinearAlgebra.HermiteForm
+import Lib.General.LinearAlgebra.PartnerAlgebra
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.SiegelWeil.RallisInner.DualDatum
+import Lib.SiegelWeil.RallisInner.VacuumSummability
+import Lib.Weil.Unramified.HeckeTransfer
 
 /-!
 # Rallis' inner product formula for sharp data and injectivity of the theta lift
@@ -196,26 +212,6 @@ lemma IsSharp.isUnramifiedOn (hF : IsSharp b S₀ F J c) [b.HasWeight γ' ψ] :
   simpa [vacuumCoeff, finMultiplier_eq_one_of_mem hk.1, Prod.mk_one_one, ← Circle.coe_inj,
     finMultiplier_eq_one_of_mem (one_mem (stdLevel E n))] using h_coeff
 
-/-- Cutting an integral over a group into cosets. Let `μ` be left invariant on `H`, let `L` be a
-measurable subgroup with countably many cosets, represented by the points `r q`. The integral of an
-integrable `Φ` is the sum over the cosets `q` of the integrals of `g ↦ Φ (r q * g)` over `L`. -/
-lemma _root_.New.hasSum_setIntegral_mul_coset {H : Type*} [Group H] [MeasurableSpace H]
-    [MeasurableMul H] {μ : Measure H} [μ.IsMulLeftInvariant] {L : Subgroup H} [Countable (H ⧸ L)]
-    (hL : MeasurableSet (L : Set H)) {r : H ⧸ L → H} (hr : ∀ q : H ⧸ L, (r q : H ⧸ L) = q)
-    {Φ : H → ℂ} (hΦ : Integrable Φ μ) :
-    HasSum (fun q : H ⧸ L ↦ ∫ g in (L : Set H), Φ (r q * g) ∂μ) (∫ g, Φ g ∂μ) := by
-  let coset (q : H ⧸ L) : Set H := (fun g ↦ (r q)⁻¹ * g) ⁻¹' L
-  have mem_coset (q : H ⧸ L) (g : H) : g ∈ coset q ↔ q = (g : H ⧸ L) := by
-    rw [Set.mem_preimage, SetLike.mem_coe, ← QuotientGroup.eq, hr]
-  have h_disjoint : Pairwise (Function.onFun Disjoint coset) := by
-    grind [Pairwise]
-  have h_cover : ⋃ q, coset q = Set.univ := by simp [Set.eq_univ_iff_forall, mem_coset]
-  have h_coset (q : H ⧸ L) : ∫ g in coset q, Φ g ∂μ = ∫ g in (L : Set H), Φ (r q * g) ∂μ := by
-    simpa using (measurePreserving_mul_left μ (r q)⁻¹).setIntegral_preimage_emb
-      (measurableEmbedding_mulLeft _) (fun g ↦ Φ (r q * g)) L
-  simpa only [h_coset, h_cover, Measure.restrict_univ] using
-    hasSum_integral_iUnion (s := coset) (fun q ↦ measurable_const_mul _ hL) h_disjoint hΦ.restrict
-
 /-- Let `F` be sharp for `J` off `S₀`, of mass `c`, let `v` be a vector of the Fock space,
 `φ = v ⊗ F` and `x` a real point, and let `P` be a right `J`-invariant function on the finite
 points. If `g ↦ ⟨φ, ω(x g) φ⟩ P(g)` is integrable, its integral is the sum, over the cosets `q` of
@@ -231,7 +227,6 @@ lemma IsSharp.hasSum_integral_weilMatrixCoeff_mul (hF : IsSharp b S₀ F J c) [b
         (vacuumCoeff (card m) b (cosetRep q).val * P (cosetRep q).val)))
       (∫ g : Gf E n,
         weilMatrixCoeff b (integrated (S.hom T) v F) (integrated (S.hom T) v F) (x, g) * P g) := by
-  classical
   -- Cut the finite points into the cosets; on each, `weilMatrixCoeff_integrated_mul` gives the
   -- integrand, a multiple of the function whose integral is the mass.
   let φ : 𝒮 (S.hom T) := integrated (S.hom T) v F
@@ -250,8 +245,10 @@ lemma IsSharp.hasSum_integral_weilMatrixCoeff_mul (hF : IsSharp b S₀ F J c) [b
     · simp +contextual only [φ, Set.indicator_apply_eq_zero, SetLike.mem_coe, ite_eq_right h_level,
         hF.weilMatrixCoeff_integrated_mul γ v x hu, mul_zero, zero_mul, implies_true]
   have : Countable (Gf E n ⧸ localLevel n S₀ᶜ) := countable_quotient_localLevel S₀ᶜ
-  exact (hasSum_setIntegral_mul_coset h_meas mk_cosetRep h_int).congr_fun
-    fun q ↦ (h_coset _ (cosetRep q).property).symm
+  exact (hasSum_setIntegral_mul_of_existsUnique h_meas
+    (r := fun q : Gf E n ⧸ localLevel n S₀ᶜ ↦ (cosetRep q).val)
+    (fun g ↦ by simp [← QuotientGroup.eq, mk_cosetRep]) h_int).congr_fun
+      fun q ↦ (h_coset _ (cosetRep q).property).symm
 
 /-- Inner product formula. Let `2 * card n < card m`, let `F` be sharp for `J` off `S₀` with mass
 `c` (see `IsSharp`), let `v` be a Fock-space vector, and let `Θ` be the lift by `v ⊗ F` for the
@@ -302,6 +299,128 @@ theorem IsSharp.petersson_lift_eq_integral {S₀ : Set (FinPlace E)} {F : 𝒮 (
   rw [h_adelic, Measure.volume_eq_prod, integral_prod _ h_int, integral_congr_ae h_finite,
     integral_const_mul, mul_assoc]
 
+/-! ### Partial integrals and injectivity by the dual datum -/
+
+/-- The integral of `Φ` over the points `g` of the adelic unitary group whose finite part is
+integral at every place of `A`. -/
+def partialIntegral (A : Set (FinPlace E)) (Φ : G E s → ℂ) : ℂ :=
+  ∫ g in {g : G E s | g.2 ∈ localLevel n A}, Φ g
+
+omit [WeilData E] in
+open Filter Topology in
+/-- For `Φ` integrable on the adelic unitary group, the integral of `Φ` over the points integral at
+the places of `R` outside `B` tends, as the finite set `R` grows to all places, to the integral over
+the points integral at every place outside `B`. -/
+lemma tendsto_partialIntegral (B : Set (FinPlace E)) {Φ : G E s → ℂ} (hΦ : Integrable Φ) :
+    Tendsto (fun R : Finset (FinPlace E) ↦ partialIntegral ((R : Set (FinPlace E)) \ B) Φ) atTop
+      (𝓝 (partialIntegral Bᶜ Φ)) := by
+  -- The sets of points integral at `R \ B` decrease as `R` grows, with intersection the set of
+  -- points integral at every place outside `B`.
+  let K (A : Set (FinPlace E)) : Set (G E s) := {g | g.2 ∈ localLevel n A}
+  have h_meas (A : Set (FinPlace E)) : MeasurableSet (K A) :=
+    ((isOpen_coe_localLevel A).preimage continuous_snd).measurableSet
+  have h_anti : Antitone fun R : Finset (FinPlace E) ↦ K ((R : Set (FinPlace E)) \ B) :=
+    fun R R' h_le g hg w hw ↦ hg w ⟨h_le hw.1, hw.2⟩
+  have h_inter : (⋂ R : Finset (FinPlace E), K ((R : Set (FinPlace E)) \ B)) = K Bᶜ := by
+    ext g
+    simp only [K, Set.mem_iInter, Set.mem_ofPred_eq, mem_localLevel]
+    exact ⟨fun h w hw ↦ h {w} w ⟨Finset.mem_singleton_self w, hw⟩, fun h R w hw ↦ h w hw.2⟩
+  have h_lim := tendsto_setIntegral_of_antitone (μ := volume) (f := Φ)
+    (fun R : Finset (FinPlace E) ↦ h_meas _) h_anti ⟨∅, hΦ.integrableOn⟩
+  rwa [h_inter] at h_lim
+
+/-- Let `F` be sharp for `J` off `S₀`, of mass `c`, let `v` be a vector of the Fock space and
+`φ = v ⊗ F`, let `y` be fixed by `J`, `y'` any function and `u` a finite point. The integral of
+`⟨φ, ω(g) φ⟩ ⟨y', R(u g) y⟩` over the points `g` integral off `S₀` is `c` times the real integral of
+`⟨v, Ω(x) v⟩ ⟨y', R(x u) y⟩`. Here `R` is right translation and
+`Ω(x) = realPairWeil γ γ' (x, 1)`. -/
+lemma IsSharp.partialIntegral_eq (hF : IsSharp b S₀ F J c) [b.HasWeight γ' ψ]
+    (γ : NumberField.InfinitePlace E → ℤ) (v : PairFock E s t) (hJ : HasLevel y J)
+    (y' : G E s → ℂ) (u : Gf E n) :
+    partialIntegral S₀ᶜ (fun g ↦
+        weilMatrixCoeff b (integrated (S.hom T) v F) (integrated (S.hom T) v F) g *
+          S.petersson y' (rightRegular ℂ (G E s) ℂ ((u : G E s) * g) y)) =
+      c * ∫ x : GInf E s, fockInner v (realPairWeil γ γ' (x, 1) v) *
+        S.petersson y' (fun h ↦ y (h * (x, 1) * (u : G E s))) := by
+  classical
+  -- On the points integral off `S₀` the integrand is a product of a function of the real part and
+  -- the function of the finite part whose integral is the mass `c`.
+  let φ : 𝒮 (S.hom T) := integrated (S.hom T) v F
+  let realPart (x : GInf E s) : ℂ := fockInner v (realPairWeil γ γ' (x, 1) v) *
+    S.petersson y' (fun h ↦ y (h * (x, 1) * (u : G E s)))
+  let finPart (k : Gf E n) : ℂ := if k ∈ J ⊓ stdLevel E n then dataInner (S.hom T) F F else 0
+  have h_meas : MeasurableSet {g : G E s | g.2 ∈ localLevel n S₀ᶜ} :=
+    ((isOpen_coe_localLevel S₀ᶜ).preimage continuous_snd).measurableSet
+  have h_point (g : G E s) : {g : G E s | g.2 ∈ localLevel n S₀ᶜ}.indicator (fun g ↦
+      weilMatrixCoeff b φ φ g * S.petersson y' (rightRegular ℂ (G E s) ℂ ((u : G E s) * g) y)) g =
+      realPart g.1 * finPart g.2 := by
+    obtain ⟨x, k⟩ := g
+    by_cases hk : k ∈ localLevel n S₀ᶜ
+    · rw [indicator_of_mem (show (x, k) ∈ {g : G E s | g.2 ∈ localLevel n S₀ᶜ} from hk),
+        weilMatrixCoeff_integrated hF.mem_finitePart γ, hF.weilMatrixCoeff_eq k hk]
+      by_cases hJk : k ∈ J ⊓ stdLevel E n
+      · -- Right translation by `k ∈ J` does not change `y`.
+        have h_translate : rightRegular ℂ (G E s) ℂ ((u : G E s) * (x, k)) y =
+            fun h ↦ y (h * (x, 1) * (u : G E s)) := by
+          funext h
+          have h_split : h * ((u : G E s) * (x, k)) = h * (x, 1) * (u : G E s) * (1, k) := by
+            simp [Prod.mul_def, mul_assoc]
+          simp only [rightRegular_apply_apply, h_split, hJ k hJk.1]
+        simp only [h_translate, realPart, finPart, hJk, ite_true]
+        ring
+      · simp only [finPart, ite_eq_right hJk, mul_zero, zero_mul]
+    · have hJk : k ∉ J ⊓ stdLevel E n := fun h ↦ hk (stdLevel_le_localLevel h.2)
+      rw [indicator_of_notMem (show (x, k) ∉ {g : G E s | g.2 ∈ localLevel n S₀ᶜ} from hk)]
+      simp only [finPart, ite_eq_right hJk, mul_zero]
+  rw [partialIntegral, ← integral_indicator h_meas, funext h_point, Measure.volume_eq_prod,
+    integral_prod_mul, hF.integral_ite_eq_mass, mul_comm]
+
+/-- Let `card m > 2 * card n`, `F` sharp for `J` off `S₀`, `y` rapidly decreasing, automorphic and
+fixed by `J`, with zero theta lift by `v ⊗ F`. For every rapidly decreasing automorphic `y'`, the
+integral over the real points `x` of `⟨v, Ω(x) v⟩ ⟨y', R(x) y⟩` is zero, where
+`Ω(x) = realPairWeil γ γ' (x, 1)`. The proof pairs `v ⊗ F` with the dual datum
+(`exists_dualDatum`) of a finite set of places `R \ S₀` in the inner product formula, and lets `R`
+exhaust the places. -/
+lemma integral_eq_zero_of_lift_eq_zero (hF : IsSharp b S₀ F J c) [b.HasWeight γ' ψ]
+    (v : PairFock E s t) (hJ : HasLevel y J) (hy : y ∈ S.rapidFunctions)
+    (h_rank : 2 * card n < card m)
+    (h_lift : lift (pairThetaKer S T a b) (integrated (S.hom T) v F) y = 0)
+    (γ : NumberField.InfinitePlace E → ℤ) {y' : G E s → ℂ} (hy' : y' ∈ S.rapidFunctions) :
+    ∫ x : GInf E s, fockInner v (realPairWeil γ γ' (x, 1) v) *
+      S.petersson y' (fun h ↦ y (h * (x, 1))) = 0 := by
+  classical
+  -- By the inner product formula with the dual datum of `R \ S₀`, the integral over the points
+  -- integral at `R \ S₀` vanishes for every finite `R`; let `R` exhaust the places.
+  set φ : 𝒮 (S.hom T) := integrated (S.hom T) v F
+  let Φ (g : G E s) : ℂ := weilMatrixCoeff b φ φ g * S.petersson y' (rightRegular ℂ (G E s) ℂ g y)
+  have h_formula (f' : 𝒮 (S.hom T)) := inner_product_formula h_rank a b (hF.clean v) hy hy' f'
+  obtain ⟨h_int, -⟩ := h_formula φ
+  have h_zero (R : Finset (FinPlace E)) : partialIntegral ((R : Set (FinPlace E)) \ S₀) Φ = 0 := by
+    obtain ⟨f', hf'⟩ : ∃ f' : 𝒮 (S.hom T), ∀ g : G E s, weilMatrixCoeff b φ f' g =
+        if g.2 ∈ localLevel n ((R : Set (FinPlace E)) \ S₀) then weilMatrixCoeff b φ φ g else 0 :=
+      exists_dualDatum b h_rank.le (hF.vacuum_off _ v disjoint_sdiff_right)
+      R.finite_toSet.sdiff
+    obtain ⟨-, h_eq⟩ := h_formula f'
+    have h_vanish : ∫ g, weilMatrixCoeff b φ f' g * S.petersson y' (rightRegular ℂ (G E s) ℂ g y) =
+        0 := by
+      simpa [φ, h_lift, petersson, measureReal_univ_ne_zero] using h_eq.symm
+    have h_meas : MeasurableSet {g : G E s | g.2 ∈ localLevel n ((R : Set (FinPlace E)) \ S₀)} :=
+      ((isOpen_coe_localLevel _).preimage continuous_snd).measurableSet
+    rw [partialIntegral, ← integral_indicator h_meas, ← h_vanish]
+    refine integral_congr_ae (.of_forall fun g ↦ ?_)
+    by_cases hg : g.2 ∈ localLevel n ((R : Set (FinPlace E)) \ S₀)
+    · rw [indicator_of_mem (show g ∈ {g : G E s | g.2 ∈ localLevel n ((R : Set (FinPlace E)) \ S₀)}
+        from hg)]
+      simp only [Φ, hf' g, hg, ↓reduceIte]
+    · rw [indicator_of_notMem
+        (show g ∉ {g : G E s | g.2 ∈ localLevel n ((R : Set (FinPlace E)) \ S₀)} from hg)]
+      simp only [hf' g, hg, ↓reduceIte, zero_mul]
+  have h_lim : partialIntegral S₀ᶜ Φ = 0 :=
+    tendsto_nhds_unique (tendsto_partialIntegral S₀ h_int) (by simp [h_zero])
+  have h_sharp := hF.partialIntegral_eq γ v hJ y' 1
+  simp only [Prod.mk_one_one, one_mul, mul_one] at h_sharp
+  simpa [hF.mass_ne_zero] using h_sharp.symm.trans h_lim
+
 /-- Let `card m > 2 * card n` and let `F` on `Hom(S, T)` be sharp for `J` off `S₀` with mass `c`
 (see `IsSharp`). Let `y` be automorphic, rapidly decreasing and fixed by `J`, let `v` be a
 Fock-space vector and let `a`, `b` be characters. If the theta lift of `y` by `v ⊗ F` for
@@ -314,51 +433,21 @@ lemma realConv_eq_zero_of_lift_eq_zero (hF : IsSharp b S₀ F J c) [b.HasWeight 
     (γ : NumberField.InfinitePlace E → ℤ)
     (h_int : Integrable fun x : GInf E s ↦ fockInner v (realPairWeil γ γ' (x, 1) v)) :
     realConv (fun x : GInf E s ↦ fockInner v (realPairWeil γ γ' (x, 1) v)) y = 0 := by
-  -- The convolution `y₁` is bounded and fixed by the integral points supported off `S₀`, so it is
-  -- enough to show that its series `z` vanishes, that is, `⟨z, z⟩ = 0`.
+  -- The convolution `y₁` is automorphic and bounded; `⟨y₁, y₁⟩` is an average of products of `y₁`
+  -- with real translates of `y`, each zero by `integral_eq_zero_of_lift_eq_zero`.
   set κ : GInf E s → ℂ := fun x ↦ fockInner v (realPairWeil γ γ' (x, 1) v)
-  let y₁ : G E s → ℂ := realConv κ y
-  let z : G E s → ℂ := rallisSeries (card m) b S₀ᶜ y₁
-  have ⟨y_aut, y_rapid⟩ : S.IsAutomorphic y ∧ S.IsRapid y := hy
+  obtain ⟨y_aut, y_rapid⟩ : S.IsAutomorphic y ∧ S.IsRapid y := hy
   have y_bdd : IsBoundedMeasurable y := .of_continuous y_rapid.bounded y_aut.continuous
   obtain ⟨K, hK⟩ := y_aut.exists_level
-  obtain ⟨y₁_aut, y₁_bdd⟩ : S.IsAutomorphic y₁ ∧ IsBoundedMeasurable y₁ :=
+  obtain ⟨y₁_aut, y₁_bdd⟩ : S.IsAutomorphic (realConv κ y) ∧ IsBoundedMeasurable (realConv κ y) :=
     isAutomorphic_realConv K y_bdd y_aut.rat_mul hK h_int
-  have y₁_level : HasLevel y₁ (stdLevel E n ⊓ Gf.supportedOn n S₀ᶜ) := fun k hk_mem g ↦ by
-    have h_comm (x : GInf E s) : g * (1, k) * (x, 1) = g * (x, 1) * (1, k) := by simp [mul_assoc]
-    simp only [y₁, realConv, h_comm, hJ k (hF.inf_supportedOn_le hk_mem)]
-  refine eq_zero_of_rallisSeries_eq_zero h_rank hF.isUnramifiedOn y₁_bdd.bounded y₁_level ?_
-  have z_aut : S.IsAutomorphic z :=
-    isAutomorphic_rallisSeries h_rank hF.isUnramifiedOn y₁_aut y₁_bdd.bounded y₁_level
-  have series_bdd {φ : G E s → ℂ} (φ_aut : S.IsAutomorphic φ) (φ_bdd : IsBoundedMeasurable φ) :
-      IsBoundedMeasurable (rallisSeries (card m) b S₀ᶜ φ) := by
-    obtain ⟨B, hB⟩ := φ_bdd.bounded
-    exact .of_continuous ⟨_, norm_rallisSeries_le h_rank b S₀ᶜ hB⟩
-      (continuous_rallisSeries h_rank b S₀ᶜ φ_aut.continuous φ_bdd.bounded)
-  have z_bdd : IsBoundedMeasurable z := series_bdd y₁_aut y₁_bdd
-  -- The series commutes with real translations, so by the inner product formula `z` is orthogonal
-  -- to every rapidly decreasing `y'`.
-  have h_orth {y' : G E s → ℂ} (hy' : y' ∈ S.rapidFunctions) : S.petersson y' z = 0 := by
-    obtain ⟨-, h_formula⟩ := hF.petersson_lift_eq_integral h_rank a γ v hy hy' hJ
-    have y'_bdd : IsBoundedMeasurable y' := .of_continuous hy'.2.bounded hy'.1.continuous
-    rw [← petersson_realConv_right (series_bdd y_aut y_bdd) h_int y'_bdd,
-      realConv_rallisSeries h_rank b S₀ᶜ y_bdd h_int, h_lift] at h_formula
-    simpa [petersson, hF.mass_ne_zero, measureReal_univ_ne_zero, z, y₁] using h_formula
-  -- `z` is a sum of averages of translates of `y`, and the translates are rapidly decreasing.
-  have h_translate (x : G E s) : S.petersson z (fun g : G E s ↦ y (g * x)) = 0 := by
-    rw [← conj_petersson, h_orth ⟨y_aut.comp_mul_right x, y_rapid.comp_mul_right⟩, map_zero]
-  have h_average (u : Gf E n) : S.petersson z (fun g : G E s ↦ y₁ (g * (1, u))) = 0 := by
-    have h_conv : (fun g : G E s ↦ y₁ (g * (1, u))) = realConv κ fun g ↦ y (g * (1, u)) :=
-      funext fun g ↦ by simp [y₁, realConv, mul_assoc]
-    rw [h_conv, petersson_realConv_right (y_bdd.comp (measurable_mul_const (1, u))) h_int z_bdd]
-    simp only [mul_assoc, h_translate, mul_zero, integral_zero]
-  apply z_aut.eq_zero_of_petersson_self (z_bdd.memLp_top.mono_exponent le_top)
-  have z_int : Integrable z S.quotMeasure := z_bdd.memLp_top.integrable le_top
-  have h_series : HasSum (fun q : Gf E n ⧸ localLevel n S₀ᶜ ↦
-      vacuumCoeff (card m) b (cosetRep q).val *
-        S.petersson z fun g : G E s ↦ y₁ (g * (1, (cosetRep q).val))) (S.petersson z z) := by
-    simpa only [mul_one] using hasSum_petersson_rallisSeries (S := S) h_rank b S₀ᶜ y₁_bdd z_int 1
-  simpa only [h_average, mul_zero, tsum_zero] using h_series.tsum_eq.symm
+  have h_translate (x : GInf E s) : S.petersson (fun g ↦ y (g * (x, 1))) (realConv κ y) = 0 := by
+    rw [petersson_realConv_right y_bdd h_int (y_bdd.comp (measurable_mul_const (x, 1)))]
+    exact integral_eq_zero_of_lift_eq_zero hF v hJ ⟨y_aut, y_rapid⟩ h_rank h_lift γ
+      ⟨y_aut.comp_mul_right _, y_rapid.comp_mul_right⟩
+  refine y₁_aut.eq_zero_of_petersson_self (y₁_bdd.memLp_top.mono_exponent le_top) ?_
+  rw [petersson_realConv_right y_bdd h_int y₁_bdd]
+  simp [← conj_petersson (F' := realConv κ y), h_translate]
 
 /-- Injectivity and norm of the lift, in Weil's range `2 * card n < card m`. Let the vector `v` of
 the Fock space be an edge (a real datum that carries type `e` to type `e'`, such as the vector of
@@ -413,16 +502,14 @@ theorem exists_petersson_formLift_eq_rallisSeries {γ : NumberField.InfinitePlac
     rw [h_integral, ← hz, h_real y' z]
     ring
   refine ⟨fun h_zero ↦ ?_, h_norm⟩
-  -- If the lift vanishes, `z` is orthogonal to itself; and the series is injective.
+  -- If the lift vanishes, the real integral of `⟨y, R(x) y⟩` is zero, and it is `Z ⟨y, y⟩`.
   have h_lift : Θ y = 0 := (h_arr.coe_formLift y).symm.trans (congrArg Subtype.val h_zero)
-  have z_zero : z = 0 := by
-    have h_inner : T.petersson (Θ z) (Θ y) =
-        T.quotMeasure.real univ * Z * c * S.petersson z z := h_norm z
-    rw [h_lift, ← inner_eq_petersson] at h_inner
-    simpa [petersson, hZ, hF.mass_ne_zero, measureReal_univ_ne_zero] using h_inner
-  have h_series : rallisSeries (card m) b S₀ᶜ y = 0 := hz.symm.trans (congrArg Subtype.val z_zero)
-  exact Subtype.ext (eq_zero_of_rallisSeries_eq_zero h_rank hF.isUnramifiedOn y.property.bounded
-    y_level h_series)
+  obtain ⟨y_rapid, -⟩ := h_arr y
+  have h_self : Z * S.petersson y y = 0 := by
+    rw [← h_real y y]
+    exact integral_eq_zero_of_lift_eq_zero hF v hJ y_rapid h_rank h_lift γ y_rapid
+  exact Subtype.ext (y.property.eq_zero_of_petersson_self y.property.memLp
+    ((mul_eq_zero.1 h_self).resolve_left hZ))
 
 /-- Rallis' inner product formula with the series written out as a sum over cosets. Let
 `2 * card n < card m` and let `v` be an edge from type `e` to type `e'` for the weights `γ`, `γ'`.
@@ -494,7 +581,7 @@ structure SiegelWeil.IsSharpFn (S : Space E n s) (T : Space E m t) (b : AutChar 
   /-- On the support of `Ψ` the matrix `A x` is the reduction of a point of `J`. -/
   exists_mul_eq : ∃ A : Matrix n m 𝔪.ResidueRing,
     ∀ x : Matrix m n 𝔪.ResidueRing,
-      Ψ x ≠ 0 → ∃ k : stdLevel E n, k.1 ∈ J ∧ (𝔪.reductionGL k).1 = A * x
+      Ψ x ≠ 0 → ∃ k : stdLevel E n, k.val ∈ J ∧ (𝔪.reductionGL k).val = A * x
 
 section IsSharpFn
 
@@ -533,8 +620,8 @@ lemma SiegelWeil.IsSharpFn.eq_zero_or_eq_zero (hΨ : IsSharpFn S T b 𝔪 J Ψ) 
 of `x ↦ Ψ (x k̄)`, where `k̄` is `k` modulo `𝔪`. -/
 lemma SiegelWeil.pairWeil_stdLevel_vacuumDatum (S : Space E n s) (T : Space E m t) (b : AutChar E)
     (k : stdLevel E n) (Ψ : Matrix m n 𝔪.ResidueRing → ℂ) :
-    pairWeil S T 1 b ((1, k.val), 1) (vacuumDatum S T 𝔪 Ψ).1 = ((b.val (detFin s k.val))⁻¹ : ℂ) •
-      (vacuumDatum S T 𝔪 fun x : Matrix m n 𝔪.ResidueRing ↦ Ψ (x * (𝔪.reductionGL k).val)).1 := by
+    pairWeil S T 1 b ((1, k.val), 1) (vacuumDatum S T 𝔪 Ψ).val = ((b.val (detFin s k.val))⁻¹ : ℂ) •
+      (vacuumDatum S T 𝔪 fun x : Matrix m n 𝔪.ResidueRing ↦ Ψ (x * (𝔪.reductionGL k).val)).val := by
   simpa [vacuumDatum, Prod.mk_one_one] using pairWeil_modDatum_stdLevel S T 1 b 𝔪 k 1 Ψ
     Fock.vacVector
 
@@ -542,7 +629,7 @@ lemma SiegelWeil.pairWeil_stdLevel_vacuumDatum (S : Space E n s) (T : Space E m 
 coefficient at `g` of the datum `Ψ ⊗ vac` is zero. -/
 lemma SiegelWeil.IsSharpFn.weilMatrixCoeff_eq_zero_of_mem_stdLevel_of_notMem
     (hΨ : IsSharpFn S T b 𝔪 J Ψ) (g : stdLevel E n) (hg : g.val ∉ J) :
-    weilMatrixCoeff b (vacuumDatum S T 𝔪 Ψ).1 (vacuumDatum S T 𝔪 Ψ).1 (1, g.val) = 0 := by
+    weilMatrixCoeff b (vacuumDatum S T 𝔪 Ψ).val (vacuumDatum S T 𝔪 Ψ).val (1, g.val) = 0 := by
   -- The point `g` acts on `Ψ` through its reduction, up to a scalar.
   have h_sum : star (Ψ ∘ vecToMatrix) ⬝ᵥ (fun x ↦ Ψ (x * (𝔪.reductionGL g).val)) ∘ vecToMatrix =
     0 :=
@@ -554,7 +641,7 @@ lemma SiegelWeil.IsSharpFn.weilMatrixCoeff_eq_zero_of_mem_stdLevel_of_notMem
 Then the matrix coefficient at `g` of the datum `Ψ ⊗ vac` is zero. -/
 lemma SiegelWeil.IsSharpFn.weilMatrixCoeff_eq_zero_of_notMem_stdLevel (hΨ : IsSharpFn S T b 𝔪 J Ψ)
     {g : Gf E n} (g_off : g ∈ localLevel n 𝔪.places.conjClosureᶜ) (hg : g ∉ stdLevel E n) :
-    weilMatrixCoeff b (vacuumDatum S T 𝔪 Ψ).1 (vacuumDatum S T 𝔪 Ψ).1 (1, g) = 0 := by
+    weilMatrixCoeff b (vacuumDatum S T 𝔪 Ψ).val (vacuumDatum S T 𝔪 Ψ).val (1, g) = 0 := by
   -- If `x` and `x g` were both primitive at the places of `𝔪`, `g` would be integral there, hence
   -- everywhere.
   have h_supp (x : m × n → 𝔸f E) : 𝔪.liftFn (Ψ ∘ vecToMatrix) x = 0 ∨
@@ -586,7 +673,7 @@ of `J` whenever `Ψ x ≠ 0`. Write `K₀ = stdLevel E n`. Then `Ψ ⊗ vac` (`v
 index `[K₀ : J ∩ K₀]`. -/
 lemma SiegelWeil.IsSharpFn.isSharp (hΨ : IsSharpFn S T b 𝔪 J Ψ)
     (hn : (∀ i j : n, s i = s j) ∨ Nonempty 𝔪.places) :
-    IsSharp b 𝔪.places.conjClosure (vacuumDatum S T 𝔪 Ψ).1 J
+    IsSharp b 𝔪.places.conjClosure (vacuumDatum S T 𝔪 Ψ).val J
       (star Ψ ⬝ᵥ Ψ / card (m × n → 𝔪.ResidueRing) / stdLevelIndex J) := by
   -- On `J` the datum is fixed. If the coefficient at `g` is not zero, some `x` and `x g` lie in the
   -- support of `Ψ`; this makes `g` integral and then puts it in `J` (the two lemmas above). The
@@ -594,11 +681,11 @@ lemma SiegelWeil.IsSharpFn.isSharp (hΨ : IsSharpFn S T b 𝔪 J Ψ)
   -- Sums over matrices are sums over vectors indexed by `m × n`.
   have h_curry : star (Ψ ∘ vecToMatrix) ⬝ᵥ (Ψ ∘ vecToMatrix) = star Ψ ⬝ᵥ Ψ :=
     comp_equiv_dotProduct_comp_equiv (star Ψ) Ψ (Equiv.curry m n 𝔪.ResidueRing)
-  have h_norm : dataInner (S.hom T) (vacuumDatum S T 𝔪 Ψ).1 (vacuumDatum S T 𝔪 Ψ).1 =
+  have h_norm : dataInner (S.hom T) (vacuumDatum S T 𝔪 Ψ).val (vacuumDatum S T 𝔪 Ψ).val =
       star Ψ ⬝ᵥ Ψ / card (m × n → 𝔪.ResidueRing) := by
     simp [vacuumDatum, ← h_curry, ↓ isConjDisjoint_places, ↓ dataInner_schrodingerOp,
       ↓ localInner_liftFn]
-  refine ⟨?_, (vacuumDatum S T 𝔪 Ψ).2, fun B v hB ↦ ?_, fun g g_off ↦ ?_, by rw [h_norm],
+  refine ⟨?_, (vacuumDatum S T 𝔪 Ψ).property, fun B v hB ↦ ?_, fun g g_off ↦ ?_, by rw [h_norm],
     fun v ↦ hn.imp_right fun ⟨w⟩ ↦ ?_⟩
   · open scoped ComplexOrder in simp [h_norm, dotProduct_star_self_eq_zero, hΨ.ne_zero]
   · -- a vacuum off `𝔪 𝔪̄`
@@ -637,7 +724,7 @@ lemma SiegelWeil.isSharpFn_of_mul_eq_one (S : Space E n s) (T : Space E m t) (b 
   rintro _ ⟨k, hk, rfl⟩
   -- An element `k ≡ 1` modulo `𝔪` acts by the scalar `b (det k)⁻¹ = 1`.
   have h_red : 𝔪.reductionGL k = 1 := by simpa using hk
-  change pairWeil S T 1 b ((1, k.val), 1) (vacuumDatum S T 𝔪 F).1 = (vacuumDatum S T 𝔪 F).1
+  change pairWeil S T 1 b ((1, k.val), 1) (vacuumDatum S T 𝔪 F).val = (vacuumDatum S T 𝔪 F).val
   simp [pairWeil_stdLevel_vacuumDatum, h_red, hb.apply_det_eq_charOfTamePart hψ k]
 
 /-- The case of the principal level. Let the signs of `S` agree or `𝔪 ≠ (1)`, let `b` have trivial
@@ -650,7 +737,7 @@ lemma SiegelWeil.isSharp_vacuumDatum_of_mul_eq_one {S : Space E n s} (T : Space 
     {F : Matrix m n 𝔪.ResidueRing → ℂ} (hA : ∀ x : Matrix m n 𝔪.ResidueRing, F x ≠ 0 → A * x = 1)
     {γ : InfinitePlace E → ℤ} {ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ} [hb : b.HasWeight γ ψ]
     (hψ : ∀ w : FinPlace E, w ∉ 𝔪.places → ψ w = 1) (h_norm : star F ⬝ᵥ F ≠ 0) :
-    IsSharp b 𝔪.places.conjClosure (vacuumDatum S T 𝔪 F).1 (𝔪.levelOfSubgroup ⊥)
+    IsSharp b 𝔪.places.conjClosure (vacuumDatum S T 𝔪 F).val (𝔪.levelOfSubgroup ⊥)
       (star F ⬝ᵥ F / card (m × n → 𝔪.ResidueRing) / card (GL n 𝔪.ResidueRing)) := by
   simpa [stdLevelIndex_levelOfSubgroup] using
     (isSharpFn_of_mul_eq_one S T b hψ (fun h ↦ h_norm (by simp [h])) A hA).isSharp hn
@@ -703,8 +790,8 @@ omit [WeilData E] in
 /-- In rank one a point at `w` lies in the integral level `localIntGL Unit w` exactly when its
 determinant has order zero. -/
 lemma mem_localIntGL_unit_iff (g : GL Unit (LocField w)) :
-    g ∈ localIntGL Unit w ↔ (v g.1.det).log = 0 := by
-  have h_ne : v g.1.det ≠ 0 := by simp [-det_unique, GeneralLinearGroup.det_ne_zero]
+    g ∈ localIntGL Unit w ↔ (v g.val.det).log = 0 := by
+  have h_ne : v g.val.det ≠ 0 := by simp [-det_unique, GeneralLinearGroup.det_ne_zero]
   rw [← WithZero.exp_eq_one, WithZero.exp_log h_ne]
   exact mem_intGL_iff_det.trans (by aesop)
 
@@ -747,7 +834,7 @@ lemma vacuumCoeff_ofSplitPlace_uniformizer_zpow {l : InfinitePlace E → ℤ}
     rw [h_idele]
     exact (h_unram.apply_locFullIdele g.det).trans (by simp [hg])
   have h_unif : χ.atUniformizer w = ν.baseChange.atUniformizer w * υ.atUniformizer w ^ (2 * k) := by
-    simp [χ, HeckeChar.atUniformizer, finPart, pow_mul]
+    simp [χ, HeckeChar.atUniformizer, pow_mul]
   have h_conj : starRingEnd ℂ (υ.atUniformizer w) = (υ.atUniformizer w)⁻¹ := by
     simp [HeckeChar.atUniformizer, finPart, ← Circle.coe_inv_eq_conj]
   rw [vacuumCoeff, h_det, h_mult, h_unif, hν.atUniformizer_star hψ hψ_star, q_star,
@@ -756,7 +843,7 @@ lemma vacuumCoeff_ofSplitPlace_uniformizer_zpow {l : InfinitePlace E → ℤ}
   -- For either sign of `z` the powers of `υ.atUniformizer w` cancel.
   obtain ⟨i, rfl | rfl⟩ := z.eq_nat_or_neg
   all_goals
-    simp [h_conj, mul_pow, div_pow]
+    simp [h_conj, mul_pow]
     field
 
 open scoped Classical in
@@ -871,7 +958,6 @@ theorem vacuumSum_eq_L_div_eulerProd {k : ℕ} (hν : ν.HasWeight l ψ) {S : Se
     (hψ : ∀ w : FinPlace E, w ∉ S → ψ w = 1) (h_rank : card m = 2 * k) (hk : 1 < k) :
     vacuumSum Unit (card m) (ν * upsilonU1 ^ k) S.conjClosureᶜ =
       ν⁻¹.L S k / eulerProd (S.conjClosureᶜ.indicator placeSign) k := by
-  classical
   -- Both sides are products over the pairs `{w, w̄}` off `D`, and `vacuumSum_pair` compares the
   -- factors.
   let D : Set (FinPlace E) := S.conjClosure

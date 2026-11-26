@@ -1,8 +1,19 @@
 module
 
-public import Lib.General.Analysis.HolomorphicIntegrals
+public import Mathlib.RingTheory.Etale.StandardEtale
+public import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Algebra.DualNumber
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.RingTheory.Unramified.LocalStructure
+import TauCeti.RingTheory.MvPolynomial.IntegrallyClosed
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
-public import TauCeti.RingTheory.MvPolynomial.IntegrallyClosed
+public import Lib.Cohomology.Etale.Basic
+import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Smoothness near an arc from an immersive generic family and a bound on the tangent space
@@ -291,7 +302,7 @@ lemma New.Variety.ofSection_eq_zero_of_specializes {X : Scheme} {U : X.Opens} {q
     (hxy : x (closedPoint ℂ) ⤳ y (closedPoint ℂ))
     (hq : PointFn.ofSection q (of ℂ) x = 0) : PointFn.ofSection q (of ℂ) y = 0 := by
   have generise : LandsIn y (X.basicOpen q) → LandsIn x (X.basicOpen q) := by
-    simpa [landsIn_iff_mem] using hxy.mem_open (X.basicOpen q).2
+    simpa [landsIn_iff_mem] using hxy.mem_open (X.basicOpen q).is_open'
   simpa [landsIn_basicOpen, hx, hy, hq] using generise
 
 /-- Let `Spec ρ` be the structure map of an affine chart `W` of `X` over `Spec R`, and let the

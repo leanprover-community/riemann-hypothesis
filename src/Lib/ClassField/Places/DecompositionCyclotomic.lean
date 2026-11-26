@@ -1,7 +1,11 @@
 module
 
-public import Lib.ClassField.Places.ProfiniteGalois
+public import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.NumberTheory.Multiplicity
+import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Lib.General.Topology
+public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
+public import Lib.ClassField.Places.ProfiniteGalois -- shake: keep (needed public by an exposed definition)
 
 /-!
 # Decomposition and inertia groups, and cyclotomic characters at Frobenii and inertia
@@ -119,22 +123,15 @@ lemma eq_of_pow_eq_one_of_val_sub_lt {x y : Ω} (hx : x ^ N = 1) (hy : y ^ N = 1
     (h_val_lt : A.valuation (x - y) < A.valuation N) : x = y := by
   -- Write `x = y + a N` with `a, y` in `A`. The binomial expansion of `x ^ (N + 1)` to second order
   -- gives `-(x - y) N = (x - y) ^ 2 b` with `b` in `A`, so `x - y` divides `N` if `x ≠ y`.
-  have hN_ne : N ≠ 0 := by
-    rintro rfl
-    simp at h_val_lt
-  have hy_mem : y ∈ A := by
+  have hN_ne : N ≠ 0 := fun h ↦ by simp [h] at h_val_lt
+  lift y to A using by
     rw [← A.valuation_le_one_iff, ← pow_le_one_iff hN_ne, ← map_pow, hy, map_one]
-  lift y to A using hy_mem
   obtain ⟨a, ha⟩ := (A.valuation_le_iff _ _).mp h_val_lt.le
-  obtain ⟨b, hb⟩ :
-      (a * N) ^ 2 ∣ (y + a * N) ^ (N + 1) - y ^ N * (a * N) * (N + 1 : ℕ) - y ^ (N + 1) :=
-    sq_dvd_add_pow_sub_sub (a * N) y (N + 1)
-  have h_expand : x ^ (N + 1) - (x - y) * (N + 1) - y ^ (N + 1) = (x - y) ^ 2 * b := by
-    simp_all [Subtype.ext_iff]
+  obtain ⟨b, hb⟩ := sq_dvd_add_pow_sub_sub (a * N) y (N + 1)
   contrapose! h_val_lt
-  -- so `N` is `-b` times `x - y`, with `-b` in `A`
-  have h_dvd : -(b * (x - y)) = N := by grind
-  exact (A.valuation_le_iff _ _).mpr ⟨-b, by simpa using h_dvd⟩
+  refine (A.valuation_le_iff _ _).mpr ⟨-b, ?_⟩
+  simp_all [Subtype.ext_iff]
+  grind
 
 /-- If `N` is a unit of `A` (`hN`), two `N`-th roots of unity that are congruent modulo the maximal
 ideal are equal. -/
@@ -234,15 +231,12 @@ lemma cyclotomicCharMod_eq_one_of_mem_inertiaGroup (hσ : σ ∈ inertiaGroup Γ
     cyclotomicCharMod Ω N σ = 1 :=
   (hσ.mem_ker_cyclotomicCharMod_iff hN).mpr rfl
 
-/-- A residue modulo `N` is the cast of its natural representative. -/
-lemma zmod_eq_natCast_val {g : ZMod N} : g = g.val := by simp
-
 /-- Every additive map from `ZMod N` to the units of `Ω` is equivariant, when `g` acts on `ZMod N`
 through the character. -/
 lemma map_cyclotomicCharMod_mul (μ : ZMod N →+ DiscreteUnits Ω) (g : Γ) (a : ZMod N) :
     μ ((cyclotomicCharMod Ω N g).val * a) = unitsRep g (μ a) := by
-  simp [cyclotomicCharMod_eq_iff_unitsRep.mp (zmod_eq_natCast_val
-    (g := (cyclotomicCharMod Ω N g : ZMod N))), ← map_nsmul, natCast_self]
+  simp [cyclotomicCharMod_eq_iff_unitsRep.mp
+    (ZMod.natCast_zmod_val (cyclotomicCharMod Ω N g : ZMod N)).symm, ← map_nsmul, natCast_self]
 
 variable {l : ℕ} [Fact (Nat.Prime l)] {K : Type*} [Field K] [Algebra K Ω]
 
@@ -272,7 +266,7 @@ lemma map_cyclotomicChar_smul {A B : Type*} [AddCommGroup A] [Module ℤ_[l] A] 
   -- Write the value of `cyclotomicChar` as its residue plus a multiple of `l ^ r`, which `f` kills.
   obtain ⟨c, hc⟩ : (l : ℤ_[l]) ^ r ∣
       (cyclotomicChar Ω l σ).val - (cyclotomicCharMod Ω (l ^ r) σ : ZMod (l ^ r)).val :=
-    (pow_dvd_cyclotomicChar_sub_iff r).mpr zmod_eq_natCast_val
+    (pow_dvd_cyclotomicChar_sub_iff r).mpr (ZMod.natCast_zmod_val _).symm
   rw [eq_add_of_sub_eq hc, add_smul, mul_smul]
   norm_cast
   simp [h_kill]
@@ -311,7 +305,7 @@ lemma cyclotomicCharMod_eq_of_equivariant (h_comm : ∀ x : Ω, j (g • x) = g'
     refine cyclotomicCharMod_eq_iff.mpr fun ζ hζ ↦ j.injective ?_
     have hζ' : j ζ ^ N = 1 := by rw [← map_pow, hζ, map_one]
     rw [h_comm, smul_eq_pow_cyclotomicCharMod (N := N) g' hζ', map_pow]
-  exact ext (h_val_eq.trans zmod_eq_natCast_val.symm)
+  exact ext (h_val_eq.trans (ZMod.natCast_zmod_val _))
 
 /-- Let `Γ`, `Γ'` act on algebraically closed fields `Ω`, `Ω'` of characteristic `0`, and let
 `j : Ω → Ω'` be a ring homomorphism with `j (g • x) = g' • j x` for all `x` (`h_comm`). Then the

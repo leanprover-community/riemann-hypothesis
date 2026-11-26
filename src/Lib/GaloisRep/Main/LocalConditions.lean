@@ -1,8 +1,16 @@
 module
 
-public import Lib.GaloisRep.Main.Defs
-public import Lib.PadicHodge.Crystalline.HodgeTateJumps
-public import Lib.PadicHodge.Crystalline.Regularity
+public import Aesop.BuiltinRules
+import Mathlib.Topology.Algebra.Valued.LocallyCompact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.ClassField.Places.DecompositionCompletion
+public import Lib.PadicHodge.Crystalline.Basic
+import Lib.ClassField.Places.DecompositionCyclotomic
+import Lib.General.LinearAlgebra.MatrixPolynomials
+import Lib.PadicHodge.Crystalline.HodgeTateForms
+import Lib.PadicHodge.Crystalline.HodgeTateJumps
+import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # Local conditions on ℓ-adic Galois representations and their passage to retracts
@@ -16,11 +24,17 @@ This map respects Frobenius elements, inertia and the cyclotomic character. Fini
 polynomials pass from a representation to one that embeds in it near the identity. This covers
 subrepresentations, restriction to open subgroups and conjugation by automorphisms of `Ω`.
 
+`PolyKillsAt` records an annihilating polynomial, not its equality with the characteristic
+polynomial. Even a monic annihilator of degree equal to the rank need not record root
+multiplicities. The above-`ℓ` clauses are quantified over local embedding data; they do not
+by themselves assert the existence of such data.
+
 ## Main definitions and results
 
 * `New.GaloisRep.IsGoodAt`: unramified, or crystalline.
 * `New.GaloisRep.IsFiniteTypeAt`: trivial on an open part of inertia, or potentially crystalline.
-* `New.GaloisRep.PolyKillsAt`: the polynomial `P` kills `s`.
+* `New.GaloisRep.PolyKillsAt`: the polynomial `P` kills the relevant action of `s`, without
+  prescribing its characteristic polynomial.
 * `New.GaloisRep.JumpsRelAt`, `New.GaloisRep.HasJumpsAt`: the Hodge–Tate jumps compared with
   multisets `J`.
 * `New.GaloisRep.IsSphericalAbove`: the three conditions that hold at a spherical place `w` of `E`.

@@ -1,8 +1,14 @@
 module
 
-public import Lib.Adelic.Unitary.CongruenceLevels
+import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt -- shake: keep (needed public by an exposed definition)
+import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.General.Analysis.FiniteFourier
 public import Lib.Weil.Construction.WeilData
+import Lib.Adelic.Adeles.IdeleModulus
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.ComponentsAndBlockSums
+import Lib.Adelic.Unitary.CongruenceLevels
 
 /-!
 # Idelic generators of ideals, semilocal fields and tame local characters
@@ -359,7 +365,7 @@ class SemilocalField (F : Type*) extends CommRing F, TopologicalSpace F, Measure
   /-- The ring of integers is open. -/
   isOpen_O : _root_.IsOpen O.carrier
   /-- The powers of the uniformiser tend to zero. -/
-  isTopologicallyNilpotent_ϖ : IsTopologicallyNilpotent ϖ.1
+  isTopologicallyNilpotent_ϖ : IsTopologicallyNilpotent ϖ.val
   /-- As in a product of valuation rings, for `a, b` in `F` there is an idempotent `e` of `O` such
   that `a` and `b` are `O`-multiples of `(1 - e) a + e b`. -/
   isValuationPair : IsValuationPair O
@@ -392,10 +398,10 @@ class TameLocalChar where
   resChar : MulChar ResidueRing ℂ
   /-- The reduction is surjective with kernel `ϖ O`. -/
   reduction_surjective_and_eq_zero_iff : Function.Surjective reduction ∧ ∀ x : O,
-    reduction x = 0 ↔ ϖ⁻¹.1 * x.1 ∈ O
+    reduction x = 0 ↔ ϖ⁻¹.val * x.val ∈ O
   /-- `η` is primitive, and `η ∘ π` is `χ⁻¹` on the units of `O` and zero on the rest of `O`. -/
   isPrimitive_resChar_and_invOnUnits_eq :
-      Exchange.IsPrimitiveMulChar resChar ∧ ∀ x : O, invOnUnits χ x.1 = resChar (reduction x)
+      Exchange.IsPrimitiveMulChar resChar ∧ ∀ x : O, invOnUnits χ x.val = resChar (reduction x)
 
 attribute [instance_reducible, instance] TameLocalChar.commRing
 attribute [instance] TameLocalChar.finite

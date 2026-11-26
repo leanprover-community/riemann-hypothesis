@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.RingTheory.MvPowerSeries.Rename
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import Lib.General.LinearAlgebra.PolarDecomposition
 public import Lib.Shimura.ComplexTheta.DimensionFormula
 public import Lib.Weil.DualPair.Defs
@@ -235,7 +237,7 @@ lemma entireTheta_translate_finiteImage (V : Space E n ε)
     -- Unfolded, both sides are exponentials; the exponents agree as polynomials in the four
     -- inner products of `y` and `r`.
     simp [IsStd.signs_eq_one (V := V), hB, realHeisenberg, realVac, signMatrix, ← exp_add,
-      ← exp_sub, ← exp_neg, dotProduct_add, add_dotProduct, mul_comm, fieldEq]
+      ← exp_sub, ← exp_neg, dotProduct_add, add_dotProduct, fieldEq]
     ring_nf
   rw [thetaShift_apply, entireTheta, entireTheta, h_translate, h_period]
   linear_combination -(f ((adelicSum E ε).equiv (y, z))) * h_exp

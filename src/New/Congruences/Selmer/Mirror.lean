@@ -1,7 +1,9 @@
 module
 
+import TauCeti.Algebra.Module.CharacterModule
 public import New.Congruences.Selmer.Count
-public import TauCeti.Algebra.Module.CharacterModule
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.GreenbergWiles.SplitPrimeReciprocity
 
 /-!
 # Reciprocity at conjugate primes
@@ -54,18 +56,18 @@ lemma isTameGeneratorFor_conjGal_inv {E : Type} [Field E]
     (hδ : IsTameGeneratorFor (K := E) m B δ) :
     IsTameGeneratorFor (K := E) m (conjPlace B) (conjGal δ)⁻¹ := by
   obtain ⟨hδ_inertia, ϖ, r, hϖ, hr, hδr⟩ : δ ∈ inertiaGroup Gal(Ω/E) B ∧
-      ∃ (ϖ : Eˣ) (r : DiscreteUnits Ω), IsUniformiser B (ϖ : E) ∧
+      ∃ (ϖ : Eˣ) (r : DiscreteUnits Ω), IsUniformizer B (ϖ : E) ∧
         m • r = DiscreteUnits.ofBase Gal(Ω/E) Ω (Additive.ofMul ϖ) ∧
-        unitsRep δ r - r = (rootPowHom Ω m).1 1 := hδ
+        unitsRep δ r - r = (rootPowHom Ω m).val 1 := hδ
   -- Conjugate the uniformiser `ϖ` and the root `δ r`, which `δ⁻¹` moves back to `r`; conjugation
   -- inverts the root of unity.
   refine ⟨by simpa using hδ_inertia, star ϖ, unitsRep cmConj (unitsRep δ r), ?_, ?_, ?_⟩
-  · simpa [hB.conjPlace_star.isUniformiser_iff, hB.isUniformiser_iff] using hϖ
+  · simpa [hB.conjPlace_star.isUniformizer_iff, hB.isUniformizer_iff] using hϖ
   · simp [← map_nsmul, hr, DiscreteUnits.ext_iff]
   · have h_back : unitsRep (conjGal δ)⁻¹ (unitsRep cmConj (unitsRep δ r)) = unitsRep cmConj r := by
       rw [← map_inv conjGal]
       simp [DiscreteUnits.ext_iff, conjGal]
-    have h_inv : unitsRep cmConj ((rootPowHom Ω m).1 1) = -(rootPowHom Ω m).1 1 := by
+    have h_inv : unitsRep cmConj ((rootPowHom Ω m).val 1) = -(rootPowHom Ω m).val 1 := by
       simp [← map_cyclotomicCharMod_mul, isComplexConj_cmConj.cyclotomicCharMod_eq_neg_one]
     rw [h_back, ← neg_sub, ← map_sub, hδr, h_inv, neg_neg]
 
@@ -381,7 +383,7 @@ lemma dualSelmer_frob_add_conj_frob_eq_zero {hp : IsTiedPrimes ℓ S₀ V W N P�
       unionWithConj T.places (J.erase P₀) ∪ Set.range fun j : Fin 2 ↦ (![p, p'] j).prime := by
     intro v hv
     have hv_cases : v ∈ unionWithConj T.places (J.erase P₀) ∨ v = P ∨ v = star P := by grind
-    simpa [p, p', Matrix.range_cons, or_comm, eq_comm] using hv_cases
+    simpa [p, p', Matrix.range_cons, eq_comm] using hv_cases
   have h_mem : t • k • z ∈ (T.tiedSetting hp hV hN ha A).cocycles
       (Set.range fun j : Fin 2 ↦ (![p, p'] j).prime) :=
     T.mem_cocycles_tiedSetting hp hV hN ha A
@@ -621,10 +623,8 @@ lemma exists_linearMap_apply_eq_dualSelmer_conj {hp : IsTiedPrimes ℓ S₀ V W 
     rintro t _ ⟨h', hh', rfl⟩
     simpa [LinearMap.mem_ker.1 hα] using h_pair α t (conjGal_mem_sahGroup hh')
   -- So `θ` factors through the surjection `π`.
-  let η : (n → QuotSpan a) →ₗ[O] CharacterModule (n → QuotSpan a) :=
-    (LinearMap.ker π).liftQ θ h_ker ∘ₗ (π.quotKerEquivOfSurjective hπ).symm.toLinearMap
-  have hη (α : T.sahGroup →₀ O) : η (π α) = θ α := by simp [η]
-  exact ⟨η, fun h hh ↦ by simpa [π, θ] using hη (Finsupp.single ⟨h, hh⟩ 1)⟩
+  refine ⟨π.liftOfSurjective hπ ⟨θ, h_ker⟩, fun h hh ↦ ?_⟩
+  simpa [π, θ] using LinearMap.equivOfSurjective_apply hπ h_ker (m := Finsupp.single ⟨h, hh⟩ 1)
 
 /-- Let `y` lie in the dual Selmer group, let `z` be a cocycle such that `z(H)` spans `(O / a) ^ n`,
 and let `η` be linear with `η(z(h)) = y(h^c)` on `H`. Then `η` lies in `conjDualHom ℓ T.ρ a`: it

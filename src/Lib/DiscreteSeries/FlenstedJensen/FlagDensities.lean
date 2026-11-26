@@ -1,6 +1,15 @@
 module
 
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+public import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.LinearAlgebra.PolarDecomposition
+import Lib.General.Measure.IdempotentKernel
 
 /-!
 # Integrals of densities over unitary groups and over the flag variety of `K_ℂ`
@@ -242,7 +251,7 @@ lemma exists_mul_isBorelMatrix_of_mem_openOrbit (ho : o.Injective) (ε : n → �
   -- Move the phases of the diagonal of `b` into `g`.
   let t : USign ε := diagTorus ε fun i : n ↦
     ⟨‖b i i‖ / b i i, by simp [Submonoid.unitSphere, hb.diag_ne_zero ho]⟩
-  have ht : IsBorelMatrix o t := ⟨blockTriangular_diagonal _, GeneralLinearGroup.det_ne_zero t.1⟩
+  have ht : IsBorelMatrix o t := ⟨blockTriangular_diagonal _, GeneralLinearGroup.det_ne_zero t.val⟩
   refine ⟨g * t⁻¹, t * b, ht.mul hb, fun i ↦ ?_, by simp [mul_assoc]⟩
   simp [t, diagTorus, hb.diag_ne_zero ho]
 
@@ -668,8 +677,8 @@ noncomputable def signBlocksHom (ε : n → ℤˣ) :
   MonoidHom.mk'
     (fun u ↦ ⟨U.of IsHermitianInvolution.isUnit (signBlocks ε u.1 u.2)
         (signBlocks_preserves_form
-          (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.1.2)
-          (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.2.2)),
+          (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.1.property)
+          (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u.2.property)),
       mem_maxCompactU.2 signBlocks_mem_blockDiagAlg⟩)
     fun u v ↦ Subtype.ext <| Subtype.ext <| Units.ext (by simp [signBlocks_mul])
 
@@ -699,13 +708,6 @@ the Haar measures of mass one to the Haar measure `haarK ε` of mass one. -/
 theorem measurePreserving_signBlocksHom :
     MeasurePreserving (signBlocksHom ε) (volume.prod volume) (haarK ε) :=
   MonoidHom.measurePreserving continuous_signBlocksHom signBlocksHom_surjective (by simp)
-
-/-- Fubini's theorem on `K = maxCompactU ε ≃ U(p) × U(q)`: the integral of a continuous function
-over `K` is the double integral over the unitary blocks. -/
-theorem integral_haarK_eq_integral_signBlocksHom {φ : maxCompactU ε → ℂ} (hφ : Continuous φ) :
-    ∫ k : maxCompactU ε, φ k ∂haarK ε = ∫ u : USign (1 : PosIndex ε → ℤˣ),
-      ∫ v : USign (1 : NegIndex ε → ℤˣ), φ (signBlocksHom ε (u, v)) :=
-  (measurePreserving_signBlocksHom.fubini (DiscreteSeries.integrable_of_compactSpace hφ)).right.symm
 
 omit [DecidableEq n] in
 /-- Let `p` select the indices of one sign. On these indices `-2 ρ_c`, minus the sum of the compact
@@ -785,7 +787,8 @@ theorem integral_haarK_mul_left_of_density {l : n → ℤ} (hl : l.Injective) {F
       refine hF_cont.comp_continuous (by fun_prop) fun k ↦ ⟨?_, ?_⟩
       · exact mul_mem signBlocks_mem_blockDiagAlg (mem_maxCompactU.1 k.prop)
       · simp [h_det, GeneralLinearGroup.det_ne_zero]
-    simp [integral_haarK_eq_integral_signBlocksHom h_cont, coe_signBlocksHom, signBlocks_mul, f, Up,
+    simp [(measurePreserving_signBlocksHom.fubini (DiscreteSeries.integrable_of_compactSpace h_cont)).right.symm,
+      coe_signBlocksHom, signBlocks_mul, f, Up,
       Uq]
   have h_swap (y : GL (PosIndex ε) ℂ) :
       ∫ u : Up, ∫ v : Uq, f (y * u) v = ∫ v : Uq, ∫ u : Up, f (y * u) v :=

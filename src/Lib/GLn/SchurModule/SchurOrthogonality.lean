@@ -1,7 +1,21 @@
 module
 
-public import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
-public import Lib.GLn.SchurModule.GramMatrix
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Algebra.Group.Matrix
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
+public import Lib.GLn.SchurModule.SchurMatrix
+import Lib.Adelic.Witt.WittTheorem
+import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.GLn.SchurModule.GramMatrix
+import Lib.GLn.SchurModule.WeylKernel
+import Lib.General.LinearAlgebra.MinorProducts
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Algebraic representations of GL(n) on unitary groups: Schur orthogonality
@@ -202,7 +216,10 @@ groups of signs `s`. -/
 @[fun_prop]
 lemma continuous_conjWeylRep (ξ : WeylIndex n κ → ℂ) :
     Continuous (conjWeylRep (s := s) κ e · ξ) := by
-  simp [conjWeylRep, weylRep, smul_mulVec]
+  suffices Continuous fun x : Φ → USign s ↦
+      (∏ τ, ((x τ : GL n ℂ).map (starRingEnd ℂ)).det ^ e τ) •
+        schur κ (fun τ ↦ (x τ : Matrix n n ℂ).map (starRingEnd ℂ)) *ᵥ ξ by
+    simpa [conjWeylRep, weylRep, smul_mulVec] using this
   fun_prop
 
 /-- For matrix representations S, R of a compact group with a Haar measure ν and a matrix M such
@@ -245,14 +262,8 @@ lemma weightMinors_add_sum_ite {N : ℕ} (p : n → Fin N) {x : Matrix n n ℂ} 
           c + ∑ h' ∈ t, if p i < h' then (k h' : ℤ) else 0 := by
       gcongr
       lia
-    calc weightMinors (fun i : n ↦ c + ∑ h' ∈ cons h t ht, if p i < h' then (k h' : ℤ) else 0) x
-        = weightMinors (fun i : n ↦ c + ∑ h' ∈ t, if p i < h' then (k h' : ℤ) else 0) x *
-            principalMinor x (p · < h) ^ k h := by
-          simp [add_comm (ite ..), ← add_assoc, weightMinors_add_ite hx (k h).cast_nonneg h_anti,
-            ht]
-      _ = x.det ^ c * ∏ h' ∈ cons h t ht, principalMinor x (p · < h') ^ k h' := by
-          rw [ih, Finset.prod_cons]
-          ring
+    simp [add_comm (ite ..), ← add_assoc, weightMinors_add_ite hx (k h).cast_nonneg h_anti, ht, ih]
+    ring
 
 /-- Let v be the evaluation vector of weight κ at the array `permArray` with entry 1 in row i of
 block τ exactly in column p_τ(i), for bijections p_τ : n_τ ≃ Fin (rankAt n τ), so rankAt n
@@ -292,7 +303,8 @@ lemma schur_orthogonality (e : Φ → ℤ) (f : (WeylIndex n κ → ℂ) →ₗ[
   have h_cont : Continuous fun x : Φ → USign (1 : n → ℤˣ) ↦
       conjWeylMatrix κ e x * ((gramForm a).smulRight c).toMatrix' * conjWeylMatrix κ e x⁻¹ := by
     -- Both factors are, by definition, products of determinant powers and Schur matrices.
-    simp [-Pi.inv_apply, weylRep]
+    simp only [MonoidHom.coe_comp, weylRep, MonoidHom.coe_mk, OneHom.coe_mk, Function.comp_apply,
+      MonoidHom.pi_apply, Pi.coe_evalMonoidHom]
     fun_prop
   obtain ⟨B, h_comm : ∀ y : Φ → USign (1 : n → ℤˣ),
       B * conjWeylMatrix κ e y = conjWeylMatrix κ e y * B, h_mean⟩ :=

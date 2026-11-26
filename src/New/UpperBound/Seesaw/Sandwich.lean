@@ -1,8 +1,11 @@
 module
 
+import Mathlib.Tactic.Linter.Style
 public import Lib.Weil.DualPair.FiniteAction
-public import Lib.Weil.Periods.GradedLattice
-public import New.UpperBound.Seesaw.StandardLines
+public import Lib.Weil.Periods.PointLattice
+public import New.UpperBound.Seesaw.AdmissibleCombinations
+import Lib.Weil.Periods.GradedLattice
+import New.UpperBound.Seesaw.StandardLines
 
 /-!
 # Bounds for the lattices of points on graded spaces
@@ -119,7 +122,7 @@ lemma LatticeSplitsAt.conj_scalarFin_mem {Y : Grading V N X s} {w : FinPlace E} 
     {z : unitary (𝔸f E)} (hz_int : z.val ∈ Ô E)
     (hz_off : ∀ u : FinPlace E, u ≠ w → star u ≠ w → z.val u = 1) :
     x⁻¹ * (Y.inclXFin (scalarFin X z) * x) ∈ maxCompactAt ι w := by
-  refine ⟨V.conj_mem_stdLevel_iff.2 fun y hy ↦ ?_, mem_supportedOn.2 fun u hu hu' ↦ ?_⟩
+  refine ⟨V.conj_mem_stdLevel_of_mapsTo_lattice fun y hy ↦ ?_, mem_supportedOn.2 fun u hu hu' ↦ ?_⟩
   · -- The conjugate is integral, as the scaling by `z` maps the lattice of `x` into itself.
     show V.ratCoordMatrixFin (Y.inclXFin (scalarFin X z)) *ᵥ y ∈ V.lattice x
     have h_supp : z.val - 1 = (z.val - 1) * (idem {w} + idem {star w}) := by
@@ -137,7 +140,7 @@ lemma LatticeSplitsAt.conj_scalarFin_mem {Y : Grading V N X s} {w : FinPlace E} 
       (h_split.idem_smul_sub_stringProj_mem hy) (h_split.conj.idem_smul_sub_stringProj_mem hy)))
   · -- The conjugate is trivial at a place other than `w` and `w̄`, where `z` is `1`.
     have h_scaling : atPlace u (Y.inclXFin (scalarFin X z)) = 1 := by
-      simpa [atPlace, mul_eq_one_iff_eq_inv] using inclXFin_scalarFin_map_evalAt (hz_off u hu hu')
+      simpa [atPlace] using inclXFin_scalarFin_map_evalAt (hz_off u hu hu')
     simp [h_scaling]
 
 end Splitting

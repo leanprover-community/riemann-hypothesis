@@ -1,7 +1,12 @@
 module
 
-public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.GLn.Branching.IntegralMap
+public import Lib.Adelic.AutomorphicForms.Basic
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 
 /-!
 # Periods of algebraic forms over a block subgroup as class sums via branching
@@ -59,15 +64,6 @@ lemma fst_blockEmb_one_one {σ : ι ⊕ Unit ≃ X}
     (G.blockEmb hσ ((1, k), (1 : G E (1 : Unit → ℤˣ)))).1 = 1 := by
   ext τ : 2
   simp [val_fst_blockEmb_one, GL.blockScalar]
-
-/-- `conjWeylMatrix κ e y` is `weylRep κ e` at the entrywise complex conjugate of `y`;
-`conjWeylRep κ e y v` is `conjWeylMatrix κ e y *ᵥ v`. -/
-lemma conjWeylMatrix_eq_weylRep_map_conj {E X : Type} [Field E] [CMType E] [Fintype X]
-    [DecidableEq X] (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ)
-    (y : GInf E (1 : X → ℤˣ)) :
-    conjWeylMatrix κ e y = weylRep κ e
-      fun τ : InfinitePlace E ↦ (y τ : GL X ℂ).map (starRingEnd ℂ) :=
-  rfl
 
 /-- The entrywise complex conjugate of a unitary matrix is unitary. -/
 lemma map_conj_mem_uSign_one {g : GL X ℂ} (hg : g.valᴴ * g.val = 1) :
@@ -135,7 +131,7 @@ lemma exists_eq_smul_of_intertwines {σ : ι ⊕ Unit ≃ X} (hσ : (1 : X → �
   refine ⟨x, hx, ?_⟩
   calc B * weylRep κ e x
     _ = conjWeylMatrix κ₀ e₀ y * B := hB y
-    _ = weylRep κ₀ e₀ g * B := by rw [conjWeylMatrix_eq_weylRep_map_conj, hy]
+    _ = weylRep κ₀ e₀ g * B := by rw [← hy]; rfl
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum Finset.prod Finset.univ in

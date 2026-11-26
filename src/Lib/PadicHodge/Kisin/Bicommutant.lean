@@ -1,5 +1,7 @@
 module
 
+import Mathlib.Algebra.Module.Torsion.PrimaryComponent
+import Mathlib.RingTheory.PiTensorProduct
 public import Lib.PadicHodge.Kisin.Charts
 
 /-!
@@ -237,28 +239,20 @@ A_inf, then `m • c.extendToBPlus f y` lies in S_B = `c.bicommutant` for every 
 lemma smul_extendToBPlus_mem_bicommutant {m : FrobGal} {y : BPlus} {f : Ainf →ₗ[c.S] Ainf}
     (hf : ∀ a : Ainf, m • f a ∈ c.S) :
     m • c.extendToBPlus f y ∈ c.bicommutant := by
-  -- To show: multiplication by `t = m • c.extendToBPlus f y` commutes with every `c.S`-linear `G`
-  -- keeping `amaxImage`.
-  rw [mem_bicommutant_iff]
-  intro G hG x
-  -- On `w` in `amaxImage`: by density in `y`, since for `y` in `Ainf` the scalar lies in `c.S`.
-  have h_on_amaxImage (w : BPlus) (hw : w ∈ amaxImage) :
-      G (m • c.extendToBPlus f y * w) - m • c.extendToBPlus f y * G w = 0 := by
-    let H : BPlus →+ BPlus :=
-      (G * .mulRight c.S w - .mulRight c.S (G w)).toAddMonoidHom.comp (m • c.extendToBPlus f)
-    have hH_amax : ∀ y ∈ amaxImage, H y ∈ amaxImage := by
-      aesop (add simp [extendToBPlus_mem_amaxImage, smul_mem_amaxImage])
-    have hH_ainf (a : Ainf) : H (ainfToBPlus a) = 0 := by
-      simpa [H, extendToBPlus_ainfToBPlus, sub_eq_zero, smul_def] using
-        G.map_smul (⟨m • f a, hf a⟩ : c.S) w
-    exact eq_zero_of_map_ainfToBPlus_eq_zero H hH_amax hH_ainf
-  -- Every `x` has a multiple `p ^ n * x` in `amaxImage`; cancel `p ^ n`.
-  obtain ⟨n, b, hb⟩ : ∃ (n : ℕ) (b : Amax), (p : BPlus) ^ n * x = algebraMap Amax BPlus b :=
-    x.exists_p_pow_mul_eq_amax
-  have h_pow : G (m • c.extendToBPlus f y * (p ^ n * x)) -
-      m • c.extendToBPlus f y * G (p ^ n * x) = 0 :=
-    h_on_amaxImage (p ^ n * x) ⟨b, hb.symm⟩
-  rw [sub_eq_zero, mul_left_comm, map_p_pow_mul, map_p_pow_mul, mul_left_comm] at h_pow
+  -- Show multiplication by `m • c.extendToBPlus f y` commutes with `G` on `p ^ n * x ∈ amaxImage`,
+  -- then cancel `p ^ n`.
+  refine c.mem_bicommutant_iff.2 fun G hG x => ?_
+  obtain ⟨n, b, hb⟩ := x.exists_p_pow_mul_eq_amax
+  let w : BPlus := (p : BPlus) ^ n * x
+  have hw : w ∈ amaxImage := ⟨b, hb.symm⟩
+  let H : BPlus →+ BPlus :=
+    (G * .mulRight c.S w - .mulRight c.S (G w)).toAddMonoidHom.comp (m • c.extendToBPlus f)
+  have h_pow : G (m • c.extendToBPlus f y * w) = m • c.extendToBPlus f y * G w :=
+    sub_eq_zero.1 <| eq_zero_of_map_ainfToBPlus_eq_zero H
+      (by aesop (add simp [extendToBPlus_mem_amaxImage, smul_mem_amaxImage])) fun a => by
+        simpa [H, extendToBPlus_ainfToBPlus, sub_eq_zero, smul_def] using
+          G.map_smul (⟨m • f a, hf a⟩ : c.S) w
+  simp only [w, mul_left_comm _ ((p : BPlus) ^ n), map_p_pow_mul] at h_pow
   exact mul_left_cancel₀ (pow_ne_zero n isUnit_p.ne_zero) h_pow
 
 /-- For each index `i`, take the coordinate `c.adicBasis.coord i : A_inf → c.S` of the chosen
@@ -283,12 +277,15 @@ lemma mem_bicommutant_of_mul {u v : BPlus} (hv : v ∈ c.bicommutant) (hv_ne : v
   apply mul_left_cancel₀ hv_ne
   rw [← h_v, ← mul_assoc, h_vu, mul_assoc]
 
+/-- A unit of `BPlus` in the bicommutant has its inverse there as well. -/
+private lemma exists_bicommutant_mul_eq_one {v : BPlus} (hv : v ∈ c.bicommutant)
+    (h_unit : IsUnit v) : ∃ u ∈ c.bicommutant, u * v = 1 :=
+  ⟨↑h_unit.unit⁻¹, c.mem_bicommutant_of_mul hv h_unit.ne_zero
+    (h_unit.mul_val_inv.symm ▸ one_mem _), h_unit.val_inv_mul⟩
+
 /-- The inverse of `p` in B^+ lies in S_B = `c.bicommutant`. -/
-lemma exists_bicommutant_mul_p_eq_one : ∃ u ∈ c.bicommutant, u * p = 1 := by
-  -- `p` and the product `p * p⁻¹ = 1` lie in `c.bicommutant`.
-  refine ⟨↑isUnit_p.unit⁻¹, c.mem_bicommutant_of_mul (natCast_mem c.bicommutant p)
-    isUnit_p.ne_zero ?_, isUnit_p.val_inv_mul⟩
-  simp [one_mem]
+lemma exists_bicommutant_mul_p_eq_one : ∃ u ∈ c.bicommutant, u * p = 1 :=
+  c.exists_bicommutant_mul_eq_one (natCast_mem c.bicommutant p) isUnit_p
 
 /-! ### Coordinates, Frobenius and decompositions on S_B -/
 
@@ -378,10 +375,7 @@ lemma exists_bicommutant_mul_phi_E_eq_one : ∃ u ∈ c.bicommutant, u * ainfToB
     -- `ainfToBPlus` is the composite of the maps `Ainf → Amax → BPlus`.
     change IsUnit (algebraMap Amax BPlus (algebraMap Ainf Amax (frobEnd c.E.val)))
     exact (h_assoc.map (algebraMap Amax BPlus)).isUnit (by rw [map_natCast]; exact isUnit_p)
-  -- The inverse lies in `c.bicommutant`, as `φ E` and the product `1` do.
-  refine ⟨↑h_unit.unit⁻¹, c.mem_bicommutant_of_mul (ainfToBPlus_mem_bicommutant (c.φ c.E))
-    h_unit.ne_zero ?_, h_unit.val_inv_mul⟩
-  simp [one_mem]
+  exact c.exists_bicommutant_mul_eq_one (ainfToBPlus_mem_bicommutant (c.φ c.E)) h_unit
 
 /-- Let `ν` in `c.S` have `ξ ∈ (p, ν)` in A_inf, and let `b` be in A_max. For every `M`, the
 extended coordinate at `c.oneIndex` (the one that is the identity on `c.S`) satisfies
@@ -412,28 +406,19 @@ lemma exists_pow_mul_extendedCoord_eq_add (ν : c.S) (hν : ∃ b : Ainf, ν.val
 lemma eventually_exists_pow_mul_eq_add_z_mul {y : BPlus} (hy : y ∈ c.bicommutant) :
     ∀ᶠ m : ℕ in Filter.atTop, ∃ w : WittFq c.f, ∃ x ∈ c.bicommutant,
       p ^ m * y = ainfToBPlus (algebraMap (WittFq c.f) Ainf w) + ainfToBPlus c.z * x := by
-  -- Let `p ^ k * y = b` lie in `Amax` and `m = k + 1 + n`. Apply
-  -- `exists_pow_mul_extendedCoord_eq_add` to `p ^ n * b`, which `extendedCoord oneIndex` fixes, and
-  -- split the constant off `s`.
-  obtain ⟨k, b, hb⟩ : ∃ (k : ℕ) (b : Amax), (p : BPlus) ^ k * y = algebraMap Amax BPlus b :=
-    y.exists_p_pow_mul_eq_amax
+  -- Write `p ^ k * y = b ∈ Amax`, apply `exists_pow_mul_extendedCoord_eq_add` to `p ^ n * b`,
+  -- and split the constant off `s`.
+  obtain ⟨k, b, (hb : (p : BPlus) ^ k * y = algebraMap Amax BPlus b)⟩ := y.exists_p_pow_mul_eq_amax
   filter_upwards [Ioi_mem_atTop k] with m hm
-  obtain ⟨n, rfl⟩ : ∃ n : ℕ, k + 1 + n = m := Nat.le.dest hm
-  obtain ⟨s, x, hx, h_dec⟩ : ∃ s : c.S, ∃ x ∈ c.bicommutant,
-      p ^ 1 * c.extendedCoord c.oneIndex (algebraMap Amax BPlus (p ^ n * b)) =
-        ainfToBPlus s + ainfToBPlus c.z ^ 1 * x :=
+  obtain ⟨n, rfl⟩ := Nat.le.dest hm
+  obtain ⟨s, x, hx, h_dec⟩ :=
     c.exists_pow_mul_extendedCoord_eq_add c.z c.exists_z_dvd_xi_sub_p_mul (p ^ n * b) 1
-  obtain ⟨w, r, hr⟩ : ∃ (w : WittFq c.f) (r : c.S), s = algebraMap (WittFq c.f) c.S w + c.z * r :=
-    c.exists_eq_const_add_z_mul s
+  obtain ⟨w, r, hr⟩ := c.exists_eq_const_add_z_mul s
   refine ⟨w, ainfToBPlus r + x, add_mem (ainfToBPlus_mem_bicommutant r) hx, ?_⟩
-  -- The coordinate fixes `p ^ n * b = p ^ (n + k) * y`, as `y` lies in S_B.
-  have h_fix : c.extendedCoord c.oneIndex (algebraMap Amax BPlus (p ^ n * b)) =
-      p ^ n * (p ^ k * y) := by
-    rw [map_mul, map_pow, map_natCast, ← hb, map_p_pow_mul, map_p_pow_mul,
-      c.extendedCoord_oneIndex_eq_self hy]
-  calc (p : BPlus) ^ (k + 1 + n) * y = p ^ 1 * (p ^ n * (p ^ k * y)) := by ring
-    _ = ainfToBPlus s + ainfToBPlus c.z ^ 1 * x := by rw [← h_fix, h_dec]
-    _ = _ := by simp [hr, mul_add, add_assoc]
+  rw [map_mul, map_pow, map_natCast, ← hb, map_p_pow_mul, map_p_pow_mul,
+    c.extendedCoord_oneIndex_eq_self hy] at h_dec
+  have h_pow : (p : BPlus) ^ (k + 1 + n) * y = p ^ 1 * (p ^ n * (p ^ k * y)) := by ring
+  simpa [hr, mul_add, add_assoc] using h_pow.trans h_dec
 
 /-! ### Divisibility by z -/
 
@@ -447,8 +432,8 @@ lemma z_dvd_sub {y : BPlus} {g : Gp p} (hg : FixesLambda c.f g) (hy : y ∈ c.bi
       (p : BPlus) ^ k * y = ainfToBPlus (algebraMap (WittFq c.f) Ainf w) + ainfToBPlus c.z * x :=
     (c.eventually_exists_pow_mul_eq_add_z_mul hy).exists
   obtain ⟨u, hu⟩ : c.z.val ∣ g • c.z.val := by
-    -- `erw`: `g` acts on `Ainf` as its image in `FrobGal`, the action of `smul_teichmuller`.
-    erw [z_eq_teichmuller, smul_teichmuller]
+    change c.z.val ∣ ((1, g) : FrobGal) • c.z.val
+    rw [z_eq_teichmuller, smul_teichmuller]
     simp [map_dvd, untilt_dvd_iff.mp, valRingCp.dvd_iff_norm_le, untilt_frobGal_smul]
   have h_dvd : ainfToBPlus c.z ∣ g • ((p : BPlus) ^ k * y) - (p : BPlus) ^ k * y := by
     rw [hk]

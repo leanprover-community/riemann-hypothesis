@@ -1,7 +1,8 @@
 module
 
+import Mathlib.Algebra.Ring.IsFormallyReal
+import TauCeti.NumberTheory.ModularForms.DedekindEta.LimitFormula
 public import Lib.CM.Sigma.Basic
-public import TauCeti.NumberTheory.ModularForms.DedekindEta.LimitFormula
 
 /-!
 # Kronecker's first limit formula

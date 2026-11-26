@@ -1,7 +1,9 @@
 module
 
+import Mathlib.MeasureTheory.Group.IntegralConvolution
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Frames.Levels
-public import New.Spanning.Frames.TwoGauges
 
 /-!
 # The scale, near points and partial correlations

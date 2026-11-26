@@ -1,6 +1,15 @@
 module
 
-public import Lib.General.LinearAlgebra.MinorProducts
+public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+public import Mathlib.Analysis.InnerProductSpace.NormDet
+public import Aesop.BuiltinRules
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Lib.Speed
+import Lib.General.LinearAlgebra.MinorProducts
 
 /-!
 # Gram determinants
@@ -31,23 +40,23 @@ namespace New
 
 section Basis
 
-variable {V : Type} [AddCommGroup V] [Module ℂ V] [Module.Finite ℂ V]
+variable {F V : Type*} [Field F] [AddCommGroup V] [Module F V] [Module.Finite F V]
 
 /-- A linearly independent family `y` in a finite-dimensional space is completed to a basis by
 finitely many members `z` of a given spanning set `S`. -/
 lemma exists_extend_basis_of_span_eq_top {n : ℕ} {S : Set V} {y : Fin n → V}
-    (hy : LinearIndependent ℂ y) (hS : span ℂ S = ⊤) :
+    (hy : LinearIndependent F y) (hS : span F S = ⊤) :
     ∃ (n' : ℕ) (z : Fin n' → V),
       (∀ i : Fin n', z i ∈ S) ∧
-      LinearIndependent ℂ (Sum.elim y z) ∧
-      finrank ℂ V = n + n' := by
+      LinearIndependent F (Sum.elim y z) ∧
+      finrank F V = n + n' := by
   -- Choose a basis `w` of `V ⧸ span y` among the images of members of `S`, and lift it to `z`.
-  let Y : Submodule ℂ V := span ℂ (Set.range y)
-  obtain ⟨w, hw, -, w_indep⟩ := exists_fun_fin_finrank_span_eq ℂ (Y.mkQ '' S)
+  let Y : Submodule F V := span F (Set.range y)
+  obtain ⟨w, hw, -, w_indep⟩ := exists_fun_fin_finrank_span_eq F (Y.mkQ '' S)
   choose z hz hzw using fun i ↦ (Set.mem_image _ _ _).mp (hw i)
-  have z_indep : LinearIndependent ℂ (Y.mkQ ∘ z) := by rwa [← funext hzw] at w_indep
+  have z_indep : LinearIndependent F (Y.mkQ ∘ z) := by rwa [← funext hzw] at w_indep
   refine ⟨_, z, hz, (linearIndependent_span hy).sumElim_of_quotient z z_indep, ?_⟩
-  have image_spans : span ℂ (Y.mkQ '' S) = ⊤ := by simp [span_image, hS, range_mkQ]
+  have image_spans : span F (Y.mkQ '' S) = ⊤ := by simp [span_image, hS, range_mkQ]
   rw [image_spans, finrank_top, ← Y.finrank_quotient_add_finrank, finrank_span_eq_card hy,
     Fintype.card_fin, add_comm]
 

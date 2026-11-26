@@ -1,8 +1,13 @@
 module
 
+import Mathlib.Algebra.Ring.IsFormallyReal
 public import Lib.Weil.DualPair.KernelLaws
-public import New.Derivatives.Vacuum.Divisibility
 public import New.UpperBound.Kernels.JetConjugatesAndBounds
+public import New.Derivatives.Divisibility.Count
+import Lib.Adelic.AutomorphicForms.PAdicGauge
+import Lib.General.LinearAlgebra.MatrixNormBounds
+import New.Derivatives.Vacuum.Divisibility
+import New.Derivatives.Vacuum.JetIntegrality
 
 /-!
 # p-adic gauge bounds for one theta lift and data from functions modulo an ideal
@@ -64,12 +69,6 @@ section Raises
 variable {c : ℝ} {K : Subgroup (Gf (P.E s) n)} {p : ℕ} [Fact p.Prime] [PadicPlace p]
   {S : Type*} [AddCommGroup S] [Module ℂ S] (k : Kernel n n' κ e ea K S)
 
-/-- The `p`-adic gauge `New.weylGauge` is ultrametric in the vector. -/
-lemma New.weylGauge_add_le_max (g : Gf (P.E s) n) (ξ η : WeylIndex n κ → ℂ) :
-    weylGauge κ e g (ξ + η) ≤ max (weylGauge κ e g ξ) (weylGauge κ e g η) := by
-  have h_add : ιₚ ∘ (ξ + η) = ιₚ ∘ ξ + ιₚ ∘ η := funext fun i ↦ map_add ιₚ (ξ i) (η i)
-  simpa only [weylGauge, h_add, mulVec_add] using norm_add_le_max _ _
-
 /-- The data `Φ` whose kernel multiplies the `p`-adic gauge by at most `c`: for all `g`, `h` and
 `ξ`, the gauge at `h * d'` of `jetMap (ω (g, h) Φ) ξ` is at most `max c 0` times the gauge at
 `g * d` of `ξ`. The factor is `max c 0` so that `0` is a member for every real `c`; sums stay inside
@@ -80,7 +79,7 @@ def New.Kernel.raises (d : Gf (E P s) n) (d' : Gf (E P s) n') (c : ℝ) : AddSub
       weylGauge κ ea (h * d') (k.jetMap (k.ω (g, h) Φ) ξ) ≤ max c 0 * weylGauge κ e (g * d) ξ}
   add_mem' hΦ hΨ g h ξ := by
     simp only [map_add, LinearMap.add_apply]
-    exact (weylGauge_add_le_max _ _ _).trans (max_le (hΦ g h ξ) (hΨ g h ξ))
+    exact (Rows.weylGauge_add_le_max _ _ _).trans (max_le (hΦ g h ξ) (hΨ g h ξ))
   zero_mem' := by simp [weylGauge, mul_nonneg]
 
 /-- Let `k` be a theta kernel with data in `S`: the pairs of finite adelic points of rank `n`, `n'`
@@ -238,7 +237,7 @@ lemma omega_mem_raises_of_schurJet_le
       simp [hΨ', hg₀, hg₁, k.omega_omega, mul_assoc, η]
     _ = weylGauge κ ea d⁻¹ (k.jetMap Ψ' η) := by
       rw [← weylGauge_mul_of_mem_integralAbove (hk := div_mem hx hεd)]
-      simp [hg₁, ← mul_assoc, div_eq_mul_inv]
+      simp [hg₁, ← mul_assoc]
     _ = ‖A *ᵥ ιₚ ∘ η‖ := by
       simp [A, V, k, thetaKernel, ιₚ.map_mulVec, weylGauge, comp_def, weylRep, hu, Units.smul_def,
         schur_diagonal_eq_prod]
@@ -348,7 +347,7 @@ lemma mem_raises_predictedDivisibility
   rw [← h_one]
   refine omega_mem_raises_of_jet_minorProd_le hΦ (one_mem _) (one_mem _) (d := 1) (u := 1) (by simp)
     fun f hf i' w ↦ ?_
-  simpa [N, diagonalWeight_one] using norm_jet_minorProd_jetSeries_le hp hf hc i' w
+  simpa [diagonalWeight_one] using norm_jet_minorProd_jetSeries_le hp hf hc i' w
 
 /-- Take the theta kernel (`New.thetaKernel`) of weight `(κ, e)`, with `κ` giving the column numbers
 of the diagrams, and of scale `c * P.jetScale s`, where `P.jetScale s` is the scale of Taylor series

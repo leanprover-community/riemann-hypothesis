@@ -1,6 +1,13 @@
 module
 
-public import Lib.PadicHodge.Kisin.PeriodMatrixBasis
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.RingTheory.PicardGroup
+public import Lib.General.NumberTheory.CoefficientRings
+public import Lib.PadicHodge.Kisin.Bicommutant
+public import Lib.PadicHodge.Kisin.KummerChartExistence
+public import Lib.PadicHodge.TateSen
+import Lib.PadicHodge.Crystalline.FixedRatios
+import Lib.PadicHodge.Kisin.PeriodMatrixBasis
 
 /-!
 # Kummer charts: the different, the primes φ^a E of A_inf and their images in B_dR
@@ -217,19 +224,20 @@ lemma zTau_mul_E_dvd_smul_sub (s : k.S) : k.zTau * k.E ∣ g • s - s := by
   grw [zTau, mul_rotate, mul_assoc, k.associated_E_mul_tau_mu.dvd]
   apply k.dvd_smul_sub_of_fixesLambda _ h_const
   -- `z = [ϖ]` and `g z = [ϖ']` with `ϖ' = g ϖ`; `ϖ'` has the same untilt as `ϖ`, so `ϖ' = ϖ η`.
-  -- `erw` sees through the coercion of `z` from `S` to `A_inf`.
-  erw [← theta_smul, k.z_eq_teichmuller, smul_teichmuller] at *
-  generalize MonoidHom.inr (Multiplicative ℕ) (Gp p) (toGp (γ : Γ)) • k.varpiFlat = ϖ'
-    at h_fix ⊢
-  change theta (WittVector.teichmuller p ϖ') = theta (WittVector.teichmuller p k.varpiFlat) at h_fix
-  change WittVector.teichmuller p k.varpiFlat * mu ∣
-    WittVector.teichmuller p ϖ' - WittVector.teichmuller p k.varpiFlat
-  have h_untilt_dvd : k.varpiFlat.untilt ∣ ϖ'.untilt := by simpa using h_fix.symm.dvd
+  let a : FrobGal := MonoidHom.inr (Multiplicative ℕ) (Gp p) (toGp (γ : Γ))
+  have h_z : k.z.val = WittVector.teichmuller p k.varpiFlat := k.z_eq_teichmuller
+  have h_fix' : theta (a • k.z.val) = theta k.z.val :=
+    (theta_smul (toGp (γ : Γ)) k.z.val).trans h_fix
+  change k.z.val * mu ∣ a • k.z.val - k.z.val
+  rw [h_z, smul_teichmuller] at h_fix' ⊢
+  rw [h_z] at hz
+  generalize a • k.varpiFlat = ϖ' at h_fix' ⊢
+  have h_untilt_dvd : k.varpiFlat.untilt ∣ ϖ'.untilt := by simpa using h_fix'.symm.dvd
   obtain ⟨η, hη⟩ : k.varpiFlat ∣ ϖ' := Variety.untilt_dvd_iff.mp h_untilt_dvd
   -- `η` has untilt `1`, as `ϖ` and `ϖ η` have the same nonzero untilt; so `θ (φ ^ n ([η] - 1)) = 0`
   -- for all `n`, which makes `[η] - 1` a multiple of `μ` (`mu_dvd_of_theta_frobEnd`)
   have hη_one : η.untilt = 1 := by
-    have h_untilt : k.varpiFlat.untilt * η.untilt = k.varpiFlat.untilt := by simpa [hη] using h_fix
+    have h_untilt : k.varpiFlat.untilt * η.untilt = k.varpiFlat.untilt := by simpa [hη] using h_fix'
     have h_ne : k.varpiFlat.untilt ≠ 0 := by simpa using hz
     exact (mul_eq_left₀ h_ne).mp h_untilt
   have h_theta (j : ℕ) : theta (frobEnd^[j] (WittVector.teichmuller p η - 1)) = 0 := by
@@ -341,13 +349,6 @@ lemma valueField_eq_adjoin_union :
       (Set.forall_mem_range.mpr algebraMap_bicommutant_mem_valueField)
       (Set.forall_mem_range.mpr phiInvToBdR_mem_valueField))
 
-/-- The image in B_dR of an element `s` of S is the image of `s` under S_B → B_dR: both maps
-factor through B^+. -/
-private lemma algebraMap_ainf_eq_algebraMap_bicommutant (s : k.S) :
-    algebraMap Ainf BdR s =
-      algebraMap k.bicommutant BdR ⟨Chart.ainfToBPlus s, k.ainfToBPlus_mem_bicommutant s⟩ :=
-  rfl
-
 /-- The field `𝒦_0` is contained in `𝒦_a`. -/
 lemma valueField_zero_le : valueField 0 ≤ valueField a := by
   rw [valueField_eq_adjoin_union (a := 0)]
@@ -355,9 +356,8 @@ lemma valueField_zero_le : valueField 0 ≤ valueField a := by
     (Set.forall_mem_range.mpr algebraMap_bicommutant_mem_valueField)
     (Set.forall_mem_range.mpr fun s ↦ ?_))
   -- At level `0` the image of `S` lies in the image of `S_B`.
-  rw [show phiInvToBdR 0 (s : Ainf) = algebraMap Ainf BdR s by simp [phiInvToBdR],
-    algebraMap_ainf_eq_algebraMap_bicommutant]
-  exact algebraMap_bicommutant_mem_valueField _
+  rw [show phiInvToBdR 0 (s : Ainf) = algebraMap Ainf BdR s by simp [phiInvToBdR]]
+  exact algebraMap_bicommutant_mem_valueField ⟨Chart.ainfToBPlus s, k.ainfToBPlus_mem_bicommutant s⟩
 
 /-- An element of `B_dR` fixed by `Γ'` lies in `Fil⁰` and in `𝒦₀`. -/
 lemma mem_hodgeFil_zero_and_mem_valueField_zero_of_fixed

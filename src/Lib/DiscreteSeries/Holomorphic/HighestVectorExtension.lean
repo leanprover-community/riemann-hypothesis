@@ -1,7 +1,23 @@
 module
 
-public import Lib.General.Analysis.MeanValueAndTaylor
-public import Lib.General.LinearAlgebra.PolarDecomposition
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Basic
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.MeasureTheory.Integral.CurveIntegral.Basic
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.LinearAlgebra.Matrix.Triangular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.General.Analysis.MeanValueAndTaylor
+import Lib.General.LinearAlgebra.PolarDecomposition
 
 /-!
 # Exponentials in U(diag ε) and holomorphic extension of coefficients of highest vectors
@@ -71,16 +87,24 @@ theorem New.exists_expU_eq_maxCompactU (k : maxCompactU ε) :
   let A : Matrix n n ℂ := (k : USign ε)
   let L : Matrix n n ℂ := cfc (fun z : ℂ ↦ z.arg * I) A
   have h_unitary : A ∈ unitaryGroup n ℂ := U_one_mem_unitaryGroup ⟨_, k.property⟩
+  have h_normal : IsStarNormal A := isStarNormal_of_mem_unitary h_unitary
   have h_comm : Commute A (signMatrix ε) :=
     (DiscreteSeries.mem_blockDiagAlg_iff_commute.1 (mem_maxCompactU.1 k.property)).symm
   have h_log_comm : Commute L (signMatrix ε) :=
-    h_comm.cfc ((isStarNormal_of_mem_unitary h_unitary).commute_star_left h_comm) _
-  have h_skew : Lᴴ = -L := by simp [L, ← star_eq_conjTranspose, ← cfc_star, cfc_neg]
-  have h_lie : L ∈ unitaryLie (signMatrix ε) := by simp [unitaryLie, h_skew, h_log_comm.eq]
+    h_comm.cfc (h_normal.commute_star_left h_comm) _
+  have h_skew : Lᴴ = -L := by
+    dsimp only [L]
+    rw [← star_eq_conjTranspose, ← cfc_star (R := ℂ), ← cfc_neg]
+    refine cfc_congr fun z _ ↦ ?_
+    simp only [star_mul', star_def, conj_I, conj_ofReal, mul_neg, mul_comm]
+  have h_lie : L ∈ unitaryLie (signMatrix ε) := by
+    change Lᴴ * signMatrix ε + signMatrix ε * L = 0
+    rw [h_skew, neg_mul, h_log_comm.eq, neg_add_cancel]
   -- the spectrum lies on the unit circle, where `exp (arg z * I) = z`
   have h_exp : ∀ z ∈ spectrum ℂ A, cexp (z.arg * I) = z := fun z hz ↦ by
-    have h_norm : ‖z‖ = 1 := by simpa using subset_circle_of_unitary h_unitary hz
-    simpa [h_norm] using norm_mul_exp_arg_mul_I z
+    have h_norm : ‖z‖ = 1 := mem_sphere_zero_iff_norm.1 (subset_circle_of_unitary h_unitary hz)
+    have h := norm_mul_exp_arg_mul_I z
+    rwa [h_norm, Complex.ofReal_one, one_mul] at h
   have h_exp_log : NormedSpace.exp L = A := by
     rw [← CFC.complex_exp_eq_normedSpace_exp,
       ← cfc_comp' (hf := (finite_spectrum A).continuousOn _) cexp, cfc_congr h_exp, cfc_id' ℂ A]
@@ -126,10 +150,31 @@ noncomputable def lowerLiePart (c : ℂ) : Matrix n n ℂ →L[ℝ] Matrix n n �
 lemma lowerLiePart_mem_unitaryLie (c : ℂ) (Z : Matrix n n ℂ) :
     lowerLiePart ε ε' o c Z ∈ unitaryLie (signMatrix ε) := by
   let N : Matrix n n ℂ := lowerMask ε' o Z + c • entryMask Eq Z
-  convert (unitaryLie (signMatrix ε)).smul_mem (2 : ℝ) (unitaryLiePart ε N).2 using 1
+  convert (unitaryLie (signMatrix ε)).smul_mem (2 : ℝ) (unitaryLiePart ε N).property using 1
   change N - signMatrix ε * Nᴴ * signMatrix ε =
     (2 : ℝ) • (2⁻¹ : ℝ) • (N - (signMatrix ε)⁻¹ * Nᴴ * signMatrix ε)
   rw [smul_smul, mul_inv_cancel₀ two_ne_zero, one_smul, inv_eq_left_inv (signMatrix_mul_self ε)]
+
+omit [DecidableEq n] in
+private lemma lowerMask_apply (Z : Matrix n n ℂ) (i j : n) :
+    lowerMask ε o Z i j = if o j < o i ∧ ε i = ε j then Z i j else 0 := rfl
+
+private lemma signMatrix_mul_conjTranspose_mul_apply (A : Matrix n n ℂ) (i j : n) :
+    (signMatrix ε * Aᴴ * signMatrix ε) i j =
+      ((ε i : ℤ) : ℂ) * conj (A j i) * ((ε j : ℤ) : ℂ) := by
+  rw [signMatrix, mul_diagonal, diagonal_mul, conjTranspose_apply, star_def]
+
+private lemma lowerLiePart_zero_eq (Z : Matrix n n ℂ) :
+    lowerLiePart ε ε' o 0 Z =
+      lowerMask ε' o Z - signMatrix ε * (lowerMask ε' o Z)ᴴ * signMatrix ε := by
+  rw [lowerLiePart, mul_apply_eq_comp, sub_apply, one_apply_eq_self, mul_apply_eq_comp,
+    mulLeftRight_apply]
+  have hN : (lowerMask ε' o + (0 : ℂ) • entryMask Eq).restrictScalars ℝ Z = lowerMask ε' o Z := by
+    change lowerMask ε' o Z + (0 : ℂ) • entryMask Eq Z = lowerMask ε' o Z
+    rw [zero_smul, add_zero]
+  rw [hN]
+  change lowerMask ε' o Z - signMatrix ε * starL' ℝ (lowerMask ε' o Z) * signMatrix ε = _
+  rw [starL'_apply, star_eq_conjTranspose]
 
 /-- A chart at `1` adapted to the triangular matrices. Let `E` send `0` to `1` with strict
 derivative the identity. Let `L` be real linear, with every `E (L Z)` block diagonal for `ε`, and
@@ -149,37 +194,53 @@ theorem exists_borel_chart (L : Matrix n n ℂ →L[ℝ] Matrix n n ℂ) {E : Ma
         IsBorelMatrix o b ∧ (a ∈ blockDiagAlg ε ∧ b ∈ blockDiagAlg ε) ∧ y = a * b := by
   -- `ψ` is the local inverse of `f`, which maps `0` to `1` with derivative `L + (1 - L) = id`.
   let f (x : Matrix n n ℂ) : Matrix n n ℂ := E (L x) * (1 + (1 - L) x)
-  have f_zero : f 0 = 1 := by simp [f, E_zero]
+  have f_zero : f 0 = 1 := by dsimp only [f]; rw [map_zero, E_zero, map_zero, add_zero, mul_one]
   have f_deriv : HasStrictFDerivAt f
       (ContinuousLinearEquiv.refl ℝ (Matrix n n ℂ)).toContinuousLinearMap 0 := by
     have first : HasStrictFDerivAt (fun x ↦ E (L x)) (.comp (.id ℝ (Matrix n n ℂ)) L) 0 :=
-      .comp 0 (by simpa using E_deriv) L.hasStrictFDerivAt
-    exact (first.mul' (.const_add 1 (1 - L).hasStrictFDerivAt)).congr_fderiv
-      (ContinuousLinearMap.ext fun Z ↦ by simp [E_zero])
+      .comp 0 (by rw [map_zero]; exact E_deriv) L.hasStrictFDerivAt
+    refine (first.mul' (.const_add 1 (1 - L).hasStrictFDerivAt)).congr_fderiv
+      (ContinuousLinearMap.ext fun Z ↦ ?_)
+    rw [add_apply, smul_apply, smul_apply, map_zero, E_zero, map_zero, add_zero, smul_eq_mul,
+      Matrix.one_mul, MulOpposite.op_one, one_smul, sub_apply, one_apply_eq_self,
+      ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply, sub_add_cancel]
+    rfl
   let ψ : Matrix n n ℂ → Matrix n n ℂ := f_deriv.localInverse f _ 0
-  have ψ_one : ψ 1 = 0 := by simpa [f_zero] using f_deriv.localInverse_apply_image
+  have ψ_one : ψ 1 = 0 := by rw [← f_zero]; exact f_deriv.localInverse_apply_image
   have ψ_deriv : HasFDerivAt ψ (ContinuousLinearMap.id ℝ (Matrix n n ℂ)) 1 := by
-    simpa [f_zero] using f_deriv.to_localInverse.hasFDerivAt
+    rw [← f_zero]; exact f_deriv.to_localInverse.hasFDerivAt
   have right_inverse : ∀ᶠ y : Matrix n n ℂ in 𝓝 1, f (ψ y) = y := by
-    simpa [f_zero] using f_deriv.eventually_right_inverse
+    rw [← f_zero]; exact f_deriv.eventually_right_inverse
   refine ⟨ψ, ⟨ψ_deriv, ψ_one⟩, ?_⟩
   -- Near `1`, `y = f x` is invertible, hence so are both factors.
   filter_upwards [right_inverse, Units.nhds 1] with y
   generalize ψ y = x
   rintro rfl h_unit h_mem
   obtain ⟨det_a, det_b⟩ : (E (L x)).det ≠ 0 ∧ (1 + (1 - L) x).det ≠ 0 := by
-    simpa [f, isUnit_iff_isUnit_det] using h_unit
+    have h_det := (isUnit_iff_isUnit_det _).1 h_unit
+    rwa [det_mul, isUnit_iff_ne_zero, mul_ne_zero_iff] at h_det
   have b_mem : 1 + (1 - L) x ∈ blockDiagAlg ε := by
-    simpa [f, det_a] using mul_mem (blockDiagAlg.inv_mem (hL_mem x)) h_mem
+    have h_mul := mul_mem (blockDiagAlg.inv_mem (hL_mem x)) h_mem
+    rwa [← Matrix.mul_assoc, nonsing_inv_mul _ (isUnit_iff_ne_zero.2 det_a), Matrix.one_mul]
+      at h_mul
   refine ⟨⟨fun i j hij ↦ ?_, det_b⟩, ⟨hL_mem x, b_mem⟩, rfl⟩
   -- Below the diagonal, `x - L x` vanishes inside the blocks by `hL_lower` and outside by `b_mem`.
   by_cases h_sign : ε i = ε j
   · have h_ne : i ≠ j := fun h_eq ↦ hij.ne (congrArg o h_eq.symm)
-    simpa [h_sign, hij, h_ne, sub_eq_zero] using congr_fun₂ (hL_lower x).symm i j
+    have h_eq := congr_fun₂ (hL_lower x).symm i j
+    simp only [lowerMask_apply, hij, h_sign, and_self, ↓reduceIte] at h_eq
+    rw [Matrix.add_apply, Matrix.one_apply_ne h_ne, zero_add, sub_apply, one_apply_eq_self,
+      Matrix.sub_apply, h_eq, sub_self]
   · exact mem_blockDiagAlg.1 b_mem i j h_sign
 
 variable {ε ε' : n → ℤˣ} {o : n → ℤ} {M X : Type*} [AddCommGroup M] [Module ℂ M]
   [NormedAddCommGroup X] [NormedSpace ℂ X]
+
+private lemma diagChar_one (w : n → ℤ) : diagChar w (1 : Matrix n n ℂ) = 1 := by
+  simp only [diagChar, Matrix.one_apply_eq, _root_.one_zpow, prod_const_one]
+
+private lemma isBorelMatrix_one : IsBorelMatrix o (1 : Matrix n n ℂ) :=
+  ⟨blockTriangular_one, by rw [det_one]; exact one_ne_zero⟩
 
 /-- Let `D` be a continuous family of `ℂ`-linear maps from `E` to a Banach space `X`. If
 `t ↦ f (t • Y)` has derivative `D (t • Y) Y` at every real `t`, for all `Y`, then `f` is complex
@@ -192,10 +253,16 @@ theorem hasFDerivAt_of_rays [CompleteSpace X]
   -- `f Y - f 0` is the integral of the form `D` along the segment from `0` to `Y`.
   have ftc (Y : E) : ∫ t in (0 : ℝ)..1, D (t • Y) Y = f ((1 : ℝ) • Y) - f ((0 : ℝ) • Y) :=
     intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ ↦ h_ray Y t)
-      (Continuous.intervalIntegrable (by fun_prop) 0 1)
+      (((hD_cont.comp (continuous_id.smul continuous_const)).clm_apply
+        continuous_const).intervalIntegrable 0 1)
   have integral_eq (Y : E) : ∫ᶜ Z in .segment 0 Y, D Z = f Y - f 0 := by
-    simp [curveIntegral_segment, AffineMap.lineMap, ftc]
-  simpa [integral_eq] using HasFDerivAt.curveIntegral_segment_source (a := 0) hD_cont
+    rw [curveIntegral_segment]
+    simp only [AffineMap.lineMap_apply_module, smul_zero, zero_add, sub_zero, ftc, one_smul,
+      zero_smul]
+  have h := (HasFDerivAt.curveIntegral_segment_source (a := 0) hD_cont).congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun Y ↦ (integral_eq Y).symm)
+  exact (h.add_const (f 0)).congr_of_eventuallyEq
+    (Filter.Eventually.of_forall fun Y ↦ (sub_add_cancel (f Y) (f 0)).symm)
 
 /-- The product of principal minors `weightMinors w` is continuous along a continuous family of
 invertible matrices. -/
@@ -212,17 +279,23 @@ theorem DiscreteSeries.continuous_weightMinors {X : Type*} {w : n → ℤ} [Topo
 @[simp]
 theorem kTypeNormSq_pos (w : HCParam ε) : 0 < w.kTypeNormSq := by
   -- The integrand is continuous, nonnegative and nonzero at `k = 1`.
-  have h_cont : Continuous fun k : maxCompactU ε ↦ ‖weightMinors w (k : USign ε)‖ ^ 2 := by
-    fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])
+  have h_cont : Continuous fun k : maxCompactU ε ↦ ‖weightMinors w (k : USign ε)‖ ^ 2 :=
+    (DiscreteSeries.continuous_weightMinors (continuous_U_iff_matrix.1 continuous_subtypeVal)
+      fun k ↦ GeneralLinearGroup.det_ne_zero k.1.1).norm.pow 2
   unfold HCParam.kTypeNormSq
   exact integral_pos_of_integrable_nonneg_ne_zero (x := 1) h_cont
-    (h_cont.integrable_of_hasCompactSupport (.of_compactSpace _)) (fun k ↦ sq_nonneg _) (by simp)
+    (h_cont.integrable_of_hasCompactSupport (.of_compactSpace _)) (fun k ↦ sq_nonneg _) (by
+      show ‖weightMinors w (1 : Matrix n n ℂ)‖ ^ 2 ≠ 0
+      rw [weightMinors_one, norm_one, one_pow]
+      exact one_ne_zero)
 
 /-- For `|s| = 1` the matrix `diag (s ^ o)` is invertible and triangular for the order `o`. -/
 @[simp]
 theorem isBorelMatrix_diagonal (s : Circle) :
-    IsBorelMatrix o (diagonal fun i : n ↦ (s : ℂ) ^ o i) := by
-  simp [IsBorelMatrix, blockTriangular_diagonal, prod_eq_zero_iff, zpow_ne_zero]
+    IsBorelMatrix o (diagonal fun i : n ↦ (s : ℂ) ^ o i) :=
+  ⟨blockTriangular_diagonal _, by
+    rw [det_diagonal]
+    exact Finset.prod_ne_zero_iff.2 fun i _ ↦ zpow_ne_zero _ (Circle.coe_ne_zero s)⟩
 
 /-- Let `ε'` be `1` or `ε`. An element of `U(diag ε)` that is block diagonal for `ε'` is joined to
 `1` by a real analytic path of such elements. -/
@@ -235,15 +308,21 @@ theorem exists_analytic_path (hε : ε' = 1 ∨ ε' = ε) (g : USign ε)
       ∀ t : ℝ, (c t : Matrix n n ℂ) ∈ blockDiagAlg ε' := by
   have analytic (X : unitaryLie (signMatrix ε)) (t : ℝ) :
       AnalyticAt ℝ (fun s : ℝ ↦ (expU (s • X) : Matrix n n ℂ)) t :=
-    (NormedSpace.exp_analytic _).comp (f := fun s : ℝ ↦ s • (X : Matrix n n ℂ)) (by fun_prop)
+    (NormedSpace.exp_analytic _).comp (f := fun s : ℝ ↦ s • (X : Matrix n n ℂ))
+      (analyticAt_id.smul analyticAt_const)
   obtain rfl | rfl := hε
   · -- No condition on the path: write `g` as a product of two exponentials.
     obtain ⟨X, Y, rfl⟩ := exists_eq_expU_mul_expU g
-    exact ⟨fun t ↦ expU (t • X) * expU (t • Y), by simp, by simp,
-      fun t ↦ (analytic X t).mul (analytic Y t), by simp⟩
+    exact ⟨fun t ↦ expU (t • X) * expU (t • Y),
+      by dsimp only; rw [zero_smul, zero_smul, expU_zero, mul_one],
+      by dsimp only; rw [one_smul, one_smul],
+      fun t ↦ (analytic X t).mul (analytic Y t), fun _ ↦ mem_blockDiagAlg_one⟩
   · -- Here `g` lies in the compact subgroup, so it is the exponential of a block diagonal `X`.
     obtain ⟨X, exp_X, X_mem⟩ := exists_expU_eq_maxCompactU ⟨g, mem_maxCompactU.2 hg⟩
-    refine ⟨fun t ↦ expU (t • X), by simp, by simp [exp_X], analytic X, fun t ↦ ?_⟩
+    refine ⟨fun t ↦ expU (t • X),
+      by dsimp only; rw [zero_smul, expU_zero],
+      by dsimp only; rw [one_smul, exp_X],
+      analytic X, fun t ↦ ?_⟩
     rw [mem_blockDiagAlg_iff_commute] at X_mem ⊢
     exact (X_mem.smul_right t).exp_right
 
@@ -254,9 +333,12 @@ theorem IsHolOfWeight.continuous {u : Φ → n → ℤ} {F : (Φ → USign ε) �
   -- Taking `b = 1`: `F` agrees with its extension `F'`, which is analytic at every `h`.
   obtain ⟨F', hF'⟩ := hF
   have at_one (h : Φ → USign ε) : AnalyticAt ℂ F' (fun τ ↦ h τ) ∧ F' (fun τ ↦ h τ) = F h := by
-    simpa [IsBorelMatrix, blockTriangular_one, diagChar] using hF' h 1
+    have h_at := hF' h 1 (fun _ ↦ isBorelMatrix_one)
+      (fun _ ↦ ⟨mem_blockDiagAlg_one, mem_blockDiagAlg_one⟩)
+    simpa only [Pi.one_apply, Matrix.mul_one, diagChar_one, prod_const_one, one_mul] using h_at
   refine .congr (continuous_iff_continuousAt.2 fun h ↦ ?_) fun h ↦ (at_one h).2
-  exact (at_one h).1.continuousAt.comp_of_eq (Continuous.continuousAt (by fun_prop)) rfl
+  exact (at_one h).1.continuousAt.comp_of_eq
+    (continuous_pi fun τ ↦ continuous_U_iff_matrix.1 (continuous_apply τ)).continuousAt rfl
 
 /-- A function `F` that is holomorphic of weight `u` (with no block condition) transforms by the
 character `u` under right translation by `diagTorus ε t = diag t`, for `t` with `|t i| = 1`. -/
@@ -267,12 +349,22 @@ theorem IsHolOfWeight.apply_mul_diagTorus {u : Φ → n → ℤ} {F : (Φ → US
   -- with `b = 1`.
   obtain ⟨F', hF'⟩ := hF
   let z (τ : Φ) : Matrix n n ℂ := h τ * diagTorus ε t
+  have h_borel : IsBorelMatrix o (diagTorus ε t : Matrix n n ℂ) :=
+    ⟨blockTriangular_diagonal _, by
+      show (diagonal fun i : n ↦ (t i : ℂ)).det ≠ 0
+      rw [det_diagonal]
+      exact Finset.prod_ne_zero_iff.2 fun i _ ↦ Circle.coe_ne_zero (t i)⟩
   have as_triangular : F' z = (∏ τ : Φ, ∏ i : n, (t i : ℂ) ^ u τ i) * F h := by
-    simpa [z, diagTorus, diagChar] using (hF' h (fun _ ↦ diagTorus ε t) (fun _ ↦ by
-      simp [IsBorelMatrix, diagTorus, blockTriangular_diagonal, prod_eq_zero_iff]) (by simp)).right
+    have h_eq := (hF' h (fun _ ↦ diagTorus ε t) (fun _ ↦ h_borel)
+      (fun _ ↦ ⟨mem_blockDiagAlg_one, mem_blockDiagAlg_one⟩)).right
+    refine h_eq.trans (congrArg (· * F h) (Finset.prod_congr rfl fun τ _ ↦ ?_))
+    exact Finset.prod_congr rfl fun i _ ↦ by
+      rw [show (diagTorus ε t : Matrix n n ℂ) i i = t i from diagonal_apply_eq _ i]
   have as_unitary : F' z = F (h * fun _ ↦ diagTorus ε t) := by
-    simpa [z, Pi.mul_def, diagChar] using (hF' (fun τ ↦ h τ * diagTorus ε t) 1
-      (by simp [IsBorelMatrix, blockTriangular_one]) (by simp)).right
+    have h_eq := (hF' (fun τ ↦ h τ * diagTorus ε t) 1 (fun _ ↦ isBorelMatrix_one)
+      (fun _ ↦ ⟨mem_blockDiagAlg_one, mem_blockDiagAlg_one⟩)).right
+    simpa only [z, Subgroup.coe_mul, Units.val_mul, Pi.mul_def, Pi.one_apply, Matrix.mul_one,
+      diagChar_one, prod_const_one, one_mul] using h_eq
   rw [← as_unitary, as_triangular]
 
 /-- For injective `o`, weights `u τ` that are dominant within the blocks of `ε'` for the order `o`,
@@ -284,14 +376,16 @@ theorem isHolOfWeight_weightMinors {u : Φ → n → ℤ} (ho : o.Injective) (a 
     IsHolOfWeight ε o u (fun g : Φ → USign ε ↦ ∏ τ : Φ, weightMinors (u τ) (a * g τ)) ε' := by
   -- The same formula, read on tuples of matrices, is the extension.
   refine ⟨fun z ↦ ∏ τ, weightMinors (u τ) (a * z τ), fun h b b_borel h_block ↦ ?_⟩
-  have det_ah (τ : Φ) : (a * h τ).det ≠ 0 := by simp [ha_det, GeneralLinearGroup.det_ne_zero]
+  have det_ah (τ : Φ) : (a * h τ).det ≠ 0 := by
+    rw [det_mul]; exact mul_ne_zero ha_det (GeneralLinearGroup.det_ne_zero (h τ).1)
   have det_ahb (τ : Φ) : (a * (h τ * b τ)).det ≠ 0 := by
-    simpa [← mul_assoc, det_mul] using mul_ne_zero (det_ah τ) (b_borel τ).2
+    rw [← mul_assoc, det_mul]; exact mul_ne_zero (det_ah τ) (b_borel τ).2
   have minors_mul (τ : Φ) : weightMinors (u τ) (a * (h τ * b τ)) =
       diagChar (u τ) (b τ) * weightMinors (u τ) (a * h τ) := by
     rw [← mul_assoc, (hu τ).weightMinors_mul_borel ho (det_ah τ) (h_block τ).2 (b_borel τ),
       mul_comm]
-  refine ⟨Finset.analyticAt_fun_prod univ fun τ _ ↦ ?_, by simp [minors_mul, prod_mul_distrib]⟩
+  refine ⟨Finset.analyticAt_fun_prod univ fun τ _ ↦ ?_,
+    by simp only [minors_mul, prod_mul_distrib]⟩
   exact (analyticAt_weightMinors (det_ahb τ)).comp_of_eq
     (analyticAt_const.mul ((proj (R := ℂ) (φ := fun _ : Φ ↦ Matrix n n ℂ) τ).analyticAt _)) rfl
 
@@ -304,16 +398,29 @@ theorem IsBorelMatrix.exists_eq_diagonal_exp (ho : o.Injective) {t : USign ε}
   -- both sides of the diagonal, and the diagonal entries have norm one.
   have norm_one (i : n) : ‖(t : Matrix n n ℂ) i i‖ = 1 := by
     have norm_inv : ‖(t : Matrix n n ℂ) i i‖⁻¹ = ‖(t : Matrix n n ℂ) i i‖ := by
-      simp [← _root_.norm_inv, ← ht.inv_apply_diag ho i, signMatrix, abs_unit_intCast,
-        inv_coe_eq_mul_conjTranspose_mul]
-    field_simp [norm_ne_zero_iff.2 (ht.diag_ne_zero ho i)] at norm_inv
-    nlinarith [norm_nonneg ((t : Matrix n n ℂ) i i)]
+      rw [← _root_.norm_inv, ← ht.inv_apply_diag ho i, inv_coe_eq_mul_conjTranspose_mul t,
+        signMatrix_mul_conjTranspose_mul_apply, norm_mul, norm_mul, Complex.norm_intCast,
+        abs_unit_intCast, Complex.norm_conj, one_mul, mul_one]
+    have h_ne : ‖(t : Matrix n n ℂ) i i‖ ≠ 0 := norm_ne_zero_iff.2 (ht.diag_ne_zero ho i)
+    have h_mul : ‖(t : Matrix n n ℂ) i i‖ * ‖(t : Matrix n n ℂ) i i‖ = 1 :=
+      (congrArg (‖(t : Matrix n n ℂ) i i‖ * ·) norm_inv.symm).trans (mul_inv_cancel₀ h_ne)
+    exact (mul_self_eq_one_iff.1 h_mul).resolve_right
+      (ne_of_gt (lt_of_lt_of_le (neg_lt_zero.2 one_pos) (norm_nonneg _)))
   refine ⟨fun i ↦ arg ((t : Matrix n n ℂ) i i), ext fun i j ↦ ?_⟩
   obtain rfl | hij := eq_or_ne i j
-  · simpa [norm_one i] using (norm_mul_exp_arg_mul_I ((t : Matrix n n ℂ) i i)).symm
+  · rw [diagonal_apply_eq]
+    have h := norm_mul_exp_arg_mul_I ((t : Matrix n n ℂ) i i)
+    rw [norm_one i, Complex.ofReal_one, one_mul] at h
+    exact h.symm
   · rw [diagonal_apply_ne _ hij]
     obtain h_lt | h_gt := (ho.ne hij).lt_or_gt
-    · simpa [signMatrix, inv_coe_eq_mul_conjTranspose_mul] using ht.inv.1 h_lt
+    · have h0 := ht.inv.1 h_lt
+      rw [inv_coe_eq_mul_conjTranspose_mul t, signMatrix_mul_conjTranspose_mul_apply] at h0
+      have h_ne_j : ((ε j : ℤ) : ℂ) ≠ 0 := Int.cast_ne_zero.2 (Units.ne_zero (ε j))
+      have h_ne_i : ((ε i : ℤ) : ℂ) ≠ 0 := Int.cast_ne_zero.2 (Units.ne_zero (ε i))
+      have h_conj : conj ((t : Matrix n n ℂ) i j) = 0 :=
+        (mul_eq_zero.1 ((mul_eq_zero.1 h0).resolve_right h_ne_i)).resolve_left h_ne_j
+      exact (map_eq_zero (starRingEnd ℂ)).1 h_conj
     · exact ht.1 h_gt
 
 /-- Let `x` be a highest vector of weight `u` in the `gl n`-module `ρ` for the blocks of `ε'` and
@@ -328,12 +435,16 @@ theorem HCParam.IsKHighest.apply_triangular (ho : o.Injective) {ρ : GlModule n 
   have off_diag (a b : n) (hab : b ≠ a) : Y a b • ρ.E a b x = 0 := by
     by_cases h_sign : ε' a = ε' b
     · obtain h_lt | h_gt := (ho.ne hab).lt_or_gt
-      · simp [hY_tri h_lt]
-      · simp [h_kill a b h_sign (neg_lt_neg h_gt)]
-    · simp [mem_blockDiagAlg.1 hY_block a b h_sign]
+      · rw [hY_tri h_lt, zero_smul]
+      · rw [h_kill a b h_sign (neg_lt_neg h_gt), smul_zero]
+    · rw [mem_blockDiagAlg.1 hY_block a b h_sign, zero_smul]
   have row (a : n) : ∑ b : n, Y a b • ρ.E a b x = (u a * Y a a) • x := by
     rw [Fintype.sum_eq_single a (off_diag a), h_weight, smul_smul, mul_comm]
-  simp [ρ.apply_eq_sum Y, sum_smul, row]
+  rw [ρ.apply_eq_sum Y, LinearMap.sum_apply, sum_smul]
+  refine Finset.sum_congr rfl fun a _ ↦ ?_
+  rw [LinearMap.sum_apply]
+  simp only [LinearMap.smul_apply]
+  exact row a
 
 /-- Let `x` be a highest vector of weight `u` for the order `-o` and the blocks of `ε'` (see
 `New.HCParam.IsKHighest.apply_triangular`), with `o` injective, and let `c` be a coefficient map for
@@ -347,22 +458,47 @@ theorem HCParam.IsKHighest.coef_mul_triangular (ho : o.Injective) {ρ : GlModule
   -- `t` is diagonal with entries `exp (θ i * I)`, so `t = exp Y` with `Y` diagonal.
   obtain ⟨θ, hθ⟩ := ht.exists_eq_diagonal_exp ho
   let Y : unitaryLie (signMatrix ε) :=
-    ⟨diagonal fun a ↦ θ a * I, by simp [unitaryLie, signMatrix, mul_comm]⟩
-  have exp_Y : expU Y = t := Subtype.ext (Units.ext (by simp [hθ, Y, exp_diagonal, exp_eq_exp_ℂ]))
+    ⟨diagonal fun a ↦ θ a * I, by
+      change (diagonal fun a ↦ (θ a : ℂ) * I)ᴴ * signMatrix ε +
+        signMatrix ε * (diagonal fun a ↦ (θ a : ℂ) * I) = 0
+      ext i j
+      rw [Matrix.add_apply, Matrix.zero_apply, signMatrix, mul_diagonal, diagonal_mul,
+        conjTranspose_apply, star_def]
+      obtain rfl | hij := eq_or_ne i j
+      · rw [diagonal_apply_eq, map_mul, conj_ofReal, conj_I, mul_neg, neg_mul, mul_comm,
+          neg_add_cancel]
+      · rw [diagonal_apply_ne _ hij.symm, diagonal_apply_ne _ hij, map_zero, zero_mul, mul_zero,
+          add_zero]⟩
+  have exp_Y : expU Y = t := Subtype.ext (Units.ext (by
+    change NormedSpace.exp (diagonal fun a ↦ (θ a : ℂ) * I) = (t : Matrix n n ℂ)
+    rw [hθ, exp_diagonal, Pi.exp_def, exp_eq_exp_ℂ]))
   let lam : ℂ := ∑ a : n, u a * (θ a * I)
   have act_Y : ρ Y x = lam • x := by
-    simp [hx.apply_triangular ho Y (diagonal_mem_blockDiagAlg _) (blockTriangular_diagonal _),
-      lam, Y]
+    rw [hx.apply_triangular ho Y (diagonal_mem_blockDiagAlg _) (blockTriangular_diagonal _)]
+    congr 1
+    exact Finset.sum_congr rfl fun a _ ↦ by dsimp only [Y]; rw [diagonal_apply_eq]
   -- Along `expU (s • Y)` the coefficient grows by the weight `lam` of `Y`; the factor `cexp` undoes
   -- it, so `f` is constant.
   let f (s : ℝ) : X := cexp ((1 - s) * lam) • c (h * expU (s • Y)) x
   have deriv_zero (s : ℝ) : HasDerivAt f 0 s := by
     have factor : HasDerivAt (fun s : ℝ ↦ cexp ((1 - s) * lam)) (cexp ((1 - s) * lam) * -lam) s :=
       ((hasDerivAt_mul_const lam).comp_const_sub 1 (s : ℂ)).cexp.comp_ofReal
-    exact (factor.smul (hc h Y x s)).congr_deriv (by rw [act_Y, map_smul]; module)
+    refine (factor.smul (hc h Y x s)).congr_deriv ?_
+    rw [act_Y, map_smul, smul_smul, ← add_smul, mul_neg, mul_comm (cexp _) lam, add_neg_cancel,
+      zero_smul]
   have f_const : f 1 = f 0 := is_const_of_deriv_eq_zero
     (fun s ↦ (deriv_zero s).differentiableAt) (fun s ↦ (deriv_zero s).deriv) 1 0
-  simpa [f, lam, exp_Y, hθ, exp_sum, Complex.exp_intCast_mul, diagChar] using f_const
+  have hf1 : f 1 = c (h * t) x := by
+    dsimp only [f]
+    rw [Complex.ofReal_one, sub_self, zero_mul, Complex.exp_zero, one_smul, one_smul, exp_Y]
+  have hf0 : f 0 = diagChar u t • c h x := by
+    dsimp only [f]
+    rw [Complex.ofReal_zero, sub_zero, one_mul, zero_smul, expU_zero, mul_one, diagChar]
+    congr 1
+    rw [exp_sum]
+    exact Finset.prod_congr rfl fun a _ ↦ by
+      rw [Complex.exp_intCast_mul, hθ, diagonal_apply_eq]
+  rw [← hf1, ← hf0, f_const]
 
 /-- Under the hypotheses of `New.HCParam.IsKHighest.coef_mul_triangular` (`x` highest of weight
 `u`, `c` a coefficient map), the vector `diagChar u b • c h x` depends only on the product `h * b`
@@ -374,10 +510,16 @@ theorem HCParam.IsKHighest.diagChar_smul_coeffMap_eq (ho : o.Injective) {ρ : Gl
     diagChar u b' • c h' x = diagChar u b • c h x := by
   -- write `h' = h * t`; then `t = b * b'⁻¹` is triangular
   obtain ⟨t, rfl⟩ : ∃ t : USign ε, h * t = h' := mul_left_surjective h h'
-  obtain rfl : t * b' = b := by simpa [mul_assoc] using h_eq
-  have ht : IsBorelMatrix o t := by simpa [hb'.2] using hb.mul hb'.inv
+  obtain rfl : t * b' = b := by
+    rw [Subgroup.coe_mul, Units.val_mul, Matrix.mul_assoc] at h_eq
+    exact h.1.isUnit.mul_left_cancel h_eq
+  have ht : IsBorelMatrix o t := by
+    have h_prod := hb.mul hb'.inv
+    rwa [Matrix.mul_assoc, mul_nonsing_inv _ (isUnit_iff_ne_zero.2 hb'.2), Matrix.mul_one] at h_prod
   have char_mul : diagChar u (t * b') = diagChar u b' * diagChar u t := by
-    simp only [diagChar, ht.mul_apply_diag ho hb', mul_zpow, prod_mul_distrib, mul_comm]
+    rw [diagChar, diagChar, diagChar, mul_comm]
+    exact (Finset.prod_congr rfl fun i _ ↦ by rw [ht.mul_apply_diag ho hb', mul_zpow]).trans
+      prod_mul_distrib
   rw [hx.coef_mul_triangular ho hc h t ht, smul_smul, char_mul]
 
 variable [CompleteSpace X]
@@ -387,7 +529,11 @@ variable [CompleteSpace X]
 lemma exp_lowerLiePart_zero_mem_blockDiagAlg (Z : Matrix n n ℂ) :
     NormedSpace.exp (lowerLiePart ε ε' o 0 Z) ∈ blockDiagAlg ε' := by
   have h_mem : lowerLiePart ε ε' o 0 Z ∈ blockDiagAlg ε' :=
-    mem_blockDiagAlg.2 fun i j h_sign ↦ by simp [lowerLiePart, signMatrix, h_sign, Ne.symm h_sign]
+    mem_blockDiagAlg.2 fun i j h_sign ↦ by
+      rw [lowerLiePart_zero_eq, Matrix.sub_apply, signMatrix_mul_conjTranspose_mul_apply,
+        lowerMask_apply, lowerMask_apply]
+      simp only [h_sign, h_sign.symm, and_false, ↓reduceIte, map_zero, mul_zero, zero_mul,
+        sub_zero]
   rw [mem_blockDiagAlg_iff_commute] at h_mem ⊢
   exact h_mem.exp_right
 
@@ -398,13 +544,24 @@ lemma HCParam.IsKHighest.apply_lowerLiePart_zero (ho : o.Injective) {ρ : GlModu
     {u : n → ℤ} {x : M} (hx : (toHCParam ε' (-o)).IsKHighest ρ u x) (Y : Matrix n n ℂ) :
     ρ (lowerLiePart ε ε' o 0 Y) x = ρ (lowerMask ε' o Y) x := by
   let U : Matrix n n ℂ := signMatrix ε * (lowerMask ε' o Y)ᴴ * signMatrix ε
-  have eq_lower_sub : lowerLiePart ε ε' o 0 Y = lowerMask ε' o Y - U := by
-    simp [lowerLiePart, U, star_eq_conjTranspose]
+  have eq_lower_sub : lowerLiePart ε ε' o 0 Y = lowerMask ε' o Y - U :=
+    lowerLiePart_zero_eq ε ε' o Y
   have U_block : U ∈ blockDiagAlg ε' :=
-    mem_blockDiagAlg.2 fun i j hij ↦ by simp [U, signMatrix, Ne.symm hij]
-  have U_tri : U.BlockTriangular o := fun i j hij ↦ by simp [U, signMatrix, hij.not_gt]
-  have U_diag (a : n) : U a a = 0 := by simp [U, signMatrix]
-  have U_apply : ρ U x = 0 := by simp [hx.apply_triangular ho U U_block U_tri, U_diag]
+    mem_blockDiagAlg.2 fun i j hij ↦ by
+      dsimp only [U]
+      rw [signMatrix_mul_conjTranspose_mul_apply, lowerMask_apply]
+      simp only [hij.symm, and_false, ↓reduceIte, map_zero, mul_zero, zero_mul]
+  have U_tri : U.BlockTriangular o := fun i j hij ↦ by
+    dsimp only [U]
+    rw [signMatrix_mul_conjTranspose_mul_apply, lowerMask_apply]
+    simp only [hij.not_gt, false_and, ↓reduceIte, map_zero, mul_zero, zero_mul]
+  have U_diag (a : n) : U a a = 0 := by
+    dsimp only [U]
+    rw [signMatrix_mul_conjTranspose_mul_apply, lowerMask_apply]
+    simp only [lt_irrefl, false_and, ↓reduceIte, map_zero, mul_zero, zero_mul]
+  have U_apply : ρ U x = 0 := by
+    rw [hx.apply_triangular ho U U_block U_tri]
+    simp only [U_diag, mul_zero, sum_const_zero, zero_smul]
   rw [eq_lower_sub, map_sub, LinearMap.sub_apply, U_apply, sub_zero]
 
 /-- The matrices `lowerLiePart ε ε' o 0 Z` and `Z` have the same entries below the diagonal for `o`
@@ -412,9 +569,12 @@ inside the blocks of `ε'`. -/
 lemma lowerMask_lowerLiePart_zero (Z : Matrix n n ℂ) :
     lowerMask ε' o (lowerLiePart ε ε' o 0 Z) = lowerMask ε' o Z := by
   ext i j
+  rw [lowerMask_apply, lowerLiePart_zero_eq, Matrix.sub_apply,
+    signMatrix_mul_conjTranspose_mul_apply, lowerMask_apply, lowerMask_apply]
   by_cases h_lower : o j < o i ∧ ε' i = ε' j
-  · simp [lowerLiePart, signMatrix, h_lower, h_lower.1.asymm]
-  · simp [h_lower]
+  · simp only [h_lower, and_self, ↓reduceIte, h_lower.1.asymm, false_and, map_zero, mul_zero,
+      zero_mul, sub_zero]
+  · simp only [h_lower, ↓reduceIte]
 
 /-- Let `x` be highest for the order `-o` and the blocks of `ε'`, with `o` injective, and let `c` be
 a continuous coefficient map for `ρ` (its derivative along `exp (s • Y)` is given by `ρ Y`). Write
@@ -430,13 +590,19 @@ theorem HCParam.IsKHighest.differentiableAt_coeffMap_expU (ho : o.Injective) {ρ
     ⟨lowerLiePart ε ε' o 0 Z, lowerLiePart_mem_unitaryLie ε ε' o 0 Z⟩
   -- The upper part of `v Y` kills `x`, so the derivative along real rays is complex linear.
   let D (Z : Matrix n n ℂ) : Matrix n n ℂ →L[ℂ] X :=
-    (c (h * expU (v Z)) ∘ₗ ρ.ρ.flip x).toContinuousLinearMap ∘L lowerMask ε' o
-  have D_cont : Continuous D := continuous_clm_apply.2 fun Y ↦ (hc_cont _).comp (by fun_prop)
+    ((c (h * expU (v Z)) ∘ₗ ρ.ρ.flip x) ∘ₗ
+      (lowerMask ε' o : Matrix n n ℂ →ₗ[ℂ] Matrix n n ℂ)).toContinuousLinearMap
+  have D_cont : Continuous D :=
+    continuous_clm_apply.2 fun Y ↦ (hc_cont _).comp
+      (continuous_const.mul
+        (continuous_expU.comp ((lowerLiePart ε ε' o 0).continuous.subtype_mk _)))
   have D_apply (Y Z : Matrix n n ℂ) : D Z Y = c (h * expU (v Z)) (ρ (v Y : Matrix n n ℂ) x) := by
-    simp [D, v, hx.apply_lowerLiePart_zero ho, -lowerMask]
+    rw [LinearMap.coe_toContinuousLinearMap', LinearMap.comp_apply, LinearMap.comp_apply,
+      LinearMap.flip_apply, ContinuousLinearMap.coe_coe, ← hx.apply_lowerLiePart_zero ho]
   have ray (Y : Matrix n n ℂ) (t : ℝ) :
       HasDerivAt (fun t : ℝ ↦ c (h * expU (v (t • Y))) x) (D (t • Y) Y) t := by
-    have v_smul (s : ℝ) : v (s • Y) = s • v Y := Subtype.ext (by simp [v])
+    have v_smul (s : ℝ) : v (s • Y) = s • v Y :=
+      Subtype.ext (map_smul (lowerLiePart ε ε' o 0) s Y)
     simpa only [D_apply, v_smul] using hc h (v Y) x t
   exact (hasFDerivAt_of_rays (fun Z ↦ c (h * expU (v Z)) x) D D_cont ray).differentiableAt
 
@@ -478,7 +644,14 @@ theorem HCParam.IsKHighest.isHolOfWeight_coeffMap (ho : o.Injective) {ρ : Φ �
     -- `shift` takes the block diagonal part of `h⁻¹ * y' * b⁻¹`, so sends `y` to `1`.
     let shift : Matrix n n ℂ →L[ℂ] Matrix n n ℂ :=
       blockDiagPart ε' ∘L mulLeftRight ℂ (Matrix n n ℂ) (h : Matrix n n ℂ)⁻¹ b⁻¹
-    have shift_y : shift y = 1 := by simp [shift, hb.2, y_eq, h_mem, b_mem]
+    have h_det : IsUnit (h : Matrix n n ℂ).det :=
+      isUnit_iff_ne_zero.2 (GeneralLinearGroup.det_ne_zero h.1)
+    have b_det : IsUnit b.det := isUnit_iff_ne_zero.2 hb.2
+    have shift_y : shift y = 1 := by
+      change blockDiagPart ε' ((h : Matrix n n ℂ)⁻¹ * y * b⁻¹) = 1
+      rw [blockDiagPart_mul_right (blockDiagAlg.inv_mem b_mem),
+        blockDiagPart_mul_left (blockDiagAlg.inv_mem h_mem), y_eq,
+        ← Matrix.mul_assoc, nonsing_inv_mul _ h_det, Matrix.one_mul, mul_nonsing_inv _ b_det]
     let unit (Z : Matrix n n ℂ) : USign ε := h * expU ⟨v Z, lowerLiePart_mem_unitaryLie ε ε' o 0 Z⟩
     let tri (Z : Matrix n n ℂ) : Matrix n n ℂ := 1 + (1 - v) Z
     have factor : ∀ᶠ y' in 𝓝 y, IsBorelMatrix o (tri (ψ (shift y'))) ∧
@@ -486,8 +659,21 @@ theorem HCParam.IsKHighest.isHolOfWeight_coeffMap (ho : o.Injective) {ρ : Φ �
       filter_upwards [shift.cont.tendsto' y 1 shift_y chart] with y' hy'
       obtain ⟨tri_borel, ⟨exp_mem, tri_mem⟩, shift_eq⟩ := hy' (blockDiagPart_mem _)
       refine ⟨tri_borel, tri_borel.mul hb, ⟨mul_mem h_mem exp_mem, mul_mem tri_mem b_mem⟩, ?_⟩
-      simpa [shift, unit, tri, h_mem, b_mem, hb.2, mul_assoc] using
-        congrArg (fun z : Matrix n n ℂ ↦ h * z * b) shift_eq
+      have h_mul := congrArg (fun z : Matrix n n ℂ ↦ (h : Matrix n n ℂ) * z * b) shift_eq
+      change (h : Matrix n n ℂ) * blockDiagPart ε' ((h : Matrix n n ℂ)⁻¹ * y' * b⁻¹) * b =
+        (h : Matrix n n ℂ) *
+          (NormedSpace.exp (v (ψ (shift y'))) * tri (ψ (shift y'))) * b at h_mul
+      rw [blockDiagPart_mul_right (blockDiagAlg.inv_mem b_mem),
+        blockDiagPart_mul_left (blockDiagAlg.inv_mem h_mem),
+        ← Matrix.mul_assoc (h : Matrix n n ℂ), ← Matrix.mul_assoc (h : Matrix n n ℂ),
+        mul_nonsing_inv _ h_det, Matrix.one_mul, Matrix.mul_assoc, nonsing_inv_mul _ b_det,
+        Matrix.mul_one] at h_mul
+      rw [h_mul]
+      dsimp only [unit]
+      rw [Subgroup.coe_mul, Units.val_mul]
+      change (h : Matrix n n ℂ) * (NormedSpace.exp (v (ψ (shift y'))) * tri (ψ (shift y'))) * b =
+        (h : Matrix n n ℂ) * NormedSpace.exp (v (ψ (shift y'))) * (tri (ψ (shift y')) * b)
+      rw [Matrix.mul_assoc, Matrix.mul_assoc, Matrix.mul_assoc]
     refine ⟨?_, factor.mono fun y' hy' ↦ Set.nonempty_of_mem hy'.2⟩
     let inChart (Z : Matrix n n ℂ) : X :=
       (diagChar (u τ) (1 + Z) * diagChar (u τ) b) • c τ (unit Z) (x τ)
@@ -495,24 +681,42 @@ theorem HCParam.IsKHighest.isHolOfWeight_coeffMap (ho : o.Injective) {ρ : Φ �
       rw [shift_y]
       refine .comp 1 ?_ ψ_complex.differentiableAt
       rw [ψ_one]
-      exact .smul (by fun_prop (disch := simp) [diagChar])
-        ((hx τ).differentiableAt_coeffMap_expU ho (hc τ) (hc_cont τ) h)
+      have h_entry (i : n) : AnalyticAt ℂ (fun Z : Matrix n n ℂ ↦ (1 + Z) i i) 0 :=
+        analyticAt_const.add
+          ((ContinuousLinearMap.mk
+            ({ toFun Z := Z i i
+               map_add' _ _ := rfl
+               map_smul' _ _ := rfl } : Matrix n n ℂ →ₗ[ℂ] ℂ)
+            ((continuous_apply i).comp (continuous_apply i))).analyticAt 0)
+      have h_char : DifferentiableAt ℂ
+          (fun Z : Matrix n n ℂ ↦ diagChar (u τ) (1 + Z) * diagChar (u τ) b) 0 :=
+        ((Finset.analyticAt_fun_prod univ fun i _ ↦
+          (h_entry i).zpow (by rw [add_zero, Matrix.one_apply_eq]; exact one_ne_zero)).mul
+            analyticAt_const).differentiableAt
+      exact .smul h_char ((hx τ).differentiableAt_coeffMap_expU ho (hc τ) (hc_cont τ) h)
     -- Near `y` we have `extend τ = inChart ∘ ψ ∘ shift`, because `v Z` has zero diagonal.
     have tri_diag (Z : Matrix n n ℂ) (i : n) : tri Z i i = (1 + Z) i i := by
-      simp [tri, v, lowerLiePart, signMatrix]
+      dsimp only [tri, v]
+      rw [Matrix.add_apply, Matrix.add_apply, sub_apply, one_apply_eq_self, Matrix.sub_apply,
+        lowerLiePart_zero_eq, Matrix.sub_apply, signMatrix_mul_conjTranspose_mul_apply,
+        lowerMask_apply]
+      simp only [lt_irrefl, false_and, ↓reduceIte, map_zero, mul_zero, zero_mul, sub_zero]
     refine (comp_diff.comp y shift.differentiableAt).congr_of_eventuallyEq (factor.mono ?_)
     rintro y' ⟨tri_borel, h_factor⟩
     change extend τ y' = inChart (ψ (shift y'))
     simp only [← extend_eq τ y' _ h_factor, inChart, diagChar, tri_borel.mul_apply_diag ho hb,
       tri_diag, mul_zpow, prod_mul_distrib]
   refine ⟨fun z ↦ ℓ fun τ ↦ extend τ (z τ), fun h b hb h_block ↦ ?_⟩
-  have mem (τ : Φ) : (h τ, b τ) ∈ factors (h τ * b τ) := ⟨hb τ, h_block τ, by simp [h_block]⟩
-  refine ⟨analyticAt_of_eventually_differentiableAt ?_,
-    by simp [← extend_eq _ _ (h _, b _) (mem _), ℓ.map_smul_univ]⟩
+  have mem (τ : Φ) : (h τ, b τ) ∈ factors (h τ * b τ) :=
+    ⟨hb τ, h_block τ, blockDiagPart_of_mem (mul_mem (h_block τ).1 (h_block τ).2)⟩
+  refine ⟨analyticAt_of_eventually_differentiableAt ?_, by
+    simp only [← extend_eq _ _ (h _, b _) (mem _), ℓ.map_smul_univ, smul_eq_mul]⟩
   have all_near : ∀ᶠ y in 𝓝 (fun τ ↦ h τ * b τ), ∀ τ, DifferentiableAt ℂ (extend τ) (y τ) :=
     nhds_pi.le (eventually_pi fun τ ↦
       (differentiable τ _ ⟨_, mem τ⟩).2.mono fun y hy ↦ (differentiable τ y hy).1)
-  exact all_near.mono fun y hy ↦ ℓ.analyticAt.differentiableAt.comp y (by fun_prop)
+  exact all_near.mono fun y hy ↦ ℓ.analyticAt.differentiableAt.comp y
+    (differentiableAt_pi.2 fun τ ↦
+      (hy τ).comp y (proj (R := ℂ) (φ := fun _ : Φ ↦ Matrix n n ℂ) τ).differentiableAt)
 
 variable (ε o) in
 /-- The translates of `x` by the circle `diag (s ^ o)` factor through an entire curve `A` from `1`
@@ -547,9 +751,13 @@ lemma diagonal_mul_one_add_lowerMask (s : Circle) (Z : Matrix n n ℂ) :
   · have h_pow : (s : ℂ) ^ (o i - o j).toNat * (s : ℂ) ^ o j = (s : ℂ) ^ o i := by
       rw [← zpow_natCast, ← zpow_add₀ (coe_ne_zero s), Int.toNat_of_nonneg (by omega),
         sub_add_cancel]
-    rw [Matrix.one_apply_ne (show i ≠ j by grind), zero_add, zero_add, ← h_pow]
-    ring
-  · obtain rfl | h_ne := eq_or_ne i j <;> simp [*]
+    have h_ne : i ≠ j := fun h_eq ↦ h.1.ne (congrArg o h_eq.symm)
+    rw [Matrix.one_apply_ne h_ne, zero_add, zero_add, ← h_pow]
+    exact mul_right_comm _ _ _
+  · simp only [lowerMask_apply, h, ↓reduceIte, mul_zero, add_zero]
+    obtain rfl | h_ne := eq_or_ne i j
+    · rw [Matrix.one_apply_eq, mul_one, one_mul]
+    · rw [Matrix.one_apply_ne h_ne, mul_zero, zero_mul]
 
 /-- For injective `o` the matrix `1 + lowerMask ε o Z`, which has diagonal entries `1` and off the
 diagonal the entries `Z i j` with `o j < o i` and `ε i = ε j` (others `0`), is invertible and
@@ -576,44 +784,62 @@ lemma eventually_exists_isCircleFactorization (ho : o.Injective) {w : n → ℤ}
   -- Near `1` write `x = a b` with `a = 1 + lowerMask (ψ x)` lower unipotent; conjugation by
   -- `diag (s ^ o)` multiplies its entry `(i, j)` by `s ^ (o i - o j)`, a polynomial in `s`.
   have lower_mem (Z : Matrix n n ℂ) : 1 + lowerMask ε o Z ∈ blockDiagAlg ε :=
-    add_mem (one_mem _) (mem_blockDiagAlg.2 fun i j h_sign ↦ by simp [h_sign])
+    add_mem (one_mem _) (mem_blockDiagAlg.2 fun i j h_sign ↦ by
+      rw [lowerMask_apply]; simp only [h_sign, and_false, ↓reduceIte])
   have lower_idem (Z : Matrix n n ℂ) : lowerMask ε o (lowerMask ε o Z) = lowerMask ε o Z :=
-    Matrix.ext fun i j ↦ by simp +contextual
+    Matrix.ext fun i j ↦ by
+      rw [lowerMask_apply, lowerMask_apply]
+      split_ifs <;> rfl
   obtain ⟨ψ, ⟨ψ_deriv, ψ_one⟩, chart⟩ := exists_borel_chart ε o ((lowerMask ε o).restrictScalars ℝ)
     (E := fun Z ↦ 1 + Z) (.const_add 1 (hasStrictFDerivAt_id 0)) (add_zero 1) lower_mem lower_idem
   let A (Z : Matrix n n ℂ) (s : ℂ) : Matrix n n ℂ :=
     1 + of fun i j ↦ s ^ (o i - o j).toNat * lowerMask ε o Z i j
   -- `A 0 s = 1`, so by compactness of the disc `A Z s ∈ P` holds on it for `Z` near `0 = ψ 1`.
-  have A_one (s : ℂ) : A (ψ 1) s = 1 := by simp [A, ψ_one, ← ext_iff]
+  have A_one (s : ℂ) : A (ψ 1) s = 1 := Matrix.ext fun i j ↦ by
+    simp only [A, ψ_one, map_zero, Matrix.add_apply, of_apply, Matrix.zero_apply, mul_zero,
+      add_zero]
+  have hA_cont : Continuous (Function.uncurry A) :=
+    continuous_const.add (continuous_matrix fun i j ↦
+      (continuous_snd.pow _).mul
+        ((continuous_apply j).comp ((continuous_apply i).comp
+          ((lowerMask ε o).continuous.comp continuous_fst))))
   have near : ∀ᶠ Z in 𝓝 (ψ 1), ∀ s ∈ closedBall (0 : ℂ) 1, A Z s ∈ P :=
-    (isCompact_closedBall 0 1).eventually_forall_mem A P fun s _ ↦ by rwa [A_one]
+    (isCompact_closedBall 0 1).eventually_forall_mem A P (fun s _ ↦ by rwa [A_one]) hA_cont
   filter_upwards [chart, ψ_deriv.continuousAt near] with x hx_chart hx_near hx
   let a : Matrix n n ℂ := 1 + lowerMask ε o (ψ x)
   let b : Matrix n n ℂ := 1 + (1 - (lowerMask ε o).restrictScalars ℝ) (ψ x)
   obtain ⟨hb, ⟨ha_mem, hb_mem⟩, x_eq⟩ :
       IsBorelMatrix o b ∧ (a ∈ blockDiagAlg ε ∧ b ∈ blockDiagAlg ε) ∧ x = a * b := hx_chart hx
   have A_differentiable : Differentiable ℂ (A (ψ x)) :=
-    differentiable_pi.2 fun i ↦ differentiable_pi.2 fun j ↦ by
-      simp only [A, Matrix.add_apply, of_apply]
-      fun_prop
+    differentiable_pi.2 fun i ↦ differentiable_pi.2 fun j ↦
+      (differentiable_const _).add ((differentiable_id.pow _).mul_const _)
   have det_b : b.det ≠ 0 := hb.2
   -- The lower unipotent factor `a` does not change `weightMinors w`.
-  have minors_x : weightMinors w x = diagChar w b :=
-    calc weightMinors w x = weightMinors w (a * b) := congrArg (weightMinors w) x_eq
-      _ = diagChar w a * weightMinors w b :=
-        hw.weightMinors_oppBorel_mul ho det_b ha_mem (isBorelMatrix_one_add_lowerMask ho _)
-      _ = weightMinors w b := by simp [a, diagChar]
-      _ = diagChar w b := by
-        simpa using hw.weightMinors_mul_borel ho (x := 1) (by simp) hb_mem hb
+  have h_da : diagChar w a = 1 := Finset.prod_eq_one fun i _ ↦ by
+    dsimp only [a]
+    rw [Matrix.add_apply, Matrix.one_apply_eq, lowerMask_apply]
+    simp only [lt_irrefl, false_and, ↓reduceIte, add_zero, _root_.one_zpow]
+  have h_wb : weightMinors w b = diagChar w b := by
+    have h := hw.weightMinors_mul_borel ho (x := 1) (by rw [det_one]; exact one_ne_zero) hb_mem hb
+    rwa [Matrix.one_mul, weightMinors_one, one_mul] at h
+  have minors_x : weightMinors w x = diagChar w b := by
+    rw [x_eq, hw.weightMinors_oppBorel_mul ho det_b ha_mem (isBorelMatrix_one_add_lowerMask ho _),
+      h_da, one_mul, h_wb]
   have on_circle (s : Circle) : diagonal (fun i : n ↦ (s : ℂ) ^ o i) * x =
-      A (ψ x) s * (diagonal (fun i : n ↦ (s : ℂ) ^ o i) * b) :=
-    calc _ = diagonal (fun i : n ↦ (s : ℂ) ^ o i) * a * b := by rw [mul_assoc, ← x_eq]
-      _ = _ := by rw [diagonal_mul_one_add_lowerMask, mul_assoc]
+      A (ψ x) s * (diagonal (fun i : n ↦ (s : ℂ) ^ o i) * b) := by
+    have h1 : diagonal (fun i : n ↦ (s : ℂ) ^ o i) * x =
+        diagonal (fun i : n ↦ (s : ℂ) ^ o i) * (a * b) := congrArg _ x_eq
+    rw [h1, ← Matrix.mul_assoc, diagonal_mul_one_add_lowerMask, Matrix.mul_assoc]
   exact ⟨A (ψ x), b,
     { mem_blockDiagAlg := hb_mem
       isBorelMatrix := hb
       analyticAt := A_differentiable.analyticAt
-      apply_zero := by simp +contextual [A, ← ext_iff]
+      apply_zero := Matrix.ext fun i j ↦ by
+        dsimp only [A]
+        rw [Matrix.add_apply, of_apply, lowerMask_apply]
+        split_ifs with h
+        · rw [zero_pow (by omega), zero_mul, add_zero]
+        · rw [mul_zero, add_zero]
       weightMinors_eq := minors_x
       diagonal_mul_eq := on_circle }, hx_near⟩
 
@@ -640,37 +866,49 @@ theorem circle_mean_of_isCircleFactorization (ho : o.Injective) {u : Φ → n �
       q 0 * (∏ τ : Φ, weightMinors (u τ) (g τ)) * F 1 := by
   have b_tri (τ : Φ) : IsBorelMatrix o (b τ) := (h_factor τ).isBorelMatrix
   let β : ℂ := ∏ τ : Φ, ∏ i : n, b τ i i ^ u τ i
-  have β_ne : β ≠ 0 := by simp [β, (b_tri _).diag_ne_zero ho, prod_eq_zero_iff, zpow_ne_zero]
+  have β_ne : β ≠ 0 := Finset.prod_ne_zero_iff.2 fun τ _ ↦
+    Finset.prod_ne_zero_iff.2 fun i _ ↦ zpow_ne_zero _ ((b_tri τ).diag_ne_zero ho i)
   -- With `d = diag (s ^ o)` we have `A s = (d g) (d b)⁻¹`, and `d b` is triangular.
   have on_circle (s : Circle) : F' (fun τ ↦ A τ s) = β⁻¹ * (∏ τ, ∏ i, ((s : ℂ) ^ o i) ^ u τ i)⁻¹ *
       F fun τ ↦ diagTorus ε (fun i ↦ s ^ o i) * g τ := by
     let dg (τ : Φ) : USign ε := diagTorus ε (fun i ↦ s ^ o i) * g τ
     let db (τ : Φ) : Matrix n n ℂ := diagonal (fun i ↦ (s : ℂ) ^ o i) * b τ
     have db_tri (τ : Φ) : IsBorelMatrix o (db τ) := (isBorelMatrix_diagonal s).mul (b_tri τ)
-    have blocks (τ : Φ) : ↑(dg τ) ∈ blockDiagAlg ε' ∧ (db τ)⁻¹ ∈ blockDiagAlg ε' := by
-      simp [dg, db, hg, (h_factor τ).mem_blockDiagAlg, Matrix.mul_inv_rev, diagTorus,
-        diagonal_mem_blockDiagAlg, mul_mem]
-    have A_eq (τ : Φ) : dg τ * (db τ)⁻¹ = A τ s := by
-      have dg_eq : dg τ = A τ s * db τ := by
-        simpa [dg, db, diagTorus] using (h_factor τ).diagonal_mul_eq s
-      simp [dg_eq, (db_tri τ).2]
+    have blocks (τ : Φ) : ↑(dg τ) ∈ blockDiagAlg ε' ∧ (db τ)⁻¹ ∈ blockDiagAlg ε' :=
+      ⟨mul_mem (diagonal_mem_blockDiagAlg _) (hg τ),
+        blockDiagAlg.inv_mem (mul_mem (diagonal_mem_blockDiagAlg _) (h_factor τ).mem_blockDiagAlg)⟩
+    have A_eq (τ : Φ) : (dg τ : Matrix n n ℂ) * (db τ)⁻¹ = A τ s := by
+      have dg_eq : (dg τ : Matrix n n ℂ) = A τ s * db τ := (h_factor τ).diagonal_mul_eq s
+      rw [dg_eq, Matrix.mul_assoc, mul_nonsing_inv _ (isUnit_iff_ne_zero.2 (db_tri τ).2),
+        Matrix.mul_one]
     have char_inv (τ : Φ) : diagChar (u τ) (db τ)⁻¹ =
         (∏ i, b τ i i ^ u τ i)⁻¹ * (∏ i, ((s : ℂ) ^ o i) ^ u τ i)⁻¹ := by
-      simp [diagChar, (db_tri τ).inv_apply_diag ho, db, mul_zpow, prod_mul_distrib]
+      rw [diagChar, ← prod_inv_distrib, ← prod_inv_distrib, ← prod_mul_distrib]
+      refine Finset.prod_congr rfl fun i _ ↦ ?_
+      rw [(db_tri τ).inv_apply_diag ho i]
+      dsimp only [db]
+      rw [diagonal_mul, _root_.mul_inv_rev, mul_zpow, _root_.inv_zpow, _root_.inv_zpow]
     simpa only [A_eq, char_inv, prod_mul_distrib, prod_inv_distrib] using
       hF' dg (fun τ ↦ (db τ)⁻¹) (fun τ ↦ (db_tri τ).inv) blocks
   have at_centre : F' (fun τ ↦ A τ 0) = F 1 := by
-    simpa [(h_factor _).apply_zero, IsBorelMatrix, blockTriangular_one, diagChar] using hF' 1 1
+    have h1 := hF' 1 1 (fun _ ↦ isBorelMatrix_one) (fun _ ↦ ⟨one_mem _, one_mem _⟩)
+    simpa only [Pi.one_apply, Submonoid.coe_one, Units.val_one, Matrix.mul_one, diagChar_one,
+      prod_const_one, one_mul, (h_factor _).apply_zero] using h1
   have holomorphic : AnalyticOnNhd ℂ (fun s ↦ q s * β * F' fun τ ↦ A τ s) (closedBall 0 1) :=
     (hq.mul analyticOnNhd_const).mul fun s hs ↦
       .comp (hA s hs) (.pi fun τ ↦ (h_factor τ).analyticAt s)
-  calc _ = ∫ θ : UnitAddCircle, q θ.toCircle * β * F' fun τ ↦ A τ θ.toCircle := by
-        congr with θ
-        rw [on_circle]
-        field_simp
-    _ = q 0 * β * F' fun τ ↦ A τ 0 := integral_comp_toCircle_eq_apply_zero
-      (f := fun s ↦ q s * β * F' fun τ ↦ A τ s) holomorphic.differentiableOn
-    _ = _ := by simp [β, at_centre, (h_factor _).weightMinors_eq, diagChar]
+  have h_eq_int :
+      ∫ θ : UnitAddCircle,
+          F (fun τ : Φ ↦ diagTorus ε (fun i : n ↦ θ.toCircle ^ o i) * g τ) *
+            ((∏ τ : Φ, ∏ i : n, ((θ.toCircle : ℂ) ^ o i) ^ u τ i)⁻¹ * q θ.toCircle) =
+        ∫ θ : UnitAddCircle, q θ.toCircle * β * F' fun τ ↦ A τ θ.toCircle := by
+    congr 1; ext θ
+    rw [on_circle, mul_assoc (q _), ← mul_assoc β, ← mul_assoc β, mul_inv_cancel₀ β_ne, one_mul,
+      mul_comm (q _), mul_assoc, mul_left_comm]
+  rw [h_eq_int, integral_comp_toCircle_eq_apply_zero
+    (f := fun s ↦ q s * β * F' fun τ ↦ A τ s) holomorphic.differentiableOn, at_centre]
+  congr 2
+  exact Finset.prod_congr rfl fun τ _ ↦ ((h_factor τ).weightMinors_eq).symm
 
 /-- The mean over the circle `diag (s ^ o)` of a function of weight `u`. Let `o` be injective and
 `ε'` be `1` or `ε`, and let `F` on `(USign ε)^Φ`, the tuples in the unitary group of `diag ε`, be
@@ -696,39 +934,83 @@ theorem IsHolOfWeight.circle_mean_weightMinors (ho : o.Injective) {u : Φ → n 
   let d (s : Circle) : Matrix n n ℂ := diagonal fun i ↦ (s : ℂ) ^ o i
   have on_path (s : Circle) (t : ℝ) : AnalyticAt ℂ F' (fun τ ↦ d s * c τ t) ∧
       F' (fun τ ↦ d s * c τ t) = F fun τ ↦ diagTorus ε (fun i ↦ s ^ o i) * c τ t := by
-    simpa [d, c_mem, diagTorus, IsBorelMatrix, blockTriangular_one, diagonal_mem_blockDiagAlg,
-      mul_mem, diagChar] using hF' (fun τ ↦ diagTorus ε (fun i ↦ s ^ o i) * c τ t) 1
+    have h_at := hF' (fun τ ↦ diagTorus ε (fun i ↦ s ^ o i) * c τ t) 1 (fun _ ↦ isBorelMatrix_one)
+      (fun τ ↦ ⟨mul_mem (diagonal_mem_blockDiagAlg _) (c_mem τ t), one_mem _⟩)
+    have h_mat : (fun τ ↦ ((diagTorus ε (fun i ↦ s ^ o i) * c τ t : USign ε) : Matrix n n ℂ)) =
+        (fun τ ↦ d s * c τ t) := funext fun τ ↦ by rw [Subgroup.coe_mul, Units.val_mul]; rfl
+    simpa only [Pi.one_apply, Matrix.mul_one, h_mat, diagChar_one, prod_const_one, one_mul]
+      using h_at
   let weight (s : ℂ) : ℂ := (∏ τ, ∏ i, (s ^ o i) ^ u τ i)⁻¹ * q s
   let lhs (t : ℝ) : ℂ :=
     ∫ θ : UnitAddCircle, F' (fun τ ↦ d θ.toCircle * c τ t) * weight θ.toCircle
   let rhs (t : ℝ) : ℂ := q 0 * (∏ τ, weightMinors (u τ) (c τ t)) * F 1
   suffices h_path : lhs = rhs by
     simpa only [lhs, rhs, weight, on_path, c_one] using congrFun h_path 1
+  have h_circ : Continuous fun θ : UnitAddCircle ↦ (θ.toCircle : ℂ) :=
+    continuous_subtypeVal.comp AddCircle.continuous_toCircle
+  have h_pow (k : ℤ) : Continuous fun θ : UnitAddCircle ↦ (θ.toCircle : ℂ) ^ k :=
+    continuous_iff_continuousAt.2 fun θ ↦
+      h_circ.continuousAt.zpow₀ k (Or.inl (Circle.coe_ne_zero _))
+  have h_d : Continuous fun θ : UnitAddCircle ↦ d θ.toCircle :=
+    continuous_matrix fun i j ↦ by
+      by_cases hij : i = j
+      · subst hij
+        simpa only [d, diagonal_apply_eq] using h_pow (o i)
+      · simpa only [d, diagonal_apply_ne _ hij] using continuous_const
+  have h_prod_cont {ι : Type} (s : Finset ι) {f : ι → UnitAddCircle → ℂ}
+      (hf : ∀ i ∈ s, Continuous (f i)) : Continuous fun θ ↦ ∏ i ∈ s, f i θ :=
+    (Finset.prod_induction f (fun g : UnitAddCircle → ℂ ↦ Continuous g)
+      (fun _ _ ha hb ↦ ha.mul hb) continuous_const hf).congr fun θ ↦ Finset.prod_apply θ s f
+  have h_prod : Continuous fun θ : UnitAddCircle ↦
+      ∏ τ : Φ, ∏ i : n, ((θ.toCircle : ℂ) ^ o i) ^ u τ i :=
+    h_prod_cont univ fun τ _ ↦ h_prod_cont univ fun i _ ↦
+      continuous_iff_continuousAt.2 fun θ ↦
+        (h_pow (o i)).continuousAt.zpow₀ (u τ i) (Or.inl (zpow_ne_zero _ (Circle.coe_ne_zero _)))
+  have h_weight : Continuous fun θ : UnitAddCircle ↦ weight θ.toCircle :=
+    (h_prod.inv₀ fun θ ↦ Finset.prod_ne_zero_iff.2 fun τ _ ↦
+      Finset.prod_ne_zero_iff.2 fun i _ ↦
+        zpow_ne_zero _ (zpow_ne_zero _ (Circle.coe_ne_zero _))).mul
+      (continuous_iff_continuousAt.2 fun θ ↦
+        (hq _ (by rw [mem_closedBall_zero_iff, Circle.norm_coe])).continuousAt.comp
+          h_circ.continuousAt)
+  let ι (θ : UnitAddCircle) : (Φ → Matrix n n ℂ) × ℂ := (fun _ ↦ d θ.toCircle, weight θ.toCircle)
+  have hι : Continuous ι := (continuous_pi fun _ ↦ h_d).prodMk h_weight
+  let pA : (Φ → Matrix n n ℂ) × ((Φ → Matrix n n ℂ) × ℂ) →L[ℂ] (Φ → Matrix n n ℂ) :=
+    ContinuousLinearMap.fst ℂ (Φ → Matrix n n ℂ) ((Φ → Matrix n n ℂ) × ℂ)
+  let pB : (Φ → Matrix n n ℂ) × ((Φ → Matrix n n ℂ) × ℂ) →L[ℂ] (Φ → Matrix n n ℂ) :=
+    (ContinuousLinearMap.fst ℂ (Φ → Matrix n n ℂ) ℂ).comp
+      (ContinuousLinearMap.snd ℂ (Φ → Matrix n n ℂ) ((Φ → Matrix n n ℂ) × ℂ))
+  let pW : (Φ → Matrix n n ℂ) × ((Φ → Matrix n n ℂ) × ℂ) →L[ℂ] ℂ :=
+    (ContinuousLinearMap.snd ℂ (Φ → Matrix n n ℂ) ℂ).comp
+      (ContinuousLinearMap.snd ℂ (Φ → Matrix n n ℂ) ((Φ → Matrix n n ℂ) × ℂ))
   have lhs_analytic : AnalyticOnNhd ℝ lhs .univ := fun t _ ↦ by
     -- the integrand is analytic in the point, uniformly in `θ`, which enters through `ι θ`
-    let ι (θ : UnitAddCircle) : (Φ → Matrix n n ℂ) × ℂ := (fun _ ↦ d θ.toCircle, weight θ.toCircle)
-    have q_analytic (z : ℂ) (hz : z ∈ closedBall (0 : ℂ) 1) : AnalyticAt ℂ q z := hq z hz
-    have hι : Continuous ι := continuous_iff_continuousAt.2 <| by
-      fun_prop (disch := simp [zpow_ne_zero, prod_eq_zero_iff, norm_coe])
-    have F'_analytic (s : Circle) : AnalyticAt ℂ F' (fun τ ↦ d s * c τ t) := (on_path s t).1
-    exact ((IsAnalyticFamily.of_analyticAt hι (fun (a, b, w) ↦ F' (b * a) * w) (by fun_prop)
-      ).analyticAt_integral volume).restrictScalars.comp_of_eq (.pi fun τ ↦ c_analytic τ t) rfl
-  have rhs_analytic : AnalyticOnNhd ℝ rhs .univ := fun t _ ↦ by
-    have minors_analytic (τ : Φ) : AnalyticAt ℝ (fun t : ℝ ↦ weightMinors (u τ) (c τ t)) t :=
-      (analyticAt_weightMinors (by simp [GeneralLinearGroup.det_ne_zero])).restrictScalars.comp
-        (c_analytic τ t)
-    fun_prop
+    have h_fam := IsAnalyticFamily.of_analyticAt (p := fun τ ↦ (c τ t : Matrix n n ℂ)) hι
+      (fun p ↦ F' (p.2.1 * p.1) * p.2.2) fun θ ↦
+        ((on_path θ.toCircle t).1.comp ((pB.analyticAt _).mul (pA.analyticAt _))).mul
+          (pW.analyticAt _)
+    exact (h_fam.analyticAt_integral volume).restrictScalars.comp_of_eq
+      (.pi fun τ ↦ c_analytic τ t) rfl
+  have rhs_analytic : AnalyticOnNhd ℝ rhs .univ := fun t _ ↦
+    (analyticAt_const.mul (Finset.analyticAt_fun_prod univ fun τ _ ↦ by
+      have h_det : ((c τ t : USign ε) : Matrix n n ℂ).det ≠ 0 :=
+        GeneralLinearGroup.det_ne_zero (c τ t).1
+      exact (analyticAt_weightMinors h_det).restrictScalars.comp
+        (g := weightMinors (u τ)) (f := fun s : ℝ ↦ (c τ s : Matrix n n ℂ)) (c_analytic τ t))).mul
+      analyticAt_const
   refine lhs_analytic.eq_of_eventuallyEq rhs_analytic (z₀ := 0) ?_
   -- `F'` is analytic on a box `V` around `1`, which contains `A s` for `|s| ≤ 1` and small `t`.
   have at_one : AnalyticAt ℂ F' fun _ ↦ 1 := by
-    simpa using (hF' 1 1 (by simp [IsBorelMatrix, blockTriangular_one]) (by simp)).left
+    have h1 := (hF' 1 1 (fun _ ↦ isBorelMatrix_one) (fun _ ↦ ⟨one_mem _, one_mem _⟩)).left
+    simpa only [Pi.one_apply, Submonoid.coe_one, Units.val_one, Matrix.mul_one] using h1
   obtain ⟨T, V, hV, V_analytic⟩ : ∃ (T : Finset Φ) (V : Φ → Set (Matrix n n ℂ)),
       (∀ τ, V τ ∈ 𝓝 1) ∧ Set.pi T V ⊆ {z | AnalyticAt ℂ F' z} :=
     mem_pi'.1 (nhds_pi.ge at_one.eventually_analyticAt)
   have factor_near (τ : Φ) : ∀ᶠ t in 𝓝 (0 : ℝ), ∃ (A : ℂ → Matrix n n ℂ) (b : Matrix n n ℂ),
       IsCircleFactorization ε' o (u τ) (c τ t) A b ∧ ∀ s ∈ closedBall (0 : ℂ) 1, A s ∈ V τ := by
-    have c_tendsto : Tendsto (fun t ↦ (c τ t : Matrix n n ℂ)) (𝓝 0) (𝓝 1) :=
-      (c_analytic τ 0).continuousAt.tendsto.mono_right (by simp [c_zero])
+    have c_tendsto : Tendsto (fun t ↦ (c τ t : Matrix n n ℂ)) (𝓝 0) (𝓝 1) := by
+      have ht := (c_analytic τ 0).continuousAt.tendsto
+      rwa [c_zero τ] at ht
     filter_upwards [c_tendsto.eventually (eventually_exists_isCircleFactorization ho (hu τ) (hV τ))]
       with t ht using ht (c_mem τ t)
   filter_upwards [eventually_all.2 factor_near] with t ht
@@ -758,19 +1040,45 @@ theorem IsHolOfWeight.integral_mul_conj_weightMinors {F : (Unit → USign ε) �
     -- translating `k` multiplies `conj (weightMinors w k)` by the inverse character
     have conj_translate (θ : UnitAddCircle) : conj (weightMinors w (T θ * k).val) =
         (∏ i : n, ((θ.toCircle : ℂ) ^ o i) ^ w i)⁻¹ * conj (weightMinors w k.val) := by
-      simp [T, ← coe_inv_eq_conj, diagTorus, zpow_ne_zero, GeneralLinearGroup.det_ne_zero]
+      have h_mul : weightMinors w ((T θ * k).val : Matrix n n ℂ) =
+          (∏ i : n, ((θ.toCircle : ℂ) ^ o i) ^ w i) * weightMinors w k.val :=
+        weightMinors_diagonal_mul (GeneralLinearGroup.det_ne_zero k.1.1)
+          fun i ↦ zpow_ne_zero _ (Circle.coe_ne_zero _)
+      have h_conj : conj (θ.toCircle : ℂ) = (θ.toCircle : ℂ)⁻¹ :=
+        eq_inv_of_mul_eq_one_left (by
+          rw [Complex.conj_mul', Circle.norm_coe, Complex.ofReal_one, one_pow])
+      rw [h_mul, map_mul, map_prod, ← prod_inv_distrib]
+      congr 1
+      refine Finset.prod_congr rfl fun i _ ↦ ?_
+      rw [map_zpow₀, map_zpow₀, h_conj, _root_.inv_zpow, _root_.inv_zpow]
     have k_mem : (k.val : Matrix n n ℂ) ∈ blockDiagAlg ε := mem_maxCompactU.1 k.property
     simp only [conj_translate]
-    simpa [T, diagTorus] using hF.circle_mean_weightMinors ho (g := fun _ ↦ k) (hε := .inr rfl)
+    have h_coe (θ : UnitAddCircle) :
+        (↑(T θ * k) : USign ε) = diagTorus ε (fun i ↦ θ.toCircle ^ o i) * k.val :=
+      Subgroup.coe_mul (maxCompactU ε) (T θ) k
+    simp only [h_coe]
+    have h_cm := hF.circle_mean_weightMinors ho (g := fun _ ↦ k) (hε := .inr rfl)
       (hu := fun _ ↦ hw) (hg := fun _ ↦ k_mem) (q := fun _ ↦ conj (weightMinors w k.val))
       (hq := analyticOnNhd_const)
-  calc ∫ k : maxCompactU ε, F (fun _ ↦ k) * conj (weightMinors w k) ∂haarK ε
-      = ∫ k, conj (weightMinors w k.val) * weightMinors w k.val * F 1 ∂haarK ε :=
-        integral_eq_of_circle_mean (T := fun θ k ↦ T θ * k) (Continuous.measurable (by fun_prop))
-          (fun θ ↦ measurePreserving_mul_left _ (T θ))
-          (integrable_of_compactSpace
-            (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))
-          h_mean
-    _ = w.kTypeNormSq * F 1 := by simp [← integral_complex_ofReal, integral_mul_const, conj_mul']
+    simpa only [Fintype.prod_unique] using h_cm
+  have hT_cont : Continuous T :=
+    (continuous_diagTorus.comp (continuous_pi fun i ↦
+      (continuous_zpow (o i)).comp AddCircle.continuous_toCircle)).subtype_mk _
+  have h_int_cont : Continuous fun k : maxCompactU ε ↦
+      F (fun _ : Unit ↦ k) * conj (weightMinors w k) :=
+    (F_cont.comp (continuous_pi fun _ ↦ continuous_subtypeVal)).mul
+      (Complex.continuous_conj.comp (DiscreteSeries.continuous_weightMinors
+        (continuous_U_iff_matrix.1 continuous_subtypeVal)
+        fun k ↦ GeneralLinearGroup.det_ne_zero k.1.1))
+  refine (integral_eq_of_circle_mean (T := fun θ k ↦ T θ * k)
+    ((hT_cont.comp continuous_fst).mul continuous_snd).measurable
+    (fun θ ↦ measurePreserving_mul_left _ (T θ))
+    (integrable_of_compactSpace h_int_cont) h_mean).trans ?_
+  rw [integral_mul_const]
+  congr 1
+  unfold HCParam.kTypeNormSq
+  rw [← integral_complex_ofReal]
+  congr 1; ext k
+  rw [Complex.conj_mul', Complex.ofReal_pow]
 
 end New

@@ -1,6 +1,8 @@
 module
 
+import Mathlib.Algebra.AffineMonoid.UniqueSums
 public import New.OneLift.ComparisonOperator.ExchangeData
+import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # Products of determinants and first-column coordinates under substitution
@@ -113,8 +115,7 @@ lemma twoSidedSubst_stackedDetProd (e : a ⊕ N ≃ L) [Fintype Φ] {ι : Φ →
       · simp [A, Matrix.mul_apply, mul_sum, mul_add, mul_assoc, mul_comm (X _), ← e.sum_comp,
           ← C_mul']
     simp only [h_left, det_mul, ← RingHom.map_det]
-    simp [stackedDet, A, ← C_mul', mul_assoc]
-    exact .inl (mul_comm _ _)
+    simpa [stackedDet, A, ← C_mul', mul_assoc] using .inl (mul_comm _ _)
   simp only [stackedDetProd, map_prod, h_factor, prod_smul, prod_const, card_univ]
 
 /-- The coordinate `l` of `F` in the first `p` columns: regard `F` as a polynomial in these
@@ -166,7 +167,7 @@ lemma twoSidedSubst_firstColsCoord {p : ℕ} [Fintype Φ] (c : Φ → Matrix N N
   have h_adjoint : fockPairing R (inFirstCols (s • F)) (v l) =
       ∑ l', schur κ c l l' • fockPairing R (map φ (inFirstCols F')) (v l') := by
     rw [← h_subst, ← inFirstCols.comp_apply, h_split]
-    simp [φ, R, fockPairing_rowSubst, h_schur, C_mul']
+    simp [φ, fockPairing_rowSubst, h_schur, C_mul']
   have h_smul : s • firstColsCoord κ F l = firstColsCoord κ (s • F) l := by
     simp [firstColsCoord, smul_comm s]
   rw [h_smul, firstColsCoord, h_adjoint]

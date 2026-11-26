@@ -1,7 +1,13 @@
 module
 
-public import New.Spanning.RemainingTerms.FramesOverLattice
-public import New.Spanning.Unfolding.Climbing
+import Mathlib.CategoryTheory.Shift.Basic
+import Mathlib.RingTheory.PicardGroup
+public import Lib.General.LinearAlgebra.PartnerAlgebra
+public import New.Spanning.RemainingTerms.Data
+import Lib.Adelic.Reduction.DefiniteClassSums
+import New.Spanning.RemainingTerms.FramesOverLattice
+import New.Spanning.Unfolding.Climbing
+import New.Spanning.Unfolding.ReducedPoints
 
 /-!
 # Sums over lattices of given corank and small discriminant
@@ -93,7 +99,7 @@ abbrev InverseRowsCongruent (y y' : stdLevel E 𝔰.κ) : Prop :=
   let Y : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := (y⁻¹ : Gf E 𝔰.κ)
   let Y' : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := (y'⁻¹ : Gf E 𝔰.κ)
   colLattice (Ô E) (replicateRow Unit (Y 𝔰.k₀) - replicateRow Unit (Y' 𝔰.k₀)) ≤
-    .comap (.proj ()) (Ô E ∙ S.piN.1)
+    .comap (.proj ()) (Ô E ∙ S.piN.val)
 
 /-- Let `y`, `y'` be integral unitary matrices whose inverses have congruent rows `𝔰.k₀` modulo the
 idele `S.piN` of the filling `S` (`InverseRowsCongruent`). Then `y` and `y'` lie in the same coset
@@ -104,15 +110,15 @@ lemma inv_mul_mem_of_inverseRowsCongruent {y y' : stdLevel E 𝔰.κ}
     (h_congr : S.InverseRowsCongruent y y') :
     y⁻¹ * y' ∈ (S.latticeStabilizer.comap S.inclHFin).subgroupOf (stdLevel E 𝔰.κ) := by
   -- It is enough that row `k₀` of `y⁻¹ y'` is congruent to that of `1`.
-  refine S.inclHFin_mem_latticeStabilizer_iff.2 ⟨(y⁻¹ * y').2, fun _ j ↦ ?_⟩
+  refine S.inclHFin_mem_latticeStabilizer_iff.2 ⟨(y⁻¹ * y').property, fun _ j ↦ ?_⟩
   -- Apply the difference of the rows to the integral column `j` of `y'`.
   let Y : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := ((y⁻¹ : stdLevel E 𝔰.κ) : Gf E 𝔰.κ)
   let Y' : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := ((y'⁻¹ : stdLevel E 𝔰.κ) : Gf E 𝔰.κ)
   let M : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := (y' : Gf E 𝔰.κ)
   let row : Matrix Unit 𝔰.κ (𝔸f E) := replicateRow Unit (Y 𝔰.k₀) - replicateRow Unit (Y' 𝔰.k₀)
   have h_image : row *ᵥ Mᵀ j ∈ colLattice (Ô E) row :=
-    ⟨Mᵀ j, y'.2.isIntMatrix.transpose j, rfl⟩
-  have h_entry : ((Y - Y') * M) 𝔰.k₀ j ∈ Ô E ∙ S.piN.1 := h_congr h_image
+    ⟨Mᵀ j, y'.property.isIntMatrix.transpose j, rfl⟩
+  have h_entry : ((Y - Y') * M) 𝔰.k₀ j ∈ Ô E ∙ S.piN.val := h_congr h_image
   simpa [M, Y, Y', Matrix.sub_mul] using h_entry
 
 end ClassesAndCosets
@@ -143,7 +149,7 @@ abbrev BoundedDiscSublattice (r : ℕ) (L₀ : Submodule (Ô E) (𝔰.κ → �
 
 /-- The unimodular lattice `u Ô ^ κ`: the vectors `v` with `u⁻¹ v` integral. -/
 abbrev unimodularLattice (u : Gf E 𝔰.κ) : Submodule (Ô E) (𝔰.κ → 𝔸f E) :=
-  preimageLattice (Ô E) u.1.inv
+  preimageLattice (Ô E) u.val.inv
 
 variable (S) in
 /-- The linear form "row `k₀` of `y⁻¹ u⁻¹`" on `u Ô ^ κ`, called the form of `y`, vanishes on `L`
@@ -151,7 +157,7 @@ modulo `piN`. -/
 def RowVanishesModPiN (u : Gf E 𝔰.κ) (y : stdLevel E 𝔰.κ) (L : Submodule (Ô E) (𝔰.κ → 𝔸f E)) :
     Prop :=
   ∀ v ∈ L,
-    (((y⁻¹ : Gf E 𝔰.κ) : Matrix 𝔰.κ 𝔰.κ (𝔸f E)) *ᵥ u.1.inv *ᵥ v) 𝔰.k₀ ∈ Ô E ∙ S.piN.1
+    (((y⁻¹ : Gf E 𝔰.κ) : Matrix 𝔰.κ 𝔰.κ (𝔸f E)) *ᵥ u.val.inv *ᵥ v) 𝔰.k₀ ∈ Ô E ∙ S.piN.val
 
 variable (S) in
 /-- The term `(disc L) ^ (-k)`, for the discriminant in rank `r`, if the form of `y` on `u Ô ^ κ`
@@ -185,14 +191,14 @@ lemma map_le_and_rowVanishesModPiN_of_out_eq {c : S.Classes} {η : U (stdSpace E
   let Y : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := ((y⁻¹ : stdLevel E 𝔰.κ) : Gf E 𝔰.κ)
   let H : Matrix 𝔰.κ 𝔰.κ (𝔸f E) := finAdeleMatrix (η⁻¹ : GL 𝔰.κ E).val
   have hH : H = ((stdSpace E 𝔰.κ).embFin η⁻¹ : Gf E 𝔰.κ) := by simp [H, -map_inv]
-  have h_coord : S.classCoordX₀ c = middleInclusionMatrix 𝔰 S.piN * (Y * (u.1.inv * H)) := by
+  have h_coord : S.classCoordX₀ c = middleInclusionMatrix 𝔰 S.piN * (Y * (u.val.inv * H)) := by
     rw [classCoordX₀, hc, _root_.mul_inv_rev, _root_.mul_inv_rev, ← map_inv, hH]
     -- The coercion to matrices respects products, and turns `u⁻¹` into `u.1.inv`.
     rfl
   -- For `v ∈ L` the vector `y⁻¹ u⁻¹ η⁻¹ v` is integral, with entry `k₀` divisible by `piN`.
   have h_vector (v : 𝔰.κ → 𝔸f E) (hv : v ∈ L) :
-      Y *ᵥ u.1.inv *ᵥ H *ᵥ v ∈ intVectors (Ô E) 𝔰.κ ∧
-      (Y *ᵥ u.1.inv *ᵥ H *ᵥ v) 𝔰.k₀ ∈ Ô E ∙ S.piN.1 := by
+      Y *ᵥ u.val.inv *ᵥ H *ᵥ v ∈ intVectors (Ô E) 𝔰.κ ∧
+      (Y *ᵥ u.val.inv *ᵥ H *ᵥ v) 𝔰.k₀ ∈ Ô E ∙ S.piN.val := by
     have h_int : IsIntMatrix (Ô E)
         (middleInclusionMatrix 𝔰 S.piN * replicateCol Unit (Y *ᵥ u.1.inv *ᵥ H *ᵥ v)) := fun i j ↦ by
       -- `classLatticeX₀` consists of the vectors that `classCoordX₀` makes integral.
@@ -202,7 +208,7 @@ lemma map_le_and_rowVanishesModPiN_of_out_eq {c : S.Classes} {η : U (stdSpace E
     exact ⟨fun i ↦ h_all i (), h_row ()⟩
   constructor
   · rintro _ ⟨v, hv, rfl⟩
-    exact (mulVec_mem_intVectors_iff (inv_mem y.2)).1 (h_vector v hv).left
+    exact (mulVec_mem_intVectors_iff (inv_mem y.property)).1 (h_vector v hv).left
   · rintro _ ⟨v, hv, rfl⟩
     exact (h_vector v hv).right
 
@@ -220,13 +226,14 @@ lemma tsum_discriminant_inv_le_of_out_eq {c : S.Classes} {η : U (stdSpace E �
   -- The rational isometry `η⁻¹` moves the lattices injectively and preserves the discriminant.
   let H : Matrix 𝔰.κ 𝔰.κ E := (η⁻¹ : GL 𝔰.κ E).val
   let P : (𝔰.κ → 𝔸f E) →ₗ[Ô E] 𝔰.κ → 𝔸f E := (finAdeleMatrix H).mulVecLin.restrictScalars (Ô E)
-  have hH : Hᴴ * H = 1 := by simpa [H, star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 η⁻¹.2
+  have hH : Hᴴ * H = 1 := by simpa [H,
+    star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 η⁻¹.property
   have h_inv : finAdeleMatrix Hᴴ * finAdeleMatrix H = 1 := by
     simpa only [Matrix.map_mul, Matrix.map_one, map_zero, map_one] using congrArg finAdeleMatrix hH
   have hP : Function.Injective P := injective_restrictScalars_mulVecLin h_inv
   have h_map (L : S.BoundedDiscSublattice r (S.classLatticeX₀ c)) :
-      (IsLatticeOfRank r (L.1.map P) ∧ L.1.map P ≤ unimodularLattice u ∧
-        discriminant r (L.1.map P) ≤ S.discriminantBound) ∧
+      (IsLatticeOfRank r (L.val.map P) ∧ L.val.map P ≤ unimodularLattice u ∧
+        discriminant r (L.val.map P) ≤ S.discriminantBound) ∧
       S.RowVanishesModPiN u y (L.1.map P) ∧ discriminant r (L.1.map P) = discriminant r L.1 := by
     obtain ⟨L, hL, h_le, h_small⟩ := L
     obtain ⟨h_rank, h_disc⟩ := hL.map_of_unitary hH
@@ -234,15 +241,15 @@ lemma tsum_discriminant_inv_le_of_out_eq {c : S.Classes} {η : U (stdSpace E �
     exact ⟨⟨h_rank, h_map_le, h_disc.trans_le h_small⟩, h_kills, h_disc⟩
   let move (L : S.BoundedDiscSublattice r (S.classLatticeX₀ c)) :
     S.BoundedDiscSublattice r (unimodularLattice u) :=
-    ⟨L.1.map P, (h_map L).1⟩
+    ⟨L.val.map P, (h_map L).1⟩
   have h_move : Function.Injective move := fun L L' h ↦
     Subtype.ext (Submodule.map_injective_of_injective hP (congrArg Subtype.val h))
   calc _ = ∑' L : S.BoundedDiscSublattice r (S.classLatticeX₀ c),
-         S.discWeightIfRowVanishes u y r (move L).1 := by
+         S.discWeightIfRowVanishes u y r (move L).val := by
         refine tsum_congr fun L ↦ ?_
         obtain ⟨-, h_kills, h_disc⟩ := h_map L
         rw [discWeightIfRowVanishes, Set.indicator_of_mem h_kills, h_disc]
-    _ ≤ _ := tsum_comp_le_tsum_of_injective h_move fun L ↦ S.discWeightIfRowVanishes u y r L.1
+    _ ≤ _ := tsum_comp_le_tsum_of_injective h_move fun L ↦ S.discWeightIfRowVanishes u y r L.val
 
 omit [HasPrimitiveRoot5040 E] in
 /-- Let `u` be in `Gf E 𝔰.κ`, and let `φ` be a coset in `stdLevel E 𝔰.κ` of the preimage under
@@ -271,7 +278,7 @@ variable (S) in
 /-- The generalised index of `S.piN` is `N ^ f`, where `N = π π̄` and `f` is the number of
 infinite places of `E`. -/
 lemma genIndex_piN_eq_pow : genIndex S.piN.val = S.N ^ numInfPlaces E := by
-  have h_sq : genIndex S.piN.1 ^ 2 = (S.N ^ numInfPlaces E) ^ 2 := by
+  have h_sq : genIndex S.piN.val ^ 2 = (S.N ^ numInfPlaces E) ^ 2 := by
     rw [← genIndex_natCast, ← S.piN_mul_star, map_mul, genIndex_star, sq]
   exact (pow_left_inj₀ (genIndex_pos _).le (by positivity) two_ne_zero).1 h_sq
 
@@ -383,15 +390,15 @@ lemma encard_rowVanishesModPiN_le (u : Gf E 𝔰.κ) {y : S.LatticeStabilizerCos
         (colLattice (Ô E) ((sublatticeBasis u.val.val_inv V).val * A.val))}.encard ≤
       ENNReal.ofReal (genIndex A.val.det * (S.N ^ numInfPlaces E) ^ l) := by
   -- Count the rows `k₀` of the `(y φ)⁻¹` modulo `piN`; congruent rows belong to one coset.
-  let m : Matrix 𝔰.κ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis u.1.val_inv V).1
+  let m : Matrix 𝔰.κ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis u.val.val_inv V).val
   let B : Set S.LatticeStabilizerCoset :=
-    {φ | S.RowVanishesModPiN u (y φ) (colLattice (Ô E) (m * A.1))}
+    {φ | S.RowVanishesModPiN u (y φ) (colLattice (Ô E) (m * A.val))}
   let row (φ : S.LatticeStabilizerCoset) : 𝔰.κ → 𝔸f E :=
     (((y φ)⁻¹ : stdLevel E 𝔰.κ) : Gf E 𝔰.κ).val.val 𝔰.k₀
-  have h_kills (φ : S.LatticeStabilizerCoset) (hφ : φ ∈ B) : row φ ᵥ* (u.1.inv * m * A.1) ∈
+  have h_kills (φ : S.LatticeStabilizerCoset) (hφ : φ ∈ B) : row φ ᵥ* (u.val.inv * m * A.val) ∈
       S.piN • intVectors (Ô E) (Fin (finrank E V)) := by
     have h_entry (i : Fin (finrank E V)) : ∃ a ∈ Ô E,
-        S.piN * a = (row φ ᵥ* (u.1.inv * m * A.1)) i := by
+        S.piN * a = (row φ ᵥ* (u.val.inv * m * A.val)) i := by
       rw [Matrix.mul_assoc]
       obtain ⟨a, ha, h_value⟩ := mem_span_singleton_iff_exists_mul.1 (hφ _ (col_mem_colLattice i))
       exact ⟨a, ha, h_value.symm⟩
@@ -406,8 +413,8 @@ lemma encard_rowVanishesModPiN_le (u : Gf E 𝔰.κ) {y : S.LatticeStabilizerCos
     -- Entry `i` of the difference of the two rows is `π̄ a i`.
     exact mem_span_singleton_iff_exists_mul.2 ⟨a i, ha i, (congrFun h_value i).symm⟩
   rw [← S.genIndex_piN_eq_pow]
-  exact encard_le_of_vecMul_mem_smul row (fun φ _ ↦ (y φ).2.isIntMatrix_inv 𝔰.k₀)
-    (isPrimitiveMatrix_mul_sublatticeBasis u.1.val_inv V) h_rank hA S.piN_mem h_kills h_apart
+  exact encard_le_of_vecMul_mem_smul row (fun φ _ ↦ (y φ).property.isIntMatrix_inv 𝔰.k₀)
+    (isPrimitiveMatrix_mul_sublatticeBasis u.val.val_inv V) h_rank hA S.piN_mem h_kills h_apart
 
 /-- Let `E` contain a primitive 5040th root of unity, and let `S` be filling data over `E` with
 prime `N = π π̄` and `π̄ = S.piN`. The set `S.LatticeStabilizerCoset` is the quotient of `stdLevel`,
@@ -434,18 +441,18 @@ lemma exists_saturatedLattice_encard_rowVanishesModPiN_le (u : Gf E 𝔰.κ)
   -- `L` has a basis `m A`, with `m` a basis of the saturated lattice; the index is `[det A]`.
   obtain ⟨V, A, rfl, hA, rfl, h_disc⟩ :
       ∃ (V : Submodule E (𝔰.κ → E)) (A : GL (Fin (finrank E V)) (𝔸f E)),
-        finrank E V = r ∧ IsIntMatrix (Ô E) A.1 ∧
-        colLattice (Ô E) ((sublatticeBasis u.1.val_inv V).1 * A.1) = L ∧
-        discriminant r L = sublatticeDiscriminant u.1.val_inv V * genIndex A.1.det :=
-    hL.exists_eq_colLattice_sublatticeBasis_mul u.1.val_inv h_le
-  let m : Matrix 𝔰.κ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis u.1.val_inv V).1
-  have hm : IsPrimitiveMatrix (Ô E) (u.1.inv * m) :=
-    isPrimitiveMatrix_mul_sublatticeBasis u.1.val_inv V
+        finrank E V = r ∧ IsIntMatrix (Ô E) A.val ∧
+        colLattice (Ô E) ((sublatticeBasis u.val.val_inv V).val * A.val) = L ∧
+        discriminant r L = sublatticeDiscriminant u.val.val_inv V * genIndex A.val.det :=
+    hL.exists_eq_colLattice_sublatticeBasis_mul u.val.val_inv h_le
+  let m : Matrix 𝔰.κ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis u.val.val_inv V).val
+  have hm : IsPrimitiveMatrix (Ô E) (u.val.inv * m) :=
+    isPrimitiveMatrix_mul_sublatticeBasis u.val.val_inv V
   have h_inv : HasLeftInv m := by
     obtain ⟨p, -, hp⟩ := hm.right
-    exact ⟨p * u.1.inv, by rw [Matrix.mul_assoc, hp]⟩
-  have h_index : submoduleIndex (colLattice (Ô E) (m * A.1)) (saturatedLattice u.1.val_inv V) =
-      genIndex A.1.det := submoduleIndex_colLattice_mul h_inv hA
+    exact ⟨p * u.val.inv, by rw [Matrix.mul_assoc, hp]⟩
+  have h_index : submoduleIndex (colLattice (Ô E) (m * A.val)) (saturatedLattice u.val.val_inv V) =
+      genIndex A.val.det := submoduleIndex_colLattice_mul h_inv hA
   refine ⟨V, rfl, colLattice_mul_le m hA, ?_, by rw [h_index, h_disc], ?_⟩
   · exact Nat.cast_ne_zero.1 (h_index.trans_ne (genIndex_pos A.det).ne')
   · rw [h_index]
@@ -471,12 +478,12 @@ lemma mul_inv_pow_le_of_mul_le {d i H : ℝ} (hd : 1 ≤ d) (hi : 1 ≤ i) (hH :
 of `V` in `u Ô ^ κ` has discriminant at least `1`. -/
 lemma one_le_sublatticeDiscriminant_unimodular (u : Gf E 𝔰.κ) (V : Submodule E (𝔰.κ → E)) :
     1 ≤ sublatticeDiscriminant u.val.val_inv V := by
-  refine one_le_sublatticeDiscriminant u.1.val_inv V fun m hm ↦ ?_
+  refine one_le_sublatticeDiscriminant u.val.val_inv V fun m hm ↦ ?_
   -- As `u⁻¹` is unitary, the Gram matrix of `m` is that of the integral matrix `u⁻¹ m`.
-  have h_unitary : (u.1.inv)ᴴ * u.1.inv = 1 := by
-    simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u⁻¹.2
-  have h_gram : (u.1.inv * m)ᴴ * (u.1.inv * m) = mᴴ * m := by
-    rw [conjTranspose_mul, Matrix.mul_assoc, ← Matrix.mul_assoc _ u.1.inv, h_unitary,
+  have h_unitary : (u.val.inv)ᴴ * u.val.inv = 1 := by
+    simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 u⁻¹.property
+  have h_gram : (u.val.inv * m)ᴴ * (u.val.inv * m) = mᴴ * m := by
+    rw [conjTranspose_mul, Matrix.mul_assoc, ← Matrix.mul_assoc _ u.val.inv, h_unitary,
       Matrix.one_mul]
   rw [← h_gram]
   exact hm.conjTranspose.mul hm
@@ -534,8 +541,8 @@ lemma exists_sum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (
   obtain ⟨V, rfl, h_sat, h_index, h_disc, h_forms⟩ :=
     exists_saturatedLattice_encard_rowVanishesModPiN_le u hy h_rank hL h_le
   refine ⟨V, ⟨h_sat, h_index⟩, ?_⟩
-  set d : ℝ := sublatticeDiscriminant u.1.val_inv V
-  set i : ℕ := submoduleIndex L (saturatedLattice u.1.val_inv V)
+  set d : ℝ := sublatticeDiscriminant u.val.val_inv V
+  set i : ℕ := submoduleIndex L (saturatedLattice u.val.val_inv V)
   have hd : 1 ≤ d := one_le_sublatticeDiscriminant_unimodular u V
   have hi : (1 : ℝ) ≤ i := Nat.one_le_cast.2 h_index.pos
   have hi_pos : (0 : ℝ) < i := one_pos.trans_le hi
@@ -582,7 +589,7 @@ lemma tsum_index_saturatedLattice_le (S : Filling E 𝔰) (u : Gf E 𝔰.κ) (V 
   have h_zeta : idealZeta (Ô E) (2 * 𝔰.ϱ + 4) ≤ 2 := le_two_of_pow_le_ofReal h_zeta_pow
   have h_rank : finrank E V ≤ 𝔰.k := V.finrank_le.trans_eq (finrank_fintype_fun_eq_card E)
   calc _ ≤ idealZeta (Ô E) (2 * 𝔰.ϱ + 4) ^ finrank E V :=
-      (isLatticeOfRank_saturatedLattice u.1.val_inv V).tsum_submoduleIndex_inv_pow_le _
+      (isLatticeOfRank_saturatedLattice u.val.val_inv V).tsum_submoduleIndex_inv_pow_le _
     _ ≤ 2 ^ finrank E V := by gcongr
     _ ≤ 2 ^ 𝔰.k := pow_le_pow_right₀ one_le_two h_rank
 
@@ -612,16 +619,16 @@ lemma sum_tsum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (u 
   set C : ℝ≥0∞ :=
     ENNReal.ofReal ((S.N ^ numInfPlaces E) ^ l * S.discriminantBound ^ (2 * 𝔰.ϱ + 4 + 2))
   let Sub (V : Submodule E (𝔰.κ → E)) : Type :=
-    {M : Submodule (Ô E) (𝔰.κ → 𝔸f E) // M ≤ saturatedLattice u.1.val_inv V ∧
-      submoduleIndex M (saturatedLattice u.1.val_inv V) ≠ 0}
+    {M : Submodule (Ô E) (𝔰.κ → 𝔸f E) // M ≤ saturatedLattice u.val.val_inv V ∧
+      submoduleIndex M (saturatedLattice u.val.val_inv V) ≠ 0}
   let w (V : Submodule E (𝔰.κ → E)) (M : Sub V) : ℝ≥0∞ :=
     (submoduleIndex M.1 (saturatedLattice u.1.val_inv V) : ℝ≥0∞)⁻¹ ^ (finrank E V + (2 * 𝔰.ϱ + 4))
   have h_span (L : S.BoundedDiscSublattice r (unimodularLattice u)) :
-      ∃ (V : Submodule E (𝔰.κ → E)) (M : Sub V), M.1 = L.1 ∧
-        ∑ φ : S.LatticeStabilizerCoset, S.discWeightIfRowVanishes u (y φ) r L.1 ≤ C *
+      ∃ (V : Submodule E (𝔰.κ → E)) (M : Sub V), M.val = L.val ∧
+        ∑ φ : S.LatticeStabilizerCoset, S.discWeightIfRowVanishes u (y φ) r L.val ≤ C *
           (subspaceDiscWeight u l V * w V M) := by
     obtain ⟨V, h_sub, h_term⟩ := exists_sum_discWeightIfRowVanishes_le u hy h_rank (2 * 𝔰.ϱ + 4) L
-    exact ⟨V, ⟨L.1, h_sub⟩, rfl, h_term⟩
+    exact ⟨V, ⟨L.val, h_sub⟩, rfl, h_term⟩
   choose span M hM h_term using h_span
   let sort (L : S.BoundedDiscSublattice r (unimodularLattice u)) : Σ V : Submodule E (𝔰.κ → E),
     Sub V :=
@@ -631,7 +638,7 @@ lemma sum_tsum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (u 
     have h_eq : (sort L).snd.val = (sort L').snd.val := by rw [h]
     exact Subtype.ext (by rwa [← hM L, ← hM L'])
   calc _ = ∑' L : S.BoundedDiscSublattice r (unimodularLattice u), ∑ φ : S.LatticeStabilizerCoset,
-          S.discWeightIfRowVanishes u (y φ) r L.1 :=
+          S.discWeightIfRowVanishes u (y φ) r L.val :=
       (Summable.tsum_finsetSum fun _ _ ↦ CompleteLattice.summable).symm
     _ ≤ ∑' L : S.BoundedDiscSublattice r (unimodularLattice u),
           C * (subspaceDiscWeight u l (span L) * w (span L) (M L)) := tsum_le_tsum h_term
@@ -651,7 +658,7 @@ lemma sum_tsum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (u 
         fun V hV ↦ of_not_not fun h_codim ↦ hV (ite_eq_right h_codim)
       have h_weight (V : {V : Submodule E (𝔰.κ → E) // finrank E V + l = Fintype.card 𝔰.κ}) :
           subspaceDiscWeight u l V.val = ENNReal.ofReal
-            (sublatticeDiscriminant u.1.val_inv V.val ^ (𝔰.k + 1))⁻¹ :=
+            (sublatticeDiscriminant u.val.val_inv V.val ^ (𝔰.k + 1))⁻¹ :=
         ite_eq_left V.property
       rw [← tsum_subtype_eq_of_support_subset h_support]
       exact (tsum_congr h_weight).trans_le (tsum_sublatticeDiscriminant_inv_le u l)
@@ -689,7 +696,7 @@ omit [HasPrimitiveRoot5040 E]
 `b ^ f H ^ (2 ϱ + 6) 2 ^ k` is at most `tailScale = b ^ (k f / 4)`. Here `b` is the size parameter
 of `S`, `k = #κ`, `f` is the number of infinite places of `E`, and
 `H = discriminantBound = b ^ (n ^ 3 f)` with `n = ϱ + 1`. -/
-lemma pow_mul_discriminantBound_pow_le (S : Filling E 𝔰) [S.IsAdmissible] :
+lemma pow_mul_discriminantBound_pow_le (S : Filling E 𝔰) :
     S.b ^ numInfPlaces E * S.discriminantBound ^ (2 * 𝔰.ϱ + 4 + 2) * 2 ^ 𝔰.k ≤ S.tailScale := by
   have hb : 2 ≤ S.b := by linarith [S.thousand_le_b]
   have discriminantBound_nonneg : 0 ≤ S.discriminantBound := pow_nonneg (zero_le_two.trans hb) _
@@ -715,10 +722,8 @@ lemma pow_mul_mul_rootDiscr_pow_le_tailScale (S : Filling E 𝔰) [S.IsAdmissibl
       S.tailScale := by
   -- Compare the thousandth powers, which are bounded by powers of `b`.
   have hb : 0 < S.b := by linarith [S.thousand_le_b]
-  have h_rd : 0 < rootDiscr E := rootDiscr_pos E
   have h_exponent : 60 * 𝔰.n * 1000 + (𝔰.k + 1) ≤ 250 * 𝔰.k := by
     have hk : 1000 * (2 * 𝔰.ϱ + 2) ≤ 𝔰.k := S.thousand_mul_le_k
-    have hn : 𝔰.n = 𝔰.ϱ + 1 := rfl
     lia
   refine le_of_pow_le_pow_left₀ (n := 1000) (by norm_num) S.tailScale_nonneg ?_
   set X : ℝ := 200 * (numInfPlaces E * 𝔰.k) * rootDiscr E
@@ -792,7 +797,7 @@ theorem sum_discriminant_inv_le {S : Filling E 𝔰} [S.IsAdmissible] {r l : ℕ
   have : Fintype S.LatticeStabilizerCoset :=
     Subgroup.fintypeOfIndexNeZero (Nat.cast_pos.1 h_card_pos).ne'
   rw [mul_comm_div]
-  refine sum_classes_le_of_sum_translates_le (fun φ : S.LatticeStabilizerCoset ↦ φ.out.1) _
+  refine sum_classes_le_of_sum_translates_le (fun φ : S.LatticeStabilizerCoset ↦ φ.out.val) _
     (by positivity) fun u ↦ ?_
   have h_rep : ∀ φ : S.LatticeStabilizerCoset, ∃ (η : U (stdSpace E 𝔰.κ).J) (y : stdLevel E 𝔰.κ),
       (y : S.LatticeStabilizerCoset) = φ ∧
@@ -801,9 +806,9 @@ theorem sum_discriminant_inv_le {S : Filling E 𝔰} [S.IsAdmissible] {r l : ℕ
   choose η y hy h_out using h_rep
   calc ∑ φ : S.LatticeStabilizerCoset, ∑' L :
          S.BoundedDiscSublattice r (S.classLatticeX₀ ⟦u * φ.out⟧),
-        ENNReal.ofReal (discriminant r L.1 ^ 𝔰.k)⁻¹
+        ENNReal.ofReal (discriminant r L.val ^ 𝔰.k)⁻¹
     _ ≤ ∑ φ : S.LatticeStabilizerCoset, ∑' L : S.BoundedDiscSublattice r (unimodularLattice u),
-          S.discWeightIfRowVanishes u (y φ) r L.1 :=
+          S.discWeightIfRowVanishes u (y φ) r L.val :=
       Finset.sum_le_sum fun φ _ ↦ tsum_discriminant_inv_le_of_out_eq (h_out φ) r
     _ ≤ ENNReal.ofReal ((S.N ^ numInfPlaces E) ^ l * S.discriminantBound ^ (2 * 𝔰.ϱ + 4 + 2) *
           ((200 * (numInfPlaces E * 𝔰.k) * rootDiscr E) ^ (numInfPlaces E * (𝔰.k + 1) * l) *

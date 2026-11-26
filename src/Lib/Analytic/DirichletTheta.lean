@@ -1,6 +1,16 @@
 module
 
-public import Lib.Analytic.PolyaVinogradov
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.NumberTheory.LSeries.DirichletContinuation
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.HalfPlane
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.NumberTheory.LSeries.Nonvanishing
+import Mathlib.NumberTheory.MulChar.Lemmas
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Lib.Speed
 
 /-!
 # Theta series of Dirichlet characters, Poisson summation, and `L(s, χ)` as a Mellin transform
@@ -186,13 +196,15 @@ lemma mellin_pow_mul_comp_sq (F : ℝ → ℂ) (k : ℕ) (s : ℂ) :
 /-- For `re s > 0` the Mellin transform `Γ_j` of `w(z) = z ^ j e^(-π z²)` is
 `Γ_j(s) = π ^ (-(s + j) / 2) Γ((s + j) / 2) / 2`. -/
 lemma gaussianMellin_eq (hs : 0 < s.re) : gaussianMellin j s = Gammaℝ (s + j.val) / 2 := by
-  -- `w(t) = t ^ j F(t²)` with `F(u) = e^(-π u)`, a series of Gaussians with a single term.
-  let F (u : ℝ) : ℂ := rexp (-π * u)
-  have h_re : 0 < (s + j.val).re := by simpa using hs.trans_le (by simp)
-  have h_single : HasSum (fun _ : Unit ↦ Gammaℝ (s + j.val)) (mellin F ((s + j.val) / 2)) := by
-    simpa using hasSum_mellin_pi_mul_sq (a := 1) (r := 1) (F := F) h_re (by simp [F]) .of_finite
-  rw [(hasSum_unique _).unique h_single, ← mellin_pow_mul_comp_sq]
-  simp [gaussianMellin, gaussianMonomial, F]
+  have h_re : 0 < ((s + j.val) / 2).re := by
+    simp only [div_ofNat_re, add_re, natCast_re]
+    positivity
+  simp only [gaussianMellin, gaussianMonomial, ofReal_mul, ofReal_pow]
+  rw [mellin_pow_mul_comp_sq (fun u : ℝ ↦ (rexp (-π * u) : ℂ)), Gammaℝ_def, neg_div]
+  congr 1
+  simpa only [mellin, smul_eq_mul, ofReal_exp, ofReal_mul, ofReal_neg, neg_mul, one_div, cpow_neg,
+    inv_cpow _ _ (arg_ofReal_of_nonneg pi_pos.le ▸ pi_pos.ne)] using
+      integral_cpow_mul_exp_neg_mul_Ioi h_re pi_pos
 
 /-- Integration term by term: if `|c(n)| ≤ 1` and `re s > 1`, the Mellin transform of
 `∑_{n ≥ 1} c(n) w(n u)` at `s` is `Γ_j(s) L(s, c)`, where `Γ_j` is the Mellin transform of the

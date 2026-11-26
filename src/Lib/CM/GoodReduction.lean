@@ -1,6 +1,12 @@
 module
 
-public import Lib.CM.Sigma.ThetaSections
+public import Mathlib.NumberTheory.Padics.Complex
+public import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.PiTensorProduct
+public import Lib.CM.Sigma.Basic
+import Lib.CM.Sigma.ThetaSections
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # CM lattices as multiples of fractional ideals, and good reduction of CM curves
@@ -70,7 +76,7 @@ variable {d : ℕ}
 /-- The lattice Λ of a CM datum regarded as an 𝒪_K-submodule of ℂ. -/
 def CMLattice.latticeModule [PrimeSevenModEight d]
     (C : CMLattice d) : Submodule (𝓞 (QuadField d)) ℂ where
-  toAddSubmonoid := C.Λ.1
+  toAddSubmonoid := C.Λ.toAddSubmonoid
   smul_mem' y _ hx := C.mul_mem_of_quadInt ⟨y, rfl⟩ hx
 
 /-- The monoid homomorphism (u, 𝔞) ↦ u𝔞 from pairs of a nonzero complex number and a nonzero
@@ -96,7 +102,7 @@ lemma QuadField.mem_scaledIdeal {x : ℂˣ × (FractionalIdeal (𝓞 (QuadField 
 /-- For a ℤ-basis b₀, b₁ of a fractional ideal of K = ℚ(√−d) and a nonzero complex number c, the
 numbers cb₀, cb₁ are linearly independent over ℝ. -/
 lemma QuadField.linearIndependent_mul_basis [PrimeSevenModEight d]
-    {𝔠 : (FractionalIdeal (𝓞 (QuadField d))⁰ (QuadField d))ˣ} (b : Basis (Fin 2) ℤ 𝔠.1) (c : ℂˣ) :
+    {𝔠 : (FractionalIdeal (𝓞 (QuadField d))⁰ (QuadField d))ˣ} (b : Basis (Fin 2) ℤ 𝔠.val) (c : ℂˣ) :
     LinearIndependent ℝ ![(c * b 0 : ℂ), c * b 1] := by
   -- If `b 0 / b 1` were real, so would be `ω = ω b 1 / b 1`.
   suffices h_not_real : ∀ a : ℝ, (a : ℂ) * b 1 ≠ b 0 by
@@ -108,7 +114,7 @@ lemma QuadField.linearIndependent_mul_basis [PrimeSevenModEight d]
   have h_omega : quadGen d * b 1 = m * b 0 + n * b 1 := by
     have h_two : ((2 : QuadField d) : ℂ) = 2 := map_ofNat (QuadField d).val 2
     simpa [Algebra.smul_def, quadGen, h_two] using
-      congrArg (fun y : 𝔠.1 ↦ ((y : QuadField d) : ℂ)) h_repr
+      congrArg (fun y : 𝔠.val ↦ ((y : QuadField d) : ℂ)) h_repr
   have h_real : quadGen d = m * a + n := mul_right_cancel₀ (b := (b 1 : ℂ))
     (by simp [b.ne_zero]) (by linear_combination h_omega - m * ha)
   simpa [quadGen, NeZero.ne] using congrArg im h_real
@@ -171,11 +177,11 @@ lemma QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal [PrimeSevenModEigh
   -- `𝔠` is a lattice `L 1` in `ℂ`. Neither `ω / 2` nor `ω̄ / 2` preserves it, so some `t = l / 2`,
   -- `l ∈ L 1`, has `ω t, ω̄ t ∉ L 1`. Then `℘''(t) ≠ 0`, and scaling the lattice makes
   -- `℘''(t) = 2`.
-  have b : Basis (Fin 2) ℤ 𝔠.1 :=
+  have b : Basis (Fin 2) ℤ 𝔠.val :=
     finBasisOfFinrankEq ℤ 𝔠 (by rw [fractionalIdeal_rank, rank, finrank_eq_two])
   let L (c : ℂˣ) : PeriodPair := ⟨c * b 0, c * b 1, linearIndependent_mul_basis b c⟩
   have mem_iff (c : ℂˣ) (z : ℂ) : z ∈ (L c).lattice ↔ z ∈ scaledIdeal d (c, 𝔠) := by
-    trans ∃ y : 𝔠.1, (c : ℂ) * y = z
+    trans ∃ y : 𝔠.val, (c : ℂ) * y = z
     · refine mem_lattice.trans (.trans ?_ b.equivFun.symm.surjective.exists.symm)
       simp [L, field, Fin.exists_fin_succ_pi]
     · simp [mem_scaledIdeal]
@@ -262,10 +268,10 @@ lemma CMLattice.exists_latticeModule_eq_scaledIdeal_mul
 isomorphism 𝔞 ≅ Λ. -/
 def QuadField.latticeEquiv (h : latticeModule C = scaledIdeal d x) : x.2 ≃+ C.Λ :=
   AddEquiv.ofBijective
-    (AddHom.mk (fun y ↦ ⟨x.1 * y, h.ge (mem_scaledIdeal.2 ⟨y, y.2, rfl⟩)⟩)
+    (AddHom.mk (fun y ↦ ⟨x.1 * y, h.ge (mem_scaledIdeal.2 ⟨y, y.property, rfl⟩)⟩)
       (fun y z ↦ Subtype.ext (by simp [mul_add])))
     ⟨fun y z hyz ↦ Subtype.ext (by simpa using congrArg Subtype.val hyz),
-      fun z ↦ by simpa [mem_scaledIdeal, Subtype.ext_iff] using h.le z.2⟩
+      fun z ↦ by simpa [mem_scaledIdeal, Subtype.ext_iff] using h.le z.property⟩
 
 /-- Let d be a prime ≡ 7 mod 8. If the lattice of C equals u𝔞, with x = (u, 𝔞), u ∈ ℂ^× and 𝔞 a
 nonzero fractional ideal of K = ℚ(√−d), then its area is |u|²·N(𝔞)·√d/2. -/
@@ -283,11 +289,11 @@ lemma QuadField.area_eq_of_eq_scaledIdeal {C : CMLattice d}
   -- `f` is division by `u = x.1`; it carries the lattice basis to a basis of the ideal `x.2`,
   -- whose determinant against `B` is the norm of the ideal up to sign.
   let f : C.Λ ≃+ x.2 := (latticeEquiv hC).symm
-  have h_norm : |BK.det (Subtype.val ∘ C.latticeBasis.map f.toIntLinearEquiv)| = absNorm x.2.1 :=
-    abs_det_basis_change B x.2.1 _
+  have h_norm : |BK.det (Subtype.val ∘ C.latticeBasis.map f.toIntLinearEquiv)| = absNorm x.2.val :=
+    abs_det_basis_change B x.2.val _
   have h_equiv (y : x.2.val) : (latticeEquiv hC y : ℂ) = x.1 * y := rfl
-  have h_coord (z : C.Λ) : z.1 = x.1 * (BK.repr (f z) 0 + BK.repr (f z) 1 * quadGen d) := by
-    have h_sum : z.1 = x.1 * ((∑ i, BK.repr (f z) i • BK i : QuadField d) : ℂ) := by
+  have h_coord (z : C.Λ) : z.val = x.1 * (BK.repr (f z) 0 + BK.repr (f z) 1 * quadGen d) := by
+    have h_sum : z.val = x.1 * ((∑ i, BK.repr (f z) i • BK i : QuadField d) : ℂ) := by
       rw [BK.sum_repr, ← h_equiv, AddEquiv.apply_symm_apply]
     have h_two : ((2 : QuadField d) : ℂ) = 2 := map_ofNat (QuadField d).val 2
     simpa [Fin.sum_univ_two, BK, hB, Rat.smul_def, h_two, quadGen] using h_sum
@@ -684,22 +690,14 @@ lemma IsInClass.exists_eq_scaledIdeal_mul {𝒞 : ClassGroup (𝓞 (QuadField d)
     {𝔟 : (FractionalIdeal (𝓞 (QuadField d))⁰ (QuadField d))ˣ} (hC : C.IsInClass 𝒞)
     (hD : D.IsInClass (ClassGroup.mk (QuadField d) 𝔟 * 𝒞)) :
     ∃ c : ℂˣ, D.latticeModule = scaledIdeal d (c, 𝔟) * C.latticeModule := by
-  -- `u 𝔞` is the lattice of `C` and `v 𝔞'` that of `D`.
   obtain ⟨u, 𝔞, rfl, hC⟩ := hC
   obtain ⟨v, 𝔞', h𝔞', hD⟩ := hD
-  have h_class : ClassGroup.mk (QuadField d) (𝔟 * 𝔞 / 𝔞') = 1 := by
-    rw [map_div, map_mul, h𝔞', div_self']
   -- The ideal `𝔟 𝔞 / 𝔞'` is principal, so a multiple of it fixes the lattice of `D`.
-  obtain ⟨w, hw⟩ := exists_eq_scaledIdeal_mul_of_mk_eq_one h_class D.latticeModule
+  obtain ⟨w, hw⟩ := exists_eq_scaledIdeal_mul_of_mk_eq_one
+    (by simp [h𝔞'] : ClassGroup.mk (QuadField d) (𝔟 * 𝔞 / 𝔞') = 1) D.latticeModule
   refine ⟨w * v / u, ?_⟩
-  calc D.latticeModule
-      = scaledIdeal d (w, 𝔟 * 𝔞 / 𝔞') * scaledIdeal d (v, 𝔞') := by
-        rw [← hD]
-        exact hw
-    _ = scaledIdeal d (w * v, 𝔟 * 𝔞) := by
-        rw [← map_mul, Prod.mk_mul_mk, div_mul_cancel]
-    _ = scaledIdeal d (w * v / u, 𝔟) * C.latticeModule := by
-        rw [hC, ← map_mul, Prod.mk_mul_mk, div_mul_cancel]
+  rw [hw, hD, hC, ← map_mul, ← map_mul]
+  simp
 
 /-- For `b = ω` or `ω̄`, with `ω = (1 + √-d) / 2`, there is an ideal class `𝔤` such that, for any CM
 lattices `C` in a class `𝒞` and `D` in the class `𝔤 𝒞`, we have `s_C(b t) s_D((1 - b) t) = 2¹²` and
@@ -765,22 +763,11 @@ lemma prod_scaledDisc_t (hD : ∀ 𝒞 : ClassGroup (𝓞 (QuadField d)), (D �
       (-1) ^ Fintype.card (ClassGroup (𝓞 (QuadField d))) := by
   -- Multiply `s_D(ω t) s_D(t) = -s_C(ω t)` over all classes; the numbers at the `ω t` cancel.
   obtain ⟨𝔤, h𝔤⟩ := exists_class_scaledDisc_mul (d := d) (b := quadGen d) (.inl rfl)
-  set s : ClassGroup (𝓞 (QuadField d)) → ℂ := fun 𝒞 ↦ (D 𝒞).scaledDisc (quadGen d * (D 𝒞).t)
-  set s₀ : ClassGroup (𝓞 (QuadField d)) → ℂ := fun 𝒞 ↦ (D 𝒞).scaledDisc (D 𝒞).t
-  have h_dual (𝒞 : ClassGroup (𝓞 (QuadField d))) :
-      s 𝒞 * (D (𝔤 * 𝒞)).scaledDisc ((1 - quadGen d) * (D (𝔤 * 𝒞)).t) = 2 ^ 12 :=
-    (h𝔤 (hD 𝒞) (hD _)).1
-  have h_step (𝒞 : ClassGroup (𝓞 (QuadField d))) : s (𝔤 * 𝒞) * s₀ (𝔤 * 𝒞) = -s 𝒞 :=
-    (h𝔤 (hD 𝒞) (hD _)).2
-  have h_ne : ∏ 𝒞, s 𝒞 ≠ 0 := prod_ne_zero_iff.2 fun 𝒞 _ ↦
-    left_ne_zero_of_mul ((h_dual 𝒞).trans_ne (by norm_num))
-  apply mul_left_cancel₀ h_ne
-  calc (∏ 𝒞, s 𝒞) * ∏ 𝒞, s₀ 𝒞
-      = ∏ 𝒞, s (𝔤 * 𝒞) * s₀ (𝔤 * 𝒞) := by
-        rw [← prod_mul_distrib]
-        exact (Equiv.prod_comp (Equiv.mulLeft 𝔤) fun 𝒞 ↦ s 𝒞 * s₀ 𝒞).symm
-    _ = (∏ 𝒞, s 𝒞) * (-1) ^ Fintype.card (ClassGroup (𝓞 (QuadField d))) := by
-        simp [h_step, prod_neg, mul_comm]
+  apply mul_left_cancel₀ (a := ∏ 𝒞, (D 𝒞).scaledDisc (quadGen d * (D 𝒞).t))
+  · exact prod_ne_zero_iff.2 fun 𝒞 _ ↦
+      left_ne_zero_of_mul ((h𝔤 (hD 𝒞) (hD _)).1.trans_ne (by norm_num))
+  rw [← prod_mul_distrib, ← Equiv.prod_comp (Equiv.mulLeft 𝔤)]
+  simp [fun 𝒞 ↦ (h𝔤 (hD 𝒞) (hD _)).2, prod_neg, mul_comm]
 
 end Family
 

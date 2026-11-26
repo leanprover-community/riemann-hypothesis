@@ -1,5 +1,7 @@
 module
 
+import Mathlib.Data.Pi.Interval
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.Reduction.Data.Magnitudes
 
 /-!
@@ -361,26 +363,18 @@ lemma exists_abs_log_le_and_apply_deltaE_eq (v : P.Φ s) :
   -- `A = |P₀'(ξ)|` for the primitive `q₀`-th root of unity `ξ = ζ ^ towerDeg s`.
   have hζ : IsPrimitiveRoot (v.embedding (P.ζ s)) (P.q₁ s) :=
     isPrimitiveRoot_zeta.map_of_injective v.embedding.injective
-  set ξ : ℂ := v.embedding (P.ζ s) ^ towerDeg s with ξ_def
+  set ξ : ℂ := v.embedding (P.ζ s) ^ towerDeg s
   have hξ : ξ ∈ primitiveRoots P.q₀ ℂ :=
     (mem_primitiveRoots one_le).2 (hζ.pow one_le (mul_comm P.q₀ (towerDeg s)))
-  set A : ℝ := ‖(cyclotomic P.q₀ ℂ).derivative.eval ξ‖ with A_def
+  set A : ℝ := ‖(cyclotomic P.q₀ ℂ).derivative.eval ξ‖
   -- Chain rule for `P₀(X ^ towerDeg s)` at the image of `ζ`, which has absolute value `1`.
-  have h_chain : v.embedding (P.relDifferentGen s) = (cyclotomic P.q₀ ℂ).derivative.eval ξ *
-      (towerDeg s * v.embedding (P.ζ s) ^ (towerDeg s - 1)) :=
-    calc _ = (cyclotomic (P.q₁ s) ℂ).derivative.eval (v.embedding (P.ζ s)) := by
-          simp [← eval_map_apply, ← derivative_map]
-      _ = _ := by simp [← expand_towerDeg_cyclotomic, derivative_expand, ξ_def]
   have h_relDiff : v (P.relDifferentGen s) = A * towerDeg s := by
-    simp [← v.norm_embedding_eq, h_chain, A_def, hζ.norm'_eq_one NeZero.out]
-  have hA_pos : 0 < A := by
-    simpa [h_relDiff, NeZero.pos] using v.pos_iff.2 (P.relDifferentGen_ne_zero s)
+    simp [← v.norm_embedding_eq, ← eval_map_apply, ← derivative_map, ← expand_towerDeg_cyclotomic,
+      derivative_expand, hζ.norm'_eq_one NeZero.out, ξ, A]
   -- `|log A|` is one of the terms of the sum in `P.constantBound`.
-  have h_term :
-      |log A| ≤ ∑ w ∈ primitiveRoots P.q₀ ℂ, |log ‖(cyclotomic P.q₀ ℂ).derivative.eval w‖| :=
-    single_le_sum (f := fun w : ℂ ↦ |log ‖(cyclotomic P.q₀ ℂ).derivative.eval w‖|)
-      (fun _ _ ↦ abs_nonneg _) hξ
-  refine ⟨A, hA_pos, h_term.trans ?_, by rw [infinitePlace_apply_deltaE, h_relDiff]⟩
+  refine ⟨A, by simpa [h_relDiff, NeZero.pos] using v.pos_iff.2 (P.relDifferentGen_ne_zero s),
+    (single_le_sum (f := fun w : ℂ ↦ |log ‖(cyclotomic P.q₀ ℂ).derivative.eval w‖|)
+      (fun _ _ ↦ abs_nonneg _) hξ).trans ?_, by rw [infinitePlace_apply_deltaE, h_relDiff]⟩
   rw [constantBound, ← add_assoc]
   exact le_add_of_nonneg_left (by positivity)
 

@@ -1,5 +1,12 @@
 module
 
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+public import Mathlib.Analysis.Complex.Circle
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.SimpleRing.Principal
+public import Mathlib.Topology.Algebra.Group.Units -- shake: keep (needed public by an exposed definition)
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
 public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
@@ -81,11 +88,11 @@ def unitaryLie : Submodule ℝ (Matrix n n ℂ) where
 `U(J)`. -/
 @[simps! coe_val]
 def expU {J : Matrix n n ℂ} (X : unitaryLie J) : U J where
-  val := X.1.isUnit_exp.unit
+  val := X.val.isUnit_exp.unit
   property := by
     -- Exponentiate the relation `J * X = -Xᴴ * J`.
-    have h_semiconj : SemiconjBy J X.1 (-X.1ᴴ) :=
-      (eq_neg_of_add_eq_zero_right X.2).trans (neg_mul X.1ᴴ J).symm
+    have h_semiconj : SemiconjBy J X.val (-X.valᴴ) :=
+      (eq_neg_of_add_eq_zero_right X.property).trans (neg_mul X.valᴴ J).symm
     -- `using!`: the two sides differ in the topology instance under which `exp` is taken.
     simpa [mem_unitaryGroupOf_iff, star_eq_conjTranspose, ← exp_conjTranspose] using!
       h_semiconj.exp_neg_mul_mul_exp_eq_self
@@ -104,6 +111,17 @@ abbrev gapThreshold (n : Type*) [Fintype n] (A : ℕ) : ℕ := 500 * Fintype.car
 those roots e_i − e_j selected by r that are positive for l, when r is symmetric. -/
 def twoRho (r : n → n → Prop) [DecidableRel r] (i : n) : ℤ :=
   (#{j : n | r i j ∧ l j < l i} - #{j : n | r i j ∧ l i < l j} : ℤ)
+
+omit [DecidableEq n] in
+/-- For an integer vector `l`, the sum `2ρ = twoRho l ⊤` of all roots that are positive for `l` has
+its entries in the strict order of those of `l`. -/
+theorem twoRho_lt_twoRho {l : n → ℤ} {a b : n} (hab : l a < l b) : twoRho l ⊤ a < twoRho l ⊤ b := by
+  -- both sides are sums of signs of differences of entries of `l`; compare them term by term
+  have h_sum (i : n) : twoRho l ⊤ i =
+      ∑ j : n, ((if l j < l i then 1 else 0) - (if l i < l j then 1 else 0)) := by
+    simp [twoRho, ← sum_boole, sum_sub_distrib]
+  rw [h_sum, h_sum]
+  exact sum_lt_sum (fun j _ ↦ by split_ifs <;> lia) ⟨a, mem_univ a, by split_ifs <;> lia⟩
 
 /-- The integer vector with entries (l_i + 2ρ_i)/2 rounded down, ρ the half sum of roots
 positive for l; it is λ+ρ for a parameter l = 2λ. -/

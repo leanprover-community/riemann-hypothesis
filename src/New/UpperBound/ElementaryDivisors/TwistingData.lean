@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
 public import Lib.GLn.SchurModule.Basic
 public import Lib.General.Groups.BesselGroups
 
@@ -128,7 +129,7 @@ def map : FrobeniusCycle N W R' :=
 even, ι_s of the inverse transpose if s is odd. -/
 @[simps -isSimp]
 def letterMatrix : GL (Fin k) W →* Matrix (Fin k) (Fin k) R where
-  toFun g := (if T.isEven s then ↑g else g⁻¹.1ᵀ).map (T.embedding s)
+  toFun g := (if T.isEven s then ↑g else g⁻¹.valᵀ).map (T.embedding s)
   map_one' := by simp
   map_mul' g h := by cases T.isEven s <;> simp [Matrix.map_mul]
 
@@ -364,8 +365,6 @@ lemma five_mul_P_pow_le_q : 5 * T.P ^ s.val ≤ T.q :=
   calc 5 * T.P ^ s.val ≤ T.P ^ (s.val + 1) := by grw [pow_succ', T.five_le_P]
     _ ≤ T.P ^ N := Nat.pow_le_pow_right (pow_pos T.prime.pos T.frobExp) s.val_lt
 
-lemma five_le_q : (5 : ℝ) ≤ T.q := mod_cast T.five_le_P.trans (Nat.le_self_pow (NeZero.ne N) T.P)
-
 /-- Let `a ≠ a'`. In the letter `s` let `u = T.rootVar a a' s` be the variable `(a', s)` if `s` is
 even and `(a, s)` if `s` is odd, and let `ū = T.rootVar a' a s` be the other of these two variables.
 The defect of a monomial at the letter `i` along the root `(a, a')` is its weighted degree for the
@@ -387,7 +386,8 @@ lemma defectWeight_sub_mem_Icc (T : FrobeniusCycle N W R) {i : ZMod N} {a a' : F
     mod_cast Nat.pow_le_pow_right (pow_pos T.prime.pos _) (by linarith [(s - 1 - i).val_lt])
   have h_second : (5 * T.P ^ (s - i).val : ℝ) ≤ T.q := mod_cast T.five_mul_P_pow_le_q (s - i)
   rw [h_diff]
-  exact ⟨by positivity, (div_le_iff₀ q_sub_one_pos).2 (by linarith [T.five_le_q])⟩
+  have hq : (5 : ℝ) ≤ T.q := mod_cast T.five_le_P.trans (Nat.le_self_pow (NeZero.ne N) T.P)
+  exact ⟨by positivity, (div_le_iff₀ q_sub_one_pos).2 (by linarith)⟩
 
 /-- Let `P = T.P` be the prime power of the Frobenius cycle, which is at least `5`, and let
 `q = T.q = P ^ N`. As `s` runs over the letters, the exponent `1 + (s - 1 - i).val` runs over

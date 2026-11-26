@@ -2,6 +2,7 @@ module
 
 public import Lib.SiegelWeil.Tower.FiniteTateIntegral
 public import New.Determinant.Twist.FitTwists
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # The algebraic part as a Hecke L-value, and products of L-values of twists
@@ -24,9 +25,8 @@ twisted and untwisted `L`-values, which is nonzero, is a ratio of values of `alg
 * `New.Data.CriticalPair.exists_integralAlgebraicPart_eq_mul_L`,
   `New.Data.CriticalPair.ratio_eq_integralAlgebraicPart_div`: the same value and ratio for the
   multiple `New.Data.CriticalPair.integralAlgebraicPart`, with the `L`-value of `(ν ϑ)⁻¹`.
-* `New.Data.CriticalPair.exists_ofAlgForm_trivialLift_eq_smul_lift`,
-  `New.Data.CriticalPair.formAction_trivialLift`: the lift is a nonzero multiple of the theta lift
-  of the constant function `1`, and the finite group of rank one at the chosen places fixes it.
+* `New.LValueData.formAction_trivialLift`: the finite group of rank one at the chosen places fixes
+  the lift `New.LValueData.trivialLift`, a multiple of the theta lift of the constant function `1`.
 * `New.Data.CriticalPair.lValueProd_eq_mul_prod_ratio_sq`: the product `New.Exchange.lValueProd` of
   squared L-values for the twist is the untwisted one times a power of the norm of `Q` and the
   squared ratios at `1, …, p.z`.

@@ -154,25 +154,64 @@ lemma coe_weylRatio :
           1 := by
   -- Column by column: w_p exchanges e_a and e*_a up to a scalar, and w_q⁻¹ exchanges them back.
   ext i k
-  obtain ⟨h_invol, h_floor, h_level⟩ : oppositeIndex (oppositeIndex k) = k ∧
-      floorOf (oppositeIndex k) = floorOf k ∧ level (oppositeIndex k) + level k = 2 * 𝔰.ϱ :=
-    oppositeIndex_involutive_and_floorOf_level k
+  rw [weylRatio, ← weylElem_star]
+  change ((weylElem j (star q) : T.G).val.val * (weylElem j p : T.G).val.val) i k = _
+  rw [Matrix.mul_apply]
+  obtain ⟨h_invol, h_floor, h_level⟩ := oppositeIndex_involutive_and_floorOf_level k
   by_cases hk : floorOf k < j ∧ floorOf k < 𝔰.ϱ
   · have h_swap : level (oppositeIndex k) < 𝔰.ϱ ↔ ¬level k < 𝔰.ϱ := by
-      grind [floorOf_level_cases k]
+      rcases floorOf_level_cases k with ⟨h1 | h1, h2⟩ | ⟨h1, h2, _⟩ <;> omega
+    have h_col (m : 𝔰.BesselIndex) : (weylElem j p : T.G).val.val m k =
+        if m = oppositeIndex k then
+          if level k < 𝔰.ϱ then (p (floorOf k)).val else Ring.inverse (star (p (floorOf k)).val)
+        else 0 :=
+      weylOn_apply_of_swapped m ⟨hk.1, hk.2, (p (floorOf k)).isUnit⟩
+    rw [Finset.sum_eq_single (oppositeIndex k)
+      (fun m _ hm ↦ by rw [h_col m, ite_eq_right_iff.2 fun h ↦ absurd h hm, mul_zero])
+      (fun hm ↦ absurd (Finset.mem_univ _) hm), h_col, ite_eq_left_iff.2 fun h ↦ absurd rfl h]
+    have h_row : (weylElem j (star q) : T.G).val.val i (oppositeIndex k) =
+        if i = k then
+          if level (oppositeIndex k) < 𝔰.ϱ then (star q (floorOf k)).val
+          else Ring.inverse (star (star q (floorOf k)).val)
+        else 0 := by
+      have h := weylOn_apply_of_swapped (T := T) (P := (· < j))
+        (p := fun n ↦ (star q n : A)) i (k := oppositeIndex k)
+        ⟨h_floor ▸ hk.1, h_floor ▸ hk.2, (star q (floorOf (oppositeIndex k))).isUnit⟩
+      rw [h_invol, h_floor] at h
+      exact h
+    rw [h_row]
     obtain rfl | hik := eq_or_ne i k
-    · by_cases hi : level i < 𝔰.ϱ
-      · rw [diagonal_apply_eq, div_eq_inv_mul]
-        simp [weylRatio, weylElem, weylOn, Matrix.mul_apply, hk, h_invol, h_floor, h_swap, hi]
-      · simp [weylRatio, weylElem, weylOn, Matrix.mul_apply, hk, h_invol, h_floor, h_swap, hi,
-          division_def]
-    · simp [weylRatio, weylElem, weylOn, Matrix.mul_apply, hk, h_invol, h_floor, hik]
-  · obtain rfl | hik := eq_or_ne i k
-    · simp [weylRatio, weylElem, weylOn, Matrix.mul_apply, hk]
-    · simp [weylRatio, weylElem, weylOn, Matrix.mul_apply, hk, hik]
+    · have hk_min : floorOf i < j ⊓ 𝔰.ϱ := lt_inf_iff.2 hk
+      rw [ite_eq_left_iff.2 fun h ↦ absurd rfl h, diagonal_apply_eq,
+        ite_eq_left_iff.2 fun h ↦ absurd hk_min h]
+      by_cases hi : level i < 𝔰.ϱ
+      · have hhi : ¬level (oppositeIndex i) < 𝔰.ϱ := fun h ↦ h_swap.1 h hi
+        rw [ite_eq_left_iff.2 fun h ↦ absurd hi h, ite_eq_left_iff.2 fun h ↦ absurd hi h,
+          ite_eq_right_iff.2 fun h ↦ absurd h hhi, Pi.star_apply, Units.coe_star, star_star,
+          Ring.inverse_unit, ← Units.val_mul, ← div_eq_inv_mul]
+      · rw [ite_eq_right_iff.2 fun h ↦ absurd h hi, ite_eq_right_iff.2 fun h ↦ absurd h hi,
+          ite_eq_left_iff.2 fun h ↦ absurd (h_swap.2 hi) h, Pi.star_apply, Units.coe_star,
+          inverse_star_unit, ← star_mul, mul_comm (p _ : Aˣ)⁻¹.val, ← Units.val_mul,
+          ← div_eq_mul_inv]
+    · rw [ite_eq_right_iff.2 fun h ↦ absurd h hik, zero_mul, diagonal_apply_ne _ hik]
+  · have h_col (m : 𝔰.BesselIndex) : (weylElem j p : T.G).val.val m k =
+        (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) m k :=
+      weylOn_apply_of_not_swapped m fun h ↦ hk ⟨h.1, h.2.1⟩
+    rw [Finset.sum_eq_single k
+      (fun m _ hm ↦ by rw [h_col m, one_apply_ne hm, mul_zero])
+      (fun hm ↦ absurd (Finset.mem_univ _) hm), h_col, one_apply_eq, mul_one]
+    have h_row : (weylElem j (star q) : T.G).val.val i k =
+        (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i k :=
+      weylOn_apply_of_not_swapped i fun h ↦ hk ⟨h.1, h.2.1⟩
+    rw [h_row]
+    obtain rfl | hik := eq_or_ne i k
+    · have hk_min : ¬floorOf i < j ⊓ 𝔰.ϱ := fun h ↦ hk (lt_inf_iff.1 h)
+      rw [one_apply_eq, diagonal_apply_eq, ite_eq_right_iff.2 fun h ↦ absurd h hk_min]
+    · rw [one_apply_ne hik, diagonal_apply_ne _ hik]
 
 /-- The inverse of w_q⁻¹ w_p is w_p⁻¹ w_q. -/
-lemma weylRatio_inv : (weylRatio j p q : T.G)⁻¹ = weylRatio j q p := by simp [weylRatio]
+lemma weylRatio_inv : (weylRatio j p q : T.G)⁻¹ = weylRatio j q p := by
+  rw [weylRatio, weylRatio, _root_.mul_inv_rev, inv_inv]
 
 /-- For a < ϱ, the number of basis indices of floor at least a + 1 is k + 1 + 2(ϱ − (a + 1)), the
 rank of the orthogonal complement of the first a + 1 hyperbolic planes. Here k + 1 is the rank of
@@ -183,7 +222,7 @@ lemma card_subtype_succ_le_floorOf_eq :
   have h_blocks : Fintype.card {i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} =
       (𝔰.ϱ - 1 - a) + (𝔰.k + 1 + (𝔰.ϱ - 1 - a)) := by
     simp [card_congr .subtypeSum, Fintype.card_subtype, filter_lt_eq_Ioi]
-  lia
+  omega
 
 /-! ### Quotients along the frame
 
@@ -207,14 +246,14 @@ def CongrBelow (l : ℕ) (ω ω' : 𝔰.BesselIndex → A) : Prop :=
 /-- The index e*_b has level 2ϱ - b, which is at least ϱ. -/
 lemma le_level_eStar (b : Fin 𝔰.ϱ) : 𝔰.ϱ ≤ level (eStar b : 𝔰.BesselIndex) := by
   change 𝔰.ϱ ≤ 2 * 𝔰.ϱ - b
-  lia
+  omega
 
 /-- For l ≤ ϱ, a basis index of level below l is the index of some e_b, b < l. -/
 lemma exists_eq_inl_of_level_lt {k : 𝔰.BesselIndex} (hk : level k < l) (hl : l ≤ 𝔰.ϱ) :
     ∃ b : Fin 𝔰.ϱ, b.val < l ∧ k = inl b := by
   obtain b | (m | b) := k
-  · exact ⟨b, by simpa [level] using hk, rfl⟩
-  · simpa [level] using hk.trans_le hl
+  · exact ⟨b, hk, rfl⟩
+  · exact absurd (hk.trans_le hl) (lt_irrefl _)
   · exact absurd (hk.trans_le hl) (le_level_eStar b).not_gt
 
 /-- Congruence modulo the e_b, b < l, is reflexive. -/
@@ -249,12 +288,12 @@ lemma IsOrthogonalBelow.of_congrBelow {A : Type} [CommRing A] {𝔰 : Shape} {l 
 /-- A multiple of a vector orthogonal to the e_b, b < l, is orthogonal to them. -/
 lemma IsOrthogonalBelow.smul {A : Type} [CommRing A] {𝔰 : Shape} {l : ℕ} {ω : 𝔰.BesselIndex → A}
     (hω : IsOrthogonalBelow l ω) (c : A) : IsOrthogonalBelow l (c • ω) :=
-  fun b hb ↦ by simp [hω b hb]
+  fun b hb ↦ by rw [Pi.smul_apply, hω b hb, smul_zero]
 
 /-- Congruence modulo the e_b, b < l, is kept under multiplication by a scalar. -/
 lemma CongrBelow.smul {A : Type} [CommRing A] {𝔰 : Shape} {l : ℕ} {ω ω' : 𝔰.BesselIndex → A}
     (h : CongrBelow l ω ω') (c : A) : CongrBelow l (c • ω) (c • ω') :=
-  fun k hk ↦ by simp [h k hk]
+  fun k hk ↦ by rw [Pi.smul_apply, Pi.smul_apply, h k hk]
 
 /-- Let l ≤ j. An element of R^(j) = `partialUnitriangularGroup j`, which changes each e_b, b < j,
 by a combination of the earlier ones, keeps vectors orthogonal to the e_b, b < l, orthogonal to
@@ -293,7 +332,8 @@ lemma IsOrthogonalBelow.congrBelow_mulVec (hω : IsOrthogonalBelow l ω) (hu : u
     CongrBelow l ω ((u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) *ᵥ ω) := by
   intro k hk
   -- An index of level at least l is some e*_b, or its floor is at least its level.
-  have hk_kept : l ≤ floorOf k ∨ 𝔰.ϱ < level k := by grind [floorOf_level_cases k]
+  have hk_kept : l ≤ floorOf k ∨ 𝔰.ϱ < level k := by
+    rcases floorOf_level_cases k with ⟨h1 | h1, h2⟩ | ⟨h1, h2, _⟩ <;> omega
   exact unipotentBelow_mulVec_apply hu hω k hk_kept
 
 /-- Let l ≤ ϱ, and let o be orthogonal to the e_b, b < l. The product ⟨ω, o⟩ for the Gram matrix
@@ -303,9 +343,11 @@ lemma CongrBelow.form_eq_left (h : CongrBelow l ω ω') (ho : IsOrthogonalBelow 
   unfold dotProduct
   refine Finset.sum_congr rfl fun k _ ↦ ?_
   obtain hk | hk := le_or_gt l (level k)
-  · simp [h k hk]
+  · rw [Pi.star_apply, Pi.star_apply, h k hk]
   · obtain ⟨b, hb, rfl⟩ : ∃ b : Fin 𝔰.ϱ, b.val < l ∧ k = inl b := exists_eq_inl_of_level_lt hk hl
-    have h_zero : (T.splitGram *ᵥ o) (inl b) = 0 := by simp [ho b hb]
+    have h_zero : (T.splitGram *ᵥ o) (inl b) = 0 := by
+      rw [splitGram_mulVec_apply (inl b) b.is_lt]
+      exact ho b hb
     rw [h_zero, mul_zero, mul_zero]
 
 /-- Let l ≤ ϱ = `𝔰.ϱ`, the number of hyperbolic planes, and let o be orthogonal to the e_b, b < l.
@@ -319,7 +361,10 @@ lemma CongrBelow.form_eq_right (h : CongrBelow l ω ω') (ho : IsOrthogonalBelow
   obtain hk | hk := le_or_gt l (level k)
   · rw [h k hk]
   · obtain ⟨b, hb, rfl⟩ : ∃ b : Fin 𝔰.ϱ, b.val < l ∧ k = inl b := exists_eq_inl_of_level_lt hk hl
-    have h_zero : (star o ᵥ* T.splitGram) (inl b) = 0 := by simp [ho b hb]
+    have h_zero : (star o ᵥ* T.splitGram) (inl b) = 0 := by
+      rw [vecMul_splitGram_apply (inl b) b.is_lt]
+      change star (o (eStar b)) = 0
+      rw [ho b hb, star_zero]
     rw [h_zero, zero_mul, zero_mul]
 
 omit [StarRing A] in
@@ -332,17 +377,17 @@ lemma CongrBelow.sub_smul {f : 𝔰.BesselIndex → A} (h : CongrBelow (a + 1) �
     CongrBelow a ω (ω' - (ω' (inl a) - ω (inl a)) • f) := by
   intro k hk
   obtain rfl | h_ne := eq_or_ne k (inl a)
-  · have hf_one : f (inl a) = 1 := by simp [hf (inl a) hk]
-    simp [hf_one]
+  · have hf_one : f (inl a) = 1 := (hf (inl a) hk).trans (Pi.single_eq_same _ _)
+    rw [Pi.sub_apply, Pi.smul_apply, hf_one, smul_eq_mul, mul_one, sub_sub_cancel]
   · have h_level : a + 1 ≤ level k := by
       by_contra! h_lt
       obtain ⟨b, hb, rfl⟩ : ∃ b : Fin 𝔰.ϱ, b.val < a + 1 ∧ k = inl b :=
         exists_eq_inl_of_level_lt h_lt a.is_lt
-      have h_le : a.val ≤ b.val := by simpa [level] using hk
-      have h_eq : b = a := Fin.ext (by lia)
+      have h_le : a.val ≤ b.val := hk
+      have h_eq : b = a := Fin.ext (by omega)
       exact h_ne (congrArg inl h_eq)
-    have hf_zero : f k = 0 := by simp [hf k hk, h_ne]
-    simp [hf_zero, h k h_level]
+    have hf_zero : f k = 0 := (hf k hk).trans (Pi.single_eq_of_ne h_ne _)
+    rw [Pi.sub_apply, Pi.smul_apply, hf_zero, smul_zero, sub_zero, h k h_level]
 
 /-- Write ⟨v, w⟩ for the form with Gram matrix `T.splitGram`, so that ⟨e_a, ζ⟩ is the coordinate of
 ζ at e*_a (index `eStar a`). Let ζ be a dual of e_a, that is, orthogonal to the e_b, b < a, with
@@ -359,8 +404,9 @@ lemma CongrBelow.form_sub_form {ζ ζ' : 𝔰.BesselIndex → A} (h : CongrBelow
   have h_congr : CongrBelow a ω (ω' - c • Pi.single (inl a) 1) := h.sub_smul (.refl a _)
   have hω_orth : IsOrthogonalBelow a ω := fun b hb ↦ hω b (hb.trans a.val.lt_succ_self)
   have h_one : star ζ' ⬝ᵥ T.splitGram *ᵥ Pi.single (inl a) 1 = 1 := by
-    rw [dotProduct_mulVec]
-    simp [hζ'.apply_eStar ha, hζ_one]
+    rw [dotProduct_mulVec, dotProduct_single, mul_one, vecMul_splitGram_apply (inl a) a.is_lt]
+    change star (ζ' (eStar a)) = 1
+    rw [hζ'.apply_eStar ha, hζ_one, star_one]
   have h_lift : star ζ' ⬝ᵥ T.splitGram *ᵥ ω' - c = star ζ ⬝ᵥ T.splitGram *ᵥ ω :=
     calc star ζ' ⬝ᵥ T.splitGram *ᵥ ω' - c
       _ = star ζ' ⬝ᵥ T.splitGram *ᵥ (ω' - c • Pi.single (inl a) 1) := by
@@ -424,7 +470,9 @@ def IsHead (j : ℕ) (p : ℕ → Aˣ) : Prop :=
 /-- If the head `p` of length `j` is adapted to the sizes `S` (the inverses of the products p₀ ⋯
 p_(l-1), l ≤ j, have size 1), so is the head `star p` of its conjugates. -/
 lemma IsHead.star_head (hp : S.IsHead j p) : S.IsHead j (star p) := by
-  simpa [IsHead, ← star_prod, neg_mem_iff_and_star_mem_iff] using hp
+  intro l hl
+  have h := S.neg_mem_iff_and_star_mem_iff.right.mpr (hp l hl)
+  rwa [← Units.coe_star, star_inv, star_prod] at h
 
 /-- A number of size i has every larger size. -/
 lemma mem_ofSize_mono (h : α ∈ S.ofSize i) (hij : i ≤ j := by lia) : α ∈ S.ofSize j := by
@@ -453,13 +501,19 @@ lemma sum_fin_mem_ofSize {f : Fin j → A} (hj : j ≤ 𝔰.ϱ + 1) (hf : ∀ a 
   -- the rank `𝔰.r` is the number of basis indices
   have h_card : Fintype.card (Fin j) ≤ 𝔰.r + 1 := by
     simp only [Fintype.card_sum, Fintype.card_fin]
-    lia
+    omega
   exact S.sum_mem_ofSize h_card hf
 
 /-- The difference of two numbers of size i has size i + 1. -/
 lemma sub_mem_ofSize (hα : α ∈ S.ofSize i) (hβ : β ∈ S.ofSize i) : α - β ∈ S.ofSize (i + 1) := by
-  have h_terms : ∀ a : Fin 2, ![α, -β] a ∈ S.ofSize i := by simp [hα, neg_mem_ofSize hβ]
-  simpa [sub_eq_add_neg] using S.sum_mem_ofSize (by simp +arith) h_terms
+  have h_terms : ∀ a : Fin 2, ![α, -β] a ∈ S.ofSize i :=
+    Fin.forall_fin_two.2 ⟨hα, neg_mem_ofSize hβ⟩
+  have h_card : Fintype.card (Fin 2) ≤ 𝔰.r + 1 := by
+    simp only [Fintype.card_sum, Fintype.card_fin, Fintype.card_unique]
+    omega
+  have h_sum := S.sum_mem_ofSize h_card h_terms
+  rwa [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+    ← sub_eq_add_neg] at h_sum
 
 /-- A matrix of size i has every larger size. -/
 lemma HasMatrixSize.mono (h : S.HasMatrixSize i X) (hij : i ≤ j := by lia) : S.HasMatrixSize j X :=
@@ -467,7 +521,10 @@ lemma HasMatrixSize.mono (h : S.HasMatrixSize i X) (hij : i ≤ j := by lia) : S
 
 /-- The identity matrix has every size. -/
 lemma HasMatrixSize.one : S.HasMatrixSize i (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) := by
-  simp [HasMatrixSize, Matrix.one_apply, ite_mem, zero_one_mem_ofSize]
+  intro a b
+  rw [Matrix.one_apply]
+  split_ifs
+  exacts [(S.zero_one_mem_ofSize i).2, (S.zero_one_mem_ofSize i).1]
 
 /-- The difference of two matrices of size i has size i + 1. -/
 lemma HasMatrixSize.sub (hX : S.HasMatrixSize i X) (hZ : S.HasMatrixSize i Z) :
@@ -484,9 +541,10 @@ lemma dotProduct_mem_ofSize (hw : ∀ a : 𝔰.BesselIndex, v a ≠ 0 → w a �
     w ⬝ᵥ v ∈ S.ofSize (i + j + 1) := by
   have h_term (a : 𝔰.BesselIndex) : w a * v a ∈ S.ofSize (i + j) := by
     by_cases ha : v a = 0
-    · simp [ha, zero_one_mem_ofSize]
+    · rw [ha, mul_zero]
+      exact (S.zero_one_mem_ofSize _).1
     · exact S.mul_mem_ofSize (hw a ha) (hv a)
-  exact S.sum_mem_ofSize (by simp) h_term
+  exact S.sum_mem_ofSize (Nat.le_succ _) h_term
 
 /-- A matrix of size i maps vectors of size j to vectors of size i + j + 1. -/
 lemma HasMatrixSize.mulVec (hX : S.HasMatrixSize i X) (hv : v ∈ S.vecsOfSize j) :
@@ -519,21 +577,30 @@ lemma sub_mem_vecsOfSize {v w : n → A} (hv : v ∈ S.vecsOfSize i) (hw : w ∈
 lemma single_mem_vecsOfSize (k : 𝔰.BesselIndex) :
     (Pi.single k 1 : 𝔰.BesselIndex → A) ∈ S.vecsOfSize i := by
   intro a
-  simp [Pi.single_apply, ite_mem, zero_one_mem_ofSize]
+  rw [Pi.single_apply]
+  split_ifs
+  exacts [(S.zero_one_mem_ofSize i).2, (S.zero_one_mem_ofSize i).1]
 
 /-- At the point 1, having length at most L^i means having size i. -/
-lemma lengthLeAt_one_iff : S.LengthLeAt 1 i v ↔ v ∈ S.vecsOfSize i := by simp [LengthLeAt]
+lemma lengthLeAt_one_iff : S.LengthLeAt 1 i v ↔ v ∈ S.vecsOfSize i := by
+  rw [LengthLeAt, inv_one]
+  change (1 : Matrix _ _ _) *ᵥ v ∈ S.vecsOfSize i ↔ _
+  rw [one_mulVec]
 
 /-- The vector g v has length at most L^i at g if and only if v has size i. -/
 lemma lengthLeAt_mulVec_iff : S.LengthLeAt g i (g.val.val *ᵥ v) ↔ v ∈ S.vecsOfSize i := by
-  simp [LengthLeAt]
+  rw [LengthLeAt, mulVec_mulVec]
+  change (g⁻¹ * g : T.G).val.val *ᵥ v ∈ S.vecsOfSize i ↔ _
+  rw [inv_mul_cancel]
+  change (1 : Matrix _ _ _) *ᵥ v ∈ S.vecsOfSize i ↔ _
+  rw [one_mulVec]
 
 /-- If v has size i and w has size j, then the product ⟨v, w⟩ for the form `T.splitGram` has size
 i + j + 3. -/
 lemma form_mem_ofSize (hv : v ∈ S.vecsOfSize i) (hw : w ∈ S.vecsOfSize j) :
     star v ⬝ᵥ T.splitGram *ᵥ w ∈ S.ofSize (i + j + 3) := by
   have h_gram : T.splitGram *ᵥ w ∈ S.vecsOfSize (1 + j + 1) := hasMatrixSize_splitGram.mulVec hw
-  exact mem_ofSize_mono (dotProduct_mem_ofSize (fun a _ ↦ star_mem_ofSize (hv a)) h_gram)
+  exact mem_ofSize_mono (dotProduct_mem_ofSize (fun a _ ↦ star_mem_ofSize (hv a)) h_gram) (by omega)
 
 /-- The form respects closeness modulo r. Write ⟨v, w⟩ for the form with Gram matrix `T.splitGram`.
 Let r be a self-adjoint unit of size 1. If v and (v - v') / r have size i, and w and (w - w') / r
@@ -544,11 +611,13 @@ lemma form_sub_form_mem_ofSize {v' w' : 𝔰.BesselIndex → A} (hr_star : star 
     (hw' : r⁻¹.val • (w - w') ∈ S.vecsOfSize j) :
     r⁻¹.val * (star v' ⬝ᵥ T.splitGram *ᵥ w' - star v ⬝ᵥ T.splitGram *ᵥ w) ∈
       S.ofSize (i + j + 6) := by
-  have hv'_eq : v' = v - r.val • r⁻¹.val • (v - v') := by simp [smul_smul]
+  have hv'_eq : v' = v - r.val • r⁻¹.val • (v - v') := by
+    rw [smul_smul, Units.mul_inv, one_smul, sub_sub_cancel]
   have hv'_size : v' ∈ S.vecsOfSize (1 + i + 1) := by
     rw [hv'_eq]
-    exact sub_mem_vecsOfSize (mem_vecsOfSize_mono hv) (smul_mem_vecsOfSize hr_size hv')
-  have hr_inv : star r⁻¹.val = r⁻¹.val := by simp [← inverse_star_unit, hr_star]
+    exact sub_mem_vecsOfSize (mem_vecsOfSize_mono hv (by omega)) (smul_mem_vecsOfSize hr_size hv')
+  have hr_inv : star r⁻¹.val = r⁻¹.val := by
+    rw [← inverse_star_unit, hr_star, Ring.inverse_unit]
   have h_terms : r⁻¹.val * (star v' ⬝ᵥ T.splitGram *ᵥ w' - star v ⬝ᵥ T.splitGram *ᵥ w) =
       -(star v' ⬝ᵥ T.splitGram *ᵥ (r⁻¹.val • (w - w'))) -
         star (r⁻¹.val • (v - v')) ⬝ᵥ T.splitGram *ᵥ w := by
@@ -556,9 +625,9 @@ lemma form_sub_form_mem_ofSize {v' w' : 𝔰.BesselIndex → A} (hr_star : star 
       smul_dotProduct, dotProduct_sub, sub_dotProduct, smul_eq_mul]
     ring
   have h_left : star v' ⬝ᵥ T.splitGram *ᵥ (r⁻¹.val • (w - w')) ∈ S.ofSize (i + j + 5) :=
-    mem_ofSize_mono (form_mem_ofSize hv'_size hw')
+    mem_ofSize_mono (form_mem_ofSize hv'_size hw') (by omega)
   have h_right : star (r⁻¹.val • (v - v')) ⬝ᵥ T.splitGram *ᵥ w ∈ S.ofSize (i + j + 5) :=
-    mem_ofSize_mono (form_mem_ofSize hv' hw)
+    mem_ofSize_mono (form_mem_ofSize hv' hw) (by omega)
   rw [h_terms]
   exact sub_mem_ofSize (neg_mem_ofSize h_left) h_right
 
@@ -568,7 +637,9 @@ order `j ≤ 𝔰.ϱ`, with ϱ the number of hyperbolic planes, and `Z` has size
 lemma det_mem_ofSize (Z : Matrix (Fin j) (Fin j) A) (hj : j ≤ 𝔰.ϱ) (hZ : S.HasMatrixSize 7 Z) :
     Z.det ∈ S.ofSize (8 * j) := by
   induction j with
-  | zero => simp [zero_one_mem_ofSize]
+  | zero =>
+    rw [Matrix.det_isEmpty]
+    exact (S.zero_one_mem_ofSize _).2
   | succ j ih =>
     -- Expand along the first row: each term has size 7 + 8 j, and the sum costs one more.
     have h_minor (b : Fin (j + 1)) : S.HasMatrixSize 7 (Z.submatrix Fin.succ b.succAbove) :=
@@ -578,7 +649,7 @@ lemma det_mem_ofSize (Z : Matrix (Fin j) (Fin j) A) (hj : j ≤ 𝔰.ϱ) (hZ : S
       S.mul_mem_ofSize (neg_one_pow_mul_mem_ofSize (hZ 0 b) b)
         (ih _ (Nat.le_of_succ_le hj) (h_minor b))
     rw [det_succ_row_zero]
-    exact mem_ofSize_mono (sum_fin_mem_ofSize (Nat.le_succ_of_le hj) h_term)
+    exact mem_ofSize_mono (sum_fin_mem_ofSize (Nat.le_succ_of_le hj) h_term) (by omega)
 
 /-- For the sizes `S`: let `Z` be a square matrix of order `j + 1`, where `j ≤ 𝔰.ϱ` and ϱ is the
 number of hyperbolic planes. If the last row `Z (last j)` has size 9 and the other rows have size 7,
@@ -599,7 +670,7 @@ lemma det_mem_ofSize_of_last_row {j : ℕ} (Z : Matrix (Fin (j + 1)) (Fin (j + 1
   · rw [det_eq_elem_of_card_eq_one (Fintype.card_fin _) (last 0)]
     exact h_last (last 0)
   · rw [det_succ_row Z (last (j + 1))]
-    exact mem_ofSize_mono (sum_fin_mem_ofSize (Nat.succ_le_succ hj) h_term)
+    exact mem_ofSize_mono (sum_fin_mem_ofSize (Nat.succ_le_succ hj) h_term) (by omega)
 
 /-- Let the Gram matrix J = `T.splitGram` be hermitian and invertible (`IsHermitianUnit`), and let X
 be the adjoint of Y for J, that is, J X = Yᴴ J. Sizes are those of `S`, and a vector has size i if
@@ -620,7 +691,7 @@ lemma adjoint_apply_mem_ofSize {T : 𝔰.Form A} {i : ℕ} [IsHermitianUnit T.sp
       fun n ↦ hasMatrixSize_splitGram n b
   have h_gram_inv : S.HasMatrixSize 1 T.splitGram⁻¹ := S.splitGram_and_inv_mem.right
   rw [hX, mul_apply']
-  exact mem_ofSize_mono (dotProduct_mem_ofSize (fun n _ ↦ h_gram_inv a n) h_col)
+  exact mem_ofSize_mono (dotProduct_mem_ofSize (fun n _ ↦ h_gram_inv a n) h_col) (by omega)
 
 /-- If the matrix of x, an element of the unitary group of J = `T.splitGram`, has size i, then the
 matrix of x⁻¹ has size i + 4, since J x⁻¹ = xᴴ J. -/

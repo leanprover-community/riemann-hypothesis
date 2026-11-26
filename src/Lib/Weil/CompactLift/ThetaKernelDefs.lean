@@ -1,6 +1,9 @@
 module
 
 public import Lib.Weil.DualPair.WeilAction
+public import Lib.Adelic.Reduction.DefiniteClassSums -- shake: keep (needed public by an exposed definition)
+import Lib.Cohomology.Etale.Basic
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 
 /-!
 # The jet matrix of a definite pair is a kernel for algebraic forms
@@ -56,7 +59,7 @@ lemma coeff_aeval_smul_X {σ : Type*} (Q : MvPolynomial σ ℂ) (t : ℂ) (m : �
     classical
     rw [h_mon]
     by_cases h : u = m <;> simp [h]
-  | add p q hp hq => simp [hp, hq, mul_add, -aeval_eq_bind₁]
+  | add p q hp hq => simp [hp, hq, mul_add]
 
 /-- A complex polynomial is homogeneous of degree `d` exactly when multiplying the variables by
 any `t ≠ 0` multiplies it by `t ^ d`. -/
@@ -115,7 +118,7 @@ of 𝒮(Hom(V, T)). -/
 @[simps! apply_apply_coe]
 def pairWeilFinite : Gf E n × Gf E n' →* Module.End ℂ (V.hom T).finitePart where
   toFun p :=
-    LinearMap.restrict (pairWeil V T a b ((1, p.1), 1, p.2)).1 fun f hf ↦ by
+    LinearMap.restrict (pairWeil V T a b ((1, p.1), 1, p.2)).toLinearMap fun f hf ↦ by
       -- Up to a scalar, `pairWeil` is `ω` at a point whose infinite part is trivial (`onHom_fin`).
       refine (finitePart _).smul_mem _ ?_
       rw [onHom_fin]
@@ -167,23 +170,15 @@ weight `(κ, e)` and `h ∈ G'_f`, the integrand `g ↦ jetMap(ω(g, h)Φ)(φ(g)
 @[simp]
 lemma Kernel.integrand_mem_smoothInvariants (Φ : S) (φ : AlgForm n κ e) (h : Gf E n') :
     (fun g : Gf E n ↦ k.jetMap (k.ω (g, h) Φ) (φ.val g)) ∈ smoothInvariants stdRatPoints := by
-  obtain ⟨hφ_smooth, hφ_equiv⟩ := φ.property
-  constructor
-  · -- Left invariance: `φ` is equivariant, and `equivariant` at `(γ, 1)` absorbs `γ`.
-    rintro _ ⟨γ, rfl⟩ g
-    simpa [hφ_equiv γ] using k.equivariant γ 1 (k.ω (g, h) Φ) (φ.val g)
-  · -- The stabiliser contains the open subgroup of the `a` that fix `φ` and for which `(a, 1)`
-    -- fixes `Φ`.
-    let L : Subgroup (Gf E n) :=
-      rightStabilizer φ.val ⊓ comap (.inl _ _) (rightStabilizer fun g ↦ k.ω g Φ)
-    have hL_open : IsOpen (L : Set (Gf E n)) :=
-      .inter hφ_smooth ((k.isOpen_stabilizer Φ).preimage (.prodMk_left 1))
-    refine L.isOpen_mono (fun a ha ↦ ?_) hL_open
-    obtain ⟨ha_φ, ha_Φ⟩ := Subgroup.mem_inf.1 ha
-    refine mem_rightStabilizer.2 fun g ↦ ?_
-    have h_ω_eq : k.ω (g * a, h) Φ = k.ω (g, h) Φ := by
-      simpa using mem_rightStabilizer.1 (Subgroup.mem_comap.1 ha_Φ) (g, h)
-    rw [h_ω_eq, mem_rightStabilizer.1 ha_φ g]
+  -- Left invariance follows from `equivariant` at `(γ, 1)`; openness from intersecting stabilisers.
+  refine ⟨?_, (rightStabilizer φ.val ⊓
+      comap (.inl _ _) (rightStabilizer fun g ↦ k.ω g Φ)).isOpen_mono
+    (fun a ⟨ha_φ, ha_Φ⟩ ↦ mem_rightStabilizer.2 fun g ↦ by
+      simpa [mem_rightStabilizer.1 ha_φ g] using
+        congrArg (k.jetMap · (φ.val g)) (mem_rightStabilizer.1 (mem_comap.1 ha_Φ) (g, h)))
+    (.inter φ.property.1 ((k.isOpen_stabilizer Φ).preimage (.prodMk_left 1)))⟩
+  rintro _ ⟨γ, rfl⟩ g
+  simpa [φ.property.2 γ] using k.equivariant γ 1 (k.ω (g, h) Φ) (φ.val g)
 
 variable [IsLevel K]
 
@@ -193,9 +188,10 @@ points, for the Haar measure with vol K = 1 (`New.classIntegral`). -/
 def Kernel.lift : S →ₗ[ℂ] AlgForm n κ e →ₗ[ℂ] AlgForm n' κ ea := by
   refine LinearMap.mk₂ ℂ
     (fun Φ φ ↦
-      ⟨fun h ↦ classIntegral stdRatPoints K fun g ↦ k.jetMap (k.ω (g, h) Φ) (φ.1 g), ?_,
+      ⟨fun h ↦ classIntegral stdRatPoints K fun g ↦ k.jetMap (k.ω (g, h) Φ) (φ.val g), ?_,
         fun γ h ↦ ?_⟩)
-    (fun Φ Φ' φ ↦ ?_) (fun c Φ φ ↦ ?_) (fun Φ φ φ' ↦ ?_) fun c Φ φ ↦ ?_
+    (fun Φ Φ' φ ↦ ?addDatum) (fun c Φ φ ↦ ?smulDatum)
+    (fun Φ φ φ' ↦ ?addForm) fun c Φ φ ↦ ?smulForm
   · -- Smoothness: the lift is fixed by the open subgroup of the `a` with `(1, a)` fixing `Φ`.
     refine (comap (.inr _ _) (rightStabilizer fun g ↦ k.ω g Φ)).isOpen_mono (fun a ha h ↦ ?_)
       ((k.isOpen_stabilizer Φ).preimage (.prodMk_right 1))
@@ -204,15 +200,11 @@ def Kernel.lift : S →ₗ[ℂ] AlgForm n κ e →ₗ[ℂ] AlgForm n' κ ea := b
     -- moves it into `k.ω`.
     exact classIntegral_map_mul_right (weightRep κ ea _ γ).toAddMonoidHom 1
       (k.integrand_mem_smoothInvariants Φ φ h) (by simp [← k.equivariant 1])
-  -- Bilinearity: the integral is additive and commutes with scalars.
-  · ext : 2
+  case addDatum | addForm =>
+    ext : 2
     simp [classIntegral_add, ← Pi.add_def]
-  · ext h : 2
-    exact classIntegral_map_mul_right (DistribSMul.toAddMonoidHom _ c) 1
-      (k.integrand_mem_smoothInvariants Φ φ h) (by simp)
-  · ext : 2
-    simp [classIntegral_add, ← Pi.add_def]
-  · ext h : 2
+  case smulDatum | smulForm =>
+    ext h : 2
     exact classIntegral_map_mul_right (DistribSMul.toAddMonoidHom _ c) 1
       (k.integrand_mem_smoothInvariants Φ φ h) (by simp)
 
@@ -302,7 +294,7 @@ lemma realPairWeil_schurCoeffPoly (hκ : IsLiftWeight n n' κ eb e) {ea : Infini
     ← h_schur_mul, prod_mul_distrib, principalMinor_of_forall,
     DiscreteSeries.principalMinor_of_forall_not]
   -- Both sides are now the same multiple of `Aᵀ S_κ(yᵀ w xᵀ) ξ`.
-  simp [h_entry, vecMul_smul, field, ← schur_mul_left h_fits, mul_right_comm]
+  simp [h_entry, vecMul_smul, field, ← schur_mul_left h_fits]
 
 variable [WeilData E]
 
@@ -342,7 +334,7 @@ lemma schurJet_jetSeries_eq_smul (hκ : IsLiftWeight n n' κ eb e) (c : ℂ)
   -- An entry of the jet matrix is the theta functional at the Fock vector of an entry of
   -- `schur κ (c • z)`, and `c` comes out of that entry.
   ext i' i
-  simp [schurJet, -aeval_eq_bind₁, aeval_smul_X_schur hκ.1 c, aeval_X_left_apply]
+  simp [schurJet, aeval_smul_X_schur hκ.1 c, aeval_X_left_apply]
 
 /-- The theta function of a Schur coefficient is a matrix coefficient of the jet matrix. Assume
 `IsLiftWeight n n' κ eb e`, and let the characters `a`, `b` have weights `ea`, `eb`, with ψ, ψ' the
@@ -416,8 +408,8 @@ def thetaKernel (hκ : IsLiftWeight n n' κ eb e) (c : ℂ) {a b : AutChar E} {e
     rw [← h_eq, Representation.self_inv_apply]
   isOpen_stabilizer f := by
     -- The stabiliser of `f` contains an open subgroup `L × L'`.
-    obtain ⟨L, L', h_fix⟩ := exists_level_pairWeil a b f.2
-    refine isOpen_mono ?_ (L.prod L').2
+    obtain ⟨L, L', h_fix⟩ := exists_level_pairWeil a b f.property
+    refine isOpen_mono ?_ (L.prod L').isOpen'
     simp_all [LE.le, mem_prod, Subtype.ext_iff]
 
 end New

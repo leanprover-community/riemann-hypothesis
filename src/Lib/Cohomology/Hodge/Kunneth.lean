@@ -1,7 +1,13 @@
 module
 
-public import Lib.Cohomology.Hodge.DepthVanishing
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Lib.Cohomology.LerayHirsch
+public import Lib.Cohomology.Etale.RelativeChains
+public import Lib.Cohomology.Hodge.Site
+import Lib.Cohomology.Etale.DenseSubfunctors
+import Lib.Cohomology.Hodge.DepthVanishing
+import Lib.General.Algebra.CohomologyBaseChange
 
 /-!
 # Künneth formula: Hodge classes on X × X are sums of external products

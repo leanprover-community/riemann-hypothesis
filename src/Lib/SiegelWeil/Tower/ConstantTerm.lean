@@ -1,9 +1,26 @@
 module
 
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.LinearAlgebra.Matrix.CharP
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Compactness.Paracompact
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
 public import Lib.SiegelWeil.Tower.LineTerms
 public import Lib.SiegelWeil.Tower.PrincipalIdeles
 public import Lib.Weil.DualPair.ThetaIntegrals
+import Lib.Adelic.QuotientMeasure.IwasawaUnfolding
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.Cohomology.Etale.Basic
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # The constant term of a theta integral, unfolded along isotropic lines
@@ -233,7 +250,8 @@ lemma radicalPoint_hermitianPart (c : Matrix r Unit (𝔸 E)) (b : Matrix Unit U
     radicalPoint X (c, hermitianPart b) = X.radicalElement c b := by
   -- `b` enters the matrix only through `b + bᴴ`.
   have h_sum : (hermitianPart b).val + (hermitianPart b).valᴴ = b + bᴴ := by
-    simp [coe_hermitianPart, star_toAdele]
+    simp only [coe_hermitianPart, smul_add, conjTranspose_add, conjTranspose_smul, star_toAdele,
+      star_inv₀, star_ofNat, conjTranspose_conjTranspose]
     match_scalars <;> grind
   exact G.ext_adeleMatrix (by simp only [radicalPoint, radicalElement, G.adeleMatrix_ofMatrix,
     h_sum])
@@ -265,7 +283,8 @@ lemma radicalPoint_mul (x q : RadicalCoord E r) :
   let z : Matrix Unit Unit (𝔸 E) := toAdele (j : E) • x.1ᴴ * stdForm E t * q.1
   have h_part : x.2 + hermitianPart z + q.2 = hermitianPart (x.2.val + z + q.2.val) := by
     ext : 1
-    simp [coe_hermitianPart, IsHermitian.eq x.2.prop, IsHermitian.eq q.2.prop]
+    simp only [AddSubgroup.coe_add, coe_hermitianPart, smul_add, conjTranspose_add,
+      IsHermitian.eq x.2.prop, IsHermitian.eq q.2.prop]
     match_scalars <;> grind
   rw [h_part, radicalPoint_hermitianPart, radicalPoint, radicalPoint, radicalElement_mul]
 
@@ -430,7 +449,7 @@ lemma mem_lineStabilizer_iff (g : G E t') :
       rw [← span_singleton_eq_span_singleton, eq_comm]
       simp [splittingLine, Subgroup.smul_def, Units.smul_def, smul_span]
     simp only [h_span, h_frame, ← V'.vecAtPoint_injective.eq_iff, ← ratEmbed_mulVec_vecAtPoint]
-    simp [Units.smul_def, funext_iff]
+    simp only [Units.smul_def, LinearMap.map_smulₛₗ, funext_iff, Pi.smul_apply, smul_eq_mul]
     exact exists_congr fun _ ↦ forall_congr' fun _ ↦ by rw [mul_comm, eq_comm]
   simp only [lineStabilizer, Space.Γ, Subgroup.mem_map, MonoidHom.mem_range, h_rat]
   grind

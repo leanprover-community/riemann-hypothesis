@@ -1,7 +1,9 @@
 module
 
-public import New.Congruences.FirstOrder.RibetLemma
+import Mathlib.FieldTheory.Galois.Profinite
 public import New.Congruences.FirstOrder.TraceRelations
+import New.Congruences.FirstOrder.RibetLemma
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
 
 /-!
 # Ribet's element for conjugate self-dual representations
@@ -129,11 +131,11 @@ lemma ellVal_add_le_of_addVal_le {O : CoeffRing ℓ} {t' h k nTest nDetect : ℕ
     (hd : addVal O d ≤ lossT + selT + (∑ e : Fin t', (lossχ e + odd e) +
       t' * (tame + 2 * nDetect * addVal O (ℓ ^ (D.halfGap * h))) +
       (k + 1) * addVal O (ℓ ^ (D.halfGap * h)))) :
-    ellVal d.1 + 2 * padicValNat ℓ D.chosenGroupOrder ≤
+    ellVal d.val + 2 * padicValNat ℓ D.chosenGroupOrder ≤
       sel + 2 * t' * ram + loc + denominatorError D ℓ := by
   have h_odd_val (e : Fin t') : O.normLength (odd e) ≤ padicValNat ℓ (oddClassBound D) :=
     (normLength_mono (h_odd e)).trans_eq (by simp [ellVal_natCast (oddClassBound_ne_zero D)])
-  have h_val : ellVal d.1 ≤ sel + loc + (t' * padicValNat ℓ (oddClassBound D) +
+  have h_val : ellVal d.val ≤ sel + loc + (t' * padicValNat ℓ (oddClassBound D) +
       t' * (O.normLength tame + 2 * nDetect * (D.halfGap * h : ℕ)) +
       (k + 1) * (D.halfGap * h : ℕ)) := by
     grw [← normLength_addVal d, hd, ← h_sel, ← h_loc]
@@ -251,13 +253,7 @@ lemma exists_length_le_loss_add_crystallineSelmerLength {ν : ℕ} {w : K → Fi
     rw [← map_sum]
     exact normLength_mono
       (crystallineColength_le_sum_dualDefect hu_cl (fun v ↦ hT_cl v (some e)) ν)
-  -- modulo every `ℓ ^ M` the cocycles are counted by the loss and the Selmer group
-  have h_main (M : ℕ) : length O (ribetCocyclesVanishingOn u T (QuotSpan (ℓ ^ M : ↑O))
-      (.range (withConjInv τ)) γ) ≤ lossT + crystallineSelmerLength T Q γ :=
-    (length_ribetCocyclesVanishingOn_le hw hu_cont hu_unr hT_unr M γ).trans
-      (add_le_add (crystallineColength_le_sum_dualDefect hu_cl (fun v ↦ hT_cl v none) M)
-        (length_selmerCocycles_le_crystallineSelmerLength _ Q M γ))
-  -- both are finite, so the bound holds with divisible coefficients
+  -- The local defect and the Selmer length are both finite; choose the truncation after fixing their sum.
   have h_ne {a : ℕ∞} {b : ℝ≥0∞} (hb : b ≠ ⊤) (hab : O.normLength a ≤ b) : a ≠ ⊤ :=
     fun ha ↦ hb (by simpa [ha, normLength_top] using hab)
   obtain ⟨b₀, hb₀⟩ : ∃ b₀ : ℕ, b₀ = lossT + crystallineSelmerLength T Q γ :=
@@ -266,8 +262,14 @@ lemma exists_length_le_loss_add_crystallineSelmerLength {ν : ℕ} {w : K → Fi
   have hℓ_ne : (ℓ : ↑O) ≠ 0 := ne_zero_pow one_ne_zero (NeZero.ne _)
   have hℓ_unit : ¬IsUnit (ℓ : ↑O) := fun h ↦ by
     simpa [IsDiscreteValuationRing.addVal_eq_zero_iff.2 h] using normLength_addVal_pow (O := O) 1
+  -- Only the level `ℓ ^ (b₀ + 1)` is needed to control all the divisible coefficients.
+  have h_main : length O (ribetCocyclesVanishingOn u T (QuotSpan (ℓ ^ (b₀ + 1) : ↑O))
+      (.range (withConjInv τ)) γ) ≤ b₀ :=
+    ((length_ribetCocyclesVanishingOn_le hw hu_cont hu_unr hT_unr (b₀ + 1) γ).trans
+      (add_le_add (crystallineColength_le_sum_dualDefect hu_cl (fun v ↦ hT_cl v none) (b₀ + 1))
+        (length_selmerCocycles_le_crystallineSelmerLength _ Q (b₀ + 1) γ))).trans_eq hb₀.symm
   exact ⟨b₀, lossT, length_ribetCocyclesVanishingOn_divisibleQuot_le u T _ γ hℓ_ne hℓ_unit
-    fun M ↦ (h_main M).trans_eq hb₀.symm, hb₀, h_loc⟩
+    h_main, hb₀, h_loc⟩
 
 /-- Ribet's element for conjugate self-dual representations, with `t' = V.rankDiff`, the difference
 `card n - card r` of the ranks of the descent pair `V`, and `r' = card r`. Let `V` with type
@@ -378,7 +380,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
     grw [card_union_le, card_insert_le, card_image_le, card_univ, card_prod, card_bool]
     omega
   -- the characters `χ e`, which `g₀` separates up to `ℓ ^ (halfGap h)`
-  let χ (e : Fin V.rankDiff) : AbsGal D →* O := cyclotomicInv ℓ D.E O ^ e.1
+  let χ (e : Fin V.rankDiff) : AbsGal D →* O := cyclotomicInv ℓ D.E O ^ e.val
   have h_sep (e : Fin V.rankDiff) : ∏ e' ∈ {e}ᶜ, (χ e g₀ - χ e' g₀) ∣ ℓ ^ (D.halfGap * h) := by
     simpa [χ, cyclotomicInv] using map_dvd (algebraMap ℤ_[ℓ] O) (h_tri.prod_dvd e)
   let ϵ' : r ⊕ Fin V.rankDiff ≃ n := (summandCoordIndexEquiv r V.rankDiff).trans ϵ
@@ -412,7 +414,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   rw [hb₀_eq] at hd_le
   have ht' : V.rankDiff ≤ D.t := (h_summand π).t_le
   refine ⟨d, ?_, ellVal_add_le_of_addVal_le ht' h_le hs_card hs'_card h_loc h_selT
-    (fun e ↦ h_odd e (e.2.trans_le ht') ν) ho hd_le⟩
+    (fun e ↦ h_odd e (e.isLt.trans_le ht') ν) ho hd_le⟩
   -- `det (1 - u x g)` is the determinant of the combination `∑ ω g' (u' x g' - 1)`, where the
   -- coefficient function `ω` is `-1` at `g` and `0` elsewhere
   simp only [(hu' _).det_one_sub]

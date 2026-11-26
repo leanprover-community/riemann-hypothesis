@@ -1,6 +1,12 @@
 module
 
+import Mathlib.Analysis.Convex.Integral
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.ProperConstSMul
+import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.Adelic.Adeles.IdeleModulus
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Idelic theta sums over principal ideles as Riemann sums
@@ -18,9 +24,9 @@ the principal ideles. It writes theta sums as Riemann sums over the image of `K`
 * `New.ZetaIntegral.adelicTent r d`: a tent of height and radius `r` at `1` times the indicator of
   `d * (x - 1) ∈ Ô`.
 * `New.ZetaIntegral.thetaSum d r b`: the sum of the tent over the coset of `b` modulo the
-  principal ideles. `New.ZetaIntegral.exists_abs_sub_thetaSum_le_mul_rpow`: `thetaSum d (r / 3) b`
+  principal ideles. `New.ZetaIntegral.exists_abs_sub_thetaSum_le`: `thetaSum d (r / 3) b`
   depends only on the module `l` of `b`, up to an error: for each `l > 0` some `i` has
-  `|i - thetaSum d (r / 3) b| ≤ C * l ^ δ * thetaSum d r b` for all `b` of module `l`.
+  `|i - thetaSum d (r / 3) b| ≤ C * l ^ δ * |thetaSum d r b|` for all `b` of module `l`.
 
 Notions from other files:
 * `New.finIdeleAbs`: The module |x| of a finite idele x: the adelic absolute value of the idele with
@@ -344,15 +350,15 @@ def thetaSum (ρ : ℝ) (b : (mixedSpace K)ˣ × (𝔸f K)ˣ) : ℝ :=
   ∑' γ : principalIdeles K, adelicTent ρ d ((γ.val * b).map val val)
 
 open scoped Pointwise in
-/-- Let `0 < r < 1`, and for an idele `b` let `thetaSum d ρ b` be the sum of the adelic tent
-`adelicTent ρ d` of radius `ρ` (built from the finite idele `d`) over the coset of `b` modulo the
-principal ideles `Kˣ`. There are `δ > 0` and `C > 0` such that for every `l > 0` some number `i` is
-within `C * l ^ δ * thetaSum d r b` of `thetaSum d (r / 3) b`, for all ideles `b` of module `l`. The
-bound on `r` makes the tents of radius `r` and `r / 3` vanish at `0`, so the theta sums may be taken
-over all of `K`. -/
-lemma exists_abs_sub_thetaSum_le_mul_rpow (hr_pos : 0 < r) (hr : r < 1) :
-    ∃ δ > (0 : ℝ), ∃ C > (0 : ℝ), ∀ l > (0 : ℝ), ∃ i : ℝ, ∀ b : (mixedSpace K)ˣ × (𝔸f K)ˣ,
-      ideleModule b = l → |i - thetaSum d (r / 3) b| ≤ C * l ^ δ * thetaSum d r b := by
+/-- The principal ideles are discrete. Let `0 < r < 1` and let `thetaSum d ρ b` be the sum of the
+adelic tent of radius `ρ` over the coset of `b` modulo the principal ideles. There are `δ > 0` and
+`C` such that for every `l > 0` some number `i` is within `C * l ^ δ * |thetaSum d r b|` of
+`thetaSum d (r / 3) b`, for all ideles `b` of module `l`. The bound on `r` makes the tents of radius
+`r` and `r / 3` vanish at `0`, so the theta sums may be taken over all of `K`. -/
+lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
+    DiscreteTopology (principalIdeles K) ∧
+    ∃ δ > (0 : ℝ), ∃ C : ℝ, ∀ l > (0 : ℝ), ∃ i : ℝ, ∀ b : (mixedSpace K)ˣ × (𝔸f K)ˣ,
+      ideleModule b = l → |i - thetaSum d (r / 3) b| ≤ C * l ^ δ * |thetaSum d r b| := by
   classical
   -- Take a fundamental domain `F` of volume one for `K` in its adeles. Blichfeldt's lemma moves `b`
   -- by a principal idele `γ` to a small `b * γ`; then `thetaSum d (r / 3) b` is a Riemann sum, over
@@ -373,8 +379,8 @@ lemma exists_abs_sub_thetaSum_le_mul_rpow (hr_pos : 0 < r) (hr : r < 1) :
     (isOpen_adelicBox d _).measure_ne_zero volume ⟨0, by simpa [adelicBox] using hr_pos⟩
   obtain ⟨n, hn, hn_vol⟩ : ∃ n : ℕ, 0 < n ∧ 1 < (n : ℝ≥0∞) * volume (adelicBox d (r / 6)) :=
     exists_nat_pos_mul_gt h_box_ne_zero one_ne_top
-  refine ⟨(finrank ℚ K : ℝ)⁻¹, by simp [finrank_pos], R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹,
-    by positivity, fun l hl ↦ ?_⟩
+  refine ⟨discreteTopology_principalIdeles h_disc, (finrank ℚ K : ℝ)⁻¹, by simp [finrank_pos],
+    R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹, fun l hl ↦ ?_⟩
   let t : ℝ := ((n : ℝ) * l) ^ (finrank ℚ K : ℝ)⁻¹
   have ht : 0 < t := by positivity
   refine ⟨integral (ENNReal.ofReal l⁻¹ • volume) (adelicTent ((r - R * t * r) / 3) d),
@@ -420,27 +426,8 @@ lemma exists_abs_sub_thetaSum_le_mul_rpow (hr_pos : 0 < r) (hr : r < 1) :
       ≤ R * t * thetaSum d r b := h_bound
     _ = R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹ * l ^ (finrank ℚ K : ℝ)⁻¹ * thetaSum d r b := by
         rw [mul_assoc R ((n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹), ← Real.mul_rpow n.cast_nonneg hl.le]
-
-open scoped Pointwise in
-/-- Let `0 < r < 1`, and let `Θ r b` be the theta sum `thetaSum d r b`. (a) The principal ideles
-are discrete. (b) The estimate of `exists_abs_sub_thetaSum_le_mul_rpow`, with `|Θ r b|` in the
-bound. -/
-lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
-    let Θ (r : ℝ) (b : (mixedSpace K)ˣ × (𝔸f K)ˣ) :=
-      ∑' γ : principalIdeles K, adelicTent r d ((γ.val * b).map val val)
-    DiscreteTopology (principalIdeles K) ∧
-    ∃ δ > (0 : ℝ), ∃ C : ℝ, ∀ l > (0 : ℝ), ∃ i : ℝ, ∀ b : (mixedSpace K)ˣ × (𝔸f K)ˣ,
-      ideleModule b = l → |i - Θ (r / 3) b| ≤ C * l ^ δ * |Θ r b| := by
-  classical
-  intro Θ
-  have : IsAddHaarMeasure (volume : Measure (mixedSpace K × 𝔸f K)) := prod.instIsAddHaarMeasure ..
-  obtain ⟨R, -, h_fund⟩ :=
-    exists_hasFundDomain (mixedEmbedding K) (.refl ℝ (mixedSpace K)) (.id volume) fun _ ↦ rfl
-  obtain ⟨δ, hδ, C, hC, h_approx⟩ := exists_abs_sub_thetaSum_le_mul_rpow r d hr_pos hr
-  refine ⟨discreteTopology_principalIdeles h_fund.isCovolOneLattice.toDiscreteTopology, δ, hδ, C,
-    fun l hl ↦ ?_⟩
-  obtain ⟨i, hi⟩ := h_approx l hl
-  exact ⟨i, fun b hb ↦ (hi b hb).trans (mul_le_mul_of_nonneg_left (le_abs_self _) (by positivity))⟩
+    _ ≤ R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹ * l ^ (finrank ℚ K : ℝ)⁻¹ * |thetaSum d r b| :=
+        mul_le_mul_of_nonneg_left (le_abs_self _) (by positivity)
 
 end New.ZetaIntegral
 

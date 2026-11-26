@@ -1,17 +1,8 @@
 module
 
-public import Mathlib.Data.Fin.Tuple.Sort
-public import Mathlib.Data.ZMod.Basic
-public import Mathlib.LinearAlgebra.Matrix.Permutation
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
-public import Mathlib.MeasureTheory.Integral.Bochner.Set
-public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-public import Mathlib.Tactic.CongrExclamation
-public import Mathlib.Tactic.Field
-public import Mathlib.Tactic.FunProp
-public import Mathlib.Tactic.Linarith
-public import Mathlib.Tactic.LinearCombination
-public import TauCeti.LinearAlgebra.Determinant.Basic
+import Mathlib.LinearAlgebra.Matrix.Permutation
+import TauCeti.LinearAlgebra.Determinant.Basic
+public import Lib.Speed
 
 /-!
 # The Pieri cone, the step map and the slab: interlacing and volume of the cone
@@ -375,12 +366,12 @@ lemma volume_real_inter_degreeSlab_eq_signed_sum {v : Fin (m + 1) → Bool} (hP 
   obtain ⟨c, hc⟩ := exists_det_permStep_eq (k := k) P v hP
   obtain ⟨hc_ne, hΔ_ne⟩ : c ≠ 0 ∧ Δ 1 ≠ 0 := by
     simpa [hc, Δ] using det_permStep_ne_zero (k := k) P v hP 1
-  have h_fin (σ τ : Fin (m + 1) → Perm (Fin k)) (Y : Set (Fin k × Fin (m + 1) → ℝ)) :
+  have h_finite_volume (σ τ : Fin (m + 1) → Perm (Fin k)) (Y : Set (Fin k × Fin (m + 1) → ℝ)) :
       volume (positiveStepSet v P D σ τ Y) ≠ ⊤ := by
     rw [volume_positiveStepSet P v hP]
     exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
       (isBounded_inter_degreeSlab D Y).measure_lt_top.ne
-  have h_vol (σ τ : Fin (m + 1) → Perm (Fin k)) (Y : Set (Fin k × Fin (m + 1) → ℝ)) :
+  have h_preimage_volume (σ τ : Fin (m + 1) → Perm (Fin k)) (Y : Set (Fin k × Fin (m + 1) → ℝ)) :
       volume.real (positiveStepSet v P D σ τ Y) =
         (|c| * Δ (ofFn σ).prod)⁻¹ * volume.real (Y ∩ degreeSlab k D) := by
     simp [Measure.real, volume_positiveStepSet P v hP, hc, abs_mul, Δ, abs_nonneg]
@@ -391,7 +382,8 @@ lemma volume_real_inter_degreeSlab_eq_signed_sum {v : Fin (m + 1) → Bool} (hP 
       MeasurableSet (positiveStepSet v P D 1 τ Ω) := by
     simp only [positiveStepSet, hΩ, pieriCone, mem_ofPred_eq, measurableSet_setOfPred, Set.mem_Icc]
     fun_prop
-  have h_int : ∑ τ : Fin (m + 1) → Perm (Fin k), volume.real (positiveStepSet v P D 1 τ Ω) =
+  have h_integrated_count :
+      ∑ τ : Fin (m + 1) → Perm (Fin k), volume.real (positiveStepSet v P D 1 τ Ω) =
       ∑ σ : Fin (m + 1) → Perm (Fin k),
         volume.real (positiveStepSet v P D σ 1 univ) * sign (ofFn σ).prod := by
     have h_count : ∫ ν, ∑ τ, (positiveStepSet v P D 1 τ Ω).indicator (fun _ ↦ (1 : ℝ)) ν =
@@ -400,19 +392,26 @@ lemma volume_real_inter_degreeSlab_eq_signed_sum {v : Fin (m + 1) → Bool} (hP 
       simp_rw [sum_indicator_positiveStepSet P (zero_le_one.trans hP.le) D hΩ]
     rw [integral_finsetSum, integral_finsetSum] at h_count
     · simpa [h_meas_univ, h_meas_Ω] using h_count
-    · exact fun σ _ ↦ (integrableOn_const (h_fin σ 1 univ)).integrable_indicator (h_meas_univ σ)
-    · exact fun τ _ ↦ (integrableOn_const (h_fin 1 τ Ω)).integrable_indicator (h_meas_Ω τ)
-  have h_eq : (k.factorial : ℝ) ^ (m + 1) * ((|c| * Δ 1)⁻¹ * volume.real (Ω ∩ degreeSlab k D)) =
+    · exact fun σ _ ↦
+        (integrableOn_const (h_finite_volume σ 1 univ)).integrable_indicator (h_meas_univ σ)
+    · exact fun τ _ ↦ (integrableOn_const (h_finite_volume 1 τ Ω)).integrable_indicator (h_meas_Ω τ)
+  -- The product of the cyclic permutations is the only permutation dependence of the Jacobian.
+  -- Group by this product: every product has `k ! ^ m` representatives, instead of `k ! ^ (m+1)`
+  -- unrestricted families on the left.
+  have h_grouped_count :
+      (k.factorial : ℝ) ^ (m + 1) * ((|c| * Δ 1)⁻¹ * volume.real (Ω ∩ degreeSlab k D)) =
       k.factorial ^ m * ∑ τ : Perm (Fin k),
         (|c| * Δ τ)⁻¹ * volume.real (degreeSlab k D) * sign τ := by
-    simpa [← sum_comp_prod_ofFn, h_vol, card_perm, Set.univ_inter] using h_int
-  have h_sum : ∑ τ : Perm (Fin k), (|c| * Δ τ)⁻¹ * volume.real (degreeSlab k D) * sign τ =
+    simpa [← sum_comp_prod_ofFn, h_preimage_volume, card_perm, Set.univ_inter] using
+      h_integrated_count
+  have h_common_factor : ∑ τ : Perm (Fin k), (|c| * Δ τ)⁻¹ * volume.real (degreeSlab k D) * sign τ =
       |c|⁻¹ * (∑ τ : Perm (Fin k), τ.sign / Δ τ) * volume.real (degreeSlab k D) := by
     rw [mul_sum, sum_mul]
     exact sum_congr rfl fun τ _ ↦ by ring
-  rw [h_sum, pow_succ] at h_eq
-  field_simp at h_eq ⊢
-  linear_combination h_eq
+  -- Cancel the common Jacobian constant and the common permutation multiplicity.
+  rw [h_common_factor, pow_succ] at h_grouped_count
+  field_simp at h_grouped_count ⊢
+  linear_combination h_grouped_count
 
 end SignedCount
 
@@ -451,7 +450,7 @@ lemma volume_real_pieriCone_inter_degreeSlab_one (k : ℕ) {q : ℝ} (hq : 1 < q
   let F : Module.End ℝ (Fin k × Fin 1 → ℝ) := pi fun x ↦ d x.1 • (coord x.1 - q • coord (x.1 + 1))
   have hF (β : Fin k × Fin 1 → ℝ) (b : Fin k) :
       F β (b, 0) = d b * (β (b, 0) - q * coord (b + 1) β) := by simp [F, h_coord]
-  have h_det : F.det = ∏ b : Fin k, d b := by
+  have h_jacobian : F.det = ∏ b : Fin k, d b := by
     have h_tri : ((toMatrix' F).reindex (prodUnique _ _) (prodUnique _ _)).IsUpperTriangular := by
       intro b b' h_lt
       have h_ne : b.val ≠ b'.val ∧ b.val + 1 ≠ b'.val :=
@@ -459,21 +458,21 @@ lemma volume_real_pieriCone_inter_degreeSlab_one (k : ℕ) {q : ℝ} (hq : 1 < q
       simp [Fin.ext_iff, F, coord, DFunLike.dite_apply, h_ne]
     rw [← det_toMatrix', ← det_reindex_self (prodUnique _ _), det_of_isUpperTriangular h_tri]
     simp [Fin.ext_iff, F, coord, DFunLike.dite_apply]
-  have h_det_pos : 0 < F.det := by simp [prod_pos, h_det, hd_pos]
-  have h_deg (β : Fin k × Fin 1 → ℝ) : ∑ b, F β (b, 0) = ∑ b, β (b, 0) := by
+  have h_det_pos : 0 < F.det := by simp [prod_pos, h_jacobian, hd_pos]
+  have h_degree_preserved (β : Fin k × Fin 1 → ℝ) : ∑ b, F β (b, 0) = ∑ b, β (b, 0) := by
     rw [← sub_eq_zero, ← sum_sub_distrib]
     calc ∑ b : Fin k, (F β (b, 0) - β (b, 0))
         = ∑ b ∈ range k, ((d b - 1) * coord b β - (d (b + 1) - 1) * coord (b + 1) β) := by
           rw [sum_range]
           exact sum_congr rfl fun b _ ↦ by rw [hF, hd_succ, h_coord]; ring
       _ = 0 := by rw [sum_range_sub' fun b ↦ (d b - 1) * coord b β]; simp [hd_zero, coord]
-  have h_pre : pieriCone ⊤ q ∩ degreeSlab k 1 = F ⁻¹' degreeSlab k 1 := by
+  have h_slab_preimage : pieriCone ⊤ q ∩ degreeSlab k 1 = F ⁻¹' degreeSlab k 1 := by
     ext β
     have h_nonneg : 0 ≤ F β ↔ ∀ b : Fin k, q * coord (b + 1) β ≤ β (b, 0) := by
       simp [Pi.le_def, hF, hd_pos]
     suffices h_orthant :
         (∀ b b' : Fin k, b.val + 1 = b' → q * β (b', 0) ≤ β (b, 0)) ∧ 0 ≤ β ↔ 0 ≤ F β by
-      simp [pieriCone, degreeSlab, h_deg, ← and_assoc, ← h_orthant]
+      simp [pieriCone, degreeSlab, h_degree_preserved, ← and_assoc, ← h_orthant]
     rw [h_nonneg]
     refine ⟨fun ⟨h_step, hβ⟩ b ↦ ?_, fun h_step ↦
       ⟨fun b b' h_succ ↦ by simpa [h_succ, h_coord] using h_step b, fun ⟨b, j⟩ ↦ ?_⟩⟩
@@ -488,8 +487,8 @@ lemma volume_real_pieriCone_inter_degreeSlab_one (k : ℕ) {q : ℝ} (hq : 1 < q
         by_cases hb : b.val + 1 < k
         · simpa [coord, hb] using ih ⟨b + 1, hb⟩ (Nat.lt_succ_self b)
         · simp [coord, hb]
-  rw [h_pre, Measure.real, volume.addHaar_preimage_linearMap h_det_pos.ne', toReal_mul,
-    toReal_ofReal (abs_nonneg _), abs_inv, abs_of_pos h_det_pos, h_det, Measure.real]
+  rw [h_slab_preimage, Measure.real, volume.addHaar_preimage_linearMap h_det_pos.ne', toReal_mul,
+    toReal_ofReal (abs_nonneg _), abs_inv, abs_of_pos h_det_pos, h_jacobian, Measure.real]
 
 /-- Volume of the image of the cone in a slab. Let `P > 1` and `q = P ^ N`, and let `Ω` be a set
 whose preimage under the step map is the cone. Then the volume of `Ω ∩ degreeSlab k D`, multiplied
@@ -508,9 +507,9 @@ theorem prod_mul_volume_real_inter_degreeSlab {k N : ℕ} [NeZero N] {v : ZMod N
   let c : ℝ := |detOneSubPerm q (1 : Perm (Fin k))| / k.factorial *
     ∑ τ : Perm (Fin k), τ.sign / |detOneSubPerm q τ|
   -- `ZMod (m + 1)` is `Fin (m + 1)` by definition.
-  have h_share : volume.real (Ω ∩ degreeSlab k D) = c * volume.real (degreeSlab k D) :=
+  have h_universal_share : volume.real (Ω ∩ degreeSlab k D) = c * volume.real (degreeSlab k D) :=
     volume_real_inter_degreeSlab_eq_signed_sum P hP D hΩ
-  have h_block : volume.real (pieriCone ⊤ q ∩ degreeSlab k (1 : Fin 1 → ℝ)) =
+  have h_one_letter_share : volume.real (pieriCone ⊤ q ∩ degreeSlab k (1 : Fin 1 → ℝ)) =
       c * volume.real (degreeSlab k (1 : Fin 1 → ℝ)) := by
     -- For one letter the step map is the homothety of ratio `q - 1 > 0`.
     have h_cone (ν : Fin k × Fin 1 → ℝ) :
@@ -519,10 +518,12 @@ theorem prod_mul_volume_real_inter_degreeSlab {k N : ℕ} [NeZero N] {v : ZMod N
       simp [pieriCone, field]
     simpa only [zero_add, pow_one] using volume_real_inter_degreeSlab_eq_signed_sum (m := 0) q hq 1
       h_cone
-  have hc : (∏ l : Fin k, (q ^ (l.val + 1) - 1) / (q - 1))⁻¹ = c :=
+  -- The one-letter simplex has positive volume, so comparing its two formulas determines `c`.
+  have h_share_formula : (∏ l : Fin k, (q ^ (l.val + 1) - 1) / (q - 1))⁻¹ = c :=
     mul_right_cancel₀ (volume_real_degreeSlab_one_pos k).ne'
-      ((volume_real_pieriCone_inter_degreeSlab_one k hq).symm.trans h_block)
-  rw [h_share, ← hc, mul_inv_cancel_left₀ (prod_pos fun l _ ↦ by simp [one_lt_pow₀, hq]).ne']
+      ((volume_real_pieriCone_inter_degreeSlab_one k hq).symm.trans h_one_letter_share)
+  rw [h_universal_share, ← h_share_formula,
+    mul_inv_cancel_left₀ (prod_pos fun l _ ↦ by simp [one_lt_pow₀, hq]).ne']
 
 end InterlacingCone
 

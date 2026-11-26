@@ -1,6 +1,10 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Lib.Analytic.PrimeNumberTheorem.LFunctionGrowth
+import Lib.Analytic.EntireLFunction
 
 /-!
 # A zero-free region for Dirichlet L-functions

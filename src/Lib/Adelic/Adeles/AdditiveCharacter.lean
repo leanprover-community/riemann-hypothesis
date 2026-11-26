@@ -1,5 +1,19 @@
 module
 
+public import Mathlib.Analysis.Complex.Circle
+public import Mathlib.NumberTheory.NumberField.Discriminant.Defs
+public import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
+import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Dynamics.FixedPoints.Topology
+import Mathlib.NumberTheory.NumberField.Discriminant.Basic
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.Adeles.Basic
 public import Lib.Adelic.QuotientMeasure.Basic
 public import Lib.General.Groups.CongruenceSubgroups
@@ -137,11 +151,6 @@ lemma mk_algebraMap_surjective :
   rintro ⟨x⟩
   exact (exists_sub_mem_Ô x).imp fun a ha ↦ (eq_iff_sub_mem.mpr ha).symm
 
-/-- For an algebraic integer `a` of `E`, the value `𝐞 (tr a) = exp (2πi Tr_{E/ℚ} a)` is one. -/
-lemma fourierChar_trace_eq_one {a : E} (ha : IsIntegral ℤ a) : 𝐞 (trace ℚ E a) = 1 :=
-  -- the trace of an algebraic integer is an integer
-  fourierChar_eq_one_iff.mpr ⟨trace ℤ (𝓞 E) ⟨a, ha⟩, mod_cast (coe_trace_int ⟨a, ha⟩).symm⟩
-
 /-- The standard additive character of the finite adeles: ψ_f(x) = exp(2πi Tr_{E/ℚ}(a)) for any
 a in E with x − a integral. -/
 def ψf : AddChar (𝔸f E) Circle :=
@@ -152,7 +161,9 @@ def ψf : AddChar (𝔸f E) Circle :=
       (((mk' (Ô E).toAddSubgroup).comp (algebraMap E (𝔸f E))).liftOfSurjective
         (mk_algebraMap_surjective E)
         ⟨AddMonoidHom.mk' (fun a : E ↦ 𝐞 (trace ℚ E a)) (by aesop (add simp map_add_eq_mul)),
-          fun a ha ↦ fourierChar_trace_eq_one E (algebraMap_mem_Ô.1 (by aesop))⟩)
+          fun a ha ↦ fourierChar_eq_one_iff.mpr
+            ⟨trace ℤ (𝓞 E) ⟨a, algebraMap_mem_Ô.1 (by aesop)⟩,
+              mod_cast (coe_trace_int ⟨a, algebraMap_mem_Ô.1 (by aesop)⟩).symm⟩⟩)
       (mk' (Ô E).toAddSubgroup)
 
 /-- The standard additive character of `New.𝔸 E` (the adele ring when E is totally complex): the
@@ -217,7 +228,9 @@ lemma ψf_eq_one_of_mem {x : 𝔸f E} (h : x ∈ Ô E) : ψf E x = 1 := by
 
 instance : SigmaFinite (volume (α := 𝔸f E)) := inferInstance
 
-deriving instance SecondCountableTopology, T2Space for 𝔸f E, 𝔸 E
+deriving instance T2Space for 𝔸f E
+
+deriving instance SecondCountableTopology, T2Space for 𝔸 E
 
 deriving instance PolishSpace, LocallyCompactSpace, BorelSpace, IsTopologicalRing,
   MeasurableSingletonClass for 𝔸 E
@@ -449,7 +462,8 @@ lemma finite_preimage_of_discreteTopology_range {B I : Type*} [AddCommGroup B] [
   -- `f` tends to infinity along the cofinite filter
   simpa using f.tendsto_coe_cofinite_of_isDiscrete hf_inj ⟨h_disc⟩ hC.compl_mem_cocompact
 
-omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure] in
+omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
+    [T2Space B] in
 /-- Let `f : I →+ B` be an injective additive map whose image is a lattice of covolume one in `B`
 (discrete, with compact quotient of measure one). Then for every compact set `C`, only finitely many
 `a` in `I` have `f a ∈ C`. -/

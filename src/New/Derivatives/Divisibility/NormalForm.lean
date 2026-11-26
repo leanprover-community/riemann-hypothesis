@@ -1,9 +1,13 @@
 module
 
-public import TauCeti.RingTheory.MvPowerSeries.Derivative
-public import TauCeti.RingTheory.MvPowerSeries.Dvd
-public import Lib.General.Algebra.SeriesBounds
-public import Lib.General.Algebra.SeriesCongruences
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.MvPowerSeries.Dvd
+public import Lib.General.Algebra.IntegralPowerSeries
+import Lib.General.Algebra.SeriesBounds
+import Lib.General.Algebra.SeriesCongruences
 
 /-!
 # Couplings and the normal form
@@ -12,8 +16,7 @@ public import Lib.General.Algebra.SeriesCongruences
   `F(ϖ z) = W exp (c_ϖ Ξ)` with `W` integral, `c_ϖ = ϖ ^ (p + 1) / p` and
   `Ξ = ∑_{e ∈ S} ∑_j λ_{e j} Γ_e ^ p ^ j`, for any rule that assigns partners to places.
 * `New.HasNormalForm.rescale`: the normal form is kept, with other numbers `λ_{e j}`, under
-  `z ↦ α z` with `α` integral; so its existence depends only on the valuation of `ϖ`
-  (`New.HasNormalForm.exists_of_norm_eq`).
+  `z ↦ α z` with `α` integral.
 * `New.HasNormalForm.norm_coeff_subst_le_one`: if `F` has the normal form and `Z` is integral
   without constant term, then `F(ϖ Z)` is integral in degrees at most `B` if the couplings `Γ_e(Z)`
   with `e ∈ S`, `e ≤ log_p B` are divisible by some `π` with `‖c_ϖ π‖ ≤ p ^ (-1 / (p - 1))`.
@@ -140,7 +143,7 @@ lemma norm_coeff_expSubst_smul_le_one {τ : Type} {a : ℂ_[p]} {π : valRingCp 
   refine norm_coeff_expSubst_le_one (by simp [hG]) (fun d hd ↦ ?_) hm
   calc ‖coeff d (a • seriesToCp G)‖ = ‖a * (coeff d G : valRingCp p)‖ := rfl
     _ ≤ p ^ (-(1 / (p - 1)) : ℝ) := by
-      grw [← hπ, norm_mul, norm_mul, dvd_iff_norm_le.1 (h_dvd d hd)]
+      grw [← hπ, norm_mul, norm_mul, valRingCp.dvd_iff_norm_le.1 (h_dvd d hd)]
 
 /-- To prove that `F` has the normal form `F(ϖ z) = W exp (c_ϖ Ξ₀)`, where `W` is integral,
 `c_ϖ = ϖ ^ (p + 1) / p` and `Ξ₀ = couplingSum S pr l`, it is enough to know the exponent modulo a
@@ -250,20 +253,25 @@ lemma HasNormalForm.norm_coeff_subst_le_one (hF : HasNormalForm S pr ϖ l F) {π
     ‖coeff m (F.subst fun x : Φ × c ↦ ϖ • seriesToCp (Z x))‖ ≤ 1 := by
   classical
   set Ξ : MvPowerSeries τ (valRingCp p) := (couplingSum S pr l).subst Z
-  have h_zero : constantCoeff Ξ = 0 :=
+  have h_exponent_zero : constantCoeff Ξ = 0 :=
     constantCoeff_subst_eq_zero (hasSubst_of_constantCoeff_zero hZ) hZ constantCoeff_couplingSum
-  have h_exp (d : τ →₀ ℕ) (hd : d.degree ≤ B) :
+  -- Only couplings of sufficiently small degree can affect the truncated exponential.
+  have h_exp_integral (d : τ →₀ ℕ) (hd : d.degree ≤ B) :
       ‖coeff d (expSubst ((ϖ ^ (p + 1) / p) • seriesToCp Ξ))‖ ≤ 1 :=
-    norm_coeff_expSubst_smul_le_one hπ h_zero
+    norm_coeff_expSubst_smul_le_one hπ h_exponent_zero
       (fun _ hd' ↦ dvd_coeff_subst_couplingSum hZ hΓ hd') hd
-  obtain ⟨W, hW⟩ : ∃ W : MvPowerSeries τ (valRingCp p),
+  obtain ⟨W, h_factorization⟩ : ∃ W : MvPowerSeries τ (valRingCp p),
       F.subst (fun x : Φ × c ↦ ϖ • seriesToCp (Z x)) =
         seriesToCp W * expSubst ((ϖ ^ (p + 1) / p) • seriesToCp Ξ) :=
           hF.exists_subst_eq_mul_expSubst hZ
-  rw [hW, coeff_mul]
+  -- The other factor is already integral. Each convolution term uses a coefficient
+  -- of the exponential of degree at most B.
+  rw [h_factorization, coeff_mul]
   refine sum_mem (S := valRingCp p) fun ⟨d₁, d₂⟩ hd ↦ ?_
-  have h_le : d₂ ≤ m := le_of_add_le_right (Finset.HasAntidiagonal.mem_antidiagonal.1 hd).le
-  exact mul_mem (coeff d₁ W).property (h_exp d₂ ((Finsupp.degree_mono h_le).trans hm))
+  have h_degree_bound : d₂ ≤ m :=
+    le_of_add_le_right (Finset.HasAntidiagonal.mem_antidiagonal.1 hd).le
+  exact mul_mem (coeff d₁ W).property
+    (h_exp_integral d₂ ((Finsupp.degree_mono h_degree_bound).trans hm))
 
 variable [DecidableEq Φ] [DecidableEq c]
 

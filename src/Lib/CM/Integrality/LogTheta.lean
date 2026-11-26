@@ -1,8 +1,15 @@
 module
 
-public import Lib.CM.Integrality.IsogenyIntegrality
-public import Lib.General.Algebra.SeriesBounds
+public import Mathlib.RingTheory.PowerSeries.Log
+import TauCeti.RingTheory.MvPowerSeries.Derivative
+import TauCeti.RingTheory.PowerSeries.Log
+import TauCeti.RingTheory.PowerSeries.Rescale
 public import Lib.General.NumberTheory.PadicLimitsValuation
+public import Lib.CM.FormalGroup.IntegralParameter
+import Lib.CM.Integrality.IsogenyIntegrality
+import Lib.General.Algebra.SeriesBounds
+import Lib.General.NumberTheory.SUnitsAndClassNumber
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # The logarithm of the theta function of a CM lattice and the integral group law
@@ -87,18 +94,8 @@ lemma IsSeriesGenerator.isClosed {p : ℕ} [Fact p.Prime] {B : Subring ℂ_[p]�
 `T_n` are the coefficients of `X ^ n` in `f` and `T`. -/
 lemma coeff_two_subst {p : ℕ} [Fact p.Prime] {T f : ℂ_[p]⟦X⟧} (hT₀ : constantCoeff T = 0) :
     coeff 2 (f.subst T) = coeff 1 f * coeff 2 T + coeff 2 f * coeff 1 T ^ 2 := by
-  -- Only the powers `T` and `T ^ 2` contribute to degree two.
-  have h_sq : coeff 2 (T ^ 2) = coeff 1 T ^ 2 := by
-    simp [sq, coeff_mul, Finset.Nat.antidiagonal_succ, hT₀]
-  have h_pow (n : ℕ) (hn₁ : n ≠ 1) (hn₂ : n ≠ 2) : coeff 2 (T ^ n) = 0 := by
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp [coeff_one]
-    · exact X_pow_dvd_iff.1 (pow_dvd_pow_of_dvd (X_dvd_iff.2 hT₀) n) 2 (by omega)
-  rw [coeff_subst' (.of_constantCoeff_zero' hT₀), finsum_eq_sum_of_support_subset _ (s := {1, 2}),
-    Finset.sum_pair (by norm_num), pow_one, h_sq, smul_eq_mul, smul_eq_mul]
-  intro n hn
-  by_contra h_not
-  simp_all
+  rw [coeff_subst_eq_sum_range f hT₀]
+  simp [Finset.sum_range_succ, coeff_one, sq, coeff_mul, Finset.Nat.antidiagonal_succ, hT₀]
 
 /-- If an element `f` of the ring `B = 𝒪[[T]]` of integral power series in `T = X + ⋯` has no
 linear term, then its coefficient of `X²` is its coefficient of `T²`, so it is integral. -/
@@ -546,7 +543,7 @@ lemma norm_constantCoeff_le_of_mem_multiSeriesRing (hH : H ∈ C.multiSeriesRing
     ‖constantCoeff H‖ ≤ 1 := by
   obtain ⟨G, rfl⟩ := C.mem_multiSeriesRing_iff.1 hH
   rw [constantCoeff_subst_translatedY_subst, constantCoeff_map]
-  exact (constantCoeff G).2
+  exact (constantCoeff G).property
 
 /-- An element of `𝒪[[y(μ_i z)]]` whose constant term has norm one is a unit of that ring. -/
 lemma exists_mul_eq_one_of_mem_multiSeriesRing (hH : H ∈ C.multiSeriesRing μ)

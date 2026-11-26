@@ -6,6 +6,7 @@ public import New.Spanning.SecondMoment.PositiveType
 /-!
 # Few translates fill
 
-Compatibility entry point for the second-moment and greedy-spanning arguments.
-New callers can import `HilbertSchmidt` or `Spread` directly.
+Compatibility entry point for callers using the original module name. The second-moment
+and greedy-spanning declarations now live in `HilbertSchmidt` and `Spread`; new callers should
+import the module that contains the result they use.
 -/

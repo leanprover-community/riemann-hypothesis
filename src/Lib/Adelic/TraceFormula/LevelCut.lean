@@ -1,5 +1,6 @@
 module
 
+import TauCeti.RepresentationTheory.AsAlgebraHom
 public import Lib.Adelic.TraceFormula.LevelAlgebra
 public import Lib.Adelic.TraceFormula.LineDeterminant
 public import Lib.Adelic.TraceFormula.LineStabiliser
@@ -158,7 +159,7 @@ def offAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w) :
         obtain ⟨h_off, h_local⟩ := (mem_levelSpace_cutLevel_iff hw ρ hK hJ).1 hy
         change ρ.asAlgebraHom (mapDomain (offPlace hw) a) y ∈ levelSpace ρ (cutLevel K w J)
         rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
-        exact ⟨a.2 y h_off, map_mem_levelSpace_of_commute h_local
+        exact ⟨a.property y h_off, map_mem_levelSpace_of_commute h_local
           fun x ↦ commute_localRep_offRep hw ρ x a⟩
 
 /-- The elements of the group algebra at `w` that map the space of vectors fixed by `J` to itself
@@ -172,7 +173,7 @@ def localAction (hK : maxCompactAt n w ≤ K) (hJ : J ≤ localIntGL n w) :
         change ρ.asAlgebraHom (mapDomain (ofSplitPlace hw) u) y ∈ levelSpace ρ (cutLevel K w J)
         rw [asAlgebraHom_mapDomain, mem_levelSpace_cutLevel_iff hw ρ hK hJ]
         exact ⟨map_mem_levelSpace_of_commute h_off fun k ↦ commute_offRep_localRep hw ρ k u,
-          u.2 y h_local⟩
+          u.property y h_local⟩
 
 /-- On the vectors of the cut level, `offAction` of `a` is the action of `a` through the parts off
 `w`. -/
@@ -375,9 +376,9 @@ theorem trace_eq_of_trace_cutLevel_eq (hw : w.IsSplit) (hK : maxCompactAt n w �
   let a₂ : levelAlgebra (offRep hw ρ') K := ⟨a, universalLevelAlgebra_le K (offRep hw ρ') ha⟩
   -- Vectors of level `K` are spherical at `w`, so `a` acts on them through its part off `w`.
   have hT_off (y : levelSpace ρ K) : (T y : M) = (offRep hw ρ).asAlgebraHom a y :=
-    (hT y).trans (asAlgebraHom_offRep_apply hw ρ h_int (levelSpace_anti hK y.2)).symm
+    (hT y).trans (asAlgebraHom_offRep_apply hw ρ h_int (levelSpace_anti hK y.property)).symm
   have hT_off' (y : levelSpace ρ' K) : (T' y : M') = (offRep hw ρ').asAlgebraHom a y :=
-    (hT' y).trans (asAlgebraHom_offRep_apply hw ρ' h_int (levelSpace_anti hK y.2)).symm
+    (hT' y).trans (asAlgebraHom_offRep_apply hw ρ' h_int (levelSpace_anti hK y.property)).symm
   rw [← trace_offAction_mul_mean hw ρ hK i a₁ hT_off,
     ← trace_offAction_mul_mean hw ρ' hK i a₂ hT_off']
   -- By the line relation it suffices to compare the traces of the products of positive powers.

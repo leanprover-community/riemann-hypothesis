@@ -1,6 +1,14 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Data.Finset.Slice
+public import Mathlib.Analysis.Matrix.Order -- shake: keep (opened namespace `MatrixOrder`)
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.GLn.SchurModule.GramMatrix
+import Lib.Base
+import Lib.Cohomology.Etale.Basic
+import Lib.GLn.SchurModule.WeylKernel
 
 /-!
 # Norm bound for Schur matrices and basic facts on the weight representations
@@ -109,16 +117,21 @@ lemma exists_enum_prod_le {ι : Type*} [DecidableEq ι] (d : ι → NNReal) (S :
       obtain rfl | ⟨c, hc⟩ : A = ∅ ∨ A.Nonempty := A.eq_empty_or_nonempty
       · simp
       -- Remove from `A` one element `b` (namely `a`, if present) so that the rest lies in `S`.
-      obtain ⟨b, hb, h_sub⟩ : ∃ b ∈ A, A.erase b ⊆ S := by grind
+      obtain ⟨b, hb, h_sub, h_le⟩ : ∃ b ∈ A, A.erase b ⊆ S ∧ d b ≤ d a := by
+        by_cases haA : a ∈ A
+        · exact ⟨a, haA, fun x hx ↦ (mem_insert.mp (h_A_subset (mem_of_mem_erase hx))).resolve_left
+            (ne_of_mem_erase hx), le_rfl⟩
+        · exact ⟨c, hc, fun x hx ↦ (mem_insert.mp (h_A_subset (mem_of_mem_erase hx))).resolve_left
+            fun hxa ↦ haA (hxa ▸ mem_of_mem_erase hx),
+            h_max c ((mem_insert.mp (h_A_subset hc)).resolve_left fun hca ↦ haA (hca ▸ hc))⟩
       rw [← prod_erase_mul A d hb, ← card_erase_add_one hb, prod_range_succ']
-      change (∏ x ∈ A.erase b, d x) * d b ≤ (∏ i ∈ range #(A.erase b), ρ i) * d a
-      exact mul_le_mul' (h_prod _ h_sub) (by grind)
+      exact mul_le_mul' (h_prod _ h_sub) h_le
 
 omit [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
 /-- The rows in one column of a column filling are distinct. -/
 lemma fillingRows_injective (T : ColumnFilling n κ) (τ : Φ) (h : Fin (rankAt n τ))
     (j : Fin (κ τ h)) : Function.Injective (fillingRows T τ h j) :=
-  (rowEquivFin n τ).symm.injective.comp (T τ h j).2.injective
+  (rowEquivFin n τ).symm.injective.comp (T τ h j).property.injective
 
 omit [DecidableEq Φ] in
 /-- Diagonal matrices act diagonally on tensors: `minorsMatrix` multiplies the basis tensor of a
@@ -135,7 +148,7 @@ lemma minorsMatrix_diagonal {R : Type} [CommRing R] (x : ∀ τ : Φ, n τ → R
     simp [submatrix_diagonal _ _ (fillingRows_injective T _ _ _)]
   · -- Two different increasing sequences have different ranges, so that minor has a zero line.
     obtain ⟨τ, h, j, h_ne⟩ : ∃ τ h j, T τ h j ≠ T' τ h j := by simpa [funext_iff] using h_eq
-    have h_range : Set.range (T τ h j).1 ≠ Set.range (T' τ h j).1 :=
+    have h_range : Set.range (T τ h j).val ≠ Set.range (T' τ h j).val :=
       mt ((T τ h j).2.range_inj_of_wellFoundedLT (T' τ h j).2).1 (Subtype.coe_ne_coe.2 h_ne)
     refine prod_eq_zero (mem_univ τ) (prod_eq_zero (mem_univ h) (prod_eq_zero (mem_univ j) ?_))
     simp only [Ne, Set.Subset.antisymm_iff, not_and_or, Set.range_subset_iff, not_forall] at h_range
@@ -167,9 +180,10 @@ lemma dotProduct_weylGram_schur_diagonal_le (d : ∀ τ : Φ, n τ → NNReal) (
       star η ⬝ᵥ (weylGramOver * schur κ fun τ : Φ ↦ diagonal fun a : n τ ↦ (d τ a : ℂ)) *ᵥ η =
         ∑ T : ColumnFilling n κ, (entry T : ℂ) * (‖(F *ᵥ η) T‖ : ℂ) ^ 2 := by
     rw [h_gram, Matrix.mul_assoc, fillingMatrixOver_mul_schur, minorsMatrix_diagonal,
-      ← mulVec_mulVec,
-      dotProduct_mulVec, ← star_mulVec, ← mulVec_mulVec]
-    simp [F, entry, dotProduct, mulVec_diagonal, mul_left_comm, conj_mul']
+      ← mulVec_mulVec, dotProduct_mulVec, ← star_mulVec, ← mulVec_mulVec, dotProduct]
+    refine sum_congr rfl fun T _ ↦ ?_
+    rw [mulVec_diagonal, Pi.star_apply, Complex.star_def, mul_left_comm, conj_mul']
+    simp only [entry, NNReal.coe_prod, ofReal_prod, F]
   have h_norm : (weylNormSq η : ℂ) = ∑ T : ColumnFilling n κ, (‖(F *ᵥ η) T‖ : ℂ) ^ 2 := by
     rw [coe_weylNormSq, h_gram, ← mulVec_mulVec, dotProduct_mulVec, ← star_mulVec]
     simp [dotProduct, conj_mul']
@@ -194,12 +208,41 @@ lemma prod_pow_diagramWeight_eq (hF : FitsRanks n n' κ) (ρ : Φ → ℕ → NN
     ∏ τ : Φ, ∏ i ∈ range (rankAt n τ), ρ τ i ^ diagramWeight (rankAt n') κ (τ, i) =
       (∏ τ : Φ, (∏ i ∈ range (rankAt n τ), ρ τ i) ^ schurDetExp n n' κ τ) *
         ∏ τ : Φ, ∏ h : Fin (rankAt n τ), (∏ i ∈ range h, ρ τ i) ^ κ τ h := by
-  have h_cols : ∏ τ : Φ, ∏ h : Fin (rankAt n τ), (∏ a ∈ range h, ρ τ a) ^ κ τ h =
-      ∏ τ : Φ, ∏ h ∈ range (rankAt n τ), (∏ a ∈ range (min (rankAt n τ) h), ρ τ a) ^ κ τ h := by
-    simp [prod_range (n := rankAt ..)]
-  rw [diagramWeight_eq_of_fitsRanks hF]
-  simp +contextual [pow_add, diagramWeight, ← prod_pow_eq_pow_sum, ite_and, prod_pow, field,
-    Finsupp.single_apply, prod_comm, -mem_range, prod_mul_distrib, h_cols]
+  let P (w : Φ × ℕ →₀ ℕ) : NNReal :=
+    ∏ τ : Φ, ∏ i ∈ range (rankAt n τ), ρ τ i ^ w (τ, i)
+  have hP_add (w₁ w₂) : P (w₁ + w₂) = P w₁ * P w₂ := by
+    simp only [P, Finsupp.add_apply, pow_add, prod_mul_distrib]
+  have hP_sum {α : Type} (s : Finset α) (g : α → Φ × ℕ →₀ ℕ) :
+      P (∑ a ∈ s, g a) = ∏ a ∈ s, P (g a) := by
+    induction s using Finset.cons_induction with
+    | empty =>
+      simp only [sum_empty, prod_empty, P, Finsupp.coe_zero, Pi.zero_apply, pow_zero,
+        prod_const_one]
+    | cons a s ha ih => rw [sum_cons, prod_cons, hP_add, ih]
+  have hP_smul (c : ℕ) (w) : P (c • w) = P w ^ c := by
+    simp only [P, Finsupp.smul_apply, smul_eq_mul, mul_comm c, pow_mul, prod_pow]
+  have hP_single (τ : Φ) {i : ℕ} (hi : i < rankAt n τ) :
+      P (Finsupp.single (τ, i) 1) = ρ τ i := by
+    simp only [P, Finsupp.single_apply, Prod.mk.injEq]
+    rw [prod_eq_single τ
+      (fun τ' _ hτ' ↦ prod_eq_one fun _ _ ↦ by rw [ite_eq_right (fun h ↦ hτ' h.1.symm), pow_zero])
+      (fun h ↦ absurd (mem_univ τ) h)]
+    rw [prod_eq_single i (fun j _ hj ↦ by rw [ite_eq_right (fun h ↦ hj h.2.symm), pow_zero])
+      (fun h ↦ absurd (mem_range.mpr hi) h)]
+    rw [ite_eq_left ⟨rfl, rfl⟩, pow_one]
+  change P (diagramWeight (rankAt n') κ) = _
+  rw [diagramWeight_eq_of_fitsRanks hF, hP_add, mul_comm, diagramWeight]
+  congr 1
+  · rw [hP_sum]
+    refine prod_congr rfl fun τ _ ↦ ?_
+    rw [hP_smul, hP_sum]
+    exact congrArg (· ^ _) (prod_congr rfl fun i hi ↦ hP_single τ (mem_range.mp hi))
+  · rw [hP_sum]
+    refine prod_congr rfl fun τ _ ↦ ?_
+    rw [hP_sum, ← Fin.prod_univ_eq_prod_range]
+    refine prod_congr rfl fun h _ ↦ ?_
+    rw [hP_smul, hP_sum]
+    exact congrArg (· ^ _) (prod_congr rfl fun i hi ↦ hP_single τ ((mem_range.mp hi).trans h.2))
 
 /-- Let `z τ` be complex `n' τ × n τ` matrices, and assume `FitsRanks n n' κ`: at each `τ`,
 `#(n τ) ≤ #(n' τ)` and `κ τ h = 0` for `#(n τ) < h < #(n' τ)`. There are numbers `ρ τ i ≥ 0` (in the
@@ -295,8 +338,18 @@ variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
 matrix `New.weylRep` κ e g (∏_τ det(g_τ)^{e_τ} times the Schur matrix of g). -/
 lemma weylRep_map {κ : T → ℕ → ℕ} {e : T → ℤ} (f : R →+* S) (g : T → GL n R) :
     weylRep κ e (fun τ : T ↦ GeneralLinearGroup.map f (g τ)) = (weylRep κ e g).map f := by
-  -- `coe_units_zpow` is left out: with it this simp call does not close the goal.
-  exact ext (by simp [weylRep, schur_map, ← map_zpow, Units.smul_def, f.map_det, -coe_units_zpow])
+  change ((∏ τ, (GeneralLinearGroup.map f (g τ)).det ^ e τ : Sˣ) : S) •
+      schur κ (fun τ ↦ (g τ : Matrix n n R).map f) =
+    (((∏ τ, (g τ).det ^ e τ : Rˣ) : R) • schur κ (fun τ ↦ (g τ : Matrix n n R))).map f
+  rw [Matrix.map_smul' (hf := map_mul f), schur_map .refl]
+  refine congrArg (· • _) ?_
+  change ((∏ τ, (GeneralLinearGroup.map f (g τ)).det ^ e τ : Sˣ) : S) =
+    ((Units.map f.toMonoidHom (∏ τ, (g τ).det ^ e τ) : Sˣ) : S)
+  refine congrArg Units.val ?_
+  rw [map_prod]
+  refine Finset.prod_congr rfl fun τ _ ↦ ?_
+  rw [map_zpow]
+  exact congrArg (· ^ e τ) (Units.ext (f.map_det (g τ).val).symm)
 
 /-- Integrality: if every g_τ is an invertible matrix over the subring A (with inverse over A,
 `New.intGL`), then every entry of `New.weylRep` κ e g lies in A. -/
@@ -313,10 +366,12 @@ lemma weylRep_entry_mem {κ : T → ℕ → ℕ} {e : T → ℤ} (A : Subring R)
 the embedding Φ_w chosen by the CM type applied to its entries. -/
 lemma stdSpace_ratEmbed_apply (w : NumberField.InfinitePlace E) :
     (((stdSpace E n).ratEmbed γ).1 w).val.val = (Φ w).mapMatrix γ := by
-  -- `erw`: the rational embedding is a composite of equivalences, and the subtype literal it
-  -- produces only matches `Subtype.coe_mk` after unfolding them.
-  erw [Subtype.coe_mk]
-  aesop
+  ext i j
+  dsimp only [Space.ratEmbed, Space.toRatCoords, stdSpace, G.toUnitary,
+    MonoidHom.comp_apply, MulEquiv.symm_trans_apply, MulEquiv.coe_toMonoidHom,
+    MulEquiv.coe_mk, Equiv.coe_fn_symm_mk]
+  simp only [U.map, U.conj, RingHom.mapMatrix_apply, Matrix.map_apply, inv_one, one_mul, mul_one]
+  rfl
 
 /-- On the definite space `New.stdSpace`, γ acts by `New.weylRep` at the family of matrices
 Φ_τ(γ̄). -/
@@ -341,7 +396,14 @@ lemma gramForm_conjWeylRep {κ : T → ℕ → ℕ} {e : T → ℤ} (x : T → U
     simpa [mul_comm] using congrArg det (h_unitary τ)
   have h_rep (ζ : WeylIndex n κ → ℂ) :
       conjWeylRep κ e x ζ = (∏ τ, (g τ).det ^ e τ) • schur κ g *ᵥ ζ := by
-    simp [conjWeylRep, weylRep, Units.smul_def, g]
+    change (((∏ τ, (GeneralLinearGroup.map conj (x τ).1).det ^ e τ : ℂˣ) : ℂ) •
+        schur κ g) *ᵥ ζ = _
+    rw [smul_mulVec]
+    refine congrArg (· • _) ?_
+    rw [← Units.coeHom_apply, map_prod]
+    refine Finset.prod_congr rfl fun τ _ ↦ ?_
+    rw [Units.coeHom_apply, Units.val_zpow_eq_zpow_val]
+    rfl
   -- The determinant factor has absolute value one.
   have h_factor : (∏ τ, (g τ).det ^ e τ) * ∏ τ, conj (g τ).det ^ e τ = 1 := by
     simp [← Finset.prod_mul_distrib, ← mul_zpow, h_det]

@@ -1,6 +1,13 @@
 module
 
-public import New.Spanning.Unfolding.ReducedPoints
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.TotallySplit
+public import New.Spanning.RemainingTerms.BorderedDeterminant
+import Lib.General.Analysis.GaussianIntegral
+import Lib.General.NumberTheory.SUnitsAndClassNumber
+import New.Spanning.Unfolding.ReducedPoints
 
 /-!
 # Frames of near terms: short shared vectors and moves between frames
@@ -370,7 +377,7 @@ lemma frameProducts_mul_of_mem_besselU0 {S : Filling E 𝔰} {u : S.G E} (hu : u
 elements that fix each vector of the frame `f`. Then `u γ` and `γ` have the same shared vectors (the
 first `ϱ` coordinates of the columns `k ≥ j` of `γ f · adj Y`, see `sharedVectors`), as these
 columns lie in the span of `f`. -/
-lemma HasCellRank.sharedVectors_mul_of_mem_besselU0 {S : Filling E 𝔰} [HasPrimitiveRoot5040 E]
+lemma HasCellRank.sharedVectors_mul_of_mem_besselU0 {S : Filling E 𝔰}
     {j : Fin (𝔰.ϱ + 2)} {γ : S.G E} (h : S.HasCellRank j γ) {u : S.G E} (hu : u ∈ besselU0) :
     S.sharedVectors j (u * γ) = S.sharedVectors j γ := by
   ext a k
@@ -394,7 +401,7 @@ completed by rows of `1`. If `j ≤ k`, column `k` of `S.sharedVectors j γ` con
 coordinates along `e₁, …, e_ϱ` of column `k` of `γ f · adj Y`, which lies in the spans of both the
 frame `f` and `γ f`. If `k < j`, the column is zero. All these entries have norm at most
 `S.b ^ (182 n²)` under the embedding `Φ v` of every infinite place `v`, where `n = ϱ + 1`. -/
-lemma HasCellRank.norm_sharedVectors_le [S.IsAdmissible] [HasPrimitiveRoot5040 E]
+lemma HasCellRank.norm_sharedVectors_le [S.IsAdmissible]
     {j : Fin (𝔰.ϱ + 2)} {γ : S.G E} (h : S.HasCellRank j γ) (h_near : S.IsNear γ)
     (v : InfinitePlace E) (a : Fin 𝔰.ϱ) (k : Fin (𝔰.ϱ + 1)) :
     ‖Φ v (S.sharedVectors j γ a k)‖ ≤ S.b ^ (182 * 𝔰.n ^ 2) := by
@@ -679,7 +686,7 @@ completed by rows of `1`. If the two frames agree outside the isotropic space an
 unipotent group `S.classUnipotent₀ c` of level `M = S.M` fixing the standard frame, carries the
 frame of `γ` to that of `γ'`. -/
 lemma exists_mem_classUnipotent₀_frameImage_mul_eq [HasPrimitiveRoot5040 E] {𝔰 : Shape}
-    {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} [S.IsAdmissible] {γ γ' : S.G E} (c : S.Classes)
+    {S : Filling E 𝔰} {j : Fin (𝔰.ϱ + 2)} {γ γ' : S.G E} (c : S.Classes)
     (hZ : S.frameProducts γ' = S.frameProducts γ)
     (hZ_int : ∀ a b : Fin (𝔰.ϱ + 1), IsIntegral ℤ (S.frameProducts γ a b))
     (h_minor : leadingMinor (S.frameProducts γ) j ≠ 0)

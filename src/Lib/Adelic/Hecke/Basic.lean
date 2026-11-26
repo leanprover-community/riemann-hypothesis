@@ -1,6 +1,11 @@
 module
 
-public import Lib.Base
+import TauCeti.RepresentationTheory.Induction.Mackey.Subgroup
+public import Mathlib.GroupTheory.DoubleCoset
+public import Mathlib.RepresentationTheory.Coinduced
+import Mathlib.Algebra.FiniteSupport.Basic
+import Mathlib.CategoryTheory.Shift.Basic
+public import Lib.Speed
 
 /-!
 # Level spaces, Hecke operators, stabilisers and class sums
@@ -132,21 +137,18 @@ lemma eq_and_eq_one_of_doubleCoset_rep {e : Δ →* G}
 
 /-- The class sum of f: the sum over the double cosets c in Γ\G/K of f(g_c)/#(Γ ∩ g_c K g_c⁻¹), g_c
 a chosen representative. For f left invariant under Γ and right invariant under K the choice of
-representatives does not matter (`New.classSum_eq_finsum_of_rep`). -/
+representatives does not matter. -/
 def classSum [Module ℚ W] (Γ K : Subgroup G) (f : G → W) : W :=
   ∑ᶠ c : DoubleCoset.Quotient (Γ : Set G) K, (Nat.card (classAut Γ K c.out) : ℚ)⁻¹ • f c.out
 
 /-- The order of the stabiliser Γ ∩ gKg⁻¹ depends only on the double coset ΓgK. -/
 lemma card_classAut_mul_mul {γ k : G} (hγ : γ ∈ Γ) (hk : k ∈ K) (g : G) :
     Nat.card (classAut Γ K (γ * g * k)) = Nat.card (classAut Γ K g) := by
-  -- Conjugation `δ ↦ γ⁻¹ * δ * γ` carries the first stabiliser onto the second.
-  refine Nat.card_congr ((MulAut.conj γ⁻¹).toEquiv.subtypeEquiv fun δ ↦ ?_)
-  change δ ∈ classAut Γ K (γ * g * k) ↔ γ⁻¹ * δ * γ⁻¹⁻¹ ∈ classAut Γ K g
-  have h_left : γ⁻¹ * δ * γ ∈ Γ ↔ δ ∈ Γ := by
-    rw [mul_mem_cancel_right hγ, mul_mem_cancel_left (inv_mem hγ)]
-  have h_conj : (γ * g * k)⁻¹ * δ * (γ * g * k) = k⁻¹ * (g⁻¹ * (γ⁻¹ * δ * γ) * g) * k := by group
-  rw [inv_inv, mem_classAut, mem_classAut, h_left, h_conj, mul_mem_cancel_right hk,
-    mul_mem_cancel_left (inv_mem hk)]
+  have hAut (x : G) : classAut Γ K x = TauCeti.mackeySubgroup x K Γ := by
+    ext δ
+    simp [mem_classAut]
+  rw [hAut, hAut]
+  exact Nat.card_congr (TauCeti.mackeySubgroupCongr hγ hk g).symm.toEquiv
 
 variable [TopologicalSpace G] [IsTopologicalGroup G]
 
@@ -232,7 +234,7 @@ abbrev HasFiniteCosets : Prop := (support fun q : G ⧸ K ↦ f q.out).Finite
 
 /-- The function f on G is left and right K-invariant and supported on finitely many cosets gK. -/
 abbrev IsHeckeFunction : Prop :=
-  HasFiniteCosets K f ∧ ∀ᵉ (g : G) (k ∈ K), f (g * k) = f g ∧ f (k * g) = f g
+  HasFiniteCosets K f ∧ ∀ g : G, ∀ k ∈ K, f (g * k) = f g ∧ f (k * g) = f g
 
 variable {K K' f}
 
@@ -250,7 +252,7 @@ lemma map_heckeFun (L : W →ₗ[A] W') (h : HasFiniteCosets K f)
     L (heckeFun π K f v) = heckeFun π' K f (L v) := by simp [heckeFun_eq_sum_toFinset h, hL]
 
 lemma levelSpace_anti (hK : K ≤ K') : levelSpace π K' ≤ levelSpace π K :=
-  fun v hv k ↦ by simpa using hv ⟨k, hK k.2⟩
+  fun v hv k ↦ by simpa using hv ⟨k, hK k.property⟩
 
 /-- For a compact open subgroup K of a topological group G and g in G, the indicator function of KgK
 is K-invariant on both sides and supported on finitely many left cosets of K. -/
@@ -399,8 +401,8 @@ vectors fixed by `K`. -/
 lemma IsHeckeFunction.heckeFun_mem (hv : v ∈ levelSpace (A := A) π K) (hb : IsHeckeFunction K f) :
     heckeFun π K f v ∈ levelSpace π K := by
   obtain ⟨h_finite, h_inv⟩ := hb
-  exact heckeFun_mem_levelSpace h_finite (fun g k ↦ (h_inv g k k.2).1)
-    (fun g k ↦ by simp [(h_inv g k k.2).2]) hv
+  exact heckeFun_mem_levelSpace h_finite (fun g k ↦ (h_inv g k k.property).1)
+    (fun g k ↦ by simp [(h_inv g k k.property).2]) hv
 
 end HeckeBasic
 

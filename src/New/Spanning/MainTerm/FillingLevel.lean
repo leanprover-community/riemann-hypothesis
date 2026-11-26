@@ -1,7 +1,17 @@
 module
 
+public import Mathlib.Topology.Connected.Separation
+public import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Data.Finset.Functor
+import Mathlib.MeasureTheory.Integral.Pi
+import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Frames.StandardLevel
 public import New.Spanning.MainTerm.GlobalSieve
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Cohomology.Etale.Basic
 
 /-!
 # The place and level of a set of primes, orbit sums and the set of entries
@@ -108,7 +118,7 @@ class IsFillingData [P : IntegralPlace (LocProd T)]
 lemma eventually_mem_integralOff (a : 𝔸f E) :
     ∀ᶠ T : Finset (FinPlace E) in Filter.atTop, a ∈ integralOff T := by
   -- It suffices that `T` contain the finitely many places where `a` is not integral.
-  have h_fin : {w : FinPlace E | a w ∉ LocInt w}.Finite := a.2
+  have h_fin : {w : FinPlace E | a w ∉ LocInt w}.Finite := a.property
   filter_upwards [eventually_ge_atTop h_fin.toFinset] with T hT
   have h_int (w : FinPlace E) (hw : w ∉ T) : a w ∈ LocInt w :=
     by_contra fun h_not ↦ hw (hT (h_fin.mem_toFinset.2 h_not))
@@ -317,8 +327,9 @@ lemma exists_isAddHaarMeasure_skewAdjoint {i τ : LocProd T} (hi : i ∈ O) (hτ
       mem_of_eq_of_mem h_trace (mul_mem (neg_mem hi) (add_mem hx (IsStarStable.star_mem hx)))
     exact ⟨ha, (add_mem_cancel_left (mul_mem (mul_mem hτ hi) ha)).1 hx⟩
   have h_map : (ν.prod ν).map π = volume := by
-    simpa [h_pre, SemilocalField.volume_O, hν, Set.inter_univ] using measure_smul_map_restrict_eq_smul_neg
-      (ν.prod ν) volume (by measurability) .univ h_lift isCompact_O.measurableSet
+    simpa [h_pre, SemilocalField.volume_O, hν, Set.inter_univ] using
+      measure_smul_map_restrict_eq_smul_neg (ν.prod ν) volume (by measurability) .univ h_lift
+        isCompact_O.measurableSet
   exact ⟨ν, inferInstance, hν, by fun_prop, h_map⟩
 
 /-- If the integers at `T` are self-dual for the character `ψ`, then there is a kernel `G` for
@@ -436,7 +447,8 @@ theorem exists_integralPlace : ∃ P : IntegralPlace (LocProd T), P.ψ = S.charO
       kernelBound := 1
       continuous_psi := continuous_ψf.subtypeVal.comp ((continuous_adeleOfLocal T).const_mul _)
       measurable_modulus := by
-        simp [modulus, genIndex_eq_inv_prod_norm]
+        simp only [modulus, genIndex_eq_inv_prod_norm, MonoidHom.coe_mk, OneHom.coe_mk,
+          measurable_inv_iff]
         fun_prop
       star_skewUnit := by simp [h_skew]
       measurePreserving_split := h_split

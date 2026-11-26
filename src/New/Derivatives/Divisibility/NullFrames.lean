@@ -1,7 +1,10 @@
 module
 
-public import Lib.Cohomology.Etale.Basic
-public import Lib.General.Algebra.SeriesCongruences
+import Mathlib.RingTheory.PiTensorProduct
+import Std.Tactic.BVDecide.Normalize.BitVec
+public import Lib.General.Algebra.AdicCompletion
+import Lib.Cohomology.Etale.Basic
+import Lib.General.Algebra.SeriesCongruences
 
 /-!
 # The change of directions
@@ -50,7 +53,8 @@ lemma New.exists_det_dvd_and_dvd_mulVec {p : ℕ} [Fact p.Prime] {m : ℕ} (a : 
   -- Take a row `k₀` of least valuation, subtract multiples of it from the other rows so that their
   -- values vanish, and multiply it by `α`.
   obtain ⟨k₀, h_max⟩ := Finite.exists_max fun k ↦ ‖(a k : ℂ_[p])‖
-  have h_dvd (k : Fin m) : ∃ c : valRingCp p, a k = a k₀ * c := dvd_iff_norm_le.2 (h_max k)
+  have h_dvd (k : Fin m) : ∃ c : valRingCp p, a k = a k₀ * c :=
+    valRingCp.dvd_iff_norm_le.2 (h_max k)
   choose c hc using h_dvd
   let b (k : Fin m) : valRingCp p := if k = k₀ then α else -c k
   let u : Matrix (Fin m) (Fin m) (valRingCp p) := updateCol 1 k₀ b
@@ -446,6 +450,6 @@ lemma New.exists_newDirection_dvd {p : ℕ} [Fact p.Prime] {Φ n : Type} [Fintyp
           exact norm_rpow_sum_cost_eq_prod_congruenceModulus pr S N κ (fun e : ℕ ↦ h_root e π) c
       _ ≤ ∏ τ : Φ, ∏ h : Fin N, ‖((g τ h).det : ℂ_[p])‖ ^ κ τ h := by
         gcongr with τ _ h
-        exact dvd_iff_norm_le.1 (det_dvd τ h)
+        exact valRingCp.dvd_iff_norm_le.1 (det_dvd τ h)
 
 end NullFrames

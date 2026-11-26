@@ -1,6 +1,13 @@
 module
 
-public import Lib.Shimura.ComplexTheta.DimensionFormula
+import Mathlib.Tactic.Linarith.NNRealPreprocessor -- shake: keep (`nlinarith` over `ℝ≥0`)
+import Mathlib.Algebra.GroupWithZero.Torsion
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.GroupTheory.FiniteAbelian.Basic
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
+import Lib.General.Topology
+import Lib.Shimura.ComplexTheta.DimensionFormula
 
 /-!
 # Sizes of theta functions at torsion points: products, bounds and shift bounds
@@ -212,7 +219,7 @@ lemma isCocompact_of_isFullRankLattice : L.toAddSubgroup.IsCocompact := by
   -- The fractional parts for a basis `b` of `L` lie in the ball of radius `∑ i, ‖b i‖`.
   let b := (finBasis ℤ L).ofZLatticeBasis ℝ
   refine ⟨_, isCompact_closedBall 0 (∑ i, ‖b i‖), fun x ↦ ⟨-floor b x, ?_, ?_⟩⟩
-  · exact ((finBasis ℤ L).ofZLatticeBasis_span ℝ).le (-floor b x).2
+  · exact ((finBasis ℤ L).ofZLatticeBasis_span ℝ).le (-floor b x).property
   · -- the fractional part `x - floor b x` has norm at most `∑ i, ‖b i‖`
     simpa [neg_add_eq_sub, ZSpan.fract_apply] using norm_fract_le b x
 

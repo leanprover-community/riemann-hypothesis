@@ -1,7 +1,27 @@
 module
 
-public import Lib.ClassField.Avatar.LocalGlobalCompatibility
-public import Lib.GaloisRep.Main.ThetaLift
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Analysis.Normed.Ring.CompactMonoid
+public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.GaloisRep.Main.AttachedRepresentations
+public import Lib.GaloisRep.Pseudocharacter.SemisimpleRepresentations
+import Lib.Adelic.AutomorphicForms.HeckeEigenforms
+import Lib.ClassField.Avatar.LocalGlobalCompatibility
+import Lib.GaloisRep.Main.OddRank
+import Lib.GaloisRep.Main.QuadraticStep
+import Lib.GaloisRep.Main.ThetaLift
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.PadicHodge.Limit.TraceLimit
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Isotypic spaces of eigenforms and attached Galois representations in every positive rank
@@ -100,7 +120,6 @@ section SphericalAllRanks
 
 open New NumberField Matrix Polynomial Filter Fintype Finset AlgHeckeChar AutChar Metric
   Units
-open scoped Classical
 
 /-- Let `E` be a CM field with Weil data, including a splitting character `υ`, and let `e` assign an
 integer to each infinite place. Then there are two characters `μ 0`, `μ 1` of `U(1)(𝔸)` (norm-one
@@ -178,9 +197,9 @@ lemma New.GaloisRep.isGoodAt_hasJumpsAt_of_trace_eq_sub {ℓ : ℕ} {E n m T : T
     IsGoodAt r A ∧ HasJumpsAt r A J ∧
     ∀ (s : Gal(Ω/E)) (P : (PadicAlgCl ℓ)[X]), PolyKillsAt ρ A s P →
       (∀ l : T, PolyKillsAt (χ l) A s P) → PolyKillsAt r A s P := by
-  -- `r` is the trace limit (`IsTraceLimit`) of the constant family `σ` of `ρ` and the `χ l`, with
-  -- coefficients `a` equal to `1` and `-1`. The index type is `Option T`, with `none` for `ρ`; the
-  -- filter `pure ()` makes the limits equalities.
+  -- Regard the trace subtraction as a finite linear combination in `IsTraceLimit`.
+  -- The coefficients are `1` for `ρ` and `-1` for the characters. The filter `pure ()`
+  -- makes convergence an equality; the limit representation is already given, not constructed.
   let a : Option T → PadicAlgCl ℓ := Option.elim' 1 (-1)
   let σ : Option T → Period.PadicRep Gal(Ω/E) ℓ := Option.elim' ⟨ρ⟩ fun l ↦ ⟨χ l⟩
   have hσ_jumps : ∀ i : Option T, HasJumpsAt (σ i).rep A (Option.elim' (J + ∑ l : T, j l) j i) :=
@@ -215,7 +234,8 @@ lemma New.GaloisRep.PolyKillsAt.of_mul_of_isCoprime {ℓ : ℕ} {E n : Type} [Th
     (hb : PolyKillsAt r A s (P * b)) (hab : IsCoprime a b) :
     PolyKillsAt r A s P := by
   obtain ⟨u, v, huv⟩ := hab
-  -- A sum of two killing polynomials kills, and so does a multiple of one.
+  -- Bézout cancels the auxiliary factors inside the ideal of annihilating polynomials.
+  -- This argument does not require any of the polynomials to be characteristic.
   have hP_eq : P = P * a * u + P * b * v := by linear_combination -P * huv
   rw [hP_eq]
   exact (ha.of_dvd (dvd_mul_right _ u)).add (hb.of_dvd (dvd_mul_right _ v))
@@ -505,7 +525,7 @@ lemma New.GaloisRep.sphericalCompat_std {ℓ : ℕ} {E n : Type} [ThePrime ℓ] 
     (GeneralLinearGroup.scalar (Fin 1)).comp (ψ i l)
   have hχ_cont (i : Fin 2) (l : Fin t) : Continuous (χ i l) := by
     refine .of_coeHom_comp (.matrix_diagonal ?_)
-    simp
+    simp only [Pi.constRingHom_eq_algebraMap]
     fun_prop
   choose hρ_good hρ_jumps hρ_kill using fun i : Fin 2 ↦ hρ_loc i hfK A hA
   -- The trace of `r` is `tr ρ i - ∑ l, ψ i l`, so the local clauses pass from `ρ i` to `r`.
@@ -541,7 +561,6 @@ of the finite adelic group on it by right translation, and `New.heckeSplit` the 
 namespace New.Patching
 
 open NumberField Filter Submodule Set Gf GaloisRep Algebra Fintype
-open scoped Classical
 
 section
 

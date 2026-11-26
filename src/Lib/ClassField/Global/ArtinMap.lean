@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.ClassField.Local.ArtinMap
 
 /-!
@@ -39,12 +42,6 @@ namespace New
 open Module QZChar Set FinPlace IsGalois
 
 variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [EmbeddedNumberField K]
-
-/-- The character χ, as a homomorphism on Γ, takes at g the value of `abelianLift χ` at the class
-of g. -/
-private lemma QZChar.toHom_eq_abelianLift [IsTopologicalGroup Γ] (χ : QZChar Γ) (g : Γ) :
-    toHom χ g = abelianLift χ (g : TopologicalAbelianization Γ) :=
-  rfl
 
 /-- g lies in the kernel of χ exactly when `abelianLift χ` kills the class of g. -/
 private lemma QZChar.mem_ker_iff_abelianLift_eq_one [IsTopologicalGroup Γ] (χ : QZChar Γ) (g : Γ) :
@@ -116,21 +113,17 @@ lemma range_abelianLift_comp_artinAt :
   · -- The local symbol of `x` is the class of some `g` in the decomposition group.
     rintro _ ⟨x, rfl⟩
     obtain ⟨g, hg⟩ := QuotientGroup.mk_surjective (localArtin Γ A v x)
-    have h_art : New.artinAt Γ v x = ((g : Γ) : TopologicalAbelianization Γ) :=
-      h.artinAt_eq_of_localArtin_eq hg.symm
-    refine ⟨g, g.property, ?_⟩
-    rw [MonoidHom.comp_apply, h_art, toHom_eq_abelianLift]
+    refine ⟨g, g.2, ?_⟩
+    rw [MonoidHom.comp_apply, h.artinAt_eq_of_localArtin_eq hg.symm]
+    rfl
   · -- `localArtin` has dense range, so it meets the open fibre of `χ` through `g`.
     rintro _ ⟨g, hg, rfl⟩
-    let ψ : QZChar (decompGroup Γ A) := comap (subgroupIncl (decompGroup Γ A)) χ
-    -- Every subset of `ℚ/ℤ` is open.
-    have fibre_open : IsOpen (abelianLift ψ ⁻¹' {toHom χ g}) :=
-      (continuous_abelianLift ψ).isOpen_preimage _ trivial
-    have g_mem : (⟦⟨g, hg⟩⟧ : TopologicalAbelianization (decompGroup Γ A)) ∈
-        abelianLift ψ ⁻¹' {toHom χ g} := by
-      simp [ψ, QZChar.comap, toHom_eq_abelianLift, subgroupIncl]
-    obtain ⟨x, hx : abelianLift ψ (localArtin Γ A v x) = toHom χ g⟩ :=
-      h.denseRange_localArtin.exists_mem_open fibre_open ⟨_, g_mem⟩
+    let ψ := comap (subgroupIncl (decompGroup Γ A)) χ
+    obtain ⟨x, hx⟩ := h.denseRange_localArtin.exists_mem_open
+      ((continuous_abelianLift ψ).isOpen_preimage {toHom χ g} trivial)
+      ⟨⟦⟨g, hg⟩⟧, by
+        simp [ψ, QZChar.comap, subgroupIncl]
+        rfl⟩
     exact ⟨x, (h.abelianLift_artinAt χ x).trans hx⟩
 
 /-- Let `A` be a place of `Ω` over `v`. A character `χ` kills all local symbols at `v` exactly when
@@ -197,24 +190,17 @@ variable (χ : QZChar Γ) {L : Type} [Field L] [EmbeddedNumberField L] [Algebra 
 lemma QZChar.eventually_artinAt_eq_one :
     ∀ᶠ a : (𝔸f K)ˣ in nhds 1,
       a ∈ idelesUnitOff ∅ ∧ ∀ v : FinPlace K, abelianLift χ (artinAt Γ v (ideleAt v a)) = 1 := by
-  -- Only finitely many places ramify for `χ`. At these the condition is open; at the others
-  -- it holds for every unit idele. (Every homomorphism from the units of a completion to the
-  -- abelianisation of `Γ` is continuous: `continuous_hom_locField_units`.)
-  let R : Set (FinPlace K) :=
-    {v : FinPlace K | ∀ A : ClosurePlace, IsPlaceOver A v → inertiaGroup Γ A ≤ ker χ}ᶜ
-  have h_open : IsOpen (⋂ v ∈ R, ideleAt v ⁻¹' ((abelianLift χ).comp (artinAt Γ v)).ker) := by
-    refine (finite_ramified (isOpen_ker χ)).isOpen_biInter fun v _ ↦
-      IsOpen.preimage (by fun_prop) ?_
-    exact continuous_iff_forall_isOpen_ker_comp.mp (continuous_hom_locField_units _) χ
-  filter_upwards [((isOpen_idelesUnitOff ∅).inter h_open).mem_nhds (by simp)]
-    with a ⟨h_unit, h_ram⟩
-  refine ⟨h_unit, fun v ↦ ?_⟩
-  by_cases hv : v ∈ R
-  · exact mem_iInter₂.1 h_ram v hv
-  · have h_unr : inertiaGroup Γ (placeOver v) ≤ ker χ :=
-      not_not.1 hv _ v.isPlaceOver_placeOver
-    exact (v.isPlaceOver_placeOver.artinAt_units_trivial_iff_inertiaGroup_le χ).2 h_unr _
-      (mem_idelesUnitOff.1 h_unit v (notMem_empty v))
+  -- Only finitely many places ramify for `χ`; at these the condition is open, and at the others
+  -- it holds for every unit idele.
+  have h_open := (finite_ramified (isOpen_ker χ)).isOpen_biInter fun v _ ↦
+    IsOpen.preimage (by fun_prop : Continuous (ideleAt v))
+      (continuous_iff_forall_isOpen_ker_comp.mp (continuous_hom_locField_units (artinAt Γ v)) χ)
+  filter_upwards [((isOpen_idelesUnitOff ∅).inter h_open).mem_nhds (by simp)] with a ⟨hu, hr⟩
+  refine ⟨hu, fun v ↦ ?_⟩
+  by_cases hv : ∀ A : ClosurePlace, IsPlaceOver A v → inertiaGroup Γ A ≤ ker χ
+  · exact (v.isPlaceOver_placeOver.artinAt_units_trivial_iff_inertiaGroup_le χ).2
+      (hv _ v.isPlaceOver_placeOver) _ (mem_idelesUnitOff.1 hu v (notMem_empty v))
+  · exact mem_iInter₂.1 hr v hv
 
 /-- A character `χ` of `Γ` takes the global Artin symbol of a finite idele `a` to the product over
 the finite places `v` of its values on the local symbols of the components of `a`. -/

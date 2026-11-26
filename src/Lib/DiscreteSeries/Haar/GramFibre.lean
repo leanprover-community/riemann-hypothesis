@@ -1,7 +1,15 @@
 module
 
-public import Lib.DiscreteSeries.Haar.TotalMass
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.Analysis.Matrix.Hermitian
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.General.Measure.FibreMeasure
+public import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.Adelic.Adeles.AdditiveCharacter
+import Lib.DiscreteSeries.Haar.TotalMass
 
 /-!
 # The fibre measure of the Gram map
@@ -10,12 +18,12 @@ Let `J` be a hermitian involution of size `r` and `G = U(J)`. The Gram map sends
 the columns of a matrix `Y`, to the real coordinates (`New.gramCoords`) of the hermitian matrix
 `T = Yᴴ J Y`.
 
-* `New.LeGramFibre J E m`: the law of `g E` under the measure `m` on `G` is at most the fibre
+* `New.LeGramFiber J E m`: the law of `g E` under the measure `m` on `G` is at most the fibre
   measure `dY / dT` on the tuples with the Gram matrix of `E`.
-* `New.LeGramFibre.le_haar`, `New.leGramFibre_haar`: on the bases with Gram matrix `J`, which form
+* `New.LeGramFiber.le_haar`, `New.leGramFiber_haar`: on the bases with Gram matrix `J`, which form
   the group `G`, the largest measure below the fibre measure is `vol U(r) / 2 ^ r` times the compact
   dual Haar measure `New.haarU J`, which is the `volume` of `U(J)`. Here `vol U(r)` is `New.volU r`.
-* `New.LeGramFibre.append`, `New.LeGramFibre.append_vector`, `New.LeGramFibre.insert`: lower bounds
+* `New.LeGramFiber.append`, `New.LeGramFiber.append_vector`, `New.LeGramFiber.insert`: lower bounds
   for the fibre measure by choosing some vectors, moving them to a fixed position by an isometry,
   and choosing the others.
 
@@ -52,7 +60,7 @@ variable {ι n n₁ n₂ : Type} [Fintype ι] [Fintype n] [Fintype n₁] [Fintyp
 variable (J) in
 /-- The image of the measure `m` under `g ↦ g E` is at most the fibre measure `dY / dT` of the Gram
 map on the tuples with the Gram matrix of `E`. -/
-def LeGramFibre (E : Matrix ι n ℂ) (m : Measure (U J)) : Prop :=
+def LeGramFiber (E : Matrix ι n ℂ) (m : Measure (U J)) : Prop :=
   LeFibreMeasure volume volume (gramCoords J) (gramCoords J E)
     (m.map fun g : U J ↦ g.val.val * E)
 
@@ -73,7 +81,7 @@ theorem IsGramSection.continuousOn_mul_inv {V : Set (Matrix ι ι ℝ)}
 /-- A measure `m` on `U(J)` that is at most the fibre measure `dY / dT` of the Gram map on the bases
 with Gram matrix `J` is at most `vol U(r) / 2 ^ r` times the compact dual Haar measure, which is
 the `volume` of `U(J)`. Here `r` is the size of `J` and `vol U(r) = volU r`. -/
-theorem LeGramFibre.le_haar {m : Measure (U J)} (h_fibre : LeGramFibre J (1 : Matrix ι ι ℂ) m) :
+theorem LeGramFiber.le_haar {m : Measure (U J)} (h_fibre : LeGramFiber J (1 : Matrix ι ι ℂ) m) :
     m ≤ ENNReal.ofReal (volU (card ι) / 2 ^ card ι) • volume := by
   -- Test against the indicator function of the open set `W` of the `γ σ(T)` with `γ` in an open
   -- set `O` and `T` in `V`; then use the outer regularity of Haar measure.
@@ -110,9 +118,9 @@ theorem LeGramFibre.le_haar {m : Measure (U J)} (h_fibre : LeGramFibre J (1 : Ma
 
 /-- The measure `vol U(r) / 2 ^ r` times the compact dual Haar measure, which is the `volume` of
 `U(J)`, is at most the fibre measure `dY / dT` of the Gram map on the bases with Gram matrix `J`
-(`New.LeGramFibre`). Here `r` is the size of `J` and `vol U(r) = volU r`. -/
-theorem leGramFibre_haar :
-    LeGramFibre J (1 : Matrix ι ι ℂ) (ENNReal.ofReal (volU (card ι) / 2 ^ card ι) • volume) := by
+(`New.LeGramFiber`). Here `r` is the size of `J` and `vol U(r) = volU r`. -/
+theorem leGramFiber_haar :
+    LeGramFiber J (1 : Matrix ι ι ℂ) (ENNReal.ofReal (volU (card ι) / 2 ^ card ι) • volume) := by
   -- The products `g σ(T)` are coordinates near the bases with Gram matrix `J`, and the volume in
   -- them is `c` times the product of the Haar measure and `dT`.
   obtain ⟨V, σ, hσ, h_base, hσ_base⟩ := exists_isGramSection J
@@ -181,7 +189,7 @@ columns of `J E` and `R` form an orthonormal basis. Then the image `l` of Lebesg
 `x ↦ J E M + R x` is at most the fibre measure of `y ↦ Eᴴ J y` over `M` (`New.LeFibreMeasure`). That
 is, take a lower semicontinuous `K ≥ 0` with `∫_{Eᴴ J y ∈ S} K dy ≤ C·vol(S)` for all open `S` near
 `M`; then `∫ K dl ≤ C`. -/
-theorem leFibreMeasure_conjTranspose_mul_mul {E : Matrix ι n₁ ℂ} {R : Matrix ι n₂ ℂ}
+theorem leFiberMeasure_conjTranspose_mul_mul {E : Matrix ι n₁ ℂ} {R : Matrix ι n₂ ℂ}
     (hE : Eᴴ * E = 1)
     (hR : Rᴴ * R = 1) (h_orth : Eᴴ * J * R = 0) (h_card : card n₁ + card n₂ = card ι)
     (M : Matrix n₁ n ℂ) :
@@ -193,6 +201,7 @@ theorem leFibreMeasure_conjTranspose_mul_mul {E : Matrix ι n₁ ℂ} {R : Matri
   exact .of_measurePreserving (measurePreserving_mul_mul_add_mul hE hR h_orth h_card)
     (by fun_prop) h_proj fun _ ↦ Continuous.continuousAt (by fun_prop)
 
+omit [DecidableEq n] [DecidableEq n₁] in
 /-- Choosing `g` with law `m` and completing `g E₁` by further columns with the Lebesgue measure, in
 the places given by `e` (`joinCols`), is the same as completing `E₁` first and then moving all
 columns by `g`. -/
@@ -213,7 +222,7 @@ theorem map_joinCols_prod_volume (e : n₁ ⊕ n₂ ≃ n) (E₁ : Matrix ι n�
       (f := fun y : Matrix ι n₂ ℂ ↦ K (joinCols e (g.val.val * E₁, y))) (by fun_prop)
   simp only [mul_joinCols, Prod.swap_prod_mk, h_subst]
 
-omit [DecidableEq n₁] [IsHermitianInvolution J] in
+omit [DecidableEq n] [DecidableEq n₁] [DecidableEq n₂] [IsHermitianInvolution J] in
 /-- Let `E = joinCols e (E₁, E₂)` have the columns of `E₁` and `E₂`. If `m'` is carried by the
 elements that fix `E₁`, then the law of `g (E₁, g' E₂)` under `m × m'` is the law of `g E` under
 the convolution `m ∗ₘ m'`. -/
@@ -236,18 +245,18 @@ theorem map_mul_joinCols_prod_eq_map_mconv {E : Matrix ι n ℂ} {E₁ : Matrix 
 
 /-- Choosing vectors in turn. Let the tuple `E = joinCols e (E₁, E₂)` consist of `E₁` and `E₂`, in
 the places given by `e`. Suppose that the law of `g E₁` under `m` is at most the fibre measure of
-the Gram map (`New.LeGramFibre`), that `m'` is carried by the elements that fix `E₁`, and that the
+the Gram map (`New.LeGramFiber`), that `m'` is carried by the elements that fix `E₁`, and that the
 law of `g' E₂` under `m'` is at most the fibre measure (`New.LeFibreMeasure`) of the map that sends
 `y` to the products `E₁ᴴ J y` and to the coordinates `gramCoords J y` of its Gram matrix. Then the
 law of `g g' E` is at most the fibre measure of the Gram map over the Gram matrix of `E`. -/
-theorem LeGramFibre.append {E : Matrix ι n ℂ} {E₁ : Matrix ι n₁ ℂ} {E₂ : Matrix ι n₂ ℂ}
+theorem LeGramFiber.append {E : Matrix ι n ℂ} {E₁ : Matrix ι n₁ ℂ} {E₂ : Matrix ι n₂ ℂ}
     (e : n₁ ⊕ n₂ ≃ n) (hE : joinCols e (E₁, E₂) = E) {m m' : Measure (U J)} [SFinite m]
-    [SFinite m'] (h_first : LeGramFibre J E₁ m)
+    [SFinite m'] (h_first : LeGramFiber J E₁ m)
     (h_rest : LeFibreMeasure volume volume
       (fun y : Matrix ι n₂ ℂ ↦ (E₁ᴴ * J * y, gramCoords J y)) (E₁ᴴ * J * E₂, gramCoords J E₂)
       (m'.map fun g : U J ↦ g.val.val * E₂))
     (h_fix : ∀ᵐ g : U J ∂m', g.val.val * E₁ = E₁) :
-    LeGramFibre J E (m ∗ₘ m') := by
+    LeGramFiber J E (m ∗ₘ m') := by
   -- The Gram matrix consists of `π₁`, the Gram matrix of the first columns, and of `π₂`, the
   -- other two blocks. Take the fibre of `π₁`, and on it the fibre of `π₂`.
   let split (Y : Matrix ι n ℂ) : Matrix ι n₁ ℂ × Matrix ι n₂ ℂ := (joinCols e).symm Y
@@ -287,22 +296,22 @@ theorem LeGramFibre.append {E : Matrix ι n ℂ} {E₁ : Matrix ι n₁ ℂ} {E�
       (φ (gramCoords J E)) ((m ∗ₘ m').map fun g : U J ↦ g.val.val * E) := by
     simpa only [h_base, φ_gram] using h₁.trans h₂ π₂_cont
   have : BorelSpace (Matrix n₁ n₁ ℝ × Matrix n₁ n₂ ℂ × Matrix n₂ n₂ ℝ) := Prod.borelSpace
-  simpa only [LeGramFibre, Function.comp_def, φ.symm_apply_apply] using
+  simpa only [LeGramFiber, Function.comp_def, φ.symm_apply_apply] using
     h_both.comp_homeomorph φ.symm (φ_vol.symm φ.toMeasurableEquiv)
 
-/-- Choosing one more vector `v`: the case of `New.LeGramFibre.append` in which the second tuple
+/-- Choosing one more vector `v`: the case of `New.LeGramFiber.append` in which the second tuple
 has one member. Suppose that the law of `g E` under `m` is at most the fibre measure of the Gram
 map, that `m'` is carried by the elements that fix `E`, and that the law of `g v` under `m'` is at
 most the fibre measure of the map that sends `y` to the vector `Eᴴ J y` and the number `y* J y`.
 Then the law of `g (E, v)` under `m ∗ m'` is at most the fibre measure of the Gram map, `(E, v)`
 having its columns in the places given by `e`. -/
-theorem LeGramFibre.append_vector {E : Matrix ι n₁ ℂ} {v : ι → ℂ} (e : n₁ ⊕ Unit ≃ n)
-    {m m' : Measure (U J)} [SFinite m] [SFinite m'] (h_first : LeGramFibre J E m)
+theorem LeGramFiber.append_vector {E : Matrix ι n₁ ℂ} {v : ι → ℂ} (e : n₁ ⊕ Unit ≃ n)
+    {m m' : Measure (U J)} [SFinite m] [SFinite m'] (h_first : LeGramFiber J E m)
     (h_next : LeFibreMeasure volume volume
       (fun y : ι → ℂ ↦ (Eᴴ *ᵥ J *ᵥ y, (star y ⬝ᵥ J *ᵥ y).re)) (Eᴴ *ᵥ J *ᵥ v, (star v ⬝ᵥ J *ᵥ v).re)
       (m'.map fun g : U J ↦ g.val.val *ᵥ v))
     (h_fix : ∀ᵐ g : U J ∂m', g.val.val * E = E) :
-    LeGramFibre J (joinCol e (E, v)) (m ∗ₘ m') := by
+    LeGramFiber J (joinCol e (E, v)) (m ∗ₘ m') := by
   -- Carry `h_next` from vectors to matrices with one column (`toCol`), and from pairs of a vector
   -- and a number to the two blocks of the Gram matrix (`toCorner`).
   have h_col (A : Matrix ι ι ℂ) (y : ι → ℂ) : A * toCol ι ℂ y = toCol ι ℂ (A *ᵥ y) := rfl
@@ -328,7 +337,7 @@ theorem LeGramFibre.append_vector {E : Matrix ι n₁ ℂ} {v : ι → ℂ} (e :
 omit [IsHermitianInvolution J] in
 /-- For the empty tuple `E`, the law of `g E` under the unit mass at the identity of `U(J)` is at
 most the fibre measure of the Gram map. -/
-theorem leGramFibre_dirac [IsEmpty n] (E : Matrix ι n ℂ) : LeGramFibre J E (dirac 1) := by
+theorem leGramFiber_dirac [IsEmpty n] (E : Matrix ι n ℂ) : LeGramFiber J E (dirac 1) := by
   have h_vol : MeasurePreserving (fun _ : Matrix n n ℝ × Unit ↦ E) (volume.prod (dirac ())) :=
     ⟨measurable_const,
       by simp [volume_eq_dirac_of_isEmpty E, volume_eq_dirac_of_isEmpty (gramCoords J E)]⟩
@@ -336,7 +345,7 @@ theorem leGramFibre_dirac [IsEmpty n] (E : Matrix ι n ℂ) : LeGramFibre J E (d
       ((dirac () : Measure Unit).map fun _ ↦ E) :=
     .of_measurePreserving h_vol (by fun_prop) (fun _ _ ↦ Subsingleton.elim _ _)
       fun _ ↦ continuousAt_const
-  simpa [LeGramFibre] using h_fibre
+  simpa [LeGramFiber] using h_fibre
 
 /-- The bijection from `p` and one more point onto `q = p ∪ {j}`, for `j` outside `p`: the point
 goes to `j`. -/
@@ -353,14 +362,14 @@ def subtypeInsertEquiv {α : Type} {p q : α → Prop} {j : α} (hj : ¬p j)
 map. Let `m'` be carried by the elements that fix these `e_i`, and let the law of `g e_j` under
 `m'` be at most the fibre measure of the `J`-products of a vector `y` with them and with itself.
 Then the law of `g (e_i)_{i ∈ q}` under `m ∗ m'` is at most the fibre measure of the Gram map. -/
-theorem LeGramFibre.insert {p q : ι → Prop} [DecidablePred p] [DecidablePred q] {j : ι}
+theorem LeGramFiber.insert {p q : ι → Prop} [DecidablePred p] [DecidablePred q] {j : ι}
     (hj : ¬p j) (hq : ∀ i : ι, q i ↔ p i ∨ i = j) {m m' : Measure (U J)} [SFinite m] [SFinite m']
-    (h_first : LeGramFibre J (inclMatrix ℂ (Subtype.val : Subtype p → ι)) m)
+    (h_first : LeGramFiber J (inclMatrix ℂ (Subtype.val : Subtype p → ι)) m)
     (h_next : LeFibreMeasure volume volume
       (fun y : ι → ℂ ↦ (fun i : Subtype p ↦ (J *ᵥ y) i, (star y ⬝ᵥ J *ᵥ y).re))
       (fun i : Subtype p ↦ J i j, (J j j).re) (m'.map fun g : U J ↦ g.val.val *ᵥ Pi.single j 1))
     (h_fix : ∀ᵐ g : U J ∂m', ∀ i k : ι, p k → g.val.val i k = (1 : Matrix ι ι ℂ) i k) :
-    LeGramFibre J (inclMatrix ℂ (Subtype.val : Subtype q → ι)) (m ∗ₘ m') := by
+    LeGramFiber J (inclMatrix ℂ (Subtype.val : Subtype q → ι)) (m ∗ₘ m') := by
   set E : Matrix ι (Subtype p) ℂ := inclMatrix ℂ Subtype.val
   have h_join :
       joinCol (subtypeInsertEquiv hj hq) (E, Pi.single j 1) = inclMatrix ℂ Subtype.val := by
@@ -372,7 +381,7 @@ theorem LeGramFibre.insert {p q : ι → Prop} [DecidablePred p] [DecidablePred 
     funext fun i ↦ by simp [E, inclMatrix, mulVec, dotProduct, Matrix.one_apply]
   rw [← h_join]
   refine h_first.append_vector _ ?_ (h_fix.mono fun g hg ↦
-    (mul_inclMatrix g.val.val _).trans (Matrix.ext fun i k ↦ hg i k k.2))
+    (mul_inclMatrix g.val.val _).trans (Matrix.ext fun i k ↦ hg i k k.property))
   -- `mulVec_mulVec` would merge `Eᴴ` and `J` before `h_products` applies.
   simpa [h_products, -mulVec_mulVec] using h_next
 

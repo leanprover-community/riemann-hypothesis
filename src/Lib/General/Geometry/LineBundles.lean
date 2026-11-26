@@ -1,6 +1,17 @@
 module
 
-public import Lib.Base
+public import Mathlib.Algebra.Group.MinimalAxioms
+public import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
+public import Mathlib.Combinatorics.Quiver.ReflQuiver
+public import Mathlib.Order.CompletePartialOrder
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.AlgebraicGeometry.Sites.Fpqc
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.CategoryTheory.ExtremalEpi
+import Mathlib.RingTheory.FreeCommRing
+import TauCeti.AlgebraicGeometry.Scheme.AffinePoints
+public import Lib.Speed
 
 /-!
 # Line bundles on schemes via ring-valued points: descent and the Picard group
@@ -287,10 +298,6 @@ lemma hom_ext_of_isOpenCover {V : κ → Y.Opens} (hV : IsOpenCover V) {f g : Y 
   let 𝒰 : Y.OpenCover := (Y.openCoverOfIsOpenCover V hV).affineRefinement.openCover
   exact 𝒰.hom_ext f g fun k ↦ h k.1 _ (𝒰.f k) landsIn_comp_incl
 
-lemma hom_ext_of_points {f g : Y ⟶ X}
-    (h : ∀ (A : CommRingCat) (t : Spec A ⟶ Y), t ≫ f = t ≫ g) : f = g :=
-  hom_ext_of_isOpenCover isOpenCover_top fun _ A t _ ↦ h A t
-
 /-- Two morphisms from `Y` are equal if they agree on every ring-valued point that lands in a
 trivialising open of a line bundle `M` on `Y`. -/
 lemma hom_ext_of_cover (M : LineBundle Y κ) {f g : Y ⟶ X}
@@ -320,7 +327,7 @@ lemma exists_hom_of_cover {V : κ → Y.Opens} (hV : IsOpenCover V)
   have agree {i j : κ} {A B : CommRingCat} {t : Spec A ⟶ Y} {s : Spec B ⟶ Y}
       (hi : LandsIn t (V i)) (hj : LandsIn s (V j)) :
       fst t s ≫ F i A t hi = snd t s ≫ F j B s hj := by
-    refine hom_ext_of_points fun C r ↦ ?_
+    refine Scheme.hom_ext_of_forall_spec fun C r ↦ ?_
     have hj_fst : LandsIn ((r ≫ fst t s) ≫ t) (V j) := by
       simpa [condition] using hj.comp (r ≫ snd t s)
     rw [← assoc, ← assoc, h_hom i j _ hi hj_fst, h_hom j j _ hj (hj.comp _)]
@@ -349,8 +356,8 @@ lemma le_of_cover {V : κ → Y.Opens} (hV : IsOpenCover V) {U W : Y.Opens}
 
 /-! ### Effective epimorphisms -/
 
-/-- A quasi-compact effective epimorphism of schemes is scheme-theoretically dominant. -/
-instance [EffectiveEpi p] [QuasiCompact p] : IsSchemeTheoreticallyDominant p := by
+/-- An effective epimorphism of schemes is scheme-theoretically dominant. -/
+instance [EffectiveEpi p] : IsSchemeTheoreticallyDominant p := by
   -- `p` factors through the closed immersion of its image, which is thus an isomorphism.
   have : IsIso p.imageι := ExtremalEpi.isIso p p.toImage p.imageι p.toImage_imageι
   have h_ker : p.imageι.ker = ⊥ := p.imageι.ker_eq_bot_of_isIso
@@ -764,8 +771,8 @@ lemma IsSection.pull (hs : L.IsSection s) (p : Y ⟶ X) :
 
 /-- Pulling back a frame of a line bundle gives a frame of the pulled-back bundle. -/
 lemma IsFrame.pull (hu : L.IsFrame u) (p : Y ⟶ X) :
-    (L.pull p).IsFrame fun i : ι ↦ (u i).pull p := by
-  aesop (add simp [IsFrame, IsSection, IsRegularOn])
+    (L.pull p).IsFrame fun i : ι ↦ (u i).pull p :=
+  ⟨hu.1.pull p, fun i A t ht ↦ hu.2 i A (t ≫ p) (landsIn_preimage.1 ht)⟩
 
 /-- The pointwise inverse of a frame `u` of `L` is a frame of the dual bundle `L.inv`. -/
 lemma IsFrame.inv (hu : L.IsFrame u) :
@@ -774,10 +781,8 @@ lemma IsFrame.inv (hu : L.IsFrame u) :
   refine ⟨⟨fun i A B φ t ht ↦ ?_, fun i j A t hi hj ↦ ?_⟩,
     fun i A t hi ↦ (u_unit i A t hi).ringInverse⟩
   · -- a ring map sends the inverse of a unit to the inverse of its image
-    have h_map_unit : IsUnit (φ (u i A t)) := (u_unit i A t ht).map φ.hom
     simp only [u_regular i φ t ht]
-    apply h_map_unit.mul_left_cancel
-    rw [mul_inverse_cancel _ h_map_unit, ← map_mul, mul_inverse_cancel _ (u_unit i A t ht), map_one]
+    exact ((u_unit i A t ht).map_ringInverse φ.hom).symm
   · -- both sides are inverse to `u i`
     have hj_inv : u j A t * inverse (u j A t) = 1 := mul_inverse_cancel _ (u_unit j A t hj)
     apply (u_unit i A t hi).mul_left_cancel
@@ -907,10 +912,6 @@ lemma LineBundle.picClass_mul_assoc {μ : Type} (N : LineBundle X μ) :
     ((L.mul M).mul N).picClass = (L.mul (M.mul N)).picClass :=
   picClass_eq_of_le (fun a ↦ ((a.1, a.2.1), a.2.2)) (by simp [inf_assoc]) (by simp [mul_assoc])
 
-/-- The tensor product of line bundles is commutative up to isomorphism. -/
-lemma LineBundle.picClass_mul_comm : (L.mul M).picClass = (M.mul L).picClass :=
-  picClass_eq_of_le (fun a ↦ (a.2, a.1)) (by simp) (by simp [mul_comm])
-
 /-- The trivial line bundle is neutral for the tensor product up to isomorphism. -/
 lemma LineBundle.picClass_mul_one : (L.mul one).picClass = L.picClass :=
   picClass_eq_of_le (fun a ↦ (a, ())) (by simp) (by simp)
@@ -939,7 +940,8 @@ instance : AddCommGroup (Pic X) where
   toAddGroup := AddGroup.ofRightAxioms
     (fun a b c ↦ Quotient.inductionOn₃ a b c fun _ _ N ↦ picClass_mul_assoc N.2)
     (Quotient.ind fun _ ↦ picClass_mul_one) (Quotient.ind fun _ ↦ picClass_mul_inv)
-  add_comm a b := Quotient.inductionOn₂ a b fun _ _ ↦ picClass_mul_comm
+  add_comm a b := Quotient.inductionOn₂ a b fun _ _ ↦
+    picClass_eq_of_le (fun a ↦ (a.2, a.1)) (by simp) (by simp [mul_comm])
 
 @[simp]
 lemma LineBundle.picClass_mul : (L.mul M).picClass = L.picClass + M.picClass := rfl

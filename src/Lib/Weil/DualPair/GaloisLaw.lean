@@ -1,6 +1,8 @@
 module
 
 public import Lib.Weil.DualPair.FiniteAction
+import Lib.Adelic.Witt.WittTheorem
+import Lib.Cohomology.Etale.Basic
 
 /-!
 # Semilinear maps intertwining the Weil action up to σΔ/Δ
@@ -191,8 +193,8 @@ lemma Space.finsum_finHeisenbergOp_unit_smul (a : (Ô E)ˣ) (g : Gf E n) :
   let Λ' : AddSubgroup Λ := (Λ.comap g.val.val.mulVecLin).addSubgroupOf Λ
   -- Multiplication by `a` is an automorphism `mulUnit` of `Λ` that preserves `Λ' = Λ ∩ g⁻¹ Λ`.
   let mulUnit : Λ ≃+ Λ :=
-    { toFun x := ⟨a.val.val • x.val, smul_mem_stdLattice a.val.2 x.2⟩
-      invFun x := ⟨a⁻¹.val.val • x.val, smul_mem_stdLattice a⁻¹.val.2 x.2⟩
+    { toFun x := ⟨a.val.val • x.val, smul_mem_stdLattice a.val.property x.property⟩
+      invFun x := ⟨a⁻¹.val.val • x.val, smul_mem_stdLattice a⁻¹.val.property x.property⟩
       left_inv x := Subtype.ext (inv_smul_smul a x.val)
       right_inv x := Subtype.ext (smul_inv_smul a x.val)
       map_add' x y := Subtype.ext (smul_add a.val.val x.val y.val) }
@@ -200,8 +202,9 @@ lemma Space.finsum_finHeisenbergOp_unit_smul (a : (Ô E)ˣ) (g : Gf E n) :
     rw [AddSubgroup.map_equiv_eq_comap_symm]
     change g.val.val *ᵥ a⁻¹.val.val • x.val ∈ Λ ↔ g.val.val *ᵥ x.val ∈ Λ
     rw [mulVec_smul]
-    exact ⟨fun h ↦ by simpa [smul_smul, ← Subring.coe_mul] using smul_mem_stdLattice a.val.2 h,
-      smul_mem_stdLattice a⁻¹.val.2⟩
+    exact ⟨fun h ↦ by simpa [smul_smul,
+      ← Subring.coe_mul] using smul_mem_stdLattice a.val.property h,
+      smul_mem_stdLattice a⁻¹.val.property⟩
   -- The term at a coset times `a` is the term at the coset moved by `mulUnit`.
   let perm : Λ ⧸ Λ' ≃+ Λ ⧸ Λ' := QuotientAddGroup.congr Λ' Λ' mulUnit h_map
   have h_term (q : Λ ⧸ Λ') : V.finHeisenbergOp (a.val.val • g.val.val *ᵥ q.out.val) V.vacElem =
@@ -252,7 +255,8 @@ in `Gf E n`. -/
 lemma omega_inv_comp {u : unitary (𝔸f E)} {a : 𝔸f E} (hL : V.ScalesTranslations σ (u * a) L) :
     V.ScalesTranslations σ a ((V.ω (1, (scalarFin n u)⁻¹)).toLinearMap ∘ₛₗ L) where
   map_selfDualAddChar z := by
-    rw [hL.map_selfDualAddChar, star_mul', mul_mul_mul_comm, mul_star_self_of_mem u.2, one_mul]
+    rw [hL.map_selfDualAddChar, star_mul', mul_mul_mul_comm, mul_star_self_of_mem u.property,
+      one_mul]
   map_mem hf := omega_mem_finitePart _ (hL.map_mem hf)
   map_rho {f} hf x := by
     have h_scalar : (scalarFin n u)⁻¹.val.val *ᵥ (u.val * a) • x = a • x := by
@@ -273,7 +277,7 @@ lemma exists_map_vacElem_of_unit {a : (Ô E)ˣ} (hL : V.ScalesTranslations σ a.
           simp [smul_smul, ← Subring.coe_mul]
       _ = L (V.finHeisenbergOp (a⁻¹.val.val • y) V.vacElem) :=
         (hL.map_finHeisenbergOp vacElem_mem_finitePart _).symm
-      _ = L V.vacElem := by rw [finHeisenbergOp_vacElem (smul_mem_stdLattice a⁻¹.val.2 hy)]
+      _ = L V.vacElem := by rw [finHeisenbergOp_vacElem (smul_mem_stdLattice a⁻¹.val.property hy)]
   simpa [Prod.mk_one_one] using exists_eq_smul_omega_vacElem (g := 1)
     (hL.map_mem vacElem_mem_finitePart) (by simpa using h_fix)
 

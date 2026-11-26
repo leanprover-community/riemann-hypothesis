@@ -1,6 +1,21 @@
 module
 
-public import Lib.ClassField.Global.CMSplittingCharacters
+public import Mathlib.Algebra.QuadraticAlgebra.Basic
+import Mathlib.Algebra.QuadraticAlgebra.NormDeterminant
+import Mathlib.Analysis.Complex.HalfPlane
+import Mathlib.RingTheory.PicardGroup
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+public import Lib.ClassField.Places.Ideles
+public import Lib.GaloisRep.BaseChange.Defs
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.GramMatrix
+import Lib.Adelic.Witt.WittTheorem
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.CMSplittingCharacters
+import Lib.ClassField.Global.NormTheorems
+import Lib.GaloisRep.Hilbert90.TameActions
+import Lib.GaloisRep.Hilbert90.UnitaryGroups
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Sums of two squares, Landherr's theorem and the Hasse principle for unitary cocycles
@@ -316,7 +331,7 @@ lemma Core.exists_form_eq_one [HasPrimitiveRoot5040 E]
   have hI_sq : (i : E) * i = -1 := by simpa using congrArg (algebraMap (𝓞 E) E) hi_sq
   have hI_star : star (i : E) = -i := by simpa using congrArg (algebraMap (𝓞 E) E) hi_star
   have h_real (x : maximalRealSubfield E) : star (x : E) = x :=
-    mem_maximalRealSubfield_iff_star_eq.1 x.2
+    mem_maximalRealSubfield_iff_star_eq.1 x.property
   have h_re_coe : (p * p + q * q + (N v * N u - B ^ 2) * (r * r + s * s) : E) = N u :=
     congrArg Subtype.val h_re
   have h_im_coe : (p * r + q * s : E) = 0 := congrArg Subtype.val h_im
@@ -549,22 +564,22 @@ lemma U.hasse_principle_coboundary [IsCMField E']
   -- that is everywhere locally isometric to the standard form, hence globally (Landherr):
   -- `lᴴ J l = 1`. Then `g l` is unitary and still splits `s`.
   let a : E' →+* 𝔸f E' := algebraMap E' (𝔸f E')
-  have h_norm : twistedNorm (GeneralLinearGroup.map (σ : E' →+* E')) (orderOf σ) s.1 = 1 := by
+  have h_norm : twistedNorm (GeneralLinearGroup.map (σ : E' →+* E')) (orderOf σ) s.val = 1 := by
     rw [orderOf_eq_prime (p := finrank E E') (by simp [← card_aut_eq_finrank]) hσ,
       ← map_one (U (1 : Matrix n n E')).subtype, ← hs_norm]
     exact (map_twistedNorm (U (1 : Matrix n n E')).subtype (fun _ ↦ rfl) _ s).symm
   -- Hilbert 90 at level `1`, where the congruence condition always holds
-  obtain ⟨g, -, hg : s.1.1 * g.1.map (σ : E' →+* E') = g.1, -⟩ :=
-    (isTameAtLevel_gal σ).hilbert90_gl (Y := s.1.1 - 1) (.inl inferInstance) s.1
+  obtain ⟨g, -, hg : s.val.val * g.val.map (σ : E' →+* E') = g.val, -⟩ :=
+    (isTameAtLevel_gal σ).hilbert90_gl (Y := s.val.val - 1) (.inl inferInstance) s.val
       (by simp) h_norm
   -- `u⁻¹ g` is fixed by `σ`, since `s` is split by both `u` and `g`; so it comes from `E`.
   have hs_mat : s.1.1.map a = (u * (galoisGf σ u)⁻¹).1.1 := congrArg (fun x : Gf E' n ↦ x.1.1) hs
-  have h_fixed_adelic : (u.1⁻¹ * g.map a).map (adeleMap σ) = u.1⁻¹ * g.map a := by
-    have hg_adelic : (u⁻¹).1.1 * (s.1.1 * g.1.map (σ : E' →+* E')).map a =
-        (u⁻¹).1.1 * g.1.map a := by rw [hg]
+  have h_fixed_adelic : (u.val⁻¹ * g.map a).map (adeleMap σ) = u.val⁻¹ * g.map a := by
+    have hg_adelic : (u⁻¹).val.val * (s.val.val * g.val.map (σ : E' →+* E')).map a =
+        (u⁻¹).val.val * g.val.map a := by rw [hg]
     -- `using!` identifies the inverse in `Gf E' n` with that in `GL n (𝔸f E')`.
     exact Units.ext <| by simpa [a, hs_mat, comp_def, mul_assoc] using! hg_adelic
-  obtain ⟨y, hy⟩ : ∃ y : GL n (𝔸f E), y.map (adeleMap (algebraMap E E')) = u.1⁻¹ * g.map a :=
+  obtain ⟨y, hy⟩ : ∃ y : GL n (𝔸f E), y.map (adeleMap (algebraMap E E')) = u.val⁻¹ * g.map a :=
     exists_gl_map_eq_of_fixed (adeleMap_injective _) (mem_range_finAdeleIncl_of_adeleMap_eq hσ)
       h_fixed_adelic
   -- `gᴴ g` is fixed by `σ`, since `s` is unitary; so it comes from `E` too.
@@ -575,23 +590,23 @@ lemma U.hasse_principle_coboundary [IsCMField E']
   obtain ⟨J, hJ⟩ : ∃ J : GL n E, J.map (algebraMap E E') = star g * 1 * g :=
     exists_gl_map_eq_of_fixed (RingHom.injective _) (mem_range_algebraMap_of_fixed_of_prime hσ)
       h_fixed_form
-  have hJ_mat : g.1ᴴ * 1 * g.1 = J.1.map (algebraMap E E') := congrArg Units.val hJ.symm
+  have hJ_mat : g.valᴴ * 1 * g.val = J.val.map (algebraMap E E') := congrArg Units.val hJ.symm
   -- Local isometries: `g` at the infinite places, `y` at the finite places.
   have h_infinite (w : InfinitePlace E) :
-      (g.map (lift E' (Φ w))).1ᴴ * signMatrix (1 : n → ℤˣ) * (g.map (lift E' (Φ w))).1 =
-        J.1.map (Φ w) := by
+      (g.map (lift E' (Φ w))).valᴴ * signMatrix (1 : n → ℤˣ) * (g.map (lift E' (Φ w))).val =
+        J.val.map (Φ w) := by
     simpa [← ext_iff, Matrix.mul_apply] using congrArg (Matrix.map · (lift E' (Φ w))) hJ_mat
-  have h_adelic : (g.map a).1ᴴ * 1 * (g.map a).1 = J.1.map (a ∘ algebraMap E E') := by
+  have h_adelic : (g.map a).valᴴ * 1 * (g.map a).val = J.val.map (a ∘ algebraMap E E') := by
     simpa [← ext_iff, Matrix.mul_apply, a] using congrArg (Matrix.map · a) hJ_mat
-  have h_finite : y.1ᴴ * 1 * y.1 = J.1.map (algebraMap E (𝔸f E)) := by
+  have h_finite : y.valᴴ * 1 * y.val = J.val.map (algebraMap E (𝔸f E)) := by
     apply map_injective (adeleMap_injective (algebraMap E E'))
     -- `y` becomes `u⁻¹ g` over `E'`, and `u⁻¹` is unitary.
     simpa [← hy, comp_def, ↓map_conjTranspose_mul_mul, adeleMap_star] using!
-      gram_mul_of_gram_eq (mem_unitaryGroupOf_iff.1 u⁻¹.2) h_adelic
+      gram_mul_of_gram_eq (mem_unitaryGroupOf_iff.1 u⁻¹.property) h_adelic
   -- Landherr's theorem compares the space of `J` with the standard space `stdSpace E n`.
   let V : Space E n 1 := ⟨J, _, gram_mkAdelicGL (fun w ↦ gram_inv_of_gram_eq (h_infinite w))
     (gram_inv_of_gram_eq h_finite)⟩
-  obtain ⟨l, hl : l.1ᴴ * J.1 * l.1 = (stdSpace E n).J⟩ := V.landherr (stdSpace E n)
+  obtain ⟨l, hl : l.valᴴ * J.val * l.val = (stdSpace E n).J⟩ := V.landherr (stdSpace E n)
   refine ⟨⟨g * l.map (algebraMap E E'), mem_unitaryGroupOf_iff.2 (gram_mul_of_gram_eq hJ_mat ?_)⟩,
      eq_inv_mul_of_mul_eq ?_⟩
   · simp [← map_conjTranspose_mul_mul, map_star_CM, hl, stdSpace]

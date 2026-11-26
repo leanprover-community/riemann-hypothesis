@@ -1,8 +1,16 @@
 module
 
+public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+import Mathlib.RingTheory.Ideal.Quotient.HasFiniteQuotients.Norm
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 public import Lib.Shimura.Uniformisation.AdelicFrames
 public import Lib.Weil.Unramified.HeckeGL
+public import Lib.Adelic.Adeles.IdeleModulus
+public import Lib.Cohomology.Etale.Basic
+import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
 # Hecke elements in group rings, marked triples, local terms and neat levels
@@ -214,15 +222,11 @@ variable {E : Type} [Field.{0} E] [CMBase E] {n : Type} [Fintype.{0} n] [Decidab
   [CommRing k] (𝔑 : 𝓞 E)
 
 omit [DecidableEq n] in
-/-- A finite type embeds in ℂ. -/
-lemma nonempty_embedding_complex : Nonempty (n ↪ ℂ) :=
-  (Cardinal.le_def n ℂ).mp (mk_le_aleph0.trans (aleph0_le_mk ℂ))
-
 /-- A chosen injection `n ↪ ℂ` that lists the roots of `t(P)` when these, counted with
 multiplicity, are `|n|` distinct numbers (`roots_map_eq_map_numberedRoots`). Otherwise it is an
 arbitrary injection. -/
 def numberedRoots (t : E →+* ℂ) (P : E[X]) : n ↪ ℂ :=
-  have : Nonempty (n ↪ ℂ) := nonempty_embedding_complex
+  have : Nonempty (n ↪ ℂ) := (Cardinal.le_def n ℂ).mp (mk_le_aleph0.trans (aleph0_le_mk ℂ))
   Classical.epsilon fun r : n ↪ ℂ ↦ (P.map t).roots = Finset.univ.val.map r
 
 omit [CMBase E] [DecidableEq n] in
@@ -482,27 +486,17 @@ instance [h : HasPrimitiveRoot5040 E] : Nontrivial (InfinitePlace E) := by
 lemma exists_isScalarFrame_of_gram_eq (a : (𝔸f ℚ)ˣ)
     (h_gram : xᴴ * x.val = finAdeleIncl ℚ E a • 1) :
     ∃ c : ℚ, (c : ℝ) = finIdeleAbs a ∧ IsScalarFrame x c := by
-  -- As `ℚ` has class number one, `a = s * u` with `s` rational and `u` a unit at every place; then
-  -- `finIdeleAbs a = |s|⁻¹` by the product formula, and `|s|⁻¹ * a = ± u` is a unit of `Ô ℚ`.
-  have h_split : a ∈ principalIdele.range ⊔ idelesUnitOff ∅ := by
-    simpa [classNumber_eq] using pow_classNumber_mem_principal_sup a
-  -- `a = principalIdele s * u` with `s ∈ ℚˣ` and `u` a unit at every place
-  obtain ⟨_, ⟨s, rfl⟩, u, hu, rfl⟩ := Subgroup.mem_sup.1 h_split
-  -- `u` as a unit of `Ô ℚ`
+  -- As `ℚ` has class number one, `a = s * u` with `s ∈ ℚˣ` and `u` a unit at every place.
+  obtain ⟨_, ⟨s, rfl⟩, u, hu, rfl⟩ := Subgroup.mem_sup.1
+    (by simpa [classNumber_eq] using pow_classNumber_mem_principal_sup a)
   let ν : (Ô ℚ)ˣ := (Ô ℚ).unitsEquivUnitsType ⟨u, idelesUnitOff_empty.le hu⟩
-  have h_unit : finIdeleAbs u = 1 := by
-    simp [finIdeleAbs, ideleAbs_eq_prod_of_v_eq_one, mem_idelesUnitOff.1 hu]
-  have h_abs : finIdeleAbs (principalIdele s * u) = (|(s : ℚ)|⁻¹ : ℚ) := by
-    rw [map_mul, h_unit, mul_one, finIdeleAbs_principalIdele]
-    push_cast
-    -- The goal's instance `Algebra ℚ ℚ` agrees with `Algebra.id ℚ` only after unfolding.
-    exact congrArg (fun q : ℚ ↦ |(q : ℝ)|⁻¹)
-      (show Algebra.norm ℚ (s : ℚ) = s by simp [Algebra.norm_self])
-  refine ⟨|(s : ℚ)|⁻¹, h_abs.symm, inv_pos.2 (abs_pos.2 s.ne_zero), ?_⟩
+  refine ⟨|(s : ℚ)|⁻¹, ?_, inv_pos.2 (abs_pos.2 s.ne_zero), ?_⟩
+  · rw [map_mul, finIdeleAbs_principalIdele]
+    simp [finIdeleAbs, ideleAbs_eq_prod_of_v_eq_one, mem_idelesUnitOff.1 hu, Algebra.norm_self]
   -- With `c = |s|⁻¹`, `xᴴ (c • 1) x = c • s • u`, which is `u` or `-u` by the sign of `s`.
-  rcases abs_choice (s : ℚ) with hs | hs
-  · exact ⟨ν, by simp [h_gram, hs, ν, principalIdele, mul_smul, map_smul']⟩
-  · exact ⟨-ν, by simp [h_gram, hs, ν, principalIdele, Matrix.map_neg, mul_smul, map_smul']⟩
+  · rcases abs_choice (s : ℚ) with hs | hs
+    · exact ⟨ν, by simp [h_gram, hs, ν, principalIdele, mul_smul, map_smul']⟩
+    · exact ⟨-ν, by simp [h_gram, hs, ν, principalIdele, Matrix.map_neg, mul_smul, map_smul']⟩
 
 /-- A matrix `x` with `xᴴ x` the scalar matrix of a finite idele of `ℚ` is a similitude. -/
 lemma mem_GU_of_gram_eq (a : (𝔸f ℚ)ˣ) (h_gram : xᴴ * x.val = finAdeleIncl ℚ E a • 1) :
@@ -642,29 +636,16 @@ frame for the scalar form `c • 1` with `c > 0` rational, then `yᴴ β' y = c 
 lemma IsSignedFrameFor.conjTranspose_mul_mul_eq_smul (h : IsSignedFrameFor x ℓ β)
     (h' : IsSignedFrameFor x' ℓ' β') (h_frame : IsScalarFrame (x'⁻¹ * toFinGL y * x)⁻¹ c) :
     yᴴ * β' * y.val = (c : E) • β := by
-  -- Both forms have the frame `(toFinGL y)⁻¹ * x'` and are positive at a place `w ≠ v₀`, so they
-  -- agree.
-  obtain ⟨h_frame_x, h_pos_x⟩ := h
-  obtain ⟨h_frame_x', h_pos_x'⟩ := h'
-  obtain ⟨hc_pos, h_frame_c⟩ := h_frame
+  -- Both forms have the frame `x * (x'⁻¹ * y * x)⁻¹` and are positive at a place `w ≠ v₀`.
   obtain ⟨w, hw⟩ := exists_ne (v₀ : InfinitePlace E)
-  have h_prod : toFinGL y * (x * (x'⁻¹ * toFinGL y * x)⁻¹) = x' := by group
-  -- the common frame of the two forms
-  set x₁ : GL n (𝔸f E) := x * (x'⁻¹ * toFinGL y * x)⁻¹
-  have h_frame_conj : IsFrameFor (y.valᴴ * β' * y.val) x₁ := by
-    rwa [IsFrameFor.conj_iff, h_prod]
-  have hβ_pos : (β.map (Φ w)).PosDef := by simpa [hw] using h_pos_x w
-  have hβ'_pos : (β'.map (Φ w)).PosDef := by simpa [hw] using h_pos_x' w
-  have h_frame_smul : IsFrameFor ((c : E) • β) x₁ := h_frame_x.mul_iff.2 h_frame_c
-  refine h_frame_smul.unique w h_frame_conj ?_ ?_
-  · -- At `w` the form `c • β` is `c` times the positive definite `β`.
-    have h_map_smul : ((c : E) • β).map (Φ w) = c • β.map (Φ w) := by
-      simp [← Matrix.ext_iff, Rat.smul_def]
-    simpa only [h_map_smul] using hβ_pos.smul hc_pos
-  · -- At `w` the form `yᴴ β' y` is the positive definite `β'` transported by `y`.
-    rw [map_conjTranspose_mul_mul (Φ w) (map_star_complex (Φ w))]
+  refine (h.1.mul_iff.2 h_frame.2).unique w ?_ ?_ ?_
+  · rw [IsFrameFor.conj_iff, show toFinGL y * (x * (x'⁻¹ * toFinGL y * x)⁻¹) = x' by group]
+    exact h'.1
+  · convert (by simpa [hw] using h.2 w : (β.map (Φ w)).PosDef).smul h_frame.1
+    simp [← Matrix.ext_iff, Rat.smul_def]
+  · rw [map_conjTranspose_mul_mul (Φ w) (map_star_complex (Φ w))]
     simpa [star_eq_conjTranspose] using
-      (y.map (Φ w)).isUnit.posDef_star_left_conjugate_iff.2 hβ'_pos
+      (y.map (Φ w)).isUnit.posDef_star_left_conjugate_iff.2 (by simpa [hw] using h'.2 w)
 
 /-- Let `(x, ℓ, β)` be a signed frame (`IsSignedFrameFor`) and let `y ∈ GL_n(E)` fix `ℓ` under
 `ratConj`, with `(x⁻¹ y x)⁻¹` a frame for the scalar form `c • 1`; so `y` is an automorphism of the
@@ -932,7 +913,7 @@ unitary group over `E` of the definite form `stdSpace E n` (identity matrix, sum
 coordinates), embedded in `Gf E n`. A case of Minkowski's lemma on integral matrices of finite
 order. -/
 lemma classAut_eq_bot {E : Type} [Field.{0} E] [CMType E] {w : ι → FinPlace E}
-    [Nontrivial (InfinitePlace E)] (hw : w.Injective)
+    (hw : w.Injective)
     (h_large : (2 * card n) ^ finrank ℚ E < ∏ i : ι, (w i).q)
     {K : Subgroup (Gf E n)} (hK : K ≤ levelOf w ⊥) (g : Gf E n) :
     classAut (stdSpace E n).Γf K g = ⊥ := by

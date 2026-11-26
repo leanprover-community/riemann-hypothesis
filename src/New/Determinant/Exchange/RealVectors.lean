@@ -1,6 +1,16 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.Topology.UniformSpace.Uniformizable
 public import New.Determinant.Exchange.LargeTriple
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.General.Analysis.MeanValueAndTaylor
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.Weil.MixedModel.ThetaInvariance
 
 /-!
 # Smooth local Witt theorem and the exchange identity for `V' ⊕ W₁` and `V'`
@@ -47,6 +57,38 @@ namespace New.Exchange
 open Matrix NumberField MeasureTheory Complex Fock Space Filter ContDiff Norms.Elementwise Finset
   Function Splitting Measure MixedModel GeneralLinearGroup ENNReal IsHermitianInvolution U
 
+private lemma contDiff_mat_mul {X l o k : Type*} {N : ℕ∞ω} [NormedAddCommGroup X]
+    [NormedSpace ℝ X] [Fintype l] [Fintype o] [Fintype k]
+    {f : X → Matrix l o ℂ} {g : X → Matrix o k ℂ}
+    (hf : ContDiff ℝ N f) (hg : ContDiff ℝ N g) : ContDiff ℝ N fun x ↦ f x * g x :=
+  contDiff_matrix_mul.comp (hf.prodMk hg)
+
+private lemma continuous_mat_mul {X l o k : Type*} [TopologicalSpace X] [Fintype l] [Fintype o]
+    [Fintype k] {f : X → Matrix l o ℂ} {g : X → Matrix o k ℂ}
+    (hf : Continuous f) (hg : Continuous g) : Continuous fun x ↦ f x * g x :=
+  (contDiff_matrix_mul (N := 0)).continuous.comp (hf.prodMk hg)
+
+private lemma contDiff_finset_prod {ι X : Type*} {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    {s : Finset ι} {f : ι → X → ℂ} (hf : ∀ i ∈ s, ContDiff ℝ N (f i)) :
+    ContDiff ℝ N fun x ↦ ∏ i ∈ s, f i x := by
+  classical
+  induction s using Finset.induction with
+  | empty => simpa only [Finset.prod_empty] using contDiff_const
+  | insert a s ha ih =>
+    simp only [Finset.prod_insert ha]
+    exact (hf a (Finset.mem_insert_self a s)).mul (ih fun i hi ↦ hf i (Finset.mem_insert_of_mem hi))
+
+private lemma contDiff_mat_det {X k : Type*} {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X]
+    [Fintype k] [DecidableEq k] {f : X → Matrix k k ℂ} (hf : ContDiff ℝ N f) :
+    ContDiff ℝ N fun x ↦ (f x).det := by
+  simp only [det_apply, Units.smul_def, zsmul_eq_mul]
+  exact ContDiff.sum fun σ _ ↦ contDiff_const.mul
+    (contDiff_finset_prod fun i _ ↦ contDiff_pi.1 (contDiff_pi.1 hf (σ i)) i)
+
+private lemma pi_mul_inv_apply {ι G : Type*} [Group G] (a b : ι → G) (w : ι) :
+    (a * b)⁻¹ w = b⁻¹ w * a⁻¹ w := by
+  rw [_root_.mul_inv_rev, Pi.mul_apply]
+
 variable {E n a b m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
   [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
   {s : n → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s}
@@ -82,7 +124,8 @@ lemma exists_isSchwartzVector_realSlice_eq (D : X.Splitting W₁ b) [IsBaseAdapt
   let g : GL (a × b) (𝔸 E) := adaptedHomBasis b V'
   have : MeasurableConstSMul (GL (a × b) (𝔸 E)) (a × b → 𝔸 E) :=
     ContinuousConstSMul.toMeasurableConstSMul
-  let ν : Measure (a × b → 𝔸 E) := DomMulAct.mk (star g) • vacuumMeasure
+  let ν : Measure (a × b → 𝔸 E) :=
+    (DomMulAct.mk (star g) : (GL (a × b) (𝔸 E))ᵈᵐᵃ) • (vacuumMeasure : Measure (a × b → 𝔸 E))
   obtain ⟨c, hc⟩ : ∃ c : NNReal, volume = c • ν := ⟨_, isAddLeftInvariant_eq_smul volume ν⟩
   let term (x : a × b → 𝔸 E) : 𝒮 (X.hom V') → 𝒮 (W₁.hom V') :=
     (D.homSource V').slice ((g⁻¹ : GL (a × b) (𝔸 E)).valᴴ *ᵥ x)
@@ -115,8 +158,32 @@ lemma exists_isSchwartzVector_realSlice_eq (D : X.Splitting W₁ b) [IsBaseAdapt
   -- Here `projReal` is `integrated` at the vacuum, so `term_eq` applies to both sides.
   simp only [term_eq]
   -- Insert the slice of `Λ` and split the adelic variable into real and finite parts.
-  simpa [g, (adelicSum E 1).integral_eq_integral_prod, adelicSum, realCoord.eq_unfold, hslice]
-    using h
+  have h_real (y : (InfinitePlace E × a × b → ℂ) × (a × b → 𝔸f E)) :
+      realCoord ((adelicSum E 1).equiv y) = y.1 := by
+    funext p
+    change ((WeilData.scaleIdele E).val.1 p.1 * y.1 p) / (WeilData.scaleIdele E).val.1 p.1 = y.1 p
+    have hne : (WeilData.scaleIdele E).val.1 p.1 ≠ 0 := fun h0 ↦ by
+      have h1 := congrFun (congrArg Prod.fst (WeilData.scaleIdele E).mul_inv) p.1
+      simp only [Prod.fst_mul, Pi.mul_apply, h0, zero_mul, Prod.fst_one, Pi.one_apply,
+        zero_ne_one] at h1
+    exact mul_div_cancel_left₀ _ hne
+  rw [(adelicSum E 1).integral_eq_integral_prod, (adelicSum E 1).integral_eq_integral_prod]
+  have h_lhs (y : (InfinitePlace E × a × b → ℂ) × (a × b → 𝔸f E)) :
+      (W₁.hom V').integrated (𝓜.slice (realCoord ((adelicSum E 1).equiv y)) Λ)
+        ((D.homSource V').slice (g⁻¹.valᴴ *ᵥ fun i ↦ (0, ((adelicSum E 1).equiv y i).2))
+          ((X.hom V').projReal f)) = ((τ y.1 : ℂ) * κ) • ψ y.2 := by
+    rw [h_real, hslice, map_one, one_apply_eq_self, map_smul, _root_.smul_apply, real_smul,
+      coe_units_inv]
+    rfl
+  have h_rhs (y : (InfinitePlace E × a × b → ℂ) × (a × b → 𝔸f E)) :
+      (W₁.hom V').integrated v ((W₁.hom V').integrated
+        (𝓜.slice (realCoord ((adelicSum E 1).equiv y)) Fock.vacVector)
+        ((D.homSource V').slice (g⁻¹.valᴴ *ᵥ fun i ↦ (0, ((adelicSum E 1).equiv y i).2))
+          ((X.hom V').projReal f))) = 𝓜.slice y.1 Fock.vacVector 0 • ψ y.2 := by
+    rw [h_real]
+    simp [ψ, g, adelicSum]
+  simp only [h_lhs, h_rhs]
+  exact h
 
 /-- Taking the slice at `0` is onto on Schwartz vectors. Every Schwartz vector `v` (all moments
 finite) in the Fock space `PairFock E s t'` of `(W₁, V')` is the slice at `0` of a Schwartz vector
@@ -149,39 +216,56 @@ theorem exists_contDiff_witt {J : Matrix m m ℂ} (hJ : Jᴴ = J) {x : Matrix m 
   let w : Matrix b m ℂ := (xᴴ * J * x)⁻¹ * xᴴ
   have hw (y : Matrix m b ℂ) : y * w * J * x = y := by
     rw [Matrix.mul_assoc] at hdet
-    simp [w, hdet, Matrix.mul_assoc]
+    simp only [w, Matrix.mul_assoc, nonsing_inv_mul _ (isUnit_iff_ne_zero.2 hdet), Matrix.mul_one]
   let L (a : Matrix m m ℂ) : Matrix m m ℂ := (a * x * w - x * w * aᴴ) * J
   have hL (a : Matrix m m ℂ) : L a ∈ unitaryLie J := by
-    simp [unitaryLie, L, w, hJ, conjTranspose_nonsing_inv, Matrix.mul_assoc, sub_mul, mul_sub]
+    change (L a)ᴴ * J + J * L a = 0
+    simp only [L, w, conjTranspose_mul, conjTranspose_sub, conjTranspose_conjTranspose,
+      conjTranspose_nonsing_inv, hJ, Matrix.mul_assoc, Matrix.sub_mul, Matrix.mul_sub,
+      sub_add_sub_cancel, sub_self]
   have hL_span (a : Matrix m m ℂ) : (a - L a) * x = x * (w * aᴴ * J * x) := by
     simp only [L, Matrix.sub_mul, hw, _root_.sub_sub_cancel, Matrix.mul_assoc x]
   let T (a : Matrix m m ℂ) : Matrix m m ℂ := NormedSpace.exp (L a) * (a - L a)
-  have hL₁ : L 1 = 0 := by simp [L]
-  have hT₁ : T 1 = 1 := by simp [T, hL₁]
+  have hL₁ : L 1 = 0 := by
+    simp only [L, Matrix.one_mul, conjTranspose_one, Matrix.mul_one, sub_self, Matrix.zero_mul]
+  have hT₁ : T 1 = 1 := by
+    simp only [T, hL₁, NormedSpace.exp_zero, sub_zero, Matrix.one_mul]
+  have hL_smooth : ContDiff ℝ ω L :=
+    contDiff_mat_mul
+      ((contDiff_mat_mul (contDiff_mat_mul contDiff_id contDiff_const) contDiff_const).sub
+        (contDiff_mat_mul contDiff_const (contDiff_conjTranspose.comp contDiff_id)))
+      contDiff_const
   have hT' : HasFDerivAt T (ContinuousLinearEquiv.refl ℝ _).toContinuousLinearMap 1 := by
-    obtain ⟨L', hL'⟩ := (by fun_prop : ContDiff ℝ 1 L).differentiable_one 1
+    obtain ⟨L', hL'⟩ := (hL_smooth.of_le le_top).differentiable_one 1
     open Norms.L2Operator in
       -- The product rule gives `(id - L') + L'`.
-      refine ((HasFDerivAt.comp 1 (by simpa [hL₁] using hasFDerivAt_exp_zero) hL').fun_mul'
+      refine ((HasFDerivAt.comp 1 (by simpa only [hL₁] using hasFDerivAt_exp_zero) hL').fun_mul'
         ((hasFDerivAt_id 1).fun_sub hL')).congr_fderiv ?_
       simp only [hL₁, Function.comp_apply, NormedSpace.exp_zero, sub_zero, id, one_smul,
         MulOpposite.op_one]
       exact sub_add_cancel _ L'
   obtain ⟨A, hA, hTA⟩ : ∃ A, ContDiff ℝ ∞ A ∧ ∀ᶠ z in nhds 1, T (A z) = z := by
-    have hT : ContDiffAt ℝ ω T 1 := by fun_prop
-    obtain ⟨A, hA, h_eq⟩ := exists_contDiff_eventuallyEq (hT.to_localInverse hT' (by simp))
+    have hT : ContDiffAt ℝ ω T 1 :=
+      (contDiff_mat_mul (contDiff_matrix_exp.comp hL_smooth)
+        (contDiff_id.sub hL_smooth)).contDiffAt
+    obtain ⟨A, hA, h_eq⟩ := exists_contDiff_eventuallyEq
+      (hT.to_localInverse hT' (WithTop.coe_ne_top (a := (0 : ℕ∞))).symm)
     rw [← hT₁]
     exact ⟨A, hA, (h_eq.fun_comp T).trans (HasStrictFDerivAt.eventually_right_inverse _)⟩
   let z (y : Matrix m b ℂ) : Matrix m m ℂ := 1 - (x - y) * w * J
-  have hz : Tendsto z (nhds x) (nhds 1) := Continuous.tendsto' (by fun_prop) _ _ (by simp [z])
-  refine ⟨fun y ↦ expU ⟨L (A (z y)), hL _⟩, by
-      change ContDiff ℝ ∞ fun y ↦ NormedSpace.exp (L (A (z y)))
-      fun_prop,
+  have hz_smooth : ContDiff ℝ ∞ z :=
+    contDiff_const.sub
+      (contDiff_mat_mul (contDiff_mat_mul (contDiff_const.sub contDiff_id) contDiff_const)
+        contDiff_const)
+  have hz : Tendsto z (nhds x) (nhds 1) :=
+    hz_smooth.continuous.tendsto' _ _ (by simp only [z, sub_self, Matrix.zero_mul, sub_zero])
+  refine ⟨fun y ↦ expU ⟨L (A (z y)), hL _⟩,
+    ((contDiff_matrix_exp.comp (hL_smooth.of_le le_top)).comp hA).comp hz_smooth,
     (hz.eventually hTA).mono fun y hy ↦ ⟨w * (A (z y))ᴴ * J * x, ?_⟩⟩
   calc NormedSpace.exp (L (A (z y))) * x * (w * (A (z y))ᴴ * J * x)
     _ = T (A (z y)) * x := by rw [Matrix.mul_assoc, ← hL_span, ← Matrix.mul_assoc]
     _ = z y * x := by rw [hy]
-    _ = y := by simp [z, Matrix.sub_mul, hw]
+    _ = y := by rw [Matrix.sub_mul, Matrix.one_mul, hw, _root_.sub_sub_cancel]
 
 /-- The external product `realBoxProd he v w` of two Schwartz Fock vectors (all moments finite), for
 a splitting `e` of the coordinates compatible with the signs, is a Schwartz vector. -/
@@ -194,21 +278,39 @@ lemma isSchwartzVector_realBoxProd {ι ι₁ ι₂ : Type*} [Fintype ι] [Decida
   -- `v`; padding a vector with zeros does not increase its maximum norm.
   intro N
   have pad_left (x : ι₁ → ℂ) : ‖(realCoordSum he).equiv (x, 0)‖ₑ ≤ ‖x‖ₑ := by
-    simp [realCoordSum, eNorm_eq_nnNorm, pi_nnNorm_le_iff, e.surjective.forall, nnNorm_le_pi_nnNorm]
+    rw [eNorm_eq_nnNorm, eNorm_eq_nnNorm, ENNReal.coe_le_coe, pi_nnNorm_le_iff]
+    refine e.surjective.forall.2 (Sum.forall.2 ⟨fun i ↦ ?_, fun i ↦ ?_⟩)
+    · change ‖(x ⊕ᵥ (0 : ι₂ → ℂ)) (e.symm (e (Sum.inl i)))‖₊ ≤ ‖x‖₊
+      rw [e.symm_apply_apply, Sum.elim_inl]
+      exact nnNorm_le_pi_nnNorm x i
+    · change ‖(x ⊕ᵥ (0 : ι₂ → ℂ)) (e.symm (e (Sum.inr i)))‖₊ ≤ ‖x‖₊
+      rw [e.symm_apply_apply, Sum.elim_inr, Pi.zero_apply, nnNorm_zero]
+      exact bot_le
   have pad_right (y : ι₂ → ℂ) : ‖(realCoordSum he).equiv (0, y)‖ₑ ≤ ‖y‖ₑ := by
-    simp [realCoordSum, eNorm_eq_nnNorm, pi_nnNorm_le_iff, e.surjective.forall, nnNorm_le_pi_nnNorm]
+    rw [eNorm_eq_nnNorm, eNorm_eq_nnNorm, ENNReal.coe_le_coe, pi_nnNorm_le_iff]
+    refine e.surjective.forall.2 (Sum.forall.2 ⟨fun i ↦ ?_, fun i ↦ ?_⟩)
+    · change ‖((0 : ι₁ → ℂ) ⊕ᵥ y) (e.symm (e (Sum.inl i)))‖₊ ≤ ‖y‖₊
+      rw [e.symm_apply_apply, Sum.elim_inl, Pi.zero_apply, nnNorm_zero]
+      exact bot_le
+    · change ‖((0 : ι₁ → ℂ) ⊕ᵥ y) (e.symm (e (Sum.inr i)))‖₊ ≤ ‖y‖₊
+      rw [e.symm_apply_apply, Sum.elim_inr]
+      exact nnNorm_le_pi_nnNorm y i
   let inner : fockSpace ε := ∫ y, w y • realHeisenbergOp ((realCoordSum he).equiv (0, y))
     Fock.vacVector
     ∂normalizedVolume ι₂
   have inner_le : fockMoment N inner ≤
       fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w := by
     refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun y ↦ ?_)
-    grw [fockMoment_realHeisenbergOp_le, pad_right, mul_comm]
+    exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
+      (mul_le_mul_left (pow_le_pow_left' (add_le_add_right (pad_right y) 1) N) _)).trans_eq
+      (mul_comm _ _)
   have outer_le : fockMoment N (realBoxProd he v w) ≤
       fockMoment N (Fock.vacVector : fockSpace ε) * fockMoment N w * fockMoment N v := by
     refine (fockMoment_integral_le _).trans (lintegral_fockMoment_smul_le fun x ↦ ?_)
     change fockMoment N (realHeisenbergOp ((realCoordSum he).equiv (x, 0)) inner) ≤ _
-    grw [fockMoment_realHeisenbergOp_le, pad_left, inner_le, mul_comm]
+    exact ((fockMoment_realHeisenbergOp_le _ _ _).trans
+      (mul_le_mul' (pow_le_pow_left' (add_le_add_right (pad_left x) 1) N) inner_le)).trans_eq
+      (mul_comm _ _)
   exact ne_top_of_le_ne_top (mul_ne_top (mul_ne_top (isSchwartzVector_vacVector N) (hw N)) (hv N))
     outer_le
 
@@ -218,13 +320,16 @@ lemma exists_contDiff_eventuallyEq_inv {A₀ : Matrix b b ℂ} (hdet : A₀.det 
     ∃ γ : Matrix b b ℂ → Matrix b b ℂ,
       ContDiff ℝ ∞ γ ∧ γ =ᶠ[nhds A₀] fun A : Matrix b b ℂ ↦ A⁻¹ := by
   -- The inverse is the adjugate, a polynomial in the entries, divided by the determinant.
-  have det_smooth : ContDiffAt ℝ ω (fun A : Matrix b b ℂ ↦ A.det) A₀ := by
-    simp only [det_apply]
-    fun_prop
+  have det_smooth : ContDiffAt ℝ ω (fun A : Matrix b b ℂ ↦ A.det) A₀ :=
+    (contDiff_mat_det contDiff_id).contDiffAt
   have adjugate_smooth : ContDiffAt ℝ ω (fun A : Matrix b b ℂ ↦ A.adjugate) A₀ := by
-    refine contDiffAt_pi.2 fun i : b ↦ contDiffAt_pi.2 fun j : b ↦ ?_
-    simp only [adjugate_apply, det_apply, updateRow_apply, prod_ite]
-    fun_prop
+    refine (contDiff_pi.2 fun i : b ↦ contDiff_pi.2 fun j : b ↦ ?_).contDiffAt
+    simp only [adjugate_apply]
+    refine contDiff_mat_det (contDiff_pi.2 fun r ↦ contDiff_pi.2 fun c ↦ ?_)
+    simp only [updateRow_apply]
+    split_ifs
+    · exact contDiff_const
+    · exact (contDiff_pi.1 (contDiff_pi.1 contDiff_id r) c)
   simp only [Matrix.inv_def, Ring.inverse_eq_inv']
   exact exists_contDiff_eventuallyEq ((det_smooth.inv hdet).smul adjugate_smooth)
 
@@ -238,7 +343,8 @@ lemma exists_mul_mul_eq_and_gram_eq {J : Matrix m m ℂ} (g : U J) {x₀ x : Mat
       (g : Matrix m m ℂ) * x₀ * c' = x ∧ c'ᴴ * (x₀ᴴ * J * x₀) * c' = xᴴ * J * x := by
   rw [gram_mul, det_mul] at hdet
   have hx : (g : Matrix m m ℂ) * x₀ * (c * A⁻¹) = x := by
-    simp [← Matrix.mul_assoc, hc, right_ne_zero_of_mul hdet]
+    rw [← Matrix.mul_assoc, hc, Matrix.mul_assoc,
+      mul_nonsing_inv _ (isUnit_iff_ne_zero.2 (right_ne_zero_of_mul hdet)), Matrix.mul_one]
   exact ⟨c * A⁻¹, hx, by conv_rhs => rw [← hx, gram_mul, U.gram_invariant]⟩
 
 /-- Smooth data for Witt's theorem near a frame `x₀`, for a form `J`: a function `γ` on square
@@ -281,21 +387,15 @@ lemma exists_contDiff_witt_and_bump {ι : Type*} [Fintype ι] {J : Matrix m m �
       IsWittBump J x₀ γ k σ := by
   obtain ⟨γ, γ_smooth, γ_inv⟩ := exists_contDiff_eventuallyEq_inv hdet
   obtain ⟨k, k_smooth, span_near⟩ := exists_contDiff_witt hJ hdet
-  have gram_near : ∀ᶠ y : Matrix m b ℂ in nhds x₀,
-      γ (yᴴ * J * y) = (yᴴ * J * y)⁻¹ ∧ (yᴴ * J * y).det ≠ 0 :=
-    Continuous.tendsto (f := fun y : Matrix m b ℂ ↦ yᴴ * J * y) (by fun_prop) x₀
-      (γ_inv.and (ContinuousAt.eventually_ne (by fun_prop) hdet))
-  obtain ⟨σ, σ_supp, σ_cpt, σ_smooth, σ_range, σ_one⟩ :=
-    exists_contDiff_tsupport_subset
-      (nhds_pi.le (eventually_pi fun _ : ι ↦ span_near.and gram_near))
-  have near (x : ι → Matrix m b ℂ) (hx : σ x ≠ 0) (i : ι) :
-      (∃ c : Matrix b b ℂ, (k (x i) : Matrix m m ℂ) * x₀ * c = x i) ∧
-        γ ((x i)ᴴ * J * x i) = ((x i)ᴴ * J * x i)⁻¹ ∧ ((x i)ᴴ * J * x i).det ≠ 0 :=
-    σ_supp (subset_closure hx) i
-  simp only [forall_and] at near
-  obtain ⟨span_supp, inv_supp, det_supp⟩ := near
+  obtain ⟨σ, σ_supp, σ_cpt, σ_smooth, σ_range, σ_one⟩ := exists_contDiff_tsupport_subset <|
+    nhds_pi.le <| eventually_pi fun _ : ι ↦ span_near.and <|
+      (by fun_prop : Continuous fun y : Matrix m b ℂ ↦ yᴴ * J * y).tendsto x₀ <|
+        γ_inv.and (ContinuousAt.eventually_ne (by fun_prop) hdet)
   exact ⟨γ, k, σ, γ_smooth, γ_inv.eq_of_nhds, k_smooth, σ_smooth, σ_cpt,
-    fun x ↦ (σ_range ⟨x, rfl⟩).1, σ_one, span_supp, inv_supp, det_supp⟩
+    fun x ↦ (σ_range ⟨x, rfl⟩).1, σ_one,
+    fun x hx i ↦ (σ_supp (subset_closure hx) i).1,
+    fun x hx i ↦ (σ_supp (subset_closure hx) i).2.1,
+    fun x hx i ↦ (σ_supp (subset_closure hx) i).2.2⟩
 
 omit [DecidableEq m] in
 /-- The `J`-orthogonal projection `x * (xᴴ * J * x)⁻¹ * xᴴ * J * x₀` of `x₀` to the span of a frame
@@ -304,7 +404,7 @@ lemma mul_gram_inv_mul_of_isUnit_det (J : Matrix m m ℂ) (x x₀ : Matrix m b �
     (hC : IsUnit C.det) :
     x * C * (((x * C)ᴴ * J * (x * C))⁻¹ * ((x * C)ᴴ * J * x₀)) =
       x * ((xᴴ * J * x)⁻¹ * (xᴴ * J * x₀)) := by
-  have hC' : IsUnit Cᴴ.det := by simpa using hC
+  have hC' : IsUnit Cᴴ.det := by rw [det_conjTranspose]; exact hC.map (starRingEnd ℂ)
   rw [gram_mul, Matrix.mul_inv_rev, Matrix.mul_inv_rev, conjTranspose_mul]
   simp only [Matrix.mul_assoc, mul_nonsing_inv_cancel_left _ _ hC,
     nonsing_inv_mul_cancel_left _ _ hC']
@@ -323,8 +423,18 @@ lemma exists_sum_one_eq_mul_mul_sum {t' : b → ℤˣ}
   refine (mem_range_sum_right (signMatrix_sum t' s) isUnit).2 ?_
   have h_fix : (g : Matrix (b ⊕ n) (b ⊕ n) ℂ) * ((k : Matrix (b ⊕ n) (b ⊕ n) ℂ) *
       fromRows (1 : Matrix b b ℂ) (0 : Matrix n b ℂ) * (u : Matrix b b ℂ)) = fromRows 1 0 := by
-    simp [h_frame, ← Matrix.mul_assoc]
-  simpa [U.sum, ← fromCols_fromRows_eq_fromBlocks, Matrix.mul_assoc] using h_fix
+    rw [h_frame, ← Matrix.mul_assoc, ← Units.val_mul, ← Subgroup.coe_mul, mul_inv_cancel,
+      Subgroup.coe_one, Units.val_one, Matrix.one_mul]
+  have h_blk : (U.sum (signMatrix_sum t' s) (u, 1) : Matrix (b ⊕ n) (b ⊕ n) ℂ) =
+      fromCols (fromRows (u : Matrix b b ℂ) 0) (fromRows 0 1) := by
+    rw [fromCols_fromRows_eq_fromBlocks]
+    rfl
+  have h_u : fromRows (u : Matrix b b ℂ) (0 : Matrix n b ℂ) =
+      fromRows (1 : Matrix b b ℂ) 0 * (u : Matrix b b ℂ) := by
+    rw [fromRows_mul, Matrix.one_mul, Matrix.zero_mul]
+  rw [Subgroup.coe_mul, Units.val_mul, Subgroup.coe_mul, Units.val_mul, h_blk,
+    mul_fromCols, toCols₁_fromCols, h_u, Matrix.mul_assoc,
+    ← Matrix.mul_assoc (k : Matrix (b ⊕ n) (b ⊕ n) ℂ), h_fix]
 
 /-- The coordinates at the infinite places of an `a × b` matrix, read as one complex matrix for each
 place. -/
@@ -345,6 +455,14 @@ first summand to the span of the frame `x`, orthogonal for the form with signs `
 def frameProjection {t' : b → ℤˣ} (γ : Matrix b b ℂ → Matrix b b ℂ) (x : Matrix (b ⊕ n) b ℂ) :
     Matrix (b ⊕ n) b ℂ :=
   x * (γ (xᴴ * signMatrix (t' ⊕ᵥ s) * x) * (xᴴ * signMatrix (t' ⊕ᵥ s) * fromRows 1 0))
+
+private lemma contDiff_frameProjection {t' : b → ℤˣ} {γ : Matrix b b ℂ → Matrix b b ℂ}
+    (hγ : ContDiff ℝ ∞ γ) : ContDiff ℝ ∞ (frameProjection (t' := t') (s := s) γ) := by
+  have hJ : ContDiff ℝ ∞ fun x : Matrix (b ⊕ n) b ℂ ↦ xᴴ * signMatrix (t' ⊕ᵥ s) :=
+    contDiff_mat_mul (contDiff_conjTranspose.comp contDiff_id) contDiff_const
+  exact contDiff_mat_mul contDiff_id
+    (contDiff_mat_mul (hγ.comp (contDiff_mat_mul hJ contDiff_id))
+      (contDiff_mat_mul hJ contDiff_const))
 
 /-- The family `x` of frames moved by the inverses of the unitary elements `k (y v)`. -/
 def unitaryMovedFrame {t' : b → ℤˣ}
@@ -391,20 +509,33 @@ lemma exists_isSchwartzVector_realSlice_bump (D : X.Splitting W₁ b) [IsBaseAda
   let C := placeMatrices E b b
   let τ (x : InfinitePlace E → Matrix b b ℂ) : ℝ :=
     σ (fun w ↦ fromRows (1 : Matrix b b ℂ) (0 : Matrix n b ℂ) * x w) * ‖∏ w, (x w).det ^ N w‖ ^ 2
-  have τ_smooth : ContDiff ℝ ∞ (τ ∘ C) := by
-    refine .mul (by fun_prop) (.norm_sq ℂ ?_)
-    simp only [det_apply]
-    fun_prop
+  have τ_smooth : ContDiff ℝ ∞ (τ ∘ C) :=
+    (hσ.comp (contDiff_pi.2 fun w ↦ contDiff_mat_mul contDiff_const
+      (contDiff_pi.1 C.contDiff w))).mul
+      (.norm_sq ℂ (contDiff_finset_prod fun w _ ↦
+        (contDiff_mat_det (contDiff_pi.1 C.contDiff w)).pow (N w)))
   -- `x` is recovered from the frame `(x, 0)`, which lies in the support of `σ`.
   have τ_cpt : HasCompactSupport (τ ∘ C) := by
-    refine (hσ_cpt.image_of_continuous (C.symm ∘ fun (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) w ↦
-      (fromRows 1 0 : Matrix (b ⊕ n) b ℂ)ᴴ * x w)).closure_of_subset fun x hx ↦
+    have h_cont : Continuous (C.symm ∘ fun (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) w ↦
+        (fromRows 1 0 : Matrix (b ⊕ n) b ℂ)ᴴ * x w) :=
+      C.symm.continuous.comp (continuous_pi fun w ↦
+        continuous_mat_mul continuous_const (continuous_apply w))
+    refine (hσ_cpt.image h_cont).closure_of_subset fun x hx ↦
       ⟨fun w ↦ fromRows 1 0 * C x w, subset_closure (left_ne_zero_of_mul hx), ?_⟩
-    simp [conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromRows]
+    apply C.injective
+    rw [Function.comp_apply, C.apply_symm_apply]
+    funext w
+    rw [← Matrix.mul_assoc, conjTranspose_fromRows_eq_fromCols_conjTranspose, fromCols_mul_fromRows,
+      conjTranspose_one, conjTranspose_zero, Matrix.one_mul, Matrix.zero_mul, add_zero,
+      Matrix.one_mul]
   obtain ⟨κ, Λ, hΛ, hΛ₀, hΛ_slice⟩ := exists_isSchwartzVector_realSlice_eq D V' (τ ∘ C) τ_smooth hv
     τ_cpt
-    (fun _ ↦ mul_nonneg (hσ₀ _) (sq_nonneg _)) (C.symm fun _ ↦ 1) (by simp [τ, hσ₁])
-  exact ⟨κ, Λ, hΛ, hΛ₀, fun x ↦ by simp [realSlice_eq_slice_placeMatrices_symm, hΛ_slice, τ, C]⟩
+    (fun _ ↦ mul_nonneg (hσ₀ _) (sq_nonneg _)) (C.symm fun _ ↦ 1) (by
+      simp only [Function.comp_apply, C.apply_symm_apply, τ, Matrix.mul_one, hσ₁, det_one, one_pow,
+        prod_const_one, norm_one, mul_one, ne_eq, one_ne_zero, not_false_eq_true])
+  exact ⟨κ, Λ, hΛ, hΛ₀, fun x ↦ by
+    rw [realSlice_eq_slice_placeMatrices_symm, hΛ_slice, Function.comp_apply, C.apply_symm_apply,
+      map_one, one_apply_eq_self]⟩
 
 /-- Let `σ` be smooth with compact support, `z` and `k` smooth maps on frames, and `v`, `v₁`
 Schwartz vectors (all moments finite) in the Fock spaces `PairFock` of `(W₁, V')` and `(W₁, W₁)`.
@@ -434,30 +565,71 @@ lemma exists_isSchwartzVector_exchangeSection (D : X.Splitting W₁ b) [IsBaseAd
   have section_eq (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) :
       exchangeSection σ k j M κ v v₁ (z ∘ x) x = τ x • realWeil (pairHomInf (1, k ∘ z ∘ x))
         (realBoxProd (realSigns_comp_split (homSigns_sum_target signs_comp_refl)) v v₁) := by
-    simp [exchangeSection, τ, w, S, realPairWeil, ← smul_assoc, -real_smul, zpow_sub₀, division_def,
-      inv_eq_conj, GeneralLinearGroup.det_ne_zero, prod_mul_distrib]
+    have h_inv_det (p : InfinitePlace E) : ((S (z (x p))).det)⁻¹ = star (S (z (x p))).det := by
+      have hd := congrArg Matrix.det (U.coe_inv IsHermitianInvolution.mul_self (k (z (x p))))
+      rw [Subgroup.coe_inv, coe_units_inv, det_nonsing_inv, Ring.inverse_eq_inv',
+        det_mul, det_mul, det_conjTranspose, mul_right_comm, ← det_mul,
+        IsHermitianInvolution.mul_self, det_one, one_mul] at hd
+      exact hd
+    rw [exchangeSection, realPairWeil, MonoidHom.coe_mk, OneHom.coe_mk, _root_.smul_apply,
+      smul_smul]
+    congr 1
+    dsimp only [τ, w]
+    rw [smul_mul_assoc]
+    congr 1
+    congr 1
+    · simp only [det_conjTranspose]
+    · rw [← prod_mul_distrib]
+      refine Finset.prod_congr rfl fun p _ ↦ ?_
+      rw [Pi.zero_apply, neg_zero, zpow_zero, mul_one, Function.comp_apply, Function.comp_apply,
+        zpow_sub₀ (GeneralLinearGroup.det_ne_zero (k (z (x p))).val), div_eq_mul_inv,
+        zpow_natCast, zpow_natCast, ← inv_pow, h_inv_det p]
   -- `τ` is `σ * σ` times a polynomial in the entries of `x` and `k (z x)` and their conjugates.
   have τ_smooth : ContDiff ℝ ∞ (τ ∘ C) := by
     have w_eq (x : InfinitePlace E → Matrix (b ⊕ n) b ℂ) : w x = fun p ↦
         signMatrix (t' ⊕ᵥ s) * (S (z (x p)))ᴴ * signMatrix (t' ⊕ᵥ s) * x p :=
       funext fun p ↦ congrArg (· * x p) (U.coe_inv IsHermitianInvolution.mul_self _)
-    simp [τ, w_eq, comp_def, det_apply, -real_smul, Matrix.mul_assoc]
+    simp only [τ, w_eq, comp_def, det_apply, Matrix.mul_assoc, toRows₁_apply, star_sum, star_smul,
+      star_prod, star_def]
     fun_prop
   -- On the support, `x = k y * w x` with `y = z ∘ x` and `w x` in the support of `σ`.
   have τ_cpt : HasCompactSupport (τ ∘ C) := by
-    refine ((hσ_cpt.prod hσ_cpt).image_of_continuous
-      (C.symm ∘ fun (p, q) v ↦ S (p v) * q v)).closure_of_subset fun x hx ↦ ?_
+    have h_cont : Continuous (C.symm ∘ fun (p : (InfinitePlace E → Matrix (b ⊕ n) b ℂ) ×
+        (InfinitePlace E → Matrix (b ⊕ n) b ℂ)) v ↦ S (p.1 v) * p.2 v) :=
+      C.symm.continuous.comp (continuous_pi fun v ↦
+        continuous_mat_mul (hk.continuous.comp ((_root_.continuous_apply v).comp continuous_fst))
+          ((_root_.continuous_apply v).comp continuous_snd))
+    refine ((hσ_cpt.prod hσ_cpt).image h_cont).closure_of_subset fun x hx ↦ ?_
     have hσ_ne : σ (z ∘ C x) ≠ 0 ∧ σ (w (C x)) ≠ 0 := mul_ne_zero_iff.1 (left_ne_zero_of_smul hx)
-    exact ⟨(z ∘ C x, w (C x)), closure_prod_eq.le (subset_closure hσ_ne),
-      by simp [S, w, unitaryMovedFrame]⟩
+    refine ⟨(z ∘ C x, w (C x)), closure_prod_eq.le (subset_closure hσ_ne), ?_⟩
+    apply C.injective
+    rw [Function.comp_apply, C.apply_symm_apply]
+    funext v
+    simp only [S, w, unitaryMovedFrame, Function.comp_apply, ← Matrix.mul_assoc, ← Units.val_mul,
+      ← Subgroup.coe_mul, mul_inv_cancel, Subgroup.coe_one, Units.val_one, Matrix.one_mul]
   -- The entries of the unitary matrix are entries of `k (z x)` or `0`.
   have u_smooth : ContDiff ℝ ∞ fun x ↦ (pairHomInf (1, k ∘ z ∘ C x) : USign
       (realSigns E (homSigns s (t' ⊕ᵥ s)))).val.val := by
     refine contDiff_pi' fun p ↦ contDiff_pi' fun q ↦ ?_
-    suffices ContDiff ℝ ∞ fun x ↦
-        if p.1 = q.1 then if p.2.2 = q.2.2 then S (z (C x p.1)) p.2.1 q.2.1 else 0 else 0 by
-      simpa [pairHomInf, blockDiagonal_apply, pairHom, S, Matrix.one_apply]
-    split_ifs <;> fun_prop
+    have h_eq : (fun x ↦ (pairHomInf (1, k ∘ z ∘ C x) : USign
+        (realSigns E (homSigns s (t' ⊕ᵥ s)))).val.val p q) = fun x ↦
+        if p.1 = q.1 then if p.2.2 = q.2.2 then S (z (C x p.1)) p.2.1 q.2.1 else 0 else 0 := by
+      funext x
+      change blockDiagonal (fun w ↦ (pairHom (t' ⊕ᵥ s) s (1, k (z (C x w))) :
+        Matrix ((b ⊕ n) × n) ((b ⊕ n) × n) ℂ)) (p.2, p.1) (q.2, q.1) = _
+      rw [blockDiagonal_apply]
+      by_cases h1 : p.1 = q.1
+      · rw [ite_eq_left h1, ite_eq_left h1, coe_pairHom, kroneckerMap_apply]
+        have h_one : (1 : Matrix n n ℂ)⁻¹ = 1 := Matrix.inv_eq_left_inv (Matrix.one_mul 1)
+        simp only [S, Subgroup.coe_one, Units.val_one, h_one, transpose_one,
+          Matrix.one_apply, mul_ite, mul_one, mul_zero]
+      · rw [ite_eq_right h1, ite_eq_right h1]
+    rw [h_eq]
+    split_ifs
+    · exact contDiff_pi.1 (contDiff_pi.1
+        (hk.comp (hz.comp (contDiff_pi.1 C.contDiff p.1))) p.2.1) q.2.1
+    · exact contDiff_const
+    · exact contDiff_const
   obtain ⟨Φ, hΦ, hΦ_slice⟩ := exists_isSchwartzVector_slice_eq
     (isAdapted_homSource D (V'.sum W₁)).mixedModel
     τ_smooth τ_cpt u_smooth (isSchwartzVector_realBoxProd _ hv hv₁)
@@ -492,10 +664,9 @@ lemma exchangeSection_frameProjection_mul {t' : b → ℤˣ}
         (fun w : InfinitePlace E ↦ x w * (C w).val) := by
   set A : InfinitePlace E → Matrix (b ⊕ n) b ℂ := fun w ↦ x w * (C w).val
   rcases forall_or_exists_not fun y ↦ σ (unitaryMovedFrame k y A) = 0 with hσ_zero | ⟨y, hy⟩
-  · simp [exchangeSection, hσ_zero]
+  · simp only [exchangeSection, hσ_zero, mul_zero, zero_smul]
   -- It is enough to see that `A w` and `x w` give the same projection.
-  congr 1
-  funext w
+  refine congrArg (exchangeSection σ k j M κ v₀ v₁ · A) (funext fun w ↦ ?_)
   have hγA : γ ((A w)ᴴ * signMatrix (t' ⊕ᵥ s) * A w) = ((A w)ᴴ * signMatrix (t' ⊕ᵥ s) * A w)⁻¹ := by
     simpa only [unitaryMovedFrame, U.gram_invariant] using hγ_supp _ hy w
   simp only [Function.comp_apply, frameProjection, hγA, hγx, A]
@@ -523,9 +694,12 @@ lemma exists_unitary_pair_of_frame {t' : b → ℤˣ}
   simp only [← hu_eq] at hc
   choose q hq using fun v ↦ exists_sum_one_eq_mul_mul_sum (hc v)
   refine ⟨u, q, fun v ↦ ⟨hc v, ?_⟩⟩
-  have hhk : h v * k v = U.sum (signMatrix_sum t' s) ((1, q v) * (u v, 1)⁻¹) := by
-    rw [map_mul, map_inv, hq, mul_inv_cancel_right]
-  simp [mul_assoc, hhk, ← map_mul, Prod.mk_one_one]
+  let φ := U.sum (signMatrix_sum t' s)
+  have hhk : h v * k v = φ ((1, q v) * (u v, 1)⁻¹) := by
+    rw [φ.map_mul, φ.map_inv, hq, mul_inv_cancel_right]
+  rw [mul_assoc, hhk, ← φ.map_mul]
+  simp only [Prod.inv_mk, Prod.mk_mul_mk, one_mul, inv_one, mul_one, mul_inv_cancel,
+    inv_mul_cancel, Prod.mk_one_one, φ.map_one]
 
 omit [WeilData E] in
 /-- Let `𝔠` be a tame character (`SplitTameChar`) of weight `μ ≥ 0` with automorphic character
@@ -541,16 +715,26 @@ lemma prod_conj_pow_eq_norm_div {μ : InfinitePlace E → ℕ}
   set z := ζ.map (MonoidHom.inl (InfinitePlace E → ℂ) (𝔸f E))
   set P : ℂ := ∏ w, ζ.val w with hP
   set Q : ℂ := ∏ w, ζ.val w ^ μ w with hQ
-  have hP₀ : (‖P‖ : ℂ) ≠ 0 := by simp [hP, prod_eq_zero_iff, (ζ.isUnit.apply _).ne_zero]
-  have hQ₀ : Q ≠ 0 := by simp [hQ, prod_eq_zero_iff, (ζ.isUnit.apply _).ne_zero]
+  have hζ (w : InfinitePlace E) : ζ.val w ≠ 0 := (ζ.isUnit.apply w).ne_zero
+  have hP₀ : (‖P‖ : ℂ) ≠ 0 := ofReal_ne_zero.2 <| norm_ne_zero_iff.2 <|
+    Finset.prod_ne_zero_iff.2 fun w _ ↦ hζ w
+  have hQ₀ : Q ≠ 0 := Finset.prod_ne_zero_iff.2 fun w _ ↦ pow_ne_zero _ (hζ w)
   have h_char : (𝔠.character.baseChange.val z : ℂ) = Q ^ 2 / ‖Q‖ ^ 2 := by
-    simp [z, hQ, 𝔠.hasWeight.baseChange_apply_inf, _root_.zpow_mul, div_pow, ← prod_pow,
-      pow_right_comm _ 2]
+    rw [𝔠.hasWeight.baseChange_apply_inf, hQ, norm_prod, Complex.ofReal_prod,
+      ← prod_pow, ← prod_pow]
+    trans ∏ w, (ζ.val w ^ μ w) ^ 2 / (‖ζ.val w ^ μ w‖ : ℂ) ^ 2
+    · refine Finset.prod_congr rfl fun w _ ↦ ?_
+      simp only [Pi.smul_apply, nsmul_eq_mul, Nat.cast_ofNat, _root_.zpow_mul, zpow_natCast,
+        zpow_two, ← sq, div_pow, norm_pow, Complex.ofReal_pow, pow_right_comm _ 2]
+    · exact Finset.prod_div_distrib _ _
   have h_abs : √(ideleAbs z) = ‖P‖ := by
-    simp [z, hP, ideleAbs_eq_prod_of_v_eq_one, prod_pow, prod_nonneg]
-  have h_lhs : ∏ w, star (ζ.val w) ^ (μ w * 2) = star Q ^ 2 := by simp [hQ, pow_mul, prod_pow]
+    rw [ideleAbs_eq_prod_of_v_eq_one (fun w ↦ by change Valued.v (1 : _) = 1; exact map_one _),
+      prod_pow, Real.sqrt_sq (Finset.prod_nonneg fun _ _ ↦ norm_nonneg _), hP, norm_prod]
+    rfl
+  have h_lhs : ∏ w, star (ζ.val w) ^ (μ w * 2) = star Q ^ 2 := by
+    simp only [hQ, pow_mul, ← prod_pow, star_prod, star_pow]
   have h_num : ∏ w, ζ.val w ^ (j + μ w) = P ^ j * Q := by
-    simp [hP, hQ, pow_add, prod_mul_distrib, prod_pow]
+    simp only [hP, hQ, pow_add, prod_mul_distrib, prod_pow]
   have h_conj : star Q = ‖Q‖ ^ 2 / Q := by rw [eq_div_iff hQ₀, star_def, conj_mul']
   push_cast [h_lhs, h_char, h_abs, h_num, h_conj, norm_mul, norm_pow]
   field
@@ -577,9 +761,11 @@ lemma realPairWeil_exchangeSection {t' : b → ℤˣ} {σ : (InfinitePlace E →
           ((∏ w : InfinitePlace E, star (B w).det ^ (M w * 2)) * κ)) •
         realBoxProd (realSigns_comp_split (homSigns_sum_target signs_comp_refl)) v v₁ := by
   by_cases hσ : σ y = 0
-  · simp [exchangeSection, hσ]
-  rw [exchangeSection, map_smul, ← mul_apply_eq_comp, ← map_mul, hx hσ]
-  simp [hg hσ, Prod.mk_one_one]
+  · simp only [exchangeSection, hσ, zero_mul, zero_smul, map_zero]
+  let ρ := realPairWeil (s := s) (s' := t' ⊕ᵥ s) (fun w : InfinitePlace E ↦ (j : ℤ) - M w) 0
+  rw [exchangeSection, map_smul, ← mul_apply_eq_comp, ← ρ.map_mul, hx hσ, Prod.mk_mul_mk,
+    one_mul, hg hσ, Prod.mk_one_one, ρ.map_one, one_apply_eq_self]
+  simp only [toRows₁_fromRows, det_conjTranspose]
 
 omit [WeilData E] in
 /-- Let `h` be a point of `GInf E (t' ⊕ᵥ s)`, the unitary group for the signs `t' ⊕ᵥ s` at the
@@ -592,10 +778,33 @@ lemma atRealPlace_inv_sum_mul_fromRows {t' : b → ℤˣ} (u : GInf E t') (q : G
     atRealPlace (G.adeleMatrix ((G.sum ((u, 1), q, 1)).1 * h, 1)⁻¹ * fromRows (m₂ := n) B 0) w =
       (↑(h⁻¹ w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) * fromRows (1 : Matrix b b ℂ) (0 : Matrix n b ℂ) *
         ((↑(u⁻¹ w) : Matrix b b ℂ) * atRealPlace B w) := by
-  rw [← Matrix.mul_assoc]
-  ext
-  -- `↓`: expand the products into sums of entries before the factors are rewritten.
-  simp [G.sum, ↓Matrix.mul_apply, Prod.fst_sum, U.sum, blockGL, Matrix.one_apply]
+  let φ : 𝔸 E →+* ℂ := (Pi.evalRingHom _ w).comp (RingHom.fst _ _)
+  have h_mul : atRealPlace (G.adeleMatrix ((G.sum ((u, 1), q, 1)).1 * h, 1)⁻¹ *
+      fromRows (m₂ := n) B 0) w =
+      atRealPlace (G.adeleMatrix ((G.sum ((u, 1), q, 1)).1 * h, 1)⁻¹) w *
+        atRealPlace (fromRows (m₂ := n) B 0) w :=
+    Matrix.map_mul (f := φ)
+  have h_g : atRealPlace (G.adeleMatrix ((G.sum ((u, 1), q, 1)).1 * h, 1)⁻¹) w =
+      (↑(h⁻¹ w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) *
+        fromBlocks (↑(u⁻¹ w) : Matrix b b ℂ) 0 0 (↑(q⁻¹ w) : Matrix n n ℂ) := by
+    have h_sum : (((G.sum ((u, 1), q, 1)).1)⁻¹ w : Matrix (b ⊕ n) (b ⊕ n) ℂ) =
+        fromBlocks (↑(u⁻¹ w) : Matrix b b ℂ) 0 0 (↑(q⁻¹ w) : Matrix n n ℂ) := by
+      change (↑((U.sum (signMatrix_sum t' s) (u w, q w))⁻¹) : Matrix (b ⊕ n) (b ⊕ n) ℂ) = _
+      rw [← (U.sum (signMatrix_sum t' s)).map_inv]
+      rfl
+    refine Matrix.ext fun i j ↦ ?_
+    rw [atRealPlace, Matrix.map_apply, G.adeleMatrix_fst, Prod.inv_mk]
+    dsimp only
+    rw [pi_mul_inv_apply, Subgroup.coe_mul, Units.val_mul, h_sum]
+  have h_rows : atRealPlace (fromRows (m₂ := n) B 0) w = fromRows (atRealPlace B w) 0 := by
+    refine Matrix.ext fun i j ↦ ?_
+    cases i <;> rfl
+  have h_from : fromRows ((↑(u⁻¹ w) : Matrix b b ℂ) * atRealPlace B w) (0 : Matrix n b ℂ) =
+      fromRows (1 : Matrix b b ℂ) 0 * ((↑(u⁻¹ w) : Matrix b b ℂ) * atRealPlace B w) := by
+    rw [fromRows_mul, Matrix.one_mul, Matrix.zero_mul]
+  rw [h_mul, h_g, h_rows, Matrix.mul_assoc]
+  simp only [fromBlocks_mul_fromRows, Matrix.mul_zero, Matrix.zero_mul, add_zero]
+  rw [h_from, ← Matrix.mul_assoc]
 
 /-- The Gram matrix of the frame `fromRows 1 0` of the first summand, for the form with signs
 `t' ⊕ᵥ s`, is the form with signs `t'`. -/
@@ -647,10 +856,26 @@ lemma IsWittBump.eventually_bump_frameProjection_ne_zero
   let x₀ : Matrix (b ⊕ n) b ℂ := fromRows 1 0
   have proj_base : frameProjection (t' := t') (s := s) γ x₀ = x₀ := by
     change x₀ * (γ (x₀ᴴ * signMatrix (t' ⊕ᵥ s) * x₀) * (x₀ᴴ * signMatrix (t' ⊕ᵥ s) * x₀)) = x₀
-    rw [hW.inv_gram_base, gram_signMatrix_fromRows_one_zero]
-    simp [IsHermitianInvolution.det_ne_zero]
-  refine (Continuous.tendsto (by fun_prop [frameProjection]) 1).eventually_ne ?_
-  simp [comp_def, x₀, proj_base, hW.bump_base]
+    rw [hW.inv_gram_base, gram_signMatrix_fromRows_one_zero,
+      nonsing_inv_mul _ (isUnit_iff_ne_zero.2 (IsHermitianInvolution.det_ne_zero (signMatrix t'))),
+      Matrix.mul_one]
+  have h_cont : Continuous fun h : GInf E (t' ⊕ᵥ s) ↦
+      σ (frameProjection (t' := t') (s := s) γ ∘ fun w : InfinitePlace E ↦
+        (↑(h⁻¹ w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) * x₀) :=
+    σ_smooth.continuous.comp (continuous_pi fun w ↦
+      (contDiff_frameProjection γ_smooth).continuous.comp
+        (continuous_mat_mul
+          (Units.continuous_val.comp (continuous_subtypeVal.comp
+            ((_root_.continuous_apply w).comp continuous_inv)))
+          continuous_const))
+  refine (h_cont.tendsto 1).eventually_ne ?_
+  have h_at_one : (frameProjection (t' := t') (s := s) γ ∘ fun w : InfinitePlace E ↦
+      (↑((1 : GInf E (t' ⊕ᵥ s))⁻¹ w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) * x₀) = fun _ ↦ x₀ := by
+    funext w
+    rw [Function.comp_apply, inv_one, Pi.one_apply, Subgroup.coe_one, Units.val_one,
+      Matrix.one_mul, proj_base]
+  rw [h_at_one, hW.bump_base]
+  exact one_ne_zero
 
 /-- Let `γ`, `k`, `σ` be smooth Witt data near `x₀ = fromRows 1 0` (`IsWittBump`): for frames `y`
 where the bump function `σ` is nonzero, `y` lies in the span of `k y * x₀` with `k y` unitary, and
@@ -708,7 +933,7 @@ lemma IsWittBump.isPeriodIdentity {t' : b → ℤˣ} {γ : Matrix b b ℂ → Ma
       (k (y w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) * x₀ * (u w : Matrix b b ℂ) = x₁ w ∧
         U.sum (signMatrix_sum t' s) (u w, (q w)⁻¹) * h w * k (y w) = 1 := by
     by_cases hσ : σ y = 0
-    · simp [hσ]
+    · exact ⟨1, 1, fun h ↦ absurd hσ h⟩
     have hframe (w : InfinitePlace E) : ∃ c : Matrix b b ℂ,
         (k (y w) : Matrix (b ⊕ n) (b ⊕ n) ℂ) * x₀ * c = x₁ w ∧
           cᴴ * signMatrix t' * c = signMatrix t' :=
@@ -727,9 +952,15 @@ lemma IsWittBump.isPeriodIdentity {t' : b → ℤˣ} {γ : Matrix b b ℂ → Ma
   -- The group elements cancel, the moved frame is `(B, 0)`, and the period splits off `v₁`.
   have cancel (hσ : σ y ≠ 0) : p * (k ∘ y) = 1 := funext fun w ↦ (huq hσ w).2
   have moved_frame (hσ : σ y ≠ 0) : unitaryMovedFrame k y (fun w ↦ x₁ w * (C w).val) =
-      fun w ↦ fromRows (atRealPlace B.val w) 0 :=
-    funext fun w ↦ by simp [unitaryMovedFrame, C_val, ← (huq hσ w).1, Matrix.mul_assoc, x₀]
-  have weight_eq : (fun w ↦ (Fintype.card n : ℤ) / 2 - μ w) = fun w ↦ (j : ℤ) - μ w := by simp [hj]
+      fun w ↦ fromRows (atRealPlace B.val w) 0 := by
+    funext w
+    rw [unitaryMovedFrame, C_val, ← (huq hσ w).1]
+    simp only [← Matrix.mul_assoc, ← Units.val_mul, ← Subgroup.coe_mul, inv_mul_cancel,
+      Subgroup.coe_one, Units.val_one, Matrix.one_mul, Pi.inv_apply, mul_inv_cancel, x₀,
+      fromRows_mul, Matrix.zero_mul]
+  have weight_eq : (fun w ↦ (Fintype.card n : ℤ) / 2 - μ w) = fun w ↦ (j : ℤ) - μ w := by
+    funext w
+    rw [hj, Nat.cast_mul, Nat.cast_ofNat, Int.mul_ediv_cancel_left _ two_ne_zero]
   rw [hΦ, hΛ, re_A, exchangeSection_frameProjection_mul k hW.inv_gram j μ κ v v₁ x₁ C γ_inv,
     weight_eq, realPairWeil_exchangeSection j μ κ v v₁ cancel moved_frame]
   simp only [map_smul, smul_eq_mul, integral_const_mul, thetaOnRealData_boxProd_eq_mul]
@@ -767,10 +998,12 @@ theorem exists_rowColExchangeIdentity_sum (D : X.Splitting W₁ b) [IsBaseAdapte
   obtain ⟨j, hj⟩ : ∃ j : ℕ, Fintype.card n = 2 * j := exists_eq_mul_right_of_dvd hn
   obtain ⟨γ, k, σ, hW⟩ := exists_contDiff_witt_and_bump (ι := InfinitePlace E)
     (J := signMatrix (t' ⊕ᵥ s)) (x₀ := fromRows (1 : Matrix b b ℂ) (0 : Matrix n b ℂ)) isHermitian
-    (by simp [gram_signMatrix_fromRows_one_zero, IsHermitianInvolution.det_ne_zero])
+    (by
+      rw [gram_signMatrix_fromRows_one_zero]
+      exact IsHermitianInvolution.det_ne_zero (signMatrix t'))
   let z : Matrix (b ⊕ n) b ℂ → Matrix (b ⊕ n) b ℂ := frameProjection (t' := t') (s := s) γ
   have γ_smooth : ContDiff ℝ ∞ γ := hW.contDiff_inv
-  have z_smooth : ContDiff ℝ ∞ z := by fun_prop [frameProjection]
+  have z_smooth : ContDiff ℝ ∞ z := contDiff_frameProjection γ_smooth
   let M : InfinitePlace E → ℕ := Int.toNat ∘ μ
   obtain ⟨κ, Λ, hΛ, Λ_zero, Λ_slice⟩ :=
     exists_isSchwartzVector_realSlice_bump D V' (fun w ↦ j + M w)
@@ -779,7 +1012,8 @@ theorem exists_rowColExchangeIdentity_sum (D : X.Splitting W₁ b) [IsBaseAdapte
     hW.hasCompactSupport_bump hW.contDiff_unitary z_smooth j M κ hv hv₁
   -- Where the slice of `Φ` is nonzero, the frame is `k x₀ c`, and `c` represents its Gram matrix.
   have h_vanish : SlicesVanishOutside D (V'.sum W₁) t' Φ := fun x hx w ↦ by
-    have hσ : σ (z ∘ atRealPlace x) ≠ 0 := fun h₀ ↦ hx (by simp [Φ_slice, exchangeSection, h₀])
+    have hσ : σ (z ∘ atRealPlace x) ≠ 0 := fun h₀ ↦
+      hx (by rw [Φ_slice, exchangeSection, h₀, zero_mul, zero_smul, zero_smul])
     obtain ⟨c, -, hc⟩ := hW.exists_mul_fromRows_mul_eq_of_ne_zero hσ w
     exact ⟨c, hc.trans (gram_atRealPlace _ w)⟩
   let ρ (h : GInf E (t' ⊕ᵥ s)) : ℝ := σ (z ∘ fun w ↦

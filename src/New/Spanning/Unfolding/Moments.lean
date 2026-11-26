@@ -1,7 +1,22 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.InnerProductSpace.Trace
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.Analysis.Normed.Ring.Ultra
+import TauCeti.NumberTheory.NumberField.Countable
 public import New.Spanning.SecondMoment.HilbertSchmidt
-public import New.Spanning.Unfolding.MomentBounds
+public import Lib.General.Groups.CharacterTheory
+public import Lib.Shimura.ComplexTheta.AppellHumbertData
+public import New.Spanning.Frames.FixedLines
+public import New.Spanning.RemainingTerms.Size
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import New.Spanning.Frames.FiniteDepth
+import New.Spanning.Frames.FiniteShells
+import New.Spanning.MainTerm.GlobalToLocal
+import New.Spanning.Unfolding.MomentBounds
+import New.Spanning.Unfolding.SquareExpansion
 
 /-!
 # The second moments of the operators `P* s P`, and good forms
@@ -541,13 +556,12 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_adjoint_comp_sq_le [HasPrimitiveRoot
     simpa [hilbertSchmidtNorm] using norm_add_le (hilbertSchmidtVector (P.adjoint ∘ₗ P - one))
       (hilbertSchmidtVector one)
   have h_near : hilbertSchmidtNorm (P.adjoint ∘ₗ P - one) ≤ hilbertSchmidtNorm one / 3 := by
-    have h_sq : hilbertSchmidtNorm (P.adjoint ∘ₗ P - one) ^ 2 ≤ (hilbertSchmidtNorm one / 3) ^
-      2 := by
-      grw [hP.hilbertSchmidtNorm_sub_one_sq_le, div_pow, hilbertSchmidtNorm_one_sq_eq_sourceDim,
-        ← hb]
-      gcongr
-      norm_num
-    exact (abs_le_of_sq_le_sq' h_sq (div_nonneg (hilbertSchmidtNorm_nonneg _) zero_le_three)).2
+    refine le_of_pow_le_pow_left₀ (n := 2) (by decide)
+      (div_nonneg (hilbertSchmidtNorm_nonneg _) zero_le_three) ?_
+    grw [hP.hilbertSchmidtNorm_sub_one_sq_le, div_pow, hilbertSchmidtNorm_one_sq_eq_sourceDim,
+      ← hb]
+    gcongr
+    norm_num
   rw [← hilbertSchmidtNorm_one_sq_eq_sourceDim]
   nlinarith [hilbertSchmidtNorm_nonneg (P.adjoint ∘ₗ P), hilbertSchmidtNorm_nonneg one]
 
@@ -692,7 +706,8 @@ lemma sum_norm_sq_coeff_of_isCentralProj {G : Type*} [Group G] [Fintype G] {x : 
     congr_arg (fun y ↦ (y.coeff 1).re) hx.1
 
 omit ok in
-/-- Let `S` be filling data over a CM field `E` with Weil data. Let `γ` be in the Bessel
+omit [WeilData E] in
+/-- Let `S` be filling data over a CM field `E`. Let `γ` be in the Bessel
 subgroup and `k = translateByClassReps c c γ`, that is `h_c⁻¹ γ h_c` for the representative `h_c` of
 the class `c`. If `k` lies in the stabilizer `latticeStabilizer` of the lattice and reduces to `1`
 at the chosen places above the level prime `p_j`, then `k` lies in the unipotent subgroup
@@ -759,22 +774,16 @@ lemma trace_besselTranslate_eq_mul_reducedChar {j : Fin 2} {s : S.ResidueGL} (hs
   split_ifs with h
   · -- If `s` is the reduction of a unipotent `k`, the block at `s⁻¹` is `ψ_U(k)` times the block at
     -- `1`, which is the covolume times the identity.
-    obtain ⟨hk_unip, hk_red⟩ :
-        h.choose.val ∈ (S.latticeMiddle (𝔸f E)).besselU ∧ S.reduction h.choose = s := h.choose_spec
-    have h_move (c : S.Classes) :
-        S.amplitudeSum .full (S.ratMiddle E).besselS c s⁻¹ c =
-          S.unipotentChar h.choose • S.amplitudeSum .full (S.ratMiddle E).besselS c 1 c := by
-      simpa [hk_red] using
-        amplitudeSum_besselU_mul isStable_besselS (u := 1) (one_mem _) hk_unip c 1 c
+    obtain ⟨hk_unip, hk_red⟩ := h.choose_spec
+    have h_move (c : S.Classes) :=
+      amplitudeSum_besselU_mul (side := .full) isStable_besselS (u := 1) (one_mem _) hk_unip c 1 c
+    simp [hk_red] at h_move
     simp [h_move, amplitudeSum_besselS_one_eq_ite, S.unipotentCovolume_pos.ne', sourceDim]
   · -- Otherwise there is no term: its translate `k` by the class representatives would be unipotent
     -- with the reduction `s⁻¹`.
-    have h_empty (c : S.Classes) :
-        IsEmpty ↥(↑(S.ratMiddle E).besselS ∩ S.termsOver c s⁻¹ c) := by
-      refine ⟨fun ⟨γ, hγ, k, hk_red, hk⟩ ↦ ?_⟩
-      have hk_unip : k.val ∈ (S.latticeMiddle (𝔸f E)).besselU :=
-        S.mem_besselU_of_reduction_eq_one (j := j) hγ hk (by simp [hk_red, hs])
-      exact h ⟨k⁻¹, inv_mem hk_unip, by simp [hk_red]⟩
+    have (c : S.Classes) : IsEmpty ↥(↑(S.ratMiddle E).besselS ∩ S.termsOver c s⁻¹ c) :=
+      ⟨fun ⟨_, hγ, k, hk_red, hk⟩ ↦ h ⟨k⁻¹, inv_mem <|
+        S.mem_besselU_of_reduction_eq_one (j := j) hγ hk (by simp [hk_red, hs]), by simp [hk_red]⟩⟩
     simp [amplitudeSum, tsum_empty]
 
 omit ok [WeilData E] in
@@ -1138,7 +1147,7 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_asAlgebraHom_comp_sq_le [WeilData E]
     have h_sum : P.adjoint ∘ₗ e ∘ₗ P =
         ∑ t, x.coeff t • (P.adjoint ∘ₗ ρ (Pi.mulSingle i t) ∘ₗ P) := by
       ext1 v
-      simp [he_def, asAlgebraHom_eq_sum]
+      simp [he_def, Representation.asAlgebraHom_eq_sum]
     rw [← ofReal_re (_ ^ 2), hilbertSchmidtNorm_sq_eq_trace, h_proj, h_sum, ← add_re, hP']
     simp [mul_sub]
   have h_bessel :
@@ -1152,10 +1161,7 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_asAlgebraHom_comp_sq_le [WeilData E]
       rw [inner_hilbertSchmidtVector, End.one_eq_id, LinearMap.adjoint_id, LinearMap.id_comp]
     rw [h_inner]
     refine (re_le_norm _).trans ((norm_inner_le_norm _ _).trans ?_)
-    suffices h_sq : (‖hilbertSchmidtVector
-      (1 : End ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord)))‖ *
-        ‖hilbertSchmidtVector P'‖) ^ 2 ≤ ((S.b ^ 4)⁻¹ * S.sourceDim) ^ 2 from
-      (abs_le_of_sq_le_sq' h_sq (by positivity)).2
+    refine le_of_pow_le_pow_left₀ (n := 2) (by decide) (by positivity) ?_
     calc
       _ = S.sourceDim * hilbertSchmidtNorm P' ^ 2 := by
         rw [mul_pow, ← hilbertSchmidtNorm_one_sq_eq_sourceDim, hilbertSchmidtNorm,

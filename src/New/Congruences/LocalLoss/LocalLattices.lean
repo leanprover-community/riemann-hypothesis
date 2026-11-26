@@ -1,7 +1,11 @@
 module
 
+import Mathlib.Algebra.Module.StablyFree.Basic
+import TauCeti.LinearAlgebra.Pi
 public import New.Congruences.GaloisRepresentations.SelmerHypotheses
 public import New.Congruences.LocalLoss.CrystallineCocycles
+import Lib.PadicHodge.Crystalline.HodgeTateForms
+import Lib.PadicHodge.Crystalline.Regularity
 
 /-!
 # Tame classes from roots of unity and lattices read at a place above ℓ
@@ -207,6 +211,7 @@ lemma IsConjSelfDualOfLevel.hasJumps_localLattice {τ : (D.E →+* ℂ) → Mult
     (h_selfDual : IsConjSelfDualOfLevel D t τ S R) (hu : IsLatticeIn R u)
     (w : placesDividing D.E ℓ) (g : Gp ℓ) :
     HasJumps (localLattice u w).ρ (coefficientEmbedding O g) (τ (complexEmbeddingAt w g)) := by
+  -- Use the actual local data supplied by `localChart ℓ D.E w` at the chosen place.
   -- Jumps are unchanged by extension of scalars from `O` to `ℚ̄_ℓ`.
   obtain ⟨-, h_jump, -⟩ := h_selfDual.local_conditions w.val (by simp) w.val.isPlaceOver_placeOver
   obtain ⟨F, b, -, F_smul, F_basis, F_mulVec⟩ := hu.exists_equivariant_embedding
@@ -238,7 +243,8 @@ lemma IsConjSelfDualOfLevel.inClass_localLattice {τ : (D.E →+* ℂ) → Multi
     (hu : IsLatticeIn R u) (w : placesDividing D.E ℓ) :
     InClass (crystallinityFilter w) (KillsAboveM 𝓡 w) (jumpSetAt τ w) (localLattice u w) := by
   refine ⟨?_, fun γ i hi ↦ ?_, fun s Q ⟨_, h_kills⟩ hs ↦ ?_⟩
-  · -- `R` is potentially crystalline at `w`, and crystalline if `w` is not in `placesAboveM D`
+  · -- Instantiate the local conditions using `localChart`. At `w`, `R` is potentially
+    -- crystalline, and crystalline if `w` is not in `placesAboveM D`.
     obtain ⟨⟨-, h_potCrys⟩, -, h_good⟩ :=
       h_selfDual.local_conditions w.val (by simp) w.val.isPlaceOver_placeOver
     refine hu.isAdmissible_localLattice le_sup_left ?_

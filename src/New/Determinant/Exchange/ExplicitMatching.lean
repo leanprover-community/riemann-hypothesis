@@ -1,9 +1,17 @@
 module
 
-public import Lib.GLn.SchurModule.Polarisation
-public import New.Determinant.Exchange.TheoremForPartners
+import Mathlib.Analysis.Complex.MeanValue
+import Mathlib.Topology.UniformSpace.Uniformizable
 public import New.OneLift.ComparisonOperator.DeterminantProducts
-public import New.OneLift.ComparisonOperator.OneExchange
+public import Lib.SiegelWeil.Tower.FiniteTateIntegral
+public import New.Determinant.Exchange.MatchingPartners
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.GLn.SchurModule.Polarisation
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Weil.Construction.CanonicalTheta
+import New.Determinant.Exchange.TheoremForPartners
+import New.OneLift.ComparisonOperator.OneExchange
 
 /-!
 # Explicit real data: the exchange identity for a definite space with determinant data
@@ -88,9 +96,11 @@ abbrev blockSigns : b → ℤˣ := (1 ⊕ᵥ -1) ∘ f.symm
 
 /-- The embedding of the compact groups `U(m)`, one for each infinite place, as the positive block
 of the unitary group of signs `blockSigns j`. -/
-@[simps!]
+@[simps! -isSimp]
 def posBlockEmb : GInf E (1 : m → ℤˣ) →* GInf E (blockSigns j) :=
   ((U.reindex j (by simp [signMatrix])).toMonoidHom.comp (U.inl 1 (-1))).compLeft (InfinitePlace E)
+
+attribute [simp] val_posBlockEmb_apply_coe
 
 omit [NumberField E] in
 /-- At each place, the inverse of the image of `k` has the matrix of the image of `k⁻¹`. -/
@@ -126,11 +136,6 @@ omit [DecidableEq p] [DecidableEq l] in
 @[simp↓]
 lemma card_neg_blockSigns : card {i : b // blockSigns f i = -1} = card l := by
   simp [Fintype.card_subtype, card_filter, reindex_equiv f, -sum_boole]
-
-omit [NumberField E] in
-lemma continuous_posBlockEmb : Continuous (posBlockEmb (E := E) j) := by
-  simp only [continuous_pi_iff, continuous_U_iff_matrix, val_posBlockEmb_apply_coe]
-  fun_prop
 
 /-- The polynomial `∏_τ det (y⁻_τ) ^ (card (ι τ) + card n - 2 * card l) ∏_{τ, k} det (η_{τ k} y_τ)`,
 where `y⁻_τ` is the `l × l` block of variables with both signs negative and `y_τ` the `m × p` block
@@ -309,7 +314,8 @@ lemma exists_mul_eq_circle_mean (j : m ⊕ l ≃ n) (e : p ⊕ a ≃ m)
     exact h_mem.imp fun κ hκ ℓ hℓ ↦ congrFun hκ ⟨ℓ, hℓ⟩
   -- A line of functions of `ℓ` is closed and `mean` is continuous, so it is enough to treat Fock
   -- vectors of polynomials.
-  have h_cont := continuous_posBlockEmb (E := E) j
+  have h_cont : Continuous (posBlockEmb (E := E) j) := by
+    simp only [continuous_pi_iff, continuous_U_iff_matrix, val_posBlockEmb_apply_coe]; fun_prop
   have h_cont_torus : Continuous (frameTorus E e) := by fun_prop [frameTorus]
   refine isClosed_property denseRange_polyVector
     ((isClosedMap_smul_left _).isClosed_range.preimage_of_continuous (f := mean)) (fun P ↦ ?_) y
@@ -404,9 +410,7 @@ lemma exists_stackedDetProd_eq_sum_unitary (f : p ⊕ l ≃ b) (j : m ⊕ l ≃ 
     exists_pairedDetProd_eq_sum_unitary h_card (e.injective.comp inl_injective) ξ
   refine ⟨c, MvPolynomial.funext fun x ↦ ?_, ?_⟩
   · -- At the point `x`, `stackedDetProd e` is a fixed multiple of the product for complex `Y τ`.
-    have h_point (τ : InfinitePlace E) : ∃ (Y : m → p → ℂ) (d : ℂ), ∀ ζ : Matrix p m ℂ,
-        (stackedDet τ ζ e).eval x = d * (ζ * of Y).det := exists_eval_stackedDet_eq e τ x
-    choose Y d hY using h_point
+    choose Y d hY using fun τ : InfinitePlace E ↦ exists_eval_stackedDet_eq e τ x
     have h_eval (ζ : (τ : InfinitePlace E) → ι τ → Matrix p m ℂ) :
         (stackedDetProd e ζ).eval x =
           (∏ τ : InfinitePlace E, d τ ^ card (ι τ)) * pairedDetProd Y ζ := by
@@ -465,7 +469,7 @@ lemma exists_mul_apply_eq_apply_matchedPoly (f : p ⊕ l ≃ b) (j : m ⊕ l ≃
     -- multiple of `matchedPoly (z⁻¹ ^ 2 • ξ)`, so `h_match` applies.
     have h_frame (z : Circle) (τ : InfinitePlace E) (i : ι τ) :
         η τ i * ((k * t z) τ : Matrix m m ℂ)ᵀ = (z⁻¹ : Circle).val ^ 2 • ξ τ i := by
-      simp [η, ξ, ← ext_iff, Matrix.mul_apply, t, standardFrame, frameTorus, mul_comm, ↓diagTorus,
+      simp [η, ξ, ← ext_iff, Matrix.mul_apply, t, standardFrame, frameTorus, ↓diagTorus,
         Matrix.one_apply, ↓diagonal_apply]
     have h_transl (z : Circle) : ℓ (posBlockEmb j (k * t z)) v =
         ℓ' ((∏ τ, ((k * t z) τ : Matrix m m ℂ).det ^ c τ)⁻¹ •
@@ -556,6 +560,7 @@ lemma exists_linearMap_eq_integral_modKernel {s : b → ℤˣ} {t : n → ℤˣ}
            map_smul' c Q := by simp [integral_const_mul] },
     fun Q ↦ rfl⟩ -- by definition of `modKernelBilin`
 
+omit [DecidableEq b] in
 /-- Let `W` have `card l` negative signs and let `I_a` be the positive definite standard space
 `stdSpace E a`. Let the character `α` be tame for `(𝔪, χ)` of weight `card l - card (ι τ)`. Let `Φ`
 have a matched function `Ψ` for `χ⁻¹` (`AreMatched`): for invertible `k` modulo `𝔪` they vanish off

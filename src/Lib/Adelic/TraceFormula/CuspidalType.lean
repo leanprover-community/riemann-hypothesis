@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.RingTheory.PicardGroup
 public import Lib.Adelic.TraceFormula.TestFunction
 public import Lib.LocalGL.Green.LabelCharacters
 
@@ -59,7 +60,7 @@ lemma upperRightBlock_surjective (T : Finset n) :
   let Z : Matrix n n k := of fun i j ↦
     if h : ¬i ∉ T ∧ j ∉ T then LinearMap.toMatrix' X ⟨i, h.1⟩ ⟨j, h.2⟩ else 0
   have h_block : Z.submatrix Subtype.val Subtype.val = LinearMap.toMatrix' X := by
-    ext i j; simp [Z, i.2, j.2]
+    ext i j; simp [Z, i.property, j.property]
   exact ⟨Z, by simp [upperRightBlock, h_block]⟩
 
 omit [Finite k] in
@@ -67,14 +68,14 @@ omit [Finite k] in
 triangular endomorphism with identity blocks on the diagonal and the upper right block of `Z` off
 it. -/
 lemma simClassOf_radicalHom (T : Finset n) (Z : Matrix n n k) :
-    simClassOf (toLin' (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z)).1) =
+    simClassOf (toLin' (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z)).val) =
       simClassOf (blockTriangularEnd 1 1 (upperRightBlock T Z)) := by
   let e : {i // i ∉ T} ⊕ {i // ¬i ∉ T} ≃ n := Equiv.sumCompl (· ∉ T)
-  have h_entry (i j : n) : (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z)).1 i j =
+  have h_entry (i j : n) : (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z)).val i j =
       (1 : Matrix n n k) i j + if i ∈ T ∧ j ∉ T then Z i j else 0 := by
     by_cases hi : i ∈ T <;> by_cases hj : j ∈ T <;>
       simp [coe_radicalHom, coordProjector, mul_sub, hi, hj]
-  have h_blocks : (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z)).1.submatrix e e =
+  have h_blocks : (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z)).val.submatrix e e =
       fromBlocks 1 0 (Z.submatrix Subtype.val Subtype.val) 1 := by
     ext (⟨i, hi⟩ | ⟨i, hi⟩) (⟨j, hj⟩ | ⟨j, hj⟩) <;> simp [h_entry, e, Matrix.one_apply] <;> grind
   rw [← simClassOf_submatrix e, h_blocks]
@@ -139,12 +140,12 @@ lemma sum_coeff_labelIdem_radicalHom {c : k[X]} (hc : IsLabel (Fintype.card n) c
     obtain ⟨hc_monic, -⟩ := hc
     exact finMean_labelChar_radicalHom hc_monic hc_irr hT_empty hT_univ
   have h_sum : ∑ Z : Matrix n n k, χ (U (ofAdd Z) * (z * y)) = 0 := by
-    obtain ⟨h_char, -⟩ : IsIrreducibleChar χ := hc.isIrreducibleChar_labelChar (faithfulChar k)
+    have h_char : IsChar χ := (hc.isIrreducibleChar_labelChar (faithfulChar k)).isChar
     have h_elem : (Representation.trivial ℂ (Multiplicative (Matrix n n k)) ℂ).asAlgebraHom
         (groupAlgElem fun Z : Multiplicative (Matrix n n k) ↦ χ (U Z * (z * y))) = 0 :=
       h_char.asAlgebraHom_groupAlgElem_eq_zero U (z * y) h_mean
     -- the trivial representation sends a group algebra element to the sum of its coefficients
-    simpa [asAlgebraHom_eq_sum, ← ofAdd.sum_comp] using LinearMap.congr_fun h_elem 1
+    simpa [Representation.asAlgebraHom_eq_sum, ← ofAdd.sum_comp] using LinearMap.congr_fun h_elem 1
   -- The coefficients are a multiple of the conjugate character, which is a class function.
   have h_coeff (u : GL n k) : (labelIdem n c).coeff (y * (u * z)) =
       χ 1 / Nat.card (GL n k) * starRingEnd ℂ (χ (u * (z * y))) := by
@@ -165,8 +166,8 @@ variable {E n ι : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [De
 
 omit [Fintype ι] in
 lemma coe_mem_levelOf_bot {k : stdLevel E n} :
-    k.1 ∈ levelOf w ⊥ ↔ stdLevel.reduceFamily w k = 1 := by
-  rw [mem_levelOf, exists_prop_of_true k.2, Subgroup.mem_bot]
+    k.val ∈ levelOf w ⊥ ↔ stdLevel.reduceFamily w k = 1 := by
+  rw [mem_levelOf, exists_prop_of_true k.property, Subgroup.mem_bot]
 
 /-- For places `w i`, none conjugate to another or to itself, lift an element `a` of the group
 algebra of their finite groups by `liftResidue` and convolve it with the indicator of `levelOf w ⊥`.
@@ -177,7 +178,7 @@ lemma convIndicator_mapDomain_liftResidue [hw : IsConjApart w]
     {hK_compact : IsCompact (levelOf (n := n) w ⊥ : Set (Gf E n))}
     (a : ℂ[∀ i : ι, GL n (ResField (w i))]) (k : stdLevel E n) :
     (convIndicator hK_open hK_compact
-      (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).1) a)).1 k.1 =
+      (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val) a)).val k.val =
       a.coeff (stdLevel.reduceFamily w k) := by
   classical
   induction a using induction_linear with
@@ -185,7 +186,7 @@ lemma convIndicator_mapDomain_liftResidue [hw : IsConjApart w]
   | add a b ha hb =>
     simp [mapDomain_add, ha, hb]
   | single s c =>
-    have h_iff : (liftResidue s).1⁻¹ * k.1 ∈ levelOf w ⊥ ↔ s = stdLevel.reduceFamily w k := by
+    have h_iff : (liftResidue s).val⁻¹ * k.val ∈ levelOf w ⊥ ↔ s = stdLevel.reduceFamily w k := by
       rw [← Subgroup.coe_inv, ← Subgroup.coe_mul, coe_mem_levelOf_bot, map_mul, map_inv,
         reduceFamily_liftResidue, inv_mul_eq_one]
     simp [convIndicator_single, Finsupp.single_apply, h_iff]
@@ -199,14 +200,13 @@ lemma convIndicator_mapDomain_liftResidue_of_notMem [hw : IsConjApart w]
     {hK_compact : IsCompact (levelOf (n := n) w ⊥ : Set (Gf E n))}
     (a : ℂ[∀ i : ι, GL n (ResField (w i))]) {g : Gf E n} (hg : g ∉ stdLevel E n) :
     (convIndicator hK_open hK_compact
-      (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).1) a)).1 g = 0 := by
-  classical
+      (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val) a)).val g = 0 := by
   induction a using induction_linear with
   | zero => simp
   | add a b ha hb => simp [mapDomain_add, ha, hb]
   | single s c =>
-    have h_notMem : (liftResidue s).1⁻¹ * g ∉ levelOf w ⊥ := fun h_mem ↦
-      hg (((stdLevel E n).mul_mem_cancel_left (inv_mem (liftResidue s).2)).1
+    have h_notMem : (liftResidue s).val⁻¹ * g ∉ levelOf w ⊥ := fun h_mem ↦
+      hg (((stdLevel E n).mul_mem_cancel_left (inv_mem (liftResidue s).property)).1
         (levelOf_le_stdLevel h_mem))
     rw [mapDomain_single, convIndicator_single, ite_eq_right h_notMem]
 
@@ -247,13 +247,13 @@ theorem isCuspidalAt_convIndicator_tupleIdem [hw : IsConjApart w]
     {c : ∀ i : ι, (ResField (w i))[X]} {x : ι}
     (hc : IsLabel (Fintype.card n) (c x)) (hc_irr : Irreducible (c x)) (b : ℂ[Gf E n]) :
     IsCuspidalAt (hw.star_ne x x) (convIndicator hK_open hK_compact
-      (b * mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).1)
+      (b * mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val)
         (tupleIdem n c))) := by
   -- Left convolution by `b` preserves cuspidality, so it suffices to treat the lifted idempotent.
   refine IsCuspidalAt.convIndicator_mul ?_ b
   intro T hT_empty hT_univ t lift h_lift g
   let u (Z : Matrix n n (ResField (w x))) : stdLevel E n :=
-    ⟨ofSplitPlace (hw.star_ne x x) (lift Z), (ofSplitPlace_mem_stdLevel _ _).2 (lift Z).2⟩
+    ⟨ofSplitPlace (hw.star_ne x x) (lift Z), (ofSplitPlace_mem_stdLevel _ _).2 (lift Z).property⟩
   by_cases hg : g ∈ stdLevel E n
   · -- On the maximal compact subgroup the sum is that of the coefficients of the idempotent.
     lift g to stdLevel E n using hg
@@ -262,14 +262,14 @@ theorem isCuspidalAt_convIndicator_tupleIdem [hw : IsConjApart w]
           Pi.mulSingle x (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t) := by
       rw [map_mul, ← h_lift, ← reduceFamily_ofSplitPlace x (lift Z)]
     calc ∑ᶠ Z : Matrix n n (ResField (w x)), (convIndicator hK_open hK_compact
-            (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).1)
-              (tupleIdem n c))).1 (g * u Z : stdLevel E n)
+            (mapDomain (fun s : ∀ i : ι, GL n (ResField (w i)) ↦ (liftResidue s).val)
+              (tupleIdem n c))).val (g * u Z : stdLevel E n)
         = ∑ᶠ Z : Matrix n n (ResField (w x)), (tupleIdem n c).coeff (stdLevel.reduceFamily w g *
             Pi.mulSingle x (radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t)) :=
           finsum_congr fun Z ↦ by rw [convIndicator_mapDomain_liftResidue, h_red]
       _ = 0 := sum_coeff_tupleIdem_radicalHom hc hc_irr hT_empty hT_univ (stdLevel.reduceFamily w g)
         t
   · exact finsum_eq_zero_of_forall_eq_zero fun Z ↦ convIndicator_mapDomain_liftResidue_of_notMem _
-      fun h_mem ↦ hg (((stdLevel E n).mul_mem_cancel_right (u Z).2).1 h_mem)
+      fun h_mem ↦ hg (((stdLevel E n).mul_mem_cancel_right (u Z).property).1 h_mem)
 
 end New

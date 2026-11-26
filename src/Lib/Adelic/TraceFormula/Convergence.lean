@@ -1,8 +1,14 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.AutomorphicForms.Cuspidality
 public import Lib.Adelic.TraceFormula.IsotropicStabiliser
 public import Lib.Adelic.TraceFormula.KernelBound
+import Lib.Adelic.QuotientMeasure.IwasawaUnfolding
+import Lib.Adelic.TraceFormula.Stretch
 
 /-!
 # Convergence of the geometric side
@@ -388,7 +394,7 @@ theorem exists_norm_partialKernel_spanStabilizer_le {B : ℕ} {k : GInf E s → 
     (hB : 13 * card n ^ 3 ≤ B) (φ : TestFunction (Gf E n)) (he : IsCuspKernel B k)
     {J : Subgroup (Gf E n)} [hJ : IsLevel J]
     (h_level : ∀ u ∈ J, ∀ y : Gf E n, (φ : Gf E n → ℂ) (u⁻¹ * y) = (φ : Gf E n → ℂ) y) :
-    ∃ C : ℝ, ∀ (x : G E s), ∀ δ ≥ (0 : ℝ), ∀ A : (V.move x).CuspFrame δ,
+    ∃ C : ℝ, ∀ (x : G E s) (δ : ℝ) (A : (V.move x).CuspFrame δ),
       (V.move x).RadicalCovered A.isotropicCols δ J → ∀ S : Set E[X],
       ‖V.partialKernel k φ {γ : U V.J | γ ∈ spanStabilizer V.J A.isotropicCols ∧
           ((γ : GL n E) : Matrix n n E).charpoly ∈ S} x x‖ ≤
@@ -399,7 +405,7 @@ theorem exists_norm_partialKernel_spanStabilizer_le {B : ℕ} {k : GInf E s → 
   -- In a cusp of size `δ`, a bounded continuous function of level `J` that is fixed by `k` and
   -- invariant under the rational radical is at most `(δ / δ₀) ^ (card n * d)` times its bound.
   obtain ⟨δ₀, hδ₀, h_decay⟩ := exists_norm_le_of_radicalCovered (s := s) he (card n * d)
-  refine ⟨C / δ₀ ^ (card n * d), fun x δ hδ A h_cover S ↦ ?_⟩
+  refine ⟨C / δ₀ ^ (card n * d), fun x δ A h_cover S ↦ ?_⟩
   set Z : Set (U V.J) :=
     {γ | γ ∈ spanStabilizer V.J A.isotropicCols ∧ ((γ : GL n E) : Matrix n n E).charpoly ∈ S}
   have hk : Measurable k := he.continuous.measurable
@@ -425,7 +431,7 @@ theorem exists_norm_partialKernel_spanStabilizer_le {B : ℕ} {k : GInf E s → 
     exact continuous_realConv ⟨J, hJ.isOpen⟩ ⟨hF_meas.stronglyMeasurable, _, hF_bound⟩ hF_level
       he.integrable
   calc ‖F x‖ ≤ (δ / δ₀) ^ (card n * d) * (C * V.height x ^ d) :=
-        h_decay J V x δ A.isotropicCols hδ A.ne_zero A.isotropic h_cover F _ hF_cont hF_bound hF_fix
+        h_decay J V x δ A.isotropicCols A.ne_zero A.isotropic h_cover F _ hF_cont hF_bound hF_fix
           hF_level
           fun ν hν g ↦ V.partialKernel_ratEmbed_mul φ (h_keeps ν hν) g x
     _ = C / δ₀ ^ (card n * d) * (δ ^ card n * V.height x) ^ d := by ring
@@ -441,41 +447,33 @@ theorem exists_norm_tsum_polyTerm_le {B : ℕ} {k : GInf E s → ℂ} (hB : 13 *
   -- that move the isotropic subspace and those that keep it.
   classical
   obtain ⟨J, hJ, h_level, -⟩ := TestFunction.exists_isLevel_invariant φ
-  obtain ⟨κ, -, h_cusp⟩ :=
-    exists_cuspFrame_of_height (s := s) (⟨J, hJ.isOpen⟩ : OpenSubgroup (Gf E n))
-  set d : ℕ := 4 * Core.numInfPlaces E * card n ^ 2
-  obtain ⟨C₀, hC₀, h_low⟩ := V.exists_tsum_enorm_kernelTerm_le_height
+  obtain ⟨κ, -, h_cusp⟩ := exists_cuspFrame_of_height (s := s) ⟨J, hJ.isOpen⟩
+  set d := 4 * Core.numInfPlaces E * card n ^ 2
+  obtain ⟨C₀, hC₀, h₀⟩ := V.exists_tsum_enorm_kernelTerm_le_height
     (eight_mul_sq_lt_of_thirteen_mul_cube_le card_pos hB) φ he.decay
   obtain ⟨C₁, hC₁, h_moves⟩ := V.exists_tsum_enorm_kernelTerm_le_of_notMem hB φ he.decay
   obtain ⟨C₂, h_keeps⟩ := V.exists_norm_partialKernel_spanStabilizer_le hB φ he h_level
   refine ⟨max (C₀ * κ ^ d) (C₂ * κ ^ d + C₁ * κ ^ d), fun x S ↦ ?_⟩
-  have h_height : 0 < V.height x := V.height_pos x
+  have := V.height_pos x
   -- The equation `δ ^ card n * V.height x = κ` eliminates `κ`.
   obtain ⟨δ, hδ, rfl, h_frame⟩ := h_cusp V x
   let inS : Set (U V.J) := {γ | ((γ : GL n E) : Matrix n n E).charpoly ∈ S}
-  have h_sum : ∑' γ : U V.J, V.polyTerm k φ S γ x = V.partialKernel k φ inS x x :=
-    tsum_congr fun γ ↦ V.polyTerm_eq_kernelTerm_indicator k φ S γ x
-  rw [h_sum]
+  rw [tsum_congr fun γ ↦ V.polyTerm_eq_kernelTerm_indicator k φ S γ x]
   obtain h_one | h_one := le_total 1 δ
   · -- The height is bounded, so the bound by a power of the height suffices.
-    have h_norm : ‖V.partialKernel k φ inS x x‖ ≤ C₀ * V.height x ^ d :=
-      norm_tsum_le_of_tsum_enorm_le (by positivity) (h_low inS x x)
-    refine le_max_of_le_left (h_norm.trans ?_)
+    refine le_max_of_le_left <| (norm_tsum_le_of_tsum_enorm_le (by positivity) (h₀ _ x x)).trans ?_
     gcongr
     exact V.height_le_pow_mul_height h_one x
   -- High in a cusp, split the sum according to whether `γ` keeps the isotropic subspace.
   obtain ⟨A, h_cover⟩ := h_frame h_one
-  let stab : Set (U V.J) := spanStabilizer V.J A.isotropicCols
-  have h_split : V.partialKernel k φ inS x x =
-      V.partialKernel k φ (stab ∩ inS) x x + V.partialKernel k φ (inS \ stab) x x := by
+  let stab := spanStabilizer V.J A.isotropicCols
+  rw [show (∑' γ, V.kernelTerm k φ (inS.indicator 1) x γ x) =
+      V.partialKernel k φ (stab ∩ inS) x x + V.partialKernel k φ (inS \ stab) x x by
     simp only [partialKernel, ← (V.summable_kernelTerm hB φ he.decay _ x x).tsum_add
       (V.summable_kernelTerm hB φ he.decay _ x x)]
-    refine tsum_congr fun γ ↦ ?_
-    by_cases hγ : γ ∈ stab <;> simp [kernelTerm, Set.indicator, hγ]
-  have h_move : ‖V.partialKernel k φ (inS \ stab) x x‖ ≤ C₁ * (δ ^ card n * V.height x) ^ d :=
-    norm_tsum_le_of_tsum_enorm_le (by positivity) (h_moves x δ hδ.le A _ fun γ hγ ↦ hγ.2)
-  rw [h_split]
-  exact le_max_of_le_right (norm_add_le_of_le (h_keeps x δ hδ.le A h_cover S) h_move)
+    exact tsum_congr fun γ ↦ by by_cases hγ : γ ∈ stab <;> simp [kernelTerm, Set.indicator, hγ]]
+  exact le_max_of_le_right <| norm_add_le_of_le (h_keeps x δ A h_cover S)
+    (norm_tsum_le_of_tsum_enorm_le (by positivity) (h_moves x δ hδ.le A _ fun _ hγ ↦ hγ.2))
 
 end Space
 

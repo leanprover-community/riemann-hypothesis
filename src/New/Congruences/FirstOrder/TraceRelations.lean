@@ -1,11 +1,22 @@
 module
 
-public import Lib.Cyclotomic.OddSha
-public import New.Congruences.FirstOrder.TateTwistCocycles
-public import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
-public import New.Congruences.LocalLoss.CrystallineDefect
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.Topology.Algebra.Module.Compact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 public import New.Congruences.LocalLoss.LocalLattices
-public import New.Congruences.LocalLoss.TateDualBound
+public import New.Congruences.FirstOrder.EvenClasses
+public import New.Congruences.FirstOrder.FittingBlock
+import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
+public import Lib.Cyclotomic.OddSha -- shake: keep (needed public by an exposed definition)
+import New.Congruences.FirstOrder.TateTwistCocycles
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
+import New.Congruences.GaloisRepresentations.RowsAndColumnsFromLabels
+import New.Congruences.LocalLoss.CrystallineDefect
+import New.Congruences.LocalLoss.TateDualBound
 
 /-!
 # Constants, trace relations, lattices and local defects for Ribet's method
@@ -122,9 +133,6 @@ lemma denominatorError_eq_natCast :
           ℝ≥0∞) := by
   simp [denominatorError]
 
-lemma denominatorError_ne_top : denominatorError D ℓ ≠ ⊤ :=
-  (denominatorError_eq_natCast D ℓ).trans_ne (ENNReal.natCast_ne_top _)
-
 /-- The clearing bound `β_ℓ = loc_ℓ + (1 + 2 t) e'_ℓ + e_ℓ + v_ℓ(N)` per unit of rank of a main
 summand at `ℓ`, where `N = D.chosenGroupOrder`. Here `loc_ℓ = localDefectBound D ℓ` bounds the local
 defect, `e'_ℓ = twistError ℓ D` is the number `(4 f + 3) r v_ℓ(N) + 2 ^ (-ℓ)` allowed for the Selmer
@@ -155,7 +163,8 @@ lemma add_denominatorError_le_mul_clearingBound {r' t' : ℕ} (hr' : r' ∈ Set.
     _ = r' * loc + 1 * ((1 + 2 * D.t) * err + denominatorError D ℓ + v) := by ring
     _ ≤ r' * loc + r' * ((1 + 2 * D.t) * err + denominatorError D ℓ + v) := by gcongr
     _ = r' * clearingBound D ℓ := by
-      simp [clearingBound, err, loc, v, coe_toNNReal (denominatorError_ne_top D ℓ), mul_add,
+      simp [clearingBound, err, loc, v,
+        coe_toNNReal ((denominatorError_eq_natCast D ℓ).trans_ne (ENNReal.natCast_ne_top _)), mul_add,
         add_assoc]
 
 /-- The cost of `t' ≤ D.t` characters, an inequality between numbers. Let `v` be the `ℓ`-adic
@@ -204,13 +213,6 @@ variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
   {K Y n r : Type} [Fintype n] [DecidableEq n] [Fintype r] [DecidableEq r]
   {t ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D} {O : CoeffRing ℓ}
 
-/-- Ribet's cocycles vanish on the kernel of `u`: a cocycle `z` that obeys the linear relations
-among the `u x g - 1` vanishes at every `g` with `u x g = 1` for all `x`. -/
-lemma ribetCocycles.apply_eq_zero {u : Y → AbsGal D →* Matrix n n O}
-    {ρ : AbsGal D →* Matrix r r O} {b : ↑O} {z : AbsGal D → r → QuotSpan b}
-    (hz : z ∈ ribetCocycles u ρ b) {g : AbsGal D} (hg : ∀ x : Y, u x g = 1) : z g = 0 := by
-  simpa using (mem_ribetCocycles.1 hz).2 (.single g 1) (by simp [funext_iff, hg])
-
 open Ideal IsLocallyConstant in
 /-- Let `z` be a cocycle for `ρ` modulo `b` that obeys the linear relations among the `u x g - 1`
 (`ribetCocycles`), where the `u x` are continuous and trivial on the inertia groups outside
@@ -233,7 +235,9 @@ lemma ribetCocycles.mem_selmerModule [Fintype Y] {u : Y → AbsGal D →* Matrix
     exact congrArg Prod.snd h_pair
   have h_coc : ∀ g g' : AbsGal D, z (g * g') = z g + ρ g • z g' :=
     mem_obeying_cocycleRelations.1 hz.1
-  refine mem_selmerModule_iff.2 ⟨h_coc, fun g hg ↦ apply_eq_zero hz (h_unr g hg), hzL, ?_⟩
+  refine mem_selmerModule_iff.2 ⟨h_coc,
+    fun g hg ↦ by simpa using (mem_ribetCocycles.1 hz).2 (.single g 1) (by simp [funext_iff, h_unr g hg]),
+    hzL, ?_⟩
   -- So `z g` depends only on `u g` modulo `b ^ k`, which is locally constant in `g`.
   have h_red : IsLocallyConstant fun g x ↦ (u x g).map (span {b ^ k}).mkQ := (iff_continuous _).2
     (continuous_pi fun x ↦ (hu_cont x).matrix_map (span {b ^ k}).continuous_mkQ)
@@ -269,20 +273,20 @@ lemma isTraceIdeal_withConjInv (hw : IsTameGeneratorFamily ν w τ φ)
   let g' : AbsGal D := (conjGal g)⁻¹
   let χ : AbsGal D →* O := cyclotomicInv ℓ D.E O
   have h_dual (f : K → AbsGal D) (i : ℕ) (x : Y) :
-      (u x (withConjInv f k ^ i * g)).1.trace =
-        χ (withConjInv f k ^ i * g) ^ (t - 1) • (u x (f j ^ i * g')).1.trace := by
-    simpa [k, g', χ, idOrConjInv, cyclotomicInv, trace_mul_comm _⁻¹, O.1.smul_def] using
+      (u x (withConjInv f k ^ i * g)).val.trace =
+        χ (withConjInv f k ^ i * g) ^ (t - 1) • (u x (f j ^ i * g')).val.trace := by
+    simpa [k, g', χ, idOrConjInv, cyclotomicInv, trace_mul_comm _⁻¹, O.val.smul_def] using
       (hu x).trace_conj ((f j)⁻¹ ^ i * conjGal g)
   obtain ⟨hχτ : χ (withConjInv τ k) = 1, hχφ⟩ := hw.cyclotomicInv_withConjInv_eq_one_and_dvd O k
   have h_cong : ∀ i : ℕ, ∃ a : ↑O, χ (withConjInv φ k) ^ i - 1 = ℓ ^ ν * a := hχφ
   choose d hd using h_cong
-  have h_one (x : Y) : (u x g).1.trace = χ g ^ (t - 1) • (u x g').1.trace := by
+  have h_one (x : Y) : (u x g).val.trace = χ g ^ (t - 1) • (u x g').val.trace := by
     simpa using h_dual τ 0 x
-  have h_τ (x : Y) : ((u x (withConjInv τ k)).1 * u x g).trace =
-      χ g ^ (t - 1) • ((u x (τ j)).1 * u x g').trace := by
+  have h_τ (x : Y) : ((u x (withConjInv τ k)).val * u x g).trace =
+      χ g ^ (t - 1) • ((u x (τ j)).val * u x g').trace := by
     simpa [hχτ] using h_dual τ 1 x
-  have h_φ (i : ℕ) (x : Y) : ((u x (withConjInv φ k)).1 ^ i * u x g).trace =
-      ((1 + ℓ ^ ν * d ((t - 1) * i)) * χ g ^ (t - 1)) • ((u x (φ j)).1 ^ i * u x g').trace := by
+  have h_φ (i : ℕ) (x : Y) : ((u x (withConjInv φ k)).val ^ i * u x g).trace =
+      ((1 + ℓ ^ ν * d ((t - 1) * i)) * χ g ^ (t - 1)) • ((u x (φ j)).val ^ i * u x g').trace := by
     simpa [mul_pow, ← pow_mul', ← hd] using h_dual φ i x
   have h_smul (c : ↑O) {f : Y → MvPolynomial K (PadicAlgCl ℓ)} (hf : f ∈ 𝒥) :
       c • f ∈ 𝒥 := by
@@ -291,9 +295,9 @@ lemma isTraceIdeal_withConjInv (hw : IsTameGeneratorFamily ν w τ φ)
   -- expand `G` in powers and apply `h_φ` to each of them; `err` collects the multiples of `ℓ ^ ν`
   let G : O[X] := (X - 1) * H j
   let err (x : Y) : PadicAlgCl ℓ := ∑ i ∈ range (G.natDegree + 1),
-    (d ((t - 1) * i) * G.coeff i) • (ℓ ^ ν : ↑O) • (u x (φ j ^ i * g')).1.trace
-  have h_G (x : Y) : (aeval (u x (withConjInv φ k)).1 G * u x g).trace =
-      χ g ^ (t - 1) • ((aeval (u x (φ j)).1 G * u x g').trace + err x) := by
+    (d ((t - 1) * i) * G.coeff i) • (ℓ ^ ν : ↑O) • (u x (φ j ^ i * g')).val.trace
+  have h_G (x : Y) : (aeval (u x (withConjInv φ k)).val G * u x g).trace =
+      χ g ^ (t - 1) • ((aeval (u x (φ j)).val G * u x g').trace + err x) := by
     simp only [err, aeval_eq_sum_range, sum_mul, trace_sum, smul_mul_assoc, trace_smul, h_φ,
       smul_add, smul_sum, smul_smul, ← sum_add_distrib, map_mul, map_pow, Units.val_mul,
       Units.val_pow_eq_pow_val]
@@ -304,7 +308,7 @@ lemma isTraceIdeal_withConjInv (hw : IsTameGeneratorFamily ν w τ φ)
   have h_err : (fun x : Y ↦ MvPolynomial.C (err x)) ∈ 𝒥 := by
     have h_expand : (fun x : Y ↦ (.C (err x) : MvPolynomial K (PadicAlgCl ℓ))) =
         ∑ i ∈ range (G.natDegree + 1), (d ((t - 1) * i) * G.coeff i) •
-          fun x : Y ↦ .C ((ℓ ^ ν : ↑O) • (u x (φ j ^ i * g')).1.trace) := by
+          fun x : Y ↦ .C ((ℓ ^ ν : ↑O) • (u x (φ j ^ i * g')).val.trace) := by
       funext x
       simp [err, Subalgebra.smul_def, MvPolynomial.smul_eq_C_mul]
     rw [h_expand]
@@ -313,7 +317,7 @@ lemma isTraceIdeal_withConjInv (hw : IsTameGeneratorFamily ν w τ φ)
     𝒥.smul_mem ⟨_, h𝒥.X_mem j⟩ h_err
   -- `rel a b γ`: the trace of the relation that ties `a` to `b`, multiplied by `γ`
   let rel (a b γ : AbsGal D) (x : Y) : MvPolynomial K (PadicAlgCl ℓ) :=
-    .C (((u x a).1 - 1) * u x γ).trace - .X j * .C (aeval (u x b).1 G * u x γ).trace
+    .C (((u x a).val - 1) * u x γ).trace - .X j * .C (aeval (u x b).val G * u x γ).trace
   have h_old : rel (τ j) (φ j) g' ∈ 𝒥 := h𝒥.trace_relation_mem g' j
   have h_new : rel (withConjInv τ k) (withConjInv φ k) g =
       χ g ^ (t - 1) • (rel (τ j) (φ j) g' - fun x : Y ↦ .X j * .C (err x)) := by
@@ -354,7 +358,7 @@ lemma IsTraceIdeal.of_isLatticeIn (hw : IsTameGeneratorFamily ν w τ φ)
       (withConjInv φ) Prod.fst H' := by
   -- first change the ring of coefficients and add the conjugates, then pass to the lattices
   have h_conj : IsTraceIdeal (S := restrictToCoeffRing S O) 𝒥
-      (fun (x : Y) (g : AbsGal D) ↦ (u x g).1) (ℓ ^ ν) (withConjInv τ) (withConjInv φ)
+      (fun (x : Y) (g : AbsGal D) ↦ (u x g).val) (ℓ ^ ν) (withConjInv τ) (withConjInv φ)
       Prod.fst H' := by
     refine isTraceIdeal_withConjInv hw hu
       ⟨h𝒥.X_mem, h𝒥.charpoly_coeff_mem, fun g ↦ ?_, fun g j ↦ ?_⟩
@@ -368,7 +372,7 @@ lemma IsTraceIdeal.of_isLatticeIn (hw : IsTameGeneratorFamily ν w τ φ)
   choose F hF hF_trace using h_algHom
   refine ⟨h_conj.X_mem, fun g k ↦ ?_, fun g ↦ ?_, fun g k ↦ ?_⟩
   · simpa [↓(hu' _).charpoly_eq_map] using h_conj.charpoly_coeff_mem g k
-  · simpa [← (hu' _).trace_eq, O.1.smul_def] using h_conj.smul_trace_mem g
+  · simpa [← (hu' _).trace_eq, O.val.smul_def] using h_conj.smul_trace_mem g
   · simpa [← hF, aeval_algHom_apply (F _), ← map_mul, sub_mul, hF_trace] using
       h_conj.trace_relation_mem g k
 
@@ -422,7 +426,7 @@ lemma exists_blockDiagonal_lattice {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalR
   let Φ (A : Type) [CommRing A] := (reindexAlgEquiv A A ϵ).toAlgHom.comp blockDiagonalAlgHom
   let ρ : AbsGal D →* ∀ i : Option (Fin t),
       Matrix (SummandCoordIndex r i) (SummandCoordIndex r i) (PadicAlgCl ℓ) :=
-    .pi fun i ↦ O.1.val.mapMatrix.toMonoidHom.comp (summandRep T i)
+    .pi fun i ↦ O.val.val.mapMatrix.toMonoidHom.comp (summandRep T i)
   have h_semi : HasSemiprimeSpan (PadicAlgCl ℓ) ρ := by
     intro y _ hy
     ext (_ | e) a b
@@ -441,12 +445,12 @@ lemma exists_blockDiagonal_lattice {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalR
       exact mul_self_eq_zero.1 h_entry
   -- both traces are the sum of the traces of the summands
   have h_trace_main (g : AbsGal D) : (ρ g none).trace = ψ g * (R g).val.trace := by
-    change ((T g).map O.1.val).trace = _
+    change ((T g).map O.val.val).trace = _
     rw [← hR₀.trace_eq, ← hψ']
     simp [T, twistRep, trace, mul_sum]
   have h_trace_char (g : AbsGal D) (e : Fin t) :
       (ρ g (some e)).trace = cyclotomicInv ℓ D.E (PadicAlgCl ℓ) g ^ e.val := by
-    change ((summandRep T (some e) g).map O.1.val).trace = _
+    change ((summandRep T (some e) g).map O.val.val).trace = _
     rw [summandRep_some_apply]
     simp [trace, cyclotomicInv]
     simp! [map_pow, inv_pow]
@@ -457,10 +461,10 @@ lemma exists_blockDiagonal_lattice {ψ : AbsGal D →* PadicAlgCl ℓ} {R : GalR
   -- equal traces make `R'` conjugate to `Φ ρ`, which has entries in `O`
   obtain ⟨Z, hZ⟩ := hR'.exists_conj_of_trace_eq ρ (Φ _) h_semi h_trace_eq
   refine ⟨(Φ O).toMonoidHom.comp (.pi (summandRep T)), ⟨Z, fun g ↦ ?_⟩, fun _ ↦ rfl⟩
-  have h_map : (Φ O fun i ↦ summandRep T i g).map O.1.val = Φ (PadicAlgCl ℓ) (ρ g) := by
-    change _ = Φ (PadicAlgCl ℓ) fun i ↦ (summandRep T i g).map O.1.val
+  have h_map : (Φ O fun i ↦ summandRep T i g).map O.val.val = Φ (PadicAlgCl ℓ) (ρ g) := by
+    change _ = Φ (PadicAlgCl ℓ) fun i ↦ (summandRep T i g).map O.val.val
     simp [Φ, ← submatrix_map, blockDiagonal'_map]
-  change _ = (Φ O fun i ↦ summandRep T i g).map O.1.val
+  change _ = (Φ O fun i ↦ summandRep T i g).map O.val.val
   rw [h_map]
   simp [hZ, mul_assoc]
 
@@ -614,7 +618,7 @@ lemma hasTriangleCost_of_isCharacterCocycle [Fintype Y] [Fintype K] [LinearOrder
   -- A member of `Z` that is unramified off `ℓ` vanishes at `γ`, so `(χ g₀ - 1) z(g₀) = 0`.
   have h_g₀ : ∀ z ∈ Z,
       z ∈ selmerModule (tateTwist ℓ D.E O e) (placesDividing D.E ℓ) ∅ (QuotSpan (ℓ ^ ν : ↑O)) →
-      (cyclotomicInv ℓ D.E O g₀ ^ e.1 - 1) • z g₀ = 0 := by
+      (cyclotomicInv ℓ D.E O g₀ ^ e.val - 1) • z g₀ = 0 := by
     intro z hz hz_sel
     obtain ⟨-, h_unram, -⟩ := mem_selmerModule_iff.1 hz_sel
     obtain ⟨-, -, h_kill⟩ := hZ z hz
@@ -650,18 +654,18 @@ lemma isTameType_of_mem_placesAboveM {V : DescentPair D.E r n}
     {c : ∀ i : V.ChosenIndex, (ResField (V.chosenPlace i))[X]} {ϑ : D.Twist}
     (hc : IsLiftSetting V c ϑ) (ht : t ≤ D.t)
     {J : (D.E →+* ℂ) → Multiset ℤ} {S : Set (FinPlace D.E)}
-    (v : placesDividing D.E ℓ) (hv : v.1 ∈ placesAboveM D) :
+    (v : placesDividing D.E ℓ) (hv : v.val ∈ placesAboveM D) :
     ∃ k : Fin 2, ℓ = D.levelPrime k ∧
-      ∀ s : decompGroup (AbsGal D) (placeOver v.1), IsWeilPair (toGp s) 0 →
-      IsTameType ℓ D.r ((D.r + D.t) * D.r) fun Q : O[X] ↦ v.1 ∈ placesAboveM D ∧
+      ∀ s : decompGroup (AbsGal D) (placeOver v.val), IsWeilPair (toGp s) 0 →
+      IsTameType ℓ D.r ((D.r + D.t) * D.r) fun Q : O[X] ↦ v.val ∈ placesAboveM D ∧
         ∀ R : GalRep ℓ D.E n,
           IsRepOfType V t J (fun i : V.ChosenIndex ↦ scaledTypePoly V c i * (X - 1) ^ t) S R →
-          IsKilledBy (decompRep R (placeOver v.1)) s 0 (Q.map O.1.val) := by
+          IsKilledBy (decompRep R (placeOver v.val)) s 0 (Q.map O.val.val) := by
   have ⟨k, hk⟩ :
-      ∃ k : Fin 2, (D.levelPrime k : NumberField.RingOfIntegers D.E) ∈ v.1.asIdeal := hv
-  have hℓ : D.levelPrime k = ℓ := (v.1.charP_quotient hk).eq _ (v.1.charP_quotient v.2)
+      ∃ k : Fin 2, (D.levelPrime k : NumberField.RingOfIntegers D.E) ∈ v.val.asIdeal := hv
+  have hℓ : D.levelPrime k = ℓ := (v.val.charP_quotient hk).eq _ (v.val.charP_quotient v.property)
   refine ⟨k, hℓ.symm, fun s hs ↦ ?_⟩
-  obtain ⟨γ, -, hγ⟩ := exists_inertiaGroup_isInertiaSpectrum n hc hk v.1.isPlaceOver_placeOver t
+  obtain ⟨γ, -, hγ⟩ := exists_inertiaGroup_isInertiaSpectrum n hc hk v.val.isPlaceOver_placeOver t
   obtain ⟨μ, hμ, -⟩ := hγ s ((localChart ℓ D.E v).isWeilPair_zero_iff.1 hs)
   refine isTameType_of_roots (M := μ) (by grw [hμ.card_eq, hc.rank_le.1, ht])
     (by simpa only [hℓ] using hμ.exists_pow_eq_one) fun Q hQ ↦ ⟨hv, fun R hR ↦ ?_⟩
@@ -681,8 +685,8 @@ length of the crystalline cocycles of the Tate dual of `ρ`, modulo those orthog
 product to the class. -/
 lemma crystallineColength_le_sum_dualDefect [Fintype Y] {u : Y → AbsGal D →* Matrix n n O}
     {ρ : AbsGal D →* Matrix r r O}
-    {F : ∀ v : placesDividing D.E ℓ, Filter (decompGroup (AbsGal D) (placeOver v.1))}
-    {C : ∀ v : placesDividing D.E ℓ, decompGroup (AbsGal D) (placeOver v.1) → O[X] → Prop}
+    {F : ∀ v : placesDividing D.E ℓ, Filter (decompGroup (AbsGal D) (placeOver v.val))}
+    {C : ∀ v : placesDividing D.E ℓ, decompGroup (AbsGal D) (placeOver v.val) → O[X] → Prop}
     {U : placesDividing D.E ℓ → (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ}
     (hu : ∀ (v : placesDividing D.E ℓ) (x : Y), InClass (F v) (C v) (U v) (localLattice (u x) v))
     (hρ : ∀ v : placesDividing D.E ℓ, InClass (F v) (C v) (U v) (localLattice ρ v)) (M : ℕ) :
@@ -702,13 +706,13 @@ jump `e`. -/
 lemma hasJumps_localLattice_summandRep {J : (D.E →+* ℂ) → Multiset ℤ} {R : GalRep ℓ D.E r}
     (h_summand : IsMainSummandLike D t J R) {T T₀ : AbsGal D →* Matrix r r O}
     (hT₀ : IsLatticeIn R T₀)
-    {v : placesDividing D.E ℓ} (hTT₀ : ∀ g ∈ decompGroup (AbsGal D) (placeOver v.1), T g = T₀ g)
+    {v : placesDividing D.E ℓ} (hTT₀ : ∀ g ∈ decompGroup (AbsGal D) (placeOver v.val), T g = T₀ g)
     (i : Option (Fin t)) (g : Gp ℓ) :
     HasJumps (localLattice (summandRep T i) v).ρ (coefficientEmbedding O g)
       (i.elim (J (complexEmbeddingOf ((localChart ℓ D.E v).e.comp (algebraMap D.E Ω)) g))
         fun e : Fin t ↦ {↑e}) := by
   rcases i with _ | e
-  · let G := decompGroup (AbsGal D) (placeOver v.1)
+  · let G := decompGroup (AbsGal D) (placeOver v.val)
     have h_restrict : T.comp G.subtype = T₀.comp G.subtype := MonoidHom.ext fun s ↦ hTT₀ s s.2
     change HasJumps (matrixLattice (T.comp G.subtype)).ρ _ _
     rw [h_restrict]
@@ -807,7 +811,7 @@ lemma eventually_exists_inClass_sum_dualDefect_le {V : DescentPair D.E r n}
       (localChart ℓ D.E v).inducesPlace.2]
     with O h_place T T₀ u hπ hu_lat hT₀ hTT₀
   -- `L v i`: the summands at `v`; `f`: the splitting of `u π` into its summands
-  let G (v : placesDividing D.E ℓ) : Subgroup (AbsGal D) := decompGroup (AbsGal D) (placeOver v.1)
+  let G (v : placesDividing D.E ℓ) : Subgroup (AbsGal D) := decompGroup (AbsGal D) (placeOver v.val)
   let L (v : placesDividing D.E ℓ) (i : Option (Fin t)) : GalLattice O (G v) :=
     localLattice (summandRep T i) v
   let f : (n → ↑O) ≃ₗ[O] ∀ i : Option (Fin t), SummandCoordIndex r i → ↑O :=
@@ -822,11 +826,11 @@ lemma eventually_exists_inClass_sum_dualDefect_le {V : DescentPair D.E r n}
   -- are crystalline (`F v = ⊤`) and `C v` is empty.
   let σ (v : placesDividing D.E ℓ) : Gp ℓ → D.E →+* ℂ :=
     complexEmbeddingOf ((localChart ℓ D.E v).e.comp (algebraMap D.E Ω))
-  let F (v : placesDividing D.E ℓ) : Filter (G v) := ⨅ _ : v.1 ∈ placesAboveM D, ⊥
-  let C (v : placesDividing D.E ℓ) (s : G v) (Q : O[X]) : Prop := v.1 ∈ placesAboveM D ∧
+  let F (v : placesDividing D.E ℓ) : Filter (G v) := ⨅ _ : v.val ∈ placesAboveM D, ⊥
+  let C (v : placesDividing D.E ℓ) (s : G v) (Q : O[X]) : Prop := v.val ∈ placesAboveM D ∧
     ∀ R₀ : GalRep ℓ D.E n,
       IsRepOfType V t J' (fun i ↦ scaledTypePoly V c i * (X - 1) ^ t) S R₀ →
-      IsKilledBy (decompRep R₀ (placeOver v.1)) s 0 (Q.map O.1.val)
+      IsKilledBy (decompRep R₀ (placeOver v.val)) s 0 (Q.map O.val.val)
   let U (v : placesDividing D.E ℓ) : (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ :=
     Multiset.toFinset ∘ (fun g ↦ J' (σ v g)) ∘ surjInv coefficientEmbedding_surjective
   have hu (v : placesDividing D.E ℓ) (x : Y) :
@@ -855,11 +859,11 @@ lemma eventually_exists_inClass_sum_dualDefect_le {V : DescentPair D.E r n}
     have h_rank (j : Option (Fin t)) : finrank O (L v j) = card (SummandCoordIndex r j) :=
       finrank_pi _
     rw [← h_rank]
-    have h_jumps := hasJumps_localLattice_summandRep h_summand hT₀ (hTT₀ v v.2)
+    have h_jumps := hasJumps_localLattice_summandRep h_summand hT₀ (hTT₀ v v.property)
     refine h_place v ⟨?_, h_jump_from v, h_jumps none, fun c ↦ h_jumps (some c), h_rank none⟩
       i (hL v i)
     -- the class is tame above `p₀ p₁` and crystalline elsewhere
-    by_cases hv : v.1 ∈ placesAboveM D
+    by_cases hv : v.val ∈ placesAboveM D
     · exact .inl (isTameType_of_mem_placesAboveM hc h_summand.t_le v hv)
     · exact .inr (by simp [F, C, hv, funext_iff])
   refine ⟨F, C, U, fun v x ↦ (hu v x).2, hL, ?_⟩
@@ -894,7 +898,7 @@ lemma pow_chosenGroupOrder_eq_one_of_mem_inertiaAbove {V : DescentPair D.E r n}
     rw [hm, pow_mul, hyd, one_pow]
   -- inertia acts through a finite group, so a polynomial that vanishes on `μ` kills `R g`
   have h_finite : IsFiniteTypeAt R A := (hR.local_conditions v (·.2 (.inr ⟨i, hvi⟩)) hA).1
-  have h_aeval : aeval (R g).1 (X ^ D.chosenGroupOrder - 1 : (PadicAlgCl ℓ)[X]) = 0 :=
+  have h_aeval : aeval (R g).val (X ^ D.chosenGroupOrder - 1 : (PadicAlgCl ℓ)[X]) = 0 :=
     h_finite.aeval_eq_zero_of_roots (hA.valuation_natCast_eq_one_iff.2 hvℓ) hgA h_kill _
       (by simpa [eval_multiset_prod, sub_eq_zero] using h_root)
   simpa [sub_eq_zero] using h_aeval
@@ -936,13 +940,13 @@ lemma exists_tame_relations {V : DescentPair D.E r n}
     (badPlaces D ℓ).finite_toSet.subset fun v hv ↦
       placesDividing_union_subset_badPlaces D ℓ (.inr hv.1)
   let M : Finset (FinPlace D.E) := h_fin.toFinset
-  have hM (v : M) : v.1 ∈ placesAboveM D \ placesDividing D.E ℓ := h_fin.mem_toFinset.1 v.2
+  have hM (v : M) : v.val ∈ placesAboveM D \ placesDividing D.E ℓ := h_fin.mem_toFinset.1 v.property
   let q : Q ⊕ M → FinPlace D.E := Sum.elim (↑) (↑)
-  let δ : Q ⊕ M → AbsGal D := Sum.elim σ fun v ↦ v.1.isPlaceOver_placeOver.tameGenerator
+  let δ : Q ⊕ M → AbsGal D := Sum.elim σ fun v ↦ v.val.isPlaceOver_placeOver.tameGenerator
   have hq : IsTameGeneratorFamily 0 q δ 1 := by
     rintro (v | v)
     · exact hσ v
-    · exact ⟨(hM v).2, map_one _, placeOver v.1, v.1.isPlaceOver_placeOver, rfl⟩
+    · exact ⟨(hM v).2, map_one _, placeOver v.val, v.val.isPlaceOver_placeOver, rfl⟩
   have h_inertia (k : (Q ⊕ M) × Bool) {S : Set (FinPlace D.E)}
       (hS : q k.1 ∈ S ∧ star (q k.1) ∈ S) : withConjInv δ k ∈ inertiaAbove S := by
     obtain ⟨-, -, A, hA : IsPlaceOver A (q k.1), hδA : hA.tameGenerator = δ k.1⟩ := hq k.1
@@ -966,13 +970,13 @@ lemma exists_tame_relations {V : DescentPair D.E r n}
     obtain ⟨j | j, b⟩ := k
     · -- at `Q` the eigenvalues are `1` and `ψ g`
       set g : AbsGal D := withConjInv δ (.inl j, b) with hg
-      have h_prod : (ψ g • 1 - (u x g).1) * ((u x g).1 - 1) = 0 := by
+      have h_prod : (ψ g • 1 - (u x g).val) * ((u x g).val - 1) = 0 := by
         rw [← neg_sub, neg_mul, h_quad x g (h_inertia _ (by simp [q])), neg_zero]
       have h_scalar : F (algebraMap O (Matrix n n O) (ψ' g)) = ψ g • 1 := by
-        rw [F.commutes, ← hψ', Algebra.algebraMap_eq_smul_one, O.1.smul_def]
+        rw [F.commutes, ← hψ', Algebra.algebraMap_eq_smul_one, O.val.smul_def]
       simpa [o, ← hg, hF, h_scalar, -AlgHom.commutes] using h_prod
     · -- above `p₀ p₁` the order divides `N`
-      have h_pow : (u x (withConjInv δ (.inr j, b))).1 ^ D.chosenGroupOrder = 1 :=
+      have h_pow : (u x (withConjInv δ (.inr j, b))).val ^ D.chosenGroupOrder = 1 :=
         pow_chosenGroupOrder_eq_one_of_mem_inertiaAbove hc (h_type x)
           (h_inertia _ (by simpa [q] using hM j))
       simpa [o, hF, geom_sum_mul, sub_eq_zero] using h_pow

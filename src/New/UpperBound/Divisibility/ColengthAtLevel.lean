@@ -1,8 +1,11 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Rat.Cast.OfScientific
+import TauCeti.NumberTheory.Padics.Complex.Basic
 public import New.Reduction.Lattices.Colength
 public import New.UpperBound.Divisibility.SetupAtLevel
-public import New.UpperBound.Objects.Rows
+import New.UpperBound.Objects.Rows
 
 /-!
 # The colength of source forms at p = N
@@ -88,7 +91,7 @@ lemma integralFormsAt_one_le :
   refine fun φ ⟨h_source, (h_integral : GaugeLe 1 1 φ)⟩ ↦ ⟨h_source, fun g ↦ ?_⟩
   let d : Gf D.E (D.X 0) := D.diagPoint 0 (D.nonInducedPlaces \ D.piNPlaces)
   have h_dual : D.dualPointN 0 = d⁻¹ := by
-    simp [d, dualPointN, diagPoint, diagN_eq_sdiff_mul D.piNPlaces]
+    simp [d, dualPointN, diagPoint, diagN_eq_sdiff_mul (N := D.N) (P := D.nonInducedPlaces) D.piNPlaces]
   let A (τ : D.Φ) : Matrix (D.X 0) (D.X 0) ℂ_[D.N] :=
     (GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) d.val).val
   have hA (τ : D.Φ) (i j : D.X 0) : ‖A τ i j‖ ≤ 1 := by
@@ -184,24 +187,19 @@ lemma upOperator_mem_integralFormsAt {φ : D.FormX 0}
     (hφ : φ ∈ integralFormsAt D.SourceForm (D.diagPointN 0)) :
     upOperator (D.formRepAtN 0) φ ∈ integralFormsAt D.SourceForm (D.dualPointN 0) := by
   classical
-  obtain ⟨h_source, h_integral⟩ := hφ
-  refine ⟨D.upOperator_mem_sourceForm h_source, fun g ↦ ?_⟩
+  refine ⟨D.upOperator_mem_sourceForm hφ.1, fun g ↦ ?_⟩
   -- The value at `g` is a sum of roots of unity times values `φ (g g')`, where `g' δ_0` and `δ_0^∨`
   -- differ on the right by an element `k` that is integral above `N`.
-  let k (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) : Gf D.E (D.X 0) :=
-    embedGL (inclGL (lastRowColGL y))
-  let g' (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) : Gf D.E (D.X 0) :=
-    D.dualPointN 0 * k y * (D.diagPointN 0)⁻¹
-  have h_value : (upOperator (D.formRepAtN 0) φ).val g =
-      ∑ y with IsUnit (y (.inr ())), psiN (y (.inr ())) • φ.val (g * g' y) := by
-    simp [upOperator, conjEmbedGL, g', k, mul_assoc]
-  rw [h_value]
+  let k (y : D.X 0 → D.nonInducedPlaces → ZMod D.N) := embedGL (inclGL (lastRowColGL y))
+  let g' y := D.dualPointN 0 * k y * (D.diagPointN 0)⁻¹
+  rw [show (upOperator (D.formRepAtN 0) φ).val g =
+      ∑ y with IsUnit (y (.inr ())), psiN (y (.inr ())) • φ.val (g * g' y) by
+    simp [upOperator, conjEmbedGL, g', k, mul_assoc]]
   refine weylGauge_sum_le _ zero_le_one fun y _ ↦ ?_
   rw [weylGauge_smul, psiN, P.norm_map_selfDualAddChar, one_mul,
     ← weylGauge_mul_of_mem_integralAbove (k := k y) _
-    (mem_integralAbove_of_inclGL_eq (atPlaces_embedGL _).symm),
-    show g * D.dualPointN 0 * k y = g * g' y * D.diagPointN 0 by simp [g', mul_assoc]]
-  exact h_integral (g * g' y)
+      (mem_integralAbove_of_inclGL_eq (atPlaces_embedGL _).symm)]
+  simpa [g', mul_assoc] using hφ.2 (g * g' y)
 
 /-- Let `𝒜_ι` and `𝒜^L` be the modules of source forms (`D.SourceForm`) that are integral at the
 points `1` and `δ_0 = D.diagPointN 0`. Let `Up = upOperator (D.formRepAtN 0)` be the sum of right

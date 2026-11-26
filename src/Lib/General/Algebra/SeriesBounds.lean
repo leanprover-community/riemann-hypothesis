@@ -1,8 +1,13 @@
 module
 
+import TauCeti.RingTheory.PowerSeries.Exp.Padic.Subst
+public import Mathlib.RingTheory.PowerSeries.Log
+import Mathlib.NumberTheory.Padics.MahlerBasis
+import Mathlib.RingTheory.Valuation.Extension
+import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.RingTheory.PowerSeries.Log
 public import Lib.CM.FormalGroup.IntegralParameter
-public import Lib.General.Algebra.AbsIntegrallyClosed
-public import TauCeti.RingTheory.PowerSeries.Log
+import Lib.General.Algebra.AbsIntegrallyClosed
 
 /-!
 # Integrality of exponentials, logarithms and roots of power series
@@ -175,17 +180,14 @@ lemma norm_coeff_subst_le {σ : Type} {g : MvPowerSeries σ ℂ_[p]} {l : ℕ} {
 is integral in these degrees.
 
 A consequence of the upper bound `v(j!) ≤ j / (p - 1)` given by Legendre's formula, applied to the
-terms `g ^ j / j!` of the exponential series. -/
+terms `g ^ j / j!` of the exponential series: the case of radius `1` of Tau Ceti's weighted bound. -/
 lemma norm_coeff_expSubst_le_one {σ : Type} {g : MvPowerSeries σ ℂ_[p]}
     (hg_zero : g.constantCoeff = 0) {l : ℕ}
     (hg : ∀ m : σ →₀ ℕ, m.degree ≤ l → ‖g.coeff m‖ ≤ p ^ (-(1 / (p - 1)) : ℝ))
     {m : σ →₀ ℕ} (hm : m.degree ≤ l) : ‖(expSubst g).coeff m‖ ≤ 1 := by
-  refine norm_coeff_subst_le hg_zero (by positivity) hg (fun j ↦ ?_) hm
-  -- The coefficients of `g ^ j` have valuation at least `j / (p - 1) ≥ v(j!)`.
-  have h_fac : ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ j ≤ ‖(j.factorial : ℂ_[p])‖ := by
-    rw [← Real.rpow_mul_natCast p.cast_nonneg, neg_mul, one_div_mul_eq_div]
-    exact rpow_le_norm_factorial
-  simpa [coeff_exp, inv_mul_eq_div] using div_le_one_of_le₀ h_fac (norm_nonneg _)
+  simpa using PowerSeries.norm_coeff_subst_exp_mul_prod_le_one (p := p) (c := fun _ ↦ 1)
+    (fun _ ↦ zero_le_one) hg_zero
+    (fun k hk ↦ by simpa using hg k ((Finsupp.degree_mono hk).trans hm))
 
 end Bounds
 

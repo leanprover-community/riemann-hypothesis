@@ -1,6 +1,8 @@
 module
 
-public import Lib.Adelic.TraceFormula.ChangingSigns
+public import Lib.Shimura.HeckeTower.HeckeData
+import Lib.Adelic.TraceFormula.ChangingSigns
+import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!
 # Eigenline reflections of a separable matrix, and the term of the count at a marked triple
@@ -184,7 +186,7 @@ lemma heckeAlgebra.heckeCosetFn_conj (hx_level : x ∈ levelGU n 𝔑) :
   set π := Representation.ofMulAction ℂ (GL n (𝔸f E)) (GL n (𝔸f E) ⧸ levelGU n 𝔑)
   set v : MonoidAlgebra ℂ (GL n (𝔸f E) ⧸ levelGU n 𝔑) :=
     π.asAlgebraHom f.val (MonoidAlgebra.single ⟦1⟧ 1)
-  have h_fixed : π x v = v := by simpa using f.2.2 single_one_mem_levelSpace ⟨x, hx_level⟩
+  have h_fixed : π x v = v := by simpa using f.property.2 single_one_mem_levelSpace ⟨x, hx_level⟩
   calc heckeCosetFn f ↑(x⁻¹ * g * x) = v.coeff (x⁻¹ • ↑g) := by
         simp [v, π, cosetFn, QuotientGroup.mk_mul_of_mem _ hx_level]
     _ = (π x v).coeff ↑g := (Representation.coeff_ofMulAction x v _).symm
@@ -196,7 +198,7 @@ entries. -/
 lemma heckeAlgebra.mem_GUPlus_of_ne_zero (hg_ne : heckeCosetFn f g ≠ 0) : g ∈ GUPlus E n := by
   -- `g` lies in the coset of some `d` in `GUPlus E n`, and the level is contained in `GUPlus E n`.
   obtain ⟨d, hd_mem, hd_coset⟩ : ∃ d ∈ GUPlus E n, (d : GL n (𝔸f E) ⧸ levelGU n 𝔑) = g :=
-    spanOn.exists_mem_of_cosetFn_ne_zero f.2.1 hg_ne
+    spanOn.exists_mem_of_cosetFn_ne_zero f.property.1 hg_ne
   simpa using mul_mem hd_mem (mem_GUPlus_of_mem_levelGU (QuotientGroup.eq.mp hd_coset))
 
 open scoped Classical in

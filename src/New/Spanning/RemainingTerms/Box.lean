@@ -1,7 +1,12 @@
 module
 
-public import Lib.Adelic.Adeles.SemilocalProducts
+import Mathlib.MeasureTheory.Constructions.Polish.EmbeddingReal
+import Mathlib.Tactic.Linter.Style
+import TauCeti.NumberTheory.NumberField.Countable
 public import New.Spanning.Unfolding.Setup
+import Lib.Adelic.Adeles.SemilocalProducts
+import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.NumberTheory.SUnitsAndClassNumber
 
 /-!
 # The box
@@ -198,11 +203,18 @@ lemma mul_mem_reducedPoints_iff {s y : InfinitePlace E → 𝔰.G₁}
   simp only [reducedPoints, mem_ofPred_eq, h_triangle]
 
 variable (S) in
+/-- The chosen set of representatives modulo the level lattice at the infinite places. -/
+noncomputable def residueDomain : Set (InfinitePlace E → ℂ) := Classical.epsilon S.IsResidueDomain
+
+lemma isResidueDomain_residueDomain [S.IsAdmissible] : S.IsResidueDomain S.residueDomain :=
+  Classical.epsilon_spec S.exists_isResidueDomain
+
+variable (S) in
 /-- The boxed points: the archimedean points `y` that are reduced for a chosen set satisfying
 `New.Filling.IsResidueDomain` (one exists for admissible data) and lie in the cut at every infinite
 place `v`, that is, `besselLength (y v) ≤ S.b ^ (6 * 𝔰.n + 2)`. -/
 def boxedPoints : Set (InfinitePlace E → 𝔰.G₁) :=
-  {y ∈ S.reducedPoints (Classical.epsilon S.IsResidueDomain) |
+  {y ∈ S.reducedPoints S.residueDomain |
     ∀ v : InfinitePlace E, InCut (y v) S.b}
 
 /-- A boxed point `y` lies in the cut at every infinite place `v`, that is,
@@ -297,23 +309,16 @@ lemma IsResidueDomain.mem_frameBox [S.IsAdmissible] (hD : S.IsResidueDomain D)
     y v ∈ frameBox (S.b ^ 27 * besselLength (y v)) := by
   -- A frame vector is a sum of `ϱ + 1 ≤ b` orthogonal vectors, each no longer than the Bessel
   -- length, with coefficients of modulus at most `b ^ 26`.
-  intro (l : Fin (𝔰.ϱ + 1))
-  show ‖frameVector (y v) l‖ ≤ S.b ^ 27 * besselLength (y v)
+  intro l
   have hb_pos : 0 < S.b := zero_lt_one.trans_le S.one_le_b
-  have h_besselLength_nonneg : 0 ≤ besselLength (y v) := besselLength_nonneg (y v)
-  have h_term (a : Fin (𝔰.ϱ + 1)) :
-      ‖gramSchmidtMatrix (y v) a l • orthoFrame (y v) a‖ ≤ S.b ^ 26 * besselLength (y v) := by
-    have h_ortho : ‖orthoFrame (y v) a‖ ≤ besselLength (y v) :=
-      (norm_orthoFrame_mem_Icc (y v) a le_rfl).right
-    grw [norm_smul, hD.norm_gramSchmidtMatrix_le hy, h_ortho]
+  have h_nonneg : 0 ≤ besselLength (y v) := besselLength_nonneg (y v)
   calc ‖frameVector (y v) l‖
     _ = ‖∑ a : Fin (𝔰.ϱ + 1), gramSchmidtMatrix (y v) a l • orthoFrame (y v) a‖ := by
       rw [← frameVector_eq_sum_orthoFrame]
-    _ ≤ ∑ _ : Fin (𝔰.ϱ + 1), S.b ^ 26 * besselLength (y v) :=
-      norm_sum_le_of_le _ fun a _ ↦ h_term a
-    _ = ↑(𝔰.ϱ + 1) * (S.b ^ 26 * besselLength (y v)) := by simp
-    _ ≤ S.b * (S.b ^ 26 * besselLength (y v)) := by grw [S.succ_le_b]
-    _ = S.b ^ 27 * besselLength (y v) := by ring
+    _ ≤ ∑ _ : Fin (𝔰.ϱ + 1), S.b ^ 26 * besselLength (y v) := norm_sum_le_of_le _ fun a _ ↦ by
+      grw [norm_smul, hD.norm_gramSchmidtMatrix_le hy, (norm_orthoFrame_mem_Icc (y v) a le_rfl).2]
+    _ ≤ S.b ^ 27 * besselLength (y v) := by
+      simpa [pow_succ', mul_assoc] using mul_le_mul_of_nonneg_right S.succ_le_b (by positivity)
 
 /-- Let `S` be admissible, that is, satisfy the standing hypotheses `New.Filling.IsAdmissible`,
 `n = 𝔰.n`, and let `y` be boxed: the entries above the diagonal of `S.ratTriangle y` lie in the set
@@ -323,24 +328,20 @@ infimum of `‖s * g‖ + 1` over `s` in the Bessel subgroup `besselS` of `𝔰.
 `frameBox` of radius `S.frameBoxRadius = S.b ^ (37 n)`. -/
 lemma mem_frameBox_of_mem_boxedPoints [S.IsAdmissible] {y : InfinitePlace E → 𝔰.G₁}
     (hy : y ∈ S.boxedPoints) (v : InfinitePlace E) : y v ∈ frameBox S.frameBoxRadius := by
-  have hy_reduced : y ∈ S.reducedPoints (Classical.epsilon S.IsResidueDomain) := hy.left
+  have hy_reduced : y ∈ S.reducedPoints S.residueDomain := hy.left
   have hy_cut : besselLength (y v) ≤ S.b ^ (6 * 𝔰.n + 2) := inCut_of_mem_boxedPoints hy v
   intro (a : Fin (𝔰.ϱ + 1))
   show ‖frameVector (y v) a‖ ≤ S.frameBoxRadius
   have hb : 1 ≤ S.b := S.one_le_b
-  have hD : S.IsResidueDomain (Classical.epsilon S.IsResidueDomain) :=
-    Classical.epsilon_spec S.exists_isResidueDomain
   -- The norm is at most `b ^ 27 * b ^ (6 n + 2) ≤ b ^ (37 n)`.
-  grw [hD.mem_frameBox hy_reduced v a, hy_cut, frameBoxRadius, ← pow_add]
+  grw [isResidueDomain_residueDomain.mem_frameBox hy_reduced v a, hy_cut, frameBoxRadius, ← pow_add]
   exact pow_le_pow_right₀ hb (by lia)
 
 /-- For admissible data the set of boxed points is measurable. -/
 lemma measurableSet_boxedPoints [S.IsAdmissible] : MeasurableSet S.boxedPoints := by
-  have hD : S.IsResidueDomain (Classical.epsilon S.IsResidueDomain) :=
-    Classical.epsilon_spec S.exists_isResidueDomain
-  change MeasurableSet (S.reducedPoints (Classical.epsilon S.IsResidueDomain) ∩
+  change MeasurableSet (S.reducedPoints S.residueDomain ∩
     {y : InfinitePlace E → 𝔰.G₁ | ∀ v, InCut (y v) S.b})
-  refine hD.measurableSet_reducedPoints.inter ?_
+  refine isResidueDomain_residueDomain.measurableSet_reducedPoints.inter ?_
   change MeasurableSet {y : InfinitePlace E → 𝔰.G₁ | ∀ v, besselLength (y v) ≤ S.b ^ (6 * 𝔰.n + 2)}
   measurability
 

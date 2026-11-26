@@ -1,5 +1,10 @@
 module
 
+public import Mathlib.LinearAlgebra.CliffordAlgebra.Contraction
+public import Mathlib.CategoryTheory.Abelian.Exact
+import Mathlib.Algebra.Category.Grp.Zero
+import Mathlib.RingTheory.Flat.Equalizer
+import Mathlib.RingTheory.PiTensorProduct
 public import Lib.Cohomology.Hodge.Site
 
 /-!
@@ -65,7 +70,8 @@ lemma exists_cokernel_map_extClass {S : ShortComplex (AbFunctor C)} (hS : S.Shor
         (mk₀ c).comp (ShortExact.mk (exact_cokernel α)).extClass (zero_add 1) := by
   have hS_epi : Epi S.g := hS.epi_g
   -- `S.f ≫ b = a ≫ α` dies in the cokernel of `α`
-  obtain ⟨c, hc⟩ := hS.exact.desc' (b ≫ cokernel.π α) (by simp [← reassoc_of% h_square])
+  obtain ⟨c, hc⟩ := hS.exact.desc' (b ≫ cokernel.π α)
+    (by rw [← reassoc_of% h_square, cokernel.condition, Limits.comp_zero])
   exact ⟨c, hc, hS.extClass_naturality ⟨exact_cokernel α⟩ ⟨a, b, c, h_square, hc.symm⟩⟩
 
 /-- Let `0 → Ψ K → Ξ K → Φ K → 0` (maps `i`, `p`) be short exact for every `K`, with `Φ`, `Ψ`
@@ -84,8 +90,10 @@ lemma extClass_anticomm {Ψ Ξ Φ : AbFunctor C ⥤ AbFunctor C} [IsExactFunctor
   -- Both classes that end in `Ψ.obj T.X₁` are pulled back from the class of the diagonal
   -- monomorphism `α`, along maps `u` and `v` to its cokernel.
   let α : Ψ.obj T.X₁ ⟶ Ξ.obj T.X₂ := Ψ.map T.f ≫ i.app T.X₂
+  have : Mono α := mono_comp _ _
   obtain ⟨u, hu : p.app T.X₁ ≫ u = Ξ.map T.f ≫ cokernel.π α, hu_class⟩ :=
-    exists_cokernel_map_extClass (h_row T.X₁) α (𝟙 _) (Ξ.map T.f) (by simp [α])
+    exists_cokernel_map_extClass (h_row T.X₁) α (𝟙 _) (Ξ.map T.f)
+      (by rw [Category.id_comp]; exact i.naturality T.f)
   obtain ⟨v, hv : Ψ.map T.g ≫ v = i.app T.X₂ ≫ cokernel.π α, hv_class⟩ :=
     exists_cokernel_map_extClass (hT.map_of_exact Ψ) α (𝟙 _) (i.app T.X₂) (Category.id_comp α)
   -- Push the row at `T.X₃` out along `v`; this compares its class with that of `inl`.
@@ -96,14 +104,19 @@ lemma extClass_anticomm {Ψ Ξ Φ : AbFunctor C ⥤ AbFunctor C} [IsExactFunctor
   -- from the difference that defines `b`.
   have h_desc : i.app T.X₂ ≫ (cokernel.π α ≫ pushout.inl v (i.app T.X₃) -
       Ξ.map T.g ≫ pushout.inr v (i.app T.X₃)) = 0 := by
-    simp [← reassoc_of% hv, condition]
+    rw [Preadditive.comp_sub, ← Category.assoc, ← hv, Category.assoc, condition,
+      ← Category.assoc, i.naturality, Category.assoc, sub_self]
   obtain ⟨b, hb⟩ : ∃ b : Φ.obj T.X₂ ⟶ pushout v (i.app T.X₃), p.app T.X₂ ≫ b =
       cokernel.π α ≫ pushout.inl v (i.app T.X₃) - Ξ.map T.g ≫ pushout.inr v (i.app T.X₃) :=
     (h_row T.X₂).exact.desc' _ h_desc
   have h_left : u ≫ pushout.inl v (i.app T.X₃) = Φ.map T.f ≫ b := by
-    simp [← cancel_epi (p.app _), ← p.naturality_assoc, hb, reassoc_of% hu, ← Ξ.map_comp_assoc]
+    rw [← cancel_epi (p.app T.X₁), ← Category.assoc, hu, ← p.naturality_assoc, hb,
+      Preadditive.comp_sub, ← Ξ.map_comp_assoc, T.zero, Ξ.map_zero, Limits.zero_comp, sub_zero,
+      Category.assoc]
   have h_right : b ≫ cokernel.π (pushout.inl v (i.app T.X₃)) = Φ.map T.g ≫ (-c) := by
-    simp [← cancel_epi (p.app _), ← p.naturality_assoc, hc, reassoc_of% hb]
+    rw [← cancel_epi (p.app T.X₂), ← Category.assoc, hb, Preadditive.sub_comp, Category.assoc,
+      cokernel.condition, Limits.comp_zero, zero_sub, Preadditive.comp_neg, Preadditive.comp_neg,
+      ← p.naturality_assoc, hc, Category.assoc]
   have h_column : (hT.map_of_exact Φ).extClass.comp (mk₀ u) (add_zero 1) =
       (mk₀ (-c)).comp (ShortExact.mk (exact_cokernel (pushout.inl v (i.app T.X₃)))).extClass
         (zero_add 1) :=
@@ -112,7 +125,7 @@ lemma extClass_anticomm {Ψ Ξ Φ : AbFunctor C ⥤ AbFunctor C} [IsExactFunctor
   -- Write the two classes through `α` as `u`, `v` followed by `ε`, then move `-c` across.
   rw [comp_mk₀_id] at hu_class hv_class
   rw [hu_class, hv_class]
-  simp [← comp_assoc_of_second_deg_zero, h_column, hc_class]
+  simp only [← comp_assoc_of_second_deg_zero, h_column, hc_class, mk₀_neg, Abelian.Ext.neg_comp]
 
 /-- Let `Φ`, `Ψ` be exact functors and `Ξ` an additive functor to `AbFunctor C`, with natural maps
 `i : Ψ ⟶ Ξ` and `p : Ξ ⟶ Φ` such that `0 → ΨK → ΞK → ΦK → 0` is short exact for every `K`. For `x`
@@ -132,25 +145,30 @@ lemma TotalH.extClass_sign_comm {Ψ Ξ Φ : (C ⥤ Ab) ⥤ AbFunctor C} [IsExact
         (mk₀ (Φ.map f)).comp (h_row G).extClass (zero_add 1) :=
       (h_row F).extClass_naturality (h_row G)
         ⟨Ψ.map f, Ξ.map f, Φ.map f, i.naturality f, p.naturality f⟩
-    simp [comp_of, h_nat, mapExactFunctor_mk₀]
+    rw [pow_zero, one_zsmul, map_homClass, map_homClass,
+      comp_of _ _ (zero_add 1), comp_of _ _ (add_zero 1), h_nat]
   | h T hT n x ih =>
     -- compose `ih` with the class of `Ψ T`; passing the class of `T` costs one more sign
-    calc comp (map Φ (DirectSum.of (H F T.X₁) (n + 1) (x.comp hT.extClass rfl)))
-          (h_row T.X₁).extClass.toTotalH
-        = comp (map Φ (DirectSum.of (H F T.X₃) n x))
-            (comp (h_row T.X₃).extClass.toTotalH (-map Ψ hT.extClass.toTotalH)) := by
-          -- `extClass_anticomm` for `T`, in the total Ext groups
-          have h_anti :
-              comp (map Φ (DirectSum.of (H T.X₃ T.X₁) 1 hT.extClass))
-                  (h_row T.X₁).extClass.toTotalH =
-                -comp (h_row T.X₃).extClass.toTotalH (map Ψ hT.extClass.toTotalH) := by
-            simp [comp_of, mapExactFunctor_extClass, extClass_anticomm h_row hT]
-          simp only [← comp_of, map_comp, comp_assoc, h_anti, map_neg]
-      _ = comp ((-1) ^ n • comp (h_row F).extClass.toTotalH (map Ψ x.toTotalH))
-            (-map Ψ hT.extClass.toTotalH) := comp_assoc_of_eq ih _
-      _ = (-1) ^ (n + 1) • comp (h_row F).extClass.toTotalH
-            (map Ψ (x.comp hT.extClass rfl).toTotalH) := by
-          simp [← comp_of, map_comp, pow_add, comp_assoc]
+    have h_anti :
+        comp (map Φ hT.extClass.toTotalH) (h_row T.X₁).extClass.toTotalH =
+          -comp (h_row T.X₃).extClass.toTotalH (map Ψ hT.extClass.toTotalH) := by
+      dsimp only [toTotalH]
+      rw [map_of, map_of, mapExactFunctor_extClass, mapExactFunctor_extClass,
+        comp_of _ _ (rfl : 1 + 1 = 2), comp_of _ _ (rfl : 1 + 1 = 2),
+        extClass_anticomm h_row hT, AddMonoidHom.map_neg]
+    have h_stepΦ :
+        map Φ (x.comp hT.extClass rfl).toTotalH =
+          comp (map Φ x.toTotalH) (map Φ hT.extClass.toTotalH) := by
+      dsimp only [toTotalH]
+      rw [← comp_of x hT.extClass rfl, map_comp]
+    have h_stepΨ :
+        map Ψ (x.comp hT.extClass rfl).toTotalH =
+          comp (map Ψ x.toTotalH) (map Ψ hT.extClass.toTotalH) := by
+      dsimp only [toTotalH]
+      rw [← comp_of x hT.extClass rfl, map_comp]
+    rw [h_stepΦ, h_stepΨ, comp_assoc, h_anti, AddMonoidHom.map_neg, ← comp_assoc, ih,
+      AddMonoidHom.map_zsmul, AddMonoidHom.zsmul_apply, ← neg_smul, ← neg_one_mul, ← pow_succ',
+      comp_assoc]
 
 /-- If `f ≫ g = 0`, the maps `f` and `g` tensored pointwise with `K` also compose to zero. -/
 lemma abTensor_flip_map_app_comp_eq_zero {E : AbFunctor C} {f : G' ⟶ E} {g : E ⟶ G}
@@ -217,16 +235,49 @@ def extension : ShortComplex (AbFunctor C) where
           ((F.map f).hom.comp (AddMonoidHom.snd ..)))
       map_id c := by
         -- the cocycle rule at `𝟙 c ≫ 𝟙 c` reads `D(𝟙) = D(𝟙) + D(𝟙)`
-        have h_zero : D.component (𝟙 c) = 0 := by simpa using D.cocycle_comp (𝟙 c) (𝟙 c)
-        aesop
-      map_comp := by aesop (add simp [cocycle_comp, add_assoc]) }
+        have h_zero : D.component (𝟙 c) = 0 := by
+          have h := D.cocycle_comp (𝟙 c) (𝟙 c)
+          rw [Category.id_comp, G.map_id, F.map_id, Category.comp_id, Category.id_comp] at h
+          exact (add_left_cancel ((add_zero _).trans h)).symm
+        ext ⟨y, x⟩
+        · change G.map (𝟙 c) y + D.component (𝟙 c) x = y
+          rw [G.map_id, h_zero]
+          exact add_zero y
+        · change F.map (𝟙 c) x = x
+          rw [F.map_id]
+          rfl
+      map_comp f g := by
+        ext ⟨y, x⟩
+        · change G.map (f ≫ g) y + D.component (f ≫ g) x =
+            G.map g (G.map f y + D.component f x) + D.component g (F.map f x)
+          rw [G.map_comp, D.cocycle_comp, (G.map g).hom.map_add]
+          exact (add_assoc _ _ _).symm
+        · change F.map (f ≫ g) x = F.map g (F.map f x)
+          rw [F.map_comp]
+          rfl }
   X₃ := F
-  f := { app _ := ofHom (AddMonoidHom.inl ..) }
-  g := { app _ := ofHom (AddMonoidHom.snd ..) }
+  f :=
+    { app _ := ofHom (AddMonoidHom.inl ..)
+      naturality _ _ f := by
+        ext y
+        · change G.map f y = G.map f y + D.component f 0
+          rw [(D.component f).hom.map_zero, add_zero]
+        · change 0 = F.map f 0
+          exact (F.map f).hom.map_zero.symm }
+  g :=
+    { app _ := ofHom (AddMonoidHom.snd ..)
+      naturality _ _ _ := by
+        ext ⟨_, _⟩
+        rfl }
+  zero := NatTrans.ext (funext fun _ ↦ AddCommGrpCat.hom_ext (AddMonoidHom.ext fun _ ↦ rfl))
 
 lemma shortExact_extension : D.extension.ShortExact := by
   -- at each object `c` the sequence is `G c → G c × F c → F c`, by `inl` and `snd`
-  refine (shortExact_of_app (fun c ↦ ?_) (fun c ↦ ?_) fun c ↦ ?_).2 <;> aesop_cat
+  refine (shortExact_of_app (fun c ↦ ?_) (fun c ↦ ?_) fun c ↦ ?_).2
+  · exact fun _ _ h ↦ (Prod.mk.inj h).1
+  · rintro ⟨y, x⟩
+    exact ⟨fun h ↦ ⟨y, Prod.ext rfl h.symm⟩, fun ⟨_, h⟩ ↦ (congrArg Prod.snd h).symm⟩
+  · exact fun x ↦ ⟨(0, x), rfl⟩
 
 /-- For a cocycle D from F to G, the class in Ext^1(F,G) of its extension G → E → F, viewed in
 the total Ext group. -/
@@ -246,8 +297,23 @@ lemma cohomClass_comp_eq_extClass {S : ShortComplex (AbFunctor C)} (hS : ShortEx
   -- by `h_cocycle` and gives a map of short exact sequences `D.extension ⟶ S`.
   let τ : D.extension.X₂ ⟶ S.X₂ :=
     { app c := ofHom (((β ≫ S.f).app c).hom.coprod (σ c).hom)
-      naturality c d f := by simp [AddCommGrpCat.ext_iff, add_assoc, elementwise_of% h_cocycle] }
-  have h_left : β ≫ S.f = D.extension.f ≫ τ := by aesop
+      naturality c d f := by
+        ext ⟨y, x⟩
+        change S.f.app d (β.app d (G.map f y + D.component f x)) + σ d (F.map f x) =
+          S.X₂.map f (S.f.app c (β.app c y) + σ c x)
+        have h_β : S.f.app d (β.app d (G.map f y)) = S.X₂.map f (S.f.app c (β.app c y)) := by
+          have h1 := AddCommGrpCat.ext_iff.mp (S.f.naturality f) (β.app c y)
+          have h2 := AddCommGrpCat.ext_iff.mp (β.naturality f) y
+          exact (congrArg (S.f.app d) h2).trans h1
+        have h_σ : S.X₂.map f (σ c x) =
+            S.f.app d (β.app d (D.component f x)) + σ d (F.map f x) :=
+          AddCommGrpCat.ext_iff.mp (h_cocycle c d f) x
+        rw [(β.app d).hom.map_add, (S.f.app d).hom.map_add, (S.X₂.map f).hom.map_add, h_β, h_σ,
+          add_assoc] }
+  have h_left : β ≫ S.f = D.extension.f ≫ τ := by
+    ext c y
+    change S.f.app c (β.app c y) = S.f.app c (β.app c y) + σ c 0
+    rw [(σ c).hom.map_zero, add_zero]
   have h_right : τ ≫ S.g = D.extension.g ≫ α := by
     ext c x
     have h0 : S.g.app c (S.f.app c (β.app c x.1)) = 0 := by
@@ -255,7 +321,7 @@ lemma cohomClass_comp_eq_extClass {S : ShortComplex (AbFunctor C)} (hS : ShortEx
       rw [S.zero]
       rfl
     change S.g.app c (S.f.app c (β.app c x.1) + σ c x.2) = α.app c x.2
-    rw [map_add, h0, zero_add, ← h_lift c]
+    rw [(S.g.app c).hom.map_add, h0, zero_add, ← h_lift c]
     rfl
   have h_nat : D.shortExact_extension.extClass.comp (mk₀ β) (add_zero 1) =
       (mk₀ α).comp hS.extClass (zero_add 1) :=
@@ -279,7 +345,7 @@ lemma cohomClass_naturality (D' : Cocycle F' G') (α : F ⟶ F') (β : G ⟶ G')
   ext x
   refine Prod.ext ?_ ?_
   · change G'.map f 0 + D'.component f (α.app c x) = β.app d (D.component f x) + 0
-    rw [map_zero, zero_add, add_zero, h_cd]
+    rw [(G'.map f).hom.map_zero, zero_add, add_zero, h_cd]
   · change F'.map f (α.app c x) = 0 + α.app d (F.map f x)
     rw [zero_add]
     exact (AddCommGrpCat.ext_iff.mp (α.naturality f) x).symm
@@ -315,9 +381,17 @@ variable {T T' M M' : Type} [CommRing T] [CommRing T'] [AddCommGroup M] [AddComm
 lemma algebraMapInv_exteriorMap (m : M →ₛₗ[a] M') (x : ExteriorAlgebra T M) :
     algebraMapInv (exteriorMap m x) = a (algebraMapInv x) := by
   induction x using left_induction with
-  | algebraMap r => simp [algebraMapInv, Algebra.algebraMap_eq_smul_one]
-  | add x x' ih ih' => simp [ih, ih']
-  | ι_mul x m ih => simp [algebraMapInv]
+  | algebraMap r =>
+    rw [algebraMap_leftInverse, Algebra.algebraMap_eq_smul_one, exteriorMap_smul,
+      (exteriorMap m).map_one, ← Algebra.algebraMap_eq_smul_one, algebraMap_leftInverse]
+  | add x x' ih ih' =>
+    rw [(exteriorMap m).map_add, map_add, map_add, a.map_add, ih, ih']
+  | ι_mul x m' _ =>
+    change algebraMapInv (exteriorMap m (ExteriorAlgebra.ι T m' * x)) =
+      a (algebraMapInv (ExteriorAlgebra.ι T m' * x))
+    rw [(exteriorMap m).map_mul, exteriorMap_iota, map_mul, map_mul, algebraMapInv, algebraMapInv,
+      ExteriorAlgebra.lift_ι_apply, ExteriorAlgebra.lift_ι_apply, LinearMap.zero_apply,
+      LinearMap.zero_apply, zero_mul, zero_mul, a.map_zero]
 
 /-- Contraction with `φ₀` for a semilinear map `φ = (φ₀, φ₁) : M → T' × M'`. It is the map
 `⋀ M → ⋀ (T' × M')` induced by `φ`, followed by contraction with the first projection and then the
@@ -326,11 +400,17 @@ noncomputable def contraction : ExteriorAlgebra T M →ₛₗ[a] ExteriorAlgebra
   toFun :=
     ExteriorAlgebra.map (LinearMap.snd T' T' M') ∘
       CliffordAlgebra.contractLeft (LinearMap.fst T' T' M') ∘ exteriorMap φ
-  map_add' := by simp
-  map_smul' := by simp
+  map_add' x y := by
+    dsimp only [Function.comp_apply]
+    rw [(exteriorMap φ).map_add, map_add, map_add]
+  map_smul' r x := by
+    dsimp only [Function.comp_apply]
+    rw [exteriorMap_smul, map_smul, map_smul]
 
 @[simp]
-lemma contraction_one : contraction φ 1 = 0 := by simp [contraction]
+lemma contraction_one : contraction φ 1 = 0 := by
+  dsimp only [contraction, LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply]
+  rw [(exteriorMap φ).map_one, contractLeft_one, map_zero]
 
 /-- For semilinear φ: M→T'×M', the map of exterior algebras ΛM→ΛM' induced by the second
 component M→M' of φ. -/
@@ -346,10 +426,19 @@ lemma contraction_ι_mul (m : M) (x : ExteriorAlgebra T M) :
   have h_snd :
       ExteriorAlgebra.map (LinearMap.snd T' T' M') (exteriorMap φ x) = exteriorMapSnd φ x := by
     induction x using left_induction with
-    | algebraMap r => simp [Algebra.algebraMap_eq_smul_one]
-    | add x x' ih ih' => simp [ih, ih']
-    | ι_mul x m ih => simp [ih]
-  simp [contraction, contractLeft_ι_mul, h_snd]
+    | algebraMap r =>
+      rw [Algebra.algebraMap_eq_smul_one, exteriorMap_smul, exteriorMap_smul,
+        (exteriorMap φ).map_one, (exteriorMapSnd φ).map_one, map_smul, map_one]
+    | add x x' ih ih' =>
+      rw [(exteriorMap φ).map_add, map_add, (exteriorMapSnd φ).map_add, ih, ih']
+    | ι_mul x m ih =>
+      rw [(exteriorMap φ).map_mul, map_mul, (exteriorMapSnd φ).map_mul, exteriorMap_iota,
+        ExteriorAlgebra.map_apply_ι, exteriorMap_iota, ih]
+      rfl
+  dsimp only [contraction, LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply]
+  rw [(exteriorMap φ).map_mul, exteriorMap_iota, contractLeft_ι_mul, map_sub, map_smul, map_mul,
+    ExteriorAlgebra.map_apply_ι, h_snd]
+  rfl
 
 /-- The graded Leibniz rule for `contraction φ` along the ring map `exteriorMapSnd φ`. The sign
 when the contraction passes `x` comes from the grade involution `exteriorMap s`, induced by the
@@ -359,13 +448,21 @@ lemma contraction_mul {s : M' →ₗ[T'] M'} (hs : ∀ m : M', s m = -m) (x y : 
       exteriorMap s (exteriorMapSnd φ x) * contraction φ y +
         contraction φ x * exteriorMapSnd φ y := by
   induction x using left_induction with
-  | algebraMap => simp [Algebra.algebraMap_eq_smul_one]
+  | algebraMap r =>
+    rw [Algebra.algebraMap_eq_smul_one, smul_mul_assoc, one_mul, LinearMap.map_smulₛₗ,
+      LinearMap.map_smulₛₗ, contraction_one, smul_zero, zero_mul, add_zero, exteriorMap_smul,
+      exteriorMap_smul, (exteriorMapSnd φ).map_one, (exteriorMap s).map_one, smul_mul_assoc,
+      one_mul]
+    rfl
   | add x x' ih ih' =>
     simp only [add_mul, map_add, ih, ih']
     abel
   | ι_mul x m ih =>
     -- Expand both sides by `contraction_ι_mul`; the sign comes from `s m = -m`.
-    simp [ih, hs, mul_assoc, mul_add, sub_mul]
+    rw [mul_assoc, contraction_ι_mul, ih, (exteriorMapSnd φ).map_mul, (exteriorMapSnd φ).map_mul,
+      (exteriorMap s).map_mul, exteriorMap_iota, exteriorMap_iota, LinearMap.comp_apply,
+      LinearMap.snd_apply, hs, map_neg, contraction_ι_mul, mul_add, neg_mul, neg_mul, sub_mul,
+      smul_mul_assoc, mul_assoc, mul_assoc]
     abel
 
 end New.Variety

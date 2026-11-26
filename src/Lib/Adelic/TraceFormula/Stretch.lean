@@ -1,6 +1,8 @@
 module
 
 public import Lib.Adelic.Reduction.FirstMinimumShortBases
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Unitary.RationalPoints
 
 /-!
 # Rational points that pair short lattice vectors non-trivially

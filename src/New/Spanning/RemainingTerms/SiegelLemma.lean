@@ -1,8 +1,16 @@
 module
 
-public import Lib.Adelic.Adeles.LocalFactors
-public import Lib.General.NumberTheory.LatticeCovolumes
-public import New.Spanning.Unfolding.Setup
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.PicardGroup
+import TauCeti.LinearAlgebra.Matrix.Range
+public import Lib.Adelic.Reduction.FirstMinimumShortBases
+public import Lib.Adelic.Reduction.MinkowskiTheorems
+import Lib.Adelic.Adeles.LocalFactors
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.LinearAlgebra.PolarDecomposition
+import Lib.General.NumberTheory.LatticeCovolumes
 
 /-!
 # Discriminants of sublattices, Siegel's lemma and a height zeta function of subspaces
@@ -394,7 +402,7 @@ lemma genIndex_sq_mul_abs_norm_eq [HasPrimitiveRoot5040 E] (u : Gf E κ) {t s : 
       rw [Matrix.mul_one, conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul_fromCols]
       simp [fromBlocks_add]
     rw [h_index, h_block] at h_jacobi
-    simpa [w, Matrix.mul_assoc] using h_jacobi
+    simpa [w] using h_jacobi
   have h_conj : wᴴ * w = a.valᴴ * finAdeleMatrix (yᴴ * y) * a.val := by
     simp [w, finAdeleMatrix_conjTranspose, Matrix.mul_assoc]
   rw [h_gram, h_gram, h_conj, det_mul, det_mul, det_conjTranspose] at h_disc

@@ -1,5 +1,11 @@
 module
 
+public import Mathlib.CategoryTheory.Limits.FunctorCategory.BinaryBiproducts
+public import Mathlib.Algebra.Category.Grp.Biproducts
+import Mathlib.Algebra.Category.Grp.Zero
+import Mathlib.CategoryTheory.Abelian.CommSq
+import Mathlib.CategoryTheory.Limits.Types.Multicoequalizer
+import Mathlib.RingTheory.LocalProperties.Reduced
 public import Lib.Cohomology.Etale.BijectiveComparisons
 
 /-!
@@ -98,16 +104,16 @@ namespace IsCohomDense
 /-- If the subfunctor U of Y is dense for F, then the inclusion U → Y is an equivalence: it
 induces bijections H^n(Y,F) → H^n(U,F) for all n. -/
 lemma isCohomEquiv (h : IsCohomDense F U) : IsCohomEquiv F (freeAb.map U.ι) := by
-  -- It suffices to test on the fibres over the points `y` (`isBijective_of_fibres`); such a fibre
+  -- It suffices to test on the fibres over the points `y` (`isBijective_of_fibers`); such a fibre
   -- injects into the representable h_A with image the preimage of `U`.
-  refine (isBijective_of_fibres (𝟙 _) .of_id_snd fun A y ↦ IsCohomEquiv.bij ?_).eqv
-  -- written in the form of the goal that `isBijective_of_fibres` leaves, so that `exact` matches it
-  have h_range : range (fibreProd.snd U.ι
+  refine (isBijective_of_fibers (𝟙 _) .of_id_snd fun A y ↦ IsCohomEquiv.bij ?_).eqv
+  -- written in the form of the goal that `isBijective_of_fibers` leaves, so that `exact` matches it
+  have h_range : range (fiberProd.snd U.ι
         ((Comparison.id F).functor.whiskerLeft (pointMap (NatTrans.app (𝟙 Y) A y)))) =
       U.preimage (pointMap y) := by
-    aesop (add simp [toFunctor, fibreProd, fibreProd.snd])
+    aesop (add simp [toFunctor, fiberProd, fiberProd.snd])
   -- the projection is a monomorphism as a pullback of `U.ι`
-  exact (isCohomEquiv_iff_range (hg := isPullback_fibreProd.mono_fst_of_mono) h_range).mpr (h A y)
+  exact (isCohomEquiv_iff_range (hg := isPullback_fiberProd.mono_fst_of_mono) h_range).mpr (h A y)
 
 /-- The preimage of a dense subfunctor `U` of `Y` under `p : E ⟶ Y` is dense in `E`. -/
 lemma preimage (h : IsCohomDense F U) (p : E ⟶ Y) : IsCohomDense (Y := E) F (U.preimage p) := by
@@ -257,9 +263,6 @@ lemma relationLocus_sum_eq_zero :
   -- On a generator `x` of the locus the sum vanishes by the defining condition of `x`.
   freeAb.hom_ext fun _ x ↦ sum_app_apply.trans x.prop
 
-private lemma H.mapHom_apply {M N : AbFunctor C} (α : M ⟶ N) : H.mapHom F M N n α = H.map F α n :=
-  rfl
-
 /-- For finitely many f_i: W → Y and integers c_i, if the inclusion into W of the locus where ∑
 c_i [f_i(w)] = 0 is an equivalence for F, then ∑ c_i f_i^* x = 0 for every x in H^n(Y,F). -/
 lemma H.sum_map_eq_zero_of_relationLocus {C : Type 1} [Category C] {Y W : C ⥤ Type 1}
@@ -275,7 +278,7 @@ lemma H.sum_map_eq_zero_of_relationLocus {C : Type 1} [Category C] {Y W : C ⥤ 
   have h_sum : ∑ i : ι, c i • mapHom F (freeAb.obj (relationLocus c f).toFunctor) (freeAb.obj Y) n
       (freeAb.map (relationLocus c f).ι ≫ freeAb.map (f i)) x = 0 := by
     simpa [comp_sum] using h_zero
-  simpa [H.mapHom_apply, ← map_comp] using h_sum
+  simpa [H.mapHom, ← map_comp] using h_sum
 
 end Relations
 

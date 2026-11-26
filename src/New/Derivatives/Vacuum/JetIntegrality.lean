@@ -2,7 +2,11 @@ module
 
 public import New.Derivatives.FormalGroup.Resolution
 public import New.Derivatives.Vacuum.IntegralVacuum
-public import New.UpperBound.Seesaw.AdmissibleCombinations
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+import Lib.CM.Integrality.IsogenyIntegrality
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import New.UpperBound.Seesaw.AdmissibleCombinations
 
 /-!
 # Integrality of jets of theta products and stability of standard data
@@ -123,20 +127,11 @@ lemma theta_mem_jetRing (i : I) :
     (taylorVia ιₚ C.θ).subst (linearSeries (μ i)) ∈ C.jetRing μ :=
   Subring.subset_closure (.inl (.inr ⟨i, rfl⟩))
 
-/-- The series `g'(μ_i z)`, where `g = -log θ`, lies in `jetRing`. -/
-lemma derivative_negLogTheta_mem_jetRing (i : I) :
-    (PowerSeries.derivative C.negLogTheta).subst (linearSeries (μ i)) ∈ C.jetRing μ :=
-  Subring.subset_closure (.inr ⟨i, rfl⟩)
-
 /-- The ring `jetRing` is stable under multiplication by integral constants. -/
 lemma smul_mem_jetRing {c : ℂ_[p]} (hc : ‖c‖ ≤ 1) (hF : F ∈ C.jetRing μ) :
     c • F ∈ C.jetRing μ := by
   rw [smul_eq_C_mul]
   exact mul_mem (C.mem_jetRing_of_mem_multiSeriesRing (C.C_mem_multiSeriesRing hc)) hF
-
-/-- The product `∏ θ(μ_i z) ^ m i` lies in `jetRing`. -/
-lemma thetaProd_mem_jetRing (m : I → ℕ) : C.thetaProd μ m ∈ C.jetRing μ :=
-  prod_mem fun i _ ↦ pow_mem (C.theta_mem_jetRing i) (m i)
 
 end Generators
 
@@ -182,7 +177,7 @@ lemma pderiv_mem_jetRing {F : MvPowerSeries X ℂ_[p]} {ν : I → X → ℂ_[p]
           ← PowerSeries.coe_substAlgHom (hasSubst_linearSeries _), map_neg, map_mul]
       rw [h_eq]
       exact C.smul_mem_jetRing (h_int i x)
-        (neg_mem (mul_mem (C.theta_mem_jetRing i) (C.derivative_negLogTheta_mem_jetRing i)))
+        (neg_mem (mul_mem (C.theta_mem_jetRing i) (Subring.subset_closure (.inr ⟨i, rfl⟩))))
     · -- The derivative is `ν_i x` times `(d g'')(μ_i z)`: the factor `d` of the linear form clears
       -- the denominator of `g''`.
       rw [pderiv_subst_linearSeries, hμ i x, mul_smul,
@@ -210,7 +205,8 @@ lemma norm_jet_thetaProd_pow_mul_le_one {ν : I → X → ℂ_[p]}
     ‖jet ℂ_[p] (Q.map φ) (C.thetaProd ((d : ℂ_[p]) • ν) m ^ N * H)‖ ≤ 1 :=
   norm_jet_le_one_of_pderiv_mem (fun _ ↦ C.norm_constantCoeff_le_of_mem_jetRing)
     (fun _ ↦ C.pderiv_mem_jetRing hν) hφ Q
-    (mul_mem (pow_mem (C.thetaProd_mem_jetRing m) N) (C.mem_jetRing_of_mem_multiSeriesRing hH))
+    (mul_mem (pow_mem (prod_mem fun i _ ↦ pow_mem (C.theta_mem_jetRing i) (m i)) N)
+      (C.mem_jetRing_of_mem_multiSeriesRing hH))
 
 end CMLattice
 

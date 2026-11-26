@@ -1,8 +1,13 @@
 module
 
-public import Lib.General.Geometry.SerreTheorem
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.LocalFlatDescent
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
 public import Lib.Shimura.ThetaNormality.RiemannRelation
 public import Lib.Shimura.Uniformisation.TorusModel
+public import Lib.Adelic.Hecke.ClassSums
+import Lib.General.Geometry.SerreTheorem
+import Lib.Shimura.AbelianScheme.Pairings
 
 /-!
 # Linear systems and theta families from dense complex points carrying theta tori
@@ -412,7 +417,7 @@ lemma ThetaTori.ThetaTorus.exists_eigenline (b : ℤ) {ρ : 𝓞 E →+* ℂ}
   obtain ⟨ε, hε⟩ := x.exists_std_equiv
   have h_std (d : 𝓞 E) (z : V) : ε (x.intAction d z) =
       ((Φ v₀ d.val * (ε z).fst.fst, star (Φ v₀ d.val) • (ε z).fst.snd),
-        fun w ↦ Φ w.1 d.val • (ε z).snd w) := by
+        fun w ↦ Φ w.val d.val • (ε z).snd w) := by
     -- `using!`: the last component comes out as `Pi.map` of the diagonal maps, which is the
     -- stated function only after unfolding.
     simpa using! LinearMap.congr_fun (hε d) (ε z)
@@ -935,13 +940,13 @@ lemma Variety.exists_linearMap_coe_eq_of_comp_eq_torsionLift {E : Type} [Field E
 
 /-- The points of `A` over a point `η` of `S`, seen as points of the fibre of `A` over `η`; the map
 is `𝓞 E`-linear. -/
-noncomputable def Variety.fibrePointMap {E : Type} [Field E] [CMBase E] {S : Scheme}
+noncomputable def Variety.fibrePointMap {E : Type} [Field E] {S : Scheme}
     (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A] (η : Spec (CommRingCat.of ℂ) ⟶ S) :
     (Over.mk η ⟶ A) →ₗ[𝓞 E] (𝟙_ (Over (Spec (CommRingCat.of ℂ))) ⟶ (Over.pullback η).obj A) :=
   ((isGroupBaseChange_counit (O := 𝓞 E) (A := A) η).pointEquiv (T := 𝟙_ _)).symm.toLinearMap
 
 /-- The point of the fibre given by `fibrePointMap A η u` is the pair of `u` and the point `η`. -/
-lemma Variety.fibrePointMap_left {E : Type} [Field E] [CMBase E] {S : Scheme}
+lemma Variety.fibrePointMap_left {E : Type} [Field E] {S : Scheme}
     {η : Spec (CommRingCat.of ℂ) ⟶ S} (A : Over S) [AddObj A] [ModuleObj (𝓞 E) A]
     (u : Over.mk η ⟶ A) :
     (fibrePointMap (E := E) A η u).left = (lift u (𝟙 (Over.mk η))).left :=
@@ -1091,7 +1096,7 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
     exact hd
   -- The fibre over `η i` is the base change of `A` along `η i`, so it has the same dimension.
   choose u hu_theta hu_e hu_L _ using fun i : κ ↦
-    h_unif i _ ((smoothOfRelativeDimension_isStableUnderBaseChange _).1
+    h_unif i _ ((smoothOfRelativeDimension_isStableUnderBaseChange _).of_isPullback
       (isGroupBaseChange_counit (O := 𝓞 E) (A := A) (η i)).isPullback h_dim)
   refine ⟨{ total := A, lineBundle := N, embeds := hN, levelPoints := ς, class_laws := h_class
             relative_dim := h_dim
@@ -1102,9 +1107,8 @@ theorem Variety.exists_thetaFamily_of_points (j : ι → κ) (hη : IsDenseFamil
             eq_of_level_coords_eq t t' h_base h_coord := ?ext }, fun i ↦ ?model⟩
   case ext =>
     -- The lists agree, so do the pull-backs of the product of the `c l`.
-    have h_pi : pi (fun l : D.levelTorsion ↦ N.pull (t ≫ (ς l).left)) =
-        pi (fun l : D.levelTorsion ↦ N.pull (t' ≫ (ς l).left)) := congrArg pi (funext h_coord)
-    exact hπ.ext (by simpa [← hσ_pull, pull_pi] using h_pi) (hφ.right_cancellation _ _ h_base)
+    exact hπ.ext (by simpa [← hσ_pull, pull_pi] using congrArg pi (funext h_coord))
+      (hφ.right_cancellation _ _ h_base)
   case model =>
     refine ⟨⟨hη_base i, u i, _, _, hu_theta i, fun d w ↦ ?_, fun l ↦ ?_, hu_L i⟩, rfl⟩
     -- `using!`: the exponential map `u i` matches `fibrePointMap A (η i)` only up to unfolding.

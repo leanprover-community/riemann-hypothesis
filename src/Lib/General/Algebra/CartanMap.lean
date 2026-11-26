@@ -1,5 +1,8 @@
 module
 
+import Mathlib.CategoryTheory.Shift.Basic
+import Mathlib.GroupTheory.Nilpotent
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 
 /-!
@@ -54,7 +57,7 @@ variable {R G : Type} [CommRing R] [Group G] [TopologicalSpace G]
 /-- Higman's criterion for the discrete `G`-module `A` relative to a subgroup `Q` of finite index:
 some additive `τ : A → A` has `∑ g τ g⁻¹ = 1`, summed over the chosen representatives `g.out` of the
 cosets in `G ⧸ Q`. The map `τ` is not asked to commute with `Q`. If `Q` acts trivially on `A`, the
-choice of representatives does not matter, see `TrivialOn.isHigmanProjective_iff`. -/
+choice of representatives does not matter. -/
 def IsHigmanProjective (Q : Subgroup G) [Finite (G ⧸ Q)] (A : DiscreteModule R G) : Prop :=
   ∃ τ : A →+ A, ∀ a : A.V, ∑ g : G ⧸ Q, A.ρ g.out (τ (A.ρ g.out⁻¹ a)) = a
 

@@ -1,7 +1,22 @@
 module
 
-public import Lib.Shimura.HeckeTower.Model
+import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.CategoryTheory.EffectiveEpi.Comp
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import TauCeti.LinearAlgebra.Pi
 public import Lib.Shimura.Uniformisation.TorusModel
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Base
+import Lib.PadicComparison.Descent.TestCategory
+import Lib.Shimura.ArcExtension
+import Lib.Shimura.HeckeTower.Model
+import Lib.Shimura.Uniformisation.AppellHumbert
+import Lib.Shimura.Uniformisation.LieExponential
 
 /-!
 # Every full complex object is modelled on a point (g, ℓ)

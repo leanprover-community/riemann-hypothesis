@@ -1,8 +1,10 @@
 module
 
-public import Lib.Weil.Periods.LatticeBounds
 public import New.UpperBound.Seesaw.IntegralAsCosetSum
 public import New.UpperBound.Seesaw.UnfoldingStages
+import Lib.Weil.Periods.LatticeBounds
+import New.UpperBound.Seesaw.GluedLevel
+import New.UpperBound.Seesaw.LevelIdeles
 
 /-!
 # The outer variables: finitely many classes, with weights
@@ -50,23 +52,16 @@ lemma exists_conj_pow_mem_stdLevel {j : ℕ} {x : Gf D.E (D.Y j)}
     ∃ n : ℕ, ∀ u ∈ levelY ϑ j, (x * u * x⁻¹) ^ ϑ.normQ ^ n ∈ stdLevel D.E (D.Y j) := by
   -- At `w ∈ ϑ.Q`, conjugation by `x` keeps elements close to `1` integral, and high powers of
   -- `u ≡ 1` are close to `1` by lifting the exponent.
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, ∀ w ∈ ϑ.Q, ∀ g ∈ localCongruence (D.Y j) w n,
-      x.atPlace w * g * (x.atPlace w)⁻¹ ∈ localIntGL (D.Y j) w :=
-    (ϑ.Q.eventually_all.2 fun w _ ↦ eventually_localCongruence_subset
-      (((isOpen_localIntGL w).preimage (continuous_conj (x.atPlace w))).mem_nhds (by simp))).exists
+  obtain ⟨n, hn⟩ := (ϑ.Q.eventually_all.2 fun w _ ↦ eventually_localCongruence_subset
+    (((isOpen_localIntGL w).preimage (continuous_conj (x.atPlace w))).mem_nhds (by simp))).exists
   refine ⟨n, fun u hu ↦ mem_stdLevel_iff.2 fun w ↦ ?_⟩
   have hu_int := mem_stdLevel_iff.1 (levelOf_le_stdLevel hu)
-  have h_onQ (w : FinPlace D.E) (hw : w ∈ ϑ.Q) :
-      ((x * u * x⁻¹) ^ ϑ.normQ ^ n).atPlace w ∈ localIntGL (D.Y j) w := by
-    -- `u` reduces to `1` at every place of `D.levelPlaces ϑ`, and `w` is the place `.inr ⟨w, hw⟩`.
-    have hu_near : u.atPlace w ∈ localCongruence (D.Y j) w 0 :=
-      mem_localCongruence_zero.2 ⟨hu_int w, congrFun (mem_levelOf.1 hu).2 (.inr ⟨w, hw⟩)⟩
-    have hu_pow : u.atPlace w ^ ϑ.normQ ^ n ∈ localCongruence (D.Y j) w n := by
-      simpa using pow_pow_mem_localCongruence
-        (D.normQ_mem_and_notMem_of_mem_Q ϑ (.inl hw)).1 hu_near n
-    simpa using hn w hw _ hu_pow
+  have h_onQ {w} (hw : w ∈ ϑ.Q) : ((x * u * x⁻¹) ^ ϑ.normQ ^ n).atPlace w ∈ localIntGL _ w := by
+    have := pow_pow_mem_localCongruence (D.normQ_mem_and_notMem_of_mem_Q ϑ (.inl hw)).1
+      (mem_localCongruence_zero.2 ⟨hu_int w, congrFun (mem_levelOf.1 hu).2 (.inr ⟨w, hw⟩)⟩) n
+    simpa using hn w hw (by simpa using this)
   by_cases hw : w ∈ ϑ.Q ∨ star w ∈ ϑ.Q
-  · exact hw.elim (h_onQ w) fun hw ↦ atPlace_star_mem_iff.1 (h_onQ (star w) hw)
+  · exact hw.elim h_onQ fun hw ↦ atPlace_star_mem_iff.1 (h_onQ hw)
   · simp [hx w hw, mul_mem, pow_mem (hu_int w)]
 
 /-- A cut for the `j`-th outer variable: a finite set `T` of classes of `G_j = Gf D.E (D.Y j)`

@@ -1,8 +1,12 @@
 module
 
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.RingTheory.TotallySplit
 public import Lib.GaloisRep.Main.LocalConditions
 public import Lib.General.NumberTheory.PadicLimitsValuation
 public import New.Reduction.Data.AdmissibleData
+import Lib.ClassField.Places.TameInertia
+import Lib.PadicHodge.Crystalline.HodgeTateForms
 
 /-!
 # Local loss above ℓ: main summand weights, b-places, crystalline relations and crystalline colength
@@ -475,8 +479,9 @@ end CocyclesAndSummands
 /-!
 ## Crystalline conditions above ℓ as relations on cocycles, and crystalline colength
 
-* `New.Selmer.localChart`: a chosen identification of the decomposition group at `v` with a subgroup
-  of `Gal(ℚ̄_ℓ / ℚ_ℓ)`.
+* `New.Selmer.localChart`: a chosen identification of the decomposition group at `v` with an open
+  subgroup of `Gal(ℚ̄_ℓ / ℚ_ℓ)`. It supplies actual local data for the universally quantified
+  conditions `IsGoodAt`, `IsFiniteTypeAt`, `HasJumpsAt` and `PolyKillsAt` at the chosen place.
 
 A relation is a finitely supported matrix-valued `f`, and `c` obeys it if `∑ γ, f γ • c γ = 0`.
 `New.relationsOn Z` is the set of relations that hold on `Z`, `New.obeying R B` the module of
@@ -487,19 +492,21 @@ functions with values in `Bⁿ` that obey the relations `R`, and `New.relLength 
 section CrystallineConditions
 
 variable (ℓ : ℕ) [ThePrime ℓ] {n : Type*} [Fintype n] [DecidableEq n]
-  (E : Type) [Field E] [CMFieldWithRoot5040 E] (v : placesDividing E ℓ) {O : CoeffRing ℓ}
+  (E : Type) [Field E] [EmbeddedNumberField E] (v : placesDividing E ℓ) {O : CoeffRing ℓ}
 
 /-- A chosen embedding Ω → ℚ̄_ℓ that induces the chosen place of Ω above v, together with the
 homomorphism to Gal(ℚ̄_ℓ over ℚ_ℓ) from the decomposition group of that place that goes with it in
 the sense of `New.GaloisRep.InducesPlace`. -/
-instance localChart : GaloisRep.PadicPlaceEmbedding E (placeOver v.1) ℓ :=
-  -- An embedding of `Ω` into `PadicAlgCl ℓ` induces the place, which lies above `ℓ`; it gives the
-  -- open embedding of the decomposition group. Both chosen maps are read off the type of `loc`.
+instance localChart : GaloisRep.PadicPlaceEmbedding E (placeOver v.val) ℓ :=
+  -- Membership of `v` in `placesDividing E ℓ` implies that `ℓ` has valuation less than 1
+  -- at `placeOver v.1`. First choose an embedding inducing exactly that place, then use
+  -- `exists_inducesPlace` to choose the compatible open embedding of its decomposition group.
+  -- Both chosen maps are read off the type of `loc`.
   have loc :=
     (exists_inducesPlace E _
       (exists_comap_intQpBar_eq
         (v.1.isPlaceOver_placeOver.valuation_natCast_lt_one_iff.2 v.2)).choose_spec).choose_spec
-  { isOpen_range := ⟨loc.2.1.2⟩, inducesPlace := loc, .. }
+  { isOpen_range := ⟨loc.2.1.isOpen_range⟩, inducesPlace := loc, .. }
 
 variable {ℓ E} (u : Gal(Ω/E) →* Matrix n n O)
 
@@ -531,8 +538,8 @@ abbrev crystallineColength {X σ : Type*} [Fintype σ] [DecidableEq σ]
     (w : X → Gal(Ω/E) →* Matrix σ σ O) (M : ℕ) : ℕ∞ :=
   relLength (ribetCocycles w u (ℓ ^ M)) (obeying (crysRelations u) (QuotSpan ((ℓ : ↑O) ^ M)))
 
-/-- Let `E` be a CM field in the algebraic closure `Ω` of `ℚ` with a primitive `5040`-th root of
-unity, `O` the ring of integers of a finite Galois extension of `ℚ_ℓ` in `ℚ̄_ℓ`, and `u` a matrix
+/-- Let `E` be an embedded number field, `O` the ring of integers of a finite Galois extension
+of `ℚ_ℓ` in `ℚ̄_ℓ`, and `u` a matrix
 representation of `Gal(Ω/E)` over `O`. A function `c : Gal(Ω/E) → (O/a)^n` obeys the relations
 `New.Selmer.crysRelations u` if and only if, for every place `v` of `E` above `ℓ`, its restriction
 to the decomposition group of the chosen place over `v` obeys every linear relation
@@ -609,22 +616,22 @@ lemma IsCompletionGroup.index_eq_card_range (hj : IsCompletionGroup e j) :
     ((Quotient.congr (Equiv.inv (Gp ℓ)) h_left).trans
       (quotientKerEquivRange (complexEmbeddingOf e)))
 
-/-- Let `E` be a CM field in the algebraic closure `Ω` of `ℚ` with a primitive `5040`-th root of
-unity, and `ι : ℂ ≃ ℚ̄_ℓ` the isomorphism fixed by `PadicIso ℓ`. Let `v` and `w` be places of `E`
+/-- Let `E` be an embedded number field, and `ι : ℂ ≃ ℚ̄_ℓ` the isomorphism fixed by `PadicIso ℓ`.
+Let `v` and `w` be places of `E`
 above the prime `ℓ`, and `e_v`, `e_w` the restrictions to `E` of the embeddings `Ω → ℚ̄_ℓ` of their
 charts `localChart`. If `ι⁻¹ ∘ g⁻¹ ∘ e_v = ι⁻¹ ∘ g'⁻¹ ∘ e_w` for some `g` and `g'` in
 `Gp ℓ = Gal(ℚ̄_ℓ/ℚ_ℓ)`, then `v = w`: a complex embedding determines its place above `ℓ`. -/
-lemma eq_of_complexEmbeddingOf_localChart_eq [CMFieldWithRoot5040 E] {v w : placesDividing E ℓ}
+lemma eq_of_complexEmbeddingOf_localChart_eq [EmbeddedNumberField E] {v w : placesDividing E ℓ}
     {g g' : Gp ℓ}
     (h_eq : complexEmbeddingOf ((localChart ℓ E v).e.comp (algebraMap E Ω)) g =
       complexEmbeddingOf ((localChart ℓ E w).e.comp (algebraMap E Ω)) g') :
     v = w := by
   -- the valuation ring that the chart at a place pulls back lies over that place
   have h_over (v : placesDividing E ℓ) :
-      IsPlaceOver ((intQpBar ℓ).comap (localChart ℓ E v).e) v.1 := by
-    obtain ⟨⟨h_comap : (intQpBar ℓ).comap (localChart ℓ E v).e = placeOver v.1, -⟩, -⟩ :=
+      IsPlaceOver ((intQpBar ℓ).comap (localChart ℓ E v).e) v.val := by
+    obtain ⟨⟨h_comap : (intQpBar ℓ).comap (localChart ℓ E v).e = placeOver v.val, -⟩, -⟩ :=
       (localChart ℓ E v).inducesPlace
-    simpa only [h_comap] using FinPlace.isPlaceOver_placeOver v.1
+    simpa only [h_comap] using FinPlace.isPlaceOver_placeOver v.val
   ext x
   -- `x` lies in the place exactly when its image has norm `< 1`, and `Gp ℓ` acts by isometries.
   have h_norm :
@@ -636,13 +643,13 @@ lemma eq_of_complexEmbeddingOf_localChart_eq [CMFieldWithRoot5040 E] {v w : plac
     ← UniformSpace.Completion.algEquiv_smul_coe] using h_norm
 
 open scoped Classical in
-/-- Let `E` be a CM field in the algebraic closure `Ω` of `ℚ` with a primitive `5040`-th root of
-unity, and `ι : ℂ ≃ ℚ̄_ℓ` the isomorphism fixed by `PadicIso ℓ`. For each place `v` of `E` above the
+/-- Let `E` be an embedded number field, and `ι : ℂ ≃ ℚ̄_ℓ` the isomorphism fixed by `PadicIso ℓ`.
+For each place `v` of `E` above the
 prime `ℓ`, the chart `localChart ℓ E v` has an embedding `Ω → ℚ̄_ℓ` that induces a place above `v`.
 Its restriction `e` to `E` gives the complex embeddings `complexEmbeddingOf e g = ι⁻¹ ∘ g⁻¹ ∘ e`,
 for `g` in `Gp ℓ = Gal(ℚ̄_ℓ/ℚ_ℓ)`. For distinct `v` these sets of embeddings are disjoint, so the
 sums of `a` over them add up to at most the sum of `a` over all complex embeddings of `E`. -/
-lemma sum_complexEmbeddingOf_le [CMFieldWithRoot5040 E] (a : (E →+* ℂ) → ℕ) :
+lemma sum_complexEmbeddingOf_le [EmbeddedNumberField E] (a : (E →+* ℂ) → ℕ) :
     ∑ v : placesDividing E ℓ,
         ∑ σ : E →+* ℂ with
           ∃ g : Gp ℓ, complexEmbeddingOf ((localChart ℓ E v).e.comp (algebraMap E Ω)) g = σ,

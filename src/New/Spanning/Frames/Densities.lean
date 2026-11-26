@@ -1,7 +1,13 @@
 module
 
+import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Bessel.Basic
 public import New.Spanning.Frames.Depth
+import New.Spanning.Frames.QuadricPlancherel
+import New.Spanning.Frames.TwoGauges
 
 /-!
 # The densities as integrals over pairs of frames

@@ -1,7 +1,12 @@
 module
 
-public import New.Spanning.Frames.FiniteDepth
+import Mathlib.Topology.Sheaves.Presheaf
 public import New.Spanning.Frames.Shells
+public import New.Spanning.Frames.BesselVector
+public import New.Spanning.Unfolding.BesselLevelStructure
+import New.Spanning.Frames.FiniteDepth
+import New.Spanning.Frames.Gains
+import New.Spanning.Frames.QuadricPlancherel
 
 /-!
 # Shells, decay and mass at the finite places
@@ -166,22 +171,15 @@ theorem exists_gauge_idealShell_subset {F : PlaceData ι T (m + 1)} [h : IsLarge
     (Γ : Gauge F) {J : Ideal P.integers} (hJ : J.cardQuot ≠ 0) :
     ∃ Γ' : Gauge F, F.idealShell J ⊆ Γ'.positionsOfSize ∧ Γ'.loss ≤ Γ.loss * J.cardQuot ^ 2 := by
   obtain h_empty | ⟨x₀, hx₀⟩ := (F.idealShell J).eq_empty_or_nonempty
-  · have one_le : (1 : ℝ≥0∞) ≤ J.cardQuot := by exact_mod_cast hJ.pos
-    exact ⟨Γ, h_empty.le.trans (Set.empty_subset _), le_mul_of_one_le_right' (one_le_pow₀ one_le)⟩
+  · exact ⟨Γ, by simp [h_empty], le_mul_of_one_le_right' (one_le_pow₀ (by exact_mod_cast hJ.pos))⟩
   -- In the gauge of scale `star c * c` the matrices `(x - 1) / F.levelUnit` have size 1, and its
   -- `loss` is `2 / modulus c ^ 2 = 2 [R : J] ^ 2`.
-  obtain ⟨c, hc, h_card, hJ_eq⟩ :
-      ∃ c : Aˣ, c.val ∈ integers ∧ J.cardQuot = (P.modulus c)⁻¹ ∧
-        integers.subtype '' J = {ε : A | c⁻¹.val * ε ∈ integers} :=
-    exists_generator_of_mem_idealShell hx₀
+  obtain ⟨c, hc, h_card, hJ_eq⟩ := exists_generator_of_mem_idealShell hx₀
   have hc_star : star c.val ∈ integers := isAdelic.toIsStarStable.star_mem hc
   refine ⟨h.gauge (star c * c) (mul_mem hc_star hc),
     fun x ⟨hx_pos, hx_den⟩ ↦ ⟨hx_pos, fun i k ↦ ?_⟩, ?_⟩
-  · have hc_gen : c.val ∈ {ε : A | c⁻¹.val * ε ∈ integers} := by simp
-    obtain ⟨-, h_den⟩ : c.val ∈ integers ∧
-        ∀ i k : 𝔰.BesselIndex, c.val * (F.levelUnit⁻¹.val • (x.val.val - 1)) i k ∈ integers :=
-      (hx_den.trans hJ_eq).superset hc_gen
-    simpa [mul_assoc] using mul_mem hc_star (h_den i k)
+  · simpa [mul_assoc] using
+      mul_mem hc_star (((hx_den.trans hJ_eq).superset (by simp : c.val ∈ _)).2 i k)
   · grw [h_card, ← Γ.two_le_loss]
     simp [div_eq_mul_inv, sq, ENNReal.mul_inv]
 

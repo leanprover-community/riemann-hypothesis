@@ -1,8 +1,9 @@
 module
 
-public import Lib.General.Algebra.ResidueSums
-public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+public import Mathlib.LinearAlgebra.Lagrange
 public import New.Appendix.DiscreteSeries.Positions
+import Lib.General.Algebra.ResidueSums
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # The stationary position
@@ -163,6 +164,15 @@ lemma alternatingSignForm_polyVec_X_pow_mul (h : AreOppositeNodes μ μ') (F : �
     rw [← mul_assoc, eval_mul, mul_div_mul_right _ _ (h.eval_nodal_ne_zero i), mul_comm F]
   simp_rw [h.alternatingSignForm_polyVec, h_quotient]
 
+private lemma alternatingSignForm_monic (h : AreOppositeNodes μ μ') {F : ℝ[X]} (hF : F.Monic)
+    (a : ℕ) (hdeg : a + F.natDegree < L) :
+    alternatingSignForm (polyVec μ μ' F) (polyVec μ μ' (X ^ a * nodal univ μ')) =
+      if a + F.natDegree + 1 = L then (-1) ^ L' else 0 := by
+  rw [h.alternatingSignForm_polyVec_X_pow_mul,
+    sum_eval_div_eval_derivative_nodal h.strictAnti.injective ((monic_X_pow _).mul hF)]
+  · simp [(monic_X_pow _).natDegree_mul hF, mul_ite]
+  · simpa [(monic_X_pow _).natDegree_mul hF] using hdeg
+
 /-- Let the `L` decreasing roots `μ i` of `p = nodal univ μ` lie below the `L'` increasing roots
 `μ' j` of `q = nodal univ μ'`, where `L = L' + 2 d + 1`. Here `polyVec μ μ' F` is the vector with
 the entries `F (μ i) |p' (μ i) q (μ i)| ^ (-1 / 2)`, and `alternatingSignForm x y` is the
@@ -173,16 +183,11 @@ lemma alternatingSignForm_polyVec_X_pow_mul_X_pow_mul (h : AreOppositeNodes μ �
     alternatingSignForm (polyVec μ μ' (X ^ a * nodal univ μ'))
       (polyVec μ μ' (X ^ b * nodal univ μ')) =
       if a + b = 2 * d then (-1) ^ L' else 0 := by
-  have h_degree : (X ^ (b + a) * nodal univ μ').natDegree = b + a + L' := by
+  have h_degree : (X ^ a * nodal univ μ').natDegree = a + L' := by
     simp [(monic_X_pow _).natDegree_mul nodal_monic]
-  have h_lt : (X ^ (b + a) * nodal univ μ').natDegree < Fintype.card (Fin L) := by
-    rw [h_degree, Fintype.card_fin]
-    lia
-  have h_top : b + a + L' + 1 = L ↔ a + b = 2 * d := by lia
-  rw [h.alternatingSignForm_polyVec_X_pow_mul, ← mul_assoc, ← pow_add,
-    sum_eval_div_eval_derivative_nodal h.strictAnti.injective ((monic_X_pow _).mul nodal_monic)
-      h_lt, h_degree]
-  simp [h_top]
+  rw [alternatingSignForm_monic h ((monic_X_pow _).mul nodal_monic) b (by rw [h_degree]; lia),
+    h_degree]
+  simp only [show b + (a + L') + 1 = L ↔ a + b = 2 * d by lia]
 
 /-- Let the `L` decreasing roots `μ i` of `p = nodal univ μ` lie below the `L'` increasing roots
 `μ' j` of `q = nodal univ μ'`, where `L = L' + 2 d + 1`, and let `q_j = q / (t - μ' j)`. Here
@@ -195,17 +200,9 @@ lemma alternatingSignForm_polyVec_erase_X_pow_mul (h : AreOppositeNodes μ μ')
     alternatingSignForm (polyVec μ μ' (nodal (univ.erase j) μ'))
       (polyVec μ μ' (X ^ a * nodal univ μ')) =
       0 := by
-  have hL' : 0 < L' := j.pos
-  have h_degree : (X ^ a * nodal (univ.erase j) μ').natDegree = a + (L' - 1) := by
-    simp [(monic_X_pow _).natDegree_mul nodal_monic]
-  have h_lt : (X ^ a * nodal (univ.erase j) μ').natDegree < Fintype.card (Fin L) := by
-    rw [h_degree, Fintype.card_fin]
-    lia
-  have h_not_top : a + (L' - 1) + 1 ≠ L := by lia
-  rw [h.alternatingSignForm_polyVec_X_pow_mul,
-    sum_eval_div_eval_derivative_nodal h.strictAnti.injective ((monic_X_pow _).mul nodal_monic)
-      h_lt, h_degree]
-  simp [h_not_top]
+  have h_degree : (nodal (univ.erase j) μ').natDegree = L' - 1 := by simp
+  have hj := j.pos
+  rw [alternatingSignForm_monic h nodal_monic a (by rw [h_degree]; lia), h_degree, ite_eq_right (by lia)]
 
 /-- Let the `L` decreasing roots `μ i` of `p = nodal univ μ` lie below the `L'` increasing roots
 `μ' j` of `q = nodal univ μ'`, where `L = L' + 2 d + 1`, and let `q_j = q / (t - μ' j)`. Here

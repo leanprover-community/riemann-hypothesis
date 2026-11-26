@@ -1,8 +1,16 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.NumberTheory.Padics.Complex.Basic
+import TauCeti.RingTheory.PowerSeries.Dvd
+import TauCeti.RingTheory.PowerSeries.Rescale
 public import Lib.General.Algebra.SeriesCongruences
-public import New.Derivatives.FormalGroup.FrobeniusCongruence
-public import TauCeti.RingTheory.PowerSeries.Dvd
+public import Lib.CM.FormalGroup.FormalParameter
+import Lib.General.Algebra.SeriesBounds
+import New.Derivatives.FormalGroup.FrobeniusCongruence
 
 /-!
 # The exponent on one curve
@@ -98,7 +106,7 @@ lemma exists_seriesToCp_eq_and_C_dvd_sub {p : ℕ} [Fact p.Prime] {π : valRingC
     mem_range_seriesToCp.2 fun n ↦ (h n).trans π.property
   refine ⟨D + G, by rw [map_add, hD, sub_add_cancel], ?_⟩
   rw [add_sub_cancel_right]
-  refine (C_dvd_iff_dvd_coeff _ _).2 fun n ↦ dvd_iff_norm_le.2 ?_
+  refine (C_dvd_iff_dvd_coeff _ _).2 fun n ↦ valRingCp.dvd_iff_norm_le.2 ?_
   rw [← coeff_seriesToCp, hD]
   exact h n
 
@@ -178,9 +186,8 @@ lemma norm_piPrime_pow_div_le (hp : chiK d p ≠ 1) {n : ℕ} (hn : 2 < n) :
       ‖ιₚ (piPrime d p)‖ ^ (k + 1) := by
     rcases ramified_or_inert hp with ⟨hd, hq⟩ | ⟨hpd_ne, -, hq⟩
     · -- Here `π_p ^ 2 = -p`.
-      simp [hq, pow_add, piPrime_sq_of_ramified hd]
-      rw [mul_right_comm, inv_mul_cancel₀ (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero),
-        one_mul]
+      simp [hq, pow_add, piPrime_sq_of_ramified hd, mul_right_comm _ _ (p : ℝ),
+        (Fact.out : p.Prime).ne_zero]
     · simp [hq, piPrime, hpd_ne, pow_add, hp0]
   rw [h_eq]
   exact pow_le_of_le_one (norm_nonneg _) (norm_piPrime_lt_one d).le k.succ_ne_zero
@@ -260,94 +267,6 @@ lemma exists_rescale_theta_eq_mul_expSubst {ϖ : ℂ_[p]} (hϖ0 : ϖ ≠ 0)
 
 /-! ## Step 2: the functional equation -/
 
-/-- Let `T = C.formalParam` be the formal parameter, the part in the degrees `≡ 1` mod `q_p - 1` of
-the Taylor series of `C.translatedY`, so that `C.integralSeriesRing = 𝒪[[T]]`. Let `i < q_p - 1`.
-For `H ∈ 𝒪[[T]]` the part of `H` in the degrees `≡ i` mod `q_p - 1` has the form
-`l T ^ i + T ^ (i + q_p - 1) H'` with `l ∈ 𝒪` and `H' ∈ 𝒪[[T]]`. -/
-lemma exists_congruencePart_eq_smul_formalParam_pow_add {i : ℕ} (hi : i < primeNorm d p - 1)
-    {H : ℂ_[p]⟦X⟧} (hH : H ∈ C.integralSeriesRing) :
-    ∃ l : valRingCp p, ∃ H' ∈ C.integralSeriesRing,
-      congruencePart (primeNorm d p - 1) i H =
-        (l : ℂ_[p]) • C.formalParam ^ i + C.formalParam ^ (i + (primeNorm d p - 1)) * H' := by
-  have h_subst : HasSubst (C.formalParam : ℂ_[p]⟦X⟧) :=
-    .of_constantCoeff_zero' C.constantCoeff_formalParam
-  obtain ⟨G, rfl⟩ := C.mem_integralSeriesRing_iff_exists_subst_formalParam.1 hH
-  -- Split the series `G` in `X` and then substitute `X = T`.
-  obtain ⟨l, G', hG⟩ := exists_congruencePart_eq_smul_X_pow_add hi G
-  refine ⟨l, subst C.formalParam (seriesToCp G'),
-    C.mem_integralSeriesRing_iff_exists_subst_formalParam.2 ⟨G', rfl⟩, ?_⟩
-  rw [congruencePart_subst_formalParam, hG, subst_add h_subst, subst_smul h_subst,
-    subst_mul h_subst, subst_pow h_subst, subst_pow h_subst, subst_X h_subst]
-
-/-- The Frobenius congruence for `g^♭ = C.negLogThetaPart`, the part of `g = -log θ` in the degrees
-`≡ p + 1` mod `q_p - 1`. Let `d ≡ 7` mod `8` be a prime and `p` a prime that does not split in
-`ℚ(√-d)`. The numbers `π_p = piPrime d p`, `q_p = primeNorm d p`, `i₀ = leastFlatDegree d p` are
-`√-d`, `p`, `2` if `p = d`, and `p`, `p²`, `p + 1` if `p` is inert. The formal parameter
-`T = C.formalParam` is the part in the degrees `≡ 1` mod `q_p - 1` of the Taylor series of the
-coordinate function `y = C.translatedY`. Then `q_p g^♭(z) - g^♭(ιₚ π_p z) = ιₚ π_p (l T ^ i₀ + T ^
-(i₀ + q_p - 1) H)` for some `l ∈ 𝒪` and `H ∈ 𝒪[[T]]`. -/
-lemma exists_smul_negLogThetaPart_sub_rescale_eq (hp : chiK d p ≠ 1) :
-    ∃ l : valRingCp p, ∃ H ∈ C.integralSeriesRing,
-      (primeNorm d p : ℂ_[p]) • C.negLogThetaPart - rescale (ιₚ (piPrime d p)) C.negLogThetaPart =
-        ιₚ (piPrime d p) • ((l : ℂ_[p]) • C.formalParam ^ leastFlatDegree d p +
-          C.formalParam ^ (leastFlatDegree d p + (primeNorm d p - 1)) * H) := by
-  obtain ⟨G, hG, h_frob⟩ : ∃ G ∈ C.integralSeriesRing,
-      (primeNorm d p : ℂ_[p]) • C.negLogTheta - rescale (ιₚ (piPrime d p)) C.negLogTheta =
-        ιₚ (piPrime d p) • G :=
-    C.exists_negLogTheta_frobenius_congruence hp
-  obtain ⟨l, H, hH, h_part⟩ :=
-    C.exists_congruencePart_eq_smul_formalParam_pow_add (leastFlatDegree_lt hp) hG
-  refine ⟨l, H, hH, ?_⟩
-  have h_mod (n : ℕ) :
-      n ≡ p + 1 [MOD primeNorm d p - 1] ↔ n ≡ leastFlatDegree d p [MOD primeNorm d p - 1] :=
-    ⟨(·.trans (add_one_modEq_leastFlatDegree hp)),
-      (·.trans (add_one_modEq_leastFlatDegree hp).symm)⟩
-  rw [← h_part]
-  ext n
-  have h_coeff : primeNorm d p * coeff n C.negLogTheta -
-      ιₚ (piPrime d p) ^ n * coeff n C.negLogTheta = ιₚ (piPrime d p) * coeff n G := by
-    simpa only [map_sub, coeff_smul, coeff_rescale, smul_eq_mul] using congrArg (coeff n) h_frob
-  simp only [negLogThetaPart, congruencePart, map_sub, coeff_smul, coeff_rescale, coeff_mk,
-    smul_eq_mul, mul_ite, mul_zero, h_mod]
-  split_ifs
-  · exact h_coeff
-  · exact sub_zero _
-
-/-- The Frobenius congruence for `f(z) = g^♭(ϖ z)`. Let `p` be a prime that does not split in
-`ℚ(√-d)`. The numbers `π_p = piPrime d p`, `q_p = primeNorm d p`, `i₀ = leastFlatDegree d p`,
-`ρ_p = varpiValuation d p` are `√-d`, `p`, `2`, `1 / (2 p - 2)` if `p = d`, and `p`, `p²`, `p + 1`,
-`1 / (p² - 1)` if `p` is inert. If `‖ϖ‖ ≤ p ^ (-ρ_p)` and `T(ϖ z) = ϖ Y` with `Y ∈ 𝒪[[z]]`, then
-`q_p f(z) - f(π_p z) = π_p ϖ ^ i₀ (λ' Y ^ i₀ + ϖ ^ (q_p - 1) R)` for some `λ' ∈ 𝒪` and
-`R ∈ 𝒪[[z]]`. -/
-lemma exists_smul_rescale_negLogThetaPart_sub_rescale_eq {ϖ : ℂ_[p]} {Y : (valRingCp p)⟦X⟧}
-    (hp : chiK d p ≠ 1) (hϖ : ‖ϖ‖ ≤ p ^ (-varpiValuation d p))
-    (hY : rescale ϖ C.formalParam = ϖ • seriesToCp Y) :
-    ∃ (l : valRingCp p) (R : (valRingCp p)⟦X⟧),
-      (primeNorm d p : ℂ_[p]) • rescale ϖ C.negLogThetaPart -
-          rescale (ιₚ (piPrime d p)) (rescale ϖ C.negLogThetaPart) =
-        (ιₚ (piPrime d p) * ϖ ^ leastFlatDegree d p) •
-          ((l : ℂ_[p]) • seriesToCp (Y ^ leastFlatDegree d p) +
-            ϖ ^ (primeNorm d p - 1) • seriesToCp R) := by
-  set π : ℂ_[p] := ιₚ (piPrime d p)
-  set q : ℕ := primeNorm d p
-  set i : ℕ := leastFlatDegree d p
-  obtain ⟨l, H, hH, h_frob⟩ : ∃ l : valRingCp p, ∃ H ∈ C.integralSeriesRing,
-      (q : ℂ_[p]) • C.negLogThetaPart - rescale π C.negLogThetaPart =
-        π • ((l : ℂ_[p]) • C.formalParam ^ i + C.formalParam ^ (i + (q - 1)) * H) :=
-    C.exists_smul_negLogThetaPart_sub_rescale_eq hp
-  obtain ⟨V, hV⟩ : ∃ V : (valRingCp p)⟦X⟧, seriesToCp V = rescale ϖ H :=
-    C.rescale_mem_range_seriesToCp hϖ hH
-  refine ⟨l, Y ^ (i + (q - 1)) * V, ?_⟩
-  calc
-    _ = rescale ϖ ((q : ℂ_[p]) • C.negLogThetaPart - rescale π C.negLogThetaPart) := by
-      rw [map_sub, rescale_smul, rescale_rescale, rescale_rescale, mul_comm]
-    _ = π • ((l : ℂ_[p]) • (ϖ • seriesToCp Y) ^ i +
-          (ϖ • seriesToCp Y) ^ (i + (q - 1)) * seriesToCp V) := by
-      simp only [h_frob, map_mul, map_add, map_pow, rescale_smul, hY, hV]
-    _ = _ := by
-      simp only [map_mul, map_pow, smul_pow, smul_mul_assoc]
-      module
-
 /-- The functional equation, modulo `π_p`, for the exponent `Ξ₁`. Let `p` be a prime that does not
 split in `ℚ(√-d)`. The numbers `π_p = piPrime d p`, `q_p = primeNorm d p`,
 `i₀ = leastFlatDegree d p`, `ρ_p = varpiValuation d p` are `√-d`, `p`, `2`, `1 / (2 p - 2)` if
@@ -360,18 +279,55 @@ lemma exists_functional_equation_exponentSeries {ϖ : ℂ_[p]} {Y : (valRingCp p
     ∃ l : valRingCp p, ∀ n : ℕ,
       ‖(1 - ιₚ (piPrime d p) ^ n / primeNorm d p) * coeff n (C.exponentSeries ϖ) -
         (l * coeff n (Y ^ leastFlatDegree d p)).val‖ ≤ ‖ιₚ (piPrime d p)‖ := by
-  -- Divide the Frobenius congruence for `g^♭(ϖ z)` by `-q c_ϖ`. On the right a unit `u` appears,
-  -- and the second term has the factor `ϖ ^ (q - 1)`, of norm `‖π‖`.
+  -- Combine the Frobenius congruence for `g` with `G ∈ 𝒪[[T]]`, take the `(q - 1)`-congruence
+  -- part, rescale by `ϖ`, and divide by `-q c_ϖ`. On the right a unit `u` appears, and the
+  -- remainder has the factor `ϖ ^ (q - 1)` of norm `‖π‖`.
   set π : ℂ_[p] := ιₚ (piPrime d p)
   set q : ℕ := primeNorm d p
   set i : ℕ := leastFlatDegree d p
   have hq0 : (q : ℂ_[p]) ≠ 0 := Nat.cast_ne_zero.2 (one_lt_primeNorm d p).ne_bot
   have hϖ0 : ϖ ≠ 0 := ne_zero_of_norm_eq_rpow hϖ
   have hϖπ : ‖ϖ‖ ^ (q - 1) = ‖π‖ := by rw [hϖ, norm_piPrime_eq_rpow_pow]
-  obtain ⟨l, R, h_scaled⟩ : ∃ (l : valRingCp p) (R : (valRingCp p)⟦X⟧),
-      (q : ℂ_[p]) • rescale ϖ C.negLogThetaPart - rescale π (rescale ϖ C.negLogThetaPart) =
-        (π * ϖ ^ i) • ((l : ℂ_[p]) • seriesToCp (Y ^ i) + ϖ ^ (q - 1) • seriesToCp R) :=
-    C.exists_smul_rescale_negLogThetaPart_sub_rescale_eq hp hϖ.le hY
+  obtain ⟨G, hG, h_frob⟩ := C.exists_negLogTheta_frobenius_congruence hp
+  obtain ⟨G₀, rfl⟩ := C.mem_integralSeriesRing_iff_exists_subst_formalParam.1 hG
+  obtain ⟨l, G', hG₀⟩ := exists_congruencePart_eq_smul_X_pow_add (leastFlatDegree_lt hp) G₀
+  obtain ⟨V, hV⟩ := C.rescale_mem_range_seriesToCp hϖ.le
+    (C.mem_integralSeriesRing_iff_exists_subst_formalParam.2 ⟨G', rfl⟩)
+  have h_subst : HasSubst (C.formalParam : ℂ_[p]⟦X⟧) :=
+    .of_constantCoeff_zero' C.constantCoeff_formalParam
+  have h_part : (q : ℂ_[p]) • C.negLogThetaPart - rescale π C.negLogThetaPart =
+      π • ((l : ℂ_[p]) • C.formalParam ^ i +
+        C.formalParam ^ (i + (q - 1)) * subst C.formalParam (seriesToCp G')) := by
+    have h_mod (n : ℕ) : n ≡ p + 1 [MOD primeNorm d p - 1] ↔ n ≡ i [MOD q - 1] :=
+      ⟨(·.trans (add_one_modEq_leastFlatDegree hp)),
+        (·.trans (add_one_modEq_leastFlatDegree hp).symm)⟩
+    have h_rhs : congruencePart (q - 1) i (subst C.formalParam (seriesToCp G₀)) =
+        (l : ℂ_[p]) • C.formalParam ^ i +
+          C.formalParam ^ (i + (q - 1)) * subst C.formalParam (seriesToCp G') := by
+      rw [congruencePart_subst_formalParam, hG₀, subst_add h_subst, subst_smul h_subst,
+        subst_mul h_subst, subst_pow h_subst, subst_pow h_subst, subst_X h_subst]
+    rw [← h_rhs]
+    ext n
+    have h_c : q * coeff n C.negLogTheta - π ^ n * coeff n C.negLogTheta =
+        π * coeff n (subst C.formalParam (seriesToCp G₀)) := by
+      simpa only [map_sub, coeff_smul, coeff_rescale, smul_eq_mul] using congrArg (coeff n) h_frob
+    simp only [negLogThetaPart, congruencePart, map_sub, coeff_smul, coeff_rescale, coeff_mk,
+      smul_eq_mul, mul_ite, mul_zero, h_mod]
+    split_ifs
+    · exact h_c
+    · exact sub_zero _
+  set R : (valRingCp p)⟦X⟧ := Y ^ (i + (q - 1)) * V
+  have h_scaled : (q : ℂ_[p]) • rescale ϖ C.negLogThetaPart -
+      rescale π (rescale ϖ C.negLogThetaPart) =
+      (π * ϖ ^ i) • ((l : ℂ_[p]) • seriesToCp (Y ^ i) + ϖ ^ (q - 1) • seriesToCp R) := calc
+    _ = rescale ϖ ((q : ℂ_[p]) • C.negLogThetaPart - rescale π C.negLogThetaPart) := by
+      rw [map_sub, rescale_smul, rescale_rescale, rescale_rescale, mul_comm]
+    _ = π • ((l : ℂ_[p]) • (ϖ • seriesToCp Y) ^ i +
+          (ϖ • seriesToCp Y) ^ (i + (q - 1)) * seriesToCp V) := by
+      simp only [h_part, map_mul, map_add, map_pow, rescale_smul, hY, hV]
+    _ = _ := by
+      simp only [R, map_mul, map_pow, smul_pow, smul_mul_assoc]
+      module
   let u : ℂ_[p] := -(π * ϖ ^ i / (q * (ϖ ^ (p + 1) / p)))
   have hu : ‖u‖ = 1 := (norm_neg _).trans (norm_piPrime_mul_pow_leastFlatDegree_div hp hϖ0 hϖπ)
   refine ⟨⟨u, hu.le⟩ * l, fun n ↦ ?_⟩
@@ -419,31 +375,6 @@ lemma norm_coeff_exponentSeries_sub_le {ϖ : ℂ_[p]} (hp : chiK d p ≠ 1) {n :
   · exact norm_sub_le_of_norm_one_sub_mul_sub_le (norm_piPrime_lt_one d)
       (norm_piPrime_pow_div_le hp hn) a.property h_eq
 
-/-- Let `p` be inert in `ℚ(√-d)`, that is, `chiK d p = (p / d) = -1`, so that `π_p = piPrimeInt d`
-is `p`, `q_p = primeNorm d p` is `p²` and `ρ_p = varpiValuation d p` is `1 / (p² - 1)`. If
-`‖ϖ‖ = p ^ (-ρ_p)` and `T(ϖ z) = ϖ Y` with `Y ∈ 𝒪[[z]]`, then `Ξ₁` comes from a series `Ξ ∈ 𝒪[[z]]`
-by the inclusion `seriesToCp`, and `Ξ ≡ λ Y ^ (p + 1)` modulo `π_p` for some `λ ∈ 𝒪`. -/
-lemma exists_seriesToCp_eq_exponentSeries_of_inert {ϖ : ℂ_[p]} {Y : (valRingCp p)⟦X⟧}
-    (h_inert : chiK d p = -1) (hϖ : ‖ϖ‖ = p ^ (-varpiValuation d p))
-    (hY : rescale ϖ C.formalParam = ϖ • seriesToCp Y) :
-    ∃ (Ξ : (valRingCp p)⟦X⟧) (l : valRingCp p),
-      seriesToCp Ξ = C.exponentSeries ϖ ∧
-      PowerSeries.C (piPrimeInt d) ∣ Ξ - l • Y ^ (p + 1) := by
-  have hp : chiK d p ≠ 1 := by simp [h_inert]
-  have hpd_ne : p ≠ d := fun hd ↦ by simp [chiK_eq_zero_of_ramified hd] at h_inert
-  have hp_two_le : 2 ≤ p := (Fact.out : p.Prime).two_le
-  have h_degree : leastFlatDegree d p = p + 1 := ite_eq_right hpd_ne
-  obtain ⟨l, hl⟩ : ∃ l : valRingCp p, ∀ n : ℕ,
-      ‖(1 - ιₚ (piPrime d p) ^ n / primeNorm d p) * coeff n (C.exponentSeries ϖ) -
-        (l * coeff n (Y ^ leastFlatDegree d p)).val‖ ≤ ‖ιₚ (piPrime d p)‖ :=
-    C.exists_functional_equation_exponentSeries hp hϖ hY
-  have h_coeff (n : ℕ) : ‖coeff n (C.exponentSeries ϖ) - (coeff n (l • Y ^ (p + 1))).val‖ ≤
-      ‖ιₚ (piPrime d p)‖ :=
-    C.norm_coeff_exponentSeries_sub_le hp (by omega)
-      (by simpa only [h_degree, coeff_smul, smul_eq_mul] using hl n)
-  obtain ⟨Ξ, hΞ, h_dvd⟩ := exists_seriesToCp_eq_and_C_dvd_sub (π := piPrimeInt d) h_coeff
-  exact ⟨Ξ, l, hΞ, h_dvd⟩
-
 /-- Let `p = d`, so that `π_p = piPrimeInt d` is `√-d`, `q_p = primeNorm d p` is `p` and
 `ρ_p = varpiValuation d p` is `1 / (2 p - 2)`. Let `‖ϖ‖ = p ^ (-ρ_p)` and `T(ϖ z) = ϖ Y` with
 `Y ∈ 𝒪[[z]]` and `[z ^ 2] Y ^ 2 ≡ 1` modulo `π_p`, and let `half` be the inverse of `2` in `𝒪`. Then
@@ -480,7 +411,8 @@ lemma exists_seriesToCp_eq_exponentSeries_of_ramified {ϖ : ℂ_[p]} {Y : (valRi
         one_add_one_eq_two]
     have h_double : ‖2 * x - (l * c).val‖ ≤ ‖ιₚ (piPrime d p)‖ := by
       simpa only [h_factor] using hl 2
-    have h_one : ‖(l * (1 - c)).val‖ ≤ ‖ιₚ (piPrime d p)‖ := dvd_iff_norm_le.1 (hY_two.mul_left l)
+    have h_one : ‖(l * (1 - c)).val‖ ≤ ‖ιₚ (piPrime d p)‖ :=
+      valRingCp.dvd_iff_norm_le.1 (hY_two.mul_left l)
     have h_eq : x - (l * (c - half)).val =
         half.val * ((2 * x - (l * c).val) + (l * (1 - c)).val) := by
       have h_coe : 2 * half.val = 1 := congrArg Subtype.val h_half
@@ -636,11 +568,16 @@ lemma CMLattice.exists_eq_exponentSeries_dvd_sub_tsum_of_inert {ϖ : ℂ_[p]} {Y
       PowerSeries.C (piPrimeInt d) ∣
         Ξ - ∑' x : {e : ℕ | Odd e} × ℕ, l • (X ^ p ^ (x.1 : ℕ) * X) ^ p ^ x.2 ∧
       IsUnit l := by
-  have hp_ne_two : p ≠ 2 := ne_two_of_chiK_ne_one (d := d) (by simp [h_inert])
-  obtain ⟨Ξ, l, hΞ, hΞ_congr⟩ : ∃ (Ξ : (valRingCp p)⟦X⟧) (l : valRingCp p),
-      seriesToCp Ξ = C.exponentSeries ϖ ∧
-      PowerSeries.C (piPrimeInt d) ∣ Ξ - l • Y ^ (p + 1) :=
-    C.exists_seriesToCp_eq_exponentSeries_of_inert h_inert hϖ hTY
+  have hp : chiK d p ≠ 1 := by simp [h_inert]
+  have hp_ne_two : p ≠ 2 := ne_two_of_chiK_ne_one hp
+  have hpd_ne : p ≠ d := fun hd ↦ by simp [chiK_eq_zero_of_ramified hd] at h_inert
+  have hp_two_le : 2 ≤ p := (Fact.out : p.Prime).two_le
+  have h_degree : leastFlatDegree d p = p + 1 := ite_eq_right hpd_ne
+  obtain ⟨l, hl⟩ := C.exists_functional_equation_exponentSeries hp hϖ hTY
+  obtain ⟨Ξ, hΞ, hΞ_congr⟩ :=
+    exists_seriesToCp_eq_and_C_dvd_sub (π := piPrimeInt d) (G := l • Y ^ (p + 1)) fun n ↦
+      C.norm_coeff_exponentSeries_sub_le hp (by omega)
+        (by simpa only [h_degree, coeff_smul, smul_eq_mul] using hl n)
   set P : (valRingCp p)⟦X⟧ := primePowerSeries (valRingCp p) p {i : ℕ | Odd i} *
     primePowerSeries (valRingCp p) p {i : ℕ | Even i}
   have hY_pow_congr : PowerSeries.C (piPrimeInt d) ∣ Y ^ (p + 1) - P :=
@@ -715,9 +652,7 @@ theorem CMLattice.exists_exponent_tsum (hp : chiK d p ≠ 1) :
       (chiK d p = -1 → ∀ e : ℕ, Odd e → IsUnit (l e 0)) := by
   -- Scale by `ϖ` so that `Y = T(ϖ z) / ϖ` is integral, and split `exp (c_ϖ Ξ₁)` off `θ(ϖ z)`.
   obtain ⟨ϖ, Y, hϖ, hTY, -, hY⟩ := C.exists_scaled_formalParam (p := p)
-  obtain ⟨W, hW⟩ : ∃ W : (valRingCp p)⟦X⟧, rescale ϖ (taylorVia ιₚ C.θ) =
-      seriesToCp W * expSubst ((ϖ ^ (p + 1) / p) • C.exponentSeries ϖ) :=
-    C.exists_rescale_theta_eq_mul_expSubst (ne_zero_of_norm_eq_rpow hϖ) hϖ.le
+  obtain ⟨W, hW⟩ := C.exists_rescale_theta_eq_mul_expSubst (ne_zero_of_norm_eq_rpow hϖ) hϖ.le
   have h_zero {Ξ : (valRingCp p)⟦X⟧} (hΞ : seriesToCp Ξ = C.exponentSeries ϖ) :
       constantCoeff Ξ = 0 := by
     rw [← coeff_zero_eq_constantCoeff_apply, ← ZeroMemClass.coe_eq_zero, ← coeff_seriesToCp, hΞ,
@@ -731,22 +666,13 @@ theorem CMLattice.exists_exponent_tsum (hp : chiK d p ≠ 1) :
     have h_two : IsUnit ((2 : ℕ) : valRingCp p) :=
       isUnit_integer_iff_norm_eq_one.2 (h_coprime.norm_natCast_eq_one ℂ_[p])
     obtain ⟨half, h_half⟩ : ∃ half : valRingCp p, 2 * half = 1 := h_two.exists_right_inv
-    obtain ⟨Ξ, l, hΞ, h_dvd⟩ : ∃ (Ξ : (valRingCp p)⟦X⟧) (l : valRingCp p),
-        seriesToCp Ξ = C.exponentSeries ϖ ∧
-        PowerSeries.C (piPrimeInt d) ∣ Ξ - ∑' x : ↥(Set.univ : Set ℕ) × ℕ,
-          (if (x.1 : ℕ) = 0 then if x.2 = 0 then l * half else l else 2 * l) •
-            (X ^ p ^ (x.1 : ℕ) * X) ^ p ^ x.2 :=
-      C.exists_exponentSeries_tsum_of_ramified hd hϖ hTY hY h_half
+    obtain ⟨Ξ, l, hΞ, h_dvd⟩ := C.exists_exponentSeries_tsum_of_ramified hd hϖ hTY hY h_half
     let coef (e j : ℕ) : valRingCp p := if e = 0 then if j = 0 then l * half else l else 2 * l
     rw [← hΞ] at hW
     refine ⟨ϖ, Ξ, W, coef, hϖ, h_zero hΞ, hW, ?_, fun h_inert ↦ absurd h_inert h_not_inert⟩
     rwa [h_all]
   · -- Take `λ_{e j} = λ`.
-    obtain ⟨Ξ, l, hΞ, h_dvd, h_unit⟩ : ∃ (Ξ : (valRingCp p)⟦X⟧) (l : valRingCp p),
-        seriesToCp Ξ = C.exponentSeries ϖ ∧
-        PowerSeries.C (piPrimeInt d) ∣
-          Ξ - ∑' x : {e : ℕ | Odd e} × ℕ, l • (X ^ p ^ (x.1 : ℕ) * X) ^ p ^ x.2 ∧
-        IsUnit l :=
+    obtain ⟨Ξ, l, hΞ, h_dvd, h_unit⟩ :=
       C.exists_eq_exponentSeries_dvd_sub_tsum_of_inert h_inert hϖ hTY hY
     rw [← hΞ] at hW
     refine ⟨ϖ, Ξ, W, fun _ _ ↦ l, hϖ, h_zero hΞ, hW, ?_, fun _ _ _ ↦ h_unit⟩

@@ -201,15 +201,6 @@ lemma map_augmentationIdeal_le_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : 
       tieIdeal u p τ φ ε ρ₀ :=
   le_sup_right.trans (le_sup_left.trans le_sup_left)
 
-/-- The tie `τ k - 1 - X j * (ε j)(φ k) * (φ k - 1)` of index `k = (j, b)` lies in the tie
-ideal. -/
-lemma tie_mem_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
-    (k : J × Bool) :
-    MonoidAlgebra.single (τ k) 1 - 1 - (MvPolynomial.X k.1 : MvPolynomial J O) •
-      (aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ k)) (ε k.1) *
-        (MonoidAlgebra.single (φ k) 1 - 1)) ∈ tieIdeal u p τ φ ε ρ₀ :=
-  mem_sup_left (mem_sup_right (subset_span ⟨k, rfl⟩))
-
 /-- For `r` in the augmentation ideal, `r ρ₀` lies in the tie ideal. -/
 lemma mul_mem_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
     {r : (MvPolynomial J O)[G]} (hr : r ∈ augmentationIdeal (O := O) (G := G) J) :
@@ -229,14 +220,14 @@ lemma mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {p : O} {τ φ : J 
 
 /-- The row `c₁ z γ + (1 - e) z a` with `e = c₁ (γ - 1)`. If the `z g` are coordinates of the
 `u · g - 1`, its element is `e + (1 - e) (a - 1)` up to elements that every `u x` kills
-(`polyAction_rowValue_normaliserRow`). -/
-noncomputable def normaliserRow {ι : Type} (z : G → ι → O) (γ a : G) (c₁ : O) :
+(`polyAction_rowValue_normalizerRow`). -/
+noncomputable def normalizerRow {ι : Type} (z : G → ι → O) (γ a : G) (c₁ : O) :
     ι → (MvPolynomial J O)[G] :=
   c₁ • coordRows J ι (z γ) +
     (1 - c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1)) • coordRows J ι (z a)
 
 /-- The element `ρ₀ = e + (1 - e) (a - 1)` that Ribet's method uses, with `e = c₁ (γ - 1)`. -/
-noncomputable def tiedNormaliser (J : Type) (γ a : G) (c₁ : O) : (MvPolynomial J O)[G] :=
+noncomputable def tiedNormalizer (J : Type) (γ a : G) (c₁ : O) : (MvPolynomial J O)[G] :=
   c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1) +
     (1 - c₁ • (MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1)) *
       (MonoidAlgebra.single a (1 : MvPolynomial J O) - 1)
@@ -377,38 +368,38 @@ lemma coordRows_tau_sub_mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {
     simp only [map_sub, LinearMap.map_smul_of_tower, map_smul, smul_eq_mul, mul_sub, smul_sub]
     abel
   rw [mem_tiedRows, h_val]
-  refine add_mem (tie_mem_tieIdeal u i) (ker_le_tieIdeal u ?_)
+  refine add_mem (mem_sup_left (mem_sup_right (subset_span ⟨i, rfl⟩))) (ker_le_tieIdeal u ?_)
   exact sub_mem (h_ker (τ i))
     (Submodule.smul_of_tower_mem _ _ (Ideal.mul_mem_left _ c (h_ker (φ i))))
 
-/-- If the `z g` are coordinates of the `u · g - 1`, then the element of the row `normaliserRow`
-acts under every `u x` as `ρ₀ = e + (1 - e) (a - 1)`, `e = c₁ (γ - 1)` (`tiedNormaliser`). -/
-lemma polyAction_rowValue_normaliserRow {ι : Type} [Fintype ι] {gen : ι → G} {z : G → ι → O}
+/-- If the `z g` are coordinates of the `u · g - 1`, then the element of the row `normalizerRow`
+acts under every `u x` as `ρ₀ = e + (1 - e) (a - 1)`, `e = c₁ (γ - 1)` (`tiedNormalizer`). -/
+lemma polyAction_rowValue_normalizerRow {ι : Type} [Fintype ι] {gen : ι → G} {z : G → ι → O}
     (hz : AreCoordinates u gen z) (γ a : G) (c₁ : O) (x : Y) :
-    polyAction J (u x) (rowValue J gen (normaliserRow z γ a c₁)) =
-      polyAction J (u x) (tiedNormaliser J γ a c₁) := by
-  simp [normaliserRow, tiedNormaliser, polyAction_rowValue_coordRows_of_areCoordinates u hz,
+    polyAction J (u x) (rowValue J gen (normalizerRow z γ a c₁)) =
+      polyAction J (u x) (tiedNormalizer J γ a c₁) := by
+  simp [normalizerRow, tiedNormalizer, polyAction_rowValue_coordRows_of_areCoordinates u hz,
     AlgHom.map_smul_of_tower]
 
 /-- The multiples of `ρ₀`. Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`,
 with `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`). Put
-`ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormaliser`) in `O[X j][G]`, the variables
-`X j` being indexed by `J`, and let `c₁ z γ + (1 - n) z a` be its row (`normaliserRow`). Then
+`ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormalizer`) in `O[X j][G]`, the variables
+`X j` being indexed by `J`, and let `c₁ z γ + (1 - n) z a` be its row (`normalizerRow`). Then
 `g - 1` times this row is tied. -/
-lemma sub_one_smul_normaliserRow_mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {z : G → ι → O}
+lemma sub_one_smul_normalizerRow_mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {z : G → ι → O}
     (hz : AreCoordinates u gen z) (γ a : G) (c₁ : O) (g : G) :
-    (MonoidAlgebra.single g (1 : MvPolynomial J O) - 1) • normaliserRow z γ a c₁ ∈
-      tiedRows u gen p τ φ ε (tiedNormaliser J γ a c₁) := by
+    (MonoidAlgebra.single g (1 : MvPolynomial J O) - 1) • normalizerRow z γ a c₁ ∈
+      tiedRows u gen p τ φ ε (tiedNormalizer J γ a c₁) := by
   -- The row value is `(g - 1) ρ₀` plus `g - 1` times an element that every `u x` kills.
   set g₁ : (MvPolynomial J O)[G] := MonoidAlgebra.single g 1 - 1 with hg₁
-  have h_diff : rowValue J gen (g₁ • normaliserRow z γ a c₁) = g₁ * tiedNormaliser J γ a c₁ +
-      g₁ * (rowValue J gen (normaliserRow z γ a c₁) - tiedNormaliser J γ a c₁) := by
+  have h_diff : rowValue J gen (g₁ • normalizerRow z γ a c₁) = g₁ * tiedNormalizer J γ a c₁ +
+      g₁ * (rowValue J gen (normalizerRow z γ a c₁) - tiedNormalizer J γ a c₁) := by
     rw [map_smul, smul_eq_mul, mul_sub, add_sub_cancel]
   have h_aug : g₁ ∈ augmentationIdeal (O := O) (G := G) J := by
     simp [hg₁, RingHom.mem_ker, polyChar_single]
-  have h_ker : rowValue J gen (normaliserRow z γ a c₁) - tiedNormaliser J γ a c₁ ∈
+  have h_ker : rowValue J gen (normalizerRow z γ a c₁) - tiedNormalizer J γ a c₁ ∈
       ⨅ x : Y, RingHom.ker (polyAction J (u x)) := by
-    simp [RingHom.mem_ker, polyAction_rowValue_normaliserRow u hz]
+    simp [RingHom.mem_ker, polyAction_rowValue_normalizerRow u hz]
   rw [mem_tiedRows, h_diff]
   exact add_mem (mul_mem_tieIdeal u h_aug) (ker_le_tieIdeal u (Ideal.mul_mem_left _ g₁ h_ker))
 
@@ -505,27 +496,27 @@ variable {p : O} {τ φ : J × Bool → G} {ε : J → O[X]}
 /-- Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`, with
 `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`). Let `γ` act through
 `ρ` as the scalar `y`, with `c₁ (y - 1) = 1`, and put `ρ₀ = n + (1 - n) (a - 1)` with
-`n = c₁ (γ - 1)` (`tiedNormaliser`). Through `ρ` at `X j = 0` (`polyActionAtZero`), the row of `z γ`
+`n = c₁ (γ - 1)` (`tiedNormalizer`). Through `ρ` at `X j = 0` (`polyActionAtZero`), the row of `z γ`
 has the same image as a tied row. -/
 lemma exists_mem_tiedRows_polyActionAtZero_eq {r ι : Type} [Fintype r] [DecidableEq r]
     [Fintype ι] (ρ : G →* Matrix r r O) {γ : G} {y : O} (hργ : ρ γ = y • 1) {c₁ : O}
     (hc₁ : c₁ * (y - 1) = 1) (a : G) {gen : ι → G} {z : G → ι → O}
     (hz : AreCoordinates u gen z) :
-    ∃ t ∈ tiedRows u gen p τ φ ε (tiedNormaliser J γ a c₁), ∀ j : ι,
+    ∃ t ∈ tiedRows u gen p τ φ ε (tiedNormalizer J γ a c₁), ∀ j : ι,
       polyActionAtZero J ρ (t j) = polyActionAtZero J ρ (coordRows J ι (z γ) j) := by
   have h_one (A : Matrix r r O) : c₁ • (y • A - A) = A :=
     calc c₁ • (y • A - A) = (c₁ * (y - 1)) • A := by rw [mul_smul, sub_smul, one_smul]
       _ = A := by rw [hc₁, one_smul]
-  refine ⟨(MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1) • normaliserRow z γ a c₁,
-    sub_one_smul_normaliserRow_mem_tiedRows u hz γ a c₁ γ, fun j ↦ ?_⟩
-  simp [normaliserRow, polyActionAtZero_single, hργ, h_one, mul_add, sub_mul, map_smul, sub_smul]
+  refine ⟨(MonoidAlgebra.single γ (1 : MvPolynomial J O) - 1) • normalizerRow z γ a c₁,
+    sub_one_smul_normalizerRow_mem_tiedRows u hz γ a c₁ γ, fun j ↦ ?_⟩
+  simp [normalizerRow, polyActionAtZero_single, hργ, h_one, mul_add, sub_mul, map_smul]
 
 /-- Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`, with
 `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`). Let the matrices
 `ρ g` span, and let `γ` act through `ρ` as the scalar `y` with `c₁ (y - 1) = 1`. Let `b₀` bound the
 length of the module of cocycles of `ρ` with values in `K/O` (`K` the fraction field) that obey the
 linear relations among the families `(u x g - 1)_x` and vanish at the `τ k` and at `γ`. Then some
-square matrix of tied rows, for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormaliser`),
+square matrix of tied rows, for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormalizer`),
 has through `ρ` at `X j = 0` a determinant of valuation at most `b₀`. -/
 lemma exists_tiedRows_addVal_det_le [DVR O] {r ι : Type} [Fintype r] [DecidableEq r]
     [Fintype ι] [DecidableEq ι] (ρ : G →* Matrix r r O) (hρ_span : span O (Set.range ρ) = ⊤)
@@ -534,10 +525,10 @@ lemma exists_tiedRows_addVal_det_le [DVR O] {r ι : Type} [Fintype r] [Decidable
     (hz : AreCoordinates u gen z) {b₀ : ℕ}
     (hb₀ : length O (ribetCocyclesVanishingOn u ρ (DivisibleQuot O) (Set.range τ) γ) ≤ b₀) :
     ∃ B₀ : Matrix ι ι (MvPolynomial J O)[G],
-      (∀ i : ι, B₀ i ∈ tiedRows u gen p τ φ ε (tiedNormaliser J γ a c₁)) ∧
+      (∀ i : ι, B₀ i ∈ tiedRows u gen p τ φ ε (tiedNormalizer J γ a c₁)) ∧
       addVal O (Matrix.comp ι ι r r O (B₀.map (polyActionAtZero J ρ))).det ≤ b₀ := by
   -- At `X j = 0` the tie of index `k` is the row of `z (τ k)`.
-  have h_τ (k : J × Bool) : ∃ t ∈ tiedRows u gen p τ φ ε (tiedNormaliser J γ a c₁), ∀ j : ι,
+  have h_τ (k : J × Bool) : ∃ t ∈ tiedRows u gen p τ φ ε (tiedNormalizer J γ a c₁), ∀ j : ι,
       polyActionAtZero J ρ (t j) = polyActionAtZero J ρ (coordRows J ι (z (τ k)) j) := by
     refine ⟨coordRows J ι (z (τ k)) - (MvPolynomial.X k.1 : MvPolynomial J O) •
         aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ k)) (ε k.1) • coordRows J ι (z (φ k)),
@@ -545,7 +536,7 @@ lemma exists_tiedRows_addVal_det_le [DVR O] {r ι : Type} [Fintype r] [Decidable
     rw [Pi.sub_apply, map_sub, Pi.smul_apply, polyActionAtZero_X_smul, sub_zero]
   exact exists_block_rows u ρ hρ_span (polyActionAtZero J ρ) (MonoidAlgebra.of (MvPolynomial J O) G)
     (polyActionAtZero_single ρ) (coordRows J ι) (polyActionAtZero_coordRows ρ) gen z
-    (tiedRows u gen p τ φ ε (tiedNormaliser J γ a c₁)) τ γ hb₀
+    (tiedRows u gen p τ φ ε (tiedNormalizer J γ a c₁)) τ γ hb₀
     (coordRows_cocycle_mem_tiedRows u hz) (coordRows_gen_sub_single_mem_tiedRows u hz)
       (coordRows_linearCombination_mem_tiedRows u hz) h_τ
     (exists_mem_tiedRows_polyActionAtZero_eq u ρ hργ hc₁ a hz)
@@ -556,7 +547,7 @@ lemma exists_tiedRows_addVal_det_le [DVR O] {r ι : Type} [Fintype r] [Decidable
 `gen` be the `δ w` and the `gen' i`, with `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and
 `x` (`AreCoordinates`), and let the character `ξ` be trivial at `γ`. Read rows on `ξ` with the
 `δ`-coordinates forgotten (`evalRowAtChar`), apply a linear map `A`, and let `K` contain the image
-of the tied rows for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormaliser`). Then for
+of the tied rows for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormalizer`). Then for
 every linear form `Ψ` with values in `O / p` on coordinate vectors that kills the vectors sent into
 `K`, the function `Ψ ∘ z` is a cocycle for `ξ` in the sense of `IsCharacterCocycle`: it obeys the
 linear relations among the families `(u x g - 1)_x`, vanishes at the `δ w`, and if it vanishes at
@@ -567,7 +558,7 @@ lemma isCharacterCocycle_of_tiedRows {ξ : G →* O}
     {γ a : G} (hξγ : ξ γ = 1) (c₁ : O) {r' : Type}
     (A : (ι' → MvPolynomial J O) →ₗ[MvPolynomial J O] r' → MvPolynomial J O)
     {K : Submodule (MvPolynomial J O) (r' → MvPolynomial J O)}
-    (hK : ((tiedRows u (δ ⊕ᵥ gen') p τ φ ε (tiedNormaliser J γ a c₁)).restrictScalars
+    (hK : ((tiedRows u (δ ⊕ᵥ gen') p τ φ ε (tiedNormalizer J γ a c₁)).restrictScalars
       (MvPolynomial J O)).map (A ∘ₗ evalRowAtChar J ξ W ι') ≤ K) :
     ∀ c ∈ formsMod ((A ∘ₗ evalRowAtChar J ξ W ι').restrictScalars O ∘ₗ coordRows J (W ⊕ ι')) z K p,
       IsCharacterCocycle u ξ δ γ a c := by
@@ -576,7 +567,7 @@ lemma isCharacterCocycle_of_tiedRows {ξ : G →* O}
     (A ∘ₗ evalRowAtChar J ξ W ι').restrictScalars O ∘ₗ coordRows J (W ⊕ ι')
   -- A tied row that `ξ` reads as `m` off the `δ`-coordinates puts `Φ m` into `K`.
   have h_row (m : W ⊕ ι' → O) {w : W ⊕ ι' → (MvPolynomial J O)[G]}
-      (hw : w ∈ tiedRows u (δ ⊕ᵥ gen') p τ φ ε (tiedNormaliser J γ a c₁))
+      (hw : w ∈ tiedRows u (δ ⊕ᵥ gen') p τ φ ε (tiedNormalizer J γ a c₁))
       (h_read : ∀ i : ι', polyChar J ξ (w (inr i)) = MvPolynomial.C (m (inr i))) :
       Φ m ∈ K := by
     have h_eq : evalRowAtChar J ξ W ι' w = evalRowAtChar J ξ W ι' (coordRows J (W ⊕ ι') m) := by
@@ -593,10 +584,10 @@ lemma isCharacterCocycle_of_tiedRows {ξ : G →* O}
       Φ (linearCombination O z θ) ∈ K :=
     h_row _ (coordRows_linearCombination_mem_tiedRows u hz θ hθ) fun i ↦
       polyChar_coordRows ξ _ (inr i)
-  -- On `ξ`, the row `(g - 1) normaliserRow` is `(ξ g - 1) (c₁ z γ + z a)`, as `ξ γ = 1`.
+  -- On `ξ`, the row `(g - 1) normalizerRow` is `(ξ g - 1) (c₁ z γ + z a)`, as `ξ γ = 1`.
   have h_fix (g : G) : Φ ((ξ g - 1) • (c₁ • z γ + z a)) ∈ K := by
-    refine h_row _ (sub_one_smul_normaliserRow_mem_tiedRows u hz γ a c₁ g) fun i ↦ ?_
-    simp [normaliserRow, polyChar_coordRows, polyChar_single, hξγ, AlgHom.map_smul_of_tower,
+    refine h_row _ (sub_one_smul_normalizerRow_mem_tiedRows u hz γ a c₁ g) fun i ↦ ?_
+    simp [normalizerRow, polyChar_coordRows, polyChar_single, hξγ, AlgHom.map_smul_of_tower,
       MvPolynomial.smul_eq_C_mul]
   exact isCharacterCocycle_of_mem_formsMod u Φ z K ξ δ a γ c₁ h_cocycle h_δ h_rel h_fix
 
@@ -605,7 +596,7 @@ lemma isCharacterCocycle_of_tiedRows {ξ : G →* O}
 `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`), and let `ε k.1` have
 the value `1` modulo `p` at `ξ e (φ k)`. Then the row of `z (τ k) - X k.1 · z (φ k)`, read on `ξ e`
 with the `δ`-coordinates forgotten (`evalRowAtChar`) and then mapped by `A`, is the image of a tied
-row for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormaliser`). -/
+row for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormalizer`). -/
 lemma tie_mem_map_tiedRows {t : ℕ} {ξ : Fin t → G →* O} [Fintype W] {δ : W → G}
     {ι' : Type} [Fintype ι'] {gen' : ι' → G} {z : G → W ⊕ ι' → O}
     (hz : AreCoordinates u (δ ⊕ᵥ gen') z)
@@ -615,7 +606,7 @@ lemma tie_mem_map_tiedRows {t : ℕ} {ξ : Fin t → G →* O} [Fintype W] {δ :
     A (fun l : ι' ↦ polyChar J (ξ e) (coordRows J (W ⊕ ι') (z (τ k)) (inr l))) -
         (MvPolynomial.X k.1 : MvPolynomial J O) •
           A (fun l : ι' ↦ polyChar J (ξ e) (coordRows J (W ⊕ ι') (z (φ k)) (inr l))) ∈
-      ((tiedRows u (δ ⊕ᵥ gen') p τ φ ε (tiedNormaliser J γ a c₁)).restrictScalars
+      ((tiedRows u (δ ⊕ᵥ gen') p τ φ ε (tiedNormalizer J γ a c₁)).restrictScalars
         (MvPolynomial J O)).map (A ∘ₗ evalRowAtChar J (ξ e) W ι') := by
   -- On `ξ e` the factor is `1 + p c`; the row `p X c z (φ k)` is tied and corrects the tie.
   obtain ⟨c, hc⟩ : ∃ c : O, (ε k.1).eval (ξ e (φ k)) - 1 = p * c := hε
@@ -637,7 +628,7 @@ members of `s₀` and of `s` (`ribetGenerators`), with `u x g - 1 = ∑ z g i (u
 `g` and `x` (`AreCoordinates`), and let the characters be trivial on `γ`. Suppose that `p ≠ 0`, that
 `ε j` is `1` modulo `p` at `ξ e (φ (j, b))`, and that every module `Z` of character cocycles for
 `ξ e` satisfies `HasTriangleCost` along the `j` of type `ty j = e`. Read the tied rows for
-`ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormaliser`) on `ξ e` (`evalRowAtChar`), and
+`ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormalizer`) on `ξ e` (`evalRowAtChar`), and
 subtract from the `s`-part of each row the `s`-parts of any given rows `ν i`, weighted by the
 `s₀`-coordinates of the row. Then some `Γ`, whose constant term has valuation at most
 `b e + (#{ty j = e} + #s) v(C)`, has `Γ ∏ X j` (over `ty j = e`) in the Fitting ideal of the image,
@@ -662,7 +653,7 @@ lemma exists_mem_fittingIdeal_character [DVR O] [Fintype J] [LinearOrder J] [Dec
     ∃ Γ : MvPolynomial J O,
       addVal O (constantCoeff Γ) ≤ b e + (#{j : J | ty j = e} + #s) * addVal O C ∧
       Γ * ∏ j : J with ty j = e, MvPolynomial.X j ∈ fittingIdeal
-        (((tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormaliser J γ a c₁)).restrictScalars
+        (((tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)).restrictScalars
           (MvPolynomial J O)).map
           (vecMulLinear
             (fromRows (-of fun (i : s₀) (j : s) ↦ polyChar J (ξ e) (ν i (inr (inr j))))
@@ -675,7 +666,7 @@ lemma exists_mem_fittingIdeal_character [DVR O] [Fintype J] [LinearOrder J] [Dec
     vecMulLinear (fromRows (-of fun i j ↦ η (ν i (inr (inr j)))) (1 : Matrix s s Λ))
   let F : (W ⊕ s₀ ⊕ s → Λ[G]) →ₗ[Λ] s → Λ := A ∘ₗ evalRowAtChar J (ξ e) W (s₀ ⊕ s)
   let K : Submodule Λ (s → Λ) :=
-    ((tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormaliser J γ a c₁)).restrictScalars Λ).map
+    ((tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)).restrictScalars Λ).map
       F ⊔
       (nonDivisorIdeal O J).colon {∏ j with ty j < e, MvPolynomial.X j} • ⊤
   let Φ : (W ⊕ s₀ ⊕ s → O) →ₗ[O] s → Λ := F.restrictScalars O ∘ₗ v
@@ -756,7 +747,7 @@ structure CharacterRows [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G] {t :
   correction : Fin t → MvPolynomial J O
   /-- The rows of the `M i` are tied. -/
   tied : ∀ (i : ∀ e : Fin t, Fin (count e)) (j : W ⊕ s₀ ⊕ s),
-    tiedMatrix i j ∈ tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormaliser J γ a c₁)
+    tiedMatrix i j ∈ tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)
   /-- On `ξ e`, `M i` has determinant `c₀ det (B e (i e))`. -/
   det_map : ∀ (i : ∀ e : Fin t, Fin (count e)) (e : Fin t),
     ((tiedMatrix i).map (polyChar J (ξ e))).det =
@@ -778,7 +769,7 @@ structure CharacterRows [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G] {t :
 `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`). Suppose that
 `p ≠ 0`, that the characters `ξ e` are trivial on `γ`, and that in every module of character
 cocycles for a `ξ e` a member that vanishes on `s` is zero (`IsDetectedBy`). Then there are tied
-rows `ν i`, for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormaliser`), whose `s₀`-part
+rows `ν i`, for `ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormalizer`), whose `s₀`-part
 is the unit vector `i` on every character. -/
 lemma exists_unit_rows_mem_tiedRows [DVR O] [DecidableEq G] {t : ℕ} {ξ : Fin t → G →* O}
     [Fintype W] [DecidableEq W] {δ : W → G} {s₀ s : Finset G} {z : G → W ⊕ s₀ ⊕ s → O}
@@ -787,10 +778,10 @@ lemma exists_unit_rows_mem_tiedRows [DVR O] [DecidableEq G] {t : ℕ} {ξ : Fin 
     (h_detect : ∀ (e : Fin t) (Z : Submodule O (G → Unit → QuotSpan p)),
       (∀ c ∈ Z, IsCharacterCocycle u (ξ e) δ γ a c) → IsDetectedBy Z s) :
     ∃ ν : s₀ → W ⊕ s₀ ⊕ s → (MvPolynomial J O)[G],
-      (∀ i : s₀, ν i ∈ tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormaliser J γ a c₁)) ∧
+      (∀ i : s₀, ν i ∈ tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)) ∧
       ∀ (e : Fin t) (i j : s₀), polyChar J (ξ e) (ν i (inr (inl j))) = if j = i then 1 else 0 := by
   let N : Submodule (MvPolynomial J O)[G] (W ⊕ s₀ ⊕ s → (MvPolynomial J O)[G]) :=
-    tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormaliser J γ a c₁)
+    tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)
   -- The forms modulo `p` that kill the image of `N` give cocycles, so `s` detects them.
   have h_one (e : Fin t) (i : s₀) :
       ∃ w ∈ N, ∀ j : s₀, polyChar J (ξ e) (w (inr (inl j))) = if j = i then 1 else 0 := by
@@ -842,7 +833,7 @@ lemma exists_sum_mul_det_of_mem_fittingIdeal_evalRowAtChar {S₀ S' : Type} [Fin
 /-- Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`, let `gen` list the
 `δ v` and the members of `s₀` and of `s` (`ribetGenerators`), with
 `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`), and put
-`ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormaliser`). The characters `ξ e` are
+`ρ₀ = n + (1 - n) (a - 1)` with `n = c₁ (γ - 1)` (`tiedNormalizer`). The characters `ξ e` are
 trivial on `γ` and on the `δ v`; `o v * (X - 1)` kills the `u x (δ v)`; `p ≠ 0` and `ε j` is `1`
 modulo `p` at the `ξ e (φ (j, b))`; `q e` is `C` on `ξ e` and `0` on the other characters. Every
 module `Z` of character cocycles for `ξ e` satisfies `HasTriangleCost` along the `j` of type
@@ -878,7 +869,7 @@ lemma nonempty_characterRows [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G]
   let Λ : Type := MvPolynomial J O
   let η (e : Fin t) : Λ[G] →ₐ[Λ] Λ := polyChar J (ξ e)
   let N : Submodule Λ[G] (W ⊕ s₀ ⊕ s → Λ[G]) :=
-    tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormaliser J γ a c₁)
+    tiedRows u (ribetGenerators δ s₀ s) p τ φ ε (tiedNormalizer J γ a c₁)
   obtain ⟨ν, hν, hν_eq⟩ : ∃ ν : s₀ → W ⊕ s₀ ⊕ s → Λ[G], (∀ i : s₀, ν i ∈ N) ∧
       ∀ (e : Fin t) (i j : s₀), η e (ν i (inr (inl j))) = if j = i then 1 else 0 :=
     exists_unit_rows_mem_tiedRows u hz hξγ c₁ hp h_detect
@@ -897,14 +888,8 @@ lemma nonempty_characterRows [DVR O] [Fintype J] [LinearOrder J] [DecidableEq G]
       ∃ d ∈ fittingIdeal (K e), ∃ ζ ∈ 𝔮 e, d + ζ = Γ e * ∏ j with ty j = e, .X j :=
     mem_sup.1 (fittingIdeal.sup_smul_top_le (hΓ e))
   choose d hd ζ hζ hdζ using h_split
-  have h_expand (e : Fin t) : ∃ (l : ℕ) (w : Fin l → Λ) (B : Fin l → Matrix s s Λ)
-      (B' : Fin l → s → W ⊕ s₀ ⊕ s → Λ[G]),
-      (∀ (i : Fin l) (j : s), B' i j ∈ N) ∧
-      (∀ (i : Fin l) (j : s) (k : s₀), η e (B' i j (inr (inl k))) = 0) ∧
-      (∀ (i : Fin l) (j : s), (fun k : s ↦ η e (B' i j (inr (inr k)))) = B i j) ∧
-      ∑ i : Fin l, w i * (B i).det = d e :=
+  choose l w B B' hB' hB'_zero hB'_eq hw using fun e : Fin t ↦
     exists_sum_mul_det_of_mem_fittingIdeal_evalRowAtChar (ξ e) hν (hν_eq e) (hd e)
-  choose l w B B' hB' hB'_zero hB'_eq hw using h_expand
   -- Choose one `B e (i e)` for each `e`. Without the coordinates of the `δ v`, the rows `ν j` and
   -- `B' e (i e) j` meet the hypotheses of `exists_rows_det_eq_pow_mul_det`.
   let forget : (W ⊕ s₀ ⊕ s → Λ[G]) →ₗ[Λ[G]] s₀ ⊕ s → Λ[G] := LinearMap.funLeft _ _ inr

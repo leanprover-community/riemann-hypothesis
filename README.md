@@ -68,6 +68,10 @@ About 300,000 lines of code; 433,000 non-blank lines with comments; 477,000 line
 - `GUIDE.md`: start here. It gives the reading order, a glossary, sizes and conventions. `CONTENTS.md`: every file with its title. `INDEX.md`: the results, with sources or related work and files.
 - `REFERENCES.md` lists the citations and says which were compared with their sources.
 
+## Acknowledgements
+
+Thanks to the Lean FRO and BAIF for providing resources to run CI here; others have contributed too, if you'd like acknowledgement here let @kim-em know.
+
 ## License
 
 The proof belongs to its author Levent Alpöge with Claude and was originally published without a license. The repo https://github.com/lsernau/grh-lean uses Apache 2.0, and so does this repo; see [`LICENSE`](LICENSE), [`NOTICE`](NOTICE) and [`ATTRIBUTION.md`](ATTRIBUTION.md).

@@ -1,6 +1,11 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Frames.BesselVector
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Scaled orbital integrals of the finite Bessel vector on the floor group
@@ -107,7 +112,7 @@ lemma eventually_forall_apply_add_smul_eq {A n : Type} [SemilocalField A]
 constant along `Q` at the points of `C`. Then for some unit `u` one has `φ x = φ y` whenever
 `x ∈ Q`, `y ∈ C ∩ Q` and `x - y` lies in `u • L`. -/
 lemma exists_unit_forall_apply_eq_of_inv_smul_sub_mem {A n : Type} [SemilocalField A] [StarRing A]
-    [P : IntegralPlace A] [Fintype n] {Q C L : Set (n → A)} (hC : IsCompact C) (hL : IsCompact L)
+    [P : IntegralPlace A] {Q C L : Set (n → A)} (hC : IsCompact C) (hL : IsCompact L)
     {φ : (n → A) → ℂ} (h_loc : ∀ e ∈ C, ∀ᶠ x : n → A in nhds e, x ∈ Q → φ x = φ e) :
     ∃ u : Aˣ, ∀ x ∈ Q, ∀ y ∈ C ∩ Q, u⁻¹ • (x - y) ∈ L → φ x = φ y := by
   -- Units are dense, since almost every element is a unit.
@@ -238,16 +243,11 @@ lemma exists_ne_zero_of_besselOrbitalIntegral_ne_zero {G I : Type*} [Group G] [M
 lemma IntegralPlace.modulus_eq_of_inv_mul_mem_units {A : Type} [SemilocalField A] [StarRing A]
     [P : IntegralPlace A] {a b : Aˣ} (hab : a⁻¹ * b ∈ (O : Subring A).units) :
     P.modulus b = P.modulus a := by
-  obtain ⟨h_int, h_inv_int⟩ : (a⁻¹ * b).val ∈ O ∧ (a⁻¹ * b)⁻¹.val ∈ O :=
-    (Submonoid.mem_units_iff _ _).1 hab
-  have h_inv_le : (P.modulus (a⁻¹ * b : Aˣ))⁻¹ ≤ 1 :=
-    (P.modulus_inv (a⁻¹ * b)).symm.trans_le (modulus_le_one _ h_inv_int)
+  obtain ⟨h_int, h_inv_int⟩ := (Submonoid.mem_units_iff _ _).1 hab
   have h_one : P.modulus (a⁻¹ * b : Aˣ) = 1 :=
-    (modulus_le_one _ h_int).antisymm (ENNReal.inv_le_one.1 h_inv_le)
-  calc P.modulus b
-    _ = P.modulus a * P.modulus (a⁻¹ * b : Aˣ) := by
-      rw [← map_mul, ← Units.val_mul, mul_inv_cancel_left]
-    _ = P.modulus a := by rw [h_one, mul_one]
+    (modulus_le_one _ h_int).antisymm <| ENNReal.inv_le_one.1 <|
+      (P.modulus_inv (a⁻¹ * b)).symm.trans_le (modulus_le_one _ h_inv_int)
+  rw [← mul_one (P.modulus a), ← h_one, ← map_mul, ← Units.val_mul, mul_inv_cancel_left]
 
 section Correlation
 
@@ -278,18 +278,12 @@ in `besselH`, the fixer of the hyperbolic pairs and the last frame vector. -/
 lemma PlaceData.besselVector_mul_left {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGroup)
     {k : T.G} (hk : k ∈ besselH ⊓ F.congruenceSubgroup) (x : T.G) :
     Z.besselVector (k * x) = Z.besselVector x := by
-  obtain ⟨hk_fix, hk_cong⟩ : k ∈ besselH ∧ k ∈ F.congruenceSubgroup := Subgroup.mem_inf.1 hk
-  have h_phase (y : T.G) : P.extendedBesselChar F.levelUnit (k * y) = P.extendedBesselChar
-    F.levelUnit y := by
-    -- `k` lies in the coset `1 * F.congruenceSubgroup`, and the character of `1` is trivial.
-    have h_mul : P.extendedBesselChar F.levelUnit (k * y) =
-        P.ψ (F.levelUnit⁻¹.val * simpleRootSum (1 : T.G)) * P.extendedBesselChar F.levelUnit y :=
-      P.extendedBesselChar_besselS_mul (mem_partialUnitriangularGroup_of_mem_floorGroup hk_fix)
-        (one_mem besselU)
-        (by simpa using hk_cong)
-    simpa [simpleRootSum_eq_zero_of_mem_besselH (one_mem T.besselH)] using h_mul
   ext c
-  rw [besselVector_apply, besselVector_apply, mul_assoc, h_phase]
+  -- `k` lies in the coset `1 * F.congruenceSubgroup`, and the character of `1` is trivial.
+  rw [besselVector_apply, besselVector_apply, mul_assoc,
+    P.extendedBesselChar_besselS_mul (mem_partialUnitriangularGroup_of_mem_floorGroup hk.1)
+      (one_mem besselU) (by simpa using hk.2)]
+  simp [simpleRootSum_eq_zero_of_mem_besselH (one_mem T.besselH)]
 
 /-- The finite Bessel vector of `Z`, whose coordinates are translates of the Bessel function
 `P.extendedBesselChar F.levelUnit`, is right invariant under the congruence group
@@ -298,14 +292,9 @@ lemma PlaceData.besselVector_mul_right (x : T.G) {k : T.G} (hk : k ∈ F.congrue
     Z.besselVector (x * k) = Z.besselVector x := by
   ext c
   rw [besselVector_apply, besselVector_apply]
-  set z : T.G := (c.out : T.G)
-  have hZ : (Z : Subgroup T.G) ≤ unitaryLevel P.integers 1 T.splitGram :=
-    (Set.mem_Icc.1 Z.property).2
-  have h_conj : z * k * z⁻¹ ∈ F.congruenceSubgroup := conj_mem_unitaryLevel (hZ c.out.property) hk
-  calc P.extendedBesselChar F.levelUnit (x * k * z⁻¹)
-    _ = P.extendedBesselChar F.levelUnit (x * z⁻¹ * (z * k * z⁻¹)) := by simp [mul_assoc]
-    _ = P.extendedBesselChar F.levelUnit (x * z⁻¹) :=
-      P.extendedBesselChar_mul_of_mem_unitaryLevel h_conj
+  refine Eq.trans ?_ (P.extendedBesselChar_mul_of_mem_unitaryLevel
+    (conj_mem_unitaryLevel ((Set.mem_Icc.1 Z.property).2 c.out.property) hk))
+  simp [mul_assoc]
 
 /-- The finite Bessel vector of `Z` is a continuous function on the unitary group `T.G`. -/
 @[fun_prop] lemma PlaceData.continuous_besselVector : Continuous Z.besselVector := by
@@ -364,27 +353,17 @@ lemma exists_gauge_isHead {F : PlaceData ι T (m + 1)} (p q : ℕ → Aˣ) [h : 
       ∀ᶠ r : ℕ → Aˣ in nhds q, Γ.IsHead 𝔰.ϱ r := by
   -- Take the gauge of scale `star α * α` for a unit `α` close to `0`: as `O` is open, this scale
   -- absorbs the finitely many inverse products, locally uniformly in the head.
-  -- `Bounded a r` says that these products have size `1` for the scale `star a * a`.
   let Bounded (a : A) (r : ℕ → Aˣ) : Prop :=
     ∀ i ≤ 𝔰.ϱ, (star a * a) ^ 1 * (∏ l ∈ range i, r l)⁻¹.val ∈ O
-  have near (r₀ : ℕ → Aˣ) : ∀ᶠ a : A in nhds 0, ∀ᶠ r : ℕ → Aˣ in nhds r₀, Bounded a r := by
-    refine Eventually.curry_nhds (p := fun z : A × (ℕ → Aˣ) ↦ Bounded z.1 z.2) ?_
-    refine (finite_le_nat 𝔰.ϱ).eventually_all.2 fun i _ ↦ ?_
-    have h_cont : Continuous fun z : A × (ℕ → Aˣ) ↦
-        (star z.1 * z.1) ^ 1 * (∏ l ∈ range i, z.2 l)⁻¹.val := by fun_prop
-    -- At `a = 0` the value is `0`, which lies in the open set `O`.
-    exact h_cont.continuousAt.eventually_mem (isOpen_O.mem_nhds (by simp))
+  have near (r₀ : ℕ → Aˣ) : ∀ᶠ a : A in nhds 0, ∀ᶠ r : ℕ → Aˣ in nhds r₀, Bounded a r :=
+    Eventually.curry_nhds (p := fun z : A × (ℕ → Aˣ) ↦ Bounded z.1 z.2) <|
+      (finite_le_nat 𝔰.ϱ).eventually_all.2 fun i _ ↦
+        ContinuousAt.eventually_mem (by fun_prop) (isOpen_O.mem_nhds (by simp))
   -- Units are dense, since almost every element is a unit.
-  obtain ⟨_, ⟨α, rfl⟩, hp, hq⟩ : ∃ a : A, IsUnit a ∧
-      (∀ᶠ r : ℕ → Aˣ in nhds p, Bounded a r) ∧ ∀ᶠ r : ℕ → Aˣ in nhds q, Bounded a r :=
+  obtain ⟨_, ⟨α, rfl⟩, hp, hq⟩ :=
     (dense_of_ae P.ae_isUnit).inter_nhds_nonempty ((near p).and (near q))
-  have hp_zero : (star α.val * α.val) ^ 1 * (∏ l ∈ range 0, p l)⁻¹.val ∈ O :=
-    hp.self_of_nhds 0 (Nat.zero_le _)
-  have α_int : (star α * α).val ∈ P.integers := by simpa using hp_zero
-  have α_star : star (star α * α).val = (star α * α).val := by simp [mul_comm]
-  let Γ : Gauge F := gauge (star α * α) α_int α_star
-  have isHead_iff (r : ℕ → Aˣ) : Γ.IsHead 𝔰.ϱ r ↔ Bounded α r := Iff.rfl
-  exact ⟨Γ, by simpa only [isHead_iff] using hp, by simpa only [isHead_iff] using hq⟩
+  exact ⟨gauge (star α * α) (by simpa using hp.self_of_nhds 0 (Nat.zero_le _))
+    (by simp [mul_comm]), hp, hq⟩
 
 /-- Let `F` be a large lattice datum. The scaled orbital integral `scaledOrbitalIntegral Z p l` is a
 density depending on `p` times `∫ W y ⊗ (W (l w_p⁻¹ y))^*` over the unitary group, with `W` the
@@ -463,7 +442,7 @@ lemma exists_isCompact_scaledOrbitalIntegral_support {F : PlaceData ι T (m + 1)
   have h_back : (weylElem 𝔰.ϱ (star p) * l)⁻¹ * y' = y := by
     simp [y', mul_assoc, (weylElem_mul_left_comm hl).1]
   have y'_mem : y' ∈ S := Γ.hasMatrixSize_of_ne_zero h_cut hp.star_head hl hy' (by rwa [h_back])
-  exact ⟨(y, y'), ⟨y_mem, y'_mem⟩, by simp [y', mul_assoc]⟩
+  exact ⟨(y, y'), ⟨y_mem, y'_mem⟩, by simp [y']⟩
 
 /-- At a large lattice datum `F` and for `l` in the floor group G^(ϱ), the pairing of the scaled
 orbital integrals with heads `p`, `q` at `l` is the density `F.headDensity 𝔰.ϱ p q` of the two heads

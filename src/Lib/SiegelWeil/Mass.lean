@@ -1,8 +1,13 @@
 module
 
-public import Lib.Adelic.Reduction.DefiniteClassSums
-public import Lib.ClassField.HeckeL.EulerProduct
+import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 public import Lib.Weil.Construction.FiniteMultiplier
+public import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Unitary.CongruenceLevels
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Witt.WittTheorem
+import Lib.ClassField.HeckeL.EulerProduct
 
 /-!
 # Masses of definite hermitian lattices and ideal zeta bounds for adelic Gauss sums
@@ -264,7 +269,7 @@ lemma lintegral_le_idealZeta_mul (hμ : idealZeta R μ ≤ 2) {α : Type*} [Meas
         measure_mono fun x (hx : x ∈ T I) ↦ hx.1]
     grw [sup_bound]
     simp_rw [ENNReal.iSup_mul, iSup_le_iff, ← ENNReal.inv_pow]
-    exact fun x hx ↦ (ENNReal.mul_le_iff_le_inv (by simp [I.2]) (by simp)).1 hx.2
+    exact fun x hx ↦ (ENNReal.mul_le_iff_le_inv (by simp [I.property]) (by simp)).1 hx.2
   refine (lintegral_mono_set' cover).trans ((lintegral_iUnion_le T f).trans ?_)
   grw [piece, ENNReal.tsum_mul_right, idealZeta]
 
@@ -289,18 +294,13 @@ it contains the preimage of `Ô` under multiplication by `b`. -/
 lemma isOpen_characterKernel (b : 𝔸f E) : IsOpen (characterKernel b : Set (𝔸f E)) :=
   (characterKernel b).isOpen_of_mem_nhds (g := 0) <| Filter.mem_of_superset
     ((isOpen_Ô.preimage (continuous_const_mul b)).mem_nhds (by simp))
-    fun _ hr v ↦ ψf_eq_one_of_mem (mul_mem hr v.2)
+    fun _ hr v ↦ ψf_eq_one_of_mem (mul_mem hr v.property)
 
 /-- The largest ideal of `Ô` on which the character `v ↦ ψ_f(b v)` is trivial. -/
 noncomputable def conductorIdeal {E : Type*} [Field E] [NumberField E] (b : 𝔸f E) :
     Ideal (Ô E) where
   toAddSubmonoid := ((characterKernel b).addSubgroupOf (Ô E).toAddSubgroup).toAddSubmonoid
   smul_mem' c r hr v := by simpa [mul_assoc, mul_left_comm] using hr (c * v)
-
-/-- The conductor ideal of a finite adele `b`, the largest ideal of `Ô` on which `v ↦ ψ_f(b v)` is
-trivial, has finite index. -/
-lemma cardQuot_conductorIdeal_ne_zero (b : 𝔸f E) : (conductorIdeal b).cardQuot ≠ 0 :=
-  isCompact_Ô.relIndex_ne_zero_add (isOpen_characterKernel b)
 
 /-- Let `E` be a CM field. Take a self-adjoint finite adele `b`, a finite adele `Γ`, and
 `I = conductorIdeal b`, the largest ideal of `Ô` on which `v ↦ ψ_f(b v)` is trivial. Then the Gauss
@@ -313,11 +313,11 @@ lemma gauss_sum_sq_le [Fintype n] (b : selfAdjoint (𝔸f E)) (Γ : 𝔸f E) :
           (ψf E ((2⁻¹ : E) * (b.val * (star w ⬝ᵥ w - Γ))) : ℂ)‖ₑ ^ 2 ≤
       (volÔ E ^ card n) ^ 2 := by
   classical
-  let K : AddSubgroup (𝔸f E) := characterKernel b.1
-  have K_open : IsOpen (K : Set (𝔸f E)) := isOpen_characterKernel b.1
+  let K : AddSubgroup (𝔸f E) := characterKernel b.val
+  have K_open : IsOpen (K : Set (𝔸f E)) := isOpen_characterKernel b.val
   -- Weyl differencing: the squared modulus of `∫ F` is the integral of the autocorrelation `corr`.
   let L : Set (n → 𝔸f E) := ↑(stdLattice E n)
-  let F (w : n → 𝔸f E) : ℂ := ψf E ((2⁻¹ : E) * (b.1 * (star w ⬝ᵥ w - Γ)))
+  let F (w : n → 𝔸f E) : ℂ := ψf E ((2⁻¹ : E) * (b.val * (star w ⬝ᵥ w - Γ)))
   have F_cont : Continuous F := continuous_ψf.subtypeVal.comp (by fun_prop)
   let corr (d : n → 𝔸f E) : ℂ := ∫ w in L, starRingEnd ℂ (F w) * F (w + d)
   -- Translating `w` by `star v` in the entry `i` multiplies `corr d` by `ψf E (b * d i * v)`
@@ -337,7 +337,7 @@ lemma gauss_sum_sq_le [Fintype n] (b : selfAdjoint (𝔸f E)) (Γ : 𝔸f E) :
       ring_nf
     simp only [corr, ← integral_const_mul, integrand_eq]
     exact setIntegral_add_left_eq_self_of_mem (fun w ↦ starRingEnd ℂ (F w) * F (w + d))
-      (smul_mem_stdLattice (star_mem_Ô v.2) (single_mem_intVectors i))
+      (smul_mem_stdLattice (star_mem_Ô v.property) (single_mem_intVectors i))
   have sq_eq : starRingEnd ℂ (∫ w in L, F w) * ∫ w in L, F w = ∫ d in L, corr d := by
     -- Fubini, and translation by `w ∈ L` in the inner integral
     rw [← integral_conj, ← integral_mul_const, ← integral_integral_swap]
@@ -345,7 +345,7 @@ lemma gauss_sum_sq_le [Fintype n] (b : selfAdjoint (𝔸f E)) (Γ : 𝔸f E) :
         rw [integral_const_mul, setIntegral_add_left_eq_self_of_mem F hw]
     · rw [prod_restrict]
       exact (isCompact_stdLattice.prod isCompact_stdLattice).integrableOn _
-  have vol_K : (conductorIdeal b.1).cardQuot * volume (K ∩ Ô E : Set (𝔸f E)) = volÔ E :=
+  have vol_K : (conductorIdeal b.val).cardQuot * volume (K ∩ Ô E : Set (𝔸f E)) = volÔ E :=
     (relIndex_add_measure_inf (K := (Ô E).toAddSubgroup) isCompact_Ô K_open _).trans volume_Ô
   -- As `‖F‖ = 1` and `corr` vanishes off `K ^ n`, the square is at most a product of volumes.
   have h_sq : ‖∫ w in L, F w‖ₑ ^ 2 ≤ (volume (K ∩ Ô E : Set (𝔸f E)) * volÔ E) ^ card n := calc
@@ -375,25 +375,25 @@ lemma lintegral_gauss_sum_le_idealZeta (hμ : idealZeta (Ô E) μ ≤ 2) [Fintyp
       idealZeta (Ô E) μ * volÔ E ^ card n := by
   -- Sort the `b` by their conductor ideal `I`. The `b` with a given `I` of index `y` lie in at most
   -- `y` cosets of `selfAdjointCodifferent E 1`, one for each character of `Ô ⧸ I`.
-  let ξ (a : selfAdjoint (𝔸f E)) (v : Ô E) : ℂ := ψf E (a.1 * v)
+  let ξ (a : selfAdjoint (𝔸f E)) (v : Ô E) : ℂ := ψf E (a.val * v)
   -- `S I` has, for each character `χ` of `Ô ⧸ I`, a coset that holds all `b` with `ξ b = χ`.
   let S (I : Ideal (Ô E)) : Set (selfAdjoint (𝔸f E)) := ⋃ χ : AddChar (Ô E ⧸ I.toAddSubgroup) ℂ,
     (fun b ↦ -Function.invFun ξ (fun v ↦ χ v) + b) ⁻¹' selfAdjointCodifferent E 1
   refine (setLIntegral_univ _).ge.trans (lintegral_le_idealZeta_mul hμ S (.of_forall fun b _ ↦ ?_))
-  let I : Ideal (Ô E) := conductorIdeal b.1
-  have index_ne : I.cardQuot ≠ 0 := cardQuot_conductorIdeal_ne_zero b.1
+  let I : Ideal (Ô E) := conductorIdeal b.val
+  have index_ne : I.cardQuot ≠ 0 := isCompact_Ô.relIndex_ne_zero_add (isOpen_characterKernel b.val)
   have : Fintype (Ô E ⧸ I.toAddSubgroup) := fintypeOfIndexNeZero index_ne
   have mem_S : b ∈ S I := by
     -- `ξ b` is trivial on `I`, so it descends to a character of `Ô ⧸ I`
     let ξb : Ô E →+ Additive ℂ := (coeHom.compAddChar (ψf E)).toAddMonoidHom.comp
-      ((AddMonoidHom.mulLeft b.1).comp (Ô E).subtype.toAddMonoidHom)
+      ((AddMonoidHom.mulLeft b.val).comp (Ô E).subtype.toAddMonoidHom)
     have h_trivial (r : Ô E) (hr : r ∈ I.toAddSubgroup) : ξb r = 0 := by
-      simp [ξb, show ψf E (b.1 * r) = 1 by simpa using hr 1]
+      simp [ξb, show ψf E (b.val * r) = 1 by simpa using hr 1]
     let χ : AddChar (Ô E ⧸ I.toAddSubgroup) ℂ :=
       toAddMonoidHomEquiv.symm (QuotientAddGroup.lift I.toAddSubgroup ξb h_trivial)
     -- The chosen representative `a` of that character differs from `b` by the codifferent.
     let a : selfAdjoint (𝔸f E) := Function.invFun ξ (ξ b)
-    have h_eq (x : Ô E) : ψf E (a.1 * x) = ψf E (b.1 * x) :=
+    have h_eq (x : Ô E) : ψf E (a.val * x) = ψf E (b.val * x) :=
       Circle.ext (congrFun (Function.invFun_eq ⟨b, rfl⟩ : ξ a = ξ b) x)
     have h_codiff : -a + b ∈ selfAdjointCodifferent E 1 := fun x hx ↦ by
       simp [add_mul, map_add_eq_mul, map_neg_eq_inv, h_eq ⟨x, hx⟩]
@@ -405,7 +405,7 @@ lemma lintegral_gauss_sum_le_idealZeta (hμ : idealZeta (Ô E) μ ≤ 2) [Fintyp
   -- As `2 * (μ + 1) ≤ card n`, the Gauss sum saves `[Ô : I] ^ (μ + 1)`; one factor `[Ô : I]` pays
   -- for the cosets.
   set gauss : ℝ≥0∞ := ‖∫ w in (stdLattice E n : Set (n → 𝔸f E)),
-    (ψf E ((2⁻¹ : E) * (b.1 * (star w ⬝ᵥ w - Γ))) : ℂ)‖ₑ
+    (ψf E ((2⁻¹ : E) * (b.val * (star w ⬝ᵥ w - Γ))) : ℂ)‖ₑ
   have gauss_le : I.cardQuot ^ (μ + 1) * gauss ≤ volÔ E ^ card n := by
     rw [← ENNReal.pow_le_pow_left_iff two_ne_zero, mul_pow, ← pow_mul']
     calc
@@ -446,7 +446,7 @@ lemma idealZeta_intAdeles_pow_le (u : ℕ) {v n : ℕ} (h_le : n * Module.finran
       (card_eq_of_bijective _ (bijective_quot_Ô (by aesop) rfl (index_mem I)))
   have zeta_le_euler : idealZeta (Ô E) σ ≤ ENNReal.ofReal P.re := calc
       _ = ∑' I, ENNReal.ofReal (term (contract I)) := tsum_congr fun I ↦ by
-        simp [term, same_index, ofReal_inv_of_pos, I.2.pos, ENNReal.inv_pow]
+        simp [term, same_index, ofReal_inv_of_pos, I.property.pos, ENNReal.inv_pow]
       _ ≤ ∑' J, ENNReal.ofReal (term J) :=
         tsum_comp_le_tsum_of_injective inj fun J ↦ ENNReal.ofReal (term J)
       _ = _ := by rw [← ofReal_tsum_of_nonneg (by simp [term]) euler.summable, euler.tsum_eq]

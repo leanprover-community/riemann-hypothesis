@@ -1,6 +1,11 @@
 module
 
-public import Lib.ClassField.Global.ArtinReciprocity
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Topology.Sheaves.Presheaf
+public import Lib.ClassField.Local.ArtinMap
+import Lib.ClassField.Global.AlbertBrauerHasseNoether
+import Lib.ClassField.Global.ArtinMap
+import Lib.ClassField.Global.ArtinReciprocity
 
 /-!
 # Surjectivity of the Artin map, Hasse's norm theorem and norm groups of cyclic extensions

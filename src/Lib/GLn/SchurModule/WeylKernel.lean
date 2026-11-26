@@ -1,7 +1,21 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.Analysis.CStarAlgebra.Exponential
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
 public import Lib.GLn.SchurModule.TensorModel
-public import Lib.Shimura.ComplexTheta.AppellHumbertData
+import Lib.GLn.SchurModule.SchurMatrix
+import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.General.Groups.CongruenceSubgroups
+import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # The Weyl kernel and its Gram matrix: the hook number bound, positivity, Schur's lemma
@@ -110,7 +124,7 @@ lemma fockPairing_tableauPoly_le {n : Φ → Type} (T : ∀ τ : Φ, Tableau (n 
   have h_card : Fintype.card S ≤ d ! := by
     -- the product over all columns of (height)! is at most the factorial of the sum of the heights
     let height : (Σ (τ : Φ) (h : Fin (N τ)), Fin (κ τ h)) → ℕ := fun ⟨_, h, _⟩ ↦ h
-    simpa [S, d, height, Fintype.card_perm, Fintype.prod_sigma, Fintype.sum_sigma] using
+    simpa [S, height, Fintype.card_perm, Fintype.prod_sigma, Fintype.sum_sigma] using
       prod_factorial_le_factorial_sum univ height
   have h_d_le : d ≤ L := by simpa only [d, sum_range, mul_comm] using h_degree
   rw [h_expand]
@@ -243,7 +257,7 @@ lemma weylKernel_symm :
 
 end
 
-omit [∀ τ : Φ, DecidableEq (n τ)] in
+omit [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
 /-- Multiplying `y` on the right by the upper triangular part of `b` scales the kernel `K(·, y)`
 by `∏ b(τ, i, i) ^ λ(τ, i)`, with `λ = New.diagramWeight (rankAt n) κ`. -/
 lemma weylKernel_borelMul (b : Φ × ℕ × ℕ → R) :
@@ -399,7 +413,7 @@ lemma weylKernel_eq_sum_fillingPoly (y : (Σ τ : Φ, n τ) × ℕ → R) :
     weylKernel n κ y = ∑ T : ColumnFilling n κ, eval y (fillingPoly R T) • fillingPoly R T := by
   -- the Cauchy–Binet formula for one leading minor of `yᵀ x`
   let m (τ : Φ) (h : ℕ) (I : IncreasingMap (rankAt n τ) h) : MatrixPoly (Σ τ : Φ, n τ) R :=
-    minor R (Sigma.mk τ ∘ (rowEquivFin n τ).symm ∘ I.1)
+    minor R (Sigma.mk τ ∘ (rowEquivFin n τ).symm ∘ I.val)
   have hminor (τ : Φ) (h : ℕ) :
       (of fun s t : Fin h ↦ ∑ a : n τ, y (⟨τ, a⟩, s) • X (⟨τ, a⟩, ↑t)).det =
         ∑ I : IncreasingMap (rankAt n τ) h, eval y (m τ h I) • m τ h I := by
@@ -436,12 +450,6 @@ lemma weylGramOver_eq_transpose_mul :
       (fillingMatrixOver R n κ)ᵀ * fillingMatrixOver R n κ := by
   rw [weylGramOver, ← fillingMatrix_transpose_mul_self]
   exact Matrix.map_mul (f := Int.castRingHom R)
-
-/-- The polynomial of a vector is the pairing of its tensor with the tensor of the variables. -/
-lemma toPoly_eq_sum_fillingPoly (ξ : WeylIndexFamily n κ → R) :
-    toPoly n κ ξ = ∑ T : ColumnFilling n κ, (fillingMatrixOver R n κ *ᵥ ξ) T • fillingPoly R T := by
-  rw [← nablaCombination_weylGramOver_mulVec, weylGramOver_eq_transpose_mul, ← mulVec_mulVec,
-    nablaCombination_transpose_mulVec]
 
 /-- The integer Gram matrix `weylGram n κ` is symmetric. Its entries are the chosen coefficients of
 the generic kernel `weylKernel n κ` in the products b_i(x) b_j(y) of the basis minor products

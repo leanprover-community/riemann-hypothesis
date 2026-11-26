@@ -1,7 +1,12 @@
 module
 
+import Mathlib.Algebra.Order.Star.Rat
+import Mathlib.GroupTheory.FiniteAbelian.Duality
+import Mathlib.RingTheory.LocalRing.Quotient
 public import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
 public import Lib.ClassField.GaloisCohomology.TateIndexFormula
+import Lib.ClassField.Places.LocalFields
+import Lib.ClassField.Places.ProfiniteGalois
 
 /-!
 # Index of l-th powers in a local field and finiteness of Kummer 1-cocycles
@@ -79,7 +84,7 @@ lemma New.exists_root_near_one {Ω : Type*} [Field Ω] [IsAlgClosed Ω] (A : Val
 then `a = x ^ l` for some `x` in `L` with `|x - 1| ≤ r`. -/
 lemma New.exists_local_root_near_one (Γ : Type*) {L Ω : Type} [Group Γ] [TopologicalSpace Γ]
     [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω] (A : ValuationSubring Ω)
-    [hLocal : IsLocalGalois Γ L A] {l : ℕ} [NeZero l] {a : L} {r : A.ValueGroup} (hr : r ≠ 0)
+    [hLocal : IsLocalGalois Γ L A] {l : ℕ} {a : L} {r : A.ValueGroup} (hr : r ≠ 0)
     (hr_lt : r < A.valuation l) (ha : A.valuation (algebraMap L Ω a - 1) ≤ A.valuation l * r) :
     ∃ x : L, a = x ^ l ∧ A.valuation (algebraMap L Ω x - 1) ≤ r := by
   have h_alg_closed : IsAlgClosed Ω := hLocal.toIsAlgClosed
@@ -129,7 +134,7 @@ additive group isomorphic to `Lˣ` (by `y`). Then some surjective `f : Y → ℤ
 `|y a| = |π| ^ n` exactly when `f a = n`. -/
 lemma New.IsLocalGalois.exists_surjective_ord {Γ L Ω : Type} [Group Γ] [TopologicalSpace Γ]
     [Field L] [Field Ω] [Algebra L Ω] [MulSemiringAction Γ Ω] {A : ValuationSubring Ω}
-    (hLocal : IsLocalGalois Γ L A) {π : Lˣ} (hπ : IsUniformiser A π.val) {Y : Type} [AddCommGroup Y]
+    (hLocal : IsLocalGalois Γ L A) {π : Lˣ} (hπ : IsUniformizer A π.val) {Y : Type} [AddCommGroup Y]
     (y : Y ≃+ Additive Lˣ) :
     ∃ f : Y →+ ℤ, Function.Surjective f ∧ ∀ (a : Y) (n : ℤ),
       A.valuation.comap (algebraMap L Ω) (y a).toMul = A.valuation.comap (algebraMap L Ω) π ^ n ↔
@@ -168,7 +173,7 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
   -- The index is multiplicative in `1 → Oˣ → Lˣ → ℤ → 0`, it is `l` on `ℤ`, and `Oˣ` may be
   -- replaced by the subgroup `V = 1 + l π O` of finite index. On `V` the `l`-th power map is
   -- injective, and `a ↦ (a - 1) / (l π)` identifies its cokernel with `O / l`.
-  obtain ⟨π, hπ⟩ := hLocal.exists_isUniformiser
+  obtain ⟨π, hπ⟩ := hLocal.exists_isUniformizer
   -- The fields of `hLocal` (discrete valuation ring, finite residue field, …) as local instances.
   have h_fields := hLocal
   obtain ⟨⟩ := h_fields
@@ -360,22 +365,22 @@ lemma finite_Z1 [IsLocalGalois Γ k A] ⦃R : Type⦄ [CommRing R] (M : Discrete
   obtain ⟨⟨U, hU_normal⟩, hU⟩ := exists_openNormalSubgroup_apply_eq M.cartierDual.continuous
   -- On `U` every `f : M →+ DiscreteUnits Ω` is equivariant (`using!`: the action on
   -- `M.cartierDual` in `hU` gives this equation only after unfolding).
-  have h_equiv (f : M →+ DiscreteUnits Ω) (u : U.1) (x : M) :
+  have h_equiv (f : M →+ DiscreteUnits Ω) (u : U.toSubgroup) (x : M) :
       f (M.ρ u x) = unitsRep u.val (f x) := by
     simpa using! congr($(hU _ u.property f) (M.ρ u x)).symm
   -- Over the fixed field of `U` the cocycles killed by `#M` form a finite group.
-  letI := (of_finite U).isLocalGalois.finite_ker_natCast_Z1_unitsModule (Nat.card M)
+  let := (of_finite U).isLocalGalois.finite_ker_natCast_Z1_unitsModule (Nat.card M)
   have hz_mul (z : Z1 M.ρ) (g h : Γ) : z.val (g * h) = z.val g + M.ρ g (z.val h) :=
     z.property.right g h
   -- Restrict to `U` and compose with each character of `M`. The resulting cocycles lie in
   -- the finite Kummer kernel, so there is no need to enumerate that kernel.
   let res (z : Z1 M.ρ) (f : M →+ DiscreteUnits Ω) :
-      (Nat.card M : Module.End ℤ (Z1 (unitsModule U.1).ρ)).ker :=
+      (Nat.card M : Module.End ℤ (Z1 (unitsModule U.toSubgroup).ρ)).ker :=
     ⟨⟨fun u ↦ f (z.val u),
       continuous_of_discreteTopology.comp (z.property.left.comp continuous_subtypeVal),
       fun g g' ↦ by simpa [hz_mul z] using! h_equiv f g _⟩,
       by simp [Subtype.ext_iff, funext_iff, ← map_nsmul]⟩
-  refine .of_injective (fun z ↦ (fun q : Γ ⧸ U.1 ↦ z.val q.out, res z)) fun y z hyz ↦ ?_
+  refine .of_injective (fun z ↦ (fun q : Γ ⧸ U.toSubgroup ↦ z.val q.out, res z)) fun y z hyz ↦ ?_
   have h_out_eq : (fun q : Γ ⧸ U.1 ↦ y.val q.out) = fun q ↦ z.val q.out := congrArg Prod.fst hyz
   have h_res_eq : res y = res z := congrArg Prod.snd hyz
   ext g

@@ -1,8 +1,14 @@
 module
 
-public import New.Congruences.GaloisRepresentations.AttachedRepresentations
-public import New.Congruences.LocalLoss.LocalLattices
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.FieldTheory.Galois.Profinite
+import Mathlib.Topology.Algebra.Module.Compact
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 public import New.Congruences.Selmer.SelmerData
+public import New.Congruences.GaloisRepresentations.SelmerHypotheses
+import New.Congruences.GaloisRepresentations.AttachedRepresentations
+import New.Congruences.LocalLoss.LocalLattices
 
 /-!
 # Main summands are Selmer data
@@ -79,22 +85,15 @@ lemma IsMainSummandLike.conjGal_inv_eq_smul_one (hrow : IsMainSummandLike D t J 
     (h_span_top : Submodule.span O (Set.range u) = ⊤) {g : AbsGal D} {y : ↑O} (hy : u g = y • 1) :
     u (conjGal g)⁻¹ = (cyclotomicInv ℓ D.E O g⁻¹ ^ (t - 1) * y) • 1 := by
   -- The `u x` span all matrices, so it is enough to compare traces against them.
-  set y' : ↑O := cyclotomicInv ℓ D.E O g⁻¹ ^ (t - 1) * y with hy'
-  have h_trace (x : AbsGal D) :
-      (u x * u (conjGal g)⁻¹).trace = (u x * y' • (1 : Matrix n n O)).trace := by
-    -- Self-duality at `x^c g⁻¹` and at `x^c`: both traces are multiples of `tr u (x^c)⁻¹`.
-    have h_dual_xg : (u x * u (conjGal g)⁻¹).trace =
-        cyclotomicInv ℓ D.E O (conjGal x * g⁻¹) ^ (t - 1) * (y * (u (conjGal x)⁻¹).trace) := by
-      simpa [hy] using hrow.trace_lattice_conjGal hu (conjGal x * g⁻¹)
-    have h_dual_x : (u x).trace =
-        cyclotomicInv ℓ D.E O (conjGal x) ^ (t - 1) * (u (conjGal x)⁻¹).trace := by
-      simpa using hrow.trace_lattice_conjGal hu (conjGal x)
-    rw [h_dual_xg, Matrix.mul_smul, mul_one, trace_smul, smul_eq_mul, h_dual_x, map_mul, hy']
-    ring
-  have h_forms : traceLinearMap n O O ∘ₗ mulRight O (u (conjGal g)⁻¹) =
-      traceLinearMap n O O ∘ₗ mulRight O (y' • (1 : Matrix n n O)) :=
-    ext_on_range h_span_top h_trace
-  exact ext_iff_trace_mul_left.2 (LinearMap.ext_iff.1 h_forms)
+  refine ext_iff_trace_mul_left.2 ((LinearMap.ext_iff
+    (f := traceLinearMap n O O ∘ₗ mulRight O _)
+    (g := traceLinearMap n O O ∘ₗ mulRight O _)).1 (ext_on_range h_span_top fun x ↦ ?_))
+  -- Self-duality at `x^c g⁻¹` and at `x^c`: both traces are multiples of `tr u (x^c)⁻¹`.
+  have h₁ := hrow.trace_lattice_conjGal hu (conjGal x * g⁻¹)
+  have h₂ := hrow.trace_lattice_conjGal hu (conjGal x)
+  simp [hy, map_mul] at h₁ h₂ ⊢
+  rw [h₁, h₂]
+  ring
 
 /-- A scalar by which a Galois element acts through `u` is a unit. The hypothesis `hrow` is used
 only to know that `n` is not empty. -/
@@ -136,8 +135,8 @@ lemma IsMainSummandLike.sum_finrank_crysCocyclesAt_le (hrow : IsMainSummandLike 
         v).isPotentiallyCrystalline
       (hrow.toIsConjSelfDualOfLevel.hasJumps_localLattice hu v)).trans (by simp)
   -- Each embedding is counted at one place at most.
-  simp [h_rank, sum_add_distrib, add_mul]
-  exact (sum_complexEmbeddingOf_le _).trans hrow.sum_countP_neg_le
+  simpa [h_rank, sum_add_distrib, add_mul] using
+    (sum_complexEmbeddingOf_le _).trans hrow.sum_countP_neg_le
 
 /-- The global term. Let `u` be an `O`-lattice (`IsLatticeIn R u`) in a main summand `R` whose image
 spans all matrices. Let some `g` act by a scalar `α` and have cyclotomic character `p_l ^ card n`,
@@ -161,10 +160,10 @@ lemma IsMainSummandLike.normLength_congruenceTerm_le (hrow : IsMainSummandLike D
   have hd : d ∈ Set.Icc 1 (D.r * D.t) :=
     ⟨mul_pos hrow.rank_mem.1 (t - 1).succ_pos,
       mul_le_mul' hrow.rank_mem.2 (by grind [D.t_odd.pos, hrow.t_le])⟩
-  have hδ : δ.1 = (1 - D.levelPrime l ^ d) * α.1 := by
+  have hδ : δ.val = (1 - D.levelPrime l ^ d) * α.val := by
     simp [δ, d, cyclotomicInv, h_cyc, ← mul_assoc, pow_succ', ← one_sub_mul, pow_mul]
-  have hα : ‖α.1‖ = 1 := (O.isUnit_iff_norm_eq_one α).1 (hrow.isUnit_of_eq_smul_one hg)
-  have h_gap : ellVal δ.1 ≤ ellVal (D.levelPrime l ^ d - 1 : PadicAlgCl ℓ) :=
+  have hα : ‖α.val‖ = 1 := (O.isUnit_iff_norm_eq_one α).1 (hrow.isUnit_of_eq_smul_one hg)
+  have h_gap : ellVal δ.val ≤ ellVal (D.levelPrime l ^ d - 1 : PadicAlgCl ℓ) :=
     ellVal_le_ellVal (by rw [hδ, norm_mul, hα, mul_one, norm_sub_rev])
   have h_term : congruenceTerm ℓ u ≤ card n * addVal O δ :=
     congruenceTerm_le h_span_top hg (hrow.conjGal_inv_eq_smul_one hu h_span_top hg)
@@ -175,7 +174,7 @@ omit [PadicIso ℓ] in
 /-- For a lattice `u` in `R`, the valuation of `det (u g - 1)` in `O`, normalised by `v(ℓ) = 1`, is
 the valuation `ellVal` of `det (R g - 1)` in `ℚ̄_ℓ`. -/
 lemma IsLatticeIn.normLength_addVal_det_sub_one (hu : IsLatticeIn R u) (g : AbsGal D) :
-    O.normLength (addVal O (u g - 1).det) = ellVal ((R g).1 - 1).det := by
+    O.normLength (addVal O (u g - 1).det) = ellVal ((R g).val - 1).det := by
   obtain ⟨Φ, -, hΦ_u, hΦ_det_trace⟩ := hu.exists_algHom
   rw [O.normLength_addVal, ← (hΦ_det_trace (u g - 1)).1, map_sub, map_one, hΦ_u]
 
@@ -192,7 +191,7 @@ lemma IsMainSummandLike.normLength_localTerm_le (hrow : IsMainSummandLike D t J 
   -- The term is at most the valuation of `det (u γ - 1)` for the inertial `γ` of the row.
   obtain ⟨γ, m, -, hm_unit : (placeOver v).valuation m = 1,
       hm_pow : ∀ s ∈ inertiaGroup (AbsGal D) (placeOver v), R (s ^ m) = 1,
-      h_det : ellVal ((R γ).1 - 1).det ≤ card n * padicValNat ℓ D.chosenGroupOrder, -⟩ :=
+      h_det : ellVal ((R γ).val - 1).det ≤ card n * padicValNat ℓ D.chosenGroupOrder, -⟩ :=
     hrow.inertia_above_M v hv v.isPlaceOver_placeOver
   have hℓ_unit : (placeOver v).valuation ℓ = 1 :=
     v.isPlaceOver_placeOver.valuation_natCast_eq_one_iff.2 hv.2
@@ -261,7 +260,7 @@ lemma IsMainSummandLike.exists_mem_inertiaAbove_eq_smul_one_isUnit
       u γ = ζ • 1 ∧ IsUnit (ζ ^ 2 - 1) := by
   obtain ⟨i⟩ := hrow.nonempty
   obtain ⟨Φ, hΦ_inj, hΦ_u : ∀ g, Φ (u g) = R g, -⟩ := hu.exists_algHom
-  obtain ⟨γ, hγ, y, hRγ : (R γ).1 = y • 1, hy⟩ := hrow.exists_scalar_inertia
+  obtain ⟨γ, hγ, y, hRγ : (R γ).val = y • 1, hy⟩ := hrow.exists_scalar_inertia
   have hy_unit : ‖y ^ 2 - 1‖ = 1 := by simpa using hy 0 2 ⟨one_le_two, le_add_self⟩
   -- The scalar `y` lies in `O`, being a diagonal entry of `u γ`, a conjugate of `R γ`.
   obtain ⟨ζ, rfl⟩ : ∃ ζ : ↑O, (ζ : PadicAlgCl ℓ) = y := by

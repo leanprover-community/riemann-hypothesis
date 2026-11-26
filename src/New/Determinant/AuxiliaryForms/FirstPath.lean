@@ -1,8 +1,11 @@
 module
 
-public import New.Determinant.AuxiliaryForms.DeepLevelVanishing
 public import New.Determinant.AuxiliaryForms.GridFirstColumns
-public import New.Determinant.Chain.ChainNorms
+public import New.Determinant.Chain.TriangleLifts
+public import New.Determinant.Chain.TriangleNorms
+import New.Determinant.AuxiliaryForms.DeepLevelVanishing
+import New.Determinant.Chain.ChainNorms
+import New.OneLift.ComparisonOperator.ExchangeData
 
 /-!
 # The maps `Θ^♭` and `res^♭`, and the first path
@@ -247,7 +250,7 @@ lemma gridLevelForms_eq_map_transposedChain :
   simp only [transposedChain_self, mul_comm (D.transposedChain 1 true 0 φ _)] at h
   have hU : inner ℂ U U = 0 :=
     (h : inner ℂ U U = _).trans (inner_eq_zero_symm.1 (hz_orth _ ⟨φ, φ_mem, rfl⟩))
-  exact Subtype.ext <| star_eq_zero.1 <| congrArg (fun x ↦ x.1.1)
+  exact Subtype.ext <| star_eq_zero.1 <| congrArg (fun x ↦ x.val.val)
     (D.eq_zero_of_weightedChain_triangleLift_eq_zero (inner_self_eq_zero.1 hU))
 
 end DescentOnto
@@ -339,14 +342,14 @@ lemma exists_isFlatRestriction_range_eq_top :
   -- The space is finite-dimensional, and a form `y` orthogonal to the range is zero.
   refine ⟨g, r, hr, orthogonal_eq_bot_iff.1 (bot_unique fun y hy ↦ Subtype.ext ?_)⟩
   by_contra hy_ne
-  obtain ⟨φ, hφ, h_ne⟩ := h_reach _ y.2 hy_ne
-  have h_orthogonal : (D.spaceY 0).petersson y.1.1 (r ⟨φ, hφ⟩).1.1 = 0 :=
+  obtain ⟨φ, hφ, h_ne⟩ := h_reach _ y.property hy_ne
+  have h_orthogonal : (D.spaceY 0).petersson y.val.val (r ⟨φ, hφ⟩).val.val = 0 :=
     inner_eq_zero_symm.1 (hy _ (LinearMap.mem_range_self r ⟨φ, hφ⟩))
   -- The forms of level `J_M` have the level `𝔪₀` of the trivial twist.
-  have h_pairing : (D.spaceY 0).petersson y.1.1 (r ⟨φ, hφ⟩).1.1 =
+  have h_pairing : (D.spaceY 0).petersson y.val.val (r ⟨φ, hφ⟩).val.val =
       diagonalPeriodForm 1 zero_le g (conjForm D.gridKernel_zero_true_eq_star y.val)
         (D.transposedChain 1 true 0 φ) :=
-    hr ⟨φ, hφ⟩ 1 _ (levelSpace_anti (levelY_le_chosenLevel ..) y.2)
+    hr ⟨φ, hφ⟩ 1 _ (levelSpace_anti (levelY_le_chosenLevel ..) y.property)
   exact h_ne (h_pairing.symm.trans h_orthogonal)
 
 variable {D} in
@@ -377,18 +380,18 @@ lemma IsFlatRestriction.integral_lowerChainUpTo {g : GInf D.E (D.gridSigns true 
         ((LevelPlaces.ker_reductionGL_eq _).ge (mem_levelOf.1 hk).2)
     exact congrArg (fun F : D.GridForm false 0 0 ↦ star (F x)) h_fix
   have h_restrict :
-      ∫ x, y'Lift x * (r φ).1 x ∂(D.spaceY 0).quotMeasure =
+      ∫ x, y'Lift x * (r φ).val x ∂(D.spaceY 0).quotMeasure =
         diagonalPeriodForm ϑ zero_le g y'Lift (D.transposedChain 1 true 0 φ) := by
     simpa [y'Lift_conj, petersson, periodPairing] using! hr φ ϑ y'Lift_conj h_level
   -- The chain of lifts is `weightedChain` with the weight written as the order of a group.
   have h_chain : D.lowerChainUpTo ϑ D.m (r φ) =
-      weightedChain (D.triangleGLCard false) (D.triangleLift false) ϑ 0 D.m (r φ).1 := by
+      weightedChain (D.triangleGLCard false) (D.triangleLift false) ϑ 0 D.m (r φ).val := by
     simp +unfoldPartialApp [liftY, lowerChainUpTo, ← LevelPlaces.card_GL_levelModulus]
     rfl
   -- By transposition the left side is `∫ y'Lift x * r φ x`.
   refine Eq.trans ?_ h_restrict
   simpa [transposedChain_self, h_chain] using!
-    D.integral_transposedChain_mul_weightedChain false ϑ le_rfl (r φ).1 y'
+    D.integral_transposedChain_mul_weightedChain false ϑ le_rfl (r φ).val y'
 
 /-- The twisted edges are those that carry a power of the twist `ϑ` (`IsVerticalEdge`). There are
 functions `Ψ ϑ`, one for each twist `ϑ`, of tuples `EdgeTuple ϑ` and a constant `α` as follows.

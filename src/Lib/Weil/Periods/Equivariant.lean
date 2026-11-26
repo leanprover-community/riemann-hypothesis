@@ -1,7 +1,11 @@
 module
 
-public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import Mathlib.Algebra.CharP.Pi
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Topology.Algebra.Group.Units
 public import Lib.Weil.Periods.Grading
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
 
 /-!
 # The character `ψ_U` and the function `𝒲_φ`
@@ -298,28 +302,10 @@ def sourceFn (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : AlgForm (E := 
     (r : Y.besselGroup) : ℂ :=
   Y.unipotentChar (r * (Y.inclX (Y.leviPart r))⁻¹) * algFormCoeff 1 t φ (Y.leviPart r)
 
-/-- Let `u` lie in the unipotent subgroup `U = Y.unipotent`, and let `a` lie in `H`, the adelic
-unitary group of the standard definite space on `X`, embedded by `inclX`. Then the source function
-`𝒲_φ = Y.sourceFn t φ` of the algebraic form `φ` satisfies
-`𝒲_φ (u a) = ψ_U (u) · algFormCoeff 1 t φ a`, where `ψ_U = Y.unipotentChar` and the second factor is
-`t (ρ(a_∞⁻¹) φ(a_fin))` with `ρ = conjWeylRep`. For `t = (·, v_*)` this is the formula
-`𝒲_φ (u a) = ψ_U (u) (φ (a_fin), π_X (a_∞) v_*)`. -/
-lemma sourceFn_mul {u : G E ε} (hu : u ∈ Y.unipotent) (a : G E (1 : X → ℤˣ)) :
-    Y.sourceFn t φ ⟨u * Y.inclX a,
-        mul_mem (Y.unipotent_le_besselGroup hu) (Y.inclX_mem_besselGroup a)⟩ =
-      Y.unipotentChar u * algFormCoeff 1 t φ a := by
-  rw [sourceFn, Y.leviPart_mul_inclX hu a, mul_inv_cancel_right]
-
 /-- On `H`, the function `𝒲_φ` is the coefficient function `algFormCoeff 1 t φ` of `φ`. -/
 lemma sourceFn_inclX (a : G E (1 : X → ℤˣ)) :
     Y.sourceFn t φ ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩ = algFormCoeff 1 t φ a := by
   rw [sourceFn, leviPart_inclX, mul_inv_cancel, Y.unipotentChar_of_mem_Gamma (one_mem _), one_mul]
-
-omit [WeilData E] in
-/-- The algebraic form `algFormRep κ e a φ` is the right translate `g ↦ φ (g a)`. -/
-private lemma algFormRep_apply (a g : Gf E X) (φ : AlgForm (E := E) X κ e) :
-    (algFormRep κ e a φ : Gf E X → WeylIndex X κ → ℂ) g =
-      (φ : Gf E X → WeylIndex X κ → ℂ) (g * a) := rfl
 
 /-- Right translation of `𝒲_φ` by a finite point of `H` is right translation of `φ`. -/
 lemma sourceFn_mul_inclX (r : Y.besselGroup) (a : Gf E X) :
@@ -327,7 +313,8 @@ lemma sourceFn_mul_inclX (r : Y.besselGroup) (a : Gf E X) :
       Y.sourceFn t (algFormRep κ e a φ) r := by
   rw [sourceFn, sourceFn, map_mul, leviPart_inclX, map_mul, Subgroup.coe_mul, _root_.mul_inv_rev,
     mul_assoc, mul_inv_cancel_left, algFormCoeff_apply, algFormCoeff_apply, Prod.fst_mul, mul_one,
-    Prod.snd_mul, algFormRep_apply]
+    Prod.snd_mul]
+  rfl
 
 lemma sourceFn_add (ψ : AlgForm (E := E) X κ e) (r : Y.besselGroup) :
     Y.sourceFn t (φ + ψ) r = Y.sourceFn t φ r + Y.sourceFn t ψ r := by
@@ -392,7 +379,7 @@ lemma IsEquivariant.eq_sourceFn {W : Y.besselGroup → ℂ} (hW : Y.IsEquivarian
   -- Write `r = u a` with `u` in `U` and `a` in `H`.
   obtain ⟨u, hu, a, rfl⟩ : ∃ u ∈ Y.unipotent, ∃ a : G E (1 : X → ℤˣ), r = u * Y.inclX a :=
     Y.exists_unipotent_mul_inclX hr
-  rw [Y.sourceFn_mul t φ hu, ← h_levi]
+  rw [sourceFn, Y.leviPart_mul_inclX hu a, mul_inv_cancel_right, ← h_levi]
   exact hW.unipotent_mul ⟨u, Y.unipotent_le_besselGroup hu⟩ (Y.hasDegreeGe_two_of_odd hs hu)
     ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩
 

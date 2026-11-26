@@ -1,7 +1,11 @@
 module
 
+import Mathlib.MeasureTheory.Group.IntegralConvolution
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Frames.Densities
 public import New.Spanning.Frames.StandardLevel
+import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # The Bessel vector at the finite places
@@ -118,30 +122,22 @@ translation by `x` multiplies χ_g = `extendedBesselChar g` by ψ(σ(u) / g). -/
 theorem IntegralPlace.extendedBesselChar_besselS_mul {x y u : T.G} {g : Aˣ} (hx : x ∈ T.besselS)
     (hu : u ∈ T.besselU) (hux : u⁻¹ * x ∈ unitaryLevel integers g T.splitGram) :
     extendedBesselChar g (x * y) = P.ψ (g⁻¹.val * simpleRootSum u) * extendedBesselChar g y := by
-  -- `x` normalises `besselU`, so `y ∈ v K(g)` gives `x * y ∈ (x * v * x⁻¹ * u) K(g)`, and
-  -- conversely.
+  -- `x` normalises `besselU`, so `y ∈ v K(g)` iff `x * y ∈ (x * v * x⁻¹ * u) K(g)`.
   by_cases hy : ∃ v ∈ T.besselU, v⁻¹ * y ∈ unitaryLevel integers g T.splitGram
   · obtain ⟨v, hv, hvy⟩ := hy
-    have h_conj : x * v * x⁻¹ ∈ T.besselU := (besselS_le_normalizer_besselU hx v).1 hv
-    have h_lev : (x * v * x⁻¹ * u)⁻¹ * (x * y) ∈ unitaryLevel integers g T.splitGram := by
-      simpa [mul_assoc] using mul_mem hux hvy
-    -- `simpleRootSum` is additive on `besselS`, hence unchanged by conjugation.
     have hvS : v ∈ T.besselS := mem_partialUnitriangularGroup_of_mem_besselU hv
-    have h_inv : simpleRootSum (x * v * x⁻¹) = simpleRootSum v := by
-      apply add_right_cancel (b := simpleRootSum x)
-      rw [← simpleRootSum_mul (mul_mem (mul_mem hx hvS) (inv_mem hx)) hx, inv_mul_cancel_right,
-        simpleRootSum_mul hx hvS, add_comm]
-    have h_add : simpleRootSum (x * v * x⁻¹ * u) = simpleRootSum u + simpleRootSum v := by
-      rw [simpleRootSum_mul (mem_partialUnitriangularGroup_of_mem_besselU h_conj)
-        (mem_partialUnitriangularGroup_of_mem_besselU hu), h_inv, add_comm]
-    rw [extendedBesselChar_eq (mul_mem h_conj hu) h_lev, extendedBesselChar_eq hv hvy, h_add,
-      mul_add, P.ψ.map_add_eq_mul]
-  · have hxy : ¬∃ v ∈ T.besselU, v⁻¹ * (x * y) ∈ unitaryLevel integers g T.splitGram := by
-      rintro ⟨v, hv, hvxy⟩
-      refine hy ⟨x⁻¹ * (v * u⁻¹) * x, ?_, ?_⟩
-      · simpa using (besselS_le_normalizer_besselU (inv_mem hx) _).1 (mul_mem hv (inv_mem hu))
-      · simpa [mul_assoc] using mul_mem (inv_mem hux) hvxy
-    rw [extendedBesselChar_eq_zero hy, extendedBesselChar_eq_zero hxy, mul_zero]
+    have hS := mul_mem (mul_mem hx hvS) (inv_mem hx)
+    have h_inv : simpleRootSum (x * v * x⁻¹) = simpleRootSum v := add_right_cancel <| by
+      rw [← simpleRootSum_mul hS hx, inv_mul_cancel_right, simpleRootSum_mul hx hvS, add_comm]
+    rw [extendedBesselChar_eq (mul_mem ((besselS_le_normalizer_besselU hx v).1 hv) hu)
+        (by simpa [mul_assoc] using mul_mem hux hvy), extendedBesselChar_eq hv hvy,
+      simpleRootSum_mul hS (mem_partialUnitriangularGroup_of_mem_besselU hu), h_inv,
+      add_comm, mul_add, P.ψ.map_add_eq_mul]
+  · rw [extendedBesselChar_eq_zero hy, mul_zero, extendedBesselChar_eq_zero]
+    rintro ⟨v, hv, hvxy⟩
+    exact hy ⟨x⁻¹ * (v * u⁻¹) * x,
+      by simpa using (besselS_le_normalizer_besselU (inv_mem hx) _).1 (mul_mem hv (inv_mem hu)),
+      by simpa [mul_assoc] using mul_mem (inv_mem hux) hvxy⟩
 
 /-- The function χ_g = `extendedBesselChar g` is invariant under right translation by the principal
 congruence subgroup K(g). -/
@@ -518,16 +514,9 @@ theorem enorm_sq_besselVector_mul_unipotentMass (y : T.G) :
       rw [h_unfold, eNorm_smul, h_phase, mul_one, Real.eNorm_of_nonneg measureReal_nonneg,
         ofReal_measureReal ((ascConv_setOf_mul_mem_le_one Z y).trans_lt one_lt_top).ne]
 
-/-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, the normalised Bessel vector
-`√fl W_Z` has norm at most one at every point, where `fl = F.unipotentMass` is the mass of 𝖴 ∩ K(g)
-and `W_Z = Z.besselVector`. -/
-theorem enorm_sq_besselVector_mul_le_one (y : T.G) :
-    ‖Z.besselVector y‖ₑ ^ 2 * F.unipotentMass ≤ 1 :=
-  (enorm_sq_besselVector_mul_unipotentMass Z y).trans_le (ascConv_setOf_mul_mem_le_one Z y)
-
 /-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, let `fl = F.unipotentMass` be
 the mass of 𝖴 ∩ K(g) and `W_Z = Z.besselVector`. The squared norm of `√fl W_Z` on 𝖴∖G is the measure
-of `Z`; by `card_cosets_mul_groupMeasure` this is the number of cosets of K(g) in `Z` times the
+of `Z`, which is the number of cosets of K(g) in `Z` times the
 measure of K(g). Functions on 𝖴∖G are integrated against `F.quotientMeasureFrom 0`, the product of
 the measures of all floors. -/
 theorem lintegral_enorm_sq_besselVector :
@@ -588,7 +577,8 @@ theorem lintegral_inner_besselVector_sq_mul_le (x : T.G) :
         ‖Z.besselVector x‖ₑ * ‖Z.besselVector y‖ₑ :=
       coe_le_coe.2 (nnNorm_inner_le_nnNorm _ _)
     rw [Set.indicator_of_mem (h_supp y hy)]
-    grw [h_schwarz, mul_pow, mul_assoc, enorm_sq_besselVector_mul_le_one, mul_one]
+    grw [h_schwarz, mul_pow, mul_assoc, enorm_sq_besselVector_mul_unipotentMass,
+      ascConv_setOf_mul_mem_le_one, mul_one]
   calc
     _ ≤ (∫⁻ y : T.G, S.indicator (fun _ ↦ ‖Z.besselVector x‖ₑ ^ 2) y ∂θ) * F.unipotentMass := by
       grw [lintegral_mul_const_le, lintegral_mono h_bound]
@@ -603,24 +593,17 @@ theorem pairingNormSq_mul_le_massRatio :
     F.pairingNormSq Z.besselVector * F.unipotentMass ≤ Z.massRatio := by
   -- Bound the integral over `y`, then integrate over `x` by `lintegral_enorm_sq_besselVector`.
   let θ : Measure T.G := F.quotientMeasureFrom 0
-  let I : T.G → ℝ≥0∞ := fun x ↦ ∫⁻ y : T.G, ‖⟪Z.besselVector x, Z.besselVector y⟫_ℂ‖ₑ ^ 2 ∂θ
-  have h_le : F.pairingNormSq Z.besselVector * F.unipotentMass * F.unipotentMass ≤
-      ∫⁻ x : T.G, ‖Z.besselVector x‖ₑ ^ 2 * F.groupMeasure F.congruenceSubgroup ∂θ :=
-    calc (∫⁻ x : T.G, I x ∂θ) * F.unipotentMass * F.unipotentMass
-      _ ≤ ∫⁻ x : T.G, I x * F.unipotentMass * F.unipotentMass ∂θ := by
-        grw [lintegral_mul_const_le, lintegral_mul_const_le]
-      _ ≤ ∫⁻ x : T.G, ‖Z.besselVector x‖ₑ ^ 2 * F.groupMeasure F.congruenceSubgroup ∂θ :=
-        lintegral_mono (lintegral_inner_besselVector_sq_mul_le Z)
-  have h_sq_ne_zero : F.unipotentMass ^ 2 ≠ 0 := by simp
-  have h_sq_ne_top : F.unipotentMass ^ 2 ≠ ∞ := by simp
   rw [IntermediateGroup.massRatio,
-    ENNReal.le_div_iff_mul_le (.inl h_sq_ne_zero) (.inl h_sq_ne_top)]
+    ENNReal.le_div_iff_mul_le (.inl (by simp)) (.inl (by simp))]
   calc F.pairingNormSq Z.besselVector * F.unipotentMass * F.unipotentMass ^ 2
-    _ = F.unipotentMass * (F.pairingNormSq Z.besselVector * F.unipotentMass * F.unipotentMass) := by
-      ring
+    _ = F.unipotentMass *
+        (F.pairingNormSq Z.besselVector * F.unipotentMass * F.unipotentMass) := by ring
     _ ≤ F.unipotentMass *
         ∫⁻ x : T.G, ‖Z.besselVector x‖ₑ ^ 2 * F.groupMeasure F.congruenceSubgroup ∂θ := by
-      grw [h_le]
+      gcongr
+      refine le_trans ?_ (lintegral_mono (lintegral_inner_besselVector_sq_mul_le Z))
+      grw [← lintegral_mul_const_le, ← lintegral_mul_const_le]
+      rfl
     _ = F.groupMeasure Z * F.groupMeasure F.congruenceSubgroup := by
       rw [lintegral_mul_const' _ _ (groupMeasure_ne_top unitaryLevel_le_unitaryLevel_one),
         ← mul_assoc, lintegral_enorm_sq_besselVector]

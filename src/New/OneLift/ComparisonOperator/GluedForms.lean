@@ -1,6 +1,8 @@
 module
 
+import Mathlib.Data.Finset.Slice
 public import New.OneLift.ComparisonOperator.GluedLattices
+import Lib.General.LinearAlgebra.MatrixNormBounds
 
 /-!
 # Gluing: the descent of product forms and the denominators
@@ -386,7 +388,7 @@ lemma prod_twist_det_eq_inv_mul_charOfTamePart {s : Matrix a N O.chosenModulusSq
   have h_char (t : (O.levelModulus 2).ResidueRing) :
       charOfTamePart (O.levelModulus 2) O.tamePart t =
         ∏ᶠ j, O.tamePart ((O.chosenPlace ⊕ᵥ O.twistPlace) j) (levelResidueAt j t) :=
-    (finprod_comp_equiv (.trans (.ofInjective _ O.apart.1)
+    (finprod_comp_equiv (.trans (.ofInjective _ O.apart.injective)
       (.subtypeEquivRight fun _ ↦ by rw [places_levelModulus]))).symm
   -- The rows `V.genResidue • 1` in `V.stackOverGenScalar s` give `S ≡ inclMatrix V.fixedEmb`
   -- modulo `ϖ` for the rows `S` of `x Y` in `N`.
@@ -406,7 +408,6 @@ lemma prod_twist_det_eq_inv_mul_charOfTamePart {s : Matrix a N O.chosenModulusSq
         (levelResidueAt (inl i) (S.submatrix V.fixedEmb id).det) = 1 := by
     simp [RingHom.map_det, ← submatrix_map, (V.genResidue_smul_eq_inclMatrix_iff S V.fixedEmb).1 hS,
       inclMatrix, -elim_inl]
-
   -- At the places of `Q` the lift of `Y` reduces to `1`.
   have h_lift (i : O.TwistIndex) :
     stdLevel.reduceAt ((O.chosenPlace ⊕ᵥ O.twistPlace) (inr i)) (liftMod Y.val) = 1 :=
@@ -465,8 +466,8 @@ lemma normalizedDescent_productForm [DecidableEq m] [Fintype a] [WeilData E]
     -- with the same support conditions as on the right; compare the values on the support.
     ext x
     simp [← ite_and, ← submatrix_map, columnDatum, reduceAt_liftMod_congruenceGroup,
-      hL.indicator_eq_sum, IsBlockNormalised,
-      O.hasWeight.hasWeight_rankTwist.apply_det_eq_prod O.apart.1 O.tame_eq_one,
+      hL.indicator_eq_sum, IsBlockNormalized,
+      O.hasWeight.hasWeight_rankTwist.apply_det_eq_prod O.apart.injective O.tame_eq_one,
       Pi.single_apply, -elim_inl, -elim_inr]
     refine sum_congr rfl fun Y _ ↦ ite_congr rfl (fun h_supp ↦ ?_) fun _ ↦ rfl
     exact V.prod_twist_det_eq_inv_mul_charOfTamePart x Y h_supp.2
@@ -613,7 +614,7 @@ lemma norm_schur_inv_cols_le_weylGauge [DecidableEq l]
         (L.reducedInverse.submatrix id f * (O.chosenModulusSq.reductionGL k).val) i j = 0 :=
     reductionGL_surjective.exists.1 hS
   obtain ⟨h, rfl⟩ := mul_right_surjective k⁻¹.val h
-  rw [weylGauge_mul_of_mem_integralAbove h (stdLevel_le_localLevel k⁻¹.2)]
+  rw [weylGauge_mul_of_mem_integralAbove h (stdLevel_le_localLevel k⁻¹.property)]
   let A : Matrix n l (𝔸f E) := of fun (i : n) (j : l) ↦
     (L.point⁻¹.val.val.submatrix id f * k.val.val.val) i j * if j ∈ S then (M : 𝔸f E) else 1
   let Δ : Matrix l l ℂ_[p] := diagonal (S.piecewise (M : l → ℂ_[p])⁻¹ 1)
@@ -625,7 +626,7 @@ lemma norm_schur_inv_cols_le_weylGauge [DecidableEq l]
   -- modulo `ϖ²` (off `S`, via `hk`).
   have hA (i : n) (j : l) : A i j ∈ Ô E := by
     let X : Ô E := ∑ c : l, ⟨O.genIdele * L.point⁻¹.val.val i (f c), L.mul_inv_mem i (f c)⟩ *
-      ⟨k.val.val.val c j, k.2.isIntMatrix c j⟩
+      ⟨k.val.val.val c j, k.property.isIntMatrix c j⟩
     have hX_val : (X : 𝔸f E) =
         O.genIdele.val * (L.point⁻¹.val.val.submatrix id f * k.val.val.val) i j := by
       change (Ô E).subtype.toAddMonoidHom _ = _

@@ -1,5 +1,7 @@
 module
 
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.MeasureTheory.Integral.Pi
 public import Lib.General.Groups.BesselGroups
 public import Lib.General.Measure.IntegralOperators
 
@@ -16,10 +18,10 @@ last the integral of the next one over a common entry, with bounds `B₀`, `Λ`,
   `New.SieveSystem.norm_integral_mul_sum_update_le`: sum the forms `J (i + 1)` over all pairs of
   heads from one finite family, with a common entry at position `i ≤ n`. The sum is integrable in
   the common entry, its integral is the sum of the `J i`, and its twisted integrals are bounded by
-  `β` and `Λ`. `New.SieveSystem.integrable_and_integral_sum_update` collects the three.
+  `β` and `Λ`.
 * `New.SieveSystem.sum_nonneg`, `New.SieveSystem.lowerSemicontinuousAt_sum`: such a sum is
   nonnegative, and its real part is lower semicontinuous in a parameter `x : C` at each point where
-  every head is continuous. `New.SieveSystem.sum_nonneg_and_lowerSemicontinuousAt` collects the two.
+  every head is continuous.
 * `New.dampedPower`, `New.headWeight`: the decay in the frequency and the weights `Λ` of the heads
   at the real places.
 

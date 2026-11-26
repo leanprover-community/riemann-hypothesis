@@ -1,7 +1,21 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Convex.Integral
+import Mathlib.Analysis.Normed.Group.Tannery
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
-public import Lib.Weil.DualPair.ThetaIntegrals
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Adelic.Unitary.WeakApproximation
+import Lib.Adelic.Witt.WittTheorem
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.Weil.DualPair.ThetaIntegrals
+import Lib.Weil.DualPair.ThetaLiftConvergence
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Siegel sets and the Siegel–Weil formula in Weil's range
@@ -98,7 +112,8 @@ lemma exists_compact_parabolic_normal_form :
   obtain ⟨N, hN, hN_cover⟩ := IsCovolOneLattice.exists_compact_cover (ratMatrices E p p)
   obtain ⟨M, _, hM, h_bases⟩ := exists_isCompact_profileBases E p
   have h_levi : Continuous fun a : GL p (𝔸 E) ↦ P.levi (a, 1) := by
-    simp [↓continuous_iff, Splitting.levi, -coe_units_inv]
+    simp only [↓continuous_iff, Splitting.levi, mk'_apply, adeleMatrix_one, Matrix.mul_one,
+      adeleMatrix_ofMatrix]
     fun_prop
   -- The compact set is `N ×ˢ (K * levi '' M)⁻¹` with `K` the maximal compact subgroup.
   open Pointwise in
@@ -168,7 +183,7 @@ lemma exists_siegel_set :
   let A : Matrix n I E := Y.val.submatrix id ((↑) : I → n)
   have hA_inv : HasLeftInv A :=
     ⟨_, (congrArg (submatrix · _ _) Y.inv_val).trans (submatrix_one _ (by simp))⟩
-  have hA_isotropic : Aᴴ * S.J * A = 0 := funext₂ fun i j ↦ hY.isotropic i i.2 j j.2
+  have hA_isotropic : Aᴴ * S.J * A = 0 := funext₂ fun i j ↦ hY.isotropic i i.property j j.property
   obtain ⟨γ, hγ⟩ := exists_isometry_orthogonal P hA_inv hA_isotropic
   let γk : Matrix n p E := γ.val.val * P.k
   have fix : W.val * (D * (⅟W.val * γk)) = γk := by

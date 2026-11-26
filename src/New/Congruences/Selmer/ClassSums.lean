@@ -1,11 +1,17 @@
 module
 
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.Congruences.GaloisRepresentations.SelmerHypotheses
 public import New.Congruences.Selmer.AuxiliaryPrimes
-public import New.OneLift.ComparisonOperator.ThreeExchanges
 public import New.OneLift.HeckeValues.AlgebraicPartIntegrality
 public import New.OneLift.HeckeValues.PeriodAtOne
-public import New.OneLift.HeckeValues.TwistedRatio
+public import Lib.SiegelWeil.Tower.FiniteTateIntegral
+public import New.Determinant.Twist.FitTwists
+import Lib.ClassField.Global.NormTheorems
+import Lib.ClassField.HeckeL.ContinuationAtOne
+import New.OneLift.ComparisonOperator.FirstFactors
+import New.OneLift.ComparisonOperator.ThreeExchanges
+import New.OneLift.HeckeValues.TwistedRatio
 
 /-!
 # L-values of a pair as integral measures, and avatars of tame characters
@@ -187,7 +193,7 @@ lemma exists_mul_norm_sq_detPeriod_eq {p : D.CriticalPair} (h_ram : p.IsRamified
     (fun τ : D.Φ ↦ p.negWeight τ - 1)
   refine ⟨C, fun ϑ ↦ ?_⟩
   set Λ : ℂ := detPeriod (Fin 2) (p.character * ϑ.toAutChar * upsilonU1 ^ 1)
-    (fun τ : D.Φ ↦ p.negWeight τ - 1) (D.twistModulus ϑ.1 2) (p.tamePart * ϑ.tamePart)
+    (fun τ : D.Φ ↦ p.negWeight τ - 1) (D.twistModulus ϑ.toTameChar 2) (p.tamePart * ϑ.tamePart)
   obtain ⟨γ, norm_γ, eq_γ⟩ :=
     exists_period_inv (isTameFor_of_hasWeight (c := 2) ϑ (hasWeight_mul_upsilonU1 p ϑ.1) h_ram)
   have h_norm : ‖γ‖ * ‖Λ‖ = 1 := by rw [← norm_mul, show γ * Λ = 1 from eq_γ 1, norm_one]
@@ -239,7 +245,6 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
         detPeriod (Fin 2) (p.character * ϑ'.toAutChar * upsilonU1 ^ 1)
           (fun τ : D.Φ ↦ p.negWeight τ - 1)
           (D.twistModulus ϑ' 2) (p.tamePart * ϑ'.tamePart)‖ ^ 2 := by
-  classical
   -- The period is a weighted sum of kernel values at points `g x` that depend only on the modulus,
   -- and `N` times such a value is integral once `g x` is moved to an integral point.
   let c (τ : D.Φ) : ℕ := p.negWeight τ - 1
@@ -256,7 +261,7 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
   refine ⟨N, hN, fun ϑ ↦ ?_⟩
   let g (x : StdClasses (stdLevel D.E (Fin 2)) × GL (Fin 2) (D.twistModulus ϑ 2).ResidueRing) :
     Gf D.E (Fin 2) :=
-    x.1.out * (Rows.liftMod x.2).1
+    x.1.out * (Rows.liftMod x.2).val
   let θ : Gf D.E (Fin 2) → ℂ :=
     detKernel (Fin 2) (p.character * TameChar.one.toAutChar * upsilonU1 ^ 1) c (D.twistModulus ϑ 2)
       (Pi.single 1 1)
@@ -282,7 +287,7 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
     simp [variableMinor, det_apply]
   have h_twist (μ : AutChar D.E) (x : Gf D.E (Fin 2)) :
       detKernel (Fin 2) (p.character * μ * upsilonU1 ^ 1) c (D.twistModulus ϑ 2) (Pi.single 1 1) x =
-        μ.1 (detFin 1 x) * θ x := by
+        μ.val (detFin 1 x) * θ x := by
     simp [θ, detKernel, modKernel_twist]
     ac_rfl
   -- So the period at a character of modulus `ϑ.Q` is a sum of multiples of its values.
@@ -291,7 +296,7 @@ lemma exists_isIntegralMeasure_norm_sq_detPeriod (p : D.CriticalPair) :
         (p.tamePart * ϑ'.tamePart) =
         stdClassSum (stdLevel D.E (Fin 2)) fun x ↦ ∑ y :
           GL (Fin 2) (D.twistModulus ϑ 2).ResidueRing,
-          ϑ'.toAutChar.1 (detFin 1 (x * (liftMod y).1)) * θ (x * (liftMod y).1) := by
+          ϑ'.toAutChar.val (detFin 1 (x * (liftMod y).val)) * θ (x * (liftMod y).val) := by
     have h_weight : (p.character * ϑ'.toAutChar * upsilonU1 ^ 1).HasWeight (-c ·)
       (p.tamePart * ϑ'.tamePart) := weight ϑ'
     obtain ⟨μ, Q, ψ⟩ := ϑ'
@@ -323,8 +328,8 @@ theorem exists_isTwistMeasure_of_z_eq_one {p : D.CriticalPair} (h_ram : p.IsRami
   -- `D.chosenGroupOrder * N` clears the denominators of the period; `C` relates its size at a
   -- twist to `L`-values.
   obtain ⟨N, hN, h_measure⟩ := exists_isIntegralMeasure_norm_sq_detPeriod p
-  obtain ⟨C, Λ_twist⟩ : ∃ C : ℝ, ∀ ϑ : D.Twist, Λ ϑ.1 ≠ 0 ∧ C ≠ 0 ∧
-      C * ‖Λ ϑ.1‖ ^ 2 =
+  obtain ⟨C, Λ_twist⟩ : ∃ C : ℝ, ∀ ϑ : D.Twist, Λ ϑ.toTameChar ≠ 0 ∧ C ≠ 0 ∧
+      C * ‖Λ ϑ.toTameChar‖ ^ 2 =
         Exchange.lValueProd ({w | D.IsChosen w} ∪ ϑ.Q) (p.character * ϑ.toAutChar)⁻¹ 1 :=
     exists_mul_norm_sq_detPeriod_eq h_ram
   refine ⟨fun ϑ ↦ ‖D.chosenGroupOrder * N * Λ ϑ‖ ^ 2,
@@ -341,13 +346,13 @@ theorem exists_isTwistMeasure_of_z_eq_one {p : D.CriticalPair} (h_ram : p.IsRami
     ring
   · -- Compare `Λ_twist` at `ϑ` and at `1`: the two values of `lValueProd` differ by the factor
     -- in `lValueProd_eq_mul_prod_ratio_sq`, and `C ≠ 0` cancels.
-    have h_sq : (‖Λ ϑ.1‖ : ℂ) ^ 2 =
+    have h_sq : (‖Λ ϑ.toTameChar‖ : ℂ) ^ 2 =
         ‖Λ TameChar.one‖ ^ 2 * (ϑ.normQ * p.ratio ϑ ^ 2) := by
       have h_ratio : Exchange.lValueProd ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q)
           (p.character * ϑ.toAutChar ^ (1 : ℤˣ).val)⁻¹ p.z = ϑ.normQ ^ p.z ^ 2 *
             (Exchange.lValueProd {w : FinPlace D.E | D.IsChosen w} p.character⁻¹ p.z *
-              ∏ k ∈ Icc 1 p.z, (p.lowerPoint k).ratio ϑ.1 1 ^ 2) :=
-        p.lValueProd_eq_mul_prod_ratio_sq 1 ϑ.1
+              ∏ k ∈ Icc 1 p.z, (p.lowerPoint k).ratio ϑ.toTameChar 1 ^ 2) :=
+        p.lValueProd_eq_mul_prod_ratio_sq 1 ϑ.toTameChar
       obtain ⟨-, hC, h_one⟩ := Λ_twist 1
       obtain ⟨-, -, h_ϑ⟩ := Λ_twist ϑ
       -- With `z = 1` the product has one factor, the square of the ratio; divide by `C` after
@@ -410,11 +415,11 @@ auxiliary set avoiding `badPlaces D ℓ`, the places dividing `ℓ`, `D.M` or `D
 noncomputable def tameCharOfAuxiliary (I : Finset (FinPlace D.E))
     (hI : IsAuxiliary (badPlaces D ℓ) I) (χ : tameChars I) :
     D.TameChar where
-  toAutChar := χ.1.1
+  toAutChar := χ.val.1
   Q := I
-  tamePart := χ.1.2
-  hasWeight := χ.2.1
-  tamePart_eq_one := χ.2.2
+  tamePart := χ.val.2
+  hasWeight := χ.property.1
+  tamePart_eq_one := χ.property.2
   star_notMem := by grind
   coprime := (coprime_prod_q_of_isAuxiliary hI).2
 
@@ -441,41 +446,29 @@ modulus `I` in `D.TameChar`, the weight-zero tamely ramified characters of U(1)(
 lemma exists_tameChar_invAvatar_eq {I : Finset (FinPlace D.E)} (hI : IsAuxiliary (badPlaces D ℓ) I)
     {ψ : Gal(Ω/D.E) →* PadicAlgCl ℓ} (hψ : IsFromU1 (placesDividing D.E ℓ) I ψ) :
     ∃ τ : D.TameChar, τ.Q = I ∧ ψ = τ.invAvatar := by
-  -- `ψ (Art x) = η (x / star x)` for a character `η` of the finite ideles that kills the
-  -- principal ones. Restricted to U(1), `η` factors through the class group of tame level `I`, so
-  -- it comes from a tame character `μ`; then `ψ` is `TameChar.invAvatar` of `μ⁻¹`.
-  obtain ⟨η, η_rat, η_int, η_art⟩ : ∃ η : (𝔸f D.E)ˣ →* PadicAlgCl ℓ,
-      (∀ y : D.Eˣ, η (principalIdele y) = 1) ∧
-      (∀ a ∈ idelesUnitOff (placesDividing D.E ℓ).conjClosure,
-        (∀ w ∈ ↑I \ (placesDividing D.E ℓ).conjClosure,
-          Valued.v ((ideleAt w a : LocField w) - 1) < 1) → η a = 1) ∧
-      ∀ (x : (𝔸f D.E)ˣ) (g : Gal(Ω/D.E)), artinMap Gal(Ω/D.E) x = g → ψ g = η (x / star x) :=
-    hψ.exists_ideleChar
+  -- Factor `ψ ∘ Art` through `η`, restrict to `U(1)`, and lift to `tameChars I`.
+  obtain ⟨η, η_rat, η_int, η_art⟩ := hψ.exists_ideleChar
   let toFinIdele : unitary (𝔸 D.E) →* (𝔸f D.E)ˣ :=
-    (Units.map (MonoidHom.snd (NumberField.InfinitePlace D.E → ℂ) (𝔸f D.E))).comp Unitary.toUnits
+    (Units.map (MonoidHom.snd _ (𝔸f D.E))).comp Unitary.toUnits
   let η' : unitary (𝔸 D.E) →* PadicAlgCl ℓ := η.comp toFinIdele
-  -- `η'` is trivial on rational points and on integral points that are `1` modulo `I`.
-  have rat_le : rationalU1 ≤ η'.ker := by
-    intro u hu
+  have rat_le : rationalU1 ≤ η'.ker := fun u hu ↦ by
     obtain ⟨y, hy⟩ := exists_unitary_of_mem_rationalU1 hu
-    have h_principal : toFinIdele u = principalIdele (Unitary.toUnits y) :=
+    have h : toFinIdele u = principalIdele (Unitary.toUnits y) :=
       Units.ext (by simp [toFinIdele, ← hy])
-    simp [η', h_principal, η_rat]
+    simp [η', h, η_rat]
   have int_le : integralU1 I ≤ η'.ker := fun u ⟨hu, hu_red⟩ ↦
     η_int _ (idelesUnitOff_mono bot_le (idelesUnitOff_empty.ge ⟨hu, star_mem_Ô hu⟩))
       fun w hw ↦ residue_eq_iff_valuation_sub_lt_one.1 (hu_red w hw.1)
-  let χ : unitary (𝔸 D.E) ⧸ (rationalU1 ⊔ integralU1 I) →* ℂ :=
-    MonoidHom.comp ιℓ.symm (QuotientGroup.lift _ η' (sup_le rat_le int_le))
-  -- The character `χ` is that of a member `μ` of `tameChars I`.
-  obtain ⟨μ, hμ⟩ := AutChar.exists_mem_tameChars χ
+  obtain ⟨μ, hμ⟩ := AutChar.exists_mem_tameChars
+    (MonoidHom.comp ιℓ.symm (QuotientGroup.lift _ η' (sup_le rat_le int_le)))
   refine ⟨tameCharOfAuxiliary I hI μ⁻¹, rfl, MonoidHom.ext fun g ↦ ?_⟩
   obtain ⟨x, hx⟩ := artinMap_surjective (AbsGal D) g
   let u : unitary (𝔸 D.E) := divStar (finIdeleIncl x)
-  have h_baseChange : (μ.val.1.baseChange.finPart x : ℂ) = μ.val.1.val u := rfl
   calc ψ g = η (x / star x) := η_art x g hx
     _ = η' u := congrArg η (Units.ext rfl)
     _ = ιℓ (μ.val.1.val u) := ιℓ.symm_apply_eq.1 (hμ u).symm
     _ = (tameCharOfAuxiliary I hI μ⁻¹).invAvatar g := by
-      simp [invAvatar_eq_of_artinMap_eq hx, h_baseChange, -map_inv₀]
+      have h_bc : (μ.val.1.baseChange.finPart x : ℂ) = μ.val.1.val u := rfl
+      simp [invAvatar_eq_of_artinMap_eq hx, h_bc, -map_inv₀]
 
 end New.Selmer

@@ -1,7 +1,11 @@
 module
 
 public import Lib.Weil.DualPair.ShortIsotropicVectors
-public import Lib.Weil.DualPair.ThetaLiftConvergence
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Base
+import Lib.General.LinearAlgebra.PartnerAlgebra
+import Lib.Weil.DualPair.ThetaLiftConvergence
+import Lib.Weil.DualPair.WeilAction
 
 /-!
 # Rapid decay of theta kernels of unitary dual pairs under support conditions
@@ -205,17 +209,12 @@ lemma isotropic_span_rankOneMaps (h_iso : dᴴ * T.J * d = 0 ∨ cᴴ * S.J * c 
     ∀ γ ∈ Submodule.span E (Set.range (S.rankOneMaps d c).col),
     ∀ η ∈ Submodule.span E (Set.range (S.rankOneMaps d c).col),
       star γ ⬝ᵥ (S.hom T).J *ᵥ η = 0 := by
-  have h_source : (cᴴ * S.J)ᵀᴴ * S.J⁻¹ᵀ * (cᴴ * S.J)ᵀ = (cᴴ * S.J * c)ᴴᵀ := by
-    rw [conjTranspose_transpose_eq_transpose_conjTranspose, ← transpose_mul, ← transpose_mul,
-      ← Matrix.mul_assoc, conjTranspose_mul (cᴴ * S.J),
-      mul_nonsing_inv_cancel_right _ _ ((isUnit_iff_isUnit_det _).1 S.isUnit_J)]
-  have h_gram : (S.rankOneMaps d c)ᴴ * (S.hom T).J * S.rankOneMaps d c = 0 := by
-    rw [hom_J, conjTranspose_kronecker, ← mul_kronecker_mul, ← mul_kronecker_mul, h_source]
-    rcases h_iso with h_zero | h_zero <;> simp [h_zero]
-  rw [← range_mulVecLin]
-  rintro _ ⟨γ, rfl⟩ _ ⟨η, rfl⟩
-  simp only [mulVecLin_apply, star_mulVec_dotProduct, mulVec_mulVec, ← Matrix.mul_assoc, h_gram,
-    zero_mulVec, dotProduct_zero]
+  simp only [← range_mulVecLin, LinearMap.mem_range, forall_exists_index,
+    forall_apply_eq_imp_iff, mulVecLin_apply, star_mulVec_dotProduct, mulVec_mulVec,
+    ← Matrix.mul_assoc, hom_J, conjTranspose_kronecker, ← mul_kronecker_mul, ← transpose_mul,
+    ← conjTranspose_mul, conjTranspose_transpose_eq_transpose_conjTranspose,
+    mul_nonsing_inv_cancel_right _ _ ((isUnit_iff_isUnit_det _).1 S.isUnit_J)]
+  rcases h_iso with h | h <;> simp [h]
 
 omit [WeilData E] in
 /-- If `d` is invertible, the maps `dᵢ ⟨cⱼ, ·⟩` span the space of all maps `z cᴴ S.J`. -/
@@ -333,7 +332,6 @@ lemma exists_norm_pairWeil_schrodingerOp_mul_pow_le {S : Space E n s} {T : Space
   refine ⟨C' * |Y| * 2 ^ (N + A), fun v g h ℓ ρ H hv hρ hH h_growth h_short ↦ ?_⟩
   let L : 𝒮 (S.hom T) →L[ℂ] ℂ := ℓ ∘L pairWeil S T a b (g, h)
   let m : ℝ := (fockMoment (N + A) v).toReal
-  have hm : 0 ≤ m := toReal_nonneg
   have hL : ‖L‖ ≤ |Y| * (ρ * H) ^ A :=
     L.opNorm_le_bound (by positivity) fun f ↦
       (h_growth f).trans (by grw [le_abs_self Y, mul_right_comm])
@@ -365,6 +363,10 @@ lemma exists_norm_pairWeil_schrodingerOp_mul_pow_le {S : Space E n s} {T : Space
     _ = C' * |Y| * 2 ^ (N + A) * m * ρ ^ (N + 2 * A) := by
       simp [mul_pow, div_pow, pow_add, two_mul, field]
 
+/-- The adelic coordinate matrix of a rational basis at `g`, as an invertible matrix. -/
+private noncomputable def basisCoordMatrix (S : Space E n s) (g : G E s) (c : GL n E) :
+    GL n (𝔸 E) := g⁻¹.toUnitary.val * (S.x⁻¹ * c.map toAdele)
+
 /-- Data on surjective maps decay rapidly on the target group. Let `Ψ` be Schwartz–Bruhat above a
 set `P` of finite places disjoint from its conjugate. Suppose that every map `y` with `Ψ y ≠ 0` has
 a right inverse after the ring map `φ` to a nonzero ring (for evaluation at a place `w`: `y` is
@@ -394,19 +396,14 @@ lemma pairTheta_decay_of_onto (S : Space E n s) (T : Space E n' s') (a b : AutCh
         ∀ j : Unit, d.col j ∈ (T.move k).latticeBall (2 / T.height k) :=
       T.exists_short_isotropic hk
     obtain ⟨c, hc_short⟩ := h_basis g
-    -- The coordinates of the basis form the invertible matrix `(S.x * g)⁻¹ c`.
-    let X : GL n (𝔸 E) := g⁻¹.toUnitary.val * (S.x⁻¹ * c.map toAdele)
-    have h_coord : S.coordMatrix g c.val = X.val := rfl
-    have h_ne (y : n' × n → 𝔸f E) (hy : Ψ y ≠ 0) :
-        ((T.coordMatrix k d).map snd)ᴴ * (vecToMatrix y * (S.coordMatrix g c.val).map snd) ≠ 0 := by
-      simpa only [h_coord] using T.coordMatrix_mul_ne_zero hd_ne X (h_onto y hy)
     exact ⟨d, c, 2 / T.height k, Z * S.height g,
       { short_target := hd_short
         short_source := hc_short
         mul_le := (mul_comm _ _).le
         isotropic := .inl hd_iso
         invariant := by simp [← vecAtPoint_hom]
-        ne_zero_or_mean_eq_zero := .inl h_ne }⟩
+        ne_zero_or_mean_eq_zero := .inl fun y hy ↦
+          T.coordMatrix_mul_ne_zero hd_ne (basisCoordMatrix S g c) (h_onto y hy) }⟩
   obtain ⟨C, h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (p := Unit) (q := n) (S := S)
     (T := T)
     (Ψ := Ψ) a b hP vacElem_mem_finitePart N A Y Z
@@ -442,19 +439,14 @@ lemma pairTheta_decay_of_injective (S : Space E n s) (T : Space E n' s') (a b : 
     obtain ⟨c, hc_ne, hc_iso, hc_short⟩ : ∃ c : Matrix n Unit E, c ≠ 0 ∧ cᴴ * S.J * c = 0 ∧
         ∀ j : Unit, c.col j ∈ (S.move g).latticeBall (2 / S.height g) :=
       S.exists_short_isotropic hg
-    -- The coordinates of the basis form the invertible matrix `(T.x * k)⁻¹ d`.
-    let X : GL n' (𝔸 E) := k⁻¹.toUnitary.val * (T.x⁻¹ * d.map toAdele)
-    have h_coord : T.coordMatrix k d.val = X.val := rfl
-    have h_ne (y : n' × n → 𝔸f E) (hy : Ψ y ≠ 0) :
-        ((T.coordMatrix k d.val).map snd)ᴴ * (vecToMatrix y * (S.coordMatrix g c).map snd) ≠ 0 := by
-      simpa only [h_coord] using S.mul_coordMatrix_ne_zero hc_ne X (h_inj y hy)
     exact ⟨d, c, Z * T.height k, 2 / S.height g,
       { short_target := hd_short
         short_source := hc_short
         mul_le := le_rfl
         isotropic := .inr hc_iso
         invariant := by simp [← vecAtPoint_hom]
-        ne_zero_or_mean_eq_zero := .inl h_ne }⟩
+        ne_zero_or_mean_eq_zero := .inl fun y hy ↦
+          S.mul_coordMatrix_ne_zero hc_ne (basisCoordMatrix T k d) (h_inj y hy) }⟩
   obtain ⟨C, h_decay⟩ := exists_norm_pairWeil_schrodingerOp_mul_pow_le (p := n') (q := Unit)
     (S := S) (T := T)
     (Ψ := Ψ) a b hP vacElem_mem_finitePart N A Y Z

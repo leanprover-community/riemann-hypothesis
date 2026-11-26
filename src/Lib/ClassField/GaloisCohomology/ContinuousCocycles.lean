@@ -1,5 +1,10 @@
 module
 
+public import Mathlib.FieldTheory.Galois.IsGaloisGroup
+public import Mathlib.RepresentationTheory.Invariants
+public import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.ClassField.Places.GaloisDefs
 
 /-!
@@ -111,7 +116,12 @@ def B2 : Submodule R (G × G → M) :=
       module⟩
 
 /-- Continuous cohomology `H²(G, M)`: the continuous 2-cocycles of `ρ` modulo the coboundaries of
-continuous 1-cochains `G → M`. -/
+continuous 1-cochains `G → M`.
+
+For a discrete module `A`, this explicit quotient is identified with the cohomology `A.H 2`,
+Mathlib's `continuousCohomology 2`, by `New.DiscreteModule.H2EquivH`. It stays a separate definition
+until the class field theory built on it (`cyclicClass`, `IsLocalArtin`, `localArtin`) moves onto Tau
+Ceti's, which waits on Tau Ceti. -/
 @[instance_reducible]
 def H2 : Type _ := Z2 ρ ⧸ (B2 ρ).comap (Z2 ρ).subtype
   deriving AddCommGroup, Module R
@@ -125,7 +135,7 @@ variable {ρ}
 given), the additive map `f ↦ u ∘ f ∘ φ` from continuous 1-cocycles of `ρ` to those of `ρ'`. -/
 abbrev pairMapZ1 (h : ∀ (g : H) (m : M), u (ρ (φ g) m) = ρ' g (u m) := by bound) :
     Z1 ρ →+ Z1 ρ' where
-  toFun f := ⟨fun g ↦ u (f.1 (φ.1 g)), f.2.imp (by continuity) (by aesop)⟩
+  toFun f := ⟨fun g ↦ u (f.val (φ.toMonoidHom g)), f.property.imp (by continuity) (by aesop)⟩
   map_zero' := by bound
   map_add' := by bound
 
@@ -302,7 +312,7 @@ variable {Γ K Ω : Type*} [Group Γ] [Field K] [Field Ω] [Algebra K Ω] [MulSe
 /-- `π` is a uniformiser of `K` for `A`: an element `x` of `K` lies in the maximal ideal of `A`
 exactly when its valuation is at most that of `π`. Here `valuationVia K A x` is the valuation of
 `A` at the image of `x` in `Ω`. -/
-def IsUniformiser (π : K) : Prop :=
+def IsUniformizer (π : K) : Prop :=
   ∀ x : K, valuationVia K A x < 1 ↔ valuationVia K A x ≤ valuationVia K A π
 
 /-- For a subgroup `H` of `Γ`, the intermediate field of `Ω / K` of the elements fixed by `H`. -/
@@ -369,22 +379,22 @@ infinite). -/
 abbrev residueCard : ℕ := Nat.card (IsLocalRing.ResidueField (valRingBelow K A))
 
 /-- The order normalised on `K`: a chosen additive `f : Ωˣ → ℚ` with `n * f x = a` exactly when
-`x ^ n` and `π ^ a` have equal valuation, for every uniformiser `π` of `K` (`New.IsUniformiser`: an
+`x ^ n` and `π ^ a` have equal valuation, for every uniformiser `π` of `K` (`New.IsUniformizer`: an
 `x : K` lies in the maximal ideal of `A` exactly when its valuation is at most that of `π`);
 valuations are those of `A`, taken in `Ω`. It is unspecified if no such map exists; see
 `New.valuation_pow_eq_iff_mul_ordRat_eq_of_exists`. -/
 def ordRat : DiscreteUnits Ω →+ ℚ :=
   Classical.epsilon fun f : DiscreteUnits Ω →+ ℚ ↦
-    ∀ π : Kˣ, IsUniformiser A (π : K) → ∀ (x : DiscreteUnits Ω) (n : ℕ) (a : ℤ),
+    ∀ π : Kˣ, IsUniformizer A (π : K) → ∀ (x : DiscreteUnits Ω) (n : ℕ) (a : ℤ),
       A.valuation x.toMul ^ n = valuationVia K A π ^ a ↔ n * f x = a
 
 /-- The defining property of `New.ordRat` (`x ^ n` and `π ^ a` have equal valuation in `A` exactly
 when `n * ordRat K A x = a`, for each uniformiser `π`) holds as soon as some additive map has it. -/
 lemma valuation_pow_eq_iff_mul_ordRat_eq_of_exists
-    (h_exists : ∃ f : DiscreteUnits Ω →+ ℚ, ∀ π : Kˣ, IsUniformiser A (π : K) →
+    (h_exists : ∃ f : DiscreteUnits Ω →+ ℚ, ∀ π : Kˣ, IsUniformizer A (π : K) →
       ∀ (x : DiscreteUnits Ω) (n : ℕ) (a : ℤ),
         A.valuation x.toMul ^ n = valuationVia K A π ^ a ↔ n * f x = a)
-    (π : Kˣ) (hπ : IsUniformiser A (π : K)) (x : DiscreteUnits Ω) (n : ℕ) (a : ℤ) :
+    (π : Kˣ) (hπ : IsUniformizer A (π : K)) (x : DiscreteUnits Ω) (n : ℕ) (a : ℤ) :
     A.valuation x.toMul ^ n = valuationVia K A π ^ a ↔ n * ordRat K A x = a :=
   Classical.epsilon_spec h_exists π hπ x n a
 

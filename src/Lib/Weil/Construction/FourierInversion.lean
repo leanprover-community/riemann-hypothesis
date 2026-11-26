@@ -1,6 +1,12 @@
 module
 
+import Mathlib.GroupTheory.IndexNSmul
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.TotallySplit
 public import Lib.Weil.Construction.ThetaDictionary
+public import Lib.General.Algebra.AdicCompletion
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.Cohomology.Etale.Basic
 
 /-!
 # Fourier inversion for theta functions
@@ -70,7 +76,7 @@ lemma mk_eq_mk_iff_sub_mem {x x' : K} :
 /-- Chosen representatives of the quotient of `K` by `H ⊓ K` are a system of representatives. -/
 lemma out (K H : AddSubgroup A) :
     IsRepresentativeSystem (fun q : K ⧸ H.addSubgroupOf K ↦ (q.out : A)) K H := by
-  refine ⟨fun q ↦ q.out.2, fun x hx ↦ ?_⟩
+  refine ⟨fun q ↦ q.out.property, fun x hx ↦ ?_⟩
   lift x to K using hx
   simp only [← mk_eq_mk_iff_sub_mem, QuotientAddGroup.out_eq', existsUnique_eq']
 
@@ -87,7 +93,7 @@ lemma exists_mem_iff_eq (hy : IsRepresentativeSystem y K H) :
 lemma card_eq_relIndex (hy : IsRepresentativeSystem y K H) : Nat.card ι = H.relIndex K := by
   refine Nat.card_eq_of_bijective (fun i ↦ ((⟨y i, hy.mem i⟩ : K) : K ⧸ H.addSubgroupOf K))
     ⟨fun i j h ↦ hy.eq_of_sub_mem (mk_eq_mk_iff_sub_mem.1 h), fun q ↦ ?_⟩
-  obtain ⟨i, (hi : (q.out : A) - y i ∈ H), -⟩ := hy.existsUnique q.out q.out.2
+  obtain ⟨i, (hi : (q.out : A) - y i ∈ H), -⟩ := hy.existsUnique q.out q.out.property
   exact ⟨i, (mk_eq_mk_iff_sub_mem.2 hi).symm.trans q.out_eq'⟩
 
 /-- If `f` is constant on the classes of `K` modulo `H`, its sum over the representatives is
@@ -184,11 +190,6 @@ lemma star_smul_idealLattice_le (hδ : (δ : 𝔸f E) ∈ Ô E) :
   rintro - ⟨γ, hγ, rfl⟩
   exact smul_mem_idealLattice (by simpa using star_mem_Ô hδ) hγ
 
-/-- For a nonzero integral `δ` the lattice `𝔞₀ⁿ` lies in `δ⁻¹ 𝔞₀ⁿ`. -/
-lemma idealLattice_le_inv_smul (hδ : (δ : 𝔸f E) ∈ Ô E) (hδ_ne : δ ≠ 0) :
-    idealLattice E n ≤ δ⁻¹ • idealLattice E n :=
-  fun _ hγ ↦ (mem_inv_smul_idealLattice hδ_ne).2 (smul_mem_idealLattice hδ hγ)
-
 /-- For `δ δ̄ = N` and `δ ≠ 0`, the index of `δ̄ 𝔞₀ⁿ` in `δ⁻¹ 𝔞₀ⁿ` is that of `N 𝔞₀ⁿ` in `𝔞₀ⁿ`,
 where `𝔞₀ⁿ = idealLattice E n`: multiplication by `δ` carries one pair to the other. -/
 lemma relIndex_star_smul_inv_smul (hδ_ne : δ ≠ 0) (hN : δ * star δ = N) :
@@ -232,7 +233,8 @@ lemma relIndex_mul_relIndex_idealLattice (hδ : (δ : 𝔸f E) ∈ Ô E) (hN_ne 
         N ^ (2 * Fintype.card (InfinitePlace E × n)) := by
   have hδ_ne : δ ≠ 0 := ne_zero_of_mul_star_eq hN_ne hN
   rw [AddSubgroup.relIndex_mul_relIndex _ _ _ (star_smul_idealLattice_le hδ)
-    (idealLattice_le_inv_smul hδ hδ_ne), relIndex_star_smul_inv_smul hδ_ne hN,
+    (fun _ hγ ↦ (mem_inv_smul_idealLattice hδ_ne).2 (smul_mem_idealLattice hδ hγ)),
+    relIndex_star_smul_inv_smul hδ_ne hN,
     relIndex_map_nsmul_idealLattice]
 
 /-- For `δ` integral with `δ δ̄ = N ≠ 0`, the group `δ⁻¹ 𝔞₀ⁿ⧸𝔞₀ⁿ`, where `𝔞₀ⁿ = idealLattice E n`,
@@ -361,7 +363,7 @@ lemma Space.exists_smul_entireTheta_vacElem_eq {ε : n → ℤˣ} (V : Space E n
       c • entireTheta V.vacElem = ∑ j : Γ, signedShift (-γ j) (ratShift (y i) F) := by
     have h_phase : ∀ x ∈ star δ • idealLattice E n, ratPhase x (y i) = 1 :=
       fun x hx ↦ (mem_star_smul_idealLattice_iff hδ_ne).1 hx _ (hy.mem i)
-    exact V.isThetaFunction_iff.1 ((hF.ratShift h_phase).sum_signedShift hγ)
+    exact V.exists_smul_entireTheta_of_isThetaFunction ((hF.ratShift h_phase).sum_signedShift hγ)
   choose c hc using h_multiple
   refine ⟨c, hc, ?_⟩
   calc _ = ∑ i : Y, ratShift (-y i) (∑ j : Γ, signedShift (-γ j) (ratShift (y i) F)) := by

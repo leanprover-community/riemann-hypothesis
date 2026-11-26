@@ -1,8 +1,21 @@
 module
 
-public import Lib.General.Analysis.HolomorphicIntegrals
-public import Lib.General.Geometry.GeometricPoints
+import Mathlib.AlgebraicGeometry.Modules.Sheaf
+import Mathlib.AlgebraicGeometry.Morphisms.Immersion
+import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+import Mathlib.Analysis.Calculus.TangentCone.Seq
+import Mathlib.Analysis.Normed.Module.ContinuousInverse
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PicardGroup
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Linter.Style
+import Mathlib.Topology.Algebra.Group.SubmonoidClosure
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.General.Analysis.HolomorphicIntegrals
+import Lib.General.Geometry.GeometricPoints
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Exponential of compact commutative Lie groups and uniformisation of abelian varieties
@@ -479,10 +492,6 @@ private lemma surjective_fderiv_relations {V : (Spec (CommRingCat.of ℂ)).Opens
   ext
   simp [h_eval, ← ofSection_eq hx, vecMul_eq_sum, Pi.single_apply, pderiv_map]
 
-private lemma concreteCategory_hom_eq_hom {R S : CommRingCat} (f : R ⟶ S) :
-    ConcreteCategory.hom f = f.hom :=
-  rfl
-
 /-- Let `P` present `Γ(A, U)` over `Γ(Spec ℂ, V)`, the algebra map being `A.hom.appLE V U e`, for
 affine opens `U` and `V`. Every zero `p` of the relations of `P`, read as polynomial functions on
 `ℂ^ι`, is the vector of coordinates of a complex point of `U`. -/
@@ -512,7 +521,7 @@ private lemma exists_point_of_relations_eq_zero {V : (Spec (CommRingCat.of ℂ))
     landsIn_fromSpec hU _, funext fun i ↦ ?_⟩
   · -- The point lies over `Spec ℂ`, since the constants are evaluated as before.
     rw [← ofSection_appLE A.hom e r (landsIn_fromSpec hU _)]
-    simpa [landsIn_fromSpec hU, ofSection_eq hV1, h_alg, ev, concreteCategory_hom_eq_hom] using
+    simpa [landsIn_fromSpec hU, ofSection_eq hV1, h_alg, ev] using!
       h_lift (C r)
   · -- Its `i`-th coordinate is `p i`: the generator `X i` evaluates to `p i`.
     simpa [Algebra.Generators.algebraMap_apply, ev] using h_lift (X i)
@@ -650,7 +659,7 @@ lemma LineBundle.IsProjEmbedding.compactSpace_complexPoint (hN : N.IsProjEmbeddi
   have hf : Continuous f := by
     refine continuous_iff_continuousAt.mpr fun c ↦ continuousAt_complexPoint_iff.mpr ?_
     have hv_coords (c : K) : (((hyperplaneBundle ι).pull Limits.prod.fst).pull
-        j).IsHomogeneousCoords (f c).left (c.1 : ι → ℂ) := by
+        j).IsHomogeneousCoords (f c).left (c.val : ι → ℂ) := by
       rw [IsHomogeneousCoords.pull_iff, show (f c).left ≫ j = t c from hs c]
       exact ht_lifts c
     exact .of_isHomogeneousCoords hN (continuousAt_pi.mp (by fun_prop)) (.of_forall hv_coords)
@@ -757,7 +766,8 @@ lemma LineBundle.IsProjEmbedding.nonempty_uniformisation [IsAbelianScheme A]
     -- complex point `x`; then `y = m • x` lies in the image.
     obtain ⟨x, hx⟩ :
         ∃ x : Spec (CommRingCat.of ℂ) ⟶ A.left, x ≫ (e.range.index • 𝟙 A).left = y.left :=
-      exists_point_over _ ((IsAbelianScheme.nsmul_surjective _ h_index.index_ne_zero).surj _)
+      (Scheme.Hom.exists_comp_eq_iff_mem_range _ _).2
+        ((IsAbelianScheme.nsmul_surjective _ h_index.index_ne_zero).surj _)
     have hxy : homMk x (by simp [← y.w, ← hx]) ≫ (e.range.index • 𝟙 A) = y := OverMorphism.ext hx
     rw [← hxy]
     simpa [comp_nsmul] using e.range.nsmul_index_mem _

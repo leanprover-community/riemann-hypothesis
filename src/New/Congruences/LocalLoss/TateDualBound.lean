@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import New.Congruences.LocalLoss.CrystallineCocycles
 
 /-!
@@ -201,7 +204,6 @@ lemma New.Selmer.comesFromClass_of_mem_ribetCocycles {ℓ : ℕ} [ThePrime ℓ] 
     (hu : ∀ x : X, InClass F K U (matrixLattice ((u x).comp η))) {m : ℕ}
     {w : G → d → QuotSpan (ℓ ^ m : R)} (hw : w ∈ ribetCocycles u ρ (ℓ ^ m)) :
     ComesFromClass (InClass F K U) (ρ.comp η) m (w ∘ η) := by
-  have := Fintype.ofFinite X
   -- `Y` is a subrepresentation of (families of matrices) × (values), determined by its first
   -- component (`Y_inj`), that contains all `(u g - 1 + (ℓ ^ m) ^ k • v, w g)` (`hY`).
   obtain ⟨k, Y, Y_inj, hY⟩ : ∃ (k : ℕ) (Y : Subrepresentation
@@ -259,7 +261,6 @@ lemma New.Selmer.relLength_ribetCocycles_le {ℓ : ℕ} [ThePrime ℓ] {X n R Γ
         ((obeying (relationsOn (crysCocycles (matrixLattice (ρ.comp η)).ρ))
           (QuotSpan (ℓ ^ m : R))).comap (LinearMap.funLeft R (d → QuotSpan (ℓ ^ m : R)) η)) ≤
       dualDefect (InClass F K U) (matrixLattice (ρ.comp η)).tateDual := by
-  have := Fintype.ofFinite X
   let L : GalLattice R Γ := matrixLattice (ρ.comp η)
   let restrict : (G → d → QuotSpan (ℓ ^ m : R)) →ₗ[R] Γ → d → QuotSpan (ℓ ^ m : R) :=
     LinearMap.funLeft R (d → QuotSpan (ℓ ^ m : R)) η

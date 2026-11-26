@@ -1,6 +1,21 @@
 module
 
-public import Lib.General.LinearAlgebra.HermiteForm
+public import Mathlib.LinearAlgebra.Matrix.Module
+public import Mathlib.NumberTheory.Padics.PadicIntegers
+import TauCeti.LinearAlgebra.Determinant.Basic
+public import Aesop.BuiltinRules
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Henselian
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.OrderOfVanishing.Noetherian
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import Lib.Speed
+import Lib.General.LinearAlgebra.HermiteForm
 
 /-!
 # Relations, relative lengths and Fitting ideals for Selmer group estimates
@@ -126,6 +141,12 @@ lemma relLength_add_length_inf : relLength S T + length A ↥(S ⊓ T) = length 
   rw [relLength, ← (T.submoduleOfEquivInf S).length_eq, add_comm]
   exact (length_eq_add_of_exact (T.submoduleOf S).subtype (T.submoduleOf S).mkQ
     (Submodule.subtype_injective _) (mkQ_surjective _) (LinearMap.exact_subtype_mkQ _)).symm
+/-- The length of `S` is the sum of the lengths of its image under `f` and the kernel of `f` on
+`S`. -/
+lemma length_map_add_length_inf_ker :
+    length A (S.map f) + length A ↥(S ⊓ f.ker) = length A S := by
+  rw [← relLength_ker S f, relLength_add_length_inf]
+
 @[simp]
 lemma relLength_bot : relLength S ⊥ = length A S := by rw [← ker_id, relLength_ker, S.map_id]
 
@@ -179,7 +200,7 @@ lemma relLength_le_of_mapsTo (h_maps : ∀ x ∈ S, f x ∈ S') (h_back : ∀ x 
     relLength S T ≤ relLength S' T' := by
   -- `S ⧸ f⁻¹ T'` surjects onto `S ⧸ T` and injects into `S' ⧸ T'`.
   let K : Submodule A S := (T'.submoduleOf S').comap (f.restrict h_maps)
-  have hK : K ≤ T.submoduleOf S := fun x ↦ h_back x x.2
+  have hK : K ≤ T.submoduleOf S := fun x ↦ h_back x x.property
   calc relLength S T ≤ length A (S ⧸ K) := length_le_of_surjective _ (factor_surjective hK)
     _ ≤ relLength S' T' :=
       length_le_of_injective (mapQ K (T'.submoduleOf S') (f.restrict h_maps) le_rfl)
@@ -256,25 +277,25 @@ lemma length_ker_le_addVal_det (M : Matrix n n O) (p : O) :
   -- is cyclic, so a quotient of `O ⧸ a i`.
   obtain ⟨Q, -, P, -, a, rfl⟩ := isValuationPair_top.smith_normal_form M
   have h_cyclic : ∀ i : n, ∃ g : QuotSpan p, torsionBy O (QuotSpan p) (a i) = O ∙ g := fun i ↦
-    (IsPrincipal.of_comap _ (span {p}).mkQ_surjective _).1
+    (IsPrincipal.of_comap _ (span {p}).mkQ_surjective _).principal
   choose g hg using h_cyclic
   let ψ : (∀ i : n, QuotSpan (a i)) →ₗ[O] n → QuotSpan p :=
     P⁻¹ • piMap fun i ↦ liftQSpanSingleton _ (toSpanSingleton O _ (g i))
       (show g i ∈ torsionBy O (QuotSpan p) (a i) by simp [hg i])
-  have h_ker : ker ((Q.1 * diagonal a * P.1) • 1 : End O (n → QuotSpan p)) ≤ .map ψ ⊤ :=
+  have h_ker : ker ((Q.val * diagonal a * P.val) • 1 : End O (n → QuotSpan p)) ≤ .map ψ ⊤ :=
     fun w hw ↦ by
       -- Cancelling `Q` shows that `a i` kills the coordinate `i` of `P • w`.
-      have h_coord : ∀ i : n, ∃ t : O, t • g i = (P.1 • w) i := by
+      have h_coord : ∀ i : n, ∃ t : O, t • g i = (P.val • w) i := by
         simpa [mul_smul, funext_iff, diagonal, ← mem_torsionBy_iff, Submodule.mem_span_singleton,
           hg] using hw
       choose t ht using h_coord
       exact ⟨fun i ↦ mkQ _ (t i), mem_top, ((smul_eq_iff_eq_inv_smul P).1 (funext ht).symm).symm⟩
-  calc length O (ker ((Q.1 * diagonal a * P.1) • 1 : End O (n → QuotSpan p)))
+  calc length O (ker ((Q.val * diagonal a * P.val) • 1 : End O (n → QuotSpan p)))
     _ ≤ length O (⊤ : Submodule O (∀ i : n, QuotSpan (a i))) := length_le_of_le_map _ ⊤ h_ker
     _ = addVal O (∏ i : n, a i) := by simp [addVal_prod]
     -- `det M = det Q * (∏ i, a i) * det P`, so its valuation is no smaller than that of the
     -- product.
-    _ ≤ addVal O (Q.1 * diagonal a * P.1).det := by simp [le_add_right]
+    _ ≤ addVal O (Q.val * diagonal a * P.val).det := by simp [le_add_right]
 
 /-- Let `O` be a discrete valuation ring, `B ≅ O/p` a cyclic `O`-module and `Z` an `O`-module of
 functions from `Γ` to `B`. If `n i • z (q i) = 0` for all `z ∈ Z`, and only `0` vanishes at all
@@ -401,7 +422,7 @@ lemma relLength_le_of_prime_smul_mem {T : Submodule ℤ_[p] V}
   -- `m + 1` classes in it are linearly dependent.
   let P : Ideal ℤ_[p] := Ideal.span {(p : ℤ_[p])}
   have h_torsion : IsTorsionBy ℤ_[p] (T ⧸ L'.submoduleOf T) p :=
-    (isTorsionBy_quotient_iff _ _).2 fun x ↦ h_kill x x.2
+    (isTorsionBy_quotient_iff _ _).2 fun x ↦ h_kill x x.property
   let : Module (ℤ_[p] ⧸ P) (T ⧸ L'.submoduleOf T) := h_torsion.module
   have : P.IsMaximal := PadicInt.prime_p.isMaximal_span_singleton
   let := Ideal.Quotient.field P
@@ -446,7 +467,7 @@ lemma relLength_le_of_relations (t : ℕ) (h_kill : ∀ x ∈ L, p ^ t • x ∈
         simpa [Finset.smul_sum, ← mul_smul, mul_comm] using h_sum
     have h_bottom : relLength T L' ≤ m :=
       relLength_le_of_prime_smul_mem (fun x hx ↦ ((h_mem x).1 hx).2) fun x ↦
-        h_rel (fun i ↦ x i) fun i ↦ (h_mem _).1 (x i).2
+        h_rel (fun i ↦ x i) fun i ↦ (h_mem _).1 (x i).property
     simpa [add_one_mul] using relLength_trans h_top h_bottom
 
 end New.Lift
@@ -515,27 +536,13 @@ lemma mul_det_mem_fittingIdeal {r : R} {v : ι → R} (h_smul : r • v ∈ N) {
 This is a case of the inclusion `Fitt(M') * Fitt(M'') ≤ Fitt(M)` for an exact sequence
 `M' → M → M'' → 0`: here `M' = R / (r)` maps to `M = R^ι / N` by `1 ↦ v`. -/
 lemma fittingIdeal.mul_mem_of_smul_mem {r : R} {v : ι → R} (h_smul : r • v ∈ N) :
-    ∀ d ∈ fittingIdeal (N ⊔ R ∙ v), r * d ∈ fittingIdeal N := by
-  -- Each row of `B` is a combination of `v` and of elements of `N`. Expand `det B` in the rows.
-  refine (span_le (p := comap (.mulLeft R r) (fittingIdeal N))).2
-    (Set.forall_mem_image.2 fun B hB ↦ ?_)
-  change r * det B ∈ fittingIdeal N
-  have h_comb (i : ι) :
-      ∃ c : (ι → R) →₀ R, ↑c.support ⊆ (N : Set (ι → R)) ∪ {v} ∧ ∑ w ∈ c.support, c w • w = B i :=
-    mem_span_set.1 (by simpa only [← N.sup_span] using hB i)
-  choose c hc h_row using h_comb
-  have h_expand :
-      det B = ∑ s ∈ Fintype.piFinset fun i ↦ (c i).support, (∏ i, c i (s i)) * det (of s) := by
-    -- The determinant is multilinear in the rows.
-    change detRowAlternating.toMultilinearMap B = _
-    rw [← funext h_row, MultilinearMap.map_sum_finset]
-    exact Finset.sum_congr rfl fun s _ ↦ det_mul_column (fun i ↦ c i (s i)) s
-  rw [h_expand, Finset.mul_sum]
-  -- In each term, every row of `s` lies in `N` or equals `v`.
-  refine sum_mem fun s hs ↦ ?_
-  rw [mul_left_comm]
-  exact Ideal.mul_mem_left _ _
-    (mul_det_mem_fittingIdeal h_smul fun i ↦ hc i (Fintype.mem_piFinset.1 hs i))
+    ∀ d ∈ fittingIdeal (N ⊔ R ∙ v), r * d ∈ fittingIdeal N :=
+  (span_le (p := comap (.mulLeft R r) (fittingIdeal N))).2 <|
+    Set.forall_mem_image.2 fun B hB ↦
+      TauCeti.det_mem_of_mem_span (I := comap (.mulLeft R r) (fittingIdeal N))
+        (s := (N : Set (ι → R)) ∪ {v}) LinearMap.proj
+        (fun i ↦ by simpa only [← N.sup_span] using hB i)
+        fun _ hs ↦ mul_det_mem_fittingIdeal h_smul hs
 
 /-- Let `I` be a finite ordered set of indices. Suppose that for each `j ∈ I`, every submodule
 `K ≥ N` that contains the `v i` with `i ∈ I`, `i < j` also contains `r j • v j`. Then there is
@@ -689,7 +696,6 @@ lemma fittingIdeal.exists_addVal_le_relLength [Finite n] (hp : p ≠ 0)
       (∀ ⦃v : n → O⦄, (∀ Ψ : (n → O) →ₗ[O] Unit → QuotSpan p, Ψ ∘ z ∈ V → Ψ v = 0) → Φ v ∈ K) ∧
       -- (c)
       ∀ d ∈ fittingIdeal K, c • d ∈ fittingIdeal N := by
-  have := Fintype.ofFinite n
   -- Noetherian induction on `N`. If `K = N` fails (b), enlarge `N` by one vector `x` with
   -- `ϖ • x ∈ N`, `ϖ` a uniformiser: `ϖ` takes the new Fitting ideal into the old one, and the
   -- length of `formsMod` modulo `V` drops.

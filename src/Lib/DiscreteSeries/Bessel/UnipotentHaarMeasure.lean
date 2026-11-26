@@ -1,7 +1,27 @@
 module
 
+import TauCeti.Analysis.Matrix.L2OpNorm
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.CategoryTheory.Countable
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Topology.Algebra.ProperAction.Torsor
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Bessel.Basic
-public import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.Adelic.Adeles.AdditiveCharacter
+import Lib.DiscreteSeries.Bruhat.FloorMeasures
+import Lib.DiscreteSeries.FlenstedJensen.RightDerivatives
+import Lib.DiscreteSeries.Haar.TotalMass
+import Lib.General.Analysis.GaussianIntegral
+import Lib.General.Measure.HaarModulus
 
 /-!
 # Haar measures on the Bessel unipotent groups 𝖴⁰ ⊆ 𝖴 and σ-finiteness on G₁
@@ -143,7 +163,7 @@ lemma measurePreserving_conj_bessel {S : Subgroup 𝔰.G₁} {P : 𝔰.BesselInd
       ∀ i j : 𝔰.BesselIndex, P i j → u.val.val i j = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) i j)
     {μ : Measure S} {s : (𝔰.middleGram (1 : ℂ)).G} [IsHaarMeasure μ]
     (h_norm : besselS ≤ normalizer S) (hs : s ∈ besselS) :
-    MeasurePreserving (fun u : S ↦ ⟨s * u.val * s⁻¹, (h_norm hs u).mp u.2⟩) μ μ := by
+    MeasurePreserving (fun u : S ↦ ⟨s * u.val * s⁻¹, (h_norm hs u).mp u.property⟩) μ μ := by
   -- Let `χ t` be the factor by which conjugation by `t` scales `μ`. The supremum `b` of
   -- `χ t * μ (ball 2)` over `besselS` is positive and finite, and `χ s * b = b`; so `χ s = 1`.
   have h_closed : IsClosed (S : Set 𝔰.G₁) := isClosed_of_entries_eq_one hS
@@ -220,7 +240,7 @@ theorem exists_measurePreserving_freeEntries {S : Subgroup 𝔰.G₁}
     if x.val.1 = a then (g.val.val - 1) x.val.2 j else 0
   let linMatrix : Matrix (Subtype p) (Subtype p) ℂ := 1 + of fun x ↦ gCol x.val.1 x.val.2
   have h_det : linMatrix.det = 1 :=
-    det_eq_one_of_unitriangular (lev := fun x ↦ -(level x.1.2 : ℤ)) fun x y hxy ↦ by
+    det_eq_one_of_unitriangular (lev := fun x ↦ -(level x.val.2 : ℤ)) fun x y hxy ↦ by
       simp [linMatrix, gCol, mem_besselU.1 hg y.val.2 x.val.2 (by lia)]
   let linPart (q : (Subtype p → ℂ) × (Fin 𝔰.ϱ → ℝ)) : (Subtype p → ℂ) × (Fin 𝔰.ϱ → ℝ) :=
     (linMatrix *ᵥ q.1, q.2 + fun a ↦ (gCol a (eStar a) ⬝ᵥ q.1).im)
@@ -377,7 +397,7 @@ lemma exists_measurePreserving_linearEquiv_freeEntries :
   have h_dual (q : 𝔰.UnipotentParams) (a b : Fin 𝔰.ϱ) :
       rows q a (eStar b) = skewOfReal q.2 a b := by
     simp [rows, Matrix.mul_apply, inclMatrix, Matrix.one_apply]
-  have hE₀ (q : 𝔰.UnipotentParams) : E₀ q = (fun x ↦ rows q x.1.1 x.1.2, fun a ↦ q.2 a a) := by
+  have hE₀ (q : 𝔰.UnipotentParams) : E₀ q = (fun x ↦ rows q x.val.1 x.val.2, fun a ↦ q.2 a a) := by
     simp [E₀, Matrix.mul_apply, h_dual, skewOfReal, inclMatrix, Prod.ext_iff, funext_iff,
       Matrix.one_apply]
   have h_isometry (q : 𝔰.UnipotentParams) : ∑ x, ‖(E₀ q).1 x‖ ^ 2 + ∑ a, (E₀ q).2 a ^ 2 =
@@ -609,7 +629,7 @@ theorem measurePreserving_freeEntries_besselHaar :
     -- above the diagonal are `x`.
     change q.1 y = frameMatrix (q.2.val * liftUnitriangular q.1) y.val.1 y.val.2
     rw [frameMatrix_mul (liftUnitriangular_mem_besselU q.1)]
-    simp [mem_besselU0_iff.1, unitriangularMatrix, y.2]
+    simp [mem_besselU0_iff.1, unitriangularMatrix, y.property]
   have h_entries : MeasurePreserving entries (volume.prod 𝔰.besselHaar₀) :=
     h_regroup.comp_left_iff.1 (h_skew.congr (by fun_prop) (.of_forall h_eq))
   exact .map_of_comp h_entries (by fun_prop) (by fun_prop)

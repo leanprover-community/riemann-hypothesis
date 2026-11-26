@@ -1,6 +1,7 @@
 module
 
-public import Lib.General.NumberTheory.GaussValuation
+public import Lib.General.NumberTheory.PadicLimitsValuation
+import Lib.General.NumberTheory.GaussValuation
 
 /-!
 # Coefficient rings inside the ring of all integral elements

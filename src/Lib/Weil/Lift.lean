@@ -1,9 +1,18 @@
 module
 
-public import Lib.Adelic.AutomorphicForms.Cuspidality
+import Mathlib.MeasureTheory.Integral.CompactlySupported
+import Mathlib.MeasureTheory.Integral.Pi
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Theta.BlockRule
-public import Lib.DiscreteSeries.Theta.LocalCorrespondence
 public import Lib.Weil.DualPair.ThetaLiftConvergence
+public import Lib.Adelic.AutomorphicForms.RealConvolution
+public import Lib.DiscreteSeries.Rigidity.KernelFixes
+public import Lib.Weil.DualPair.WeilAction
+import Lib.Adelic.AutomorphicForms.Cuspidality
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Theta.FockJointHarmonics
+import Lib.DiscreteSeries.Theta.LocalCorrespondence
 
 /-!
 # Theta lifts of forms: products of minors, edges, arrows between spaces of forms
@@ -133,7 +142,6 @@ theorem New.sign_eq_of_ne_zero_of_lt {N : ℕ} {k : ℤˣ → ℕ → ℕ}
     (hx : ∀ η : ℤˣ, x (-η) = (x η).rev) {η μ : ℤˣ} {p q : ℕ} (hp : k η p ≠ 0) (hq : k μ q ≠ 0)
     (hxp : x η < p) (hxq : x μ < q) : η = μ := by
   -- For opposite signs the two places add up to `N - 1`, so `N < p + q`.
-  have h_sum : (x (-1) : ℕ) + x 1 + 1 = N := by grind
   rcases Int.units_eq_one_or η with rfl | rfl <;> rcases Int.units_eq_one_or μ with rfl | rfl <;>
     grind
 
@@ -248,6 +256,14 @@ variable {E n n' ι : Type} [Field E] [CMType E] [WeilData E]
   (l' : InfinitePlace E → n' → ℤ) {η : ι → ℤˣ}
   (Ω : GInf E s × GInf E t → fockSpace (realSigns E η) →L[ℂ] fockSpace (realSigns E η))
   (e : GInf E s → ℂ) (e' : GInf E t → ℂ) (Φ : fockSpace (realSigns E η))
+
+omit [WeilData E] in
+private lemma star_typeKernel_of_hasGap {a : Type} [Fintype a] [DecidableEq a]
+    {σ : a → ℤˣ} {μ : InfinitePlace E → HCParam σ} {h : InfinitePlace E → ℕ}
+    (hg : ∀ w, (μ w).HasGap (h w)) :
+    star (typeKernel μ σ) = typeKernel (-μ) σ := by
+  funext x
+  simp [typeKernel, ← conj_dsKernel_neg (hg _)]
 
 /-! ### Corresponding parameters and the chosen joint harmonic -/
 
@@ -591,7 +607,8 @@ theorem integral_fockInner_mul_typeKernel_ne_zero {T : InfinitePlace E → FockD
   let pΦ (w : InfinitePlace E) : fockSpace η :=
     integratedRep (π w) (dsKernel (l w)) (polyVector η (Φ w))
   have h_conj (x : GInf E s) : conj (typeKernel (-l) s x) = typeKernel l s x := by
-    simp [typeKernel, conj_dsKernel_neg (hΦ _).hasGap_row]
+    simpa only [Pi.star_apply, starRingEnd_apply, neg_neg] using
+      congrFun (star_typeKernel_of_hasGap (μ := -l) (fun w ↦ (hΦ w).hasGap_row.neg)) x
   have h_pairing : ∫ x : GInf E s, fockInner Φ₀ (Ω (x, 1) Φ₀) * typeKernel l s x =
       ∏ w, fockInner (polyVector η (Φ w)) (pΦ w) := by
     simpa only [smul_eq_mul, mul_comm, Φ₀, fockInner_piTensor] using
@@ -645,7 +662,7 @@ theorem isHalfEdge_of_oscillatorPair {T : InfinitePlace E → FockDualPair s t �
       polyVector η (monomial (a.curry w) 1)
     have local_bump (a : InfinitePlace E × ι →₀ ℕ) (w : InfinitePlace E) :
         ∃ α : DiscreteSeries.Bumps t,
-        p w (v a w) = integratedRep (π' w) (fun g ↦ α.1.1 g⁻¹) (p w (polyVector η (Φ w))) :=
+        p w (v a w) = integratedRep (π' w) (fun g ↦ α.val.val g⁻¹) (p w (polyVector η (Φ w))) :=
       (hp w).exists_bump_integratedRep_eq (hΦ w) _
     choose α hα using local_bump
     rintro _ ⟨P, rfl⟩
@@ -705,11 +722,8 @@ theorem isEdge_of_isJointHarmonic {Φ : InfinitePlace E → MvPolynomial (n' × 
     rw [← neg_neg l]
     exact isHalfEdge_of_oscillatorPair (fun w ↦ (h_pair w).swap) (fun w ↦ (hΦ w).swap) hπ hπ'
   · -- for the reverse one, conjugation changes the sign of the parameters
-    have h_conj : Star.star (typeKernel l s) = typeKernel (-l) s :=
-      funext fun x ↦ by simp [typeKernel, ← conj_dsKernel_neg (hΦ _).hasGap_column]
-    have h_conj' : Star.star (typeKernel l' t) = typeKernel (-l') t :=
-      funext fun y ↦ by simp [typeKernel, ← conj_dsKernel_neg (hΦ _).hasGap_row]
-    rw [h_conj, h_conj']
+    rw [star_typeKernel_of_hasGap (μ := l) (fun w ↦ by simpa using (hΦ w).hasGap_column.neg),
+      star_typeKernel_of_hasGap (μ := l') (fun w ↦ (hΦ w).hasGap_row)]
     exact isHalfEdge_of_oscillatorPair h_pair hΦ hπ' hπ
 
 /-- If `l`, `l'` correspond (the block rule holds at every infinite place), the Fock vector

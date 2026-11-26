@@ -1,6 +1,9 @@
 module
 
-public import Lib.General.LinearAlgebra.MatrixPolynomials
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Topology.Algebra.Group.Units
+public import Lib.Speed
+import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # The unipotent radical attached to an idempotent matrix
@@ -157,17 +160,11 @@ lemma radicalHom_mul_mul_sub_mem_upperBlocks (hε : IsIdempotentElem ε) {g : Ma
     (hg : ε * (g * ε) = g * ε) (Y Z : Multiplicative (Matrix n n k)) :
     (radicalHom hε Y : Matrix n n k) * g * radicalHom hε Z - g ∈ upperBlocks ε := by
   rw [coe_radicalHom, coe_radicalHom]
-  set A : Matrix n n k := ε * Y.toAdd * (1 - ε)
-  set B : Matrix n n k := ε * Z.toAdd * (1 - ε)
-  have hA : A ∈ upperBlocks ε := mul_mul_one_sub_mem_upperBlocks hε Y.toAdd
-  have hgB : g * B ∈ upperBlocks ε :=
-    mul_mem_upperBlocks_left hg (mul_mul_one_sub_mem_upperBlocks hε Z.toAdd)
-  have h_zero : A * (g * B) = 0 :=
+  have hA := mul_mul_one_sub_mem_upperBlocks hε Y.toAdd
+  have hgB := mul_mem_upperBlocks_left hg (mul_mul_one_sub_mem_upperBlocks hε Z.toAdd)
+  convert add_mem (mul_mem_upperBlocks_right hg hA) hgB using 1
+  linear_combination (norm := noncomm_ring)
     mul_eq_zero_of_mem_upperBlocks hA (mem_upperBlocks_iff.mp hgB).1
-  have h_diff : (1 + A) * g * (1 + B) - g = A * g + g * B := by
-    linear_combination (norm := noncomm_ring) h_zero
-  rw [h_diff]
-  exact add_mem (mul_mem_upperBlocks_right hg hA) hgB
 
 /-- Let `ε` be idempotent, let `p(g)` be a projection onto its image (`ε p(g) = p(g)` and
 `p(g) ε = ε`), and let `x = u g u'` with `u, u'` in the image of `radicalHom`, the group of the

@@ -1,8 +1,13 @@
 module
 
+import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.Tactic.Linter.Style
 public import Lib.Weil.DualPair.HolomorphicData
 public import New.OneLift.HeckeValues.CharacterLift
 public import New.UpperBound.Objects.Rows
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.General.LinearAlgebra.MatrixPolynomials
 
 /-!
 # Data of the three exchanges: the carrier, the choices and the functions 𝖥_i
@@ -230,13 +235,13 @@ abbrev padSigns : D.RowIndex ⊕ PadIndex j → ℤˣ := D.signsW j ⊕ᵥ (-1 �
 /-- The m chosen negative rows of the padded W_j: i < m goes to the i-th index of the padding block
 of size j if i < j, and to `New.Data.rowIndexOfNumber`(k + i − 1) otherwise. -/
 def negIndex (i : Fin D.m) : D.RowIndex ⊕ PadIndex j :=
-  if hi : i.1 < j then inr (inl ⟨i, hi⟩) else inl (D.rowIndexOfNumber (D.posRank i))
+  if hi : i.val < j then inr (inl ⟨i, hi⟩) else inl (D.rowIndexOfNumber (D.posRank i))
 
 /-- The 2m constant rows for a column of height h < r₊ = k + j − 1, all basis vectors: i < 2m goes
 to the basis vector number h + i of W_j if h + i < r₊, and otherwise to index i of the positive
 padding block. -/
 def posRowIndex (h : ℕ) (i : Fin (2 * D.m)) : D.RowIndex ⊕ PadIndex j :=
-  if h + i.1 < D.posRank j then inl (D.rowIndexOfNumber (h + ↑i)) else inr
+  if h + i.val < D.posRank j then inl (D.rowIndexOfNumber (h + ↑i)) else inr
     (inr (i.castAdd (D.m - j)))
 
 /-- The j-th descent pair `New.Data.descentPair` at the trivial character: the data of the lift from
@@ -369,10 +374,6 @@ variable {P : Parameters} (D : Data P)
 /-- The natural number n_* = 2ft³, where f is the number of infinite places of E and t = 5r. -/
 abbrev nStar : ℕ := D.f * (2 * D.t ^ 3)
 
-/-- Twice the rank `r` of `W_j` is at most the real number `b = D.b`, the size parameter of the
-weights `D.liftWeight j`. -/
-lemma two_mul_r_le_b : 2 * D.r ≤ D.b := D.le_of_hasLogBound
-
 /-- The number `300 n_* + t`, with `n_* = nStar D = 2 f t ^ 3`, is at most `D.halfGap = r ^ 8`. -/
 lemma mul_nStar_add_t_le_halfGap : 300 * nStar D + D.t ≤ D.halfGap := D.nat_le_of_hasLogBound
 
@@ -448,7 +449,7 @@ lemma t_eq_five_mul_r : D.t = 5 * D.r := rfl
 /-- The index set of `V″` has `r + 9 m + 1` elements: `r` for `W_j`, `3 m` for the padding and
 `6 m + 1` for `W♭`. -/
 lemma card_firstFactorIndex : card (FirstFactorIndex j) = D.r + 9 * D.m + 1 := by
-  grind [card_sum, card_rowIndex, card_fin, j.2.2]
+  grind [card_sum, card_rowIndex, card_fin, j.property.2]
 
 /-- Twice the sum of the number of determinants in the positive columns at `τ` (`DetIndex j τ`), the
 rank of `V″` and `m` is at most `5 b`, with `b = D.b` the size parameter of the weights
@@ -534,7 +535,7 @@ lemma conjHolomorphicWeight_of_eq_neg_one {c : D.RowIndex} (hc : D.signsW j c = 
     conjHolomorphicWeight j τ c =
       D.liftWeight j τ - firstFactorCharExp j + card (FirstFactorIndex j) + kernelWeight j τ c := by
   rw [conjHolomorphicWeight_eq_add_kernelWeight, Pi.add_apply, staircaseWeight_of_eq_neg_one hc]
-  simp [sub_eq_add_neg, add_comm]
+  simp [sub_eq_add_neg]
 
 /-- At a basis vector `c` of `W_j` of sign `−1` in `D.signsW j`, consider the sum of
 `(untwistedDescentPair j).colsMinus τ x`, the number of columns of height `x` of `μ⁻`. The sum runs
@@ -559,7 +560,7 @@ lemma abs_conjHolomorphicWeight_le (c : D.RowIndex) :
     D.liftWeight_le_two_mul_b (by grind) τ
   grw [← cast_abs, abs_lowestKType_le (D.hasGap_paramW _ τ).neg param_le, card_rowIndex]
   push_cast
-  linarith [D.two_mul_r_le_b]
+  linarith [show 2 * D.r ≤ D.b from D.le_of_hasLogBound]
 
 /-- For `1 ≤ j ≤ m` and an infinite place `τ`, the weight `kernelWeight j τ` on the basis of `W_j`
 is `K`-dominant for the order `orderW j`. That is, on basis vectors of one sign `D.signsW j`, it
@@ -736,7 +737,7 @@ lemma New.toPoly_coeff_nablaBasis {Φ : Type} [Fintype Φ] [DecidableEq Φ] {n :
   have pairing : fockPairing ℂ (toPoly n κ ξ) (nablaBasis ℂ n κ i) =
       hookNumber κ (rankAt n) * ξ i := fockPairing_toPoly_nablaBasis ξ i
   rw [hξ, fockPairing_monomial, ← map_nablaBasis (algebraMap ℤ ℂ), coeff_map] at pairing
-  simpa [field, Finsupp.prod, prod_eq_zero_iff, factorial_ne_zero, mul_comm] using pairing
+  simpa [field, prod_eq_zero_iff, factorial_ne_zero, mul_comm] using pairing
 
 /-- Let `R` be a field of characteristic zero and `g τ` square matrices over `R`, one for each
 `τ`. Suppose the substitution `y ↦ gᵀ y` of the rows of variables (`rowSubst`) fixes the monomial

@@ -1,7 +1,15 @@
 module
 
-public import Lib.General.LinearAlgebra.Eigenvalues
-public import Lib.Weil.Unramified.HeckeGL
+public import Mathlib.RingTheory.PowerSeries.Inverse
+public import Aesop.BuiltinRules
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Topology.Connected.Separation
+import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+public import Lib.Adelic.Hecke.ClassSums
+public import Lib.Adelic.Unitary.Defs
+import Lib.Adelic.Adeles.StrongApproximation
+import Lib.General.LinearAlgebra.Eigenvalues
+import Lib.Weil.Unramified.HeckeGL
 
 /-!
 # Hecke operators and Hecke polynomials at split places; spherical eigenvectors
@@ -14,6 +22,8 @@ at `w` and `w̄`.
 
 ## Main definitions and results
 
+* `New.exists_inf_trivialOn_le`: an open subgroup contains the integral points trivial at some
+  finite set `S`, which avoids each `w, w̄` for which the subgroup contains `maxCompactAt n w`.
 * `New.heckeSplit`: the operator `T_{w,j}` of the double coset `New.basicDoubleCoset` of
   `diag (ϖ 1_j, 1)`.
 * `New.heckeSplit_star`: on vectors spherical at `w`, `T_{w̄,j}` is the action at `w` of the inverse
@@ -272,7 +282,7 @@ lemma heckeSplit_comm (hw : w.IsSplit) (hu : u.IsSplit) (i j : ℕ) (hv : v ∈ 
   · -- different pairs of places: elements supported at `u, ū` are trivial at `w`, so commute with
     -- `T_{w,i}` (`heckeSplit_comm_of_trivialOn`)
     refine map_heckeSplit hu j (heckeSplit π hw i) fun g hg ↦ ?_
-    have h_triv : g ∈ trivialOn n {w} := by simp_all [trivialOn, supportedOn]
+    have h_triv : g ∈ trivialOn n {w} := by simp_all [trivialOn]
     exact (heckeSplit_comm_of_trivialOn hw i h_triv).symm
 
 /-! ### Joint eigenvectors in a unitary representation -/
@@ -360,6 +370,62 @@ lemma IsUnitary.le_span_hecke_eigenvectors [Module ℂ W] {π : Representation �
   exact ⟨hx, fun (w, j) ↦ c w j, fun (w, j) ↦ hc w w.property _ j⟩
 
 end SplitHecke
+
+section OpenSubgroups
+
+open Gf
+
+variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+
+/-- For an open subgroup `H` of the finite adelic unitary group there is a finite set `S` of
+places such that (a) neither `w` nor its conjugate is in `S` when `H` contains `maxCompactAt n w`,
+the integral points supported at `w, w̄`, and (b) `H` contains all integral points (`stdLevel E n`)
+that are trivial at `S`. -/
+lemma exists_inf_trivialOn_le {H : Subgroup (Gf E n)} (hH : H.IsOpen) :
+    ∃ S : Finset (FinPlace E), (∀ w : FinPlace E, maxCompactAt n w ≤ H → w ∉ S ∧ star w ∉ S) ∧
+      stdLevel E n ⊓ trivialOn n S ≤ H := by
+  classical
+  -- The compact set `stdLevel \ H` is covered by the open sets `{g | g.atPlace w ≠ 1}`; a finite
+  -- subcover is a finite `S` with `stdLevel ⊓ trivialOn S ≤ H`. Take a minimal such `S`.
+  have hex : ∃ S : Finset (FinPlace E), stdLevel E n ⊓ trivialOn n S ≤ H := by
+    have h_cover : (stdLevel E n : Set (Gf E n)) \ H ⊆ ⋃ w : FinPlace E, {g | g.atPlace w ≠ 1} := by
+      intro g hg
+      have hg_ne : g ≠ 1 := (H.one_mem.ne_of_notMem hg.right).symm
+      simpa using mt Gf.ext hg_ne
+    obtain ⟨S, hS⟩ := (isCompact_stdLevel.diff hH).elim_finite_subcover _
+      (fun w ↦ isOpen_ne_fun (continuous_atPlace w) continuous_const) h_cover
+    refine ⟨S, fun g ⟨hg, hoff⟩ ↦ by_contra fun hgH ↦ ?_⟩
+    simpa +contextual [mem_trivialOn.1 hoff] using hS ⟨hg, hgH⟩
+  obtain ⟨S, hS, hmin⟩ := exists_minimal_of_wellFoundedLT _ hex
+  refine ⟨S, fun w hw ↦ ?_, hS⟩
+  -- If `maxCompactAt n w ≤ H`, the places `w, w̄` can be dropped from `S`: write `g = a * b` with
+  -- `a` supported at `w, w̄` and `b` trivial there; `a ∈ maxCompactAt n w`, and `b` is trivial on
+  -- all of `S`.
+  have hdrop : stdLevel E n ⊓ trivialOn n (S \ {w, star w} : Finset _) ≤ H := by
+    rintro g ⟨hg, hoff⟩
+    obtain ⟨a, ha, b, hb, rfl, hab⟩ := exists_supportedOn_mul_trivialOn {w} g
+    obtain ⟨ha_int, hb_int⟩ : a ∈ stdLevel E n ∧ b ∈ stdLevel E n := hab hg
+    refine mul_mem (hw ⟨ha_int, ha⟩) (hS ⟨hb_int, mem_trivialOn.2 fun u hu ↦ ?_⟩)
+    have hoff_u : u ∈ (↑(S \ {w, star w}) : Set (FinPlace E)) → (a * b).atPlace u = 1 :=
+      mem_trivialOn.1 hoff u
+    grind [mem_trivialOn, mem_supportedOn, atPlace_star_eq_one_iff, star_star]
+  have hsub : S ⊆ S \ {w, star w} := hmin hdrop Finset.sdiff_subset
+  grind
+
+/-- An open subgroup `K` of the finite adelic group contains `maxCompactAt n v`, the integral
+elements supported at `v` and its conjugate, for almost all places `v`. -/
+lemma eventually_maxCompactAt_le {K : Subgroup (Gf E n)} (hK : K.IsOpen) :
+    ∀ᶠ v : FinPlace E in Filter.cofinite, maxCompactAt n v ≤ K := by
+  obtain ⟨S, -, hS⟩ := exists_inf_trivialOn_le hK
+  filter_upwards [S.finite_toSet.conjClosure.eventually_cofinite_notMem] with v hv
+  -- Elements supported at `v` and its conjugate are trivial at every place of `S`.
+  have h_trivial : supportedOn n {v} ≤ trivialOn n (S : Set (FinPlace E)) := by
+    rw [← supportedOn_compl]
+    exact supportedOn_mono (Set.singleton_subset_iff.2 hv)
+  exact le_trans (inf_le_inf_left (stdLevel E n) h_trivial) hS
+
+end OpenSubgroups
+
 
 /-! ## The Hecke polynomial at a split place -/
 
@@ -451,7 +517,7 @@ lemma sum_coeff_invOfUnit_smul_eq {R V : Type*} [CommRing R] [Algebra R ℂ] [Ad
     simpa [Polynomial.eval_finsetSum, mul_comm] using congrArg f (h_rel U)
   -- Multiply by the inverse of `Q` as a power series and read the coefficient of `X ^ r`.
   have h_inv : map (algebraMap R ℂ) (invOfUnit Q 1) * map (algebraMap R ℂ) (Q : R⟦X⟧) = 1 := by
-    rw [← map_mul, invOfUnit_mul (Q : R⟦X⟧) 1 (by simpa using hQ), map_one]
+    rw [← map_mul, invOfUnit_mul (Q : R⟦X⟧) 1 (hQ), map_one]
   -- The coefficient of `X ^ r` in `Q⁻¹ * X ^ i`, summed against `f (b i)`, is `f (a r)`.
   have h_eq : ∑ i ∈ t,
       algebraMap R ℂ (PowerSeries.coeff r (invOfUnit Q 1 * PowerSeries.X ^ i)) * f (b i) =
@@ -507,15 +573,7 @@ theorem exists_heckeSplit_eq_smul (p : ℂ → ℂ) :
       zero_mem' := ⟨0, by simp⟩
       add_mem' := fun ⟨c, hc⟩ ⟨d, hd⟩ ↦ ⟨c + d, by simp +contextual [hc, hd, add_smul]⟩
       smul_mem' := fun a _ ⟨c, hc⟩ ↦ ⟨a * c, by simp +contextual [hc, mul_smul]⟩ }
-  -- it contains the Hecke polynomial at every point, hence each Hecke operator
-  have h_poly_mem (T : ℂ) : heckePolyOp π hw T ∈ N := by
-    refine ⟨p T, fun y hy ↦ ?_⟩
-    obtain ⟨-, h_eigen⟩ : y ∈ sphericalAt π w ∧ ∀ T : ℂ, heckePolyOp π hw T y = p T • y := hy
-    exact h_eigen T
-  have h_mem (i : ℕ) : ∃ c : ℂ, ∀ y : W, HasHeckePolynomial π hw p y → heckeSplit π hw i y = c •
-    y :=
-    heckeSplit_mem_of_heckePolyOp N h_poly_mem i
-  choose t ht using h_mem
+  choose t ht using heckeSplit_mem_of_heckePolyOp N fun T ↦ ⟨p T, fun _ hy ↦ hy.2 T⟩
   exact ⟨t, fun y hy i ↦ ht i y hy⟩
 
 end SphericalHecke

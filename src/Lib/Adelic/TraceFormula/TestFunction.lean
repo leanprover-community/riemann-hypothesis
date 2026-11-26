@@ -1,5 +1,7 @@
 module
 
+import Mathlib.RingTheory.Valuation.LocalSubring
+public import Mathlib.Topology.LocallyConstant.Algebra -- shake: keep (needed public by an exposed definition)
 public import Lib.Adelic.Adeles.LocalFactors
 public import Lib.General.LinearAlgebra.IdempotentRadical
 public import Lib.Weil.Unramified.HeckeGL
@@ -95,10 +97,10 @@ lemma convIndicator_single_mul {K : Subgroup G} (hK_open : IsOpen (K : Set G))
 
 /-- The representation of `G × G` on test functions by translation is smooth: each test function is
 fixed by all translations near the identity. -/
-instance [WeaklyLocallyCompactSpace G] : IsSmoothRep (TestFunction.translate (G := G)) := by
+instance : IsSmoothRep (TestFunction.translate (G := G)) := by
   refine ⟨fun f : TestFunction G ↦ ?_⟩
-  have h_const : IsLocallyConstant fun (g : G × G) (x : G) ↦ f.1 (g.1⁻¹ * x * g.2) :=
-    schwartzBruhat.isLocallyConstant_curry f.2 (fun (g : G × G) (x : G) ↦ g.1⁻¹ * x * g.2)
+  have h_const : IsLocallyConstant fun (g : G × G) (x : G) ↦ f.val (g.1⁻¹ * x * g.2) :=
+    schwartzBruhat.isLocallyConstant_curry f.property (fun (g : G × G) (x : G) ↦ g.1⁻¹ * x * g.2)
       (fun (g : G × G) (x : G) ↦ g.1 * (x * g.2⁻¹)) (fun g x ↦ by group)
   filter_upwards [h_const.eventually_eq 1] with g hg
   ext x
@@ -141,7 +143,7 @@ def IsCuspidalAt (hw : w.IsSplit) (φ : TestFunction (Gf E n)) : Prop :=
     (lift : Matrix n n (ResField w) → localIntGL n w),
     (∀ Z : Matrix n n (ResField w),
       reduceGL (lift Z) = radicalHom (isIdempotentElem_coordProjector T) (ofAdd Z) * t) →
-    ∀ g : Gf E n, ∑ᶠ Z : Matrix n n (ResField w), φ.1 (g * ofSplitPlace hw (lift Z)) = 0
+    ∀ g : Gf E n, ∑ᶠ Z : Matrix n n (ResField w), φ.val (g * ofSplitPlace hw (lift Z)) = 0
 
 omit [IsCMField E] in
 /-- Let `T` be a set of coordinates. Every element `1 + ε Z (1 - ε)` (`radicalHom`, with `ε` the
@@ -188,7 +190,7 @@ lemma IsCuspidalAt.exists_sum_translate_eq_zero {hw : w.IsSplit} {φ : TestFunct
         ⟨k, hk⟩ := by
     rw [← hY Z]
     exact reduceGL.map_mul _ _
-  have h_sum : ∑ᶠ Z : Matrix n n (ResField w), φ.1 (g * ofSplitPlace hw (lift Z)) = 0 :=
+  have h_sum : ∑ᶠ Z : Matrix n n (ResField w), φ.val (g * ofSplitPlace hw (lift Z)) = 0 :=
     hφ T hT_empty hT_univ _ lift h_lift g
   simpa [lift, finsum_eq_sum_of_fintype] using h_sum
 
@@ -210,11 +212,6 @@ lemma IsCuspidalAt.convIndicator_mul {hw : w.IsSplit} {K : Subgroup (Gf E n)}
     simp [convIndicator_single_mul, ← mul_assoc, ← mul_finsum,
       ha T hT_empty hT_univ t lift h_lift (x⁻¹ * g)]
 
-/-- The matrix `g` has entries in `O_w`, and `0` is a simple root of its characteristic polynomial
-modulo `w`. -/
-def HasSimpleZero (g : GL n (LocField w)) : Prop :=
-  (∀ i j : n, Valued.v (g i j) ≤ 1) ∧ (g.1.map residueOrZero).charpoly.rootMultiplicity 0 = 1
-
 /-- If a monic polynomial over an integrally closed domain is a `j`-th power over the fraction
 field, with `j ≠ 0`, then it is the `j`-th power of a polynomial over the domain. -/
 lemma exists_eq_pow_of_monic_of_map_eq_pow {R K : Type} [CommRing R]
@@ -234,16 +231,16 @@ omit [IsCMField E] in
 modulo `w` (`HasSimpleZero g`), then the characteristic polynomial of `g` over `E_w` itself is no
 `j`-th power for `j > 1`. -/
 lemma HasSimpleZero.charpoly_ne_pow {g : GL n (LocField w)} (hg : HasSimpleZero g)
-    (Q : (LocField w)[X]) {j : ℕ} (hj : 1 < j) : g.1.charpoly ≠ Q ^ j := by
+    (Q : (LocField w)[X]) {j : ℕ} (hj : 1 < j) : g.val.charpoly ≠ Q ^ j := by
   classical
   intro h_pow
   obtain ⟨h_int, h_simple⟩ : (∀ a b : n, Valued.v (g a b) ≤ 1) ∧
-      (g.1.map residueOrZero).charpoly.rootMultiplicity 0 = 1 := hg
+      (g.val.map residueOrZero).charpoly.rootMultiplicity 0 = 1 := hg
   let M : Matrix n n (LocInt w) := of fun a b : n ↦ ⟨g a b, h_int a b⟩
-  have h_red : g.1.map residueOrZero = M.map (residue (LocInt w)) :=
+  have h_red : g.val.map residueOrZero = M.map (residue (LocInt w)) :=
     Matrix.ext fun a b : n ↦ residueOrZero_coe (M a b)
   have h_map : M.charpoly.map (algebraMap (LocInt w) (LocField w)) = Q ^ j := by
-    rw [← charpoly_map, show M.map (algebraMap (LocInt w) (LocField w)) = g.1 from rfl, h_pow]
+    rw [← charpoly_map, show M.map (algebraMap (LocInt w) (LocField w)) = g.val from rfl, h_pow]
   obtain ⟨P, h_pow_int⟩ : ∃ P : (LocInt w)[X], M.charpoly = P ^ j :=
     exists_eq_pow_of_monic_of_map_eq_pow M.charpoly_monic (by omega) h_map
   -- Modulo `w` every root of `P ^ j` has multiplicity divisible by `j`.

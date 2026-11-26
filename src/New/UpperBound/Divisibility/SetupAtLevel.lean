@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
 public import New.UpperBound.Divisibility.MarkedPrimes
 
 /-!
@@ -69,7 +70,7 @@ instance isSplitLevel_nonInducedPlaces : IsSplitLevel D.nonInducedPlaces D.N whe
 /-- The point supported above `N` that is `diag (1, …, 1, N)` at the places of `Σ_N` in `S`, and `1`
 at the other places of `Σ_N`. -/
 abbrev diagPoint (j : ℕ) (S : Finset (FinPlace D.E)) : Gf D.E (D.X j) :=
-  embedGL (diagN (P := D.nonInducedPlaces) (D.InitIndex j) S)
+  embedGL (diagN (P := D.nonInducedPlaces) (N := D.N) (D.InitIndex j) S)
 
 /-- The point `δ_j`, which is `diag (1, …, 1, N)` at the places of `Σ_N` that divide `π` and `1` at
 the others. It takes the standard lattice at `Σ_N` to `L_j`, the lattice of integral vectors whose
@@ -125,7 +126,8 @@ lemma directDatum_ne_zero_iff {j : ℕ} (M : Matrix (D.X j) (D.X j) (LocProd D.n
   have h_lift : directDatum M ≠ 0 ↔ ∃ h : ∀ b c : D.X j, M b c ∈ SemilocalField.O,
       ∀ b : D.X j, D.isSplitLevel_nonInducedPlaces.reduction ⟨M b (.inr ()), h b (.inr ())⟩ =
         lastBasisVector b := by
-    simp [directDatum, lastColDatum, liftFn_apply, funext_iff (α := D.X j), -Sum.forall]
+    simp only [directDatum, lastColDatum, funext_iff (α := D.X j), transpose_apply, liftFn_apply,
+      of_apply, ne_eq, dite_eq_right_iff, not_forall]
     exact exists_congr fun _ ↦ by split_ifs <;> simp [*]
   simp [h_lift, mem_O_locProd, reduction_eq_iff, D.isSplitLevel_nonInducedPlaces.v_natCast,
     div_le_one₀, ZMod.val_one, ← forall_and, forall_comm (β := D.nonInducedPlaces),

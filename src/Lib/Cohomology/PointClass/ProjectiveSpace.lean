@@ -1,7 +1,10 @@
 module
 
+import Mathlib.RingTheory.PicardGroup
 public import Lib.Cohomology.PointClass.NoetherNormalization
-public import Lib.PadicComparison.Primitive.PeriodCoefficients
+public import Lib.PadicComparison.HodgeTate.GenericFibre
+import Lib.PadicComparison.Descent.TestCovers
+import Lib.PadicComparison.Primitive.PeriodCoefficients
 
 /-!
 # Projective space as a functor, and injective pull-back along Noether normalisation
@@ -59,7 +62,7 @@ trivial; no sheafification is made. -/
 def New.Variety.projSpace : CommAlg k ⥤ Type 1 where
   -- Unimodular vectors of length `d + 1`, up to scaling by a unit.
   obj A := Quot ((MulAction.orbitRel Aˣ (Fin (d + 1) → A)).comap
-    (·.1.1 : @unimodular k _ (d + 1) A → Fin (d + 1) → A))
+    (·.val.down : @unimodular k _ (d + 1) A → Fin (d + 1) → A))
   -- Vectors that differ by the unit `u` are sent to vectors that differ by the unit `f u`.
   map f := ↾Quot.map (unimodular.toFunctor.map f) fun _ _ ⟨u, h⟩ ↦ ⟨u.map f.hom.toMonoidHom, by
     simpa [Units.smul_def, _root_.funext_iff] using! congr(f ∘ $h)⟩
@@ -138,11 +141,6 @@ lemma mk_mem_stdChart_iff {hv : span (Set.range v) = ⊤} :
     refine ⟨⟨φ⟩, mk_eq_mk_iff_exists_unit.mpr ⟨u, ?_⟩⟩
     simp [φ, i.forall_iff_succAbove, ← hu, Units.smul_def, _root_.funext_iff]
 
-/-- The image of the point `[v]` under a map `f` of `k`-algebras is `[f ∘ v]`. -/
-private lemma map_mk {B : CommAlg k} (f : A ⟶ B) (hv : span (Set.range v) = ⊤) :
-    (projSpace k d).map f (mk v hv) = mk (f ∘ v) (unimodular.map f (a := ⟨v⟩) hv) :=
-  rfl
-
 /-! ### The map `ℙ^d × ℙ¹ → ℙ^(d+1)` -/
 
 /-- Let `v`, `u` be unimodular vectors over a local algebra over a field of characteristic `0`, with
@@ -162,7 +160,14 @@ private lemma exists_isUnit_coord_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u
   have hu0 : IsUnit (u 0) := span_singleton_eq_top.mp (eq_top_mono h_le hu)
   refine ⟨j, hj, hu0, hu1, fun i hij ↦ by_contra fun hi ↦ hij ?_⟩
   -- Put `u 1 = j * u 0` in `h_mul_eq_zero i`; cancel the unit `u 0` and the nonzero `v i`.
-  have h_mul : u 0 * ((i : k) • v i) = u 0 * ((j : k) • v i) := by grind [Nat.cast_smul_eq_nsmul]
+  have h_mul : u 0 * ((i : k) • v i) = u 0 * ((j : k) • v i) := by
+    have h0 := h_mul_eq_zero i
+    rw [← hu1, sub_mul] at h0
+    have h1 : (i : A) * u 0 * v i = (j : A) * u 0 * v i := (sub_eq_zero.mp h0).symm
+    rw [Nat.cast_smul_eq_nsmul, Nat.cast_smul_eq_nsmul, nsmul_eq_mul, nsmul_eq_mul]
+    calc u 0 * ((i : A) * v i) = (i : A) * u 0 * v i := by ring
+      _ = (j : A) * u 0 * v i := h1
+      _ = u 0 * ((j : A) * v i) := by ring
   have h_cast : (i : k) = j := smul_left_injective k hi (hu0.mul_left_cancel h_mul)
   exact Fin.ext (Nat.cast_injective h_cast)
 
@@ -191,12 +196,10 @@ lemma exists_eq_map_affinePoint_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u :
   refine ⟨j, Prod.ext ?_ ?_⟩
   · -- `v` is `v j` times the `j`-th coordinate vector, as its other entries vanish.
     change mk v hv = (projSpace k d).map structureMap (affinePoint j 0)
-    rw [map_mk]
     refine (mk_eq_mk_iff_exists_unit.mpr ⟨hj.unit, ?_⟩).symm
     simp [_root_.funext_iff, j.forall_iff_succAbove, h_zero]
   · -- `u` is `u 0` times `(1, j)`.
     change mk u hu = (projSpace k 1).map structureMap (affinePoint 0 ![j])
-    rw [map_mk]
     refine (mk_eq_mk_iff_exists_unit.mpr ⟨hu0.unit, ?_⟩).symm
     simp [_root_.funext_iff, ← hu1, mul_comm]
 
@@ -218,7 +221,7 @@ def stdChart : EtaleChart d (projSpace k d) where
   isOpenSubfunctor A := by
     -- The chart is the locus where the `i`-th coordinate is a unit.
     rintro ⟨v⟩
-    exact ⟨span {v.1.down i}, fun B φ ↦ (mk_mem_stdChart_iff i).trans (by simp [map_span])⟩
+    exact ⟨span {v.val.down i}, fun B φ ↦ (mk_mem_stdChart_iff i).trans (by simp [map_span])⟩
 
 /-- Projective `d`-space has an atlas of dimension `d`: finitely many charts whose images contain
 every field-valued point, and for any two points an ideal whose vanishing locus is where they agree.
@@ -252,7 +255,12 @@ lemma span_range_cons_mul_eq_top [CharZero k] {u : Fin 2 → A} (hv : span (Set.
   let fieldK : Field K := hK.toField
   obtain ⟨h_first, h_rest⟩ : ψ (u 0) * ∑ i : Fin (d + 1), ψ (v i) = 0 ∧
       ∀ i : Fin (d + 1), (ψ (u 1) - i * ψ (u 0)) * ψ (v i) = 0 := by
-    simpa [span_le, insert_subset_iff, range_subset_iff] using h_le
+    rw [span_le, range_subset_iff] at h_le
+    refine ⟨?_, fun i ↦ ?_⟩
+    · have h0 : ψ (u 0 * ∑ i : Fin (d + 1), v i) = 0 := h_le 0
+      simpa only [map_mul, map_sum] using h0
+    · have hi : ψ ((u 1 - i * u 0) * v i) = 0 := h_le i.succ
+      simpa only [map_mul, map_sub, map_natCast] using hi
   have h_unit : IsUnit (ψ (u 0) * ∑ i : Fin (d + 1), ψ (v i)) :=
     isUnit_mul_sum_of_mul_eq_zero
       (unimodular.map ψ (a := ⟨v⟩) hv) (unimodular.map ψ (a := ⟨u⟩) hu) h_rest
@@ -267,18 +275,28 @@ def lineProductMap [CharZero k] : projSpace k d ⊗ projSpace k 1 ⟶ projSpace 
         (span_range_cons_mul_eq_top k d hv hw))
     -- Scaling `w`, or `v`, by a unit scales every coordinate by that unit.
     (by
-      rintro ⟨⟨v⟩⟩ ⟨⟨w⟩⟩ ⟨w'⟩ ⟨c, rfl⟩
-      refine mk_eq_mk_iff_cross_mul.mpr ?_
-      simp [forall_fin_succ, Units.smul_def]
-      grind)
+      rintro ⟨⟨v⟩, hv⟩ ⟨⟨w⟩, hw⟩ ⟨⟨w'⟩, hw'⟩ ⟨c, h⟩
+      have hc : ∀ j, (c : A) * w' j = w j := fun j ↦ congrFun h j
+      refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
+      refine Fin.cases ?_ (fun i ↦ ?_) j
+      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc, mul_assoc]
+      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
+        ring)
     (by
-      rintro ⟨⟨v⟩⟩ ⟨⟨v'⟩⟩ ⟨w⟩ ⟨c, rfl⟩
-      refine mk_eq_mk_iff_cross_mul.mpr ?_
-      simp [forall_fin_succ, ← Finset.mul_sum, Units.smul_def]
-      grind)
+      rintro ⟨⟨v⟩, hv⟩ ⟨⟨v'⟩, hv'⟩ ⟨⟨w⟩, hw⟩ ⟨c, h⟩
+      have hc : ∀ j, (c : A) * v' j = v j := fun j ↦ congrFun h j
+      refine (mk_eq_mk_iff_exists_unit.mpr ⟨c, funext fun j ↦ ?_⟩).symm
+      refine Fin.cases ?_ (fun i ↦ ?_) j
+      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_zero, ← hc,
+          ← Finset.mul_sum, mul_left_comm]
+      · simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, cons_succ, ← hc]
+        ring)
   naturality A B f := by
     ext ⟨⟨v⟩, ⟨w⟩⟩
-    exact mk_eq_mk_iff_cross_mul.mpr (by simp [forall_fin_succ])
+    refine mk_eq_mk_iff_exists_unit.mpr ⟨1, funext fun j ↦ ?_⟩
+    refine Fin.cases ?_ (fun i ↦ ?_) j
+    · simp only [one_smul, Function.comp_apply, cons_zero, map_mul, map_sum]
+    · simp only [one_smul, Function.comp_apply, cons_succ, map_mul, map_sub, map_natCast]
 
 end New.Variety.projSpace
 
@@ -347,7 +365,10 @@ lemma New.Variety.CutsOutLocus.exists_lift_near_prime {k A B σ : Type} [Field k
     rw [aeval_unique π]
     rfl
   replace h_surj : Surjective q := fun b ↦ (h_surj b).imp fun x hx ↦ (h_q x).trans hx
-  replace h_ker : span (rel : Set _) = RingHom.ker q := by simp [h_ker, Ideal.ext_iff, h_q]
+  replace h_ker : span (rel : Set _) = RingHom.ker q := by
+    rw [h_ker]
+    ext x
+    simp only [RingHom.mem_ker, AlgHom.toRingHom_eq_coe, RingHom.coe_coe, h_q]
   -- `y i` is integral over `k[X]`, so `φ (y i)` is integral over the image of `φ ∘ f = κ ∘ aeval w`
   have h_int (i : Fin N) : κ.toRingHom.IsIntegralElem (φ (y i)) := by
     have h_comp : (φ.comp f).toRingHom.IsIntegralElem (φ (y i)) :=
@@ -360,24 +381,32 @@ lemma New.Variety.CutsOutLocus.exists_lift_near_prime {k A B σ : Type} [Field k
   let θ : MvPolynomial (Fin N) (MvPolynomial σ k) →ₐ[k] A := aevalTower (aeval (R := k) w) r
   have h_comm : κ.comp θ = φ.comp q := by
     ext i : 2
-    · simp [θ, q, ← φ.comp_apply, hφ]
-    · simpa [θ, q] using hr i
+    · simp only [AlgHom.comp_apply, IsScalarTower.coe_toAlgHom', θ, q, aevalTower_algebraMap]
+      exact (AlgHom.congr_fun hφ (X i)).symm
+    · simp only [AlgHom.comp_apply, θ, q, aevalTower_X]
+      exact hr i
   have h_rel (x : rel) : κ (θ x) = κ 0 := by
-    simpa [RingHom.mem_ker.mp (h_ker.le (subset_span x.prop))] using DFunLike.congr_fun h_comm x.val
+    have hqx : q x.val = 0 := RingHom.mem_ker.mp (h_ker.le (subset_span x.prop))
+    calc κ (θ x) = φ (q x.val) := AlgHom.congr_fun h_comm x.val
+      _ = 0 := by rw [hqx, map_zero]
+      _ = κ 0 := (map_zero κ).symm
   obtain ⟨a, ha, h_mul⟩ : ∃ a ∉ m, ∀ l : rel, a * θ l = a * 0 := h_near h_rel
   refine ⟨a, ha, θ ∘ surjInv h_surj, fun C ψ hψ ↦ ?_⟩
   -- `ψ ∘ θ` kills the relations, since `ψ a` is a unit, and so factors through `q`
   have h_kill : RingHom.ker q ≤ RingHom.ker (ψ.comp θ) := by
     rw [← h_ker, span_le]
     intro x hx
-    have h_ax : ψ a * ψ (θ x) = 0 := by simpa using congrArg ψ (h_mul ⟨x, hx⟩)
+    have h_ax : ψ a * ψ (θ x) = 0 := by
+      have h0 := congrArg ψ (h_mul ⟨x, hx⟩)
+      rw [mul_zero, map_mul, map_zero] at h0
+      exact h0
     exact hψ.mul_right_eq_zero.mp h_ax
   let v : B →ₐ[k] C := q.liftOfSurjective h_surj (ψ.comp θ) h_kill
   have h_fac (x : MvPolynomial (Fin N) (MvPolynomial σ k)) : v (q x) = ψ (θ x) :=
     q.liftOfSurjective_apply h_surj (ψ.comp θ) h_kill x
   refine ⟨v, funext fun j ↦ ?_, fun x ↦ ?_⟩
-  · simpa [θ, q] using h_fac (.C (X j))
-  · simpa [surjInv_eq] using h_fac (surjInv h_surj x)
+  · simpa only [θ, q, aevalTower_C, aeval_X, Function.comp_apply] using h_fac (.C (X j))
+  · simpa only [surjInv_eq h_surj x, Function.comp_apply] using h_fac (surjInv h_surj x)
 
 /-- Suppose that some solution `v` of the homogeneous equations of `g` has `v i ≠ 0`. Then every
 solution `u` whose coordinate `u i` is a unit is a coordinate vector of a point of `Y`. -/
@@ -398,7 +427,7 @@ a family `y` of points of `Y` indexed by `G` with a map `v : B → A` of `k`-alg
 `v ∘ b σ` is a coordinate vector of `y σ` with a unit entry for each `σ`, and the values
 `v (f (X j))` generate the unit ideal. -/
 private def New.Variety.CutsOutLocus.galoisCover {k ι G : Type} [Field k] {R : CommRingCat}
-    [Algebra R.carrier k] [Finite ι] {Y : Over (AlgebraicGeometry.Spec R)}
+    [Algebra R.carrier k] {Y : Over (AlgebraicGeometry.Spec R)}
     (L : LineBundle Y.left ι) [Fact (L.IsProjEmbedding Y.hom)] {B : CommAlg k} {d : ℕ}
     (f : MvPolynomial (Fin (d + 1)) k →ₐ[k] B) (b : G → ι → B) : CommAlg k ⥤ Type 1 :=
   .mk
@@ -439,14 +468,17 @@ lemma New.Variety.CutsOutLocus.exists_cover_point_near_prime {k ι F G : Type} [
   obtain ⟨v, hv, hv_s⟩ :
       ∃ v : B →ₐ[k] m.ResidueField, v ∘ f ∘ X = algebraMap A m.ResidueField ∘ w ∧
         ∀ y : B, v y = algebraMap A m.ResidueField (s y) :=
-    h_lift (.of k m.ResidueField) (IsScalarTower.toAlgHom k A m.ResidueField) (by simpa using ha)
+    h_lift (.of k m.ResidueField) (IsScalarTower.toAlgHom k A m.ResidueField)
+      (isUnit_iff_ne_zero.mpr (mt algebraMap_residueField_eq_zero.mp ha))
   -- In the residue field no `v ∘ b σ` vanishes: otherwise the forms `Λ` vanish there, so the
   -- entries of `w` lie in `m`.
   have h_ne (σ : G) : v ∘ b σ ≠ 0 := by
     intro h_zero
     have h_forms : v ∘ f ∘ X = 0 := by
       rw [← hb_forms σ, ← evalForms_map, h_zero]
-      simpa [← Pi.zero_def] using evalForms_smul Λ (u := (0 : m.ResidueField)) (v := 0)
+      have h0 := evalForms_smul Λ (u := (0 : m.ResidueField)) (v := 0)
+      simp only [zero_smul] at h0
+      exact h0
     rw [hv] at h_forms
     have h_le : span (Set.range w) ≤ m := by
       rw [span_le, Set.range_subset_iff]
@@ -457,11 +489,14 @@ lemma New.Variety.CutsOutLocus.exists_cover_point_near_prime {k ι F G : Type} [
     hi σ ((hv_s _).trans (algebraMap_residueField_eq_zero.mpr h_mem))
   refine ⟨a * ∏ σ : G, s (b σ (i σ)), m.primeCompl.mul_mem ha (prod_mem fun σ _ ↦ h_notMem σ),
     fun C ψ h_unit ↦ ?_⟩
-  obtain ⟨ha_unit, h_unit_s⟩ : IsUnit (ψ a) ∧ ∀ σ : G, IsUnit (ψ (s (b σ (i σ)))) := by
-    simpa using h_unit
+  rw [map_mul, map_prod] at h_unit
+  obtain ⟨ha_unit, h_prod⟩ := IsUnit.mul_iff.mp h_unit
+  have h_unit_s (σ : G) : IsUnit (ψ (s (b σ (i σ)))) :=
+    isUnit_of_dvd_unit
+      (Finset.dvd_prod_of_mem (fun x ↦ ψ (s (b x (i x)))) (Finset.mem_univ σ)) h_prod
   obtain ⟨v', hv', hv'_s⟩ : ∃ v' : B →ₐ[k] C, v' ∘ f ∘ X = ψ ∘ w ∧ ∀ y : B, v' y = ψ (s y) :=
     h_lift C ψ.hom ha_unit
-  have h_unit' (σ : G) : IsUnit (v' (b σ (i σ))) := by simpa only [hv'_s] using h_unit_s σ
+  have h_unit' (σ : G) : IsUnit (v' (b σ (i σ))) := (hv'_s _).symm ▸ h_unit_s σ
   have h_point (σ : G) : ∃ y : PointsIn Y C, IsCoordsWithUnit L y (v' ∘ b σ) :=
     exists_point_of_isUnit_coord (A := .of k m.ResidueField) (v := v ∘ b σ) (u := v' ∘ b σ) hξ
       ((hb_hom σ).map v) (hi σ) ((hb_hom σ).map v') (h_unit' σ)
@@ -490,11 +525,14 @@ lemma New.Variety.CutsOutLocus.exists_map_mul_eq_map_near_prime {k ι G : Type} 
   -- (`h_conj`); these finitely many equations then hold in `A` after multiplication by `a ∉ m`.
   obtain ⟨K, _, _, _, κ, h_near⟩ := exists_geometric_point_near_prime (k := k) hA m
   have h_κ : κ u • κ.comp v₀ ∘ f ∘ X = κ.comp v₁ ∘ f ∘ X :=
-    funext fun j ↦ by simpa [Units.smul_def] using congrArg κ (congrFun hu j)
+    funext fun j ↦ by
+      simpa only [Pi.smul_apply, Units.smul_def, smul_eq_mul, Function.comp_apply,
+        map_mul, AlgHom.comp_apply] using congrArg κ (congrFun hu j)
   obtain ⟨τ, hτ⟩ : ∃ τ : G, ∀ σ : G, κ.comp v₁ ∘ b σ = κ u • κ.comp v₀ ∘ b (τ * σ) :=
     h_conj (κ.comp v₀) (κ.comp v₁) (κ u) h_κ
   have h_eq_κ (l : G × ι) : κ (v₁ (b l.fst l.snd)) = κ (u * v₀ (b (τ * l.fst) l.snd)) := by
-    simpa using congrFun (hτ l.fst) l.snd
+    simpa only [Function.comp_apply, AlgHom.comp_apply, Pi.smul_apply, smul_eq_mul,
+      map_mul] using congrFun (hτ l.fst) l.snd
   obtain ⟨a, ha, h_mul⟩ : ∃ a ∉ m, ∀ l : G × ι,
       a * v₁ (b l.fst l.snd) = a * (u * v₀ (b (τ * l.fst) l.snd)) :=
     h_near h_eq_κ
@@ -503,7 +541,7 @@ lemma New.Variety.CutsOutLocus.exists_map_mul_eq_map_near_prime {k ι G : Type} 
   have h_coord : ψ ∘ v₁ ∘ b ρ = u.map ψ.hom.toMonoidHom • ψ ∘ v₀ ∘ b (τ * ρ) := by
     funext l
     have h_l : ψ a * ψ (v₁ (b ρ l)) = ψ a * (ψ u * ψ (v₀ (b (τ * ρ) l))) := by
-      simpa using congrArg ψ (h_mul (ρ, l))
+      simpa only [map_mul] using congrArg ψ (h_mul (ρ, l))
     exact h_unit.mul_left_cancel h_l
   refine ((hy₀ (τ * ρ)).map_unit_smul ψ (u.map ψ.hom.toMonoidHom)).ext ?_
   rw [← h_coord]
@@ -556,14 +594,19 @@ lemma New.Variety.CutsOutLocus.IsNoetherNormalization.pullback_injective {p : �
   obtain ⟨hb_hom, hb_forms⟩ := forall_and.mp hb
   let T : PadicTest ⥤ CommAlg k := genericOver (p := p)
   let W : PadicTest ⥤ Type 1 := T ⋙ galoisCover L f b
-  -- `convert`: the point of projective space carries a proof of unimodularity, which `rw` cannot
-  -- rewrite; `Λ` takes `x.val.snd ∘ b σ` to `x.val.snd ∘ f ∘ X`.
   have h_mem (σ : G) (c : PadicTest) (x : W.obj c) :
       ∃ hΓ, ⟨(x.val.fst σ, projSpace.mk _ x.property.right), hΓ⟩ ∈ O (T.obj c) := by
-    convert hO ((hb_hom σ).map x.val.snd) (x.property.left σ)
-    -- three like goals: the vector, its unimodularity and the point are those of `x`
-    all_goals simp [hb_forms, x.property.right]
-  let t (σ : G) : W ⟶ T ⋙ O.toFunctor := .mk fun c ↦ ↾fun x ↦ ⟨_, (h_mem σ c x).snd⟩
+    have h_vec : evalForms Λ (x.val.snd ∘ b σ) = x.val.snd ∘ f ∘ X := by
+      rw [evalForms_map, hb_forms σ]
+    have hv : span (Set.range (evalForms Λ (x.val.snd ∘ b σ))) = ⊤ := h_vec.symm ▸ x.property.right
+    have h_pt :
+        projSpace.mk (evalForms Λ (x.val.snd ∘ b σ)) hv =
+          projSpace.mk (x.val.snd ∘ f ∘ X) x.property.right := by
+      simp only [h_vec]
+    exact h_pt ▸ hO (hv := hv) ((hb_hom σ).map x.val.snd) (x.property.left σ)
+  let t (σ : G) : W ⟶ T ⋙ O.toFunctor :=
+    { app c := ↾fun x ↦ ⟨_, (h_mem σ c x).snd⟩
+      naturality c₁ c₂ φ := rfl }
   let π : T ⋙ O.toFunctor ⟶ T ⋙ projSpace k d :=
     T.whiskerLeft (O.ι ≫ Γ.ι ≫ snd (algPointsOf k R Y) (projSpace k d))
   have h_over (σ : G) : t σ ≫ π = t 1 ≫ π := rfl

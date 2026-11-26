@@ -1,10 +1,15 @@
 module
 
-public import Lib.Adelic.QuotientMeasure.MovingTheQuotient
+import Mathlib.Algebra.CharP.Pi
 public import Lib.Weil.Periods.RealAndFinitePoints
 public import New.Spanning.Unfolding.BesselFormula
 public import New.Spanning.Unfolding.FillingAdmissible
 public import New.UpperBound.Objects.PoincareMap
+public import Lib.DiscreteSeries.Bessel.SchurBound
+import Lib.Adelic.QuotientMeasure.MovingTheQuotient
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Haar.TotalMass
+import New.Spanning.Unfolding.Packing
 
 /-!
 # The Poincaré map as a Poincaré series of the Bessel function
@@ -94,11 +99,11 @@ lemma besselChar_mul (h : S.Fits V l kw Y η) {r r' : New.G E ε}
 `Y.inclX` of `H(𝔸)` to the standard inclusion `toBesselH`. -/
 lemma adelicEquiv_inclX (h : S.Fits V l kw Y η) (a : New.G E (1 : 𝔰.κ → ℤˣ)) :
     h.adelicEquiv (Y.inclX a) =
-      toBesselH 𝔰 (S.N : 𝔸 E) ⟨(G.toUnitary a).1, by simpa using (G.toUnitary a).2⟩ := by
+      toBesselH 𝔰 (S.N : 𝔸 E) ⟨(G.toUnitary a).val, by simpa using (G.toUnitary a).property⟩ := by
   -- Both sides act on the block of `a` and fix the other basis vectors; compare the entries.
   have h_mat : (h.adelicEquiv (Y.inclX a)).val.val =
       gradedBlocks Y.indexEquiv Y.indexEquiv a.adeleMatrix 1 := Y.ratCoordMatrix_inclX a
-  have h_block (i j : 𝔰.κ) : a.adeleMatrix i j = (G.toUnitary a).1.1 i j := rfl
+  have h_block (i j : 𝔰.κ) : a.adeleMatrix i j = (G.toUnitary a).val.val i j := rfl
   refine Subtype.ext (Units.ext (Matrix.ext fun i j ↦ ?_))
   rw [h_mat]
   -- What is left after `simp` compares positions in the string.
@@ -112,13 +117,6 @@ lemma besselChar_inclX (h : S.Fits V l kw Y η) (a : New.G E (1 : 𝔰.κ → �
     h.besselChar (Y.inclX a) = 1 := by
   rw [besselChar, h.adelicEquiv_inclX, simpleRootSum_eq_zero_of_mem_besselH (toBesselH_mem _),
     mul_zero, map_zero_eq_one, Circle.coe_one]
-
-/-- For `r` in the Bessel group `Y.besselGroup` and any adelic point `a` of the unitary group of the
-standard definite space, `h.besselChar` takes the same value at `r * (Y.inclX a)⁻¹` as at `r`. -/
-lemma besselChar_mul_inv_inclX (h : S.Fits V l kw Y η) {r : New.G E ε}
-    (hr : r ∈ Y.besselGroup) (a : New.G E (1 : 𝔰.κ → ℤˣ)) :
-    h.besselChar (r * (Y.inclX a)⁻¹) = h.besselChar r := by
-  rw [← map_inv, h.besselChar_mul hr (Y.inclX_mem_besselGroup _), besselChar_inclX, mul_one]
 
 /-- Suppose the space `V` with the grading `Y` fits the filling data `S`; in particular `Y` labels
 the basis of `V` in the standard way. Then the shift `𝔢 = Y.shift` of the grading is `c C`, where
@@ -162,7 +160,7 @@ lemma besselChar_eq_unipotentChar [WeilData E] (h : S.Fits V l kw Y η)
     toAdele 2⁻¹ *
       (toAdele (WeilData.j * Y.genericConst : E) * σ + star
         (toAdele (WeilData.j * Y.genericConst : E) * σ)) := by
-    simp [Y.genericConst.2, div_eq_inv_mul, sub_eq_add_neg, mul_add, mul_assoc]
+    simp [Y.genericConst.property, div_eq_inv_mul, sub_eq_add_neg, mul_add, mul_assoc]
   rw [besselChar, Grading.unipotentChar, h_trace, h_half, stdAddChar_inv_two_mul_add_star,
     hj_genericConst]
 
@@ -176,7 +174,7 @@ lemma sourceFn_eq_besselChar_mul [WeilData E] (h : S.Fits V l kw Y η)
     Y.sourceFn t φ r = h.besselChar r * algFormCoeff 1 t φ (Y.leviPart r) := by
   rw [Grading.sourceFn,
     ← h.besselChar_eq_unipotentChar hj_genericConst (Y.mul_inv_inclX_leviPart_mem r),
-    h.besselChar_mul_inv_inclX r.2]
+    ← map_inv, h.besselChar_mul r.property (Y.inclX_mem_besselGroup _), besselChar_inclX, mul_one]
 
 open MeasureTheory Measure ComplexConjugate
 
@@ -207,7 +205,7 @@ lemma inv_classPoint_mul_mem_iff (h : S.Fits V l kw Y η) (c : S.Classes) (t : G
 in the Bessel group `Y.besselGroup`. -/
 lemma ratEquiv_classUnipotent_mem_besselGroup (h : S.Fits V l kw Y η) {c : S.Classes}
     (u : S.classUnipotent c) : (h.ratEquiv u : New.G E ε) ∈ Y.besselGroup :=
-  Y.unipotent_le_besselGroup (h.ratEquiv_mem_unipotent (mem_inf.mp u.2).1)
+  Y.unipotent_le_besselGroup (h.ratEquiv_mem_unipotent (mem_inf.mp u.property).1)
 
 /-- The point `(s, h_c)` of `R(𝔸)`, for a class `c` and a real point `s` of `R`. -/
 def classSection (h : S.Fits V l kw Y η) (c : S.Classes) (s : Y.besselReal) : Y.besselGroup :=
@@ -217,7 +215,7 @@ def classSection (h : S.Fits V l kw Y η) (c : S.Classes) (s : Y.besselReal) : Y
 def classUnipotentToReal (h : S.Fits V l kw Y η) (c : S.Classes) :
     S.classUnipotent c →* Y.besselReal where
   toFun u := ⟨(h.ratEquiv u : New.G E ε).1, Y.fst_mem_besselReal
-    ⟨h.ratEquiv u, Y.unipotent_le_besselGroup (h.ratEquiv_mem_unipotent (mem_inf.mp u.2).1)⟩⟩
+    ⟨h.ratEquiv u, Y.unipotent_le_besselGroup (h.ratEquiv_mem_unipotent (mem_inf.mp u.property).1)⟩⟩
   map_one' := by simp
   map_mul' := by simp
 
@@ -240,7 +238,7 @@ lemma exists_ratEquiv_mul_classPoint (h : S.Fits V l kw Y η) {c : S.Classes}
     ∃ k : Y.besselFin, (k : Gf E 𝔰.BesselIndex) ∈ S.stdPrincipalLevel ∧ ∀ x : GInf E ε,
       (h.ratEquiv u : New.G E ε) * (x, h.classPoint c) =
         (h.classUnipotentToReal c u * x, h.classPoint c) * (1, (k : Gf E 𝔰.BesselIndex)) := by
-  obtain ⟨-, hu_level⟩ := mem_inf.mp u.2
+  obtain ⟨-, hu_level⟩ := mem_inf.mp u.property
   have hu : (h.ratEquiv u : New.G E ε).2 ∈ Y.besselFin :=
     Y.snd_mem_besselFin (h.ratEquiv_classUnipotent_mem_besselGroup u)
   have hc : h.classPoint c ∈ Y.besselFin := h.classPoint_mem_besselFin c
@@ -263,12 +261,12 @@ lemma sourceFn_classSection [WeilData E] (h : S.Fits V l kw Y η)
     (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ) (ψ : AlgForm (E := E) 𝔰.κ kw 0) (c : S.Classes)
     (s : Y.besselReal) :
     Y.sourceFn t (algFormRep kw 0 η ψ) (h.classSection c s) =
-      h.besselChar (s.1, 1) *
-        t (conjWeylRep kw 0 (Y.leviPart ⟨(s.1, 1), s.2⟩).1⁻¹ (ψ.val c.out)) := by
+      h.besselChar (s.val, 1) *
+        t (conjWeylRep kw 0 (Y.leviPart ⟨(s.val, 1), s.property⟩).1⁻¹ (ψ.val c.out)) := by
   have h_split : h.classSection c s =
       ⟨(s.1, 1), s.2⟩ * ⟨Y.inclX (1, c.out * η⁻¹), Y.inclX_mem_besselGroup _⟩ := Subtype.ext <| by
     simp [classSection, Grading.besselProdEquiv, classPoint_eq_inclXFin, Y.inclX_inr]
-  have h_levi : (Y.leviPart ⟨(s.1, 1), s.2⟩).2 = 1 := Y.leviPart_snd_eq_one rfl
+  have h_levi : (Y.leviPart ⟨(s.val, 1), s.property⟩).2 = 1 := Y.leviPart_snd_eq_one rfl
   rw [h_split, Y.sourceFn_mul_inclX, h.sourceFn_eq_besselChar_mul hj_genericConst,
     algFormCoeff_apply, h_levi]
   simp
@@ -287,20 +285,21 @@ theorem exists_dotProduct_besselFn_eq_integral [WeilData E] (h : S.Fits V l kw Y
     ∃ (g₀ : GInf E ε) (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ),
       ∀ (ψ : AlgForm (E := E) 𝔰.κ kw 0) (c : S.Classes) (x : GInf E ε),
         h.weylBesselEquiv (ψ.val c.out) ⬝ᵥ S.besselFn .full (h.realHomeomorph x) =
-          ∫ s : Y.besselReal, conj (typeKernel l ε (g₀⁻¹ * s.1⁻¹ * x)) *
+          ∫ s : Y.besselReal, conj (typeKernel l ε (g₀⁻¹ * s.val⁻¹ * x)) *
             Y.sourceFn t (algFormRep kw 0 η ψ) (h.classSection c s) ∂haar := by
   -- Invert the variable, as `R(F_∞)` is unimodular, and compare the integrands.
   obtain ⟨g₀, t, h_formula⟩ := h.exists_besselFn_eq_integral
-  have := Y.isMulRightInvariant_haar_besselReal_besselFin.1
+  have := Y.isMulRightInvariant_haar_besselReal
   have : SecondCountableTopology Y.besselReal := inferInstance
   refine ⟨g₀, t, fun ψ c x ↦ ?_⟩
   rw [h_formula, ← integral_inv_eq_self]
   refine integral_congr_ae (.of_forall fun s ↦ ?_)
-  let s' : Y.besselGroup := ⟨(s.1, 1), s.2⟩
+  let s' : Y.besselGroup := ⟨(s.val, 1), s.property⟩
   have h_inv : (⟨((s⁻¹).1, 1), (s⁻¹).2⟩ : Y.besselGroup) = s'⁻¹ := Subtype.ext (by simp [s'])
-  have h_char : (h.besselChar ((s⁻¹).1, 1))⁻¹ = h.besselChar (s.1, 1) :=
+  have h_char : (h.besselChar ((s⁻¹).val, 1))⁻¹ = h.besselChar (s.val, 1) :=
     inv_eq_of_mul_eq_one_left <| by
-      simp [s', ← h.besselChar_mul s'.2 (r' := ((s⁻¹).1, 1)) (s⁻¹).2, ← h.besselChar_inclX 1]
+      simp [s', ← h.besselChar_mul s'.property (r' := ((s⁻¹).val, 1)) (s⁻¹).property,
+        ← h.besselChar_inclX 1]
   simp only [h.sourceFn_classSection hj_genericConst, h_char, h_inv, map_inv]
   rfl
 
@@ -321,17 +320,17 @@ lemma integral_classCutoff_integral_mul [WeilData E]
     (hW_int : Integrable
       (fun s : Y.besselReal ↦ (S.classCutoff c (h.realHomeomorph s)).toReal • W s) haar) :
     ∫ x : GInf E ε, (S.classCutoff c (h.realHomeomorph x)).toReal •
-        (∫ s : Y.besselReal, e (g₀⁻¹ * s.1⁻¹ * x) * W s ∂haar) * y (x, h.classPoint c) =
+        (∫ s : Y.besselReal, e (g₀⁻¹ * s.val⁻¹ * x) * W s ∂haar) * y (x, h.classPoint c) =
       ∫ s : Y.besselReal, (S.classCutoff c (h.realHomeomorph s)).toReal •
         (W s * y (s * g₀, h.classPoint c)) ∂haar := by
   let F (p : Y.besselReal × GInf E ε) : ℂ :=
-    W p.1 * (e (g₀⁻¹ * p.1.1⁻¹ * p.2) * y (p.2, h.classPoint c))
+    W p.1 * (e (g₀⁻¹ * p.1.val⁻¹ * p.2) * y (p.2, h.classPoint c))
   have hy_cont : Continuous y := hy.continuous
   have hF_inv (u : S.classUnipotent c) (s : Y.besselReal) (x : GInf E ε) :
       F (h.classUnipotentToReal c u * s, h.classUnipotentToReal c u * x) = F (s, x) := by
     obtain ⟨k, hk, h_eq⟩ := h.exists_ratEquiv_mul_classPoint u
     have hy_inv : y (h.classUnipotentToReal c u * x, h.classPoint c) = y (x, h.classPoint c) := by
-      rw [← hy_level k hk, ← h_eq, hy.rat_mul _ (h.ratEquiv u).2]
+      rw [← hy_level k hk, ← h_eq, hy.rat_mul _ (h.ratEquiv u).property]
     simp [F, hW_inv, hy_inv, mul_assoc]
   -- All converges: `y` is bounded, `e` is integrable, and `W` is integrable over `U_c \ R(F_∞)`.
   have hF_int : Integrable (fun p ↦
@@ -349,7 +348,7 @@ lemma integral_classCutoff_integral_mul [WeilData E]
     simp [F, mul_assoc]
   calc _ = ∫ x, (S.classCutoff c (h.realHomeomorph x)).toReal • ∫ s, F (s, x) ∂haar := by
         simp only [F, smul_mul_assoc, ← integral_mul_const, mul_assoc, mul_left_comm (W _)]
-    _ = ∫ s, (S.classCutoff c (h.realHomeomorph s.1)).toReal • (∫ x, F (s, x)) ∂haar :=
+    _ = ∫ s, (S.classCutoff c (h.realHomeomorph s.val)).toReal • (∫ x, F (s, x)) ∂haar :=
         integral_cutoff_swap volume haar (h.classUnipotentToReal c) (by fun_prop)
           (h.tsum_classCutoff_realHomeomorph c) (by fun_prop) hF_inv hF_int
     _ = _ := by simp only [h_fix]
@@ -411,20 +410,20 @@ lemma sourceFn_mul_of_mem_stdPrincipalLevel [WeilData E] (h : S.Fits V l kw Y η
     (t : (WeylIndex 𝔰.κ kw → ℂ) →ₗ[ℂ] ℂ)
     (ψ : levelSpace (algFormRep kw 0) S.sourceLevel) (r : Y.besselGroup) {k : Y.besselFin}
     (hk : (k : Gf E 𝔰.BesselIndex) ∈ S.stdPrincipalLevel) :
-    Y.sourceFn t (algFormRep kw 0 η ψ.1) (r * Y.besselProdEquiv (1, k)) =
-      Y.sourceFn t (algFormRep kw 0 η ψ.1) r := by
-  obtain ⟨u, hu, a, ha, h_char, h_eq⟩ := h.exists_eq_unipotent_mul_inclX k.2 hk
+    Y.sourceFn t (algFormRep kw 0 η ψ.val) (r * Y.besselProdEquiv (1, k)) =
+      Y.sourceFn t (algFormRep kw 0 η ψ.val) r := by
+  obtain ⟨u, hu, a, ha, h_char, h_eq⟩ := h.exists_eq_unipotent_mul_inclX k.property hk
   let u' : Y.besselGroup := ⟨u, Y.unipotent_le_besselGroup hu⟩
   have h_split : Y.besselProdEquiv (1, k) = u' * ⟨_, Y.inclX_mem_besselGroup (1, a)⟩ :=
     Subtype.ext h_eq
-  have h_fix : algFormRep kw 0 a (algFormRep kw 0 η ψ.1) = algFormRep kw 0 η ψ.1 := by
-    have h_level : algFormRep kw 0 a ψ.1 = ψ.1 := by simpa using ψ.2 ⟨a, ha⟩
+  have h_fix : algFormRep kw 0 a (algFormRep kw 0 η ψ.val) = algFormRep kw 0 η ψ.val := by
+    have h_level : algFormRep kw 0 a ψ.val = ψ.val := by simpa using ψ.property ⟨a, ha⟩
     rw [← mul_apply_eq_comp, ← map_mul, ← (h.central a).eq, map_mul, mul_apply_eq_comp,
       h_level]
   rw [h_split, ← mul_assoc, Y.sourceFn_mul_inclX, h_fix,
     h.sourceFn_eq_besselChar_mul hj_genericConst, h.sourceFn_eq_besselChar_mul hj_genericConst,
     map_mul, (Y.leviPart_eq_one_iff (r := u')).mpr hu, mul_one,
-    Subgroup.coe_mul, h.besselChar_mul r.2 u'.2, h_char, mul_one]
+    Subgroup.coe_mul, h.besselChar_mul r.property u'.property, h_char, mul_one]
 
 /-- Suppose `V` fits `S` (`h`) and `S` is admissible. Every point `r` of the Bessel group
 `Y.besselGroup` can be moved by a rational point `γ` of `Y.ratBessel` so that the finite part of
@@ -446,7 +445,7 @@ lemma exists_ratBessel_mul_mem_coset (h : S.Fits V l kw Y η) [S.IsAdmissible] (
   let δ' : New.G E (1 : 𝔰.κ → ℤˣ) := (stdSpace E 𝔰.κ).ratEmbed δ⁻¹
   have hδ'_fin : δ'.2 = (stdEmbFin δ)⁻¹ := map_inv stdEmbFin δ
   have hu_rat : (h.ratEquiv u⁻¹ : New.G E ε) ∈ Y.ratBessel := mem_inf.mpr
-    ⟨(h.ratEquiv u⁻¹).2, Y.unipotent_le_besselGroup (h.ratEquiv_mem_unipotent (inv_mem hu))⟩
+    ⟨(h.ratEquiv u⁻¹).property, Y.unipotent_le_besselGroup (h.ratEquiv_mem_unipotent (inv_mem hu))⟩
   refine ⟨Y.inclX δ' * h.ratEquiv u⁻¹, mul_mem (Y.inclX_mem_ratBessel ⟨δ⁻¹, rfl⟩) hu_rat, c, ?_⟩
   -- Seen from the class `c`, the moved point is `k` divided by the error of the approximation.
   have h_eq : (S.classRep c)⁻¹ * (S.inclHFin η *
@@ -456,8 +455,8 @@ lemma exists_ratBessel_mul_mem_coset (h : S.Fits V l kw Y η) [S.IsAdmissible] (
       adelicEquiv_ratEquiv]
     simp [err, adelicToFin_adelicEquiv_inclX, hδ'_fin, eq_mul_inv_of_mul_eq h_dec, ratToFin,
       mul_assoc]
-  rw [inv_classPoint_mul_mem_iff, ← inv_mul_cancel_right r.1 (Y.inclX a), h_eq]
-  exact mul_mem (IsAdmissible.sourceLevel_eq.le k.2) (inv_mem h_approx)
+  rw [inv_classPoint_mul_mem_iff, ← inv_mul_cancel_right r.val (Y.inclX a), h_eq]
+  exact mul_mem (IsAdmissible.sourceLevel_eq.le k.property) (inv_mem h_approx)
 
 /-- Let `c`, `d` be classes, `J = S.stdPrincipalLevel` the principal level, and
 `U_c = S.classUnipotent c`. Suppose the finite part of `g` lies in `h.classPoint d * J`, `γ` is in
@@ -516,11 +515,11 @@ lemma isCutoff_sum_classWeight (h : S.Fits V l kw Y η) [S.IsAdmissible] :
   -- Only the class `d` and the elements of `U_d` contribute, and they give `∑_u β_d (u r_∞) = 1`.
   let ι (u : S.classUnipotent d) : Y.ratBessel.subgroupOf Y.besselGroup :=
     have hu := h.ratEquiv_classUnipotent_mem_besselGroup u
-    ⟨⟨h.ratEquiv u, hu⟩, (h.ratEquiv u).2, hu⟩
+    ⟨⟨h.ratEquiv u, hu⟩, (h.ratEquiv u).property, hu⟩
   have hι : Injective ι := fun u u' h_eq ↦ Subtype.ext <| h.ratEquiv.injective <|
-    Subtype.ext (congrArg (fun γ ↦ (γ.1 : New.G E ε)) h_eq)
+    Subtype.ext (congrArg (fun γ ↦ (γ.val : New.G E ε)) h_eq)
   have h_ne (γ) (c : S.Classes) (hc : h.classWeight c (γ • r) ≠ 0) : c = d ∧ γ ∈ Set.range ι := by
-    obtain ⟨rfl, u, hu⟩ := h.eq_and_exists_classUnipotent_of_mem_coset hd γ.2
+    obtain ⟨rfl, u, hu⟩ := h.eq_and_exists_classUnipotent_of_mem_coset hd γ.property
       (by_contra fun h_not ↦ hc (ite_eq_right h_not))
     exact ⟨rfl, u, Subtype.ext (Subtype.ext hu)⟩
   have h_term (u : S.classUnipotent d) : h.classWeight d (ι u • r) =
@@ -569,7 +568,7 @@ theorem exists_integral_besselMeasure_eq_sum (h : S.Fits V l kw Y η) [S.IsAdmis
   have h_cut : IsCutoff (count : Measure (Y.ratBessel.subgroupOf Y.besselGroup))
       fun r : Y.besselGroup ↦ ∑ c : S.Classes, h.classWeight c r := h.isCutoff_sum_classWeight
   have h_inv (γ : Y.ratBessel.subgroupOf Y.besselGroup) (r : Y.besselGroup) : F (γ • r) = F r :=
-    hF_rat γ γ.2 r
+    hF_rat γ γ.property r
   have h_fin : ∀ᵐ r : Y.besselGroup ∂haar, ∑ c, h.classWeight c r < ⊤ := h_cut.ae_cutoff_lt_top
   have h_int (c : S.Classes) : Integrable (fun r ↦ (h.classWeight c r).toReal • F r) haar := by
     have h_sum : Integrable (fun r ↦ (∑ c, h.classWeight c r).toReal • F r) haar :=
@@ -581,8 +580,8 @@ theorem exists_integral_besselMeasure_eq_sum (h : S.Fits V l kw Y η) [S.IsAdmis
   have h_prod (c : S.Classes) (s : Y.besselReal) (k : Y.besselFin) :
       (h.classWeight c (h.classSection c s * Y.besselProdEquiv (1, k))).toReal •
           F (h.classSection c s * Y.besselProdEquiv (1, k)) =
-        Φ c s * (S.stdPrincipalLevel.toSubgroup : Set (Gf E 𝔰.BesselIndex)).indicator 1 k.1 := by
-    by_cases hk : k.1 ∈ S.stdPrincipalLevel
+        Φ c s * (S.stdPrincipalLevel.toSubgroup : Set (Gf E 𝔰.BesselIndex)).indicator 1 k.val := by
+    by_cases hk : k.val ∈ S.stdPrincipalLevel
     · rw [hF_level _ k hk]
       simp [Φ, classWeight, classSection, Grading.besselProdEquiv, hk]
     · simp [classWeight, classSection, Grading.besselProdEquiv, hk]
@@ -627,21 +626,21 @@ theorem exists_integral_poincareSeries_eq_period (h : S.Fits V l kw Y η) [S.IsA
       ∀ (ψ : levelSpace (algFormRep kw 0) S.sourceLevel) {y : New.G E ε → ℂ},
         V.IsForm (star (typeKernel l ε)) y → HasLevel y S.stdPrincipalLevel.toSubgroup →
         ∫ x : New.G E ε, (y * h.poincareSeries (h.sourceFormCoords ψ)) x ∂V.Γ.quotMeasure =
-          ∫ r : Y.besselGroup, Y.sourceFn t (algFormRep kw 0 η ψ.1) r *
-            y (r.1 * (g₀, 1)) ∂Y.besselMeasure := by
+          ∫ r : Y.besselGroup, Y.sourceFn t (algFormRep kw 0 η ψ.val) r *
+            y (r.val * (g₀, 1)) ∂Y.besselMeasure := by
   -- Both sides are multiples of `∑_c ∫_{U_c \ R(F_∞)} 𝒲 (s, h_c) y (s g₀, h_c) ds`; the ratio of
   -- the two factors goes into the linear form.
   obtain ⟨g₀, t, h_bessel⟩ := h.exists_dotProduct_besselFn_eq_integral hj_genericConst
   obtain ⟨volJ', h_vol, h_classes⟩ := h.exists_integral_besselMeasure_eq_sum
   let volJ : ℝ := volume.real S.stdPrincipalLevel.carrier
   refine ⟨g₀, (volJ / volJ' : ℂ) • t, fun ψ y hy hy_level ↦ ?_⟩
-  let W : Y.besselGroup → ℂ := Y.sourceFn t (algFormRep kw 0 η ψ.1)
+  let W : Y.besselGroup → ℂ := Y.sourceFn t (algFormRep kw 0 η ψ.val)
   have hW : Y.IsEquivariant W := Y.isEquivariant_sourceFn (odd_two_mul_add_one _) _ _
   have hW_cont : Continuous W := hW.continuous
   have hy_cont : Continuous y := hy.continuous
   have hW_rat : (Y.ratBessel.subgroupOf Y.besselGroup).FixesLeft W :=
     fun γ hγ ↦ hW.rat_mul γ (mem_subgroupOf.mp hγ).1
-  have hW_level (r) (k : Y.besselFin) (hk : k.1 ∈ S.stdPrincipalLevel) :
+  have hW_level (r) (k : Y.besselFin) (hk : k.val ∈ S.stdPrincipalLevel) :
       W (r * Y.besselProdEquiv (1, k)) = W r :=
     h.sourceFn_mul_of_mem_stdPrincipalLevel hj_genericConst t ψ r hk
   -- The function `𝒲` is integrable over each `U_c \ R(F_∞)`, since `[R]` is compact.
@@ -653,19 +652,19 @@ theorem exists_integral_poincareSeries_eq_period (h : S.Fits V l kw Y η) [S.IsA
     let γ : Y.besselGroup := ⟨h.ratEquiv u, h.ratEquiv_classUnipotent_mem_besselGroup u⟩
     have h_move : γ * h.classSection c s = h.classSection c (h.classUnipotentToReal c u * s) *
         Y.besselProdEquiv (1, k) := Subtype.ext (h_eq s)
-    rw [← hW_level _ k hk, ← h_move, hW.rat_mul γ (h.ratEquiv u).2]
+    rw [← hW_level _ k hk, ← h_move, hW.rat_mul γ (h.ratEquiv u).property]
   -- The period integrates a function `F` on `[R]` that is right invariant under `J'`.
-  let F (r : Y.besselGroup) : ℂ := W r * y (r.1 * (g₀, 1))
+  let F (r : Y.besselGroup) : ℂ := W r * y (r.val * (g₀, 1))
   have hF_rat : (Y.ratBessel.subgroupOf Y.besselGroup).FixesLeft F := fun γ hγ r ↦ by
     simp [F, hW_rat γ hγ r, mul_assoc, hy.rat_mul _ (mem_subgroupOf.mp hγ).1]
-  have hF_level (r) (k : Y.besselFin) (hk : k.1 ∈ S.stdPrincipalLevel) :
+  have hF_level (r) (k : Y.besselFin) (hk : k.val ∈ S.stdPrincipalLevel) :
       F (r * Y.besselProdEquiv (1, k)) = F r := by
-    simp only [F, hW_level r k hk, ← hy_level k hk (r.1 * (g₀, 1))]
+    simp only [F, hW_level r k hk, ← hy_level k hk (r.val * (g₀, 1))]
     simp [Grading.besselProdEquiv, mul_assoc]
   obtain ⟨-, h_period⟩ :=
     h_classes (by fun_prop) hF_rat hF_level (hW.integrable_mul hy.toIsAutomorphic (g₀, 1))
   calc _ = (volJ : ℂ) * ∑ c, ∫ x, (S.classCutoff c (h.realHomeomorph x)).toReal •
-          (∫ s : Y.besselReal, conj (typeKernel l ε (g₀⁻¹ * s.1⁻¹ * x)) *
+          (∫ s : Y.besselReal, conj (typeKernel l ε (g₀⁻¹ * s.val⁻¹ * x)) *
             W (h.classSection c s) ∂haar) * y (x, h.classPoint c) := by
         simpa only [W, ← h_bessel, dotProduct, sourceFormCoords_apply, Pi.mul_apply] using
           integral_mul_poincareSeries_eq_sum_classes (X := h) (h.sourceFormCoords ψ) hy hy_level
@@ -700,36 +699,25 @@ theorem exists_poincareAt_eq_poincareMap_comp :
     ∃ (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ),
       D.poincareAt g t = D.filling_fits.poincareMap ∘ₗ D.sourceFormCoords.toLinearMap := by
   -- Both forms have the same inner product, the Bessel period, with every form `y`.
-  have hj_genericConst : WeilData.j * (D.gradingY 0).genericConst =
-      -(D.filling.M * D.filling.deltaE : D.E)⁻¹ := by
-    have hj_ne_zero : (WeilData.j : D.E) ≠ 0 := WeilData.j_ne_zero
-    simp [gradingY, filling, M, field]
-  obtain ⟨g, t, h_period⟩ :=
-    D.filling_fits.exists_integral_poincareSeries_eq_period hj_genericConst
+  obtain ⟨g, t, h_period⟩ := D.filling_fits.exists_integral_poincareSeries_eq_period
+    (by
+      simp [gradingY, filling, M, field]
+      rw [mul_assoc, mul_assoc, ← div_div, div_self WeilData.j_ne_zero, one_div]
+      simp only [mul_inv_rev]
+      ac_rfl)
   refine ⟨g, t, LinearMap.ext fun φ ↦ ext_inner_left ℂ fun y ↦ ?_⟩
-  -- `D.sourceFormCoords φ` are the coordinates of the translate `ψ` of `φ` by the central element
-  -- `D.latticeScale 0`; translating back by its inverse gives `φ`.
-  let ψ : D.SourceForm := D.centralRep (D.latticeScale 0) φ
-  have h_back : algFormRep D.columnCount 0 (scalarFin (D.X 0) (D.latticeScale 0))⁻¹ ψ.1 = φ.1 :=
-    (algFormRep D.columnCount 0).inv_self_apply _ φ.1
-  let f : New.G D.E (D.signsY 0) → ℂ := y.1
-  have hf_form : (D.spaceY 0).IsForm (typeKernel D.paramW (D.signsY 0)) f := y.1.2
-  have hf_level : HasLevel (star f) D.filling.stdPrincipalLevel.toSubgroup := by
-    intro k hk x
-    have h_fix : f (x * (1, k)) = f x :=
-      (congrFun (congrArg Subtype.val (y.2 ⟨k, hk⟩)) x).trans (by simp [f])
-    exact congrArg star h_fix
-  calc inner ℂ y (D.poincareAt g t φ)
-      = ∫ r : (D.gradingY 0).besselGroup, (D.gradingY 0).sourceFn t φ.1 r *
-          star f (r.1 * (g, 1)) ∂(D.gradingY 0).besselMeasure := D.inner_poincareAt g t φ y
-    _ = ∫ x : New.G D.E (D.signsY 0), (star f *
-          D.filling_fits.poincareSeries (D.sourceFormCoords φ)) x
-          ∂(D.spaceY 0).Γ.quotMeasure := by
-        rw [← h_back]
-        exact (h_period ψ hf_form.conj hf_level).symm
-    _ = inner ℂ y (D.filling_fits.poincareMap (D.sourceFormCoords φ)) := by
-        rw [← D.filling_fits.coe_poincareMap]
-        rfl
+  have hf_level : HasLevel (star (y.val : New.G D.E (D.signsY 0) → ℂ))
+      D.filling.stdPrincipalLevel.toSubgroup := fun k hk x ↦
+    congrArg star <| (congrFun (congrArg Subtype.val (y.property ⟨k, hk⟩)) x).trans (by simp)
+  have h_back : algFormRep D.columnCount 0 (scalarFin (D.X 0) (D.latticeScale 0))⁻¹
+      (D.centralRep (D.latticeScale 0) φ).val = φ.val :=
+    (algFormRep D.columnCount 0).inv_self_apply _ φ.val
+  refine (D.inner_poincareAt g t φ y).trans ?_
+  rw [← h_back]
+  refine (h_period (D.centralRep (D.latticeScale 0) φ) y.val.property.conj hf_level).symm.trans ?_
+  change _ = inner ℂ y (D.filling_fits.poincareMap (D.sourceFormCoords φ))
+  rw [← D.filling_fits.coe_poincareMap]
+  rfl
 
 /-- A chosen real point `g` at which, for a suitable linear form `t`, the form `D.poincareAt g t φ`
 that represents the Bessel period of every source form `φ` is the Poincaré series of the Bessel

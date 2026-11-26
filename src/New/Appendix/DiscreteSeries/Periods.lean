@@ -1,8 +1,14 @@
 module
 
-public import Lib.General.LinearAlgebra.BlockEmbeddings
-public import New.Appendix.DiscreteSeries.GaussianShape
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Topology.Algebra.Group.Matrix
 public import New.Appendix.DiscreteSeries.Localization
+public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+import Lib.DiscreteSeries.Haar.TotalMass
+import New.Appendix.DiscreteSeries.GaussianShape
 
 /-!
 # Lower bounds for periods by Laplace's method

@@ -1,6 +1,7 @@
 module
 
-public import Lib.Cohomology.Etale.BijectiveComparisons
+import Mathlib.Algebra.Homology.ShortComplex.ExactFunctor
+public import Lib.Cohomology.Etale.BijectiveComparisons -- shake: keep (instance attribute)
 
 /-!
 # Pointwise tensor product of functors, total Ext with Yoneda composition, external products
@@ -271,9 +272,8 @@ lemma pullbackAlong_id : pullbackAlong (𝟙 M) x = x := by
 
 lemma map_id : map (𝟭 (AbFunctor C)) x = x := by
   ext n
-  -- The identity functor is restriction along the identity of `C`, which fixes every class.
-  have h_id : (𝟭 (AbFunctor C)).mapExtAddHom M N n (x n) = x n :=
-    mapExactFunctor_restrictAlong_id (x n)
+  -- The identity functor fixes every class.
+  have h_id : (𝟭 (AbFunctor C)).mapExtAddHom M N n (x n) = x n := (x n).id_mapExactFunctor
   simpa using h_id
 
 /-- For a natural transformation `η : Φ ⟶ Ψ` of exact functors, pushing `Φ x` along `η F` equals
@@ -281,9 +281,11 @@ pulling `Ψ x` back along `η N`. -/
 lemma naturality (η : Φ ⟶ Ψ) (x : TotalH N F) :
     comp (map Φ x) (homClass (η F)) = pullbackAlong (η N) (map Ψ x) := by
   induction x using DirectSum.induction_on with
-  | zero => simp
-  | of n x => simpa [H.push, H.map] using congrArg toTotalH (mapExactFunctor_naturality η x)
-  | add x y hx hy => simp_all
+  | zero => simp only [_root_.map_zero, AddMonoidHom.zero_apply]
+  | of n x =>
+    rw [map_of, map_of, of_comp_homClass, pullbackAlong_of]
+    exact congrArg toTotalH (mapExactFunctor_naturality η x)
+  | add x y hx hy => simp only [_root_.map_add, AddMonoidHom.add_apply, hx, hy]
 
 /-- The action of a scalar `r` of `R` on the coefficients `F` (`CoeffAction R F` gives each `r` an
 endomorphism `CoeffAction.act r` of `F`) is the product with the class of its action map. -/
@@ -377,26 +379,24 @@ lemma exact_triangle (h : S.ShortExact) (F : AbFunctor C) :
     Exact (comp (F := F) h.extClass.toTotalH) (pullbackAlong S.g) := by
   -- By `exact_precomp` it is enough to argue degree by degree, in the long exact Ext sequence `L`.
   let L := LongExactSeq.contravariant h F
-  have h_f_g : (mk₀ S.f).comp (mk₀ S.g) rfl = 0 := by simp
-  have h_extClass_f : h.extClass.comp (mk₀ S.f) rfl = 0 := by simp
-  have h_g_extClass : (mk₀ S.g).comp h.extClass rfl = 0 := by simp
+  -- The zero of `H` is the zero of Mathlib's group structure on `Ext`, in which Mathlib and `L`
+  -- state their results.
+  have h_zero {X Y : AbFunctor C} {m : ℕ} {z : H X Y m} :
+      z = 0 ↔ z = (letI := Ext.instAddCommGroup (X := X) (Y := Y) (n := m); 0) := .rfl
+  have h_f_g : (mk₀ S.f).comp (mk₀ S.g) (zero_add 0) = 0 := by simp
+  have h_extClass_f : h.extClass.comp (mk₀ S.f) rfl = 0 := h_zero.2 h.extClass_comp
+  have h_g_extClass : (mk₀ S.g).comp h.extClass rfl = 0 := h_zero.2 h.comp_extClass
   refine ⟨exact_precomp (fun {n y} hy ↦ ?_) h_f_g,
     exact_precomp (fun {n y} hy ↦ ?_) h_extClass_f,
     exact_precomp (fun {n y} hy ↦ ?_) h_g_extClass⟩
-  · exact .inr ⟨n, zero_add n, (L.exact_f_g n y).1 (hy n (zero_add n))⟩
-  · exact .inr ⟨n, zero_add n, (L.exact_g_delta n y).1 (hy (n + 1) (add_comm 1 n))⟩
+  · exact .inr ⟨n, zero_add n, (L.exact_f_g n y).1 (h_zero.1 (hy n (zero_add n)))⟩
+  · exact .inr ⟨n, zero_add n, (L.exact_g_delta n y).1 (h_zero.1 (hy (n + 1) (add_comm 1 n)))⟩
   · rcases n with _ | n
     · -- in degree 0 nothing comes from the extension class, but the first map is injective
-      exact .inl ((injective_iff_map_eq_zero (L.f 0)).1 L.injective_f y (hy 0 rfl))
-    · exact .inr ⟨n, add_comm 1 n, (L.exact_delta_f n y).1 (hy (n + 1) (zero_add (n + 1)))⟩
-
-/-- The cohomology Ext(`freeAb (reprBy c)`, G) of the free abelian functor ℤ[Hom(c, −)] on a
-representable functor is concentrated in degree zero. -/
-lemma bijective_directSum_of_zero_reprBy (G : AbFunctor C) (c : C) :
-    Bijective (DirectSum.of (H (freeAb (reprBy c)) G) 0) :=
-  ⟨of_injective 0, fun x ↦ ⟨x 0, ext fun
-    | 0 => rfl
-    | _ + 1 => by subsingleton⟩⟩
+      exact .inl (h_zero.2
+        ((injective_iff_map_eq_zero (L.f 0)).1 L.injective_f y (h_zero.1 (hy 0 rfl))))
+    · exact .inr ⟨n, add_comm 1 n,
+        (L.exact_delta_f n y).1 (h_zero.1 (hy (n + 1) (zero_add (n + 1))))⟩
 
 /-- The Yoneda isomorphism from G(c) to the total Ext(ℤ[h_c], G), which is concentrated in
 degree 0; here h_c = Hom(c, −). -/
@@ -404,7 +404,7 @@ def sectionEquiv (G : AbFunctor C) (c : C) : G c ≃+ TotalH (freeAb (reprBy c))
   -- Yoneda identifies the sections with the classes of degree zero, and these are all classes.
   (homReprEquiv c G).symm.trans
     ((addEquiv₀ (C := AbFunctor C)).symm.trans
-      (AddEquiv.ofBijective _ (bijective_directSum_of_zero_reprBy G c)))
+      (AddEquiv.ofBijective _ ⟨of_injective 0, fun x ↦ ⟨x 0, ext fun | 0 => rfl | _ + 1 => by subsingleton⟩⟩))
 
 end TotalH
 
@@ -501,12 +501,23 @@ lemma TotalH.pull_twist {N : C ⥤ AddCommGrpCat} {N' : AbFunctor C'} {φ : C' �
     (h_space : α ≫ φ.whiskerLeft A = A ≫ whiskerRight σ N) :
     pullbackAlong α (map (restrictAlong φ) y.toTotalH) = comp y.toTotalH (homClass s) := by
   -- Both sides are pull-backs of `x`, and `σ` moves from the coefficients to the space.
-  have h_move : Comparison.pull ⟨c.functor, whiskerRight σ F ≫ φ.whiskerLeft c.coeffHom⟩ A n x =
-      Comparison.pull ⟨φ ⋙ c.functor, φ.whiskerLeft c.coeffHom⟩ (A ≫ whiskerRight σ N) n x := by
-    rw [Comparison.pull_whiskerRight]
-  simpa [h, h_space, ← h_coeff, map_def, Comparison.pull, H.map, H.push, mapExtAddHom,
-    mapExactFunctor_comp, mapExactFunctor_mk₀, mapExactFunctor_mapExactFunctor] using! congrArg
-    toTotalH h_move.symm
+  subst h
+  have key : Comparison.pull ⟨φ, 𝟙 (φ ⋙ F')⟩ α n (c.pull A n x) = push N' s n (c.pull A n x) :=
+    calc Comparison.pull ⟨φ, 𝟙 (φ ⋙ F')⟩ α n (c.pull A n x)
+        = Comparison.pull ⟨φ ⋙ c.functor, φ.whiskerLeft c.coeffHom⟩ (α ≫ φ.whiskerLeft A) n
+            x := by
+          rw [Comparison.pull_trans]
+          exact congrArg (fun β ↦ Comparison.pull ⟨φ ⋙ c.functor, β⟩ (α ≫ φ.whiskerLeft A) n x)
+            (Category.comp_id _)
+      _ = Comparison.pull ⟨c.functor, c.coeffHom ≫ s⟩ A n x := by
+          rw [h_space, ← Comparison.pull_whiskerRight, h_coeff]
+      _ = push N' s n (c.pull A n x) :=
+          (congrArg _ (Ext.comp_mk₀_id x)).symm.trans (c.pull_push _ (𝟙 F) s (by simp) A x)
+  -- The left-hand side is the pull-back of `c.pull A n x` by the comparison `(φ, 𝟙)` along `α`.
+  rw [map_of]
+  dsimp only [whiskeringLeft_obj_obj]
+  rw [pullbackAlong_of, of_comp_homClass, ← key]
+  exact congrArg (DirectSum.of _ n) (congrArg (H.map _ α n) (Ext.comp_mk₀_id _)).symm
 
 /-- For `x` in Ext^b(N ∘ Θ, F), pulling back along `c` and `η` commutes in total Ext with composing
 by `ξ` in Ext^a(N', N) on `A`, restricted along `Θ` before and along `Θ'` after the pull-back. -/
@@ -544,19 +555,20 @@ lemma Comparison.pull_cup {F : AbFunctor C} {a b n : ℕ} {A : Type _} [Category
     c.pull (whiskerRight η ((abTensor.obj N).obj N')) n (cup μ x y h :) =
       cup μ' (c.pull (whiskerRight η N) a x) (c.pull (whiskerRight η N') b y) h := by
   -- A pull-back is restriction along `c.functor` and push along `c.coeffHom`, then pull-back along
-  -- `η`; the product commutes with each of the two steps.
+  -- `η`; the product commutes with each of the two steps. The restrictions are taken between the
+  -- categories `AbFunctor C` and `AbFunctor C'`, in which `H` is stated.
   let x' : H (c.functor ⋙ Θ ⋙ N) F' a := push _ c.coeffHom a
-    (x.mapExactFunctor (restrictAlong c.functor))
-  let y' : H (c.functor ⋙ Θ ⋙ N') F' b :=
-    push _ c.coeffHom b (y.mapExactFunctor (restrictAlong c.functor))
+    (x.mapExactFunctor (C := AbFunctor C) (D := AbFunctor C') (restrictAlong c.functor))
+  let y' : H (c.functor ⋙ Θ ⋙ N') F' b := push _ c.coeffHom b
+    (y.mapExactFunctor (C := AbFunctor C) (D := AbFunctor C') (restrictAlong c.functor))
   -- First step: `mapExactFunctor_naturality` moves the push of `y` along `c.coeffHom` past the
   -- class of `x`; there the two pushes and the pairing `μ'` compose as `hμ` says.
   have h_push :
-      push _ c.coeffHom n ((cup μ x y h).mapExactFunctor (restrictAlong c.functor)) = cup μ' x' y'
-        h := by
+      push _ c.coeffHom n ((cup μ x y h).mapExactFunctor (C := AbFunctor C) (D := AbFunctor C')
+        (restrictAlong c.functor)) = cup μ' x' y' h := by
     have h_nat := congrArg (push _ ((abTensor.map c.coeffHom).app F' ≫ μ') a)
       (mapExactFunctor_naturality (abTensor.flip.map c.coeffHom)
-        (x.mapExactFunctor (restrictAlong c.functor)))
+        (x.mapExactFunctor (C := AbFunctor C) (D := AbFunctor C') (restrictAlong c.functor)))
     -- Simplify `h_nat` in place: stated in simplified form it would need the degree equations
     -- written out.
     simp [hμ, H.push, mapExactFunctor_mapExactFunctor, H.map] at h_nat

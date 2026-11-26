@@ -1,8 +1,15 @@
 module
 
-public import Lib.General.LinearAlgebra.HermiteForm
-public import New.UpperBound.ElementaryDivisors.InvariantAverage
-public import New.UpperBound.ElementaryDivisors.RootLemma
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+public import New.UpperBound.ElementaryDivisors.TwistingData
+import Lib.General.LinearAlgebra.HermiteForm
+import New.UpperBound.ElementaryDivisors.InvariantAverage
+import New.UpperBound.ElementaryDivisors.RootLemma
 
 /-!
 # Edges, halfway lattices and duality
@@ -103,9 +110,9 @@ lemma card_le_mul_finrank_of_dual_rows {O X I E : Type*} [CommRing O] [IsLocalRi
       simpa [v] using congrArg (fun f : X → S ↦ S.subtype (f y.1) y.2) hc
     -- Pair the relation with row `i` of `R`: only the coefficient `c i` survives.
     calc c i = ∑ j : s, c j * residue O ((R * Q) i j) := by
-          simp [h_dual, apply_ite (residue O)]
+          simp [h_dual]
       _ = ∑ y : X × I, residue O (R i y) * ∑ j : s, c j * residue O (Q y j) := by
-          simp only [Matrix.mul_apply, map_sum, map_mul, mul_sum, mul_left_comm]
+          simp only [Matrix.mul_apply, map_sum, mul_sum, mul_left_comm]
           exact sum_comm
       _ = 0 := by simp only [h_entry, mul_zero, sum_const_zero]
   simpa [finrank_pi_fintype] using h_indep.fintype_card_le_finrank
@@ -142,13 +149,6 @@ section Edges
 variable {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
   (T : FrobeniusCycle N W O)
 
-/-- A coefficient vector `v` lies in `T.translatesIn n τ I B` if and only if its translates by the
-Levi subgroup of the labelling `τ` have their coefficients at the exponents in `B` in `I`. -/
-lemma mem_translatesIn_iff {τ : Fin k → ℕ} {I : Ideal O} {B : Set (Exponents N k n)}
-    {v : Exponents N k n → O} :
-    v ∈ T.translatesIn n τ I B ↔ ∀ g ∈ levi W τ, ∀ β ∈ B, (T.letterRep n g *ᵥ v) β ∈ I :=
-  Iff.rfl
-
 /-- Let `v` be a coefficient vector whose translates `T.letterRep n g *ᵥ v`, for `g` in the Levi
 subgroup of the labelling `τ`, have their coefficients at the exponents in `B` in the maximal ideal
 of `O`. Then the translates of the reduction of `v`, for the Frobenius cycle pushed to the residue
@@ -157,7 +157,6 @@ lemma residue_mem_translatesIn [IsLocalRing O] {τ : Fin k → ℕ} {B : Set (Ex
     {v : Exponents N k n → O} (hv : v ∈ T.translatesIn n τ (maximalIdeal O) B) :
     (fun β : Exponents N k n ↦ residue O (v β)) ∈
       (T.map (residue O)).translatesIn n τ (⊥ : Ideal (ResidueField O)) B := by
-  rw [mem_translatesIn_iff] at hv ⊢
   intro g hg β hβ
   have h_residue : ((T.map (residue O)).letterRep n g *ᵥ fun α ↦ residue O (v α)) β =
       residue O ((T.letterRep n g *ᵥ v) β) := by simp [letterRep_map, mulVec, dotProduct]

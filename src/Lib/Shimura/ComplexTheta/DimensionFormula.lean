@@ -1,7 +1,21 @@
 module
 
-public import Lib.General.Analysis.HolomorphicIntegrals
+import Mathlib.Algebra.Azumaya.Basic
+import Mathlib.Algebra.Central.End
+import Mathlib.Algebra.Module.StablyFree.Basic
+import Mathlib.Algebra.Module.ZLattice.Summable
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.RingTheory.TotallySplit
+import Mathlib.Tactic.Linter.Style
 public import Lib.Shimura.ComplexTheta.AppellHumbertData
+import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!
 # Theta functions on complex tori: dimension formula, base points, multipliers
@@ -154,15 +168,15 @@ function of type (B, χ) in `y`; (d) the diagonal `x ↦ K(x, x)` has mean `(χ 
 lemma IsAppellHumbert.poincareSeries_mem_thetaSpace_and_quotMean
     (h_pos : ∀ x ≠ (0 : V), 0 < (B x x).re) :
     -- (a)
-    (∀ x y : V, Summable (hB.poincareTerm x y)) ∧
+    (∀ x y : V, Summable (B.poincareTerm χ x y)) ∧
     -- (b)
-    Continuous ↿hB.poincareSeries ∧
+    Continuous ↿(B.poincareSeries χ) ∧
     -- (c)
-    (∀ x : V, hB.poincareSeries x ∈ B.thetaSpace χ) ∧
+    (∀ x : V, B.poincareSeries χ x ∈ B.thetaSpace χ) ∧
     -- (d)
-    quotMean L.toAddSubgroup (fun x : V ↦ hB.poincareSeries x x) = (χ 0)⁻¹ ∧
+    quotMean L.toAddSubgroup (fun x : V ↦ B.poincareSeries χ x x) = (χ 0)⁻¹ ∧
     -- (e)
-    ∃ w : V, hB.poincareSeries w w ≠ 0 := by
+    ∃ w : V, B.poincareSeries χ w w ≠ 0 := by
   -- The series is the case `T = 1` of `summable_and_analyticAt_tsum`, at the parameters
   -- `(B x, y - x, y)`; as `T` is constant, any base point `b` serves.
   let t : StrongDual ℂ V × V × V → L → ℂ :=
@@ -173,17 +187,17 @@ lemma IsAppellHumbert.poincareSeries_mem_thetaSpace_and_quotMean
       Summable (t p) ∧ AnalyticAt ℂ (fun q ↦ tsum (t q)) p :=
     (hB.summable_and_analyticAt_tsum (b := I) (T := 1) h_T_an h_pos p).imp_right
       fun h ↦ h.comp (f := fun q ↦ (I, q)) (by fun_prop)
-  have mean : (quotMean L.toAddSubgroup fun x ↦ hB.poincareSeries x x) = (χ 0)⁻¹ := by
+  have mean : (quotMean L.toAddSubgroup fun x ↦ B.poincareSeries χ x x) = (χ 0)⁻¹ := by
     -- On the diagonal the series is `∑ l, 𝐞 (B.riemannForm x l) * t 0 l`, a Fourier series on
     -- `V ⧸ L`; its mean is the coefficient at `l = 0`.
-    have h_term (x : V) (l : L) : hB.poincareTerm x x l = 𝐞 (B.riemannForm x l) * t 0 l := by
-      simp [t, poincareTerm, exp_sub, ← hB.sub_eq_riemannForm, field]
+    have h_term (x : V) (l : L) : B.poincareTerm χ x x l = 𝐞 (B.riemannForm x l) * t 0 l := by
+      simp [t, ThetaTori.LatticeForm.poincareTerm, exp_sub, ← hB.sub_eq_riemannForm, field]
     have coef : ∑' l : ({0} : Set L), t 0 l =
         quotMean L.toAddSubgroup fun x ↦ ∑' l : L, 𝐞 (B.riemannForm x l) * t 0 l :=
       (isPosRiemann_of_re_pos h_pos).isDualFamily.tsum_coeff_eq_quotMean
         (fun l : L ↦ ⟨l, hB.le_dualLattice l.prop⟩) (S := {0}) (by simp) (series 0).1
-    have h_series (x : V) : hB.poincareSeries x x = ∑' l : L, 𝐞 (B.riemannForm x l) * t 0 l := by
-      simp only [poincareSeries]
+    have h_series (x : V) : B.poincareSeries χ x x = ∑' l : L, 𝐞 (B.riemannForm x l) * t 0 l := by
+      simp only [ThetaTori.LatticeForm.poincareSeries]
       exact tsum_congr (h_term x)
     simp only [h_series, ← coef]
     simp [t]
@@ -193,15 +207,15 @@ lemma IsAppellHumbert.poincareSeries_mem_thetaSpace_and_quotMean
   · exact (series _).2.differentiableAt.comp (f := fun y ↦ (B x, y - x, y)) y (by fun_prop)
   · -- Translating `z` by `m` shifts the summation index by `m`, up to the factor of automorphy:
     -- use the cocycle rule for `χ (m + l)` and `B m l - B l m = 2 π I * B.riemannForm m l`.
-    have shift (l : L) : hB.poincareTerm x (z + m) l =
-        χ m * (B m z + B m m / 2).exp * hB.poincareTerm x z (Equiv.addLeft ⟨m, hm⟩ l) := by
+    have shift (l : L) : B.poincareTerm χ x (z + m) l =
+        χ m * (B m z + B m m / 2).exp * B.poincareTerm χ x z (Equiv.addLeft ⟨m, hm⟩ l) := by
       have hχ_m : χ m ≠ 0 := hB.ne_zero hm
       have hχ_l : χ l ≠ 0 := hB.ne_zero l.prop
-      simp [poincareTerm, hB.semicharacter, hm, field, ← exp_add]
+      simp [ThetaTori.LatticeForm.poincareTerm, hB.semicharacter, hm, field, ← exp_add]
       -- The exponents differ by `(B m l - B l m) / 2 + π I E(l, m)`, which is zero.
       congr 1
       linear_combination (-1 / 2 : ℂ) * hB.sub_eq_riemannForm (l : V) m
-    rw [poincareSeries, tsum_congr shift, tsum_mul_left, Equiv.tsum_eq, poincareSeries]
+    rw [ThetaTori.LatticeForm.poincareSeries, tsum_congr shift, tsum_mul_left, Equiv.tsum_eq, ThetaTori.LatticeForm.poincareSeries]
   · -- A function with nonzero mean is not identically zero.
     contrapose! mean
     simp [mean, hB.ne_zero, eq_comm]
@@ -240,7 +254,7 @@ lemma IsAppellHumbert.exists_mem_thetaSpace_ne_zero : ∃ f ∈ B.thetaSpace χ,
     exact mul_pos Real.pi_pos (hp.riemannForm_pos x hx)
   obtain ⟨-, -, series_mem, -, w, hw⟩ := hB'.poincareSeries_mem_thetaSpace_and_quotMean pos
   -- A factor without zeros carries theta functions for `B + T` to theta functions for `B`.
-  have mem : (fun z ↦ ((B z z - (B + T) z z) / 2).exp * hB'.poincareSeries w z) ∈
+  have mem : (fun z ↦ ((B z z - (B + T) z z) / 2).exp * (B + T).poincareSeries χ w z) ∈
       B.thetaSpace χ :=
     hB'.exp_mul_mem_thetaSpace hB h_riem (fun _ _ ↦ rfl) (series_mem w)
   exact ⟨_, mem, fun h_zero ↦ mul_ne_zero (exp_ne_zero _) hw (congrFun h_zero w)⟩
@@ -341,13 +355,8 @@ private lemma pairingMean_neg {n : ℕ} (s t : Fin n → B.thetaSpace χ) (b : V
             (-((B x x + B x b + (B b x + B b b)) / 2) + (B b b + B x b))) =
         (-(I / 2 * conj (B (I • b) b)) + I / 2 * I * conj (B b b)) / 2 +
           (-(B x x / 2) + (-(conj (B x x) / 2) + -conj (B x b))) := by
-    apply Complex.ext
-    · -- real parts: `Re (B x b) = Re (B b x)`
-      simp [hB.re_symm]
-      ring
-    · -- imaginary parts: `Re (B (I • b) b) = Re (B b (I • b)) = -Im (B b b)`
-      simp [hB.re_symm, neg_div]
-      ring
+    -- Use symmetry of the real part, including at `I • b`, in both components.
+    apply Complex.ext <;> simp [hB.re_symm, neg_div] <;> ring
   have h_integrand (x : V) :
       pairingIntegrand t s (-b) (x + b) = conj (pairingIntegrand s t b x) := by
     simp [pairingIntegrand, linearPartForm, mul_sum, thetaShift_apply_apply, ← exp_conj,
@@ -618,10 +627,10 @@ lemma IsAppellHumbert.schur_lemma {Q : End ℂ (B.thetaSpace χ)}
 vector of the dual lattice into `L`. -/
 lemma IsAppellHumbert.exists_nsmul_mem_of_mem_dualLattice :
     ∃ N ≠ (0 : ℕ), ∀ a ∈ B.dualLattice, N • a ∈ L := by
-  -- Take for `N` the index of `L` in its dual, which is the square of a positive dimension.
-  refine ⟨L.toAddSubgroup.relIndex B.dualLattice.toAddSubgroup, ?_,
+  -- The index is the cardinality of the finite quotient of the dual lattice.
+  exact ⟨L.toAddSubgroup.relIndex B.dualLattice.toAddSubgroup,
+    Nat.card_ne_zero.mpr ⟨inferInstance, hB.finite_dualLattice_quotient⟩,
     fun a ha ↦ L.toAddSubgroup.nsmul_relIndex_mem ha⟩
-  simpa [← hB.finrank_thetaSpace_sq] using hB.finrank_thetaSpace_pos.ne'
 
 end New
 

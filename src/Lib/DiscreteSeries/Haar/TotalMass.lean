@@ -1,8 +1,21 @@
 module
 
-public import Lib.Adelic.Witt.WittTheorem
-public import Lib.DiscreteSeries.Haar.GramPolar
-public import Lib.General.Analysis.PackingAndSobolev
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.ExtremallyDisconnected
+import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Topology.Separation.Connected
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.Haar.CayleyChart
+public import Lib.DiscreteSeries.Haar.GramCoordinates
+import Lib.Adelic.Witt.WittTheorem
+import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.General.Analysis.GaussianIntegral
+import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.Measure.IntegralOperators
 
 /-!
 # Haar measure on U(J): U(n) has mass one, covering bounds for norm balls
@@ -323,8 +336,9 @@ instance isProbabilityMeasure_haarU :
       _ = ∫⁻ Y : Matrix n n ℂ, S.indicator 1 (gramCoords 1 Y) :=
           (lintegral_indicator ((continuous_gramCoords 1).measurable hS.measurableSet) _).symm
       _ = c * (1 * volume S) := by
-          simpa [hS.measurableSet, Set.univ_inter] using hW _ (measurable_one.indicator hS.measurableSet)
-            (support_indicator_subset.trans (by grind))
+          simpa [hS.measurableSet, Set.univ_inter] using
+            hW _ (measurable_one.indicator hS.measurableSet)
+              (support_indicator_subset.trans (by grind))
 
 /-- For all signs equal to one, the unitary group of the sign matrix `signMatrix 1`, which equals
 `1` by `signMatrix_one`, has total mass one. -/

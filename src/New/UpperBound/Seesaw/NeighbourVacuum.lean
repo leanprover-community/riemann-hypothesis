@@ -1,6 +1,9 @@
 module
 
 public import New.UpperBound.Seesaw.NeighbourLattice
+public import Lib.Weil.DualPair.TwoEdges
+public import New.UpperBound.Objects.Columns
+import New.UpperBound.Seesaw.EdgePairEvaluation
 
 /-!
 # The vacuum of the neighbour lattice

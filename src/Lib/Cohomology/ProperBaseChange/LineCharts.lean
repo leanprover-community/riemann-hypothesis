@@ -1,7 +1,15 @@
 module
 
-public import Lib.General.Algebra.MultivariatePolynomials
-public import Lib.PadicComparison.Descent.TestCategory
+public import Mathlib.GroupTheory.Nilpotent
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Data.Finset.Functor
+import Mathlib.Order.Filter.AtTopBot.Interval
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Tactic.Linter.Style
+public import Lib.Cohomology.Etale.Basic
+public import Lib.General.Algebra.AdicCompletion
+import Lib.General.Algebra.MultivariatePolynomials
+import Lib.PadicComparison.Descent.TestCategory
 
 /-!
 # Mayer–Vietoris for two charts of a line modulo an ideal
@@ -335,7 +343,7 @@ lemma exists_pow_eq_mul_of_local (hts : (t * s : D) = 1)
         have h_mem : 1 ^ m * c * (κ G + m • c) ∈ T N ^ m * T N * T N :=
           mul_mem_mul (mul_mem_mul (pow_mem_pow _ h_one m) hc) (add_mem hG (nsmul_mem hc m))
         rwa [one_pow, one_mul, ← pow_succ, ← pow_succ] at h_mem
-      · simp [pow_succ', mul_assoc, ih]
+      · simp only [pow_succ', mul_assoc, ih]
         algebra
   obtain ⟨Φ, hΦ, h_expand⟩ := h_binom ℓ
   -- `Φ` and `L a * L b` lie in the spans of `N ^ (ℓ + 1)` and `P * Q`, hence in the span of `e`.
@@ -558,18 +566,15 @@ lemma exists_eq_basicOpen_of_isClopen_of_preimage_eq (hts : (t * s : D) = 1)
   have huv : mk K (u : D) = mk K (v : D) :=
     basicOpen_injOn_isIdempotentElem (he.map r) (hf.map q) (SetLike.ext' h_preimage)
   have h_idem : IsIdempotentElem (mk K (v : D)) := hf.map q
-  -- so `u (1 - v)` and `v (1 - u)` lie in `K = ID`
-  have h_fst : (u : D) * (1 - v) ∈ K := by
-    rw [← eq_zero_iff_mem, map_mul, map_sub, map_one, huv, h_idem.mul_one_sub_self]
-  have h_snd : (v : D) * (1 - u) ∈ K := by
-    rw [← eq_zero_iff_mem, map_mul, map_sub, map_one, huv, h_idem.mul_one_sub_self]
   subst hJ hL hK
   -- `hI` for the ring `D × D` gives one `ϖ ∈ I` that divides both elements
   have h_mem : ((u : D) * (1 - v), (v : D) * (1 - u)) ∈
       I.map ((algebraMap A D).prod (algebraMap A D)) := by
     apply (Ideal.ideal_prod_eq _).ge
     rw [Ideal.mem_prod, I.map_map, I.map_map, RingHom.fst_comp_prod, RingHom.snd_comp_prod]
-    exact ⟨h_fst, h_snd⟩
+    -- Both products vanish in the quotient since the images are the same idempotent.
+    constructor <;> rw [← eq_zero_iff_mem, map_mul, map_sub, map_one, huv,
+      h_idem.mul_one_sub_self]
   obtain ⟨ϖ, hϖ, ⟨α, β⟩, h_div⟩ := hI _ _ h_mem
   obtain ⟨hα, hβ⟩ : (u : D) * (1 - v) = ϖ • α ∧ (v : D) * (1 - u) = ϖ • β := by
     simpa [Algebra.smul_def] using h_div

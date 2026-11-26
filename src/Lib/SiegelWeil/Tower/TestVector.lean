@@ -1,20 +1,33 @@
 module
 
+import Mathlib.LinearAlgebra.AffineSpace.MidpointZero
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.Topology.Algebra.Group.Units
 public import Lib.SiegelWeil.Tower.RealConeIntegral
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.SiegelWeil.Tower.PrincipalIdeles
 
 /-!
-# The test vector of the zeta integral
+# Determinant vectors: the test vectors of the cone integral
 
-Let `H` be a hyperbolic plane over the CM field `E`. At each infinite place the Fock space
-`New.PairFock` of `Hom(H, H)` has two positive coordinates, the diagonal ones. The test vector is
-the Fock vector of the product of their `m w`-th powers. Its cone integrand for the pair `(H, H)`
-over `(0, 0)` is the vacuum times the integrand of a zeta integral: the test function
-`∏ conj (a w) ^ (2 m w) exp (-|a w|²)` times a character and a power of `|a|`.
+Let `W' = W ⊕ H` and `V' = V ⊕ H` with hyperbolic planes `H`, split by adapted splittings `A` and
+`X`. At each infinite place `w` a point `u` of `Hom(W, V)` has a positive part `u₊`. For matrices
+`F w` the determinant vector is the Fock vector of the polynomial whose value at `u` is the
+conjugate of `∏ w, det₊ (u₊ F w) ^ m w * det₋ (u₊ F w) ^ (m w + 2 k)`, where `det₊` and `det₋` are
+the principal minors on the basis vectors of `V` of sign `1` and `-1`. If the rank of `W'` is
+`2 (k + q')`, with `q'` its number of negative signs, the maximal compact subgroup of `U(V')` fixes
+the determinant vectors of `(W', V')` in the Weil representation of weight `k + m`, and the cone
+integral, on either side of the summation formula on the line, sends a suitable one to any given
+multiple of a determinant vector of `(W, V)`. For `V = 0` the determinant vector is the vacuum.
 
-* `New.Exchange.tateVector`: the test vector.
-* `New.Exchange.realPairWeil_tateVector`: the maximal compact subgroup of the target group fixes it.
-* `New.Exchange.coneIntegrand_tateVector`: its cone integrand, in either model, is an explicit
-  positive function times the vacuum.
+* `New.Exchange.slice_polyVector_apply`: in the mixed model of an adapted splitting, the slice of
+  the Fock vector of a polynomial in the positive coordinates is its value at a point of the frame.
+* `New.Exchange.detVector`: the determinant vector.
+* `New.Exchange.realPairWeil_detVector`: the maximal compact subgroup of the target group fixes it.
+* `New.Exchange.coneIntegrand_detVector`: the cone integrand, in either model, of the determinant
+  vector of `liftFrame A X F` is an explicit positive function times the determinant vector of `F`.
+* `New.Exchange.exists_integral_coneIntegrand_detVector`: every multiple of a determinant vector is
+  a cone integral of a multiple of a determinant vector.
 
 Notions from other files:
 * `New.Fock.polyVector`: the Fock vector x ↦ P(ζ(x))·exp(−|x|²/2) of a polynomial P, where ζ(x)_i is
@@ -25,14 +38,11 @@ Notions from other files:
   `D` has orthonormal columns at the infinite places and integral entries at the finite ones.
 * `New.Exchange.coneIntegrand`: the integrand of the cone integral, `lineTermReal A X β a` applied
   to the translate of a vector by the compact part, times a character and a power of `|a|`.
+* `principalMinor y p`: the determinant of the block of `y` on the indices that satisfy `p`.
 
 ## Relation to the literature
 
 Known; see `Lib.Weil.MixedModel.ZeroTerm` for sources.
-
-Part of a known result: analytic continuation and functional equation of Hecke `L`-functions. See
-`Lib.SiegelWeil.Tower.FunctionalEquation`. Up to a scaling of the variable the test function is that
-of J. Tate, Fourier analysis in number fields and Hecke's zeta-functions (thesis, 1950), §2.5.
 -/
 
 @[expose] public section
@@ -46,11 +56,11 @@ open Matrix MeasureTheory Complex WeilData Fock Space Splitting MvPolynomial Fin
 
 open NumberField (InfinitePlace)
 
+section Frame
+
 variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r : Type} [Fintype n] [DecidableEq n]
   [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] {s : n → ℤˣ} {s' : n' → ℤˣ}
   {W : Space E n s} {W' : Space E n' s'} {D : W.Splitting W' r}
-
-section Frame
 
 variable {b : GL r (𝔸 E)}
 
@@ -100,9 +110,8 @@ lemma framePoint_eq_mulVec (h : D.IsAdapted 1 b) (a : InfinitePlace E × r → �
       fun ((w, i) : InfinitePlace E × ((r ⊕ r) ⊕ n')) ↦
         (vecToMatrix a w ⊕ᵥ vecToMatrix c w ⊕ᵥ vecToMatrix z w) i := by
   ext ⟨w, i⟩
-  simp [vecToMatrix, framePoint, IsAdapted.mixedModel, mulVec, dotProduct, sum_prod_type,
-    Splitting.frameAt, realMatrix, blockDiagonal, G.adeleMatrix_one]
-  exact add_right_comm ..
+  simpa [vecToMatrix, framePoint, IsAdapted.mixedModel, mulVec, dotProduct, sum_prod_type,
+    Splitting.frameAt, realMatrix, blockDiagonal, G.adeleMatrix_one] using add_right_comm ..
 
 /-- At the infinite place `w`, the point `framePoint h a z c`, which is `L a + I z + K c`, is the
 image under the component at `w` of the adapted frame `D.frameAt 1 b` of the three blocks of
@@ -252,172 +261,480 @@ lemma slice_polyVector_apply (h : D.IsAdapted 1 b) (a : InfinitePlace E × r →
 
 end Frame
 
-/-- The test vector on `Hom(W, W)`, for a space `W` with signs `s` (the signs on `Hom(W, W)` are
-`homSigns s s`, and the diagonal coordinates are positive for them): the Fock vector of the product,
-over the infinite places `w`, of the `m w`-th powers of the diagonal variables at `w`. -/
-def tateVector (s : n → ℤˣ) (m : InfinitePlace E → ℕ) : PairFock E s s :=
-  polyVector (realSigns E (homSigns s s)) (∏ w : InfinitePlace E, ∏ i : n, X (w, i, i) ^ m w)
+section LinearAlgebra
+
+variable {r r' : Type} [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r'] {t : r → ℤˣ}
+  {t' : r' → ℤˣ}
+
+/-- The determinant of a matrix with rows and columns indexed by `Unit ⊕ Unit`. -/
+lemma det_unit_sum_unit (N : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ) :
+    N.det = N (.inl ()) (.inl ()) * N (.inr ()) (.inr ()) -
+      N (.inl ()) (.inr ()) * N (.inr ()) (.inl ()) := by
+  let e : Fin 2 ≃ Unit ⊕ Unit := finTwoEquiv.trans Equiv.boolEquivPUnitSumPUnit
+  rw [← det_submatrix_equiv_self e, det_fin_two]
+  rfl
+
+/-- Two signs have product `1` exactly when they are equal. -/
+lemma units_int_mul_eq_one_iff (a b : ℤˣ) : a * b = 1 ↔ a = b := by
+  revert a b
+  decide
+
+omit [Fintype r] in
+/-- The diagonal projection on the indices of sign `σ` is `(1 + σ S) / 2`, with `S` the matrix of
+signs. -/
+lemma diagonal_sign_eq (t : r → ℤˣ) (σ : ℤˣ) :
+    (diagonal fun i : r ↦ if t i = σ then (1 : ℂ) else 0) =
+      (2⁻¹ : ℂ) • (1 + (σ : ℂ) • signMatrix t) := by
+  ext i j
+  by_cases hij : i = j
+  · subst hij
+    obtain rfl | rfl := Int.units_eq_one_or σ <;> obtain h | h := Int.units_eq_one_or (t i) <;>
+      simp [signMatrix, h] <;> norm_num
+  · simp [signMatrix, hij]
+
+/-- Let `P` be unitary and carry the signs `t'` to the exchange of the two lines of a hyperbolic
+plane and the signs `t`. The principal minor on the indices of sign `σ` of the conjugate by `P` of
+the block matrix of the scalar `a` on the plane and `M` is `a` times that of `M`. -/
+lemma principalMinor_conj_fromBlocks {P : Matrix r' ((Unit ⊕ Unit) ⊕ r) ℂ}
+    (hP : P * Pᴴ = 1) (hP' : Pᴴ * P = 1)
+    (h_sign : signMatrix t' * P =
+      P * fromBlocks (n := Unit ⊕ Unit) (fromBlocks 0 1 1 0) 0 0 (signMatrix t))
+    (a : ℂ) (M : Matrix r r ℂ) (σ : ℤˣ) :
+    principalMinor (P * fromBlocks (a • (1 : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ)) 0 0 M * Pᴴ)
+      (t' · = σ) = a * principalMinor M (t · = σ) := by
+  set e : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ :=
+    (2⁻¹ : ℂ) • (1 + (σ : ℂ) • fromBlocks 0 1 1 0) with he
+  set Δ : Matrix r r ℂ := diagonal fun i : r ↦ if t i = σ then (1 : ℂ) else 0 with hΔ
+  set D : Matrix ((Unit ⊕ Unit) ⊕ r) ((Unit ⊕ Unit) ⊕ r) ℂ := fromBlocks (a • 1) 0 0 M with hD
+  set Θ : Matrix ((Unit ⊕ Unit) ⊕ r) ((Unit ⊕ Unit) ⊕ r) ℂ := fromBlocks e 0 0 Δ with hΘ
+  have h_one : (1 : Matrix ((Unit ⊕ Unit) ⊕ r) ((Unit ⊕ Unit) ⊕ r) ℂ) = fromBlocks 1 0 0 1 :=
+    fromBlocks_one.symm
+  -- In the frame `P` the projection on the indices of sign `σ` is block diagonal.
+  have h_proj : (diagonal fun i : r' ↦ if t' i = σ then (1 : ℂ) else 0) * P = P * Θ := by
+    have h_block : Θ = (2⁻¹ : ℂ) • (1 + (σ : ℂ) •
+        fromBlocks (n := Unit ⊕ Unit) (fromBlocks 0 1 1 0) 0 0 (signMatrix t)) := by
+      rw [hΘ, hΔ, diagonal_sign_eq, he]
+      ext (i | i) (j | j) <;> simp [Matrix.one_apply, mul_add]
+    rw [diagonal_sign_eq, h_block]
+    simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul, Matrix.mul_add, Matrix.one_mul,
+      Matrix.mul_one, h_sign]
+  have h_conj : 1 - (diagonal fun i : r' ↦ if t' i = σ then (1 : ℂ) else 0) * (1 - P * D * Pᴴ) =
+      P * fromBlocks (1 - e * (1 - a • 1)) 0 0 (1 - Δ * (1 - M)) * Pᴴ := by
+    have h_blocks : fromBlocks (1 - e * (1 - a • 1)) 0 0 (1 - Δ * (1 - M)) = 1 - Θ * (1 - D) := by
+      simp only [hΘ, hD, h_one, sub_eq_add_neg, fromBlocks_neg, fromBlocks_add, fromBlocks_multiply]
+      simp
+    have h_sub : 1 - P * D * Pᴴ = P * (1 - D) * Pᴴ := by
+      rw [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, hP]
+    rw [h_blocks, h_sub, ← Matrix.mul_assoc, ← Matrix.mul_assoc, h_proj]
+    nth_rw 1 [← hP]
+    simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_assoc]
+  have h_plane : (1 - e * (1 - a • 1)).det = a := by
+    rw [det_unit_sum_unit]
+    obtain rfl | rfl := Int.units_eq_one_or σ <;>
+      simp [he, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_sum_type] <;> ring
+  rw [principalMinor_eq_det, h_conj, det_conj_of_mul_eq_one hP hP', det_fromBlocks_zero₂₁,
+    h_plane, principalMinor_eq_det]
+
+end LinearAlgebra
+
+section DetVector
+
+variable {E : Type} [Field E] [CMType E] [WeilData E] {n r : Type} [Fintype n] [DecidableEq n]
+  [Fintype r] [DecidableEq r]
+
+/-- The square matrix `u₊ F` at the infinite place `w`: the positive part of the point `u` of
+`Hom(W, V)`, an `r × n` matrix at each place, times the `n × r` matrix `F w`. -/
+def posCoordMatrix (s : n → ℤˣ) (t : r → ℤˣ) (F : InfinitePlace E → Matrix n r ℂ)
+    (u : InfinitePlace E × r × n → ℂ) (w : InfinitePlace E) : Matrix r r ℂ :=
+  (of fun i j ↦ (posProj (realSigns E (homSigns s t)) *ᵥ u) (w, i, j)) * F w
+
+/-- The matrix of linear forms in the positive variables, with rows and columns indexed by the
+basis vectors of sign `σ` of `V`, whose value at a point `u` is the block of sign `σ` of the
+conjugate transpose of `posCoordMatrix s t F u w`. -/
+def detPolyMatrix (s : n → ℤˣ) (t : r → ℤˣ) (F : InfinitePlace E → Matrix n r ℂ)
+    (w : InfinitePlace E) (σ : ℤˣ) : Matrix {i : r // t i = σ} {i : r // t i = σ}
+      (MvPolynomial {c : InfinitePlace E × r × n // realSigns E (homSigns s t) c = 1} ℂ) :=
+  of fun l i ↦ ∑ j : {j : n // s j = σ},
+    C (star (F w j l)) * X ⟨(w, i, j), by simp [pairSign, i.2, j.2]⟩
+
+/-- The determinant polynomial: the product over the infinite places `w` of the `m w`-th power of
+the determinant of `detPolyMatrix` on the positive block and the `(m w + 2 k)`-th power of that on
+the negative block. -/
+def detPoly (s : n → ℤˣ) (t : r → ℤˣ) (k : ℕ) (m : InfinitePlace E → ℕ)
+    (F : InfinitePlace E → Matrix n r ℂ) :
+    MvPolynomial {c : InfinitePlace E × r × n // realSigns E (homSigns s t) c = 1} ℂ :=
+  ∏ w : InfinitePlace E, (detPolyMatrix s t F w 1).det ^ m w *
+    (detPolyMatrix s t F w (-1)).det ^ (m w + 2 * k)
+
+/-- The determinant vector: the Fock vector of the determinant polynomial. -/
+def detVector (s : n → ℤˣ) (t : r → ℤˣ) (k : ℕ) (m : InfinitePlace E → ℕ)
+    (F : InfinitePlace E → Matrix n r ℂ) : PairFock E s t :=
+  polyVector (realSigns E (homSigns s t)) (rename Subtype.val (detPoly s t k m F))
+
+variable {s : n → ℤˣ} {t : r → ℤˣ}
 
 omit [WeilData E] in
-/-- All weighted norms of the test vector are finite (`IsSchwartzVector`). -/
-lemma isSchwartzVector_tateVector (s : n → ℤˣ) (m : InfinitePlace E → ℕ) :
-    IsSchwartzVector (tateVector s m) :=
-  fun N ↦ fockMoment_polyVector_ne_top N _
+/-- The value of the determinant vector at `u`: `realVac u` times the conjugate of the product of
+the powers of the principal minors of `posCoordMatrix s t F u w` on the two blocks of signs. -/
+lemma detVector_apply (k : ℕ) (m : InfinitePlace E → ℕ) (F : InfinitePlace E → Matrix n r ℂ)
+    (u : InfinitePlace E × r × n → ℂ) :
+    detVector s t k m F u =
+      star (∏ w : InfinitePlace E, principalMinor (posCoordMatrix s t F u w) (t · = 1) ^ m w *
+        principalMinor (posCoordMatrix s t F u w) (t · = -1) ^ (m w + 2 * k)) * realVac u := by
+  have h_block (w : InfinitePlace E) (σ : ℤˣ) :
+      (eval (holomorphicCoord (realSigns E (homSigns s t)) u ∘ Subtype.val)).mapMatrix
+        (detPolyMatrix s t F w σ) =
+        toSquareBlockProp (posCoordMatrix s t F u w)ᴴ (t · = σ) := by
+    ext l i
+    have h_split := Fintype.sum_subtype_add_sum_subtype (fun j : n ↦ s j = σ) fun j : n ↦
+      (starRingEnd ℂ) (F w j l) * (starRingEnd ℂ) (if σ * s j = 1 then u (w, i, j) else 0)
+    have h_zero : ∑ j : {j : n // ¬s j = σ},
+        (starRingEnd ℂ) (F w j l) * (starRingEnd ℂ) (if σ * s j = 1 then u (w, i, j) else 0) = 0 :=
+      Fintype.sum_eq_zero _ fun j ↦ by simp [units_int_mul_eq_one_iff, Ne.symm j.2]
+    rw [h_zero, add_zero] at h_split
+    simp [detPolyMatrix, posCoordMatrix, toSquareBlockProp, Matrix.mul_apply, holomorphicCoord_eq,
+      posProj, mulVec_diagonal, pairSign, i.2, mul_comm, ← h_split, fun j : {j // s j = σ} ↦ j.2]
+  have h_minor (w : InfinitePlace E) (σ : ℤˣ) :
+      eval (holomorphicCoord (realSigns E (homSigns s t)) u ∘ Subtype.val)
+        (detPolyMatrix s t F w σ).det =
+        star (principalMinor (posCoordMatrix s t F u w) (t · = σ)) := by
+    rw [RingHom.map_det, h_block, ← principalMinor, principalMinor_conjTranspose]
+    rfl
+  simp [detVector, detPoly, polyVector_apply, eval_rename, h_minor]
+
+omit [WeilData E] [CMType E] [DecidableEq n] in
+/-- A substitution that multiplies the rows of the positive variables by a block diagonal matrix
+`g w` at each place multiplies the determinant of `detPolyMatrix` on the block of sign `σ` by the
+principal minor of `g w` on that block. -/
+lemma aeval_det_detPolyMatrix (F : InfinitePlace E → Matrix n r ℂ) {g : GInf E t}
+    (hg : ∀ w : InfinitePlace E, (g w : Matrix r r ℂ) ∈ blockDiagAlg t)
+    {sub : InfinitePlace E × r × n → MvPolynomial (InfinitePlace E × r × n) ℂ}
+    (h_sub : ∀ (w : InfinitePlace E) (a : r) (b : n), t a = s b →
+      sub (w, a, b) = ∑ i : r, (g w : Matrix r r ℂ) i a • X (w, i, b))
+    (w : InfinitePlace E) (σ : ℤˣ) :
+    aeval sub (rename Subtype.val (detPolyMatrix s t F w σ).det) =
+      C (principalMinor (g w) (t · = σ)) * rename Subtype.val (detPolyMatrix s t F w σ).det := by
+  have h_matrix : (aeval (sub ∘ Subtype.val)).mapMatrix (detPolyMatrix s t F w σ) =
+      (rename Subtype.val).mapMatrix (detPolyMatrix s t F w σ) *
+        (toSquareBlockProp (g w : Matrix r r ℂ) (t · = σ)).map C := by
+    refine Matrix.ext fun l a ↦ ?_
+    have h_var (j : {j : n // s j = σ}) : sub (w, a, j) =
+        ∑ i : {i : r // t i = σ}, C ((g w : Matrix r r ℂ) i a) * X (w, (i : r), (j : n)) := by
+      have h_split := Fintype.sum_subtype_add_sum_subtype (fun i : r ↦ t i = σ) fun i : r ↦
+        (g w : Matrix r r ℂ) i a • (X (w, i, (j : n)) : MvPolynomial (InfinitePlace E × r × n) ℂ)
+      have h_zero : ∑ i : {i : r // ¬t i = σ}, (g w : Matrix r r ℂ) i a •
+          (X (w, (i : r), (j : n)) : MvPolynomial (InfinitePlace E × r × n) ℂ) = 0 :=
+        Fintype.sum_eq_zero _ fun i ↦ by
+          rw [mem_blockDiagAlg.1 (hg w) i a (fun h ↦ i.2 (h.trans a.2)), zero_smul]
+      rw [h_sub w a j (a.2.trans j.2.symm), ← h_split, h_zero, add_zero]
+      simp [smul_eq_C_mul]
+    simp [detPolyMatrix, Matrix.mul_apply, toSquareBlockProp, h_var, Finset.mul_sum, Finset.sum_mul]
+    rw [Finset.sum_comm]
+    exact Fintype.sum_congr _ _ fun i ↦ Fintype.sum_congr _ _ fun j ↦ by ring
+  rw [aeval_rename, AlgHom.map_det, h_matrix, det_mul, ← AlgHom.map_det, ← RingHom.mapMatrix_apply,
+    ← RingHom.map_det, mul_comm]
+  rfl
 
 omit [WeilData E] in
-/-- Let the signs `s` take each of the values `1` and `-1` once. Let the components of `g`, a point
-of the archimedean unitary group `GInf E s`, preserve the lines of each sign (`blockDiagAlg s` is
-the algebra of matrices commuting with the signs). Then `(1, g)`, acting in the real Weil
-representation `realPairWeil` of the pair with weight `0` on the source and
-`targetWeight n m = 1 - m` on the target, fixes the test vector, which is the Fock vector of
-`∏ w, ∏ i, X (w, i, i) ^ m w`. -/
-lemma realPairWeil_tateVector (hs : Function.Bijective s) (m : InfinitePlace E → ℕ) {g : GInf E s}
-    (hg : ∀ w : InfinitePlace E, (g w : Matrix n n ℂ) ∈ blockDiagAlg s) :
-    realPairWeil (targetWeight n fun w : InfinitePlace E ↦ m w) 0 (1, g) (tateVector s m) =
-      tateVector s m := by
-  -- Each `g w` is diagonal. It multiplies the polynomial by `det (g w) ^ m w`, and the character of
-  -- the vacuum is the inverse of this number.
-  classical
-  have h_diag (w : InfinitePlace E) : (g w : Matrix n n ℂ).IsDiag :=
-    fun i j hij ↦ mem_blockDiagAlg.1 (hg w) i j (hs.injective.ne hij)
-  have h_det (w : InfinitePlace E) :
-      ∏ i : n, (g w : Matrix n n ℂ) i i = (g w : Matrix n n ℂ).det := by
-    simpa using congrArg det (h_diag w).diagonal_diag
-  have h_column (w : InfinitePlace E) (i : n) :
-      ∑ j, (g w : Matrix n n ℂ) j i • (X (w, j, i) : MvPolynomial (InfinitePlace E × n × n) ℂ) =
-        (g w : Matrix n n ℂ) i i • X (w, i, i) :=
-    Fintype.sum_eq_single i fun j hj ↦ by rw [h_diag w hj, zero_smul]
-  have h_exponent (w : InfinitePlace E) (σ : ℤˣ) :
-      targetWeight n (fun w ↦ m w) w - Nat.card {i : n // s i = -σ} = -m w := by
-    rw [Nat.card_eq_one_iff_exists.2 (by simpa [ExistsUnique] using hs.existsUnique (-σ)),
-      targetWeight, card_of_bijective hs, card_units_int]
-    simp
-  have h_character (w : InfinitePlace E) :
-      ∏ σ ∈ ({1, -1} : Finset ℤˣ), principalMinor (g w) (fun i ↦ s i = σ) ^ (-m w : ℤ) =
-        ((g w : Matrix n n ℂ).det ^ m w)⁻¹ := by
-    rw [det_eq_prod_principalMinor (hg w), UnitsInt.univ, prod_zpow, _root_.zpow_neg, zpow_natCast]
-  rw [tateVector, realPairWeil_polyVector _ _ (fun w ↦ by simp) hg, ← map_smul]
+/-- Let `card n = 2 (k + q)`, with `q` the number of negative signs of `s`. A point `g` of the
+archimedean unitary group of `V` whose components are block diagonal for the signs `t`, acting in
+the real Weil representation of weight `targetWeight n μ` on the target and `0` on the source, with
+`μ w = k + m w`, fixes the determinant vector. -/
+lemma realPairWeil_detVector {k : ℕ} (hn : card n = 2 * (k + negCount s))
+    (m : InfinitePlace E → ℕ) {μ : InfinitePlace E → ℤ} (hμ : ∀ w : InfinitePlace E, μ w = k + m w)
+    (F : InfinitePlace E → Matrix n r ℂ) {g : GInf E t}
+    (hg : ∀ w : InfinitePlace E, (g w : Matrix r r ℂ) ∈ blockDiagAlg t) :
+    realPairWeil (targetWeight n μ) 0 (1, g) (detVector s t k m F) = detVector s t k m F := by
+  have h_card_pos : card {i : n // s i = 1} = 2 * k + negCount s := by
+    have h_sum := negCount_neg_add (a := s)
+    have h_eq : negCount (-s) = card {i : n // s i = 1} := by simp [negCount]
+    omega
+  have h_exp_pos (w : InfinitePlace E) :
+      targetWeight n μ w - Nat.card {i : n // s i = -1} = -(m w : ℤ) := by
+    have h_half : card n / 2 = k + negCount s := by omega
+    simp [targetWeight, h_half, hμ w, negCount]
+    ring
+  have h_exp_neg (w : InfinitePlace E) :
+      targetWeight n μ w - Nat.card {i : n // s i = - -1} = -((m w + 2 * k : ℕ) : ℤ) := by
+    have h_half : card n / 2 = k + negCount s := by omega
+    simp [targetWeight, h_half, hμ w, h_card_pos]
+    ring
+  have h_ne (w : InfinitePlace E) (σ : ℤˣ) : principalMinor (g w) (t · = σ) ≠ 0 := by
+    intro h_zero
+    have h_det := det_eq_prod_principalMinor (hg w)
+    rw [Finset.prod_eq_zero (Finset.mem_univ σ) h_zero] at h_det
+    exact (g w : GL r ℂ).det_ne_zero h_det
+  have h_poly (sub : InfinitePlace E × r × n → MvPolynomial (InfinitePlace E × r × n) ℂ)
+      (h_sub : ∀ (w : InfinitePlace E) (a : r) (b : n), t a = s b →
+        sub (w, a, b) = ∑ i : r, (g w : Matrix r r ℂ) i a • X (w, i, b)) :
+      aeval sub (rename Subtype.val (detPoly s t k m F)) =
+        C (∏ w : InfinitePlace E, principalMinor (g w) (t · = 1) ^ m w *
+          principalMinor (g w) (t · = -1) ^ (m w + 2 * k)) *
+          rename Subtype.val (detPoly s t k m F) := by
+    simp only [detPoly, map_prod, map_mul, map_pow, aeval_det_detPolyMatrix F hg h_sub, mul_pow,
+      Finset.prod_mul_distrib]
+    ring
+  rw [detVector, realPairWeil_polyVector _ _ (fun w ↦ by simp) hg, h_poly]
+  swap
+  · intro w a b hab
+    simp [hab, Matrix.one_apply]
+  rw [← smul_eq_C_mul, map_smul, smul_smul]
+  have h_one : ((1 : ℤˣ) : ℤˣ) ≠ -1 := by decide
   simp only [Pi.one_apply, OneMemClass.coe_one, Units.val_one, principalMinor_one, _root_.one_zpow,
-    mul_one, h_exponent, h_character]
-  -- The substitution scales the diagonal variable `X (w, i, i)` by the entry `g w i i`, so it
-  -- multiplies the polynomial by `∏ w, det (g w) ^ m w`.
-  have h_scaled : ∏ w : InfinitePlace E, ∏ i : n,
-      ((g w : Matrix n n ℂ) i i • (X (w, i, i) : MvPolynomial (InfinitePlace E × n × n) ℂ)) ^ m w =
-        (∏ w, (g w : Matrix n n ℂ).det ^ m w) • ∏ w, ∏ i : n, X (w, i, i) ^ m w := by
-    simp [smul_pow, prod_smul, prod_pow, h_det]
-  simp [Matrix.one_apply, h_column, h_scaled, prod_ne_zero_iff, (g _ : GL n ℂ).det_ne_zero]
+    mul_one, Finset.prod_pair h_one, h_exp_pos, h_exp_neg, _root_.zpow_neg, zpow_natCast]
+  rw [← Finset.prod_mul_distrib]
+  have h_factor (w : InfinitePlace E) :
+      (principalMinor (g w) (t · = 1) ^ m w)⁻¹ *
+        (principalMinor (g w) (t · = -1) ^ (m w + 2 * k))⁻¹ *
+        (principalMinor (g w) (t · = 1) ^ m w *
+          principalMinor (g w) (t · = -1) ^ (m w + 2 * k)) = 1 := by
+    have h₁ := pow_ne_zero (m w) (h_ne w 1)
+    have h₂ := pow_ne_zero (m w + 2 * k) (h_ne w (-1))
+    field_simp
+  simp [h_factor]
 
-variable [IsEmpty n] (A : W'.Splitting W Unit) [IsBaseAdapted A]
+end DetVector
 
-/-- Let `A` be a base-adapted splitting (`IsBaseAdapted A`, which makes each
-`lineTermSplitting A A β` adapted at `1`) of `W'` along a line over a space `W` of rank zero, and
-take the frame of `lineTermSplitting A A β`, the splitting of `Hom(W', W')` over `Hom(W, W)` for the
-model `β` (one of the two sides of Poisson's formula on the line). Let `x` be `a` on the line (the
-right summand of the index set `LineIndex`) and `0` elsewhere. The diagonal entries at the infinite
-place `w` of the point `framePoint h (-x) u (-x)`, for the adapted frame `h` of this splitting, are
-`-a w`. -/
-lemma framePoint_lineTermSplitting_diag (β : Bool) (a : InfinitePlace E → ℂ)
-    (u : InfinitePlace E × n × n → ℂ) (w : InfinitePlace E) (i : n') :
-    let x : InfinitePlace E × LineIndex n n → ℂ :=
-      fun p : InfinitePlace E × LineIndex n n ↦ a p.1 * p.2.isRight.toNat
-    framePoint (isAdapted_lineTermSplitting A A β) (-x) u (-x) (w, i, i) = -a w := by
-  -- In either model the two columns for the line are the projections of `W'` on `k` and on `l`.
-  -- Their sum is the identity, because `W = 0`.
-  intro x
-  have h_real : (A.kAdelic i ()).1 w * (A.kCoord () i).1 w +
-      (A.lAdelic i ()).1 w * (A.lCoord () i).1 w = 1 := by
-    simpa [Matrix.mul_apply, univ_eq_empty] using
-      congrArg (fun M ↦ evalInf w (M i i)) A.sum_frame_mul_coord_eq_one
-  -- A diagonal entry of the point sees only the two columns of the line, and in either model these
-  -- are the products of frame and coordinate on `k` and on `l`.
-  have h_value : framePoint (isAdapted_lineTermSplitting A A β) (-x) u (-x) (w, i, i) =
-      -((A.kAdelic i ()).1 w * (A.kCoord () i).1 w * a w) +
-        -((A.lAdelic i ()).1 w * (A.lCoord () i).1 w * a w) := by
-    rw [framePoint_eq_mulVec, frameAt_lineTermSplitting]
-    cases β <;> simp [x, realMatrix, mulVec, dotProduct, blockDiagonal, sum_prod_type, vecToMatrix,
-      univ_eq_empty, add_comm]
-  linear_combination h_value - a w * h_real
+section ConeIntegral
 
-/-- Let `W` have rank zero (`n` is empty), let `W'` have rank two (`hn`), and let `A` be a
-base-adapted splitting of `W'` over `W` along one line (`IsBaseAdapted A`, so that
-`lineTermSplitting A A β` is adapted at `1`). For either of the two models `β` of Poisson's formula
-on the line, the real line term `lineTermReal A A β a` is the slice, in the real mixed model of
-`Hom(W', W')` over `Hom(W, W)`, at the point with coordinates `a` on the line and `0` elsewhere. It
-sends the test vector `tateVector s' m` to `exp (-∑ |a w|²) ∏ conj (a w) ^ (2 m w)` times the
-vacuum, where `tateVector s' m` is the Fock vector of the product over the infinite places `w` of
-the `m w`-th powers of the diagonal variables at `w`. -/
-lemma lineTermReal_tateVector (hn : Fintype.card n' = 2) (m : InfinitePlace E → ℕ) (β : Bool)
-    (a : InfinitePlace E → ℂ) :
-    lineTermReal A A β a (tateVector s' m) =
+variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n]
+  [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
+  [DecidableEq r'] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s}
+  {W' : Space E n' s'} {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit)
+  (X : V'.Splitting V Unit) [IsBaseAdapted A] [IsBaseAdapted X]
+
+omit [WeilData E] in
+/-- The component at an infinite place of a product of adelic matrices is the product of the
+components. -/
+lemma atRealPlace_mul {a b c : Type} [Fintype b] (M : Matrix a b (𝔸 E)) (N : Matrix b c (𝔸 E))
+    (w : InfinitePlace E) : atRealPlace (M * N) w = atRealPlace M w * atRealPlace N w := by
+  ext i j
+  simp [Matrix.mul_apply, Prod.fst_sum]
+
+/-- The point of the real mixed model of `lineTermSplitting` with coordinate `a w` on the line at
+each infinite place `w` and `0` elsewhere. -/
+def lineCoord (n r : Type) (a : InfinitePlace E → ℂ) : InfinitePlace E × LineIndex n r → ℂ :=
+  fun p ↦ a p.1 * p.2.isRight.toNat
+
+/-- The entries at the infinite place `w` of the point `framePoint h (-x) u (-x)`, for the adapted
+frame `h` of `lineTermSplitting A X β` and `x` equal to `a` on the line and `0` elsewhere. -/
+lemma framePoint_lineTermSplitting_apply (β : Bool) (a : InfinitePlace E → ℂ)
+    (u : InfinitePlace E × r × n → ℂ) (w : InfinitePlace E) (i : r') (j : n') :
+    framePoint (isAdapted_lineTermSplitting A X β) (-lineCoord n r a) u (-lineCoord n r a)
+        (w, i, j) =
+      -(a w * ((X.lAdelic i ()).1 w * (A.lCoord () j).1 w +
+        (X.kAdelic i ()).1 w * (A.kCoord () j).1 w)) +
+      ∑ i₀ : r, ∑ j₀ : n, (X.iAdelic i i₀).1 w * u (w, i₀, j₀) * (A.iCoord j₀ j).1 w := by
+  have h_sum : ∑ i₀ : r, ∑ j₀ : n, (X.iAdelic i i₀).1 w * (A.iCoord j₀ j).1 w * u (w, i₀, j₀) =
+      ∑ i₀ : r, ∑ j₀ : n, (X.iAdelic i i₀).1 w * u (w, i₀, j₀) * (A.iCoord j₀ j).1 w :=
+    Fintype.sum_congr _ _ fun _ ↦ Fintype.sum_congr _ _ fun _ ↦ by ring
+  rw [framePoint_eq_mulVec, frameAt_lineTermSplitting, ← h_sum]
+  cases β <;> simp [lineCoord, realMatrix, mulVec, dotProduct, blockDiagonal, sum_prod_type,
+    vecToMatrix, add_comm] <;> ring
+
+/-- The matrices `G w` of the determinant vector one floor up: minus the identification of the two
+hyperbolic planes, plus `F w` between the images of `W` and `V`. -/
+def liftFrame (F : InfinitePlace E → Matrix n r ℂ) (w : InfinitePlace E) : Matrix n' r' ℂ :=
+  -(atRealPlace (A.lAdelic.fromCols A.kAdelic) w *
+      (atRealPlace (X.lAdelic.fromCols X.kAdelic) w)ᴴ) +
+    atRealPlace A.iAdelic w * F w * (atRealPlace X.iAdelic w)ᴴ
+
+/-- At the point `-L x + I u - K x` of the mixed model of `lineTermSplitting A X β`, with `x` equal
+to `a` on the line, the matrix `posCoordMatrix` of `liftFrame A X F` is, in the adapted frame of
+`X`, the block matrix of the scalar `a w` on the hyperbolic plane and the matrix `posCoordMatrix`
+of `F` at `u`. -/
+lemma posCoordMatrix_liftFrame (β : Bool) (a : InfinitePlace E → ℂ)
+    (F : InfinitePlace E → Matrix n r ℂ) (u : InfinitePlace E × r × n → ℂ) (w : InfinitePlace E) :
+    posCoordMatrix s' t' (liftFrame A X F)
+        (framePoint (isAdapted_lineTermSplitting A X β) (-lineCoord n r a) u (-lineCoord n r a))
+        w =
+      atRealPlace (X.frameAt 1 1) w *
+        fromBlocks (a w • (1 : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ)) 0 0
+          (posCoordMatrix s t F u w) * (atRealPlace (X.frameAt 1 1) w)ᴴ := by
+  set U : Matrix r n ℂ :=
+    of fun i j ↦ (posProj (realSigns E (homSigns s t)) *ᵥ u) (w, i, j) with hU
+  set xp : Matrix r' (Unit ⊕ Unit) ℂ := atRealPlace (X.lAdelic.fromCols X.kAdelic) w with hxp
+  set xi : Matrix r' r ℂ := atRealPlace X.iAdelic w with hxi
+  set cp : Matrix (Unit ⊕ Unit) n' ℂ := atRealPlace (A.lCoord.fromRows A.kCoord) w with hcp
+  set ci : Matrix n n' ℂ := atRealPlace A.iCoord w with hci
+  set ap : Matrix n' (Unit ⊕ Unit) ℂ := atRealPlace (A.lAdelic.fromCols A.kAdelic) w with hap
+  set ai : Matrix n' n ℂ := atRealPlace A.iAdelic w with hai
+  -- The positive part of the point, as a matrix at the place `w`.
+  have h_point : (of fun i j ↦ (posProj (realSigns E (homSigns s' t')) *ᵥ
+      framePoint (isAdapted_lineTermSplitting A X β) (-lineCoord n r a) u (-lineCoord n r a))
+        (w, i, j)) = -(a w • (xp * cp)) + xi * U * ci := by
+    rw [posProj_mulVec_framePoint, midpoint_self]
+    ext i j
+    simpa [framePoint_lineTermSplitting_apply, Matrix.mul_apply, Fintype.sum_sum_type, hxp, hcp,
+      hxi, hci, hU, Finset.sum_mul] using Finset.sum_comm
+  -- The coordinates of `A` are dual to its frames.
+  obtain ⟨⟨h_kk, h_kl, h_ki⟩, ⟨h_lk, h_ll, h_li⟩, h_ik, h_il, h_ii⟩ := A.coord_mul_frame
+  have h_pp : cp * ap = 1 := by
+    rw [hcp, hap, ← atRealPlace_mul, fromRows_mul_fromCols, h_ll, h_lk, h_kl, h_kk, fromBlocks_one]
+    ext i j
+    by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
+  have h_pi : cp * ai = 0 := by
+    rw [hcp, hai, ← atRealPlace_mul, fromRows_mul, h_li, h_ki]
+    ext (i | i) j <;> simp
+  have h_ip : ci * ap = 0 := by
+    rw [hci, hap, ← atRealPlace_mul, Matrix.mul_fromCols, h_il, h_ik]
+    ext i (j | j) <;> simp
+  have h_one : ci * ai = 1 := by
+    rw [hci, hai, ← atRealPlace_mul, h_ii]
+    ext i j
+    by_cases hij : i = j <;> simp [Matrix.one_apply, hij]
+  have h₁ : xp * cp * (ap * xpᴴ) = xp * xpᴴ := by
+    rw [Matrix.mul_assoc, ← Matrix.mul_assoc cp, h_pp, Matrix.one_mul]
+  have h₂ : xp * cp * (ai * F w * xiᴴ) = 0 := by
+    rw [Matrix.mul_assoc xp, ← Matrix.mul_assoc cp, ← Matrix.mul_assoc cp, h_pi]
+    simp
+  have h₃ : xi * U * ci * (ap * xpᴴ) = 0 := by
+    rw [Matrix.mul_assoc _ ci, ← Matrix.mul_assoc ci, h_ip]
+    simp
+  have h₄ : xi * U * ci * (ai * F w * xiᴴ) = xi * (U * F w) * xiᴴ := by
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc ci ai, h_one, Matrix.one_mul]
+  have h_frame : atRealPlace (X.frameAt 1 1) w = fromCols xp xi := by
+    simp [Splitting.frameAt, G.adeleMatrix_one, fromCols_map, hxp, hxi]
+  rw [posCoordMatrix, h_point, liftFrame, ← hap, ← hxp, ← hai, ← hxi, h_frame,
+    fromCols_mul_fromBlocks,
+    conjTranspose_fromCols_eq_fromRows_conjTranspose, fromCols_mul_fromRows, posCoordMatrix]
+  simp only [Matrix.add_mul, Matrix.mul_add, Matrix.neg_mul, Matrix.mul_neg, Matrix.smul_mul,
+    h₁, h₂, h₃, h₄]
+  simp
+  rfl
+
+/-- The real line term `lineTermReal A X β a`, in either model `β`, sends the determinant vector of
+`liftFrame A X F` to that of `F`, times `exp (-∑ |a w|²) ∏ conj (a w) ^ (2 (k + m w))`. -/
+lemma lineTermReal_detVector (β : Bool) (a : InfinitePlace E → ℂ) (k : ℕ)
+    (m : InfinitePlace E → ℕ) (F : InfinitePlace E → Matrix n r ℂ) :
+    lineTermReal A X β a (detVector s' t' k m (liftFrame A X F)) =
       (Real.exp (-∑ w : InfinitePlace E, ‖a w‖ ^ 2) *
-        ∏ w : InfinitePlace E, star (a w) ^ (2 * m w) : ℂ) • vacVector := by
-  -- The map is the slice at `x` in an adapted frame. So on polynomials in the positive coordinates,
-  -- among them the diagonal ones, it evaluates at the point `y`.
+        ∏ w : InfinitePlace E, star (a w) ^ (2 * (k + m w)) : ℂ) • detVector s t k m F := by
   ext u
-  let x : InfinitePlace E × LineIndex n n → ℂ :=
-    fun p : InfinitePlace E × LineIndex n n ↦ a p.1 * p.2.isRight.toNat
-  let y : InfinitePlace E × n' × n' → ℂ :=
-    framePoint (isAdapted_lineTermSplitting A A β) (-x) u (-x)
+  let y : InfinitePlace E × r' × n' → ℂ :=
+    framePoint (isAdapted_lineTermSplitting A X β) (-lineCoord n r a) u (-lineCoord n r a)
+  -- The line term is the slice at `lineCoord n r a`, so on polynomial vectors it evaluates at `y`.
   have h_eval (P : MvPolynomial
-      {i : InfinitePlace E × n' × n' // realSigns E (homSigns s' s') i = 1} ℂ) :
-      lineTermReal A A β a (polyVector _ (rename Subtype.val P)) u =
-        (polyVector _ (rename Subtype.val P) : PairFock E s' s') y := by
+      {i : InfinitePlace E × r' × n' // realSigns E (homSigns s' t') i = 1} ℂ) :
+      lineTermReal A X β a (polyVector _ (rename Subtype.val P)) u =
+        (polyVector _ (rename Subtype.val P) : PairFock E s' t') y := by
     rw [lineTermReal]
-    exact slice_polyVector_apply (isAdapted_lineTermSplitting A A β) x u P
-  -- The polynomial `1` gives the vacuum, so this compares the Gaussians at `y` and at `u`.
+    exact slice_polyVector_apply (isAdapted_lineTermSplitting A X β) (lineCoord n r a) u P
   have h_vac : realVac y = Real.exp (-∑ w : InfinitePlace E, ‖a w‖ ^ 2) * realVac u := by
-    -- The slice of the vacuum at `x` is `exp (-|x|²)` times the vacuum, and `|x|² = ∑ |a w|²`.
-    simpa [lineTermReal, star_dotProduct_self_eq_sum, slice_vac, x, sum_prod_type, mul_pow,
-      vacElem_apply,
-      IsVacuum.smul_apply] using (h_eval 1).symm
-  have h_pos (w : InfinitePlace E) (i : n') : realSigns E (homSigns s' s') (w, i, i) = 1 := by
-    simp [pairSign]
-  have h_coord (w : InfinitePlace E) (i : n') :
-      holomorphicCoord (realSigns E (homSigns s' s')) y (w, i, i) = -star (a w) := by
-    simp [holomorphicCoord_eq, h_pos, y, x, framePoint_lineTermSplitting_diag]
-  calc lineTermReal A A β a (tateVector s' m) u
-      = tateVector s' m y := by
-        simpa only [tateVector, map_prod, map_pow, rename_X]
-          using h_eval (∏ w, ∏ i, X ⟨(w, i, i), h_pos w i⟩ ^ m w)
-    _ = ((Real.exp (-∑ w, ‖a w‖ ^ 2) * ∏ w, star (a w) ^ (2 * m w) : ℂ) •
-          (vacVector : PairFock E s s)) u := by
-      simp only [tateVector, polyVector_apply, map_prod, map_pow, eval_X, h_coord, prod_const,
-        card_univ, hn, pow_right_comm _ _ 2, neg_sq, pow_mul, h_vac, IsVacuum.smul_apply,
-        vacElem_apply]
+    simpa [lineTermReal, star_dotProduct_self_eq_sum, slice_vac, lineCoord, sum_prod_type, mul_pow,
+      vacElem_apply, IsVacuum.smul_apply] using (h_eval 1).symm
+  have hX : X.IsAdapted 1 1 := by
+    simp [IsAdapted, Splitting.frameAt, G.adeleMatrix_one, IsBaseAdapted.isOrthoIntegral]
+  have h_minor (w : InfinitePlace E) (σ : ℤˣ) :
+      principalMinor (posCoordMatrix s' t' (liftFrame A X F) y w) (t' · = σ) =
+        a w * principalMinor (posCoordMatrix s t F u w) (t · = σ) := by
+    rw [show posCoordMatrix s' t' (liftFrame A X F) y w = _ from
+      posCoordMatrix_liftFrame A X β a F u w]
+    exact principalMinor_conj_fromBlocks (frameAt_real_mul_conjTranspose hX w) (hX.1 w)
+      (signMatrix_mul_frameAt_real hX w) (a w) _ σ
+  have h_prod : ∏ w : InfinitePlace E,
+      (a w * principalMinor (posCoordMatrix s t F u w) (t · = 1)) ^ m w *
+        (a w * principalMinor (posCoordMatrix s t F u w) (t · = -1)) ^ (m w + 2 * k) =
+      (∏ w : InfinitePlace E, a w ^ (2 * (k + m w))) *
+        ∏ w : InfinitePlace E, principalMinor (posCoordMatrix s t F u w) (t · = 1) ^ m w *
+          principalMinor (posCoordMatrix s t F u w) (t · = -1) ^ (m w + 2 * k) := by
+    rw [← Finset.prod_mul_distrib]
+    exact Finset.prod_congr rfl fun w _ ↦ by ring
+  calc lineTermReal A X β a (detVector s' t' k m (liftFrame A X F)) u
+      = detVector s' t' k m (liftFrame A X F) y := h_eval _
+    _ = ((Real.exp (-∑ w : InfinitePlace E, ‖a w‖ ^ 2) *
+          ∏ w : InfinitePlace E, star (a w) ^ (2 * (k + m w)) : ℂ) • detVector s t k m F) u := by
+      rw [IsVacuum.smul_apply, detVector_apply, detVector_apply]
+      simp only [h_minor, h_prod, h_vac, star_mul', star_prod, star_pow]
       ring
 
-/-- Let `A` be a base-adapted splitting (`IsBaseAdapted A`, so each `lineTermSplitting A A β` is
-adapted at `1`) of `W'` along a line over a space of rank zero, and let the signs `s'` of `W'` take
-each of the values `1` and `-1` once. The cone integrand `coneIntegrand` at `p = (κ, a)` is the
-phase `∏ (a w / |a w|) ^ (2 m w)` times `|a| ^ z` times the line term at `a` of the translate by
-`κ`; here `κ` is in the maximal compact group and `|a|` is the module of the idele with components
-`a w` at infinity and `1` at the finite places. For the test vector `tateVector s' m`, the Fock
-vector of `∏ X (w, i, i) ^ m w`, in either of the two models `β` of Poisson's formula on the line
-and for every real exponent `z`, it is the vacuum times the number
-`exp (-∑ |a w|²) |a| ^ z ∏ |a w| ^ (2 m w)`. -/
-theorem coneIntegrand_tateVector (hs : Function.Bijective s') (m : InfinitePlace E → ℕ) (β : Bool)
-    (z : ℝ) (p : maxCompact E s' × (InfinitePlace E → ℂ)ˣ) :
-    coneIntegrand A A (fun w : InfinitePlace E ↦ m w) β z (tateVector s' m) p =
+/-- Let `card n' = 2 (k + q')`, with `q'` the number of negative signs of `s'`, and `μ w = k + m w`.
+The cone integrand at `p = (κ, a)` of the determinant vector of `liftFrame A X F`, in either model
+`β` and for every real exponent `z`, is the determinant vector of `F` times the positive number
+`exp (-∑ |a w|²) |a| ^ z ∏ |a w| ^ (2 (k + m w))`. -/
+theorem coneIntegrand_detVector (β : Bool) (z : ℝ) {k : ℕ}
+    (hn : card n' = 2 * (k + negCount s')) (m : InfinitePlace E → ℕ) {μ : InfinitePlace E → ℤ}
+    (hμ : ∀ w : InfinitePlace E, μ w = k + m w) (F : InfinitePlace E → Matrix n r ℂ)
+    (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) :
+    coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) p =
       (Real.exp (-∑ w : InfinitePlace E, ‖p.2.val w‖ ^ 2) * ideleAbs (realIdele p.2) ^ z *
-        ∏ w : InfinitePlace E, normSq (p.2.val w) ^ m w) • vacVector := by
-  -- The compact part `κ` fixes the test vector, and the phase in `coneIntegrand` turns
-  -- `conj (a w) ^ (2 * m w)` into `normSq (a w) ^ m w`.
+        ∏ w : InfinitePlace E, normSq (p.2.val w) ^ (k + m w)) • detVector s t k m F := by
   obtain ⟨κ, a⟩ := p
   have h_phase (w : InfinitePlace E) :
-      (a.val w / ‖a.val w‖) ^ (2 * m w : ℤ) * star (a.val w) ^ (2 * m w) =
-        (normSq (a.val w) ^ m w : ℝ) := by
+      (a.val w / ‖a.val w‖) ^ (2 * μ w) * star (a.val w) ^ (2 * (k + m w)) =
+        (normSq (a.val w) ^ (k + m w) : ℝ) := by
     have h_sq : (a.val w / ‖a.val w‖) ^ 2 * star (a.val w) ^ 2 = normSq (a.val w) := by
       rw [← mul_pow, div_mul_eq_mul_div, star_def, mul_conj', normSq_eq_norm_sq, ofReal_pow]
       field_simp [piUnits_val_apply_ne_zero]
-    rw [ofReal_pow, ← h_sq, mul_pow, ← pow_mul, ← pow_mul]
+    rw [hμ w, ofReal_pow, ← h_sq, mul_pow, ← pow_mul, ← pow_mul]
     norm_cast
-  rw [coneIntegrand, realPairWeil_tateVector hs m fun w ↦ mem_maxCompactU.1 (κ.prop.1 w trivial),
-    lineTermReal_tateVector A ((card_of_bijective hs).trans card_units_int), smul_smul,
-    ← Complex.coe_smul]
+  rw [coneIntegrand,
+    realPairWeil_detVector hn m hμ _ fun w ↦ mem_maxCompactU.1 (κ.prop.1 w trivial),
+    lineTermReal_detVector, smul_smul, ← Complex.coe_smul]
   congr 1
-  -- It remains to absorb the phase at each place.
   simp only [ofReal_mul, ofReal_prod, ← h_phase, prod_mul_distrib]
   ring
+
+omit [WeilData E] in
+/-- All weighted norms of a multiple of a determinant vector are finite. -/
+lemma isSchwartzVector_smul_detVector (c : ℂ) (k : ℕ) (m : InfinitePlace E → ℕ)
+    (F : InfinitePlace E → Matrix n r ℂ) : IsSchwartzVector (c • detVector s t k m F) := fun N ↦ by
+  rw [detVector]
+  simpa only [fockMoment_smul] using
+    ENNReal.mul_ne_top eNorm_ne_top (fockMoment_polyVector_ne_top N _)
+
+omit [WeilData E] in
+/-- For a space `V` of rank zero the determinant vector is the vacuum. -/
+lemma detVector_of_isEmpty [IsEmpty r] (k : ℕ) (m : InfinitePlace E → ℕ)
+    (F : InfinitePlace E → Matrix n r ℂ) : detVector s t k m F = vacVector := by
+  simp [detVector, detPoly]
+
+/-- Determinant vectors are cone integrals of determinant vectors one floor up. Let
+`card n' = 2 (k + q')`, with `q'` the number of negative signs of `s'`, let `μ w = k + m w` and
+`0 < z`. In either model `β` of the summation formula on the line, every multiple of a determinant
+vector of `(W, V)` is the integral of the cone integrand of a multiple of a determinant vector of
+`(W', V')`. -/
+theorem exists_integral_coneIntegrand_detVector (β : Bool) {z : ℝ} (hz : 0 < z) {k : ℕ}
+    (hn : card n' = 2 * (k + negCount s')) (m : InfinitePlace E → ℕ) {μ : InfinitePlace E → ℤ}
+    (hμ : ∀ w : InfinitePlace E, μ w = k + m w) (F : InfinitePlace E → Matrix n r ℂ) (c : ℂ) :
+    ∃ c' : ℂ, ∫ p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ,
+      coneIntegrand A X μ β z (c' • detVector s' t' k m (liftFrame A X F)) p
+        ∂Measure.haar.prod Measure.haar = c • detVector s t k m F := by
+  have h_smul (c' : ℂ) (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) :
+      coneIntegrand A X μ β z (c' • detVector s' t' k m (liftFrame A X F)) p =
+        c' • coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) p := by
+    simp only [coneIntegrand, map_smul]
+    rw [smul_comm]
+  by_cases h_zero : detVector s t k m F = 0
+  · exact ⟨0, by simp_rw [h_smul, zero_smul, integral_zero, h_zero, smul_zero]⟩
+  -- The cone integrand is a positive function `ρ` times the determinant vector of `F`.
+  let ρ (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) : ℝ :=
+    Real.exp (-∑ w : InfinitePlace E, ‖p.2.val w‖ ^ 2) * ideleAbs (realIdele p.2) ^ z *
+      ∏ w : InfinitePlace E, normSq (p.2.val w) ^ (k + m w)
+  have hρ_pos (p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ) : 0 < ρ p :=
+    mul_pos (mul_pos (Real.exp_pos _) (Real.rpow_pos_of_pos ideleAbs_pos _))
+      (Finset.prod_pos fun w _ ↦ pow_pos (normSq_pos.2 (piUnits_val_apply_ne_zero _ _)) _)
+  have h_integrand : coneIntegrand A X μ β z (detVector s' t' k m (liftFrame A X F)) =
+      fun p ↦ ρ p • detVector s t k m F :=
+    funext fun p ↦ coneIntegrand_detVector A X β z hn m hμ F p
+  have h_integrable : Integrable ρ (Measure.haar.prod Measure.haar) := by
+    have h_schwartz : IsSchwartzVector (detVector s' t' k m (liftFrame A X F)) :=
+      fun N ↦ fockMoment_polyVector_ne_top N _
+    have h_cone := (integrable_coneIntegrand A X μ β hz h_schwartz).1
+    rw [h_integrand] at h_cone
+    exact (integrable_smul_const h_zero).1 h_cone
+  have h_pos : 0 < ∫ p, ρ p ∂Measure.haar.prod Measure.haar := by
+    have h_exp : ρ = fun p ↦ Real.exp (Real.log (ρ p)) :=
+      funext fun p ↦ (Real.exp_log (hρ_pos p)).symm
+    rw [h_exp]
+    exact integral_exp_pos (by rwa [← h_exp])
+  refine ⟨c * ((∫ p, ρ p ∂Measure.haar.prod Measure.haar : ℝ) : ℂ)⁻¹, ?_⟩
+  simp only [h_smul, h_integrand]
+  rw [integral_smul, integral_smul_const, ← Complex.coe_smul, smul_smul, mul_assoc,
+    inv_mul_cancel₀ (Complex.ofReal_ne_zero.2 h_pos.ne'), mul_one]
+
+end ConeIntegral
 
 end New.Exchange
 

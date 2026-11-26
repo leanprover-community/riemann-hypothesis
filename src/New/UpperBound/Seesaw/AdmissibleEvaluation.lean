@@ -1,6 +1,7 @@
 module
 
 public import New.UpperBound.Seesaw.NeighbourVacuum
+public import New.UpperBound.Seesaw.EdgePairEvaluation
 
 /-!
 # Finite evaluation of edge pairs takes translates of the vacuum to admissible combinations
@@ -271,7 +272,8 @@ lemma conjTranspose_latticeLift_mulVec_stackedStringMapFin [Finite X'] :
 
 variable [Fact N.Prime]
 
-/-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄`
+omit [Fact (Nat.Prime N)] in
+/-- Let `P` contain one place of each conjugate pair above `N` (`hP`), let `N = π π̄`
 with `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling
 factors with values `1` or `δ`, trivial above `N`, with denominators bounded by the integral adele
 `β` and its conjugate (`hκ`).
@@ -310,7 +312,8 @@ lemma latticeLift_eq_latticeUnitary_add_isotropic (hP : IsSplitLevel P N)
           ((fun _ : X ⊕ Unit ↦ (flipScale E : 𝔸f E)) ⊕ᵥ (1 : X'' ⊕ Unit → 𝔸f E)) * κ *
             (neighbourMatrix X X'' P π).col j := by
       simp [funext_iff, Matrix.mul_apply, planeCoeff, M, S, Z, removePlanes, flipScale, xFin,
-        Space.sum, flipSpace, ← mul_assoc, diagonal_apply, Matrix.one_apply, fromRows_map, fromBlocks_map]
+        Space.sum, flipSpace, ← mul_assoc, diagonal_apply, Matrix.one_apply, fromRows_map,
+        fromBlocks_map]
     rw [neighbourLift, transpose_apply, of_apply, liftVector, ← h_column, mulVec_mulVec]
     rfl
   -- The image of `κ γ ⊗ 1` and that of `planeCoeff ⊗ 1` are Kronecker products with the same
@@ -331,7 +334,7 @@ lemma latticeLift_eq_latticeUnitary_add_isotropic (hP : IsSplitLevel P N)
     transpose_mul, transpose_transpose]
   simp [M, R, Matrix.mul_add, Matrix.mul_assoc, add_kronecker, ← mul_kronecker_mul]
 
-omit [Fintype X'] in
+omit [Fintype X'] [Fact (Nat.Prime N)] in
 /-- Let `P` contain one place of each conjugate pair above `N`, let `π` be the matching idele and
 `κ` scaling factors with values `1` or `δ`. Suppose that the point of `V'` spans the lattice of
 its grading `Y'` and that all neighbour vectors lift to the lattice of `V⁻ ⊕ V''`. Then the matrix
@@ -341,7 +344,6 @@ lemma isIntMatrix_latticeLift
     [Finite X'] (hP : IsSplitLevel P N) (hπ : IsSplitSquarefree P (N : E) π)
     (hκ : IsScalingAtM N β δ κ) {u' : unitary (𝔸f E)} (hL : Y'.SpansLattice a π u')
     (h_lift : D.LiftsNeighbours π u κ δ) : IsIntMatrix (Ô E) (D.latticeLift P π u κ) := by
-  have := Fintype.ofFinite X'
   intro i j
   have h_entry : D.neighbourLift P π u κ i.1 j.1 ∈ Ô E :=
     h_lift _ _ (isNeighbourVector_col_neighbourMatrix hP hπ hκ j.1) i.1
@@ -349,7 +351,8 @@ lemma isIntMatrix_latticeLift
   exact mul_mem h_entry
     (Y'.isIntMatrix_gradeZeroRows hL (Nat.not_odd_iff_even.2 D.even_length_middle) j.2 i.2)
 
-/-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄`
+omit [Fact N.Prime] in
+/-- Let `P` contain one place of each conjugate pair above `N` (`hP`), let `N = π π̄`
 with `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling
 factors with values `1` or `δ`, trivial above `N`, with denominators bounded by the integral adele
 `β` and its conjugate (`hκ`).
@@ -428,11 +431,8 @@ lemma evalAt_neighbourLift_eq_zero (hP : IsSplitLevel P N) (hκ : IsScalingAtM N
   · -- Here `i` and `l` lie in different blocks, and the point of `V⁻ ⊕ V''` is block diagonal.
     have h_val : v (selfOrConj β l w) = v ((selfOrConj β j * κ j) w) := h_match l j hl w
     rw [inv_xFin_flipSum]
-    rcases i with i | i <;> rcases l with l | l
-    · exact absurd h_val h_ne
-    · simp
-    · simp
-    · exact absurd h_val h_ne
+    rcases i with i | i <;> rcases l with l | l <;>
+      first | exact h_ne.elim h_val | simp
 
 omit [Fact N.Prime] in
 /-- Let `P` contain one place of each conjugate pair above `N` (`hP`) and let `κ` be scaling factors
@@ -452,7 +452,8 @@ lemma conjTranspose_latticeLift_mulVec_mem (hP : IsSplitLevel P N) (hκ : IsScal
 
 end
 
-/-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄` with
+omit [Fact (Nat.Prime N)] in
+/-- Let `P` contain one place of each conjugate pair above `N` (`hP`), let `N = π π̄` with
 `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling factors
 with values `1` or `δ`, trivial above `N`, with denominators bounded by the integral adele `β` and
 its conjugate (`hκ`). Let `D` be the data of two consecutive lifts between the graded hermitian
@@ -513,6 +514,7 @@ lemma conjTranspose_iFin_mulVec_mem (hP : IsSplitLevel P N) (hπ : IsSplitSquare
   rw [h_scaled, ← mul_assoc]
   exact D.conjTranspose_latticeLift_mulVec_mem hP hκ h_match h_int hy j w hw
 
+omit [Fact N.Prime] in
 /-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄`
 with `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling
 factors with values `1` or `δ`, trivial above `N`, with denominators bounded by the integral adele

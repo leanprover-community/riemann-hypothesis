@@ -2,6 +2,7 @@ module
 
 public import Lib.Weil.Periods.PointLattice
 public import New.UpperBound.Seesaw.EdgePairEvaluation
+public import Lib.Weil.Periods.ConstantTerm
 
 /-!
 # The shift at a nonzero constant term maps lattices into lattices
@@ -101,7 +102,7 @@ lemma stringMap_eq_zero_of_gradeOf_ne {p : ι'} {q : ι} (h_grade : Y'.gradeOf p
   · obtain ⟨a | a, rfl⟩ := Y.indexEquiv.surjective q <;> simp [stringMap]
   obtain ⟨a | a, rfl⟩ := Y.indexEquiv.surjective q
   · simp [stringMap]
-  have h_ne : b.1 ≠ a.1 := by
+  have h_ne : b.val ≠ a.val := by
     simp only [gradeOf, Equiv.symm_apply_apply, Sum.elim_inr] at h_grade
     omega
   simp [stringMap, h_ne]
@@ -332,8 +333,6 @@ lemma smul_map_stringMapFin_latticePlus_le [Finite X] [Finite X']
     {r' : Gf E ι'} (hr' : r' ∈ Y'.besselFin) (h_graded' : Y'.IsGraded (V'.lattice (r' * x'.2))) :
     (star b / α).val • (Y.latticePlus (r * x.2)).map ((Y.stringMapFin Y').restrictScalars (Ô E)) ≤
       Y'.latticeMinus (r' * x'.2) := by
-  have := Fintype.ofFinite X
-  have := Fintype.ofFinite X'
   set c : 𝔸f E := (star b / α).val
   obtain ⟨W, hW_mem, hW_deg⟩ : ∃ W : Matrix ι' ι (𝔸f E),
       (∀ y ∈ V.lattice x.2, W *ᵥ y ∈ V'.lattice x'.2) ∧

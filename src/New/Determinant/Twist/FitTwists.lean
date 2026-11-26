@@ -13,6 +13,11 @@ default `1`). For these, `New.Data.CriticalPair.ratio` is the quotient
 congruence arguments need to know about a family of twists `θ ι`. The family has one twist for each
 prime `ℓ` and isomorphism `ι : ℂ ≃ ℚ̄_ℓ` (`New.PrimePadicIso`).
 
+For a fixed lift index, the denominator budget is a sum over primes, not embeddings. The
+bound at a prime must work for every embedding above it, even though the chosen twists and
+the clearing operators may vary with the embedding. The budget is imposed for each lift
+index separately. The same family of twists must also satisfy the inverse-ratio height bounds.
+
 ## Main definitions
 
 * `New.Data.goodLift`: the lift `New.Data.singleLift` restricted to good forms, whose range is the
@@ -60,10 +65,6 @@ variable {P : Parameters} {D : Data P}
 lemma Twist.toAutChar_one : (1 : D.Twist).toAutChar = 1 :=
   rfl
 
-/-- The modulus `Q` of the trivial twist, its finite set of finite places, is empty. -/
-lemma Twist.Q_one : (1 : D.Twist).Q = ∅ :=
-  rfl
-
 /-- The twist underlying the trivial `m`-fold twist is the trivial twist. -/
 lemma MFoldTwist.toTwist_one : (1 : D.MFoldTwist).toTwist = 1 :=
   rfl
@@ -73,7 +74,7 @@ twist has the trivial character, underlies the trivial `m`-fold twist, and has e
 lemma toAutChar_one_and_toTwist_one_and_Q_one :
     ((1 : D.Twist).toAutChar = 1 ∧ (1 : D.MFoldTwist).toTwist = 1) ∧
       (1 : D.Twist).Q = ∅ :=
-  ⟨⟨Twist.toAutChar_one, MFoldTwist.toTwist_one⟩, Twist.Q_one⟩
+  ⟨⟨Twist.toAutChar_one, MFoldTwist.toTwist_one⟩, rfl⟩
 
 /-- For a pair `p = (ν, z)`, a tame character `ϑ` and a sign `s` (by default `1`), the ratio
 `|L(z, (ν ϑ^s)⁻¹)| / |L(z, ν⁻¹)|`, as a complex number. Both L-functions omit the Euler factors at
@@ -183,7 +184,8 @@ most `exp β`. Here `p.lValueData _ ϑ` is the datum of the theta lift of the ch
 space, and its `trivialLift` is the lifted form. -/
 structure HasDenominatorsLe {ℓ : ℕ} [Fact ℓ.Prime] (ι : ℂ ≃+* PadicAlgCl ℓ) (ϑ : D.Twist) (j : ℕ)
     (β : ℝ) : Prop where
-  /-- An operator of controlled determinant clears the denominator of the projection. -/
+  /-- An operator of controlled determinant clears the denominator of the projection for forms
+  integral at the given embedding and orthogonal to the false lifts. -/
   clearsProjection : D.ClearsProjection ι ϑ j β
   /-- For a main pair for `j` and two test forms (`IsTestForm`: integral above `ℓ` and orthogonal to
   the false lifts in the kernel of the adjoint of the lift), the inner product of the projections to
@@ -204,7 +206,7 @@ structure IsDenominatorBound (θ : PrimePadicIso → D.MFoldTwist) (j : D.LiftIn
   sum_le (T : Finset ℕ) (hT : ∀ ℓ ∈ T, ℓ.Prime) : ∑ ℓ ∈ T, γ ℓ ≤ D.denominatorBudget
   /-- At `ι`, with prime `ℓ = ι.1`, both bounds of `HasDenominatorsLe` hold for the `j`-th power of
   `θ ι` with `β = γ ℓ`. -/
-  hasDenominatorsLe (ι : PrimePadicIso) : D.HasDenominatorsLe ι.2 ((θ ι).powTwist j) j (γ ι.1)
+  hasDenominatorsLe (ι : PrimePadicIso) : D.HasDenominatorsLe ι.iso ((θ ι).powTwist j) j (γ ι.prime)
 
 /-- Reals `e ℓ`, one for each `ℓ`, are negligible, with the exponent `C`, if
 `∑ e ℓ log ℓ ≤ x ^ C`, the sum taken over any finite set of primes. Here `x = D.x` is the length of
@@ -219,7 +221,7 @@ and their inverses have, for every ramified pair, inverse ratios of L-values of 
 `D.x₁`, the second cut-off of the data. -/
 structure HasSmallRatios (θ : PrimePadicIso → D.MFoldTwist) : Prop where
   /-- The norm of the modulus of `θ ι` is prime to the prime `ℓ = ι.1` of `ι`. -/
-  coprime (ι : PrimePadicIso) : Nat.Coprime ι.1 (θ ι).normQ
+  coprime (ι : PrimePadicIso) : Nat.Coprime ι.prime (θ ι).normQ
   /-- For a ramified pair, the inverse ratios of L-values at the `j`-th powers of the twists
   (`s = 1`) or at their inverses (`s = -1`) form a family of height at most `D.x₁`. -/
   height_le (j : D.LiftIndex) (p : D.CriticalPair) (s : ℤˣ) (hp : p.IsRamified) :
@@ -229,7 +231,8 @@ structure HasSmallRatios (θ : PrimePadicIso → D.MFoldTwist) : Prop where
 has small ratios (`HasSmallRatios`) and, for `1 ≤ j ≤ m`, the `j`-th powers `(θ ι).powTwist j`
 have denominators within the budget `denominatorBudget` (`IsDenominatorBound`). -/
 structure IsRegularFamily (θ : PrimePadicIso → D.MFoldTwist) : Prop extends D.HasSmallRatios θ where
-  /-- Some reals `γ ℓ` bound the denominators of the `j`-th powers within `denominatorBudget`. -/
+  /-- For each `j`, some prime-indexed reals `γ ℓ` bound the denominators of the `j`-th powers
+  at all embeddings, within `denominatorBudget`. -/
   exists_denominator_bound (j : D.LiftIndex) : ∃ γ : ℕ → ℝ, D.IsDenominatorBound θ j γ
 
 end FitTwists

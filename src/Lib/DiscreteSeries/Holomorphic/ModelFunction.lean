@@ -1,6 +1,18 @@
 module
 
-public import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.LinearAlgebra.Matrix.Triangular
+import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Instances.Matrix
+public import Lib.DiscreteSeries.FlenstedJensen.Defs
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
+import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.General.Analysis.MeanValueAndTaylor
+import Lib.General.LinearAlgebra.PolarDecomposition
 
 /-!
 # The holomorphic model function and discrete series coefficients in the holomorphic chamber
@@ -64,30 +76,22 @@ the indices of sign `1`. -/
 theorem holMinors_ite_sign {a b : ℤ} (hab : a ≤ b) (g : USign ε) :
     holMinors ε (fun i : n ↦ if ε i = 1 then a else b) g =
       (g : Matrix n n ℂ).det ^ b / principalMinor g (fun i : n ↦ ε i = 1) ^ (b - a) := by
-  -- Let `p` be the principal minor and `c` the shift in `holMinors`, whose denominator is `p ^ c`.
-  -- Its numerator times `p ^ (b - a)` and `det ^ b * p ^ c` are both `weightMinors` of the weight
-  -- `b + c` on the sign `1` and `b` elsewhere.
+  -- Let `c` be the shift in `holMinors`; both sides of the cross-multiplication equal
+  -- `weightMinors` of the weight `b + c` on sign `1` and `b` elsewhere.
   let w (i : n) : ℤ := if ε i = 1 then a else b
   let c : ℤ := 2 * ∑ j : n, |w j|
-  have hc_nonneg : 0 ≤ c := by positivity
+  have hc : 0 ≤ c := by positivity
+  have hg : (g : Matrix n n ℂ).det ≠ 0 := by simp [Matrix.GeneralLinearGroup.det_ne_zero]
   have h_top (i j : n) (hi : ε i = 1) (hj : ¬ε j = 1) :
       (w j + if ε j = 1 then c else 0) ≤ w i + if ε i = 1 then c else 0 := by
     grind [neg_sum_abs_le_and_le_sum_abs w i, neg_sum_abs_le_and_le_sum_abs w j]
-  have h_weight : (fun i : n ↦ (w i + if ε i = 1 then c else 0) + if ε i = 1 then b - a else 0) =
-      fun i : n ↦ b + if ε i = 1 then c else 0 := by grind
-  have hg : (g : Matrix n n ℂ).det ≠ 0 := by simp [Matrix.GeneralLinearGroup.det_ne_zero]
-  have h_num : weightMinors (fun i : n ↦ w i + if ε i = 1 then c else 0) (g : Matrix n n ℂ) *
-      principalMinor g (fun i : n ↦ ε i = 1) ^ (b - a) =
-        weightMinors (fun i : n ↦ b + if ε i = 1 then c else 0) g := by
-    rw [← weightMinors_add_ite hg (sub_nonneg.2 hab) h_top, h_weight]
-  have h_det : (g : Matrix n n ℂ).det ^ b *
-      weightMinors (fun i : n ↦ if ε i = 1 then c else 0) g =
-        weightMinors (fun i : n ↦ b + if ε i = 1 then c else 0) g := by
-    rw [weightMinors_add_ite hg hc_nonneg (by simp), weightMinors_const hg,
-      weightMinors_ite_eq_zpow hg hc_nonneg]
-  have h_den_ne : weightMinors (fun i : n ↦ if ε i = 1 then c else 0) (g : Matrix n n ℂ) ≠ 0 := by
-    simp [weightMinors_ite_eq_zpow hg hc_nonneg, zpow_ne_zero]
-  rw [holMinors, div_eq_div_iff h_den_ne (by simp [zpow_ne_zero]), h_num, h_det]
+  have h_den : weightMinors (fun i : n ↦ if ε i = 1 then c else 0) (g : Matrix n n ℂ) ≠ 0 := by
+    simp [weightMinors_ite_eq_zpow hg hc, zpow_ne_zero]
+  rw [holMinors, div_eq_div_iff h_den (by simp [zpow_ne_zero]),
+    ← weightMinors_add_ite hg (sub_nonneg.2 hab) h_top,
+    show (fun i : n ↦ (w i + if ε i = 1 then c else 0) + if ε i = 1 then b - a else 0) =
+      fun i : n ↦ b + if ε i = 1 then c else 0 by grind,
+    weightMinors_add_ite hg hc (by simp), weightMinors_const hg, weightMinors_ite_eq_zpow hg hc]
 
 @[simp]
 theorem holMinorsPi_one : holMinorsPi ε u 1 = 1 := by simp [holMinorsPi, holMinors]
@@ -602,31 +606,20 @@ theorem dsCoeff_eq_holMinors_lowestKType (hl : l.HasGap h) (ho : IsPosFirstOrder
   -- Both sides are analytic on the group, so it is enough to treat `g = x' * a * x` near `1`.
   refine USign.eq_of_analyticAt_of_eventually_eq l.analyticAt_dsCoeff
     (analyticAt_holMinors l.lowestKType) ?_ g
-  have h_dom : IsKDominant ε o l.lowestKType := hl.isKDominant_lowestKType_of_order h_same
   have h_acc : ∀ᶠ z : Matrix n n ℂ in 𝓝 1, z.IsAccretive := PosDef.one.isAccretive.setOf_mem_nhds
   have h_coe : Tendsto (fun g : USign ε ↦ (g : Matrix n n ℂ)) (𝓝 1) (𝓝 1) :=
     Continuous.tendsto' (by fun_prop) 1 1 rfl
-  filter_upwards [h_coe.eventually h_acc,
-    h_coe.eventually (eventually_exists_eq_corner_mul_mul_corner ε (h_acc.and
-      (eventually_flenstedJensen_eq_holMinors_of_mem_blockDiagAlg hl ho h_same)))]
-    with g hg_acc hg
-  obtain ⟨x', a, x, (hx' : IsInCornerBlock ε (-1) (x' - 1)), ha_mem,
-    ⟨(ha_acc : a.IsAccretive), ha_eq⟩, (hx : IsInCornerBlock ε 1 (x - 1)),
-    (hg_eq : (g : Matrix n n ℂ) = x' * a * x)⟩ := hg
+  filter_upwards [h_coe.eventually (h_acc.and (eventually_exists_eq_corner_mul_mul_corner ε
+      (h_acc.and (eventually_flenstedJensen_eq_holMinors_of_mem_blockDiagAlg hl ho h_same))))]
+    with g ⟨hg_acc, x', a, x, hx', ha_mem, ⟨ha_acc, ha_eq⟩, hx, hg_eq⟩
   -- In the order `o` the factors `x'` and `x` are lower and upper unipotent.
-  obtain ⟨h_lower, h_lower_char⟩ : IsBorelMatrix (-o) x' ∧ ∀ w : n → ℤ, diagChar w x' = 1 :=
-    hx'.isBorelMatrix_and_diagChar_eq_one (neg_injective.comp ho.1)
-      fun i j hi hj ↦ neg_lt_neg (ho.2 j i hj hi)
-  obtain ⟨h_upper, h_upper_char⟩ : IsBorelMatrix o x ∧ ∀ w : n → ℤ, diagChar w x = 1 :=
-    hx.isBorelMatrix_and_diagChar_eq_one ho.1 ho.2
-  calc l.dsCoeff g = l.flenstedJensen 1 g := by
-        rw [dsCoeff_eq_flenstedJensen hl (one_mem _) (by simpa using hg_acc), inv_one, one_mul]
-    _ = l.flenstedJensen 1 a := by
-        rw [hg_eq, flenstedJensen_corner_mul_mul_corner hl h_cross hx' ha_acc.det_ne_zero hx]
-    _ = holMinors ε l.lowestKType a := ha_eq ha_mem
-    _ = holMinors ε l.lowestKType g := by
-        rw [hg_eq, holMinors_oppBorel_mul_mul_borel ho h_dom h_lower ha_acc.det_ne_zero h_upper,
-          h_lower_char, h_upper_char, one_mul, one_mul]
+  obtain ⟨h_lower, h_lower_char⟩ := hx'.isBorelMatrix_and_diagChar_eq_one (neg_injective.comp ho.1)
+    fun i j hi hj ↦ neg_lt_neg (ho.2 j i hj hi)
+  obtain ⟨h_upper, h_upper_char⟩ := hx.isBorelMatrix_and_diagChar_eq_one ho.1 ho.2
+  rw [dsCoeff_eq_flenstedJensen hl (one_mem _) (by simpa using hg_acc), inv_one, one_mul, hg_eq,
+    flenstedJensen_corner_mul_mul_corner hl h_cross hx' ha_acc.det_ne_zero hx, ha_eq ha_mem,
+    holMinors_oppBorel_mul_mul_borel ho (hl.isKDominant_lowestKType_of_order h_same) h_lower
+      ha_acc.det_ne_zero h_upper, h_lower_char, h_upper_char, one_mul, one_mul]
 
 end
 

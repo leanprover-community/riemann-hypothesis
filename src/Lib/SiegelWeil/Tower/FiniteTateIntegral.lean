@@ -1,8 +1,14 @@
 module
 
+import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.Order.Interval.Finset.Box
+import TauCeti.Topology.Algebra.Group.Units
 public import Lib.ClassField.Avatar.HeckeBaseChange
-public import Lib.ClassField.HeckeCharacter.TameModulus
 public import Lib.SiegelWeil.Tower.RealConeIntegral
+public import Lib.SiegelWeil.Tower.PrincipalIdeles
+import Lib.ClassField.HeckeCharacter.TameModulus
+import Lib.ClassField.HeckeL.ContinuationAtOne
+import Lib.Weil.DualPair.ThetaIntegrals
 
 /-!
 # Products of `L`-values and Tate's integral at the finite places
@@ -233,8 +239,8 @@ lemma integral_finTateIntegrand (ρ : Measure (𝔸f E)ˣ) [IsHaarMeasure ρ] {x
 nonzero weight is not trivial. -/
 lemma continuousOn_L : ContinuousOn (𝔠.character.L 𝔠.ramifiedPlaces) (Ici 1) := by
   have h_hecke : IsHeckeOfType 𝔠.character.baseChange.finPart (2 • μ) := 𝔠.hasWeight.isHeckeOfType
-  exact (h_hecke.exists_hasPrimeDensity (by simp [Finite.star])
-    (h_hecke.ne_one (smul_ne_zero two_ne_zero 𝔠.weight_ne_zero))).1
+  exact h_hecke.continuousOn_eulerProd (by simp [Finite.star])
+    (h_hecke.ne_one (smul_ne_zero two_ne_zero 𝔠.weight_ne_zero))
 
 /-! ### Unfolding over the idele classes -/
 

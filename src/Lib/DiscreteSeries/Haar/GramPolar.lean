@@ -1,6 +1,16 @@
 module
 
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
+import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import Mathlib.RingTheory.SimpleRing.Principal
+import Mathlib.Topology.Algebra.Group.Units
+import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Haar.GramCoordinates
+public import Lib.DiscreteSeries.Haar.CayleyChart
 
 /-!
 # The polar formula for the Gram map on bases
@@ -47,7 +57,7 @@ variable {ι n : Type} [Fintype ι] [Fintype n] [DecidableEq ι] [DecidableEq n]
 /-- The Haar measure of `U J` is invariant under right translations. -/
 instance : (volume (α := U J)).IsMulRightInvariant :=
   ⟨fun g ↦ (measurePreserving_haarU 1 g 1 (.mulRight g)
-    (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.2) (by simp)).map_eq⟩
+    (by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 g.property) (by simp)).map_eq⟩
 
 theorem IsHermitianInvolution.norm_det : ‖J.det‖ = 1 := by
   refine (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 ?_

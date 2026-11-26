@@ -1,5 +1,9 @@
 module
 
+import Mathlib.Algebra.Order.Sub.Prod
+import Mathlib.Algebra.Polynomial.Bivariate
+import Mathlib.Data.Finsupp.Pointwise
+import Mathlib.Order.Grade
 public import Lib.GLn.SchurModule.Basic
 
 /-!
@@ -15,7 +19,7 @@ and a leading-term analysis describes the leading term of a semi-invariant.
 
 * `New.GL.HasLeadingTerm F γ G`: `F` is `G` times the monomial of exponent `γ` plus smaller terms;
   `New.GL.rowExpansion x` expands in row `x`.
-* `New.GL.columnWeight`, `New.GL.ColouredTableau`, `New.GL.minorProduct`: the weight of a family of
+* `New.GL.columnWeight`, `New.GL.ColoredTableau`, `New.GL.minorProduct`: the weight of a family of
   coloured columns, its fillings by rows, and the product of the minors of a filling.
 * `New.GL.interlacing l`: the exponents `γ` with `γ i ≤ l i - l (i + 1)` (truncated subtraction).
   For antitone `l`, these are the `γ ≤ l` such that `l - γ` interlaces `l`.
@@ -168,14 +172,14 @@ def columnWeight (τ : J → Φ) (h : J → ℕ) : Φ × ℕ →₀ ℕ :=
   ∑ j : J, ∑ i ∈ range (h j), Finsupp.single ((τ j : Φ), i) 1
 
 /-- The type of assignments giving each column j an h_j-tuple of rows, all of colour τ_j. -/
-abbrev ColouredTableau (c : m → Φ) (τ : J → Φ) (h : J → ℕ) : Type :=
+abbrev ColoredTableau (c : m → Φ) (τ : J → Φ) (h : J → ℕ) : Type :=
   ∀ j : J, Fin (h j) → {a // c a = τ j}
 
-variable (S : Type) [CommRing S] (I : ColouredTableau c τ h)
+variable (S : Type) [CommRing S] (I : ColoredTableau c τ h)
 
 /-- For a coloured column filling I, the polynomial over S that is the product over columns j of
 the minor with rows I_j on the first h_j columns. -/
-def minorProduct : MatrixPoly m S := ∏ j : J, minor S fun s ↦ (I j s).1
+def minorProduct : MatrixPoly m S := ∏ j : J, minor S fun s ↦ (I j s).val
 
 /-- The weight `New.diagramWeight N κ` equals the weight `New.GL.columnWeight` of the family having
 `κ τ h` columns of colour `τ` and height `h`, for every `τ` and `h < N τ`: its columns are the
@@ -244,7 +248,7 @@ lemma exists_bordering (h : J → ℕ) (hγ : γ ∈ interlacing ((columnWeight 
       -- (a)
       columnWeight τ h = γ.mapDomain (fun i : ℕ ↦ (c x, i)) + columnWeight τ k ∧
       -- every filling `I` of heights `k` that avoids `x` has a lift `K` of heights `h` such that
-      ∀ I : ColouredTableau (c ∘ ((↑) : {a : m // a ≠ x} → m)) τ k, ∃ K : ColouredTableau c τ h,
+      ∀ I : ColoredTableau (c ∘ ((↑) : {a : m // a ≠ x} → m)) τ k, ∃ K : ColoredTableau c τ h,
         -- (b)
         (∀ (R : Type) [CommRing R],
           HasLeadingTerm (rowExpansion x (minorProduct R K)) γ (minorProduct R I)) ∧
@@ -384,12 +388,6 @@ section Interlacing
 
 open MvPolynomial Finset Finsupp Algebra MonomialOrder
 
-/-- The map `aevalTower g y` is `eval₂` with the coefficient map `g`. -/
-private lemma MvPolynomial.aevalTower_apply {S R A σ : Type*} [CommSemiring S] [CommSemiring R]
-    [CommSemiring A] [Algebra S R] [Algebra S A] (g : R →ₐ[S] A) (y : σ → A)
-    (p : MvPolynomial σ R) : aevalTower g y p = eval₂ (g : R →+* A) y p :=
-  rfl
-
 namespace New.GL
 
 /-- Let the exponents `n` and `γ` agree outside the columns `i` and `i + 1` and have the same sum
@@ -467,17 +465,44 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
     .restrictScalars R (Polynomial.aeval (R := Polynomial (MatrixPoly {a // a ≠ x} R)) (.C .X * .X))
   have h_factor : aeval (borelMul c b (Ψ ∘ X)) = (mapAlgHom scale).comp
       (aeval (mapAlgHom (Polynomial.aeval 0) ∘ (borelMul c b (Ψ ∘ X) - Ψ ∘ X) + Ψ ∘ X)) := by
+    -- Multiplying by `b` scales the columns `i` and `i + 1` of the colour of `x` by `s` and `T`,
+    -- and subtracts column `i` from column `i + 1`.
+    have h_mul (Y : m × ℕ → MvPolynomial ℕ P) (y : m) (j : ℕ) : borelMul c b Y (y, j) =
+        Y (y, j) * C (.C .X ^ single (c x, i) 1 (c y, j) * .X ^ single (c x, i + 1) 1 (c y, j)) -
+          if (c x, i + 1) = (c y, j) then Y (y, i) else 0 := by
+      rcases eq_or_ne (i + 1) j with rfl | hj
+      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and]
+      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and, hj]
+    -- The values of `Ψ` on the variables of the row `x` and of another row `y`.
+    have hΨx (j : ℕ) : Ψ (X (x, j)) =
+        (C Polynomial.X * X (i + 1)) ^ single i 1 j * X i ^ single (i + 1) 1 j * X j := by
+      simp [Ψ, rowExpansion]
+    have hΨy (y : m) (hy : y ≠ x) (j : ℕ) : Ψ (X (y, j)) = C (θ (X (⟨y, hy⟩, j))) := by
+      simp [Ψ, rowExpansion, hy, algHom]
     refine algHom_ext fun ⟨y, j⟩ ↦ ?_
-    -- Casework on the row `y` and on the column `j` against `i` and `i + 1`; each case is a ring
-    -- identity.
     by_cases hy : y = x
-    · simp +zetaDelta [rowExpansion, ite_and, mul_sub, hy, single_apply, algHom, mul_assoc,
-        borelMul]
-      split_ifs <;> subst_vars <;> simp_all [sub_eq_zero, mul_assoc] <;> ring
-    · simp +zetaDelta [rowExpansion, ite_and, mul_sub, hy, single_apply, algHom, mul_assoc,
-        borelMul]
-      split_ifs <;> subst_vars <;> simp_all
-      ring
+    · -- Row `x`: casework on the column `j` against `i` and `i + 1`; each case is a ring identity.
+      by_cases hj : j = i
+      · simp [h_mul, hΨx, scale, P, hy, hj]
+        ring
+      by_cases hj' : j = i + 1
+      · simp [h_mul, hΨx, scale, P, hy, hj']
+        ring
+      · simp [h_mul, hΨx, scale, P, hy, Ne.symm hj, Ne.symm hj']
+    · -- Another row: the entries are constants `C p`, so this is an identity in `P`. Casework on
+      -- `(c y, j)` against `(c x, i)` and `(c x, i + 1)`.
+      simp only [aeval_X, AlgHom.comp_apply, mapAlgHom_apply, Pi.add_apply, Pi.sub_apply,
+        Function.comp_apply, h_mul, hΨy _ hy, ← apply_ite C, ← C_0, ← C_mul, ← C_sub, ← C_add,
+        map_C]
+      refine congrArg C ?_
+      by_cases hα : (c x, i) = (c y, j)
+      · obtain ⟨hc, rfl⟩ := Prod.mk.inj hα
+        simp [θ, scale, P, hc]
+        ring
+      by_cases hβ : (c x, i + 1) = (c y, j)
+      · obtain ⟨hc, rfl⟩ := Prod.mk.inj hβ
+        simp [θ, scale, P, hc]
+      · simp [θ, scale, P, hα, hβ]
   -- After `T ↦ s T` the coefficient of `T ^ a` is divisible by `s ^ a`.
   have h_scale (p : P) {a k : ℕ} (hk : k < a) : ((scale p).coeff a).coeff k = 0 := by
     simp [P, scale, ← Polynomial.comp_eq_aeval, Polynomial.coeff_mul_X_pow', hk.not_ge]
@@ -499,7 +524,9 @@ lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
         θ ((rowExpansion x f).coeff n) *
           (.X ^ n i * (X (i + 1) ^ n i * (X i ^ n (i + 1) * monomial n 1) : MvPolynomial ℕ P).coeff
             δ) := by
-      rw [AlgHom.comp_apply, MvPolynomial.aevalTower_apply, eval₂_eq]
+      rw [AlgHom.comp_apply]
+      change (eval₂ _ _ ((rowExpansion x).toAlgHom f) : MvPolynomial ℕ P).coeff δ = _
+      rw [eval₂_eq]
       -- Flags as in `h_weight`; `-map_aeval` keeps `θ` applied to the coefficients.
       simp [prod_mul_distrib, -pow_ite, prod_pow_eq_pow_sum, -map_aeval, ↓if_mem_support,
         algHom, single_apply, mul_pow, ← map_pow, mul_assoc, ← pow_mul, ← map_prod, -C_pow]
@@ -624,11 +651,11 @@ open MvPolynomial Finset MonomialOrder Submodule Finsupp Nat
 namespace New.GL
 
 /-- A standard family of fillings `I` for rows coloured by `c` and columns `j` of colour `τ j` and
-height `h j`: each `I i` (a `ColouredTableau`) gives column `j` an `h j`-tuple of rows of colour
+height `h j`: each `I i` (a `ColoredTableau`) gives column `j` an `h j`-tuple of rows of colour
 `τ j`; `minorProduct R (I i)` is the product of the minors on these rows and the first `h j`
 columns. -/
 structure IsStdMinorFamily {Φ J m ι : Type} [Fintype m] [Fintype J] [Fintype ι]
-    {c : m → Φ} {τ : J → Φ} {h : J → ℕ} (I : ι → ColouredTableau c τ h) : Prop where
+    {c : m → Φ} {τ : J → Φ} {h : J → ℕ} (I : ι → ColoredTableau c τ h) : Prop where
   /-- Over every commutative ring the products of minors are linearly independent. -/
   linearIndependent (R : Type) [CommRing R] :
     LinearIndependent R fun i : ι ↦ minorProduct R (I i)
@@ -765,12 +792,12 @@ lemma antitone_columnWeight_curry {Φ J : Type} [Fintype J] (τ : J → Φ) (h :
   gcongr
 
 /-- Rows `m` are coloured by `c`; column `j : J` has colour `τ j` and height `h j`, and a
-`ColouredTableau c τ h` gives it an `h j`-tuple of rows of colour `τ j`. With no rows there is a
+`ColoredTableau c τ h` gives it an `h j`-tuple of rows of colour `τ j`. With no rows there is a
 standard family (`IsStdMinorFamily`) of these: the one empty filling if all heights are zero, and
 the empty family otherwise. -/
 lemma exists_isStdMinorFamily_of_isEmpty {Φ J m : Type} [Fintype m] [IsEmpty m] [Fintype J]
     (c : m → Φ) (τ : J → Φ) (h : J → ℕ) :
-    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColouredTableau c τ h), IsStdMinorFamily I := by
+    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColoredTableau c τ h), IsStdMinorFamily I := by
   -- Polynomials are constants, and an enumeration `Fin N ≃ m` forces `N = 0`.
   rcases eq_or_ne h 0 with rfl | h_ne
   · refine ⟨Unit, inferInstance, nofun, ⟨?indep, ?span, ?character⟩⟩
@@ -811,7 +838,7 @@ stated for products of minors with coloured rows; the index type is not identifi
 semistandard tableaux. -/
 lemma exists_isStdMinorFamily {Φ J m : Type} [Fintype m] [Fintype J] (c : m → Φ)
     (τ : J → Φ) (h : J → ℕ) :
-    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColouredTableau c τ h), IsStdMinorFamily I := by
+    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColoredTableau c τ h), IsStdMinorFamily I := by
   classical
   -- Induction on the number of rows. Fix a row `y` and expand polynomials in its variables. For
   -- each exponent `γ` interlacing the weight, take the family for the other rows and the weight
@@ -822,21 +849,15 @@ lemma exists_isStdMinorFamily {Φ J m : Type} [Fintype m] [Fintype J] (c : m →
   · exact exists_isStdMinorFamily_of_isEmpty c τ h
   -- For each `γ`, the heights `k γ` give the weight lowered by `γ` (`h_weight`), and `lift γ`
   -- borders the fillings that avoid `y` (`h_lift`, `h_monomial`), by `exists_bordering`.
-  have h_border : ∀ γ : interlacing ((columnWeight τ h).curry (c y)), ∃ k : J → ℕ,
-      columnWeight τ h = γ.val.mapDomain (fun i : ℕ ↦ (c y, i)) + columnWeight τ k ∧
-      ∀ I : ColouredTableau (c ∘ (↑) : {a : m // a ≠ y} → Φ) τ k, ∃ K : ColouredTableau c τ h,
-        (∀ (R : Type) [CommRing R],
-          HasLeadingTerm (rowExpansion y (minorProduct R K)) γ (minorProduct R I)) ∧
-        ∀ z : m → ℂ, ∏ j : J, ∏ s : Fin (h j), z (K j s) =
-          z y ^ Finsupp.degree γ.val * ∏ j : J, ∏ s : Fin (k j), z (I j s) :=
-    fun γ ↦ exists_bordering h γ.prop
+  have h_border (γ : interlacing ((columnWeight τ h).curry (c y))) :=
+    exists_bordering h γ.prop
   choose k h_weight lift h_lift h_monomial using h_border
   -- The induction hypothesis: standard families `I γ` for the other rows.
   have h_fewer : Nat.card {a : m // a ≠ y} < n :=
     h_card.subst (Finite.card_subtype_lt (x := y) (not_not_intro rfl))
   have h_family : ∀ γ : interlacing ((columnWeight τ h).curry (c y)),
       ∃ (ι : Type) (_ : Fintype ι)
-        (I : ι → ColouredTableau (c ∘ (↑) : {a : m // a ≠ y} → Φ) τ (k γ)), IsStdMinorFamily I :=
+        (I : ι → ColoredTableau (c ∘ (↑) : {a : m // a ≠ y} → Φ) τ (k γ)), IsStdMinorFamily I :=
     fun γ ↦ ih _ h_fewer (c ∘ (↑) : {a : m // a ≠ y} → Φ) (k γ) rfl
   choose ι hι_fintype I hI using h_family
   refine ⟨Sigma ι, inferInstance, fun i ↦ lift i.fst (I i.fst i.snd), fun R _ ↦ ?_,
@@ -864,12 +885,10 @@ lemma exists_isStdMinorFamily {Φ J m : Type} [Fintype m] [Fintype J] (c : m →
     -- For each `γ` use the identity for the other rows, enumerated by `e` with `y` left out.
     let e' : Fin N ≃ {a : m // a ≠ y} :=
       .optionSubtype _ ⟨(finSuccEquiv' (e.symm y)).symm.trans e, e.apply_symm_apply y⟩
-    have h_rest : (∑ i : ι γ, ∏ j : J, ∏ s : Fin (k γ j), x (I γ i j s)) *
-        alternant (fun i : Fin N ↦ x (e' i)) 0 =
-          alternant (fun i : Fin N ↦ x (e' i)) fun n : ℕ ↦ columnWeight τ (k γ) (c y, n) :=
-      (hI γ).character (c y) N e' fun a ↦ x a
+    have h_rest := (hI γ).character (c y) N e' fun a ↦ x a
     -- `e'` is `e` composed with the embedding that skips the index of `y`.
-    have h_e' : (fun i : Fin N ↦ x (e' i)) = (x ∘ e) ∘ (e.symm y).succAbove := by
+    have h_e' : (fun a : {a : m // a ≠ y} ↦ x a) ∘ e' =
+        (x ∘ e) ∘ (e.symm y).succAbove := by
       simp [funext_iff, e', finSuccEquiv'_symm_some]
     rw [h_e'] at h_rest
     -- The weight lowered by `γ` is that of `k γ` (`h_weight γ`), and a lift adds `x y ^ |γ|` to the

@@ -1,12 +1,18 @@
 module
 
-public import Lib.DiscreteSeries.Character.WeylCharacterFormula
-public import Lib.GLn.SchurModule.SchurNorm
+import TauCeti.LinearAlgebra.Trace.Nilpotent
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 public import Lib.Shimura.TraceFormula.DefiniteTrace
-public import Lib.Shimura.TraceFormula.MarkedDefiniteSums
 public import Lib.Shimura.TraceFormula.TestFunction
 public import Lib.Shimura.Transfer.Lefschetz
-import TauCeti.LinearAlgebra.Trace.Nilpotent
+public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
+public import Lib.General.Combinatorics
+public import Lib.Shimura.Uniformisation.HolomorphicFamilies
+import Lib.DiscreteSeries.Character.WeylCharacterFormula
+import Lib.GLn.SchurModule.SchurNorm
+import Lib.General.NumberTheory.FrobeniusOrbits
+import Lib.Shimura.TraceFormula.MarkedDefiniteSums
+import Lib.Shimura.Transfer.MarkedPairs
 
 /-!
 # Coefficient systems from weights and the degrees where Hecke eigensystems occur
@@ -69,32 +75,19 @@ lemma New.Variety.prod_map_tauHecke_mem_spanOn {E : Type} [Field E] [NumberField
   induction L with
   | nil => exact subset_span ⟨1, Subgroup.one_mem _, by simp [MonoidAlgebra.one_def]⟩
   | cons s L ih =>
-    obtain ⟨⟨v, hv_safe⟩, j⟩ := s
+    obtain ⟨⟨v, -, h_notMem, h_notMem_conj⟩, j⟩ := s
     refine spanOn.mul heckeSum_mem_spanOn ih ?_
     rintro _ ⟨U, rfl⟩ g
-    have h_GU : invHeckeIsogeny (v : SplitFinPlace E) U ∈ GU E (Fin a) :=
-      And.left (invHeckeIsogeny_mem_GUPlus _ U)
-    refine Subgroup.mul_mem _ ⟨h_GU, ?_⟩
-    -- Both factors of `invHeckeIsogeny` are trivial at `w₁`, because `w₁` divides `𝔑`, whereas a
-    -- safe place and the places over the conjugate of the place below it do not.
-    -- (`h_notMem` says that `𝔑 ∉ v`, and `h_notMem_conj` that `𝔑` lies in no place over the
-    -- conjugate of the place below `v`.)
-    obtain ⟨-, h_notMem, h_notMem_conj⟩ := hv_safe
+    refine Subgroup.mul_mem _ ⟨(invHeckeIsogeny_mem_GUPlus _ U).1, ?_⟩
+    -- Both factors of `invHeckeIsogeny` are trivial at `w₁` since `w₁ ∣ 𝔑` and `v` is safe.
     have h_below_ne : (w₁ : FinPlace E).below (QuadField d₀) ≠
-        star ((v : FinPlace E).below (QuadField d₀)) :=
-      fun h_below ↦ h_notMem_conj _ h_below hw₁
-    have h_ne : (w₁ : FinPlace E) ≠ (v : FinPlace E) :=
-      fun h_eq ↦ h_notMem (by rwa [← h_eq])
-    have h_star_ne : star (w₁ : FinPlace E) ≠ (v : FinPlace E) :=
-      fun h_eq ↦ h_below_ne (by rw [← h_eq, below_star, star_star])
-    suffices h_triv :
-        (invHeckeIsogeny (v : SplitFinPlace E) U).map (evalAt (w₁ : FinPlace E)) = 1 by
-      simp [dualComponent, h_triv]
-    rw [invHeckeIsogeny, map_mul, evalAt_conjAtSplit_of_ne (hu := h_ne) (hu' := h_star_ne),
-      mul_one]
-    -- `uniformizerNorm v` is a norm of a local idele at `v`, so the central scalar is trivial
-    -- at `w₁`.
-    rw [uniformizerNorm, ← map_pow, ← map_inv, ← map_pow, ← map_inv]
+        star ((v : FinPlace E).below (QuadField d₀)) := fun h ↦ h_notMem_conj _ h hw₁
+    suffices (invHeckeIsogeny (v : SplitFinPlace E) U).map (evalAt (w₁ : FinPlace E)) = 1 by
+      simp [dualComponent, this]
+    rw [invHeckeIsogeny, map_mul,
+      evalAt_conjAtSplit_of_ne (hu := fun h ↦ h_notMem (by rwa [← h]))
+        (hu' := fun h ↦ h_below_ne (by rw [← h, below_star, star_star])),
+      mul_one, uniformizerNorm, ← map_pow, ← map_inv, ← map_pow, ← map_inv]
     exact evalAt_centralScalar_of_ne h_below_ne _
 
 /-- A word `L` in the Hecke operators `tauHecke` at safe places acts on a common eigenvector `φ`
@@ -652,11 +645,11 @@ lemma New.Variety.exists_isCoefficientSystem {E : Type} [Field E] [CMType E] {a 
   let ξ : Representation ℂ (GL (Fin a) E) (WeylIndex (Fin a) κ.1 → ℂ) := twistedWeylRep κ p m
   -- The exponents and polynomials at `Φ v` and at its conjugate, as
   -- `mul_trace_weylRep_eq_prod_rootCoeffEval` needs them.
-  have hl_pos (v : InfinitePlace E) (_hv : p v) (j : Fin a) :
+  have hl_pos (v : InfinitePlace E) (j : Fin a) :
       (l (Φ v) j : ℤ) = m + (a - 1 - u v j.rev) := by simp [hl, k]
   have hq_conj_pos (v : InfinitePlace E) (hv : p v) : q (star (Φ v)) = (-.X 0) ^ m := by
     simp [q, show (Φ v).comp i = s₀ from hv]
-  have hl_neg (v : InfinitePlace E) (_hv : ¬p v) (j : Fin a) :
+  have hl_neg (v : InfinitePlace E) (j : Fin a) :
       (l (star (Φ v)) j : ℤ) = m + u v j := by simp [hl, k]
   have hq_conj_neg (v : InfinitePlace E) (hv : ¬p v) :
       q (star (Φ v)) = genericSchur (l (star (Φ v))) := by
@@ -665,8 +658,9 @@ lemma New.Variety.exists_isCoefficientSystem {E : Type} [Field E] [CMType E] {a 
       (ξ y⁻¹).trace ℂ (WeylIndex (Fin a) κ.1 → ℂ) =
         ∏ σ, rootCoeffEval (y.val.charpoly.map σ).roots (q σ) := by
     rw [trace_twistedWeylRep_inv κ p m y]
-    exact mul_trace_weylRep_eq_prod_rootCoeffEval ha κ p (u := u) (l := l) (fun _ _ ↦ rfl) hl_pos
-      (fun _ hv ↦ ite_eq_left hv) hq_conj_pos hl_neg (fun _ hv ↦ ite_eq_right hv) hq_conj_neg hy
+    exact mul_trace_weylRep_eq_prod_rootCoeffEval ha κ p (u := u) (l := l) (fun _ _ ↦ rfl)
+      (fun v _ ↦ hl_pos v) (fun _ hv ↦ ite_eq_left hv) hq_conj_pos
+      (fun v _ ↦ hl_neg v) (fun _ hv ↦ ite_eq_right hv) hq_conj_neg hy
   let μ : ℕ := m * a * Core.numInfPlaces E
   obtain ⟨A, h_scalar⟩ := exists_twistedWeylRep_scalar (a := a) i s₀ κ m
   -- Each jump at `σ` is some `k σ j = l σ j - m`, so adding `μ` gives the weight in

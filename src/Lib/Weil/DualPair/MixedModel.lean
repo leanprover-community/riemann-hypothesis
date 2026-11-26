@@ -1,6 +1,9 @@
 module
 
-public import Lib.Weil.DualPair.WeilAction
+public import Lib.Weil.DualPair.Defs
+public import Lib.Weil.MixedModel.ZeroTerm
+import Lib.Weil.DualPair.WeilAction
+import Lib.Weil.MixedModel.ThetaInvariance
 
 /-!
 # Mixed models and zero terms of a pair with one split space: Levi and radical laws
@@ -59,7 +62,7 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E]
 /-- For a space T with adelic frame x, the invertible adelic matrix (x⁻¹)* ε, with inverse ε x*,
 where ε is the standard form of its signs. -/
 def dualFrame : GL n' (𝔸 E) where
-  val := T.x⁻¹.1ᴴ * stdForm E s'
+  val := T.x⁻¹.valᴴ * stdForm E s'
   inv := stdForm E s' * T.xᴴ
   val_inv := by simp [conjTranspose_nonsing_inv, Matrix.mul_assoc]
   inv_val := by simp [conjTranspose_nonsing_inv, Matrix.mul_assoc]
@@ -409,24 +412,29 @@ lemma homSlice_radicalElement (c : Matrix n₀ p (𝔸 E)) (z : Matrix p p (𝔸
       D.homSlice T x (pairWeil V T a b (D.radicalElement c z, 1) f) =
         D.homSlice T 0 ((V.hom T).ϱ (matrixToVec y) f) := by
     simp [y, homSlice, rho_pairWeil, h_zeroTerm_radicalElt]
+  -- The radical element fixes k and sends ι to ι + k c* ε₀, so `y` sends k to x and ι to x c* ε₀.
+  have h_yk : y * D.kAdelic = x := by
+    simp [y, Matrix.mul_assoc, h_kAdelic]
+  have h_yi : y * D.iAdelic = x * cᴴ * stdForm E s₀ := by
+    simp [y, Matrix.mul_assoc, radicalElement_mul_iAdelic, Matrix.mul_add]
   -- After the law `homSlice_rho` the two sides differ only in the value of `stdAddChar E`.
-  -- The matrix of `radicalElement c z` turns its argument into a term in `c` and terms in `z`,
-  -- `zᴴ`. By `stdAddChar_inv_two_mul_add_star` the value depends only on `t + star t`. The term in
-  -- `c` is `j` times a self-conjugate adele and drops out of this sum; the terms in `z` and `zᴴ`
-  -- are conjugate.
+  -- Its argument is a term in `c` plus terms in `z`, `zᴴ`. By `stdAddChar_inv_two_mul_add_star`
+  -- the value depends only on `t + star t`. The term in `c` is `j` times a self-conjugate adele
+  -- and drops out of this sum; the terms in `z` and `zᴴ` are conjugate.
   set X : Matrix p p (𝔸 E) := xᴴ * (stdForm E s' * x) with hX
   have h_char : stdAddChar E (toAdele (j / 2) *
         ((y * D.lAdelic)ᴴ * stdForm E s' * (0 + 0 + y * D.kAdelic)).trace) =
       stdAddChar E (toAdele (2⁻¹ : E) * (z * X).trace) := by
-    rw [← stdAddChar_inv_two_mul_add_star, eq_comm, ← stdAddChar_inv_two_mul_add_star]
+    have hXH : Xᴴ = X := by simp [hX, Matrix.mul_assoc]
+    have hj : toAdele (j / 2) * toAdele j⁻¹ = toAdele (2⁻¹ : E) := by
+      rw [← map_mul, div_mul_eq_mul_div, mul_inv_cancel₀ j_ne_zero, one_div]
+    rw [h_yk, ← stdAddChar_inv_two_mul_add_star, eq_comm, ← stdAddChar_inv_two_mul_add_star]
     congr 1
     simp [y, radicalElement, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub,
-      Matrix.sub_mul, hX, ← trace_conjTranspose, trace_mul_comm cᴴ, (stdForm E _).trace_mul_comm,
-      z.trace_mul_comm]
-    grind
-  rw [h_sourceTerm_eq, homSlice_rho, h_char]
-  simp [y, radicalElement, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub,
-    Matrix.sub_mul, ← hX]
+      Matrix.sub_mul, ← hX, hXH, ← trace_conjTranspose, trace_mul_comm X, neg_div]
+    linear_combination -(toAdele (2⁻¹ : E) ^ 2 * ((z * X).trace + (zᴴ * X).trace)) *
+      (toAdele_half_add_half (E := E) + 2 * hj)
+  rw [h_sourceTerm_eq, homSlice_rho, h_char, h_yi, h_yk, zero_add, hX, ← Matrix.mul_assoc xᴴ]
 
 end Splitting
 

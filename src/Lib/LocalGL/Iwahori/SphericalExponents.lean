@@ -1,6 +1,11 @@
 module
 
-public import Lib.LocalGL.Iwahori.HeckeDegrees
+public import Lib.Adelic.Adeles.Basic
+public import Lib.LocalGL.Iwahori.ParahoricStructure
+import Lib.General.LinearAlgebra.HermiteForm
+import Lib.LocalGL.Iwahori.HeckeDegrees
+import Lib.LocalGL.Iwahori.QuadraticRelation
+import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
 # Exponents that survive on spherical vectors, and a Hecke operator on parahoric eigenvectors
@@ -118,16 +123,6 @@ private lemma permGL_swap_mem_blockParahoric_min {j : Fin N} (hj : m ≤ j) :
   refine ⟨permGL_mem_intGL _, ?_⟩
   simp
   grind [one_pos]
-
-/-- The group of level `update (min m) m N` lies in `blockParahoric (min m)`. -/
-private lemma mem_blockParahoric_min_of_mem_update {k : GL (Fin N) F}
-    (hk : k ∈ blockParahoric (update (min m) m N)) : k ∈ blockParahoric (min m) := by
-  grind
-
-/-- An element of the group of level `update (min m) m N` has row `m` in `𝔭` off the diagonal. -/
-private lemma v_apply_lt_one_of_mem_blockParahoric_update {k : GL (Fin N) F}
-    (hk : k ∈ blockParahoric (update (min m) m N)) {r : Fin N} (hr : r ≠ m) : v (k m r) < 1 := by
-  grind
 
 /-- Reduction modulo `𝔭` on `blockParahoric (min m)`, a homomorphism to `GL_N(𝓀[F])`. -/
 private def reduceParahoric (m : Fin N) :
@@ -297,9 +292,11 @@ lemma exists_compactMean_and_swap_eq_sum [IsSmoothRep ρ.ρ]
     simpa only [Y, map_sum, map_colVector_eq_sum hx hφ] using sum_by_last_nonzero_coord _ I
   refine ⟨Y ∅, Y {m}, mem_levelSpace.mpr fun k ↦ ?_, ?_, fun i hi ↦ ?_⟩
   · -- the group of level `update (min m) m N` lies in `P` and fixes `Y {m}`
-    have hk_mem : k.val ∈ blockParahoric (min m) := mem_blockParahoric_min_of_mem_update k.property
+    have hk := k.property
+    have hk_mem : k.val ∈ blockParahoric (min m) := by grind
     have h_row (r : Fin N) (hr : r ≠ m) : reduceParahoric m ⟨k.val, hk_mem⟩ m r = 0 := by
-      simpa [reduceParahoric] using v_apply_lt_one_of_mem_blockParahoric_update k.property hr
+      have h_val : v (k.val m r) < 1 := by grind
+      simpa [reduceParahoric] using h_val
     simpa [Y] using apply_sum_colVector hx ⟨k.val, hk_mem⟩ {m} m (by simpa using h_row)
   · -- `Y ∅` is fixed by `P`, so the mean over `P` does not change it.
     have fixed : Y ∅ ∈ levelSpace ρ.ρ (blockParahoric (min m)) :=

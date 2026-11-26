@@ -1,9 +1,15 @@
 module
 
-public import Lib.Adelic.Reduction.DefiniteClassSums
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.MeasureTheory.Integral.Pi
 public import Lib.GLn.SchurModule.SchurOrthogonality
 public import Lib.GaloisRep.Main.Defs
 public import Lib.Weil.Construction.ThetaJets
+import Lib.Adelic.Reduction.DefiniteClassSums
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.GLn.SchurModule.WeylKernel
 
 /-!
 # Algebraic forms on definite unitary groups, their pairing and Harish-Chandra parameters
@@ -250,15 +256,6 @@ def smoothPairing
     (fun φ ψ₁ ψ₂ ↦ by simp [classIntegral_add, ← Pi.add_def, hB])
     (fun c φ ψ ↦ by simp)
 
-/-- The value of `New.smoothPairing` at two forms is the integral of their pointwise pairing. -/
-lemma smoothPairing_apply
-    (hB : ∀ (γ : U V.J) (v v' : WeylIndex n κ.1 → ℂ),
-      B (V.weightRep κ.1 κ.2 γ v) (V.weightRep κ.1 κ.2 γ v') = B v v')
-    (φ φ' : V.forms κ) :
-    smoothPairing B hB φ φ' =
-      classIntegral V.Γf (stdLevel E n) fun g : Gf E n ↦ B (φ.val g) (φ'.val g) :=
-  rfl
-
 /-- The pairing `New.smoothPairing` of forms of weight κ on the definite space V, by a form `B`
 invariant under `New.Space.weightRep`, is unchanged when both forms are translated on the right by
 the same finite adelic point `a`. -/
@@ -269,7 +266,6 @@ lemma smoothPairing_formTranslation
     smoothPairing B hB (V.formTranslation κ a φ) (V.formTranslation κ a φ') =
       smoothPairing B hB φ φ' := by
   -- The integral over Γ\G_f does not change under right translation of the integrand.
-  rw [smoothPairing_apply, smoothPairing_apply]
   exact classIntegral_map_mul_right (.id ℂ) a (pairing_mem_smoothInvariants hB φ φ') fun g ↦ by simp
 
 end SmoothFormPairing
@@ -306,6 +302,18 @@ lemma isHCParam_hcParameter (n : Type) [Fintype n] (κ : Φ → ℕ → ℕ) (e 
       hcParameter κ e (Fintype.card n) w (Fintype.equivFin n i) := by
   simp [IsHCParam, Function.Injective, hcParameter_strictAnti.injective.eq_iff, Fin.val_inj]
 
+/-- In rank `N`, for `p + 1 < N`, entries `p` and `p + 1` of the parameter `New.hcParameter`
+differ by twice the number `κ w (p + 1)` of columns of height `p + 1`, plus two. -/
+lemma hcParameter_sub_succ {N p : ℕ} (w : Φ) (hp : p + 1 < N) :
+    hcParameter κ e N w p - hcParameter κ e N w (p + 1) = 2 * κ w (p + 1) + 2 := by
+  classical
+  have h_row : diagramWeight (fun _ ↦ N) κ (w, p) =
+      diagramWeight (fun _ ↦ N) κ (w, p + 1) + κ w (p + 1) := by
+    rw [GL.diagramWeight_eq_succ_add, ite_eq_left hp]
+  simp only [hcParameter, h_row]
+  push_cast
+  ring
+
 /-- Let L be a sequence of integers with L(p) − L(p+1) = 2κ_w(p+1) + 2 whenever p + 1 < N. If L
 agrees with `New.hcParameter κ e N w` at one index q < N, then it agrees with it at every p < N.
 That sequence is the decreasing parameter for rank N, and it has these same steps. -/
@@ -320,12 +328,8 @@ lemma hcParameter_eq_of_steps (w : Φ) (L : ℕ → ℤ)
     induction p with
     | zero => rfl
     | succ p ih =>
-      have h_row : diagramWeight (fun _ ↦ N) κ (w, p) =
-          diagramWeight (fun _ ↦ N) κ (w, p + 1) + κ w (p + 1) := by
-        rw [GL.diagramWeight_eq_succ_add, ite_eq_left hp]
-      have h_param : hcParameter κ e N w p = hcParameter κ e N w (p + 1) + 2 * κ w (p + 1) + 2 := by
-        grind [hcParameter]
-      linarith [ih (Nat.lt_of_succ_lt hp), h_step p hp]
+      linarith [ih (Nat.lt_of_succ_lt hp), h_step p hp,
+        hcParameter_sub_succ (κ := κ) (e := e) w hp]
   intro p hp
   linarith [diff_const p hp, diff_const q hq]
 

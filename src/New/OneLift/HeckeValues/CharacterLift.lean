@@ -1,8 +1,13 @@
 module
 
-public import Lib.Weil.CompactLift.DefiniteThetaLift
 public import New.Determinant.Norms.VectorKernel
-public import New.UpperBound.Kernels.JetConjugatesAndBounds
+public import Lib.Weil.CompactLift.ThetaKernelDefs
+public import Lib.Weil.DualPair.GaloisLaw
+public import New.Derivatives.Vacuum.TightFrames
+import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
+import Lib.ClassField.HeckeCharacter.SplitTameCharacters
+import Lib.Weil.CompactLift.DefiniteThetaLift
+import New.UpperBound.Kernels.JetConjugatesAndBounds
 
 /-!
 # The lift of a character from U(1): kernel, descent and Galois conjugates
@@ -105,13 +110,9 @@ lemma LevelPlaces.LevelForm.inner_eq_petersson {s : n → ℤˣ} (V : Space E n 
 
 variable [WeilData E]
 
-/-- The one-point type `Unit` embeds in every non-empty type. -/
-lemma nonempty_unit_embedding {α : Type} [h : Nonempty α] : Nonempty (Unit ↪ α) :=
-  h.map Function.Embedding.punit
-
 /-- For non-empty `n`, an arbitrary embedding of the one-point type `Unit` into `n`, that is, an
 arbitrary index. -/
-def arbitraryIndexEmbedding [h : Nonempty n] : Unit ↪ n := (nonempty_unit_embedding (h := h)).some
+def arbitraryIndexEmbedding [h : Nonempty n] : Unit ↪ n := (h.map Function.Embedding.punit).some
 
 /-! ### The data and the theta kernel -/
 
@@ -223,14 +224,14 @@ def kernelForm (g : Gf E Unit) : X.descentPair.FormV :=
   -- The level acts through its character, by the law `DescentPair.omega_blockDatum_eq_smul`; so the
   -- function is smooth.
   have h_level (k : X.descentPair.levelGroup) :
-      rightRegular ℂ (Gf E n) _ k.1 (X.kernelValue 1 X.descentPair.blockDatum g) =
+      rightRegular ℂ (Gf E n) _ k.val (X.kernelValue 1 X.descentPair.blockDatum g) =
         X.descentPair.residueLevelChar.comp (levelOf.reduction ..) k •
           X.kernelValue 1 X.descentPair.blockDatum g := by
     ext h' i
     have h_omega : X.descentPair.pairThetaKernel.ω ((1, 1), 1, k.val) X.descentPair.blockDatum.val =
         X.descentPair.residueLevelChar.comp (levelOf.reduction ..) k •
           X.descentPair.blockDatum.val := by
-      simpa using X.descentPair.omega_blockDatum_eq_smul 1 ⟨k, levelOf_le_stdLevel k.2⟩
+      simpa using X.descentPair.omega_blockDatum_eq_smul 1 ⟨k, levelOf_le_stdLevel k.property⟩
         (levelOf.reduction _ _ k) (by simp [levelOf.reduction]; rfl)
     -- The jets are linear in the datum, and `ω` is multiplicative.
     simpa [kernelValue, rep_apply_apply, smul_mulVec] using
@@ -238,8 +239,12 @@ def kernelForm (g : Gf E Unit) : X.descentPair.FormV :=
   -- Equivariance under the rational points of `V` is that of the theta kernel.
   ⟨⟨X.kernelValue 1 X.descentPair.blockDatum g,
     mem_smoothFunctions_of_eigen _ isOpen_levelOf h_level,
-      fun γ h ↦ by simpa [Kernel.omega_omega] using!
-        X.liftKernel.equivariant 1 γ (X.liftKernel.ω (g, h) X.descentPair.blockDatum) 1⟩,
+      fun γ h ↦ by
+        have h_eq :=
+          X.liftKernel.equivariant 1 γ (X.liftKernel.ω (g, h) X.descentPair.blockDatum) 1
+        simp only [Kernel.omega_omega, Prod.mk_mul_mk, map_one, one_mul, one_apply_eq_self]
+          at h_eq
+        exact h_eq⟩,
     fun k ↦ Subtype.ext (h_level k)⟩
 
 /-- The principal level of the finite adelic U(1) at the places `chosenPlace`: integral elements
@@ -262,17 +267,23 @@ lemma kernelForm_invariant (X : LValueData E n) :
     stdRatPoints.FixesLeft X.kernelForm ∧ X.chosenLevel ≤ rightStabilizer X.kernelForm := by
   constructor
   · -- Left invariance is the equivariance of the theta kernel; `U(1)` acts trivially on the weight.
-    rintro _ ⟨γ, hγ⟩ g
+    rintro _ ⟨γ, rfl⟩ g
     refine Subtype.ext (Subtype.ext (funext fun h ↦ ?_))
-    simpa [kernelForm, hγ, weightRep, Kernel.omega_omega] using!
-      X.liftKernel.equivariant γ 1 (X.liftKernel.ω (g, h) X.descentPair.blockDatum) 1
+    have h_eq := X.liftKernel.equivariant γ 1 (X.liftKernel.ω (g, h) X.descentPair.blockDatum) 1
+    simp only [Kernel.omega_omega, Prod.mk_mul_mk, map_one, one_mul, weightRep,
+      MonoidHom.comp_apply, conjWeylRep_eq_one, one_apply_eq_self] at h_eq
+    exact h_eq
   · -- By `omega_blockDatum_eq_smul` at `(k, 1)`, `k` multiplies `blockDatum` by a character of its
     -- reduction at the places `chosenPlace`, and that is `1`.
     rintro _ ⟨k, hk : stdLevel.reduceFamily _ k = 1, rfl⟩ g
     refine Subtype.ext (Subtype.ext (funext fun h ↦ ?_))
     have h_omega : X.descentPair.pairThetaKernel.ω ((1, k.val), 1, 1) X.descentPair.blockDatum.val =
         X.descentPair.blockDatum.val := by
-      simpa [hk] using X.descentPair.omega_blockDatum_eq_smul k 1 1 (by simp [hk])
+      have h_smul := X.descentPair.omega_blockDatum_eq_smul k 1 1
+        (by rw [map_one, hk, map_one, OneMemClass.coe_one, mul_one])
+      simp only [hk, Pi.one_apply, Units.val_one, det_one, map_one, Finset.prod_const_one,
+        inv_one, mul_one, one_smul] at h_smul
+      exact h_smul
     simpa [kernelForm, kernelValue, rep_apply_apply] using
       congr_fun (congr_arg (X.kernelValue 1 · g) h_omega) h
 
@@ -314,10 +325,14 @@ lemma toPoly_eq_rename_fockPoly (X : LValueData E n)
   refine LinearMap.congr_fun (g := (rename _).toLinearMap ∘ₗ X.descentPair.fockPoly)
     (ext_schur_weylEval (rowEquivFin _) fun g : InfinitePlace E → GL n ℂ ↦ ?_) η
   have h_intertwines := (mixedCartan n X.descentPair.colsPlus 0).intertwines g
+    (weylEval (fun _ ↦ n) (mixedWeight n X.descentPair.colsPlus 0)
+      (permArray fun τ i ↦ (rowEquivFin (fun _ : InfinitePlace E ↦ n) τ i : ℕ)))
+  simp only [Pi.zero_apply, Finset.sum_const_zero, Nat.cast_zero, neg_zero, weylRep,
+    MonoidHom.coe_mk, OneHom.coe_mk, zpow_zero, Finset.prod_const_one, one_smul] at h_intertwines
   -- `↓rowSubst_highestPoly` has to rewrite before `rowSubst` and `highestPoly` are unfolded.
-  simp_all [DescentPair.fockPoly, -mulVec_mulVec, MixedCartanEmbedding.top, letterPoly, weylKernel,
-    ↓rowSubst_highestPoly, rowSubst, fockLetters, X.one_lt_card, weylRep, mixedWeight,
-    Pi.single_apply, kronecker_mulVec_vec, mul_vecMulVec, vecMul_transpose, vecMulVec_mul]
+  simp [DescentPair.fockPoly, -mulVec_mulVec, MixedCartanEmbedding.top, letterPoly, weylKernel,
+    ↓rowSubst_highestPoly, rowSubst, fockLetters, X.one_lt_card, mixedWeight, Pi.single_apply,
+    kronecker_mulVec_vec, mul_vecMulVec, vecMul_transpose, vecMulVec_mul, h_intertwines]
 
 omit [WeilData E] in
 /-- The Fock polynomial of a coordinate vector `η` for the weight `κ` of `X.descentPair` is the
@@ -330,10 +345,12 @@ lemma fockPoly_eq_schurCoeffPoly (X : LValueData E n)
   -- `toPoly η` at an array `y` whose evaluation vector is the translate by `z` of the evaluation
   -- vector of rank one (`schur_mulVec_weylEval`), which is `1`.
   refine funext fun z : InfinitePlace E × n × Unit → ℂ ↦ ?_
-  let y : (Σ _ : InfinitePlace E, n) × ℕ → ℂ := fun x ↦ ∑ a : Unit, z (x.1.fst, x.1.snd, a) * 1
+  let y : (Σ _ : InfinitePlace E, n) × ℕ → ℂ := fun x ↦
+    ∑ a : Unit, (of fun b c ↦ z (x.1.fst, b, c)) x.1.snd a *
+      (1 : (Σ _ : InfinitePlace E, Unit) × ℕ → ℂ) (⟨x.1.fst, a⟩, x.2)
   have h_eval_fock : eval z (X.descentPair.fockPoly η) =
-      eval y (toPoly _ (mixedWeight n X.descentPair.colsPlus X.descentPair.colsMinus) η) := by
-    simp [y, toPoly_eq_rename_fockPoly, eval_rename, Function.comp_def]
+      eval y (toPoly _ X.descentPair.columnCount η) := by
+    simp [y, toPoly_eq_rename_fockPoly, eval_rename, Function.comp_def, DescentPair.columnCount]
   have h_minor (I : Fin 1 → Σ _ : InfinitePlace E, Unit) : minor ℂ I = MvPolynomial.X (I 0, 0) :=
     det_unique _
   have h_one :
@@ -343,12 +360,12 @@ lemma fockPoly_eq_schurCoeffPoly (X : LValueData E n)
     simp +contextual [weylEval, nablaBasis_eq_one, columnCount, mixedWeight]
   -- The left side is the pairing of the translated evaluation vector with `G η`.
   rw [h_eval_fock, eval_toPoly, eval_schurCoeffPoly X.isLiftWeight]
-  erw [← schur_mulVec_weylEval X.isLiftWeight.1 (fun τ a b ↦ z (τ, a, b)) 1]
+  dsimp only [y]
+  rw [← schur_mulVec_weylEval X.isLiftWeight.1 (fun τ ↦ of fun a b ↦ z (τ, a, b)) 1]
   have h_gram : η ᵥ* weylGramOver = weylGramOver *ᵥ η :=
     funext fun _ ↦ by simp [mulVec, vecMul, dotProduct, weylGram_isSymm.apply, mul_comm]
   rw [h_one, dotProduct_comm, h_gram]
   simp [detPow, h_minor]
-  rfl
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
@@ -372,13 +389,17 @@ lemma theta_pairThetaKernel_omega_fockDatum (X : LValueData E n) (x : GInf E X.d
   -- Both sides are `θ` of a Fock vector tensored with `ω((1, g), (1, h)) blockDatum`: on the left
   -- the real points act on the Fock vector alone (`pairWeil_integrated_all`); on the right the
   -- pairing is the jet along a polynomial `schurCoeffPoly` (`dotProduct_schurJet_mulVec`).
-  -- `erw`, since `fockDatum`, `kernelForm` and `gramForm` have to be unfolded for these rewrites.
-  erw [pairWeil_integrated_all, gramForm_apply, mulVec_mulVec, dotProduct_mulVec,
-    dotProduct_schurJet_mulVec]
-  -- The simp lemma `jet_jetSeries_eq_theta` turns the jet into a theta value. Then compare the
-  -- vectors: `y⁻¹` moves the covector, and `x` acts trivially.
-  simp [fockPoly_eq_schurCoeffPoly, realPairWeil_schurCoeffPoly X.isLiftWeight,
-    MvPolynomial.aeval_X_left_apply]
+  dsimp only [DescentPair.fockDatum, kernelForm, kernelValue]
+  rw [pairWeil_integrated_all, gramForm_apply]
+  rw [show conjWeylRep (mixedWeight n X.descentPair.colsPlus X.descentPair.colsMinus)
+      X.descentPair.detExp y⁻¹ _ =
+    conjWeylMatrix (mixedWeight n X.descentPair.colsPlus X.descentPair.colsMinus)
+      X.descentPair.detExp y⁻¹ *ᵥ _ from rfl]
+  rw [mulVec_mulVec, dotProduct_mulVec, dotProduct_schurJet_mulVec, jet_jetSeries_eq_theta]
+  -- Compare the Fock polynomials: `y⁻¹` moves the covector, and `x` acts trivially.
+  simp only [fockPoly_eq_schurCoeffPoly, realPairWeil_schurCoeffPoly X.isLiftWeight,
+    MvPolynomial.aeval_X_left_apply, star_star, one_smul, conjWeylRep_eq_one, one_apply_eq_self,
+    vecMul_vecMul]
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
@@ -404,9 +425,10 @@ lemma kernelForm_of_rowLength_eq_zero (X : LValueData E n) (g : Gf E Unit) (h : 
   -- The coordinate `i` is the jet along the sum of row `i` of the Schur matrix, so it is the theta
   -- value of the datum with that polynomial (`jet_jetSeries_eq_theta`).
   have h_charW : X.descentPair.charW = 1 := by simp [charW]
-  simp only [kernelForm, kernelValue, columnCount, mulVec_apply_eq_sum, Pi.one_apply, mul_one]
-  -- `erw`, since `schurJet` has to be unfolded to a linear map in each entry.
-  erw [← LinearMap.sum_apply, ← map_sum, jet_jetSeries_eq_theta, ← pairWeil_integrated_fin, h_charW]
+  simp only [kernelForm, kernelValue, columnCount, mulVec_apply_eq_sum, Pi.one_apply, mul_one,
+    schurJet, LinearMap.flip_apply, LinearMap.comp_apply, LinearMap.mapMatrixLinear_apply,
+    LinearMap.mapMatrix_apply, Matrix.map_apply]
+  rw [← LinearMap.sum_apply, ← map_sum, jet_jetSeries_eq_theta, ← pairWeil_integrated_fin, h_charW]
   congr
   -- In degree zero all basis polynomials are `1`, so `sum_schur_smul_nablaBasis` says that the
   -- row sums to `1`.
@@ -424,7 +446,9 @@ lemma kernelForm_eq_vectorKernelForm (X : LValueData E n) (x : GInf E X.descentP
   refine Subtype.ext (Subtype.ext (funext fun h ↦ ext_gramForm_left fun ζ ↦ ?_))
   change gramForm ζ (X.kernelForm g h) = gramForm ζ (X.descentPair.vectorKernel (x, g) h)
   rw [gramForm_vectorKernel, pairTheta]
-  simpa using (X.theta_pairThetaKernel_omega_fockDatum x (star ζ) 1 g h).symm
+  have hθ := (X.theta_pairThetaKernel_omega_fockDatum x (star ζ) 1 g h).symm
+  simp only [star_star, inv_one, map_one, one_apply_eq_self] at hθ
+  exact hθ
 
 /-- The descent `New.DescentPair.normalizedDescent` of a form `y` on `V`, at the point `(x, g)` of
 `U(1)`, is the inner product of the kernel `X.kernelForm g` with `y`. -/
@@ -541,13 +565,18 @@ lemma DescentPair.heckePolyOnForms_liftHeckeRoot_eq_zero {O : DescentPair E r n}
   obtain ⟨k, hk⟩ := Nat.exists_eq_add_of_lt O.rank_lt
   have h_zero : SiegelWeil.qPochhammer w.q O.rankDiff (O.charW.frobValue r w * O.liftHeckeRoot w) =
     0 := by
-    simp [liftHeckeRoot, rankDiff, hk, Finset.prod_range_succ, add_assoc, AutChar.frobValue,
-      HeckeChar.atUniformizer, field]
-    right
-    have hq : 0 < w.q := zero_lt_one.trans w.one_lt_q
-    have hsqrt : 0 < Real.sqrt (w.q : ℝ) := Real.sqrt_pos.2 (by exact_mod_cast hq)
-    rw [div_self (mul_ne_zero (pow_ne_zero _ (Nat.cast_ne_zero.mpr hq.ne'))
-      (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr hsqrt.ne'))), sub_self]
+    rw [SiegelWeil.qPochhammer, rankDiff, hk, add_assoc, Nat.add_sub_cancel_left,
+      Finset.prod_range_succ]
+    refine mul_eq_zero_of_right _ ?_
+    have hq_pos : 0 < w.q := zero_lt_one.trans w.one_lt_q
+    have hq : (w.q : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hq_pos.ne'
+    have hsqrt : (Real.sqrt (w.q : ℝ) : ℂ) ≠ 0 :=
+      Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.2 (by exact_mod_cast hq_pos)).ne'
+    have h_frob_ne : O.charW.frobValue r w ≠ 0 := by
+      simp [AutChar.frobValue, HeckeChar.atUniformizer, hsqrt]
+    rw [liftHeckeRoot, rankDiff, hk, add_assoc, Nat.add_sub_cancel_left, Nat.add_sub_cancel,
+      ← mul_assoc, mul_comm ((w.q : ℂ) ^ k),
+      mul_inv_cancel₀ (mul_ne_zero h_frob_ne (pow_ne_zero k hq)), sub_self]
   rw [O.heckePolyOnForms_eq_smul _ _ (h_lifts w hw hw_level), h_zero, zero_mul, zero_smul]
 
 end DescentPairHecke
@@ -592,11 +621,12 @@ lemma onHom_mul_scalarFin_inv {E n : Type} [Field E] [CMType E] [Fintype n] [Dec
       G.onHom ((1, g), 1, h) * (1, scalarFin (n × Unit) z) := by
   have h_scalar : G.onHom (s := 1) (s' := 1) ((1, scalarFin Unit z⁻¹), 1, scalarFin n 1) =
       (1, scalarFin (n × Unit) z) := by rw [onHom_scalarFin, one_div, inv_inv]
-  simp [← h_scalar, ← map_mul]
+  rw [← h_scalar, ← MonoidHom.map_mul, Prod.mk_mul_mk, Prod.mk_mul_mk, Prod.mk_mul_mk,
+    mul_one, map_one, mul_one, mul_one]
 
 /-- The space `Hom(W, V)` from the standard line `W` to the standard space `V` of rank `card n`;
 its signs `homSigns 1 1`, the products of those of `W` and `V`, are all `1`. -/
-abbrev stdLineHom (E n : Type) [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] :
+abbrev stdLineHom (E n : Type) [Field E] [CMType E] [Fintype n] [DecidableEq n] :
     Space E (n × Unit) (homSigns 1 1) := (stdSpace E Unit).hom (stdSpace E n)
 
 /-- Let `L` be a `σ`-semilinear map on the Schwartz space of `stdLineHom`, the space `Hom(W, V)` of
@@ -661,15 +691,15 @@ lemma LValueData.map_pairWeilFinite_blockDatum {P : Parameters} {s : ℕ} {n : T
   have hg' : G.onHom (s := 1) (s' := 1) ((1, g), 1) = (1, g') := onHom_fin g 1
   have hh' : G.onHom (s := 1) (s' := 1) (1, 1, h) = (1, h') := onHom_fin 1 h
   have h_onHom : G.onHom (s := 1) (s' := 1) ((1, g), 1, h) = (1, g') * (1, h') := by
-    rw [← hg', ← hh', ← map_mul, mk_mul_mk, mul_one, one_mul]
+    rw [← hg', ← hh', ← MonoidHom.map_mul, mk_mul_mk, mul_one, one_mul]
   let fY : 𝒮 V := V.ω (G.onHom ((1, g * scalarFin Unit z⁻¹), 1, h)) Y.descentPair.blockDatum.val
   have h_omega : L (V.ω (G.onHom ((1, g), 1, h)) X.descentPair.blockDatum.val) =
       (multiplierRatio σ g' * multiplierRatio σ h' * l) • fY := by
     have h_mem : X.descentPair.blockDatum.val ∈ V.finitePart := X.descentPair.blockDatum.prop
     have hfY : fY = V.ω (1, g') (V.ω (1, h')
         (V.ω (1, scalarFin (n × Unit) z) Y.descentPair.blockDatum.val)) := by
-      simp only [fY, onHom_mul_scalarFin_inv, h_onHom, map_mul, mul_apply_eq_comp]
-    rw [hfY, h_onHom, map_mul, mul_apply_eq_comp,
+      simp only [fY, onHom_mul_scalarFin_inv, h_onHom, MonoidHom.map_mul, mul_apply_eq_comp]
+    rw [hfY, h_onHom, MonoidHom.map_mul, mul_apply_eq_comp,
       hL_scale.map_omega g' (omega_mem_finitePart h' h_mem), hL_scale.map_omega h' h_mem, h_datum]
     simp only [V, map_smul, smul_smul, mul_assoc]
   -- The ratio `σ Δ / Δ` at `g'` is that at `g⁻¹` to the power `2 * m`, and the ratio at `g⁻¹` has
@@ -679,17 +709,26 @@ lemma LValueData.map_pairWeilFinite_blockDatum {P : Parameters} {s : ℕ} {n : T
   have h_ratio : multiplierRatio σ g' =
       (σ (WeilData.upsilonU1.val u) / WeilData.upsilonU1.val u) ^ m := by
     have h_pow : multiplierRatio σ g' = (multiplierRatio σ g⁻¹ ^ 2) ^ m := by
-      rw [← pow_mul, ← hm, multiplierRatio, multiplierRatio, finMultiplier_onHom_left, map_pow,
-        div_pow]
-    have h_det : detFin 1 g⁻¹ = u⁻¹ := map_inv G.det (1, g)
-    rw [h_pow, multiplierRatio_sq, h_det]
-    simp [div_eq_mul_inv, mul_comm]
+      rw [← pow_mul, ← hm, multiplierRatio, multiplierRatio, finMultiplier_onHom_left,
+        RingHom.map_pow, div_pow]
+    have h_det : detFin 1 g⁻¹ = u⁻¹ := MonoidHom.map_inv G.det (1, g)
+    have h_ups_inv : WeilData.upsilonU1.val u⁻¹ = (WeilData.upsilonU1.val u)⁻¹ :=
+      WeilData.upsilonU1.val.toMonoidHom.map_inv u
+    rw [h_pow, multiplierRatio_sq, h_det, h_ups_inv, Circle.coe_inv, map_inv₀ (σ : ℂ →+* ℂ),
+      inv_div_inv]
+    rfl
   -- The characters `charV` are `X.u1Char υ ^ m` and `Y.u1Char υ ^ m`, and `hY_char` turns
   -- `σ X.u1Char` into `Y.u1Char`.
   have h_charV_conj :
       σ (X.descentPair.charV.val u) = Y.descentPair.charV.val u * multiplierRatio σ g' := by
     have h_char_u : Y.u1Char.val u = σ (X.u1Char.val u) := hY_char u (by simp [u, funext_iff])
-    simp [h_ratio, rankTwist, hm, h_char_u, div_pow, field]
+    have h_ups_ne : (WeilData.upsilonU1.val u : ℂ) ^ m ≠ 0 :=
+      pow_ne_zero m (Circle.coe_ne_zero _)
+    have h_char_val (Z : LValueData (P.E s) n) : (Z.descentPair.charV.val u : ℂ) =
+        Z.u1Char.val u * (WeilData.upsilonU1.val u : ℂ) ^ m := by
+      simp [DescentPair.charV, rankTwist, hm]
+    rw [h_char_val X, h_char_val Y, h_ratio, map_mul σ, map_pow σ, ← h_char_u, div_pow,
+      mul_assoc, mul_div_cancel₀ _ h_ups_ne]
   -- The characters `charW` are trivial, so the characters of the two pairs are inverse values of
   -- `charV`.
   let χX : ℂ := pairChar (s := 1) (s' := 1) X.descentPair.charW X.descentPair.charV ((1, g), 1, h)
@@ -698,8 +737,17 @@ lemma LValueData.map_pairWeilFinite_blockDatum {P : Parameters} {s : ℕ} {n : T
       ((1, g * scalarFin Unit z⁻¹), 1, h)
   have hχX : χX = (X.descentPair.charV.val u : ℂ)⁻¹ := by simp [χX, DescentPair.charW, u]
   have hχY : χY = (Y.descentPair.charV.val u * Y.descentPair.charV.val v : ℂ)⁻¹ := by
-    simp only [χY, pairChar_apply, ← one_mk_mul_one_mk g, map_mul]
-    simp [DescentPair.charW, u, v]
+    have h_det_mul : G.det (s := 1) (1, g * scalarFin Unit z⁻¹) = u * v := by
+      rw [← one_mk_mul_one_mk g, MonoidHom.map_mul]
+    have h_val_mul : Y.descentPair.charV.val (u * v) =
+        Y.descentPair.charV.val u * Y.descentPair.charV.val v :=
+      Y.descentPair.charV.val.toMonoidHom.map_mul u v
+    have h_charW_one : (Y.descentPair.charW.val (detFin 1 h) : ℂ) = 1 := by
+      simp [DescentPair.charW]
+    dsimp only [χY]
+    rw [pairChar_apply]
+    dsimp only
+    rw [h_charW_one, one_mul, h_det_mul, h_val_mul, Circle.coe_mul]
   have h_char : σ χX * multiplierRatio σ g' = Y.descentPair.charV.val v * χY := by
     have h_ratio_ne : multiplierRatio σ g' ≠ 0 := by simp [h_ratio]
     rw [hχX, hχY, map_inv₀, h_charV_conj]
@@ -784,12 +832,21 @@ lemma LValueData.map_trivialLift {P : Parameters} {s : ℕ} (n : Type) [Fintype 
   suffices h_term : ∀ g : Gf (P.E s) Unit, σ (P.jetScale s) ^ D * σ (X.kernelForm g h i) =
       c * Y.kernelForm (g * scalarFin Unit z⁻¹) h i' by
     have hX_sum : (P.jetScale s ^ D • X.trivialLift) h i =
-        P.jetScale s ^ D * stdClassSum X.chosenLevel fun g ↦ X.kernelForm g h i :=
-      congrArg (P.jetScale s ^ D * ·) (map_classSum (LinearMap.proj i ∘ₗ evalForm h) X.kernelForm)
+        P.jetScale s ^ D * stdClassSum X.chosenLevel fun g ↦ X.kernelForm g h i := by
+      have h_map := map_classSum (Γ := stdRatPoints) (K := X.chosenLevel)
+        (LinearMap.proj i ∘ₗ evalForm h) X.kernelForm
+      simp only [LinearMap.comp_apply, LinearMap.proj_apply, ← apply_eq_evalForm] at h_map
+      exact congrArg (P.jetScale s ^ D * ·) h_map
     have hY_sum : Y.trivialLift h i' =
         stdClassSum X.chosenLevel fun g ↦ Y.kernelForm (g * scalarFin Unit z⁻¹) h i' := by
+      have h_lvl : Y.chosenLevel = X.chosenLevel := rfl
+      have h_map := map_classSum (Γ := stdRatPoints) (K := Y.chosenLevel)
+        (LinearMap.proj i' ∘ₗ evalForm h)
+        (fun g : Gf (P.E s) Unit ↦ Y.kernelForm (g * scalarFin Unit z⁻¹))
+      simp only [LinearMap.comp_apply, LinearMap.proj_apply, ← apply_eq_evalForm] at h_map
       rw [Y.trivialLift_eq_stdClassSum_translate (scalarFin Unit z⁻¹)]
-      exact map_classSum (LinearMap.proj i' ∘ₗ evalForm h) _
+      rw [h_lvl] at h_map ⊢
+      exact h_map
     rw [hX_sum, hY_sum, map_mul, map_pow, map_classSum, mul_classSum, mul_classSum]
     exact congrArg (stdClassSum X.chosenLevel) (funext h_term)
   intro g

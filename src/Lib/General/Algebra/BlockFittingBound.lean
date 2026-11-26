@@ -1,5 +1,11 @@
 module
 
+import TauCeti.RingTheory.DiscreteValuationRing.BlockSolutions
+public import Mathlib.RingTheory.RegularLocalRing.Defs
+import Mathlib.RingTheory.Coalgebra.IsFrobenius
+import Mathlib.RingTheory.Etale.Weakly
+import Mathlib.RingTheory.HopfAlgebra.Basic
+import Mathlib.RingTheory.TotallySplit
 public import Lib.General.Algebra.FittingIdealsAndLengths
 
 /-!
@@ -15,13 +21,13 @@ length of a module of solutions, taken modulo an element p or in K/O.
 * `New.Selmer.divQuot`: the map x ↦ x/p from O/p to K/O (`New.Selmer.DivisibleQuot`). For p ≠ 0 it
   is injective with image the p-torsion.
 * `New.Selmer.exists_rows_addVal_det_le_of_divisible`: the same bound when the vectors with entries
-  in K/O killed by ψ(N) lie in a module of length at most b. It follows from the form modulo p and
-  is the form that Ribet's lemma uses.
+  in K/O killed by ψ(N) lie in a module of length at most b. This is the form that Ribet's lemma
+  uses.
 
-The idea: as ψ is onto, any d linear forms in the span of the rows of the ψ(t), t ∈ N, are the rows
-of one ψ(t). So a basis of this span, divided into groups of d forms, gives B. The length of the
-solutions bounds the determinant of such a basis by the duality lemma
-`New.exists_matrix_addVal_det_le_length` for lattices in O^n.
+For the form modulo p, apply `New.exists_matrix_addVal_det_le_length` to the row span enlarged by
+p·O^(ι × d), then use `TauCeti.exists_mem_blockRow_eq` to reconstruct the block rows modulo p.
+For the divisible form, `TauCeti.exists_addVal_det_eq_length_blockSolutions` gives an optimal array;
+its determinant valuation is the length of the solution module, which is contained in Z.
 
 ## Relation to the literature
 
@@ -44,43 +50,27 @@ lemma New.Selmer.exists_rows_addVal_det_le {O ι A d : Type} [CommRing O] [DVR O
     (hZ_mem : ∀ w : ι → d → QuotSpan p, (∀ t ∈ N, ∑ j : ι, ψ (t j) • w j = 0) → w ∈ Z) :
     ∃ B : Matrix ι ι A,
       (∀ i : ι, B i ∈ N) ∧ addVal O (Matrix.comp ι ι d d O (B.map ψ)).det ≤ b := by
-  -- Let σ(t) ∈ O^(ι × d) be the sum of the rows of the d × (ι × d) matrix ψ(t). As ψ is onto, σ(N)
-  -- is the span of all rows of the ψ(t), t ∈ N. Apply duality to the lattice
-  -- L = p·O^(ι × d) + σ(N): there are a matrix M with rows in L and an S with annihilator L and
-  -- v(det M) ≤ length S. This S embeds in Z, so v(det M) ≤ b. Modulo p the rows of M, in groups of
-  -- d, are the rows of some ψ(B), and b < v(p), so det ψ(B) has the valuation of det M.
-  obtain ⟨E, hE : ∀ X : Matrix d d O, ψ (E X) = X⟩ := hψ.hasRightInverse
-  let σ : (ι → A) →ₗ[O] (ι × d → O) :=
-    .pi fun x : ι × d ↦ ∑ c : d, entryLinearMap O O c x.2 ∘ₗ ψ.toLinearMap ∘ₗ proj x.1
-  have σ_apply (s : ι → A) (j : ι) (l : d) : σ s (j, l) = ∑ c : d, ψ (s j) c l := by simp [σ]
-  let L : Submodule O (ι × d → O) := range (p • .id) ⊔ (N.restrictScalars O).map σ
-  -- The rows of M lie in L, and L is the annihilator of S in O^(ι × d).
+  let L : Submodule O (ι × d → O) := range (p • .id) ⊔ TauCeti.blockRowSpan ψ N
   obtain ⟨M, S, M_mem, mem_L, det_le⟩ :=
     exists_matrix_addVal_det_le_length L hp fun v ↦ mem_sup_left ⟨v, rfl⟩
   have S_le : S ≤ Z.map (LinearEquiv.curry O (QuotSpan p) ι d).symm.toLinearMap := by
-    refine fun w hw ↦ ⟨fun j l ↦ w (j, l), hZ_mem _ fun s hs ↦ funext fun i ↦ ?_, rfl⟩
-    -- Row i of ψ(s) is σ(e • s), with e a preimage of the matrix unit at (i, i).
-    let e : A := E (.single i i 1)
-    have h_orth : ∑ x : ι × d, σ (e • s) x • w x = 0 :=
-      (mem_L _).1 (mem_sup_right (mem_map_of_mem (N.smul_mem e hs))) w hw
-    have σ_row (j : ι) (l : d) : σ (e • s) (j, l) = ψ (s j) i l := by
-      simp [e, σ_apply, hE, Matrix.mul_apply, Matrix.single_apply, ite_and]
-    simpa [σ_row, sum_prod_type] using h_orth
+    refine fun w hw ↦ ⟨fun j l ↦ w (j, l), hZ_mem _ fun t ht ↦ funext fun i ↦ ?_, rfl⟩
+    have h_orth := (mem_L _).1
+      (mem_sup_right (TauCeti.blockRow_mem_blockRowSpan ψ N ht i)) w hw
+    simpa [sum_prod_type] using h_orth
   have det_M : addVal O M.det ≤ b := by grw [det_le, length_le_of_le_map _ Z S_le, hZ]
-  have M_row (k : ι) (c : d) : ∃ u : ι × d → O, ∃ s ∈ N, p • u + σ s = M (k, c) := by
+  have M_row (k : ι) (c : d) :
+      ∃ u : ι × d → O, ∃ v ∈ TauCeti.blockRowSpan ψ N, p • u + v = M (k, c) := by
     simpa [L, mem_sup] using M_mem (k, c)
-  choose u t t_mem M_eq using M_row
-  -- The matrix with ones in row c puts σ(t k c) into row c, so row (k, c) of ψ(B) is σ(t k c).
-  let B : Matrix ι ι A := of fun k : ι ↦ ∑ c : d, E (updateRow 0 c 1) • t k c
-  refine ⟨B, fun k ↦ N.sum_mem fun c _ ↦ N.smul_mem _ (t_mem k c), ?_⟩
-  set ψB : Matrix (ι × d) (ι × d) O := comp ι ι d d O (B.map ψ)
-  have B_apply (k j : ι) (c l : d) : ψB (k, c) (j, l) = σ (t k c) (j, l) := by
-    simp [ψB, B, σ_apply, hE, Matrix.mul_apply, Matrix.sum_apply, updateRow_apply]
+  choose u v hv M_eq using M_row
+  choose t ht ht_rows using fun k ↦ TauCeti.exists_mem_blockRow_eq ψ N hψ (hv k)
+  refine ⟨of t, ht, ?_⟩
+  set ψB : Matrix (ι × d) (ι × d) O := comp ι ι d d O ((of t).map ψ)
   have congr_p : p ∣ ψB.det - M.det := by
     rw [← Quotient.eq_zero_iff_dvd, map_sub, sub_eq_zero, RingHom.map_det, RingHom.map_det]
     congr 1
     ext ⟨k, c⟩ ⟨j, l⟩
-    simp [B_apply, ← M_eq]
+    simp [ψB, ht_rows, ← M_eq]
   have h_lt : addVal O M.det < addVal O (ψB.det - M.det) :=
     det_M.trans_lt (hb.trans_le (addVal_le_iff_dvd.2 congr_p))
   rwa [AddValuation.map_eq_of_lt_sub _ h_lt]
@@ -149,9 +139,9 @@ lemma addVal_le_length_torsionBy {X : Type} [AddCommGroup X] [Module O X] {a : O
     ext t
     have h_smul : t • w = 0 ↔ a * c ∣ t * c := by simp [w, Subtype.ext_iff, smul_smul, hb]
     simp [mulW, h_smul, Ideal.mem_span_singleton, mul_dvd_mul_iff_right hc]
-  rw [← length_quot_span_eq_addVal]
-  exact length_le_of_injective ((Ideal.span {a}).liftQ mulW h_ker.le)
-    (LinearMap.ker_eq_bot.1 ((Ideal.span {a}).ker_liftQ_eq_bot' mulW h_ker))
+  rw [← length_quot_span_eq_addVal,
+    ((quotEquivOfEq _ _ h_ker).trans mulW.quotKerEquivRange).length_eq]
+  exact length_le_of_injective _ (LinearMap.range mulW).injective_subtype
 
 /-- Let O be a discrete valuation ring with normalized valuation v = `addVal O` and fraction field
 K, and write `DivisibleQuot O` for K/O. Let ψ : A → M_d(O) be onto and N an A-submodule of A^ι.
@@ -165,21 +155,14 @@ lemma exists_rows_addVal_det_le_of_divisible {ι A d : Type} [Fintype ι] [Decid
     (hZ_mem : ∀ w : ι → d → DivisibleQuot O, (∀ t ∈ N, ∑ j : ι, ψ (t j) • w j = 0) → w ∈ Z) :
     ∃ B : Matrix ι ι A,
       (∀ i : ι, B i ∈ N) ∧ addVal O (Matrix.comp ι ι d d O (B.map ψ)).det ≤ b := by
-  -- Take `p = ϖ ^ (b + 1)`. Division by `p` embeds the vectors modulo `p` killed by `N` in `Z`.
-  obtain ⟨ϖ, hϖ⟩ := exists_irreducible O
-  let p : O := ϖ ^ (b + 1)
-  have hp : p ≠ 0 := pow_ne_zero _ hϖ.ne_zero
-  have hb : (b : ℕ∞) < addVal O p := by simp [p, hϖ, ENat.lt_natCast_add_one_iff]
-  let E : (ι → d → QuotSpan p) →ₗ[O] (ι → d → DivisibleQuot O) :=
-    ((divQuot p).compLeft d).compLeft ι
-  have hE : Function.Injective E := (divQuot_injective hp).comp_left.comp_left
-  have h_length : length O (Z.comap E) ≤ length O Z :=
-    length_le_of_injective (E.restrict fun _ hw ↦ hw) fun _ _ h ↦
-      Subtype.ext (hE (congrArg Subtype.val h))
-  refine exists_rows_addVal_det_le ψ hψ N hp hb (h_length.trans hZ) fun w hw ↦
-    hZ_mem (E w) fun t ht ↦ ?_
-  have h_comm (j : ι) : ψ (t j) • E w j = (divQuot p).compLeft d (ψ (t j) • w j) :=
-    funext fun l ↦ by simp [E, map_sum, map_smul]
-  simp only [h_comm, ← map_sum, hw t ht, map_zero]
+  obtain ⟨B, hB, hdet⟩ :=
+    TauCeti.exists_addVal_det_eq_length_blockSolutions (K := FractionRing O) ψ N hψ
+  rw [← Submodule.one_eq_range] at hdet
+  refine ⟨B, hB, hdet.le.trans ((New.length_mono ?_).trans hZ)⟩
+  intro w hw
+  apply hZ_mem w
+  intro t ht
+  ext i
+  simpa using (TauCeti.mem_blockSolutions ψ N).1 hw t ht i
 
 end New.Selmer

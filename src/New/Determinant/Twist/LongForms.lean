@@ -1,10 +1,14 @@
 module
 
-public import New.Congruences.FitTwistsExist
-public import New.Determinant.AuxiliaryForms.SpanningForms
-public import New.OneLift.LiftVolumeHeight
+import Mathlib.Data.Rat.Cast.OfScientific
+import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import New.Reduction.IntegralTargetForms
-public import New.UpperBound.Size.ArchimedeanSize
+public import New.Determinant.AuxiliaryForms.Turns
+public import New.Reduction.PrimeSums
+import New.Congruences.FitTwistsExist
+import New.Determinant.AuxiliaryForms.SpanningForms
+import New.OneLift.LiftVolumeHeight
+import New.UpperBound.Size.ArchimedeanSize
 
 /-!
 # Theorem C: integral forms are long
@@ -14,6 +18,11 @@ of a family of target forms that spans almost all of the target. The target form
 lattice, and the bound follows from `New.TwistedLattice.covolume_add_index_nonneg` with four inputs:
 auxiliary forms that complete a family to a basis, a family of twists `ξ_ι`, the injectivity of the
 lifts `Θ_ξ`, and the height of `Z(1) / Z(ξ_ι)`.
+
+`New.Congruences.FitTwistsExist` supplies regular twists, `New.OneLift.LiftVolumeHeight` bounds
+the single-lift ratios, and `New.Determinant.Chain.NormOfChain` factors the long-chain ratio.
+The auxiliary forms pay only for the missing dimensions; the resulting completion cost is
+kept explicit in `integral_forms_long_with_completion_cost` before being absorbed in Theorem C.
 
 In comments, `d` is the dimension `D.targetDim` of the target `D.targetForms`, the space of good
 forms on `Y₀ = D.spaceY 0`. The letters `x, x₁, b, a, m, k, t, f` are the numbers `D.x`, `D.x₁`, …
@@ -48,7 +57,7 @@ structure IsAuxiliaryForm (γ : D.MFoldTwist → ℂ) (y : D.targetForms) : Prop
   /-- The form `γ ϑ • Θ_ϑ y` is integral at `ι : ℂ ≃ ℚ̄_l` whenever the norm `ϑ.normQ` of the
   modulus of `ϑ` is prime to `l = ι.1`. -/
   smul_lift_mem_integralForms (ι : PrimePadicIso) (ϑ : D.MFoldTwist)
-    (hϑ : Nat.Coprime ι.1 ϑ.normQ) : γ ϑ • D.Θ ϑ y ∈ integralForms ι.place
+    (hϑ : Nat.Coprime ι.prime ϑ.normQ) : γ ϑ • D.Θ ϑ y ∈ integralForms ι.place
   /-- The conjugate of `Θ₁ y` by each automorphism `σ` of `ℂ` has squared norm at most
   `exp (2 x₁² b²)`. -/
   normSqAt_lift_le (σ : ℂ ≃+* ℂ) : (D.Θ 1 y).normSqAt σ ≤ exp (2 * D.x₁ ^ 2 * D.b ^ 2)
@@ -101,7 +110,7 @@ theorem exists_span_isAuxiliaryForm_eq_top :
   have h_exponent_le : D.x ^ 99 + D.x ^ 202 * D.b ^ 2 ≤ 2 * D.x₁ ^ 2 * D.b ^ 2 :=
     D.le_of_hasLogBound
   refine ⟨fun ι ϑ hϑ ↦ ?_, fun σ ↦ ?_⟩
-  · exact goodProjTranslate_mem_integralForms ι.place (h_int ϑ ι.1 ι.place hϑ) 1
+  · exact goodProjTranslate_mem_integralForms ι.place (h_int ϑ ι.prime ι.place hϑ) 1
   · exact (normSqAt_goodProjTranslate_le (h_short σ)).trans (exp_le_exp.2 h_exponent_le)
 
 /-- Let `ξ_ι = θ ι` be a family of `m`-fold twists, one for each `ι : ℂ ≃ ℚ̄_l`. Assume the family
@@ -216,33 +225,44 @@ theorem integral_forms_long_with_completion_cost {n : ℕ} {y : Fin n → D.targ
     (hδ : D.targetLattice.IndexLe y δ) (hc : D.targetLattice.CovolumeLe y c) :
     D.targetDim * (D.mainAmount - D.f * D.a * D.logB ^ 4 - D.b) ≤
       c + 2 * δ + ((D.targetDim : ℝ) - n) * (2 * D.x₁ ^ 2 * D.b ^ 2 + D.b) := by
-  -- Complete `y` to a basis by auxiliary forms `z` and take a twist for each prime.
-  obtain ⟨θ, hθ, h_single⟩ := D.exists_hasSmallRatios_heightLe_liftDeterminant_div
-  obtain ⟨e, γ, hγ_ne, -, hγ_norm, h_span⟩ := D.exists_span_isAuxiliaryForm_eq_top
-  obtain ⟨n', z, hz, h_indep, h_card⟩ := exists_extend_basis_of_span_eq_top hy h_span
+  -- Choose local twists and complete `y` to a basis with auxiliary forms `z`. The number of
+  -- added vectors is the codimension, which is the multiplier of the completion cost.
+  obtain ⟨θ, h_small_ratios, h_single_lift_heights⟩ :=
+    D.exists_hasSmallRatios_heightLe_liftDeterminant_div
+  obtain ⟨e, γ, hγ_ne, -, hγ_norm, h_auxiliary_span⟩ := D.exists_span_isAuxiliaryForm_eq_top
+  obtain ⟨n', z, hz, h_completed_indep, h_completed_card⟩ :=
+    exists_extend_basis_of_span_eq_top hy h_auxiliary_span
   have hz_aux (i : Fin n') : D.IsAuxiliaryForm γ (z i) := hz i
   have hz_int (i : Fin n') (ι : PrimePadicIso) (ϑ : D.MFoldTwist)
-      (hϑ : Nat.Coprime ι.1 ϑ.normQ) : γ ϑ • D.Θ ϑ (z i) ∈ integralForms ι.place :=
+      (hϑ : Nat.Coprime ι.prime ϑ.normQ) : γ ϑ • D.Θ ϑ (z i) ∈ integralForms ι.place :=
     (hz_aux i).smul_lift_mem_integralForms ι ϑ hϑ
   have hz_short (i : Fin n') (σ : ℂ ≃+* ℂ) :
       D.targetLattice.normSqAt (z i) σ ≤ exp (2 * D.x₁ ^ 2 * D.b ^ 2) :=
     (normSqAt_targetLattice (z i) σ).trans_le ((hz_aux i).normSqAt_lift_le σ)
   -- `|γ| ^ (-2)` is a power of `Nm Q` times `2 m² t` inverse ratios of Hecke values.
-  have h_scalar : HeightLe D.b fun ι : PrimePadicIso ↦ ((‖γ (θ ι)‖ : ℂ) ^ 2)⁻¹ := by
+  have h_auxiliary_scalar_height :
+      HeightLe D.b fun ι : PrimePadicIso ↦ ((‖γ (θ ι)‖ : ℂ) ^ 2)⁻¹ := by
     have h_cost : 2 * (D.m * D.m * (D.t * D.x₁)) ≤ D.b := D.le_of_hasLogBound
-    refine ((hθ.heightLe_inv_rpow_mul_prod_turnRatio e).pow 2).mono (mod_cast h_cost)
+    refine ((h_small_ratios.heightLe_inv_rpow_mul_prod_turnRatio e).pow 2).mono (mod_cast h_cost)
       fun ι ↦ le_of_eq ?_
     rw [hγ_norm, Pi.pow_apply, inv_pow]
-  have h_volume : HeightLe (D.targetDim * (D.b + D.f * D.a * D.logB ^ 4 - D.mainAmount))
+  have h_chain_ratio_height : HeightLe (D.targetDim * (D.b + D.f * D.a * D.logB ^ 4 - D.mainAmount))
       fun ι : PrimePadicIso ↦ D.targetLattice.volume 1 / D.targetLattice.volume (θ ι) :=
-    heightLe_chainDeterminant_one_div hθ h_single
-  have h_nonneg : 0 ≤ c + 2 * δ + n' * (2 * D.x₁ ^ 2 * D.b ^ 2 + D.b) +
+    heightLe_chainDeterminant_one_div h_small_ratios h_single_lift_heights
+  -- Compare the Gram determinants for the local twists with the untwisted determinant.
+  -- The product formula gives one inequality, including the cost of the completion.
+  have h_product_formula : 0 ≤ c + 2 * δ + n' * (2 * D.x₁ ^ 2 * D.b ^ 2 + D.b) +
       D.targetDim * (D.b + D.f * D.a * D.logB ^ 4 - D.mainAmount) :=
-    TwistedLattice.covolume_add_index_nonneg injective_lift_targetLattice h_indep h_card hθ.coprime
-      hc hδ hγ_ne hz_int hz_short h_scalar h_volume
-  have h_dim : (D.targetDim : ℝ) = n + n' := mod_cast h_card
-  have h_missing : (n' : ℝ) = D.targetDim - n := by linarith
-  rw [h_missing] at h_nonneg
+    TwistedLattice.covolume_add_index_nonneg (injective_lift_targetLattice 1) h_completed_indep
+      h_completed_card h_small_ratios.coprime
+      (fun ι ↦ TwistedLattice.volume_ne_zero (injective_lift_targetLattice (θ ι)))
+      hc hδ (γ := fun ι ↦ γ (θ ι)) (fun ι ↦ hγ_ne (θ ι))
+      (fun ι i ↦ hz_int i ι (θ ι) (h_small_ratios.coprime ι))
+      (fun ι i ↦ hz_int i ι.conj (θ ι) (h_small_ratios.coprime ι))
+      hz_short h_auxiliary_scalar_height h_chain_ratio_height
+  have h_dim : (D.targetDim : ℝ) = n + n' := mod_cast h_completed_card
+  have h_missing_dimension : (n' : ℝ) = D.targetDim - n := by linarith
+  rw [h_missing_dimension] at h_product_formula
   linarith
 
 /-- **Theorem C: integral forms are long.** Let `y_1, …, y_n` be independent target forms with

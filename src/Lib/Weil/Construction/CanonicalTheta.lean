@@ -1,7 +1,9 @@
 module
 
-public import Lib.Adelic.Landherr
-public import Lib.Weil.MixedModel.ThetaInvariance
+public import Lib.Weil.Construction.ProductsAndTransport
+import Lib.Adelic.Landherr
+import Lib.Adelic.Unitary.RationalPoints
+import Lib.Weil.MixedModel.ThetaInvariance
 
 /-!
 # Independence of the theta functional of the chosen group element; transport and sums

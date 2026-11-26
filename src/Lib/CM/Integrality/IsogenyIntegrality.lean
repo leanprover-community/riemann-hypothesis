@@ -1,6 +1,9 @@
 module
 
-public import Lib.CM.Integrality.IntegralSections
+import TauCeti.RingTheory.PowerSeries.Rescale
+public import Lib.CM.FormalGroup.IntegralParameter
+public import Lib.CM.Integrality.TorsionValues
+import Lib.CM.Integrality.IntegralSections
 
 /-!
 # Isogenies and translates act integrally on expansions
@@ -22,8 +25,9 @@ coefficients.
 * `New.CMLattice.exists_rescale_twistedTranslate_eq_theta_pow_mul`: the pull-back of a torsion
   translate of `θ`.
 
-The pull-back statements rest on the integrality principle for sections with integral torsion
-values, and the integrality of the multiplier follows from the pull-back of `y`.
+The pull-back statements rest on the height comparison and on the integrality principle for sections
+bounded by a power of the naive height, and the integrality of the multiplier follows from the
+pull-back of `y`.
 
 ## Relation to the literature
 
@@ -42,20 +46,23 @@ variable {d : ℕ} [PrimeSevenModEight d] (C : CMLattice d) {p : ℕ} [Fact p.Pr
 
 /-- Let multiplication by `a` be an isogeny of degree `N` from the lattice `Λ` of `C` to the lattice
 `Λ'` of `C'`, and let `G` be a section of degree `n` for `C'` (a theta function of that degree)
-with integral torsion values (their images under `ιₚ` have norm at most `1`). Then the series of
-`G(a z)` (Taylor series at `0`, mapped to `ℂ_[p]` by `ιₚ`) is the `N n`-th power of that of
+with `‖ιₚ (G w)‖ ≤ h'(w) ^ n` for all `w`, where `h'` is the naive height of `C'`. Then the series
+of `G(a z)` (Taylor series at `0`, mapped to `ℂ_[p]` by `ιₚ`) is the `N n`-th power of that of
 `θ_Λ = C.θ` times an element of `C.integralSeriesRing`, the ring of integral power series in the
 series of `y_Λ = C.translatedY`. -/
 lemma exists_rescale_eq_theta_pow_mul {C' : CMLattice d} {a : ℂ} {N n : ℕ} {G : ℂ → ℂ}
     (h_isog : C.IsIsogeny C'.periodPair a N) (hG_mem : G ∈ C'.sections n)
-    (hG_int : C'.HasIntegralValues (p := p) n G) :
+    (hG_le : ∀ w : ℂ, ‖ιₚ (G w)‖ ≤ C'.naiveHeight w ^ n) :
     ∃ u ∈ C.integralSeriesRing, (taylorVia ιₚ G).rescale (ιₚ a) = (taylorVia ιₚ C.θ ^ N) ^ n *
       u := by
-  -- The pull-back `G(a z)` is a section of degree `n N` with integral torsion values.
-  have h_int : C.HasIntegralValues (p := p) (n * N) fun z : ℂ ↦ G (a * z) :=
-    hG_int.comp_isogeny h_isog
+  -- The pull-back `G(a z)` is a section of degree `n N`; the height comparison bounds it by
+  -- `h ^ (n N)`.
+  have h_le (z : ℂ) : ‖ιₚ (G (a * z))‖ ≤ C.naiveHeight z ^ (n * N) :=
+    (hG_le (a * z)).trans <| by
+      rw [mul_comm n N, pow_mul]
+      exact pow_le_pow_left₀ (C'.naiveHeight_pos _).le (C.naiveHeight_mul_le h_isog z) n
   simpa only [taylorVia, taylorAtZero_comp_mul, rescale_map, pow_mul'] using
-    C.exists_taylorVia_eq_theta_pow_mul (C.comp_mul_mem_sections h_isog hG_mem) h_int
+    C.exists_taylorVia_eq_theta_pow_mul (C.comp_mul_mem_sections h_isog hG_mem) h_le
 
 /-- Let multiplication by `a` be an isogeny of degree `N` from the lattice `Λ` of `C` to the lattice
 `Λ'` of `C'`, and let `θ` be the normalised theta function of degree one. Then the series of
@@ -67,7 +74,8 @@ lemma exists_rescale_theta_eq_theta_pow_mul {C' : CMLattice d} {a : ℂ} {N : �
     (h_isog : C.IsIsogeny C'.periodPair a N) :
     ∃ v ∈ C.integralSeriesRing, (taylorVia ιₚ C'.θ).rescale (ιₚ a) = taylorVia ιₚ C.θ ^ N * v := by
   simpa only [pow_one] using
-    C.exists_rescale_eq_theta_pow_mul h_isog C'.theta_mem C'.hasIntegralValues_theta
+    C.exists_rescale_eq_theta_pow_mul h_isog C'.theta_mem fun w ↦ by
+      simpa only [pow_one] using C'.norm_theta_le_naiveHeight w
 
 /-- Let multiplication by `a` be an isogeny of degree `N` from the lattice `Λ` of `C` to the lattice
 `Λ'` of `C'`, and write `y = translatedY`, that is, `y(z) = ½(℘′(z + t) − a₁ x(z))` with
@@ -86,7 +94,7 @@ lemma rescale_translatedY_mem_integralSeriesRing {C' : CMLattice d} {a : ℂ} {N
   obtain ⟨R₁, hR₁, hθ⟩ := C.exists_rescale_theta_eq_theta_pow_mul (p := p) h_isog
   obtain ⟨R₃, hR₃, h_cube⟩ : ∃ R₃ ∈ C.integralSeriesRing,
       (taylorVia ιₚ C'.translatedYThetaCube).rescale (ιₚ a) = (taylorVia ιₚ C.θ ^ N) ^ 3 * R₃ :=
-    C.exists_rescale_eq_theta_pow_mul h_isog h_cube_mem C'.hasIntegralValues_translatedYThetaCube
+    C.exists_rescale_eq_theta_pow_mul h_isog h_cube_mem C'.norm_translatedYThetaCube_le
   have h_factor : taylorVia ιₚ C'.translatedYThetaCube =
       taylorVia ιₚ C'.translatedY * taylorVia ιₚ C'.θ ^ 3 := by
     simp (disch := fun_prop) only [taylorVia, taylorAtZero_mul, taylorAtZero_pow, map_mul, map_pow,
@@ -133,7 +141,7 @@ lemma exists_rescale_twistedTranslate_eq_theta_pow_mul {δ v : ℂ} {N : ℕ}
     ∃ R ∈ C.integralSeriesRing, (taylorVia ιₚ (C.twistedTranslate 1 v C.θ)).rescale (ιₚ (conj δ)) =
       taylorVia ιₚ C.θ ^ N * R := by
   -- The function is a section of degree `N = δ δ̄`. It is a pull-back of a translate of `θ` by a
-  -- torsion point, so its torsion values are integral.
+  -- torsion point, so the height comparison bounds it by `h ^ N`.
   have ⟨h_maps, h_degree⟩ : (∀ x ∈ C.periodPair.lattice, conj δ * x ∈ C.periodPair.lattice) ∧
       conj δ * conj (conj δ) * C.area = N * C.area := h_isog
   have hN : conj δ * δ = N := by
@@ -145,10 +153,11 @@ lemma exists_rescale_twistedTranslate_eq_theta_pow_mul {δ v : ℂ} {N : ℕ}
       simp [hδ₀] at hN
     refine ⟨N, hN₀, ?_⟩
     simpa only [← hN, mul_assoc] using h_maps (δ * v) hv
-  have h_int : C.HasIntegralValues N fun z : ℂ ↦ C.twistedTranslate 1 v C.θ (conj δ * z) := by
-    simpa only [one_mul] using (C.hasIntegralValues_theta.translate h_torsion).comp_isogeny h_isog
+  have h_le (z : ℂ) : ‖ιₚ (C.twistedTranslate 1 v C.θ (conj δ * z))‖ ≤ C.naiveHeight z ^ N := by
+    simpa only [one_mul] using C.norm_twistedTranslate_mul_le (m := 1) h_isog h_torsion
+      (fun w ↦ by simpa only [pow_one] using C.norm_theta_le_naiveHeight w) z
   -- The Taylor series of `z ↦ f (c z)` is that of `f` rescaled by `c`.
   simpa only [taylorVia, taylorAtZero_comp_mul, rescale_map] using
-    C.exists_taylorVia_eq_theta_pow_mul (C.twistedTranslate_comp_mem h_isog hv) h_int
+    C.exists_taylorVia_eq_theta_pow_mul (C.twistedTranslate_comp_mem h_isog hv) h_le
 
 end New.CMLattice

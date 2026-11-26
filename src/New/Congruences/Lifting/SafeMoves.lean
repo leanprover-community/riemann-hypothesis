@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.Order.Star.Int
 public import New.Congruences.Lifting.SidePoints
 
 /-!
@@ -98,7 +99,7 @@ lemma antitone_shiftedOrders (h_anti : ∀ a : ℕ, Antitone (o a)) (l : ℕ) (n
 
 /-- The coordinate `k.z` of the chart, a Teichmüller lift that is not a unit, lies in the ideal
 `W(𝔪^♭)` of `Ainf`. -/
-lemma z_mem_wittOfMaxIdeal : k.z.1 ∈ wittOfMaxIdeal := by
+lemma z_mem_wittOfMaxIdeal : k.z.val ∈ wittOfMaxIdeal := by
   rw [k.z_eq_teichmuller]
   refine teichmuller_mem_wittOfMaxIdeal fun h ↦ k.chart.not_isUnit_z ?_
   rw [k.seriesMap_X]
@@ -108,9 +109,9 @@ lemma z_mem_wittOfMaxIdeal : k.z.1 ∈ wittOfMaxIdeal := by
 `O(1)` falls into the image `smallPart P.exponent` of `W(𝔪^♭)`. -/
 lemma z_smul_map_mem_smallPart {ξ : (tateLattice O).Ambient}
     (hξ : ξ ∈ (tateLattice O).ainfLattice) :
-    k.z.1 • DiagTensor.map (mkQ (Ideal.span {(p : ℤ_[p]) ^ P.exponent}) ∘ₗ P.toZp) ξ ∈ smallPart
+    k.z.val • DiagTensor.map (mkQ (Ideal.span {(p : ℤ_[p]) ^ P.exponent}) ∘ₗ P.toZp) ξ ∈ smallPart
       P.exponent := by
-  let red := k.z.1 • (DiagTensor.map (mkQ (Ideal.span {(p : ℤ_[p]) ^ P.exponent}) ∘ₗ P.toZp) :
+  let red := k.z.val • (DiagTensor.map (mkQ (Ideal.span {(p : ℤ_[p]) ^ P.exponent}) ∘ₗ P.toZp) :
     (tateLattice O).Ambient →ₗ[WittCFlat] DiagTensor (.of (charRep _ χ))).restrictScalars Ainf
   refine (span_le (p := (smallPart P.exponent).comap red)).2 (Set.forall_mem_range.2 fun t ↦ ?_) hξ
   refine ⟨_, smul_of_tower_mem _ (P.toZp t) (z_mem_wittOfMaxIdeal (k := k)), ?_⟩
@@ -480,11 +481,6 @@ lemma SidePairing.isSafeMoveSnd_cocycle {c' : S'.paramLattice} {P : S.SidePairin
   simp only [ruleBound, shiftedOrders, standardDepth]
   split_ifs <;> omega
 
-/-- The path that stays at `(x, x')` is safe: its four moves are zero. -/
-lemma isSafePath_refl {P : S.SidePairing S'} {κ : ℕ} (x : S.extensionLattice.Ambient)
-    (x' : S'.extensionLattice.Ambient) : P.IsSafePath κ x x x x' x' x' := by
-  constructor <;> intro g <;> simp [IsSafe]
-
 lemma smul_sub_mem_letterPart {x : S.extensionLattice.Ambient} (g : k.galMonoid)
     (hx : x ∈ S.extensionLattice.letterPart i) : g • x - x ∈ S.extensionLattice.letterPart i :=
   sub_mem ((gal_smul_mem_letterPart g).2 hx) hx
@@ -631,7 +627,7 @@ lemma SidePairing.isScaledCupCoboundary_of_stops {S S' : PairingSide O} {c : S.p
         (hx i hi) (hx' i hi) (hx _ (hl_cut i)) (hx' _ (hl_cut i)) (h_stop i hi)
     · simp only [d, ite_eq_right hi]
       exact ⟨φ ^ l i • x (i.stepBack (l i)), φ ^ l i • x' (i.stepBack (l i)),
-        h_over (hl_cut i), h_over' (hl_cut i), isSafePath_refl _ _⟩
+        h_over (hl_cut i), h_over' (hl_cut i), by constructor <;> intro g <;> simp [IsSafe]⟩
   choose w w' hw hw' h_path using exists_path
   have h_cocycles (i : k.Letter) (g : k.galMonoid) : P.IsSafeMoveSnd κ
       (φ ^ d i • x (i.stepBack (d i)))
@@ -798,6 +794,32 @@ lemma low_or_far_of_fitsWindows {η β V : ℕ} {σ : ℤˣ} {U : Finset ℤ} {u
     (hU : FitsWindows η σ β V U) (hu : u ∈ U) :
     -η ≤ u ∧ u ≤ η ∨ β ≤ u ∧ u ≤ β + V ∨ β ≤ -u ∧ -u ≤ β + V :=
   (hU u hu).imp_right (Or.imp And.right And.right)
+
+/-- In opposite windows two low jumps sum to at most `2η` in absolute value, and two far
+jumps sum to at most `W`. If only one is far, the absolute value of their sum lies between
+`b - η` and `b + W + η`. -/
+lemma _root_.New.Lift.FitsWindows.abs_add_of_opposite {η b W : ℕ} {ε : ℤˣ} {V V' : Finset ℤ}
+    (hV : FitsWindows η (-ε) b W V) (hV' : FitsWindows η ε b W V') {v v' : ℤ}
+    (hv : v ∈ V) (hv' : v' ∈ V') :
+    |v + v'| ≤ max (2 * (η : ℤ)) W ∨ (b : ℤ) - η ≤ |v + v'| ∧ |v + v'| ≤ b + W + η := by
+  have h_sign : ((-ε : ℤˣ) : ℤ) = -(ε : ℤ) := Units.val_neg ε
+  rcases hV v hv with h | ⟨h, hv⟩ | ⟨h, hv⟩ <;>
+    rcases hV' v' hv' with h' | ⟨h', hv'⟩ | ⟨h', hv'⟩ <;> simp only [abs_eq_max_neg] <;> omega
+
+/-- Let the jumps of `T` and `S` at a letter `i` lie in `[-η, η]` or in far windows `∓σ [β, β + W]`
+of opposite signs. Then each jump `u` of the Tate dual side of a pairing of `T` and `S` lies near
+`0`, `β` or `-β`: such a jump is `0` or `-(v + w) - 1` for jumps `v` of `T` and `w` of `S`. -/
+lemma tateDualSide_jump_near {k : KummerChart Γ} {O : k.Coeffs} {S : k.PairingSide O} {i : Letter}
+    {η W : ℕ} {T : PairingSide O} (P : SidePairing T S) {σ : ℤˣ} {β : ℕ}
+    (hT_window : FitsWindows η (-σ) β W (T.jumpSet i))
+    (hS_window : FitsWindows η σ β W (S.jumpSet i)) {u : ℤ}
+    (hu : u ∈ P.tateDualSide.jumpSet i) :
+    u = 0 ∨ |u + 1| ≤ max (2 * (η : ℤ)) W ∨
+      (β : ℤ) - η ≤ |u + 1| ∧ |u + 1| ≤ β + W + η := by
+  obtain rfl | ⟨v, hv, w, hw, rfl⟩ : u = 0 ∨ ∃ v ∈ T.jumpSet i, ∃ w ∈ S.jumpSet i,
+    -(v + w) - 1 = u := by simpa [mem_image₂] using hu
+  · exact .inl rfl
+  · exact .inr (by simpa only [sub_add_cancel, abs_neg] using hT_window.abs_add_of_opposite hS_window hv hw)
 
 /-- A side is down, that is, its jumps are at most `η`, at a letter where they lie in the windows
 `[-η, η]` and `σ [β, β + V]` and the far window is negative or ends at or below `η`. -/

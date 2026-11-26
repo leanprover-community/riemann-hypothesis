@@ -1,6 +1,9 @@
 module
 
-public import New.Reduction.Data.LevelAndTwists
+import Mathlib.Data.Rat.Cast.OfScientific
+public import New.Reduction.Data.AdmissibleData
+import Lib.General.NumberTheory.SUnitsAndClassNumber
+import New.Reduction.Data.LevelAndTwists
 
 /-!
 # Sizes of the data

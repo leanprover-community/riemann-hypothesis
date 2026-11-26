@@ -1,7 +1,14 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Data.Rat.Cast.OfScientific
 public import New.OneLift.ComparisonOperator.DeterminantProducts
-public import New.UpperBound.Kernels.ThetaLiftGauge
+public import New.UpperBound.Kernels.JetConjugatesAndBounds
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
+import Lib.GLn.SchurModule.SchurNorm
+import New.Derivatives.Vacuum.Divisibility
+import New.Derivatives.Vacuum.Scale
+import New.UpperBound.Kernels.ThetaLiftGauge
 
 /-!
 # Rational equivariance, integrality and size of definite theta kernels

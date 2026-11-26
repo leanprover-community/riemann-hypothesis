@@ -1,6 +1,8 @@
 module
 
+import Mathlib.Algebra.Order.Star.Real
 public import New.Spanning.RemainingTerms.FrameParts
+import New.Spanning.Unfolding.ReducedPoints
 
 /-!
 # Counting frames over a lattice of small discriminant
@@ -199,6 +201,7 @@ lemma isIntegral_sharedVectors {γ : S.G E} {s : S.ResidueGL} {c' : S.Classes}
   · exact algebraMap_mem_Ô.1 (h_frame.mul hY.adjugate a k)
   · exact isIntegral_zero
 
+omit [HasPrimitiveRoot5040 E] in
 /-- Let `B` be a frame set whose terms all have cell rank `j`: from the index `j` on, the flags of
 the standard frame `f` and of the frame `γ f` share vectors, and the leading minor of order `j` of
 their matrix of products is nonzero. Then there are at most `b ^ (366 n⁴ f')` matrices
@@ -210,23 +213,18 @@ lemma IsFrameSet.encard_range_sharedVectors_le (hB : S.IsFrameSet c B)
       ENNReal.ofReal (S.b ^ (366 * 𝔰.n ^ 4 * numInfPlaces E)) := by
   -- The entries are integral and bounded at every infinite place.
   have hb : 1000 ≤ S.b := S.thousand_le_b
-  have h_packing : (Set.range fun p : B ↦ S.sharedVectors j p.val.2).encard ≤ ENNReal.ofReal
-      ((1 + 2 * S.b ^ (182 * 𝔰.n ^ 2)) ^ (card (Fin 𝔰.ϱ × Fin 𝔰.n) * numInfPlaces E * 2)) := by
-    refine encard_le_of_isIntegral_norm_le Function.uncurry (by positivity) ?_
-      Function.uncurry_injective.injOn
-    rintro _ ⟨⟨p, hp⟩, rfl⟩ ⟨a, k⟩
-    obtain ⟨s, h_over⟩ : ∃ s : S.ResidueGL, p.2 ∈ S.termsOver c s p.1 := hB.mem_termsOver p hp
+  refine (encard_le_of_isIntegral_norm_le Function.uncurry
+    (by positivity : 0 ≤ S.b ^ (182 * 𝔰.n ^ 2)) ?_
+    Function.uncurry_injective.injOn).trans (ofReal_le_ofReal ?_)
+  · rintro _ ⟨⟨p, hp⟩, rfl⟩ ⟨a, k⟩
+    obtain ⟨s, h_over⟩ := hB.mem_termsOver p hp
     exact ⟨isIntegral_sharedVectors h_over a k,
       fun v ↦ (h_cellRank p hp).norm_sharedVectors_le (hB.near p hp) v a k⟩
-  have h_radius : 1 + 2 * S.b ^ (182 * 𝔰.n ^ 2) ≤ S.b ^ (183 * 𝔰.n ^ 2) :=
-    one_add_two_mul_pow_le_pow (by linarith) (by lia)
-  have h_exponent : 183 * 𝔰.n ^ 2 * (card (Fin 𝔰.ϱ × Fin 𝔰.n) * numInfPlaces E * 2) ≤
-      366 * 𝔰.n ^ 4 * numInfPlaces E := by
-    rw [card_prod, Fintype.card_fin, Fintype.card_fin]
-    lia
-  grw [h_packing, h_radius, ← pow_mul]
-  exact ofReal_le_ofReal (pow_le_pow_right₀ (by linarith) h_exponent)
+  · grw [one_add_two_mul_pow_le_pow (m' := 183 * 𝔰.n ^ 2) (by linarith) (by lia), ← pow_mul,
+      card_prod, Fintype.card_fin, Fintype.card_fin]
+    exact pow_le_pow_right₀ (by linarith) (by lia)
 
+omit [S.IsAdmissible] in
 /-- Let `γ` and `γ'` have the same integral matrix of products `Z` with nonzero leading minor of
 order `j`, the same shared vectors and the same part in the anisotropic space `X₀`. Let `c`, `c'`,
 `c''` be any three classes, with representatives `h_c`, `h_c'`, `h_c''`. If the first `ϱ` rows of
@@ -268,6 +266,7 @@ private lemma exists_frameImage_mul_eq_of_sub_mem {γ γ' : S.G E} {c' c'' : S.C
   exact exists_mem_classUnipotent₀_frameImage_mul_eq c hγ' hZ_int h_minor h_shared
     (apply_inr_besselFrame_eq hγ' h_part) hξ (smul_inv_smul₀ hd_ne ξ).symm
 
+omit [S.IsAdmissible] in
 /-- Let `E` be a CM field with a primitive 5040-th root of unity and `S` admissible filling data
 over `E`. Take near terms of cell rank `j` (from the index `j` on, the flags of the standard frame
 and of the frame of the term share vectors, and the leading minor of order `j` of their matrix of

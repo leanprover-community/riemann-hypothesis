@@ -1,6 +1,14 @@
 module
 
-public import Lib.General.Measure.IntegralOperators
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Order.CompletePartialOrder
+import Mathlib.Topology.Separation.CompletelyRegular
+public import Lib.Speed
+import Lib.General.Measure.IntegralOperators
 
 /-!
 # Packing bounds for separated points and Sobolev trace inequalities
