@@ -570,9 +570,8 @@ lemma lintegral_formMajorant_ne_top [Nonempty I]
   have h_factor : card I * ‖(hF.formConst : ℂ)‖ₑ * hF.complexData.headDensity j p q ≠ 0 := by
     simp [headDensity, formConst, prod_eq_zero_iff, toReal_ne_zero, ne_of_gt,
       haarRatio_ne_zero_and_groupMeasure_eq_smul]
-  intro h_top
-  rw [h_top, ← mul_assoc, ← mul_assoc, ENNReal.mul_top h_factor] at h_finite
-  exact h_finite rfl
+  rw [← mul_assoc, ← mul_assoc] at h_finite
+  exact (ENNReal.lt_top_of_mul_ne_top_right h_finite h_factor).ne
 
 /-- Let `ρ`, `s`, `b` be the sizes of a cut Bessel function, `0 < r` and `1 ≤ L`, and let `H ≥ 0`
 satisfy `L ^ n ^ 6 ≤ ρ ^ n ^ 6 * H`. At `t = max 1 (ρ ^ 24 * r)`, the bound for the sum over all
