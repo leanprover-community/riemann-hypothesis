@@ -92,13 +92,6 @@ lemma pow_le_of_submultiplicative {c : ℕ → ℝ} {b : ℝ} (hb : 0 < b) (hc :
 
 variable {p : ℕ} [Fact p.Prime]
 
-/-- Differentiating `g(z₀ + z₁)` `m` times in `z₀` and `n` times in `z₁` at `0` gives
-`g⁽ᵐ⁺ⁿ⁾(0)`. Here `linearSeries ![1, 1]` is the linear form `z₀ + z₁`. -/
-lemma factorial_mul_coeff_subst_add (g : ℂ_[p]⟦X⟧) (m n : ℕ) :
-    m ! * n ! * MvPowerSeries.coeff (.single 0 m + .single 1 n) (g.subst (linearSeries ![1, 1])) =
-      (m + n)! * coeff (m + n) g := by
-  simp [coeff_subst_linearSeries, factorial_ne_zero, mul_div_cancel₀]
-
 /-- The coefficient of `z₀ ^ m z₁ ^ n` in `g(z₀) h(z₁)` is the product of the `m`-th coefficient
 of `g` and the `n`-th coefficient of `h`. Here `linearSeries ![1, 0]` and `linearSeries ![0, 1]` are
 the linear forms `z₀` and `z₁`. -/
@@ -199,7 +192,8 @@ lemma maxDerivNorm_add_le (m n : ℕ) :
   calc C.maxDerivNorm (m + n) = ‖(m + n)! * coeff (m + n) (y ^ j)‖ := hj.csSup_eq
     _ = ‖(m ! * n ! : ℂ_[p])‖ * ‖MvPowerSeries.coeff (.single 0 m + .single 1 n)
           ((y ^ j).subst (linearSeries ![(1 : ℂ_[p]), 1]))‖ := by
-      rw [← factorial_mul_coeff_subst_add, norm_mul]
+      rw [← show m ! * n ! * MvPowerSeries.coeff (.single 0 m + .single 1 n) ((y ^ j).subst (linearSeries ![(1 : ℂ_[p]), 1])) =
+        (m + n)! * coeff (m + n) (y ^ j) by simp [coeff_subst_linearSeries, factorial_ne_zero, mul_div_cancel₀], norm_mul]
     _ ≤ ‖(m ! * n ! : ℂ_[p])‖ * ‖coeff m (y ^ a) * coeff n (y ^ b)‖ := by gcongr
     _ = ‖m ! * coeff m (y ^ a)‖ * ‖n ! * coeff n (y ^ b)‖ := by simp [mul_mul_mul_comm]
     _ ≤ C.maxDerivNorm m * C.maxDerivNorm n :=
