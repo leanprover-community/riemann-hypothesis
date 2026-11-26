@@ -227,10 +227,11 @@ abbrev localizedProjTrivial (S : PairingSide O) :
 
 /-- The points of `S.extensionLattice.kisinLoc` that lie over a constant at the letter `i` (the
 projection `S.constantAt i c` of some `1 ⊗ c` to `i`) and are deep for `o`, that is, fixed by
-`k.galMonoid` modulo the vectors with orders `o`. For a point `x` at the letter `i` this means that
-for each jump `u` at `i.stepBack a` and each form `μ` of type `u` there, the value
+`k.galMonoid` modulo the vectors with orders `o`. For a point `x` at the letter `i` this implies
+that for each jump `u` at `i.stepBack a` and each form `μ` of type `u` there, the value
 `valueAt a μ x = μ (φ^{-a} x)` lies in the fixed field of `Γ'` modulo
-`hodgeFil (o a u) = t ^ (o a u) B_dR⁺` (`JumpLattice.mem_invariantsMod_withOrders_iff`). -/
+`hodgeFil (o a u) = t ^ (o a u) B_dR⁺`
+(`JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). -/
 def deepElements (S : PairingSide O) (i : k.Letter) (o : ℕ → ℤ → ℤ) :
     Submodule ℤ_[p] S.extensionLattice.kisinLoc :=
   (S.constantAt i).range.comap S.localizedProjTrivial ⊓
@@ -258,9 +259,10 @@ abbrev SidePairing (S S' : PairingSide O) : Type := Pairing S.toGalLattice S'.to
 
 /-- The points of `S.extensionLattice.kisinLoc` over `p ^ e` times the constant of `c` at the letter
 `i` (the projection `S.constantAt i c` of `1 ⊗ c` to `i`) that have orders `o` and are deep for
-`o'`: for each jump `u` at `i.stepBack a` and each form `μ` of type `u` there, the value
-`valueAt a μ x = μ (φ^{-a} x)` lies in the fixed field of `Γ'` modulo
-`hodgeFil (o' a u) = t ^ (o' a u) B_dR⁺` (`JumpLattice.mem_invariantsMod_withOrders_iff`). -/
+`o'`. For such a point, for each jump `u` at `i.stepBack a` and each form `μ` of type `u` there,
+the value `valueAt a μ x = μ (φ^{-a} x)` lies in the fixed field of `Γ'` modulo
+`hodgeFil (o' a u) = t ^ (o' a u) B_dR⁺`
+(`JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). -/
 def pointsOver (S : PairingSide O) (c : S.paramLattice) (i : k.Letter) (e : ℕ)
     (o o' : ℕ → ℤ → ℤ) : Set S.extensionLattice.Ambient :=
   {x ∈ S.extensionLattice.kisinLoc | S.projTrivial.wittMap x = p ^ e • S.constantAt i c ∧
