@@ -173,17 +173,6 @@ lemma exists_inertia_cyclotomicPowDirichlet_eq {a : ℕ} (ha : l.Coprime a) (ha_
     mem_cycloGalGroup_of_mem_inertiaGroup hi hB_compl (N.ordProj_mul_ordCompl_eq_self l) fix_l_part
   exact ⟨i, hi, by simp [cyclotomicPowDirichlet, cyc_i, mem_ker.1 fix_N]⟩
 
-/-- A cocycle `x ∈ component l e ψ ν` vanishes at every `g` that fixes the `N m`-th roots of unity
-and lies in the inertia group of a place `A` of `Ω` prime to `l`, above the place `t` of `ℚ`. -/
-private lemma apply_eq_zero_of_mem_inertiaGroup_of_valuation_eq_one
-    {x : Gal(Ω/ℚ) → QuotSpan ((l : O) ^ ν)} (hx : x ∈ component l e ψ ν) {A : ClosurePlace}
-    {t : FinPlace ℚ} (hA : IsPlaceOver A t) (hA_l : A.valuation l = 1) {g : Gal(Ω/ℚ)}
-    (hg : g ∈ cycloGalGroup (N * m)) (hg_inertia : g ∈ inertiaGroup Gal(Ω/ℚ) A) : x g = 0 := by
-  have hg_N : g ∈ cycloGalGroup N := cyclotomicCharMod_eq_one_of_dvd ⟨_, rfl⟩ hg
-  have hg_off : g ∈ inertiaAbove (placesDividing ℚ l)ᶜ :=
-    ⟨t, hA.valuation_natCast_eq_one_iff.1 hA_l, A, hA, hg_inertia⟩
-  exact apply_eq_zero_of_mem_vanishingCocycles hx (.inr ⟨hg_N, .inl hg_off⟩)
-
 /-- Let `x ∈ component l e ψ ν` be killed by `m`, let `A` be a place of `Ω` above `l`, and let
 `a ≡ 1 mod N` be prime to `l`. Then `(a ^ e - 1) • x g = 0` for every `g` that fixes the `N m`-th
 roots of unity and lies in the decomposition group of `A`. -/
@@ -338,7 +327,11 @@ lemma artin_reciprocity_of_mem_component {a : ℕ} (ha : l.Coprime a) (ha_one : 
   have unramified {A : ClosurePlace} {t : FinPlace ℚ} (hA : IsPlaceOver A t) (g : G)
       (hg : g ∈ inertiaGroup G A) : χ.val g = 0 := by
     rcases (A.valuation_le_one l).eq_or_lt with h | h
-    · simp [χ, apply_eq_zero_of_mem_inertiaGroup_of_valuation_eq_one hx hA h g.prop hg]
+    · have hg_N : (g : Gal(Ω/ℚ)) ∈ cycloGalGroup N :=
+        cyclotomicCharMod_eq_one_of_dvd ⟨_, rfl⟩ g.prop
+      have hg_off : (g : Gal(Ω/ℚ)) ∈ inertiaAbove (placesDividing ℚ l)ᶜ :=
+        ⟨_, hA.valuation_natCast_eq_one_iff.1 h, A, hA, hg⟩
+      simp [χ, apply_eq_zero_of_mem_vanishingCocycles hx (.inr ⟨hg_N, .inl hg_off⟩)]
     · exact dec_zero A h g (IsFrob.mem_decompGroup hg)
   -- The places `w u` are all the places of `F` above `q`.
   have unit_q (t : FinPlace F) (ht : t ∉ Set.range w) : (placeOver t).valuation v.q = 1 :=
