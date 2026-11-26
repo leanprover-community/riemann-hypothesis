@@ -111,41 +111,46 @@ lemma primeRemainder_eq_integral_countError_sub {y : ℝ} (hy : 1 ≤ y) :
   simp only [pow_zero, mul_one, div_one, pow_one, h_div_mul_cancel, h_abel]
   ring
 
-/-- Let `d` be a prime and `q ≠ 0`, and let `λ(n) = lambdaKResidueClass d q n` be `Λ(n) (1 - (n/d))`
-for `n ≡ 1` mod `q` and `0` otherwise. The remainder `R_q = primeRemainder d q`, that is
-`R_q(y) = ∑_{n ≤ y} λ(n) (1/n - 1/y) - log y / φ(q) - c_q`, varies slowly:
-`|R_q(z) - R_q(y)| ≤ 13 (z - y) / y` for `1 ≤ y ≤ z`. -/
-lemma abs_primeRemainder_sub_le {y z : ℝ} (hy : 1 ≤ y) (hyz : y ≤ z) :
-    |primeRemainder d q z - primeRemainder d q y| ≤ 13 * ((z - y) / y) := by
-  -- The difference is the integral over `[y, z]` of `𝓔_q(t) t⁻²`, which is at most `13 / y` there.
-  have h_bound (t : ℝ) (ht : t ∈ Set.uIoc y z) : ‖countError d q t / t ^ 2‖ ≤ 13 / y := by
-    obtain ⟨hyt, -⟩ : y < t ∧ t ≤ z := by rwa [Set.uIoc_of_le hyz] at ht
-    have ht_pos : 0 < t := by linarith
-    calc ‖countError d q t / t ^ 2‖ ≤ 13 * t / t ^ 2 := by
-          grw [norm_eq_abs, abs_div, abs_countError_le ht_pos.le, abs_of_pos (pow_pos ht_pos 2)]
-      _ ≤ 13 / y := by grw [hyt]; simp [field]
+/-- For `1 ≤ y ≤ z`, the weighted prime remainder changes by at most `13 log (z / y)`.
+This follows by integrating the bound `|countError d q t| / t² ≤ 13 / t`. -/
+lemma abs_primeRemainder_sub_le_log {y z : ℝ} (hy : 1 ≤ y) (hyz : y ≤ z) :
+    |primeRemainder d q z - primeRemainder d q y| ≤ 13 * Real.log (z / y) := by
+  have hy_pos : 0 < y := zero_lt_one.trans_le hy
   calc |primeRemainder d q z - primeRemainder d q y| = ‖∫ t in y..z, countError d q t / t ^ 2‖ := by
         rw [primeRemainder_eq_integral_countError_sub hy,
           primeRemainder_eq_integral_countError_sub (hy.trans hyz),
           sub_sub_sub_cancel_right, intervalIntegral.integral_interval_sub_left
             (intervalIntegrable_countError_div_sq le_rfl (hy.trans hyz))
             (intervalIntegrable_countError_div_sq le_rfl hy), norm_eq_abs]
-    _ ≤ 13 / y * |z - y| := intervalIntegral.norm_integral_le_of_norm_le_const h_bound
-    _ = 13 * ((z - y) / y) := by rw [abs_of_nonneg (sub_nonneg.2 hyz)]; ring
+    _ ≤ ∫ t in y..z, 13 * (1 / t) := by
+      apply intervalIntegral.norm_integral_le_of_norm_le hyz
+      · refine .of_forall fun t ht ↦ ?_
+        have ht_pos : 0 < t := hy_pos.trans ht.1
+        rw [Real.norm_eq_abs, abs_div, abs_of_pos (pow_pos ht_pos 2)]
+        calc |countError d q t| / t ^ 2 ≤ (13 * t) / t ^ 2 :=
+              div_le_div_of_nonneg_right (abs_countError_le ht_pos.le) (sq_nonneg t)
+          _ = 13 * (1 / t) := by field_simp
+      · exact ContinuousOn.intervalIntegrable_of_Icc hyz
+          (continuousOn_const.mul (continuousOn_const.div continuousOn_id
+            fun t ht ↦ (hy_pos.trans_le ht.1).ne'))
+    _ = 13 * Real.log (z / y) := by
+      rw [intervalIntegral.integral_const_mul, integral_one_div_of_pos hy_pos (hy_pos.trans_le hyz)]
 
-/-- Let `d` be a prime and `q ≠ 0`. In the variable `v = log y` the remainder
-`R_q = primeRemainder d q` is Lipschitz: `|R_q(e^v) - R_q(e^u)| ≤ 26 (v - u)` for
-`0 ≤ u ≤ v ≤ u + 1`. -/
-lemma abs_primeRemainder_exp_sub_le {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v) (hvu : v ≤ u + 1) :
-    |primeRemainder d q (rexp v) - primeRemainder d q (rexp u)| ≤ 26 * (v - u) := by
-  have h_abs : |v - u| = v - u := abs_of_nonneg (sub_nonneg.2 huv)
-  have h_exp : rexp (v - u) - 1 ≤ 2 * (v - u) := by
-    linarith [abs_le.1 (abs_exp_sub_one_le (x := v - u) (by linarith))]
-  calc |primeRemainder d q (rexp v) - primeRemainder d q (rexp u)| ≤ 13 *
-         ((rexp v - rexp u) / rexp u) :=
-        abs_primeRemainder_sub_le (one_le_exp hu) (exp_le_exp.2 huv)
-    _ = 13 * (rexp (v - u) - 1) := by simp [Real.exp_sub, field]
-    _ ≤ 26 * (v - u) := by linarith
+/-- For `1 ≤ y ≤ z`, the change in the weighted prime remainder is at most `13 (z - y) / y`. -/
+lemma abs_primeRemainder_sub_le {y z : ℝ} (hy : 1 ≤ y) (hyz : y ≤ z) :
+    |primeRemainder d q z - primeRemainder d q y| ≤ 13 * ((z - y) / y) := by
+  have hy_pos : 0 < y := zero_lt_one.trans_le hy
+  calc |primeRemainder d q z - primeRemainder d q y| ≤ 13 * Real.log (z / y) :=
+        abs_primeRemainder_sub_le_log hy hyz
+    _ ≤ 13 * (z / y - 1) := by
+      grw [Real.log_le_sub_one_of_pos (div_pos (hy_pos.trans_le hyz) hy_pos)]
+    _ = 13 * ((z - y) / y) := by rw [sub_div, div_self hy_pos.ne']
+
+/-- In logarithmic coordinates the weighted prime remainder is 13-Lipschitz on `[0, ∞)`. -/
+lemma abs_primeRemainder_exp_sub_le {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v) :
+    |primeRemainder d q (rexp v) - primeRemainder d q (rexp u)| ≤ 13 * (v - u) := by
+  simpa only [← Real.exp_sub, Real.log_exp] using
+    (abs_primeRemainder_sub_le_log (d := d) (q := q) (one_le_exp hu) (exp_le_exp.2 huv))
 
 /-- For a character `ψ` mod `q` let `L_ψ = entireL ψ` be `L(s, ψ)`, times `s - 1` if `ψ` is
 principal, and let `ψ' = quadTwist ψ d` be `ψ (·/d)`. If all `logDeriv L_ψ` and `logDeriv L_ψ'` have
@@ -214,7 +219,8 @@ theorem eventually_abs_primeRemainder_le (hd : d ≠ 2) (h_cop : q.Coprime d) (B
     simp [F, integral_primeRemainder hd h_cop hs, ofReal_re_logDerivMean_one hd h_cop]
   have h_bound : ∀ᶠ v : ℝ in atTop, |primeRemainder d q (rexp v)| ≤ 1 / v ^ B :=
     eventually_abs_le_inv_pow_of_transform (by fun_prop [primeRemainder, lambdaKSum])
-      (fun u v ↦ abs_primeRemainder_exp_sub_le) h_transform eventually_norm_logDerivMean_div_le B
+      (fun _ _ hu huv _ ↦ abs_primeRemainder_exp_sub_le hu huv)
+      h_transform eventually_norm_logDerivMean_div_le B
   filter_upwards [tendsto_log_atTop.eventually h_bound, eventually_gt_atTop 0] with y hy hy_pos
   rwa [Real.exp_log hy_pos] at hy
 
