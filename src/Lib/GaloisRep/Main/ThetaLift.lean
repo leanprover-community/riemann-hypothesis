@@ -329,20 +329,6 @@ private lemma paramsCorrespond_of_isHCParam {κ κ' : InfinitePlace E → ℕ �
     ⟨by grind [card_fin], by simp [hs.pos], rfl⟩
   exact (hl_weight.paramsCorrespond_iff h_lift_weight).mpr hl'
 
-omit [DecidableEq n] in
-/-- The scalars of the theta lift at the place `w` cancel: `q_w ^ s * frobValue 1 n w`, divided by
-`b.frobValue (Fin (card n + s)) w` (scalars at `w` built from powers of `√q_w` and values at a
-uniformiser) and multiplied by the value at `w` of the algebraic Hecke character
-`hb.toAlgebraic s s`, is `1`. Here `b` is a character of `U(1)` of weight `c`. -/
-private lemma frobValue_div_mul_heckeCoeff_eq_one {b : AutChar E} {c : InfinitePlace E → ℤ}
-    (hb : b.HasWeight c 1) (s : ℕ) (w : FinPlace E) :
-    w.q ^ s * frobValue 1 n w / b.frobValue (Fin (card n + s)) w *
-      heckeCoeff (hb.toAlgebraic s s).val.fst ∅ w = 1 := by
-  simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, w.ne_bot, HeckeChar.atUniformizer,
-    heckeCoeff, AutChar.spaceChar, zpow_sub₀, zpow_mul (_ : ℂ), field]
-  -- What is left is a rearrangement of powers of `√q_w` and of `υ` at a uniformiser.
-  ring
-
 /-- Rallis' inner product formula makes the theta lift injective on forms of level `J`. Let `b` be
 a character of `U(1)` of weight `c`, `v` an edge from type `l` to type `l'` (`IsEdge`), `Ψ` sharp
 for `b` and a level `J` (`IsSharp`), and `2 * card n < card n + s`. If the algebraic form of `y`
@@ -411,13 +397,15 @@ private lemma exists_hasHeckePolyAt_scaleRoots_eq {κ' : InfinitePlace E → ℕ
     exact (hF_eigval' X).symm
   refine ⟨_, hF_eig, ?_⟩
   -- The constants of `hasHeckePolynomial_formLift` are values of the algebraic characters.
-  exact scaleRoots_heckePoly_eq w
+  refine scaleRoots_heckePoly_eq w
     (fun l ↦ heckeCoeff (hb.toAlgebraic (card n + s) (s - l)).val.fst ∅ w)
-    (hF_eig.isMonicOfDegree hF_ne).natDegree_eq h_eigval
-    (frobValue_div_mul_heckeCoeff_eq_one hb s w) (by
-      intro l
-      simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, w.ne_bot, HeckeChar.atUniformizer,
-        heckeCoeff, AutChar.spaceChar, zpow_add₀, zpow_sub₀, zpow_mul (_ : ℂ), field])
+    (hF_eig.isMonicOfDegree hF_ne).natDegree_eq h_eigval ?_ ?_
+  · simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, w.ne_bot, HeckeChar.atUniformizer,
+      heckeCoeff, AutChar.spaceChar, zpow_sub₀, zpow_mul (_ : ℂ), field]
+    ring
+  · intro l
+    simp [HasWeight.toAlgebraic, frobValue, w.coe_q_eq_sq_sqrt, w.ne_bot, HeckeChar.atUniformizer,
+      heckeCoeff, AutChar.spaceChar, zpow_add₀, zpow_sub₀, zpow_mul (_ : ℂ), field]
 
 /-- Theta lift by `s > n` steps. Let `f ≠ 0` be a form of rank `n ≥ 1` and weight `(κ, e)`, and let
 `b` be a character of `U(1)` of weight `c ≤ e` with trivial tame part (`b u = ∏ u_v^{c v}` for `u`
