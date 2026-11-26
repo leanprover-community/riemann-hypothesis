@@ -486,11 +486,6 @@ def gridCentres (z : Bool) : CentreSystem (ℕ ⊕ ℕ) where
 `l < i` and the down centres `o ≤ l < o + j`. -/
 def gridBlocks (o i j : ℕ) : Finset (ℕ ⊕ ℕ) := (range i).disjSum (Ico o (o + j))
 
-/-- The step from `(i, j)` to `(i + 1, j)` adds the up centre `i`. -/
-lemma gridBlocks_succ_left (o i j : ℕ) :
-    gridBlocks o (i + 1) j = insert (.inl i) (gridBlocks o i j) := by
-  ext (l | l) <;> grind [gridBlocks, inl_mem_disjSum, inr_mem_disjSum]
-
 /-- The step from `(i, j)` to `(i, j + 1)` adds the down centre `j + o`. -/
 lemma gridBlocks_succ_right (o i j : ℕ) :
     gridBlocks o i (j + 1) = insert (.inr (j + o)) (gridBlocks o i j) := by
@@ -804,7 +799,8 @@ lemma paramsCorrespond_grid_succ_left (z : Bool) (i j : ℕ) (hi : i + 1 ≤ D.m
       (D.gridCentres τ z).IsParam (gridBlocks 0 a j) ((-1) ^ 0) (D.gridParam z 0 a j τ) :=
     D.isParam_gridParam τ z (by omega) (.inl rfl)
   rw [h_weight, h_weight]
-  exact (h_param i).isBlockRule_neg_insert_of_up (h_param (i + 1)) (gridBlocks_succ_left 0 i j)
+  exact (h_param i).isBlockRule_neg_insert_of_up (h_param (i + 1))
+    (by ext (l | l) <;> grind [gridBlocks, inl_mem_disjSum, inr_mem_disjSum])
     (D.isSeparated_gridCentres τ z) (D.gridBlocks_subset τ z (by omega) (by omega))
     (inl_mem_disjSum.2 (mem_range.2 hi)) (by simp [gridBlocks])
     (D.mul_card_gridIndex_add_pow_three_le (by omega) hj hi hj) rfl
