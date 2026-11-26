@@ -289,9 +289,15 @@ lemma exists_framePartX₀_mul_eq_sub_smul (c : S.Classes) {η : Matrix 𝔰.κ 
   have h_products :
       xᴴ * (S.ratGram * frameImage γ.val.val) = isotropicRows (S.frameProducts γ) := by
     rw [← Matrix.mul_assoc, inclMatrix_conjTranspose_mul_frameImage]
+  have hx (Y : Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) E) : (x * Y) (𝔰.indexX₀ i) b = 0 := by
+    simp [x, inclMatrix, Matrix.mul_apply]
+  have hv (Y : Matrix (Fin 𝔰.ϱ) (Fin (𝔰.ϱ + 1)) E) : (v * Y) (𝔰.indexX₀ i) b = (η * Y) i b :=
+    rfl
   simp only [hu_eq, Matrix.add_mul, Matrix.sub_mul, Matrix.smul_mul, Matrix.mul_assoc,
     Matrix.one_mul, h_products]
-  simp [x, v, framePartX₀, frameMiddle, inclMatrix, Matrix.mul_apply, sub_eq_add_neg]
+  rw [Matrix.add_apply, Matrix.smul_apply, Matrix.sub_apply, hx, Matrix.add_apply, hx, hv,
+    Matrix.sub_apply, Matrix.smul_apply, zero_sub, add_zero, smul_neg, ← sub_eq_add_neg]
+  rfl
 
 omit [HasPrimitiveRoot5040 E] in
 /-- The middle part of the frame of the translate by class representatives `h_c⁻¹ γ h_c'`, in the
