@@ -735,9 +735,9 @@ private lemma abs_norm_le_pow_finrank_of_forall_norm_le {E : Type} [Field.{0} E]
   -- `|N t| = ∏ v, ‖Φ v t‖ ^ 2`, and `[E : ℚ]` is twice the number of places `v`.
   rw [← Rat.cast_intCast, Algebra.coe_norm_int, abs_norm_eq_prod_norm_sq]
   calc ∏ v : InfinitePlace E, ‖Φ v (t : E)‖ ^ 2
-      ≤ ∏ _v : InfinitePlace E, B ^ 2 := by
-        gcongr with v
-        exact h_le v
+      ≤ ∏ _v : InfinitePlace E, B ^ 2 :=
+        Finset.prod_le_prod₀ (fun _ _ ↦ sq_nonneg _)
+          fun v _ ↦ pow_le_pow_left₀ (norm_nonneg _) (h_le v) 2
     _ = B ^ finrank ℚ E := by
         simp [finrank_eq_two_mul_card_infinitePlace, pow_mul]
 
