@@ -158,7 +158,12 @@ lemma directDatum_conj_ne_zero_iff {j : ℕ} (k : Gf D.E (D.X j)) :
       (atPlaces D.nonInducedPlaces ((D.diagPointN j)⁻¹ * k * D.diagPointN j)).val b c w =
         (t b)⁻¹ * k.atPlace w b c * t c := by
     have h_entry : atPlaces D.nonInducedPlaces k b c w = k.atPlace w b c := rfl
-    cases b <;> cases c <;> simp [t, ← map_inv, diagN, h_entry, apply_ite Units.val]
+    cases b <;> cases c <;>
+      simp only [← map_inv, diagN, map_mul, atPlaces_embedGL, Units.val_mul, coe_diagGL,
+        Pi.inv_apply, Units.val_inv_eq_inv_val, apply_ite Units.val, Units.val_one, mul_diagonal,
+        diagonal_mul, Sum.isLeft_inl, Sum.isLeft_inr, Bool.false_eq_true, ↓reduceIte, inv_one,
+        one_mul, Pi.mul_apply, h_entry, Pi.one_apply, MulEquiv.val_piUnits_symm_apply,
+        Units.val_mk0, mul_ite, mul_one, t]
   -- The last row of `k⁻¹` at `w̄` is the conjugate of the last column of `k` at `w`.
   have h_star (b : D.X j) : v (((k⁻¹.atPlace (star w.val)).val - 1) (.inr ()) b) =
       v (k.atPlace w b (.inr ()) - if b.isLeft then 0 else 1) := by
@@ -181,9 +186,14 @@ lemma directDatum_conj_ne_zero_iff {j : ℕ} (k : Gf D.E (D.X j)) :
         (∀ a a', v (M (.inl a) (.inl a')) ≤ 1) ∧ (∀ a, v (M (.inr ()) (.inl a)) ≤ 1) ∧
           (∀ a, v (M (.inl a) (.inr ())) ≤ 1) ∧ v (M (.inr ()) (.inr ())) ≤ 1 ∧
           (∀ a, v (M (.inr ()) (.inl a)) ≤ exp (-1)) ∧ v (M (.inr ()) (.inr ()) - 1) ≤ exp (-1) by
-      simpa [M, t, hw, hN, D.isSplitLevel_piNPlaces.star_notMem _ hw, inv_mul_le_one₀,
-        mul_right_comm, Unique.forall_iff, inv_mul_cancel_of_invertible, forall_and, and_assoc,
-        -WithZero.inv_exp] using h_entries
+      simpa only [hw, ↓reduceIte, mul_ite, mul_one, mul_right_comm, Sum.forall, Sum.isLeft_inl,
+        map_mul, map_inv₀, Sum.isLeft_inr, Bool.false_eq_true, hN, Int.reduceNeg, Unique.forall_iff,
+        PUnit.default_eq_unit, forall_and, map_one, inv_one, one_mul, exp_pos, inv_mul_le_one₀,
+        ne_eq, exp_ne_zero, not_false_eq_true, inv_mul_cancel₀, and_assoc, sub_zero,
+        mul_le_iff_le_one_right, inv_mul_cancel_of_invertible,
+        D.isSplitLevel_piNPlaces.star_notMem _ hw, IsEmpty.forall_iff, Matrix.sub_apply,
+        reduceCtorEq, one_apply_ne, one_apply_eq, forall_const, true_and, and_congr_right_iff, t, M]
+        using h_entries
     constructor
     · rintro ⟨h_block, h_row, -, h_corner, h_col, h_cong⟩
       exact ⟨h_block, fun a ↦ (h_row a).trans h_exp, h_col, h_corner, h_row, h_cong⟩
