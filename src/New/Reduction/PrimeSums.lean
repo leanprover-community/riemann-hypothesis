@@ -37,13 +37,6 @@ namespace New
 
 variable {d : ℕ} [Fact d.Prime] {q : ℕ}
 
-/-- The function `lambdaKResidueClass d q` is the restriction of `Λ_K = lambdaKResidueClass d 1` to
-the integers `n ≡ 1` modulo `q`. -/
-lemma lambdaKResidueClass_eq_ite (n : ℕ) :
-    lambdaKResidueClass d q n = if (n : ZMod q) = 1 then lambdaKResidueClass d 1 n else 0 := by
-  simp [lambdaKResidueClass, ArithmeticFunction.vonMangoldt.residueClass, Set.indicator,
-    Subsingleton.elim (n : ZMod 1) 1]
-
 /-- For `0 < z ≤ A` with `A` an integer, the sum of `Λ_K(n) (A / n - A / z)₊` over the `n ≤ A` with
 `n ≡ 1` modulo `q` equals `A (R_q(z) + log z / φ(q) + c_q)`. -/
 lemma sum_lambdaKResidueClass_mul_posPart [NeZero q] (A : ℕ) {z : ℝ} (hz : 0 < z) (hzA : z ≤ A) :
@@ -129,7 +122,10 @@ lemma sum_aPlaces_lambdaKResidueClass_mul_posPart (n : ℕ) :
         #{τ ∈ D.aPlaces | D.placeOfInt (-n) * τ ∈ D.bPlaces} *
         ((D.a / n - D.a / D.x : ℝ)⁺ - (D.a / n - D.a / D.x₁ : ℝ)⁺) := by
     simp only [h_term, sum_add_distrib, ← sum_filter, sum_const, nsmul_eq_mul]
-  rw [← mul_sum, h_sum, card_filter_mem_bPlaces, lambdaKResidueClass_eq_ite (q := P.q₀)]
+  rw [← mul_sum, h_sum, card_filter_mem_bPlaces,
+    show lambdaKResidueClass P.d P.q₀ n = if (n : ZMod P.q₀) = 1 then lambdaKResidueClass P.d 1 n else 0 by
+      simp [lambdaKResidueClass, ArithmeticFunction.vonMangoldt.residueClass, Set.indicator,
+        Subsingleton.elim (n : ZMod 1) 1]]
   split_ifs <;> simp [mul_add, mul_sub, mul_left_comm]
 
 /-- The sum over the `a`-places `τ` of the prime sums `D.primeSum a τ = s_fin(a, τ) = ∑_{1 ≤ n ≤ a}
