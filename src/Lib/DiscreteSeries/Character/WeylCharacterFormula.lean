@@ -318,7 +318,9 @@ lemma apply_comp_perm_of_conj_invariant {w : Perm n} (x : n → Circle) (hw : ε
   have h_form : (g : Matrix n n ℂ)ᴴ * signMatrix ε * g = signMatrix ε := by
     simp [g, ← Matrix.ext_iff, signMatrix, diagonal, Matrix.mul_apply, sum_ite, hw_apply]
   have h_unitary : (g : Matrix n n ℂ)ᴴ * 1 * g = 1 := by
-    simp [g, ← Matrix.ext_iff, Matrix.mul_apply, sum_ite, Matrix.one_apply]
+    change ((w⁻¹).permMatrix ℂ)ᴴ * 1 * (w⁻¹).permMatrix ℂ = 1
+    rw [Matrix.mul_one, conjTranspose_permMatrix, inv_inv, ← permMatrix_mul,
+      inv_mul_cancel, permMatrix_one]
   let y : maxCompactU ε :=
     ⟨⟨g, mem_unitaryGroupOf_iff.2 h_form⟩, mem_unitaryGroupOf_iff.2 h_unitary⟩
   have h_conj : y * diagTorusK (x ∘ w) * y⁻¹ = diagTorusK x := by
@@ -986,9 +988,9 @@ lemma trace_weylRep [DecidableEq ι] (κ : ι → ℕ → ℕ) (e : ι → ℤ) 
       ∏ v : ι, (of fun i j : Fin a ↦
         x v i ^ (e v + ↑(diagramWeight (rankAt fun _ : ι ↦ Fin a) κ (v, j.rev) + j))).det := by
   -- diagonalise each `g v`; the trace is invariant under conjugation
-  have h_eigen (v : ι) : ∃ h : GL (Fin a) ℂ, h.val * diagonal (x v) = (g v).val * h.val :=
-    isConj_diagonal_of_isRoot_charpoly (hg v)
-  choose h h_diag using h_eigen
+  choose h h_diag using fun v ↦ isConj_diagonal_of_isRoot_charpoly (hg v)
+  -- The conjugating matrix intertwines the diagonal matrix and `g v`.
+  simp only [SemiconjBy] at h_diag
   have h_trace : (weylRep κ e g).trace =
       (∏ v : ι, (univ.prod (x v)) ^ e v) * (schur κ fun v ↦ diagonal (x v)).trace := by
     have h_conj (v : ι) : ((h⁻¹ * (g * h)) v).val = diagonal (x v) := by simp [← h_diag]
