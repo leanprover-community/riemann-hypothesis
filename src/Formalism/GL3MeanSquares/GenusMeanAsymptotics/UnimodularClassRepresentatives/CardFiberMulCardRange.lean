@@ -160,11 +160,10 @@ theorem range_linPart (hσ : ∀ a, σ (σ a) = a) {I : Ideal A} (hI : ∀ a ∈
     rw [linPart_apply]
     constructor
     · exact sum_mem (fun i _ => I.add_mem (I.mul_mem_left _ (δ i).2) (I.mul_mem_right _ (hI _ (δ i).2)))
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sum]
-        refine Finset.sum_congr rfl (fun i _ => ?_)
-        simp only [map_add (f := _), map_mul, hσ]
-        ring
+    · rw [map_sum]
+      refine Finset.sum_congr rfl (fun i _ => ?_)
+      simp only [map_add (f := _), map_mul, hσ]
+      ring
   · rintro ⟨hwI, hwσ⟩
     obtain ⟨v, hv, hv2⟩ := exists_trace hσ he ((mem_fixSub σ I).mpr ⟨hwI, hwσ⟩)
     refine ⟨fun i => ⟨y i * (m * v), I.mul_mem_left _ (I.mul_mem_left _ hv)⟩, ?_⟩

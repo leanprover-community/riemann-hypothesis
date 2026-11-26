@@ -6,8 +6,6 @@ import Mathlib.AlgebraicGeometry.Modules.Sheaf
 
 @[expose] public section
 
-set_option synthInstance.maxHeartbeats 400000
-
 noncomputable section
 
 namespace Formalism.L2.Pj

@@ -41,8 +41,7 @@ def Φ (v : InfinitePlace X.B.I.F) (y : D.host.E) : ℂ := X.B.I.φ v (X.ιE.sym
 theorem Φ_add (v) (a b : D.host.E) : Φ X v (a + b) = Φ X v a + Φ X v b := by
   simp [Φ]
 theorem Φ_sum (v) {ι : Type} (s : Finset ι) (f : ι → D.host.E) : Φ X v (∑ i ∈ s, f i) = ∑ i ∈ s, Φ X v (f i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [Φ, map_sum]
+  simp [Φ, map_sum]
 theorem Φ_star (v) (a : D.host.E) : Φ X v (star a) = star (Φ X v a) := by
   have hb : star a = D.host.conj a := Formalism.BasicNotions.bridge_star_holds _ _ a
   have h1 : X.ιE.symm (star a) = star (X.ιE.symm a) := by

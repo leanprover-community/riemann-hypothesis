@@ -1425,8 +1425,7 @@ theorem count_HW [NeZero r] (L : Letters N) (j0 : ℕ) {q : ℕ} (J : Fin q → 
       have h0 := congrArg ((GA p L j0).comp ν.1) hg
 
       rw [map_zero, Fintype.sum_sigma, map_sum, Finset.sum_eq_single ν] at h0
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum] at h0
+      · rw [map_sum] at h0
         rw [← h0]
         refine Finset.sum_congr rfl fun y _ => ?_
         rw [map_smul]

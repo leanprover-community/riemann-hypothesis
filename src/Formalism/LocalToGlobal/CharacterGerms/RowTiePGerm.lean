@@ -47,8 +47,7 @@ theorem ev_zero (ha : Z0 a) : ev a (0 : PS R m d) = 0 := by
 
 theorem ev_sum (ha : Z0 a) {ι : Type} (s : Finset ι) (f : ι → PS R m d) :
     ev a (∑ i ∈ s, f i) = ∑ i ∈ s, ev a (f i) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [ev_eq_alg ha, map_sum]
+  simp only [ev_eq_alg ha, map_sum]
 
 theorem ev_C (r : R) : ev a (C r : PS R m d) = C r := by
   unfold ev; rw [subst_C]
@@ -98,8 +97,7 @@ theorem intS_neg {f : MvPowerSeries τ C} (hf : IntS V f) : IntS V (-f) := fun �
 
 theorem intS_sum {ι : Type} (s : Finset ι) {f : ι → MvPowerSeries τ C} (hf : ∀ i ∈ s, IntS V (f i)) :
     IntS V (∑ i ∈ s, f i) := fun μ => by
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum]; exact VF.Ge.sum fun i hi => hf i hi μ
+  rw [map_sum]; exact VF.Ge.sum fun i hi => hf i hi μ
 
 theorem intS_C_mul {c : C} (hc : V.Ge 0 c) {f : MvPowerSeries τ C} (hf : IntS V f) : IntS V (MvPowerSeries.C c * f) :=
   fun μ => by rw [coeff_C_mul]; exact hc.mul_int (hf μ)

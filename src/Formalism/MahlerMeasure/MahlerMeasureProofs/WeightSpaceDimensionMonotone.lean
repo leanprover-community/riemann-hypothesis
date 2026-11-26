@@ -1592,8 +1592,7 @@ theorem Cas_comm_glAct (LL : Letters N) {j0 J : ℕ} (hJ : j0 ≤ J) (c d : Fin 
   rw [glAct_split LL hJ c d, LinearMap.add_apply, LinearMap.add_apply, map_add (f := _)]
   congr 1
   · exact ((GA p LL j0).E_Cas c d F).symm
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [GlW.Cas_apply, GlW.Cas_apply, map_sum]
+  · rw [GlW.Cas_apply, GlW.Cas_apply, map_sum]
     refine Finset.sum_congr rfl fun a _ => ?_
 
     rw [map_sum]

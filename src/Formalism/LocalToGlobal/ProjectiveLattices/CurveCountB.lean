@@ -140,15 +140,13 @@ theorem countQAt_of (v : Fin N → Ω) (hv : ∀ i, gF (X.inc wL (w i)) = v i)
   have hlin : ∀ i : Fin (WeightFamilies.dimY D j), ∑ k, t (i.succ, k) * x k = 0 := by
     intro i
     have h := congrArg ρ (sfr_eq X la N w i.succ)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum] at h
+    rw [map_sum] at h
     simp only [map_mul] at h
     rw [← (hρ _).mpr (hJ (sfr_succ_mem_Jid X la w i)), h]
     rfl
   have hlin0 : ∑ k, t (0, k) * x k = 1 := by
     have h := congrArg ρ (sfr_eq X la N w 0)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, sfr_zero, map_one] at h
+    rw [map_sum, sfr_zero, map_one] at h
     simp only [map_mul] at h
     rw [h]
     rfl

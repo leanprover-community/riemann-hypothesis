@@ -169,9 +169,8 @@ theorem ccE_ne_bot (D : D7) (cc : Ideal (𝓞 D.host.K)) (hcc : IsCurveIdeal D c
   rw [h, Ideal.mem_bot] at this
   apply hc0
   have h2 : ((c : D.host.K) : D.host.E) = 0 := congrArg Subtype.val this
-  set_option synthInstance.maxHeartbeats 200000 in
-    have h3 : (c : D.host.K) = 0 := by exact_mod_cast h2
-    exact_mod_cast h3
+  have h3 : (c : D.host.K) = 0 := by exact_mod_cast h2
+  exact_mod_cast h3
 
 theorem central_character_local_holds : CcLoc := by
   intro D cc hcc P

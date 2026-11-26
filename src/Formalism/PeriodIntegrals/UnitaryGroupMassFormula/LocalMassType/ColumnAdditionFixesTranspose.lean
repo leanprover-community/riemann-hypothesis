@@ -66,8 +66,7 @@ theorem prim_smul {k : HA (Fv F v) σ J} (hk : k ∈ Formalism.L2.SG.TypedSets.K
   · rw [smul_apply_lin, kv_lin σ J v Λ hk]; exact hY.1 i
   · apply hY.2 c
     have : (∑ i, c i • (k • Y) i) = lin (Fv F v) σ J k (∑ i, c i • Y i) := by
-      set_option synthInstance.maxHeartbeats 100000 in
-        simp only [smul_apply_lin, map_sum, map_smul]
+      simp only [smul_apply_lin, map_sum, map_smul]
     rw [this, kv_lin σ J v Λ hk] at hc
     exact hc
 

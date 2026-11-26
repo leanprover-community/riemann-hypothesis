@@ -53,7 +53,6 @@ theorem hform_sum_left {ι : Type} (s : Finset ι) (f : ι → n → A) (y : n �
 theorem hform_map {B : Type} [CommRing B] (τ : B →+* B) (f : A →+* B)
     (hf : ∀ a, f (σ a) = τ (f a)) (x y : n → A) :
     hform τ (J.map f) (fun i => f (x i)) (fun i => f (y i)) = f (hform σ J x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [PI.SelfDualLoc.hform, map_sum, map_mul, hf, Matrix.map_apply]
+  simp only [PI.SelfDualLoc.hform, map_sum, map_mul, hf, Matrix.map_apply]
 
 end PI.SelfDualLoc.W

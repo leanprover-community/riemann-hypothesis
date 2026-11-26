@@ -175,8 +175,7 @@ theorem standardFormBasic : StdHBasic := by
   intro L n _ _
   have harea := Formalism.L2.Th1.F.PeriodAreaSignLemmas.area_pos L
   refine ⟨stdH_apply L n, fun x y => ?_, fun x hx => ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [stdH_apply, stdH_apply, map_sum]
+  · rw [stdH_apply, stdH_apply, map_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     simp only [Formalism.L2.Th1.F.herm, map_div₀, map_mul, Complex.conj_conj, Complex.conj_ofReal]
     ring

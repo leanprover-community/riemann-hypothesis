@@ -369,8 +369,7 @@ theorem psTrunc_two_twist (G : FGLaw S d) (c : Fin d → Fin d → S) :
   · rw [ite_eq_left hd, ← MvPolynomial.coeff_coe]
     have h := hdiff e (by omega)
     rwa [map_sub, sub_eq_zero] at h
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [ite_eq_right hd, ← MvPolynomial.coeff_coe, hcoe, map_add (f := _), map_sum]
+  · rw [ite_eq_right hd, ← MvPolynomial.coeff_coe, hcoe, map_add (f := _), map_sum]
     have h2 : 2 < e.degree := by omega
     have hz : ∀ a b : Fin 2 × Fin d, coeff e (X a * X b : MvPowerSeries (Fin 2 × Fin d) S) = 0 :=
       fun a b => hXX a b e h2

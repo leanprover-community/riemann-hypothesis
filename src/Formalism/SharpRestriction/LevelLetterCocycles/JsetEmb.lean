@@ -82,8 +82,7 @@ theorem lagrange_eigen_decomposition {ι : Type*} [Fintype ι] [DecidableEq ι] 
   · have hs := Lagrange.sum_basis hinj (Finset.univ_nonempty (α := ι))
     calc ∑ i, aeval T (Lagrange.basis Finset.univ v i) x
         = aeval T (∑ i, Lagrange.basis Finset.univ v i) x := by
-          set_option synthInstance.maxHeartbeats 100000 in
-            rw [map_sum, LinearMap.sum_apply]
+          rw [map_sum, LinearMap.sum_apply]
       _ = x := by rw [hs, map_one, Module.End.one_apply]
   · rw [aeval_apply_eigenvector_alt T (v j) u hu]
     by_cases h : i = j

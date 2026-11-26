@@ -438,9 +438,7 @@ namespace Formalism.MainNotions.N.Ln34
 
 open Formalism.WeaklyAdmissibleFiltrations Formalism.BasicNotions Formalism.BasicNotions.Loc Module Formalism.MainNotions.ElementDenominator Formalism.MainNotions.ElementDenominator.CongruenceModules
 
-set_option maxHeartbeats 1000000 in
 theorem invLiftCondition : InvLiftStep := by
-  set_option synthInstance.maxHeartbeats 400000 in
   intro D HW F Cm CA CB CK hA l _ hl K LL hG π' E hπ T h' hh' hT hJ c
   haveI := ((HW l).W K 1 LL hG).ddTowO T
   have hNL : NinLam ((HW l).W K 1 LL hG) T (Formalism.MainNotions.DeltaInvariantLattices.Eat E π') h' :=

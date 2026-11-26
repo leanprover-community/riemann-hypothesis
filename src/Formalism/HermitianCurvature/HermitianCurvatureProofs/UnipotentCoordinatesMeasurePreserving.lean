@@ -6219,7 +6219,6 @@ theorem utSplit_mp : MeasurePreserving (utSplit (ph := ph) (n := n)) volume
   have h2 := measurePreserving_sumPiEquivProdPi
     (fun _ : (G.UT ph ⊕ (Fin ph × Fin (n + 1))) ⊕ G.UT (n + 1) => (volume : Measure ℂ))
   have h3 := measurePreserving_sumPiEquivProdPi (fun _ : G.UT ph ⊕ (Fin ph × Fin (n + 1)) => (volume : Measure ℂ))
-  set_option synthInstance.maxHeartbeats 200000 in
   have h4 : MeasurePreserving (MeasurableEquiv.prodCongr ((MeasurableEquiv.sumPiEquivProdPi (fun _ => ℂ)).trans
       (MeasurableEquiv.prodCongr (MeasurableEquiv.refl _) (MeasurableEquiv.curry (Fin ph) (Fin (n + 1)) ℂ)))
       (MeasurableEquiv.refl (G.UT (n + 1) → ℂ)))

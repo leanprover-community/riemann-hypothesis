@@ -48,8 +48,7 @@ theorem gauss_abs {H : Type} [AddCommGroup H] [Fintype H] (F : H → ℂ) (B : H
     simp only [e] at h
     exact h
   calc (∑ y, F y) * conj (∑ y, F y) = ∑ z, ∑ y, F y * conj (F z) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum, Finset.sum_mul_sum, Finset.sum_comm]
+        rw [map_sum, Finset.sum_mul_sum, Finset.sum_comm]
     _ = ∑ z, ∑ w, F (z + w) * conj (F z) := by
         refine Finset.sum_congr rfl fun z _ => ?_
         exact (Fintype.sum_equiv (Equiv.addLeft z) _ _ fun w => rfl).symm

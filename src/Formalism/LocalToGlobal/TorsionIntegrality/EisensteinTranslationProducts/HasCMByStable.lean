@@ -64,8 +64,7 @@ theorem cW_map {K K' : Type} [Field K] [Field K'] (φ : K →+* K') (g2 g3 : K) 
     split_ifs with h2 h3 h4
     · rw [map_div₀, map_ofNat]
     · rw [map_div₀, map_ofNat]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_mul, map_div₀, map_mul, map_add (f := _), map_sub, map_mul, map_natCast, map_one, map_sum]
+    · rw [map_mul, map_div₀, map_mul, map_add (f := _), map_sub, map_mul, map_natCast, map_one, map_sum]
       simp only [map_ofNat]
       congr 1
       refine Finset.sum_congr rfl fun m _ => ?_

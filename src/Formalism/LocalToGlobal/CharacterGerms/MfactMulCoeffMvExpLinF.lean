@@ -28,8 +28,7 @@ theorem constantCoeff_linF (lam : τ → K) : constantCoeff (linF lam) = 0 := by
 
 theorem pderiv_linF (lam : τ → K) (w : τ) : pderiv (R := K) w (linF lam) = C (lam w) := by
   classical
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [linF, map_sum]
+  rw [linF, map_sum]
   simp only [Derivation.map_smul, pderiv_X]
   rw [Finset.sum_eq_single w]
   · simp [MvPowerSeries.smul_eq_C_mul]

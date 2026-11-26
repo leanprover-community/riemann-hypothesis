@@ -337,8 +337,7 @@ theorem pol_eq_rowDiv (R : Type) [CommRing R] {r m : ℕ} (a b : Fin r) (f : MvP
 theorem pol_map {R S : Type} [CommRing R] [CommRing S] (ψ : R →+* S) {r m : ℕ} (a b : Fin r)
     (f : MvPolynomial (Fin r × Fin m) R) :
     pol S a b (MvPolynomial.map ψ f) = MvPolynomial.map ψ (pol R a b f) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [pol_apply, pderiv_map, map_sum]
+  simp [pol_apply, pderiv_map, map_sum]
 
 theorem pol_mem_dualWeyl (R : Type) [CommRing R] {r m : ℕ} (ν : Fin m → ℕ) (a b : Fin r)
     (f : MvPolynomial (Fin r × Fin m) R) (hf : f ∈ dualWeyl R r m ν) : pol R a b f ∈ dualWeyl R r m ν := by

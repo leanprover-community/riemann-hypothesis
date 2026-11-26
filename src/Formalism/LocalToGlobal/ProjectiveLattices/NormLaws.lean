@@ -68,21 +68,20 @@ theorem cusp_L2_of_measurable (hσ : GoodEmb c σ) (hd : ∀ g, (dict g).2 ∈ (
 
 theorem l2Def_of_cusp (hσ : GoodEmb c σ) (hsup : SupDef Xo c U) (hae : AeDom U σ V dict mu)
     (h : CuspL2 U σ V dict mu) : L2DefiniteCuspForms U σ V dict mu h := by
-  set_option synthInstance.maxHeartbeats 200000 in
-    intro a n hdom f h0
-    have hhol : rdU (U σ) (f : Rul Xo c) ∈ holSub (U σ).X (laU (U σ) a n) :=
-      ((mem_cusp Xo c U a n f).1 f.2).2 σ hσ
-    have hz : (h a n hdom f).toLp _ = 0 := norm_eq_zero.1 h0
-    have hz' : jFn V σ (rdC U σ a n) dict mu f =ᵐ[muQ1 V] 0 :=
-      (MemLp.coeFn_toLp (h a n hdom f)).symm.trans (Lp.eq_zero_iff_ae_eq_zero.1 hz)
-    have hv := hae (laU (U σ) a n) (rdU (U σ) (f : Rul Xo c)) hhol hz'
-    have hE : supE (U σ).X (laU (U σ) a n) (rdU (U σ) (f : Rul Xo c)) = 0 := by
-      refine le_antisymm (iSup_le fun p => ?_) zero_le
-      rw [pnorm_of_eq_zero _ _ _ _ (hv p.1 p.2 p.2.2), ENNReal.ofReal_zero]
-    have hN : supN (U σ).X (laU (U σ) a n) (rdU (U σ) (f : Rul Xo c)) = 0 := by
-      unfold supN
-      rw [hE, ENNReal.toReal_zero]
-    exact Subtype.ext (hsup a n hdom σ hσ f f.2 hN)
+  intro a n hdom f h0
+  have hhol : rdU (U σ) (f : Rul Xo c) ∈ holSub (U σ).X (laU (U σ) a n) :=
+    ((mem_cusp Xo c U a n f).1 f.2).2 σ hσ
+  have hz : (h a n hdom f).toLp _ = 0 := norm_eq_zero.1 h0
+  have hz' : jFn V σ (rdC U σ a n) dict mu f =ᵐ[muQ1 V] 0 :=
+    (MemLp.coeFn_toLp (h a n hdom f)).symm.trans (Lp.eq_zero_iff_ae_eq_zero.1 hz)
+  have hv := hae (laU (U σ) a n) (rdU (U σ) (f : Rul Xo c)) hhol hz'
+  have hE : supE (U σ).X (laU (U σ) a n) (rdU (U σ) (f : Rul Xo c)) = 0 := by
+    refine le_antisymm (iSup_le fun p => ?_) zero_le
+    rw [pnorm_of_eq_zero _ _ _ _ (hv p.1 p.2 p.2.2), ENNReal.ofReal_zero]
+  have hN : supN (U σ).X (laU (U σ) a n) (rdU (U σ) (f : Rul Xo c)) = 0 := by
+    unfold supN
+    rw [hE, ENNReal.toReal_zero]
+  exact Subtype.ext (hsup a n hdom σ hσ f f.2 hN)
 
 theorem dict_dom_of {Comp : Type} {X : Comp → Data E r} {V : HSp D} {dict : GA D V → Σ k, Frame (X k).Ψ r}
     {Kf : Subgroup (GA D V)} {th} {hr}

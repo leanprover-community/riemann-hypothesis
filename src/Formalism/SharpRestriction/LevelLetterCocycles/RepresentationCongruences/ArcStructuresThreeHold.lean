@@ -1041,8 +1041,7 @@ theorem arc_section_map (hinj : Function.Injective (algebraMap O LL))
   refine ⟨κ + t, κ' + ∑ m, K m, Hh, fun k => ∑ m, a₁ m * algebraMap O (LetA O n) (μ m k), hHh,
     fun k => ⟨?_, ?_⟩, ?_⟩
   · exact W.AΔ.sum_mem fun m _ => W.AΔ.mul_mem (ha₁ m).1 (W.AΔ.algebraMap_mem _)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [Finset.mul_sum, map_sum]
+  · rw [Finset.mul_sum, map_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     rw [← mul_assoc, (ha₁ m).2, map_mul, ← IsScalarTower.algebraMap_apply O (LetA O n) W.EE]
   · have hS : ∀ m, InFP W T₂ c' e (W.π₀ * abelian₂ W A (c' + (e : ZMod n)) e ^ 2)

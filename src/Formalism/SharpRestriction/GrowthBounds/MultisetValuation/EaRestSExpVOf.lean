@@ -137,8 +137,7 @@ theorem ea_reduce {σ τ A : Type} [Finite σ] [Fintype A] (a b : A → σ) (be 
     intro x; unfold sub2 ren; congr 1; funext k; fin_cases k <;> rfl
   have hS0 : MvPowerSeries.constantCoeff
       (∑ x : A, sub2 p be (MvPowerSeries.X (a x) : MvPowerSeries σ (K0 p)) (MvPowerSeries.X (b x))) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]; exact Finset.sum_eq_zero fun x _ => by rw [hsubren]; exact hren0 _ _ hbe0
+    rw [map_sum]; exact Finset.sum_eq_zero fun x _ => by rw [hsubren]; exact hren0 _ _ hbe0
   have hPh0 : MvPowerSeries.constantCoeff Ph = 0 := by
     have h3 := hPh.1; rw [map_sub, hS0, sub_zero] at h3; exact h3
   have hy0 : MvPowerSeries.constantCoeff (inParam p be - Gser p c c') = 0 := by
@@ -157,14 +156,12 @@ theorem ea_reduce {σ τ A : Type} [Finite σ] [Fintype A] (a b : A → σ) (be 
         (MvPowerSeries.X (b x)))) + ∑ x : A, ren ![a x, b x] (inParam p be - Gser p c c')) := by
     rw [th_inParam_neg, hY, hInS]; ring
   have hGs0 : MvPowerSeries.constantCoeff (∑ x : A, ren ![a x, b x] (Gser p c c')) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]; exact Finset.sum_eq_zero fun x _ => hren0 _ _ hG0
+    rw [map_sum]; exact Finset.sum_eq_zero fun x _ => hren0 _ _ hG0
   have hE0 : MvPowerSeries.constantCoeff (inParam p Ph - inParam p (∑ x : A, sub2 p be
       (MvPowerSeries.X (a x) : MvPowerSeries σ (K0 p)) (MvPowerSeries.X (b x)))) = 0 := by
     rw [map_sub, th_inParam_const p hPh0, th_inParam_const p hS0, sub_zero]
   have hY0 : MvPowerSeries.constantCoeff (∑ x : A, ren ![a x, b x] (inParam p be - Gser p c c')) = 0 := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]; exact Finset.sum_eq_zero fun x _ => hren0 _ _ hy0
+    rw [map_sum]; exact Finset.sum_eq_zero fun x _ => hren0 _ _ hy0
   have hinExp : ∀ f : MvPowerSeries σ (K0 p), MvPowerSeries.constantCoeff f = 0 →
       inParam p (expK f) = expK (inParam p f) := fun f hf => by
     unfold inParam
@@ -186,10 +183,9 @@ theorem ea_reduce {σ τ A : Type} [Finite σ] [Fintype A] (a b : A → σ) (be 
       induction s using Finset.induction_on with
       | empty => simp [th_expK_zero]
       | insert x s hx ih =>
-        set_option synthInstance.maxHeartbeats 100000 in
-          rw [Finset.sum_insert hx, Finset.prod_insert hx, neg_add,
-          expK_add (hneg0 _ (hren0 _ _ hy0))
-            (hneg0 _ (by rw [map_sum]; exact Finset.sum_eq_zero fun _ _ => hren0 _ _ hy0)), ih]
+        rw [Finset.sum_insert hx, Finset.prod_insert hx, neg_add,
+        expK_add (hneg0 _ (hren0 _ _ hy0))
+          (hneg0 _ (by rw [map_sum]; exact Finset.sum_eq_zero fun _ _ => hren0 _ _ hy0)), ih]
     rw [hYdef, hprod]
     refine Finset.prod_induction _ (fun F => ∃ w : MvPowerSeries σ (WW p),
       F = MvPowerSeries.map (algebraMap (WW p) (K0 p)) w) ?_ ⟨1, by simp⟩ ?_

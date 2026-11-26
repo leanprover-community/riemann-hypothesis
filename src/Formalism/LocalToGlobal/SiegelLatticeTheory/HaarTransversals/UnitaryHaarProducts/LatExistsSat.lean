@@ -61,8 +61,7 @@ lemma sub_smul_mem_span_init {n : ℕ} (w : Fin (n + 1) → V) (f : V →ₗ[E] 
   rw [Fin.sum_univ_castSucc]
   have hfx : f (∑ i : Fin n, k i.castSucc • w i.castSucc + k (Fin.last n) • w (Fin.last n)) =
       k (Fin.last n) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, hf0, hf1]
+    simp [map_sum, hf0, hf1]
   rw [hfx, add_sub_cancel_right]
   exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
 

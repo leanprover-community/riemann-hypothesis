@@ -347,8 +347,7 @@ theorem mem_L_of_inclE_mem (u : Fin I.n → I.E)
       obtain ⟨⟨l, hl⟩, rfl⟩ := hv
       obtain ⟨o, ho⟩ := (I.L_dual l).1 hl y hy
       have : Φ (fun i => ι (l i)) = ι (Formalism.UG.hform (starRingEnd I.E) I.J y l) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Φ, Formalism.UG.hform, map_sum, map_mul]
+        simp only [Φ, Formalism.UG.hform, map_sum, map_mul]
       rw [this, ← ho]
       exact inclE_int_mem I o
     | zero => simp [Φ]
@@ -366,8 +365,7 @@ theorem mem_L_of_inclE_mem (u : Fin I.n → I.E)
       exact mul_mem a.2 hv
   have h1 := hΦ _ hu
   have : Φ (fun i => ι (u i)) = ι (Formalism.UG.hform (starRingEnd I.E) I.J y u) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp only [Φ, Formalism.UG.hform, map_sum, map_mul]
+    simp only [Φ, Formalism.UG.hform, map_sum, map_mul]
   rw [this] at h1
   exact mem_OE_of_inclE_mem _ h1
 

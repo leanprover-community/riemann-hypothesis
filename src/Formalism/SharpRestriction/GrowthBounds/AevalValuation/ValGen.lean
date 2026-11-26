@@ -132,8 +132,7 @@ theorem twist_aeval (LL : Letters ι) (LL' : Letters κ) (S L : Set ι) (S' : Se
       rw [hg]
       simp only [twistSub, eval₂Hom_X', ite_eq_left hS, ite_eq_left hf, hvec]
       split_ifs
-      · set_option synthInstance.maxHeartbeats 100000 in
-          simp only [thetaG, map_sum, map_mul, eval₂Hom_C, eval₂Hom_X']
+      · simp only [thetaG, map_sum, map_mul, eval₂Hom_C, eval₂Hom_X']
         apply Finset.sum_congr rfl
         intro b _
         rw [(h1 (v.1, b) hv hS).1, map_X]

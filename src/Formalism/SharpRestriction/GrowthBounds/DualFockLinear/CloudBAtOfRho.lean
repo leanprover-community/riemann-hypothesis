@@ -179,8 +179,7 @@ theorem cloudBAt_of_rho {p n' : ℕ} {W Qq O Kf : Type} [CommRing W] [IsDomain W
   have hak : a ≤ 2 * κ := by omega
   choose F' hF'1 hF'2 using fun x : Fin nb × Fin n2 => h4 β (FsB x.1) (sh x.2) (S x) (hSd x.1 x.2)
   have hG : Θ (∑ x, c x • F' x) = ρ β xx := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hxx, map_sum, map_sum]
+    rw [hxx, map_sum, map_sum]
     apply Finset.sum_congr rfl
     intro x _
     rw [map_smul, LinearMap.map_smul_of_tower, hF'2]

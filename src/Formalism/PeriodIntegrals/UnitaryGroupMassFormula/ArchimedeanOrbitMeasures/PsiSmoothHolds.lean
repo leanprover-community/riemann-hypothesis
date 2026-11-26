@@ -41,8 +41,7 @@ theorem psiSmooth_holds : PsiSmoothU := by
   intro n ε m h hmh horth ι η _ _ L₀ L₁
   set P := EuclideanSpace ℝ ι
   set Q := EuclideanSpace ℝ η
-  set_option synthInstance.maxHeartbeats 200000 in
-    letI : ContinuousSMul ℝ (P × Q) := inferInstance
+  letI : ContinuousSMul ℝ (P × Q) := inferInstance
   set A : P × Q →L[ℝ] Matrix (Fin n) (Fin n) ℂ :=
     (unrLin n).toContinuousLinearMap ∘L m.subtypeL ∘L (L₀.toContinuousLinearEquiv : P →L[ℝ] m) ∘L
       ContinuousLinearMap.fst ℝ P Q with hA

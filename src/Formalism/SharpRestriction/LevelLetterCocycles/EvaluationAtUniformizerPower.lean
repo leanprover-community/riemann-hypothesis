@@ -782,8 +782,7 @@ theorem ser_cv (κ : M →ₗ[L] L) (s₀ : ℕ) (g : PowerSeries L) (y : ℤ �
   rw [ser, PowerSeries.coeff_mk, cv, PowerSeries.coeff_mul,
     Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   rw [finsum_eq_sum_of_support_subset (s := Finset.range (j + 1))]
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     refine Finset.sum_congr rfl fun i hi => ?_
     have hij : i ≤ j := Nat.lt_succ_iff.1 (Finset.mem_range.1 hi)
     rw [map_smul, ser, PowerSeries.coeff_mk, smul_eq_mul]

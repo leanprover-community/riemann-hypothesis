@@ -79,8 +79,7 @@ theorem card_lift_pred [Finite A] (hπ : Function.Surjective π) (hστ : ∀ a,
           refine Ideal.sum_mem _ fun i _ => Ideal.add_mem _ ?_ ?_
           · exact Ideal.mul_mem_left _ _ (δ i).2
           · exact Ideal.mul_mem_right _ _ (hIσ _ (δ i).2)
-        · set_option synthInstance.maxHeartbeats 100000 in
-            rw [linPart_apply, map_sum]
+        · rw [linPart_apply, map_sum]
           refine Finset.sum_congr rfl fun i _ => ?_
           simp only [map_add (f := _), map_mul, hσ]
           ring
@@ -113,8 +112,7 @@ theorem card_lift_pred [Finite A] (hπ : Function.Surjective π) (hστ : ∀ a,
       σ (n - ∑ i, σ (x0 i) * x0 i) = n - ∑ i, σ (x0 i) * x0 i
     refine ⟨?_, ?_⟩
     · rw [RingHom.mem_ker, map_sub, hNx0, sub_self]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        rw [map_sub, hn, map_sum]
+    · rw [map_sub, hn, map_sum]
       congr 1
       refine Finset.sum_congr rfl fun i _ => ?_
       simp only [map_mul, hσ]

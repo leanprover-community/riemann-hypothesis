@@ -52,8 +52,6 @@ private theorem local_value_eq_zsmul {ι A R M : Type} [Fintype ι] [DecidableEq
     ((hfκ ⟨t, ht⟩).trans ((hfδ ⟨t, ht⟩).symm.trans
       (congrArg (fun a : L => k • f a) (Subtype.ext hback))))
 
-set_option maxHeartbeats 20000000 in
-set_option synthInstance.maxHeartbeats 400000 in
 theorem diaFun_same (T : Forms0 D u) (v : (D.mem u).A.vT) (k : ℤ)
     (δ : UPts (sigD D) (gramN D 0 (Nat.zero_le _)) (FiniteAdeleRing (𝓞 D.host.F) D.host.F))
     (hδ : IsDia T.cls0.lev (T.atT.eV v).1 (T.atT.eV v).2 k δ) (c c2 : (D.mem u).C.cls 0)

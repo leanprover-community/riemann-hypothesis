@@ -383,8 +383,7 @@ theorem ring_objects_of_matrix_data (hEM : StatEMat) (hSP : StatSplitPts) (hKO :
       map_mul' := fun a b => by
         ext i j; apply hι; rw [hent]
         show (a.1 π' * b.1 π') i j = _
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [Matrix.mul_apply, map_sum, map_mul, hent]
+        simp only [Matrix.mul_apply, map_sum, map_mul, hent]
       map_zero' := by
         ext i j; apply hι; rw [hent]
         show (0 : Matrix d d K) i j = ι ((0 : Matrix d d O) i j)
@@ -555,8 +554,7 @@ theorem ring_objects_of_matrix_data (hEM : StatEMat) (hSP : StatSplitPts) (hKO :
   let tE : G → T' := fun g => ⟨cE g, hcE g⟩
   have hEs : E = ∑ g ∈ sE, tE g • rR g := Subtype.ext (by
     show E.1 = R'.val (∑ g ∈ sE, tE g • rR g)
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [hEsum, map_sum]
+    rw [hEsum, map_sum]
     exact Finset.sum_congr rfl fun g _ => funext fun y => (hsv (tE g) (rR g) y).symm)
   let τ : T' := ∑ g ∈ sE, tE g * ((χ g : (T')ˣ) : T')
   let c1 : Fin (t + 1) := ⟨1, by omega⟩
@@ -571,8 +569,7 @@ theorem ring_objects_of_matrix_data (hEM : StatEMat) (hSP : StatSplitPts) (hKO :
     have h2 : E.1 π' a1.1 a1.1 = ι δO := by
       rw [hEπ, Matrix.diagonal_apply_eq]
       exact hval1 a1.1 (by rw [a1.2])
-    set_option synthInstance.maxHeartbeats 100000 in
-      rw [← h2, hEsum, h1, map_sum]
+    rw [← h2, hEsum, h1, map_sum]
     simp only [Finset.sum_apply, Matrix.sum_apply]
     refine Finset.sum_congr rfl fun g _ => ?_
     show _ = ι (cE g π') • ι (r₀ g π a1.1 a1.1)

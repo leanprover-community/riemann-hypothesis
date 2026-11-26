@@ -38,8 +38,7 @@ theorem cayProdU_of (hC : CayDensG) (hP : SumLPres) : CayProdU := by
   obtain ⟨r₀, hr₀, f₀, hm, hc, h0, hS⟩ := hC n ε hG
   obtain ⟨_, hPS⟩ := hP n ε m h hmh horth ι η L₀ L₁
   set F := sumL ε m h hmh L₀ L₁ with hF
-  set_option synthInstance.maxHeartbeats 200000 in
-    have hFc : Continuous F := LinearMap.continuous_of_finiteDimensional F
+  have hFc : Continuous F := LinearMap.continuous_of_finiteDimensional F
   refine ⟨r₀ / 2, by positivity, fun p => f₀ (F p), hc.comp_of_eq hFc.continuousAt (map_zero F), ?_,
     hm.comp hFc.measurable, ?_⟩
   · show f₀ (F 0) = gaugeU ε

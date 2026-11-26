@@ -39,8 +39,7 @@ theorem cW_map (g2 g3 : K) (k : ℕ) : φ (cW g2 g3 k) = cW (φ g2) (φ g3) k :=
     split_ifs with h2 h3 h4
     · rw [map_div₀, map_ofNat]
     · rw [map_div₀, map_ofNat]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [map_mul, map_div₀, map_add, map_sub, map_natCast, map_one, map_ofNat, map_sum]
+    · simp only [map_mul, map_div₀, map_add, map_sub, map_natCast, map_one, map_ofNat, map_sum]
       congr 1
       refine Finset.sum_congr rfl fun m _ => ?_
       have hm := m.isLt

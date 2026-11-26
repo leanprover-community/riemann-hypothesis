@@ -135,8 +135,7 @@ theorem exists_map_of_inWj0 {P : MvPolynomial σ (KK O)} (hP : InWj w P 0) :
     ∃ h : MvPolynomial σ O, MvPolynomial.map (algebraMap O (KK O)) h = P ∧ h.vars ⊆ P.vars := by
   choose a ha using hP
   refine ⟨∑ m ∈ P.support, monomial m (a m), ?_, ?_⟩
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum]
+  · rw [map_sum]
     conv_rhs => rw [P.as_sum]
     refine Finset.sum_congr rfl fun m _ => ?_
     rw [map_monomial, ha]; simp

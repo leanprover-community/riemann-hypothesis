@@ -167,8 +167,7 @@ theorem finCovol {D : D7} (V W : HSp D) : Formalism.IndefR.Heis.FinCovol V W := 
   have hfd : ∀ μ : Measure (WA V W), IsAddFundamentalDomain (ratL V W) (FD V W) μ :=
     fun μ => IsAddFundamentalDomain.mk' (meas_FD V W).nullMeasurableSet (exU V W)
   refine ⟨⟨Measure.addHaar, FD V W, inferInstance, hfd _⟩, fun μ 𝓕 hμ h𝓕 => ?_⟩
-  set_option synthInstance.maxHeartbeats 200000 in
-    rw [h𝓕.measure_eq (hfd μ)]
+  rw [h𝓕.measure_eq (hfd μ)]
   exact (measure_mono hFK).trans_lt hK.measure_lt_top
 
 end D7

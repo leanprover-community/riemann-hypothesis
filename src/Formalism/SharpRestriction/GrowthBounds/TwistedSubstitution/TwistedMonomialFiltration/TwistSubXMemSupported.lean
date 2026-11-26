@@ -343,12 +343,10 @@ theorem untw_comp (w : Set ι) (hw : ∀ l ∈ w, LL.vec l = true) (hd : Disjoin
       unfold twistSub
       rw [eval₂Hom_X', eval₂Hom_X', ite_eq_left (Set.mem_union_left w hS), ite_eq_left hS]
       split_ifs
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+      · rw [map_sum]
         refine Finset.sum_congr rfl fun b _ => ?_
         rw [map_mul, untw_C, untw_X, ite_eq_right hnw]
-      · set_option synthInstance.maxHeartbeats 100000 in
-          rw [map_sum]
+      · rw [map_sum]
         refine Finset.sum_congr rfl fun b _ => ?_
         rw [map_mul, untw_C, untw_X, ite_eq_right hnw]
     · by_cases hW : v.1 ∈ w

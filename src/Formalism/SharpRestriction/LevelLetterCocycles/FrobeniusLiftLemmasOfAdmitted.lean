@@ -1305,7 +1305,6 @@ theorem rhoLift_of_Adm (hA : admitted D HW F Cm CR CA CB CK) : rhoLift D HW F :=
     ⟨((truncation_clause_of_admitted D HW F Cm hA).2 l K LL hg).2, Formalism.MainNotions.CrystallineLiftingInputs.Tools.local_clause_of_admitted_statements D HW F Cm hA l K LL hg⟩
 
 
-set_option maxHeartbeats 1600000 in
 theorem h2_bound_of_admitted (hA : admitted D HW F Cm CR CA CB CK) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
     (hg : Loc.Good K 1 LL) [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))] :
     Formalism.MainNotions.N.Pv.LocalLengthBound.H2Bound ((HW l).W K 1 LL hg) := by
@@ -1342,7 +1341,6 @@ theorem h2_bound_of_admitted (hA : admitted D HW F Cm CR CA CB CK) (l : ℕ) [Fa
     (fun T hT c ζ hζ x hx hγx k => hG.1 T hT c ζ hζ ⟨x, hx⟩ hγx k) hG.2 d T₁ T₂ F' b S η m hset
 
 
-set_option maxHeartbeats 1600000 in
 theorem lemGA_rec (hA : admitted D HW F Cm CR CA CB CK) (l : ℕ) [Fact l.Prime] (K LL : Loc.FinExt l)
     (hg : Loc.Good K 1 LL) [NeZero (Module.finrank ℚ_[l] ↥(Loc.K0 K))] :
     LemGA ((HW l).W K 1 LL hg) := by
@@ -1369,8 +1367,7 @@ theorem lemGA_rec (hA : admitted D HW F Cm CR CA CB CK) (l : ℕ) [Fact l.Prime]
     Formalism.MainNotions.UnusedSlot80.ring_condition_uniformizer_polynomial D HW F hP9 l K LL hrec
   have hG : Formalism.MainNotions.N.Pv.LocalLengthBound.GamN ((HW l).W K 1 LL hg) ∧
       Formalism.MainNotions.N.Pv.LocalLengthBound.GamA ((HW l).W K 1 LL hg) := by
-    set_option synthInstance.maxHeartbeats 400000 in
-      exact Formalism.MainNotions.N.Pv.LocalLengthBound.gam_of_tie ((HW l).W K 1 LL hg) hCA.2.1 hCT
+    exact Formalism.MainNotions.N.Pv.LocalLengthBound.gam_of_tie ((HW l).W K 1 LL hg) hCA.2.1 hCT
   obtain ⟨hGN, hGA⟩ := hG
   have hER : Formalism.MainNotions.RamifiedCoefficientChains.Sh.ExpRing ((HW l).W K 1 LL hg) :=
     Formalism.MainNotions.N.Pv.LocalLengthBound.expRing_of ((HW l).W K 1 LL hg) hR

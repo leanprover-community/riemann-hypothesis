@@ -89,8 +89,7 @@ theorem crd_of_L (l : Fin X.B.I.n → X.B.I.E) (hl : l ∈ X.B.I.L) :
   refine ⟨∑ i, X.ιE (l i) • X.bas i, (X.L_eq l).1 hl, ?_⟩
   funext j
   have h : X.bas.repr (∑ i, X.ιE (l i) • X.bas i) j = X.ιE (l j) := by
-    set_option synthInstance.maxHeartbeats 100000 in
-      simp [map_sum, Module.Basis.repr_self, Finsupp.single_apply]
+    simp [map_sum, Module.Basis.repr_self, Finsupp.single_apply]
   simp only [crdOf]
   rw [h, RingEquiv.symm_apply_apply]
 

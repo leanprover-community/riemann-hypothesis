@@ -51,8 +51,7 @@ theorem DictLat.sigR_one_tmul (I : AutInst) (a : Af I.F) :
 
 theorem DictLat.hhat_iv (I : AutInst) (v w : Fin I.n → I.E) :
     hhat I (iv I v) (iv I w) = Formalism.UG.inclE (F := I.F) (Af I.F) (Formalism.UG.hform (starRingEnd I.E) I.J v w) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp [hhat, iv, Formalism.UG.hform, DictLat.sigR_inclE, map_sum, map_mul, starRingEnd_apply]
+  simp [hhat, iv, Formalism.UG.hform, DictLat.sigR_inclE, map_sum, map_mul, starRingEnd_apply]
 
 theorem DictLat.inclE_int (I : AutInst) {e : I.E} (he : e ∈ (algebraMap (𝓞 I.E) I.E).range) :
     Formalism.UG.inclE (F := I.F) (Af I.F) e ∈ IntAf I.F I.E := by

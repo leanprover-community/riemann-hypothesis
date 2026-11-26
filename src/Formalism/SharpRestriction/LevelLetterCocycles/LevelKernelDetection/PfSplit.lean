@@ -228,8 +228,7 @@ theorem exists_invariant_lift_average (hcu : IsUnit ((W.DelF.card : ℕ) : W.EE)
     exact Finset.sum_nbij' (fun δ => δ' * δ) (fun δ => δ'⁻¹ * δ)
       (fun δ hδ => finiteDelta_mul_mem hδ' hδ) (fun δ hδ => finiteDelta_mul_mem (finiteDelta_inv_mem hδ') hδ)
       (fun δ _ => by group) (fun δ _ => by group) (fun δ _ => rfl)
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_smul, map_sum]
+  · rw [map_smul, map_sum]
     rw [Finset.sum_congr rfl fun δ hδ => by rw [W.map_γ, hw, hy δ hδ]]
     rw [Finset.sum_const, ← Nat.cast_smul_eq_nsmul W.EE, smul_smul, hcu.val_inv_mul, one_smul]
 

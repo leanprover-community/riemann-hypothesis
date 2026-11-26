@@ -847,8 +847,7 @@ lemma lift_substitution_letter (w : O) (LL : LiftLetters (Fin N)) (g g' : Matrix
       MvPolynomial.map (algebraMap O (KK O)) (zetaL p f w LL g g' i b) := by
   unfold letG zetaL
   by_cases hv : LL.vec i = true
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [ite_eq_left hv, ite_eq_left hv, map_sum]
+  · rw [ite_eq_left hv, ite_eq_left hv, map_sum]
 
     simp only [map_mul, liftSubst_X_vec p f O w LL r g' hg' i _ hv, algHom_C, Matrix.vecMul, dotProduct, map_sum,
     Matrix.map_apply, phiS, RingHom.comp_apply, map_C, yO, map_X]

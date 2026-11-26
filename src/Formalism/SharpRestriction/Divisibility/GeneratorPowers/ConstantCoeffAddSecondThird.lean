@@ -335,8 +335,7 @@ theorem ev_act_pt {O : Type} [CommRing O] [StarRing O] (B : FB S d O) (a : O) {n
     funext j k
     fin_cases j
     rfl
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [h2, ev_eq_hom _ hq, map_sum]
+  · rw [h2, ev_eq_hom _ hq, map_sum]
     simp only [map_smul]
     simp only [← ev_eq_hom _ hq]
 

@@ -228,7 +228,6 @@ theorem arith {tc sc N r H0 : ℕ} {S : ℤ} (hts : tc ≤ sc) (hs : (sc : ℤ) 
   zify
   nlinarith
 
-set_option maxHeartbeats 800000 in
 theorem gen_core (LT : LocTheory) (hgen : H1fGeneratorBoundAll LT) (hfon : FontaineRegularity LT) (l : ℕ) [Fact l.Prime]
     (hl : l ≠ 2) (K LL : FinExt l) (hg : Good K 1 LL) (T : LocLat ↥(GK K) ℚ_[l] ↥LL.1 ↥(OL LL))
     (r : ℕ) (hc : IsCrys ((LT l).PD K) T.ρ) (hr : finrank ↥LL.1 T.V = r) :
@@ -256,7 +255,6 @@ theorem gen_core (LT : LocTheory) (hgen : H1fGeneratorBoundAll LT) (hfon : Fonta
     rw [Finset.sum_const, Finset.card_univ, card_emb K LL hg, nsmul_eq_mul]))
   have hV : (finrank ↥LL.1 T.V : ℤ) = r := by exact_mod_cast hr
   rw [hV] at hcard
-  set_option synthInstance.maxHeartbeats 200000 in
   have h0' : finrank ↥LL.1 ↥(H0V T.ρ) ≤ r := hr ▸ Submodule.finrank_le _
   exact arith ht hcard h0' hS
 

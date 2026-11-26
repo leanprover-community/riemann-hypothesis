@@ -137,7 +137,6 @@ theorem SplitSk_finFactor (Λ : Set (Fin n → E)) (μ : Measure (Hsub (Af F) σ
       rw [mul_smul, hst, hx]
     rw [e3, measure_empty]
 
-set_option synthInstance.maxHeartbeats 400000 in
 theorem SplitSk_ident (MG : MeasG σ J r) (MW : MeasW σ J P) (νH : Measure (Fin (r + 1 + r) → Fin n → AF F ⊗[F] E))
     (Λ : Set (Fin n → E)) (hsplit : Measurable (splitA σ J))
     (hsurj : ∀ (g₁ : HA (Ainf F) σ J) (g₂ : HA (Af F) σ J), ∃ g, splitA σ J g = (g₁, g₂))

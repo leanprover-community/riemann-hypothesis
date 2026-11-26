@@ -166,10 +166,8 @@ theorem KapChoice.rt_ne_zero (p : ℕ) (hp : p.Prime) (hs : SplitK D p) : k.rt p
   intro h0
   have h := k.rt_pow p hp hs
   have hpi := k.pi_ne_zero p hp hs
-  set_option synthInstance.maxHeartbeats 200000 in
-    have h1 : ((k.pi p : 𝓞 D.host.K) : D.host.K) ≠ 0 := by simpa using hpi
-  set_option synthInstance.maxHeartbeats 200000 in
-    have h2 : (((k.pi p : 𝓞 D.host.K) : D.host.K) : D.host.E) ≠ 0 := by simpa using h1
+  have h1 : ((k.pi p : 𝓞 D.host.K) : D.host.K) ≠ 0 := by simpa using hpi
+  have h2 : (((k.pi p : 𝓞 D.host.K) : D.host.K) : D.host.E) ≠ 0 := by simpa using h1
   rw [h0, zero_pow (mul_ne_zero two_ne_zero (classNumber_ne D))] at h
   exact (div_ne_zero ((map_ne_zero _).2 h2) ((map_ne_zero _).2 ((map_ne_zero _).2 h2))) h.symm
 

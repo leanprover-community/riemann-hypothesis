@@ -312,8 +312,7 @@ theorem unit_function_mahler_decay_of (D : Formalism.BasicNotions.D7) (h1 : ∀ 
             ∏ k, asm_bin σ k (j k)) =
           ∑ j ∈ boundedDegreeExponents σ c, (∏ k, mah (asm_f p t rho inv k) (j k)) *
             ∏ k, ((e' k).choose (j k) : ℚ) := by
-        set_option synthInstance.maxHeartbeats 100000 in
-          simp only [map_sum, map_mul, map_prod, MvPolynomial.eval_C, asm_bin_eval]
+        simp only [map_sum, map_mul, map_prod, MvPolynomial.eval_C, asm_bin_eval]
       rw [e]
       exact hm e'
   · have hf := fun k => asm_f_dec (h1 p hp) (h2 p hp) t rho hr inv k

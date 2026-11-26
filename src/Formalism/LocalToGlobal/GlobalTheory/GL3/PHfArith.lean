@@ -110,7 +110,6 @@ theorem div_okc_host (cc : Ideal (𝓞 H.K)) (hcc : cc ≠ ⊥) (δ : ℂ) (hδ 
     obtain ⟨x, y, -, hz⟩ := hpair c₁ c₂
     exact ⟨y, by rw [Bf_lat_host, hz, im_coord_host]; ring⟩
   have hne : ∃ w₁ ∈ L, ∃ w₂ ∈ L, Bf w₁ w₂ ≠ 0 := by
-    set_option synthInstance.maxHeartbeats 200000 in
     obtain ⟨c, hc, hc0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hcc
     refine ⟨δ * phH H c, hL_sub c hc,
       δ * phH H (c * om_host H), hL_sub (c * om_host H) (cc.mul_mem_right _ hc), ?_⟩

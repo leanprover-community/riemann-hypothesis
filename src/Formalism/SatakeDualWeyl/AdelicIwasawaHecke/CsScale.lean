@@ -89,8 +89,7 @@ theorem csScale_sigR_mem (σ : E →ₐ[F] E) {s : 𝒜} (hs : s ∈ 𝒮) :
 theorem csScale_hform_incl (σ : E →ₐ[F] E) (J : Matrix n n E) (x y : n → E) :
     hform (sigR σ (FiniteAdeleRing (𝓞 F) F)) (J.map ιA) (fun i => ιA (x i)) (fun i => ιA (y i)) =
       ιA (hform (σ : E →+* E) J x y) := by
-  set_option synthInstance.maxHeartbeats 100000 in
-    simp only [hform, map_sum, map_mul, Matrix.map_apply, csScale_sigR_incl]
+  simp only [hform, map_sum, map_mul, Matrix.map_apply, csScale_sigR_incl]
 
 theorem csScale_den (σ : E →ₐ[F] E) (J : Matrix n n E) (Λ : Submodule (𝓞 E) (n → E))
     (hfin : Module.Finite (𝓞 E) Λ) :

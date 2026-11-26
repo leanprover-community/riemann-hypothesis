@@ -249,8 +249,7 @@ theorem subst_coordZA_zOfX (z : X.ZA j) :
   · rw [subst_lin (hasSubst_coordZA Kc)]
     simp only [MvPowerSeries.subst_X (hasSubst_coordZA Kc), Sys.coordZA, Finset.mul_sum]
     rw [Finset.sum_comm, Finset.sum_eq_single_of_mem s (by simp [h])]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [← mul_assoc, ← map_mul MvPowerSeries.C, ← Finset.sum_mul, ← map_sum MvPowerSeries.C]
+    · simp only [← mul_assoc, ← map_mul MvPowerSeries.C, ← Finset.sum_mul, ← map_sum MvPowerSeries.C]
       rw [dualK (X.om v) Kc he s s rfl]
       simp
     · intro s' hs' hne
@@ -262,8 +261,7 @@ theorem subst_coordZA_zOfX (z : X.ZA j) :
   · rw [subst_lin (hasSubst_coordZA Kc)]
     simp only [MvPowerSeries.subst_X (hasSubst_coordZA Kc), Sys.coordZA, Finset.mul_sum]
     rw [Finset.sum_comm, Finset.sum_eq_single_of_mem s (by simp [h])]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [← mul_assoc, ← map_mul MvPowerSeries.C, ← Finset.sum_mul, ← map_sum MvPowerSeries.C]
+    · simp only [← mul_assoc, ← map_mul MvPowerSeries.C, ← Finset.sum_mul, ← map_sum MvPowerSeries.C]
       simp only [mul_comm (algebraMap (K0 p) Kc (algebraMap (WW p) (K0 p) ((sigW p)^[s.val] ((X.om v).om _))))]
       rw [dualK (X.om v) Kc he s s rfl]
       simp

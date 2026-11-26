@@ -159,8 +159,7 @@ lemma mqk_induction (F : Type*) [Field F] [Algebra F E] {k : ℕ} (a : Fin k →
       | exact Finset.card_insert_of_notMem hj
     refine ⟨?_, ?_⟩
     · rw [mqk_insert, hcard, pow_succ, ← ihr, ← hfr]
-      set_option synthInstance.maxHeartbeats 200000 in
-        exact (Module.finrank_mul_finrank F K (IntermediateField.adjoin K {α j})).symm
+      exact (Module.finrank_mul_finrank F K (IntermediateField.adjoin K {α j})).symm
     · intro d y hy hyd
       rw [mqk_insert] at hy
       have hdK : algebraMap F E d ∈ K := K.algebraMap_mem d

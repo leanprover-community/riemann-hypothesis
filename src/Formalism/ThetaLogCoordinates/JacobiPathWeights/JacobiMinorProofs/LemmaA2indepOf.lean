@@ -1132,8 +1132,7 @@ theorem factEV_of : IndexWeightsDominance → PsiWeight → FactEV := by
     obtain ⟨h1, h2⟩ := key ν p hp'
     rw [← h2]
     exact (hT n (μ N) _ hanti h1).1
-  · set_option synthInstance.maxHeartbeats 100000 in
-      rw [map_sum, Finset.sum_eq_single (fun c _ => canIdx (μ N) c)]
+  · rw [map_sum, Finset.sum_eq_single (fun c _ => canIdx (μ N) c)]
     · have hcan : extF F (fun c _ => canIdx (μ N) c) = canIdx (μ N) := by
         funext c
         unfold extF

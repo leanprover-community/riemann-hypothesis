@@ -587,9 +587,8 @@ theorem glAct_inv_glAct {K : Type} [Field K] {k : ℕ} (g : GL (Fin k) K) (f : P
             rw [Finset.sum_comm]
         _ = X (Sum.inl i) := by
           simp only [hm, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
-    · set_option synthInstance.maxHeartbeats 100000 in
-        simp only [AlgHom.comp_apply, AlgHom.id_apply, glAct_X_inr, map_sum, map_mul,
-        MvPolynomial.algHom_C, MvPolynomial.algebraMap_eq, inv_inv]
+    · simp only [AlgHom.comp_apply, AlgHom.id_apply, glAct_X_inr, map_sum, map_mul,
+      MvPolynomial.algHom_C, MvPolynomial.algebraMap_eq, inv_inv]
       have hm : ∀ l : Fin k, C (∑ j : Fin k, ((g⁻¹ : GL (Fin k) K) : Matrix (Fin k) (Fin k) K) j i *
           (g : Matrix (Fin k) (Fin k) K) l j) = (if i = l then 1 else 0 : PolXY K k) := by
         intro l
