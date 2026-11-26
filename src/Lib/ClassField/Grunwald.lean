@@ -378,7 +378,9 @@ noncomputable instance [CMType E] (χ : QZChar Gal(Ω/E)) : CMTypeOver E (stepFi
       e
     else
       star e
-  mk_Φ := by aesop
+  mk_Φ u := by
+    dsimp only
+    split <;> simp
   eq_chosen_iff := by grind [embedding_mk_eq, Φ_mk_eq_or_star_eq, comap_mk, conjugate_comp,
     star_star]
 
