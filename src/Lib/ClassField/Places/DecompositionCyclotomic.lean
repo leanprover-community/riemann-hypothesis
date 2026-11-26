@@ -323,8 +323,10 @@ omit [IsAlgClosed Ω] [CharZero Ω] in
 /-- For the Galois group `Γ` of `Ω / K`, with `l` a prime natural number, the `l`-adic cyclotomic
 character is continuous. -/
 lemma continuous_cyclotomicChar : Continuous (cyclotomicChar (Γ := Γ) Ω l) :=
-  (cyclotomicCharacter.continuous l K Ω).comp
-    (continuous_of_equivariant_emb (φ := MulSemiringAction.toAlgAut Γ K Ω) 1 fun _ _ ↦ rfl)
+  -- `(… :)`: elaborated first without the expected type, which `Continuous.comp` would otherwise
+  -- try to unify by unfolding `cyclotomicCharacter`.
+  ((cyclotomicCharacter.continuous l K Ω).comp
+    (continuous_of_equivariant_emb (φ := MulSemiringAction.toAlgAut Γ K Ω) 1 fun _ _ ↦ rfl) :)
 
 open IntermediateField Subgroup MonoidHom IsCyclotomicExtension
 
