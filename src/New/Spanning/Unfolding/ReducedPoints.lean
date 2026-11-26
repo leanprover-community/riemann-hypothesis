@@ -423,7 +423,7 @@ lemma tsum_le_relIndex_pow_mul {A : Set α} [AddCommGroup β] (f : α → ι →
       (∀ a ∈ B, ∀ b ∈ B, ∀ i : ι, f a i - f b i ∈ K) → ∑' a : B, w a ≤ x) :
     ∑' a : A, w a ≤ ENNReal.ofReal (K.relIndex K' ^ card ι) * x := by
   -- Colour `a` by the classes of the `f a i` in `K' / (K ⊓ K')`.
-  have : Fintype (K' ⧸ K.addSubgroupOf K') := fintypeOfIndexNeZero h_index
+  let : Fintype (K' ⧸ K.addSubgroupOf K') := fintypeOfIndexNeZero h_index
   let colour (a : A) (i : ι) : K' ⧸ K.addSubgroupOf K' := mk' _ ⟨f a i, hf a a.property i⟩
   refine tsum_le_of_encard_range_le colour ?_ (fun a b hab i ↦ ?_) h_class
   · grw [encard_le_card]

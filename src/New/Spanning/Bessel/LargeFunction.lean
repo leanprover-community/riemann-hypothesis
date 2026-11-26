@@ -796,7 +796,7 @@ private lemma besselValueRep_inv_val (k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
     have h : besselValueRep rep k⁻¹ * besselValueRep rep k = 1 := by
       rw [← (besselValueRep rep).map_mul, inv_mul_cancel, (besselValueRep rep).map_one]
     exact congrArg Subtype.val h
-  exact left_inv_eq_right_inv hBA (besselValueRep rep k).2.2
+  exact left_inv_eq_right_inv hBA (besselValueRep rep k).property.2
 
 /-- Let `rep` be a continuous unitary representation of `H` on `ℂ^I`, `v` a unit vector of `ℂ^I`,
 `x` a point of `G₁`, and `l = 2λ` a parameter with coefficient `c_λ = l.dsCoeffInFrame` and large

@@ -827,7 +827,7 @@ lemma exists_eichler_mem_latticeStabilizer (a : Fin (𝔰.ϱ + 1)) (r : Ô E) (x
   -- trace `1`, and push it into the finite adeles.
   obtain ⟨v, hv⟩ := exists_star_vecMul_eq (S.latticeMiddle (Ô E)).splitGram m
   obtain ⟨-, -, τ, hτ_mem, -, -, hτ⟩ := exists_skew_unit (A := 𝔸f E)
-  have : Floors.TraceOne (Ô E) := ⟨⟨τ, hτ_mem⟩, Subtype.ext hτ⟩
+  let : Floors.TraceOne (Ô E) := ⟨⟨τ, hτ_mem⟩, Subtype.ext hτ⟩
   obtain ⟨u, hu, hu_sum, hu_eq⟩ := exists_mem_besselU_eq_eichlerMap a x r hv hx hm
   let u' : S.GFin := U.map (Ô E).subtype (by simp) (map_splitGram_latticeMiddle _) u
   have hu'_sum : simpleRootSum u' = (simpleRootSum u : Ô E) := (map_sum (Ô E).subtype _ _).symm
