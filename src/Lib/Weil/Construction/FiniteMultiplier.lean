@@ -740,9 +740,7 @@ lemma glMultiplier_map_star (γ : GL ι (𝔸f E)) :
   change IsSaturating (Ô E).matrix (γ.map (starRingEnd (𝔸f E)))
     (GeneralLinearGroup.map (starRingEnd (𝔸f E)) u) at h_star
   rw [h_star.glMultiplier_eq, hu.glMultiplier_eq, ← chiFin_star]
-  congr 1
-  rw [GeneralLinearGroup.map_det]
-  rfl
+  exact congrArg chiFin (GeneralLinearGroup.map_det (starRingEnd _) u)
 
 /-- Let E be a CM field with Weil data and `b` an element of `GL_ι(𝔸_f)`. The multiplier `Δ_f`
 (`New.glMultiplier`) of the conjugate transpose `star b` is the complex conjugate of `Δ_f b`. Here
