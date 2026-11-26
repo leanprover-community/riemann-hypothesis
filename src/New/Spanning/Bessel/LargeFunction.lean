@@ -203,11 +203,6 @@ lemma besselPairHom_snd_val (s : 𝔰.besselGraph) (x : 𝔰.G₁) :
     ((besselPairHom (ε := ε) x s).snd : Matrix 𝔰.κ 𝔰.κ ℂ) = (s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) := by
   simp [besselPairHom]
 
-/-- The second entry of `subOnePair (besselPairHom x) s` is the image of `s` in `H`, minus one. -/
-lemma subOnePair_besselPairHom_snd (s : 𝔰.besselGraph) (x : 𝔰.G₁) :
-    (subOnePair (besselPairHom (ε := ε) x) s).snd = (s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) - 1 := by
-  simp [besselPairHom_snd_val]
-
 variable {v : Matrix 𝔰.BesselIndex (Fin (𝔰.ϱ + 1)) ℂ} {i₀ : Matrix 𝔰.BesselIndex 𝔰.κ ℂ}
 
 /-- The unitary frame `p` takes a vector with entries of modulus at most `M` to one of length at
@@ -331,7 +326,7 @@ lemma inducesOn_besselPairHom (s : 𝔰.besselGraph)
     rw [← h_isometry, ← Matrix.mul_assoc, Units.inv_mul, Matrix.one_mul]
   obtain ⟨C, hC⟩ := exists_sub_one_mul_definiteCols_eq s
   refine ⟨C, ?_⟩
-  rw [subOnePair_besselPairHom_fst, subOnePair_besselPairHom_snd, Matrix.mul_assoc, h_isometry,
+  rw [subOnePair_besselPairHom_fst, subOnePair, besselPairHom_snd_val, Matrix.mul_assoc, h_isometry,
     Matrix.mul_assoc, hC, initCols_eq_of_frame h_frame, Matrix.mul_add, ← Matrix.mul_assoc, h_inv,
     Matrix.mul_assoc]
 
