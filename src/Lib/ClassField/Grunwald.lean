@@ -173,16 +173,6 @@ private lemma exists_nsmul_eq_zero_abelianLift_artinMap_eq_of_apply_principalIde
       _ = θ a := hμ a g hg.symm
       _ = ψ a := hθ ⟨a, ha⟩
 
-omit [Algebra E Ω] in
-/-- The idele `New.locIdele u x`, with single component `x` at `u`, is a unit outside `T` if `u ∈ T`
-or if `x` is a local unit (`v x = 1`). -/
-private lemma locIdele_mem_idelesUnitOff_of_mem_or_v_eq_one {T : Set (FinPlace E)} {u : FinPlace E}
-    {x : (LocField u)ˣ} (hu : u ∈ T ∨ v x.val = 1) : locIdele u x ∈ idelesUnitOff T := by
-  rcases hu with hu_T | hx_unit
-  · refine mem_idelesUnitOff.mpr fun w hw ↦ ?_
-    rw [locIdele_apply_of_ne (ne_of_mem_of_not_mem hu_T hw).symm x, map_one]
-  · exact locIdele_mem_idelesUnitOff hx_unit
-
 /-- Grunwald's theorem in prime exponent. Let `E` be totally complex, `p` prime, `S` a finite set of
 finite places, and `ψ` a character of the finite ideles with values in `ℚ/ℤ` (written
 multiplicatively), with open kernel and killed by `p`; it need not be trivial on `Eˣ`. Then some
@@ -276,8 +266,12 @@ lemma grunwald [IsTotallyComplex E] {p : ℕ} {S : Set (FinPlace E)} (hp : p.Pri
     rcases hu with hu_S | ⟨hu_not_prime, -⟩
     · exact hwT q (hST hu_S)
     · exact hu_not_prime (hw_prime q)
-  refine ⟨locIdele_mem_idelesUnitOff_of_mem_or_v_eq_one (hu.imp (fun hu_S ↦ hST hu_S) And.right),
-    mem_iInf.mpr fun q ↦ ?_⟩
+  have h_unit : locIdele u x ∈ idelesUnitOff T := by
+    rcases hu with hu_S | ⟨-, hx_unit⟩
+    · refine mem_idelesUnitOff.mpr fun w hw ↦ ?_
+      rw [locIdele_apply_of_ne (ne_of_mem_of_not_mem (hST hu_S) hw).symm x, map_one]
+    · exact locIdele_mem_idelesUnitOff hx_unit
+  refine ⟨h_unit, mem_iInf.mpr fun q ↦ ?_⟩
   change ideleAt (w q) (locIdele u x) ∈ (powMonoidHom p).range
   rw [ideleAt_locIdele_of_ne (h_ne q) x]
   exact one_mem _
