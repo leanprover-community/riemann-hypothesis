@@ -754,18 +754,17 @@ lemma ordRat_smul (h : IsPlaceOver A v) (g : Γ) (x : DiscreteUnits Ω) :
   -- Expand: `g` fixes `π`, which has order `1` at `A` and at `g • A`; then cancel `q.den`.
   have h_fix_π : unitsRep g (ofBase Γ Ω (.ofMul π) : DiscreteUnits Ω) = ofBase Γ Ω (.ofMul π) :=
     (ofBase Γ Ω (.ofMul π)).property g
-  have h_ord_π : ordRat K A (ofBase Γ Ω (.ofMul π)) = 1 := by
-    rw [h.ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
-  have h_ord_π_g : ordRat K (g • A) (ofBase Γ Ω (.ofMul π)) = 1 := by
-    rw [(h.smul g).ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
+  have h_ord_π {B : ClosurePlace} (hB : IsPlaceOver B v) :
+      ordRat K B (ofBase Γ Ω (.ofMul π)) = 1 := by
+    rw [hB.ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
   have h_ord_y : ordRat K A y = q.den * ordRat K A x - q.num := by
     dsimp only [y]
-    rw [_root_.map_sub, map_nsmul, map_zsmul, nsmul_eq_mul, zsmul_eq_mul, h_ord_π, mul_one]
+    rw [_root_.map_sub, map_nsmul, map_zsmul, nsmul_eq_mul, zsmul_eq_mul, h_ord_π h, mul_one]
   have h_ord_gy :
       ordRat K (g • A) (unitsRep g y) = q.den * ordRat K (g • A) (unitsRep g x) - q.num := by
     dsimp only [y]
     rw [_root_.map_sub, map_nsmul, map_zsmul, h_fix_π, _root_.map_sub, map_nsmul, map_zsmul,
-      nsmul_eq_mul, zsmul_eq_mul, h_ord_π_g, mul_one]
+      nsmul_eq_mul, zsmul_eq_mul, h_ord_π (h.smul g), mul_one]
   rw [h_ord_gy, h_ord_y] at h_int
   -- Cancel `q.den > 0`: `q ≤ t` exactly when `0 ≤ q.den * t - q.num`.
   have h_le (t : ℚ) : q ≤ t ↔ 0 ≤ q.den * t - q.num := by
