@@ -138,15 +138,15 @@ theorem norm_det_blockDiagPart (σ : ℤˣ) (g : USign ε) :
     ‖(blockDiagPart ε g).det‖ = ‖principalMinor g (ε · = σ)‖ ^ 2 := by
   -- `blockDiagPart ε g` is block diagonal with the two principal blocks of `g`, whose minors have
   -- equal norm.
-  have h_zero : ∀ i : n, ¬ε i = σ → ∀ j : n, ε j = σ → blockDiagPart ε g i j = 0 := by
-    aesop (add simp blockDiagPart)
+  have h_zero : ∀ i : n, ¬ε i = σ → ∀ j : n, ε j = σ → blockDiagPart ε g i j = 0 :=
+    fun i hi j hj ↦ ite_eq_right fun hij ↦ hi (hij.trans hj)
   -- there are only two signs, so `ε` is constant on the complement of `{i | ε i = σ}` as well
   have h_block (p : n → Prop) (hp : ∀ i j : n, p i → p j → ε i = ε j) :
       (blockDiagPart ε g).toSquareBlockProp p = g.val.val.toSquareBlockProp p :=
     ext fun i j ↦ ite_eq_left (hp i j i.prop j.prop)
   calc
     _ = ‖principalMinor g (ε · = σ)‖ * ‖principalMinor g (¬ε · = σ)‖ := by
-      simp [twoBlockTriangular_det _ _ h_zero, principalMinor, h_block (ε · = σ) (by grind),
+      simp [twoBlockTriangular_det _ _ h_zero, principalMinor, h_block (ε · = σ) (fun _ _ hi hj ↦ hi.trans hj.symm),
         h_block (¬ε · = σ) (by simp +contextual [Int.units_ne_iff_eq_neg])]
     _ = ‖principalMinor g (ε · = σ)‖ ^ 2 := by simp [principalMinor_compl, sq]
 
