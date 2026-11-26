@@ -190,9 +190,6 @@ lemma prod_frameScaleSq_bounds [S.IsAdmissible] (v : NumberField.InfinitePlace E
     grw [prod_le_prod₀ (fun a _ ↦ pow_nonneg (h_pos a) _) fun a _ ↦ h_factor a]
     simp [← pow_mul, mul_assoc, ← pow_succ]
 
--- Lean v4.37.0-rc1: elaborating side goals `0 < S.b ^ (60 * 𝔰.n ^ 2)` (`Shape.n` is an abbrev)
--- exceeds the default recursion depth.
-set_option maxRecDepth 2000 in
 /-- For admissible data, `pairingBoundConst ≤ 2 ^ (k f) τ d² / (deg c_G ^ f Λ²)`. The left side is
 the factor of the product over the infinite places of the open-cell bounds `pairingBoundSq` that
 does not depend on the rational element at which they are taken. The numbers `d = card BesselCoord`
@@ -227,7 +224,14 @@ lemma pairingBoundConst_le_mul [S.IsAdmissible] :
       prod_pos fun a _ ↦ pow_pos (div_pos ((even_two_mul _).pow_pos (by simp))
         (Nat.cast_pos.2 S.N_prime.pos)) _
     have h_box : S.frameBoxRadius ^ (9 * 𝔰.n) / s ^ 2 ≤ S.b ^ (453 * 𝔰.n ^ 2) := by
-      grw [← h_lower, frameBoxRadius]
+      have h_base := inv_pos.mpr (pow_pos (b_pos (S := S)) (60 * 𝔰.n ^ 2))
+      have h_div : S.frameBoxRadius ^ (9 * 𝔰.n) / s ^ 2 ≤
+          S.frameBoxRadius ^ (9 * 𝔰.n) / ((S.b ^ (60 * 𝔰.n ^ 2))⁻¹) ^ 2 := by
+        generalize (S.b ^ (60 * 𝔰.n ^ 2))⁻¹ = d at h_lower h_base ⊢
+        exact div_le_div_of_nonneg_left (pow_nonneg h_radius.le _)
+          (pow_pos h_base 2) (pow_le_pow_left₀ h_base.le h_lower 2)
+      refine h_div.trans ?_
+      rw [frameBoxRadius]
       exact le_of_eq (by field_simp; ring)
     grw [h_box, h_local]
     calc
