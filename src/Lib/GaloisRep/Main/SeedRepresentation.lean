@@ -1,6 +1,7 @@
 module
 
 public import Lib.ClassField.Avatar.HeckeBaseChange
+public import Lib.ClassField.Avatar.HeckeTwist
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 public import Lib.GaloisRep.Main.QuadraticStep
 public import Lib.Shimura.TraceFormula.DefiniteTrace
