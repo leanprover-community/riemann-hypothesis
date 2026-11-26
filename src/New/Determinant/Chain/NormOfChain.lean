@@ -58,8 +58,6 @@ namespace New.Data
 
 open Finset LinearMap Module
 
-attribute [local instance low] Fintype.ofFinite
-
 section
 
 variable {U V : Type*} [NormedAddCommGroup U] [InnerProductSpace ℂ U]

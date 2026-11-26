@@ -49,8 +49,6 @@ namespace New
 
 open Polynomial Finset Nat
 
-attribute [local instance low] Fintype.ofFinite
-
 variable {k : Type*} [Field k] [Finite k] {c : k[X]} {r : ℕ}
 
 /-- The polynomial `c` is a primitive polynomial: an irreducible label of degree `r` over `k` with a
