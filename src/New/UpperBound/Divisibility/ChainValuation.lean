@@ -168,7 +168,7 @@ theorem chainCombination_eq_sum {Φ : D.Translations → ∀ j : ℕ, (D.homX j)
         Ψ x • kernelProduct (D.liftKernel ϑ) (Φ x) φ (classPoints c g) D.m := by
   -- The classes for the levels below `D.m` have trivial automorphism groups.
   have free (j : ℕ) (hj : j < D.m) : ∀ g, classAut stdRatPoints (D.levelX j) g = ⊥ :=
-    D.classAut_eq_bot_of_le_chosenLevel inf_le_left (by grind [card_X, D.n_mono hj.le])
+    D.classAut_eq_bot_of_le_chosenLevel inf_le_left (by rw [card_X]; have := D.n_mono hj.le; omega)
   simpa [Finsupp.sum] using h_inv.sum_chain_eq_sum_kernelProduct _ free φ.prop g
 
 /-- Let `Ψ` be a weak chain datum for the twist `ϑ`; only the support condition is used: each tuple
