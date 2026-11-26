@@ -288,10 +288,6 @@ lemma ReadsAt.continuous_lift_and_apply_lift (h : ReadsAt S π) :
   h.exists_section.2.choose_spec
 
 omit [WeilData E] in
-lemma ReadsAt.continuous_lift (h : ReadsAt S π) : Continuous h.lift :=
-  h.continuous_lift_and_apply_lift.1
-
-omit [WeilData E] in
 lemma ReadsAt.apply_lift (h : ReadsAt S π) (y : F) : π (h.lift y) = y := by
   obtain ⟨-, h_section, -⟩ := h.continuous_lift_and_apply_lift
   exact h_section y
@@ -312,7 +308,7 @@ lemma ReadsAt.psi_apply (h : ReadsAt S π) (z : 𝔸f E) : h.ψ (π z) = selfDua
 /-- If `π` reads the components at `S`, the induced character `h.ψ` of `F` has conductor the ring
 of integers `O`: it is continuous, and `h.ψ (t * ·)` is trivial on `O` exactly for `t ∈ O`. -/
 lemma ReadsAt.hasIntegralConductor_psi (h : ReadsAt S π) : HasIntegralConductor h.ψ := by
-  refine ⟨continuous_selfDualAddChar.comp h.continuous_lift, fun t ↦ ?_⟩
+  refine ⟨continuous_selfDualAddChar.comp h.continuous_lift_and_apply_lift.1, fun t ↦ ?_⟩
   -- Write `t = π (h.lift t)`; this becomes self-duality of `Ô E` for `idem S * h.lift t`.
   rw [← h.apply_lift t, h.mem_iff, ← forall_selfDualAddChar_mul_eq_one_iff]
   refine ⟨fun h_triv u hu ↦ ?_, fun h_triv s hs ↦ ?_⟩
