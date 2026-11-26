@@ -256,7 +256,8 @@ lemma integrableOn_mul {F : (n → 𝔸f E) → ℂ} (hF : Continuous F) :
       ∀ x : n → 𝔸f E, Ψ x ≠ 0 → idem S • x ∈ C := hΨ.compact_support
   have h_int : IntegrableOn (fun x : n → 𝔸f E ↦ F x * Ψ x) (C + (stdLattice E n : Set (n → 𝔸f E)))
       (latticeMeasure E n) :=
-    (hC.add isCompact_stdLattice).integrableOn _ (hF.mul hΨ.locally_constant.continuous)
+    ContinuousOn.integrableOn_compact (hC.add isCompact_stdLattice)
+      (hF.mul hΨ.locally_constant.continuous).continuousOn
   have h_subset : (integralBox n Sᶜ : Set (n → 𝔸f E)) ∩ Function.support (fun x ↦ F x * Ψ x) ⊆
       C + (stdLattice E n : Set (n → 𝔸f E)) := by
     rintro x ⟨hx_box, hx⟩

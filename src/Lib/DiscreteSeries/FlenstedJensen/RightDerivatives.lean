@@ -483,7 +483,8 @@ theorem hasDerivAt_smear (F : USign ε → E) (α : Bumps ε) (hF : Continuous F
   have h_int_t : Integrable fun y : USign ε ↦ α.val.val (y⁻¹ * γ t) • F y := by
     simpa using (integrable_bump_inv_smul (fun y ↦ F (γ t * y)) α).comp_mul_left (γ t)⁻¹
   have h_int_bound : Integrable fun y : USign ε ↦ bound y * C :=
-    ((hK.inv.integrableOn _).integrable_indicator hK.inv.measurableSet).mul_const C
+    ((ContinuousOn.integrableOn_compact hK.inv (by fun_prop)).integrable_indicator
+      hK.inv.measurableSet).mul_const C
   have h_meas_deriv : AEStronglyMeasurable fun y : USign ε ↦
       toSpanSingleton ℝ ((rightDeriv ε ℂ X α.val).val (y⁻¹ * γ t) • F y) :=
     (toSpanSingletonCLE (𝕜 := ℝ)).continuous.comp_aestronglyMeasurable (by fun_prop)

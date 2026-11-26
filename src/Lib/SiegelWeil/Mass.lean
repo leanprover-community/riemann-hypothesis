@@ -344,7 +344,8 @@ lemma gauss_sum_sq_le [Fintype n] (b : selfAdjoint (𝔸f E)) (Γ : 𝔸f E) :
     · exact setIntegral_congr_fun isOpen_stdLattice.measurableSet fun w hw ↦ by
         rw [integral_const_mul, setIntegral_add_left_eq_self_of_mem F hw]
     · rw [prod_restrict]
-      exact (isCompact_stdLattice.prod isCompact_stdLattice).integrableOn _
+      exact ContinuousOn.integrableOn_compact (isCompact_stdLattice.prod isCompact_stdLattice)
+        (by fun_prop)
   have vol_K : (conductorIdeal b.val).cardQuot * volume (K ∩ Ô E : Set (𝔸f E)) = volÔ E :=
     (relIndex_add_measure_inf (K := (Ô E).toAddSubgroup) isCompact_Ô K_open _).trans volume_Ô
   -- As `‖F‖ = 1` and `corr` vanishes off `K ^ n`, the square is at most a product of volumes.

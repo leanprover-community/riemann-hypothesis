@@ -230,7 +230,8 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
   refine ⟨.of _ (M ⧸ submoduleOf (L.prod L) M), h_fin, fun q ↦ F q.out, ?_, fun t q ↦ ⟨?_, ?_⟩⟩
   · let ν : Measure ((ι → 𝔸f E) × (ι → 𝔸f E)) := (latticeMeasure E ι).prod (latticeMeasure E ι)
     have h_int : IntegrableOn (selfDualAddChar E ∘ F) M.toAddSubgroup ν :=
-      hM.integrableOn _ (continuous_selfDualAddChar.comp (by fun_prop))
+      ContinuousOn.integrableOn_compact hM
+        (continuous_selfDualAddChar.comp (by fun_prop)).continuousOn
     -- The double integral is the integral of `selfDualAddChar E ∘ F` over `M`, so a volume times a
     -- sum.
     simp_rw [finProjAction, ← h_integrand]

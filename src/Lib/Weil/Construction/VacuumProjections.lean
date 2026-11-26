@@ -236,9 +236,9 @@ lemma map_projOn_eq_integral (f : 𝒮 V) :
   have h_int (u : 𝒮 V) :
       IntegrableOn (fun y ↦ V.finHeisenbergOp (idem S.conjClosure • y) u) (stdLattice E n)
         (latticeMeasure E n) :=
-    isCompact_stdLattice.integrableOn _ (show Continuous fun y ↦
+    ContinuousOn.integrableOn_compact isCompact_stdLattice (show Continuous fun y ↦
       semichar (idem S.conjClosure • y) • V.ϱ (finVec (idem S.conjClosure • y)) u by
-        fun_prop [finVec, semichar])
+        fun_prop [finVec, semichar]).continuousOn
   rw [L.integral_comp_comm (h_int f), projOn, strongIntegral_apply _ _ h_int]
 
 /-- `projOn S f` is the mean of `finHeisenbergOp (idem S.conjClosure • y) f` over `y` in the

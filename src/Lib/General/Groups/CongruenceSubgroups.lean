@@ -90,13 +90,6 @@ lemma IsClosed.preimage_of_continuous (hs : IsClosed s) (hf : Continuous f := by
 variable {E : Type _} [NormedAddCommGroup E] [MeasurableSpace X] [OpensMeasurableSpace X]
   {ν : Measure X} [IsFiniteMeasureOnCompacts ν] {f : X → E}
 
-/-- A continuous function f from a Hausdorff space to a normed group is integrable on a compact
-set K, for a measure ν finite on compact sets. Continuity is proved automatically by
-default. -/
-lemma IsCompact.integrableOn [T2Space X] (hK : IsCompact K) (f : X → E)
-    (hf : Continuous f := by fun_prop) : IntegrableOn f K ν :=
-  hf.continuousOn.integrableOn_compact hK
-
 /-- A continuous function f of compact support with values in a normed group is integrable, for
 a measure ν finite on compact sets. Continuity is proved automatically by default. -/
 lemma HasCompactSupport.integrable (hc : HasCompactSupport f) (hf : Continuous f := by fun_prop) :
