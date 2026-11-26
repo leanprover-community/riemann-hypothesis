@@ -28,8 +28,8 @@ in `X₀ = ℂ ^ κ` runs over a sphere.
 One can find the measure on the frames over `Z` by letting both frames vary and dividing two
 equalities of fibre measures, the one on pairs of frames, which are tuples of `2 (ϱ + 1)` vectors
 with an invertible Gram matrix, by the one on frames. Here a fibre measure enters only through the
-relation of being at most it (`New.LeFibreMeasure`); the measure over `Z` is computed directly in
-coordinates as a lower bound, and the fibre measure on frames is used as an upper bound.
+relation of being at most it (`TauCeti.IsLeFiberMeasure`); the measure over `Z` is computed directly
+in coordinates as a lower bound, and the fibre measure on frames is used as an upper bound.
 
 * `New.RealPlace.lintegral_eq_lintegral_sphereMass_mul_dualFrameOfGram`: Lebesgue measure on the
   tuples dual to the frame, in terms of their Gram matrix and of `R°`.
@@ -540,12 +540,13 @@ theorem leGramFibre_gramSectionMeasure :
     have h_pos : 0 < 1 + (congrGram t p.1 𝔰.top 𝔰.top).re :=
       Set.mem_of_indicator_ne_zero (right_ne_zero_of_mul h_ne_zero)
     exact gramCoords_dualFrameOfGram_mul (det_ne_zero_of_mem_openCell hp) h_pos.le p.2
-  have h_cont : ∀ᵐ p ∂μ, ContinuousAt (tuple · p) t₀ ∧ ContinuousAt (density · p) t₀ := by
+  have h_cont : ∀ᵐ p ∂μ, ContinuousAt (tuple · p) t₀ ∧ LowerSemicontinuousAt (density · p) t₀ := by
     filter_upwards [h_cell] with p hp
     have h_mass : ContinuousAt (fun t ↦ sphereMass 𝔰.k (1 + (congrGram t p.1 𝔰.top 𝔰.top).re)) t₀ :=
       (continuousAt_sphereMass (oneSubNormSqInvCorner_pos hp)).comp_of_eq (by fun_prop)
         (h_corner p.1)
-    exact ⟨by fun_prop, ENNReal.Tendsto.const_mul h_mass (.inr (by finiteness))⟩
+    exact ⟨by fun_prop,
+      ContinuousAt.lowerSemicontinuousAt (ENNReal.Tendsto.const_mul h_mass (.inr (by finiteness)))⟩
   have h_le (K : Matrix 𝔰.BesselIndex (Fin (𝔰.ϱ + 1)) ℂ → ℝ≥0∞) (hK : Measurable K) :
       ∫⁻ t in Set.univ, ∫⁻ p, density t p * K (tuple t p) ∂μ ≤ ∫⁻ y, K y := calc
     _ = ∫⁻ Z in 𝔰.openCell, ∫⁻ t, ∫⁻ s, density t (Z, s) * K (tuple t (Z, s)) ∂fixerHaar 𝔰 := by
@@ -569,8 +570,9 @@ theorem leGramFibre_gramSectionMeasure :
       ← withDensity_congr_ae h_density]
     exact Measure.map_congr (withDensity_absolutelyContinuous μ (density t₀) h_point)
   rw [LeGramFiber, h_law]
-  exact .of_coordinates (ψ := tuple) (w := density) (by fun_prop) (by fun_prop) (by fun_prop)
-    Filter.univ_mem (fun t _ ↦ h_fibre t) h_cont h_le
+  exact Measurable.isLeFiberMeasure_of_coordinates (ψ := tuple) (w := density) (by fun_prop)
+    (volume.finiteAt_nhds _) (fun _ ↦ by fun_prop) (fun _ ↦ by fun_prop) Filter.univ_mem
+    (fun t _ ↦ h_fibre t) h_cont h_le
 
 /-- The mean value inequality. For measurable `f ≥ 0` on `G₁`, the integral of `f (s' γ_Z s)` over
 `s, s'` in the fixer `R°` of the frame and `Z` in the open cell, with density `c 𝗀(Z) ^ (k - 1)`, is

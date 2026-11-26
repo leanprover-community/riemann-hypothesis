@@ -912,7 +912,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **Measure**: Measure theory, Haar measures and integration
 
-- `Lib/General/Measure/FibreMeasure` (149): Measures below a fibre measure
 - `Lib/General/Measure/IdempotentKernel` (121): Fubini and convolution lemmas; idempotent kernels
 - `Lib/General/Measure/HaarNormalisation` (126): Uniqueness of Haar measure, integrals over subgroups and Gaussian normalisation of volumes
 - `Lib/General/Measure/IntegralOperators` (293): Product measures, layer cake bounds, cocompact subgroups and L² bounds of integral operators

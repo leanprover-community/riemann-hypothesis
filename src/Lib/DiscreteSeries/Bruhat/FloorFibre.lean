@@ -4,7 +4,7 @@ import Mathlib.CategoryTheory.Countable
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Bruhat.ComplexPlace
-public import Lib.General.Measure.FibreMeasure
+public import TauCeti.MeasureTheory.Measure.FiberMeasure
 import Lib.Adelic.Adeles.AdditiveCharacter
 import Lib.Base
 import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
@@ -21,7 +21,7 @@ spanned by the basis vectors of floor at least `b`; `oppositeIndex` exchanges th
 and `e*_a`.
 
 A vector `y` is chosen with given products with earlier basis vectors and with a given norm
-`h(y, y)`. Here `New.LeFibreMeasure μ ν π b l` says that the measure `l` is at most the fibre
+`h(y, y)`. Here `TauCeti.IsLeFiberMeasure μ ν π b l` says that the measure `l` is at most the fibre
 measure `dμ / dν` of the map `π` over the point `b`.
 
 ## Main definitions and results
@@ -56,6 +56,7 @@ Known; see `Lib.DiscreteSeries.Bruhat.ComplexPlace` for sources.
 namespace New.Floors
 
 open Matrix MeasureTheory Measure RealPlace FloorGroups
+open TauCeti (IsLeFiberMeasure)
 
 variable {𝔰 : Shape}
 
@@ -75,7 +76,7 @@ lemma inclMatrix_sumElim_mulVec {α β ι : Type} [Fintype α] [Fintype β] [Dec
 lemma leFiberMeasure_coords {α β ι : Type} [Fintype α] [Fintype β] [Fintype ι] [DecidableEq α]
     [DecidableEq ι] {f : α → ι} {g : β → ι} (hf : f.Injective)
     (hg : g.Injective) (h_compl : Set.range g = (Set.range f)ᶜ) (c : α → ℂ) :
-    LeFibreMeasure volume volume (fun y : ι → ℂ ↦ y ∘ f) c
+    IsLeFiberMeasure volume volume (fun y : ι → ℂ ↦ y ∘ f) c
       (volume.map fun v : β → ℂ ↦ inclMatrix ℂ f *ᵥ c + inclMatrix ℂ g *ᵥ v) := by
   have h_ne (a : α) (b : β) : f a ≠ g b := fun h ↦ h_compl.subset ⟨b, rfl⟩ ⟨a, h⟩
   have h_bij : (Sum.elim f g).Bijective := by
@@ -88,8 +89,8 @@ lemma leFiberMeasure_coords {α β ι : Type} [Fintype α] [Fintype β] [Fintype
   have h_fibre (t : α → ℂ) (v : β → ℂ) : φ (t, v) ∘ f = t := by
     ext a
     simp [φ, inclMatrix, mulVec, dotProduct, Matrix.one_apply, hf.eq_iff, h_ne a]
-  exact .of_measurePreserving h_vol (by fun_prop) h_fibre
-    fun _ ↦ Continuous.continuousAt (by fun_prop)
+  exact h_vol.isLeFiberMeasure (by fun_prop) (volume.finiteAt_nhds _)
+    (fun t ↦ .of_forall (h_fibre t)) (.of_forall fun _ ↦ Continuous.continuousAt (by fun_prop))
 
 lemma involutive_oppositeIndex : (oppositeIndex (𝔰 := 𝔰)).Involutive :=
   oppositeIndex_oppositeIndex
@@ -144,11 +145,11 @@ lemma measurePreserving_half_add :
 
 /-- Let `h` be the orthogonal sum of a hyperbolic plane and a hermitian form `T` (its Gram matrix is
 `planeSumGram T`). Half the measure `quadricMeasure` of the quadric `h(v, v) = t₀`, which is indexed
-by `skewOfLevel t₀ = i t₀ / 2`, is at most the fibre measure `dv / dh(v, v)` (`LeFibreMeasure`)
+by `skewOfLevel t₀ = i t₀ / 2`, is at most the fibre measure `dv / dh(v, v)` (`IsLeFiberMeasure`)
 over `t₀`. -/
 lemma leFiberMeasure_quadricMeasure {ι : Type} [Fintype ι] {T : Matrix ι ι ℂ}
     (hT : Tᴴ = T) (t₀ : ℝ) :
-    LeFibreMeasure volume volume (fun v : Fin 2 ⊕ ι → ℂ ↦ (star v ⬝ᵥ planeSumGram T *ᵥ v).re) t₀
+    IsLeFiberMeasure volume volume (fun v : Fin 2 ⊕ ι → ℂ ↦ (star v ⬝ᵥ planeSumGram T *ᵥ v).re) t₀
       ((2 : ENNReal)⁻¹ • Place.quadricMeasure T (skewOfLevel t₀)) := by
   have h_unit : ∀ᵐ p : (ℂ × (ι → ℂ)) × skewAdjoint ℂ ∂volume.prod complexPlace.skewMeasure,
       IsUnit p.1.1 :=
@@ -177,24 +178,25 @@ lemma leFiberMeasure_quadricMeasure {ι : Type} [Fintype ι] {T : Matrix ι ι �
           measurePreserving_skewOfLevel.lintegral_comp h_inner
       _ = ∫⁻ v, K v :=
           ((Place.isDisintegration_quadricMeasure hT).lintegral_eq (K ·.2) (by fun_prop)).symm
-  have h_meas : Measurable ψ.uncurry := by fun_prop
+  have h_meas (t : ℝ) : Measurable (ψ t) := by fun_prop
   have h_form_ae (t : ℝ) : ∀ᵐ p ∂volume.prod complexPlace.skewMeasure,
       (2 : ENNReal)⁻¹ ≠ 0 → (star (ψ t p) ⬝ᵥ planeSumGram T *ᵥ ψ t p).re = t :=
     h_unit.mono fun p hp _ ↦ h_form t p hp
   simp (disch := fun_prop) only [← Measure.map_smul]
   rw [← withDensity_const]
-  exact .of_coordinates (ψ := ψ) (w := fun _ _ ↦ 2⁻¹) (by fun_prop) h_meas measurable_const
-    Filter.univ_mem (fun t _ ↦ h_form_ae t)
-    (.of_forall fun p ↦ ⟨(h_cont p).continuousAt, continuousAt_const⟩)
+  exact Measurable.isLeFiberMeasure_of_coordinates (ψ := ψ) (w := fun _ _ ↦ 2⁻¹) (by fun_prop)
+    (volume.finiteAt_nhds _) h_meas (fun _ ↦ measurable_const) Filter.univ_mem
+    (fun t _ ↦ h_form_ae t)
+    (.of_forall fun p ↦ ⟨(h_cont p).continuousAt, continuousAt_const.lowerSemicontinuousAt⟩)
     fun K hK ↦ (h_integral K hK).le
 
 /-- Let `h` be the form with Gram matrix `J₁` and `V_b` the span of the basis vectors of floor at
 least `b`, with Lebesgue measure `floorVolume b`. Half the measure `floorQuadricMeasure` of the
 quadric `h(y, y) = t₀` in `V_b`, indexed by `skewOfLevel t₀ = i t₀ / 2` and taken in the
-hyperbolic basis `complexBasis 𝔰`, is at most the fibre measure `dy / dh(y, y)` (`LeFibreMeasure`)
+hyperbolic basis `complexBasis 𝔰`, is at most the fibre measure `dy / dh(y, y)` (`IsLeFiberMeasure`)
 on `V_b`. -/
 lemma leFiberMeasure_floorQuadric (b : Fin 𝔰.n) (t₀ : ℝ) :
-    LeFibreMeasure (floorVolume b) volume
+    IsLeFiberMeasure (floorVolume b) volume
       (fun y : 𝔰.BesselIndex → ℂ ↦ (star y ⬝ᵥ 𝔰.J₁ *ᵥ y).re) t₀
       ((2 : ENNReal)⁻¹ • (complexBasis 𝔰).floorQuadricMeasure b (skewOfLevel t₀)) := by
   have h_herm : (hyperbolicGram (FloorPairs b 0) (1 : Matrix {i // i ≠ 𝔰.k₀} {i // i ≠ 𝔰.k₀} ℂ))ᴴ =
@@ -217,17 +219,17 @@ lemma leFiberMeasure_floorQuadric (b : Fin 𝔰.n) (t₀ : ℝ) :
 /-- The frame vector `f_b` of floor `b`, the basis vector of index `besselFrame b`. The vectors
 `y` orthogonal for the form `h` of matrix `J₁` to the basis vectors of lower floors (`floorOf`)
 form `V_b`. Half the measure of the quadric `h(y, y) = h(f_b, f_b)` in `V_b`, which is the default
-level of `floorQuadricMeasure b`, is at most the fibre measure (`LeFibreMeasure`) of the products of
-`y` with these vectors and with itself. -/
+level of `floorQuadricMeasure b`, is at most the fibre measure (`IsLeFiberMeasure`) of the products
+of `y` with these vectors and with itself. -/
 lemma leFiberMeasure_frameVector (b : Fin 𝔰.n) :
-    LeFibreMeasure volume volume
+    IsLeFiberMeasure volume volume
       (fun y : 𝔰.BesselIndex → ℂ ↦
         (fun i : {i : 𝔰.BesselIndex // floorOf i < b} ↦ (𝔰.J₁ *ᵥ y) i, (star y ⬝ᵥ 𝔰.J₁ *ᵥ y).re))
       (fun i : {i : 𝔰.BesselIndex // floorOf i < b} ↦ 𝔰.J₁ i.val (𝔰.besselFrame b),
         (𝔰.J₁ (𝔰.besselFrame b) (𝔰.besselFrame b)).re)
       ((2 : ENNReal)⁻¹ • (complexBasis 𝔰).floorQuadricMeasure b) := by
   have h_low (i : {i : 𝔰.BesselIndex // floorOf i < b}) : floorOf i.1 < 𝔰.ϱ := i.2.trans_le b.is_le
-  have h_linear : LeFibreMeasure volume volume
+  have h_linear : IsLeFiberMeasure volume volume
       (fun (y : 𝔰.BesselIndex → ℂ) (i : {i : 𝔰.BesselIndex // floorOf i < b}) ↦ (𝔰.J₁ *ᵥ y) i) 0
       (floorVolume b) := by
     have h_compl : Set.range (Subtype.val : {i : 𝔰.BesselIndex // b ≤ floorOf i} → 𝔰.BesselIndex) =
@@ -235,7 +237,7 @@ lemma leFiberMeasure_frameVector (b : Fin 𝔰.n) :
       rw [range_oppositeIndex_val, Subtype.range_coe_subtype]
       ext i
       simp [floorOf_oppositeIndex]
-    have h_coords : LeFibreMeasure volume volume
+    have h_coords : IsLeFiberMeasure volume volume
         (fun (y : 𝔰.BesselIndex → ℂ) (i : {i : 𝔰.BesselIndex // floorOf i < b}) ↦
           y (oppositeIndex i)) 0 (floorVolume b) := by
       simpa [Function.comp_def] using leFiberMeasure_coords
@@ -281,9 +283,9 @@ lemma re_form_dualPoint (a : Fin 𝔰.ϱ) (μ : ℂ) (v : {i : 𝔰.BesselIndex 
 /-- For the form `h` of matrix `J₁`, consider the products of `y` with `e_a` and with the basis
 vectors of lower floors (`floorOf`). Over their values at `e*_a` (index `eStar a`), the image of
 `dμ dv` under `dualPoint a (μ, v) = e*_a + v + μ e_a` is at most the fibre measure
-(`LeFibreMeasure`). -/
+(`IsLeFiberMeasure`). -/
 lemma leFiberMeasure_dualPoint (a : Fin 𝔰.ϱ) :
-    LeFibreMeasure volume volume
+    IsLeFiberMeasure volume volume
       (fun (y : 𝔰.BesselIndex → ℂ) (i : {i : 𝔰.BesselIndex // floorOf i < a ∨ i = .inl a}) ↦
         (𝔰.J₁ *ᵥ y) i)
       (fun i : {i : 𝔰.BesselIndex // floorOf i < a ∨ i = .inl a} ↦ 𝔰.J₁ i.val (eStar a))
@@ -355,10 +357,10 @@ lemma lintegral_map_dualPoint (a : Fin 𝔰.ϱ)
 
 /-- On the image under `dualPoint a (μ, v) = e*_a + v + μ e_a` of `dμ dv`, half the image of the
 measure of the Heisenberg group of floor `a` under `u ↦ u e*_a` is at most the fibre measure
-`dμ dv / dh(y, y)` (`LeFibreMeasure`) over the value `0`, for the form `h` of matrix `J₁`. Here
+`dμ dv / dh(y, y)` (`IsLeFiberMeasure`) over the value `0`, for the form `h` of matrix `J₁`. Here
 `eStar a` is the index of `e*_a`. -/
 lemma leFiberMeasure_heisenbergMeasure (a : Fin 𝔰.ϱ) :
-    LeFibreMeasure (volume.map (dualPoint a)) volume
+    IsLeFiberMeasure (volume.map (dualPoint a)) volume
       (fun y : 𝔰.BesselIndex → ℂ ↦ (star y ⬝ᵥ 𝔰.J₁ *ᵥ y).re) 0
       ((2 : ENNReal)⁻¹ • (complexPlace.heisenbergMeasure a).map
         fun u : 𝔰.G₁ ↦ (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) *ᵥ Pi.single (eStar a) 1) := by
@@ -388,9 +390,11 @@ lemma leFiberMeasure_heisenbergMeasure (a : Fin 𝔰.ϱ) :
     ← h_zero]
   simp (disch := fun_prop) only [← Measure.map_smul]
   rw [← withDensity_const]
-  refine .of_coordinates (w := fun _ _ ↦ 2⁻¹) (by fun_prop) hψ.measurable measurable_const
+  refine Measurable.isLeFiberMeasure_of_coordinates (w := fun _ _ ↦ 2⁻¹) (by fun_prop)
+    (volume.finiteAt_nhds _) (fun t ↦ (hψ.uncurry_left t).measurable) (fun _ ↦ measurable_const)
     Filter.univ_mem (fun t _ ↦ .of_forall fun p _ ↦ h_norm t p)
-    (.of_forall fun p ↦ ⟨(hψ.uncurry_right p).continuousAt, continuousAt_const⟩)
+    (.of_forall fun p ↦
+      ⟨(hψ.uncurry_right p).continuousAt, continuousAt_const.lowerSemicontinuousAt⟩)
     fun K hK ↦ le_of_eq ?_
   calc ∫⁻ t : ℝ in Set.univ, ∫⁻ p, 2⁻¹ * K (ψ t p) ∂volume.prod complexPlace.skewMeasure
       = 2⁻¹ * ∫⁻ t : ℝ, ∫⁻ v : S → ℂ, ∫⁻ β, K (ψ t (v, β)) ∂complexPlace.skewMeasure := by
@@ -407,10 +411,10 @@ lemma leFiberMeasure_heisenbergMeasure (a : Fin 𝔰.ϱ) :
 /-- The dual vector `e*_a` of floor `a`, of index `eStar a`. For the form `h` of matrix `J₁`, on the
 isotropic vectors `y` with `h(e_a, y) = 1` that are orthogonal to the basis vectors of lower floors
 (`floorOf`), half the image of the measure of the Heisenberg group under `u ↦ u e*_a` is at most the
-fibre measure (`LeFibreMeasure`) of the products of `y` with these vectors, with `e_a` and with
+fibre measure (`IsLeFiberMeasure`) of the products of `y` with these vectors, with `e_a` and with
 itself. -/
 lemma leFiberMeasure_dualVector (a : Fin 𝔰.ϱ) :
-    LeFibreMeasure volume volume
+    IsLeFiberMeasure volume volume
       (fun y : 𝔰.BesselIndex → ℂ ↦
         (fun i : {i : 𝔰.BesselIndex // floorOf i < a ∨ i = .inl a} ↦ (𝔰.J₁ *ᵥ y) i,
           (star y ⬝ᵥ 𝔰.J₁ *ᵥ y).re))

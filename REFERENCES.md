@@ -1,8 +1,8 @@
 # References
 
-Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
+Only some of the citations were compared with their sources. The table lists the 227 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
-- compared, place confirmed: 66
+- compared, place confirmed: 65
 - not compared, no place given: 8
 - place confirmed at second hand: 35
 - work found, no place given: 119
@@ -17,7 +17,6 @@ The citations of 122 other files were not part of this check, nor were further c
 | A. Knapp, Lie Groups Beyond an Introduction | place confirmed at second hand | `Lib/DiscreteSeries/Bruhat/ComplexPlace` |
 | A. Paul, First occurrence for the dual pairs (U(p,q), U(r,s)) | compared, place confirmed | `Lib/DiscreteSeries/Theta/BlockRule` |
 | A. Selberg, S. Chowla, On Epstein's zeta-function | place confirmed at second hand | `Lib/CM/ChowlaSelberg` |
-| A. Weil, Sur la formule de Siegel dans la théorie des groupes classiques | compared, place confirmed | `Lib/General/Measure/FibreMeasure` |
 | A. Weil, Sur la formule de Siegel dans la théorie des groupes classiques, Acta Math. 113 (1965) | compared, place confirmed | `Lib/Adelic/Reduction/FiniteVolume` |
 | Akin, Buchsbaum, Weyman, Schur functors and Schur complexes | work found, no place given | `Lib/GLn/SchurModule/TensorModel` |
 | Alon–Shapira, Lemma 4.1 | compared, place confirmed | `New/Reduction/Data/Existence` |
