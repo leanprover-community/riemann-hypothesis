@@ -788,13 +788,6 @@ lemma modKernel_div_apply {E r n : Type} [Field E] [CMType E] [WeilData E] [Fint
   congr 1
   simp
 
-/-- For an embedding `ι` of `ℂ` in a normed field and `ρ ≠ 0`, the bound
-`‖ι (V * ρ)‖ * a ≤ ‖ι y‖` is the bound `‖ι V‖ * a ≤ ‖ι (y / ρ)‖`. -/
-lemma norm_map_mul_le_iff_le_div {F : Type*} [NormedField F] (ι : ℂ →+* F) {V y ρ : ℂ} {a : ℝ}
-    (hρ : ρ ≠ 0) : ‖ι (V * ρ)‖ * a ≤ ‖ι y‖ ↔ ‖ι V‖ * a ≤ ‖ι (y / ρ)‖ := by
-  have h_pos : 0 < ‖ι ρ‖ := norm_pos_iff.2 ((map_ne_zero ι).2 hρ)
-  rw [map_mul, map_div₀, norm_mul, norm_div, le_div_iff₀ h_pos, mul_right_comm]
-
 /-- Let `χ` run over the finite group `tameChars` of characters of `U(1)(𝔸)` of weight zero whose
 tame part is trivial off the chosen places. Let the critical pairs `q₁ χ` and `q₃ χ` have empty row
 (`HasEmptyRow`) on `n` and on `Fin 4`. Some geometric mean `L` over `χ` of the products of their
@@ -986,7 +979,8 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
     linear_combination -(L_twist * V ^ 12 * J) * h_sum +
       N * L_twist * W * V ^ 12 * T * J * A * q₂.integralAlgebraicPart hq₂.2 ϑ *
         mul_inv_cancel₀ ht_ne
-  rw [norm_map_mul_le_iff_le_div ιₚ (q₂.ratio_ne_zero ϑ 1)]
+  rw [map_mul, norm_mul, mul_right_comm,
+    ← le_div_iff₀ (norm_pos_iff.2 ((map_ne_zero ιₚ).2 (q₂.ratio_ne_zero ϑ 1))), ← norm_div, ← map_div₀]
   calc ‖ιₚ (t * L_twist * L)‖ * (l : ℝ) ^ (-D.localPrimeSumTotal l)
       ≤ ‖ιₚ (t * L_twist)‖ * ‖ιₚ W‖ * (‖ιₚ c‖ * ‖ιₚ A‖) := by
         grw [map_mul, norm_mul, h_lower, hL_l, h_avg]
