@@ -187,10 +187,6 @@ lemma coe_lineElement :
     (lineElement w i).val = diagonal fun j : n ↦ if j = i then (uniformizer w).val else 1 := by
   simp [lineElement, apply_ite Units.val]
 
-lemma coe_lineElement_inv :
-    (lineElement w i)⁻¹.val = diagonal fun j : n ↦ if j = i then (uniformizer w).val⁻¹ else 1 := by
-  simp [lineElement, ← map_inv, apply_ite Units.val, apply_ite Inv.inv]
-
 variable {w : FinPlace E} {i : n} {g h : GL n (LocField w)} {k l : localIntGL n w}
 
 lemma v_le_one_of_mem_localIntGL (hg : g ∈ localIntGL n w) (a b : n) : v (g a b) ≤ 1 :=
@@ -284,7 +280,7 @@ lemma conj_lineElement_mem_lineStabilizer_iff :
   set g' : GL n (LocField w) := (lineElement w i)⁻¹ * g * lineElement w i with hg'
   have h_entry (a b : n) : g' a b = (if a = i then (uniformizer w).val⁻¹ else 1) * g a b *
       if b = i then (uniformizer w).val else 1 := by
-    simp only [hg', Units.val_mul, coe_lineElement_inv, coe_lineElement, mul_diagonal, diagonal_mul]
+    simp [hg', lineElement, ← map_inv, apply_ite Units.val, apply_ite Inv.inv, mul_diagonal, diagonal_mul]
   have h_diag : v (g' i i) ≤ 1 ↔ v (g i i) ≤ 1 := by simp [h_entry, mul_right_comm _ (g i i)]
   have h_row (j : n) (hj : j ≠ i) : v (g' i j) ≤ 1 ↔ v (g i j) < 1 := by
     rw [h_entry, ite_eq_left rfl, ite_eq_right hj, mul_one, v_uniformizer_inv_mul_le_one_iff]
