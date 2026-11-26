@@ -570,9 +570,8 @@ lemma isCharacterCocycle_of_tiedRows {ξ : G →* O}
       (hw : w ∈ tiedRows u (δ ⊕ᵥ gen') p τ φ ε (tiedNormalizer J γ a c₁))
       (h_read : ∀ i : ι', polyChar J ξ (w (inr i)) = MvPolynomial.C (m (inr i))) :
       Φ m ∈ K := by
-    have h_eq : evalRowAtChar J ξ W ι' w = evalRowAtChar J ξ W ι' (coordRows J (W ⊕ ι') m) := by
-      funext i
-      rw [evalRowAtChar_apply, evalRowAtChar_apply, h_read, polyChar_coordRows]
+    have h_eq : evalRowAtChar J ξ W ι' w = evalRowAtChar J ξ W ι' (coordRows J (W ⊕ ι') m) :=
+      funext fun i ↦ by simpa only [evalRowAtChar_apply, polyChar_coordRows] using h_read i
     exact hK ⟨w, hw, congrArg A h_eq⟩
   have h_cocycle (g h : G) : Φ (z (g * h) - z g - ξ g • z h) ∈ K := by
     refine h_row _ (coordRows_cocycle_mem_tiedRows u hz g h) fun i ↦ ?_
