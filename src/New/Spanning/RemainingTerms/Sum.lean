@@ -230,7 +230,7 @@ lemma IsNearPairOverAgreeingBlock.ofReal_termSize_mul_le {E : Type} [Field E] [C
 
 /-- The number `n³ + 1` of possible coranks is at most `τ = S.tailScale`. -/
 lemma cube_add_one_le_tailScale {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
-    [S.IsAdmissible] : ((𝔰.n ^ 3 + 1 : ℕ) : ℝ) ≤ S.tailScale := by
+    : ((𝔰.n ^ 3 + 1 : ℕ) : ℝ) ≤ S.tailScale := by
   have hb : 2 ≤ S.b := two_le_b
   calc
     _ = (𝔰.n : ℝ) ^ 3 + 1 := by norm_cast
