@@ -1021,7 +1021,8 @@ lemma exists_integral_thetaTerm_eq_of_periods {σ' : b ⊕ b ⊕ n ≃ m} {v : P
   have hB_det : B.det = (Unitary.toUnits y.det)⁻¹ * Y.det := by
     have hinv : y⁻¹.toUnitary.val.det = (Unitary.toUnits y.det)⁻¹ := by
       rw [MulEquiv.map_inv G.toUnitary, InvMemClass.coe_inv, map_inv, det_y]
-    rw [show B.det = y⁻¹.toUnitary.val.det * Y.det from MonoidHom.map_mul GeneralLinearGroup.det _ _,
+    rw [show B.det = y⁻¹.toUnitary.val.det * Y.det from
+        MonoidHom.map_mul GeneralLinearGroup.det _ _,
       hinv]
   have abs_inf : ideleAbs (realIdele (infiniteDet B)) = ideleAbs Y.det := by
     rw [det_inf, MonoidHom.map_mul ideleAbs, MonoidHom.map_inv ideleAbs, hB_det,
@@ -1044,7 +1045,8 @@ lemma exists_integral_thetaTerm_eq_of_periods {σ' : b ⊕ b ⊕ n ≃ m} {v : P
   dsimp only [κ₀]
   exact largeTriple_scalar_alg _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
     (Circle.coe_ne_zero _)
-    (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.sqrt_ne_zero'.mpr (ideleAbs_pos (x := Y.det)))))
+    (pow_ne_zero _ (Complex.ofReal_ne_zero.mpr (Real.sqrt_ne_zero'.mpr
+      (ideleAbs_pos (x := Y.det)))))
     (Units.ne_zero _)
 
 /-- Let `D` split `X` as `W₁` plus a hyperbolic space, let `𝔠` be a tame character, let `v` be a
