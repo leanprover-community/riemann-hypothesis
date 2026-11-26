@@ -154,8 +154,8 @@ lemma smul_top_le_of_le_sup_smul_top {a u w : O} {G : Submodule O (E → O)}
     rintro _ ⟨η, -, rfl⟩
     have h_assoc : (a * w * v) • η = w • a • v • η := by rw [mul_comm a w, mul_smul, mul_smul]
     exact Set.mem_of_eq_of_mem h_assoc (smul_mem_smul hw (smul_mem_pointwise_smul _ a ⊤ mem_top))
-  exact le_of_le_smul_of_le_jacobson_bot (Module.Finite.fg_top.map _)
-    (maximalIdeal_le_jacobson ⊥) (h_le.trans (sup_le_sup_left h_small G))
+  exact le_of_le_smul_of_le_jacobson (Module.Finite.fg_top.map _)
+    (IsLocalRing.ringJacobson_eq_maximalIdeal O).ge (h_le.trans (sup_le_sup_left h_small G))
 
 /-- Let `O` be a valuation domain. Let the matrix `Q` have the left inverse `R`, so that its columns
 are a basis of a direct summand of `O ^ (X × I)`, and let `B` be a near inverse of `A`: `A * B ≡ a`
