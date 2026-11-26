@@ -85,7 +85,7 @@ theorem tied_generic_fibre : ∀ (E : Type) [Field E] [NumberField E] [IsCMField
   have hmA : mA.φ = m.φ ≫ k.φ := (sabRebase_φ n₁ h4).trans hn₁
   have hmA' : mA'.φ = m'.φ ≫ k'.φ := (sabRebase_φ n₂ _).trans hn₂
   rw [sabRebase_φ] at hk'
-  obtain ⟨M₁, P1, P2, -, P4⟩ := _root_.PositivityTheory.UnitarySelfGeneration.lie_model_transport_isomorphism E H A.X A'.X e Ω A.ξ A'.ξ A.t t k A.Li A.M h4
+  obtain ⟨M₁, P1, P2, P4⟩ := _root_.PositivityTheory.UnitarySelfGeneration.lie_model_transport_isomorphism E H A.X A'.X e Ω A.ξ A'.ξ A.t t k A.Li A.M h4
   obtain ⟨M₂, Q⟩ := _root_.GlobalTheory.CompanionTheory.Ar.FrameModelsGeometry.main A'.X Ω A'.ξ t.G A'.t.G tΩ.G m.φ mA'.φ m.cart mA'.cart A.Li M₁
   obtain ⟨φ, hφ, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.lieModel_existsUnique_equiv A'.X A'.t.G Ω A'.ξ A.Li A'.Li M₂ A'.M
   refine ⟨t, tΩ, k, m, mA, mA', u, u', M₁, φ, hmA, ?_, ?_, E3, P1, ?_, P2, P4⟩

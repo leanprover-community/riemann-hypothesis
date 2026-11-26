@@ -196,7 +196,7 @@ theorem grp_id (G : Over X) [GrpObj G] : IsGrpPullback G G (𝟙 X) (𝟙 G.left
 
 end Isomove
 
-theorem lie_model_transport_isomorphism : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X X' : Scheme.{0}) (e : X' ≅ X) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (ξ' : Sp Ω ⟶ X') (t : SAB H X) (t' : SAB H X') (m : SABMap t' t e.hom) (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V), ξ' ≫ e.hom = ξ → ∃ M' : LieModel t'.G ξ' V, (∀ v, (M'.pt v).left ≫ m.φ = (M.pt v).left) ∧ (∀ n, FullTorsion t.G ξ n → FullTorsion t'.G ξ' n) ∧ (IsCptGen ξ → IsCptGen ξ') ∧ ∀ (q : Cpt ξ') (h : genPt ξ ⤳ e.hom q.1), regAt ξ' q = regAt ξ ⟨e.hom q.1, h⟩ ∧ (M'.lat q : Set V) = M.lat ⟨e.hom q.1, h⟩ ∧ ∀ n, (M'.htOm t'.PP.L n q : Set (Module.Dual Ω V)) = M.htOm t.PP.L n ⟨e.hom q.1, h⟩ := by
+theorem lie_model_transport_isomorphism : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (X X' : Scheme.{0}) (e : X' ≅ X) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶ X) (ξ' : Sp Ω ⟶ X') (t : SAB H X) (t' : SAB H X') (m : SABMap t' t e.hom) (V : Type) [AddCommGroup V] [Module Ω V] (M : LieModel t.G ξ V), ξ' ≫ e.hom = ξ → ∃ M' : LieModel t'.G ξ' V, (∀ v, (M'.pt v).left ≫ m.φ = (M.pt v).left) ∧ (∀ n, FullTorsion t.G ξ n → FullTorsion t'.G ξ' n) ∧ ∀ (q : Cpt ξ') (h : genPt ξ ⤳ e.hom q.1), regAt ξ' q = regAt ξ ⟨e.hom q.1, h⟩ ∧ (M'.lat q : Set V) = M.lat ⟨e.hom q.1, h⟩ ∧ ∀ n, (M'.htOm t'.PP.L n q : Set (Module.Dual Ω V)) = M.htOm t.PP.L n ⟨e.hom q.1, h⟩ := by
   intro E _ _ _ H X X' e Ω _ ξ ξ' t t' m V _ _ M hξ
   have hφ : IsGrpPullback t'.G t.G e.hom m.φ := m.cart
   haveI : IsIso m.φ := hφ.1.isIso_fst_of_isIso
@@ -233,7 +233,7 @@ theorem lie_model_transport_isomorphism : ∀ (E : Type) [Field E] [NumberField 
     have ha' : a.left ≫ m.φ = a'.left := by rw [← ha, Category.assoc, ψφ, Category.comp_id]
     have hb' : b.left ≫ m.φ = b'.left := by rw [← hb, Category.assoc, ψφ, Category.comp_id]
     exact (_root_.GlobalTheory.CompanionTheory.Ar.WeilPull.main E H X X' t t' e.hom m k z a b a' b' n c ha' hb').mp hw
-  refine ⟨M', hM', ?_, ?_, ?_⟩
+  refine ⟨M', hM', ?_, ?_⟩
   · intro n hT k _ i g' hpow
     have hy : (spMap i ≫ ξ') ≫ e.hom = spMap i ≫ ξ := by rw [Category.assoc, hξ]
     obtain ⟨a, ha⟩ := mv_push hφ.1.w hy g'
@@ -243,32 +243,6 @@ theorem lie_model_transport_isomorphism : ∀ (E : Type) [Field E] [NumberField 
     calc g'.left = (g'.left ≫ m.φ) ≫ inv m.φ := by rw [Category.assoc, φψ, Category.comp_id]
       _ = (spMap i ≫ x.left) ≫ inv m.φ := by rw [ha, hx]
       _ = spMap i ≫ x'.left := by rw [Category.assoc, hx']
-  · intro hc
-    have hsp : ∀ p : Cpt ξ', genPt ξ ⤳ e.hom p.1 := by
-      intro p
-      have h0 : genPt ξ = e.hom (genPt ξ') := by
-        show ξ _ = e.hom (ξ' _)
-        rw [← hξ]
-        exact Scheme.Hom.comp_apply _ _ _
-      rw [h0]
-      exact p.2.map e.hom.continuous
-    refine ⟨?_, ?_⟩
-    · have key : ∀ ζ : Sp Ω ⟶ X, ξ' ≫ e.hom = ζ → Function.Bijective (Scheme.stalkClosedPointTo ζ).hom →
-          Function.Bijective (Scheme.stalkClosedPointTo ξ').hom := by
-        intro ζ hζ hb
-        subst hζ
-        rw [Scheme.stalkClosedPointTo_comp] at hb
-        change Function.Bijective ((Scheme.stalkClosedPointTo ξ').hom ∘ (e.hom.stalkMap _).hom) at hb
-        exact (Function.Bijective.of_comp_iff _ (ConcreteCategory.bijective_of_isIso (e.hom.stalkMap _))).mp hb
-      exact key ξ hξ hc.bij
-    · intro p a b hab
-      obtain ⟨σ, -, h2, hbij⟩ := mv_stalk hξ p ⟨e.hom p.1, hsp p⟩ rfl
-      obtain ⟨a0, rfl⟩ := (hbij inferInstance).2 a
-      obtain ⟨b0, rfl⟩ := (hbij inferInstance).2 b
-      have hab' : genMap ξ ⟨e.hom p.1, hsp p⟩ a0 = genMap ξ ⟨e.hom p.1, hsp p⟩ b0 := by
-        rw [← h2]
-        exact hab
-      rw [hc.inj _ hab']
   · intro q h
     have hq2 : e.inv (e.hom q.1) = q.1 := by
       rw [← Scheme.Hom.comp_apply, e.hom_inv_id]
