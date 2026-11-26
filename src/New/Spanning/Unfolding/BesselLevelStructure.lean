@@ -164,15 +164,11 @@ Its columns form a basis of hΛ₀, where Λ₀ is the lattice spanned by the co
 noncomputable def classBasis (c : S.Classes) : GL 𝔰.BesselIndex (𝔸f E) :=
   (toBesselH 𝔰 (S.N : 𝔸f E) c.out).val * S.latticeBasis
 
-lemma classBasis_eq_latticeBasis_mul_classRep (c : S.Classes) :
-    classBasis c = S.latticeBasis * (S.classRep c).val := by
-  simp [classBasis, classRep, inclHFin, toLatticeBasis, mul_assoc]
-
 /-- The matrix of `S.translateByClassReps c c' γ` is `B_c⁻¹ γ B_c'`, with `B_c = classBasis c`. -/
 lemma coe_translateByClassReps (c c' : S.Classes) (γ : S.G E) :
     (S.translateByClassReps c c' γ).val =
       (classBasis c)⁻¹ * GeneralLinearGroup.map (algebraMap E (𝔸f E)) γ.val * classBasis c' := by
-  simp only [classBasis_eq_latticeBasis_mul_classRep, translateByClassReps, Subgroup.coe_mul,
+  simp [classBasis, classRep, inclHFin, toLatticeBasis, translateByClassReps, Subgroup.coe_mul,
     InvMemClass.coe_inv, coe_ratToFin, _root_.mul_inv_rev, mul_assoc]
 
 /-- The chosen representative `h_c = S.classRep c` of a class lies in `besselS`, as it lies in
