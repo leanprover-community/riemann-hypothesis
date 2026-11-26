@@ -497,6 +497,18 @@ theorem coe_embedH (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
   simp [actOnCols, val_toBesselH_apply_coe, inclMatrix, ← ext_iff, Matrix.one_apply,
     Matrix.mul_apply]
 
+/-- The columns of `definiteCols`, the basis vectors `x_i` of `X₀`, are orthonormal for the standard
+hermitian form. -/
+theorem conjTranspose_definiteCols_mul_self : 𝔰.definiteColsᴴ * 𝔰.definiteCols = 1 :=
+  inclMatrix_gram_eq_one (by simp)
+
+/-- For `h` in the unitary group `H` of `X₀`, the element `embedH h` of `G₁` acts on the basis
+vectors `x_i` of `X₀` by the matrix `h`. -/
+theorem embedH_mul_definiteCols (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
+    (embedH h).val.val * 𝔰.definiteCols = 𝔰.definiteCols * h.val.val := by
+  simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
+    conjTranspose_definiteCols_mul_self]
+
 /-- Each explicit isometry `unipotentOf q` lies in 𝖴⁰ = `besselU0`: it is block upper unitriangular
 for the levels `New.BesselIndex.level` and fixes the frame e_0, …, e_{ϱ-1}, z. -/
 lemma unipotentOf_mem_besselU0 (q : 𝔰.UnipotentParams) : unipotentOf q ∈ besselU0 := by
