@@ -12,7 +12,7 @@ autoImplicit = false
 relaxedAutoImplicit = false
 maxSynthPendingDepth = 3
 pp.unicode.fun = true
-maxHeartbeats = 4000000
+maxHeartbeats = 200000
 
 [[require]]
 name = "mathlib"
