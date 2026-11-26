@@ -8,6 +8,7 @@ import Mathlib.Topology.Algebra.Group.Matrix
 import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.DiscreteSeries.Bessel.Basic
 public import New.Spanning.MainTerm.SieveSystem
+public import TauCeti.MeasureTheory.Integral.SieveSystem
 import Lib.DiscreteSeries.Bruhat.FloorMeasures
 
 /-!
@@ -768,7 +769,7 @@ end LinkDefs
 /-!
 ## Bessel systems: cut pairs, Schur bounds and local bounds
 
-* `New.HasLocalBounds`: local bounds, a system of forms (`New.SieveSystem`) whose top form comes
+* `New.HasLocalBounds`: local bounds, a system of forms (`TauCeti.SieveSystem`) whose top form comes
   from `New.besselOrbitalIntegral`.
 -/
 
@@ -873,8 +874,8 @@ def normalizedOrbitalIntegral (p : ℕ → ℂˣ) : EuclideanSpace ℂ (I × I) 
     besselOrbitalIntegral volume W (weylElem 𝔰.ϱ p * y)
 
 /-- Local bounds for given forms J_i(p, q) on tuples of nonzero complex numbers, with n = ϱ + 1 and
-k = |κ|: (a) J is a system `New.SieveSystem`, in which each J_i (i < n) is the integral of J_(i+1)
-over a common entry and the integrals twisted by the character e^(c − c̄) are bounded, with
+k = |κ|: (a) J is a system `TauCeti.SieveSystem`, in which each J_i (i < n) is the integral of
+J_(i+1) over a common entry and the integrals twisted by the character e^(c − c̄) are bounded, with
 |J_0| ≤ (1 + b^(−10))/deg, weights `New.headWeight` with exponent n⁶ that vanish unless the products
 of the first entries have modulus at most b^(60n²), and decay Θ b^(2000n⁹) ℓ_{k−n⁷}(1/|ξ|), where
 Θ = `New.Shape.scaledVolumeRatio` and ℓ_j(r) = r^j min(1, r)⁶ (`New.dampedPower`); (b) if σ fixes
@@ -884,7 +885,7 @@ at p and at q. -/
 def HasLocalBounds (b : ℝ) (W : 𝔰.G₁ → EuclideanSpace ℂ I) (deg : ℝ)
     (J : ℕ → (ℕ → ℂˣ) → (ℕ → ℂˣ) → ℂ) : Prop :=
   -- (a) `J` is a system over `ℂ` with the character `wave` and these bounds
-  SieveSystem unitOrOne (fun z ↦ z⁻¹.val) 𝔰.ϱ J wave ((1 + b⁻¹ ^ 10) / deg)
+  TauCeti.SieveSystem unitOrOne (fun z ↦ z⁻¹.val) 𝔰.ϱ J wave ((1 + b⁻¹ ^ 10) / deg)
     (headWeight (b ^ (60 * 𝔰.n ^ 2)) (𝔰.n ^ 6))
     (fun ξ ↦ 𝔰.scaledVolumeRatio * b ^ (2000 * 𝔰.n ^ 9) * dampedPower (𝔰.k - 𝔰.n ^ 7) ‖ξ‖⁻¹) ∧
   -- (b) its top form is an inner product of values of `normalizedOrbitalIntegral σ`, if both last
