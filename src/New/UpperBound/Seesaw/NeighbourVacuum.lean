@@ -139,17 +139,6 @@ lemma finHeisenbergOp_neighbourTranslation_add (hπ : IsSplitSquarefree P (N : E
     star_neighbourTranslation_dotProduct_eq_zero hπ y hx, star_zero, mul_zero,
     AddChar.map_zero_eq_one, one_smul]
 
-/-- Let `N = π π̄` with `π` a uniformiser at the places of `P`, none conjugate to another, and a
-unit elsewhere (`hπ`). The matrix `neighbourTranslation X X'' y`, made from residues `y` modulo
-`N`, is supported at the conjugates of these places. So the translation of `𝒮 Z` by it commutes
-with the translation by any `x` that vanishes at the places of `P` and their conjugates. -/
-lemma finHeisenbergOp_comm_neighbourTranslation (hπ : IsSplitSquarefree P (N : E) π)
-    (y : X' → P → ZMod N) (hx : x ∈ vanishingAbove (PairIndex X X'' × X') P) (f : 𝒮 Z) :
-    Z.finHeisenbergOp x (Z.finHeisenbergOp (neighbourTranslation X X'' y) f) =
-      Z.finHeisenbergOp (neighbourTranslation X X'' y) (Z.finHeisenbergOp x f) := by
-  rw [finHeisenbergOp_comm, star_neighbourTranslation_dotProduct_eq_zero hπ y hx,
-    AddChar.map_zero_eq_one, one_smul]
-
 end Commute
 
 omit [WeilData E] [Fintype X] [DecidableEq X] [Fintype X''] [DecidableEq X''] in
@@ -348,7 +337,8 @@ theorem isAdmissibleCombination_finHeisenbergOp_sum_neighbourCosetRep
     have hq_zero : q.out.val ∈ vanishingAbove (PairIndex X X'' × X') P :=
       (AddSubgroup.mem_inf.1 q.out.property).2
     rw [neighbourCosetRep, finHeisenbergOp_neighbourTranslation_add Z hπ y hq_zero,
-      finHeisenbergOp_comm_neighbourTranslation Z hπ y hx_zero]
+      finHeisenbergOp_comm, star_neighbourTranslation_dotProduct_eq_zero hπ y hx_zero,
+      AddChar.map_zero_eq_one, one_smul]
   have h_mean : arrowTensor.leftInverse (∑ q : AwayLatticeQuotient X' hπ hκ, classTerm q) =
       ∑ q : AwayLatticeQuotient X' hπ hκ,
         (1 / K : ℂ) • (K : ℂ) • arrowTensor.leftInverse (classTerm q) := by
