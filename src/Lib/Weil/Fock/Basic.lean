@@ -1,5 +1,6 @@
 module
 
+import TauCeti.MeasureTheory.Constructions.Pi
 import TauCeti.Analysis.SpecialFunctions.Gaussian.Reproducing
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
@@ -831,8 +832,10 @@ omit [DecidableEq ι] [DecidableEq T] in
 lemma pi_normalizedVolume :
     Measure.pi (fun _ : T ↦ normalizedVolume ι) =
       (normalizedVolume (T × ι)).map (MeasurableEquiv.curry T ι ℂ) := by
+  have h_curry : MeasurePreserving (MeasurableEquiv.curry T ι ℂ) :=
+    TauCeti.measurePreserving_curry (fun (_ : T) (_ : ι) ↦ (volume : Measure ℂ))
   refine Measure.pi_eq ?_
-  simp [normalizedVolume, pow_mul', -inv_pow, Measure.map_smul, measurePreserving_curry.map_eq,
+  simp [normalizedVolume, pow_mul', -inv_pow, Measure.map_smul, h_curry.map_eq,
     (MeasurableEquiv.measurable _).aemeasurable, prod_mul_distrib, ← volume_pi_pi]
 
 /-- The continuous multilinear map sending (for signs ε : ι → ℤˣ) a T-indexed family of Fock vectors
