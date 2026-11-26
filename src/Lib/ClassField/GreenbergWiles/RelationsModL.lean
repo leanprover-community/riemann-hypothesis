@@ -229,10 +229,6 @@ def torsionAction : Gal(Ω/K) →* Multiplicative (AddAut (M.torsion ℓ)) × (Z
   ((DistribMulAction.toAddAut _ (M.torsion ℓ)).comp (M.torsion ℓ).ρ.asGroupHom).prod
     (cyclotomicCharMod Ω ℓ)
 
-/-- The kernel of the action on `M[ℓ]` and `μ_ℓ` acts trivially on `M[ℓ]`. -/
-lemma trivialOn_ker_torsionAction : (M.torsion ℓ).TrivialOn (torsionAction M ℓ).ker := fun _ hg a ↦
-  DFunLike.congr_fun (congrArg (fun p ↦ Multiplicative.toAdd p.1) (MonoidHom.mem_ker.1 hg)) a
-
 /-- If `ℓ ∣ m`, the subgroup `U` of the setting acts trivially on `M[ℓ]` and on the `ℓ`-th roots of
 unity. -/
 lemma le_ker_torsionAction (hm : ℓ ∣ m) : D.subgroup.toSubgroup ≤ (torsionAction M ℓ).ker :=
@@ -368,7 +364,9 @@ lemma exists_hasFewCocycles_torsion (hκ : Continuous κ)
     exact hγ _ h_ker (isOpen_mono hUF D.subgroup.toOpenSubgroup.isOpen').preimage_val (hxF true) g
   -- `M[ℓ]` is finite, killed by `ℓ`, fixed by `O`, and `ρ 1 - 0` is injective on it.
   have hV : (M.torsion ℓ).FiniteKilledFixedInj ℓ O 1 0 :=
-    ⟨inferInstance, fun a ↦ Subtype.ext a.2, trivialOn_ker_torsionAction, by simp [Injective]⟩
+    ⟨inferInstance, fun a ↦ Subtype.ext a.2,
+      fun _ hg a ↦ DFunLike.congr_fun (congrArg (fun p ↦ Multiplicative.toAdd p.1) (MonoidHom.mem_ker.1 hg)) a,
+      by simp [Injective]⟩
   -- Higman's criterion holds because the index of `O` is prime to `ℓ`.
   obtain ⟨h_few, -⟩ := s'.card_trivialised_of_isHigmanProjective hV
     (hV.isHigmanProjective_of_coprime (coprime_index_ker_torsionAction h_card))
