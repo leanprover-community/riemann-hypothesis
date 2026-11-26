@@ -555,8 +555,11 @@ lemma HasCellRank.exists_majorant_lintegral_le_kernelBound (h_rank : S.HasCellRa
   have h_box : y v ∈ frameBox S.frameBoxRadius := mem_frameBox_of_mem_boxedPoints hy v
   have h_cut : InCut (y v) S.b := inCut_of_mem_boxedPoints hy v
   have h_seven : 7 ≤ 𝔰.k := by
-    have h_base : 2 ^ 9 ≤ (2 * 𝔰.ϱ + 2) ^ 9 := Nat.pow_le_pow_left (by lia) 9
-    grind [S.pow_le_k]
+    calc
+      7 ≤ 2 ^ 9 := by decide
+      _ ≤ (2 * 𝔰.ϱ + 2) ^ 9 := Nat.pow_le_pow_left (Nat.le_add_left 2 _) 9
+      _ ≤ 1000 * (2 * 𝔰.ϱ + 2) ^ 9 := Nat.le_mul_of_pos_left _ (by decide)
+      _ ≤ 𝔰.k := S.pow_le_k
   obtain ⟨φ₀, h_meas, h_int, h_le⟩ := exists_majorant_volumeRatio_inv_pow (min_le_left 𝔰.ϱ j)
     h_box h_cut j.is_le (hij := rfl) h_seven hg₀_gram hg₀_pair (h_rank.det_subframeBlock_ne_zero v)
   -- Pass to the parameters of the shift; the term `+ 0` is the form that `lintegral_comp_mul_add`
