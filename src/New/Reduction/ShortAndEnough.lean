@@ -307,6 +307,7 @@ lemma indexLe_of_mem_image_normalizedPoincare (s : D.chosenGL) {n : ℕ} {y : Fi
   -- On `S` the chain has valuation at least `gain_l - err_l`, for all twists prime to `l`.
   obtain ⟨j, S, hj, h_index, h_gauge⟩ :=
     exists_colengthDvd_gaugeLe_compositeLift (D := D) (p := ι.prime)
+  letI : Module ι.integers D.ramifiedSourceForms := inferInstance
   let A : D.ramifiedSourceForms →ₗ[ι.integers] D.targetForms :=
     (D.normalizedPoincare s).restrictScalars _
   let M : Submodule ι.integers D.ramifiedSourceForms :=
