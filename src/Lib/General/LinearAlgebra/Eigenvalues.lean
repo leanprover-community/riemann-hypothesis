@@ -18,7 +18,7 @@ import Mathlib.RingTheory.TotallySplit
 public import Lib.General.Groups.CongruenceSubgroups
 
 /-!
-# Eigenvalues: traces of powers, common eigenvectors, Amitsur's theorem, Sylvester's law
+# Eigenvalues: traces of powers, common eigenvectors, Sylvester's law
 
 This file collects linear algebra on eigenvalues and characteristic polynomials. It expresses traces
 of powers and determinants such as `det (1 - c N)` through the roots of the characteristic
@@ -31,22 +31,10 @@ polynomial.
 * `New.exists_eigenvector_of_trace_mul_eq`: if twisted traces of a commuting family `A'` are
   proportional to traces of a commuting family `A`, a generalised eigensystem of `A` on which one
   operator has non-zero trace extends to an eigensystem of `A'` that is invariant under the twist.
-* `New.amitsur_charpoly_mem_of_span` (Amitsur): for an algebra map to matrices, it suffices to check
-  on a spanning set that the coefficients of the characteristic polynomials lie in the base ring.
-  The proof works with det (1 - t ρ(w)) modulo a power of t and factors 1 - t ρ(w) step by step.
 * `New.isConj_diagonal_of_isRoot_charpoly`: a complex square matrix whose characteristic polynomial
   vanishes at pairwise distinct numbers x_i, one for each index i, is conjugate to the diagonal
   matrix with entries x_i.
 * `New.sylvester_law_of_inertia`: Sylvester's law of inertia for sign matrices.
-
-## Relation to the literature
-
-Known result: Amitsur's theorem that integral characteristic polynomials on a spanning set give them
-on the whole algebra. It is a consequence of Amitsur's formula for the characteristic polynomial of
-a sum of matrices. Source: S. A. Amitsur, On the characteristic polynomial of a sum of matrices,
-Linear and Multilinear Algebra 8 (1980), no. 3, 177-182; G. Chenevier, The p-adic analytic space of
-pseudocharacters of a profinite group and pseudorepresentations over arbitrary rings, LMS Lecture
-Note Ser. 414 (2014), (1.5).
 -/
 
 @[expose] public section
@@ -592,108 +580,14 @@ end New
 end EigensystemTransfer
 
 /-!
-## Amitsur's theorem on integral characteristic polynomials
-
-Let ρ be a B-algebra map from a ring Λ to n × n matrices over a commutative B-algebra A. The
-question is when the characteristic polynomials of the ρ(w) have coefficients in the image of B, the
-range of `algebraMap B A`.
+## Coefficients of the characteristic polynomial of a multiple
 -/
 
 namespace New
 
-variable {B A n Λ : Type*} [CommRing B] [CommRing A] [Fintype n] [DecidableEq n] [Algebra B A]
-  [Ring Λ] [Algebra B Λ] (ρ : Λ →ₐ[B] Matrix n n A)
+variable {A n : Type*} [CommRing A] [Fintype n] [DecidableEq n]
 
-open Polynomial Submodule AdjoinRoot Matrix Finset Fintype Algebra Function
-
-/-- Let ρ be a B-algebra map from Λ to square matrices over a commutative B-algebra A. If all
-characteristic polynomials of the ρ(w) have coefficients in the image of B, then for each w there
-are F in B with det ρ(w) = F and v in Λ with ρ(v) ρ(w) = ρ(w) ρ(v) = F • 1.
-
-This is a consequence of the Cayley–Hamilton theorem for ρ(w): when the characteristic polynomial
-has coefficients from B, the determinant of ρ(w) is ρ(v) ρ(w) with v in Λ. -/
-lemma exists_adjugate_of_charpoly_mem
-    (h_coeff : ∀ (w : Λ) (k : ℕ), (ρ w).charpoly.coeff k ∈ (algebraMap B A).range) (w : Λ) :
-    ∃ (v : Λ) (F : B), (ρ w).det = algebraMap B A F ∧ ρ v * ρ w = F • 1 ∧ ρ w * ρ v = F • 1 := by
-  -- Let `Q` over `B` lift the characteristic polynomial of `ρ (-w)`, and write
-  -- `Q = divX Q * X + C (Q.coeff 0)`. Then `Q.coeff 0` maps to `det (ρ w)`, and by Cayley–Hamilton
-  -- `divX Q` at `-w` is the required adjugate.
-  obtain ⟨Q, hQ⟩ : ∃ Q : B[X], Q.map (algebraMap B A) = (ρ (-w)).charpoly :=
-    (lifts_iff_coeff_lifts _).2 (h_coeff (-w))
-  let v : Λ := Q.divX.aeval (-w)
-  have det_eq : (ρ w).det = algebraMap B A (Q.coeff 0) := by
-    simpa [eval_charpoly, eval_map] using congrArg (Polynomial.eval 0) hQ.symm
-  have cayley_hamilton : ρ v * ρ w = Q.coeff 0 • 1 := by
-    have vanish : aeval (ρ (-w)) ((Q.divX * X + C (Q.coeff 0)).map (algebraMap B A)) = 0 := by
-      rw [Q.divX_mul_X_add, hQ, aeval_self_charpoly]
-    simpa [v, ← aeval_algHom_apply, neg_add_eq_zero, algebraMap_eq_smul_one] using vanish
-  have comm : ρ w * ρ v = ρ v * ρ w := by
-    simpa [v, ← aeval_algHom_apply] using congrArg (aeval (-ρ w)) (X_mul (p := Q.divX))
-  exact ⟨v, Q.coeff 0, det_eq, cayley_hamilton, comm.trans cayley_hamilton⟩
-
-/-- Amitsur's theorem. Let ρ be a B-algebra map from Λ to square matrices over a commutative
-B-algebra A. If Λ is spanned over B by the elements s for which the characteristic polynomial of
-ρ(s) has all coefficients in the image of B in A, then every w in Λ has this property. -/
-lemma amitsur_charpoly_mem_of_span
-    (hρ : span B {s : Λ | ∀ k : ℕ, (ρ s).charpoly.coeff k ∈ (algebraMap B A).range} = ⊤) (w : Λ)
-    (k : ℕ) : (ρ w).charpoly.coeff k ∈ (algebraMap B A).range := by
-  -- Work modulo `t ^ e = 0` over `R = B[t]`, the image of `B[X]` in `A[X] / X ^ e`. By descending
-  -- induction on `j`, adding `t ^ j • γ` to `β` keeps `det (1 - t • f β)` in `R`. So
-  -- `det (1 - t • ρ w)`, the reversed characteristic polynomial at `t`, lies in `R`.
-  -- The `k`-th coefficient sits in degree `e - 1` of the reversed polynomial.
-  let e : ℕ := revAt (ρ w).charpoly.natDegree k + 1
-  let R : Subalgebra B (AdjoinRoot (X ^ e : A[X])) := (aeval (root (X ^ e : A[X]))).range
-  let t : R := ⟨aeval (root (X ^ e : A[X])) (X : B[X]), X, rfl⟩
-  -- `f` is the extension of `ρ` to `R ⊗ Λ`.
-  let f : TensorProduct B R Λ →ₐ[R] Matrix n n (AdjoinRoot (X ^ e : A[X])) :=
-    ((ofAlgHom B (X ^ e : A[X])).mapMatrix.comp ρ).liftEquiv B R _ _
-  have det_eq (s : Λ) (c : R) :
-      det (1 - c • f (1 ⊗ₜ s)) = (ρ s).charpoly.reverse.aeval (c : AdjoinRoot (X ^ e : A[X])) := by
-    simp [f, reverse_charpoly, charpolyRev, AlgHom.map_det, R.smul_def, map_sub, Matrix.map_smul',
-      comp_def]
-  let S : Set Λ := {s | ∀ k : ℕ, (ρ s).charpoly.coeff k ∈ (algebraMap B A).range}
-  have det_mem (s : Λ) (hs : s ∈ S) (c : R) : det (1 - c • f (1 ⊗ₜ s)) ∈ R := by
-    obtain ⟨y, hy⟩ : ∃ y : B[X], y.map (algebraMap B A) = (ρ s).charpoly :=
-      (lifts_iff_coeff_lifts _).2 hs
-    simp [det_eq, reverse, ← hy, reflect_map]
-  -- The tensors `1 ⊗ₜ s`, `s ∈ S`, span `R ⊗ Λ` over `R`.
-  have mem_span (γ : TensorProduct B R Λ) : γ ∈ span R (TensorProduct.mk B R Λ 1 '' S) := by
-    simp [← baseChange_span, show span B S = ⊤ from hρ]
-  have stable (j : ℕ) (hj : j ≤ e) (γ β : TensorProduct B R Λ) :
-      det (1 - t • f β) ∈ R → det (1 - t • f (β + t ^ j • γ)) ∈ R := by
-    induction hj using Nat.decreasingInduction generalizing γ β with
-    | self =>
-      have t_pow : t ^ e = 0 := Subtype.ext (by simp [t, ← mk_X, ← map_pow])
-      simp [t_pow]
-    | of_succ j _ ih =>
-      induction mem_span γ using closure_induction generalizing β with
-      | zero => simp
-      | add γ γ' _ _ ih_γ ih_γ' =>
-        intro hβ
-        simpa [smul_add, ← add_assoc] using ih_γ' _ (ih_γ β hβ)
-      | smul_mem c x hx =>
-        obtain ⟨s, hs, rfl⟩ := hx
-        intro hβ
-        -- Multiplying by `1 - t ^ (j + 1) • c • s` adds `t ^ j • c • s` to `β`, up to the error
-        -- `t ^ (j + 1) • δ`, which the induction hypothesis removes.
-        let δ : TensorProduct B R Λ := c • β * 1 ⊗ₜ s
-        let β' : TensorProduct B R Λ := β + t ^ j • c • (1 : R) ⊗ₜ[B] s - t ^ (j + 1) • δ
-        have factor : 1 - t • f β' = (1 - t • f β) * (1 - (t ^ (j + 1) * c) • f (1 ⊗ₜ s)) := by
-          simp only [β', δ, map_sub, map_add, map_smul, map_mul, sub_mul, mul_sub, mul_one, one_mul,
-            smul_mul_assoc, mul_smul_comm]
-          module
-        have h_mem : det (1 - t • f β') ∈ R := by
-          rw [factor, det_mul]
-          exact mul_mem hβ (det_mem s hs _)
-        simpa [β'] using ih δ β' h_mem
-  -- The case `j = 0`, `β = 0`: `det (1 - t • ρ w)` is the value at `t` of some `q : B[X]`.
-  obtain ⟨q, hq⟩ : det (1 - t • f (0 + t ^ 0 • (1 : R) ⊗ₜ[B] w)) ∈ R :=
-    stable 0 e.zero_le (1 ⊗ₜ w) 0 (by simp)
-  -- `q` agrees with the reversed characteristic polynomial in all degrees below `e`.
-  have h_agree : ∀ d < e,
-      algebraMap B A (q.coeff d) = (ρ w).charpoly.coeff (revAt (ρ w).charpoly.natDegree d) := by
-    simpa [aeval_eq_of_algebra, det_eq, t, X_pow_dvd_iff, sub_eq_zero, coeff_reverse] using hq
-  exact ⟨q.coeff (e - 1), by simpa [e] using h_agree (e - 1) (Nat.lt_succ_self _)⟩
+open Polynomial Matrix Fintype
 
 /-- Scaling a square matrix of size `card n` by `a` multiplies the `k`-th coefficient of its
 characteristic polynomial by `a ^ (card n - k)`. -/
