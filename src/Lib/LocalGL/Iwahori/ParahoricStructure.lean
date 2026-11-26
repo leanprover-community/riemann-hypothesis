@@ -731,7 +731,7 @@ private lemma exists_twistedConj_mem_conjProIwahori (ht : StrictMono fun i : Fin
     -- `diag(t) I₁ diag(t)⁻¹`.
     obtain ⟨u, hu, hu_conj⟩ : ∃ u ∈ unitriangular id F ⊓ proIwahori,
         (diagGL t)⁻¹ * (u⁻¹ * twistedConj t g σ k) * diagGL t ∈ proIwahori :=
-      exists_unipotent_conj_mem_proIwahori ht.monotone (hk 0 le_rfl (by lia))
+      exists_unipotent_conj_mem_proIwahori ht.monotone (hk 0 le_rfl (by omega))
     obtain ⟨z, hz⟩ : ∃ z : GL (Fin N) F, GeneralLinearGroup.map σ z = u⁻¹ * twistedConj t g σ k :=
       hσ_surj _
     have hu_mem (j : ℕ) : u ∈ conjProIwahori t j := by
@@ -741,15 +741,19 @@ private lemma exists_twistedConj_mem_conjProIwahori (ht : StrictMono fun i : Fin
       cases j with
       | zero =>
         -- for the index `-1`, membership is conjugation by `diag(t)⁻¹`, which is `hu_conj`
-        simpa [_root_.zpow_neg_one] using hu_conj
+        simpa only [Nat.cast_zero, zero_add, MulEquiv.comapSubgroup_apply, _root_.zpow_neg_one, Subgroup.mem_comap,
+          MonoidHom.coe_ofClass, MulAut.inv_apply, MulAut.conj_symm_apply] using hu_conj
       | succ j =>
         -- `σ(z) = u⁻¹ * twistedConj t g σ k` and both factors lie in `diag(t)⁻ʲ I₁ diag(t)ʲ`
         rw [Nat.cast_succ, add_neg_cancel_right]
-        exact mul_mem (inv_mem (hu_mem j)) (hk j (by lia) (by lia))
+        exact mul_mem (inv_mem (hu_mem j)) (hk j (by omega) (by omega))
     -- For `k' = k z⁻¹` one has `twistedConj t g σ k' = (t⁻¹ z t) u`.
-    refine ⟨k * ⟨z, hz_mem 1 (by lia)⟩⁻¹, fun j hj₀ hj ↦ ?_⟩
+    refine ⟨k * ⟨z, hz_mem 1 (by omega)⟩⁻¹, fun j hj₀ hj ↦ ?_⟩
     lift j to ℕ using hj₀
-    simpa [hz, mul_assoc, _root_.zpow_add] using proIwahori.mul_mem (hz_mem j (by lia)) (hu_mem j)
+    simpa only [MulEquiv.comapSubgroup_apply, zpow_natCast, Subgroup.mem_comap, MonoidHom.coe_ofClass, map_mul,
+      map_inv, Subgroup.coe_mul, InvMemClass.coe_inv, _root_.mul_inv_rev, inv_inv, mul_assoc, hz, mul_inv_cancel_left,
+      inv_mul_cancel_left, _root_.zpow_add, _root_.zpow_neg, zpow_ofNat, pow_one, MulAut.mul_apply,
+      MulAut.inv_apply, MulAut.conj_symm_apply] using proIwahori.mul_mem (hz_mem j (by omega)) (hu_mem j)
   -- Shifting, from `[-a, b + 1]` to `[-a - 1, b]`: `y = t (twistedConj t g σ k) t⁻¹` lies in `I₁`,
   -- and `twistedConj t g σ (k y) = σ(y)`.
   have h_shift (a b : ℕ) (k : proIwahori)
@@ -757,17 +761,21 @@ private lemma exists_twistedConj_mem_conjProIwahori (ht : StrictMono fun i : Fin
       ∃ k' : proIwahori, ∀ j : ℤ, -(a + 1) ≤ j → j ≤ b →
         twistedConj t g σ k' ∈ conjProIwahori t j := by
     let y : proIwahori :=
-      ⟨(MulAut.conj (diagGL t) ^ (1 : ℤ)) (twistedConj t g σ k), hk 1 (by lia) (by lia)⟩
+      ⟨(MulAut.conj (diagGL t) ^ (1 : ℤ)) (twistedConj t g σ k), hk 1 (by omega) (by omega)⟩
     refine ⟨k * y, fun j hj₀ hj ↦ ?_⟩
     have hy : (y : GL (Fin N) F) ∈ conjProIwahori t j := by
-      simpa [y, _root_.zpow_add] using hk (j + 1) (by lia) (by lia)
-    simpa [y, mul_assoc] using (map_mem_conjProIwahori_iff hσ).mpr hy
+      simpa only [y, MulEquiv.comapSubgroup_apply, zpow_ofNat, pow_one, Subgroup.mem_comap, MonoidHom.coe_ofClass,
+        _root_.zpow_add, MulAut.mul_apply] using hk (j + 1) (by omega) (by omega)
+    simpa only [y, MulEquiv.comapSubgroup_apply, Subgroup.mem_comap, MonoidHom.coe_ofClass, zpow_ofNat, pow_one,
+      MulAut.conj_apply, mul_inv_cancel_left, mul_assoc, map_mul, map_inv,
+      Subgroup.coe_mul, _root_.mul_inv_rev, inv_inv, inv_mul_cancel, mul_one, inv_mul_cancel_left] using
+      (map_mem_conjProIwahori_iff hσ).mpr hy
   induction a generalizing b with
   | succ a ih => exact (ih (b + 1)).elim (h_shift a b)
   | zero =>
     induction b with
     | succ b ih => exact ih.elim (h_widen b)
-    | zero => exact h_start.imp fun k hk j hj₀ hj ↦ by rwa [show j = 0 by lia]
+    | zero => exact h_start.imp fun k hk j hj₀ hj ↦ by rwa [show j = 0 by omega]
 
 /-- If `v (t i)` increases strictly and `x` lies in `diag(t)⁻ʲ I₁ diag(t)ʲ` for every integer `j`,
 then `x` is a diagonal matrix. -/
@@ -815,7 +823,7 @@ lemma exists_inv_mul_mul_map_eq_diagGL_mul [CompactSpace 𝒪[F]]
     have h_closed : IsClosed (twistedConj t g σ ⁻¹' conjProIwahori t j) :=
       (proIwahori.isClosed_of_isOpen isOpen_proIwahori).preimage h_cont
     refine h_closed.mem_of_mapClusterPt hk ?_
-    filter_upwards [mem_atTop j.natAbs] with m hm using hf m m j (by lia) (by lia)
+    filter_upwards [mem_atTop j.natAbs] with m hm using hf m m j (by omega) (by omega)
   -- The diagonal entries are `≡ 1`, so have valuation `1`, as `X k` lies in `K = H 0`.
   have hX_mem : twistedConj t g σ k ∈ proIwahori := by simpa using h_all 0
   have h_unit (i : Fin N) : twistedConj t g σ k i i ≠ 0 :=
