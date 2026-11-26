@@ -484,9 +484,9 @@ lemma exists_ainfToBPlus_eq_pow_mul (hU : c.IsPeriodMatrix U h v) :
   exact ⟨a, fun i ↦ by rw [ha, pow_add _ _ m, mul_assoc]⟩
 
 /-- Let `U` over `B⁺` be a period matrix of height `h` with Frobenius factor `v`. The `x` over
-`A_inf` for which `U y = E ^ h x` has a solution `y` with entries in `S_B` (`c.bicommutant`, the
-closure of `S[E/p]` in `B⁺` with `p` inverted) form an `S`-module spanned by the columns of a square
-matrix `Q` over `A_inf`; moreover `U Z = E ^ h Q` for a matrix `Z` with entries in `S_B`. -/
+`A_inf` for which `U y = E ^ h x` has a solution `y` with entries in `S_B` (`c.bicommutant`) form
+an `S`-module spanned by the columns of a square matrix `Q` over `A_inf`; moreover `U Z = E ^ h Q`
+for a matrix `Z` with entries in `S_B`. -/
 lemma exists_spanning_matrix (hU : c.IsPeriodMatrix U h v) :
     ∃ (Q : Matrix d d Ainf) (Z : Matrix d d BPlus),
       (∀ i j : d, Z i j ∈ c.bicommutant) ∧
