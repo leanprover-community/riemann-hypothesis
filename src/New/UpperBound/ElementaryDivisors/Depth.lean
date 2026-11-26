@@ -159,15 +159,6 @@ theorem prod_deepOrder_le {r m : ℕ} (hm : 2 * r + m = k) :
         exacts [mod_cast T.one_lt_P.le, N.div_mul_le_self 2]
     _ = T.q ^ (r * (m + 1)) := by rw [q, pow_mul T.P]
 
-/-- If `F` lies in `T.deepForms k n r τ`, the coefficient of its translate by `g` (the matrix of `g`
-on coefficient vectors is `T.letterRep n g`) vanishes at every monomial `β` whose degree in the
-variables that are deep for `r` is below `τ`. -/
-theorem letterRep_mulVec_eq_zero_of_mem_deepForms {n r τ : ℕ} {F : Exponents N k n → K}
-    (hF : F ∈ T.deepForms k n r τ) (g : GL (Fin k) W) {β : Exponents N k n}
-    (hβ : T.depth k n r β < τ) : (T.letterRep n g *ᵥ F) β = 0 := by
-  -- With a single block, the Levi subgroup is all of `GL_k(W)`.
-  exact Ideal.mem_bot.1 (hF g (fun i j hij ↦ absurd rfl hij) β hβ)
-
 /-- Let `F` lie in `T.deepForms k n r τ`. If a ring map `ψ` sends the translates by `g⁻¹` of the
 deep variables into an ideal `𝔪`, then it sends the form with coefficients `F` into `𝔪 ^ τ`. -/
 theorem map_polyOfCoeffs_mem_pow_of_mem_deepForms {n r τ : ℕ} {F : Exponents N k n → K}
@@ -199,7 +190,7 @@ theorem map_polyOfCoeffs_mem_pow_of_mem_deepForms {n r τ : ℕ} {F : Exponents 
     refine pow_le_pow_right h_deep (mul_mem_left _ _ ?_)
     rw [h_pow]
     exact prod_mem_prod fun v _ ↦ pow_mem_pow (h_var v) _
-  · have hG0 : G β = 0 := T.letterRep_mulVec_eq_zero_of_mem_deepForms hF g h_shallow
+  · have hG0 : G β = 0 := Ideal.mem_bot.1 (hF g (fun i j hij ↦ absurd rfl hij) β h_shallow)
     rw [hG0, ringHom_map_zero C, ringHom_map_zero ψ, zero_mul]
     exact Ideal.zero_mem _
 
