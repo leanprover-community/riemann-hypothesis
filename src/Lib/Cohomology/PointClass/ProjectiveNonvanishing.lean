@@ -174,9 +174,14 @@ private lemma pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu
   let N : CommAlg k ⥤ AddCommGrpCat := freeAb.obj (unimodular (k := k) (d := 1)).toFunctor
   let α : HodgeTatePair.pairAlg ⋙ N ⟶ HodgeTatePair.toHodgeTest ⋙ hodgeCoeff :=
     Functor.whiskerRight HodgeTatePair.toSqZero N ≫ HodgeTatePair.toHodgeTest.whiskerLeft ω
-  simp [Comparison.pull, H.map, H.push, Abelian.Ext.toTotalH, Functor.mapExtAddHom,
-    Abelian.Ext.mapExactFunctor_mk₀, Abelian.Ext.mapExactFunctor_comp,
-    Abelian.Ext.mapExactFunctor_extClass]
+  -- `Comparison.pull_apply` writes both pull-backs as Yoneda products of `mk₀` classes with the
+  -- restricted class; these reduce by the composition rules for `mk₀`.
+  rw [Comparison.pull_apply, Comparison.pull_apply]
+  simp only [H.map, Abelian.Ext.toTotalH, AddMonoidHom.flip_apply,
+    Abelian.Ext.bilinearComp_apply_apply, Abelian.Ext.comp_mk₀_id, Abelian.Ext.mk₀_comp_mk₀,
+    Abelian.Ext.mapExactFunctor_mk₀, Abelian.Ext.mapExactFunctor_comp, Functor.whiskerLeft_twice,
+    Abelian.Ext.mapExactFunctor_extClass, Abelian.Ext.mk₀_comp_mk₀_assoc, Category.comp_id,
+    Functor.whiskeringLeft_obj_obj, Functor.whiskeringLeft_obj_map]
   -- The left side is `α` (the form `ω` on pairs), then one contraction, then the projection
   -- `HodgeTatePair.contractionPow 0` of `⋀ M` to degree zero; with `D` below it is the class of the
   -- cocycle `D` (the form `ω`, then contraction along `f`), followed by that projection.
@@ -278,7 +283,9 @@ lemma hodgeTateMap_symbolClass :
     ((congrArg _ (pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu ω hω)).trans
       (Comparison.pull_comp_restrictAlong (relFreeAb.shortExact unimodular).2.extClass _
         (rfl : 1 + 1 = 2)))
-  simpa [hθ, Abelian.Ext.mapExactFunctor_extClass, hodgeTateMap, restrictToPairs] using! h_chain
+  simp only [hθ, Abelian.Ext.mapExactFunctor_extClass, hodgeTateMap, restrictToPairs,
+    LinearMap.coe_mk, AddHom.coe_mk, Function.comp_apply] at h_chain ⊢
+  exact h_chain
 
 end New.Variety
 
