@@ -131,7 +131,11 @@ theorem exists_dilation {T : ℝ} (hT : 1 ≤ T) :
     refine exists_U_coe_eq ?_
     -- The form pairs e_a with e*_a, and the exponents at these two indices add up to `0`.
     simp [← ext_iff, level, ← zpow_add₀ hT_ne]
-    grind [zpow_zero]
+    have h_exp (i : Fin 𝔰.ϱ) :
+        (𝔰.ϱ : ℤ) - i.val + ((𝔰.ϱ : ℤ) - (2 * 𝔰.ϱ - i.val : ℕ)) = 0 := by
+      have hi := i.isLt
+      omega
+    simp +contextual [h_exp, add_comm]
   have h_conj (u : 𝔰.G₁) (i j : 𝔰.BesselIndex) :
       (d⁻¹ * u * d).val.val i j = T ^ (level i - level j : ℤ) * u.val.val i j := by
     simp [inv_diagonal, Ring.inverse, Pi.isUnit_iff, zpow_sub₀, field, hd, hT_ne]
