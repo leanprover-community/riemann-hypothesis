@@ -75,8 +75,10 @@ lemma v_alpha_mul_star_eq_ideleA_norm_mul_M (w : FinPlace D.E) :
   have h_norm : v ((D.chosenIdele * star D.chosenIdele.val) w) =
       w.valuation D.E (D.M : D.E) := by
     simp [← h_piM_mul_star, v_chosenIdele]
-  rw [← h_α, ← h_norm]
-  simp [mul_assoc, mul_comm, mul_left_comm]
+  have h_ring : D.ideleA.val * star D.chosenIdele.val * (D.chosenIdele.val * star D.ideleA.val) =
+      D.ideleA.val * star D.ideleA.val * (D.chosenIdele.val * star D.chosenIdele.val) := by ring
+  rw [← h_α, ← h_norm, ← map_mul, Units.coe_star, star_mul, star_star, h_ring]
+  rfl
 
 /-- Let `D` be admissible data, with field `E = P.E D.towerExp`, level `M = D.M = p₀ p₁` and
 `D.m = 2 ϱ + 2` lifts (`ϱ = D.ϱ`), and let `k ≤ 2 ϱ + 1`, that is `k < D.m`. The grading
