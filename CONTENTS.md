@@ -651,7 +651,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/ClassField/Places/LocalFields` (445): Local fields: Frobenius, uniformisers, normalised valuation, extensions, unramified characters
 - `Lib/ClassField/Places/DecompositionCompletion` (497): Decomposition groups of places above p as Galois groups of local fields in ℚ̄_p
 - `Lib/ClassField/Places/Ideles` (237): Finite ideles, principal ideles and the class group; finite index of open subgroups
-- `Lib/ClassField/Places/TameInertia` (269): Tame inertia, Frobenius on roots of unity over ℚ_p, the cyclotomic character, Weil pairs
+- `Lib/ClassField/Places/TameInertia` (252): Tame inertia, Frobenius on roots of unity over ℚ_p, and the cyclotomic character
 
 ### Cohomology: Cohomology of schemes
 
@@ -1004,7 +1004,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **Crystalline**: Crystalline representations and Hodge–Tate jumps
 
-- `Lib/PadicHodge/Crystalline/Basic` (330): Crystalline and potentially crystalline representations and admissibility
+- `Lib/PadicHodge/Crystalline/Basic` (350): Crystalline and potentially crystalline representations and admissibility
 - `Lib/PadicHodge/Crystalline/HodgeTateForms` (103): Semilinear forms of given weight: independence, finiteness, and jumps read off a basis
 - `Lib/PadicHodge/Crystalline/HodgeTateJumps` (552): Hodge frames and Hodge–Tate jumps under operations on representations
 - `Lib/PadicHodge/Crystalline/FixedRatios` (258): Bounded poles, φ-fixed elements of B_max, and ratios of periods fixed near 1

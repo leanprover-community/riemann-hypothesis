@@ -5,14 +5,13 @@ import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
-public import Lib.PadicHodge.Crystalline.Basic
+public import Lib.ClassField.Places.DecompositionCompletion
 public import Lib.General.Topology
 import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
-import Lib.ClassField.Places.DecompositionCompletion
 import Lib.ClassField.Places.LocalFields
 
 /-!
-# Tame inertia, Frobenius on roots of unity over ℚ_p, the cyclotomic character, Weil pairs
+# Tame inertia, Frobenius on roots of unity over ℚ_p, and the cyclotomic character
 
 This file studies how inertia and Frobenius elements act on roots of unity and on roots of a
 uniformiser over a henselian local field, and in particular over `ℚ_p`. Over `ℚ_ℓ`, with `G_ℓ`
@@ -36,8 +35,6 @@ determined by the Galois element.
   `p`-adic cyclotomic character on inertia. Inertia permutes the primitive `p ^ (k + 1)`-th roots of
   unity transitively, and `New.Selmer.exists_cyclotomicGp_eq_of_isClosed` passes to the limit by
   compactness.
-* `New.Period.IsWeilPair.eq_pow_of_isFrob`: for a homomorphism `j` from a group `Γ` to the absolute
-  Galois group of `ℚ_p` and a Weil pair `(j s, m)`, the element `j s` determines `p ^ m`.
 
 Notions from other files:
 * `New.IsLocalGalois`: Γ = Gal(Ω/k), with Ω algebraically closed of characteristic 0, stabilises A,
@@ -476,44 +473,6 @@ lemma exists_inertia_cyclotomicGp_eq (a : ℕ) (h_cop : p.Coprime a) :
 end CyclotomicRamification
 
 end New.Selmer
-
-/-!
-## Weil pairs: products, powers and uniqueness of the degree
-
-`New.Period.IsWeilPair s m` says that `s` in the absolute Galois group of `ℚ_p` acts on the residue
-field of `ℚ̄_p` as `x ↦ x ^ (1 / p ^ m)`. The lemmas concern elements `j s`, where `j` is a
-homomorphism from a group `Γ` to this Galois group.
--/
-
-namespace New.Period.IsWeilPair
-
-variable {p : ℕ} [ι : ThePrime p] {m m' : ℕ} {Γ : Type*} {s t : Γ} [Group Γ] {j : Γ →* Gp p}
-
-/-- Weil pairs multiply: the degrees add. -/
-lemma mul (h : IsWeilPair (j s) m) (h' : IsWeilPair (j t) m') :
-    IsWeilPair (j (s * t)) (m + m') := by
-  simpa [IsWeilPair, p.pow_add', h'.mul_iff] using h
-
-/-- If `(j s, m)` is a Weil pair, then so is `(j (s ^ n), n * m)`. -/
-lemma pow (h : IsWeilPair (j s) m) (n : ℕ) : IsWeilPair (j (s ^ n)) (n * m) := by
-  -- A Frobenius for `p ^ m` raised to the `n`-th power is a Frobenius for `(p ^ m) ^ n`.
-  rw [IsWeilPair, map_pow, ← inv_pow, mul_comm n m, pow_mul]
-  exact IsFrob.pow h n
-
-/-- If `(j s, m)` is a Weil pair and `(j s)⁻¹` acts on the residue field as `x ↦ x ^ q`, then
-`q = p ^ m`. -/
-lemma eq_pow_of_isFrob (h : IsWeilPair (j s) m) {q : ℕ} (hq : IsFrob (intQpBar p) q (j s)⁻¹) :
-    q = p ^ m := by
-  -- The `l`-adic cyclotomic character of `(j s)⁻¹`, for a prime `l > p`, is both `q` and `p ^ m`
-  -- (`IsFrob.cyclotomicChar_eq`: on `l`-power roots of unity a Frobenius for `q` acts as
-  -- `x ↦ x ^ q`).
-  obtain ⟨l, hpl, hl⟩ : ∃ l : ℕ, p.succ ≤ l ∧ l.Prime := p.succ.exists_infinite_primes
-  have hl_fact : Fact l.Prime := ⟨hl⟩
-  have h_not_dvd : ¬p ∣ l := (Nat.prime_dvd_prime_iff_eq ι.out hl).not.mpr (by omega)
-  have hval : (intQpBar p).valuation l = 1 := Selmer.valuation_natCast_eq_one h_not_dvd
-  exact_mod_cast (hq.cyclotomicChar_eq l hval).symm.trans (h.cyclotomicChar_eq l hval)
-
-end New.Period.IsWeilPair
 
 /-!
 ## Inertia and roots of unity of order prime to p
