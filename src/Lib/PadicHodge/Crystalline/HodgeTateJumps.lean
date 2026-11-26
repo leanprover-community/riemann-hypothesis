@@ -496,7 +496,8 @@ def hodgeTateMaps.pull [RingHomCompTriple φ (toRingHom γ) γ'] (i : T' →ₛ�
   toFun f :=
     ⟨f.val ∘ₛₗ i, fun x ↦ by
       filter_upwards [hi, f.property (i x)] with g h_equiv h_weight
-      simpa [h_equiv] using h_weight⟩
+      simpa only [coe_comp, Function.comp_apply, h_equiv, MonoidHom.coe_comp, _root_.zpow_neg] using
+        h_weight⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
