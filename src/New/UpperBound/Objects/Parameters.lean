@@ -156,7 +156,7 @@ def gridWeight (c : Bool) (l : ℕ) (n : Type) [Fintype n] (τ : D.Φ) : ℤ :=
 polynomials (`New.jointHarmonic`) for the nodes `(a, b)` and `(i, j)` of grid `z` with offset `o`.
 The weights are `D.gridWeight c l`, where `l` gives the centre `±w_{l+1}` of the step and `c` the
 rounding. The parameters are negated (`negIf`) if `d` is true, as for the step from `(i, j)` to
-`(i + 1, j)` (see `paramsCorrespond_grid`). -/
+`(i + 1, j)`. -/
 def gridHarmonic (o : ℕ) (d c : Bool) (l : ℕ) (z : Bool) (a b i j : ℕ) :
     MvPolynomial (NumberField.InfinitePlace D.E × D.GridIndex z i j × D.GridIndex z a b) ℂ :=
   jointHarmonic (D.gridWeight c l (D.GridIndex z a b)) (D.gridWeight c l (D.GridIndex z i j))

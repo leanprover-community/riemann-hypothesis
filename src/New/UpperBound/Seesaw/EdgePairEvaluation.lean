@@ -26,9 +26,8 @@ Throughout, a *string* of a grading is the block of basis vectors outside the de
 `DoubleLiftData` records two successive steps `Y → Y' → Y''` where the first step makes the string
 one shorter and the second, unless the string is already empty, makes it shorter by one.
 
-* `New.Seesaw.zeroTermFin`: the finite part of the zero term. It obeys the law of the zero term for
-  finite points of the parabolic subgroup (`New.Seesaw.zeroTermFin_omega`) and is not zero at the
-  vacuum (`New.Seesaw.zeroTermFin_vacElem_ne_zero`).
+* `New.Seesaw.zeroTermFin`: the finite part of the zero term. It is not zero at the vacuum
+  (`New.Seesaw.zeroTermFin_vacElem_ne_zero`).
 * `New.Seesaw.GradeZeroPart`, `New.Seesaw.GradeZeroPart.splitting`: the part of grade zero, and the
   splitting it gives.
 * `New.Seesaw.DoubleLiftData`: the part of grade zero of `V⁻ ⊕ V''` is `X⁻ ⊕ X''` plus hyperbolic
