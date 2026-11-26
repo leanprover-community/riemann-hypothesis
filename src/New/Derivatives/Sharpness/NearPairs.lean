@@ -354,12 +354,8 @@ lemma weight_of_notMem (D : Data P) {τ : D.Φ} (hτ : τ ∉ D.bPlaces) :
     (D.weight τ : ℝ) = D.a / D.x₁ := by
   rw [cast_weight, ite_eq_right hτ]
 
-/-- A `b`-place has weight `a / x = b`, as `a = x b`. -/
-lemma weight_of_mem (D : Data P) {τ : D.Φ} (hτ : τ ∈ D.bPlaces) : (D.weight τ : ℝ) = D.b := by
-  rw [cast_weight, ite_eq_left hτ, cast_a, mul_div_cancel_left₀ _ (exp_ne_zero D.logX : D.x ≠ 0)]
-
 lemma b_le_weight (D : Data P) {τ : D.Φ} (hτ : τ ∈ D.bPlaces) : D.b ≤ D.weight τ :=
-  (D.weight_of_mem hτ).ge
+  (by rw [cast_weight, ite_eq_left hτ, cast_a, mul_div_cancel_left₀ _ (exp_ne_zero D.logX : D.x ≠ 0)] : (D.weight τ : ℝ) = D.b).ge
 
 /-- For any `n` and `e`, the term of `R_τ` with exponent `e + n` is at most `b / (p ^ n 2 ^ e)`, the
 general term of a geometric series with sum `2 b / p ^ n`. The term at an exponent `i` is
