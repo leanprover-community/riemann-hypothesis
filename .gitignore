@@ -2,3 +2,6 @@
 *.olean
 *.ilean
 __pycache__/
+# Written by scripts/lint-style.sh while it runs. (Not its Src link: where case is ignored,
+# that pattern would match src/ itself.)
+/src/Src.lean
