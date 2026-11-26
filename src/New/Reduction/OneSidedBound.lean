@@ -252,7 +252,7 @@ theorem grh : DirichletLNonvanishingRightOfHalf := by
   intro q _ χ ρ hρ h_pole
   -- The case `ρ = 1` is Dirichlet's theorem.
   obtain rfl | hρ_ne := eq_or_ne ρ 1
-  · exact χ.LFunction_ne_zero_of_one_le_re h_pole le_rfl
+  · exact LFunction_apply_one_ne_zero (by simpa using h_pole)
   obtain ⟨β, hβ, hβρ⟩ : ∃ β : ℝ, 1 / 2 < β ∧ β < ρ.re := exists_between hρ
   have hq_pos : 0 < q := NeZero.pos q
   obtain ⟨d₀, hd₀⟩ : ∃ d₀ : ℕ, d₀ + 1 = 9240 * q := ⟨9240 * q - 1, by omega⟩

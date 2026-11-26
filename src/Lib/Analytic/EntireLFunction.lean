@@ -139,7 +139,7 @@ lemma entireL_ne_zero (hs : 1 ≤ s.re) : entireL χ s ≠ 0 := by
   · rw [entireL]
     split_ifs with hχ
     · exact LFunctionTrivChar₁_apply_one_ne_zero N
-    · exact LFunction_ne_zero_of_one_le_re χ (.inl hχ) hs
+    · exact LFunction_apply_one_ne_zero hχ
   · exact (entireL_ne_zero_iff χ hs_ne).2 (LFunction_ne_zero_of_one_le_re χ (.inr hs_ne) hs)
 
 /-- For `re s > 1`, the series `∑ χ(n) Λ(n) n^{-s}` has the sum `-L'/L(s, χ)`, written through
