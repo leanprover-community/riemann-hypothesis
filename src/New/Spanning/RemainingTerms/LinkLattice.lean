@@ -128,12 +128,6 @@ lemma IsOrthogonalLift.toCols₁_mul_toCols₂ (hu : IsOrthogonalLift j γ v u) 
     u.toCols₁ᴴ * S.ratGram * u.toCols₂ = 0 :=
   congrArg toCols₂ hu.toCols₁_mul_self
 
-/-- The first columns of an orthogonal lift are orthogonal to the `e_a` and the `γ e_a`. -/
-lemma IsOrthogonalLift.toCols₁_mul_isotropicFramePair (hu : IsOrthogonalLift j γ v u) :
-    u.toCols₁ᴴ * S.ratGram * isotropicFramePair γ = 0 :=
-  -- These are columns of the frame pair of `γ`.
-  Matrix.ext fun x _ ↦ congrFun₂ hu.toCols₁_mul_framePair x _
-
 /-- The first columns of an orthogonal lift are orthogonal to `z` and `γ z`, for `z` the last
 vector of the frame. -/
 lemma IsOrthogonalLift.toCols₁_mul_lastPair (hu : IsOrthogonalLift j γ v u) :
@@ -260,7 +254,7 @@ lemma IsOrthogonalLift.linkDiscSq_mul_sq_eq [HasPrimitiveRoot5040 E] [Fintype τ
   intro F latticeIndex
   set J₀ : Matrix μ μ (𝔸f E) := Bᴴ * (S.latticeMiddle (𝔸f E)).splitGram * B
   have h_isotropic : u.toCols₁ᴴ * S.ratGram * isotropicFramePair γ = 0 :=
-    hu.toCols₁_mul_isotropicFramePair
+    Matrix.ext fun x _ ↦ congrFun₂ hu.toCols₁_mul_framePair x _
   -- The two lists consist of columns of the isotropic pair.
   have h_list : u.toCols₁ᴴ * S.ratGram * listPair j γ = 0 :=
     Matrix.ext fun x b ↦ congrFun₂ h_isotropic x _
