@@ -265,7 +265,7 @@ The prime number theorem in this table is known (Montgomery and Vaughan, Multipl
 | Amitsur's theorem that integral characteristic polynomials on a spanning set give them on the whole algebra | `Lib/General/LinearAlgebra/Eigenvalues` |  | S. A. Amitsur, On the characteristic polynomial of a sum of matrices, Linear and Multilinear Algebra 8 (1980), no. 3, 177-182; G. Chenevier, The p-adic analytic space of pseudocharacters of a profinite group and pseudorepresentations over arbitrary rings, LMS Lecture Note Ser. 414 (2014), (1.5) |
 | Commutativity of the spherical Hecke algebra of GL_n | `Lib/General/LinearAlgebra/IntegralLattices` | `Lib/Weil/Unramified/SplitHecke` | J. Tits, Reductive groups over local fields, Corvallis 1979, 3.3.3; T. Tamagawa, On the zeta functions of a division algebra, Ann. Math. 77 (1963) |
 | Auerbach's lemma, here for a compact family of linear forms | `Lib/General/LinearAlgebra/MatrixNormBounds` |  |  |
-| Fibre measures | `Lib/General/Measure/FibreMeasure` |  | Weil, Sur la formule de Siegel dans la théorie des groupes classiques, no. 6 |
+| Fibre measures | Tau Ceti `TauCeti/MeasureTheory/Measure/FiberMeasure` |  | Weil, Sur la formule de Siegel dans la théorie des groupes classiques, no. 6 |
 | Dirichlet's S-unit theorem and an explicit class number bound from Minkowski's bound | `Lib/General/NumberTheory/SUnitsAndClassNumber` |  |  |
 | Teichmüller representatives as limits of powers | `Lib/General/NumberTheory/PadicLimitsValuation` |  | Serre, Local Fields, Chapter II |
 | Gauss norms and Gauss's lemma for polynomials over the integral elements of ℚ̄_ℓ | `Lib/General/NumberTheory/GaussValuation` |  | Bosch, Güntzer, Remmert, Non-Archimedean Analysis |
