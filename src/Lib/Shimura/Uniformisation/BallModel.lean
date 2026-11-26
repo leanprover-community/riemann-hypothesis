@@ -555,14 +555,6 @@ private lemma hasFDerivAt_ballPeriod (e : (D.Index → ℂ) ≃L[ℂ] ℂ × Bal
   (ContinuousLinearMap.hasFDerivAt ((ballPeriod E e H).flip w).toContinuousLinearMap).comp b
     (hasFDerivAt_prodMk_right (1 : ℂ) b)
 
-/-- The real vector spaces (E ⊗ ℝ)ⁿ and `New.Variety.BallFibre E D.Index` have the same
-dimension. -/
-lemma finrank_realVectors_eq_finrank_ballFibre :
-    Module.finrank ℝ (RealVectors E D.Index) = Module.finrank ℝ (BallFibre E D.Index) := by
-  zify
-  simp [Fin.pos', finrank_real_of_complex, Module.finrank_pi_fintype]
-  ring
-
 /-- Let x = e⁻¹(1, b) have xᵀHx̄ ≠ 0, and let the real isomorphism `Q` agree with
 `New.Variety.ballPeriod` at (1, b). Then `Q` is a period map (`New.Variety.IsPeriodMap`) for the
 reflection `New.Variety.formReflection` for H in x̄. -/
@@ -612,7 +604,7 @@ lemma exists_analyticFamily_positiveBall (e : (D.Index → ℂ) ≃L[ℂ] ℂ ×
     refine (injective_iff_map_eq_zero (P b)).2 fun w hw ↦ by_contra fun hw_ne ↦ ?_
     simpa [hw] using hP_pos b w hw_ne
   let Q (b : BallBase D.Index) : RealVectors E D.Index ≃L[ℝ] BallFibre E D.Index :=
-    ((P b).linearEquivOfInjective (P_inj b) finrank_realVectors_eq_finrank_ballFibre)
+    ((P b).linearEquivOfInjective (P_inj b) (by zify; simp [Fin.pos', finrank_real_of_complex, Module.finrank_pi_fintype]; ring))
       |>.toContinuousLinearEquiv
   have hQ (b : BallBase D.Index) (w : RealVectors E D.Index) : Q b w = P b w := rfl
   have hper (b : BallBase D.Index) : IsPeriodMap (formReflection H (star (x b))) (Q b) :=
