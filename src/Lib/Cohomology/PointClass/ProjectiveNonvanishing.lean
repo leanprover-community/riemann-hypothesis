@@ -964,16 +964,26 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
       let I := (freeAb.map (unimodular (d := 1)).ι).app (genericOver.obj c)
       change I.hom (D.hom (((-W).app c).hom (.of u))) =
         (f.app c).hom ((gluing.app c).hom (.of u))
-      erw [NatTrans.app_neg, AddCommGrpCat.hom_neg, AddMonoidHom.neg_apply]
+      have h_neg : ((-W).app c).hom (.of u) = -((W.app c).hom (.of u)) := rfl
+      refine (congrArg (fun v ↦ I.hom (D.hom v)) h_neg).trans ?_
       obtain ⟨⟨_ | _⟩, t⟩ := u
-      · erw [h_W_false, gluing_apply_point c t, h_f_false]
+      · have h_left := (congrArg (fun v ↦ I.hom (D.hom (-v))) (h_W_false c t)).trans
+          (show I.hom (D.hom (-0)) = 0 by simp only [neg_zero, map_zero])
+        exact h_left.trans ((congrArg (f.app c).hom (gluing_apply_point c t)).trans
+          (h_f_false c _)).symm
       · have h_D : D.hom (.of (torusPoint c t)) =
             FreeAddCommGroup.of (((unimodular (d := 1)).toFunctor.map (proj.app c)) (torusPoint c t)) := by
           change FreeAddCommGroup.map _ (.of (torusPoint c t)) = _
           exact FreeAddCommGroup.map_of_apply _
-        erw [h_W_true, gluing_apply_torus c t, _root_.map_sub, h_f_false, h_f_true, zero_sub,
-          _root_.map_neg, _root_.map_neg, h_D, freeAb.map_of]
-        rfl
+        have h_image := (congrArg I.hom h_D).trans
+          (freeAb.map_of (unimodular (d := 1)).ι (genericOver.obj c) _)
+        have h_left := (congrArg (fun v ↦ I.hom (D.hom (-v))) (h_W_true c t)).trans
+          ((congrArg I.hom (map_neg D.hom _)).trans
+            ((map_neg I.hom _).trans (congrArg Neg.neg h_image)))
+        have h_right := (congrArg (f.app c).hom (gluing_apply_torus c t)).trans
+          ((_root_.map_sub (f.app c).hom _ _).trans
+            ((congrArg₂ (· - ·) (h_f_false c _) (h_f_true c _)).trans (zero_sub _)))
+        exact h_left.trans h_right.symm
     · -- `a` is invariant under the twist.
       intro c u
       let u' : twoDiscs.obj c := ⟨u.fst, ⟨discTwist epsPow u.fst ≫ u.snd.down⟩⟩
@@ -994,18 +1004,29 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
       have ht : T.hom (.of u) = .of u - .of u' := freeAb.desc_of ..
       change G.hom (((-W).app c).hom (T.hom (.of u))) =
         (oneSubMu.app c).hom ((κ.app c).hom ((gluing.app c).hom (.of u)))
-      erw [NatTrans.app_neg, AddCommGrpCat.hom_neg, AddMonoidHom.neg_apply, ht, _root_.map_sub, _root_.map_neg, _root_.map_sub, neg_sub]
+      change G.hom (-((W.app c).hom (T.hom (.of u)))) = _
+      refine (map_neg G.hom _).trans ?_
+      refine (congrArg (fun z ↦ -G.hom ((W.app c).hom z)) ht).trans ?_
+      refine (congrArg Neg.neg (_root_.map_sub (G.hom.comp (W.app c).hom) _ _)).trans ?_
+      refine (neg_sub ..).trans ?_
       obtain ⟨⟨_ | _⟩, t⟩ := u
-      · erw [h_W_false, gluing_apply_point c t, h_κ]
-        rw [sub_self]
-        change 0 = (oneSubMu.app c).hom 0
-        exact (map_zero (oneSubMu.app c).hom).symm
+      · have h_W_twist : (W.app c).hom (.of u') = 0 := h_W_false c _
+        refine (congrArg₂ (· - ·) (congrArg G.hom h_W_twist)
+          (congrArg G.hom (h_W_false c t))).trans ?_
+        have h_right := (congrArg (fun v ↦ (oneSubMu.app c).hom ((κ.app c).hom v))
+          (gluing_apply_point c t)).trans
+          ((congrArg (oneSubMu.app c).hom (h_κ c false _)).trans (map_zero _))
+        exact (sub_self _).trans h_right.symm
       · let t' : (tilt ⋙ reprBy (monoidAlg ℚ)).obj c :=
           ⟨charTwist epsPow (AddMonoidHom.id ℚ) ≫ t.down⟩
         have h_W_twist : (W.app c).hom (.of u') = .of (torusPoint c t') :=
           h_W_true c t'
-        erw [gluing_apply_torus c t, _root_.map_sub (κ.app c).hom, h_κ c false, h_κ c true,
-          h_W_true c t, h_W_twist]
+        refine (congrArg₂ (· - ·) (congrArg G.hom h_W_twist)
+          (congrArg G.hom (h_W_true c t))).trans ?_
+        have h_κ_eval := (congrArg (κ.app c).hom (gluing_apply_torus c t)).trans
+          ((_root_.map_sub (κ.app c).hom _ _).trans
+            (congrArg₂ (· - ·) (h_κ c false _) (h_κ c true _)))
+        refine Eq.trans ?_ (congrArg (oneSubMu.app c).hom h_κ_eval).symm
         apply neg_injective
         rw [neg_sub]
         let one_c : genericCoeff.obj c := ⟨(1 : genericAlg c)⟩
@@ -1014,7 +1035,13 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
         rw [zero_sub, _root_.map_neg, neg_neg]
         refine sub_eq_of_eq_add (Gm.ext.2 (.symm ?_))
         change (1 - mulMu c _) * _ = _
-        erw [desc_of, desc_of, IsUnit.unit_spec, IsUnit.unit_spec]
+        have h_value (v : (unimodular (d := 1)).toFunctor.obj (thickeningOver.obj c)) :
+            (G.hom (.of v)).down.val = v.val.down 0 := by
+          have h_eval : G.hom (.of v) = ⟨(isUnit_of_unimodular_one v).unit⟩ :=
+            freeAb.desc_of ..
+          exact (congrArg (fun u ↦ u.down.val) h_eval).trans (isUnit_of_unimodular_one v).unit_spec
+        refine (congrArg ((1 - mulMu c (1 : genericAlg c)) * ·) (h_value (torusPoint c t'))).trans ?_
+        refine Eq.trans ?_ (h_value (torusPoint c t)).symm
         have h_coord (u : (tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
             (torusPoint c u).val.down 0 =
               teichmullerLift c ((discToTorus coeHom ≫ u.down).hom (.single 1 1)) :=
