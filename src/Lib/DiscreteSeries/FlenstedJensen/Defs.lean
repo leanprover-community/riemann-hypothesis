@@ -243,12 +243,10 @@ lemma negCount_sumElim : negCount (a ⊕ᵥ b) = negCount a + negCount b :=
 
 lemma negCount_one : negCount (1 : α → ℤˣ) = 0 := by simp
 
-lemma negCount_neg_one : negCount (-1 : α → ℤˣ) = Fintype.card α := by simp
-
 @[simp]
 lemma negCount_one_and_neg_one :
     negCount (1 : α → ℤˣ) = 0 ∧ negCount (-1 : α → ℤˣ) = Fintype.card α :=
-  ⟨negCount_one, negCount_neg_one⟩
+  ⟨negCount_one, by simp⟩
 
 /-- Sign vectors on index types of the same size with equally many negative signs (`negCount`, the
 number of entries `-1`) differ by a bijection of the indices. -/
