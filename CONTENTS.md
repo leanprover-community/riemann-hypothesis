@@ -830,7 +830,8 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 - `Lib/GaloisRep/Main/SelmerModules` (138): Selmer modules, Tate twists, components of cocycles and places above a prime
 - `Lib/GaloisRep/Main/DivisibleSelmerModules` (90): Selmer modules with divisible coefficients
-- `Lib/GaloisRep/Main/Defs` (156): Weights, Hecke polynomials, eigenforms and the filter of most Frobenii
+- `Lib/GaloisRep/Main/Defs` (71): Weights, Hecke polynomials and eigenforms
+- `Lib/GaloisRep/Main/FrobeniusFilter` (96): The filter of most Frobenii and Chebotarev density
 - `Lib/GaloisRep/Main/LocalConditions` (279): Local conditions on ℓ-adic Galois representations and their passage to retracts
 - `Lib/GaloisRep/Main/QuadraticStep` (378): Split places over ℚ(√−d) and quadratic steps with prescribed splitting
 - `Lib/GaloisRep/Main/CuspidalTypes` (370): Cuspidal types, multiplicity-free sums and the Hodge–Tate cocharacter
