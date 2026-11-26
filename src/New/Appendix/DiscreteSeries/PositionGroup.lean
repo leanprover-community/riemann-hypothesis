@@ -81,7 +81,7 @@ lemma LowersFlag.inv {g : (Matrix n n ℂ)ˣ} {σ : ℂ}
     blockTriangular_one.add fun a b hba ↦ hN_tri a b.castSucc (le_of_lt hba)
   have hT_diag (a : Fin d) : T a a = 1 := by simp [hT, initCols, hN_tri]
   have hT_unit : IsUnit T.det := by simp [det_of_isUpperTriangular hT_tri, hT_diag]
-  have : Invertible T := T.invertibleOfIsUnitDet hT_unit
+  let : Invertible T := T.invertibleOfIsUnitDet hT_unit
   have hg_inv : (↑g⁻¹ : Matrix n n ℂ) * initCols v = initCols v * T⁻¹ :=
     calc _ = (↑g⁻¹ : Matrix n n ℂ) * ((g : Matrix n n ℂ) * initCols v) * T⁻¹ := by
           rw [mul_initCols_eq hN, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ hT_unit]

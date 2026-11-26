@@ -81,7 +81,7 @@ lemma add_conjGal_mem_evenClasses {e ν : ℕ} {S : Set (FinPlace E)}
   · -- the cocycle identity: `g` and `conjGal g` act alike on the twist
     simpa [h_cocycle, tateTwist, cyclotomicInv] using add_add_add_comm ..
   · -- `conjGal g` lies in the inertia group of the conjugate place, which is again outside
-    have ⟨v, hv, A, hA, hgA⟩ := hg
+    let ⟨v, hv, A, hA, hgA⟩ := hg
     have hv_star : star v ∉ placesDividing E ℓ ∪ S.conjClosure := by
       simpa [star_mem_placesDividing, and_comm] using hv
     have h_conj : c (conjGal g) = 0 :=
@@ -89,7 +89,7 @@ lemma add_conjGal_mem_evenClasses {e ν : ℕ} {S : Set (FinPlace E)}
     simp [h_unram g hg, h_conj]
   · -- `conjGal g` lies in the kernel of `cyclotomicChar` and in the decomposition group of the
     -- conjugate place
-    have ⟨A, hA, hgA, h_cyc⟩ := hg
+    let ⟨A, hA, hgA, h_cyc⟩ := hg
     have h_conj_mem : conjGal g ∈ shaLocalSet ℓ E 1 := ⟨conjPlace A, comap_apply_lt_one_iff.2
       (by simpa using hA), decompGroup.map cmConj_conjGal_smul hgA, by simpa using h_cyc⟩
     simp [h_loc g hg, h_loc _ h_conj_mem]

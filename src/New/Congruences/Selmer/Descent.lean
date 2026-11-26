@@ -222,7 +222,7 @@ lemma exists_unit_residue_notMem {O : Type} [CommRing O] [IsLocalRing O]
     ∃ s : Oˣ, residue O s ∉ bad := by
   classical
   have : Finite (ResidueField O) := Nat.finite_of_card_ne_zero (by lia)
-  have := Fintype.ofFinite (ResidueField O)
+  let := Fintype.ofFinite (ResidueField O)
   obtain ⟨r, -, hr⟩ := exists_mem_notMem_of_card_lt_card (t := (univ : Finset (ResidueField O)))
     ((card_insert_le 0 bad).trans_lt (by simpa using h_room))
   obtain ⟨s, rfl⟩ := residue_surjective r
@@ -687,7 +687,7 @@ theorem exists_isTiedPrimes_card_le_and_length_le [Finite ι]
       #J ≤ s ∧
       ∀ i : ι,
         length O ((T i).tiedSelmer J J x i (ℓ ^ M)) ≤ (T i).globalTerm + (T i).placesTerm := by
-  have : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   obtain ⟨ϖ, hϖ⟩ := exists_irreducible O
   obtain ⟨e, he⟩ : ∃ e : ℕ, Associated ((ℓ : O) ^ M) (ϖ ^ e) :=
     associated_pow_irreducible (NeZero.ne _) hϖ

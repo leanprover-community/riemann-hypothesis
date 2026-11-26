@@ -289,7 +289,7 @@ lemma flenstedJensen_shift_eq_conj (hl : l.HasGap h) {u : Matrix n n ℂ}
         weightMinors l.lowestKType ((1 - u) * (k : Matrix n n ℂ)) =
           weightMinors l.lowestKType (k : Matrix n n ℂ) := by
       rw [hl.isKDominant_lowestKType.weightMinors_oppBorel_mul hl.neg.injective
-        ((Matrix.isUnit_iff_isUnit_det _).1 k.1.1.isUnit).ne_zero hu_mem hu_borel]
+        ((Matrix.isUnit_iff_isUnit_det _).1 k.val.val.isUnit).ne_zero hu_mem hu_borel]
       simp [diagChar, show ∀ i, u i i = 0 from fun i ↦ hu i i (by simp)]
     simp [flenstedJensen, h_minors]
   rw [← conj_flenstedJensen_one, ← h_move, h_char]
@@ -386,7 +386,7 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
   have hP_compl : IsStarProjection (1 - P) := hP.one_sub
   have hA_nonneg : 0 ≤ ‖A‖ := norm_nonneg A
   have hPk_nonneg : 0 ≤ ‖⁅P, k⁆‖ := norm_nonneg _
-  have hP_star : Pᴴ = P := hP.2
+  have hP_star : Pᴴ = P := hP.isSelfAdjoint
   have hV : ‖V‖ ≤ 2 * ‖X‖ := norm_inv_one_add_sub_one_le hX_half
   have hB_le : ‖B‖ ≤ ‖A‖ := by
     rw [show B = lowerMask ε (-l) A from h_mask (-l)]
@@ -410,13 +410,13 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
     linarith [mul_nonneg hX_nonneg hA_nonneg,
       mul_le_mul_of_nonneg_right hX_half (mul_nonneg hX_nonneg hA_nonneg)]
   -- The complementary minor of `g`.
-  have ⟨x, hx_eq, hx⟩ := exists_det_compress_eq_exp_logOneAdd (Y := -A) hP_compl hP_compl hX_half
+  let ⟨x, hx_eq, hx⟩ := exists_det_compress_eq_exp_logOneAdd (Y := -A) hP_compl hP_compl hX_half
     (le_refl ‖X‖) (by simp) (by simp [A, mul_sub, sub_mul, mul_nonneg]) (norm_neg A).le (by simp)
   -- The complementary minor of `y l`, which is that of `g`.
   have h_near_compl : ‖⁅1 - P, y l - 1⁆ - (B + C - A)‖ ≤ 4 * ‖X‖ * (4 * ‖A‖) := by
     rw [show ⁅1 - P, y l - 1⁆ - (B + C - A) = H by simp +zetaDelta only [lie_def]; noncomm_ring]
     linarith [mul_nonneg hX_nonneg hA_nonneg]
-  have ⟨z, hz_eq, hz⟩ := exists_det_compress_eq_exp_logOneAdd (Y := B + C - A) hP_compl hP_compl
+  let ⟨z, hz_eq, hz⟩ := exists_det_compress_eq_exp_logOneAdd (Y := B + C - A) hP_compl hP_compl
     hX_four (hy_near l) (by simp) h_near_compl
     (by linarith [norm_sub_le_of_le (norm_add_le_of_le hB_le hC_le) (le_refl ‖A‖)]) (by simp)
   -- The minor of `kᴴ (y l) k` on `p`, as `det (1 + Q (y l - 1))`.
@@ -432,7 +432,7 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
     have := norm_sub_le_of_le (norm_sub_le_of_le (norm_mul_le_of_le (hy_near l) hPQ)
       (norm_mul_le_of_le hPQ (hy_near l))) hH
     linarith [mul_nonneg hX_nonneg hA_nonneg, mul_nonneg hX_nonneg hPk_nonneg]
-  have ⟨t, ht_eq, ht⟩ := exists_det_compress_eq_exp_logOneAdd (P := Q) (Y := A - B - C)
+  let ⟨t, ht_eq, ht⟩ := exists_det_compress_eq_exp_logOneAdd (P := Q) (Y := A - B - C)
     (hP.map (Unitary.conjStarAlgAut ℂ _ ⟨k, hk, hk'⟩)) hP hX_four (hy_near l) h_comm h_near
     (by linarith [norm_sub_le_of_le (norm_sub_le_of_le (le_refl ‖A‖) hB_le) hC_le])
     (by linarith)

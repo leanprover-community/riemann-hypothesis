@@ -332,7 +332,7 @@ lemma exists_rootsOfUnity_ellVal_eval_le (s₀ : ℕ) {m : ℕ} (hm : 1 ≤ m) {
             ellVal (eval (x i) (P i)).val + ε := by
   -- Apply the case of one exponent to the polynomials `P^{(j)}` that arise from `P` by putting
   -- `(1 + X) ^ j - 1` for each variable `X`, with points `x'` such that `(1 + x') ^ j = 1 + x`.
-  have : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   obtain ⟨B, hB⟩ : ∃ B : ℝ≥0, (B : ℝ≥0∞) = ∑ p : ι × Set.Icc 1 m, β p.1 :=
     ENNReal.canLift.prf _ (ENNReal.sum_ne_top.2 fun p _ ↦ hβ p.1)
   obtain ⟨h₀, h_roots⟩ :=

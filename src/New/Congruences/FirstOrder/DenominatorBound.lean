@@ -404,7 +404,7 @@ lemma exists_taylorWilesPlaces_hasRootChain {P : Parameters} {D : Data P} {ℓ :
     rw [← hx₀]
     exact h_congr _ k
   choose e h_string he using h_shape
-  have : Fintype Near := Fintype.ofFinite Near
+  let : Fintype Near := Fintype.ofFinite Near
   refine ⟨Q, h_triangle, h_good, h_offLevel, fun j ↦ ∏ x : Near, e j x,
     by simp [eval_prod, he], fun j x h_congr h_weak ↦ ?_⟩
   obtain ⟨S, hS, h_dvd⟩ := h_string j ⟨x, h_congr, h_weak⟩
