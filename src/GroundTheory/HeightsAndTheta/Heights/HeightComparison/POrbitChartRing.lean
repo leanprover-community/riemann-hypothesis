@@ -7,8 +7,6 @@ import Mathlib.RingTheory.SimpleRing.Principal
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 open MvPolynomial NumberField ReciprocityTheory.ChartRestriction.G

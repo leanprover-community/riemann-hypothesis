@@ -4,8 +4,6 @@ public import GroundTheory.HeightsAndTheta.Heights.HeightComparison.HeightObject
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Heights₂.Heights
 
 open ReciprocityTheory.ChartRestriction.G NumberField

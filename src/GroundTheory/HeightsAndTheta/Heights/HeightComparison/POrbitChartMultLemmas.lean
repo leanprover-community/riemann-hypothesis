@@ -56,8 +56,7 @@ theorem chartCone_of_isWeightedHomogeneous (D : Type*) [CommRing D] [Algebra (ch
   classical
   conv_lhs => rw [F.as_sum]
   conv_rhs => rw [F.as_sum]
-  set_option synthInstance.maxHeartbeats 100000 in
-    rw [map_sum, map_sum, map_sum, map_sum, Finset.sum_mul]
+  rw [map_sum, map_sum, map_sum, map_sum, Finset.sum_mul]
   refine Finset.sum_congr rfl fun m hm ↦ ?_
   have hm' : ∀ k, ∑ i, m ⟨k, i⟩ = d k := fun k ↦ by
     rw [← weight_coordDeg_apply, hF (mem_support_iff.mp hm)]
