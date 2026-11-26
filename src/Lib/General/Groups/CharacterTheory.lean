@@ -467,19 +467,13 @@ lemma IsIrreducibleChar.mul_classInner_translate (hχ : IsIrreducibleChar χ) {�
     ⟨groupAlgElem fun t ↦ φ t⁻¹, Subalgebra.mem_center_iff.2 hφ_inv.commute⟩
   have h_translate (y : G) : ∑ x : G, conj (V.character x) * φ (x * y) =
       TauCeti.Representation.centralCharacter V.ρ z * V.character y := by
-    have h_repr : ∑ u : G, φ (u⁻¹ * y) • single u (1 : ℂ) = z.val * single y 1 := by
-      ext u
-      have h_swap : φ (y * u⁻¹) = φ (u⁻¹ * y) := by simpa [mul_assoc] using hφ (u⁻¹ * y) u
-      simp [z, Finsupp.single_apply, h_swap]
-    have h_sum : ∑ x : G, conj (V.character x) * φ (x * y) =
-        ∑ u : G, φ (u⁻¹ * y) * V.character u :=
-      Fintype.sum_equiv (Equiv.inv G) _ _ fun x ↦ by
-        rw [Equiv.inv_apply, inv_inv, ← V.conj_char, mul_comm]
     calc ∑ x : G, conj (V.character x) * φ (x * y)
         = LinearMap.trace ℂ _ (asAlgebraHom V.ρ (z.val * single y 1)) := by
-          rw [h_sum, ← h_repr, map_sum, map_sum]
-          refine Finset.sum_congr rfl fun u _ ↦ ?_
-          simp [FDRep.character]
+          rw [asAlgebraHom_eq_sum, map_sum]
+          refine Fintype.sum_equiv (Equiv.inv G) _ _ fun x ↦ ?_
+          have h_swap : φ (y * x) = φ (x * y) := by simpa [mul_assoc] using hφ (x * y) y
+          rw [V.conj_char]
+          simp [z, h_swap, FDRep.character, mul_comm]
       _ = TauCeti.Representation.centralCharacter V.ρ z * V.character y := by
           rw [map_mul, TauCeti.Representation.asAlgebraHom_center]
           simp [FDRep.character, Module.End.mul_eq_comp]
