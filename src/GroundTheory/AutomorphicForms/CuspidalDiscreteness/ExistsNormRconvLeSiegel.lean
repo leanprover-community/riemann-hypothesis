@@ -423,7 +423,6 @@ theorem exists_norm_rconv_le_siegel {β : ArchMatrix K n → ℝ}
         simp only [ccTranslate]
         change _ * (f ((archProj K n (C ε))⁻¹ * (x⁻¹ * z)) * _) = _
         ring
-      set_option synthInstance.maxHeartbeats 200000 in
       have enorm_sum_altSign_rconv_sq_le (f : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ)
           (φ : Lp ℂ 2 (quotientMeasure Γ₁ μ)) (x : normOneGL (K := K) (n := n)) {k : ℕ} {𝒞 : Set (ArchUnits K n)}
           (h𝒞 : IsCompact 𝒞) (C : (Fin k → Bool) → ArchUnits K n) (hC : ∀ ε, C ε ∈ 𝒞) {b : ℝ}

@@ -11,8 +11,6 @@ public import Mathlib.Topology.Algebra.Group.ContinuousInv
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GroundTheory.Automorphic

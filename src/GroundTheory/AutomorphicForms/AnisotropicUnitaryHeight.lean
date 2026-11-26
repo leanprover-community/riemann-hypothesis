@@ -7,8 +7,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open Module Matrix TensorProduct NumberField IsDedekindDomain
 open scoped NumberField.AdeleRing
 

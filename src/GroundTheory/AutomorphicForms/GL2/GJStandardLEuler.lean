@@ -656,8 +656,7 @@ theorem map_prodEquiv_eq (ν : Measure (AdelicGLn.AdelicGL K n)) [ν.IsHaarMeasu
     ν.map (AdelicGLn.prodEquiv K n) =
       prodConst ν μi • μi.prod (Measure.haar : Measure (AdelicGLn.FiniteAdelicGL K n)) :=
   by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact Measure.isMulLeftInvariant_eq_smul _ _
+    exact Measure.isMulLeftInvariant_eq_smul _ _
 
 theorem integral_eq_mul (ν : Measure (AdelicGLn.AdelicGL K n)) [ν.IsHaarMeasure]
     (μi : Measure (AdelicGLn.InfiniteAdelicGL K n)) [μi.IsHaarMeasure]
@@ -669,9 +668,8 @@ theorem integral_eq_mul (ν : Measure (AdelicGLn.AdelicGL K n)) [ν.IsHaarMeasur
     rw [integral_map_equiv me (fun p ↦ A p.1 * B p.2)]
     rfl
   have hme : ν.map me = ν.map (AdelicGLn.prodEquiv K n) := rfl
-  set_option synthInstance.maxHeartbeats 200000 in
-    rw [h1, hme, map_prodEquiv_eq ν μi, integral_smul_nnreal_measure, integral_prod_mul, NNReal.smul_def,
-      Complex.real_smul]
+  rw [h1, hme, map_prodEquiv_eq ν μi, integral_smul_nnreal_measure, integral_prod_mul, NNReal.smul_def,
+    Complex.real_smul]
 
 theorem lintegral_eq_mul (ν : Measure (AdelicGLn.AdelicGL K n)) [ν.IsHaarMeasure]
     (μi : Measure (AdelicGLn.InfiniteAdelicGL K n)) [μi.IsHaarMeasure]

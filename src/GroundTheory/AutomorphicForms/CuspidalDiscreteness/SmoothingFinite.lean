@@ -87,10 +87,9 @@ theorem continuous_finAvgFun (g : CompactlySupportedContinuousMap (normOneGL (K 
     rw [Measure.restrict_univ]
     rfl
   rw [this]
-  set_option synthInstance.maxHeartbeats 100000 in
-    refine continuous_parametric_integral_of_continuous ?_ isCompact_univ
-    exact g.continuous.comp (((continuous_finOne.comp (continuous_subtype_val.comp
-      continuous_snd)).inv).mul continuous_fst)
+  refine continuous_parametric_integral_of_continuous ?_ isCompact_univ
+  exact g.continuous.comp (((continuous_finOne.comp (continuous_subtype_val.comp
+    continuous_snd)).inv).mul continuous_fst)
 
 theorem finAvgFun_eq_zero_of_notMem (g : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ)
     {x : normOneGL (K := K) (n := n)}
@@ -107,7 +106,6 @@ theorem isCompact_finOne_image : IsCompact ((fun u : U => finOne K n (u : Adelic
   have := compactSpace_of_isOpen U hU
   isCompact_univ.image (continuous_finOne.comp continuous_subtype_val)
 
-set_option synthInstance.maxHeartbeats 100000 in
 def finAvg (g : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ) :
     CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ :=
   ⟨⟨finAvgFun U hU g, continuous_finAvgFun U hU g⟩,

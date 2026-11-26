@@ -252,8 +252,6 @@ end
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open MeasureTheory Filter Topology Module End
 open scoped InnerProductSpace ComplexConjugate ENNReal
 

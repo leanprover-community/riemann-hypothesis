@@ -56,47 +56,46 @@ theorem integrated_archConv (hβ : Continuous β) (hβc : HasCompactSupport β)
     (g : CompactlySupportedContinuousMap (normOneGL (K := K) (n := n)) ℂ) (w : H) :
     σ.integrated μ (UnitaryRep.ccToL1 μ (archConv ν hβ hβc hβu g)) w =
       ∫ A, (β A : ℂ) • σ (archProj K n A) (σ.integrated μ (UnitaryRep.ccToL1 μ g) w) ∂ν := by
-  set_option synthInstance.maxHeartbeats 400000 in
-    refine ext_inner_left ℂ fun w' => ?_
-    set u := σ.integrated μ (UnitaryRep.ccToL1 μ g) w with hu
-    rw [← integral_inner (integrable_smul_archProj σ ν hβ hβc hβu u) w']
-    set S : Set (ArchUnits K n) := (Units.val : ArchUnits K n → ArchMatrix K n) ⁻¹' tsupport β
-    have hS : IsCompact S := isCompact_unitsSupport hβc hβu
-    set Φ : ArchUnits K n → normOneGL (K := K) (n := n) → ℂ :=
-      fun A x => (β A : ℂ) * g ((archProj K n A)⁻¹ * x) * ⟪w', σ x w⟫_ℂ with hΦ
-    have hcont : Continuous (uncurry Φ) :=
-      (((Complex.continuous_ofReal.comp (hβ.comp (Units.continuous_val.comp continuous_fst)))).mul
-        (g.continuous.comp (((continuous_archProj.comp continuous_fst).inv).mul continuous_snd))).mul
-        (continuous_const.inner ((σ.continuous_orbit w).comp continuous_snd))
-    have hsupp : HasCompactSupport (uncurry Φ) := by
-      refine HasCompactSupport.intro
-        (hS.prod ((hS.image continuous_archProj).mul g.hasCompactSupport)) fun p hp => ?_
-      obtain ⟨A, x⟩ := p
-      show (β A : ℂ) * g ((archProj K n A)⁻¹ * x) * ⟪w', σ x w⟫_ℂ = 0
-      by_cases h1 : A ∈ S
-      · by_cases h2 : (archProj K n A)⁻¹ * x ∈ tsupport (g : normOneGL (K := K) (n := n) → ℂ)
-        · exact absurd ⟨h1, ⟨archProj K n A, ⟨A, h1, rfl⟩, _, h2, mul_inv_cancel_left _ _⟩⟩ hp
-        · rw [image_eq_zero_of_notMem_tsupport h2, mul_zero, zero_mul]
-      · have : β A = 0 := image_eq_zero_of_notMem_tsupport (f := β) h1
-        rw [this, Complex.ofReal_zero, zero_mul, zero_mul]
-    have hint : Integrable (uncurry Φ) (ν.prod μ) := hcont.integrable_of_hasCompactSupport hsupp
-    calc ⟪w', σ.integrated μ (UnitaryRep.ccToL1 μ (archConv ν hβ hβc hβu g)) w⟫_ℂ
-        = ∫ x, archConvFun ν β g x * ⟪w', σ x w⟫_ℂ ∂μ := by
-          rw [inner_integrated_ccToL1_eq]
-          rfl
-      _ = ∫ x, ∫ A, Φ A x ∂ν ∂μ := by
-          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
-          exact (integral_mul_const _ _).symm
-      _ = ∫ A, ∫ x, Φ A x ∂μ ∂ν := (integral_integral_swap hint).symm
-      _ = ∫ A, ⟪w', (β A : ℂ) • σ (archProj K n A) u⟫_ℂ ∂ν := by
-          refine integral_congr_ae (Eventually.of_forall fun A => ?_)
-          dsimp only
-          rw [← integral_mul_left_eq_self (fun x => Φ A x) (archProj K n A), inner_smul_right,
-            UnitaryRep.inner_map_right, hu, inner_integrated_ccToL1_eq, ← integral_const_mul]
-          refine integral_congr_ae (Eventually.of_forall fun y => ?_)
-          simp only [hΦ, inv_mul_cancel_left]
-          rw [UnitaryRep.inner_map_left, inv_inv, ← UnitaryRep.map_mul_apply]
-          ring
+  refine ext_inner_left ℂ fun w' => ?_
+  set u := σ.integrated μ (UnitaryRep.ccToL1 μ g) w with hu
+  rw [← integral_inner (integrable_smul_archProj σ ν hβ hβc hβu u) w']
+  set S : Set (ArchUnits K n) := (Units.val : ArchUnits K n → ArchMatrix K n) ⁻¹' tsupport β
+  have hS : IsCompact S := isCompact_unitsSupport hβc hβu
+  set Φ : ArchUnits K n → normOneGL (K := K) (n := n) → ℂ :=
+    fun A x => (β A : ℂ) * g ((archProj K n A)⁻¹ * x) * ⟪w', σ x w⟫_ℂ with hΦ
+  have hcont : Continuous (uncurry Φ) :=
+    (((Complex.continuous_ofReal.comp (hβ.comp (Units.continuous_val.comp continuous_fst)))).mul
+      (g.continuous.comp (((continuous_archProj.comp continuous_fst).inv).mul continuous_snd))).mul
+      (continuous_const.inner ((σ.continuous_orbit w).comp continuous_snd))
+  have hsupp : HasCompactSupport (uncurry Φ) := by
+    refine HasCompactSupport.intro
+      (hS.prod ((hS.image continuous_archProj).mul g.hasCompactSupport)) fun p hp => ?_
+    obtain ⟨A, x⟩ := p
+    show (β A : ℂ) * g ((archProj K n A)⁻¹ * x) * ⟪w', σ x w⟫_ℂ = 0
+    by_cases h1 : A ∈ S
+    · by_cases h2 : (archProj K n A)⁻¹ * x ∈ tsupport (g : normOneGL (K := K) (n := n) → ℂ)
+      · exact absurd ⟨h1, ⟨archProj K n A, ⟨A, h1, rfl⟩, _, h2, mul_inv_cancel_left _ _⟩⟩ hp
+      · rw [image_eq_zero_of_notMem_tsupport h2, mul_zero, zero_mul]
+    · have : β A = 0 := image_eq_zero_of_notMem_tsupport (f := β) h1
+      rw [this, Complex.ofReal_zero, zero_mul, zero_mul]
+  have hint : Integrable (uncurry Φ) (ν.prod μ) := hcont.integrable_of_hasCompactSupport hsupp
+  calc ⟪w', σ.integrated μ (UnitaryRep.ccToL1 μ (archConv ν hβ hβc hβu g)) w⟫_ℂ
+      = ∫ x, archConvFun ν β g x * ⟪w', σ x w⟫_ℂ ∂μ := by
+        rw [inner_integrated_ccToL1_eq]
+        rfl
+    _ = ∫ x, ∫ A, Φ A x ∂ν ∂μ := by
+        refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+        exact (integral_mul_const _ _).symm
+    _ = ∫ A, ∫ x, Φ A x ∂μ ∂ν := (integral_integral_swap hint).symm
+    _ = ∫ A, ⟪w', (β A : ℂ) • σ (archProj K n A) u⟫_ℂ ∂ν := by
+        refine integral_congr_ae (Eventually.of_forall fun A => ?_)
+        dsimp only
+        rw [← integral_mul_left_eq_self (fun x => Φ A x) (archProj K n A), inner_smul_right,
+          UnitaryRep.inner_map_right, hu, inner_integrated_ccToL1_eq, ← integral_const_mul]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        simp only [hΦ, inv_mul_cancel_left]
+        rw [UnitaryRep.inner_map_left, inv_inv, ← UnitaryRep.map_mul_apply]
+        ring
 
 end Integrated
 

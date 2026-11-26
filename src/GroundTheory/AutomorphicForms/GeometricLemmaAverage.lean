@@ -14,8 +14,6 @@ public import Mathlib.Topology.Algebra.OpenSubgroup
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 namespace GroundTheory.Automorphic

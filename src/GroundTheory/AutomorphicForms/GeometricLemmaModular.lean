@@ -12,8 +12,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 noncomputable section
 
 set_option linter.unusedSectionVars false

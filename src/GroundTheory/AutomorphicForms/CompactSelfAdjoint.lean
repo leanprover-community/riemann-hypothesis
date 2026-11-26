@@ -11,8 +11,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 namespace GroundTheory.Automorphic.CompactSelfAdjoint
 
 open Module End Submodule Filter Topology

@@ -6,8 +6,6 @@ import Mathlib.Tactic.TypeStar
 
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open NumberField IsDedekindDomain Topology Set Matrix
 open scoped NumberField.AdeleRing Pointwise
 

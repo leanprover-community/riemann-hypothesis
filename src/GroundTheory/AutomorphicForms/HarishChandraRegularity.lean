@@ -967,8 +967,7 @@ theorem exists_ball_sqSymbol_ne_zero {ι : Type*} [Fintype ι]
     simp only [hQ]
     exact tendsto_finsetSum _ fun i _ =>
       (Filter.Tendsto.inner (hc i) tendsto_const_nhds).smul (hc i)
-  set_option synthInstance.maxHeartbeats 200000 in
-    obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.1 (hQc.preimage_mem_nhds (Units.isOpen.mem_nhds hU))
+  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.1 (hQc.preimage_mem_nhds (Units.isOpen.mem_nhds hU))
   refine ⟨δ, hδ, fun x hx ξ hξ hs => hξ ?_⟩
   obtain ⟨u, hu⟩ := hball hx
   rw [sqSymbol_eq, Complex.ofReal_eq_zero] at hs

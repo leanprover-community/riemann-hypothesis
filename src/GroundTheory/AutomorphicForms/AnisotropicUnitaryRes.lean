@@ -17,8 +17,6 @@ import Mathlib.Tactic.TypeStar
 section -- clump:auto
 @[expose] public section
 
-set_option maxSynthPendingDepth 1
-
 open Matrix TensorProduct
 
 set_option linter.unusedSectionVars false

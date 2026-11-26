@@ -67,28 +67,26 @@ theorem centralHaarConst_pos : 0 < centralHaarConst hn μ ν :=
 
 theorem eq_centralHaarConst_smul : ν = centralHaarConst hn μ ν • splitHaar (K := K) hn μ :=
   by
-    set_option synthInstance.maxHeartbeats 200000 in
-      exact Measure.isMulLeftInvariant_eq_smul ν _
+    exact Measure.isMulLeftInvariant_eq_smul ν _
 
 theorem integral_eq_centralHaarConst_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : AdelicGLn.AdelicGL K n → E} (hH : Integrable H ν) :
     ∫ g, H g ∂ν = (centralHaarConst hn μ ν : ℝ) •
       ∫ s, ∫ y, H (centralSection K n s * (y : AdelicGLn.AdelicGL K n)) ∂μ ∂posRealMeasure := by
-  set_option synthInstance.maxHeartbeats 200000 in
-    have hH' : Integrable H (splitHaar hn μ) := by
-      have h := eq_centralHaarConst_smul hn μ ν
-      rw [h] at hH
-      exact (integrable_smul_measure (by simpa using (centralHaarConst_pos hn μ ν).ne')
-        ENNReal.coe_ne_top).1 hH
+  have hH' : Integrable H (splitHaar hn μ) := by
     have h := eq_centralHaarConst_smul hn μ ν
-    calc ∫ g, H g ∂ν = ∫ g, H g ∂(centralHaarConst hn μ ν • splitHaar hn μ) := by
-          conv_lhs => rw [h]
-      _ = _ := ?_
-    rw [integral_smul_nnreal_measure, integral_splitHaar]
-    rw [integrable_splitHaar_iff] at hH'
-    rw [integral_prod_symm _ hH']
-    simp only [centralSection_mul_comm]
-    rfl
+    rw [h] at hH
+    exact (integrable_smul_measure (by simpa using (centralHaarConst_pos hn μ ν).ne')
+      ENNReal.coe_ne_top).1 hH
+  have h := eq_centralHaarConst_smul hn μ ν
+  calc ∫ g, H g ∂ν = ∫ g, H g ∂(centralHaarConst hn μ ν • splitHaar hn μ) := by
+        conv_lhs => rw [h]
+    _ = _ := ?_
+  rw [integral_smul_nnreal_measure, integral_splitHaar]
+  rw [integrable_splitHaar_iff] at hH'
+  rw [integral_prod_symm _ hH']
+  simp only [centralSection_mul_comm]
+  rfl
 
 theorem integrable_iff_prod (hn : 0 < n) {E : Type*} [NormedAddCommGroup E]
     (H : AdelicGLn.AdelicGL K n → E) :
@@ -127,8 +125,7 @@ theorem isMulRightInvariant_haar (hn : 0 < n) : ν.IsMulRightInvariant := by
 
 theorem isInvInvariant_haar (hn : 0 < n) : ν.IsInvInvariant := by
   have := isMulRightInvariant_haar ν hn
-  set_option synthInstance.maxHeartbeats 200000 in
-    exact isInvInvariant_of_isMulRightInvariant ν
+  exact isInvInvariant_of_isMulRightInvariant ν
 
 theorem integral_comp_inv (hn : 0 < n) {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (H : AdelicGLn.AdelicGL K n → E) : ∫ g, H g⁻¹ ∂ν = ∫ g, H g ∂ν := by
