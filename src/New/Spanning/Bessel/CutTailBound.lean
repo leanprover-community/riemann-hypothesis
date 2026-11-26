@@ -332,12 +332,6 @@ lemma enorm_besselCut_sub_le (y : 𝔰.G₁) : ‖besselCut b F y - F y‖ₑ �
   rw [besselCut_apply, ← sub_smul, eNorm_le_iff_norm_le, norm_smul]
   exact mul_le_of_le_one_left (norm_nonneg _) (abs_le.2 ⟨by linarith, by linarith⟩)
 
-/-- Where the cut of `F` is nonzero, the length is at most `b ^ (6 n + 2)` (`InCut`). -/
-lemma inCut_of_besselCut_ne_zero (hb : 0 < b) {y : 𝔰.G₁} (hy : besselCut b F y ≠ 0) :
-    InCut y b := by
-  contrapose! hy with h_large
-  rw [besselCut_apply, besselCutoff_eq_zero (by positivity) h_large.le, zero_smul]
-
 /-- Where the cut of `F` differs from `F`, the length exceeds `b ^ (6 n + 2) / 2`. -/
 lemma lt_besselLength_of_besselCut_ne (hb : 0 < b) {y : 𝔰.G₁} (hy : besselCut b F y ≠ F y) :
     b ^ (6 * 𝔰.n + 2) / 2 < besselLength y := by
@@ -580,7 +574,9 @@ lemma exists_isCutPair_besselAverage {m : ℕ} {b : ℝ} {x : 𝔰.G₁} {v : Eu
       lintegral_sq_full_eq := hF_norm
       lintegral_sq_cut_le :=
         (lintegral_mono fun y ↦ pow_le_pow_left' (enorm_besselCut_le y) 2).trans_eq hF_norm
-      inCut_of_ne_zero y := inCut_of_besselCut_ne_zero hb_pos
+      inCut_of_ne_zero y hy := by
+        contrapose! hy with h_large
+        rw [besselCut_apply, besselCutoff_eq_zero (by positivity) h_large.le, zero_smul]
       lintegral_sq_sub_le := hw.lintegral_sq_besselCut_sub_le hb_two hr
       lt_besselLength_of_ne y := lt_besselLength_of_besselCut_ne hb_pos
       exists_majorant := ⟨w, a, hw⟩ }⟩
