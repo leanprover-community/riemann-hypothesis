@@ -103,12 +103,6 @@ lemma negCount_gridSigns_add_lt {P : Parameters} (D : Data P) (z : Bool) {i n : 
   rw [card_gridIndex]
   nlinarith [h_neg i, h_neg (i + 1)]
 
-/-- The ranks along a row of the triangle form an arithmetic progression. -/
-lemma card_gridIndex_add_card_gridIndex {P : Parameters} (D : Data P) (z : Bool) (n : ℕ) :
-    card (D.GridIndex z 0 n) + card (D.GridIndex z 0 (n + 1 + 1)) =
-      2 * card (D.GridIndex z 0 (n + 1)) := by
-  simp +arith [card_gridIndex, add_mul]
-
 /-- Let `1 ≤ j ≤ D.m` (`LiftIndex`), and let `quotientPair j` be the pair of the quotient of two
 characters of the chain at distance `j`, of weight `-c τ = -j * D.gap` at the place `τ`. The rank in
 column `j` of the triangle is at most `c τ`. -/
@@ -274,7 +268,7 @@ lemma exists_squareLaw_triangleReversedLift {P : Parameters} (D : Data P) {i n :
             (D.triangleReversedLift false ϑ i n Φ₀ (Pi.single η.toRows₁ 1) y))) := by
   have h_ranks : card (D.GridIndex false 0 n ⊕ D.GridIndex false 0 (n + 1 + 1)) =
       2 * card (D.GridIndex false 0 (n + 1)) := by
-    rw [card_sum, card_gridIndex_add_card_gridIndex]
+    simp +arith [card_sum, card_gridIndex, add_mul]
   have h_upper := D.isEdgeFamily_triangleKernel false h_lt
   -- the upper and the lower lift have the same character, of index `n + i + 1`
   simp only [triangleDatumLift, n.succ_add] at h_upper ⊢
