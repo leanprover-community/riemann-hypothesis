@@ -3,6 +3,7 @@ module
 public import Lib.GLn.SchurModule.SchurMatrix
 public import New.Derivatives.Divisibility.NullFrames
 public import New.Derivatives.FormalGroup.ThetaProducts
+import Lib.General.Algebra.SeriesBounds
 
 /-!
 # Divisibility of the jets of a series with the normal form along products of minors
@@ -746,13 +747,7 @@ lemma exists_norm_le_norm_sum_mul_eval {ι σ : Type} [Fintype ι]
   have : IsAlgClosed (IsLocalRing.ResidueField (valRingCp p)) :=
     ((Variety.IsAbsIntegrallyClosed.of_isIntegrallyClosedIn ℂ_[p]).of_surjective
       IsLocalRing.residue_surjective).isAlgClosed
-  obtain ⟨x, hx⟩ : ∃ x : σ → IsLocalRing.ResidueField (valRingCp p),
-      eval x ((∑ t, β t • b t).map (IsLocalRing.residue (valRingCp p))) ≠ 0 := by
-    contrapose! h_ne
-    exact MvPolynomial.funext fun x ↦ by rw [h_ne x, map_zero]
-  obtain ⟨y, rfl⟩ := IsLocalRing.residue_surjective.comp_left x
-  have h_unit : IsUnit (eval y (∑ t, β t • b t)) := by
-    rwa [← IsLocalRing.residue_ne_zero_iff_isUnit, map_eval]
+  obtain ⟨y, h_unit⟩ := New.exists_isUnit_eval_of_map_ne_zero _ h_ne
   have h_eq : ∑ t, α t * (eval y (b t) : valRingCp p) =
       α t₀ * (eval y (∑ t, β t • b t) : valRingCp p) := by
     simp [β, mul_sum, smul_eval, ← mul_assoc, mul_div_cancel₀ _ h_zero]

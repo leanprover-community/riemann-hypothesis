@@ -53,13 +53,24 @@ valuation, and of the binomial series with exponent in `ℤ_p`.
 /-!
 ## A general integral point
 
-Each polynomial is a constant times a polynomial with nonzero reduction. As the residue field is
-infinite, there is a point at which none of the reductions vanishes.
+Over a local ring with infinite residue field, a polynomial with nonzero reduction takes a unit
+value. Scaling each polynomial and applying this fact to their product gives a single integral
+point for the finite family.
 -/
 
 section IntegralityPrinciple
 
 open Finset IsLocalRing MvPolynomial New.Variety.IsAbsIntegrallyClosed
+
+/-- A polynomial with nonzero reduction over a local ring with infinite residue field
+takes a unit value. -/
+lemma New.exists_isUnit_eval_of_map_ne_zero {R σ : Type*} [CommRing R] [IsLocalRing R]
+    [Infinite (ResidueField R)] (f : MvPolynomial σ R)
+    (hf : map (residue R) f ≠ 0) : ∃ y : σ → R, IsUnit (eval y f) := by
+  obtain ⟨x, hx⟩ : ∃ x : σ → ResidueField R, eval x (map (residue R) f) ≠ eval x 0 :=
+    not_forall.mp fun h ↦ hf (MvPolynomial.funext h)
+  obtain ⟨y, rfl⟩ := residue_surjective.comp_left x
+  exact ⟨y, (residue_ne_zero_iff_isUnit _).1 (by simpa only [map_eval, map_zero] using hx)⟩
 
 /-- Over an algebraically closed valued field there is an integral point at which each of finitely
 many polynomials takes a value at least as large as all its coefficients. -/
@@ -97,19 +108,13 @@ lemma New.exists_val_coeff_le_val_eval {K σ : Type*} {n : ℕ} [Field K] [IsAlg
   choose c g hg hfg using fun i : Fin n ↦ h_scale (f i)
   have : IsAlgClosed (ResidueField V) :=
     ((of_isIntegrallyClosedIn K).of_surjective residue_surjective).isAlgClosed
-  -- Over an infinite field a nonzero polynomial has a nonzero value.
-  obtain ⟨y₀, hy₀⟩ :
-      ∃ y₀ : σ → ResidueField V, eval y₀ (∏ i : Fin n, map (residue V) (g i)) ≠ eval y₀ 0 :=
-    not_forall.1 fun h_eq ↦ prod_ne_zero_iff.2 (fun i _ ↦ hg i) (MvPolynomial.funext h_eq)
-  obtain ⟨y, rfl⟩ : ∃ y : σ → V, residue V ∘ y = y₀ := residue_surjective.comp_left y₀
-  have h_unit (i : Fin n) : IsUnit (eval y (g i)) := by
-    rw [map_prod, map_zero, prod_ne_zero_iff] at hy₀
-    rw [← residue_ne_zero_iff_isUnit]
-    simpa [eval_map, ← eval₂_comp] using hy₀ i (mem_univ i)
+  obtain ⟨y, h_unit⟩ := New.exists_isUnit_eval_of_map_ne_zero (∏ i, g i)
+    (by simpa only [map_prod] using prod_ne_zero_iff.mpr (fun i _ ↦ hg i))
+  simp only [map_prod, IsUnit.prod_iff] at h_unit
   refine ⟨y, fun i m ↦ ?_⟩
   -- The factor `c i` is common, and the unit `eval y (g i)` divides every coefficient of `g i`.
   have h_le : v (algebraMap V K ((g i).coeff m)) ≤ v (algebraMap V K (eval y (g i))) :=
-    (Valuation.integer.integers v).le_of_dvd (h_unit i).dvd
+    (Valuation.integer.integers v).le_of_dvd (h_unit i (mem_univ i)).dvd
   grw [hfg i, AddMonoidAlgebra.coeff_smul_apply, coeff_map, smul_eval, eval_map, ← eval₂_comp,
     smul_eq_mul, map_mul, map_mul, h_le]
 
