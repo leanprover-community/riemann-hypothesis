@@ -752,7 +752,8 @@ private lemma New.reindexGL_apply_eq_prod_smul_of_blockTriangular {F : Type*} [F
     (g : intGL n 𝒪[F]) (hg : BlockTriangular (intGL.map (residue 𝒪[F]) g).val e) :
     ρ (reindexGL e g) y = (∏ i : n, χ (b i) (intGL.map (residue 𝒪[F]) g i i)) • y := by
   -- Blocks of smaller level come first in the order `e`, so the reduction lies in `parabolic b`.
-  have h_lt (i j : n) (h_lt_b : b j < b i) : e j < e i := by grind [hb h_lt_b, e.injective]
+  have h_lt (i j : n) (h_lt_b : b j < b i) : e j < e i :=
+    lt_of_le_of_ne (hb h_lt_b) fun h ↦ h_lt_b.ne (congrArg b (e.injective h))
   have hg_par : intGL.map (residue 𝒪[F]) g ∈ parabolic b := fun i j h ↦ hg (h_lt i j h)
   rw [h_block g hg_par, ← prod_fiberwise b]
   congr 1
