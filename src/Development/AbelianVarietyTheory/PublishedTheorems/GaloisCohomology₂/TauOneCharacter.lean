@@ -228,15 +228,13 @@ theorem _root_.GlobalTheory.Published.GreenModel.green_one (L : _root_.GlobalThe
     ∃ τ : (ZMod g)[X] → _root_.GlobalTheory.GLq.Gn g 1 → ℂ,
     (∀ P, _root_.GlobalTheory.GLq.IsPrimeLab 1 P → _root_.GlobalTheory.GLq.IsCuspOf L P (τ P) ∧
       τ P 1 = ∏ i ∈ Finset.Ico 1 1, ((g : ℂ) ^ i - 1)) ∧
-    (∀ P P', _root_.GlobalTheory.GLq.IsPrimeLab 1 P → _root_.GlobalTheory.GLq.IsPrimeLab 1 P' →
-      τ P = τ P' → P = P') ∧
     ∀ χ : _root_.GlobalTheory.GLq.Gn g 1 → ℂ, _root_.GlobalTheory.GLq.IsCusp χ →
       ∃ P, _root_.GlobalTheory.GLq.IsPrimeLab 1 P ∧ χ = τ P := by
   classical
   have hlab : ∀ {P : (ZMod g)[X]}, _root_.GlobalTheory.GLq.IsPrimeLab 1 P → -P.coeff 0 ≠ 0 :=
     fun h => neg_ne_zero.mpr h.2.2.1
   refine ⟨fun P => if h : _root_.GlobalTheory.GLq.IsPrimeLab 1 P then
-      ⇑(_root_.GlobalTheory.Published.GreenModel.th L (hlab h)) else fun _ => 0, ?_, ?_, ?_⟩
+      ⇑(_root_.GlobalTheory.Published.GreenModel.th L (hlab h)) else fun _ => 0, ?_, ?_⟩
   · intro P hP
     simp only [dite_eq_left hP]
     refine ⟨⟨hP, ⟨one_pos, _root_.GlobalTheory.Published.GreenModel.isIrr_hom _,
@@ -257,22 +255,6 @@ theorem _root_.GlobalTheory.Published.GreenModel.green_one (L : _root_.GlobalThe
     subst hx' hz'
     simp only [Nat.sub_self, pow_zero, one_mul, Finset.sum_range_one, pow_one]
     rfl
-  · intro P P' hP hP' he
-    obtain ⟨c, hc, y0, -, hy0⟩ := exists_ne_zero_gn_one_ev_eq_gen_one L
-    have h1 := congrFun he y0
-    simp only [dite_eq_left hP, dite_eq_left hP'] at h1
-    have key : ∀ {b : ZMod g} (hb : b ≠ 0), _root_.GlobalTheory.Published.GreenModel.th L hb y0 =
-        L.teich (algebraMap (ZMod g) (_root_.Formalism.CyclotomicNorms.Fbar g) b) := by
-      intro b hb
-      change _root_.GlobalTheory.GLq.thetaOf L 1 _ (_root_.GlobalTheory.Published.GreenModel.ev y0) = _
-      rw [hy0, ← pow_one (L.gen 1),
-        _root_.GlobalTheory.GLq.Model.thetaOf_gen_pow L one_pos (_root_.GlobalTheory.Published.GreenModel.alg_pow hb), pow_one]
-    rw [key, key] at h1
-    have h2 := L.teich_inj _ _ ((_root_.map_ne_zero _).2 (hlab hP))
-      ((_root_.map_ne_zero _).2 (hlab hP')) h1
-    have hb := (algebraMap (ZMod g) (_root_.Formalism.CyclotomicNorms.Fbar g)).injective h2
-    rw [_root_.GlobalTheory.Published.GreenModel.lab_eq hP,
-      _root_.GlobalTheory.Published.GreenModel.lab_eq hP', hb]
   · intro χ hχ
     obtain ⟨-, ⟨V, hVs, hV⟩, -⟩ := hχ
     haveI := hVs
@@ -352,7 +334,7 @@ theorem tauOne_character (θ : (ZMod g)ˣ →* ℂˣ) (y : Gn g 1) :
 theorem exists_label (L : LabelDatum g) (θ : (ZMod g)ˣ →* ℂˣ) (u : (ZMod g)ˣ)
     (hu : algebraMap (ZMod g) (Formalism.CyclotomicNorms.Fbar g) u = L.gen 1) :
     ∃ P, IsCuspOf L P (tauOne θ).character ∧ liftPoly L.teich P = X - C (θ u : ℂ) := by
-  obtain ⟨T, h1, -, h3⟩ := GlobalTheory.Published.GreenModel.green_one L
+  obtain ⟨T, h1, h3⟩ := GlobalTheory.Published.GreenModel.green_one L
   have hc : GlobalTheory.GLq.IsCusp (tauOne θ).character := by
     refine ⟨one_pos, ?_, fun a h1 h2 => by omega⟩
     have := GlobalTheory.Published.GreenModel.isIrr_hom
