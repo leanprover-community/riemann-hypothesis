@@ -29,17 +29,17 @@ lemma New.prod_euler_factor_ne_zero {M : ℕ} {s : ℂ} (h_re : s.re ≠ 0) :
     ∏ p ∈ M.primeFactors, (1 - χ p * (p : ℂ) ^ (-s)) ≠ 0 := by
   refine Finset.prod_ne_zero_iff.2 fun p hp_mem h_factor ↦ ?_
   have hp : p.Prime := Nat.prime_of_mem_primeFactors hp_mem
-  -- A vanishing factor means `χ p = p ^ s`. As `conj (χ p) = (χ p)⁻¹`, comparing norms gives
-  -- `re s = -re s`.
+  -- A vanishing factor gives `χ p = p ^ s`, so `p` is a unit modulo `N` and `‖χ p‖ = 1`.
   have hχp : χ p = (p : ℂ) ^ s := by
     rwa [sub_eq_zero, cpow_neg, eq_comm, mul_inv_eq_one₀ (by simp [hp.ne_zero])] at h_factor
-  have h_conj : star (χ p) = (χ p)⁻¹ := by rw [χ.star_apply', χ.inv_apply_eq_inv']
-  have h_norm : ‖χ p‖ = (p : ℝ) ^ s.re := by rw [hχp, norm_natCast_cpow_of_pos hp.pos]
-  have h_rpow : (p : ℝ) ^ s.re = (p : ℝ) ^ (-s.re) := by
-    rw [Real.rpow_neg p.cast_nonneg, ← h_norm, ← norm_inv, ← h_conj, norm_star]
-  have h_neg : s.re = -s.re :=
-    (Real.rpow_right_inj (mod_cast hp.pos) (mod_cast hp.ne_one)).1 h_rpow
-  exact h_re (self_eq_neg.1 h_neg)
+  have hχp_ne : χ p ≠ 0 := by
+    rw [hχp]
+    exact cpow_ne_zero_iff.mpr (.inl (by exact_mod_cast hp.ne_zero))
+  obtain ⟨u, hu⟩ := MulChar.apply_ne_zero_iff.mp hχp_ne
+  have h_norm : ‖χ p‖ = 1 := by rw [← hu, χ.unit_norm_eq_one]
+  have h_rpow : (p : ℝ) ^ s.re = (p : ℝ) ^ (0 : ℝ) := by
+    rw [Real.rpow_zero, ← norm_natCast_cpow_of_pos hp.pos, ← hχp, h_norm]
+  exact h_re ((Real.rpow_right_inj (mod_cast hp.pos) (mod_cast hp.ne_one)).mp h_rpow)
 
 /-- Every complex Dirichlet character χ mod N, with N ≥ 1, is induced by a primitive character ψ
 mod M for some divisor M ≥ 1 of N. -/
