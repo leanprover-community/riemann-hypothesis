@@ -181,8 +181,8 @@ largest `l`-adic norm of a coordinate of `h⁻¹ v`, in the representation of we
 twisted by the determinant powers `O.detExp`, with coordinates indexed by
 `WeylIndex n O.columnCount`. -/
 theorem pointForm_mem_integralForms {l : ℕ} [Fact l.Prime] {E r n : Type} [Field E] [CMType E]
-    [WeilData E] [Fintype r]
-    [DecidableEq r] [Fintype n] [DecidableEq n] (j : PadicPlace l) {O : DescentPair E r n}
+    [Fintype r] [DecidableEq r] [Fintype n] [DecidableEq n]
+    (j : PadicPlace l) {O : DescentPair E r n}
     {h : Gf E n} {Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (.inl i)))}
     {hY : ∀ i : O.ChosenIndex, (Y i).mulVec.Injective} {e : r ↪ n}
     {v : WeylIndex n O.columnCount → ℂ} (hv : weylGauge (p := l) O.columnCount O.detExp h v ≤ 1) :
