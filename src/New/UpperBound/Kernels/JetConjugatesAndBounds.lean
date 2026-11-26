@@ -521,7 +521,8 @@ lemma FitsRanks.sum_diagramWeight_eq_boxes {n n' Φ : Type} [Fintype n] [Fintype
     _ = ∑ k ∈ range (card n'), ∑ _i ∈ {i : Fin (card n) | i < k}, κ τ k := sum_comm' (by grind)
     _ = ∑ k ∈ range (card n'), k * κ τ k := by
         refine sum_congr rfl fun k hk ↦ ?_
-        have h_height : k ≤ card n ∨ κ τ k = 0 := by grind [FitsRanks]
+        have h_height : k ≤ card n ∨ κ τ k = 0 :=
+          (le_or_gt k (card n)).imp_right fun h ↦ (hκ τ).2 k (mem_Ioo.2 ⟨h, mem_range.1 hk⟩)
         simpa [Fin.card_filter_val_lt] using h_height
 
 variable (P : Parameters) {s : ℕ} {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
