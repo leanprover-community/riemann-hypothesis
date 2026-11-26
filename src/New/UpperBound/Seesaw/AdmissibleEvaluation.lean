@@ -491,7 +491,8 @@ lemma latticeUnitary_mulVec_conjTranspose_latticeLift_mulVec (hP : IsSplitLevel 
     ← U.inv_val_eq_conjTranspose]
   exact smul_inv_smul (latticeUnitary (X' ⊕ Unit) hπ hκ) _
 
-/-- Let `P` contain one place of each conjugate pair above the prime `N` (`hP`), let `N = π π̄` with
+omit [Fact N.Prime] in
+/-- Let `P` contain one place of each conjugate pair above `N` (`hP`), let `N = π π̄` with
 `π` a uniformiser at the places of `P` and a unit elsewhere (`hπ`), and let `κ` be scaling factors
 with values `1` or `δ`, trivial above `N`, with denominators bounded by the integral adele `β` and
 its conjugate (`hκ`). Suppose that, for a unitary adele `u`, the matrix `latticeLift` built from the
