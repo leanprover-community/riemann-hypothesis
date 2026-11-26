@@ -296,9 +296,11 @@ noncomputable def weylNormSq : ℝ :=
 @[simp]
 lemma weylNormSq_nonneg : 0 ≤ weylNormSq ξ := weylGramOver_posDef.posSemidef.re_dotProduct_nonneg ξ
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 lemma weylNormSq_smul (t : ℂ) : weylNormSq (t • ξ) = ‖t‖ ^ 2 * weylNormSq ξ := by
   simp [weylNormSq, mulVec_smul, ← mul_assoc, mul_conj', sq]
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 /-- The squared Gram norm of `σ ∘ (t • ξ)` is `‖σ t‖ ^ 2` times that of `σ ∘ ξ`, for multiplicative
 `σ`. -/
 @[simp]
