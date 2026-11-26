@@ -150,9 +150,12 @@ lemma New.Selmer.relLength_le_of_comesFromClass {ℓ : ℕ} [ThePrime ℓ] {R Γ
   -- So `L / ℓ ^ m` is a discrete `Γ`-module: `g ↦ g • τ x` is a coboundary plus a constant.
   let V : DiscreteModule ℤ_[ℓ] Γ := .of (actionRep ℤ_[ℓ] (d → QuotSpan (ℓ ^ m : R)) σ) <| by
     suffices ∀ x : L, Continuous fun g : Γ ↦ σ g • τ x by
-      simpa [τ_surj.forall, continuous_prod_of_discrete_right]
+      refine continuous_prod_of_discrete_right.2 fun v ↦ ?_
+      obtain ⟨x, rfl⟩ := τ_surj v
+      exact this x
     intro x
-    simpa [τ_equiv] using (cont_red (Y := L) hL .id (coboundary_mem x)).add_const (τ x)
+    refine ((cont_red (Y := L) hL .id (coboundary_mem x)).add_const (τ x)).congr fun g ↦ ?_
+    simp [τ_equiv]
   let A : Submodule R (Γ → d → QuotSpan (ℓ ^ m : R)) := (crysCocycles L.ρ).map (τ.compLeft Γ)
   let H : Submodule R (Γ → L.tateDual) := cupOrthogonal (InClass F K U) L.tateDual
   -- A map that comes from the class is a continuous cocycle, and its cup products with the members
