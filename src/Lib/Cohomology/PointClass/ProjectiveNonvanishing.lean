@@ -1192,8 +1192,9 @@ lemma New.Variety.projSpace.exists_map_pointClass_eq_nsmul_map_cup {k : Type} [F
   rw [map_pointClass_eq_sum_of_isCoincidenceSet _ _ coin]
   -- The class of a point `(v, w)` is the product of the classes, which do not depend on the points.
   refine sum_eq_card_nsmul fun ⟨v, w⟩ _ ↦ ?_
-  erw [← IsPointSum.cup_pointClass, pointClass_eq_pointClass_affinePoint v,
-    pointClass_eq_pointClass_affinePoint w, pointClass_eq_pointClass_affinePoint z]
+  refine (IsPointSum.cup_pointClass (X := projSpace k d) (Y := projSpace k 1) (v, w)).symm.trans ?_
+  rw [pointClass_eq_pointClass_affinePoint v, pointClass_eq_pointClass_affinePoint w,
+    pointClass_eq_pointClass_affinePoint z]
 
 -- Keeps definitional checks from unfolding the Ext groups.
 seal CategoryTheory.Abelian.Ext in
@@ -1218,7 +1219,12 @@ lemma New.Variety.projSpace.hodgeTateMap_pointClass_ne_zero {p : ℕ} {k : Type}
     -- Only the term `h = d` of the product formula survives; its coefficient is `± n * (d + 1)`.
     trans PairH.map (freeAb.prod (projSpace k d) (projSpace k 1))
       (HodgeTatePair.cross (restrictToPairs η) (restrictToPairs ξ)) = 0
-    · erw [hn, map_nsmul, hodgeTateMap_map, hodgeTateMap_cup, sum_eq_single d _ (by simp)]
+    · have h_map := hodgeTateMap_map (h := d + 1) (freeAb.prod (projSpace k d) (projSpace k 1))
+        (cup exteriorAlg.mulPairing (pointClass d z) (pointClass 1 (affinePoint 0 0)) (add_comm 1 d))
+      have h_cup := hodgeTateMap_cup (N' := freeAb.obj (projSpace k 1))
+        (pointClass d z) (pointClass 1 (affinePoint 0 0))
+        (add_comm 1 d) (d + 1)
+      rw [hn, map_nsmul, h_map, h_cup, sum_eq_single d _ (by simp)]
       · simp [n_ne, hξ, hη, ← Nat.cast_smul_eq_nsmul k]
         let y : PairH (abTensor (freeAb.obj (projSpace k d)) (freeAb.obj (projSpace k 1))) :=
           HodgeTatePair.cross (restrictToPairs η) (restrictToPairs ξ)
