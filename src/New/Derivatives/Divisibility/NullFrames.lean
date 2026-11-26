@@ -170,10 +170,6 @@ def rootExponent (side : PairingSide) (e : ℕ) : ℕ :=
   | source => e
   | partner => 0
 
-lemma sum_univ {M : Type*} [AddCommMonoid M] (f : PairingSide → M) :
-    ∑ side : PairingSide, f side = f source + f partner :=
-  sum_pair (by decide : source ≠ partner)
-
 end New.PairingSide
 
 namespace New.CongruenceChoice
@@ -331,7 +327,7 @@ lemma New.norm_rpow_sum_cost_eq_prod_congruenceModulus {p : ℕ} [Fact p.Prime] 
       (if σ = τ then ((c e σ).sourceCount h / p ^ e : ℝ) else 0) +
         if pr e σ = τ then ((c e σ).partnerCount h / p ^ 0 : ℝ) else 0 := by
     rw [← CongruenceChoice.sum_imposes_source, ← CongruenceChoice.sum_imposes_partner]
-    exact PairingSide.sum_univ (weight τ h e σ)
+    exact sum_pair (by decide : PairingSide.source ≠ .partner)
   -- The exponent of `‖π‖` in the product of all moduli at `τ` and height `h`.
   let exponent (τ : Φ) (h : ℕ) : ℝ := ∑ e : S, ∑ σ : Φ, ∑ side : PairingSide, weight τ h e σ side
   have norm_moduli (τ : Φ) (h : ℕ) :
