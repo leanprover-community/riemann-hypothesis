@@ -655,6 +655,17 @@ def invariantTraceChar (Λ : Matrix D.CarrierIndex (FirstFactorIndex j)
   ∑ γ : GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing,
     traceChar Λ (x.map (forgetTwist ϑ.toTameChar) * γ.val)
 
+/-- The invariant trace character `ψ^inv_Λ = invariantTraceChar ϑ j Λ` is invariant under right
+multiplication of its argument `x` by an invertible matrix `γ` over the residue ring of
+`D.twistModulus ϑ 2`. -/
+lemma invariantTraceChar_mul
+    (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    (x : Matrix (FirstFactorIndex j) D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing)
+    (γ : GL D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing) :
+    invariantTraceChar ϑ j Λ (x * γ.val) = invariantTraceChar ϑ j Λ x :=
+  Finset.sum_equiv (.mulLeft (γ.map (forgetTwist ϑ.toTameChar))) (by simp)
+    (by simp [Matrix.mul_assoc])
+
 /-- The character of the residue ring modulo `D.twistModulus ϑ 2 = ϖ² Q`, with `ϖ` the product of
 the chosen places and `Q` the product of the places of `ϑ`, that comes from the tame part of
 `twistedChiMPow ϑ j`, the product `χ' = χ^j ϑ` of the fixed character `D.chiM` and the twist. -/
@@ -843,8 +854,7 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
     rw [← integral_carrierForm_mul_eq_card_mul_choiceFn ϑ]
     refine mul_stdClassSum_eq_integral_mul_modKernel _ (enlargedSpace j) (h_tame ϑ).1
       (h_carrier (h_tame ϑ))
-      (fun x γ ↦ Finset.sum_equiv (.mulLeft (γ.map (forgetTwist ϑ.toTameChar))) (by simp) (by simp [Matrix.mul_assoc]))
-      (K := thirdExchangeKernel ϑ j i g) fun Φ Ψ hΦΨ h' ↦ ?_
+      (invariantTraceChar_mul ϑ j i.matrix) (K := thirdExchangeKernel ϑ j i g) fun Φ Ψ hΦΨ h' ↦ ?_
     rw [← matchedPoly_constantRows, eq_div_of_mul_eq'' (firstFactorChar_mul_upsilonU1_pow ϑ j)]
     exact h_third (h_tame₃ ϑ) (constantRows j i.rowChoice (D.shortRows i.rowChoice)) hΦΨ _ _
 

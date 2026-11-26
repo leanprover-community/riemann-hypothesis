@@ -149,6 +149,13 @@ section Edges
 variable {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
   (T : FrobeniusCycle N W O)
 
+/-- A coefficient vector `v` lies in `T.translatesIn n τ I B` if and only if its translates by the
+Levi subgroup of the labelling `τ` have their coefficients at the exponents in `B` in `I`. -/
+lemma mem_translatesIn_iff {τ : Fin k → ℕ} {I : Ideal O} {B : Set (Exponents N k n)}
+    {v : Exponents N k n → O} :
+    v ∈ T.translatesIn n τ I B ↔ ∀ g ∈ levi W τ, ∀ β ∈ B, (T.letterRep n g *ᵥ v) β ∈ I :=
+  Iff.rfl
+
 /-- Let `v` be a coefficient vector whose translates `T.letterRep n g *ᵥ v`, for `g` in the Levi
 subgroup of the labelling `τ`, have their coefficients at the exponents in `B` in the maximal ideal
 of `O`. Then the translates of the reduction of `v`, for the Frobenius cycle pushed to the residue
@@ -157,6 +164,7 @@ lemma residue_mem_translatesIn [IsLocalRing O] {τ : Fin k → ℕ} {B : Set (Ex
     {v : Exponents N k n → O} (hv : v ∈ T.translatesIn n τ (maximalIdeal O) B) :
     (fun β : Exponents N k n ↦ residue O (v β)) ∈
       (T.map (residue O)).translatesIn n τ (⊥ : Ideal (ResidueField O)) B := by
+  rw [mem_translatesIn_iff] at hv ⊢
   intro g hg β hβ
   have h_residue : ((T.map (residue O)).letterRep n g *ᵥ fun α ↦ residue O (v α)) β =
       residue O ((T.letterRep n g *ᵥ v) β) := by simp [letterRep_map, mulVec, dotProduct]

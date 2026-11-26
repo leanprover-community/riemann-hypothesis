@@ -514,6 +514,13 @@ theorem enorm_sq_besselVector_mul_unipotentMass (y : T.G) :
       rw [h_unfold, eNorm_smul, h_phase, mul_one, Real.eNorm_of_nonneg measureReal_nonneg,
         ofReal_measureReal ((ascConv_setOf_mul_mem_le_one Z y).trans_lt one_lt_top).ne]
 
+/-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, the normalised Bessel vector
+`√fl W_Z` has norm at most one at every point, where `fl = F.unipotentMass` is the mass of 𝖴 ∩ K(g)
+and `W_Z = Z.besselVector`. -/
+theorem enorm_sq_besselVector_mul_le_one (y : T.G) :
+    ‖Z.besselVector y‖ₑ ^ 2 * F.unipotentMass ≤ 1 :=
+  (enorm_sq_besselVector_mul_unipotentMass Z y).trans_le (ascConv_setOf_mul_mem_le_one Z y)
+
 /-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, let `fl = F.unipotentMass` be
 the mass of 𝖴 ∩ K(g) and `W_Z = Z.besselVector`. The squared norm of `√fl W_Z` on 𝖴∖G is the measure
 of `Z`, which is the number of cosets of K(g) in `Z` times the
@@ -577,8 +584,7 @@ theorem lintegral_inner_besselVector_sq_mul_le (x : T.G) :
         ‖Z.besselVector x‖ₑ * ‖Z.besselVector y‖ₑ :=
       coe_le_coe.2 (nnNorm_inner_le_nnNorm _ _)
     rw [Set.indicator_of_mem (h_supp y hy)]
-    grw [h_schwarz, mul_pow, mul_assoc, enorm_sq_besselVector_mul_unipotentMass,
-      ascConv_setOf_mul_mem_le_one, mul_one]
+    grw [h_schwarz, mul_pow, mul_assoc, enorm_sq_besselVector_mul_le_one, mul_one]
   calc
     _ ≤ (∫⁻ y : T.G, S.indicator (fun _ ↦ ‖Z.besselVector x‖ₑ ^ 2) y ∂θ) * F.unipotentMass := by
       grw [lintegral_mul_const_le, lintegral_mono h_bound]

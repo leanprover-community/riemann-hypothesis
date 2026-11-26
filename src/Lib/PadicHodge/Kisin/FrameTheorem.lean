@@ -770,6 +770,11 @@ lemma mem_smul_kisinAinf_of_crysForms {d : Ainf}
     x ∈ d • L.kisinAinf :=
   frame_theorem.mem_smul_kisinAinf_of_forall_crysForms d h_cancel x hx n h_val
 
+/-- Multiplication by `tau ^ jumpBound` maps `kisinAinf` into `ainfLattice`. -/
+lemma tau_pow_jumpBound_smul_mem_ainfLattice_of_mem_kisinAinf {x : L.Ambient}
+    (hx : x ∈ L.kisinAinf) : tau ^ L.jumpBound • x ∈ L.ainfLattice :=
+  frame_theorem.tau_pow_smul_mem_ainfLattice x hx
+
 /-- Multiplication by `tau ^ jumpBound` maps `ainfLattice` into `kisinAinf`. -/
 lemma tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice {x : L.Ambient}
     (hx : x ∈ L.ainfLattice) : tau ^ L.jumpBound • x ∈ L.kisinAinf :=
@@ -802,7 +807,7 @@ lemma saturateBy_tau_span_kisinModule :
     rintro x ⟨r, hr, hrx⟩
     exact ⟨tau ^ L.jumpBound * r, mul_mem ⟨L.jumpBound, rfl⟩ hr, by simpa [mul_smul] using hMN hrx⟩
   rw [← kisinAinf_eq_span_kisinModule]
-  exact le_antisymm (h_le fun hx ↦ frame_theorem.tau_pow_smul_mem_ainfLattice _ hx)
+  exact le_antisymm (h_le tau_pow_jumpBound_smul_mem_ainfLattice_of_mem_kisinAinf)
     (h_le tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice)
 
 /-- In W(C^♭) ⊗ L, `kisinAinf` is the A_inf-module of those `x` in A_inf[1/τ] ⊗ L with

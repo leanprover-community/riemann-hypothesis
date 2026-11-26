@@ -68,6 +68,12 @@ lemma unitriangularEquiv_symm_apply_of_lt (a : FreeEntry lev → R) {i j : n} (h
     ((unitriangularEquiv lev R).symm a : GL n R) i j = a ⟨(i, j), hij⟩ :=
   dite_eq_left hij
 
+/-- The number of matrices over a ring with `q` elements that are block unitriangular for the level
+function `lev` is `q` to the power of the number of free entries. -/
+lemma card_unitriangular (R : Type*) [CommRing R] :
+    Nat.card (unitriangular lev R) = Nat.card R ^ Nat.card (FreeEntry lev) :=
+  (Nat.card_congr (unitriangularEquiv lev R)).trans Nat.card_fun
+
 /-- Let `n` be the index type and `lev : n → α` a level function. Suppose every family `t` has a
 common preimage `y` under the maps `f p : R → F p`. Then a family `s p` in `unitriangular lev (F p)`
 lifts to one `u` in `unitriangular lev R` with `GeneralLinearGroup.map (f p) u = s p`. -/
@@ -319,11 +325,17 @@ theorem card_reducedImage_besselU : Nat.card (S.reducedImage besselU) = S.unipot
           (unitriangular (BesselIndex.level : 𝔰.BesselIndex → ℕ) (ResField (w : FinPlace E))) := by
         simp only [Nat.card_congr equivPi, Nat.card_pi]
     _ = ∏ i : Fin 2, ∏ _w : S.chosenPlaces i, S.levelPrime i ^ d := by
-        simp only [(Nat.card_congr (unitriangularEquiv _ _)).trans Nat.card_fun,
-          card_freeEntry_besselIndex, card_resField_eq_levelPrime, d]
+        simp only [card_unitriangular, card_freeEntry_besselIndex, card_resField_eq_levelPrime, d]
     _ = (S.levelPrime 0 * S.levelPrime 1) ^ (numInfPlaces E * d) := by
         simp [S.card_chosenPlaces, mul_pow, ← pow_mul, mul_comm d]
     _ = S.unipotentOrder := rfl
+
+/-- If the image `S.inclHFin k` of an element `k` of the unitary group of `X₀` preserves the
+lattice, then its reduction lies in `H̄ = S.reducedImage besselH`. -/
+lemma reduction_inclHFin_mem_reducedImage_besselH {k : Gf E 𝔰.κ}
+    (hk : S.inclHFin k ∈ S.latticeStabilizer) :
+    S.reduction ⟨S.inclHFin k, hk⟩ ∈ S.reducedImage besselH :=
+  ⟨⟨S.inclHFin k, hk⟩, inclHFin_mem_besselH k, rfl⟩
 
 /-- An element of the stabiliser of the lattice lies in the principal congruence subgroup
 `S.principalLevel` if and only if it reduces to `1` at all chosen places. -/
@@ -343,7 +355,7 @@ theorem relIndex_comap_principalLevel :
     S.coe_mem_principalLevel_iff_reduction_eq_one (k := ⟨S.inclHFin k, k.property⟩))).trans ?_
   suffices reduce.range = S.reducedImage besselH by rw [Subgroup.index_ker, this]
   ext s
-  refine ⟨fun ⟨k, hk⟩ ↦ hk ▸ ⟨⟨S.inclHFin k.val, k.property⟩, inclHFin_mem_besselH k.val, rfl⟩, ?_⟩
+  refine ⟨fun ⟨k, hk⟩ ↦ hk ▸ S.reduction_inclHFin_mem_reducedImage_besselH k.property, ?_⟩
   rintro ⟨⟨x, hx⟩, hx_mem, rfl⟩
   obtain ⟨k, rfl⟩ : x ∈ S.inclHFin.range := range_inclHFin.ge hx_mem
   exact ⟨⟨k, hx⟩, rfl⟩

@@ -675,6 +675,15 @@ lemma finite_definiteForms_and_trace_eq_finsum_definiteClass (hN : IsNeat n 𝔑
 lemma finite_definiteForms (hN : IsNeat n 𝔑) : Module.Finite ℂ (definiteForms 𝔑 ξ) :=
   (finite_definiteForms_and_trace_eq_finsum_definiteClass ξ hN 1).left
 
+/-- At a neat level the trace of a Hecke element `a` on the definite forms is the sum, over the
+definite classes `j` and the rational matrices `y`, of `heckeCosetFn a` (the function `∑ a_g [gK]`
+of `a` on cosets) at `x_j⁻¹ y x_j`, where `x_j = j.frame` is the frame of `j`, times `tr (ξ y)`. -/
+lemma trace_definiteForms_eq_finsum_definiteClass (hN : IsNeat n 𝔑) (a : heckeAlgebra n ℂ 𝔑) :
+    (definiteForms.rep 𝔑 ξ a).trace ℂ (definiteForms 𝔑 ξ) =
+      ∑ᶠ (j : DefiniteClass n 𝔑) (y : GL n E),
+        heckeCosetFn a (j.frame⁻¹ * toFinGL y * j.frame) * (ξ y).trace ℂ W :=
+  (finite_definiteForms_and_trace_eq_finsum_definiteClass ξ hN a).right
+
 /-- The trace formula on the definite side. Let `W` be finite-dimensional, `𝔑` neat and `a` a
 regular Hecke element. Suppose `tr ξ(y⁻¹) = ∑ i, w P i` whenever the characteristic polynomial `P`
 of `y` is separable. Then the trace of `a` on definite forms is the sum, over all orbits of triples,
@@ -710,7 +719,7 @@ lemma trace_definiteForms_eq_finsum_countTerm (hN : IsNeat n 𝔑) {a : heckeAlg
     · have h_separable : (y⁻¹).val.charpoly.Separable :=
         ha (x := j.frame) (by simpa only [invAutInFrame, inv_inv] using h_coeff)
       rw [← hw y⁻¹ h_separable, inv_inv]
-  rw [(finite_definiteForms_and_trace_eq_finsum_definiteClass ξ hN a).right, h_orbits]
+  rw [trace_definiteForms_eq_finsum_definiteClass ξ hN a, h_orbits]
   simp_rw [h_term]
 
 end New.Variety

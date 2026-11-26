@@ -191,6 +191,14 @@ noncomputable def familyCoeff {𝒜 : J → Subring R}
     (S : Finset J) : R :=
   commutingProd h𝒜 (S.piecewise der Nm)
 
+/-- An element that commutes with all the subrings `𝒜 j` commutes with every product
+`familyCoeff h𝒜 Nm der S = ∏_{j ∈ S} der j ∏_{j ∉ S} Nm j` of elements `der j`, `Nm j` of `𝒜 j`. -/
+lemma commute_familyCoeff {𝒜 : J → Subring R}
+    (h𝒜 : ∀ i j : J, i ≠ j → ∀ a ∈ 𝒜 i, ∀ b ∈ 𝒜 j, Commute a b) (Nm der : ∀ j : J, 𝒜 j)
+    {t : R} (ht : ∀ j : J, ∀ a ∈ 𝒜 j, Commute t a) (S : Finset J) :
+    Commute t (familyCoeff h𝒜 Nm der S) :=
+  MonoidHom.commute_noncommPiCoprod _ (fun j (a : 𝒜 j) ↦ ht j a a.property) (S.piecewise der Nm)
+
 /-- Let `𝒜 j` be pairwise commuting subrings of `R`, with elements `Nm j` and `der j`, so that
 `familyCoeff h𝒜 Nm der S` is the product `∏_{j ∈ S} der j ∏_{j ∉ S} Nm j`. Let `ρ` map the product
 of the finite groups `Γ j` to `R`, with `Γ j` going into `𝒜 j`. If `Nm j` is the sum of `ρ` over
@@ -242,8 +250,7 @@ lemma exists_empty_eq_sum_and_insert_eq_mul (ρ : (∀ j : J, Γ j) →* R) (�
         N S = N' * ∑ g : Γ j, ρ (Pi.mulSingle j g) ∧ N (insert j S) = N' * der j := by
   let Nm (j : J) : 𝒜 j := ⟨∑ g : Γ j, ρ (Pi.mulSingle j g), sum_mem fun g _ ↦ hρ j g⟩
   let der' (j : J) : 𝒜 j := ⟨der j, h_der j⟩
-  exact ⟨familyCoeff h𝒜 Nm der', fun t ht S ↦
-    MonoidHom.commute_noncommPiCoprod _ (fun j (a : 𝒜 j) ↦ ht j a a.property) (S.piecewise der' Nm),
+  exact ⟨familyCoeff h𝒜 Nm der', fun t ht ↦ commute_familyCoeff h𝒜 Nm der' ht,
     familyCoeff_empty ρ h𝒜 hρ (fun j ↦ rfl) der',
     fun j S hj ↦ exists_familyCoeff_eq_mul h𝒜 Nm der' hj⟩
 

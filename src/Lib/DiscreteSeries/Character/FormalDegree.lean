@@ -377,6 +377,16 @@ lemma isWeylAntisymm_pow_mul_alternant {ε : n → ℤˣ} {l : HCParam ε} (hl :
     (torusEval_comp_eq_mul_iff w).2 (isWeylAntisymm_alternant w hw) x
   simp only [map_mul, map_pow, D_invariant, alt_anti, mul_left_comm]
 
+/-- For injective `κ`, a power of the product of the negative noncompact roots times the alternant
+of `κ` is that power times a series `t` with `t κ = 1` whose exponents each occur in some
+`alternant ε μ` with `μ - κ` in the positive root cone of `l` (`IsConeSeriesMultiple`): the series
+is the alternant. -/
+lemma isConeSeriesMultiple_pow_mul_alternant {ε : n → ℤˣ} (l : HCParam ε) {κ : n → ℤ}
+    (hκ : κ.Injective) (N : ℕ) :
+    IsConeSeriesMultiple l κ ((-l).rootProd Ne ^ N) ((-l).rootProd Ne ^ N * alternant ε κ) :=
+  ⟨(alternant ε κ).coeff, coeff_mul_apply_left _ _, coeff_alternant_self ε hκ,
+    fun γ hγ ↦ ⟨κ, hγ, by simp [rootCone]⟩⟩
+
 /-- Let the Harish-Chandra parameter `l` for the signs `ε` have gap `500 n³ + 10 n⁵`
 (`HasLargeGap (10 * n ^ 5)`), let `D = (-l).rootProd Ne` be the product of the negative noncompact
 roots, and let `N = 4 n²`. Then `l.formalDegree` times the squared norm `kTypeNormSq` of the lowest
@@ -435,8 +445,7 @@ lemma formalDegree_mul_kTypeNormSq_and_isOrbitalLaurent [Nonempty n] {ε : n →
   obtain ⟨numerator_top, numerator_low⟩ : (numerator ε).coeff top = 1 ∧
       ∀ γ : n → ℤ, (numerator ε).coeff γ ≠ 0 → ∃ w : Perm n, ε ∘ w = ε ∧ o ⬝ᵥ γ ∘ w ≤ o ⬝ᵥ top :=
     coeff_top_of_isConeSeriesMultiple hgap.injective o_anti top_mono
-      ⟨(alternant ε κ).coeff, coeff_mul_apply_left _ _, coeff_alternant_self ε κ_inj,
-        fun γ hγ ↦ ⟨κ, hγ, by simp [rootCone]⟩⟩ rfl
+      (isConeSeriesMultiple_pow_mul_alternant l κ_inj N) rfl
   -- By `orbital` and Weyl's formula for `U(n)`, on the accretive part of the torus
   -- `P - scalar • numerator 1` is a multiple of `offOrbitIntegral`; with the bound
   -- `level_add_lt_of_coeff_ne_zero` this excludes exponents of level at most that of `top`.

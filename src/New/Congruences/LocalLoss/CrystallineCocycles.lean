@@ -211,6 +211,13 @@ lemma New.Selmer.two_mul_lt_mul_crystallineLoss_succ {ℓ : ℕ} [hp : ThePrime 
   calc 2 * b < ℓ * (2 * b / ℓ + 1) := lt_mul_div_succ _ hp.out.pos
     _ ≤ ℓ * (crystallineLoss h b ℓ + 1) := by grw [h_div, h_val]
 
+/-- If `ℓ` divides some positive integer in `(b - 30 h³, b + 30 h³]`, then the crystalline loss
+`crystallineLoss h b ℓ` is at least `h³`. -/
+lemma New.Selmer.cube_le_crystallineLoss_of_dvd {ℓ h b n : ℕ} [ThePrime ℓ]
+    (hn : n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3)) (hℓ : ℓ ∣ n) : h ^ 3 ≤ crystallineLoss h b ℓ :=
+  le_crystallineLoss_of_pow_dvd
+    ((pow_dvd_pow_of_dvd (hℓ.trans (dvd_prod_of_mem _ hn)) _).mul_left _)
+
 /-- If `H ≤ 4 b` and `2 log (4 b) < m`, then `⌊log_ℓ H⌋ < m`, because `log ℓ ≥ 1 / 2`. -/
 lemma New.Selmer.natLog_lt_of_two_mul_log_lt {ℓ H b m : ℕ} [hp : ThePrime ℓ]
     (hm : 2 * Real.log (4 * b : ℝ) < m) (hH : H ≤ 4 * b) : ℓ.log H < m := by
@@ -603,8 +610,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
   -- Besides `hy`, only these facts about `v` and `K` are used below.
   have h_loss : 2 * b < ℓ * (crystallineLoss h b ℓ + 1) := two_mul_lt_mul_crystallineLoss_succ h b
   have h_cube {n : ℕ} (hn : n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3)) (h_dvd : ℓ ∣ n) :
-      h ^ 3 ≤ crystallineLoss h b ℓ :=
-        le_crystallineLoss_of_pow_dvd ((pow_dvd_pow_of_dvd (h_dvd.trans (dvd_prod_of_mem _ hn)) _).mul_left _)
+      h ^ 3 ≤ crystallineLoss h b ℓ := cube_le_crystallineLoss_of_dvd hn h_dvd
   have hK : 2 * crystallineLoss h b ℓ < 2 * crystallineLoss h b ℓ / Q * Q + Q :=
     lt_div_mul_add h_sizes.bound_pos
   generalize crystallineLoss h b ℓ = v at *

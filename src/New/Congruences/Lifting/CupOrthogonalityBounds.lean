@@ -492,6 +492,10 @@ lemma TameChart.differentBound_le_one (d : TameChart Γ) : d.differentBound ≤ 
   grind [KummerChart.differentBound, Nat.padicValNat_def,
     multiplicity_eq_zero_of_not_dvd d.tame]
 
+/-- If `b + n < q`, then `q` divides no nonzero integer within distance `n` of `0`, `b` or `-b`. -/
+lemma noMultipleNear_of_add_lt {q n b : ℕ} (h_lt : b + n < q) : NoMultipleNear q n b :=
+  fun _ hy_ne hy_near h_dvd ↦ hy_ne (Int.eq_zero_of_abs_lt_dvd h_dvd (by grind))
+
 /-- Let `Γ → Gp p = Gal(ℚ̄_p / ℚ_p)` be a surjective open embedding. For each `s` in inertia let
 `K s` be a tame type: it holds for `X ^ e - 1`, with `e` the least common multiple of the
 `p ^ i - 1` for `1 ≤ i ≤ r`, and for a monic polynomial over `ℤ_[p]` of degree at most `N`. A
@@ -557,8 +561,7 @@ lemma hasCupExponent_of_isTameType [TopologicalSpace Γ] (ho : IsOpenEmbedding �
     omega
   have cost_le {n : ℕ} (hn : n ≤ N * N + N) : r ^ 2 * (n + 1) ≤ r ^ 2 * (N + 1) ^ 2 :=
     Nat.mul_le_mul_left _ (by linarith)
-  have h_gap : NoMultipleNear p (η + max η W) b :=
-    fun _ hy_ne hy_near h_dvd ↦ hy_ne (Int.eq_zero_of_abs_lt_dvd h_dvd (by grind))
+  have h_gap : NoMultipleNear p (η + max η W) b := noMultipleNear_of_add_lt (by omega)
   refine P.isScaledCupCoboundary_of_killsCokernel (a := 0) (κ := r ^ 2 * (N + 1) ^ 2)
     (fun i ↦ ?_) (fun i ↦ ?_) (fun i ↦ ?_) (fun _ ↦ h_gap) (by simp) h_window h_window'
     (.inl (by simp))

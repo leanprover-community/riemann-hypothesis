@@ -562,6 +562,12 @@ def denominatorIdele (x : (𝔸f E)ˣ) : (𝔸f E)ˣ where
   val_inv := by grind [idem_compl, idem_mul_self, Units.inv_mul]
   inv_val := by grind [idem_compl, idem_mul_self, Units.inv_mul]
 
+/-- The inverse of the denominator of `x` is `1` where `x` is integral and `x` elsewhere. -/
+lemma coe_inv_denominatorIdele (x : (𝔸f E)ˣ) :
+    (denominatorIdele x)⁻¹.val =
+      idem {w : FinPlace E | v (x.val w) ≤ 1} + idem {w : FinPlace E | v (x.val w) ≤ 1}ᶜ * x.val :=
+      rfl
+
 /-- The valuation of the denominator of `x` at `w` is the inverse of `max 1 |x_w|`. -/
 lemma v_denominatorIdele (x : (𝔸f E)ˣ) (w : FinPlace E) :
     v ((denominatorIdele x).val w) = (max 1 (v (x.val w)))⁻¹ := by
@@ -586,7 +592,7 @@ lemma isSaturating_diagGL (d : ι → (𝔸f E)ˣ) :
       mul_inv_le_one_of_le₀ (le_max_right _ _) zero_le
     simpa [v_denominatorIdele] using h_le
   · rw [← map_inv, coe_diagGL, coe_diagGL, diagonal_mul_diagonal, diagonal_add]
-    rfl
+    exact congrArg diagonal (funext fun i ↦ coe_inv_denominatorIdele (d i))
 
 /-! ### The chosen saturating matrix -/
 

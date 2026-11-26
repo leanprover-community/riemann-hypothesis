@@ -221,10 +221,14 @@ def TimesBNat.wangPow : freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift) �
   freeAb.map ⟨fun D ↦ ↾fun x ↦ (shiftEnd Y x.2.down).asHom.app D.1 x.1,
     fun _ _ f ↦ by exact shiftEnd_naturality Y f⟩
 
+/-- The two maps of the Wang sequence compose to zero, as `γ^k (γ x) = γ^(k + 1) x`. -/
+lemma TimesBNat.wangSub_comp_wangPow : wangSub Y ≫ wangPow Y = 0 :=
+  (shortExact_induced Y).fst
+
 /-- The Wang sequence ℤ[Y × ℕ] → ℤ[Y × ℕ] → ℤ[Y] (`wangSub`, then `wangPow`), a short complex of
 functors from C × Bℕ to abelian groups. -/
 abbrev TimesBNat.wangComplex : ShortComplex (TimesBNat C ⥤ AddCommGrpCat.{1}) :=
-  .mk (wangSub Y) (wangPow Y) (shortExact_induced Y).fst
+  .mk (wangSub Y) (wangPow Y) (wangSub_comp_wangPow Y)
 
 /-- For Y on C × Bℕ with endomorphism γ, the Wang sequence 0 → ℤ[Y × ℕ] → ℤ[Y × ℕ] → ℤ[Y] → 0 is
 short exact (`wangComplex`): the first map is `(x, k) ↦ (γ x, k) - (x, k + 1)`, the second

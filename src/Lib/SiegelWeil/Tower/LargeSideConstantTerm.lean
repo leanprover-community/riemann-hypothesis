@@ -382,6 +382,14 @@ lemma stdKernelForm_apply (σ : b ⊕ r ≃ n) (y : Matrix b n (LocProd 𝔠.ram
       (localDatum W V v (stdRowDatum σ 𝔠.semilocalChar y) 𝔠.readsAt) (g, h) :=
   rfl
 
+/-- The integral over `[U(V)]` of the kernel `stdKernelForm` on a real vector `v` is the theta
+integral of `(W, V)` on `v` and the standard datum of `y`. -/
+lemma integral_stdKernelForm (σ : b ⊕ r ≃ n) (y : Matrix b n (LocProd 𝔠.ramifiedPlaces)) (g : G E s)
+    (v : PairFock E s t) :
+    ∫ h : G E t, stdKernelForm 𝔠 W V σ y g h v ∂V.quotMeasure =
+      thetaLarge W V 𝔠 v (stdRowDatum σ 𝔠.semilocalChar y) g :=
+  rfl
+
 /-- The datum factors. For integral `y`, the function of Tate's integral of `planeDatum 𝔠 A σ' v y`
 at `α α₀`, where `α₀ = scaleIdele E`, is `l β * γ` times the finite factor `lineFinFactor` shifted
 by the uniformiser `ϖ` times the kernel of `(W, V)` on the real line term at `α∞` of `k v`. Here `l`
@@ -490,7 +498,7 @@ theorem integral_coneKernel (hv : IsSchwartzVector v) {x : ℝ} (hx : 0 < x) :
       thetaLarge W V 𝔠 (∫ p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ,
         coneIntegrand A X μ β x v p ∂haar.prod haar)
         (stdRowDatum σ 𝔠.semilocalChar y) g := by
-  rw [integral_prod _ (integrable_coneKernel A X y g β hv hx)]
+  rw [integral_prod _ (integrable_coneKernel A X y g β hv hx), ← integral_stdKernelForm]
   exact integral_congr_ae (.of_forall fun h ↦ (stdKernelForm 𝔠 W V σ y g h).integral_comp_comm
     (integrable_coneIntegrand A X μ β hx hv).1)
 

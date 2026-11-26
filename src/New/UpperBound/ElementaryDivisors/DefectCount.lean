@@ -917,6 +917,15 @@ lemma FrobeniusCycle.pieriStepMap_mem_defectCone_iff (T : FrobeniusCycle N W K) 
   cases h_even : T.isEven i <;> simp [h_even]
   constructor <;> intro <;> linarith
 
+/-- For a Frobenius cycle `T` with `q = T.P ^ N`, the cone `T.defectCone a 0` of Pieri's
+inequalities fills the part `∏ (q - 1) / (q ^ (l + 1) - 1)`, over `l < k`, of the volume of every
+slab of vectors `β ≥ 0` with degrees in `[D s - 1, D s]`. -/
+lemma FrobeniusCycle.prod_mul_volume_defectCone_inter_degreeSlab (T : FrobeniusCycle N W K)
+    {a : Fin k} (D : ZMod N → ℝ) :
+    (∏ l : Fin k, (((T.P : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.P ^ N - 1)) *
+      volume.real (T.defectCone a 0 ∩ degreeSlab k D) = volume.real (degreeSlab k D) :=
+  prod_mul_volume_real_inter_degreeSlab T.one_lt_P D (Set.ext T.pieriStepMap_mem_defectCone_iff)
+
 /-- Few forms have bounded defect. Let `T` be a Frobenius cycle from the local ring `W` to the field
 `K` of characteristic `T.p`: ring maps `ι s : W → K`, one for each letter `s ∈ ℤ/N`, with
 `ι (s + 1) ≡ ι s ^ P` modulo the prime `T.p`. Here `P = T.P` is a power of `T.p`, the residue field
@@ -969,9 +978,7 @@ lemma FrobeniusCycle.index_mul_finrank_defectConditions_le (T : FrobeniusCycle N
           (parahoric W Fin.val).relIndex (levi W (twoBlock (k' + 1) a')) *
           volume.real (T.defectCone a 0 ∩ degreeSlab (k' + 1) D) := by grw [h_flags, mul_assoc]
     _ ≤ volume.real (degreeSlab (k' + 1) D) := by
-        grw [T.index_mul_relIndex_le,
-          prod_mul_volume_real_inter_degreeSlab T.one_lt_P D
-            (Set.ext T.pieriStepMap_mem_defectCone_iff)]
+        grw [T.index_mul_relIndex_le, T.prod_mul_volume_defectCone_inter_degreeSlab]
     _ ≤ rexp x * (n ^ k' / k' !) ^ N := by
         refine (ENNReal.toReal_le_of_le_ofReal (b := ((rexp (E / n) * n) ^ k' / k' !) ^ N)
           (by positivity) ?_).trans_eq ?_

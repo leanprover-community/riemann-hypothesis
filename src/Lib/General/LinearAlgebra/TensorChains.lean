@@ -54,6 +54,9 @@ section
 variable {M : ℕ → Type*} [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module R (M j)]
   (L : ∀ j : ℕ, M j →ₗ[R] M (j + 1))
 
+lemma New.compUpTo_zero_apply (x : M 0) : compUpTo L 0 x = x :=
+  rfl
+
 lemma New.compUpTo_succ_apply (j : ℕ) (x : M 0) : compUpTo L (j + 1) x = L j (compUpTo L j x) :=
   rfl
 
@@ -146,7 +149,7 @@ lemma lift_succ_tmul (x : M 0) (j : ℕ) (s : S j) (z : TensorChain S j) :
 @[simp] lemma lift_pure (x : M 0) (j : ℕ) :
     lift b x j (pure f j) = compUpTo (fun i : ℕ ↦ b i (f i)) j x := by
   induction j with
-  | zero => rw [pure_zero, lift_zero_apply, one_smul]; rfl
+  | zero => rw [pure_zero, lift_zero_apply, one_smul, compUpTo_zero_apply]
   | succ j ih => rw [pure_succ, lift_succ_tmul, ih, compUpTo_succ_apply]
 
 /-- The lift is additive in the starting vector: at `x - y` it is the difference of the lifts at `x`

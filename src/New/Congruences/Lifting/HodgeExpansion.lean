@@ -430,6 +430,15 @@ lemma apply_smul_wittPairing_mem_hodgeFil {n : ℤ} {x : L.Ambient}
     exact hodgeFil_anti (by omega) (h_fil (β (A.letterProj j (.mk 1 t))) (-u) hβ)
   exact h_terms κ ν hν σ hσ hσ_type
 
+/-- The extension `wittPairing b` of a bilinear map `b` of lattices maps
+`A.ainfLattice × L.ainfLattice` into `C.ainfLattice`. -/
+lemma wittPairing_mem_ainfLattice {x : L.Ambient}
+    {b : A.Carrier →ₗ[O] L.Carrier →ₗ[O] C.Carrier} {y : A.Ambient}
+    (hy : y ∈ A.ainfLattice) (hx : x ∈ L.ainfLattice) :
+    wittPairing b y x ∈ C.ainfLattice :=
+  LinearMap.BilinMap.apply_apply_mem_of_mem_span C.ainfLattice _ _
+    ((wittPairing b).restrictScalars₁₂ Ainf Ainf) (by simp [mk_one_mem_ainfLattice]) y x hy hx
+
 /-- The extension of an equivariant bilinear map `b` of lattices maps `A.kisinAinf × L.kisinAinf`
 into `C.kisinAinf`. -/
 lemma wittPairing_mem_kisinAinf {x : L.Ambient}
@@ -440,9 +449,7 @@ lemma wittPairing_mem_kisinAinf {x : L.Ambient}
   obtain ⟨hy_sat, hy_int⟩ := hy
   obtain ⟨hx_sat, hx_int⟩ := hx
   have h_sat : wittPairing b y x ∈ saturateBy (Submonoid.powers tau) C.ainfLattice :=
-    wittPairing_mem_saturateBy hy_sat hx_sat fun hy hx ↦
-      LinearMap.BilinMap.apply_apply_mem_of_mem_span C.ainfLattice _ _
-        ((wittPairing b).restrictScalars₁₂ Ainf Ainf) (by simp [mk_one_mem_ainfLattice]) _ _ hy hx
+    wittPairing_mem_saturateBy hy_sat hx_sat wittPairing_mem_ainfLattice
   refine ⟨h_sat, fun n μ hμ ↦ ?_⟩
   show μ (φ ^ (n + 1) • wittPairing b y x) ∈ hodgeFil 0
   -- Products of values of forms are integral; letter and type play no role, any choice will do.

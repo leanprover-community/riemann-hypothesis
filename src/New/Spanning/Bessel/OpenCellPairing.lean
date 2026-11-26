@@ -68,6 +68,10 @@ noncomputable def piKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut) (
   WithLp.toLp 2 fun i ↦ ∏ v : ι, (X v).besselFn σ (γ v * z v) (i.1 v) * conj
     ((X v).besselFn σ (z v) (i.2 v))
 
+lemma continuous_piKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOrCut) (γ : ι → 𝔰.G₁) :
+    Continuous (piKernel X σ γ) := by
+  fun_prop [piKernel]
+
 /-- The parameter `b` of a Bessel system is at least `1`, being at least eight times the rank. -/
 lemma one_le_b (X : BesselSystem 𝔰 b f) : 1 ≤ b := by
   have h_rank : (𝔰.r : ℝ) = 𝔰.ϱ + (card 𝔰.κ + 1 + 𝔰.ϱ) := by simp
@@ -91,7 +95,7 @@ lemma integrableOn_smul_piKernel (X : ι → BesselSystem 𝔰 b f) (σ : FullOr
     {A : Set (ι → 𝔰.G₁)} (hA : IsCompact A) :
     IntegrableOn (fun z : ι → 𝔰.G₁ ↦ φ (t * z) • piKernel X σ γ (t * z)) A := by
   have h_cont : Continuous fun z : ι → 𝔰.G₁ ↦ piKernel X σ γ (t * z) :=
-    (by fun_prop [piKernel] : Continuous (piKernel X σ γ)).comp (continuous_const_mul t)
+    (continuous_piKernel X σ γ).comp (continuous_const_mul t)
   exact (h_cont.continuousOn.integrableOn_compact hA).bdd_smul 1
     (hφ_meas.comp (measurable_const_mul t)).aestronglyMeasurable (.of_forall fun z ↦ hφ_le (t * z))
 

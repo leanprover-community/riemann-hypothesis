@@ -234,6 +234,11 @@ lemma weylDimensionPoly_mul_scaledVolumeRatio_le (v : D.Φ)
     show D.shape.r = D.r from D.card_rowIndex, ← pow_add]
   exact le_of_eq (by ring)
 
+/-- The entries of `D.paramW v`, twice the Harish-Chandra parameter at the place `v` of the discrete
+series on G₁, have absolute value at most `3 a`, where `a = D.a` is a size parameter of D. -/
+lemma abs_paramW_le (v : D.Φ) (i : D.RowIndex) : |D.paramW v i| ≤ ↑(3 * D.a) :=
+  (D.abs_gridParam_le (z := false) v bot_le bot_le i).trans (mod_cast D.nat_le_of_hasLogBound)
+
 /-- Let `u ()`, indexed by the basis `D.shape.κ` of X₀, list twice the Harish-Chandra parameter of
 the weight on the compact group U(X₀) that has `D.columnCount v h` columns of height `h` for each
 `h` below the rank. Then the highest weight `lowestKType` attached to `u ()` is `D.columnCount v 1`
@@ -359,8 +364,7 @@ lemma exists_besselSystem (v : D.Φ) :
   let ε : D.shape.BesselIndex → ℤˣ := (D.signsY 0 ·)
   let frame : SignFrame D.shape.J₁ ε := D.unitarySignFrameY.toSignFrame
   let l : HCParam ε := toHCParam ε (D.paramW v)
-  have h_abs (i : D.RowIndex) : |D.paramW v i| ≤ ↑(3 * D.a) :=
-    (D.abs_gridParam_le (z := false) v bot_le bot_le i).trans (mod_cast D.nat_le_of_hasLogBound)
+  have h_abs : ∀ i : D.RowIndex, |D.paramW v i| ≤ ↑(3 * D.a) := D.abs_paramW_le v
   have h_gap : l.HasLargeGap (D.r ^ 7) := (D.hasGap_signsY_paramW v).mono D.nat_le_of_hasLogBound
   have h_deg_pos : 0 < l.formalDegree := formalDegree_pos h_gap
   have h_deg : l.formalDegree = weylDimensionPoly (D.paramW v) :=

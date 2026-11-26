@@ -522,6 +522,12 @@ lemma mem_echelonRows {u : Fin N → ResField w} :
     · simp [h_one]
     · simp [hi]
 
+/-- There are `q ^ (N - 1 - r)` rows `(0, …, 0, 1, *, …, *)` with the entry `1` at `r`, where `q` is
+the order of the residue field. -/
+lemma card_echelonRows : #(echelonRows (w := w) r) = w.q ^ r.rev.val := by
+  simp [echelonRows, apply_ite card, prod_ite, card_ResField, filter_lt_eq_Ioi,
+    tsub_add_eq_tsub_tsub_swap, Fintype.card_eq_nat_card]
+
 open scoped Classical in
 /-- Let `g` lie in `partialCosets r (j + 1)`: it is in the basic double coset of colength `j + 1`
 and its lattice `g 𝒪^N` contains the first `r` standard basis vectors. Consider the rows `u` in
@@ -706,8 +712,7 @@ lemma partialHecke_hyperplane_count_of_invariant (hϖ : v ϖ.val = exp (-1)) {x 
     rw [h_coeff, mul_smul, sub_smul]
   -- `ψ` does not see `(n u)⁻¹`, and there are `q ^ (N - 1 - r)` rows `u`.
   rw [← h_sum]
-  simp [hψ_inv, echelonRows, apply_ite card, prod_ite, card_ResField, filter_lt_eq_Ioi,
-    tsub_add_eq_tsub_tsub_swap, Fintype.card_eq_nat_card, ← Nat.cast_smul_eq_nsmul ℂ]
+  simp [hψ_inv, card_echelonRows, ← Nat.cast_smul_eq_nsmul ℂ]
 
 /-! ### The hyperplane count, Satake's formula and the duality of lattices -/
 

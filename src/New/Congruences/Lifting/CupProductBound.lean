@@ -799,6 +799,13 @@ lemma smul_sub_mem_withOrders_of_stdOrders_one {S : PairingSide O} {i : Letter}
   · -- At `a ≥ 1` the exponent is not raised.
     simp [stdOrders] at h_lt
 
+/-- At level one the standard exponents allow one division by `E`: `stdOrders 1 a u` is at most
+`(if a < 1 then 1 else -u)` lowered by `1` at `a = 0`. That is, the exponents raised by one at
+`a = 0` and then lowered by one there are at least the standard exponents. -/
+lemma stdOrders_one_le_add (a : ℕ) (u : ℤ) :
+    stdOrders 1 a u ≤ (if a < 1 then 1 else -u) + if 0 = a then -1 else 0 := by
+  cases a <;> simp [stdOrders]
+
 /-- An operator `α (g - 1) / d` preserves the ideals. Let `g` lie in `Γ'`, the subgroup of the
 Kummer chart `k`, and let multiplication by `d` in `Ainf` be injective on `W(C^♭) ⊗ S.paramLattice`,
 the ambient module of `S.trivialLattice`. Let `d` divide `g t - t` for all `t` in the ring `k.S`.
@@ -888,7 +895,7 @@ lemma mem_liftIdeal_of_eq_mul_smul_sub {S : PairingSide O} {r : ℕ} {i : Letter
         S.extensionLattice.withOrders i (stdOrders 1) :=
       frobEUnit_zpow_smul_mem_withOrders 0 (-1)
         (zTauUnit_inv_smul_sub_mem_withOrders hx_loc h_gain)
-        fun a u _ ↦ by cases a <;> simp [stdOrders]
+        fun a u _ ↦ stdOrders_one_le_add a u
     exact ⟨_, h_quot, by simp [← h_unit, mul_smul]⟩
   have h_sum : s + β * f ∈ S.liftIdeal r 1 i :=
     mem_liftIdeal_of_mul_eq_mul_smul_sub α g h_regular (zTau_mul_E_dvd_smul_sub g) h_div hf h_eq

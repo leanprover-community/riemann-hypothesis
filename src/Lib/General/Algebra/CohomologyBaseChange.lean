@@ -124,6 +124,11 @@ noncomputable def HasBaseChange.yonedaEquiv₀ (Φ : C ⥤ ModuleCat S) (A : C) 
     -- `smul_eq_push`, which holds by definition.
     (push_homReprEquiv_symm (CoeffAction.act s : End (moduleCoeff Φ)).asHom A (.up x)).symm
 
+/-- `yonedaEquiv₀` sends x to the class of the map ℤ[h_A] → Φ that corresponds to x. -/
+lemma HasBaseChange.yonedaEquiv₀_apply (Φ : C ⥤ ModuleCat S) (A : C) (x : Φ.obj A) :
+    yonedaEquiv₀ Φ A x = mk₀ ((homReprEquiv A (moduleCoeff Φ)).symm (ULift.up x)) :=
+  rfl
+
 /-- For every object A, the map M ⊗_S H^n(ℤ[h_A], Φ) → H^n(ℤ[h_A], M ⊗_S Φ) is bijective in
 every degree n (`AllBijective`), h_A the functor represented by A; no flatness of M is assumed. -/
 lemma HasBaseChange.baseChangeMap_bijective_freeAb_reprBy (A : C) :
@@ -138,7 +143,7 @@ lemma HasBaseChange.baseChangeMap_bijective_freeAb_reprBy (A : C) :
       induction x with
       | add => simp [*, mk₀_add]
       | tmul m x =>
-        rw [LinearEquiv.lTensor_tmul, baseChangeMap_tmul]
+        rw [LinearEquiv.lTensor_tmul, baseChangeMap_tmul, yonedaEquiv₀_apply]
         exact push_homReprEquiv_symm (tensorWith.mk T m Φ) A (ULift.up x)
     exact (bijective_iff_of_comm_sq h_square (e.lTensor M).bijective (mk₀_bijective _ _)).1
       e'.bijective

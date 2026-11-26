@@ -329,6 +329,14 @@ lemma sq_lt_norm_sq_last_frameProducts {σ : S.G E} (hσ : σ ∈ floorGroup �
   have h_pos : 0 < Φ v (θ * star θ - S.N ^ 2) := ((map_ne_zero (Φ v)).2 hθ).lt_of_le' h_nonneg
   simpa [θ, mul_conj', sq] using (Complex.lt_def.1 h_pos).1
 
+/-- For `σ` fixing the `ϱ` hyperbolic pairs, the map `(p, u, u') ↦ u (w_p σ) u'⁻¹` is injective,
+where `u`, `u'` are rational points of 𝖴 = `besselU` and `p` is a `ϱ`-tuple with entries in 𝒯 =
+`S.entrySet`, completed by the last entry `t` (`padTuple`). -/
+lemma injective_bigCellTerm {σ : S.G E} (hσ : σ ∈ floorGroup 𝔰.ϱ) (t : Eˣ) :
+    Injective fun i : (Fin 𝔰.ϱ → S.entrySet) × (S.ratMiddle E).besselU × (S.ratMiddle E).besselU ↦
+      i.2.1.val * (weylElem 𝔰.ϱ (padTuple (fun a : Fin 𝔰.ϱ ↦ (i.1 a).val) t) * σ) * i.2.2.val⁻¹ :=
+  fun _ _ h ↦ by simpa [Prod.ext_iff, funext_iff, padTuple] using big_cell_unique hσ h
+
 /-- The Weyl element depends only on the entries of its tuple below `ϱ`, so these may be completed
 by any last entry `t`. -/
 lemma weylElem_padTuple (p : ℕ → Eˣ) (t : Eˣ) :
@@ -440,7 +448,7 @@ lemma exists_amplitudeSum_eq_sum_cosetAmplitude [WeilData E] [S.IsAdmissible] {c
   have h_sum : HasSum (a ∘ δ) (S.amplitudeSum .cut (S.termsOfLink Λ) c s c') := by
     have h_zero (γ : S.G E) (hγ : γ ∉ range δ) : a γ = 0 :=
       indicator_apply_eq_zero.2 fun h ↦ not_not.1 (mt (hδ_onto γ h) hγ)
-    rw [Injective.hasSum_iff (g := δ) (fun _ _ h ↦ by simpa [Prod.ext_iff, funext_iff, padTuple] using big_cell_unique hσ h) h_zero]
+    rw [Injective.hasSum_iff (g := δ) (injective_bigCellTerm hσ t) h_zero]
     exact hasSum_subtype_iff_indicator.1 (summable_amplitude _ c s c').hasSum
   obtain ⟨h_head₀, ht⟩ := head_and_last_mem_entrySet (t := t) hσ rfl hu₀ hu₀' hγ₀ h_amp₀
   have h_off : S.IsIntegralOff T (S.translateByClassReps c c' σ) :=

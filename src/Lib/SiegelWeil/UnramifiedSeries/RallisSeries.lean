@@ -75,6 +75,15 @@ lemma tendstoUniformly_rallisSeries (h_rank : 2 * card n < card m) (b : AutChar 
   exact tendstoUniformly_tsum ((summable_norm_vacuumCoeff h_rank b A).mul_right C)
     fun q g ↦ norm_mul_le_of_le le_rfl (hC _)
 
+/-- For `2 * card n < card m` and `y` bounded by `C`, the series `rallisSeries` is bounded by `C`
+times the sum of the moduli of the coefficients of the vacuum. -/
+lemma norm_rallisSeries_le (h_rank : 2 * card n < card m) (b : AutChar E)
+    (A : Set (FinPlace E)) {C : ℝ} (hC : ∀ g : G E s, ‖y g‖ ≤ C) (g : G E s) :
+    ‖rallisSeries (card m) b A y g‖ ≤
+      (∑' q : Gf E n ⧸ localLevel n A, ‖vacuumCoeff (card m) b (cosetRep q).val‖) * C :=
+  tsum_of_norm_bounded ((summable_norm_vacuumCoeff h_rank b A).hasSum.mul_right C)
+    fun _ ↦ norm_mul_le_of_le le_rfl (hC _)
+
 /-- For `2 * card n < card m` and `y` continuous and bounded, the series `rallisSeries` is
 continuous. -/
 lemma continuous_rallisSeries (h_rank : 2 * card n < card m) (b : AutChar E)
@@ -238,8 +247,7 @@ lemma isForm_rallisSeries {S : Space E n s} (h_rank : 2 * card n < card m)
   toIsAutomorphic := isAutomorphic_rallisSeries h_rank hb hy.toIsAutomorphic hy.bounded h_level
   bounded := by
     obtain ⟨C, hC⟩ := hy.bounded
-    exact ⟨_, fun g ↦ tsum_of_norm_bounded ((summable_norm_vacuumCoeff h_rank b A).hasSum.mul_right _)
-      fun _ ↦ norm_mul_le_of_le le_rfl (hC _)⟩
+    exact ⟨_, norm_rallisSeries_le h_rank b A hC⟩
   realConv_eq he := by
     rw [realConv_rallisSeries h_rank b A hy.isBoundedMeasurable he, hy.realConv_eq he]
 

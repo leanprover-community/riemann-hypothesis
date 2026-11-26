@@ -143,6 +143,12 @@ lemma exists_isGreatest_norm_deriv (n : ℕ) : ∃ i : ℕ, IsGreatest
     Set.forall_mem_image.2 fun g hg ↦ ?_⟩
   simpa [norm_mul] using mul_le_mul_of_nonneg_left (h_max g hg) (norm_nonneg _)
 
+/-- The greatest norm `C.maxDerivNorm n` of `g⁽ⁿ⁾(0) = n! · coeff n g` is attained by some `g` in
+`𝒪[[y]] = C.integralSeriesRing`. -/
+lemma exists_norm_deriv_eq_maxDerivNorm (n : ℕ) :
+    ∃ g ∈ C.integralSeriesRing, ‖n ! * coeff n g‖ = C.maxDerivNorm (p := p) n :=
+  (C.exists_isGreatest_norm_deriv n).elim fun _i hi ↦ hi.csSup_mem
+
 variable {C} in
 /-- For `g` in `𝒪[[y]] = C.integralSeriesRing`, the norm of `g⁽ⁿ⁾(0) = n! · coeff n g` is at most
 `C.maxDerivNorm n`. -/
@@ -281,7 +287,7 @@ lemma katz_divisibility_limit (n : ℕ) : ∃ f ∈ C.integralSeriesRing (p := p
   have h_le : b ^ n ≤ C.maxDerivNorm n :=
     pow_le_of_submultiplicative hb_pos C.maxDerivNorm_nonneg C.maxDerivNorm_add_le h_large n
   obtain ⟨f, hf, h_eq⟩ : ∃ f ∈ C.integralSeriesRing (p := p),
-      ‖n ! * coeff n f‖ = C.maxDerivNorm n := (C.exists_isGreatest_norm_deriv n).elim fun _i hi ↦ hi.csSup_mem
+      ‖n ! * coeff n f‖ = C.maxDerivNorm n := C.exists_norm_deriv_eq_maxDerivNorm n
   exact ⟨f, hf, h_le.trans h_eq.ge⟩
 
 end CMLattice
