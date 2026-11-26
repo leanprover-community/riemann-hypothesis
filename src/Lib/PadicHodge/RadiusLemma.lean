@@ -57,12 +57,6 @@ private lemma sub_padicValNat_factorial_add_two_eq (n : ℕ) :
     n - padicValNat p n ! + 2 = n + 1 - padicValNat p (n + 1)! + padicValNat p (n + 1) + 1 := by
   grind [Nat.padicValNat_def, multiplicity_factorial_le, factorial, Nat.multiplicity_mul]
 
-/-- If `tau` divides `E ^ h * a` in `BPlus`, for `a` in `Ainf`, then `tau` divides `a` in
-`Ainf`. -/
-lemma tau_dvd_of_dvd_E_pow_mul {h : ℕ} {a : Ainf}
-    (h_dvd : ainfToBPlus tau ∣ ainfToBPlus (c.E ^ h * a)) : tau ∣ a :=
-  c.dvd_of_dvd_E_pow_mul not_p_dvd_tau exists_tau_dvd_xi_sub_p_mul theta_tau_ne_zero h_dvd
-
 /-- Let `c` be a chart with z = `c.z` and E = `c.E` (the image in A_inf of the series
 X^e·(unit) + p, ξ times a unit), and let τ = [ε^{1/p}] − 1. If τ^m·z^n divides E^h·a in `BPlus`,
 for a in `Ainf`, then τ^m·z^n divides a in `Ainf`. -/
@@ -73,7 +67,7 @@ lemma tau_pow_mul_z_pow_dvd_of_dvd_E_pow_mul {m n h : ℕ} {a : Ainf}
   -- the factors `c.z` one at a time.
   obtain ⟨b, rfl⟩ : tau ^ m ∣ a := by
     refine pow_dvd_of_map (T := fun x ↦ ainfToBPlus (c.E ^ h * x)) (ϖ := ainfToBPlus tau)
-      ?_ ?_ (fun _ ↦ tau_dvd_of_dvd_E_pow_mul) ?_
+      ?_ ?_ (fun _ ↦ c.dvd_of_dvd_E_pow_mul not_p_dvd_tau exists_tau_dvd_xi_sub_p_mul theta_tau_ne_zero) ?_
     · simp [mul_left_comm]
     · simp
     · rw [← map_pow]
