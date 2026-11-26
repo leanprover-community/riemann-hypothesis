@@ -1,3 +1,4 @@
+import Lib.General.Analysis.FiniteGroupInnerProduct
 import Lib.Adelic.Unitary.Defs
 import Lib.General.Analysis.FiniteFourier
 import Lib.General.LinearAlgebra.IntegralLattices
@@ -33,17 +34,6 @@ namespace New
 
 variable {G H k n m : Type*} [Group G] [Fintype G] [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   [Field k] [Fintype n] [DecidableEq n] [Fintype m] {u : G → H}
-
-/-- If the inner product of two families of vectors indexed by a finite group `G` has the form
-`⟪u a, v b⟫ = f (a⁻¹ * b)`, then `⟪∑ a, u a, ∑ a, v a⟫ = |G| · ∑ s, f s`. -/
-lemma inner_sum_sum_eq_card_mul {v : G → H} (f : G → ℂ)
-    (h : ∀ a b : G, ⟪u a, v b⟫_ℂ = f (a⁻¹ * b)) :
-    ⟪∑ a : G, u a, ∑ a : G, v a⟫_ℂ = Fintype.card G * ∑ s : G, f s := by
-  -- For each `a` the map `b ↦ a⁻¹ * b` is a bijection of `G`.
-  have h_row (a : G) : ⟪u a, ∑ b : G, v b⟫_ℂ = ∑ s : G, f s := by
-    simpa [inner_sum, h] using (Group.mulLeft_bijective a⁻¹).sum_comp f
-  rw [sum_inner]
-  simp [h_row]
 
 /-- Let `Θ` be of positive type, `Θ (a⁻¹ * b) = ⟪u a, u b⟫`, let `ρ` be a matrix representation of
 `G`, and let `c` be an orthonormal family indexed by the vectors of `kⁿ`. Then the squared norm of

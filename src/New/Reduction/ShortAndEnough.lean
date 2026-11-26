@@ -1,5 +1,6 @@
 import New.Reduction.IntegralTargetForms
 import New.Spanning.SecondMoment.SpanningTheorem
+import New.Spanning.SecondMoment.Spread
 import New.UpperBound.Divisibility.LocalDivisibility
 import New.UpperBound.Seesaw.SeesawIdentity
 import New.UpperBound.Size.ArchimedeanSize

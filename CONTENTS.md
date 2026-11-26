@@ -156,8 +156,10 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 **The second moment and the spanning theorem**
 
-- `New/Spanning/SecondMoment/PositiveType` (139): Functions of positive type and singular minors
-- `New/Spanning/SecondMoment/FewTranslates` (404): Few translates fill
+- `New/Spanning/SecondMoment/PositiveType` (133): Functions of positive type and singular minors
+- `New/Spanning/SecondMoment/Spread` (146): Few translates span almost everything
+- `New/Spanning/SecondMoment/HilbertSchmidt` (262): Hilbert–Schmidt norms and the second-moment criterion for spread
+- `New/Spanning/SecondMoment/FewTranslates` (2): Compatibility entry point for the second-moment and greedy-spanning arguments
 - `New/Spanning/SecondMoment/SpanningTheorem` (202): The dimension of the target and one good translate of the Poincaré map
 
 **Equality of multiplicities**
@@ -860,6 +862,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **Analysis**: Real and complex analysis
 
 - `Lib/General/Analysis/FiniteFourier` (148): Orthogonality, Fourier inversion and matrix Gauss sums over a finite ring
+- `Lib/General/Analysis/FiniteGroupInnerProduct` (14): Translation-invariant inner products on a finite group
 - `Lib/General/Analysis/GaussianIntegral` (146): Matrix norm estimates, the Ostrowski–Taussky inequality, and the complex Gaussian integral
 - `Lib/General/Analysis/FourierTransforms` (207): Fourier inversion for periodic functions and decay of Fourier transforms
 - `Lib/General/Analysis/HolomorphicIntegrals` (456): Strong operator integrals, analyticity of parameter integrals, and Hua's integral bound

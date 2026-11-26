@@ -1,4 +1,4 @@
-import New.Spanning.SecondMoment.FewTranslates
+import New.Spanning.SecondMoment.HilbertSchmidt
 import New.Spanning.Unfolding.MomentBounds
 
 /-!
