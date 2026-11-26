@@ -383,17 +383,12 @@ theorem CrystallineSemistableComparison.P.five : ∀ {R : Type} [CommRing R] {K 
     refine ⟨s • w - g.mapH n z, ?_⟩
     rw [map_sub, map_smul, sq2, hz, map_smul, hz', smul_sub, sub_sub_cancel, smul_smul, ← pow_succ']
 
-theorem CrystallineSemistableComparison.P.res_2of3 : ∀ {R : Type} [CommRing R] {K : Cx.{w} R} {L : Cx.{w'} R} {M : Cx.{w''} R} (f : Cx.Hom K L (RingHom.id R)) (g : Cx.Hom L M (RingHom.id R)) (hf : ∀ n, Function.Injective (f.f n)) (hfg : ∀ n, Function.Exact (f.f n) (g.f n)) (hg : ∀ n, Function.Surjective (g.f n)) {A : Type t} {B : Type t'} {D : Type u} [AddCommGroup A] [AddCommGroup B] [AddCommGroup D] [Module R A] [Module R B] [Module R D] (i : A →ₗ[R] B) (p : B →ₗ[R] D) (hi : Function.Injective i) (hip : Function.Exact i p) (hp : Function.Surjective p) (a : A →ₗ[R] K.X 0) (b : B →ₗ[R] L.X 0) (c : D →ₗ[R] M.X 0) (hab : ∀ x, b (i x) = f.f 0 (a x)) (hbc : ∀ x, c (p x) = g.f 0 (b x)) (hb : ∀ x, L.d 0 (b x) = 0) (s : R), (K.ResUpTo s a → M.ResUpTo s c → L.ResUpTo (s ^ 3) b) ∧ (L.ResUpTo s b → M.ResUpTo s c → K.ResUpTo (s ^ 3) a) ∧ (K.ResUpTo s a → L.ResUpTo s b → M.ResUpTo (s ^ 3) c) := by
+theorem CrystallineSemistableComparison.P.res_2of3 : ∀ {R : Type} [CommRing R] {K : Cx.{w} R} {L : Cx.{w'} R} {M : Cx.{w''} R} (f : Cx.Hom K L (RingHom.id R)) (g : Cx.Hom L M (RingHom.id R)) (hf : ∀ n, Function.Injective (f.f n)) (hfg : ∀ n, Function.Exact (f.f n) (g.f n)) (hg : ∀ n, Function.Surjective (g.f n)) {A : Type t} {B : Type t'} {D : Type u} [AddCommGroup A] [AddCommGroup B] [AddCommGroup D] [Module R A] [Module R B] [Module R D] (i : A →ₗ[R] B) (p : B →ₗ[R] D) (hi : Function.Injective i) (hip : Function.Exact i p) (hp : Function.Surjective p) (a : A →ₗ[R] K.X 0) (b : B →ₗ[R] L.X 0) (c : D →ₗ[R] M.X 0) (hab : ∀ x, b (i x) = f.f 0 (a x)) (hbc : ∀ x, c (p x) = g.f 0 (b x)) (hb : ∀ x, L.d 0 (b x) = 0) (s : R), (K.ResUpTo s a → M.ResUpTo s c → L.ResUpTo (s ^ 3) b) ∧ (L.ResUpTo s b → M.ResUpTo s c → K.ResUpTo (s ^ 3) a) := by
   intro R _ K L M f g hf hfg hg A B D _ _ _ _ _ _ i p hi hip hp a b c hab hbc hb s
-  obtain ⟨δ, hδ, i0, e1, e2, e3⟩ := CrystallineSemistableComparison.P.les f g hf hfg hg
+  obtain ⟨δ, hδ, i0, e1, -, e3⟩ := CrystallineSemistableComparison.P.les f g hf hfg hg
   have ha0 : ∀ x, K.d 0 (a x) = 0 := fun x => hf 1 (by rw [map_zero, ← f.comm, ← hab, hb])
-  have hc0 : ∀ x, M.d 0 (c x) = 0 := by
-    intro x
-    obtain ⟨x', rfl⟩ := hp x
-    rw [hbc, g.comm, hb, map_zero]
   refine ⟨fun ⟨_, ka1, ka2, ka3⟩ ⟨_, mc1, mc2, mc3⟩ => ⟨hb, fun x hx => ?_, fun y hy => ?_, fun n => (kill_iff _ _).2 fun z => ?_⟩,
-    fun ⟨_, lb1, lb2, lb3⟩ ⟨_, mc1, mc2, mc3⟩ => ⟨ha0, fun x hx => ?_, fun k hk => ?_, fun n => (kill_iff _ _).2 fun z => ?_⟩,
-    fun ⟨_, ka1, ka2, ka3⟩ ⟨_, lb1, lb2, lb3⟩ => ⟨hc0, fun e he => ?_, fun m hm => ?_, fun n => (kill_iff _ _).2 fun w => ?_⟩⟩
+    fun ⟨_, lb1, lb2, lb3⟩ ⟨_, mc1, mc2, mc3⟩ => ⟨ha0, fun x hx => ?_, fun k hk => ?_, fun n => (kill_iff _ _).2 fun z => ?_⟩⟩
   · have h1 : c (p x) = 0 := by rw [hbc, hx, map_zero]
     have h2 := mc1 _ h1
     rw [← map_smul p] at h2
@@ -450,29 +445,6 @@ theorem CrystallineSemistableComparison.P.res_2of3 : ∀ {R : Type} [CommRing R]
       | succ j =>
         rw [(kill_iff _ _).1 (mc3 j) w, map_zero]
     rw [pow3, ← hw, ← map_smul (δ n), h2, smul_zero]
-  · obtain ⟨x, rfl⟩ := hp e
-    rw [hbc] at he
-    obtain ⟨k, hk⟩ := (hfg 0 _).1 he
-    have hkc : K.d 0 k = 0 := hf 1 (by rw [map_zero, ← f.comm, hk, hb])
-    obtain ⟨y, hy⟩ := ka2 k hkc
-    have h1 : b (s • x - i y) = 0 := by rw [map_sub, map_smul, hab, hy, map_smul, hk, sub_self]
-    have h2 := lb1 _ h1
-    rw [smul_sub, sub_eq_zero] at h2
-    rw [pow3, ← map_smul p, ← map_smul p, h2, map_smul, (hip _).2 ⟨y, rfl⟩, smul_zero, smul_zero]
-  · have h1 := (kill_iff _ _).1 (ka3 0) (δ 0 (M.cls m hm))
-    rw [← map_smul (δ 0)] at h1
-    obtain ⟨z, hz⟩ := (e2 0 _).1 h1
-    obtain ⟨y, hy, rfl⟩ := clsSurj z
-    rw [mapH_cls' g _ hy (cyc g _ hy), ← cls_smul (h := by rw [map_smul, hm, smul_zero]), cls_eq, mem_boundaries_zero_iff,
-      sub_eq_zero] at hz
-    obtain ⟨x, hx⟩ := lb2 y hy
-    refine ⟨s • p x, ?_⟩
-    rw [map_smul, hbc, hx, map_smul, hz, pow3]
-  · have h1 := (kill_iff _ _).1 (ka3 (n + 1)) (δ (n + 1) w)
-    rw [← map_smul (δ (n + 1))] at h1
-    obtain ⟨z, hz⟩ := (e2 (n + 1) _).1 h1
-    have h2 := (kill_iff _ _).1 (lb3 n) z
-    rw [pow3, ← hz, ← map_smul (g.mapH (n + 1)), h2, map_zero, smul_zero]
 
 theorem CrystallineSemistableComparison.P.res_transfer : ∀ {R : Type} [CommRing R] {K : Cx.{w} R} {L : Cx.{w'} R} (φ : Cx.Hom K L (RingHom.id R)) {M : Type w''} [AddCommGroup M] [Module R M] (ε : M →ₗ[R] K.X 0) (s s' : R), (∀ n, UpTo s' (φ.mapH n)) → (K.ResUpTo s ε → L.ResUpTo (s * s') (φ.f 0 ∘ₗ ε)) ∧ ((∀ x, K.d 0 (ε x) = 0) → L.ResUpTo s (φ.f 0 ∘ₗ ε) → K.ResUpTo (s * s') ε) := by
   intro R _ K L φ M _ _ ε s s' hφ

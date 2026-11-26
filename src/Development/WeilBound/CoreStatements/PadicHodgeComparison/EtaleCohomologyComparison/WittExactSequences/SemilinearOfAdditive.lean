@@ -91,7 +91,7 @@ theorem des_ses_nat {R : Type} [CommRing R] {C : Type u} [Category.{v} C] {T : T
     let a := Functor.whiskerLeft (CategoryOfElements.π (CH.pts j A)) (Functor.whiskerLeft j α)
     let b := Functor.whiskerLeft (CategoryOfElements.π (CH.pts j A)) (Functor.whiskerLeft j β)
     obtain ⟨h1, h2, h3⟩ := CrystallineSemistableComparison.P.ses_cochains a b (fun X => hi _) (fun X => he _) (fun X => hs _)
-    obtain ⟨k1, k2, -⟩ := CrystallineSemistableComparison.P.res_2of3 _ _ h1 h2 h3 (α.app A).hom (β.app A).hom (hi A) (he A) (hs A)
+    obtain ⟨k1, k2⟩ := CrystallineSemistableComparison.P.res_2of3 _ _ h1 h2 h3 (α.app A).hom (β.app A).hom (hi A) (he A) (hs A)
       (CH.ptsAug j G₁ A) (CH.ptsAug j G₂ A) (CH.ptsAug j G₃ A)
       (fun x => funext fun t => (congrArg (fun φ => ModuleCat.Hom.hom φ x) (α.naturality (t.obj (Fin.last 0)).2)).symm)
       (fun x => funext fun t => (congrArg (fun φ => ModuleCat.Hom.hom φ x) (β.naturality (t.obj (Fin.last 0)).2)).symm)
