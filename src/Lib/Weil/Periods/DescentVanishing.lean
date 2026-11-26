@@ -137,7 +137,12 @@ lemma DescentsVanish.of_schrodingerOp {V : Space E m 1} {A : Set (FinPlace E)}
   rw [hL, Pi.zero_apply]
   refine map_eq_zero_of_map_integrated_eq_zero (W.hom V) hf fun P x hx ↦ ?_
   -- `ρ(x) vacElem` is a multiple of the image of `vacElem` under an operator `schrodingerOp A Ψ`.
-  have hx_idem : idem A.conjClosure • x = x := by aesop (add simp idem_apply)
+  have hx_idem : idem A.conjClosure • x = x := by
+    ext i w
+    by_cases hw : w ∈ A.conjClosure
+    · simp [hw]
+    · have h_zero : x i w = 0 := hx i w (Or.inl hw)
+      simp [hw, h_zero]
   have h_multiple : (W.hom V).finHeisenbergOp x (vacElem (W.hom V)) = stdLattice.semichar x •
       schrodingerOp (W.hom V) A (schrodingerAct A x (boxIndicator (m × n) A))
         (vacElem (W.hom V)) := by
