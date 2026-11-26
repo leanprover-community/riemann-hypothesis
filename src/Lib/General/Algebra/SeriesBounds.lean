@@ -5,7 +5,7 @@ public import Mathlib.RingTheory.PowerSeries.Log
 import Mathlib.NumberTheory.Padics.MahlerBasis
 import Mathlib.RingTheory.Valuation.Extension
 import Mathlib.RingTheory.Valuation.LocalSubring
-import TauCeti.RingTheory.PowerSeries.Log
+import TauCeti.RingTheory.PowerSeries.Binomial
 public import Lib.CM.FormalGroup.IntegralParameter
 import Lib.General.Algebra.AbsIntegrallyClosed
 
@@ -300,24 +300,18 @@ lemma exists_pow_eq_one_add_X {m : ℕ} (hm : p.Coprime m) :
   obtain ⟨r, hr⟩ : ∃ r : ℤ_[p], m * r = 1 :=
     (PadicInt.isUnit_iff.2 (PadicInt.norm_natCast_eq_one_iff.2 hm)).exists_right_inv
   let φ : ℤ_[p] →+* ℂ_[p] := (algebraMap ℚ_[p] ℂ_[p]).comp PadicInt.Coe.ringHom
-  have h_pow (k : ℕ) : binomialSeries ℤ_[p] r ^ k = binomialSeries ℤ_[p] (k * r) := by
-    induction k with
-    | zero => simp
-    | succ k ih => rw [pow_succ, ih, Nat.cast_succ, add_one_mul, binomialSeries_add]
   have h_norm (x : ℤ_[p]) : ‖φ x‖ ≤ 1 :=
     (norm_algebraMap' ℂ_[p] (x : ℚ_[p])).trans_le x.norm_le_one
   refine ⟨(binomialSeries ℤ_[p] r).map φ, mem_range_seriesToCp.2 fun n ↦ h_norm _, ?_, ?_⟩
   · simp [← coeff_zero_eq_constantCoeff_apply]
-  · simpa [← map_pow, h_pow, hr] using congrArg (map φ) (binomialSeries_nat (A := ℤ_[p]) 1)
+  · rw [← map_pow, ← binomialPow_one_add_X, pow_binomialPow (by simp), nsmul_eq_mul, hr,
+      binomialPow_one (by simp), map_add, map_one, map_X]
 
 /-- Two series with constant term `1` and the same `m`-th power, `m ≠ 0`, are equal. -/
 lemma eq_of_pow_eq_pow_of_constantCoeff_eq_one {f g : ℂ_[p]⟦X⟧} {m : ℕ} (hm : m ≠ 0)
     (hf : constantCoeff f = 1) (hg : constantCoeff g = 1) (h_pow : f ^ m = g ^ m) : f = g := by
-  set S : ℂ_[p]⟦X⟧ := ∑ i ∈ Finset.range m, f ^ i * g ^ (m - 1 - i) with hS
-  have h_geom : S * (f - g) = 0 := by rw [hS, (Commute.all f g).geom_sum₂_mul, h_pow, sub_self]
-  have h_const : constantCoeff S = m := by simp [hS, hf, hg]
-  have h_sum_ne : S ≠ 0 := fun h ↦ hm (by simpa [h, eq_comm] using h_const)
-  simpa [h_sum_ne, sub_eq_zero] using h_geom
+  apply (binomialPow_left_inj hf hg (Units.mk0 (m : ℚ) (Nat.cast_ne_zero.mpr hm))).mp
+  simpa [hf, hg] using h_pow
 
 namespace IsSeriesGenerator
 
