@@ -268,7 +268,7 @@ theorem mem_closure_int (T : LocAt F E sig p) (c : T.Fp) (hc : c ∈ 𝒪[T.Fp])
   rw [this]
   exact (valuation T.Fp).map_add_lt ha' hx1'
 
-theorem locAt_topology : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E], Formalism.BasicNotions.CMData F E → ∀ (sig : E →ₐ[F] E), (∀ x, sig x = star x) → ∀ (p : HeightOneSpectrum (𝓞 F)) (A : LocAt F E sig p), IsTopologicalRing A.Ep ∧ T2Space A.Ep ∧ LocallyCompactSpace A.Ep ∧ SecondCountableTopology A.Ep ∧ IsOpen (A.O : Set A.Ep) ∧ IsCompact (A.O : Set A.Ep) ∧ DenseRange A.ιE ∧ Function.Injective A.ιE ∧ (∀ x : E, x ≠ 0 → IsUnit (A.ιE x)) ∧ closure (Set.range fun x : 𝓞 E => A.ιE (x : E)) = (A.O : Set A.Ep) := by
+theorem locAt_topology : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [StarRing E] [Algebra F E], Formalism.BasicNotions.CMData F E → ∀ (sig : E →ₐ[F] E), (∀ x, sig x = star x) → ∀ (p : HeightOneSpectrum (𝓞 F)) (A : LocAt F E sig p), IsTopologicalRing A.Ep ∧ IsOpen (A.O : Set A.Ep) ∧ (∀ x : E, x ≠ 0 → IsUnit (A.ιE x)) ∧ closure (Set.range fun x : 𝓞 E => A.ιE (x : E)) = (A.O : Set A.Ep) := by
   intro F E _ _ _ _ _ _ hc sig hsig p A
   have hO := _root_.GlobalTheory.LocSpan.mem_O_iff hc sig hsig p A
   haveI := A.lf
@@ -277,7 +277,6 @@ theorem locAt_topology : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [N
   haveI := A.top
   haveI : Module.Finite A.Fp A.Ep := Module.finite_of_finrank_pos (by rw [A.rank]; norm_num)
   haveI : Nontrivial A.Ep := Module.nontrivial_of_finrank_pos (R := A.Fp) (by rw [A.rank]; norm_num)
-  haveI := secondCountable_localField A.Fp
   haveI := t2Space_of_nonarchimedeanLocalField A.Fp
   haveI hR : IsTopologicalRing A.Ep := IsModuleTopology.isTopologicalRing A.Fp A.Ep
   haveI : ContinuousSMul A.Fp A.Ep := IsModuleTopology.toContinuousSMul A.Fp A.Ep
@@ -288,8 +287,6 @@ theorem locAt_topology : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [N
       continuous_toFun := IsModuleTopology.continuous_of_linearMap b.equivFun.toLinearMap
       continuous_invFun := IsModuleTopology.continuous_of_linearMap b.equivFun.symm.toLinearMap }
   haveI hT2 : T2Space A.Ep := h.symm.t2Space
-  have hLC : LocallyCompactSpace A.Ep := h.isClosedEmbedding.locallyCompactSpace
-  have hSC : SecondCountableTopology A.Ep := h.secondCountableTopology
   let w := RingOfIntegers.basis E
   let L : (Module.Free.ChooseBasisIndex ℤ (𝓞 E) → A.Fp) →ₗ[A.Fp] A.Ep :=
     Fintype.linearCombination A.Fp (fun i => A.ιE (w i : E))
@@ -337,22 +334,7 @@ theorem locAt_topology : ∀ {F E : Type} [Field F] [NumberField F] [Field E] [N
     exact (isCompact_univ_pi fun _ =>
       isCompact_iff_compactSpace.2 (inferInstanceAs (CompactSpace 𝒪[A.Fp]))).image
       (IsModuleTopology.continuous_of_linearMap L)
-  refine ⟨hR, hT2, hLC, hSC, hopen, hcomp, ?_, A.ιE.injective,
-    fun x hx => (IsUnit.mk0 x hx).map A.ιE, ?_⟩
-  · let S : Subring A.Ep := A.ιE.range.topologicalClosure
-    have hS : ∀ a : A.Fp, algebraMap A.Fp A.Ep a ∈ S := by
-      intro a
-      refine map_mem_closure (t := Set.range A.ιE) hcont (A.dense a) ?_
-      rintro _ ⟨r, rfl⟩
-      exact ⟨_, A.compat r⟩
-    intro y
-    have hy : y ∈ Submodule.span A.Fp (Set.range A.ιE) := by rw [A.span]; trivial
-    change y ∈ S
-    induction hy using Submodule.span_induction with
-    | mem x hx => exact subset_closure hx
-    | zero => exact S.zero_mem
-    | add x y _ _ hx hy => exact S.add_mem hx hy
-    | smul a x _ hx => rw [Algebra.smul_def]; exact S.mul_mem (hS a) hx
+  refine ⟨hR, hopen, fun x hx => (IsUnit.mk0 x hx).map A.ιE, ?_⟩
   · apply le_antisymm
     · refine closure_minimal ?_ hcomp.isClosed
       rintro _ ⟨x, rfl⟩
