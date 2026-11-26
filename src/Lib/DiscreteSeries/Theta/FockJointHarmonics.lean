@@ -110,11 +110,6 @@ theorem IsMatch.col_eq_of_isMatchedPair (hm : IsMatch T l l') {r : R} {c d : C}
     (hc : T.IsMatchedPair l l' r c) (hd : T.IsMatchedPair l l' r d) : c = d := by
   grind [hm.hasGap_column.injective]
 
-/-- If `l` and `l'` match, a column is matched with at most one row. -/
-theorem IsMatch.row_eq_of_isMatchedPair (hm : IsMatch T l l') {a r : R} {c : C}
-    (ha : T.IsMatchedPair l l' a c) (hr : T.IsMatchedPair l l' r c) : a = r := by
-  grind [hm.hasGap_row.injective]
-
 /-- Let `l`, `l'` match. Then `∑ c, G c ≤ ∑ r, F r`, provided that `G c ≤ F r` when row `r` is
 matched with column `c`, that `0 ≤ F r` when the centred parameter `l r - 2γ + card C` is less than
 `card R - card C` in absolute value, and that `G c ≤ 0` when `l' c - 2γ' + card R` is less than
@@ -130,7 +125,7 @@ theorem IsMatch.sum_cols_le_sum_rows (hm : IsMatch T l l') (F : R → ℤ) (G : 
         gcongr with c
         obtain ⟨r, hr⟩ | h_free := hm.right c
         · rw [sum_eq_single_of_mem r (mem_univ r) fun a _ ha ↦
-            ite_eq_right fun hac ↦ ha (hm.row_eq_of_isMatchedPair hac hr), ite_eq_left hr]
+            ite_eq_right fun hac ↦ ha (by grind [hm.hasGap_row.injective]), ite_eq_left hr]
           exact h_matched r c hr
         · rw [sum_eq_zero fun r _ ↦ ite_eq_right (show ¬T.IsMatchedPair l l' r c by grind)]
           exact h_cols c h_free
