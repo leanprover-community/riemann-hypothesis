@@ -1,5 +1,6 @@
 module
 
+import TauCeti.RepresentationTheory.NormDeformation.Basic
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import New.Congruences.FirstOrder.FittingBlock
@@ -267,21 +268,20 @@ theorem exists_deformed_norm_family (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) !
       (∀ S : Finset J, σ ((c ^ 2 • heckeAction δ') ^ card J * 𝒩 S) =
         σ (Y S * ∑ g : (j : J) → GL (Fin (card n)) (ResField (Q.place j)), D.residueRep Q g)) ∧
       Y ∅ = (c ^ 2 • heckeAction δ') ^ card J := by
-  -- Multiply the factors `Nm j + α j ∂ j`, one for each place.
   choose der der_mem norm_kills tie der_mul_sub_one using fun j : J ↦
     exists_mul_traceElement_tameGenerator_eq_frob Q hQ hN ha j ht δ' (h_chain j) hσ
-  obtain ⟨𝒩, comm, h_empty, h_last⟩ := exists_empty_eq_sum_and_insert_eq_mul (D.residueRep Q)
-    (fun j ↦ (D.localOperators Q j).toSubring) (commute_of_mem_localOperators_of_ne Q)
-    (fun _ ↦ residueRep_mem_localOperators hQ) der_mem
+  obtain ⟨𝒩, comm, h_empty, h_last⟩ :=
+    TauCeti.exists_empty_eq_sum_and_insert_eq_mul (D.residueRep Q)
+      (fun j ↦ (D.localOperators Q j).toSubring) (commute_of_mem_localOperators_of_ne Q)
+      (fun _ ↦ residueRep_mem_localOperators hQ) der_mem
   have hecke_comm (s : D.heckeAlgebra Q.place) (S : Finset J) : Commute (heckeAction s) (𝒩 S) :=
     comm _ (fun _ _ h ↦ localOperators.commute_heckeAction h s) S
   obtain ⟨Ψ, hΨ⟩ := exists_higman_operator hQ (.id _) Function.injective_id
-  choose Y factor Y_empty using fun S : Finset J ↦ exists_map_pow_mul_family_eq_mul_norm hΨ
-    (commute_heckeAction_residueRep Q hQ δ') (hecke_comm δ') h_empty h_last der_mul_sub_one S
-    S.card_le_univ
+  choose Y factor Y_empty using fun S : Finset J ↦
+    TauCeti.exists_map_pow_mul_family_eq_mul_norm hΨ (commute_heckeAction_residueRep Q hQ δ')
+      (hecke_comm δ') h_empty h_last der_mul_sub_one S S.card_le_univ
   refine ⟨𝒩, Y, hecke_comm, h_empty, fun G hG ↦ ?_, factor, Y_empty ∅ rfl⟩
-  -- Prove the claim for all multiples `G' G`; induction over the span reduces it to the multiples
-  -- `G' z` of the generators `z`.
+  -- Induction over the span reduces multiples `G' G` to multiples of the generators.
   suffices multiples : ∀ G' : MvPolynomial J (D.heckeAlgebra Q.place),
       σ (∑ S, 𝒩 Sᶜ * heckeAction ((G' * G).coeff (∑ j ∈ S, .single j 1))) = 0 by
     simpa only [one_mul] using multiples 1
@@ -300,9 +300,8 @@ theorem exists_deformed_norm_family (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) !
       simp only [mul_smul_comm, AddMonoidAlgebra.coeff_smul_apply, map_nsmul, ← smul_sum]
       rw [nsmul_eq_mul, hσ.natCast_eq_zero, zero_mul]
     · -- The tie at `w j` cancels the two terms of a tied relation.
-      exact map_top_coeff_mul_C_sub_X_mul_C_eq_zero (heckeAction (D := D) (L := Q.place)).toRingHom
-        h_last
-        (norm_kills j g) (tie j g) G'
+      exact TauCeti.map_top_coeff_mul_C_sub_X_mul_C_eq_zero
+        (heckeAction (D := D) (L := Q.place)).toRingHom h_last (norm_kills j g) (tie j g) G'
 
 section
 
