@@ -75,6 +75,16 @@ attribute [instance 20] SetLike.GradeZero.instMonoid SetLike.GradeZero.instCommM
   SetLike.GradeZero.instSemiring SetLike.GradeZero.instCommSemiring SetLike.GradeZero.instRing
   SetLike.GradeZero.instCommRing
 
+-- Same priority. Each of these is expensive in this tree (see the PR for the census).
+-- `Prod.distribMulAction` applies to adele goals because `𝔸` is an `abbrev` of a product
+-- (`Lib/Adelic/Adeles/Basic.lean`). TODO: `MulSemiringAction.toDistribMulAction` and
+-- `Module.free_of_finite_type_torsion_free'` are priority problems in Mathlib itself
+-- (https://github.com/leanprover-community/riemann-hypothesis/issues/1038); drop them once
+-- fixed there.
+attribute [instance 20] Prod.distribMulAction MeasureTheory.instSFiniteOfCountable
+  MulSemiringAction.toDistribMulAction Module.free_of_finite_type_torsion_free'
+  Lean.Grind.OrderedRing.instIsCharPOfNatNatOfLawfulOrderLT
+
 -- These lemmas leave the default `simp` set of every importing file. They match very many terms
 -- and then fail on a side condition. Tagging a lemma in both directions erases both, and, unlike
 -- `attribute [-simp]`, the effect passes to importers. The reversed tags last one command only,
