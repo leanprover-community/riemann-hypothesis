@@ -2,10 +2,13 @@ module
 
 public import Mathlib.Analysis.Matrix.MeasurableSpace
 public import Mathlib.Analysis.CStarAlgebra.Classes
+public import TauCeti.Data.Matrix.Countable
 public import TauCeti.LinearAlgebra.Matrix.IndefiniteUnitaryGroup
+public import TauCeti.MeasureTheory.Constructions.Polish.Units
+public import TauCeti.Topology.Instances.Matrix
+public import TauCeti.Topology.MetricSpace.Polish.Matrix
 import Mathlib.Topology.Algebra.Group.Matrix
 import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
-import TauCeti.Topology.Algebra.Group.Units
 public import Lib.Speed
 
 /-!
@@ -23,9 +26,10 @@ integrability.
   bound on the entries of a unitary matrix, the complex unitary group of the identity matrix is
   compact.
 
-The file also supplies the Polish and Borel instances on units, the measurable and measure space
-structures on matrices, the Polish instance on unitary groups and the Borel instance on complex
-ones, local compactness of unitary groups, and the additive Haar measure on matrices.
+The file also supplies the measure space structure on matrices with its additive Haar measure, the
+Polish instance on unitary groups and the Borel instance on complex ones, and local compactness of
+unitary groups. The Polish, countability, local compactness and Borel instances on matrices and
+units come from Mathlib and Tau Ceti.
 -/
 
 @[expose] public section
@@ -109,30 +113,6 @@ namespace New
 section Matrices
 
 variable {m n R S : Type*} [DecidableEq n]
-
-section
-
-variable [Countable m] [Countable n] [Monoid R] [TopologicalSpace R] [ContinuousMul R]
-  [PolishSpace R]
-
-deriving instance PolishSpace for Matrix m n R
-
-variable [MeasurableSpace R] [BorelSpace R]
-
-instance : BorelSpace Rˣ := by
-  borelize Rˣ
-  use (continuous_val.measurableEmbedding val_injective).comap_eq
-
-end
-
-section
-
-variable [Countable m] [Countable n] [TopologicalSpace R] [SecondCountableTopology R]
-  [MeasurableSpace R] [BorelSpace R] [Finite m] [Finite n] [Countable R] [LocallyCompactSpace R]
-
-deriving instance Countable, LocallyCompactSpace, BorelSpace for Matrix m n R
-
-end
 
 /-- The product measure on matrices, over Mathlib's `σ`-algebra `Matrix.instMeasurableSpace`. -/
 instance [Fintype m] [Fintype n] [MeasureSpace R] : MeasureSpace (Matrix m n R) where
