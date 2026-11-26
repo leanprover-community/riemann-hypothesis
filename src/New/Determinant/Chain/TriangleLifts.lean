@@ -504,10 +504,6 @@ theorem exists_hasSum_inner_triangleFirstLift {P : Parameters} (D : Data P) (z :
     apply (h_rallis ϑ y).1
     rw [← inner_self_eq_zero (𝕜 := ℂ), ← hv, hv_zero, inner_zero_left]
 
--- The index type of the node `(i, n + 1)` unfolds to a sum type, and `kernelPair l s false` to
--- `typeKernel l s`; rewriting below has to see through both.
-attribute [local implicit_reducible] Data.GridIndex BlockIndex kernelPair
-
 omit [CMType E] [WeilData E] [Fintype N] [DecidableEq N] [Fintype N'] [DecidableEq N'] in
 /-- Every polynomial `P` is the signed transpose `flipPoly s t` of the polynomial obtained from some
 `Q` by conjugating the coefficients. -/
