@@ -696,7 +696,6 @@ theorem mainSecondMoment_div_identitySecondMoment_mem_Icc :
     gcongr
     simpa using log_le_log (by positivity) (D.le_of_hasLogBound : D.b ^ 19 ≤ D.M)
   have one_le_logB : 1 ≤ D.logB := D.le_of_hasLogBound
-  have f_k_logB_nonneg : (0 : ℝ) ≤ D.f * D.k * D.logB := by positivity
   obtain ⟨h_lower, h_upper⟩ := abs_le.1 D.abs_log_mainSecondMoment_div_identitySecondMoment_sub_le
   constructor
   · rw [← log_le_log_iff (by positivity) ratio_pos, log_pow, log_exp]
