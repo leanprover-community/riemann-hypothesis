@@ -99,9 +99,6 @@ def pointOrTorus : ULift.{1} Bool → CommAlg OFlat
   | ⟨true⟩ => monoidAlg ℚ
   | ⟨false⟩ => CommAlgCat.of OFlat OFlat
 
-lemma pointOrTorus_true : pointOrTorus ⟨true⟩ = monoidAlg ℚ := rfl
-
-
 /-- For O^♭-algebras B_i indexed by Bool and an endofunctor ψ of O^♭-algebras (default the
 identity), the functor S ↦ ⊔_i Hom(ψ(B_i), S^♭) on p-adic tests. -/
 abbrev tiltPointsSum : PadicTest ⥤ Type 1 := sigma fun a ↦ tilt ⋙ reprBy (ψ (B a))
