@@ -45,6 +45,13 @@ and for discrete subgroups. Source: O. Kallenberg, Invariant measures and disint
 applications to Palm and related kernels, Probab. Theory Related Fields 139 (2007) 285-310 (as
 cited in D. Gentner, G. Last, Math. Z. 267 (2011), §2); for the classical form, N. Bourbaki,
 Intégration VII, 1963.
+
+## Countability of discrete subgroups
+
+There is no global `Countable Γ` instance for discrete subgroups: as an instance it would apply
+to every `Countable ↥A` goal and search for `DiscreteTopology ↥A` there. Concrete discrete
+subgroups have their own `Countable` instances (for example `V.Γ`, `ratAdeles`); for a general
+discrete `Γ`, state it with `have : Countable Γ := countable_of_Lindelof_of_discrete`.
 -/
 
 @[expose] public section
