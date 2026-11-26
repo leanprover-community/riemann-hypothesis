@@ -166,7 +166,7 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
   obtain ⟨P⟩ := Q.nonempty_localChoice j
   have hσ_char : ((ℓ ^ ν : ℕ) : R) = 0 := hσ.natCast_eq_zero
   let ρ : GL (Fin (card n)) (ResField (Q.place j)) →* D.integralEnd Q.place := D.placeRep Q j
-  let K : Subgroup _ := residueLineStabilizer (ResField (Q.place j)) (card n)
+  let K : Subgroup _ := TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n))
   let p : EllAdicIntegers[X] := (X - C ((Q.place j).q ^ t' : EllAdicIntegers)) * H
   obtain ⟨B, B_mem, hB⟩ := exists_aevalHecke_weightedNorm (a := a) hQ P p
   have ρ_mem (k : GL (Fin (card n)) (ResField (Q.place j))) : ρ k ∈ D.localOperators Q j :=

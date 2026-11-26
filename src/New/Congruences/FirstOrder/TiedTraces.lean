@@ -127,8 +127,8 @@ variable {Q : TaylorWilesPlaces E J m} {j : J} (P : Q.LocalChoice j) {N : ℕ} [
 /-- The logarithm `ind₁ g = ind g₁₁` of the first entry, on the stabiliser in `GL_N(𝔽_w)` of the
 line of the first basis vector. -/
 noncomputable abbrev indLine :
-    residueLineStabilizer (ResField (Q.place j)) N →* Multiplicative (ZMod m) :=
-  P.ind.comp firstEntry
+    TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin N) →* Multiplicative (ZMod m) :=
+  P.ind.comp (TauCeti.lineStabilizerChar _ 0)
 
 /-- The logarithm `indDet = ind ∘ det` on `GL_N(𝔽_w)`. -/
 noncomputable abbrev indDet : GL (Fin N) (ResField (Q.place j)) →* Multiplicative (ZMod m) :=
@@ -140,8 +140,8 @@ noncomputable def diamond : GL (Fin N) (ResField (Q.place j)) :=
   diagGL (Pi.mulSingle 0 (residueUnit P.tameUnit))
 
 /-- The transfer of `ind₁` from the stabiliser of the line to `GL_N(𝔽_w)` is `ind ∘ det`. -/
-lemma transfer_indLine : (P.indLine (N := N)).transfer = P.indDet :=
-  transfer_comp_firstEntry P.ind
+lemma transfer_indLine : (P.indLine (N := N)).transfer = P.indDet := by
+  rw [MonoidHom.transfer_comp, TauCeti.transfer_lineStabilizerChar]
 
 lemma indDet_diamond : P.indDet (P.diamond (N := N)) = .ofAdd 1 := by
   rw [MonoidHom.comp_apply, show Matrix.GeneralLinearGroup.det (P.diamond (N := N)) =
@@ -170,8 +170,9 @@ noncomputable def placeRep (j : J) :
 variable (D) in
 /-- The action of the stabiliser of a line in `GL_n(𝔽_w)` at the auxiliary place `w = Q.place j`. -/
 noncomputable def lineRep (j : J) :
-    residueLineStabilizer (ResField (Q.place j)) (card n) →* D.integralEnd Q.place :=
-  (D.placeRep Q j).comp (residueLineStabilizer (ResField (Q.place j)) (card n)).subtype
+    TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n)) →* D.integralEnd Q.place :=
+  (D.placeRep Q j).comp
+    (TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n))).subtype
 
 omit [Nonempty n] in
 /-- If the auxiliary places `w j = Q.place j` are off the base level, the Hecke algebra commutes
@@ -191,7 +192,6 @@ section Parahoric
 
 variable {Q}
 
-omit [Nonempty n] in
 /-- Let the auxiliary places be off the base level. An element `k` of the parahoric subgroup
 of the line in `GL_n(E_w)`, `w = Q.place j` (blocks of sizes `1` and `n - 1`), acts on forms of
 principal level through its reduction, which stabilises the line. On the left, `localFormRep` is
@@ -200,7 +200,7 @@ lemma localFormRep_apply_eq_lineRep (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) !
     {j : J} {k : GL (Fin (card n)) (LocField (Q.place j))}
     (hk : k ∈ blockParahoric (min 1)) (y : D.formsOfLevel Q.place) :
     localFormRep V κ (Q.apart.star_ne j j) k y =
-      (D.lineRep Q j ⟨reduceGL ⟨k, hk.1⟩, reduceGL_mem_residueLineStabilizer_iff.2 hk⟩).val y :=
+      (D.lineRep Q j ⟨reduceGL ⟨k, hk.1⟩, reduceGL_mem_lineStabilizer_iff.2 hk⟩).val y :=
   (residueRep_mulSingle hQ ⟨k, hk.1⟩ y).symm
 
 /-- Let the auxiliary places be off the base level. If the elements of the stabiliser
@@ -210,14 +210,14 @@ in the space `levelSpace` of its fixed vectors for the action `localFormRep` of 
 forms. -/
 lemma mem_levelSpace_proIwahori (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     {j : J} {y : D.formsOfLevel Q.place}
-    (hy : ∀ k : residueLineStabilizer (ResField (Q.place j)) (card n),
-      firstEntry k = 1 → Matrix.GeneralLinearGroup.det k.val = 1 →
+    (hy : ∀ k : TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n)),
+      TauCeti.lineStabilizerChar _ 0 k = 1 → Matrix.GeneralLinearGroup.det k.val = 1 →
       (D.lineRep Q j k).val y = y) :
     y.val ∈ levelSpace (localFormRep V κ (Q.apart.star_ne j j)).ρ proIwahori := by
   rintro ⟨g, hg_iw⟩
   have hg : g ∈ blockParahoric (min 1) := proIwahori_le_blockParahoric (by omega) hg_iw
   obtain ⟨det_one, entry_one⟩ :=
-    det_firstEntry_reduceGL_eq_one_of_mem_proIwahori (g := ⟨g, hg.1⟩) hg_iw
+    det_lineStabilizerChar_reduceGL_eq_one_of_mem_proIwahori (g := ⟨g, hg.1⟩) hg_iw
   have fixed : localFormRep V κ (Q.apart.star_ne j j) g y = y :=
     (localFormRep_apply_eq_lineRep hQ hg y).trans
       (congrArg Subtype.val (hy _ (entry_one _) det_one))
@@ -230,16 +230,16 @@ on which the stabiliser of the line in `GL_n(𝔽_w)` acts by `ψ ∘ P.indLine`
 and the parahoric subgroup of the line in `GL_n(E_w)` acts on it by `k ↦ ψ (P.ind k₁₁)`. -/
 lemma mem_parahoricEigenspace_line (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     {j : J} (P : Q.LocalChoice j) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ) {y : D.formsOfLevel Q.place}
-    (hy : ∀ k : residueLineStabilizer (ResField (Q.place j)) (card n),
+    (hy : ∀ k : TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n)),
       (D.lineRep Q j k).val y = ψ (P.indLine k).toAdd • y) :
     y.val ∈ parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) (min 1)
       ((fun s : LocField (Q.place j) ↦ ψ (P.ind (residueUnit s)).toAdd) ∘
         fun k : GL (Fin (card n)) (LocField (Q.place j)) ↦ k 0 0) := by
   refine ⟨mem_levelSpace_proIwahori hQ fun k entry_one _ ↦ by simp [hy, entry_one],
     fun k hk ↦ ?_⟩
-  have entry : firstEntry ⟨reduceGL ⟨k, hk.1⟩, reduceGL_mem_residueLineStabilizer_iff.2 hk⟩ =
-      residueUnit (k 0 0) :=
-    firstEntry_reduceGL (g := ⟨k, hk.1⟩) _
+  have entry : TauCeti.lineStabilizerChar _ 0
+      ⟨reduceGL ⟨k, hk.1⟩, reduceGL_mem_lineStabilizer_iff.2 hk⟩ = residueUnit (k 0 0) :=
+    lineStabilizerChar_reduceGL (g := ⟨k, hk.1⟩) _
   rw [localFormRep_apply_eq_lineRep hQ hk, hy, MonoidHom.comp_apply, entry]
   simp
 
@@ -573,7 +573,7 @@ lemma tameTrace_smul_eq_aevalHecke (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E))
     {x : D.Eigensystem Q.place} {ψ : AddChar (ZMod (ℓ ^ ν)) ℂ} (hψ : ψ (card n)! ≠ 1)
     {y : D.formsOfLevel Q.place} (hx : (y : V.forms κ) ∈ (x : Isotypic V κ).val)
-    (hy : ∀ k : residueLineStabilizer (ResField (Q.place j)) (card n),
+    (hy : ∀ k : TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n)),
       (D.lineRep Q j k).val y = ψ (P.indLine k).toAdd • y) :
     ιℓ.symm ((tameTrace Q hN j p g).val x) • (y : V.forms κ) =
       ιℓ.symm ((tameTrace Q hN j 1 g).val x) • aevalHecke V κ P a p (y : V.forms κ) := by
@@ -716,14 +716,14 @@ lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ 
   rw [← sub_eq_zero, ← σ.map_sub]
   refine map_valMinAbs_eq_zero_of_shift hσ ℰ fun f ↦ sub_eq_zero.2 (Eq.symm ?_)
   -- The eigenvectors to be tested are those with `ψ (n!) ≠ 1`, where the dictionary applies.
-  have lineRep_mem (k : residueLineStabilizer (ResField (Q.place j)) (card n)) :
+  have lineRep_mem (k : TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n))) :
       D.lineRep Q j k ∈ D.localOperators Q j :=
     residueRep_mem_localOperators hQ _
   let U : D.formsOfLevel Q.place →ₗ[ℂ] V.forms κ :=
     LinearMap.domRestrict (aevalHecke V κ P a p) _
   have dict (x : D.Eigensystem Q.place) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ)
       (z : D.formsOfLevel Q.place) (hz : (z : V.forms κ) ∈ (x : Isotypic V κ).val)
-      (hz_eigen : ∀ k : residueLineStabilizer (ResField (Q.place j)) (card n),
+      (hz_eigen : ∀ k : TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n)),
         (D.lineRep Q j k).val z = ψ (P.indLine k).toAdd • z)
       (hψ : ψ ((card n)! : ZMod (ℓ ^ ν)) ≠ 1) :
       ιℓ.symm ((tameTrace Q hN j p g).val x) • (z : V.forms κ) =
@@ -740,10 +740,11 @@ weight `f ∘ P.indLine` (`hB`). Then the stabiliser fixes the values of `B 1`. 
 lemma lineRep_mul_eq_self (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
       aevalHecke V κ P a p ((weightedNorm (D.lineRep Q j) P.indLine f).val y))
-    (k : residueLineStabilizer (ResField (Q.place j)) (card n)) : D.lineRep Q j k * B 1 = B 1 := by
+    (k : TauCeti.lineStabilizer (ResField (Q.place j)) (0 : Fin (card n))) :
+    D.lineRep Q j k * B 1 = B 1 := by
   obtain ⟨k₀, hk⟩ := k
   obtain ⟨g₀, rfl⟩ := reduceGL_surjective k₀
-  have hg₀ : g₀.val ∈ blockParahoric (min 1) := reduceGL_mem_residueLineStabilizer_iff.1 hk
+  have hg₀ : g₀.val ∈ blockParahoric (min 1) := reduceGL_mem_lineStabilizer_iff.1 hk
   ext y : 3
   have norm_fixed : ((weightedNorm (D.lineRep Q j) P.indLine 1).val y).val ∈
       parahoricEigenspace (localFormRep V κ (Q.apart.star_ne j j)) (min 1) 1 := by
