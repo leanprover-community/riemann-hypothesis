@@ -315,7 +315,6 @@ section TateIndex
 
 open LinearMap Module End Polynomial Function GeneralLinearGroup IsCyclotomicExtension
 
-set_option synthInstance.maxHeartbeats 200000 in
 /-- Tate's index formula. Let `l` be prime, let `σ ^ l = 1` on `B`, let the sequence
 `C → B → B → C` with maps `j`, `σ - 1`, `s` be exact with `j` injective, and let `s ∘ j = l`. So
 `C` is the group of fixed points of `σ`, and `s` plays the role of the norm. With
