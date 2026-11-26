@@ -284,8 +284,7 @@ lemma exists_petersson_eq_diagonalPeriodForm (D : Data P)
               (conjForm he_star y) := by
           refine Subtype.ext (funext fun x ↦ ?_)
           have h_g : (x * (1, u.val)) * (1, v.val) = x * (1, u.val * v.val) := by
-            rw [mul_assoc]
-            exact congrArg (x * ·) (Prod.ext (one_mul 1) rfl)
+            simp only [mul_assoc, Prod.mk_mul_mk, one_mul]
           exact congrArg star ((mem_levelSpace_formRep_iff.1 hy v.1 hv (x * (1, u.1))).symm.trans
             (congrArg y.val h_g))
         have h_diag : diagonalPeriodForm 1 zero_le g = diagonalPeriodForm ϑ zero_le g := by
