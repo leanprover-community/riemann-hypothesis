@@ -428,7 +428,10 @@ theorem HCParam.IsKHighest.norm_apply_le_mul_norm (hx : l.IsKHighest ρ ν x)
   have cK_le (w : List (n × n)) (hw : w.length ≤ s) :
       l.casimirKValue (wordWeight ν w) ≤ ∑ _a : n, ((L + s) * (L + s + card n) : ℤ) := by
     refine sum_le_sum fun a _ ↦ ?_
-    have h_wt : |wordWeight ν w a| ≤ L + s := by grind [abs_wordWeight_sub_le ν w a, hL a]
+    have h_wt : |wordWeight ν w a| ≤ L + s := calc
+      |wordWeight ν w a| ≤ |ν a| + |wordWeight ν w a - ν a| := by
+        simpa only [sub_zero, add_comm] using abs_sub_le (wordWeight ν w a) (ν a) 0
+      _ ≤ L + s := add_le_add (hL a) ((abs_wordWeight_sub_le ν w a).trans (Int.ofNat_le.mpr hw))
     grw [le_abs_self (wordWeight ν w a * _), abs_mul, abs_add_le, abs_twoRho_le]
     gcongr
   -- An upper bound from `casimirK_bound_of_highest`: take `α = -1` and the inner product itself
