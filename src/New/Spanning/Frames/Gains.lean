@@ -872,16 +872,15 @@ lemma Gauge.partialCorrelation_mul_eq_integral_sectionPoint (Γ : Gauge F) (hk :
       simpa [Pi.single_apply, Matrix.one_apply] using mem_floorGroup.1 hσ l k h_lt
     rw [← U.form_mulVec_mulVec σ, h_fix, orbitPoint_eq_iff.1 rfl]
   have h_floor : floorOf (𝔰.besselFrame i.succ) = i + 1 := floorOf_besselFrame
+  have h_ne_of_floor (b : 𝔰.BesselIndex) (hb : floorOf b = i.val) :
+      b ≠ 𝔰.besselFrame i.succ :=
+    fun h ↦ i.val.succ_ne_self (h_floor.symm.trans (h ▸ hb))
   have h_e : star (Pi.single (Sum.inl i) (1 : A)) ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ = 0 := by
-    have h_ne : eStar i ≠ 𝔰.besselFrame i.succ := fun h ↦ by
-      rw [← h] at h_floor
-      exact i.val.succ_ne_self h_floor.symm
     rw [h_orth _ (by simp)]
-    simp [h_ne]
+    simp [h_ne_of_floor (eStar i) (by simp)]
   have h_dual : star (Pi.single (eStar i) (1 : A)) ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ = 0 := by
-    have h_ne : Sum.inl i ≠ 𝔰.besselFrame i.succ := fun h ↦ by simp [← h] at h_floor
     rw [h_orth _ (by simp)]
-    simp [h_ne]
+    simp [h_ne_of_floor (Sum.inl i) rfl]
   have h_form : star (sectionPoint i (star (p i).val) (P.heisenbergElem (T := T) i t)) ⬝ᵥ
         T.splitGram *ᵥ orbitPoint i.succ σ =
       -(p i).val * star ω ⬝ᵥ T.splitGram *ᵥ orbitPoint i.succ σ := by
