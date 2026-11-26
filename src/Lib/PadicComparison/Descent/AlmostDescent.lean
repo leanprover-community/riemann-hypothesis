@@ -196,7 +196,10 @@ instance MaxIdealTensor.isTorsionFree_of_isReduced [IsReduced S] :
       LinearMap.lTensor MaxIdealFlat (LinearMap.ker (LinearMap.lsmul OFlat S t)).subtype = 0 := by
     refine ext' fun m ⟨x, (htx : t • x = 0)⟩ ↦ ?_
     obtain ⟨s, k, rfl, n, d, hd : s ^ n = t * d⟩ := m.exists_smul_eq ht.ne_zero
-    have h_nilpotent : (s • x) ^ (n + 1) = 0 := by grind [smul_pow, Algebra.smul_def]
+    have h_nilpotent : (s • x) ^ (n + 1) = 0 := calc
+      _ = (d * s) • ((t • x) * x ^ n) := by
+        rw [smul_pow, pow_succ s, hd, mul_rotate t d s, mul_smul, pow_succ' x, smul_mul_assoc]
+      _ = 0 := by rw [htx, zero_mul, smul_zero]
     have hsx : s • x = 0 := IsReduced.eq_zero _ ⟨n + 1, h_nilpotent⟩
     rw [LinearMap.lTensor_tmul, Submodule.subtype_apply, smul_tmul, hsx, tmul_zero,
       LinearMap.zero_apply]
