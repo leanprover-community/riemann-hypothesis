@@ -547,7 +547,7 @@ theorem quotientIntegral_oneDoubleCoset_eq_mul_value (G : Type) [Group G] [Topol
     [LocallyCompactSpace G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (R K : Subgroup G)
     (hR : IsClosed (R : Set G)) (hKc : IsCompact (K : Set G)) (hKo : IsOpen (K : Set G))
     (ρ : Measure R) (μ : Measure G) (hρ : ρ.IsHaarMeasure) (hρr : ρ.IsMulRightInvariant) (hμ : μ.IsHaarMeasure)
-    (t : G) : ∃ w : ℂ, w ≠ 0 ∧ ∀ f : G → ℂ, (∀ r ∈ R, ∀ g, f (r * g) = f g) → (∀ k ∈ K, ∀ g, f (g * k) = f g) →
+    (t : G) : ∃ w : ℂ, ∀ f : G → ℂ, (∀ r ∈ R, ∀ g, f (r * g) = f g) → (∀ k ∈ K, ∀ g, f (g * k) = f g) →
       (∀ g, f g ≠ 0 → ∃ r ∈ R, ∃ k ∈ K, g = r * t * k) → IsQuotIntL1 ρ μ f (w * f t) := by
 
   set T : Set G := {g | t⁻¹ * g ∈ K} with hT
@@ -566,7 +566,6 @@ theorem quotientIntegral_oneDoubleCoset_eq_mul_value (G : Type) [Group G] [Topol
     exact hemb.isCompact_preimage h1
   have hTm : MeasurableSet T := (hKo.preimage (continuous_const.mul continuous_id)).measurableSet
   have hμT : μ T = μ K := measure_preimage_mul μ t⁻¹ K
-  have hμK0 : μ K ≠ 0 := (hKo.measure_pos μ ⟨1, K.one_mem⟩).ne'
   have hμKt : μ K ≠ ⊤ := hKc.measure_lt_top.ne
   have hSo : IsOpen S := by simpa using hAo t
   have hSc : IsCompact S := by simpa using hAc t
@@ -574,8 +573,7 @@ theorem quotientIntegral_oneDoubleCoset_eq_mul_value (G : Type) [Group G] [Topol
   have hρSt : ρ S ≠ ⊤ := hSc.measure_lt_top.ne
   set c : ℝ := ρ.real S with hc
   have hc0 : c ≠ 0 := ENNReal.toReal_ne_zero.2 ⟨hρS0, hρSt⟩
-  have hμK : μ.real K ≠ 0 := ENNReal.toReal_ne_zero.2 ⟨hμK0, hμKt⟩
-  refine ⟨(μ.real K : ℂ) / (c : ℂ), div_ne_zero (by exact_mod_cast hμK) (by exact_mod_cast hc0), fun f hfl hfr hfs => ?_⟩
+  refine ⟨(μ.real K : ℂ) / (c : ℂ), fun f hfl hfr hfs => ?_⟩
   set a : ℂ := f t / (c : ℂ) with ha
   refine ⟨T.indicator fun _ => a, ?_, fun h => ?_, fun h => ?_, ?_⟩
   · exact (integrable_indicator_iff hTm).2 (integrableOn_const (by rw [hμT]; exact hμKt))
@@ -789,7 +787,7 @@ theorem quot_chi {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G
     [μ.IsHaarMeasure] (t : G) : ∃ w, IsQuotIntL1 ρ μ (chi R K t) w := by
   classical
   have : ρ.IsMulRightInvariant := by rw [← Measure.inv_eq_self ρ]; infer_instance
-  obtain ⟨w, -, hw⟩ := quotientIntegral_oneDoubleCoset_eq_mul_value G R K hR hK.2 hK.1 ρ μ inferInstance inferInstance inferInstance t
+  obtain ⟨w, hw⟩ := quotientIntegral_oneDoubleCoset_eq_mul_value G R K hR hK.2 hK.1 ρ μ inferInstance inferInstance inferInstance t
   refine ⟨_, hw _ ?_ ?_ ?_⟩
   · intro r hr g; by_cases h : g ∈ cell R K t <;> simp [chi, h, mul_mem_cell_left hr]
   · intro k hk g; by_cases h : g ∈ cell R K t <;> simp [chi, h, mul_mem_cell_right hk]
