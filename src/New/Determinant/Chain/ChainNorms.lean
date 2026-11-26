@@ -695,9 +695,6 @@ lemma triangleGLCard_false_eq_prod {P : Parameters} (D : Data P) (ϑ : D.MFoldTw
     relIndex_levelOf, Nat.card_pi, placeAt, -Nat.card_eq_fintype_card,
     -Bool.cond_eq_ite]
 
-attribute [-simp] Bool.cond_eq_ite
-attribute [local simp] Bool.cond_true Bool.cond_false
-
 /-- Let m = `D.m` be the number of lifts of the data `D`. There are a constant C and an integer k
 such that [K₀ : J] = C·N(Q)^k·δ(ϑ)^m·N_m / (N₀·N₁^m) for every twist ϑ whose tame part has
 non-trivial powers up to m at all places of its set Q (`MFoldTwist`). Here N(Q) is the number of

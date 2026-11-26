@@ -129,7 +129,6 @@ lemma exists_zeroTermFin_ne_zero (D : V.Splitting V₀ p) :
   have h_vac : V₀.vacElem = 0 := (smul_eq_zero.1 (h_value.symm.trans h_zero)).resolve_left hc_ne
   simpa [h_vac] using V₀.dataInner_vacElem_vacElem
 
-unseal finitePart in
 /-- Let `D` be a splitting of `V` over `V₀`, with isotropic frame `k` indexed by `p`. The finite
 part `zeroTermFin D : 𝒮 V → 𝒮 V₀` of the zero term along `k` sends `V.finitePart`, the span of the
 finite Heisenberg translates of the vacuum, into `V₀.finitePart`. -/
