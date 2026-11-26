@@ -427,6 +427,15 @@ def DividedSplitting.stackOverGenScalar (V : DividedSplitting N m a O z)
     Matrix (a ⊕ N) N O.chosenModulusSq.ResidueRing :=
   fromRows s (V.genResidue • 1 : Matrix N N O.chosenModulusSq.ResidueRing)
 
+omit [DecidableEq N] [DecidableEq m] [Fintype a] [DecidableEq n] in
+private lemma reduceAt_eq_one_of_genResidue_smul_eq (V : DividedSplitting N m a O z)
+    {c : Type} [Fintype c] [DecidableEq c] {k : stdLevel E c}
+    (h : V.genResidue • ((O.levelModulus 2).reductionGL k).val.map reduceToChosenModulusSq =
+      V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing id) (i : O.ChosenIndex) :
+    stdLevel.reduceAt (O.placeAt (inl i)) k = 1 :=
+  ext ((reductionGL_map_modulusResidue ..).symm.trans
+    ((V.genResidue_smul_eq_inclMatrix_iff _ id).1 h i))
+
 omit [DecidableEq m] [Fintype a] [DecidableEq n] in
 /-- Let `V` split the indices `n` as `N ⊕ m`, with the embedding `V.fixedEmb : r ↪ N`, and let `s`
 be an `a × N` matrix modulo `ϖ²`. Consider the integral unitary `N × N` matrices whose reduction
@@ -446,9 +455,7 @@ lemma rowFixingLevel_le_levelOf (V : DividedSplitting N m a O z)
     simpa [DividedSplitting.stackOverGenScalar, inclMatrix, -factor_reductionGL] using
       congrArg toRows₂ h_rows
   -- It remains that `k` reduces to `1` at each chosen place.
-  refine ⟨k, funext fun i ↦ ext ?_, rfl⟩
-  exact (reductionGL_map_modulusResidue ..).symm.trans
-    ((V.genResidue_smul_eq_inclMatrix_iff _ id).1 h_fix i)
+  exact ⟨k, funext fun i ↦ reduceAt_eq_one_of_genResidue_smul_eq V h_fix i, rfl⟩
 
 end
 
@@ -483,8 +490,7 @@ lemma reduceAt_liftMod_congruenceGroup (V : DividedSplitting N m a O z) (Y : V.c
         reduceToChosenModulusSq =
         V.genResidue • inclMatrix O.chosenModulusSq.ResidueRing id := by
     simpa [inclMatrix] using (V.mem_congruenceGroup_iff _).1 Y.property
-  exact ext ((reductionGL_map_modulusResidue ..).symm.trans
-    ((V.genResidue_smul_eq_inclMatrix_iff _ id).1 hY i))
+  exact reduceAt_eq_one_of_genResidue_smul_eq V hY i
 
 /-- The two conditions on the blocks of a matrix `x`: its block on `V°` is `(1; 0)` modulo `ϖ²`, and
 its block on `V″` lies in `(1; 0) + ϖ L″_s`, where `L″_s` consists of the `u` with `s u ≡ 0` modulo
