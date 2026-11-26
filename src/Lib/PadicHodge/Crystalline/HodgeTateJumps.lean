@@ -513,13 +513,12 @@ lemma jump_baseChange {φ : R →ₐ[ℤ_[p]] R'} (f : T →ₛₗ[toRingHom φ]
   have : RingHomCompTriple (toRingHom φ) (toRingHom γ') (toRingHom (γ'.comp φ)) :=
     ⟨(γ'.comp_toRingHom φ).symm⟩
   -- The values of `F.comp f` on `b` are the values of `F` on `b'`.
-  have h_eval_comp : (fun F : T' →ₛₗ[toRingHom γ'] ℂ_[p] ↦
-      evalOnBasis b (F.comp f : T →ₛₗ[toRingHom (γ'.comp φ)] ℂ_[p])) = evalOnBasis b' :=
+  let pullback (F : T' →ₛₗ[toRingHom γ'] ℂ_[p]) : T →ₛₗ[toRingHom (γ'.comp φ)] ℂ_[p] :=
+    F.comp f
+  have h_eval_comp : evalOnBasis b ∘ pullback = evalOnBasis b' :=
     funext fun F ↦ funext fun i ↦ congrArg F (hb i)
-  have h_bij : Function.Bijective fun F : T' →ₛₗ[toRingHom γ'] ℂ_[p] ↦
-      (F.comp f : T →ₛₗ[toRingHom (γ'.comp φ)] ℂ_[p]) :=
-    .of_comp_left (by rw [Function.comp_def, h_eval_comp]; exact (evalOnBasis b').bijective)
-      (evalOnBasis b).injective
+  have h_bij : Function.Bijective pullback :=
+    .of_comp_left (h_eval_comp.symm ▸ (evalOnBasis b').bijective) (evalOnBasis b).injective
   have h_iff (F : T' →ₛₗ[toRingHom γ'] ℂ_[p]) :
       F ∈ hodgeTateMaps σ γ' u ↔ F.comp f ∈ hodgeTateMaps ρ (γ'.comp φ) u := by
     refine ⟨fun hF ↦ (pull f hf ⟨F, hF⟩).property, fun hF ↦ ?_⟩
@@ -528,7 +527,7 @@ lemma jump_baseChange {φ : R →ₐ[ℤ_[p]] R'} (f : T →ₛₗ[toRingHom φ]
     filter_upwards [hf, hF (b i)] with g h_equiv hg
     simpa [h_equiv, hb] using hg
   let e_forms : hodgeTateMaps σ γ' u ≃ₗ[PadicAlgCl p] hodgeTateMaps ρ (γ'.comp φ) u :=
-    { pull f hf, (Equiv.ofBijective _ h_bij).subtypeEquiv h_iff with }
+    { pull f hf, (Equiv.ofBijective pullback h_bij).subtypeEquiv h_iff with }
   exact finrank_eq e_forms
 
 /-- If ρ'(g) = a(g)ρ(g) with scalars a(g) in R, and some nonzero y in C_p has γ(a(g))y = χ(g)^(−v)·g
