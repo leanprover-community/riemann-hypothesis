@@ -783,11 +783,8 @@ lemma isFiniteLerayHirsch_of_retract [HasFlatValues N] (r : ι → NaturalOp 0 (
           b N' ((u.mapRange δ δ.map_zero).mapRange ((r i).app stL) ((r i).app stL).map_zero) =
             b N' (w.mapRange ((r i).app stL) ((r i).app stL).map_zero) := by
         rw [h_nat, h_nat, h_cob]
-      have h_eq : (u.mapRange δ δ.map_zero).mapRange ((r i).app stL) ((r i).app stL).map_zero =
-          w.mapRange ((r i).app stL) ((r i).app stL).map_zero :=
-        hN'_inj h_image
-      -- Evaluate at `m`; `Finsupp.mapRange_apply` holds by definition.
-      exact DFunLike.congr_fun h_eq m
+      -- Evaluate the equality of finitely supported functions at `m`.
+      exact DFunLike.congr_fun (hN'_inj h_image) m
     rw [Finsupp.mapRange_apply, Finsupp.zero_apply, ← hπ_sum (w m),
       ← h_exact.apply_apply_eq_zero (u m), ← hπ_sum (δ (u m))]
     simp only [h_r]
