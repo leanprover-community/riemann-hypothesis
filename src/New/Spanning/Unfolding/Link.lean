@@ -670,11 +670,6 @@ lemma perpToPositive_apply (γ : S.G E) (y : isotropicPerp γ) :
     perpToPositive γ y = linkSource E 𝔰 (linkMatrix γ *ᵥ y) :=
   rfl
 
-/-- Let `A` be the span of `e_1, …, e_ϱ`. The space `commonIsotropic γ = A ∩ γ A` lies in
-`isotropicPerp γ = (A + γ A)^⊥`. -/
-lemma commonIsotropic_le_isotropicPerp (γ : S.G E) : commonIsotropic γ ≤ isotropicPerp γ :=
-  fun _ hy ↦ (mem_commonIsotropic.1 hy).1
-
 /-- Let `A` be the span of `e_1, …, e_ϱ`, and let `γ` lie in the unitary group `S.G E`. The map
 `perpToPositive γ` sends `y` in `isotropicPerp γ = (A + γ A)^⊥` to `y₀ + λ z⁺` in the positive space
 `X₀ ⊥ E z⁺`. Here `z⁺` is a vector of norm `S.N`, `y₀` is the `X₀`-part of `y`, and `λ` is the
@@ -708,7 +703,7 @@ theorem ker_perpToPositive_and_surjective (γ : S.G E) :
     commonIsotropic γ ≤ isotropicPerp γ ∧
     (perpToPositive γ).ker = (commonIsotropic γ).submoduleOf (isotropicPerp γ) ∧
     Surjective (perpToPositive γ) :=
-  ⟨commonIsotropic_le_isotropicPerp γ, ker_perpToPositive γ, perpToPositive_surjective γ⟩
+  ⟨fun _ hy ↦ (mem_commonIsotropic.1 hy).1, ker_perpToPositive γ, perpToPositive_surjective γ⟩
 
 /-- The link of `γ` is the graph of `Υ_γ`: a pair `p` lies in it if and only if `Υ_γ` sends
 `linkSource p` to `linkTarget p`. -/
