@@ -499,6 +499,11 @@ lemma Period.IsPotentiallyCrystalline.index_mul_index_dual [𝒥 : OverGp Γ ℓ
   -- Each index is `ℓᵐ` to the power of the rank.
   simp [← pow_add, ← pow_mul, ← mul_add, h_sum, mul_assoc]
 
+private lemma card_of_surjective_ker_eq_pPowMultiples {m : ℕ} {V : Type} [AddCommGroup V]
+    {q : L →+ V} (hq_surj : Surjective q) (hq_ker : q.ker = pPowMultiples L m) :
+    Nat.card V = (ℓ ^ m) ^ finrank ℤ_[ℓ] L := by
+  simpa [hq_ker] using (index_comap_of_surjective ⊥ hq_surj).symm
+
 /-- The pairing `b` reduced modulo `ℓᵐ` gives a map from `L'` onto the dual `Hom(V, Q̄_ℓ^×)` of
 `V = L / ℓᵐ L`, with kernel `ℓᵐ L'`. -/
 lemma Period.exists_dual_reduction (b : L' ≃ₗ[ℤ_[ℓ]] Dual ℤ_[ℓ] L) {m : ℕ} {V : Type}
@@ -533,8 +538,7 @@ lemma Period.exists_dual_reduction (b : L' ≃ₗ[ℤ_[ℓ]] Dual ℤ_[ℓ] L) {
     exact ⟨(b x).codRestrictOfInjective _ h_inj hx, codRestrictOfInjective_comp_apply _ _ h_inj hx⟩
   refine ⟨r, hr, hr_ker, r.range_eq_top.mp (eq_top_of_card_eq _ ?_)⟩
   -- `L' / ℓᵐ` and the dual of `V` both have the order of `V`
-  have h_card : Nat.card V = (ℓ ^ m) ^ finrank ℤ_[ℓ] L := by
-    simpa [hq_ker] using (index_comap_of_surjective ⊥ hq_surj).symm
+  have h_card := card_of_surjective_ker_eq_pPowMultiples hq_surj hq_ker
   rw [← index_ker, hr_ker, index_pPowMultiples, b.finrank_eq, finrank_linearMap_self,
     card_congr (β := _ →* _ˣ) AddMonoidHom.toMultiplicativeLeft,
     CommGroup.card_monoidHom_of_hasEnoughRootsOfUnity, Nat.card_congr Multiplicative.toAdd, h_card]
@@ -737,8 +741,7 @@ lemma Period.IsPotentiallyCrystalline.card_pairingAnnihilator_mul_card_dvd
       ((ℓ ^ m) ^ finrank ℤ_[ℓ] L) ^ (2 + 𝒥.toGp.range.index) := by
   -- A Tate twist of `L`, `L'` has the same reductions, and its crystalline cocycles form an
   -- orthogonal pair of the largest size over an open subgroup `U` of index prime to `ℓ`.
-  have h_card : Nat.card V = (ℓ ^ m) ^ finrank ℤ_[ℓ] L := by
-    simpa [hq_ker] using (index_comap_of_surjective (f := q.toAddMonoidHom) ⊥ hq_surj).symm
+  have h_card := card_of_surjective_ker_eq_pPowMultiples hq_surj hq_ker
   -- An open normal `Q` fixes `V`; over `U` every element acts on `V` with `ℓ`-power order.
   obtain ⟨Q, hQ⟩ := exists_openNormalSubgroup_apply_eq V.continuous
   obtain ⟨U, -, hU_index, hU_pow⟩ := DiscreteModule.exists_open_sylow ℓ Q
