@@ -338,6 +338,7 @@ lemma GaugeLe.restrictToY_of_diag {d : Gf D.E (D.X D.m)}
       NormedField.valuation.comap (weightEmbedding ιₚ τ)
         (if star (inducedPlace τ) ∈ D.piNPlaces then D.N else 1) := by
     rw [(isEquiv_placeOfEmb (weightEmbedding ιₚ τ)).eq_iff]
+    clear h_intertwine h_restrict h_block h_integral hφ hd
     split <;> simp_all [inducedPlace, placeOfEmb_comp_star, ← v_algebraMap_eq_valuation,
       v_algebraMap_eq_intValuation, intValuation_piN, D.isSplitLevel_piNPlaces.v_natCast, piNPlaces]
   have h_scalar : ‖ιₚ a‖ = ‖((∏ τ, s τ ^ D.branchExponent τ : ℂ_[p]ˣ) : ℂ_[p])‖ := by
