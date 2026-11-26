@@ -984,7 +984,7 @@ lemma New.SiegelWeil.eq_zero_of_le_tsum_zeroTerm {E n m : Type} {p : ℕ} [Field
   obtain ⟨a, ha⟩ := NormedField.exists_lt_norm ℂ (σ 1)
   have h_large : ‖ℓ (splitWeil S T (1, 1) ((a / ℓ φ) • φ))‖ - σ 1 ≤ 0 := h_le (by simp [hφ]) 1
   rw [hℓ 1, map_smul, smul_eq_mul, div_mul_cancel₀ _ h_ne] at h_large
-  linarith
+  exact ha.not_ge (sub_nonpos.mp h_large)
 
 end CuspidalVanishing
 
