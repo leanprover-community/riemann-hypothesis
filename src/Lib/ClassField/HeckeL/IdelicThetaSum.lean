@@ -247,15 +247,6 @@ private lemma principalIdelesToRange_injective :
     Function.Injective (principalIdelesToRange (K := K)) :=
   Subtype.map_injective _ (val_injective.prodMap val_injective)
 
-/-- If the image of `K` in `mixedSpace K × 𝔸f K` is discrete, so are the principal ideles: they map
-continuously and injectively to it. -/
-lemma discreteTopology_principalIdeles
-    (h_disc :
-      DiscreteTopology ((mixedEmbedding K).prod (algebraMap K (𝔸f K))).toAddMonoidHom.range) :
-    DiscreteTopology (principalIdeles K) :=
-  .of_continuous_injective (f := principalIdelesToRange)
-    ((continuous_val.prodMap continuous_val).subtype_map _) principalIdelesToRange_injective
-
 /-- Let the image of `K` in `mixedSpace K × 𝔸f K` be discrete. For `ρ ≤ 1`, an idele `b` and a
 principal idele `γ`, the sum of `adelicTent ρ d` at the points `b * γ * y`, `y` in the image of
 `K`, is its sum at the points `γ' * b`, `γ'` principal. The term of `y = 0` vanishes, and the
@@ -374,7 +365,9 @@ lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
     (isOpen_adelicBox d _).measure_ne_zero volume ⟨0, by simpa [adelicBox] using hr_pos⟩
   obtain ⟨n, hn, hn_vol⟩ : ∃ n : ℕ, 0 < n ∧ 1 < (n : ℝ≥0∞) * volume (adelicBox d (r / 6)) :=
     exists_nat_pos_mul_gt h_box_ne_zero one_ne_top
-  refine ⟨discreteTopology_principalIdeles h_disc, (finrank ℚ K : ℝ)⁻¹, by simp [finrank_pos],
+  refine ⟨.of_continuous_injective (f := principalIdelesToRange)
+    ((continuous_val.prodMap continuous_val).subtype_map _) principalIdelesToRange_injective,
+    (finrank ℚ K : ℝ)⁻¹, by simp [finrank_pos],
     R * (n : ℝ) ^ (finrank ℚ K : ℝ)⁻¹, fun l hl ↦ ?_⟩
   let t : ℝ := ((n : ℝ) * l) ^ (finrank ℚ K : ℝ)⁻¹
   have ht : 0 < t := by positivity
