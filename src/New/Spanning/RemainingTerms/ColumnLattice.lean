@@ -105,7 +105,7 @@ omit [Fintype ι] in
 /-- If `q` and `q'` are matrices whose columns lie in `Λ ∩ X₀`, for the lattice `Λ` of the class
 `c`, then the hermitian products of their columns, the entries of `qᴴ * q'`, are algebraic
 integers. Here `E` contains a primitive root of unity of order `5040`. -/
-lemma isIntegral_conjTranspose_mul {S : Filling E 𝔰} {c : S.Classes} [HasPrimitiveRoot5040 E]
+lemma isIntegral_conjTranspose_mul {S : Filling E 𝔰} {c : S.Classes}
     {q q' : Matrix 𝔰.κ ι E} (hq : IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix q))
     (hq' : IsIntMatrix (Ô E) (S.classCoordX₀ c * finAdeleMatrix q')) (l l' : ι) :
     IsIntegral ℤ ((qᴴ * q') l l') := by
