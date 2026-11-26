@@ -71,7 +71,6 @@ private lemma ringHom_map_sub {A B : Type*} [Ring A] [Ring B] (f : A →+* B) (x
 
 /-- The `R`-algebra isomorphism from `N × N` matrices whose entries are `σ × σ` matrices over `L`
 onto `(N × σ) × (N × σ)` matrices over `L`, flattening blocks. -/
-@[simps!]
 def blockFlattenAlgEquiv (N : Type*) [Fintype N] [DecidableEq N] :
     Matrix N N (Matrix σ σ L) ≃ₐ[R] Matrix (N × σ) (N × σ) L :=
   { compRingEquiv N σ L with
@@ -335,7 +334,14 @@ lemma Selmer.exists_ribet_polynomial [Nonempty σ] (ρ : Λ →ₐ[R] Matrix σ 
         smul_mul_assoc, one_mul, mul_smul_comm, ← algHom_map_mul ρ]
     rw [h_prod, trace_smul, Algebra.smul_def]
 
-private lemma exists_family_algHom_charpoly_mem_aux {A : Type*} [CommRing A] [Algebra A (Y → L)]
+/-- Let `u x` (`x : Y`) be representations of `O[G]` such that the coefficients of the
+characteristic polynomials of the group elements, as functions `Y → L` of `x`, lie in the image of
+`A`, and let `κ : O → A` agree with `algebraMap O (Y → L)` after `algebraMap A (Y → L)`. Then the
+family lifts to an `A`-algebra map `ρ` from `A[G]` to matrices over `Y → L` which (a) is `u x` at
+the point `x` on elements coming from `O[G]`, and (b) has all its characteristic polynomials with
+coefficients in the image of `A` (Amitsur's formula passes from the group elements to their
+span). -/
+lemma exists_family_algHom_charpoly_mem {A : Type*} [CommRing A] [Algebra A (Y → L)]
     (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* A)
     (hκ : (algebraMap A (Y → L)).comp κ = algebraMap O (Y → L))
     (h_coeff : ∀ (g : G) (k : ℕ),
@@ -413,7 +419,7 @@ private lemma Selmer.det_mem_of_coeff_mem_aux {A : Type*} [CommRing A] [Algebra 
         (algebraMap A (Y → L)).range)
     (w : O[G]) :
     (fun x : Y ↦ algebraMap O L (u x w).det) ∈ (algebraMap A (Y → L)).range := by
-  obtain ⟨ρ, hρ, h_charpoly⟩ := exists_family_algHom_charpoly_mem_aux u κ hκ h_coeff
+  obtain ⟨ρ, hρ, h_charpoly⟩ := exists_family_algHom_charpoly_mem u κ hκ h_coeff
   have h_det : (fun x : Y ↦ algebraMap O L (u x w).det) = (ρ (mapRingHom G κ w)).det := by
     funext x
     change algebraMap O L (u x w).det = Pi.evalRingHom (fun _ : Y ↦ L) x (ρ (mapRingHom G κ w)).det
@@ -457,7 +463,11 @@ lemma Selmer.mem_traceIdeal {ρ : Λ →ₐ[R] Matrix σ σ L} {𝒥 : Submodule
     w ∈ Selmer.traceIdeal ρ 𝒥 ↔ ∀ s : Λ, (ρ (w * s)).trace ∈ 𝒥 := by
   rw [Selmer.traceIdeal, TwoSidedIdeal.mem_mk', Set.mem_ofPred_eq]
 
-private lemma Selmer.trace_mul_mem_of_mem_span_aux {A : Type*} [CommSemiring A] [Algebra A (Y → L)]
+/-- Let `u x` (`x : Y`) be representations of `O[G]`, and let `ρ` be a representation of `A[G]`
+over `Y → L` that is `u x` at the point `x` on elements coming from `O[G]` along `κ`. If `r` lies in
+the left ideal spanned by the `w` such that the trace of `u x (w g)`, as a function of `x`, lies in
+`𝒥` for every group element `g`, then the trace of `ρ (b r)` lies in `𝒥` for every `b : A[G]`. -/
+lemma Selmer.trace_mul_mem_of_mem_span {A : Type*} [CommSemiring A] [Algebra A (Y → L)]
     (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* A)
     (ρ : A[G] →ₐ[A] Matrix σ σ (Y → L))
     (hρ : ∀ (x : Y) (r : O[G]) (i j : σ), ρ (mapRingHom G κ r) i j x = algebraMap O L (u x r i j))
@@ -497,21 +507,9 @@ private lemma Selmer.trace_mul_mem_of_mem_span_aux {A : Type*} [CommSemiring A] 
     rw [smul_eq_mul, ringHom_map_mul (mapRingHom G κ), ← mul_assoc]
     exact hr (b * mapRingHom G κ s)
 
-/-- Let `u x` (`x : Y`) be representations of `O[G]`, and let `ρ` be a representation of `S[G]` over
-`Y → L` that is `u x` at the point `x` on elements coming from `O[G]` along `κ`. If `r` lies in the
-left ideal spanned by the `w` such that the trace of `u x (w g)`, as a function of `x`, lies in `𝒥`
-for every group element `g`, then the trace of `ρ (b r)` lies in `𝒥` for every `b : S[G]`. -/
-lemma Selmer.trace_mul_mem_of_mem_span (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* S)
-    (ρ : S[G] →ₐ[S] Matrix σ σ (Y → L))
-    (hρ : ∀ (x : Y) (r : O[G]) (i j : σ), ρ (mapRingHom G κ r) i j x = algebraMap O L (u x r i j))
-    (𝒥 : Submodule S (Y → L)) {r : O[G]}
-    (hr : r ∈ span O[G] {w : O[G] | ∀ g : G,
-      (fun x : Y ↦ algebraMap O L (u x w * u x (.single g 1)).trace) ∈ 𝒥})
-    (b : S[G]) :
-    (ρ (b * mapRingHom G κ r)).trace ∈ 𝒥 :=
-  Selmer.trace_mul_mem_of_mem_span_aux (L := L) (A := S) u κ ρ hρ 𝒥 hr b
-
-private lemma Selmer.trace_mul_aeval_apply_aux {A Λ : Type*} [CommSemiring A] {instR : Semiring Λ}
+/-- Where `ρ₁ ρ₀` acts as `0`, `ρ₁ P(ρ₀)` acts as `P(0) ρ₁`: at a point `x` where every entry of
+`ρ (ρ₁ ρ₀)` vanishes, the trace of `ρ (ρ₁ P(ρ₀))` is `P(0)` times the trace of `ρ ρ₁`. -/
+lemma Selmer.trace_mul_aeval_apply {A Λ : Type*} [CommSemiring A] {instR : Semiring Λ}
     {instAL : Algebra A Λ} [Algebra A (Y → L)] (ρ : Λ →ₐ[A] Matrix σ σ (Y → L)) (ρ₀ ρ₁ : Λ)
     (P : A[X]) (x : Y) (h_zero : ∀ i j : σ, ρ (ρ₁ * ρ₀) i j x = 0) :
     (ρ (ρ₁ * aeval ρ₀ P)).trace x = algebraMap A (Y → L) (P.coeff 0) x * (ρ ρ₁).trace x := by
@@ -528,14 +526,11 @@ private lemma Selmer.trace_mul_aeval_apply_aux {A Λ : Type*} [CommSemiring A] {
     ρ.commutes, ← Algebra.smul_def, trace_add, trace_smul, Pi.add_apply, h_vanish, zero_add,
     Algebra.smul_def, Pi.mul_apply]
 
-/-- Where `ρ₁ ρ₀` acts as `0`, `ρ₁ P(ρ₀)` acts as `P(0) ρ₁`: at a point `x` where every entry of
-`ρ (ρ₁ ρ₀)` vanishes, the trace of `ρ (ρ₁ P(ρ₀))` is `P(0)` times the trace of `ρ ρ₁`. -/
-lemma Selmer.trace_mul_aeval_apply (ρ : S[G] →ₐ[S] Matrix σ σ (Y → L)) (ρ₀ ρ₁ : S[G]) (P : S[X])
-    (x : Y) (h_zero : ∀ i j : σ, ρ (ρ₁ * ρ₀) i j x = 0) :
-    (ρ (ρ₁ * aeval ρ₀ P)).trace x = (P.coeff 0 : Y → L) x * (ρ ρ₁).trace x :=
-  Selmer.trace_mul_aeval_apply_aux ρ ρ₀ ρ₁ P x h_zero
-
-private lemma Selmer.exists_mul_eq_algebraMap_det_aux {A Λ : Type*} [CommRing A] [Ring Λ]
+/-- Cayley–Hamilton for a family. Let `ρ` be a representation of `Λ` over `Y → L` whose
+characteristic polynomials have their coefficients in the image of `A`, and let `w' : Λ` act
+through `ρ` as `u x w` at each point `x`. Then the function `x ↦ det (u x w)` is the image of an
+element `D` of `A`, and `ρ` sends some left multiple of `w'` to the scalar matrix `D`. -/
+lemma Selmer.exists_mul_eq_algebraMap_det {A Λ : Type*} [CommRing A] [Ring Λ]
     {instAL : Algebra A Λ} [Algebra A (Y → L)] (u : Y → O[G] →ₐ[O] Matrix σ σ O)
     (ρ : Λ →ₐ[A] Matrix σ σ (Y → L))
     (h_charpoly : ∀ (a : Λ) (k : ℕ), (ρ a).charpoly.coeff k ∈ (algebraMap A (Y → L)).range)
@@ -551,20 +546,6 @@ private lemma Selmer.exists_mul_eq_algebraMap_det_aux {A Λ : Type*} [CommRing A
     ext i j
     exact hρw x i j
   · rw [algHom_map_mul ρ, hv, Algebra.algebraMap_eq_smul_one]
-
-/-- Cayley–Hamilton for a family. Map `O[G]` to `S[G]` along `κ : O → S`. Let `ρ` be a
-representation of `S[G]` over `Y → L` that is `u x` on `O[G]` at each point `x` and has its
-characteristic polynomials over `S`. Then for `w : O[G]` the function `x ↦ det (u x w)` is an
-element `D` of `S`, and `ρ` sends some left multiple of `w` to the scalar matrix `D`. -/
-lemma Selmer.exists_mul_eq_algebraMap_det (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ : O →+* S)
-    (ρ : S[G] →ₐ[S] Matrix σ σ (Y → L))
-    (hρ : ∀ (x : Y) (r : O[G]) (i j : σ), ρ (mapRingHom G κ r) i j x = algebraMap O L (u x r i j))
-    (h_charpoly : ∀ (a : S[G]) (k : ℕ), (ρ a).charpoly.coeff k ∈ (algebraMap S (Y → L)).range)
-    (w : O[G]) :
-    ∃ D : S, ((D : Y → L) = fun x : Y ↦ algebraMap O L (u x w).det) ∧
-      ∃ v : S[G], ρ (v * mapRingHom G κ w) = algebraMap S (Matrix σ σ (Y → L)) D :=
-  Selmer.exists_mul_eq_algebraMap_det_aux u ρ h_charpoly w (mapRingHom G κ w) (fun x i j ↦
-    hρ x w i j)
 
 /-- A ring homomorphism `f` sends the left ideal spanned by the `y i` into the left ideal spanned by
 the `f (y i)`. -/
@@ -622,7 +603,7 @@ private lemma Selmer.exists_ribet_element_of_tied_rows_aux {A r : Type*} [CommRi
         (μ₀ * (comp N N r r O (B.map (ψ x))).det * ∏ e : Fin t, (B.map (η e)).det) := by
   have : Nonempty σ := blockEquiv.symm.nonempty
   let ι : O[G] →+* A[G] := mapRingHom G κ
-  obtain ⟨ρ, hρι, h_charpoly⟩ := exists_family_algHom_charpoly_mem_aux u κ hκ h_coeff
+  obtain ⟨ρ, hρι, h_charpoly⟩ := exists_family_algHom_charpoly_mem u κ hκ h_coeff
   let 𝔞 : TwoSidedIdeal A[G] := Selmer.traceIdeal ρ 𝒥
   have mem_𝔞 (w : A[G]) : w ∈ 𝔞 ↔ ∀ s : A[G], (ρ (w * s)).trace ∈ 𝒥 := Selmer.mem_traceIdeal
   have h_span (w : O[G]) (hw : w ∈ span O[G] (Set.range y)) :
@@ -633,7 +614,7 @@ private lemma Selmer.exists_ribet_element_of_tied_rows_aux {A r : Type*} [CommRi
     obtain ⟨a, ha, z, hz, h_eq⟩ := hB_tied i
     have h_a : ι a ∈ 𝔞 := (mem_𝔞 _).2 fun s ↦ by
       rw [algHom_map_mul ρ, trace_mul_comm, ← algHom_map_mul ρ]
-      exact Selmer.trace_mul_mem_of_mem_span_aux u κ ρ hρι 𝒥 ha s
+      exact Selmer.trace_mul_mem_of_mem_span u κ ρ hρι 𝒥 ha s
     refine ⟨ι a, h_a, ι z, h_span z hz, ?_⟩
     rw [← ringHom_map_mul ι, ← ringHom_map_add ι, ← h_eq]
     simp only [mulVec, dotProduct, Matrix.map_apply, Function.comp_apply, map_sum,
@@ -649,7 +630,7 @@ private lemma Selmer.exists_ribet_element_of_tied_rows_aux {A r : Type*} [CommRi
   obtain ⟨f, hf⟩ := h_tr (ι ρ₁)
   refine ⟨f, fun w hw ↦ ?_, fun x ↦ ?_⟩
   · obtain ⟨D, hD, v, hv⟩ :=
-      Selmer.exists_mul_eq_algebraMap_det_aux u ρ h_charpoly w (ι w) (fun x i j ↦ hρι x w i j)
+      Selmer.exists_mul_eq_algebraMap_det u ρ h_charpoly w (ι w) (fun x i j ↦ hρι x w i j)
     obtain ⟨b, hb, hb_eq⟩ := h_δ (ι ρ₁) D ⟨v * ι w, smul_mem _ v (h_span w hw), hv⟩
     rw [← hD, mul_comm, hf, hb_eq, ← mul_one b]
     exact (mem_𝔞 b).1 hb 1
@@ -659,7 +640,7 @@ private lemma Selmer.exists_ribet_element_of_tied_rows_aux {A r : Type*} [CommRi
       rw [← ringHom_map_mul ι, hρι, h_zero, Matrix.zero_apply, ringHom_map_zero]
     have h_value : algebraMap A (Y → L) f x =
         algebraMap A (Y → L) (P.coeff 0) x * algebraMap O L (u x ρ₁).trace := by
-      rw [hf, Selmer.trace_mul_aeval_apply_aux ρ (ι ρ₀) (ι ρ₁) P x h_zero_x]
+      rw [hf, Selmer.trace_mul_aeval_apply ρ (ι ρ₀) (ι ρ₁) P x h_zero_x]
       congr 1
       simp only [Matrix.trace, diag_apply, Finset.sum_apply, map_sum]
       exact Finset.sum_congr rfl fun i _ ↦ hρι x ρ₁ i i
