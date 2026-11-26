@@ -211,14 +211,36 @@ private lemma pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu
     obtain ⟨w, hw_smul, hω_app⟩ := hω (HodgeTatePair.toHodgeTest.obj X) z
     simp [D, α, ← Functor.map_comp]
     refine Eq.trans ?_ (AddMonoidHom.add_apply ..).symm
-    iterate 4 erw [AddMonoidHom.comp_apply]
-    have h_map : (N.map q).hom (.of y) =
-        FreeAddCommGroup.of (((unimodular (d := 1)).toFunctor.map q) y) := by
+    let units := (thickeningOver ⋙ forget₂ (CommAlg k) CommRingCat ⋙ Gm).obj Y.test
+    let toUnits : HodgeTatePair.formCoeff.obj Y ⟶ units :=
+      uliftFunctor.map (AddCommGrpCat.ofHom
+        (@ExteriorAlgebra.algebraMapInv (HodgeTatePair.toHodgeTest.obj Y).baseAlg _
+          ((HodgeTatePair.toHodgeTest.obj Y).Index → Y.GenericRing) ..).toAddMonoidHom) ≫
+        oneSubMu.app Y.test
+    let contract := (HodgeTatePair.contractionCocycle.component f).hom
+    let form := (ω.app (HodgeTatePair.toHodgeTest.obj X)).hom
+    change _ = toUnits.hom (contract (form ((N.map q).hom (.of y)))) + _
+    have h_map : (N.map q).hom (.of y) = FreeAddCommGroup.of z := by
       change FreeAddCommGroup.map _ (.of y) = _
       exact FreeAddCommGroup.map_of_apply y
-    erw [h_map]
-    erw [AddMonoidHom.comp_apply, AddMonoidHom.comp_apply]
-    erw [hω_app, ← sub_eq_iff_eq_add', freeAb.desc_of, Gm.ext]
+    have h_cocycle := (congrArg (fun u ↦ toUnits.hom (contract (form u))) h_map).trans
+      (congrArg (fun u ↦ toUnits.hom (contract u)) hω_app)
+    refine Eq.trans ?_ (congrArg (fun u ↦ u + (_ : units)) h_cocycle).symm
+    apply sub_eq_iff_eq_add'.mp
+    apply Gm.ext.2
+    let Bₓ := HodgeTatePair.pairAlg.obj X
+    let lhsMap := (Gm.map (CommRingCat.ofHom
+      ((thickeningOver.map f.fst).hom.toRingHom.comp
+        ((proj.app X.test).hom'.pullbackFst (TrivSqZeroExt.fstHom k _
+          (Fin X.rank → X.GenericRing))).toRingHom))).hom
+    have h_gen : (Gm.ofCoord.app Bₓ).hom (.of y) = ⟨(isUnit_of_unimodular_one y).unit⟩ :=
+      freeAb.desc_of ..
+    let target := CommRingCat.of (thickeningOver.obj Y.test)
+    let correction : Gm target := toUnits.hom (contract ⟨ExteriorAlgebra.ι _ w⟩)
+    let leftValue (u : Gm ((forget₂ (CommAlg k) CommRingCat).obj Bₓ)) :=
+      let a : Gm target := lhsMap u
+      (a - correction).down.val
+    refine (congrArg leftValue h_gen).trans ?_
     change _ *
       (1 - mulMu (HodgeTatePair.toTest.obj Y)
         (-ExteriorAlgebra.algebraMapInv (contraction f.2 (.ι _ w)))) = _ + _
@@ -239,11 +261,11 @@ private lemma pull_mk₀_comp_contractionPow_one_eq_pull_extClass_oneSubMu
         genericOver.map f.fst a :=
       (proj.naturality_apply f.fst (v 0).val.fst).trans
         (congrArg (genericOver.map f.fst) (v 0).property)
-    rw [mul_one_sub]
     let b : thickeningOver.obj X.test := (v 0).val.1
     let b' := thickeningOver.map f.fst b
-    change b' - b' * mulMu Y.test (-ExteriorAlgebra.algebraMapInv
-      (contraction f.snd (.ι _ w'))) = b' + mulMu Y.test (f.snd m).fst
+    change b' * (1 - mulMu Y.test (-ExteriorAlgebra.algebraMapInv
+      (contraction f.snd (.ι _ w')))) = b' + mulMu Y.test (f.snd m).fst
+    rw [mul_one_sub]
     rw [← mulMu_proj_mul, h_proj]
     let a' : Y.GenericRing := genericOver.map f.fst a
     change b' - mulMu Y.test (a' * -ExteriorAlgebra.algebraMapInv
