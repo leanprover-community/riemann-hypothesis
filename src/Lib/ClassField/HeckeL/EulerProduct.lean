@@ -162,6 +162,20 @@ private lemma norm_neg_mul_cpow_le_inv_of_norm_le_one (ha : ∀ v : FinPlace K, 
     (hs : 1 ≤ s) (v : FinPlace K) : ‖-(a v * v.q ^ (-s : ℂ))‖ ≤ (v.q : ℝ)⁻¹ := by
   simpa [Real.rpow_neg] using norm_neg_mul_cpow_le_rpow_of_norm_le_one ha hs v
 
+/-- For `‖a v‖ ≤ 1` and real `1 ≤ σ ≤ s`, the logarithm of the Euler factor `1 - a v * q ^ (-s)` has
+norm at most `2 * q ^ (-σ)`. -/
+lemma norm_log_one_add_neg_mul_cpow_le_of_norm_le_one (ha : ∀ v : FinPlace K, ‖a v‖ ≤ 1)
+    {σ : ℝ} (hσ : 1 ≤ σ) (hσs : σ ≤ s) (v : FinPlace K) :
+    ‖Complex.log (1 + -(a v * v.q ^ (-s : ℂ)))‖ ≤ 2 * v.q ^ (-σ) := by
+  set w : ℂ := -(a v * v.q ^ (-s : ℂ))
+  have h_inv : ‖w‖ ≤ (v.q : ℝ)⁻¹ := norm_neg_mul_cpow_le_inv_of_norm_le_one ha (hσ.trans hσs) v
+  have h_half : ‖w‖ ≤ 1 / 2 := by
+    rw [one_div]
+    exact h_inv.trans (inv_anti₀ two_pos (mod_cast v.one_lt_q))
+  exact (norm_log_one_add_half_le_self h_half).trans
+    (mul_le_mul (by norm_num) (norm_neg_mul_cpow_le_rpow_of_norm_le_one ha hσs v)
+      (norm_nonneg w) zero_le_two)
+
 /-- For `‖a v‖ ≤ 1` and real `s ≥ 1`, the logarithm of the Euler factor `1 - a v * q ^ (-s)`
 differs from `-(a v * q ^ (-s))` (if `q` is prime) or from `0` (if not) by at most `2 / p ^ 2`, with
 `p` the least prime factor of `q`. -/
@@ -170,20 +184,24 @@ lemma norm_log_one_add_neg_mul_cpow_sub_ite_le_of_norm_le_one (ha : ∀ v : FinP
     ‖Complex.log (1 + -(a v * v.q ^ (-s : ℂ))) -
         (if v.q.Prime then -(a v * v.q ^ (-s : ℂ)) else 0)‖ ≤ 2 / v.q.minFac ^ 2 := by
   set w : ℂ := -(a v * v.q ^ (-s : ℂ))
-  have h_inv : ‖w‖ ≤ (v.q : ℝ)⁻¹ := norm_neg_mul_cpow_le_inv_of_norm_le_one ha hs v
-  have h_half : ‖w‖ ≤ 2⁻¹ := h_inv.trans (inv_anti₀ two_pos (mod_cast v.one_lt_q))
   split_ifs with hq
   · -- `q` is its own least factor, and `‖log (1 + w) - w‖ ≤ ‖w‖ ^ 2 / (1 - ‖w‖) / 2 ≤ 1 / q ^ 2`.
+    have h_inv : ‖w‖ ≤ (v.q : ℝ)⁻¹ := norm_neg_mul_cpow_le_inv_of_norm_le_one ha hs v
+    have h_half : ‖w‖ ≤ 2⁻¹ := h_inv.trans (inv_anti₀ two_pos (mod_cast v.one_lt_q))
     grw [norm_log_one_add_sub_self_le (h_half.trans_lt (by norm_num)),
       ← sub_le_sub_left h_half, h_inv, hq.minFac_eq]
     ring_nf
     linarith [sq_nonneg (v.q : ℝ)⁻¹]
   · -- Nothing is subtracted, `‖log (1 + w)‖ ≤ 2 / q` and `minFac q ^ 2 ≤ q`.
-    have h_log : ‖log (1 + w)‖ ≤ 2 * ‖w‖ := by grind [norm_log_one_add_half_le_self, norm_nonneg]
     have h_sq : ((v.q.minFac : ℝ) ^ 2) ≤ v.q :=
       mod_cast Nat.minFac_sq_le_self (zero_lt_one.trans v.one_lt_q) hq
-    rw [sub_zero, div_eq_mul_inv]
-    grw [h_log, h_inv, inv_anti₀ (pow_pos (mod_cast v.q.minFac_pos) 2) h_sq]
+    rw [sub_zero]
+    calc
+      ‖log (1 + w)‖ ≤ 2 / v.q := by
+        simpa only [Real.rpow_neg_one, div_eq_mul_inv] using
+          norm_log_one_add_neg_mul_cpow_le_of_norm_le_one ha (le_refl 1) hs v
+      _ ≤ 2 / v.q.minFac ^ 2 := div_le_div_of_nonneg_left zero_le_two
+        (pow_pos (mod_cast v.q.minFac_pos) 2) h_sq
 
 /-- For `‖a v‖ ≤ 1` and real `s ≥ 1`, the Euler factor `1 - a v * q ^ (-s)` lies in the slit plane,
 where the logarithm is continuous. -/
@@ -191,17 +209,6 @@ lemma one_add_neg_mul_cpow_mem_slitPlane_of_norm_le_one (ha : ∀ v : FinPlace K
     (hs : 1 ≤ s) (v : FinPlace K) : 1 + -(a v * v.q ^ (-s : ℂ)) ∈ slitPlane :=
   mem_slitPlane_of_norm_lt_one ((norm_neg_mul_cpow_le_inv_of_norm_le_one ha hs v).trans_lt
     (inv_lt_one_of_one_lt₀ (mod_cast v.one_lt_q)))
-
-/-- For `‖a v‖ ≤ 1` and real `1 ≤ σ ≤ s`, the logarithm of the Euler factor `1 - a v * q ^ (-s)` has
-norm at most `2 * q ^ (-σ)`. -/
-lemma norm_log_one_add_neg_mul_cpow_le_of_norm_le_one (ha : ∀ v : FinPlace K, ‖a v‖ ≤ 1)
-    {σ : ℝ} (hσ : 1 ≤ σ) (hσs : σ ≤ s) (v : FinPlace K) :
-    ‖Complex.log (1 + -(a v * v.q ^ (-s : ℂ)))‖ ≤ 2 * v.q ^ (-σ) := by
-  set w : ℂ := -(a v * v.q ^ (-s : ℂ))
-  have h_inv : ‖w‖ ≤ (v.q : ℝ)⁻¹ := norm_neg_mul_cpow_le_inv_of_norm_le_one ha (hσ.trans hσs) v
-  have h_half : ‖w‖ ≤ 2⁻¹ := h_inv.trans (inv_anti₀ two_pos (mod_cast v.one_lt_q))
-  have h_log : ‖log (1 + w)‖ ≤ 2 * ‖w‖ := by grind [norm_log_one_add_half_le_self, norm_nonneg]
-  grw [h_log, norm_neg_mul_cpow_le_rpow_of_norm_le_one ha hσs v]
 
 /-- If `‖a v‖ ≤ 1` and `s > 1`, the series `∑ v, log (1 - a v * q ^ (-s))` converges, its sum is
 continuous at `s`, and `New.eulerProd a s` is the exponential of minus this sum. -/
