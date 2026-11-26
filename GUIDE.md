@@ -27,6 +27,20 @@ The folders of `New` follow the order of the argument. The background results th
 | Lower bound: congruences | `New/Congruences` | Congruences and the choice of twists (`FitTwistsExist`); Congruences and Galois representations (`GaloisRepresentations`); Congruences to first order (`FirstOrder`); Anticyclotomic twists with small Selmer groups (`Selmer`); The local loss (`LocalLoss`); Lifting crystalline extension classes in large weight (`Lifting`) |
 | Supplement | `New/Appendix` | Discrete series with a large gap (`DiscreteSeries`) |
 
+For the exceptional-prime divisibility step, start with
+[`HeckeEdges`](src/New/UpperBound/Divisibility/HeckeEdges.lean):
+`isOntoUpToColength_scaledHeckeOperator_of_frobeniusCycle` transfers the edge bound to a
+single scaled Hecke operator, given a compatible Frobenius cycle.
+[`MarkOperator`](src/New/UpperBound/Divisibility/MarkOperator.lean) constructs that cycle.
+For the lattice `M` and operator `y`, “onto up to colength” says that `y` preserves `M`
+and that, for some natural number `i ≤ c`, `y(M) + p^j₀ M` has index dividing `p^i` in `M`,
+in the sense of [`ColengthDvd`](src/New/Reduction/Lattices/Colength.lean).
+[`LocalDivisibility`](src/New/UpperBound/Divisibility/LocalDivisibility.lean) applies the bound
+to the product of the marked operators raised to the number of lifts, and combines it
+with the valuation estimate in `exists_colengthDvd_gaugeLe_compositeLift`.
+[`ShortAndEnough`](src/New/Reduction/ShortAndEnough.lean) uses the resulting sublattice
+to bound the index in Theorem A(b).
+
 `Lib` proves parts of several standard theories, often in a weaker form that suffices here and with its own definitions. For example, Galois representations match the Hecke polynomials for most Frobenii only, up to each η > 0 (`GaloisRep.Attached`), local polynomials only kill and need not be characteristic, and no Weil–Deligne representation is built. Each has an overview in the head of the file that holds the theorem named here: class field theory and duality, `artin_reciprocity`; ℓ-adic and Hodge cohomology, `Variety.ellAdicCohom.woods_hole`; odd classes over cyclotomic fields, `exists_length_shaOdd_le`; Galois representations of eigenforms, `GaloisRep.sphericalCompat_std`; p-adic comparison, `Variety.ellAdicCohom.isCrystalline_and_linearFrob_rel`; p-adic Hodge theory, `GaloisRep.local_clauses_of_trace_limit`; Kisin modules, `Lift.KummerChart.JumpLattice.frame_theorem`; Shimura varieties, `Variety.Model.exists_galois_rep`. Other inputs: the Siegel–Weil and Rallis formulas in `Lib/SiegelWeil`, a simple trace formula in `Lib/Adelic/TraceFormula`, a Chowla–Selberg formula in `Lib/CM/ChowlaSelberg`, primes in progressions in `Lib/Analytic/PrimeNumberTheorem`, and the choice of d, a zero-density count from Pólya–Vinogradov, in `Lib/Analytic/QuadraticTwist`.
 
 ## 2. Glossary
