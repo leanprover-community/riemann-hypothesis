@@ -738,7 +738,7 @@ private lemma map_minor {h : ℕ} (I : Fin h → m) :
   simp
 
 @[simp]
-lemma map_nablaBasis [∀ τ : Φ, DecidableEq (n τ)] (i : WeylIndexFamily n κ) :
+lemma map_nablaBasis (i : WeylIndexFamily n κ) :
     MvPolynomial.map φ (nablaBasis R n κ i) = nablaBasis S n κ i := by
   simp [nablaBasis, tableauPoly, map_minor]
 
