@@ -341,15 +341,31 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
   have hg_acc : (g : Matrix n n ℂ).IsAccretive :=
     isAccretive_of_norm_sub_one_lt (hg.trans (by norm_num))
   have hug_acc : ((1 - u) * (g : Matrix n n ℂ)).IsAccretive := by
-    simpa [y, show r 0 = 0 from rfl] using hy_acc 0
+    simpa only [y, mul_assoc, show r 0 = 0 from rfl, sub_zero, mul_one] using hy_acc 0
   have h_coeff : l.dsCoeff g = l.flenstedJensen 1 (y l) := by
-    have h_left := flenstedJensen_shift_eq_conj hl (u := u) (by simp [u, r]; grind) hg_acc hug_acc
+    have h_left := flenstedJensen_shift_eq_conj hl (u := u)
+      (by
+        simp only [not_and, lowerMask, entryMask, LinearMap.coe_toContinuousLinearMap',
+          LinearMap.coe_mk, AddHom.coe_mk, Pi.neg_apply, neg_lt_neg_iff, of_apply, ite_eq_right_iff,
+          and_imp, u, r]
+        grind) hg_acc hug_acc
     have h_right := flenstedJensen_shift_eq_conj hl (u := (r l)ᴴ)
-      (X := ((1 - u) * (g : Matrix n n ℂ))ᴴ) (by simp [r]; grind)
-      (by simpa [IsAccretive, add_comm] using hug_acc)
-      (by simpa [y, IsAccretive, add_comm] using hy_acc l)
-    rw [dsCoeff_eq_flenstedJensen hl (one_mem _) (by simpa using hg_acc)]
-    simpa [y] using (h_right.trans (congrArg _ h_left)).symm
+      (X := ((1 - u) * (g : Matrix n n ℂ))ᴴ)
+      (by
+        simp only [not_and, lowerMask, entryMask, LinearMap.coe_toContinuousLinearMap',
+          LinearMap.coe_mk, AddHom.coe_mk, conjTranspose_apply, of_apply, star_def, map_eq_zero,
+          ite_eq_right_iff, and_imp, r]
+        grind)
+      (by
+        simpa only [IsAccretive, conjTranspose_mul, conjTranspose_sub, conjTranspose_one,
+          conjTranspose_conjTranspose, add_comm] using hug_acc)
+      (by
+        simpa only [IsAccretive, conjTranspose_mul, conjTranspose_sub, conjTranspose_one,
+          conjTranspose_conjTranspose, mul_assoc, add_comm, y] using hy_acc l)
+    rw [dsCoeff_eq_flenstedJensen hl (one_mem _) (by simpa only [inv_one, one_mul] using hg_acc)]
+    simpa only [y, inv_one, one_mul, mul_assoc, RingHomCompTriple.comp_apply, RingHom.id_apply,
+      conjTranspose_mul, conjTranspose_sub, conjTranspose_one, conjTranspose_conjTranspose] using
+      (h_right.trans (congrArg _ h_left)).symm
   -- Step 2: on a set of highest entries of `l` the triangular factors do not change the minor.
   have h_minor (p : n → Prop) [DecidablePred p] (hp : ∀ i j, p i → ¬p j → l j < l i) :
       principalMinor (y l) p = principalMinor (g : Matrix n n ℂ) p := by
@@ -357,7 +373,11 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
     rw [principalMinor_mul, principalMinor_mul, principalMinor_eq_det,
       det_eq_prod_diag_of_blockTriangular hl.injective, mul_comm, principalMinor_eq_det,
       det_eq_prod_diag_of_blockTriangular hl.neg.injective] <;>
-      simp [u, r, BlockTriangular, Matrix.one_apply] <;> grind
+      simp only [lowerMask, entryMask, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
+        AddHom.coe_mk, sub_sub_cancel, Matrix.sub_apply, one_apply_eq, diagonal_mul, of_apply,
+        lt_self_iff_false, and_true, ↓reduceIte, mul_zero, sub_zero, Finset.prod_const_one,
+        Pi.neg_apply, neg_lt_neg_iff, principalMinor_eq_det, one_mul, BlockTriangular,
+        Matrix.one_apply, mul_ite, ite_mul, zero_mul, r, u] <;> grind
   refine ⟨y l, h_coeff, fun p _ hp κ ↦ ?_⟩
   -- Step 3: one minor. Notation: `P` projects to `p`, `Q = k P kᴴ`, and `A`, `B`, `C` are the
   -- commutators of `P` with `X`, `u`, `r l`.
@@ -377,11 +397,15 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
   let V : Matrix n n ℂ := (1 + X)⁻¹ - 1
   let H : Matrix n n ℂ := G + m * C - (G + B - A) * r l
   have ⟨h_mask, hB⟩ : (∀ c, ⁅P, r c⁆ = lowerMask ε c A) ∧ B = blockDiagPart ε A - C := by
-    simp +zetaDelta [← ext_iff, blockDiagPart]
+    simp +zetaDelta only [coordProj, lowerMask, entryMask, LinearMap.coe_toContinuousLinearMap',
+      LinearMap.coe_mk, AddHom.coe_mk, Matrix.sub_apply, lie_def, diagonal_mul, ite_mul, one_mul,
+      zero_mul, mul_diagonal, mul_ite, mul_one, mul_zero, ← ext_iff, of_apply, map_sub,
+      Pi.neg_apply, neg_lt_neg_iff, of_sub_of, blockDiagPart, Pi.sub_apply]
     grind
   have h_det_compl (x : Matrix n n ℂ) :
       (1 + (1 - P) * (x - 1)).det = principalMinor x (¬p ·) := by
-    simp [P, det_apply, sub_mul]
+    simp only [coordProj, sub_mul, one_mul, det_apply, Matrix.add_apply, Matrix.sub_apply,
+      diagonal_mul, ite_mul, zero_mul, principalMinor_eq_det, ite_not, P]
     grind
   have hP_compl : IsStarProjection (1 - P) := hP.one_sub
   have hA_nonneg : 0 ≤ ‖A‖ := norm_nonneg A
@@ -421,10 +445,12 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
     (by linarith [norm_sub_le_of_le (norm_add_le_of_le hB_le hC_le) (le_refl ‖A‖)]) (by simp)
   -- The minor of `kᴴ (y l) k` on `p`, as `det (1 + Q (y l - 1))`.
   have h_comm : (⁅Q, P⁆ * (A - B - C)).trace = 0 := by
-    simp [Q, s, hB, blockDiagPart_eq, hsP.eq, trace_mul_comm P,
-      (mem_blockDiagAlg_iff_commute.1 hk_mem).left_comm,
-      A, X, inv_eq_left_inv hk ▸ blockDiagAlg.inv_mem hk_mem _ rfl, trace_mul_comm k,
-      trace_mul_comm kᴴ, trace_mul_comm s, signMatrix_mul_self, mul_sub, sub_mul]
+    simp only [mul_assoc, lie_def, mul_sub, mul_one, sub_mul, one_mul, sub_sub_sub_cancel_right, hB,
+      blockDiagPart_eq, smul_add, mul_add, Algebra.mul_smul_comm, trace_sub, trace_mul_comm k,
+      trace_mul_comm P, trace_mul_comm kᴴ, trace_add, trace_smul, smul_eq_mul,
+      (mem_blockDiagAlg_iff_commute.1 hk_mem).left_comm, hsP.eq,
+      inv_eq_left_inv hk ▸ blockDiagAlg.inv_mem hk_mem _ rfl, trace_mul_comm s, signMatrix_mul_self,
+      Q, A, X, s]
     ring_nf
   have h_near : ‖⁅Q, y l - 1⁆ - (A - B - C)‖ ≤ 4 * ‖X‖ * (4 * (‖A‖ + ‖⁅P, k⁆‖)) := by
     rw [show ⁅Q, y l - 1⁆ - (A - B - C) = (y l - 1) * (P - Q) - (P - Q) * (y l - 1) - H by
@@ -459,9 +485,14 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
   · -- Multiply by the complementary minor and by `det (y l) = det g`, and compare exponents.
     refine h_conj.trans (ht_eq.trans (mul_right_cancel₀ (by simp)
       (congr(_ * ($hz_eq * $h_det)).trans ?_)))
-    simp [V, s, hg_star, hP_star, hB, blockDiagPart_eq, hsP.eq, trace_mul_comm P,
-      ← ofReal_pow, A, X, trace_mul_comm s, signMatrix_mul_self, ← mul_assoc s s, ← exp_add,
-      mul_sub, sub_mul, ← trace_star_mul_self_eq_norm_sq]
+    simp only [trace_mul_comm P, lie_def, mul_sub, mul_one, sub_mul, one_mul,
+      sub_sub_sub_cancel_right, hB, blockDiagPart_eq, mul_assoc, smul_add, add_mul,
+      Algebra.smul_mul_assoc, mul_add, Algebra.mul_smul_comm, ← mul_assoc s s, signMatrix_mul_self,
+      trace_sub, trace_add, trace_smul, smul_eq_mul, trace_mul_comm s, hsP.eq, sub_add_cancel,
+      ← exp_add, ← ofReal_pow, ← trace_star_mul_self_eq_norm_sq, conjTranspose_sub,
+      conjTranspose_mul, hg_star, hP_star, add_sub_cancel, mul_inv_of_invertible,
+      inv_mul_cancel_left_of_invertible, real_smul, ofReal_inv, ofReal_ofNat, sub_self, zero_sub,
+      neg_sub, A, X, s, V]
     ring_nf
   · have := norm_add_le_of_le (norm_sub_le_of_le (norm_add_le_of_le ht hz) hx) h_corr
     linarith [mul_nonneg hX_nonneg (sq_nonneg ‖A‖), mul_nonneg hX_nonneg (sq_nonneg ‖⁅P, k⁆‖),
