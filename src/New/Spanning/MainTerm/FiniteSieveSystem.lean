@@ -45,7 +45,7 @@ whose powers sizes are measured, `M = S.M` the product of the two level primes, 
 the number of infinite places, and `n = 𝔰.n = ϱ + 1` with `ϱ` the number of hyperbolic planes. Then
 `(2 (M ^ f) ^ 2) ^ (n ^ 6) ≤ b ^ (n ^ 9 * f)`. -/
 lemma two_mul_M_pow_sq_pow_le {E : Type} {𝔰 : Shape} [Field E] [CMType E] [WeilData E]
-    (S : Filling E 𝔰) [S.IsAdmissible] :
+    (S : Filling E 𝔰) :
     (2 * ((S.M : ℝ) ^ numInfPlaces E) ^ 2) ^ 𝔰.n ^ 6 ≤ S.b ^ (𝔰.n ^ 9 * numInfPlaces E) := by
   have one_le_b : 1 ≤ S.b := S.one_le_b
   have exponent_le : 46 * numInfPlaces E + 1 ≤ 𝔰.n ^ 3 * numInfPlaces E := by
