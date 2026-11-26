@@ -822,37 +822,20 @@ lemma shiftCoeff_aeval_swapTransvection_X [NeZero N]
       zeroOrder_varX, mul_one, sub_zero, mapAlgHom_apply, map_X, sub_self, abs_zero,
       map_zero, ZMod.val_zero, pow_one, add_sub_cancel_left, cast_zero, smul_zero]
   · -- `z = Y_s` with `s ≠ i`, for both signs
-    rcases D.sign_varY_eq_one_or_neg_one s with h_sign | h_sign
-    · simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
-        monomial_eq, C_1, pow_zero, prod_single_index, one_mul, swapVar_varY,
-        h_sign, Int.cast_one, varY_snd, map_add, aeval_X, Pi.sub_apply, poleOrder_varX,
-        card, frobPower, merge_varX, crossSign_varX, hs, ↓reduceIte, swapVar_varX,
-        zeroOrder_varY, map_mul, algHom_C, MvPolynomial.algebraMap_apply,
-        MvPolynomial.algebraMap_eq, poleOrder_varY, merge_varY, crossSign_varY,
-        zeroOrder_varX, mul_one, mapAlgHom_apply, map_sub, map_pow, map_C, RingHom.coe_coe,
-        AlgHom.coe_comp, AlgEquiv.coe_toAlgHom, Function.comp_apply,
+    rcases D.sign_varY_eq_one_or_neg_one s with h_sign | h_sign <;>
+      simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
+        monomial_eq, C_1, pow_zero, prod_single_index, one_mul, swapVar_varY, h_sign, Int.cast_one,
+        varY_snd, map_add, aeval_X, Pi.sub_apply, poleOrder_varX, card, frobPower, merge_varX,
+        crossSign_varX, hs, ↓reduceIte, swapVar_varX, zeroOrder_varY, map_mul, algHom_C,
+        MvPolynomial.algebraMap_apply, MvPolynomial.algebraMap_eq, poleOrder_varY, merge_varY,
+        crossSign_varY, zeroOrder_varX, mul_one, mapAlgHom_apply, map_sub, map_pow, map_C,
+        RingHom.coe_coe, AlgHom.coe_comp, AlgEquiv.coe_toAlgHom, Function.comp_apply,
         MvPolynomial.uniqueAlgEquiv_apply, eval₂_X, Polynomial.taylorAlgHom_apply,
         Polynomial.taylor_X, MvPolynomial.uniqueAlgEquiv_symm_apply, PUnit.default_eq_unit,
-        Polynomial.eval₂_X, Polynomial.eval₂_C, map_X, abs_one,
-        pow_add, cast_add, ZMod.natCast_self, ZMod.natCast_val, dvd_refl, ZMod.cast_sub,
-        ZMod.cast_id', id_eq, zero_add, add_sub_cancel, one_smul]
-      ring
-    · simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
-        monomial_eq, C_1, pow_zero, prod_single_index, one_mul, swapVar_varY,
-        h_sign, Int.reduceNeg, Int.cast_neg, Int.cast_one, varY_snd, neg_mul,
-        map_add, aeval_X, Pi.sub_apply, poleOrder_varX, card, frobPower, merge_varX,
-        crossSign_varX, hs, ↓reduceIte, swapVar_varX, zeroOrder_varY, sub_neg_eq_add,
-        map_neg, map_mul, algHom_C, MvPolynomial.algebraMap_apply,
-        MvPolynomial.algebraMap_eq, poleOrder_varY, merge_varY, crossSign_varY,
-        zeroOrder_varX, mul_one, mapAlgHom_apply, map_pow, map_C, RingHom.coe_coe,
-        AlgHom.coe_comp, AlgEquiv.coe_toAlgHom, Function.comp_apply,
-        MvPolynomial.uniqueAlgEquiv_apply, eval₂_X, Polynomial.taylorAlgHom_apply,
-        Polynomial.taylor_X, MvPolynomial.uniqueAlgEquiv_symm_apply, PUnit.default_eq_unit,
-        Polynomial.eval₂_X, Polynomial.eval₂_C, map_X,
-        abs_neg, abs_one, pow_add, cast_add, ZMod.natCast_self, ZMod.natCast_val,
-        dvd_refl, ZMod.cast_sub, ZMod.cast_id', id_eq, zero_add, add_sub_cancel, C_sub,
-        neg_smul, one_smul]
-      ring
+        Polynomial.eval₂_X, Polynomial.eval₂_C, map_X, abs_one, pow_add, cast_add,
+        ZMod.natCast_self, ZMod.natCast_val, dvd_refl, ZMod.cast_sub, ZMod.cast_id', id_eq,
+        zero_add, add_sub_cancel, one_smul, Int.reduceNeg, Int.cast_neg, neg_mul, sub_neg_eq_add,
+        map_neg, abs_neg, neg_smul] <;> ring
   · -- `z = X_s` with `s ≠ i`
     simp only [AlgEquiv.arrowCongr_symm, AlgEquiv.arrowCongr_apply, AlgEquiv.symm_symm,
       monomial_eq, C_1, pow_zero, prod_single_index, one_mul, C_pow, swapVar_varX,
