@@ -348,13 +348,12 @@ private lemma four_mul_totient_smul_eq_zero_of_sum_eq {E : Type} [Field E] [Numb
     (4 * φ N) • x = 0 := by
   ext g u
   -- Compare `g` with `c = conjGal g`: `φ(N) (x c - x g) = φ(N) (x g - x c)`, and `x c = -x g`.
-  have hx_sum : x g () + x (conjGal g) () = 0 := by rw [hx_odd g, Pi.neg_apply, add_neg_cancel]
   have h_even_sum : ∑ ψ : Ψ, z ψ (ι (conjGal g)) = ∑ ψ : Ψ, z ψ (ι g) :=
     Fintype.sum_congr _ _ fun ψ ↦ h_even ψ g
-  rw [h_sum, h_sum, h_conj_conj] at h_even_sum
+  rw [h_sum, h_sum, h_conj_conj, hx_odd g, Pi.neg_apply] at h_even_sum
   change (4 * φ N) • x g () = 0
   simp only [nsmul_eq_mul, Nat.cast_mul, Nat.cast_ofNat]
-  linear_combination h_even_sum + 2 * ((φ N : ℕ) : QuotSpan (l ^ n : O)) * hx_sum
+  linear_combination h_even_sum
 
 /-- Let `x` on `Gal(Ω/E)` vanish on the inertia groups at places of `E` prime to `l` and on
 `shaLocalSet l E e`, where `e ≠ 0`. Let `g` lie in an inertia group at a place prime to `l`, or in
