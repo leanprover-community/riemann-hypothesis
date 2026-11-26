@@ -305,6 +305,16 @@ lemma IsOrthogonalBelow.mulVec (hω : IsOrthogonalBelow l ω) (hs : s ∈ partia
   have h_below (b' : Fin 𝔰.ϱ) (hb' : b' < b) : ω (eStar b') = 0 := hω b' (Nat.lt_trans hb' hb)
   rw [partialUnitriangularGroup_mulVec_eStar hs (hb.trans_le hl) h_below, hω b hb]
 
+omit [StarRing A] in
+private lemma CongrBelow.dotProduct_eq (h : CongrBelow l ω ω') (hl : l ≤ 𝔰.ϱ)
+    {v : 𝔰.BesselIndex → A} (hv : ∀ b : Fin 𝔰.ϱ, b.val < l → v (inl b) = 0) :
+    v ⬝ᵥ ω' = v ⬝ᵥ ω := by
+  refine Finset.sum_congr rfl fun k _ ↦ ?_
+  obtain hk | hk := le_or_gt l (level k)
+  · rw [h k hk]
+  · obtain ⟨b, hb, rfl⟩ := exists_eq_inl_of_level_lt hk hl
+    simp [hv b hb]
+
 /-- Let l ≤ j and l ≤ ϱ = `𝔰.ϱ`, the number of hyperbolic planes. An element `s` of
 R^(j) = `partialUnitriangularGroup j` changes each e_b, b < j, by a combination of the earlier ones.
 It respects congruence modulo the e_b, b < l: if ω and ω' are congruent, so are `s *ᵥ ω` and
@@ -315,16 +325,12 @@ lemma CongrBelow.mulVec (h : CongrBelow l ω ω') (hs : s ∈ partialUnitriangul
       ((s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) *ᵥ ω') := by
   -- In the row k only the columns e_b, b < l, can contribute a difference, and there s vanishes.
   intro k hk
-  simp only [Matrix.mulVec, dotProduct]
-  refine Finset.sum_congr rfl fun n _ ↦ ?_
-  obtain hn | hn := le_or_gt l (level n)
-  · rw [h n hn]
-  · have h_ne : k ≠ n := ne_of_apply_ne level (hn.trans_le hk).ne'
-    obtain ⟨b, hb, rfl⟩ := exists_eq_inl_of_level_lt hn hl_le
-    have h_entry : s.val.val k (inl b) = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) k (inl b) :=
-      mem_partialUnitriangularGroup.1 hs k (inl b) (hn.le.trans hk)
-        (Or.inl ⟨hb.trans_le hl, hn.trans_le hl⟩)
-    rw [h_entry, one_apply_ne h_ne, zero_mul, zero_mul]
+  apply h.dotProduct_eq hl_le (v := s.val.val k)
+  intro b hb
+  have h_lt : level (inl b : 𝔰.BesselIndex) < l := hb
+  have h_entry := mem_partialUnitriangularGroup.1 hs k (inl b) (h_lt.le.trans hk)
+    (Or.inl ⟨hb.trans_le hl, h_lt.trans_le hl⟩)
+  exact h_entry.trans (one_apply_ne (ne_of_apply_ne level (h_lt.trans_le hk).ne'))
 
 /-- The unipotent group U_(<l) = `unipotentBelow l` keeps the coordinates of level at least l of a
 vector orthogonal to the e_b, b < l. For l ≤ ϱ this says that it acts as 1 on Y^(l). -/
@@ -340,15 +346,12 @@ lemma IsOrthogonalBelow.congrBelow_mulVec (hω : IsOrthogonalBelow l ω) (hu : u
 `T.splitGram` depends only on the class of its left argument ω modulo these e_b. -/
 lemma CongrBelow.form_eq_left (h : CongrBelow l ω ω') (ho : IsOrthogonalBelow l o) (hl : l ≤ 𝔰.ϱ) :
     star ω' ⬝ᵥ T.splitGram *ᵥ o = star ω ⬝ᵥ T.splitGram *ᵥ o := by
-  unfold dotProduct
-  refine Finset.sum_congr rfl fun k _ ↦ ?_
-  obtain hk | hk := le_or_gt l (level k)
-  · rw [Pi.star_apply, Pi.star_apply, h k hk]
-  · obtain ⟨b, hb, rfl⟩ : ∃ b : Fin 𝔰.ϱ, b.val < l ∧ k = inl b := exists_eq_inl_of_level_lt hk hl
-    have h_zero : (T.splitGram *ᵥ o) (inl b) = 0 := by
-      rw [splitGram_mulVec_apply (inl b) b.is_lt]
-      exact ho b hb
-    rw [h_zero, mul_zero, mul_zero]
+  rw [dotProduct_comm (star ω'), dotProduct_comm (star ω)]
+  have h_star : CongrBelow l (star ω) (star ω') := fun k hk ↦ congrArg star (h k hk)
+  apply h_star.dotProduct_eq hl
+  intro b hb
+  rw [splitGram_mulVec_apply (inl b) b.is_lt]
+  exact ho b hb
 
 /-- Let l ≤ ϱ = `𝔰.ϱ`, the number of hyperbolic planes, and let o be orthogonal to the e_b, b < l.
 The product ⟨o, ω⟩ for the Gram matrix `T.splitGram` depends only on the class of its right argument
@@ -356,16 +359,11 @@ The product ⟨o, ω⟩ for the Gram matrix `T.splitGram` depends only on the cl
 lemma CongrBelow.form_eq_right (h : CongrBelow l ω ω') (ho : IsOrthogonalBelow l o) (hl : l ≤ 𝔰.ϱ) :
     star o ⬝ᵥ T.splitGram *ᵥ ω' = star o ⬝ᵥ T.splitGram *ᵥ ω := by
   rw [dotProduct_mulVec, dotProduct_mulVec]
-  unfold dotProduct
-  refine Finset.sum_congr rfl fun k _ ↦ ?_
-  obtain hk | hk := le_or_gt l (level k)
-  · rw [h k hk]
-  · obtain ⟨b, hb, rfl⟩ : ∃ b : Fin 𝔰.ϱ, b.val < l ∧ k = inl b := exists_eq_inl_of_level_lt hk hl
-    have h_zero : (star o ᵥ* T.splitGram) (inl b) = 0 := by
-      rw [vecMul_splitGram_apply (inl b) b.is_lt]
-      change star (o (eStar b)) = 0
-      rw [ho b hb, star_zero]
-    rw [h_zero, zero_mul, zero_mul]
+  apply h.dotProduct_eq hl
+  intro b hb
+  rw [vecMul_splitGram_apply (inl b) b.is_lt]
+  change star (o (eStar b)) = 0
+  rw [ho b hb, star_zero]
 
 omit [StarRing A] in
 /-- From congruence modulo e_0, …, e_a to congruence modulo e_0, …, e_(a-1), where `inl b` is the
