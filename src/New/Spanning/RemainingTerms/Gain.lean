@@ -388,10 +388,10 @@ lemma torsionIndex_mul_discriminant_commonPart_le [HasPrimitiveRoot5040 E] (h_ag
     rw [hX]
     split_ifs
     exacts [h_meet, one_le_meetNorm s]
-  have h_top (h_ne : X ≠ 1) : 𝔰.ϱ < j :=
-    by_contra fun h_not ↦ h_ne (ite_eq_right fun h_both ↦ h_not h_both.left)
-  have h_corank (h_ne : X ≠ 1) : S.linkCorank γ γ' = 0 :=
-    by_contra fun h_not ↦ h_ne (ite_eq_right fun h_both ↦ h_not h_both.right)
+  have h_both (h_ne : X ≠ 1) : 𝔰.ϱ < j ∧ S.linkCorank γ γ' = 0 :=
+    by_contra fun h_not ↦ h_ne (ite_eq_right h_not)
+  have h_top (h_ne : X ≠ 1) : 𝔰.ϱ < j := (h_both h_ne).left
+  have h_corank (h_ne : X ≠ 1) : S.linkCorank γ γ' = 0 := (h_both h_ne).right
   have h_link (h_ne : X ≠ 1) : link γ = link γ' := linkCorank_eq_zero_iff.1 (h_corank h_ne)
   have h_top' (h_ne : X ≠ 1) : 𝔰.ϱ < j' := by
     have h_disc : S.termDisc γ' ≠ 0 :=
