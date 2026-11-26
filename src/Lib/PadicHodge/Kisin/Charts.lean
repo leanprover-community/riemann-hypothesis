@@ -836,7 +836,8 @@ lemma eventually_exists_coeff_eq_of_fixed {y : OFlat}
     rw [valRingCp.dvd_iff_norm_le, AddSubgroupClass.coe_sub, ← h_x_eq]
     exact x_near.le
   -- Modulo `p`, `thetaPhiInv N [y]` reads off `y.coeff N` (`mk_thetaPhiInv_eq_coeff`).
-  exact ⟨s', by simpa [t, mk_thetaPhiInv_eq_coeff] using mk_span_eq_iff_dvd_sub.mpr congr_p⟩
+  exact ⟨s', by simpa [t, mk_thetaPhiInv_eq_coeff] using
+    Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr congr_p)⟩
 
 end Chart
 

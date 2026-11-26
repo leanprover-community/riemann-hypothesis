@@ -46,12 +46,6 @@ lemma IsCompact.eventually_forall_mem {X Y Z : Type*} [TopologicalSpace X] [Topo
     ∀ᶠ x : X in nhds x₀, ∀ y ∈ K, f x y ∈ W :=
   hK.eventually_forall_of_forall_eventually fun y hy ↦ hf.continuousAt (h_nhds y hy)
 
-/-- Two elements x and y have the same class modulo the principal ideal (a) if and only if a divides
-x − y. -/
-lemma Ideal.mk_span_eq_iff_dvd_sub {R : Type*} [CommRing R] {a x y : R} :
-    Quotient.mk (span {a}) x = Quotient.mk (span {a}) y ↔ a ∣ x - y :=
-  Quotient.eq.trans mem_span_singleton
-
 /-! ## Procyclic images of ℓ-adic characters of compact groups -/
 
 section ProcyclicImage

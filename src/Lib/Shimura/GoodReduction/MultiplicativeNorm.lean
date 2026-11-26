@@ -869,7 +869,8 @@ lemma _root_.New.ThetaTori.hasMultiplicativeNorm_of_expanding [CharZero R] {n p 
     (h_cop_ni.map _).isUnit_of_dvd (by simp)
   obtain ⟨m, hm_pos, h_pow⟩ := h_unit.isOfFinOrder.exists_pow_eq_one
   obtain ⟨j, rfl⟩ := Nat.exists_eq_add_one.mpr hm_pos
-  have h_dvd_pow : (n * i : R) ∣ c ^ (j + 1) - 1 := mk_span_eq_iff_dvd_sub.mp h_pow
+  have h_dvd_pow : (n * i : R) ∣ c ^ (j + 1) - 1 :=
+    Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp h_pow)
   have h_cop_pow : IsCoprime (c ^ (j + 1)) (star (c ^ (j + 1))) := by simpa using h_cop.pow
   -- A non-unit prime to its conjugate differs from it.
   have h_ne_star : c ^ (j + 1) ≠ star (c ^ (j + 1)) := by

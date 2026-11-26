@@ -197,10 +197,10 @@ lemma exists_tau_mul_E_eq_mul_epsTilt_pow_sub_one {n : ℕ} (hn : n ≠ 0) :
     (c.associated_teichmuller_pow_sub_one hn).dvd
   have h_factor (a : ℕ) :
       Ideal.Quotient.mk (span {c.z.val}) (c.frobE a).val = Ideal.Quotient.mk (span {c.z.val}) p :=
-    mk_span_eq_iff_dvd_sub.mpr (c.dvd_iff_coe_dvd.mp (c.z_dvd_frobE_sub_p a))
+    Ideal.Quotient.eq.mpr (mem_span_singleton.mpr (c.dvd_iff_coe_dvd.mp (c.z_dvd_frobE_sub_p a)))
   obtain ⟨β, hβ⟩ : c.z.val ∣
       ∏ a ∈ Finset.range (padicValNat p n), (c.frobE (a + 1)).val - p ^ padicValNat p n := by
-    rw [← mk_span_eq_iff_dvd_sub, map_prod, map_pow]
+    rw [← Ideal.mem_span_singleton, ← Ideal.Quotient.eq, map_prod, map_pow]
     simp only [h_factor, Finset.prod_const, Finset.card_range]
   rw [Finset.prod_range_succ', show (c.frobE 0).val = c.E by simp [frobE]] at hα
   exact ⟨α, β, by linear_combination hα - tau * c.E * hβ⟩

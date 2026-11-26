@@ -282,7 +282,7 @@ lemma dvd_letterEmbedding_sub_pow {P : Parameters} {D : Data P} {p : ℕ} [Fact 
     change red (letterEmbedding σ' hσ' (j (star b))) = ψ (star b) ^ p ^ e
     rw [h_shift, ← h_frob b]
     rfl
-  exact Ideal.mk_span_eq_iff_dvd_sub.1 (RingHom.congr_fun h_hom x)
+  exact Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp (RingHom.congr_fun h_hom x))
 
 omit [PadicPlace p] in
 /-- Let `p` be exceptional: inert in the imaginary quadratic field, not `±1` modulo the number `D.m`

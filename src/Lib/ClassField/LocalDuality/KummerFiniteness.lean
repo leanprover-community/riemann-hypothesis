@@ -211,7 +211,7 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
       (fun a ↦ mk _ ⟨(y a.out).toMul, (val_ker a.out).le⟩) fun a b hab ↦ ?_
     -- Equal residues mod `l π` of representatives put their quotient in `V`.
     have h_quot : w (((y (a.out - b.out : f.ker)).toMul : L) - 1) ≤ w (l * π) := by
-      simpa [mk_span_eq_iff_dvd_sub, dvd_iff_valuationVia_le, val_ker, w, div_sub_one,
+      simpa [Ideal.Quotient.eq, Ideal.mem_span_singleton, dvd_iff_valuationVia_le, val_ker, w, div_sub_one,
         valuationVia] using hab
     exact out_equiv_out.mp (V.quotientRel_def.mpr (div_mem.mpr h_quot))
   -- An `l`-th root of unity closer to `1` than `|l|` is `1`.
@@ -227,8 +227,8 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
       l * ((s - 1) / (l * π) * ((t - 1) / (l * π)) * π) := by field
   let red : V →ₗ[ℤ] valRingBelow L A ⧸ span {(l : valRingBelow L A)} :=
     (AddMonoidHom.mk' (fun a : V ↦ mk (span {(l : valRingBelow L A)}) ⟨_, a.property⟩) fun a b ↦ by
-      refine mk_span_eq_iff_dvd_sub.mpr
-        ⟨⟨_, a.property⟩ * ⟨_, b.property⟩ * ⟨π, hπ.valuationVia_lt_one.le⟩, Subtype.ext ?_⟩
+      refine Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr
+        ⟨⟨_, a.property⟩ * ⟨_, b.property⟩ * ⟨π, hπ.valuationVia_lt_one.le⟩, Subtype.ext ?_⟩)
       simpa using h_defect _ _).toIntLinearMap
   have red_surj : Function.Surjective red := by
     refine Quot.ind fun x ↦ ?_

@@ -243,7 +243,7 @@ lemma ribetCocycles.mem_selmerModule [Fintype Y] {u : Y → AbsGal D →* Matrix
     (continuous_pi fun x ↦ (hu_cont x).matrix_map (span {b ^ k}).continuous_mkQ)
   refine (iff_eventually_eq _).2 fun g ↦ (h_red.eventually_eq g).mono fun g' hg' ↦ ?_
   have h_dvd (x : Y) (i j : n) : b ^ k ∣ u x g' i j - u x g i j :=
-    mk_span_eq_iff_dvd_sub.1 (congrFun₃ hg' x i j)
+    Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp (congrFun₃ hg' x i j))
   choose v hv using h_dvd
   refine h_determined (v := fun x ↦ of (v x)) ?_
   ext

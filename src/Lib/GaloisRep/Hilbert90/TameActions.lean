@@ -292,7 +292,8 @@ lemma IsProfiniteRing.exists_algHom_semiconj (hR : IsProfiniteRing R) (σ : R �
     have h_dvd : (M : R) ∣ N ! := cast_dvd_cast (dvd_factorial (pos_of_ne_zero hM) hMN)
     calc
       mk (I M) (G (N !) (x N) (y N)).out = mk (I M) (F (x N).out (y N).out) :=
-        mk_span_eq_iff_dvd_sub.mpr (h_dvd.trans (mk_span_eq_iff_dvd_sub.mp h_fact))
+        Ideal.Quotient.eq.mpr (mem_span_singleton.mpr
+          (h_dvd.trans (mem_span_singleton.mp (Ideal.Quotient.eq.mp h_fact))))
       _ = mk (I M) (F (Λ x) (Λ y)) := by rw [hG.eq, hx, hy, ← hG.eq]
   -- constants and `σ` are operations that ignore both or the first of their arguments
   have hΛ_const (a : R) : Λ (fun N ↦ mk (I N !) a) = a :=
