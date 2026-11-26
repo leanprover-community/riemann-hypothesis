@@ -268,14 +268,6 @@ lemma realPlaceSizes : Floors.RealPlaceSizes D.shape (D.b ^ (6 * D.shape.n + 2))
     ten_pow_le_varrho := D.nat_le_of_hasLogBound
     two_le_b := D.le_of_hasLogBound }
 
-/-- An inequality of exponents of `b = D.b`, where `r` and `k` are the ranks of G₁ and U(X₀): the
-loss `3 * (20 * (r + k) ^ 2)` in the lower bound for the period and the further `99 r ^ 2` allowed
-for cutting the Bessel function add up to at most `400 r ^ 2`. -/
-lemma exponent_add_le_mul_sq_r :
-    3 * (20 * (D.shape.r + D.shape.k) ^ 2) + 99 * D.shape.r ^ 2 ≤ 400 * D.shape.r ^ 2 := by
-  have hk : D.shape.k ≤ D.shape.r := D.card_X₀.trans_le (D.k_le_r.trans D.card_rowIndex.ge)
-  nlinarith
-
 /-- At an infinite place `v`, three times `D.liftWeight 0 v`, which is the weight of the character
 of the lift of index `0` (the first one), plus the number `D.columnCount v 1` of columns of height 1
 in the weight on X₀ is at most `b ^ 2`, where `b = D.b` is the size parameter of D. -/
@@ -385,7 +377,8 @@ lemma exists_besselSystem (v : D.Φ) :
       IsCutPair D.b D.f rep (FullOrCut.select F (besselCut D.b F)) :=
     exists_isCutPair_besselAverage h_gap h_abs D.f h_cont he h_volume hx
       (hb_large := D.le_of_hasLogBound) (hr := D.nat_le_of_hasLogBound)
-      (hm := D.exponent_add_le_mul_sq_r) (hL_le := D.le_of_hasLogBound)
+      (hm := by have hk : D.shape.k ≤ D.shape.r := D.card_X₀.trans_le (D.k_le_r.trans D.card_rowIndex.ge); nlinarith)
+      (hL_le := D.le_of_hasLogBound)
       (hf := D.nat_le_of_hasLogBound)
   have hF : IsBesselFunction rep F := h_tail.isBesselFunction .full
   have hF_norm : ∫⁻ y : D.shape.G₁, ‖F y‖ₑ ^ 2 ∂besselQuotMeasure = card I :=
