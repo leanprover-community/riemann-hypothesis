@@ -87,10 +87,6 @@ lemma ellAddVal_apply (x : intQpBar ℓ) : ellAddVal x = ellVal x.val := rfl
 
 lemma ellVal_neg (x : intQpBar ℓ) : ellVal (-x).1 = ellVal x.1 := ellVal_congr_norm (norm_neg x.1)
 
-lemma min_ellVal_le_ellVal_sub (x y : intQpBar ℓ) :
-    min (ellVal x.val) (ellVal y.val) ≤ ellVal (x - y).val := by
-  simpa only [ellAddVal_apply] using ellAddVal.map_sub x y
-
 /-- If two integral elements `x`, `y` of `ℚ̄_ℓ` have different valuations, then `v(x + y)` is the
 smaller of these. -/
 lemma ellVal_add_eq_min_of_ne {x y : intQpBar ℓ} (h_ne : ellVal x.val ≠ ellVal y.val) :
@@ -303,7 +299,7 @@ lemma gaussVal_X_sub_C (α : intQpBar ℓ) :
   · obtain ⟨y, hy, h_eq⟩ := exists_ellVal_eval_eq_gaussVal ρ (X - C α : (intQpBar ℓ)[X])
     calc min (ellVal α.val) (ρ : ℝ≥0) ≤ min (ellVal y.val) (ellVal α.val) :=
           (min_comm _ _).trans_le (min_le_min_right _ hy)
-      _ ≤ ellVal (y - α).val := min_ellVal_le_ellVal_sub y α
+      _ ≤ ellVal (y - α).val := by simpa only [ellAddVal_apply] using ellAddVal.map_sub y α
       _ = gaussVal ρ (X - C α) := by rw [← h_eq, eval_sub, eval_X, eval_C]
 
 /-- For a prime `ℓ`, a radius `ρ ≥ 0` and a multiset `R` of integral elements (elements of the
