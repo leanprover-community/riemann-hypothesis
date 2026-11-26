@@ -49,8 +49,6 @@ open CategoryTheory Limits Abelian.Ext AddCommGrpCat ShortComplex LinearMap Tota
 
 variable {C : Type 1} [Category C] {F G F' G' : AbFunctor C}
 
-set_option backward.isDefEq.respectTransparency false
-
 /-! ### The sign rule for connecting classes -/
 
 /-- Let `S` be a short exact sequence of functors, `α : A ⟶ B` a monomorphism, and `a : S.X₁ ⟶ A`,
@@ -250,12 +248,26 @@ lemma cohomClass_comp_eq_extClass {S : ShortComplex (AbFunctor C)} (hS : ShortEx
       naturality c d f := by simp [AddCommGrpCat.ext_iff, add_assoc, elementwise_of% h_cocycle] }
   have h_left : β ≫ S.f = D.extension.f ≫ τ := by aesop
   have h_right : τ ≫ S.g = D.extension.g ≫ α := by
-    ext
-    simp [τ, ← h_lift, ← S.f.comp_app_apply]
+    ext c x
+    change G.obj c × F.obj c at x
+    change S.g.app c (S.f.app c (β.app c x.1) + σ c x.2) = α.app c x.2
+    have h_zero : S.g.app c (S.f.app c (β.app c x.1)) = 0 := by
+      rw [← S.f.comp_app_apply, S.zero]
+      rfl
+    have h_lift_apply : S.g.app c (σ c x.2) = α.app c x.2 :=
+      AddCommGrpCat.ext_iff.mp (h_lift c) x.2
+    simp only [map_add, h_zero, zero_add, h_lift_apply]
   have h_nat : D.shortExact_extension.extClass.comp (mk₀ β) (add_zero 1) =
       (mk₀ α).comp hS.extClass (zero_add 1) :=
     D.shortExact_extension.extClass_naturality hS ⟨β, τ, α, h_left, h_right⟩
-  simp [comp_of, h_nat]
+  have h_push : D.cohomClass.comp (TotalH.homClass β) =
+      DirectSum.of (H F S.X₁) 1 (D.shortExact_extension.extClass.comp (mk₀ β) (add_zero 1)) :=
+    of_comp_homClass D.shortExact_extension.extClass
+  have h_pull : pullbackAlong α hS.extClass.toTotalH =
+      DirectSum.of (H F S.X₁) 1 ((mk₀ α).comp hS.extClass (zero_add 1)) :=
+    pullbackAlong_of (f := α) hS.extClass
+  rw [h_push, h_pull]
+  exact congrArg (DirectSum.of (H F S.X₁) 1) h_nat
 
 /-- If `α : F ⟶ F'` and `β : G ⟶ G'` intertwine the cocycles `D` and `D'`, the class of `D`
 followed by `β` is `α` followed by the class of `D'`. -/
@@ -268,7 +280,17 @@ lemma cohomClass_naturality (D' : Cocycle F' G') (α : F ⟶ F') (β : G ⟶ G')
   -- on `G'` this is `h_comm`, on `F'` the naturality of `α`
   have h_cd (x : F.obj c) : D'.component f (α.app c x) = β.app d (D.component f x) :=
     AddCommGrpCat.ext_iff.mp (h_comm c d f) x
-  simp [σ, AddCommGrpCat.ext_iff, h_cd]
+  apply AddCommGrpCat.ext
+  intro x
+  rw [AddCommGrpCat.hom_add_apply]
+  change (G'.map f 0 + D'.component f (α.app c x), F'.map f (α.app c x)) =
+    (β.app d (D.component f x), 0) + (0, α.app d (F.map f x))
+  apply Prod.ext
+  · change G'.map f 0 + D'.component f (α.app c x) = β.app d (D.component f x) + 0
+    simpa only [map_zero, zero_add, add_zero] using h_cd x
+  · change F'.map f (α.app c x) = 0 + α.app d (F.map f x)
+    rw [zero_add]
+    exact AddCommGrpCat.ext_iff.mp (α.naturality f).symm x
 
 /-- Restricting the class of `D` along a functor `φ : C ⥤ C` gives the class of the cocycle
 `f ↦ D(φ f)`. -/
