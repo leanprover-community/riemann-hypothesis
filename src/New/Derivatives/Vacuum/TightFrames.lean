@@ -165,37 +165,6 @@ lemma IsTightFrame.mul_left {E I : Type} [Field E] [CMType E] [WeilData E] [Fint
 
 namespace Parameters
 
-/-- Let `φ : E →+* ℂ_[p]` be an embedding of the CM field `E = P.E s`, and let `adeleExtension φ` be
-its extension to the finite adeles. There is an element `y` of `𝔞₀⁻¹`, the inverse of the
-fractional ideal `𝔞₀` of the idele `α = P.α s`, such that the integral adele `α y` is a unit at the
-place of `φ`. -/
-lemma exists_norm_adeleExtension_alpha_mul_eq_one {P : Parameters} {s p : ℕ} [Fact p.Prime]
-    (φ : P.E s →+* ℂ_[p]) :
-    ∃ y : P.E s, (P.α s).val * y ∈ Ô (P.E s) ∧ ‖adeleExtension φ ((P.α s).val * y)‖ = 1 := by
-  -- `E` is dense in the finite adeles, so some `y` has `α y - 1 ∈ p Ô`.
-  let pInv : 𝔸f (P.E s) := ((p : P.E s)⁻¹ : P.E s)
-  have h_open : IsOpen {x : 𝔸f (P.E s) | pInv * ((P.α s).val * x - 1) ∈ Ô (P.E s)} :=
-    isOpen_Ô.preimage (by fun_prop)
-  obtain ⟨y, hy⟩ : ∃ y : P.E s, pInv * ((P.α s).val * y - 1) ∈ Ô (P.E s) :=
-    denseRange_algebraMap_finAdele.exists_mem_open h_open ⟨(P.α s)⁻¹.val, by simp⟩
-  have h_decomp : (P.α s).val * y = 1 + p * (pInv * ((P.α s).val * y - 1)) := by
-    rw [← mul_assoc, ← map_natCast (algebraMap (P.E s) (𝔸f (P.E s))), ← map_mul,
-      mul_inv_cancel₀ (NeZero.ne _), map_one, one_mul, add_sub_cancel]
-  have h_small : ‖adeleExtension φ (p * (pInv * ((P.α s).val * y - 1)))‖ < 1 :=
-    calc ‖adeleExtension φ (p * (pInv * ((P.α s).val * y - 1)))‖
-      _ = ‖(p : ℂ_[p])‖ * ‖adeleExtension φ (pInv * ((P.α s).val * y - 1))‖ := by
-        rw [map_mul, map_natCast, norm_mul]
-      _ ≤ ‖(p : ℂ_[p])‖ :=
-        mul_le_of_le_one_right (norm_nonneg _) (norm_adeleExtension_le_one φ hy)
-      _ < 1 := PadicComplex.norm_p_lt_one p
-  have h_int : (P.α s).val * y ∈ Ô (P.E s) := by
-    rw [h_decomp]
-    exact add_mem (one_mem _) (mul_mem (natCast_mem _ p) hy)
-  refine ⟨y, h_int, ?_⟩
-  -- In an ultrametric field, `‖1 + x‖ = 1` for `‖x‖ < 1`.
-  rw [h_decomp, map_add, map_one, IsUltrametricDist.norm_add_eq_max_of_norm_ne_norm
-    (norm_one.trans_ne h_small.ne'), norm_one, max_eq_left h_small.le]
-
 variable {P : Parameters} {s p : ℕ} [Fact p.Prime] [ι : PadicPlace p]
 
 /-- The trace of `z` from `E` to `K`, as a complex number, is the sum of its images under the
@@ -302,39 +271,6 @@ lemma norm_iota_vacuumRoot (τ : P.Φ s) :
   rw [h_chi, ← inv_pow] at h_pow
   exact (pow_left_inj₀ (norm_nonneg _) (by positivity) Fintype.card_ne_zero).1 h_pow
 
-/-- At a `p`-adic place `ιₚ` of `ℂ` with valuation ring `embValRing`, the number `vacuumRoot`
-generates the module spanned by `τ(𝔞̄₀)⁻¹`, the set of the `τ ȳ` with `y` in `𝔞₀⁻¹`. -/
-lemma span_vacuumRoot_eq (τ : P.Φ s) :
-    Submodule.span embValRing {P.vacuumRoot s} =
-      Submodule.span embValRing
-        {conj (Φ τ y) | (y : P.E s) (_ : (P.α s).val * y ∈ Ô (P.E s))} := by
-  -- With `φ` the embedding `y ↦ ιₚ (τ ȳ)`, extended to the finite adeles, we have
-  -- `‖φ y‖ = ‖φ (α y)‖ ‖ιₚ vacuumRoot‖`. So each `τ ȳ` is an integral multiple of `vacuumRoot`,
-  -- and a unit multiple if `‖φ (α y)‖ = 1`.
-  let φ : P.E s →+* ℂ_[p] := weightEmbedding ιₚ τ
-  have h_alpha_ne : adeleExtension φ (P.α s).val ≠ 0 := ((P.α s).isUnit.map _).ne_zero
-  have h_root : P.vacuumRoot s ≠ 0 := fun h_zero ↦
-    h_alpha_ne (norm_eq_zero.1 (by simpa [h_zero, φ, eq_comm] using norm_iota_vacuumRoot τ))
-  have h_ratio (y : P.E s) : ‖ιₚ (conj (Φ τ y) / P.vacuumRoot s)‖ =
-      ‖adeleExtension φ ((P.α s).val * y)‖ := by
-    rw [map_div₀, norm_div, norm_iota_vacuumRoot τ, div_inv_eq_mul, mul_comm, map_mul, norm_mul,
-      adeleExtension_algebraMap]
-    congr 2
-    simp [φ, starRingEnd_apply y]
-  refine le_antisymm ?_ (Submodule.span_le.2 ?_)
-  · obtain ⟨y, h_int, h_one⟩ := exists_norm_adeleExtension_alpha_mul_eq_one φ
-    have h_unit : ‖ιₚ (conj (Φ τ y) / P.vacuumRoot s)‖ = 1 := (h_ratio y).trans h_one
-    have h_inv_norm_le : ‖ιₚ (P.vacuumRoot s / conj (Φ τ y))‖ ≤ 1 := by
-      rw [← inv_div, map_inv₀, norm_inv, h_unit, inv_one]
-    have h_ne : conj (Φ τ y) ≠ 0 := fun h_zero ↦ by simp [h_zero] at h_unit
-    rw [Submodule.span_singleton_le_iff_mem, ← div_mul_cancel₀ (P.vacuumRoot s) h_ne]
-    exact Submodule.smul_mem _ (⟨_, h_inv_norm_le⟩ : embValRing)
-      (Submodule.subset_span ⟨y, h_int, rfl⟩)
-  · rintro - ⟨y, hy, rfl⟩
-    have h_mem : conj (Φ τ y) / P.vacuumRoot s ∈ embValRing :=
-      (h_ratio y).trans_le (norm_adeleExtension_le_one φ hy)
-    exact Submodule.mem_span_singleton.2 ⟨⟨_, h_mem⟩, div_mul_cancel₀ (conj (Φ τ y)) h_root⟩
-
 /-- At a `p`-adic place `ιₚ` of `ℂ`, the absolute value of `periodFactor` equals that of
 `vacuumRoot`. It is the inverse of the absolute value of the idele `P.α s` of the Weil data at the
 place of `weightEmbedding ιₚ τ : y ↦ ιₚ (τ ȳ)`. -/
@@ -356,33 +292,18 @@ variable (P s) in
 /-- If the prime `p` does not divide `q₁ = P.q₁ s`, the order of the roots of unity that generate
 `E = P.E s` over `K`, then `periodFactor` is a unit at the `p`-adic place `ιₚ` of `ℂ`. -/
 lemma norm_iota_periodFactor_eq_one (hp : ¬p ∣ P.q₁ s) : ‖ιₚ (P.periodFactor s)‖ = 1 := by
-  -- With `τ = Φ 1`, the number `vacuumRoot` generates the module spanned by the `τ ȳ` with `y` in
-  -- `𝔞₀⁻¹`. As `q₁ 𝔞₀ ⊆ 𝓞 E ⊆ 𝔞₀`, the `τ ȳ` are integral, and one of them is the unit `q₁`.
-  have h_span : Submodule.span embValRing {P.vacuumRoot s} = Submodule.span embValRing
-      {conj (Φ (1 : P.Φ s) y) | (y : P.E s) (_ : (P.α s).val * y ∈ Ô (P.E s))} :=
-    span_vacuumRoot_eq (p := p) 1
-  have h_le : ‖ιₚ (P.vacuumRoot s)‖ ≤ 1 := by
-    have h_int : Submodule.span embValRing {P.vacuumRoot s} ≤ (1 : Submodule embValRing ℂ) := by
-      rw [h_span, Submodule.span_le]
-      rintro - ⟨y, hy, rfl⟩
-      have h_norm : ‖ιₚ (conj (Φ (1 : P.Φ s) y))‖ ≤ 1 := by
-        simpa [starRingEnd_apply y] using
-          norm_adeleExtension_le_one (weightEmbedding ιₚ 1) (mul_mem inv_alpha_mem hy)
-      exact Submodule.mem_one.2 ⟨⟨_, h_norm⟩, rfl⟩
-    obtain ⟨c, hc⟩ := Submodule.mem_one.1 (h_int (Submodule.mem_span_singleton_self _))
-    rw [← hc]
-    exact c.prop
-  obtain ⟨c, hc⟩ : ∃ c : embValRing, c • P.vacuumRoot s = P.q₁ s := by
-    rw [← Submodule.mem_span_singleton, h_span]
-    exact Submodule.subset_span ⟨P.q₁ s, by simpa [mul_comm] using q₁_mul_alpha_mem, by simp⟩
-  have h_norm_q₁ : ‖(P.q₁ s : ℂ_[p])‖ = 1 :=
+  let φ := weightEmbedding ιₚ (1 : P.Φ s)
+  have hq : ‖(P.q₁ s : ℂ_[p])‖ = 1 :=
     ((Nat.Prime.coprime_iff_not_dvd Fact.out).2 hp).norm_natCast_eq_one ℂ_[p]
-  have h_ge : 1 ≤ ‖ιₚ (P.vacuumRoot s)‖ :=
-    calc 1 = ‖ιₚ c‖ * ‖ιₚ (P.vacuumRoot s)‖ := by
-          rw [← norm_mul, ← map_mul, ← smul_eq_mul, ← Subring.smul_def, hc, map_natCast, h_norm_q₁]
-      _ ≤ ‖ιₚ (P.vacuumRoot s)‖ := mul_le_of_le_one_left (norm_nonneg _) c.prop
-  rw [periodFactor, map_div₀, norm_div, norm_iota_chowlaSelbergUnit, div_one]
-  exact h_le.antisymm h_ge
+  -- Both α⁻¹ and q₁ α are integral, and q₁ is a unit at this place.
+  have h_le : ‖adeleExtension φ (P.α s).val‖ ≤ 1 := by
+    simpa only [map_mul, map_natCast, norm_mul, hq, one_mul] using
+      norm_adeleExtension_le_one φ (q₁_mul_alpha_mem (P := P) (s := s))
+  have h_inv : ‖adeleExtension φ (P.α s).val‖⁻¹ ≤ 1 := by
+    simpa only [map_units_inv, norm_inv] using
+      norm_adeleExtension_le_one φ (inv_alpha_mem (P := P) (s := s))
+  rw [norm_iota_periodFactor (1 : P.Φ s)]
+  exact h_inv.antisymm ((one_le_inv₀ (norm_pos_iff.mpr ((P.α s).isUnit.map _).ne_zero)).2 h_le)
 
 /-- The integers of `P.E s` have integral finite image: for `a` in the ring of integers `𝓞 (P.E s)`,
 the finite adele `α⁻¹ a` (`finiteImage id a`) lies in `Ô (P.E s)`. -/
