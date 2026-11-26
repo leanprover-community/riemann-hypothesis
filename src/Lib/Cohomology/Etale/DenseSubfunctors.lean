@@ -111,11 +111,7 @@ lemma isCohomEquiv (h : IsCohomDense F U) : IsCohomEquiv F (freeAb.map U.ι) := 
   have h_range : range (fiberProd.snd U.ι
         ((Comparison.id F).functor.whiskerLeft (pointMap (NatTrans.app (𝟙 Y) A y)))) =
       U.preimage (pointMap y) := by
-    ext B x
-    refine ⟨?_, fun hx ↦ ⟨⟨⟨⟨_, hx⟩, x⟩, rfl⟩, rfl⟩⟩
-    rintro ⟨⟨⟨u, x'⟩, hux⟩, rfl⟩
-    change (pointMap y).app B x' ∈ U.obj B
-    exact (hux : u.val = (pointMap y).app B x') ▸ u.prop
+    aesop (add simp [toFunctor, fiberProd, fiberProd.snd])
   -- the projection is a monomorphism as a pullback of `U.ι`
   exact (isCohomEquiv_iff_range (hg := isPullback_fiberProd.mono_fst_of_mono) h_range).mpr (h A y)
 
@@ -145,21 +141,12 @@ lemma trans (h : IsCohomDense F V) (k : IsCohomDense F (U.preimage V.ι)) : IsCo
           freeAb.map V_y.ι) :=
       (k.preimage (fromPreimage V (pointMap y))).isCohomEquiv.comp_iff.mpr (h A y)
     -- the composite of the two inclusions is injective with image `U_y ⊓ V_y`
-    have h_rng : range (((U.preimage V.ι).preimage (V.fromPreimage (pointMap y))).ι ≫ V_y.ι) =
-        U_y ⊓ V_y := by
-      ext B x
-      exact ⟨fun ⟨u, hu⟩ ↦ hu ▸ ⟨u.prop, u.val.prop⟩,
-        fun ⟨hU, hV⟩ ↦ ⟨⟨⟨x, hV⟩, hU⟩, rfl⟩⟩
-    rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) h_rng]
+    rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
       at h_comp
   -- `U_y ⊓ V_y ⊆ U_y` is an equivalence by `h`, so `U_y ⊆ h_A` is one by cancellation.
   refine (h.preimage (U_y.ι ≫ pointMap y)).isCohomEquiv.comp_iff.mp ?_
   -- again the composite of the two inclusions has image `U_y ⊓ V_y`
-  have h_rng : range ((V.preimage (U_y.ι ≫ pointMap y)).ι ≫ U_y.ι) = U_y ⊓ V_y := by
-    ext B x
-    exact ⟨fun ⟨u, hu⟩ ↦ hu ▸ ⟨u.val.prop, u.prop⟩,
-      fun ⟨hU, hV⟩ ↦ ⟨⟨⟨x, hU⟩, hV⟩, rfl⟩⟩
-  rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) h_rng]
+  rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
 
 /-- A subfunctor that contains a dense subfunctor is dense. -/
 lemma mono (h : IsCohomDense F U) (hU : U ≤ V) : IsCohomDense F V := by
@@ -605,14 +592,7 @@ lemma hasPartitions_locConstCoeff {Λ : Ab} : HasPartitions testIncl (locConstCo
     refine ⟨⟨_, A.property.quotient (A.property.isRadical_span_idempotent he)⟩,
       ⟨ofHom (mk (span {e}))⟩, mk_singleton_self _, fun B f hf ↦ ?_, exists_rep, by simp⟩
     -- `f` kills `e`, hence the ideal `(e)`, so it factors through the quotient
-    refine ⟨⟨ofHom (lift _ f.hom.hom fun x hx ↦ ?_)⟩, ?_, fun g hg ↦ ?_⟩
-    · rcases mem_span_singleton'.mp hx with ⟨r, rfl⟩
-      have hfe : f.hom.hom e = 0 := hf
-      rw [map_mul, hfe, mul_zero]
-    · ext x
-      rfl
-    · ext x
-      exact congrArg (fun u : A ⟶ B ↦ u.hom.hom x) hg
+    exact ⟨⟨ofHom (lift _ f.hom.hom (by simp_all [mem_span_singleton']))⟩, by aesop⟩
   · -- the spectrum of `A ≃ B₁ × B₂` is the disjoint union of the two spectra
     let spec_sum : PrimeSpectrum A.obj ≃ₜ PrimeSpectrum B₁.obj ⊕ PrimeSpectrum B₂.obj :=
       (homeomorphOfRingEquiv (.ofBijective (RingHom.prod ..) h_bij)).trans primeSpectrumProdHomeo
