@@ -274,16 +274,26 @@ lemma mem_ramified_of_mem_ramifiedSourceForms {φ : D.SourceForm} (hφ : φ ∈ 
     simpa [and_or_left, exists_or] using
       (D.isSplitLevel_piNPlaces.natCast_mem_iff _).1 (natCast_level_mem _ w.prop)
   obtain ⟨h_int, h_supp⟩ := D.isScalingAt_scalingGenerator u
-  have h_supp_w : ∀ u' ≠ w.val, star u' ≠ w → (D.scalingGenerator u).val u' = 1 := by aesop
+  have h_supp_w : ∀ u' ≠ w.val, star u' ≠ w → (D.scalingGenerator u).val u' = 1 := by
+    intro u' h1 h2
+    refine h_supp u' ?_ ?_ <;> rcases hu with hu | hu <;> rw [← hu] <;> intro h
+    · exact h1 h
+    · exact h2 (by rw [h, star_star])
+    · exact h2 h
+    · exact h1 (star_injective h)
   obtain ⟨x, hx_one, hx⟩ := exists_embedGL_scalar_eq_scalarFin (n := D.X 0) w h_int h_supp_w
   -- A scalar is not changed by the passage to a basis of `L_0`.
   have h_conj : D.conjEmbedGL 0 (inclGL (GeneralLinearGroup.scalar (D.X 0) x)) =
       scalarFin (D.X 0) (D.scalingGenerator u) := by
-    simp [conjEmbedGL, hx, ← (Seesaw.commute_scalarFin _).eq]
+    simp only [conjEmbedGL, MulEquiv.toMonoidHom_eq_coe, MonoidHom.coe_comp, MonoidHom.coe_ofClass,
+      Function.comp_apply, hx, MulAut.conj_apply, ← (Seesaw.commute_scalarFin _).eq,
+      mul_inv_cancel_right]
   obtain ⟨ψ, hψ⟩ : ∃ ψ : D.SourceForm, φ.val = ψ.val -
       algFormRep D.columnCount (D.lastEntry 0) (scalarFin (D.X 0) (D.scalingGenerator u)) ψ :=
     D.exists_eq_sub_scalingGenerator u hφ
-  exact ⟨x, hx_one, ψ, by simp [h_conj, hψ]⟩
+  exact ⟨x, hx_one, ψ, by
+    simp only [MonoidHom.coe_comp, Function.comp_apply, h_conj, LinearMap.sub_apply,
+      one_apply_eq_self, hψ]⟩
 
 /-- For a matrix `a` over the completions at `Σ_N = D.nonInducedPlaces`, the adelic point
 `D.conjEmbedGL j a` (`a` read in a basis of the lattice `L_j`) lies in
