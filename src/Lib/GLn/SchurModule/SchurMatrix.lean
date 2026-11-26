@@ -149,14 +149,14 @@ lemma isTableauBasis_epsilon {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ
 
 /-- The minor products of the chosen fillings `New.BasisTableau` are linearly independent over
 every ring. -/
-lemma linearIndependent_basisTableau {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℕ} {k : ℕ → ℕ}
+lemma linearIndependent_basisTableau {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ}
     (R : Type) [CommRing R] :
     LinearIndependent R fun T : BasisTableau ι M k ↦ tableauPoly R id T.val := by
   -- `BasisTableau ι M k` is the subtype of the members of the chosen set.
   exact (isTableauBasis_epsilon (ι := ι) (M := M) (k := k)).linearIndepOn R
 
 /-- The minor product of any filling is a linear combination of those of the standard fillings. -/
-lemma exists_sum_basisTableau_smul_eq {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℕ} {k : ℕ → ℕ}
+lemma exists_sum_basisTableau_smul_eq {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ}
     (R : Type) [CommRing R] (T : Tableau ι M k) :
     ∃ c : BasisTableau ι M k → R,
       ∑ U : BasisTableau ι M k, c U • tableauPoly R id U.val = tableauPoly R id T := by
@@ -166,7 +166,7 @@ lemma exists_sum_basisTableau_smul_eq {ι : Type} [Fintype ι] [DecidableEq ι] 
 /-- The character formula for the standard fillings: the sum of their monomials, times the
 alternant of weight zero, is the alternant of the weight whose `i`-th entry counts the columns of
 height greater than `i`. -/
-lemma sum_basisTableau_mul_alternant {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℕ} {k : ℕ → ℕ}
+lemma sum_basisTableau_mul_alternant {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ}
     {a : ℕ} (e : Fin a ≃ ι) (x : ι → ℂ) :
     (∑ T : BasisTableau ι M k, ∏ h : Fin M, ∏ j : Fin (k h), ∏ s : Fin h, x (T.val h j s)) *
         alternant (x ∘ e) 0 =
