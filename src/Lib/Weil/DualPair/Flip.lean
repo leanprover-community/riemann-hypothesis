@@ -448,7 +448,10 @@ private lemma Modulus.exists_pairWeil_vacTranslate (V : Space E m (-t)) (a b : A
   simp [u, boxIndicator, mem_integralBox, mem_Ô, vecToMatrix, scalarFin, idem_apply, coe_divStar,
     matrixToVec]
   congr! 6
-  grind [generator_spec]
+  split_ifs with hw
+  · rw [𝔪.generator_apply_of_notMem (𝔪.not_le_star _ hw), map_one]
+    ring
+  · rfl
 
 /-- Let c be a unit of Ô such that −c satisfies c̄c = −1 (the form in which the flip takes it), V a
 space of rank m with signs −t, and v an integral n × m matrix. The flip φ = `New.flipCoords` for
