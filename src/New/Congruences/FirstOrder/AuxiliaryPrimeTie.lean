@@ -2,7 +2,7 @@ module
 
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-public import New.Congruences.FirstOrder.FittingBlock
+public import New.Congruences.FirstOrder.RibetMethod
 public import New.Congruences.FirstOrder.TiedTraces
 import Lib.PadicComparison.Descent.TestCategory
 

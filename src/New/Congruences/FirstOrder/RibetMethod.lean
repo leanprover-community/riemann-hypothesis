@@ -1,8 +1,9 @@
 module
 
-import Mathlib.RingTheory.TwoSidedIdeal.Instances
+public import Mathlib.RingTheory.MvPolynomial.Basic
+public import Mathlib.RingTheory.TwoSidedIdeal.Instances
 public import Lib.Speed
-import Lib.General.LinearAlgebra.Eigenvalues
+public import Lib.General.LinearAlgebra.Eigenvalues
 
 /-!
 # Amitsur's formula and Ribet's method for matrices over an algebra
@@ -16,6 +17,10 @@ ideal whose traces are controlled.
 
 ## Main definitions and results
 
+* `New.Selmer.IsTraceIdeal`: an algebra `S` of families of polynomials in variables `X j` holds the
+  characteristic polynomials, and an `S`-submodule `𝒥` holds the traces of given relations.
+* `New.Selmer.IsCommonRibetElement`: one polynomial family sends each of a collection of functions
+  into the trace ideal and has a prescribed coefficient at the chosen point.
 * `New.Selmer.exists_ribet_polynomial`: Ribet's method. Let `ρ` represent an `R`-algebra `Λ` with
   characteristic polynomials over `R`, let `𝔞` be a two-sided ideal containing its kernel, and let
   `I` be the left ideal spanned by a vector `y`. If `B y` has entries in `𝔞 + I ρ₀`, then some
@@ -716,3 +721,56 @@ lemma Selmer.exists_ribet_element_of_tied_rows {r : Type*} [Fintype r] [Decidabl
     (fun g k ↦ ⟨⟨_, h_coeff g k⟩, rfl⟩) 𝒥 y ρ₀ ρ₁ B hB_tied ψ η hu_block hψ₁ hη₁ hη₀
 
 end New
+
+namespace New.Selmer
+
+open Matrix Polynomial Finset
+
+variable {O L Y G J σ : Type} [CommRing O] [CommRing L] [Algebra O L] [Fintype σ] [DecidableEq σ]
+  {S : Subalgebra O (Y → MvPolynomial J L)}
+
+/-- Elements of `S` and `𝒥` are families, indexed by `x : Y`, of polynomials over `L` in the
+variables `X j`. The algebra `S` contains the variables and the coefficients of the characteristic
+polynomials of `u`. The `S`-module `𝒥` contains `p` times the traces of the `u x g` and, for each
+relation that ties `τ i` to `φ i`, the traces of its products with the `u x g` on the right. -/
+structure IsTraceIdeal (𝒥 : Submodule S (Y → MvPolynomial J L)) {A : Type*} {K : Sort*}
+    [CommRing A] [Algebra O A] [Algebra A L] (u : Y → G → Matrix σ σ A) (p : O) (τ φ : K → G)
+    (k : K → J) (ε : J → O[X]) : Prop where
+  /-- The algebra `S` contains the constant families `X j`. -/
+  X_mem (j : J) : (fun _ : Y ↦ MvPolynomial.X j) ∈ S
+  /-- The algebra `S` contains the coefficients of the characteristic polynomials of the `u x g`,
+  as families of constants. -/
+  charpoly_coeff_mem (g : G) (n : ℕ) :
+    (fun x : Y ↦ MvPolynomial.C (algebraMap A L ((u x g).charpoly.coeff n))) ∈ S
+  /-- The `S`-module `𝒥` contains `p` times the trace of `u x g`. -/
+  smul_trace_mem (g : G) :
+    (fun x : Y ↦ MvPolynomial.C (algebraMap A L (p • (u x g).trace))) ∈ 𝒥
+  /-- The `S`-module `𝒥` contains the trace of
+  `(τ i - 1 - X (k i) * (φ i - 1) * ε (k i) (φ i)) * g` under `u x`. -/
+  trace_relation_mem (g : G) (i : K) :
+    (fun x : Y ↦
+      MvPolynomial.C (algebraMap A L ((u x (τ i) - 1) * u x g).trace) -
+        MvPolynomial.X (k i) *
+          MvPolynomial.C
+            (algebraMap A L (((X - 1) * ε (k i)).aeval (u x (φ i)) * u x g).trace)) ∈ 𝒥
+
+variable (𝒥 : Submodule S (Y → MvPolynomial J L))
+
+/-- One Ribet element for a family `β` of functions `β i : Y → L`. Here `S` is an algebra of
+families, indexed by `x : Y`, of polynomials over `L` in the variables `X j`, and `𝒥` is an
+`S`-module of such families. Every family of constant polynomials `x ↦ C (β i x)` lies in `S` and
+vanishes on `𝓧`. One `f : S` multiplies all of them into `𝒥`; for `x ∈ 𝓧`, `f x` has no monomial
+properly dividing `∏ X j`; and the coefficient of `∏ X j` in `f π` is `c`. -/
+def IsCommonRibetElement [Fintype J] {I : Type*} (β : I → Y → L) {𝓧 : Set Y} (π : 𝓧) (c : L) :
+    Prop :=
+  (∀ i : I, (fun x : Y ↦ MvPolynomial.C (β i x)) ∈ S) ∧
+  (∀ (i : I) (x : 𝓧), β i x = 0) ∧
+  ∃ f : S,
+    -- (a) `f` multiplies every `β i` into `𝒥`
+    (∀ i : I, f.val * (fun x : Y ↦ MvPolynomial.C (β i x)) ∈ 𝒥) ∧
+    -- (b) on `𝓧`, `f` has no term below `∏ X j`
+    (∀ x : 𝓧, ∀ d < ∑ j : J, Finsupp.single j 1, (f.val x).coeff d = 0) ∧
+    -- (c) the coefficient of `∏ X j` at `π`
+    (f.val π).coeff (∑ j : J, Finsupp.single j 1) = c
+
+end New.Selmer
