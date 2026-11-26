@@ -209,10 +209,6 @@ lemma IsSplitSquarefree.isConjDisjoint (hπ : IsSplitSquarefree P (N : E) π) :
     Set.IsConjDisjoint (P : Set (FinPlace E)) :=
   Set.disjoint_left.2 hπ.star_notMem
 
-lemma IsSplitSquarefree.natCast_eq_mul_star (hπ : IsSplitSquarefree P (N : E) π) :
-    (N : 𝔸f E) = π * star (π : 𝔸f E) := by
-  simpa using hπ.algebraMap_eq_mul_star
-
 lemma IsSplitSquarefree.mem_integralAdeles (hπ : IsSplitSquarefree P (N : E) π) :
     (π : 𝔸f E) ∈ Ô E := by
   refine mem_Ô.2 fun w ↦ ?_
@@ -668,7 +664,8 @@ lemma exists_class_star_idem_mul_mem_iff [Fact N.Prime] (hP : IsSplitLevel P N)
     grind
   -- `N z = η π̄ t̄`, and `π̄` is a unit at `P`.
   have h_mul : idem P * ((N : 𝔸f E) * z) = star (π : 𝔸f E) * (η * star (star (idem P) * t)) := by
-    simp only [hz, hπ.natCast_eq_mul_star, star_mul', star_star]
+    simp only [hz, show (N : 𝔸f E) = π * star (π : 𝔸f E) by simpa using hπ.algebraMap_eq_mul_star,
+      star_mul', star_star]
     grind [π.mul_inv]
   have h_div : η * star (star (idem P) * t) =
       star ((1 - idem P) * (↑π⁻¹ : 𝔸f E)) * (idem P * ((N : 𝔸f E) * z)) := by
