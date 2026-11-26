@@ -125,20 +125,33 @@ lemma integralAlgebraicPart_insert {p : D.CriticalPair} {n : Type} [Fintype n] [
     ({w : FinPlace D.E | D.IsChosen w} ∪ ↑Q).conjClosure
   simp_rw [hA, hχ, mul_assoc, AutChar.L]
   congr 1
-  -- Setting the coefficients at `{v, star v}` to zero multiplies the Euler product by the two
-  -- inverse Euler factors.
-  obtain ⟨-, -, h_erase⟩ := eulerProd_erase
-    (p.hasWeight.mul ϑ.hasWeight).inv.isHeckeOfType.norm_heckeCoeff_le {v, star v}
   have h_coeff : heckeCoeff φ (S ϑ'.Q) = Set.indicator {v, star v}ᶜ (heckeCoeff φ (S ϑ.Q)) := by
     -- The places removed for `ϑ'` are those for `ϑ` together with `v` and `star v`.
-    simp [φ, funext_iff, heckeCoeff, Set.indicator, hQ]
-    grind [star_star]
+    have h_S : S ϑ'.Q = {v, star v} ∪ S ϑ.Q := by
+      ext w
+      have h_star : star w = v ↔ w = star v :=
+        ⟨fun h ↦ by rw [← h, star_star], fun h ↦ by rw [h, star_star]⟩
+      simp only [S, hQ, Set.conjClosure, Set.mem_union, Set.mem_preimage, Set.mem_insert_iff,
+        Set.mem_ofPred_eq, Finset.coe_insert, Finset.mem_coe, Set.mem_singleton_iff, h_star,
+        or_assoc, or_left_comm]
+    simp only [heckeCoeff, Set.indicator_indicator, h_S, Set.compl_union]
   have h_factors :
       ∏ w ∈ {v, star v}, (1 - heckeCoeff φ (S ϑ.Q) w * (w.q : ℂ) ^ (-(p.z : ℂ))) =
         ∏ ε : ℤˣ, (1 - (p.character * ϑ.toAutChar).baseChange.atUniformizer v ^ ε.val / v.q ^
           p.z) := by
-    simp_all [φ, S, HeckeChar.atUniformizer, heckeCoeff, cpow_neg, Ne.symm]
-    grind
+    have hv_star : star v ∉ ϑ.Q := fun h_mem ↦ hv_star' (by simp [hQ, h_mem])
+    have h_ne : v ≠ star v := fun h ↦ hv_star' (by simp [hQ, ← h])
+    have h_at (w : FinPlace D.E) (hw : w ∉ S ϑ.Q) : heckeCoeff φ (S ϑ.Q) w =
+        ((p.character * ϑ.toAutChar).baseChange.atUniformizer w)⁻¹ := by
+      simp [φ, heckeCoeff, HeckeChar.atUniformizer, hw]
+    rw [prod_pair h_ne, h_at v (by simp [S, hv, hv_chosen, hv_star_chosen, hv_star]),
+      h_at (star v) (by simp [S, hv, hv_chosen, hv_star_chosen, hv_star]), at_star, inv_inv]
+    simp [cpow_neg, q_star, div_eq_mul_inv]
+    ring
+  -- Setting the coefficients at `{v, star v}` to zero multiplies the Euler product by the two
+  -- inverse Euler factors.
+  obtain ⟨-, -, h_erase⟩ := eulerProd_erase
+    (p.hasWeight.mul ϑ.hasWeight).inv.isHeckeOfType.norm_heckeCoeff_le {v, star v}
   rw [h_coeff, ← h_factors]
   simpa [φ] using h_erase p.z (mod_cast H.2)
 
@@ -200,7 +213,11 @@ lemma exists_mul_norm_sq_detPeriod_eq {p : D.CriticalPair} (h_ram : p.IsRamified
   have h_sq : ‖γ‖ ^ 2 =
       C / Exchange.lValueProd ({w | D.IsChosen w} ∪ ϑ.Q) (p.character * ϑ.toAutChar)⁻¹ 1 := by
     simpa [places_twistModulus, inv_mul_cancel_comm] using norm_γ
-  grind [norm_zero]
+  have h_ne : ‖γ‖ ^ 2 ≠ 0 := pow_ne_zero 2 (left_ne_zero_of_mul_eq_one h_norm)
+  rw [h_sq] at h_ne
+  obtain ⟨hC, hL⟩ := div_ne_zero_iff.1 h_ne
+  refine ⟨norm_ne_zero_iff.1 (right_ne_zero_of_mul_eq_one h_norm), hC, ?_⟩
+  rw [(div_eq_iff hL).1 h_sq.symm, mul_right_comm, ← mul_pow, h_norm, one_pow, one_mul]
 
 open scoped Classical in
 /-- Let `p = (ν, z)` be a critical pair with `ν = p.character` of weight `-c`. Let `ϑ'` be the tame
@@ -458,7 +475,8 @@ lemma exists_tameChar_invAvatar_eq {I : Finset (FinPlace D.E)} (hI : IsAuxiliary
     simp [η', h, η_rat]
   have int_le : integralU1 I ≤ η'.ker := fun u ⟨hu, hu_red⟩ ↦
     η_int _ (idelesUnitOff_mono bot_le (idelesUnitOff_empty.ge ⟨hu, star_mem_Ô hu⟩))
-      fun w hw ↦ residue_eq_iff_valuation_sub_lt_one.1 (hu_red w hw.1)
+      fun w hw ↦
+        (residue_eq_iff_valuation_sub_lt_one (a := ⟨_, mem_Ô.1 hu w⟩) (b := 1)).1 (hu_red w hw.1)
   obtain ⟨μ, hμ⟩ := AutChar.exists_mem_tameChars
     (MonoidHom.comp ιℓ.symm (QuotientGroup.lift _ η' (sup_le rat_le int_le)))
   refine ⟨tameCharOfAuxiliary I hI μ⁻¹, rfl, MonoidHom.ext fun g ↦ ?_⟩
