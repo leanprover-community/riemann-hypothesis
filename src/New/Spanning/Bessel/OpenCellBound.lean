@@ -196,12 +196,6 @@ section OpenCellBound
 open Finset Fintype Subgroup Matrix New.RealPlace MeasureTheory Norms.L2Operator ProbabilityTheory
   ENNReal Metric IdemSemiring Measure ComplexConjugate Fin
 
-private lemma continuousMul_G₁ {𝔰 : New.Shape} : ContinuousMul 𝔰.G₁ := inferInstance
-
-private lemma continuousInv_G₁ {𝔰 : New.Shape} : ContinuousInv 𝔰.G₁ := inferInstance
-
-private lemma measurableMul₂_G₁ {𝔰 : New.Shape} : MeasurableMul₂ 𝔰.G₁ := inferInstance
-
 private lemma mul_conjTranspose_inclMatrix_apply {l m n : Type*} [Fintype m] [DecidableEq n]
     (M : Matrix l m ℂ) (u : m → n) (x : l) (j : n) :
     (M * (New.inclMatrix ℂ u)ᴴ) x j = ∑ k : m, if j = u k then M x k else 0 := by
@@ -540,7 +534,6 @@ lemma New.isL2Contraction_of_columns {𝔰 : Shape} {I : Type*} [Fintype I] [Dec
       (((μ S)⁻¹ * K) • volume.withDensity fun y : 𝔰.G₁ ↦ A.indicator 1 y * ‖W y‖ₑ ^ 2)
       fun (i : I × I) (x : T) (y : 𝔰.G₁) ↦ W (s * g x * y) i.1 * conj (W (t x * y) i.2) := by
   -- Apply `h_bound` column by column, to the weights `β j`.
-  have : MeasurableMul₂ 𝔰.G₁ := measurableMul₂_G₁
   intro φ C hφ hC
   have hA_meas : MeasurableSet A := hA.measurableSet
   have hψ : Integrable (A.indicator φ) := (volume.integrableOn_of_bounded hA.measure_ne_top
@@ -636,8 +629,6 @@ lemma New.BesselSystem.isL2Contraction_gramSection {𝔰 : Shape} {B P c : ℝ} 
       fun (i : X.Index × X.Index) (x : 𝔰.FixerFactors) (y : 𝔰.G₁) ↦
         X.besselFn .full (s * (gramSection Z * (x.2 * embedH x.1)⁻¹) * y) i.1 *
           conj (X.besselFn .full (t x * y) i.2) := by
-  have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
-  have : ContinuousInv 𝔰.G₁ := continuousInv_G₁
   let g₀ (x : 𝔰.FixerFactors) : 𝔰.G₁ := gramSection Z * (x.2 * embedH x.1)⁻¹
   have hg₀_meas : Measurable g₀ :=
     (continuous_const.fun_mul
@@ -732,8 +723,6 @@ lemma New.exists_mul_eq_mul_gramSection_mul {𝔰 : Shape} {γ : 𝔰.G₁}
       ∀ x : 𝔰.FixerFactors,
         γ * t x = s * (gramSection (realFrameGram γ) * (x.2 * embedH x.1)⁻¹) := by
   -- Write `γ = u k γ_Z (u' k')⁻¹`, and take `s = u k` and `t(h, v) = u' k' h⁻¹ v⁻¹`.
-  have : ContinuousMul 𝔰.G₁ := continuousMul_G₁
-  have : ContinuousInv 𝔰.G₁ := continuousInv_G₁
   obtain ⟨u, k, u', k', hγ_eq⟩ := exists_eq_mul_gramSection_mul (Z := realFrameGram γ) hγ rfl
   have ht_meas : Measurable fun x : 𝔰.FixerFactors ↦
       unipotentOf u' * embedH (k' * x.1⁻¹) * (x.2⁻¹ : besselU0) :=
