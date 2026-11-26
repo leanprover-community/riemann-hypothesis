@@ -155,14 +155,14 @@ sign −1, and Δ_f is `New.finMultiplier`, the multiplier of the action `finAct
 vectors. -/
 def weilMultiplier : ℂ := (∏ w : InfinitePlace E, realMultiplier (g.1 w)) * finMultiplier g.2
 
-set_option synthInstance.maxSize 999
-
 /-- The Haar measure on 𝔸^n that is the image of the product of `New.Fock.normalizedVolume` and
 `New.latticeMeasure` under the isomorphism `New.adelicSum` from real and finite coordinates. The
 isomorphism does not depend on the signs, so the signs `1` are used. -/
 def vacuumMeasure : Measure (n → 𝔸 E) :=
   ((normalizedVolume (InfinitePlace E × n)).prod (latticeMeasure E n)).map (adelicSum E 1).equiv
-  deriving IsAddHaarMeasure
+
+instance : IsAddHaarMeasure (vacuumMeasure (E := E) (n := n)) :=
+  (adelicSum E 1).equiv.isAddHaarMeasure_map _
 
 /-- The function `New.vacuumFn` (Gaussian at infinity times twisted lattice indicator at finite
 places) is a vacuum, in the sense of `New.Heisenberg.IsVacuum`, for the bicharacter β of signs s and
