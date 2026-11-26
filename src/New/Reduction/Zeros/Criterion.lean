@@ -7,9 +7,9 @@ import Lib.Analytic.QuadraticTwist
 /-!
 # The one-sided criterion for a zero-free half-plane
 
-`New.LFunction_ne_zero_of_primeRemainder_le`: an eventual upper bound `R_q(x) ≤ A * x ^ (β - 1)` for the
-remainder of a sum over prime powers `≡ 1` mod `q` with weights depending on a prime `d`, for all
-`d` of a suitable class, excludes zeros `s ≠ 1` of the `L(s, ψ)`, `ψ` mod `q`, in `re s > β`.
+`New.LFunction_ne_zero_of_primeRemainder_le`: an eventual upper bound `R_q(x) ≤ A * x ^ (β - 1)` for
+the remainder of a sum over prime powers `≡ 1` mod `q` with weights depending on a prime `d`, for
+all `d` of a suitable class, excludes zeros `s ≠ 1` of the `L(s, ψ)`, `ψ` mod `q`, in `re s > β`.
 
 Notions from other files:
 * `primeRemainder d q x`: the remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`,
@@ -34,10 +34,10 @@ open Complex Filter Nat Real Set MeasureTheory Topology
 
 /-- **One-sided criterion.** Let `q₀` be a positive multiple of `8`, let `d₀ ≡ 7` mod `8` be prime
 to `q₀`, and let `β > 1/2`. Suppose that for each prime `d ≡ d₀` mod `q₀` the remainder
-`primeRemainder d q₀ x = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q₀) - c` is at most `A * x ^ (β - 1)`
-for some `A` and all large `x`. Here `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q₀` and `0` otherwise,
-and `c` is the constant for which the remainder tends to `0`. Then `L(ρ, ψ) ≠ 0` for every
-character `ψ` modulo `q₀` and every `ρ ≠ 1` with `re ρ > β`. -/
+`primeRemainder d q₀ x = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q₀) - c` is at most
+`A * x ^ (β - 1)` for some `A` and all large `x`. Here `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod
+`q₀` and `0` otherwise, and `c` is the constant for which the remainder tends to `0`. Then
+`L(ρ, ψ) ≠ 0` for every character `ψ` modulo `q₀` and every `ρ ≠ 1` with `re ρ > β`. -/
 theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (hq₀ : 8 ∣ q₀) {d₀ : ℕ}
     (hd₀_mod : d₀ % 8 = 7) (hd₀_cop : d₀.Coprime q₀) {β : ℝ} (hβ : 1 / 2 < β)
     (h_bound : ∀ d : Primes, (d : ℕ) ≡ d₀ [MOD q₀] →

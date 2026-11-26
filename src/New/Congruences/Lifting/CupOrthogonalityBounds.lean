@@ -217,11 +217,12 @@ lemma KummerChart.pow_smul_mem_cupOrthogonal_of_isScaledCupCoboundary [Topologic
 
 /-- Let `Γ → Gp p = Gal(ℚ̄_p / ℚ_p)` be an open embedding, let the chart `k` be unramified and
 `p ≥ 5`, and at each letter `i` let `b i + W + η ≤ (p - 3) a` and let `p`
-divide no nonzero integer within `n ≥ a + max a η + max η W` of `0` or `± b i` (`NoMultipleNear`). Let `L` be
-crystalline with Hodge–Tate jumps in `U'`, and at each letter let the jump sets of `U` and `U'` lie
-in `[-η, η] ∪ ∓ε i [b i, b i + W]`, with opposite signs. If `U` and `U'` avoid `[-a, 0)`, or `U'`
-lies in `[-η, 0]`, then every crystalline cocycle of `L` lies in `cupOrthogonal`: its cup product
-with every crystalline cocycle of a crystalline lattice with jumps in `U` is a coboundary. -/
+divide no nonzero integer within `n ≥ a + max a η + max η W` of `0` or `± b i` (`NoMultipleNear`).
+Let `L` be crystalline with Hodge–Tate jumps in `U'`, and at each letter let the jump sets of `U`
+and `U'` lie in `[-η, η] ∪ ∓ε i [b i, b i + W]`, with opposite signs. If `U` and `U'` avoid
+`[-a, 0)`, or `U'` lies in `[-η, 0]`, then every crystalline cocycle of `L` lies in `cupOrthogonal`:
+its cup product with every crystalline cocycle of a crystalline lattice with jumps in `U` is a
+coboundary. -/
 lemma KummerChart.crysCocycles_le_cupOrthogonal_of_no_small_neg_jump [TopologicalSpace Γ]
     (k : KummerChart Γ)
     (ζ : k.LetterRoot O) (ho : IsOpenEmbedding Γ.overGp.toGp) (hk : k.IsUnramified)
@@ -559,7 +560,8 @@ lemma hasCupExponent_of_isTameType [TopologicalSpace Γ] (ho : IsOpenEmbedding �
   have h_gap : NoMultipleNear p (η + max η W) b :=
     fun _ hy_ne hy_near h_dvd ↦ hy_ne (Int.eq_zero_of_abs_lt_dvd h_dvd (by grind))
   refine P.isScaledCupCoboundary_of_killsCokernel (a := 0) (κ := r ^ 2 * (N + 1) ^ 2)
-    (fun i ↦ ?_) (fun i ↦ ?_) (fun i ↦ ?_) (fun _ ↦ h_gap) (by simp) h_window h_window' (.inl (by simp))
+    (fun i ↦ ?_) (fun i ↦ ?_) (fun i ↦ ?_) (fun _ ↦ h_gap) (by simp) h_window h_window'
+    (.inl (by simp))
     ?_ c ⟨x, hx⟩
   · exact d.killsCokernel_of_isKilledBy h_killed tateDual_le hq'' he_le hp (cost_le (by nlinarith))
   · exact d.killsCokernel_of_isKilledBy (hY.isKilledBy_of_isWeilPair hKq d.isWeilPair_tameGen)
