@@ -105,7 +105,7 @@ abbrev cohomologyFunctor (F : AbFunctor C) (n : ℕ) : (T ⥤ AbFunctor C)ᵒᵖ
   opHom T (AbFunctor C) ⋙ (whiskeringRight (Tᵒᵖ) ((AbFunctor C)ᵒᵖ) AddCommGrpCat).obj
     { obj N := .of (H N.unop F n)
       map α := ofHom (map F α.unop n)
-      map_id := by aesop
+      map_id _ := ext H.map_id
       map_comp _ _ := ext (map_comp _ _) }
 
 /-- Continuity of cohomology up to a level. For a cone `c` over a cofiltered system `D j` of
