@@ -445,10 +445,6 @@ lemma weight_eq_of_coeff_leviTensor_ne_zero {k : ℕ} {O : Type} [CommRing O] (�
   obtain rfl : ∑ l : Fin d, single (j l, i l) 1 = α := by simp_all [leviTensor_apply]
   simp [weight]
 
-lemma isHomogeneous_leviTensor {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → ℕ) {d : ℕ}
-    (i j : Fin d → Fin k) : (leviTensor O τ d i j).IsHomogeneous d := by
-  simpa [leviTensor_apply] using isHomogeneous_monomial _ (by simp)
-
 /-- Let `T = leviTensor O τ d` be the `d`-th tensor power of the generic block matrix of `τ`, a
 matrix of polynomials. The linear map `schurMap O τ d` sends the basis vector at a monomial `γ` of
 degree `d` to the matrix of the coefficients of `γ` in the entries of `T`. It sends the vector of
@@ -460,7 +456,7 @@ lemma schurMap_apply_monomial {k : ℕ} {O : Type} [CommRing O] (τ : Fin k → 
   ext i j
   have h_sum : ∑ γ : Monomials (Fin k × Fin k) d,
       (leviTensor O τ d i j).coeff γ.val • monomial γ.val 1 = leviTensor O τ d i j :=
-    sum_monomials_eq_of_isHomogeneous (isHomogeneous_leviTensor τ i j)
+    sum_monomials_eq_of_isHomogeneous (by simpa [leviTensor_apply] using isHomogeneous_monomial _ (by simp))
   rw [Matrix.map_apply, ← h_sum]
   simp [Matrix.sum_apply, schurMap, mul_comm]
 
