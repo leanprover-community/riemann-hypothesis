@@ -102,15 +102,9 @@ def flipCoords : CoordChange E (.id ℂ) (homSigns t s) (homSigns s t') where
     grind [star_mul', star_one, α.mul_inv]
   beta_realEquiv := by
     -- Conjugation exchanges the two sums in the exponent, and `t' = -t` changes their signs.
-    simp only [realHeisenberg, dotProduct, Pi.star_apply, Complex.star_def, signMatrix, pairSign,
-      mul_comm, mul_one, Units.val_mul, mulVec_diagonal, sum_prod_type, starCoordEquiv, map_mul,
-      Units.coe_map, MonoidHom.coe_ofClass, eq_intCast, ← cast_mul, Equiv.prodCongr_apply,
-      Equiv.Perm.coe_one, Equiv.coe_prodComm, _root_.mul_inv_rev, Units.val_inv_eq_inv_val,
-      ← mul_assoc, Equiv.prodCongr_symm, Equiv.prodComm_symm, ContinuousAddEquiv.coe_mk,
-      AddEquiv.coe_mk, Equiv.coe_fn_mk, Prod.map_apply, id_eq, Prod.swap_prod_mk,
-      units_coe_mul_self, cast_one, one_mul, map_intCast, RingHomCompTriple.comp_apply,
-      RingHom.id_apply, ht, Pi.neg_apply, mul_neg, Units.val_neg, cast_neg, neg_mul,
-      Finset.sum_neg_distrib, Finset.sum_comm (γ := a), sub_neg_eq_add]
+    simp [ht, realHeisenberg, signMatrix, dotProduct, Finset.sum_comm (γ := a), ← mul_assoc,
+      ← cast_mul,
+      mul_comm, pairSign, mulVec_diagonal, sum_prod_type, starCoordEquiv]
     grind
   vac_realEquiv := by
     simp [dotProduct, Finset.sum_comm (γ := a), ← mul_assoc, ← cast_mul, mul_comm, realVac,
@@ -182,10 +176,7 @@ lemma flipCoords_map_omega (hc : star (c : 𝔸f E) * c = -1) (V : Space E a t) 
     · simp [mul_comm, pairSign]
   -- So `conj_weilMultiplier_of_eq_neg` at `(onHom (g, h))⁻¹` is the required ratio, as inversion
   -- conjugates `weilMultiplier`.
-  simpa only [pairChar_apply, SubmonoidClass.coe_pow, ContinuousMonoidHom.pow_apply, Circle.coe_pow,
-    Δ_transpose, map_inv, weilMultiplier_inv, RingHomCompTriple.comp_apply, RingHom.id_apply,
-    det_onHom, inv_pow, _root_.mul_inv_rev, inv_inv, map_mul, map_pow, Circle.coe_mul,
-    Circle.coe_inv]
+  simpa [Δ_transpose, det_onHom, weilMultiplier_inv]
     using conj_weilMultiplier_of_eq_neg rfl (onHom (g, h))⁻¹.adeleMatrix_neg
 
 /-- The opposite space of the space V with matrix J and point x: it has matrix −J and the opposite
@@ -474,23 +465,14 @@ private lemma Modulus.flipCoords_map_vacTranslate {c : (Ô E)ˣ}
   have h_vec : idem 𝔪.places • -(↑𝔪.generator⁻¹ : 𝔸f E) • Subtype.val ∘ matrixToVec v =
       (flipCoords (s := s) hc_neg (neg_neg t).symm).finEquiv
         (star (idem 𝔪.places • (↑𝔪.generator⁻¹ : 𝔸f E) • Subtype.val ∘ y)) := by
-    simp only [neg_smul, smul_neg, flipCoords, starCoordEquiv, Function.comp_apply,
-      Equiv.prodComm_apply, Pi.star_apply, Equiv.prodComm_symm, Equiv.coe_prodComm, Units.coe_map,
-      MonoidHom.coe_ofClass, eq_intCast, Equiv.prodCongr_apply, Equiv.Perm.coe_one,
-      Complex.star_def, Units.val_inv_eq_inv_val, Equiv.prodCongr_symm, Units.map_neg,
-      Units.val_neg, Subring.subtype_apply, neg_mul, inv_neg, Units.coe_map_inv, star_smul,
-      ContinuousAddEquiv.coe_mk, AddEquiv.coe_mk, Equiv.coe_fn_mk, Pi.smul_apply, Pi.neg_apply,
-      matrixToVec, Prod.swap_swap, smul_eq_mul, NegMemClass.coe_neg, MulMemClass.coe_mul,
-      coe_star_Ô, star_neg, star_mul', star_star, mul_neg, neg_neg, funext_iff, Prod.forall, y]
+    simp [y, flipCoords, starCoordEquiv, funext_iff, matrixToVec]
     intro i j
     linear_combination (-(idem 𝔪.places * ((↑𝔪.generator⁻¹ : 𝔸f E) * (v i j : 𝔸f E)))) * hc
   rw [vacTranslate, h_vec, ← apply_finVec, map_rho, map_vacElem, ← projOn_vacElem (S := 𝔪.places),
     ← 𝔪.schrodingerOp_char_eq_translate_projOn, projOn_vacElem]
   congr with x
-  simp only [dotProduct, neg_smul, Function.comp_apply, Pi.neg_apply, Pi.smul_apply, matrixToVec,
-    Prod.fst_swap, Prod.snd_swap, smul_eq_mul, map_neg, map_mul, mul_neg, mul_left_comm (x _),
-    Finset.sum_neg_distrib, ← Finset.mul_sum, sum_prod_type, Units.coe_star, trace, diag_apply,
-    Matrix.mul_apply, of_apply, AddChar.mulShift_apply, neg_mul, vecToMatrix, y]
+  simp [y, vecToMatrix, trace, Matrix.mul_apply, dotProduct, sum_prod_type, mul_left_comm (x _),
+    ← Finset.mul_sum, matrixToVec]
 
 /-- Flip of a pair. Let c be a unit of Ô with c̄c = −1, T a space of rank m, V a space with the
 opposite signs whose point is (1, c) times that of T (hypothesis `hV`), and S a space of rank n.
@@ -541,7 +523,7 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
     obtain ⟨v, rfl⟩ := 𝔪.reduction_surjective.comp_left.comp_left v
     have h_mat : (g * (1, 𝔪.flipScalar m)).adeleMatrix = l.adeleMatrix *
       (G.neg g * (1, u)).adeleMatrix := by
-      -- `-map_mul` keeps the image of a product whole, in the form that `grind` matches.
+      -- `-map_mul` keeps the image of a product whole, in the form that `ring` closes.
       simp [l, u, flipScalar, -map_mul, smul_smul, adeleMatrix_scalarFin, coe_divStar]
       congr 2
       ring
