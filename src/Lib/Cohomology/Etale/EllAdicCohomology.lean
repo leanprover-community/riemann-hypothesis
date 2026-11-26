@@ -82,7 +82,7 @@ def geomPoints : Over (Spec R) ⥤ PointFunctor where
           ⟨(ULift.up (x.1.1.1 ≫ f.1), x.1.2), by
             -- `f` is a map over `Spec R`, so the new point lies over the same map out of `R`
             have h_over : (x.1.1.1 ≫ f.1) ≫ Y.hom = x.1.1.1 ≫ X.hom :=
-              (Category.assoc ..).trans (congrArg (x.1.1.1 ≫ ·) f.w)
+              (Category.assoc ..).trans (congrArg (x.val.1.down ≫ ·) f.w)
             exact (congrArg (fun h ↦ ULift.up (Spec.preimage h)) h_over).trans x.property⟩
       naturality _ _ _ := by
         ext x

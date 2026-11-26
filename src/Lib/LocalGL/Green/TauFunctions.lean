@@ -388,7 +388,7 @@ lemma aroots_map_frobenius_pow [IsAlgClosed K] {L : Type*} [Field L] [Algebra L 
     (σ : L →+* L) (hσ : ∀ y : L, σ y = y ^ Nat.card k ^ i) (P : L[X]) :
     (P.map σ).aroots K = (P.aroots K).map fun z : K ↦ z ^ Nat.card k ^ i := by
   -- Apply `Splits.roots_map` to the `i`-th power of the Frobenius map of `K`, which extends `σ`.
-  have h_fintype : Fintype k := Fintype.ofFinite k
+  let h_fintype : Fintype k := Fintype.ofFinite k
   have h_map : (P.map σ).map (algebraMap L K) =
       (P.map (algebraMap L K)).map (frobeniusAlgHom k K ^ i).toRingHom := by
     aesop (add simp coe_frobeniusAlgHom)
@@ -449,7 +449,7 @@ lemma greenTau_eq (hP : Irreducible P) (h0 : P.coeff 0 ≠ 0) {x : K} (hx : P.ae
     exists_pow_card_pow_eq_of_root hP hx (aeval_chosenRoot hx)
   have h_roots (c : SimClass k) :
       (c.charpoly.aroots K).map (fun z : K ↦ z ^ Nat.card k ^ i) = c.charpoly.aroots K := by
-    have h_fintype : Fintype k := Fintype.ofFinite k
+    let h_fintype : Fintype k := Fintype.ofFinite k
     rw [← aroots_map_frobenius_pow (.id k) (by simp [pow_card_pow]), c.charpoly.map_id]
   have h_brauer (η : K → ℂ) :
       brauerLift k (fun z : K ↦ η (z ^ Nat.card k ^ i)) = brauerLift k η := by
@@ -463,7 +463,7 @@ open scoped Classical in
 private lemma finMean_conj_mul_eq_ite {L : Type*} [Field L] [Finite L] (χ ξ : MulChar L ℂ) :
     finMean (fun z : Lˣ ↦ conj (χ z) * ξ z) = if χ = ξ then 1 else 0 := by
   -- the sum over `Lˣ` of the character `χ⁻¹ ξ` is `|Lˣ|` if it is trivial and `0` otherwise
-  have h_fintype : Fintype Lˣ := Fintype.ofFinite Lˣ
+  let h_fintype : Fintype Lˣ := Fintype.ofFinite Lˣ
   have h_sum : ∑ z : Lˣ, ((χ⁻¹ * ξ).comp (Units.coeHom L)) z =
       ((if (χ⁻¹ * ξ).comp (Units.coeHom L) = 1 then Fintype.card Lˣ else 0 : ℕ) : ℂ) :=
     sum_hom_units ((χ⁻¹ * ξ).comp (Units.coeHom L))

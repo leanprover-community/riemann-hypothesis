@@ -215,7 +215,8 @@ lemma IsAppellHumbert.poincareSeries_mem_thetaSpace_and_quotMean
       -- The exponents differ by `(B m l - B l m) / 2 + π I E(l, m)`, which is zero.
       congr 1
       linear_combination (-1 / 2 : ℂ) * hB.sub_eq_riemannForm (l : V) m
-    rw [ThetaTori.LatticeForm.poincareSeries, tsum_congr shift, tsum_mul_left, Equiv.tsum_eq, ThetaTori.LatticeForm.poincareSeries]
+    rw [ThetaTori.LatticeForm.poincareSeries, tsum_congr shift, tsum_mul_left, Equiv.tsum_eq,
+      ThetaTori.LatticeForm.poincareSeries]
   · -- A function with nonzero mean is not identically zero.
     contrapose! mean
     simp [mean, hB.ne_zero, eq_comm]
@@ -537,7 +538,7 @@ lemma IsAppellHumbert.relIndex_dualLattice_eq_finrank_end :
   -- index `≤ n ^ 2`, and the embedding of `n`-tuples gives `n ^ 2 ≤` index.
   let N : AddSubgroup B.dualLattice := (L.submoduleOf B.dualLattice).toAddSubgroup
   have := hB.finite_dualLattice_quotient
-  have h_fintype_quot : Fintype (B.dualLattice ⧸ N) := Fintype.ofFinite (B.dualLattice ⧸ N)
+  let h_fintype_quot : Fintype (B.dualLattice ⧸ N) := Fintype.ofFinite (B.dualLattice ⧸ N)
   have h_finite : Module.Finite ℂ (B.thetaSpace χ) := hB.finite_thetaSpace
   have card_le : card (B.dualLattice ⧸ N) ≤ finrank ℂ (End ℂ (B.thetaSpace χ)) :=
     hB.linearIndependent_thetaShiftEnd_out.fintype_card_le_finrank
@@ -562,7 +563,7 @@ lemma IsAppellHumbert.span_range_thetaShiftEnd_eq_top :
   -- The translations by representatives modulo `L` are independent and as many as the dimension.
   let N : AddSubgroup B.dualLattice := (L.submoduleOf B.dualLattice).toAddSubgroup
   have := hB.finite_dualLattice_quotient
-  have h_fintype_quot : Fintype (B.dualLattice ⧸ N) := Fintype.ofFinite (B.dualLattice ⧸ N)
+  let h_fintype_quot : Fintype (B.dualLattice ⧸ N) := Fintype.ofFinite (B.dualLattice ⧸ N)
   have card_eq : card (B.dualLattice ⧸ N) = finrank ℂ (End ℂ (B.thetaSpace χ)) :=
     card_eq_nat_card.trans hB.relIndex_dualLattice_eq_finrank_end
   exact eq_top_mono (span_mono (Set.range_comp_subset_range out hB.thetaShiftEnd))

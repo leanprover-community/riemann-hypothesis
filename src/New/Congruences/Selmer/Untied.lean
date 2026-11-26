@@ -221,6 +221,15 @@ lemma selmerAtPoint_zero {σ : Type} [Fintype σ] {q : ℕ}
     simp [pointTwist, universalChar]
   rw [selmerAtPoint, h_twist, show mapRel (.id O) '' L = L by simp [mapRel.eq_def]]
 
+/-- For the line with index `i` (the points `x_{P₀} = Y` and `x_v = s_v Y` for `v ≠ P₀`, with
+`s_v = (d v).2 i`), the point at `Y = 0` is `0`. So the Selmer module `selmerOnLine` at
+`Y = 0` is the Selmer module of `ρ` with values in `(O / ℓ ^ M) ^ n`. -/
+lemma selmerOnLine_zero {q : ℕ} (P₀ : FinPlace E) (J : Finset (FinPlace E))
+    (d : FinPlace E → AuxPrimeData E q × (ι → O)) (i : ι) (S : Set (FinPlace E))
+    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) : selmerOnLine ℓ M ρ P₀ J d i (RingHom.id O) 0 S L =
+      selmerModule ρ S L (QuotSpan (ℓ ^ M : O)) := by
+  simp only [selmerOnLine, mul_zero, selmerAtPoint_zero]
+
 omit [NumberField.IsCMField E] in
 /-- If `ρ(g)` and `ρ(g')` agree modulo `ℓ ^ M`, then their images under `e : O →+* O'` act in the
 same way on `(O' / ℓ ^ M) ^ n`. -/
@@ -557,7 +566,7 @@ lemma IsTiedPrimes.relLength_tieRelations_le_sum_addVal_det [ThePrime ℓ] [DVR 
     _ ≤ ∑ b : Bool, length O (K (Φ b)) := by
       -- At `y = 0`, where the point of the line is `0`, the two tie maps take their values in the
       -- kernels of `ρ(φ₀) - 1` and `ρ(φ₀^{-c}) - 1`.
-      simpa [K, Φ, selmerOnLine, selmerAtPoint_zero] using
+      simpa [K, Φ, selmerOnLine_zero] using
         hp.relLength_tied_le_sum_ker hN i h_unr h_triv_of_V (RingHom.id O) h_geom_sum S L
           (singleton_subset_iff.2 hp.first_mem) fun _ ↦ rfl
     _ ≤ ∑ b : Bool, length O (K (ρ (idOrConjInv b g₀))) :=

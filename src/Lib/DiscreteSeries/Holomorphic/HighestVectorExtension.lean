@@ -281,11 +281,11 @@ theorem kTypeNormSq_pos (w : HCParam ε) : 0 < w.kTypeNormSq := by
   -- The integrand is continuous, nonnegative and nonzero at `k = 1`.
   have h_cont : Continuous fun k : maxCompactU ε ↦ ‖weightMinors w (k : USign ε)‖ ^ 2 :=
     (DiscreteSeries.continuous_weightMinors (continuous_U_iff_matrix.1 continuous_subtypeVal)
-      fun k ↦ GeneralLinearGroup.det_ne_zero k.1.1).norm.pow 2
+      fun k ↦ GeneralLinearGroup.det_ne_zero k.val.val).norm.pow 2
   unfold HCParam.kTypeNormSq
   exact integral_pos_of_integrable_nonneg_ne_zero (x := 1) h_cont
     (h_cont.integrable_of_hasCompactSupport (.of_compactSpace _)) (fun k ↦ sq_nonneg _) (by
-      show ‖weightMinors w (1 : Matrix n n ℂ)‖ ^ 2 ≠ 0
+      change ‖weightMinors w (1 : Matrix n n ℂ)‖ ^ 2 ≠ 0
       rw [weightMinors_one, norm_one, one_pow]
       exact one_ne_zero)
 
@@ -351,7 +351,7 @@ theorem IsHolOfWeight.apply_mul_diagTorus {u : Φ → n → ℤ} {F : (Φ → US
   let z (τ : Φ) : Matrix n n ℂ := h τ * diagTorus ε t
   have h_borel : IsBorelMatrix o (diagTorus ε t : Matrix n n ℂ) :=
     ⟨blockTriangular_diagonal _, by
-      show (diagonal fun i : n ↦ (t i : ℂ)).det ≠ 0
+      change (diagonal fun i : n ↦ (t i : ℂ)).det ≠ 0
       rw [det_diagonal]
       exact Finset.prod_ne_zero_iff.2 fun i _ ↦ Circle.coe_ne_zero (t i)⟩
   have as_triangular : F' z = (∏ τ : Φ, ∏ i : n, (t i : ℂ) ^ u τ i) * F h := by
@@ -377,7 +377,7 @@ theorem isHolOfWeight_weightMinors {u : Φ → n → ℤ} (ho : o.Injective) (a 
   -- The same formula, read on tuples of matrices, is the extension.
   refine ⟨fun z ↦ ∏ τ, weightMinors (u τ) (a * z τ), fun h b b_borel h_block ↦ ?_⟩
   have det_ah (τ : Φ) : (a * h τ).det ≠ 0 := by
-    rw [det_mul]; exact mul_ne_zero ha_det (GeneralLinearGroup.det_ne_zero (h τ).1)
+    rw [det_mul]; exact mul_ne_zero ha_det (GeneralLinearGroup.det_ne_zero (h τ).val)
   have det_ahb (τ : Φ) : (a * (h τ * b τ)).det ≠ 0 := by
     rw [← mul_assoc, det_mul]; exact mul_ne_zero (det_ah τ) (b_borel τ).2
   have minors_mul (τ : Φ) : weightMinors (u τ) (a * (h τ * b τ)) =
@@ -512,7 +512,7 @@ theorem HCParam.IsKHighest.diagChar_smul_coeffMap_eq (ho : o.Injective) {ρ : Gl
   obtain ⟨t, rfl⟩ : ∃ t : USign ε, h * t = h' := mul_left_surjective h h'
   obtain rfl : t * b' = b := by
     rw [Subgroup.coe_mul, Units.val_mul, Matrix.mul_assoc] at h_eq
-    exact h.1.isUnit.mul_left_cancel h_eq
+    exact h.val.isUnit.mul_left_cancel h_eq
   have ht : IsBorelMatrix o t := by
     have h_prod := hb.mul hb'.inv
     rwa [Matrix.mul_assoc, mul_nonsing_inv _ (isUnit_iff_ne_zero.2 hb'.2), Matrix.mul_one] at h_prod
@@ -645,7 +645,7 @@ theorem HCParam.IsKHighest.isHolOfWeight_coeffMap (ho : o.Injective) {ρ : Φ �
     let shift : Matrix n n ℂ →L[ℂ] Matrix n n ℂ :=
       blockDiagPart ε' ∘L mulLeftRight ℂ (Matrix n n ℂ) (h : Matrix n n ℂ)⁻¹ b⁻¹
     have h_det : IsUnit (h : Matrix n n ℂ).det :=
-      isUnit_iff_ne_zero.2 (GeneralLinearGroup.det_ne_zero h.1)
+      isUnit_iff_ne_zero.2 (GeneralLinearGroup.det_ne_zero h.val)
     have b_det : IsUnit b.det := isUnit_iff_ne_zero.2 hb.2
     have shift_y : shift y = 1 := by
       change blockDiagPart ε' ((h : Matrix n n ℂ)⁻¹ * y * b⁻¹) = 1
@@ -994,7 +994,7 @@ theorem IsHolOfWeight.circle_mean_weightMinors (ho : o.Injective) {u : Φ → n 
   have rhs_analytic : AnalyticOnNhd ℝ rhs .univ := fun t _ ↦
     (analyticAt_const.mul (Finset.analyticAt_fun_prod univ fun τ _ ↦ by
       have h_det : ((c τ t : USign ε) : Matrix n n ℂ).det ≠ 0 :=
-        GeneralLinearGroup.det_ne_zero (c τ t).1
+        GeneralLinearGroup.det_ne_zero (c τ t).val
       exact (analyticAt_weightMinors h_det).restrictScalars.comp
         (g := weightMinors (u τ)) (f := fun s : ℝ ↦ (c τ s : Matrix n n ℂ)) (c_analytic τ t))).mul
       analyticAt_const
@@ -1042,7 +1042,7 @@ theorem IsHolOfWeight.integral_mul_conj_weightMinors {F : (Unit → USign ε) �
         (∏ i : n, ((θ.toCircle : ℂ) ^ o i) ^ w i)⁻¹ * conj (weightMinors w k.val) := by
       have h_mul : weightMinors w ((T θ * k).val : Matrix n n ℂ) =
           (∏ i : n, ((θ.toCircle : ℂ) ^ o i) ^ w i) * weightMinors w k.val :=
-        weightMinors_diagonal_mul (GeneralLinearGroup.det_ne_zero k.1.1)
+        weightMinors_diagonal_mul (GeneralLinearGroup.det_ne_zero k.val.val)
           fun i ↦ zpow_ne_zero _ (Circle.coe_ne_zero _)
       have h_conj : conj (θ.toCircle : ℂ) = (θ.toCircle : ℂ)⁻¹ :=
         eq_inv_of_mul_eq_one_left (by
@@ -1069,7 +1069,7 @@ theorem IsHolOfWeight.integral_mul_conj_weightMinors {F : (Unit → USign ε) �
     (F_cont.comp (continuous_pi fun _ ↦ continuous_subtypeVal)).mul
       (Complex.continuous_conj.comp (DiscreteSeries.continuous_weightMinors
         (continuous_U_iff_matrix.1 continuous_subtypeVal)
-        fun k ↦ GeneralLinearGroup.det_ne_zero k.1.1))
+        fun k ↦ GeneralLinearGroup.det_ne_zero k.val.val))
   refine (integral_eq_of_circle_mean (T := fun θ k ↦ T θ * k)
     ((hT_cont.comp continuous_fst).mul continuous_snd).measurable
     (fun θ ↦ measurePreserving_mul_left _ (T θ))

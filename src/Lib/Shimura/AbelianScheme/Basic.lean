@@ -561,8 +561,8 @@ lemma New.Variety.hasConstFunctions_of_isPullback {k : Type} [Field k]
   have h_inj : Function.Injective ζ[A].left.appTop :=
     RingHom.injective (S := Γ(Spec (.of k), ⊤)) ζ[A].left.appTop.hom
   have h_sec : Function.LeftInverse ζ[A].left.appTop A.hom.appTop := fun a ↦ by
-    rw [← CommRingCat.comp_apply, ← Scheme.Hom.comp_appTop, show ζ[A].left ≫ A.hom = 𝟙 _ from Over.w ζ[A],
-      Scheme.Hom.id_appTop]
+    rw [← CommRingCat.comp_apply, ← Scheme.Hom.comp_appTop,
+      show ζ[A].left ≫ A.hom = 𝟙 _ from Over.w ζ[A], Scheme.Hom.id_appTop]
     rfl
   have h_epi : Epi (s.appLE ⊤ ⊤ le_top) := h_pushout.epi_inr_of_epi <| by
     rw [show A.hom.appLE ⊤ ⊤ le_top = A.hom.appTop from appLE_eq_app A.hom]

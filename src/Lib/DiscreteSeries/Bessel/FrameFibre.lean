@@ -53,23 +53,11 @@ open Matrix MeasureTheory Measure Complex Fintype ENNReal Norms.L2Operator
 
 variable {𝔰 : Shape} {n : Type} [Fintype n] [DecidableEq n]
 
-/-- The columns of `definiteCols`, the basis vectors `x_i` of `X₀`, are orthonormal for the standard
-hermitian form. -/
-theorem conjTranspose_definiteCols_mul_self : 𝔰.definiteColsᴴ * 𝔰.definiteCols = 1 :=
-  inclMatrix_gram_eq_one (by simp)
-
 /-- The matrix `J₁` of the form fixes the basis vectors `x_i` of `X₀`. -/
 theorem J₁_mul_definiteCols : 𝔰.J₁ * 𝔰.definiteCols = 𝔰.definiteCols := by
   simp [J₁_eq, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
     conjTranspose_definiteCols_mul_self,
     inclMatrix_gram_eq_zero]
-
-/-- For `h` in the unitary group `H` of `X₀`, the element `embedH h` of `G₁` acts on the basis
-vectors `x_i` of `X₀` by the matrix `h`. -/
-theorem embedH_mul_definiteCols (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
-    (embedH h).val.val * 𝔰.definiteCols = 𝔰.definiteCols * h.val.val := by
-  simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
-    conjTranspose_definiteCols_mul_self]
 
 omit [DecidableEq n] in
 /-- Let `f` be a measurable map to the unitary group `G₁` whose values all fix the tuple of

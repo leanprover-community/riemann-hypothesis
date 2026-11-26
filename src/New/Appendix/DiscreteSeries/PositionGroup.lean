@@ -81,7 +81,7 @@ lemma LowersFlag.inv {g : (Matrix n n ℂ)ˣ} {σ : ℂ}
     blockTriangular_one.add fun a b hba ↦ hN_tri a b.castSucc (le_of_lt hba)
   have hT_diag (a : Fin d) : T a a = 1 := by simp [hT, initCols, hN_tri]
   have hT_unit : IsUnit T.det := by simp [det_of_isUpperTriangular hT_tri, hT_diag]
-  have : Invertible T := T.invertibleOfIsUnitDet hT_unit
+  let : Invertible T := T.invertibleOfIsUnitDet hT_unit
   have hg_inv : (↑g⁻¹ : Matrix n n ℂ) * initCols v = initCols v * T⁻¹ :=
     calc _ = (↑g⁻¹ : Matrix n n ℂ) * ((g : Matrix n n ℂ) * initCols v) * T⁻¹ := by
           rw [mul_initCols_eq hN, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ hT_unit]
@@ -550,6 +550,13 @@ lemma conj_inl_sub_one_mul (w : USign (Sum.elim ε (1 : Unit → ℤˣ))) (g : U
       (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) * fromBlocks ((g : Matrix n n ℂ) - 1) 0 0 0 :=
   (Units.eq_mul_inv_iff_mul_eq _).1 (conj_inl_sub_one w g)
 
+omit [DecidableEq n] in
+private lemma mul_frame_blocks_iff
+    {Y W : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ} {D : Matrix n n ℂ}
+    {A : Matrix (n ⊕ Unit) n ℂ} {b : Matrix (n ⊕ Unit) Unit ℂ} (hw : W = fromCols A b) :
+    Y * W = W * fromBlocks D 0 0 0 ↔ Y * A = A * D ∧ Y * b = 0 := by
+  simp [hw, mul_fromCols, fromCols_mul_fromBlocks, fromCols_ext_iff]
+
 /-- Let `w = (i₀, v₁)` lie in `U(ε ⊕ 1)`, where `v₁` is the only column of `v`. For `g` in `U(ε)`
 the element `w (g ⊕ 1) w⁻¹` fixes `v₁`: its difference with `1` lowers the flag of `v`, with sum of
 coefficients `0`. -/
@@ -560,18 +567,11 @@ lemma lowersFlag_conj_inl_sub_one {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ : 
     LowersFlag 0 v
       (((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1)
       0 := by
-  set Y : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ :=
-    ((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1
-  -- Read the last column of `Y w = w ((g - 1) ⊕ 0)`.
-  have h_vec : Y * replicateCol Unit (v.col 0) = 0 := by
-    have h_eq := conj_inl_sub_one_mul w g
-    rw [hw, mul_fromCols, fromCols_mul_fromBlocks, fromCols_ext_iff] at h_eq
-    simpa [Y] using h_eq.right
   refine ⟨0, fun a ↦ a.elim0, ?_, Finset.sum_of_isEmpty _⟩
   rw [Matrix.mul_zero]
   ext i b
   obtain rfl : b = 0 := Fin.fin_one_eq_zero b
-  exact congrFun₂ h_vec i ()
+  exact congrFun₂ ((mul_frame_blocks_iff hw).mp (conj_inl_sub_one_mul w g)).2 i ()
 
 /-- Let `w = (i₀, v₁)` lie in `U(ε ⊕ 1)`, where `v₁` is the only column of `v`. For `g` in `U(ε)`,
 `InducesOn 0 v i₀` holds: `w (g ⊕ 1) w⁻¹ - 1` acts on the image of `i₀` as `g - 1`. So
@@ -583,14 +583,7 @@ lemma inducesOn_conj_inl_sub_one {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ : M
     InducesOn 0 v i₀
       (((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1)
       ((g : Matrix n n ℂ) - 1) := by
-  set Y : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ :=
-    ((w * U.inl ε 1 g * w⁻¹ : USign (Sum.elim ε 1)) : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) - 1
-  -- Read the first block of columns of `Y w = w ((g - 1) ⊕ 0)`.
-  have h_image : Y * i₀ = i₀ * ((g : Matrix n n ℂ) - 1) := by
-    have h_eq := conj_inl_sub_one_mul w g
-    rw [hw, mul_fromCols, fromCols_mul_fromBlocks, fromCols_ext_iff] at h_eq
-    simpa [Y] using h_eq.left
-  exact ⟨0, by rw [Matrix.mul_zero, add_zero, h_image]⟩
+  exact ⟨0, by simpa using ((mul_frame_blocks_iff hw).mp (conj_inl_sub_one_mul w g)).1⟩
 
 /-- Let `(v, i₀)` be a position of `U(ε)` in `U(ε ⊕ 1)` with `d = 0`: `v` has a single column `v₁`,
 of norm `±1` for the form `ε ⊕ 1`, and `i₀` is an isometry of `(ℂ^n, ε)` into its orthogonal
@@ -612,11 +605,9 @@ lemma IsPosition.exists_conj_inl_eq {v : Matrix (n ⊕ Unit) (Fin 1) ℂ} {i₀ 
     rw [Subsingleton.elim N 0, Matrix.mul_zero] at hN
     ext i b
     exact congrFun₂ hN i 0
-  have h_cols : Y * (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) =
-      (w : Matrix (n ⊕ Unit) (n ⊕ Unit) ℂ) * fromBlocks ((y : Matrix n n ℂ) - 1) 0 0 0 := by
-    simp [hw, mul_fromCols, fromCols_mul_fromBlocks, h_image, h_vec]
   refine ⟨y, Subtype.ext (Units.ext (sub_left_injective (b := 1) ?_))⟩
-  exact (Units.mul_left_inj _).1 ((conj_inl_sub_one_mul w y).trans h_cols.symm)
+  exact (Units.mul_left_inj _).1
+    ((conj_inl_sub_one_mul w y).trans ((mul_frame_blocks_iff hw).mpr ⟨h_image, h_vec⟩).symm)
 
 omit [Fintype X] [DecidableEq n] in
 /-- If `l` is steep (so its weight is `0` on `X` and in `[-3 B, -B]` elsewhere) and has a large gap,

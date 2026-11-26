@@ -217,11 +217,12 @@ lemma KummerChart.pow_smul_mem_cupOrthogonal_of_isScaledCupCoboundary [Topologic
 
 /-- Let `Γ → Gp p = Gal(ℚ̄_p / ℚ_p)` be an open embedding, let the chart `k` be unramified and
 `p ≥ 5`, and at each letter `i` let `b i + W + η ≤ (p - 3) a` and let `p`
-divide no nonzero integer within `n ≥ a + max a η + max η W` of `0` or `± b i` (`NoMultipleNear`). Let `L` be
-crystalline with Hodge–Tate jumps in `U'`, and at each letter let the jump sets of `U` and `U'` lie
-in `[-η, η] ∪ ∓ε i [b i, b i + W]`, with opposite signs. If `U` and `U'` avoid `[-a, 0)`, or `U'`
-lies in `[-η, 0]`, then every crystalline cocycle of `L` lies in `cupOrthogonal`: its cup product
-with every crystalline cocycle of a crystalline lattice with jumps in `U` is a coboundary. -/
+divide no nonzero integer within `n ≥ a + max a η + max η W` of `0` or `± b i` (`NoMultipleNear`).
+Let `L` be crystalline with Hodge–Tate jumps in `U'`, and at each letter let the jump sets of `U`
+and `U'` lie in `[-η, η] ∪ ∓ε i [b i, b i + W]`, with opposite signs. If `U` and `U'` avoid
+`[-a, 0)`, or `U'` lies in `[-η, 0]`, then every crystalline cocycle of `L` lies in `cupOrthogonal`:
+its cup product with every crystalline cocycle of a crystalline lattice with jumps in `U` is a
+coboundary. -/
 lemma KummerChart.crysCocycles_le_cupOrthogonal_of_no_small_neg_jump [TopologicalSpace Γ]
     (k : KummerChart Γ)
     (ζ : k.LetterRoot O) (ho : IsOpenEmbedding Γ.overGp.toGp) (hk : k.IsUnramified)
@@ -491,6 +492,10 @@ lemma TameChart.differentBound_le_one (d : TameChart Γ) : d.differentBound ≤ 
   grind [KummerChart.differentBound, Nat.padicValNat_def,
     multiplicity_eq_zero_of_not_dvd d.tame]
 
+/-- If `b + n < q`, then `q` divides no nonzero integer within distance `n` of `0`, `b` or `-b`. -/
+lemma noMultipleNear_of_add_lt {q n b : ℕ} (h_lt : b + n < q) : NoMultipleNear q n b :=
+  fun _ hy_ne hy_near h_dvd ↦ hy_ne (Int.eq_zero_of_abs_lt_dvd h_dvd (by grind))
+
 /-- Let `Γ → Gp p = Gal(ℚ̄_p / ℚ_p)` be a surjective open embedding. For each `s` in inertia let
 `K s` be a tame type: it holds for `X ^ e - 1`, with `e` the least common multiple of the
 `p ^ i - 1` for `1 ≤ i ≤ r`, and for a monic polynomial over `ℤ_[p]` of degree at most `N`. A
@@ -556,10 +561,10 @@ lemma hasCupExponent_of_isTameType [TopologicalSpace Γ] (ho : IsOpenEmbedding �
     omega
   have cost_le {n : ℕ} (hn : n ≤ N * N + N) : r ^ 2 * (n + 1) ≤ r ^ 2 * (N + 1) ^ 2 :=
     Nat.mul_le_mul_left _ (by linarith)
-  have h_gap : NoMultipleNear p (η + max η W) b :=
-    fun _ hy_ne hy_near h_dvd ↦ hy_ne (Int.eq_zero_of_abs_lt_dvd h_dvd (by grind))
+  have h_gap : NoMultipleNear p (η + max η W) b := noMultipleNear_of_add_lt (by omega)
   refine P.isScaledCupCoboundary_of_killsCokernel (a := 0) (κ := r ^ 2 * (N + 1) ^ 2)
-    (fun i ↦ ?_) (fun i ↦ ?_) (fun i ↦ ?_) (fun _ ↦ h_gap) (by simp) h_window h_window' (.inl (by simp))
+    (fun i ↦ ?_) (fun i ↦ ?_) (fun i ↦ ?_) (fun _ ↦ h_gap) (by simp) h_window h_window'
+    (.inl (by simp))
     ?_ c ⟨x, hx⟩
   · exact d.killsCokernel_of_isKilledBy h_killed tateDual_le hq'' he_le hp (cost_le (by nlinarith))
   · exact d.killsCokernel_of_isKilledBy (hY.isKilledBy_of_isWeilPair hKq d.isWeilPair_tameGen)

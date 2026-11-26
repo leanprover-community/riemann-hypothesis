@@ -574,6 +574,12 @@ variable {R n k : Type*} [DecidableEq k] [CommRing R] [Fintype n]
 /-- The n × k matrix X over R has a left inverse over R. -/
 abbrev HasLeftInv : Prop := ∃ L : Matrix k n R, L * X = 1
 
+/-- Applying a ring homomorphism entrywise preserves a matrix's left inverse. -/
+lemma HasLeftInv.map {S : Type*} [CommRing S] {X : Matrix n k R} (hX : HasLeftInv X)
+    (φ : R →+* S) : HasLeftInv (X.map φ) := by
+  obtain ⟨L, hL⟩ := hX
+  exact ⟨L.map φ, by rw [← Matrix.map_mul, hL, Matrix.map_one _ φ.map_zero φ.map_one]⟩
+
 /-- The submodule of R^n spanned by the columns of the matrix X. -/
 abbrev colSpan [Fintype k] : Submodule R (n → R) := X.mulVecLin.range
 

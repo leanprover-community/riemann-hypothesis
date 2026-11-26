@@ -120,8 +120,8 @@ follow `r`. Then the unit square with lower left corner `(i, j)` is not among th
 path, the unit squares to the left of its steps down. -/
 lemma notMem_squares_down_right_append {i j : ℕ} (q : GridPath a₀ b₀ i (j + 1))
     (r : GridPath (i + 1) j a b) : (i, j) ∉ (q.down.right.append r).squares := by
-  have hq : (i, j) ∉ q.squares := by grind [→ bounds_of_mem_squares]
-  have hr : (i, j) ∉ r.squares := by grind [→ bounds_of_mem_squares]
+  have hq : (i, j) ∉ q.squares := fun h ↦ lt_irrefl i (bounds_of_mem_squares h).1
+  have hr : (i, j) ∉ r.squares := fun h ↦ lt_irrefl j (bounds_of_mem_squares h).2.2
   simp [squares_append, squares, hq, hr]
 
 /-- Let a path follow `q` to `(i, j + 1)`, go to `(i + 1, j)` in two steps and follow `r`. If it
@@ -130,8 +130,7 @@ the left of its steps down, gains the square with lower left corner `(i, j)`. -/
 lemma squares_right_down_append {i j : ℕ} (q : GridPath a₀ b₀ i (j + 1))
     (r : GridPath (i + 1) j a b) :
     (q.right.down.append r).squares = insert (i, j) (q.down.right.append r).squares := by
-  have h_strip : range (i + 1) ×ˢ {j} = insert (i, j) (range i ×ˢ {j}) := by grind
-  simp [squares_append, squares, h_strip]
+  simp [squares_append, squares, product_singleton, range_add_one]
 
 /-- A path from `(a₀, b₀)` to `(a, b)` has a corner `(i, j)`, where it comes down and leaves to the
 right, or ends with a step down, or has no step down (`b = b₀`). -/
@@ -241,8 +240,8 @@ lemma Turn.squares_eq (h_turn : Γ.Turn s Γ') :
     obtain ⟨-, hb : Γ.diagonalIndex ≤ b⟩ := r.le_and_le
     have h_notMem : (a, b) ∉ (Γ.half z).squares := by
       simpa [hΓ] using GridPath.notMem_squares_down_right_append q r
-    have h_notMem_swap (z' : Bool) : (b, a) ∉ (Γ.half z').squares := by
-      grind [→ GridPath.bounds_of_mem_squares]
+    have h_notMem_swap (z' : Bool) : (b, a) ∉ (Γ.half z').squares :=
+      fun h ↦ hb.not_gt (GridPath.bounds_of_mem_squares h).1
     have h_insert : (q.right.down.append r).squares = insert (a, b) (Γ.half z).squares := by
       simp [hΓ, GridPath.squares_right_down_append]
     constructor
@@ -253,8 +252,9 @@ lemma Turn.squares_eq (h_turn : Γ.Turn s Γ') :
       fun h_mem ↦ lt_irrefl j (GridPath.bounds_of_mem_squares h_mem).1
     have h_block : range (j + 1) ×ˢ range (j + 1) = insert (j, j)
         (range j ×ˢ range j ∪ range j ×ˢ {j} ∪ (range j ×ˢ {j}).image Prod.swap) := by
-      rw [image_swap_product]
-      grind
+      simp only [image_swap_product, range_add_one, ← singleton_union, union_product, product_union,
+        singleton_product_singleton]
+      ac_rfl
     refine ⟨by simp [mem_squares, h_notMem], ?_⟩
     simp only [squares, GridPath.squares, h_block, image_union, insert_union]
     ac_rfl

@@ -106,8 +106,14 @@ lemma invLastRows_invTransposeGL :
     invLastRows e (invTransposeGL k) = (firstCols ((Equiv.sumComm a b).trans e) k)ᵀ :=
   rfl
 
+/-- The transposed rows `a` of `k⁻¹` are the columns `a` of `invTransposeGL k = (kᵀ)⁻¹`. -/
+lemma transpose_invLastRows :
+    (invLastRows e k)ᵀ = firstCols ((Equiv.sumComm a b).trans e) (invTransposeGL k) :=
+  rfl
+
 lemma hasLeftInv_invLastRows_transpose [DecidableEq a] : HasLeftInv (invLastRows e k)ᵀ := by
-  exact ⟨_, invFirstRows_mul_firstCols ((Equiv.sumComm a b).trans e) (invTransposeGL k)⟩
+  rw [transpose_invLastRows]
+  exact ⟨_, invFirstRows_mul_firstCols _ _⟩
 
 omit [DecidableEq n] in
 /-- Let `y` be primitive over `O`, that is, integral with an integral left inverse. Then `y * x` is

@@ -133,6 +133,9 @@ lemma denominatorError_eq_natCast :
           ℝ≥0∞) := by
   simp [denominatorError]
 
+lemma denominatorError_ne_top : denominatorError D ℓ ≠ ⊤ :=
+  (denominatorError_eq_natCast D ℓ).trans_ne (ENNReal.natCast_ne_top _)
+
 /-- The clearing bound `β_ℓ = loc_ℓ + (1 + 2 t) e'_ℓ + e_ℓ + v_ℓ(N)` per unit of rank of a main
 summand at `ℓ`, where `N = D.chosenGroupOrder`. Here `loc_ℓ = localDefectBound D ℓ` bounds the local
 defect, `e'_ℓ = twistError ℓ D` is the number `(4 f + 3) r v_ℓ(N) + 2 ^ (-ℓ)` allowed for the Selmer
@@ -163,8 +166,7 @@ lemma add_denominatorError_le_mul_clearingBound {r' t' : ℕ} (hr' : r' ∈ Set.
     _ = r' * loc + 1 * ((1 + 2 * D.t) * err + denominatorError D ℓ + v) := by ring
     _ ≤ r' * loc + r' * ((1 + 2 * D.t) * err + denominatorError D ℓ + v) := by gcongr
     _ = r' * clearingBound D ℓ := by
-      simp [clearingBound, err, loc, v,
-        coe_toNNReal ((denominatorError_eq_natCast D ℓ).trans_ne (ENNReal.natCast_ne_top _)), mul_add,
+      simp [clearingBound, err, loc, v, coe_toNNReal (denominatorError_ne_top D ℓ), mul_add,
         add_assoc]
 
 /-- The cost of `t' ≤ D.t` characters, an inequality between numbers. Let `v` be the `ℓ`-adic
@@ -213,6 +215,13 @@ variable {ℓ : ℕ} [ThePrime ℓ] {P : Parameters} {D : Data P}
   {K Y n r : Type} [Fintype n] [DecidableEq n] [Fintype r] [DecidableEq r]
   {t ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D} {O : CoeffRing ℓ}
 
+/-- Ribet's cocycles vanish on the kernel of `u`: a cocycle `z` that obeys the linear relations
+among the `u x g - 1` vanishes at every `g` with `u x g = 1` for all `x`. -/
+lemma ribetCocycles.apply_eq_zero {u : Y → AbsGal D →* Matrix n n O}
+    {ρ : AbsGal D →* Matrix r r O} {b : ↑O} {z : AbsGal D → r → QuotSpan b}
+    (hz : z ∈ ribetCocycles u ρ b) {g : AbsGal D} (hg : ∀ x : Y, u x g = 1) : z g = 0 := by
+  simpa using (mem_ribetCocycles.1 hz).2 (.single g 1) (by simp [funext_iff, hg])
+
 open Ideal IsLocallyConstant in
 /-- Let `z` be a cocycle for `ρ` modulo `b` that obeys the linear relations among the `u x g - 1`
 (`ribetCocycles`), where the `u x` are continuous and trivial on the inertia groups outside
@@ -235,9 +244,7 @@ lemma ribetCocycles.mem_selmerModule [Fintype Y] {u : Y → AbsGal D →* Matrix
     exact congrArg Prod.snd h_pair
   have h_coc : ∀ g g' : AbsGal D, z (g * g') = z g + ρ g • z g' :=
     mem_obeying_cocycleRelations.1 hz.1
-  refine mem_selmerModule_iff.2 ⟨h_coc,
-    fun g hg ↦ by simpa using (mem_ribetCocycles.1 hz).2 (.single g 1) (by simp [funext_iff, h_unr g hg]),
-    hzL, ?_⟩
+  refine mem_selmerModule_iff.2 ⟨h_coc, fun g hg ↦ apply_eq_zero hz (h_unr g hg), hzL, ?_⟩
   -- So `z g` depends only on `u g` modulo `b ^ k`, which is locally constant in `g`.
   have h_red : IsLocallyConstant fun g x ↦ (u x g).map (span {b ^ k}).mkQ := (iff_continuous _).2
     (continuous_pi fun x ↦ (hu_cont x).matrix_map (span {b ^ k}).continuous_mkQ)
@@ -661,7 +668,7 @@ lemma isTameType_of_mem_placesAboveM {V : DescentPair D.E r n}
         ∀ R : GalRep ℓ D.E n,
           IsRepOfType V t J (fun i : V.ChosenIndex ↦ scaledTypePoly V c i * (X - 1) ^ t) S R →
           IsKilledBy (decompRep R (placeOver v.val)) s 0 (Q.map O.val.val) := by
-  have ⟨k, hk⟩ :
+  let ⟨k, hk⟩ :
       ∃ k : Fin 2, (D.levelPrime k : NumberField.RingOfIntegers D.E) ∈ v.val.asIdeal := hv
   have hℓ : D.levelPrime k = ℓ := (v.val.charP_quotient hk).eq _ (v.val.charP_quotient v.property)
   refine ⟨k, hℓ.symm, fun s hs ↦ ?_⟩

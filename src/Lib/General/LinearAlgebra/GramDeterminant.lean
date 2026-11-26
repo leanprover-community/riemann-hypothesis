@@ -4,12 +4,12 @@ public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 public import Mathlib.Analysis.InnerProductSpace.NormDet
 public import Aesop.BuiltinRules
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.Speed
 import Lib.General.LinearAlgebra.MinorProducts
+import TauCeti.LinearAlgebra.Matrix.AbsoluteValue
 
 /-!
 # Gram determinants
@@ -91,17 +91,17 @@ lemma norm_det_mul_det_gram_mul_det_le_one {F : Type} [NormedField F] [IsUltrame
     (ι : ℂ →+* F) {φ : S → H} {u u' : Matrix S S ℂ}
     (h_inner : ∀ a b : S, ‖ι ⟪∑ c : S, u' a c • φ c, ∑ c : S, u b c • φ c⟫_ℂ‖ ≤ 1) :
     ‖ι (starRingEnd ℂ u'.det)‖ * ‖ι (gram ℂ φ).det‖ * ‖ι u.det‖ ≤ 1 := by
-  -- The matrix of the inner products has entries, hence determinant, in the ring of integers.
-  have h_mem (z : F) : z ∈ (valuation (K := F)).integer ↔ ‖z‖ ≤ 1 := .rfl
   have h_entry (a b : S) :
       (u'ᴴᵀ * (gram ℂ φ * uᵀ)) a b = ⟪∑ c : S, u' a c • φ c, ∑ c : S, u b c • φ c⟫_ℂ := by
     simp only [← star_dotProduct_gram_mulVec, Matrix.mul_apply, dotProduct, mulVec,
       Matrix.transpose_apply, Matrix.conjTranspose_apply, Pi.star_apply]
-  have h_int : ι (u'ᴴᵀ * (gram ℂ φ * uᵀ)).det ∈ (valuation (K := F)).integer := by
-    rw [ι.map_det, det_apply']
-    refine sum_mem fun σ _ ↦ mul_mem (intCast_mem _ _) (prod_mem fun b _ ↦ ?_)
-    simpa [h_mem, h_entry] using h_inner (σ b) b
-  simpa [h_mem, mul_assoc] using h_int
+  have h_det : ‖(ι.mapMatrix (u'ᴴᵀ * (gram ℂ φ * uᵀ))).det‖ ≤ 1 :=
+    Matrix.abv_det_le_one_of_isNonarchimedean (abv := NormedField.toAbsoluteValue F)
+      IsUltrametricDist.isNonarchimedean_norm fun a b ↦ by
+        simpa only [NormedField.toAbsoluteValue_apply, RingHom.mapMatrix_apply, Matrix.map_apply,
+          h_entry] using h_inner a b
+  rw [← ι.map_det] at h_det
+  simpa [mul_assoc] using h_det
 
 end Gram
 
@@ -117,9 +117,7 @@ noncomputable def formGram (G : Matrix I I ℂ) (v : S → I → ℂ) : Matrix S
 lemma posSemidef_formGram (hG : G.PosSemidef) (v : S → I → ℂ) :
     (formGram G v).PosSemidef := by
   have h_eq : formGram G v = (of v)ᵀᴴ * G * (of v)ᵀ := by
-    rw [Matrix.mul_assoc]
-    ext i k
-    simp [formGram, Matrix.mul_apply, dotProduct, mulVec]
+    exact Matrix.ext fun i k ↦ (Matrix.mul_mul_apply (of v)ᵀᴴ G (of v)ᵀ i k).symm
   rw [h_eq]
   exact hG.conjTranspose_mul_mul_same _
 

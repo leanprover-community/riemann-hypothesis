@@ -434,6 +434,12 @@ lemma tensorAction_tensorAction (x : B ⊗[ℤ_[p]] T) :
 
 /-! ### Criteria for admissibility and its stability -/
 
+/-- An element `x` of `B ⊗ T` lies in `fixedPeriods ρ B F` if and only if `j(g) ⊗ ρ(g)` fixes it
+for `F`-almost all `g`. -/
+lemma mem_fixedPeriods_iff [MulSemiringAction (Gp p) B] [SMulCommClass (Gp p) ℤ_[p] B]
+    {x : B ⊗[ℤ_[p]] T} :
+    x ∈ fixedPeriods ρ B F ↔ ∀ᶠ g : Γ in F, tensorAction B (toGp g) (ρ g) x = x := Iff.rfl
+
 /-- If `1 ⊗ x` lies in the `Bmax`-span of the periods fixed along `F` for every `x` in `T`, then
 `ρ` is admissible along `F`. -/
 lemma isAdmissible_of_one_tmul_mem_span
@@ -542,7 +548,7 @@ filter `F' ≤ F`, because an element fixed for `F`-almost all `g` is fixed for 
 `g`. -/
 lemma IsAdmissible.mono (h_adm : IsAdmissible ρ F) (h_le : F' ≤ F) : IsAdmissible ρ F' := by
   have h_subset : fixedPeriods ρ Bmax F ⊆ fixedPeriods ρ Bmax F' :=
-    fun _ hy ↦ hy.filter_mono h_le
+    fun y hy ↦ mem_fixedPeriods_iff.mpr ((mem_fixedPeriods_iff.mp hy).filter_mono h_le)
   exact eq_top_mono (span_mono h_subset) h_adm
 
 /-- Let `ρ` be admissible along `F` and let `f` intertwine `ρ g` and `ρ' g` for all `g` in a set of

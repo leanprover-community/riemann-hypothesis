@@ -598,6 +598,13 @@ lemma eventually_mem_kerCompNorm_of_apply_localNorm_eq_one {A : Set (FinPlace E'
       simpa [adeleOneOn, hu, ideleAt] using congrArg (fun z : 𝔸f E' ↦ z u) h_eq
     simp [hd_one]
 
+/-- Let `A` be a set of unramified places. For `x` near `0`, the norm of a unit idele congruent to
+`1` modulo `adeleOneOn A x` is killed by `μ`. -/
+lemma eventually_mem_kerCompNorm {A : Set (FinPlace E')} (hA : ∀ u ∈ A, IsStepUnramifiedPlace μ u) :
+    ∀ᶠ x : 𝔸f E' in nhds (0 : 𝔸f E'), ∀ y ∈ Ô E', ∀ d ∈ idelesUnitOff ∅,
+      d.val - adeleOneOn A x * y = 1 → d ∈ kerCompNorm E' μ :=
+  eventually_mem_kerCompNorm_of_apply_localNorm_eq_one fun u hu ↦ (hA u hu).apply_localNorm_eq_one
+
 /-- Let the open subgroup `H` contain the integral points that are trivial on `S`, and let no place
 of `A` lie above `S`. For `x` near `0`, an integral point `g` over `E` whose matrix over `E'` is
 congruent to `1` modulo `adeleOneOn A x` lies in `H`. -/
@@ -928,8 +935,7 @@ lemma exists_isBaseChangeLevel {H : Subgroup (Gf E n)} (hH : H.IsOpen) :
     · exact fun hS₀ ↦ h_notMem (.inr (by simpa using hS₀))
   -- Both congruence conditions hold at `x = N * C` for a suitable `N ≠ 0`.
   obtain ⟨N, hN, h_small⟩ := mem_nhds_zero_finAdele_iff.1
-    ((eventually_mem_kerCompNorm_of_apply_localNorm_eq_one
-        fun u hu ↦ (hA_unram u hu).apply_localNorm_eq_one).and
+    ((eventually_mem_kerCompNorm hA_unram).and
       (eventually_mem_of_baseChangeGf_congr hH hS₀_le hA_off))
   obtain ⟨h_idele, h_group⟩ := h_small C (by simp)
   let m : Ô E' := N * C + ⟨idem A, idem_mem_Ô A⟩ * (1 - N * C)

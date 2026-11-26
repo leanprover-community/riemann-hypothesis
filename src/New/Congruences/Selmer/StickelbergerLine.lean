@@ -342,6 +342,11 @@ lemma norm_natCast_eq_one_of_modEq {ℓ : ℕ} [ThePrime ℓ] {q N : ℕ} (hN : 
     Nat.coprime_of_mul_modEq_one 1 <| by simpa using hq.of_dvd (dvd_pow_self ℓ hN)
   h_coprime.symm.norm_natCast_eq_one _
 
+/-- If `q ≡ 1` modulo `ℓ ^ N`, then `q - 1` has valuation (`ellVal`) at least `N`. -/
+lemma le_ellVal_natCast_sub_one {ℓ : ℕ} [ThePrime ℓ] {q N : ℕ} (hq : q ≡ 1 [MOD ℓ ^ N]) :
+    (N : ℝ≥0∞) ≤ ellVal (q - 1 : PadicAlgCl ℓ) := by
+  simpa using dvd_iff_ellVal_le.1 ((Int.castRingHom (intQpBar ℓ)).map_dvd hq.symm.dvd)
+
 namespace StickelbergerSystem
 
 variable {ℓ : ℕ} [ThePrime ℓ] {E ι O : Type} [Field E] [EmbeddedNumberField E]
@@ -458,8 +463,7 @@ lemma ellVal_one_element_singleton_le (h_tied : IsTiedPrimes ℓ S₀ U W N P₀
   exact ellVal_mul_le.trans (add_le_add le_rfl (ellVal_eulerFactor_le Y.exponents
     (Y.norm_twistChar _) (Y.norm_twistChar _)
     (norm_natCast_eq_one_of_modEq ((Nat.cast_pos.1 hM.pos).trans_le hMN).ne' h_data.norm_modEq)
-    h_frob ((Nat.cast_le.2 hMN).trans
-      (by simpa using dvd_iff_ellVal_le.1 ((Int.castRingHom (intQpBar ℓ)).map_dvd h_data.norm_modEq.symm.dvd)))
+    h_frob ((Nat.cast_le.2 hMN).trans (le_ellVal_natCast_sub_one h_data.norm_modEq))
     (le_add_self.trans_lt hM)))
 
 /-- The system `Y`, for a set `S₀` of places and `g₀ ∈ Gal(Ω/E)`, gives elements `Θ_Q = Y.element Q`

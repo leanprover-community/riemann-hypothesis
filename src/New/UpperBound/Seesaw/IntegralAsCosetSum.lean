@@ -342,7 +342,6 @@ lemma lintegral_besselGroup_cutoff_mul {β : G E ε → ENNReal} (hβ_meas : Mea
       ∫⁻ u : Y.besselFin, φ ((u : Gf E ι)⁻¹ * t.2) ∂η := by
   -- Substitute `r ↦ (1, u⁻¹) * r`, then `u ↦ r.2 * u`: this moves `r` from `φ` to `β`, whose orbit
   -- integral is one.
-  have : SFinite (haar : Measure Y.besselGroup) := inferInstance
   have h_mul : Measurable fun r : Y.besselGroup ↦ (r : G E ε) * t :=
     measurable_subtypeVal.mul_const t
   calc
@@ -454,12 +453,9 @@ lemma _root_.New.Grading.exists_integral_eq_sum_over_cut (A : Subgroup (Gf E ι)
   -- Unfolding in stages turns the integral into the weighted integral of the period; this
   -- factors, and the finite part is a sum over `T`.
   -- `η` is the Haar measure on `Y.besselFin` that gives `Y.besselFin ⊓ A` mass one.
-  have : OpensMeasurableSpace (G E ε) := inferInstance
   have : ContinuousMul Y.besselGroup :=
     ⟨((continuous_subtypeVal.comp continuous_fst).mul
       (continuous_subtypeVal.comp continuous_snd)).subtype_mk _⟩
-  have : ProperSMul (G E ε) (G E ε) := inferInstance
-  have : ProperSMul Y.besselGroup (G E ε) := inferInstance
   have : NeZero (haar : Measure Y.besselGroup) :=
     ⟨fun h ↦ isOpen_univ.measure_ne_zero (haar : Measure Y.besselGroup)
       ⟨(1 : Y.besselGroup), trivial⟩ (by rw [h]; rfl)⟩

@@ -877,8 +877,8 @@ lemma exists_agreesWithStringMap (w : Matrix ι' ι (𝔸 E)) (hw : w ∈ ratMat
         ((w.map toAdele)ᴴ * V'.J.map toAdele * w.map toAdele) k i := by
       rw [gram_adj, gram_adj]
       -- Both basis vectors have positive weight and the target weights are zero.
-      have hi : 0 < Y.gradeOf i := (mem_filter.mp i.2).2
-      have hk : 0 < Y.gradeOf k := (mem_filter.mp k.2).2
+      have hi : 0 < Y.gradeOf i := (mem_filter.mp i.property).2
+      have hk : 0 < Y.gradeOf k := (mem_filter.mp k.property).2
       have h_adj := Y.formAdjoint_mul_self_entry_eq_of_survives Y' survives (i : ι)
         (Y.stringReversal k) (by rw [gradeOf_stringReversal]; omega)
         (fun p hp ↦ by rw [Pi.zero_apply, gradeOf_stringReversal] at hp; omega)

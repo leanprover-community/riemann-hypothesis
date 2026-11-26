@@ -6,6 +6,7 @@ public import New.UpperBound.Seesaw.EdgePairEvaluation
 public import Lib.Weil.Periods.BesselIntegral
 public import Lib.Weil.Periods.Equivariant
 import Lib.General.Measure.IntegralOperators
+import Lib.Adelic.Hecke.ClassSums
 
 /-!
 # The Poincaré map
@@ -97,13 +98,14 @@ lemma Form.hasLevel_levelTrace {J : Subgroup (Gf E n)} (K : Subgroup (Gf E n))
     HasLevel (z.levelTrace J K) K := by
   intro k hk x
   rw [levelTrace_apply, levelTrace_apply]
-  -- Left multiplication by `k` permutes the cosets.
-  refine Fintype.sum_equiv (MulAction.toPerm (⟨k, hk⟩ : K)) _ _ fun q ↦ ?_
-  obtain ⟨⟨j, hj_mem⟩, hj⟩ := QuotientGroup.mk_out_eq_mul (J.subgroupOf K) (⟨k, hk⟩ * q.out)
-  have h_out : (((⟨k, hk⟩ : K) • q).out : Gf E n) = k * q.out * j := by
-    rw [← MulAction.Quotient.mk_smul_out, smul_eq_mul, hj, Subgroup.coe_mul, Subgroup.coe_mul]
-  rw [MulAction.toPerm_apply, h_out, ← hz j hj_mem (x * (1, k) * (1, (q.out : Gf E n)))]
-  simp only [mul_assoc, Prod.mk_mul_mk, mul_one]
+  -- Left multiplication by `k` permutes the cosets of `J ∩ K` in `K` (`sum_mul_out`).
+  let i : K →* G E s := (MonoidHom.inr (GInf E s) (Gf E n)).comp K.subtype
+  have h_inv (a j : K) (hj : j ∈ J.subgroupOf K) : z (x * i (a * j)) = z (x * i a) := by
+    rw [map_mul, ← mul_assoc]
+    exact hz j hj (x * i a)
+  have h_sum := sum_mul_out (J.subgroupOf K) (fun a : K ↦ z (x * i a)) h_inv (⟨k, hk⟩ : K)
+  simp only [map_mul, ← mul_assoc] at h_sum
+  simpa only [i, MonoidHom.comp_apply, MonoidHom.inr_apply, Subgroup.subtype_apply] using h_sum
 
 /-- Let `y` be a form of level `K` and `z` any form. The integral against `y` of the sum of the
 translates of `z` under representatives of `K / (J ∩ K)` is `[K : J ∩ K]` times the integral of
@@ -179,10 +181,21 @@ def besselPeriod : D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) →ₗ
     (fun c φ y ↦ by
       simp [Space.Form.smul_apply, mul_left_comm _ (conj c), integral_const_mul])
 
+/-- Let `g` be an archimedean point of the unitary group `G₀` of `Y₀`, let `φ` be a source form and
+`t` a linear form on the Weyl module of its values. Let `y` be a form on `G₀` of discrete series
+type `D.paramW` and principal level `D.chosenLevel`. Then `D.besselPeriod g t φ y = ∫_{[R₀]} 𝒲_φ (r)
+conj (y (r g)) dr`. -/
+lemma besselPeriod_apply (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0)) :
+    D.besselPeriod g t φ y =
+      ∫ r : (D.gradingY 0).besselGroup,
+        (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
+        ∂(D.gradingY 0).besselMeasure :=
+  rfl
+
 /-- The Poincaré map `𝒫 : 𝒜(X₀) → 𝒜(Y₀)` for an archimedean point `g` of `G₀` and a linear form
 `t`: the form `𝒫 φ` represents the Bessel period of `φ`. The measure on `[R₀]` is `besselMeasure`;
 another Haar measure on `R₀(𝔸)` would multiply `𝒫` by a positive constant, which can be absorbed
-in `t` by `poincareAt_smul`. -/
+in `t`. -/
 def poincareAt (g : GInf D.E (D.signsY 0)) (t : (WeylIndex (D.X 0) D.columnCount → ℂ) →ₗ[ℂ] ℂ) :
     D.SourceForm →ₗ[ℂ] D.principalForms (D.spaceY 0) :=
   rieszMap (D.besselPeriod g t)
@@ -197,7 +210,7 @@ theorem inner_poincareAt (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0))
       ∫ r : (D.gradingY 0).besselGroup,
         (D.gradingY 0).sourceFn t φ.val r * conj (y.val (r.val * (g, 1)))
         ∂(D.gradingY 0).besselMeasure := by
-  rw [poincareAt, inner_rieszMap]; rfl
+  rw [poincareAt, inner_rieszMap, besselPeriod_apply]
 
 /-- Let `z` be a form on `G₀`, right invariant under `J`, whose archimedean type is conjugate to
 that of the values of `𝒫 = D.poincareAt g t`. Then `[J_M : J ∩ J_M] ∫_{[G₀]} z · 𝒫 φ` is the sum

@@ -637,6 +637,12 @@ lemma isRamifiedRatio_turnRatio_of_mem (s : ℕ × ℕ)
     (hs : s ∈ Finset.range D.m ×ˢ Finset.range D.m) : D.IsRamifiedRatio (D.turnRatio s.1 s.2) :=
   isRamifiedRatio_turnRatio (by grind) (by grind)
 
+/-- The two pairs of opposite corners of a square of the grid `z` have the same sum of ranks. -/
+lemma card_gridIndex_square (z : Bool) (a b : ℕ) :
+    card (D.GridIndex z a b ⊕ D.GridIndex z (a + 1) (b + 1)) =
+      card (D.GridIndex z a (b + 1) ⊕ D.GridIndex z (a + 1) b) := by
+  cases z <;> simp [card_gridIndex] <;> grind
+
 /-- The character of the residue ring with given tame parts is multiplicative in the tame parts. -/
 lemma charOfTamePart_gridModulus_mul {ϑ : D.MFoldTwist}
     (ψ ψ' : ∀ w : FinPlace D.E, MulChar (ResField w) ℂ) :
@@ -735,9 +741,7 @@ lemma exists_squareLaw_grid_hasAbsUpToNormPower (z : Bool) (ha : a < D.m) (hb : 
       if z then D.turnRatio b a else D.turnRatio a b := by
     funext ϑ
     cases z <;> simp [pair, n, squarePair, turnRatio, mul_comm (D.untwistedLiftChar (b + 1))]
-  have h_card : card (D.GridIndex z a b ⊕ D.GridIndex z (a + 1) (b + 1)) =
-      card (D.GridIndex z a (b + 1) ⊕ D.GridIndex z (a + 1) b) := by
-    cases z <;> simp [card_gridIndex] <;> grind
+  have h_card := card_gridIndex_square (D := D) z a b
   -- On the two kept corners together at least two more signs are positive than negative.
   have h_few_neg :
       2 * negCount (Sum.elim (D.gridSigns z 0 a (b + 1)) (D.gridSigns z 0 (a + 1) b)) + 2 ≤

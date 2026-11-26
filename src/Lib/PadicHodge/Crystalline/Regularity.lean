@@ -766,7 +766,10 @@ lemma New.Period.IsPotentiallyCrystalline.isCrystalline_of_inertia_fixes {p : �
   let fieldL : Field L := (isField_of_isIntegral_of_isField' (Field.toIsField ℚ_[p])).toField
   refine span_subset_span L _ _
     (mem_span_fixed (A := L) 𝒥.toGp (U := U) (.tprod (actionRep _ Bmax toGp) (overZp ρ))
-      (fun g a x ↦ tensorAction_smul ..) (fun g hg ↦ ?_) fun s hs ↦ ?_)
+      (fun g a x ↦ by
+        rw [Representation.tprod_apply]
+        exact tensorAction_smul (m := toGp g) (g := ρ g) (a : Bmax) x)
+      (fun g hg ↦ ?_) fun s hs ↦ ?_)
   · -- Write `toGp g = i * toGp t` with `i` in inertia and `toGp t ∈ V`; both `t` and `g / t` fix
     -- `y`.
     obtain ⟨i, hi, v, hv, h_eq⟩ := mem_sup_of_normal_left.mp hg

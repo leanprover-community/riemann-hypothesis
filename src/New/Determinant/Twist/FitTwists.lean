@@ -65,6 +65,10 @@ variable {P : Parameters} {D : Data P}
 lemma Twist.toAutChar_one : (1 : D.Twist).toAutChar = 1 :=
   rfl
 
+/-- The modulus `Q` of the trivial twist, its finite set of finite places, is empty. -/
+lemma Twist.Q_one : (1 : D.Twist).Q = ∅ :=
+  rfl
+
 /-- The twist underlying the trivial `m`-fold twist is the trivial twist. -/
 lemma MFoldTwist.toTwist_one : (1 : D.MFoldTwist).toTwist = 1 :=
   rfl
@@ -74,7 +78,7 @@ twist has the trivial character, underlies the trivial `m`-fold twist, and has e
 lemma toAutChar_one_and_toTwist_one_and_Q_one :
     ((1 : D.Twist).toAutChar = 1 ∧ (1 : D.MFoldTwist).toTwist = 1) ∧
       (1 : D.Twist).Q = ∅ :=
-  ⟨⟨Twist.toAutChar_one, MFoldTwist.toTwist_one⟩, rfl⟩
+  ⟨⟨Twist.toAutChar_one, MFoldTwist.toTwist_one⟩, Twist.Q_one⟩
 
 /-- For a pair `p = (ν, z)`, a tame character `ϑ` and a sign `s` (by default `1`), the ratio
 `|L(z, (ν ϑ^s)⁻¹)| / |L(z, ν⁻¹)|`, as a complex number. Both L-functions omit the Euler factors at

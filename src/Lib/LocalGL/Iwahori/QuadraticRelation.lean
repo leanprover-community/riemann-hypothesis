@@ -89,7 +89,8 @@ lemma conj_monomial_mem_blockParahoric_of_mem (t : Fin N → Fˣ) (σ : Perm (Fi
     (permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) ∈ blockParahoric c := by
   set k : GL (Fin N) F := (permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t)
   have h_det : k.val.det = g.val.det := det_units_conj' _ _
-  simp only [mem_blockParahoric, mem_intGL_iff_det, k, conj_monomial_apply, h_det, map_mul, map_inv₀] at hg ⊢
+  simp only [mem_blockParahoric, mem_intGL_iff_det, k, conj_monomial_apply, h_det, map_mul,
+    map_inv₀] at hg ⊢
   obtain ⟨⟨hg_int, hg_det⟩, hg_below⟩ :
       ((∀ a b : Fin N, v (g a b) ≤ 1) ∧ v g.val.det = 1) ∧
         (∀ i j : Fin N, d j.val < d i.val → v (g i j) < 1) := hg

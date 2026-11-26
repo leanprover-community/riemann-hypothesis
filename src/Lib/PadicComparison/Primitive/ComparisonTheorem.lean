@@ -100,8 +100,9 @@ lemma PadicTest.bijective_generic_points {Y : Over (Spec R)} [IsProper Y.hom] (c
     exact down_injective (OverMorphism.ext h_left)
   -- Surjectivity. As `p ≠ 0` in the cell `c.Cell i`, the projection extends to a map `φ i` from
   -- `c.GenericRing` to the fraction field of the cell.
-  let π (i : c.Index) : of c.ProdRing ⟶ of (c.Cell i) := CommRingCat.ofHom (Pi.evalRingHom c.Cell i)
-  let j (i : c.Index) : of (c.Cell i) ⟶ of (FractionRing (c.Cell i)) :=
+  let π (i : c.Index) : CommRingCat.of c.ProdRing ⟶ CommRingCat.of (c.Cell i) :=
+    CommRingCat.ofHom (Pi.evalRingHom c.Cell i)
+  let j (i : c.Index) : CommRingCat.of (c.Cell i) ⟶ CommRingCat.of (FractionRing (c.Cell i)) :=
     CommRingCat.ofHom (algebraMap _ _)
   have hp (i : c.Index) : IsUnit ((π i ≫ j i).hom p) := by
     simp [π, j, -map_natCast, IsCell.p_ne_zero]
@@ -111,7 +112,7 @@ lemma PadicTest.bijective_generic_points {Y : Over (Spec R)} [IsProper Y.hom] (c
       (Spec.map (ofHom (algebraMap c.ProdRing c.GenericRing))) (Spec.map (π i)) :=
     ⟨by simp [← Spec.map_comp, ← ofHom_comp, φ, π, j]⟩
   -- The valuative criterion extends the point `z` over `Frac (c.Cell i)` to the cell `c.Cell i`.
-  have lift (i : c.Index) : ∃ l : Spec (of (c.Cell i)) ⟶ Y.left,
+  have lift (i : c.Index) : ∃ l : Spec (CommRingCat.of (c.Cell i)) ⟶ Y.left,
       Spec.map (j i) ≫ l = Spec.map (ofHom (φ i)) ≫ z.down.left ∧
         l ≫ Y.hom = Spec.map (π i) ≫ a := by
     have h_val : ValuativeCriterion.Existence Y.hom :=
@@ -125,8 +126,9 @@ lemma PadicTest.bijective_generic_points {Y : Over (Spec R)} [IsProper Y.hom] (c
     exact ⟨l.l, l.fac_left, l.fac_right⟩
   choose l hl_left hl_right using lift
   -- `Y` is quasi-compact, so the points `l i` come from a point `x` in the product `c.ProdRing`.
-  have (i : c.Index) : IsLocalRing (of (c.Cell i)) := ValuationRing.isLocalRing (c.Cell i)
-  obtain ⟨x, hx⟩ := pointsPi_surjective (of <| c.Cell ·) Y.left l
+  have (i : c.Index) : IsLocalRing (CommRingCat.of (c.Cell i)) :=
+    ValuationRing.isLocalRing (c.Cell i)
+  obtain ⟨x, hx⟩ := pointsPi_surjective (CommRingCat.of <| c.Cell ·) Y.left l
   have hx_eq (i : c.Index) : Spec.map (π i) ≫ x = l i := congrFun hx i
   have hx_over : x ≫ Y.hom = a := by
     -- both sides are determined by their restrictions to the cells, where `hl_right` holds

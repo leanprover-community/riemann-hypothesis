@@ -783,11 +783,8 @@ lemma isFiniteLerayHirsch_of_retract [HasFlatValues N] (r : ι → NaturalOp 0 (
           b N' ((u.mapRange δ δ.map_zero).mapRange ((r i).app stL) ((r i).app stL).map_zero) =
             b N' (w.mapRange ((r i).app stL) ((r i).app stL).map_zero) := by
         rw [h_nat, h_nat, h_cob]
-      have h_eq : (u.mapRange δ δ.map_zero).mapRange ((r i).app stL) ((r i).app stL).map_zero =
-          w.mapRange ((r i).app stL) ((r i).app stL).map_zero :=
-        hN'_inj h_image
-      -- Evaluate at `m`; `Finsupp.mapRange_apply` holds by definition.
-      exact DFunLike.congr_fun h_eq m
+      -- Evaluate the equality of finitely supported functions at `m`.
+      exact DFunLike.congr_fun (hN'_inj h_image) m
     rw [Finsupp.mapRange_apply, Finsupp.zero_apply, ← hπ_sum (w m),
       ← h_exact.apply_apply_eq_zero (u m), ← hπ_sum (δ (u m))]
     simp only [h_r]
@@ -885,8 +882,10 @@ lemma isFiniteLerayHirsch_of_integrate_params (β : ι → TotalH (relFreeAb I.t
               (comp (map (restrictAlong (elementsProj (projLineAlong t.toTestOver))) ξ) x) :=
       t.line_formula.integrate_naturality (φ := 𝟭 _) t.line_formula
         (lerayHirsch_mapRange_comp _ rfl)
-    -- `erw`: the summands match `comp_int` only after unfolding `NaturalOp.integrate`.
-    erw [Finset.sum_congr rfl fun i _ ↦ comp_int .., ← map_sum, comp_int]
+    -- `change`: the summands match `comp_int` only after unfolding `NaturalOp.integrate`.
+    change pullbackAlong _ (∑ i, comp (map (restrictAlong t.toTestOver) (β i))
+      (t.line_formula.integrate _)) = _
+    rw [Finset.sum_congr rfl fun i _ ↦ comp_int .., ← map_sum, comp_int]
     -- Push restriction into the products, split off the first factor in `h_sum_eq_foldr`, and
     -- write the remaining products as folds over lists.
     simp only [map_comp_assoc, map_restrictAlong_restrictAlong, map_homClass,

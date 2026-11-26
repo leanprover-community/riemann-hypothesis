@@ -169,6 +169,13 @@ lemma coe_pow_apply_pow_eq_one (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl �
     (v : X.auxPrimes) : ((ζ ^ j) v : PadicAlgCl ℓ) ^ ℓ ^ N = 1 := by
   rw [Pi.pow_apply, SubmonoidClass.coe_pow, pow_right_comm, hζ v, one_pow]
 
+/-- The power `ψ ^ j` of the twist `ψ = ∏ ζ_𝔮 ^ λ_𝔮` by roots of unity `ζ_𝔮` of order dividing
+`ℓ ^ N` is the twist by the `ζ_𝔮 ^ j`, which again have order dividing `ℓ ^ N`. -/
+lemma twist_pow (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1) (j : ℕ) :
+    X.twist hζ ^ j = X.twist (ζ := ζ ^ j) (X.coe_pow_apply_pow_eq_one hζ j) := by
+  ext g
+  simp [← prod_pow, pow_right_comm]
+
 /-- The twist by roots of unity of order dividing `ℓ ^ N` has order dividing `ℓ ^ N`. -/
 lemma twist_pow_eq_one (hζ : ∀ v : X.auxPrimes, (ζ v : PadicAlgCl ℓ) ^ ℓ ^ N = 1) :
     X.twist hζ ^ ℓ ^ N = 1 := by
@@ -332,7 +339,7 @@ lemma exists_rootsOfUnity_ellVal_eval_le (s₀ : ℕ) {m : ℕ} (hm : 1 ≤ m) {
             ellVal (eval (x i) (P i)).val + ε := by
   -- Apply the case of one exponent to the polynomials `P^{(j)}` that arise from `P` by putting
   -- `(1 + X) ^ j - 1` for each variable `X`, with points `x'` such that `(1 + x') ^ j = 1 + x`.
-  have : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   obtain ⟨B, hB⟩ : ∃ B : ℝ≥0, (B : ℝ≥0∞) = ∑ p : ι × Set.Icc 1 m, β p.1 :=
     ENNReal.canLift.prf _ (ENNReal.sum_ne_top.2 fun p _ ↦ hβ p.1)
   obtain ⟨h₀, h_roots⟩ :=
@@ -443,8 +450,7 @@ theorem exists_anticyclotomic_twist [Finite ι] [Finite κ] (hS₀ : placesDivid
   refine ⟨X.auxPrimes, X.twist hζ_N, X.auxiliary, fun j hj ↦ ?_⟩
   have h_far : ∀ v : X.auxPrimes, ellVal ((ζ ^ j) v - 1).val ≤ (r : ℝ≥0) :=
     fun v ↦ ellVal_pow_sub_one_le hr_lt hj (hζ v) (hζ_far v)
-  rw [show X.twist hζ_N ^ j = X.twist (ζ := ζ ^ j) (X.coe_pow_apply_pow_eq_one hζ_N j) by
-    ext g; simp [← prod_pow, pow_right_comm]]
+  rw [X.twist_pow hζ_N j]
   exact X.isSmallTwist_twist _ hS₀ hε_one (hr_ε.trans (half_le_self hε.le)) h_far
     (fun i ↦ h_value (.inl i) hj) fun k ↦ h_value (.inr k) hj
 

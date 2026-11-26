@@ -210,8 +210,8 @@ lemma idemAdele_conjClosure_mul_self :
   simp [idem_mul_self]
 
 @[simp]
-lemma star_idemAdele_conjClosure : star (idemAdele S.conjClosure) = idemAdele S.conjClosure := by
-  aesop
+lemma star_idemAdele_conjClosure : star (idemAdele S.conjClosure) = idemAdele S.conjClosure :=
+  Prod.ext (star_zero _) star_idem_conjClosure
 
 /-- Taking the part on S ∪ S̄ of an adele, as a finite adele, is multiplicative. -/
 lemma snd_idemAdele_conjClosure_mul_mul (x y : 𝔸 E) :

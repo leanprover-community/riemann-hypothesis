@@ -129,6 +129,10 @@ the chains with `m` witnesses. -/
 def boundaryFromCoker (m : ℕ) : abCoker (boundary R (m + 1)) ⟶ freeAb.obj (witnessed R m) :=
   desc (α := boundary R (m + 1)) (boundary R m) (boundary_comp_boundary R m)
 
+lemma proj_comp_boundaryFromCoker (m : ℕ) :
+    π (boundary R (m + 1)) ≫ boundaryFromCoker R m = boundary R m :=
+  rfl
+
 /-- The natural isomorphism from points with `0` witnesses to points of `V` that forgets the empty
 tuple of witnesses. -/
 def noWitness : witnessed R 0 ≅ V :=
@@ -325,7 +329,7 @@ lemma map_cocycleClass (Φ : AbFunctor C ⥤ AbFunctor C') [IsExactFunctor Φ] (
         refine Finset.sum_congr rfl fun j _ ↦ ?_
         rw [Preadditive.zsmul_comp, Φ.map_zsmul, Preadditive.comp_zsmul, h_reindex]
       _ = q (m + 1) ≫ Φ.map (π _) ≫ Φ.map (boundaryFromCoker R m) := by
-        rw [← Φ.map_comp]; rfl
+        rw [← Φ.map_comp, proj_comp_boundaryFromCoker]
   let k (m : ℕ) : abCoker (boundary R' m) ⟶ Φ.obj (abCoker (boundary R m)) :=
     abCoker.desc (q m ≫ Φ.map (π _))
       (by simp [reassoc_of% h_bd, ← Φ.map_comp, shortExact_boundaryFromCoker.1])
@@ -617,7 +621,7 @@ lemma isPullback_iff :
 /-- The fibre product of `u : W ⟶ Y` and `p : E ⟶ Y` with its two projections is a pull-back
 square. -/
 lemma isPullback_fiberProd : IsPullback (snd u p) (fst u p) p u :=
-  isPullback_iff.mpr ⟨fun _ z ↦ z.2.symm, fun _ w x hx ↦
+  isPullback_iff.mpr ⟨fun _ z ↦ z.property.symm, fun _ w x hx ↦
     ⟨⟨(w, x), hx.symm⟩, ⟨rfl, rfl⟩, fun _ ⟨h1, h2⟩ ↦ Subtype.ext (Prod.ext h1 h2)⟩⟩
 
 /-- The fibre power with `m + 2` factors is the pull-back of `p` along the fibre power with `m + 1`
@@ -964,8 +968,8 @@ lemma HasUniversalPoints.isBijective_subfunctor (h_points : c.HasUniversalPoints
     c.IsBijective (freeAbMap (Y := toFunctor U) ((U.whisker c.functor).fromPreimage u)) := by
   -- the map from the preimage of `U` to `U` is the base change of `u` along the inclusion
   refine h_points.isBijective_of_isPullback (Subfunctor.ι _) U.ι (isPullback_iff.mpr ?_)
-  exact ⟨fun _ _ ↦ rfl, fun B w x (hx : x.1 = u.app B w) ↦
-    ⟨⟨w, (hx ▸ x.2 : u.app B w ∈ U.obj (c.functor.obj B))⟩,
+  exact ⟨fun _ _ ↦ rfl, fun B w x (hx : x.val = u.app B w) ↦
+    ⟨⟨w, (hx ▸ x.property : u.app B w ∈ U.obj (c.functor.obj B))⟩,
       ⟨rfl, Subtype.ext hx.symm⟩, fun _ ⟨hz, _⟩ ↦ Subtype.ext hz⟩⟩
 
 /-- With universal points, a subfunctor `U` of `Y` has the cohomology of `Y` for `F` if and only

@@ -65,7 +65,8 @@ lemma Place.isDisintegration_map_quadricMeasure {T : Matrix ι ι A}
   let e : ι ≃ Fin 2 ⊕ κ := equivOfCardEq h_card
   let M : Matrix ι ι A := B * inclMatrix A e
   have gram_sq : (Mᴴ * T * M) ^ 2 = 1 := by
-    rw [gram_mul, h_gram, gram_inclMatrix, sq, submatrix_mul_equiv, h_plane, submatrix_one_equiv]
+    rw [gram_mul, h_gram, conjTranspose_inclMatrix_mul_mul_inclMatrix, sq, submatrix_mul_equiv,
+      h_plane, submatrix_one_equiv]
   have h_unit : IsUnit M.det := by
     rw [sq, ← mul_assoc] at gram_sq
     exact isUnit_det_of_left_inverse gram_sq

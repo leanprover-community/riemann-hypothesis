@@ -684,8 +684,10 @@ private lemma IsLargeLevel.SplitPlaces.sum_symbol_smul_snd_generators_eq_zero {�
       l (V.ρ θ.snd.out⁻¹ (P.snd (γ θ.fst))) = 0 by
     simpa [ZMod.map_smul] using congrArg (ofZMod m) h_goal
   apply ofZMod_injective (n := m)
-  -- By `l_γ` and the Kummer formula at Frobenius both sums have the terms `cyclotomicCharMod g⁻¹ * b (g y) i * ord x`.
-  simpa [S, ← map_zsmul, χ, ZMod.map_smul, l_γ, kummer_frob_liftToFixedField s hκ hb ⟨y, y_fix⟩ y_unit,
+  -- By `l_γ` and the Kummer formula at Frobenius both sums have the terms
+  -- `cyclotomicCharMod g⁻¹ * b (g y) i * ord x`.
+  simpa [S, ← map_zsmul, χ, ZMod.map_smul, l_γ,
+    kummer_frob_liftToFixedField s hκ hb ⟨y, y_fix⟩ y_unit,
     mul_comm (b _ _),
     mul_left_comm (Int.cast _), mul_assoc] using h_sum
 
@@ -727,7 +729,6 @@ private lemma IsLargeLevel.SplitPlaces.exists_mem_trivializedCocycles_of_valuati
   have κ_γ (θ : ι × G ⧸ Q) : (κ (ofBase Q Ω (.ofMul x))).val (γ' θ) =
       cyclotomicCharMod Ω m θ.snd.out⁻¹ * ↑(-((S.v θ).valuation F x.val).log) :=
     kummer_conj_liftToFixedField s hγ hκ θ x
-
   -- The cocycle `z = κ x • a` of `U` vanishes on `I` and on the stabilisers of the places above
   -- `N` and infinity, so it is trivialised by `0` at representatives of the orbits.
   let xFixed : ↥(unitsModule Q).H0 := ofBase Q Ω (.ofMul x)
@@ -815,7 +816,8 @@ private lemma IsLargeLevel.SplitPlaces.exists_mem_trivializedCocycles_of_sum_sym
     simp [S, α, e, (S.isPlaceOver _).artinAt_eq_of_localArtin_eq (hξ_art _), ← toAdd_eq_zero,
       ← map_nsmul, ← map_sum,
       mul_comm (f _), mul_assoc,
-      kummer_frob_liftToFixedField s hκ hb (ofBase Q Ω (.ofMul u.val)) (ofBase_mem_sUnits.mpr u.prop),
+      kummer_frob_liftToFixedField s hκ hb (ofBase Q Ω (.ofMul u.val))
+          (ofBase_mem_sUnits.mpr u.prop),
       hf]
   obtain ⟨_, ⟨x, rfl⟩, β, ⟨h_pow, h_unit⟩, hβ⟩ := mem_sup.mp (h_idele α hα)
   obtain rfl : β = α / principalIdele x := eq_div_of_mul_eq'' hβ

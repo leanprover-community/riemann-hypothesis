@@ -9,7 +9,6 @@ import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
 import Lib.Adelic.Adeles.AdditiveCharacter
-import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.General.Analysis.HolomorphicIntegrals
 
 /-!

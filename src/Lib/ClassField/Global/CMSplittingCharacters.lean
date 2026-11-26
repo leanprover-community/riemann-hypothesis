@@ -699,7 +699,7 @@ lemma New.nonempty_splittingChar {E : Type} [Field E] [CMType E] [HasPrimitiveRo
   have h_phase_mul (x y : (𝔸 E)ˣ) : phase (x * y) = phase x * phase y := by
     simp [phase, mul_div_mul_comm, prod_mul_distrib]
   have h_phase_cont : Continuous fun x : (𝔸 E)ˣ ↦ (⟨phase x, h_phase_mem x⟩ : Circle) := by
-    fun_prop (disch := aesop)
+    fun_prop (disch := exact fun x ↦ ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (h_ne x _)))
   let S : (𝔸 E)ˣ →ₜ* Circle :=
     ⟨.mk' (fun x ↦ ⟨phase x, h_phase_mem x⟩) fun x y ↦ Subtype.ext (h_phase_mul x y), h_phase_cont⟩
   let U : Subgroup (𝔸 E)ˣ :=
@@ -873,7 +873,8 @@ lemma IsFromU1.eq_one_of_mem_decompGroup (h : IsFromU1 S I χ) (hv : v ∈ S)
   obtain ⟨x, s, hs, hx⟩ : ∃ (x : (LocField v)ˣ) (s : decompGroup Gal(Ω/E) A),
       χ g = χ s ∧ ↑s = localArtin Gal(Ω/E) A v x := by
     obtain ⟨x, s, hs, hx⟩ := hA.denseRange_localArtin.exists_mem_open
-      (QuotientGroup.isOpenMap_coe _ (h.isLocallyConstant {χ g}).preimage_val) ⟨_, ⟨g, hg⟩, rfl, rfl⟩
+      (QuotientGroup.isOpenMap_coe _ (h.isLocallyConstant {χ g}).preimage_val)
+      ⟨_, ⟨g, hg⟩, rfl, rfl⟩
     exact ⟨x, s, (by simpa using hs : χ s = χ g).symm, hx⟩
   have h_art : artinMap Gal(Ω/E) (locIdele v x) = (s : Gal(Ω/E)) := by
     simp [hA.artinAt_eq_of_localArtin_eq hx.symm]

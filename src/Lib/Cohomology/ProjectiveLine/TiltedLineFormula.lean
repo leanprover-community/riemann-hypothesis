@@ -89,6 +89,16 @@ lemma IsDetectedAtPoints.isOpen_setOf_map_eq_zero {F : AbFunctor D}
       H.map F (freeAb.map (g.whiskerLeft (reprMap (residueTest c P).hom))) n x = 0} :=
   (h_detect.isOpen_zero_set_and_eq_zero c n x).1
 
+/-- For a coefficient `F` that satisfies `New.Variety.IsDetectedAtPoints`, a class `x` over a test
+`c` that vanishes at the residue field of every prime of `c` is zero. -/
+lemma IsDetectedAtPoints.eq_zero_of_setOf_map_eq_zero_eq_univ {F : AbFunctor D}
+    (h_detect : IsDetectedAtPoints g F) (c : TestOver A) (n : ℕ)
+    (x : H (freeAb.obj (g ⋙ reprFunctor.obj (Opposite.op c))) F n)
+    (h_univ : {P : PrimeSpectrum c.obj |
+      H.map F (freeAb.map (g.whiskerLeft (reprMap (residueTest c P).hom))) n x = 0} = Set.univ) :
+    x = 0 :=
+  (h_detect.isOpen_zero_set_and_eq_zero c n x).2 h_univ
+
 /-- The Yoneda isomorphism `sectionEquiv` is natural: for `φ : e ⟶ e'`, pulling the class of a
 section `t ∈ G(e)` back along `ℤ[h_e'] → ℤ[h_e]` gives the class of the image of `t` in `G(e')`. -/
 lemma TotalH.comp_homClass_sectionEquiv (G : AbFunctor D) {e e' : D} (φ : e ⟶ e') (t : G e) :
@@ -192,7 +202,7 @@ lemma isLerayHirschBasis_of_forall_isField [InvertsPrime A ℓ] {F : AbFunctor D
     not_imp_comm.mp fun hi ↦ congrArg ULift.up (LocallyConstant.ext (h_coef_zero i hi))
   refine ⟨m, (sub_eq_zero.mp (DFinsupp.ext fun n ↦ ?_)).symm, fun m' hm' ↦ ?_⟩
   · -- `y - lerayHirsch θ _ (s c m)` vanishes at every prime, hence is zero
-    exact (h_detect.isOpen_zero_set_and_eq_zero c n _).2
+    exact h_detect.eq_zero_of_setOf_map_eq_zero_eq_univ c n _
       (top_unique fun P _ ↦ (coef_iff m P).mp (ext fun _ ↦ rfl) n)
   · ext i P
     have h_coef : coef P = ev P m' := (coef_iff m' P).mpr fun n ↦ by simp [← hm']
@@ -225,7 +235,7 @@ lemma exists_isLerayHirschBasis_of_isCohomDense [InvertsPrime A ℓ] (M : Torsio
         IsLerayHirschBasis (fun i : b ↦ i.val.snd) (freeAb (reprBy c)) := by
   -- The values `u i = i(1)` of homogeneous classes span the cohomology of the point, a vector
   -- space over `ZMod ℓ`. Let `b` index a basis among them, containing `j` if `u j ≠ 0`.
-  have module_zmod {N : AbFunctor D} : Module (ZMod ℓ) (TotalH N M.functor) :=
+  let module_zmod {N : AbFunctor D} : Module (ZMod ℓ) (TotalH N M.functor) :=
     AddCommGroup.zmodModule M.nsmul_totalH_eq_zero
   let u (i : Σ n : ℕ, H (locConstAlong g) M.functor n) :
     TotalH (freeAb (onePointFunctor D)) M.functor :=
@@ -625,7 +635,8 @@ lemma TorsionCoeff.sliceEquiv_mulClass (v : TotalH S M.functor) :
   -- Restricting and then evaluating at the tautological point is the definition of `sliceEquiv`.
   change pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S))
     (TotalH.map (restrictAlong π) (M.mulClass (etaClass g).toTotalH v)) = _
-  refine (congrArg (pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S))) h_res).trans ?_
+  refine (congrArg (pullbackAlong (tensorPoint (freeAb.map tautologicalSection) (π ⋙ S)))
+      h_res).trans ?_
   exact M.onElements.mulClass_eq_comp_etaAt (S := π ⋙ S) η _ rfl _
 
 
@@ -734,7 +745,6 @@ lemma isLerayHirschBasis_lineBasis_of_injective
       congrArg (fun ξ ↦ comp ξ Θ.onElements.cupClass.toTotalH) map_pullbackAlong
     exact h_first.trans ((etaAt_swap Θ.onElements.onElements x' h_inf' a b).trans
       ((comp_assoc ..).trans (congrArg (pullbackAlong _) h_cup.symm)))
-
   -- Restriction `r` from the points of the line to the base point undoes the pull-back, and it
   -- corresponds to `at_inf` under `sliceEquiv`.
   let r {N : AbFunctor C} : TotalH (elementsProj (projLineAlong g) ⋙ N)
@@ -999,7 +1009,6 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
           (map_sub (R.map j).hom _ _).trans
             (congrArg₂ (· - ·) (ρ_nat c d j x) (map_one (R.map j).hom))
         exact congrArg (fun a : R d ↦ F d (a, 1)) h_coordinate.symm)
-
   -- `α` sends a point `t` of the torus to `pow c t`, the untilts of the powers of the coordinate.
   let pow (c : PadicTest) (t : (PadicTest.tilt ⋙ reprBy (monoidAlg ℚ)).obj c) :
       (kummerSeq (genericTestOver A)).X₂ c :=
@@ -1076,7 +1085,6 @@ lemma exists_isTodaCancellation_etaClass [Algebra A ℂ_[ℓ]] :
       simp only [Bool.cond_false, Bool.cond_true, h_coord]
       change v = (F c (0, 0) - F c (0, X')) - (F c (0, 0) - F c (X - 1, 1))
       simpa only [sub_sub_sub_cancel_left, eq_sub_iff_add_eq] using h_frame
-
   have h_disc : oneSub (discTwist χ) ≫ f = 0 := by
     -- `charTwist χ` fixes `X`, as the roots of unity are trivial at `1` and `-1`.
     refine freeAb.hom_ext fun c y ↦ ?_

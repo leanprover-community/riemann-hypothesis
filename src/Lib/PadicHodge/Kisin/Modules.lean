@@ -682,28 +682,30 @@ lemma exists_span_formsOfType_mod_pred (i : Letter) (u : ℤ) :
     mem_span_singleton.1 (μ.property.2 t)
   -- Write `μ (letterProj i (1 ⊗ t)) = a μ t • tUnit ^ (-u)` with `a μ t` in `B_dR⁺`.
   choose a ha using h_type
-  -- The leading coefficient can be computed from any expression `y • tUnit ^ (-u)`.
+  -- The leading coefficient can be computed from any expression `y • tUnit ^ (-u)`. (`hz` is an
+  -- explicit argument: as a default tactic it was slow to elaborate.)
   have theta_a {μ : L.formsOfType i u} {t : Rep.of (overZp L.ρ)} {z : ℂ_[p]} {y : BdRPlus}
       (h : μ.val (L.letterProj i (.mk 1 t)) = y • (tUnit ^ (-u)).val)
-      (hz : thetaBdR y = z := by simp +zetaDelta [smul_def', -toRingHom_ofId]) :
+      (hz : thetaBdR y = z) :
       thetaBdR (a μ t) = z := by
     rw [show a μ t = y from (smul_left_inj (Units.ne_zero _)).1 ((ha μ t).trans h), hz]
   let f (μ : L.formsOfType i u) : L.Carrier →ₛₗ[(ofId ℤ_[p] ℂ_[p] : ℤ_[p] →+* ℂ_[p])] ℂ_[p] :=
     { toFun := thetaBdR ∘ a μ
       map_add' _ _ := theta_a (by simp [add_smul, ← ha]) (map_add ..)
-      map_smul' c t := theta_a (y := c • a μ t) (by simp [← ha]) }
+      map_smul' c t := theta_a (y := c • a μ t) (by simp [← ha])
+        (by simp +zetaDelta [smul_def', -toRingHom_ofId]) }
   -- `g` multiplies `tUnit ^ (-u)` by the cyclotomic character to the power `-u`, and `ζ` acts on
   -- the letter `i` by `letterTeich i`.
   have f_gal (μ : L.formsOfType i u) (t : Rep.of (overZp L.ρ)) (g : k.subgroup) :
       f μ (L.ρ g t) = (χ g ^ (-u)).val • toGp g • f μ t :=
-    theta_a <| by
+    theta_a (hz := by simp +zetaDelta [smul_def', -toRingHom_ofId]) <| by
       have h_inv : μ.val (L.letterProj i (.mk 1 (L.ρ g t))) =
           toGp g.val • μ.val (L.letterProj i (.mk 1 t)) :=
         comp_letterProj_mem_forms μ.property.1 t g
       rw [h_inv, ← ha, smul_distrib_smul, smul_tUnit_zpow, smul_comm, ← smul_assoc]
   have f_ζ (μ : L.formsOfType i u) (t : Rep.of (overZp L.ρ)) :
       f μ (O.ζ.val • t) = theta (k.letterTeich i) * f μ t :=
-    theta_a <| by
+    theta_a (hz := by simp +zetaDelta [smul_def', -toRingHom_ofId]) <| by
       have h_mk : (DiagTensor.mk 1 (O.ζ.val • t) : L.Ambient) = L.mulZeta.wittMap (.mk 1 t) := by
         simp [mulZeta]
       rw [h_mk, ← mulZeta.wittMap_letterProj (.mk 1 t),
@@ -733,7 +735,10 @@ lemma exists_span_formsOfType_mod_pred (i : Letter) (u : ℤ) :
     c_fixed g m
   refine ⟨c', fun t g ↦ ?_, fun t ↦ ?_⟩
   · -- The difference is invariant, since `Γ'` fixes the coefficients.
-    simp_all [μ.property.1 t, (ν _).property.1 t, smul_sub, smul_sum, smul_def', -toRingHom_ofId]
+    have c'_fixed (m) : toGp g.val • algebraMap _ BdR (c' m) = algebraMap _ BdR (c' m) :=
+      (BdR.smul_algebraMap_padicAlgCl _ _).trans (congrArg _ (mem_localFieldOf.1 (hc' m) g))
+    simp only [LinearMap.sub_apply, LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply,
+      μ.property.1 t, (ν _).property.1 t, smul_sub, smul_sum, smul_def', smul_mul', c'_fixed]
   · -- The leading coefficient of the difference vanishes, so its pole has order at most `u - 1`.
     have lead : thetaBdR (a μ t - ∑ m, c' m • a (ν m) t) = 0 := by
       simpa [← hν, c_eq, smul_def', sub_eq_zero, -toRingHom_ofId] using!

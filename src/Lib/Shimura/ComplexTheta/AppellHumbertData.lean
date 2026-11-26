@@ -7,6 +7,7 @@ import Mathlib.RingTheory.PiTensorProduct
 public import Lib.General.Analysis.FourierTransforms
 import Lib.Adelic.Adeles.AdditiveCharacter
 import Lib.General.Topology
+public import TauCeti.Algebra.Module.ZLattice.Quotient
 
 /-!
 # Theta functions on complex tori: Appell–Humbert data and factors of automorphy
@@ -509,12 +510,6 @@ lemma exists_factor_of_automorphy (hf_ne : ∀ z : V, f z ≠ 0)
       simpa [mul_comm, mul_left_comm, field, hf_ne] using h_two
     simpa [norm_exp] using congrArg (‖·‖) exp_eq
   | _ => simp [*]
-
-/-- The torus `V ⧸ L` is compact, as `L` is a full lattice. -/
-instance : CompactSpace (V ⧸ L.toAddSubgroup) where
-  isCompact_univ := by
-    rw [← range_mk]
-    exact isCompact_range_of_periodic L _ continuous_mk (by simp)
 
 /-! ### Positive Riemann forms and the dual lattice -/
 

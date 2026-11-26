@@ -364,7 +364,8 @@ lemma exists_taylorWilesPlaces_hasRootChain {P : Parameters} {D : Data P} {ℓ :
   let HasShape (x : B.Eigensystem ![]) (y : FrobeniusDatum D.E) (e : EllAdicIntegers[X]) : Prop :=
     HasRootChain (x.val.heckePolyAt y.place) (e.map (algebraMap EllAdicIntegers ℂ)) y.place.q
       (ιℓ.symm (normalizingAvatar O y.frob).val)⁻¹ O.rankDiff
-  let W : Set (FrobeniusDatum D.E) := {y | y.place ∉ badPlaces D ℓ ∧ B.IsOffLevel (ℓ := ℓ) ![] y.place ∧
+  let W : Set (FrobeniusDatum D.E) :=
+    {y | y.place ∉ badPlaces D ℓ ∧ B.IsOffLevel (ℓ := ℓ) ![] y.place ∧
     (∀ x : B.Eigensystem ![], IsWeakLift O x.val → ∀ S : (PadicAlgCl ℓ)[X], 1 ≤ ‖S.eval 1‖ →
       (∀ k : ℕ, ‖(χ x y.frob).coeff k - (S * chain y.frob).coeff k‖ < 1) →
       ∃ e : EllAdicIntegers[X], HasShape x y e ∧ e.eval 1 = 1) ∧
@@ -404,7 +405,7 @@ lemma exists_taylorWilesPlaces_hasRootChain {P : Parameters} {D : Data P} {ℓ :
     rw [← hx₀]
     exact h_congr _ k
   choose e h_string he using h_shape
-  have : Fintype Near := Fintype.ofFinite Near
+  let : Fintype Near := Fintype.ofFinite Near
   refine ⟨Q, h_triangle, h_good, h_offLevel, fun j ↦ ∏ x : Near, e j x,
     by simp [eval_prod, he], fun j x h_congr h_weak ↦ ?_⟩
   obtain ⟨S, hS, h_dvd⟩ := h_string j ⟨x, h_congr, h_weak⟩
@@ -822,7 +823,8 @@ lemma IsLiftGenerator.typeProjection_eq_zero_or_mem_range {P : Parameters} {D : 
       have h_orth : typeProjection O c * typeProjection O c' = 0 := by
         rw [← map_mul, tupleIdem_orthogonal.ortho h_label_ne, map_zero]
       apply h_ne
-      rw [← typeProjection_eq_self_of_mem_range hc', ← mul_apply_eq_comp, h_orth, LinearMap.zero_apply]
+      rw [← typeProjection_eq_self_of_mem_range hc', ← mul_apply_eq_comp, h_orth,
+        LinearMap.zero_apply]
     exact hc'
   · -- Otherwise the line of `v` has no nonzero isotypic form, so it lies in the kernel.
     by_contra h_none

@@ -434,6 +434,10 @@ theorem norm_orthoFrame_mem_Icc (h_size : besselLength y ≤ M) :
   · grw [inv_le_iff_one_le_mul₀' hM, ← h_norm, ← one_le_norm_mul_norm_orthoFrame]
   · grw [norm_orthoFrame_le, norm_frameVector_le, h_norm]
 
+lemma linearIndependent_orthoFrame : LinearIndependent ℂ (orthoFrame y) :=
+  linearIndependent_of_ne_zero_of_inner_eq_zero (orthoFrame_ne_zero y)
+    fun _ _ ↦ inner_orthoFrame_eq_zero_of_ne y
+
 /-- For `y` in the unitary group `𝔰.G₁`, let `gramSchmidtMatrix y` be the unitriangular matrix of
 the moved frame in its Gram–Schmidt vectors. Let `s` lie in the Bessel subgroup `besselS`, the group
 of the elements of `𝔰.G₁` that map each vector of the frame (e₁, …, e_ϱ, z) to itself plus a
@@ -457,9 +461,7 @@ theorem gramSchmidtMatrix_besselS_mul (y : 𝔰.G₁) {s : 𝔰.G₁} (hs : s �
       smul_smul]
     exact sum_comm.trans (sum_congr rfl fun _ _ ↦ sum_congr rfl fun _ _ ↦ by rw [mul_comm])
   ext a b
-  exact Fintype.linearIndependent_iffₛ.1
-    (linearIndependent_of_ne_zero_of_inner_eq_zero (orthoFrame_ne_zero y)
-      fun _ _ ↦ inner_orthoFrame_eq_zero_of_ne y) (C · b)
+  exact Fintype.linearIndependent_iffₛ.1 (linearIndependent_orthoFrame y) (C · b)
     (gramSchmidtMatrix y · b) (h_same_expansion b) a
 
 /-- The Gram–Schmidt vectors `orthoFrame y a` of the moved frame (y⁻¹ e₁, …, y⁻¹ e_ϱ, y⁻¹ z) depend

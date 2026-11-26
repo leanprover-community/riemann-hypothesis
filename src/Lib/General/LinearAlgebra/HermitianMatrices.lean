@@ -49,12 +49,8 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι] {P Q : Matrix ι ι ℂ}
 /-- If `P` and `Q - P` are positive semidefinite complex square matrices, that is `0 ≤ P ≤ Q` in
 the Loewner order, then `|det P| ≤ |det Q|`. -/
 lemma New.norm_det_le_norm_det_of_posSemidef (hP : P.PosSemidef) (h_le : (Q - P).PosSemidef) :
-    ‖P.det‖ ≤ ‖Q.det‖ := by
-  have h_det : P.det ≤ Q.det := hP.det_le_det h_le
-  have hnorm {z : ℂ} (hz : 0 ≤ z) : ‖z‖ = z.re := by
-    simpa using congrArg Complex.re (RCLike.norm_of_nonneg' hz)
-  rw [hnorm hP.det_nonneg, hnorm (hP.det_nonneg.trans h_det)]
-  exact (Complex.le_def.1 h_det).1
+    ‖P.det‖ ≤ ‖Q.det‖ :=
+  CStarAlgebra.norm_le_norm_of_le_of_nonneg (hP.det_le_det h_le) hP.det_nonneg
 
 /-- Cauchy–Schwarz inequality for determinants: if the complex block matrix with rows `(P, A)` and
 `(B, Q)`, all blocks square of the same size, is positive semidefinite, then

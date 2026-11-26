@@ -6,7 +6,7 @@ import Mathlib.RingTheory.PiTensorProduct
 public import Lib.PadicComparison.HodgeTate.ExtCocycles
 public import Lib.PadicComparison.HodgeTate.GenericFibre
 import Lib.Cohomology.Etale.DenseSubfunctors
-import Lib.PadicComparison.Primitive.PeriodCoefficients
+import Lib.PadicComparison.Primitive.TiltProducts
 
 /-!
 # The Hodge–Tate maps λ_h on pairs (S, M): construction, properties and restriction

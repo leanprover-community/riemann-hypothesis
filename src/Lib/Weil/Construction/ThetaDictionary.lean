@@ -255,9 +255,7 @@ lemma mem_star_smul_idealLattice_iff {δ : E} (hδ : δ ≠ 0) {γ : n → E} :
     -- the substitution y' = δ • y
     (MulAction.surjective₀ hδ).forall
 
-/-- The translation `T_γ` times the value of the semicharacter at the finite image of `γ`. For `γ`
-in `𝔞₀ⁿ` this value is the sign `(-1) ^ |γ|²`, where `|γ|² = ∑ |Φ w (γ i)|²`; see
-`New.exists_semichar_finiteImage_eq_neg_one_zpow`. -/
+/-- The translation `T_γ` times the value of the semicharacter at the finite image of `γ`. -/
 noncomputable def signedShift (γ : n → E) : Module.End ℂ ((InfinitePlace E × n → ℂ) → ℂ) :=
   semichar (finiteImage γ) • ratShift γ
 

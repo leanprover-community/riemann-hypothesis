@@ -192,7 +192,7 @@ lemma exists_isTameExponent [IsFaithfulMulChar K T] (hA : IsPlaceOver A w) (f : 
   have tame_of_eq (s : inertiaGroup Gal(Ω/E) A) (a : ℕ)
       (hsa : ((hA.tameGenerator • z / z) ^ j) ^ a = s.val z / z) :
       IsTameExponent w A T f.factorial s a :=
-    ⟨hA, f.factorial_ne_zero, s.2, ρ, ⟨π, z, (hζ.toInteger ^ j) ^ a,
+    ⟨hA, f.factorial_ne_zero, s.property, ρ, ⟨π, z, (hζ.toInteger ^ j) ^ a,
       { centrePrime_le_ker := hρ_cen, commutes := hρ_int, isUniformiser := hπ,
         pow_eq := hz, coe_eq := hsa, map_eq := by simp only [map_pow, hTj, N] }⟩⟩
   refine ⟨⟨hA.tameGenerator ^ j, tame_of_eq _ 1 <|
@@ -226,7 +226,7 @@ private lemma IsTameExponent.of_unramified {L : Type} [Field L] [EmbeddedNumberF
           pow_eq := by rw [← hq, ← pow_mul, hw.pow_eq, IsScalarTower.algebraMap_apply E L Ω],
           coe_eq := hw.coe_eq, map_eq := by rw [← hq, ← pow_mul, hw.map_eq] }⟩⟩⟩
   obtain ⟨x, rfl⟩ := algebraMap_ResField_surjective _ y
-  show algebraMap (ResField (u.below E)) K _ = i _
+  change algebraMap (ResField (u.below E)) K _ = i _
   rw [hj, hi, comp_apply, ← IsScalarTower.algebraMap_apply (𝓞 E) (𝓞 L), hw.commutes]
 
 end New.GaloisRep
@@ -357,7 +357,8 @@ private lemma New.GaloisRep.Attached.isLabelledAt_of_root_pow_eq_one {g : ℕ}
     algebraize [j₀]
     let j : ResField w →+* ResField u := algebraMap (ResField w) (ResField u)
     have h_res_rank : finrank (ResField w) (ResField u) = p := Nat.pow_right_injective w.one_lt_q <|
-      by show w.q ^ _ = w.q ^ p; rw [hq, ← card_ResField, ← card_ResField, ← natCard_eq_pow_finrank]
+      by change w.q ^ _ = w.q ^ p; rw [hq, ← card_ResField, ← card_ResField,
+        ← natCard_eq_pow_finrank]
     -- Given any `ResField w`-embedding `ResField u → K`, Shintani base change descends to `E`.
     have descend [Algebra (ResField u) K] [IsScalarTower (ResField w) (ResField u) K] :
         (IsFiniteTypeAt r A ∧ HasJumpsAt r A (jumps κ (Fintype.card n))) ∧

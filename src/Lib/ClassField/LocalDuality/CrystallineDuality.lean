@@ -301,7 +301,7 @@ lemma InClass.of_jointly_injective [IsDomain O] {ι : Type*} [Finite ι] {M : ι
     (h : ∀ a : ι, InClass F K U (M a)) (f : ∀ a : ι, Y →ₗ[O] M a)
     (hf : ∀ (a : ι) (g : Γ) (x : Y), f a (Y.ρ g x) = (M a).ρ g (f a x))
     (h_inj : ∀ x : Y, (∀ a : ι, f a x = 0) → x = 0) : InClass F K U Y := by
-  have := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   refine ⟨?_, fun g u hu ↦ ?_, fun s Q hK hs ↦ ?_⟩
   · exact .of_jointly_injective le_sup_left (fun a ↦ (h a).isAdmissible) (fun a ↦ f a)
       (fun a ↦ .of_forall (hf a)) h_inj

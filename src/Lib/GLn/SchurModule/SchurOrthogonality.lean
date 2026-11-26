@@ -124,7 +124,7 @@ def gramForm : (WeylIndex n κ → ℂ) →ₗ⋆[ℂ] (WeylIndex n κ → ℂ) 
 /-- The Gram form at `ξ` and `η` is `ξ* G η` for the Gram matrix `G = weylGramOver`. -/
 lemma gramForm_apply (ξ η : WeylIndex n κ → ℂ) : gramForm ξ η = star ξ ⬝ᵥ weylGramOver *ᵥ η := rfl
 
-omit [DecidableEq Φ] in
+omit [DecidableEq Φ] [DecidableEq n] in
 /-- If all columns of `κ` have height `card n` (`κ τ k = 0` for `k ≠ card n`), every basis
 polynomial `nablaBasis R _ κ j` is the empty product `1`. -/
 lemma Exchange.nablaBasis_eq_one (hκ : ∀ τ : Φ, ∀ k ≠ Fintype.card n, κ τ k = 0)

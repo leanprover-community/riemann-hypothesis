@@ -25,8 +25,7 @@ import New.UpperBound.ElementaryDivisors.DefectCount
 The main result `New.FrobeniusCycle.elementary_divisors` bounds the mean exponent of the elementary
 divisors of an edge Hecke operator `A`, outside a small proportion of them, under the size
 conditions `New.FrobeniusCycle.IsLargeDegree`. Colengths in the sense of `New.ColengthDvd` take
-the place of lengths, because the ring of coefficients need not be discrete;
-`New.FrobeniusCycle.elementary_divisors_length` is the statement in lengths.
+the place of lengths, because the ring of coefficients need not be discrete.
 
 Let `w ^ 2 = p`, let `N` be the number of letters of the Frobenius cycle `T` and
 `c₀ = T.multinomialExponent k`. Write `M` for the integral functions on lattices, `M_all` for the

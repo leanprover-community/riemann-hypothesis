@@ -500,12 +500,12 @@ def cocycleKer [Monoid R] [DistribMulAction R M] (a : G →* R)
   Subgroup.ofDiv (x ⁻¹' {0})
     -- `x 1 = x 1 + x 1` gives `x 1 = 0`
     ⟨1, by
-      show x 1 = 0
+      change x 1 = 0
       have h1 := c 1 1
       rwa [mul_one, map_one, one_smul, left_eq_add] at h1⟩
     -- `x g = x (g * k⁻¹) + a (g * k⁻¹) • x k`, with `x g = 0` and `x k = 0`
     (fun g (hg : x g = 0) k (hk : x k = 0) ↦ by
-      show x (g * k⁻¹) = 0
+      change x (g * k⁻¹) = 0
       have h := c (g * k⁻¹) k
       rw [inv_mul_cancel_right, hg, hk, smul_zero, add_zero] at h
       exact h.symm)
@@ -602,7 +602,7 @@ lemma isLocalGalois_and_residueCard_eq_and_isUniformizer (h : IsPlaceOver A v) :
     refine (algebraMap_ResField_surjective v).forall.mpr fun x ↦
       ⟨⟨algebraMap K F x, algebraMap_ringOfIntegers_mem _ x⟩, ?_⟩
     exact congrArg (residue (LocInt v)) (Subtype.ext (hφ x))
-  have res_equiv : (valRingBelow F A ⧸ maximalIdeal (valRingBelow F A)) ≃ ResField v := by
+  let res_equiv : (valRingBelow F A ⧸ maximalIdeal (valRingBelow F A)) ≃ ResField v := by
     rw [← ker_eq_maximalIdeal ψ hψ]
     exact (quotientKerEquivOfSurjective hψ).toEquiv
   -- A uniformiser `π₀` at `v` makes the valuation of `F` nontrivial; hence `A ∩ F` is discrete.
@@ -754,18 +754,17 @@ lemma ordRat_smul (h : IsPlaceOver A v) (g : Γ) (x : DiscreteUnits Ω) :
   -- Expand: `g` fixes `π`, which has order `1` at `A` and at `g • A`; then cancel `q.den`.
   have h_fix_π : unitsRep g (ofBase Γ Ω (.ofMul π) : DiscreteUnits Ω) = ofBase Γ Ω (.ofMul π) :=
     (ofBase Γ Ω (.ofMul π)).property g
-  have h_ord_π : ordRat K A (ofBase Γ Ω (.ofMul π)) = 1 := by
-    rw [h.ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
-  have h_ord_π_g : ordRat K (g • A) (ofBase Γ Ω (.ofMul π)) = 1 := by
-    rw [(h.smul g).ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
+  have h_ord_π {B : ClosurePlace} (hB : IsPlaceOver B v) :
+      ordRat K B (ofBase Γ Ω (.ofMul π)) = 1 := by
+    rw [hB.ordRat_ofBase, hπ, WithZero.log_exp, Int.cast_neg, Int.cast_one, neg_neg]
   have h_ord_y : ordRat K A y = q.den * ordRat K A x - q.num := by
     dsimp only [y]
-    rw [_root_.map_sub, map_nsmul, map_zsmul, nsmul_eq_mul, zsmul_eq_mul, h_ord_π, mul_one]
+    rw [_root_.map_sub, map_nsmul, map_zsmul, nsmul_eq_mul, zsmul_eq_mul, h_ord_π h, mul_one]
   have h_ord_gy :
       ordRat K (g • A) (unitsRep g y) = q.den * ordRat K (g • A) (unitsRep g x) - q.num := by
     dsimp only [y]
     rw [_root_.map_sub, map_nsmul, map_zsmul, h_fix_π, _root_.map_sub, map_nsmul, map_zsmul,
-      nsmul_eq_mul, zsmul_eq_mul, h_ord_π_g, mul_one]
+      nsmul_eq_mul, zsmul_eq_mul, h_ord_π (h.smul g), mul_one]
   rw [h_ord_gy, h_ord_y] at h_int
   -- Cancel `q.den > 0`: `q ≤ t` exactly when `0 ≤ q.den * t - q.num`.
   have h_le (t : ℚ) : q ≤ t ↔ 0 ≤ q.den * t - q.num := by
@@ -818,8 +817,8 @@ lemma ramification_in_tower (h : IsPlaceOver A v) (U : Subgroup Γ) [hU_open : F
      fun hx ⟨⟨g, hgU⟩, hgA⟩ ↦ hx ⟨⟨g, hgA⟩, hgU⟩⟩
   let e_field :
       fixedFieldOf (decompGroup U A) ≃+* fixedFieldOf (V : Subgroup (decompGroup Γ A)) :=
-    { toFun := fun x ↦ ⟨x.1, (h_same_set x.1).mp x.2⟩
-      invFun := fun x ↦ ⟨x.1, (h_same_set x.1).mpr x.2⟩
+    { toFun := fun x ↦ ⟨x.val, (h_same_set x.val).mp x.property⟩
+      invFun := fun x ↦ ⟨x.val, (h_same_set x.val).mpr x.property⟩
       left_inv := fun _ ↦ rfl
       right_inv := fun _ ↦ rfl
       map_mul' := fun _ _ ↦ rfl
@@ -827,8 +826,8 @@ lemma ramification_in_tower (h : IsPlaceOver A v) (U : Subgroup Γ) [hU_open : F
   let e_ring :
       valRingBelow (fixedFieldOf (decompGroup U A)) A ≃+*
         valRingBelow (fixedFieldOf (V : Subgroup (decompGroup Γ A))) A :=
-    { toFun := fun x ↦ ⟨e_field x.1, x.2⟩
-      invFun := fun x ↦ ⟨e_field.symm x.1, x.2⟩
+    { toFun := fun x ↦ ⟨e_field x.val, x.property⟩
+      invFun := fun x ↦ ⟨e_field.symm x.val, x.property⟩
       left_inv := fun _ ↦ rfl
       right_inv := fun _ ↦ rfl
       map_mul' := fun _ _ ↦ rfl

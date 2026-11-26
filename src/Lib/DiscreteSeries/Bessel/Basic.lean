@@ -352,8 +352,12 @@ lemma continuous_unitriangularMatrix :
 
 /-- The Gram matrix `New.Shape.J₁` is a hermitian involution. -/
 instance isHermitianInvolution_J₁ : IsHermitianInvolution 𝔰.J₁ where
-  isHermitian := ext <| by simp [eq_comm, splitGram, middleGram, Matrix.one_apply]
-  mul_self := ext <| by simp [eq_comm, splitGram, middleGram, Matrix.mul_apply, Matrix.one_apply]
+  isHermitian := by
+    ext (a | (k | ⟨⟩) | a) (b | (l | ⟨⟩) | b) <;>
+      simp [splitGram, middleGram, Matrix.one_apply, eq_comm]
+  mul_self := by
+    ext (a | (k | ⟨⟩) | a) (b | (l | ⟨⟩) | b) <;>
+      simp [splitGram, middleGram, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_sum_type]
 
 /-- The Gram matrix `New.Shape.J₁` is hermitian and invertible. -/
 instance : Floors.IsHermitianUnit 𝔰.J₁ where
@@ -430,7 +434,8 @@ and `z` has square `-1`. -/
 theorem J₁_eq :
     𝔰.J₁ = 𝔰.isotropicCols * 𝔰.dualColsᴴ + 𝔰.dualCols * 𝔰.isotropicColsᴴ +
         𝔰.definiteCols * 𝔰.definiteColsᴴ - 𝔰.zCol * 𝔰.zColᴴ := by
-  aesop (add simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply])
+  ext (a | (k | ⟨⟩) | a) (b | (l | ⟨⟩) | b) <;>
+    simp [splitGram, middleGram, inclMatrix, Matrix.mul_apply, Matrix.one_apply]
 
 /-! ### The explicit elements -/
 
@@ -491,6 +496,18 @@ theorem coe_embedH (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
     (embedH h).val.val = actOnCols 𝔰.definiteCols h.val.val := by
   simp [actOnCols, val_toBesselH_apply_coe, inclMatrix, ← ext_iff, Matrix.one_apply,
     Matrix.mul_apply]
+
+/-- The columns of `definiteCols`, the basis vectors `x_i` of `X₀`, are orthonormal for the standard
+hermitian form. -/
+theorem conjTranspose_definiteCols_mul_self : 𝔰.definiteColsᴴ * 𝔰.definiteCols = 1 :=
+  inclMatrix_gram_eq_one (by simp)
+
+/-- For `h` in the unitary group `H` of `X₀`, the element `embedH h` of `G₁` acts on the basis
+vectors `x_i` of `X₀` by the matrix `h`. -/
+theorem embedH_mul_definiteCols (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
+    (embedH h).val.val * 𝔰.definiteCols = 𝔰.definiteCols * h.val.val := by
+  simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
+    conjTranspose_definiteCols_mul_self]
 
 /-- Each explicit isometry `unipotentOf q` lies in 𝖴⁰ = `besselU0`: it is block upper unitriangular
 for the levels `New.BesselIndex.level` and fixes the frame e_0, …, e_{ϱ-1}, z. -/
@@ -568,19 +585,44 @@ theorem exists_mul_unipotentOf_dualCols_eq {s : 𝔰.G₁} {B : Matrix 𝔰.Bess
   let q : 𝔰.UnipotentParams := (-Cᴴ * 𝔰.definiteCols, skewCoords (skewAdjointPart ℝ C.toRows₁))
   suffices h_cols : (unipotentOf q).val.val * 𝔰.dualCols = C from
     ⟨q, by simp [-val_unipotentOf_coe, Matrix.mul_assoc, h_cols]⟩
-  -- As duality fixes the rows at `e*_a` and `z`, isotropy says that the hermitian part of the rows
-  -- at the `e_a` is `-q.1 * q.1ᴴ / 2`.
+  -- Duality fixes the rows of `C` at `e*_a` and `z`.
+  have h_dual_eStar (a b : Fin 𝔰.ϱ) : C (eStar a) b = if a = b then 1 else 0 := by
+    simpa [J₁_eq, inclMatrix, Matrix.mul_sub, Matrix.mul_add, Matrix.sub_mul, Matrix.add_mul,
+      Matrix.mul_assoc, Matrix.mul_apply, Matrix.one_apply] using congr_fun₂ h_dual a.castSucc b
+  have h_dual_z (b : Fin 𝔰.ϱ) : C 𝔰.z b = 0 := by
+    simpa [J₁_eq, inclMatrix, Matrix.mul_sub, Matrix.mul_add, Matrix.sub_mul, Matrix.add_mul,
+      Matrix.mul_assoc, Matrix.mul_apply, Matrix.one_apply, Fin.ne_of_gt (Fin.castSucc_lt_last b)]
+      using congr_fun₂ h_dual (Fin.last 𝔰.ϱ) b
+  -- Isotropy then says that the hermitian part of the rows at `e_a` is `-q.1 * q.1ᴴ / 2`.
   have h_block (a b : Fin 𝔰.ϱ) : star (C (Sum.inl b) a) + C (Sum.inl a) b +
       ∑ k : 𝔰.κ, star (C (𝔰.indexX₀ k) a) * C (𝔰.indexX₀ k) b = 0 := by
-    simp_all [inclMatrix, J₁_eq, Matrix.mul_sub, Matrix.mul_add, Matrix.sub_mul, Matrix.add_mul,
-      Matrix.mul_assoc, ← ext_iff, Matrix.mul_apply, Matrix.one_apply, forall_fin_succ', ne_of_gt]
+    have h := congr_fun₂ h_isotropic a b
+    simp [J₁_eq, inclMatrix, Matrix.mul_sub, Matrix.mul_add, Matrix.mul_apply, Matrix.one_apply,
+      h_dual_eStar, h_dual_z] at h ⊢
+    linear_combination h
   have h_top (a b : Fin 𝔰.ϱ) : 2⁻¹ * (C (Sum.inl a) b - star (C (Sum.inl b) a)) -
       2⁻¹ * ∑ k : 𝔰.κ, star (C (𝔰.indexX₀ k) a) * C (𝔰.indexX₀ k) b = C (Sum.inl a) b := by
     linear_combination (-2⁻¹ : ℂ) * h_block a b
-  -- Duality fixes the rows at `e*_a` and `z`; `h_top` is the remaining block, at the `e_a`.
-  simp_all [q, -map_sub, inclMatrix, J₁_eq, Matrix.mul_sub, Matrix.mul_add, Matrix.sub_mul,
-    Matrix.add_mul, Matrix.mul_assoc, ← ext_iff, Matrix.mul_apply, Matrix.one_apply,
-    forall_fin_succ', Fin.ne_of_gt, sub_eq_zero]
+  -- Simplify `(unipotentOf q).val.val * 𝔰.dualCols` using column orthogonality, then match entries.
+  have h_skew : skewOfReal q.2 = (skewAdjointPart ℝ C.toRows₁ : Matrix _ _ ℂ) :=
+    skewOfReal_skewCoords (by
+      simpa [star_eq_conjTranspose] using skewAdjoint.mem_iff.mp (skewAdjointPart ℝ C.toRows₁).2)
+  have h_mul : (unipotentOf q).val.val * 𝔰.dualCols =
+      𝔰.dualCols - 𝔰.definiteCols * q.1ᴴ +
+        𝔰.isotropicCols * ((skewAdjointPart ℝ C.toRows₁ : Matrix _ _ ℂ) -
+          (2⁻¹ : ℂ) • (q.1 * q.1ᴴ)) := by
+    rw [← h_skew]
+    simp [val_unipotentOf_coe, Matrix.add_mul, Matrix.sub_mul, Matrix.mul_assoc,
+      inclMatrix_gram_eq_zero, inclMatrix_gram_eq_one]
+  rw [h_mul]
+  ext (a | (k | ⟨⟩) | a) b
+  · have h := h_top a b
+    simp [q, inclMatrix, Matrix.mul_apply, Matrix.one_apply, skewAdjointPart_apply_coe,
+      toRows₁, mul_sub, mul_comm] at h ⊢
+    linear_combination h
+  · simp [q, inclMatrix, Matrix.mul_apply, Matrix.one_apply]
+  · simp [inclMatrix, Matrix.mul_apply, h_dual_z]
+  · simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply, h_dual_eStar]
 
 /-- If `s` in `G₁` fixes the frame e_0, …, e_{ϱ-1}, z (the columns of `frameCols`), then
 `s * unipotentOf q = embedH h` for some `q` and some `h` in U(κ): after a correction by an element

@@ -190,6 +190,11 @@ lemma star_smul_idealLattice_le (hδ : (δ : 𝔸f E) ∈ Ô E) :
   rintro - ⟨γ, hγ, rfl⟩
   exact smul_mem_idealLattice (by simpa using star_mem_Ô hδ) hγ
 
+/-- For a nonzero integral `δ` the lattice `𝔞₀ⁿ` lies in `δ⁻¹ 𝔞₀ⁿ`. -/
+lemma idealLattice_le_inv_smul (hδ : (δ : 𝔸f E) ∈ Ô E) (hδ_ne : δ ≠ 0) :
+    idealLattice E n ≤ δ⁻¹ • idealLattice E n :=
+  fun _ hγ ↦ (mem_inv_smul_idealLattice hδ_ne).2 (smul_mem_idealLattice hδ hγ)
+
 /-- For `δ δ̄ = N` and `δ ≠ 0`, the index of `δ̄ 𝔞₀ⁿ` in `δ⁻¹ 𝔞₀ⁿ` is that of `N 𝔞₀ⁿ` in `𝔞₀ⁿ`,
 where `𝔞₀ⁿ = idealLattice E n`: multiplication by `δ` carries one pair to the other. -/
 lemma relIndex_star_smul_inv_smul (hδ_ne : δ ≠ 0) (hN : δ * star δ = N) :
@@ -233,8 +238,7 @@ lemma relIndex_mul_relIndex_idealLattice (hδ : (δ : 𝔸f E) ∈ Ô E) (hN_ne 
         N ^ (2 * Fintype.card (InfinitePlace E × n)) := by
   have hδ_ne : δ ≠ 0 := ne_zero_of_mul_star_eq hN_ne hN
   rw [AddSubgroup.relIndex_mul_relIndex _ _ _ (star_smul_idealLattice_le hδ)
-    (fun _ hγ ↦ (mem_inv_smul_idealLattice hδ_ne).2 (smul_mem_idealLattice hδ hγ)),
-    relIndex_star_smul_inv_smul hδ_ne hN,
+    (idealLattice_le_inv_smul hδ hδ_ne), relIndex_star_smul_inv_smul hδ_ne hN,
     relIndex_map_nsmul_idealLattice]
 
 /-- For `δ` integral with `δ δ̄ = N ≠ 0`, the group `δ⁻¹ 𝔞₀ⁿ⧸𝔞₀ⁿ`, where `𝔞₀ⁿ = idealLattice E n`,

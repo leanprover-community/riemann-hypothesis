@@ -303,6 +303,13 @@ lemma upIntegrand_add (f₁ : G E s₁ → ℂ) (f₂ : G E s₂ → ℂ) (x : M
   ext q
   simp [upIntegrand, pairTheta, modDatum, mul_add]
 
+/-- The function `upIntegrand` respects differences in its real datum, the Fock vector in
+`PairFock E (s₁ ⊕ᵥ s₂) s'`: its value at `v - w` is its value at `v` minus its value at `w`. -/
+lemma upIntegrand_sub (f₁ : G E s₁ → ℂ) (f₂ : G E s₂ → ℂ) (x : Matrix n' (n₁ ⊕ n₂) 𝔪.ResidueRing)
+    (v w : PairFock E (s₁ ⊕ᵥ s₂) s') : upIntegrand A U₁ U₂ ν₀ γ b f₁ f₂ x (v - w) =
+      upIntegrand A U₁ U₂ ν₀ γ b f₁ f₂ x v - upIntegrand A U₁ U₂ ν₀ γ b f₁ f₂ x w := by
+  rw [eq_sub_iff_add_eq, ← upIntegrand_add, sub_add_cancel]
+
 /-- Let `x` be onto modulo an ideal `𝔪` with at least one prime divisor (`𝔪 ≠ 1`), let `f₁`, `f₂`
 be automorphic functions of rapid decay for the hermitian spaces `U₁`, `U₂`, and let `ν₀`, `γ`, `b`
 be any characters of `[U(1)]`. At `((g₁, g₂), h)`, `upIntegrand` is `f₁ g₁ * f₂ g₂ * ν₀ (det g₂)`
@@ -362,9 +369,7 @@ lemma exists_norm_integral_upIntegrand_sub_le (h𝔪 : Nonempty 𝔪.places)
   refine ⟨N, D * μA.real .univ, fun v v' hv hv' hvv' ↦ ?_⟩
   rw [norm_sub_rev, ← integral_sub (h_bound v' hv').left (h_bound v hv).left, mul_right_comm]
   refine norm_integral_le_of_norm_le_const (.of_forall fun q ↦ ?_)
-  have h_sub := eq_sub_iff_add_eq.2
-    ((upIntegrand_add A U₁ U₂ ν₀ γ b f₁ f₂ x (v' - v) v).symm.trans (by rw [sub_add_cancel]))
-  simpa only [h_sub, Pi.sub_apply] using (h_bound (v' - v) hvv').right q
+  simpa only [upIntegrand_sub, Pi.sub_apply] using (h_bound (v' - v) hvv').right q
 
 /-- Let `y` be left invertible modulo `𝔪 ≠ 1`, let `f₁`, `f₂` be automorphic functions of rapid
 decay for `U₁`, `U₂`, and let `ν₀`, `γ`, `b` be any characters of `[U(1)]`. At `((g₁, g₂), h)`,

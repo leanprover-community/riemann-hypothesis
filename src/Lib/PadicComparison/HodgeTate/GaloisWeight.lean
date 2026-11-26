@@ -231,10 +231,25 @@ theorem hodgeTateMap_galois_twist
           (show Y.test.GenericRing from (f.snd m).1) = (f.snd (t • m)).1 := by
       rw [← ht, ← algebraMap_smul X.GenericRing, map_smulₛₗ, RingHom.coe_coe, AlgHom.commutes]
       rfl
-    -- first component: `mulMu` and `h_scal`; second component: `S` is natural
+    -- The map of thickenings induced by a map `u` of tests sends the class of `y` to the class of
+    -- the image of `y` under the map of Witt vectors of the tilts, with `p` inverted. This does
+    -- not involve the structure maps, so it is the same for `f` and for its twist.
+    have h_can {c d : PadicTest} (u : c ⟶ d) (y : Localization.Away (p : WittVector p c.TiltRing)) :
+        PadicTest.mapThickening u (Ideal.Quotient.mk _ y) =
+          Ideal.Quotient.mk (RingHom.ker d.thetaGeneric ^ 2)
+            (IsLocalization.map (Localization.Away (p : WittVector p d.TiltRing))
+              (WittVector.map (p := p) (tiltMap u.toRingHom : c.TiltRing →+* d.TiltRing))
+              (powers_le_comap_powers p _) y) :=
+      rfl
+    have h_map : ∀ b : X.test.Thickening, PadicTest.mapThickening f.1 b =
+        PadicTest.mapThickening ((PadicTest.twist g).map f.1) b :=
+      Ideal.Quotient.mk_surjective.forall.2 fun y ↦
+        (h_can f.1 y).trans (h_can ((PadicTest.twist g).map f.1) y).symm
+    -- first component: `h_map`, `mulMu` and `h_scal`; second component: `S` is natural
     ext z
     refine Subtype.ext (Prod.ext ?_ (ConcreteCategory.congr_hom (S.naturality f) _))
-    exact congrArg (_ + ·) ((thickeningOver.mulMu_twist g Y.test _).trans (congrArg _ (h_scal _)))
+    exact congrArg₂ (fun b c : Y.test.Thickening ↦ b + c) (h_map _)
+      ((thickeningOver.mulMu_twist g Y.test _).trans (congrArg _ (h_scal _)))
   -- Only the second component of `T` is used below.
   obtain ⟨T, hT⟩ : ∃ T : A ⟶ galTwist g ⋙ A,
       ∀ (X : HodgeTatePair) (x : A.obj X), (T X x).val.snd = S X x.val.snd :=

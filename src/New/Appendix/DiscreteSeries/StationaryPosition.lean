@@ -202,7 +202,8 @@ lemma alternatingSignForm_polyVec_erase_X_pow_mul (h : AreOppositeNodes μ μ')
       0 := by
   have h_degree : (nodal (univ.erase j) μ').natDegree = L' - 1 := by simp
   have hj := j.pos
-  rw [alternatingSignForm_monic h nodal_monic a (by rw [h_degree]; lia), h_degree, ite_eq_right (by lia)]
+  rw [alternatingSignForm_monic h nodal_monic a (by rw [h_degree]; lia), h_degree,
+    ite_eq_right (by lia)]
 
 /-- Let the `L` decreasing roots `μ i` of `p = nodal univ μ` lie below the `L'` increasing roots
 `μ' j` of `q = nodal univ μ'`, where `L = L' + 2 d + 1`, and let `q_j = q / (t - μ' j)`. Here

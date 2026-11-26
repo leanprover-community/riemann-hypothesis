@@ -140,6 +140,19 @@ lemma hasAmplitudeBlocks_smul_of_inner_eq {c : ℝ} (hc : 0 < c)
   push_cast
   field [ofReal_ne_zero.2 hc.ne']
 
+open scoped Classical in
+omit ok in
+private lemma hilbertSchmidtNorm_sq_of_entries
+    {L : Module.End ℂ (EuclideanSpace ℂ (S.Classes × S.BesselCoord))}
+    {A : S.Classes → S.ResidueGL → S.Classes → EuclideanSpace ℂ (S.BesselCoord × S.BesselCoord)}
+    {s : S.ResidueGL} (h : ∀ x y : S.Classes × S.BesselCoord,
+      ⟪L (.single y 1), .single x 1⟫_ℂ = A x.1 s y.1 (x.2, y.2) / S.unipotentCovolume) :
+    hilbertSchmidtNorm L ^ 2 = secondMoment (S := S) A {s} := by
+  rw [hilbertSchmidtNorm_sq_eq_sum_entries (basisFun _ ℂ) (basisFun _ ℂ)]
+  simp only [basisFun_apply, h]
+  simp [secondMoment, sum_filter, norm_sq_eq, sum_prod_type, sum_div, div_pow,
+    sum_comm (α := S.Classes) (γ := S.BesselCoord)]
+
 omit ok in
 /-- Let `S` be filling data (`Filling`) for a unitary group `G` over the CM field `E`, and let
 `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue fields at the chosen
@@ -157,15 +170,9 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_sq_eq_secondMoment (hP : S.HasAmplit
     (s : S.ResidueGL) :
     hilbertSchmidtNorm (P.adjoint ∘ₗ ρ s ∘ₗ P) ^ 2 =
       secondMoment (S.amplitudeSum .full .univ) {s} := by
-  classical
-  have h_entry (x y : S.Classes × S.BesselCoord) :
-      ⟪(P.adjoint ∘ₗ ρ s ∘ₗ P) (.single y 1), .single x 1⟫_ℂ =
-        S.amplitudeSum .full .univ x.1 s y.1 (x.2, y.2) / S.unipotentCovolume := by
-    simpa [LinearMap.adjoint_inner_left] using hP s x y
-  rw [hilbertSchmidtNorm_sq_eq_sum_entries (basisFun _ ℂ) (basisFun _ ℂ)]
-  simp only [basisFun_apply, h_entry]
-  simp [secondMoment, sum_filter, norm_sq_eq, sum_prod_type, sum_div, div_pow,
-    sum_comm (α := S.Classes) (γ := S.BesselCoord)]
+  apply hilbertSchmidtNorm_sq_of_entries
+  intro x y
+  simpa [LinearMap.adjoint_inner_left] using hP s x y
 
 open scoped Classical in
 variable (S) in
@@ -426,24 +433,12 @@ lemma HasAmplitudeBlocks.hilbertSchmidtNorm_sub_besselTranslate_sq [HasPrimitive
     hilbertSchmidtNorm (P.adjoint ∘ₗ ρ s ∘ₗ P - S.besselTranslate s) ^ 2 =
       secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) {s} := by
   classical
-  have h_entry (x y : S.Classes × S.BesselCoord) :
-      ⟪(P.adjoint ∘ₗ ρ s ∘ₗ P - S.besselTranslate s) (.single y 1), .single x 1⟫_ℂ =
-        S.amplitudeSum .full (S.ratMiddle E).besselSᶜ x.1 s y.1 (x.2, y.2) /
-          S.unipotentCovolume := by
-    rw [LinearMap.sub_apply, inner_sub_left, LinearMap.comp_apply, LinearMap.adjoint_inner_left,
-      LinearMap.comp_apply, hP s x y, amplitudeSum_eq_inter_compl_add_inter Set.univ
-        (S.ratMiddle E).besselS]
-    simp [besselTranslate, inner_single_right, add_div, Set.univ_inter]
-  calc hilbertSchmidtNorm (P.adjoint ∘ₗ ρ s ∘ₗ P - S.besselTranslate s) ^ 2
-    _ = ∑ x : S.Classes × S.BesselCoord, ∑ y : S.Classes × S.BesselCoord,
-        ‖S.amplitudeSum .full (S.ratMiddle E).besselSᶜ x.1 s y.1 (x.2, y.2) / S.unipotentCovolume‖ ^
-          2 :=
-      by
-        simp only [hilbertSchmidtNorm_sq_eq_sum_entries (basisFun _ ℂ) (basisFun _ ℂ),
-          basisFun_apply, h_entry]
-    _ = secondMoment (S.amplitudeSum .full (S.ratMiddle E).besselSᶜ) {s} := by
-      simp [secondMoment, sum_filter, norm_sq_eq, sum_prod_type, sum_div, div_pow,
-        sum_comm (α := S.Classes) (γ := S.BesselCoord)]
+  apply hilbertSchmidtNorm_sq_of_entries
+  intro x y
+  rw [LinearMap.sub_apply, inner_sub_left, LinearMap.comp_apply, LinearMap.adjoint_inner_left,
+    LinearMap.comp_apply, hP s x y, amplitudeSum_eq_inter_compl_add_inter Set.univ
+      (S.ratMiddle E).besselS]
+  simp [besselTranslate, inner_single_right, add_div, Set.univ_inter]
 
 open scoped Classical in
 /-- **Second moment near the Bessel subgroup.** Let `S` be admissible filling data for a unitary
