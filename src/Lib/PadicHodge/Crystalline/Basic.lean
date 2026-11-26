@@ -632,9 +632,17 @@ each coordinate. It then multiplies by the matrix `New.Period.repMatrix ρ e g`,
 noncomputable def coordAction : Representation ℤ_[p] Γ (ι → B) where
   toFun g := ((repMatrix ρ e g).map (algebraMap ℤ_[p] B)).mulVecLin ∘ₗ
     actionRep ℤ_[p] (ι → B) toGp g
-  map_one' := by aesop
+  map_one' := by
+    simp only [map_one, map_zero, Matrix.map_one, mulVecLin_one, restrictScalars_id, id_comp]
   -- `Gp p` fixes the entries of `repMatrix ρ e g`, which come from `ℤ_[p]`
-  map_mul' := by simp [LinearMap.ext_iff, mul_smul, mulVec_eq_sum, Finset.smul_sum]
+  map_mul' := by
+    simp only [map_mul, Matrix.map_mul, mulVecLin_mul, restrictScalars_comp, MonoidHom.coe_comp,
+      Function.comp_apply, DistribMulAction.toModuleEnd_apply, LinearMap.ext_iff, coe_comp,
+      coe_restrictScalars, DistribSMul.toLinearMap_apply, mul_smul, mulVecBilin_apply,
+      mulVec_eq_sum, Pi.smul_apply, MulOpposite.op_smul, map_sum, map_smul_of_tower,
+      transpose_apply, map_apply, op_smul_eq_smul, algebraMap_smul, Finset.smul_sum,
+      MulOpposite.smul_eq_mul_unop, MulOpposite.unop_smul, MulOpposite.unop_op, smul_mul',
+      smul_algebraMap, mul_apply_eq_comp, MulOpposite.op_mul, implies_true]
 
 /-- For a `ℤ_[p]`-algebra `B` with an action of `Gp p` and a finite `ℤ_[p]`-basis `e` of `T`, the
 map `b ⊗ x ↦ j(g) b ⊗ ρ(g) x` on `B ⊗ T` becomes, in the coordinates given by `e`, the action
