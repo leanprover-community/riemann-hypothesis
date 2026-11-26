@@ -815,13 +815,9 @@ theorem isKilledBy (h : IsTraceLimit r A F a ρ) [L : PadicPlaceEmbedding E A �
             (linearFrob (decompRep (ρ θ x).rep A) ⟨s, hs⟩ k) (1 ⊗ₜ v) = 0 := by
           rw [h_Q_zero, LinearMap.zero_apply, smul_zero]
         refine periodTensorMap_injective ((hM θ x (hQ θ x) v).trans ?_)
-        rw [map_zero]
-        exact h_Q
-      -- `M θ x = 0`, so the value read off it is `0`
-      have h_read_x := h_read θ x (Q θ x) v f
-      rw [hMx, map_zero] at h_read_x
-      rw [zero_mulVec]
-      exact h_read_x.symm
+        simpa only [map_zero] using! h_Q
+      -- `M θ x = 0`, so the value read off it is `0`.
+      simpa only [hMx, map_zero, zero_mulVec] using! (h_read θ x (Q θ x) v f).symm
     · -- For r the element M does not depend on θ.
       have h_indep : M θ none P v = M t₀ none P v :=
         periodTensorMap_injective ((hM θ none hP v).trans (hM t₀ none hP v).symm)
