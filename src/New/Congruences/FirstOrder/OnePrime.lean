@@ -97,13 +97,13 @@ variable {Γ R : Type*} [Group Γ] [Fintype Γ] [Ring R] (ρ : Γ →* R) {Ψ : 
 
 /-- The norm `∑ ρ h` is fixed by left multiplication with `ρ g`. -/
 lemma mul_sum_monoidHom (g : Γ) : ρ g * ∑ h : Γ, ρ h = ∑ h : Γ, ρ h := by
-  simp only [mul_sum, ← map_mul]
-  exact Equiv.sum_comp (.mulLeft g) ρ
+  simpa only [mul_sum, ← map_mul, Equiv.coe_mulLeft] using
+    Equiv.sum_comp (.mulLeft g) ρ
 
 /-- The norm `∑ ρ h` is fixed by right multiplication with `ρ g`. -/
 lemma sum_monoidHom_mul (g : Γ) : (∑ h : Γ, ρ h) * ρ g = ∑ h : Γ, ρ h := by
-  simp only [sum_mul, ← map_mul]
-  exact Equiv.sum_comp (.mulRight g) ρ
+  simpa only [sum_mul, ← map_mul, Equiv.coe_mulRight] using
+    Equiv.sum_comp (.mulRight g) ρ
 
 /-- If `∑ g⁻¹ Ψ g = n` and `g A = A` for all `g`, then `n A = Nm Ψ A`, where `g` stands for `ρ g`
 and `Nm = ∑ g`. -/
@@ -654,8 +654,8 @@ lemma mul_weightedSum (c : Γ →* Multiplicative (ZMod m)) (f : ZMod m → ℤ)
   have shift (h : Γ) :
       ρ g * f (c h).toAdd • ρ h = f ((c (g * h)).toAdd - (c g).toAdd) • ρ (g * h) := by
     rw [map_mul c, map_mul ρ, toAdd_mul, add_sub_cancel_left, mul_smul_comm]
-  rw [weightedSum_apply, weightedSum_apply, mul_sum]
-  exact Fintype.sum_equiv (.mulLeft g) _ _ shift
+  simpa only [weightedSum_apply, mul_sum] using
+    Fintype.sum_equiv (.mulLeft g) _ _ shift
 
 /-- Right multiplication by `ρ g` shifts the weight of the weighted norm `∑ f (c h) ρ h` by
 `c g`. -/
@@ -664,8 +664,8 @@ lemma weightedSum_mul (c : Γ →* Multiplicative (ZMod m)) (f : ZMod m → ℤ)
   have shift (h : Γ) :
       f (c h).toAdd • ρ h * ρ g = f ((c (h * g)).toAdd - (c g).toAdd) • ρ (h * g) := by
     rw [map_mul c, map_mul ρ, toAdd_mul, add_sub_cancel_right, smul_mul_assoc]
-  rw [weightedSum_apply, weightedSum_apply, sum_mul]
-  exact Fintype.sum_equiv (.mulRight g) _ _ shift
+  simpa only [weightedSum_apply, sum_mul] using
+    Fintype.sum_equiv (.mulRight g) _ _ shift
 
 open scoped Classical in
 /-- The sum `∑ ρ h` over the fixed representatives `h` of `Γ / H`, namely the elements `η.out` that
