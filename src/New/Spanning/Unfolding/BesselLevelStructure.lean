@@ -96,7 +96,11 @@ lemma _root_.Membership.mem.map_mem_agreeWithOneOn (f : R →+* R')
     {hr : ∀ i k j : 𝔰.BesselIndex, r i j → r i k ∨ r k j} {H : Subgroup (GL 𝔰.BesselIndex R)}
     {γ : H} (hγ : γ ∈ (agreeWithOneOn r R hr).subgroupOf H) :
     GeneralLinearGroup.map f γ.val ∈ agreeWithOneOn r R' hr := by
-  aesop (add simp [Subgroup.mem_subgroupOf, Matrix.one_apply])
+  refine mem_agreeWithOneOn.mpr fun i j hij ↦ ?_
+  have h_entry : γ.val.val i j = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) i j :=
+    mem_agreeWithOneOn.mp hγ.out i j hij
+  rw [GeneralLinearGroup.map_apply, h_entry]
+  exact congrFun (congrFun (Matrix.map_one f (map_zero f) (map_one f)) i) j
 
 variable (S) in
 lemma isUnit_natCast_N : IsUnit (S.N : E) := (Nat.cast_ne_zero.2 S.N_prime.ne_zero).isUnit
