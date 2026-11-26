@@ -144,12 +144,6 @@ lemma primeSum_eq_sum_localPrimeSum {U : ℕ} (hU : ⌈D.x₁⌉₊ ≤ U) {y : 
     _ = ∑ p ∈ range U with p.Prime, 2 * D.localPrimeSum p y σ * Real.log p :=
       sum_congr rfl fun p hp ↦ (h_prime p (mem_filter.1 hp).2).symm
 
-/-- The number `D.localPrimeSumTotal p`, the sum over the infinite places `τ` of the local terms
-`D.localPrimeSum p (D.weight τ) τ`, is nonnegative. -/
-lemma localPrimeSumTotal_nonneg (p : ℕ) : 0 ≤ D.localPrimeSumTotal p := by
-  refine sum_nonneg fun σ _ ↦ mul_nonneg (piPrimeValuation_pos P.d p).le (tsum_nonneg fun e ↦ ?_)
-  positivity
-
 /-- The admissible data `D` give an integer `a` and a weight `κ = D.weight` on the group `D.Φ` of
 infinite places of the field `D.E`, identified with `(ℤ/q₁)ˣ`. Let `χ_K` be the Legendre symbol
 modulo the prime `d = P.d`, and for a place `τ` put `g_τ(ν) = (1 - χ_K(ν)) (κ(τ) / ν - κ(-ν τ))₊`.
@@ -168,7 +162,8 @@ lemma sum_localPrimeSumTotal_mul_log_le (T : Finset ℕ) (hT : ∀ p ∈ T, p.Pr
   calc ∑ p ∈ T, 2 • (D.localPrimeSumTotal p * Real.log p)
       ≤ ∑ p ∈ range U with p.Prime, 2 • (D.localPrimeSumTotal p * Real.log p) :=
         sum_le_sum_of_subset_of_nonneg h_subset fun p _ _ ↦
-          nsmul_nonneg (mul_nonneg (D.localPrimeSumTotal_nonneg p) (Real.log_natCast_nonneg p)) 2
+          nsmul_nonneg (mul_nonneg (sum_nonneg fun σ _ ↦ mul_nonneg (piPrimeValuation_pos P.d p).le
+            (tsum_nonneg fun _ ↦ by positivity)) (Real.log_natCast_nonneg p)) 2
     _ = ∑ τ : D.Φ, D.primeSum (D.weight τ) τ := by
         simp only [h_prime_sum, localPrimeSumTotal, sum_mul, smul_sum, nsmul_eq_mul, Nat.cast_ofNat,
           mul_assoc]
