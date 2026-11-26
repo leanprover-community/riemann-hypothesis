@@ -180,7 +180,7 @@ class Sweep(unittest.TestCase):
         gh = Fake([node(1, draft=True), node(2, ref="batch/citations"),
                    node(3, labels=["batch queue"]), node(4, labels=["building"]),
                    node(5, labels=["awaiting-author"]), node(6, state="CLOSED"),
-                   node(7, labels=["batch-building"])])
+                   node(7, labels=["batch-building"]), node(8, labels=["approved"])])
         sweep(gh)
         self.assertEqual(gh.writes, [])
 
@@ -253,9 +253,12 @@ class Sweep(unittest.TestCase):
 
     def test_drafts_batches_and_decided_pull_requests_come_out(self):
         gh = Fake([waiting(1, draft=True), waiting(2, ref="batch/x"),
-                   waiting(3, labels=["batch queue"]), waiting(4, labels=["batch-building"])])
-        sweep(gh)
-        self.assertEqual(gh.writes, [("remove", 1), ("remove", 2), ("remove", 3), ("remove", 4)])
+                   waiting(3, labels=["batch queue"]), waiting(4, labels=["batch-building"]),
+                   waiting(5, labels=["approved"])])
+        log = sweep(gh)
+        self.assertEqual(gh.writes, [("remove", 1), ("remove", 2), ("remove", 3), ("remove", 4),
+                                     ("remove", 5)])
+        self.assertIn("#5: taken out of the inbox, because it is labelled `approved`", log)
 
     def test_a_comment_takes_it_out(self):
         gh = Fake([waiting(1, comments=[("maint", 2)])], roles=MAINT)
@@ -400,6 +403,26 @@ class Sweep(unittest.TestCase):
             {"__typename": "LabeledEvent", "createdAt": at(12), "label": {"name": "awaiting-author"},
              "actor": user("maint")})
         gh = Fake([handed], roles=MAINT)
+        sweep(gh)
+        self.assertEqual(gh.writes, [])
+
+    def test_approving_a_pull_request_handed_back_keeps_it_out(self):
+        # `approve` puts `approved` on and takes `awaiting-author` off with the review commands
+        # workflow's token, after the comment: the pull request enters review, but stays out.
+        handed = self.handed_back(BOT)
+        handed["labels"]["nodes"].append({"name": "approved"})
+        handed["timelineItems"]["nodes"].insert(
+            -1, {"__typename": "LabeledEvent", "createdAt": at(10), "label": {"name": "approved"},
+                 "actor": BOT})
+        gh = Fake([handed], roles=MAINT)
+        log = inbox.sync(gh, 1)
+        self.assertEqual(log, ["#1: left as it was, because it is labelled `approved`"])
+        self.assertEqual(gh.writes, [])
+
+    def test_an_approved_draft_marked_ready_stays_out(self):
+        events = [("on", INBOX, 1, BOT), ("on", "approved", 2, "maint"), ("off", INBOX, 3, BOT),
+                  ("ready", 4)]
+        gh = Fake([node(1, labels=["approved"], events=events)], roles=MAINT)
         sweep(gh)
         self.assertEqual(gh.writes, [])
 
