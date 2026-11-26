@@ -375,8 +375,8 @@ theorem exists_tsum_enorm_cutBessel_le :
   have h_zero (δ : S.G E) (hδ : ¬InLevel δ) : X.cutBessel a (X.ratEquiv δ * g) = 0 :=
     (X.cutBessel_ratEquiv_mul a g δ).trans (ite_eq_right hδ)
   rw [← X.ratEquiv.tsum_eq]
-  obtain h_none | ⟨δ, hδ⟩ : (∀ δ, ¬InLevel δ) ∨ ∃ δ, InLevel δ := by grind
-  · simp [h_zero _ (h_none _)]
+  obtain h_none | ⟨δ, hδ⟩ := (em (∃ δ, InLevel δ)).symm
+  · simp [h_zero _ (not_exists.mp h_none _)]
   -- If `γ⁻¹ * δ` satisfies the condition too, then `γ` lies in `T`.
   have h_over (γ : S.G E) (hγ : InLevel (γ⁻¹ * δ)) : γ ∈ T := by
     simpa [T, principalLevel, termsOver, translateByClassReps, mul_assoc] using mul_mem hδ
