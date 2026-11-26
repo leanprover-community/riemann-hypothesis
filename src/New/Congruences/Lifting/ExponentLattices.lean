@@ -903,10 +903,6 @@ abbrev improvedOrders (lo hi : ℕ → ℤ → ℤ) (a : ℕ) (u : ℤ) : ℤ :=
 lemma improvedOrders_le {lo hi : ℕ → ℤ → ℤ} {u : ℤ} : improvedOrders lo hi a u ≤ hi a u :=
   min_le_left _ _
 
-lemma min_pos_of_improvedOrders_pos {lo hi : ℕ → ℤ → ℤ} {u : ℤ}
-    (h_pos : 0 < improvedOrders lo hi a u) : 0 < min (lo a u) (hi a u) := by
-  grind
-
 /-- If `y` in `B_dR` is fixed modulo `hodgeFil n` by the Galois group `k.galMonoid` of the chart,
 then `y` is congruent modulo `hodgeFil n` to a constant in the fixed field of `Γ'`. -/
 lemma exists_const_sub_mem_hodgeFil_of_smul_sub_mem {y : BdR}
@@ -980,7 +976,7 @@ lemma mem_withOrders_improvedOrders {i : Letter} {x : L.Ambient} {lo hi : ℕ �
       (hodgeFil_anti (min_le_right _ _) h_close)
   have h_const : (y : BdR) ∈ hodgeFil (improvedOrders lo hi a u) :=
     coe_mem_hodgeFil_iff.2 fun h_pos ↦
-      coe_mem_hodgeFil_iff.1 h_min (min_pos_of_improvedOrders_pos h_pos)
+      coe_mem_hodgeFil_iff.1 h_min (by grind)
   exact (sub_mem_iff_left _ h_const).1 (hodgeFil_anti improvedOrders_le h_close)
 
 /-- If `t` in `k.galMonoid` (an element of `Γ'`) acts trivially on the ring `S` of the chart modulo
