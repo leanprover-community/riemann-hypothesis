@@ -1,11 +1,11 @@
 # References
 
-Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
+Only some of the citations were compared with their sources. The table lists the 229 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
-- compared, place confirmed: 66
+- compared, place confirmed: 68
 - not compared, no place given: 8
 - place confirmed at second hand: 35
-- work found, no place given: 119
+- work found, no place given: 118
 
 The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
 
@@ -34,7 +34,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Bannai–Kobayashi–Yasuda, The radius of convergence of the p-adic sigma function | work found, no place given | `New/Derivatives/FormalGroup/Exponent` |
 | Beauville, Theta functions, old and new | compared, place confirmed | `Lib/Weil/Construction/ThetaDictionary` |
 | Behrend, PNAS 32, 1946 | work found, no place given | `New/Reduction/Data/Existence` |
-| Benson–Doty, Schur–Weyl duality over finite fields, 2009 | work found, no place given | `New/UpperBound/ElementaryDivisors/AveragingMap`, `New/UpperBound/ElementaryDivisors/InvariantAverage` |
+| Benson–Doty, Schur–Weyl duality over finite fields, 2009, [Theorem 4.3](https://arxiv.org/pdf/0805.1235v2#page=9) | compared, place confirmed | `New/UpperBound/ElementaryDivisors/AveragingMap`, `New/UpperBound/ElementaryDivisors/InvariantAverage` |
 | Bernstein, P-invariant distributions on GL(N), LNM 1041 (1984) | work found, no place given | `Lib/LocalGL/SphericalChainLemma` |
 | Bhatt, Scholze, Prismatic F-crystals and crystalline Galois representations (2023) | compared, place confirmed | `Lib/PadicHodge/RadiusLemma` |
 | Birch, Weber's class invariants | work found, no place given | `Lib/CM/Integrality/TorsionValues` |
@@ -57,6 +57,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Carter, Finite groups of Lie type (1985) | work found, no place given | `Lib/LocalGL/Green/CuspidalFunctions` |
 | Coates–Sinnott, An analogue of Stickelberger's theorem for the higher K-groups, Invent. Math. 24 (1974) | place confirmed at second hand | `Lib/Cyclotomic/Kolyvagin/ReciprocityComponentBounds` |
 | Crapo, complementation theorem (1966) | not compared, no place given | `Lib/LocalGL/Green/CuspidalFunctions` |
+| Cruz, Schur–Weyl duality over commutative rings, 2019, [Theorem 3.6](https://arxiv.org/pdf/2009.10166#page=6) | compared, place confirmed | `New/UpperBound/ElementaryDivisors/AveragingMap`, `New/UpperBound/ElementaryDivisors/InvariantAverage` |
 | D. Blasius, J. Rogawski, Motives for Hilbert modular forms | work found, no place given | `Lib/GaloisRep/Main/ThetaLift` |
 | D. Cox, Primes of the form x²+ny² (1989) | place confirmed at second hand | `Lib/CM/ChowlaSelberg` |
 | D. R. Heath-Brown, A mean value estimate for real character sums, Acta Arith. 72 (1995) | work found, no place given | `Lib/Analytic/QuadraticTwist` |

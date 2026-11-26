@@ -58,10 +58,17 @@ The average serves the map `Av` of `New.UpperBound.ElementaryDivisors.AveragingM
 
 ## Relation to the literature
 
-Known result: the Schur algebra, and that group elements span it in degrees below the size of the
-field. Here this is proved for Levi subgroups over local rings, in degrees `d` with `d + k` at most
-the size of the residue field. Source: Green, Polynomial representations of GL_n, 1980; Benson–Doty,
-Schur–Weyl duality over finite fields, 2009.
+For the Schur algebra see Green, *Polynomial representations of GL_n* (1980).
+For the full general linear group over a field with more than `d` elements, Benson–Doty,
+[*Schur–Weyl duality over finite fields*, Theorem 4.3](https://arxiv.org/pdf/0805.1235v2#page=9),
+show that the group action on the degree-`d` tensor power spans the Schur algebra.
+Cruz, [*Schur–Weyl duality over commutative rings*, Theorem 3.6](https://arxiv.org/pdf/2009.10166#page=6),
+proves this for the full group over a commutative ring containing `d + 1` elements with pairwise
+unit differences. Over a local ring these may be lifted from distinct residue classes.
+
+Here `eq_top_of_schurMap_eq_leviMonomialValues` treats a block Levi over the local ring `W`,
+with coefficients mapped to `O`. Its bound `d + k ≤ Nat.card (ResidueField W)` accounts for the
+degree `k` of the determinant of the generic block matrix in the polynomial evaluation argument.
 -/
 
 @[expose] public section
