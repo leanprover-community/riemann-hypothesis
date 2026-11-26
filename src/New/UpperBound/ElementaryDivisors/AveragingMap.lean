@@ -64,9 +64,9 @@ terms of large defect that keeps the pairing up to `p ^ (N c₀)` modulo `w ^ c`
 dual of polynomials in a generic matrix, its spanning by finite points in low degree, and truncation
 by weights are known in the literature. For spanning by the full general linear group see
 Benson–Doty, *Schur–Weyl duality over finite fields*, Theorem 4.3, and Cruz, *Schur–Weyl duality
-over commutative rings*, Theorem 3.6. Here `exists_isAverage` supplies the averages for the two-block
-Levi `twoBlock k r`. Related work: Green, *Polynomial representations of GL_n* (1980), and Donkin,
-*On Schur algebras and related algebras I* (1986).
+over commutative rings*, Theorem 3.6. Here `New.Average.exists_isAverage` supplies the averages for
+the two-block Levi `twoBlock k r`. Related work: Green, *Polynomial representations of GL_n* (1980),
+and Donkin, *On Schur algebras and related algebras I* (1986).
 -/
 
 @[expose] public section
