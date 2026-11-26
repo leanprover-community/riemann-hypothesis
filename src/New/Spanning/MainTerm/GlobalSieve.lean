@@ -854,10 +854,6 @@ end
 noncomputable def headProduct {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) (j : ℕ) : E :=
   ∏ a ∈ range j, (padTuple (fun l : Fin i ↦ (p l : Eˣ)) 1 a : Eˣ)
 
-omit [CMType E] [WeilData E] in
-lemma headProduct_ne_zero {A : Finset Eˣ} {i : ℕ} (p : Fin i → A) (j : ℕ) : headProduct p j ≠ 0 :=
-  prod_ne_zero_iff.2 fun _ _ ↦ Units.ne_zero _
-
 omit [WeilData E] [T.StarStable] in
 lemma headProduct_mem_ratIntegralOff {A : Finset Eˣ} (hA : ∀ t ∈ A, (t : E) ∈ ratIntegralOff T)
     {i : ℕ} (p : Fin i → A) (j : ℕ) : headProduct p j ∈ ratIntegralOff T := by
@@ -1006,7 +1002,7 @@ lemma globalWeight_scaledHead_le [S.IsAdmissible] {A : Finset Eˣ}
   let δ (j : Fin i) : E := headProduct p (j + 1)
   have h_factor (j : Fin i) : (∏ v, max 1 ‖c j v * Φ v (δ j)‖⁻¹) *
       √(genIndex (ratToPlaces T (δ j))) ≤ (S.b ^ (120 * 𝔰.n ^ 2)) ^ numInfPlaces E :=
-    prod_max_inv_norm_mul_sqrt_genIndex_le T (headProduct_ne_zero p _)
+    prod_max_inv_norm_mul_sqrt_genIndex_le T (prod_ne_zero_iff.2 fun _ _ ↦ Units.ne_zero _)
       (headProduct_mem_ratIntegralOff T hA p _)
       (fun v ↦ (S.inv_norm_prod_frameScaleSq_le v (j.isLt.trans_le hi)).trans
         (pow_le_pow_right₀ hb (by lia)))
