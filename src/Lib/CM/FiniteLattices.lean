@@ -50,7 +50,7 @@ lemma sumInvPow_four_of_mul_mem_iff {L L' : PeriodPair} {c y z : ℂ} (hc : c �
   -- Write both sums as sums over `ℂ`, centred at the base point, and substitute `x ↦ c x`.
   let term (M : PeriodPair) (w : ℂ) := (M.lattice : Set ℂ).indicator fun l ↦ ((l - w) ^ 4)⁻¹
   have h_sum (M : PeriodPair) (w : ℂ) : HasSum (fun x ↦ term M w (w + x)) (M.sumInvPow w 4) :=
-    (Equiv.addLeft w).hasSum_iff.2 <|
+    ((Equiv.addLeft w).hasSum_iff (f := term M w)).2 <|
       hasSum_subtype_iff_indicator.1 (M.hasSum_sumInvPow w (by norm_num))
   have h_term (x : ℂ) : term L' z (z + c * x) = term L y (y + x) / c ^ 4 := by
     have h_mem : z + c * x ∈ L'.lattice ↔ y + x ∈ L.lattice := by
