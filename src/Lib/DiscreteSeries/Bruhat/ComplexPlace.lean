@@ -205,18 +205,13 @@ lemma cellChart_top_of_one_le {c : ℂ} (hc : 1 ≤ ‖c‖) :
     cellChart 𝔰 𝔰.ϱ c = cellBoost 𝔰 c hc := by
   simp [cellChart, norm_pos_iff.1 (one_pos.trans_le hc), min_eq_left hc]
 
-/-- For 1 ≤ |c| the boost at c fixes the basis vectors of the floors below the top, that is, it
-lies in `floorGroup ϱ`. -/
-lemma cellBoost_mem_floorGroup {c : ℂ} (hc : 1 ≤ ‖c‖) : cellBoost 𝔰 c hc ∈ floorGroup 𝔰.ϱ := by
-  simp +contextual [cellBoost, mem_floorGroup, Matrix.one_apply]
-
 /-- The chart of floor l takes its values in the group of floor l, which fixes the basis vectors
 of the floors below l. -/
 lemma cellChart_mem_floorGroup {l : ℕ} {c : ℂ} : cellChart 𝔰 l c ∈ floorGroup l := by
   unfold cellChart
   split_ifs with h
   · obtain ⟨rfl, hc⟩ := h
-    exact cellBoost_mem_floorGroup (one_le_norm_div_min hc)
+    simp +contextual [cellBoost, mem_floorGroup, Matrix.one_apply]
   · exact floorWeyl_mem_floorGroup
 
 /-- The embedding of U(X₀) in G₁ takes its values in the group of the top floor, which fixes the
