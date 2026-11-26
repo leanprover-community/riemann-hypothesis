@@ -464,7 +464,7 @@ lemma isUnimodular_gradedLatticeBasis_gram
     (hN : f (N : S) = π * star (π : R)) :
     IsUnimodular O ((gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f *
       gradedLatticeBasis e a π u) := by
-  have := Fintype.ofFinite X
+  let := Fintype.ofFinite X
   -- The Gram matrix is `gluedGram N 0`, reindexed by `e`; it and its inverse `gluedGram 0 N` have
   -- entries in `O`.
   let B : Matrix ι ι R := gradedLatticeBasis e a π u
@@ -674,7 +674,7 @@ lemma exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix [Finite X] (e : (X �
     (φ : R →+* ℂ) (hN : 0 < N) {ε : ι → ℤˣ} (hε : negCount ε = (s + 1) / 2) :
     ∃ y : Matrix ι ι ℂ, yᴴ * (gradedGram e (N : R)).map φ * y = signMatrix ε ∧
       (N = 1 → yᴴ * y = 1) := by
-  have := Fintype.ofFinite X
+  let := Fintype.ofFinite X
   -- Up to a bijection `f` of the indices the signs are `1` on `X ⊕ Unit` and `stringSign s` on
   -- the string. The frame is the identity on `X ⊕ Unit` and `stringFrame s N` on the string.
   let σ : (X ⊕ Unit) ⊕ Fin s → ℤˣ := 1 ⊕ᵥ stringSign s
@@ -1085,7 +1085,7 @@ lemma New.Seesaw.isAdmissibleCombination_weil_vacElem {E n : Type} [Field E] [CM
   have h_index_ne : H.index ≠ 0 := fun h_zero ↦ by
     simp only [h_zero, Nat.cast_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
       pow_eq_zero_iff, norm_eq_zero, finMultiplier_ne_zero] at h_index
-  have : Fintype (L ⧸ H) := fintypeOfIndexNeZero h_index_ne
+  let : Fintype (L ⧸ H) := fintypeOfIndexNeZero h_index_ne
   -- `ζ z` is the root of unity in the product of the translations by `g x` and `g z`.
   let ζ (z : L ⧸ H) : ℂ :=
     stdLattice.selfDualAddChar E (star stdLattice.traceOneAdele * star (M *ᵥ z.out) ⬝ᵥ M *ᵥ x)
