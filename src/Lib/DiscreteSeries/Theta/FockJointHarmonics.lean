@@ -398,12 +398,6 @@ noncomputable def FockDualPair.matchingPoint (T : FockDualPair ε ε' ι) (l : H
     (l' : HCParam ε') (i : ι) : ℂ :=
   if T.IsMatchedPair l l' (T.varEquiv.symm i).1 (T.varEquiv.symm i).2 then 1 else 0
 
-/-- The coordinate `(r, c)` of the 0-1 matrix of the matching is nonzero exactly when row `r` is
-matched with column `c`. -/
-theorem FockDualPair.matchingPoint_ne_zero_iff (r : R) (c : C) :
-    T.matchingPoint l l' (T.varEquiv (r, c)) ≠ 0 ↔ T.IsMatchedPair l l' r c := by
-  rw [matchingPoint, Equiv.symm_apply_apply, ite_ne_right_iff, and_iff_left one_ne_zero]
-
 /-- The variable `i` is an eigendirection of `F` at the point `x` if `F` is an eigenvector of a
 linear vector field `∑ k ∈ S, X (a k) * ∂ (b k)` of which exactly one term, a multiple of `∂ i`,
 is nonzero at `x`. -/
@@ -523,7 +517,8 @@ theorem IsMatch.isEigenDirection_of_polarisation (hm : IsMatch T l l') {F : MvPo
     (h_eigen : T.polarisation F a r (T.varSign (r, c)) = μ • F) :
     IsEigenDirection F (T.matchingPoint l l') (T.varEquiv (r, c)) := by
   have only_c (d : C) : T.matchingPoint l l' (T.varEquiv (a, d)) ≠ 0 ↔ d = c := by
-    grind [matchingPoint_ne_zero_iff, hm.col_eq_of_isMatchedPair]
+    simp only [matchingPoint, Equiv.symm_apply_apply, ite_ne_right_iff, and_iff_left one_ne_zero]
+    grind [hm.col_eq_of_isMatchedPair]
   have field : ∑ d with T.varSign (r, d) = T.varSign (r, c),
       X (T.varEquiv (a, d)) * pderiv (T.varEquiv (r, d)) F = μ • F := h_eigen
   exact ⟨C, _, fun d ↦ T.varEquiv (a, d), fun d ↦ T.varEquiv (r, d), c, μ, by simp, rfl, only_c,
