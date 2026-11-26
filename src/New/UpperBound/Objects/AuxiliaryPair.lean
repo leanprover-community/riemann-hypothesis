@@ -868,11 +868,19 @@ lemma fockPoly_highestVector (O : DescentPair E r n) :
           rename (w, ·) (of fun i j : Fin p ↦ ∑ a : n, ∑ c : r,
             if pos a = i ∧ O.signs c = η ∧ O.numbering c = j.val then X (a, c) else 0).det ^ k w
               p := by
-    simp [letterPoly, weylKernel, highestPoly, permArray, Matrix.map, tableauPoly, minor,
-      AlgHom.map_det, rowSubst, ite_and, fockLetters, apply_ite, sum_filter]
+    simp only [letterPoly, fockLetters, sum_filter, ite_and, LinearMap.coe_comp,
+      AlgHom.coe_toLinearMap, Function.comp_apply, toPoly_weylEval, weylKernel, rowSubst, permArray,
+      of_apply, ite_smul, one_smul, zero_smul, highestPoly, tableauPoly, minor, prod_const,
+      card_univ, Fintype.card_fin, map_prod, map_pow, AlgHom.map_det, AlgHom.mapMatrix_apply,
+      Matrix.map, aeval_X, Fin.val_castLE, map_sum, apply_ite, map_zero, sum_ite_irrel,
+      sum_const_zero, rename_X]
   -- `MixedCartanEmbedding.top` sends the highest vector to a tensor of two evaluation vectors.
-  simp [productOfMinors, staircaseBlock, decreasingPosition_paramV, fockPoly, highestVector,
-    MixedCartanEmbedding.top, prod_mul_distrib, h_minors]
+  simp only [fockPoly, highestVector, decreasingPosition_paramV, LinearMap.coe_comp,
+    Function.comp_apply, mulVecBilin_apply, MixedCartanEmbedding.top, Fin.val_rev,
+    tensorPoly_vecMulVec, h_minors, productOfMinors, UnitsInt.univ, staircaseBlock, zsmul_eq_mul,
+    mem_singleton, units_ne_neg_self, not_false_eq_true, prod_insert, Units.val_one, Int.cast_one,
+    one_mul, ↓reduceIte, prod_singleton, Units.val_neg, Int.reduceNeg, Int.cast_neg, neg_mul,
+    neg_units_ne_self, map_mul, map_prod, map_pow, prod_mul_distrib]
 
 /-- If l fits O, consider the standard Fock dual pair on the variables n × r with signs 1 on the
 rows and `O.signs` on the columns and weights r₋ (the number of minus signs) and
