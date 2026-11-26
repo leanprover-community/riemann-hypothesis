@@ -579,7 +579,9 @@ theorem IsFillingData.unipotentOrder_mul_unipotentMass_eq_one [hF : S.IsFillingD
       ∑ l ∈ .range n, (2 * (𝔰.k + 1 + 2 * (n - (l + 1))) + 1) = n * (2 * 𝔰.k + 2 * n + 1) := by
     induction n with
     | zero => simp
-    | succ n ih => grind [Finset.sum_range_succ']
+    | succ n ih =>
+      simp only [Finset.sum_range_succ', Nat.add_sub_add_right, Nat.sub_zero, ih]
+      ring
   simp only [Nat.cast_pow, PlaceData.unipotentMass, PlaceData.floorModulus, hF.modulus_levelUnit,
     ← rpow_natCast_mul, Nat.cast_ofNat, mul_inv_cancel₀ (two_ne_zero' ℝ), rpow_one, ← pow_mul _ 2,
     ← pow_succ, Finset.prod_pow_eq_pow_sum]
