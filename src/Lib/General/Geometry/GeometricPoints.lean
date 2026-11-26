@@ -342,13 +342,6 @@ lemma Variety.isReduced_pullback_of_flat {X Y T : Scheme} (f : X ⟶ T) (g : Y �
     simp [((IsNilpotent.map_iff (stalkMap_injective_of_flat _ _)).1 ha).eq_zero]⟩
   exact isReduced_of_isReduced_stalk _
 
-/-- The points of a finite set `C` that lie near `s` specialise to `s`. -/
-lemma eventually_specializes_of_finite {T : Type*} [TopologicalSpace T] {C : Set T}
-    (hC : C.Finite) (s : T) : ∀ᶠ t in nhds s, t ∈ C → t ⤳ s := by
-  suffices h : ∀ᶠ t in nhds s, ∀ c ∈ C, t = c → c ⤳ s from h.mono fun t ht htC ↦ ht t htC rfl
-  refine hC.eventually_all.2 fun c _ ↦ eventually_imp_distrib_right.2 fun h_freq ↦ ?_
-  exact specializes_iff_mem_closure.2 h_freq.mem_closure
-
 /-- Let `S` and `A` be reduced, `z : A ⟶ S`, `s` a point of `S`, and `x w` complex points of `A`
 with dense images and with finitely many composites `x w ≫ z`. Consider the pairs of an index `w`
 and a map `ψ` from the stalk `𝒪_{S,s}` to `ℂ` such that `x w ≫ z` factors through `Spec 𝒪_{S,s}`
@@ -373,7 +366,9 @@ lemma isSeparatingFamily_stalk {S : Scheme} {W : Type} {A : Scheme} {z : A ⟶ S
   have h_spec : z (π y) ⤳ s := by
     simpa [range_fromSpecStalk] using (range_fst z (S.fromSpecStalk s)).subset (mem_range_self y)
   have h_near : ∀ᶠ a in nhds (π y), z a ∈ C → z a ⤳ s := (z.continuous.tendsto (π y)).eventually
-    ((eventually_specializes_of_finite hC s).filter_mono (specializes_iff_nhds.1 h_spec))
+    (((hC.eventually_all.2 fun c _ ↦ eventually_imp_distrib_right.2 fun h_freq ↦
+      specializes_iff_mem_closure.2 h_freq.mem_closure).mono fun t ht htC ↦ ht t htC rfl).filter_mono
+      (specializes_iff_nhds.1 h_spec))
   -- So the `x w` whose image specialises to `s` accumulate at `π y`, and these lift.
   refine (((mem_closure_iff_frequently.1 (h_dense (π y))).and_eventually h_near).mono
     ?_).mem_closure
