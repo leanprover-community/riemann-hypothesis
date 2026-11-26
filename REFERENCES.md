@@ -7,7 +7,7 @@ Only some of the citations were compared with their sources. The table lists the
 - place confirmed at second hand: 35
 - work found, no place given: 119
 
-The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
+The citations of 121 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 67 of these files give places. They are listed at the end.
 
 | citation | state | files |
 |---|---|---|

@@ -359,7 +359,6 @@ The prime number theorem in this table is known (Montgomery and Vaughan, Multipl
 | `Lib/General/LinearAlgebra` | `BlockEmbeddings`, `GramDeterminant`, `IdempotentRadical`, `MatricesNearIdentity`, `MatrixPolynomials`, `MinorProducts`, `PolarDecomposition`, `TensorChains` |
 | `Lib/General/Measure` | `HaarModulus`, `HaarNormalisation`, `IdempotentKernel`, `IntegralOperators`, `QuadricDisintegration` |
 | `Lib/General/NumberTheory` | `CMFields`, `CoefficientInclusion`, `CoefficientRings`, `EmbeddingsAndDifferent`, `FrobeniusOrbits`, `ImaginaryQuadraticField`, `LargeResidueField` |
-| `Lib/SiegelWeil/OneVector` | `ResidueClasses` |
 | `Lib/SiegelWeil/SingularForms` | `CentreCoefficients` |
 | `Lib/SiegelWeil/Tower` | `PrincipalIdeles` |
 | `Lib/Weil/Periods` | `RealAndFinitePoints`, `StringPowers` |
