@@ -41,11 +41,6 @@ eigenspace of `A` for `μ`. -/
 abbrev restrictGenEigenspace (h : Commute A T) (μ : ℂ) : End ℂ (A.maxGenEigenspace μ) :=
   T.restrict fun _ hx ↦ End.mapsTo_maxGenEigenspace_of_comm h μ hx
 
-/-- Restriction to a generalised eigenspace of `A` commutes with taking powers. -/
-lemma restrictGenEigenspace_pow (h : Commute A T) (μ : ℂ) (i : ℕ) :
-    restrictGenEigenspace h μ ^ i = restrictGenEigenspace (h.pow_right i) μ :=
-  End.pow_restrict i _
-
 variable [Module.Finite ℂ B] [Module.Finite ℂ B']
 
 /-- If `T` commutes with `A`, then on the generalised eigenspace of `A` for `μ` the trace of
@@ -335,8 +330,10 @@ lemma finrank_range_restrictGenEigenspace_eq (h : LineRelation d c A Tp Tm e)
       (restrictGenEigenspace h'.commute_plus α).charpoly := by
     refine charpoly_eq_of_trace_pow_succ_eq (h.restrict_maxGenEigenspace α).det_ne_zero
       (h'.restrict_maxGenEigenspace α).det_ne_zero fun i ↦ ?_
-    rw [restrictGenEigenspace_pow, restrictGenEigenspace_pow]
-    exact trace_restrictGenEigenspace_eq_of_ne_zero _ _ (fun l ↦ h_trace l i) hα
+    rw [End.pow_restrict (i + 1) (fun _ hx ↦ End.mapsTo_maxGenEigenspace_of_comm h.commute_plus α hx),
+      End.pow_restrict (i + 1) (fun _ hx ↦ End.mapsTo_maxGenEigenspace_of_comm h'.commute_plus α hx)]
+    exact trace_restrictGenEigenspace_eq_of_ne_zero (h.commute_plus.pow_right (i + 1))
+      (h'.commute_plus.pow_right (i + 1)) (fun l ↦ h_trace l i) hα
   exact (h.restrict_maxGenEigenspace α).finrank_range_eq_of_charpoly_eq
     (h'.restrict_maxGenEigenspace α) h_charpoly
 
