@@ -534,7 +534,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 ### Analytic: Analytic number theory
 
-- `Lib/Analytic/ZeroSymmetry` (47): Zeros of L(s, χ) and of L(1 − s, χ⁻¹)
+- `Lib/Analytic/ZeroSymmetry` (16): Dirichlet characters and the primitive characters that induce them
 - `Lib/Analytic/PolyaVinogradov` (146): Gauss sums of primitive characters and the Pólya–Vinogradov bound
 - `Lib/Analytic/DirichletTheta` (373): Theta series of Dirichlet characters, Poisson summation, and `L(s, χ)` as a Mellin transform
 - `Lib/Analytic/EntireLFunction` (123): Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions

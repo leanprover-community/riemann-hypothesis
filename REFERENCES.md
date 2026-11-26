@@ -250,7 +250,6 @@ A star marks a file that gives places.
 - `Lib/Adelic/Unitary/CongruenceLevels`*
 - `Lib/Adelic/Unitary/WeakApproximation`*
 - `Lib/Analytic/Landau`*
-- `Lib/Analytic/ZeroSymmetry`
 - `Lib/CM/FormalGroup/IntegralParameter`
 - `Lib/CM/KroneckerLimit`*
 - `Lib/CM/Sigma/Basic`*
