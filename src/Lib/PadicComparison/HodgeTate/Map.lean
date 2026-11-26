@@ -499,8 +499,13 @@ lemma hodgeTateMap_scale {q h : ℕ} (t : k) (x : HodgeH N q) :
       mapExactFunctor_naturality
         ((Functor.whiskeringLeft ..).map (HodgeTest.scaleModule t (𝟭 (HodgeTest k)))) x
   rw [← h_nat]
-  simp [hodgeTateMap, comp_assoc_of_eq, of_comp_homClass, Comparison.pull, H.map, H.push,
-    Functor.mapExtAddHom, Ext.mapExactFunctor_comp, Ext.mapExactFunctor_mk₀]
+  -- the push-forward along the scaling commutes with the pull-back to pairs, and is then
+  -- composition with its class
+  change comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull (Functor.whiskerRight toSqZero N) q
+    (H.push _ (HodgeTest.scaleModule t hodgeCoeff) q x)).toTotalH (contractionPow h) = _
+  rw [Comparison.pull_push (Comparison.restrict toHodgeTest hodgeCoeff) (𝟙 _) _
+      (toHodgeTest.whiskerLeft (HodgeTest.scaleModule t hodgeCoeff)) rfl, Ext.toTotalH,
+    Ext.toTotalH, ← of_comp_homClass, comp_assoc]
 
 /-- For functors `M`, `L` on pairs (`M` with flat values) and `y` in the total cohomology of `L`
 with coefficients `scalarCoeff` (`(S, M) ↦ T`), the `k`-linear map `x ↦ x × y` to the total
