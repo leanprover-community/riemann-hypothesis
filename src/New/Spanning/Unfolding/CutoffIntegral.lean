@@ -124,8 +124,6 @@ namespace New.Filling
 
 open NumberField MeasureTheory Matrix Complex Finset RealPlace Sum ENNReal Function Fintype
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod in
 /-- Additivity of an entry in the row of e_a, for x and u in the Bessel unipotent group of G₁. Let
 the column j be e*_a or free for the row (`IsFreeEntry`: e_b or e*_b with b > a, or a column of the
 middle block). If the free entries of u vanish in the rows e_b with b > a and in the row e_b with

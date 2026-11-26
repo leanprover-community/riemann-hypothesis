@@ -178,8 +178,6 @@ lemma prod_poissonConst_eq {kPred : ℕ} (hk : 𝔰.k = kPred + 1) :
   rw [pow_mul √𝔰.openCellConst, sq_sqrt 𝔰.openCellConst_pos.le]
   field [prod_eq_zero_iff, h_scale]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod Finset.univ in
 /-- The error is measured against the identity second moment. Let `f` be the number of infinite
 places, `n = 𝔰.n = ϱ + 1` the number of frame vectors, `k = 𝔰.k` and `dim` the number of Bessel
 coordinates. The left side has three factors: the constant `scaledSiegelConst` of Siegel's step; the

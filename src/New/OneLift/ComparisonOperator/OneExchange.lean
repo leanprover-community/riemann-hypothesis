@@ -388,8 +388,6 @@ abbrev signedRowSubst (s : n → ℤˣ) (c d : InfinitePlace E → Matrix b b �
   MvPolynomial.aeval fun ((τ, k, j) : InfinitePlace E × b × n) ↦
     ∑ i : b, (if s j = 1 then c τ i k else d τ k i) • MvPolynomial.X (τ, i, j)
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 omit [WeilData E] in
 /-- Let `δ` be a rational point of the unitary group of the standard definite space `E^b`, paired
 with a space of signs `s`. Let `polyVector` of a polynomial `P` be its Fock vector

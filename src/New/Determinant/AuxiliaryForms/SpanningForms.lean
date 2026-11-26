@@ -208,8 +208,6 @@ lemma norm_mul_det_flipScalar_zpow_le_one {ϑ : D.MFoldTwist} {p : ℕ} [Fact p.
 
 end Denominators
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- The pairing `lastPathPairing v' v = v' ⬝ᵥ lastPathBranching *ᵥ v` of the two halves at the
 middle of the last path, given by an integer branching matrix, is cleared by one natural number
 `N ≠ 0` with `log N ≤ x ^ 98 * b ^ 2`. For every twist `ϑ` and every prime `p` prime to the norm

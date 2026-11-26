@@ -290,8 +290,6 @@ lemma frobContraction_evalAtOne (r ℓ : ℕ) (z : O) :
   rw [frobContraction, Matrix.map_apply, tensorDual_evalAtOne, ZMod.card, Matrix.smul_apply,
     smul_eq_mul, ← h_one, Matrix.map_apply]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let `T` be a Frobenius cycle, with ring maps `T.embedding j : W →+* O` for the letters
 `j ∈ ℤ/N`, and let `ρ(g) = T.letterRep n g` be the matrix of `g ∈ GL_k(W)` on polynomials of degree
 `n` in each of `N` groups of `k` variables. For a family `ψ` of factors,
