@@ -411,13 +411,6 @@ lemma IsImage.conjugate [IsTopologicalGroup G] [T2Space G] (hf : IsImage j ν X 
     _ = fibreIntegral j ν Ψ (a⁻¹ * g) y := hf (a⁻¹ * g) y hy
     _ = fibreIntegral j ν Ψ' g y := by simp only [fibreIntegral, h_left, mul_assoc]
 
-/-- Let `X` be a slice, so that `H` conjugates `X` into itself. If `Ψ` vanishes on `Γ × X`, then its
-integrals over the `H`-orbits in `Γ × X` vanish, that is, `0` is an image of `Ψ`. -/
-lemma IsSlice.isImage_zero (hX : IsSlice j H C X) (h_zero : ∀ g : Γ, ∀ y ∈ X, Ψ.val (g, y) = 0) :
-    IsImage j ν X Ψ 0 := by
-  intro g y hy
-  simp [fibreIntegral, fun h : H ↦ h_zero (g * h) _ ((hX.conj_mem_iff y hy h).2 h.property)]
-
 /-- Let `X` be a slice of `C`, so that `C` consists of the conjugates of the elements of `X`. Two
 images `f` and `f'` of `Ψ` agree on `C`, since both are given there by the integrals of `Ψ` over
 `H`-orbits. Hence an invariant distribution `I` on `C`, a linear form that is invariant under
@@ -581,7 +574,8 @@ theorem IsInvariantDistribution.eq_zero_of_isImage [T2Space Γ] {K : Subgroup Γ
     obtain ⟨φ, hφ⟩ := hX.exists_isImage ν Φ
     rw [hΛ Φ' (conjugate j a φ) (hφ.conjugate h_translate), hI.map_conjugate, hΛ Φ φ hφ]
   have h_zero (Φ : TestFunction (Γ × G)) (hΦ : ∀ g : Γ, ∀ y ∈ X, Φ.val (g, y) = 0) : Λ Φ = 0 := by
-    rw [hΛ Φ 0 (hX.isImage_zero hΦ), map_zero]
+    rw [hΛ Φ 0 fun g y hy ↦ by
+      simp [fibreIntegral, fun h : H ↦ hΦ (g * h) _ ((hX.conj_mem_iff y hy h).2 h.property)], map_zero]
   rw [← hΛ Ψ f hf]
   exact map_eq_zero_of_integral_eq_zero hK_open hK_compact μ h_left h_zero hΨ
 
