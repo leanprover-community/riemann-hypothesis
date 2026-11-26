@@ -222,7 +222,8 @@ element ξ of `partialUnitriangularGroup j`. -/
 @[simp] lemma depthWeight_mul_left (h : ξ ∈ partialUnitriangularGroup j) :
     F.depthWeight j (ξ * x) y = F.depthWeight j x y := by
   refine prod_congr rfl fun a ha ↦ ?_
-  have h_succ : ξ ∈ partialUnitriangularGroup (a + 1) := by grind
+  have h_succ : ξ ∈ partialUnitriangularGroup (a + 1) :=
+    partialUnitriangularGroup_anti (Nat.succ_le_of_lt (Finset.mem_filter.mp ha).2) h
   rw [depth_mul_left h_succ]
 
 /-- The function `F.invDepthWeight j x`, the inverse of the weight of length j on the points near at
