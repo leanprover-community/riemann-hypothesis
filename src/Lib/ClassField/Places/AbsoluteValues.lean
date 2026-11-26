@@ -12,8 +12,7 @@ In this library a place of `Ω` is a valuation subring `A`. This file compares t
 `A` with the same notions for an absolute value `w` on `Ω` whose closed unit ball is `A`, that is,
 `x ∈ A ↔ w x ≤ 1`. If `w` restricts to the real or a `p`-adic absolute value on `ℚ`, an element of
 `Γ` stabilises `A` exactly when it preserves `w`, so decomposition groups, Frobenius elements and
-inertia groups can be read off from `w`. Over a number field `K`, `A` lies over the prime `v` of
-`𝓞 K` exactly when the restriction of `w` to `K` is equivalent to the `v`-adic absolute value.
+inertia groups can be read off from `w`.
 
 ## Main results
 
@@ -24,8 +23,6 @@ inertia groups can be read off from `w`. Over a number field `K`, `A` lies over 
 * `New.mem_decompGroup_iff_of_forall_mem_iff`: `σ` stabilises `A` iff `w (σ • x) = w x` for all `x`.
 * `New.isFrob_iff_of_forall_mem_iff`, `New.mem_inertiaGroup_iff_of_forall_mem_iff`: Frobenius
   elements and the inertia group of `A` in terms of `w`.
-* `New.isPlaceOver_iff_isEquiv_adicAbv`: `A` lies over `v` iff `w.under K` is equivalent to the
-  `v`-adic absolute value `NumberField.HeightOneSpectrum.adicAbv K v`.
 
 Notions from other files:
 * `Rat.AbsoluteValue.IsStandard` (Tau Ceti): an absolute value on `ℚ` is the real one or a `p`-adic
@@ -75,20 +72,6 @@ theorem valuation_lt_one_iff_of_forall_mem_iff (hA : ∀ x, x ∈ A ↔ w x ≤ 
     apply_lt_one_iff_or]
 
 variable {K : Type*} [Field K] [NumberField K] [Algebra K Ω] {v : FinPlace K}
-
-/-- If `A` is the closed unit ball of `w`, then `A` lies over the prime `v` of `𝓞 K` exactly when
-the restriction of `w` to `K` is equivalent to the `v`-adic absolute value. -/
-theorem isPlaceOver_iff_isEquiv_adicAbv (hA : ∀ x, x ∈ A ↔ w x ≤ 1) :
-    IsPlaceOver A v ↔ (w.under K).IsEquiv (adicAbv K v) := by
-  have h_adic (x : K) : adicAbv K v x < 1 ↔ v.valuation K x < 1 := by
-    rw [adicAbv_def, NNReal.coe_lt_one,
-      WithZeroMulInt.toNNReal_lt_one_iff (one_lt_absNorm_nnreal v)]
-  refine ⟨fun h ↦ AbsoluteValue.isEquiv_iff_lt_one_iff.mpr fun x ↦ ?_, fun h x ↦ ?_⟩
-  · rw [AbsoluteValue.under_apply, ← valuation_lt_one_iff_of_forall_mem_iff hA, h_adic]
-    exact h.isEquiv.lt_one_iff_lt_one
-  · rw [valuation_lt_one_iff_of_forall_mem_iff hA, ← AbsoluteValue.under_apply, h.lt_one_iff,
-      h_adic]
-    exact v.valuation_lt_one_iff_mem x
 
 variable [CharZero Ω]
 
