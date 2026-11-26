@@ -671,8 +671,7 @@ lemma setLIntegral_inv_pow_sphereDensity_le (s : ℕ) (R : ℝ) :
         lintegral_withDensity_le_lintegral_mul _ (by fun_prop) _
     _ ≤ ∫⁻ _r : ℝ in Ioc 0 R, ENNReal.ofReal (4 * 3 ^ 144) :=
         setLIntegral_mono' measurableSet_Ioc fun r hr ↦ integrand_le r hr.1
-    _ = ENNReal.ofReal (4 * 3 ^ 144) * ENNReal.ofReal R := by
-        rw [setLIntegral_const, Real.volume_Ioc, sub_zero]
+    _ = ENNReal.ofReal (4 * 3 ^ 144) * ENNReal.ofReal R := by simp
 
 /-- Let n = `𝔰.n` = ϱ + 1; the shape 𝔰 enters only through this number. Let C be a matrix with
 s + 1 + 3 n ≤ L columns and rank at most 3 n, and let L ≥ 4. The kernel of C contains orthonormal
@@ -822,8 +821,7 @@ lemma RealPlaceSizes.closedBall_subset_image_commonVectors (hF : RealPlaceSizes 
   -- The multiple `w` of `O Oᴴ u` with `⟨u, w⟩ = t` has length at most `1 / 2`.
   let w : hF.complexData.FreeIndex → ℂ := O *ᵥ (t / r) • Oᴴ *ᵥ u
   have h_adj (z : hF.complexData.FreeIndex → ℂ) (z' : D → ℂ) :
-      star z ⬝ᵥ O *ᵥ z' = star (Oᴴ *ᵥ z) ⬝ᵥ z' := by
-    rw [star_mulVec, conjTranspose_conjTranspose, dotProduct_mulVec]
+      star z ⬝ᵥ O *ᵥ z' = star (Oᴴ *ᵥ z) ⬝ᵥ z' := by simp
   have h_prod : star u ⬝ᵥ w = t := by
     rw [h_adj, dotProduct_smul, hr, smul_eq_mul, div_mul_cancel₀ t hr_ne]
   have h_len : ‖star w ⬝ᵥ w‖ ≤ 4⁻¹ := by
