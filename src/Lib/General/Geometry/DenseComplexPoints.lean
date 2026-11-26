@@ -242,9 +242,9 @@ lemma New.eq_map_C_of_ne_bot_of_le_map_C {A σ : Type*} [CommRing A] [IsDomain A
   obtain ⟨n, u, hu, w, rfl⟩ := w.exists_fin_rename
   let J' : Ideal (MvPolynomial (Fin n) A) := J.comap (rename u)
   have h_le : J' ≤ p.map C := by
-    refine fun a ha ↦ mem_map_C_iff.2 fun m ↦ ?_
+    refine fun a ha ↦ (mem_map_C_iff (I := p) (f := a)).2 fun m ↦ ?_
     rw [← coeff_rename_mapDomain u hu]
-    exact mem_map_C_iff.1 (hJ_le (mem_comap.1 ha)) _
+    exact (mem_map_C_iff (I := p) (f := rename u a)).1 (hJ_le (mem_comap.1 ha)) _
   have h_ne_bot : J' ≠ ⊥ := J'.ne_bot_iff.2 ⟨w, mem_comap.2 hw_mem, ne_zero_of_map hw_ne⟩
   have h_eq : J' = p.map C := J'.eq_of_le_of_height_le h_le
     ((height_map_C_le_one hp).trans (by simpa [Order.one_le_iff_ne_zero] using h_ne_bot))
