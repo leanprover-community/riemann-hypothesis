@@ -140,7 +140,17 @@ end New.Patching.TaylorWilesPlaces
 
 namespace New.Patching.BaseLevel
 
-set_option synthInstance.maxHeartbeats 200000
+noncomputable local instance (priority := 1100) {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type}
+    [Field E] [CMType E] [Algebra E Ω] {n : Type} [Fintype n] [DecidableEq n] {V : Space E n 1}
+    {κ : Weight E} {J : Type} {c : ℕ} {D : BaseLevel V κ c} {L : J → FinPlace E} :
+    NonUnitalNonAssocSemiring ↥(D.integralEnd L) :=
+  (D.integralEnd L).toSemiring.toNonAssocSemiring.toNonUnitalNonAssocSemiring
+
+noncomputable local instance (priority := 1100) {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type}
+    [Field E] [CMType E] [Algebra E Ω] {n : Type} [Fintype n] [DecidableEq n] {V : Space E n 1}
+    {κ : Weight E} {J : Type} {c : ℕ} {D : BaseLevel V κ c} {L : J → FinPlace E} :
+    NonAssocRing ↥(D.integralEnd L) :=
+  (D.integralEnd L).toRing.toNonAssocRing
 
 section BaseData
 

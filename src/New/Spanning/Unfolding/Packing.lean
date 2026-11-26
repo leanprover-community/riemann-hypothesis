@@ -65,22 +65,6 @@ lemma frameVector_sub_eq_sum {γ γ' : S.G E}
   simp only [h_lower]
   simp [frameVector, mul_sub, mul_comm]
 
-/-- Reduction of frames: for every class `c` and every point `y` at the infinite places, some `u` in
-the congruence group `S.classUnipotent c` of rational unipotent elements makes all entries of
-`gramSchmidtMatrix` of the components of `u y` at most `S.b ^ 26` in absolute value. Here
-`gramSchmidtMatrix x` is the upper unitriangular matrix expressing the frame vectors
-`x⁻¹ e₁, …, x⁻¹ e_ϱ, x⁻¹ z` in their Gram–Schmidt orthogonalisation. -/
-lemma exists_gramSchmidtMatrix_le [HasPrimitiveRoot5040 E] [S.IsAdmissible]
-    (c : S.Classes) (y : NumberField.InfinitePlace E → 𝔰.G₁) :
-    ∃ u : S.classUnipotent c, ∀ (v : NumberField.InfinitePlace E) (a b : Fin (𝔰.ϱ + 1)),
-      ‖gramSchmidtMatrix (S.ratToInf u v * y v) a b‖ ≤ S.b ^ 26 := by
-  obtain ⟨D, hD⟩ : ∃ D : Set (NumberField.InfinitePlace E → ℂ), S.IsResidueDomain D :=
-    S.exists_isResidueDomain
-  obtain ⟨u, hu⟩ : ∃ u₀ : S.classUnipotent c, ∀ u : S.classUnipotent c,
-      S.ratToInf u * y ∈ S.reducedPoints D ↔ (u * u₀⁻¹).val ∈ S.classUnipotent₀ c :=
-    hD.exists_mul_mem_reducedPoints_iff_rightCoset c y
-  exact ⟨u, hD.norm_gramSchmidtMatrix_le ((hu u).2 (by simp))⟩
-
 /-- The indicator of the reduced points for the chosen set of representatives is a partition of
 unity in boxes (`IsBoxPartitionOfUnity`) for every class `c`. -/
 lemma isBoxPartitionOfUnity_reducedIndicator [HasPrimitiveRoot5040 E] [S.IsAdmissible]

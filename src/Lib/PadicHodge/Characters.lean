@@ -855,26 +855,6 @@ lemma isKilledBy_X_sub_C_of_unramified_char (h_emb : IsOpenEmbedding 𝒥.toGp) 
       one_tmul_mul_toBmaxTensor_mem_dpcris hρ h_near x, h_weil (toGp s) k hs]
   exact ⟨h_pcr, by simp [h_frob]⟩
 
-/-- Let `𝒥.toGp` be an open embedding and `ν` a continuous character of `Γ`, trivial on inertia near
-`1`, and let `ρ` act on a commutative `ℚ̄_p`-algebra `T` by the scalars `ν g`. Then `ρ` is
-potentially crystalline, has the jumps of the trivial action, and for every Weil pair `(toGp s, k)`
-the polynomial `X - ν s` kills `linearFrob ρ s k`.
-
-A case of the fact that potentially unramified characters are potentially crystalline of weight 0
-(Caruso). -/
-lemma isPotentiallyCrystalline_of_unramified_char (h_emb : IsOpenEmbedding 𝒥.toGp)
-    (hν : Continuous ν) (hν_inertia : ∀ᶠ g : Γ in 𝓝 1, IsWeilPair (toGp g) 0 → ν g = 1)
-    {ρ : Γ →* End (PadicAlgCl p) T} (hρ : ∀ (g : Γ) (x : T), ρ g x = (ν g).val • x) :
-    -- (a) potentially crystalline
-    IsPotentiallyCrystalline ρ ∧
-    -- (b) the jumps of the trivial representation
-    jump ρ = jump (1 : Γ →* End (PadicAlgCl p) T) ∧
-    -- (c) a Weil element `s` acts by the scalar `ν s`
-    ∀ (s : Γ) (k : ℕ), IsWeilPair (toGp s) k → IsKilledBy ρ s k (X - C (ν s).val) :=
-  ⟨.of_unramified_char h_emb hν hν_inertia hρ,
-    jump_eq_jump_one_of_unramified_char h_emb hν hν_inertia hρ,
-    fun _ _ hs ↦ isKilledBy_X_sub_C_of_unramified_char h_emb hν hν_inertia hρ hs⟩
-
 end New.Period
 
 /-!

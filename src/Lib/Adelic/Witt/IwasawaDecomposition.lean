@@ -207,90 +207,6 @@ lemma New.Space.exists_splitting {E : Type} [Field E] [CMType E] [WeilData E] {n
 variable {E : Type*} [Field E] [CMType E] {n n₀ p : Type*} [Fintype n] [DecidableEq n]
   [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ}
 
-/-- Let `k`, `l` be dual isotropic frames of `V`, whose Gram matrix is `J`, and let `i` be an
-isometric embedding of a space `V₀` into `V` that is orthogonal to both. If every vector orthogonal
-to the columns of `k` has the form `k a + i b`, then the rank of `V` is the rank of `V₀` plus twice
-the number of columns of `k`. -/
-lemma New.Space.card_eq_of_perp_subset (V : Space E n s) (V₀ : Space E n₀ s₀)
-    {k l : Matrix n p E} {i : Matrix n n₀ E} (h_kk : kᴴ * V.J * k = 0) (h_ll : lᴴ * V.J * l = 0)
-    (h_lk : lᴴ * V.J * k = 1) (h_ii : iᴴ * V.J * i = V₀.J) (h_ik : iᴴ * V.J * k = 0)
-    (h_il : iᴴ * V.J * l = 0)
-    (h_perp : ∀ y : n → E,
-      (kᴴ * V.J) *ᵥ y = 0 → ∃ (a : p → E) (b : n₀ → E), y = k *ᵥ a + i *ᵥ b) :
-    card n = card n₀ + 2 * card p := by
-  -- Every vector is `k a + i b + l c`, so the projections to the three summands add up to the
-  -- identity. Their traces count the dimensions.
-  have h_kl : kᴴ * V.J * l = 1 := by rw [V.conjTranspose_mul_J_mul_swap, h_lk, conjTranspose_one]
-  have h_ki : kᴴ * V.J * i = 0 := by rw [V.conjTranspose_mul_J_mul_swap, h_ik, conjTranspose_zero]
-  have h_li : lᴴ * V.J * i = 0 := by rw [V.conjTranspose_mul_J_mul_swap, h_il, conjTranspose_zero]
-  have h_J₀ : V₀.J⁻¹ * V₀.J = 1 := nonsing_inv_mul _ ((isUnit_iff_isUnit_det _).1 V₀.isUnit_J)
-  let P : Matrix n n E := k * (lᴴ * V.J) + i * (V₀.J⁻¹ * (iᴴ * V.J)) + l * (kᴴ * V.J)
-  -- By the Gram relations, `P` fixes the columns of `k`, `i` and `l`.
-  obtain ⟨h_Pk, h_Pi, h_Pl⟩ : P * k = k ∧ P * i = i ∧ P * l = l := by
-    simp [P, Matrix.add_mul, Matrix.mul_assoc k, Matrix.mul_assoc i, Matrix.mul_assoc l,
-      Matrix.mul_assoc V₀.J⁻¹, h_kk, h_ik, h_lk, h_ki, h_ii, h_li, h_J₀, h_kl, h_il, h_ll]
-  have h_one : P = 1 := by
-    refine ext_iff_mulVec.mpr fun y : n → E ↦ ?_
-    have h_perp_part : (kᴴ * V.J) *ᵥ (y - l *ᵥ ((kᴴ * V.J) *ᵥ y)) = 0 := by
-      rw [mulVec_sub, mulVec_mulVec, h_kl, one_mulVec, sub_self]
-    obtain ⟨a, b, h_ab⟩ := h_perp _ h_perp_part
-    generalize (kᴴ * V.J) *ᵥ y = c at h_ab
-    have hy : y = k *ᵥ a + i *ᵥ b + l *ᵥ c := eq_add_of_sub_eq h_ab
-    simp [hy, mulVec_add, h_Pk, h_Pi, h_Pl]
-  have h_trace : (card p : E) + card n₀ + card p = card n :=
-    calc (card p : E) + card n₀ + card p
-        = trace (lᴴ * V.J * k) + trace (V₀.J⁻¹ * (iᴴ * V.J * i)) + trace (kᴴ * V.J * l) := by
-          simp [h_lk, h_ii, h_J₀, h_kl]
-      _ = trace P := by simp [P, trace_mul_comm k, trace_mul_comm i, trace_mul_comm l,
-          Matrix.mul_assoc]
-      _ = card n := by rw [h_one, trace_one]
-  norm_cast at h_trace
-  omega
-
-/-- Let `k` be a left invertible `n × p` matrix over `E` whose columns span an isotropic subspace
-`A` of `V` (`kᴴ J k = 0` for the Gram matrix `J`), and let `i` be an isometric embedding of a space
-`V₀` into `V` (`iᴴ J i = J₀`) such that the orthogonal complement of `A` is `A + i V₀`: a vector `y`
-satisfies `kᴴ J y = 0` exactly when `y = k a + i b` for some `a`, `b`. Then there is a splitting `D`
-of `V` over `V₀` whose isotropic frame `D.k` is `k` and whose embedding `D.i` is `i`. -/
-lemma New.Space.exists_splitting_of_perp_eq (V : Space E n s) (V₀ : Space E n₀ s₀)
-    {k : Matrix n p E} {i : Matrix n n₀ E} (hk : HasLeftInv k) (h_iso : kᴴ * V.J * k = 0)
-    (h_isom : iᴴ * V.J * i = V₀.J)
-    (h_perp : ∀ y : n → E,
-      (kᴴ * V.J) *ᵥ y = 0 ↔ ∃ (a : p → E) (b : n₀ → E), y = k *ᵥ a + i *ᵥ b) :
-    ∃ D : V.Splitting V₀ p, D.k = k ∧ D.i = i := by
-  -- Take `e` dual to `k` and orthogonal to `i`, and put `l = e - ½ k (eᴴ J e)`.
-  obtain ⟨L, hL⟩ : ∃ L : Matrix p n E, L * k = 1 := hk
-  have h_ki : kᴴ * V.J * i = 0 := ext_iff_mulVec.mpr fun b ↦ by
-    simpa [mulVec_mulVec] using (h_perp (i *ᵥ b)).mpr ⟨0, b, by simp⟩
-  have h_ik : iᴴ * V.J * k = 0 := by rw [V.conjTranspose_mul_J_mul_swap, h_ki, conjTranspose_zero]
-  have h_J : IsUnit V.J.det := (isUnit_iff_isUnit_det _).1 V.isUnit_J
-  have h_J₀ : IsUnit V₀.J.det := (isUnit_iff_isUnit_det _).1 V₀.isUnit_J
-  -- `J⁻¹ Lᴴ` is dual to `k`; removing its component in `i V₀` gives `e`.
-  let e : Matrix n p E := V.J⁻¹ * Lᴴ - i * (V₀.J⁻¹ * (iᴴ * Lᴴ))
-  have h_ie : iᴴ * V.J * e = 0 := by
-    simp [e, Matrix.mul_sub, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ h_J,
-      mul_nonsing_inv _ h_J₀, h_isom]
-  have h_ke : kᴴ * V.J * e = 1 := by
-    simp [e, Matrix.mul_sub, ← Matrix.mul_assoc, mul_nonsing_inv_cancel_right _ _ h_J, h_ki,
-      ← conjTranspose_mul, hL]
-  have h_ek : eᴴ * V.J * k = 1 := by rw [V.conjTranspose_mul_J_mul_swap, h_ke, conjTranspose_one]
-  -- Correct `e` by a multiple of `k` to make it isotropic.
-  let M : Matrix p p E := (2⁻¹ : E) • (eᴴ * V.J * e)
-  have hM : Mᴴ = M := by simp [M, ← V.conjTranspose_mul_J_mul_swap e e]
-  let l : Matrix n p E := e - k * M
-  have h_il : iᴴ * V.J * l = 0 := by simp [l, Matrix.mul_sub, ← Matrix.mul_assoc, h_ie, h_ik]
-  have h_kl : kᴴ * V.J * l = 1 := by simp [l, Matrix.mul_sub, ← Matrix.mul_assoc, h_ke, h_iso]
-  have h_lk : lᴴ * V.J * k = 1 := by rw [V.conjTranspose_mul_J_mul_swap, h_kl, conjTranspose_one]
-  have h_ll : lᴴ * V.J * l = 0 := by
-    calc lᴴ * V.J * l = eᴴ * V.J * l - Mᴴ * (kᴴ * V.J * l) := by
-          simp [l, Matrix.sub_mul, Matrix.mul_assoc]
-      _ = eᴴ * V.J * e - M - M := by
-          simp [l, h_kl, hM, Matrix.mul_sub, ← Matrix.mul_assoc, h_ek]
-      _ = 0 := by simp only [M]; module
-  have h_card : card n = card n₀ + 2 * card p :=
-    V.card_eq_of_perp_subset V₀ h_iso h_ll h_lk h_isom h_ik h_il fun y ↦ (h_perp y).mp
-  exact ⟨⟨k, l, i, h_iso, h_ll, h_lk, h_isom, h_ik, h_il, h_card⟩, rfl, rfl⟩
-
 end SplittingExists
 
 /-!
@@ -312,46 +228,6 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E]
   (H : W.Splitting W₀ p)
 
 /-! ### Adapted elements -/
-
-variable {H} in
-open Exchange in
-omit [WeilData E] in
-/-- Let `H` be a Witt decomposition of `W` over `W₀`, and let `l`, `k`, `ι` be its two isotropic
-frames and its embedding of `W₀` in standard adelic coordinates (`H.lAdelic`, `H.kAdelic`,
-`H.iAdelic`). Let `t` be in GL_p(𝔸). Suppose two elements `g`, `g'` of the adelic unitary group
-`G E s` are both adapted to `H` and `t`: the matrices `g⁻¹ (l (t⁻¹)ᴴ, k t, ι)` and
-`g'⁻¹ (l (t⁻¹)ᴴ, k t, ι)` have orthonormal columns at every infinite place and integral entries at
-the finite places. Then `g⁻¹ * g'` lies in the maximal compact subgroup K_∞K₀. -/
-lemma IsAdapted.inv_mul_mem_maxCompact {g g' : G E s} {t : GL p (𝔸 E)} (hg : H.IsAdapted g t)
-    (hg' : H.IsAdapted g' t) : g⁻¹ * g' ∈ maxCompact E s := by
-  -- The frames `M`, `M'` of `g`, `g'` satisfy `M = (g⁻¹g') M'`. The Gram matrix `Q` of `M'` for the
-  -- standard form `ε` has `Q² = 1`, so `L = Q M'ᴴ ε` inverts the square matrix `M'`. Hence
-  -- `g⁻¹g' = M L` is a product of matrices that are unitary at infinity and integral.
-  let M' : Matrix n ((p ⊕ p) ⊕ n₀) (𝔸 E) := H.frameAt g' t
-  let Q : Matrix ((p ⊕ p) ⊕ n₀) ((p ⊕ p) ⊕ n₀) (𝔸 E) :=
-    fromBlocks (fromBlocks 0 1 1 0) 0 0 (stdForm E s₀)
-  let L : Matrix ((p ⊕ p) ⊕ n₀) n (𝔸 E) := Q * M'ᴴ * stdForm E s
-  have h_card : Fintype.card ((p ⊕ p) ⊕ n₀) = Fintype.card n := by simp +arith [H.card_eq]
-  have h_left : L * M' = 1 :=
-    calc L * M' = Q * (M'ᴴ * stdForm E s * M') := by simp only [L, Matrix.mul_assoc]
-      _ = Q * Q := by rw [H.gram_frameAt g' t]
-      _ = 1 := by simp [Q, fromBlocks_multiply, stdForm_mul_self]
-  have h_right : M' * L = 1 := (mul_eq_one_comm_of_card_eq _ _ _ h_card).1 h_left
-  have h_mat : (g⁻¹ * g').adeleMatrix = H.frameAt g t * L := by
-    rw [← Matrix.mul_one (g⁻¹ * g').adeleMatrix, ← h_right]
-    simp only [M', frameAt, ← Matrix.mul_assoc, ← G.adeleMatrix_mul, mul_inv_cancel_right]
-  have h_hyp : IsOrthoIntegral (fromBlocks 0 1 1 0 : Matrix (p ⊕ p) (p ⊕ p) (𝔸 E)) :=
-    ⟨fun w ↦ by simp [fromBlocks_map, fromBlocks_conjTranspose, fromBlocks_multiply],
-      by simp [Sum.forall, Matrix.one_apply, apply_ite]⟩
-  have h_star : IsOrthoIntegral M'ᴴ := by
-    obtain ⟨h_cols, h_int⟩ : IsOrthoIntegral M' := hg'
-    refine ⟨fun w ↦ ?_, fun i j ↦ star_mem_Ô (h_int j i)⟩
-    rw [conjTranspose_map (evalInf w) fun a : 𝔸 E ↦ rfl, conjTranspose_conjTranspose]
-    exact (mul_eq_one_comm_of_card_eq _ _ _ h_card).1 (h_cols w)
-  have h_L : IsOrthoIntegral L :=
-    ((h_hyp.block_diag (.of_stdForm s₀)).mul h_star).mul (.of_stdForm s)
-  rw [mem_maxCompact_iff_isOrthoIntegral_adeleMatrix, h_mat]
-  exact IsOrthoIntegral.mul hg h_L
 
 variable {H} in
 omit [WeilData E] in
@@ -557,50 +433,6 @@ lemma exists_mem_maxCompact_actsOnFrame (g : G E s) (wt : p → ℕ) :
   have h_triangular : (mkAdelicGL (b, b')).val.BlockTriangular wt := fun i j hij ↦
     Prod.ext (funext fun w ↦ hb w hij) (hb' hij)
   exact ⟨(κ, κ'), ⟨fun w _ ↦ hκ w, hκ'⟩, mkAdelicGL (b, b'), h_triangular, h_frame⟩
-
-/-- The Iwasawa decomposition place by place. Every `g` has a right translate `g * κ`, with `κ` in
-the maximal compact subgroup, that acts on the isotropic frame k by a matrix `b` (`H.ActsOnFrame`:
-g κ k = k b) that is block triangular for the weights `wt`, where `κ` is trivial at every infinite
-and every finite place at which `g` is trivial (`atPlace w` is the component at `w`). -/
-lemma exists_mem_maxCompact_actsOnFrame_and_eq_one (g : G E s) (wt : p → ℕ) :
-    ∃ κ ∈ maxCompact E s, ∃ b : GL p (𝔸 E),
-      b.val.BlockTriangular wt ∧
-      H.ActsOnFrame (g * κ) b.val ∧
-      (∀ w : NumberField.InfinitePlace E, g.fst w = 1 → κ.fst w = 1) ∧
-      ∀ w : FinPlace E, g.snd.atPlace w = 1 → κ.snd.atPlace w = 1 := by
-  -- Replace the components of `κ` and `b` by `1` at the places where `g` is trivial; the adele `e`
-  -- is `0` at these places and `1` at the others.
-  classical
-  obtain ⟨κ, ⟨hκ_inf, hκ_fin⟩, b, hb, h_frame⟩ := H.exists_mem_maxCompact_actsOnFrame g wt
-  let S : Set (FinPlace E) := {w : FinPlace E | g.snd.atPlace w ≠ 1}
-  have hS (w : FinPlace E) : w ∈ S.conjClosure ↔ g.snd.atPlace w ≠ 1 := by
-    simp [S, Gf.atPlace_star_eq_one_iff]
-  let e : 𝔸 E := (fun w ↦ if g.fst w = 1 then 0 else 1, idem S.conjClosure)
-  have he : IsIdempotentElem e :=
-    Prod.ext (funext fun w ↦ by simp [e]) (idem_mul_self S.conjClosure)
-  let κ' : G E s := (fun w ↦ if g.fst w = 1 then 1 else κ.fst w, Gf.componentOn n S κ.snd)
-  have hκ' : κ' ∈ maxCompact E s :=
-    ⟨fun w hw ↦ by simpa [κ', ite_mem] using fun _ ↦ hκ_inf w hw,
-                     Gf.componentOn_mem_stdLevel hκ_fin⟩
-  have h_mat : (g * κ').adeleMatrix = e • (g * κ).adeleMatrix + (1 - e) • 1 := by
-    ext i j : 1
-    refine Prod.ext (funext fun w ↦ ?_) ?_
-    · by_cases hw : g.fst w = 1 <;>
-        simp [e, κ', hw, Matrix.one_apply, apply_ite Prod.fst, ite_apply, -G.adeleMatrix_mul]
-    · have h_fin : (g * κ').snd = Gf.componentOn n S (g * κ).snd := by
-        refine Gf.ext fun w ↦ ?_
-        by_cases hw : g.snd.atPlace w = 1 <;> simp [κ', hS, hw]
-      have h_component : (Gf.componentOn n S (g * κ).snd).val.val =
-          idem S.conjClosure • (g * κ).snd.val.val + (1 - idem S.conjClosure) • 1 := rfl
-      rw [G.adeleMatrix_snd, h_fin, h_component]
-      simp [e, Matrix.one_apply, apply_ite Prod.snd, -G.adeleMatrix_mul]
-  have h_cut : (cutGL he b).val = e • b.val + (1 - e) • 1 := rfl
-  refine ⟨κ', hκ', cutGL he b, fun i j hij ↦ ?_, ?_, fun w hw ↦ ?_, fun w hw ↦ ?_⟩
-  · simp [h_cut, hb hij, ne_of_apply_ne wt hij.ne']
-  · rw [ActsOnFrame, h_mat, h_cut, Matrix.add_mul, Matrix.smul_mul, h_frame]
-    simp [Matrix.mul_add]
-  · simp [κ', hw]
-  · simp [κ', hS, hw]
 
 /-- The Iwasawa decomposition. Every `g` has a right translate `g * κ`, with `κ` in the maximal
 compact subgroup, that acts on the isotropic frame by a matrix `b`, block triangular for the

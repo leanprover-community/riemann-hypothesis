@@ -201,14 +201,6 @@ theorem inner_poincareAt (φ : D.SourceForm) (y : D.principalForms (D.spaceY 0))
         ∂(D.gradingY 0).besselMeasure := by
   rw [poincareAt, inner_rieszMap, besselPeriod_apply]
 
-/-- Scaling the linear form `t` scales the Poincaré map `𝒫 = D.poincareAt g t` by the same factor,
-so that a change of the Haar measure can be absorbed in `t`. -/
-theorem poincareAt_smul (c : ℂ) : D.poincareAt g (c • t) = c • D.poincareAt g t := by
-  refine LinearMap.ext fun φ ↦ ext_inner_left ℂ fun y ↦ ?_
-  rw [LinearMap.smul_apply, inner_smul_right, inner_poincareAt, inner_poincareAt,
-    ← integral_const_mul]
-  simp only [Grading.sourceFn_smul_left, mul_assoc]
-
 /-- Let `z` be a form on `G₀`, right invariant under `J`, whose archimedean type is conjugate to
 that of the values of `𝒫 = D.poincareAt g t`. Then `[J_M : J ∩ J_M] ∫_{[G₀]} z · 𝒫 φ` is the sum
 over representatives `γ` of `J_M / (J ∩ J_M)` of `∫_{[R₀]} 𝒲_φ (r) z (r g γ) dr`. -/

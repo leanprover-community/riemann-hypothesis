@@ -306,23 +306,6 @@ lemma sourceFn_mul {u : G E ε} (hu : u ∈ Y.unipotent) (a : G E (1 : X → ℤ
       Y.unipotentChar u * algFormCoeff 1 t φ a := by
   rw [sourceFn, Y.leviPart_mul_inclX hu a, mul_inv_cancel_right]
 
-/-- This is the case `t = gramForm v` of `New.Grading.sourceFn_mul`, where `v` stands for the
-complex conjugate of `v_*` and `gramForm` is the Gram pairing `(ξ, η) ↦ ξ* G η`. Let `u` lie in the
-unipotent subgroup `Y.unipotent`, and let `a` lie in the adelic unitary group of the standard
-definite space on `X`, embedded by `inclX`. Then the source function of the algebraic form `φ`
-satisfies `Y.sourceFn (gramForm v) φ (u a) = ψ_U (u) · gramForm (conjWeylRep κ e a.1 v) (φ.1 a.2)`,
-where `a.1` is the infinite (real) part of `a` and `a.2` is its finite part. -/
-lemma sourceFn_gramForm_mul_inclX (v : WeylIndex X κ → ℂ) {u : G E ε} (hu : u ∈ Y.unipotent)
-    (a : G E (1 : X → ℤˣ)) :
-    Y.sourceFn (gramForm v) φ ⟨u * Y.inclX a,
-        mul_mem (Y.unipotent_le_besselGroup hu) (Y.inclX_mem_besselGroup a)⟩ =
-      Y.unipotentChar u * gramForm (conjWeylRep κ e a.1 v) (φ.1 a.2) := by
-  have h_invariant : gramForm (conjWeylRep κ e a.1 v) (φ.1 a.2) =
-      gramForm v (conjWeylRep κ e a.1⁻¹ (φ.1 a.2)) := by
-    -- `conjWeylRep κ e a.1` preserves the Gram product and undoes `conjWeylRep κ e a.1⁻¹`.
-    rw [← gramForm_conjWeylRep (e := e) a.1 v, Representation.self_inv_apply]
-  rw [Y.sourceFn_mul (gramForm v) φ hu, algFormCoeff_apply, h_invariant]
-
 /-- On `H`, the function `𝒲_φ` is the coefficient function `algFormCoeff 1 t φ` of `φ`. -/
 lemma sourceFn_inclX (a : G E (1 : X → ℤˣ)) :
     Y.sourceFn t φ ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩ = algFormCoeff 1 t φ a := by

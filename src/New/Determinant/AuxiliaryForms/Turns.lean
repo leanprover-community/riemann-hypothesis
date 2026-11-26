@@ -231,9 +231,6 @@ lemma newTuple_apply_of_mem (hc : c.IsTurn ϑ w) {e : GridNode × GridNode} (he 
 lemma oldTuple_low (hc : c.IsTurn ϑ w) : c.oldTuple S y v (c.low, c.fst) = y.toRows₁ := by
   simp [oldTuple, hc.fst_ne_snd]
 
-lemma newTuple_fst (hc : c.IsTurn ϑ w) : c.newTuple S x v' (c.fst, c.high) = x.toCols₁ := by
-  simp [newTuple, hc.fst_ne_snd]
-
 lemma oldMatrix_oldTuple (hc : c.IsTurn ϑ w) : c.oldMatrix (c.oldTuple S y v) = y := by
   simp [oldMatrix, oldTuple, hc.fst_ne_snd]
 

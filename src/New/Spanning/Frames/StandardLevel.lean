@@ -749,17 +749,6 @@ def gauge (α : Aˣ := 1) (hα : α.1 ∈ integers := by simp)
                      (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))⟩
   exists_commonBound _ hx _ hz := h.exists_isCommonBound hα (fun _ ↦ rfl) hx hz
 
-/-- At a large lattice datum, let `y` and `γ⁻¹ y` be near at `l`: elements of
-`partialUnitriangularGroup l` move them into the group of integral isometries. Then the leading
-minors of order `j ≤ l` of the matrix of the products `h(f_a, γ f_b)` of the frame vectors are
-integral. -/
-theorem leadingMinor_mem_of_isNear {l : ℕ} {γ y : T.G} (hy : F.IsNear l y)
-    (hγy : F.IsNear l (γ⁻¹ * y)) {j : Fin (𝔰.n + 1)} (hj : j.val ≤ l) :
-    leadingMinor (T.frameGram (γ.val : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)) j ∈ P.integers := by
-  -- In the gauge of scale `1` every size means integral.
-  simpa [gauge] using
-    (h.gauge 1 (one_mem P.integers) (star_one A)).leadingMinor_mem_ofSize_of_isNear hy hγy hj
-
 include h in
 /-- At a large lattice datum `F`, let `g` be an integral self-conjugate unit of `A`, `a < 𝔰.ϱ`, and
 `S` a subgroup of the unipotent group `unipotentBelow a` of the floors below `a`. Some `u ∈ S` moves

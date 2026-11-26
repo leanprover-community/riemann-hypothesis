@@ -189,16 +189,6 @@ def conjugateBy (σ : ℂ ≃+* ℂ) : AlgHeckeChar K where
     rw [← e.prod_comp]
     simp [e, h_principal, ← RingHom.comp_assoc]
 
-/-- For an algebraic Hecke character `θ` of the number field `K`, an automorphism `σ` of `ℂ` and a
-finite idele `y`, the finite-idele character of the conjugate `θ.conjugateBy σ` (that is, `σ ∘ θ`)
-takes at `y` the value `σ` applied to the value of `θ` at `y`. -/
-lemma conjugateBy_apply (σ : ℂ ≃+* ℂ) : ((θ.conjugateBy σ).val.fst y : ℂ) = σ (θ.val.fst y) := rfl
-
-/-- The conjugate of the character `θ` by `σ` has at `σ ∘ τ` the exponent of `θ` at `τ`. -/
-lemma conjugateBy_exponent (σ : ℂ ≃+* ℂ) (τ : K →+* ℂ) :
-    (θ.conjugateBy σ).val.snd.toAdd (σ.toRingHom.comp τ) = θ.val.snd.toAdd τ := by
-  simp [conjugateBy, ← RingHom.comp_assoc]
-
 end AlgHeckeChar
 
 /-! ## Algebraic characters from unitary Hecke characters of a CM field -/

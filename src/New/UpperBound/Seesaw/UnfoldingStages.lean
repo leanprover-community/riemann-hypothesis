@@ -620,9 +620,6 @@ noncomputable def unfoldStage (k : ℕ) (hk : k ≤ 2 * D.ϱ + 1) {X : Type} {s 
   (D.gradingY k hk).unfoldStep Y' (rankTwist (D.chainChar ϑ (k + 1))) (movedDatum ϑ ξ y k)
     (unfoldStageOn ϑ t φ ξ y k hk)
 
-lemma unfoldStageOn_zero (hk : 0 ≤ 2 * D.ϱ + 1) :
-    unfoldStageOn ϑ t φ ξ y 0 hk = (D.gradingY 0).sourceFn t φ.1 := rfl
-
 /-- On `R_{k+1}`, the Bessel group of `D.gradingY (k + 1) hk`, the function `unfoldStageOn` of the
 unfolding is `γ ↦ 𝒲_{k+1} (γ g_{k+1})`, where `𝒲_{k+1}` is `unfoldStage` at `k` and
 `g_{k+1} = (ξ (k + 1), y (k + 1))`. -/

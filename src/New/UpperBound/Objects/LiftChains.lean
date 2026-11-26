@@ -189,13 +189,6 @@ def kernelProduct (Φ : (j : ℕ) → S j) (φ : AlgForm (n 0) κ (e 0)) (g : �
     (m : ℕ) : WeylIndex (n m) κ → ℂ :=
   compUpTo (fun j ↦ (k j).jetMap ((k j).ω (g j, g (j + 1)) (Φ j))) m (φ.val (g 0))
 
-omit [∀ j, IsLevel (K j)] in
-/-- The product of `m + 1` kernels is the last kernel applied to the product of the first `m`. -/
-lemma kernelProduct_succ (Φ : ∀ j : ℕ, S j) (φ : AlgForm (n 0) κ (e 0))
-    (g : ∀ j : ℕ, Gf E (n j)) (m : ℕ) :
-    kernelProduct k Φ φ g (m + 1) =
-      (k m).jetMap ((k m).ω (g m, g (m + 1)) (Φ m)) (kernelProduct k Φ φ g m) := rfl
-
 omit [Module ℚ M] [Module ℂ M] in
 /-- A sum over tuples of `m + 1` double cosets, sorted by the last one. For a tuple `c` of classes
 `c j` in `StdClasses (K j)`, the family `classPoints c g` lists their chosen representatives and

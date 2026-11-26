@@ -380,32 +380,6 @@ def weylGram : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ :=
   of (invFun (GL.nablaCombination (R := ℤ) κ) ∘
     invFun (GL.nablaCombination (R := MatrixPoly (Σ τ : Φ, n τ) ℤ) κ) (weylKernel n κ X))
 
-/-- Let `n τ` be the finite row type and `κ τ h` the number of columns of height `h` at the place
-`τ`, let `y` be the array of variables `X` with rows `(τ, a)`, and let `b = nablaBasis`. If `b` is
-linearly independent over the polynomial ring `ℤ[y]` and the generic kernel `weylKernel n κ X` is an
-integer combination of the products `b_i(x) * b_j(y)`, then `weylGram` gives the coefficients of
-such a combination. -/
-lemma sum_weylGram_smul_eq_weylKernel_of_exists {Φ : Type} [Fintype Φ] [DecidableEq Φ]
-    (n : Φ → Type) [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)] (κ : Φ → ℕ → ℕ)
-    (h_indep : LinearIndependent (MatrixPoly (Σ τ : Φ, n τ) ℤ)
-      (nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ))
-    (h_coords : ∃ G : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ,
-      ∑ i : WeylIndexFamily n κ, (∑ j : WeylIndexFamily n κ, G i j • nablaBasis ℤ n κ j) •
-        nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ i = weylKernel n κ X) :
-    ∑ i : WeylIndexFamily n κ, (∑ j : WeylIndexFamily n κ, weylGram n κ i j • nablaBasis ℤ n κ j) •
-        nablaBasis (MatrixPoly (Σ τ : Φ, n τ) ℤ) n κ i = weylKernel n κ X := by
-  obtain ⟨G, hG⟩ := h_coords
-  -- By independence the coordinates in the `b_i(x)` are unique, so they are those given by `G`.
-  have h_outer : invFun (GL.nablaCombination κ) (weylKernel n κ X) =
-      fun i ↦ ∑ j, G i j • nablaBasis ℤ n κ j :=
-    h_indep.fintypeLinearCombination_injective <|
-      (invFun_eq (f := GL.nablaCombination κ) ⟨_, hG⟩).trans hG.symm
-  have h_row (i : WeylIndexFamily n κ) :
-      ∑ j, weylGram n κ i j • nablaBasis ℤ n κ j = ∑ j, G i j • nablaBasis ℤ n κ j := by
-    rw [weylGram, h_outer]
-    exact invFun_eq (f := GL.nablaCombination κ) ⟨G i, rfl⟩
-  simp only [h_row, hG]
-
 variable {n} in
 /-- The integer Gram matrix `New.weylGram` for the row type n and column counts κ, with its entries
 mapped into R. -/

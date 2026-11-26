@@ -102,18 +102,6 @@ lemma baseChange_mul_upsilon_zpow_inv_apply [WeilData E] (k : ℤ) (y : (𝔸 E)
         rw [h_base, h_upsilon, ← prod_zpow, prod_div_distrib]
     _ = ∏ w, u w ^ (2 * e w - k) := prod_congr rfl fun w _ ↦ (zpow_sub₀ (hu_ne w) ..).symm
 
-/-- Let `ν` be a character of `U(1)(𝔸)` of weight `e` with tame part `ψ`, and let `υ` be the
-splitting character in the Weil data on `E`, whose component at each infinite place `w` is
-`z ↦ z / |z|` in the chosen embedding. At an idele `y` with finite part `1`, the rank-`r` space
-character `ν.spaceChar r : y ↦ ν(y / ȳ) υ(y) ^ (-r)` takes the value
-`∏ w, (y_w / |y_w|) ^ (2 e_w - r)`, where `y_w` is the complex component of `y` at the infinite
-place `w`. In this sense it has the weight `e - r / 2`. -/
-theorem spaceChar_apply_of_snd_eq_one [WeilData E] (r : ℕ) (y : (𝔸 E)ˣ) (hy_fin : (y : 𝔸 E).2 = 1) :
-    ((ν.spaceChar r).val y : ℂ) =
-      ∏ w : NumberField.InfinitePlace E, ((y : 𝔸 E).1 w / ‖(y : 𝔸 E).1 w‖) ^ (2 * e w - r) := by
-  rw [AutChar.spaceChar, inv_pow, ← zpow_natCast]
-  exact h.baseChange_mul_upsilon_zpow_inv_apply r y hy_fin
-
 /-- Let `ν` have weight `e ≠ 0` and some tame part, and let `S` be finite. Then the `L`-function of
 `x ↦ ν(x / x̄)` without the factors at `S ∪ S̄` does not vanish at any real `s ≥ 1` (at `s = 1`
 its value is the limit from the right, see `New.eulerProd`). -/

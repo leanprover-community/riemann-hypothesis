@@ -58,9 +58,6 @@ level `0`. -/
 /-- The integers within distance `n` of `0` or of `c`. -/
 noncomputable abbrev twoWindows (n : ℕ) (c : ℤ) : Finset ℤ := Icc (-n : ℤ) n ∪ Icc (c - n) (c + n)
 
-lemma mem_twoWindows {n : ℕ} {c y : ℤ} : y ∈ twoWindows n c ↔ |y| ≤ n ∨ |y - c| ≤ n := by
-  grind
-
 /-- The gap condition: `p` divides no nonzero integer within distance `n` of `0`, of `b` or
 of `-b`. -/
 def NoMultipleNear (p n : ℕ) (b : ℤ) : Prop :=
@@ -708,17 +705,20 @@ lemma exists_isOperatorOfCost_and_mem_deepElements (I : Finset ((_ : ℕ) × ℤ
     let low (b : ℕ) (u : ℤ) : ℤ := if b = a ∧ o' b u = n + 1 then n else o' b u
     have cover_low (b : ℕ) (u : ℤ) (hu : u ∈ S.jumpSet (i.stepBack b)) (m : ℤ) (h_le : o b u ≤ m)
         (h_lt : m < low b u) : (⟨b, m⟩ : Σ _ : ℕ, ℤ) ∈ I := by
-      refine mem_of_mem_insert_of_ne (cover b u hu m h_le (by grind)) fun h_eq ↦ ?_
+      have h_lt' : m < o' b u := by dsimp only [low] at h_lt; split_ifs at h_lt <;> omega
+      refine mem_of_mem_insert_of_ne (cover b u hu m h_le h_lt') fun h_eq ↦ ?_
       obtain ⟨rfl, rfl⟩ : b = a ∧ m = n := by simpa using h_eq
       -- here `m + 1 < o' b u`, so the pair `(b, m + 1)` contradicts the choice of `m`
+      have h_succ_lt : m + 1 < o' b u := by dsimp only [low] at h_lt; split_ifs at h_lt <;> omega
       have succ_mem : (⟨b, m + 1⟩ : Σ _ : ℕ, ℤ) ∈ I :=
-        mem_of_mem_insert_of_ne (cover b u hu (m + 1) (by lia) (by grind)) (by simp)
+        mem_of_mem_insert_of_ne (cover b u hu (m + 1) (by omega) h_succ_lt) (by simp)
       exact (lt_add_one m).not_ge (q_max _ succ_mem)
     have deep_low : A x ∈ S.deepElements i low := A_deep hx low cover_low
     -- `B` keeps the depth `low`; it remains to raise the lowered orders
     obtain ⟨B_const, B_deep⟩ : B (A x) ∈ S.deepElements i low := B_cost.mem_deepElements deep_low
     refine ⟨B_const, fun g ↦ mem_withOrders_of_mem_hodgeFil (B_deep g) fun b u hu h_lt μ hμ ↦ ?_⟩
-    obtain ⟨rfl, eq_succ⟩ : b = a ∧ o' b u = n + 1 := by grind
+    obtain ⟨rfl, eq_succ⟩ : b = a ∧ o' b u = n + 1 := by
+      dsimp only [low] at h_lt; split_ifs at h_lt with h; exact h; omega
     rw [eq_succ]
     refine B_step (A x) μ hμ.1 (fun γ ↦ ?_) g
     obtain ⟨-, low_values⟩ := deep_low.2 γ

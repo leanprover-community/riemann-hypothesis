@@ -158,8 +158,11 @@ lemma AgreeModEps.ringChar_smul_and_smul_eq_zero (hq : IsPullbackAlong (sqZeroRe
     -- On infinitesimal points the logarithm `ω` of `exists_isTangentLog` turns `c •` into
     -- multiplication by `x.baseHom c = 0`, and the points with `ω = 0` are killed by
     -- `star D.β - b`.
-    obtain ⟨ω, hω⟩ := x.exists_isTangentLog (b := b) (by simp [hρ, hb])
-    have h_log : ω (c • (τ ≫ y)) = 0 := by simp [(hω h_tiny).map_smul, hρ, hc]
+    obtain ⟨ω, hω⟩ := x.exists_isTangentLog (b := b)
+      (by simp only [hρ, RingHom.coe_comp, Function.comp_apply, hb, map_zero])
+    have h_log : ω (c • (τ ≫ y)) = 0 := by
+      simp only [(hω h_tiny).map_smul, hρ, RingHom.coe_comp, Function.comp_apply, hc, map_zero,
+        zero_mul]
     simpa [mul_smul] using (hω (h_tiny.smul c)).smul_eq_zero_of_eq_zero h_log
 
 /-- Drinfeld's lifting lemma. Let `x`, `x'` deform `x₀` over `k[ε]`, and let `c` in `𝓞 E` kill all
@@ -283,8 +286,10 @@ lemma isLinear_and_pairing_eq_of_reduction :
       x'.lineBundle.picClass.atPoint (v ≫ f) = x.lineBundle.picClass.atPoint (a • v) := by
     obtain ⟨w, rfl⟩ := hq.isGroupBaseChange.pointEquiv.surjective v
     rw [← map_smul, LinearEquiv.symm_apply_apply]
-    simp [pointEquiv_apply, ← (IsPullbackAlong.isGroupBaseChange _).linear.map_smul, Pic.atPoint,
-      ← IsPullbackAlong.lineBundle_eq_pull, hf]
+    simp only [pointEquiv_apply, assoc, hf, ModuleObj.comp_smul,
+      ← (IsPullbackAlong.isGroupBaseChange _).linear.map_smul, map_smul, map_obj_left,
+      Pic.atPoint, comp_left, map_map_left, Pic.pull_picClass, LineBundle.pull_comp,
+      ← IsPullbackAlong.lineBundle_eq_pull, and_self]
   have h_isog_char : IsIsogeny (ringChar k • 𝟙 x.groupScheme) :=
     mod_cast x.isIsogeny_smul_id (a := ringChar k) NeZero.out
   -- For the pairing, `pairing_eq_of_fpqc_cover` lets us assume that the first point is a multiple
@@ -292,7 +297,8 @@ lemma isLinear_and_pairing_eq_of_reduction :
   refine ⟨⟨fun c ↦ ?_⟩, fun y hy B b t ↦ ?_, fun hs ↦ ?_⟩
   · -- The defect of linearity vanishes modulo `ε`, so `ringChar k` kills it; cancel this isogeny.
     have h_agree : AgreeModEps hq' hq' x.groupScheme ((c • 𝟙 x.groupScheme) ≫ f - c • f) 0 := by
-      simp [AgreeModEps, ← assoc, h_red, smul_comm c, AddGrpObj.comp_sub]
+      simp only [AgreeModEps, AddGrpObj.comp_sub, ← assoc, ModuleObj.comp_smul, comp_id, h_red,
+        map_smul, smul_comm c, sub_self, map_zero, comp_zero, implies_true]
     obtain ⟨h_char_kills, -⟩ := h_agree.ringChar_smul_and_smul_eq_zero hq'
     refine (epi_of_epi_left (ringChar k • 𝟙 _)).left_cancellation _ _ (eq_of_sub_eq_zero ?_)
     simpa [← smul_sub, nsmul_comp] using h_char_kills
@@ -325,7 +331,8 @@ lemma isLinear_and_pairing_eq_of_reduction :
     suffices h_mul : ringChar k • x'.lineBundle.picClass.pairing (y ≫ f) (z ≫ f) =
         ringChar k • x.lineBundle.picClass.pairing (a • y) (a • z) by
       simpa [(ThetaObject.hasClassLaws _).1.pairing_nsmul_left, nsmul_comp, comp_nsmul] using h_mul
-    simp [Pic.pairing, smul_sub, h_frob, ← add_comp, ← assoc, (h_red _).right, comp_add]
+    simp only [Pic.pairing, ← add_comp, atPoint_zero, add_zero, smul_sub, h_frob, ← assoc, comp_add,
+      (h_red _).right, smul_add, ModuleObj.comp_smul]
 
 /-- Let `f : x.groupScheme ⟶ x'.groupScheme` and `F : x.groupScheme ⟶ x₁.groupScheme` be
 homomorphisms of deformations of `x₀.groupScheme` over `k[ε]` (`k` algebraically closed of prime

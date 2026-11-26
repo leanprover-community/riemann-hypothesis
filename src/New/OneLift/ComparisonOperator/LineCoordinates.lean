@@ -588,23 +588,6 @@ lemma weylNormSq_comp_eval_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowC
   rw [comp_eval_stackedDetProdCoords_eq_of_toPoly_eq j i Y hξ]
   exact h_norm ⟨hY_small, hz_small⟩
 
-/-- Specialise the coordinates `stackedDetProdCoords j i Y` by values `z` for the remaining
-variables and a ring map `φ`. Then `toPoly` of the result is the specialised product of
-determinants. Assume `IsSmallSpecialization j Y φ z`: the images under `φ` of the conjugates of the
-entries of `Y`, and of the values of `z`, are at most `M ^ 4` in size. Then `weylNormSq` of the
-result is at most `(M ^ 9) ^ ((12 D.m + 1) N)`, where `N` is the sum over `τ` of
-`card (DetIndex j τ)`, the total number of determinants. -/
-lemma weylNormSq_stackedDetProdCoords_le (j : D.LiftIndex) (i : D.RowChoice)
-    (Y : Matrix D.FlatIndex D.FlatIndex D.E) (φ : ℂ →+* ℂ)
-    (z : D.Φ × FirstFactorIndex j × AddedIndex j → ℂ) :
-    toPoly (fun _ : D.Φ ↦ FirstFactorIndex j) (untwistedDescentPair j).colsPlus
-        (φ ∘ eval z ∘ stackedDetProdCoords j i Y) =
-      .map (φ.comp (eval z)) (inFirstCols (stackedDetProd (posEquiv j) (constantRows j i Y))) ∧
-    (IsSmallSpecialization j Y φ z → weylNormSq (φ ∘ eval z ∘ stackedDetProdCoords j i Y) ≤
-      ↑(D.M ^ 9) ^ ((12 * D.m + 1) * ∑ τ : D.Φ, card (DetIndex j τ))) :=
-  ⟨toPoly_comp_eval_stackedDetProdCoords j i Y φ z, fun h_small ↦
-    weylNormSq_comp_eval_stackedDetProdCoords_le j i Y h_small.norm_entry_le h_small.norm_value_le⟩
-
 /-- Take the product of the determinants of the constant rows `constantRows j i Y`, some of them
 rows of the matrix `Y` chosen by `i`, stacked over rows of variables (`stackedDetProd`). Read it as
 a polynomial in the first `D.posRank j` columns of variables, with coefficients polynomials in the

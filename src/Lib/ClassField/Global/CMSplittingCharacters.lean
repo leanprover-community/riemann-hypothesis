@@ -584,22 +584,6 @@ lemma upsilon_atUniformizer_eq_neg_one [SplittingChar E] (w : FinPlace E) (hw : 
     υ.atUniformizer w = -1 :=
   upsilon_locFullIdele_eq_neg_one_of_star_eq w (uniformizer w) hw (v_uniformizer w)
 
-/-- The four properties of a splitting character `υ` of `E` that are used: (1) `υ(ȳ) = υ(y)⁻¹`;
-(2) `υ(y) = ∏_τ y_τ/|y_τ|` over the infinite places `τ` if the finite part of `y` is a unit of
-`Ô E`; (3) `υ(ϖ) = -1` for every uniformiser `ϖ` at a finite place `w = w̄`, placed at `w` in an
-idele by `locFullIdele`; (4) on the ideles fixed by conjugation, the ideles of the maximal real
-subfield `F`, `υ` is the quadratic character `η` of `E/F`. This collects `υ_star`, `υ_unit`,
-`upsilon_locFullIdele_eq_neg_one_of_star_eq` and `upsilon_eq_quadraticIdeleChar`. -/
-theorem υ_star_eq_inv_and_apply_eq [SplittingChar E] :
-    (∀ y : (𝔸 E)ˣ, υ.val (star y) = (υ.val y)⁻¹) ∧
-    (∀ y : (𝔸 E)ˣ, y.map (MonoidHom.snd (InfinitePlace E → ℂ) (𝔸f E)) ∈ (Ô E).units →
-      (υ.val y : ℂ) = ∏ w : InfinitePlace E, (y : 𝔸 E).1 w / ‖(y : 𝔸 E).1 w‖) ∧
-    (∀ (w : FinPlace E) (ϖ : (LocField w)ˣ), star w = w →
-      Valued.v (ϖ : LocField w) = WithZero.exp (-1) → (υ.val (locFullIdele w ϖ) : ℂ) = -1) ∧
-    ∀ y : (𝔸 E)ˣ, star y = y → (υ.val y : ℂ) = quadraticIdeleChar E y :=
-  ⟨υ_star, υ_unit, upsilon_locFullIdele_eq_neg_one_of_star_eq,
-    fun _ hy ↦ upsilon_eq_quadraticIdeleChar hy⟩
-
 end Restriction
 
 end CMTypeField

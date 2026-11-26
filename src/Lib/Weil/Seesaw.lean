@@ -213,20 +213,6 @@ def IsPairEdge (a b : I → AutChar E) (e : GInf E s → ℂ) (e' : GInf E s' �
 
 variable {a b : I → AutChar E} {e : GInf E s → ℂ} {e' : GInf E s' → ℂ}
 
-/-- Let the characters `a i` have weight `γ` and the `b i` weight `γ'`, with some tame parts. If at
-each infinite place `w` the polynomial `Φ w` is a joint harmonic for the parameters `l'`, `-l` and
-the weights `γ`, `-γ'` (`New.IsJointHarmonic`), then the product of the `Φ w`, each in the variables
-of `w`, gives an edge (`New.Exchange.IsPairEdge`) between the types of `l` and `l'`. This is a
-corollary of `New.isEdge_of_isJointHarmonic`. -/
-lemma isPairEdge_of_isJointHarmonic [Nonempty n] [Nonempty n'] {γ γ' : InfinitePlace E → ℤ}
-    (ha : ∀ i : I, ∃ ψ : (w : FinPlace E) → MulChar (ResField w) ℂ, (a i).HasWeight γ ψ)
-    (hb : ∀ i : I, ∃ ψ : (w : FinPlace E) → MulChar (ResField w) ℂ, (b i).HasWeight γ' ψ)
-    {Φ : InfinitePlace E → MvPolynomial (n' × n) ℂ}
-    (hΦ : ∀ w : InfinitePlace E, IsJointHarmonic (.std s' s (γ w) (-γ' w)) (l' w) (-l w) (Φ w)) :
-    IsPairEdge a b (typeKernel l s) (typeKernel l' s')
-      (∏ w : InfinitePlace E, MvPolynomial.rename (fun p : n' × n ↦ (w, p)) (Φ w)) :=
-  ⟨γ, γ', ha, hb, isEdge_of_isJointHarmonic hΦ⟩
-
 /-- An edge family (`New.Exchange.IsEdgeFamily`) of characters `c` with polynomial `P` is an edge
 (`New.Exchange.IsPairEdge`) between `k d` and `k' d` for the characters that `c` attaches to the
 index types `n`, `n'`. -/

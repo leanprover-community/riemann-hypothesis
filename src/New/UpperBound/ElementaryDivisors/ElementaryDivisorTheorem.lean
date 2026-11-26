@@ -1213,36 +1213,6 @@ theorem elementary_divisors {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [
     rw [hY_apply, hb.edgeHeckeOperator_regroup]
     simp only [π, A, LinearMap.comp_apply, mulVecLin_apply]
 
-/-- The theorem on elementary divisors in terms of lengths. Let `O` be a discrete valuation ring of
-characteristic zero and `T` a Frobenius cycle: a prime `p = T.p`, not a unit of `O`, a power
-`P = T.P` of `p` and `N` ring maps `W → O` (the letters), where the residue field of `W` has
-`q = P ^ N` elements. The points of `X` represent `W`-lattices of rank `k`, each with a free
-`O`-module with basis indexed by `H`. The edges into `x ∈ X` are indexed by the cosets of the
-parahoric subgroup of `GL_k(W)` with blocks `r` and `k - r`, and `𝓔` records their origins and basis
-changes. The bijection `J` splits `I` into `H` and the exponents of the monomials with `k` variables
-and degree `n` in each letter. The edge Hecke operator `A` on functions `X → O ^ I` sums, over the
-edges into `x`, the values at their origins carried to `x`. Let `Y ∘ f = f ∘ A`, and let
-`0 < r ≤ k / 2`, `0 < θ ≤ 1`, `n ^ 4 ≤ q` and `(N k log q / θ) ^ 5 P ^ (3 r) ≤ n` (`h_large`). Then
-`Y` keeps the image `L` of `f`, and the length of `L / (Y L + p ^ m L)` (`New.relLength`) is at most
-`l` times the length of `O / p`, for a natural number `l ≤ (3 c_div + θ m) |X| |I|` with
-`c_div = T.divisorConstant k n r = N n (1 / P ^ (2 r) + r ^ 2 / (k P))`. This is a corollary of
-`New.FrobeniusCycle.elementary_divisors`. -/
-theorem elementary_divisors_length {N k n : ℕ} {W : Type} [NeZero N] [CommRing W] [IsLocalRing W]
-    {X : Type*} [Fintype X] {O : Type} [CommRing O] [IsDomain O] [IsDiscreteValuationRing O]
-    [CharZero O] (T : FrobeniusCycle N W O) (hp : ¬IsUnit (T.p : O)) {r : ℕ} {θ : ℝ}
-    (h_large : T.IsLargeDegree k n r θ) {H : Type*} {I M : Type} [Fintype H] [DecidableEq H]
-    [Fintype (ParahoricCosets W k r)] [Fintype I] [AddCommGroup M] [Module O M]
-    (J : I ≃ Exponents N k n × H) (𝓔 : EdgeCoordinates W O k r X H) (f : (X → I → O) →ₗ[O] M)
-    {Y : End O M} (hY : Y ∘ₗ f = f ∘ₗ T.edgeHeckeOperator n J 𝓔) (m : ℕ) :
-    f.range.map Y ≤ f.range ∧
-    ∃ l : ℕ, l ≤ (3 * T.divisorConstant k n r + θ * m) * (Nat.card X * Nat.card I) ∧
-      relLength f.range (f.range.map Y ⊔ (T.p : O) ^ m • f.range) ≤
-        l * length O (O ⧸ span {(T.p : O)}) := by
-  have h_onto : IsOntoUpToColength (T.p : O) f.range m Y
-      ((3 * T.divisorConstant k n r + θ * m) * (Nat.card X * Nat.card I)) :=
-    T.elementary_divisors hp h_large J 𝓔 f hY m
-  exact ⟨h_onto.left, h_onto.exists_relLength_le (Submodule.fg_range f)⟩
-
 end FrobeniusCycle
 
 end New

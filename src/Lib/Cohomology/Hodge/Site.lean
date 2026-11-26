@@ -228,9 +228,6 @@ lemma HodgeTest.hom_ext {f g : P ⟶ Q} (h_ring : f.1 = g.1)
 private lemma HodgeTest.snd_sqZeroExt_map_apply (f : P ⟶ Q) (x : sqZeroExt.obj P) :
     (sqZeroExt.map f x).snd = f.2 x.snd := rfl
 
-private lemma HodgeTest.baseProj_apply (C : HodgeTest k) (x : sqZeroExt.obj C) :
-    C.baseProj x = x.fst := rfl
-
 private lemma HodgeTest.sqZeroExt_map_comp_baseProj (f : P ⟶ Q) :
     sqZeroExt.map f ≫ Q.baseProj = P.baseProj ≫ f.1 := rfl
 

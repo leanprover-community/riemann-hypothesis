@@ -305,10 +305,6 @@ section
 
 omit [Fintype ι]
 
-theorem oscRows_apply (X : Matrix R R ℂ) :
-    T.oscRows X = ∑ a : R, ∑ b : R, X a b • T.oscRowsUnit a b := by
-  simp [oscRows, liftLinear_apply]
-
 theorem oscRows_E (a b : R) : T.oscRows.E a b = T.oscRowsUnit a b := by
   simp [oscRows, E]
 

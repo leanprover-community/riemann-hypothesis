@@ -300,7 +300,9 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
   let Φ (v : ℤ) (L : List σ) :
       End (PadicAlgCl ℓ) (∀ i, hodgeTateMaps (ρ i) (toAlgHom ..) v) :=
     piMap fun i ↦ hodgeTateMaps.pull (L.map (T i)).prod
-      (by simp [← End.mul_apply, (Commute.list_prod_left ..).eq, *])
+      (by simp only [← End.mul_apply, List.mem_map, forall_exists_index, and_imp,
+        forall_apply_eq_imp_iff₂, implies_true, (Commute.list_prod_left ..).eq,
+        Filter.eventually_true, hTρ])
   have h_alg : Algebra.IsAlgebraic ℤ_[ℓ] ℚ_[ℓ] := IsLocalization.isAlgebraic ℚ_[ℓ] ℤ_[ℓ]⁰
   have h_no_eigen (f : ∀ i : ι, hodgeTateMaps (ρ i) (toAlgHom ℤ_[ℓ] ℚ_[ℓ] ℂ_[ℓ]) u)
       (hf : ∀ s : σ, Φ u [s] f = (a ∘ θ) s • f) : f = 0 := by
@@ -320,7 +322,8 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
     have h_mem : φ ∈ hodgeTateMaps (matrixRep r) γ u :=
       mem_hodgeTateMaps_of_span h_span fun ⟨i, x⟩ ↦ by simpa [↓h_equiv, ← hφ] using! (f i).prop x
     ext
-    simp [← hφ, jump_eq_zero_iff.1 h_jump φ h_mem]
+    simp only [← hφ, jump_eq_zero_iff.1 h_jump φ h_mem, LinearMap.zero_apply, Pi.zero_apply,
+      ZeroMemClass.coe_zero]
   have h_comm (s t : σ) : Commute (Φ u [s]) (Φ u [t]) := by
     -- Both sides apply the same form to `x` moved by `T j s` and `T j t`, which commute.
     ext i f j x
@@ -347,7 +350,7 @@ lemma IsEigenQuotient.exists_sum_baseChange_eq_zero_of_jump_eq_zero [Fintype ι]
     obtain rfl | hw := eq_or_ne (w l) u
     · -- For `w l = u`, the combination `c(Φ u)` is zero, so `z = 0`.
       have h_z : z = 0 := by simp only [z, h_kill, LinearMap.zero_apply, Pi.zero_apply]
-      simp [h_z]
+      simp only [h_z, ZeroMemClass.coe_zero, map_zero, LinearMap.zero_apply]
     -- For `w l ≠ u` the pairing of `y` with `z` transforms by two different powers of the
     -- cyclotomic character, so it vanishes by Tate's theorem.
     obtain ⟨_, e, x, rfl⟩ := y.exists_sum_tmul_eq
@@ -515,7 +518,10 @@ lemma New.Variety.Model.jumpsRelAt_of_isEigenQuotient {E : Type} [Field E] [CMBa
     simpa [apply_ite] using hu
   lift u to ℕ using hJ_nonneg u hu_mem with h
   let ε : ℂ ≃+* PadicAlgCl ℓ := ιℓ.trans s.toRingEquiv
-  have hε (y : E) : ε (algebraMap E ℂ y) = place.e (algebraMap E Ω y) := by simp [h_emb, ε]
+  have hε (y : E) : ε (algebraMap E ℂ y) = place.e (algebraMap E Ω y) := by
+    simp only [h_emb, RingHom.coe_comp, RingHom.coe_coe, AlgEquiv.coe_inv, Function.comp_apply,
+      RingEquiv.coe_trans, RingEquiv.coe_mk, AlgEquiv.toEquiv_eq_coe, EquivLike.coe_coe,
+      RingEquiv.apply_symm_apply, AlgEquiv.apply_symm_apply, ε]
   obtain ⟨c, hc_one, hc_kill⟩ : ∃ c : List (SafePlace 𝔑 × ℕ) →₀ PadicAlgCl ℓ,
       (c.sum fun L z ↦ z * (L.map (s ∘ ιℓ ∘ ↿θ)).prod) = 1 ∧
       ∀ (n : Set.Iic (X.dimension + X.dimension))
@@ -731,7 +737,7 @@ lemma New.Variety.Model.exists_galois_rep {E : Type} [Field E] [CMBase E] {a d�
   -- `T` commutes with the Galois action: check after the injective pull-back to the level `l w`
   have hT_gal (n : Set.Iic (X.dimension + X.dimension)) (s : SafePlace 𝔑 × ℕ) (g : Gal(Ω/E)) :
       Commute (T n s) (galoisAction (.of R) Ω Gal(Ω/E) X.base n g) :=
-    ext fun x ↦ h_inj n (l s.1) (by simp [hT_pull, map_galoisAction])
+    ext fun x ↦ h_inj n (l s.1) (by simp only [End.mul_apply, hT_pull, map_galoisAction, map_sum])
   -- the largest quotient `(r, F)` on which `T` acts by `ιℓ ∘ θ`
   obtain ⟨N, r, F, h_eig, hr⟩ :=
     exists_isEigenQuotient (ιℓ ∘ ↿θ) hT_gal (continuous_galoisAction · E)
@@ -744,7 +750,10 @@ lemma New.Variety.Model.exists_galois_rep {E : Type} [Field E] [CMBase E] {a d�
   have h_crys [PadicPlaceEmbedding E A ℓ] (n : ℕ) :
       IsCrystalline (galoisAction (.of R) Ω (decompGroup Gal(Ω/E) A) X.base n) :=
     (isCrystalline_and_linearFrob_rel E hR n (X.mulMap ∘ ![]) 0 1 0
-      (by simp [CongruenceRelation, Cancels]) nofun).1
+      (by simp only [CongruenceRelation, Set.mem_ofPred_eq, Subtype.forall,
+        Subalgebra.algebraMap_mk, Cancels, Pi.zero_apply, iterateFrobenius_zero,
+        CommRingCat.ofHom_id, AlgebraicGeometry.Spec.map_id, Function.comp_apply,
+        CategoryTheory.Category.id_comp, zero_smul, sum_const_zero, implies_true]) nofun).1
   -- the quotient is also one for the decomposition group of `A`
   have h_cut : Variety.IsEigenQuotient
       (fun n : Set.Iic (X.dimension + X.dimension) ↦

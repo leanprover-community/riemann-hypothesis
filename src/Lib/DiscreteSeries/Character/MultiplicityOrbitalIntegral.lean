@@ -67,7 +67,7 @@ lemma integral_mul_conj_kTypeChar {f : maxCompactU ε → ℂ} (hf : Continuous 
       ∫ y, ∫ k, F y k ∂haarK ε ∂haarK ε :=
     (integral_skew_product (f := F.uncurry)
       (fun y ↦ ((measurePreserving_mul_left _ y⁻¹).mul_right _ y).map_eq)
-      (integrable_of_compactSpace (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))).2
+      (integrable_of_compactSpace (by fun_prop (disch := simp only [ne_eq, GeneralLinearGroup.det_ne_zero, not_false_eq_true, implies_true])))).2
   have h_integrand (k : maxCompactU ε) : f k * conj (ν.kTypeChar k) =
       (∫ y : maxCompactU ε, F y (y⁻¹ * k * y) ∂haarK ε) / ν.kTypeNormSq := by
     simp [F, kTypeChar, ← integral_conj, mul_div, mul_assoc, integral_const_mul]
@@ -82,7 +82,7 @@ lemma integral_conj_kTypeChar :
   · simp [hν, kTypeNormSq, Pi.zero_def, GeneralLinearGroup.det_ne_zero]
   -- Left invariance under the torus gives `t ^ ν * I = I` for all `t`, which forces `I = 0`.
   let I : ℂ := ∫ k : maxCompactU ε, weightMinors ν k ∂haarK ε
-  suffices hI : I = 0 by simp [integral_conj, I, hI]
+  suffices hI : I = 0 by simp only [mul_one, integral_conj, hI, map_zero, zero_div, integral_zero, I]
   by_contra hI
   have h_eval (t : n → Circle) : torusEval t (.single ν I) = torusEval t (.single 0 I) := by
     simpa [torusEval, diagTorus, I, hI, GeneralLinearGroup.det_ne_zero, integral_const_mul] using
@@ -109,7 +109,7 @@ lemma mean_coefficient_lowering [Nonempty n] [hg : l.HasLargeGap A] (hν : IsKDo
   have Φ_an : AnalyticAt ℂ Φ 1 := IsAnalyticFamily.analyticAt_integral _
     (.of_analyticAt (.prodMk (by fun_prop) (by fun_prop))
       (fun (g, p, q) ↦ weightMinors ν (g * p) * q)
-      (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))
+      (by fun_prop (disch := simp only [InvMemClass.coe_inv, coe_units_inv, one_mul, det_nonsing_inv, Ring.inverse_eq_inv', ne_eq, inv_eq_zero, GeneralLinearGroup.det_ne_zero, not_false_eq_true])))
   have hΦ : HasFDerivAt Φ (fderiv ℂ Φ 1) 1 := Φ_an.differentiableAt.hasFDerivAt
   have Φ_K (j : maxCompactU ε) : φ (rightRegularL2 j (hg.toL2 y)) = Φ j := by
     refine .trans ?_ (integral_mul_right_eq_self _ j)
@@ -163,7 +163,7 @@ lemma exists_isKHighest_inner_eq_mean_coefficient [Nonempty n] [hg : l.HasLargeG
       E_mem_filtration (z t).2 hε⟩) (y := (if a = c then (ν a : ℂ) else 0) • z t) fun y ↦ ?_)
     calc
       _ = φ (hg.toL2 (l.dsAction.E c a y.val)) := by
-        simp [h_inv.inner_E_left a, hε, hz (E_mem_filtration y.2 hε.symm) le_rfl]
+        simp only [Submodule.coe_inner, h_inv.inner_E_left a, hε, Int.units_mul_self, Units.val_one, Int.cast_one, hz (E_mem_filtration y.2 hε.symm) le_rfl, one_mul]
       _ = _ := by
         rw [mean_coefficient_lowering hν hφ y hε hl]
         simp +contextual [↓inner_smul_left, hz y.2 le_rfl, apply_ite conj, eq_comm (a := c)]
@@ -172,8 +172,8 @@ lemma exists_isKHighest_inner_eq_mean_coefficient [Nonempty n] [hg : l.HasLargeG
   refine ⟨z s, (z s).prop, z_high s, fun t y hy ↦ ?_⟩
   have h_perp : (z (s ⊔ t)).val - z s ∈ (W t)ᗮ :=
     mem_orthogonal_filtration_of_casimirK (θ := l.casimirKValue ν) s h_inv h_high _
-      (by simp [(z_high _).casimirK_eq_smul, smul_sub]) (sub_le_iff_le_add'.1 hs)
-      (fun y' hy' ↦ inner_eq_zero_symm.mpr (by simp [hz hy', inner_sub_left])) t
+      (by simp only [map_sub, (z_high _).casimirK_eq_smul, Complex.ofReal_intCast, smul_sub]) (sub_le_iff_le_add'.1 hs)
+      (fun y' hy' ↦ inner_eq_zero_symm.mpr (by simp only [inner_sub_left, le_max_iff, Std.le_refl, true_or, hz hy', sub_self])) t
   simpa [hz hy, sub_eq_zero, inner_sub_left] using congrArg conj (h_perp y hy)
 
 /-- Let `n` be nonempty, let `l = 2λ` have a large gap (`hg : l.HasLargeGap A`), and let `ν` be
@@ -211,11 +211,11 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
       ⟪hg.toL2 l.dsGenerator, rightRegularL2 x (rightRegularL2 k w)⟫_ℂ ∂haarK ε :=
     strongIntegral_apply _ _ (fun _ ↦ by
       simpa using integrable_of_compactSpace
-        (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))) w
+        (by fun_prop (disch := simp only [ne_eq, GeneralLinearGroup.det_ne_zero, not_false_eq_true, implies_true]))) w
   obtain ⟨v, v_mem, v_high, v_rep⟩ := exists_isKHighest_inner_eq_mean_coefficient hν hs hφ
   have norm_eq (g : USign ε) (y : l.DsModule) : ‖rightRegularL2 g (hg.toL2 y)‖ = ‖y‖ :=
     -- the norm of `y` is by definition that of `hg.toL2 y`
-    show _ = ‖hg.toL2 y‖ by simp [rightRegularL2]
+    show _ = ‖hg.toL2 y‖ by simp only [rightRegularL2, Function.comp_apply, MonoidHom.coe_mk, OneHom.coe_mk, _root_.smul_apply, one_apply_eq_self, DomMulAct.norm_smul_Lp]
   -- `u` is an analytic vector: a bounded coefficient map that kills all steps of the filtration at
   -- `1` kills `u` at every group element. So `v` also represents `φ` at the translate of `u`.
   have h_rep : (φ - innerSL ℂ (hg.toL2 v)) (rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)) = 0 :=
@@ -226,14 +226,14 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
   -- Compute both terms; for the second expand `v` in the basis `b`.
   have φ_u : φ (rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)) = ∫ k : maxCompactU ε,
       conj (weightMinors ν k) * l.dsCoeff (x * k.val * x⁻¹ :) ∂haarK ε := by
-    simp [hφ, -map_mul, h_coef, rep_apply_apply, mul_assoc]
+    simp only [hφ, rep_apply_apply, h_coef, dsGenerator_coe, dsCoeffSmooth_coe, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, coe_units_inv, mul_assoc]
   -- The mean against `conj (weightMinors ν)` multiplies a highest vector of weight `ν` by
   -- `ν.kTypeNormSq`.
   have v_b (i : I) : ⟪v, (b i).val⟫_ℂ = ν.kTypeNormSq * (b i).val.val.val x := by
     obtain ⟨b_high, b_mem⟩ := (hV _).mp (b i).prop
     rw [← v_rep s _ b_mem, (hφ (hg.toL2 (b i))).trans
       (b_high.integral_conj_weightMinors_mul isUnitaryRep_rightRegularL2 hd hν T)]
-    simp [T, h_coef]
+    simp only [ContinuousLinearMap.comp_apply, coe_innerSL_apply, h_coef, T]
   have b_u (i : I) : ⟪hg.toL2 (b i), rightRegularL2 x⁻¹ (hg.toL2 l.dsGenerator)⟫_ℂ =
       conj ((b i).val.val.val x) := by
     simpa [← h_coef] using isUnitaryRep_rightRegularL2.form_apply_eq_form_inv_apply x⁻¹
@@ -261,7 +261,7 @@ lemma exists_kType_multiplicity [Nonempty n] [hg : l.HasLargeGap A] (hν : IsKDo
   obtain ⟨s, hs⟩ := exists_nat_ge (l.casimirKValue ν - l.casimirKValue l.lowestKType : ℝ)
   have h_fin := (isKHighest_dsGenerator hg).finite_filtration hg.isUnitaryCasimirGe s
   let V : Submodule ℂ l.DsModule :=
-    .ofLinearComb {v | l.IsKHighest l.dsAction ν v} ⟨0, by simp [IsKHighest]⟩ (by simp +contextual
+    .ofLinearComb {v | l.IsKHighest l.dsAction ν v} ⟨0, by simp only [IsKHighest, IsCompactPrimitive, Set.mem_ofPred_eq, map_zero, smul_zero, implies_true, and_self]⟩ (by simp +contextual
       [smul_smul, mul_comm, IsKHighest]) ⊓ l.dsAction.filtration ε l.dsGenerator s
   let b : OrthonormalBasis (Fin (Module.finrank ℂ V)) ℂ V := stdOrthonormalBasis ℂ V
   let S (g : USign ε) : ℂ := ∑ i, (b i).val.val.val g * conj ((b i).val.val.val g)
@@ -280,18 +280,18 @@ lemma exists_kType_multiplicity [Nonempty n] [hg : l.HasLargeGap A] (hν : IsKDo
   -- `ν.kTypeChar` is the mean of `weightMinors ν / ν.kTypeNormSq` under conjugation by `y ∈ K`;
   -- this mean is absorbed by the invariance of the measure under `g ↦ g⁻¹ * y`.
   have hR : R = fun g ↦ ∫ y : maxCompactU ε, S (g⁻¹ * y) ∂haarK ε :=
-    funext fun g ↦ .trans integral_mul_conj_kTypeChar (by simp [← key, div_eq_inv_mul, mul_assoc])
+    funext fun g ↦ .trans integral_mul_conj_kTypeChar (by simp only [mul_assoc, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, coe_units_inv, div_eq_inv_mul, ← key, _root_.mul_inv_rev, inv_inv])
   have S_int : Integrable S := integrable_finsetSum univ fun i _ ↦ h_int (b i)
   obtain ⟨R_int, R_eq⟩ := integral_skew_product
     (fun y : maxCompactU ε ↦ ((Measure.measurePreserving_inv _).mul_right _ y.val).map_eq)
     (S_int.comp_snd (haarK ε))
-  refine ⟨by rwa [hR], Module.finrank ℂ V, by simp [hR, h_dim, R_eq], ?_, fun hm ↦ ?_⟩
+  refine ⟨by rwa [hR], Module.finrank ℂ V, by simp only [hR, R_eq, integral_const, probReal_univ, one_smul, h_dim], ?_, fun hm ↦ ?_⟩
   · -- For `ν = l.lowestKType` the left side of `key` is `|dsCoeff x|²`, of integral
     -- `1 / l.formalDegree`.
     rintro rfl
     have hS (x : USign ε) : S x = l.dsCoeff x * conj (l.dsCoeff x) := by
       rw [← key, integral_conj_weightMinors_lowestKType_mul_dsCoeff hg x x⁻¹]
-      simp [↓dsCoeff_inv, ne_of_gt]
+      simp only [↓dsCoeff_inv, ne_eq, Complex.ofReal_eq_zero, kTypeNormSq_pos, ne_of_gt, not_false_eq_true, inv_mul_cancel_left₀]
     exact Nat.cast_eq_one.1 (h_dim.trans (by simpa [hS] using dsCoeff_schur_orthogonality hg 1 1))
   · -- Off the cone the left side of `key` vanishes.
     by_contra h_cone
@@ -347,7 +347,7 @@ lemma New.Orbital.sq_norm_mul_norm_prod_sub_le [Nonempty n] (u : USign ε) (t : 
   have norm_prod (s : Finset n) :
       ‖φ (∏ i ∈ s, ((t · : n → ℂ) - (t i).val • 1))‖ ≤ (‖g.val.val‖ + ‖g.val.val‖) ^ #s := by
     induction s using cons_induction with
-    | empty => simp
+    | empty => simp only [Finset.prod_empty, map_one, NormOneClass.norm_one, Finset.card_empty, pow_zero, Std.le_refl]
     | cons i s hi ih => simp [ih, hi, show φ (t ·) = g.val.val from rfl, pow_succ', norm_smul,
         norm_mul_le_of_le, norm_sub_le_of_le, U.one_le_norm, Circle.norm_coe]
   calc
@@ -366,7 +366,7 @@ lemma New.Orbital.sq_norm_mul_norm_prod_sub_le [Nonempty n] (u : USign ε) (t : 
     _ ≤ (2 * ‖g.val.val‖) ^ #(oppositePairs ε) := by
       -- a minor of size p of a product of q matrices of norm at most 2 ‖g‖
       grw [norm_principalMinor_le_pow, Fintype.card_subtype, norm_prod, ← two_mul, ← pow_mul]
-      simp [oppositePairs, mul_comm]
+      simp only [mul_comm, ne_eq, oppositePairs, card_product, Std.le_refl]
 
 /-- Let `n` be nonempty, let `l = 2λ` have a large gap for `A = 10 (card n)⁵`, and let
 `K = U(diag ε) ∩ U(n)`. Let `d` be a continuous class function on `K` whose value at `diag(x)` is
@@ -404,7 +404,7 @@ lemma New.Orbital.integrable_mul_dsCoeff_conj [Nonempty n] (hg : l.HasLargeGap (
     simp [u, norm_mem_unitary_mul, Unitary.mem_iff, star, ← maxCompactU.coe_inv,
       conjTranspose_nonsing_inv]
   have g_eq : x.val.val⁻¹ * (y.val.val.val * (diagTorus ε t).val.val * y.val.val.val⁻¹) *
-      x.val.val = g.val.val := by simp [g, u, mul_assoc]
+      x.val.val = g.val.val := by simp only [mul_assoc, InvMemClass.coe_inv, _root_.mul_inv_rev, inv_inv, Subgroup.coe_mul, Units.val_mul, coe_units_inv, g, u]
   suffices key : ‖∏ p ∈ oppositePairs ε, (t p.1 - t p.2 : ℂ)‖ ^ N * ‖l.dsCoeff g.val.val‖ ≤
       ((2 ^ #(oppositePairs ε)) ^ N) ^ 2 * ((2 / ‖x.val.val‖) ^ 2) ^ N by
     simpa [g_eq, hd, hψ, pow_mul, torusEval_rootProd_noncompact hg.neg.injective, -norm_prod,
@@ -433,7 +433,7 @@ lemma New.Orbital.kTypeChar_mul_mul_inv (ν : n → ℤ) (y k : maxCompactU ε) 
   -- substitute `a ↦ y * a` in the mean over `a ∈ K` of `weightMinors ν (a⁻¹ * (y * k * y⁻¹) * a)`
   refine congrArg (fun I : ℂ ↦ I / _) ?_
   rw [← integral_mul_left_eq_self _ y]
-  simp [mul_assoc]
+  simp only [_root_.mul_inv_rev, mul_assoc, inv_mul_cancel_left, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, coe_units_inv]
 
 /-- Weyl's formula for any exponent γ, for injective `l`. Let ν be dominant for K and let
 δ = `l.lowerCount Eq`. If every function `t` antisymmetric under the Weyl group of K has
@@ -446,7 +446,7 @@ lemma New.Orbital.exists_alternant_eq_rootProd_mul {γ ν : n → ℤ} {s : ℤ}
         s * (toHCParam ε ν).kTypeChar (y * diagTorusK x * y⁻¹) = torusEval x P) ∧
       alternant ε γ = l.rootProd Eq * P := by
   obtain ⟨⟨P, hP⟩, formula⟩ := weyl_character_kTypeChar hl hν
-  refine ⟨s * P, fun y x ↦ by simp [kTypeChar_mul_mul_inv, ← hP], eq_of_torusEval_eq fun x ↦ ?_⟩
+  refine ⟨s * P, fun y x ↦ by simp only [kTypeChar_mul_mul_inv, map_mul, map_intCast, ← hP], eq_of_torusEval_eq fun x ↦ ?_⟩
   -- `γ ↦ torusEval x (alternant ε γ)` is antisymmetric, being a determinant
   have antisymm : IsWeylAntisymm ε fun γ ↦ torusEval x (alternant ε γ) := by
     simp +contextual [IsWeylAntisymm, torusEval_alternant, ← det_permute', submatrix, funext_iff]
@@ -504,14 +504,14 @@ lemma torusEval_rootProd_mul (hXY : IsWeylFamily l X Y) (p : ℂ[n → ℤ]) (x 
       ∑ w : {w : Perm n // ε ∘ w = ε}, (w.val.sign : ℂ) * ∏ i, (x (w.val i) : ℂ) ^ γ i := by
     rw [← sum_subtype {w : Perm n | ε ∘ w = ε} (by simp)
       (fun w ↦ (w.sign : ℂ) * ∏ i, (x (w i) : ℂ) ^ γ i)]
-    simp [torusEval_alternant, det_apply', Fintype.prod_ite_zero, ← sum_filter, funext_iff]
+    simp only [torusEval_alternant, det_apply', Matrix.of_apply, Fintype.prod_ite_zero, mul_ite, mul_zero, ← sum_filter, funext_iff, Function.comp_apply]
   calc
     _ = ∑ γ ∈ p.coeff.support, p.coeff γ * torusEval x (alternant ε γ) := by
-      simp [Finsupp.linearCombination_apply, hXY.alternant_eq, Finsupp.sum, mul_sum]
+      simp only [Finsupp.linearCombination_apply, Finsupp.sum, mul_sum, Algebra.mul_smul_comm, map_sum, map_smul, map_mul, smul_eq_mul, hXY.alternant_eq]
     _ = _ := by
       simp_rw [alternant_eval, mul_sum]
       rw [sum_comm]
-      simp [torusEval, lift_apply', Finsupp.sum, mul_sum, mul_left_comm]
+      simp only [mul_left_comm, torusEval, Function.comp_apply, lift_apply', Finsupp.sum, Algebra.algebraMap_self, RingHom.id_apply, MonoidHom.coe_mk, OneHom.coe_mk, toAdd_ofAdd, mul_sum]
 
 /-- Let `X`, `Y` satisfy Weyl's formula and let `l` be injective. If the antisymmetrisation of
 `p` over the Weyl group of K is the Weyl denominator times `q` on the torus, then the combination
@@ -527,7 +527,7 @@ lemma linearCombination_apply_conj (hXY : IsWeylFamily l X Y) (hl : l.Injective)
       alternant_coeff_of_isKDominant hl zero_dominant zero_dominant
   have q_eq : Finsupp.linearCombination ℂ Y p.coeff = q := mul_left_cancel₀ denominator_ne <|
     eq_of_torusEval_eq fun x ↦ (hXY.torusEval_rootProd_mul p x).trans (hpq x)
-  simp [Finsupp.linearCombination_apply, hXY.apply_conj, ← q_eq, Finsupp.sum]
+  simp only [Finsupp.linearCombination_apply, Finsupp.sum, ContinuousMap.coe_sum, ContinuousMap.coe_smul, Finset.sum_apply, Pi.smul_apply, hXY.apply_conj, smul_eq_mul, ← q_eq, map_sum, map_smul]
 
 /-- Let `X`, `Y` satisfy Weyl's formula and let `l` be injective. The combination of the `X γ`
 with the coefficients of `l.rootProd Eq * p` is, on the torus, the symmetrisation of `p` over the
@@ -583,7 +583,7 @@ lemma inner_toLp_mul (hXY : IsWeylFamily l X Y) (hl : l.Injective) {d : C(maxCom
     refine hXY.linearCombination_apply_conj hl (fun x ↦ ?_) y x
     rw [mul_left_comm, map_mul _ S, alternant_sum, mul_sum]
     exact sum_congr rfl fun w _ ↦ by
-      simp [hS, apply_comp_perm_of_conj_invariant _ w.2 hd, mul_left_comm]
+      simp only [map_mul, hS, apply_comp_perm_of_conj_invariant _ w.2 hd, Complex.star_def, mul_left_comm]
   calc
     _ = ⟪toLp (E := ℂ) 2 (haarK ε) ℂ (Finsupp.linearCombination ℂ X (S * .single γ 1).coeff),
           toLp (E := ℂ) 2 (haarK ε) ℂ f⟫_ℂ := by
@@ -591,7 +591,7 @@ lemma inner_toLp_mul (hXY : IsWeylFamily l X Y) (hl : l.Injective) {d : C(maxCom
       congr with k
       obtain ⟨y, x, rfl⟩ := exists_conj_diagTorusK k
       rw [S_apply, ContinuousMap.mul_apply, hd, hXY.apply_conj]
-      simp [hS, mul_left_comm, mul_assoc]
+      simp only [mul_assoc, mul_left_comm, map_mul, hS, Complex.star_def, RingHomCompTriple.comp_apply, RingHom.id_apply]
     _ = _ := by simp [S, sum_mul, sum_inner, Finsupp.sum, inner_smul_left]
 
 /-- Completeness. Let `X`, `Y` satisfy Weyl's formula, let `l` be injective and let `e` be an
@@ -623,7 +623,7 @@ lemma eq_linearCombination (hXY : IsWeylFamily l X Y) (hl : l.Injective) {ι : T
     · rw [Finsupp.linearCombination_apply]
       exact A.ker.sum_mem fun γ _ ↦ A.ker.smul_mem _ (A_X γ)
     · simp only [q, hXY.linearCombination_rootProd_mul_apply_conj hl, AlgHom.map_smul_of_tower]
-  have A_r : A r = 0 := sub_mem h_mem (by simp [Finsupp.linearCombination_apply, A_e, Finsupp.sum])
+  have A_r : A r = 0 := sub_mem h_mem (by simp only [Finsupp.linearCombination_apply, Finsupp.sum, LinearMap.mem_ker, map_sum, LinearMap.map_smulₛₗ, ContinuousLinearMap.coe_coe, A_e, smul_eq_mul, mul_zero, sum_const_zero])
   have L_r : L r = 0 := inner_self_eq_zero.1 A_r
   exact sub_eq_zero.1 ((map_eq_zero_iff L (toLp_injective _)).1 L_r)
 
@@ -693,7 +693,7 @@ lemma inner_virtualChar (hs : IsStraightening l s ν) (hl : l.Injective) (γ μ 
         (alternant ε (l.lowerCount Eq)).coeff β := by
     rw [← zero_add (l.lowerCount Eq), hs.coeff_alternant hl (fun _ _ _ _ ↦ le_rfl),
       ← integral_conj_kTypeChar (ε := ε)]
-    simp [virtualChar, inner_smul_left, inner_toLp]
+    simp only [virtualChar, map_smul, inner_smul_left, map_intCast, inner_toLp, ContinuousMap.one_apply, one_mul]
   obtain ⟨Y, hY⟩ := hs.exists_isWeylFamily hl
   calc
     _ = (Y μ).coeff.sum fun (β : n → ℤ) (c : ℂ) ↦
@@ -718,7 +718,7 @@ lemma virtualChar_mem_span (hs : IsStraightening l s ν) (hl : l.Injective) (γ 
     virtualChar ε s ν γ ∈ Submodule.span ℂ (Set.range fun μ : {μ : n → ℤ // IsKDominant ε (-l) μ} ↦
       virtualChar ε s ν (μ + l.lowerCount Eq)) := by
   rw [show virtualChar ε s ν γ = (s γ : ℂ) • virtualChar ε s ν (ν γ + l.lowerCount Eq) by
-    simp [virtualChar, hs.apply_add_lowerCount hl (hs.isKDominant γ)]]
+    simp only [virtualChar, hs.apply_add_lowerCount hl (hs.isKDominant γ), cast_one, one_smul]]
   exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨⟨ν γ, hs.isKDominant γ⟩, rfl⟩)
 
 end New.Orbital.IsStraightening
@@ -736,7 +736,7 @@ lemma New.Orbital.integral_mul_dsCoeff_apply_conj {d : C(maxCompactU ε, ℂ)} {
   -- Evaluate under the integral, then substitute `g ↦ y g`.
   simp_rw [integral_apply h_int, ContinuousMap.mul_apply, hd, hψ]
   rw [integral_const_mul, ← integral_mul_left_eq_self _ y.val]
-  simp [mul_assoc]
+  simp only [_root_.mul_inv_rev, mul_assoc, Subgroup.coe_mul, InvMemClass.coe_inv, inv_mul_cancel_left, Units.val_mul, coe_units_inv]
 
 /-- Let `ψ g k = l.dsCoeff (g⁻¹ k g)`, let `d` be a class function on K that equals `D` on the
 torus, with `g ↦ d * ψ g` integrable, and let `m γ` be the formal degree times the integral over G
@@ -763,7 +763,7 @@ lemma New.Orbital.inner_virtualChar_formalDegree_smul_integral (hl : l.Injective
   have inner_ψ (β : n → ℤ) (g : USign ε) : ⟪L (virtualChar ε s ν β), L (ψ g)⟫_ℂ =
       s β * ∫ k, l.dsCoeff (g⁻¹ * k * g :) *
         starRingEnd ℂ ((toHCParam ε (ν β)).kTypeChar k) ∂haarK ε := by
-    simp [L, virtualChar, hψ, inner_smul_left, inner_toLp, ← integral_const_mul]
+    simp only [virtualChar, map_smul, inner_smul_left, map_intCast, inner_toLp, hψ, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, coe_units_inv, ← integral_const_mul, L]
   -- move the inner product under the integral, then integrate Brauer's rule term by term
   have swap : ⟪L (virtualChar ε s ν γ), L (∫ g, d * ψ g)⟫_ℂ =
       ∫ g, ⟪L (virtualChar ε s ν γ), L (d * ψ g)⟫_ℂ :=
@@ -772,13 +772,13 @@ lemma New.Orbital.inner_virtualChar_formalDegree_smul_integral (hl : l.Injective
   simp only [L, hXY.inner_toLp_mul hl hd, Finsupp.sum] at inner_ψ ⊢
   simp only [inner_ψ]
   rw [integral_finsetSum _ fun β _ ↦ ((int_m _).const_mul _).const_mul _]
-  simp [← hm, integral_const_mul, mul_sum, mul_left_comm]
+  simp only [Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, coe_units_inv, mul_left_comm, integral_const_mul, Complex.real_smul, mul_sum, ← hm]
 
 /-- The powers of `l.rootProd r` have integer coefficients. -/
 lemma New.Orbital.exists_int_rootProd_pow (r : ℤˣ → ℤˣ → Prop) [DecidableRel r] (N : ℕ) :
     ∃ Z : ℤ[n → ℤ], mapRingHom (n → ℤ) (castRingHom ℂ) Z = l.rootProd r ^ N :=
   ⟨(∏ a, ∏ b with r (ε a) (ε b) ∧ l b < l a,
-    (.single (Pi.single a 1) 1 - .single (Pi.single b 1) 1)) ^ N, by simp [HCParam.rootProd]⟩
+    (.single (Pi.single a 1) 1 - .single (Pi.single b 1) 1)) ^ N, by simp only [map_pow, map_prod, map_sub, mapRingHom_single, eq_intCast, cast_one, HCParam.rootProd]⟩
 
 /-- The Laurent polynomial `P` is `Vc D Θ`. Here Θ(x) = deg ∫ ψ(g⁻¹ x g) dg is the normalised
 orbital integral of ψ = `l.dsCoeff` on the diagonal torus, `Vc = l.rootProd Eq` is the Weyl
@@ -819,7 +819,7 @@ lemma New.Orbital.exists_classFun_orbital_integral [Nonempty n]
   have hψ (g : USign ε) (k : maxCompactU ε) : ψ g k = l.dsCoeff (g⁻¹ * k * g :) := rfl
   -- `D` is symmetric under the Weyl group, so it extends to a continuous class function d on K.
   obtain ⟨d, hd⟩ := hXY.exists_apply_conj_eq (D := D) hg.injective fun w hw x ↦ by
-    simp [D, torusEval_rootProd_noncompact_comp hg.neg.injective hw]
+    simp only [map_pow, torusEval_rootProd_noncompact_comp hg.neg.injective hw, D]
   have integrable : Integrable fun g ↦ d * ψ g := integrable_mul_dsCoeff_conj l hg hd hψ
   -- The multiplicities are the formal degree times the integrals over g of ⟪χ, ψ g⟫, χ the
   -- character of `ν γ`.
@@ -827,7 +827,7 @@ lemma New.Orbital.exists_classFun_orbital_integral [Nonempty n]
   refine ⟨l.formalDegree • ∫ g, d * ψ g, m, fun y x ↦ ?_,
     inner_virtualChar_formalDegree_smul_integral l hg.injective hXY hd hψ integrable int_m hm,
     m_top, m_cone⟩
-  simp [integral_mul_dsCoeff_apply_conj l hd hψ integrable, mul_left_comm]
+  simp only [ContinuousMap.coe_smul, Pi.smul_apply, integral_mul_dsCoeff_apply_conj l hd hψ integrable, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, coe_units_inv, Complex.real_smul, mul_left_comm]
 
 /-- The normalised orbital integral Θ(x) = deg ∫ ψ(g⁻¹ x g) dg, for ψ = `l.dsCoeff` and `l` with a
 large gap, becomes a Laurent polynomial once its denominators are cleared; here `n` is nonempty, and
@@ -872,7 +872,7 @@ lemma New.Orbital.exists_laurent_orbital_integral [Nonempty n]
   have finite : (Function.support fun i ↦ ⟪L (e i), L h⟫_ℂ).Finite :=
     finite_support_inner_of_int orthonormal fun i ↦
       ⟨∑ β ∈ D.coeff.support, Z.coeff β * (s (-β + (i + δ)) * m (-β + (i + δ))),
-        by simp [e, coeff_h, ← hZ, t, Finsupp.sum]⟩
+        by simp only [Function.comp_apply, coeff_h, Finsupp.sum, ← hZ, coeff_mapRingHom, eq_intCast, cast_sum, cast_mul, cast_natCast, e, t]⟩
   -- By completeness `h = ∑ a_i e_i`.
   let a : {μ : n → ℤ // IsKDominant ε (-l) μ} →₀ ℂ :=
     Finsupp.ofSupportFinite (fun i ↦ ⟪L (e i), L h⟫_ℂ) finite
@@ -895,9 +895,9 @@ lemma New.Orbital.exists_laurent_orbital_integral [Nonempty n]
     simp [↓← coeff_h, h_eq, Finsupp.linearCombination_apply, e, X, L, hs.inner_virtualChar hl,
       Finsupp.sum, inner_sum, inner_smul_right]
   · -- the lowest K-type has multiplicity one
-    simp [t, hs.apply_add_lowerCount hl hg.isKDominant_lowestKType, m_top]
+    simp only [hs.apply_add_lowerCount hl hg.isKDominant_lowestKType, cast_one, m_top, Nat.cast_one, mul_one, t]
   · -- the K-types that occur lie in the shifted cone
     have s_m_ne : s γ ≠ 0 ∧ m γ ≠ 0 := by simpa [t] using hγ
-    simp [δ, hs.coeff_alternant hl (hν γ), m_cone, s_m_ne]
+    simp only [hs.coeff_alternant hl (hν γ), ↓reduceIte, mul_one, ne_eq, cast_eq_zero, s_m_ne, not_false_eq_true, add_sub_add_right_eq_sub, m_cone, and_self, δ]
 
 end OrbitalLaurent

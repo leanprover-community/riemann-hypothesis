@@ -140,17 +140,6 @@ lemma fockMatrixCoeff_lowerOp (u : USign ε) (P Q : MvPolynomial ι ℂ) (j : ι
     sum_add_distrib]
   grind [I_sq, h_deriv 1, conj_I]
 
-/-- Both relations of `New.Fock.fockMatrixCoeff_raiseOp` and `New.Fock.fockMatrixCoeff_lowerOp`:
-for u in U(ε), polynomials P, Q and an index j, with A_a = `New.Fock.raiseOp` ε a and
-B_a = `New.Fock.lowerOp` ε a, ⟨v_Q, ω₀(u) v_{A_j P}⟩ = Σ_i u_ij ε_i ⟨v_{B_i Q}, ω₀(u) v_P⟩ and ε_j
-⟨v_Q, ω₀(u) v_{B_j P}⟩ = Σ_i conj(u_ij) ⟨v_{A_i Q}, ω₀(u) v_P⟩. -/
-lemma fockMatrixCoeff_raiseOp_lowerOp (u : USign ε) (P Q : MvPolynomial ι ℂ) (j : ι) :
-    fockMatrixCoeff u Q (raiseOp ε j P) =
-      ∑ i : ι, u.val i j * ε i * fockMatrixCoeff u (lowerOp ε i Q) P ∧
-    ε j * fockMatrixCoeff u Q (lowerOp ε j P) =
-      ∑ i : ι, conj (u.val i j) * fockMatrixCoeff u (raiseOp ε i Q) P :=
-  ⟨fockMatrixCoeff_raiseOp u P Q j, fockMatrixCoeff_lowerOp u P Q j⟩
-
 /-- Multiplication by X_i is adjoint to the derivative ∂_i for the inner product
 `New.Fock.fockInner` of polynomial vectors: ⟨v_{X_i P}, v_Q⟩ = ⟨v_P, v_{∂_i Q}⟩. -/
 lemma fockInner_X_mul (P Q : MvPolynomial ι ℂ) (i : ι) :
@@ -179,23 +168,6 @@ lemma fockInner_polyVector (P Q : MvPolynomial ι ℂ) :
       _ = fockPairing ℂ (MvPolynomial.map conj P) (pderiv i Q) := hP (pderiv i Q)
       _ = fockPairing ℂ (MvPolynomial.map conj (P * X i)) Q := by
           rw [map_mul, MvPolynomial.map_X, fockPairing_mul_X]
-
-open scoped Nat in
-/-- The Fock vectors of monomials are orthogonal, and the vector of the monomial `X ^ μ` has
-squared norm `μ! = ∏ i, (μ i)!`. -/
-lemma fockInner_polyVector_monomial {ι : Type} [Fintype ι] [DecidableEq ι] (ε : ι → ℤˣ)
-    (μ μ' : ι →₀ ℕ) :
-    fockInner (polyVector ε (monomial μ 1)) (polyVector ε (monomial μ' 1)) =
-      if μ = μ' then ∏ i ∈ μ.support, ((μ i)! : ℂ) else 0 := by
-  -- The inner product is the Fischer pairing, which reads off the coefficient of `X ^ μ`.
-  calc
-    fockInner (polyVector ε (monomial μ 1)) (polyVector ε (monomial μ' 1))
-        = fockPairing ℂ (monomial μ (1 : ℂ)) (monomial μ' (1 : ℂ)) := by
-      rw [fockInner_polyVector, map_monomial, map_one]
-    _ = (∏ i ∈ μ.support, ((μ i)! : ℂ)) * if μ' = μ then 1 else 0 := by
-      rw [fockPairing_monomial, one_mul, coeff_monomial, Finsupp.prod, Nat.cast_prod]
-    _ = if μ = μ' then ∏ i ∈ μ.support, ((μ i)! : ℂ) else 0 := by
-      simp only [mul_ite, mul_one, mul_zero, eq_comm]
 
 /-- The Fock vectors v_P of the polynomials P are dense in the Fock space with signs ε. -/
 lemma denseRange_polyVector : DenseRange (polyVector ε) := by

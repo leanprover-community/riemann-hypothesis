@@ -307,28 +307,6 @@ lemma modKernel_sum_left (a' : AutChar E) (Ψ : Matrix n' n 𝔪.ResidueRing →
   simp only [modKernel, pairTheta]
   rw [← h_datum, pairWeil_boxProd_source, theta_boxProd_source]
 
-/-- Sums in the second space, with standard characters (`New.stdKernel`): the kernel of (S, T ⊕ V)
-for the product ΨΨ′ on the two row blocks and PP′, at (g, h ⊕ h′), is
-θ^{S,T}[Ψ,P](g,h) · θ^{S,V}[Ψ′,P′](g,h′). This is a special case of `New.modKernel_sum_right`. -/
-lemma stdKernel_sum_right (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ) (Ψ' : Matrix n₁ n 𝔪.ResidueRing → ℂ)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (P' : MvPolynomial (InfinitePlace E × n₁ × n) ℂ)
-    (g : G E s) (h : G E s') (h' : G E s₁) :
-    stdKernel S (T.sum V) 𝔪 (fun x : Matrix (n' ⊕ n₁) n 𝔪.ResidueRing ↦ Ψ x.toRows₁ * Ψ' x.toRows₂)
-        (renameRowsCols Sum.inl id P * renameRowsCols Sum.inr id P') g (G.sum (h, h')) =
-      stdKernel S T 𝔪 Ψ P g h * stdKernel S V 𝔪 Ψ' P' g h' := by
-  rw [stdKernel, stdChar_sum, modKernel_sum_right]
-
-/-- Sums in the first space, with standard characters (`New.stdKernel`): the kernel of (S ⊕ V, T)
-for the product ΨΨ′ on the two column blocks and PP′, at (g ⊕ g′, h), is
-θ^{S,T}[Ψ,P](g,h) · θ^{V,T}[Ψ′,P′](g′,h). This is a special case of `New.modKernel_sum_left`. -/
-lemma stdKernel_sum_left (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ) (Ψ' : Matrix n' n₁ 𝔪.ResidueRing → ℂ)
-    (P : MvPolynomial (InfinitePlace E × n' × n) ℂ)
-    (P' : MvPolynomial (InfinitePlace E × n' × n₁) ℂ) (g : G E s) (g' : G E s₁) (h : G E s') :
-    stdKernel (S.sum V) T 𝔪 (fun x : Matrix n' (n ⊕ n₁) 𝔪.ResidueRing ↦ Ψ x.toCols₁ * Ψ' x.toCols₂)
-        (renameRowsCols id Sum.inl P * renameRowsCols id Sum.inr P') (G.sum (g, g')) h =
-      stdKernel S T 𝔪 Ψ P g h * stdKernel V T 𝔪 Ψ' P' g' h := by
-  rw [stdKernel, stdChar_sum, modKernel_sum_left]
-
 /-! ### Negation -/
 
 /-- The unit of O_E/𝔪 that is the reduction of the chosen element of norm −1 of Ô. -/
@@ -400,37 +378,6 @@ lemma exists_conj_modKernel_eq_mul_modKernel_neg :
   refine ⟨c, hc, fun a b 𝔪 Ψ P g h ↦ ?_⟩
   simp only [modKernel, pairTheta]
   rw [← hθ, map_smul, ← pairWeil_negSource, map_negSource_modDatum, smul_eq_mul]
-
-/-- Negating S conjugates kernels with standard characters (`New.stdKernel`): for some c of modulus
-one depending only on S and T, the complex conjugate of θ^{S,T}[Ψ,P](g,h) is c υ(det g)^{−(n₊ − n₋)}
-θ^{S⁻,T}[Ψ′,P̄](g,h) for all 𝔪, Ψ, P, g, h. Here υ is `New.WeilData.upsilonU1`, the splitting
-character of the Weil data restricted to the norm-one ideles (a character of U(1)(𝔸) trivial on
-U(1)(E)). n₊ = `negCount (-s')` and n₋ = `negCount s'` count the signs 1 and −1 of T, so that
-n₊ − n₋ is its signature. S⁻ is `New.Space.neg` S, and Ψ′(x) is the conjugate of Ψ(u⁻¹x), where
-u = `New.Modulus.normNegOne` is the reduction mod 𝔪 of the chosen ε in Ô with ε̄ε = −1. P̄ has the
-conjugate coefficients. On the right, `New.G.neg` moves g to the group of S⁻. This is a corollary of
-`New.exists_conj_modKernel_eq_mul_modKernel_neg`. -/
-lemma exists_stdKernel_neg_left :
-    ∃ c : ℂ, ‖c‖ = 1 ∧
-      ∀ (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-          (P : MvPolynomial (InfinitePlace E × n' × n) ℂ) (g : G E s) (h : G E s'),
-        conj (stdKernel S T 𝔪 Ψ P g h) =
-          c * (upsilonU1.val g.det : ℂ) ^
-              (-((Exchange.negCount (-s') : ℤ) - Exchange.negCount s')) *
-            stdKernel S.neg T 𝔪 (fun x : Matrix n' n 𝔪.ResidueRing ↦ conj (Ψ (𝔪.normNegOne⁻¹ • x)))
-              (MvPolynomial.map conj P) (G.neg g) h := by
-  -- The rule for general characters gives S⁻ its standard character and T that of T⁻, which is the
-  -- standard character of T times μ = υ^{n₊ − n₋}; the twist rule takes out μ(det g)⁻¹.
-  obtain ⟨c, hc_norm, h_conj⟩ := exists_conj_modKernel_eq_mul_modKernel_neg S T
-  refine ⟨c, hc_norm, fun 𝔪 Ψ P g h ↦ ?_⟩
-  let μ : AutChar E := stdChar (-s') / stdChar s'
-  have h_char_S : (stdChar s)⁻¹ * upsilonU1 ^ card n = (stdChar (-s) * 1 : AutChar E) := by
-    simp [stdChar_neg]
-  have h_char_T : (stdChar s')⁻¹ * upsilonU1 ^ card n' = stdChar s' * μ := by simp [μ, stdChar_neg]
-  have h_factor : ((1 : AutChar E).val h.det : ℂ) / μ.val (G.neg g).det =
-      (upsilonU1.val g.det : ℂ) ^ (-((Exchange.negCount (-s') : ℤ) - Exchange.negCount s')) := by
-    simp [μ, stdChar, zpow_sub₀, div_eq_mul_inv]
-  rw [h_conj, h_char_S, h_char_T, modKernel_twist, h_factor, mul_assoc]
 
 /-! ### Passing to a smaller ideal -/
 

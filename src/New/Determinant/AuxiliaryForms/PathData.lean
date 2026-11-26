@@ -94,10 +94,6 @@ the places of `ϑ`, if `z` is false, and `𝔟 = ϖ ^ D.natB` if `z` is true. He
 abbrev triangleModulus (z : Bool) (ϑ : D.MFoldTwist) : Modulus D.E :=
   D.twistModulus (triangleTwist ϑ z) (D.triangleExponent z)
 
-lemma triangleModulus_false : triangleModulus false ϑ = D.twistModulus ϑ 1 := rfl
-
-lemma triangleModulus_true : triangleModulus true ϑ = D.gridModulus 1 := rfl
-
 /-- Let `ϑ` be an `m`-fold twist, `Q` the product of its places, `ϖ = D.piM` the generator of the
 product of the chosen places, and `b = D.natB ≥ 1`. The triangle modulus of grid `z`, which is
 `ϖ Q` for `z = false` (grid `Y`) and `ϖ ^ b` for `z = true` (grid `Ỹ`), divides the grid modulus
@@ -174,16 +170,6 @@ vertical edge (`c = true`) the character is `μ ϑ ^ (l + 1) υ ^ ⌊card n / 2�
 def gridChar : AutChar D.E :=
   D.liftChar (bif c then ϑ.pow (l + 1) else TameChar.one) (l + 1) *
     WeilData.upsilonU1 ^ ((card n + (!c).toNat) / 2)
-
-lemma gridChar_true :
-    gridChar ϑ true l n =
-      D.liftChar (ϑ.pow (l + 1)) (l + 1) * WeilData.upsilonU1 ^ (card n / 2) :=
-  rfl
-
-lemma gridChar_false :
-    gridChar ϑ false l n =
-      D.liftChar .one (l + 1) * WeilData.upsilonU1 ^ ((card n + 1) / 2) :=
-  rfl
 
 /-- The tame part of `gridChar`: that of `liftChar` with the twist `ϑ ^ (l + 1)` if `c`, and with
 the trivial twist otherwise. -/

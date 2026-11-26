@@ -196,19 +196,6 @@ lemma exists_eq_map_affinePoint_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u :
     refine (mk_eq_mk_iff_exists_unit.mpr ⟨hu0.unit, ?_⟩).symm
     simp [_root_.funext_iff, ← hu1, mul_comm]
 
-/-- Let `v`, `u` be unimodular vectors over a local algebra over a field of characteristic `0`, with
-`(u 1 - i * u 0) * v i = 0` for all `i`. Then `u 0 * ∑ i, v i` is a unit, and for some `j` the point
-`[v]` is the `j`-th coordinate point and `[u] = [1 : j]`. -/
-lemma isUnit_and_exists_eq_affinePoint_of_mul_eq_zero [CharZero k] [IsLocalRing A] {u : Fin 2 → A}
-    (hv : span (Set.range v) = ⊤) (hu : span (Set.range u) = ⊤)
-    (h_mul_eq_zero : ∀ i : Fin (d + 1), (u 1 - i * u 0) * v i = 0) :
-    IsUnit (u 0 * ∑ i : Fin (d + 1), v i) ∧
-    ∃ j : Fin (d + 1),
-      (mk v hv, mk u hu) =
-        (projSpace k d ⊗ projSpace k 1).map structureMap (affinePoint j 0, affinePoint 0 ![j]) :=
-  ⟨isUnit_mul_sum_of_mul_eq_zero hv hu h_mul_eq_zero,
-    exists_eq_map_affinePoint_of_mul_eq_zero hv hu h_mul_eq_zero⟩
-
 variable (k d)
 
 /-- For `i : Fin (d + 1)`, the standard chart of projective `d`-space where the `i`-th coordinate is

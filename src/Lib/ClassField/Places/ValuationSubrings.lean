@@ -514,12 +514,6 @@ lemma placeOfEmbExtension_algebraMap (x : E) :
   let ⟨_, h_ext, _⟩ := (exists_placeOfEmb_extension σ).choose_spec
   h_ext x
 
-/-- The extension of `σ` to the completion takes values in the subfield `ℚ_p(σ E)` of `F`. -/
-lemma placeOfEmbExtension_mem_adjoin (x : LocField (placeOfEmb σ)) :
-    placeOfEmbExtension σ x ∈ adjoin ℚ_[p] (Set.range σ) :=
-  let ⟨_, _, h_image, _⟩ := (exists_placeOfEmb_extension σ).choose_spec
-  h_image x
-
 /-- The norm valuation of `F` pulled back along `New.placeOfEmbExtension σ` is equivalent to the
 valuation `Valued.v` of the completion at `New.placeOfEmb σ`. -/
 lemma valuation_comap_placeOfEmbExtension_isEquiv :

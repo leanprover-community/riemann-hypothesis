@@ -530,8 +530,6 @@ def vecAtPoint : (n → E) →ₛₗ[(toAdele : E →+* 𝔸 E)] n → 𝔸 E :=
   V.x⁻¹.1.mulVecLin ∘ₛₗ LinearMap.mk (σ := toAdele) ⟨fun y ↦ toAdele ∘ y, by simp⟩
     (by simp [funext_iff])
 
-lemma vecAtPoint_apply (y : n → E) : V.vecAtPoint y = V.x⁻¹.val *ᵥ (toAdele ∘ y) := rfl
-
 /-- For a space (J, x), the lattice E^n ∩ x_f Ô^n, as an additive subgroup of E^n. It consists of
 the y whose vector x⁻¹y has integral finite part. -/
 def baseLattice : AddSubgroup (n → E) where

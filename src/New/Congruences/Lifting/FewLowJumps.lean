@@ -131,7 +131,13 @@ lemma exists_isOperatorOfCost_zero_mem_deepElements (hk : k.IsUnramified) {N : �
     obtain ⟨v, -, hn_mem⟩ := mem_biUnion.1 hn
     exact Nat.le_zero.1 (cost_le_of_isUnramified hk fun h ↦ absurd h (h_free v n hn_mem))
   refine ⟨A, by rwa [h_cost] at h_reach, fun w hw ↦ h_raise hw _ fun l v hv n hn_ge hn_lt ↦ ?_⟩
-  obtain ⟨rfl, hn⟩ : l = 0 ∧ n ∈ Ioo (c l v) (c l v + N) := by grind [raiseOrdersAt]
+  obtain ⟨rfl, hn⟩ : l = 0 ∧ n ∈ Ioo (c l v) (c l v + N) := by
+    by_cases h : l = 0
+    · subst h
+      simp only [raiseOrdersAt, ↓reduceIte] at hn_ge hn_lt
+      exact ⟨rfl, mem_Ioo.2 ⟨by omega, by omega⟩⟩
+    · simp only [raiseOrdersAt, Ne.symm h, ↓reduceIte] at hn_ge hn_lt
+      omega
   exact mem_sigma.2 ⟨mem_singleton_self 0, mem_biUnion.2 ⟨v, hv, hn⟩⟩
 
 /-- Division by `p`. Suppose the chart is unramified, and no multiple of `p` lies strictly between
@@ -215,7 +221,11 @@ lemma exists_isOperatorOfCost_mem_deepElements_raiseOrder (a : ℕ) (u : ℤ) :
       ∀ x ∈ S.deepElements i c, A x ∈ S.deepElements i (raiseOrder c a u) := by
   obtain ⟨A, h_reach, h_raise⟩ := S.exists_isOperatorOfCost_and_mem_deepElements {⟨a, c a u⟩}
   refine ⟨A, by simpa using h_reach, fun x hx ↦ h_raise hx _ fun l v _ n hn_ge hn_lt ↦ ?_⟩
-  obtain ⟨rfl, rfl, rfl⟩ : l = a ∧ v = u ∧ n = c l v := by grind [raiseOrder]
+  obtain ⟨rfl, rfl, rfl⟩ : l = a ∧ v = u ∧ n = c l v := by
+    simp only [raiseOrder] at hn_lt
+    split_ifs at hn_lt with h
+    · rcases h with ⟨rfl, rfl⟩; exact ⟨rfl, rfl, by omega⟩
+    · omega
   exact mem_singleton_self _
 
 /-- A primitive relation for one step. Let `S` be a side on an unramified chart `k` and `i` a
@@ -313,7 +323,16 @@ lemma sigma_Ico_raiseOrder (U : Finset ℤ) (a : ℕ) (u : ℤ) (d : ℤ → ℤ
     (U.sigma fun v : ℤ ↦ Ico (raiseOrder c a u a v) (d v)) =
       (U.sigma fun v : ℤ ↦ Ico (c a v) (d v)).erase ⟨u, c a u⟩ := by
   ext ⟨v, n⟩
-  grind [raiseOrder]
+  simp only [mem_sigma, mem_Ico, mem_erase, ne_eq, Sigma.mk.inj_iff, heq_eq_eq, raiseOrder,
+    true_and]
+  split_ifs with h
+  · subst h
+    constructor
+    · rintro ⟨hv, h1, h2⟩; exact ⟨fun h' ↦ by omega, hv, by omega, h2⟩
+    · rintro ⟨hne, hv, h1, h2⟩; exact ⟨hv, by omega, h2⟩
+  · constructor
+    · rintro ⟨hv, h1, h2⟩; exact ⟨fun h' ↦ h h'.1, hv, by omega, h2⟩
+    · rintro ⟨-, hv, h1, h2⟩; exact ⟨hv, by omega, h2⟩
 
 /-- All steps at one level. Let `S` be a side on an unramified chart `k`, `i` a letter, and
 `S.deepConstants i 0 c` the constants at `i` below elements of the extension without pole and of
@@ -614,7 +633,7 @@ lemma sum_cost_zero_Ico_multiple_le {k : KummerChart Γ} (hk : k.IsUnramified) (
       ring
     have h_bound : t.toNat ≤ (p - 1) * (a + 1) := by omega
     have h_sub : Ico (2 * a + η - u) t ⊆ Ico (0 : ℤ) (t.toNat + 1) :=
-      Ico_subset_Ico (by grind) (by omega)
+      Ico_subset_Ico (by omega) (by omega)
     exact (sum_le_sum_of_subset h_sub).trans (sum_cost_zero_le hk h_bound)
   · -- a step `y < t` divisible by `p` has `y ≤ t - p`, so it is near `β` and hence is `0`
     refine sum_nonpos fun y hy ↦ cost_le_of_isUnramified hk fun h_dvd ↦
@@ -642,7 +661,8 @@ lemma sum_cost_one_Ico_negativeWindowDepth_le {k : KummerChart Γ} (hk : k.IsUnr
     cost_le_of_isUnramified hk
       (h_gap.eq_zero_of_dvd (by grind [low_or_far_of_fitsWindows h_window hu]))
   grw [sum_le_card_nsmul _ _ _ h_step, h_depth, Int.card_Ico, smul_eq_mul]
-  grind
+  simp only [mem_Icc]
+  split_ifs <;> omega
 
 /-- Let `S` be a side on an unramified Kummer chart `k` and `p ≥ 5`. At every letter `j` let
 `b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j`, let `p` divide no nonzero integer within

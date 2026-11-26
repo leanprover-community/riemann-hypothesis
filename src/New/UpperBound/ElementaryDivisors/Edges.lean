@@ -148,16 +148,6 @@ variable {N k n : ℕ} [NeZero N] (O K : Type) [CommRing O] [CommRing K] [Algebr
 def dividedPowerCoeff (β : Exponents N k n) : ℕ :=
   n ! ^ N / ∏ s : ZMod N, ∏ b : Fin k, ((β s).val b)!
 
-/-- The number `n! ^ N / β!` is the product over the letters `s` of the multinomial coefficients of
-the exponent vectors `β s`. -/
-lemma dividedPowerCoeff_eq_prod_multinomial (β : Exponents N k n) :
-    dividedPowerCoeff β = ∏ s : ZMod N, multinomial univ (β s).val := by
-  have h_letter (s : ZMod N) :
-      (∏ b : Fin k, ((β s).val b)!) * multinomial univ (β s).val = n ! := by
-    rw [multinomial_spec, (mem_finsuppAntidiag.1 (β s).property).left]
-  refine Nat.div_eq_of_eq_mul_right (by positivity) ?_
-  simp [← prod_mul_distrib, h_letter]
-
 variable (N k n) in
 /-- The lattice `H` of forms with coefficients in `O`: the `O`-span, in the polynomials over the
 `O`-algebra `K`, of the monomials `z ^ β` of degree `n` in each of the `N` letters, with `k`
@@ -172,34 +162,6 @@ with `k` variables in each letter. -/
 def dividedPowerLattice : Submodule O (MvPolynomial (Fin k × ZMod N) K) :=
   Submodule.span O
     (Set.range fun β : Exponents N k n ↦ monomial (exponentOf β) (dividedPowerCoeff β : K))
-
-/-- The span `H°` of the `(n! ^ N / β!) z ^ β` lies in the span `H` of the monomials `z ^ β`. -/
-theorem dividedPowerLattice_le_monomialLattice :
-    dividedPowerLattice N k n O K ≤ monomialLattice N k n O K := by
-  refine Submodule.span_le.2 (Set.range_subset_iff.2 fun β ↦ ?_)
-  have h_mem : monomial (exponentOf β) (1 : K) ∈ monomialLattice N k n O K :=
-    Submodule.subset_span ⟨β, rfl⟩
-  simpa [smul_monomial] using nsmul_mem h_mem (dividedPowerCoeff β)
-
-/-- Over a domain of characteristic `0`, the `n`-th symmetric powers of a matrix `A` and of `Aᵀ` are
-transposes of each other up to the multinomial coefficients of the exponents. -/
-lemma symPowMatrix_mul_multinomial {σ O : Type} [Fintype σ] [DecidableEq σ] [CommRing O]
-    [IsDomain O] [CharZero O] {n : ℕ} (A : Matrix σ σ O) (α β : Monomials σ n) :
-    symPowMatrix n A α β * multinomial univ β.val =
-      multinomial univ α.val * symPowMatrix n Aᵀ β α := by
-  -- Multiply by `α! β!` and use `γ! * multinomial γ = n!` in degree `n`.
-  let fact (γ : Monomials σ n) : ℕ := ∏ i : σ, (γ.val i)!
-  have h_fact (γ : Monomials σ n) : (fact γ : O) * multinomial univ γ.val = n ! := by
-    rw [← cast_mul, multinomial_spec, (mem_finsuppAntidiag.1 γ.property).left]
-  have h_ne (γ : Monomials σ n) : (fact γ : O) ≠ 0 := cast_ne_zero.2 (by positivity)
-  have h_adjoint : fact α * symPowMatrix n A α β = fact β * symPowMatrix n Aᵀ β α :=
-    Average.prod_factorial_mul_coeff_linSubst A α.val β.val
-  refine mul_left_cancel₀ (mul_ne_zero (h_ne α) (h_ne β)) ?_
-  calc fact α * fact β * (symPowMatrix n A α β * multinomial univ β.val)
-      = fact α * symPowMatrix n A α β * (fact β * multinomial univ β.val) := by ring
-    _ = fact β * symPowMatrix n Aᵀ β α * (fact α * multinomial univ α.val) := by
-        rw [h_adjoint, h_fact, h_fact]
-    _ = fact α * fact β * (multinomial univ α.val * symPowMatrix n Aᵀ β α) := by ring
 
 end Lattices
 
@@ -231,66 +193,6 @@ lemma residue_mem_translatesIn [IsLocalRing O] {τ : Fin k → ℕ} {B : Set (Ex
   simpa only [h_residue, Submodule.mem_bot, residue_eq_zero_iff] using hv g hg β hβ
 
 /-! ### Stability of the two lattices of forms -/
-
-/-- Over an `O`-algebra `K`, the translate by `g ∈ GL_k(W)` of `c z ^ β`, with `c ∈ O`, has the
-coefficient `ρ(g)_{αβ} c` at `z ^ α`, where `ρ = T.letterRep n`. -/
-lemma polyAction_map_monomial {K : Type} [CommRing K] [Algebra O K] (g : GL (Fin k) W)
-    (β : Exponents N k n) (c : O) :
-    (T.map (algebraMap O K)).polyAction g (monomial (exponentOf β) (algebraMap O K c)) =
-      ∑ α : Exponents N k n,
-        monomial (exponentOf α) (algebraMap O K (T.letterRep n g α β * c)) := by
-  have h_single : monomial (exponentOf β) (algebraMap O K c) =
-      polyOfCoeffs (Pi.single β (algebraMap O K c)) := by
-    simp [polyOfCoeffs, Pi.single_apply, apply_ite]
-  rw [h_single, polyAction_polyOfCoeffs, letterRep_map]
-  simp [polyOfCoeffs, Algebra.smul_def, mul_comm]
-
-/-- The lattice `H`, the `O`-span of the monomials of degree `n` in each letter in the polynomials
-over the `O`-algebra `K`, is stable under `GL_k(W)`. An element `g` acts by linear substitution,
-through the image of `g` in even letters and of its inverse transpose in odd letters. -/
-theorem polyAction_mem_monomialLattice {K : Type} [CommRing K] [Algebra O K] (g : GL (Fin k) W)
-    {h : MvPolynomial (Fin k × ZMod N) K} (h_mem : h ∈ monomialLattice N k n O K) :
-    (T.map (algebraMap O K)).polyAction g h ∈ monomialLattice N k n O K := by
-  let act : MvPolynomial (Fin k × ZMod N) K →ₗ[O] MvPolynomial (Fin k × ZMod N) K :=
-    ((T.map (algebraMap O K)).polyAction g).toLinearMap.restrictScalars O
-  suffices h_le : monomialLattice N k n O K ≤ (monomialLattice N k n O K).comap act from
-    h_le h_mem
-  refine Submodule.span_le.2 (Set.range_subset_iff.2 fun β ↦ ?_)
-  have h_act : act (monomial (exponentOf β) 1) =
-      ∑ α : Exponents N k n, T.letterRep n g α β • monomial (exponentOf α) (1 : K) := by
-    simpa [act, Algebra.smul_def, C_mul_monomial] using T.polyAction_map_monomial (K := K) g β 1
-  rw [SetLike.mem_coe, Submodule.mem_comap, h_act]
-  exact sum_mem fun α _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨α, rfl⟩)
-
-/-- Let `O` be a domain of characteristic `0`. The lattice `H°`, the `O`-span of the
-`(n! ^ N / β!) z ^ β` in the polynomials over the `O`-algebra `K`, is stable under `GL_k(W)`. -/
-theorem polyAction_mem_dividedPowerLattice [IsDomain O] [CharZero O] {K : Type} [CommRing K]
-    [Algebra O K] (g : GL (Fin k) W) {h : MvPolynomial (Fin k × ZMod N) K}
-    (h_mem : h ∈ dividedPowerLattice N k n O K) :
-    (T.map (algebraMap O K)).polyAction g h ∈ dividedPowerLattice N k n O K := by
-  -- In the basis of divided powers `g` acts by the transpose of the matrix `ρ'` built from the
-  -- transposes of the matrices of the letters, which has entries in `O`.
-  let act : MvPolynomial (Fin k × ZMod N) K →ₗ[O] MvPolynomial (Fin k × ZMod N) K :=
-    ((T.map (algebraMap O K)).polyAction g).toLinearMap.restrictScalars O
-  let ρ' : Matrix (Exponents N k n) (Exponents N k n) O :=
-    kroneckerPi fun s : ZMod N ↦ symPowMatrix n (T.letterMatrix s g)ᵀ
-  have h_entry (α β : Exponents N k n) :
-      T.letterRep n g α β * dividedPowerCoeff β = dividedPowerCoeff α * ρ' β α := by
-    simp only [letterRep_apply, ρ', kroneckerPi, of_apply, dividedPowerCoeff_eq_prod_multinomial,
-      Nat.cast_prod, ← prod_mul_distrib, symPowMatrix_mul_multinomial]
-  suffices h_le : dividedPowerLattice N k n O K ≤ (dividedPowerLattice N k n O K).comap act from
-    h_le h_mem
-  refine Submodule.span_le.2 (Set.range_subset_iff.2 fun β ↦ ?_)
-  have h_act : act (monomial (exponentOf β) (dividedPowerCoeff β)) =
-      ∑ α : Exponents N k n, ρ' β α • monomial (exponentOf α) (dividedPowerCoeff α : K) := by
-    have h_expand : act (monomial (exponentOf β) (algebraMap O K (dividedPowerCoeff β))) =
-        ∑ α : Exponents N k n,
-          monomial (exponentOf α) (algebraMap O K (dividedPowerCoeff α * ρ' β α)) := by
-      simp only [← h_entry]
-      exact T.polyAction_map_monomial g β (dividedPowerCoeff β)
-    simpa [Algebra.smul_def, C_mul_monomial, mul_comm] using h_expand
-  rw [SetLike.mem_coe, Submodule.mem_comap, h_act]
-  exact sum_mem fun α _ ↦ Submodule.smul_mem _ _ (Submodule.subset_span ⟨α, rfl⟩)
 
 /-! ### One edge -/
 
@@ -402,12 +304,6 @@ def allEdgesForms (k n r : ℕ) : Submodule O (Exponents N k n → O) where
     refine ⟨m, c • h, ?_, fun g β ↦ ?_⟩
     · rw [mulVec_smul, ← hv, smul_comm]
     · simpa only [mulVec_smul, Pi.smul_apply, smul_eq_mul] using (h_dvd g β).mul_left c
-
-/-- Integral forms lie in the halfway lattices of all edges from the origin: the normalized
-coefficients of a form with coefficients `h` in `O` belong to `allEdgesForms`. -/
-lemma depthScaling_mulVec_mem_allEdgesForms (r : ℕ) (h : Exponents N k n → O) :
-    T.depthScaling k n r *ᵥ h ∈ T.allEdgesForms k n r :=
-  ⟨0, h, by simp, by simp⟩
 
 /-! ### Duality -/
 

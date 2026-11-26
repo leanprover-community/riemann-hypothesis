@@ -86,16 +86,6 @@ lemma CriticalPair.ofReal_lRatioProd (p : D.CriticalPair) (ϑ : D.TameChar) :
   exact prod_congr rfl fun z hz ↦ by simp [CriticalPair.ratio, CriticalPair.lowerPoint,
     mem_Icc.1 hz]
 
-/-- For the character `ν` of a critical pair and a tame character `ϑ` of modulus `Q`, the product
-`lRatioProd` of the ratios of Hecke values can be written without inverses, as the product over
-`1 ≤ i ≤ s` of `|L^{MQ}(i, ν ϑ) / L^M(i, ν)|`. -/
-lemma CriticalPair.lRatioProd_eq_prod_norm_div (p : D.CriticalPair) (s : ℕ) (ϑ : D.TameChar) :
-    D.lRatioProd p.character s ϑ =
-      ∏ i ∈ Icc 1 s,
-        ‖(p.character * ϑ.toAutChar).L ({w : FinPlace D.E | D.IsChosen w} ∪ ϑ.Q) i /
-          p.character.L {w : FinPlace D.E | D.IsChosen w} i‖ := by
-  simp only [lRatioProd, p.L_mul_inv ϑ, p.L_inv, norm_div]
-
 /-- For a critical pair `p` (a character `ν = p.character` and an integer `z = p.z`) and a tame
 character `ϑ` with places `ϑ.Q`, the number `lValueProd` up to `z` for `(ν ϑ)⁻¹` and the chosen
 places together with `ϑ.Q` is a product of three factors. They are `lValueProd` for `ν` and the

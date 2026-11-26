@@ -861,15 +861,6 @@ theorem coe_adjoint_singleLift {j : D.LiftIndex} (Ξ : (D.descentPair ϑ j).Form
     rw [LinearMap.adjoint_inner_right, inner_singleLift, Submodule.coe_inner, inner_eq_petersson]
   rw [h_eq]
 
-/-- The descent is the inner product with the kernel: for a form `φ` on `V_j` and `g` in
-`U(W_j)(𝔸)`, the value at `g` of the adjoint of the lift applied to `φ` is the inner product of the
-form `New.DescentPair.vectorKernelForm` at `g` with `φ`. -/
-theorem adjoint_singleLift_apply {j : D.LiftIndex} (φ : (D.descentPair ϑ j).FormV)
-    (g : New.G D.E (D.signsW j)) :
-    ((D.singleLift ϑ j).adjoint φ).val g = inner ℂ ((D.descentPair ϑ j).vectorKernelForm g) φ := by
-  rw [coe_adjoint_singleLift]
-  exact (D.descentPair ϑ j).normalizedDescent_eq_inner_vectorKernelForm φ g
-
 /-- The lift is integration against the kernel: the lift of a form `y` of level `J_M` on `W_j` is
 the integral over `g` in `[U(W_j)]` of `y(g)` times the form `New.DescentPair.vectorKernelForm` at
 `g`. -/

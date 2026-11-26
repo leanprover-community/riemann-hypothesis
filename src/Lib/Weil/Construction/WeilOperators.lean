@@ -621,19 +621,6 @@ lemma OrthogonalSum.modelInner_tmul [LocallyCompactSpace W] [LocallyCompactSpace
     _ = modelInner v v' * modelInner w w' := by
       rw [modelInner_apply, modelInner_apply]
 
-/-- Let `S` present `W` as the orthogonal sum of `W₁` and `W₂`, with `H` and the vacuum `e` being
-the products of the data on the factors. For model vectors `v` of `e₁` and `w` of `e₂`, the tensor
-product `S.tmul v w` (the function `S.equiv (x₁, x₂) ↦ v x₁ * w x₂`) has L¹ norm ‖v‖ · ‖w‖. -/
-lemma OrthogonalSum.norm_tmul [LocallyCompactSpace W] [LocallyCompactSpace W₁]
-    [LocallyCompactSpace W₂] : ‖S.tmul v w‖ = ‖v‖ * ‖w‖ := by
-  calc ‖S.tmul v w‖ = ∫ x : W₁ × W₂, ‖S.tmul v w (S.equiv x)‖ ∂μ₁.prod μ₂ := by
-        rw [norm_eq_integral_norm, ← S.measurePreserving_equiv.integral_comp
-          S.equiv.measurableEmbedding]
-    _ = ∫ x : W₁ × W₂, ‖v x.1‖ * ‖w x.2‖ ∂μ₁.prod μ₂ := by simp [S.tmul_apply]
-    _ = ‖v‖ * ‖w‖ := by
-      rw [norm_eq_integral_norm v, norm_eq_integral_norm w]
-      exact integral_prod_mul (fun x₁ : W₁ ↦ ‖v x₁‖) fun x₂ : W₂ ↦ ‖w x₂‖
-
 /-- The product rule for the Weil representation of an orthogonal sum. Identify `W` with
 `W₁ × W₂` by `S.equiv`, and let `A`, `A₁`, `A₂` be actions with cocycle 1 of groups `G`, `G₁`,
 `G₂` on `W`, `W₁`, `W₂`. If `g` acts as `(g₁, g₂)` and its multiplier is the product of theirs,

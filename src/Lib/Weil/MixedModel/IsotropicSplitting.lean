@@ -617,11 +617,20 @@ def levi : GL p (𝔸 E) × G E s₀ →* G E s :=
         D.lAdelic * (x.fst⁻¹).valᴴ * D.lCoord) <| by
       -- The matrix preserves the form: after the cross terms vanish, `sum_frame_mul_coord_eq_one`
       -- is left.
-      simp [← Matrix.mul_assoc, conjTranspose_nonsing_inv, Matrix.add_mul, Matrix.mul_add]
-      simp [↓conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix, Matrix.mul_assoc,
-        eq_sub_of_add_eq' D.sum_frame_mul_coord_eq_one, Matrix.mul_sub, Matrix.mul_add])
+      simp only [coe_units_inv, conjTranspose_nonsing_inv, conjTranspose_add, conjTranspose_mul,
+        conjTranspose_coord, ← Matrix.mul_assoc, conjTranspose_conjTranspose, Matrix.add_mul,
+        Matrix.mul_add]
+      simp only [Matrix.mul_assoc, coord_mul_frame_mul, coord_mul_frame, mul_zero, Matrix.mul_zero,
+        Matrix.zero_mul, add_zero, mul_one, isUnits_det_units, nonsing_inv_mul, Matrix.mul_one,
+        zero_add, ↓conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix, stdForm_mul_self,
+        det_conjTranspose, isUnit_star, mul_nonsing_inv,
+        eq_sub_of_add_eq' D.sum_frame_mul_coord_eq_one, Matrix.mul_sub, Matrix.mul_add,
+        add_sub_cancel])
     fun x y ↦ ext_adeleMatrix <| by
-      simp [Matrix.mul_assoc, conjTranspose_nonsing_inv, Matrix.mul_add, Matrix.add_mul]
+      simp only [Prod.fst_mul, Units.val_mul, Matrix.mul_assoc, Prod.snd_mul, adeleMatrix_mul,
+        _root_.mul_inv_rev, coe_units_inv, conjTranspose_mul, conjTranspose_nonsing_inv,
+        adeleMatrix_ofMatrix, Matrix.mul_add, Matrix.add_mul, coord_mul_frame_mul, Matrix.mul_zero,
+        add_zero, zero_add]
 
 section
 
@@ -679,8 +688,13 @@ def radicalElement : G E s :=
           D.lCoord) <| by
     -- The matrix preserves the form: the terms in `b + bᴴ` cancel as `star j = -j`, those in
     -- `cᴴ * c` as `2⁻¹ + 2⁻¹ = 1`.
-    simp [↓coord_mul_frame_mul, iCoord, lCoord, Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul,
-      Matrix.sub_mul, Matrix.mul_sub]
+    simp only [lCoord, Matrix.mul_assoc, iCoord, stdForm_mul_stdForm_mul, smul_add, Matrix.mul_add,
+      Matrix.mul_smul, Matrix.add_mul, smul_mul, conjTranspose_sub, conjTranspose_add,
+      conjTranspose_one, conjTranspose_mul, conjTranspose_stdForm, conjTranspose_conjTranspose,
+      conjTranspose_smul, star_toAdele, star_inv₀, star_ofNat, star_j, inv_neg, map_neg, neg_smul,
+      smul_neg, Matrix.sub_mul, one_mul, neg_mul, Algebra.smul_mul_assoc, Matrix.mul_sub, mul_one,
+      ↓coord_mul_frame_mul, Matrix.mul_zero, mul_zero, add_zero, smul_zero, neg_zero, sub_zero,
+      Algebra.mul_smul_comm]
     match_scalars <;> grind
 
 /-- The unipotent element `radicalElement c b` depends continuously on the pair `(c, b)`. -/
@@ -713,7 +727,12 @@ lemma radicalElement_mul (c' : Matrix n₀ p (𝔸 E)) (b' : Matrix p p (𝔸 E)
   refine ext_adeleMatrix ?_
   -- Expand both sides in the frames and coordinates, then compare the scalar coefficients of each
   -- term.
-  simp [Matrix.mul_assoc, Matrix.mul_add, Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul]
+  simp only [radicalElement, Matrix.mul_assoc, smul_add, Matrix.mul_add, Matrix.mul_smul,
+    Matrix.add_mul, smul_mul, adeleMatrix_mul, adeleMatrix_ofMatrix, Matrix.mul_sub, mul_one,
+    Matrix.sub_mul, one_mul, coord_mul_frame_mul, Matrix.mul_zero, sub_zero, Algebra.smul_mul_assoc,
+    smul_zero, add_zero, Algebra.mul_smul_comm, conjTranspose_add, conjTranspose_smul, star_toAdele,
+    star_j, map_neg, conjTranspose_mul, conjTranspose_stdForm, conjTranspose_conjTranspose,
+    neg_smul, smul_neg, Matrix.mul_neg, Matrix.neg_mul]
   match_scalars <;> grind
 
 lemma radicalElement_inv : (D.radicalElement c b)⁻¹ = D.radicalElement (-c) (-b) :=
@@ -726,8 +745,14 @@ lemma levi_conj_radicalElement (a : GL p (𝔸 E)) (g : G E s₀) :
       D.radicalElement (g.adeleMatrix * c * a.valᴴ) (a.val * b * a.valᴴ) * D.levi (a, g) := by
   refine ext_adeleMatrix ?_
   -- Both sides expand to the same sum of products of frames and coordinates.
-  simp [adeleMatrix, ofMatrix, ← U.form_mul_inv_eq, Matrix.mul_assoc, Matrix.mul_add,
-    Matrix.add_mul, Matrix.mul_sub, Matrix.sub_mul, conjTranspose_nonsing_inv]
+  simp only [adeleMatrix, levi, ofMatrix, Matrix.mul_assoc, coe_units_inv,
+    conjTranspose_nonsing_inv, MonoidHom.mk'_apply, radicalElement, smul_add, Matrix.mul_add,
+    Matrix.mul_smul, Matrix.add_mul, smul_mul, map_mul, MulEquiv.apply_symm_apply, Subgroup.coe_mul,
+    Units.val_mul, U.val_of_coe, Matrix.mul_sub, mul_one, coord_mul_frame_mul, Matrix.mul_zero,
+    zero_add, add_zero, Algebra.mul_smul_comm, conjTranspose_mul, conjTranspose_conjTranspose,
+    ← U.form_mul_inv_eq, InvMemClass.coe_inv, isUnits_det_units, nonsing_inv_mul_cancel_left,
+    Matrix.sub_mul, one_mul, sub_zero, Algebra.smul_mul_assoc, smul_zero, det_conjTranspose,
+    isUnit_star, mul_nonsing_inv_cancel_left]
   abel
 
 /-- Every `radicalElement c b` is a commutator of a Levi element `m = levi (a, 1)` with a unipotent
@@ -747,7 +772,12 @@ lemma exists_levi_mul_radicalElement_eq :
   congr 1
   refine ext_adeleMatrix ?_
   -- Expand both matrices and compare the scalar coefficients of each term.
-  simp [Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, two]
+  simp only [radicalElement, adeleMatrix_one, Matrix.one_mul, Units.val_mkOfMulEqOne,
+    conjTranspose_add, conjTranspose_one, Matrix.mul_add, Matrix.mul_one, Matrix.add_mul,
+    Matrix.mul_assoc, Algebra.mul_smul_comm, one_mul, smul_add, mul_one, conjTranspose_smul,
+    star_toAdele, star_inv₀, star_ofNat, Matrix.mul_smul, smul_mul, adeleMatrix_ofMatrix, star_j,
+    map_neg, conjTranspose_mul, conjTranspose_stdForm, conjTranspose_conjTranspose, neg_smul,
+    smul_neg, Matrix.mul_neg, Matrix.neg_mul, sub_right_inj, add_left_inj, two]
   match_scalars <;> norm_num [mul_two, ← map_add, ← map_mul] <;> ring_nf
 
 /-- For two unipotent elements, the first with `c = 0`, the product adds the parameters `b`. -/
@@ -784,21 +814,28 @@ lemma exists_eq_radicalElement_mul_levi (hk : D.ActsOnFrame g a) :
     refine ⟨D.kCoord * g.adeleMatrix, D.iCoord * g.adeleMatrix, ?_⟩
     -- Resolve the identity; the `l`-component of `g` is known from `lCoord_mul_adeleMatrix`.
     conv_lhs => rw [← g.adeleMatrix.one_mul, ← D.sum_frame_mul_coord_eq_one]
-    simp [D.lCoord_mul_adeleMatrix hk, Matrix.add_mul, Matrix.mul_assoc, conjTranspose_nonsing_inv]
+    simp only [Matrix.add_mul, Matrix.mul_assoc, D.lCoord_mul_adeleMatrix hk, coe_units_inv,
+      conjTranspose_nonsing_inv]
   -- `g` preserves the form; we use this on the columns `i` and `l`.
   have h_pres : g.adeleMatrixᴴ * stdForm E s * g.adeleMatrix = stdForm E s :=
     g.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix
   have h_form_i : Yᴴ * (stdForm E s₀ * (Y * D.iAdelic)) =
       stdForm E s * D.iAdelic - stdForm E s * (D.kAdelic * (a.val⁻¹ * (X * D.iAdelic))) := by
-    simpa [hg, ← eq_sub_iff_add_eq', Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add,
-      conjTranspose_nonsing_inv] using congrArg (· * D.iAdelic) h_pres
+    simpa only [hg, conjTranspose_add, conjTranspose_mul, conjTranspose_coord,
+      conjTranspose_nonsing_inv, conjTranspose_conjTranspose, Matrix.mul_assoc, Matrix.add_mul,
+      Matrix.mul_add, coord_mul_frame_mul, Matrix.mul_zero, add_zero, zero_add, mul_zero,
+      coord_mul_frame, ← eq_sub_iff_add_eq'] using congrArg (· * D.iAdelic) h_pres
   have h_form_l : Xᴴ * a.valᴴ⁻¹ = stdForm E s * D.lAdelic -
       (stdForm E s * (D.kAdelic * (a.val⁻¹ * (X * D.lAdelic))) +
         Yᴴ * (stdForm E s₀ * (Y * D.lAdelic))) := by
-    simpa [hg, ← eq_sub_iff_add_eq', Matrix.mul_assoc, Matrix.add_mul, Matrix.mul_add,
-      conjTranspose_nonsing_inv] using congrArg (· * D.lAdelic) h_pres
+    simpa only [hg, conjTranspose_add, conjTranspose_mul, conjTranspose_coord,
+      conjTranspose_nonsing_inv, conjTranspose_conjTranspose, Matrix.mul_assoc, Matrix.add_mul,
+      Matrix.mul_add, coord_mul_frame_mul, Matrix.mul_zero, add_zero, zero_add, mul_zero,
+      coord_mul_frame, mul_one, ← eq_sub_iff_add_eq'] using congrArg (· * D.lAdelic) h_pres
   let g₀ : G E s₀ :=
-    ofMatrix (Y * D.iAdelic) (by simp [h_form_i, Matrix.mul_assoc, Matrix.mul_sub])
+    ofMatrix (Y * D.iAdelic) (by
+      simp only [conjTranspose_mul, Matrix.mul_assoc, h_form_i, Matrix.mul_sub,
+        coord_mul_frame_mul, coord_mul_frame, mul_one, mul_zero, sub_zero])
   refine ⟨-Y * D.lAdelic * a.valᴴ, -toAdele (j : E) • X * D.lAdelic * a.valᴴ, a, g₀,
     ext_adeleMatrix ?_, rfl, ?_⟩
   · -- Compare both sides on the frames `k`, `i` and `l`.
@@ -816,7 +853,8 @@ lemma exists_eq_radicalElement_mul_levi (hk : D.ActsOnFrame g a) :
       -- `2⁻¹ + 2⁻¹ = 1`.
       match_scalars <;> grind
   · -- The matrix of `g₀` is the `V₀`-block of `g`.
-    simp [g₀, hg, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_add]
+    simp only [adeleMatrix_ofMatrix, hg, Matrix.add_mul, Matrix.mul_assoc, coord_mul_frame,
+      Matrix.mul_zero, add_zero, Matrix.mul_add, coord_mul_frame_mul, zero_add, g₀]
 
 /-- The unipotent radical of the stabiliser of `A = range k` consists of the `radicalElement c b`:
 an element `g` of the adelic unitary group of `V` is of this form exactly when it fixes the frame

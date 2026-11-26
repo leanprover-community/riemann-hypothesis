@@ -385,18 +385,6 @@ lemma IsAppellHumbert.deriv_theta_ne_zero [IsAppellHumbert L.hermitianForm χ]
   simpa [weierstrassPMulSq_of_mem hz] using
     weierstrassPMulSq_ne_zero hf hf_ne hf_zero (theta_eq_zero_of_mem_lattice hf hf_zero hz)
 
-/-- Let `(H, χ)` be Appell–Humbert data with `H = L.hermitianForm` (see `New.IsAppellHumbert`) and
-`f ≠ 0` a theta function for them with `f 0 = 0`. The theorem combines three facts: the zeros of `f`
-are the lattice points, they are simple, and `℘ f²` and `f²` span the theta functions for
-`(2 H, χ²)`. -/
-lemma IsAppellHumbert.thetaSpace_two_eq_span [IsAppellHumbert L.hermitianForm χ]
-    (hf : f ∈ L.hermitianForm.thetaSpace χ) (hf_ne : f ≠ 0) (hf_zero : f 0 = 0) :
-    (∀ z : ℂ, f z = 0 ↔ z ∈ L.lattice) ∧
-    (∀ z ∈ L.lattice, deriv f z ≠ 0) ∧
-    (2 • L.hermitianForm).thetaSpace (χ ^ 2) = span ℂ {L.weierstrassPMulSq f, f ^ 2} :=
-  ⟨fun _ ↦ theta_eq_zero_iff_mem_lattice hf hf_ne hf_zero,
-    fun _ ↦ deriv_theta_ne_zero hf hf_ne hf_zero, thetaSpace_two_eq_span_pair hf hf_ne hf_zero⟩
-
 /-- If `f` is a theta function for `L.hermitianForm` and `sigmaSign L`, then so is `z ↦ f (-z)`. -/
 lemma comp_neg_mem_thetaSpace (hf : f ∈ L.hermitianForm.thetaSpace (sigmaSign L)) :
     (fun z : ℂ ↦ f (-z)) ∈ L.hermitianForm.thetaSpace (sigmaSign L) := by

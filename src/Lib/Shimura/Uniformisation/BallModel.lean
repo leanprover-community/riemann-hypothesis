@@ -631,16 +631,30 @@ lemma exists_analyticFamily_positiveBall (e : (D.Index → ℂ) ≃L[ℂ] ℂ ×
           isFrameFor := hβ.left
           isPeriodMap := hper b
           -- the right side of `h_alt` is purely imaginary, and gives the Riemann form
-          re_symm := by simp [reindex_equiv (Q b), ← sub_eq_zero, ← sub_re, h_alt, -Prod.forall]
-          riemannForm_eq := by simp [riemannForm_def, h_alt, field]
+          re_symm := by
+            simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+              ← sub_eq_zero, ← sub_re, sub_zero, reindex_equiv (Q b),
+              ContinuousLinearEquiv.symm_apply_apply, h_alt, mul_re, re_ofNat, ofReal_re,
+              im_ofNat, ofReal_im, mul_zero, I_re, mul_im, zero_mul, add_zero, I_im, mul_one,
+              sub_self, implies_true]
+          riemannForm_eq := by
+            simp only [riemannForm_def, ContinuousLinearMap.comp_apply,
+              ContinuousLinearEquiv.coe_coe, ContinuousLinearEquiv.symm_apply_apply, h_alt, mul_im,
+              mul_re, re_ofNat, ofReal_re, im_ofNat, ofReal_im, mul_zero, sub_zero, I_re, zero_mul,
+              add_zero, I_im, mul_one, sub_self, zero_add, ne_eq, mul_eq_zero, OfNat.ofNat_ne_zero,
+              pi_ne_zero, or_self, not_false_eq_true, mul_div_cancel_left₀, implies_true]
           isPosRiemann := isPosRiemann_of_re_pos (h_pos b)
           reflection := ⟨star (x b), _, by simp [x_ne, ← dotProduct_mulVec], rfl⟩
           -- using! lets the two sides match after unfolding the equivalence
           adjoint c := by
             simpa [reindex_equiv (Q b), -Prod.forall, PeriodMap.intAction] using! h_adj b c
           exists_std_equiv := ⟨.refl ℂ (BallFibre E D.Index), fun a ↦ by
-            simp [LinearMap.ext_iff, -Prod.forall, PeriodMap.intAction,
-              h_smul, Prod.ext_iff, funext_iff]⟩ }
+            simp only [ne_eq, LinearEquiv.refl_toLinearMap, PeriodMap.intAction, RingHom.coe_comp,
+              Function.comp_apply, LinearEquiv.refl_symm, comp_id, id_comp, star_def,
+              LinearMap.ext_iff, ContinuousLinearMap.coe_coe, IsPeriodMap.complexMul_apply_apply,
+              h_smul, ContinuousLinearEquiv.apply_symm_apply, smul_eq_mul, prodMap_apply,
+              LinearMap.smul_apply, Module.End.one_apply, coe_piMap, LinearMap.coe_smul,
+              Prod.ext_iff, funext_iff, Pi.map_apply, Pi.smul_apply, implies_true, and_self]⟩ }
       analyticAt b hb w := analyticAt_of_eventually_differentiableAt
         (.mono (ball_open.mem_nhds hb) fun b' hb' ↦ (hderiv b' hb').differentiableAt)
       -- Test linearity on `Q b w` for `w` in the line of `b`: the `BallBase` component of the
@@ -753,18 +767,28 @@ def AnalyticFamily.heckeTranslate (f : AnalyticFamily D) (γ : GUPlus E D.Index)
           automorphyForm := c • x.automorphyForm
           isFrameFor := x.isFrameFor.mul_iff.2 hγ
           isPeriodMap := x.isPeriodMap
-          re_symm := by simp [x.re_symm]
+          re_symm := by simp only [_root_.smul_apply, re_qsmul, x.re_symm, implies_true]
           riemannForm_eq := by
-            simp [map_rat_smul, x.riemannForm_eq, Rat.smul_def, mul_left_comm, polarisationForm,
-              PEL.xi_im_pos_and_re_eq_zero, mul_sum, map_smul', smul_mulVec]
-          isPosRiemann := isPosRiemann_of_re_pos (by simpa [hc, Prod.ext_iff] using f.re_pos b)
+            simp only [map_rat_smul, LinearMap.smul_apply, x.riemannForm_eq, polarisationForm,
+              mul_re, PEL.xi_im_pos_and_re_eq_zero, zero_mul, zero_sub, mul_neg, sum_neg_distrib,
+              mk₂_apply, smul_neg, Rat.smul_def, mul_sum, mul_left_comm, map_mul, implies_true,
+              map_smul', map_ratCast, smul_mulVec, dotProduct_smul, smul_eq_mul, ratCast_re,
+              ratCast_im, mul_im, zero_add, sub_zero]
+          isPosRiemann := isPosRiemann_of_re_pos fun u hu ↦ by
+            rw [_root_.smul_apply, _root_.smul_apply, re_qsmul]
+            exact smul_pos hc (f.re_pos b u hu)
           reflection := x.reflection
-          adjoint := by simpa [hc.ne', ThetaTori.PeriodMap.intAction] using x.adjoint
+          adjoint a u v := by
+            simpa only [ThetaTori.PeriodMap.intAction, RingHom.coe_comp, Function.comp_apply,
+              IsPeriodMap.complexMul_apply_apply, _root_.smul_apply] using
+              congrArg (c • ·) (x.adjoint a u v)
           exists_std_equiv := x.exists_std_equiv }
       analyticAt := f.analyticAt
       eq_zero_of_linear := f.eq_zero_of_linear
-      form_const := by simp [f.form_const 0]
-      re_pos := by simpa [hc, Prod.ext_iff] using f.re_pos }
+      form_const := by simp only [f.form_const 0, _root_.smul_apply, implies_true, and_self]
+      re_pos b u hu := by
+        rw [_root_.smul_apply, _root_.smul_apply, re_qsmul]
+        exact smul_pos hc (f.re_pos b u hu) }
 
 /-- Let `f` be an analytic family whose frame `f.frame` has the sign condition for the matrix `β`
 and some complex matrix `ℓ` (only `β` is used afterwards) (`hβ`), let `H = Φ_{v₀}(β)` be negative

@@ -332,12 +332,6 @@ lemma normLength_addVal (x : ↑O) : O.normLength (addVal O x) = ellVal x.val :=
     simp [← mul_neg, hϖ.ne_zero, hu_norm, ellVal, logb_pow]
   rw [addVal_def' u hϖ n, h_ellVal, normLength_natCast]
 
-/-- The normalised length of `n` is `n v(ϖ)` for every uniformiser `ϖ` of `O`, where v = `ellVal`
-is the normalised valuation on ℚ̄_ℓ. -/
-lemma normLength_natCast_of_irreducible {ϖ : ↑O} (hϖ : Irreducible ϖ) (n : ℕ) :
-    O.normLength n = n * ellVal ϖ.val := by
-  rw [← hϖ.addVal_pow n, normLength_addVal, SubmonoidClass.coe_pow, ellVal_pow]
-
 @[simp]
 lemma normLength_natCast_mul (k : ℕ) (g : ℕ∞) : O.normLength (k * g) = k * O.normLength g := by
   simp [← nsmul_eq_mul]

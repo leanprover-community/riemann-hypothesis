@@ -802,23 +802,6 @@ lemma exists_span_eq_kisinModule_linearIndependent :
       LinearIndependent Ainf v :=
   frame_theorem.exists_span_eq_kisinModule_linearIndependent
 
-/-- For a jump lattice `L` (a finite free `O`-module with a `Γ`-action, crystalline over `Γ'`), the
-vectors of `L.frobKisinAinf l`, the image of `kisinAinf` under `φ ^ l`, on which all forms in
-`L.forms` take values in the field `valueField 0` ⊂ B_dR form the `S`-span of the image of the Kisin
-module `L.kisinModule` under `φ ^ l`. -/
-lemma valueFieldPoints_frobKisinAinf_eq_span (l : ℕ) :
-    L.valueFieldPoints (L.frobKisinAinf l) =
-      span k.S ((fun y : L.Ambient ↦ φ ^ l • y) '' (L.kisinModule : Set L.Ambient)) := by
-  -- Both sides are spanned by the vectors `φ ^ l • F.n i` of a frame `F`, as `φ` preserves `S`.
-  obtain ⟨F⟩ : Nonempty (Frame L) := nonempty_frame
-  rw [← F.span_phi_pow_smul_n_eq_valueFieldPoints l, ← F.span_n_eq_kisinModule]
-  refine le_antisymm (span_mono (range_subset_iff.mpr fun i ↦ ?_)) (span_le.2 ?_)
-  · exact ⟨F.n i, subset_span ⟨i, rfl⟩, rfl⟩
-  · rintro _ ⟨y, hy, rfl⟩
-    obtain ⟨c, rfl⟩ := (mem_span_range_iff_exists_fun k.S).mp hy
-    refine (mem_span_range_iff_exists_fun k.S).mpr ⟨fun i ↦ (k.φ ^ l) (c i), ?_⟩
-    simp only [smul_sum, smul_eq_val_smul, frobGroup_smul_smul, Chart.coe_phi_pow, phi_pow_smul]
-
 private lemma mem_kisinAinf_of_mem_kisinModule {x : L.Ambient} (hx : x ∈ L.kisinModule) :
     x ∈ L.kisinAinf :=
   hx.left
@@ -827,15 +810,6 @@ private lemma mem_kisinAinf_of_mem_kisinModule {x : L.Ambient} (hx : x ∈ L.kis
 private lemma mem_saturateBy_of_mem_kisinAinf {x : L.Ambient} (hx : x ∈ L.kisinAinf) :
     x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice :=
   hx.left
-
-/-- For a jump lattice `L` (a finite free `O`-module with a `Γ`-action, crystalline over `Γ'` of the
-Kummer chart `k`), the Kisin module is free over `S`. This module consists of the x in `kisinAinf`
-on which all `Γ'`-equivariant forms take values in the field `valueField 0`. -/
-lemma free_kisinModule : Module.Free k.S L.kisinModule := by
-  -- The family `v` is linearly independent over `Ainf`, hence over `S`, and spans the module.
-  obtain ⟨v, h_span_S, -, h_indep⟩ := exists_span_eq_kisinModule_linearIndependent (L := L)
-  rw [← h_span_S]
-  exact .of_basis (Basis.span (h_indep.restrict_scalars' k.S))
 
 /-- After inverting `tau`, the `Ainf`-span of the Kisin module and `ainfLattice` agree: they have
 the same saturation by the powers of `tau`. This is a case of the comparison over `A_inf[1/μ]` for

@@ -1064,12 +1064,6 @@ structure IsDualPairing (A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ) : Pr
     ∃ v' : WeylIndex n κ' → ℂ, weylNormSq v' = weylNormSq v ∧
       ∀ u : WeylIndex n κ' → ℂ, u ⬝ᵥ A.map (↑) *ᵥ v = gramForm v' u
 
-lemma IsDualPairing.ofAlgForm_apply {A : Matrix (WeylIndex n κ') (WeylIndex n κ) ℤ}
-    (hA : IsDualPairing κ κ' e e' l A) (s : n → ℤˣ) (η : AlgForm n κ' e') (x : GInf E s)
-    (g : Gf E n) :
-    ofAlgForm (-l) s η (x, g) = η.val g ⬝ᵥ A.map (↑) *ᵥ conjWeylRep κ e x (highestVector κ l) :=
-  hA.ofAlgForm_eq_bilin s η x g
-
 /-- Let `l` list twice the Harish-Chandra parameter of `(κ, e)`, and `-l` that of `(κ', e')`, in the
 sense of `New.IsHCParam`: at each place the entries are distinct values of `hcParameter` at
 positions `< card n`. Then some integer matrix `A` makes `v' ⬝ᵥ A *ᵥ v` a duality between the

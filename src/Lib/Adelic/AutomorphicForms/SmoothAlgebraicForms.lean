@@ -392,18 +392,6 @@ lemma span_gramForm_highestVector_comp_eq_top [DecidableEq n]
       gramForm (highestVector κ l) (conjWeylRep κ e x u) = 0 := (Submodule.mem_iInf _).1 hu x
   simp [eq_zero_of_forall_gramForm_translate_eq_zero hl e u h_orth]
 
-/-- Let each `l w` be injective. For any determinant twist `e`, the highest vector
-v⁺ = `New.highestVector κ l` and its dual ⟨v⁺, ·⟩ for `New.gramForm` are cyclic under the compact
-group (`USign 1` at each place, acting by ρ = `New.conjWeylRep`): the vectors ρ(x)v⁺ span the
-representation, and the linear forms u ↦ ⟨v⁺, ρ(x)u⟩ span its dual. Both facts are consequences of
-the irreducibility of the Schur module. -/
-lemma highestVector_cyclic [DecidableEq n] (hl : ∀ w : Φ, (l w).Injective) (e : Φ → ℤ) :
-    Submodule.span ℂ (Set.range fun x : Φ → USign (1 : n → ℤˣ) ↦
-      conjWeylRep κ e x (highestVector κ l)) = ⊤ ∧
-    Submodule.span ℂ (Set.range fun x : Φ → USign (1 : n → ℤˣ) ↦
-      gramForm (highestVector κ l) ∘ₗ conjWeylRep κ e x) = ⊤ :=
-  ⟨span_translate_highestVector_eq_top hl e, span_gramForm_highestVector_comp_eq_top hl e⟩
-
 /-! ### Positions in the decreasing order -/
 
 /-- For an injective integer vector `a` indexed by `n`, every position `q < card n` in the

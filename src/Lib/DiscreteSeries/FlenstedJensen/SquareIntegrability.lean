@@ -727,20 +727,6 @@ theorem isUnitaryCasimirGe (hg : l.HasLargeGap A) : IsUnitaryCasimirGe l l.dsAct
   -- the Casimir operator is central, so it acts on the whole module by its eigenvalue on `c_λ`
   simp [dsAction, casimirK_generatedModule casimir_dsCoeffSmooth, sq]
 
-/-- The three properties of the inner product that `U(𝔤) c_λ` inherits from `L²`: it is invariant
-and the Casimir operator Ω = ∑ E_ab E_ba is at least `l.casimirValue`, the scalar by which Ω acts on
-`c_λ` (`isUnitaryCasimirGe`); the generator is a unit vector (`norm_dsGenerator`); the values of a
-function are bounded by its norm (`norm_apply_le_norm`).
-
-A step in Flensted-Jensen's construction of Harish-Chandra's discrete series of U(p,q), for
-parameters of large gap. `IsUnitaryCasimirGe` records only the inequality for Ω, although Ω acts on
-the whole module by exactly `l.casimirValue`. -/
-theorem isUnitaryCasimirGe_dsAction (hg : l.HasLargeGap A) :
-    IsUnitaryCasimirGe l l.dsAction ∧
-    ‖l.dsGenerator‖ = 1 ∧
-    ∀ (y : l.DsModule) (g : USign ε), ‖y.val.val g‖ ≤ ‖y‖ :=
-  ⟨hg.isUnitaryCasimirGe, hg.norm_dsGenerator, hg.norm_apply_le_norm⟩
-
 end HCParam.HasLargeGap
 
 end New

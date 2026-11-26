@@ -76,7 +76,18 @@ variable {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ] {E : Type} [Field E] [CMType 
 
 /-! ### One place: the operator `∂` -/
 
-set_option synthInstance.maxHeartbeats 200000
+noncomputable local instance (priority := 1100) {L : J → FinPlace E} :
+    NonUnitalNonAssocSemiring ↥(D.integralEnd L) :=
+  (D.integralEnd L).toSemiring.toNonAssocSemiring.toNonUnitalNonAssocSemiring
+
+noncomputable local instance (priority := 1100) {L : J → FinPlace E} :
+    NonUnitalNonAssocRing ↥(D.integralEnd L) :=
+  (D.integralEnd L).toRing.toNonAssocRing.toNonUnitalNonAssocRing
+
+local instance (priority := 1100) {L : J → FinPlace E} :
+    MulActionSemiHomClass (↥(D.heckeAlgebra L) →ₐ[EllAdicIntegers] ↥(D.integralEnd L))
+      (RingHom.id EllAdicIntegers) ↥(D.heckeAlgebra L) ↥(D.integralEnd L) :=
+  ⟨fun f r x ↦ by rw [Algebra.smul_def, map_mul, f.commutes, ← Algebra.smul_def]; rfl⟩
 
 omit [Nonempty n] [Fintype J] [DecidableEq J] [V.IsStd] [WeilData E] in
 lemma integralEnd_mul_apply (s s' : D.integralEnd Q.place) (y : D.formsOfLevel Q.place) :

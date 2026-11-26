@@ -54,14 +54,6 @@ protected def GridIndex (j : ℕ) : Type :=
     (Fin (D.t - z.toNat)) j
   deriving Fintype, DecidableEq
 
-lemma gridIndex_false (j : ℕ) :
-    D.GridIndex false i j = BlockIndex (BlockIndex D.RowIndex (Fin D.t) i) (Fin D.t) j := rfl
-
-/-- The index set `D.GridIndex true i j` of the node `(i, j)` of grid `Ỹ` is `D.RowIndex ⊕ Unit`
-with `i` blocks `Fin (D.t + 1)` and then `j` blocks `Fin (D.t - 1)`. -/
-lemma gridIndex_true (j : ℕ) : D.GridIndex true i j =
-    BlockIndex (BlockIndex (D.RowIndex ⊕ Unit) (Fin (D.t + 1)) i) (Fin (D.t - 1)) j := rfl
-
 /-- The numbering of the base index set: `D.basisNumber` on `D.RowIndex`, and `r` for the extra
 point of grid `Ỹ`. -/
 def gridNumber : ∀ z : Bool, BlockIndex D.RowIndex Unit z.toNat ≃ Fin (D.r + z.toNat)
@@ -910,25 +902,6 @@ lemma paramsCorrespond_grid_succ_right (z : Bool) (o i j : ℕ) (hi : i ≤ D.m)
     (gridBlocks_succ_right o i j) (D.isSeparated_gridCentres τ z)
     (D.gridBlocks_subset τ z hi (by omega)) h_centre (by simp [gridBlocks, add_comm])
     (D.mul_card_gridIndex_add_pow_three_le hi (by omega) hi (by omega)) rfl
-
-/-- Both kinds of step in one statement, for arguments that treat them together: `isLeft = true` is
-`paramsCorrespond_grid_succ_left` and `isLeft = false` is `paramsCorrespond_grid_succ_right`. The
-equation `h_step` fixes the target `(i', j')` and the weights: at a node of rank `N` the weight
-`D.gridWeight weightGrid weightIdx` is `N / 2`, rounded down if `weightGrid` is true and up
-otherwise, less `w_(weightIdx+1)`. The target satisfies `i' ≤ m` and `j' + o ≤ m`, and it lies in a
-grid (`o = 0`) or in a triangle (`i' = 0`). -/
-lemma paramsCorrespond_grid (isLeft z : Bool) (o i j : ℕ) {weightGrid : Bool} {weightIdx i' j' : ℕ}
-    (h_step : (weightGrid, weightIdx, i', j') =
-      bif isLeft then (z, i, i + 1, j) else (!z, j + o, i, j + 1))
-    (hi : i' ≤ D.m) (hj : j' + o ≤ D.m) (h_zero : o = 0 ∨ i' = 0) :
-    ParamsCorrespond (D.gridWeight weightGrid weightIdx (D.GridIndex z i j))
-      (D.gridWeight weightGrid weightIdx (D.GridIndex z i' j'))
-      (negIf isLeft (D.gridParam z o i j)) (negIf isLeft (D.gridParam z o i' j'))
-      (D.gridSigns z o i j) (D.gridSigns z o i' j') := by
-  cases isLeft <;> cases h_step
-  · exact D.paramsCorrespond_grid_succ_right z o i j hi hj h_zero
-  · obtain rfl : o = 0 := h_zero.resolve_right i.succ_ne_zero
-    exact D.paramsCorrespond_grid_succ_left z i j hi hj
 
 end Steps
 

@@ -455,7 +455,7 @@ def liftUnitriangular (x : UpperEntries 𝔰.n) : 𝔰.G₁ :=
           𝔰.dualColsᴴ) <| by
     -- `a` has determinant `1`, so its adjugate is its inverse.
     have a_det : a.det = 1 := det_eq_one_of_unitriangular (lev := id) <| by
-      simp [a, unitriangularMatrix, Matrix.one_apply]
+      simp only [id_eq, unitriangularMatrix, submatrix_apply, of_apply, castSucc_lt_castSucc_iff, castSucc_inj, Matrix.one_apply, dite_eq_right_iff, a]
       lia
     -- Expand with `J₁_eq` and the orthogonality relations of the columns.
     simp [a_det, adjugate_conjTranspose, mul_mul_eq_of_mul_eq (mul_adjugate _),
@@ -484,7 +484,7 @@ lemma unipotentOf_mem_besselU0 (q : 𝔰.UnipotentParams) : unipotentOf q ∈ be
   -- and the inequalities a, b < ϱ put all three above the block diagonal.
   rintro (a | k | a) (b | l | b) h_level
   case inl.inr.inl | inl.inr.inr | inr.inl.inr.inr =>
-    simp [BesselIndex.level] at h_level
+    simp only [BesselIndex.level, Sum.elim_inr, Sum.elim_inl, tsub_le_iff_right] at h_level
     lia
   all_goals simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply]
 
@@ -522,7 +522,7 @@ theorem liftUnitriangular_mem_besselU (x : UpperEntries 𝔰.n) : liftUnitriangu
   case inr.inr =>
     refine partialUnitriangularGroup_apply_eStar h_mem (isLt a) j fun b hb ↦ ?_
     rintro rfl
-    simp [BesselIndex.level] at h_level
+    simp only [BesselIndex.level, Sum.elim_inr, tsub_le_iff_right] at h_level
     lia
   all_goals rcases j with b | l | b
   -- `h_mem` covers the columns e_b; the middle block is explicit; the other positions lie above
@@ -533,7 +533,7 @@ theorem liftUnitriangular_mem_besselU (x : UpperEntries 𝔰.n) : liftUnitriangu
     rcases k with k | ⟨⟩ <;> rcases l with l | ⟨⟩ <;>
       simp [inclMatrix, Matrix.add_mul, Matrix.mul_assoc, Matrix.mul_apply, Matrix.one_apply]
   all_goals
-    simp [BesselIndex.level] at h_level -- the position is above the block diagonal
+    simp only [BesselIndex.level, Sum.elim_inr, Sum.elim_inl, tsub_le_iff_right] at h_level-- the position is above the block diagonal
     lia
 
 /-- Let s be in `G₁`, let h be the form `J₁`, and let the ϱ columns B_b of B span an isotropic space
@@ -550,7 +550,7 @@ theorem exists_mul_unipotentOf_dualCols_eq {s : 𝔰.G₁} {B : Matrix 𝔰.Bess
   rw [U.gram_invariant] at h_dual h_isotropic
   let q : 𝔰.UnipotentParams := (-Cᴴ * 𝔰.definiteCols, skewCoords (skewAdjointPart ℝ C.toRows₁))
   suffices h_cols : (unipotentOf q).val.val * 𝔰.dualCols = C from
-    ⟨q, by simp [-val_unipotentOf_coe, Matrix.mul_assoc, h_cols]⟩
+    ⟨q, by simp only [Subgroup.coe_mul, Units.val_mul, Matrix.mul_assoc, h_cols]⟩
   -- As duality fixes the rows at `e*_a` and `z`, isotropy says that the hermitian part of the rows
   -- at the `e_a` is `-q.1 * q.1ᴴ / 2`.
   have h_block (a b : Fin 𝔰.ϱ) : star (C (Sum.inl b) a) + C (Sum.inl a) b +

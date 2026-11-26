@@ -347,107 +347,6 @@ lemma exists_eq_heisenbergElem_of_mem (h : g ∈ floorUnipotent a) :
     (mul_mem (inv_mem h) (heisenbergElem_mem_floorUnipotent a p)).2
   exact ⟨p, inv_mul_eq_one.1 (eq_one_of_mem_floorGroup_inf ⟨hp, h_nilp⟩ (by simp))⟩
 
-/-- The map u ↦ ue*_a is a bijection from N_a = `floorUnipotent a`, the group of Eichler maps along
-e_a, onto the isotropic vectors y that vanish on the floors below a (they are orthogonal to the
-first a hyperbolic planes) and have h(e_a, y) = 1. -/
-lemma bijOn_mulVec_eStar (a : Fin 𝔰.ϱ) :
-    Set.BijOn (fun u : T.G ↦ u.val.val *ᵥ Pi.single (eStar a) 1)
-      (floorUnipotent a : Subgroup T.G)
-      {y : 𝔰.BesselIndex → A |
-        (∀ j : 𝔰.BesselIndex, floorOf j < a → y j = 0) ∧
-        star y ⬝ᵥ T.splitGram *ᵥ y = 0 ∧
-        star (Pi.single (inl a) 1 : 𝔰.BesselIndex → A) ⬝ᵥ T.splitGram *ᵥ y = 1} := by
-  have h_pair (y : 𝔰.BesselIndex → A) :
-      star (Pi.single (inl a) 1 : 𝔰.BesselIndex → A) ⬝ᵥ T.splitGram *ᵥ y = y (eStar a) := by
-    rw [Pi.star_single, star_one, single_dotProduct, one_mul]
-    exact splitGram_mulVec_apply (inl a) a.is_lt
-  refine ⟨fun u hu ↦ ?_, fun u hu v hv huv ↦ ?_, fun y ⟨h_lower, h_iso, h_top⟩ ↦ ?_⟩
-  · -- the image is the column of `u` at `e*_a`; it is isotropic as `u` is an isometry
-    obtain ⟨h_group, h_unip⟩ : u ∈ floorGroup a ∧ u ∈ unipotentBelow (a + 1) := mem_inf.1 hu
-    have h_col (j : 𝔰.BesselIndex) :
-        (u.val.val *ᵥ Pi.single (eStar a) 1 : 𝔰.BesselIndex → A) j = u.val j (eStar a) := by
-      rw [mulVec_single_one, col_apply]
-    refine ⟨fun j hj ↦ (h_col j).trans ?_, ?_, (h_pair _).trans ((h_col _).trans ?_)⟩
-    · have h_ne : j ≠ eStar a := fun h_eq ↦ by simp [h_eq] at hj
-      rw [apply_eq_one_apply_of_mem_floorGroup h_group j _ (.inl ⟨hj, hj.trans a.is_lt⟩),
-        one_apply_ne h_ne]
-    · rw [form_mulVec_mulVec]
-      simp
-    · have h_ne (b : Fin 𝔰.ϱ) (hb : b < a) : (eStar a : 𝔰.BesselIndex) ≠ eStar b :=
-        fun h_eq ↦ hb.ne' (by simpa using h_eq)
-      rw [partialUnitriangularGroup_apply_eStar (unipotentBelow_le_partialUnitriangularGroup h_unip)
-        a.val.lt_succ_self _ h_ne, one_apply_eq]
-  · -- `u⁻¹ v` fixes `e*_a`, so it lies in `floorGroup (a + 1)`; being unipotent, it is `1`
-    have h_mem : u⁻¹ * v ∈ floorUnipotent a := mul_mem (inv_mem hu) hv
-    have h_floor : u⁻¹ * v ∈ floorGroup (a + 1) :=
-      inv_mul_mem_floorGroup_succ ⟨unipotentBelow_le_partialUnitriangularGroup h_mem.2, h_mem.1⟩ huv
-    exact inv_mul_eq_one.1 (eq_one_of_mem_floorGroup_inf ⟨h_floor, h_mem.2⟩ (.inl le_rfl))
-  · obtain ⟨p, hp⟩ := exists_heisenbergElem_mulVec_eq h_lower ((h_pair y).symm.trans h_top) h_iso
-    exact ⟨heisenbergElem a p, heisenbergElem_mem_floorUnipotent a p, hp.symm⟩
-
-omit [TraceOne A] H in
-/-- A product x_0 ⋯ x_(j-1) with x_l in N_l = `floorUnipotent l` lies in
-N_(<j) = `unipotentBelow j`. -/
-lemma prod_ofFn_mem_unipotentBelow {j : ℕ} {x : Fin j → T.G}
-    (hx : ∀ l : Fin j, x l ∈ floorUnipotent l) : (List.ofFn x).prod ∈ unipotentBelow j := by
-  induction j with
-  | zero => simp [one_mem]
-  | succ j ih =>
-    rw [List.ofFn_succ', List.prod_concat]
-    exact mul_mem (unipotentBelow_le_succ (ih fun l ↦ hx l.castSucc)) (hx (Fin.last j)).2
-
-/-- Every element of N_(<j) = `unipotentBelow j` is a product x_0 ⋯ x_(j-1) with unique factors x_l
-in N_l = `floorUnipotent l`. Here N_(<j) is the group of isometries of `splitGram T` that are
-unitriangular when the basis vectors of floor below `j` keep their level and all others get the
-middle level ϱ, and N_l = G_l ∩ N_(<l+1). The floor of a basis vector is `a` for the a-th hyperbolic
-pair, ϱ for the last vector z of the middle block, and ϱ + 1 for the other middle vectors. -/
-lemma existsUnique_prod_of_mem_unipotentBelow {j : ℕ} {u : T.G} (hu : u ∈ unipotentBelow j) :
-    ∃! x : Fin j → T.G, (∀ l : Fin j, x l ∈ floorUnipotent l) ∧ u = (List.ofFn x).prod := by
-  induction j generalizing u with
-  | zero =>
-    have h_one : u = 1 :=
-      eq_one_of_mem_floorGroup_inf ⟨floorGroup_zero.ge (mem_top u), hu⟩ (.inl le_rfl)
-    exact ⟨Fin.elim0, ⟨fun l ↦ l.elim0, h_one⟩, fun x _ ↦ Subsingleton.elim x _⟩
-  | succ j ih =>
-    -- `u = ν⁻¹ γ⁻¹` with `ν` in `unipotentBelow j` and `γ` in `floorGroup j`; these groups meet
-    -- only in `1`, so the last factor is `γ⁻¹` and the others are the factors of `ν⁻¹`
-    obtain ⟨γ, hγ, ν, hν, h_inv⟩ :
-        ∃ γ ∈ floorGroup j, ∃ ν ∈ unipotentBelow j, u⁻¹ = γ * ν :=
-      exists_floorGroup_mul_unipotentBelow
-        (unipotentBelow_le_partialUnitriangularGroup (inv_mem hu))
-    have h_eq : u = ν⁻¹ * γ⁻¹ := by rw [← _root_.mul_inv_rev, ← h_inv, inv_inv]
-    have hγ_unip : γ⁻¹ ∈ unipotentBelow (j + 1) :=
-      (mul_mem_cancel_left (inv_mem (unipotentBelow_le_succ hν))).1 (by rwa [← h_eq])
-    obtain ⟨y, ⟨hy_mem, hy_prod⟩, hy_unique⟩ := ih (inv_mem hν)
-    refine ⟨Fin.snoc y γ⁻¹, ⟨fun l ↦ ?_, ?_⟩, fun x ⟨hx_mem, hx_prod⟩ ↦ ?_⟩
-    · cases l using Fin.lastCases with
-      | last =>
-        rw [Fin.snoc_last]
-        exact mem_inf.2 ⟨inv_mem hγ, hγ_unip⟩
-      | cast l => simpa using hy_mem l
-    · simp only [List.ofFn_succ', List.prod_concat, Fin.snoc_castSucc, Fin.snoc_last, h_eq, hy_prod]
-    · rw [List.ofFn_succ', List.prod_concat] at hx_prod
-      set ν' : T.G := (List.ofFn fun l : Fin j ↦ x l.castSucc).prod
-      have hν' : ν' ∈ unipotentBelow j := prod_ofFn_mem_unipotentBelow fun l ↦ hx_mem l.castSucc
-      have h_cross : ν * ν' = γ⁻¹ * (x (Fin.last j))⁻¹ := by
-        rw [eq_mul_inv_iff_mul_eq, mul_assoc, ← hx_prod, h_eq, mul_inv_cancel_left]
-      have h_one : ν * ν' = 1 := by
-        refine eq_one_of_mem_floorGroup_inf (mem_inf.2 ⟨?_, mul_mem hν hν'⟩) (.inl le_rfl)
-        rw [h_cross]
-        exact mul_mem (inv_mem hγ) (inv_mem (hx_mem (Fin.last j)).1)
-      have h_init : Fin.init x = y :=
-        hy_unique _ ⟨fun l ↦ hx_mem l.castSucc, inv_eq_of_mul_eq_one_right h_one⟩
-      have h_last : x (Fin.last j) = γ⁻¹ := by
-        rw [h_one, eq_comm, mul_inv_eq_one] at h_cross
-        exact h_cross.symm
-      rw [← h_init, ← h_last, Fin.snoc_init_self]
-
-/-- Every element of the unipotent group `besselU` is a product x_0 ⋯ x_(ϱ-1) with unique factors
-x_l in N_l = `floorUnipotent l`, the group of Eichler maps along e_l. -/
-lemma existsUnique_prod_of_mem_besselU {u : T.G} (hu : u ∈ besselU) :
-    ∃! x : Fin 𝔰.ϱ → T.G, (∀ l : Fin 𝔰.ϱ, x l ∈ floorUnipotent l) ∧ u = (List.ofFn x).prod :=
-  existsUnique_prod_of_mem_unipotentBelow ((unipotentBelow_eq_besselU le_rfl).ge hu)
-
 /-- Let `A` have a trace-one element τ (τ + τ̄ = 1) and let `T.splitGram` be hermitian and
 invertible, with h(v, w) = v* · `T.splitGram` · w. For a < ϱ, a vector v on the indices of floor at
 least a + 1 (extended by zero) and a skew-adjoint β, the inverse of the Heisenberg element ν(v, β)
@@ -600,25 +499,6 @@ def HyperbolicBasis.floorBasis :
     inl ∘ inl ⊕ᵥ
       (Sum.map (inr ∘ inl) inl ⊕ᵥ (inl ∘ inr ∘ inr ∘ inl ⊕ᵥ Sum.map (inr ∘ inr ∘ inr) inr))
   inclMatrix A incl * F.basisMatrix.fromBlocks 0 0 (diagonal (n := S ⊕ S) 1) * inclMatrix A order
-
-/-- The columns of `F.floorBasis b` are, in this order: the first pair of `F`; the first vectors of
-the `m` other pairs of `F`, then the `e_a`; the orthonormal vectors of `F`; the second vectors of
-the `m` other pairs of `F`, then the `e*_a`. -/
-lemma HyperbolicBasis.col_floorBasis (j : Fin 2 ⊕ FloorPairs b m ⊕ ι ⊕ FloorPairs b m) :
-    (F.floorBasis b).col j =
-      match j with
-      | inl i => F.middleVector (inl i)
-      | inr (inl (inl c)) => F.middleVector (inr (inl c))
-      | inr (inl (inr a)) => Pi.single (inl a) 1
-      | inr (inr (inl i)) => F.middleVector (inr (inr (inl i)))
-      | inr (inr (inr (inl c))) => F.middleVector (inr (inr (inr c)))
-      | inr (inr (inr (inr a))) => Pi.single (eStar a) 1 := by
-  rw [floorBasis, mul_inclMatrix]
-  -- compare entries, for each kind of column
-  rcases j with i | (c | a) | i | c | a
-  all_goals
-    simp [funext_iff, middleVector, inclMatrix, mul_apply, one_apply, Pi.single_apply, -ite_mul,
-      Finset.sum_boole_mul]
 
 /-- The Gram matrix of `F.floorBasis b` consists of a hyperbolic plane for the first pair, one for
 each pair indexed by `FloorPairs b m`, and an orthonormal part indexed by `ι`. -/

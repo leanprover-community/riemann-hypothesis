@@ -418,9 +418,6 @@ noncomputable def firstEntry : residueLineStabilizer F N →* Fˣ :=
       map_one' := by simp
       map_mul' g h := mul_apply_zero_of_mem_residueLineStabilizer (g : GL (Fin N) F) h.property 0 }
 
-lemma coe_firstEntry (g : residueLineStabilizer F N) :
-    (firstEntry g : F) = (g : GL (Fin N) F) 0 0 := rfl
-
 /-- Let `d = diagGL t` be the diagonal matrix with entries `t i`. If `h⁻¹ d h` stabilises the line
 of the first basis vector, then the first column of `h` is an eigenvector of `d`, so the first entry
 of `h⁻¹ d h` is `t i` whenever the `i`-th entry of that column is nonzero. -/

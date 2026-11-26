@@ -123,17 +123,17 @@ omit [Fintype n] in
 theorem abs_wordWeight_sub_le (ν : n → ℤ) (w : List (n × n)) (a : n) :
     |wordWeight ν w a - ν a| ≤ w.length := by
   induction w with
-  | nil => simp [wordWeight]
+  | nil => simp only [wordWeight, List.foldr_nil, sub_self, abs_zero, List.length_nil, Nat.cast_zero, Std.le_refl]
   | cons p w ih =>
     obtain ⟨c, d⟩ := p
     have h_diff : wordWeight ν ((c, d) :: w) a - wordWeight ν w a =
         (if a = c then 1 else 0) - (if a = d then 1 else 0) := by
-      simp [wordWeight, Pi.single_apply]
+      simp only [wordWeight, List.foldr_cons, Pi.add_apply, Pi.sub_apply, Pi.single_apply, add_sub_cancel_left]
     calc |wordWeight ν ((c, d) :: w) a - ν a|
         ≤ |wordWeight ν ((c, d) :: w) a - wordWeight ν w a| + |wordWeight ν w a - ν a| :=
           abs_sub_le ..
       _ ≤ 1 + w.length := add_le_add (by grind) ih
-      _ = ((c, d) :: w).length := by simp [add_comm]
+      _ = ((c, d) :: w).length := by simp only [add_comm, List.length_cons, Nat.cast_add, Nat.cast_one]
 
 /-- Let x be a K-highest vector of weight ν. The word w, a product of operators E_ab, sends x to a
 vector of weight `wordWeight ν w`. -/
@@ -146,8 +146,8 @@ theorem HCParam.IsKHighest.E_self_word_eq_smul (hx : l.IsKHighest ρ ν x) (w : 
     obtain ⟨c, d⟩ := p
     have h_wt : (wordWeight ν ((c, d) :: w) a : ℂ) =
         wordWeight ν w a + (Pi.single c 1 - Pi.single d 1 : n → ℂ) a := by
-      simp [wordWeight, Pi.single_apply]
-    rw [show ρ.word ((c, d) :: w) x = ρ.E c d (ρ.word w x) by simp [word], h_wt]
+      simp only [wordWeight, List.foldr_cons, Pi.add_apply, Pi.sub_apply, Pi.single_apply, Int.cast_add, Int.cast_sub, Int.cast_ite, Int.cast_one, Int.cast_zero]
+    rw [show ρ.word ((c, d) :: w) x = ρ.E c d (ρ.word w x) by simp only [word, List.map_cons, Function.uncurry_apply_pair, List.prod_cons, End.mul_apply], h_wt]
     exact E_self_E_apply_eq_smul ih c d
 
 /-- Let l be a parameter of some gap (`New.HCParam.HasGap`) and x K-highest of weight ν. Let the
@@ -166,7 +166,7 @@ theorem HCParam.IsKHighest.filtration_le_of_word_mem (hx : l.IsKHighest ρ ν x)
   let preimage (r : Set (ℤˣ × ℤˣ)) (U : Submodule ℂ H) : Submodule ℂ H :=
     (pi (Prod.map ε ε ⁻¹' r) fun _ ↦ U).comap (.pi ρ.E.uncurry)
   have mem_preimage (r : Set (ℤˣ × ℤˣ)) (U : Submodule ℂ H) (y : H) :
-      y ∈ preimage r U ↔ ∀ c d : n, (ε c, ε d) ∈ r → ρ.E c d y ∈ U := by simp [preimage]
+      y ∈ preimage r U ↔ ∀ c d : n, (ε c, ε d) ∈ r → ρ.E c d y ∈ U := by simp only [mem_comap, Submodule.mem_pi, Set.mem_preimage, pi_apply, Prod.forall, Prod.map_apply, Function.uncurry_apply_pair, preimage]
   have isStable_preimage (r : Set (ℤˣ × ℤˣ)) {U : Submodule ℂ H} (hU : IsStable U) :
       IsStable (preimage r U) := fun a b hab hlt y hy ↦ by
     have hy_mem : ∀ c d : n, (ε c, ε d) ∈ r → ρ.E c d y ∈ U := (mem_preimage r U y).1 hy
@@ -182,7 +182,7 @@ theorem HCParam.IsKHighest.filtration_le_of_word_mem (hx : l.IsKHighest ρ ν x)
     -- The least stable subspace `T₀` that contains `x` lies in `T` and is stable under `𝔨`.
     let T₀ : Submodule ℂ H := sInf {U | IsStable U ∧ x ∈ U}
     have h_le : T₀ ≤ T := sInf_le ⟨hT, by simpa [word] using h_words []⟩
-    refine sInf_le_of_le ⟨by simp [T₀], fun a b hab y hy ↦ ?_⟩ h_le
+    refine sInf_le_of_le ⟨by simp only [mem_sInf, Set.mem_ofPred_eq, and_imp, imp_self, implies_true, T₀], fun a b hab y hy ↦ ?_⟩ h_le
     refine mem_sInf.2 fun U ⟨hU, hxU⟩ ↦ ?_
     -- `𝔨` maps `x` into `U`: lowering operators by stability, diagonal ones to a multiple of `x`,
     -- raising ones to zero.
@@ -193,7 +193,7 @@ theorem HCParam.IsKHighest.filtration_le_of_word_mem (hx : l.IsKHighest ρ ν x)
       · exact hU c d hcd h_lower hxU
       · obtain rfl : c = d := hg.injective h_eq
         simpa [hx_wt c] using U.smul_mem _ hxU
-      · simp [hx_raise c d hcd h_upper]
+      · simp only [hx_raise c d hcd h_upper, zero_mem]
     exact (mem_preimage _ U y).1 (mem_sInf.1 hy _ ⟨isStable_preimage _ hU, hx_preimage⟩) a b hab
   | succ s ih =>
     refine sup_le (ih T hT fun w hw ↦ h_words w (by omega)) (iSup₂_le fun a b ↦ ?_)
@@ -220,12 +220,12 @@ theorem HCParam.IsKHighest.finite_filtration (hx : l.IsKHighest ρ ν x) [hg : l
     have h_span : ρ.filtration ε x 0 ≤ span ℂ G := by
       refine hx.filtration_le_of_word_mem _ (fun a b hε hab ↦ mapsTo_span ?_) fun w hw ↦ ?_
       · rintro _ ⟨y_mem, w, (hw : l ⬝ᵥ wordWeight ν w + w.length ≤ l ⬝ᵥ ν), rfl⟩
-        refine ⟨E_mem_filtration y_mem hε, (a, b) :: w, ?_, by simp [word]⟩
+        refine ⟨E_mem_filtration y_mem hε, (a, b) :: w, ?_, by simp only [word, List.map_cons, Function.uncurry_apply_pair, List.prod_cons, End.mul_apply]⟩
         have h_wt : l ⬝ᵥ wordWeight ν ((a, b) :: w) = l ⬝ᵥ wordWeight ν w + (l a - l b) := by
-          simp [wordWeight]
+          simp only [wordWeight, List.foldr_cons, dotProduct_add, dotProduct_sub, dotProduct_single, mul_one]
         grind
       · obtain rfl : w = [] := by simpa using hw
-        exact subset_span ⟨self_mem_filtration, [], by simp [wordWeight]⟩
+        exact subset_span ⟨self_mem_filtration, [], by simp only [wordWeight, Set.mem_ofPred_eq, List.foldr_nil, List.length_nil, Nat.cast_zero, add_zero, Std.le_refl, and_self]⟩
     -- The words with a nonzero value have bounded length, so `G` is finite.
     let N : ℕ := (l ⬝ᵥ (ν + ν + l) + l.casimirKValue ν).toNat
     have h_fin : G.Finite := by
@@ -291,7 +291,7 @@ theorem IsKInvariantForm.mul_E (hρ : IsUnitaryCasimirGe l ρ) (hJ : IsKInvarian
   suffices ∑ p : n, ∑ q : n, ⟪ρ.E q p u, D (ρ.E q p v)⟫_ℂ =
       ⟪u, (∑ c, ∑ d, ((ε c : ℂ) * ε d) • (ρ.E c d * D * ρ.E d c)) v⟫_ℂ by
     simpa [sum_prod_type, ← hD_form]
-  simp [hρ.inner_E_left, mul_comm]
+  simp only [hρ.inner_E_left, mul_comm, Units.val_mul, cast_mul, LinearMap.coe_sum, LinearMap.coe_smul, Finset.sum_apply, Pi.smul_apply, End.mul_apply, CStarModule.inner_sum_right, CStarModule.inner_op_smul_right]
 
 /-- Assume `New.IsUnitaryCasimirGe l ρ`, which gives `E_ab` the adjoint `ε_a ε_b E_ba`, and let `J`
 satisfy `New.IsKInvariantForm`: its form is given by an operator commuting with `𝔨`. Then the
@@ -305,7 +305,7 @@ theorem IsKInvariantForm.sum_inner_casimirK (hρ : IsUnitaryCasimirGe l ρ)
   -- For a compact pair (c, d), `E c d` commutes with `D` and has adjoint `E d c`.
   have h_move (c d : n) (hcd : ε c = ε d) (z : H) :
       ⟪u, D (ρ.E c d z)⟫_ℂ = ⟪ρ.E d c u, D z⟫_ℂ := by
-    simp [← End.mul_apply D, ← (hD_comm c d hcd).eq, hρ.inner_E_left, hcd]
+    simp only [← End.mul_apply D, ← (hD_comm c d hcd).eq, End.mul_apply, hρ.inner_E_left, hcd, units_mul_self, Units.val_one, cast_one, one_mul]
   suffices h_sum : ∑ c : n, ∑ d : n with ε c = ε d, ⟪u, D (ρ.E c d (ρ.E d c v))⟫_ℂ =
       ∑ c : n, ∑ d : n with ε c = ε d, ⟪ρ.E d c u, D (ρ.E d c v)⟫_ℂ by
     simpa [sum_comm (γ := I), GlModule.casimir, hD_form] using h_sum
@@ -363,14 +363,14 @@ theorem HCParam.IsKHighest.casimirK_bound_of_highest (hx : l.IsKHighest ρ ν x)
     by_contra! h_orth
     have h_stable (a b : n) (hab : ε a = ε b) (hlt : l a < l b) :
         (innerSLFlip ℂ z).ker ∈ (ρ.E a b).invtSubmodule := fun v _ ↦ by
-      simp [hρ.inner_E_left, hz_high b a hab.symm hlt]
+      simp only [mem_comap, LinearMap.mem_ker, ContinuousLinearMap.coe_coe, innerSLFlip_apply_apply, hρ.inner_E_left, Units.val_mul, cast_mul, hz_high b a hab.symm hlt, inner_zero_right, mul_zero]
     exact inner_self_ne_zero.2 hz_ne
       (hx.filtration_le_of_word_mem (innerSLFlip ℂ z).ker h_stable h_orth (hU_le hzU))
   -- As `ρ.E a a` is self-adjoint, `z` has the weight of that word.
   have hz : l.IsKHighest ρ (wordWeight ν w) z := by
     have h_weight (a : n) : (wordWeight ν w a : ℂ) = μ a := by
       have h_selfAdj : ⟪ρ.E a a (ρ.word w x), z⟫_ℂ = ⟪ρ.word w x, ρ.E a a z⟫_ℂ := by
-        simp [hρ.inner_E_left a a]
+        simp only [hρ.inner_E_left a a, units_mul_self, Units.val_one, cast_one, one_mul]
       rw [hx.E_self_word_eq_smul, hz_wt a, inner_smul_left, inner_smul_right] at h_selfAdj
       simpa [hw_ne] using h_selfAdj
     exact ⟨fun a ↦ by rw [h_weight, hz_wt a], hz_high⟩
@@ -428,7 +428,7 @@ theorem HCParam.IsKHighest.norm_apply_le_mul_norm (hx : l.IsKHighest ρ ν x)
       ← sum_sub_distrib]
     refine sum_congr rfl fun a _ ↦ sum_congr rfl fun b _ ↦ ?_
     by_cases hab : ε a = ε b
-    · simp [hab, two_mul]
+    · simp only [hab, ↓reduceIte, units_mul_self, Units.val_one, cast_one, one_mul, two_mul, Pi.one_apply, add_sub_cancel_right]
     · simp [units_ne_iff_eq_neg.1 hab]
   -- κ_λ = ∑ (l_a² − (2ρ)_a²) / 4, and |(2ρ)_a| ≤ n.
   have cas_ge : -l.casimirValue ≤ card n ^ 3 / 4 := by
@@ -436,7 +436,7 @@ theorem HCParam.IsKHighest.norm_apply_le_mul_norm (hx : l.IsKHighest ρ ν x)
       have h_abs : |(twoRho l ⊤ a : ℝ)| ≤ card n := mod_cast abs_twoRho_le _ a l
       nlinarith [abs_le.1 h_abs, sq_nonneg (l a : ℝ)]
     grw [HCParam.casimirValue, ← term]
-    simp [pow_succ', mul_div_assoc]
+    simp only [pow_succ', pow_zero, mul_one, mul_div_assoc, sum_neg_distrib, sum_const, card_univ, nsmul_eq_mul, neg_neg, Std.le_refl]
   let C : ℝ := 2 * (card n * (N * (N + card n))) + card n ^ 3 / 4
   have sum_le : ∑ p : n × n, ‖ρ.E p.1 p.2 y‖ ^ 2 ≤ C * ‖y‖ ^ 2 := by
     unfold C
@@ -513,7 +513,7 @@ theorem New.casimirKValue_lowestKType_add_le {n : Type} [Fintype n] [DecidableEq
     let μ : n → ℤ := Pi.single a 1 - Pi.single b 1
     have h_lower : -(Fintype.card n : ℤ) ^ 3 - 2 ≤ l a - l b := by
       have h_bound : 0 ≤ ∑ i : n, ((Fintype.card n : ℤ) ^ 2 + μ i * (μ i + l i)) :=
-        hz_high.sum_card_sq_add_mul_nonneg hρ fun hz_zero ↦ h_inner (by simp [hz_zero])
+        hz_high.sum_card_sq_add_mul_nonneg hρ fun hz_zero ↦ h_inner (by simp only [hz_zero, inner_zero_right])
       simp [μ, sum_add_distrib, mul_add, sub_mul, mul_sub, Pi.single_apply, hab_ne,
         hab_ne.symm] at h_bound
       linarith
@@ -612,7 +612,7 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
       ‖ρ.E d c (P (ρ.E q p y))‖ ^ 2 +
         2 * re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ +
         ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
-    simp [lie_def, P_comm d c hcd, norm_sub_sq (𝕜 := ℂ), ← ofReal_pow]
+    simp only [lie_def, LinearMap.sub_apply, Module.End.mul_apply, map_sub, P_comm d c hcd, CStarModule.inner_sub_right, inner_self_eq_norm_sq_to_K, coe_algebraMap, ← ofReal_pow, sub_re, ofReal_re, norm_sub_sq (𝕜 := ℂ), RCLike.re_to_complex]
     ring
   have expand : (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d,
       ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) = l.casimirKValue l.lowestKType * N + 2 * C + R := by
@@ -678,7 +678,7 @@ theorem New.IsDetectingFamily.mul_E {n : Type} [Fintype n] [DecidableEq n] {H : 
       rintro _ ⟨u, hu, rfl⟩
       simp [h.inner_E_left,
         hJ.mem_orthogonal (ρ.E q p a) (h_lower ha p q) (fun i ↦ h_zero (p, q, i)) u hu]
-    simp [filtration, ← inf_orthogonal, ← iInf_orthogonal, ha k k.lt_succ_self, h_image]
+    simp only [filtration, ← inf_orthogonal, ← iInf_orthogonal, Submodule.mem_inf, ha k k.lt_succ_self, mem_iInf, h_image, implies_true, and_self]
   · -- The bound at level `k` for each `ρ.E q p a`, plus the cross-term bound for `a`.
     have h_level :
         ∑ p : n, ∑ q : n,
@@ -696,7 +696,7 @@ theorem New.IsDetectingFamily.mul_E {n : Type} [Fintype n] [DecidableEq n] {H : 
         ‖J i (ρ.E q p (ρ.E d c a))‖ ^ 2 - ‖⁅ρ.E d c, J i * ρ.E q p⁆ a‖ ^ 2 =
           ‖J i (ρ.E d c (ρ.E q p a))‖ ^ 2 - ‖⁅ρ.E d c, J i⁆ (ρ.E q p a)‖ ^ 2 +
             2 * re ⟪ρ.E d c (J i (ρ.E q p a)), J i (⁅ρ.E q p, ρ.E d c⁆ a)⟫_ℂ := by
-      simp [lie_def, norm_sub_sq (𝕜 := ℂ)]
+      simp only [lie_def, LinearMap.sub_apply, Module.End.mul_apply, norm_sub_sq (𝕜 := ℂ), RCLike.re_to_complex, sub_add_cancel_right, neg_sub, map_sub, CStarModule.inner_sub_right, sub_re]
       ring
     simp only [sum_prod_type, Module.End.mul_apply, h_expand, sum_add_distrib]
     simpa [↓sum_comm (α := I), mul_add, add_mul, ← mul_sum, sum_add_distrib, add_assoc]
@@ -727,7 +727,7 @@ theorem New.exists_detecting_family {n : Type} [Fintype n] [DecidableEq n] {H : 
     have P_eq_zero {a : H} : P a = 0 ↔ a ∈ (ρ.filtration ε x 0)ᗮ :=
       starProjection_apply_eq_zero_iff _
     have P_adj : IsKInvariantForm ε ρ ![P] :=
-      ⟨P * P, fun c d e ↦ LinearMap.ext fun v ↦ by simp [P_comm c d e],
+      ⟨P * P, fun c d e ↦ LinearMap.ext fun v ↦ by simp only [Module.End.mul_apply, P_comm c d e],
         fun u v ↦ by simp [P, inner_starProjection_left_eq_right]⟩
     -- `Ω_K` is the scalar `l.casimirKValue l.lowestKType` on `ρ.filtration ε x 0`.
     have casimir_zero (a : H) : (∑ c : n, ∑ d : n, if ε c = ε d then ‖ρ.E d c (P a)‖ ^ 2 else 0) =
@@ -832,7 +832,7 @@ theorem HCParam.IsKHighest.coeffMap_eq_zero [InnerProductSpace ℂ H] {ρ : GlMo
     refine image_norm_le_of_norm_deriv_right_lt_deriv_boundary
       (HasDerivAt.continuousOn fun t _ ↦ h_coef g Y v t)
       (fun t _ ↦ (h_coef g Y v t).hasDerivWithinAt)
-      (by simp [hg s v hv]; positivity) (fun _ ↦ hasDerivAt_deriv_iff.2 (by fun_prop))
+      (by simp only [zero_smul, expU_zero, mul_one, hg s v hv, norm_zero, mul_neg]; positivity) (fun _ ↦ hasDerivAt_deriv_iff.2 (by fun_prop))
       fun t ⟨ht_nonneg, ht_lt⟩ h_touch ↦ ?_
     -- where `f_v` touches the barrier, `‖f_v t‖ ≤ D * ‖v‖` forces `R + 1 + s < m * decay t ≤ m`
     have h_lt : R + 1 + s < m * decay t := by
@@ -841,7 +841,7 @@ theorem HCParam.IsKHighest.coeffMap_eq_zero [InnerProductSpace ℂ H] {ρ : GlMo
       simpa [← exp_add, field] using h_le
     have hs : s < m := by
       rify
-      nlinarith [show decay t ≤ 1 by simp [decay]; positivity]
+      nlinarith [show decay t ≤ 1 by simp only [neg_mul, exp_le_one_iff, Left.neg_nonpos_iff, decay]; positivity]
     -- `‖Y v‖ ≤ growth * (R + 1 + s) * ‖v‖`, and `R + 1 + s` is below `m * decay t`
     have h_deriv_lt : |D| * ‖ρ Y v‖ + 1 < (growth + 1) * (m * decay t) * (|D| * ‖v‖ + 1) := by
       grw [hYv_le, ← h_lt, ← sub_nonneg]
@@ -870,12 +870,12 @@ theorem IsDerivedAction.isCoeffMap (hd : IsDerivedAction ϖ ι ρ) [NormedSpace 
   intro g Y v t
   -- one-parameter group law, to move the base point of the derivative from `0` to `t`
   have h_exp (s : ℝ) : expU (s • Y) = expU (t • Y) * expU ((s - t) • Y) := by
-    ext; simp [← exp_add_of_commute, ← add_smul, commute_iff_eq, smul_comm t]
+    ext; simp only [val_expU_coe, SetLike.val_smul, Subgroup.coe_mul, Units.val_mul, commute_iff_eq, Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_comm t, ← exp_add_of_commute, ← add_smul, add_sub_cancel]
   have h_shift : HasDerivAt (fun s : ℝ ↦ ϖ (expU ((s - t) • Y)) (ι v)) (ι (ρ Y v)) t :=
     .comp_sub_const t t (by simpa using hd Y v)
   have h_fun (s : ℝ) : φ (ϖ (g * expU (s • Y)) (ι v)) =
       (φ ∘L ϖ (g * expU (t • Y))) (ϖ (expU ((s - t) • Y)) (ι v)) := by
-    simp [rep_apply_apply, -map_mul, mul_assoc, ← h_exp]
+    simp only [ContinuousLinearMap.comp_apply, rep_apply_apply, mul_assoc, ← h_exp]
   simpa [h_fun, -map_mul] using h_shift.map_clm (φ ∘L ϖ (g * expU (t • Y)))
  
 /-- The invariant form `B` of a unitary representation `ϖ` (`New.IsUnitaryRep A ϖ B`: `B` is
@@ -891,8 +891,8 @@ theorem IsUnitaryRep.exists_innerProductSpace (hp : IsUnitaryRep A ϖ B) :
     { inner x y := B x y
       conj_inner_symm x y := hp.conj_symm y x
       re_inner_nonneg x := by by_cases hx : x = 0 <;> simp [hx, hp.pos, le_of_lt]
-      add_left := by simp
-      smul_left := by simp
+      add_left := by simp only [map_add, _root_.add_apply, implies_true]
+      smul_left := by simp only [ContinuousLinearMap.map_smulₛₗ, _root_.smul_apply, smul_eq_mul, implies_true]
       definite x hx := by_contra fun h_ne ↦ by simpa [hx] using hp.pos x h_ne }
   refine ⟨X, Core.toNormedAddCommGroup (cd := core), .ofCore _, 1, fun x y ↦ rfl, fun g x ↦ ?_⟩
   -- the new norm is `√(B x x).re`, and `B` is invariant
@@ -902,7 +902,7 @@ theorem IsUnitaryRep.exists_innerProductSpace (hp : IsUnitaryRep A ϖ B) :
 adjoint of `ϖ g` is `ϖ g⁻¹`. -/
 theorem IsUnitaryRep.form_apply_eq_form_inv_apply (hp : IsUnitaryRep A ϖ B) (g : USign ε)
     (x y : X) : B x (ϖ g y) = B (ϖ g⁻¹ x) y := by
-  simp [← hp.invariant g⁻¹ x, rep_apply_apply]
+  simp only [← hp.invariant g⁻¹ x, rep_apply_apply, inv_mul_cancel, map_one, one_apply_eq_self]
 
 /-- For the invariant form `B` (`New.IsUnitaryRep A ϖ B`: conjugate symmetric, positive definite,
 `ϖ`-invariant) of a representation `ϖ` with derivative `ρ` along `ι`, the adjoint of `E a b` is
@@ -914,7 +914,7 @@ theorem IsDerivedAction.form_E_eq_sign_mul (hp : IsUnitaryRep A ϖ B)
   -- `U(ε)` acts by skew operators.
   have h_skew (Y : unitaryLie (signMatrix ε)) : B (ι (ρ Y.1 v)) (ι w) = -B (ι v) (ι (ρ Y.1 w)) := by
     have h_inv (Z : unitaryLie (signMatrix ε)) : expU (-Z) = (expU Z)⁻¹ := by
-      simp [Subtype.ext_iff, Units.ext_iff, ← Matrix.exp_neg]
+      simp only [Subtype.ext_iff, InvMemClass.coe_inv, Units.ext_iff, val_expU_coe, NegMemClass.coe_neg, coe_units_inv, ← Matrix.exp_neg]
     refine HasDerivAt.unique (f := fun t : ℝ ↦ B (ϖ (expU (t • Y)) (ι v)) (ι w)) (x := 0) ?_ ?_
     · simpa [hp.conj_symm] using ((hd Y v).map_clm (B (ι w))).star
     · simpa [h_inv, hp.form_apply_eq_form_inv_apply] using (hd (-Y) w).map_clm (B (ι v))

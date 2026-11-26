@@ -400,19 +400,6 @@ theorem isCut_besselVector : F.IsCut Z.besselVector := by
   exact { toIsBoundedMeasurable := ⟨h_meas, _,
     h_bdd⟩, map_unipotent_mul := h_law, exists_mul_mem_box := h_supp }
 
-/-- For a large lattice datum and K(g) ≤ Z ≤ K, let the orbital integral J(γ) = ∫_G W(y) ⊗ W(γ⁻¹y)^*
-dy (`besselOrbitalIntegral`, for the Haar measure `F.groupMeasure`) of the finite Bessel vector
-`W = Z.besselVector` be non-zero. Then all leading minors of `T.frameGram γ`, the matrix of the
-products h(f_a, γ f_b) of the frame vectors f_a under the form h = `T.splitGram`, are integral. -/
-theorem leadingMinor_mem_of_besselOrbitalIntegral_ne_zero (Z : F.IntermediateGroup) {γ : T.G}
-    (hγ : besselOrbitalIntegral F.groupMeasure Z.besselVector γ ≠ 0) (j : Fin (𝔰.n + 1)) :
-    leadingMinor (T.frameGram γ.val.val) j ∈ P.integers := by
-  -- For the gauge of scale `1`, having any given size means being integral.
-  let Γ : Gauge F := h.gauge 1 (one_mem P.integers) (star_one A)
-  have h_size : leadingMinor (T.frameGram γ.val.val) j ∈ Γ.ofSize (9 * 𝔰.n) :=
-    Γ.leadingMinor_mem_ofSize_of_besselOrbitalIntegral_ne_zero (isCut_besselVector Z) hγ j
-  simpa [Γ, gauge] using h_size
-
 /-- The pairing of two translates of the finite Bessel vector as an integral over the Bessel
 unipotent group 𝖴. For a large lattice datum and K(g) ≤ Z ≤ K, let fl = `F.unipotentMass` be the
 mass of 𝖴 ∩ K(g), let W_Z = `Z.besselVector`, and let χ_g = `extendedBesselChar F.levelUnit` be the
@@ -485,21 +472,6 @@ theorem unipotentMass_mul_inner_besselVector (y x : T.G) :
   rw [integral_indicator_const _ (hS_meas c), Measure.real, h_mass, dirac_apply_of_mem h_one,
     mul_one]
   simp [a, Complex.real_smul]
-
-/-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, the Haar measure of `Z` is the
-number of cosets of K(g) = `F.congruenceSubgroup` in `Z` times the measure of K(g). -/
-theorem card_cosets_mul_groupMeasure :
-    card Z.Cosets * F.groupMeasure F.congruenceSubgroup = F.groupMeasure Z := by
-  obtain ⟨h_lower, h_upper⟩ : F.congruenceSubgroup ≤ Z.val ∧ Z.val ≤ unitaryLevel integers 1
-    T.splitGram :=
-    Z.prop
-  have h_compact : IsCompact (Z.val : Set T.G) :=
-    unitaryLevel_open_compact.2.of_isClosed_subset (Z.val.isClosed_of_isOpen Z.isOpen) h_upper
-  have h_card : card Z.Cosets = F.congruenceSubgroup.relIndex Z.val := by
-    rw [← Nat.card_eq_fintype_card]
-    exact Nat.card_congr (quotientRightRelEquivQuotientLeftRel _)
-  rw [h_card, ← relIndex_mul_measure_inf h_compact unitaryLevel_open_compact.1,
-    inf_of_le_left h_lower]
 
 /-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, the set of `u` with `u y ∈ Z`
 has mass at most one for the convolution of the measures `heisenbergMeasure`, which is carried by

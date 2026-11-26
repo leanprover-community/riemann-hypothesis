@@ -551,40 +551,6 @@ lemma frobEUnit_zpow_smul_mem_withOrders (b : ℕ) (m : ℤ) (hx : x ∈ L.withO
     k.frobEUnit b ^ m • x ∈ L.withOrders i c' :=
   mem_withOrders_of_le (frobEUnit_zpow_smul_mem_withOrders_add b m hx) h_le
 
-/-- Let `p_b = φ^b E` be the unit `k.frobEUnit b`. Then `p_b ^ m • x` has orders at the letter `i`
-given by c(a,u) + m for a = b and c(a,u) for a ≠ b if and only if `x` has the orders `c` at `i`. -/
-lemma frobEUnit_zpow_smul_mem_withOrders_add_iff (b : ℕ) (m : ℤ) :
-    k.frobEUnit b ^ m • x ∈
-        L.withOrders i (fun (a : ℕ) (u : ℤ) ↦ c a u + if b = a then m else 0) ↔
-      x ∈ L.withOrders i c := by
-  refine ⟨fun hx ↦ ?_, frobEUnit_zpow_smul_mem_withOrders_add b m⟩
-  have h_back : k.frobEUnit b ^ (-m) • k.frobEUnit b ^ m • x ∈ L.withOrders i c :=
-    frobEUnit_zpow_smul_mem_withOrders b (-m) hx fun a u _ ↦ by grind
-  simpa [smul_smul, ← zpow_add] using h_back
-
-/-- Let `F = ∏_{b ∈ s} p_b ^ r b` be a product of integer powers of the units `p_b = φ^b E`
-(`k.frobEUnit b`). Then `F • x` has the orders `c` raised by `r a` at `p_a` for `a ∈ s` (and
-unchanged at the other `p_a`) at the letter `i` if and only if `x` has the orders `c` at `i`. -/
-lemma prod_frobEUnit_zpow_smul_mem_withOrders_add_iff (s : Finset ℕ) (r : ℕ → ℤ) :
-    (∏ b ∈ s, k.frobEUnit b ^ r b) • x ∈
-        L.withOrders i (fun (a : ℕ) (u : ℤ) ↦ c a u + if a ∈ s then r a else 0) ↔
-      x ∈ L.withOrders i c := by
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert b s hb ih =>
-    have h_exponents : (fun (a : ℕ) (u : ℤ) ↦ c a u + if a ∈ insert b s then r a else 0) =
-        fun (a : ℕ) (u : ℤ) ↦ (c a u + if a ∈ s then r a else 0) + if b = a then r b else 0 := by
-      grind
-    rw [prod_insert hb, mul_smul, h_exponents, frobEUnit_zpow_smul_mem_withOrders_add_iff, ih]
-
-/-- The Kisin module `L.kisinLoc` with all `φ^a E` inverted is stable under multiplication and
-division by products of integer powers of the units `k.frobEUnit b = φ^b E`. -/
-lemma prod_frobEUnit_zpow_smul_mem_kisinLoc_iff (s : Finset ℕ) (r : ℕ → ℤ) :
-    (∏ b ∈ s, k.frobEUnit b ^ r b) • x ∈ L.kisinLoc ↔ x ∈ L.kisinLoc := by
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert b s hb ih => rw [prod_insert hb, mul_smul, frobEUnit_zpow_smul_mem_kisinLoc_iff, ih]
-
 /-- Every element of `L.kisinLocAinf` has a multiple by a non-zero element of A_inf in the
 A_inf-span of 1 ⊗ L, that is, lies in `L.fracSpan`. -/
 lemma kisinLocAinf_le_fracSpan : L.kisinLocAinf ≤ L.fracSpan :=

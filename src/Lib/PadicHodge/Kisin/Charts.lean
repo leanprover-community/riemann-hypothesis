@@ -259,10 +259,6 @@ lemma FixesThetaZ.smul_theta_z {c : Chart} {g : Gp p} (h : c.FixesThetaZ g) :
     g • theta c.z = theta c.z :=
   h.right
 
-lemma fixesThetaZ_iff {g : Gp p} :
-    c.FixesThetaZ g ↔ FixesLambda c.f g ∧ g • theta c.z = theta c.z :=
-  Iff.rfl
-
 /-- The chart `c` is a chart of a group homomorphism `j : Γ →* G_p`: every g in G_p that fixes Λ
 pointwise and fixes θ(z) lies in the image of j. So the field fixed by all g that fix Λ pointwise
 and fix θ(z) contains the field fixed by the image of j. -/

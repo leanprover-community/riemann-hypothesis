@@ -638,6 +638,34 @@ lemma PadicTest.mem_nearZeros_of_rTensor_eq_zero (M : ModuleCat OFlat) (x : Tilt
 
 end
 
+private lemma tiltTheory_supp {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p] [Algebra Ω ℂ_[p]]
+    (M : ModuleCat OFlat) (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M)))
+    (c : PadicTest) (I : Ideal c.GenericRing) :
+    let J : Ideal (TiltRing c) := c.nearZeros I fun f ↦ ker (tilt.map f).hom
+    let q : CommAlgCat.of OFlat (TiltRing c) ⟶ CommAlgCat.of OFlat (TiltRing c ⧸ J) :=
+      CommAlgCat.ofHom (mkₐ OFlat J)
+    (Function.Surjective ((moduleCoeff (tensorCoeff M)).map q) →
+      ∀ n : ℕ, Function.Surjective (H.map (tilt ⋙ moduleCoeff (tensorCoeff M))
+        (freeAb.map (killingMaps (ringOf (genericTestOver Ω)) I).ι) n)) ∧
+    ∀ x : (tilt ⋙ moduleCoeff (tensorCoeff M)).obj c,
+      (∀ (d : PadicTest) (f : c ⟶ d), ⟨f⟩ ∈ (killingMaps (ringOf (genericTestOver Ω)) I) d →
+        (tilt ⋙ moduleCoeff (tensorCoeff M)).map f x = 0) →
+      (moduleCoeff (tensorCoeff M)).map q x = 0 := by
+  let J : Ideal (TiltRing c) := c.nearZeros I fun f ↦ ker (tilt.map f).hom
+  exact surjective_and_map_eq_zero_of_quotient_sieve tilt
+    (R := killingMaps (ringOf (genericTestOver Ω)) I)
+    (CommAlgCat.ofHom (mkₐ OFlat J))
+    (fun {d} f hf ↦ by
+      have h_kill : ∀ y ∈ J, (tilt.map f).hom y = 0 := fun y ⟨a, ha, hy⟩ ↦
+        hy d f (by simp [show mapGeneric f a = 0 from le_comap_of_map_le hf.le ha])
+      refine ⟨ofHom (liftₐ _ (tilt.map f).hom h_kill), rfl, fun g hg ↦ ?_⟩
+      ext ⟨y⟩
+      exact ConcreteCategory.congr_hom hg y)
+    (fun f g hg ↦ (map_eq_bot_iff_le_ker _).2 <| c.le_ker_of_tiltNearZeros_le_ker I f fun y hy ↦
+      RingHom.mem_ker.mpr <| (ConcreteCategory.congr_hom hg y).symm.trans
+        (mk_ker.ge.trans (ker_le_comap (K := ker g.hom) _) hy))
+    (@ac (CommAlgCat.of OFlat (c.TiltRing ⧸ J)) (c.perfectRing_quotient_tiltNearZeros I))
+
 /-- The theory (`New.Variety.Theory`, for the prime `ℓ = p`) on `p`-adic tests along `R ↦ R[1/p]`
 (`New.Variety.genericTestOver`), with coefficients `R ↦ R♭ ⊗_{O♭} M`. It needs `p` invertible in
 `Ω`, and every perfect `O♭`-algebra acyclic for these coefficients (`ac`,
@@ -649,45 +677,29 @@ cohomology to these maps is onto, and a section that dies along them vanishes ne
 ideal containing `I`. -/
 def tiltTheory {p : ℕ} (Ω : Type) [CommRing Ω] [InvertsPrime Ω p] [Algebra Ω ℂ_[p]]
     (M : ModuleCat OFlat) (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) :
-    Theory (genericTestOver Ω) :=
-  let J (c : PadicTest) (I : Ideal c.GenericRing) : Ideal (TiltRing c) :=
-    c.nearZeros I fun f ↦ ker (tilt.map f).hom
-  -- The maps that kill `I` are those whose tilt factors, uniquely, through the perfect algebra
-  -- `TiltRing c ⧸ J c I`.
-  have h_supp (c : PadicTest) (I : Ideal c.GenericRing) :=
-    surjective_and_map_eq_zero_of_quotient_sieve tilt
-      (R := killingMaps (ringOf (genericTestOver Ω)) I)
-      (CommAlgCat.ofHom (mkₐ OFlat (J c I)))
-      (fun {d} f hf ↦ by
-        have h_kill : ∀ y ∈ J c I, (tilt.map f).hom y = 0 := fun y ⟨a, ha, hy⟩ ↦
-          hy d f (by simp [show mapGeneric f a = 0 from le_comap_of_map_le hf.le ha])
-        refine ⟨ofHom (liftₐ _ (tilt.map f).hom h_kill), rfl, fun g hg ↦ ?_⟩
-        ext ⟨y⟩
-        exact ConcreteCategory.congr_hom hg y)
-      (fun f g hg ↦ (map_eq_bot_iff_le_ker _).2 <| c.le_ker_of_tiltNearZeros_le_ker I f fun y hy ↦
-        RingHom.mem_ker.mpr <| (ConcreteCategory.congr_hom hg y).symm.trans
-          (mk_ker.ge.trans (ker_le_comap (K := ker g.hom) _) hy))
-      (@ac (CommAlgCat.of OFlat (c.TiltRing ⧸ J c I)) (c.perfectRing_quotient_tiltNearZeros I))
-  { functor := tilt ⋙ moduleCoeff (tensorCoeff M)
-    prime_smul_eq_zero c x := ULift.down_injective (show p • x.down = 0 by
-      simp [natCast_eq_zero_of_algebra_oFlat, ← Nat.cast_smul_eq_nsmul OFlat])
-    -- Zariski descent: tilting and `· ⊗ M` keep the product of two tests. The rings `R[1/p]` do
-    -- not depend on the ground field in `hasZariskiDescent_genericOver`, so `ℚ` will do.
-    zariski_descent :=
-      letI : EmbeddedInQpBar p ℚ := {}
-      hasZariskiDescent_genericOver (k := ℚ) (𝟭 PadicTest)
-        ⟨exists_isQuotientByElem, fun f g hfg ↦ (bijective_prod_tilt f g hfg).map_prod
-          (moduleCoeff (MonoidalCategory.tensorRight M) ⋙ forget AddCommGrpCat)⟩
-    -- By `h_supp` it is enough that `R♭ ⊗ M → (R♭ ⧸ J) ⊗ M` is onto.
-    restrict_surjective c I :=
-      (h_supp c I).1 (ULift.map_surjective.2 (LinearMap.rTensor_surjective M Quot.exists_rep))
-    dies_near c I x hx n hn hI := by
-      -- By `h_supp`, `x` has image zero in `(R♭ ⧸ J) ⊗ M`.
-      obtain ⟨a, ha, h_dies⟩ :=
-        c.mem_nearZeros_of_rTensor_eq_zero I M x.down (congrArg ULift.down ((h_supp c I).2 x hx))
-      -- `1 - a ∉ n`, since `a ∈ I ≤ n` and `1 ∉ n`.
-      exact ⟨(1 - a : c.GenericRing), (n.sub_mem_iff_left (hI ha)).1.mt n.one_notMem, fun d f hf ↦
-        congrArg _ (h_dies d f hf)⟩ }
+    Theory (genericTestOver Ω) where
+  functor := tilt ⋙ moduleCoeff (tensorCoeff M)
+  prime_smul_eq_zero c x := ULift.down_injective (show p • x.down = 0 by
+    simp [natCast_eq_zero_of_algebra_oFlat, ← Nat.cast_smul_eq_nsmul OFlat])
+  -- Zariski descent: tilting and `· ⊗ M` keep the product of two tests. The rings `R[1/p]` do
+  -- not depend on the ground field in `hasZariskiDescent_genericOver`, so `ℚ` will do.
+  zariski_descent :=
+    letI : EmbeddedInQpBar p ℚ := {}
+    hasZariskiDescent_genericOver (k := ℚ) (𝟭 PadicTest)
+      ⟨exists_isQuotientByElem, fun f g hfg ↦ (bijective_prod_tilt f g hfg).map_prod
+        (moduleCoeff (MonoidalCategory.tensorRight M) ⋙ forget AddCommGrpCat)⟩
+  -- By `tiltTheory_supp` it is enough that `R♭ ⊗ M → (R♭ ⧸ J) ⊗ M` is onto.
+  restrict_surjective c I :=
+    (tiltTheory_supp Ω M ac c I).1
+      (ULift.map_surjective.2 (LinearMap.rTensor_surjective M Quot.exists_rep))
+  dies_near c I x hx n hn hI := by
+    -- By `tiltTheory_supp`, `x` has image zero in `(R♭ ⧸ J) ⊗ M`.
+    obtain ⟨a, ha, h_dies⟩ :=
+      c.mem_nearZeros_of_rTensor_eq_zero I M x.down
+        (congrArg ULift.down ((tiltTheory_supp Ω M ac c I).2 x hx))
+    -- `1 - a ∉ n`, since `a ∈ I ≤ n` and `1 ∉ n`.
+    exact ⟨(1 - a : c.GenericRing), (n.sub_mem_iff_left (hI ha)).1.mt n.one_notMem, fun d f hf ↦
+      congrArg _ (h_dies d f hf)⟩
 
 end TiltedTheory
 

@@ -83,44 +83,6 @@ lemma liftKernel_omega_scaling {z : unitary (𝔸f D.E)} (hz : D.IsScalingAt w z
       (D.scalarFin_mem_maxCompactAt_of_isScalingAt w m hz)
   simp [liftKernel_ω, Seesaw.pairWeilFinite_scalarFin, Prod.mk_one_one, h_det]
 
-/-- Each lift of the chain commutes with the scalings at a prime `w` dividing `π`: for a scaling `z`
-at `w`, a datum `Φ` of the lift from stage `j` to stage `j + 1` and a form `φ` of stage `j`, the
-lift of the translate of `φ` by `z` is the translate by `z` of the lift of `φ`. -/
-theorem liftKernel_lift_scaling {z : unitary (𝔸f D.E)} (hz : D.IsScalingAt w z)
-    (Φ : (D.homX j).finitePart) (φ : D.FormX j) :
-    (D.liftKernel ϑ j).lift Φ (algFormRep D.columnCount (D.lastEntry j) (scalarFin (D.X j) z) φ) =
-      algFormRep D.columnCount (D.lastEntry (j + 1)) (scalarFin (D.X (j + 1)) z)
-        ((D.liftKernel ϑ j).lift Φ φ) := by
-  rw [← (D.liftKernel ϑ j).lift_equivariant (scalarFin (D.X j) z),
-    D.liftKernel_omega_scaling ϑ j w hz, Module.End.one_apply]
-
-/-- The lift from stage `j` to stage `j + 1` takes forms `ψ - z ψ`, for a scaling `z` at a prime
-`w` dividing `π`, to forms of the same kind: the lift of `ψ - z ψ` is `χ - z χ` for the lift `χ`
-of `ψ`. -/
-theorem liftKernel_lift_sub_scaling {z : unitary (𝔸f D.E)} (hz : D.IsScalingAt w z)
-    (Φ : (D.homX j).finitePart) (ψ : D.FormX j) :
-    (D.liftKernel ϑ j).lift Φ (ψ - algFormRep D.columnCount (D.lastEntry j) (scalarFin (D.X j) z) ψ)
-      =
-      (D.liftKernel ϑ j).lift Φ ψ -
-        algFormRep D.columnCount (D.lastEntry (j + 1)) (scalarFin (D.X (j + 1)) z)
-          ((D.liftKernel ϑ j).lift Φ ψ) := by
-  rw [map_sub, D.liftKernel_lift_scaling ϑ j w hz]
-
-/-- Let `z` be a scaling at a prime `w` dividing `π`, and let `Φ` be a datum fixed by `ω(1, z)`.
-Then the lift from stage `j` to stage `j + 1` with datum `Φ` sends `ψ - z ψ` to `0` for every form
-`ψ` of stage `j`, where `z ψ` is the right translate of `ψ` by `z`. -/
-theorem liftKernel_lift_sub_scaling_eq_zero {z : unitary (𝔸f D.E)} (hz : D.IsScalingAt w z)
-    {Φ : (D.homX j).finitePart}
-    (h_fix : (D.liftKernel ϑ j).ω (1, scalarFin (D.X (j + 1)) z) Φ = Φ) (ψ : D.FormX j) :
-    (D.liftKernel ϑ j).lift Φ (ψ - algFormRep D.columnCount (D.lastEntry j) (scalarFin (D.X j) z) ψ)
-      =
-      0 := by
-  -- `ω(1, z)` on the datum translates the lift by `z`; as it fixes `Φ`, `z` fixes the lift of `ψ`.
-  have h_lift_fixed : (D.liftKernel ϑ j).lift Φ ψ = algFormRep D.columnCount (D.lastEntry (j + 1))
-      (scalarFin (D.X (j + 1)) z) ((D.liftKernel ϑ j).lift Φ ψ) := by
-    simpa [h_fix] using (D.liftKernel ϑ j).lift_equivariant 1 (scalarFin (D.X (j + 1)) z) Φ ψ
-  rw [D.liftKernel_lift_sub_scaling ϑ j w hz, ← h_lift_fixed, sub_self]
-
 /-- Let `t` be a tensor of data of the first `m` lifts, so that `TensorChain.lift` is the composite
 of these lifts, extended linearly in `t`. Let `z` be a scaling at a prime `w` dividing `π = D.piN`,
 the integer of `E` with `π π̄ = N` for the level `N = D.N`, and let `j < m`. If `ω(1, z)`, acting on

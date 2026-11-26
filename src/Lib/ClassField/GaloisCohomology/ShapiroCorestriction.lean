@@ -61,10 +61,6 @@ characters of Γ to those of H, χ ↦ χ∘φ. -/
 def New.QZChar.comap : QZChar Γ →+ QZChar H := pairMapZ1 φ LinearMap.id
 
 omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
-lemma New.QZChar.comap_val_apply (χ : ↥(QZChar Γ)) (h : H) :
-    (QZChar.comap φ χ).val h = χ.val (φ h) := rfl
-
-omit [IsTopologicalGroup Γ] [CompactSpace Γ] in
 /-- The character `χ ∘ φ`, as a homomorphism to `ℚ/ℤ`, takes the value `χ (φ h)` at `h`. -/
 lemma New.QZChar.comap_apply [IsTopologicalGroup H] (χ : ↥(QZChar Γ)) (h : H) :
     QZChar.toHom (QZChar.comap φ χ) h = QZChar.toHom χ (φ h) := rfl

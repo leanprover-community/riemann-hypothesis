@@ -349,9 +349,14 @@ lemma exists_isAnnihilatingRow_of_one_le (h_unit : IsUnit (x.submatrix ι id).de
     exact congrFun h_mul a
   have μ_apply (c : r) : μ (ι c) = y a c := by
     have h_ne : ι c ≠ a := fun h ↦ ha ⟨c, h⟩
-    simp [μ, inclMatrix_mulVec_apply_embedding, h_ne]
+    simp only [Pi.sub_apply, inclMatrix_mulVec_apply_embedding, ne_eq, h_ne, not_false_eq_true,
+      Pi.single_eq_of_ne, sub_zero, μ]
   have μ_le (c : n) (hc : c ∉ Set.range ι) : v (μ c) ≤ 1 := by
-    obtain rfl | h := eq_or_ne c a <;> simp [μ, inclMatrix_mulVec_apply_of_notMem_range ι _ hc, *]
+    obtain rfl | h := eq_or_ne c a
+    · simp only [Pi.sub_apply, inclMatrix_mulVec_apply_of_notMem_range ι _ hc, Pi.single_eq_same,
+        zero_sub, Valuation.map_neg, map_one, Std.le_refl, μ]
+    · simp only [Pi.sub_apply, inclMatrix_mulVec_apply_of_notMem_range ι _ hc, ne_eq,
+        not_false_eq_true, Pi.single_eq_of_ne, sub_self, map_zero, zero_le, μ, h]
   refine exists_isAnnihilatingRow_of_max (b := b) hμ ?_ (fun c ↦ ?_) fun h_not c hc ↦ ?_
   · simpa only [μ_apply] using (Valuation.pos_iff _).1 (zero_lt_one.trans_le h_ge)
   · obtain ⟨d, rfl⟩ | hc : c ∈ Set.range ι ∨ c ∉ Set.range ι := Classical.em _
@@ -654,7 +659,9 @@ lemma exists_atPlace_eq {m : Type*} [Fintype m] [DecidableEq m]
       ∀ j : O.ChosenIndex ⊕ O.TwistIndex, k.atPlace (O.placeAt j) = g j := by
   classical
   suffices h_mem : g ∈ (supportedOn m O.places).map (.pi fun j ↦ atPlace (O.placeAt j)) by
-    simpa [funext_iff] using h_mem
+    simpa only [Set.Sum.elim_range, mem_supportedOn, Set.mem_union, Set.mem_range, not_or,
+      not_exists, and_imp, Sum.forall, Sum.elim_inl, Sum.elim_inr, Subgroup.mem_map, funext_iff,
+      MonoidHom.pi_apply] using h_mem
   -- It suffices to reach the tuples with one non-trivial entry `g i`; these come from
   -- `ofSplitPlace`.
   refine Subgroup.pi_mem_of_mulSingle_mem g fun i ↦ ?_
@@ -965,7 +972,7 @@ lemma translatedBlockFn_eq_one_of_hasIntegralBlockRatio {A : Gf E r} {z : n × r
   have h_int (j) (a : n) (b : r) : y j a b ∈ LocInt (O.placeAt j) := by
     obtain ⟨c, rfl⟩ | ha := Classical.em (a ∈ Set.range O.incl)
     · have h_entry : y j (O.incl c) b = if c = b then 1 else 0 := congrFun₂ (h_top j) c b
-      simp [h_entry, ite_mem]
+      simp only [h_entry, ite_mem, one_mem, implies_true, zero_mem, and_self]
     · exact (hz j).valuation_le_one a ha b
   let u (j) : Matrix n r (LocInt (O.placeAt j)) := .of fun a b ↦ ⟨y j a b, h_int j a b⟩
   have hu (j) : matrixAt (O.placeAt j) (matrixToVec (vecToMatrix z * (A : Matrix r r (𝔸f E)))) =
@@ -975,7 +982,7 @@ lemma translatedBlockFn_eq_one_of_hasIntegralBlockRatio {A : Gf E r} {z : n × r
   have h_res_top (j) : ((u j).map (residue _)).submatrix O.incl id = 1 := by
     have h_one : (u j).submatrix O.incl id = 1 :=
       Matrix.map_injective (LocInt (O.placeAt j)).subtype_injective ((h_top j).trans (by simp))
-    simp [submatrix_map, h_one]
+    simp only [submatrix_map, h_one, map_zero, map_one, Matrix.map_one]
   -- At a chosen place the lower block is `≡ 0`, so the reduction is `(1, 0)ᵀ`.
   have h_low (i) (a : n) (ha : a ∉ Set.range O.incl) (b : r) :
       (u (.inl i)).map (residue _) a b = 0 := by
@@ -1036,7 +1043,8 @@ lemma smul_chosenGLRep_eq_apply_of_triangular {V : Type*} [AddCommGroup V] [Modu
       (((σ⁻¹ * τ) (.inr i)).val.submatrix O.incl O.incl).det = _
     rw [h_twist, h_first]
   have h_act : π (k₀⁻¹ * k).val y = O.residueLevelChar ⟨σ⁻¹ * τ, h_level⟩ • y.val :=
-    levelSpace_levelOf_apply y.prop _ _ (by simp [k₀, τ, reduceFamily_liftResidue])
+    levelSpace_levelOf_apply y.prop _ _ (by
+      simp only [map_mul, map_inv, reduceFamily_liftResidue, k₀, τ])
   -- The factors at the chosen places cancel the scalar `d` in the definition of `chosenGLRep`.
   let d : ℂ := ∏ i : O.ChosenIndex, O.tamePart (O.placeAt (.inl i)) (s (.inl i)).val.det
   have h_rep : (O.chosenGLRep π (fun i ↦ s (.inl i)) y).val = d • π k₀ y := rfl
@@ -1046,7 +1054,9 @@ lemma smul_chosenGLRep_eq_apply_of_triangular {V : Type*} [AddCommGroup V] [Modu
     rw [← MulChar.mul_apply, inv_mul_cancel, MulChar.one_apply (s (.inl i)).det_ne_zero.isUnit]
   calc _ = c • π k₀ y := by rw [h_rep, smul_smul, h_cancel]
     _ = π k₀ (π (k₀⁻¹ * k).val y) := by rw [h_act, h_char, map_smul]
-    _ = π k y := by simp
+    _ = π k y := by
+      simp only [Subgroup.coe_mul, InvMemClass.coe_inv, map_mul, Module.End.mul_apply,
+        Representation.self_inv_apply]
 
 /-- The complex conjugate of the matrix coefficient `algFormCoeff 1 u y` of a form `y` on `V`, for a
 linear functional `u` on the weight space, is automorphic on `U(V)`. -/
@@ -1113,17 +1123,24 @@ lemma descentPairing_translate (u : (WeylIndex n O.columnCount → ℂ) →ₗ[�
   let vac : 𝒮 (O.W.hom (stdSpace E n)) := vacElem _
   have h_form : star (algFormCoeff 1 u y'.val) =
       fun x ↦ star (algFormCoeff 1 u y.val) (x * (1, k.val)) :=
-    funext fun x ↦ by simp [h_translate, algFormCoeff_algFormRep]
+    funext fun x ↦ by
+      simp only [h_translate, Pi.star_apply, algFormCoeff_algFormRep, Complex.star_def]
   have h_vac : pairWeil O.W (stdSpace E n) O.charW 1 ((1, 1), 1, k.val) vac = vac := by
-    rw [pairWeil_eq_smul_of_projOn_eq ⊤ (by simp [vac]) (one_mem _) (by simp)]
-    simp
+    rw [pairWeil_eq_smul_of_projOn_eq ⊤ (by simp only [Set.top_eq_univ, projOn_vacElem, vac])
+      (one_mem _) (by
+        simp only [Set.top_eq_univ, Subgroup.mem_inf, SetLike.coe_mem, mem_supportedOn,
+          Set.mem_univ, not_true_eq_false, IsEmpty.forall_iff, implies_true, and_self])]
+    simp only [SubmonoidClass.coe_pow, detFin, ContinuousMonoidHom.pow_apply, SetLike.coe_mem,
+      Exchange.upsilonU1_detFin_eq_one_of_mem_stdLevel, one_pow, OneMemClass.coe_one,
+      ContinuousMonoidHom.one_toFun, inv_one, mul_one, Circle.coe_one, one_smul]
   have h_datum : K.ω ((1, k.val), 1) (integrated _ v (schrodingerOp _ O.places Ψ vac)) =
       integrated _ v (schrodingerOp _ O.places (fun x ↦ Ψ (leftMul E r n k.val⁻¹ x)) vac) := by
     change pairWeil O.W (stdSpace E n) O.charW 1 ((1, 1), 1, k.val) _ = _
     rw [pairWeil_integrated_fin, pairWeil_schrodingerOp_of_mem isConjDisjoint_places (one_mem _)
       k.prop,
       h_vac]
-    simp [leftMul_apply]
+    simp only [Set.Sum.elim_range, Gf.coe_inv, coe_units_inv, OneMemClass.coe_one, Units.val_one,
+      Matrix.mul_one, leftMul_apply]
   rw [descentPairing_apply, descentPairing_apply, h_form, ← h_datum,
     ← K.lift_equivariant (isAutomorphic_star_algFormCoeff u y), mul_one]
 
@@ -1397,7 +1414,9 @@ lemma exists_leftMul_eq_and_blockAction_eq [DecidableEq O.TwistIndex] {z : n × 
     simp only [reduceAt_eq_of_atPlace (h_at j), τ, Pi.mulSingle_eq_same]
     exact map_rowShear O.incl res v l
   have h_red_ne {i : O.ChosenIndex ⊕ O.TwistIndex} (hi : i ≠ j) :
-      stdLevel.reduceAt (O.placeAt i) h = 1 := by simp [reduceAt_eq_of_atPlace (h_at i), τ, hi]
+      stdLevel.reduceAt (O.placeAt i) h = 1 := by
+    simp only [reduceAt_eq_of_atPlace (h_at i), ne_eq, hi, not_false_eq_true,
+      Pi.mulSingle_eq_of_ne, GeneralLinearGroup.map_one, τ]
   refine ⟨h, idem_smul_eq_of_matrixAt_eq fun i ↦ ?_,
     smul_chosenGLRep_eq_apply_of_triangular y h (Pi.mulSingle j s) (fun i ↦ ?_) fun i ↦ ?_⟩
   · -- The row `l` annihilates the component of `z` at `w`, so the shear fixes it.
@@ -1407,7 +1426,8 @@ lemma exists_leftMul_eq_and_blockAction_eq [DecidableEq O.TwistIndex] {z : n × 
       change (rowShear O.incl v l).map (LocInt _).subtype * matrixAt (O.placeAt i) z = _
       rw [map_rowShear]
       exact rowShear_mul_eq_self_of_vecMul_eq_zero O.incl hl.vecMul_eq_zero
-    · simp [τ, hi]
+    · simp only [ne_eq, hi, not_false_eq_true, Pi.mulSingle_eq_of_ne, GeneralLinearGroup.map_one,
+        Units.val_one, Matrix.one_mul, τ]
   · -- The reduction of the shear is block upper triangular with first block `s`.
     obtain rfl | hi := eq_or_ne (Sum.inl i) j
     · rw [h_red_self, Pi.mulSingle_eq_same, hs, rowShear_mul_inclMatrix]

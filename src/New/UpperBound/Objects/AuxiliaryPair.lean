@@ -99,10 +99,6 @@ def firstBlockHom :
     | .inl i => (extendGL u).comp (Pi.evalMonoidHom _ i)
     | .inr _ => 1
 
-/-- At a place w of M the component of `firstBlockHom S u g` is diag(g_w, 1). -/
-lemma firstBlockHom_apply_inl (g : S.ChosenGL r) (i : S.ChosenIndex) :
-    firstBlockHom S u g (inl i) = extendGL (R := ResField (S.placeAt (inl i))) u (g i) := rfl
-
 /-- At a place of Q the component of `firstBlockHom S u g` is 1. -/
 lemma firstBlockHom_apply_inr (g : S.ChosenGL r) (i : S.TwistIndex) :
     firstBlockHom S u g (inr i) = 1 := rfl

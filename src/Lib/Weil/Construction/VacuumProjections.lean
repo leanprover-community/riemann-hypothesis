@@ -820,29 +820,6 @@ lemma finHeisenbergOp_mem_finitePart (hf : f ∈ V.finitePart) :
   | add f₁ f₂ _ _ h₁ h₂ => simpa using add_mem h₁ h₂
   | smul c f₁ _ h₁ => simpa using smul_mem _ c h₁
 
-variable (V) in
-/-- Let r choose a representative of each class of finite adelic vectors modulo the standard
-lattice Ô^n. Then the translates ϱ_f(r q) vac of the vacuum span the finite part 𝒮_f. They are
-orthonormal by `New.Space.dataInner_finHeisenbergOp_rep_vacElem`. -/
-lemma span_finHeisenbergOp_rep_vacElem {r : (n → 𝔸f E) ⧸ stdLattice E n → n → 𝔸f E}
-    (hr : ∀ q : (n → 𝔸f E) ⧸ stdLattice E n, (r q : (n → 𝔸f E) ⧸ stdLattice E n) = q) :
-    span ℂ (range fun q : (n → 𝔸f E) ⧸ stdLattice E n ↦ V.finHeisenbergOp (r q) V.vacElem) =
-      V.finitePart := by
-  refine le_antisymm (span_le.mpr ?_) (span_le.mpr ?_)
-  · rintro _ ⟨q, rfl⟩
-    exact finHeisenbergOp_mem_finitePart (r q) vacElem_mem_finitePart
-  · -- A translate `ϱ_f(z) vac` is a multiple of the translate by the representative of `z`, as
-    -- the two vectors differ by a lattice vector, which fixes the vacuum.
-    rintro _ ⟨z, rfl⟩
-    have h_mem : r z - z ∈ stdLattice E n := QuotientAddGroup.eq_iff_sub_mem.mp (hr z)
-    have h_rep : V.finHeisenbergOp z V.vacElem =
-        selfDualAddChar E (star traceOneAdele * star (r z - z) ⬝ᵥ z) •
-          V.finHeisenbergOp (r z) V.vacElem := by
-      nth_rw 1 [← finHeisenbergOp_vacElem h_mem]
-      rw [finHeisenbergOp_finHeisenbergOp, add_sub_cancel]
-    simpa only [SetLike.mem_coe, h_rep] using
-      smul_mem _ _ (subset_span (mem_range_self (z : (n → 𝔸f E) ⧸ stdLattice E n)))
-
 /-- The finite part is stable under the Heisenberg operators ϱ(x) of finite adelic vectors x. -/
 lemma rho_finVec_mem_finitePart (hf : f ∈ V.finitePart) : V.ϱ (finVec x) f ∈ V.finitePart :=
   (smul_mem_iff _ (semichar_ne_zero _)).mp (finHeisenbergOp_mem_finitePart x hf)

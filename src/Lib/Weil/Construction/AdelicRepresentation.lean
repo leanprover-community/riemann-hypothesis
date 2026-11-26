@@ -337,8 +337,6 @@ variable {E : Type _} [Field E] [CMType E] [WeilData E]
   {n : Type _} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} (V : Space E n s) (g : G E s) (x y : n → 𝔸 E) (f f' : 𝒮 V)
 
-lemma dataInner_apply : V.dataInner f f' = modelInner f f' := rfl
-
 /-- Superposition: a bounded linear map `T` from `𝒮 V` to a complex Banach space is determined by
 its values on the translates ϱ(y) vac of the vacuum `vacElem`. Specifically, `T f` = ∫ ⟨ϱ(y) vac, f⟩
 T(ϱ(y) vac) dy, where ⟨·,·⟩ is `dataInner` and the integral over y ∈ 𝔸^n is taken against

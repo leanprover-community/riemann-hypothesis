@@ -233,16 +233,6 @@ lemma linearFrob_eq_tensorAction_of_exists (s : Γ) (m : ℕ)
     ∀ d ∈ Dpcris ρ, linearFrob ρ s m d = tensorAction Bmax (⟨.ofAdd m, toGp s⟩ : FrobGal) (ρ s) d :=
   Classical.epsilon_spec h_exists
 
-/-- For potentially crystalline `ρ`, a `Bmax`-linear map that agrees with `φ ^ m s ⊗ ρ s` on
-`Dpcris ρ` is `linearFrob ρ s m`. -/
-lemma IsPotentiallyCrystalline.linearFrob_eq {ρ : Representation R Γ T}
-    (h_potCrys : IsPotentiallyCrystalline ρ) {s : Γ} {m : ℕ} {β : End Bmax (Bmax ⊗[ℤ_[p]] T)}
-    (hβ : ∀ d ∈ Dpcris ρ, β d = tensorAction Bmax (⟨.ofAdd m, toGp s⟩ : FrobGal) (ρ s) d) :
-    linearFrob ρ s m = β := by
-  -- Both maps are linear and agree on `Dpcris ρ`, which spans.
-  refine LinearMap.ext_on (s := Dpcris ρ) h_potCrys fun d hd ↦ ?_
-  rw [linearFrob_eq_tensorAction_of_exists ρ s m ⟨β, hβ⟩ d hd, hβ d hd]
-
 variable (R T) in
 /-- The ring homomorphism from `R` to the `Bmax`-linear endomorphisms of `Bmax ⊗ T` (tensor over
 `ℤ_p`) sending `a` to `1 ⊗ (multiplication by a on T)`. -/
@@ -269,11 +259,6 @@ lemma isKilledBy_iff {ρ : Representation R Γ T} {s : Γ} {m : ℕ} {P : Polyno
 lemma IsKilledBy.isPotentiallyCrystalline {ρ : Representation R Γ T} {s : Γ} {m : ℕ}
     {P : Polynomial R} (h_killed : IsKilledBy ρ s m P) : IsPotentiallyCrystalline ρ :=
   (isKilledBy_iff.mp h_killed).left
-
-/-- If `P` kills `(s, m)`, then `P` evaluated at `linearFrob ρ s m` through `coeffEnd` is zero. -/
-lemma IsKilledBy.eval₂_eq_zero {ρ : Representation R Γ T} {s : Γ} {m : ℕ} {P : Polynomial R}
-    (h_killed : IsKilledBy ρ s m P) : Polynomial.eval₂ (coeffEnd R T) (linearFrob ρ s m) P = 0 :=
-  (isKilledBy_iff.mp h_killed).right
 
 end Frobenius
 

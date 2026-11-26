@@ -174,14 +174,6 @@ indicator) to the vacuum `V.vacElem` of `V`. -/
 @[simp]
 lemma boxProd_vacElem : boxProd hs V₁.vacElem V₂.vacElem = V.vacElem := tmul_vacElem _
 
-/-- For a splitting of the coordinates of V into those of V₁ and V₂ compatible with the signs,
-the product of data is multiplicative for the inner products:
-⟨f₁ ⊠ f₂, f₁′ ⊠ f₂′⟩ = ⟨f₁, f₁′⟩ ⟨f₂, f₂′⟩. -/
-lemma dataInner_boxProd (f₁ f₁' : 𝒮 V₁) (f₂ f₂' : 𝒮 V₂) :
-    V.dataInner (boxProd hs f₁ f₂) (boxProd hs f₁' f₂') =
-      V₁.dataInner f₁ f₁' * V₂.dataInner f₂ f₂' :=
-  modelInner_tmul _ f₁ f₁' f₂ f₂'
-
 /-- The product respects the insertion of real vectors:
 (v₁ ⊗ f₁) ⊠ (v₂ ⊗ f₂) = (v₁ ⊠ v₂) ⊗ (f₁ ⊠ f₂). Here v ⊗ f = `New.Space.integrated` v f inserts a
 vector v of the Fock space of the real coordinates, and v₁ ⊠ v₂ = `New.Fock.realBoxProd` is the

@@ -122,21 +122,10 @@ rank `k`. The Weil representation `ω_{χ_S, χ_T}` is `pairWeil` at these chara
 def _root_.New.HeckeChar.IsSplitting.autChar (h : χ.IsSplitting k) : AutChar E :=
   (HeckeChar.isSplitting_iff.mp h).choose
 
-lemma spaceChar_autChar (h_split : χ.IsSplitting k) : h_split.autChar.spaceChar k = χ :=
-  (HeckeChar.isSplitting_iff.mp h_split).choose_spec.left
-
 /-- The splitting character of `ν * ν'` at rank `k + l` is the product of those of `ν` at rank `k`
 and of `ν'` at rank `l`, as for an orthogonal sum of spaces. -/
 lemma spaceChar_mul : (ν * ν').spaceChar (k + l) = ν.spaceChar k * ν'.spaceChar l := by
   rw [spaceChar, map_mul, pow_add, mul_mul_mul_comm, spaceChar, spaceChar]
-
-/-- For a character `ν` of `[U(1)]` and `k : ℕ`, `ν.spaceChar k` is the Hecke character
-x ↦ `ν (x / x̄) * υ x ^ (-k)` of `E`, where `υ` is the splitting character from `WeilData`.
-Replacing `ν` by `ν⁻¹ * upsilonU1 ^ k`, where `upsilonU1` is the restriction of `υ` to the norm-one
-ideles, inverts this rank-`k` Hecke character. -/
-lemma spaceChar_inv_mul_upsilonU1_pow : (ν⁻¹ * upsilonU1 ^ k).spaceChar k = (ν.spaceChar k)⁻¹ := by
-  simp only [spaceChar, map_mul, map_inv, map_pow, baseChange_upsilonU1, mul_inv]
-  group
 
 /-- Adding `l` hyperbolic planes, that is, raising the rank by `2 * l`, keeps the splitting
 character if `ν` is multiplied by `upsilonU1 ^ l`. Here `ν.spaceChar k` is the Hecke character
@@ -172,17 +161,6 @@ theorem spaceChar_rankTwist_eq_ite (ν : AutChar E) (n : Type*) [Fintype n] :
   split_ifs with hn
   · rw [h_mod_two, Nat.even_iff.mp hn, spaceChar, pow_zero, mul_one]
   · rw [h_mod_two, Nat.not_even_iff.mp hn, spaceChar, pow_one]
-
-/-- Let `E` be a CM field with Weil data, whose splitting character is `υ`. For a character `ν` of
-`[U(1)]` and a finite type `n`, let `rankTwist ν⁻¹ n = ν⁻¹ · υ^⌊card n / 2⌋` (with `υ` restricted to
-norm-one ideles). Its space character at rank `card n` is the Hecke character
-`x ↦ (rankTwist ν⁻¹ n)(x / x̄) · υ(x)^(-card n)`. The inverse of that character equals
-`ν.baseChange` if `card n` is even and `ν.baseChange * υ` if `card n` is odd. -/
-theorem inv_spaceChar_rankTwist_inv (ν : AutChar E) (n : Type*) [Fintype n] :
-    ((rankTwist ν⁻¹ n).spaceChar (card n))⁻¹ =
-      if Even (card n) then ν.baseChange else ν.baseChange * υ := by
-  rw [spaceChar_rankTwist_eq_ite, map_inv]
-  split_ifs <;> simp [mul_comm]
 
 end AutChar
 

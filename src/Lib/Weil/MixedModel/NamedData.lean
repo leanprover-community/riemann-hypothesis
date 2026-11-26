@@ -111,24 +111,6 @@ lemma integrated_schrodingerOp (v : Heisenberg.IsVacuum.Model (Fock.realHeisenbe
     exact (V.rho_integrated v u hy_real).symm
   exact DFunLike.congr_fun h_comm.eq f
 
-/-- For any function `Ψ` on finite adelic vectors, the operator Ψ⊗ = `V.schrodingerOp S Ψ` on 𝒮(V)
-commutes with the Heisenberg operator `V.ϱ z` of any adelic vector `z` whose finite components
-vanish at the places of S ∪ S̄. -/
-lemma commute_rho_schrodingerOp {z : n → 𝔸 E} (hz : ∀ i : n, ∀ w ∈ S.conjClosure, (z i).2 w = 0)
-    (Ψ : (n → 𝔸f E) → ℂ) : Commute (V.ϱ z) (V.schrodingerOp S Ψ) := by
-  refine V.commute_schrodingerOp (fun y hy_real hy_off ↦ ?_) Ψ
-  -- The coordinates of `z` and `y` have disjoint supports, so the commutator is trivial.
-  have h_zero (i : n) : star (y i) * z i = 0 := by
-    refine Prod.ext (by simp [hy_real]) ?_
-    ext w
-    by_cases hw : w ∈ S.conjClosure
-    · simp [hz i w hw]
-    · simp [hy_off i (star w) (by simpa [and_comm] using hw)]
-  have h_pair : star y ⬝ᵥ stdForm E s *ᵥ z = 0 := by
-    simp [stdForm, dotProduct, mulVec_diagonal, mul_left_comm (star (y _)), h_zero]
-  ext f : 1
-  simp [V.rho_swap z y, adelicHeisenberg, h_pair]
-
 /-- Naming ignores the projection P^S = `New.Space.projOn` S: `V.schrodingerOp S Ψ` takes the same
 value at `P^S f` as at `f`. -/
 lemma schrodingerOp_projOn (f : 𝒮 V) :

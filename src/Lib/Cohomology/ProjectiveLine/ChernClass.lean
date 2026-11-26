@@ -174,7 +174,9 @@ variable {C C' : Type _} [Category C] [Category C'] {ℓ : ℕ} {A : Type} [Comm
 private lemma tateModule_apply_inv_mem_rootsOfUnity {c : C} (t : tateModule g c) :
     (t.val (1 / ℓ)).down ∈ rootsOfUnity ℓ ((ringOf g).obj c) := by
   have h_pow : ℓ • t.val (1 / ℓ) = 0 := by
-    calc ℓ • t.val (1 / ℓ) = (ℓ • t.val.comp (.mulRight (ℓ : ℚ)⁻¹)) 1 := by simp
+    calc ℓ • t.val (1 / ℓ) = (ℓ • t.val.comp (.mulRight (ℓ : ℚ)⁻¹)) 1 := by
+          simp only [AddMonoidHom.smul_apply, AddMonoidHom.comp_apply, AddMonoidHom.mulRight_apply,
+            one_mul, one_div]
       _ = t.val 1 := by rw [AddMonoidHom.nsmul_comp_mulRight_inv_natCast]
       _ = 0 := t.property
   exact congrArg ULift.down h_pow
@@ -275,7 +277,8 @@ lemma isCohomEquiv_tensorPoint_tateGen (hS : ∀ (c : C) (x : S c), ℓ • x = 
     have hτ : τ = ℓ • τ' := Subtype.ext (AddMonoidHom.nsmul_comp_mulRight_inv_natCast τ.val ℓ).symm
     have h_zero : S.map (f.down ≫ f') s ⊗ₜ[ℤ] τ = 0 := by rw [hτ, ← smul_tmul, hS, zero_tmul]
     -- In the cokernel s ⊗ t and s ⊗ t' agree, as they differ by (i • s) ⊗ ε.
-    have h_sub : (i • s) ⊗ₜ[ℤ] ε = s ⊗ₜ[ℤ] t - s ⊗ₜ[ℤ] t' := by simp [t', tmul_sub, smul_tmul]
+    have h_sub : (i • s) ⊗ₜ[ℤ] ε = s ⊗ₜ[ℤ] t - s ⊗ₜ[ℤ] t' := by
+      simp only [t', tmul_sub, sub_sub_cancel, smul_tmul]
     have h_class : (abCoker.π ((tensorPoint (tateGen g)).app S)).app c (s ⊗ₜ[ℤ] t) =
         (abCoker.π ((tensorPoint (tateGen g)).app S)).app c (s ⊗ₜ[ℤ] t') :=
       QuotientAddGroup.eq_iff_sub_mem.mpr ⟨i • s, h_sub⟩
@@ -1052,9 +1055,6 @@ def lineBasis : ∀ i : Bool, H (restrictAlong (elementsProj (projLineAlong g)) 
     (elementsProj (projLineAlong g) ⋙ M.functor) (lineDegree i)
   | true => Ext.mk₀ (𝟙 (elementsProj (projLineAlong g) ⋙ M.functor))
   | false => M.cupClass
-
-lemma lineBasis_true :
-    M.lineBasis true = Ext.mk₀ (𝟙 (elementsProj (projLineAlong g) ⋙ M.functor)) := rfl
 
 lemma lineBasis_false : M.lineBasis false = M.cupClass := rfl
 

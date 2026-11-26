@@ -475,35 +475,6 @@ lemma directDatum_mul_mul_of_mem_mirabolic {g : GL (n ⊕ Unit) (LocProd P)}
           then 1 else 0) T := (congrFun (liftFn_comp_mul _ a b) T).symm
     _ = Λ.directDatum T := by simp only [h_col, directDatum, lastColDatum]
 
-/-- Let `g` and `h` lie in `mirabolic`, that is, they are integral invertible matrices at `P` whose
-last column is the last basis vector modulo `N`, and let `D = diagNInv = diag (1, …, 1, N⁻¹)`. Then
-`T ↦ mirrorDatum (D⁻¹ T)` is invariant under `T ↦ h⁻¹ T g`. -/
-lemma mirrorDatum_mul_mul_of_mem_mirabolic {g : GL (n ⊕ Unit) (LocProd P)}
-    {h : GL (n' ⊕ Unit) (LocProd P)}
-    (hg : g ∈ Λ.mirabolic) (hh : h ∈ Λ.mirabolic)
-    (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P)) :
-    Λ.mirrorDatum ((Λ.diagNInv (n := n'))⁻¹.val * (h⁻¹.val * T * g.val)) =
-      Λ.mirrorDatum ((Λ.diagNInv (n := n'))⁻¹.val * T) := by
-  obtain ⟨a, ha_fix, rfl⟩ := mem_mirabolic.1 hg
-  -- In a basis of the enlarged target lattice, that is, after conjugation by `diagNInv`, the matrix
-  -- `h⁻¹` is integral and fixes the last-coordinate form modulo `N`.
-  obtain ⟨b, hb_row, hb⟩ : ∃ b : GL (n' ⊕ Unit) (O (F := LocProd P)),
-      (Λ.reductionGL b).val (.inr ()) = lastBasisVector ∧
-        inclGL b = Λ.diagNInv⁻¹ * h⁻¹ * Λ.diagNInv :=
-    exists_inclGL_eq_conj_diagNInv (inv_mem hh)
-  have h_corner (T' : Matrix (n' ⊕ Unit) (n ⊕ Unit) (P → ZMod N)) :
-      ((Λ.reductionGL b).val * T' * (Λ.reductionGL a).val) (.inr ()) ⬝ᵥ lastBasisVector =
-        T' (.inr ()) ⬝ᵥ lastBasisVector := by
-    rw [Units.smul_def, smul_eq_mulVec] at ha_fix
-    rw [mul_apply_eq_vecMul, mul_apply_eq_vecMul, ← dotProduct_mulVec, ha_fix, hb_row,
-      single_one_vecMul, row_def]
-  have h_move : (Λ.diagNInv (n := n'))⁻¹.val * (h⁻¹.val * T * (inclGL a).val) =
-      (inclGL b).val * ((Λ.diagNInv (n := n'))⁻¹.val * T) * (inclGL a).val := by
-    simp [hb, Matrix.mul_assoc]
-  rw [h_move]
-  refine (congrFun (liftFn_comp_mul _ a b) _).symm.trans ?_
-  simp only [h_corner, mirrorDatum, charDatum]
-
 /-! ## The operator `Up` -/
 
 /-- `Up` preserves the vectors fixed by `mirabolic`, the group of integral invertible matrices at

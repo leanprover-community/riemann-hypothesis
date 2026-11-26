@@ -184,9 +184,6 @@ lemma isOpen_integralOff : IsOpen (integralOff S : Set (𝔸f E)) :=
   AddSubgroup.isOpen_mono (H₁ := (Ô E).toAddSubgroup) (H₂ := (integralOff S).toAddSubgroup)
     (fun _ hx ↦ (mem_integralOff S).2 fun w _ ↦ mem_Ô.1 hx w) isOpen_Ô
 
-lemma evalAt_adeleOfLocal_of_notMem {w : FinPlace E} (hw : w ∉ S) (x : LocProd S) :
-    evalAt w (adeleOfLocal S x) = 0 := dite_eq_right hw
-
 @[simp]
 lemma adeleOfLocal_mem_integralOff (x : LocProd S) : adeleOfLocal S x ∈ integralOff S :=
   (mem_integralOff S).2 fun w hw ↦ by simp [adeleOfLocal_apply, hw]

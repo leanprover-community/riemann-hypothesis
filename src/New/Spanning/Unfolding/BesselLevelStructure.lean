@@ -431,7 +431,8 @@ lemma exists_mem_besselU_eq_eichlerMap {v : 𝔰.BesselIndex → A} [hJ : IsHerm
   -- `a ≤ b`, and `j b = 0`, or `c < a`, and that coordinate is `0`.
   have h_low (b c : Fin 𝔰.ϱ) (hcb : c ≤ b) : j b.castSucc = 0 ∨ v (inr (inr c)) = 0 := by
     refine (le_or_gt a b.castSucc).imp (hj _) fun hb ↦ ?_
-    simpa [← hm, splitGram, vecMul, dotProduct, Matrix.one_apply] using hm_low c.castSucc (by grind)
+    simpa [← hm, splitGram, vecMul, dotProduct, Matrix.one_apply] using
+      hm_low c.castSucc ((Fin.castSucc_le_castSucc_iff.mpr hcb).trans_lt hb)
   have hxx : star x ⬝ᵥ T.splitGram *ᵥ x = 0 := by
     simp [hx, splitGram, mulVec, dotProduct]
   have hvx : star v ⬝ᵥ T.splitGram *ᵥ x = 0 := by
@@ -499,8 +500,6 @@ def invAdjoint : MulAut (Matrix 𝔰.BesselIndex 𝔰.BesselIndex F)ˣ :=
 identity; J is the Gram matrix in the lattice basis. -/
 def idOrInvAdjoint (b : Bool) : MulAut (Matrix 𝔰.BesselIndex 𝔰.BesselIndex F)ˣ :=
   if b then S.invAdjoint else 1
-
-lemma idOrInvAdjoint_false : S.idOrInvAdjoint (F := F) false = 1 := rfl
 
 lemma idOrInvAdjoint_true : S.idOrInvAdjoint (F := F) true = S.invAdjoint := rfl
 
@@ -808,20 +807,6 @@ lemma mem_termsOver_reduction_iff {c d : S.Classes} {γ : S.G E} {k : S.latticeS
   · rintro ⟨k', h_kernel, h_position⟩
     exact ⟨k * k', by simp [MonoidHom.mem_ker.1 h_kernel], eq_inv_mul_iff_mul_eq.1 h_position⟩
 
-/-- Let `γ` be a rational point of `𝖴 = besselU` with `h_c⁻¹ γ h_c` integral, where `h_c` represents
-the class `c`, and let `k` be an integral point of `𝖴(𝔸_f)` with the same reduction at the chosen
-places as `h_c⁻¹ γ h_c`. Let `σ = simpleRootSum` be the sum of the entries just above the diagonal
-on the frame e₁, …, e_ϱ, z, and `γ_v = S.ratToInf γ v` the image of `γ` at the infinite place `v`,
-in the rescaled basis. With `wave x = exp (x - x̄)`, the product of the numbers `wave (σ γ_v)` over
-all `v` is the complex conjugate of `S.unipotentChar k = ψ_f(-σ(k) / (M ϖ))`. Here `ψ_f` is the
-standard character of the finite adeles, `M = S.M` is the level and `ϖ` generates the different. -/
-theorem prod_wave_eq_star_unipotentChar {c : S.Classes} {γ : S.G E} (hγ : γ ∈ besselU)
-    {k : S.latticeStabilizer} (hk : (k : S.GFin) ∈ besselU)
-    (h_over : γ ∈ S.termsOver c (S.reduction k) c) :
-    ∏ v : InfinitePlace E, wave (simpleRootSum (S.ratToInf γ v)) = star (S.unipotentChar k) := by
-  rw [prod_wave_simpleRootSum_ratToInf, unipotentChar_eq_of_mem_principalLevel hk
-    (ratToFin_mem_besselU_iff.2 hγ) c.out (mem_termsOver_reduction_iff.1 h_over)]
-
 /-- Let `c`, `d` be classes, that is, double cosets in U(X₀)(E⁺) \ U(X₀)(𝔸_f) / `S.sourceLevel`,
 with chosen representatives `h_c = S.classRep c` and `h_d`. Let `S` satisfy the standing hypotheses
 `S.IsAdmissible`; they include that `S.sourceLevel` is the preimage in U(X₀)(𝔸_f) of the principal
@@ -839,7 +824,8 @@ lemma eq_and_mem_classUnipotent_of_besselS [hS : S.IsAdmissible] {c d : S.Classe
   -- `K(M)` too, and relates the representatives of `c` and `d` modulo `S.sourceLevel`.
   have h_split : S.translateByClassReps c d (u * toBesselH 𝔰 (S.N : E) η) =
       S.translateByClassReps c c u * S.inclHFin (c.out⁻¹ * stdEmbFin η * d.out) := by
-    simp [translateByClassReps, ratToFin_toBesselH, mul_assoc]
+    simp only [translateByClassReps, map_mul, map_inv, ratToFin_toBesselH, mul_assoc,
+      mul_inv_cancel_left]
   have h_level : c.out⁻¹ * stdEmbFin η * d.out ∈ S.sourceLevel := by
     rw [h_split, principalLevel_eq_unitaryLevel] at hγ_level
     exact hS.sourceLevel_eq.ge (S.principalLevel_eq_unitaryLevel.ge (mem_unitaryLevel_of_besselU_mul
@@ -870,21 +856,6 @@ lemma exists_rat_approx_unipotentChar_eq [_hS : S.IsAdmissible] (c : S.Classes) 
     simpa [translateByClassReps, mul_assoc] using h_approx
   exact ⟨u₀, hu₀, h_level,
     unipotentChar_eq_of_mem_principalLevel hu (ratToFin_mem_besselU_iff.2 hu₀) c.out h_level⟩
-
-/-- Let `S` be admissible. For each class `c` with representative `h_c`, the rational points `γ` of
-`𝖴 = besselU` with `h_c⁻¹ γ h_c` integral map onto `S.reducedImage besselU`, the reduction of the
-integral points of `𝖴(𝔸_f)`: an element `s` lies in this group if and only if it is the reduction of
-some `h_c⁻¹ γ h_c`. -/
-theorem mem_reducedImage_besselU_iff_exists_termsOver [hS : S.IsAdmissible] (c : S.Classes)
-    {s : S.ResidueGL} :
-    s ∈ S.reducedImage besselU ↔ ∃ γ : S.G E, γ ∈ besselU ∧ γ ∈ S.termsOver c s c := by
-  constructor
-  · rintro ⟨k, hk, rfl⟩
-    obtain ⟨γ, hγ, h_level, -⟩ := exists_rat_approx_unipotentChar_eq c hk
-    exact ⟨γ, hγ, mem_termsOver_reduction_iff.2 h_level⟩
-  · rintro ⟨γ, hγ, k, rfl, h_position⟩
-    exact ⟨k, by simpa [mem_subgroupOf, h_position] using hγ.translateByClassReps_mem_besselU c,
-                   rfl⟩
 
 /-- Let `S` satisfy the standing hypotheses `S.IsAdmissible`. They include that `S.sourceLevel` is
 the preimage in U(X₀)(𝔸_f) of `S.principalLevel`, the kernel of reduction at the chosen places. Let

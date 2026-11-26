@@ -185,24 +185,6 @@ abbrev projectedPoincare (s : D.chosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.
 def normalizedPoincare (s : D.chosenGL) : D.ramifiedSourceForms →ₗ[ℂ] D.targetForms :=
   (D.invGainFactor : ℂ) • D.projectedPoincare s
 
-/-- The map `normalizedPoincare s = c_B c_ss⁻¹ #Ḡ · e₀ s 𝒫` is the translate by `s` of
-`𝔭 = normalizedPoincare 1`, in the representation `D.principalRep` of the finite group
-`Ḡ = D.chosenGL` on the forms on `Y₀`. -/
-lemma coe_normalizedPoincare (s : D.chosenGL) (φ : D.ramifiedSourceForms) :
-    (D.normalizedPoincare s φ : D.principalForms (D.spaceY 0)) =
-      D.principalRep (D.spaceY 0) s (D.normalizedPoincare 1 φ) := by
-  have h_comm : Commute (D.principalRep (D.spaceY 0) s)
-      ((D.principalRep (D.spaceY 0)).asAlgebraHom D.e₀) := by
-    simpa using (D.isCentralProj_e₀.2.commute (.of ℂ D.chosenGL s)).map
-      (D.principalRep (D.spaceY 0)).asAlgebraHom
-  have h_translate (z : D.principalForms (D.spaceY 0)) :
-      (D.goodProjTranslate s z : D.principalForms (D.spaceY 0)) =
-        D.principalRep (D.spaceY 0) s (D.goodProjTranslate 1 z) := by
-    -- Both sides are `#Ḡ` times the two sides of `h_comm` at `z`.
-    simpa using congrArg ((Nat.card D.chosenGL : ℂ) • ·) (LinearMap.congr_fun h_comm.eq z).symm
-  simp only [normalizedPoincare, LinearMap.smul_apply, Submodule.coe_smul, map_smul]
-  exact congrArg _ (h_translate (D.poincare (D.scaledInclusion φ)))
-
 /-- The ramified source forms that are integral at every `ι`, where `ι` runs over the pairs of a
 prime `l` and an `l`-adic place of `ℂ` (`PrimePadicIso`). -/
 def integralRamified : Set D.ramifiedSourceForms :=

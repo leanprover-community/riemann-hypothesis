@@ -61,13 +61,6 @@ def frobEnd : U ⟶ U where
     congr 3
     aesop
 
-/-- The value of `New.Variety.ellAdicCohom.frobEnd` at a point x ∈ U(B): the image of x under the
-ring map b ↦ b^(p^j) of B. -/
-lemma frobEnd_app (hU_char : ∀ B : CommRingCat, U B → (p : B) = 0) (j : ℕ) (B : CommRingCat)
-    (x : U B) :
-    (frobEnd hU_char j).app B x = U.map (ofHom (frobPow (hU_char B x) j)) x :=
-  rfl
-
 /-- The absolute Frobenius acts trivially on ℓ-adic cohomology. Let p = 0 in every ring B in which
 U has a point (`hU_char`). Then the endomorphism `New.Variety.ellAdicCohom.frobEnd` of U, which
 moves a point x ∈ U(B) along the ring map b ↦ b^(p^j) of B, pulls back to the identity of

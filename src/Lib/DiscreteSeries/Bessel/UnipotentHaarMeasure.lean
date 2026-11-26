@@ -482,17 +482,6 @@ theorem measurePreserving_freeEntries_besselHaar₀ :
     (hE.comp h_shear).congr (by fun_prop) (.of_forall fun q ↦ (h_coord q).symm)
   exact .map_of_comp h_param (by fun_prop) (by fun_prop)
 
-open scoped Classical in
-/-- The free entries are coordinates on 𝖴⁰ in which `New.Shape.besselHaar₀` is Lebesgue measure:
-they are injective on 𝖴⁰ (`New.RealPlace.injective_freeEntries_besselU0`) and carry this measure
-to Lebesgue measure (`New.RealPlace.measurePreserving_freeEntries_besselHaar₀`). -/
-theorem injective_measurePreserving_freeEntries₀ :
-    (Injective fun u : (𝔰.middleGram (1 : ℂ)).besselU0 ↦
-      freeEntries IsFreeEntry₀ (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) ∧
-    MeasurePreserving (fun u : (𝔰.middleGram (1 : ℂ)).besselU0 ↦
-      freeEntries IsFreeEntry₀ (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) 𝔰.besselHaar₀ :=
-  ⟨injective_freeEntries_besselU0, measurePreserving_freeEntries_besselHaar₀⟩
-
 /-- `New.Shape.besselHaar₀` is a two-sided Haar measure on 𝖴⁰ with a cutoff for the action on G₁,
 in the sense of `New.RealPlace.IsUnimodularHaar`. -/
 instance isUnimodularHaar_besselHaar₀ : IsUnimodularHaar 𝔰.besselHaar₀ :=

@@ -645,23 +645,6 @@ theorem IsJointHarmonic.exists_eq_smul_of_row_weight {Φ P : MvPolynomial ι ℂ
       h_harmonic_swap.isLaplaceHarmonic⟩
     exact hΦ.unique hP hΦ.isJointHighest.isPreJointHarmonic
 
-/-- Let `T` be a dual pair in Fock space, whose variables in `ι` are indexed by rows `R` and columns
-`C`, and let `Φ` be a joint harmonic for matching `l`, `l'`. That is, `Φ ≠ 0` is `K`-highest, of the
-weights of the lowest `K`-types, for the row action `T.oscRows` and the column action
-`T.swap.oscRows`, and it is termwise harmonic for `T` and `T.swap`: no monomial has two variables of
-one column from rows of opposite signs, or two variables of one row from columns of opposite signs.
-Then every polynomial `P` satisfying both termwise harmonic conditions, killed by the compact
-raising operators of the row action for `l`, and `K`-highest of weight `l'.lowestKType` for the
-column action, is a scalar multiple of `Φ`. -/
-theorem IsJointHarmonic.exists_eq_smul_of_column_weight {Φ P : MvPolynomial ι ℂ}
-    (hΦ : IsJointHarmonic T l l' Φ) (h_harmonic : T.IsTermwiseHarmonic P)
-    (h_harmonic_swap : T.swap.IsTermwiseHarmonic P)
-    (h_rows : T.oscRows.IsCompactPrimitive l P)
-    (h_cols : l'.IsKHighest T.swap.oscRows l'.lowestKType P) :
-    ∃ c : ℂ, P = c • Φ :=
-  hΦ.swap.exists_eq_smul_of_row_weight h_harmonic_swap (by rwa [swap_swap]) h_cols
-    (by rwa [swap_swap])
-
 end New
 
 end JointHarmonicUnique

@@ -226,10 +226,6 @@ pair of conditions on the blocks `V″` and `V°`, and its inverse is integral o
 lemma isGlued_glueLattice (i : ChoiceIndex j) : (splittingV j ϑ).IsGlued i.1 (glueLattice j ϑ i) :=
   isGlued_splittingV_of_isGlued j ϑ ((splittingV j 1).exists_isGlued i.1).choose_spec
 
-/-- The scalar `c_𝗀` of the lattice `L_Λ` does not depend on the twist. -/
-lemma weilScalar_glueLattice (i : ChoiceIndex j) :
-    (glueLattice j ϑ i).weilScalar = (glueLattice j 1 i).weilScalar := rfl
-
 /-! ### The first factors -/
 
 /-- The constant `c″ ≠ 0` that makes the vectors `c″ Υ_{ϑ,i} (h)` integral away from `Q`, and small
@@ -846,57 +842,6 @@ at any place of its set `Q`. -/
 lemma tamePart_twistPlace_ne_one (i : (D.descentPair ϑ j).TwistIndex) :
     (D.descentPair ϑ j).tamePart ((D.descentPair ϑ j).twistPlace i) ≠ 1 :=
   (liftTamePart_eq_of_mem_Q ..).trans_ne (ϑ.tamePart_ne_one _ i.2)
-
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum Finset.prod in
-/-- Periods of false lifts on `V_j` vanish, for the pair `W_j, V_j` at the twist `ϑ`. Let `Ξ` be a
-false lift (`falseLiftsAt`): it lies in the image of `D.e₀`, is killed by the Hecke polynomial
-operator for a split place `w` off the level at the value `liftHeckeRoot w`, and is orthogonal to
-the lifts of good forms. Let `ε` split `V_j` as `V″ ⊕ V°`, with bases `N` and `l` and
-`r + 2 rk V″ + 3 < t`. Let `h₁` be a finite point of `U(V″)` and `x` one of `U(V_j)` supported on
-the places of the level and their conjugates. Let `κ` be a diagram given by column counts at the
-infinite places, and `k` a function on the finite points of `U(V°)` with values vectors of weight
-`κ`, whose coordinates, moved by the real points (`GInf`), are multiples of conjugate theta kernels
-`pairTheta` of `W_j, V°` with Schwartz data `φ` fixed by the projection `Space.projOn` for the
-places off the level. Let the conjugate-linear map `C` carry these vectors to the space of values of
-`Ξ`, equivariantly for the representations `conjWeylRep` of `U(V°)_∞`. Then the pairing of `C (k h)`
-with `Ξ ((h₁, h) x)` is left invariant under the rational points, and its class sum is zero at every
-level `K` that fixes it. This is `stdClassSum_gramForm_eq_zero` for `descentPair ϑ j`. -/
-theorem stdClassSum_gramForm_eq_zero_of_mem_falseLiftsAt {N l : Type} [Fintype N] [DecidableEq N]
-    [Fintype l] [DecidableEq l] {w : FinPlace D.E} {hw : star w ≠ w}
-    {hS : w ∉ (D.descentPair ϑ j).places.conjClosure} {Ξ : (D.descentPair ϑ j).FormV}
-    (hΞ : Ξ ∈ (D.descentPair ϑ j).falseLiftsAt hw hS D.e₀ (D.goodLift ϑ j).rangeᗮ)
-    (ε : N ⊕ l ≃ D.RowIndex ⊕ Fin D.t) (h_rank : D.r + 2 * card N + 3 < D.t)
-    {κ : NumberField.InfinitePlace D.E → ℕ → ℕ}
-    (C : (WeylIndex l κ → ℂ) →ₗ⋆[ℂ] WeylIndex (D.RowIndex ⊕ Fin D.t) (D.descentPair ϑ j).columnCount
-      → ℂ)
-    (hC : ∀ (g : GInf D.E (1 : D.RowIndex ⊕ Fin D.t → ℤˣ)) (y : GInf D.E (1 : l → ℤˣ))
-      (ζ : WeylIndex l κ → ℂ),
-      (∀ τ : NumberField.InfinitePlace D.E,
-          (g τ : GL (D.RowIndex ⊕ Fin D.t) ℂ) = reindexGL ε (blockGL (1, y τ))) →
-        conjWeylRep (D.descentPair ϑ j).columnCount (D.descentPair ϑ j).detExp g (C ζ) = C
-          (conjWeylRep κ 0 y ζ))
-    (k : Gf D.E l → WeylIndex l κ → ℂ)
-    (h_kernels : ∀ i : WeylIndex l κ, ∃ (c : ℂ) (g : G D.E (D.signsW j)) (b : AutChar D.E)
-      (φ : 𝒮 ((D.descentPair ϑ j).W.hom (stdSpace D.E l))),
-      Space.projOn ((D.descentPair ϑ j).W.hom (stdSpace D.E l))
-          (D.descentPair ϑ j).places.conjClosureᶜ φ = φ ∧
-        ∀ (u : GInf D.E (1 : l → ℤˣ)) (h : Gf D.E l), conjWeylRep κ 0 u⁻¹ (k h) i =
-          c * conj (pairTheta (D.descentPair ϑ j).W (stdSpace D.E l) (D.descentPair ϑ j).charW b φ
-            (g, u, h)))
-    (h₁ : Gf D.E N) {x : Gf D.E (D.RowIndex ⊕ Fin D.t)}
-    (hx : x ∈ Gf.supportedOn (D.RowIndex ⊕ Fin D.t) (D.descentPair ϑ j).places) :
-    let f (h : Gf D.E l) : ℂ := gramForm (C (k h)) (Ξ (U.block ε (h₁, h) * x))
-    (∀ δ ∈ (stdSpace D.E l).Γ, ∀ h : Gf D.E l, f (δ.2 * h) = f h) ∧
-      ∀ (K : Subgroup (Gf D.E l)) [IsLevel K], K ≤ rightStabilizer f → stdClassSum K f = 0 := by
-  obtain ⟨⟨hΞ_range, hΞ_hecke⟩, hΞ_orth⟩ := hΞ
-  have h_gap : 2 * card D.RowIndex + 2 * card N + 3 < card (D.RowIndex ⊕ Fin D.t) := by
-    rw [D.card_rowIndex_sum_fin, D.card_rowIndex]
-    linarith [D.t_eq_five_mul_r]
-  exact stdClassSum_gramForm_eq_zero (D.fitsParams_descentPair ϑ j) (tamePart_twistPlace_ne_one j ϑ)
-    (hyperplaneSum_apply_eq_zero j ϑ hΞ_range)
-    (normalizedDescent_eq_zero_of_mem_orthogonal j ϑ hΞ_range hΞ_orth) hΞ_hecke
-    h_gap ε C hC k h_kernels h₁ hx
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in

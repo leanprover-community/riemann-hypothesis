@@ -208,19 +208,6 @@ namespace HasClassLaws
 variable {D : PEL E} {S : AlgebraicGeometry.Scheme} {A : CategoryTheory.Over S} [AddObj (S := S) A]
   [ModuleObj (𝓞 E) A] {c : Pic A.left}
 
-lemma parallelogramLaw (h_laws : D.HasClassLaws c) : c.ParallelogramLaw := h_laws.1
-
-/-- For a class with the laws `New.PEL.HasClassLaws`, `1 - β` is adjoint to `β` for the pairing. -/
-lemma pairing_smul_beta (h_laws : D.HasClassLaws c) {T : CategoryTheory.Over S} (x y : T ⟶ A) :
-    c.pairing (D.β • x) y = c.pairing x ((1 - D.β) • y) :=
-  (h_laws.right x y).left
-
-/-- For a class with the laws `New.PEL.HasClassLaws`, the pull-back along `y` is `⟨β y, y⟩` plus the
-pull-back along `0`. -/
-lemma atPoint_eq (h_laws : D.HasClassLaws c) {T : CategoryTheory.Over S} (y : T ⟶ A) :
-    c.atPoint y = c.pairing (D.β • y) y + c.atPoint 0 :=
-  (h_laws.right y y).right
-
 end HasClassLaws
 
 end PEL

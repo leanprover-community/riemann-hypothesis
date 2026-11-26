@@ -242,21 +242,6 @@ lemma SieveSystem.norm_integral_mul_sum_update_le (K : SieveSystem u ι n J ψ B
           K.norm_integral_mul_update_le hi (a p) (a q) hξ
     _ = β ξ * (∑ p, Λ i (a p)) ^ 2 := by simp only [sq, sum_mul_sum, ← mul_sum]
 
-/-- The summed recursion in one statement: for `i ≤ n`, let `F c` be the sum of the forms
-`J (i + 1)` over all pairs from finitely many `heads` with entry `u c` put at position `i`. Then
-`F` is integrable, its integral is the sum of the forms `J i`, and for a unit `ξ` the integral of
-`ψ (ξ * c) * F c` has modulus at most `β ξ * (∑ p, Λ i (heads p)) ^ 2`, with `Λ` the head weights
-and `β` the decay of the system. -/
-lemma SieveSystem.integrable_and_integral_sum_update (K : SieveSystem u ι n J ψ B₀ Λ β) {i : ℕ}
-    (hi : i ≤ n) (heads : τ → ℕ → U) :
-    let F (c : C) : ℂ :=
-      ∑ p : τ, ∑ q : τ, J (i + 1) (update (heads p) i (u c)) (update (heads q) i (u c))
-    Integrable F ∧
-    ∫ c : C, F c = ∑ p : τ, ∑ q : τ, J i (heads p) (heads q) ∧
-    ∀ ξ : C, IsUnit ξ → ‖∫ c : C, ψ (ξ * c) * F c‖ ≤ β ξ * (∑ p : τ, Λ i (heads p)) ^ 2 :=
-  ⟨K.integrable_sum_update hi heads, K.integral_sum_update hi heads,
-    fun _ξ hξ ↦ K.norm_integral_mul_sum_update_le hi heads hξ⟩
-
 /-- In a sieve system `K` with forms `J`, if finitely many heads `a p` have a common entry `t` at
 position `i ≤ n`, then the sum of `J (i + 1)` over all pairs of heads is a nonnegative real
 number. -/
@@ -309,21 +294,6 @@ lemma SieveSystem.lowerSemicontinuousAt_sum (K : SieveSystem u ι n J ψ B₀ Λ
           lintegral_mono h_lsc
       _ ≤ Filter.liminf (fun y ↦ ∫⁻ z, ENNReal.ofReal (RCLike.re (G y z))) (nhds x) :=
           lintegral_liminf_le' fun y ↦ (h_int y).re.aemeasurable.ennreal_ofReal
-
-/-- In a sieve system `K` with forms `J`, let finitely many sequences `heads x p` have a common
-entry `entry x` at position `i ≤ n` for each `x`. Then the sum `F x` of `J (i + 1)` over all pairs
-of heads is a nonnegative real number, and `ENNReal.ofReal` of its real part is lower semicontinuous
-at each `x` where the heads are continuous. -/
-lemma SieveSystem.sum_nonneg_and_lowerSemicontinuousAt (K : SieveSystem u ι n J ψ B₀ Λ β) {i : ℕ}
-    (hi : i ≤ n) (heads : C → τ → ℕ → U) {entry : C → U}
-    (h_common : ∀ (x : C) (p : τ), heads x p i = entry x) :
-    let F (x : C) : ℂ := ∑ p : τ, ∑ q : τ, J (i + 1) (heads x p) (heads x q)
-    (∀ x : C, 0 ≤ F x) ∧
-    ∀ x : C,
-      (∀ p : τ, ContinuousAt (fun y : C ↦ heads y p) x) →
-      LowerSemicontinuousAt (fun y : C ↦ ENNReal.ofReal (RCLike.re (F y))) x :=
-  ⟨fun x ↦ K.sum_nonneg hi (heads x) (h_common x),
-    fun _x h_cont ↦ K.lowerSemicontinuousAt_sum hi heads h_common h_cont⟩
 
 end New
 

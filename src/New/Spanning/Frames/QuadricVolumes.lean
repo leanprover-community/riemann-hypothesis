@@ -354,37 +354,6 @@ lemma measurable_sectionPoint (c : A) : Measurable (sectionPoint (T := T) a c) :
   unfold sectionPoint
   fun_prop
 
-omit [TopologicalSpace A] [MeasureSpace A] [Place A] [IsHermitianUnit T.splitGram] in
-/-- Let w = `floorWeyl a c` be the Weyl element of floor a that sends e_a to c e*_a, for a unit c.
-Then the point (w⁻¹ n)⁻¹ e_a of the orbit of e_a is c n⁻¹ e*_a = `sectionPoint a c n`. -/
-lemma orbitPoint_floorWeyl_inv_mul (c : Aˣ) (n : T.G) :
-    orbitPoint a.castSucc ((floorWeyl a c.val)⁻¹ * n) = sectionPoint a c.val n := by
-  have h_weyl : (floorWeyl a c.val : T.G).val.val *ᵥ Pi.single (inl a) 1 =
-      c.val • Pi.single (eStar a) 1 := by
-    ext k
-    simp [floorWeyl, weylOn, BesselIndex.level, Pi.single_apply]
-  simp [orbitPoint, sectionPoint, ← mulVec_mulVec, -mulVec_single, h_weyl, mulVec_smul]
-
-/-- The measure `F.floorQuadricMeasure a.castSucc` of the isotropic cone of Y^(a) is dc times the
-measures `sectionMeasure T a c` of its sections ⟨e_a, y⟩ = c, where the product is that of the form
-`T` over `A` and e_a is the a-th isotropic basis vector. -/
-lemma PlaceData.lintegral_floorQuadricMeasure_eq {f : (𝔰.BesselIndex → A) → ℝ≥0∞}
-    (hf : Measurable f) :
-    ∫⁻ y : 𝔰.BesselIndex → A, f y ∂F.floorQuadricMeasure a.castSucc =
-      ∫⁻ c : A, ∫⁻ y : 𝔰.BesselIndex → A, f y ∂sectionMeasure T a c := by
-  -- The measure of the cone is the image under `orbitPoint` of the floor measure, which is the
-  -- Weyl law convolved with the Heisenberg measure.
-  have h_floor : F.floorMeasure a.castSucc = weylLaw a ∗ₘ heisenbergMeasure a := by
-    simp [floorMeasure]
-  rw [← (measurePreserving_orbitPoint (F := F) a.castSucc).lintegral_comp hf, h_floor,
-    lintegral_mconv (by fun_prop), weylLaw, lintegral_map (by fun_prop) (by fun_prop),
-    lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)]
-  -- Almost every `c` is a unit, and for a unit the inner integrals agree.
-  refine lintegral_congr_ae (ae_isUnit.mono ?_)
-  rintro _ ⟨c, rfl⟩
-  simp only [sectionMeasure, lintegral_smul_measure, lintegral_map hf (measurable_sectionPoint _),
-    ← orbitPoint_floorWeyl_inv_mul, Pi.mul_apply, smul_eq_mul]
-
 /-- The coordinates of a point of a section: for the Heisenberg element n = `heisenbergElem a t`
 with t = (ω, β), the point c n⁻¹ e*_a is c (e*_a - ω) plus a multiple of c e_a. Here ω is extended
 by zero to the floors at most a. -/

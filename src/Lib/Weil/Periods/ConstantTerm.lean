@@ -560,20 +560,6 @@ lemma exists_tsum_enorm_constTerm_le (hd : ∀ b : ι', d (Y'.stringReversal b) 
     _ ≤ ‖U.θ‖ₑ * (M * ‖f‖ₑ) := by grw [U.θ.le_opENorm, ENNReal.tsum_mul_left, hM]
     _ = (‖U.θ‖₊ * M : NNReal) * ‖f‖ₑ := by rw [ENNReal.coe_mul, mul_assoc, enorm_eq_nnnorm]
 
-/-- Let `d` be weights on the indices of `V'` that change sign under the string reversal of `Y'`.
-Take rational matrices modulo `Y.nonnegMaps d`, the ones whose entry `(b, a)` vanishes whenever
-`d b` is less than the grade of `a`. (a) The constant terms `Y.constTerm d f` along maps of positive
-degree, taken at representatives of these classes, sum to `f 0`; (b) there is a constant `M` such
-that for every `f` the sum of their norms is at most `M * ‖f‖`. This corollary joins
-`hasSum_constTerm_out` and `exists_tsum_enorm_constTerm_le`. -/
-lemma hasSum_constTerm (hd : ∀ b : ι', d (Y'.stringReversal b) = -d b) :
-    -- (a)
-    HasSum (fun x : ratMatrices E ι' ι ⧸ Y.nonnegMaps d ↦ Y.constTerm d f x.out) (f 0) ∧
-    -- (b)
-    ∃ M : NNReal, ∀ f : 𝒮 (V.hom V'),
-      ∑' x : ratMatrices E ι' ι ⧸ Y.nonnegMaps d, ‖Y.constTerm d f x.out‖ₑ ≤ M * ‖f‖ₑ :=
-  ⟨hasSum_constTerm_out hd, exists_tsum_enorm_constTerm_le hd⟩
-
 variable (Y) in
 /-- The set `𝒞` of classes whose chosen representative agrees with `T = Y.stringMap Y'`
 (`New.Grading.AgreesWithStringMap`). For `d ≤ Y'.gradeOf ⊔ 0` any representative may be used

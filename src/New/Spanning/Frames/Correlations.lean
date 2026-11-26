@@ -173,19 +173,6 @@ structure Gauge extends Size T where
 @[simp]
 lemma Gauge.one_le_loss (Γ : Gauge F) : 1 ≤ Γ.loss := one_le_two.trans Γ.two_le_loss
 
-/-- Let `y` and `γ⁻¹ y` be near at `l`: elements of `partialUnitriangularGroup l` move them into the
-compact set `F.boxSet` of the place datum `F`. Then the leading minors of order `j ≤ l` of the
-matrix `T.frameGram γ` of the products `h(e_a, γ e_b)` of the frame vectors, for the form `h` with
-Gram matrix `T.splitGram`, lie in step `9 * 𝔰.n` of the filtration by size of every gauge `Γ`. -/
-theorem Gauge.leadingMinor_mem_ofSize_of_isNear {F : PlaceData ι T m} (Γ : Gauge F) {l : ℕ}
-    {γ y : T.G} (hy : F.IsNear l y) (hγy : F.IsNear l (γ⁻¹ * y))
-    {j : Fin (𝔰.n + 1)} (hj : j.val ≤ l) :
-    leadingMinor (T.frameGram γ.val.val) j ∈ Γ.ofSize (9 * 𝔰.n) := by
-  obtain ⟨ξ, hξ, hξ_box⟩ : ∃ ξ ∈ partialUnitriangularGroup l, ξ * y ∈ F.boxSet := hy
-  obtain ⟨ξ', hξ', hξ'_box⟩ : ∃ ξ' ∈ partialUnitriangularGroup l, ξ' * (γ⁻¹ * y) ∈ F.boxSet := hγy
-  exact Size.leadingMinor_mem_ofSize hξ hξ' (Γ.hasMatrixSize_boxSet hξ_box)
-    (Γ.hasMatrixSize_boxSet hξ'_box) hj
-
 /-- The close positions of a gauge Γ for the place datum F: the positions z ∈ `F.positions` for
 which the matrix (z - 1) / M has size 1, where M = `F.levelUnit` is the level. -/
 def Gauge.positionsOfSize (Γ : Gauge F) : Set T.G :=
@@ -503,15 +490,6 @@ lemma partialCorrelation_eq_integral_floorMeasure (hk : F.IsPairingKernel j k d)
       integral_integral_swap (h_int.comp_measurable measurable_mul)
     _ = ∫ σ : T.G, F.partialCorrelation (l + 1) k (σ * g) (σ * y) ∂F.floorMeasure l := by
       simp only [partialCorrelation, mul_assoc]
-
-/-- For a pairing kernel `k` with element `d` at any floor `j`, the correlation
-`F.partialCorrelation l k g y` from floor `l` on is an absolutely convergent integral: that of
-`F.partialCorrelation (l + 1) k (σ * g) (σ * y)` over σ against θ_l = `F.floorMeasure l`. -/
-lemma partialCorrelation_eq_integral_succ (hk : F.IsPairingKernel j k d) :
-    Integrable (fun σ : T.G ↦ F.partialCorrelation (l + 1) k (σ * g) (σ * y)) (F.floorMeasure l) ∧
-    F.partialCorrelation l k g y =
-      ∫ σ : T.G, F.partialCorrelation (l + 1) k (σ * g) (σ * y) ∂F.floorMeasure l :=
-  ⟨hk.integrable_partialCorrelation_succ, hk.partialCorrelation_eq_integral_floorMeasure⟩
 
 /-- For a pairing kernel `k`, the modulus of the correlation from floor `l` on is at most
 `F.pivotL1Norm l k g y`, the integral over floor `l` of the modulus of the correlation from floor

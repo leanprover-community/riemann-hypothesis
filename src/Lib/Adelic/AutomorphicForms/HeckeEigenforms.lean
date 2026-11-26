@@ -90,11 +90,6 @@ def evalClassReps [IsTopologicalGroup G] (r : DoubleCosets e.range K → G) :
     levelSpace (smoothFormRep e ρ) K χ →ₗ[ℂ] DoubleCosets e.range K → W :=
   ((funLeft ℂ W r).domRestrict (SmoothForm e ρ)).domRestrict (levelSpace (smoothFormRep e ρ) K χ)
 
-lemma evalClassReps_apply [IsTopologicalGroup G] (r : DoubleCosets e.range K → G)
-    (φ : levelSpace (smoothFormRep e ρ) K χ) (c : DoubleCosets e.range K) :
-    evalClassReps e ρ χ r φ c = φ.val.val (r c) :=
-  rfl
-
 /-- Evaluation of forms of level `(K, χ)` at representatives `r c` of the double cosets `c` in
 `e(Γ) \ G / K` is injective. -/
 lemma evalClassReps_injective [IsTopologicalGroup G] {r : DoubleCosets e.range K → G}
@@ -251,24 +246,6 @@ noncomputable def freeLevelEquiv (h_free : ∀ g : G, classAut e.range K g = ⊥
     levelSpace_ext_doubleCosets hr (sum_deltaForm_apply_rep e ρ χ h_free hr
       (evalClassReps e ρ χ r φ))
   right_inv f := funext (sum_deltaForm_apply_rep e ρ χ h_free hr f)
-
-/-- `freeLevelEquiv` sends a form to its values at the representatives `r c`. -/
-lemma freeLevelEquiv_apply (h_free : ∀ g : G, classAut e.range K g = ⊥)
-    {r : DoubleCosets e.range K → G}
-    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c)
-    (φ : levelSpace (smoothFormRep e ρ) K χ) (c : DoubleCosets e.range K) :
-    freeLevelEquiv e ρ χ h_free hr φ c = φ.val.val (r c) :=
-  rfl
-
-/-- The inverse of `freeLevelEquiv` sends `f` to the sum over the classes `c` of the forms
-`deltaForm e ρ χ (r c) (f c)`. -/
-lemma freeLevelEquiv_symm_apply (h_free : ∀ g : G, classAut e.range K g = ⊥)
-    {r : DoubleCosets e.range K → G}
-    (hr : ∀ c : DoubleCosets e.range K, DoubleCoset.mk e.range K (r c) = c)
-    (f : DoubleCosets e.range K → W) :
-    (freeLevelEquiv e ρ χ h_free hr).symm f =
-      ∑ c : DoubleCosets e.range K, deltaForm e ρ χ (r c) (f c) :=
-  rfl
 
 variable {e ρ χ}
 

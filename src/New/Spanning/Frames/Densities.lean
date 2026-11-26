@@ -219,58 +219,11 @@ lemma Gauge.isCompact_hasMatrixSize {j : ℕ} (Γ : Gauge F) :
     IsCompact {y : T.G | Γ.HasMatrixSize j (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)} :=
   isClosedEmbedding_unitary_coe.isCompact_preimage (Γ.isCompact_ofSize _).matrix
 
-omit [IsHermitianUnit T.splitGram] in
-/-- Let `W` be a Bessel function of frequency `η`, so that `W (u * y) = χ(u) • W y` for `u` in the
-unipotent group 𝖴 = `T.besselU`, with `χ(u) = ψ (η * simpleRootSum u)`. For a left invariant measure
-`μ`, the orbital integral J(γ) = ∫ W(y) ⊗ W(γ⁻¹y)^* dμ(y) (`besselOrbitalIntegral μ W γ`) satisfies
-J(u⁻¹γu') = conj χ(u) · χ(u') · J(γ) for `u`, `u'` in 𝖴. -/
-theorem Place.IsBessel.besselOrbitalIntegral_besselU_mul {W : T.G → EuclideanSpace ℂ I} {η : Aˣ}
-    (hW : P.IsBessel W η) (μ : Measure T.G) [μ.IsMulLeftInvariant] {u u' : T.G}
-    (hu : u ∈ T.besselU) (hu' : u' ∈ T.besselU) (γ : T.G) :
-    besselOrbitalIntegral μ W (u⁻¹ * γ * u') =
-      (conj (P.ψ (η * simpleRootSum u)) * P.ψ (η * simpleRootSum u')) •
-        besselOrbitalIntegral μ W γ := by
-  let χ (v : T.G) : ℂ := P.ψ (η * simpleRootSum v)
-  have h_inv {v : T.G} (hv : v ∈ T.besselU) (y : T.G) : W (v⁻¹ * y) = conj (χ v) • W y := by
-    have h_law : W y = χ v • W (v⁻¹ * y) := by
-      rw [← hW.map_unipotent_mul v hv, mul_inv_cancel_left]
-    rw [h_law, smul_smul, RCLike.conj_mul, P.norm_psi, RCLike.ofReal_one, one_pow, one_smul]
-  ext ⟨i, i'⟩
-  simp only [besselOrbitalIntegral, PiLp.smul_apply, smul_eq_mul]
-  -- Substitute `u⁻¹ * y` for `y`.
-  calc ∫ y : T.G, W y i * conj (W ((u⁻¹ * γ * u')⁻¹ * y) i') ∂μ
-    _ = ∫ y : T.G, W (u⁻¹ * y) i * conj (W ((u⁻¹ * γ * u')⁻¹ * (u⁻¹ * y)) i') ∂μ :=
-      (integral_mul_left_eq_self _ u⁻¹).symm
-    _ = ∫ y : T.G, conj (χ u) * χ u' * (W y i * conj (W (γ⁻¹ * y) i')) ∂μ := by
-      refine integral_congr_ae (.of_forall fun y : T.G ↦ ?_)
-      have h_point : (u⁻¹ * γ * u')⁻¹ * (u⁻¹ * y) = u'⁻¹ * (γ⁻¹ * y) := by group
-      simp only [h_point, h_inv hu, h_inv hu', PiLp.smul_apply, smul_eq_mul, map_mul, conj_conj]
-      ring
-    _ = conj (χ u) * χ u' * ∫ y : T.G, W y i * conj (W (γ⁻¹ * y) i') ∂μ := integral_const_mul _ _
-
 /-- A cut Bessel function `W` vanishes off the points near at `j`, for every `j`: if `W x ≠ 0`, then
 `u x` lies in the box `F.boxSet` for some `u` in `partialUnitriangularGroup j`. -/
 theorem PlaceData.IsCut.isNear_of_ne_zero (hk : F.IsCut W) (h : W x ≠ 0) : F.IsNear j x := by
   obtain ⟨u, hu, hu_box⟩ : ∃ u ∈ T.besselU, u * x ∈ F.boxSet := hk.exists_mul_mem_box h
   exact ⟨u, mem_partialUnitriangularGroup_of_mem_besselU hu, hu_box⟩
-
-/-- Let `W` be a cut Bessel function for the place datum `F`. If the orbital integral J(γ) = ∫
-W(y) ⊗ W(γ⁻¹y)^* dμ(y) is not zero, then all leading minors of the matrix of the products h(f_a, γ
-f_b) of the frame vectors (`T.frameGram γ`) have size `9 * 𝔰.n`, that is lie in the set
-`Γ.ofSize (9 * 𝔰.n)`, in every gauge `Γ` for `F`. -/
-theorem Gauge.leadingMinor_mem_ofSize_of_besselOrbitalIntegral_ne_zero (Γ : Gauge F)
-    {W : T.G → EuclideanSpace ℂ I} (hW : F.IsCut W) {μ : Measure T.G} {γ : T.G}
-    (hγ : besselOrbitalIntegral μ W γ ≠ 0) (j : Fin (𝔰.n + 1)) :
-    leadingMinor (T.frameGram (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)) j ∈
-      Γ.ofSize (9 * 𝔰.n) := by
-  obtain ⟨y, hy, hγy⟩ : ∃ y : T.G, W y ≠ 0 ∧ W (γ⁻¹ * y) ≠ 0 := by
-    by_contra! h_zero
-    refine hγ (PiLp.ext fun i ↦ integral_eq_zero_of_ae (.of_forall fun y ↦ ?_))
-    by_cases hy : W y = 0
-    · simp only [hy, PiLp.zero_apply, zero_mul, Pi.zero_apply]
-    · simp only [h_zero y hy, PiLp.zero_apply, map_zero, mul_zero, Pi.zero_apply]
-  exact Γ.leadingMinor_mem_ofSize_of_isNear (hW.isNear_of_ne_zero hy) (hW.isNear_of_ne_zero hγy)
-    le_rfl
 
 /-- Let W be a cut Bessel function and |ω| ≤ 1 everywhere. For every floor `j : ℕ`, all sequences of
 units `p q : ℕ → Aˣ` and every point x of the group, the L¹ norm 𝖥_j(x; ω) of the form integrand at

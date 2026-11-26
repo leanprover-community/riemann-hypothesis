@@ -650,13 +650,6 @@ noncomputable def Filling.imSkewLattice (t : InfinitePlace E → ℝ) :
     (AddMonoidHom.mk' (fun (s : 𝓞 E) (v : InfinitePlace E) ↦ t v * (Φ v s.val).im)
       (by simp [funext_iff, mul_add]))
 
-/-- A vector lies in `imSkewLattice t` iff it is `(t v * Im Φ_v(s))_v` for an integer `s` of `E`
-with `star s = -s`. -/
-lemma Filling.mem_imSkewLattice {t l : InfinitePlace E → ℝ} :
-    l ∈ imSkewLattice t ↔
-      ∃ s : 𝓞 E, star s = -s ∧ (fun v : InfinitePlace E ↦ t v * (Φ v s.val).im) = l :=
-  Iff.rfl
-
 /-- If `ι² = -1`, `star ι = -ι` and all `Φ_v(ι)` are imaginary, the group `imSkewLattice t`
 consists of the vectors `(t v * Im Φ_v(ι) * Re Φ_v(a))_v`, `a` an integer of the maximal real
 subfield. -/

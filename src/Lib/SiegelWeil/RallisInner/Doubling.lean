@@ -60,9 +60,6 @@ variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [Decidable
 `norm_negSourceFactor` and `theta_negSourceFactor_smul`. -/
 def negSourceFactor (S : Space E n s) (T : Space E m t) : ℂ := (exists_theta_negSource S T).choose
 
-lemma norm_negSourceFactor (S : Space E n s) (T : Space E m t) : ‖negSourceFactor S T‖ = 1 :=
-  (exists_theta_negSource S T).choose_spec.1
-
 /-- The theta functional of `S⁻, T` at the transport of `f`, multiplied by `negSourceFactor S T`,
 is the complex conjugate of the theta functional of `S, T` at `f`. -/
 lemma theta_negSourceFactor_smul (f : 𝒮 (S.hom T)) :

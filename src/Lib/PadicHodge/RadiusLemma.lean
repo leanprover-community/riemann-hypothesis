@@ -99,38 +99,6 @@ lemma tau_pow_dvd_of_dvd_E_pow_mul {m h : ℕ} {a : Ainf}
   rw [← mul_one (tau ^ m), ← pow_zero (c.z : Ainf)] at h_dvd ⊢
   exact tau_pow_mul_z_pow_dvd_of_dvd_E_pow_mul h_dvd
 
-/-- Let `c` be a chart with ring S = `c.S` (the image of Λ⟦X⟧ in A_inf), E = `c.E` and
-S_B = `c.bicommutant` (the p-adic closure of S[E/p] in `BPlus`, with p inverted). If E^h·a lies in
-S_B, for a in `Ainf`, then a lies in S. -/
-lemma mem_S_of_E_pow_mul_mem_bicommutant {h : ℕ} {a : Ainf}
-    (h_mem : ainfToBPlus (c.E ^ h * a) ∈ c.bicommutant) : a ∈ c.S := by
-  -- Cancel `E ^ h` in `S_B`; the projection onto `S_B` then fixes `a` and sends it into `S`.
-  have hE_ne : ainfToBPlus c.E ^ h ≠ 0 := by simp [c.E_ne_zero']
-  have ha_mem : ainfToBPlus a ∈ c.bicommutant :=
-    c.mem_bicommutant_of_mul (pow_mem (ainfToBPlus_mem_bicommutant c.E) h) hE_ne
-      (by simpa using h_mem)
-  have h_coord : ainfToBPlus (c.adicBasis.coord c.oneIndex a) = ainfToBPlus a :=
-    (c.extendToBPlus_ainfToBPlus _ a).symm.trans (c.extendedCoord_oneIndex_eq_self ha_mem)
-  rw [← FaithfulSMul.algebraMap_injective Ainf BPlus h_coord]
-  exact (c.adicBasis.coord c.oneIndex a).property
-
-/-- The equality A_inf[1/τ] ∩ S_B[1/E] = S, with denominators cleared. Let `c` be a chart with ring
-S = `c.S` (the image of Λ⟦X⟧ in A_inf), E = `c.E` and S_B = `c.bicommutant` (the p-adic closure of
-S[E/p] in `BPlus`, with p inverted), and let τ = [ε^{1/p}] − 1. For a in `Ainf`, the fraction a/τ^m
-equals y/E^h for some h and some y in S_B if and only if a = τ^m·s for some s in S. -/
-theorem exists_E_pow_mul_eq_tau_pow_mul_iff {m : ℕ} {a : Ainf} :
-    (∃ h : ℕ, ∃ y ∈ c.bicommutant, ainfToBPlus (c.E ^ h * a) = ainfToBPlus (tau ^ m) * y) ↔
-      ∃ s : c.S, a = tau ^ m * s := by
-  refine ⟨fun ⟨h, y, hy_mem, h_eq⟩ ↦ ?_, fun ⟨s, hs⟩ ↦
-    ⟨0, ainfToBPlus s, ainfToBPlus_mem_bicommutant s, by simp [hs]⟩⟩
-  -- The fraction `a / tau ^ m` is an element `b` of `Ainf`, and `E ^ h * b = y` lies in `S_B`.
-  obtain ⟨b, rfl⟩ : tau ^ m ∣ a := tau_pow_dvd_of_dvd_E_pow_mul ⟨y, h_eq⟩
-  have h_quotient : ainfToBPlus (c.E ^ h * b) = y := by
-    rw [mul_left_comm, map_mul] at h_eq
-    exact mul_left_cancel₀ (by simp) h_eq
-  have hb_mem : b ∈ c.S := mem_S_of_E_pow_mul_mem_bicommutant (h := h) (by rwa [h_quotient])
-  exact ⟨⟨b, hb_mem⟩, rfl⟩
-
 /-- `φ ^ l` on `BPlus` restricts on `S` to the Frobenius `c.φ ^ l` of the chart. -/
 lemma frobEnd_pow_ainfToBPlus (l : ℕ) (s : c.S) :
     (frobEnd ^ l) (ainfToBPlus s.val) = ainfToBPlus ((c.φ ^ l) s).val := by

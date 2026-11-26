@@ -127,73 +127,9 @@ lemma shift_mulVec_stringPower (i : Fin s) :
   · -- At the string index `b` both sides are `Y.powerCoeff (i + 1)` if `b = i + 1`, else `0`.
     by_cases hb : b.val = i + 1 <;> simp [stringPower, hb, ← Y.shift_factor_mul_powerCoeff i]
 
-/-- The vectors `𝔢 ^ i` and `𝔢 ^ l`, that is `Y.stringPower i` and `Y.stringPower l`, pair under
-the hermitian form `V.J` to `-N` if `i + l = s - 1`, and to `0` otherwise. -/
-lemma form_stringPower (i l : Fin s) :
-    star (Y.stringPower i) ⬝ᵥ V.J *ᵥ Y.stringPower l = if i.val + l + 1 = s then -N else 0 := by
-  obtain ⟨hc, hc_star⟩ : Y.genericConst.val ≠ 0 ∧ star Y.genericConst.val = Y.genericConst.val :=
-    Y.genericConst.property
-  -- Only the entry of `V.J` at the string indices `i` and `l` enters.
-  have h_entry : star (Y.stringPower i) ⬝ᵥ V.J *ᵥ Y.stringPower l = star (Y.powerCoeff i) *
-      (if i = l.rev then if i = l then -N else 1 else 0) * Y.powerCoeff l := by
-    simp [stringPower_eq_single, Y.gram_eq, gradedGram, Pi.star_single, mul_comm]
-  rw [h_entry]
-  by_cases h_sum : i.val + l + 1 = s
-  · rw [ite_eq_left h_sum, ite_eq_left (show i = l.rev by grind)]
-    -- The exponents of `c` are opposite, and exactly one factor `-N` occurs.
-    obtain h | h | h := lt_trichotomy i l
-    · have h_i : Y.powerCoeff i = Y.genericConst.val ^ (i - s / 2 : ℤ) :=
-        Y.powerCoeff_of_lt (by omega) rfl
-      have h_l : Y.powerCoeff l = -N * Y.genericConst.val ^ (-(i - s / 2) : ℤ) :=
-        Y.powerCoeff_of_le (by omega) (by omega)
-      rw [ite_eq_right h.ne, h_i, h_l, star_zpow₀, hc_star, _root_.zpow_neg]
-      field_simp
-    · have h_i : Y.powerCoeff i = Y.genericConst.val ^ (0 : ℤ) :=
-        Y.powerCoeff_of_lt (by omega) (by omega)
-      simp [← h, h_i]
-    · have h_i : Y.powerCoeff i = -N * Y.genericConst.val ^ (i - (s - 1) / 2 : ℤ) :=
-        Y.powerCoeff_of_le (by omega) rfl
-      have h_l : Y.powerCoeff l = Y.genericConst.val ^ (-(i - (s - 1) / 2) : ℤ) :=
-        Y.powerCoeff_of_lt (by omega) (by omega)
-      rw [ite_eq_right h.ne', h_i, h_l, star_mul, star_neg, Y.N_ne_zero_and_star_eq.right,
-        star_zpow₀, hc_star, _root_.zpow_neg]
-      field_simp
-  · simp [h_sum, show i ≠ l.rev by grind]
-
 /-- The vector `z_N`: for a string of odd length `s = 2 * n + 1` it is the power `𝔢 ^ n`, the one
 of grade `0`. -/
 def middlePower : ι → E := Y.stringPower (s / 2)
-
-/-- For a string of odd length `s = 2 * n + 1`, the vector `z_N` is the string vector with number
-`n`. -/
-lemma middlePower_eq_single (n : Fin s) (hn : 2 * n.val + 1 = s) :
-    Y.middlePower = Pi.single (Y.indexEquiv (.inr n)) 1 := by
-  have h_coeff : Y.powerCoeff n = Y.genericConst.val ^ (0 : ℤ) :=
-    Y.powerCoeff_of_lt (by omega) (by omega)
-  rw [middlePower, show s / 2 = n by omega, stringPower_eq_single, h_coeff, zpow_zero]
-
-/-- For a grading `Y` of `V` as `X ⊕ J_s` whose string has odd length `s = 2 * n + 1`, consider the
-vector `z_N = 𝔢 ^ n` (`Y.middlePower`, a multiple of the middle string vector). It has grade `0`:
-its entry vanishes at every basis index `k` of nonzero grade `Y.gradeOf k`. The grade is `0` on `X`
-and `s − 1 − 2i` on the `i`-th string vector. -/
-lemma middlePower_apply_eq_zero (hs : Odd s) {k : ι} (hk : Y.gradeOf k ≠ 0) :
-    Y.middlePower k = 0 := by
-  obtain ⟨n, hn⟩ := hs
-  -- The only nonzero entry is at the string index `n`, of grade `s - 1 - 2 * n = 0`.
-  have h_grade : Y.gradeOf (Y.indexEquiv (.inr ⟨n, by omega⟩)) = 0 := by simp [gradeOf, hn]
-  rw [Y.middlePower_eq_single ⟨n, by omega⟩ hn.symm, Pi.single_eq_of_ne]
-  rintro rfl
-  exact hk h_grade
-
-/-- For a grading `Y` of `V` as `X ⊕ J_s` whose string has odd length `s = 2 * n + 1`, the vector
-`z_N = 𝔢 ^ n` (`Y.middlePower`, the multiple of the middle string vector of grade `0`) has norm `-N`
-under the hermitian form `V.J`. -/
-lemma form_middlePower (hs : Odd s) : star Y.middlePower ⬝ᵥ V.J *ᵥ Y.middlePower = -N := by
-  obtain ⟨n, hn⟩ := hs
-  have h_form : star (Y.stringPower n) ⬝ᵥ V.J *ᵥ Y.stringPower n =
-      if n + n + 1 = s then -N else 0 :=
-    Y.form_stringPower ⟨n, by omega⟩ ⟨n, by omega⟩
-  rw [middlePower, show s / 2 = n by omega, h_form, ite_eq_left (by omega)]
 
 /-- For gradings `Y` and `Y'` of string lengths `s` and `s - 1` with the same constant `c`, the
 factor of `Y.stringMap Y'` at the string vector `i` (the two `if`s below) times the coefficient of

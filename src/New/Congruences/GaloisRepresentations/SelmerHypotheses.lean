@@ -474,38 +474,6 @@ theorem IsMainSummandLike.eventually_span_eq_top_and_exists_eq_smul_one
   filter_upwards [hR.span_eq_top, hR.exists_scalar_cyclotomicChar] with O h_span h_scalar u hu
   exact ⟨h_span u hu, h_scalar u hu⟩
 
-/-- A main summand `R` (`IsMainSummandLike`) is residually absolutely irreducible: for all large
-coefficient rings `O`, every lattice `u` in `R` and every ring map `f` from `O` to a field `k`, the
-only subspaces of `kⁿ` stable under all `f (u g)` are `0` and `kⁿ`. -/
-theorem IsMainSummandLike.eventually_eq_bot_or_eq_top (hR : IsMainSummandLike D t J R) :
-    ∀ᶠ O : CoeffRing ℓ in Filter.atTop, ∀ u : Gal(Ω/D.E) →* Matrix n n O, IsLatticeIn R u →
-      ∀ (k : Type) [Field k] (f : O →+* k) (U : Submodule k (n → k)),
-        (∀ g : Gal(Ω/D.E), ∀ v ∈ U, ((u g).map f).mulVec v ∈ U) → U = ⊥ ∨ U = ⊤ := by
-  filter_upwards [hR.span_eq_top] with O h_span u hu k _ f U h_stable
-  exact eq_bot_or_eq_top_of_span_eq_top f (h_span u hu) U h_stable
-
-/-- Let `R` be a main summand: an `ℓ`-adic representation of the Galois group of `D.E` with
-`R^c ≅ R^∨(1 - t)` on traces and Hodge–Tate jumps `J`, such that, among other conditions, the image
-of each lattice over a large coefficient ring `O` spans all matrices. Then the stable lattice is
-unique up to scalars, for all large `O`: if `R` has matrices `u g` over `O` in the basis `Q` and
-`u' g` over `O` in the basis `Q'`, then `Q' = α Q k` with a scalar `α` and `k` in `GL_n(O)`. -/
-theorem IsMainSummandLike.eventually_lattice_unique {ℓ : ℕ} [ThePrime ℓ] {P : Parameters}
-    {D : Data P} [PadicIso ℓ] {n : Type} [Fintype n] [DecidableEq n] {t : ℕ}
-    {J : (D.E →+* ℂ) → Multiset ℤ} {R : GalRep ℓ D.E n} (hR : IsMainSummandLike D t J R) :
-    ∀ᶠ O : CoeffRing ℓ in Filter.atTop,
-      ∀ (u u' : Gal(Ω/D.E) →* Matrix n n O) (Q Q' : GL n (PadicAlgCl ℓ)),
-        (∀ g : Gal(Ω/D.E), (Q⁻¹ * R g * Q).val = (u g).map O.val.val) →
-        (∀ g : Gal(Ω/D.E), (Q'⁻¹ * R g * Q').val = (u' g).map O.val.val) →
-        ∃ (α : (PadicAlgCl ℓ)ˣ) (k : GL n O), Q'.val = α.val • (Q.val * k.val.map O.val.val) := by
-  -- The change of basis `Q⁻¹ * Q'` conjugates `u` to `u'`, and `u` spans all matrices over `O`.
-  filter_upwards [hR.span_eq_top] with O h_span u u' Q Q' hQ hQ'
-  have h_conj (g : Gal(Ω/D.E)) :
-      (Q⁻¹ * Q')⁻¹.val * (u g).map O.val.val * (Q⁻¹ * Q').val = (u' g).map O.val.val := by
-    have h_group : (Q⁻¹ * Q')⁻¹ * (Q⁻¹ * R g * Q) * (Q⁻¹ * Q') = Q'⁻¹ * R g * Q' := by group
-    rw [← hQ g, ← hQ' g, ← h_group, ← Units.val_mul, ← Units.val_mul]
-  obtain ⟨α, k, h_eq⟩ := exists_eq_smul_of_conj_eq (h_span u ⟨Q, hQ⟩) (Q⁻¹ * Q') h_conj
-  exact ⟨α, k, by rw [← Matrix.mul_smul, ← h_eq, Units.val_mul, Units.mul_inv_cancel_left]⟩
-
 end RowColumnDefs
 
 /-!

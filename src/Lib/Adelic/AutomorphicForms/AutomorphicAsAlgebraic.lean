@@ -229,16 +229,6 @@ lemma ofAlgForm_toAlgForm [V.IsStd] (h : IsHCParam (n := n) κ e l)
     ofAlgForm l s (V.toAlgForm h y) = y :=
   congrArg Subtype.val ((V.toAlgForm h).left_inv y)
 
-/-- Let `l` be twice the Harish-Chandra parameter of `(κ, e)` and `y` a form of type
-`typeKernel l 1` on the standard space. The algebraic form `toAlgForm h y` corresponds to `y` under
-the inverse of `φ ↦ ofAlgForm l 1 φ`. Its underlying function is `y♭ = toAlgFormFun κ e l y`, i.e.
-`g ↦ d ∫_{G_∞} y(x, g) ρ(x) v⁺ dx`, with `d` the dimension of the Weyl module, `ρ = conjWeylRep` and
-`v⁺` the highest vector for `l`. -/
-theorem toAlgForm_eq_toAlgFormFun (h : IsHCParam (n := n) κ e l)
-    (y : (stdSpace E n).Form (typeKernel l 1)) :
-    ((stdSpace E n).toAlgForm h y).val = toAlgFormFun κ e l y.val := by
-  rw [← toAlgFormFun_ofAlgForm h, ofAlgForm_toAlgForm]
-
 /-- For `l` twice the Harish-Chandra parameter of `(κ, e)`, the isomorphism `New.Space.toAlgForm`
 from forms of type `typeKernel l s` on a standard space to smooth algebraic forms of weight
 `(κ, e)` commutes with right translation by `G_f`. -/

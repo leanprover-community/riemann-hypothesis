@@ -404,51 +404,6 @@ open Matrix
 
 namespace New.Data
 
-/-- The weight on the hermitian space `X₀` has `D.columnCount τ h` columns of height `h` in its
-Young diagram at the infinite place `τ`, and last entry `D.lastEntry 0 = 0`. Let `ζ` be a vector of
-its Weyl module, `toPoly` of `ιₚ ∘ ζ` its polynomial, and `z_τ` the first column of variables at
-`τ`, indexed by the basis of `X₀`. Then `ζ` has gauge at most `1` at `g` if and only if this
-polynomial, after the substitution `rowSubst` of `g z_τ` for `z_τ`, is a combination of the
-`∏_τ (a_τ! / α_τ!) z_τ ^ α_τ` with `|α_τ| = a_τ` and coefficients in the unit ball `valRingCp p` of
-`ℂ_[p]`. Here `g` is read at the place induced by `ιₚ` and the complex embedding `New.Φ τ` chosen at
-`τ`, and `a_τ`, the length of the one row of the weight at `τ`, is `D.a` at the places in
-`D.aPlaces` and `0` at the others. -/
-lemma weylGauge_le_one_iff_mem_span {P : Parameters} (D : Data P) {p : ℕ} [Fact p.Prime]
-    [PadicPlace p] (g : Gf D.E (D.X 0)) (ζ : WeylIndex (D.X 0) D.columnCount → ℂ) :
-    weylGauge D.columnCount (D.lastEntry 0) g ζ ≤ 1 ↔
-      rowSubst (fun τ : D.Φ ↦ (g : Matrix (D.X 0) (D.X 0) (𝔸f D.E)).map
-          (adeleExtension (ιₚ.comp (New.Φ τ))))
-          (toPoly (fun _ : D.Φ ↦ D.X 0) D.columnCount (ιₚ ∘ ζ)) ∈
-        Submodule.span (valRingCp p) (multinomialMonomial ℂ_[p] ''
-          {α | ∀ τ : D.Φ, ∑ b : D.X 0, α τ b = if τ ∈ D.aPlaces then D.a else 0}) := by
-  classical
-  -- The gauge at `g` is the norm of `ζ` moved by the Schur matrix of the conjugate `z` of `g⁻¹`. On
-  -- polynomials this substitutes `zᵀ`, and the weight of `X₀` has one row at each place.
-  let z (τ : D.Φ) : Matrix (D.X 0) (D.X 0) ℂ_[p] :=
-    g⁻¹.val.val.map (adeleExtension (weightEmbedding ιₚ τ))
-  have h_card : Fintype.card (D.X 0) = D.k := by simp [D.card_X, Data.n]
-  have h_gauge :
-      weylGauge D.columnCount (D.lastEntry 0) g ζ = ‖schur D.columnCount z *ᵥ ιₚ ∘ ζ‖ := by
-    simp [weylGauge, weylRep, Data.lastEntry, z, -map_inv, -coe_units_inv]
-  -- As `g` is unitary, the transpose of the conjugate of `g⁻¹` is `g`.
-  have h_transpose (τ : D.Φ) : (z τ)ᵀ =
-      (g : Matrix (D.X 0) (D.X 0) (𝔸f D.E)).map (adeleExtension (ιₚ.comp (New.Φ τ))) := by
-    ext a b
-    simp only [z, U.inv_val_eq_conjTranspose g, transpose_apply, map_apply, conjTranspose_apply,
-      ← adeleExtension_star, star_star]
-  have h_poly : toPoly (fun _ : D.Φ ↦ D.X 0) D.columnCount (schur D.columnCount z *ᵥ ιₚ ∘ ζ) =
-      rowSubst (fun τ : D.Φ ↦ (z τ)ᵀ) (toPoly (fun _ : D.Φ ↦ D.X 0) D.columnCount (ιₚ ∘ ζ)) := by
-    simp [toPoly_schur, detPow, schurDetExp]
-  have h_row (τ : D.Φ) : D.columnCount τ 1 = if τ ∈ D.aPlaces then D.a else 0 := ite_eq_left rfl
-  have h_rank (τ : D.Φ) : 1 < rankAt (fun _ : D.Φ ↦ D.X 0) τ := by grind [D.ten_thousand_le_m]
-  have h_one_row (τ : D.Φ) (h : ℕ) (h_one : 1 < h) (h_lt : h < rankAt (fun _ : D.Φ ↦ D.X 0) τ) :
-      D.columnCount τ h = 0 := by grind [Data.columnCount]
-  simp only [← h_transpose, ← h_poly, ← h_row, h_gauge]
-  -- The gauge is the largest norm of a coordinate, and `valRingCp p` is the unit ball.
-  rw [toPoly_mem_span_multinomialMonomial_iff h_rank h_one_row,
-    pi_norm_le_iff_of_nonneg zero_le_one]
-  rfl
-
 end New.Data
 
 end SourceValues
