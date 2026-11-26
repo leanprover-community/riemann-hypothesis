@@ -198,8 +198,9 @@ lemma norm_conj_pow_sub_partner_le {P : Parameters} {s p : ℕ} [Fact p.Prime] [
   have h_fermat : piPrimeInt P.d ∣ (N : valRingCp p) ^ p ^ e - N := by
     have h_mod : (p : ℤ) ∣ (N : ℤ) ^ p ^ e - N :=
       (ZMod.intCast_zmod_eq_zero_iff_dvd _ p).1 (by simp [ZMod.pow_card_pow])
-    exact (piPrimeInt_dvd_natCast P.d).trans
-      (mod_cast map_dvd (Int.castRingHom (valRingCp p)) h_mod)
+    have h_map := map_dvd (Int.castRingHom (valRingCp p)) h_mod
+    simp only [eq_intCast, Int.cast_sub, Int.cast_pow, Int.cast_natCast] at h_map
+    exact (piPrimeInt_dvd_natCast P.d).trans h_map
   have h_unit : IsUnit ((N : valRingCp p) ^ p ^ e) :=
     (isUnit_integer_iff_norm_eq_one.2 (hN.norm_natCast_eq_one ℂ_[p])).pow _
   have h_mul : piPrimeInt P.d ∣ (N : valRingCp p) ^ p ^ e * (a ^ p ^ e - b) := by
