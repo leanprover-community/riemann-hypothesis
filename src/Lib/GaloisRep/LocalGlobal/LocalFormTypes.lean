@@ -133,12 +133,8 @@ translation by the finite adelic unitary group is unitary (`New.IsUnitary`), cho
 noncomputable def Space.invariantForm : V.forms κ →ₗ⋆[ℂ] V.forms κ →ₗ[ℂ] ℂ :=
   (V.exists_isUnitary_formTranslation κ).choose
 
-variable (V κ) in
-lemma Space.isUnitary_formTranslation : IsUnitary (V.formTranslation κ) (V.invariantForm κ) :=
-  (V.exists_isUnitary_formTranslation κ).choose_spec
-
 lemma isUnitary_localFormRep : IsUnitary (localFormRep V κ hw).ρ (V.invariantForm κ) := by
-  obtain ⟨h_pos, h_inv⟩ := V.isUnitary_formTranslation κ
+  obtain ⟨h_pos, h_inv⟩ := (V.exists_isUnitary_formTranslation κ).choose_spec
   exact ⟨h_pos, fun a ↦ h_inv (embedAtSplit hw a)⟩
 
 open scoped Pointwise in
