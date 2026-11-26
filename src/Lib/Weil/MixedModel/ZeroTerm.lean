@@ -641,7 +641,7 @@ lemma IsAdapted.omega_schrodingerOp_of_isMixedLaw
           D.finFrameVector g t (x + a) (y + w) (b' + b) := by
       simp [finFrameVector, ← Sum.elim_add_add, ← mulVec_add]
     have h_idem : idem S * idem S.conjClosure = idem S := by
-      grind [idem_mul_self, idem_conjClosure_eq_add_star, idem_mul_star]
+      rw [idem_conjClosure_eq_add_star hS, mul_add, idem_mul_self, idem_mul_star hS, add_zero]
     -- By `finFrameVector_mem_integralBox` the two integrands have the same support.
     simp [schrodingerAct, h_add, h.finFrameVector_mem_integralBox, ite_and, mul_add,
       ← mul_assoc, idem_mul_self, ← AddChar.map_add_eq_mul]
@@ -650,7 +650,9 @@ lemma IsAdapted.omega_schrodingerOp_of_isMixedLaw
     -- The phases differ by a trace `τ + star τ`, which `selfDualAddChar` does not see.
     apply selfDualAddChar_congr (half * idem S * star (x + x + a) ⬝ᵥ b) (zero_mem _)
     simp [mul_add]
-    grind [star_dotProduct, idem_mul_self, idem_conjClosure_eq_add_star, idem_mul_star]
+    simp only [idem_conjClosure_eq_add_star hS, star_half, ← star_dotProduct]
+    linear_combination (-(idem S * star a ⬝ᵥ b' + idem S * star x ⬝ᵥ b + idem S * star a ⬝ᵥ b)) *
+      two_mul_half (E := E)
   have h_off (a : p → 𝔸f E) :
       idem S.conjClosureᶜ • (x + idem S.conjClosure • a) = idem S.conjClosureᶜ • x := by
     have h_zero : idem S.conjClosureᶜ * idem S.conjClosure = 0 := by
