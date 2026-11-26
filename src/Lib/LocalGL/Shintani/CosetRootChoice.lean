@@ -328,9 +328,7 @@ lemma IsIrreducibleChar.extend_semidirect [Finite Γ] (hY : IsIrreducibleChar Y)
     rw [h_split, hY_norm]
     field_simp
     linear_combination h_self
-  · -- the value at 1 is `Y 1`, the dimension of a representation
-    obtain ⟨V, hV⟩ := hY_char
-    simp [← hV]
+  · simpa using hY.re_apply_one_pos.le
   -- χ meets I, so its restriction to G is a multiple of Y: compare the two convolution identities
   have h_res (g : G) : χ (inl g) = χ 1 / Y 1 * Y g := by
     -- `IsIrreducibleChar.mul_classInner_translate` for χ|G at g⁻¹, translated by g and conjugated
@@ -349,10 +347,7 @@ lemma IsIrreducibleChar.extend_semidirect [Finite Γ] (hY : IsIrreducibleChar Y)
     have h_pair_ne : (finMean fun t : G ↦ conj (χ (inl t)) * Y t) ≠ 0 := by
       simpa [← finMean_conj, ← hY_char.apply_inv, field, classInner] using h_ne
     have hY_one_ne : Y 1 ≠ 0 := fun h_zero ↦ by
-      -- otherwise the same identity for `Y` itself gives `Y = 0`, against `⟨Y, Y⟩ = 1`
-      have hY_zero (t : G) : Y t = 0 := by
-        simpa [h_zero, hY_norm] using (hY.mul_classInner_translate hY_char.isClassFunction t).symm
-      simp [classInner, hY_zero, finMean_eq] at hY_norm
+      simpa [h_zero] using hY.re_apply_one_pos
     -- the two identities share the left mean: eliminate it and cancel the pairing
     field_simp
     refine mul_left_cancel₀ h_pair_ne ?_
