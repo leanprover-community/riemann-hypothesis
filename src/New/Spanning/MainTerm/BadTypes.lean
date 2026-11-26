@@ -242,9 +242,7 @@ lemma New.re_coeff_one_sub_sum_tupleIdem_le {n ι : Type*} [Fintype n] [Decidabl
   have cover : piFinset allowed \ piFinset nonPrim ⊆ good := by
     intro c hc
     simp only [mem_sdiff, mem_piFinset, allowed, nonPrim, mem_filter] at hc
-    refine mem_goodTuples.2 ⟨fun w ↦ (hc.1 w).2, ?_⟩
-    obtain ⟨w, hw⟩ := not_forall.1 hc.2
-    exact ⟨w, not_not.1 (not_and.1 hw (hc.1 w).1)⟩
+    grind [mem_goodTuples]
   have pow_le_sum : (1 - ε) ^ f ≤ ∑ c ∈ good, ((tupleIdem n c).coeff 1).re + exp (-(f * u)) := calc
     _ = ∏ _ : ι, (1 - ε) := by simp [hf]
     _ ≤ ∏ w, #(allowed w) * m := prod_le_prod₀ (by bound) fun w _ ↦
