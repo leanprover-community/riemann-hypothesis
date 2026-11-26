@@ -8,6 +8,7 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.PNatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.NumberTheory.DirichletCharacter.Conductor
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.Basic
 public import Lib.Analytic.DirichletTheta
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.Analytic.EntireLFunction
@@ -301,8 +302,7 @@ theorem eventually_rpow_lt_thetaTailIntegral (hδ : 0 < δ) (H : ℝ) :
     simpa using (tendsto_rpow_neg_atTop (by positivity : 0 < 2 * δ)).const_mul C
   filter_upwards [h_lim.eventually_lt_const (pow_pos hc_pos 2), eventually_gt_atTop 0]
     with T h_small hT q _ χ s hχ hχ_ne h_parity hq h_re h_im h_zero
-  have h_re_le : s.re ≤ 1 :=
-    le_of_not_ge fun hs ↦ χ.LFunction_ne_zero_of_one_le_re (.inl hχ_ne) hs h_zero
+  have h_re_le : s.re ≤ 1 := (χ.re_lt_one_of_LFunction_eq_zero (.inr hχ_ne) h_zero).le
   by_contra! hJ
   refine h_small.not_ge ?_
   calc c ^ 2
