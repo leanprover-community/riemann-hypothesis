@@ -86,10 +86,6 @@ noncomputable def localFrequency (z : selfAdjoint (𝔸f E)) : skewAdjoint (LocP
 @[fun_prop] lemma continuous_localFrequency : Continuous (S.localFrequency T) :=
   .subtype_mk (by fun_prop) _
 
-lemma adelicFrequency_add (b b' : skewAdjoint (LocProd T)) :
-    S.adelicFrequency T (b + b') = S.adelicFrequency T b + S.adelicFrequency T b' :=
-  Subtype.ext (by simp [adelicFrequency, mul_add])
-
 /-- `adelicFrequency` is a section of `localFrequency`, compatibly with translations. -/
 lemma localFrequency_adelicFrequency_add (b : skewAdjoint (LocProd T)) (z : selfAdjoint (𝔸f E)) :
     S.localFrequency T (S.adelicFrequency T b + z) = b + S.localFrequency T z := by
@@ -158,7 +154,8 @@ lemma ψf_quadric_eq_mul (hψ : P.ψ = S.charOnPlaces T) {κ : Type} [Fintype κ
   have h_arg : (S.adelicFrequency T b + z).val * (star x ⬝ᵥ x - β) =
       z * (star w ⬝ᵥ w - β') + S.adelicFrequency T (b + b') * (star x ⬝ᵥ x - β) -
         S.adelicFrequency T b' * (star w ⬝ᵥ w - β') := by
-    rw [adelicFrequency_add, AddSubgroup.coe_add, AddSubgroup.coe_add]
+    rw [show S.adelicFrequency T (b + b') = S.adelicFrequency T b + S.adelicFrequency T b' from
+      Subtype.ext (by simp [adelicFrequency, mul_add]), AddSubgroup.coe_add, AddSubgroup.coe_add]
     linear_combination (z.val - S.adelicFrequency T b') * h_diff +
       S.sub_adelicFrequency_mul_adeleOfLocal (T := T) z _
   -- the last term is integral at `T`, so its phase is one
