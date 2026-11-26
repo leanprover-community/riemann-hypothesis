@@ -517,12 +517,6 @@ lemma lCoord_mul_iAdelic_mul {m : Type*} (X : Matrix n₀ m (𝔸 E)) :
 lemma conjTranspose_lAdelic_mul_stdForm_mul {m : Type*} (X : Matrix n m (𝔸 E)) :
     D.lAdelicᴴ * (stdForm E s * X) = D.kCoord * X := by rw [kCoord, Matrix.mul_assoc]
 
-/-- Pairing with `iAdelic` under the standard form is the `V₀`-coordinate matrix followed by the
-standard form of `V₀`. -/
-lemma conjTranspose_iAdelic_mul_stdForm_mul {m : Type*} (X : Matrix n m (𝔸 E)) :
-    D.iAdelicᴴ * (stdForm E s * X) = stdForm E s₀ * (D.iCoord * X) := by
-  simp [iCoord, ← Matrix.mul_assoc, stdForm_mul_self]
-
 /-- The relations of `New.Space.Splitting.coord_mul_frame` followed by a further factor `X`, in the
 right-bracketed form that `simp` meets. The first two groups say that a coordinate matrix applied to
 a combination of the columns of one frame gives its coefficients. The last group says that the
@@ -549,7 +543,7 @@ lemma coord_mul_frame_mul {m : Type*} :
       D.kCoord_mul_lAdelic_mul X, D.iCoord_mul_lAdelic_mul X, D.lCoord_mul_lAdelic_mul X⟩,
     fun X ↦ ⟨D.kCoord_mul_iAdelic_mul X, D.iCoord_mul_iAdelic_mul X, D.lCoord_mul_iAdelic_mul X⟩,
     fun X ↦ ⟨by rw [lCoord, Matrix.mul_assoc], D.conjTranspose_lAdelic_mul_stdForm_mul X,
-      D.conjTranspose_iAdelic_mul_stdForm_mul X⟩⟩
+      by simp [iCoord, ← Matrix.mul_assoc, stdForm_mul_self]⟩⟩
 
 /-- The frames and coordinate matrices of a splitting resolve the identity, so every adelic vector
 is the sum of its components along `kAdelic`, `iAdelic` and `lAdelic`. -/
