@@ -254,7 +254,7 @@ lemma asAlgebraHom_hyperplaneSum [Finite k] {V : Type*} [AddCommGroup V] [Module
     σ.asAlgebraHom (hyperplaneSum χ l) y =
       ∑ s : hyperplaneGroup l, χ⁻¹ ((s : GL r k) : Matrix r r k).det • σ (s : GL r k) y := by
   classical
-  have : Fintype (GL r k) := .ofFinite _
+  let : Fintype (GL r k) := .ofFinite _
   calc _ = ∑ s : GL r k, (hyperplaneSum χ l).coeff s • σ s y := by
         simp [Representation.asAlgebraHom_eq_sum]
     _ = ∑ s : GL r k with s ∈ hyperplaneGroup l, χ⁻¹ (s : Matrix r r k).det • σ s y := by

@@ -451,7 +451,7 @@ lemma carrierForm_mem_rapidOfLevel_and_isAdelicHol {m : ℕ} [NeZero m] (hm_even
     -- the class sum is now a finite sum: read off the index type, the coefficients and the points
     exact ⟨_, _, _, _, h_class_sum⟩
   -- `hψ` is the weight instance that `isAdelicHol_pairTheta` needs.
-  have ⟨h𝔪, ψ, hψ, _⟩ := h_tame
+  let ⟨h𝔪, ψ, hψ, _⟩ := h_tame
   have h_mem (N : RingOfIntegers E) (g : Gf E (Fin (2 * m) ⊕ Fin m)) : θ g ∈ rapidOfLevel V N := by
     -- Level one: on `stdLevel` the factor `c (det k)⁻¹` cancels against `χ (det k)`.
     have h_level : HasLevel (θ g) (⟨stdLevel E _, isOpen_stdLevel⟩ : OpenSubgroup _) := by

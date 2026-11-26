@@ -331,7 +331,7 @@ theorem exists_isTightFrame_coprime (P : Parameters) (s : ℕ) :
           ((P.zetaInt s ^ j.val * (y * (0 : 𝓞 (P.E s)) ^ k.val * a ℓ ^ i.val + q * g) : 𝓞 (P.E s)) :
             P.E s) := by
         have hN_E : (N : P.E s) ≠ 0 := Nat.cast_ne_zero.2 hN_ne
-        have hg_E : (a ℓ : P.E s) ^ i.1 - (a ℓ : P.E s) ^ k.1 =
+        have hg_E : (a ℓ : P.E s) ^ i.val - (a ℓ : P.E s) ^ k.val =
             ((a ℓ : P.E s) - 1) * (g : P.E s) := by
           exact_mod_cast hg
         have hq_E : (y : P.E s) * (t : P.E s) * ((M ℓ : P.E s) * ((a ℓ : P.E s) - 1)) =

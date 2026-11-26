@@ -342,7 +342,7 @@ lemma IntegralFrame.match_mem_of_isPrimitiveMatrix_vanishing
   let π : V.O →+* R := hχ.reduction
   let η : MulChar R ℂ := hχ.resChar
   have h_surj : Surjective π := hχ.reduction_surjective_and_eq_zero_iff.left
-  have : Fintype R := Fintype.ofFinite R
+  let : Fintype R := Fintype.ofFinite R
   obtain ⟨hL', -, hK, hL, -, -, hK'K, -, hL'K, -, -, -, hK'L, -, hL'L⟩ := A.blockRelations
   -- `x ↦ ψ (ϖ⁻¹ x)` descends to a primitive character `φ` of the residue ring.
   obtain ⟨φ, hφ, hφπ⟩ : ∃ φ : AddChar R ℂ, φ.IsPrimitive ∧ ∀ x : V.O, φ (π x) = ψ (V.ϖ⁻¹.val * x) :=
