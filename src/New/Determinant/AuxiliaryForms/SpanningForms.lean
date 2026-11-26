@@ -592,10 +592,9 @@ lemma weylNormSq_le_of_dualPairing (σ : ℂ ≃+* ℂ) {ζ : WeylIndex (D.Y D.m
             Function.comp_apply, RingEquiv.apply_symm_apply]
   have h_le : weylNormSq w ≤ K * √(weylNormSq w) :=
     calc weylNormSq w = ‖(weylNormSq w : ℂ)‖ := by simp [abs_of_nonneg]
-      _ ≤ K * √(weylNormSq (σ ∘ σ.symm ∘ w)) := by
+      _ ≤ K * √(weylNormSq w) := by
         rw [h_eq]
-        exact hζ _
-      _ = _ := by simp [Function.comp_def]
+        simpa [Function.comp_def] using hζ (σ.symm ∘ w)
   have h_root : √(weylNormSq w) ≤ K :=
     div_sqrt.ge.trans (div_le_of_le_mul₀ (sqrt_nonneg _) hK h_le)
   rw [← hw_norm]
