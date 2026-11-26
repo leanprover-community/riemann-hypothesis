@@ -110,9 +110,11 @@ lemma twoSidedSubst_stackedDetProd (e : a ⊕ N ≃ L) [Fintype Φ] {ι : Φ →
       congr 1
       ext (i | i) j : 2
       · simp [A, Matrix.mul_apply, Matrix.one_apply, ← e.sum_comp]
-      · simp [A, Matrix.mul_apply, mul_sum, mul_add, mul_assoc, mul_comm, ← e.sum_comp, ← C_mul']
+      · simp [A, Matrix.mul_apply, mul_sum, mul_add, mul_assoc, mul_comm (X _), ← e.sum_comp,
+          ← C_mul']
     simp only [h_left, det_mul, ← RingHom.map_det]
-    simp [stackedDet, A, ← C_mul', mul_comm, mul_left_comm, mul_assoc]
+    simp [stackedDet, A, ← C_mul']
+    ring
   simp only [stackedDetProd, map_prod, h_factor, prod_smul, prod_const, card_univ]
 
 /-- The coordinate `l` of `F` in the first `p` columns: regard `F` as a polynomial in these

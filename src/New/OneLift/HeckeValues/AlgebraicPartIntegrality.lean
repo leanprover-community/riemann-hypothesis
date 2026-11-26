@@ -85,7 +85,7 @@ lemma TameChar.IsIntegralMeasure.norm_sq {F : D.TameChar → ℂ} (hF : ϑ.IsInt
       rw [eq_sum ϑ' hQ, map_sum, univ.sum_mul_sum]
     _ = _ := by
       simp only [sum_prod_type, map_mul, map_inv, Circle.coe_mul, coe_inv_eq_conj,
-        mul_mul_mul_comm, RCLike.star_def]
+        mul_mul_mul_comm (c _) (ϑ'.toAutChar.1 _ : ℂ), RCLike.star_def]
 
 namespace CriticalPair
 
