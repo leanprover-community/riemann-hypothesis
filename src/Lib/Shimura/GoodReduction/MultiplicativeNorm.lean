@@ -83,6 +83,8 @@ variable {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R] [IsDomain R]
   {β c d : R} [IsFullRankLattice L]
   (h : IsHermitianAction L B F β) {v : Valuation ℂ ℝ≥0} [NeZero c] [NeZero d] {A : LatticeForm L}
 
+local notation "normShiftβ" => normalizedShift B (F β)
+
 /-- The action of `a` on the points of `V` of finite order modulo `L`: `x ↦ F a x`, again of finite
 order because `F a` preserves `L`. -/
 abbrev torsionAction (a : R) (x : torsionPoints L) : torsionPoints L :=
@@ -99,7 +101,7 @@ omit [IsDomain R] [IsFullRankLattice L]
 /-- The commutator of the normalised translations by `x` and `y` is `exp (2 π i E(x, y))`, where
 `E` is the Riemann form of `B`. -/
 lemma normShift_comm (x y : V) :
-    normalizedShift B (F β) x (normalizedShift B (F β) y f) = B.riemannPhase x y • normalizedShift B (F β) y (normalizedShift B (F β) x f) := by
+    normShiftβ x (normShiftβ y f) = B.riemannPhase x y • normShiftβ y (normShiftβ x f) := by
   -- unfolded, both sides are the phase and two multipliers times `thetaShift y (thetaShift x f)`
   simp [normalizedShift, h.isAppellHumbert.thetaShift_comm x]
   module
@@ -115,14 +117,14 @@ lemma isAmpleType : IsAmpleType B h.multiplier where
 /-- The size of `f` at the sum of torsion points `x` and `w` is the valuation of the value at `0` of
 the normalised translate of `f` by `w` and then by `x`. -/
 lemma sizeAt_add (x w : torsionPoints L) :
-    B.sizeAt v f (x + w) = v (normalizedShift B (F β) x (normalizedShift B (F β) w f) 0) := by
+    B.sizeAt v f (x + w) = v (normShiftβ x (normShiftβ w f) 0) := by
   -- The normalising factors `h.multiplier x` and `h.multiplier w` have valuation 1 by
   -- `valuation_exp_riemannForm`.
   rw [← h.isAppellHumbert.sizeAt_thetaShift]
   simp [normalizedShift, LatticeForm.sizeAt,
     h.isAppellHumbert.valuation_exp_riemannForm (h.torsionAction β _), canonicalMultiplier]
 
-lemma sizeAt_eq_normShift (x : torsionPoints L) : B.sizeAt v f x = v (normalizedShift B (F β) x f 0) := by
+lemma sizeAt_eq_normShift (x : torsionPoints L) : B.sizeAt v f x = v (normShiftβ x f 0) := by
   simpa [normalizedShift, canonicalMultiplier] using h.sizeAt_add x 0
 
 end
@@ -151,8 +153,8 @@ omit [IsFullRankLattice L] [NeZero d] in
 /-- Let `d = star c`. Translating `f ∘ F c ∘ (F d)⁻¹` by `d w` gives the translate of `f` by `c w`,
 composed with `F c ∘ (F d)⁻¹`. -/
 lemma normShift_comp_inverse_eq (hd : star c = d) (w : V) (f : V → ℂ) :
-    normalizedShift B (F β) (F d w) (f ∘ F c ∘ (F d).inverse) =
-      normalizedShift B (F β) (F c w) f ∘ F c ∘ (F d).inverse := by
+    normShiftβ (F d w) (f ∘ F c ∘ (F d).inverse) =
+      normShiftβ (F c w) f ∘ F c ∘ (F d).inverse := by
   ext
   simp [normalizedShift, riemannForm, h.adjoint, action_comm, ← hd, canonicalMultiplier,
     thetaShift_apply]
@@ -163,11 +165,11 @@ lemma normShift_comp_inverse_eq (hd : star c = d) (w : V) (f : V → ℂ) :
 classes `z` of `d⁻¹ L / L` (with chosen representatives `z.out`), of the normalised translates of
 `t ∘ F c ∘ (F d)⁻¹` by `d z`. -/
 private noncomputable def averagedPullback (c d : R) [NeZero d] : (V → ℂ) →ₗ[ℂ] V → ℂ :=
-  (∑ z : h.MulKernel d, normalizedShift B (F β) (F d z.out)) ∘ₗ funLeft ℂ ℂ (F c ∘ (F d).inverse)
+  (∑ z : h.MulKernel d, normShiftβ (F d z.out)) ∘ₗ funLeft ℂ ℂ (F c ∘ (F d).inverse)
 
 private lemma averagedPullback_apply {c d : R} [NeZero d] (t : V → ℂ) :
     h.averagedPullback c d t =
-      (∑ z : h.MulKernel d, normalizedShift B (F β) (F d z.out)) (t ∘ F c ∘ (F d).inverse) :=
+      (∑ z : h.MulKernel d, normShiftβ (F d z.out)) (t ∘ F c ∘ (F d).inverse) :=
   rfl
 
 /-- Let `d = star c`. The averaged pull-back of a theta function with the canonical multiplier is
@@ -177,10 +179,10 @@ private lemma averagedPullback_mem_thetaSpace (hd : star c = d) {t : V → ℂ}
     h.averagedPullback c d t ∈ B.thetaSpace h.multiplier := by
   -- The pull-back `t ∘ F c ∘ (F d)⁻¹` is fixed by the normalised translations by `d L`, so a
   -- translation by `d x ∈ L` only permutes the terms of the sum over the kernel of `d`.
-  obtain ⟨t_diff, t_fixed⟩ : Differentiable ℂ t ∧ ∀ l ∈ L, normalizedShift B (F β) l t = t :=
+  obtain ⟨t_diff, t_fixed⟩ : Differentiable ℂ t ∧ ∀ l ∈ L, normShiftβ l t = t :=
     mem_thetaSpace_iff_normalizedShift.mp ht
   have pullback_fixed (l : V) (hl : l ∈ L) :
-      normalizedShift B (F β) (F d l) (t ∘ F c ∘ (F d).inverse) = t ∘ F c ∘ (F d).inverse := by
+      normShiftβ (F d l) (t ∘ F c ∘ (F d).inverse) = t ∘ F c ∘ (F d).inverse := by
     rw [h.normShift_comp_inverse_eq hd l t, t_fixed _ (h.map_mem c l hl)]
   rw [mem_thetaSpace_iff_normalizedShift]
   constructor
@@ -197,40 +199,40 @@ averaged pull-back of `t`. -/
 private lemma averagedPullback_normShift_of_mem_dualLattice (hd : star c = d)
     (hc_dual : ∀ a ∈ B.dualLattice, F c a - a ∈ L) (hd_dual : ∀ a ∈ B.dualLattice, F d a - a ∈ L)
     {a : V} (ha : a ∈ B.dualLattice) {t : V → ℂ} (ht : t ∈ B.thetaSpace h.multiplier) :
-    h.averagedPullback c d (normalizedShift B (F β) a t) = normalizedShift B (F β) a (h.averagedPullback c d t) := by
-  -- On theta functions `normShift y` equals `normShift a` whenever `y - a ∈ L`, as for `y = c a`
-  -- and `y = d a`. In between, `normShift (c a)` passes through the pull-back as `normShift (d a)`,
+    h.averagedPullback c d (normShiftβ a t) = normShiftβ a (h.averagedPullback c d t) := by
+  -- On theta functions `normShiftβ y` equals `normShiftβ a` whenever `y - a ∈ L`, as for `y = c a`
+  -- and `y = d a`. In between, `normShiftβ (c a)` passes through the pull-back as `normShiftβ (d a)`,
   -- which commutes with the terms of the sum.
   have shift_eq (y : V) (hy : y - a ∈ L) {s : V → ℂ} (hs : s ∈ B.thetaSpace h.multiplier) :
-      normalizedShift B (F β) y s = normalizedShift B (F β) a s := by
-    have s_fixed : normalizedShift B (F β) (y - a) s = s :=
+      normShiftβ y s = normShiftβ a s := by
+    have s_fixed : normShiftβ (y - a) s = s :=
       (mem_thetaSpace_iff_normalizedShift.mp hs).2 _ hy
     have phase : B.riemannPhase (F β a) (y - a) = 1 :=
       h.riemannPhase_eq_one ha (h.map_mem (star β) _ hy)
-    calc normalizedShift B (F β) y s = normalizedShift B (F β) (a + (y - a)) s := by rw [add_sub_cancel]
-      _ = normalizedShift B (F β) a (normalizedShift B (F β) (y - a) s) := by
+    calc normShiftβ y s = normShiftβ (a + (y - a)) s := by rw [add_sub_cancel]
+      _ = normShiftβ a (normShiftβ (y - a) s) := by
         simp only [h.isAppellHumbert.normalizedShift_normalizedShift
           h.riemannForm_apply_beta_eq_sub,
           phase, one_smul]
-      _ = normalizedShift B (F β) a s := by rw [s_fixed]
+      _ = normShiftβ a s := by rw [s_fixed]
   have phase_one (z : h.MulKernel d) : B.riemannPhase (F d a) (F d z.out) = 1 := by
     refine h.riemannPhase_eq_one ha ?_
     rw [star_eq_iff_star_eq.mp hd]
     exact h.map_mem c _ (map_divLattice_mem (L := L) (F := F) d z.out)
   set s : V → ℂ := t ∘ F c ∘ (F d).inverse
-  have pull : normalizedShift B (F β) (F c a) t ∘ F c ∘ (F d).inverse = normalizedShift B (F β) (F d a) s :=
+  have pull : normShiftβ (F c a) t ∘ F c ∘ (F d).inverse = normShiftβ (F d a) s :=
     (h.normShift_comp_inverse_eq hd a t).symm
   have term_comm (z : h.MulKernel d) :
-      normalizedShift B (F β) (F d z.out) (normalizedShift B (F β) (F d a) s) =
-        normalizedShift B (F β) (F d a) (normalizedShift B (F β) (F d z.out) s) := by
+      normShiftβ (F d z.out) (normShiftβ (F d a) s) =
+        normShiftβ (F d a) (normShiftβ (F d z.out) s) := by
     rw [h.normShift_comm (F d a), phase_one z, one_smul]
-  calc h.averagedPullback c d (normalizedShift B (F β) a t)
-    _ = h.averagedPullback c d (normalizedShift B (F β) (F c a) t) := by rw [shift_eq _ (hc_dual a ha) ht]
-    _ = normalizedShift B (F β) (F d a) (h.averagedPullback c d t) := by
+  calc h.averagedPullback c d (normShiftβ a t)
+    _ = h.averagedPullback c d (normShiftβ (F c a) t) := by rw [shift_eq _ (hc_dual a ha) ht]
+    _ = normShiftβ (F d a) (h.averagedPullback c d t) := by
       rw [averagedPullback_apply, averagedPullback_apply, LinearMap.sum_apply, LinearMap.sum_apply,
         map_sum, pull]
       exact Finset.sum_congr rfl fun z _ ↦ term_comm z
-    _ = normalizedShift B (F β) a (h.averagedPullback c d t) :=
+    _ = normShiftβ a (h.averagedPullback c d t) :=
       shift_eq _ (hd_dual a ha) (h.averagedPullback_mem_thetaSpace hd ht)
 
 /-- Let `d = star c`, and let `c` and `d` act as the identity on the dual lattice modulo `L`. The
@@ -239,19 +241,19 @@ private lemma exists_averagedPullback_eq_smul (hd : star c = d)
     (hc_dual : ∀ a ∈ B.dualLattice, F c a - a ∈ L) (hd_dual : ∀ a ∈ B.dualLattice, F d a - a ∈ L) :
     ∃ μ : ℂ, ∀ t ∈ B.thetaSpace h.multiplier, h.averagedPullback c d t = μ • t := by
   -- Schur's lemma: on theta functions the operator commutes with the twisted translations by the
-  -- dual lattice, because `normalizedShift B (F β) a` is a non-zero multiple of the twisted translation by `a`.
+  -- dual lattice, because `normShiftβ a` is a non-zero multiple of the twisted translation by `a`.
   let Q : Module.End ℂ (B.thetaSpace h.multiplier) :=
     (h.averagedPullback c d).restrict fun _ ht ↦ h.averagedPullback_mem_thetaSpace hd ht
   have Q_commute : ∀ a : B.dualLattice, Commute (h.isAppellHumbert.thetaShiftEnd a) Q := by
     rintro ⟨a, ha⟩
     refine LinearMap.ext fun t ↦ Subtype.ext ?_
     change B.thetaShift a (h.averagedPullback c d t) = h.averagedPullback c d (B.thetaShift a t)
-    have shift_eq_smul (s : V → ℂ) : normalizedShift B (F β) a s = (h.multiplier a)⁻¹ • B.thetaShift a s := rfl
+    have shift_eq_smul (s : V → ℂ) : normShiftβ a s = (h.multiplier a)⁻¹ • B.thetaShift a s := rfl
     have multiplier_ne : (h.multiplier a)⁻¹ ≠ 0 := by simp [canonicalMultiplier]
     have scaled : (h.multiplier a)⁻¹ • h.averagedPullback c d (B.thetaShift a t) =
         (h.multiplier a)⁻¹ • B.thetaShift a (h.averagedPullback c d t) := by
-      have commutes : h.averagedPullback c d (normalizedShift B (F β) a t) =
-          normalizedShift B (F β) a (h.averagedPullback c d t) :=
+      have commutes : h.averagedPullback c d (normShiftβ a t) =
+          normShiftβ a (h.averagedPullback c d t) :=
         h.averagedPullback_normShift_of_mem_dualLattice hd hc_dual hd_dual ha t.prop
       rwa [shift_eq_smul, shift_eq_smul, map_smul] at commutes
     exact (smul_right_injective (V → ℂ) multiplier_ne scaled).symm
@@ -275,12 +277,12 @@ lemma exists_sum_normShift_eq_smul (hd : star c = d)
           quotMean L.toAddSubgroup (fun x : V ↦ B.poincareSeries h.multiplier (F d x) (F c x)) =
           μ ∧
       ∀ t ∈ B.thetaSpace h.multiplier,
-        (∑ z : h.MulKernel d, normalizedShift B (F β) (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t := by
+        (∑ z : h.MulKernel d, normShiftβ (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t := by
   -- The averaged pull-back is a scalar `μ` on theta functions. Testing it on the Poincaré series
   -- and taking the mean over `V / L` computes `μ`.
   obtain ⟨μ, pullback_eq⟩ := h.exists_averagedPullback_eq_smul hd hc_dual hd_dual
   have identity (t : V → ℂ) (ht : t ∈ B.thetaSpace h.multiplier) :
-      (∑ z : h.MulKernel d, normalizedShift B (F β) (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t :=
+      (∑ z : h.MulKernel d, normShiftβ (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t :=
     pullback_eq t ht
   refine ⟨μ, ?_, identity⟩
   subst hd
@@ -294,7 +296,7 @@ lemma exists_sum_normShift_eq_smul (hd : star c = d)
   have sum_G (x : V) :
       ∑ z : h.MulKernel (star c), G (x + z.out) = μ * K (F (star c) x) (F (star c) x) := by
     have term (z : h.MulKernel (star c)) :
-        normalizedShift B (F β) (F (star c) z.out) (K (F (star c) x) ∘ F c ∘ (F (star c)).inverse)
+        normShiftβ (F (star c) z.out) (K (F (star c) x) ∘ F c ∘ (F (star c)).inverse)
           (F (star c) x) = G (x + z.out) := by
       simp [G, K, normalizedShift, h.poincareSeries_add, h.adjoint, mul_assoc, thetaShift_apply]
     simpa [term] using congrFun (identity _ (kern_mem (F (star c) x))) (F (star c) x)
@@ -320,22 +322,22 @@ lemma exists_sum_normShift_eq_smul (hd : star c = d)
 E integral on `L`, `F` preserving `L` with `star` giving adjoints, `star β = 1 - β`). Let `c` and
 `d = star c` be coprime and non-zero, with `F d a - a ∈ L` for every `a` in the dual lattice of `B`.
 Let `t` be a theta function of type (`B`, χ), where χ is the canonical multiplier x ↦ exp(πi E(βx,
-x)), and let `z ≠ 0` lie in the kernel of `d` on `V/L`. Write `normShift x` for the twisted
+x)), and let `z ≠ 0` lie in the kernel of `d` on `V/L`. Write `normShiftβ x` for the twisted
 translation by `x` divided by exp(πi E(βx, x)). Then the sum of
-`normShift (F c k.out) (normShift (F c z.out) t)` over `k` in the kernel of `c` on `V/L` vanishes at
+`normShiftβ (F c k.out) (normShiftβ (F c z.out) t)` over `k` in the kernel of `c` on `V/L` vanishes at
 every point `x`. -/
 lemma sum_normShift_eq_zero (hd : star c = d) (hd_dual : ∀ a ∈ B.dualLattice, F d a - a ∈ L)
     (hc : IsCoprime c d) {t : V → ℂ} (ht : t ∈ B.thetaSpace h.multiplier) {z : h.MulKernel d}
     (hz : z ≠ 0) (x : V) :
-    ∑ k : h.MulKernel c, normalizedShift B (F β) (F c k.out) (normalizedShift B (F β) (F c z.out) t) x = 0 := by
+    ∑ k : h.MulKernel c, normShiftβ (F c k.out) (normShiftβ (F c z.out) t) x = 0 := by
   -- If the sum is not zero, then `c z` lies in the dual lattice, hence in `L`; as `d z ∈ L` and
   -- `c`, `d` are coprime, `z` lies in `L`, that is `z = 0`.
   subst hd
   by_contra hne
   have killed : F (star c) (F c z.out) ∈ L := by simp [action_comm _ c, h.map_mem]
-  have t_periodic : ∀ l ∈ L, normalizedShift B (F β) l t = t := (mem_thetaSpace_iff_normalizedShift.mp ht).2
+  have t_periodic : ∀ l ∈ L, normShiftβ l t = t := (mem_thetaSpace_iff_normalizedShift.mp ht).2
   have fixed (l : V) (hl : l ∈ L) :
-      normalizedShift B (F β) (F c l) (normalizedShift B (F β) (F c z.out) t) = normalizedShift B (F β) (F c z.out) t := by
+      normShiftβ (F c l) (normShiftβ (F c z.out) t) = normShiftβ (F c z.out) t := by
     rw [h.normShift_comm, h.riemannPhase_eq_one (h.riemannForm_integral l hl) killed, one_smul,
       t_periodic _ (h.map_mem _ _ hl)]
   -- Translation by `l ∈ L` fixes the sum (`normShift_sum_eq_char_smul`) and multiplies it by the
@@ -343,26 +345,26 @@ lemma sum_normShift_eq_zero (hd : star c = d) (hd_dual : ∀ a ∈ B.dualLattice
   -- dual lattice.
   have dual_mem : F c z.out ∈ B.dualLattice := by
     intro l hl
-    have sum_fixed : normalizedShift B (F β) l (∑ k : h.MulKernel c,
-        normalizedShift B (F β) (F c k.out) (normalizedShift B (F β) (F c z.out) t)) =
-          ∑ k : h.MulKernel c, normalizedShift B (F β) (F c k.out) (normalizedShift B (F β) (F c z.out) t) := by
+    have sum_fixed : normShiftβ l (∑ k : h.MulKernel c,
+        normShiftβ (F c k.out) (normShiftβ (F c z.out) t)) =
+          ∑ k : h.MulKernel c, normShiftβ (F c k.out) (normShiftβ (F c z.out) t) := by
       simpa using h.normShift_sum_eq_char_smul c fixed 1
         ⟨(F c).inverse l, by simpa [divLattice]⟩ rfl
     -- every term of the sum is the phase `B.riemannPhase (c k) (c z)` times
-    -- `u = normShift (c z) t`, so the sum is a multiple of `u`, and translation by `l` multiplies
+    -- `u = normShiftβ (c z) t`, so the sum is a multiple of `u`, and translation by `l` multiplies
     -- `u` by `B.riemannPhase l (c z)`
     have sum_fixed' : ∀ y : V,
-        B.riemannPhase l (F c z.out) * normalizedShift B (F β) (F c z.out) t y = normalizedShift B (F β) (F c z.out) t y ∨
+        B.riemannPhase l (F c z.out) * normShiftβ (F c z.out) t y = normShiftβ (F c z.out) t y ∨
           ∑ i : h.MulKernel c, B.riemannPhase (F c i.out) (F c z.out) = 0 := by
       simpa [← sum_mul, funext_iff, h.normShift_comm _ (F c z.out),
         mem_thetaSpace_iff_normalizedShift.mp ht, hl] using sum_fixed
     obtain ⟨h_sum_ne, h_val_ne⟩ :
         ∑ i : h.MulKernel c, B.riemannPhase (F c i.out) (F c z.out) ≠ 0 ∧
-          normalizedShift B (F β) (F c z.out) t x ≠ 0 := by
+          normShiftβ (F c z.out) t x ≠ 0 := by
       simpa [← sum_mul, mem_thetaSpace_iff_normalizedShift.mp ht, h.normShift_comm _ (F c z.out)]
         using hne
-    have phase_mul : B.riemannPhase l (F c z.out) * normalizedShift B (F β) (F c z.out) t x =
-        normalizedShift B (F β) (F c z.out) t x := (sum_fixed' x).resolve_right h_sum_ne
+    have phase_mul : B.riemannPhase l (F c z.out) * normShiftβ (F c z.out) t x =
+        normShiftβ (F c z.out) t x := (sum_fixed' x).resolve_right h_sum_ne
     have phase_eq_one : B.riemannPhase l (F c z.out) = 1 := (mul_eq_right₀ h_val_ne).mp phase_mul
     simpa [riemannForm_swap l, exp_neg, ← fourierChar_eq_one_iff, Circle.ext_iff] using phase_eq_one
   have h_dual_star : F (star c) (F c z.out) - F c z.out ∈ L := hd_dual _ dual_mem
@@ -402,7 +404,7 @@ lemma exists_theta_identity (hd : star c = d)
     ∃ μ : ℂ,
       μ ^ 8 = (F d).det ^ 8 ∧
       ∀ t ∈ B.thetaSpace h.multiplier,
-        (∑ z : h.MulKernel d, normalizedShift B (F β) (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t := by
+        (∑ z : h.MulKernel d, normShiftβ (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t := by
   -- The averaged pull-backs for `(c, star c)` and `(star c, c)` are the scalars `μ` and `ν`. The
   -- means give `ν = #(c⁻¹ L / L) * conj m` and `μ = δ * conj δ * m`, with `δ = det (star c)`;
   -- composing the two identities gives `conj m * μ = 1`, and `m * conj δ` has a real fourth power.
@@ -425,9 +427,9 @@ lemma exists_theta_identity (hd : star c = d)
         h.isAppellHumbert.exists_mem_thetaSpace_ne_zero (hp := h.isAmpleType.isPosRiemann)
     have double_sum_eq :
         ∑ k : h.MulKernel c, ∑ z : h.MulKernel (star c),
-            normalizedShift B (F β) (F c k.out) (normalizedShift B (F β) (F c z.out) t) x =
+            normShiftβ (F c k.out) (normShiftβ (F c z.out) t) x =
           ν * (μ * t x) := by
-      have at_x : (∑ z : h.MulKernel c, normalizedShift B (F β) (F c z.out))
+      have at_x : (∑ z : h.MulKernel c, normShiftβ (F c z.out))
           ((μ • t) ∘ F (star c) ∘ (F c).inverse) x = ν * (μ * t x) :=
         congrFun (identity_star _ (Submodule.smul_mem _ μ ht)) x
       simpa [smul_smul, ← identity _ ht, h.normShift_comp_inverse_eq, mul_assoc] using at_x
@@ -482,22 +484,22 @@ normalised translate of `f` by `d q` equals `μ * T(d g, d q)` minus the sum ove
 (with chosen representatives `z.out`) of `(B.riemannPhase (c g) (c z) - 1) * T(c z, c q)`. -/
 lemma mul_normShift_eq_mul_normShift_sub_sum (hd : star c = d) {μ : ℂ}
     (identity : ∀ t ∈ B.thetaSpace h.multiplier,
-      (∑ z : h.MulKernel d, normalizedShift B (F β) (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t)
+      (∑ z : h.MulKernel d, normShiftβ (F d z.out)) (t ∘ F c ∘ (F d).inverse) = μ • t)
     {f : V → ℂ} (hf : f ∈ B.thetaSpace h.multiplier) {g : V} (hg : F c g ∈ L) (q : V) :
-    μ * normalizedShift B (F β) (F d q) f 0 =
-      μ * normalizedShift B (F β) (F d q) (normalizedShift B (F β) (F d g) f) 0 -
+    μ * normShiftβ (F d q) f 0 =
+      μ * normShiftβ (F d q) (normShiftβ (F d g) f) 0 -
         ∑ z : h.MulKernel d, (B.riemannPhase (F c g) (F c z.out) - 1) *
-          normalizedShift B (F β) (F c q) (normalizedShift B (F β) (F c z.out) f) 0 := by
-  have plain : ∑ z : h.MulKernel d, normalizedShift B (F β) (F c q) (normalizedShift B (F β) (F c z.out) f) 0 =
-      μ * normalizedShift B (F β) (F d q) f 0 := by
+          normShiftβ (F c q) (normShiftβ (F c z.out) f) 0 := by
+  have plain : ∑ z : h.MulKernel d, normShiftβ (F c q) (normShiftβ (F c z.out) f) 0 =
+      μ * normShiftβ (F d q) f 0 := by
     simpa [h.normShift_comp_inverse_eq hd]
-      using congrArg (fun s : V → ℂ ↦ normalizedShift B (F β) (F d q) s 0) (identity f hf)
+      using congrArg (fun s : V → ℂ ↦ normShiftβ (F d q) s 0) (identity f hf)
   have moved : ∑ z : h.MulKernel d, B.riemannPhase (F c g) (F c z.out) *
-      normalizedShift B (F β) (F c q) (normalizedShift B (F β) (F c z.out) f) 0 =
-        μ * normalizedShift B (F β) (F d q) (normalizedShift B (F β) (F d g) f) 0 := by
+      normShiftβ (F c q) (normShiftβ (F c z.out) f) 0 =
+        μ * normShiftβ (F d q) (normShiftβ (F d g) f) 0 := by
     simpa [h.normShift_comp_inverse_eq hd, h.normShift_comm (F c g),
       mem_thetaSpace_iff_normalizedShift.mp hf, hg]
-      using congrArg (fun s : V → ℂ ↦ normalizedShift B (F β) (F d q) (normalizedShift B (F β) (F d g) s) 0) (identity f hf)
+      using congrArg (fun s : V → ℂ ↦ normShiftβ (F d q) (normShiftβ (F d g) s) 0) (identity f hf)
   simp [← plain, ← moved, sub_mul]
 
 /-- The constant `1` on the kernel of `c`. Let `c ≠ 0` and `d = star c` be distinct and coprime and
@@ -550,22 +552,22 @@ lemma hasShiftBound_one_of_ker {A : LatticeForm L} {w : torsionPoints L} (hd : s
       simpa [ζ, g, action_comm c, ← exp_nsmul, mul_left_comm] using
         h.riemannPhase_eq_one (h.riemannForm_integral _ (h.map_mem γ _ hpw)) (killed z)
     -- compare the identity translated by `d q` with the one translated by `d g` and then `d q`
-    let E : ℂ := ∑ z, (ζ z - 1) * normalizedShift B (F β) (F c q) (normalizedShift B (F β) (F c z.out) f) 0
+    let E : ℂ := ∑ z, (ζ z - 1) * normShiftβ (F c q) (normShiftβ (F c z.out) f) 0
     have diff :
-        μ * normalizedShift B (F β) (F d q) f 0 = μ * normalizedShift B (F β) (F d q) (normalizedShift B (F β) (F d g) f) 0 - E :=
+        μ * normShiftβ (F d q) f 0 = μ * normShiftβ (F d q) (normShiftβ (F d g) f) 0 - E :=
       h.mul_normShift_eq_mul_normShift_sub_sum hd identity hf g_mem q
     have error : v E ≤ ρ * iSup φ := by
       refine v.map_sum_le fun z _ ↦ (v.map_mul _ _).trans_le (mul_le_mul' (v_sub_one (root z)) ?_)
       -- the term is the size of `f` at the torsion point `c q + c z`
       let cz : torsionPoints L := ⟨F c z.out, h.mem_torsionPoints (c := d) ⟨F c z.out, killed z⟩⟩
-      calc v (normalizedShift B (F β) (F c q) (normalizedShift B (F β) (F c z.out) f) 0)
+      calc v (normShiftβ (F c q) (normShiftβ (F c z.out) f) 0)
         _ = φ (h.torsionAction c q + cz) := (h.sizeAt_add (h.torsionAction c q) cz).symm
         _ ≤ iSup φ := le_iSup_of_mem_sizes hφ _
     have h_sub : ((T q + w : torsionPoints L) : V) - (T q + T g : torsionPoints L) ∈ L := by
       simpa using g_eq
     calc φ (T q)
-      _ = v (μ * normalizedShift B (F β) (F d q) f 0) := by simp [φ_def, h.sizeAt_eq_normShift, v_μ, T]
-      _ ≤ max (v (μ * normalizedShift B (F β) (F d q) (normalizedShift B (F β) (F d g) f) 0)) (ρ * iSup φ) := by
+      _ = v (μ * normShiftβ (F d q) f 0) := by simp [φ_def, h.sizeAt_eq_normShift, v_μ, T]
+      _ ≤ max (v (μ * normShiftβ (F d q) (normShiftβ (F d g) f) 0)) (ρ * iSup φ) := by
         grw [diff, v.map_sub, error]
       _ = max (φ (T q + w)) (ρ * iSup φ) := by
         rw [factorsThrough_mkQ_of_mem_sizes hφ (a := T q + w) (b := T q + T g)
@@ -627,15 +629,16 @@ lemma hasShiftBound_of_torsionAction
   have hφ : φ ∈ LatticeForm.sizes v (B.pullForm (F c)) :=
     .of_mem_thetaSpace h_pull.isAmpleType ht
   have h_transl (a : V) (t : V → ℂ) :
-      normalizedShift B (F β) (F c a) (t ∘ (F c).inverse) = normalizedShift (B.pullForm (F c)) (F β) a t ∘ (F c).inverse := by
+      normShiftβ (F c a) (t ∘ (F c).inverse) =
+        normalizedShift (B.pullForm (F c)) (F β) a t ∘ (F c).inverse := by
     ext
     simp [normalizedShift, riemannForm, action_comm, canonicalMultiplier, thetaShift_apply]
-  have h_fixed : ∀ l ∈ L, normalizedShift B (F β) (F c l) (t ∘ (F c).inverse) = t ∘ (F c).inverse := by
+  have h_fixed : ∀ l ∈ L, normShiftβ (F c l) (t ∘ (F c).inverse) = t ∘ (F c).inverse := by
     grind [mem_thetaSpace_iff_normalizedShift.mp ht]
   -- The eigensum `s ξ` for a character `ξ` of the kernel of `c` has degree `B` and the multiplier
   -- `χ l = h.multiplier l * ξ (c⁻¹ l)`, of finite order.
   let s (ξ : AddChar (h.MulKernel c) ℂ) : V → ℂ :=
-    ∑ k : h.MulKernel c, ξ (-k) • normalizedShift B (F β) (F c k.out) (t ∘ (F c).inverse)
+    ∑ k : h.MulKernel c, ξ (-k) • normShiftβ (F c k.out) (t ∘ (F c).inverse)
   have hs_mem (ξ : AddChar (h.MulKernel c) ℂ) : B.sizeAt v (s ξ) ∈ B.sizes v := by
     let χ (l : V) : ℂ :=
       h.multiplier l * if hl : l ∈ L then ξ ⟦⟨(F c).inverse l, by simpa [divLattice]⟩⟧ else 1
@@ -655,7 +658,7 @@ lemma hasShiftBound_of_torsionAction
       fun_prop
     -- translation by `l ∈ L` multiplies `s ξ` by `ξ (c⁻¹ l)`
     let y : divLattice L F c := ⟨(F c).inverse l, by simpa [divLattice]⟩
-    have h_eigen_z : normalizedShift B (F β) (F c y) (s ξ) z = ξ y * s ξ z :=
+    have h_eigen_z : normShiftβ (F c y) (s ξ) z = ξ y * s ξ z :=
       congrFun (h.normShift_sum_eq_char_smul c h_fixed ξ y rfl) z
     simpa [y, χ, normalizedShift, ← neg_add_rev, exp_neg, field, mul_right_comm _ (ξ _), hl,
       canonicalMultiplier, thetaShift_apply] using h_eigen_z
@@ -680,7 +683,7 @@ lemma hasShiftBound_of_torsionAction
     rwa [← le_sqrt_iff_sq_le, mul_right_comm, sqrt_mul, sqrt_sq, le_mul_inv_iff₀ h_card_pos]
   -- The eigensums add up to the order of the kernel times `t ∘ c⁻¹`.
   calc φ x * v (Nat.card (h.MulKernel c))
-    _ = v (∑ ξ, normalizedShift B (F β) (T x) (s ξ) 0) := by
+    _ = v (∑ ξ, normShiftβ (T x) (s ξ) 0) := by
       simp [s, T, φ_def, sum_comm, ← sum_mul, h_transl, mem_thetaSpace_iff_normalizedShift.mp ht,
         AddChar.sum_apply_eq_ite, field, h_pull.sizeAt_eq_normShift, out_mem_iff_eq_zero]
     _ ≤ NNReal.sqrt (D * ⨆ z, φ z * φ (z + w)) := by

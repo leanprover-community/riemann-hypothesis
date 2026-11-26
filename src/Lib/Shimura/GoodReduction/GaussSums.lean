@@ -112,6 +112,8 @@ lemma action_isInvertible : (F a).IsInvertible :=
 
 namespace IsHermitianAction
 
+local notation "normShiftβ" => normalizedShift B (F β)
+
 /-! ### Multiplier, normalised translations and kernels -/
 
 /-- The canonical multiplier x ↦ exp(πi E(βx, x)) of the hermitian data, where E is the Riemann
@@ -170,15 +172,15 @@ lemma riemannPhase_eq_one (h : IsHermitianAction L B F β) {a : R} (hx : x ∈ B
 /-- For `u, w ∈ L` the normalised translations by `u` and `w` compose to that by `u + w`: on `L`
 the phase in their composition law is `1`. -/
 lemma normShift_normShift_of_mem (h : IsHermitianAction L B F β) {u w : V} (hu : u ∈ L)
-    (hw : w ∈ L) (g : V → ℂ) : normalizedShift B (F β) u (normalizedShift B (F β) w g) = normalizedShift B (F β) (u + w) g := by
+    (hw : w ∈ L) (g : V → ℂ) : normShiftβ u (normShiftβ w g) = normShiftβ (u + w) g := by
   rw [h.isAppellHumbert.normalizedShift_normalizedShift h.riemannForm_apply_beta_eq_sub,
     h.riemannPhase_eq_one (h.riemannForm_integral u hu) (h.map_mem _ w hw), one_smul]
 
 /-- Let `f` be fixed by the normalised translations by `a l`, `l ∈ L`. For `z ∈ a⁻¹ L`, the chosen
 representative of the class of `z` in `a⁻¹ L / L` gives the same translate of `f` as `z`. -/
 lemma normShift_map_out (h : IsHermitianAction L B F β) {a : R}
-    (hf : ∀ l ∈ L, normalizedShift B (F β) (F a l) f = f) (z : divLattice L F a) :
-    normalizedShift B (F β) (F a ((z : h.MulKernel a).out : V)) f = normalizedShift B (F β) (F a (z : V)) f := by
+    (hf : ∀ l ∈ L, normShiftβ (F a l) f = f) (z : divLattice L F a) :
+    normShiftβ (F a ((z : h.MulKernel a).out : V)) f = normShiftβ (F a (z : V)) f := by
   -- the representative is `z + l` with `l ∈ L`, and the translation by `a l` fixes `f`
   obtain ⟨l, hl⟩ : ∃ l : L.toAddSubgroup.addSubgroupOf (divLattice L F a),
       (z : h.MulKernel a).out = z + l := mk_out_eq_add (L.toAddSubgroup.addSubgroupOf _) z
@@ -228,21 +230,21 @@ instance : Fintype (h.MulKernel a) :=
 `s = ∑_k ξ(−k) • (normalised translate of f by a k.out)`, where `k.out` is the chosen
 representative of the class `k`; the terms do not depend on that choice. For `y ∈ a⁻¹ L`, the
 normalised translation by `a y` multiplies `s` by `ξ(y)`. -/
-lemma normShift_sum_eq_char_smul (hf : ∀ l ∈ L, normalizedShift B (F β) (F a l) f = f)
+lemma normShift_sum_eq_char_smul (hf : ∀ l ∈ L, normShiftβ (F a l) f = f)
     (ξ : AddChar (h.MulKernel a) ℂ) (y : divLattice L F a) {s : V → ℂ}
-    (hs : s = ∑ k : h.MulKernel a, ξ (-k) • normalizedShift B (F β) (F a k.out) f) :
-    normalizedShift B (F β) (F a y) s = ξ y • s := by
+    (hs : s = ∑ k : h.MulKernel a, ξ (-k) • normShiftβ (F a k.out) f) :
+    normShiftβ (F a y) s = ξ y • s := by
   -- Reindex the sum by `k ↦ y + k` and compare term by term.
   rw [hs, map_sum, Finset.smul_sum]
   refine Fintype.sum_equiv (.addLeft ↑y) _ _ fun k ↦ ?_
   -- `y + k.out` represents `y + k`; its translate is that by `k.out` followed by that by `y`.
   have h_class : ((y + k.out : divLattice L F a) : h.MulKernel a) = y + k := by simp
-  have h_term : normalizedShift B (F β) (F a ((y : h.MulKernel a) + k).out) f =
-      normalizedShift B (F β) (F a y) (normalizedShift B (F β) (F a k.out) f) := by
+  have h_term : normShiftβ (F a ((y : h.MulKernel a) + k).out) f =
+      normShiftβ (F a y) (normShiftβ (F a k.out) f) := by
     rw [← h_class, normShift_map_out h hf, AddSubgroup.coe_add, map_add,
       normShift_normShift_of_mem h (map_divLattice_mem (L := L) (F := F) a y) (map_divLattice_mem (L := L) (F := F) a k.out)]
-  change normalizedShift B (F β) (F a y) (ξ (-k) • normalizedShift B (F β) (F a k.out) f) =
-    ξ y • ξ (-(y + k)) • normalizedShift B (F β) (F a ((y : h.MulKernel a) + k).out) f
+  change normShiftβ (F a y) (ξ (-k) • normShiftβ (F a k.out) f) =
+    ξ y • ξ (-(y + k)) • normShiftβ (F a ((y : h.MulKernel a) + k).out) f
   rw [h_term, _root_.map_smul, smul_smul, ← ξ.map_add_eq_mul, neg_add, add_neg_cancel_left]
 
 end IsHermitianAction
