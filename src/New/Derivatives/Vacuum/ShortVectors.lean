@@ -202,17 +202,9 @@ lemma exists_cyclotomic_different_factor {R : Type*} [CommRing R] [IsDomain R] [
       h1.trans (mul_dvd_mul_left (M : R) (mul_dvd_mul_left _ h_dvd_exp))
     simpa [mul_assoc, mul_left_comm, mul_comm] using h2
   obtain ⟨V, hV_eq⟩ := h_dvd_N
-  have hV_dvd_M : V ∣ (M : R) := by
-    refine ⟨q.eval ζ * ζ, ?_⟩
-    have h_mul : (N : R) * (V * (q.eval ζ * ζ)) = (N : R) * (M : R) := by
-      calc (N : R) * (V * (q.eval ζ * ζ))
-          = (N : R) * V * (q.eval ζ * ζ) := by ring
-        _ = (cyclotomic N R).derivative.eval ζ * (ζ ^ r - 1) * M * (q.eval ζ * ζ) := by
-            rw [← hV_eq]
-        _ = ((ζ ^ r - 1) * (cyclotomic N R).derivative.eval ζ * (q.eval ζ * ζ)) * (M : R) := by
-            ring
-        _ = (N : R) * (M : R) := by rw [← h_deriv_N]
-    exact (mul_left_cancel₀ (Nat.cast_ne_zero.2 hN_ne) h_mul).symm
+  have hV_dvd_M : V ∣ (M : R) :=
+    ⟨q.eval ζ * ζ, mul_left_cancel₀ (Nat.cast_ne_zero.2 hN_ne)
+      (by linear_combination (q.eval ζ * ζ) * hV_eq + (M : R) * h_deriv_N)⟩
   exact ⟨r, M, hM_le, hN_eq, hM_primes, V, hV_dvd_M, hV_eq⟩
 
 /-- Every prime factor of `q₁ = P.q₁ s` divides `n = (d + 1) / 4`, so `q₁ ∣ n ^ q₁`. -/
