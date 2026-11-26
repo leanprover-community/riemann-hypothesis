@@ -610,7 +610,8 @@ lemma DescentPair.residueBlockDatum_inv_mul_mul
   have h_char : O.residueLevelChar j = ∏ i : O.TwistIndex,
       O.tamePart (O.placeAt (.inr i)) ((j.val (.inr i))⁻¹.val.submatrix O.incl O.incl).det := by
     rw [← inv_inv j, map_inv, inv_inv]
-    simp [residueLevelChar, inv_apply_eq_inv', -Sum.elim_inr]
+    simp only [residueLevelChar, Pi.inv_apply, inv_apply_eq_inv', prod_inv_distrib,
+      MonoidHom.coe_mk, OneHom.coe_mk, InvMemClass.coe_inv, coe_units_inv, inv_inv]
   rw [residueBlockDatum, residueBlockDatum, mul_ite, mul_zero]
   refine if_congr (forall_congr' h_support) ?_ rfl
   simp only [h_block, h_char, det_mul, map_mul, prod_mul_distrib]
