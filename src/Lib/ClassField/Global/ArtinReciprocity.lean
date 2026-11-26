@@ -282,11 +282,6 @@ lemma abelianLift_add_eq_mul (χ ψ : QZChar Γ) :
     abelianLift (χ + ψ) = abelianLift χ * abelianLift ψ := by
   aesop
 
-omit [MulSemiringAction Γ Ω] in
-lemma QZChar.apply_pow (χ : QZChar Γ) (g : Γ) (n : ℕ) : χ.val (g ^ n) = n • χ.val g := by
-  apply Multiplicative.ofAdd.injective
-  simpa only [ofAdd_nsmul, toHom_apply] using map_pow (toHom χ) g n
-
 /-- For a prime `l` and `a > 1` there is a prime `p > 2`, not dividing `a`, such that `l` divides
 the order of `a` modulo `p`. -/
 lemma exists_prime_dvd_orderOf {l a : ℕ} (hl : l.Prime) (ha : 1 < a) :
@@ -324,8 +319,9 @@ lemma exists_reciprocity_character {A : ClosurePlace} {v : FinPlace K} (hA : IsP
     ((isUnit_iff_coprime _ p).mp (by simpa [hm] using h_isUnit)).valuation_eq_one
       hA.valuation_q_lt_one
   have h_mem : (σ ^ (2 * m)) ^ a ∈ ker χ := by
-    rw [MonoidHom.mem_ker, QZChar.toHom_apply, ofAdd_eq_one]
-    simpa [QZChar.apply_pow, mul_nsmul', two_nsmul] using h0
+    rw [MonoidHom.mem_ker, map_pow, map_pow, QZChar.toHom_apply, ← ofAdd_nsmul, ← ofAdd_nsmul,
+      ofAdd_eq_one]
+    simpa [mul_nsmul', two_nsmul] using h0
   have h_pow : ((v.q ^ (2 * m) : ℕ) : ZMod p) ^ a = 1 := by
     simpa [Units.ext_iff, hσ.cyclotomicCharMod_eq h_unit] using h_ker.le h_mem
   exact hl.coprime_iff_not_dvd.mp ha (h_order.trans (orderOf_dvd_of_pow_eq_one h_pow))
