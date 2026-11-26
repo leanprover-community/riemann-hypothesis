@@ -458,7 +458,9 @@ private lemma exists_tensorPush_ne_zero_of_isChain {c : Set (a.obj → a.obj →
     -- project to a factor where `s t = 1`.
     obtain ⟨s, hs : tensorPush (mulLeft S s.val) (tensorPush Ψ.toLinearMap z) = 0⟩ :=
       (IsLocalizedModule.eq_zero_iff M (TensorProduct.mk (∀ t, (B t).obj) (Localization M) _ 1)).mp
-        (one_tmul_eq_zero_of_tensorPush φ (tensorPush Ψ.toLinearMap z)
+        -- `(… :)` elaborates the argument without its expected type, so Lean does not unify two
+        -- functors while both are still metavariables
+        (one_tmul_eq_zero_of_tensorPush φ (tensorPush Ψ.toLinearMap z :)
           (tensorPush_comp.symm.trans h_zero))
     have h_neBot : (atTop : Filter c).NeBot :=
       atTop_neBot_iff.mpr ⟨hc_nonempty.to_subtype, hc_chain.directedOn.isDirectedOrder⟩
