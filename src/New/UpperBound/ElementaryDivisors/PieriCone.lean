@@ -138,14 +138,17 @@ lemma det_permStep_ne_zero (v : Fin (m + 1) → Bool) (hP : 1 < P)
   -- In the kernel `P • ν` only rearranges the entries of `ν`, so `P ‖ν‖ ≤ ‖ν‖`.
   have h_step (b : Fin k) (j : Fin (m + 1)) : P * ν (b, j + 1) = ν (σ j b, j) := by
     have h_entry : permStep v P σ ν (b, j) = 0 := congrFun (mem_ker.1 hν) (b, j)
-    rw [permStep_apply] at h_entry; split_ifs at h_entry <;> linarith
+    rw [permStep_apply] at h_entry
+    split at h_entry
+    · exact sub_eq_zero.mp h_entry
+    · exact (sub_eq_zero.mp h_entry).symm
   have h_eq : P • ν = ν ∘ fun x : Fin k × Fin (m + 1) ↦ (σ (x.2 - 1) x.1, x.2 - 1) := by
     ext ⟨b, j⟩
     simpa using h_step b (j - 1)
   have h_le : P * ‖ν‖ ≤ ‖ν‖ :=
     calc P * ‖ν‖ = ‖P • ν‖ := by rw [norm_smul, Real.norm_of_nonneg (zero_le_one.trans hP.le)]
       _ ≤ ‖ν‖ := (congrArg norm h_eq).trans_le (pi_norm_comp_le ν _)
-  nlinarith [norm_pos_iff.2 h_ne]
+  exact (lt_mul_of_one_lt_left (norm_pos_iff.2 h_ne) hP).not_ge h_le
 
 /-- Let `P > 1`. The step map `permStep v P σ` takes `ν` to the vector with entries
 `± (P * ν (b, j + 1) - ν (σ j b, j))`, with `+` where `v j` is true, `-` where it is false, and
