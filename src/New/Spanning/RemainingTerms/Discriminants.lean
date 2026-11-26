@@ -45,10 +45,6 @@ lemma cardQuot_comap_of_surjective {f : N →ₗ[R] N'} (hf : Function.Surjectiv
     (M : Submodule R N') : (M.comap f).cardQuot = M.cardQuot :=
   M.toAddSubgroup.index_comap_of_surjective (f := f.toAddMonoidHom) hf
 
-lemma submoduleZeta_anti {s t : ℕ} (hst : s ≤ t) : submoduleZeta R N t ≤ submoduleZeta R N s := by
-  refine tsum_le_tsum fun M ↦ pow_le_pow_of_le_one zero_le ?_ hst
-  exact ENNReal.inv_le_one.2 (Nat.one_le_cast.2 (Nat.pos_of_ne_zero M.property))
-
 /-- The sum of `[range f : M] ^ (-s)` over the submodules `M` of finite index in the range of a
 linear map `f` is at most the same sum over the submodules of finite index in its domain. -/
 lemma tsum_relIndex_range_le_submoduleZeta (f : N →ₗ[R] N') (s : ℕ) :
@@ -189,7 +185,8 @@ lemma submoduleZeta_pi_le (h_principal : ∀ I : Ideal R, I.cardQuot ≠ 0 → I
       _ ≤ submoduleZeta R R (r + μ + 1) * submoduleZeta R (Fin r → R) (r + μ) :=
         submoduleZeta_prod_le h_principal _
       _ ≤ submoduleZeta R R μ * submoduleZeta R R μ ^ r :=
-        mul_le_mul' (submoduleZeta_anti (by omega)) ih
+        mul_le_mul' (tsum_le_tsum fun M ↦ pow_le_pow_of_le_one zero_le
+          (ENNReal.inv_le_one.2 (Nat.one_le_cast.2 (Nat.pos_of_ne_zero M.property))) (by omega)) ih
       _ = submoduleZeta R R μ ^ (r + 1) := (pow_succ' _ r).symm
 
 end SubmoduleZeta
