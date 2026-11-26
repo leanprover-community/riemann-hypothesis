@@ -11,6 +11,7 @@ import Mathlib.RingTheory.TotallySplit
 public import Lib.General.Geometry.GeometricPoints
 import Lib.General.Algebra.MultivariatePolynomials
 import Lib.General.LinearAlgebra.MatrixPolynomials
+public import TauCeti.RingTheory.MvPolynomial.Finrank
 
 /-!
 # Flat families of ideals cut out by points and the flat closure of theta points
@@ -154,10 +155,6 @@ structure IsCutOut (r i : ℕ) (σ : ℕ → ℕ) (c : J) (p : ι → J → k) (
 lemma restrictSupport_le_homogeneousSubmodule {M : Set (J →₀ ℕ)} :
     restrictSupport A (degree ⁻¹' {d} \ M) ≤ homogeneousSubmodule J A d :=
   (restrictSupport_mono A sdiff_le).trans (homogeneousSubmodule_eq_finsupp_supported J A d).ge
-
-variable [Finite J] in
-/-- In finitely many variables the forms of degree `d` form a finite `A`-module. -/
-instance : Module.Finite A (homogeneousSubmodule J A d) := of_fg (homogeneousSubmodule_fg J A d)
 
 /-! ### Flatness -/
 
