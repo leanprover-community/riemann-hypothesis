@@ -535,6 +535,11 @@ lemma apply_liftMatrix_eq (hy : y ∈ levelSpace ρ (lineStabilizer w i)) {g : G
   apply_eq_of_inv_mul_mem hy <|
     inv_mul_mem_lineStabilizer.2 ⟨1, by rw [reduceGL_liftMatrix_val, hk, one_smul]⟩
 
+private lemma apply_mul_eq_liftMatrix (hy : y ∈ levelSpace ρ (lineStabilizer w i))
+    (k l : localIntGL n w) :
+    ρ k.val (ρ l.val y) = ρ (liftMatrix (reduceGL k * reduceGL l).val).val y := by
+  rw [apply_liftMatrix_eq hy (reduceGL_mul k l), Subgroup.coe_mul, map_mul, mul_apply_eq_comp]
+
 /-- The operator `e_sph = sphericalMean ρ` is the mean of the actions of the chosen lifts to
 `GL_n(𝒪)` of the elements of `GL_n` of the residue field. -/
 lemma sphericalMean_apply [Fintype (GL n (ResField w))] (x : W) : sphericalMean ρ x =
@@ -552,30 +557,20 @@ lemma sphericalMean_mem (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
     sphericalMean ρ y ∈ levelSpace ρ (localIntGL n w) := by
   have : Fintype (GL n (ResField w)) := Fintype.ofFinite _
   refine mem_levelSpace.2 fun k ↦ ?_
-  have h_term (g : GL n (ResField w)) :
-      ρ k.val (ρ (liftMatrix g.val).val y) = ρ (liftMatrix (reduceGL k * g).val).val y := by
-    have h_reduce : reduceGL (k * liftMatrix g.val) = reduceGL k * g := by
-      rw [reduceGL_mul, reduceGL_liftMatrix_val]
-    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, mul_apply_eq_comp]
-  -- Left multiplication by the reduction of `k` permutes the terms of the mean.
-  rw [sphericalMean_apply, map_smul, map_sum, MonoidHom.one_apply, one_smul,
-    Fintype.sum_equiv (Equiv.mulLeft (reduceGL k)) _
-      (fun g ↦ ρ (liftMatrix g.val).val y) h_term]
+  rw [sphericalMean_apply, map_smul, map_sum, MonoidHom.one_apply, one_smul]
+  simp only [apply_mul_eq_liftMatrix hy, reduceGL_liftMatrix_val]
+  exact congrArg (_ • ·) (Equiv.sum_comp (Equiv.mulLeft (reduceGL k))
+    (fun g ↦ ρ (liftMatrix g.val).val y))
 
 /-- A vector fixed by `J_line` and its translates by `GL_n(𝒪)` have the same image under
 `e_sph = sphericalMean ρ`. -/
 lemma sphericalMean_apply_translate (hy : y ∈ levelSpace ρ (lineStabilizer w i))
     (k : localIntGL n w) : sphericalMean ρ (ρ k.val y) = sphericalMean ρ y := by
   have : Fintype (GL n (ResField w)) := Fintype.ofFinite _
-  have h_term (g : GL n (ResField w)) :
-      ρ (liftMatrix g.val).val (ρ k.val y) = ρ (liftMatrix (g * reduceGL k).val).val y := by
-    have h_reduce : reduceGL (liftMatrix g.val * k) = g * reduceGL k := by
-      rw [reduceGL_mul, reduceGL_liftMatrix_val]
-    rw [apply_liftMatrix_eq hy h_reduce, Subgroup.coe_mul, map_mul, mul_apply_eq_comp]
-  -- Right multiplication by the reduction of `k` permutes the terms of the mean.
-  rw [sphericalMean_apply, sphericalMean_apply,
-    Fintype.sum_equiv (Equiv.mulRight (reduceGL k)) _
-      (fun g ↦ ρ (liftMatrix g.val).val y) h_term]
+  rw [sphericalMean_apply, sphericalMean_apply]
+  simp only [apply_mul_eq_liftMatrix hy, reduceGL_liftMatrix_val]
+  exact congrArg (_ • ·) (Equiv.sum_comp (Equiv.mulRight (reduceGL k))
+    (fun g ↦ ρ (liftMatrix g.val).val y))
 
 /-- Let `y` be fixed by the stabiliser `J_line` of the line of `e_i` modulo `w`. Then
 `T⁺ y = lineRaise i ρ y` is the sum of its translates by the coset representatives
