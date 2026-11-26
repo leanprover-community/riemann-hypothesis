@@ -62,7 +62,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | D. R. Heath-Brown, A mean value estimate for real character sums, Acta Arith. 72 (1995) | work found, no place given | `Lib/Analytic/QuadraticTwist` |
 | DLMF, Chapter 20 | place confirmed at second hand | `Lib/CM/Integrality/Doubling` |
 | DLMF, Chapter 23 | place confirmed at second hand | `Lib/CM/Integrality/Doubling` |
-| Davenport, Multiplicative Number Theory | compared, place confirmed | `Lib/Analytic/DirichletTheta`, `Lib/Analytic/PolyaVinogradov` |
+| Davenport, Multiplicative Number Theory | compared, place confirmed | `Lib/Analytic/DirichletTheta`, `Lib/Analytic/QuadraticTwist` |
 | Davenport, Multiplicative Number Theory | work found, no place given | `New/Reduction/Zeros/PrimeError` |
 | Davidson 1987 | work found, no place given | `Lib/Weil/DualPair/HolomorphicData` |
 | Deligne and Kazhdan | work found, no place given | `Lib/Adelic/TraceFormula/CoprimeFactors` |
@@ -164,7 +164,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Milne, Étale Cohomology | compared, place confirmed | `Lib/Cohomology/TorsionTheories` |
 | Milne, Étale Cohomology | place confirmed at second hand | `Lib/Cohomology/ProjectiveLine/ConstantLineFormula` |
 | Milne, Étale Cohomology | work found, no place given | `Lib/Cohomology/ProjectiveLine/TiltedLineFormula` |
-| Montgomery, Vaughan, Multiplicative Number Theory I | compared, place confirmed | `Lib/Analytic/DirichletTheta`, `Lib/Analytic/PolyaVinogradov` |
+| Montgomery, Vaughan, Multiplicative Number Theory I | compared, place confirmed | `Lib/Analytic/DirichletTheta`, `Lib/Analytic/QuadraticTwist` |
 | Montgomery, Vaughan, Multiplicative Number Theory I, 2007 | compared, place confirmed | `Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth`, `Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion`, `Lib/Analytic/Primes` |
 | Montgomery–Vaughan, Multiplicative Number Theory I, 2007 | compared, place confirmed | `New/Reduction/Zeros/PrimeNumberTheorem` |
 | Muić, Smooth cuspidal automorphic forms and integrable discrete series | work found, no place given | `Lib/Adelic/AutomorphicForms/Cuspidality` |
@@ -177,7 +177,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | O'Meara, Introduction to Quadratic Forms | compared, place confirmed | `Lib/Weil/Periods/PointLattice` |
 | O. T. O'Meara, Introduction to quadratic forms | place confirmed at second hand | `Lib/Weil/Periods/PointLattice` |
 | Pritsker, The Gelfond–Schnirelman method in prime number theory, 2005 | work found, no place given | `New/Reduction/MainInequality` |
-| Pólya 1918 | work found, no place given | `Lib/Analytic/PolyaVinogradov` |
+| Pólya 1918 | work found, no place given | `Lib/Analytic/QuadraticTwist` |
 | R. Howe, Transcending classical invariant theory | place confirmed at second hand | `Lib/DiscreteSeries/Theta/LocalCorrespondence` |
 | R. Taylor, A. Wiles, Ring-theoretic properties of certain Hecke algebras | work found, no place given | `New/Congruences/FirstOrder/TrianglePrimes` |
 | Raghuram, Notes on the arithmetic of Hecke L-functions, arXiv:2207.03399 | compared, place confirmed | `Lib/ClassField/Global/CMSplittingCharacters` |
@@ -228,7 +228,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Tits, Reductive groups over local fields, PSPM 33 (1979), part 1 | compared, place confirmed | `Lib/Adelic/Witt/IwasawaDecomposition` |
 | V. Bargmann, reproducing formula (no title given) | work found, no place given | `Lib/Weil/Fock/Basic` |
 | V. Platonov, A. Rapinchuk, Algebraic groups and number theory | place confirmed at second hand | `Lib/DiscreteSeries/Bruhat/FloorGroups` |
-| Vinogradov 1918 | work found, no place given | `Lib/Analytic/PolyaVinogradov` |
+| Vinogradov 1918 | work found, no place given | `Lib/Analytic/QuadraticTwist` |
 | W. Banaszczyk, New bounds in some transference theorems in the geometry of numbers, Math. Ann. 296 (1993) | work found, no place given | `Lib/Adelic/Reduction/FirstMinimumShortBases` |
 | W. T. Gan, B. Gross, D. Prasad, Astérisque 346 (2012) | work found, no place given | `Lib/DiscreteSeries/Bruhat/FloorGroups` |
 | Wallach, On the constant term of a square integrable automorphic form, 1984 | work found, no place given | `Lib/Adelic/AutomorphicForms/Cuspidality` |
