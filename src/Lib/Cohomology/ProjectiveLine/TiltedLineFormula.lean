@@ -834,15 +834,23 @@ lemma hasLineFormula_of_isTodaCancellation {B K : AbFunctor C} {i : W' ⟶ W} {�
     exact h_restrict
   -- Acyclicity over the points of `ℙ¹` is that of `h_c × ℙ¹`, after swapping two tensor factors.
   have h_acyclic_Φ (n : ℕ) : Subsingleton (H (Φ (cokernel i)) Θ.onElements.functor n) := by
-    let swap : abTensor (abTensor S L) (cokernel i) ≅
-        abTensor (abTensor S (cokernel i)) L :=
-      NatIso.ofComponents (fun _ ↦ (rightComm ℤ _ _ _).toAddCommGrpIso) fun _ ↦ by
-        refine addCommGrp_tensor_hom_ext fun t ↦ ?_
-        induction t using TensorProduct.inductionOn with
-        | tmul x l => exact fun r ↦ rfl
-        | add x x' h₁ h₂ =>
-          intro r
-          erw [add_tmul, _root_.map_add, _root_.map_add, h₁ r, h₂ r]
+    let F := abTensor (abTensor S L) (cokernel i)
+    let G := abTensor (abTensor S (cokernel i)) L
+    let swapAt (c : C) : F.obj c ≅ G.obj c :=
+      (rightComm ℤ _ _ _).toAddCommGrpIso
+    let swap : F ≅ G := NatIso.ofComponents swapAt fun {c d} f ↦ by
+      let p := (F.map f ≫ (swapAt d).hom).hom
+      let q := ((swapAt c).hom ≫ G.map f).hom
+      refine addCommGrp_tensor_hom_ext fun t ↦ ?_
+      induction t using TensorProduct.inductionOn with
+      | tmul x l => exact fun r ↦ rfl
+      | add x x' h₁ h₂ =>
+        intro r
+        change p ((x + x') ⊗ₜ[ℤ] r) = q ((x + x') ⊗ₜ[ℤ] r)
+        have h_add := add_tmul (R := ℤ) x x' r
+        have hp := (congrArg p h_add).trans (_root_.map_add p _ _)
+        have hq := (congrArg q h_add).trans (_root_.map_add q _ _)
+        exact hp.trans ((congrArg₂ (· + ·) (h₁ r) (h₂ r)).trans hq.symm)
     have h_line (k : ℕ) : Subsingleton (H (abTensor (abTensor S L) (cokernel i)) Θ.functor k) :=
       h_acyclic (abTensor S L) k
     have h_swapped : Subsingleton (TotalH (abTensor (abTensor S (cokernel i)) L) Θ.functor) :=
