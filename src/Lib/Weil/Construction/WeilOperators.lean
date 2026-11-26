@@ -437,13 +437,13 @@ lemma IsVacuum.wiener_bound [LocallyCompactSpace W] [LocallyCompactSpace W₁]
   · by_cases hv : v = 0 <;> simp [hN, hv]
   -- If `y` lies in the translates of `K` by `φ i` and `φ i₀`, then `φ (i - i₀)` lies in `B`.
   have h_encard_le (y : W₁) : {i : I | y ∈ (· - φ i) ⁻¹' K}.encard ≤ N := by
-    obtain h_empty | ⟨i₀, hi₀⟩ := {i : I | y ∈ (· - φ i) ⁻¹' K}.eq_empty_or_nonempty
-    · rw [h_empty, encard_empty]
-      exact zero_le
-    · have h_mem (i : I) (hi : y - φ i ∈ K) : φ (i - i₀) ∈ B := by
+    let A : Set I := {i : I | y ∈ (· - φ i) ⁻¹' K}
+    change A.encard ≤ N
+    obtain h_empty | ⟨i₀, hi₀⟩ := A.eq_empty_or_nonempty
+    · simp only [h_empty, encard_empty, zero_le]
+    · have h_translate : MapsTo (· - i₀) A (φ ⁻¹' B) := fun i hi ↦ by
         simpa using mem_B (y - φ i) hi (y - φ i₀) hi₀
-      rw [← hN]
-      exact encard_le_encard_of_injOn (f := (· - i₀)) h_mem sub_left_injective.injOn
+      exact (encard_le_encard_of_injOn h_translate sub_left_injective.injOn).trans_eq hN
   let G (s : W₁) : ℝ≥0∞ := ∫⁻ z : W, ‖v z‖ₑ * ‖T (heisenbergOp (z + κ s) u)‖ₑ ∂μ
   have G_int : ∫⁻ s : W₁, G s ∂μ₁ = M * ‖v‖ₑ := by
     -- The norm of a model vector is its `L¹` norm.
