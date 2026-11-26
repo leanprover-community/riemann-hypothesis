@@ -524,7 +524,8 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
   have h_point : (T.x : Matrix m m (𝔸 E)) * l.adeleMatrix = star (flipIdele (-c) 1 : 𝔸 E) •
     V.x := by
     simp [l, ← hV, val_flipIdele, smul_smul, Prod.star_def, adeleMatrix_scalarFin, coe_divStar]
-    grind
+    congr 2
+    linear_combination (star ((α : (𝔸f E)ˣ) : 𝔸f E) * ↑(α : (𝔸f E)ˣ)⁻¹) * hc
   have hc_neg : star ((-c : (Ô E)ˣ) : 𝔸f E) * ((-c : (Ô E)ˣ) : 𝔸f E) = -1 := by simpa using hc
   -- `exists_pairTheta_flip`: a number `z` of modulus one relates the theta function of `(V, S)` at
   -- `(g, h)` to that of `(S, T)` at `(h, l g)`, for the datum moved by `flipCoords`.
@@ -542,7 +543,8 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
       (G.neg g * (1, u)).adeleMatrix := by
       -- `-map_mul` keeps the image of a product whole, in the form that `grind` matches.
       simp [l, u, flipScalar, -map_mul, smul_smul, adeleMatrix_scalarFin, coe_divStar]
-      grind
+      congr 2
+      ring
     -- Move `(1, u)` from the datum into the group argument (`hC`, `pairTheta_mul`), then flip.
     calc
       _ = z * pairTheta V S a b
