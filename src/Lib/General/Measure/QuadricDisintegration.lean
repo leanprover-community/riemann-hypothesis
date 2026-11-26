@@ -183,7 +183,8 @@ lemma continuous_lintegral_of_compact_support {X Z : Type*} [TopologicalSpace X]
   have h_zero (x : X) (y : Z) (hy : y ∉ k) : (F x y : ℝ) = 0 := by simpa using mt (h_supp x y) hy
   -- Each `F x` is integrable, so its lower integral is the Bochner integral.
   have h_eq (x : X) : ∫⁻ y, F x y ∂ζ = .ofReal (∫ y, F x y ∂ζ) :=
-    lintegral_coe_eq_integral (F x) (HasCompactSupport.integrable (.intro hk (h_zero x)))
+    lintegral_coe_eq_integral (F x)
+      (Continuous.integrable_of_hasCompactSupport (by fun_prop) (.intro hk (h_zero x)))
   simp only [h_eq]
   exact continuous_ofReal.comp <| continuousOn_univ.1 <|
     continuousOn_integral_of_compact_support hk (by fun_prop) fun x y _ ↦ h_zero x y

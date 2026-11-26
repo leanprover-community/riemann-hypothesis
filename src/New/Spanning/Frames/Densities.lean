@@ -324,7 +324,7 @@ theorem Gauge.inner_besselOrbitalIntegral {p q : ℕ → Aˣ} {W : T.G → Eucli
       refine hy (Γ.hasMatrixSize_of_ne_zero hk hr hx_top (fun h_zero ↦ ?_) fun h_zero ↦ ?_)
       · exact h_left (by rw [h_zero, PiLp.zero_apply])
       · exact h_right (by rw [h_zero, PiLp.zero_apply, map_zero])
-    exact h_support.integrable
+    exact Continuous.integrable_of_hasCompactSupport (by fun_prop) h_support
   have h_integrable_prod (i : I × I) :
       Integrable (fun z : T.G × T.G ↦ conj (f p i z.1) * f q i z.2) (μ.prod μ) :=
     (Complex.conjCLE.integrable_comp_iff.2 (h_integrable hp i)).mul_prod (h_integrable hq i)

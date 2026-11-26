@@ -202,7 +202,8 @@ theorem exists_derivative_kernels (h_gap : l.HasLargeGap A)
     l.formalDegree * smearCoeff (bump w) (π g)
   have bump_int (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) :
       Integrable ((bump w : USign ε → ℂ) ∘ π) :=
-    measurePreserving_frameEquiv.integrable_comp_of_integrable (bump w).prop.integrable
+    measurePreserving_frameEquiv.integrable_comp_of_integrable
+      (Continuous.integrable_of_hasCompactSupport (by fun_prop) (bump w).prop)
   have X_eq (w : List (𝔰.BesselIndex × 𝔰.BesselIndex)) :
       convolve idem ((bump w : USign ε → ℂ) ∘ π) = X w :=
     convolve_formalDegree_mul_dsCoeffInFrame_comp_frameEquiv l (bump w)

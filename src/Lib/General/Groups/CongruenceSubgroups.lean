@@ -97,16 +97,11 @@ lemma IsCompact.integrableOn [T2Space X] (hK : IsCompact K) (f : X → E)
     (hf : Continuous f := by fun_prop) : IntegrableOn f K ν :=
   hf.continuousOn.integrableOn_compact hK
 
-/-- A continuous function f of compact support with values in a normed group is integrable, for
-a measure ν finite on compact sets. Continuity is proved automatically by default. -/
-lemma HasCompactSupport.integrable (hc : HasCompactSupport f) (hf : Continuous f := by fun_prop) :
-    Integrable f ν := hf.integrable_of_hasCompactSupport hc
-
 /-- A continuous function from a compact space `X` to a normed group is integrable for every measure
 ν on `X` that is finite on compact sets. Continuity is proved automatically by default. -/
 lemma New.DiscreteSeries.integrable_of_compactSpace [CompactSpace X]
     (hf : Continuous f := by fun_prop (disch := simp)) : Integrable f ν :=
-  HasCompactSupport.integrable (.of_compactSpace f) hf
+  hf.integrable_of_hasCompactSupport (.of_compactSpace f)
 
 namespace New
 

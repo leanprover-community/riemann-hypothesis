@@ -329,7 +329,8 @@ lemma norm_setIntegral_vadd_sub_adelicTent_le {R t : ℝ} (hR : 0 < R) (ht : 0 <
   have : IsProbabilityMeasure (volume.restrict (y +ᵥ F)) :=
     ⟨by rw [Measure.restrict_apply_univ, AddSubgroup.vadd_def, measure_vadd, hF_vol]⟩
   have h_int : Integrable fun x ↦ adelicTent ((r - R * t * r) / 3) d (c.map val val * x) :=
-    (hasCompactSupport_adelicTent_mul ((r - R * t * r) / 3) d c).integrable
+    Continuous.integrable_of_hasCompactSupport (by fun_prop)
+      (hasCompactSupport_adelicTent_mul ((r - R * t * r) / 3) d c)
   rw [← mem_closedBall_iff_norm]
   refine (convex_closedBall _ _).integral_mem isClosed_closedBall
     (ae_restrict_of_forall_mem (hF_meas.const_vadd y) ?_) h_int.restrict
@@ -405,7 +406,9 @@ lemma exists_abs_sub_thetaSum_le (hr_pos : 0 < r) (hr : r < 1) :
   have h_sum (ρ : ℝ) (hρ : ρ ≤ 1) : HasSum (fun y : j.range ↦ f ρ y) (thetaSum d ρ b) :=
     hasSum_adelicTent_mul_range d h_disc hρ b γ
   have h_cells (ρ : ℝ) : HasSum (fun y : j.range ↦ ∫ x in y +ᵥ F, f ρ x) (∫ x, f ρ x) := by
-    have h_int : Integrable (f ρ) := (hasCompactSupport_adelicTent_mul ρ d (b * γ.val)).integrable
+    have h_int : Integrable (f ρ) :=
+      Continuous.integrable_of_hasCompactSupport (by fun_prop)
+        (hasCompactSupport_adelicTent_mul ρ d (b * γ.val))
     rw [← hF.sum_restrict] at h_int
     simpa only [hF.sum_restrict] using hasSum_integral_measure h_int
   -- Each cell is within `R * t` times the tent of radius `r` of its term of `thetaSum d (r / 3) b`.

@@ -426,7 +426,8 @@ theorem norm_bump_smul_sub_le_indicator (F : USign ε → E) (α : Bumps ε)
 theorem integrable_bump_inv_smul (F : USign ε → E) (α : Bumps ε)
     (hF : Continuous F := by fun_prop) :
     Integrable fun y : USign ε ↦ α.val.val y⁻¹ • F y :=
-  (α.prop.comp_homeomorph (.inv _)).smul_right.integrable
+  Continuous.integrable_of_hasCompactSupport (by fun_prop)
+    (α.prop.comp_homeomorph (.inv _)).smul_right
 
 /-- Convolution with the continuous function `F`: the linear map that sends `α` to the function
 `g ↦ ∫ y, α y⁻¹ • F (g * y)`. -/
