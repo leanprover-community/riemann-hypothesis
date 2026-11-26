@@ -778,11 +778,6 @@ lemma eq_of_forall_actionAt_eq (b : Bool) {s t : S.ResidueGL}
       S.actionAt s (q, b) = S.actionAt t (q, b)) : s = t :=
   funext₂ fun i v ↦ (S.idOrInvAdjoint b).injective (Units.ext (h_action ⟨i, v⟩))
 
-/-- Conjugation exchanges the reductions at a chosen place and at its conjugate. -/
-lemma reduceAboveM_star (q : Σ i : Fin 2, S.chosenPlaces i) (b : Bool) (z : Ô E) :
-    S.reduceAboveM (q, b) (star z) = S.reduceAboveM (q, !b) z := by
-  cases b <;> simp [reduceAboveM, starRingEnd_apply]
-
 /-- Let `w` be a place above `M`, the product of the two level primes: a chosen place, or its
 conjugate if the Boolean is true. Residues at `w` lift to integral adeles, `0` to `0`, that vanish
 at all other places above `M`. -/
@@ -856,7 +851,8 @@ lemma vecMul_frameImage_dotProduct_cons_init_eq_of_agrees {k : S.latticeStabiliz
     S.actionAt (S.reduction k) (p, b) with hγ
   have h_star (q : Σ i : Fin 2, S.chosenPlaces i) (t : ResField p.2.val) :
       S.reduceAboveM (q, b) (star (lift t)) = 0 := by
-    rw [reduceAboveM_star, h_lift_ne (q, !b) (by simp) t]
+    rw [show S.reduceAboveM (q, b) (star (lift t)) = S.reduceAboveM (q, !b) (lift t) by
+      cases b <;> simp [reduceAboveM, starRingEnd_apply], h_lift_ne (q, !b) (by simp) t]
   -- `liftPairing 1 x` and `liftPairing γ y` lift the two sides to `Ô`; it suffices that `M` divides
   -- their difference.
   let liftPairing (g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex (ResField p.2.val))
