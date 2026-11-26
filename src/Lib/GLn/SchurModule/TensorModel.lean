@@ -192,6 +192,7 @@ variable (R n κ) in
 abbrev fillingMatrixOver : Matrix (ColumnFilling n κ) (WeylIndexFamily n κ) R :=
   (fillingMatrix n κ).map (Int.cast : ℤ → R)
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 lemma fillingMatrixOver_int : fillingMatrixOver ℤ n κ = fillingMatrix n κ := by
   ext T i
   simp
