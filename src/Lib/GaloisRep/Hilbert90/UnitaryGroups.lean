@@ -109,6 +109,72 @@ structure IsTwistedRoot (τ : O →+* O) (p : ℕ) (m : O) (k : ℕ) {A : Type w
     aeval B (1 + m • (X ^ (1 - k) * y)) ^ (1 - k) * (1 + m • B) *
       star (aeval B (1 + m • (X ^ (1 - k) * y))) = aeval B (1 + m • (X ^ (1 - k) * y)) ^ k
 
+/-- Given a matrix `Y` over `O` with `τ`-fixed characteristic polynomial `Q`, an inverse `w` of
+`1 + m X` modulo `Q`, and `Yᴴ (1 + m Y) ^ k = (-1) ^ k Y` for `k ≤ 1`, there exist commuting ring
+endomorphisms `θ` and `ρ` of `AdjoinRoot Q` lifting `τ` and `star` on `O`, with `θ` fixing
+`root Q`, `ρ (root Q) = root Q * (-mk Q w) ^ k`, and `ρ ^ 2 = 1`. -/
+private lemma exists_adjoinRoot_aut_and_involution {m : O} {k : ℕ} (hk : k ≤ 1)
+    (hτ : ∀ a : O, τ (star a) = star (τ a)) (hm : τ m = m) (hm_star : star m = m)
+    {Y : Matrix n n O}
+    (hY_rel : Yᴴ * (1 + m • Y) ^ k = (-1) ^ k * Y)
+    {Q a w : O[X]} (hQ : Y.charpoly = Q) (hQτ : Q.map τ = Q)
+    (hw₀ : a * Q + w * (1 + m • X) = 1) :
+    ∃ (θ ρ : AdjoinRoot Q →+* AdjoinRoot Q),
+      (∀ q : O[X], θ (mk Q q) = mk Q (q.map τ)) ∧
+      (∀ q : O[X], ρ (mk Q q) = mk Q ((q.map (starRingEnd O)).comp (X * (-w) ^ k))) ∧
+      (∀ x : O, θ (AdjoinRoot.of Q x) = AdjoinRoot.of Q (τ x)) ∧
+      θ (root Q) = root Q ∧
+      (∀ x : O, ρ (AdjoinRoot.of Q x) = AdjoinRoot.of Q (star x)) ∧
+      ρ (root Q) = root Q * (-mk Q w) ^ k ∧
+      Commute θ ρ ∧ ρ ^ 2 = 1 := by
+  obtain ⟨θ, hθ⟩ :
+      ∃ θ : AdjoinRoot Q →+* AdjoinRoot Q, ∀ q : O[X], θ (mk Q q) = mk Q (q.map τ) := by
+    simpa using exists_adjoinRoot_map_comp (Q := Q) τ X (by rw [comp_X, hQτ])
+  have hQ_dvd : Q ∣ (Q.map (starRingEnd O)).comp (X * (-w) ^ k) := by
+    subst hQ
+    have h_val : (X * (-w) ^ k).aeval Y = Yᴴ :=
+      aeval_X_mul_neg_pow_eq_of_mul_one_add_smul_pow_eq hw₀ hk Y.aeval_self_charpoly hY_rel
+    have h_char : Yᴴ.charpoly = Y.charpoly.map (starRingEnd O) := by
+      change (Yᵀ.map (starRingEnd O)).charpoly = _
+      rw [charpoly_map, charpoly_transpose]
+    have h_dvd := charpoly_dvd_charpoly_aeval_comp (Y := Y) (X * (-w) ^ k)
+    rwa [h_val, h_char] at h_dvd
+  obtain ⟨ρ, hρ⟩ := exists_adjoinRoot_map_comp (starRingEnd O) (X * (-w) ^ k) hQ_dvd
+  have hw : mk Q w * (1 + AdjoinRoot.of Q m * root Q) = 1 := by
+    simpa [smul_eq_C_mul] using congrArg (mk Q) hw₀
+  have hθ_of (x : O) : θ (AdjoinRoot.of Q x) = AdjoinRoot.of Q (τ x) := by simp [hθ, ← mk_C]
+  have hθ_root : θ (root Q) = root Q := by simp [hθ, ← mk_X]
+  have hρ_of (x : O) : ρ (AdjoinRoot.of Q x) = AdjoinRoot.of Q (star x) := by
+    rw [← mk_C, hρ, Polynomial.map_C, C_comp, starRingEnd_apply, mk_C]
+  have hρ_root : ρ (root Q) = root Q * (-mk Q w) ^ k := by
+    rw [← mk_X, hρ, Polynomial.map_X, X_comp, map_mul, map_pow, map_neg, mk_X]
+  have h_comm : Commute θ ρ := by
+    have hθw : θ (mk Q w) = mk Q w := by
+      refine left_inv_eq_right_inv ?_ ((mul_comm _ _).trans hw)
+      have h_fix : θ (1 + AdjoinRoot.of Q m * root Q) = 1 + AdjoinRoot.of Q m * root Q := by
+        simp [hθ_of, hθ_root, hm]
+      rw [← h_fix, ← map_mul, hw, map_one]
+    refine (commute_iff_eq θ ρ).mpr ?_
+    ext x
+    · simp [hθ_of, hρ_of, hτ]
+    · simp [hθ_root, hρ_root, hθw]
+  have hρ_sq : ρ ^ 2 = 1 := by
+    have hρ_root_sq : ρ (ρ (root Q)) = root Q := by
+      interval_cases k
+      · simp [hρ_root]
+      · have hρw : ρ (mk Q w) * mk Q w = 1 := by
+          have h_img : ρ (mk Q w) * (1 + AdjoinRoot.of Q m * (root Q * (-mk Q w) ^ 1)) = 1 := by
+            rw [← hρ_root, ← hm_star, ← hρ_of, ← map_mul, ← map_one ρ, ← map_add, ← map_mul, hw]
+          have h_w : 1 + AdjoinRoot.of Q m * (root Q * (-mk Q w) ^ 1) = mk Q w := by
+            linear_combination (-1 : AdjoinRoot Q) * hw
+          rwa [h_w] at h_img
+        rw [hρ_root, map_mul, map_pow, map_neg, hρ_root]
+        linear_combination root Q * hρw
+    ext x
+    · simp [sq, hρ_of]
+    · simpa [sq] using hρ_root_sq
+  exact ⟨θ, ρ, hθ, hρ, hθ_of, hθ_root, hρ_of, hρ_root, h_comm, hρ_sq⟩
+
 universe w in
 /-- Roots in `O[X]/Q`. Let `O` be profinite, let `τ` be tame at level `0` (`τ ^ p = 1`, `0 < p`,
 and some element has trace `1`), commute with `star` and fix `c`, with `c - star c` a unit. Let `m`
@@ -132,52 +198,10 @@ lemma exists_isTwistedRoot_of_charpoly_eq (hO : IsProfiniteRing O) {m c : O}
     simpa using hY_unit
   obtain ⟨a, w, hw₀⟩ : ∃ a w : O[X], a * Q + w * (1 + m • X) = 1 := h_coprime
   have hQ_monic : Q.Monic := hQ ▸ Y.charpoly_monic
-  obtain ⟨θ, hθ⟩ :
-      ∃ θ : AdjoinRoot Q →+* AdjoinRoot Q, ∀ q : O[X], θ (mk Q q) = mk Q (q.map τ) := by
-    simpa using exists_adjoinRoot_map_comp (Q := Q) τ X (by rw [comp_X, hQτ])
-  have hQ_dvd : Q ∣ (Q.map (starRingEnd O)).comp (X * (-w) ^ k) := by
-    subst hQ
-    have h_val : (X * (-w) ^ k).aeval Y = Yᴴ :=
-      aeval_X_mul_neg_pow_eq_of_mul_one_add_smul_pow_eq hw₀ hk Y.aeval_self_charpoly hY_rel
-    have h_char : Yᴴ.charpoly = Y.charpoly.map (starRingEnd O) := by
-      change (Yᵀ.map (starRingEnd O)).charpoly = _
-      rw [charpoly_map, charpoly_transpose]
-    have h_dvd := charpoly_dvd_charpoly_aeval_comp (Y := Y) (X * (-w) ^ k)
-    rwa [h_val, h_char] at h_dvd
-  obtain ⟨ρ, hρ⟩ := exists_adjoinRoot_map_comp (starRingEnd O) (X * (-w) ^ k) hQ_dvd
+  obtain ⟨θ, ρ, hθ, hρ, hθ_of, hθ_root, hρ_of, hρ_root, h_comm, hρ_sq⟩ :=
+    exists_adjoinRoot_aut_and_involution hk hτ hm hm_star hY_rel hQ hQτ hw₀
   have hw : mk Q w * (1 + AdjoinRoot.of Q m * root Q) = 1 := by
     simpa [smul_eq_C_mul] using congrArg (mk Q) hw₀
-  have hθ_of (a : O) : θ (AdjoinRoot.of Q a) = AdjoinRoot.of Q (τ a) := by simp [hθ, ← mk_C]
-  have hθ_root : θ (root Q) = root Q := by simp [hθ, ← mk_X]
-  have hρ_of (a : O) : ρ (AdjoinRoot.of Q a) = AdjoinRoot.of Q (star a) := by
-    rw [← mk_C, hρ, Polynomial.map_C, C_comp, starRingEnd_apply, mk_C]
-  have hρ_root : ρ (root Q) = root Q * (-mk Q w) ^ k := by
-    rw [← mk_X, hρ, Polynomial.map_X, X_comp, map_mul, map_pow, map_neg, mk_X]
-  have h_comm : Commute θ ρ := by
-    have hθw : θ (mk Q w) = mk Q w := by
-      refine left_inv_eq_right_inv ?_ ((mul_comm _ _).trans hw)
-      have h_fix : θ (1 + AdjoinRoot.of Q m * root Q) = 1 + AdjoinRoot.of Q m * root Q := by
-        simp [hθ_of, hθ_root, hm]
-      rw [← h_fix, ← map_mul, hw, map_one]
-    refine (commute_iff_eq θ ρ).mpr ?_
-    ext a
-    · simp [hθ_of, hρ_of, hτ]
-    · simp [hθ_root, hρ_root, hθw]
-  have hρ_sq : ρ ^ 2 = 1 := by
-    have hρ_root_sq : ρ (ρ (root Q)) = root Q := by
-      interval_cases k
-      · simp [hρ_root]
-      · have hρw : ρ (mk Q w) * mk Q w = 1 := by
-          have h_img : ρ (mk Q w) * (1 + AdjoinRoot.of Q m * (root Q * (-mk Q w) ^ 1)) = 1 := by
-            rw [← hρ_root, ← hm_star, ← hρ_of, ← map_mul, ← map_one ρ, ← map_add, ← map_mul, hw]
-          have h_w : 1 + AdjoinRoot.of Q m * (root Q * (-mk Q w) ^ 1) = mk Q w := by
-            linear_combination (-1 : AdjoinRoot Q) * hw
-          rwa [h_w] at h_img
-        rw [hρ_root, map_mul, map_pow, map_neg, hρ_root]
-        linear_combination root Q * hρw
-    ext a
-    · simp [sq, hρ_of]
-    · simpa [sq] using hρ_root_sq
   have h_prof : IsProfiniteRing (AdjoinRoot Q) :=
     hO.of_addEquiv_pi (powerBasisAux' hQ_monic).equivFun.toAddEquiv
   have hθ_tame {x : O} (ht : IsTameAtLevel τ p x) : IsTameAtLevel θ p (AdjoinRoot.of Q x) :=
