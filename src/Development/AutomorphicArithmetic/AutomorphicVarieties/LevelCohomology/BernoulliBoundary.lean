@@ -1,7 +1,6 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.BernoulliFourierRows
-public import Mathlib.Algebra.CharP.Lemmas
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.BernoulliRowSpecialization
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
@@ -158,47 +157,6 @@ theorem bernoulliFourierRow_boundary_ne_zero (k : ℕ) (β : K) (h2 : (2 : K) �
   apply (mul_ne_zero hphase hG)
   linear_combination γ ^ s * hEven + β * hOdd - γ ^ s * hz
 
-/-- If a field endomorphism negates the frequency, a vanishing integer-coefficient
-sum has vanishing even part. -/
-private lemma even_part_zero (F : ℕ → ℤ) (n : ℕ) (z : K) (σ : K →+* K) (hσ : σ z = -z)
-    (h2 : (2 : K) ≠ 0) (hs : ∑ i ∈ range (2 * n), (F i : K) * z ^ i = 0) :
-    ∑ j ∈ range n, (F (2 * j) : K) * (z ^ 2) ^ j = 0 := by
-  let P (y : K) := ∑ i ∈ range (2 * n), (F i : K) * y ^ i
-  let E (y : K) := ∑ i ∈ range n, (F (2 * i) : K) * y ^ i
-  let O (y : K) := ∑ i ∈ range n, (F (2 * i + 1) : K) * y ^ i
-  have split (y : K) : P y = E (y ^ 2) + y * O (y ^ 2) := by
-    simp only [P, E, O, sum_range_even_odd, mul_sum, pow_succ, pow_mul, mul_comm _ y, mul_left_comm y]
-  have hs' : P (-z) = 0 := calc
-    P (-z) = σ (P z) := by simp [P, hσ]
-    _ = 0 := by rw [show P z = 0 from hs, map_zero]
-  change P z = 0 at hs
-  rw [split] at hs
-  rw [split, neg_sq] at hs'
-  change E (z ^ 2) = 0
-  apply (mul_eq_zero.mp (show 2 * E (z ^ 2) = 0 by linear_combination hs + hs')).resolve_left h2
-
-/-- Iterated Frobenius isolates the exponents divisible by `2^r`. The exact dyadic
-factor in `ℓ^d - 1` is `4*b` when `b` is a power of two. -/
-private lemma isolate_row {ℓ : ℕ} [Fact ℓ.Prime] [CharP K ℓ] {d b c : ℕ}
-    (hQ : ℓ ^ d = 1 + 4 * b * c) (hc : Odd c) (h2 : (2 : K) ≠ 0) (r : ℕ)
-    (F : ℕ → ℤ) (z : K) (hz : z ^ (2 ^ r * (2 * b)) = -1)
-    (hs : ∑ i ∈ range (2 ^ r * (2 * b)), (F i : K) * z ^ i = 0) :
-    ∑ j ∈ range (2 * b), (F (2 ^ r * j) : K) * (z ^ (2 ^ r)) ^ j = 0 := by
-  induction r generalizing F z with
-  | zero => simpa using hs
-  | succ r ih =>
-    obtain ⟨t, ht, hp⟩ := pow_two_pow_stride hQ hc r
-    let σ := iterateFrobenius K ℓ (d * 2 ^ r)
-    have hσ : σ z = -z := by
-      change z ^ (ℓ ^ (d * 2 ^ r)) = -z
-      rw [pow_mul, hp, pow_add, pow_one, show 4 * b * 2 ^ r = 2 ^ (r + 1) * (2 * b) by ring,
-        pow_mul, hz, ht.neg_one_pow, mul_neg_one]
-    have hn : 2 ^ (r + 1) * (2 * b) = 2 * (2 ^ r * (2 * b)) := by ring
-    rw [hn] at hs hz
-    have h := ih (fun j ↦ F (2 * j)) (z ^ 2) (by rwa [← pow_mul])
-      (even_part_zero F _ z σ hσ h2 hs)
-    simpa only [← pow_mul, pow_succ' 2 r, mul_assoc] using h
-
 /-- A character's half-turn at `1 + N/2` supplies the frequency hypothesis
 at `5`, for any dyadic level `N ≥ 8`. -/
 theorem map_five_pow_half_turn {R : Type*} [Monoid R] (n : ℕ)
@@ -228,29 +186,23 @@ theorem bernoulliSignedSum_boundary_ne_zero {ℓ : ℕ} [Fact ℓ.Prime] [CharP 
     simp [pureCoeff]
   obtain ⟨k, rfl⟩ : ∃ k, e = k + 3 := ⟨e - 3, by omega⟩
   let h := 4 * 2 ^ k
-  let b := 2 * 2 ^ k
-  have hhb : h = 2 * b := by dsimp [h, b]; ring
+  have hT : 2 ^ (k + 1 + 1) = h := by dsimp [h]; ring
   have hN : N = 2 * h ^ 2 := by
     dsimp [N, h]
-    rw [show 2 * (k + 3) - 1 = k + k + 5 by omega, pow_add, pow_add]
+    rw [show 2 * (k + 3) - 1 = k + k + 5 by lia, pow_add, pow_add]
     ring
-  have hlen : N / 8 = 2 ^ k * (2 * b) := by
-    rw [hN, show 2 * h ^ 2 = (2 ^ k * (2 * b)) * 8 by dsimp [h, b]; ring, Nat.mul_div_cancel _ (by decide)]
-  rw [hlen] at hz ⊢
-  have hQ' : ℓ ^ d = 1 + 4 * b * c := by rw [hQ]; dsimp [b]; ring
-  let F (i : ℕ) : ℤ := if 5 ^ i % N < N / 2 then - 1 else 1
-  have hF (i : ℕ) : (F i : K) = bernoulliSignedCoeff (fun _ : ZMod 1 ↦ (1 : K)) N (5 ^ i % N) := by
-    rw [pureCoeff]; dsimp [F]; split <;> simp
-  intro hzero
-  simp_rw [← hF] at hzero
-  have hrow := isolate_row hQ' hc h2 k F z hz hzero
+  have hlen : N / 8 = 2 ^ k * h := by
+    rw [hN, show 2 * h ^ 2 = (2 ^ k * h) * 8 by dsimp [h]; ring, Nat.mul_div_cancel _ (by decide)]
+  intro hs
   apply bernoulliFourierRow_boundary_ne_zero k (z ^ (2 ^ k)) h2 (by
     change (z ^ (2 ^ k)) ^ h = -1
-    rwa [← pow_mul, hhb])
-  change bernoulliFourierRow _ (2 * h ^ 2) 1 (5 ^ (2 ^ k)) h _ = 0
-  unfold bernoulliFourierRow
-  rw [← hN, hhb, Fin.sum_univ_eq_sum_range
-    (fun i : ℕ ↦ bernoulliSignedCoeff _ N (1 * (5 ^ (2 ^ k)) ^ i % N) * (z ^ (2 ^ k)) ^ i)]
-  simpa only [one_mul, ← pow_mul, hF] using hrow
+    rwa [← pow_mul, ← hlen])
+  have row := bernoulliFourierRow_eq_zero_of_sum_eq_zero d (k + 1) k c 1
+    (fun _ : ZMod 1 ↦ (1 : K)) z hc h2 (by simp)
+  dsimp only at row
+  rw [hT, show 4 * 2 ^ k = h from rfl, show h * (2 * h) = N by rw [hN]; ring] at row
+  change bernoulliFourierRow _ (2 * h ^ 2) 1 _ h _ = 0
+  rw [← hN]
+  exact row (by rw [hQ]; dsimp [h]; ring) hz (by simpa only [one_mul] using hs)
 
 end UpperTheory.V.X
