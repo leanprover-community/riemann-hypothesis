@@ -2,25 +2,15 @@ module
 
 public import Mathlib.NumberTheory.LSeries.DirichletContinuation
 import TauCeti.NumberTheory.DirichletCharacter.LFunction.ChangeLevel
-import TauCeti.NumberTheory.DirichletCharacter.LFunction.TrivialZeros
-import TauCeti.NumberTheory.DirichletCharacter.LFunction.ZeroReflection
 public import Lib.Speed
 
 /-!
-# Zeros of L(s, χ) and of L(1 − s, χ⁻¹)
+# Dirichlet characters and the primitive characters that induce them
 
-`New.gammaFactor_eq_zero_or_LFunction_one_sub_eq_zero` shows that a zero `s` of L(·, χ) with
-`s.re ≠ 0` and `s ≠ 1` is either a pole of `χ.gammaFactor` or gives the zero `1 - s` of L(·, χ⁻¹),
-extending the symmetry given by the functional equation from primitive to all Dirichlet characters.
-It is assembled from Tau Ceti's trivial zeros of imprimitive L-functions
-(`DirichletCharacter.LFunction_eq_zero_iff_of_re_neg`) and its reflection of zeros in the critical
-strip (`DirichletCharacter.LFunction_one_sub_eq_zero_iff`).
-
-## Relation to the literature
-
-Known result: the symmetry of the zeros, a consequence of the functional equation for Dirichlet
-L-functions. Source: Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Corollaries 10.3
-and 10.8.
+Two facts for passing between a Dirichlet character `χ` and the primitive character that induces it.
+`New.prod_euler_factor_ne_zero`: off the line `re s = 0`, the inverse Euler factors
+`1 - χ(p) p ^ (-s)` at the primes dividing a given number do not vanish.
+`New.exists_isPrimitive_changeLevel_eq`: every Dirichlet character is induced by a primitive one.
 -/
 
 @[expose] public section
@@ -43,17 +33,3 @@ lemma New.exists_isPrimitive_changeLevel_eq :
       NeZero M ∧ IsPrimitive ψ ∧ changeLevel hM ψ = χ :=
   ⟨χ.conductor, χ.conductor_dvd_level, χ.primitiveCharacter, ⟨χ.conductor_ne_zero⟩,
     χ.primitiveCharacter_isPrimitive, χ.changeLevel_primitiveCharacter⟩
-
-/-- Symmetry of the zeros: if L(s, χ) = 0, re s ≠ 0 and s ≠ 1, then either s is a pole of the gamma
-factor of χ (where Mathlib gives it the value 0), or L(1 − s, χ⁻¹) = 0. The character need not be
-primitive, and multiplicities are not compared. -/
-lemma New.gammaFactor_eq_zero_or_LFunction_one_sub_eq_zero (s : ℂ) (h_re : s.re ≠ 0)
-    (h_ne_one : s ≠ 1) (hs : χ.LFunction s = 0) :
-    χ.gammaFactor s = 0 ∨ LFunction χ⁻¹ (1 - s) = 0 := by
-  -- Left of the critical strip only the trivial zeros remain, inside it the zeros reflect, and
-  -- right of it there are none.
-  rcases h_re.lt_or_gt with h_neg | h_pos
-  · exact .inl ((χ.LFunction_eq_zero_iff_of_re_neg h_neg).1 hs)
-  rcases lt_or_ge s.re 1 with h_lt | h_ge
-  · exact .inr ((χ⁻¹.LFunction_one_sub_eq_zero_iff h_pos h_lt).2 (by rwa [inv_inv]))
-  · exact absurd hs (χ.LFunction_ne_zero_of_one_le_re (.inr h_ne_one) h_ge)

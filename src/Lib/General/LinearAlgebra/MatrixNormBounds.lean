@@ -55,7 +55,7 @@ lemma New.exists_auerbach {K U A L ι : Type*} [Field K] [AddCommGroup U] [Modul
       (∀ k : ι, z.coord k = ℓ (S k)) ∧ ∀ (a : A) (k : ι), ‖φ (ℓ a (z k))‖ ≤ 1 := by
   classical
   have : Finite ι := Module.Finite.finite_basis b
-  have := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   -- Choose `S` to maximise `‖φ (det (ℓ ∘ S))‖` and let `z` be the basis dual to `ℓ ∘ S`. By
   -- Cramer's rule `ℓ a (z k)` is the determinant with `S k` replaced by `a` over the maximal one.
   -- First, the forms span the dual space, so the determinant is nonzero on some family of them.

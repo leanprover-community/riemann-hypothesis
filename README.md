@@ -72,6 +72,8 @@ About 300,000 lines of code; 433,000 non-blank lines with comments; 477,000 line
 
 Thanks to the Lean FRO and BAIF for providing resources to run CI here; others have contributed too, if you'd like acknowledgement here let @kim-em know.
 
+[`CONTRIBUTORS.md`](CONTRIBUTORS.md) lists everyone with a merged pull request.
+
 ## License
 
 The proof belongs to its author Levent Alpöge with Claude and was originally published without a license. The repo https://github.com/lsernau/grh-lean uses Apache 2.0, and so does this repo; see [`LICENSE`](LICENSE), [`NOTICE`](NOTICE) and [`ATTRIBUTION.md`](ATTRIBUTION.md).

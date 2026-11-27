@@ -13,8 +13,11 @@ Mathlib's cache and before the project's, does four things:
    compile every imported Tau Ceti module from source;
 2. downloads Tau Ceti's input-to-output mappings for the pinned revision
    (`lake cache get --mappings-only`; about 135 MB the first time);
-3. runs `lake build` on the Tau Ceti modules imported anywhere under `src`, which downloads and
-   unpacks exactly the oleans they need, without compiling.
+3. runs `lake build` on the Tau Ceti modules that `src` needs: those imported anywhere under
+   `src`, together with every Tau Ceti module they import in turn, publicly or not. Lake restores
+   a cached module without the modules it imports only privately, but a later
+   `lake build --no-build` checks those too, so they are fetched explicitly. This downloads and
+   unpacks exactly the oleans needed, without compiling.
 
 It only reads from Tau Ceti's cache; it never uploads. It verifies nothing about proofs.
 """
@@ -26,7 +29,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent.parent
-IMPORT = re.compile(r"^\s*(?:(?:public|private|meta)\s+)*import\s+(?:all\s+)?(TauCeti(?:\.[\w']+)+)\s*$")
+# An import line may end in a comment, such as `-- shake: keep`.
+IMPORT = re.compile(r"^\s*(?:(?:public|private|meta)\s+)*import\s+(?:all\s+)?(TauCeti(?:\.[\w']+)+)\s*(?:--.*)?$")
 
 
 def say(message):
@@ -67,13 +71,34 @@ def check_trusted_files():
                 raise ValueError(f"{name} imports a Tau Ceti module: {line.strip()}")
 
 
+def tauceti_imports(path):
+    imports = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        match = IMPORT.match(line)
+        if match:
+            imports.add(match.group(1))
+    return imports
+
+
 def imported_modules():
-    modules = set()
+    """The Tau Ceti modules imported under `src`, closed under Tau Ceti's own imports (public,
+    private and `meta` alike)."""
+    pending = set()
     for path in (ROOT / "src").rglob("*.lean"):
-        for line in path.read_text(encoding="utf-8").splitlines():
-            match = IMPORT.match(line)
-            if match:
-                modules.add(match.group(1))
+        pending |= tauceti_imports(path)
+    direct = len(pending)
+    source = ROOT / ".lake" / "packages" / "TauCeti"
+    modules = set()
+    while pending:
+        module = pending.pop()
+        if module in modules:
+            continue
+        modules.add(module)
+        path = source.joinpath(*module.split(".")).with_suffix(".lean")
+        if not path.is_file():
+            raise ValueError(f"{module} is imported but {path} is missing")
+        pending |= tauceti_imports(path) - modules
+    say(f"{direct} Tau Ceti module(s) imported under src, {len(modules)} with their imports")
     return sorted(modules)
 
 
@@ -102,7 +127,7 @@ def main():
     if not modules:
         say("no Tau Ceti module is imported under src; nothing more to fetch")
         return 0
-    say(f"fetching oleans for the {len(modules)} imported Tau Ceti module(s)")
+    say(f"fetching oleans for those {len(modules)} Tau Ceti module(s)")
     code = run_lake(["-q", "build", *modules], env)
     if code:
         say("fetching Tau Ceti oleans failed")

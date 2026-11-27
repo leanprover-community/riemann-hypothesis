@@ -406,7 +406,7 @@ lemma sum_phiInvToBdR_map_mul_mem_of_mem_valueField (f : Ainf →ₗ[k.S] k.S) {
           f.map_smul ⟨φ ^ a • s, by simp [phi_pow_smul, ← k.coe_phi_pow]⟩ (φ ^ a • x) }
   -- Applying the extension of `f'` to `BPlus` multiplies the weighted sum by some `u : BdRPlus`.
   let term (i : Σ l, q l) : BPlus :=
-    i.2.1.1 * Chart.ainfToBPlus ((φ ^ a)⁻¹ • i.2.1.2 • r i.1)
+    i.2.val.1 * Chart.ainfToBPlus ((φ ^ a)⁻¹ • i.2.val.2 • r i.1)
   obtain ⟨u, hu⟩ := k.isChartOf.dvd_extendToBPlus _
     (fun i : Σ l, q l ↦ (c i.1 i.2).property) f' term
   simp [term, f', k.extendToBPlus_mul, k.extendToBPlus_ainfToBPlus,
