@@ -30,7 +30,9 @@ Notions from other files:
 * A `χ : New.QZChar Γ` is a continuous character `Γ → ℚ/ℤ`; `New.QZChar.toHom χ` and
   `New.QZChar.abelianLift χ` are its multiplicative forms on `Γ` and `Γ^ab`. "`χ` cuts out `L`" is
   the instance `IsProGalois (ker χ) L Ω`, with `New.QZChar.ker`.
-* `New.IsTotallyPositive x`: every ring homomorphism `K → ℝ` sends `x` to a positive number.
+* `NumberField.IsTotallyPositive x` (from Tau Ceti): `x` is positive at every real place, that is
+  (`New.isTotallyPositive_iff_forall_ringHom`) every ring homomorphism `K → ℝ` sends `x` to a
+  positive number.
 
 ## Relation to the literature
 
@@ -42,6 +44,7 @@ Known; see `Lib.ClassField.Global.AlbertBrauerHasseNoether` for sources.
 namespace New
 
 open Subgroup QZChar QuotientGroup Set Module Function IsScalarTower Algebra
+open NumberField (IsTotallyPositive)
 
 variable (Γ : Type)
   {K L : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [EmbeddedNumberField K]
@@ -189,7 +192,8 @@ lemma abelianLift_artinMap_eq_one_iff (a : (𝔸f K)ˣ) :
   -- in the kernel of `χ ∘ artinMap`, which has index `[L : K]`, while the second inequality
   -- (`second_inequality`) bounds the index of `W` by `[L : K]`. Hence the two groups are equal.
   let P : Subgroup Kˣ := ⨅ φ : K →+* ℝ, (Units.posSubgroup ℝ).comap (Units.map φ)
-  have h_mem_P (x : Kˣ) : x ∈ P ↔ IsTotallyPositive x.val := mem_iInf
+  have h_mem_P (x : Kˣ) : x ∈ P ↔ IsTotallyPositive x.val :=
+    mem_iInf.trans isTotallyPositive_iff_forall_ringHom.symm
   let W : Subgroup (𝔸f K)ˣ := P.map principalIdele ⊔ (Units.map (adeleNorm K L)).range
   -- `W` is open: an idele `b` near `1` is a unit everywhere and `χ` kills its local symbols,
   -- so it is a norm.

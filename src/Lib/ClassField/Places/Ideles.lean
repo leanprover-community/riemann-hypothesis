@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.NumberTheory.NumberField.ClassNumber
+public import TauCeti.NumberTheory.NumberField.TotallyPositive
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.General.Measure.HaarModulus
@@ -220,8 +221,19 @@ lemma eventually_unramified {C : Type*} [CommGroup C] (ψ : (𝔸f K)ˣ →* C) 
 
 /-! ### Totally positive elements -/
 
-/-- An element x of K is totally positive if φ(x) > 0 for every ring homomorphism φ : K → ℝ. -/
-def IsTotallyPositive (x : K) : Prop := ∀ φ : K →+* ℝ, 0 < φ x
+omit [NumberField K] in
+/-- An element of `K` is totally positive (`NumberField.IsTotallyPositive`, positive at every real
+place) exactly when every ring homomorphism `K →+* ℝ` sends it to a positive number. -/
+lemma isTotallyPositive_iff_forall_ringHom {x : K} :
+    NumberField.IsTotallyPositive x ↔ ∀ φ : K →+* ℝ, 0 < φ x := by
+  refine NumberField.isTotallyPositive_iff.trans ⟨fun h φ ↦ ?_, fun h w hw ↦ h _⟩
+  have hφ : NumberField.ComplexEmbedding.IsReal (Complex.ofRealHom.comp φ) := by
+    ext; simp
+  convert h _ (NumberField.InfinitePlace.isReal_mk_iff.mpr hφ)
+  refine RingHom.ext fun y ↦ Complex.ofReal_injective ?_
+  rw [NumberField.InfinitePlace.embedding_of_isReal_apply,
+    NumberField.InfinitePlace.embedding_mk_eq_of_isReal hφ]
+  rfl
 
 end New
 
@@ -404,7 +416,8 @@ lemma finiteIndex_idele_subgroup_of_isOpen (H : Subgroup (𝔸f K)ˣ) (h_open : 
   let sgn : Kˣ →* ((K →+* ℝ) → SignType)ˣ :=
     Units.map (.pi fun φ : K →+* ℝ ↦ signHom.toMonoidHom.comp φ.toMonoidHom)
   have h_ker_le : sgn.ker ≤ H.comap principalIdele := fun x hx ↦
-    h_pos x fun φ ↦ sign_eq_one_iff.mp (congrFun (congrArg Units.val hx) φ)
+    h_pos x <| isTotallyPositive_iff_forall_ringHom.mpr fun φ ↦
+      sign_eq_one_iff.mp (congrFun (congrArg Units.val hx) φ)
   obtain ⟨c, hc⟩ := exists_idele_classGroup_hom (K := K)
   rw [finiteIndex_iff, ← relIndex_mul_index (le_sup_left (b := P)),
     ← relIndex_mul_index (le_sup_left (a := H ⊔ P) (b := idelesUnitOff ∅))]

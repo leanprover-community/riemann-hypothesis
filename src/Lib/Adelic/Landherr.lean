@@ -163,7 +163,7 @@ lemma New.exists_sq_add_sq_quadraticAlgebra {E : Type} [Field E] [CMType E] [Has
       have : NumberField (QuadraticAlgebra _ μ 0) := .of_module_finite (maximalRealSubfield E) _
       exact key (algebraMap _ (QuadraticAlgebra _ μ 0)) ω omega_mul_omega_eq_mk
   intro M _ _ i m hm
-  refine exists_norm_eq_of_forall_mem_closure (fun σ ↦ hp_pos (σ.comp i)) fun w ↦ ?_
+  refine exists_norm_eq_of_forall_mem_closure (hp_pos.map i) fun w ↦ ?_
   -- Let `u` be a place of `E` above the place of `E⁺` below `w`.
   obtain ⟨u, hu⟩ := FinPlace.comap_surjective (algebraMap (maximalRealSubfield E) E) (w.comap i)
   -- The adele `a` that is `q⁻¹` on `S.conjClosure` and `p` elsewhere is a real unit, and its
@@ -301,7 +301,7 @@ lemma Core.exists_form_eq_one [HasPrimitiveRoot5040 E]
                              (principalIdele (.mk0 _ hu))
   obtain ⟨v, -, hv_unit⟩ := exists_form_pos_and_unit z hz hS
   -- Each real embedding of `E⁺` is the restriction of some `Φ w`.
-  have h_tot : IsTotallyPositive (N u) := fun φ ↦ by
+  have h_tot : IsTotallyPositive (N u) := isTotallyPositive_iff_forall_ringHom.mpr fun φ ↦ by
     obtain ⟨w, hw⟩ := bijective_cmType_restrict.surjective (ofRealHom.comp φ)
     exact (hu_pos w).trans_eq (congrArg re (RingHom.congr_fun hw (N u)))
   -- With `2 B = uᴴ K v + vᴴ K u` and `μ = N v * N u - B²`, write `N u` as a sum of the two squares

@@ -266,7 +266,8 @@ lemma exists_sign_eq_principalIdele_mul_adeleNorm {χ : QZChar Gal(Ω/maximalRea
   refine ⟨a * x, z, fun φ ↦ ?_, by simp [mul_assoc, ← hxz]⟩
   -- `x` is totally positive, so `a * x` has the signs of `a`
   have hφx_pos : 0 < φ (x.val : L) := by
-    simpa using zero_lt_real.mpr (hx_pos (complexEmbedding_isReal (φ.comp K.subtype)).embedding)
+    simpa using zero_lt_real.mpr <| isTotallyPositive_iff_forall_ringHom.mp hx_pos
+      (complexEmbedding_isReal (φ.comp K.subtype)).embedding
   simpa [mul_assoc] using mul_pos (ha_sign φ) hφx_pos
 
 end Character
