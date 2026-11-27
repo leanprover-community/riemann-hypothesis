@@ -638,8 +638,8 @@ lemma New.BesselSystem.isL2Contraction_gramSection {𝔰 : Shape} {B P c : ℝ} 
 /-- For `1 ≤ M`, `M₀ = M ^ (9 n)` and `P = (M₀ ^ 5) ^ n`, the product `P ^ (2000 n²) · M₀ ^
 5 · (M · P ^ 20 · P ^ 20) ^ (2 n²)` equals `M ^ (93600 n⁴ + 2 n² + 45 n)`, hence is at most
 `M ^ (10⁵ n⁴)`. -/
-lemma New.scale_mul_le_pow {M M₀ P : ℝ} {n : ℕ} (hM : 1 ≤ M) (hM₀ : M₀ = M ^ (9 * n))
-    (hP : P = (M₀ ^ 5) ^ n) :
+lemma New.scale_mul_le_pow {R : Type*} [CommSemiring R] [PartialOrder R] [IsOrderedRing R]
+    {M M₀ P : R} {n : ℕ} (hM : 1 ≤ M) (hM₀ : M₀ = M ^ (9 * n)) (hP : P = (M₀ ^ 5) ^ n) :
     P ^ (2000 * n ^ 2) * (M₀ ^ 5 * (M * (P ^ 20 * P ^ 20)) ^ (2 * n ^ 2)) ≤
       M ^ (10 ^ 5 * n ^ 4) := by
   have h_le_pow_four : n ≤ n ^ 4 := Nat.le_self_pow four_ne_zero n
