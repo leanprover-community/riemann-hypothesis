@@ -20,7 +20,7 @@ Notions from other files:
 * `primeRemainder d q z` is `R_q(z) = ∑_{n ≤ z} λ(n) (1 / n - 1 / z) - log z / φ(q) - c_q` with
   `λ = lambdaKResidueClass d q` and `c_q = (logDerivMean d q 1).re`. The function `logDerivMean d q`
   is `(∑_ψ (L'/L(quadTwist ψ d) - L'/L(ψ)) - 1) / φ(q)`, summed over the Dirichlet characters `ψ`
-  modulo `q`, where `L = entireL` is the `L`-function made entire.
+  modulo `q`, where `L = DirichletCharacter.entireLFunction` is the `L`-function made entire.
 * `D.Φ` is the group of the `D.f` infinite places; `D.aPlaces` (`Φ_a`, the `a`-places) are those
   `≡ 1` modulo `q₀`, and `D.bPlaces` (`Φ_b`, the `b`-places) is a set of places `≡ -1` modulo `q₀`.
   The class of a place modulo `q₀` is its image under `P.placeClass`, and `-n τ` stands for

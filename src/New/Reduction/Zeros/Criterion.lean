@@ -3,6 +3,7 @@ module
 public import New.Reduction.Zeros.PrimeError
 import Lib.Analytic.Landau
 import Lib.Analytic.QuadraticTwist
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.Entire
 
 /-!
 # The one-sided criterion for a zero-free half-plane
@@ -14,7 +15,7 @@ all `d` of a suitable class, excludes zeros `s ≠ 1` of the `L(s, ψ)`, `ψ` mo
 Notions from other files:
 * `primeRemainder d q x`: the remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`,
   where `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `0` otherwise, and `c_q` is a constant.
-* `entireL ψ`: the entire function `L(s, ψ)`, times `s - 1` if `ψ` is principal.
+* `ψ.entireLFunction` (Tau Ceti): the entire function `L(s, ψ)`, times `s - 1` if `ψ` is principal.
 * `quadTwist ψ d`: the product of `ψ` and the Legendre symbol `(·/d)`.
 * `IsPolar E r`: the transform `∫₀^∞ E(v) e^{(1-s)v} dv` continues meromorphically, with at most
   simple poles in `re s > 0` and residues `r`.
@@ -46,8 +47,8 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
     ψ.LFunction ρ ≠ 0 := by
   -- Choose `d` with no twisted zero in `β ≤ re s`, `|im s| ≤ |im ρ|`. There the residue `r s` of
   -- the transform of the remainder (`IsPolar`) is `n(s) / (φ(q₀) s (1 - s))`, with `n(s)` the sum
-  -- of the orders at `s` of the `entireL χ` (`L(s, χ)`, times `s - 1` for principal `χ`), `χ` mod
-  -- `q₀`. It is `≥ 0` at real `x > β`, so `0` at `ρ` by Landau's lemma.
+  -- of the orders at `s` of the `χ.entireLFunction` (`L(s, χ)`, times `s - 1` for principal `χ`),
+  -- `χ` mod `q₀`. It is `≥ 0` at real `x > β`, so `0` at `ρ` by Landau's lemma.
   have h_mod (d : Primes) (hd : ((d : ℕ) : ZMod q₀) = d₀) : (d : ℕ) ≡ d₀ [MOD q₀] :=
     (ZMod.natCast_eq_natCast_iff d d₀ q₀).1 hd
   have h_class (d : Primes) (hd : ((d : ℕ) : ZMod q₀) = d₀) : (d : ℕ) % 8 = 7 ∧ q₀.Coprime d := by
@@ -55,16 +56,18 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
     exact ⟨h_mod_eight.trans hd₀_mod, Coprime.symm ((h_mod d hd).gcd_eq.trans hd₀_cop)⟩
   obtain ⟨d, hd, h_twist⟩ : ∃ d : Primes, ((d : ℕ) : ZMod q₀) = d₀ ∧
       ∀ (χ : DirichletCharacter ℂ q₀) (s : ℂ),
-        β ≤ re s → |im s| ≤ |ρ.im| → entireL (quadTwist χ d) s ≠ 0 :=
-    exists_entireL_quadTwist_ne_zero |ρ.im| hβ ((ZMod.isUnit_iff_coprime d₀ q₀).2 hd₀_cop) h_class
+        β ≤ re s → |im s| ≤ |ρ.im| → (quadTwist χ d).entireLFunction s ≠ 0 :=
+    exists_entireLFunction_quadTwist_ne_zero |ρ.im| hβ ((ZMod.isUnit_iff_coprime d₀ q₀).2 hd₀_cop)
+      h_class
   obtain ⟨hd_mod, hd_cop⟩ := h_class d hd
-  let n (s : ℂ) : ℕ := ∑ χ : DirichletCharacter ℂ q₀, analyticOrderNatAt (entireL χ) s
+  let n (s : ℂ) : ℕ := ∑ χ : DirichletCharacter ℂ q₀, analyticOrderNatAt χ.entireLFunction s
   obtain ⟨r, h_polar, hr⟩ : ∃ r : ℂ → ℂ, IsPolar (fun v : ℝ ↦ primeRemainder d q₀ v.exp) r ∧
       ∀ s : ℂ, β < s.re → |s.im| ≤ |ρ.im| → r s = n s / φ q₀ / (s * (1 - s)) := by
     refine ⟨_, isPolar_primeRemainder hd_mod hd_cop, fun s h_re h_im ↦ ?_⟩
     have h_twist_order (χ : DirichletCharacter ℂ q₀) :
-        analyticOrderNatAt (entireL (quadTwist χ d)) s = 0 :=
-      (analyticOrderNatAt_entireL_eq_zero_iff (quadTwist χ d) s).2 (h_twist χ s h_re.le h_im)
+        analyticOrderNatAt (quadTwist χ d).entireLFunction s = 0 :=
+      (analyticOrderNatAt_entireLFunction_eq_zero_iff (quadTwist χ d) s).2
+        (h_twist χ s h_re.le h_im)
     simp [n, h_twist_order]
   -- `x (1 - x) ≥ 0` for `0 ≤ x ≤ 1`, and there is no zero at `x ≥ 1`.
   have h_nonneg (x : ℝ) (hx : β < x) : 0 ≤ (r x).re := by
@@ -74,7 +77,8 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
     · have h_denom : 0 ≤ x * (1 - x) := mul_nonneg (by linarith) (sub_nonneg.2 hx_le)
       positivity
     · have hn : n x = 0 := Finset.sum_eq_zero fun χ _ ↦
-        (analyticOrderNatAt_entireL_eq_zero_iff χ x).2 (entireL_ne_zero χ hx_ge)
+        (analyticOrderNatAt_entireLFunction_eq_zero_iff χ x).2
+          (χ.entireLFunction_ne_zero_of_one_le_re hx_ge)
       simp [hn]
   obtain ⟨A, hA⟩ := h_bound d (h_mod d hd)
   have h_exp : ∀ᶠ v : ℝ in atTop, primeRemainder d q₀ v.exp ≤ A * Real.exp ((β - 1) * v) := by
@@ -85,6 +89,7 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
   rw [hr ρ hρ_re le_rfl] at h_landau
   have h_count : n ρ = 0 := by
     simpa [hρ_ne_zero, sub_ne_zero.2 hρ_ne.symm, NeZero.ne] using h_landau
-  have h_entire : entireL ψ ρ ≠ 0 := (analyticOrderNatAt_entireL_eq_zero_iff ψ ρ).1
-    (Finset.sum_eq_zero_iff.1 h_count ψ (Finset.mem_univ ψ))
-  exact (entireL_ne_zero_iff ψ hρ_ne).1 h_entire
+  have h_entire : ψ.entireLFunction ρ ≠ 0 :=
+    (analyticOrderNatAt_entireLFunction_eq_zero_iff ψ ρ).1
+      (Finset.sum_eq_zero_iff.1 h_count ψ (Finset.mem_univ ψ))
+  exact (entireLFunction_ne_zero_iff ψ hρ_ne).1 h_entire

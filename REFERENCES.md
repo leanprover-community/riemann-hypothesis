@@ -165,7 +165,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Milne, Étale Cohomology | place confirmed at second hand | `Lib/Cohomology/ProjectiveLine/ConstantLineFormula` |
 | Milne, Étale Cohomology | work found, no place given | `Lib/Cohomology/ProjectiveLine/TiltedLineFormula` |
 | Montgomery, Vaughan, Multiplicative Number Theory I | compared, place confirmed | `Lib/Analytic/DirichletTheta`, `Lib/Analytic/PolyaVinogradov` |
-| Montgomery, Vaughan, Multiplicative Number Theory I, 2007 | compared, place confirmed | `Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth`, `Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion`, `Lib/Analytic/Primes` |
+| Montgomery, Vaughan, Multiplicative Number Theory I, 2007 | compared, place confirmed | `Lib/Analytic/Primes` |
 | Montgomery–Vaughan, Multiplicative Number Theory I, 2007 | compared, place confirmed | `New/Reduction/Zeros/PrimeNumberTheorem` |
 | Muić, Smooth cuspidal automorphic forms and integrable discrete series | work found, no place given | `Lib/Adelic/AutomorphicForms/Cuspidality` |
 | Mumford, On the equations defining abelian varieties II, Invent. Math. 3 (1967) 75–135 | place confirmed at second hand | `Lib/Shimura/IntegralModel/UniversalFamily`, `Lib/Shimura/ThetaModuli/UniversalFamily` |

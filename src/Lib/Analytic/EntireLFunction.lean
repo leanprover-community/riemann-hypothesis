@@ -1,6 +1,6 @@
 module
 
-import TauCeti.Analysis.Contour.Residue.LogDeriv
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.Entire
 import TauCeti.Analysis.LaplaceTransform.Elementary
 public import Mathlib.Analysis.Meromorphic.Basic
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
@@ -8,14 +8,14 @@ import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 
 /-!
-# Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions
+# Quadratic twists, polar functions and entire Dirichlet L-functions
 
 This part shows that the twist of a Dirichlet character by the Legendre symbol of an odd prime not
 dividing the modulus is not principal. It defines `New.IsPolar`, the condition that a Laplace-type
 transform of an error term continues meromorphically with at most simple poles in the right
-half-plane. It also expresses `∑ χ(n) Λ(n) n^{-s}` through the logarithmic derivative of
-`New.entireL χ` and identifies the residues of that logarithmic derivative with the orders of the
-zeros of `New.entireL χ`.
+half-plane. It also adds two facts about `DirichletCharacter.entireLFunction χ`: away from `1` it
+vanishes where `L(s, χ)` does, and its order of vanishing at `s` is zero exactly when it is nonzero
+at `s`.
 
 ## Main definitions and results
 
@@ -24,14 +24,11 @@ zeros of `New.entireL χ`.
 * `New.IsPolar`: `E` is measurable, `|E v| ≤ C e^v` for `v ≥ 0`, and `∫₀^∞ E(v) e^{(1-s)v} dv`
   continues to a meromorphic function of `s` with at most simple poles of residue `r ρ` in
   `re ρ > 0`.
-* `New.LSeriesHasSum_mul_vonMangoldt`: `∑ χ(n) Λ(n) n^{-s}` in terms of the logarithmic derivative
-  of `New.entireL χ`.
-* `New.tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt`: the residues of that logarithmic
-  derivative are the orders of the zeros of `New.entireL χ`.
+* `New.entireLFunction_ne_zero_iff`: for `s ≠ 1`, `entireLFunction χ s ≠ 0` iff `L(s, χ) ≠ 0`.
 
 Notions from other files:
-* `New.entireL`: The entire function equal to L(s, χ) if χ is not principal, and to the continuation
-  of (s − 1)L(s, χ) if χ is principal.
+* `DirichletCharacter.entireLFunction` (Tau Ceti): the entire function equal to L(s, χ) if χ is not
+  principal, and to the continuation of (s − 1)L(s, χ) if χ is principal.
 
 ## Relation to the literature
 
@@ -115,84 +112,23 @@ lemma laplace_pow {s : ℂ} (hs : 0 < s.re) (k : ℕ) :
     ∫ t : ℝ in Ioi 0, t ^ k * Complex.exp (-s * t) = k ! / s ^ (k + 1) := by
   simpa only [smul_eq_mul, mul_comm] using (TauCeti.hasLaplace_pow k hs).integral_eq
 
-/-! ### The logarithmic derivative of a Dirichlet L-function -/
-
-@[fun_prop]
-lemma analyticAt_entireL (s : ℂ) : AnalyticAt ℂ (entireL χ) s := by
-  refine Differentiable.analyticAt ?_ s
-  rw [entireL]
-  split_ifs with hχ
-  exacts [differentiable_LFunctionTrivChar₁ N, differentiable_LFunction hχ]
+/-! ### The entire L-function of a Dirichlet character -/
 
 /-- Away from `s = 1`, removing the possible pole preserves nonvanishing. -/
-lemma entireL_ne_zero_iff (hs : s ≠ 1) : entireL χ s ≠ 0 ↔ χ.LFunction s ≠ 0 := by
-  rw [entireL]
-  split_ifs with hχ
-  · subst χ
-    rw [LFunctionTrivChar₁, Function.update_of_ne hs, mul_ne_zero_iff]
-    exact and_iff_right (sub_ne_zero.2 hs)
-  · rfl
-
-/-- `entireL χ` has no zero in `re s ≥ 1`. -/
-lemma entireL_ne_zero (hs : 1 ≤ s.re) : entireL χ s ≠ 0 := by
-  obtain rfl | hs_ne := eq_or_ne s 1
-  · rw [entireL]
-    split_ifs with hχ
-    · exact LFunctionTrivChar₁_apply_one_ne_zero N
-    · exact LFunction_ne_zero_of_one_le_re χ (.inl hχ) hs
-  · exact (entireL_ne_zero_iff χ hs_ne).2 (LFunction_ne_zero_of_one_le_re χ (.inr hs_ne) hs)
-
-/-- For `re s > 1`, the series `∑ χ(n) Λ(n) n^{-s}` has the sum `-L'/L(s, χ)`, written through
-`entireL χ`, which is `L(s, χ)`, or `(s - 1) L(s, χ)` for principal `χ`. The term `1 / (s - 1)` is
-present only for `χ = 1`. -/
-lemma LSeriesHasSum_mul_vonMangoldt (hs : 1 < s.re) :
-    LSeriesHasSum (fun n : ℕ ↦ χ n * Λ n) s
-      ((if χ = 1 then 1 else 0) / (s - 1) - logDeriv (entireL χ) s) := by
-  refine LSeriesHasSum_iff.2 ⟨χ.LSeriesSummable_twist_vonMangoldt hs, ?_⟩
-  -- The series is `-L' / L`; for `χ = 1` the factor `s - 1` of `entireL` adds `1 / (s - 1)` to the
-  -- logarithmic derivative.
-  have hs_ne : s ≠ 1 := ne_of_apply_ne re hs.ne'
-  have h_series : LSeries (fun n : ℕ ↦ χ n * Λ n) s = -deriv χ.LFunction s / χ.LFunction s := by
-    rw [χ.deriv_LFunction_eq_deriv_LSeries hs, χ.LFunction_eq_LSeries hs]
-    exact χ.LSeries_twist_vonMangoldt_eq hs
-  have hL_ne : χ.LFunction s ≠ 0 := χ.LFunction_ne_zero_of_one_le_re (.inr hs_ne) hs.le
-  rw [h_series, entireL, logDeriv_apply]
+lemma entireLFunction_ne_zero_iff (hs : s ≠ 1) : χ.entireLFunction s ≠ 0 ↔ χ.LFunction s ≠ 0 := by
   obtain rfl | hχ := eq_or_ne χ 1
-  · rw [ite_eq_left rfl, ite_eq_left rfl, deriv_LFunctionTrivChar₁_apply_of_ne_one N hs_ne,
-      LFunctionTrivChar₁, Function.update_of_ne hs_ne, LFunctionTrivChar]
-    field [sub_ne_zero.2 hs_ne]
-  · simp [hχ, neg_div]
+  · rw [entireLFunction_one_apply hs, mul_ne_zero_iff]
+    exact and_iff_right (sub_ne_zero.2 hs)
+  · rw [entireLFunction_of_ne_one hχ]
 
 /-- A function continuous at `s` has residue zero there. -/
 lemma tendsto_sub_mul_of_continuousAt {f : ℂ → ℂ} (hf : ContinuousAt f s) :
     Tendsto (fun z : ℂ ↦ (z - s) * f z) (𝓝[≠] s) (𝓝 0) := by
   simpa using ((tendsto_id.sub_const s).mul hf).mono_left nhdsWithin_le_nhds
 
-lemma analyticOrderAt_entireL_ne_top (s : ℂ) : analyticOrderAt (entireL χ) s ≠ ⊤ := by
-  -- An entire function of infinite order at a point is zero, but `entireL χ 1 ≠ 0`.
-  exact fun h_top ↦ entireL_ne_zero χ le_rfl
-    (congrFun ((analyticOrderAt_eq_top_iff_eq_zero s (by fun_prop)).1 h_top) 1)
-
-lemma analyticOrderNatAt_entireL_eq_zero_iff (s : ℂ) :
-    analyticOrderNatAt (entireL χ) s = 0 ↔ entireL χ s ≠ 0 := by
-  rw [← (analyticAt_entireL χ s).analyticOrderAt_eq_zero,
-    ← Nat.cast_analyticOrderNatAt (analyticOrderAt_entireL_ne_top χ s), Nat.cast_eq_zero]
-
-/-- The logarithmic derivative of `entireL χ`, which is `L(s, χ)`, or `(s - 1) L(s, χ)` for
-principal `χ`, has at most a simple pole at `s`. Its residue is the order of vanishing of
-`entireL χ` at `s`. -/
-lemma tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt (s : ℂ) :
-    Tendsto (fun z : ℂ ↦ (z - s) * logDeriv (entireL χ) z) (𝓝[≠] s)
-      (𝓝 (analyticOrderNatAt (entireL χ) s : ℂ)) := by
-  let n := analyticOrderNatAt (entireL χ) s
-  have h_ord : meromorphicOrderAt (entireL χ) s = ((n : ℤ) : WithTop ℤ) := by
-    rw [(analyticAt_entireL χ s).meromorphicOrderAt_eq,
-      ← Nat.cast_analyticOrderNatAt (analyticOrderAt_entireL_ne_top χ s)]
-    rfl
-  have h_meromorphic := (analyticAt_entireL χ s).meromorphicAt
-  rw [← Int.cast_natCast,
-    ← TauCeti.Contour.residue_logDeriv_eq_meromorphicOrderAt h_meromorphic h_ord]
-  exact TauCeti.Contour.tendsto_sub_mul_nhds_residue h_meromorphic.logDeriv
-    (TauCeti.Contour.neg_one_le_meromorphicOrderAt_logDeriv h_meromorphic)
+lemma analyticOrderNatAt_entireLFunction_eq_zero_iff (s : ℂ) :
+    analyticOrderNatAt χ.entireLFunction s = 0 ↔ χ.entireLFunction s ≠ 0 := by
+  rw [← (χ.analyticAt_entireLFunction s).analyticOrderAt_eq_zero,
+    ← Nat.cast_analyticOrderNatAt (χ.analyticOrderAt_entireLFunction_ne_top s), Nat.cast_eq_zero]
 
 end New

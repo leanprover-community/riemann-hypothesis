@@ -20,7 +20,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/Analytic/EntireLFunction.lean` | `New.entireL_ne_zero` | `DirichletCharacter.continuousOn_neg_logDeriv_LFunctionTrivChar₁` | `Mathlib/NumberTheory/LSeries/DirichletContinuation.lean` |
 | `src/Lib/Analytic/EntireLFunction.lean` | `New.tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt` | `AnalyticAt.tendsto_mul_logDeriv_simple_zero` | `Mathlib/Analysis/Calculus/LogDeriv.lean` |
 | `src/Lib/Analytic/PolyaVinogradov.lean` | `New.filter_dvd_Ioc_eq_image_mul` | `Int.Ioc_filter_dvd_eq` | `Mathlib/Data/Int/CardIntervalMod.lean` |
-| `src/Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth.lean` | `norm_regularL_le_linear` | `LSeries_tendsto_sub_mul_nhds_one_of_tendsto_sum_div_aux₃` | `Mathlib/NumberTheory/LSeries/SumCoeff.lean` |
 | `src/Lib/Analytic/Primes.lean` | `New.hasSum_residueClass_one` | `ArithmeticFunction.vonMangoldt.residueClass_eq`, `ArithmeticFunction.vonMangoldt.LSeries_residueClass_eq` | `Mathlib/NumberTheory/LSeries/PrimesInAP.lean` |
 | `src/Lib/Analytic/ZeroSymmetry.lean` | `New.prod_euler_factor_ne_zero` | `DirichletCharacter.LFunction_changeLevel` | `Mathlib/NumberTheory/LSeries/DirichletContinuation.lean` |
 | `src/Lib/CM/Integrality/LogTheta.lean` | `New.CMLattice.subst_mem_multiSeriesRing` | `PowerSeries.subst_toMvPowerSeries` | `Mathlib/RingTheory/MvPowerSeries/Equiv.lean` |

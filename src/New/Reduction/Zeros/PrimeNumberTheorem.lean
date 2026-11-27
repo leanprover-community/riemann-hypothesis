@@ -3,7 +3,7 @@ module
 import Mathlib.MeasureTheory.Function.Floor
 public import New.Reduction.Zeros.PrimeError
 import Lib.Analytic.PrimeNumberTheorem.Tauberian
-import Lib.Analytic.PrimeNumberTheorem.ZeroFreeRegion
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.LogDeriv.ZeroFreeRegion
 
 /-!
 # The prime number theorem for the remainders `R_q`
@@ -16,8 +16,8 @@ to `q` its absolute value is at most `(log y) ^ (-B)` for all large `y`, for eve
 Notions from other files:
 * `lambdaKResidueClass d q n` is `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q`, and `0` for other
   `n`.
-* `entireL ψ` is `L(s, ψ)`, multiplied by `s - 1` if `ψ` is principal; `quadTwist ψ d` is the
-  product of `ψ` and the Legendre symbol `(·/d)`.
+* `ψ.entireLFunction` (Tau Ceti) is `L(s, ψ)`, multiplied by `s - 1` if `ψ` is principal;
+  `quadTwist ψ d` is the product of `ψ` and the Legendre symbol `(·/d)`.
 * `logDerivMean d q` is the function `G_q` that continues `∑ λ(n) n ^ (-s) - s / (φ(q) (s - 1))`
   when `d` is odd and prime to `q`.
 * `primeRemainder d q y` is `R_q(y) = ∑_{n ≤ y} λ(n) (1/n - 1/y) - log y / φ(q) - c_q` with
@@ -150,13 +150,13 @@ lemma abs_primeRemainder_exp_sub_le {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v) (
     _ = 13 * (rexp (v - u) - 1) := by simp [Real.exp_sub, field]
     _ ≤ 26 * (v - u) := by linarith
 
-/-- For a character `ψ` mod `q` let `L_ψ = entireL ψ` be `L(s, ψ)`, times `s - 1` if `ψ` is
+/-- For a character `ψ` mod `q` let `L_ψ = ψ.entireLFunction` be `L(s, ψ)`, times `s - 1` if `ψ` is
 principal, and let `ψ' = quadTwist ψ d` be `ψ (·/d)`. If all `logDeriv L_ψ` and `logDeriv L_ψ'` have
 norm at most `C` at `s`, then `logDerivMean d q = (∑_ψ (logDeriv L_ψ' - logDeriv L_ψ) - 1) / φ(q)`
 has norm at most `2 C + 1` at `s`, since there are `φ(q)` characters mod `q`. -/
 lemma norm_logDerivMean_le {s : ℂ} {C : ℝ}
-    (h_char : ∀ ψ : DirichletCharacter ℂ q, ‖logDeriv (entireL ψ) s‖ ≤ C)
-    (h_twist : ∀ ψ : DirichletCharacter ℂ q, ‖logDeriv (entireL (quadTwist ψ d)) s‖ ≤ C) :
+    (h_char : ∀ ψ : DirichletCharacter ℂ q, ‖logDeriv ψ.entireLFunction s‖ ≤ C)
+    (h_twist : ∀ ψ : DirichletCharacter ℂ q, ‖logDeriv (quadTwist ψ d).entireLFunction s‖ ≤ C) :
     ‖logDerivMean d q s‖ ≤ 2 * C + 1 := by
   have hφ : (1 : ℝ) ≤ φ q := mod_cast totient_pos.2 (NeZero.pos q)
   have h_sum := norm_sum_le_of_le univ fun ψ _ ↦ norm_sub_le_of_le (h_twist ψ) (h_char ψ)
@@ -178,12 +178,13 @@ lemma eventually_norm_logDerivMean_div_le : ∀ᶠ l : ℝ in atTop, ∀ s : ℂ
   -- the exponent `26` in place of `25` absorbs the constants.
   have h_char : ∀ᶠ l : ℝ in atTop, ∀ (ψ : DirichletCharacter ℂ q) (s : ℂ),
       1 - 1 / l ^ 25 ≤ s.re → ‖s‖ ≤ rexp l →
-        entireL ψ s ≠ 0 ∧ ‖logDeriv (entireL ψ) s‖ ≤ 2 * l ^ 25 :=
-    eventually_all.2 eventually_norm_logDeriv_entireL_le
+        ψ.entireLFunction s ≠ 0 ∧ ‖logDeriv ψ.entireLFunction s‖ ≤ 2 * l ^ 25 :=
+    eventually_all.2 DirichletCharacter.eventually_entireLFunction_ne_zero_and_norm_logDeriv_le
   have h_twist : ∀ᶠ l : ℝ in atTop, ∀ (ψ : DirichletCharacter ℂ q) (s : ℂ),
       1 - 1 / l ^ 25 ≤ s.re → ‖s‖ ≤ rexp l →
-        entireL (quadTwist ψ d) s ≠ 0 ∧ ‖logDeriv (entireL (quadTwist ψ d)) s‖ ≤ 2 * l ^ 25 :=
-    eventually_all.2 fun ψ ↦ eventually_norm_logDeriv_entireL_le (quadTwist ψ d)
+        (quadTwist ψ d).entireLFunction s ≠ 0 ∧
+          ‖logDeriv (quadTwist ψ d).entireLFunction s‖ ≤ 2 * l ^ 25 :=
+    eventually_all.2 fun ψ ↦ (quadTwist ψ d).eventually_entireLFunction_ne_zero_and_norm_logDeriv_le
   filter_upwards [h_char, h_twist, eventually_ge_atTop (10 : ℝ)]
     with l hl_char hl_twist hl s h_re h_norm
   have hl_two : 2 ≤ l := by linarith

@@ -10,6 +10,7 @@ public import Lib.CM.ConjugateCurve
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.General.Algebra.AdicCompletion
 import Lib.Analytic.EntireLFunction
+import TauCeti.NumberTheory.DirichletCharacter.LFunction.Entire
 import Lib.CM.Integrality.IsogenyIntegrality
 import Lib.CM.KroneckerLimit
 import Lib.ClassField.Places.ValuationSubrings
@@ -201,13 +202,15 @@ seal Finset.prod in
 /-- The Euler product over the primes of `K = ℚ(√-d)` with all coefficients `1`, that is, the
 Dedekind zeta function of `K`, is `ζ(s) L(s, χ)` for real `s > 1`. Here `quadTwist (N := 1) 1 d` is
 the trivial character modulo `1` twisted by the Legendre symbol, that is, the character
-`χ = (· / d)` modulo `1 * d`, and `entireL` is its L-function, continued to an entire function. -/
+`χ = (· / d)` modulo `1 * d`, and `entireLFunction` is its L-function, continued to an entire
+function. -/
 lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
-    eulerProd (K := QuadField d) 1 s = riemannZeta s * entireL (quadTwist (N := 1) 1 d) s := by
+    eulerProd (K := QuadField d) 1 s =
+      riemannZeta s * (quadTwist (N := 1) 1 d).entireLFunction s := by
   classical
   -- Group the primes of `K` by the rational prime `p` below them and compare Euler factors.
   have hs_re : 1 < (s : ℂ).re := by simpa
-  rw [entireL, ite_eq_right (quadTwist_ne_one 1 d (by grind [PrimeSevenModEight]) (by simp)),
+  rw [entireLFunction_of_ne_one (quadTwist_ne_one 1 d (by grind [PrimeSevenModEight]) (by simp)),
     (quadTwist (N := 1) 1 d).LFunction_eq_LSeries hs_re]
   let below (v : FinPlace (QuadField d)) : Subtype Nat.Prime :=
     ⟨ringChar (ResField v), CharP.prime_ringChar (ResField v)⟩
@@ -540,8 +543,10 @@ lemma CMLattice.latticeModule_galConjugate_eq_mul (σ : Gal(ℂ/QuadField d)) {C
 each class once, and let `F c` be the sum of `(s - 1) (|l|² / (k · area))^(-s)` over the lattice of
 `E c`, `k = 2/√d`, for a real `s` with `1 < s`; the term at `l = 0` is `0`. Then
 `∑ c, F c = (s - 1) ζ(s) #𝓞ˣ L(s, χ)`, where `riemannZeta₁` is `(s - 1) ζ(s)`,
-`entireL (quadTwist (N := 1) 1 d)` is `L(s, χ)` and `χ` is the Legendre symbol modulo `d`. -/
-lemma CMLattice.riemannZeta₁_mul_entireL_eq_sum {E : ClassGroup (𝓞 (QuadField d)) → CMLattice d}
+`(quadTwist (N := 1) 1 d).entireLFunction` is `L(s, χ)` and `χ` is the Legendre symbol modulo
+`d`. -/
+lemma CMLattice.riemannZeta₁_mul_entireLFunction_eq_sum
+    {E : ClassGroup (𝓞 (QuadField d)) → CMLattice d}
     {v : ClassGroup (𝓞 (QuadField d)) →
       ℂˣ × (FractionalIdeal (nonZeroDivisors (𝓞 (QuadField d))) (QuadField d))ˣ}
     (hE : ∀ c : ClassGroup (𝓞 (QuadField d)), (E c).latticeModule = scaledIdeal d (v c))
@@ -550,7 +555,7 @@ lemma CMLattice.riemannZeta₁_mul_entireL_eq_sum {E : ClassGroup (𝓞 (QuadFie
     {s : ℝ} (hs : 1 < s) {F : ClassGroup (𝓞 (QuadField d)) → ℝ}
     (hF : ∀ c : ClassGroup (𝓞 (QuadField d)), HasSum (fun l : (E c).periodPair.lattice ↦
       (s - 1) * (‖l.val‖ ^ 2 / (2 / √d) / (E c).periodPair.area) ^ (-s)) (F c)) :
-    riemannZeta₁ s * (Nat.card (𝓞 (QuadField d))ˣ * entireL (quadTwist (N := 1) 1 d) s) =
+    riemannZeta₁ s * (Nat.card (𝓞 (QuadField d))ˣ * (quadTwist (N := 1) 1 d).entireLFunction s) =
       ↑(∑ c : ClassGroup (𝓞 (QuadField d)), F c) := by
   have hd_pos : 0 < d := NeZero.pos d
   -- the lattice `u 𝔞` has area `|u|² N𝔞 √d / 2`, so `|u y|² / (k · area) = |N y| / N𝔞`
@@ -596,13 +601,13 @@ lemma CMLattice.sum_kronecker_terms {E : ClassGroup (𝓞 (QuadField d)) → CML
   -- its value is `π k` (`hF₁`), its right derivative `π k` times the summand of the claim (`hF`)
   choose F hF₁ hF hS using
     fun c ↦ kronecker_limit (E c).periodPair (2 / √d) (by positivity)
-  set L : ℂ → ℂ := entireL (quadTwist (N := 1) 1 d) with hL
+  set L : ℂ → ℂ := (quadTwist (N := 1) 1 d).entireLFunction with hL
   set U : ℂ := (Nat.card (𝓞 (QuadField d))ˣ : ℂ)
   let Z (s : ℝ) : ℂ := riemannZeta₁ s * (U * L s)
   -- on `(1, 2)` both `Z s` and `∑ c, F c s` are `(s - 1) ζ_K(s)` times the number of units
   have h_eq : Z =ᶠ[nhdsWithin 1 (Set.Ioi 1)] fun s : ℝ ↦ ((∑ c, F c s : ℝ) : ℂ) := by
     filter_upwards [Ioo_mem_nhdsGT one_lt_two] with s hs
-    exact riemannZeta₁_mul_entireL_eq_sum hE hv hs.1 fun c ↦ hS c s hs
+    exact riemannZeta₁_mul_entireLFunction_eq_sum hE hv hs.1 fun c ↦ hS c s hs
   -- compare the values and the right derivatives at `1`
   set S : ℝ := ∑ c, (2 * eulerMascheroniConstant - Real.log ((E c).area / (2 / √d) / π ^ 2) -
     Real.log ‖(E c).a₁ ^ 4 - 64‖ / 6) with hS_def
@@ -612,7 +617,7 @@ lemma CMLattice.sum_kronecker_terms {E : ClassGroup (𝓞 (QuadField d)) → CML
       (HasDerivWithinAt.fun_sum (u := univ) fun c _ ↦ hF c).ofReal_comp
   have hZ : HasDerivAt Z (deriv riemannZeta₁ 1 * (U * L 1) + riemannZeta₁ 1 * (U * deriv L 1)) 1 :=
     ((differentiable_riemannZeta₁ _).hasDerivAt.mul
-      ((analyticAt_entireL _ 1).differentiableAt.hasDerivAt.const_mul _)).comp_ofReal
+      ((DirichletCharacter.analyticAt_entireLFunction _ 1).differentiableAt.hasDerivAt.const_mul _)).comp_ofReal
   have h_one : Z 1 = ↑(∑ c, F c 1) :=
     tendsto_nhds_unique (hZ.continuousAt.continuousWithinAt.congr' h_eq) h_sum.continuousWithinAt
   -- the values give the class number formula; the number `U` of units cancels at the end

@@ -22,7 +22,7 @@ Names omit `New.`; `D` is the data. The head of `New/Reduction/MainInequality` g
 | `LFunction_ne_zero_of_primeRemainder_le` | `New/Reduction/Zeros/Criterion` | A one-sided bound gives a zero-free half-plane. |
 | `grh` | `New/Reduction/OneSidedBound` | No Dirichlet L-function vanishes in re s > 1/2 (s ≠ 1 for a principal character). |
 
-The prime number theorem in this table is known (Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Cor. 11.19). Its proof is in `Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion` and `Lib/Analytic/PrimeNumberTheorem/Tauberian`.
+The prime number theorem in this table is known (Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Cor. 11.19). Its proof is in `Lib/Analytic/PrimeNumberTheorem/Tauberian`, with the zero-free region from Tau Ceti's `TauCeti.NumberTheory.DirichletCharacter.LFunction.LogDeriv.ZeroFreeRegion`.
 
 ## Steps of the argument
 
@@ -155,9 +155,7 @@ The prime number theorem in this table is known (Montgomery and Vaughan, Multipl
 | Landau's lemma on Dirichlet integrals of one sign | `Lib/Analytic/Landau` | `Lib/Analytic/EntireLFunction` | Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Lemma 15.1 (Widder, The Laplace Transform, 1941, II Thm 5b) |
 | Zero density for quadratic twists by mean values over real characters | `Lib/Analytic/QuadraticTwist` |  | Jutila, On mean values of Dirichlet polynomials with real characters, Acta Arith. 27 (1975); Heath-Brown, A mean value estimate for real character sums, Acta Arith. 72 (1995). Form here: a weak density bound for the twists of the characters of a fixed modulus, by a smoothed mean square of Jacobi symbol sums |
 | Primes congruent to `1` modulo `M ^ k` with logarithm in a prescribed window | `Lib/Analytic/Primes` |  | Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Cor. 11.19 |
-| The bound `L(s, χ) ≪ log (N \|s\|)` near `re s = 1` and away from the pole | `Lib/Analytic/PrimeNumberTheorem/LFunctionGrowth` |  | Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Lemma 10.15 |
 | The passage from a zero-free region to the error term of the prime number theorem | `Lib/Analytic/PrimeNumberTheorem/Tauberian` |  | Montgomery and Vaughan, Multiplicative Number Theory I, 2007, Section 6.2, where a contour integral is used in place of the Taylor coefficient |
-| The classical zero-free region, in the crude form with a power of the logarithm that the 3-4-1 inequality gives directly | `Lib/Analytic/PrimeNumberTheorem/ZeroFreeRegion` |  | Montgomery and Vaughan, Multiplicative Number Theory I, 2007, ch. 11 |
 | Kronecker's first limit formula | `Lib/CM/KroneckerLimit` |  | C. L. Siegel, Lectures on Advanced Analytic Number Theory (1961), Chapter I, Theorem 1; for a proof of this shape, F. Chamizo, A simple evaluation of a theta value, the Kronecker limit formula and a formula of Ramanujan, Ramanujan J. (2022), Prop. 3.1 |
 | Lattices stable under `𝓞 K` are the multiples of fractional ideals | `Lib/CM/GoodReduction` |  | Silverman, Advanced topics in the arithmetic of elliptic curves |
 | Siegel units | `Lib/CM/GoodReduction` |  | Kubert, Lang, Modular Units. Up to sign the numbers `s(u)` are the 24-th powers of Weber's functions. Source: Birch, Weber's class invariants, 1969 |

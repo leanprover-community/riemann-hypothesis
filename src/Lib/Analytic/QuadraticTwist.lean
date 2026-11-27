@@ -41,7 +41,7 @@ Pólya–Vinogradov inequality, because theta series keep all sums short.
    `ξ` to the primitive character that induces it.
 5. If all primes of an invertible class were bad, the sum of `log p / p` over the class would
    converge; it diverges, so some prime of the class is not bad
-   (`exists_entireL_quadTwist_ne_zero`).
+   (`exists_entireLFunction_quadTwist_ne_zero`).
 
 Notions from other files:
 * `gaussianMonomial j` is the weight `w(z) = z ^ j e^(-π z²)` of parity `j`, and `gaussianMellin j`
@@ -787,16 +787,16 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
 
 /-- **Choice of the prime.** Let `β > 1/2`, `H` real and `a` an invertible class mod `N` all of
 whose primes are `≡ 7 mod 8` and prime to `N`. For some prime `d` of the class no `L(s, ξ (·/d))`,
-`ξ` mod `N`, vanishes in `β ≤ re s`, `|im s| ≤ H`. Here `quadTwist ξ d` is `ξ (·/d)`, and
-`entireL` is `L`, as the twists are not principal.
+`ξ` mod `N`, vanishes in `β ≤ re s`, `|im s| ≤ H`. Here `quadTwist ξ d` is `ξ (·/d)`, and its
+`entireLFunction` is its `L`-function, as the twists are not principal.
 
 The bound on bad primes is played against the divergence of `∑ log p / p` over the class
 (Dirichlet), so the prime number theorem for progressions is not needed. -/
-lemma exists_entireL_quadTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ) {a : ZMod N}
+lemma exists_entireLFunction_quadTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ) {a : ZMod N}
     (hβ : 1 / 2 < β) (ha : IsUnit a)
     (h_class : ∀ d : Primes, ((d : ℕ) : ZMod N) = a → (d : ℕ) % 8 = 7 ∧ N.Coprime d) :
     ∃ d : Primes, ((d : ℕ) : ZMod N) = a ∧ ∀ (ξ : DirichletCharacter ℂ N) (s : ℂ),
-      β ≤ s.re → |s.im| ≤ H → entireL (quadTwist ξ d) s ≠ 0 := by
+      β ≤ s.re → |s.im| ≤ H → (quadTwist ξ d).entireLFunction s ≠ 0 := by
   classical
   -- We may assume `β < 1`, as a smaller `β` gives a larger box.
   wlog hβ_lt : β < 1 generalizing β with h_lt_one
@@ -811,7 +811,7 @@ lemma exists_entireL_quadTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ)
       IsBadPrime a (1 / 2 + 9 * δ) H d := by
     obtain ⟨ξ, s, h_re, h_im, h_zero⟩ := h_all d hd_class
     obtain ⟨h8, h_coprime⟩ := h_class d hd_class
-    rw [entireL, ite_eq_right (quadTwist_ne_one ξ _ (by omega) h_coprime)] at h_zero
+    rw [entireLFunction_of_ne_one (quadTwist_ne_one ξ _ (by omega) h_coprime)] at h_zero
     exact ⟨hd_class, ξ, ⟨s, h_re, h_im, h_zero⟩⟩
   let f (n : ℕ) : ℂ := if n.Prime ∧ n = a then 1 else 0
   have h_count : (fun X ↦ ∑ n ∈ Icc 1 X, ‖f n‖) =O[atTop] fun X : ℕ ↦ (X : ℝ) ^ (1 - δ / 2) := by
