@@ -18,7 +18,7 @@ Names omit `New.`; `D` is the data. The head of `New/Reduction/MainInequality` g
 | `D.integral_forms_long` | `New/Determinant/Twist/LongForms` | Theorem C, the lower bound: covolume and twice the index together are at least about the main amount. |
 | `star_inequality` | `New/Reduction/MainInequality` | The main inequality: the main amount cancels and the remainder is bounded above. |
 | `eventually_abs_primeRemainder_le` | `New/Reduction/Zeros/PrimeNumberTheorem` | The prime number theorem for the remainder of the prime sum, used at the second cut-off. |
-| `eventually_primeRemainder_le_mul_rpow` | `New/Reduction/OneSidedBound` | For each ε > 0 the prime remainder is at most (128 φ(q₀) + 32) x^(−1/2 + ε) for all sufficiently large x. |
+| `eventually_primeRemainder_le_mul_rpow` | `New/Reduction/OneSidedBound` | For each ε > 0 the prime remainder is at most (64 φ(q₀) + 4) x^(−1/2 + ε) for all sufficiently large x. |
 | `LFunction_ne_zero_of_primeRemainder_le` | `New/Reduction/Zeros/Criterion` | A one-sided bound for each prime d in the prescribed class, with a constant allowed to depend on d, gives a zero-free half-plane. |
 | `grh` | `New/Reduction/OneSidedBound` | No Dirichlet L-function vanishes in re s > 1/2 (s ≠ 1 for a principal character). |
 
