@@ -338,6 +338,52 @@ lemma New.GaloisRep.isStepUnramifiedAt_of_decompGroup_le {E : Type} [Field E]
   change QZ.expUnit (abelianLift χ (artinMap Gal(Ω/E) (locIdele (v.below E) (localNorm E v y)))) = 1
   rw [artinMap_locIdele, h_units _ hv_norm, QZ.expUnit.map_one]
 
+/-- Two representations on normal subgroups of `Gal(Ω/E)` that are attached to the same system `P`
+are conjugate on the intersection of their domains, since they have non-degenerate trace forms and
+the same traces there. -/
+private lemma New.GaloisRep.Attached.exists_conj_inf {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    {E n : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
+    {P : FinPlace E → Polynomial ℂ} {N₀ N₁ : Subgroup Gal(Ω/E)} [N₀.Normal] [N₁.Normal]
+    {ρ₀ : N₀ →* GL n (PadicAlgCl ℓ)} (hρ₀ : Attached P ρ₀ N₀.subtype)
+    {ρ₁ : N₁ →* GL n (PadicAlgCl ℓ)} (hρ₁ : Attached P ρ₁ N₁.subtype) :
+    ∃ Q : GL n (PadicAlgCl ℓ), ∀ g : ↥(N₀ ⊓ N₁),
+      (ρ₀ (inclusion inf_le_left g)).val * Q.val = Q.val * (ρ₁ (inclusion inf_le_right g)).val := by
+  have normal_range {M : Subgroup Gal(Ω/E)} (h_le : N₀ ⊓ N₁ ≤ M) :
+      (inclusion h_le).range.Normal := by
+    rw [inclusion_range]
+    infer_instance
+  have h_left : IsTraceNondeg (ρ₀.comp (inclusion (inf_le_left : N₀ ⊓ N₁ ≤ N₀))) :=
+    hρ₀.isTraceNondeg.comp _ (normal_range inf_le_left)
+  have h_right : IsTraceNondeg (ρ₁.comp (inclusion (inf_le_right : N₀ ⊓ N₁ ≤ N₁))) :=
+    hρ₁.isTraceNondeg.comp _ (normal_range inf_le_right)
+  have h_trace (g : ↥(N₀ ⊓ N₁)) :
+      (ρ₀ (inclusion inf_le_left g)).val.trace = (ρ₁ (inclusion inf_le_right g)).val.trace :=
+    hρ₀.trace_eq hρ₁ _ rfl
+  exact h_left.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _) h_right.hasSemiprimeSpan
+    h_trace
+
+/-- Extend a homomorphism `ρ₀ : N₀ →* H` on a subgroup `N₀` to all of `G` by declaring it trivial on
+a normal subgroup `K` that meets every coset of `N₀` and satisfies `ρ₀ = 1` on `N₀ ⊓ K`. -/
+private lemma New.GaloisRep.exists_monoidHom_extend_of_normal {G H : Type*} [Group G] [Group H]
+    {N₀ K : Subgroup G} [K.Normal] (ρ₀ : N₀ →* H)
+    (h_coset : ∀ g : G, ∃ h ∈ K, g * h ∈ N₀)
+    (h_kills : ∀ y : N₀, y.val ∈ K → ρ₀ y = 1) :
+    ∃ R : G →* H, (∀ x : N₀, ρ₀ x = R x) ∧ (∀ y ∈ K, R y = 1) ∧
+      ∀ g : G, ∃ x : N₀, R g = ρ₀ x := by
+  choose σ σ_mem mul_σ_mem using h_coset
+  have ρ₀_congr {x z : N₀} (h : (z.val : G ⧸ K) = x.val) : ρ₀ x = ρ₀ z :=
+    ρ₀.eq_iff.2 (h_kills (z⁻¹ * x) (QuotientGroup.eq.1 h))
+  have hq (a : G) : ((a * σ a : G) : G ⧸ K) = a := by
+    rw [QuotientGroup.mk_mul, (QuotientGroup.eq_one_iff _).2 (σ_mem a), mul_one]
+  have ρ₀_mul (g g' : G) : ρ₀ ⟨g * g' * σ (g * g'), mul_σ_mem (g * g')⟩ =
+      ρ₀ ⟨g * σ g, mul_σ_mem g⟩ * ρ₀ ⟨g' * σ g', mul_σ_mem g'⟩ := by
+    rw [← ρ₀.map_mul]
+    exact ρ₀_congr (by
+      rw [Subgroup.coe_mul, QuotientGroup.mk_mul, hq, hq, hq, QuotientGroup.mk_mul])
+  let R : G →* H := .mk' (fun g ↦ ρ₀ ⟨g * σ g, mul_σ_mem g⟩) ρ₀_mul
+  refine ⟨R, fun x ↦ ρ₀_congr (hq x.val), fun y hy ↦ ?_, fun g ↦ ⟨⟨g * σ g, mul_σ_mem g⟩, rfl⟩⟩
+  exact h_kills ⟨y * σ y, mul_σ_mem y⟩ (K.mul_mem hy (σ_mem y))
+
 /-- Let `ρ₀` on a normal subgroup `N₀` of `Gal(Ω/E)` and the `ρ T` on open normal subgroups `N T`
 be attached to the same system `P` along the inclusions (`New.GaloisRep.Attached`: the
 representation is continuous with non-degenerate trace form, the inclusion is open, and the
@@ -361,22 +407,8 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
     ∃ R : GalRep ℓ E n, Attached P R := by
   -- Extend `ρ₀` by `1` on the largest normal subgroup `K` inside the kernels of all the `ρ T`.
   let K : Subgroup Gal(Ω/E) := (⨅ T : ℕ, (ρ T).ker.map (N T).subtype).normalCore
-  -- `ρ₀` and `ρ T` are attached to the same `P`, so where both are defined they have the same
-  -- traces and are conjugate, by `Q T`; and `ρ T` is trivial on `K`.
-  have exists_conj (T : ℕ) :=
-    have normal_range {M : Subgroup Gal(Ω/E)} (h_le : N₀ ⊓ N T ≤ M) :
-        (inclusion h_le).range.Normal := by
-      rw [inclusion_range]
-      infer_instance
-    have h_left : IsTraceNondeg (ρ₀.comp (inclusion (inf_le_left : N₀ ⊓ N T ≤ N₀))) :=
-      hρ₀.isTraceNondeg.comp _ (normal_range inf_le_left)
-    have h_right : IsTraceNondeg ((ρ T).comp (inclusion (inf_le_right : N₀ ⊓ N T ≤ N T))) :=
-      (hρ T).isTraceNondeg.comp _ (normal_range inf_le_right)
-    have h_trace (g : ↥(N₀ ⊓ N T)) :
-        (ρ₀ (inclusion inf_le_left g)).val.trace = (ρ T (inclusion inf_le_right g)).val.trace :=
-      hρ₀.trace_eq (hρ T) _ rfl
-    h_left.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _) h_right.hasSemiprimeSpan h_trace
-  choose Q hQ using exists_conj
+  -- `ρ₀` and `ρ T` are attached to the same `P`, so they are conjugate on `N₀ ⊓ N T` by `Q T`.
+  choose Q hQ using fun T ↦ hρ₀.exists_conj_inf (hρ T)
   have h_conj (T : ℕ) (g : N T) (y : Gal(Ω/E)) (hy : y ∈ K) (hgy : g.val * y ∈ N₀) :
       ρ₀ ⟨g.val * y, hgy⟩ = Q T * ρ T g * (Q T)⁻¹ := by
     obtain ⟨y, hy_ker, rfl⟩ := mem_iInf.1 (normalCore_le _ hy) T
@@ -388,26 +420,15 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
     refine fun s hs c ↦ mem_iInf.2 fun T ↦ ?_
     obtain ⟨h_mem, h_one⟩ := h_kill s hs c T
     exact ⟨⟨c * s * c⁻¹, h_mem⟩, h_one, rfl⟩
-  -- So for every `g` there is `σ g ∈ K` with `g * σ g ∈ N₀`. As `ρ₀` kills `K ⊓ N₀`, the map
-  -- `R g = ρ₀ (g * σ g)` is a homomorphism that extends `ρ₀`.
-  choose σ σ_mem mul_σ_mem using h_gen K I_subset
+  -- `K` meets every coset of `N₀`, and `ρ₀` kills `N₀ ⊓ K`, so `ρ₀` extends to `R` killing `K`.
   have ρ₀_kills (y : N₀) (hy : y.val ∈ K) : ρ₀ y = 1 := by
     have h1y : (1 : N 0).val * y.val ∈ N₀ := by rw [OneMemClass.coe_one, one_mul]; exact y.prop
     have h := h_conj 0 1 y hy h1y
     have h_sub : (⟨(1 : N 0).val * y.val, h1y⟩ : N₀) = y := Subtype.ext (one_mul y.val)
     rw [h_sub, (ρ 0).map_one, mul_one, mul_inv_cancel] at h
     exact h
-  have ρ₀_congr {x z : N₀} (h : (z.val : Gal(Ω/E) ⧸ K) = x.val) : ρ₀ x = ρ₀ z :=
-    ρ₀.eq_iff.2 (ρ₀_kills (z⁻¹ * x) (QuotientGroup.eq.1 h))
-  have hq (a : Gal(Ω/E)) : ((a * σ a : Gal(Ω/E)) : Gal(Ω/E) ⧸ K) = a := by
-    rw [QuotientGroup.mk_mul, (QuotientGroup.eq_one_iff _).2 (σ_mem a), mul_one]
-  have ρ₀_mul (g g' : Gal(Ω/E)) : ρ₀ ⟨g * g' * σ (g * g'), mul_σ_mem (g * g')⟩ =
-      ρ₀ ⟨g * σ g, mul_σ_mem g⟩ * ρ₀ ⟨g' * σ g', mul_σ_mem g'⟩ := by
-    rw [← ρ₀.map_mul]
-    exact ρ₀_congr (by
-      rw [Subgroup.coe_mul, QuotientGroup.mk_mul, hq, hq, hq, QuotientGroup.mk_mul])
-  let R : GalRep ℓ E n := .mk' (fun g ↦ ρ₀ ⟨g * σ g, mul_σ_mem g⟩) ρ₀_mul
-  have R_eq (x : N₀) : ρ₀ x = R x := ρ₀_congr (hq x.val)
+  obtain ⟨R, R_eq, R_kills, R_range⟩ :=
+    exists_monoidHom_extend_of_normal ρ₀ (h_gen K I_subset) ρ₀_kills
   -- `R` agrees with `ρ₀` on the open subgroup `N₀`, and both have the same image.
   have R_cont : Continuous R := by
     have h_cont : Continuous fun x : N₀ ↦ R x := hρ₀.continuous.congr R_eq
@@ -418,10 +439,14 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
     have h_range : (Set.range fun g : Gal(Ω/E) ↦ (R g).val) ⊆
         Set.range fun g : N₀ ↦ (ρ₀ g).val := by
       rintro _ ⟨g, rfl⟩
-      exact ⟨⟨g * σ g, mul_σ_mem g⟩, rfl⟩
+      obtain ⟨y, hy⟩ := R_range g
+      exact ⟨y, congrArg Units.val hy.symm⟩
     exact hρ₀.isTraceNondeg x (Submodule.span_mono h_range hx) fun g ↦ by rw [R_eq, h_zero]
-  have R_conj (T : ℕ) (g : N T) : R g = Q T * ρ T g * (Q T)⁻¹ :=
-    h_conj T g (σ g) (σ_mem g) (mul_σ_mem g)
+  have R_conj (T : ℕ) (g : N T) : R g = Q T * ρ T g * (Q T)⁻¹ := by
+    obtain ⟨y, hyK, hgy⟩ := h_gen K I_subset g
+    calc R g = R (g.val * y) := by rw [R.map_mul, R_kills y hyK, mul_one]
+      _ = ρ₀ ⟨g.val * y, hgy⟩ := (R_eq ⟨g.val * y, hgy⟩).symm
+      _ = Q T * ρ T g * (Q T)⁻¹ := h_conj T g y hyK hgy
   refine ⟨R, R_cont, R_nondeg, .id, fun η hη V hV hV_ne ↦ ?_⟩
   -- By Chebotarev `V` holds a Frobenius element at a place of prime norm, so `V` meets some
   -- `N T`. The estimate for `ρ T` on an open part `O` of `V ∩ N T` passes to its conjugate `R`.
