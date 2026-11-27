@@ -1,6 +1,7 @@
 module
 
 import Mathlib.MeasureTheory.Integral.CompactlySupported
+import TauCeti.MeasureTheory.Integral.Bochner.PointwiseOperator
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.DualPair.KernelLaws
@@ -592,7 +593,7 @@ lemma Exchange.exists_continuousLinearMap_eq_integral_kernel_mul_forms
     integrable_kernel_mul_forms hk hk' a b N y f φ
   obtain ⟨Λ, hΛ⟩ : ∃ Λ : 𝒮 (T'.hom S') →L[ℂ] ℂ, ∀ φ : 𝒮 (T'.hom S'),
       Λ φ = ∫ p : G E s × G E s', F p φ ∂S.quotMeasure.prod S'.quotMeasure :=
-    exists_continuousLinearMap_apply_eq_integral (S.quotMeasure.prod S'.quotMeasure) F F_int
+    ContinuousLinearMap.exists_apply_eq_integral F_int
   let D : fockSpace (realSigns E (homSigns t' s')) →L[ℂ] 𝒮 (T'.hom S') :=
     (T'.hom S').integrated.flip
       ((T'.hom S').schrodingerOp 𝔪.places (𝔪.liftFn (Ψ ∘ vecToMatrix)) (T'.hom S').vacElem)

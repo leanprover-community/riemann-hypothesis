@@ -3,6 +3,7 @@ module
 import TauCeti.Analysis.Complex.CauchyIntegralPolydisc
 import TauCeti.Analysis.Complex.WeaklyHolomorphic
 import TauCeti.MeasureTheory.Function.StronglyMeasurable.FiniteDimensional
+import TauCeti.MeasureTheory.Integral.Bochner.PointwiseOperator
 public import Mathlib.Analysis.CStarAlgebra.ContinuousMap
 public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.Algebra.Module.StablyFree.Basic
@@ -76,7 +77,7 @@ variable {Y X Z : Type*} [MeasurableSpace Y] [NormedAddCommGroup X] [NormedSpace
 with the map `x ↦ ∫ y, F y x ∂μ`, this is that operator (`New.strongIntegral_apply_of_exists`;
 `invFun (⇑)` picks a preimage under the coercion from operators to functions); otherwise it is an
 unspecified operator. The first case holds when every `y ↦ F y x` is integrable and the spaces are
-complete (`New.exists_continuousLinearMap_apply_eq_integral`, `New.strongIntegral_apply`). -/
+complete (`ContinuousLinearMap.exists_apply_eq_integral` and `New.strongIntegral_apply`). -/
 noncomputable def New.strongIntegral : X →L[ℂ] Z := invFun (⇑) fun x ↦ ∫ y : Y, F y x ∂μ
 
 lemma New.rep_apply_apply {G : Type*} [Monoid G] (ρ : G →* X →L[ℂ] X) (g h : G) (v : X) :
@@ -98,39 +99,11 @@ lemma New.strongIntegral_apply_of_exists
   exact congrFun (invFun_eq ⟨A, funext hA⟩) x
 
 /-- For Banach spaces `X`, `Z` and a family `F` of bounded operators such that `y ↦ F y x` is
-integrable for every `x`, the map `x ↦ ∫ y, F y x ∂μ` is a bounded operator. No bound on the
-norms of the `F y` is assumed: the closed graph theorem gives the boundedness. -/
-lemma New.exists_continuousLinearMap_apply_eq_integral [CompleteSpace X] [CompleteSpace Z]
-    (h_int : ∀ x : X, Integrable (fun y : Y ↦ F y x) μ) :
-    ∃ A : X →L[ℂ] Z, ∀ x : X, A x = ∫ y : Y, F y x ∂μ := by
-  -- The linear map `T : X → L¹(μ, Z)`, `x ↦ fun y ↦ F y x`, has a closed graph, so it is bounded.
-  let T : X →ₗ[ℂ] Lp Z 1 μ :=
-    { toFun := fun x ↦ (h_int x).toL1
-      map_add' := fun v w ↦ by
-        simpa only [map_add, Pi.add_def] using Integrable.toL1_add _ _ (h_int v) (h_int w)
-      map_smul' := fun c v ↦ by
-        simpa only [map_smul, RingHom.id_apply] using Integrable.toL1_smul _ (h_int v) c }
-  have h_closed (u : ℕ → X) (x : X) (g : Lp Z 1 μ) (hu : Filter.Tendsto u .atTop (nhds x))
-      (hg : Filter.Tendsto (T ∘ u) .atTop (nhds g)) : g = T x := by
-    -- Along a subsequence `F y (u n)` tends to `g y` for almost every `y`; it tends to `F y x`
-    -- for every `y`.
-    have h_measure : TendstoInMeasure μ (fun (n : ℕ) (y : Y) ↦ F y (u n)) .atTop g :=
-      (tendstoInMeasure_of_tendsto_Lp hg).congr_left fun n ↦ (h_int (u n)).coeFn_toL1
-    obtain ⟨φ, hφ, h_ae⟩ := h_measure.exists_seq_tendsto_ae'
-    have h_limit : (fun y : Y ↦ F y x) =ᵐ[μ] g :=
-      h_ae.mono fun y hy ↦ tendsto_nhds_unique ((F y).cont.seqContinuous (hu.comp hφ)) hy
-    exact Lp.ext ((h_int x).coeFn_toL1.trans h_limit).symm
-  -- Compose with the integral on `L¹`.
-  refine ⟨L1.integralCLM' ℂ ∘L .ofSeqClosedGraph h_closed, fun v : X ↦ ?_⟩
-  change L1.integralCLM' ℂ ((h_int v).toL1) = ∫ y : Y, F y v ∂μ
-  rw [integral_eq _ (h_int v), L1.integral_eq' ℂ]
-
-/-- For Banach spaces `X`, `Z` and a family `F` of bounded operators such that `y ↦ F y x` is
 integrable for every `x`, the strong integral sends `x` to `∫ y, F y x ∂μ`. -/
 lemma New.strongIntegral_apply [CompleteSpace X] [CompleteSpace Z]
     (h_int : ∀ x : X, Integrable (fun y : Y ↦ F y x) μ) (x : X) :
     strongIntegral μ F x = ∫ y : Y, F y x ∂μ :=
-  strongIntegral_apply_of_exists μ F (exists_continuousLinearMap_apply_eq_integral μ F h_int) x
+  strongIntegral_apply_of_exists μ F (ContinuousLinearMap.exists_apply_eq_integral h_int) x
 
 end OperatorIntegral
 
