@@ -438,7 +438,8 @@ lemma sum_not_isOpenElement_le {V : Type*} [NormedAddCommGroup V]
       exact le_of_eq (by field)
 
 /-- If `M ≤ (1 + 4 x) C + x M` with `0 ≤ x ≤ 1/10` and `C ≥ 0`, then `M ≤ (1 + 9 x) C`. -/
-lemma le_one_add_nine_mul_of_le_add {x C M : ℝ} (hx₀ : 0 ≤ x) (hx : x ≤ 1 / 10) (hC : 0 ≤ C)
+lemma le_one_add_nine_mul_of_le_add {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+    {x C M : R} (hx₀ : 0 ≤ x) (hx : x ≤ 1 / 10) (hC : 0 ≤ C)
     (h : M ≤ (1 + 4 * x) * C + x * M) : M ≤ (1 + 9 * x) * C := by
   -- `(1 - x) (1 + 9 x) - (1 + 4 x) = x (4 - 9 x)`
   have h_gain : 0 ≤ x * (4 - 9 * x) * C := mul_nonneg (mul_nonneg hx₀ (by linarith)) hC
