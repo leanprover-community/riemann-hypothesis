@@ -8,7 +8,7 @@ import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.DiscreteSeries.Theta.FockJointHarmonics
-import Lib.GLn.SchurModule.WeylKernel
+import Lib.GLn.SchurModule.GramMatrix
 import Lib.Shimura.Uniformisation.HolomorphicFamilies
 
 /-!
