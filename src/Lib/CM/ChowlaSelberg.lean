@@ -617,7 +617,8 @@ lemma CMLattice.sum_kronecker_terms {E : ClassGroup (𝓞 (QuadField d)) → CML
       (HasDerivWithinAt.fun_sum (u := univ) fun c _ ↦ hF c).ofReal_comp
   have hZ : HasDerivAt Z (deriv riemannZeta₁ 1 * (U * L 1) + riemannZeta₁ 1 * (U * deriv L 1)) 1 :=
     ((differentiable_riemannZeta₁ _).hasDerivAt.mul
-      ((DirichletCharacter.analyticAt_entireLFunction _ 1).differentiableAt.hasDerivAt.const_mul _)).comp_ofReal
+      ((DirichletCharacter.analyticAt_entireLFunction _ 1).differentiableAt.hasDerivAt.const_mul _))
+        |>.comp_ofReal
   have h_one : Z 1 = ↑(∑ c, F c 1) :=
     tendsto_nhds_unique (hZ.continuousAt.continuousWithinAt.congr' h_eq) h_sum.continuousWithinAt
   -- the values give the class number formula; the number `U` of units cancels at the end

@@ -16,9 +16,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/Adelic/TraceFormula/LineDeterminant.lean` | `New.trace_restrictGenEigenspace_mul` | `LinearMap.trace_comp_eq_zero_of_commute_of_trace_restrict_eq_zero` | `Mathlib/Algebra/DirectSum/LinearMap.lean` |
 | `src/Lib/Adelic/TraceFormula/TestFunction.lean` | `New.exists_eq_pow_of_monic_of_map_eq_pow` | `Polynomial.Monic.irreducible_iff_irreducible_map_fraction_map` | `Mathlib/RingTheory/Polynomial/GaussLemma.lean` |
 | `src/Lib/Adelic/TraceFormula/TestFunction.lean` | `TestFunction.translate` | `Representation.coind` | `Mathlib/RepresentationTheory/Coinduced.lean` |
-| `src/Lib/Analytic/EntireLFunction.lean` | `New.LSeriesHasSum_mul_vonMangoldt` | `ArithmeticFunction.vonMangoldt.eqOn_LFunctionResidueClassAux` | `Mathlib/NumberTheory/LSeries/PrimesInAP.lean` |
-| `src/Lib/Analytic/EntireLFunction.lean` | `New.entireL_ne_zero` | `DirichletCharacter.continuousOn_neg_logDeriv_LFunctionTrivChar₁` | `Mathlib/NumberTheory/LSeries/DirichletContinuation.lean` |
-| `src/Lib/Analytic/EntireLFunction.lean` | `New.tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt` | `AnalyticAt.tendsto_mul_logDeriv_simple_zero` | `Mathlib/Analysis/Calculus/LogDeriv.lean` |
 | `src/Lib/Analytic/PolyaVinogradov.lean` | `New.filter_dvd_Ioc_eq_image_mul` | `Int.Ioc_filter_dvd_eq` | `Mathlib/Data/Int/CardIntervalMod.lean` |
 | `src/Lib/Analytic/Primes.lean` | `New.hasSum_residueClass_one` | `ArithmeticFunction.vonMangoldt.residueClass_eq`, `ArithmeticFunction.vonMangoldt.LSeries_residueClass_eq` | `Mathlib/NumberTheory/LSeries/PrimesInAP.lean` |
 | `src/Lib/Analytic/ZeroSymmetry.lean` | `New.prod_euler_factor_ne_zero` | `DirichletCharacter.LFunction_changeLevel` | `Mathlib/NumberTheory/LSeries/DirichletContinuation.lean` |
