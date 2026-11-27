@@ -366,8 +366,8 @@ letters of the chart `k`. Let `k` be unramified, `p ≥ 7`, `η ≥ 1` and `V + 
 crystalline with jumps in `U'`, where `U` and `U'` lie at each letter in `[-η, η]` and in opposite
 far windows of width `V`, which start at `b` at the b-letters (those with `IsBLetter i`) and at `G`
 at the others, with `0 < G ≤ b`. If `b < K p ^ 2`, `2 G < K p` and `M ≤ K`, then
-`p ^ (10⁴ (K + ⌊log_p (2 (b + M))⌋))` times any crystalline cocycle of `L` is orthogonal under cup
-products to the crystalline cocycles of the crystalline lattices with jumps in `U`. -/
+`p ^ (312 (5 K + ⌊log_p (2 (b + M))⌋) + 13)` times any crystalline cocycle of `L` is orthogonal
+under cup products to the crystalline cocycles of the crystalline lattices with jumps in `U`. -/
 lemma KummerChart.hasCupExponent_any_pattern [TopologicalSpace Γ] (k : KummerChart Γ)
     (ζ : k.LetterRoot O) (ho : IsOpenEmbedding Γ.overGp.toGp) (hk : k.IsUnramified) (hp : 7 ≤ p)
     {η V M G b K : ℕ} {IsBLetter : k.Letter → Prop} [DecidablePred IsBLetter] {ε : k.Letter → ℤˣ}
@@ -377,10 +377,10 @@ lemma KummerChart.hasCupExponent_any_pattern [TopologicalSpace Γ] (k : KummerCh
     (hU' : ∀ i : k.Letter,
       FitsWindows η (ε i) (if IsBLetter i then b else G) V (k.letterJumps ζ U' i))
     (hG_pos : 0 < G) (hGb : G ≤ b) (hbK : b < K * p ^ 2) (hGK : 2 * G < K * p) (hMK : M ≤ K) :
-    HasCupExponent (InClass ⊤ ⊥ U) L (10 ^ 4 * (K + p.log (2 * (b + M)))) :=
+    HasCupExponent (InClass ⊤ ⊥ U) L (312 * (5 * K + p.log (2 * (b + M))) + 13) :=
   fun x hx ↦ k.pow_smul_mem_cupOrthogonal_of_isScaledCupCoboundary ζ ho le_top le_rfl hL _ ⟨x, hx⟩
     fun _ _ P c ↦
-    P.isScaledCupCoboundary_any_pattern hη hM hU hU' hk hp hG_pos hGb hbK hGK hMK c ⟨x, hx⟩
+    P.isScaledCupCoboundary_any_pattern hη hM hU hU' hk hp hG_pos hGb hbK hGK hMK le_rfl c ⟨x, hx⟩
 
 /-- Let `Γ → Gp p` be an open embedding, and let the root `ζ` assign the embeddings of `O` to the
 letters of the chart `k`. Let `η ≥ 1`, and let `L` be crystalline with jumps in `U'`, where `U` and
@@ -392,8 +392,8 @@ follow one another along the orbits of `letterFrob : i ↦ i ^ p` with both gaps
 sign `ε` is constant and `8 e ≤ p ^ (J + 1)`. Let `2 e (b + 5 η) ≤ p ^ (J + 1) δ` and
 `20 (J + 1 + d) η + ⌊log_p (2 (b + 5 η))⌋ ≤ M`, where `e = k.e` is the ramification index and
 `d = k.differentBound` is `0` for `e = 1` and `v_p(e) + 1` otherwise. Then
-`p ^ (10³ (δ + (J + 1) M))` times any crystalline cocycle of `L` is orthogonal under cup products to
-the crystalline cocycles of the crystalline lattices with jumps in `U`. -/
+`p ^ (156 (δ + (J + 1) M) + 13)` times any crystalline cocycle of `L` is orthogonal under cup
+products to the crystalline cocycles of the crystalline lattices with jumps in `U`. -/
 lemma KummerChart.hasCupExponent_sparse_thick [TopologicalSpace Γ] (k : KummerChart Γ)
     (ζ : k.LetterRoot O) (ho : IsOpenEmbedding Γ.overGp.toGp) {η V G b J M δ : ℕ}
     {IsBLetter : k.Letter → Prop} [DecidablePred IsBLetter] {ε : k.Letter → ℤˣ} (hη : 1 ≤ η)
@@ -409,10 +409,10 @@ lemma KummerChart.hasCupExponent_sparse_thick [TopologicalSpace Γ] (k : KummerC
       ((∀ i i' : k.Letter, ε i = ε i') ∧ 8 * k.e ≤ p ^ (J + 1)))
     (h_depth : k.e * (2 * (b + 5 * η)) ≤ p ^ (J + 1) * δ)
     (hM : 20 * (J + 1 + k.differentBound) * η + p.log (2 * (b + 5 * η)) ≤ M) :
-    HasCupExponent (InClass ⊤ ⊥ U) L (10 ^ 3 * (δ + (J + 1) * M)) :=
+    HasCupExponent (InClass ⊤ ⊥ U) L (156 * (δ + (J + 1) * M) + 13) :=
   fun x hx ↦ k.pow_smul_mem_cupOrthogonal_of_isScaledCupCoboundary ζ ho le_top le_rfl hL _ ⟨x, hx⟩
     fun _ _ P c ↦ P.isScaledCupCoboundary_sparse_thick hη hU hU' hG hJ h_sparse
-      h_unramified_or_sign h_depth hM c ⟨x, hx⟩
+      h_unramified_or_sign h_depth hM le_rfl c ⟨x, hx⟩
 
 /-- Let `Γ → Gp p` be injective. Restricting a lattice `Y` to the subgroup `k.subgroup` of a chart
 does not change the operator `linearFrob` of `(s, m)` on the potentially crystalline periods. -/
