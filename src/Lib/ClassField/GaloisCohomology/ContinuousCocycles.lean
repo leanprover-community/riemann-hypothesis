@@ -69,7 +69,7 @@ variable {R G M H N : Type*} [CommRing R] [Group G] [TopologicalSpace G] [AddCom
   [DiscreteTopology N] {ρ' : Representation R H N} (φ : H →ₜ* G) (u : M →ₗ[R] N)
 
 /-- On a discrete module, scalar multiplication by each constant of `R` is continuous. -/
-instance : ContinuousConstSMul R M := ⟨by fun_prop⟩
+instance (priority := 100) : ContinuousConstSMul R M := ⟨by fun_prop⟩
 
 /-- The continuous 1-cocycles of `ρ`: the `R`-submodule of continuous `f : G → M` with
 `f (g * h) = f g + ρ g (f h)`. -/
