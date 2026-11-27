@@ -820,6 +820,22 @@ lemma single_mem_intVectors (j : n) : Pi.single j 1 ∈ intVectors R n :=
 lemma col_mem_colLattice (j : n) : M.col j ∈ colLattice R M :=
   ⟨Pi.single j 1, single_mem_intVectors j, by simp⟩
 
+/-- The column lattice is the span of the columns over the subring. -/
+lemma colLattice_eq_span : colLattice R M = Submodule.span R (Set.range M.col) := by
+  classical
+  exact le_antisymm (colLattice_le fun j ↦ Submodule.subset_span ⟨j, rfl⟩)
+    (Submodule.span_le.2 (Set.range_subset_iff.2 col_mem_colLattice))
+
+/-- If the lattice of the columns of `C` lies in that of the columns of `B`, then `C = B U` for
+some matrix `U` with entries in `R`. -/
+lemma exists_isIntMatrix_mul_eq {l : Type*} [Fintype l] {B : Matrix m n A} {C : Matrix m l A}
+    (h_le : colLattice R C ≤ colLattice R B) :
+    ∃ U : Matrix n l A, IsIntMatrix R U ∧ B * U = C := by
+  classical
+  rw [colLattice_eq_span, colLattice_eq_span] at h_le
+  obtain ⟨U, hU⟩ := Matrix.exists_mul_map_eq_of_span_le h_le
+  exact ⟨U.map R.subtype, fun i j ↦ (U i j).property, hU⟩
+
 end ColumnLattices
 
 end New

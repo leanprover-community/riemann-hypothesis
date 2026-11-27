@@ -100,14 +100,6 @@ lemma exists_mul_eq_of_finAdeleMatrix_mul_eq {m n ι : Type} [Fintype m] [Fintyp
   · rwa [finAdeleMatrix_add, finAdeleMatrix_mul]
   · rw [Matrix.mul_add, ← Matrix.mul_assoc, h_ker, Matrix.zero_mul, zero_add, h_special]
 
-/-- A matrix whose columns lie in the column lattice of `ξ` is `ξ` times an integral matrix. -/
-lemma exists_isIntMatrix_mul_eq_of_col_mem {σ τ ι : Type} [Fintype ι] {M : Matrix σ τ (𝔸f E)}
-    {ξ : Matrix σ ι (𝔸f E)} (h_col : ∀ j : τ, M.col j ∈ colLattice (Ô E) ξ) :
-    ∃ W : Matrix ι τ (𝔸f E), IsIntMatrix (Ô E) W ∧ ξ * W = M := by
-  obtain ⟨w, hw⟩ : ∃ w : τ → ι → 𝔸f E, ∀ j : τ, w j ∈ intVectors (Ô E) ι ∧ ξ *ᵥ w j = M.col j :=
-    Classical.skolem.1 h_col
-  exact ⟨(of w)ᵀ, fun i j ↦ (hw j).left i, Matrix.ext fun i j ↦ congrFun (hw j).right i⟩
-
 /-- Scaling a matrix by an idele scales the lattice spanned by its columns. -/
 lemma colLattice_smul {σ ι : Type} [Fintype ι] (a : (𝔸f E)ˣ) (M : Matrix σ ι (𝔸f E)) :
     colLattice (Ô E) (a • M) = a • colLattice (Ô E) M := by
@@ -384,7 +376,7 @@ lemma exists_isLift {c c' : S.Classes} {γ : S.G E} {r : ℕ} {y : Matrix 𝔰.�
   obtain ⟨W, hW_int, hW⟩ : ∃ W : Matrix (Fin 𝔰.ϱ) (Fin r) (𝔸f E), IsIntMatrix (Ô E) W ∧
       finAdeleMatrix lift * W =
         (finAdeleMatrix (framePartX₀ γ))ᴴ * (finAdeleMatrix y * a.val) := by
-    refine exists_isIntMatrix_mul_eq_of_col_mem fun k ↦ ?_
+    refine exists_isIntMatrix_mul_eq (colLattice_le fun k ↦ ?_)
     have h_lift : finAdeleMatrix lift =
         S.ideleM • (isotropicRows (finAdeleMatrix (S.frameProducts γ)))ᴴ := by
       ext b i
@@ -436,7 +428,7 @@ lemma exists_conjTranspose_mul_eq_of_row_mem {c : S.Classes} {r : ℕ} {y : Matr
   have h_unit : IsUnit (yᴴ * y).det := (det_gram_ne_zero hy).isUnit
   obtain ⟨T, hT_int, hT⟩ : ∃ T : Matrix (Fin r) (Fin 𝔰.ϱ) (𝔸f E),
       IsIntMatrix (Ô E) T ∧ (mᴴ * m)ᵀ * T = (finAdeleMatrix w * a.val)ᵀ :=
-    exists_isIntMatrix_mul_eq_of_col_mem h_rows
+    exists_isIntMatrix_mul_eq (colLattice_le h_rows)
   let t : Matrix (Fin r) (Fin 𝔰.ϱ) (𝔸f E) := Tᵀᴴ
   have h_products : finAdeleMatrix w = (m * t)ᴴ * finAdeleMatrix y := by
     refine a.val.mul_left_inj_of_invertible.1 ?_
