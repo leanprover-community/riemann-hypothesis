@@ -67,9 +67,11 @@ namespace New.CMLattice
 
 variable {d : ℕ} [PrimeSevenModEight d] (C : CMLattice d) {p : ℕ} [Fact p.Prime]
 
-/-- If `g ^ 2 + u g = v` in `ℂ_p` with `‖u‖ ≤ c` and `‖v‖ ≤ c ^ 2`, then `‖g‖ ≤ c`: a root of a
-monic quadratic whose coefficients are bounded by `c` and `c ^ 2` is bounded by `c`. -/
-lemma norm_le_of_sq_add_mul_eq {g u v : ℂ_[p]} {c : ℝ} (hu : ‖u‖ ≤ c) (hv : ‖v‖ ≤ c ^ 2)
+/-- If `g ^ 2 + u g = v` in an ultrametric normed commutative ring with multiplicative norm,
+`‖u‖ ≤ c`, and `‖v‖ ≤ c ^ 2`, then `‖g‖ ≤ c`: a root of a monic quadratic whose coefficients are
+bounded by `c` and `c ^ 2` is bounded by `c`. -/
+lemma norm_le_of_sq_add_mul_eq {K : Type*} [NormedCommRing K] [NormMulClass K] [NormOneClass K]
+    [IsUltrametricDist K] {g u v : K} {c : ℝ} (hu : ‖u‖ ≤ c) (hv : ‖v‖ ≤ c ^ 2)
     (hg : g ^ 2 + u * g = v) : ‖g‖ ≤ c := by
   by_contra! h_lt
   have hc : 0 ≤ c := (norm_nonneg u).trans hu
@@ -148,8 +150,10 @@ end TorsionValues
 
 namespace New
 
-/-- A bounded real `r` with some value at least `r z ^ 2` whenever `r z > 1` is at most `1`. -/
-lemma le_one_of_forall_exists_sq_le {α : Type*} {r : α → ℝ} {K : ℝ} (h_bdd : ∀ z : α, r z ≤ K)
+/-- A bounded function `r` into an Archimedean strictly ordered ring with some value at least
+`r z ^ 2` whenever `r z > 1` is at most `1`. -/
+lemma le_one_of_forall_exists_sq_le {α R : Type*} [CommRing R] [LinearOrder R]
+    [IsStrictOrderedRing R] [Archimedean R] {r : α → R} {K : R} (h_bdd : ∀ z : α, r z ≤ K)
     (h_sq : ∀ z : α, 1 < r z → ∃ z' : α, r z ^ 2 ≤ r z') (z : α) : r z ≤ 1 := by
   by_contra! h_lt
   have h_iterate (k : ℕ) : ∃ z' : α, r z ^ 2 ^ k ≤ r z' := by
