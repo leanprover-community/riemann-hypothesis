@@ -281,7 +281,7 @@ def oscRows : GlModule R (MvPolynomial ι ℂ) where
         simp [Matrix.coe_reindexAlgEquiv, Matrix.reindex_apply, single_apply, Equiv.eq_symm_apply]
       symm
       simp only [f, LinearMap.comp_apply, singleLinearMap_apply,
-        TauCeti.glTraceTwistHom_apply, LieHom.coe_toLinearMap, LieHom.comp_apply, LieHom.coe_mk,
+        TauCeti.glTraceTwistHom_apply, LieHom.coe_toLinearMap, LieHom.comp_apply,
         rowSignConj_single, map_smul, TauCeti.glBlockDiagonal_single, map_sum, AlgHom.coe_toLieHom,
         AlgEquiv.coe_toAlgHom, hreindex, TauCeti.oscillatorHom_single, liftLinear_single,
         LinearMap.smulRight_apply, LinearMap.id_apply, one_smul, oscRowsUnit]
