@@ -1,6 +1,7 @@
 module
 
 import Mathlib.RingTheory.PicardGroup
+public import Lib.Adelic.Reduction.FrameNormalization
 public import Lib.Weil.MixedModel.IsotropicSplitting
 public import Lib.DiscreteSeries.FlenstedJensen.Defs
 import Lib.Adelic.Landherr
@@ -8,8 +9,6 @@ import Lib.Adelic.Unitary.RationalPoints
 import Lib.Adelic.Unitary.WeakApproximation
 import Lib.Adelic.Witt.WittTheorem
 import Lib.Cohomology.Etale.Basic
-import Lib.General.LinearAlgebra.HermiteForm
-import Lib.General.LinearAlgebra.PolarDecomposition
 
 /-!
 # Maximal compact subgroup, splittings of isotropic frames and the Iwasawa decomposition
@@ -30,8 +29,8 @@ and further choices).
   matrices M through M − M*; it sends rational matrices to rational points.
 * `New.Space.Splitting.centerCoeff`: the Fourier coefficients of a function along this centre.
 * `New.Space.Splitting.iwasawa`: the Iwasawa decomposition for the maximal compact subgroup
-  `New.maxCompact`, obtained at each infinite place and over the finite adeles from Witt's theorem
-  (`New.Space.Splitting.iwasawa_of_witt`).
+  `New.maxCompact`. The proof normalises an adelic frame by a block triangular change of basis
+  and uses Witt's theorem to move between normalised isotropic frames.
 * `New.Space.Splitting.exists_eq_radicalElement_mul_levi_mul_isAdapted`: every element is a product
   of an element of the radical, a Levi element and an element adapted to the splitting.
 
@@ -389,6 +388,33 @@ lemma exists_unitary_mul_eq_of_isotropic {s : n → ℤˣ} {A B : Matrix n p ℂ
         · exact fun h ↦ absurd (Finset.mem_univ _) h
     _ = B i j := congrFun (congrFun (hg (s i)) ⟨i, rfl⟩) j
 
+/-- Two normalised adelic frames isotropic for the signed standard form are carried to one
+another by the maximal compact subgroup of the adelic unitary group. -/
+lemma exists_mem_maxCompact_mul_eq_of_isotropic {X Y : Matrix n p (𝔸 E)}
+    (hX : IsNormalizedAdelicFrame X) (hY : IsNormalizedAdelicFrame Y)
+    (hX₀ : Xᴴ * stdForm E s * X = 0) (hY₀ : Yᴴ * stdForm E s * Y = 0) :
+    ∃ κ ∈ maxCompact E s, κ.adeleMatrix * X = Y := by
+  let fin := RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)
+  have inf_iso {Z : Matrix n p (𝔸 E)} (hZ : Zᴴ * stdForm E s * Z = 0)
+      (w : NumberField.InfinitePlace E) :
+      (Z.map (evalInf w))ᴴ * signMatrix s * Z.map (evalInf w) = 0 := by
+    have hs : (stdForm E s).map (evalInf w) = signMatrix s := by simp [stdForm, signMatrix]
+    rw [← hs, ← conjTranspose_map (evalInf w) (fun _ ↦ rfl), ← Matrix.map_mul, ← Matrix.map_mul, hZ]
+    simp
+  have fin_iso {Z : Matrix n p (𝔸 E)} (hZ : Zᴴ * stdForm E s * Z = 0) :
+      (Z.map fin)ᴴ * Z.map fin = 0 := by
+    have hs : (stdForm E s).map fin = 1 := by simp [stdForm, fin]
+    simpa only [Matrix.map_mul, conjTranspose_map fin (fun _ ↦ rfl), hs, Matrix.mul_one,
+      Matrix.map_zero _ (map_zero _)] using congrArg (fun M ↦ Matrix.map M fin) hZ
+  choose a ha h_inf using fun w ↦ exists_unitary_mul_eq_of_isotropic
+    (hX.orthonormal w) (hY.orthonormal w) (inf_iso hX₀ w) (inf_iso hY₀ w)
+  obtain ⟨c, hc, h_fin⟩ := witt_Ô hX.primitive hY.primitive ((fin_iso hX₀).trans (fin_iso hY₀).symm)
+  refine ⟨(a, c), ⟨fun w _ ↦ ha w, hc⟩, matrix_ext_𝔸 (fun w ↦ ?_) ?_⟩
+  · rw [Matrix.map_mul]
+    exact h_inf w
+  · rw [Matrix.map_mul]
+    exact h_fin
+
 /-- For a Witt decomposition `H` of `W` with isotropic frame `k`, every `g` in the adelic unitary
 group `G E s` of `W` has a right translate `g * κ`. Here `κ` lies in the maximal compact subgroup
 K_∞K₀, and `g * κ` acts on `k` by some `b` in GL_p(𝔸) (`H.ActsOnFrame`: g κ k = k b). This `b` is
@@ -396,27 +422,16 @@ block triangular for the weights `wt : p → ℕ`. -/
 lemma exists_mem_maxCompact_actsOnFrame (g : G E s) (wt : p → ℕ) :
     ∃ κ ∈ maxCompact E s, ∃ b : GL p (𝔸 E),
       b.val.BlockTriangular wt ∧ H.ActsOnFrame (g * κ) b.val := by
-  -- Apply `iwasawa_of_witt` at each infinite place, with orthonormal frames (Gram–Schmidt), and
-  -- at the finite places, with frames that are integral and left invertible over Ô (Witt's
-  -- theorem over Ô is `witt_Ô`); then glue the components.
-  choose κ hκ b hb h_inf using fun w : NumberField.InfinitePlace E ↦
-    H.iwasawa_of_witt (P := fun X ↦ Xᴴ * X = 1) (evalInf w) (g.fst w)
-      (exists_orthonormal_mul wt) exists_unitary_mul_eq_of_isotropic
-      (by simp [← ext_iff, lCoord, stdForm, signMatrix])
-  let fin : 𝔸 E →+* 𝔸f E := RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)
-  obtain ⟨κ', hκ', b', hb', h_fin⟩ :=
-    H.iwasawa_of_witt fin g.snd
-      (fun hX ↦ isValuationPair_Ô.exists_isPrimitiveMatrix_mul hX wt)
-      (fun hX hY hX₀ hY₀ ↦ witt_Ô hX hY (by simpa using hX₀.trans hY₀.symm))
-      (by simp [← ext_iff, fin, lCoord, stdForm] :
-        H.lCoord.map fin = (H.kAdelic.map fin)ᴴ * (1 : Matrix n n (𝔸f E)))
-  refine ⟨(κ, κ'), ⟨fun w _ ↦ hκ w, hκ'⟩, mkAdelicGL (b, b'),
-    fun i j hij ↦ Prod.ext (funext fun w ↦ hb w hij) (hb' hij),
-    matrix_ext_𝔸 (fun w ↦ ?_) ?_⟩
-  · rw [Matrix.map_mul, Matrix.map_mul]
-    exact h_inf w
-  · rw [Matrix.map_mul, Matrix.map_mul]
-    exact h_fin
+  -- Normalise the adelic frames, then use compact transitivity on normalised isotropic frames.
+  obtain ⟨κ, hκ, b, hb, h_frame⟩ := H.iwasawa_of_witt (P := IsNormalizedAdelicFrame)
+    (C := {u | G.toUnitary.symm u ∈ maxCompact E s}) (RingHom.id _) g.toUnitary
+    (fun hX ↦ exists_blockTriangular_normalizedFrame hX wt)
+    (fun hX hY hX₀ hY₀ ↦ by
+      obtain ⟨k, hk, h⟩ := exists_mem_maxCompact_mul_eq_of_isotropic hX hY hX₀ hY₀
+      exact ⟨k.toUnitary, by simpa, h⟩)
+    (by simp [lCoord])
+  refine ⟨G.toUnitary.symm κ, hκ, b, hb, ?_⟩
+  simpa [ActsOnFrame, G.adeleMatrix] using h_frame
 
 /-- The Iwasawa decomposition. Every `g` has a right translate `g * κ`, with `κ` in the maximal
 compact subgroup, that acts on the isotropic frame by a matrix `b`, block triangular for the
