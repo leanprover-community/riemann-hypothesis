@@ -15,7 +15,6 @@ the map induced by `m ↦ r • m`. The explicit formulae in low degrees are API
 comparisons of explicit cocycles with Mathlib's continuous cohomology.
 
 * `New.DiscreteModule.H`: the cohomology `Hⁿ(Γ, A)`, with its `R`-module structure.
-* `New.DiscreteModule.zeroEquiv`: `H⁰(Γ, A)` is the module of invariants.
 * `New.DiscreteModule.π₁`, `New.DiscreteModule.ker_π₁`: the `R`-linear map from the continuous
   1-cocycles onto `H¹(Γ, A)`, with kernel the coboundaries.
 * `New.DiscreteModule.π₂`, `New.DiscreteModule.H2EquivH`: the `R`-linear map from the continuous
@@ -108,33 +107,6 @@ instance (n : ℕ) : Module R (A.H n) := Module.compHom (A.H n) (A.smulRingHom n
 lemma smul_def (n : ℕ) (r : R) (x : A.H n) :
     r • x = (TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) n).hom x :=
   rfl
-
-/-! ### Degree zero -/
-
--- This belongs in Tau Ceti: the `R`-linear form of `explicitH0IsoContinuousCohomology`.
-/-- `H⁰(Γ, A)` is the module of invariants of `A`. -/
-def zeroEquiv : A.H 0 ≃ₗ[R] A.ρ.invariants where
-  toFun x := ⟨((explicitH0IsoContinuousCohomology Γ A).inv x : A), fun g ↦
-    ((explicitH0IsoContinuousCohomology Γ A).inv x).property g⟩
-  invFun m := (explicitH0IsoContinuousCohomology Γ A).hom ⟨m, fun g ↦ m.property g⟩
-  left_inv x := (explicitH0IsoContinuousCohomology Γ A).inv_hom_id_apply x
-  right_inv m := Subtype.ext <| congrArg Subtype.val
-    ((explicitH0IsoContinuousCohomology Γ A).hom_inv_id_apply
-      (⟨m, fun g ↦ m.property g⟩ : TauCeti.ContCohomology.H0 Γ A))
-  map_add' x y := Subtype.ext <| congrArg Subtype.val
-    (map_add (ConcreteCategory.hom (explicitH0IsoContinuousCohomology Γ A).inv) x y)
-  map_smul' r x := by
-    obtain ⟨m, rfl⟩ : ∃ m, (explicitH0IsoContinuousCohomology Γ A).hom m = x :=
-      ⟨(explicitH0IsoContinuousCohomology Γ A).inv x,
-        (explicitH0IsoContinuousCohomology Γ A).inv_hom_id_apply x⟩
-    apply Subtype.ext
-    change (((explicitH0IsoContinuousCohomology Γ A).inv
-        ((TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) 0).hom
-          ((explicitH0IsoContinuousCohomology Γ A).hom m)) : TauCeti.ContCohomology.H0 Γ A) : A) =
-      r • (((explicitH0IsoContinuousCohomology Γ A).inv
-        ((explicitH0IsoContinuousCohomology Γ A).hom m) : TauCeti.ContCohomology.H0 Γ A) : A)
-    rw [explicitH0Iso_coeffMap, Iso.hom_inv_id_apply, Iso.hom_inv_id_apply, coe_explicitCoeff0]
-    rfl
 
 /-! ### Degree one -/
 
