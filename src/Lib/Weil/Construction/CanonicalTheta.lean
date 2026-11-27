@@ -32,8 +32,8 @@ Notions from other files:
   under the L¹ norm; β is the adelic bicharacter and e the vacuum function `New.vacuumFn`.
 * `New.signedSpace`: the standard space with matrix diag(s), a sum of lines.
 * `New.Space.IsThetaFunctional`: A theta functional of V: a bounded θ on
-  `Model (adelicHeisenberg E s)`, invariant under the rational Heisenberg operators, with
-  |θ(ρ(x)vac)|² of mean 1 over 𝔸^n modulo rational points.
+  `ReproducingModel (adelicHeisenberg E s) vacuumMeasure vacuumFn`, invariant under the rational
+  Heisenberg operators, with |θ(ρ(x)vac)|² of mean 1 over 𝔸^n modulo rational points.
 * `New.Space.boxProd`: For a splitting of the coordinates, the product 𝒮(V₁) × 𝒮(V₂) → 𝒮(V).
 
 ## Relation to the literature
@@ -70,7 +70,7 @@ lemma _root_.New.CoordChange.exists_theta_omega_map [RingHomInvPair σ σ] (V : 
   have h_rat (x : n₁ → 𝔸 E) (hx : x ∈ V₁.ratVectors) : g • D.φ.symm x ∈ V.ratVectors :=
     hΓ (D.φ.symm x) (by rwa [D.φ.apply_symm_apply])
   -- the functional `f ↦ σ (θ_V (ω(g) (D.map f)))`
-  let F : Heisenberg.IsVacuum.Model (adelicHeisenberg E s₁) →L[ℂ] ℂ :=
+  let F : TauCeti.ReproducingModel (adelicHeisenberg E s₁) vacuumMeasure vacuumFn →L[ℂ] ℂ :=
     σ.toSemilinearMap.mkContinuous 1 (by simp) ∘SL V.rawTheta ∘SL (V.ω g ∘SL D.map (V₁ := V₁))
   have : ContinuousConstSMul (G E s) (n → 𝔸 E) := ContinuousSMul.continuousConstSMul
   obtain ⟨h_inv, h_mean⟩ : V₁.IsThetaFunctional F :=

@@ -355,7 +355,7 @@ up to the bicharacter `β` of `New.stdLattice.finHeisenberg` at the parts of `y`
 `S ∪ S̄`. -/
 lemma schrodingerAct_schrodingerAct (y y' : n → 𝔸f E) (f : (n → 𝔸f E) → ℂ) :
     schrodingerAct S y (schrodingerAct S y' f) =
-      (stdLattice.finHeisenberg E n).β (idem S.conjClosure • y) (idem S.conjClosure • y') •
+      (stdLattice.finHeisenberg E n) (idem S.conjClosure • y) (idem S.conjClosure • y') •
         schrodingerAct S (y + y') f := by
   funext x
   -- Both sides are `selfDualAddChar E` of an exponent times `f (x + y + y')`, whose exponents

@@ -73,7 +73,7 @@ is the real vacuum projection.
 
 section AdaptedMixedModel
 
-open Matrix NumberField WeilData Fock Space Splitting Prod Heisenberg IsVacuum
+open Matrix NumberField WeilData Fock Space Splitting Prod TauCeti ReproducingModel
 
 variable {E : Type _} [Field E] [CMType E] [WeilData E] {n n₀ p : Type} [Fintype n] [DecidableEq n]
   [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ}
@@ -111,7 +111,7 @@ lemma eq_of_integrated_zeroTerm_eq (hD : D.IsAdapted 1 t) {v u : fockSpace (real
     simpa [← slice_zero, vacuumFn] using slice_vacElem_eq_vacuumFactor_smul hD 0
   have h_kill : V₀.integrated (v - u) V₀.vacElem = 0 := by
     simpa [h_zeroTerm, sub_eq_zero] using h_eq V.vacElem
-  refine sub_eq_zero.1 (eq_zero_of_modelInner_self (?_ : fockInner (v - u) (v - u) = 0))
+  refine sub_eq_zero.1 (eq_zero_of_innerSL_self (?_ : fockInner (v - u) (v - u) = 0))
   simpa [h_kill, -map_sub] using
     (V₀.dataInner_integrated (v - u) (v - u) V₀.vacElem V₀.vacElem).symm
 
@@ -152,11 +152,12 @@ noncomputable def _root_.New.Space.Splitting.IsAdapted.mixedModel (h : D.IsAdapt
     -- `isMixedLaw_slice` at real vectors.
     have h_β (x y : InfinitePlace E × p → ℂ) :
         (stdAddChar E (toAdele (j / 2) * Star.star (realVec y) ⬝ᵥ realVec x) : ℂ) =
-          (realHeisenberg 1).β x y := by
-      simpa [↓ adelicHeisenberg] using! (adelicSum E (n := p) 1).beta_equiv (x, 0) (y, 0)
+          realHeisenberg 1 x y := by
+      simpa [↓ adelicHeisenberg_apply] using!
+        (adelicSum E (n := p) 1).apply_equiv_equiv (x, 0) (y, 0)
     rw [two_nsmul a, add_assoc a a a', ← h_β]
     simpa [← hT, ↓ conjTranspose_nonsing_inv, ↓ integrated_realHeisenbergOp,
-      ↓ realVec_realMatrix_mulVec, mulVec_add, ↓ Splitting.slice, ↓ adelicHeisenberg,
+      ↓ realVec_realMatrix_mulVec, mulVec_add, ↓ Splitting.slice, adelicHeisenberg_apply,
       ↓ star_mulVec_dotProduct] using
       D.isMixedLaw_slice (t⁻¹.valᴴ *ᵥ _)
         (D.lAdelic *ᵥ t⁻¹.valᴴ *ᵥ _ + D.iAdelic *ᵥ _ + D.kAdelic *ᵥ t.val *ᵥ _) _
@@ -192,10 +193,11 @@ lemma slice_integrated (hD : D.IsAdapted 1 t) (x : p → 𝔸 E) (v : fockSpace 
   have h_split : V.ϱ (D.lAdelic *ᵥ t⁻¹.valᴴ *ᵥ x) (V.integrated v f) =
       V.integrated (realHeisenbergOp a v) (V.ϱ y f) := by
     rw [integrated_realHeisenbergOp, ← V.rho_integrated v f hy_real]
-    simp [a, y, xfin, ↓ realVec_realMatrix_mulVec, ← mulVec_add, realVec_realCoord_add, Rep.mul,
-      ↓ star_mulVec_dotProduct, Matrix.mul_assoc, adelicHeisenberg]
+    simp [a, y, xfin, ↓ realVec_realMatrix_mulVec, ← mulVec_add, realVec_realCoord_add,
+      TauCeti.HeisenbergDatum.Representation.apply_apply,
+      ↓ star_mulVec_dotProduct, Matrix.mul_assoc, adelicHeisenberg_apply]
   have h_proj : V.projReal (V.ϱ y f) = V.ϱ y (V.projReal f) :=
-    (V.rho_integrated IsVacuum.vacElem f hy_real).symm
+    (V.rho_integrated vacuum f hy_real).symm
   calc D.slice (t⁻¹.valᴴ *ᵥ x) (V.integrated v f)
       = D.zeroTerm (V.integrated (realHeisenbergOp a v) (V.ϱ y f)) := by
         rw [slice, ContinuousLinearMap.comp_apply, h_split]

@@ -2,8 +2,8 @@ module
 
 public import Mathlib.Algebra.AffineMonoid.Basic
 public import Mathlib.RingTheory.DedekindDomain.Different
+public import TauCeti.Analysis.HeisenbergModel.Basic
 public import Lib.ClassField.HeckeCharacter.Basic
-public import Lib.Weil.Construction.HeisenbergModel
 public import Lib.Adelic.Adeles.AdditiveCharacter
 public import Lib.Adelic.Unitary.Defs
 import Lib.Adelic.Adeles.StrongApproximation
@@ -35,8 +35,8 @@ Notions from other files:
   the adele ring of E when E is totally complex.
 * `New.ψf`: The standard additive character of the finite adeles: ψ_f(x) = exp(2πi Tr_{E/ℚ}(a)) for
   any a in E with x − a integral.
-* `New.Heisenberg`: A continuous function β on W × W, W a topological abelian group, with values of
-  modulus one, multiplicative in each variable, and β(x,x) = 1.
+* `TauCeti.HeisenbergDatum`: A continuous function β on W × W, W a topological abelian group, with
+  values of modulus one, multiplicative in each variable, and β(x,x) = 1.
 
 ## Relation to the literature
 
@@ -160,17 +160,21 @@ variable (E)
 /-- The Heisenberg datum on adelic n-space with bicharacter β(x,y)=ψ(½ȷ h(y,x)), h being the
 hermitian form with matrix `New.stdForm E s`; `toAdele` is the embedding of E in the adeles
 `𝔸 E`. -/
-def adelicHeisenberg : Heisenberg (n → 𝔸 E) where
-  β x y := stdAddChar E (toAdele (j / 2) * star y ⬝ᵥ stdForm E s *ᵥ x)
-  add_left := by simp [mul_add, AddChar.map_add_eq_mul, mulVec_add]
-  add_right := by simp [mul_add, AddChar.map_add_eq_mul]
-  self_eq_one x := by
+def adelicHeisenberg : TauCeti.HeisenbergDatum (n → 𝔸 E) where
+  toFun x y := stdAddChar E (toAdele (j / 2) * star y ⬝ᵥ stdForm E s *ᵥ x)
+  map_add_left' := by simp [mul_add, AddChar.map_add_eq_mul, mulVec_add]
+  map_add_right' := by simp [mul_add, AddChar.map_add_eq_mul]
+  apply_self' x := by
     -- by `stdAddChar_inv_two_mul_add_star`, `stdAddChar` sees only `a + star a` of its argument
     -- `a`, and this vanishes here since `star j = -j` and the form is Hermitian
     rw [← stdAddChar_inv_two_mul_add_star]
     simp [neg_div, ← star_dotProduct, star_mulVec_dotProduct]
-  norm_eq_one := by simp [Circle.norm_coe]
-  cont := Continuous.subtypeVal (by fun_prop)
+  norm_apply' := by simp [Circle.norm_coe]
+  continuous_uncurry' := Continuous.subtypeVal (by fun_prop)
+
+lemma adelicHeisenberg_apply (x y : n → 𝔸 E) :
+    adelicHeisenberg E s x y = stdAddChar E (toAdele (j / 2) * star y ⬝ᵥ stdForm E s *ᵥ x) :=
+  rfl
 
 end AdelicHeisenberg
 

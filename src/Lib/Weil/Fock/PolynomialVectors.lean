@@ -71,7 +71,7 @@ namespace New.Fock
 
 section FockInnerProduct
 
-open ComplexConjugate Matrix Complex Heisenberg.IsVacuum Finset MvPolynomial
+open ComplexConjugate Matrix Complex TauCeti ReproducingModel Finset MvPolynomial
 
 variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ}
 
@@ -80,10 +80,10 @@ of the principal minor of u on the coordinates of sign −1. -/
 @[simp]
 lemma realWeil_vacVector_apply_zero (u : USign ε) :
     realWeil u vacVector 0 = (principalMinor u (ε · = -1))⁻¹ := by
-  -- By `conj_delta_mul_weilRep_vacElem`, the value at `0` times the conjugate of the multiplier
+  -- By `conj_mul_weilRep_vacuum_apply_zero`, the value at `0` times the conjugate of the multiplier
   -- `realMultiplier u` is `1`; and that multiplier is the conjugate of the minor.
   have h_mul : starRingEnd ℂ (realMultiplier u) * realWeil u vacVector 0 = 1 :=
-    conj_delta_mul_weilRep_vacElem (A := realAction ε) (g := u)
+    conj_mul_weilRep_vacuum_apply_zero (realAction ε) u (realAction_cocycle ε)
   rw [eq_inv_of_mul_eq_one_right h_mul, realMultiplier, conj_conj]
 
 /-- The matrix coefficient ⟨v_P, ω₀(u)v_Q⟩ of the Weil representation, for u in U(ε) and complex
@@ -108,9 +108,10 @@ private lemma fockMatrixCoeff_heisenbergDeriv_single (u : USign ε) (P Q : MvPol
       fockInner Q (realWeil u (realHeisenbergOp (t • Pi.single j c) (polyVector ε P))) =
         star (fockInner (realWeil u P) (realHeisenbergOp (t • -c • col u j) (polyVector ε Q))) := by
     -- apply the isometry `realHeisenbergOp (t • c • col u j)` to both arguments on the right
-    rw [RCLike.star_def, conj_modelInner,
-      ← modelInner_heisenbergOp (t • c • col u j) (realHeisenbergOp _ _)]
-    simp [weilRep_heisenbergOp, mulVec_smul, Heisenberg.Rep.mul, Heisenberg.self_eq_one]
+    rw [RCLike.star_def, conj_innerSL,
+      ← innerSL_heisenbergRep (v := realHeisenbergOp _ _) (x := t • c • col u j)]
+    simp [weilRep_heisenbergRep, mulVec_smul, TauCeti.HeisenbergDatum.Representation.apply_apply,
+      TauCeti.HeisenbergDatum.apply_self]
   -- Differentiate both sides at `t = 0`: `hasDerivAt_realHeisenbergOp` turns `realHeisenbergOp`
   -- into `heisenbergDeriv`.
   refine ((hasDerivAt_realHeisenbergOp ..).map_clm (fockInner Q ∘L realWeil u)).unique ?_
@@ -124,7 +125,7 @@ private lemma fockMatrixCoeff_raise_lower (u : USign ε) (P Q : MvPolynomial ι 
       ∑ i : ι, conj (u.val i j) * fockMatrixCoeff u (raiseOp ε i Q) P := by
   -- Evaluating the derivative at 1 and I separates the raising and lowering coefficients.
   have h_deriv := fockMatrixCoeff_heisenbergDeriv_single u P Q j
-  simp_all [heisenbergDeriv, conj_modelInner, apply_ite, mul_assoc, ← mul_sum, Pi.single_apply,
+  simp_all [heisenbergDeriv, conj_innerSL, apply_ite, mul_assoc, ← mul_sum, Pi.single_apply,
     sum_add_distrib]
   have separate {a b x y : ℂ} (h : ∀ c : ℂ, c * a - conj c * b = -(conj c * y) + c * x) :
       a = x ∧ b = y := by grind [I_sq, h 1, conj_I]
@@ -213,7 +214,7 @@ through their inner products with the dense family of the v_R, using
 
 section FockDerivative
 
-open Matrix Int MvPolynomial Finset Heisenberg.IsVacuum Norms.L2Operator
+open Matrix Int MvPolynomial Finset TauCeti ReproducingModel Norms.L2Operator
 
 variable {ι : Type} [Fintype ι] {ε : ι → ℤˣ}
 
@@ -273,8 +274,8 @@ private lemma differentiableAt_realWeil_polyVector [DecidableEq ι] {γ : ℝ �
 /-- The polynomial vector of A_a B_b 1 = `New.Fock.glOp` ε a b 1 (A_a = X_a or −∂_a, B_b = ∂_b or
 X_b by the signs) takes at 0 the value −1 if a = b has sign −1, and 0 otherwise: minus the (b, a)
 entry of 1 − `New.Fock.posProj` ε. -/
-private lemma valueAt_zero_polyVector_glOp_one [DecidableEq ι] (a b : ι) :
-    valueAt 0 (polyVector ε (glOp ε a b 1)) = -(1 - posProj ε) b a := by
+private lemma evalCLM_zero_polyVector_glOp_one [DecidableEq ι] (a b : ι) :
+    evalCLM 0 (polyVector ε (glOp ε a b 1)) = -(1 - posProj ε) b a := by
   aesop (add simp [glOp, raiseOp, lowerOp, realVac, posProj, Matrix.one_apply, diagonal])
 
 /-- The relation `New.Fock.fockMatrixCoeff_raiseOp`, differentiated along a
@@ -375,9 +376,9 @@ theorem hasDerivAt_realWeil [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix
       -- (`using!`: the two sides differ only in the instance path of `ℂ` as a module over `ℝ`.)
       simpa [principalMinor_sign_eq_det, hγ_zero] using!
         (hasDerivAt_det_posProj_add_mul hγ_zero hγ).inv
-    -- Pairing with the vacuum evaluates at `0` (`valueAt_zero_polyVector_glOp_one`).
+    -- Pairing with the vacuum evaluates at `0` (`evalCLM_zero_polyVector_glOp_one`).
     rw [B_apply, (pair_deriv 1 1).unique vacuum_coeff, trace_mul_comm]
-    simp [weilDeriv, trace, Matrix.mul_apply, ← valueAt_apply, valueAt_zero_polyVector_glOp_one,
+    simp [weilDeriv, trace, Matrix.mul_apply, ← evalCLM_apply, evalCLM_zero_polyVector_glOp_one,
       mul_sub, sum_sub_distrib, Matrix.one_apply]
   -- At `u = 1` the relations `fockMatrixCoeff_raiseOp` and `fockMatrixCoeff_lowerOp` say that
   -- `raiseOp ε i` and `ε i * lowerOp ε i` are adjoint.
@@ -428,7 +429,7 @@ theorem hasDerivAt_realWeil [DecidableEq ι] {γ : ℝ → USign ε} {Y : Matrix
   have orth (v : fockSpace ε) : fockInner v (D P - polyVector ε (weilDeriv ε Y P)) = 0 :=
     isClosed_property denseRange_polyVector (fockInner.flip _).isClosed_ker B_zero v
   have h_D_eq : D P = polyVector ε (weilDeriv ε Y P) :=
-    eq_of_sub_eq_zero (eq_zero_of_modelInner_self (orth _))
+    eq_of_sub_eq_zero (eq_zero_of_innerSL_self (orth _))
   exact (h_diff P).hasDerivAt.congr_deriv h_D_eq
 
 end FockDerivative

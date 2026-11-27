@@ -9,6 +9,7 @@ import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Base
 import Lib.Cohomology.Etale.Basic
 import Lib.Weil.MixedModel.RealTheta
+import TauCeti.Analysis.HeisenbergModel.Wiener
 
 /-!
 # Zero term and mixed model of the Weil representation: slices and θ as a sum of slices
@@ -66,7 +67,7 @@ The Heisenberg operators `V.ϱ y` and the unitary group (`V.ω g`) act on the Ba
 `D.iCoord`, `D.kCoord` send `l a + ι w + k b` to `a`, `w`, `b`.
 -/
 
-open Matrix IsDualFamily NumberField Heisenberg.IsVacuum ContinuousLinearMap
+open Matrix IsDualFamily NumberField TauCeti ReproducingModel ContinuousLinearMap
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
@@ -80,7 +81,7 @@ lemma isContPeriodic_along_k (y : n₀ → 𝔸 E) :
   refine ⟨by fun_prop, fun γ hγ x ↦ ?_⟩
   -- The vector `k γ` is rational, so `f` is quasi-periodic under it; at `z = ι y + k x` the factor
   -- `β (k γ) z` is 1, as `k` is orthogonal to itself and to `ι`.
-  have quasi (z : n → 𝔸 E) : (adelicHeisenberg E s).β (D.kAdelic *ᵥ γ) z * f (D.kAdelic *ᵥ γ + z) =
+  have quasi (z : n → 𝔸 E) : adelicHeisenberg E s (D.kAdelic *ᵥ γ) z * f (D.kAdelic *ᵥ γ + z) =
     f z :=
     calc _ = V.ϱ z f (D.kAdelic *ᵥ γ) := (V.rho_apply ..).symm
       _ = f z := V.isThetaFunctional_rawTheta.left _ (D.kAdelic_mulVec_mem_ratVectors hγ) _
@@ -130,14 +131,15 @@ lemma exists_zeroTerm :
       V₀.vacElem
   have hK_bdd (z : n → 𝔸 E) : ‖K z‖ ≤ ‖c‖ * ‖(hyperbolicSpace E p).vacElem‖ * ‖V₀.vacElem‖ := by
     grw [norm_smul, c.le_opNorm]
-    simp [Heisenberg.Rep.norm_map]
+    simp [TauCeti.HeisenbergDatum.Representation.norm_apply]
   have h_vac (y : n₀ → 𝔸 E) (z : n → 𝔸 E) :
       V₀.rawTheta (V₀.ϱ y (K z)) = ℓ (V.ϱ ((0 ⊕ᵥ y) ∘ e.symm) (V.ϱ z V.vacElem)) := by
     rw [← boxProd_vacElem hs (V₁ := hyperbolicSpace E p) (V₂ := V₀), rho_boxProd hs z, ← h_prod, hc,
       map_smul, map_smul, smul_eq_mul]
   -- `exists_lift` gives a bounded `T` that acts as if it sent ϱ(z) vac to `K z`: an identity
   -- M (K z) = N (ϱ(z) vac) for all z implies M ∘ T = N.
-  obtain ⟨T, hT⟩ := exists_lift (H := adelicHeisenberg E s) (Y := ℂ) (K := K) (by fun_prop) hK_bdd
+  obtain ⟨T, hT⟩ := exists_lift (β := adelicHeisenberg E s) (μ := vacuumMeasure) (e := vacuumFn)
+    (Y := ℂ) (K := K) (by fun_prop) hK_bdd
   refine ⟨T ∘L V.ω g⁻¹, fun f y ↦ ?_⟩
   calc T (V.ω g⁻¹ f) y = ℓ (V.ϱ ((0 ⊕ᵥ y) ∘ e.symm) (V.ω g⁻¹ f)) :=
       hT (V₀.rawTheta ∘L V₀.ϱ y) (ℓ ∘L V.ϱ _) (h_vac y) _
@@ -428,10 +430,10 @@ lemma IsMixedLaw.apply_omega_rho_finFrameVector
     simp [finVec, stdAddChar, selfDualAddChar_apply, half, dotProduct, mul_sum, fst_sum, snd_sum]
     grind
   have h_phase :
-      (adelicHeisenberg E 1).β (t.val⁻¹ᴴ *ᵥ finVec x +
+      adelicHeisenberg E 1 (t.val⁻¹ᴴ *ᵥ finVec x +
         (t.val⁻¹ᴴ *ᵥ finVec x + t.val⁻¹ᴴ *ᵥ finVec a))
           (t.val *ᵥ finVec b) = selfDualAddChar E (half * star b ⬝ᵥ (x + (x + a))) := by
-    simp [dotProduct_mulVec, adelicHeisenberg, star_mulVec, ← conjTranspose_mul, mul_add,
+    simp [dotProduct_mulVec, adelicHeisenberg_apply, star_mulVec, ← conjTranspose_mul, mul_add,
       ← mulVec_add, AddChar.map_add_eq_mul, h_char]
   rw [finFrameVector, ← mulVec_finVec, omega_rho, hT, h_l, h_k, h_i, h_phase, h_add, mulVec_add]
 
@@ -580,7 +582,7 @@ lemma IsAdapted.exists_omega_vacElem_of_isMixedLaw {E : Type u_1} {n : Type u_3}
   have h_line : V₀.projReal (V₀.projOn Set.univ (T 0 u)) =
       V₀.dataInner V₀.vacElem (T 0 u) • V₀.vacElem := by
     simp [← dataInner_vacElem_smul_vacElem]
-  rw [h_real, h_fin, ← haz, (adelicSum E 1).vac_equiv]
+  rw [h_real, h_fin, ← haz, (adelicSum E 1).vacuum_equiv]
   by_cases hz : z ∈ stdLattice E p
   · simp [hz, stdLattice.finVac, sq, star_dotProduct_self_eq_sum, realVac, mul_comm (exp _),
     mul_assoc,
@@ -676,7 +678,7 @@ end MixedModelNames
 
 section RationalSums
 
-open Matrix IsDualFamily NumberField Heisenberg.IsVacuum ContinuousLinearMap
+open Matrix IsDualFamily NumberField TauCeti ReproducingModel ContinuousLinearMap
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ} {n₀ p : Type*} [Fintype n₀]
@@ -697,15 +699,18 @@ lemma exists_tsum_slice_le :
   obtain ⟨c, hc⟩ := hg.exists_omega_vacElem_of_isMixedLaw D.isMixedLaw_slice
   have h_int : MeasureTheory.Integrable
       (fun x : p → 𝔸 E ↦ (c * (‖vacuumFn x‖ ^ 2 : ℝ)) • V₀.vacElem) vacuumMeasure :=
-    ((integrable_norm_sq (stdSpace E p).vacElem).ofReal.const_mul c).smul_const V₀.vacElem
+    ((integrable_norm_sq (stdSpace E p).vacElem).ofReal.const_mul c).smul_const V₀.vacElem |>.congr
+      (.of_forall fun x ↦ by simp [Space.vacElem])
   let κ : (p → 𝔸 E) →L[𝔸 E] n → 𝔸 E := ⟨D.lAdelic.toLin', (toLin' _).continuous_on_pi⟩
   have h_norm (z : n → 𝔸 E) (x : p → 𝔸 E) :
       ‖D.zeroTerm (V.ϱ (z + D.lAdelic *ᵥ x) (V.ω g V.vacElem))‖ₑ =
         ‖(c * (‖vacuumFn (D.lCoord *ᵥ z + x)‖ ^ 2 : ℝ)) • V₀.vacElem‖ₑ := by
     rw [← slice_zero, isMixedLaw_slice, hc]
-    simp [← ofReal_norm, norm_smul, mulVec_add, Heisenberg.norm_eq_one, Heisenberg.Rep.norm_map]
+    simp [← ofReal_norm, norm_smul, mulVec_add, TauCeti.HeisenbergDatum.norm_apply,
+      TauCeti.HeisenbergDatum.Representation.norm_apply]
   -- `( :)`: `V.ϱ` is by definition the Heisenberg operator of the model.
-  exact (wiener_bound D.zeroTerm (right_ne_zero_of_mul_eq_one (conj_delta_mul_weilRep_vacElem _ g))
+  exact (exists_isCompact_tsum_enorm_le D.zeroTerm
+    (right_ne_zero_of_mul_eq_one (conj_mul_weilRep_vacuum_apply_zero _ g adelicAction_cocycle))
     κ h_int D.lCoord.mulVec (by simpa [κ, vacElem] using! h_norm) :)
 
 /-- There is M such that ∑_{ξ ∈ E^p} ‖f[ξ]‖ ≤ M‖f‖ for all f in 𝒮(V). -/
@@ -729,13 +734,13 @@ lemma hasSum_theta_slice :
   -- Fourier inversion at 0 for the periodic function b ↦ f(k b) on 𝔸^p: the numbers
   -- θ(`D.slice ξ f`) are its Fourier coefficients for the characters b ↦ β(b, ξ)².
   have h_dual : IsDualFamily (New.ratVectors E p) fun ξ b ↦
-      (adelicHeisenberg E 1).β b ((stdSpace E p).vecAtPoint ξ) ^ 2 := by
+      adelicHeisenberg E 1 b ((stdSpace E p).vecAtPoint ξ) ^ 2 := by
     convert (stdSpace E p).isDualFamily_beta_sq
     ext
     simp [mem_ratVectors_iff]
   have h_coeff (ξ : p → E) : V₀.θ (D.slice (toAdele ∘ ξ) f) =
       quotMean (New.ratVectors E p) fun b : p → 𝔸 E ↦
-        (adelicHeisenberg E 1).β b ((stdSpace E p).vecAtPoint ξ) ^ 2 *
+        adelicHeisenberg E 1 b ((stdSpace E p).vecAtPoint ξ) ^ 2 *
           f (D.iAdelic *ᵥ 0 + D.kAdelic *ᵥ b) := by
     -- The theta functional of V₀ is evaluation at 0.
     change D.zeroTerm (V.ϱ (D.lAdelic *ᵥ (toAdele ∘ ξ)) f) 0 = _

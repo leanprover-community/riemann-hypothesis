@@ -52,7 +52,7 @@ noncomputable section
 namespace New.Exchange
 
 open Matrix MeasureTheory Complex WeilData Fock Space Splitting MvPolynomial Finset Fintype
-  Heisenberg IsVacuum MixedModel Prod
+  TauCeti ReproducingModel MixedModel Prod
 
 open NumberField (InfinitePlace)
 
@@ -197,19 +197,19 @@ translate, in the mixed model of the adapted splitting, is the value of the tran
 lemma slice_realHeisenbergOp_vacElem_apply (h : D.IsAdapted 1 b) (a : InfinitePlace E × r → ℂ)
     (u : InfinitePlace E × n' → ℂ) {y : InfinitePlace E × n → ℂ}
     (hy : posProj (realSigns E s) *ᵥ y = y) :
-    h.mixedModel.slice a (realHeisenbergOp y vacElem) u =
-      (realHeisenbergOp y vacElem : fockSpace (realSigns E s)) (framePoint h (-a) u (-a)) := by
+    h.mixedModel.slice a (realHeisenbergOp y vacVector) u =
+      (realHeisenbergOp y vacVector : fockSpace (realSigns E s)) (framePoint h (-a) u (-a)) := by
   obtain ⟨c, z₀, rfl⟩ := exists_framePoint_eq_of_posProj_eq h hy
   set z : InfinitePlace E × n' → ℂ := posProj (realSigns E s') *ᵥ z₀
-  have h_slice : h.mixedModel.slice a (realHeisenbergOp (framePoint h c z c) vacElem) u =
-      (realHeisenberg 1).β (a + (a + c)) c * cexp (-(star (a + c) ⬝ᵥ (a + c))) *
-        ((realHeisenberg (realSigns E s')).β z u * realVac (u - z)) := by
+  have h_slice : h.mixedModel.slice a (realHeisenbergOp (framePoint h c z c) vacVector) u =
+      realHeisenberg 1 (a + (a + c)) c * cexp (-(star (a + c) ⬝ᵥ (a + c))) *
+        (realHeisenberg (realSigns E s') z u * realVac (u - z)) := by
     rw [framePoint, slice_realHeisenbergOp, two_nsmul, add_assoc a a c]
-    simp [slice_vac, IsVacuum.smul_apply, heisenbergOp_apply, vacElem_apply, mul_assoc]
+    simp [slice_vac, ReproducingModel.smul_apply, heisenbergRep_apply, vacuum_apply, mul_assoc]
   -- Both sides are exponentials. It remains to compare the exponents.
-  rw [h_slice, heisenbergOp_apply, vacElem_apply, framePoint_sub]
-  simp only [realHeisenberg, realVac, signMatrix_mulVec_framePoint h, star_framePoint_dotProduct h,
-    signMatrix_one, one_mulVec, ← exp_add]
+  rw [h_slice, heisenbergRep_apply, vacuum_apply, framePoint_sub]
+  simp only [realHeisenberg_apply, realVac, signMatrix_mulVec_framePoint h,
+    star_framePoint_dotProduct h, signMatrix_one, one_mulVec, ← exp_add]
   congr 1
   simp only [star_add, star_sub, star_neg, add_dotProduct, dotProduct_add, sub_dotProduct,
     dotProduct_sub, neg_dotProduct, dotProduct_neg]
@@ -223,9 +223,14 @@ lemma realBoxProd_realHeisenbergOp_vacVector {ι ι₁ ι₂ : Type} [Fintype ι
     {ε₂ : ι₂ → ℤˣ} {e : ι₁ ⊕ ι₂ ≃ ι} (he : ε ∘ e = ε₁ ⊕ᵥ ε₂) (y : ι₁ → ℂ) :
     realBoxProd he (realHeisenbergOp y vacVector) vacVector =
       realHeisenbergOp ((realCoordSum he).equiv (y, 0)) vacVector := by
-  change (realCoordSum he).tmul (heisenbergOp y vacElem) vacElem =
-    heisenbergOp ((realCoordSum he).equiv (y, 0)) vacElem
-  simp [← OrthogonalSum.tmul_vacElem (realCoordSum he), OrthogonalSum.heisenbergOp_tmul]
+  change (realCoordSum he).tmul (normalizedVolume ι)
+      (ReproducingModel.heisenbergRep y vacuum) vacuum =
+    ReproducingModel.heisenbergRep ((realCoordSum he).equiv (y, 0)) vacuum
+  rw [← TauCeti.HeisenbergDatum.OrthogonalSum.tmul_vacuum (realCoordSum he)
+      (μ := normalizedVolume ι)
+      (μ₁ := normalizedVolume ι₁) (μ₂ := normalizedVolume ι₂),
+    TauCeti.HeisenbergDatum.OrthogonalSum.heisenbergRep_tmul]
+  simp only [ContinuousAddEquiv.symm_apply_apply, TauCeti.HeisenbergDatum.Representation.zero_apply]
 
 /-- Let `P` be a polynomial in the positive coordinates and `polyVector` its Fock vector
 `P(ζ) exp(-|·|² / 2)`. In the mixed model of an adapted splitting, the value at `u` of the slice at
@@ -242,7 +247,7 @@ lemma slice_polyVector_apply (h : D.IsAdapted 1 b) (a : InfinitePlace E × r →
       (realSigns E s ∘ Subtype.val) ⊕ᵥ (realSigns E s ∘ Subtype.val) :=
     Sum.comp_elim (realSigns E s) Subtype.val Subtype.val
   let Φ : fockSpace (fun i : {i // realSigns E s i = 1} ↦ realSigns E s i) →L[ℂ] ℂ :=
-    (valueAt u ∘L h.mixedModel.slice a - valueAt (framePoint h (-a) u (-a))) ∘L
+    (evalCLM u ∘L h.mixedModel.slice a - evalCLM (framePoint h (-a) u (-a))) ∘L
       (realBoxProd h_signs).flip Fock.vacVector
   have h_functional : Φ = 0 := by
     refine hom_ext fun y ↦ ?_
@@ -250,13 +255,13 @@ lemma slice_polyVector_apply (h : D.IsAdapted 1 b) (a : InfinitePlace E × r →
         (realCoordSum h_signs).equiv (y, 0) := by
       ext i
       by_cases hi : realSigns E s i = 1 <;> simp [realCoordSum, posProj, mulVec_diagonal, hi]
-    simp [Φ, valueAt_apply, realBoxProd_realHeisenbergOp_vacVector,
+    simp [Φ, evalCLM_apply, realBoxProd_realHeisenbergOp_vacVector,
       slice_realHeisenbergOp_vacElem_apply h a u h_positive]
   have h_box : realBoxProd h_signs
       (polyVector (fun i : {i // realSigns E s i = 1} ↦ realSigns E s i) P) vacVector =
       polyVector (realSigns E s) (rename Subtype.val P) := by
     simp [← polyVector_one, realBoxProd_polyVector, Function.comp_def]
-  simpa [Φ, h_box, sub_eq_zero, valueAt_apply] using DFunLike.congr_fun h_functional
+  simpa [Φ, h_box, sub_eq_zero, evalCLM_apply] using DFunLike.congr_fun h_functional
     (polyVector (fun i : {i // realSigns E s i = 1} ↦ realSigns E s i) P)
 
 end Frame
@@ -624,7 +629,7 @@ lemma lineTermReal_detVector (β : Bool) (a : InfinitePlace E → ℂ) (k : ℕ)
     exact slice_polyVector_apply (isAdapted_lineTermSplitting A X β) (lineCoord n r a) u P
   have h_vac : realVac y = Real.exp (-∑ w : InfinitePlace E, ‖a w‖ ^ 2) * realVac u := by
     simpa [lineTermReal, star_dotProduct_self_eq_sum, slice_vac, lineCoord, sum_prod_type, mul_pow,
-      vacElem_apply, IsVacuum.smul_apply] using (h_eval 1).symm
+      vacuum_apply, ReproducingModel.smul_apply] using (h_eval 1).symm
   have hX : X.IsAdapted 1 1 := by
     simp [IsAdapted, Splitting.frameAt, G.adeleMatrix_one, IsBaseAdapted.isOrthoIntegral]
   have h_minor (w : InfinitePlace E) (σ : ℤˣ) :
@@ -646,7 +651,7 @@ lemma lineTermReal_detVector (β : Bool) (a : InfinitePlace E → ℂ) (k : ℕ)
       = detVector s' t' k m (liftFrame A X F) y := h_eval _
     _ = ((Real.exp (-∑ w : InfinitePlace E, ‖a w‖ ^ 2) *
           ∏ w : InfinitePlace E, star (a w) ^ (2 * (k + m w)) : ℂ) • detVector s t k m F) u := by
-      rw [IsVacuum.smul_apply, detVector_apply, detVector_apply]
+      rw [ReproducingModel.smul_apply, detVector_apply, detVector_apply]
       simp only [h_minor, h_prod, h_vac, star_mul', star_prod, star_pow]
       ring
 

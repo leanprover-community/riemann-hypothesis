@@ -246,7 +246,7 @@ grade.
 
 namespace New
 
-open Matrix Seesaw QuotientAddGroup Subtype WeilData Function Space Splitting Circle Set Heisenberg
+open Matrix Seesaw QuotientAddGroup Subtype WeilData Function Space Splitting Circle Set TauCeti
   MeasureTheory
 
 variable {E ι ι' X X' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
@@ -485,8 +485,8 @@ lemma constTerm_eq_homBicharacter_mul (hd : ∀ b : ι', d (Y'.stringReversal b)
         (homHeisenbergOp (w - w') (homHeisenbergOp w' f)) := by
     rw [← D.zeroTerm_rho_kAdelic (matrixToVec (w - w') ∘ val), kAdelic_mulVec D h_frame h_supp,
       x_inv_mulVec_matrixToVec]
-  simp [constTerm_eq_theta_zeroTerm D h_frame, zero_eq, sub_eq_add_neg, add_left, Rep.mul,
-    self_eq_one]
+  simp [constTerm_eq_theta_zeroTerm D h_frame, zero_eq, sub_eq_add_neg,
+    TauCeti.HeisenbergDatum.map_add_left, TauCeti.HeisenbergDatum.Representation.apply_apply]
 
 /-! ### Fourier expansion -/
 

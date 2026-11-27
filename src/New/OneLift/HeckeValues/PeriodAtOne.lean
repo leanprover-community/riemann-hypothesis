@@ -229,7 +229,7 @@ lemma sum_heckePolyCoeff_smul_modDatum_eq_modDatum
     [hα : α.HasWeight (fun τ : NumberField.InfinitePlace E ↦ -c τ) ψ]
     (hψ : ∀ w : FinPlace E, w ∉ 𝔪.places → ψ w = 1) {v : FinPlace E} (hv : v ∉ 𝔪.places)
     (h_places : 𝔪'.places = insert v 𝔪.places) (h_split : v.IsSplit)
-    (P : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns 1 1)))) :
+    (P : Fock.fockSpace (realSigns E (homSigns 1 1))) :
     ∑ U : Submodule (ResField v) (n → ResField v),
         heckePolyCoeff (α.frobValue n v)⁻¹ U • pairWeil (stdSpace E n) (stdSpace E n) α α
           ((1, 1), 1, ofSplitPlace h_split (transposeGL (basicCosetRep U)))

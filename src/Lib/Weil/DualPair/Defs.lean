@@ -270,7 +270,7 @@ a function Ψ on matrices modulo 𝔪: its real part is v, the lift of Ψ is put
 dividing 𝔪 by `New.Space.schrodingerOp` (the operator attached to a function of finite adelic
 vectors), and it is the vacuum elsewhere. -/
 def modDatum (𝔪 : Modulus E) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s s')))) :
+    (v : Fock.fockSpace (realSigns E (homSigns s s'))) :
       𝒮 (S.hom T) :=
   (S.hom T).integrated v
     ((S.hom T).schrodingerOp (Modulus.places 𝔪) (𝔪.liftFn (Ψ ∘ vecToMatrix)) (S.hom T).vacElem)

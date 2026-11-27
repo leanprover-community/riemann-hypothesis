@@ -69,13 +69,13 @@ place of E (as in `∀ w ∈ S`).
 
 section Projections
 
-open MeasureTheory Matrix Set AddChar Prod Heisenberg Rep Gf Circle Fock stdLattice _root_.Sum
-  OrthogonalSum Set.Sum IsVacuum
+open MeasureTheory Matrix Set AddChar Prod TauCeti Gf Circle Fock stdLattice _root_.Sum
+  TauCeti.HeisenbergDatum.OrthogonalSum Set.Sum ReproducingModel
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E] {n : Type*} [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} (V : Space E n s) {S : Set (FinPlace E)}
   {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y] [CompleteSpace Y]
-  (v : Model (realHeisenberg (realSigns E s))) (w : Model (realHeisenberg (realSigns E s)))
+  (v : fockSpace (realSigns E s)) (w : fockSpace (realSigns E s))
   (f f' : 𝒮 V) (L : 𝒮 V →L[ℂ] Y)
 
 /-- On the real factor of the splitting `adelicSum E s` of adelic vectors into real coordinates (in
@@ -83,22 +83,27 @@ variable {E : Type*} [Field E] [CMType E] [WeilData E] {n : Type*} [Fintype n] [
 representation acts at a real vector `y` by `ϱ (realVec y)`. -/
 @[simp]
 lemma heisenbergRep_left_rho (y : NumberField.InfinitePlace E × n → ℂ) :
-    (V.heisenbergRep.left (adelicSum E s)).ρ y = V.ϱ (realVec y) := by
-  simp [left]
+    V.heisenbergRep.restrictLeft (adelicSum E s) y = V.ϱ (realVec y) := by
+  ext f : 1
+  simp [TauCeti.HeisenbergDatum.Representation.restrictLeft_apply]
 
 /-- On the finite factor of the splitting `adelicSum E s`, the Heisenberg representation acts at a
 finite vector `y` by `ϱ (finVec y)`. -/
 lemma heisenbergRep_right_rho (y : n → 𝔸f E) :
-    (V.heisenbergRep.right (adelicSum E s)).ρ y = V.ϱ (finVec y) :=
+    V.heisenbergRep.restrictRight (adelicSum E s) y = V.ϱ (finVec y) := by
+  ext f : 1
+  rw [TauCeti.HeisenbergDatum.Representation.restrictRight_apply]
   -- The embedding of `(0, y)` has real part `0` and the finite part of `finVec y`.
-  congrArg V.ϱ (funext fun _ ↦ Prod.ext (mul_zero _) rfl)
+  exact congrArg (V.ϱ · f) (funext fun _ ↦ Prod.ext (mul_zero _) rfl)
 
 /-- Two Heisenberg operators at finite vectors compose to the operator at the sum, times the
 character value `selfDualAddChar E (half * star y ⬝ᵥ x)`. -/
 lemma rho_finVec_rho_finVec (x y : n → 𝔸f E) (f : 𝒮 V) :
     V.ϱ (finVec x) (V.ϱ (finVec y) f) =
       selfDualAddChar E (half * star y ⬝ᵥ x) • V.ϱ (finVec (x + y)) f := by
-  simp [← heisenbergRep_right_rho, stdLattice.finHeisenberg, mul]
+  rw [← heisenbergRep_right_rho, ← heisenbergRep_right_rho,
+    TauCeti.HeisenbergDatum.Representation.apply_apply, heisenbergRep_right_rho,
+    stdLattice.finHeisenberg_apply]
 
 /-- The normalised finite operators `finHeisenbergOp` compose to the operator at the sum, times the
 character value `selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x)`. -/
@@ -143,23 +148,24 @@ lemma finHeisenbergOp_eq_rho_of_dotProduct_self_eq_zero {y : n → 𝔸f E} (hy 
 /-- Two Heisenberg operators commute up to the square of the bicharacter `β` of the adelic
 Heisenberg group. -/
 lemma rho_swap (x y : n → 𝔸 E) (f : 𝒮 V) :
-    V.ϱ x (V.ϱ y f) = (adelicHeisenberg E s).β x y ^ 2 • V.ϱ y (V.ϱ x f) := by
+    V.ϱ x (V.ϱ y f) = adelicHeisenberg E s x y ^ 2 • V.ϱ y (V.ϱ x f) := by
   -- Both sides are multiples of `V.ϱ (x + y) f`, and `β x y * β y x = 1`.
-  simp [add_comm, sq, mul_assoc, mul, smul_smul]
+  simp [add_comm, sq, mul_assoc, TauCeti.HeisenbergDatum.Representation.apply_apply, smul_smul]
 
 /-- A Heisenberg operator at a vector `y` with zero real part commutes with `integrated v`. -/
 lemma rho_integrated {y : n → 𝔸 E} (hy : ∀ i : n, (y i).fst = 0) :
     V.ϱ y (V.integrated v f) = V.integrated v (V.ϱ y f) := by
   -- `ϱ y` commutes with the operators of real vectors, as the real part of `y` is zero.
-  apply map_integrated
+  apply TauCeti.HeisenbergDatum.Representation.map_integrated_of_intertwines
   intro z u
-  simp_all [left, adelicHeisenberg, dotProduct, add_comm, stdAddChar, stdForm, realVec, mul,
+  simp_all [adelicHeisenberg_apply, dotProduct, add_comm, stdAddChar, stdForm, realVec,
+    TauCeti.HeisenbergDatum.Representation.apply_apply,
     mulVec_diagonal, fst_sum, snd_sum]
 
 /-- Acting on the Fock vector by the real Heisenberg operator at `y` is acting on `integrated v f`
 by `ϱ (realVec y)`. -/
 lemma integrated_realHeisenbergOp (y : NumberField.InfinitePlace E × n → ℂ)
-    (v : Model (realHeisenberg (realSigns E s))) (f : 𝒮 V) :
+    (v : fockSpace (realSigns E s)) (f : 𝒮 V) :
     V.integrated (realHeisenbergOp y v) f = V.ϱ (realVec y) (V.integrated v f) := by
   simp [integrated]
 
@@ -168,20 +174,21 @@ dx, with x running over real vectors in Fock coordinates. The Heisenberg operato
 vector `y` acts on it factor by factor:
 ϱ(y)(v ⊗ f) = (`realHeisenbergOp (realCoord y)` v) ⊗ ϱ(0, y.snd) f. So the real coordinates
 `realCoord y` act on `v` by the Fock Heisenberg operator, and the finite part of `y` acts on `f`. -/
-lemma rho_integrated_realCoord (y : n → 𝔸 E) (v : Model (realHeisenberg (realSigns E s)))
+lemma rho_integrated_realCoord (y : n → 𝔸 E) (v : fockSpace (realSigns E s))
     (f : 𝒮 V) :
     V.ϱ y (V.integrated v f) =
       V.integrated (realHeisenbergOp (realCoord y) v) (V.ϱ (fun i : n ↦ (0, (y i).snd)) f) := by
-  rw [integrated_realHeisenbergOp, ← rho_integrated, mul, realVec_realCoord_add]
+  rw [integrated_realHeisenbergOp, ← rho_integrated,
+    TauCeti.HeisenbergDatum.Representation.apply_apply, realVec_realCoord_add]
   · -- The bicharacter of the real vector `realVec (realCoord y)` and the finite vector is `1`.
-    simp [adelicHeisenberg, dotProduct, stdAddChar, stdForm, mulVec_diagonal, fst_sum, snd_sum,
-      realVec]
+    simp [adelicHeisenberg_apply, dotProduct, stdAddChar, stdForm, mulVec_diagonal, fst_sum,
+      snd_sum, realVec]
   · exact fun i ↦ rfl
 
 /-- A Heisenberg operator ϱ(y) acts on v ⊗ f through another real datum w and the finite operator
 ϱ_f(α⁻¹y_f); the datum w does not depend on f. -/
-lemma exists_rho_integrated_eq (y : n → 𝔸 E) (v : Model (realHeisenberg (realSigns E s))) :
-    ∃ w : Model (realHeisenberg (realSigns E s)), ∀ f : 𝒮 V,
+lemma exists_rho_integrated_eq (y : n → 𝔸 E) (v : fockSpace (realSigns E s)) :
+    ∃ w : fockSpace (realSigns E s), ∀ f : 𝒮 V,
       V.ϱ y (V.integrated v f) = V.integrated w (V.finHeisenbergOp (finCoord y) f) := by
   refine ⟨(semichar (finCoord y))⁻¹ • realHeisenbergOp (realCoord y) v, fun f ↦ ?_⟩
   simp [rho_integrated_realCoord, finVec.eq_unfold, finHeisenbergOp]
@@ -270,13 +277,13 @@ lemma map_projOn {f : 𝒮 V} {F : (n → 𝔸f E) → Y}
   have h_comm (x : n → 𝔸f E) :
       V.ϱ y (V.finHeisenbergOp (idem S.conjClosure • x) f) =
         V.finHeisenbergOp (idem S.conjClosure • x) (V.ϱ y f) := by
-    simp [adelicHeisenberg, rho_swap _ y, dotProduct, ← mul_rotate, h_zero, finHeisenbergOp,
+    simp [adelicHeisenberg_apply, rho_swap _ y, dotProduct, ← mul_rotate, h_zero, finHeisenbergOp,
       stdAddChar, stdForm, mulVec_diagonal, fst_sum, snd_sum, finVec]
   rw [projOn_eq_integral, V.map_projOn _ fun x _ ↦ h_comm x]
 
 @[simp]
 lemma projOn_integrated : V.projOn S (V.integrated v f) = V.integrated v (V.projOn S f) := by
-  apply map_integrated
+  apply TauCeti.HeisenbergDatum.Representation.map_integrated_of_intertwines
   intro y g
   simpa using V.projOn_rho (by simp [realVec]) g
 
@@ -287,46 +294,60 @@ lemma projOn_integrated : V.projOn S (V.integrated v f) = V.integrated v (V.proj
 lemma integrated_integrated : V.integrated v (V.integrated w f) = w 0 • V.integrated v f := by
   -- With the restriction `r` to the finite coordinates, `u ⊗ g` is the product of `u` and `r g`,
   -- and a product with first factor `w` restricts to `w 0` times its second factor.
-  obtain ⟨r, hr_apply, hr_integrated⟩ := (adelicSum E s).exists_restriction
-  have h_product (u : Model (realHeisenberg (realSigns E s))) (g : 𝒮 V) :
-      V.integrated u g = (adelicSum E s).tmul u (r g) :=
+  obtain ⟨r, hr_apply, hr_integrated⟩ := (adelicSum E s).exists_restriction (μ := vacuumMeasure)
+    (μ₁ := normalizedVolume _) (μ₂ := latticeMeasure E n)
+  have h_product (u : fockSpace (realSigns E s)) (g : 𝒮 V) :
+      V.integrated u g = (adelicSum E s).tmul vacuumMeasure u (r g) :=
     hr_integrated u g
   have h_restrict : r (V.integrated w f) = w 0 • r f := by
     ext b
-    rw [h_product, hr_apply, tmul_apply, ContinuousAddEquiv.symm_apply_apply, IsVacuum.smul_apply]
+    rw [h_product, hr_apply, tmul_apply, ContinuousAddEquiv.symm_apply_apply,
+      ReproducingModel.smul_apply]
   rw [h_product v, h_restrict, h_product v f]
-  exact map_smul ((adelicSum E s).tmul v) (w 0) (r f)
+  exact map_smul ((adelicSum E s).tmul vacuumMeasure v) (w 0) (r f)
 
 /-- For g = (g_∞, g_f), ω(g)(v ⊗ f) = `New.Fock.realWeil`(g_∞)v ⊗ ω(g_f)f, where ⊗ is
 `New.Space.integrated`, `New.Fock.realWeil` is the Weil representation on Fock space, and g_∞ is
 read as a unitary matrix on the real coordinates. -/
-lemma omega_integrated (g : G E s) (v : Model (realHeisenberg (realSigns E s))) (f : 𝒮 V) :
+lemma omega_integrated (g : G E s) (v : fockSpace (realSigns E s)) (f : 𝒮 V) :
     V.ω g (V.integrated v f) = V.integrated (realWeil (blockU g.fst) v) (V.ω g.snd f) := by
-  let tm (a : Model (realHeisenberg (realSigns E s))) (b : Model (finHeisenberg E n)) : 𝒮 V :=
-    (adelicSum E s).tmul a b
+  let tm (a : fockSpace (realSigns E s))
+      (b : ReproducingModel (finHeisenberg E n) (latticeMeasure E n) finVac) : 𝒮 V :=
+    (adelicSum E s).tmul vacuumMeasure a b
   -- On a pure tensor `ω k` acts factor by factor, as the multiplier of `k` is a product.
   have h_tmul (k : G E s) a b :
-      V.ω k (tm a b) = tm (realWeil (blockU k.fst) a) (weilRep finAction k.snd b) :=
-    weilRep_tmul _ adelicAction (realAction _) finAction
+      V.ω k (tm a b) =
+        tm (realWeil (blockU k.fst) a) (weilRep finVac finAction finAction_cocycle k.snd b) :=
+    weilRep_tmul _ a b adelicAction (realAction _) finAction adelicAction_cocycle
+      (realAction_cocycle _) finAction_cocycle
       -- The multiplier of `k` is the multiplier of `blockU k.fst` times that of `k.snd`.
       (show weilMultiplier k = realMultiplier (blockU k.fst) * finMultiplier k.snd by
         rw [realMultiplier_blockU, weilMultiplier])
-      (adeleMatrix_mulVec_adelicSum k) a b
+      (adeleMatrix_mulVec_adelicSum k)
   have h_pure a b :
       V.ω g (V.integrated v (tm a b)) =
         V.integrated (realWeil (blockU g.fst) v) (V.ω g.snd (tm a b)) := by
-    have h_integrated_tm u a b : V.integrated u (tm a b) = a 0 • tm u b :=
-      V.integrated_integrated u a _
+    have h_integrated_tm u a b : V.integrated u (tm a b) = a 0 • tm u b := by
+      -- With the restriction `r` to the finite coordinates, `u ⊗ g` is the product of `u` and
+      -- `r g`, as in `integrated_integrated`.
+      obtain ⟨r, hr_apply, hr_integrated⟩ := (adelicSum E s).exists_restriction
+        (μ := vacuumMeasure) (μ₁ := normalizedVolume _) (μ₂ := latticeMeasure E n)
+      have h_r : r (tm a b) = a 0 • b := by
+        ext c
+        rw [hr_apply, tmul_apply, ContinuousAddEquiv.symm_apply_apply, ReproducingModel.smul_apply]
+      rw [show V.integrated u (tm a b) = _ from hr_integrated u (tm a b), h_r, map_smul]
+      rfl
     simp [h_integrated_tm, h_tmul]
   -- Both sides are bounded in `f`, so test on translates of the vacuum, which are pure tensors.
   suffices h_comp : V.ω g ∘L V.integrated v =
       V.integrated (realWeil (blockU g.fst) v) ∘L V.ω g.snd from DFunLike.congr_fun h_comp f
   refine V.ext_of_vacElem 1 fun y ↦ ?_
   have h_tensor : V.ω 1 (V.ϱ y V.vacElem) =
-      tm (heisenbergOp ((adelicSum E s).equiv.symm y).fst IsVacuum.vacElem)
-        (heisenbergOp ((adelicSum E s).equiv.symm y).snd IsVacuum.vacElem) := by
-    rw [map_one, one_apply_eq_self, vacElem, ← (adelicSum E s).tmul_vacElem]
-    exact heisenbergOp_tmul ..
+      tm (ReproducingModel.heisenbergRep ((adelicSum E s).equiv.symm y).fst vacuum)
+        (ReproducingModel.heisenbergRep ((adelicSum E s).equiv.symm y).snd vacuum) := by
+    rw [map_one, one_apply_eq_self, vacElem, ← (adelicSum E s).tmul_vacuum (μ := vacuumMeasure)
+      (μ₁ := normalizedVolume _) (μ₂ := latticeMeasure E n)]
+    exact heisenbergRep_tmul ..
   rw [h_tensor]
   exact h_pure _ _
 
@@ -337,10 +358,13 @@ lemma dataInner_vacElem_smul_vacElem :
   -- The left side is `f 0 • vacElem = ∫ vacElem y • ϱ y f`. As `vacElem` is the tensor product of
   -- the real and the finite vacuum, the integral splits, and its finite part is the mean
   -- `projOn univ`.
-  have h_int : V.dataInner V.vacElem f • V.vacElem = V.heisenbergRep.integrated V.vacElem f :=
-    (congrArg (· • V.vacElem) (modelInner_vacElem ..)).trans (integrated_eq_smul ..).symm
-  rw [h_int, vacElem, ← (adelicSum E s).tmul_vacElem,
-    integrated_tmul, map_projOn_eq_integral, map_integrated_eq_integral]
+  have h_int : V.dataInner V.vacElem f • V.vacElem =
+      V.heisenbergRep.integrated vacuumMeasure vacuumFn V.vacElem f :=
+    (congrArg (· • V.vacElem) (innerSL_vacuum ..)).trans (integrated_eq_smul ..).symm
+  rw [h_int, vacElem, ← (adelicSum E s).tmul_vacuum (μ := vacuumMeasure) (μ₁ := normalizedVolume _)
+      (μ₂ := latticeMeasure E n),
+    TauCeti.HeisenbergDatum.Representation.integrated_tmul, map_projOn_eq_integral,
+    TauCeti.HeisenbergDatum.Representation.map_integrated]
   -- By definition, the finite vacuum is `semichar` on the lattice and `0` off it.
   have h_finVac (y) : finVac y = (stdLattice E n : Set (n → 𝔸f E)).indicator semichar y := rfl
   simp [← integral_indicator, indicator_smul_left, ← heisenbergRep_right_rho, finHeisenbergOp,
@@ -350,7 +374,7 @@ lemma dataInner_vacElem_smul_vacElem :
   rfl
 
 /-- `integrated v` commutes with the finite Heisenberg operators. -/
-lemma integrated_finHeisenbergOp (y : n → 𝔸f E) (v : Model (realHeisenberg (realSigns E s)))
+lemma integrated_finHeisenbergOp (y : n → 𝔸f E) (v : fockSpace (realSigns E s))
     (f : 𝒮 V) :
     V.integrated v (V.finHeisenbergOp y f) = V.finHeisenbergOp y (V.integrated v f) := by
   simp [rho_integrated, finVec.eq_unfold, finHeisenbergOp]
@@ -414,7 +438,7 @@ lemma dataInner_projOn : V.dataInner (V.projOn S f) f' = V.dataInner f (V.projOn
     refine V.map_projOn_eq_const _ fun (y : n → 𝔸f E) (hy : y ∈ stdLattice E n) ↦ ?_
     rw [← V.dataInner_finHeisenbergOp (idem S.conjClosure • y) _ u', V.finHeisenbergOp_projOn hy]
   have h_conj (u u' : 𝒮 V) : starRingEnd ℂ (V.dataInner u u') = V.dataInner u' u :=
-    conj_modelInner u u'
+    conj_innerSL u u'
   calc V.dataInner (V.projOn S f) f'
       = V.dataInner (V.projOn S f) (V.projOn S f') := (h_inner f f').symm
     _ = starRingEnd ℂ (V.dataInner (V.projOn S f') f) := by rw [← h_inner f' f, h_conj]
@@ -423,7 +447,7 @@ lemma dataInner_projOn : V.dataInner (V.projOn S f) f' = V.dataInner f (V.projOn
 /-- The value of f at an adelic vector y is the pairing of the translate ϱ(y) vac with f. -/
 lemma val_eq_dataInner_rho_vacElem (f : 𝒮 V) (y : n → 𝔸 E) :
     f.val y = V.dataInner (V.ϱ y V.vacElem) f :=
-  (modelInner_heisenbergOp_vacElem (x := y) (v := f)).symm
+  (innerSL_heisenbergRep_vacuum (x := y) (v := f)).symm
 
 open scoped Classical in
 /-- The coefficient ⟨ϱ_f(y) vac, vac⟩ of the vacuum is the indicator of the standard lattice Ô^n
@@ -437,8 +461,9 @@ lemma dataInner_finHeisenbergOp_vacElem_vacElem (y : n → 𝔸f E) :
     funext fun i ↦ Prod.ext (mul_zero _).symm rfl
   have h_value : V.dataInner (V.ϱ (finVec y) V.vacElem) V.vacElem = finVac y :=
     calc V.dataInner (V.ϱ (finVec y) V.vacElem) V.vacElem
-        = vacuumFn (finVec y) := (V.val_eq_dataInner_rho_vacElem V.vacElem (finVec y)).symm
-      _ = realVac 0 * finVac y := by rw [h_vec, (adelicSum E s).vac_equiv]
+        = vacuumFn (finVec y) :=
+          (V.val_eq_dataInner_rho_vacElem V.vacElem (finVec y)).symm.trans (vacuum_apply _)
+      _ = realVac 0 * finVac y := by rw [h_vec, (adelicSum E s).vacuum_equiv]
       _ = finVac y := by simp [realVac]
   have h_unit : starRingEnd ℂ (semichar y) * semichar y = 1 := by
     simp [semichar, selfDualAddChar_apply, ← coe_inv_eq_conj]
@@ -453,7 +478,7 @@ lemma dataInner_finHeisenbergOp_vacElem_vacElem (y : n → 𝔸f E) :
   have h_left : V.dataInner u V.vacElem = 1 := by
     rw [hu, V.dataInner_finHeisenbergOp_vacElem_vacElem, ite_eq_left hy]
   have h_conj : starRingEnd ℂ (V.dataInner u V.vacElem) = V.dataInner V.vacElem u :=
-    conj_modelInner u V.vacElem
+    conj_innerSL u V.vacElem
   have h_right : V.dataInner V.vacElem u = 1 := by rw [← h_conj, h_left, map_one]
   have h_self : V.dataInner u u = 1 := by simp [hu, dataInner_finHeisenbergOp]
   refine sub_eq_zero.mp (V.eq_zero_of_dataInner_self ?_)
@@ -491,7 +516,7 @@ lemma projOn_finHeisenbergOp {f : 𝒮 V} (hf_fix : V.projOn S f = f) (y : n →
 /-- The translate ϱ(y) vac of the vacuum by an adelic vector y is w ⊗ ϱ_f(y') vac for a vector w of
 the real Fock space, where y' = `finCoord y` is the finite coordinate of y. -/
 lemma exists_rho_vacElem_eq_integrated (y : n → 𝔸 E) :
-    ∃ w : Model (realHeisenberg (realSigns E s)),
+    ∃ w : fockSpace (realSigns E s),
       V.ϱ y V.vacElem = V.integrated w (V.finHeisenbergOp (finCoord y) V.vacElem) := by
   refine (V.exists_rho_integrated_eq y Fock.vacVector).imp fun w hw ↦ ?_
   -- The vector `integrated vacVector vacElem` is the vacuum.
@@ -519,14 +544,14 @@ lemma projOn_val (f : 𝒮 V) (y : n → 𝔸 E) :
     simp [projOn_finHeisenbergOp, h_int]
 
 lemma projOn_empty (f : 𝒮 V) : V.projOn ∅ f = f := by
-  refine IsVacuum.ext ?_
+  refine Subtype.ext (funext ?_)
   simp [projOn_val, mem_integralBox, idem_mul_mem_Ô]
 
 /-- The projection for S ∪ S′ is the projection for S after the projection for S′. -/
 lemma projOn_union {S' : Set (FinPlace E)} (f : 𝒮 V) :
     V.projOn (S ∪ S') f = V.projOn S (V.projOn S' f) := by
   classical
-  refine IsVacuum.ext ?_
+  refine Subtype.ext (funext ?_)
   -- By `projOn_val` both sides are `f x` times indicators of integrality conditions above the
   -- places; the condition for `S ∪ S'` is the conjunction of those for `S` and for `S'`.
   -- (`grind` alone does not unfold `boxIndicator`, so `simp` first states them place by place.)
@@ -559,7 +584,7 @@ lemma omega_projOn {g : G E s} (hg : ∀ w ∈ S, g.snd.atPlace w ∈ localIntGL
     ext y
     simpa [mem_integralBox, mem_stdLattice] using k.mulVec_mem_integralBox hk_int (x := y)
   have h_measure : MeasurePreserving (k : Matrix n n (𝔸f E)).mulVec (latticeMeasure E n)
-      (latticeMeasure E n) := finAction.measurePreserving k
+      (latticeMeasure E n) := finAction.measurePreserving_smul k
   have hk_val : (k : Matrix n n (𝔸f E)) =
       idem S.conjClosure • (g.snd : Matrix n n (𝔸f E)) + (1 - idem S.conjClosure) • 1 := rfl
   have h_move (y : n → 𝔸f E) : (g.snd : Matrix n n (𝔸f E)) *ᵥ idem S.conjClosure • y =

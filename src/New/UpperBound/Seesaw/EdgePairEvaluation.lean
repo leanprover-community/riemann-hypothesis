@@ -156,8 +156,8 @@ a translated pure tensor to a pure tensor: for an adelic vector `y` and a real F
 `ϱ(y) (v ⊗ f)` is `v₀ ⊗ zeroTermFin D (ϱ_f(α⁻¹ y_f) f)`, where `ϱ_f` is `V.finHeisenbergOp`, `⊗` is
 `integrated` and `α⁻¹ y_f` is `finCoord y`. -/
 lemma exists_zeroTerm_rho_integrated_eq (D : V.Splitting V₀ p) (y : n → 𝔸 E)
-    (v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E s))) :
-    ∃ v₀ : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E s₀)), ∀ f : 𝒮 V,
+    (v : fockSpace (realSigns E s)) :
+    ∃ v₀ : fockSpace (realSigns E s₀), ∀ f : 𝒮 V,
       D.zeroTerm (V.ϱ y (V.integrated v f)) =
         V₀.integrated v₀ (zeroTermFin D (V.finHeisenbergOp (finCoord y) f)) := by
   -- Move `ϱ y` into the real datum `w` and the finite datum, and write `integrated w f` as `ω g`
@@ -183,7 +183,7 @@ lemma zeroTermFin_finHeisenbergOp_finFrameVector (D : V.Splitting V₀ p) (b : p
     {z : n → 𝔸f E} {w : n₀ → 𝔸f E} (hz : z = D.finFrameVector 1 1 0 w b) (f : 𝒮 V) :
     zeroTermFin D (V.finHeisenbergOp z f) = V₀.finHeisenbergOp w (zeroTermFin D f) := by
   have h_char : semichar z = semichar w := by simp [semichar, hz, star_dot_finFrameVector]
-  have h_real (v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E s))) :
+  have h_real (v : fockSpace (realSigns E s)) :
       V.integrated v (V.ϱ (finVec z) f) = V.ϱ (finVec z) (V.integrated v f) :=
     (V.rho_integrated v f fun _ ↦ rfl).symm
   -- The law of the mixed model, where `z` has coordinates `w`, `b` and `0` in the frame.

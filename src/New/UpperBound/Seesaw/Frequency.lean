@@ -185,7 +185,7 @@ of this translate at `sh`, `Y.constTermAtStringMap Y' μ (t ⊗ f) x x'`, is non
 `zeroTermFin D` does not kill the translate of `f` by the finite part of `(x, x')` and then by the
 finite Heisenberg operator of `sh`. -/
 lemma zeroTermFin_finHeisenbergOp_stringMap_ne_zero {μ : (n : Type) → [Fintype n] → AutChar E}
-    {t : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns ε ε')))}
+    {t : Fock.fockSpace (realSigns E (homSigns ε ε'))}
     {f : 𝒮 (V.hom V')} {x : G E ε} {x' : G E ε'}
     {m : ℕ} {s₀ : Fin m → ℤˣ} {V₀ : Space E (Fin m) s₀}
     {D : (V.hom V').Splitting V₀ {r : ι' × ι // 0 < Y.mapDegree Y'.gradeOf r}}
@@ -194,11 +194,11 @@ lemma zeroTermFin_finHeisenbergOp_stringMap_ne_zero {μ : (n : Type) → [Fintyp
     (h_ne : Y.constTermAtStringMap Y' μ ((V.hom V').integrated t f) x x' ≠ 0) :
     zeroTermFin D ((V.hom V').finHeisenbergOp (finCoord (V.homAtPoint V' (Y.stringMap Y')))
       ((V.hom V').ω (1, (G.onHom (x, x')).2) f)) ≠ 0 := by
-  let v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns ε ε'))) :=
+  let v : Fock.fockSpace (realSigns E (homSigns ε ε')) :=
     Fock.realWeil (Fock.blockU (G.onHom (x, x')).1) t
   let y : ι' × ι → 𝔸 E := V.homAtPoint V' (Y.stringMap Y')
   -- Each operation acts separately on the real and on the finite factor of a pure tensor.
-  obtain ⟨t₀, ht₀⟩ : ∃ t₀ : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E s₀)),
+  obtain ⟨t₀, ht₀⟩ : ∃ t₀ : Fock.fockSpace (realSigns E s₀),
       ∀ F : 𝒮 (V.hom V'), D.zeroTerm ((V.hom V').ϱ y ((V.hom V').integrated v F)) =
         V₀.integrated t₀ (zeroTermFin D ((V.hom V').finHeisenbergOp (finCoord y) F)) :=
     exists_zeroTerm_rho_integrated_eq D y v
@@ -244,7 +244,7 @@ and agrees with `b̄ / α` times the finite part of `sh` up to a matrix that doe
 Here `α` is the finite idele of `WeilData E` that makes `Ô` self-dual. -/
 lemma exists_mapsTo_lattice_hasDegreeGe_sub_smul_stringMap [Finite X] [Finite X']
     {μ : (n : Type) → [Fintype n] → AutChar E}
-    {t : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns ε ε')))}
+    {t : Fock.fockSpace (realSigns E (homSigns ε ε'))}
     {f : 𝒮 (V.hom V')} {x : G E ε} {x' : G E ε'}
     (h_ne : Y.constTermAtStringMap Y' μ ((V.hom V').integrated t f) x x' ≠ 0) (b : (𝔸f E)ˣ)
     (hf : ∀ y ∈ stdLattice E (ι' × ι), finHeisenbergOp (V.hom V') (b.val • y) f = f) :
@@ -325,7 +325,7 @@ the lattice of `r x.2` into the intersection with `X'^⊥` of the lattice of `r'
 the finite idele of `WeilData E` that makes `Ô` self-dual. -/
 lemma smul_map_stringMapFin_latticePlus_le [Finite X] [Finite X']
     {μ : (n : Type) → [Fintype n] → AutChar E}
-    {t : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns ε ε')))}
+    {t : Fock.fockSpace (realSigns E (homSigns ε ε'))}
     {f : 𝒮 (V.hom V')} {x : G E ε} {x' : G E ε'}
     (h_ne : Y.constTermAtStringMap Y' μ ((V.hom V').integrated t f) x x' ≠ 0) (b : (𝔸f E)ˣ)
     (hf : ∀ y ∈ stdLattice E (ι' × ι), finHeisenbergOp (V.hom V') (b.val • y) f = f)

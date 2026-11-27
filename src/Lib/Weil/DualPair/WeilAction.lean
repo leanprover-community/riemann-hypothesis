@@ -303,7 +303,7 @@ variable {E : Type} [Field E] [NumberField E]
   {s : n → ℤˣ} {s' : n' → ℤˣ} (γ γ' : NumberField.InfinitePlace E → ℤ)
 
 open Matrix Kronecker
-  Fock Fintype Finset Space MvPolynomial Heisenberg.IsVacuum AutChar
+  Fock Fintype Finset Space MvPolynomial TauCeti ReproducingModel AutChar
 
 /-- The Fock space for the signs s′_i s_j of Hom(S,T), repeated at every infinite place. -/
 abbrev PairFock (E : Type) [Field E] [NumberField E] {n n' : Type} [Fintype n] [DecidableEq n]
@@ -423,9 +423,9 @@ lemma Fock.realWeil_polyVector_of_mem_blockDiagAlg {ι : Type} [Fintype ι] [Dec
     rw [polyVector_apply, polyVector_apply, ← h_gauss (u⁻¹ • y), smul_inv_smul, funext (h_coord y),
       ← aeval_eq_eval, ← aeval_eq_eval, comp_aeval_apply]
     simp only [map_sum, map_smul, aeval_X, smul_eq_mul]
-  have h_delta : (realAction ε).Δ u = realMultiplier u := rfl
+  have h_delta : realAction ε u = realMultiplier u := rfl
   ext y
-  rw [weilRep_apply_of_vacuum_smul _ _ _ h_gauss, h_delta, Heisenberg.IsVacuum.smul_apply,
+  rw [weilRep_apply_of_vacuum _ _ _ _ _ h_gauss, h_delta, TauCeti.ReproducingModel.smul_apply,
     ← realMultiplier_of_mem_blockDiagAlg hu, h_value]
 
 /-- The Kronecker product of matrices that are block diagonal for the signs `s'` and `s` is block
@@ -518,7 +518,7 @@ lemma realPairWeil_polyVector {x : GInf E s} {y : GInf E s'}
 end
 
 open Matrix Kronecker
-  Fock Fintype Finset Space MvPolynomial Heisenberg.IsVacuum AutChar
+  Fock Fintype Finset Space MvPolynomial TauCeti ReproducingModel AutChar
 
 variable {E : Type} [Field E] [CMType E] {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n']
   [DecidableEq n'] {s : n → ℤˣ} {s' : n' → ℤˣ} {γ γ' : NumberField.InfinitePlace E → ℤ} [WeilData E]
@@ -541,7 +541,7 @@ abbrev pairThetaKer : ThetaKernel (𝒮 (S.hom T)) S T where
 elements with trivial finite part, ω_{a,b}(x,y)(v ⊗ f) = (Ω(x,y)v) ⊗ f, where ω_{a,b} is
 `New.pairWeil S T a b` and Ω is `New.realPairWeil γ γ'`. -/
 lemma pairWeil_integrated [HasWeight a γ ψ] [HasWeight b γ' ψ'] (x : GInf E s) (y : GInf E s')
-    (v : Model (realHeisenberg (realSigns E (homSigns s s')))) (f : 𝒮 (S.hom T)) :
+    (v : Fock.fockSpace (realSigns E (homSigns s s'))) (f : 𝒮 (S.hom T)) :
     pairWeil S T a b ((x, 1), y, 1) (integrated (S.hom T) v f) =
       integrated (S.hom T) (realPairWeil γ γ' (x, y) v) f := by
   -- At a real point the characters act through their weights (`HasWeight.apply_eq`), and `ω`
@@ -553,7 +553,7 @@ lemma pairWeil_integrated [HasWeight a γ ψ] [HasWeight b γ' ψ'] (x : GInf E 
 `New.PairFock E s s'`) through `f`. -/
 @[simp]
 lemma pairWeil_integrated_fin (k : Gf E n) (k' : Gf E n')
-    (v : Model (realHeisenberg (realSigns E (homSigns s s')))) (f : 𝒮 (S.hom T)) :
+    (v : Fock.fockSpace (realSigns E (homSigns s s'))) (f : 𝒮 (S.hom T)) :
     pairWeil S T a b ((1, k), 1, k') (integrated (S.hom T) v f) =
       integrated (S.hom T) v (pairWeil S T a b ((1, k), 1, k') f) := by
   simp [← Pi.one_def, pairWeil, G.onHom_eq, Prod.mk_one_one, omega_integrated]
@@ -565,7 +565,7 @@ paired with 1 in the first group, `New.pairWeil S T a b` sends v ⊗ f to (Ω(1,
 Ω = `New.realPairWeil γ 0`; no weight of `b` is needed. -/
 lemma pairWeil_integrated_right {S : Space E n s} {T : Space E n' s'} (a b : AutChar E)
     {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ} {f : 𝒮 (S.hom T)} [ha : HasWeight a γ ψ]
-    (h : GInf E s') (v : Model (realHeisenberg (realSigns E (homSigns s s')))) :
+    (h : GInf E s') (v : Fock.fockSpace (realSigns E (homSigns s s'))) :
     pairWeil S T a b (1, h, 1) (integrated (S.hom T) v f) =
       integrated (S.hom T) (realPairWeil γ 0 (1, h) v) f := by
   simp [← Submonoid.one_def, pairWeil, G.onHom_eq, HasWeight.apply_eq, Prod.mk_one_one,
@@ -577,7 +577,7 @@ lemma pairWeil_integrated_right {S : Space E n s} {T : Space E n' s'} (a b : Aut
 lemma pairWeil_integrated_all {S : Space E n s} {T : Space E n' s'}
     {ψ ψ' : (w : FinPlace E) → MulChar (ResField w) ℂ} {a b : AutChar E} [HasWeight a γ ψ]
     [HasWeight b γ' ψ'] (x : GInf E s) (k : Gf E n) (y : GInf E s') (k' : Gf E n')
-    (v : Model (realHeisenberg (realSigns E (homSigns s s')))) (f : 𝒮 (S.hom T)) :
+    (v : Fock.fockSpace (realSigns E (homSigns s s'))) (f : 𝒮 (S.hom T)) :
     pairWeil S T a b ((x, k), y, k') (integrated (S.hom T) v f) =
       integrated (S.hom T) (realPairWeil γ γ' (x, y) v) (pairWeil S T a b (k, k') f) := by
   -- Split the point into its real and its finite part.
@@ -668,7 +668,7 @@ def homAtPoint : Matrix ι' ι (𝔸 E) →+ ι' × ι → 𝔸 E :=
 /-- The Heisenberg bicharacter β of Hom(V,V') evaluated at two adelic matrices x, y given in
 rational coordinates. -/
 abbrev homBicharacter : ℂ :=
-  (adelicHeisenberg E (homSigns ε ε')).β (V.homAtPoint V' x) (V.homAtPoint V' y)
+  (adelicHeisenberg E (homSigns ε ε')) (V.homAtPoint V' x) (V.homAtPoint V' y)
 
 end HomAtPoint
 
@@ -689,8 +689,8 @@ is the element of the Weil data. -/
 lemma homBicharacter_eq :
     V.homBicharacter V' x y =
       stdAddChar E (toAdele (A.j / 2) * (V.formAdjoint V' y * x).trace) := by
-  simp [homBicharacter, adelicHeisenberg, homAtPoint, kronecker_mulVec_eq_matrixToVec, formAdjoint,
-    map_J_inv, map_J, V.x.val.trace_mul_cycle', Matrix.mul_assoc]
+  simp [homBicharacter, adelicHeisenberg_apply, homAtPoint, kronecker_mulVec_eq_matrixToVec,
+    formAdjoint, map_J_inv, map_J, V.x.val.trace_mul_cycle', Matrix.mul_assoc]
 
 /-- The finite coordinates (`New.finCoord`) of `New.Space.homAtPoint` of `x` form the matrix
 `α⁻¹ x'_f⁻¹ x_fin x_f`. Here `x_fin` is the finite part of `x`, `x_f` and `x'_f` are the finite

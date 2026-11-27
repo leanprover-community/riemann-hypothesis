@@ -133,7 +133,7 @@ lemma New.Space.map_selfDualAddChar_of_isJetConjugate {E : Type} [Field E] [CMTy
   -- The jets of a translate of `F` do not vanish, so they cancel in the comparison.
   have h_jet_ne : V.jetSeries t (V.ϱ (finVec (x • 2 + (N : 𝔸f E) • 1)) F) ≠ 0 :=
     fun h_zero ↦ hF_ne <| by
-      rw [← norm_eq_zero, ← V.heisenbergRep.norm_map,
+      rw [← norm_eq_zero, ← V.heisenbergRep.norm_apply,
         eq_zero_of_jetSeries_eq_zero (rho_finVec_mem_finitePart _ hF) ht h_zero, norm_zero]
   have h_cmp : σ (selfDualAddChar E (half * (x * ((N : 𝔸f E) * 2)))) =
       selfDualAddChar E (half * (b * (x * (star b * ((N : 𝔸f E) * 2))))) := by
@@ -402,7 +402,7 @@ lemma New.Parameters.norm_omega_vac_le {P : Parameters} {s : ℕ} {n : Type} [Fi
     have h_move : ‖V.dataInner f (V.ϱ (V.vecAtPoint γ) f)‖ = ‖vacuumFn (W.vecAtPoint γ)‖ := by
       -- The right side is a coefficient of `ω g vacElem`; translation by `y` only gives a phase.
       rw [vecAtPoint_move, ← V.dataInner_omega_vacElem_rho]
-      simp [f, rho_swap _ _ y, Heisenberg.norm_eq_one]
+      simp [f, rho_swap _ _ y, TauCeti.HeisenbergDatum.norm_apply]
     by_cases hγ : γ ∈ supp
     · grw [h_move, extend_val_apply hγ, norm_vacuumFn_vecAtPoint_le,
         exp_neg_pi_div_mul_sq_le (sqrt_pos.2 (Nat.cast_pos.2 (pos P.d))) _ D]
@@ -471,7 +471,7 @@ theorem norm_map_intVacuum_le {P : Parameters} {s : ℕ} {n : Type} [Fintype n] 
   calc _ = ‖a‖ * ‖V.ω (1, g * scalarFin n u) V.vacElem (y + finVec (b • x))‖ := by
         rw [hL.scalesTranslations.map_rho (omega_mem_finitePart g h_mem),
           hL.scalesTranslations.map_omega g h_mem, h_image]
-        simp [norm_multiplierRatio, rep_apply_apply, Heisenberg.norm_eq_one]
+        simp [norm_multiplierRatio, rep_apply_apply, TauCeti.HeisenbergDatum.norm_apply]
     _ ≤ exp (C * P.q₁ s ^ 2) ^ card n * exp ((2 * P.d + 6) * (P.q₁ s * card n + 1) ^ 2) := by
         grw [ha, norm_omega_vac_le]
     _ ≤ exp ((C + (2 * P.d + 6)) * (P.q₁ s * card n + 1) ^ 2) := by

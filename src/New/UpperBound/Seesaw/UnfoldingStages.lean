@@ -195,8 +195,8 @@ lemma integral_theta_tripleWeil_eq_lift_comp {κ : NumberField.InfinitePlace E �
       ↥(AlgForm X' κ e') →ₗ[ℂ] ↥(AlgForm X'' κ e'')}
     {a b : O → AutChar E} (hk : IsThetaLift κ e e' (fun o : O ↦ rankTwist (a o)) k)
     (hk' : IsThetaLift κ e' e'' (fun o : O ↦ rankTwist (b o)) k')
-    (u : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E
-      (homSigns (1 : X' → ℤˣ) (-(1 : X → ℤˣ) ⊕ᵥ (1 : X'' → ℤˣ))))))
+    (u : Fock.fockSpace (realSigns E
+      (homSigns (1 : X' → ℤˣ) (-(1 : X → ℤˣ) ⊕ᵥ (1 : X'' → ℤˣ)))))
     (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) :
     -- the composite lift: `L o (Φ ⊗ₜ Φ')` is `k' o Φ'` after `k o Φ`
     let L (o : O) : TensorProduct ℂ ↥((stdSpace E X).hom (stdSpace E X')).finitePart
@@ -231,8 +231,8 @@ lemma integral_theta_tripleWeil_eq_lift_comp {κ : NumberField.InfinitePlace E �
       (f : 𝒮 ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))) :
       Integrable (F o φ g · f) ((stdSpace E X).quotMeasure.prod (stdSpace E X').quotMeasure) :=
     integrable_algFormCoeff_mul_theta_tripleWeil (a o) (b o) t φ g f
-  let J (u : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E
-        (homSigns (1 : X' → ℤˣ) (-(1 : X → ℤˣ) ⊕ᵥ (1 : X'' → ℤˣ)))))) (o : O)
+  let J (u : Fock.fockSpace (realSigns E
+        (homSigns (1 : X' → ℤˣ) (-(1 : X → ℤˣ) ⊕ᵥ (1 : X'' → ℤˣ))))) (o : O)
       (y : TensorProduct ℂ ↥((stdSpace E X).hom (stdSpace E X')).finitePart
         ↥((stdSpace E X').hom (stdSpace E X'')).finitePart)
       (φ : AlgForm X κ e) (g : G E (1 : X'' → ℤˣ)) : ℂ :=
@@ -513,14 +513,14 @@ lemma DoubleLiftData.zeroTerm_stackedStringMap_planes (D : DoubleLiftData X'' q 
   -- phase.
   obtain ⟨y, hy⟩ := D.exists_add_eq_homAtPoint_stackedStringMap hn
   have h_beta (v : ((q ⊕ q) ⊕ X ⊕ X'') × X' → 𝔸 E) :
-      (adelicHeisenberg E (homSigns ε' (-ε ⊕ᵥ ε''))).β
+      (adelicHeisenberg E (homSigns ε' (-ε ⊕ᵥ ε'')))
       (D.homZeroPart.splitting.kAdelic *ᵥ y) (D.homZeroPart.splitting.iAdelic *ᵥ v) = 1 := by
     simp [D.homZeroPart.splitting.beta_eq_coords]
-  rw [← theta_rho, ← zeroTerm_rho_iAdelic, ← zeroTerm_rho_kAdelic y, (heisenbergRep _).mul, h_beta,
-    one_smul, hy]
+  rw [← theta_rho, ← zeroTerm_rho_iAdelic, ← zeroTerm_rho_kAdelic y, (heisenbergRep _).apply_apply,
+    h_beta, one_smul, hy]
   -- Compose with the translation by `stackedStringMap`, which gives `stackedStringMap * n`. The
   -- phase is 1, because (T*, T')* (T*, T') = -T T* + T'* T' = 0.
-  rw [(heisenbergRep _).mul, ← homBicharacter, homBicharacter_eq, ← Matrix.mul_assoc,
+  rw [(heisenbergRep _).apply_apply, ← homBicharacter, homBicharacter_eq, ← Matrix.mul_assoc,
     formAdjoint_stackedStringMap_mul_stackedStringMap D]
   simp [D.constTerm_mul_constTerm_eq_inv_mul_zeroTerm hz hθ, stackedStringMap, Matrix.mul_sub,
     ← homHeisenbergOp_arrowProduct, formAdjoint_ratCoordMatrix_mul, GradeZeroPart.splitting]
@@ -814,9 +814,9 @@ lemma exists_zeroTerm_eq_integrated (ξ : ∀ k : ℕ, GInf D.E (D.signsY k))
     (R : DoubleLiftData (D.X (2 * i + 2)) q (D.gradingY (2 * i) hi.le) (D.gradingY (2 * i + 1) hi)
       Y)
     (hR : D.doubleLiftEvalY i = R.finEval) (x : GInf D.E (D.signsY (2 * i + 2))) :
-    ∃ v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns D.E
+    ∃ v : Fock.fockSpace (realSigns D.E
       (homSigns (1 : D.X (2 * i + 1) → ℤˣ)
-        (Sum.elim (-(1 : D.X (2 * i) → ℤˣ)) (1 : D.X (2 * i + 2) → ℤˣ))))),
+        (Sum.elim (-(1 : D.X (2 * i) → ℤˣ)) (1 : D.X (2 * i + 2) → ℤˣ)))),
       ∀ (ϑ : D.TameChar) (y : ∀ k : ℕ, Gf D.E (D.Y k)),
       R.splitting.zeroTerm (homHeisenbergOp
         (stackedStringMap (D.gradingY (2 * i) hi.le) (D.gradingY (2 * i + 1) hi) Y)

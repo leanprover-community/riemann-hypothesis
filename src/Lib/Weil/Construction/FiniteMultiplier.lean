@@ -22,9 +22,9 @@ proves a lemma that fixes a sign by a congruence modulo `4`.
 
 ## Main definitions and results
 
-* `New.stdLattice.isVacuum_finVac`: `New.stdLattice.finVac` is a vacuum (`New.Heisenberg.IsVacuum`)
-  for `New.stdLattice.finHeisenberg`. The convolution identity follows from
-  `New.stdLattice.finVac_add` and the self-duality of the lattice.
+* `New.stdLattice.isVacuum_finVac`: `New.stdLattice.finVac` is a vacuum
+  (`TauCeti.HeisenbergDatum.IsVacuum`) for `New.stdLattice.finHeisenberg`. The convolution identity
+  follows from `New.stdLattice.finVac_add` and the self-duality of the lattice.
 * `New.glMultiplier`, `New.glMultiplier_mul_diagGL_mul`: the multiplier on `GL_ι(𝔸_f)` and its value
   in terms of elementary divisors, from which its laws are read off.
 * `New.finMultiplier`: its restriction to the finite unitary group `New.Gf`, with
@@ -37,8 +37,8 @@ Notions from other files:
   CM type and (1 − ȷ⁻¹)/2 integral; a finite idele α for which the completed integers Ô are
   self-dual under (z, u) ↦ ψ_f(ȷαᾱzu); and a splitting character υ equal to −1 at uniformisers of
   the places w with w = w̄.
-* `New.Heisenberg.IsVacuum`: a vacuum for β and μ is a continuous, integrable, even, real function e
-  with e(0) = 1 and ∫ e(z)e(x−y−z)β(z,y)β(z+y,x) dμ(z) = e(y)e(x).
+* `TauCeti.HeisenbergDatum.IsVacuum`: a vacuum for β and μ is a continuous, integrable, even, real
+  function e with e(0) = 1 and ∫ e(z)e(x−y−z)β(z,y)β(z+y,x) dμ(z) = e(y)e(x).
 
 ## Relation to the literature
 
@@ -253,18 +253,22 @@ lemma finVac_of_notMem {x : ι → 𝔸f E} (hx : x ∉ stdLattice E ι) : finVa
 variable (E ι)
 
 /-- The Heisenberg datum on finite adelic vectors with bicharacter `β x y = ψ₀ (y* x / 2)`. -/
-def finHeisenberg : Heisenberg (ι → 𝔸f E) where
-  β x y := selfDualAddChar E (half * star y ⬝ᵥ x)
-  add_left := by simp [mul_add, map_add_eq_mul]
-  add_right := by simp [mul_add, map_add_eq_mul]
-  self_eq_one x := by
+def finHeisenberg : TauCeti.HeisenbergDatum (ι → 𝔸f E) where
+  toFun x y := selfDualAddChar E (half * star y ⬝ᵥ x)
+  map_add_left' := by simp [mul_add, map_add_eq_mul]
+  map_add_right' := by simp [mul_add, map_add_eq_mul]
+  apply_self' x := by
     -- As `traceOneAdele + star traceOneAdele = 1`, the self-conjugate `half * star x ⬝ᵥ x` is a
     -- trace `t + star t`.
     rw [selfDualAddChar_congr (b := 0) (traceOneAdele * half * star x ⬝ᵥ x) (zero_mem _),
       map_zero_eq_one]
     simp [half, ← star_dotProduct, ← add_mul]
-  norm_eq_one x y := norm_selfDualAddChar (half * star y ⬝ᵥ x)
-  cont := by fun_prop
+  norm_apply' x y := norm_selfDualAddChar (half * star y ⬝ᵥ x)
+  continuous_uncurry' := by fun_prop
+
+variable {E ι} in
+lemma finHeisenberg_apply (x y : ι → 𝔸f E) :
+    finHeisenberg E ι x y = selfDualAddChar E (half * star y ⬝ᵥ x) := rfl
 
 end FiniteHeisenberg
 
@@ -278,7 +282,7 @@ end FiniteHeisenberg
 
 section FiniteVacuum
 
-open NumberField MeasureTheory Measure Matrix AddChar Heisenberg
+open NumberField MeasureTheory Measure Matrix AddChar TauCeti TauCeti.HeisenbergDatum
 
 section
 
@@ -336,11 +340,12 @@ variable [WeilData E]
 y* x) * semichar (x + y)`, where `semichar x = ψ₀ (c₀ x* x / 2)` and `β x y = ψ₀ (y* x / 2)` is the
 bicharacter of `New.stdLattice.finHeisenberg`. -/
 lemma semichar_add (x y : ι → 𝔸f E) :
-    semichar x * semichar y * (finHeisenberg E ι).β x y =
+    semichar x * semichar y * finHeisenberg E ι x y =
       selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x) * semichar (x + y) := by
   -- Both sides are values of `selfDualAddChar E`; the arguments differ by a trace `t + star t`,
   -- which `selfDualAddChar E` kills.
-  simp only [semichar, finHeisenberg, ← map_add_eq_mul, star_add, dotProduct_add, add_dotProduct]
+  simp only [semichar, finHeisenberg_apply, ← map_add_eq_mul, star_add, dotProduct_add,
+    add_dotProduct]
   apply selfDualAddChar_congr (-traceOneAdele * half * star x ⬝ᵥ y) (zero_mem _)
   -- The terms in `star x ⬝ᵥ y` cancel; for `star y ⬝ᵥ x` use `2 * half = 1` and
   -- `traceOneAdele + star traceOneAdele = 1`.
@@ -350,7 +355,7 @@ lemma semichar_add (x y : ι → 𝔸f E) :
 `finVac x * finVac y * β x y = finVac (x + y)`, where `β` is the bicharacter of
 `New.stdLattice.finHeisenberg`. -/
 lemma finVac_add {y : ι → 𝔸f E} (x : ι → 𝔸f E) (hy : y ∈ stdLattice E ι) :
-    finVac x * finVac y * (finHeisenberg E ι).β x y = finVac (x + y) := by
+    finVac x * finVac y * finHeisenberg E ι x y = finVac (x + y) := by
   by_cases hx : x ∈ stdLattice E ι
   · -- On the lattice the factor in `semichar_add` is `selfDualAddChar E` of an integral element,
     -- hence `1`.
@@ -364,7 +369,7 @@ lemma finVac_add {y : ι → 𝔸f E} (x : ι → 𝔸f E) (hy : y ∈ stdLattic
 lemma semichar_mul_self {y : ι → 𝔸f E} (hy : y ∈ stdLattice E ι) :
     semichar y * semichar y = 1 := by
   -- This is `finVac_add` for `-y` and `y`, as `β y y = 1`.
-  simpa [hy, semichar, finVac, self_eq_one] using finVac_add (-y) hy
+  simpa [hy, semichar, finVac] using finVac_add (-y) hy
 
 /-- The lattice `Ô ^ ι` is its own dual for the pairing `ψ₀ (y* x)`: `x` lies in it if and only if
 the pairing of `x` with every lattice vector `y` is trivial. -/
@@ -408,33 +413,34 @@ instance isVacuum_finVac : (finHeisenberg E ι).IsVacuum (latticeMeasure E ι) f
     by_cases hx : x ∈ stdLattice E ι
     · obtain h | h := mul_self_eq_one_iff.1 (vac_sq x hx) <;> simp [h]
     · simp [finVac_of_notMem hx]
-  refine ⟨cont, by simp [finVac], even, real, fun y x ↦ ?_,
-    cont.integrable_of_hasCompactSupport (.intro isCompact_stdLattice fun x ↦ finVac_of_notMem)⟩
+  refine ⟨cont,
+    cont.integrable_of_hasCompactSupport (.intro isCompact_stdLattice fun x ↦ finVac_of_notMem),
+    by simp [finVac], even, real, fun y x ↦ ?_⟩
   -- On the lattice the integrand is a constant times the character
   -- `z ↦ selfDualAddChar E (star x ⬝ᵥ z)`: expand `finVac (x - y - z)` by `finVac_add`; the factors
   -- `β z y` and `β y z` cancel.
-  set H : Heisenberg (ι → 𝔸f E) := finHeisenberg E ι
+  set H : HeisenbergDatum (ι → 𝔸f E) := finHeisenberg E ι
   have integrand (z : ι → 𝔸f E) (hz : z ∈ stdLattice E ι) :
-      finVac z * (H.β z y * (H.β (z + y) x * finVac (x - (z + y)))) =
-        finVac (x - y) / H.β x y * selfDualAddChar E (star x ⬝ᵥ z) := by
-    have h_shift : finVac (x - (z + y)) = finVac (x - y) * finVac z * H.β (x - y) (-z) := by
+      finVac z * (H z y * (H (z + y) x * finVac (x - (z + y)))) =
+        finVac (x - y) / H x y * selfDualAddChar E (star x ⬝ᵥ z) := by
+    have h_shift : finVac (x - (z + y)) = finVac (x - y) * finVac z * H (x - y) (-z) := by
       rw [← even z, finVac_add (x - y) (neg_mem hz), ← sub_eq_add_neg, sub_sub, add_comm y z]
-    have β_sq : H.β z x ^ 2 = selfDualAddChar E (star x ⬝ᵥ z) := by
-      simp [H, finHeisenberg, sq, ← map_add_eq_mul, ← two_mul, ← mul_assoc, two_mul_half]
-    rw [h_shift, ← β_sq, H.add_left z y x, sub_eq_add_neg x y, add_left, beta_neg_right x z,
-      beta_neg_right (-y) z, beta_neg_right z y, div_eq_mul_inv,
-        inv_eq_of_mul_eq_one_right (beta_mul_beta x y)]
-    calc _ = finVac z * finVac z * (H.β z y * H.β y z) *
-          (finVac (x + -y) * H.β y x * H.β z x ^ 2) := by ring
-      _ = finVac (x + -y) * H.β y x * H.β z x ^ 2 := by simp [vac_sq z hz, beta_mul_beta]
+    have β_sq : H z x ^ 2 = selfDualAddChar E (star x ⬝ᵥ z) := by
+      simp [H, finHeisenberg_apply, sq, ← map_add_eq_mul, ← two_mul, ← mul_assoc, two_mul_half]
+    rw [h_shift, ← β_sq, H.map_add_left z y x, sub_eq_add_neg x y, H.map_add_left, H.apply_neg x z,
+      H.apply_neg (-y) z, H.apply_neg z y, div_eq_mul_inv,
+        inv_eq_of_mul_eq_one_right (H.apply_mul_apply_swap x y)]
+    calc _ = finVac z * finVac z * (H z y * H y z) *
+          (finVac (x + -y) * H y x * H z x ^ 2) := by ring
+      _ = finVac (x + -y) * H y x * H z x ^ 2 := by simp [vac_sq z hz]
   -- Off the lattice it vanishes, and the character integrates to `1` or `0` as `x` is in it or not.
   rw [← setIntegral_eq_integral_of_forall_compl_eq_zero fun z hz ↦ by simp [finVac_of_notMem hz],
     setIntegral_congr_fun isOpen_stdLattice.measurableSet integrand, integral_const_mul,
     integral_selfDualAddChar_stdLattice x]
   -- For `x` in the lattice this is `finVac_add` for `-y` and `x`; otherwise both sides are `0`.
   split_ifs with hx
-  · rw [mul_one, ← neg_add_eq_sub, ← finVac_add (-y) hx, even, beta_neg_left,
-      mul_div_cancel_right₀ _ (beta_ne_zero x y)]
+  · rw [mul_one, ← neg_add_eq_sub, ← finVac_add (-y) hx, even, TauCeti.HeisenbergDatum.neg_apply,
+      mul_div_cancel_right₀ _ (TauCeti.HeisenbergDatum.apply_ne_zero _ x y)]
   · simp [finVac_of_notMem hx]
 
 end FiniteVacuum

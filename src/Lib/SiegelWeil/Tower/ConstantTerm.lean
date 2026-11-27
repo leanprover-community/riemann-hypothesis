@@ -110,7 +110,7 @@ lemma thetaTerm_lineRadical (x : Matrix r Unit E) (f : 𝒮 (W'.hom V))
           (matrixToVec (V.x⁻¹.val * x.map toAdele * (W.x⁻¹.val * q.1)ᴴ * stdForm E s)) := by
   -- `θ` is evaluation at `0`, and the Heisenberg operator `ϱ` translates the argument.
   rw [Splitting.thetaTerm, homSlice_radicalElement, gram_at_point_eq_map]
-  simp [← mul_assoc, ← map_mul, theta_apply, rho_apply, Heisenberg.beta_zero_left]
+  simp [← mul_assoc, ← map_mul, theta_apply, rho_apply, TauCeti.HeisenbergDatum.zero_apply]
 
 /-- The term `constTermAt A x f` is the integral of the term of `x` in the theta kernel of `f` over
 the whole radical modulo its rational points, for any automorphic characters `a` and `b`. -/
@@ -159,7 +159,7 @@ lemma hasSum_constTermAt {f : 𝒮 (W'.hom V)} :
 lemma constTermAt_zero (f : 𝒮 (W'.hom V)) :
     constTermAt A 0 f = θ (W.hom V) (A.homSlice V 0 f) := by
   simp [constTermAt, Splitting.thetaTerm, homSlice_radicalElement, matrixToVec_zero,
-    Heisenberg.Rep.rho_zero_apply, theta_apply]
+    TauCeti.HeisenbergDatum.Representation.zero_apply, theta_apply]
 
 /-- For `ξ ≠ 0`, the term of the rational vector `ξ • X.k` on the isotropic line of `X` in the
 constant term along the line of `A` (`constTermAt A`, defined as the mean of its theta term over the

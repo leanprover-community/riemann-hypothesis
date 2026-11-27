@@ -312,7 +312,7 @@ lemma exists_norm_theta_sub_zeroTerm_le (D : W'.Splitting W Unit) (χ : AutChar 
       ‖ℓ (pairWeil W' V χ 1 (g', h) φ)‖ ≤ (C + C) * ‖φ‖ * (V.height h * W'.height g) ^ i := by
     refine norm_theta_sub_zeroTerm_le D fun b ↦ ?_
     grw [rho_pairWeil, norm_sub_le, h_growth', h_growth']
-    simp [add_mul, Heisenberg.Rep.norm_map]
+    simp [add_mul, TauCeti.HeisenbergDatum.Representation.norm_apply]
   -- `d` is a basis of `V` in the lattice at `h`, of bounded lengths.
   obtain ⟨d, hd⟩ := h_basis h
   have h_pair (h_high : 2 < W'.height g) : IsShortPair g' h ℓ Ψ d.val D.k (c * V.height h)

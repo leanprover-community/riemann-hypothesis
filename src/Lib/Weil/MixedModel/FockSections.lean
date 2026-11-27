@@ -86,7 +86,7 @@ structure MixedModel where
   operator of `w` to the value and multiplies by the phase `β (2 a + a') b`. -/
   slice_realHeisenbergOp (a a' : p → ℂ) (w : ι → ℂ) (b : p → ℂ) (v : fockSpace ε') :
       slice a (realHeisenbergOp (L *ᵥ a' + I *ᵥ w + K *ᵥ b) v) =
-        (realHeisenberg 1).β (2 • a + a') b • realHeisenbergOp w (slice (a + a') v)
+        realHeisenberg 1 (2 • a + a') b • realHeisenbergOp w (slice (a + a') v)
   /-- The vacuum is the Gaussian `exp (-|a|²)` times the vacuum of the small space. -/
   slice_vac (a : p → ℂ) : slice a vacVector = Complex.exp (-(star a ⬝ᵥ a)) • vacVector
 
@@ -129,7 +129,7 @@ lemma MixedModel.exists_fockMoment_slice_le (N M : ℕ) :
       _ = (1 + ‖a‖ₑ) ^ M * ‖(-(star (a + A *ᵥ y) ⬝ᵥ (a + A *ᵥ y))).exp‖ₑ *
           fockMoment N (realHeisenbergOp (W *ᵥ y) (vacVector : fockSpace ε)) := by
         conv_lhs => rw [← h_span y, slice_realHeisenbergOp, slice_vac, map_smul]
-        simp [fockMoment_smul, mul_assoc, ← ofReal_norm, Heisenberg.norm_eq_one]
+        simp [fockMoment_smul, mul_assoc, ← ofReal_norm, TauCeti.HeisenbergDatum.norm_apply]
       _ ≤ .ofReal (.exp (M ^ 2)) * (cA * (1 + ‖y‖ₑ)) ^ M *
           ((cW * (1 + ‖y‖ₑ)) ^ N * fockMoment N (vacVector : fockSpace ε)) := by
         grw [h_gauss, fockMoment_realHeisenbergOp_le, hA, hW]
@@ -138,7 +138,7 @@ lemma MixedModel.exists_fockMoment_slice_le (N M : ℕ) :
   · simp [C, isSchwartzVector_vacVector N, mul_eq_top, hcA, hcW]
   · -- Integrate `h_transl` against `v`, with the finite non-zero weight moved to the right.
     obtain ⟨h_ne_zero, h_ne_top⟩ : (1 + ‖a‖ₑ) ^ M ≠ 0 ∧ (1 + ‖a‖ₑ) ^ M ≠ ⊤ := by simp
-    rw [mul_le_iff_le_inv h_ne_zero h_ne_top, ← mul_assoc, isVacuum_realVac.map_eq_integral]
+    rw [mul_le_iff_le_inv h_ne_zero h_ne_top, ← mul_assoc, TauCeti.ReproducingModel.map_eq_integral]
     refine (fockMoment_integral_le N).trans (lintegral_fockMoment_smul_le fun y ↦ ?_)
     grw [mul_assoc, ← mul_le_iff_le_inv h_ne_zero h_ne_top, h_transl]
 
@@ -156,7 +156,7 @@ end MixedFockModel
 
 section RapidSections
 
-open MeasureTheory Function ContinuousLinearMap Real Complex Heisenberg IsVacuum Matrix Finset
+open MeasureTheory Function ContinuousLinearMap Real Complex TauCeti ReproducingModel Matrix Finset
   Exchange Norms.Elementwise ContDiff Continuous ENNReal
 
 variable {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
@@ -179,8 +179,8 @@ lemma exists_smooth_exponent_coherent {A : EuclideanSpace ℂ p → (ι → ℂ)
     -(star (w - a) ⬝ᵥ (w - a)) / 2
   refine ⟨fun ((y, w), x) ↦ e (A x y) w, fun y w x ↦ ?_, ?_, ?_⟩
   · change cexp (e (A x y) w) = realHeisenbergOp (A x y) vacVector w
-    simp only [e, Complex.exp_add, heisenbergOp_apply]
-    rfl
+    simp only [e, Complex.exp_add, heisenbergRep_apply, realHeisenberg_apply, vacVector,
+      vacuum_apply, realVac]
   · simp only [e, dotProduct, Pi.star_apply, RCLike.star_def, mulVec, Pi.sub_apply, star_sub]
     fun_prop
   · intro r hr t x
@@ -227,8 +227,7 @@ lemma exists_norm_fourier_coherent_le {d : EuclideanSpace ℂ p → ℂ} (d_smoo
       unfold ρ
       grw [norm_le_norm_sub_add w (A x y), le_opNorm, hB _ ⟨x, hx, rfl⟩]
       nlinarith [norm_nonneg y, norm_nonneg (w - A x y), mul_nonneg B_pos.le (norm_nonneg y)]
-    simpa [D, exp_q, le_div_iff₀, mul_comm _ (ρ ^ m), mul_assoc, ← mul_pow, ρ_pos,
-      norm_eq_one] using
+    simpa [D, exp_q, le_div_iff₀, mul_comm _ (ρ ^ m), mul_assoc, ← mul_pow, ρ_pos] using
       pow_mul_realVac_le m h_rho_le ρ_pos.le (by positivity)
   -- Non-stationary phase at the rescaled point `ρ⁻¹ • (y, w)`, with parameter `a = ρ⁻¹ ^ 2`.
   have h_decay : (ρ⁻¹ ^ 2 * (1 + ‖b‖)) ^ M * ‖f‖ ≤ C * (D / ρ ^ m) := by
@@ -294,7 +293,8 @@ lemma lintegral_fockMoment_realHeisenbergOp_fourier_ne_top {d : EuclideanSpace �
       (fun x ↦ d x * (realHeisenbergOp (A x y) vacVector : fockSpace ε') w) b
     have hf : Ĝ y b w = ξ y * f := by
       -- the value at `w` is a continuous linear functional, so it passes under the integral
-      change valueAt w (FourierTransform.fourier (G y) b) = ξ y * f
+      rw [← evalCLM_apply (Ĝ y b) w]
+      change evalCLM w (FourierTransform.fourier (G y) b) = ξ y * f
       rw [fourier_eq, ← integral_comp_comm _ (by simp [G_int])]
       simp [f, G, fourier_eq, ← integral_const_mul, Circle.smul_def, mul_left_comm]
     -- `M` is chosen so that the powers of `1 + ‖b‖` match.
@@ -327,10 +327,10 @@ lemma lintegral_fockMoment_realHeisenbergOp_fourier_ne_top {d : EuclideanSpace �
 /-- At `(x + x, -π i b)`, the bicharacter of the positive signature is the Fourier character: both
 are `exp (π i ∑ₖ (xₖ b̄ₖ + x̄ₖ bₖ))`. -/
 private lemma realHeisenberg_β_eq_fourierChar (x : p → ℂ) (b : EuclideanSpace ℂ p) :
-    ((realHeisenberg 1).β (x + x) ((-↑π * Complex.I) • b.ofLp) : ℂ) =
+    (realHeisenberg 1 (x + x) ((-↑π * Complex.I) • b.ofLp) : ℂ) =
       (fourierChar (inner ℝ b (.toLp 2 x)) : ℂ) := by
   rw [Real.fourierChar_apply]
-  simp [realHeisenberg, PiLp.inner_apply, -neg_mul, dotProduct, mul_sum, sum_mul,
+  simp [realHeisenberg_apply, PiLp.inner_apply, -neg_mul, dotProduct, mul_sum, sum_mul,
     ← sum_sub_distrib, -mul_re, re_eq_add_conj]
   simp only [Finset.sum_div]
   exact congrArg _ (sum_congr rfl fun i _ ↦ by ring)
@@ -383,11 +383,12 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
   have h_inv (y : ι → ℂ) (hy : Integrable fun b ↦ F (y, b)) :
       ∫ b, h.slice x (F (y, b)) = h.slice x (G y (.toLp 2 x)) := by
     have Ĝ_int : Integrable (Ĝ y) :=
-      hy.mono (by fun_prop) (.of_forall fun b ↦ by simp [F, Rep.norm_map])
+      hy.mono (by fun_prop) (.of_forall fun b ↦ by
+        simp [F, TauCeti.HeisenbergDatum.Representation.norm_apply])
     let χ (b : EuclideanSpace ℂ p) : Circle := fourierChar (inner ℝ b (.toLp 2 x))
     have h_slice_heisOp_K (c : p → ℂ) (v : fockSpace ε') :
         h.slice x (realHeisenbergOp (h.K *ᵥ c) v) =
-          (realHeisenberg 1).β (x + x) c • h.slice x v := by
+          realHeisenberg 1 (x + x) c • h.slice x v := by
       simpa [two_mul] using h.slice_realHeisenbergOp x 0 0 c v
     calc
       _ = ∫ b, h.slice x (χ b • Ĝ y b) := by
@@ -409,7 +410,8 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
   -- `realWeil (u x) ξ` is by definition `∫ ξ y • realHeisenbergOp (S x y) vacVector` times the
   -- conjugate principal minor of `S x`; the factor `exp |x|²` of `d` cancels the Gaussian of
   -- `slice_vac`.
-  simp [G, d, A, ← integral_smul, weilRep, Rep.integrated_apply, h_slice_heisOp_I, h.slice_vac,
+  simp [G, d, A, ← integral_smul, weilRep_apply_eq, weilOp_apply_eq,
+    TauCeti.HeisenbergDatum.Representation.integrated_apply, h_slice_heisOp_I, h.slice_vac,
     smul_smul, ← mulVec_mulVec, mul_assoc, Complex.exp_neg, mul_left_comm]
   rfl
 

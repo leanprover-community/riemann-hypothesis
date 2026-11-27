@@ -155,7 +155,7 @@ structure IsSharp (b : AutChar E) (S₀ : Set (FinPlace E)) (F : 𝒮 (S.hom T))
   /-- For every `v`, the datum `v ⊗ F` is a vacuum above any set `A` of places disjoint from
   `S₀`. -/
   vacuum_off (A : Set (FinPlace E))
-    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s t)))) :
+    (v : Fock.fockSpace (realSigns E (homSigns s t))) :
     Disjoint S₀ A → projOn (S.hom T) A (integrated (S.hom T) v F) = integrated (S.hom T) v F
   /-- At the finite points `g` integral off `S₀`, the coefficient `⟨F, ω(g) F⟩` is `⟨F, F⟩` on
   `J ∩ stdLevel E n` and zero elsewhere. -/
@@ -164,7 +164,7 @@ structure IsSharp (b : AutChar E) (S₀ : Set (FinPlace E)) (F : 𝒮 (S.hom T))
   /-- The quotient of `⟨F, F⟩` by the index `stdLevelIndex J = [K₀ : J ∩ K₀]` is `c`. -/
   mass_eq : dataInner (S.hom T) F F / stdLevelIndex J = c
   /-- For every `v`, the datum `v ⊗ F` is clean (`IsClean`). -/
-  clean (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s t)))) :
+  clean (v : Fock.fockSpace (realSigns E (homSigns s t))) :
     IsClean (integrated (S.hom T) v F)
 
 lemma doubleDatum_apply (f f' : 𝒮 (S.hom T)) :

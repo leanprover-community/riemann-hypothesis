@@ -879,7 +879,7 @@ abbrev IsMixedLaw (T : (p → 𝔸 E) → 𝒮 V →L[ℂ] 𝒮 V₀) : Prop :=
   ∀ (x : p → 𝔸 E) (y : n → 𝔸 E) (f : 𝒮 V),
     T x (V.ϱ y f) =
       -- `x + (x + a)` is the sum of the old and the new argument of `T`, where `a = D.lCoord *ᵥ y`
-      (adelicHeisenberg E 1).β (x + (x + D.lCoord *ᵥ y)) (D.kCoord *ᵥ y) •
+      (adelicHeisenberg E 1) (x + (x + D.lCoord *ᵥ y)) (D.kCoord *ᵥ y) •
         V₀.ϱ (D.iCoord *ᵥ y) (T (x + D.lCoord *ᵥ y) f)
 
 variable {D} in

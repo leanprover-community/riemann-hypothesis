@@ -53,7 +53,7 @@ part `v` and component `y ↦ Ψ yᵀ`, read in the model at the conjugates of t
 `ν = 𝔠.character`. Here `υ` is the splitting character of the Weil data, restricted to the norm-one
 ideles (`upsilonU1`). In the exchange identity it is applied to the space `V'`. -/
 noncomputable abbrev thetaSmall
-    (v : (Fock.isVacuum_realVac (ε := realSigns E (homSigns s t))).Model)
+    (v : Fock.fockSpace (realSigns E (homSigns s t)))
     (Ψ : Matrix n a (LocProd 𝔠.ramifiedPlaces) → ℂ) : G E s → ℂ :=
   thetaIntegral W V (rankTwist 𝔠.character n) (upsilonU1 ^ card a)
     (localDatum W V v (fun y : Matrix a n (LocProd 𝔠.ramifiedPlaces) ↦ Ψ yᵀ) 𝔠.readsAt.star)

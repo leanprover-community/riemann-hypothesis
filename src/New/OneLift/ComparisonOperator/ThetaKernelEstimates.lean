@@ -80,7 +80,8 @@ Heisenberg action, ω = `New.Fock.realWeil` the Weil representation of U(ε), an
 
 section FockCoeffDecay
 
-open MeasureTheory Real Fintype MvPolynomial Matrix.Norms.L2Operator New.Heisenberg IsVacuum Rep
+open MeasureTheory Real Fintype MvPolynomial Matrix.Norms.L2Operator TauCeti
+  ReproducingModel TauCeti.HeisenbergDatum.Representation
   WithLp
 
 /-- For `σ` in `U(ε)` and vectors `x`, `y`, the points `x` and `σ x + y` cannot both be
@@ -129,7 +130,7 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
   have G_int : Integrable G (normalizedVolume ι) :=
     (integrable_norm_sq v_scaled).comp_smul (by positivity)
   have preserving : MeasurePreserving (σ • · + y) (normalizedVolume ι) (normalizedVolume ι) :=
-    ((realAction ε).measurePreserving σ).add_right _ y
+    ((realAction ε).measurePreserving_smul σ).add_right _ y
   -- Undoing the dilation gives `c^(2d)` from `v_scaled` and the Jacobian `c^(2|ι|)`.
   have G_le : ∫ x, G x ∂normalizedVolume ι ≤ exp n * ∫ x, ‖v x‖ ^ 2 ∂normalizedVolume ι := by
     have exponent_le : ((card ι + d : ℕ) : ℝ) * (n / A) ≤ n := by
@@ -164,18 +165,20 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
   -- By the reproducing property of the vacuum, the integrand below has the norm just bounded.
   have integrand_le (x : ι → ℂ) :
       ‖v x * fockInner (realHeisenbergOp (-y) v)
-        (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacElem)‖ ≤
+        (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacVector)‖ ≤
         K / 2 * (G x + G (σ • x + y)) := by
-    rw [← conj_modelInner, modelInner_heisenbergOp_vacElem]
-    simpa [norm_eq_one] using pointwise x
+    rw [← conj_innerSL, innerSL_heisenbergRep_vacuum]
+    simpa [TauCeti.HeisenbergDatum.norm_apply] using pointwise x
   -- Move `realHeisenbergOp y` to the left and write `realWeil σ v` as an integral of translated
   -- vacua.
   have coeff_eq : ‖fockInner v (realHeisenbergOp y (realWeil σ v))‖ = ‖realMultiplier σ‖ *
       ‖∫ x, v x * fockInner (realHeisenbergOp (-y) v)
-        (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacElem)
+        (realHeisenbergOp ((σ : Matrix ι ι ℂ).mulVec x) vacVector)
         ∂normalizedVolume ι‖ := by
-    rw [← modelInner_heisenbergOp (-y), mul, neg_add_cancel, Rep.rho_zero_apply]
-    simp [weilRep, map_integrated_eq_integral, realAction, self_eq_one]
+    rw [← innerSL_heisenbergRep (x := -y), TauCeti.HeisenbergDatum.Representation.apply_apply,
+      neg_add_cancel, TauCeti.HeisenbergDatum.Representation.zero_apply]
+    simp [weilRep_apply_eq, weilOp_apply_eq, TauCeti.HeisenbergDatum.Representation.map_integrated,
+      realAction_apply]
   -- The multiplier has norm at most `‖σ‖^|ι|`, and both terms of the bound have integral `∫ G`,
   -- since `x ↦ σ x + y` preserves the measure.
   rw [coeff_eq]
@@ -188,7 +191,7 @@ theorem New.Fock.norm_fockInner_realHeisenbergOp_le {ι : Type} [Fintype ι] [De
           (.of_forall integrand_le), integral_const_mul, integral_add' G_int G_int',
           preserving.hasLaw.integral_comp G_int.aestronglyMeasurable, norm_realMultiplier_le, G_le]
     _ = _ := by
-      simp [modelInner_self, K, mul_pow, pow_mul, div_pow, pow_add, field, one_add_one_eq_two]
+      simp [innerSL_self, K, mul_pow, pow_mul, div_pow, pow_add, field, one_add_one_eq_two]
 
 end FockCoeffDecay
 
@@ -291,17 +294,18 @@ lemma dataInner_traceChar {𝔪 : Modulus E} (t : Matrix n n' 𝔪.ResidueRing)
   rw [h_zf]
   -- the pairing splits into a real and a finite part; `ϱ y` is unitary and cancels after `rho_swap`
   trans fockInner v (realHeisenbergOp (realCoord z) w) *
-    ((adelicHeisenberg E (homSigns s s')).β zf y ^ 2 * vacuumFn zf)
+    ((adelicHeisenberg E (homSigns s s')) zf y ^ 2 * vacuumFn zf)
   · rw [modDatum, modDatum, rho_integrated_realCoord, dataInner_integrated, h_char,
       𝔪.schrodingerOp_char_eq_translate_projOn, rho_swap, map_smul]
     -- ↓ rewrites operators on integrated vectors before their arguments are simplified.
     simp [y, zf, finVec, ↓← rho_integrated]
   by_cases hz : ∀ i, finCoord z i ∈ Ô E
   · -- The phase of `ϱ zf` past `ϱ y` is the lift of `traceChar t` at `α⁻¹ z_f`.
-    have h_beta : ((adelicHeisenberg E (homSigns s s')).β zf y : ℂ) ^ 2 =
+    have h_beta : ((adelicHeisenberg E (homSigns s s')) zf y : ℂ) ^ 2 =
       (ψf E (algebraMap E (𝔸f E) j * ∑ x, star α.val *
         (idem 𝔪.places * (𝔪.generator⁻¹.val * (tLift x).val)) * (z x).2) : Circle) := by
-      simp [y, zf, finVec, adelicHeisenberg, stdForm, stdAddChar, dotProduct, fst_sum, snd_sum,
+      simp [y, zf, finVec, adelicHeisenberg_apply, stdForm, stdAddChar, dotProduct, fst_sum,
+        snd_sum,
         mulVec_diagonal, ← Circle.coe_pow, ← map_nsmul_eq_pow, two_mul, ← map_add, ← add_mul]
     rw [h_char, 𝔪.liftFn_apply, dite_eq_left fun i ↦ mul_mem (idem_mem_Ô _) (hz i), h_beta,
       mul_left_comm]

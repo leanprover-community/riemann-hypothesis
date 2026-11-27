@@ -110,7 +110,7 @@ lemma commute_schrodingerOp {A : 𝒮 V →L[ℂ] 𝒮 V}
 
 /-- For v in the Fock space and f in 𝒮(V), v⊗(Ψ⊗f) = Ψ⊗(v⊗f): the operators `New.Space.integrated` v
 and `New.Space.schrodingerOp` S Ψ commute. -/
-lemma integrated_schrodingerOp (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E s)))
+lemma integrated_schrodingerOp (v : Fock.fockSpace (realSigns E s))
     (f : 𝒮 V) :
     V.integrated v (V.schrodingerOp S Ψ f) = V.schrodingerOp S Ψ (V.integrated v f) := by
   have h_comm : Commute (V.integrated v) (V.schrodingerOp S Ψ) := by
@@ -227,8 +227,9 @@ lemma dataInner_heisenbergCombination (c c' : (n → 𝔸f E) →₀ ℂ) (f f' 
   -- the translates by `y` and `y + z`.
   simp [mul_mul_mul_comm,
     (integrableOn_mul (continuous_conj.comp' (locally_constant S).continuous)).const_mul,
-    heisenbergCombination, ← heisenbergRep_right_rho, Finsupp.sum, mul_sum, localInner, sum_mul,
-    integrable_finsetSum, integral_finsetSum, integral_const_mul]
+    heisenbergCombination, ← heisenbergRep_right_rho,
+    -TauCeti.HeisenbergDatum.Representation.restrictRight_apply, Finsupp.sum, mul_sum, localInner,
+    sum_mul, integrable_finsetSum, integral_finsetSum, integral_const_mul]
   congr! 2 with y' - y
   obtain ⟨z, rfl⟩ := add_left_surjective y y'
   -- On the right the integrand is a character on a translate of the box.
@@ -251,8 +252,10 @@ lemma dataInner_heisenbergCombination (c c' : (n → 𝔸f E) →₀ ℂ) (f f' 
         (semichar (idem S.conjClosure • z) • schrodingerAct S z (boxIndicator n S)) 0 =
           boxIndicator n S 0 :=
       congrFun (schrodingerAct_boxIndicator hS hz) 0
-    simp_all [mem_integralBox, idem_mul_mem_Ô, ← heisenbergRep_right_rho, Heisenberg.Rep.mul,
-      Heisenberg.self_eq_one, schrodingerAct_schrodingerAct, finHeisenbergOp, smul_smul,
+    simp_all [mem_integralBox, idem_mul_mem_Ô, ← heisenbergRep_right_rho,
+      -TauCeti.HeisenbergDatum.Representation.restrictRight_apply,
+      TauCeti.HeisenbergDatum.Representation.apply_apply,
+      TauCeti.HeisenbergDatum.apply_self, schrodingerAct_schrodingerAct, finHeisenbergOp, smul_smul,
         idem_mul_self]
     grind
   · -- The projection kills the translate by `z`, which is not integral.
@@ -262,7 +265,9 @@ lemma dataInner_heisenbergCombination (c c' : (n → 𝔸f E) →₀ ℂ) (f f' 
             V.finHeisenbergOp (idem S.conjClosure • z) (V.projOn S f') :=
       V.projOn_finHeisenbergOp (V.projOn_projOn f') _
     simp_all [dataInner_projOn, schrodingerAct, integralBox, apply_ite,
-      finHeisenbergOp, ← heisenbergRep_right_rho, smul_smul, idem_mul_self, Heisenberg.Rep.mul]
+      finHeisenbergOp, ← heisenbergRep_right_rho,
+      -TauCeti.HeisenbergDatum.Representation.restrictRight_apply, smul_smul, idem_mul_self,
+      TauCeti.HeisenbergDatum.Representation.apply_apply]
 
 /-- The name does not depend on the choice of coefficients: for `S` disjoint from its conjugate,
 the combination of translates of the indicator with coefficients `c` names
@@ -289,7 +294,8 @@ lemma schrodingerOp_schrodingerAct_boxIndicator (y : n → 𝔸f E) (f : 𝒮 V)
 /-- For a set S of finite places disjoint from its conjugate, the indicator of the vectors
 integral at all places of S names the operator P^S = `New.Space.projOn` S. -/
 lemma schrodingerOp_boxIndicator : V.schrodingerOp S (boxIndicator n S) = V.projOn S := by
-  simpa [schrodingerAct, ← heisenbergRep_right_rho] using
+  simpa [schrodingerAct, ← heisenbergRep_right_rho,
+    -TauCeti.HeisenbergDatum.Representation.restrictRight_apply] using
     funext (V.schrodingerOp_schrodingerAct_boxIndicator hS 0)
 /-- Let `S` be disjoint from its conjugate and `Ψ` Schwartz–Bruhat above `S`, and write Ψ⊗ for the
 operator `V.schrodingerOp S Ψ` on 𝒮(V). For a finite adelic vector `y`, let y' be `y` kept at S ∪ S̄
@@ -302,7 +308,8 @@ lemma rho_schrodingerOp [IsSchwartzBruhat S Ψ] (y : n → 𝔸f E) (f : 𝒮 V)
   -- Write `Ψ` as a combination of translates of the box: `ϱ` and `schrodingerAct` compose by the
   -- same rule.
   obtain ⟨c, rfl⟩ := mem_range_schrodingerCombination hS (Φ := Ψ) inferInstance
-  simp [hS, ← heisenbergRep_right_rho, Finsupp.sum, Heisenberg.Rep.mul,
+  simp [hS, ← heisenbergRep_right_rho, -TauCeti.HeisenbergDatum.Representation.restrictRight_apply,
+    Finsupp.sum, TauCeti.HeisenbergDatum.Representation.apply_apply,
     schrodingerAct_schrodingerAct]
 
 /-- Let `S` be disjoint from its conjugate and `Ψ`, `Ψ'` Schwartz–Bruhat above `S`, and write Ψ ⊗ f
@@ -332,7 +339,7 @@ Names on the vacuum are transported by a change of coordinates
 
 namespace New
 
-open NumberField Matrix Finset Submodule Space Heisenberg
+open NumberField Matrix Finset Submodule Space TauCeti
 
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
@@ -383,7 +390,7 @@ lemma Space.boxProd_projOn (f₁ : 𝒮 V₁) (f₂ : 𝒮 V₂) :
   classical
   -- The coefficient function of a product is the product of the coefficient functions, and
   -- `projOn S` multiplies a coefficient function by the indicator of a box.
-  refine IsVacuum.ext fun x ↦ ?_
+  refine Subtype.ext (funext fun x ↦ ?_)
   rw [projOn_val, boxProd_val, boxProd_val]
   -- A vector lies in the box for `n` iff its two parts lie in the boxes for `n₁` and `n₂`.
   -- (`using!`: one condition reads the finite coordinates of `x` at `e (.inl a)`, the other those

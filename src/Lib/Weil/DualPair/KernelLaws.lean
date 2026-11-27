@@ -138,7 +138,7 @@ lemma modKernel_twist (μ μ' : AutChar E) (Ψ : Matrix n' n 𝔪.ResidueRing �
 with k, k′ reduced modulo 𝔪 and `New.detFin` the finite determinant. -/
 lemma pairWeil_modDatum_stdLevel (k : stdLevel E n) (k' : stdLevel E n')
     (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E (homSigns s s')))) :
+    (v : Fock.fockSpace (realSigns E (homSigns s s'))) :
     pairWeil S T a b ((1, k.val), 1, k'.val) (modDatum S T 𝔪 Ψ v) =
       (a.val (detFin s' k'.val) * (b.val (detFin s k.val))⁻¹).val •
         modDatum S T 𝔪 (fun x : Matrix n' n 𝔪.ResidueRing ↦
@@ -175,7 +175,7 @@ lemma modKernel_mul_stdLevel_left (k : stdLevel E n) (Ψ : Matrix n' n 𝔪.Resi
       modKernel S T a b 𝔪 ((b.val (detFin s k.val) : ℂ)⁻¹ •
         fun x : Matrix n' n 𝔪.ResidueRing ↦ Ψ (x * (𝔪.reductionGL k).val)) P g h := by
   -- The pair `((1, k), 1)` acts on the datum of `Ψ` as stated.
-  have h_act (v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E (homSigns s s')))) :
+  have h_act (v : Fock.fockSpace (realSigns E (homSigns s s'))) :
       pairWeil S T a b ((1, k.val), 1) (modDatum S T 𝔪 Ψ v) = modDatum S T 𝔪
         ((b.val (detFin s k.val) : ℂ)⁻¹ • fun x ↦ Ψ (x * (𝔪.reductionGL k).val)) v := by
     simpa [Prod.mk_one_one, modDatum, Pi.smul_comp] using pairWeil_modDatum_stdLevel S T a b 𝔪 k 1 Ψ
@@ -194,7 +194,7 @@ lemma modKernel_mul_stdLevel_right (k : stdLevel E n') (Ψ : Matrix n' n 𝔪.Re
       modKernel S T a b 𝔪 ((a.val (detFin s' k.val) : ℂ) •
         fun y : Matrix n' n 𝔪.ResidueRing ↦ Ψ ((𝔪.reductionGL k)⁻¹.val * y)) P g (x, h) := by
   -- The pair `(1, (1, k))` acts on the datum of `Ψ` as stated.
-  have h_act (v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E (homSigns s s')))) :
+  have h_act (v : Fock.fockSpace (realSigns E (homSigns s s'))) :
       pairWeil S T a b (1, 1, k.val) (modDatum S T 𝔪 Ψ v) = modDatum S T 𝔪
         ((a.val (detFin s' k.val) : ℂ) • fun y ↦ Ψ ((𝔪.reductionGL k)⁻¹.val * y)) v := by
     simpa [Prod.mk_one_one, modDatum, Pi.smul_comp] using pairWeil_modDatum_stdLevel S T a b 𝔪 1 k Ψ
@@ -390,7 +390,7 @@ variable {S T a b 𝔪}
 /-- If the ideal 𝔪′ is contained in 𝔪, the datum modulo 𝔪′ given by the pullback of Ψ under
 reduction to O_E/𝔪 and by the real Fock vector v equals the datum modulo 𝔪 given by Ψ and v. -/
 lemma modDatum_factor {𝔪' : Modulus E} (h : 𝔪'.ideal ≤ 𝔪.ideal) (Ψ : Matrix n' n 𝔪.ResidueRing → ℂ)
-    (v : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E (homSigns s s')))) :
+    (v : Fock.fockSpace (realSigns E (homSigns s s'))) :
     modDatum S T 𝔪' (fun x : Matrix n' n 𝔪'.ResidueRing ↦ Ψ (x.map (factor h))) v =
       modDatum S T 𝔪 Ψ v := by
   -- The box function at the new places `R` names a projection that fixes the vacuum, so by

@@ -67,7 +67,7 @@ See also `Lib.Weil.Fock.OscillatorPair` and `Lib.Weil.DualPair.HolomorphicData`.
 namespace New.Rows
 
 open MeasureTheory Set Matrix Fock SiegelWeil MvPolynomial Finset Submodule NumberField Sum
-  Heisenberg.IsVacuum Fintype ComplexConjugate Space Function Exchange Complex
+  TauCeti ReproducingModel Fintype ComplexConjugate Space Function Exchange Complex
 
 variable {n n' : Type} [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n']
 variable {s : n → ℤˣ} {O : n → ℤ} {E : Type} [Field E] [CMType E]
@@ -328,7 +328,8 @@ lemma realConv_holMinorsPi_eq_zero_of_lift_eq_zero (ho : IsPosFirstOrder s O) {E
   let Ψ : Matrix n' n 𝔪.ResidueRing → ℂ := Pi.single (inclMatrix 𝔪.ResidueRing e) 1
   let φ (h : GInf E s) : ℂ := fockInner v₀ (realPairWeil γ' γ (h, 1) v₀)
   have hermitian (h : GInf E s) : φ h⁻¹ = conj (φ h) := by
-    rw [conj_modelInner, ← modelInner_weilRep (realAction _) (pairHomInf (h⁻¹, 1))]
+    rw [conj_innerSL,
+      ← innerSL_weilRep (realAction _) (pairHomInf (h⁻¹, 1)) _ _ (realAction_cocycle _)]
     simp [φ, realPairWeil, rep_apply_apply, ← map_mul, inv_eq_conj, Prod.mk_one_one]
   have coeff (h : GInf E s) : φ h = holMinorsPi s u h * fockInner v₀ v₀ := by
     simpa [Prod.mk_one_one] using (hQ₀_hol (fockInner v₀)).eq_holMinorsPi_mul ho h_dom hermitian h
@@ -346,7 +347,7 @@ lemma realConv_holMinorsPi_eq_zero_of_lift_eq_zero (ho : IsPosFirstOrder s O) {E
       (show Integrable φ by simp [funext coeff, h_int.mul_const])
   have h_scale : realConv φ ψ = fockInner v₀ v₀ • realConv (holMinorsPi s u) ψ := funext fun y ↦ by
     simp [realConv, coeff, ← integral_const_mul, mul_assoc, mul_left_comm (holMinorsPi s u _)]
-  have inner_ne : fockInner v₀ v₀ ≠ 0 := eq_zero_of_modelInner_self.mt (by simp [v₀, hQ₀_ne])
+  have inner_ne : fockInner v₀ v₀ ≠ 0 := eq_zero_of_innerSL_self.mt (by simp [v₀, hQ₀_ne])
   exact (smul_eq_zero_iff_right inner_ne).1 (h_scale.symm.trans conv_zero)
 
 /-- Let the characters `c` and `b` define the theta kernel of a hermitian space `S` of signs `s` and

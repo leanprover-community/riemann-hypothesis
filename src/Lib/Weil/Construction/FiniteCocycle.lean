@@ -18,19 +18,21 @@ The double integral in the resulting cocycle is a finite Gauss sum, and the cocy
 
 ## Main definitions and results
 
-* `New.stdLattice.exists_gauss_sum_finProjAction`: the double integral in the cocycle is a Gauss sum
+* `New.stdLattice.exists_gauss_sum_finAction`: the double integral in the cocycle is a Gauss sum
   over a finite module over `New.Ô`, the ring of integral finite adeles.
 * `New.stdLattice.mem_cocycleRadical`: the cocycle is `1` at all `g` and `s`.
-* `New.finAction`: the same action with cocycle `1`, as used for the adelic Weil representation.
+* `New.finAction`, `New.finAction_cocycle`: the action with its multiplier, and the triviality of
+  its cocycle, as used for the adelic Weil representation.
 
 Notions from other files:
 * `New.WeilData`: Weil data on a CM field E: ȷ in E with ȷ = −ȷ̄, a finite idele α for which Ô is
   self-dual under (z, u) ↦ ψ_f(ȷαᾱzu), and a splitting character υ.
-* `New.Heisenberg.IsVacuum`: a vacuum for β and μ is a continuous, integrable, even, real function e
-  with e(0) = 1 and ∫ e(z)e(x−y−z)β(z,y)β(z+y,x) dμ(z) = e(y)e(x).
-* `New.Heisenberg.MultiplierAction`: an action of G on W that preserves β and μ. It comes with a
-  continuous multiplier Δ: G → ℂ such that Δ(1) = 1, Δ(g⁻¹) = conj Δ(g) and Δ(g)Δ(h)Δ((gh)⁻¹) ∬
-  e(hx)e(ghy)β(x,y)e(x+y) = c(g,h).
+* `TauCeti.HeisenbergDatum.IsVacuum`: a vacuum for β and μ is a continuous, integrable, even, real
+  function e with e(0) = 1 and ∫ e(z)e(x−y−z)β(z,y)β(z+y,x) dμ(z) = e(y)e(x).
+* `TauCeti.HeisenbergDatum.Multiplier`: an action of G on W that preserves β and μ, with a
+  continuous multiplier Δ: G → ℂ such that Δ(1) = 1 and Δ(g⁻¹) = conj Δ(g). Its cocycle
+  (`TauCeti.HeisenbergDatum.Multiplier.cocycle`) is c(g,h) = Δ(g)Δ(h)Δ((gh)⁻¹) ∬
+  e(hx)e(ghy)β(x,y)e(x+y).
 * `New.stdLattice.finVac`: the function `ψ₀ (c₀ x* x / 2)` on the lattice `Ô ^ ι` and `0` off it.
 * `New.finMultiplier`: for g in `New.Gf`, Δ_f(g) = χ_f(det u) with uÔ^ι = Ô^ι ∩ g⁻¹Ô^ι and
   χ_f = υ|·|^(−1/2).
@@ -65,30 +67,25 @@ variable {E : Type u_1} {ι : Type u_2} [Field E] [CMType E]
 
 /-- The matrix action of the finite unitary group on the finite Heisenberg datum (β x y = ψ₀(y*
 x / 2); vacuum `finVac` = ψ₀(c₀ x* x / 2) on Ô^ι and `0` off it; `latticeMeasure` the Haar measure
-giving Ô^ι mass one), with multiplier `New.finMultiplier`, paired with its cocycle
-`finProjAction.1`, for which the cocycle identity holds by definition. -/
-noncomputable def finProjAction :
-    Σ c : Gf E ι → Gf E ι → ℂ,
-      (finHeisenberg E ι).MultiplierAction (latticeMeasure E ι) finVac (Gf E ι) c where
-  fst g h :=
-    finMultiplier g * finMultiplier h * finMultiplier (g * h)⁻¹ *
-      ∫ x : ι → 𝔸f E, ∫ y : ι → 𝔸f E, finVac (h • x) * finVac ((g * h) • y) * (finHeisenberg E ι).β
-        x y *
-        finVac (x + y) ∂latticeMeasure E ι ∂latticeMeasure E ι
-  snd :=
-    { beta_smul := by simp [finHeisenberg, HSMul.hSMul, SMul.smul]
-      -- `g` scales Haar measure by the inverse idele norm of its determinant, which is `1`.
-      measurePreserving g :=
-        ⟨by fun_prop, (map_mulVec_haar_finAdele ..).trans (by simp [g.finIdeleAbs_det])⟩
-      Δ := finMultiplier
-      continuous_delta := by
-        -- `finMultiplier` is invariant under right translation by the open subgroup `stdLevel E ι`.
-        refine (isLocallyConstant_of_eventually_mul
-          ((isOpen_stdLevel.eventually_mem (one_mem _)).mono fun k hk g ↦ ?_)).continuous
-        simpa using! glMultiplier_mul_of_mem g (one_mem _) hk
-      Δ_one := finMultiplier_eq_one_of_mem (one_mem (stdLevel E ι))
-      Δ_inv := finMultiplier_inv
-      cocycle _ _ := rfl }
+giving Ô^ι mass one), with multiplier `New.finMultiplier`. Its cocycle is trivial
+(`New.finAction_cocycle`). -/
+noncomputable def _root_.New.finAction :
+    (finHeisenberg E ι).Multiplier (latticeMeasure E ι) (Gf E ι) where
+  apply_smul_smul := by simp [finHeisenberg_apply, HSMul.hSMul, SMul.smul]
+  -- `g` scales Haar measure by the inverse idele norm of its determinant, which is `1`.
+  measurePreserving_smul g :=
+    ⟨by fun_prop, (map_mulVec_haar_finAdele ..).trans (by simp [g.finIdeleAbs_det])⟩
+  toFun := finMultiplier
+  continuous_toFun := by
+    -- `finMultiplier` is invariant under right translation by the open subgroup `stdLevel E ι`.
+    refine (isLocallyConstant_of_eventually_mul
+      ((isOpen_stdLevel.eventually_mem (one_mem _)).mono fun k hk g ↦ ?_)).continuous
+    simpa using! glMultiplier_mul_of_mem g (one_mem _) hk
+  map_one' := finMultiplier_eq_one_of_mem (one_mem (stdLevel E ι))
+  map_inv' := finMultiplier_inv
+
+@[simp]
+lemma _root_.New.finAction_apply (g : Gf E ι) : finAction g = finMultiplier g := rfl
 
 open scoped Classical in
 /-- The integrand of the double integral in the cocycle at `(g, s)`, made of the vacuum `finVac`
@@ -96,7 +93,7 @@ open scoped Classical in
 `selfDualAddChar E (c̄₀ y* x)`, with `c₀ = traceOneAdele`, if `x + y`, `s x` and `g s y` lie in the
 standard lattice, and `0` otherwise. -/
 lemma cocycleIntegrand_eq (g s : Gf E ι) (x y : ι → 𝔸f E) :
-    finVac (s • x) * finVac ((g * s) • y) * (finHeisenberg E ι).β x y * finVac (x + y) =
+    finVac (s • x) * finVac ((g * s) • y) * finHeisenberg E ι x y * finVac (x + y) =
       if x + y ∈ stdLattice E ι ∧ s • x ∈ stdLattice E ι ∧ (g * s) • y ∈ stdLattice E ι then
         selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x) else 0 := by
   -- The function `semichar` is invariant under unitary matrices and squares to `1` on the lattice.
@@ -104,7 +101,7 @@ lemma cocycleIntegrand_eq (g s : Gf E ι) (x y : ι → 𝔸f E) :
     simp [semichar, HSMul.hSMul, SMul.smul]
   split_ifs with h
   · obtain ⟨h_sum, hx, hy⟩ := h
-    calc _ = semichar (s • x) * semichar ((g * s) • y) * (finHeisenberg E ι).β x y *
+    calc _ = semichar (s • x) * semichar ((g * s) • y) * finHeisenberg E ι x y *
           semichar (x + y) := by simp [finVac, semichar, h_sum, hx, hy]
       _ = selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x) *
         (semichar (x + y) * semichar (x + y)) := by
@@ -169,7 +166,7 @@ lemma measureReal_prod_inter_cocycleSubmodule (g s : Gf E ι) :
     latticeMeasure_inter_eq_glMultiplier, finMultiplier, finMultiplier]
 
 /-- In the product of multipliers on the left of the Gauss sum identity
-`New.stdLattice.exists_gauss_sum_finProjAction`, the volume factors
+`New.stdLattice.exists_gauss_sum_finAction`, the volume factors
 `(‖Δ s‖ ^ 2)⁻¹ * (‖Δ (g * s)‖ ^ 2)⁻¹` cancel against `Δ x * Δ x⁻¹ = ‖Δ x‖ ^ 2` for `x = s` and
 `x = g * s`, with `Δ = finMultiplier`: only `Δ g` and the factor `z` remain. -/
 lemma finMultiplier_mul_smul_mul_eq (g s : Gf E ι) (z : ℂ) :
@@ -185,16 +182,16 @@ lemma finMultiplier_mul_smul_mul_eq (g s : Gf E ι) (z : ℂ) :
 /-- The cocycle as a finite Gauss sum. For `g`, `s` in the finite unitary group there are a finite
 module `Q` over the ring `Ô E` of integral finite adeles, in the larger of the universes `u_1` of
 `E` and `u_2` of `ι`, and a function `γ` from `Q` to the finite adeles with the following
-properties. Take the cocycle `c = finProjAction.1` of the matrix action of `Gf E ι` on the finite
-Heisenberg datum, the multiplier `Δ = finMultiplier` (`glMultiplier` of the underlying invertible
-matrix) and the character `ψ₀ = selfDualAddChar E`, z ↦ ψ_f(ȷαᾱz). Then (a)
+properties. Take the cocycle `c = finAction.cocycle finVac` of the matrix action of `Gf E ι` on the
+finite Heisenberg datum, the multiplier `Δ = finMultiplier` (`glMultiplier` of the underlying
+invertible matrix) and the character `ψ₀ = selfDualAddChar E`, z ↦ ψ_f(ȷαᾱz). Then (a)
 `c g s * Δ s⁻¹ * Δ (g * s)` is the sum of `ψ₀ (γ q)` over `Q` times `Δ g`; and for all `t` in `Ô E`
 and `q` in `Q`, (b) `γ (t • q)` and `star t * t * γ q` have the same value under `ψ₀`, and (c)
 `t • q = 0` if the matrix `t • s⁻¹` has entries in `Ô E`. -/
-lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
+lemma exists_gauss_sum_finAction (g s : Gf E ι) :
     ∃ (Q : ModuleCat.{max u_1 u_2} (Ô E)) (_ : Fintype Q) (γ : Q → 𝔸f E),
       -- (a) the cocycle is a sum over the finite module `Q`, up to values of `finMultiplier`
-      finProjAction.1 g s * finMultiplier s⁻¹ * finMultiplier (g * s) =
+      finAction.cocycle finVac g s * finMultiplier s⁻¹ * finMultiplier (g * s) =
         (∑ q : Q, selfDualAddChar E (γ q)) * finMultiplier g ∧
       ∀ (t : Ô E) (q : Q),
         -- (b) `γ` is hermitian-quadratic modulo the kernel of `selfDualAddChar E`
@@ -216,7 +213,7 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
     AddSubgroup.fintypeOfIndexNeZero (hM.relIndex_ne_zero_add hL)
   have h_integrand (x y : ι → 𝔸f E) : (SetLike.coe M.toAddSubgroup).indicator
     (selfDualAddChar E ∘ F) (x, y) =
-      finVac (s • x) * finVac ((g * s) • y) * (finHeisenberg E ι).β x y * finVac (x + y) := by
+      finVac (s • x) * finVac ((g * s) • y) * finHeisenberg E ι x y * finVac (x + y) := by
     rw [cocycleIntegrand_eq, indicator_apply]
     congr 1
   -- Invariance: for `x`, `y` in `M` with `y - x` in `L × L`, the difference `F y - F x` is
@@ -233,7 +230,7 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
       hM.integrableOn _ (continuous_selfDualAddChar.comp (by fun_prop))
     -- The double integral is the integral of `selfDualAddChar E ∘ F` over `M`, so a volume times a
     -- sum.
-    simp_rw [finProjAction, ← h_integrand]
+    simp_rw [TauCeti.HeisenbergDatum.Multiplier.cocycle_def, finAction_apply, ← h_integrand]
     have h_double :
         ∫ x : ι → 𝔸f E, ∫ y : ι → 𝔸f E, (SetLike.coe M.toAddSubgroup).indicator
           (selfDualAddChar E ∘ F) (x, y)
@@ -267,30 +264,30 @@ end FiniteCocycle
 /-!
 ## Triviality of the finite cocycle
 
-* `New.stdLattice.finProjAction_cocycle_eq_one_of_mem`: the cocycle at `(g, s)` is `1` when `s` lies
+* `New.stdLattice.finAction_cocycle_eq_one_of_mem`: the cocycle at `(g, s)` is `1` when `s` lies
   in the stabiliser `New.stdLevel` of the standard lattice.
 
 The `s` at which the cocycle is `1` for all `g` form a subgroup,
-`New.Heisenberg.IsVacuum.cocycleRadical`. It contains `New.stdLevel`, so only `s` supported on one
+`TauCeti.ReproducingModel.cocycleRadical`. It contains `New.stdLevel`, so only `s` supported on one
 pair of conjugate places remain. The cocycle has absolute value `1`, and
-`New.stdLattice.exists_gauss_sum_finProjAction` turns it into a Gauss sum. At a split place `w`,
+`New.stdLattice.exists_gauss_sum_finAction` turns it into a Gauss sum. At a split place `w`,
 where one may assume `s⁻¹` integral at `w`, all terms of this sum are `1`. At a place fixed by
 conjugation `New.eq_one_of_apply_apply_eq_neg` fixes the sign.
 -/
 
 section FiniteCocycleTrivial
 
-open Complex NumberField Gf ComplexOrder WeilData AddChar Weil Heisenberg IsVacuum
+open Complex NumberField Gf ComplexOrder WeilData AddChar Weil TauCeti ReproducingModel
 open scoped Pointwise
 
 variable {E ι : Type*} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [WeilData E]
 
 /-- The finite cocycle is `1` at `(g, s)` when `s` lies in the stabiliser `New.stdLevel` of the
 standard lattice. -/
-lemma finProjAction_cocycle_eq_one_of_mem ⦃s : Gf E ι⦄ (hs : s ∈ stdLevel E ι) (g : Gf E ι) :
-    finProjAction.1 g s = 1 := by
+lemma finAction_cocycle_eq_one_of_mem ⦃s : Gf E ι⦄ (hs : s ∈ stdLevel E ι) (g : Gf E ι) :
+    finAction.cocycle finVac g s = 1 := by
   -- As `s⁻¹` is integral, `1` kills the module `Q` of the Gauss sum: the sum is its one term `1`.
-  obtain ⟨Q, _, γ, h_sum, h_smul⟩ := exists_gauss_sum_finProjAction g s
+  obtain ⟨Q, _, γ, h_sum, h_smul⟩ := exists_gauss_sum_finAction g s
   have h_zero (q : Q) : q = 0 := by
     simpa using (h_smul 1 q).2 (by simpa using! hs.isIntMatrix_inv)
   have h_gauss : ∑ q : Q, selfDualAddChar E (γ q) = 1 := by
@@ -302,22 +299,27 @@ lemma finProjAction_cocycle_eq_one_of_mem ⦃s : Gf E ι⦄ (hs : s ∈ stdLevel
     h_sum
 
 /-- The finite cocycle has absolute value one, as the operators of the action are isometries. -/
-lemma norm_cocycle_eq_one (g s : Gf E ι) : ‖finProjAction.1 g s‖ = 1 := by
-  -- The product of the operators of `(g * s)⁻¹`, `g` and `s` is the scalar `finProjAction.1 g s`
-  -- (`weilOp_inv_mul_weilOp_mul_weilOp`), and each preserves `modelInner`; apply it to the vacuum,
-  -- a unit vector.
-  let A := (finProjAction (E := E) (ι := ι)).2
-  let v : Model (finHeisenberg E ι) := isVacuum_finVac.vacElem
-  have h_isometry (x : Gf E ι) (f : Model (finHeisenberg E ι)) :
-      modelInner (weilOp A x f) (weilOp A x f) = modelInner f f :=
-    modelInner_weilOp A x f f (finProjAction_cocycle_eq_one_of_mem (one_mem _) x)
+lemma norm_cocycle_eq_one (g s : Gf E ι) : ‖finAction.cocycle finVac g s‖ = 1 := by
+  -- The product of the operators of `(g * s)⁻¹`, `g` and `s` is the scalar
+  -- `finAction.cocycle finVac g s` (`weilOp_inv_mul_weilOp_mul_weilOp`), and each preserves
+  -- `innerSL`; apply it to the vacuum, a unit vector.
+  let A := finAction (E := E) (ι := ι)
+  let v : ReproducingModel (finHeisenberg E ι) (latticeMeasure E ι) finVac := vacuum
+  have h_isometry (x : Gf E ι)
+      (f : ReproducingModel (finHeisenberg E ι) (latticeMeasure E ι) finVac) :
+      innerSL (weilOp finVac A x f) (weilOp finVac A x f) = innerSL f f :=
+    innerSL_weilOp A x f f (finAction_cocycle_eq_one_of_mem (one_mem _) x)
   have h_triple :
-      weilOp A (g * s)⁻¹ (weilOp A g (weilOp A s v)) = finProjAction.1 g s • v :=
+      weilOp finVac A (g * s)⁻¹ (weilOp finVac A g (weilOp finVac A s v)) =
+        finAction.cocycle finVac g s • v :=
     DFunLike.congr_fun (weilOp_inv_mul_weilOp_mul_weilOp A g s) v
-  have h_unit : modelInner v v = 1 := (modelInner_vacElem ..).trans isVacuum_finVac.apply_zero
-  have h_inner : modelInner (finProjAction.1 g s • v) (finProjAction.1 g s • v) = 1 := by
+  have h_unit : innerSL v v = 1 := by
+    rw [innerSL_vacuum, vacuum_apply]
+    exact isVacuum_finVac.apply_zero
+  have h_inner :
+      innerSL (finAction.cocycle finVac g s • v) (finAction.cocycle finVac g s • v) = 1 := by
     rw [← h_triple, h_isometry, h_isometry, h_isometry, h_unit]
-  have h_sq : ((‖finProjAction.1 g s‖ : ℝ) : ℂ) ^ 2 = 1 := by
+  have h_sq : ((‖finAction.cocycle finVac g s‖ : ℝ) : ℂ) ^ 2 = 1 := by
     simpa [h_unit, ← Complex.mul_conj', mul_comm] using h_inner
   exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).1 (mod_cast h_sq)
 
@@ -401,21 +403,23 @@ lemma eq_one_of_gauss_sum_of_inert {w : FinPlace E} (hw : star w = w) {Q : Type*
     h_rot_term
     (fun _ ↦ isOfFinOrder_ψf _) (by simpa using h_smul 0 0) h_real h_mod hc (by simpa using h_eq)
 
-/-- **The finite cocycle is trivial**: `finProjAction.1 g s = 1` for all `g`, `s` in the finite
-unitary group. It is stated as membership of `s` in `New.Heisenberg.IsVacuum.cocycleRadical` for the
-action `New.stdLattice.finProjAction`, the subgroup of the `s` with `finProjAction.1 g s = 1` for
-every `g`, so that the proof may argue on generators. Forming that subgroup needs
-`finProjAction.1 g 1 = 1` for all `g`. This follows from
-`New.stdLattice.finProjAction_cocycle_eq_one_of_mem`, since `1` lies in `New.stdLevel`.
+/-- **The finite cocycle is trivial**: `finAction.cocycle finVac g s = 1` for all `g`, `s` in the
+finite unitary group. It is stated as membership of `s` in `TauCeti.ReproducingModel.cocycleRadical`
+for the multiplier `New.finAction`, the subgroup of the `s` with `finAction.cocycle finVac g s = 1`
+for every `g`, so that the proof may argue on generators. Forming that subgroup needs
+`finAction.cocycle finVac g 1 = 1` for all `g`. This follows from
+`New.stdLattice.finAction_cocycle_eq_one_of_mem`, since `1` lies in `New.stdLevel`.
 
 A special case of the splitting of the Weil representation over unitary groups (Kudla) at the finite
 places, for one explicit normalisation on the finite vacuum. -/
 lemma mem_cocycleRadical ⦃s : Gf E ι⦄ :
-    s ∈ cocycleRadical finProjAction.2 (finProjAction_cocycle_eq_one_of_mem (by simp)) := by
+    s ∈ cocycleRadical finAction (finAction_cocycle_eq_one_of_mem (by simp)) := by
   -- A subgroup that contains `stdLevel E ι` and, for every `w`, the elements supported on `w` and
   -- `star w` is the whole group. For such `s` the cocycle has absolute value `1`, and its phase
-  -- is read off the Gauss sum `exists_gauss_sum_finProjAction`.
-  refine s.mem_of_stdLevel_le_of_supportedOn_le finProjAction_cocycle_eq_one_of_mem fun w s hs ↦ ?_
+  -- is read off the Gauss sum `exists_gauss_sum_finAction`.
+  refine s.mem_of_stdLevel_le_of_supportedOn_le
+    (fun s hs ↦ (ReproducingModel.mem_cocycleRadical _ _ s).2
+      (finAction_cocycle_eq_one_of_mem hs)) fun w s hs ↦ ?_
   -- At a split place we may assume `s⁻¹` integral at `w`: with `u` and `s⁻¹ u` integral at `w` and
   -- `b = ofSplitPlace hw u⁻¹`, both `b` and `b * s` are of this kind.
   wlog! h_int : w.IsSplit → (s⁻¹.atPlace w).val ∈ (LocInt w).matrix generalizing s with h_gen
@@ -426,15 +430,15 @@ lemma mem_cocycleRadical ⦃s : Gf E ι⦄ :
     have hb : ofSplitPlace hw u⁻¹ ∈ supportedOn ι {w} := ofSplitPlace_mem_supportedOn hw u⁻¹
     exact (mul_mem_cancel_left (h_gen _ hb fun _ ↦ by simpa [hw] using hu)).1
       (h_gen _ (mul_mem hb hs) fun _ ↦ by simpa [hw] using hsu)
-  intro g
-  obtain ⟨Q, _, γ, h_sum, h_smul⟩ := exists_gauss_sum_finProjAction g s
+  refine (ReproducingModel.mem_cocycleRadical _ _ s).2 fun g ↦ ?_
+  obtain ⟨Q, _, γ, h_sum, h_smul⟩ := exists_gauss_sum_finAction g s
   -- Write `g = a * b` with `a` on `w`, `star w` and `b` off them; the factor `finMultiplier b`
   -- cancels.
   obtain ⟨a, ha, b, hb, rfl, -⟩ := g.exists_supportedOn_mul_trivialOn {w}
   have h_mul (x : Gf E ι) (hx : x ∈ supportedOn ι {w}) :
       finMultiplier (x * b) = finMultiplier x * finMultiplier b :=
     glMultiplier_mul_of_map_evalAt_eq_one (atPlace_eq_one_or hx hb)
-  replace h_sum : finProjAction.1 (a * b) s * finMultiplier s⁻¹ * finMultiplier (a * s) =
+  replace h_sum : finAction.cocycle finVac (a * b) s * finMultiplier s⁻¹ * finMultiplier (a * s) =
       (∑ q : Q, selfDualAddChar E (γ q)) * finMultiplier a := by
     simpa [← (commute_supportedOn_trivialOn hs hb).right_comm, h_mul, ha, hs, mul_mem, field,
       finMultiplier_ne_zero] using h_sum
@@ -454,10 +458,10 @@ lemma mem_cocycleRadical ⦃s : Gf E ι⦄ :
     have h_one (q : Q) : selfDualAddChar E (γ q) = 1 := by
       simpa [sub_smul, h_kill, h_idem] using (h_smul (1 - t) q).1
     -- The phases of `finMultiplier a` and of `finMultiplier s⁻¹ * finMultiplier (a * s)` cancel.
-    have h_quot : finProjAction.1 (a * b) s =
+    have h_quot : finAction.cocycle finVac (a * b) s =
         Fintype.card Q * (finMultiplier a / finMultiplier (a * s) / finMultiplier s⁻¹) := by
       simpa [h_one, field, finMultiplier_ne_zero, mul_right_comm] using h_sum
-    have h_nonneg : 0 ≤ finProjAction.1 (a * b) s :=
+    have h_nonneg : 0 ≤ finAction.cocycle finVac (a * b) s :=
       (mul_nonneg (Nat.cast_nonneg _) (finMultiplier_div_nonneg_of_isSplit hw ha hs)).trans_eq
         h_quot.symm
     exact (eq_coe_norm_of_nonneg h_nonneg).trans (mod_cast norm_cocycle_eq_one (a * b) s)
@@ -470,11 +474,9 @@ lemma mem_cocycleRadical ⦃s : Gf E ι⦄ :
   exact eq_one_of_gauss_sum_of_inert hw (fun t q ↦ (h_smul t q).1) h_kill hr_sq hr_mod
     (norm_cocycle_eq_one (a * b) s) h_sum
 
-/-- The matrix action of the finite adelic unitary group on the finite Heisenberg datum with
-multiplier `New.finMultiplier`, together with the fact that its cocycle is identically 1. -/
-def _root_.New.finAction : (finHeisenberg E ι).MultiplierAction (latticeMeasure E ι) finVac
-  (Gf E ι) :=
-  { finProjAction.2 with cocycle g _ := mem_cocycleRadical g }
+/-- The cocycle of the finite multiplier `New.finAction` is identically `1`. -/
+lemma _root_.New.finAction_cocycle (g h : Gf E ι) : finAction.cocycle finVac g h = 1 :=
+  (ReproducingModel.mem_cocycleRadical _ _ h).1 (mem_cocycleRadical (s := h)) g
 
 end FiniteCocycleTrivial
 

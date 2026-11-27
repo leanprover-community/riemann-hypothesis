@@ -78,7 +78,7 @@ of the vacuum with its image.
 
 namespace New.Fock
 
-open Matrix MvPolynomial Finset Int Heisenberg.IsVacuum
+open Matrix MvPolynomial Finset Int TauCeti ReproducingModel
 
 variable {ι : Type _} [Fintype ι] [DecidableEq ι] {ε : ι → ℤˣ} (u : USign ε)
 
@@ -116,7 +116,7 @@ lemma det_complexLinearPart :
 not zero. -/
 lemma realMultiplier_ne_zero : realMultiplier u ≠ 0 := fun h_zero ↦ by
   -- The cocycle identity at `(u, u)` writes `1` as a product with the factor `realMultiplier u`.
-  simpa [realAction, h_zero] using (realAction ε).cocycle u u
+  simpa [TauCeti.HeisenbergDatum.Multiplier.cocycle_def, h_zero] using realAction_cocycle ε u u
 
 /-- The matrix `complexLinearPart u` is invertible, since both diagonal blocks of u are. -/
 noncomputable instance : Invertible (complexLinearPart u) :=
@@ -253,11 +253,12 @@ lemma fockMatrixCoeff_one_left (hd : ∀ i j : ι, d i ≠ d j → (u : Matrix �
   have h_inv : fockMatrixCoeff u⁻¹ (X j * R) 1 = 0 := by
     simpa using fockMatrixCoeff_X_mul u⁻¹ hd_inv 1 fun i h_label h_sign ↦ hR i ⟨h_label, h_sign⟩
   have h_left : fockMatrixCoeff u 1 (X j * R) = star (fockMatrixCoeff u⁻¹ (X j * R) 1) := by
-    rw [RCLike.star_def, conj_modelInner,
-      ← modelInner_weilRep (realAction ε) u (realWeil u⁻¹ (polyVector ε 1)), rep_apply_apply]
+    rw [RCLike.star_def, conj_innerSL,
+      ← innerSL_weilRep (realAction ε) u (realWeil u⁻¹ (polyVector ε 1)) _ (realAction_cocycle ε),
+      rep_apply_apply]
     simp
   change fockMatrixCoeff u 1 (X j * R) = c * fockInner (polyVector ε 1) (polyVector ε (X j * R))
-  rw [h_left, h_inv, ← conj_modelInner (polyVector ε (X j * R)), fockInner_X_mul]
+  rw [h_left, h_inv, ← conj_innerSL (polyVector ε (X j * R)), fockInner_X_mul]
   simp
 
 /-- Matrix coefficients of the Weil representation ω₀ between harmonic polynomials. Let u in U(ε) be
@@ -314,7 +315,7 @@ The dual pair U(ε) × U(ε′) acts on the Fock space `New.Fock.fockSpace` of R
 namespace New.Fock
 
 open MvPolynomial Matrix ComplexOrder Kronecker MatrixOrder Fintype Norms.L2Operator
-  Algebra.TensorProduct NonUnitalStarAlgHom Heisenberg.IsVacuum
+  Algebra.TensorProduct NonUnitalStarAlgHom TauCeti ReproducingModel
 
 variable {R C : Type} [Fintype R] [DecidableEq R] [Fintype C] [DecidableEq C] (ε : R → ℤˣ)
   (ε' : C → ℤˣ)
@@ -371,7 +372,7 @@ most the norm of the vacuum vector times the modulus of `realMultiplier g`, the 
 determinant of the negative block of `g`. -/
 lemma norm_realWeil_le (g : USign ε') :
     ‖realWeil g‖ ≤ ‖(vacVector : fockSpace ε')‖ * ‖realMultiplier g‖ :=
-  norm_weilRep_le (realAction ε') g
+  norm_weilRep_le (realAction ε') g (realAction_cocycle ε')
 
 /-- Let `f` be a continuous homomorphism from U(ε) to U(ε′) with `‖f g‖ ≤ a * ‖g‖`. Then
 `detTwist f γ`, the Weil representation pulled back along `f` and twisted by `det ^ γ`, is strongly
@@ -383,7 +384,7 @@ lemma isUnitaryRep_detTwist {a : ℝ}
       rw [continuous_U_iff_matrix]
       fun_prop [kroneckerMap]) :
     IsUnitaryRep (card C) (detTwist f γ) fockInner := by
-  refine ⟨fun x ↦ ?_, fun g x y ↦ ?_, conj_modelInner, fun x hx ↦ ?_,
+  refine ⟨fun x ↦ ?_, fun g x y ↦ ?_, fun x y ↦ conj_innerSL x y, fun x hx ↦ ?_,
     ‖(vacVector : fockSpace ε')‖ * a ^ card C, fun g ↦ ?_⟩
   · -- Strong continuity.
     change Continuous fun g : USign ε ↦ (g : Matrix R R ℂ).det ^ γ • realWeil (f g) x
@@ -393,8 +394,8 @@ lemma isUnitaryRep_detTwist {a : ℝ}
       simp [← mul_zpow, RCLike.mul_conj]
     simp [← mul_assoc, h_det]
   · -- The form is a square norm, and it vanishes only at `0`.
-    have h_ne : fockInner x x ≠ 0 := mt eq_zero_of_modelInner_self hx
-    simp only [modelInner_self, Complex.ofReal_ne_zero, Complex.ofReal_re] at h_ne ⊢
+    have h_ne : fockInner x x ≠ 0 := mt eq_zero_of_innerSL_self hx
+    simp only [innerSL_self, Complex.ofReal_ne_zero, Complex.ofReal_re] at h_ne ⊢
     positivity
   · -- The determinant has modulus one, and the multiplier grows at most like `‖f g‖ ^ card C`.
     calc ‖detTwist f γ g‖ = ‖realWeil (f g)‖ := by simp [norm_smul]
