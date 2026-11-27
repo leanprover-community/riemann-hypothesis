@@ -3,6 +3,8 @@ module
 import Mathlib.Algebra.BigOperators.Ring.Nat
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Mathlib.CategoryTheory.Shift.Basic
+import TauCeti.NumberTheory.ClassFieldTheory.Global.HasseNorm.Basic
+import TauCeti.NumberTheory.NumberField.LocalGlobal.Semilocal.Norm.Units
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.ClassField.Local.ArtinMap
 import Lib.Adelic.Hecke.ClassSums
@@ -19,8 +21,8 @@ algebraic closure of `ℚ`. The first section treats complex conjugations in `Γ
 totally positive elements of `K`. The second section proves the second inequality for a Galois
 extension `L / K`; the proof compares Dirichlet densities of primes of degree one. In the last
 section `L` is the field cut out by a character `χ` of `Γ`; it treats local norms and Artin symbols,
-proves Hasse's norm theorem in prime degree when the real places of `K` stay real in `L` and deduces
-the Albert–Brauer–Hasse–Noether theorem.
+applies Tau Ceti's Hasse norm theorem in prime degree when the real places of `K` stay real in `L`,
+and deduces the Albert–Brauer–Hasse–Noether theorem.
 
 ## Main definitions and results
 
@@ -471,72 +473,6 @@ lemma relIndex_mul_index_sup {E G : Type*} [Group E] [CommGroup G] {f : E →* G
   rw [← h_relIndex_upper, ← h_relIndex_lower, relIndex_inf_mul_relIndex,
     inf_of_le_left le_sup_left, inf_relIndex_right]
 
-omit [Algebra K Ω] [Algebra L Ω] [IsScalarTower K L Ω] in
-/-- Index of the norms among the `S`-units. Let `L / K` be Galois of prime degree `l`, `S` a finite
-set of places of `K` containing the ramified ones such that the principal ideles and the ideles that
-are units off `S` generate all ideles (`h_gen`), and `T` the places above `S`. Then
-`([E_S : N E_T] * l) ^ (l - 1) * l ^ (#T + r_L) = (l ^ l) ^ (#S + r_K)`, with `[E_S : N E_T]` the
-index of the norms of the `T`-units in the `S`-units and `r` the number of infinite places. -/
-lemma relIndex_norm_unit_pow [IsGalois K L] {l : ℕ} (hl : l.Prime) (hL : Module.finrank K L = l)
-    {S : Set (FinPlace K)} (hS : S.Finite) (h_gen : principalIdele.range ⊔ idelesUnitOff S = ⊤)
-    (h_unr : ∀ w : FinPlace L, w.below K ∉ S → w.asIdeal.ramificationIdx (𝓞 K) = 1)
-    {T : Set (FinPlace L)} (hT : T = FinPlace.comap (algebraMap K L) ⁻¹' S) :
-    (((T.unit L).map (Units.map (Algebra.norm K))).relIndex (S.unit K) * l) ^ (l - 1) *
-        l ^ (T.ncard + Fintype.card (InfinitePlace L)) =
-      (l ^ l) ^ (S.ncard + Fintype.card (InfinitePlace K)) := by
-  have : Fact l.Prime := ⟨hl⟩
-  -- Dirichlet: the rank of the `S`-units is `#S` plus the number of infinite places minus one.
-  obtain ⟨finite_S, rank_S⟩ := dirichlet_unit_theorem hS
-  obtain ⟨finite_T, rank_T⟩ := dirichlet_unit_theorem (S := T)
-    (by simpa [hT] using tendsto_place_comap_cofinite _ hS.compl_mem_cofinite)
-  -- Tate's index formula suffices, as the indices `#(A / l A) / #A[l]` in it are `l ^ rank A`.
-  suffices h_tate_index :
-      ((T.unit L).map (Units.map (Algebra.norm K))).relIndex (S.unit K) ^ (l - 1) *
-          cokerKerIndex (l : Module.End ℤ (Additive (T.unit L))) =
-        cokerKerIndex (l : Module.End ℤ (Additive (S.unit K))) ^ l by
-    simp only [cokerKerIndex_eq_pow_finrank, ← Nat.cast_pow, ← Nat.cast_mul, Nat.cast_inj]
-      at h_tate_index
-    rw [← rank_S, ← rank_T, mul_pow, pow_succ, mul_mul_mul_comm, h_tate_index, pow_right_comm,
-      pow_sub_one_mul hl.ne_zero, pow_succ]
-  subst hT
-  -- Off `S` the valuations of `L` extend those of `K`, as there is no ramification.
-  have h_val {w : FinPlace L} (hw : w.below K ∉ S) (x : K) :
-      (w.below K).valuation K x = w.valuation L (algebraMap K L x) := by
-    simpa [h_unr w hw, (w.comap _).ne_bot, ramificationIdx'_eq_ramificationIdx]
-      using (w.below K).valuation_liesOver L (K := K) w x
-  refine tate_index_formula_norm l hL _ (S.unit K) ?_ ?_ ?_ cokerKerIndex_eq_pow_finrank.left
-  · -- An element of `K` is an `S`-unit exactly when it is one in `L`.
-    ext
-    simp +contextual [Set.unit, (FinPlace.comap_surjective (algebraMap K L)).forall, h_val,
-      Subgroup.copy]
-  · -- The Galois group permutes the places that are not above `S`.
-    intro g y hy w hw
-    rw [← g.toAlgHom.comp_algebraMap] at hw
-    let u := FinPlace.comap g.toRingHom w
-    let y' := algebraMap L (LocField u) (y : L)
-    change w.valuation L (g (y : L)) = 1
-    calc
-      _ = Valued.v (algebraMap L (LocField w) (g (y : L))) :=
-        (v_algebraMap_eq_valuation (g (y : L))).symm
-      _ = Valued.v (locMap g.toRingHom (u := u) rfl y') :=
-        congrArg Valued.v (locMap_algebraMap g.toRingHom rfl (y : L)).symm
-      _ = Valued.v y' := v_locMap_eq_of_surjective g.toRingHom rfl g.surjective y'
-      _ = u.valuation L (y : L) := v_algebraMap_eq_valuation (y : L)
-      _ = 1 := hy u hw
-  · -- Let the divisor of `z` off `S` be invariant. The idele `a` of `K` with orders those of the
-    -- norm of `z` divided by the degree has that divisor, and is principal off `S`.
-    intro z hz
-    let n : (𝔸f K)ˣ := principalIdele (z.map (norm K))
-    obtain ⟨a, ha⟩ := exists_idele_eq_uniformizer_zpow
-      (fun v ↦ (Valued.v (n.val v)).log / Nat.card Gal(L/K))
-      ((finite_setOf_valued_val_ne_one n).subset fun v ↦ mt fun hv ↦ by simp [hv])
-    obtain ⟨x, hx⟩ : ∃ x : Kˣ, ∀ v ∉ S, v.valuation K x.val = Valued.v (a.val v) :=
-      exists_valuation_eq_of_mem_sup (h_gen.ge (mem_top a))
-    refine ⟨x, fun w hw ↦ ?_⟩
-    have h_conj (g : Gal(L/K)) : w.valuation L (g z) = w.valuation L z := by
-      simpa [div_eq_iff] using hz g w hw
-    simp [← h_val hw, hx _ hw, h_val hw, ha, n, norm_eq_prod_automorphisms, h_conj]
-
 omit [NumberField K] [NumberField L] in
 /-- If `χ` kills all complex conjugations, the real places stay real in the field `L` it cuts out:
 `L / K` is unramified at the infinite places. -/
@@ -552,67 +488,9 @@ lemma isUnramifiedAtInfinitePlaces_of_mem_ker (hc : ∀ c : Γ, IsComplexConj c 
     exists_apply_smul_eq_of_comp_algebraMap_eq Γ j (star j) (isReal_mk_iff.mp h_real).symm
   exact ⟨_, isReal_comp_algebraMap (c := (⟨g, hc g ⟨j, hg⟩⟩ : ker χ)) hg, rfl⟩
 
-/-- Let `L / K` be Galois of prime degree `l`, cut out by `χ`. A finite place `v` of `K` either
-splits into `l` places of `L`, and the local symbol `χ ∘ artinAt Γ v` takes one value, or has one
-place above it, and the local symbol takes `l` values. In both cases
-`#(range of the local symbol) ^ (l - 1) * l ^ #(places above v) = l ^ l`. -/
-lemma card_range_abelianLift_comp_artinAt [IsGalois K L] {l : ℕ} (hl : l.Prime)
-    (hL : Module.finrank K L = l) (v : FinPlace K) :
-    Nat.card ((abelianLift χ).comp (artinAt Γ v)).range ^ (l - 1) *
-      l ^ {w : FinPlace L | w.below K = v}.ncard = l ^ l := by
-  -- The local symbol has the same range as `χ` on the decomposition group, and the number of places
-  -- above `v` times the order of this range is the prime `l`.
-  have h_mul : {w : FinPlace L | w.below K = v}.ncard *
-      (ker χ).relIndex (decompGroup Γ (placeOver v)) = l :=
-    (v.isPlaceOver_placeOver.ncard_above_mul_relIndex_eq_finrank (ker χ)).trans hL
-  rw [v.isPlaceOver_placeOver.range_abelianLift_comp_artinAt, ← relIndex_ker]
-  rw [← h_mul] at hl
-  rcases Nat.prime_mul_iff.mp hl with ⟨-, h_range_one⟩ | ⟨h_range_prime, h_one_place⟩
-  · -- `v` splits into `l` places, and the local symbol takes one value.
-    simp [← h_mul, h_range_one]
-  · -- One place lies above `v`, and the local symbol takes `l` values.
-    simp [← h_mul, h_one_place, h_range_prime.pos]
-
-/-- The tuple of the local symbols `χ ∘ artinAt Γ v` at the places `v` of a finite set `S` of
-finite places of `K`, as a homomorphism on the finite ideles of `K`; each symbol takes its values in
-its range. -/
-private noncomputable def localSymbols (χ : QZChar Γ) (S : Finset (FinPlace K)) :
-    (𝔸f K)ˣ →* (i : S) → ((abelianLift χ).comp (artinAt Γ i)).range :=
-  MonoidHom.pi fun v : SetLike.coe S ↦
-    ((abelianLift χ).comp (artinAt Γ v.val)).rangeRestrict.comp (ideleAt v.val)
-
-/-- The local count in Hasse's norm theorem. Let `L / K` be Galois of prime degree `l`, cut out by
-`χ`, and let `S` be a finite set of finite places of `K`, with a finite set `T` of places of `L`
-above it (`hT`). Then the index `i` of the kernel of the local symbols at `S` in the ideles that
-are units off `S` satisfies `i ^ (l - 1) * l ^ #T = (l ^ l) ^ #S`. -/
-private lemma relIndex_ker_localSymbols_pow_mul_pow [IsGalois K L]
-    (hl : (Module.finrank K L).Prime) (S : Finset (FinPlace K))
-    (hT : (FinPlace.comap (algebraMap K L) ⁻¹' (S : Set (FinPlace K))).Finite) :
-    (localSymbols χ S).ker.relIndex (idelesUnitOff S) ^ (Module.finrank K L - 1) *
-        Module.finrank K L ^ (FinPlace.comap (algebraMap K L) ⁻¹' (S : Set (FinPlace K))).ncard =
-      (Module.finrank K L ^ Module.finrank K L) ^ #S := by
-  classical
-  -- The local symbols map `idelesUnitOff S` onto the product of their ranges: use ideles with one
-  -- component.
-  have h_onto : (idelesUnitOff S).map (localSymbols χ S) = ⊤ := by
-    refine (eq_top_iff' _).mpr fun a ↦ pi_mem_of_mulSingle_mem a fun v ↦ ?_
-    obtain ⟨y, hy⟩ : ∃ y, (abelianLift χ).comp (artinAt Γ v) y = a v := (a v).prop
-    refine ⟨locIdele v.val y, ?_, eq_update_iff.mpr ?_⟩
-    · simp +contextual [← and_forall_ne v.val]
-    · unfold localSymbols
-      aesop
-  -- So the index of the kernel is the order of the product of the ranges.
-  have h_index : (localSymbols χ S).ker.relIndex (idelesUnitOff S) =
-      ∏ v ∈ S, Nat.card ((abelianLift χ).comp (artinAt Γ v)).range := by
-    rw [relIndex_ker, h_onto, card_top, Nat.card_pi, ← prod_coe_sort S]
-  -- `T` is the union of the fibres over `S`.
-  have h_card : (FinPlace.comap (algebraMap K L) ⁻¹' (S : Set (FinPlace K))).ncard =
-      ∑ v ∈ S, {w : FinPlace L | w.below K = v}.ncard :=
-    card_preimage_eq_sum_card_image_eq fun v hv ↦ hT.subset fun w (hw : _ = v) ↦ by simpa [hw]
-  -- Multiply the local counts `card_range_abelianLift_comp_artinAt` over `S`.
-  rw [h_index, h_card, ← prod_pow, ← prod_pow_eq_pow_sum, ← prod_mul_distrib]
-  exact prod_eq_pow_card fun v _ ↦ card_range_abelianLift_comp_artinAt hl rfl v
-
+open scoped AdicCompletionExtension in
+attribute [local instance] AbsoluteValue.Completion.algebraOfLiesOver in
+open TauCeti TauCeti.GlobalNumberFields in
 /-- Hasse's norm theorem in prime degree. Let `L / K` be Galois of prime degree, cut out by `χ`, and
 let `χ` kill every complex conjugation. If `x` in `Kˣ` has trivial local symbol
 `χ (artinAt Γ v x)` at every finite place `v` of `K`, then `x` is the norm of some `z` in
@@ -622,90 +500,50 @@ lemma exists_map_norm_eq_of_abelianLift_artinAt_eq_one [IsGalois K L]
     (hx : ∀ v : FinPlace K, abelianLift χ (artinAt Γ v (ideleAt v (principalIdele x))) = 1) :
     ∃ z : Lˣ, z.map (Algebra.norm K) = x := by
   classical
-  -- For `S` large let `τ` be the tuple of the local symbols at `S`. Among the `S`-units, the norms
-  -- lie in the kernel of `τ`, and a count shows that the two groups have the same index.
-  -- `S` holds the ramified places, the divisor of `x`, the divisors of the norms of ideles `rep c`
-  -- that represent the ideal classes of `L`, and generators of the class group of `K`.
-  obtain ⟨cl, h_cl : cl.ker = principalIdele.range ⊔ idelesUnitOff ∅⟩ :=
-    exists_idele_classGroup_hom (K := L)
-  let rep : ClassGroup (𝓞 L) → (𝔸f L)ˣ := invFun cl
-  have h_rep : (⋃ c : ClassGroup (𝓞 L), {v | Valued.v (adeleNorm K L (rep c).val v) ≠ 1}).Finite :=
-    Set.finite_iUnion fun c ↦ finite_setOf_valued_val_ne_one (.map (adeleNorm K L) (rep c))
-  obtain ⟨S, hS : S.Finite, h_sub, h_gen : principalIdele.range ⊔ idelesUnitOff S = ⊤⟩ :=
-    exists_superset_sup_idelesUnitOff_eq_top
-      ((h_rep.union (finite_ramified (isOpen_ker χ))).union
-        (finite_setOf_valued_val_ne_one (principalIdele x)))
-  obtain ⟨S, rfl⟩ : ∃ s' : Finset (FinPlace K), s' = S := hS.exists_finset_coe
-  have h_off (v : FinPlace K) (hv : v ∉ SetLike.coe S) :
-      ((∀ c : ClassGroup (𝓞 L), Valued.v (adeleNorm K L (rep c).val v) = 1) ∧
-        ∀ A : ClosurePlace, IsPlaceOver A v → inertiaGroup Γ A ≤ ker χ) ∧
-      v.valuation K x.val = 1 := by
-    simpa using Set.notMem_subset h_sub hv
-  let τ : (𝔸f K)ˣ →* (i : S) → ((abelianLift χ).comp (artinAt Γ i)).range := localSymbols χ S
-  have h_norm (y : (𝔸f L)ˣ) : τ (Units.map (adeleNorm K L) y) = 1 :=
-    funext fun _ ↦ Subtype.ext (abelianLift_artinAt_eq_one_of_mem_closure adeleNorm_mem_closure)
-  -- Second inequality: the group `W = Kˣ (ker τ ∩ idelesUnitOff S)` is open and contains all norms,
-  -- as every idele of `L` is `rep c` times a principal idele times a unit idele; so the index of
-  -- `W` is at most the degree `l`.
-  let W : Subgroup (𝔸f K)ˣ := principalIdele.range ⊔ τ.ker ⊓ idelesUnitOff S
-  have h_open : IsOpen (SetLike.coe W) := by
-    refine W.isOpen_of_mem_nhds ((eventually_artinAt_eq_one χ).mono ?_)
-    rintro a ⟨h_unit, h_symbol⟩
-    refine mem_sup_right ⟨funext fun v ↦ Subtype.ext (h_symbol v), ?_⟩
-    exact mem_idelesUnitOff.2 fun v _ ↦ mem_idelesUnitOff.1 h_unit v (Set.notMem_empty v)
-  have h_norms (y : (𝔸f L)ˣ) : Units.map (adeleNorm K L) y ∈ W := by
-    obtain ⟨_, ⟨z, rfl⟩, u, hu, h_eq⟩ :
-        ∃ a ∈ principalIdele.range, ∃ u ∈ idelesUnitOff ∅, a * u = (rep (cl y))⁻¹ * y :=
-      mem_sup.mp (h_cl.le (cl.eq_iff.mp (invFun_eq ⟨y, rfl⟩).symm))
-    rw [← mul_eq_of_eq_inv_mul h_eq, mul_rotate', map_mul]
-    -- The norm of `rep (cl y)` times a unit idele is killed by `τ` and is a unit off `S`.
-    have hu_val (w : FinPlace L) : Valued.v (u.val w) = 1 :=
-      mem_idelesUnitOff.1 hu w (Set.notMem_empty w)
-    exact Subgroup.mul_mem_sup (by simp)
-      (by simp +contextual [h_norm, h_off, v_adeleNorm_eq_one, hu_val])
-  have h_index : W.index ≤ Module.finrank K L :=
-    index_le_finrank_of_adeleNorm_mem L h_open (fun y _ ↦ mem_sup_left ⟨y, rfl⟩) h_norms
-  set l : ℕ := Module.finrank K L
-  let T : Set (FinPlace L) := FinPlace.comap (algebraMap K L) ⁻¹' S
-  have hT : T.Finite := by simpa using tendsto_place_comap_cofinite _ hS.compl_mem_cofinite
-  let E : Subgroup Kˣ := (SetLike.coe S).unit K
-  let N : Subgroup Kˣ := (T.unit L).map (Units.map (norm K))
-  -- The local count: the index of `τ.ker` among the units off `S`.
-  have h_local : τ.ker.relIndex (idelesUnitOff S) ^ (l - 1) * l ^ T.ncard = (l ^ l) ^ #S :=
-    relIndex_ker_localSymbols_pow_mul_pow (χ := χ) hl S hT
-  -- Compare with Tate's formula; the infinite places contribute the same power of `l`.
-  have h_count : N.relIndex E * l = τ.ker.relIndex (idelesUnitOff S) := by
-    have h_unr (w : FinPlace L) (hw : w.below K ∉ SetLike.coe S) :
-        w.asIdeal.ramificationIdx (𝓞 K) = 1 := by
-      have h_above : IsPlaceOver (placeOver w) w := w.isPlaceOver_placeOver
-      obtain ⟨⟨-, h_inertia⟩, -⟩ := h_off (w.below K) hw
-      obtain ⟨-, h_unramified : inertiaGroup Γ (placeOver w) ≤ ker χ → _ = 1, -⟩ :=
-        h_above.isPlaceOver_below.ramification_in_tower (ker χ) h_above
-      exact h_unramified (h_inertia _ h_above.isPlaceOver_below)
-    have h_tate : (N.relIndex E * l) ^ (l - 1) * l ^ (T.ncard + Fintype.card (InfinitePlace L)) =
-        (l ^ l) ^ ((S : Set (FinPlace K)).ncard + Fintype.card (InfinitePlace K)) :=
-      relIndex_norm_unit_pow hl rfl hS h_gen h_unr rfl
-    rw [Set.ncard_coe_finset, pow_add (l ^ l), ← h_local, mul_assoc, ← pow_mul, ← pow_add,
-      (isUnramifiedAtInfinitePlaces_of_mem_ker hc).card_infinitePlace K L, mul_comm l] at h_tate
-    exact (pow_left_inj hl.pred_pos.ne').mp (mul_right_cancel₀ (pow_ne_zero _ hl.ne_zero) h_tate)
-  -- By `relIndex_mul_index_sup` the right side of `h_count` is `W.index ≤ l` times the index of the
-  -- kernel.
-  have h_le : N.relIndex E ≤ (τ.ker.comap principalIdele).relIndex E := by
-    grw [← Nat.mul_le_mul_right_iff hl.pos, h_count,
-      ← relIndex_mul_index_sup h_gen principalIdele_mem_idelesUnitOff, h_index]
-  -- So `N` is all of the kernel of `τ` on the `S`-units, which contains `x`.
-  have h_ker : N ≤ τ.ker.comap principalIdele := by
-    rintro _ ⟨z, -, rfl⟩
-    rw [Subgroup.mem_comap, ← map_adeleNorm_principalIdele]
-    exact h_norm (principalIdele z)
-  -- Index zero would make the left side of `h_local` vanish.
-  have h_finite : (N.subgroupOf E).FiniteIndex := ⟨fun h_zero : N.relIndex E = 0 ↦ by
-    simp [← h_count, h_zero, Nat.sub_ne_zero_of_lt hl.one_lt, eq_comm] at h_local⟩
-  have h_eq : N.subgroupOf E = (τ.ker.comap principalIdele).subgroupOf E :=
-    (comap_mono (f := E.subtype) h_ker).eq_of_not_lt fun h ↦ h_le.not_gt (index_strictAnti h)
-  obtain ⟨z, -, hz⟩ : x ∈ N :=
-    h_eq.ge (x := ⟨x, fun v hv ↦ (h_off v hv).right⟩) (funext fun v ↦ Subtype.ext (hx v))
-  exact ⟨z, hz⟩
+  have : Fact (Module.finrank K L).Prime := ⟨hl⟩
+  have : IsCyclic Gal(L/K) := isCyclic_of_prime_card (IsGalois.card_aut_eq_finrank K L)
+  have h_norm : x ∈ normGroup K L := by
+    apply (TauCeti.ClassFieldTheory.isGlobalNorm_iff_isLocalNormEverywhere K L x).2
+    rw [isLocalNormEverywhere_def]
+    constructor
+    · intro v
+      rw [isFiniteLocalNorm_iff]
+      obtain ⟨w, rfl⟩ := FinPlace.comap_surjective (algebraMap K L) v
+      obtain ⟨y, hy⟩ := exists_localNorm_of_abelianLift_artinAt (χ := χ) (hx (w.below K))
+      let u := w.below K
+      -- The two completion algebra structures agree because both extend the same field map.
+      let P (a : Algebra (LocField u) (LocField w)) : Prop :=
+        letI := a
+        localNorm K w y = y.map (Algebra.norm (LocField u))
+      have h_local : P ((locMap (algebraMap K L) (rfl : w.comap (algebraMap K L) = u)).toAlgebra) :=
+        (IsPlaceOver.finite_and_localNorm_eq_norm K w).2 y
+      have h_alg : (locMap (algebraMap K L) (rfl : w.comap (algebraMap K L) = u)).toAlgebra =
+          IsDedekindDomain.HeightOneSpectrum.adicCompletionExtensionAlgebra K L u w := by
+        refine Algebra.algebra_ext _ _ fun z ↦ ?_
+        rw [RingHom.algebraMap_toAlgebra,
+          IsDedekindDomain.HeightOneSpectrum.algebraMap_adicCompletionExtensionAlgebra]
+        exact RingHom.congr_fun
+          (IsDedekindDomain.HeightOneSpectrum.eq_adicCompletionExtension_of_continuous K L u w
+            (continuous_locMap _ _) (fun a ↦ locMap_algebraMap _ _ a)) z
+      rw [h_alg] at h_local
+      change localNorm K w y = y.map (Algebra.norm (LocField u)) at h_local
+      -- Use the local norm witness at `w` and the identity at all other places over `u`.
+      let t : {w : FinPlace L // w.asIdeal.LiesOver u.asIdeal} := ⟨w, inferInstance⟩
+      refine ⟨Pi.mulSingle t y, ?_⟩
+      rw [finprod_eq_single _ t fun w' hw' ↦ by simp [Pi.mulSingle_eq_of_ne hw'],
+        Pi.mulSingle_eq_same]
+      exact Units.ext ((Algebra.coe_normUnits _ _).trans
+        (congrArg Units.val (h_local.symm.trans hy)))
+    · intro v
+      -- No real place becomes complex, so the norm at a place above `v` is surjective.
+      rw [isInfiniteLocalNorm_def]
+      obtain ⟨w, hw⟩ := InfinitePlace.comap_surjective (k := K) (K := L) v
+      have : w.LiesOver v := hw ▸ inferInstance
+      have h_unram := isUnramifiedAtInfinitePlaces_of_mem_ker (L := L) hc
+      exact TauCeti.mem_range_normUnits_completion_of_finrank_eq_one K L v
+        ⟨⟨w, inferInstance⟩, (h_unram.isUnramified w).finrank_eq_one v⟩ _
+  obtain ⟨z, hz⟩ := mem_normGroup_iff.1 h_norm
+  exact ⟨z, Units.ext hz⟩
 
 /-- Albert–Brauer–Hasse–Noether. Let α be a class in H²(Γ, Ωˣ), where Γ acts as the Galois group of
 `New.Ω` (the algebraic closure of ℚ) over the number field K. If α restricts to zero on the
