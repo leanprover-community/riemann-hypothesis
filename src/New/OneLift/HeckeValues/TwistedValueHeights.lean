@@ -426,7 +426,7 @@ theorem inner_pointForm_kernelForm (hq : q.HasEmptyRow (Fin (2 * p.z - 20)))
   -- Read the data of the four blocks modulo the same `𝔪`.
   let 𝔪 : Modulus D.E := X.descentPair.levelModulus 2
   have h_first : 𝔪.ideal ≤ (X.levelModulus 1 false).ideal := by
-    simp [𝔪, New.LevelPlaces.levelModulus, sq, Ideal.mul_le_left.trans]
+    simp [𝔪, New.LevelPlaces.levelModulus, placesPowModulus, sq, Ideal.mul_le_left.trans]
   have h_untwisted : 𝔪.ideal ≤ ((D.levelPlaces u).levelModulus 2).ideal := by
     simp +instances [𝔪, New.LevelPlaces.levelModulus, levelPlaces, X, ↓prod_of_isEmpty,
       Ideal.mul_le_left.trans]
@@ -900,10 +900,8 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
   let χ₀ : AutChar D.E :=
     (lValueData hp.hasLiftRank ϑ).descentPair.charV / (lValueData hq₂.2 ϑ).descentPair.charV
   obtain ⟨α, x₀, hα, h_coeff⟩ :=
-    h_depth (D.twistModulus ϑ 1 false) (by
-      have h := D.ideal_untwistedModulus_eq_span (c := 1)
-      rw [LevelPlaces.ideal_levelModulus_one_false, pow_one] at h
-      rwa [LevelPlaces.ideal_levelModulus_one_false]) l
+    h_depth (D.twistModulus ϑ 1 false)
+      (pow_one D.piM ▸ D.ideal_untwistedModulus_eq_span (c := 1)) l
   let s (g : Gf D.E Unit) : ℂ :=
     modKernel (stdSpace ..) (stdSpace ..) 1 χ₀ _ (Pi.single x₀ 1) (.monomial α 1) (1, g) 1
   -- Averaging: a character `ψ` whose twisted mean of `s` is as large as `s 1`, and a

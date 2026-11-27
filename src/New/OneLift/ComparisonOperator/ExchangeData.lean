@@ -160,15 +160,14 @@ open Ideal Matrix Rows WeilData Fintype Sum LevelPlaces NumberField
 
 variable {P : Parameters} (D : Data P)
 
-/-- The modulus ϖ^c, the c-th power of the product of the chosen places above p₀, p₁. It is the
-modulus `D.twistModulus` of the trivial character; the argument `false` leaves out the factor Q, the
-product of the places of the character. -/
-abbrev untwistedModulus : ℕ → Modulus D.E := fun c : ℕ ↦ D.twistModulus TameChar.one c false
+/-- The modulus ϖ^c, the c-th power of the product of the chosen places above p₀, p₁. -/
+abbrev untwistedModulus : ℕ → Modulus D.E := fun c : ℕ ↦
+  placesPowModulus D.chosenPlace (fun i j ↦ D.isConjApart_chosenPlace.star_ne i j) c
 
 lemma ideal_untwistedModulus_eq_span {c : ℕ} :
     (D.untwistedModulus c).ideal = span {D.piM ^ c} := by
   rw [← span_singleton_pow, span_piM]
-  exact mul_one ((∏ i : (k : Fin 2) × D.ChosenPlace k, (D.chosenPlace i).asIdeal) ^ c)
+  rfl
 
 instance : NeZero D.m := .of_gt D.ten_thousand_le_m
 

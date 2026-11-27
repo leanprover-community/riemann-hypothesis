@@ -79,7 +79,7 @@ abbrev gridModulus : Modulus D.E := D.twistModulus ϑ D.natB
 
 lemma gridModulus_one_ideal : (D.gridModulus 1).ideal = span {D.gridLevelGen} := by
   -- the trivial twist has no places, so its modulus is the untwisted one
-  rw [show (D.gridModulus 1).ideal = (D.untwistedModulus D.natB).ideal by rfl',
+  rw [show (D.gridModulus 1).ideal = (D.untwistedModulus D.natB).ideal from mul_one _,
     D.ideal_untwistedModulus_eq_span]
 
 /-- The twist whose places divide `New.Data.triangleModulus`: `ϑ` in the grid `false`, the trivial

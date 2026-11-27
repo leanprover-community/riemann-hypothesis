@@ -681,10 +681,10 @@ lemma card_stdClasses_le_exp_of_le {n : Type} [Fintype n] [DecidableEq n] {K : S
 /-- At the trivial twist the level `J_Λ` (`gluingLevel`) of a choice, whose matrix `Λ` is its
 first component, contains `J (ϖ²)`. -/
 lemma principalLevel_le_gluingLevel (i : ChoiceIndex j) :
-    principalLevel (FirstFactorIndex j) (D.piM ^ 2) ≤ gluingLevel j 1 i.1 := by
-  -- At the trivial twist the modulus of the level unfolds to `ϖ²`.
-  with_unfolding_all
-    exact Modulus.principalLevel_le_levelOfSubgroup (D.ideal_untwistedModulus_eq_span.ge (by simp))
+    principalLevel (FirstFactorIndex j) (D.piM ^ 2) ≤ gluingLevel j 1 i.1 :=
+  -- At the trivial twist the modulus of the level has empty twist part, so its ideal is `(ϖ²)`.
+  Modulus.principalLevel_le_levelOfSubgroup
+    (((mul_one _).trans D.ideal_untwistedModulus_eq_span).ge (Ideal.subset_span rfl))
 
 /-- The bound `(M ^ l₁)² · exp b · (n · exp b · G)² ≤ exp (f m b log² b)`. Here `M = D.M` is the
 principal level, `l₁ = DividedSplitting.denominatorExponent` the exponent of `M` in the denominator

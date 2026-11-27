@@ -125,7 +125,10 @@ lemma nonempty_modulus_places {D : Data P} {ϑ : D.TameChar} {c : ℕ} {b : Bool
   let x : Σ i : Fin 2, D.ChosenPlace i := ⟨0, chosenEquiv 0 1⟩
   refine ⟨D.chosenPlace x, ?_⟩
   calc
-    (D.twistModulus ϑ c b).ideal ≤ (∏ i, (D.chosenPlace i).asIdeal) ^ c := mul_le_left
+    (D.twistModulus ϑ c b).ideal ≤ (∏ i, (D.chosenPlace i).asIdeal) ^ c := by
+      cases b
+      · exact le_rfl
+      · exact mul_le_left
     _ ≤ ∏ i, (D.chosenPlace i).asIdeal := pow_le_self NeZero.out
     _ ≤ (D.chosenPlace x).asIdeal := Rows.prod_places_le_iff.2 ⟨x, rfl⟩
 

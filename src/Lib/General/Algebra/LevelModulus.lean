@@ -65,29 +65,46 @@ lemma Rows.prod_places_le_iff {w : FinPlace E} :
     ∏ i : ι, (u i).asIdeal ≤ w.asIdeal ↔ ∃ i : ι, u i = w := by
   simp [prod_le, IsMaximal.eq_iff_le, ne_top, (u _).ext_iff]
 
-variable [IsCMField E] (S : LevelPlaces E)
+variable [IsCMField E]
+
+/-- The modulus `M ^ c`, where `M` is the product of finitely many places `u i`, none conjugate to
+itself or to another. -/
+noncomputable def placesPowModulus {ι : Type} [Fintype ι] (u : ι → FinPlace E)
+    (h_conj : ∀ i j, star (u i) ≠ u j) (c : ℕ) : Modulus E where
+  ideal := (∏ i : ι, (u i).asIdeal) ^ c
+  ne_bot := by simp [← absNorm_eq_zero_iff, prod_eq_zero_iff]
+  not_le_star := fun w hw hw' ↦ by
+    obtain ⟨i, hi⟩ := prod_places_le_iff.1 (w.isPrime.le_of_pow_le hw)
+    obtain ⟨j, hj⟩ := prod_places_le_iff.1 ((star w).isPrime.le_of_pow_le hw')
+    exact h_conj i j (by rw [hi, hj])
+
+variable (S : LevelPlaces E)
 
 /-- The modulus M^c·Q if b is true and M^c otherwise, with M and Q the products of the places
 `New.LevelPlaces.chosenPlace` and `New.LevelPlaces.twistPlace` of S. -/
-noncomputable def LevelPlaces.levelModulus (c : ℕ) (b := true) : Modulus E where
-  ideal :=
-    (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
-      if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1
-  ne_bot := by simp [← absNorm_eq_zero_iff, prod_eq_zero_iff, ite_eq_iff]
-  not_le_star := by
-    -- A place that divides the modulus is a chosen place or a twist place, and none of these is
-    -- conjugate to itself or to another.
-    obtain ⟨-, h_conj⟩ := S.apart
-    have h_place : ∀ w : FinPlace E,
+noncomputable def LevelPlaces.levelModulus (c : ℕ) (b := true) : Modulus E :=
+  -- Use `Bool.casesOn` rather than `if b` so `b = false` ι-reduces directly to `placesPowModulus`
+  -- without unifying the dead `true` branch.
+  b.casesOn (placesPowModulus S.chosenPlace (fun i j ↦ S.apart.star_ne (.inl i) (.inl j)) c)
+    { ideal :=
         (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
-          (if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1) ≤ w.asIdeal →
-          ∃ i : S.ChosenIndex ⊕ S.TwistIndex, (S.chosenPlace ⊕ᵥ S.twistPlace) i = w := fun w hw ↦ by
-      rw [Sum.exists]
-      exact (w.isPrime.mul_le.1 hw).imp (fun h ↦ prod_places_le_iff.1 (w.isPrime.le_of_pow_le h))
-        fun h ↦ prod_places_le_iff.1 (by cases b <;> simp_all [w.isPrime.ne_top])
-    intro w hw hw'
-    obtain ⟨⟨i, hi⟩, ⟨j, hj⟩⟩ := And.intro (h_place w hw) (h_place (star w) hw')
-    exact h_conj i j (by rw [hi, hj])
+          ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal
+      ne_bot := by simp [← absNorm_eq_zero_iff, prod_eq_zero_iff]
+      not_le_star := by
+        -- A place that divides the modulus is a chosen place or a twist place, and none of these is
+        -- conjugate to itself or to another.
+        obtain ⟨-, h_conj⟩ := S.apart
+        have h_place : ∀ w : FinPlace E,
+            (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
+              ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal ≤ w.asIdeal →
+              ∃ i : S.ChosenIndex ⊕ S.TwistIndex,
+                (S.chosenPlace ⊕ᵥ S.twistPlace) i = w := fun w hw ↦ by
+          rw [Sum.exists]
+          exact (w.isPrime.mul_le.1 hw).imp
+            (fun h ↦ prod_places_le_iff.1 (w.isPrime.le_of_pow_le h)) prod_places_le_iff.1
+        intro w hw hw'
+        obtain ⟨⟨i, hi⟩, ⟨j, hj⟩⟩ := And.intro (h_place w hw) (h_place (star w) hw')
+        exact h_conj i j (by rw [hi, hj]) }
 
 /-- The modulus M·Q is the product of the chosen places and the twist places of S. -/
 lemma LevelPlaces.ideal_levelModulus_one :
@@ -97,8 +114,8 @@ lemma LevelPlaces.ideal_levelModulus_one :
 
 /-- The modulus M is the product of the chosen places of S. -/
 lemma LevelPlaces.ideal_levelModulus_one_false :
-    (S.levelModulus 1 false).ideal = ∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal := by
-  simp [LevelPlaces.levelModulus]
+    (S.levelModulus 1 false).ideal = ∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal :=
+  pow_one _
 
 variable {S}
 

@@ -1152,7 +1152,7 @@ lemma mul_choiceFn_mem_rapidOfLevel (F : D.goodForms (D.spaceW j)) (i : ChoiceIn
   simp only [h_series, kernelClassSum, classSum, finsum_eq_sum_of_fintype,
     Rat.smul_def, Finset.mul_sum, ← mul_assoc]
   refine mul_sum_mem_rapidOfLevel fun _ ↦ mul_modKernel_mem_rapidOfLevel
-    D.ideal_untwistedModulus_eq_span (fun v hv ↦ ?_)
+    ((mul_one _).trans D.ideal_untwistedModulus_eq_span) (fun v hv ↦ ?_)
     (goodForms_mem_rapidOfLevel F (dvd_pow_self D.piM two_ne_zero)) _ _ _
   -- The tame part of the character of the kernels is trivial off the modulus.
   exact (D.descentPair (1 : D.Twist) j).tame_eq_one v (places_levelModulus.ge.mt hv)

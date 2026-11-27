@@ -480,7 +480,8 @@ lemma exists_sum_choiceFn_eq_integral {o : D.CarrierIndex → ℤ} (ho : IsPosFi
       (Function.Embedding.inl.trans e) D.reducedHalfGap fun _ ↦ D.m
     have h_unit (r : D.RowChoice) : IsUnit (D.shortRows r) := by simp [shortRows]
     exact reproducing_formula_modKernel ho D.ideal_untwistedModulus_eq_span
-      nonempty_modulus_places S (hasWeight_upsilonU1_pow D.m) .one (by simp [IsKDominant]) h_int
+      (nonempty_modulus_places (ϑ := TameChar.one) (b := false)) S (hasWeight_upsilonU1_pow D.m)
+      .one (by simp [IsKDominant]) h_int
       h_card e minor_ne minor_hol (fun p rows ↦ Q (p, rows))
       (fun p ↦ realPairWeil_mem_span_pairedDetProd _ (h_unit (p, 0)) _ _) g₁
   -- The product of `Ψ` with the datum `δ` is a combination of additive characters.
@@ -814,7 +815,8 @@ lemma integral_mul_sum_choiceFn_eq_zero (F : D.goodForms (D.spaceW j))
     (paramW_lt_of_orderW_lt 1) (fit.paramsCorrespond 1).hasGap_left.injective (fit.numbering_eq 1) _
     fit.colsMinus_eq_zero
   obtain ⟨a, repro⟩ := reproducing_formula_modKernel isPosFirstOrder_orderW
-    (D.ideal_untwistedModulus_eq_span (c := 2)) nonempty_modulus_places (D.spaceW j)
+    (D.ideal_untwistedModulus_eq_span (c := 2))
+    (nonempty_modulus_places (ϑ := TameChar.one) (b := false)) (D.spaceW j)
     (hasWeight_upsilonU1_pow _) (hasWeight_upsilonU1_zpow (D.m / 2 - j))
     (isKDominant_kernelWeight j) h_int rank_lt .inl top_ne top_hol (fun _ ↦ Q)
     (fun _ _ ↦ by
