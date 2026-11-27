@@ -291,7 +291,7 @@ lemma mem_ratIntegralOff_of_transform_ne_zero {G : 𝔸 E → ℂ}
   suffices (New.stdAddChar E (toAdele (y / S.deltaE) * -a') : ℂ) = 1 by
     rw [← this, selfDualChar_apply]
     simp [New.stdAddChar, a', adeleOfLocal_evalPlaces, div_eq_mul_inv]
-    exact congrArg _ (by ring)
+    exact congrArg _ (by ring_nf)
   refine (mul_eq_right₀ hy).1 (Eq.symm ?_)
   rw [← integral_const_mul, ← integral_add_left_eq_self _ a']
   congr with z
