@@ -686,7 +686,9 @@ private theorem UpperTheory.V.X.prodX_nat {R : Type} [CommRing R] {f n : ℕ} (�
     · rw [MulChar.map_nonunit φ (fun hu => hc (isCoprime_comm.1 ((ZMod.coe_int_isUnit_iff_isCoprime _ _).1 hu))), zero_mul]
     · rw [MulChar.map_nonunit ξ (fun hu => hc (isCoprime_comm.1 ((ZMod.coe_int_isUnit_iff_isCoprime _ _).1 hu))), mul_zero]
 
-private theorem UpperTheory.V.X.genB_prodX {K : Type} [Field K] [CharZero K] {f n : ℕ} (hf : 0 < f) (φ : DirichletCharacter K f)
+/-- The first Bernoulli number of the odd product character, multiplied by its conductor,
+is its integer-weighted character sum. -/
+theorem UpperTheory.V.X.genB_prodX {K : Type} [Field K] [CharZero K] {f n : ℕ} (hf : 0 < f) (φ : DirichletCharacter K f)
     (ξ : DirichletCharacter K (2 ^ n)) (hodd : φ (-1) * ξ (-1) = -1) :
     ((f * 2 ^ n : ℕ) : K) * Bern.genB 1 (prodX φ ξ : ZMod (f * 2 ^ n) → K) =
       ∑ a ∈ Finset.range (f * 2 ^ n), φ (a : ZMod f) * ξ (a : ZMod (2 ^ n)) * a := by
