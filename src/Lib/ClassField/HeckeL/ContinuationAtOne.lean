@@ -9,6 +9,7 @@ import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.UniformSpace.Uniformizable
 import TauCeti.Topology.Algebra.Group.Units
+public import TauCeti.NumberTheory.ArithmeticDirichletSeries.DirichletDensity.PrimeDensity
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.ClassField.HeckeL.IdelicThetaSum
 import Lib.Adelic.Adeles.StrongApproximation
@@ -850,14 +851,15 @@ lemma continuousOn_eulerProd (h : IsHeckeOfType ψ n) (hS : S.Finite) (hψ_ne : 
 /-- Let `ψ ≠ 1` be the finite part of a Hecke character of type `n` (`IsHeckeOfType ψ n`), and let
 `S` be a finite set of finite places. For some natural number `m`, the coefficients `heckeCoeff ψ S`
 (the values of `ψ` at uniformisers) have mean `-m` over the primes of degree one outside `S`
-(`HasPrimeDensity`: for `s → 1⁺`, `∑ heckeCoeff ψ S v * q ^ (-s) = -m * log (1 / (s - 1)) + O(1)`).
+(`TauCeti.HasPrimeDensity`: for `s → 1⁺`,
+`∑ heckeCoeff ψ S v * q ^ (-s) = -m * log (1 / (s - 1)) + O(1)`).
 If `m = 0`, the partial `L`-function `eulerProd (heckeCoeff ψ S)` has no zero on real `s ≥ 1`, where
 its value at `s = 1` is the limit of the Euler product as `s → 1⁺`. In the proof, `m` is the order
 of vanishing at `1` of a function analytic at `1` that agrees with the `L`-function for `s > 1` near
 `1`. -/
 lemma exists_hasPrimeDensity_neg_natCast (h : IsHeckeOfType ψ n) (hS : S.Finite) (hψ_ne : ψ ≠ 1) :
     ∃ m : ℕ, (m = 0 → ∀ s : ℝ, 1 ≤ s → eulerProd (heckeCoeff ψ S) s ≠ 0) ∧
-      HasPrimeDensity (heckeCoeff ψ S) (-m) := by
+      TauCeti.HasPrimeDensity (heckeCoeff ψ S) (-m) := by
   -- By Hecke's theorem the `L`-function agrees, to the right of `1`, with a function `F` analytic
   -- at `1`. Write `F s = (s - 1) ^ m * f s` with `f 1 ≠ 0`.
   obtain ⟨F, hF, hF_eq⟩ := h.exists_analyticAt_one_eulerProd hS hψ_ne
@@ -874,7 +876,7 @@ lemma exists_hasPrimeDensity_neg_natCast (h : IsHeckeOfType ψ n) (hS : S.Finite
       ∀ᶠ s : ℝ in nhds 1, F s = (s - 1) ^ m • f s :=
     hF.exists_eventuallyEq_pow_smul_ne_zero_iff.mpr hF_ne
   -- The mean is `-m` once `(s - 1) ^ (-m)` times the `L`-function has a nonzero limit at `1⁺`.
-  refine ⟨m, ?_, hasPrimeDensity_of_tendsto h.norm_heckeCoeff_le hf_ne ?_⟩
+  refine ⟨m, ?_, ?_⟩
   · rintro rfl s hs
     obtain rfl | hs := hs.eq_or_lt
     · -- The `L`-function and `F` are continuous at `1` from the right, so agree at `1`.
@@ -886,11 +888,16 @@ lemma exists_hasPrimeDensity_neg_natCast (h : IsHeckeOfType ψ n) (hS : S.Finite
       rwa [← h_one, hF_one]
     · exact h_ne_zero hs
   · -- Just to the right of `1` that product is `f`.
-    refine hf.continuousAt.continuousWithinAt.congr' (eventually_nhdsWithin_iff.mpr ?_)
-    filter_upwards [hF_eq, hF_fac] with s h_eq h_fac hs
-    have hs_ne : (s : ℂ) - 1 ≠ 0 := mod_cast sub_ne_zero.mpr (Set.mem_Ioi.mp hs).ne'
-    rw [← h_eq hs, h_fac]
-    simp [cpow_neg, hs_ne]
+    have h_lim : Filter.Tendsto (fun s : ℝ ↦
+        TauCeti.primeEulerProduct (heckeCoeff ψ S) s * ((s - 1) ^ (-(m : ℝ)) : ℝ))
+        (nhdsWithin 1 (Set.Ioi 1)) (nhds (f 1)) := by
+      refine hf.continuousAt.continuousWithinAt.congr' (eventually_nhdsWithin_iff.mpr ?_)
+      filter_upwards [hF_eq, hF_fac] with s h_eq h_fac hs
+      have hs_ne : (s : ℂ) - 1 ≠ 0 := mod_cast sub_ne_zero.mpr (Set.mem_Ioi.mp hs).ne'
+      rw [primeEulerProduct_eq_eulerProd h.norm_heckeCoeff_le hs, ← h_eq hs, h_fac]
+      simp [Real.rpow_neg_natCast]
+      rw [mul_comm, inv_mul_cancel_left₀ (pow_ne_zero _ hs_ne)]
+    simpa using TauCeti.hasPrimeDensity_of_tendsto h.norm_heckeCoeff_le hf_ne h_lim
 
 /-- Let `ψ` be the finite part of a Hecke character of type `n` (`IsHeckeOfType ψ n`) with
 `ψ ^ 2 ≠ 1`, and let `S` be a finite set of finite places. The partial `L`-function
@@ -906,22 +913,19 @@ lemma eulerProd_ne_zero (h : IsHeckeOfType ψ n) (hS : S.Finite) (hψ_sq : ψ ^ 
   have hψ_ne : ψ ≠ 1 := fun h_one ↦ hψ_sq (by rw [h_one, one_pow])
   obtain ⟨m₁, h_nonvanishing, h_dens₁⟩ := h.exists_hasPrimeDensity_neg_natCast hS hψ_ne
   obtain ⟨m₂, -, h_dens₂⟩ := (h.pow 2).exists_hasPrimeDensity_neg_natCast hS hψ_sq
-  -- The two densities, as a family indexed by `Fin 2` for `HasPrimeDensity.sum`.
-  let a : Fin 2 → FinPlace K → ℂ := ![heckeCoeff ψ S, heckeCoeff (ψ ^ 2) S]
-  have h_dens : ∀ i : Fin 2, HasPrimeDensity (a i) (![-(m₁ : ℂ), -(m₂ : ℂ)] i) := by
-    simpa [a, Fin.forall_fin_two] using ⟨h_dens₁, h_dens₂⟩
   have h_re_sum_ge (v : FinPlace K) (hv : v ∉ S) :
-      (-3 : ℂ).re ≤ (∑ i : Fin 2, ![4, 1] i * a i v).re := by
+      (-3 : ℂ).re ≤ (4 * heckeCoeff ψ S v + heckeCoeff (ψ ^ 2) S v).re := by
     -- With `z = x + i y` of norm one, `3 + 4 x + (x ^ 2 - y ^ 2) = 2 * (x + 1) ^ 2`.
     let z : ℂ := ψ (locIdele v (uniformizer v))
     have h_unit : 1 ^ 2 - z.re ^ 2 = z.im ^ 2 := by rw [← sq_norm_sub_sq_re, h.norm_eq_one]
-    have h_sum_re : (∑ i : Fin 2, ![4, 1] i * a i v).re = 4 * z.re + (z.re ^ 2 - z.im ^ 2) := by
-      simp [a, sq, heckeCoeff, hv, z]
+    have h_sum_re : (4 * heckeCoeff ψ S v + heckeCoeff (ψ ^ 2) S v).re =
+        4 * z.re + (z.re ^ 2 - z.im ^ 2) := by
+      simp [sq, heckeCoeff, hv, z]
     rw [h_sum_re, show (-3 : ℂ).re = -3 by norm_num]
     linarith [sq_nonneg (z.re + 1)]
   -- An inequality at almost all primes passes to the means.
-  have h_mean_re : (-3 : ℂ).re ≤ (∑ i : Fin 2, ![4, 1] i * ![-(m₁ : ℂ), -(m₂ : ℂ)] i).re :=
-    (hasPrimeDensity_const (-3)).re_le_re (.sum ![4, 1] h_dens)
+  have h_mean_re : (-3 : ℂ).re ≤ (4 * -(m₁ : ℂ) + -(m₂ : ℂ)).re :=
+    (TauCeti.hasPrimeDensity_const (-3)).re_le_re ((h_dens₁.const_mul 4).add h_dens₂)
       (.mono hS.compl_mem_cofinite fun v hv _ ↦ h_re_sum_ge v hv)
   have h_mean : (m₂ + 4 * m₁ : ℝ) ≤ 3 := by simpa using h_mean_re
   norm_cast at h_mean

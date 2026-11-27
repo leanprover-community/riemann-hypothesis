@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.BigOperators.Ring.Nat
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Mathlib.CategoryTheory.Shift.Basic
+public import TauCeti.NumberTheory.ArithmeticDirichletSeries.DirichletDensity.PrimeDensity
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.ClassField.Local.ArtinMap
 import Lib.Adelic.Hecke.ClassSums
@@ -222,15 +223,16 @@ include hW_open hW_pos
 /-- Let `W` be an open subgroup of the finite ideles (`hW_open`) containing the principal ideles of
 the totally positive elements (`hW_pos`), and `f` a character of the quotient by `W`, written
 additively (so `f = 0` is the trivial character). The mean of `f` at the uniformiser ideles
-(`New.HasPrimeDensity`, Dirichlet density over the finite places) is `1 - m` if `f = 0` and `-m`
+(`TauCeti.HasPrimeDensity`, Dirichlet density over the finite places) is `1 - m` if `f = 0` and `-m`
 otherwise, for some natural number `m`. -/
 lemma New.exists_hasPrimeDensity_addChar_uniformizer (f : AddChar (Additive ((𝔸f K)ˣ ⧸ W)) ℂ) :
     ∃ m : ℕ,
-      HasPrimeDensity (fun v : FinPlace K ↦ f (Additive.ofMul ⟦locIdele v (uniformizer v)⟧))
+      TauCeti.HasPrimeDensity
+        (fun v : FinPlace K ↦ f (Additive.ofMul ⟦locIdele v (uniformizer v)⟧))
         ((if f = 0 then 1 else 0) - m) := by
   split_ifs with hf
   · -- The trivial character is `1` everywhere, with mean `1`.
-    exact ⟨0, by simp_all [hasPrimeDensity_const]⟩
+    exact ⟨0, by simp_all [TauCeti.hasPrimeDensity_const]⟩
   let ψ : (𝔸f K)ˣ →* ℂ := f.toMonoidHom.comp (mk' W)
   have hW : W ≤ ψ.ker := le_comap_mk' W f.toMonoidHom.ker
   -- Let `Φ w` be the embedding into `ℂ` at the infinite place `w`. On `Kˣ`, `ψ` is trivial where no
@@ -269,8 +271,8 @@ private lemma index_re_le_sum_of_hasPrimeDensity [FiniteIndex W]
     (h_norm : ∀ y : (𝔸f L)ˣ, Units.map (adeleNorm K L) y ∈ W)
     (d : AddChar (Additive ((𝔸f K)ˣ ⧸ W)) ℂ → ℂ)
     (hd : ∀ f : AddChar (Additive ((𝔸f K)ˣ ⧸ W)) ℂ,
-      HasPrimeDensity (fun v : FinPlace K ↦ f (Additive.ofMul ⟦locIdele v (uniformizer v)⟧))
-        (d f)) :
+      TauCeti.HasPrimeDensity
+        (fun v : FinPlace K ↦ f (Additive.ofMul ⟦locIdele v (uniformizer v)⟧)) (d f)) :
     (W.index : ℂ).re ≤ (∑ f : AddChar (Additive ((𝔸f K)ˣ ⧸ W)) ℂ, (finrank K L : ℂ) * d f).re := by
   classical
   -- `D v`: the primes above `v` of the same norm; `#(D v)` has mean 1.
@@ -291,12 +293,16 @@ private lemma index_re_le_sum_of_hasPrimeDensity [FiniteIndex W]
     simp_all [v_localNorm (f := 1), ← adeleNorm_locIdele, (eq_one_iff _).mpr]
   -- For almost all `v`, `[W] * #(D v) ≤ [L : K] * ∑ f, f(ϖ_v)` with `[W]` the index: the sum is
   -- `[W]` if `ϖ_v ∈ W` and `0` otherwise. Compare the densities of the two sides.
-  refine (hasPrimeDensity_card_degree_one L W.index).re_le_re (.sum (fun _ ↦ finrank K L) hd)
+  refine (TauCeti.hasPrimeDensity_mul_ncard_setOf_under_eq_and_absNorm_eq L (W.index : ℂ)).re_le_re
+    (TauCeti.HasPrimeDensity.sum univ fun f _ ↦ (hd f).const_mul (finrank K L))
     (h_mem.mono fun v hv _ ↦ ?_)
+  -- Tau Ceti writes `D v` with `under` in place of `below`.
+  rw [show {w : FinPlace L | w.under (NumberField.RingOfIntegers K) = v ∧ w.q = v.q} = D v from
+    rfl]
   rcases (D v).eq_empty_or_nonempty with hD | hD
-  · simp_all [D, ← mul_sum, sum_apply_eq_ite, apply_ite, mul_nonneg]
+  · simp_all [D, ← mul_sum, sum_apply_eq_ite, apply_ite, mul_nonneg, Finset.sum_apply]
   · have h_mul : (W.index : ℝ) * (D v).ncard ≤ finrank K L * W.index := by grw [h_card, mul_comm]
-    simpa [(eq_one_iff _).mpr (hv hD), index, mul_comm] using h_mul
+    simpa [(eq_one_iff _).mpr (hv hD), index, mul_comm, Finset.sum_apply] using h_mul
 
 /-- Let `L / K` be Galois and `W` an open subgroup of the finite ideles of `K` (`hW_open`) that
 contains the totally positive principal ideles (`hW_pos`) and the norms from `L` (`h_norm`). A
@@ -305,7 +311,8 @@ character `f` of the quotient by `W` has mean `1` at the uniformiser ideles if i
 private lemma hasPrimeDensity_addChar_uniformizer_of_adeleNorm_mem
     (h_norm : ∀ y : (𝔸f L)ˣ, Units.map (adeleNorm K L) y ∈ W)
     (f : AddChar (Additive ((𝔸f K)ˣ ⧸ W)) ℂ) :
-    HasPrimeDensity (fun v : FinPlace K ↦ f (Additive.ofMul ⟦locIdele v (uniformizer v)⟧))
+    TauCeti.HasPrimeDensity
+      (fun v : FinPlace K ↦ f (Additive.ofMul ⟦locIdele v (uniformizer v)⟧))
       (if f = 0 then 1 else 0) := by
   classical
   have h_fin : FiniteIndex W := finiteIndex_idele_subgroup_of_isOpen W hW_open hW_pos
@@ -343,10 +350,12 @@ lemma New.frequently_prime_uniformizer_div_mem_of_adeleNorm_mem
   -- With `ϖ_v` the uniformiser idele at `v`, `∑ f, f(ϖ_v / a)` has mean 1. If the claim failed,
   -- this sum would vanish for almost all `v` of prime norm, so its mean would be 0.
   intro h_not
-  refine ((HasPrimeDensity.sum (fun f ↦ f (.ofMul a⁻¹))
-      (hasPrimeDensity_addChar_uniformizer_of_adeleNorm_mem L hW_open hW_pos h_norm)).re_le_re
-      (hasPrimeDensity_const 0) (h_not.mono ?_)).not_gt (by simp)
-  simp +contextual [← map_add_eq_mul, sum_apply_eq_ite, neg_add_eq_sub, eq_iff_div_mem, sub_eq_zero]
+  refine ((TauCeti.HasPrimeDensity.sum univ fun f _ ↦
+      (hasPrimeDensity_addChar_uniformizer_of_adeleNorm_mem L hW_open hW_pos h_norm f).const_mul
+        (f (.ofMul a⁻¹))).re_le_re
+      (TauCeti.hasPrimeDensity_const 0) (h_not.mono ?_)).not_gt (by simp)
+  simp +contextual [Finset.sum_apply, ← map_add_eq_mul, sum_apply_eq_ite, neg_add_eq_sub,
+    eq_iff_div_mem, sub_eq_zero]
 
 /-- The second inequality of class field theory, with equidistribution. Let `L / K` be Galois and
 `W` an open subgroup of the finite ideles of `K` (`hW_open`) containing the principal ideles of the
