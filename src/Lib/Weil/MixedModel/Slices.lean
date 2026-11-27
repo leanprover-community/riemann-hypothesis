@@ -79,10 +79,6 @@ variable {E : Type _} [Field E] [CMType E] [WeilData E] {n n₀ p : Type} [Finty
   [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s₀ : n₀ → ℤˣ}
   {V : Space E n s} {V₀ : Space E n₀ s₀} {D : V.Splitting V₀ p} {t : GL p (𝔸 E)}
 
-@[simp]
-lemma scaleIdele_fst_apply_ne_zero (v : InfinitePlace E) : (scaleIdele E).val.1 v ≠ 0 :=
-  Units.ne_zero _
-
 /-- For a splitting adapted at `1`, the nonzero constant `c` such that the mixed term `D.slice x` at
 `x` of the vacuum of `V` is `c * ‖vacuumFn (tᴴ x)‖ ^ 2` times the vacuum of `V₀`
 (`slice_vacElem_eq_vacuumFactor_smul`). It is chosen from `IsAdapted.slice_omega_vacElem`. -/
