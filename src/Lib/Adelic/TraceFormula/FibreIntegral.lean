@@ -5,6 +5,7 @@ import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected
 public import Lib.Adelic.TraceFormula.TestFunction
+import TauCeti.Topology.LocallyConstant.CompactSupport.OpenClosed
 
 /-!
 # Integration over the fibres of a conjugation map
@@ -126,66 +127,20 @@ lemma TestFunction.setIndicator_apply {V : Set Y} (hV_open : IsOpen V) (hV_compa
 
 end Space
 
-section Extension
-
-/-- In a locally compact non-archimedean group, a compact open set lies between any compact set and
-any open set containing it. -/
-lemma exists_isCompact_isOpen_superset_subset {G : Type} [Group G] [TopologicalSpace G]
-    [NonarchimedeanGroup G] [WeaklyLocallyCompactSpace G] {S U : Set G} (hS : IsCompact S)
-    (hU : IsOpen U) (hSU : S ⊆ U) : ∃ V : Set G, IsOpen V ∧ IsCompact V ∧ S ⊆ V ∧ V ⊆ U := by
-  -- Take `V = S M` for a small compact open subgroup `M`.
-  obtain ⟨N, hN, hSN⟩ := compact_open_separated_mul_right hS hU hSU
-  obtain ⟨N', hN'_compact, hN'⟩ := exists_compact_mem_nhds (1 : G)
-  obtain ⟨M, hM⟩ : ∃ M : OpenSubgroup G, (M : Set G) ⊆ N ∩ N' :=
-    NonarchimedeanGroup.is_nonarchimedean (N ∩ N') (inter_mem hN hN')
-  have hM_compact : IsCompact (M : Set G) :=
-    hN'_compact.of_isClosed_subset M.isClosed (hM.trans inter_subset_right)
-  exact ⟨S * (M : Set G), M.isOpen.mul_left, hS.mul hM_compact, subset_mul_left S M.one_mem,
-    (mul_subset_mul_left (hM.trans inter_subset_left)).trans hSN⟩
-
-/-- A compact open subset of a closed subset `C` of a locally compact Hausdorff non-archimedean
-group is cut out by a compact open subset of the group. -/
-lemma exists_isCompact_isOpen_preimage_eq {G : Type} [Group G] [TopologicalSpace G]
-    [NonarchimedeanGroup G] [WeaklyLocallyCompactSpace G] {C : Set G} (hC : IsClosed C)
-    {A : Set C} (hA_open : IsOpen A) (hA_compact : IsCompact A) :
-    ∃ V : Set G, IsOpen V ∧ IsCompact V ∧ ∀ x : C, (x : G) ∈ V ↔ x ∈ A := by
-  have h_rest : IsClosed (Subtype.val '' Aᶜ) := hC.isClosedMap_subtypeVal _ hA_open.isClosed_compl
-  have h_disjoint : Disjoint (Subtype.val '' A) (Subtype.val '' Aᶜ) :=
-    disjoint_image_of_injective Subtype.val_injective disjoint_compl_right
-  obtain ⟨V, hV_open, hV_compact, h_subset_V, hV_subset⟩ :=
-    exists_isCompact_isOpen_superset_subset (hA_compact.image continuous_subtypeVal)
-      h_rest.isOpen_compl h_disjoint.subset_compl_right
-  exact ⟨V, hV_open, hV_compact, fun x ↦
-    ⟨fun hx ↦ by_contra fun h_notMem ↦ hV_subset hx ⟨x, h_notMem, rfl⟩,
-      fun hx ↦ h_subset_V ⟨x, hx, rfl⟩⟩⟩
-
 /-- A test function on a closed subset `C` of a locally compact Hausdorff non-archimedean group is
 the restriction of a test function on the group. -/
 theorem TestFunction.exists_extension {G : Type} [Group G] [TopologicalSpace G]
     [NonarchimedeanGroup G] [T2Space G] [WeaklyLocallyCompactSpace G] {C : Set G} (hC : IsClosed C)
     (F : TestFunction C) : ∃ f : TestFunction G, ∀ x : C, f.val x = F.val x := by
-  classical
-  -- `F` takes finitely many values; extend its part on each level set and add up.
-  obtain ⟨hF_const, hF_compact, -⟩ := F.property
-  have h_part (c : ℂ) : ∃ a : TestFunction G, ∀ x : C, a.val x = if F.val x = c then c else 0 := by
-    rcases eq_or_ne c 0 with rfl | hc
-    · exact ⟨0, fun x ↦ (ite_self 0).symm⟩
-    have h_level : IsCompact {x : C | F.val x = c} :=
-      hF_compact.isCompact.of_isClosed_subset (hF_const.isClosed_fiber c) fun x hx ↦
-        subset_tsupport _ (ne_of_eq_of_ne hx hc)
-    obtain ⟨V, hV_open, hV_compact, hV⟩ :=
-      exists_isCompact_isOpen_preimage_eq hC (hF_const.isOpen_fiber c) h_level
-    exact ⟨c • setIndicator hV_open hV_compact, fun x ↦ by
-      simp [setIndicator_apply, indicator_apply, hV x]⟩
-  choose a ha using h_part
-  obtain ⟨values, h_values⟩ := hF_compact.isCompact.elim_finite_subcover _ hF_const.isOpen_fiber
-    fun x _ ↦ mem_iUnion.2 ⟨F.val x, rfl⟩
-  refine ⟨∑ c ∈ values, a c, fun x ↦ ?_⟩
-  suffices F.val x ∉ values → F.val x = 0 by simpa [ha, ite_eq_left_iff, eq_comm]
-  exact fun h_notMem ↦ image_eq_zero_of_notMem_tsupport fun hx ↦
-    h_notMem (by simpa using h_values hx)
-
-end Extension
+  let F' : LocallyConstant.compactlySupported ℂ C ℂ :=
+    ⟨⟨F.val, TestFunction.isLocallyConstant F⟩,
+      LocallyConstant.mem_compactlySupported.2 (TestFunction.hasCompactSupport F)⟩
+  obtain ⟨f, hf⟩ := LocallyConstant.compactlySupported.restrict_surjective hC F'
+  refine ⟨⟨f.val, f.val.isLocallyConstant, LocallyConstant.mem_compactlySupported.1 f.property,
+    subset_univ _⟩, fun x ↦ ?_⟩
+  change f.val x = F'.val x
+  simpa only [LocallyConstant.compactlySupported.restrict_apply] using
+    congrArg (fun g : LocallyConstant.compactlySupported ℂ C ℂ ↦ g.val x) hf
 
 /-! ### Invariant distributions -/
 open New.TestFunction
