@@ -2,6 +2,7 @@ module
 
 import Mathlib.LinearAlgebra.AffineSpace.MidpointZero
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.LinearAlgebra.Matrix.Determinant.Basic
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.SiegelWeil.Tower.RealConeIntegral
 import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
@@ -266,14 +267,6 @@ section LinearAlgebra
 variable {r r' : Type} [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r'] {t : r → ℤˣ}
   {t' : r' → ℤˣ}
 
-/-- The determinant of a matrix with rows and columns indexed by `Unit ⊕ Unit`. -/
-lemma det_unit_sum_unit (N : Matrix (Unit ⊕ Unit) (Unit ⊕ Unit) ℂ) :
-    N.det = N (.inl ()) (.inl ()) * N (.inr ()) (.inr ()) -
-      N (.inl ()) (.inr ()) * N (.inr ()) (.inl ()) := by
-  let e : Fin 2 ≃ Unit ⊕ Unit := finTwoEquiv.trans Equiv.boolEquivPUnitSumPUnit
-  rw [← det_submatrix_equiv_self e, det_fin_two]
-  rfl
-
 /-- Two signs have product `1` exactly when they are equal. -/
 lemma units_int_mul_eq_one_iff (a b : ℤˣ) : a * b = 1 ↔ a = b := by
   revert a b
@@ -329,7 +322,7 @@ lemma principalMinor_conj_fromBlocks {P : Matrix r' ((Unit ⊕ Unit) ⊕ r) ℂ}
     nth_rw 1 [← hP]
     simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_assoc]
   have h_plane : (1 - e * (1 - a • 1)).det = a := by
-    rw [det_unit_sum_unit]
+    rw [det_sum_unique]
     obtain rfl | rfl := Int.units_eq_one_or σ <;>
       simp [he, Matrix.mul_apply, Matrix.one_apply, Fintype.sum_sum_type] <;> ring
   rw [principalMinor_eq_det, h_conj, det_conj_of_mul_eq_one hP hP', det_fromBlocks_zero₂₁,
