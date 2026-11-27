@@ -1,6 +1,7 @@
 module
 
 public import Lib.General.LinearAlgebra.IntegralLattices
+import TauCeti.RingTheory.Valuation.Pair
 
 /-!
 # Hermite forms over valuation pairs and integral matrices over valued fields
@@ -62,12 +63,8 @@ lemma transvectionGL_mem_intGL {i j : n} {a : A} (hij : i ≠ j) (ha : a ∈ R) 
 /-- A valuation domain `A` with the subring `R = ⊤` is a valuation pair: any two elements `a`, `b`
 are multiples of `a - e * (a - b)` for some idempotent `e`. -/
 lemma isValuationPair_top [IsDomain A] [ValuationRing A] : IsValuationPair (⊤ : Subring A) := by
-  intro a b
-  obtain ⟨c, rfl⟩ | ⟨c, rfl⟩ := dvd_total a b
-  · -- if `a ∣ b`, take `e = 0`: both elements are multiples of `a`
-    exact ⟨0, by simp, by simp [Submodule.mem_span_singleton, Subring.smul_def, mul_comm a]⟩
-  · -- if `b ∣ a`, take `e = 1`: both elements are multiples of `b`
-    exact ⟨1, by simp, by simp [Submodule.mem_span_singleton, Subring.smul_def, mul_comm b]⟩
+  simpa only [IsValuationPair, Subring.isValuationPair_iff, IsIdempotentElem, Subtype.ext_iff,
+    Subring.coe_mul] using (Subring.isValuationPair_top (A := A))
 
 /-- Let `(A, R)` be a valuation pair: any `u, v` in `A` are `R`-multiples of `u - e * (u - v)` for
 some idempotent `e` of `R`. For rows `i₀ ≠ i` of a matrix `y` over `A` and a column `a`, some `W`
