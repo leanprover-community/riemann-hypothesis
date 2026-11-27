@@ -896,7 +896,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **LinearAlgebra**: Linear algebra and matrix analysis
 
 - `Lib/General/LinearAlgebra/TensorChains` (173): Chains of linear maps, tensor products of their data, and separation by forms
-- `Lib/General/LinearAlgebra/Eigenvalues` (507): Eigenvalues: traces of powers, common eigenvectors, Amitsur's theorem, Sylvester's law
+- `Lib/General/LinearAlgebra/Eigenvalues` (438): Eigenvalues: traces of powers, common eigenvectors, Sylvester's law
 - `Lib/General/LinearAlgebra/HermitianMatrices` (216): Determinants of positive semidefinite matrices, principal minors and hermitian involutions
 - `Lib/General/LinearAlgebra/IntegralLattices` (455): Integral matrices over subrings: Smith normal form, Gelfand's condition and lattices
 - `Lib/General/LinearAlgebra/MatricesNearIdentity` (262): Matrices near the identity: Jacobi's formula and norm estimates
