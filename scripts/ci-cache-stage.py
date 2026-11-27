@@ -67,7 +67,8 @@ def main():
         path = (build / "ir" / module).with_suffix(".ltar")
         if path.is_symlink() or not path.is_file():
             raise ValueError(f"{name}: no {path.relative_to(root)}")
-        sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
+        with path.open("rb") as archive:
+            sha256 = hashlib.file_digest(archive, "sha256").hexdigest()
         if files.setdefault(artifact, (path, sha256))[1] != sha256:
             raise ValueError(f"{artifact}: two modules have different bytes for one artifact")
         entries[input_hash] = artifact
