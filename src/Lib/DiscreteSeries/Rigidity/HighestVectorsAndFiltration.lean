@@ -604,12 +604,14 @@ private theorem New.sum_norm_sq_compact_comp_eq {n : Type} [Fintype n] [Decidabl
         2 * (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d,
           re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ) +
         ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d, ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
+  -- Expand the square of `P (E_qp E_dc y) = E_dc (P (E_qp y)) + P (⁅E_qp, E_dc⁆ y)`.
   have h_square (p q c d : n) (hcd : ε d = ε c) : ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 =
       ‖ρ.E d c (P (ρ.E q p y))‖ ^ 2 +
         2 * re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ +
         ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
     simp [lie_def, P_comm d c hcd, norm_sub_sq (𝕜 := ℂ), ← ofReal_pow]
     ring
+  -- Sum `h_square` over the compact pairs `(c, d)`. The first terms add up to `casimir_zero`.
   have h_inner (p q : n) :
       (∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) =
         κ * ‖P (ρ.E q p y)‖ ^ 2 +
@@ -681,8 +683,9 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
           simpa using Int.cast_mono (R := ℝ)
             (casimirKValue_lowestKType_add_le h hu.2 hw hu_high h_inner)
   have upper : R ≤ 4 * Fintype.card n * N := sum_norm_sq_lie_E_le (ε := ε) ρ P y
-  rw [sum_norm_sq_compact_comp_eq ρ P P_comm _ casimir_zero y] at lower
-  change _ ≤ l.casimirKValue l.lowestKType * N + 2 * C + R at lower
+  have expand : (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d,
+      ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) = l.casimirKValue l.lowestKType * N + 2 * C + R :=
+    sum_norm_sq_compact_comp_eq ρ P P_comm _ casimir_zero y
   linarith
 
 /-- A finite family `J` of operators detects step `k` of the filtration
