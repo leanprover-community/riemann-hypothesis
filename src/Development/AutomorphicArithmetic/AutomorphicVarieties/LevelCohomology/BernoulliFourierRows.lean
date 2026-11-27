@@ -40,20 +40,26 @@ def bernoulliSignedCoeff (φ : ZMod f → R) (N r : ℕ) : R :=
 def bernoulliFourierRow (φ : ZMod f → R) (N a v T : ℕ) (β : R) : R :=
   ∑ i : Fin T, bernoulliSignedCoeff φ N (a * v ^ (i : ℕ) % N) * β ^ (i : ℕ)
 
+/-- The powers of a linear stride modulo a multiple of its step, when the square of
+the step vanishes modulo the modulus. -/
+theorem pow_modEq_one_add_of_dvd {h S v c : ℕ} (hh : S ∣ h)
+    (hv : v ≡ 1 + h * c [MOD h * S]) (i : ℕ) :
+    v ^ i ≡ 1 + h * (c * i) [MOD h * S] := by
+  induction i with
+  | zero => simp [Nat.ModEq]
+  | succ i ih =>
+    rw [pow_succ]
+    apply (ih.mul hv).trans
+    rw [show (1 + h * (c * i)) * (1 + h * c) =
+      1 + h * (c * (i + 1)) + h * h * (c * i * c) by ring]
+    exact Nat.add_modEq_left_iff.mpr (dvd_mul_of_dvd_left (Nat.mul_dvd_mul_left h hh) _)
+
 /-- The quadratic term in a power of `1 + h*c` vanishes modulo `N = h*(2*T)` when
 `2*T ∣ h`. This gives the least nonnegative representative of each row entry. -/
 private theorem rowResidue {a h v c : ℕ} (ha : a < h) (hT : 0 < T) (hh : 2 * T ∣ h)
     (hv : v ≡ 1 + h * c [MOD h * (2 * T)]) (hq : a * c ≡ q [MOD 2 * T]) (i : ℕ) :
     a * v ^ i % (h * (2 * T)) = a + h * (q * i % (2 * T)) := by
-  have hpow : v ^ i ≡ 1 + h * (c * i) [MOD h * (2 * T)] := by
-    induction i with
-    | zero => simp [Nat.ModEq]
-    | succ i ih =>
-      rw [pow_succ]
-      apply (ih.mul hv).trans
-      rw [show (1 + h * (c * i)) * (1 + h * c) =
-        1 + h * (c * (i + 1)) + h * h * (c * i * c) by ring]
-      exact Nat.add_modEq_left_iff.mpr (dvd_mul_of_dvd_left (Nat.mul_dvd_mul_left h hh) _)
+  have hpow := pow_modEq_one_add_of_dvd hh hv i
   have hstep := (hq.mul_right i).trans (Nat.mod_modEq (q * i) (2 * T)).symm
   apply Nat.mod_eq_of_modEq ((hpow.mul_left a).trans ?_)
   · have hr := Nat.mod_lt (q * i) (show 0 < 2 * T by omega)
@@ -177,15 +183,21 @@ theorem bernoulliFourierRow_sub (φ : ZMod f → R) {a a' h v c : ℕ} (ha : a <
   rw [hend, show w 0 = φ a by simp [w]] at htel
   linear_combination htel
 
-/-- The row stride `5^(2^k)` differs from 1 by an odd multiple of `4*2^k`. -/
-private theorem five_pow_stride (k : ℕ) : ∃ c, Odd c ∧ 5 ^ (2 ^ k) = 1 + 4 * 2 ^ k * c := by
+/-- Repeated squaring increases the two-adic valuation of `w - 1` by one per step
+when `w ≡ 1` modulo 4. The odd part of the increment is kept explicit. -/
+theorem pow_two_pow_stride {w b c : ℕ} (hw : w = 1 + 4 * b * c) (hc : Odd c) (k : ℕ) :
+    ∃ t, Odd t ∧ w ^ (2 ^ k) = 1 + (4 * b * 2 ^ k) * t := by
   induction k with
-  | zero => exact ⟨1, odd_one, rfl⟩
+  | zero => exact ⟨c, hc, by simpa using hw⟩
   | succ k ih =>
-    obtain ⟨c, hc, h⟩ := ih
-    refine ⟨c * (2 * (2 ^ k * c) + 1), hc.mul ⟨2 ^ k * c, rfl⟩, ?_⟩
+    obtain ⟨t, ht, h⟩ := ih
+    refine ⟨t * (2 * (b * 2 ^ k * t) + 1), ht.mul ⟨b * 2 ^ k * t, rfl⟩, ?_⟩
     rw [pow_succ 2 k, pow_mul, h]
     ring
+
+/-- The row stride `5^(2^k)` differs from 1 by an odd multiple of `4*2^k`. -/
+theorem five_pow_stride (k : ℕ) : ∃ c, Odd c ∧ 5 ^ (2 ^ k) = 1 + 4 * 2 ^ k * c := by
+  simpa using pow_two_pow_stride (w := 5) (b := 1) (c := 1) rfl odd_one k
 
 /-- Choose the same sign in `T*f ± 1` and `h - T*f ± 1` so both starts are 1 modulo 4. -/
 private theorem rowStarts {h : ℕ} (hf : Odd f) (hT : 2 ≤ T) (hTe : Even T)
@@ -226,7 +238,7 @@ private theorem rowStarts {h : ℕ} (hf : Odd f) (hT : 2 ≤ T) (hTe : Even T)
 
 /-- Rephase a row of odd step `q` at a prescribed frequency `β` by inverting the step
 modulo the full cycle. -/
-private theorem exists_row_phase {β : R} (hT : 0 < T) (hq : q.Coprime (2 * T))
+theorem exists_row_phase {β : R} (hT : 0 < T) (hq : q.Coprime (2 * T))
     (hβ : β ^ T = -1) : ∃ γ : R, γ ^ T = -1 ∧ γ ^ q = β := by
   obtain ⟨b, _, hb⟩ := Nat.exists_mul_mod_eq_one_of_coprime hq (by omega)
   have hmod : q * b ≡ 1 [MOD 2 * T] := by
