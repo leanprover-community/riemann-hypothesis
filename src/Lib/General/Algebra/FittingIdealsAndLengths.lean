@@ -33,8 +33,7 @@ controlled as relations are added.
 * `New.relLength S T`: the length of `S / (S ⊓ T)`, with its monotonicity and additivity rules.
 * `New.length_obeying_relationsOn_le`: the relations `New.relationsOn Z` of a finitely generated `Z`
   cut out a module of length at most `rank Z * length B`.
-* `New.length_ker_le_addVal_det`, `New.exists_matrix_addVal_det_le_length`: lengths compared with
-  valuations of determinants.
+* `New.length_ker_le_addVal_det`: kernel lengths compared with valuations of determinants.
 * `New.Lift.relLength_le_of_relations`: if `p ^ t L ≤ L'` and any `m + 1` elements of `L` killed by
   `p` modulo `L'` have a combination in `L'` with some coefficient `1`, the length of `L` modulo
   `L'` is at most `t m`.
@@ -317,66 +316,6 @@ lemma OddPart.length_le_of_detecting_points {n : m → ℕ} {q : m → Γ} {Z : 
     _ ≤ addVal O D.det := length_ker_le_addVal_det D p
     _ = addVal O (∏ i, n i : ℕ) := by simp [D]
 
-/-- Let O be a discrete valuation ring and aO^n ⊆ L ⊆ O^n, a ≠ 0. There are a square matrix M with
-rows in L and a submodule S of (O/a)^n whose annihilator in O^n is exactly L, with the valuation of
-det M at most the length of S.
-
-It is a consequence of the theorem on elementary divisors. -/
-lemma exists_matrix_addVal_det_le_length (L : Submodule O (n → O)) (ha : a ≠ 0)
-    (h_smul : ∀ v : n → O, a • v ∈ L) :
-    ∃ M : Matrix n n O, ∃ S : Submodule O (n → QuotSpan a),
-      -- (a) the rows of `M` lie in `L`
-      (∀ i : n, M i ∈ L) ∧
-      -- (b) `L` is the orthogonal of `S`
-      (∀ v : n → O, v ∈ L ↔ ∀ w ∈ S, ∑ j : n, v j • w j = 0) ∧
-      -- (c) the determinant bound
-      addVal O (det M) ≤ length O S := by
-  -- `L` is free of full rank, so it is the column span of a matrix `M`, and `N * M = a • 1` for
-  -- some `N`. Take the matrix `Mᵀ`, and for `S` the image of `Nᵀ` on `n → O ⧸ a`.
-  let g : (n → O) →ₗ[O] L := (lsmul O _ a).codRestrict L h_smul
-  have hg : Function.Injective g := (lsmul_injective ha).codRestrict h_smul
-  let b : (n → O) ≃ₗ[O] L :=
-    ofFinrankEq _ _ (L.finrank_le.antisymm' (g.finrank_le_finrank_of_injective hg))
-  obtain ⟨M, N, rfl, hNM⟩ : ∃ M N : Matrix n n O, L = M.toLin'.range ∧ N * M = a • 1 := by
-    refine ⟨(L.subtype ∘ₗ b).toMatrix', (b.symm ∘ₗ g).toMatrix', by simp [LinearMap.range_comp],
-      ext_iff_mulVec.2 fun v ↦ ?_⟩
-    -- `g` is multiplication by `a`, with values in `L`.
-    have hgb : g (b v : n → O) = a • b v := rfl
-    simpa [← toLin'_apply, symm_apply_eq] using hgb
-  have hN : N.det ≠ 0 := fun h_zero ↦ by simpa [h_zero, ha, eq_comm] using congrArg det hNM
-  let Nt : End O (n → QuotSpan a) := Nᵀ • 1
-  have h_pair (v : n → O) (x : n → QuotSpan a) :
-      ∑ j, v j • Nt x j = ∑ i, (N *ᵥ v) i • x i := by
-    simpa [Nt, mulVec, dotProduct, Finset.sum_smul, Finset.smul_sum, smul_smul, mul_comm] using
-      Finset.sum_comm
-  have h_orth (v : n → O) : v ∈ M.toLin'.range ↔
-      ∀ w ∈ Submodule.map Nt ⊤, ∑ j : n, v j • w j = 0 := by
-    constructor
-    · -- For `v = M *ᵥ t` we get `N *ᵥ v = a • t`, which pairs to zero modulo `a`.
-      rintro ⟨t, rfl⟩ _ ⟨x, -, rfl⟩
-      simp [h_pair, hNM, smul_mulVec, smul_quot_eq_zero_of_dvd]
-    · -- Conversely `a` divides `N *ᵥ v`, say `N *ᵥ v = a • t = N *ᵥ M *ᵥ t`, and `N` is injective.
-      intro hv
-      have h_dvd : ∀ i : n, a ∣ (N *ᵥ v) i := fun i ↦ by
-        have h_sum : ∑ j, (N *ᵥ v) j • (Pi.single i 1 : n → QuotSpan a) j = 0 :=
-          (h_pair v _).symm.trans (hv _ (Submodule.mem_map_of_mem mem_top))
-        simpa [← Ideal.Quotient.eq_zero_iff_dvd, Algebra.smul_def, Pi.single_apply] using h_sum
-      choose t ht using h_dvd
-      have h_eq : N *ᵥ (M *ᵥ t) = N *ᵥ v := by simp [funext_iff, ht, hNM, smul_mulVec]
-      exact ⟨t, mulVec_injective_of_det_ne_zero hN h_eq⟩
-  -- Split the length of `n → O ⧸ a` into image and kernel of `Nᵀ`, then cancel the valuation
-  -- of `det N`, which is finite.
-  have h_add : addVal O (det Mᵀ) + addVal O N.det ≤
-      length O (Submodule.map Nt ⊤) + addVal O N.det :=
-    calc addVal O (det Mᵀ) + addVal O N.det = addVal O (det (N * M)) := by simp [add_comm]
-      _ = length O (⊤ : Submodule O (n → QuotSpan a)) := by simp [hNM]
-      _ = relLength ⊤ Nt.ker + length O ↥(⊤ ⊓ Nt.ker) := (relLength_add_length_inf ⊤ Nt.ker).symm
-      _ ≤ length O (Submodule.map Nt ⊤) + addVal O N.det := by
-        grw [relLength_ker, length_mono inf_le_right, length_ker_le_addVal_det, det_transpose]
-  have h_rows (i : n) : Mᵀ i ∈ M.toLin'.range := ⟨Pi.single i 1, M.mulVec_single_one i⟩
-  have h_val : addVal O N.det ≠ ⊤ := mt addVal_eq_top_iff.1 hN
-  exact ⟨Mᵀ, Submodule.map Nt ⊤, h_rows, h_orth, (ENat.add_le_add_iff_right h_val).1 h_add⟩
-
 end New
 
 /-!
@@ -626,17 +565,28 @@ lemma mem_of_forall_form_eq_zero [Finite n] (hp : p ≠ 0) (hN : ∀ v : n → O
     {v : n → O}
     (h_kill : ∀ Ψ : (n → O) →ₗ[O] Unit → QuotSpan p, (∀ ⦃u : n → O⦄, Φ u ∈ N → Ψ u = 0) → Ψ v = 0) :
     Φ v ∈ N := by
-  classical
-  let := Fintype.ofFinite n
-  -- `Φ⁻¹ N` is the annihilator of a module `S` of vectors modulo `p`, and each `w ∈ S` gives a
-  -- linear form that vanishes on `Φ⁻¹ N`.
-  obtain ⟨-, S, -, (hS : ∀ u : n → O, Φ u ∈ N ↔ ∀ w ∈ S, ∑ j : n, u j • w j = 0), -⟩ :=
-    exists_matrix_addVal_det_le_length ((N.restrictScalars O).comap Φ) hp hN
-  refine (hS v).2 fun w hw ↦ ?_
-  let Ψ : (n → O) →ₗ[O] Unit → QuotSpan p := .pi fun _ ↦ Fintype.linearCombination O w
-  have hΨ : ∀ ⦃u : n → O⦄, Φ u ∈ N → Ψ u = 0 := fun u hu ↦ by
-    simpa [Ψ, funext_iff, Fintype.linearCombination_apply] using (hS u).1 hu w hw
-  exact congrFun (h_kill Ψ hΨ) ()
+  -- `L = Φ⁻¹ N` is free of full rank, with an isomorphism `b : L ≃ₗ[O] O^n`. On `L`, `b (p • ·)`
+  -- has coordinates divisible by `p`, so its coordinate forms modulo `p` kill `L` and hence `v`.
+  let L : Submodule O (n → O) := (N.restrictScalars O).comap Φ
+  have hL (u : n → O) : p • u ∈ L := hN u
+  let g : (n → O) →ₗ[O] L := (LinearMap.lsmul O _ p).codRestrict L hL
+  have hg : Function.Injective g := (LinearMap.lsmul_injective hp).codRestrict hL
+  let b : L ≃ₗ[O] (n → O) :=
+    LinearEquiv.ofFinrankEq _ _ ((g.finrank_le_finrank_of_injective hg).antisymm' L.finrank_le)
+  let Ψ (i : n) : (n → O) →ₗ[O] Unit → QuotSpan p :=
+    .pi fun _ ↦ (Ideal.span {p}).mkQ ∘ₗ LinearMap.proj i ∘ₗ b.toLinearMap ∘ₗ g
+  have hΨ (i : n) : ∀ ⦃u : n → O⦄, Φ u ∈ N → Ψ i u = 0 := fun u hu ↦ by
+    have hgu : g u = p • (⟨u, hu⟩ : L) := rfl
+    ext
+    simp [Ψ, hgu]
+  have h_dvd (i : n) : p ∣ b (g v) i := by
+    simpa [Ψ, ← Ideal.Quotient.eq_zero_iff_dvd] using congrFun (h_kill (Ψ i) (hΨ i)) ()
+  choose w hw using h_dvd
+  have h_eq : b (g (b.symm w)) = b (g v) := by
+    have hgw : g (b.symm w) = p • b.symm w := rfl
+    ext j
+    simpa [hgw] using (hw j).symm
+  exact hg (b.injective h_eq) ▸ (b.symm w).property
 
 omit [DVR O] in
 /-- If `Φ (p • O^n) ⊆ N`, `p` is associated to `ϖ ^ m` and `Φ v ∉ N`, then for some `k` the vector

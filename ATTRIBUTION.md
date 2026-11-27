@@ -48,7 +48,7 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/GaloisRep/KillingPolynomials.lean` | `New.powMinor_diagonal_X_mul_eq_zero` | `Matrix.charpoly.optionEquivLeft_symm_univ_isHomogeneous` | `Mathlib/LinearAlgebra/Matrix/Charpoly/Univ.lean` |
 | `src/Lib/GaloisRep/Pseudocharacter/SemisimpleRepresentations.lean` | `New.blockDiagonalAlgHom` | `Matrix.blockDiagonal'RingHom` | `Mathlib/Data/Matrix/Block.lean` |
 | `src/Lib/GaloisRep/Pseudocharacter/SemisimpleRepresentations.lean` | `New.trace_of_idempotent` | `LinearMap.IsIdempotentElem.trace_eq_zero_iff` | `Mathlib/LinearAlgebra/Trace.lean` |
-| `src/Lib/General/Algebra/FittingIdealsAndLengths.lean` | `New.exists_matrix_addVal_det_le_length` | `Submodule.finiteQuotient_iff` | `Mathlib/LinearAlgebra/FreeModule/Finite/Quotient.lean` |
+| `src/Lib/General/Algebra/FittingIdealsAndLengths.lean` | `New.Selmer.mem_of_forall_form_eq_zero` | `Submodule.finiteQuotient_iff` | `Mathlib/LinearAlgebra/FreeModule/Finite/Quotient.lean` |
 | `src/Lib/General/Algebra/IntegralPowerSeries.lean` | `New.jet_subst_linearSeries` | `MvPowerSeries.constantCoeff_subst_eq_zero` | `Mathlib/RingTheory/MvPowerSeries/Substitution.lean` |
 | `src/Lib/General/Algebra/LongExactSequences.lean` | `New.Variety.H.sigma_bijective` | `CategoryTheory.Functor.mapExt_bijective_of_preservesInjectiveObjects`, `CategoryTheory.hasExt_of_enoughInjectives` | `Mathlib/Algebra/Homology/DerivedCategory/Ext/EnoughInjectives.lean`, `Mathlib/Algebra/Homology/DerivedCategory/Ext/MapBijective.lean` |
 | `src/Lib/General/Algebra/MultivariatePolynomials.lean` | `New.Variety.IsAbsIntegrallyClosedLocal.multivariate_hensel` | the `Algebra.Etale` instance | `Mathlib/RingTheory/Polynomial/UniversalFactorizationRing.lean` |
