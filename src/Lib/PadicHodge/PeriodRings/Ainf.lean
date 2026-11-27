@@ -347,7 +347,7 @@ instance actOFlat : MulSemiringAction FrobGal OFlat := by
 
 /-- An action of `FrobGal` on `A` induces a `MulSemiringAction` of `Gp p` on `A`. It is obtained by
 composing with the right inclusion of `Gp p` into `FrobGal`. -/
-instance (priority := 100) FrobGal.galAct : MulSemiringAction (Gp p) A :=
+instance FrobGal.galAct : MulSemiringAction (Gp p) A :=
   compHom (M := FrobGal) _ (.inr ..)
 
 @[instance 100]

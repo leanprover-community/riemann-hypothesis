@@ -114,11 +114,11 @@ lemma isCutoff_chosenCutoff [h_cutoff : HasCutoff ν X] :
 
 /-- Shortcut: the `MulAction` instance of a subgroup `N` on its ambient group `G`. -/
 @[to_additive]
-instance (priority := high) mulActionSubgroupSelf : MulAction N G := inferInstance
+instance mulActionSubgroupSelf : MulAction N G := inferInstance
 
 /-- Shortcut: the `SMul` instance of a subgroup `N` on its ambient group `G`. -/
 @[to_additive]
-instance (priority := high) smulSubgroupSelf : SMul N G := inferInstance
+instance smulSubgroupSelf : SMul N G := inferInstance
 
 /-- The measure on G that computes integrals over N\G, when N with counting measure has a cutoff
 (for example when N is discrete) and μ is invariant under N. It is μ weighted by a cutoff chosen for

@@ -326,7 +326,7 @@ abbrev locAction (x : R) [Algebra R B] [Away x B]
 
 /-- A ring action of `M` on `R` induces an action of `M` on the Witt vectors `WittVector p R`. Each
 element acts by mapping Witt vector coordinates through its ring endomorphism of `R`. -/
-instance (priority := 50) wittAction (p : ℕ) [Fact p.Prime] :
+instance wittAction (p : ℕ) [Fact p.Prime] :
     MulSemiringAction M (WittVector p R) :=
   actionOfHoms M (WittVector.map <| toRingHom M R ·) (by aesop) (by aesop (add simp mul_smul))
 
