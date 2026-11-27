@@ -247,6 +247,24 @@ lemma sublatticeDiscriminant_sq_mul_genIndex_sq (hLH : L * H = 1) {V : Submodule
   rw [sublatticeDiscriminant, Real.sq_sqrt h_nonneg, ← genIndex_det_conj, ← genIndex_det_conj,
     h_gram]
 
+/-- Choose a rational basis and a finite adelic change of basis giving a primitive frame.
+The Gram determinant of the rational basis and the index of the change of basis compute
+the squared discriminant of the saturated lattice. -/
+lemma exists_basis_sublatticeDiscriminant (hLH : L * H = 1) (V : Submodule E (σ → E))
+    {s : ℕ} (hs : finrank E V = s) :
+    ∃ (y : Matrix σ (Fin s) E) (a : GL (Fin s) (𝔸f E)), HasLeftInv y ∧ colSpan y = V ∧
+      IsPrimitiveMatrix (Ô E) (H * (finAdeleMatrix y * a.val)) ∧
+      sublatticeDiscriminant hLH V ^ 2 =
+        genIndex a.val.det ^ 2 * |(Algebra.norm ℚ (yᴴ * y).det : ℝ)| := by
+  subst s
+  obtain ⟨y, a, hy, hV, hm⟩ := exists_sublatticeBasis_eq_finAdeleMatrix_mul hLH V
+  refine ⟨y, a, hy, hV, ?_, ?_⟩
+  · rw [← hm]
+    exact isPrimitiveMatrix_mul_sublatticeBasis hLH V
+  · have h := sublatticeDiscriminant_sq_mul_genIndex_sq hLH (V := V) (w := a.val) (A := 1)
+      (by simpa using hm.symm)
+    simpa [← genIndex_algebraMap, RingHom.map_det, mul_comm] using h
+
 /-- Let `E` be a CM field containing a primitive `5040`-th root of unity, and let the finite adelic
 matrix `H` have a left inverse `L`. Suppose the subspace `V` contains the columns of a matrix `x`
 over `E` with `dim V` columns and `det xᴴ x ≠ 0`. Then `sublatticeDiscriminant hLH V`, the
@@ -355,59 +373,49 @@ lemma ker_conjTranspose_mul_transpose {t s : ℕ} {x : Matrix κ (Fin t) E} {y :
       _ = v := by rw [h_split', one_mulVec]
   · simp [IsConcreteLE.le_iff, hyx, Matrix.mul_assoc]
 
-/-- Orthogonal lattices have the same discriminant. Let `E` be a CM field with a chosen CM type
-(`CMType E`), containing a primitive `5040`-th root of unity, and let `u` be a finite adelic unitary
-matrix. Let `x` and `y` be matrices over `E` with `#κ` columns in all and `xᴴ y = 0`. Let `b` and
-`a` be invertible over `𝔸_f`, with `u⁻¹ x b` and `u⁻¹ y a` primitive. Then
-`[det a]² |N(det yᴴ y)| = [det (x b)ᴴ (x b)]`. Here `[·]` is the generalised index `genIndex`: at a
-unit the inverse of the factor by which it scales Haar measure on the finite adeles, so `|N(z)|` at
-a nonzero `z ∈ E`, and `0` at a non-unit. `N` is the norm from `E` to `ℚ`. -/
-lemma genIndex_sq_mul_abs_norm_eq [HasPrimitiveRoot5040 E] (u : Gf E κ) {t s : ℕ}
-    (hts : t + s = Fintype.card κ)
-    {x : Matrix κ (Fin t) E} {y : Matrix κ (Fin s) E} (hxy : xᴴ * y = 0)
-    {b : GL (Fin t) (𝔸f E)} {a : GL (Fin s) (𝔸f E)}
-    (hx_prim : IsPrimitiveMatrix (Ô E) (u.val.inv * (finAdeleMatrix x * b.val)))
-    (hy_prim : IsPrimitiveMatrix (Ô E) (u.val.inv * (finAdeleMatrix y * a.val))) :
-    genIndex a.val.det ^ 2 * |(Algebra.norm ℚ (yᴴ * y).det : ℝ)| =
-      genIndex ((finAdeleMatrix x * b.val)ᴴ * (finAdeleMatrix x * b.val)).det := by
-  -- Jacobi's identity for `u⁻¹ m` and `u⁻¹ w`, where `m = x b` and `w = y a`: the lattice index in
-  -- it is `1` as `u⁻¹ m` is primitive, and the unitary `u⁻¹` drops out of the Gram matrices.
-  set m : Matrix κ (Fin t) (𝔸f E) := finAdeleMatrix x * b.val with hm
-  obtain ⟨hm_int, p, hp_int, hp⟩ := hx_prim
+/-- In a finite adelic unitary translate of the standard lattice, complementary orthogonal
+subspaces cut out saturated lattices of equal discriminant. -/
+lemma sublatticeDiscriminant_eq_of_orthogonal [HasPrimitiveRoot5040 E] (u : Gf E κ)
+    {V W : Submodule E (κ → E)} (hdim : finrank E V + finrank E W = card κ)
+    (hVW : ∀ v ∈ V, ∀ w ∈ W, star v ⬝ᵥ w = 0) :
+    sublatticeDiscriminant u.val.val_inv V = sublatticeDiscriminant u.val.val_inv W := by
+  let m := (sublatticeBasis u.val.val_inv V).val
+  let w := (sublatticeBasis u.val.val_inv W).val
+  obtain ⟨hm_int, p, hp_int, hp⟩ := isPrimitiveMatrix_mul_sublatticeBasis u.val.val_inv V
+  have hw_prim := isPrimitiveMatrix_mul_sublatticeBasis u.val.val_inv W
   have h_gram {i j : ℕ} (A : Matrix κ (Fin i) (𝔸f E)) (B : Matrix κ (Fin j) (𝔸f E)) :
       (u.val.inv * A)ᴴ * (u.val.inv * B) = Aᴴ * B := by
     simpa using U.gram_invariant u⁻¹ A B
-  let w : Matrix κ (Fin s) (𝔸f E) := finAdeleMatrix y * a.val
-  -- As `xᴴ y = 0`, also `(u⁻¹ m)ᴴ (u⁻¹ w) = mᴴ w = bᴴ (xᴴ y) a = 0`.
   have h_perp : (u.val.inv * m)ᴴ * (u.val.inv * w) = 0 := by
-    have h_mw : mᴴ * w = b.valᴴ * finAdeleMatrix (xᴴ * y) * a.val := by
-      simp [hm, w, finAdeleMatrix_conjTranspose, Matrix.mul_assoc]
-    rw [h_gram, h_mw]
-    simp [hxy]
+    obtain ⟨x, b, -, hx, hm⟩ := exists_sublatticeBasis_eq_finAdeleMatrix_mul u.val.val_inv V
+    obtain ⟨y, a, -, hy, hw⟩ := exists_sublatticeBasis_eq_finAdeleMatrix_mul u.val.val_inv W
+    have hxy : xᴴ * y = 0 := by
+      ext i j
+      exact hVW _ (hx.le (x.col_mem_range_mulVecLin i)) _ (hy.le (y.col_mem_range_mulVecLin j))
+    rw [h_gram, show m = _ from hm, show w = _ from hw]
+    simpa [finAdeleMatrix_conjTranspose, Matrix.mul_assoc] using
+      congrArg (fun M ↦ b.valᴴ * finAdeleMatrix M * a.val) hxy
   have h_index :
-      submoduleIndex (intVectors (Ô E) (Fin t)) (preimageLattice (Ô E) (u.val.inv * m)) = 1 :=
+      submoduleIndex (intVectors (Ô E) _) (preimageLattice (Ô E) (u.val.inv * m)) = 1 :=
     relIndex_eq_one.2 fun v hv ↦ by
-      have hv_int : p *ᵥ (u.val.inv * m) *ᵥ v ∈ intVectors (Ô E) (Fin t) := hp_int.mulVec hv
+      have hv_int : p *ᵥ (u.val.inv * m) *ᵥ v ∈ intVectors (Ô E) _ := hp_int.mulVec hv
       rwa [mulVec_mulVec, hp, one_mulVec] at hv_int
   have h_disc : genIndex ((u.val.inv * w)ᴴ * (u.val.inv * w)).det =
       genIndex ((u.val.inv * m)ᴴ * (u.val.inv * m)).det := by
-    set F : Matrix κ (Fin t) (𝔸f E) := u.val.inv * m
+    set F : Matrix κ (Fin (finrank E V)) (𝔸f E) := u.val.inv * m
     -- Take the extra columns to be zero, with `c = 1`; the Gram matrix is then block diagonal.
     obtain ⟨-, h_jacobi⟩ := jacobi_perp_discriminant (p := (0 : Matrix κ κ (𝔸f E))) (c := 1)
-      (show IsUnimodular (Ô E) (1 : Matrix κ κ (𝔸f E)) by simp [IsUnimodular]) hm_int hy_prim
-      (by rwa [Matrix.mul_one]) (by simp [hts]) rfl (.inl ⟨p, hp⟩)
+      (show IsUnimodular (Ô E) (1 : Matrix κ κ (𝔸f E)) by simp [IsUnimodular]) hm_int hw_prim
+      (by rwa [Matrix.mul_one]) (by simp [hdim]) rfl (.inl ⟨p, hp⟩)
     have h_block : (fromCols F 0)ᴴ * (1 : Matrix κ κ (𝔸f E)) * fromCols F (0 : Matrix κ κ (𝔸f E)) +
         fromBlocks 0 0 0 ((1 : (𝔸f E)ˣ) • 1) =
           fromBlocks (Fᴴ * F) 0 0 (1 : Matrix κ κ (𝔸f E)) := by
       rw [Matrix.mul_one, conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul_fromCols]
       simp [fromBlocks_add]
     rw [h_index, h_block] at h_jacobi
-    simpa [w] using h_jacobi
-  have h_conj : wᴴ * w = a.valᴴ * finAdeleMatrix (yᴴ * y) * a.val := by
-    simp [w, finAdeleMatrix_conjTranspose, Matrix.mul_assoc]
-  rw [h_gram, h_gram, h_conj, det_mul, det_mul, det_conjTranspose] at h_disc
-  -- The generalised index of an element of `E` is the absolute value of its norm.
-  simpa [field, ← mapMatrix_apply, ← map_det] using h_disc
+    simpa using h_jacobi
+  rw [h_gram, h_gram] at h_disc
+  exact congrArg Real.sqrt h_disc.symm
 
 omit [DecidableEq κ] in
 /-- Let `r v` make the columns of `y` orthonormal at each infinite place `v`, with embedding `Φ v`,
@@ -536,25 +544,25 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
       (∏ i : Fin s, ‖((stdSpace E κ).move (1, u)).archCoords (X i)‖) ^ (2 * numInfPlaces E) ≤
         (8 * (numInfPlaces E * s) * rootDiscr E) ^ (numInfPlaces E * s) *
           sublatticeDiscriminant u.val.val_inv T := by
-  -- Take lattice bases `x b` of `T` and `y a` of its orthogonal complement; by Jacobi's identity
-  -- their discriminants agree. Minkowski's second theorem gives short lattice vectors `y B i`.
-  unfold sublatticeDiscriminant
-  set m : Matrix κ (Fin (Module.finrank E T)) (𝔸f E) := (sublatticeBasis u.val.val_inv T).val
-  have hm_prim : IsPrimitiveMatrix (Ô E) (u.val.inv * m) :=
-    isPrimitiveMatrix_mul_sublatticeBasis u.val.val_inv T
-  obtain ⟨x, b, hx_inv, hx, hm⟩ :
-      ∃ x : Matrix κ (Fin (Module.finrank E T)) E, ∃ b : GL (Fin (Module.finrank E T)) (𝔸f E),
-        HasLeftInv x ∧ colSpan x = T ∧ m = finAdeleMatrix x * b.val :=
-    exists_sublatticeBasis_eq_finAdeleMatrix_mul u.val.val_inv T
-  obtain ⟨y, a, hy_inv, hy, hy_prim⟩ : ∃ y : Matrix κ (Fin s) E, ∃ a : GL (Fin s) (𝔸f E),
-      HasLeftInv y ∧ colSpan y = xᴴ.mulVecLin.ker ∧
-        IsPrimitiveMatrix (Ô E) (u.val.inv * (finAdeleMatrix y * a.val)) :=
-    exists_isPrimitiveMatrix_mul_finAdeleMatrix u.val.val_inv _
-      (finrank_ker_conjTranspose hs hx_inv)
+  -- Use the saturated basis of the orthogonal complement to apply Minkowski's theorem.
+  obtain ⟨x, hx_inv, hx⟩ := exists_hasLeftInv_colSpan_eq T
+  let W := xᴴ.mulVecLin.ker
+  have hdim : finrank E W = s := finrank_ker_conjTranspose hs hx_inv
+  have h_disc : sublatticeDiscriminant u.val.val_inv T =
+      sublatticeDiscriminant u.val.val_inv W := by
+    apply sublatticeDiscriminant_eq_of_orthogonal u (hdim ▸ hs)
+    intro v hv w hw
+    obtain ⟨c, rfl⟩ := hx.ge hv
+    change star (x *ᵥ c) ⬝ᵥ w = 0
+    rw [star_mulVec, ← dotProduct_mulVec, show xᴴ *ᵥ w = 0 from hw, dotProduct_zero]
+  obtain ⟨y, a, hy_inv, hy, hy_prim, h_basis⟩ :=
+    exists_basis_sublatticeDiscriminant u.val.val_inv W hdim
+  set m := (sublatticeBasis u.val.val_inv T).val
   have h_jacobi :
-      genIndex a.val.det ^ 2 * |(Algebra.norm ℚ (yᴴ * y).det : ℝ)| = genIndex (mᴴ * m).det := by
-    rw [hm] at hm_prim ⊢
-    exact genIndex_sq_mul_abs_norm_eq u hs (mul_eq_zero_of_colSpan_le_ker hy.le) hm_prim hy_prim
+      √(genIndex a.val.det ^ 2 * |(Algebra.norm ℚ (yᴴ * y).det : ℝ)|) =
+        √(genIndex (mᴴ * m).det) := by
+    rw [← h_basis, ← h_disc]
+    exact Real.sqrt_sq (show 0 ≤ sublatticeDiscriminant u.val.val_inv T from Real.sqrt_nonneg _)
   -- At each infinite place make the columns of `y` orthonormal by `r v`.
   have h_orth (v : InfinitePlace E) :
       ∃ r : GL (Fin s) ℂ, (y.map (Φ v) * r.val)ᴴ * (y.map (Φ v) * r.val) = 1 :=
