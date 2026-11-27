@@ -6,6 +6,7 @@ public import Mathlib.RingTheory.DedekindDomain.Different
 import Mathlib.NumberTheory.NumberField.Discriminant.Different
 import Mathlib.RingTheory.Ideal.Int
 public import Lib.Adelic.Adeles.AdditiveCharacter
+import TauCeti.RingTheory.DedekindDomain.Different.Basic
 
 /-!
 # Embeddings, differents and the maximal real subfield of a CM field
@@ -171,21 +172,17 @@ all finite places. -/
 lemma differentIdeal_eq_top_of_add_star_eq_one {i β : 𝓞 E} (hi_sq : i * i = -1)
     (hi_star : star i = -i) (hβ : β + star β = 1) :
     differentIdeal (𝓞 (maximalRealSubfield E)) (𝓞 E) = ⊤ := by
-  -- For `y = i β` the number `y - ȳ = i` is a unit. It lies in the different, the inverse of the
-  -- trace dual, because it multiplies the trace dual into the integers.
+  -- The element `i = i * β - star (i * β)` is a unit and sends the trace dual into the integers.
   have h_sub : i * β - star (i * β) = i := by
     rw [star_mul', hi_star]
     linear_combination i * hβ
-  have hi_mem : (i : E) ∈
-      IsLocalization.coeSubmodule E (differentIdeal (𝓞 (maximalRealSubfield E)) (𝓞 E)) := by
-    rw [coeSubmodule_differentIdeal _ (maximalRealSubfield E), mem_div_iff_forall_mul_mem]
-    intro x hx
-    have h_int : IsIntegral ℤ (i * x) := by
-      simpa only [h_sub] using isIntegral_sub_star_mul_of_mem_traceDual (i * β) hx
-    exact mem_one.2 ⟨⟨i * x, h_int⟩, rfl⟩
-  obtain ⟨j, hj_mem, hj_eq⟩ := (IsLocalization.mem_coeSubmodule E _).1 hi_mem
-  obtain rfl : j = i := RingOfIntegers.coe_injective hj_eq
-  exact Ideal.eq_top_of_isUnit_mem _ hj_mem (.of_mul_eq_one (-j) (by simp [hi_sq]))
+  have hi_mem : i ∈ differentIdeal (𝓞 (maximalRealSubfield E)) (𝓞 E) := by
+    refine (TauCeti.mem_differentIdeal_iff_forall_mem_traceDual
+      (K := maximalRealSubfield E) (L := E)).2 fun x hx ↦ ?_
+    have h_int : IsIntegral ℤ (x * i) := by
+      simpa only [h_sub, mul_comm] using isIntegral_sub_star_mul_of_mem_traceDual (i * β) hx
+    exact mem_one.2 ⟨⟨x * i, h_int⟩, rfl⟩
+  exact Ideal.eq_top_of_isUnit_mem _ hi_mem (.of_mul_eq_one (-i) (by simp [hi_sq]))
 
 /-- A CM field that contains a primitive root of unity of order `5040` has trivial different over
 its maximal real subfield. -/
