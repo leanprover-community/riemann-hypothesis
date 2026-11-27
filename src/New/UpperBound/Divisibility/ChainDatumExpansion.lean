@@ -227,6 +227,11 @@ noncomputable def ungluedVacuum (t : D.Translations) : D.ChainTensor :=
   pure (fun i : ℕ ↦ D.translateDatum t (2 * i) ⊗ₜ D.translateDatum t (2 * i + 1)) (D.ϱ + 1)
 
 variable {D} in
+/-- The plain tensor of `Ψ` is `∑ x, Ψ x • D.ungluedVacuum x`. -/
+lemma plainTensor_eq_sum_ungluedVacuum (Ψ : D.Translations →₀ ℂ) :
+    plainTensor Ψ = Ψ.sum fun (x : D.Translations) (c : ℂ) ↦ c • D.ungluedVacuum x :=
+  rfl
+
 open scoped Classical in
 /-- If the translations `t` vanish at the places above `N`, the glued tensor `D.gluedVacuum t` is
 the sum, over the classes `y` of the gluing, of `D.ungluedVacuum (t + gluingTuple y)`: the tensors,
@@ -338,9 +343,12 @@ fixed scalar multiple of the vacuum vector of `Hom(X_j, X_{j+1})`) translated by
 `gluingTuple y` vanish at the places not above `N`. -/
 lemma IsChainDatum.gluedTensor_eq_sum_translates {ϑ : D.Twist} {Ψ : D.Translations →₀ ℂ}
     (hΨ : IsChainDatum ϑ Ψ) :
-    gluedTensor Ψ = Ψ.sum fun (x : D.Translations) (c : ℂ) ↦
-      c • ∑ y : D.GluingClasses, D.ungluedVacuum (x + gluingTuple y) := by
-  refine Finsupp.sum_congr fun x hx ↦ ?_
+    (gluedTensor Ψ = Ψ.sum fun (x : D.Translations) (c : ℂ) ↦
+      c • ∑ y : D.GluingClasses, D.ungluedVacuum (x + gluingTuple y)) ∧
+    Fintype.card D.GluingClasses ≤ D.N ^ (D.f * D.m * D.n D.m / 2) ∧
+    ∀ y : D.GluingClasses, gluingTuple y ∈ D.supportedTranslations D.N := by
+  refine ⟨Finsupp.sum_congr fun x hx ↦ ?_, D.card_gluingClasses_le,
+    gluingTuple_mem_supportedTranslations⟩
   -- `x` vanishes at the places prime to `D.M * ϑ.normQ`, hence above `N`.
   have hx_zero : x ∈ D.supportedTranslations (D.M * ϑ.normQ) :=
     Set.inter_subset_right (hΨ.support_subset x hx)
@@ -362,7 +370,7 @@ lemma IsChainDatum.exists_isWeakChainDatum_compositeLift_eq {ϑ : D.Twist}
       (fun x : D.Translations ↦ ∑ y : D.GluingClasses, D.ungluedVacuum (x + gluingTuple y))
       (D.admissibleTranslations ϑ.normQ ∩ D.supportedTranslations (D.M * ϑ.normQ))
       ϑ.normQ 1 (ϑ.Q = ∅) (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2)) (gluedTensor Ψ) :=
-    ⟨Ψ, hΨ.toIsAdmissibleCoeffs, hΨ.gluedTensor_eq_sum_translates⟩
+    ⟨Ψ, hΨ.toIsAdmissibleCoeffs, hΨ.gluedTensor_eq_sum_translates.left⟩
   have h_size : (D.M ^ (3 * D.f * D.m * D.n D.m ^ 2) * D.N ^ (D.f * D.m * D.n D.m) : ℝ) ≤
       Real.exp (D.x ^ 60) := Real.le_exp_of_log_le D.le_of_hasLogBound
   obtain ⟨Ψ', h_adm, h_sum⟩ : IsAdmissibleCombination D.ungluedVacuum
@@ -371,7 +379,7 @@ lemma IsChainDatum.exists_isWeakChainDatum_compositeLift_eq {ϑ : D.Twist}
     h_outer.bind 1 (D.N ^ (D.f * D.m * D.n D.m))
       (fun x hx ↦ isAdmissibleCombination_sum_ungluedVacuum (Set.inter_subset_left hx) (ϑ.Q = ∅))
       (by simp) fun _ ↦ by simpa using h_size
-  have h_eq : gluedTensor Ψ = plainTensor Ψ' := h_sum
+  have h_eq : gluedTensor Ψ = plainTensor Ψ' := by rw [h_sum, plainTensor_eq_sum_ungluedVacuum]
   have h_inv : (plainTensor Ψ').IsInvariant ϑ := by simpa [← h_eq] using hΨ.isInvariant
   refine ⟨Ψ', ⟨h_adm, isJointlyInvariant_of_plainTensor h_inv⟩, fun φ ↦ ?_⟩
   have h_chain : chainOfTensor ϑ φ (plainTensor Ψ') =

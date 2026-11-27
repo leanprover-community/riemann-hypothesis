@@ -356,7 +356,8 @@ x∘φ is the restriction of x along φ. -/
 lemma Comparison.pull_apply {F : AbFunctor C} {F' : AbFunctor C'} (c : Comparison F F')
     (α : N' ⟶ c.functor ⋙ N) (x : H N F n) :
     c.pull α n x = (mk₀ α).comp
-      ((x.mapExactFunctor (restrictAlong c.functor)).comp (mk₀ c.coeffHom) (add_zero n))
+      ((x.mapExactFunctor (C := AbFunctor C) (D := AbFunctor C') (restrictAlong c.functor)).comp
+        (mk₀ c.coeffHom) (add_zero n))
         (zero_add n) :=
   rfl
 
@@ -374,12 +375,7 @@ lemma Comparison.pull_hom_contravariant (hS : S.ShortExact) (hS' : S'.ShortExact
     intro n (x : H S.X₁ F n)
     change c.pull (N := S.X₃) τ.τ₃ (n + 1) (hS.extClass.precomp F (add_comm 1 n) x) =
       hS'.extClass.precomp F' (add_comm 1 n) (c.pull (N := S.X₁) τ.τ₁ n x)
-    have h_pull {M : AbFunctor C} {M' : AbFunctor C'} (a : M' ⟶ c.functor ⋙ M) (m : ℕ)
-        (y : H M F m) :
-        c.pull a m y = (mk₀ a).comp ((y.mapExactFunctor (C := AbFunctor C) (D := AbFunctor C')
-          (restrictAlong c.functor)).comp (mk₀ c.coeffHom) (add_zero m)) (zero_add m) :=
-      pull_apply c a y
-    rw [h_pull, h_pull]
+    rw [pull_apply, pull_apply]
     simp [mapExactFunctor_comp, mapExactFunctor_extClass,
       ← comp_assoc (h₁₂ := zero_add 1), add_comm, ← hS'.extClass_naturality]
 
@@ -395,12 +391,7 @@ lemma Comparison.pull_hom_covariant (hS : S.ShortExact) (hS' : S'.ShortExact) {�
   -- the extension class is natural
   change pull (N := N) ⟨φ, τ.τ₁⟩ α (n + 1) (hS.extClass.postcomp N rfl x) =
     hS'.extClass.postcomp N' rfl (pull ⟨φ, τ.τ₃⟩ α n x)
-  have h_pull {F₀ : AbFunctor C} {F₀' : AbFunctor C'} (c : Comparison F₀ F₀') {M : AbFunctor C}
-      (a : N' ⟶ c.functor ⋙ M) (m : ℕ) (y : H M F₀ m) :
-      c.pull a m y = (mk₀ a).comp ((y.mapExactFunctor (C := AbFunctor C) (D := AbFunctor C')
-        (restrictAlong c.functor)).comp (mk₀ c.coeffHom) (add_zero m)) (zero_add m) :=
-    pull_apply c a y
-  rw [h_pull, h_pull]
+  rw [pull_apply, pull_apply]
   simp [mapExactFunctor_comp, mapExactFunctor_extClass, comp_assoc (h₂₃ := rfl),
     ShortExact.extClass_naturality (h₂ := hS')]
 

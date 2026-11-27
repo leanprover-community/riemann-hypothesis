@@ -112,15 +112,19 @@ lemma det_complexLinearPart :
   · simp [toSquareBlockProp, complexLinearPart_apply, units_ne_iff_eq_neg.1 hi,
       units_ne_iff_eq_neg.1 hj]
 
+/-- For u in U(ε), the conjugate `realMultiplier u` of the determinant of the negative block of u is
+not zero. -/
+lemma realMultiplier_ne_zero : realMultiplier u ≠ 0 := fun h_zero ↦ by
+  -- The cocycle identity at `(u, u)` writes `1` as a product with the factor `realMultiplier u`.
+  simpa [realAction, h_zero] using (realAction ε).cocycle u u
+
 /-- The matrix `complexLinearPart u` is invertible, since both diagonal blocks of u are. -/
 noncomputable instance : Invertible (complexLinearPart u) :=
   invertibleOfIsUnitDet (complexLinearPart u) <| by
     have h_pos : principalMinor (u : Matrix ι ι ℂ) (fun i : ι ↦ ¬ε i = -1) =
         (u : Matrix ι ι ℂ).det * realMultiplier u := U.principalMinor_compl u
     rw [det_complexLinearPart, h_pos]
-    have h_ne : realMultiplier u ≠ 0 := fun h_zero ↦ by
-      simpa [realAction, h_zero] using (realAction ε).cocycle u u
-    simp [h_ne, GeneralLinearGroup.det_ne_zero]
+    simp [realMultiplier_ne_zero, GeneralLinearGroup.det_ne_zero]
 
 omit [DecidableEq ι] in
 /-- Induction for polynomials P with ∂_i∂_j P = 0 whenever r(i, j). A subspace S contains all of
@@ -362,6 +366,13 @@ variable {ε : R → ℤˣ} {ε' : C → ℤˣ} (f : USign ε →* USign ε') (�
 
 variable {f : USign ε →* USign ε'} {γ : ℤ}
 
+/-- For `g` in U(ε′), the operator norm of the Weil operator `realWeil g` on the Fock space is at
+most the norm of the vacuum vector times the modulus of `realMultiplier g`, the conjugate of the
+determinant of the negative block of `g`. -/
+lemma norm_realWeil_le (g : USign ε') :
+    ‖realWeil g‖ ≤ ‖(vacVector : fockSpace ε')‖ * ‖realMultiplier g‖ :=
+  norm_weilRep_le (realAction ε') g
+
 /-- Let `f` be a continuous homomorphism from U(ε) to U(ε′) with `‖f g‖ ≤ a * ‖g‖`. Then
 `detTwist f γ`, the Weil representation pulled back along `f` and twisted by `det ^ γ`, is strongly
 continuous, preserves the positive definite hermitian form `fockInner`, and has operator norm
@@ -387,7 +398,7 @@ lemma isUnitaryRep_detTwist {a : ℝ}
     positivity
   · -- The determinant has modulus one, and the multiplier grows at most like `‖f g‖ ^ card C`.
     calc ‖detTwist f γ g‖ = ‖realWeil (f g)‖ := by simp [norm_smul]
-      _ ≤ ‖(vacVector : fockSpace ε')‖ * ‖realMultiplier (f g)‖ := norm_weilRep_le (realAction ε') (f g)
+      _ ≤ ‖(vacVector : fockSpace ε')‖ * ‖realMultiplier (f g)‖ := norm_realWeil_le (f g)
       _ ≤ ‖(vacVector : fockSpace ε')‖ * a ^ card C * ‖(g : Matrix R R ℂ)‖ ^ card C := by
         grw [mul_assoc, ← mul_pow, norm_realMultiplier_le, h_norm]
 

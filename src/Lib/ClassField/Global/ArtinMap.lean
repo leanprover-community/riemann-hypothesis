@@ -113,7 +113,7 @@ lemma range_abelianLift_comp_artinAt :
   · -- The local symbol of `x` is the class of some `g` in the decomposition group.
     rintro _ ⟨x, rfl⟩
     obtain ⟨g, hg⟩ := QuotientGroup.mk_surjective (localArtin Γ A v x)
-    refine ⟨g, g.2, ?_⟩
+    refine ⟨g, g.property, ?_⟩
     rw [MonoidHom.comp_apply, h.artinAt_eq_of_localArtin_eq hg.symm]
     rfl
   · -- `localArtin` has dense range, so it meets the open fibre of `χ` through `g`.

@@ -787,7 +787,7 @@ lemma IsProperOver.isTestCohomEquiv_field_extension (hs : IsProperOver s) (hℓ 
   let A (t : Finset T) : Subalgebra S T := adjoin S t
   let α (t : Finset T) : S ⟶ of (A t) := ofHom (algebraMap S (A t))
   have (t : Finset T) : Algebra.FiniteType S (A t) := .adjoin_of_finite t.finite_toSet
-  have β (t : Finset T) : A t →ₐ[S] S := (nullstellensatz_exists_le_ker bot_ne_top).choose
+  let β (t : Finset T) : A t →ₐ[S] S := (nullstellensatz_exists_le_ker bot_ne_top).choose
   -- The maps `W_T ⟶ W_(A t) ⟶ W_S`, and the section `W_S ⟶ W_(A t)` given by the point `β t`;
   -- `fib b` is `W_B`.
   let fib {B : CommRingCat} (b : R ⟶ B) : CommRingCat ⥤ Type 1 := Variety.baseChangeOf s b

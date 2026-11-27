@@ -449,7 +449,7 @@ lemma koszulExact_pd_line {K : Type} [CommRing K] [Algebra A K] (E : CrysTest A)
     obtain ⟨k, hk⟩ := P.binomExpansion 0 (p ^ 2 * z)
     rw [zero_add, h_eval_pt, h_eval_zero, h_deriv_zero] at hk
     refine ⟨z * k, ?_⟩
-    simp only [Nat.succ_eq_add_one, hd, z, neg_smul, smul_def', nsmul_eq_mul, map_mul, map_pow,
+    simp only [Nat.succ_eq_add_one, hd, z, smul_def', map_mul, map_pow,
       map_natCast, map_neg] at hk ⊢
     linear_combination hk
   choose w hw using h_taylor

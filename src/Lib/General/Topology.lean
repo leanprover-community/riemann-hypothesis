@@ -58,14 +58,11 @@ section ProcyclicImage
 
 open PadicInt Filter Subgroup ZMod Nat Units
 
-/-- The powers of 5 form a subgroup of index 2 in (ℤ/2^(k+2))ˣ. -/
-lemma ZMod.index_zpowers_unitOfCoprime_five (k : ℕ) (h_coprime : Nat.Coprime 5 (2 ^ (k + 2))) :
-    (zpowers (unitOfCoprime 5 h_coprime)).index = 2 := by
-  have card_units : Nat.card (ZMod (2 ^ (k + 2)))ˣ = 2 * 2 ^ k := by
-    simp [card_units_eq_totient, totient_prime_pow_succ Nat.prime_two (k + 1), ← pow_succ']
-  have card_powers : Nat.card (zpowers (unitOfCoprime 5 h_coprime)) = 2 ^ k := by
-    rw [Nat.card_zpowers, ← orderOf_units, coe_unitOfCoprime, Nat.cast_ofNat, orderOf_five]
-  exact Nat.mul_right_cancel card_pos <| by rw [index_mul_card, card_units, card_powers]
+/-- Every square unit modulo a power of two is a power of 5. -/
+private lemma sq_mem_zpowers_unitFive {n : ℕ} (u : (ZMod (2 ^ n))ˣ) :
+    u ^ 2 ∈ zpowers unitFive := by
+  obtain ⟨⟨v, ⟨_, m, rfl⟩⟩, rfl⟩ := (isComplement'_zpowers_unitFive_neg_one n).2 u
+  simpa [mul_pow, neg_one_zpow_eq_ite, apply_ite (· ^ 2)] using (zpowers _).pow_mem v.property 2
 
 /-- A continuous character κ of Γ with values in 1 + 4ℤ_ℓ admits a continuous character μ with
 ker μ ≤ ker κ whose image modulo every ℓ^(k+2) is cyclic: κ itself for odd ℓ, κ² for ℓ = 2. -/
@@ -81,11 +78,10 @@ lemma New.Selmer.exists_isCyclic_range_toZModPow {ℓ : ℕ} {Γ : Type*} [Fact 
     have (n : ℕ) : IsCyclic (ZMod (ℓ ^ n))ˣ := isCyclic_units_of_prime_pow ℓ Fact.out hℓ n
     exact ⟨κ, fun k ↦ inferInstance, hκ, le_rfl⟩
   refine ⟨κ ^ 2, fun k ↦ ?_, by fun_prop, fun g hg ↦ ?_⟩
-  · -- The powers of 5 have index 2 in (ℤ/2^(k+2))ˣ, so they contain all squares.
-    have h_five : Nat.Coprime 5 (2 ^ (k + 2)) := by bound
-    refine isCyclic_of_le (H' := zpowers (unitOfCoprime 5 h_five)) ?_
+  · -- Every unit is a power of 5 times a sign, so its square is a power of 5.
+    refine isCyclic_of_le (H' := zpowers (unitFive (n := k + 2))) ?_
     rintro _ ⟨g, rfl⟩
-    simp [sq_mem_of_index_two (index_zpowers_unitOfCoprime_five k h_five)]
+    simp [sq_mem_zpowers_unitFive]
   · -- κ(g) = ±1, and κ(g) = −1 would give 4 ∣ −2.
     have h_sq : (κ g).val ^ 2 = 1 := by simpa [← Units.val_pow_eq_pow_val] using hg
     have h_not_four : ¬(4 : ℤ_[2]) ∣ -1 - 1 :=

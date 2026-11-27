@@ -80,16 +80,16 @@ lemma resH1_π₁_eq_zero_iff {U : Subgroup Gal(Ω/K)} (hU : ∀ g ∈ U, M.ρ g
   · intro h
     refine ⟨0, fun g ↦ ?_⟩
     rw [coe_resZ1_apply, map_zero, sub_zero]
-    exact (h g g.2).symm
+    exact (h g g.property).symm
 
 /-- A cocycle that vanishes at `c` vanishes at every power of `c`. -/
 lemma apply_zpow_eq_zero (z : Z1 M.ρ) {c : Gal(Ω/K)} (h : (z : Gal(Ω/K) → M) c = 0) (n : ℤ) :
     (z : Gal(Ω/K) → M) (c ^ n) = 0 := by
   have h_mul (g : Gal(Ω/K)) : (z : Gal(Ω/K) → M) (g * c) = (z : Gal(Ω/K) → M) g := by
-    rw [z.2.2, h, map_zero, add_zero]
+    rw [z.property.2, h, map_zero, add_zero]
   induction n using Int.induction_on with
   | zero =>
-    have h1 := z.2.2 1 1
+    have h1 := z.property.2 1 1
     simpa using h1
   | succ n ih => rwa [zpow_add_one, h_mul]
   | pred n ih => rwa [← h_mul, ← zpow_add_one, sub_add_cancel]
@@ -158,7 +158,7 @@ theorem comap_π₁_eq (hu : ∀ g ∈ inertiaAbove Sᶜ, M.ρ g = 1)
   rw [h_unr, h_loc, h_conj]
   simp only [selmerZ1, Submodule.mem_inf, Submodule.mem_pi, Submodule.mem_comap,
     Set.mem_ofPred_eq]
-  exact ⟨fun ⟨⟨h1, h2⟩, h3⟩ ↦ ⟨⟨z.2, h1⟩, fun v hv ↦ h2 v hv, h3⟩,
+  exact ⟨fun ⟨⟨h1, h2⟩, h3⟩ ↦ ⟨⟨z.property, h1⟩, fun v hv ↦ h2 v hv, h3⟩,
     fun ⟨⟨_, h1⟩, h2, h3⟩ ↦ ⟨⟨h1, h2⟩, h3⟩⟩
 
 /-- Let `L` be a module of functions `G → N` that contains the coboundaries. The cocycles in `L`
@@ -234,7 +234,7 @@ theorem card_mul_pow_le {S : Finset (FinPlace K)}
     (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] [Finite M]
     {k N : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
     {ι : Type} [NeZero N] (s : IsLargeLevel.SplitPlaces m N I U ι)
-    (hk : M.HasFewCocycles (PlaceAboveLevel N) I k) (hT : ∀ v ∈ S, ↑N ∈ v.1) :
+    (hk : M.HasFewCocycles (PlaceAboveLevel N) I k) (hT : ∀ v ∈ S, ↑N ∈ v.asIdeal) :
     Nat.card (selmerH1 M S A L (Set.range s.v)) *
         Nat.card M ^ (Fintype.card (InfinitePlace K) + 1) *
         ∏ v ∈ S, Nat.card (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ.invariants ≤
@@ -260,7 +260,7 @@ theorem card_relations_ge {S : Finset (FinPlace K)}
     (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] [Finite M]
     {q : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
     {ι : Type} [NeZero q] [Fintype ι] (s : IsLargeLevel.SplitPlaces m q I U ι)
-    (γ : ι → Gal(Ω/K)) (hS : ∀ v ∈ S, ↑q ∈ v.1)
+    (γ : ι → Gal(Ω/K)) (hS : ∀ v ∈ S, ↑q ∈ v.asIdeal)
     (h_few : M.HasFewCocycles (PlaceAboveLevel q) I (Fintype.card ι + 1))
     (h_le : selmerZ1 M S A L ∅ ≤ selmerZ1 M S A L (Set.range s.v))
     (h_zero : ∀ x ∈ selmerZ1 M S A L ∅, ∀ i : ι, x (γ i) = 0) :

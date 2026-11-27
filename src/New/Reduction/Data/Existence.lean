@@ -38,12 +38,17 @@ Notions from other files:
 
 ## Relation to the literature
 
-Known result: Behrend's construction for several equations at once. Source: Shapira, Behrend-type
-constructions for sets of linear equations, Acta Arith. 2006 (after Behrend, PNAS 32, 1946); compare
-Alon–Shapira, A characterization of easily testable induced subgraphs (2006), Lemma 4.1 (preprint
-numbering). Form here: all weights up to a given bound are avoided at once, modulo an
-integer, with a fixed number of digits and the explicit count of points on a sphere. This concerns
-`exists_three_term_free`.
+Alon–Shapira, *A characterization of easily testable induced subgraphs* (2006),
+[Lemma 4.1, pp. 6–7 of the authors' version](https://web.math.princeton.edu/~nalon/PDFS/testindfull2.pdf#page=6),
+construct one set of integers on which every equation `a x + b y = (a + b) z` with
+`1 ≤ a, b ≤ h` has only the solutions `x = y = z`. Their proof uses Behrend's digit sphere
+(PNAS 32, 1946). Shapira, *Behrend-type constructions for sets of linear equations*
+(Acta Arith. 2006), also treats individual equations and systems of equations.
+
+`exists_three_term_free` bounds the sum of the positive weights by `L` and states the result
+modulo `o`, with a prescribed digit count `n` and digit bound `H`. Both weighted sums have
+base-`L * H` digits less than `L * H`, so their values are below `(L * H) ^ n ≤ o` and a
+congruence gives an equality. The sphere count gives the bound `H ^ n / (n * H ^ 2)`.
 -/
 
 @[expose] public section

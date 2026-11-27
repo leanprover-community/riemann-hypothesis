@@ -149,11 +149,19 @@ lemma ideleModule_principal_eq_one : ∀ γ : principalIdeles K, ideleModule γ.
   simp [principalIdeles, ideleModule, finIdeleAbs_principalIdele, field, h_norm]
 
 open scoped Classical in
+/-- The adelic tent is nonzero exactly on the open ball of radius `r` at infinity
+and the coset `1 + d⁻¹ Ô` at the finite places. -/
+lemma adelicTent_ne_zero_iff {x : mixedSpace K × 𝔸f K} :
+    adelicTent r d x ≠ 0 ↔ dist x.fst 1 < r ∧ d.val * (x.snd - 1) ∈ Ô K := by
+  by_cases h : d.val * (x.snd - 1) ∈ Ô K <;> simp [adelicTent, h]
+
+open scoped Classical in
 /-- Where `adelicTent r d` is nonzero, the infinite part is within `r` of `1` and `d` times the
 finite part minus `1` is integral. -/
 lemma dist_le_and_mem_of_adelicTent_ne_zero {x : mixedSpace K × 𝔸f K}
     (hx : adelicTent r d x ≠ 0) : dist x.fst 1 ≤ r ∧ d.val * (x.snd - 1) ∈ Ô K := by
-  grind [adelicTent]
+  obtain ⟨h_dist, h_mem⟩ := (adelicTent_ne_zero_iff r d).mp hx
+  exact ⟨h_dist.le, h_mem⟩
 
 /-- The tent `adelicTent r d`, composed with multiplication by an idele `a`, has compact support. -/
 lemma hasCompactSupport_adelicTent_mul :

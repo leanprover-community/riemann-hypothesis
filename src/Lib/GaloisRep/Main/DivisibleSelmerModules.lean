@@ -75,6 +75,14 @@ def selmerModuleMapOfInjective {f : B →ₗ[O] B'} (hf : Function.Injective f) 
   ((f.compLeft n).compLeft Gal(Ω/E)).restrict fun (_ : Gal(Ω/E) → n → B) hz ↦
     (comp_mem_selmerModule_iff ρ S L hf).2 hz
 
+/-- The value at `g` and `i` of the image of a Selmer cocycle `z` under the map induced by `f` is
+`f (z g i)`. -/
+lemma selmerModuleMapOfInjective_apply {f : B →ₗ[O] B'} (hf : Function.Injective f)
+    (z : selmerModule ρ S L B) (g : Gal(Ω/E)) (i : n) :
+    (selmerModuleMapOfInjective ρ S L hf z : Gal(Ω/E) → n → B') g i =
+      f ((z : Gal(Ω/E) → n → B) g i) :=
+  rfl
+
 /-- An injective map of coefficient modules induces an injective map of Selmer modules. -/
 lemma selmerModuleMapOfInjective_injective {f : B →ₗ[O] B'} (hf : Function.Injective f) :
     Function.Injective (selmerModuleMapOfInjective ρ S L hf) :=
@@ -102,6 +110,7 @@ lemma range_selmerModuleMapOfInjective {a : O} {f : QuotSpan a →ₗ[O] B}
       simpa only [hz] using hy_mem
     refine ⟨⟨z, (comp_mem_selmerModule_iff ρ S L hf).1 hfz_mem⟩, ?_⟩
     ext g i
+    rw [selmerModuleMapOfInjective_apply]
     exact hz g i
 
 /-- If `f` identifies `O / a` (that is, `QuotSpan a`) with the `a`-torsion of `B`, then the Selmer

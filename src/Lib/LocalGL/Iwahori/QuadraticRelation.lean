@@ -58,7 +58,7 @@ variable {F W : Type*} [Field F] [Valued F ℤᵐ⁰] [AddCommGroup W] [Module �
 
 /-- An element `g` lies in `New.blockParahoric c` iff it lies in `GL_N` of the valuation ring and
 its entry `g i j` has valuation less than 1 whenever `c j < c i`. -/
-@[grind]
+@[grind =]
 lemma mem_blockParahoric :
     g ∈ blockParahoric c ↔
       g ∈ intGL (Fin N) 𝒪[F] ∧ ∀ i j : Fin N, c j.val < c i.val → v (g i j) < 1 := .rfl
@@ -89,7 +89,8 @@ lemma conj_monomial_mem_blockParahoric_of_mem (t : Fin N → Fˣ) (σ : Perm (Fi
     (permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t) ∈ blockParahoric c := by
   set k : GL (Fin N) F := (permGL σ * diagGL t)⁻¹ * g * (permGL σ * diagGL t)
   have h_det : k.val.det = g.val.det := det_units_conj' _ _
-  simp only [mem_blockParahoric, mem_intGL_iff_det, k, conj_monomial_apply, h_det, map_mul, map_inv₀] at hg ⊢
+  simp only [mem_blockParahoric, mem_intGL_iff_det, k, conj_monomial_apply, h_det, map_mul,
+    map_inv₀] at hg ⊢
   obtain ⟨⟨hg_int, hg_det⟩, hg_below⟩ :
       ((∀ a b : Fin N, v (g a b) ≤ 1) ∧ v g.val.det = 1) ∧
         (∀ i j : Fin N, d j.val < d i.val → v (g i j) < 1) := hg

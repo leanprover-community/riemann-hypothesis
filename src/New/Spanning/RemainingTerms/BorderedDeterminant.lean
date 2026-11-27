@@ -28,8 +28,7 @@ says that `γ` has cell rank `j`. `New.Filling.minorNorm j γ` is the absolute n
 * `New.Filling.latticeDisc`, `New.Filling.isotropicRowsIndex`, `New.Filling.torsionIndex`: a
   discriminant and two lattice indices. `New.submoduleIndex M M'` is the index of `M ⊓ M'` in `M'`,
   `New.colLattice` a column span.
-* `New.Filling.subframeMinor`: the minor `δ_*(γ)`, nonzero for a term with a cell rank
-  (`New.Filling.HasCellRank.subframeMinor_ne_zero`).
+* `New.Filling.subframeMinor`: the minor `δ_*(γ)`.
 * `New.Filling.minorGauge`, `New.Filling.maxGauge`: the gauges of a term.
   `New.Filling.IsNearRepresentative` marks the kept terms, and `New.Filling.IsNearTermAt` selects
   the terms that are counted.
@@ -285,13 +284,10 @@ theorem linkMetric_form_of_mem_link {p q : 𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex
 lemma det_gram_linkMetric_ne_zero (h : HasLeftInv v) : (vᴴ * S.linkMetric * v).det ≠ 0 := by
   -- At a complex embedding `Φ w` the form `S.linkMetric` is positive definite and `v` stays
   -- injective.
-  obtain ⟨l, hl⟩ := h
   let w : NumberField.InfinitePlace E := Classical.ofNonempty
-  have h_inj : (v.map (Φ w)).mulVec.Injective :=
-    HasLeftInv.injective_mulVec ⟨l.map (Φ w), by simp [← Matrix.map_mul, hl]⟩
   apply_fun Φ w
   simpa [map_det, map_conjTranspose] using
-    ((linkMetric_posDef w).conjTranspose_mul_mul_same h_inj).det_pos.ne'
+    ((linkMetric_posDef w).conjTranspose_mul_mul_same (h.map (Φ w)).injective_mulVec).det_pos.ne'
 
 omit [CMType E] in
 /-- If `v` has a left inverse, the number of its columns is the dimension of their span. -/

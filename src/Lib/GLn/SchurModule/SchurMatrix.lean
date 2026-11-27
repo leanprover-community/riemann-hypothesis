@@ -149,14 +149,14 @@ lemma isTableauBasis_epsilon {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ
 
 /-- The minor products of the chosen fillings `New.BasisTableau` are linearly independent over
 every ring. -/
-lemma linearIndependent_basisTableau {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℕ} {k : ℕ → ℕ}
+lemma linearIndependent_basisTableau {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ}
     (R : Type) [CommRing R] :
     LinearIndependent R fun T : BasisTableau ι M k ↦ tableauPoly R id T.val := by
   -- `BasisTableau ι M k` is the subtype of the members of the chosen set.
   exact (isTableauBasis_epsilon (ι := ι) (M := M) (k := k)).linearIndepOn R
 
 /-- The minor product of any filling is a linear combination of those of the standard fillings. -/
-lemma exists_sum_basisTableau_smul_eq {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℕ} {k : ℕ → ℕ}
+lemma exists_sum_basisTableau_smul_eq {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ}
     (R : Type) [CommRing R] (T : Tableau ι M k) :
     ∃ c : BasisTableau ι M k → R,
       ∑ U : BasisTableau ι M k, c U • tableauPoly R id U.val = tableauPoly R id T := by
@@ -166,7 +166,7 @@ lemma exists_sum_basisTableau_smul_eq {ι : Type} [Fintype ι] [DecidableEq ι] 
 /-- The character formula for the standard fillings: the sum of their monomials, times the
 alternant of weight zero, is the alternant of the weight whose `i`-th entry counts the columns of
 height greater than `i`. -/
-lemma sum_basisTableau_mul_alternant {ι : Type} [Fintype ι] [DecidableEq ι] {M : ℕ} {k : ℕ → ℕ}
+lemma sum_basisTableau_mul_alternant {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ}
     {a : ℕ} (e : Fin a ≃ ι) (x : ι → ℂ) :
     (∑ T : BasisTableau ι M k, ∏ h : Fin M, ∏ j : Fin (k h), ∏ s : Fin h, x (T.val h j s)) *
         alternant (x ∘ e) 0 =
@@ -416,6 +416,7 @@ omit [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
 @[simp]
 lemma schurDetExp_self : schurDetExp n n κ = 0 := funext (by simp [schurDetExp])
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Let M be a matrix whose row i gives coordinates of b'_i(zy) in the family
 b_j(y)·∏_τ det(y_τ)^{d_τ}, with b, b' the basis products `New.nablaBasis` for the rows n and n' and
 d = `New.schurDetExp`. Then M is the Schur matrix S_κ(z): the family is linearly independent, so
@@ -508,6 +509,7 @@ lemma GL.diagramWeight_eq_of_fitsRanks (h : FitsRanks n n' κ) :
       rankAt n τ ≤ rankAt n' τ ∧ ∀ k ∈ Ioo (rankAt n τ) (rankAt n' τ), κ τ k = 0 := h τ
   grind [zero_smul, schurDetExp, sum_eq_ite (rankAt n τ), sum_range_add_sum_Ico _ h_le]
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Assume `FitsRanks n n' κ`: for every τ, |n_τ| ≤ |n'_τ| and κ_τ(h) = 0 for |n_τ| < h < |n'_τ|.
 Let b = `nablaBasis` for `n`, b' = `nablaBasis` for `n'`, and let d τ be κ_τ(|n_τ|) if
 |n_τ| < |n'_τ| and 0 otherwise. Then for matrices z_τ of size n'_τ × n_τ, row `i` of the Schur
@@ -827,6 +829,7 @@ lemma nablaBasis_eq_weylEval_smul_weylKernel_of_lt (e : ∀ τ : Φ, n τ ≃ Fi
   · -- the terms at the other positions are zero
     aesop
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 /-- Let e_τ enumerate the rows at each place τ, and let y be the permutation array of e
 (`New.permArray`). If, for a family i of chosen standard fillings, some entry of a column of height
 k of i_τ has position at least k in the enumeration e_τ, then the value b_i(y) of the basis vector

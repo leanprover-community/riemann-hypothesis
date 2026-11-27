@@ -48,10 +48,6 @@ private lemma group_split_eq {G : Type*} [Group G] (σ a b : G) :
     σ = a * ((σ⁻¹ * a)⁻¹ * b) * b⁻¹ := by
   rw [_root_.mul_inv_rev, inv_inv, ← mul_assoc, mul_inv_cancel_left, mul_inv_cancel_right]
 
-private lemma group_one_mul_one {G : Type*} [Group G] {w γ : G} (hw : w = 1) :
-    γ = 1⁻¹ * (w * γ) * 1 := by
-  rw [hw, inv_one, one_mul, mul_one, one_mul]
-
 private lemma group_step_eq {G : Type*} [Group G] {u u' w a fw τ b w' : G}
     (ha : w * a = a * w) (hfw : w * fw = fw * w) (hw' : w' = fw * w) :
     u⁻¹ * (w * (a * fw * τ * b⁻¹)) * u' = (a⁻¹ * u)⁻¹ * (w' * τ) * (b⁻¹ * u') := by
@@ -75,15 +71,7 @@ private lemma group_eq_inv_mul_of_one_mul {G : Type*} [Group G] {w₁ w₂ σ τ
   rw [hw, one_mul] at h
   exact eq_inv_mul_iff_mul_eq.2 (mul_left_cancel h)
 
-private lemma group_inv_inv_eq {G : Type*} [Group G] {a b c d x y : G}
-    (h : a * x * b⁻¹ = c * y * d⁻¹) : a⁻¹⁻¹ * x * b⁻¹ = c⁻¹⁻¹ * y * d⁻¹ := by
-  rwa [inv_inv, inv_inv]
-
 variable {A : Type} [CommRing A] [StarRing A] {𝔰 : Shape} {T : 𝔰.Form A} {γ σ : T.G} {p q : ℕ → Aˣ}
-
-private lemma orbitPoint_inv (b : Fin 𝔰.n) (g : T.G) :
-    orbitPoint b g⁻¹ = g.val.val *ᵥ Pi.single (𝔰.besselFrame b) 1 := by
-  rw [orbitPoint, Subgroup.coe_inv, Subgroup.coe_inv, inv_inv]
 
 omit [StarRing A] in
 private lemma splitGram_mul_apply_inl (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (a : Fin 𝔰.ϱ)
@@ -438,7 +426,8 @@ lemma exists_eq_mul_floorWeyl_mul_of_mem_intGL [IsHermitianUnit T.splitGram]
     refine inv_mul_mem_of_orbitPoint_eq (b := j.castSucc) hσ
       (mul_mem (heisenbergElem_mem_floorUnipotent j v).1 floorWeyl_mem_floorGroup) ?_
     funext i
-    rw [orbitPoint_inv, orbitPoint_inv, mulVec_single_one, mulVec_single_one, col_apply, col_apply,
+    simp only [orbitPoint, ← Subgroup.coe_inv, inv_inv]
+    rw [mulVec_single_one, mulVec_single_one, col_apply, col_apply,
       Shape.besselFrame, snoc_castSucc, Subgroup.coe_mul, Units.val_mul, Matrix.mul_apply, h_cols i]
     have h_fw (k : 𝔰.BesselIndex) :
         (floorWeyl j x.val : T.G).val k (inl j) = if k = eStar j then x.val else 0 := by
@@ -484,7 +473,7 @@ theorem exists_integral_big_cell_decomp [IsHermitianUnit T.splitGram]
   | zero =>
     exact ⟨1, one_mem _, 1, one_mem _, 1, γ,
       mem_floorGroup.2 fun _ _ h ↦ absurd h (Nat.not_lt_zero _),
-      group_one_mul_one (by rw [Fin.val_zero, weylElem_zero]),
+      by simp [weylElem_zero],
       one_mem _, one_mem _, hγ, fun _ h ↦ absurd h (Nat.not_lt_zero _)⟩
   | succ j ih =>
     obtain ⟨u, hu, u', hu', p, σ, hσ, rfl, u_int, u'_int, σ_int, p_int⟩ := ih
@@ -660,7 +649,7 @@ theorem big_cell_unique (hσ : σ ∈ floorGroup 𝔰.ϱ) {v w : T.besselU × T.
       (w.1 : T.G) * (weylElem 𝔰.ϱ q * σ) * (w.2 : T.G)⁻¹) :
     (∀ a : Fin 𝔰.ϱ, p a = q a) ∧ v = w := by
   obtain ⟨h_pq, -, h_left, h_right⟩ := big_cell_factors_unique hσ hσ (inv_mem v.1.prop)
-    (inv_mem v.2.prop) (inv_mem w.1.prop) (inv_mem w.2.prop) (group_inv_inv_eq h_eq)
+    (inv_mem v.2.prop) (inv_mem w.1.prop) (inv_mem w.2.prop) (by simpa only [inv_inv] using h_eq)
   exact ⟨h_pq, Prod.ext (Subtype.ext (inv_inj.1 h_left)) (Subtype.ext (inv_inj.1 h_right))⟩
 
 /-- Let `T.splitGram` be unimodular over `R`, and let `w_p = weylElem ϱ p` send e_a ↦ p_a e*_a and

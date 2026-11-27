@@ -465,6 +465,12 @@ variable (n) in
 def charpolyLocus (P : (LocField w)[X]) : Set (Gf E n) :=
   {y : Gf E n | (y.atPlace w : Matrix n n (LocField w)).charpoly = P}
 
+/-- An element lies in `charpolyLocus n P` exactly if its component at `w` has the characteristic
+polynomial `P`. -/
+lemma mem_charpolyLocus {P : (LocField w)[X]} {y : Gf E n} :
+    y ∈ charpolyLocus n P ↔ (y.atPlace w : Matrix n n (LocField w)).charpoly = P :=
+  Iff.rfl
+
 variable (n) in
 /-- The elements `y` with characteristic polynomial `P` at `w` and `p(y_w) = ε`. If `p(y_w)` is the
 projection that belongs to a coprime factorisation of `P` and `ε` is a coordinate projector, these
@@ -487,7 +493,7 @@ lemma conj_mem_blockLocus_iff {P p : (LocField w)[X]} {ε : Matrix n n (LocField
     (ofSplitPlace hw g)⁻¹ * x * ofSplitPlace hw g ∈ blockLocus n P p ε ↔
       x ∈ charpolyLocus n P ∧ SemiconjBy g.val ε (aeval (x.atPlace w).val p) := by
   refine and_congr ?_ ?_
-  · simp [charpolyLocus, atPlace_ofSplitPlace, charpoly_units_conj']
+  · simp [mem_charpolyLocus, atPlace_ofSplitPlace, charpoly_units_conj']
   · rw [SemiconjBy, ← (semiconjBy_aeval_atPlace_conj hw g x p).eq, Units.mul_right_inj, eq_comm]
 
 lemma continuous_aeval_atPlace (p : (LocField w)[X]) :

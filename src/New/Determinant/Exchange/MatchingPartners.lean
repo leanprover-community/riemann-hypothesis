@@ -240,6 +240,12 @@ lemma commonCosetSum_eq_sum (f : GL b F → ℂ) (t : Finset (GL b F ⧸ intGL b
 lemma isCommonCosetRep_commonCosetRep : IsCommonCosetRep n (commonCosetRep F b n) :=
   exists_linearMap_eq_sum_and_isCommonCosetRep.choose_spec.choose_spec.right
 
+/-- For `y` with a left inverse, exactly one of the chosen coset representatives `r` makes `y * r`
+primitive (integral with an integral left inverse). -/
+lemma existsUnique_isPrimitiveMatrix_mul_commonCosetRep {y : Matrix n b F} (hy : HasLeftInv y) :
+    ∃! q : GL b F ⧸ intGL b O, IsPrimitiveMatrix O (y * (commonCosetRep F b n q).val) :=
+  isCommonCosetRep_commonCosetRep.existsUnique_mul y hy
+
 /-- For `y` with a left inverse (`HasLeftInv y`), exactly one coset `q` of `GL b O` in `GL b F`
 makes `y * (commonCosetRep F b n q)⁻¹` primitive (entries in `O`, with a left inverse that has
 entries in `O`). -/
@@ -333,7 +339,7 @@ lemma exists_isPrimitiveMatrix_localSection_eq (χ : MulChar F ℂ) (y : Matrix 
       ∀ Ψ : Matrix n b F → ℂ, (∀ x : Matrix n b F, Ψ x ≠ 0 → IsPrimitiveMatrix O x) →
         localSection χ y Ψ = χ g.val.det * Ψ (y * g.val) := by
   -- Exactly one representative `r` makes `y * r` primitive, and only it counts in the sum.
-  obtain ⟨q, hq, hq_unique⟩ := isCommonCosetRep_commonCosetRep.existsUnique_mul _ hy
+  obtain ⟨q, hq, hq_unique⟩ := existsUnique_isPrimitiveMatrix_mul_commonCosetRep (n := n) hy
   refine ⟨commonCosetRep F b n q, hq, fun Ψ hΨ ↦ ?_⟩
   simpa using localSection_eq_sum χ y Ψ {q} fun p hp ↦ by simp [hq_unique p (hΨ _ hp)]
 

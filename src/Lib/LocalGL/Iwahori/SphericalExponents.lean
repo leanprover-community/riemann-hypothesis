@@ -85,7 +85,8 @@ lemma exists_v_entry_eq_one_of_mem_intGL {k : GL (Fin N) F} (hk : k ∈ intGL (F
   have h_term_lt (r : Fin N) : v (k⁻¹ m r * k r m) < 1 := by
     grind [mem_intGL, mul_lt_of_lt_of_le_one, v.mem_integer_iff]
   have h_lt : v (∑ r, k⁻¹ m r * k r m) < 1 := v.map_sum_lt' one_pos fun r _ ↦ h_term_lt r
-  have h_sum : ∑ r, k⁻¹ m r * k r m = 1 := by rw [← Matrix.mul_apply, k.inv_mul, Matrix.one_apply_eq]
+  have h_sum : ∑ r, k⁻¹ m r * k r m = 1 := by
+    rw [← Matrix.mul_apply, k.inv_mul, Matrix.one_apply_eq]
   rw [h_sum, map_one] at h_lt
   exact lt_irrefl 1 h_lt
 
@@ -292,7 +293,6 @@ lemma exists_compactMean_and_swap_eq_sum [IsSmoothRep ρ.ρ]
     simpa only [Y, map_sum, map_colVector_eq_sum hx hφ] using sum_by_last_nonzero_coord _ I
   refine ⟨Y ∅, Y {m}, mem_levelSpace.mpr fun k ↦ ?_, ?_, fun i hi ↦ ?_⟩
   · -- the group of level `update (min m) m N` lies in `P` and fixes `Y {m}`
-    have hk := k.property
     have hk_mem : k.val ∈ blockParahoric (min m) := by grind
     have h_row (r : Fin N) (hr : r ≠ m) : reduceParahoric m ⟨k.val, hk_mem⟩ m r = 0 := by
       have h_val : v (k.val m r) < 1 := by grind

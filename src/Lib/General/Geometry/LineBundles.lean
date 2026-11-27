@@ -912,6 +912,10 @@ lemma LineBundle.picClass_mul_assoc {μ : Type} (N : LineBundle X μ) :
     ((L.mul M).mul N).picClass = (L.mul (M.mul N)).picClass :=
   picClass_eq_of_le (fun a ↦ ((a.1, a.2.1), a.2.2)) (by simp [inf_assoc]) (by simp [mul_assoc])
 
+/-- The tensor product of line bundles is commutative up to isomorphism. -/
+lemma LineBundle.picClass_mul_comm : (L.mul M).picClass = (M.mul L).picClass :=
+  picClass_eq_of_le (fun a ↦ (a.2, a.1)) (by simp) (by simp [mul_comm])
+
 /-- The trivial line bundle is neutral for the tensor product up to isomorphism. -/
 lemma LineBundle.picClass_mul_one : (L.mul one).picClass = L.picClass :=
   picClass_eq_of_le (fun a ↦ (a, ())) (by simp) (by simp)
@@ -940,8 +944,7 @@ instance : AddCommGroup (Pic X) where
   toAddGroup := AddGroup.ofRightAxioms
     (fun a b c ↦ Quotient.inductionOn₃ a b c fun _ _ N ↦ picClass_mul_assoc N.2)
     (Quotient.ind fun _ ↦ picClass_mul_one) (Quotient.ind fun _ ↦ picClass_mul_inv)
-  add_comm a b := Quotient.inductionOn₂ a b fun _ _ ↦
-    picClass_eq_of_le (fun a ↦ (a.2, a.1)) (by simp) (by simp [mul_comm])
+  add_comm a b := Quotient.inductionOn₂ a b fun _ _ ↦ picClass_mul_comm
 
 @[simp]
 lemma LineBundle.picClass_mul : (L.mul M).picClass = L.picClass + M.picClass := rfl

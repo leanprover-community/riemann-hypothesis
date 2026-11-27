@@ -256,6 +256,15 @@ def smoothPairing
     (fun φ ψ₁ ψ₂ ↦ by simp [classIntegral_add, ← Pi.add_def, hB])
     (fun c φ ψ ↦ by simp)
 
+/-- The value of `New.smoothPairing` at two forms is the integral of their pointwise pairing. -/
+lemma smoothPairing_apply
+    (hB : ∀ (γ : U V.J) (v v' : WeylIndex n κ.1 → ℂ),
+      B (V.weightRep κ.1 κ.2 γ v) (V.weightRep κ.1 κ.2 γ v') = B v v')
+    (φ φ' : V.forms κ) :
+    smoothPairing B hB φ φ' =
+      classIntegral V.Γf (stdLevel E n) fun g : Gf E n ↦ B (φ.val g) (φ'.val g) :=
+  rfl
+
 /-- The pairing `New.smoothPairing` of forms of weight κ on the definite space V, by a form `B`
 invariant under `New.Space.weightRep`, is unchanged when both forms are translated on the right by
 the same finite adelic point `a`. -/
@@ -266,6 +275,7 @@ lemma smoothPairing_formTranslation
     smoothPairing B hB (V.formTranslation κ a φ) (V.formTranslation κ a φ') =
       smoothPairing B hB φ φ' := by
   -- The integral over Γ\G_f does not change under right translation of the integrand.
+  rw [smoothPairing_apply, smoothPairing_apply]
   exact classIntegral_map_mul_right (.id ℂ) a (pairing_mem_smoothInvariants hB φ φ') fun g ↦ by simp
 
 end SmoothFormPairing

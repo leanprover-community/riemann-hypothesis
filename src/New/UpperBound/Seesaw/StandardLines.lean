@@ -74,6 +74,12 @@ lemma powerIdele_eq_mul (hs : 0 < s) (i : ℕ) : powerIdele a s i = a * powerIde
   rw [powerIdele, powerIdele, show (s - i : ℤ) = 1 + ((s - 1 : ℕ) - i : ℤ) by omega,
     _root_.zpow_one_add, mul_assoc]
 
+/-- Multiplying `powerIdele a s i = a ^ (s - i) ā ^ (-1 - i)` by `(a ā) ^ n` adds `n` to both
+exponents. -/
+lemma powerIdele_mul_zpow (i : ℕ) (n : ℤ) : powerIdele a s i * (a * star a) ^ n =
+    a ^ (s - i + n : ℤ) * star a ^ (-1 - i + n : ℤ) := by
+  rw [powerIdele, mul_zpow, mul_mul_mul_comm, ← _root_.zpow_add, ← _root_.zpow_add]
+
 lemma toUnits_divStar_pow (k : ℕ) :
     Unitary.toUnits (divStar a ^ k) = a ^ (k : ℤ) * star a ^ (-k : ℤ) := by
   rw [map_pow, show Unitary.toUnits (divStar a) = a * (star a)⁻¹ from Units.ext (coe_divStar a),
@@ -89,7 +95,7 @@ lemma lineIdele_divStar_pow (b : Fin s) :
   set k : ℕ := (s + 2) / 2 with hk
   set n : ℤ := b - (if 2 * b.val < s then s else s - 1 : ℤ) / 2 with hn
   -- Both sides are a power of `a` times a power of `ā`; compare the exponents in each case.
-  rw [lineIdele, toUnits_divStar_pow, powerIdele, mul_zpow, mul_mul_mul_comm, ← _root_.zpow_add, ← _root_.zpow_add]
+  rw [lineIdele, toUnits_divStar_pow, powerIdele_mul_zpow]
   by_cases hs : Odd s
   · have hs_mod : s % 2 = 1 := Nat.odd_iff.1 hs
     obtain ⟨h_left, h_right⟩ : (s - b + n : ℤ) = k ∧ (-1 - b + n : ℤ) = -k := by omega

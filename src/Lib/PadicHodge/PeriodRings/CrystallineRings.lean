@@ -488,7 +488,8 @@ lemma mem_span_pow_of_p_pow_dvd {a : Ainf} {m : ℕ} (h_dvd : (p : Amax) ^ m ∣
         ∃ c : Ainf, thetaAmax (a : Amax) = thetaAmax ((p : Amax) ^ (m + 1)) * theta c :=
       theta_surjective.exists.mp (map_dvd thetaAmax h_dvd)
     have h_theta : theta (a - p ^ (m + 1) * c) = 0 := by
-      simpa only [map_sub, map_mul, map_pow, map_natCast, sub_eq_zero, thetaAmax_algebraMap] using hc
+      simpa only [map_sub, map_mul, map_pow, map_natCast, sub_eq_zero, thetaAmax_algebraMap]
+          using hc
     obtain ⟨w, hw⟩ : xi ∣ a - p ^ (m + 1) * c := theta_eq_zero_iff_xi_dvd.mp h_theta
     obtain rfl : a = xi * w + p * (p ^ m * c) := by linear_combination hw
     -- as `ξ = p X` and `p` is regular, `p ^ m` divides `X w`, hence `w`

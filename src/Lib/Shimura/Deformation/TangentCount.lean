@@ -37,7 +37,7 @@ open Algebra Polynomial AlgebraicGeometry CategoryTheory Fintype IsAlgClosed Lin
   CartesianMonoidalCategory
 
 variable {E : Type} [Field E] [CMBase E] {D : PEL E}
-  {k : Type} [Field k] [IsAlgClosed k]
+  {k : Type} [Field k]
   {Z : Scheme} {σ : Z ⟶ Spec (CommRingCat.of (NumberField.RingOfIntegers E))}
   {Y : ThetaFamily D Z σ} {x : ThetaObject Y (Spec ⟨k⟩)}
 
@@ -45,7 +45,7 @@ attribute [local instance low] Fintype.ofFinite in
 /-- If x ↦ x^i, for a natural number i, is F-linear on an algebraically closed extension k of a
 finite field F, then i is a power of |F|. -/
 lemma mem_powers_card_of_isLinearMap_pow (F : Type*) {i : ℕ} [Field F] [Finite F] [Algebra F k]
-    (h_lin : IsLinearMap F fun a : k ↦ a ^ i) :
+    [IsAlgClosed k] (h_lin : IsLinearMap F fun a : k ↦ a ^ i) :
     i ∈ Submonoid.powers (Nat.card F) := by
   -- Let `q = card F`. The fixed points of the `F`-linear map `x ↦ x ^ (q * i)` are the `q * i`
   -- roots of a separable polynomial, and a finite `F`-space has a power of `q` elements.
@@ -257,7 +257,7 @@ for the tangent line `L`, let `γ i` read the coefficient of `τ ^ i` (`hγ`), a
 `w = ker x.baseHom`, then `l = 0`: a lowest term of `f B u l` would have degree `q ^ j` with
 `j > 0`. -/
 lemma eq_zero_of_isLocalParameter (h_ker : RingHom.ker x.baseHom ≠ ⊥)
-    {L : k →+ (specOver k (DualNumber k) ⟶ x.groupScheme)}
+    [IsAlgClosed k] {L : k →+ (specOver k (DualNumber k) ⟶ x.groupScheme)}
     (hL_fst : ∀ m : k, specOver.map (fstHom k k k) ≫ L m = 0)
     (hL_smul : ∀ (a : NumberField.RingOfIntegers E) (m : k),
       a • L m = L (((algebraMap k k).comp x.baseHom) a * m))
@@ -364,7 +364,7 @@ along `x.baseHom` and linear in `l`, such that (a) `f` is natural in `C`; (b) `f
 points over `k[ε]` that reduce to `0`; (c) only `l = 0` gives zero on all finite local `C`. Then
 `dim W ≤ n - 1`, where `n = Fintype.card D.Index` is the number of indices of the PEL datum `D`. -/
 lemma finrank_le_of_placeTorsion (hw : D.IsGoodAt (RingHom.ker x.baseHom)) {V : ValuationSubring ℂ}
-    {φ : V →+* k} {y : ThetaObject Y (Spec (CommRingCat.of V))}
+    [IsAlgClosed k] {φ : V →+* k} {y : ThetaObject Y (Spec (CommRingCat.of V))}
     (hy : x.IsPullbackAlong (specMap φ) y) (h_full : y.FullLevelStructure) {W : Type*}
     [AddCommGroup W] [Module k W]
     (f : ∀ (C : Type) [CommRing C] [Algebra k C] [IsLocalRing C],

@@ -1,6 +1,7 @@
 module
 
 public import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import TauCeti.Algebra.Module.ZLattice.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.PiTensorProduct
@@ -744,9 +745,7 @@ lemma volume_fundamentalDomain_pi_basis {ι : Type*} [Fintype ι] {σ V : ι →
     [∀ i : ι, MeasureSpace (V i)] [∀ i : ι, SigmaFinite (volume : Measure (V i))]
     (b : ∀ i : ι, Basis (σ i) ℝ (V i)) (hb : ∀ i : ι, volume (fundamentalDomain (b i)) = 1) :
     volume (fundamentalDomain (Pi.basis b)) = 1 := by
-  have h_pi : fundamentalDomain (Pi.basis b) = Set.univ.pi fun i ↦ fundamentalDomain (b i) :=
-    Set.ext fun x ↦ by simp [mem_fundamentalDomain, Sigma.forall]
-  simp [h_pi, volume_pi_pi, hb]
+  simp [ZSpan.fundamentalDomain_pi_basis, volume_pi_pi, hb]
 
 /-- The unit square in `ℂ` has area `1`. -/
 lemma volume_fundamentalDomain_basisOneI : volume (fundamentalDomain Complex.basisOneI) = 1 := by

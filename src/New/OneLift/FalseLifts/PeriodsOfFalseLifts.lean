@@ -488,7 +488,7 @@ lemma hyperplaneSum_mul_labelIdem_X_sub_one {k : Type} [Field k] [Finite k] {χ 
     hyperplaneSum χ l * labelIdem Unit (Polynomial.X - 1 : Polynomial k) = 0 := by
   classical
   -- The group fixes its mean, so a character sum remains.
-  have : Fintype (GL Unit k) := .ofFinite _
+  let : Fintype (GL Unit k) := .ofFinite _
   have h_sum : ∑ s : GL Unit k, (hyperplaneSum χ l).coeff s = 0 :=
     calc _ = ∑ s : GL Unit k with s ∈ hyperplaneGroup l, χ⁻¹ (s : Matrix Unit Unit k).det := by
           simp [coeff_hyperplaneSum_eq_ite, Finset.sum_filter]

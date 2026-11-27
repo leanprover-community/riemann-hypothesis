@@ -8,6 +8,7 @@ import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Order.CompletePartialOrder
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.RingTheory.DedekindDomain.Factorization
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.ClassField.HeckeL.IdelicThetaSum
@@ -157,43 +158,22 @@ private lemma mul_finIdeleAbs_rpow_locIdele_uniformizer_mul {S : Set (FinPlace K
     ring
 
 open HeightOneSpectrum FractionalIdeal in
-/-- A nonzero fractional ideal `J` of `𝓞 K` whose exponent `count K w J` is nonnegative at every
-prime `w` is an integral ideal. -/
-private lemma exists_eq_coeIdeal_of_count_nonneg {J : FractionalIdeal (nonZeroDivisors (𝓞 K)) K}
-    (hJ : J ≠ 0) (h_count : ∀ w : FinPlace K, 0 ≤ count K w J) :
-    ∃ I : Ideal (𝓞 K), J = I := by
-  -- `J` is the product of the powers `w ^ count K w J`, all with natural exponents.
-  refine ⟨∏ᶠ w : FinPlace K, w.asIdeal ^ (count K w J).toNat, ?_⟩
-  calc J = ∏ᶠ w : FinPlace K,
-          (w.asIdeal : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) ^ ((count K w J).toNat : ℤ) := by
-        simp only [Int.toNat_of_nonneg (h_count _), finprod_heightOneSpectrum_factorization' K hJ]
-    _ = _ := by
-      -- `↓` turns `x ^ (n : ℤ)` into `x ^ n` before simp rewrites the cast of `toNat` as `max · 0`.
-      simp [↓zpow_natCast, ← coeIdeal_pow, ← coeIdeal_finprod]
-
-/-- Let `K` be a number field and `d` a homomorphism from the finite ideles `(𝔸f K)ˣ` to the group
-of nonzero fractional ideals of `𝓞 K`. Suppose that an idele `a` is integral at a finite place `w`
-exactly when the exponent `count K w (d a)` of the prime `w` in `d a` is nonnegative. Let `S` be a
-set of finite places and `x` an idele that is integral at each `w ∉ S` and a unit at each `w ∈ S`.
-Then the fractional ideal `d x` is an ideal of `𝓞 K`. Here `a.val w` is the component of `a` in the
-completion of `K` at `w`, and the valuation `Valued.v` is multiplicative: `≤ 1` means integral and
-`= 1` means a unit. -/
-private lemma exists_divisor_eq_coeIdeal_of_supp {K : Type*} [Field K] [NumberField K]
+/-- A finite idele is integral at every place exactly when its divisor is an integral ideal. -/
+private lemma mem_Ô_iff_exists_coeIdeal_eq_divisor
     {d : (𝔸f K)ˣ →* (FractionalIdeal (nonZeroDivisors (𝓞 K)) K)ˣ}
     (hd_count : ∀ (a : (𝔸f K)ˣ) (w : FinPlace K),
-      Valued.v (a.val w) ≤ 1 ↔ 0 ≤ FractionalIdeal.count K w (d a).val)
-    {S : Set (FinPlace K)} {x : (𝔸f K)ˣ}
-    (hx_integral : ∀ w : FinPlace K, w ∉ S → Valued.v (x.val w) ≤ 1)
-    (hx_unit : ∀ w : FinPlace K, w ∈ S → Valued.v (x.val w) = 1) :
-    ∃ I : Ideal (𝓞 K), (d x).val = (I : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) := by
-  -- A unit is integral, so `x` is integral at every place and all exponents of `d x` are `≥ 0`.
-  have h_integral (w : FinPlace K) : Valued.v (x.val w) ≤ 1 := by
-    by_cases hw : w ∈ S
-    · exact (hx_unit w hw).le
-    · exact hx_integral w hw
-  have h_count (w : FinPlace K) : 0 ≤ FractionalIdeal.count K w (d x).val :=
-    (hd_count x w).mp (h_integral w)
-  exact exists_eq_coeIdeal_of_count_nonneg (d x).ne_zero h_count
+      Valued.v (a.val w) ≤ 1 ↔ 0 ≤ count K w (d a).val) (x : (𝔸f K)ˣ) :
+    x.val ∈ Ô K ↔
+      ∃ I : Ideal (𝓞 K), (I : FractionalIdeal (nonZeroDivisors (𝓞 K)) K) = (d x).val := by
+  constructor
+  · intro hx
+    apply le_one_iff_exists_coeIdeal.mp
+    intro a ha
+    apply (mem_one_iff _).mpr
+    exact mem_integers_of_valuation_le_one K a fun w ↦
+      valuation_le_one_of_mem_of_count_nonneg (d x).val w ((hd_count x w).mp (mem_Ô.mp hx w)) ha
+  · rintro ⟨I, hI⟩
+    exact mem_Ô.mpr fun w ↦ (hd_count x w).mpr (by simp [← hI, count_coeIdeal_nonneg])
 
 namespace IsHeckeOfType
 
@@ -314,7 +294,7 @@ lemma integral_mul_finIdeleAbs_rpow_eq_eulerProd_mul (hψ : IsHeckeOfType ψ n)
   -- nonnegative, the kernel is `Ô^×`, and a uniformiser at `w` goes to the prime `w`.
   obtain ⟨d, hd_count, hd_ker, hd_unif, -⟩ := exists_idele_divisor_hom (K := K)
   have h_integral {x : (𝔸f K)ˣ} {I : Ideal (𝓞 K)} (hx : (d x).val = I) : x.val ∈ Ô K :=
-    mem_Ô.mpr fun w ↦ (hd_count x w).mpr (by simp [hx, count_coeIdeal_nonneg])
+    (mem_Ô_iff_exists_coeIdeal_eq_divisor hd_count x).mpr ⟨I, hx.symm⟩
   set W : Set (𝔸f K)ˣ := (idelesUnitOff ∅ : Subgroup (𝔸f K)ˣ) ∩ V with hW
   have hW_vol : μ.real W ≠ 0 := measureReal_idelesUnitOff_empty_inter_ne_zero μ hV hV_one
   intro s hs
@@ -365,9 +345,10 @@ lemma integral_mul_finIdeleAbs_rpow_eq_eulerProd_mul (hψ : IsHeckeOfType ψ n)
     by_cases hf : f x = 0
     · simp [Z, hf]
     obtain ⟨hx_integral, hx_unit⟩ := h_supp x hf
-    obtain ⟨I, hI⟩ : ∃ I : Ideal (𝓞 K), (d x).val = I :=
-      exists_divisor_eq_coeIdeal_of_supp hd_count hx_integral hx_unit
-    simp [hI, coeIdeal_inj]
+    have hx : x.val ∈ Ô K := mem_Ô.mpr fun w ↦
+      if hw : w ∈ S then (hx_unit w hw).le else hx_integral w hw
+    obtain ⟨I, hI⟩ := (mem_Ô_iff_exists_coeIdeal_eq_divisor hd_count x).mp hx
+    simp [← hI, coeIdeal_inj]
   have h_countable : Countable (Ideal (𝓞 K)) :=
     .of_preimage_singleton fun N ↦
       (Ring.HasFiniteQuotients.finite_absNorm_eq (S := 𝓞 K) N).countable
@@ -415,7 +396,8 @@ lemma exists_continuousAlgHom_mixedEmbedding_eq (w : InfinitePlace K) :
   let coord : mixedEmbedding.mixedSpace K →ₐ[ℝ] ℂ :=
     if hw : w.IsReal then ofRealAm.comp ((evalAlgHom _ _ ⟨w, hw⟩).comp (AlgHom.fst ℝ _ _))
     else (evalAlgHom _ _ ⟨w, not_isReal_iff_isComplex.mp hw⟩).comp (AlgHom.snd ℝ _ _)
-  have h_coord (x : K) : coord (mixedEmbedding K x) = w.embedding x := by aesop
+  have h_coord (x : K) : coord (mixedEmbedding K x) = w.embedding x := by
+    by_cases hw : w.IsReal <;> simp [coord, hw]
   let p : mixedEmbedding.mixedSpace K →ₐ[ℝ] ℂ :=
     .comp (if w.embedding = Φ w then AlgHom.id ℝ ℂ else conjAe) coord
   refine ⟨⟨p, p.toLinearMap.continuous_of_finiteDimensional⟩, fun x ↦ ?_⟩
@@ -589,9 +571,7 @@ lemma exists_level_tate_integral (h : IsHeckeOfType ψ n) :
     simp only [mem_Ô, finAdele_mul_apply, finAdele_sub_apply, finAdele_one_apply, map_mul]
   have h_supp (x : (𝔸f K)ˣ) (hx : f x ≠ 0) :
       (∀ w : FinPlace K, w ∉ T → v (x.val w) ≤ 1) ∧ ∀ w : FinPlace K, w ∈ T → v (x.val w) = 1 := by
-    have hx_mem : d.val * (x.val - 1) ∈ Ô K := by
-      by_contra hx_not
-      simp [f, hx_not] at hx
+    obtain ⟨_, hx_mem⟩ := (adelicTent_ne_zero_iff 1 d).mp (ofReal_ne_zero.mp hx)
     refine ⟨fun w _ ↦ mem_Ô.mp (h_level x hx_mem).1 w, fun w hw ↦ ?_⟩
     -- At `w ∈ T`, `1 < v (d w)` and `v (d w) * v (x w - 1) ≤ 1` give `v (x w) = 1`.
     have hd : 1 < v (d.val w) := not_le.mp ((hT w).mp hw)

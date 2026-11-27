@@ -371,7 +371,7 @@ lemma IsCutBessel.formIntegrandL1Norm_zero_eq (hF : IsCutBessel F rep ρ s b W f
     (x : 𝔰.G₁) :
     hF.complexData.formIntegrandL1Norm 0 p q F x 1 = hF.haarRatio ^ 2 * ‖quotientPairing F F x‖ₑ ^
       2 := by
-  obtain ⟨⟨-, ratio_ne_top : hF.haarRatio ≠ ∞⟩, -, h_unfold, -⟩ :=
+  obtain ⟨⟨-, ratio_ne_top : hF.haarRatio ≠ ∞⟩, -, -, -⟩ :=
     hF.haarRatio_ne_zero_and_groupMeasure_eq_smul
   let c (y : 𝔰.G₁) : ℂ := ⟪F y, F (y * x)⟫_ℂ
   have c_meas : Measurable c := by fun_prop
@@ -381,23 +381,10 @@ lemma IsCutBessel.formIntegrandL1Norm_zero_eq (hF : IsCutBessel F rep ρ s b W f
     simp [← mul_assoc, Complex.mul_conj']
   -- The integrand `c` is left invariant under `𝖴`, so its law for the floors is `hF.haarRatio`
   -- times its law on the quotient.
-  have h_law : (hF.complexData.quotientMeasureFrom 0).map c = hF.haarRatio • besselQuotMeasure.map
-    c := by
-    refine ext_of_lintegral _ fun g hg ↦ ?_
-    have g_inv : besselU.FixesLeft fun y : 𝔰.G₁ ↦ g (c y) := fun u hu y ↦ congrArg g (c_inv u hu y)
-    rw [lintegral_smul_measure, lintegral_map hg c_meas, lintegral_map hg c_meas]
-    exact h_unfold (fun y ↦ g (c y)) (hg.comp c_meas) g_inv
   have h_pairing : hF.complexData.partialCorrelation 0 (frameCorrelation F 1) 1 x =
-      hF.haarRatio.toReal • quotientPairing F F x :=
-    calc
-      _ = ∫ y, c y ∂hF.complexData.quotientMeasureFrom 0 := by simp [c, partialCorrelation]
-      _ = ∫ z, z ∂(hF.complexData.quotientMeasureFrom 0).map c :=
-        (integral_map c_meas.aemeasurable aestronglyMeasurable_id).symm
-      _ = hF.haarRatio.toReal • ∫ z, z ∂besselQuotMeasure.map c := by
-        rw [h_law, integral_smul_measure]
-      _ = _ := by
-        rw [integral_map (f := fun z ↦ z) c_meas.aemeasurable aestronglyMeasurable_id,
-          quotientPairing]
+      hF.haarRatio.toReal • quotientPairing F F x := by
+    simpa [c, partialCorrelation, quotientPairing, integral_smul_measure] using
+      (hF.toRealPlaceSizes.identDistrib_quotientMeasureFrom_haarRatio_smul c_meas c_inv).integral_eq
   -- At floor `0` the Weyl elements are trivial, so the two factors of the integrand are conjugate.
   have h_square : hF.complexData.formIntegrandL1Norm 0 p q F x 1 =
       ‖hF.complexData.partialCorrelation 0 (frameCorrelation F 1) 1 x‖ₑ ^ 2 := by

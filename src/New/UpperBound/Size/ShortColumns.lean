@@ -749,6 +749,10 @@ lemma algFormCentralRep_scalingGenerator_pow {P : Parameters} (D : Data P) {j : 
   rw [coe_algFormCentralRep_apply]
   simpa using mem_levelSpace.1 φ.property ⟨_, h_mem⟩
 
+lemma centralRep_scalingGenerator_pow_eq_one {P : Parameters} (D : Data P) (w : D.piNPlaces) :
+    D.centralRep (D.scalingGenerator w) ^ (D.N - 1) = 1 :=
+  D.algFormCentralRep_scalingGenerator_pow w
+
 /-- The ramified source forms: those for which, at each `w ∣ π`, the translates by the powers
 `z_w ^ i`, `0 ≤ i < N - 1`, of the chosen scaling `z_w = D.scalingGenerator w` have sum `0`. -/
 def ramifiedSourceForms {P : Parameters} (D : Data P) : Submodule ℂ D.SourceForm :=
@@ -771,7 +775,7 @@ product of the operators `1 - z_w` over all `w` dividing `π`. -/
 lemma ramifiedSourceForms_eq_range {P : Parameters} (D : Data P) :
     D.ramifiedSourceForms = (D.ramifyingOp univ).range :=
   iInf_ker_sum_pow_eq_range D.centralRep D.scalingGenerator D.cast_N_sub_one_ne_zero
-    D.algFormCentralRep_scalingGenerator_pow
+    D.centralRep_scalingGenerator_pow_eq_one
 
 /-- Let `D` be admissible data for the parameters `P`, with CM field `E = D.E`, prime `N = D.N` and
 integer `π = D.piN` of `E` with `π π̄ = N`, and let `w` be a prime dividing `π`. The finite adelic

@@ -87,7 +87,7 @@ private lemma New.pi_sum_apply_mem_coindV_inf_levelSpace {A G Γ W : Type*} [Fie
         rw [← mul_apply_eq_comp, ← map_mul, mul_inv_cancel_left])
   have invariant (k : K) (g : G) : S (g * k) = S g := by
     ext γ
-    rw [h_mem_S, h_mem_S, mul_inv_rev, mul_assoc, mul_mem_cancel_left (inv_mem k.2)]
+    rw [h_mem_S, h_mem_S, mul_inv_rev, mul_assoc, mul_mem_cancel_left (inv_mem k.property)]
   refine ⟨⟨fun γ g ↦ ?_, fun g hg ↦ ?_⟩, fun k ↦ funext fun g ↦ ?_⟩
   · rw [LinearMap.pi_apply, LinearMap.pi_apply, LinearMap.sum_apply, LinearMap.sum_apply, map_sum,
       equivariant γ g]
@@ -319,7 +319,7 @@ private lemma New.Variety.exists_isCompact_gram_mkAdelicGL_mem (E n : Type) [Fie
   rw [Pi.inv_apply]
   dsimp only [u]
   rw [← map_inv]
-  exact (⟨_, ha w⟩⁻¹ : unitary (Matrix n n ℂ)).2
+  exact (⟨_, ha w⟩⁻¹ : unitary (Matrix n n ℂ)).property
 
 /-- If `r` and `y` are frames for the same rational form `β` and lie in one coset of `V`, then
 `r` and `Y y`, for `Y` in `GL_n(E)`, lie in one double coset `GL_n(E) r (GU E n ⊓ V)`. -/
@@ -629,7 +629,7 @@ lemma finite_definiteForms_and_trace_eq_finsum_definiteClass (hN : IsNeat n 𝔑
   -- This is `trace_eq_weighted_sum` with all weights equal to `1`: a definite frame `g` lies in
   -- exactly one coset `y x_j K`, and any other `g` lies in none.
   have h_finite_classes : Finite (DefiniteClass n 𝔑) := finite_definiteClass hN
-  have h_fintype_classes : Fintype (DefiniteClass n 𝔑) := .ofFinite _
+  let h_fintype_classes : Fintype (DefiniteClass n 𝔑) := .ofFinite _
   have h_finite (j : DefiniteClass n 𝔑) (g : GL n (𝔸f E)) :
       {y : GL n E | j.coset y = QuotientGroup.mk g}.Finite :=
     Set.Subsingleton.finite fun y hy z hz ↦ (eq_and_eq_of_coset_eq hN (hy.trans hz.symm)).right
@@ -675,6 +675,15 @@ lemma finite_definiteForms_and_trace_eq_finsum_definiteClass (hN : IsNeat n 𝔑
 lemma finite_definiteForms (hN : IsNeat n 𝔑) : Module.Finite ℂ (definiteForms 𝔑 ξ) :=
   (finite_definiteForms_and_trace_eq_finsum_definiteClass ξ hN 1).left
 
+/-- At a neat level the trace of a Hecke element `a` on the definite forms is the sum, over the
+definite classes `j` and the rational matrices `y`, of `heckeCosetFn a` (the function `∑ a_g [gK]`
+of `a` on cosets) at `x_j⁻¹ y x_j`, where `x_j = j.frame` is the frame of `j`, times `tr (ξ y)`. -/
+lemma trace_definiteForms_eq_finsum_definiteClass (hN : IsNeat n 𝔑) (a : heckeAlgebra n ℂ 𝔑) :
+    (definiteForms.rep 𝔑 ξ a).trace ℂ (definiteForms 𝔑 ξ) =
+      ∑ᶠ (j : DefiniteClass n 𝔑) (y : GL n E),
+        heckeCosetFn a (j.frame⁻¹ * toFinGL y * j.frame) * (ξ y).trace ℂ W :=
+  (finite_definiteForms_and_trace_eq_finsum_definiteClass ξ hN a).right
+
 /-- The trace formula on the definite side. Let `W` be finite-dimensional, `𝔑` neat and `a` a
 regular Hecke element. Suppose `tr ξ(y⁻¹) = ∑ i, w P i` whenever the characteristic polynomial `P`
 of `y` is separable. Then the trace of `a` on definite forms is the sum, over all orbits of triples,
@@ -710,7 +719,7 @@ lemma trace_definiteForms_eq_finsum_countTerm (hN : IsNeat n 𝔑) {a : heckeAlg
     · have h_separable : (y⁻¹).val.charpoly.Separable :=
         ha (x := j.frame) (by simpa only [invAutInFrame, inv_inv] using h_coeff)
       rw [← hw y⁻¹ h_separable, inv_inv]
-  rw [(finite_definiteForms_and_trace_eq_finsum_definiteClass ξ hN a).right, h_orbits]
+  rw [trace_definiteForms_eq_finsum_definiteClass ξ hN a, h_orbits]
   simp_rw [h_term]
 
 end New.Variety

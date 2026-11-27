@@ -471,7 +471,8 @@ lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
             (sectionOfMaps pointOrTorus glueLinear x).app A (ofPoint t') =
               G.map t' (U.map (glueLinear ⟨false⟩) x) :=
           freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψc) _ _ A ⟨⟨false⟩, ⟨t'⟩⟩
-        change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A ((gluing ψc).app A (ofPoint t')) =
+        change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A
+          ((gluing ψc).app A (ofPoint t')) =
           (sectionOfMaps pointOrTorus glueLinear x).app A (ofPoint t')
         rw [gluing_ofPoint, h_disc, h_point, G.map_comp, h_GU]
         change G.map t' (U.map (L.map (evalZero (CommAlgCat.of OFlat OFlat)))
@@ -488,7 +489,8 @@ lemma isCohomEquiv_tensorCoeff_gluing (c : PadicTest)
             (sectionOfMaps pointOrTorus glueLinear x).app A (ofTorus t') =
               G.map t' (U.map (glueLinear ⟨true⟩) x) :=
           freeAb.desc_of (Y := tiltPointsSum pointOrTorus ψc) _ _ A ⟨⟨true⟩, ⟨t'⟩⟩
-        change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A ((gluing ψc).app A (ofTorus t')) =
+        change (sectionOfMaps _ (fun b ↦ pairProj b.down) x).app A
+          ((gluing ψc).app A (ofTorus t')) =
           (sectionOfMaps pointOrTorus glueLinear x).app A (ofTorus t')
         rw [gluing_ofTorus, map_sub, h_disc, h_disc, h_torus, G.map_comp, G.map_comp, h_GU, h_GU]
         change G.map t' (U.map (L.map (discToTorus (-coeHom))) (U.map (pairProj false) x)) -

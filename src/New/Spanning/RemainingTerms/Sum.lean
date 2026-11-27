@@ -156,9 +156,10 @@ lemma IsNearPairOverAgreeingBlock.mem_boundedDiscNearPairs {E : Type} [Field E] 
     (Submodule.finrank_le _).trans (by simp)
   ⟨hq, Nat.add_sub_cancel' h_rank, hq.corank_le_and_pairDiscriminant_le.right⟩
 
-/-- Let `S` be data of the filling theorem and let `c`, `c'` be classes and `γ` a rational point of cell rank `j = S.cellRank γ` whose gauge
-`G = S.levelGauge j c c' γ` is positive. If the constant `S.cellRankSecondMoment j` is at most `D`,
-then the square of the size `S.termSize c c' γ` is at most `τ⁴ D / (n_p G ^ k)`. -/
+/-- Let `S` be data of the filling theorem and let `c`, `c'` be classes and `γ` a rational point of
+cell rank `j = S.cellRank γ` whose gauge `G = S.levelGauge j c c' γ` is positive. If the constant
+`S.cellRankSecondMoment j` is at most `D`, then the square of the size `S.termSize c c' γ` is at
+most `τ⁴ D / (n_p G ^ k)`. -/
 lemma termSize_sq_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
     {c c' : S.Classes} {γ : S.G E} {D : ℝ}
     (h_gauge_pos : 0 < S.levelGauge (S.cellRank γ) c c' γ)
@@ -431,7 +432,8 @@ theorem sum_termSize_mul_not_inSameLinkClass_le {E : Type} [Field E] [CMType E]
       h_cell'.lt_iff_termDisc_ne_zero.1 h_top (h_both.1 h_disc)
     have h_full : 𝔰.k - finrank E (commonLink γ γ') = 0 := by lia
     have h_one : (S.pairDiscriminant c c' γ γ' * 1) ^ 2 ≤
-        S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by simpa [show S.linkCorank γ γ' = 0 from hi] using h_gain
+        S.levelGauge j c c' γ * S.levelGauge j' c c' γ' := by
+      simpa [show S.linkCorank γ γ' = 0 from hi] using h_gain
     have h_moment : S.cellRankSecondMoment j = S.identitySecondMoment / S.tailScale ^ 16 :=
       ite_eq_right h_low
     have h_moment' : S.cellRankSecondMoment j' = S.identitySecondMoment / S.tailScale ^ 16 :=
@@ -501,6 +503,13 @@ further piece. -/
 noncomputable def piece {E : Type} [Field E] [CMType E] {𝔰 : Shape} (S : Filling E 𝔰)
     (γ : S.G E) : Piece E 𝔰 :=
   if S.termDisc γ = 0 then none else some (link γ)
+
+/-- The piece of `γ` is the submodule `Λ` if and only if `𝗀(γ) = S.termDisc γ` is not zero and the
+link of `γ` is `Λ`. -/
+lemma piece_eq_some_iff {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
+    {γ : S.G E} {Λ : Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E)} :
+    S.piece γ = some Λ ↔ S.termDisc γ ≠ 0 ∧ link γ = Λ := by
+  by_cases h_disc : S.termDisc γ = 0 <;> simp [piece, h_disc]
 
 /-- The part `T ∩ S.piece ⁻¹' {κ}` of a stable set `T` in one piece `κ` is stable. A stable set is
 one invariant on both sides under the rational points of the Bessel unipotent group. This holds
@@ -635,7 +644,7 @@ lemma enorm_amplitudeSum_sq_le {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S
       ∑' Λ, ‖S.amplitudeSum .cut (T ∩ {γ | S.termDisc γ ≠ 0} ∩ link ⁻¹' {Λ}) c s c'‖ₑ ^ 2 := by
     refine (tsum_range product fun Λ Λ' h ↦ by simpa using h).trans (tsum_congr fun Λ ↦ ?_)
     have h_set : T ∩ S.piece ⁻¹' {some Λ} = T ∩ {γ | S.termDisc γ ≠ 0} ∩ link ⁻¹' {Λ} :=
-      Set.ext fun γ ↦ by by_cases h_disc : S.termDisc γ = 0 <;> simp [piece, h_disc]
+      Set.ext fun γ ↦ by simp [piece_eq_some_iff, and_assoc]
     simp only [product, part, h_set, sq]
   let nearRepsOfPiece (κ : Piece E 𝔰) : Set (S.G E) :=
     S.nearRepresentativesOver (T ∩ S.piece ⁻¹' {κ}) c s c'
@@ -794,7 +803,8 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
     rw [← tsum_prod]
     apply tsum_le_of_pair_blocks (size c c') (h_mem (c := c) (c' := c'))
     · rintro ⟨s, Λ⟩ ⟨s', Λ'⟩ q _ hq _ hq' _
-      refine Prod.ext (Subtype.ext (eq_of_mem_termsOver (mem_termsOver_of_mem_nearRepresentativesOver hq)
+      refine Prod.ext
+        (Subtype.ext (eq_of_mem_termsOver (mem_termsOver_of_mem_nearRepresentativesOver hq)
         (mem_termsOver_of_mem_nearRepresentativesOver hq'))) ?_
       exact ((mem_of_mem_nearRepresentativesOver hq).2 : link q = Λ).symm.trans
         (mem_of_mem_nearRepresentativesOver hq').2

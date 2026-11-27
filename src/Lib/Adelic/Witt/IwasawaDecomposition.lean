@@ -186,7 +186,7 @@ lemma New.Space.exists_splitting {E : Type} [Field E] [CMType E] [WeilData E] {n
   -- Landherr gives an isometry from hyperbolic space plus `V₀` onto `V`, yielding a splitting `D`.
   obtain ⟨a, ha⟩ :=
     V.landherr ((hyperbolicSum p V₀).reindex e ((Equiv.comp_symm_eq e _ _).2 h_signs.symm))
-  have D : V.Splitting V₀ p := splittingOfGram (a.val.submatrix id e)
+  let D : V.Splitting V₀ p := splittingOfGram (a.val.submatrix id e)
     (Eq.trans (b := (a.valᴴ * V.J * a.val).submatrix e e)
       (Matrix.ext fun i j ↦ by simp [Matrix.mul_apply]) (by simp [ha])) h_dim
   -- Witt moves the isotropic frame `D.k` to `k`; apply the same isometry to all of `D`.

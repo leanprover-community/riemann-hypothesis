@@ -103,7 +103,8 @@ def thickeningOver.oneSubMu :
           have h_zero : mulMu c x * mulMu c y = 0 := by
             exact (mulMu_proj_mul c (mulMu c x) y).symm.trans
               (by rw [proj_mulMu, zero_mul, map_zero])
-          rw [map_add, mul_sub, sub_mul, sub_mul, mul_one, one_mul, h_zero, sub_zero, sub_sub, mul_one] }
+          rw [map_add, mul_sub, sub_mul, sub_mul, mul_one, one_mul, h_zero, sub_zero, sub_sub,
+            mul_one] }
   naturality c d f := by
     refine ext fun t ↦ Gm.ext.2 (.symm ?_)
     change thickeningOver.map f (1 - mulMu c t.down) = 1 - mulMu d (genericOver.map f t.down)
@@ -130,7 +131,8 @@ lemma thickeningOver.shortExact_oneSubMu :
     exact congrArg ULift.up (h_inj c (sub_right_injective h_val))
   · -- Exactness applied to `1 - u`: the units with image `1` are those of the form `1 - mulMu t`.
     have hproj : proj c (1 - u.val) = 1 - proj c u.val :=
-      (c.thickeningProj.map_sub 1 u.val).trans (congrArg (· - proj c u.val) c.thickeningProj.map_one)
+      (c.thickeningProj.map_sub 1 u.val).trans
+      (congrArg (· - proj c u.val) c.thickeningProj.map_one)
     have h_one : proj c u.val = 1 ↔ ∃ t, 1 - mulMu c t = u.val := by
       calc
         _ ↔ proj c (1 - u.val) = 0 := by rw [hproj, sub_eq_zero]; exact eq_comm
@@ -968,7 +970,8 @@ lemma projSpace.exists_hodgeTateMap_pointClass_line :
       obtain ⟨⟨_ | _⟩, t⟩ := u
       · erw [h_W_false, gluing_apply_point c t, h_f_false]
       · have h_D : D.hom (.of (torusPoint c t)) =
-            FreeAddCommGroup.of (((unimodular (d := 1)).toFunctor.map (proj.app c)) (torusPoint c t)) := by
+            FreeAddCommGroup.of (((unimodular (d := 1)).toFunctor.map (proj.app c))
+                (torusPoint c t)) := by
           change FreeAddCommGroup.map _ (.of (torusPoint c t)) = _
           exact FreeAddCommGroup.map_of_apply _
         erw [h_W_true, gluing_apply_torus c t, _root_.map_sub, h_f_false, h_f_true, zero_sub,

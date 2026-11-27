@@ -237,7 +237,8 @@ lemma isMatch_std_iff :
     exact ⟨by simpa [neg_neg, add_comm] using h.hasGap_column.neg,
       by simpa [add_comm] using h.hasGap_row,
       fun r ↦ by simpa only [isMatchedPair_std_iff, hrow] using h.left r,
-      fun c ↦ by simpa only [isMatchedPair_std_iff, centeredParam_swap_std, abs_neg] using h.right c⟩
+      fun c ↦ by simpa only [isMatchedPair_std_iff, centeredParam_swap_std, abs_neg]
+          using h.right c⟩
   · intro ⟨hgap, hgap', hrows, hcols⟩
     exact ⟨by simpa [add_comm] using hgap', by simpa [add_comm] using hgap.neg,
       fun r ↦ by simpa only [isMatchedPair_std_iff, hrow] using hrows r,
@@ -417,8 +418,8 @@ theorem isBlockRule_iff_of_character {e : ℤ} (hle : card n ≤ card n')
 /-- The block rule for n ≤ n' when γ = e + ⌈n/2⌉ and γ' = e + ⌈n'/2⌉, as for characters whose
 weights for spaces of ranks n, n' are e plus the fractional parts of n/2, n'/2. It holds iff three
 conditions hold. First, both parameters have gap 500(n+n')³. Second, the entries of l' − (n mod 2)
-are those of l − (n' mod 2) together with those of `centeredBlock e (n'−n)` = {2e + d−1, 2e + d−3, …,
-2e + 1−d} for d = n'−n (the block e + [d], doubled). Third, whenever l_c − (n' mod 2) = l'_r − (n
+are those of l − (n' mod 2) together with those of `centeredBlock e (n'−n)` = {2e + d−1, 2e + d−3,
+…, 2e + 1−d} for d = n'−n (the block e + [d], doubled). Third, whenever l_c − (n' mod 2) = l'_r − (n
 mod 2), s_c ≠ t_r exactly if this common entry is below 2e. -/
 theorem isBlockRule_iff_of_character_conj {e : ℤ} (hle : card n ≤ card n')
     (hγ : γ = e + ((card n : ℤ) + 1) / 2) (hγ' : γ' = e + ((card n' : ℤ) + 1) / 2) :

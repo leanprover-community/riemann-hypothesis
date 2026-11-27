@@ -24,10 +24,10 @@ element `E = z ^ e * unit + p`, and `k.frobE m` is `φ ^ m E`; `phiInvToBdR 0` i
 A chart (`New.Lift.Chart`) is a `Λ`-algebra map `Λ⟦X⟧ → A_inf`, with `Λ = W(𝔽_{p^f})`. It sends `X`
 to a non-unit Teichmüller lift `z = [ϖ^♭]`. It sends some `X^e V + p`, with `V` a unit, to a
 generator `E` of `ker θ`. `S` is its image. `B⁺` (`New.Period.BPlus`) receives `A_inf` and maps to
-`B_max` (`New.Period.Bmax`) and `B_dR`. Its `S`-subalgebra `S_B` (`New.Lift.Chart.bicommutant`) is
-the `p`-adic closure of `S[E/p]` with `p` inverted
-(`New.Lift.Chart.adjoinEDivPClosure_eq_bicommutant`). Put `μ = [ε] - 1`, with `ε` a compatible
-system of `p`-power roots of unity, and `τ = φ⁻¹ μ`.
+`B_max` (`New.Period.Bmax`) and `B_dR`. Its `S`-subalgebra `S_B` (`New.Lift.Chart.bicommutant`)
+consists of the elements whose multiplication commutes with every `S`-linear endomorphism of `B⁺`
+that keeps the image of `A_max`. Put `μ = [ε] - 1`, with `ε` a compatible system of `p`-power roots
+of unity, and `τ = φ⁻¹ μ`.
 
 * Let `K` be the field fixed by an open subgroup `G_K` of `Gal(ℚ̄_p/ℚ_p)`. There is a Kummer chart
   (`New.Lift.KummerChart`) with `Λ` and `θ z` fixed by `G_K` and `e f = [K : ℚ_p]`
@@ -753,8 +753,7 @@ lemma kisinAinf_eq_span_kisinModule : L.kisinAinf = span Ainf (L.kisinModule : S
 W(C^♭) ⊗ L → `BdR` whose restriction to 1 ⊗ L comes from a ℤ_p-linear map L → `Bmax`), and let `y`
 be a vector of the Kisin module of `L`. Let `jumpBound` be the least a such that all Hodge–Tate
 jumps of `L` lie in [−a, a]. Then `E ^ jumpBound • μ y` is the image in `BdR` of an element of
-`bicommutant`, the ring S_B ⊂ `BPlus` of the chart, which is the closure of S[E/p] in `BPlus` with p
-inverted. -/
+`bicommutant`, the ring S_B ⊂ `BPlus` of the chart. -/
 lemma exists_mem_bicommutant_pow_smul_eq_of_mem_kisinModule {μ : L.Functional}
     (hμ : μ ∈ L.crysForms) {y : L.Ambient} (hy : y ∈ L.kisinModule) :
     ∃ s ∈ k.bicommutant, k.E.val ^ L.jumpBound • μ y = algebraMap BPlus BdR s :=
@@ -770,6 +769,11 @@ lemma mem_smul_kisinAinf_of_crysForms {d : Ainf}
     (h_val : ∀ μ ∈ L.crysForms, k.E.val ^ n • μ x ∈ BPlus ∙ algebraMap Ainf BdR d) :
     x ∈ d • L.kisinAinf :=
   frame_theorem.mem_smul_kisinAinf_of_forall_crysForms d h_cancel x hx n h_val
+
+/-- Multiplication by `tau ^ jumpBound` maps `kisinAinf` into `ainfLattice`. -/
+lemma tau_pow_jumpBound_smul_mem_ainfLattice_of_mem_kisinAinf {x : L.Ambient}
+    (hx : x ∈ L.kisinAinf) : tau ^ L.jumpBound • x ∈ L.ainfLattice :=
+  frame_theorem.tau_pow_smul_mem_ainfLattice x hx
 
 /-- Multiplication by `tau ^ jumpBound` maps `ainfLattice` into `kisinAinf`. -/
 lemma tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice {x : L.Ambient}
@@ -803,7 +807,7 @@ lemma saturateBy_tau_span_kisinModule :
     rintro x ⟨r, hr, hrx⟩
     exact ⟨tau ^ L.jumpBound * r, mul_mem ⟨L.jumpBound, rfl⟩ hr, by simpa [mul_smul] using hMN hrx⟩
   rw [← kisinAinf_eq_span_kisinModule]
-  exact le_antisymm (h_le fun hx ↦ frame_theorem.tau_pow_smul_mem_ainfLattice _ hx)
+  exact le_antisymm (h_le tau_pow_jumpBound_smul_mem_ainfLattice_of_mem_kisinAinf)
     (h_le tau_pow_jumpBound_smul_mem_kisinAinf_of_mem_ainfLattice)
 
 /-- In W(C^♭) ⊗ L, `kisinAinf` is the A_inf-module of those `x` in A_inf[1/τ] ⊗ L with
@@ -878,8 +882,7 @@ some power of `tau` = [ε^{1/p}] − 1 multiplies `x` into `ainfLattice`, the A_
 with y in L. Second, for some `n` and every `μ` in `crysForms` (the invariant A_inf-linear
 functionals to B_dR whose restriction to 1 ⊗ L comes from a Z_p-linear map L → B_max), `E ^ n • μ x`
 is the image in `BdR` of an element of `bicommutant`, the elements of B^+ = A_max[1/p] whose
-multiplication commutes with every S-linear endomorphism of B^+ preserving the image of A_max, which
-equals `adjoinEDivPClosure` by `Chart.adjoinEDivPClosure_eq_bicommutant`. -/
+multiplication commutes with every S-linear endomorphism of B^+ preserving the image of A_max. -/
 theorem mem_kisinModule_iff_crysForms {x : L.Ambient} :
     x ∈ L.kisinModule ↔ x ∈ saturateBy (Submonoid.powers tau) L.ainfLattice ∧
       ∃ n : ℕ, ∀ μ ∈ L.crysForms, ∃ s ∈ k.bicommutant,
@@ -924,11 +927,11 @@ variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
   {k : KummerChart Γ} {O : Coeffs} {L : JumpLattice O} {x : L.Ambient} {μ : L.Functional}
 
 /-- For the Kummer chart `k`, let `k.bicommutant` be its ring S_B: the elements of `BPlus` whose
-multiplication commutes with every `k.S`-linear map of `BPlus` keeping the image of A_max,
-equivalently the closure of `S[E/p]` in `BPlus` with `p` inverted. Let `E` be the chart's element
-`k.E`. If `g ∈ G_p` and `d ∈ BPlus` are such that `d` divides `g • y - y` for every `y` in
-`k.bicommutant`, and `x ∈ BdR` has `E ^ m • x` equal to the image of an element of `k.bicommutant`,
-then `E ^ (2 * m) • (g • x - x)` is a `BPlus`-multiple of the image of `d` in `BdR`. -/
+multiplication commutes with every `k.S`-linear map of `BPlus` keeping the image of A_max. Let `E`
+be the chart's element `k.E`. If `g ∈ G_p` and `d ∈ BPlus` are such that `d` divides `g • y - y` for
+every `y` in `k.bicommutant`, and `x ∈ BdR` has `E ^ m • x` equal to the image of an element of
+`k.bicommutant`, then `E ^ (2 * m) • (g • x - x)` is a `BPlus`-multiple of the image of `d` in
+`BdR`. -/
 lemma pow_smul_gal_sub_mem_span_of_dvd {g : Gp p} {d : BPlus} {m : ℕ} {x : BdR}
     (hd : ∀ {y : BPlus}, y ∈ k.bicommutant → d ∣ g • y - y)
     (hx_mem : ∃ s ∈ k.bicommutant, k.E.val ^ m • x = algebraMap BPlus BdR s) :

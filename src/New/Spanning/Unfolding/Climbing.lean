@@ -30,11 +30,8 @@ contribute. Common vectors of two flags are moved up the flags by elementary lin
   `New.Filling.InScalarCoset`: the meeting places, and the subsets of the finite group.
 * `New.Filling.amplitudeSum_eq_zero_of_not_charsAgree`: a stable set of terms none of which agrees
   contributes `0`.
-* `New.Filling.mul_star_eq_and_pairOccursAt_of_le`,
-  `New.Filling.exists_pairOccursInColumnsAt_top_of_meetsAt`: when the characters agree, the leading
-  coefficients of a common vector of two flags have equal norms and recur at all higher indices over
-  `E`; modulo a place above `M` where the flags meet, some pair not both zero occurs at the top
-  index.
+* `New.Filling.exists_pairOccursInColumnsAt_top_of_meetsAt`: when the characters agree, modulo a
+  place above `M` where the flags meet, some pair not both zero occurs at the top index.
 * `New.Filling.CharsAgree.exists_hasCellRank`: a term with agreeing characters and discriminant `0`
   has a cell rank.
 
@@ -827,7 +824,7 @@ lemma exists_eichler_mem_latticeStabilizer (a : Fin (𝔰.ϱ + 1)) (r : Ô E) (x
   -- trace `1`, and push it into the finite adeles.
   obtain ⟨v, hv⟩ := exists_star_vecMul_eq (S.latticeMiddle (Ô E)).splitGram m
   obtain ⟨-, -, τ, hτ_mem, -, -, hτ⟩ := exists_skew_unit (A := 𝔸f E)
-  have : Floors.TraceOne (Ô E) := ⟨⟨τ, hτ_mem⟩, Subtype.ext hτ⟩
+  let : Floors.TraceOne (Ô E) := ⟨⟨τ, hτ_mem⟩, Subtype.ext hτ⟩
   obtain ⟨u, hu, hu_sum, hu_eq⟩ := exists_mem_besselU_eq_eichlerMap a x r hv hx hm
   let u' : S.GFin := U.map (Ô E).subtype (by simp) (map_splitGram_latticeMiddle _) u
   have hu'_sum : simpleRootSum u' = (simpleRootSum u : Ô E) := (map_sum (Ô E).subtype _ _).symm

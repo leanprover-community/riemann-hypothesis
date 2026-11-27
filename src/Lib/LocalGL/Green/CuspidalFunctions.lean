@@ -71,9 +71,9 @@ namespace New.Hall
 open Module Finset StableSubspace Submodule LinearMap ComplexConjugate End Polynomial
 
 open scoped Classical in
-/-- A form of Crapo's complementation theorem. Let `μ` be a function on a finite modular lattice
-whose sum over the elements below `X` vanishes for every `X ≠ ⊥`. If `μ ⊤ ≠ 0`, every element
-has a complement. -/
+/-- The corollary to Theorem 3 of H. H. Crapo, *The Möbius function of a lattice*, specialized
+to a finite modular lattice. The sum condition makes `μ X` equal to `μ ⊥` times the Möbius
+function of the interval `[⊥, X]`. If `μ ⊤ ≠ 0`, every element has a complement. -/
 lemma crapo_complementation {L : Type*} [Lattice L] [BoundedOrder L] [IsModularLattice L]
     [Fintype L] {μ : L → ℂ} (h_sum : ∀ X ≠ ⊥, ∑ U : L with U ≤ X, μ U = 0) (h_ne : μ ⊤ ≠ 0)
     (W : L) : IsComplemented W := by

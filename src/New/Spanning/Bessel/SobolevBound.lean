@@ -104,7 +104,6 @@ lemma New.lintegral_mul_le_of_frameMatrix_le {𝔰 : Shape} {w φ : 𝔰.G₁ �
   -- Unfold along `besselU`; it suffices to bound the integral of `φ (s * y)` over `s ∈ besselU`.
   -- Write `s = u * liftUnitriangular x * u₀` with `u ∈ besselU0` and `φ (u₀ * y) ≠ 0`: the integral
   -- over `u` is at most `K`, and it vanishes unless all coordinates of `x` have norm at most `R`.
-  have : ContinuousMul 𝔰.G₁ := inferInstance
   let box : Set (UpperEntries 𝔰.n) := .pi ⊤ fun _ ↦ Metric.closedBall 0 R
   have inner_le (y : 𝔰.G₁) : ∫⁻ u : (𝔰.middleGram (1 : ℂ)).besselU, φ (u * y) ∂𝔰.besselHaar ≤
       K * .ofReal ((2 * R) ^ (2 * 𝔰.n ^ 2)) := by

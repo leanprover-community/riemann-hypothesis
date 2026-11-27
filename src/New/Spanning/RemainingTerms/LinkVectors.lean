@@ -10,8 +10,8 @@ public import New.Spanning.RemainingTerms.BorderedDeterminant
 Let `γ` be an element of the unitary group, with the link isometry `Υ_γ` of the positive space
 `X₀ ⊥ E z⁺`. Let `z` be the last vector of the frame and let `A` be spanned by the others.
 
-* `New.Filling.linkVectors_mulVec_eq_zero_of_mem_map`: elements in the image of `linkedX₀ γ` are orthogonal to `z⁺` and `Υ_γ⁻¹ z⁺`
-  is `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀`.
+* `New.Filling.linkVectors_mulVec_eq_zero_of_mem_map`: elements in the image of `linkedX₀ γ` are
+  orthogonal to `z⁺` and `Υ_γ⁻¹ z⁺` is `X₀^γ = X₀ ∩ Υ_γ⁻¹ X₀`.
 * `New.Filling.gram_linkVectors`, `New.Filling.HasCellRank.norm_det_gram_linkVectors`: the Gram
   matrix of `z⁺` and `Υ_γ⁻¹ z⁺`, and the modulus of its determinant at each infinite place.
 * `New.Filling.linkVectorPairs`: the negatives of the two vectors, as pairs in the graph of `Υ_γ`;

@@ -154,7 +154,7 @@ attribute [local instance low] Fintype.ofFinite
 variable {k L K : Type*} {r : ℕ}
   (k' : Type*) [Field k] [Field k'] [Algebra k k'] [Finite k] [Finite k'] [Field L]
   [Algebra k L] [Field K] [Algebra k K] [Algebra k' K] [IsScalarTower k k' K]
-  (T : MulChar K ℂ) [IsFaithfulMulChar K T] {P : k[X]} {x : K}
+  (T : MulChar K ℂ) {P : k[X]} {x : K}
 
 omit [IsScalarTower k k' K] in
 /-- Let irreducible polynomials `S` over `k'` and `P` over `k` have a common root `z`. Then
@@ -175,7 +175,7 @@ multiplication by `u` times `∏ j, conj` of the `thetaChar` of `x ^ |k| ^ a j` 
 `mulMoebius B = B · μ`. -/
 lemma exists_rankInner_labelChar_eq_finMean (hP : Irreducible P) (hx : Polynomial.aeval x P = 0)
     (hx_int : IsIntegral k' x) [FiniteDimensional k' k'⟮x⟯] [Finite k'⟮x⟯] {n : ℕ} {c : k'[X]}
-    (hc : IsLabel n c) (h_dvd : c ∣ P.map (algebraMap k k')) :
+    [IsFaithfulMulChar K T] (hc : IsLabel n c) (h_dvd : c ∣ P.map (algebraMap k k')) :
     ∃ b : ℕ, ∃ a : Fin b → ℕ,
       -- (a) the roots
       (∀ z : K, Polynomial.aeval z c = 0 → ∃ j : Fin b, ∃ v < finrank k' k'⟮x⟯,
@@ -345,7 +345,7 @@ the semidirect product `GL_r(k') ⋊ Gal(k'/k)` that descends (`DescendsTo`) to 
 cuspidal function `greenCuspidal k θ_x`, where `θ_x = thetaChar T (|k| ^ r) x`. The same `Φ`
 descends to `(-1) ^ r Ξ_P μ`, with `Ξ_P = labelChar T P` formed over `k'`. -/
 lemma exists_isChar_descendsTo_labelChar [Finite L] (hP : Irreducible P) (hP_label : IsLabel r P)
-    (hx : Polynomial.aeval x P = 0) (hL_rank : finrank k L = r) :
+    [IsFaithfulMulChar K T] (hx : Polynomial.aeval x P = 0) (hL_rank : finrank k L = r) :
     ∃ Φ : GalSemidirect k k' (Fin r) → ℂ,
       -- (a) a character
       IsChar Φ ∧
@@ -483,7 +483,7 @@ private lemma lift_labelChar_map_of_forall_eq_one [Algebra k' k']
     rw [labelChar_eq_greenTau T hP hP_monic, labelChar_eq_greenTau T hPσ (hP_monic.map _),
       greenTau_eq hP hP_coeff hx, greenTau_eq hPσ (by simpa using hP_coeff) hx_pow, natDegree_map,
       rankPart_greenCuspidal_pow hP hP_coeff hx]
-    exact (lift_brauerLift_pow_of_forall_eq_one T h_gal h_roots _).rankPart_mulMoebius_mul_constOne
+    exact (lift_brauerLift_pow_of_forall_eq_one h_gal h_roots _).rankPart_mulMoebius_mul_constOne
   simpa using h_lift_P.mul h_lift_c
 
 omit [Finite k'] in

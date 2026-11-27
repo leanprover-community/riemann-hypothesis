@@ -22,9 +22,8 @@ The proof of uniqueness has three steps.
 
 ## Main definitions and results
 
-* `New.IsMatch.unique`, `New.IsJointHarmonic.exists_eq_smul_of_row_weight`,
-  `New.IsJointHarmonic.exists_eq_smul_of_column_weight`: the joint harmonic is unique up to a
-  scalar, and one of its two weights suffices for this.
+* `New.IsMatch.unique`, `New.IsJointHarmonic.exists_eq_smul_of_row_weight`: the joint harmonic is
+  unique up to a scalar, and its row weight suffices for this.
 * `New.IsMatch.eval_matchingPoint_ne_zero`: a pre-joint harmonic does not vanish at the point
   `New.FockDualPair.matchingPoint`, the 0-1 matrix of the matching.
 
@@ -191,7 +190,8 @@ theorem IsMatch.sign_mul_relWeight_nonneg (hm : IsMatch T l l') (r : R) (s : ℤ
   let F (j : R) : ℤ := s * (ε r * ε j * (l j - l r).sign) + (if v j ∈ S then 2 else 0) - 1
   let G (c : C) : ℤ := s * T.varSign (r, c) - 1
   have matched (j : R) (c : C) (hjc : T.IsMatchedPair l l' j c) : G c ≤ F j := by
-    have j_large : |(card R - card C : ℤ)| < T.globalSign * ε j * ε' c * T.centeredParam l j := hjc.2
+    have j_large : |(card R - card C : ℤ)| < T.globalSign * ε j * ε' c * T.centeredParam l j :=
+        hjc.2
     have sign_rc : (T.varSign (r, c) : ℤ) = T.globalSign * ε r * ε' c := by simp [pairSign]
     grind
   have free_row (j : R) (hj : |T.centeredParam l j| < card R - card C) : 0 ≤ F j := by

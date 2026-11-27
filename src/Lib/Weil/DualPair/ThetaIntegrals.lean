@@ -416,7 +416,7 @@ lemma exists_linear_thetaIntegral (α β : AutChar E) :
   let L : Submodule ℂ (G E s' → ℂ) := .ofLinearComb {u | Integrable u T.quotMeasure}
     ⟨0, integrable_zero _ _ _⟩ fun _ hu _ hv a b ↦ (hu.smul a).add (hv.smul b)
   obtain ⟨I, hI⟩ := (⟨⟨fun u ↦ ∫ h, u.1 h ∂T.quotMeasure, fun u v ↦ integral_add u.2 v.2⟩,
-    fun c u ↦ integral_smul c u.1⟩ : L →ₗ[ℂ] ℂ).exists_extend
+    fun c u ↦ integral_smul c u.val⟩ : L →ₗ[ℂ] ℂ).exists_extend
   refine ⟨.pi fun g ↦ I ∘ₗ .pi fun h ↦ θ (S.hom T) ∘L pairWeil S T α β (g, h),
     fun ⟨_, _, h_bound⟩ ↦ funext fun g ↦ LinearMap.congr_fun hI
       ⟨_, .of_bound (by fun_prop) _ (.of_forall (h_bound α β g))⟩⟩

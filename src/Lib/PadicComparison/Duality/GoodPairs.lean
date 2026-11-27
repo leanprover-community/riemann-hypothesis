@@ -580,7 +580,7 @@ lemma isFiniteLerayHirsch_principal_open
       let Φ : AbFunctor (TestOver A) ⥤ AbFunctor X.Elements := restrictAlong p
       let π := Q.toZerosCoeff (locConstAlong (𝟭 (TestOver A)))
       change comp (TotalH.map Φ (comp x (homClass π))) (θ i).toTotalH =
-        comp (TotalH.map Φ x) i.1.2.toTotalH
+        comp (TotalH.map Φ x) i.val.2.toTotalH
       refine (map_comp_assoc Φ (θ i).toTotalH).trans (congrArg (comp (TotalH.map Φ x)) ?_)
       refine (congrArg (fun y ↦ comp y (θ i).toTotalH) (map_homClass (f := π) (Φ := Φ))).trans ?_
       exact (pullbackAlong_of (f := Φ.map π) (θ i)).trans

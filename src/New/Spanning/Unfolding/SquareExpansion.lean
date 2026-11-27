@@ -610,7 +610,7 @@ lemma prod_levelPrime_le_meetNorm_of_eq
 /-- The set of the `s` that coincide with an element of `R̄₀`, the reduction of the Bessel subgroup,
 at the chosen places above `p_i` avoids the cosets `ζ R̄₀` with `ζ ≠ 1`: such an `s` fixes the first
 frame vector there, so `ζ` is `1` modulo these places. -/
-lemma avoidsScalarCosets_setOf_exists_apply_eq [HasPrimitiveRoot5040 E]
+lemma avoidsScalarCosets_setOf_exists_apply_eq
     (i : Fin 2) : S.AvoidsScalarCosets
       {s : S.ResidueGL | ∃ t ∈ S.reducedImage besselS, s i = t i} := by
   rintro ζ h_int hζ h_ne s ⟨t, ht, hs⟩ ⟨t', ht', h_coset⟩

@@ -115,14 +115,6 @@ namespace DiscreteSeries
 
 variable {𝔰 : Shape} {ε : 𝔰.BesselIndex → ℤˣ}
 
-private lemma conjTranspose_inclMatrix_mul {l m n : Type*} [Fintype n] [DecidableEq n]
-    (u : l → n) (M : Matrix n m ℂ) :
-    (inclMatrix ℂ u)ᴴ * M = M.submatrix u id := by
-  ext a j
-  simp only [Matrix.mul_apply, conjTranspose_apply, inclMatrix, submatrix_apply, id_eq,
-    Matrix.one_apply, apply_ite star, star_one, star_zero, ite_mul, one_mul, zero_mul,
-    sum_ite_eq', mem_univ, ↓reduceIte]
-
 private lemma isotropicCols_mul_apply {m : Type*} (N : Matrix (Fin 𝔰.ϱ) m ℂ)
     (i : 𝔰.BesselIndex) (b : m) :
     (𝔰.isotropicCols * N) i b = match i with
@@ -135,36 +127,6 @@ private lemma isotropicCols_mul_apply {m : Type*} (N : Matrix (Fin 𝔰.ϱ) m �
   · exact sum_eq_zero fun k _ ↦ by
       simp only [inclMatrix, submatrix_apply, id_eq, Matrix.one_apply, reduceCtorEq, ↓reduceIte,
         zero_mul]
-
-private lemma embedH_mul_apply_inl (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ))
-    (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (a : Fin 𝔰.ϱ) (j : 𝔰.BesselIndex) :
-    ((embedH h : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * M) (Sum.inl a) j = M (Sum.inl a) j := by
-  rw [Matrix.mul_apply, Fintype.sum_sum_type]
-  have h1 : ∑ k : Fin 𝔰.ϱ, (embedH h : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
-      (Sum.inl a) (Sum.inl k) * M (Sum.inl k) j = M (Sum.inl a) j := by
-    simp only [val_toBesselH_apply_coe, fromBlocks_apply₁₁, Matrix.one_apply, ite_mul, one_mul,
-      zero_mul, sum_ite_eq, mem_univ, ↓reduceIte]
-  have h2 : ∑ k : 𝔰.MiddleIndex ⊕ Fin 𝔰.ϱ, (embedH h : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
-      (Sum.inl a) (Sum.inr k) * M (Sum.inr k) j = 0 :=
-    sum_eq_zero fun k _ ↦ by
-      simp only [val_toBesselH_apply_coe, fromBlocks_apply₁₂, Matrix.zero_apply, zero_mul]
-  rw [h1, h2, add_zero]
-
-private lemma embedH_mul_apply_inr_of_apply_inr (h : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ))
-    (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (i : 𝔰.MiddleIndex ⊕ Fin 𝔰.ϱ) (j : 𝔰.BesselIndex)
-    (hM : ∀ k : 𝔰.MiddleIndex ⊕ Fin 𝔰.ϱ, M (Sum.inr k) j = if Sum.inr k = j then 1 else 0) :
-    ((embedH h : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) * M) (Sum.inr i) j =
-      (embedH h : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (Sum.inr i) j := by
-  rw [Matrix.mul_apply, Fintype.sum_sum_type]
-  have h1 : ∑ a : Fin 𝔰.ϱ, (embedH h : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)
-      (Sum.inr i) (Sum.inl a) * M (Sum.inl a) j = 0 :=
-    sum_eq_zero fun a _ ↦ by
-      simp only [val_toBesselH_apply_coe, fromBlocks_apply₂₁, Matrix.zero_apply, zero_mul]
-  rw [h1, zero_add]
-  simp_rw [hM]
-  rcases j with a | k
-  · exact sum_eq_zero fun r _ ↦ by simp only [reduceCtorEq, ↓reduceIte, mul_zero]
-  · simp only [Sum.inr.injEq, mul_ite, mul_one, mul_zero, sum_ite_eq', mem_univ, ↓reduceIte]
 
 private lemma continuousMul_G₁ : ContinuousMul 𝔰.G₁ := inferInstance
 
@@ -256,33 +218,21 @@ lemma exists_sub_one_mul_definiteCols_eq (s : 𝔰.besselGraph) :
         𝔰.definiteCols * ((s.val.snd : Matrix 𝔰.κ 𝔰.κ ℂ) - 1) + 𝔰.isotropicCols * C := by
   -- Write `s = h u`; the matrix `C` is the block of `u` from `X₀` to `e₁, …, e_ϱ`.
   obtain ⟨⟨⟨u, hu⟩, h⟩, rfl⟩ := 𝔰.besselGraphChart.surjective s
-  refine ⟨(u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ).submatrix Sum.inl 𝔰.indexX₀, ?_⟩
-  ext i j
-  rw [mul_inclMatrix, submatrix_apply, id_eq, Matrix.sub_apply, Matrix.add_apply,
-    isotropicCols_mul_apply, Shape.besselGraphChart_apply_coe, Subgroup.coe_mul, Units.val_mul]
-  rcases i with a | r
-  · rw [embedH_mul_apply_inl]
-    have h_def : (𝔰.definiteCols * (h.val.val - 1) : Matrix 𝔰.BesselIndex 𝔰.κ ℂ) (Sum.inl a) j =
-        0 := by
-      rw [Matrix.mul_apply]
-      exact sum_eq_zero fun k _ ↦ by
-        simp only [inclMatrix, submatrix_apply, id_eq, Matrix.one_apply, reduceCtorEq, ↓reduceIte,
-          zero_mul]
-    rw [h_def, zero_add, Matrix.one_apply_ne (by simp), sub_zero]
-    rfl
-  · rw [embedH_mul_apply_inr_of_apply_inr h u.val.val r (𝔰.indexX₀ j)
-      (fun k ↦ apply_inr_of_mem_besselU hu k (𝔰.indexX₀ j) (by simp)), add_zero, Matrix.mul_apply]
-    rcases r with (c | ⟨⟩) | a
-    · simp only [val_toBesselH_apply_coe, fromBlocks_apply₂₂, fromBlocks_apply₁₁,
-        Matrix.one_apply, Sum.inr.injEq, Sum.inl.injEq, inclMatrix, submatrix_apply, id_eq,
-        ite_mul, one_mul, zero_mul, sum_ite_eq, mem_univ, ↓reduceIte, Matrix.sub_apply]
-    · simp only [val_toBesselH_apply_coe, fromBlocks_apply₂₂, fromBlocks_apply₁₁,
-        fromBlocks_apply₂₁, Matrix.zero_apply, Matrix.one_apply, Sum.inr.injEq, Sum.inl.injEq,
-        reduceCtorEq, ↓reduceIte, sub_zero, inclMatrix, submatrix_apply, id_eq, zero_mul,
-        sum_const_zero]
-    · simp only [val_toBesselH_apply_coe, fromBlocks_apply₂₂, fromBlocks_apply₂₁,
-        Matrix.zero_apply, Matrix.one_apply, Sum.inr.injEq, reduceCtorEq, ↓reduceIte, sub_zero,
-        inclMatrix, submatrix_apply, id_eq, zero_mul, sum_const_zero]
+  let C := u.val.val.submatrix Sum.inl 𝔰.indexX₀
+  refine ⟨C, ?_⟩
+  have hu_cols : u.val.val * 𝔰.definiteCols = 𝔰.definiteCols + 𝔰.isotropicCols * C := by
+    ext (a | r) j <;> rw [mul_inclMatrix, Matrix.add_apply, isotropicCols_mul_apply]
+    · simp [C, inclMatrix]
+    · simpa [inclMatrix, Matrix.one_apply] using
+        apply_inr_of_mem_besselU hu r (𝔰.indexX₀ j) (by simp)
+  have hh_cols : (embedH h).val.val * 𝔰.isotropicCols = 𝔰.isotropicCols := by
+    simp [coe_embedH, actOnCols, Matrix.sub_mul, Matrix.add_mul, Matrix.mul_assoc,
+      inclMatrix_gram_eq_zero]
+  change ((embedH h).val.val * u.val.val - 1) * 𝔰.definiteCols =
+    𝔰.definiteCols * (h.val.val - 1) + 𝔰.isotropicCols * C
+  rw [Matrix.sub_mul, Matrix.one_mul, Matrix.mul_assoc, hu_cols, Matrix.mul_add,
+    embedH_mul_definiteCols, ← Matrix.mul_assoc, hh_cols, Matrix.mul_sub, Matrix.mul_one]
+  abel
 
 /-- Let `g` in `G₁` lower the flag of the frame `e₁, …, e_ϱ, z`. That is, `g - 1` maps the frame
 into the span of `e₁, …, e_ϱ` by a strictly triangular matrix `N`. Then `g` is the first component
@@ -672,17 +622,6 @@ variable {𝔰 : Shape} {I : Type*} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I
 private lemma sFinite_besselGraphMeasure : SFinite 𝔰.besselGraphMeasure :=
   @Measure.instSFiniteMap _ _ _ _ (𝔰.besselHaar.prod volume) 𝔰.besselGraphChart inferInstance
 
-private lemma continuous_sum_finset {α β ι : Type*} [TopologicalSpace α] [AddCommMonoid β]
-    [TopologicalSpace β] [ContinuousAdd β] (s : Finset ι) {f : ι → α → β}
-    (hf : ∀ i ∈ s, Continuous (f i)) : Continuous fun a ↦ ∑ i ∈ s, f i a := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => exact continuous_const
-  | @insert i s hi ih =>
-    simp only [Finset.sum_insert hi]
-    exact (hf i (Finset.mem_insert_self i s)).fun_add
-      (ih fun j hj ↦ hf j (Finset.mem_insert_of_mem hj))
-
 private lemma continuous_uncurry_smul_mul_left {G S E : Type*} [TopologicalSpace G] [Mul G]
     [ContinuousMul G] [TopologicalSpace S] [TopologicalSpace E] [SMul ℂ E] [ContinuousSMul ℂ E]
     {k : G → ℂ} {F : G → S → E} (hk : Continuous k) (hF : Continuous F.uncurry) (y : G) :
@@ -793,17 +732,14 @@ lemma continuous_besselIntegrand (h_cont : Continuous rep) :
       (q.snd.val.fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) :=
     Units.continuous_val.comp (continuous_subtypeVal.comp h_fst)
   have h_srs : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ simpleRootSum q.snd.val.fst :=
-    continuous_sum_finset _ fun a _ ↦
-      (continuous_apply _).comp ((continuous_apply _).comp h_mat)
+    continuous_finsetSum _ fun _ _ ↦ h_mat.matrix_elem _ _
   have h2 : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ wave (-simpleRootSum q.snd.val.fst) :=
     Complex.continuous_exp.comp (h_srs.neg.fun_sub (Complex.continuous_conj.comp h_srs.neg))
   have h_rep : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ (rep q.snd.val.snd⁻¹).val :=
     continuous_subtypeVal.comp (h_cont.comp h_snd.inv)
   have h3 : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦
       WithLp.toLp 2 ((rep q.snd.val.snd⁻¹).val *ᵥ v.ofLp) :=
-    (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i ↦
-      continuous_sum_finset _ fun j _ ↦
-        ((continuous_apply j).comp ((continuous_apply i).comp h_rep)).fun_mul continuous_const)
+    (PiLp.continuous_toLp 2 _).comp (h_rep.matrix_mulVec continuous_const)
   exact h1.fun_smul (h2.fun_smul h3)
 
 /-- For a unit vector `v`, the norm of the integrand `c_λ(x⁻¹ s y) π(s)⁻¹ v` is `|c_λ(x⁻¹ s y)|`,
@@ -846,7 +782,7 @@ private lemma besselValueRep_inv_val (k : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)) :
     have h : besselValueRep rep k⁻¹ * besselValueRep rep k = 1 := by
       rw [← (besselValueRep rep).map_mul, inv_mul_cancel, (besselValueRep rep).map_one]
     exact congrArg Subtype.val h
-  exact left_inv_eq_right_inv hBA (besselValueRep rep k).2.2
+  exact left_inv_eq_right_inv hBA (besselValueRep rep k).property.2
 
 /-- Let `rep` be a continuous unitary representation of `H` on `ℂ^I`, `v` a unit vector of `ℂ^I`,
 `x` a point of `G₁`, and `l = 2λ` a parameter with coefficient `c_λ = l.dsCoeffInFrame` and large

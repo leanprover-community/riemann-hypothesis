@@ -302,6 +302,18 @@ def sourceFn (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : AlgForm (E := 
     (r : Y.besselGroup) : ℂ :=
   Y.unipotentChar (r * (Y.inclX (Y.leviPart r))⁻¹) * algFormCoeff 1 t φ (Y.leviPart r)
 
+/-- Let `u` lie in the unipotent subgroup `U = Y.unipotent`, and let `a` lie in `H`, the adelic
+unitary group of the standard definite space on `X`, embedded by `inclX`. Then the source function
+`𝒲_φ = Y.sourceFn t φ` of the algebraic form `φ` satisfies
+`𝒲_φ (u a) = ψ_U (u) · algFormCoeff 1 t φ a`, where `ψ_U = Y.unipotentChar` and the second factor is
+`t (ρ(a_∞⁻¹) φ(a_fin))` with `ρ = conjWeylRep`. For `t = (·, v_*)` this is the formula
+`𝒲_φ (u a) = ψ_U (u) (φ (a_fin), π_X (a_∞) v_*)`. -/
+lemma sourceFn_mul {u : G E ε} (hu : u ∈ Y.unipotent) (a : G E (1 : X → ℤˣ)) :
+    Y.sourceFn t φ ⟨u * Y.inclX a,
+        mul_mem (Y.unipotent_le_besselGroup hu) (Y.inclX_mem_besselGroup a)⟩ =
+      Y.unipotentChar u * algFormCoeff 1 t φ a := by
+  rw [sourceFn, Y.leviPart_mul_inclX hu a, mul_inv_cancel_right]
+
 /-- On `H`, the function `𝒲_φ` is the coefficient function `algFormCoeff 1 t φ` of `φ`. -/
 lemma sourceFn_inclX (a : G E (1 : X → ℤˣ)) :
     Y.sourceFn t φ ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩ = algFormCoeff 1 t φ a := by
@@ -379,7 +391,7 @@ lemma IsEquivariant.eq_sourceFn {W : Y.besselGroup → ℂ} (hW : Y.IsEquivarian
   -- Write `r = u a` with `u` in `U` and `a` in `H`.
   obtain ⟨u, hu, a, rfl⟩ : ∃ u ∈ Y.unipotent, ∃ a : G E (1 : X → ℤˣ), r = u * Y.inclX a :=
     Y.exists_unipotent_mul_inclX hr
-  rw [sourceFn, Y.leviPart_mul_inclX hu a, mul_inv_cancel_right, ← h_levi]
+  rw [Y.sourceFn_mul t φ hu, ← h_levi]
   exact hW.unipotent_mul ⟨u, Y.unipotent_le_besselGroup hu⟩ (Y.hasDegreeGe_two_of_odd hs hu)
     ⟨Y.inclX a, Y.inclX_mem_besselGroup a⟩
 
