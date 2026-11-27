@@ -415,7 +415,7 @@ lemma New.IsLargeLevel.SplitPlaces.card_trivialized_of_isHigmanProjective {G K R
     let x₀ : PlaceAboveLevel N := Classical.arbitrary _
     exact ⟨∑ δ, W δ (τ (W δ⁻¹ (f P (δ • ⟦x₀⟧)))), funext fun g ↦
       sub_eq_of_eq_add' (W.apply_sum_trace_eq_add τ hτ (f P) ⟦x₀⟧ g (P.val.val.2 g) (hf P g))⟩
-  let p : r.ker →+ d.range := mk' (fun P ↦ ⟨P.val.val.2, h_cob P⟩) (by tauto)
+  let p : r.ker →+ d.range := mk' (fun P ↦ ⟨P.val.val.2, h_cob P⟩) fun _ _ ↦ rfl
   -- `j` is onto: every equivariant `x` is given by the symbols.
   have h_onto : Function.Surjective j :=
     mem_range_symbolIntertwiningMap W hW h_tors h_inj τ hτ s.φ β₀ hβ₀ h_fix
@@ -431,7 +431,8 @@ lemma New.IsLargeLevel.SplitPlaces.card_trivialized_of_isHigmanProjective {G K R
           fun g x ↦ by simpa [hW] using! (F.property g ⟦x⟧).symm, by simp⟩, rfl⟩, rfl⟩
         invFun P := ⟨f P, fun δ ↦ δ.ind' (by simp [hf, Subtype.mk.inj P.property])⟩
         left_inv F := Subtype.ext (funext fun x ↦ x.inductionOn fun _ ↦ rfl)
-        right_inv := fun ⟨⟨⟨⟨_, _⟩, _⟩, _⟩, rfl⟩ ↦ rfl }
+        right_inv P := Subtype.ext <| Subtype.ext <| Subtype.ext <|
+          Prod.ext rfl (congrArg Subtype.val P.property).symm }
   -- `p` is onto: the constant function `a` trivialises the coboundary of `a`.
   have h_range_p : p.range = ⊤ := by
     refine p.range_eq_top.mpr fun ⟨_cocycle, a, ha⟩ ↦
@@ -447,6 +448,7 @@ lemma New.IsLargeLevel.SplitPlaces.card_trivialized_of_isHigmanProjective {G K R
   rw [DiscreteModule.HasFewCocycles, h_left, h_right]
   refine ⟨⟨?_, ?_⟩, fun h_cyc _ ↦ ?_⟩
   · have h_nonempty : Nonempty H₀ := ⟨0, by simp⟩
+    have : Nonempty r.range := ⟨0⟩
     exact mul_pos (mul_pos card_pos card_pos) card_pos
   · grw [r.range.card_le_card_addGroup, Finite.card_subtype_le]
   -- Equality, first part: every `x` kills torsion, since `z` acts on a torsion element `y` by an
