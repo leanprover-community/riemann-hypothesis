@@ -3,6 +3,7 @@ module
 public import TauCeti.Analysis.AbsoluteValue.Action
 public import TauCeti.Analysis.AbsoluteValue.ValuationSubring
 public import Lib.ClassField.Places.AbsoluteValues
+import Lib.ClassField.Places.ValuationSubrings
 import Mathlib.RingTheory.Valuation.Algebraic
 
 /-!
@@ -15,8 +16,9 @@ We obtain criteria for Frobenius and inertia using the action on `w` itself.
 
 More generally, if two absolute values agree on `K`, then `smul_valuationSubring_eq_iff`
 identifies the automorphisms carrying one unit ball to the other with those carrying one
-absolute value to the other. In particular, it transfers the conjugacy in
-`New.IsPlaceOver.exists_smul` to absolute values above a finite prime.
+absolute value to the other. For a Galois extension of a number field, possibly of infinite
+degree, `exists_smul_eq_of_liesOver_adicAbv` gives conjugacy of the absolute values extending
+the adic absolute value of a finite prime.
 -/
 
 @[expose] public section
@@ -24,6 +26,8 @@ absolute value to the other. In particular, it transfers the conjugacy in
 open scoped Pointwise
 
 namespace New
+
+section AlgebraicExtension
 
 variable {K L Γ : Type*} [Field K] [Field L] [Algebra K L] [Algebra.IsAlgebraic K L]
   {w : AbsoluteValue L ℝ}
@@ -82,5 +86,30 @@ theorem mem_inertiaGroup_valuationSubring_iff (hw : IsNonarchimedean w) {σ : Γ
     σ ∈ inertiaGroup Γ (w.valuationSubring hw) ↔
       σ ∈ MulAction.stabilizer Γ w ∧ ∀ x, w x ≤ 1 → w (σ • x - x) < 1 := by
   simp only [mem_inertiaGroup_iff, isFrob_valuationSubring_iff (K := K) hw, pow_one]
+
+end AlgebraicExtension
+
+open NumberField.HeightOneSpectrum
+
+variable {K L : Type*} [Field K] [NumberField K] [Field L] [Algebra K L]
+  (Γ : Type*) [Group Γ] [MulSemiringAction Γ L] [TopologicalSpace Γ] [IsProGalois Γ K L]
+
+/-- Let `Γ` be the profinite Galois group of `L/K`, with `K` a number field. Any two absolute
+values on `L` extending the adic absolute value of the same finite prime of `K` are conjugate
+under `Γ`. -/
+theorem exists_smul_eq_of_liesOver_adicAbv (p : FinPlace K) (v w : AbsoluteValue L ℝ)
+    [v.LiesOver (adicAbv K p)] [w.LiesOver (adicAbv K p)] : ∃ σ : Γ, σ • v = w := by
+  have hna (u : AbsoluteValue L ℝ) [u.LiesOver (adicAbv K p)] : IsNonarchimedean u :=
+    AbsoluteValue.isNonarchimedean_of_liesOver (isNonarchimedean_adicAbv K p)
+  have hplace (u : AbsoluteValue L ℝ) [u.LiesOver (adicAbv K p)] :
+      IsPlaceOver (u.valuationSubring (hna u)) p := by
+    rw [isPlaceOver_iff_isEquiv_adicAbv (w := u) (fun _ ↦ AbsoluteValue.mem_valuationSubring_iff _),
+      AbsoluteValue.LiesOver.under_eq u (adicAbv K p)]
+    exact AbsoluteValue.IsEquiv.rfl
+  obtain ⟨σ, hσ⟩ := (hplace v).exists_smul Γ (hplace w)
+  have hK : v.under K = w.under K := by
+    rw [AbsoluteValue.LiesOver.under_eq v (adicAbv K p),
+      AbsoluteValue.LiesOver.under_eq w (adicAbv K p)]
+  exact ⟨σ, (smul_valuationSubring_eq_iff (hna v) (hna w) hK σ).mp hσ⟩
 
 end New
