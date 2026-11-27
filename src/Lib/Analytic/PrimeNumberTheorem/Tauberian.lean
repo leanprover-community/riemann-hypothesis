@@ -1,10 +1,10 @@
 module
 
+import TauCeti.Analysis.Complex.Taylor.RapidDecay
 import TauCeti.Analysis.Convex.Lipschitz
+import TauCeti.Analysis.LaplaceTransform.Basic
 public import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Complex.HalfPlane
-import Mathlib.Order.CompletePartialOrder
 public import Lib.Speed
 import Lib.Analytic.EntireLFunction
 
@@ -19,7 +19,7 @@ prime powers with weights that vanish at the cutoff `x`: at `x = e ^ v` it is Li
 
 The proof reads one Taylor coefficient of the transform at a far point `1 + H` in two ways. It is a
 mean of `R` against a Gamma density that is concentrated at the given point `u`, hence close to
-`R(u)`; and it is small by Cauchy's estimate on a disc that reaches left of the line `re s = 1`.
+`R(u)`; and it is small by Tau Ceti's Cauchy estimate on a disc reaching left of `re s = 1`.
 
 ## Relation to the literature
 
@@ -46,45 +46,25 @@ lemma iteratedDeriv_transform {R : ℝ → ℝ} {C : ℝ} {Φ : ℂ → ℂ} (hR
     (hs : 2 < s.re) :
     IntegrableOn (fun v : ℝ ↦ (-v) ^ k * R v * cexp ((1 - s) * v)) (Ioi 0) ∧
       iteratedDeriv k Φ s = ∫ v in Ioi (0 : ℝ), (-v) ^ k * R v * cexp ((1 - s) * v) := by
-  induction k generalizing s with
-  | zero => simp [integrableOn_laplace_of_abs_le hR R_le hs, Φ_eq s hs]
-  | succ k ih =>
-    obtain ⟨ε, hε, hεs⟩ : ∃ ε > 0, 2 * ε < s.re - 2 := exists_pos_mul_lt (sub_pos.2 hs) 2
-    have h_nhds : {z : ℂ | 2 < z.re} ∈ 𝓝 s := (isOpen_re_gt _).mem_nhds hs
-    let G (z : ℂ) (v : ℝ) : ℂ := (-v) ^ k * R v * cexp ((1 - z) * v)
-    -- On `re z > 2 ε + 2` the derivative in `z` is dominated by `‖G (ε + 2)‖ / ε`, since
-    -- `ε v ≤ e^{ε v}`.
-    have h_dom (v : ℝ) (hv : 0 < v) (z : ℂ) (hz : 2 * ε + 2 < z.re) :
-        ‖-v * G z v‖ ≤ ‖G (ε + 2) v‖ / ε := by
-      have h_exp_le : v * ε * rexp ((1 - z.re) * v) ≤ rexp ((1 - (ε + 2)) * v) := by
-        grw [lt_add_one (v * ε), Real.add_one_le_exp, ← Real.exp_add, Real.exp_le_exp]
-        nlinarith
-      have h_norm (w : ℂ) : ‖G w v‖ = v ^ k * |R v| * rexp ((1 - w.re) * v) := by
-        simp [G, abs_of_pos hv, norm_exp]
-      rw [norm_mul, norm_neg, norm_real, Real.norm_of_nonneg hv.le, h_norm, h_norm, add_re,
-        ofReal_re, re_ofNat, le_div_iff₀ hε]
-      calc v * (v ^ k * |R v| * rexp ((1 - z.re) * v)) * ε
-          = v ^ k * |R v| * (v * ε * rexp ((1 - z.re) * v)) := by ring
-        _ ≤ v ^ k * |R v| * rexp ((1 - (ε + 2)) * v) := by gcongr
-    have h_diff (v : ℝ) (z : ℂ) : HasDerivAt (fun z : ℂ ↦ G z v) (-v * G z v) z := by
-      simpa [G, mul_comm, mul_left_comm] using
-        (((hasDerivAt_id z).const_sub 1).mul_const (v : ℂ)).cexp.const_mul ((-v : ℂ) ^ k * R v)
-    have h_meas : ∀ᶠ z in 𝓝 s, AEStronglyMeasurable (G z) (volume.restrict (Ioi 0)) :=
-      .mono h_nhds fun z hz ↦ (ih z hz).left.aestronglyMeasurable
-    have h_bound_int : IntegrableOn (fun v : ℝ ↦ ‖G (ε + 2) v‖ / ε) (Ioi 0) :=
-      (ih (ε + 2) (by simpa)).left.norm.div_const ε
-    obtain ⟨h_int, h_deriv⟩ : IntegrableOn (fun v : ℝ ↦ -v * G s v) (Ioi 0) volume ∧
-        HasDerivAt (fun z : ℂ ↦ ∫ v in Ioi 0, G z v) (∫ v in Ioi 0, -v * G s v) s :=
-      hasDerivAt_integral_of_dominated_loc_of_deriv_le
-        ((isOpen_re_gt _).mem_nhds (lt_tsub_iff_right.1 hεs)) h_meas (ih s hs).left (by fun_prop)
-        (ae_restrict_of_forall_mem measurableSet_Ioi h_dom) h_bound_int
-        (.of_forall fun v z _ ↦ h_diff v z)
-    have h_eq : iteratedDeriv k Φ =ᶠ[𝓝 s] fun z : ℂ ↦ ∫ v in Ioi 0, G z v :=
-      .mono h_nhds fun z hz ↦ (ih z hz).right
-    have h_succ (v : ℝ) : (-v : ℂ) ^ (k + 1) * R v * cexp ((1 - s) * v) = -v * G s v := by
-      simp [G, pow_succ', mul_assoc]
-    simp only [h_succ, iteratedDeriv_succ]
-    exact ⟨h_int, (h_deriv.congr_of_eventuallyEq h_eq).deriv⟩
+  have h_mul (w : ℂ) (v : ℝ) : cexp (-w * v) * ((R v : ℂ) * cexp v) = R v * cexp ((1 - w) * v) := by
+    rw [mul_left_comm, ← Complex.exp_add]
+    congr 2
+    ring
+  have h_lap : ∀ᶠ w in 𝓝 s, TauCeti.HasLaplace (fun v : ℝ ↦ (R v : ℂ) * cexp v) w (Φ w) := by
+    filter_upwards [(isOpen_re_gt (2 : ℝ)).mem_nhds hs] with w hw
+    exact TauCeti.HasLaplace.intro
+      (by simpa only [IntegrableOn, smul_eq_mul, h_mul] using
+        integrableOn_laplace_of_abs_le hR R_le hw)
+      (by simpa only [smul_eq_mul, h_mul] using (Φ_eq w hw).symm)
+  have hk := TauCeti.hasLaplace_neg_pow_smul_iteratedDeriv h_lap k
+  have h_eq (v : ℝ) : cexp (-s * v) • ((-(v : ℂ)) ^ k • ((R v : ℂ) * cexp v)) =
+      (-v : ℂ) ^ k * R v * cexp ((1 - s) * v) := by
+    simp only [smul_eq_mul]
+    calc cexp (-s * v) * ((-v : ℂ) ^ k * ((R v : ℂ) * cexp v))
+        = (-v : ℂ) ^ k * (cexp (-s * v) * ((R v : ℂ) * cexp v)) := by ring
+      _ = (-v : ℂ) ^ k * R v * cexp ((1 - s) * v) := by rw [h_mul]; ring
+  exact ⟨by simpa only [IntegrableOn, h_eq] using hk.integrable,
+    by simpa only [h_eq] using hk.integral_eq.symm⟩
 
 /-- For `H > 0` the moments of `e^{-H v}` on `(0, ∞)` exist: the function `v ^ j e^{-H v}` is
 integrable there, with integral `j! / H ^ (j + 1)`. -/
@@ -169,61 +149,6 @@ lemma norm_taylorCoeff_transform_sub_le (hR : Measurable R)
         rw [major_integral]
         field
 
-/-- Cauchy's estimate for the derivatives of the slope `(F s - F 1) / (s - 1)`, written
-`dslope F 1`, at `1 + H`: if `F` is holomorphic and at most `M` in norm on the disc of radius
-`H + η` about `1 + H`, the `k`-th one is at most `k! (2 M / η) / (H + η) ^ k`. Indeed
-`|s - 1| ≥ η` on the boundary of the disc. -/
-lemma norm_iteratedDeriv_dslope_le {H η M : ℝ} (hH : 0 ≤ H) (hη : 0 < η)
-    (hF : ∀ s ∈ closedBall (1 + H : ℂ) (H + η), DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ M) (k : ℕ) :
-    ‖iteratedDeriv k (dslope F 1) (1 + H)‖ ≤ k ! * (2 * M / η) / (H + η) ^ k := by
-  have h_one : (1 : ℂ) ∈ ball (1 + H : ℂ) (H + η) := by
-    simp [dist_eq_norm, abs_of_nonneg hH, hη]
-  have h_nhds : closedBall (1 + H : ℂ) (H + η) ∈ 𝓝 1 :=
-    mem_of_superset (isOpen_ball.mem_nhds h_one) ball_subset_closedBall
-  have h_diff : DifferentiableOn ℂ (dslope F 1) (closedBall (1 + H) (H + η)) :=
-    (differentiableOn_dslope h_nhds).2 fun s hs ↦ (hF s hs).left.differentiableWithinAt
-  refine norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le k (by positivity)
-    (h_diff.diffContOnCl_ball le_rfl) fun s hs ↦ ?_
-  have h_centre : dist (1 : ℂ) (1 + H) = H := by simp [dist_eq_norm, hH]
-  have h_far : η ≤ ‖s - 1‖ := by
-    linarith [dist_triangle s 1 (1 + H), mem_sphere.1 hs, dist_eq_norm s 1]
-  rw [le_div_iff₀' hη]
-  calc η * ‖dslope F 1 s‖ ≤ ‖(s - 1) • dslope F 1 s‖ := by grw [norm_smul, h_far]
-    _ = ‖F s - F 1‖ := by rw [sub_smul_dslope]
-    _ ≤ ‖F s‖ + ‖F 1‖ := norm_sub_le _ _
-    _ ≤ 2 * M := by
-        linarith [(hF s (sphere_subset_closedBall hs)).right,
-          (hF 1 (ball_subset_closedBall h_one)).right]
-
-/-- The normalised Taylor coefficient `(-H) ^ k H / k! · g⁽ᵏ⁾(1 + H)` of the slope `g = dslope F 1`,
-that is `(F s - F 1) / (s - 1)`, is at most `4 M H / η · exp (-(k + 1) η / (2 H))` in norm if `F`
-is holomorphic and at most `M` in norm on the disc about `1 + H` that reaches to `1 - η`, with
-`0 < η ≤ H`. The exponential bounds the gain `(H / (H + η)) ^ (k + 1)`. -/
-lemma norm_taylorCoeff_dslope_le {H η M : ℝ} (hη : 0 < η) (hηH : η ≤ H)
-    (hF : ∀ s ∈ closedBall (1 + H : ℂ) (H + η), DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ M) (k : ℕ) :
-    ‖(-H) ^ k * H / k ! * iteratedDeriv k (dslope F 1) (1 + H)‖ ≤
-      4 * M * H / η * rexp (-((k + 1) * (η / (2 * H)))) := by
-  have hH : 0 < H := hη.trans_le hηH
-  have hM : 0 ≤ M := (norm_nonneg _).trans (hF _ (mem_closedBall_self (by positivity))).right
-  have h_ratio : H / (H + η) ≤ rexp (-(η / (2 * H))) :=
-    calc H / (H + η) = 1 - η / (H + η) := by field
-      _ ≤ 1 - η / (2 * H) := by
-        gcongr
-        linarith
-      _ ≤ rexp (-(η / (2 * H))) := Real.one_sub_le_exp_neg _
-  calc ‖(-H) ^ k * H / k ! * iteratedDeriv k (dslope F 1) (1 + H)‖
-      = H ^ k * H / k ! * ‖iteratedDeriv k (dslope F 1) (1 + H)‖ := by simp [abs_of_pos hH]
-    _ ≤ H ^ k * H / k ! * (k ! * (2 * M / η) / (H + η) ^ k) := by
-        gcongr
-        exact norm_iteratedDeriv_dslope_le hH.le hη hF k
-    _ = 2 * M / η * (H + η) * (H / (H + η)) ^ (k + 1) := by
-        rw [div_pow]
-        field
-    _ ≤ 2 * M / η * (H + H) * rexp (-(η / (2 * H))) ^ (k + 1) := by gcongr
-    _ = 4 * M * H / η * rexp (-((k + 1) * (η / (2 * H)))) := by
-        rw [← Real.exp_natCast_mul, Nat.cast_succ]
-        ring_nf
-
 /-- If `|R v - R u| ≤ L (v - u)` for all steps `0 ≤ u ≤ v ≤ u + 1`, then `R` is Lipschitz with
 constant `L` on `[0, ∞)`. -/
 lemma abs_sub_le_of_unit_steps
@@ -269,56 +194,6 @@ lemma norm_taylorCoeff_transform_sub_le_of_lipschitz (hR : Measurable R)
   rw [H_eq]
   field
 
-/-- For large `u` an even power of `c log u` is at most `u`, and a power of `u` is at most
-`exp (√u / 2)`. -/
-lemma eventually_log_pow_le_and_pow_le_exp_sqrt (c : ℝ) (A j : ℕ) : ∀ᶠ u : ℝ in atTop,
-    (c * u.log) ^ (2 * A) ≤ u ∧ u ^ j ≤ rexp (√u / 2) := by
-  have h_log : (fun u : ℝ ↦ (c * u.log) ^ (2 * A)) =o[atTop] id := by
-    simpa [mul_pow] using
-      (Real.isLittleO_pow_log_id_atTop (n := 2 * A)).const_mul_left (c ^ (2 * A))
-  have h_exp : ∀ᶠ t : ℝ in atTop, ‖t ^ (2 * j)‖ ≤ ‖rexp (2⁻¹ * t)‖ :=
-    (isLittleO_pow_exp_pos_mul_atTop _ (by norm_num)).eventuallyLE
-  filter_upwards [h_log.eventuallyLE, Real.tendsto_sqrt_atTop.eventually h_exp,
-    eventually_ge_atTop 0] with u h_log_le h_exp_le hu
-  refine ⟨(le_abs_self _).trans (h_log_le.trans_eq (abs_of_nonneg hu)), ?_⟩
-  simpa [pow_mul, Real.sq_sqrt hu, abs_of_nonneg hu, div_eq_inv_mul] using h_exp_le
-
-/-- Every point `s` of the disc of radius `H + η` about `1 + H` has `re s ≥ 1 - η` and
-`|s| ≤ 2 H + η + 1`, for `H ≥ 0`. -/
-lemma one_sub_le_re_and_norm_le_of_mem_closedBall {H η : ℝ} (hH : 0 ≤ H) {s : ℂ}
-    (hs : s ∈ closedBall (1 + H : ℂ) (H + η)) : 1 - η ≤ s.re ∧ ‖s‖ ≤ 2 * H + η + 1 := by
-  rw [mem_closedBall_iff_norm] at hs
-  have h_re : |s.re - (1 + H)| ≤ H + η := by simpa using (abs_re_le_norm _).trans hs
-  have h_centre : ‖(1 + H : ℂ)‖ = 1 + H := mod_cast Real.norm_of_nonneg (by linarith)
-  exact ⟨by linarith [abs_le.1 h_re], by linarith [norm_le_norm_sub_add s (1 + H)]⟩
-
-/-- Let `l ≥ 1`, let `H = (k + 1) / u > 1` with `4 H ≤ u ^ (2 B + 5)`, and let `F` be holomorphic
-and at most `l ^ A` on the disc of radius `H + l ^ (-A)` about `1 + H`. If `l ^ (2 A) ≤ u` and
-`u ^ (3 B + 7) ≤ exp (√u / 2)`, the normalised Taylor coefficient of `dslope F 1` at `1 + H` is at
-most `u ^ (-(B + 1))`: the gain is `exp (-u / (2 l ^ A)) ≤ exp (-√u / 2)`. -/
-lemma norm_taylorCoeff_dslope_le_inv_pow {u l H : ℝ} {A B k : ℕ} (hu : 0 < u) (hl : 1 ≤ l)
-    (H_eq : H = (k + 1) / u) (hH : 1 < H) (hH_le : 4 * H ≤ u * u ^ (2 * B + 4))
-    (h_pow : l ^ (2 * A) ≤ u) (h_exp : u ^ (3 * B + 7) ≤ rexp (√u / 2))
-    (hF : ∀ s ∈ closedBall (1 + H : ℂ) (H + 1 / l ^ A), DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ l ^ A) :
-    ‖(-H) ^ k * H / k ! * iteratedDeriv k (dslope F 1) (1 + H)‖ ≤ 1 / u ^ (B + 1) := by
-  have hη_le : 1 / l ^ A ≤ H := by grw [← one_le_pow₀ hl, ← hH, div_one]
-  have h_sqrt : l ^ A ≤ √u := Real.le_sqrt_of_sq_le (by rwa [← pow_mul, mul_comm])
-  have h_gain : √u / 2 ≤ (k + 1) * (1 / l ^ A / (2 * H)) :=
-    calc √u / 2 = u / √u / 2 := by rw [Real.div_sqrt]
-      _ ≤ u / l ^ A / 2 := by gcongr
-      _ = (k + 1) * (1 / l ^ A / (2 * H)) := by
-        rw [H_eq]
-        field
-  calc ‖(-H) ^ k * H / k ! * iteratedDeriv k (dslope F 1) (1 + H)‖
-      ≤ 4 * l ^ A * H / (1 / l ^ A) * rexp (-((k + 1) * (1 / l ^ A / (2 * H)))) :=
-        norm_taylorCoeff_dslope_le (by positivity) hη_le hF k
-    _ = l ^ (2 * A) * (4 * H) / rexp ((k + 1) * (1 / l ^ A / (2 * H))) := by
-        rw [Real.exp_neg]
-        field
-    _ ≤ u * (u * u ^ (2 * B + 4)) / u ^ (3 * B + 7) := by
-        grw [h_pow, hH_le, ← h_gain, ← h_exp]
-    _ = 1 / u ^ (B + 1) := by field
-
 /-- **Tauberian theorem.** Let `R` be measurable and Lipschitz on `v ≥ 0` (it suffices to test steps
 of length at most `1`), with transform `∫₀^∞ R(v) e^{(1 - s) v} dv = (F s - F 1) / (s - 1)` in
 `re s > 2`. Suppose that for all large `l` the function `F` is holomorphic and at most `l ^ A` on
@@ -335,32 +210,20 @@ theorem eventually_abs_le_inv_pow_of_transform (hR : Measurable R)
       dslope F 1 s = ∫ v in Ioi (0 : ℝ), R v * cexp ((1 - s) * v) := by
     have hs_ne : s ≠ 1 := fun h ↦ by norm_num [h] at hs
     rw [← h_transform s hs, dslope_of_ne _ hs_ne, slope_def_field]
-  have h_log : Tendsto (fun u : ℝ ↦ (2 * B + 5 : ℕ) * u.log) atTop atTop :=
-    Real.tendsto_log_atTop.const_mul_atTop (by positivity)
-  -- Compare `R u` with one normalised Taylor coefficient of `dslope F 1` at a point `1 + H`: the
-  -- two differ by `O(u ^ (-(B + 1)))`, and Cauchy's estimate makes the coefficient as small.
-  filter_upwards [h_log.eventually hF, h_log.eventually_ge_atTop 1, eventually_ge_atTop (2 * L + 8),
-    eventually_log_pow_le_and_pow_le_exp_sqrt (2 * B + 5 : ℕ) A (3 * B + 7)]
-    with u hF_region hl_one hu_large ⟨h_log_pow_le, h_pow_le_exp⟩
-  -- Take `k + 1 ≈ u ^ (2 B + 4)` and `H = (k + 1) / u`, so that the Gamma density has mean `u` and
-  -- standard deviation `u / √(k + 1) ≤ u ^ (-(B + 1))`. With `l = (2 B + 5) log u` and
-  -- `η = l ^ (-A)` the disc of radius `H + η` about `1 + H` lies in the region of `hF_region`.
-  set l : ℝ := (2 * B + 5 : ℕ) * u.log with l_def
-  have hu_one : 1 ≤ u := by linarith
-  have hu_pos : 0 < u := one_pos.trans_le hu_one
+  -- Compare `R u` with one normalised Taylor coefficient of `dslope F 1` at `1 + H`: the two
+  -- differ by `O(u ^ (-(B + 1)))`, and Tau Ceti's rapid-decay estimate makes the coefficient
+  -- at most `u ^ (-(B + 1))`.
+  filter_upwards [TauCeti.eventually_norm_normalized_iteratedDeriv_dslope_le_inv_pow hF
+      (2 * B + 3) (B + 1), eventually_ge_atTop (2 * L + 2)] with u h_small hu_large
+  have hu_pos : 0 < u := by linarith
   let k : ℕ := ⌊u ^ (2 * B + 4)⌋₊
   have hk_ge : u ^ (2 * B + 4) ≤ k + 1 := (Nat.lt_floor_add_one _).le
-  have hk_le : (k : ℝ) ≤ u ^ (2 * B + 4) := Nat.floor_le (by positivity)
   let H : ℝ := (k + 1) / u
   have hH_gt : 1 < H :=
     (one_lt_div hu_pos).2 ((lt_self_pow₀ (by linarith) (by omega)).trans_le hk_ge)
-  have hH_le : H ≤ 2 * u ^ (2 * B + 4) :=
-    (div_le_self (by positivity) hu_one).trans (by linarith [one_le_pow₀ hu_one (n := 2 * B + 4)])
-  let η : ℝ := 1 / l ^ A
-  have hη_le : η ≤ 1 := (div_le_one (by positivity)).2 (one_le_pow₀ hl_one)
   let coeff : ℂ := (-H) ^ k * H / k ! * iteratedDeriv k (dslope F 1) (1 + H)
-  -- As `u ≥ 8`, the factor `u` absorbs the numerical constants below.
-  have h_const_mul_le : 8 * u ^ (2 * B + 4) ≤ u * u ^ (2 * B + 4) := by nlinarith
+  have h_small' : ‖coeff‖ ≤ 1 / u ^ (B + 1) := by
+    simpa only [coeff, k, H, smul_eq_mul, one_div] using h_small
   have h_close : ‖coeff - R u‖ ≤ 2 * L / u ^ (B + 1) :=
     calc ‖coeff - R u‖ ≤ L * (1 / u ^ (B + 1) + u ^ 2 / (k + 1) / (1 / u ^ (B + 1))) :=
           norm_taylorCoeff_transform_sub_le_of_lipschitz hR
@@ -368,17 +231,8 @@ theorem eventually_abs_le_inv_pow_of_transform (hR : Measurable R)
             rfl hH_gt
       _ ≤ L * (1 / u ^ (B + 1) + u ^ 2 / u ^ (2 * B + 4) / (1 / u ^ (B + 1))) := by gcongr
       _ = 2 * L / u ^ (B + 1) := by field
-  have h_disc (s : ℂ) (hs : s ∈ closedBall (1 + H : ℂ) (H + η)) :
-      DifferentiableAt ℂ F s ∧ ‖F s‖ ≤ l ^ A := by
-    obtain ⟨h_re, h_norm⟩ := one_sub_le_re_and_norm_le_of_mem_closedBall (by positivity) hs
-    refine hF_region s h_re (h_norm.trans ?_)
-    rw [l_def, Real.exp_natCast_mul, Real.exp_log hu_pos, pow_succ']
-    linarith
-  have h_small : ‖coeff‖ ≤ 1 / u ^ (B + 1) :=
-    norm_taylorCoeff_dslope_le_inv_pow hu_pos hl_one rfl hH_gt (by linarith) h_log_pow_le
-      h_pow_le_exp h_disc
   calc |R u| = ‖coeff - (coeff - R u)‖ := by simp
-    _ ≤ 1 / u ^ (B + 1) + 2 * L / u ^ (B + 1) := norm_sub_le_of_le h_small h_close
+    _ ≤ 1 / u ^ (B + 1) + 2 * L / u ^ (B + 1) := norm_sub_le_of_le h_small' h_close
     _ = (1 + 2 * L) / u / u ^ B := by field
     _ ≤ 1 / u ^ B := by grw [(div_le_one hu_pos).2 (by linarith : 1 + 2 * L ≤ u)]
 
