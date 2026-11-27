@@ -5,6 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 import Mathlib.MeasureTheory.Function.Floor
 import Mathlib.NumberTheory.LSeries.Linearity
 import Mathlib.NumberTheory.LSeries.SumCoeff
+public import TauCeti.NumberTheory.LFunctions.Zeros.OneSidedBound.Remainder
 public import Lib.Analytic.EntireLFunction
 
 /-!
@@ -14,8 +15,8 @@ Let `d` be a prime and `χ_K = (·/d)` the Legendre symbol. We study the remaind
 sum over the prime powers `n ≡ 1` modulo `q` with `χ_K(n) ≠ 1`. Its Laplace transform sees the zeros
 of the Dirichlet `L`-functions modulo `q` and of their twists by `χ_K`.
 
-* `New.lambdaKResidueClass`: the weight `λ(n) = Λ(n) (1 - χ_K(n))` on `n ≡ 1` modulo `q`; it is
-  nonnegative.
+* `TauCeti.OneSidedBound.primeWeight`: the nonnegative weight `λ(n) = Λ(n) (1 - χ_K(n))`
+  on `n ≡ 1` modulo `q`.
 * `New.logDerivMean`: the mean `G_q` over the characters `ψ` modulo `q` of the differences of the
   logarithmic derivatives of `New.entireL (New.quadTwist ψ d)` and `New.entireL ψ`, less `1 / φ(q)`.
 * `New.primeRemainder`: `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - re G_q(1)`.
@@ -45,18 +46,17 @@ open ArithmeticFunction DirichletCharacter Complex Finset Filter MeasureTheory N
 
 namespace New
 
+open TauCeti.OneSidedBound (primeWeight primeWeight_def primeWeight_nonneg
+  primeWeight_le_two_mul_vonMangoldt)
+
 variable (d : ℕ) [Fact d.Prime] (q : ℕ)
 
 /-! ### The weights, their partial sums and the error term -/
 
-/-- The weight `λ(n) = Λ(n) (1 - χ_K(n))` for `n ≡ 1` mod `q`, and `0` for other `n`. Here `Λ` is
-the von Mangoldt function and `χ_K = chiK d` is the Legendre symbol `(·/d)`. -/
-def lambdaKResidueClass (n : ℕ) : ℝ := residueClass (1 : ZMod q) n * (1 - chiK d n)
-
-/-- The sum `y ^ (-r) ∑_{1 ≤ n ≤ y} λ(n) n ^ (r - 1)` with `λ = lambdaKResidueClass d q`, used for
+/-- The sum `y ^ (-r) ∑_{1 ≤ n ≤ y} λ(n) n ^ (r - 1)` with `λ = primeWeight d q`, used for
 `r = 0` and `r = 1`. -/
 def lambdaKSum (r : ℕ) (y : ℝ) : ℝ :=
-  (∑ n ∈ Icc 1 ⌊y⌋₊, lambdaKResidueClass d q n / n * n ^ r) / y ^ r
+  (∑ n ∈ Icc 1 ⌊y⌋₊, primeWeight d q n / n * n ^ r) / y ^ r
 
 /-- The function `G_q` with `φ(q) G_q = (L_q^K)' / L_q^K - L_q' / L_q - 1` away from the zeros of
 `L_q` and `L_q^K`, which are the products of the `entireL ψ` and of the `entireL (quadTwist ψ d)`
@@ -67,37 +67,16 @@ def logDerivMean [NeZero q] (s : ℂ) : ℂ :=
     (logDeriv (entireL (quadTwist ψ d)) s - logDeriv (entireL ψ) s) - 1) / φ q
 
 /-- The remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`, with
-`λ = lambdaKResidueClass d q` and `c_q = re G_q(1)`, `G_q = logDerivMean d q`; see
+`λ = primeWeight d q` and `c_q = re G_q(1)`, `G_q = logDerivMean d q`; see
 `primeRemainder_eq_sum_posPart`. For odd `d` prime to `q` this is the constant for which
 `R_q(x) → 0` as `x → ∞`, by `eventually_abs_primeRemainder_le` in
 `New.Reduction.Zeros.PrimeNumberTheorem` with `B = 1`. -/
 def primeRemainder [NeZero q] (x : ℝ) : ℝ :=
   lambdaKSum d q 0 x - lambdaKSum d q 1 x - x.log / φ q - re (logDerivMean d q 1)
 
-/-- For a prime `d`, the Legendre symbol `chiK d n = (n/d)` takes the values `0`, `1` and `-1`, so
-`0 ≤ 1 - (n/d) ≤ 2`. -/
-lemma one_sub_chiK_mem_Icc (n : ℕ) : 1 - (chiK d n : ℝ) ∈ Set.Icc (0 : ℝ) 2 := by
-  obtain h_val | h_val | h_val :
-      legendreSym d n = 0 ∨ legendreSym d n = 1 ∨ legendreSym d n = -1 :=
-    quadraticChar_isQuadratic (ZMod d) ((n : ℤ) : ZMod d) <;>
-    norm_num [chiK_eq_legendreSym, h_val]
-
-lemma lambdaKResidueClass_nonneg (n : ℕ) : 0 ≤ lambdaKResidueClass d q n :=
-  mul_nonneg (residueClass_nonneg 1 n) (one_sub_chiK_mem_Icc d n).1
-
-variable {d q} in
-/-- For a prime `d` and any `q : ℕ`, the weight `lambdaKResidueClass d q n`, which is
-`Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `0` otherwise, is at most `2 Λ(n)`, where
-`Λ = vonMangoldt`. -/
-lemma lambdaKResidueClass_le_two_mul_vonMangoldt (n : ℕ) :
-    lambdaKResidueClass d q n ≤ 2 * vonMangoldt n := by
-  obtain ⟨h_chi_nonneg, h_chi_le⟩ := one_sub_chiK_mem_Icc d n
-  rw [lambdaKResidueClass, mul_comm 2]
-  exact mul_le_mul (residueClass_le 1 n) h_chi_le h_chi_nonneg vonMangoldt_nonneg
-
-lemma lambdaKResidueClass_le_two_mul (n : ℕ) : lambdaKResidueClass d q n ≤ 2 * n :=
+lemma lambdaKResidueClass_le_two_mul (n : ℕ) : primeWeight d q n ≤ 2 * n :=
   calc
-    lambdaKResidueClass d q n ≤ 2 * vonMangoldt n := lambdaKResidueClass_le_two_mul_vonMangoldt n
+    primeWeight d q n ≤ 2 * vonMangoldt n := primeWeight_le_two_mul_vonMangoldt d q n
     _ ≤ 2 * Real.log n := mul_le_mul_of_nonneg_left vonMangoldt_le_log zero_le_two
     _ ≤ 2 * n := mul_le_mul_of_nonneg_left (Real.log_le_self n.cast_nonneg) zero_le_two
 
@@ -125,21 +104,21 @@ lemma sum_vonMangoldt_div_le (N : ℕ) : ∑ n ∈ Ioc 0 N, vonMangoldt n / n �
 
 
 /-- Growth of the partial sums. Let `d` be a prime, `q` any natural number, and
-`λ = lambdaKResidueClass d q` the weight `Λ(n) (1 - (n/d))` on `n ≡ 1` mod `q` and `0` elsewhere,
+`λ = primeWeight d q` the weight `Λ(n) (1 - (n/d))` on `n ≡ 1` mod `q` and `0` elsewhere,
 with `(·/d)` the Legendre symbol. For every `r : ℕ` and real `v`, the sum `lambdaKSum d q r y = y ^
 (-r) ∑_{1 ≤ n ≤ y} λ(n) n ^ (r - 1)` at `y = e ^ v` has absolute value at most `2 e ^ v`. -/
 lemma abs_lambdaKSum_exp_le (r : ℕ) (v : ℝ) : |lambdaKSum d q r (rexp v)| ≤ 2 * rexp v := by
   -- There are at most `exp v` terms, each at most `2 * exp v ^ r` since `0 ≤ λ(n) ≤ 2 n`.
   have h_term (n : ℕ) (hn : n ∈ Icc 1 ⌊rexp v⌋₊) :
-      |lambdaKResidueClass d q n / n * n ^ r| ≤ 2 * rexp v ^ r := by
+      |primeWeight d q n / n * n ^ r| ≤ 2 * rexp v ^ r := by
     have hn_le : (n : ℝ) ≤ rexp v := (le_floor_iff (exp_nonneg v)).1 (mem_Icc.1 hn).2
-    have h_div : lambdaKResidueClass d q n / n ≤ 2 :=
+    have h_div : primeWeight d q n / n ≤ 2 :=
       div_le_of_le_mul₀ n.cast_nonneg zero_le_two (lambdaKResidueClass_le_two_mul d q n)
-    rw [abs_mul, abs_div, abs_pow, Nat.abs_cast, abs_of_nonneg (lambdaKResidueClass_nonneg d q n)]
+    rw [abs_mul, abs_div, abs_pow, Nat.abs_cast, abs_of_nonneg (primeWeight_nonneg d q n)]
     gcongr
   rw [lambdaKSum, abs_div, abs_pow, Real.abs_exp, div_le_iff₀ (by positivity), mul_assoc,
     mul_left_comm]
-  calc |∑ n ∈ Icc 1 ⌊rexp v⌋₊, lambdaKResidueClass d q n / n * n ^ r|
+  calc |∑ n ∈ Icc 1 ⌊rexp v⌋₊, primeWeight d q n / n * n ^ r|
       ≤ ∑ _n ∈ Icc 1 ⌊rexp v⌋₊, 2 * rexp v ^ r :=
         (abs_sum_le_sum_abs _ _).trans (sum_le_sum h_term)
     _ = ⌊rexp v⌋₊ * (2 * rexp v ^ r) := by simp
@@ -213,7 +192,7 @@ variable {d q}
 G_q(1)` with `z > 0`, the sum equals `∑_{1 ≤ n ≤ A} λ(n) (1/n - 1/z)⁺` for any integer `A ≥ ⌊z⌋`. -/
 lemma primeRemainder_eq_sum_posPart {A : ℕ} {z : ℝ} (hz_pos : 0 < z) (hz_le : ⌊z⌋₊ ≤ A) :
     primeRemainder d q z = ∑ n ∈ Icc 1 A,
-      lambdaKResidueClass d q n * (1 / n - 1 / z)⁺ - z.log / φ q -
+      primeWeight d q n * (1 / n - 1 / z)⁺ - z.log / φ q -
       re (logDerivMean d q 1) := by
   simp only [primeRemainder, lambdaKSum, sum_div, ← sum_sub_distrib, sub_left_inj]
   -- The positive part of `1 / n - 1 / z` vanishes for `z < n` and is the number itself for `n ≤ z`.
@@ -230,7 +209,7 @@ G_q(1)` with `z > 0`, the sum equals `A⁻¹ ∑_{1 ≤ n ≤ A} λ(n) (A/n - A/
 `A ≥ z`. -/
 lemma primeRemainder_eq_sum (A : ℕ) {z : ℝ} (hz_pos : 0 < z) (hz_le : z ≤ A) :
     primeRemainder d q z = ∑ n ∈ Icc 1 A,
-      lambdaKResidueClass d q n * (A / n - A / z)⁺ / A - z.log / φ q -
+      primeWeight d q n * (A / n - A / z)⁺ / A - z.log / φ q -
       re (logDerivMean d q 1) := by
   have hA : (0 : ℝ) < A := hz_pos.trans_le hz_le
   have h_scale (n : ℕ) : (A / n - A / z : ℝ)⁺ = A * (1 / n - 1 / z)⁺ := by
@@ -244,18 +223,18 @@ omit [NeZero q] in
 /-- Partial summation. For every `r : ℕ` and `re s > 2`, the series `∑ λ(n) n ^ (-s)` is `s + r - 1`
 times the Laplace transform at `s - 1` of `v ↦ lambdaKSum d q r (e ^ v)`. -/
 lemma LSeries_lambdaKResidueClass {s : ℂ} (hs : 2 < s.re) (r : ℕ) :
-    LSeries (fun n : ℕ ↦ lambdaKResidueClass d q n) s =
+    LSeries (fun n : ℕ ↦ primeWeight d q n) s =
       (s + r - 1) *
         ∫ v : ℝ in Set.Ioi 0, lambdaKSum d q r (rexp v) * Complex.exp ((1 - s) * v) := by
   -- Partial summation for the coefficients `f n = λ(n) n ^ (r - 1)` at `s + r - 1`, followed by
   -- the substitution `t = e ^ v`.
-  let f (n : ℕ) : ℂ := lambdaKResidueClass d q n / n * n ^ r
+  let f (n : ℕ) : ℂ := primeWeight d q n / n * n ^ r
   have h_sum : (fun n : ℕ ↦ ∑ k ∈ Icc 1 n, ‖f k‖) =O[atTop] fun n : ℕ ↦ (n : ℝ) ^ (1 + r : ℝ) := by
     refine .of_bound 2 ((eventually_gt_atTop 0).mono fun n hn ↦ ?_)
     have hn_pos : (0 : ℝ) < n := mod_cast hn
     have h_bound := abs_lambdaKSum_exp_le d q r (Real.log n)
     rw [Real.exp_log hn_pos] at h_bound
-    simpa [f, abs_of_nonneg, lambdaKResidueClass_nonneg, lambdaKSum, hn, div_le_iff₀, abs_div,
+    simpa [f, abs_of_nonneg, primeWeight_nonneg, lambdaKSum, hn, div_le_iff₀, abs_div,
       rpow_add, field] using h_bound
   have h_re : 1 + (r : ℝ) < (s + r - 1).re := by
     linarith [show (s + r - 1).re = s.re + r - 1 by simp]
@@ -265,7 +244,7 @@ lemma LSeries_lambdaKResidueClass {s : ℂ} (hs : 2 < s.re) (r : ℕ) :
     simp [f, lambdaKSum, field, cpow_add, cpow_neg, sub_mul, Complex.exp_sub, cpow_def _ s,
       Complex.log_exp, mul_comm s, le_of_lt, pi_pos]
   calc
-    LSeries (fun n : ℕ ↦ lambdaKResidueClass d q n) s = LSeries f (s + r - 1) := by
+    LSeries (fun n : ℕ ↦ primeWeight d q n) s = LSeries f (s + r - 1) := by
       refine tsum_congr fun n ↦ ?_
       obtain rfl | hn := eq_or_ne n 0 <;> simp [f, cpow_sub, cpow_add, field, *]
     _ = (s + r - 1) * ∫ t in .Ioi (1 : ℝ), (∑ k ∈ Icc 1 ⌊t⌋₊, f k) * t ^ (-(s + r - 1 + 1)) :=
@@ -274,21 +253,23 @@ lemma LSeries_lambdaKResidueClass {s : ℂ} (hs : 2 < s.re) (r : ℕ) :
       simp only [← Real.exp_zero, ← integral_comp_exp_Ioi, h_subst]
 
 /-- Let `d` be an odd prime coprime to `q ≥ 1`, `χ_K = (·/d)` the Legendre symbol, and
-`λ = lambdaKResidueClass d q` the weight `Λ(n) (1 - χ_K(n))` on `n ≡ 1` mod `q` and `0` elsewhere.
+`λ = primeWeight d q` the weight `Λ(n) (1 - χ_K(n))` on `n ≡ 1` mod `q` and `0` elsewhere.
 For `re s > 1`, `∑ λ(n) n ^ (-s) = s / (φ(q) (s - 1)) + G_q(s)`. -/
 lemma LSeries_lambdaKResidueClass_eq_add_logDerivMean (hd : d ≠ 2) (h_cop : q.Coprime d) {s : ℂ}
     (hs : 1 < s.re) :
-    LSeries (fun n : ℕ ↦ lambdaKResidueClass d q n) s =
+    LSeries (fun n : ℕ ↦ primeWeight d q n) s =
       s / (φ q * (s - 1)) + logDerivMean d q s := by
   -- Orthogonality of the characters mod `q` expresses `λ` through `ψ Λ - ψ χ_K Λ`.
   let a (ψ : DirichletCharacter ℂ q) : ℕ → ℂ :=
     (fun n : ℕ ↦ ψ n * vonMangoldt n) - fun n : ℕ ↦ quadTwist ψ d n * vonMangoldt n
   have h_orth (n : ℕ) :
-      (lambdaKResidueClass d q n : ℂ) = ((φ q : ℂ)⁻¹ • ∑ ψ : DirichletCharacter ℂ q, a ψ) n := by
+      (primeWeight d q n : ℂ) = ((φ q : ℂ)⁻¹ • ∑ ψ : DirichletCharacter ℂ q, a ψ) n := by
     have h_twist (ψ : DirichletCharacter ℂ q) : quadTwist ψ d n = ψ n * legendreSym d n :=
       mod_cast quadTwist_apply ψ d n
-    simp [a, lambdaKResidueClass, chiK_eq_legendreSym, residueClass_apply, h_twist, ← sum_mul,
-      field]
+    have h_weight :
+        primeWeight d q n = residueClass (1 : ZMod q) n * (1 - (legendreSym d n : ℝ)) := by
+      simp [primeWeight_def, residueClass, Set.indicator, ite_mul]
+    simp [a, h_weight, residueClass_apply, h_twist, ← sum_mul, field]
   -- No twist is principal, so only `ψ = 1` contributes the term `1 / (s - 1)`.
   let D (ψ : DirichletCharacter ℂ q) : ℂ :=
     logDeriv (entireL (quadTwist ψ d)) s - logDeriv (entireL ψ) s

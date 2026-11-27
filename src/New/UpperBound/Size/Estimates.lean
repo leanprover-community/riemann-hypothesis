@@ -48,6 +48,8 @@ section SizeEstimates
 
 namespace New.Data
 
+open TauCeti.OneSidedBound (primeWeight primeWeight_def)
+
 open Nat ArithmeticFunction Finset Real NumberField Space NeZero Subgroup
 
 variable {P : Parameters} (D : Data P)
@@ -134,7 +136,7 @@ lemma primeSum_eq_sum_localPrimeSum {U : ℕ} (hU : ⌈D.x₁⌉₊ ≤ U) {y : 
     ring
   calc
     D.primeSum y σ = ∑ ν ∈ .Icc 1 D.a, G ν := by
-      simp [primeSum, lambdaKResidueClass, G, Unique.eq_default]
+      simp [primeSum, primeWeight_def, G, Unique.eq_default, chiK_eq_legendreSym]
     _ = ∑' ν, G ν := (tsum_eq_sum h_outside).symm
     _ = ∑' (p : Primes) (e : ℕ), G (p ^ (e + 1)) :=
       tsum_eq_tsum_primes_of_support_subset_prime_powers h_summable h_support

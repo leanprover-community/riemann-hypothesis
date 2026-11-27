@@ -15,10 +15,10 @@ total remainder through the remainders `R_q` of prime sums (`totalRemainder_eq`)
 `directionAmount_mem_Icc`, `le_mainAmount`). The modulus `q₀` is `P.q₀`.
 
 Notions from other files:
-* `lambdaKResidueClass d q n` is `Λ_K(n) = Λ(n) (1 - chiK d n)` if `n ≡ 1` modulo `q`, and `0`
+* `primeWeight d q n` is `Λ_K(n) = Λ(n) (1 - chiK d n)` if `n ≡ 1` modulo `q`, and `0`
   otherwise; `Λ` is the von Mangoldt function and `chiK d` is the Legendre symbol `(·/d)`.
 * `primeRemainder d q z` is `R_q(z) = ∑_{n ≤ z} λ(n) (1 / n - 1 / z) - log z / φ(q) - c_q` with
-  `λ = lambdaKResidueClass d q` and `c_q = (logDerivMean d q 1).re`. The function `logDerivMean d q`
+  `λ = primeWeight d q` and `c_q = (logDerivMean d q 1).re`. The function `logDerivMean d q`
   is `(∑_ψ (L'/L(quadTwist ψ d) - L'/L(ψ)) - 1) / φ(q)`, summed over the Dirichlet characters `ψ`
   modulo `q`, where `L = entireL` is the `L`-function made entire.
 * `D.Φ` is the group of the `D.f` infinite places; `D.aPlaces` (`Φ_a`, the `a`-places) are those
@@ -38,19 +38,21 @@ open Real Finset
 
 namespace New
 
+open TauCeti.OneSidedBound (primeWeight primeWeight_def primeWeight_nonneg
+  primeWeight_le_two_mul_vonMangoldt)
+
 variable {d : ℕ} [Fact d.Prime] {q : ℕ}
 
-/-- The function `lambdaKResidueClass d q` is the restriction of `Λ_K = lambdaKResidueClass d 1` to
+/-- The function `primeWeight d q` is the restriction of `Λ_K = primeWeight d 1` to
 the integers `n ≡ 1` modulo `q`. -/
 lemma lambdaKResidueClass_eq_ite (n : ℕ) :
-    lambdaKResidueClass d q n = if (n : ZMod q) = 1 then lambdaKResidueClass d 1 n else 0 := by
-  simp [lambdaKResidueClass, ArithmeticFunction.vonMangoldt.residueClass, Set.indicator,
-    Subsingleton.elim (n : ZMod 1) 1]
+    primeWeight d q n = if (n : ZMod q) = 1 then primeWeight d 1 n else 0 := by
+  simp [primeWeight_def, Subsingleton.elim (n : ZMod 1) 1]
 
 /-- For `0 < z ≤ A` with `A` an integer, the sum of `Λ_K(n) (A / n - A / z)₊` over the `n ≤ A` with
 `n ≡ 1` modulo `q` equals `A (R_q(z) + log z / φ(q) + c_q)`. -/
 lemma sum_lambdaKResidueClass_mul_posPart [NeZero q] (A : ℕ) {z : ℝ} (hz : 0 < z) (hzA : z ≤ A) :
-    ∑ n ∈ Icc 1 A, lambdaKResidueClass d q n * (A / n - A / z : ℝ)⁺ =
+    ∑ n ∈ Icc 1 A, primeWeight d q n * (A / n - A / z : ℝ)⁺ =
       A * (primeRemainder d q z + log z / q.totient + (logDerivMean d q 1).re) := by
   have hA : (A : ℝ) ≠ 0 := (hz.trans_le hzA).ne'
   rw [primeRemainder_eq_sum A hz hzA, ← sum_div]
@@ -118,11 +120,11 @@ places `τ ≡ 1` modulo `q₀` (the set `D.aPlaces`). So every `τ` gives the t
 and if `n ≡ 1` modulo `q₀` there is one correction to the weight `a / x` for each place of
 `D.bPlaces`. -/
 lemma sum_aPlaces_lambdaKResidueClass_mul_posPart (n : ℕ) :
-    ∑ τ ∈ D.aPlaces, lambdaKResidueClass P.d 1 n * (D.a / n - D.weight (D.placeOfInt (-n) * τ) : ℝ)⁺
+    ∑ τ ∈ D.aPlaces, primeWeight P.d 1 n * (D.a / n - D.weight (D.placeOfInt (-n) * τ) : ℝ)⁺
       =
-      #D.aPlaces * (lambdaKResidueClass P.d 1 n * (D.a / n - D.a / D.x₁ : ℝ)⁺) +
-        #D.bPlaces * (lambdaKResidueClass P.d P.q₀ n * (D.a / n - D.a / D.x : ℝ)⁺ -
-          lambdaKResidueClass P.d P.q₀ n * (D.a / n - D.a / D.x₁ : ℝ)⁺) := by
+      #D.aPlaces * (primeWeight P.d 1 n * (D.a / n - D.a / D.x₁ : ℝ)⁺) +
+        #D.bPlaces * (primeWeight P.d P.q₀ n * (D.a / n - D.a / D.x : ℝ)⁺ -
+          primeWeight P.d P.q₀ n * (D.a / n - D.a / D.x₁ : ℝ)⁺) := by
   have h_term (σ : D.Φ) : (D.a / n - D.weight σ : ℝ)⁺ = (D.a / n - D.a / D.x₁ : ℝ)⁺ +
       if σ ∈ D.bPlaces then (D.a / n - D.a / D.x : ℝ)⁺ - (D.a / n - D.a / D.x₁ : ℝ)⁺ else 0 := by
     rw [cast_weight]
@@ -192,13 +194,13 @@ lemma totalRemainder_eq :
 cut-off `x₁ = D.x₁`, and at most `0` for `n > x₁` because `κ(σ) ≥ a / x₁`. -/
 lemma lambdaKResidueClass_mul_posPart_le_ite {y : ℝ} (hy : 0 ≤ y) (hya : y ≤ D.a) (σ : D.Φ) {n : ℕ}
     (hn : 0 < n) :
-    lambdaKResidueClass P.d 1 n * (y / n - D.weight σ : ℝ)⁺ ≤
+    primeWeight P.d 1 n * (y / n - D.weight σ : ℝ)⁺ ≤
       if n ∈ Ioc 0 ⌊D.x₁⌋₊ then 2 * y * (ArithmeticFunction.vonMangoldt n / n) else 0 := by
   split_ifs with h_mem
   · have h_part : (y / n - D.weight σ : ℝ)⁺ ≤ y / n :=
       sup_le (sub_le_self _ (Nat.cast_nonneg _)) (by positivity)
     calc _ ≤ 2 * ArithmeticFunction.vonMangoldt n * (y / n) :=
-          mul_le_mul (lambdaKResidueClass_le_two_mul_vonMangoldt n) h_part (posPart_nonneg _)
+          mul_le_mul (primeWeight_le_two_mul_vonMangoldt P.d 1 n) h_part (posPart_nonneg _)
             (by positivity)
       _ = 2 * y * (ArithmeticFunction.vonMangoldt n / n) := by ring
   · have hxn : D.x₁ ≤ n := (Nat.lt_of_floor_lt (by simpa [hn] using h_mem)).le
@@ -229,7 +231,7 @@ lemma primeSum_le {y : ℝ} (hy : 0 ≤ y) (hya : y ≤ D.a) (τ : D.Φ) :
 lemma primeSum_mem_Icc {y : ℝ} (hy : 0 ≤ y) (hya : y ≤ D.a) (τ : D.Φ) :
     D.primeSum y τ ∈ Set.Icc 0 (y * D.logB) := by
   have h_scale : 4 * D.logX₁ ≤ D.logB := D.le_of_hasLogBound
-  refine ⟨sum_nonneg fun n _ ↦ mul_nonneg (lambdaKResidueClass_nonneg P.d 1 n) (posPart_nonneg _),
+  refine ⟨sum_nonneg fun n _ ↦ mul_nonneg (primeWeight_nonneg P.d 1 n) (posPart_nonneg _),
     ?_⟩
   grw [D.primeSum_le hy hya, ← h_scale]
   linarith
