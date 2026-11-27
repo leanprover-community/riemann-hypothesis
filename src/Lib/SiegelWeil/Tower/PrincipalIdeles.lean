@@ -6,6 +6,7 @@ import Mathlib.MeasureTheory.Integral.Pi
 public import Lib.Adelic.Adeles.Basic
 public import Lib.General.Groups.CongruenceSubgroups
 import Lib.Adelic.Adeles.AdditiveCharacter
+import TauCeti.Topology.Algebra.Group.Units
 
 /-!
 # Principal ideles and a majorant on the complex torus
