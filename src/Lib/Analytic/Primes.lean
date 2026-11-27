@@ -2,6 +2,7 @@ module
 
 import TauCeti.NumberTheory.ArithmeticFunction.VonMangoldt
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
+import TauCeti.NumberTheory.LSeries.Term
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Dynamics.Newton
@@ -171,19 +172,6 @@ lemma New.eventually_norm_logDeriv_entireL_le_near_one (A : ℕ) {M : ℕ} [NeZe
   exact (norm_logDeriv_entireL_le χ hl h_level h_not_small h_re_lower (by nlinarith)).imp_right
     fun h_le ↦ h_le.trans h_pow
 
-/-- If `log n * (σ - re z) ≤ E`, then moving the `n`-th term of the Dirichlet series of `a` from
-`1 + z` to the real point `1 + σ` costs at most the factor `exp E`. -/
-lemma New.norm_term_le_exp_mul (a : ℕ → ℂ) {z : ℂ} (σ E : ℝ) {n : ℕ}
-    (h_le : Real.log n * (σ - z.re) ≤ E) :
-    ‖term a (1 + z) n‖ ≤ Real.exp E * ‖term a (1 + σ) n‖ := by
-  obtain rfl | hn := eq_or_ne n 0
-  · simp
-  have hn_pos : 0 < (n : ℝ) := Nat.cast_pos.2 (Nat.pos_of_ne_zero hn)
-  simp only [norm_term_eq, ite_eq_right hn, add_re, one_re, ofReal_re]
-  rw [show 1 + z.re = (1 + σ) - (σ - z.re) by ring,
-    Real.rpow_sub hn_pos, div_div_eq_mul_div, mul_comm ‖a n‖, mul_div_assoc]
-  grw [Real.rpow_def_of_pos hn_pos (σ - z.re), h_le]
-
 /-- For `0 < re z` the Dirichlet series of `Λ` on the class `1` mod `q` has at `1 + z` the sum
 `(1 - z * ∑ χ, L_χ'/L_χ (1 + z)) / φ(q) / z`. Here `L_χ = entireL χ` is `L(s, χ)` with the pole
 removed. -/
@@ -304,7 +292,8 @@ lemma New.norm_sub_mul_sum_term_le (ha : ∀ n : ℕ, 0 ≤ a n)
   have h_term_le_sum {n : ℕ} (h : Real.log n * (U⁻¹ - z.re) ≤ E) :
       ‖term (fun n : ℕ ↦ (a n : ℂ)) (1 + z) n‖ ≤ rexp E *
         (‖term (fun n : ℕ ↦ (a n : ℂ)) (1 + (U⁻¹ : ℝ)) n‖ + ‖term b (1 + -4⁻¹) n‖) :=
-    (norm_term_le_exp_mul _ U⁻¹ E h).trans (by gcongr; simp)
+    (TauCeti.LSeries.norm_term_le_exp_mul _ (s := 1 + z) (w := 1 + (U⁻¹ : ℝ))
+      (by simpa [Complex.add_re] using h)).trans (by gcongr; simp)
   rcases le_total z.re U⁻¹ with h_left | h_right
   · -- If `re z ≤ 1 / U`, then `E ≥ 0`, and we bound `F` and the finite sum `P` separately.
     have hU_re : U * z.re ≤ 1 := (mul_le_mul_of_nonneg_left h_left hU_pos.le).trans_eq h_unit
@@ -342,7 +331,8 @@ lemma New.norm_sub_mul_sum_term_le (ha : ∀ n : ℕ, 0 ≤ a n)
             mul_le_mul_of_nonpos_right h_log (by linarith)
           linarith
         grw [← norm_term_le (f := fun n : ℕ ↦ (a n : ℂ)) (g := b) _ (h_window n ⟨h_log, h_in⟩),
-          norm_term_le_exp_mul _ _ E h_exponent_le]
+          TauCeti.LSeries.norm_term_le_exp_mul _ (s := 1 + z) (w := 1 + -4⁻¹)
+            (by simpa [Complex.add_re] using h_exponent_le)]
         simp [exp_pos]
       · -- Beyond the window we have `log n ≥ U + X² ≥ U + t`.
         refine h_term_le_sum ?_
