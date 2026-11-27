@@ -51,9 +51,9 @@ variable {P : Parameters} (D : Data P)
 /-- The exponent `s = D.towerExp` of the tower of admissible data `D`, for which `2 ^ s = m ^ 22`
 with `m = D.m ≥ 2`, is not zero. -/
 lemma towerExp_ne_zero : D.towerExp ≠ 0 := by
-  obtain ⟨e, -, hs⟩ : ∃ e : ℕ, D.m = 2 ^ (e + 1) ∧ D.towerExp = (e + 1) * 22 :=
-    D.exists_m_eq_two_pow
-  omega
+  obtain ⟨e, -, h_exp⟩ := D.exists_m_eq_two_pow
+  rw [h_exp]
+  exact Nat.mul_ne_zero (Nat.succ_ne_zero e) (by decide)
 
 /-- The scales `x₁` and `b` of admissible data satisfy `x₁ ^ (3 l₀²) ≤ √b`, where `l₀` is the least
 power of `3` above `27 s` and `s` is the exponent of the tower. -/
