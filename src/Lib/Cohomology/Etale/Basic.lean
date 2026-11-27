@@ -101,8 +101,8 @@ scoped instance {F G : D ⥤ T} : CoeFun (F ⟶ G) fun _ ↦ ∀ A : D, F A ⟶ 
 /-- A subfunctor is applied to an object. -/
 scoped instance {F : D ⥤ Type _} : CoeFun (Subfunctor F) fun _ ↦ ∀ A : D, Set (F A) := ⟨(·.obj)⟩
 
-/-- The category of covariant functors from C to abelian groups. -/
-abbrev AbFunctor : Type 2 := C ⥤ AddCommGrpCat.{1}
+/-- The category of covariant functors from `D` to abelian groups. -/
+abbrev AbFunctor (D : Type*) [Category* D] := D ⥤ AddCommGrpCat.{1}
 
 -- `HasAbFunctorExt` is a reducible `def` and not an `abbrev`: the kernel then compares these
 -- instances by `C` alone instead of unfolding them.
@@ -147,7 +147,7 @@ abbrev H : Type 2 := Abelian.Ext N F n
 
 /-- The functor sending a set-valued functor Y to Z[Y], whose value at A is the free abelian group
 on Y(A). -/
-def freeAb : (D ⥤ Type 1) ⥤ D ⥤ Ab.{1} := (whiskeringRight D (Type 1) Ab) free
+def freeAb : (D ⥤ Type 1) ⥤ AbFunctor D := (whiskeringRight D (Type 1) Ab) free
 
 /-- A functor from C to small abelian groups, regarded as taking values in abelian groups of the
 next universe. -/
@@ -1204,7 +1204,7 @@ instance : Epi (abCoker.π α) where
 
 /-- For a subfunctor `U` of a set-valued functor `Y`, the functor to abelian groups ℤ[Y]/ℤ[U], the
 cokernel of the map ℤ[U] → ℤ[Y]. -/
-def relFreeAb : C ⥤ Ab := abCoker (freeAb.map U.ι)
+def relFreeAb : AbFunctor C := abCoker (freeAb.map U.ι)
 
 /-- For a subfunctor `U` of `Y`, the quotient morphism ℤ[Y] → ℤ[Y]/ℤ[U]. -/
 def relFreeAb.π : freeAb Y ⟶ relFreeAb U := abCoker.π (freeAb.map U.ι)

@@ -622,17 +622,6 @@ variable {𝔰 : Shape} {I : Type*} {ε : 𝔰.BesselIndex → ℤˣ} [Fintype I
 private lemma sFinite_besselGraphMeasure : SFinite 𝔰.besselGraphMeasure :=
   @Measure.instSFiniteMap _ _ _ _ (𝔰.besselHaar.prod volume) 𝔰.besselGraphChart inferInstance
 
-private lemma continuous_sum_finset {α β ι : Type*} [TopologicalSpace α] [AddCommMonoid β]
-    [TopologicalSpace β] [ContinuousAdd β] (s : Finset ι) {f : ι → α → β}
-    (hf : ∀ i ∈ s, Continuous (f i)) : Continuous fun a ↦ ∑ i ∈ s, f i a := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => exact continuous_const
-  | @insert i s hi ih =>
-    simp only [Finset.sum_insert hi]
-    exact (hf i (Finset.mem_insert_self i s)).fun_add
-      (ih fun j hj ↦ hf j (Finset.mem_insert_of_mem hj))
-
 private lemma continuous_uncurry_smul_mul_left {G S E : Type*} [TopologicalSpace G] [Mul G]
     [ContinuousMul G] [TopologicalSpace S] [TopologicalSpace E] [SMul ℂ E] [ContinuousSMul ℂ E]
     {k : G → ℂ} {F : G → S → E} (hk : Continuous k) (hF : Continuous F.uncurry) (y : G) :
@@ -743,17 +732,14 @@ lemma continuous_besselIntegrand (h_cont : Continuous rep) :
       (q.snd.val.fst : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) :=
     Units.continuous_val.comp (continuous_subtypeVal.comp h_fst)
   have h_srs : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ simpleRootSum q.snd.val.fst :=
-    continuous_sum_finset _ fun a _ ↦
-      (continuous_apply _).comp ((continuous_apply _).comp h_mat)
+    continuous_finsetSum _ fun _ _ ↦ h_mat.matrix_elem _ _
   have h2 : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ wave (-simpleRootSum q.snd.val.fst) :=
     Complex.continuous_exp.comp (h_srs.neg.fun_sub (Complex.continuous_conj.comp h_srs.neg))
   have h_rep : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦ (rep q.snd.val.snd⁻¹).val :=
     continuous_subtypeVal.comp (h_cont.comp h_snd.inv)
   have h3 : Continuous fun q : 𝔰.G₁ × 𝔰.besselGraph ↦
       WithLp.toLp 2 ((rep q.snd.val.snd⁻¹).val *ᵥ v.ofLp) :=
-    (PiLp.continuous_toLp 2 _).comp (continuous_pi fun i ↦
-      continuous_sum_finset _ fun j _ ↦
-        ((continuous_apply j).comp ((continuous_apply i).comp h_rep)).fun_mul continuous_const)
+    (PiLp.continuous_toLp 2 _).comp (h_rep.matrix_mulVec continuous_const)
   exact h1.fun_smul (h2.fun_smul h3)
 
 /-- For a unit vector `v`, the norm of the integrand `c_λ(x⁻¹ s y) π(s)⁻¹ v` is `|c_λ(x⁻¹ s y)|`,

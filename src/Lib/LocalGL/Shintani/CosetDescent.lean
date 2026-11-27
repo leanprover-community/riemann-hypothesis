@@ -1,6 +1,7 @@
 module
 
 import Mathlib.FieldTheory.Finite.Extension
+import TauCeti.LinearAlgebra.TensorProduct.Basis
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 public import Lib.LocalGL.Shintani.CosetRootChoice
 public import Lib.LocalGL.Green.HallAlgebra
@@ -533,9 +534,8 @@ private lemma basis_repr_congr_one_apply (b : Basis (Fin m) k L) (σ : Gal(k'/k)
     (x : k' ⊗[k] L) (j : Fin m) :
     (basis k' b).repr (Algebra.TensorProduct.congr σ (1 : Gal(L/k)) x) j =
       σ ((basis k' b).repr x j) := by
-  induction x with
-  | tmul a l => aesop
-  | add x y hx hy => simp only [map_add, Finsupp.add_apply, hx, hy]
+  rw [show basis k' b = b.baseChange k' by ext i; simp]
+  exact (b.map_baseChange_repr σ.toLinearEquiv.toLinearMap x j).symm
 
 /-- Let `σ ∈ Gal(k'/k)` have fixed field `k` and act on `k' ⊗[k] L` through the factor `k'`. A unit
 of `k' ⊗[k] L` is `1 ⊗ y` for a unit `y` of `L` exactly when `σ` fixes it. -/
