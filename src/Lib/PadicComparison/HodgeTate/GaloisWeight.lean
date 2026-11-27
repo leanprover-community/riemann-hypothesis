@@ -239,7 +239,7 @@ theorem hodgeTateMap_galois_twist
         PadicTest.mapThickening u (Ideal.Quotient.mk _ y) =
           Ideal.Quotient.mk (RingHom.ker d.thetaGeneric ^ 2)
             (IsLocalization.map (Localization.Away (p : WittVector p d.TiltRing))
-              (WittVector.map (p := p) (tiltMap u.toRingHom : c.TiltRing →+* d.TiltRing))
+              (WittVector.map (p := p) (PreTilt.map p u.toRingHom : c.TiltRing →+* d.TiltRing))
               (powers_le_comap_powers p _) y) :=
       rfl
     have h_map : ∀ b : X.test.Thickening, PadicTest.mapThickening f.1 b =
