@@ -10,7 +10,7 @@ public import Lib.GaloisRep.TaylorWiles
 public import Lib.LocalGL.SphericalChainLemma
 public import New.Congruences.FirstOrder.TraceRelations
 import Lib.Cyclotomic.Kolyvagin.DerivativeCocycles
-import Lib.GaloisRep.Main.ThetaLift
+import Lib.GaloisRep.Main.AllRanks
 import Lib.General.LinearAlgebra.Eigenvalues
 import Lib.PadicComparison.ToricTower
 import New.Congruences.FirstOrder.AuxiliaryPrimeTie
