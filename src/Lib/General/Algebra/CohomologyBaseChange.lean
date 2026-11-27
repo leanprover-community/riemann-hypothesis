@@ -173,14 +173,14 @@ lemma HasBaseChange.baseChangeMap_lTensor_precompₗ {N N' : AbFunctor C} {a n n
   | tmul m x => simp [precompₗ, H.push]
 
 /-- M ⊗ (composition with a class e, `precompₗ`), as a map of abelian groups
-M ⊗_S H^n(N, Φ) → M ⊗_S H^(a+n)(N', Φ): the maps of `tensoredSeq`. Together with
-`exact_lTensorPrecomp` it is stated once for all N and n; applying `lTensor_exact` directly in each
-field of `tensoredSeq` made the kernel unfold the group and module structures of the Ext groups
-there each time. -/
+M ⊗_S H^n(N, Φ) → M ⊗_S H^(a+n)(N', Φ): the maps of `tensoredSeq`. -/
 noncomputable def HasBaseChange.lTensorPrecomp (M : Type) [AddCommGroup M] [Module S M]
     (Φ : C ⥤ ModuleCat S) {N N' : AbFunctor C} {a n n' : ℕ} (e : H N' N a) (h : a + n = n') :
     AddCommGrpCat.of (M ⊗[S] H N (moduleCoeff Φ) n) →+
       AddCommGrpCat.of (M ⊗[S] H N' (moduleCoeff Φ) n') :=
+  -- Stated once for all N and n, with `exact_lTensorPrecomp`: applying `lTensor_exact` directly in
+  -- each field of `tensoredSeq` made the kernel unfold the group and module structures of the Ext
+  -- groups there each time.
   ((precompₗ Φ e h).lTensor M).toAddMonoidHom
 
 /-- For M flat, `lTensorPrecomp` preserves exactness. -/
