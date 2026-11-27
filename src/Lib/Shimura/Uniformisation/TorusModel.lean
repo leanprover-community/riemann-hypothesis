@@ -742,23 +742,16 @@ structure IsIsogenyOfMatrix (m : x.TorusModel Y) (m' : x'.TorusModel Y') (z : GL
   /-- `ψ` sends `m.π w` to `m'.π (z w)`. -/
   π_comp (w : RealVectors E D.Index) : m.π w ≫ ψ = m'.π (realVecAction z w)
 
-/-- Let `x`, `x'` be objects over `O` with torus models `m`, `m'` on the polarised period maps `Y`
-(frame `g`, matrix `ℓ`) and `Y'` (frame `g'`, matrix `ℓ'`). Let `z ∈ GL_n(E)` satisfy `z ℓ z⁻¹ = ℓ'`
-(conjugation through `Φ v₀`), and let `k = g'⁻¹ z g` have entries in `Ô E` (the integral finite
-adeles of `E`) with `IsScalarFrame k⁻¹ μ`, i.e. `μ > 0` and `μ (k⁻¹)ᴴ k⁻¹ = ε·1` for a unit `ε` of
-`Ẑ`. Then some `ψ : x.groupScheme ⟶ x'.groupScheme` is an `𝓞 E`-linear isogeny from `x` to `x'` of
-multiplier `μ`, acting by `k` on torsion and by `z` on periods. -/
-lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
-    (m : x.TorusModel Y) (m' : x'.TorusModel Y') {k : GL D.Index (𝔸f E)} {μ : ℕ}
-    (hk : g'⁻¹ * toFinGL z * g = k) (hk_int : ∀ i j : D.Index, k i j ∈ Ô E)
-    (hμ : IsScalarFrame k⁻¹ μ) :
-    ∃ ψ : x.groupScheme ⟶ x'.groupScheme, IsIsogenyOfMatrix m m' z k μ ψ := by
-  -- `z` defines a complex linear map `F` of the universal covers that respects the lattices and
-  -- multiplies the type of the theta functions by `μ`; `exists_hom_of_hasThetaCoords` makes it a
-  -- homomorphism `ψ`.
-  subst hk
-  have hQ : Function.Surjective Y.realEquiv := Y.realEquiv.surjective
-  -- `F` is complex linear because `z` carries `ℓ` to `ℓ'`.
+/-- The continuous `ℂ`-linear map `V →L[ℂ] V'` induced on universal covers by `z ∈ GL_n(E)`
+satisfying `z ℓ z⁻¹ = ℓ'`. -/
+private noncomputable def complexMapOfRatConj (Y : PeriodMap D g ℓ V) (Y' : PeriodMap D g' ℓ' V')
+    (z : GL D.Index E) (hz : ratConj z ℓ = ℓ') : V →L[ℂ] V' :=
+  let F_r : V →L[ℝ] V' :=
+    Y.realEquiv.arrowCongr Y'.realEquiv (realVecAction z.val).toContinuousLinearMap
+  have hF_r (w : RealVectors E D.Index) :
+      F_r (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) := by
+    change Y'.realEquiv (realVecAction z.val (Y.realEquiv.symm (Y.realEquiv w))) = _
+    rw [ContinuousLinearEquiv.symm_apply_apply]
   have h_conj : z.map (Φ v₀) * ℓ = ℓ' * z.map (Φ v₀) := (z.map _).mul_inv_eq_iff_eq_mul.mp hz
   have h_rva (u : RealVectors E D.Index) (i : D.Index) (v : InfinitePlace E) :
       realVecAction z.val u i v = (z.val.map (Φ v) *ᵥ fun j ↦ u j v) i := by
@@ -784,21 +777,72 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
     congr 2
     funext j
     exact (h_rva w j v).symm
-  let F_r : V →L[ℝ] V' :=
-    Y.realEquiv.arrowCongr Y'.realEquiv (realVecAction z.val).toContinuousLinearMap
-  have hF_r (w : RealVectors E D.Index) :
-      F_r (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) := by
-    change Y'.realEquiv (realVecAction z.val (Y.realEquiv.symm (Y.realEquiv w))) = _
-    rw [ContinuousLinearEquiv.symm_apply_apply]
-  let F : V →L[ℂ] V' :=
-    { F_r with
-      map_smul' a v := by
-        obtain ⟨w, rfl⟩ := hQ v
-        change F_r (a • Y.realEquiv w) = a • F_r (Y.realEquiv w)
-        rw [smul_eq_re_smul_add_im_smul a, smul_eq_re_smul_add_im_smul a, ← Y.isPeriodMap w,
-          F_r.map_add, F_r.map_smul, F_r.map_smul, hF_r, hF_r, hF_I w] }
+  { F_r with
+    map_smul' a v := by
+      obtain ⟨w, rfl⟩ := Y.realEquiv.surjective v
+      change F_r (a • Y.realEquiv w) = a • F_r (Y.realEquiv w)
+      rw [smul_eq_re_smul_add_im_smul a, smul_eq_re_smul_add_im_smul a, ← Y.isPeriodMap w,
+        F_r.map_add, F_r.map_smul, F_r.map_smul, hF_r, hF_r, hF_I w] }
+
+/-- `complexMapOfRatConj` acts through `Y.realEquiv` and `Y'.realEquiv` as `realVecAction z`. -/
+private lemma complexMapOfRatConj_realEquiv (Y : PeriodMap D g ℓ V) (Y' : PeriodMap D g' ℓ' V')
+    (z : GL D.Index E) (hz : ratConj z ℓ = ℓ') (w : RealVectors E D.Index) :
+    complexMapOfRatConj Y Y' z hz (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) := by
+  change Y'.realEquiv (realVecAction z.val (Y.realEquiv.symm (Y.realEquiv w))) = _
+  rw [ContinuousLinearEquiv.symm_apply_apply]
+
+/-- An additive morphism `ψ : x.groupScheme ⟶ x'.groupScheme` that acts on uniformisations by
+`complexMapOfRatConj Y Y' z hz` and pulls back `x'.lineBundle` to `μ • x.lineBundle` (with `μ ≠ 0`)
+is an `𝓞 E`-linear isogeny of matrix `(z, g'⁻¹ z g, μ)`. -/
+private lemma isIsogenyOfMatrix_of_hom (m : x.TorusModel Y) (m' : x'.TorusModel Y')
+    (z : GL D.Index E) (hz : ratConj z ℓ = ℓ') {μ : ℕ} (hμ : μ ≠ 0)
+    (ψ : x.groupScheme ⟶ x'.groupScheme) [IsAdditive ψ]
+    (hψ : ∀ v : V, m.uniformisation.expMap v ≫ ψ =
+      m'.uniformisation.expMap (complexMapOfRatConj Y Y' z hz v))
+    (h_cls : x'.lineBundle.picClass.pull ψ.left = μ • x.lineBundle.picClass) :
+    IsIsogenyOfMatrix m m' z (g'⁻¹ * toFinGL z * g) μ ψ := by
+  have hF_Q := complexMapOfRatConj_realEquiv Y Y' z hz
+  have hψ_π (w : RealVectors E D.Index) : m.π w ≫ ψ = m'.π (realVecAction z w) := by
+    simp [hF_Q, hψ, π]
+  -- The image of `ψ` contains the dense set of sections of `x'`.
+  have h_surj : AlgebraicGeometry.Surjective ψ.left :=
+    (isSeparatingFamily_atGeneric_of_surjective m'.uniformisation.surjective).2.surjective _
+      (atGeneric m.π ∘ realVecAction z⁻¹ ∘ Y'.realEquiv.symm)
+      (by simp [atGeneric, ← Over.comp_left, hF_Q, hψ, π])
+  have h_isog : IsIsogeny ψ := isIsogeny_of_locallyQuasiFinite ψ
+    (locallyQuasiFinite_of_pull_picClass x.isProjEmbedding hμ h_cls) h_surj
+  -- Linearity is tested on the dense set of sections of `x`.
+  have h_lin : IsLinear ψ := by
+    refine ⟨fun c ↦ (isSeparatingFamily_atGeneric_of_surjective
+      (m.uniformisation.surjective.comp Y.realEquiv.surjective)).hom_ext fun w ↦ ?_⟩
+    rw [assoc, assoc]
+    refine congrArg (_ ≫ ·) ?_
+    change m.uniformisation.expMap (Y.realEquiv w) ≫ (c • 𝟙 x.groupScheme) ≫ ψ =
+      m.uniformisation.expMap (Y.realEquiv w) ≫ (c • ψ)
+    rw [← assoc, ModuleObj.comp_smul, Category.comp_id, ← m.equivariant, hψ, hF_Q,
+      (realVecAction z.val).map_smul, m'.equivariant, ← hF_Q, ← hψ, ← ModuleObj.comp_smul]
+  exact ⟨h_isog, h_lin, h_cls, m.torsionPoint_comp m' hψ_π, hψ_π⟩
+
+/-- Let `x`, `x'` be objects over `O` with torus models `m`, `m'` on the polarised period maps `Y`
+(frame `g`, matrix `ℓ`) and `Y'` (frame `g'`, matrix `ℓ'`). Let `z ∈ GL_n(E)` satisfy `z ℓ z⁻¹ = ℓ'`
+(conjugation through `Φ v₀`), and let `k = g'⁻¹ z g` have entries in `Ô E` (the integral finite
+adeles of `E`) with `IsScalarFrame k⁻¹ μ`, i.e. `μ > 0` and `μ (k⁻¹)ᴴ k⁻¹ = ε·1` for a unit `ε` of
+`Ẑ`. Then some `ψ : x.groupScheme ⟶ x'.groupScheme` is an `𝓞 E`-linear isogeny from `x` to `x'` of
+multiplier `μ`, acting by `k` on torsion and by `z` on periods. -/
+lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
+    (m : x.TorusModel Y) (m' : x'.TorusModel Y') {k : GL D.Index (𝔸f E)} {μ : ℕ}
+    (hk : g'⁻¹ * toFinGL z * g = k) (hk_int : ∀ i j : D.Index, k i j ∈ Ô E)
+    (hμ : IsScalarFrame k⁻¹ μ) :
+    ∃ ψ : x.groupScheme ⟶ x'.groupScheme, IsIsogenyOfMatrix m m' z k μ ψ := by
+  -- `z` defines a complex linear map `F` of the universal covers that respects the lattices and
+  -- multiplies the type of the theta functions by `μ`; `exists_hom_of_hasThetaCoords` makes it a
+  -- homomorphism `ψ`.
+  subst hk
+  have hQ : Function.Surjective Y.realEquiv := Y.realEquiv.surjective
+  let F : V →L[ℂ] V' := complexMapOfRatConj Y Y' z hz
   have hF_Q (w : RealVectors E D.Index) :
-      F (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) := hF_r w
+      F (Y.realEquiv w) = Y'.realEquiv (realVecAction z.val w) :=
+    complexMapOfRatConj_realEquiv Y Y' z hz w
   -- `F` maps lattice to lattice because `g'⁻¹ z g` is integral.
   have h_lat : ∀ l ∈ m.uniformisation.lattice, F l ∈ m'.uniformisation.lattice := by
     intro l hl
@@ -878,27 +922,7 @@ lemma exists_isIsogenyOfMatrix (z : GL D.Index E) (hz : ratConj z ℓ = ℓ')
       (fun b hb ↦ (m.exists_isTranslationLift_of_dualLattice b hb).imp_right
         fun ⟨Φ, hΦ, _⟩ ↦ ⟨Φ, hΦ⟩) x'.isProjEmbedding
       x.isProjEmbedding x.hasClassLaws.1 x'.hasClassLaws.1 h_coords
-  have hψ_π (w : RealVectors E D.Index) : m.π w ≫ ψ = m'.π (realVecAction z w) := by
-    simp [hF_Q, hψ, π]
-  -- The image of `ψ` contains the dense set of sections of `x'`.
-  have h_surj : AlgebraicGeometry.Surjective ψ.left :=
-    (isSeparatingFamily_atGeneric_of_surjective m'.uniformisation.surjective).2.surjective _
-      (atGeneric m.π ∘ realVecAction z⁻¹ ∘ Y'.realEquiv.symm)
-      (by simp [atGeneric, ← Over.comp_left, hF_Q, hψ, π])
-  have h_isog : IsIsogeny ψ := isIsogeny_of_locallyQuasiFinite ψ
-    (locallyQuasiFinite_of_pull_picClass x.isProjEmbedding (Nat.cast_pos.mp hμ.left).ne' h_cls)
-    h_surj
-  -- Linearity is tested on the dense set of sections of `x`.
-  have h_lin : IsLinear ψ := by
-    refine ⟨fun c ↦ (isSeparatingFamily_atGeneric_of_surjective
-      (m.uniformisation.surjective.comp hQ)).hom_ext fun w ↦ ?_⟩
-    rw [assoc, assoc]
-    refine congrArg (_ ≫ ·) ?_
-    change m.uniformisation.expMap (Y.realEquiv w) ≫ (c • 𝟙 x.groupScheme) ≫ ψ =
-      m.uniformisation.expMap (Y.realEquiv w) ≫ (c • ψ)
-    rw [← assoc, ModuleObj.comp_smul, Category.comp_id, ← m.equivariant, hψ, hF_Q,
-      (realVecAction z.val).map_smul, m'.equivariant, ← hF_Q, ← hψ, ← ModuleObj.comp_smul]
-  exact ⟨ψ, h_isog, h_lin, h_cls, m.torsionPoint_comp m' hψ_π, hψ_π⟩
+  exact ⟨ψ, isIsogenyOfMatrix_of_hom m m' z hz (Nat.cast_pos.mp hμ.left).ne' ψ hψ h_cls⟩
 
 /-- Let `z ∈ GL_n(E)` satisfy `z ℓ z⁻¹ = ℓ'` (`hz`), and let `k = g'⁻¹ z g` have integral entries
 with `IsScalarFrame k⁻¹ μ` (μ > 0 and `k⁻¹` is a frame for the scalar matrix μ). Then `x` and `x'`
