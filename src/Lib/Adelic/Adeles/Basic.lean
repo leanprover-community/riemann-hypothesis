@@ -592,9 +592,6 @@ deriving instance PolishSpace for LocField
 
 /-! ### The topology of the finite adeles -/
 
-instance : Fact (∀ w : FinPlace E, IsOpen (LocInt w).carrier) :=
-  ⟨fun w ↦ isOpen_integer (LocField w)⟩
-
 lemma isCompact_Ô : IsCompact (Ô E : Set (𝔸f E)) :=
   FiniteAdeleRing.isCompact_integralAdeles (R := 𝓞 E) (K := E)
 

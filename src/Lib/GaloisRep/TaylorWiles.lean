@@ -247,9 +247,6 @@ lemma add_apply (a b : D.FormEnd L) (y : D.formsOfLevel L) : (a + b) y = a y + b
 lemma sub_apply (a b : D.FormEnd L) (y : D.formsOfLevel L) : (a - b) y = a y - b y := rfl
 
 @[simp]
-lemma neg_apply (a : D.FormEnd L) (y : D.formsOfLevel L) : (-a) y = -a y := rfl
-
-@[simp]
 lemma mul_apply (a b : D.FormEnd L) (y : D.formsOfLevel L) : (a * b) y = a (b y) := rfl
 
 @[simp]
