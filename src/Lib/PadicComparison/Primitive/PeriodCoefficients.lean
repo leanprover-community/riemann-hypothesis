@@ -498,6 +498,7 @@ def locConstToTilt : genericTest ⋙ testIncl ⋙ locConstAlg ⟶ tilt ⋙ restr
     have h_map : ModP.map p f.1 = quotientMap _ f.1 (by simp) :=
       Ideal.Quotient.ringHom_ext (RingHom.ext fun _ ↦ by simp)
     simp only [CommAlgCat.hom_comp, AlgHom.coe_comp, Function.comp_apply]
+    -- `erw`: the goal matches `ModP d.ProdRing p` with `d.ProdRing ⧸ span {p}` only up to unfolding
     erw [← PreTilt.coeff_def, PreTilt.coeff_map, h_map]
     refine toPiLocalization_injective _ (funext fun q ↦ .trans ?_
       (Localization.localRingHom_to_map _ _ (quotientMap _ f.1 (by simp)) (comap_asIdeal ..) _))
