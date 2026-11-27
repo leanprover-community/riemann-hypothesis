@@ -10,7 +10,7 @@ public import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.QuotientMeasure.IwasawaUnfolding
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
-import Lib.DiscreteSeries.Haar.GramPolar
+import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.Weil.Periods.Grading
 
 /-!
