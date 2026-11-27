@@ -223,6 +223,40 @@ omit [Fintype ι]
 
 attribute [local instance 100] LieRing.ofAssociativeRing
 
+/-- The diagonal signs that implement the change in the noncompact row action when `σ = -1`. -/
+private def rowSignMatrix (σ : ℤˣ) (ε : R → ℤˣ) : Matrix R R ℂ :=
+  diagonal fun r ↦ if σ = 1 ∨ ε r = 1 then 1 else -1
+
+/-- Conjugating by the diagonal row signs gives a Lie algebra endomorphism. -/
+private def rowSignConj (σ : ℤˣ) (ε : R → ℤˣ) : Matrix R R ℂ →ₗ⁅ℂ⁆ Matrix R R ℂ :=
+  let D := rowSignMatrix σ ε
+  have hD : D * D = 1 := by
+    dsimp only [D, rowSignMatrix]
+    rw [diagonal_mul_diagonal, ← diagonal_one]; congr 1; ext r; split_ifs <;> norm_num
+  { toFun X := D * X * D
+    map_add' _ _ := by simp [mul_add, add_mul]
+    map_smul' _ _ := by simp
+    map_lie' {A B} := by
+      change D * (A * B - B * A) * D = D * A * D * (D * B * D) - D * B * D * (D * A * D)
+      have h (U V : Matrix R R ℂ) : D * U * D * (D * V * D) = D * (U * V) * D := by
+        simp only [Matrix.mul_assoc, ← Matrix.mul_assoc D D, hD, Matrix.one_mul]
+      rw [h, h, mul_sub, sub_mul] }
+
+/-- Conjugation scales the matrix unit `E a b` by `σ` exactly when the row signs differ. -/
+private lemma rowSignConj_single (σ : ℤˣ) (ε : R → ℤˣ) (a b : R) :
+    rowSignConj σ ε (single a b 1) =
+      (if ε a = ε b then 1 else σ : ℂ) • single a b 1 := by
+  change rowSignMatrix σ ε * single a b 1 * rowSignMatrix σ ε = _
+  ext i j
+  rcases eq_or_ne a i with rfl | hi <;> rcases eq_or_ne b j with rfl | hj
+  · rcases Int.units_eq_one_or σ with hσ | hσ <;>
+      rcases Int.units_eq_one_or (ε a) with ha | ha <;>
+      rcases Int.units_eq_one_or (ε b) with hb | hb <;>
+      simp [rowSignMatrix, Matrix.mul_diagonal, hσ, ha, hb]
+  · simp [rowSignMatrix, Matrix.mul_diagonal, Matrix.diagonal_mul, hj]
+  · simp [rowSignMatrix, Matrix.mul_diagonal, hi, hi.symm]
+  · simp [rowSignMatrix, Matrix.mul_diagonal, Matrix.diagonal_mul, hi]
+
 /-- The oscillator action of `gl R` on the rows of the variables `varEquiv (r, c)`: the linear
 map that sends the matrix unit `E a b` to `oscRowsUnit a b`. For `σ = -1` its noncompact part
 changes sign. -/
@@ -231,47 +265,24 @@ def oscRows : GlModule R (MvPolynomial ι ℂ) where
   map_bracket X Y := by
     let _ : Fintype ι := Fintype.ofEquiv (R × C) T.varEquiv
     let _ : DecidableEq ι := Classical.decEq ι
-    let D : Matrix R R ℂ := diagonal fun r ↦ if T.globalSign = 1 ∨ ε r = 1 then 1 else -1
-    have hD : D * D = 1 := by
-      rw [diagonal_mul_diagonal, ← diagonal_one]; congr 1; ext r; split_ifs <;> norm_num
-    let signConj : Matrix R R ℂ →ₗ⁅ℂ⁆ Matrix R R ℂ :=
-      { toFun X := D * X * D
-        map_add' _ _ := by simp [mul_add, add_mul]
-        map_smul' _ _ := by simp
-        map_lie' {A B} := by
-          change D * (A * B - B * A) * D = D * A * D * (D * B * D) - D * B * D * (D * A * D)
-          have h (U V : Matrix R R ℂ) : D * U * D * (D * V * D) = D * (U * V) * D := by
-            simp only [Matrix.mul_assoc, ← Matrix.mul_assoc D D, hD, Matrix.one_mul]
-          rw [h, h, mul_sub, sub_mul] }
     let f : Matrix R R ℂ →ₗ⁅ℂ⁆ Module.End ℂ (MvPolynomial ι ℂ) :=
       TauCeti.glTraceTwistHom
         ((TauCeti.oscillatorHom ℂ (fun i ↦ T.indexSign i = 1)).comp
           (((Matrix.reindexAlgEquiv ℂ ℂ T.varEquiv).toAlgHom.toLieHom).comp
-            ((TauCeti.glBlockDiagonal ℂ R C).comp signConj)))
+            ((TauCeti.glBlockDiagonal ℂ R C).comp (rowSignConj T.globalSign ε))))
         (T.rowShift : ℂ)
     have hρ : liftLinear ℂ (fun a b : R ↦ LinearMap.id.smulRight (T.oscRowsUnit a b)) =
         f.toLinearMap := by
       refine ext_linearMap ℂ fun a b ↦ LinearMap.ext_ring ?_
-      have hdiag : D * single a b 1 * D =
-          (if ε a = ε b then 1 else T.globalSign : ℂ) • single a b 1 := by
-        ext i j
-        rcases eq_or_ne a i with rfl | hi <;> rcases eq_or_ne b j with rfl | hj
-        · rcases Int.units_eq_one_or T.globalSign with hσ | hσ <;>
-            rcases Int.units_eq_one_or (ε a) with ha | ha <;>
-            rcases Int.units_eq_one_or (ε b) with hb | hb <;>
-            simp [D, Matrix.mul_diagonal, hσ, ha, hb]
-        · simp [D, Matrix.mul_diagonal, Matrix.diagonal_mul, hj]
-        · simp [D, Matrix.mul_diagonal, hi, hi.symm]
-        · simp [D, Matrix.mul_diagonal, Matrix.diagonal_mul, hi]
       have hreindex (c : C) :
           Matrix.reindexAlgEquiv ℂ ℂ T.varEquiv (single (a, c) (b, c) (1 : ℂ)) =
             single (T.varEquiv (a, c)) (T.varEquiv (b, c)) 1 := by
         ext i j
         simp [Matrix.coe_reindexAlgEquiv, Matrix.reindex_apply, single_apply, Equiv.eq_symm_apply]
       symm
-      simp only [f, signConj, LinearMap.comp_apply, singleLinearMap_apply,
+      simp only [f, LinearMap.comp_apply, singleLinearMap_apply,
         TauCeti.glTraceTwistHom_apply, LieHom.coe_toLinearMap, LieHom.comp_apply, LieHom.coe_mk,
-        hdiag, map_smul, TauCeti.glBlockDiagonal_single, map_sum, AlgHom.coe_toLieHom,
+        rowSignConj_single, map_smul, TauCeti.glBlockDiagonal_single, map_sum, AlgHom.coe_toLieHom,
         AlgEquiv.coe_toAlgHom, hreindex, TauCeti.oscillatorHom_single, liftLinear_single,
         LinearMap.smulRight_apply, LinearMap.id_apply, one_smul, oscRowsUnit]
       congr 1
