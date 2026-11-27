@@ -293,15 +293,16 @@ lemma fderiv_mul_exp_div_apply {E : Type*} [NormedAddCommGroup E] [NormedSpace �
   simp [add_comm, mul_comm]
 
 /-- A function `f` on `ℂ^n` that vanishes off the compact set `K` and is bounded by `B` on `K` has
-Fourier transform of norm at most `B` times the volume of `K` at every point: the Fourier integral is
-an integral over `K` of a function of norm at most `B`. -/
+Fourier transform of norm at most `B` times the volume of `K` at every point: the Fourier integral
+is an integral over `K` of a function of norm at most `B`. -/
 lemma New.norm_fourier_le_of_forall_notMem_eq_zero {n : Type} [Fintype n]
     {K : Set (EuclideanSpace ℂ n)} (hK : IsCompact K) {f : EuclideanSpace ℂ n → ℂ} {B : ℝ}
     (h_zero : ∀ x ∉ K, f x = 0) (h_bound : ∀ x ∈ K, ‖f x‖ ≤ B) (b : EuclideanSpace ℂ n) :
     ‖𝓕 f b‖ ≤ B * volume.real K := by
   rw [fourier_eq, ← setIntegral_eq_integral_of_forall_compl_eq_zero (s := K)
     fun x hx ↦ by simp [h_zero x hx]]
-  exact norm_setIntegral_le_of_norm_le_const hK.measure_lt_top fun x hx ↦ by simpa using h_bound x hx
+  exact norm_setIntegral_le_of_norm_le_const hK.measure_lt_top fun x hx ↦ by
+    simpa using h_bound x hx
 
 /-- Let `c` and `q` be smooth functions of a parameter `s : T` and a point `x : ℂ^n`, with
 `c (s, x) = 0` for `x` off the compact set `K`. For each `M` there is a `C` such that, for
