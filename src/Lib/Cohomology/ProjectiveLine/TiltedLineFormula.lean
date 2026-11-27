@@ -491,7 +491,6 @@ lemma isCohomEquiv_pushout_desc {i : W' ⟶ W} [Mono i] {δ' : W' ⟶ W'} {δ : 
   rw [← Φ.map_comp, pushout.inl_desc]
   exact h_eqv i h_acyclic
 
-
 /-- Lemma on squares, for short exact `S`, `T`: let `i` be mono with `δ' ≫ i = i ≫ δ`, `z ≫ δ = 0`,
 `f : W ⟶ S.X₂` with `δ ≫ f = 0` and `i ≫ f = α₁ ≫ S.f`, and `α` with `α ≫ T.g = α₁ ≫ n` and
 `δ' ≫ α = i ≫ κ ≫ T.f`. Let `η` be the extension class of `S` times that of `T` pulled back along
@@ -774,7 +773,6 @@ lemma isLerayHirschBasis_lineBasis_of_injective
   refine (add_comm _ _).trans ?_
   exact ((map_add sliceEquiv _ _).trans
     (congrArg₂ (· + ·) (Θ.sliceEquiv_mulClass ..) (sliceEquiv.apply_symm_apply _))).symm
-
 
 open TensorProduct in
 /-- The projective line formula holds for a theory `Θ` along `g` if the class `η` is cancelled
