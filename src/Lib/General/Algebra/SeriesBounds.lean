@@ -1,6 +1,7 @@
 module
 
 import TauCeti.RingTheory.PowerSeries.Exp.Padic.Subst
+import TauCeti.NumberTheory.Padics.Distribution.Amice.Norm
 public import Mathlib.RingTheory.PowerSeries.Log
 import Mathlib.NumberTheory.Padics.MahlerBasis
 import Mathlib.RingTheory.Valuation.Extension
@@ -232,32 +233,21 @@ lemma norm_coeff_le_of_aeval {x : ℂ_[p]⟦X⟧} {l : ℕ} {s : ℝ} (h_dvd : X
   rw [eq_sub_of_add_eq' h_sum.symm, sub_eq_add_neg]
   exact (norm_add_le_max _ _).trans (max_le (hR _ hi) (by rwa [norm_neg]))
 
-/-- Legendre's bound `v((n + 1)!) ≤ n / (p - 1)`, for the norm of `ℂ_p`. -/
-lemma rpow_pow_le_norm_factorial_succ (n : ℕ) :
-    ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ n ≤ ‖((n + 1).factorial : ℂ_[p])‖ := by
-  have hp : (1 : ℝ) < p := Nat.one_lt_cast.2 (Fact.out : p.Prime).one_lt
-  have h : ((p : ℝ) - 1) * (multiplicity p (n + 1).factorial : ℝ) ≤ n := by
-    rw [← Nat.cast_pred (Fact.out : p.Prime).pos]
-    exact_mod_cast Nat.le_of_lt_succ
-      (sub_one_mul_multiplicity_factorial_lt_of_ne_zero p n.succ_ne_zero)
-  rw [← Real.rpow_mul_natCast p.cast_nonneg, neg_mul, one_div_mul_eq_div,
-    norm_natCast_eq_inv_pow_padicValNat (n + 1).factorial_ne_zero, Nat.padicValNat_def]
-  simpa [Real.rpow_neg] using Real.rpow_le_rpow_of_exponent_le hp.le
-    (neg_le_neg ((le_div_iff₀' (sub_pos.2 hp)).2 h))
-
 /-- If `v(c) ≥ 1 / (p - 1)`, that is, `‖c‖ ≤ p ^ (-1 / (p - 1))`, then `c ^ j / (j + 1)!` is
 integral, as `v((j + 1)!) ≤ j / (p - 1)`. -/
 lemma norm_pow_le_norm_factorial_succ {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 / (p - 1)) : ℝ)) (j : ℕ) :
     ‖c‖ ^ j ≤ ‖((j + 1).factorial : ℂ_[p])‖ := by
   exact (pow_le_pow_left₀ (norm_nonneg c) hc j).trans
-    (rpow_pow_le_norm_factorial_succ j)
+    (by simpa [TauCeti.amiceRadius_def] using
+      TauCeti.amiceRadius_zero_pow_sub_one_le_norm_factorial (L := ℂ_[p]) j.succ_ne_zero)
 
 /-- If `v(c) ≥ 1 / (p - 1)`, that is, `‖c‖ ≤ p ^ (-1 / (p - 1))`, then `c ^ j / (j + 1)` is
 integral. -/
 lemma norm_pow_le_norm_succ {c : ℂ_[p]} (hc : ‖c‖ ≤ p ^ (-(1 / (p - 1)) : ℝ)) (j : ℕ) :
     ‖c‖ ^ j ≤ ‖((j + 1 : ℕ) : ℂ_[p])‖ := by
-  grw [norm_pow_le_norm_factorial_succ hc j, Nat.factorial_succ, Nat.cast_mul, norm_mul,
-    norm_natCast_le_one ℂ_[p] j.factorial, mul_one]
+  exact (pow_le_pow_left₀ (norm_nonneg c) hc j).trans
+    (by simpa [TauCeti.amiceRadius_def] using
+      TauCeti.amiceRadius_zero_pow_sub_one_le_norm_natCast (L := ℂ_[p]) j.succ_ne_zero)
 
 /-- Let `v(c) ≥ 1 / (p - 1)`, that is, `‖c‖ ≤ p ^ (-1 / (p - 1))`, and `g(0) = 0`. If `c` divides
 the coefficients of `g` below the degree `l`, that is, they have norm at most `‖c‖`, then it also
