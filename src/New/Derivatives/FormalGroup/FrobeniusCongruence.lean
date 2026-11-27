@@ -6,7 +6,7 @@ public import Lib.CM.FormalGroup.PrimeNotation
 public import Lib.CM.Integrality.LogTheta
 import Lib.CM.FormalGroup.FormalParameter
 import Lib.CM.GoodReduction
-import Lib.CM.Integrality.IntegralSections
+import Lib.CM.Integrality.IsogenyIntegrality
 import Lib.General.Algebra.SeriesBounds
 
 /-!
