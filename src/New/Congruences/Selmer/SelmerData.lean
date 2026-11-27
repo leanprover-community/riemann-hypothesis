@@ -5,6 +5,7 @@ public import Lib.ClassField.GreenbergWiles.SelmerLevels
 public import New.Congruences.Selmer.AuxiliaryPrimes
 import Lib.ClassField.Global.AlbertBrauerHasseNoether
 import Lib.General.NumberTheory.CoefficientRings
+import TauCeti.RepresentationTheory.Homological.GroupCohomology.Sah
 
 /-!
 # Selmer data, tied Selmer groups and classes as functions
@@ -576,25 +577,23 @@ lemma cocycle_conj_of_fixed {z : Gal(Ω/E) → n → B}
   have h_inv : T.ρ g • z g⁻¹ = -z g := by simp [cocycle_apply_inv hz, ← mul_smul, ← map_mul]
   simp [hz, mul_smul, hh, h_inv]
 
-/-- Sah's identity `z [g, γ_*] = (1 - ζ_*) z(g)` for a cocycle `z` that vanishes at `γ_* = T.γ`,
-which acts by the scalar `ζ_* = T.ζ`. -/
-lemma cocycle_commutator_γ {z : Gal(Ω/E) → n → B}
-    (hz : ∀ g h : Gal(Ω/E), z (g * h) = z g + T.ρ g • z h) (hγ : z T.γ = 0) (g : Gal(Ω/E)) :
-    z ⁅g, T.γ⁆ = (1 - T.ζ) • z g := by
-  have h_mul : ⁅g, T.γ⁆ * (T.γ * g) = g * T.γ := by simp [commutatorElement_def, mul_assoc]
-  have h_val : z ⁅g, T.γ⁆ + T.ζ • z g = z g := by
-    simpa [hz, ρ_eq_one_of_mem_sahGroup (T.commutator_γ_mem g), hγ, T.ρ_γ] using congrArg z h_mul
-  simp [sub_smul, eq_sub_iff_add_eq, h_val]
-
 /-- A cocycle `z` with values in `B ^ n` that vanishes at `γ_* = T.γ` and on the group
 `H = T.sahGroup` is zero, by Sah's identity. -/
 lemma cocycle_eq_zero_of_sahGroup {z : Gal(Ω/E) → n → B}
     (hz : ∀ g h : Gal(Ω/E), z (g * h) = z g + T.ρ g • z h) (hγ : z T.γ = 0)
     (hH : ∀ h ∈ T.sahGroup, z h = 0) : z = 0 := by
+  -- Use the Galois action through `T.ρ` to view `z` as a cocycle in TauCeti.
+  let := DistribMulAction.compHom (n → B) T.ρ
+  have h_cocycle : groupCohomology.IsCocycle₁ z :=
+    fun g h ↦ (hz g h).trans (add_comm _ _)
   funext g
-  have h_smul : (1 - T.ζ) • z g = 0 := by
-    rw [← cocycle_commutator_γ hz hγ, hH _ (T.commutator_γ_mem g)]
-  rwa [← neg_sub T.ζ 1, T.isUnit_ζ_sub_one.neg.smul_eq_zero] at h_smul
+  -- The commutator in TauCeti’s identity is conjugate to `[g, γ_*]`.
+  have h_mem : (T.γ * g)⁻¹ * (g * T.γ) ∈ T.sahGroup := by
+    convert Normal.conj_mem _ (T.commutator_γ_mem g) (T.γ * g)⁻¹ using 1
+    simp [commutatorElement_def, mul_assoc]
+  apply (T.bijective_γ_smul_sub (B := B)).injective
+  change T.γ • z g - z g = T.γ • (0 : n → B) - 0
+  simpa [hγ] using h_cocycle.smul_apply_sub_apply_eq (hH _ h_mem)
 
 end Cocycles
 
