@@ -236,12 +236,7 @@ same way on `(O' / ℓ ^ M) ^ n`. -/
 lemma map_smul_eq_of_reduceModPow_eq {g g' : Gal(Ω/E)}
     (h_eq : reduceModPow ℓ M ρ g = reduceModPow ℓ M ρ g') {O' : Type} [CommRing O'] (e : O →+* O')
     (u : n → QuotSpan (ℓ ^ M : O')) : (ρ g).map e • u = (ρ g').map e • u := by
-  let red : QuotSpan (ℓ ^ M : O) →+* QuotSpan (ℓ ^ M : O') := Ideal.quotientMap _ e (by simp)
-  have h_red (g : Gal(Ω/E)) :
-      ((ρ g).map e).map (Ideal.Quotient.mk _) = (reduceModPow ℓ M ρ g).map red := by
-    ext i j
-    simp [reduceModPow, red]
-  rw [← map_mk_smul, ← map_mk_smul ((ρ g').map e), h_red, h_red, h_eq]
+  rw [← map_mk_smul, ← map_mk_smul ((ρ g').map e), map_reduceModPow, map_reduceModPow, h_eq]
 
 /-- If `y` divides all coordinates of the point `x`, then it divides `ψ_x(g) - 1`, where `ψ_x(g)` is
 the value at `x` of the polynomial `universalChar h g = ∏ (1 + X_j) ^ (h_j g)`. -/
@@ -250,35 +245,6 @@ lemma dvd_eval_universalChar_sub_one {G σ O' : Type} [Monoid G] [Fintype σ] [C
     (g : G) : y ∣ MvPolynomial.eval x (universalChar h g) - 1 := by
   rw [← Ideal.Quotient.eq_zero_iff_dvd]
   simp [eval_universalChar, (Ideal.Quotient.eq_zero_iff_dvd y _).2 (hx_dvd _)]
-
-omit [NumberField.IsCMField E] in
-/-- Let `h` be a finite family of characters `h_j` to `ℤ / q`, let `e : O →+* O'` be a change of
-coefficients, and let `ψ_x(g) = ∏ (1 + x_j) ^ (h_j g)` be the value of `universalChar h g` at a
-point `x` with coordinates in `O'`. If the `1 + x_j` are `q`-th roots of unity modulo `ℓ ^ M`, then
-the twisted matrices `pointTwist h x e ρ g = ψ_x(g) e(ρ(g))` act on `(O' / ℓ ^ M) ^ n` through a
-representation `R` over `O' / ℓ ^ M`, and `R(g)` is the scalar `ψ_x(g)` wherever `ρ(g) ≡ 1` modulo
-`ℓ ^ M`. -/
-lemma exists_monoidHom_smul_eq_pointTwist_smul {σ O' : Type} [Fintype σ] [CommRing O'] {q : ℕ}
-    [NeZero q] (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)) (e : O →+* O') {x : σ → O'}
-    (hx_pow : ∀ j : σ, algebraMap O' (QuotSpan (ℓ ^ M : O')) (1 + x j) ^ q = 1) :
-    ∃ R : Gal(Ω/E) →* Matrix n n (QuotSpan (ℓ ^ M : O')),
-      (∀ (g : Gal(Ω/E)) (u : n → QuotSpan (ℓ ^ M : O')), R g • u = pointTwist h x e ρ g • u) ∧
-      ∀ g : Gal(Ω/E), reduceModPow ℓ M ρ g = 1 →
-        R g = algebraMap O' (QuotSpan (ℓ ^ M : O')) (MvPolynomial.eval x (universalChar h g)) •
-          1 := by
-  -- Modulo `ℓ ^ M`, `ψ_x` is a character `χ`; take `R = χ • ρ`.
-  let B : Type := QuotSpan (ℓ ^ M : O')
-  let χ : Gal(Ω/E) →* B := pointChar h (fun j ↦ algebraMap O' B (1 + x j)) hx_pow
-  have hχ (g : Gal(Ω/E)) : χ g = algebraMap O' B (MvPolynomial.eval x (universalChar h g)) := by
-    simp [χ, eval_universalChar]
-  let red : QuotSpan (ℓ ^ M : O) →+* B := Ideal.quotientMap _ e (by simp)
-  let R : Gal(Ω/E) →* Matrix n n B := twistRep red χ (reduceModPow ℓ M ρ)
-  have hR (g : Gal(Ω/E)) : R g = χ g • (reduceModPow ℓ M ρ g).map red := rfl
-  refine ⟨R, fun g u ↦ ?_, fun g hg ↦ by simp [hR, hχ, hg, B]⟩
-  rw [← map_mk_smul]
-  congr 1
-  ext j k
-  simp [hR, hχ, pointTwist, reduceModPow, red, B]
 
 /-- Let `v ∤ ℓ` be a prime of the CM field `E` of norm `≡ 1` modulo `ℓ ^ N`, and let `a` consist of
 a place over `v`, a Frobenius element `φ`, the tame generator `γ` and a character
@@ -342,13 +308,18 @@ lemma IsTiedPrimes.frob_sub_one_smul_eq [ThePrime ℓ] (hp : IsTiedPrimes ℓ S�
     simpa [B] using (Ideal.Quotient.eq_zero_iff_dvd _ _).2 (h_geom_sum α hα)
   have hx_pow (w : J) : algebraMap O' B (1 + x w) ^ ℓ ^ N = 1 := by
     rw [← sub_eq_zero, ← geom_sum_mul, h_sum (by simp [hx_dvd]), zero_mul]
-  obtain ⟨R, hR_smul, hR_scalar⟩ : ∃ R : Gal(Ω/E) →* Matrix n n B,
-      (∀ (g : Gal(Ω/E)) (u : n → B), R g • u = pointTwist lam x e ρ g • u) ∧
-      ∀ g : Gal(Ω/E), reduceModPow ℓ M ρ g = 1 →
-        R g = algebraMap O' B (MvPolynomial.eval x (universalChar lam g)) • 1 :=
-    exists_monoidHom_smul_eq_pointTwist_smul lam e hx_pow
-  obtain ⟨hz_cocycle, -, -, hz_lc⟩ := mem_selmerModule_iff.1 hz
-  have hc (g g' : Gal(Ω/E)) : z (g * g') = z g + R g • z g' := by rw [hR_smul, hz_cocycle]
+  let f := algebraMap O' B
+  let ev := twistSpecialization (f.comp e) _ hx_pow
+  let R := ev.mapMatrix.toMonoidHom.comp (groupRingTwist lam ρ)
+  have hR (g : Gal(Ω/E)) : R g = (pointTwist lam x e ρ g).map f :=
+    map_groupRingTwist lam ρ e f x hx_pow g
+  have hR_scalar (g : Gal(Ω/E)) (hg : reduceModPow ℓ M ρ g = 1) :
+      R g = f (MvPolynomial.eval x (universalChar lam g)) • 1 := by
+    rw [hR, pointTwist, Matrix.map_smul' f _ _ f.map_mul, map_reduceModPow, hg]
+    simp
+  rw [selmerAtPoint_eq_restrictScalars ℓ M lam ρ S L e x hx_pow] at hz
+  obtain ⟨hc, -, -, hz_lc⟩ := mem_selmerModule_iff.1
+    (show z ∈ selmerModule R S (mapRel (f.comp e) '' L) B from hz)
   have h_open : ∀ᶠ g : Gal(Ω/E) in nhds 1, g ∈ inertiaAbove S₀ᶜ → R g = 1 := by
     have h_near : ∀ᶠ g : Gal(Ω/E) in nhds 1, ∀ u : J, lam u g = lam u 1 :=
       Filter.eventually_all.2 fun u ↦ (hp.isAuxPrimeDataAt u u.2).isLocallyConstant.eventually_eq 1
@@ -359,7 +330,7 @@ lemma IsTiedPrimes.frob_sub_one_smul_eq [ThePrime ℓ] (hp : IsTiedPrimes ℓ S�
     ⟨_, hR_scalar g (h_unr g hg), h_sum (dvd_eval_universalChar_sub_one lam hx_dvd g)⟩
   obtain ⟨hv_off, -, -, hv_star_off⟩ := hp.auxiliary v v.property
   -- Tame inertia at `v` or at its conjugate, both off `S₀`, gives the relation for `R`.
-  simpa only [sub_smul, one_smul, hR_smul] using
+  simpa only [sub_smul, one_smul, hR, f, B, map_mk_smul] using
     sub_one_smul_eq_of_isAuxPrimeDataAt hc hz_lc h_open h_scalar (hp.isAuxPrimeDataAt v v.property)
       hv_off hv_star_off b
 

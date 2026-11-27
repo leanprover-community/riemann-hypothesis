@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Algebra.MonoidAlgebra.Basic
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.Topology.Algebra.ClopenNhdofOne
@@ -19,6 +20,8 @@ other conditions are linear equations over `O[X]` for their values.
 * `New.Selmer.universalChar`, `New.Selmer.IsTiedPrimes.universalChar_frob`,
   `New.Selmer.IsTiedPrimes.universalChar_tame_gen`: the polynomial `ψ_X` and its values at the
   auxiliary primes.
+* `New.Selmer.selmerAtPoint_eq_restrictScalars`: when each `1 + x j` is a `q`-th root of unity
+  modulo `ℓ ^ M`, the equations of `Sel(x)` are those of the specialized group-ring twist.
 * `New.Selmer.exists_matrix_selmerAtPoint_equiv`: there is one matrix `A` over `O[X]` such that each
   `Sel(x)` is isomorphic to the kernel of `A(x)` on a power of `O' / ℓ ^ M`.
 * `New.Selmer.exists_isLeast_length_selmerAtPoint`, `New.Selmer.exists_sharp_polynomial`: the
@@ -56,7 +59,7 @@ open IsDiscreteValuationRing Module MvPolynomial Matrix.Module
 ring `O / a`. -/
 lemma map_mk_smul {n O : Type} [Fintype n] [DecidableEq n] [CommRing O] {a : O}
     (A : Matrix n n O) (u : n → QuotSpan a) :
-    A.map (Ideal.Quotient.mk (Ideal.span {a})) • u = A • u := by
+    A.map (algebraMap O (QuotSpan a)) • u = A • u := by
   ext j
   simp [Algebra.smul_def]
 
@@ -153,6 +156,14 @@ lemma mapRel_single (ev : Λ →+* O) (g : Γ) (m : Matrix n n Λ) :
 lemma mapRel_mapRel {Λ' : Type} [CommRing Λ'] (e : Λ' →+* Λ) (ev : Λ →+* O)
     (f : Γ →₀ Matrix n n Λ') : mapRel ev (mapRel e f) = mapRel (ev.comp e) f :=
   Finsupp.ext fun _ ↦ Matrix.map_map
+
+/-- A relation on vectors over `O / a` has the same value after its coefficients are
+reduced modulo `a`. -/
+lemma relEval_map_mk {a : O} (r : Γ →₀ Matrix n n O) (z : Γ → n → QuotSpan a) :
+    relEval (QuotSpan a) (mapRel (algebraMap O (QuotSpan a)) r) z = relEval (QuotSpan a) r z := by
+  rw [relEval_apply, relEval_apply, mapRel, Finsupp.sum_mapRange_index]
+  · exact Finsupp.sum_congr fun g _ ↦ map_mk_smul (r g) (z g)
+  · exact fun g ↦ zero_smul _ _
 
 /-- Applying `ev` to all matrix entries carries the relations that express the cocycle identity for
 `ρ` onto those that express it for `g ↦ ev (ρ g)`. -/
@@ -344,6 +355,40 @@ def pointTwist (h : σ → G →* Multiplicative (ZMod q)) (x : σ → O') (e : 
     (ρ : G → Matrix n n O) (g : G) : Matrix n n O' :=
   eval x (universalChar h g) • (ρ g).map e
 
+/-- The group ring `O[(ℤ / q)^σ]` of the joint target of the characters `h j`. -/
+abbrev TwistGroupRing (O σ : Type) [CommRing O] (q : ℕ) :=
+  MonoidAlgebra O (σ → Multiplicative (ZMod q))
+
+/-- The twist over the group ring sends `g` to the basis element `[(h j g)_j]` times `ρ g`. -/
+def groupRingTwist (h : σ → G →* Multiplicative (ZMod q)) (ρ : G →* Matrix n n O) :
+    G →* Matrix n n (TwistGroupRing O σ q) :=
+  twistRep (algebraMap O _) ((MonoidAlgebra.of O _).comp (MonoidHom.pi h)) ρ
+
+/-- Evaluate a group-ring basis element with coordinates `a j` at `∏ j, ζ j ^ (a j).val`. -/
+def twistSpecialization {B : Type} [CommRing B] [NeZero q] (e : O →+* B)
+    (ζ : σ → B) (hζ : ∀ j, ζ j ^ q = 1) : TwistGroupRing O σ q →+* B :=
+  MonoidAlgebra.liftNCRingHom e (pointChar (Pi.evalMonoidHom _ ·) ζ hζ) fun _ _ ↦ .all ..
+
+/-- If the coordinates `1 + x j` become `q`-th roots of unity under `f`, then the polynomial
+twist at `x`, mapped by `f`, is the specialization of the group-ring representation. -/
+lemma map_groupRingTwist [NeZero q] {B : Type} [CommRing B]
+    (h : σ → G →* Multiplicative (ZMod q)) (ρ : G →* Matrix n n O)
+    (e : O →+* O') (f : O' →+* B) (x : σ → O') (hx : ∀ j, f (1 + x j) ^ q = 1) (g : G) :
+    (groupRingTwist h ρ g).map (twistSpecialization (f.comp e) _ hx) =
+      (pointTwist h x e ρ g).map f := by
+  ext i j
+  change twistSpecialization (f.comp e) _ hx
+    ((MonoidAlgebra.of O _ (fun k ↦ h k g)) * algebraMap O _ (ρ g i j)) = _
+  simp [twistSpecialization, MonoidAlgebra.of_apply, pointTwist, eval_universalChar, mul_comm]
+
+/-- Mapping the coefficients of a representation and reducing modulo `ℓ ^ M` commutes with
+first reducing the representation and then mapping the quotient rings. -/
+lemma map_reduceModPow (ℓ M : ℕ) (ρ : G →* Matrix n n O) (e : O →+* O') (g : G) :
+    ((ρ g).map e).map (algebraMap O' (QuotSpan (ℓ ^ M : O'))) =
+      (reduceModPow ℓ M ρ g).map (Ideal.quotientMap _ e (by simp)) := by
+  ext i j
+  simp [reduceModPow]
+
 /-- Let `h j : G → ℤ / q` be finitely many homomorphisms, `ρ` a representation of `G` by matrices
 over `O`, `e : O → O'` a ring homomorphism and `x` a point with coordinates `x j ∈ O'`. If all
 `h j` vanish at `g` and `ρ g` is the identity modulo `ℓ ^ M`, then the twisted matrix
@@ -353,14 +398,8 @@ lemma pointTwist_smul_eq_self {ℓ M : ℕ} {h : σ → G →* Multiplicative (Z
     (hg_red : reduceModPow ℓ M ρ g = 1) (x : σ → O') (e : O →+* O')
     (b : n → QuotSpan (ℓ ^ M : O')) : pointTwist h x e ρ g • b = b := by
   have h_char : eval x (universalChar h g) = 1 := by simp [eval_universalChar, hg_char]
-  -- The reduction of `e (ρ g)` is the image of that of `ρ g` under `O / ℓ ^ M → O' / ℓ ^ M`.
-  let ē : QuotSpan (ℓ ^ M : O) →+* QuotSpan (ℓ ^ M : O') := Ideal.quotientMap _ e (by simp)
-  have h_red : ((ρ g).map e).map (Ideal.Quotient.mk (.span {(ℓ ^ M : O')})) =
-      (reduceModPow ℓ M ρ g).map ē := by
-    ext i j
-    simp [ē, reduceModPow]
-  rw [pointTwist, h_char, one_smul, ← map_mk_smul, h_red, hg_red,
-    Matrix.map_one ē ē.map_zero ē.map_one, one_smul]
+  rw [pointTwist, h_char, one_smul, ← map_mk_smul, map_reduceModPow, hg_red]
+  simp
 
 /-- The module `Sel(x)`: the locally constant cocycles in `(O' / ℓ ^ M) ^ n` for the twist
 `pointTwist h x e ρ` of `ρ` by `ψ_x` that are unramified outside `S` and obey the relations `L`,
@@ -369,6 +408,27 @@ def selmerAtPoint (ℓ M : ℕ) (h : σ → Gal(Ω/E) →* Multiplicative (ZMod 
     (ρ : Gal(Ω/E) → Matrix n n O) (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O))
     (e : O →+* O') (x : σ → O') : Submodule O' (Gal(Ω/E) → n → QuotSpan (ℓ ^ M : O')) :=
   selmerModule (pointTwist h x e ρ) S (mapRel e '' L) (QuotSpan (ℓ ^ M : O'))
+
+/-- At a point whose coordinates `1 + x j` have order dividing `q` modulo `ℓ ^ M`, the
+polynomial Selmer equations define the Selmer module for the specialized group-ring
+representation, viewed over `O'` by restriction of scalars. -/
+theorem selmerAtPoint_eq_restrictScalars [NeZero q] (ℓ M : ℕ)
+    (h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)) (ρ : Gal(Ω/E) →* Matrix n n O)
+    (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O)) (e : O →+* O') (x : σ → O')
+    (hx : ∀ j, algebraMap O' (QuotSpan (ℓ ^ M : O')) (1 + x j) ^ q = 1) :
+    let B := QuotSpan (ℓ ^ M : O')
+    let f := algebraMap O' B
+    let ev := twistSpecialization (f.comp e) _ hx
+    let R := ev.mapMatrix.toMonoidHom.comp (groupRingTwist h ρ)
+    selmerAtPoint ℓ M h ρ S L e x =
+      (selmerModule R S (mapRel (f.comp e) '' L) B).restrictScalars O' := by
+  intro B f ev R
+  have hR : ⇑R = fun g ↦ (pointTwist h x e ρ g).map f :=
+    funext (map_groupRingTwist h ρ e f x hx)
+  rw [hR]
+  ext z
+  simp only [selmerAtPoint, Submodule.restrictScalars_mem, mem_selmerModule_iff,
+    mem_obeying, Set.forall_mem_image, ← mapRel_mapRel e f, f, B, map_mk_smul, relEval_map_mk]
 
 variable {ℓ M : ℕ} [NeZero ℓ] {h : σ → Gal(Ω/E) →* Multiplicative (ZMod q)}
   {ρ : Gal(Ω/E) →* Matrix n n O}
