@@ -20,10 +20,11 @@ B_dR, and `hodgeFil n` is tⁿB_dR^+. `L.withOrders i c` consists of the x in th
 `L.kisinLocAinf` at the letter i with `valueAt a μ x ∈ hodgeFil (c a u)` for all a, all u in
 `L.jumpSet (i.stepBack a)` and all forms μ of type u at the letter `i.stepBack a`; such x are said
 to have orders c at i. An element x of the Kisin module `L.kisinLoc` (all φ^a E inverted) has
-depth n at p_a for a form μ if `valueAt a μ x` is a constant modulo `hodgeFil n`. Such an x at the
-letter i has depth o a u at p_a for all a, all u in `L.jumpSet (i.stepBack a)` and all forms of
-type u at `i.stepBack a` if and only if gx − x has orders o at i for every g in Γ'
-(`New.Lift.KummerChart.JumpLattice.mem_invariantsMod_withOrders_iff`). The depth lemma gives an
+depth n at p_a for a form μ if `valueAt a μ x` is a constant modulo `hodgeFil n`. If gx − x has
+orders o at i for every g in Γ', then such an x at the letter i has depth o a u at p_a for all a,
+all u in `L.jumpSet (i.stepBack a)` and all forms of type u at `i.stepBack a`
+(`New.Lift.KummerChart.JumpLattice.exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). The
+depth lemma gives an
 operator p^c + υ ∑ (t_l − 1)/δ, with t_l in Γ', that sends elements of depth n to elements whose
 value is a constant modulo `hodgeFil (n + 1)`.
 
@@ -586,7 +587,8 @@ lemma smul_sub_mem_withOrders (hx : x ∈ L.withOrders i c) (g : k.galMonoid) :
   refine mem_withOrders_iff.2 ⟨sub_mem (galMonoid_smul_mem_kisinLocAinf h_span) h_span,
     sub_mem ((gal_smul_mem_letterPart g).2 h_letter) h_letter, fun a u hu μ hμ ↦ ?_⟩
   have h_mem := h_exp a u hu μ hμ
-  simpa only [valueAt_smul_sub h_span hμ.1] using sub_mem (galMonoid_smul_mem_hodgeFil g h_mem) h_mem
+  simpa only [valueAt_smul_sub h_span hμ.1] using sub_mem (galMonoid_smul_mem_hodgeFil g h_mem)
+      h_mem
 
 /-! ### Divisibility of `g x - x` by `zTau` -/
 
@@ -691,12 +693,20 @@ lemma span_kisinLoc : span Ainf (L.kisinLoc : Set L.Ambient) = L.kisinLocAinf :=
   exact span_eq_of_le _ (fun x ↦ mem_kisinLocAinf_of_mem_kisinLoc)
     fun x hx ↦ saturateBy_induction hx h_base h_step
 
+/-- An S-linear map f: A_inf → S preserves linear relations among elements v_i of `L.fracSpan` on
+which all Γ'-equivariant forms take values in the field 𝒦₀ = `valueField 0`. This is a part of
+`frame_theorem`. -/
+lemma sum_map_smul_eq_zero_of_mem_valueFieldPoints (f : Ainf →ₗ[k.S] k.S) {ι : Type} [Fintype ι]
+    {v : ι → L.Ambient} {b : ι → Ainf} (hv : ∀ i : ι, v i ∈ L.valueFieldPoints L.fracSpan)
+    (h_zero : ∑ i : ι, b i • v i = 0) : ∑ i : ι, f (b i) • v i = 0 :=
+  L.frame_theorem.sum_map_smul_eq_zero f v b hv h_zero
+
 /-- An S-linear map f: A_inf → S preserves linear relations among elements v_i of `L.kisinLoc`, the
 Kisin module with all φ^a E inverted: if ∑ b_i v_i = 0 with b_i in A_inf, then ∑ f(b_i) v_i = 0. -/
 lemma sum_map_smul_eq_zero_of_mem_kisinLoc (f : Ainf →ₗ[k.S] k.S) {ι : Type} [Fintype ι]
     {v : ι → L.Ambient} {b : ι → Ainf} (hv : ∀ i : ι, v i ∈ L.kisinLoc)
     (h_zero : ∑ i : ι, b i • v i = 0) : ∑ i : ι, f (b i) • v i = 0 := by
-  refine L.frame_theorem.sum_map_smul_eq_zero f _ _ (fun i ↦ ?_) h_zero
+  refine sum_map_smul_eq_zero_of_mem_valueFieldPoints f (fun i ↦ ?_) h_zero
   exact ⟨kisinLocAinf_le_fracSpan (hv i).1, (hv i).2⟩
 
 /-- Let L be a Galois lattice over the Kummer chart and a ≥ 0. Let μ be a form, that is, an
@@ -874,10 +884,10 @@ abbrev locKisinPart : Submodule ℤ_[p] L.kisinLoc :=
   (Q.restrictScalars ℤ_[p]).comap (L.kisinLoc.subtype.restrictScalars ℤ_[p])
 
 /-- The Z_p-module of the x in W(C^♭) ⊗ L that are invariant modulo Q: gx − x lies in Q for all g in
-Γ'. Take Q = `L.withOrders i o` and x in `L.kisinLocAinf` at the letter i. Then this holds if and
-only if, for every a, every jump u at `i.stepBack a` and every form μ of type u there,
-`valueAt a μ x` is a constant in `localFieldOf k.subgroup` modulo `hodgeFil (o a u)`. This is the
-notion of depth in the module header (`mem_invariantsMod_withOrders_iff`). (The module is the
+Γ'. Take Q = `L.withOrders i o` and x in `L.kisinLocAinf`. Then for every a, every jump u at
+`i.stepBack a` and every form μ of type u there, `valueAt a μ x` is a constant in
+`localFieldOf k.subgroup` modulo `hodgeFil (o a u)`: x has the depth of the module header
+(`exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod`). (The module is the
 intersection of the preimages of Q under the maps g − 1; `copy` only makes membership unfold to the
 displayed condition.) -/
 def invariantsMod : Submodule ℤ_[p] L.Ambient :=
@@ -945,12 +955,12 @@ lemma valueAt_smul_sub_mem_hodgeFil_of_sub_const_mem {μ : L.Functional}
     sub_sub_sub_cancel_right] using sub_mem (galMonoid_smul_mem_hodgeFil g h_close) h_close
 
 /-- Let `i` be a letter and let `x` lie in `L.kisinLocAinf`, the `A_inf`-span of the Kisin module
-`L.kisinLoc` (all `φ^a E` inverted) in `W(C^♭) ⊗ L`, and in `L.letterPart i`. Then `x` is in
+`L.kisinLoc` (all `φ^a E` inverted) in `W(C^♭) ⊗ L`. Suppose that `x` is in
 `invariantsMod (L.withOrders i o)`, that is, `g x - x` has orders `o` at `i` for every `g` in the
-Galois group `Γ'` of the chart, if and only if the following holds for every `a`, every `u` in the
-finite set `L.jumpSet j` of jumps at the letter `j = i.stepBack a` (the one with `j ^ p ^ a = i`)
-and every form `μ` of type `u` at `j` (a linear map to `B_dR`, `Γ'`-equivariant on `1 ⊗ L`, sending
-its projection to `j` into `hodgeFil (-u)`): the value `valueAt a μ x = μ (φ^{-a} x)` is congruent
+Galois group `Γ'` of the chart. Then the following holds for every `a`, every `u` in the finite set
+`L.jumpSet j` of jumps at the letter `j = i.stepBack a` (the one with `j ^ p ^ a = i`) and every
+form `μ` of type `u` at `j` (a linear map to `B_dR`, `Γ'`-equivariant on `1 ⊗ L`, sending its
+projection to `j` into `hodgeFil (-u)`): the value `valueAt a μ x = μ (φ^{-a} x)` is congruent
 modulo `hodgeFil (o a u) = t^(o a u)B_dR⁺` to a constant in the fixed field of `Γ'`. -/
 lemma exists_valueAt_sub_mem_hodgeFil_of_mem_invariantsMod {i : Letter} {x : L.Ambient}
     {o : ℕ → ℤ → ℤ} (h_span : x ∈ L.kisinLocAinf) (h_inv : x ∈ invariantsMod (L.withOrders i o))

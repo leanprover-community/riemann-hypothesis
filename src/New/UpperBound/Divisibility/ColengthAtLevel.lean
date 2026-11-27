@@ -91,7 +91,8 @@ lemma integralFormsAt_one_le :
   refine fun φ ⟨h_source, (h_integral : GaugeLe 1 1 φ)⟩ ↦ ⟨h_source, fun g ↦ ?_⟩
   let d : Gf D.E (D.X 0) := D.diagPoint 0 (D.nonInducedPlaces \ D.piNPlaces)
   have h_dual : D.dualPointN 0 = d⁻¹ := by
-    simp [d, dualPointN, diagPoint, diagN_eq_sdiff_mul (N := D.N) (P := D.nonInducedPlaces) D.piNPlaces]
+    simp [d, dualPointN, diagPoint,
+      diagN_eq_sdiff_mul (N := D.N) (P := D.nonInducedPlaces) D.piNPlaces]
   let A (τ : D.Φ) : Matrix (D.X 0) (D.X 0) ℂ_[D.N] :=
     (GeneralLinearGroup.map (adeleExtension (weightEmbedding ιₚ τ)) d.val).val
   have hA (τ : D.Φ) (i j : D.X 0) : ‖A τ i j‖ ≤ 1 := by

@@ -516,6 +516,9 @@ lemma exists_placeOfEmb_extension :
 `New.exists_placeOfEmb_extension`: continuous, extending `σ`, with values in `ℚ_p(σ E)`. -/
 def placeOfEmbExtension : LocField (placeOfEmb σ) →+* F := (exists_placeOfEmb_extension σ).choose
 
+lemma continuous_placeOfEmbExtension : Continuous (placeOfEmbExtension σ) :=
+  (exists_placeOfEmb_extension σ).choose_spec.1
+
 /-- The norm valuation of `F` pulled back along `New.placeOfEmbExtension σ` is equivalent to the
 valuation `Valued.v` of the completion at `New.placeOfEmb σ`. -/
 lemma valuation_comap_placeOfEmbExtension_isEquiv :
@@ -535,7 +538,7 @@ lemma adeleExtension_algebraMap (x : E) : adeleExtension σ x = σ x :=
 
 @[fun_prop]
 lemma continuous_adeleExtension : Continuous (adeleExtension σ) :=
-  (exists_placeOfEmb_extension σ).choose_spec.1.comp (by fun_prop)
+  (continuous_placeOfEmbExtension σ).comp (by fun_prop)
 
 /-- Two finite adeles `x` and `y` have images of the same norm under the extension of `σ`
 exactly when their components at the prime `New.placeOfEmb σ` have the same valuation. -/

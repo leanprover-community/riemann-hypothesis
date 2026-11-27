@@ -451,7 +451,7 @@ lemma carrierForm_mem_rapidOfLevel_and_isAdelicHol {m : ℕ} [NeZero m] (hm_even
     -- the class sum is now a finite sum: read off the index type, the coefficients and the points
     exact ⟨_, _, _, _, h_class_sum⟩
   -- `hψ` is the weight instance that `isAdelicHol_pairTheta` needs.
-  have ⟨h𝔪, ψ, hψ, _⟩ := h_tame
+  let ⟨h𝔪, ψ, hψ, _⟩ := h_tame
   have h_mem (N : RingOfIntegers E) (g : Gf E (Fin (2 * m) ⊕ Fin m)) : θ g ∈ rapidOfLevel V N := by
     -- Level one: on `stdLevel` the factor `c (det k)⁻¹` cancels against `χ (det k)`.
     have h_level : HasLevel (θ g) (⟨stdLevel E _, isOpen_stdLevel⟩ : OpenSubgroup _) := by
@@ -655,6 +655,17 @@ def invariantTraceChar (Λ : Matrix D.CarrierIndex (FirstFactorIndex j)
   ∑ γ : GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing,
     traceChar Λ (x.map (forgetTwist ϑ.toTameChar) * γ.val)
 
+/-- The invariant trace character `ψ^inv_Λ = invariantTraceChar ϑ j Λ` is invariant under right
+multiplication of its argument `x` by an invertible matrix `γ` over the residue ring of
+`D.twistModulus ϑ 2`. -/
+lemma invariantTraceChar_mul
+    (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    (x : Matrix (FirstFactorIndex j) D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing)
+    (γ : GL D.CarrierIndex (D.twistModulus ϑ 2).ResidueRing) :
+    invariantTraceChar ϑ j Λ (x * γ.val) = invariantTraceChar ϑ j Λ x :=
+  Finset.sum_equiv (.mulLeft (γ.map (forgetTwist ϑ.toTameChar))) (by simp)
+    (by simp [Matrix.mul_assoc])
+
 /-- The character of the residue ring modulo `D.twistModulus ϑ 2 = ϖ² Q`, with `ϖ` the product of
 the chosen places and `Q` the product of the places of `ϑ`, that comes from the tame part of
 `twistedChiMPow ϑ j`, the product `χ' = χ^j ϑ` of the fixed character `D.chiM` and the twist. -/
@@ -830,7 +841,8 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
         inv_inv, mul_assoc]
     have h_half : twistedChiMPow ϑ.toTameChar j * upsilonU1 ^ (D.m / 2) =
         ϑ.toAutChar / ((upsilonU1 ^ (D.m / 2))⁻¹ / D.chiM ^ j.val) := by
-      rw [twistedChiMPow, div_eq_mul_inv ϑ.toAutChar, inv_div, div_inv_eq_mul, mul_left_comm, mul_assoc]
+      rw [twistedChiMPow, div_eq_mul_inv ϑ.toAutChar, inv_div, div_inv_eq_mul, mul_left_comm,
+        mul_assoc]
     simp [← Complex.ofReal_pow, mul_pow, div_pow, heckeValueProd, places_twistModulus,
       exchangePair,
       hc₃_norm, hc₁₂_norm, signPoint, ← division_def, div_right_comm _ (_ * _), div_mul_div_comm,
@@ -842,8 +854,7 @@ lemma exists_mul_thirdExchangeLeftSide_eq_choiceFn : ∃ (C : ℂ) (c : D.Twist 
     rw [← integral_carrierForm_mul_eq_card_mul_choiceFn ϑ]
     refine mul_stdClassSum_eq_integral_mul_modKernel _ (enlargedSpace j) (h_tame ϑ).1
       (h_carrier (h_tame ϑ))
-      (fun x γ ↦ Finset.sum_equiv (.mulLeft (γ.map (forgetTwist ϑ.toTameChar))) (by simp) (by simp [Matrix.mul_assoc]))
-      (K := thirdExchangeKernel ϑ j i g) fun Φ Ψ hΦΨ h' ↦ ?_
+      (invariantTraceChar_mul ϑ j i.matrix) (K := thirdExchangeKernel ϑ j i g) fun Φ Ψ hΦΨ h' ↦ ?_
     rw [← matchedPoly_constantRows, eq_div_of_mul_eq'' (firstFactorChar_mul_upsilonU1_pow ϑ j)]
     exact h_third (h_tame₃ ϑ) (constantRows j i.rowChoice (D.shortRows i.rowChoice)) hΦΨ _ _
 

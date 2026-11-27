@@ -185,7 +185,7 @@ lemma IsAppellHumbert.exists_proportional_orbit_lattice {O : Type*} [CommRing O]
   -- `G`, the dual lattice modulo `L`, is finite, and its order divides a power of `N`.
   let G : Type := B.dualLattice ⧸ H
   have h_finite : Finite G := hB.finite_dualLattice_quotient
-  have h_fintype : Fintype G := Fintype.ofFinite G
+  let h_fintype : Fintype G := Fintype.ofFinite G
   have card_unit : IsUnit (Nat.card G : O) :=
     hB.isUnit_natCard_dualLattice_quotient_of_nsmul_mem hN hN_kills
   let A (s : G) : End ℂ (B.thetaSpace χ) := c (-s.out) • hB.thetaShiftEnd (-s.out)
@@ -363,7 +363,8 @@ variable (G : HasGoodReduction B χ v r)
 include G in
 /-- A function lies in the ball of `g` if and only if it is a theta function for (L, B, χ) whose
 theta norm is at most that of `g`. -/
-lemma mem_normBall : f ∈ normBall B χ v g ↔ f ∈ B.thetaSpace χ ∧ B.thetaNorm v f ≤ B.thetaNorm v g := by
+lemma mem_normBall : f ∈ normBall B χ v g ↔ f ∈ B.thetaSpace χ ∧
+    B.thetaNorm v f ≤ B.thetaNorm v g := by
   -- for a theta function `f` the sizes are bounded above, so `‖f‖ ≤ ‖g‖` says that each size of
   -- `f` is at most `‖g‖`
   rw [normBall, Submodule.mem_inf, Submodule.restrictScalars_mem]
@@ -589,7 +590,8 @@ lemma normBall_pow_pow [IsFullRankLattice L₀] (hAH : IsAppellHumbert (L := L�
   induction j with
   | zero => simp
   | succ j ih =>
-    have h_pow : normBall B χ v f ^ r ^ (j + 1) = normBall (r ^ j • B) (χ ^ r ^ j) v (f ^ r ^ j) ^ r := by
+    have h_pow : normBall B χ v f ^ r ^ (j + 1) =
+        normBall (r ^ j • B) (χ ^ r ^ j) v (f ^ r ^ j) ^ r := by
       rw [pow_succ, pow_mul, ih]
     -- Apply `normBall_pow` to f ^ r ^ j in degree r ^ j • B. The forms r • r ^ j • B and r ^
     -- (j + 1) • B agree; the corresponding characters and theta functions also agree.
@@ -635,10 +637,10 @@ the supremum of `v (B.thetaShift x g 0)` over the torsion points `x` of `V/L`. A
 reduction (`G`): `(L, B, χ)` is of ample type, the norm is multiplicative, some natural number `N`
 with `v N = 1` maps the dual lattice into `L`, and `r > 1` has `v r = 1`. Let `f ≠ 0` be a theta
 function for `(L, B, χ)`, and let `ballMap` be an `O`-linear map from a finite `O`-module `W` onto
-the ball `normBall B χ v f` of the theta functions `g` with `‖g‖ ≤ ‖f‖`. Let `φ` be a ring map from `O`
-onto a field `k`, and `reduction` a `φ`-semilinear map from `W` to a `k`-vector space `Q` that
-vanishes at `w` exactly when `‖ballMap w‖ < ‖f‖`. Then the `k`-span of the image of `reduction`
-has the dimension over `k` that the space `B.thetaSpace χ` of theta functions has over `ℂ`. -/
+the ball `normBall B χ v f` of the theta functions `g` with `‖g‖ ≤ ‖f‖`. Let `φ` be a ring map from
+`O` onto a field `k`, and `reduction` a `φ`-semilinear map from `W` to a `k`-vector space `Q` that
+vanishes at `w` exactly when `‖ballMap w‖ < ‖f‖`. Then the `k`-span of the image of `reduction` has
+the dimension over `k` that the space `B.thetaSpace χ` of theta functions has over `ℂ`. -/
 lemma finrank_reduction_eq (G : HasGoodReduction B χ v r) (hf : f ∈ B.thetaSpace χ)
     (hf_ne : f ≠ 0) {W : Type} [AddCommGroup W] [Module v.valuationSubring W]
     {ballMap : W →ₗ[v.valuationSubring] V → ℂ} (h_range : ballMap.range = normBall B χ v f)

@@ -19,10 +19,9 @@ the insertion of a real vector, and the Weil representation up to a scalar.
 
 ## Main definitions and results
 
-* `New.Space.rho_boxProd`, `New.Space.boxProd_vacElem`, `New.Space.dataInner_boxProd`,
-  `New.Space.omega_boxProd`, `New.Space.boxProd_integrated`: the product respects the Heisenberg
-  operators, the vacua, the inner products, the Weil representation of block diagonal elements and
-  the insertion of real Fock vectors.
+* `New.Space.rho_boxProd`, `New.Space.boxProd_vacElem`, `New.Space.omega_boxProd`,
+  `New.Space.boxProd_integrated`: the product respects the Heisenberg operators, the vacua, the
+  Weil representation of block diagonal elements and the insertion of real Fock vectors.
 * `New.CoordChange.map_rho`, `New.CoordChange.map_vacElem`, `New.CoordChange.map_omega`,
   `New.CoordChange.map_integrated`: transport respects the Heisenberg operators, the vacuum, the
   Weil representation (up to a scalar) and the insertion of a real vector.
@@ -407,7 +406,8 @@ the Heisenberg bicharacter β up to `σ`, where A keeps the Gaussian and B keeps
 indicator. -/
 @[simp]
 lemma map_vacElem : D.map V₁.vacElem = V.vacElem :=
-  ext (map_integral_and_map_vacuum (adelicHeisenberg E s₁) (adelicHeisenberg E s) D.vacuumFn_apply).2
+  ext (map_integral_and_map_vacuum (adelicHeisenberg E s₁) (adelicHeisenberg E s)
+      D.vacuumFn_apply).2
 
 /-- Let φ be a vacuum-preserving change of coordinates with twist σ. If φ(gx) = g₁φ(x) for all x and
 σ(Δ(g₁)) = c·Δ(g), then (ω(g₁)f)^φ = c·ω(g)(f^φ) for all f in 𝒮(V₁), where f^φ = `D.map f` and

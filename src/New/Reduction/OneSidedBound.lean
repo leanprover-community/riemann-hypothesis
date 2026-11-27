@@ -241,7 +241,8 @@ theorem eventually_primeRemainder_le_mul_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ 
         exact natFloor_rpow_le_two_mul_rpow hy ht_ge ht_le
     _ = (128 * q₀.totient + 32) * y ^ t := by dsimp [C]; ring
     _ ≤ (128 * q₀.totient + 32) * y ^ (-1 / 2 + ε) :=
-      mul_le_mul_of_nonneg_left (rpow_le_rpow_of_exponent_le hy_one (by linarith [ht])) (by positivity)
+      mul_le_mul_of_nonneg_left (rpow_le_rpow_of_exponent_le hy_one (by linarith [ht]))
+          (by positivity)
 
 /-- **Main theorem**, in half-plane form: no Dirichlet `L`-function vanishes in `re s > 1/2`
 (with `s ≠ 1` for a principal character). -/

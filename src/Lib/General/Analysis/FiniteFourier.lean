@@ -201,6 +201,21 @@ lemma Exchange.star_matrixFourier_det_mul (hψ : ψ.IsPrimitive) (hχ : IsPrimit
       rw [← funext (matrixFourier_eq_inv_det_mul hχ S hS)]
     _ = S 1 * card (Matrix a a R) := by simpa using matrixFourier_matrixFourier hψ S (-1)
 
+/-- Gauss sums of matrices over a finite ring, both steps in one statement. Let `ψ` be primitive,
+`χ` primitive in the sense of `New.Exchange.IsPrimitiveMulChar`, and `S` a function on square
+matrices with `S (g d) = χ (det g) S d` for all invertible `g`. Write `Ŝ` for its Fourier transform
+`New.Exchange.matrixFourier ψ S`. Then (a) `Ŝ y = χ⁻¹ (det y) Ŝ 1` for every `y`, so `Ŝ` vanishes at
+non-invertible `y` (`New.Exchange.matrixFourier_eq_inv_det_mul`). (b) `γ Ŝ 1` equals `S 1` times
+the number of matrices, where `γ` is the complex conjugate of the transform of `χ ∘ det` at the
+matrix `1` (`New.Exchange.star_matrixFourier_det_mul`). -/
+lemma Exchange.matrixFourier_eq_and_star_mul_eq (hψ : ψ.IsPrimitive) (hχ : IsPrimitiveMulChar χ)
+    (S : Matrix a a R → ℂ)
+    (hS : ∀ (g : GL a R) (d : Matrix a a R), S (g.val * d) = χ g.val.det * S d) :
+    (∀ y : Matrix a a R, matrixFourier ψ S y = χ⁻¹ y.det * matrixFourier ψ S 1) ∧
+    star (matrixFourier ψ (fun d : Matrix a a R ↦ χ d.det) 1) * matrixFourier ψ S 1 =
+      S 1 * Fintype.card (Matrix a a R) :=
+  ⟨matrixFourier_eq_inv_det_mul hχ S hS, star_matrixFourier_det_mul hψ hχ S hS⟩
+
 /-- Gauss sums of square matrices over a finite ring `R`. Let `ψ` be primitive and `χ` primitive in
 the sense of `New.Exchange.IsPrimitiveMulChar`, and let `n` be the cardinality of `a`. There is a
 number `γ` with `|γ|² = #R ^ (n²)` such that every function `S` on `n × n` matrices with
@@ -228,7 +243,7 @@ lemma Exchange.exists_matrixFourier_eq_mul_inv_det (hψ : ψ.IsPrimitive)
   obtain ⟨h_formula, h_inversion⟩ :
       (∀ y : Matrix a a R, matrixFourier ψ S y = χ⁻¹ y.det * matrixFourier ψ S 1) ∧
         star γ * matrixFourier ψ S 1 = S 1 * Fintype.card (Matrix a a R) :=
-    ⟨matrixFourier_eq_inv_det_mul hχ S hS, star_matrixFourier_det_mul hψ hχ S hS⟩
+    matrixFourier_eq_and_star_mul_eq hψ hχ S hS
   have h_one : matrixFourier ψ S 1 = γ * S 1 :=
     mul_left_cancel₀ h_ne (by rw [h_inversion, ← mul_assoc, h_conj_mul, mul_comm])
   rw [h_formula y, h_one, mul_left_comm, mul_assoc]

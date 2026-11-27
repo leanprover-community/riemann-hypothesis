@@ -211,6 +211,11 @@ lemma IsForm.comp_mul_right (hF : V.IsForm e F) (a : Gf E n) :
 
 variable (V e)
 
+lemma isForm_zero : V.IsForm e 0 where
+  toIsAutomorphic := V.isAutomorphic_const 0
+  bounded := ⟨0, by simp⟩
+  realConv_eq := by simp [funext_iff, realConv]
+
 /-- A linear combination aF + bF' of two forms F, F' of type e (bounded automorphic functions on G
 fixed by convolution with e if e is integrable) is a form of type e. -/
 lemma IsForm.smul_add_smul (hF : V.IsForm e F) (hF' : V.IsForm e F') (a b : ℂ) :
@@ -229,8 +234,7 @@ lemma IsForm.smul_add_smul (hF : V.IsForm e F) (hF' : V.IsForm e F') (a b : ℂ)
 
 /-- The forms of type e for V, as a submodule of the complex functions on G. -/
 def formSubmodule : Submodule ℂ (G E s → ℂ) :=
-  ofLinearComb {F : G E s → ℂ | V.IsForm e F}
-    ⟨0, ⟨V.isAutomorphic_const 0, ⟨0, by simp⟩, by simp [funext_iff, realConv]⟩⟩ fun F hF F' hF' a b ↦
+  ofLinearComb {F : G E s → ℂ | V.IsForm e F} ⟨0, isForm_zero V e⟩ fun F hF F' hF' a b ↦
     show V.IsForm e (a • F + b • F') from hF.smul_add_smul V e hF' a b
 
 /-- The complex vector space of forms of type e for V, namely the type of elements of

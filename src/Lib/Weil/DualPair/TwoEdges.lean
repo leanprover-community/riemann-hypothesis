@@ -137,7 +137,8 @@ lemma theta_arrowProduct :
           ((flipCoords star_normNegOne_mul_self rfl).map (V := V'.hom (flipSpace V)) f) =
         z * (V.hom V').θ f := by
     simpa [pairTheta, mk_one_one] using h_flip 1 f 1 1 1 (by simp)
-  rw [arrowProduct, ContinuousLinearMap.comp_apply, theta_boxProd_target rfl _ rfl, h_one, mul_assoc]
+  rw [arrowProduct, ContinuousLinearMap.comp_apply, theta_boxProd_target rfl _ rfl, h_one,
+    mul_assoc]
 
 /-- Translating the joined datum by the block matrix with rows `w*` (the adjoint of `w`) and `w'`
 is the same as translating `f` by `w` and `f'` by `w'` before joining. -/

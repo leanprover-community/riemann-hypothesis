@@ -26,8 +26,8 @@ chart is unramified and all jumps of the second side lie in `[-η, 0]`.
 * `New.Lift.KummerChart.PairingSide.SidePairing.isScaledCupCoboundary_of_killsCokernel`: paired
   sides satisfy the cup conditions with exponent `H` when `3 κ + 2 (4 a + 4 η + W) d ≤ H`. The
   hypotheses are these. The cokernels are killed. The jumps lie in opposite windows. At every `i`,
-  `p` divides no nonzero integer within `a + max a η + max η W` of `0` or `± b i`. Either no jump lies
-  in `[-a, 0)`, or the chart is unramified and all jumps of `S'` lie in `[-η, 0]`.
+  `p` divides no nonzero integer within `a + max a η + max η W` of `0` or `± b i`. Either no jump
+  lies in `[-a, 0)`, or the chart is unramified and all jumps of `S'` lie in `[-η, 0]`.
 
 Notions from other files:
 * `New.Lift.KummerChart`: a Kummer chart `k` of the group `Γ` over `G_p`: a ring `Λ⟦z⟧` inside
@@ -415,7 +415,7 @@ lemma SidePairing.isScaledCupCoboundary_of_killsCokernel (P : S.SidePairing S') 
       (fun i u hu ↦ h_gap i u (.inl hu)) (fun i u hu ↦ h_gap i u (.inr hu))
       (fun i ↦ steps (b i)) (fun i ↦ h_steps (h_window i)) (fun i ↦ h_steps (h_window' i))
       h_cost hH c c'
-  · exact P.isScaledCupCoboundary_of_jumps_nonpos hk h_kill_tateDual h_kill hb_gap hn h_window h_nonpos
-      (by omega) c c'
+  · exact P.isScaledCupCoboundary_of_jumps_nonpos hk h_kill_tateDual h_kill hb_gap hn h_window
+      h_nonpos (by omega) c c'
 
 end New.Lift.KummerChart.PairingSide

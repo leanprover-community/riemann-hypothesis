@@ -124,7 +124,7 @@ lemma finite_range_latticeModule :
   obtain ⟨C₀, -⟩ := QuadField.exists_cmLattice_latticeModule_eq_scaledIdeal (d := d) 1
   obtain ⟨B, hB, -⟩ := C₀.exists_forall_isInClass
   refine (Set.finite_range fun p : rootsOfUnity 4 ℂ × ClassGroup (𝓞 (QuadField d)) ↦
-    QuadField.scaledIdeal d (p.1.1, 1) * (B p.2).latticeModule).subset ?_
+    QuadField.scaledIdeal d (p.1.val, 1) * (B p.2).latticeModule).subset ?_
   rintro _ ⟨C, rfl⟩
   obtain ⟨⟨u, 𝔟⟩, hC⟩ := C.exists_latticeModule_eq_scaledIdeal
   obtain ⟨c, hc_pow, hc⟩ :=
@@ -164,7 +164,7 @@ lemma exists_norm_twistedTranslate_theta_le :
   have : Finite (Set.range fun C : CMLattice d ↦ C.latticeModule) :=
     finite_range_latticeModule.to_subtype
   obtain ⟨M, hM⟩ := (isCompact_iUnion fun x : Set.range fun C : CMLattice d ↦ C.latticeModule ↦
-    IsAppellHumbert.isCompact_range_norm_thetaShift x.2.choose.theta_mem).bddAbove
+    IsAppellHumbert.isCompact_range_norm_thetaShift x.property.choose.theta_mem).bddAbove
   refine ⟨M, fun C u ↦ hM (Set.mem_iUnion.2 ⟨⟨C.latticeModule, C, rfl⟩, u, ?_⟩)⟩
   have h := (⟨C, rfl⟩ : ∃ D : CMLattice d, D.latticeModule = C.latticeModule).choose_spec
   simp [thetaShift_apply, hermitianForm_apply, theta_eq_of_latticeModule_eq h,

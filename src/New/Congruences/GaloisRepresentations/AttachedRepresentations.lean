@@ -711,7 +711,7 @@ theorem isRepOfType_of_hasProductLabel {O : DescentPair D.E r n} {ϑ : D.Twist}
         (sphericalCompat_std v hf h_eigen).2 hR (h_spherical v hv hv') A hA
       exact ⟨(isGoodAt_iff.1 h_unr).1, h_jump, fun _ ↦ h_unr⟩
   · -- The completing characters are trivial, and their exponents add up to `card m - card r`.
-    obtain ⟨-, -, h_kill⟩ := h_lab i hs.1
+    obtain ⟨-, -, h_kill⟩ := h_lab i hs.isPlaceOver
     obtain ⟨-, -, h_sum, -⟩ := h_prod i
     have h_label :
         c i * (X - 1) ^ (card m - card r) =

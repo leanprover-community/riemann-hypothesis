@@ -365,6 +365,23 @@ lemma sum_heckePolyCoeff_smul_pairWeil_transposeGL
         f :=
   (sum_heckePolyCoeff_smul_pairWeil ha hb hw hf X).left
 
+/-- The local identity behind the transfer, in the group of S. Let w be split of norm q, let the
+base changes of a and b be unramified at w, and let f be a vacuum at w. Write
+γ_U = `New.basicCosetRep U`. The sum over the subspaces U of 𝔽_w^n of `heckePolyCoeff X U` times
+the action of γ_U⁻¹ sends f to `schrodingerOp {w} Ψ f` (`New.Space.schrodingerOp`). Here Ψ(x) is
+∏_{l<r}(1 − q^l X β) if the matrix x is integral at w, and 0 otherwise, where β = `b.frobValue m w`
+and r is `card n` minus the rank of x modulo w. -/
+lemma sum_heckePolyCoeff_smul_pairWeil_inv
+    (ha : CharUnramifiedAt a.baseChange.finPart w) (hb : CharUnramifiedAt b.baseChange.finPart w)
+    (hw : w.IsSplit) (hf : (S.hom T).projOn {w} f = f) (X : ℂ) :
+    ∑ U : Submodule (ResField w) (n → ResField w),
+        heckePolyCoeff X U • pairWeil S T a b ((1, ofSplitPlace hw (basicCosetRep U)⁻¹), 1, 1) f =
+      schrodingerOp (S.hom T) {w}
+        (residueDatum (fun () ↦ w) fun x : Unit → Matrix m n (ResField w) ↦
+          qPochhammer w.q (card n - (x ()).rank) (X * b.frobValue m w))
+        f :=
+  (sum_heckePolyCoeff_smul_pairWeil ha hb hw hf X).right
+
 /-- The Weil representation `New.pairWeil S T a b` restricted to the finite adelic points of the
 unitary group of S. -/
 noncomputable def pairWeilSource (S : Space E n s) (T : Space E m t) (a b : AutChar E) :
@@ -422,7 +439,7 @@ lemma heckePolyOp_pairWeilTarget (hk : card m = card n + k)
   have hS (Y : ℂ) :
       heckePolyOp (pairWeilSource S T a b) hw.star Y f = N (card n) (Y * b.frobValue m w) :=
     (heckePolyOp_eq_sum hw source_sph Y).right.trans
-      (sum_heckePolyCoeff_smul_pairWeil ha hb hw hf Y).right
+      (sum_heckePolyCoeff_smul_pairWeil_inv ha hb hw hf Y)
   -- Modulo `w`, the kernel of `xᵀ` has `k` dimensions more than the kernel of `x`.
   have h_split (x : Matrix m n (ResField w)) :
       qPochhammer w.q (card m - x.rank) X =

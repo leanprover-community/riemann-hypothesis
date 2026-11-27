@@ -56,8 +56,8 @@ lemma New.hasDerivAt_det_of_eq_one {n : Type*} [Fintype n] [DecidableEq n] {γ :
 
 The main results are the bound `‖tr (X Y)‖ ≤ ‖X‖ ‖Y‖`, invariance under unitary left factors, the
 inverse of `1 + X` for small `X`, the formula `det (exp M) = exp (tr M)`, and the logarithm of
-`1 + X`, written as the integral of `(1 + s X)⁻¹ X` over `[0, 1]`. A matrix at distance less than `1` from the identity
-is accretive.
+`1 + X`, written as the integral of `(1 + s X)⁻¹ X` over `[0, 1]`. A matrix at distance less than
+`1` from the identity is accretive.
 -/
 
 section FrobeniusNormTools

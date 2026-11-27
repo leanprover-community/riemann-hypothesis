@@ -517,6 +517,10 @@ lemma lCoord_mul_iAdelic_mul {m : Type*} (X : Matrix n₀ m (𝔸 E)) :
 
 -- The pairings of the frames with the standard form are coordinate matrices.
 
+/-- Pairing with `kAdelic` under the standard form is the `l`-coordinate matrix. -/
+lemma conjTranspose_kAdelic_mul_stdForm_mul {m : Type*} (X : Matrix n m (𝔸 E)) :
+    D.kAdelicᴴ * (stdForm E s * X) = D.lCoord * X := by rw [lCoord, Matrix.mul_assoc]
+
 /-- Pairing with `lAdelic` under the standard form is the `k`-coordinate matrix. -/
 lemma conjTranspose_lAdelic_mul_stdForm_mul {m : Type*} (X : Matrix n m (𝔸 E)) :
     D.lAdelicᴴ * (stdForm E s * X) = D.kCoord * X := by rw [kCoord, Matrix.mul_assoc]
@@ -552,7 +556,7 @@ lemma coord_mul_frame_mul {m : Type*} :
   ⟨fun X ↦ ⟨D.kCoord_mul_kAdelic_mul X, D.iCoord_mul_kAdelic_mul X, D.lCoord_mul_kAdelic_mul X,
       D.kCoord_mul_lAdelic_mul X, D.iCoord_mul_lAdelic_mul X, D.lCoord_mul_lAdelic_mul X⟩,
     fun X ↦ ⟨D.kCoord_mul_iAdelic_mul X, D.iCoord_mul_iAdelic_mul X, D.lCoord_mul_iAdelic_mul X⟩,
-    fun X ↦ ⟨by rw [lCoord, Matrix.mul_assoc], D.conjTranspose_lAdelic_mul_stdForm_mul X,
+    fun X ↦ ⟨D.conjTranspose_kAdelic_mul_stdForm_mul X, D.conjTranspose_lAdelic_mul_stdForm_mul X,
       D.conjTranspose_iAdelic_mul_stdForm_mul X⟩⟩
 
 /-- The frames and coordinate matrices of a splitting resolve the identity, so every adelic vector
@@ -933,7 +937,7 @@ lemma exists_isAdapted_and_frame_eq :
     rw [gram_mul, gram_frameAt]
     simp [← stdForm_sum, ← (hyperbolicSpace E p).gram_point, fromBlocks_conjTranspose,
       fromBlocks_multiply, fromBlocks_map]
-  have σ : n ≃ (p ⊕ p) ⊕ n₀ := equivOfCardEq (by simp +arith [D.card_eq])
+  let σ : n ≃ (p ⊕ p) ⊕ n₀ := equivOfCardEq (by simp +arith [D.card_eq])
   let w : InfinitePlace E := Classical.ofNonempty
   have h_gram_w : (m.map (evalInf w))ᴴ * signMatrix s * m.map (evalInf w) =
       signMatrix (hyperbolicSigns p ⊕ᵥ s₀) := by

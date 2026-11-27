@@ -28,8 +28,8 @@ jumps lie in windows, under the size conditions `New.Selmer.CrystallineSizes`.
 * `New.Selmer.normLength_dualDefect_le_of_hasCupExponent`: if a power ℓ^k carries the cocycles into
   the annihilator of a class of lattices, as `New.Lift.HasCupExponent` says, then the defect is
   bounded in terms of k.
-* `New.Selmer.normLength_dualDefect_le_of_crystallineSizes`: the defect is bounded in terms of the
-  crystalline loss `New.Selmer.crystallineLoss`, uniformly in `ℓ`.
+* `New.Selmer.normLength_dualDefect_le_of_crystallineSizes`: the defect bound uses any loss
+  satisfying the size and divisibility conditions at `ℓ`.
 
 Notions from other files:
 * `New.Lift.GalLattice`: A finite free O-module with a compatible ℤ_ℓ-module structure, together
@@ -211,6 +211,13 @@ lemma New.Selmer.two_mul_lt_mul_crystallineLoss_succ {ℓ : ℕ} [hp : ThePrime 
   calc 2 * b < ℓ * (2 * b / ℓ + 1) := lt_mul_div_succ _ hp.out.pos
     _ ≤ ℓ * (crystallineLoss h b ℓ + 1) := by grw [h_div, h_val]
 
+/-- If `ℓ` divides some positive integer in `(b - 30 h³, b + 30 h³]`, then the crystalline loss
+`crystallineLoss h b ℓ` is at least `h³`. -/
+lemma New.Selmer.cube_le_crystallineLoss_of_dvd {ℓ h b n : ℕ} [ThePrime ℓ]
+    (hn : n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3)) (hℓ : ℓ ∣ n) : h ^ 3 ≤ crystallineLoss h b ℓ :=
+  le_crystallineLoss_of_pow_dvd
+    ((pow_dvd_pow_of_dvd (hℓ.trans (dvd_prod_of_mem _ hn)) _).mul_left _)
+
 /-- If `H ≤ 4 b` and `2 log (4 b) < m`, then `⌊log_ℓ H⌋ < m`, because `log ℓ ≥ 1 / 2`. -/
 lemma New.Selmer.natLog_lt_of_two_mul_log_lt {ℓ H b m : ℕ} [hp : ThePrime ℓ]
     (hm : 2 * Real.log (4 * b : ℝ) < m) (hH : H ≤ 4 * b) : ℓ.log H < m := by
@@ -372,8 +379,8 @@ embeddings `g : O → ℂ_ℓ` such that `g ζ` is the Teichmüller root of unit
 `z ↦ z ^ ℓ`; `ι`, `letter`, `th`, `ε` enter only through `h_chart`. At each letter let the jumps
 from `U` and `U'` lie in the union of `[-2 G, 2 G]` and opposite far windows of width `W`, starting
 at `b + δ` if the letter is thick and at `G + δ` otherwise. If `2 (b + δ) < h² K`, then
-`ℓ ^ (10⁴ K (⌊log_ℓ h³⌋ + 1))` times any crystalline cocycle of `L` is orthogonal under cup products
-to the class for `U`. -/
+`ℓ ^ (1600 K (⌊log_ℓ h³⌋ + 1))` times any crystalline cocycle of `L` is orthogonal under cup
+products to the class for `U`. -/
 lemma New.Selmer.LettersReadThick.hasCupExponent_of_le {ℓ : ℕ} [hp : ThePrime ℓ]
     [Γ : GroupOverGp ℓ] [TopologicalSpace Γ] {O : CoeffRing ℓ} {L : GalLattice O Γ}
     {U U' : (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ} {k : KummerChart Γ} {ι : Type} {letter : ι → ℂ_[ℓ]}
@@ -385,7 +392,7 @@ lemma New.Selmer.LettersReadThick.hasCupExponent_of_le {ℓ : ℕ} [hp : ThePrim
       (if T (theta (k.letterTeich i)) then b + δ else G + δ) W (k.letterJumps ζ U i))
     (hU' : ∀ i : k.Letter, FitsWindows (2 * G) (s (theta (k.letterTeich i)))
       (if T (theta (k.letterTeich i)) then b + δ else G + δ) W (k.letterJumps ζ U' i)) :
-    HasCupExponent (InClass ⊤ ⊥ U) L (10 ^ 4 * (K * (ℓ.log (h ^ 3) + 1))) := by
+    HasCupExponent (InClass ⊤ ⊥ U) L (1600 * (K * (ℓ.log (h ^ 3) + 1))) := by
   -- The thick letters are sparse, with gaps measured up to `J = ⌊log_ℓ h³⌋`, so
   -- `hasCupExponent_sparse_thick` applies with low window `[-2 G, 2 G]` and costs `2 K` and `K`.
   have ⟨_, hQ, (hG : 99 * h ^ 3 ≤ G), (hb : 99 * (G * h ^ 3 + G) ≤ b), _, hδ, hη⟩ := h_sizes
@@ -412,10 +419,10 @@ lemma New.Selmer.LettersReadThick.hasCupExponent_of_le {ℓ : ℕ} [hp : ThePrim
     have h_shift (t : ℕ) : ⇑(k.letterFrob ^ t) = fun i ↦ i ^ ℓ ^ t :=
       (k.letterFrob.coe_pow t).trans (pow_iterate ℓ t)
     simpa [h_shift] using h_chart.not_thick_pow hℓ (theta (k.letterTeich i))
-  have h_exp : HasCupExponent (InClass ⊤ ⊥ U) L (10 ^ 3 * (2 * K + (ℓ.log (h ^ 3) + 1) * K)) :=
-    k.hasCupExponent_sparse_thick ζ h_open (by omega) hL hU hU' (by omega) h_gaps h_sparse h_sign
-      h_depth (h_sizes.differentBound_mul_add_log_le he hK)
-  exact h_exp.mono (by lia)
+  have h_exp := k.hasCupExponent_sparse_thick ζ h_open (by omega) hL hU hU' (by omega)
+    h_gaps h_sparse h_sign h_depth (h_sizes.differentBound_mul_add_log_le he hK)
+  have hK_pos : 0 < K := Nat.pos_of_ne_zero fun h0 ↦ by simp [h0] at hK
+  exact h_exp.mono (by nlinarith only [Nat.mul_le_mul_left K h_gaps, hK_pos])
 
 /-- The exponent for large primes `ℓ > Q` and large loss `v ≥ h³`. Let `Γ → G_ℓ` be an open
 embedding and `ℓ ≥ 7`. The hypothesis `h_sizes` is the list of inequalities `Q² ≪ h`, `m ≪ h`,
@@ -426,7 +433,7 @@ are the units of `𝔽_{ℓ^f}`; `ζ` in `O` has `ζ ^ (ℓ ^ f - 1) = 1`, and `
 union of `{0}` and the sets `U g` for the embeddings `g : O → ℂ_ℓ` such that `g ζ` is the
 Teichmüller root of unity of `i`. At each letter let the jumps from `U` and `U'` lie in the union of
 `[-η, η]` and the far windows `-s i · [a, a + W]` and `s i · [a, a + W]`, where `a = b + δ` if `T i`
-holds and `a = G + δ` otherwise. If `2 b < ℓ (v + 1)` and `2 v < (K + 1) Q`, then `ℓ ^ (10⁴ K m)`
+holds and `a = G + δ` otherwise. If `2 b < ℓ (v + 1)` and `2 v < (K + 1) Q`, then `ℓ ^ (1600 K m)`
 times any crystalline cocycle of `L` is orthogonal under cup products to the class for `U`. -/
 lemma New.Selmer.CrystallineSizes.hasCupExponent_of_cube_le {ℓ : ℕ} [ThePrime ℓ]
     [Γ : GroupOverGp ℓ] [TopologicalSpace Γ] {O : CoeffRing ℓ} {L : GalLattice O Γ}
@@ -440,7 +447,7 @@ lemma New.Selmer.CrystallineSizes.hasCupExponent_of_cube_le {ℓ : ℕ} [ThePrim
     (hU' : ∀ i : k.Letter,
       FitsWindows η (s i) (if T i then b + δ else G + δ) W (k.letterJumps ζ U' i))
     (h_loss : 2 * b < ℓ * (v + 1)) (hv : h ^ 3 ≤ v) (hK : 2 * v < K * Q + Q) :
-    HasCupExponent (InClass ⊤ ⊥ U) L (10 ^ 4 * (K * m)) := by
+    HasCupExponent (InClass ⊤ ⊥ U) L (1600 * (K * m)) := by
   have ⟨_, hQ, hG, (hb : 99 * (G * h ^ 3 + G) ≤ b), _, (hδ : δ < η),
     (hη : 99 * ((η + W) * Q + η + h) ≤ h ^ 3)⟩ := h_sizes
   have hQ_le : Q ≤ h ^ 3 := by omega
@@ -448,15 +455,13 @@ lemma New.Selmer.CrystallineSizes.hasCupExponent_of_cube_le {ℓ : ℕ} [ThePrim
   have hbK : b + δ < K * ℓ ^ 2 := by nlinarith only [h_loss, hℓ, hb, hη, hδ, hv, hK, hQ_le]
   have hGK : 2 * (G + δ) < K * ℓ := by nlinarith only [h_loss, hℓ, hb, hη, hδ, hv, hK, hQ_le]
   have hWK : W + 4 * η ≤ K := by nlinarith only [hη, hv, hK, hQ_le]
-  have h_exp :
-      HasCupExponent (InClass ⊤ ⊥ U) L (10 ^ 4 * (K + ℓ.log (2 * (b + δ + (W + 4 * η))))) :=
-    k.hasCupExponent_any_pattern ζ h_open h_un h_seven (by omega) le_rfl hL hU hU' (by omega)
-      (Nat.add_le_add_right (by omega) δ) hbK hGK hWK
+  have h_exp := k.hasCupExponent_any_pattern ζ h_open h_un h_seven (by omega) le_rfl hL hU hU'
+    (by omega) (Nat.add_le_add_right (by omega) δ) hbK hGK hWK
   have h_log : ℓ.log (2 * (b + δ + (W + 4 * η))) < m :=
     natLog_lt_of_two_mul_log_lt h_sizes.log_lt (by omega)
   have hK_pos : 1 ≤ K := by omega
-  have h_add : K + ℓ.log (2 * (b + δ + (W + 4 * η))) ≤ K * m := by nlinarith only [h_log, hK_pos]
-  exact h_exp.mono (Nat.mul_le_mul_left _ h_add)
+  exact h_exp.mono (by nlinarith only [Nat.mul_le_mul_left K (Nat.succ_le_of_lt h_log),
+    Nat.mul_le_mul_right (ℓ.log (2 * (b + δ + (W + 4 * η)))) hK_pos, hK_pos])
 
 /-- The gap condition for small loss. Under the size conditions `h_sizes`, let `2 b < ℓ (v + 1)`
 with `v < h³`, and let `ℓ` divide no integer in `(b - 30 h³, b + 30 h³]`. Then `ℓ` divides no
@@ -491,7 +496,7 @@ embeddings `g : O → ℂ_ℓ` such that `g ζ` is the Teichmüller root of unit
 Then the defect of `L` for the class of `U`, the length of the crystalline cocycles modulo those
 orthogonal, under cup products, to the crystalline cocycles of the lattices in the class, normalised
 so that `O / ℓ` has length `1`, is at most `[G_ℓ : Γ] · y` for any
-`y ≥ 10⁵ (rank L · K m + μ v)`. -/
+`y ≥ 3200 rank L · K m + 33 μ v`. -/
 lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrime ℓ] [Γ : GroupOverGp ℓ]
     [TopologicalSpace Γ] {O : CoeffRing ℓ} {L : GalLattice O Γ} {Q m h μ G b δ η W v K : ℕ}
     {U U' : (O →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) → Finset ℤ} (h_sizes : CrystallineSizes Q m h G b δ η W)
@@ -507,7 +512,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
     (h_loss : 2 * b < ℓ * (v + 1)) (hv : v < h ^ 3) (hK : 2 * v < K * Q + Q)
     (h_gap : ∀ i : k.Letter,
       NoMultipleNear ℓ (6 * (2 * (v + 1) + η + W)) (if T i then b + δ else G + δ : ℕ))
-    {y : NNReal} (hy : (10 ^ 5 * (finrank O L * (K * m) + μ * v) : ℕ) ≤ y) :
+    {y : NNReal} (hy : (3200 * (finrank O L * (K * m)) + 33 * (μ * v) : ℕ) ≤ y) :
     O.normLength (dualDefect (InClass ⊤ ⊥ U) L) ≤ Γ.overGp.toGp.range.index * y := by
   have ⟨hQ_pos, (hQ : 99 * (Q * Q + (W + 1) * Q + Q + W + m) ≤ h), (hG : 99 * h ^ 3 ≤ G),
     (hb : 99 * (G * h ^ 3 + G) ≤ b), h_log, (hδ : δ < η),
@@ -533,7 +538,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
     have hm_pos : 1 ≤ m :=
       Nat.zero_lt_of_lt (natLog_lt_of_two_mul_log_lt (ℓ := ℓ) h_log (Nat.zero_le _))
     have h_bound : k.f * (μ * (8 * (2 * (v + 1)) + 1) + finrank O L * (3 * (W + 1))) ≤
-        k.f * (10 ^ 5 * (finrank O L * (K * m) + μ * v)) := by
+        k.f * (3200 * (finrank O L * (K * m)) + 33 * (μ * v)) := by
       grw [show 8 * (2 * (v + 1)) + 1 ≤ 33 * v by omega, ← hm_pos, hW_lt_K]
       ring_nf
       omega
@@ -568,8 +573,9 @@ whose jumps at each `g` lie in `U g`. Assume:
   `T (g ζ)` and the sign is `s (g ζ)`. The chart is unramified with `ℓ ≥ 7`, or `ℓ ≤ Q` and `s` is
   constant. If `ℓ ≤ Q`, no three values with `T` follow one another at distances at most `log_ℓ h³`
   along `z ↦ z ^ ℓ`;
-* `hy`: `y ≥ 10⁵ (rank L · ⌊2 λ / Q⌋ · m + μ λ)`, where `λ = crystallineLoss h b ℓ` is the `ℓ`-adic
-  valuation of `(2 b)! (∏ n) ^ h³`, with `n` over the positive integers in `(b - 30 h³, b + 30 h³]`.
+* `v`, `K`: `2 b < ℓ (v + 1)` and `2 v < (K + 1) Q`. If `ℓ` divides some positive integer in
+  `(b - 30 h³, b + 30 h³]`, also assume `h³ ≤ v`;
+* `hy`: `y ≥ 3200 rank L · K m + 33 μ v`.
 
 The defect `dualDefect (InClass ⊤ ⊥ U) L` is the length of the crystalline cocycles of `L` modulo
 those orthogonal, under cup products, to the crystalline cocycles of all lattices in the class.
@@ -582,17 +588,16 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
     (hU' : ∀ g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ], FitsWindows η (ε g) ((if th g then b else G) + δ) W (U' g))
     (hL : InClass ⊤ ⊥ U' L)
     (h_jumps : HasFewLowJumps L h μ η U U' ∨ ∀ g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ], U' g ⊆ Icc (-η : ℤ) 0)
-    {y : NNReal}
-    (hy : (10 ^ 5 * (finrank O L * (2 * crystallineLoss h b ℓ / Q * m) +
-      μ * crystallineLoss h b ℓ) : ℕ) ≤ y)
+    {v K : ℕ} (h_loss : 2 * b < ℓ * (v + 1)) (hK : 2 * v < K * Q + Q)
+    (h_cube : ∀ ⦃n : ℕ⦄, n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3) → ℓ ∣ n → h ^ 3 ≤ v)
+    {y : NNReal} (hy : (3200 * (finrank O L * (K * m)) + 33 * (μ * v) : ℕ) ≤ y)
     (h_open : Topology.IsOpenEmbedding Γ.overGp.toGp)
     (k : KummerChart Γ) (ζ : k.LetterRoot O) {T : ℂ_[ℓ] → Prop} {s : ℂ_[ℓ] → ℤˣ}
     (h_chart : LettersReadThick k (fun g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ] ↦ g ζ) th ε Q h T s) :
     O.normLength (dualDefect (InClass ⊤ ⊥ U) L) ≤ Γ.overGp.toGp.range.index * y := by
-  -- Write `v = crystallineLoss h b ℓ` and `K = ⌊2 v / Q⌋`. If `ℓ ≤ Q` or `v ≥ h³`, a power
-  -- `ℓ ^ (10⁴ K x)` with `x ≤ m` carries `crysCocycles` into the annihilator, which gives the
-  -- bound. Otherwise `ℓ` divides no nonzero integer near the windows, and
-  -- `normLength_dualDefect_le_of_noMultipleNear` applies.
+  -- If `ℓ ≤ Q` or `v ≥ h³`, a power `ℓ ^ (1600 K x)` with `x ≤ m` carries
+  -- `crysCocycles` into the annihilator. Otherwise `ℓ` divides no nonzero integer near the windows,
+  -- so `normLength_dualDefect_le_of_noMultipleNear` applies.
   have hQ : 99 * (Q * Q + (W + 1) * Q + Q + W + m) ≤ h := h_sizes.sq_le
   have hG : 99 * h ^ 3 ≤ G := h_sizes.cube_le
   have hb : 99 * (G * h ^ 3 + G) ≤ b := h_sizes.mul_cube_le
@@ -600,15 +605,6 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
   have hη : 99 * ((η + W) * Q + η + h) ≤ h ^ 3 := h_sizes.low_le
   have hη_le : η ≤ G := by omega
   have hW_le : δ + W ≤ G := by omega
-  -- Besides `hy`, only these facts about `v` and `K` are used below.
-  have h_loss : 2 * b < ℓ * (crystallineLoss h b ℓ + 1) := two_mul_lt_mul_crystallineLoss_succ h b
-  have h_cube {n : ℕ} (hn : n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3)) (h_dvd : ℓ ∣ n) :
-      h ^ 3 ≤ crystallineLoss h b ℓ :=
-        le_crystallineLoss_of_pow_dvd ((pow_dvd_pow_of_dvd (h_dvd.trans (dvd_prod_of_mem _ hn)) _).mul_left _)
-  have hK : 2 * crystallineLoss h b ℓ < 2 * crystallineLoss h b ℓ / Q * Q + Q :=
-    lt_div_mul_add h_sizes.bound_pos
-  generalize crystallineLoss h b ℓ = v at *
-  generalize 2 * v / Q = K at *
   -- The windows in terms of the letters.
   have h_winU (i : k.Letter) :
       FitsWindows (if ℓ ≤ Q then 2 * G else η) (-s (theta (k.letterTeich i)))
@@ -619,8 +615,8 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
       FitsWindows (if ℓ ≤ Q then 2 * G else η) (s (theta (k.letterTeich i)))
         (if T (theta (k.letterTeich i)) then b + δ else G + δ) W (k.letterJumps ζ U' i) :=
     fitsWindows_letterJumps h_chart.thick_iff h_chart.sign_eq hU' hη_le hW_le i
-  -- An exponent `10⁴ K x` with `x ≤ m` is small enough for the bound.
-  have h_exp {x : ℕ} (hx : x ≤ m) : finrank O L * (2 * (10 ^ 4 * (K * x) : ℕ)) ≤ y := by
+  -- An exponent `1600 K x` with `x ≤ m` is small enough for the bound.
+  have h_exp {x : ℕ} (hx : x ≤ m) : finrank O L * (2 * (1600 * (K * x) : ℕ)) ≤ y := by
     refine hy.trans' (mod_cast ?_)
     grw [hx]
     ring_nf

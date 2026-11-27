@@ -483,18 +483,12 @@ lemma fixesLeft_modKernelStdSpace {s : n → ℤˣ} {𝔪 : Modulus E} {α β : 
     (stdSpace E b).Γf.FixesLeft (modKernelStdSpace W α β 𝔪 Ψ P g) := by
   rintro _ ⟨δ, rfl⟩ h
   obtain ⟨-, ψ, h_weight, -⟩ := hα
-  -- Moving `h` by `δ` replaces `P` by `c • Q`, and `c • Q = P` by `hP` at the real part of `δ⁻¹`.
-  let c : ℂ := ∏ τ : InfinitePlace E, Φ τ (δ : Matrix b b E).det ^ ((negCount s : ℤ) - γ τ)
-  let Q : MvPolynomial (InfinitePlace E × b × n) ℂ :=
-    signedRowSubst s (fun τ : InfinitePlace E ↦ (↑δ⁻¹ : Matrix b b E).map (Φ τ))
-      (fun τ : InfinitePlace E ↦ (δ : Matrix b b E).map (Φ τ)) P
-  have h_fixed : c • Q = P := polyVector_injective (ε := realSigns E (homSigns s 1)) <| by
-    rw [map_smul, ← realPairWeil_ratEmbed_inv_polyVector, hP]
-  calc modKernelStdSpace W α β 𝔪 Ψ P g (stdEmbFin δ * h)
-      = c * modKernelStdSpace W α β 𝔪 Ψ Q g h :=
-        modKernelStdSpace_stdEmbFin_mul h_weight W Ψ P δ g h
-    _ = modKernelStdSpace W α β 𝔪 Ψ (c • Q) g h := by simp [← modKernelBilin_apply]
-    _ = modKernelStdSpace W α β 𝔪 Ψ P g h := by rw [h_fixed]
+  -- The real part of δ⁻¹ fixes the Fock vector, hence also its defining polynomial.
+  have h_fixed := hP ((stdSpace E b).ratEmbed δ⁻¹).1
+  rw [realPairWeil_ratEmbed_inv_polyVector, ← map_smul] at h_fixed
+  rw [modKernelStdSpace_stdEmbFin_mul h_weight]
+  simpa only [map_smul, smul_eq_mul, modKernelBilin_apply] using
+    congrArg (modKernelBilin W (stdSpace E b) α β 𝔪 g (1, h) Ψ) (polyVector_injective h_fixed)
 
 /-- Let the automorphic character `α` be tame for the ideal `𝔪` (`IsTameFor`): `𝔪 ≠ (1)`, `α` has
 exponents `γ` at the infinite places, and its residue characters are nontrivial exactly at the

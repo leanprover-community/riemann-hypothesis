@@ -375,7 +375,7 @@ lemma integral_mul_liftY_poincareAt (ϑ : D.TameChar)
     Subgroup.relIndex_mul_relIndex J _ _ (levelY_le_chosenLevel ϑ 0) levelOf_le_stdLevel
   have h_ne : stdLevelIndex J ≠ 0 := isCompact_stdLevel.relIndex_ne_zero IsLevel.isOpen
   have h_rel_ne : J.relIndex D.chosenLevel ≠ 0 := left_ne_zero_of_mul (h_index.trans_ne h_ne)
-  have : Fintype (D.chosenLevel ⧸ J.subgroupOf D.chosenLevel) :=
+  let : Fintype (D.chosenLevel ⧸ J.subgroupOf D.chosenLevel) :=
     Subgroup.fintypeOfIndexNeZero h_rel_ne
   -- The period over `[R_0]` at `(g, x)` depends only on the class of `x` modulo `J`.
   let period (x : Gf D.E (D.Y 0)) : ℂ :=

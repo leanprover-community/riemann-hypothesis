@@ -341,6 +341,14 @@ lemma weylGauge_firstFactor_le_one (i : ChoiceIndex j) (h : Gf D.E (FirstFactorI
     weylGauge (untwistedDescentPair j).colsPlus 0 h (firstFactor j ϑ i h) ≤ 1 :=
   (isIntegralAndSmall_firstFactor j ϑ i h).weylGauge_le_one l hl
 
+/-- Arithmetic of the first factors: for the trivial twist, every conjugate
+`σ ∘ firstFactor j 1 i h` of the values of `φ″_{1,i}` has squared norm (`weylNormSq`) at most
+`exp (D.f * D.m * D.b * D.logB ^ 2)`. -/
+lemma weylNormSq_firstFactor_le (i : ChoiceIndex j) (h : Gf D.E (FirstFactorIndex j))
+    (σ : ℂ ≃+* ℂ) :
+    weylNormSq (σ ∘ firstFactor j 1 i h) ≤ exp (D.f * D.m * D.b * D.logB ^ 2) :=
+  (isIntegralAndSmall_firstFactor j 1 i h).weylNormSq_le rfl σ
+
 /-! ### The gluing map and the slices of lifts -/
 
 /-- The gluing map `glue_ϑ`. For `ζ` in the copy `i` of the forms on `V°` it is `M ^ l₁` times the
@@ -762,7 +770,7 @@ lemma weylNormSq_evalForm_productForm_le (ζ : FormTuples j) (σ : ℂ ≃+* ℂ
       cartanProduct V.ε 1 (σ ∘ firstFactor j 1 p.1 h) (σ ∘ ζ p) :=
     map_cartanProduct h_plus h_minus V.ε (firstFactor j 1 p.1 h) (ζ p) σ.toRingHom
   have h_first : weylNormSq (σ ∘ firstFactor j 1 p.1 h) ≤ exp (D.f * D.m * D.b * D.logB ^ 2) :=
-    (isIntegralAndSmall_firstFactor j 1 p.1 h).weylNormSq_le rfl σ
+    weylNormSq_firstFactor_le j p.1 h σ
   have h_second : weylNormSq (σ ∘ ζ p) ≤ formTupleNormSq σ ζ :=
     single_le_sum (fun q _ ↦ weylNormSq_nonneg (σ ∘ ζ q)) (mem_univ p)
   -- A form supported on one class costs the order of a stabiliser, and the norm of the product

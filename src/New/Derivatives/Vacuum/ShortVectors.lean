@@ -331,7 +331,7 @@ theorem exists_isTightFrame_coprime (P : Parameters) (s : ℕ) :
           ((P.zetaInt s ^ j.val * (y * (0 : 𝓞 (P.E s)) ^ k.val * a ℓ ^ i.val + q * g) : 𝓞 (P.E s)) :
             P.E s) := by
         have hN_E : (N : P.E s) ≠ 0 := Nat.cast_ne_zero.2 hN_ne
-        have hg_E : (a ℓ : P.E s) ^ i.1 - (a ℓ : P.E s) ^ k.1 =
+        have hg_E : (a ℓ : P.E s) ^ i.val - (a ℓ : P.E s) ^ k.val =
             ((a ℓ : P.E s) - 1) * (g : P.E s) := by
           exact_mod_cast hg
         have hq_E : (y : P.E s) * (t : P.E s) * ((M ℓ : P.E s) * ((a ℓ : P.E s) - 1)) =
@@ -557,11 +557,14 @@ theorem exists_isTightFrame_coprime (P : Parameters) (s : ℕ) :
                 (Nat.mul_le_mul (Nat.mul_le_mul_left 2 hn_le) h_inner2)
           _ = (2 * P.d * (P.d + 3) + 1) * N ^ 4 := by ring
       have h_coeff : 1 + (2 * P.d * (P.d + 3) + 1) ≤ P.d ^ 6 := by
-        have h2 : P.d ^ 2 * 7 ≤ P.d ^ 3 := by
-          calc P.d ^ 2 * 7 ≤ P.d ^ 2 * P.d := Nat.mul_le_mul_left _ hd_ge
-            _ = P.d ^ 3 := by ring
-        have h3 : P.d ^ 3 ≤ P.d ^ 6 := Nat.pow_le_pow_right (by omega) (by norm_num)
-        have h4 : 2 * P.d * (P.d + 3) + 2 ≤ P.d ^ 2 * 7 := by nlinarith
+        have hd_pos : 0 < P.d := lt_of_lt_of_le (by norm_num) hd_ge
+        have h7 : 7 * P.d ≤ P.d * P.d := Nat.mul_le_mul_right _ hd_ge
+        have h3 : P.d * P.d * 3 ≤ P.d ^ 6 :=
+          calc P.d * P.d * 3 ≤ P.d * P.d * P.d :=
+                Nat.mul_le_mul_left _ (le_trans (by norm_num) hd_ge)
+            _ = P.d ^ 3 := (pow_three' P.d).symm
+            _ ≤ P.d ^ 6 := Nat.pow_le_pow_right hd_pos (by norm_num)
+        have h_eq : 1 + (2 * P.d * (P.d + 3) + 1) = 2 * (P.d * P.d) + 6 * P.d + 2 := by ring
         omega
       calc N + M ℓ * (1 + 2 * n * (z + ℓ.val * (M ℓ * e)))
           ≤ N ^ 5 + N * ((2 * P.d * (P.d + 3) + 1) * N ^ 4) :=

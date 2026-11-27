@@ -151,6 +151,11 @@ lemma mk_algebraMap_surjective :
   rintro ⟨x⟩
   exact (exists_sub_mem_Ô x).imp fun a ha ↦ (eq_iff_sub_mem.mpr ha).symm
 
+/-- For an algebraic integer `a` of `E`, the value `𝐞 (tr a) = exp (2πi Tr_{E/ℚ} a)` is one. -/
+lemma fourierChar_trace_eq_one {a : E} (ha : IsIntegral ℤ a) : 𝐞 (trace ℚ E a) = 1 :=
+  -- the trace of an algebraic integer is an integer
+  fourierChar_eq_one_iff.mpr ⟨trace ℤ (𝓞 E) ⟨a, ha⟩, mod_cast (coe_trace_int ⟨a, ha⟩).symm⟩
+
 /-- The standard additive character of the finite adeles: ψ_f(x) = exp(2πi Tr_{E/ℚ}(a)) for any
 a in E with x − a integral. -/
 def ψf : AddChar (𝔸f E) Circle :=
@@ -161,9 +166,7 @@ def ψf : AddChar (𝔸f E) Circle :=
       (((mk' (Ô E).toAddSubgroup).comp (algebraMap E (𝔸f E))).liftOfSurjective
         (mk_algebraMap_surjective E)
         ⟨AddMonoidHom.mk' (fun a : E ↦ 𝐞 (trace ℚ E a)) (by aesop (add simp map_add_eq_mul)),
-          fun a ha ↦ fourierChar_eq_one_iff.mpr
-            ⟨trace ℤ (𝓞 E) ⟨a, algebraMap_mem_Ô.1 (by aesop)⟩,
-              mod_cast (coe_trace_int ⟨a, algebraMap_mem_Ô.1 (by aesop)⟩).symm⟩⟩)
+          fun a ha ↦ fourierChar_trace_eq_one E (algebraMap_mem_Ô.1 (by aesop))⟩)
       (mk' (Ô E).toAddSubgroup)
 
 /-- The standard additive character of `New.𝔸 E` (the adele ring when E is totally complex): the

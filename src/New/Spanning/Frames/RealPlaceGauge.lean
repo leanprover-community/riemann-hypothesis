@@ -52,8 +52,6 @@ and the docstrings call it a real place.
   The bound (`New.Floors.RealPlaceSizes.inv_groupMeasure_le`) compares two descriptions of the fibre
   measure of the Gram map on tuples `(y_0, y*_0, …, y_(ϱ-1), y*_(ϱ-1), y_ϱ)`: by Haar measure, and
   by choosing the vectors in turn.
-* `New.Floors.RealPlaceSizes.exists_orthonormal_mul_eq_zero_and_fixed`: common subspaces of two
-  points at `ℂ`, orthogonal to `n` given vectors, of each rank up to the free rank less `3 n`.
 * `New.Floors.lengthAt`, `New.Floors.inducedLength`, `New.Floors.realDepth`: the Euclidean length at
   a point of `G₁`, the induced length on a quotient along the frame, and the depth of a frame vector
   as the infimum of |ζ|_g² + |ζ|_g'² over its duals ζ.
@@ -536,14 +534,15 @@ lemma RealPlaceSizes.haarRatio_le (hF : RealPlaceSizes 𝔰 ρ s b) :
   exact (ENNReal.mul_le_mul_iff_left hB_ne_zero hB_ne_top).1 h_le
 
 open PlaceData Shape in
-/-- Assume the numerical hypotheses `hF`. Let `f` be a measurable function on `G₁` that is invariant
-on the left under the unipotent group 𝖴 = `besselU`. Its integral against the convolution
-`quotientMeasureFrom 0` of the floor measures of the place datum `complexData` at `ℂ` is `haarRatio`
-times its integral against `besselQuotMeasure`, which integrates over `𝖴 \ G₁`. -/
-lemma RealPlaceSizes.lintegral_quotientMeasureFrom_eq_haarRatio_mul (hF : RealPlaceSizes 𝔰 ρ s b)
-    {f : 𝔰.G₁ → ℝ≥0∞} (hf : Measurable f) (h_inv : besselU.FixesLeft f) :
-    ∫⁻ g : 𝔰.G₁, f g ∂hF.complexData.quotientMeasureFrom 0 =
-      hF.haarRatio * ∫⁻ g : 𝔰.G₁, f g ∂besselQuotMeasure := by
+/-- A measurable function invariant on the left under `besselU` has the same distribution
+under `quotientMeasureFrom 0`, the convolution of the floor measures of `complexData` at `ℂ`,
+as under `besselQuotMeasure` scaled by `haarRatio`. The measure `besselQuotMeasure` integrates
+over the quotient 𝖴 \ G₁. -/
+lemma RealPlaceSizes.identDistrib_quotientMeasureFrom_haarRatio_smul (hF : RealPlaceSizes 𝔰 ρ s b)
+    {A : Type*} [MeasurableSpace A] {f : 𝔰.G₁ → A} (hf : Measurable f)
+    (h_inv : besselU.FixesLeft f) :
+    ProbabilityTheory.IdentDistrib f f (hF.complexData.quotientMeasureFrom 0)
+      (hF.haarRatio • besselQuotMeasure) := by
   -- `groupMeasure` is `du ∗ θ`, with `θ` the convolution of the measures of the floors. So
   -- `(g, u) ↦ u g` carries `θ × du` to `haarRatio` times Haar measure, and `θ` represents the
   -- quotient of that measure by 𝖴.
@@ -563,11 +562,7 @@ lemma RealPlaceSizes.lintegral_quotientMeasureFrom_eq_haarRatio_mul (hF : RealPl
   have h_law : ProbabilityTheory.IdentDistrib f f
       (orbitMeasure 𝔰.besselHaar (hF.haarRatio • volume)) θ :=
     identDistrib_orbitMeasure_of_unfold (.id _) h_unfold hf measurable_id fun u ↦ h_inv u u.property
-  calc ∫⁻ g : 𝔰.G₁, f g ∂θ
-      = ∫⁻ g : 𝔰.G₁, f g ∂orbitMeasure 𝔰.besselHaar (hF.haarRatio • volume) :=
-        h_law.lintegral_eq.symm
-    _ = hF.haarRatio * ∫⁻ g : 𝔰.G₁, f g ∂besselQuotMeasure := by
-        simp [withDensity_smul_measure]
+  simpa only [orbitMeasure, withDensity_smul_measure] using h_law.symm
 
 open PlaceData Shape in
 /-- Assume the numerical hypotheses `hF` on the ranks and the box radius. The measure `groupMeasure`
@@ -588,7 +583,9 @@ lemma RealPlaceSizes.haarRatio_ne_zero_and_groupMeasure_eq_smul (hF : RealPlaceS
   have h_ne_zero : hF.haarRatio ≠ 0 := fun h_zero ↦ by
     simp [h_zero, partialGroupMeasure_ne_zero] at h_smul
   refine ⟨⟨h_ne_zero, (hF.haarRatio_le.trans_lt ofReal_lt_top).ne⟩, h_smul,
-    fun f ↦ hF.lintegral_quotientMeasureFrom_eq_haarRatio_mul, ?_⟩
+    fun f hf h_inv ↦ by
+      simpa only [lintegral_smul_measure, smul_eq_mul] using
+        (hF.identDistrib_quotientMeasureFrom_haarRatio_smul hf h_inv).lintegral_eq, ?_⟩
   have hk : 0 < volU 𝔰.k := volU_pos 𝔰.k
   have hr : 0 < volU 𝔰.r := volU_pos 𝔰.r
   calc ENNReal.ofReal (volU 𝔰.k / volU 𝔰.r) * hF.haarRatio

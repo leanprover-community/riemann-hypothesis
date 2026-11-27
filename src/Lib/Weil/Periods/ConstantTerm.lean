@@ -12,6 +12,7 @@ import Lib.General.LinearAlgebra.BlockEmbeddings
 import Lib.General.Measure.IntegralOperators
 import Lib.Weil.DualPair.MixedModel
 import Lib.Weil.MixedModel.ThetaInvariance
+public import TauCeti.GroupTheory.Index.Basic
 
 /-!
 # Constant terms of Weil functions along maps of positive degree
@@ -34,8 +35,8 @@ properties.
 * `New.Grading.constTerm_mul_of_mem_ratBessel`, `New.Grading.constTerm_mul_of_mem_unipotent` (both
   cases together: `New.Grading.constTerm_mul`), `New.Grading.constTerm_congr_rat`,
   `New.Grading.constTerm_eq_homBicharacter_mul`: its transformation laws.
-* `New.Grading.hasSum_constTerm_out`, `New.Grading.exists_tsum_enorm_constTerm_le` (both together:
-  `New.Grading.hasSum_constTerm`): Fourier expansion of `f 0` in constant terms, with a bound.
+* `New.Grading.hasSum_constTerm_out`, `New.Grading.exists_tsum_enorm_constTerm_le`: Fourier
+  expansion of `f 0` in constant terms, with a bound.
 * `New.Grading.unfoldStep`: the unfolded function `𝒲'`. The laws of the constant term and the
   following properties are proved for `s' = s - 1`. `New.Grading.continuous_unfoldStep`: it is
   continuous if `W` is equivariant. `New.Grading.unfoldStep_rat_mul`: it is left invariant under the
@@ -299,9 +300,6 @@ def unfoldStep (W : Y.besselGroup → ℂ) (h : G E ε') : ℂ :=
 
 variable {d α f Y} {W : Y.besselGroup → ℂ} {Y' : Grading V' N X' (s - 1)}
 
-/-- The classes of rational maps `V → V'` modulo maps of degree `≥ 0` are countable. -/
-instance : Countable (ratMatrices E ι' ι ⧸ Y.nonnegMaps d) := Quotient.countable
-
 omit [WeilData E] in
 /-- Row `i` of a graded Gram matrix vanishes outside the column of the dual index
 `Y.stringReversal i`. -/
@@ -336,10 +334,9 @@ lemma exists_splitting_k_eq_inclMatrix (hd : ∀ b : ι', d (Y'.stringReversal b
   -- The coordinates of positive degree span an isotropic subspace.
   let pos : {r // 0 < Y.mapDegree d r} ↪ ι' × ι := .subtype _
   have h_isotropic : (inclMatrix E pos)ᴴ * (V.hom V').J * inclMatrix E pos = 0 := by
+    rw [conjTranspose_inclMatrix_mul_mul_inclMatrix]
     ext a b
-    have h_pair : (V.hom V').J a.val b.val = 0 :=
-      Y.hom_J_eq_zero_of_mapDegree_ne_neg hd a.1 b.1 (a.2.trans' (neg_lt_zero.2 b.2)).ne'
-    simp [pos, Matrix.mul_apply, inclMatrix, Matrix.one_apply, h_pair]
+    exact Y.hom_J_eq_zero_of_mapDegree_ne_neg hd a.1 b.1 (a.2.trans' (neg_lt_zero.2 b.2)).ne'
   exact (V.hom V').exists_splitting ⟨_, inclMatrix_transpose_mul_self pos⟩ h_isotropic
 
 section Splitting

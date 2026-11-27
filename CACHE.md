@@ -42,6 +42,9 @@ then compiles only the modules whose inputs differ from the baseline's, and the 
 imports changed as a result; it reuses the rest. The script exits 4 when it has restored a
 baseline. `python3 -I scripts/tests/test_ci_cache_baseline.py` tests the selection.
 
+For a pull request, CI starts this search at the base commit recorded in the event. The test
+merge contains that base even if newer batches land on `main` before a runner picks up the job.
+
 ## CI
 
 Pull requests land through GitHub's merge queue. `.github/workflows/build.yml` has one job,
@@ -168,8 +171,10 @@ cache:
 - stops if `src/Statements.lean`, `src/Main.lean` or `Challenge.lean` imports a Tau Ceti module,
   so that the five statements keep depending on Mathlib alone;
 - downloads Tau Ceti's mappings for the pinned revision (about 135 MB the first time);
-- runs `lake build` on the Tau Ceti modules imported under `src`, which downloads exactly the
-  oleans they need into `.lake/packages/TauCeti`.
+- runs `lake build` on the Tau Ceti modules imported under `src` together with every Tau Ceti
+  module they import in turn, publicly or privately, which downloads exactly those oleans into
+  `.lake/packages/TauCeti`. Lake restores a cached module without the modules it imports only
+  privately, but a later `lake build --no-build` checks them too.
 
 After adding an import of a new Tau Ceti module, rerun `lake exe cache get`; otherwise Lake
 compiles that module and its Tau Ceti dependencies from source. The Tau Ceti and Mathlib pins move

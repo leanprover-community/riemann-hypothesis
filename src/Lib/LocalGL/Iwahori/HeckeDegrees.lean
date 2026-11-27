@@ -383,17 +383,8 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
     simp only [Pi.inv_apply, mulSingle_eq_same, h_inv_val]
   have h_exp1 : (exp (-1) : ℤᵐ⁰) * exp 1 = 1 := by rw [← exp_add, neg_add_cancel, exp_zero]
   have h_le1 : (1 : ℤᵐ⁰) ≤ exp 1 := by rw [← exp_zero]; exact exp_le_exp.mpr (by decide)
-  have h_mul_exp_le_one (x : ℤᵐ⁰) : x * exp 1 ≤ 1 ↔ x < 1 := by
-    constructor
-    · intro h
-      calc x = x * exp 1 * exp (-1) := by rw [mul_assoc, mul_comm (exp 1), h_exp1, mul_one]
-        _ ≤ 1 * exp (-1) := mul_le_mul' h le_rfl
-        _ = exp (-1) := one_mul _
-        _ < 1 := by rw [← exp_zero]; exact exp_lt_exp.mpr (by decide)
-    · intro h
-      have h' : x ≤ exp (-1) :=
-        (lt_mul_exp_iff_le exp_ne_zero).mp (h.trans_eq h_exp1.symm)
-      exact (mul_le_mul' h' le_rfl).trans_eq h_exp1
+  have h_mul_exp_le_one (x : ℤᵐ⁰) : exp 1 * x ≤ 1 ↔ x < 1 := by
+    rw [mul_comm (exp 1), ← lt_mul_exp_iff_le one_ne_zero, mul_lt_mul_iff_left₀ exp_pos]
   constructor
   · rintro ⟨⟨h1, h2, h3⟩, h4⟩
     have hg1 : ∀ a b : Fin N, v (g.val a b) ≤ 1 := fun a b ↦ by
@@ -402,7 +393,6 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
       by_cases har : a = r
       · subst har
         simp only [↓reduceIte, h_inv_val] at ha
-        rw [mul_comm] at ha
         exact ((h_mul_exp_le_one _).mp ha).le
       · simpa [har] using ha
     have hg2 : ∀ a b : Fin N, v (g⁻¹.val a b) ≤ exp 1 := fun a b ↦ by
@@ -428,7 +418,6 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
     rw [Matrix.map_apply, Pi.zero_apply, residueOrZero_eq_zero_iff_lt (hg1 r b)]
     have hr := h1 r b
     simp only [h_mul, ↓reduceIte, map_mul, h_inv_val] at hr
-    rw [mul_comm] at hr
     exact (h_mul_exp_le_one _).mp hr
   · rintro ⟨⟨⟨hg1, hg2, hg3⟩, hg4⟩, hrow⟩
     refine ⟨⟨fun a b ↦ ?_, fun a b ↦ ?_, ?_⟩, fun b a hb ↦ ?_⟩
@@ -436,7 +425,6 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
       by_cases har : a = r
       · subst har
         simp only [↓reduceIte, h_inv_val]
-        rw [mul_comm]
         exact (h_mul_exp_le_one _).mpr
           ((residueOrZero_eq_zero_iff_lt (hg1 a b)).mp (congrFun hrow b))
       · simpa [har] using hg1 a b
@@ -534,6 +522,12 @@ lemma mem_echelonRows {u : Fin N → ResField w} :
     · simp [h_one]
     · simp [hi]
 
+/-- There are `q ^ (N - 1 - r)` rows `(0, …, 0, 1, *, …, *)` with the entry `1` at `r`, where `q` is
+the order of the residue field. -/
+lemma card_echelonRows : #(echelonRows (w := w) r) = w.q ^ r.rev.val := by
+  simp [echelonRows, apply_ite card, prod_ite, card_ResField, filter_lt_eq_Ioi,
+    tsub_add_eq_tsub_tsub_swap, Fintype.card_eq_nat_card]
+
 open scoped Classical in
 /-- Let `g` lie in `partialCosets r (j + 1)`: it is in the basic double coset of colength `j + 1`
 and its lattice `g 𝒪^N` contains the first `r` standard basis vectors. Consider the rows `u` in
@@ -572,7 +566,7 @@ lemma card_echelonRows_mem_residueKer (hg : g ∈ partialCosets r (j + 1)) :
     rw [Nat.card_congr (p.toAddMonoidHom.fiberEquivKerOfSurjective (p.surjective hp_ne) 1)]
     exact (natCard_eq_pow_finrank (K := ResField w) (V := p.ker)).trans
       (by rw [card_ResField, h_dim])
-  have h_equiv :
+  let h_equiv :
       {u : Fin N → ResField w // u ∈ {u ∈ echelonRows (w := w) r | u ∈ L}} ≃
         (p.toAddMonoidHom ⁻¹' {1}) :=
     { toFun u := ⟨⟨u.val, (mem_filter.mp u.prop).2⟩,
@@ -588,9 +582,9 @@ lemma partialHecke_mem_levelSpace {x : V} (hx : x ∈ levelSpace ρ (localIntGL 
     partialHecke ρ m j x ∈ levelSpace ρ (blockParahoric fun i : ℕ ↦ i + 1 - m) := by
   classical
   exact heckeFun_mem_levelSpace hasFiniteCosets_partialCosets
-    (fun g k ↦ by simp only [Set.indicator, mul_mem_partialCosets_iff.2 k.2, Pi.one_apply])
+    (fun g k ↦ by simp only [Set.indicator, mul_mem_partialCosets_iff.2 k.property, Pi.one_apply])
     (fun g k ↦ by simp only [MonoidHom.one_apply, one_mul, Set.indicator,
-      mul_mem_partialCosets_iff.1 k.2, Pi.one_apply])
+      mul_mem_partialCosets_iff.1 k.property, Pi.one_apply])
     hx
 
 /-- Every lattice of colength `0` is `𝒪^N` and contains all basis vectors, so
@@ -718,8 +712,7 @@ lemma partialHecke_hyperplane_count_of_invariant (hϖ : v ϖ.val = exp (-1)) {x 
     rw [h_coeff, mul_smul, sub_smul]
   -- `ψ` does not see `(n u)⁻¹`, and there are `q ^ (N - 1 - r)` rows `u`.
   rw [← h_sum]
-  simp [hψ_inv, echelonRows, apply_ite card, prod_ite, card_ResField, filter_lt_eq_Ioi,
-    tsub_add_eq_tsub_tsub_swap, Fintype.card_eq_nat_card, ← Nat.cast_smul_eq_nsmul ℂ]
+  simp [hψ_inv, card_echelonRows, ← Nat.cast_smul_eq_nsmul ℂ]
 
 /-! ### The hyperplane count, Satake's formula and the duality of lattices -/
 
@@ -840,21 +833,12 @@ lemma partialHecke_dual (hϖ : v ϖ.val = exp (-1)) {m : ℕ} {x : V}
         ∏ a : Fin N, v (if a.val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val =
           exp (-((i + j : ℕ) : ℤ)) := by
       subst h_sum
-      rw [Fin.prod_univ_add]
-      have h1 : ∏ a : Fin m,
-          v (if (Fin.castAdd (i + j) a).val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val = 1 :=
-        Finset.prod_eq_one fun a _ ↦ by simp [a.isLt]
-      have h2 : ∏ a : Fin (i + j),
-          v (if (Fin.natAdd m a).val < m then (1 : (LocField w)ˣ) else ϖ⁻¹)⁻¹.val =
-            exp (-((i + j : ℕ) : ℤ)) := by
-        calc _ = ∏ _a : Fin (i + j), exp (-1) :=
-              Finset.prod_congr rfl fun a _ ↦ by simp [show ¬ m + a.val < m by omega, hϖ]
-          _ = exp (-1) ^ (i + j) := by simp
-          _ = exp (-((i + j : ℕ) : ℤ)) := by rw [← WithZero.exp_nsmul]; congr 1; simp
-      rw [h1, h2, one_mul]
-    have h_det_inv : g⁻¹.val.det = (g.val.det)⁻¹ :=
-      eq_inv_of_mul_eq_one_left (by
-        rw [← Matrix.det_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.det_one])
+      -- The first m diagonal factors are 1; each of the remaining i + j has valuation exp (-1).
+      have tail (a : Fin (i + j)) : ¬ m + a.val < m := by omega
+      simp [Fin.prod_univ_add, tail, hϖ, ← WithZero.exp_nsmul]
+    have h_det_inv : g⁻¹.val.det = (g.val.det)⁻¹ := by
+      simpa only [Matrix.GeneralLinearGroup.val_det_apply, Units.val_inv_eq_inv_val] using
+        congrArg Units.val (map_inv Matrix.GeneralLinearGroup.det g)
     have h_det :
         v (c⁻¹ * invTransposeGL g).val.det = exp (-((i + j : ℕ) : ℤ)) * (v g.val.det)⁻¹ := by
       rw [Units.val_mul, Matrix.det_mul, map_mul, hc, ← map_inv, coe_diagGL, Matrix.det_diagonal,

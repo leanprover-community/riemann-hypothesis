@@ -664,7 +664,7 @@ lemma New.exists_monovary_card_fiber {n : Type*} {N r : ℕ} [Fintype n] (e : n 
     (monotone_id.monovary (Tuple.monotone_sort (Sigma.fst ∘ u))).comp_right e
   refine ⟨Sigma.fst ∘ u ∘ τ ∘ e, h_mono, funext fun a ↦ ?_⟩
   -- The fibre over `a` corresponds to the summand `Fin (m a)`.
-  have h_fiber : {i // (Sigma.fst ∘ u ∘ τ ∘ e) i = a} ≃ Fin (m a) :=
+  let h_fiber : {i // (Sigma.fst ∘ u ∘ τ ∘ e) i = a} ≃ Fin (m a) :=
     (Equiv.subtypeEquivOfSubtype (e.trans (τ.trans u))).trans (.sigmaSubtype a)
   simpa using card_congr h_fiber
 

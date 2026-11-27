@@ -3,6 +3,7 @@ module
 public import Mathlib.GroupTheory.SemidirectProduct
 public import Lib.General.Groups.CharacterTheory
 import Lib.GaloisRep.Hilbert90.TameActions
+public import TauCeti.GroupTheory.SemidirectProduct
 
 /-!
 # Root choices in a coset, induction, and extension of invariant characters
@@ -244,7 +245,8 @@ theorem exists_isRootChoice {k k' S : Type*} [Field k] [Field k'] [Algebra k k']
   -- z(γ) is a polynomial in j γ, so it follows conjugation
   have h_conj {γ : G} (δ : G) (u : Sˣ) (h_eq : j γ = u * j δ * u⁻¹) :
       z.map ↑(ev γ) = u * z.map ↑(ev δ) * u⁻¹ := by
-    simp [Units.ext_iff, ev, lift_apply, Finsupp.sum, h_eq, u.conj_pow, mul_sum, sum_mul]
+    simp [Units.ext_iff, ev, AddMonoidAlgebra.lift_apply, Finsupp.sum, h_eq, u.conj_pow, mul_sum,
+      sum_mul]
   refine ⟨fun γ ↦ ⟨z.map ↑(ev γ), σ⟩,
     ⟨inl_injective.comp hj, fun γ ↦ rfl, h_root, fun v γ ↦ ?_, ?_⟩, fun B γ hγ ↦ ?_⟩
   · ext <;> simp [(h_range _).1, h_conj γ (j v)]
@@ -260,11 +262,7 @@ theorem exists_isRootChoice {k k' S : Type*} [Field k] [Field k'] [Algebra k k']
       simpa [h_conj δ u h_j] using congrArg SemidirectProduct.left h_conj_root
     obtain ⟨a, ha⟩ : ∃ a : G, j a = u := (h_range u).mpr h_fixed
     exact ⟨a, congrArg inl ha⟩
-  · simp [ev, lift_apply, Finsupp.sum, sum_mem, B.smul_mem, pow_mem hγ]
-
-variable [Finite Γ] in
-/-- A semidirect product of finite groups is finite. -/
-instance : Finite (G ⋊[α] Γ) := .of_equiv _ equivProd.symm
+  · simp [ev, AddMonoidAlgebra.lift_apply, Finsupp.sum, sum_mem, B.smul_mem, pow_mem hγ]
 
 open scoped Classical in
 /-- On a semidirect product `G ⋊ Γ`, take the function equal to `u` on `G` and to `w` off `G`. Its
@@ -330,9 +328,7 @@ lemma IsIrreducibleChar.extend_semidirect [Finite Γ] (hY : IsIrreducibleChar Y)
     rw [h_split, hY_norm]
     field_simp
     linear_combination h_self
-  · -- the value at 1 is `Y 1`, the dimension of a representation
-    obtain ⟨V, hV⟩ := hY_char
-    simp [← hV]
+  · simpa using hY.re_apply_one_pos.le
   -- χ meets I, so its restriction to G is a multiple of Y: compare the two convolution identities
   have h_res (g : G) : χ (inl g) = χ 1 / Y 1 * Y g := by
     -- `IsIrreducibleChar.mul_classInner_translate` for χ|G at g⁻¹, translated by g and conjugated
@@ -351,10 +347,7 @@ lemma IsIrreducibleChar.extend_semidirect [Finite Γ] (hY : IsIrreducibleChar Y)
     have h_pair_ne : (finMean fun t : G ↦ conj (χ (inl t)) * Y t) ≠ 0 := by
       simpa [← finMean_conj, ← hY_char.apply_inv, field, classInner] using h_ne
     have hY_one_ne : Y 1 ≠ 0 := fun h_zero ↦ by
-      -- otherwise the same identity for `Y` itself gives `Y = 0`, against `⟨Y, Y⟩ = 1`
-      have hY_zero (t : G) : Y t = 0 := by
-        simpa [h_zero, hY_norm] using (hY.mul_classInner_translate hY_char.isClassFunction t).symm
-      simp [classInner, hY_zero, finMean_eq] at hY_norm
+      simpa [h_zero] using hY.re_apply_one_pos
     -- the two identities share the left mean: eliminate it and cancel the pairing
     field_simp
     refine mul_left_cancel₀ h_pair_ne ?_

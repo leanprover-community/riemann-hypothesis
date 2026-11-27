@@ -437,10 +437,10 @@ lemma card_GL_resField_eq_card_GL_zmod (w : D.ChosenPlace i) (l : ℕ) :
     Nat.card (GL (Fin l) (ResField w.val)) = Nat.card (GL (Fin l) (ZMod (D.levelPrime i))) := by
   -- The residue field has p_i elements, and p_i is prime, so it is isomorphic to
   -- `ZMod (D.levelPrime i)`.
-  have : Fintype (ResField w.val) := Fintype.ofFinite _
+  let : Fintype (ResField w.val) := Fintype.ofFinite _
   have h_card : Fintype.card (ResField w.val) = D.levelPrime i := by
     rw [Fintype.card_eq_nat_card, card_ResField, D.q_eq_levelPrime w.property.right]
-  have e : ZMod (D.levelPrime i) ≃+* ResField w.val :=
+  let e : ZMod (D.levelPrime i) ≃+* ResField w.val :=
     ZMod.ringEquivOfPrime _ (D.levelPrime_prime i) h_card
   exact Nat.card_congr (Units.mapEquiv e.symm.mapMatrix.toMulEquiv).toEquiv
 

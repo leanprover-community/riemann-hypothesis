@@ -89,8 +89,8 @@ omit [WeilData E] in
 private lemma continuous_pairChar (a b : AutChar E) :
     Continuous (pairChar (E := E) (s := ε) (s' := ε') a b) :=
   continuous_subtypeVal.comp
-    (((b⁻¹.1.continuous.comp G.continuous_det).comp continuous_fst).mul
-      ((a.1.continuous.comp G.continuous_det).comp continuous_snd))
+    (((b⁻¹.val.continuous.comp G.continuous_det).comp continuous_fst).mul
+      ((a.val.continuous.comp G.continuous_det).comp continuous_snd))
 
 private lemma continuous_theta_tripleWeil (a b : AutChar E)
     (f : 𝒮 (V'.hom (flipSum V V''))) :
@@ -1050,7 +1050,7 @@ lemma valued_twistIdele (w : FinPlace D.E) :
       simp [count_map_eq_count', asIdeal_injective, count_eq_of_nodup ϑ.Q.nodup]
     have h_ideal : 𝔪.ideal = Ideal.span {D.piM} * ∏ v ∈ ϑ.Q, v.asIdeal := by
       change ((∏ i : (k : Fin 2) × D.ChosenPlace k, (D.chosenPlace i).asIdeal) ^ 1) *
-        ∏ v : ϑ.Q, v.1.asIdeal = _
+        ∏ v : ϑ.Q, v.val.asIdeal = _
       rw [pow_one, ← span_piM, ϑ.Q.prod_coe_sort]
     rw [h_ideal, multiplicity_mul w.prime (.of_prime_left w.prime (h_ideal ▸ 𝔪.ne_bot)), h_Q]
   have h_mul : (twistIdele ϑ).val * D.chosenIdele.val = 𝔪.generator.val := by

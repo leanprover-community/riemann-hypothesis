@@ -64,9 +64,7 @@ noncomputable section
 A criterion for residual absolute irreducibility, in the strong form that the image of the group
 spans the matrix algebra over the coefficient ring
 (`New.Selmer.IsLatticeIn.span_range_eq_top_of_map_pow_eq_map_conj`). In the application `γ` and `φ`
-come from tame inertia and Frobenius at an auxiliary place. A spanning family has an absolutely
-irreducible reduction (`New.Selmer.eq_bot_or_eq_top_of_span_eq_top`), and its stable lattice is
-unique up to scalars (`New.Selmer.exists_eq_smul_of_conj_eq`).
+come from tame inertia and Frobenius at an auxiliary place.
 -/
 
 section ResidualIrreducibility
@@ -149,7 +147,8 @@ lemma New.Selmer.IsLatticeIn.span_range_eq_top_of_map_pow_eq_map_conj {G n : Typ
     rw [commute_iff_eq, ← map_pow, ← map_mul, ← map_mul, h_conj, map_mul, map_mul, h_fix]
   have h_comm (p : Fin (card n) × Fin (card n)) : Commute (u (w p)) (u (φ⁻¹ ^ card n)) := by
     have h_R : R (w p * φ⁻¹ ^ card n) = R (φ⁻¹ ^ card n * w p) := by
-      have h_pow := (Commute.pow_pow_self (R φ) p.1.val (card n)).mul_left (h_comm_φ.pow_left p.2.val)
+      have h_pow :=
+          (Commute.pow_pow_self (R φ) p.1.val (card n)).mul_left (h_comm_φ.pow_left p.2.val)
       simpa only [w, map_mul, map_pow, map_inv, inv_pow] using h_pow.inv_right.eq
     simpa only [map_mul, commute_iff_eq] using u_congr h_R
   exact Matrix.exists_eq_smul_one_of_commute_of_span_eq_top h_span h_comm
@@ -199,6 +198,13 @@ def IsApproximatingMonoid (s : Set.Ioi (0 : ℝ) → ℕ) (c : ∀ η : Set.Ioi 
   IsClosed N.carrier ∧
   TendstoUniformly (fun (η : Set.Ioi (0 : ℝ)) (p : N) ↦ ∑ i : Fin (s η), c η i * p.val.snd ⟨η, i⟩)
     (fun p : N ↦ p.val.fst) atBot
+
+/-- The monoid `N` of an approximation `New.IsApproximatingMonoid s c N` is closed. -/
+lemma IsApproximatingMonoid.isClosed_carrier {s : Set.Ioi (0 : ℝ) → ℕ}
+    {c : (η : Set.Ioi (0 : ℝ)) → Fin (s η) → K}
+    {N : Submonoid (K × ((η : Set.Ioi (0 : ℝ)) × Fin (s η) → K))}
+    (h_apx : IsApproximatingMonoid s c N) : IsClosed N.carrier :=
+  And.left h_apx
 
 /-- In an approximation `New.IsApproximatingMonoid s c N`, the sum over `i` of
 `c η i * p.val.snd (η, i)` tends to `p.val.fst` as `η > 0` tends to `0`, uniformly over `p ∈ N`. -/
@@ -547,7 +553,7 @@ lemma GaloisRep.exists_continuous_isTraceNondeg_of_tendsto_trace [TopologicalSpa
     (hL _ (fst_cauchy g) (tendsto_principal.mpr (h_mem g))).imp fun _ ht ↦ ht.2
   choose T hT using h_lim
   -- The limit system at `g`, as a point of the closed monoid `N`.
-  let point (g : G) : N := ⟨(T g, fun x ↦ (r x g).val.trace), h_apx.1.mem_of_tendsto
+  let point (g : G) : N := ⟨(T g, fun x ↦ (r x g).val.trace), h_apx.isClosed_carrier.mem_of_tendsto
     (.prodMk_nhds (hT g) (tendsto_pi_nhds.2 (h_tendsto g))) (by simp)⟩
   have T_cont : Continuous T := by
     have sum_cont (η : Set.Ioi (0 : ℝ)) :

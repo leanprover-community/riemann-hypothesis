@@ -234,6 +234,13 @@ lemma coe_twistRep_pointChar {O O' n σ : Type} [CommRing O] [CommRing O'] [Fint
   ext1 g
   simp [twistRep, pointTwist, eval_universalChar]
 
+/-- Bound module length using the relative length and the length of the comparison submodule. -/
+private lemma length_le_of_relLength_le {A M : Type*} [Ring A] [AddCommGroup M] [Module A M]
+    {S T : Submodule A M} {b c : ℕ∞} (hrel : relLength S T ≤ b)
+    (hT : Module.length A T ≤ c) : Module.length A S ≤ b + c := by
+  rw [← relLength_add_length_inf S T]
+  exact add_le_add hrel ((New.length_mono inf_le_right).trans hT)
+
 namespace SelmerDatum
 
 variable {ι n : Type} [Fintype n] [DecidableEq n] {V : ι → Gal(Ω/E) → Prop} {W : Set Gal(Ω/E)}
@@ -274,10 +281,8 @@ lemma length_tiedSelmer_erase_le {O : Type} [CommRing O] [PadicIntegerRing O ℓ
     exact h_primes.relLength_tieRelations_le_sum_addVal_det (Nat.ne_zero_of_lt hMN) i
       (fun _ hg ↦ T.reduceModPow_eq_one hg) hV hMN.le h_first (unionWithConj T.places J)
       (T.classRelations ∪ tieRelations (J.erase P₀) d i)
-  calc length O Z₀
-    _ = relLength Z₀ Z + length O ↥(Z₀ ⊓ Z) := (relLength_add_length_inf Z₀ Z).symm
-    _ ≤ T.firstPrimeTerm + (T.globalTerm + T.placesTerm) :=
-      add_le_add h_release ((length_mono inf_le_right).trans h_tied)
+  calc length O Z₀ ≤ T.firstPrimeTerm + (T.globalTerm + T.placesTerm) :=
+        length_le_of_relLength_le h_release h_tied
     _ = T.β := by rw [β, localTerms, add_comm, add_assoc]
 
 open scoped Classical in
@@ -347,9 +352,8 @@ lemma exists_boundsSelmer_and_eval_dvd {O : Type} [CommRing O] [PadicIntegerRing
     h_primes.relLength_tied_le hN₀ i (fun _ ↦ T.reduceModPow_eq_one) hV e h_norm S T.classRelations
   have h_dvd : P.eval₂ e x ∣
       (restrictToLine a G).eval₂ e y * (tiePolynomial T.ρ (J.erase P₀) d).eval₂ e y := by
-    rw [← addVal_le_iff_dvd, addVal_mul, eval₂_restrictToLine, hP_sharp,
-      ← relLength_add_length_inf (Sel T.classRelations) (Sel L₀), add_comm]
-    exact add_le_add ((length_mono inf_le_right).trans (hG_bound O' e x)) h_untie
+    rw [← addVal_le_iff_dvd, addVal_mul, eval₂_restrictToLine, hP_sharp, add_comm]
+    exact length_le_of_relLength_le h_untie (hG_bound O' e x)
   -- The claim is the image of `h_dvd` under `f`.
   refine ⟨P, hP_bound, ?_⟩
   simpa only [map_mul, Polynomial.hom_eval₂, MvPolynomial.eval₂_comp_left, Polynomial.eval_map,

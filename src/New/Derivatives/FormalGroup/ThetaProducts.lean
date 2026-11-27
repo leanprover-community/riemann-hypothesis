@@ -232,6 +232,15 @@ lemma dvd_pow_sub_sum_partner {P : Parameters} {s p : ℕ} [Fact p.Prime] [Padic
   rw [smul_pow, ← sub_smul, smul_eq_C_mul]
   exact (map_dvd C (h_coeff x)).mul_right _
 
+/-- For vectors `u_j` over `E = P.E s` integral above `p`, the linear forms `u_j† z`, whose
+coefficient at `z_(τ,c)` is `conj (τ(u_{j,c}))` read in `ℂ_p` through the embedding `ιₚ` of `ℂ`,
+have integral coefficients. -/
+lemma norm_daggerForms_le_one (P : Parameters) (s : ℕ) {p : ℕ} [Fact p.Prime] [PadicPlace p]
+    {n J : Type} {u : J → n → P.E s}
+    (hu : ∀ (j : J) (i : n), IsIntegralAbove p (u j i)) (j : J) (x : P.Φ s × n) :
+    ‖(daggerForms u j x : ℂ_[p])‖ ≤ 1 :=
+  (hu j x.2).norm_conj_le_one _
+
 /-- Let `E = P.E s` be `K = ℚ(√-d)` (`d = P.d`) with a root of unity of order `q₁ = P.q₁ s`
 adjoined, `s` being the tower level, and let `e` be in `I_p° = partnerExponents P.d p`. Let the
 vectors `u_j` of `Eⁿ`, integral above `p` and each taken `m_j` times, be a resolution of the
@@ -451,7 +460,7 @@ lemma exists_hasNormalForm (P : Parameters) (s : ℕ) [PadicPlace p] (hp : chiK 
   -- The linear forms `u† z` are integral, so at `ϖ z` the series is an integral series times
   -- the exponential of `c_ϖ ∑ m_j Ξ(u_j† z)`.
   let μ (j : J) (x : P.Φ s × n) : valRingCp p :=
-    ⟨daggerForms u j x, (hu j x.2).norm_conj_le_one _⟩
+    ⟨daggerForms u j x, P.norm_daggerForms_le_one s hu j x⟩
   have hL (j : J) : constantCoeff (linearSeries (μ j)) = 0 := constantCoeff_linearSeries _
   obtain ⟨V, hV⟩ : H.rescale (fun _ : P.Φ s × n ↦ ϖ) ∈ seriesToCp.range :=
     P.cmCurve.rescale_mem_range_of_mem_multiSeriesRing (μ := μ) hϖ.le hH

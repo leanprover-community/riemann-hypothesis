@@ -440,7 +440,7 @@ lemma reciprocity_mod_ell {a : ℕ} (ha : l.Coprime a) (ha_one : a ≡ 1 [MOD N]
   -- `κ τ` is killed by a unit.
   have h_zmodModule : Module (ZMod l) (O ∙ κ τ) :=
     AddCommGroup.zmodModule (by simp [mem_span_singleton, smul_comm, hκ_tors])
-  have b := Module.finBasis (ZMod l) (O ∙ κ τ)
+  let b := Module.finBasis (ZMod l) (O ∙ κ τ)
   have τ_fix : cyclotomicCharMod Ω (N * l) τ = 1 :=
     mem_ker.1 (decompGroup_le_cycloGalGroup hB hq_one (IsFrob.mem_decompGroup hτ))
   obtain ⟨v, hv, -, ord_q⟩ := exists_isPlaceOver_prime hB
@@ -905,6 +905,11 @@ lemma isUnit_natCast_of_pow_factorization_succ_dvd (hX : X ≠ 0)
     simpa [pow_succ, NeZero.ne, mul_dvd_mul_iff_left] using h_dvd
   exact (X.coprime_ordCompl L.out hX).cast.isUnit_of_dvd h_dvd_compl
 
+lemma finite_component : Finite (component l e ψ ν) :=
+  finite_vanishingCocycles (n := ν)
+    (fun g y ↦ (cyclotomicPowDirichlet_smul_eq_self g.prop (nsmul_quot_eq_zero dvd_rfl y)).right)
+    fun _ ⟨h_fix, h_inertia⟩ ↦ .inr ⟨h_fix, .inl h_inertia⟩
+
 /-- There are finitely many cocycles for `cyc ^ e ψ` modulo `l ^ m` that are unramified off `l`
 over `ℚ(ζ_N)`. -/
 lemma finite_vanishingCocycles_inertiaOff_empty (m : ℕ) :
@@ -944,9 +949,7 @@ lemma exists_finset_forall_exists_isFrob (hc : cyclotomicPowDirichlet l e ψ cmC
   -- Choose a prime for each pair; there are finitely many pairs.
   have h_finite_y : Finite (vanishingCocycles (cyclotomicPowDirichlet l (e + 1) ψ)
       (QuotSpan (l ^ m : O)) (inertiaOff N l ∅)) := finite_vanishingCocycles_inertiaOff_empty m
-  have h_finite_z : Finite (component l e ψ ν) := finite_vanishingCocycles (n := ν)
-    (fun g y ↦ (cyclotomicPowDirichlet_smul_eq_self g.prop (nsmul_quot_eq_zero dvd_rfl y)).right)
-    fun _ ⟨h_fix, h_inertia⟩ ↦ .inr ⟨h_fix, .inl h_inertia⟩
+  have h_finite_z : Finite (component l e ψ ν) := finite_component
   have h_pair (y : {y : vanishingCocycles (cyclotomicPowDirichlet l (e + 1) ψ)
       (QuotSpan (l ^ m : O)) (inertiaOff N l ∅) // ¬cycloGalGroup f ≤ openCocycleKer y.prop})
       (z : {z : component l e ψ ν // z ≠ 0}) :

@@ -821,7 +821,7 @@ theorem New.SiegelWeil.siegel_weil (P : SiegelWeil.CompleteSplitting S p)
     obtain ⟨n₁, s₁, S₁, D₁, hk⟩ := S.exists_splitting (HasLeftInv.of_ne_zero hk_ne) hk_isotropic
     obtain ⟨σ, -⟩ := exists_lagrangian_equiv_col_mem T P D₁ hk
     let L₁ := σ.symm ⟨P.lagrangian, Pi.single ι 1, mulVec_single_one P.k ι⟩
-    have P₁ : CompleteSplitting S₁ (Fin L₁.numPlanes) := L₁.chosenSplitting
+    let P₁ : CompleteSplitting S₁ (Fin L₁.numPlanes) := L₁.chosenSplitting
     obtain ⟨-, ih⟩ := IH _ (by simp [← h_card, D₁.card_eq]) P₁
       (by linarith [P.card_eq, P₁.card_eq, D₁.card_eq]) rfl
     simpa only [hℓ] using tendsto_tsum_zeroTerm_sub_integral_theta T P hm

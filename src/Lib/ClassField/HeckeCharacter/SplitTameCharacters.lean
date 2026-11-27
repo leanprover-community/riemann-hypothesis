@@ -493,7 +493,7 @@ lemma apply_det_eq_one_of_supportedOn (h : μ.HasWeight e ψ) {A : Set (FinPlace
     μ.val (detFin s k) = 1 := by
   -- `μ (det k)` is a product over the places where `ψ` is not trivial, and there `k` is `1`.
   obtain ⟨k_int, k_supp⟩ := hk
-  have : Fintype {w : FinPlace E | ψ w ≠ 1} := h.finite_ramification.fintype
+  let : Fintype {w : FinPlace E | ψ w ≠ 1} := h.finite_ramification.fintype
   have h_red (w : FinPlace E) (hw : ψ w ≠ 1) : stdLevel.reduceAt w ⟨k, k_int⟩ = 1 := by
     obtain ⟨h_not, h_star_not⟩ : w ∉ A ∧ star w ∉ A := not_or.1 fun h_mem ↦ hw (hψ w h_mem)
     exact stdLevel.reduceAt_eq_one_of_atPlace (Gf.mem_supportedOn.1 k_supp w h_not h_star_not)

@@ -190,7 +190,8 @@ lemma tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt (s : ℂ) :
       ← Nat.cast_analyticOrderNatAt (analyticOrderAt_entireL_ne_top χ s)]
     rfl
   have h_meromorphic := (analyticAt_entireL χ s).meromorphicAt
-  rw [← Int.cast_natCast, ← TauCeti.Contour.residue_logDeriv_eq_meromorphicOrderAt h_meromorphic h_ord]
+  rw [← Int.cast_natCast,
+    ← TauCeti.Contour.residue_logDeriv_eq_meromorphicOrderAt h_meromorphic h_ord]
   exact TauCeti.Contour.tendsto_sub_mul_nhds_residue h_meromorphic.logDeriv
     (TauCeti.Contour.neg_one_le_meromorphicOrderAt_logDeriv h_meromorphic)
 

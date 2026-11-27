@@ -277,6 +277,7 @@ lemma weylKernel_borelMul (b : Φ × ℕ × ℕ → R) :
   simp only [MvPolynomial.aeval_eq_eval, h_C_borelMul] at h_semi
   simpa [K, ← C_mul', map_finsuppProd, weylKernel_symm (R := R), comp_def] using h_semi
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 /-- For a vector ξ of the Weyl module over a commutative ring `R` and an array `y` over `R`, the
 value at `y` of the polynomial `toPoly n κ ξ = Σ_i (Gξ)_i b_i` equals ev_yᵀ G ξ. Here the b_i are
 the basis products of minors `nablaBasis`, indexed by `WeylIndexFamily n κ`, and
@@ -286,6 +287,7 @@ coefficients of the generic kernel in the products b_i(x) b_j(y), mapped into `R
 lemma eval_toPoly : MvPolynomial.eval y (toPoly n κ ξ) = weylEval n κ y ⬝ᵥ weylGramOver *ᵥ ξ := by
   simp [toPoly, mul_comm, linearCombination_apply, dotProduct, weylEval]
 
+omit [(τ : Φ) → DecidableEq (n τ)] in
 lemma nablaCombination_weylGramOver_mulVec :
     nablaCombination κ (weylGramOver *ᵥ ξ) = toPoly n κ ξ := rfl
 
@@ -297,7 +299,7 @@ noncomputable def blockScalar (τ : Φ) : Matrix (n' τ) (n' τ) R :=
 omit [DecidableEq Φ] in
 /-- The weight at `(τ, i)` is the weight at `(τ, i + 1)` plus `κ τ (i + 1)` when `i + 1 < N τ`:
 the columns of height `i + 1` are counted at `i` but not at `i + 1`. -/
-@[grind]
+@[grind =]
 lemma diagramWeight_eq_succ_add (τ : Φ) (i : ℕ) :
     diagramWeight N κ (τ, i) =
       diagramWeight N κ (τ, i + 1) + if i + 1 < N τ then κ τ (i + 1) else 0 := by

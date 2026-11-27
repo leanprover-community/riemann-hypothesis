@@ -350,7 +350,7 @@ theorem HCParam.IsKHighest.casimirK_bound_of_highest (hx : l.IsKHighest ρ ν x)
   -- Write `∑ ⟪J_i u, J_i v⟫ = ⟪u, D v⟫`. It is enough that the compression `B` to `U` of
   -- `T = α D Ω_K - β D` is positive. Each eigenspace of `B` is `𝔨`-stable, so it contains a highest
   -- vector, and on that vector `h_bound` shows that the eigenvalue is nonnegative.
-  have ⟨D, hD_comm, hD_form⟩ := hJ
+  let ⟨D, hD_comm, hD_form⟩ := hJ
   let T : End ℂ H := α • D * ρ.casimirK ε - β • D
   let B : End ℂ U := U.orthogonalProjectionOnto.toLinearMap ∘ₗ T.domRestrict U
   have hB_symm : B.IsSymmetric :=

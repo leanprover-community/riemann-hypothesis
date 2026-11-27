@@ -151,6 +151,12 @@ lemma mem_ofSize_gauge (hF : IsCutBessel F rep ρ s b F₀ f) (hL : ρ ≤ L) {i
     z ∈ (hF.gauge hL).ofSize i ↔ ‖z‖ ≤ L ^ i :=
   Iff.rfl
 
+/-- For the gauge of size `L`, the list `p` is a head of length `j` if the products of its first
+`l ≤ j` entries have inverse modulus at most `L`. -/
+lemma isHead_gauge_iff (hF : IsCutBessel F rep ρ s b F₀ f) (hL : ρ ≤ L) :
+    (hF.gauge hL).IsHead j p ↔ ∀ l ≤ j, ‖(∏ a ∈ range l, p a).val‖⁻¹ ≤ L := by
+  simp only [IsHead, hF.mem_ofSize_gauge, Units.val_inv_eq_inv_val, norm_inv, pow_one]
+
 /-- The exponent `s` is at least `10 ^ 10 * 𝔰.n ^ 4`, since the hypotheses carried by `hF` give
 `s + 3 𝔰.n + 6 ≥ 𝔰.n ^ 7` and `𝔰.n > 10 ^ 8`. -/
 lemma mul_pow_four_le_s (hF : IsCutBessel F rep ρ s b F₀ f) : 10 ^ 10 * 𝔰.n ^ 4 ≤ s := by
@@ -196,7 +202,7 @@ lemma exists_gauge_isHead (hF : IsCutBessel F rep ρ s b F₀ f) (j : ℕ) (p q 
   -- Induction on `j`: `L` is the largest of `ρ` and the inverse norms of the partial products.
   -- Each step enlarges `L` once for `p` and once for `q` (`max_pow_le_mul_max_one_pow`).
   have one_le_ρ : 1 ≤ ρ := by linarith [hF.four_le]
-  simp only [IsHead, hF.mem_ofSize_gauge, Units.val_inv_eq_inv_val, norm_inv, pow_one, exists_prop]
+  simp only [hF.isHead_gauge_iff, exists_prop]
   induction j with
   | zero => exact ⟨ρ, le_rfl, by simpa, by simpa, fun R _ ↦ by simp [headWeight]⟩
   | succ j ih =>
@@ -570,9 +576,8 @@ lemma lintegral_formMajorant_ne_top [Nonempty I]
   have h_factor : card I * ‖(hF.formConst : ℂ)‖ₑ * hF.complexData.headDensity j p q ≠ 0 := by
     simp [headDensity, formConst, prod_eq_zero_iff, toReal_ne_zero, ne_of_gt,
       haarRatio_ne_zero_and_groupMeasure_eq_smul]
-  intro h_top
-  rw [h_top, ← mul_assoc, ← mul_assoc, ENNReal.mul_top h_factor] at h_finite
-  exact h_finite rfl
+  rw [← mul_assoc, ← mul_assoc] at h_finite
+  exact (ENNReal.lt_top_of_mul_ne_top_right h_finite h_factor).ne
 
 /-- Let `ρ`, `s`, `b` be the sizes of a cut Bessel function, `0 < r` and `1 ≤ L`, and let `H ≥ 0`
 satisfy `L ^ n ^ 6 ≤ ρ ^ n ^ 6 * H`. At `t = max 1 (ρ ^ 24 * r)`, the bound for the sum over all

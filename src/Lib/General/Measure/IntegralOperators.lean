@@ -5,6 +5,7 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Integral.Pi
 public import Lib.Adelic.QuotientMeasure.Basic
+import TauCeti.MeasureTheory.Constructions.Pi
 import TauCeti.MeasureTheory.Integral.Lebesgue.SublevelGrowth
 
 /-!
@@ -52,17 +53,9 @@ variable {Y ι κ : Type*} {α : Type*} {n : ι → Type*} [Fintype Y] [Fintype 
 /-- For a bijection `e` from the disjoint union of the finite types `n i` onto `Y`, the regrouping
 map `α^Y → ∏ i, α^(n i)`, `x ↦ (x (e ⟨i, j⟩))_{i, j}`, preserves the product volume measures. -/
 lemma New.measurePreserving_sigma (e : Sigma n ≃ Y) :
-    MeasurePreserving fun (x : Y → α) (i : ι) (j : n i) ↦ x (e ⟨i, j⟩) := by
-  -- The map is reindexing along `e` followed by currying, which preserves the volumes of boxes.
-  have h_uncurry :
-      MeasurePreserving (MeasurableEquiv.piCurry fun (i : ι) (_ : n i) ↦ α).symm := by
-    refine ⟨by fun_prop, .symm (Measure.pi_eq fun s _ ↦ ?_)⟩
-    have h_box : (uncurry : ((i : ι) → n i → α) → Sigma n → α) ⁻¹' Set.univ.pi s =
-        Set.univ.pi fun i : ι ↦ Set.univ.pi fun j : n i ↦ s ⟨i, j⟩ :=
-      Set.ext fun x ↦ by simp [Sigma.forall, uncurry]
-    rw [MeasurableEquiv.map_apply, MeasurableEquiv.coe_piCurry_symm, h_box]
-    simp only [volume_pi_pi, Fintype.prod_sigma]
-  exact h_uncurry.symm.comp (volume_measurePreserving_piCongrLeft (fun _ : Y ↦ α) e).symm
+    MeasurePreserving fun (x : Y → α) (i : ι) (j : n i) ↦ x (e ⟨i, j⟩) :=
+  (TauCeti.measurePreserving_piCurry (fun (i : ι) (_ : n i) ↦ (volume : Measure α))).comp
+    (volume_measurePreserving_piCongrLeft (fun _ : Y ↦ α) e).symm
 
 /-- Currying, `α^(ι × κ) → (α^κ)^ι`, preserves the product volume measures. -/
 lemma New.measurePreserving_curry : MeasurePreserving (MeasurableEquiv.curry ι κ α) :=

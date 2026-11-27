@@ -466,6 +466,11 @@ def LevelPlaces.twistResidue (A : TwistGL S n) :
 lemma LevelPlaces.twistResidue_inl (A : TwistGL S n) (i : S.ChosenIndex) :
     S.twistResidue A (.inl i) = 1 := rfl
 
+/-- For an index `i : S.TwistIndex` of a place of the twist, the family `S.twistResidue A` at
+`.inr i` is `(A i)⁻¹`, the inverse of the component of `A` at that place. -/
+lemma LevelPlaces.twistResidue_inr (A : TwistGL S n) (i : S.TwistIndex) :
+    S.twistResidue A (.inr i) = (A i)⁻¹ := rfl
+
 /-- For A in the product of GL_n(k_w) over Q, a chosen element of K₀ reducing to A⁻¹ at the
 places in Q and to 1 at those in M. -/
 def LevelPlaces.twistResidueLift (A : TwistGL S n) : stdLevel E n := liftResidue (S.twistResidue A)
@@ -484,7 +489,7 @@ lemma LevelPlaces.reduceAt_twistResidueLift_inl (A : TwistGL S n) (i : S.ChosenI
 `S.placeAt (.inr i)`. -/
 lemma LevelPlaces.reduceAt_twistResidueLift_inr (A : TwistGL S n) (i : S.TwistIndex) :
     stdLevel.reduceAt (S.placeAt (.inr i)) (S.twistResidueLift A) = (A i)⁻¹ :=
-  congrFun (S.reduceFamily_twistResidueLift A) (.inr i)
+  (congrFun (S.reduceFamily_twistResidueLift A) (.inr i)).trans (S.twistResidue_inr A i)
 
 variable [WeilData E]
 

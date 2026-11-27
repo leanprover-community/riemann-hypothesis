@@ -556,6 +556,15 @@ lemma OrthogonalSum.integral_eq_integral_prod [LocallyCompactSpace W] [LocallyCo
   rw [← S.measurePreserving_equiv.map_eq]
   exact S.equiv.isClosedEmbedding.integral_map f
 
+/-- Integrate a product of functions on the two factors of an orthogonal sum. -/
+private lemma OrthogonalSum.integral_eq_mul [LocallyCompactSpace W] [LocallyCompactSpace W₁]
+    [LocallyCompactSpace W₂] (F : W → ℂ) (f₁ : W₁ → ℂ) (f₂ : W₂ → ℂ)
+    (h : ∀ x : W₁ × W₂, F (S.equiv x) = f₁ x.1 * f₂ x.2) :
+    ∫ x, F x ∂μ = (∫ a, f₁ a ∂μ₁) * ∫ b, f₂ b ∂μ₂ := by
+  rw [S.integral_eq_integral_prod]
+  simp_rw [h]
+  exact integral_prod_mul _ _
+
 omit [μ₁.IsAddHaarMeasure] [μ₂.IsAddHaarMeasure] in
 /-- Let `S` be an orthogonal sum, that is, an isomorphism φ = `S.equiv` : W₁ × W₂ → W of topological
 groups under which β and e are the products β₁β₂ and e₁e₂. Let v and w lie in the model spaces of e₁
@@ -597,18 +606,11 @@ lemma OrthogonalSum.modelInner_tmul [LocallyCompactSpace W] [LocallyCompactSpace
     modelInner (S.tmul v w) (S.tmul v' w') = modelInner v v' * modelInner w w' := by
   -- Read through `S.equiv`, the integrand on `W₁ × W₂` is a function of the first coordinate
   -- times a function of the second, and Fubini's theorem splits the integral.
-  calc
-    modelInner (S.tmul v w) (S.tmul v' w') =
-        ∫ x : W₁ × W₂, conj (S.tmul v w (S.equiv x)) * S.tmul v' w' (S.equiv x) ∂μ₁.prod μ₂ := by
-      rw [modelInner_apply, S.integral_eq_integral_prod]
-    _ = ∫ x : W₁ × W₂, conj (v x.1) * v' x.1 * (conj (w x.2) * w' x.2) ∂μ₁.prod μ₂ := by
-      refine integral_congr_ae (.of_forall fun x : W₁ × W₂ ↦ ?_)
-      simp only [S.tmul_apply, S.equiv.symm_apply_apply, map_mul]
-      ring
-    _ = (∫ x₁ : W₁, conj (v x₁) * v' x₁ ∂μ₁) * ∫ x₂ : W₂, conj (w x₂) * w' x₂ ∂μ₂ :=
-      integral_prod_mul (fun x₁ : W₁ ↦ conj (v x₁) * v' x₁) fun x₂ : W₂ ↦ conj (w x₂) * w' x₂
-    _ = modelInner v v' * modelInner w w' := by
-      rw [modelInner_apply, modelInner_apply]
+  simp only [modelInner_apply]
+  apply S.integral_eq_mul
+  intro x
+  simp only [S.tmul_apply, S.equiv.symm_apply_apply, map_mul]
+  ring
 
 /-- The product rule for the Weil representation of an orthogonal sum. Identify `W` with
 `W₁ × W₂` by `S.equiv`, and let `A`, `A₁`, `A₂` be actions with cocycle 1 of groups `G`, `G₁`,
@@ -628,23 +630,14 @@ lemma OrthogonalSum.weilRep_tmul [LocallyCompactSpace W] [LocallyCompactSpace W�
   -- the product of the two integrals over `W₁` and `W₂`.
   ext x
   obtain ⟨⟨a, b⟩, rfl⟩ := S.equiv.surjective x
-  let F₁ (y : W₁) : ℂ := v y * (H₁.β (g₁ • y) a * e₁ (a - g₁ • y))
-  let F₂ (y : W₂) : ℂ := w y * (H₂.β (g₂ • y) b * e₂ (b - g₂ • y))
-  have h_split (y : W₁ × W₂) :
-      S.tmul v w (S.equiv y) *
-          (H.β (g • S.equiv y) (S.equiv (a, b)) * e (S.equiv (a, b) - g • S.equiv y)) =
-        F₁ y.1 * F₂ y.2 := by
-    simp only [F₁, F₂, h_smul_equiv, ← map_sub, S.beta_equiv, S.vac_equiv, S.tmul_apply,
-      S.equiv.symm_apply_apply, Prod.mk_sub_mk]
-    ring
-  calc weilRep A g (S.tmul v w) (S.equiv (a, b))
-    _ = Δ A g * ∫ y : W₁ × W₂, F₁ y.1 * F₂ y.2 ∂μ₁.prod μ₂ := by
-      simp_rw [weilRep_apply_eq_integral, S.integral_eq_integral_prod, h_split]
-    _ = (Δ A₁ g₁ * ∫ y : W₁, F₁ y ∂μ₁) * (Δ A₂ g₂ * ∫ y : W₂, F₂ y ∂μ₂) := by
-      rw [integral_prod_mul, h_delta_eq, mul_mul_mul_comm]
-    _ = S.tmul (weilRep A₁ g₁ v) (weilRep A₂ g₂ w) (S.equiv (a, b)) := by
-      rw [S.tmul_apply, S.equiv.symm_apply_apply, weilRep_apply_eq_integral,
-        weilRep_apply_eq_integral]
+  rw [S.tmul_apply, S.equiv.symm_apply_apply, weilRep_apply_eq_integral,
+    weilRep_apply_eq_integral, weilRep_apply_eq_integral, h_delta_eq, mul_mul_mul_comm]
+  congr 1
+  apply S.integral_eq_mul
+  intro y
+  simp only [h_smul_equiv, ← map_sub, S.beta_equiv, S.vac_equiv, S.tmul_apply,
+    S.equiv.symm_apply_apply, Prod.mk_sub_mk]
+  ring
 
 /-- Integrating `v ⊗ w` against `R` is integrating `w` against the restriction `R.right S` of `R` to
 `W₂`, then `v` against its restriction `R.left S` to `W₁`. -/

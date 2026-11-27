@@ -379,8 +379,8 @@ def weylKernel : MatrixPoly ((τ : Φ) × n τ) R :=
 
 /-- The Gram matrix `G`: chosen integer coefficients of the generic kernel `weylKernel n κ X` in
 the products `b_i(x) * b_j(y)`, where `b` is `nablaBasis`. The kernel is first expanded in the
-`b_i(x)` with coefficients in `ℤ[y]`, and row `i` expands the `i`-th coefficient in the `b_j(y)`;
-see `sum_weylGram_smul_eq_weylKernel_of_exists`. Both expansions exist, and `toPoly_weylEval` states
+`b_i(x)` with coefficients in `ℤ[y]`, and row `i` expands the `i`-th coefficient in the `b_j(y)`.
+Both expansions exist, and `toPoly_weylEval` states
 the resulting identity. It is the matrix of the form on the Weyl module for which the basis tensors
 are orthonormal (`fillingMatrix_transpose_mul_self`). -/
 def weylGram : Matrix (WeylIndexFamily n κ) (WeylIndexFamily n κ) ℤ :=
@@ -738,7 +738,7 @@ private lemma map_minor {h : ℕ} (I : Fin h → m) :
   simp
 
 @[simp]
-lemma map_nablaBasis [∀ τ : Φ, DecidableEq (n τ)] (i : WeylIndexFamily n κ) :
+lemma map_nablaBasis (i : WeylIndexFamily n κ) :
     MvPolynomial.map φ (nablaBasis R n κ i) = nablaBasis S n κ i := by
   simp [nablaBasis, tableauPoly, map_minor]
 

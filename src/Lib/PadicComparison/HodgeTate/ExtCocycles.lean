@@ -156,17 +156,10 @@ lemma TotalH.extClass_sign_comm {Ψ Ξ Φ : (C ⥤ Ab) ⥤ AbFunctor C} [IsExact
       rw [map_of, map_of, mapExactFunctor_extClass, mapExactFunctor_extClass,
         comp_of _ _ (rfl : 1 + 1 = 2), comp_of _ _ (rfl : 1 + 1 = 2),
         extClass_anticomm h_row hT, AddMonoidHom.map_neg]
-    have h_stepΦ :
-        map Φ (x.comp hT.extClass rfl).toTotalH =
-          comp (map Φ x.toTotalH) (map Φ hT.extClass.toTotalH) := by
-      dsimp only [toTotalH]
-      rw [← comp_of x hT.extClass rfl, map_comp]
-    have h_stepΨ :
-        map Ψ (x.comp hT.extClass rfl).toTotalH =
-          comp (map Ψ x.toTotalH) (map Ψ hT.extClass.toTotalH) := by
-      dsimp only [toTotalH]
-      rw [← comp_of x hT.extClass rfl, map_comp]
-    rw [h_stepΦ, h_stepΨ, comp_assoc, h_anti, AddMonoidHom.map_neg, ← comp_assoc, ih,
+    have h_step : (x.comp hT.extClass rfl).toTotalH = comp x.toTotalH hT.extClass.toTotalH :=
+      (comp_of x hT.extClass rfl).symm
+    simp only [h_step, map_comp]
+    rw [comp_assoc, h_anti, AddMonoidHom.map_neg, ← comp_assoc, ih,
       AddMonoidHom.map_zsmul, AddMonoidHom.zsmul_apply, ← neg_smul, ← neg_one_mul, ← pow_succ',
       comp_assoc]
 

@@ -793,7 +793,11 @@ lemma mem_localIntGL_unit_iff (g : GL Unit (LocField w)) :
     g ∈ localIntGL Unit w ↔ (v g.val.det).log = 0 := by
   have h_ne : v g.val.det ≠ 0 := by simp [-det_unique, GeneralLinearGroup.det_ne_zero]
   rw [← WithZero.exp_eq_one, WithZero.exp_log h_ne]
-  exact mem_intGL_iff_det.trans (by aesop)
+  refine mem_intGL_iff_det.trans ⟨And.right, fun hv ↦ ⟨?_, hv⟩⟩
+  intro i j
+  cases i
+  cases j
+  simpa only [Matrix.det_unique] using hv.le
 
 /-- The vacuum coefficient in rank one at a split place `w`. Here `vacuumCoeff M b g = (b(det g) *
 finMultiplier g ^ M)⁻¹` is the factor by which `g` changes the matrix coefficient of a vacuum. Let

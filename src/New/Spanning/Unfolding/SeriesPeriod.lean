@@ -118,6 +118,13 @@ lemma besselChar_inclX (h : S.Fits V l kw Y η) (a : New.G E (1 : 𝔰.κ → �
   rw [besselChar, h.adelicEquiv_inclX, simpleRootSum_eq_zero_of_mem_besselH (toBesselH_mem _),
     mul_zero, map_zero_eq_one, Circle.coe_one]
 
+/-- For `r` in the Bessel group `Y.besselGroup` and any adelic point `a` of the unitary group of the
+standard definite space, `h.besselChar` takes the same value at `r * (Y.inclX a)⁻¹` as at `r`. -/
+lemma besselChar_mul_inv_inclX (h : S.Fits V l kw Y η) {r : New.G E ε}
+    (hr : r ∈ Y.besselGroup) (a : New.G E (1 : 𝔰.κ → ℤˣ)) :
+    h.besselChar (r * (Y.inclX a)⁻¹) = h.besselChar r := by
+  rw [← map_inv, h.besselChar_mul hr (Y.inclX_mem_besselGroup _), besselChar_inclX, mul_one]
+
 /-- Suppose the space `V` with the grading `Y` fits the filling data `S`; in particular `Y` labels
 the basis of `V` in the standard way. Then the shift `𝔢 = Y.shift` of the grading is `c C`, where
 `c = Y.genericConst` and `C` is `besselCharMatrix` at the middle block `S.ratMiddle` of the form of
@@ -174,7 +181,7 @@ lemma sourceFn_eq_besselChar_mul [WeilData E] (h : S.Fits V l kw Y η)
     Y.sourceFn t φ r = h.besselChar r * algFormCoeff 1 t φ (Y.leviPart r) := by
   rw [Grading.sourceFn,
     ← h.besselChar_eq_unipotentChar hj_genericConst (Y.mul_inv_inclX_leviPart_mem r),
-    ← map_inv, h.besselChar_mul r.property (Y.inclX_mem_besselGroup _), besselChar_inclX, mul_one]
+    h.besselChar_mul_inv_inclX r.property]
 
 open MeasureTheory Measure ComplexConjugate
 

@@ -10,6 +10,7 @@ import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 public import Lib.General.Topology
+import TauCeti.Algebra.Module.CharacterModule
 
 /-!
 # ℚ/ℤ, characters of profinite groups, and extension of homomorphisms
@@ -169,32 +170,17 @@ lemma bijective_ofZMod_comp (h_exp : ∀ a : A, n • a = 0) :
 
 end QZ
 
-variable (A) [Finite A]
+variable (A)
 
 /-! ### Duals of finite abelian groups -/
 
-/-- A finite abelian group `A` has exactly `#A` homomorphisms to `ℚ/ℤ`: its Pontryagin dual has
-the same order as `A`. -/
+/-- An abelian group `A` has `Nat.card (A →+ ℚ/ℤ) = Nat.card A` (for infinite `A`, both sides are
+`0`). -/
 @[simp]
-lemma card_hom_QZ : Nat.card (A →+ QZ) = Nat.card A := by
-  -- With `n` the exponent of `A`, homomorphisms to `QZ` are homomorphisms to `ZMod n`; written
-  -- multiplicatively, this cyclic group has enough `n`-th roots of unity for the duality theorem.
-  let n : ℕ := AddMonoid.exponent A
-  let M : Type := Multiplicative (ZMod n)
-  let e₁ : (A →+ ZMod n) ≃ (A →+ QZ) :=
-    .ofBijective _ (QZ.bijective_ofZMod_comp AddMonoid.exponent_nsmul_eq_zero)
-  let e : (A →+ QZ) ≃ (Multiplicative A →* Mˣ) :=
-    (e₁.symm.trans toMultiplicative).trans toUnits.monoidHomCongrRightEquiv
-  have h_prim : IsPrimitiveRoot (Multiplicative.ofAdd 1 : M) n := by
-    rw [IsPrimitiveRoot.iff_orderOf, orderOf_ofAdd_eq_addOrderOf, ZMod.addOrderOf_one]
-  -- The roots of unity correspond under `toUnits` to a subgroup of the cyclic group `M`.
-  have h_roots : HasEnoughRootsOfUnity M (Monoid.exponent (Multiplicative A)) := by
-    rw [Monoid.exponent_multiplicative]
-    exact { prim := ⟨.ofAdd 1, h_prim⟩,
-            cyc := (toUnits.symm.subgroupMap (rootsOfUnity n M)).isCyclic.2 inferInstance }
-  exact (card_congr e).trans (CommGroup.card_monoidHom_of_hasEnoughRootsOfUnity (hM := h_roots))
+lemma card_hom_QZ : Nat.card (A →+ QZ) = Nat.card A :=
+  TauCeti.natCard_characterModule A
 
-instance : Finite (A →+ QZ) := finite_of_card_ne_zero (by simp [ne])
+instance [Finite A] : Finite (A →+ QZ) := finite_of_card_ne_zero (by simp [ne])
 
 end New
 
@@ -213,7 +199,8 @@ attribute [instance] isClosed_topologicalClosure
 namespace QZChar
 
 /-- The additive map sending a continuous 1-cocycle of `G` with values in `ℤ/n` (trivial action)
-to the character `G → ℚ/ℤ` obtained by composing with the map `ofZMod n`, which is zero when `n = 0`. -/
+to the character `G → ℚ/ℤ` obtained by composing with the map `ofZMod n`, which is zero when
+`n = 0`. -/
 noncomputable abbrev ofZModCocycle (n : ℕ) :
     Z1 (Representation.trivial ℤ G (ZMod n)) →+ QZChar G :=
   pairMapZ1 (ContinuousMonoidHom.id G) (ofZMod n).toIntLinearMap

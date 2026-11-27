@@ -504,7 +504,7 @@ lemma New.Uniformisation.appell_humbert {A : Over (AlgebraicGeometry.Spec (CommR
   let s := snd A A
   let X := (((N.pull p.1).mul (N.pull s.1)).pow 2).mul
     ((N.pull (p + s).1).mul (N.pull (p - s).1)).inv
-  have ⟨w, (hw : X.IsFrame w)⟩ := picClass_eq_iff.1 (by simpa using! (h_par p s).symm)
+  let ⟨w, (hw : X.IsFrame w)⟩ := picClass_eq_iff.1 (by simpa using! (h_par p s).symm)
   -- A chart `J x` of `N` at each point; `Φ x y` changes from the chart at `y` to the chart at `x`.
   have h_cover (x : ComplexPoint A) : ∃ i : ι, LandsIn x.1 (N.opens i) := N.exists_landsIn x.1
   choose J hJ using h_cover

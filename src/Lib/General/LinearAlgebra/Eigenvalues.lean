@@ -3,6 +3,7 @@ module
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Roots
 public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Lie.Weights.Linear
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.LinearAlgebra.PID
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -290,6 +291,13 @@ lemma trace_restrict_ne_zero {p : Submodule ℂ V} [FiniteDimensional ℂ p] {b 
     simpa [sub_eq_zero] using isNilpotent_trace_of_isNilpotent h_nil
   simp [h_trace, hc, hp_ne]
 
+/-- Generalised eigenspaces for different eigenvalues meet trivially: in a complex vector space
+`V`, a vector killed by a power of `f - μ` that lies in the generalised eigenspace of `f` for
+`ν ≠ μ` is zero. -/
+lemma eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace {f : End ℂ V} {μ ν : ℂ} (hne : μ ≠ ν)
+    {N : ℕ} {v : V} (hμ : ((f - μ • 1) ^ N) v = 0) (hν : v ∈ maxGenEigenspace f ν) : v = 0 :=
+  disjoint_def.1 (disjoint_genEigenspace f hne ⊤ ⊤) v ((mem_maxGenEigenspace f μ v).2 ⟨N, hμ⟩) hν
+
 /-- If `s` intertwines `f` and `g`, that is `s * f = g * s`, and `u` commutes with `g`, then
 `f * (u * s)` and `g * (u * s)` have the same trace. -/
 lemma trace_mul_mul_eq_of_mul_eq_mul {f g s u : End ℂ V} (hs : s * f = g * s) (hu : Commute u g) :
@@ -522,7 +530,7 @@ lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimens
   have hχ (a : κ) : χ a = Sum.elim θ 0 a := by
     by_contra h_ne
     have hzero (v : U) : (x * A b) v = 0 :=
-      disjoint_def.1 (disjoint_genEigenspace _ h_ne ⊤ ⊤) _ ((mem_maxGenEigenspace _ _ _).2 ⟨_, hN_fst a (A b v)⟩) (h_eig v a)
+      eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace h_ne (hN_fst a (A b v)) (h_eig v a)
     have hρ : ρ ⟨(x, y), hx, hy, htr⟩ = 0 := ext fun v ↦ Subtype.ext (hzero v)
     exact hτ_ne (by simp [τ, hρ])
   obtain rfl : χ = Sum.elim θ 0 := funext hχ
@@ -701,14 +709,12 @@ lemma charpoly_smul_coeff (a : A) (M : Matrix n n A) (k : ℕ) :
   nontriviality A
   by_cases! h : card n < k
   · simp [coeff_eq_zero_of_natDegree_lt, h]
-  -- The coefficient is a signed sum of principal minors of size `card n - k`.
-  obtain ⟨m, hm, rfl⟩ : ∃ m ≤ card n, k = card n - m := ⟨card n - k, by omega, by omega⟩
-  have h_minor (s : Finset n) (hs : s ∈ univ.powersetCard m) :
-      ((a • M).submatrix (Subtype.val : s → n) Subtype.val).det =
-        a ^ m * (M.submatrix (Subtype.val : s → n) Subtype.val).det := by
-    simp [submatrix_smul, (mem_powersetCard.1 hs).2]
-  rw [charpoly_coeff_eq_sum_minors _ _ hm, charpoly_coeff_eq_sum_minors _ _ hm,
-    sum_congr rfl h_minor, ← mul_sum, Nat.sub_sub_self hm, mul_left_comm]
+  -- The universal coefficient of degree `k` is homogeneous of degree `card n - k` in the entries.
+  have eval (B : Matrix n n A) : _ = B.charpoly.coeff k :=
+    Matrix.charpoly.univ_coeff_eval₂Hom n (RingHom.id A) (Function.uncurry B) k
+  rw [← eval (a • M), ← eval M]
+  exact (Matrix.charpoly.univ_coeff_isHomogeneous A n k _ (Nat.add_sub_cancel' h)).eval_smul
+    a (Function.uncurry M)
 
 end New
 

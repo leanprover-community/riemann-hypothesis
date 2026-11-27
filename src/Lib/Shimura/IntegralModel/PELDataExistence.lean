@@ -166,7 +166,7 @@ lemma exists_star_eq_neg_and_im_pos {E : Type} [Field E] [CMBase E]
       ← RingOfIntegers.coe_eq_algebraMap z, ← RingOfIntegers.coe_eq_algebraMap (star z),
       coe_star_ringOfIntegers, star_star, ← coe_star_ringOfIntegers, hγ_star,
       RingOfIntegers.coe_eq_algebraMap (-γ), map_neg, ← RingOfIntegers.coe_eq_algebraMap γ,
-      mem_maximalRealSubfield_iff_star_eq.mp a.2]
+      mem_maximalRealSubfield_iff_star_eq.mp a.property]
     ring
   · -- The shift by `(C + 1) i` forces `0 < Im (Φ v z) + Im (Φ v (a γ)) / (2 s)`, and
     -- `Im (Φ v ξ)` is `2 s` times this sum.

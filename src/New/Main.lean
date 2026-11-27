@@ -1,6 +1,7 @@
 module
 
 public import New.Reduction.OneSidedBound
+import TauCeti.NumberTheory.LSeries.RiemannZeta.RiemannHypothesis
 
 /-!
 # From non-vanishing in Re s > 1/2 to zeros on the critical line
@@ -38,7 +39,9 @@ lemma New.zeros_on_line : DirichletLZerosOnLine := by
 /-- Assume `DirichletLNonvanishingRightOfHalf` (hypothesis `h`): Dirichlet L-functions do not vanish
 for Re s > 1/2, the pole excepted. Then `RiemannZetaZerosOnLine` holds: every zero s of ζ outside
 {1, −2, −4, …} has Re s = 1/2. -/
-lemma New.zeta_zeros_on_line : RiemannZetaZerosOnLine := fun s ↦ by
-  obtain _ := h 1 1 s, h 1 1 (1 - s), @Nat.or_exists_add_one, riemannZeta_zero
-  simp_all
-  grind [riemannZeta_def_of_ne_zero, completedRiemannZeta_one_sub, Complex.Gammaℝ_eq_zero_iff]
+lemma New.zeta_zeros_on_line : RiemannZetaZerosOnLine := by
+  apply TauCeti.riemannHypothesis_iff_riemannZeta_ne_zero.mpr
+  intro s hs
+  obtain rfl | hs₁ := eq_or_ne s 1
+  · exact riemannZeta_one_ne_zero
+  · simpa only [LFunction_modOne_eq] using h 1 1 s hs (Or.inr hs₁)
