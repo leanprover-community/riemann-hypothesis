@@ -224,10 +224,8 @@ theorem UpperTheory.V.X.dirData :
         rw [← pow_succ']
         congr 1
         omega
-      have hb' : 2 * (l * q * 4 ^ (l ^ f0 l ψ - 1).factorization 2) ≤ 2 * 2 ^ (c2 ψ - 1) := by
-        rw [← mul_assoc, ← h2]
-        exact hb
-      exact le_trans (Nat.mul_le_mul_right _ hfle) (Nat.le_of_mul_le_mul_left hb' two_pos)
+      rw [← h2]
+      exact (Nat.mul_le_mul_right _ (hfle.trans (Nat.le_mul_of_pos_left _ two_pos))).trans hb
     · have hc1 : IsCoprime (-1 : ℤ) ((l * N : ℕ) : ℤ) := isCoprime_one_left.neg_left
       have hc2 : IsCoprime (-1 : ℤ) (N : ℤ) := isCoprime_one_left.neg_left
       have hm1 : IsCoprime (-1 : ℤ) (l : ℤ) := isCoprime_one_left.neg_left

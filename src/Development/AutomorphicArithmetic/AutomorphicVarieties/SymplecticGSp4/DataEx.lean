@@ -646,7 +646,8 @@ private theorem dirX {O : Type} [CommRing O] [IsDomain O] {l d N p n c : ℕ} [N
       v3 a (c1 _ (by rw [mul_comm 2 N]; exact mul_dvd_mul (dvd_mul_left _ _) h2n))]
     ring
   refine ⟨f, φ, ξ₁, ⟨hd, h4, hodd.of_dvd_nat d3, p2, orderOf_dvd_of_pow_eq_one (t2 _ o3 (t1 _ o1 o2)), p3,
-    (Nat.mul_le_mul_right _ (Nat.le_of_dvd hodd.pos d3)).trans big, ?_⟩, d4, fun a ha => ?_⟩
+    (Nat.mul_le_mul_right _ (Nat.le_of_dvd hodd.pos d3)).trans
+      (big.trans (Nat.le_mul_of_pos_left _ two_pos)), ?_⟩, d4, fun a ha => ?_⟩
   · have := hv (-1) isCoprime_one_left.neg_left
     simpa only [Int.cast_neg, Int.cast_one, odd] using this
   · have ha' : IsCoprime a (f * 2 ^ n : ℕ) :=

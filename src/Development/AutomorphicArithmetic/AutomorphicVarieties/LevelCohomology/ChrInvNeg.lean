@@ -126,12 +126,13 @@ private theorem neg_one_of {R : Type} [CommRing R] [IsDomain R] (x : R) (hx : x 
 private theorem xd_neg {l d : ℕ} (hl : l.Prime) {R : Type} [CommRing R] [IsDomain R] {f n : ℕ}
     {φ : DirichletCharacter R f} {ξ : DirichletCharacter R (2 ^ n)} (h : XData l d φ ξ) :
     ∃ b : (ZMod (2 ^ n))ˣ, ξ (b : ZMod (2 ^ n)) = -1 := by
-  have h0 : 1 ≤ (l ^ d - 1).factorization 2 :=
-    (Nat.prime_two.dvd_iff_one_le_factorization (xd_pos hl h.d_pos).ne').1 (dvd_trans (by norm_num) h.four)
-  have h1 : 4 ≤ 2 ^ n := by
-    refine le_trans ?_ h.big
-    calc 4 = 1 * 4 ^ 1 := by norm_num
-      _ ≤ _ := Nat.mul_le_mul h.f_odd.pos (Nat.pow_le_pow_right (by norm_num) h0)
+  have he : 2 ≤ (l ^ d - 1).factorization 2 :=
+    (Nat.prime_two.pow_dvd_iff_le_factorization (xd_pos hl h.d_pos).ne').1 h.four
+  have h1 : 16 ≤ 2 * 2 ^ n := calc
+    16 = 1 * 4 ^ 2 := by decide
+    _ ≤ f * 4 ^ (l ^ d - 1).factorization 2 :=
+      Nat.mul_le_mul h.f_odd.pos (Nat.pow_le_pow_right (by decide) he)
+    _ ≤ _ := h.big
   have h2 : ξ ≠ 1 := by
     rintro rfl
     have := h.prim2
