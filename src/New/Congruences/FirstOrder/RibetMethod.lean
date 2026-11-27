@@ -39,36 +39,6 @@ variable {O Y σ G L R N Λ : Type*} [CommRing O] [Fintype σ] [DecidableEq σ] 
   [Algebra O L] [CommRing R] [Algebra R L]
   {S : Subalgebra R (Y → L)} [Fintype N] [DecidableEq N] [Ring Λ] [Algebra R Λ]
 
-private lemma algHom_map_zero {A B C : Type*} [CommSemiring A] [Semiring B] [Semiring C]
-    [Algebra A B] [Algebra A C] (f : B →ₐ[A] C) : f 0 = 0 := f.map_zero'
-
-private lemma algHom_map_add {A B C : Type*} [CommSemiring A] [Semiring B] [Semiring C]
-    [Algebra A B] [Algebra A C] (f : B →ₐ[A] C) (x y : B) : f (x + y) = f x + f y := f.map_add' x y
-
-private lemma algHom_map_neg {A B C : Type*} [CommSemiring A] [Ring B] [Ring C]
-    [Algebra A B] [Algebra A C] (f : B →ₐ[A] C) (x : B) : f (-x) = -f x :=
-  eq_neg_of_add_eq_zero_left (by rw [← algHom_map_add, neg_add_cancel, algHom_map_zero])
-
-private lemma algHom_map_mul {A B C : Type*} [CommSemiring A] [Semiring B] [Semiring C]
-    [Algebra A B] [Algebra A C] (f : B →ₐ[A] C) (x y : B) : f (x * y) = f x * f y := f.map_mul' x y
-
-private lemma algHom_map_smul {A B C : Type*} [CommSemiring A] [Semiring B] [Semiring C]
-    [Algebra A B] [Algebra A C] (f : B →ₐ[A] C) (r : A) (x : B) : f (r • x) = r • f x := by
-  rw [Algebra.smul_def, Algebra.smul_def, algHom_map_mul, f.commutes]
-
-private lemma ringHom_map_zero {A B : Type*} [Semiring A] [Semiring B] (f : A →+* B) :
-    f 0 = 0 := f.map_zero'
-
-private lemma ringHom_map_add {A B : Type*} [Semiring A] [Semiring B] (f : A →+* B) (x y : A) :
-    f (x + y) = f x + f y := f.map_add' x y
-
-private lemma ringHom_map_mul {A B : Type*} [Semiring A] [Semiring B] (f : A →+* B) (x y : A) :
-    f (x * y) = f x * f y := f.map_mul' x y
-
-private lemma ringHom_map_sub {A B : Type*} [Ring A] [Ring B] (f : A →+* B) (x y : A) :
-    f (x - y) = f x - f y :=
-  eq_sub_of_add_eq (by rw [← ringHom_map_add, sub_add_cancel])
-
 /-- The `R`-algebra isomorphism from `N × N` matrices whose entries are `σ × σ` matrices over `L`
 onto `(N × σ) × (N × σ)` matrices over `L`, flattening blocks. -/
 def blockFlattenAlgEquiv (N : Type*) [Fintype N] [DecidableEq N] :
@@ -237,24 +207,24 @@ lemma Selmer.mul_aeval_eq_zero_of_adjugate {Q : Type*} [Ring Q] (π : Λ →+* Q
       rw [eval₂_eq_sum, Polynomial.sum_def]
       exact Finset.sum_eq_zero fun m _ ↦ by
         dsimp only [left]
-        rw [Polynomial.coeff_sub, RingHom.comp_apply, ringHom_map_sub π, h m, sub_self,
-          ringHom_map_zero, zero_mul]
+        rw [Polynomial.coeff_sub, RingHom.comp_apply, map_sub π, h m, sub_self,
+          map_zero, zero_mul]
     rw [← sub_eq_zero, ← sub_smul, h_smul, h_zero]
     rfl
   have h_poly (p : R[X]) (r : Λ) : p.map (algebraMap R Λ) • π r = π (r * aeval ρ₀ p) := by
     induction p using Polynomial.induction_on with
-    | C a => rw [map_C, hC, aeval_C, ← ringHom_map_mul π, Algebra.commutes]
+    | C a => rw [map_C, hC, aeval_C, ← map_mul π, Algebra.commutes]
     | add p q hp hq =>
-      rw [Polynomial.map_add, add_smul, hp, hq, algHom_map_add (aeval ρ₀), mul_add,
-        ringHom_map_add π]
+      rw [Polynomial.map_add, add_smul, hp, hq, map_add (aeval ρ₀), mul_add,
+        map_add π]
     | monomial j a ih =>
       rw [pow_succ, ← mul_assoc, Polynomial.map_mul, map_X, ← X_mul, mul_smul, ih, hX,
-        ← ringHom_map_mul π, algHom_map_mul (aeval ρ₀) (C a * X ^ j) X, aeval_X, mul_assoc]
+        ← map_mul π, map_mul (aeval ρ₀) (C a * X ^ j) X, aeval_X, mul_assoc]
   have h_row (l : N) : ∑ j, (B.map C - (X : Λ[X]) • B₁.map C) l j • π (y j) = 0 := by
     calc _ = ∑ j, (π (B l j * y j) - π (B₁ l j * y j * ρ₀)) :=
           Finset.sum_congr rfl fun j _ ↦ by
             simp only [Matrix.sub_apply, Matrix.map_apply, Matrix.smul_apply, smul_eq_mul,
-              sub_smul, mul_smul, hC, hX, ringHom_map_mul π, mul_assoc]
+              sub_smul, mul_smul, hC, hX, map_mul π, mul_assoc]
       _ = π ((B *ᵥ y) l) - π ((B₁ *ᵥ y) l * ρ₀) := by
           rw [Finset.sum_sub_distrib, mulVec, mulVec, dotProduct, dotProduct, Finset.sum_mul,
             map_sum, map_sum]
@@ -330,8 +300,8 @@ lemma Selmer.exists_ribet_polynomial [Nonempty σ] (ρ : Λ →ₐ[R] Matrix σ 
   · -- With `ρ z₀ = δ` and `z₀ ∈ I`, the element `ρ₁ (z₀ P(ρ₀))` of `𝔞` has trace `δ tr (ρ₁ P(ρ₀))`.
     refine ⟨ρ₁ * (z₀ * aeval ρ₀ P), 𝔞.mul_mem_left _ _ (h_mem _ hz₀), ?_⟩
     have h_prod : ρ (ρ₁ * (z₀ * aeval ρ₀ P)) = δ • ρ (ρ₁ * aeval ρ₀ P) := by
-      rw [algHom_map_mul ρ, algHom_map_mul ρ, hz₀_eq, Algebra.algebraMap_eq_smul_one,
-        smul_mul_assoc, one_mul, mul_smul_comm, ← algHom_map_mul ρ]
+      rw [map_mul ρ, map_mul ρ, hz₀_eq, Algebra.algebraMap_eq_smul_one,
+        smul_mul_assoc, one_mul, mul_smul_comm, ← map_mul ρ]
     rw [h_prod, trace_smul, Algebra.smul_def]
 
 /-- Let `u x` (`x : Y`) be representations of `O[G]` such that the coefficients of the
@@ -368,17 +338,17 @@ lemma exists_family_algHom_charpoly_mem {A : Type*} [CommRing A] [Algebra A (Y �
       rw [mapRingHom_single, κ.map_one]
       exact hρ x g i j
     | add r r' hr hr' =>
-      rw [ringHom_map_add (mapRingHom G κ), algHom_map_add ρ, algHom_map_add (u x),
-        Matrix.add_apply, Matrix.add_apply, Pi.add_apply, ringHom_map_add (algebraMap O L),
+      rw [map_add (mapRingHom G κ), map_add ρ, map_add (u x),
+        Matrix.add_apply, Matrix.add_apply, Pi.add_apply, map_add (algebraMap O L),
         hr, hr']
     | smul c r hr =>
       have h_smul : mapRingHom G κ (c • r) = κ c • mapRingHom G κ r := by
-        rw [Algebra.smul_def, ringHom_map_mul (mapRingHom G κ), Algebra.smul_def]
+        rw [Algebra.smul_def, map_mul (mapRingHom G κ), Algebra.smul_def]
         congr 1
         exact RingHom.congr_fun (mapRingHom_comp_algebraMap (M := G) κ) c
-      rw [h_smul, algHom_map_smul ρ, Matrix.smul_apply, Algebra.smul_def, Pi.mul_apply, hκ_apply,
-        hr, algHom_map_smul (u x), Matrix.smul_apply, smul_eq_mul,
-        ringHom_map_mul (algebraMap O L)]
+      rw [h_smul, map_smul ρ, Matrix.smul_apply, Algebra.smul_def, Pi.mul_apply, hκ_apply,
+        hr, map_smul (u x), Matrix.smul_apply, smul_eq_mul,
+        map_mul (algebraMap O L)]
   · -- The group elements span `A[G]`.
     refine eq_top_mono (span_mono ?_) (basis G A).span_eq
     rintro _ ⟨g, rfl⟩ k
@@ -449,11 +419,11 @@ lemma Selmer.det_mem_of_coeff_mem (u : Y → O[G] →ₐ[O] Matrix σ σ O) (κ 
 form a two-sided ideal, as traces are cyclic. -/
 def Selmer.traceIdeal (ρ : Λ →ₐ[R] Matrix σ σ L) (𝒥 : Submodule R L) : TwoSidedIdeal Λ :=
   .mk' {w | ∀ s : Λ, (ρ (w * s)).trace ∈ 𝒥}
-    (fun s ↦ by rw [zero_mul, algHom_map_zero ρ, trace_zero]; exact zero_mem 𝒥)
-    (fun hw hw' s ↦ by rw [add_mul, algHom_map_add ρ, trace_add]; exact add_mem (hw s) (hw' s))
-    (fun hw s ↦ by rw [neg_mul, algHom_map_neg ρ, trace_neg]; exact neg_mem (hw s))
+    (fun s ↦ by rw [zero_mul, map_zero ρ, trace_zero]; exact zero_mem 𝒥)
+    (fun hw hw' s ↦ by rw [add_mul, map_add ρ, trace_add]; exact add_mem (hw s) (hw' s))
+    (fun hw s ↦ by rw [neg_mul, map_neg ρ, trace_neg]; exact neg_mem (hw s))
     (fun {w w'} hw' s ↦ by
-      rw [mul_assoc, algHom_map_mul ρ, trace_mul_comm, ← algHom_map_mul ρ, mul_assoc]
+      rw [mul_assoc, map_mul ρ, trace_mul_comm, ← map_mul ρ, mul_assoc]
       exact hw' (s * w))
     (fun {w w'} hw s ↦ by rw [mul_assoc]; exact hw (w' * s))
 
@@ -485,26 +455,26 @@ lemma Selmer.trace_mul_mem_of_mem_span {A : Type*} [CommSemiring A] [Algebra A (
         have hg : MonoidAlgebra.of A G g = mapRingHom G κ (.single g 1) := by
           rw [mapRingHom_single, κ.map_one]
           rfl
-        rw [hg, ← ringHom_map_mul (mapRingHom G κ)]
+        rw [hg, ← map_mul (mapRingHom G κ)]
         funext x
-        rw [trace_mul_comm (u x r), ← algHom_map_mul (u x)]
+        rw [trace_mul_comm (u x r), ← map_mul (u x)]
         simp only [Matrix.trace, diag_apply, Finset.sum_apply, map_sum, hρ]
       rw [h_trace]
       exact hr g
     | add b b' hb hb' =>
-      rw [add_mul, algHom_map_add ρ, trace_add]
+      rw [add_mul, map_add ρ, trace_add]
       exact add_mem hb hb'
     | smul c b hb =>
-      rw [smul_mul_assoc, algHom_map_smul ρ, trace_smul]
+      rw [smul_mul_assoc, map_smul ρ, trace_smul]
       exact 𝒥.smul_mem c hb
   | zero =>
-    rw [ringHom_map_zero (mapRingHom G κ), mul_zero, algHom_map_zero ρ, trace_zero]
+    rw [map_zero (mapRingHom G κ), mul_zero, map_zero ρ, trace_zero]
     exact zero_mem 𝒥
   | add r r' _ _ hr hr' =>
-    rw [ringHom_map_add (mapRingHom G κ), mul_add, algHom_map_add ρ, trace_add]
+    rw [map_add (mapRingHom G κ), mul_add, map_add ρ, trace_add]
     exact add_mem (hr b) (hr' b)
   | smul s r _ hr =>
-    rw [smul_eq_mul, ringHom_map_mul (mapRingHom G κ), ← mul_assoc]
+    rw [smul_eq_mul, map_mul (mapRingHom G κ), ← mul_assoc]
     exact hr (b * mapRingHom G κ s)
 
 /-- Where `ρ₁ ρ₀` acts as `0`, `ρ₁ P(ρ₀)` acts as `P(0) ρ₁`: at a point `x` where every entry of
@@ -522,7 +492,7 @@ lemma Selmer.trace_mul_aeval_apply {A Λ : Type*} [CommSemiring A] {instR : Semi
   have h_vanish : (ρ (ρ₁ * ρ₀) * ρ (aeval ρ₀ P.divX)).trace x = 0 := by
     simp only [Matrix.trace, diag_apply, Matrix.mul_apply, Finset.sum_apply, Pi.mul_apply, h_zero,
       zero_mul, sum_const_zero]
-  rw [h_split, algHom_map_add ρ, algHom_map_mul ρ (ρ₁ * ρ₀), algHom_map_mul ρ (algebraMap A Λ _),
+  rw [h_split, map_add ρ, map_mul ρ (ρ₁ * ρ₀), map_mul ρ (algebraMap A Λ _),
     ρ.commutes, ← Algebra.smul_def, trace_add, trace_smul, Pi.add_apply, h_vanish, zero_add,
     Algebra.smul_def, Pi.mul_apply]
 
@@ -545,7 +515,7 @@ lemma Selmer.exists_mul_eq_algebraMap_det {A Λ : Type*} [CommRing A] [Ring Λ]
     congr 1
     ext i j
     exact hρw x i j
-  · rw [algHom_map_mul ρ, hv, Algebra.algebraMap_eq_smul_one]
+  · rw [map_mul ρ, hv, Algebra.algebraMap_eq_smul_one]
 
 /-- A ring homomorphism `f` sends the left ideal spanned by the `y i` into the left ideal spanned by
 the `f (y i)`. -/
@@ -613,17 +583,17 @@ private lemma Selmer.exists_ribet_element_of_tied_rows_aux {A r : Type*} [CommRi
       (B.map ι *ᵥ ι ∘ y) i = a + z * ι ρ₀ := by
     obtain ⟨a, ha, z, hz, h_eq⟩ := hB_tied i
     have h_a : ι a ∈ 𝔞 := (mem_𝔞 _).2 fun s ↦ by
-      rw [algHom_map_mul ρ, trace_mul_comm, ← algHom_map_mul ρ]
+      rw [map_mul ρ, trace_mul_comm, ← map_mul ρ]
       exact Selmer.trace_mul_mem_of_mem_span u κ ρ hρι 𝒥 ha s
     refine ⟨ι a, h_a, ι z, h_span z hz, ?_⟩
-    rw [← ringHom_map_mul ι, ← ringHom_map_add ι, ← h_eq]
+    rw [← map_mul ι, ← map_add ι, ← h_eq]
     simp only [mulVec, dotProduct, Matrix.map_apply, Function.comp_apply, map_sum,
-      ringHom_map_mul ι]
+      map_mul ι]
   have h_top : span A {w : A[G] | ∀ k : ℕ,
       (ρ w).charpoly.coeff k ∈ (algebraMap A (Y → L)).range} = ⊤ :=
     top_unique fun w _ ↦ subset_span (h_charpoly w)
   have h_ker (w : A[G]) (hw : ρ w = 0) : w ∈ 𝔞 := (mem_𝔞 w).2 fun s ↦ by
-    rw [algHom_map_mul ρ, hw, zero_mul, trace_zero]
+    rw [map_mul ρ, hw, zero_mul, trace_zero]
     exact zero_mem 𝒥
   obtain ⟨P, hP, -, h_tr, h_δ⟩ :=
     Selmer.exists_ribet_polynomial ρ h_top 𝔞 h_ker (ι ∘ y) (ι ρ₀) (B.map ι) h_rows
@@ -637,7 +607,7 @@ private lemma Selmer.exists_ribet_element_of_tied_rows_aux {A r : Type*} [CommRi
   · have h_zero : u x (ρ₁ * ρ₀) = 0 :=
       Selmer.map_mul_eq_zero_of_blocks blockEquiv (u x) (ψ x) η (hu_block x) (hψ₁ x) hη₁ hη₀
     have h_zero_x (i k : σ) : ρ (ι ρ₁ * ι ρ₀) i k x = 0 := by
-      rw [← ringHom_map_mul ι, hρι, h_zero, Matrix.zero_apply, ringHom_map_zero]
+      rw [← map_mul ι, hρι, h_zero, Matrix.zero_apply, map_zero]
     have h_value : algebraMap A (Y → L) f x =
         algebraMap A (Y → L) (P.coeff 0) x * algebraMap O L (u x ρ₁).trace := by
       rw [hf, Selmer.trace_mul_aeval_apply ρ (ι ρ₀) (ι ρ₁) P x h_zero_x]
@@ -660,7 +630,7 @@ private lemma Selmer.exists_ribet_element_of_tied_rows_aux {A r : Type*} [CommRi
     have h_det : (comp N N σ σ O (B.map (u x))).det =
         (comp N N r r O (B.map (ψ x))).det * ∏ e : Fin t, (B.map (η e)).det :=
       Selmer.det_comp_map_eq_mul_prod blockEquiv (hu_block x) B
-    rw [h_value, h_coeff0, h_μ, h_det, ← ringHom_map_mul (algebraMap O L), mul_comm, mul_assoc]
+    rw [h_value, h_coeff0, h_μ, h_det, ← map_mul (algebraMap O L), mul_comm, mul_assoc]
 
 /-- Ribet's element for a matrix of tied rows. Let `u x` (`x : Y`) be representations of `O[G]`, and
 let `S` be an algebra of functions `Y → L` that contains the constants from `O` and, as functions of
