@@ -1,6 +1,7 @@
 module
 
 import Mathlib.RingTheory.PiTensorProduct
+import TauCeti.Analysis.Matrix.PosSemidef.Determinant
 import TauCeti.Analysis.Normed.Ring.Ultra
 public import Lib.General.LinearAlgebra.GramDeterminant
 public import New.Reduction.Lattices.Colength
@@ -300,7 +301,7 @@ lemma CovolumeLe.norm_map_det_gram_le {y : S → V} {c : ℝ} (hy : L.CovolumeLe
   refine le_of_sq_le_sq ?_ (exp_nonneg c)
   rw [h_pair]
   calc _ ≤ ‖(formGram G v).det‖ * ‖(formGram G w).det‖ :=
-        norm_det_pairing_sq_le L.posDef_gramMatrix.posSemidef v w
+        L.posDef_gramMatrix.posSemidef.norm_det_pairing_sq_le v w
     _ ≤ exp c * exp c := mul_le_mul (hy (conjAut σ)) (hy σ) (norm_nonneg _) (exp_nonneg c)
     _ = exp c ^ 2 := (sq _).symm
 
