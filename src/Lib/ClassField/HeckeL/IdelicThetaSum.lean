@@ -50,8 +50,8 @@ open NumberField MeasureTheory Measure Metric mixedEmbedding Set ENNReal Module 
 /-- Lowering a tent changes it little. Let `0 < r` and `0 < ε`, and let `D'` be within `ε * r / 3`
 of `D`. Then the tent of height `(r - ε * r) / 3` at distance `D'` is within `ε * max (r - D) 0` of
 the tent of height `r / 3` at distance `D`. -/
-lemma abs_max_sub_max_le_mul_max {r ε D D' : ℝ} (hr : 0 < r) (hε : 0 < ε)
-    (hD : |D' - D| ≤ ε * r / 3) :
+lemma abs_max_sub_max_le_mul_max {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+    {r ε D D' : R} (hr : 0 < r) (hε : 0 < ε) (hD : |D' - D| ≤ ε * r / 3) :
     |max ((r - ε * r) / 3 - D') 0 - max (r / 3 - D) 0| ≤ ε * max (r - D) 0 := by
   obtain ⟨hD_lower, hD_upper⟩ := abs_le.mp hD
   have h_εr : 0 < ε * r := mul_pos hε hr
