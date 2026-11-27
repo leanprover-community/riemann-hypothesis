@@ -5,6 +5,7 @@ public import Lib.CM.FormalGroup.IntegralParameter
 public import Lib.CM.Integrality.TorsionValues
 import Lib.CM.GoodReduction
 import Lib.General.Algebra.SeriesBounds
+import TauCeti.Analysis.SpecialFunctions.Elliptic.Uniformization
 
 /-!
 # The integrality principle in one variable
@@ -88,11 +89,8 @@ lemma exists_eq_theta_pow_mul_eval (hf : f ∈ C.sections m) :
       simp [C.monomialSection_eq _ z hz, mul_comm, mul_assoc]
 
 lemma exists_translatedX_eq (c : ℂ) : ∃ z : ℂ, z + C.t ∉ C.Λ ∧ C.translatedX z = c := by
-  let a : ℂ := c + C.weierstrassP C.t
-  obtain ⟨b, hb⟩ : ∃ b : ℂ, b ^ 2 = 4 * a ^ 3 - C.g₂ * a - C.g₃ :=
-    IsSepClosed.exists_pow_nat_eq _ 2
-  obtain ⟨w, hw, hw_eq, -⟩ := C.exists_weierstrassP_eq_of_cubic a b hb
-  exact ⟨w - C.t, by simpa using hw, by simp [translatedX, hw_eq, a]⟩
+  obtain ⟨w, hw, hw_eq⟩ := C.periodPair.exists_weierstrassP_eq (c + C.weierstrassP C.t)
+  exact ⟨w - C.t, by simpa using hw, by simp [translatedX, hw_eq]⟩
 
 /-- If an even function `f` is `θ ^ m (P₀(x) + y P₁(x))` off `t + Λ`, where `x = translatedX` and
 `y = translatedY`, then `P₁ = 0`. -/
