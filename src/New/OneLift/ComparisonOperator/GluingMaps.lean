@@ -683,8 +683,7 @@ first component, contains `J (ϖ²)`. -/
 lemma principalLevel_le_gluingLevel (i : ChoiceIndex j) :
     principalLevel (FirstFactorIndex j) (D.piM ^ 2) ≤ gluingLevel j 1 i.1 := by
   -- At the trivial twist the modulus of the level unfolds to `ϖ²`.
-  with_unfolding_all
-    exact Modulus.principalLevel_le_levelOfSubgroup (D.ideal_untwistedModulus_eq_span.ge (by simp))
+  exact Modulus.principalLevel_le_levelOfSubgroup (D.ideal_untwistedModulus_eq_span.ge (by simp))
 
 /-- The bound `(M ^ l₁)² · exp b · (n · exp b · G)² ≤ exp (f m b log² b)`. Here `M = D.M` is the
 principal level, `l₁ = DividedSplitting.denominatorExponent` the exponent of `M` in the denominator
