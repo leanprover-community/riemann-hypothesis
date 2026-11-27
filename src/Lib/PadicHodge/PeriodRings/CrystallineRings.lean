@@ -908,6 +908,8 @@ lemma BdRPlus.isUnit_iff : IsUnit x ↔ thetaBdR x ≠ 0 := by
 
 /-- Every nonzero element of `B_dR⁺` is a power of `ξ` times a unit. -/
 lemma BdRPlus.exists_associated_xi_pow (hx : x ≠ 0) : ∃ n : ℕ, Associated (xi ^ n : BdRPlus) x := by
+  -- Write `xi` in `BdRPlus` as the image of `algebraMap Ainf BPlus xi` first: otherwise Lean finds
+  -- this identification by unifying through the derived instances of `BdRPlus`, which is slow.
   rw [Algebra.cast, IsScalarTower.algebraMap_apply Ainf BPlus BdRPlus]
   exact AdicCompletion.exists_associated_pow_of_isMaximal_span (R := BPlus)
     (r := algebraMap Ainf BPlus xi) hx
