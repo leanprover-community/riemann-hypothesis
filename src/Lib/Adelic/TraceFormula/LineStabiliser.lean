@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.Module.Constructions
 import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.LinearAlgebra.Matrix.Determinant.Basic
 public import Lib.Adelic.TraceFormula.LineCount
 public import Lib.Shimura.HeckeTower.HeckeData
 import Lib.General.LinearAlgebra.HermiteForm
