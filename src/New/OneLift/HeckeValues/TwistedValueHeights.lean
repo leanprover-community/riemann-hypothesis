@@ -540,7 +540,7 @@ theorem inner_pointForm_kernelForm (hq : q.HasEmptyRow (Fin (2 * p.z - 20)))
   · exact h_datum _
   · simp only [map_one, mul_one, rename_rename]
     rfl
-  · rfl -- the block identity, no longer closed by unfolding
+  · rfl -- the block identity, which `congr!` now leaves open
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum Finset.prod Finset.univ in
