@@ -532,6 +532,104 @@ lemma IsKernelExtension.card_add_eq_finrank [Fintype τ] {P : Type} [Fintype P] 
 
 end
 
+omit [HasPrimitiveRoot5040 E] in
+/-- Three-part `S.linkMetric`-orthogonal basis of `link γ` adapted to a second term `γ'`: `m` spans
+the kernel of the two `z`-forms inside `link γ ⊓ link γ'`, `(m, u)` spans `link γ ⊓ link γ'`, and
+`y` completes `(m, u)` to a basis of `link γ` with `S.linkCorank γ γ'` columns. -/
+private lemma exists_orthogonal_link_basis (S : Filling E 𝔰) (γ γ' : S.G E) :
+    ∃ (t r : ℕ) (m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin t) E)
+      (u : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin r) E)
+      (y : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin (S.linkCorank γ γ')) E),
+      HasLeftInv m ∧
+      colSpan m = link γ ⊓ link γ' ⊓ (zRowBlockDiagonal (S.ratMiddle E)).mulVecLin.ker ∧
+      IsKernelExtension (mᴴ * S.linkMetric) m (link γ ⊓ link γ') u ∧
+      IsKernelExtension ((fromCols m u)ᴴ * S.linkMetric) (fromCols m u) (link γ) y := by
+  obtain ⟨t, m, hm, hm_span⟩ : ∃ (t : ℕ) (m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin t) E),
+      HasLeftInv m ∧ colSpan m = link γ ⊓ link γ' ⊓
+        (zRowBlockDiagonal (S.ratMiddle E)).mulVecLin.ker :=
+    ⟨_, exists_hasLeftInv_colSpan_eq _⟩
+  obtain ⟨r, u, hu⟩ : ∃ (r : ℕ) (u : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin r) E),
+      IsKernelExtension (mᴴ * S.linkMetric) m (link γ ⊓ link γ') u :=
+    exists_isKernelExtension (det_gram_linkMetric_ne_zero hm) (hm_span.trans_le inf_le_left)
+  have hmu_span : colSpan (fromCols m u) = link γ ⊓ link γ' := hu.colSpan_fromCols
+  obtain ⟨i, y, hy⟩ : ∃ (i : ℕ) (y : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin i) E),
+      IsKernelExtension ((fromCols m u)ᴴ * S.linkMetric) (fromCols m u) (link γ) y :=
+    exists_isKernelExtension (det_gram_linkMetric_ne_zero hu.hasLeftInv)
+      (hmu_span.trans_le inf_le_left)
+  have h_rank₁ : t + r = finrank E ↥(link γ ⊓ link γ') := by simpa using hu.card_add_eq_finrank
+  have h_rank₂ : t + r + i = 𝔰.k + 1 := by simpa [finrank_link] using hy.card_add_eq_finrank
+  obtain rfl : i = S.linkCorank γ γ' := by
+    rw [linkCorank]
+    omega
+  exact ⟨t, r, m, u, y, hm, hm_span, hu, hy⟩
+
+/-- Lower bound for the discriminant of the middle block `u` extending the `z`-form kernel `m` to
+`link γ ⊓ link γ'`: its rank is at most `1 + (j - 𝔰.ϱ)` (and `2` when `x ≠ 1`), the two `z`-forms
+are injective on its span, and `minorNorm_sq_le_linkDiscSq_mul` bounds `x ^ 2 * minorNorm ^ 2` by
+`linkDiscSq u v₀ * G ^ 2`. -/
+private lemma minorNorm_sq_le_linkDiscSq_of_isKernelExtension {c c' : S.Classes} {γ γ' : S.G E}
+    {j : Fin (𝔰.ϱ + 2)} {s : S.ResidueGL} {x t r : ℕ}
+    {m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin t) E}
+    {u : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin r) E}
+    (hs : S.Agrees s) (h_term : γ ∈ S.termsOver c s c') (h_cell : S.HasCellRank j γ)
+    (hx : x ≤ S.meetNorm s) (h_top : x ≠ 1 → 𝔰.ϱ < j) (h_corank : x ≠ 1 → S.linkCorank γ γ' = 0)
+    (hm_span : colSpan m = link γ ⊓ link γ' ⊓ (zRowBlockDiagonal (S.ratMiddle E)).mulVecLin.ker)
+    (hu : IsKernelExtension (mᴴ * S.linkMetric) m (link γ ⊓ link γ') u)
+    (h_rank₀ : t = finrank E (commonLink γ γ'))
+    (v₀ : GL (Fin r) (𝔸f E)) {z₀ : Matrix (Fin t) (Fin r) (𝔸f E)}
+    (hv₀ : HasIntegralLifts c γ (finAdeleMatrix m * z₀ + finAdeleMatrix u * v₀.val)) :
+    (x : ℝ) ^ 2 * S.minorNorm j γ ^ 2 ≤
+      S.linkDiscSq u v₀ * (S.termDiscNorm γ ⊔ S.N ^ numInfPlaces E * S.minorNorm j γ) ^ 2 := by
+  have hm_forms : zRowBlockDiagonal (S.ratMiddle E) * m = 0 :=
+    mul_eq_zero_of_colSpan_le_ker (hm_span.trans_le inf_le_right)
+  have h_rank₁ : finrank E (commonLink γ γ') + r = finrank E ↥(link γ ⊓ link γ') := by
+    simpa [← h_rank₀] using hu.card_add_eq_finrank
+  have hr_le : r ≤ 1 + (j - 𝔰.ϱ) :=
+    Nat.le_of_add_le_add_left (h_rank₁.trans_le (h_cell.finrank_link_inf_le γ'))
+  have hr_eq (hx_ne : x ≠ 1) : r = 2 := Nat.add_left_cancel
+    (h_rank₁.trans (h_cell.finrank_link_inf_eq_add_two (h_top hx_ne) (h_corank hx_ne)))
+  have hu_inv : HasLeftInv (zRowBlockDiagonal (S.ratMiddle E) * u) := .of_ker_le_bot fun w hw ↦
+    hu.eq_zero_of_mulVec_mem w (hm_span.ge ⟨hu.colSpan_le ⟨w, rfl⟩, by simpa using hw⟩)
+  have hu_forms : finAdeleMatrix (zRowBlockDiagonal (S.ratMiddle E)) *
+      (finAdeleMatrix m * z₀ + finAdeleMatrix u * v₀.val) =
+        finAdeleMatrix (zRowBlockDiagonal (S.ratMiddle E) * u) * v₀.val := by
+    simp [← Matrix.mul_assoc, ← Matrix.map_mul, hm_forms, Matrix.mul_add]
+  exact minorNorm_sq_le_linkDiscSq_mul hs h_term h_cell hx hr_le hr_eq
+    (hu.colSpan_le.trans inf_le_left) hu_inv v₀ hv₀ hu_forms
+
+omit [HasPrimitiveRoot5040 E] in
+/-- Combines the orthogonal discriminant factorisation `D_m * D_u = D_mu`, `D_mu * D_y = D_f` with
+the upper bound on `torsionIndex ^ 2 * D_f` and the lower bounds on `D_m` and `D_u` to prove
+`(torsionIndex * d * x) ^ 2 * D_y ≤ S.levelGauge j c c' γ ^ 2`. -/
+private lemma discriminant_sq_mul_le_levelGauge_sq {c c' : S.Classes} {γ : S.G E}
+    {j : Fin (𝔰.ϱ + 2)} {x : ℕ} {d D_m D_u D_mu D_y D_f : ℝ} (h_cell : S.HasCellRank j γ)
+    (hm_disc : d ^ 2 ≤ D_m) (hDy_nonneg : 0 ≤ D_y)
+    (hu_disc : (x : ℝ) ^ 2 * S.minorNorm j γ ^ 2 ≤
+      D_u * (S.termDiscNorm γ ⊔ S.N ^ numInfPlaces E * S.minorNorm j γ) ^ 2)
+    (h_split₁ : D_m * D_u = D_mu) (h_split₂ : D_mu * D_y = D_f)
+    (hf_disc : S.torsionIndex (S.translateByClassReps c c' γ) ^ 2 * D_f ≤
+      (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
+        S.N ^ numInfPlaces E) ^ 2) :
+    (S.torsionIndex (S.translateByClassReps c c' γ) * d * x) ^ 2 * D_y ≤
+      S.levelGauge j c c' γ ^ 2 := by
+  set k : S.GFin := S.translateByClassReps c c' γ
+  set G : ℝ := S.termDiscNorm γ ⊔ S.N ^ numInfPlaces E * S.minorNorm j γ
+  refine le_of_mul_le_mul_right ?_ (pow_pos h_cell.minorNorm_pos 2)
+  have hN : (S.N : ℝ) ≠ 0 := Nat.cast_ne_zero.2 S.N_prime.ne_zero
+  calc (S.torsionIndex k * d * x) ^ 2 * D_y * S.minorNorm j γ ^ 2
+    _ = d ^ 2 * S.torsionIndex k ^ 2 * D_y * (x ^ 2 * S.minorNorm j γ ^ 2) := by ring
+    _ ≤ D_m * S.torsionIndex k ^ 2 * D_y * (D_u * G ^ 2) := by
+      have hm_nonneg : 0 ≤ D_m := (sq_nonneg _).trans hm_disc
+      gcongr
+    _ = S.torsionIndex k ^ 2 * D_f * G ^ 2 := by
+      rw [← h_split₂, ← h_split₁]
+      ring
+    _ ≤ (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
+        S.N ^ numInfPlaces E) ^ 2 * G ^ 2 := by gcongr
+    _ = S.levelGauge j c c' γ ^ 2 * S.minorNorm j γ ^ 2 := by
+      simp only [levelGauge, h_cell.maxGauge_eq, h_cell.minorGauge_eq, G]
+      field_simp
+
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.univ in
 /-- **The splitting.** Let `γ` be a term of cell rank `j` over the classes `c`, `c'` with reduction
@@ -557,30 +655,15 @@ theorem nonempty_linkSplitting {c c' : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ
   -- Take a basis of `link γ` in three orthogonal parts: `m` spans the kernel of the two `z`-forms
   -- in the intersection of the links, `m` and `u` span the intersection, and `y` completes them.
   -- The discriminant of the lattice of the link is the product of those of three graded pieces.
-  obtain ⟨t, m, hm, hm_span⟩ : ∃ (t : ℕ) (m : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin t) E),
-      HasLeftInv m ∧ colSpan m = link γ ⊓ link γ' ⊓
-        (zRowBlockDiagonal (S.ratMiddle E)).mulVecLin.ker :=
-    ⟨_, exists_hasLeftInv_colSpan_eq _⟩
+  obtain ⟨t, r, m, u, y, hm, hm_span, hu, hy⟩ := exists_orthogonal_link_basis S γ γ'
   have hm_link : colSpan m ≤ link γ := hm_span.trans_le (inf_le_left.trans inf_le_left)
   have hm_forms : zRowBlockDiagonal (S.ratMiddle E) * m = 0 :=
     mul_eq_zero_of_colSpan_le_ker (hm_span.trans_le inf_le_right)
-  obtain ⟨r, u, hu⟩ : ∃ (r : ℕ) (u : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin r) E),
-      IsKernelExtension (mᴴ * S.linkMetric) m (link γ ⊓ link γ') u :=
-    exists_isKernelExtension (det_gram_linkMetric_ne_zero hm) (hm_span.trans_le inf_le_left)
   have hmu_span : colSpan (fromCols m u) = link γ ⊓ link γ' := hu.colSpan_fromCols
-  obtain ⟨i, y, hy⟩ : ∃ (i : ℕ) (y : Matrix (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex) (Fin i) E),
-      IsKernelExtension ((fromCols m u)ᴴ * S.linkMetric) (fromCols m u) (link γ) y :=
-    exists_isKernelExtension (det_gram_linkMetric_ne_zero hu.hasLeftInv)
-      (hmu_span.trans_le inf_le_left)
-  set k : S.GFin := S.translateByClassReps c c' γ
-  obtain ⟨f, hf, hf_disc : S.torsionIndex k ^ 2 * S.linkDiscSq (fromCols (fromCols m u) y) f ≤
-      (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
-        S.N ^ numInfPlaces E) ^ 2⟩ :=
+  obtain ⟨f, hf, hf_disc⟩ :=
     exists_hasLevelLifts_linkDiscSq_le h_term h_cell hy.hasLeftInv hy.colSpan_fromCols
-  obtain ⟨a₁, v, z, ha₁, hv, h_split₂ : S.linkDiscSq (fromCols m u) a₁ * S.linkDiscSq y v =
-      S.linkDiscSq (fromCols (fromCols m u) y) f⟩ := hf.exists_orthogonal_split hy.mul_eq_zero
-  obtain ⟨a, v₀, z₀, ha, hv₀, h_split₁ : S.linkDiscSq m a * S.linkDiscSq u v₀ =
-      S.linkDiscSq (fromCols m u) a₁⟩ := ha₁.exists_orthogonal_split hu.mul_eq_zero
+  obtain ⟨a₁, v, z, ha₁, hv, h_split₂⟩ := hf.exists_orthogonal_split hy.mul_eq_zero
+  obtain ⟨a, v₀, z₀, ha, hv₀, h_split₁⟩ := ha₁.exists_orthogonal_split hu.mul_eq_zero
   -- The part `m` is compared with `S.commonPart`.
   have h_common : colSpan m.toRows₁.toRows₁ = commonLink γ γ' := by
     rw [commonLink, ← hm_span, ← LinearMap.range_comp]
@@ -591,27 +674,9 @@ theorem nonempty_linkSplitting {c c' : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ
         S.linkDiscSq m a := by
     rw [commonPart, ← h_common]
     exact ha.discriminant_sq_le hm hm_link hm_forms c'
-  have h_rank₁ : finrank E (commonLink γ γ') + r = finrank E ↥(link γ ⊓ link γ') := by
-    simpa [← h_rank₀] using hu.card_add_eq_finrank
-  have h_rank₂ : t + r + i = 𝔰.k + 1 := by simpa [finrank_link] using hy.card_add_eq_finrank
-  obtain rfl : i = S.linkCorank γ γ' := by
-    rw [linkCorank]
-    omega
   -- The part `u` has rank `r ≤ 2`, and the two `z`-forms are injective on its span.
-  have hr_le : r ≤ 1 + (j - 𝔰.ϱ) :=
-    Nat.le_of_add_le_add_left (h_rank₁.trans_le (h_cell.finrank_link_inf_le γ'))
-  have hr_eq (hx_ne : x ≠ 1) : r = 2 := Nat.add_left_cancel
-    (h_rank₁.trans (h_cell.finrank_link_inf_eq_add_two (h_top hx_ne) (h_corank hx_ne)))
-  have hu_inv : HasLeftInv (zRowBlockDiagonal (S.ratMiddle E) * u) := .of_ker_le_bot fun w hw ↦
-    hu.eq_zero_of_mulVec_mem w (hm_span.ge ⟨hu.colSpan_le ⟨w, rfl⟩, by simpa using hw⟩)
-  set G : ℝ := S.termDiscNorm γ ⊔ S.N ^ numInfPlaces E * S.minorNorm j γ
-  have hu_forms : finAdeleMatrix (zRowBlockDiagonal (S.ratMiddle E)) *
-      (finAdeleMatrix m * z₀ + finAdeleMatrix u * v₀.val) =
-        finAdeleMatrix (zRowBlockDiagonal (S.ratMiddle E) * u) * v₀.val := by
-    simp [← Matrix.mul_assoc, ← Matrix.map_mul, hm_forms, Matrix.mul_add]
-  have hu_disc : x ^ 2 * S.minorNorm j γ ^ 2 ≤ S.linkDiscSq u v₀ * G ^ 2 :=
-    minorNorm_sq_le_linkDiscSq_mul hs h_term h_cell hx hr_le hr_eq
-      (hu.colSpan_le.trans inf_le_left) hu_inv v₀ hv₀.hasIntegralLifts hu_forms
+  have hu_disc := minorNorm_sq_le_linkDiscSq_of_isKernelExtension hs h_term h_cell hx h_top h_corank
+    hm_span hu h_rank₀ v₀ hv₀.hasIntegralLifts
   refine ⟨{
     CommonIndex := Fin t ⊕ Fin r
     commonCols := fromCols m u
@@ -624,26 +689,8 @@ theorem nonempty_linkSplitting {c c' : S.Classes} {γ : S.G E} {j : Fin (𝔰.ϱ
     colSpan_fromCols := hy.colSpan_fromCols
     hasIntegralLifts := hv.hasIntegralLifts
     isLatticeOfRank_commonPart := h_lattice
-    discriminant_sq_mul_le := le_of_mul_le_mul_right ?_ (pow_pos h_cell.minorNorm_pos 2) }⟩
-  have hN : (S.N : ℝ) ≠ 0 := Nat.cast_ne_zero.2 S.N_prime.ne_zero
-  calc (S.torsionIndex k *
-          discriminant (finrank E (commonLink γ γ')) (S.commonPart c c' γ γ') * x) ^ 2 *
-        S.linkDiscSq y v * S.minorNorm j γ ^ 2
-    _ = discriminant (finrank E (commonLink γ γ')) (S.commonPart c c' γ γ') ^ 2 *
-        S.torsionIndex k ^ 2 * S.linkDiscSq y v * (x ^ 2 * S.minorNorm j γ ^ 2) := by ring
-    _ ≤ S.linkDiscSq m a * S.torsionIndex k ^ 2 * S.linkDiscSq y v *
-        (S.linkDiscSq u v₀ * G ^ 2) := by
-      have hm_nonneg : 0 ≤ S.linkDiscSq m a := (sq_nonneg _).trans hm_disc
-      have hy_nonneg : 0 ≤ S.linkDiscSq y v := mul_nonneg (abs_nonneg _) (sq_nonneg _)
-      gcongr
-    _ = S.torsionIndex k ^ 2 * S.linkDiscSq ((m.fromCols u).fromCols y) f * G ^ 2 := by
-      rw [← h_split₂, ← h_split₁]
-      ring
-    _ ≤ (S.M ^ (2 * min 𝔰.ϱ j * numInfPlaces E) * S.minorGauge j c c' γ /
-        S.N ^ numInfPlaces E) ^ 2 * G ^ 2 := by gcongr
-    _ = S.levelGauge j c c' γ ^ 2 * S.minorNorm j γ ^ 2 := by
-      simp only [levelGauge, h_cell.maxGauge_eq, h_cell.minorGauge_eq, G]
-      field_simp
+    discriminant_sq_mul_le := discriminant_sq_mul_le_levelGauge_sq h_cell hm_disc
+      (mul_nonneg (abs_nonneg _) (sq_nonneg _)) hu_disc h_split₁ h_split₂ hf_disc }⟩
 
 omit [HasPrimitiveRoot5040 E] in
 /-- Let `γ` and `γ'` be terms over the classes `c`, `c'` with the same reduction `s` modulo the
