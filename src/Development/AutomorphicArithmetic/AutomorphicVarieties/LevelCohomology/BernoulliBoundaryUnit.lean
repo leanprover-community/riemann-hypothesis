@@ -79,27 +79,4 @@ theorem norm_genB_prodX_boundary {ℓ d n : ℕ} [Fact ℓ.Prime] (hd : 0 < d)
   exact le_antisymm ((hA _).mp (boundarySum N z).property)
     (not_lt.mp (mt (hred _).mpr hunit))
 
-/-- For odd primitive characters of dyadic conductor, halving the sufficient bound
-preserves the Bernoulli unit conclusion at every conductor above the new cutoff. -/
-theorem norm_genB_prodX_of_half_bound {ℓ d n : ℕ} [Fact ℓ.Prime] (hd : 0 < d)
-    (hfour : 4 ∣ ℓ ^ d - 1) (hbound : 4 ^ (ℓ ^ d - 1).factorization 2 ≤ 2 * 2 ^ n)
-    (φ : DirichletCharacter (PadicAlgCl ℓ) 1) (ξ : DirichletCharacter (PadicAlgCl ℓ) (2 ^ n))
-    (hprim : ξ.IsPrimitive) (hodd : ξ (-1) = -1) :
-    ‖Bern.genB 1 (prodX φ ξ : ZMod (1 * 2 ^ n) → PadicAlgCl ℓ)‖ = 1 := by
-  let e := (ℓ ^ d - 1).factorization 2
-  by_cases hbig : 4 ^ e ≤ 2 ^ n
-  · have hφ : φ = 1 := Subsingleton.elim _ _
-    apply lemmaX ℓ d 1 n φ ξ
-    refine ⟨hd, hfour, odd_one, Nat.eq_one_of_dvd_one φ.conductor_dvd_level, ?_, hprim,
-      by simpa using hbig, ?_⟩
-    · simp [hφ]
-    · have hone : φ (-1) = 1 := (congrArg φ (Subsingleton.elim _ 1)).trans (map_one φ)
-      simpa only [hone, one_mul] using hodd
-  · have hp : (4 : ℕ) ^ e = 2 ^ (2 * e) := by rw [pow_mul]; rfl
-    change 4 ^ e ≤ 2 * 2 ^ n at hbound
-    rw [hp, ← pow_succ'] at hbound
-    rw [hp, Nat.pow_le_pow_iff_right Nat.one_lt_two] at hbig
-    have hle := (Nat.pow_le_pow_iff_right Nat.one_lt_two).mp hbound
-    exact norm_genB_prodX_boundary hd hfour (by change n = 2 * e - 1; omega) φ ξ hprim hodd
-
 end UpperTheory.V.X

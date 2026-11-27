@@ -9,12 +9,12 @@ import Mathlib.Tactic.Ring
 
 namespace UpperTheory.V.X
 
-/-- For an odd conductor `f ≠ 1`, the improved cutoff supplies Fourier parameters
+/-- Above the equality layer, the improved cutoff supplies Fourier parameters
 `T = 2^(t+1)` and `h = 4 * 2^k` satisfying `T * f < h`. The exact power of two in
 `ℓ^d - 1` is `2*T`, and the dyadic conductor factors as `h * (2*T)`. -/
 theorem exists_bernoulli_linear_range {ℓ d f n : ℕ} [Fact ℓ.Prime] (hd : 0 < d)
-    (hfour : 4 ∣ ℓ ^ d - 1) (hf : Odd f) (hf₁ : f ≠ 1)
-    (hbound : f * 4 ^ (ℓ ^ d - 1).factorization 2 ≤ 2 * 2 ^ n) :
+    (hfour : 4 ∣ ℓ ^ d - 1) (hf : Odd f)
+    (hbound : f * 4 ^ (ℓ ^ d - 1).factorization 2 < 2 * 2 ^ n) :
     ∃ t k c : ℕ, n = k + t + 4 ∧ ℓ ^ d = 1 + 2 * 2 ^ (t + 1) * c ∧ Odd c ∧
       2 * 2 ^ (t + 1) ∣ 4 * 2 ^ k ∧ 2 ^ (t + 1) * f < 4 * 2 ^ k ∧
       2 ^ n = (4 * 2 ^ k) * (2 * 2 ^ (t + 1)) := by
@@ -27,17 +27,11 @@ theorem exists_bernoulli_linear_range {ℓ d f n : ℕ} [Fact ℓ.Prime] (hd : 0
   have hc : Odd c := Nat.coprime_two_left.mp (Nat.coprime_ordCompl Nat.prime_two hne)
   have hfactor : 2 ^ e * c = ℓ ^ d - 1 := Nat.ordProj_mul_ordCompl_eq_self _ 2
 
-  -- Equality would make the odd conductor a divisor of a power of two.
-  change f * 4 ^ e ≤ 2 * 2 ^ n at hbound
-  have hstrict := hbound.lt_of_ne fun heq ↦ hf₁ <|
-    Nat.eq_one_of_dvd_coprimes (hf.coprime_two_right.pow_right (n + 1)) dvd_rfl
-      ⟨4 ^ e, by rw [pow_succ', ← heq]⟩
-  have hf₂ : 2 ≤ f := by obtain ⟨j, hj⟩ := hf; lia
   have hsize : 2 * e ≤ n := by
-    apply (Nat.pow_le_pow_iff_right Nat.one_lt_two).mp
-    change (2 : ℕ) ^ (2 * e) ≤ 2 ^ n
-    rw [pow_mul]
-    exact Nat.le_of_mul_le_mul_left ((Nat.mul_le_mul_right (4 ^ e) hf₂).trans hbound) (by decide)
+    have hs : 4 ^ e < 2 * 2 ^ n := (Nat.le_mul_of_pos_left _ hf.pos).trans_lt hbound
+    rw [show 4 ^ e = 2 ^ (2 * e) by rw [pow_mul]; rfl, ← pow_succ',
+      Nat.pow_lt_pow_iff_right Nat.one_lt_two] at hs
+    lia
 
   obtain ⟨t, ht⟩ : ∃ t, e = t + 2 := ⟨e - 2, by lia⟩
   obtain ⟨k, hn⟩ : ∃ k, n = k + t + 4 := ⟨n - t - 4, by lia⟩
@@ -55,7 +49,7 @@ theorem exists_bernoulli_linear_range {ℓ d f n : ℕ} [Fact ℓ.Prime] (hd : 0
     apply Nat.lt_of_mul_lt_mul_right (a := 4 * 2 ^ (t + 1))
     calc
       _ = f * 4 ^ e := by rw [hsquare, hstride]; ring
-      _ < 2 * 2 ^ n := hstrict
+      _ < 2 * 2 ^ n := hbound
       _ = _ := by rw [hN]; ring
 
 end UpperTheory.V.X

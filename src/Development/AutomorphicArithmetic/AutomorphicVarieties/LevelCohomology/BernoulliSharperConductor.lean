@@ -23,13 +23,22 @@ theorem norm_genB_prodX_of_halved_conductor {ℓ d f n : ℕ} [Fact ℓ.Prime]
     (φ : DirichletCharacter (PadicAlgCl ℓ) f) (ξ : DirichletCharacter (PadicAlgCl ℓ) (2 ^ n))
     (hord : orderOf φ ∣ ℓ ^ d - 1) (hprim : ξ.IsPrimitive) (hodd : φ (-1) * ξ (-1) = -1) :
     ‖Bern.genB 1 (prodX φ ξ : ZMod (f * 2 ^ n) → PadicAlgCl ℓ)‖ = 1 := by
-  by_cases hf₁ : f = 1
-  · subst f
+  by_cases heq : f * 4 ^ (ℓ ^ d - 1).factorization 2 = 2 * 2 ^ n
+  · -- An odd divisor of the power of two on the right must be one.
+    have hf₁ : f = 1 :=
+      Nat.eq_one_of_dvd_coprimes (hf.coprime_two_right.pow_right (n + 1)) dvd_rfl
+        ⟨_, by rw [pow_succ', ← heq]⟩
+    subst f
+    let e := (ℓ ^ d - 1).factorization 2
+    have hp : 2 ^ (2 * e) = 2 ^ (n + 1) := by
+      rw [pow_mul, pow_succ' 2 n]
+      simpa only [show (2 : ℕ) ^ 2 = 4 by decide, e, one_mul] using heq
+    have hexp := Nat.pow_right_injective (by decide : 2 ≤ 2) hp
     have hφ : φ (-1) = 1 := (congrArg φ (Subsingleton.elim _ 1)).trans (map_one φ)
-    exact norm_genB_prodX_of_half_bound hd hfour (by simpa using hbound) φ ξ hprim
+    exact norm_genB_prodX_boundary hd hfour (by change n = 2 * e - 1; omega) φ ξ hprim
       (by simpa only [hφ, one_mul] using hodd)
   obtain ⟨t, j, c, rfl, hQ, hc, hdvd, hlt, hN⟩ :=
-    exists_bernoulli_linear_range hd hfour hf hf₁ hbound
+    exists_bernoulli_linear_range hd hfour hf (hbound.lt_of_ne heq)
   have hl : ℓ ≠ 2 := by
     rintro rfl
     have h := dvd_trans (by decide : 2 ∣ 4) hfour
@@ -59,5 +68,17 @@ theorem norm_genB_prodX_of_halved_conductor {ℓ d f n : ℕ} [Fact ℓ.Prime]
   have htranslate := translated_signed_sum_eq_zero_of_odd h2 hf (j + t + 1) ψ χ hpar
     (by simpa using hhalf) a haodd hsum
   exact hN ▸ htranslate
+
+/-- For odd primitive characters of dyadic conductor, halving the sufficient bound
+preserves the Bernoulli unit conclusion at every conductor above the new cutoff. -/
+theorem norm_genB_prodX_of_half_bound {ℓ d n : ℕ} [Fact ℓ.Prime] (hd : 0 < d)
+    (hfour : 4 ∣ ℓ ^ d - 1) (hbound : 4 ^ (ℓ ^ d - 1).factorization 2 ≤ 2 * 2 ^ n)
+    (φ : DirichletCharacter (PadicAlgCl ℓ) 1) (ξ : DirichletCharacter (PadicAlgCl ℓ) (2 ^ n))
+    (hprim : ξ.IsPrimitive) (hodd : ξ (-1) = -1) :
+    ‖Bern.genB 1 (prodX φ ξ : ZMod (1 * 2 ^ n) → PadicAlgCl ℓ)‖ = 1 := by
+  have hφ : φ = 1 := Subsingleton.elim _ _
+  have hone : φ (-1) = 1 := (congrArg φ (Subsingleton.elim _ 1)).trans (map_one φ)
+  exact norm_genB_prodX_of_halved_conductor hd hfour odd_one (by simpa using hbound) φ ξ
+    (by simp [hφ]) hprim (by simpa only [hone, one_mul] using hodd)
 
 end UpperTheory.V.X

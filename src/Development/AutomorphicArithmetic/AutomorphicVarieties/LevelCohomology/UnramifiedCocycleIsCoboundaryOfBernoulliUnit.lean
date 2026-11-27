@@ -22,7 +22,7 @@ structure XData (l d : ℕ) {R : Type} [CommRing R] {f n : ℕ} (φ : DirichletC
   prim : φ.IsPrimitive
   ord : orderOf φ ∣ l ^ d - 1
   prim2 : ξ.IsPrimitive
-  big : f * 4 ^ (l ^ d - 1).factorization 2 ≤ 2 ^ n
+  big : f * 4 ^ (l ^ d - 1).factorization 2 ≤ 2 * 2 ^ n
   odd : φ (-1) * ξ (-1) = -1
 
 def LemmaX : Prop :=

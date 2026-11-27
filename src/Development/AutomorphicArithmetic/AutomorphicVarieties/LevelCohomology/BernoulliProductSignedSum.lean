@@ -1,7 +1,7 @@
 module
 
 public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.BernoulliSignedNumerator
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.LemmaX
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.LevelCohomology.BernoulliCharacterInputs
 
 /-! # A signed residue formula for the first Bernoulli number of the product character -/
 
