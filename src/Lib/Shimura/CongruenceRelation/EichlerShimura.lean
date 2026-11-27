@@ -112,6 +112,27 @@ lemma ellAdicPull_frobEnd (hU_char : ∀ B : CommRingCat, U B → (p : B) = 0) (
       (DFunLike.congr_fun (pull_whiskerRight η ..) x).symm
     _ = _ := congrArg (fun c ↦ pull ⟨_, c⟩ (freeAbMap tautologicalSection) n x) h_coef
 
+/-- At a geometric point `z` of the special fibre (where the maximal ideal of `A` maps to `0`),
+an arithmetic Frobenius `g` for `p ^ f` satisfies `ω a = ω (g⁻¹ ^ e • a) ^ p ^ (e * f)` on `A`,
+where `ω : A → k` is the base ring map of `z`. -/
+private lemma baseRingMap_eq_pow_of_isFrob {Γ : Type*} [Group Γ] [MulSemiringAction Γ Ω]
+    {A : ClosurePlace} {p f : ℕ} {g : Γ} (hg : IsFrob A (p ^ f) g)
+    (e : ℕ) (σ : A →+* A) (hσ : ∀ a : A, (σ a : Ω) = g⁻¹ ^ e • (a : Ω))
+    {k : Type} [CommRing k] (ω : of A ⟶ of k)
+    (hω : ∀ a : A, A.valuation a < 1 → ω a = 0) (a : A) :
+    ω a = ω (σ a) ^ p ^ (e * f) := by
+  have h_act : g ^ e • (σ a : Ω) = (a : Ω) := by
+    rw [hσ, ← mul_smul, inv_pow, mul_inv_cancel, one_smul]
+  have h_val : A.valuation ((a : Ω) - (σ a : Ω) ^ (p ^ f) ^ e) < 1 := by
+    have h' := (hg.pow e).right (σ a) (A.valuation_le_one (σ a))
+    rwa [h_act] at h'
+  have h_zero : ω (a - σ a ^ (p ^ f) ^ e) = 0 := hω _ <| by
+    change A.valuation ((a : Ω) - ((σ a ^ (p ^ f) ^ e : A) : Ω)) < 1
+    rw [Subring.coe_pow]
+    exact h_val
+  rw [map_sub, map_pow, sub_eq_zero, ← pow_mul'] at h_zero
+  exact h_zero
+
 include hR hℓ hp
 
 /-- The Eichler–Shimura relation. Let A ⊂ Ω (an algebraic closure of ℚ) be a valuation ring
@@ -215,19 +236,8 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
     -- at `z = (w, ω)`, with `w` the `W`-component `z.val.val.fst`:
     -- `ω a = ω (σ i a) ^ p ^ (e i * f)`, as `g` is a Frobenius
     let ω : of A ⟶ of k := baseRingMap s₀ z.val
-    have h_frob (i : I) (a : A) : ω a = ω (σ i a) ^ p ^ (e i * f) := by
-      have h_act : g ^ e i • (σ i a : Ω) = (a : Ω) := by
-        change g ^ e i • (g⁻¹ ^ e i • (a : Ω)) = (a : Ω)
-        rw [← mul_smul, inv_pow, mul_inv_cancel, one_smul]
-      have h_val : A.valuation ((a : Ω) - (σ i a : Ω) ^ (p ^ f) ^ e i) < 1 := by
-        have h' := (hg.pow (e i)).right (σ i a) (A.valuation_le_one (σ i a))
-        rwa [h_act] at h'
-      have h_zero : ω (a - σ i a ^ (p ^ f) ^ e i) = 0 := z.property _ <| by
-        change A.valuation ((a : Ω) - ((σ i a ^ (p ^ f) ^ e i : A) : Ω)) < 1
-        rw [Subring.coe_pow]
-        exact h_val
-      rw [map_sub, map_pow, sub_eq_zero, ← pow_mul'] at h_zero
-      exact h_zero
+    have h_frob (i : I) (a : A) : ω a = ω (σ i a) ^ p ^ (e i * f) :=
+      baseRingMap_eq_pow_of_isFrob hg (e i) (σ i) (fun _ ↦ rfl) ω z.property a
     -- so `F i z = (Frob (u i w), ω)`, and these points cancel by the congruence relation
     have hk_char : CharP k p := (CharP.charP_iff_prime_eq_zero Fact.out).mpr (h_char _ z)
     have h_cancel : Cancels m fun i ↦
