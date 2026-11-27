@@ -462,7 +462,6 @@ end New.Filling
 
 namespace New.Filling
 open MulAction Matrix Fin Set MeasureTheory
-open scoped Classical
 open NumberField (InfinitePlace)
 
 /-- Let `a x • x` be a chosen representative of the orbit of `x` under the group `H`. A sum over
@@ -472,6 +471,7 @@ lemma tsum_indicator_smul_eq_tsum_stabilizer {H X : Type*} [Group H] [MulAction 
     (ha : ∀ x : X, a x • x = (Quotient.mk (orbitRel H X) x).out) (f : X → H → ENNReal) (x : X) :
     ∑' u : H, {z : X | z = a z • z}.indicator 1 (u • x) * f (u • x) u =
       ∑' u : stabilizer H (a x • x), f (a x • x) (u * a x) := by
+  classical
   have h_mem (u : H) : u • a x • x = a (u • a x • x) • u • a x • x ↔ u • a x • x = a x • x := by
     rw [ha (u • a x • x), ← mul_smul, Quotient.sound (s := orbitRel H X) (mem_orbit x _), ← ha]
   calc _ = ∑' u : H, {z : X | z = a z • z}.indicator 1 ((u * a x) • x) *
@@ -664,7 +664,6 @@ matrices.
 
 namespace New.Filling
 open Matrix Fin Set
-open scoped Classical
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {γ : S.G E}
 
@@ -1088,7 +1087,6 @@ end New.Filling
 
 namespace New.Filling
 open Matrix Fin Set
-open scoped Classical
 
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} {γ : S.G E}
 
@@ -1161,6 +1159,7 @@ index from `j` on; the leading minor of order `j` of the matrix `S.frameProducts
 products `h(f_a, γ f_b)` is nonzero; and `j ≤ ϱ`. -/
 lemma CharsAgree.exists_hasCellRank (h_agree : S.CharsAgree γ) (h_disc : S.termDisc γ = 0) :
     ∃ j : Fin (𝔰.ϱ + 2), S.HasCellRank j γ := by
+  classical
   -- Take the least index `j` from which a norm-one pair occurs; the condition from `ϱ + 1` on is
   -- empty, as no index reaches it.
   have h_empty : NormOnePairOccursFrom (𝔰.ϱ + 1) γ :=
