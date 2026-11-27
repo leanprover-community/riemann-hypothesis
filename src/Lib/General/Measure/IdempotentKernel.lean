@@ -1,7 +1,6 @@
 module
 
 public import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Probability.HasLaw
 public import Lib.Speed
 
 /-!
@@ -101,7 +100,9 @@ lemma _root_.MeasureTheory.MeasurePreserving.integral_integral_comp {Y : Type*}
     ∫ k : W, ∫ g : Z, f (T (k, g)) ∂μ ∂ν = ∫ y : Y, f y ∂ρ :=
   calc ∫ k : W, ∫ g : Z, f (T (k, g)) ∂μ ∂ν = ∫ z : W × Z, f (T z) ∂(ν.prod μ) :=
         (integral_prod (f ∘ T) (hT.integrable_comp_of_integrable hf)).symm
-    _ = ∫ y : Y, f y ∂ρ := hT.hasLaw.integral_comp hf.aestronglyMeasurable
+    _ = ∫ y : Y, f y ∂ρ := by
+      rw [← hT.map_eq, integral_map hT.measurable.aemeasurable]
+      simpa only [hT.map_eq] using hf.aestronglyMeasurable
 
 /-- Fubini's theorem along a map `T` carrying `ν × μ` (both s-finite) to `ρ`: for a `ρ`-integrable
 `f`, the function `f ∘ T` is integrable and `∫∫ f (T (k, g)) dμ(g) dν(k) = ∫ f dρ`. -/

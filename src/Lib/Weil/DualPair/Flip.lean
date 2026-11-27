@@ -545,7 +545,8 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
           ← pairTheta_mul, Prod.mk_mul_mk, show h * (1, 1) = h from mul_one h]
       _ = _ := by
         refine (h_flip a _ (G.neg g * (1, u)) h (g * (1, 𝔪.flipScalar m)) h_mat).symm.trans ?_
-        rw [map_integrated, realMap_flipCoords_polyVector, 𝔪.flipCoords_map_vacTranslate S T hc_neg V v]
+        rw [map_integrated, realMap_flipCoords_polyVector,
+          𝔪.flipCoords_map_vacTranslate S T hc_neg V v]
         rfl
   -- Expand `D` in indicators of classes; both kernels are linear in their datum.
   have h_ft : matrixFourier ψ D = ∑ v, D v • fun ρ ↦ ψ (ρ * v).trace := (Finset.sum_fn ..).symm

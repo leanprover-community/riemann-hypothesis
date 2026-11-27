@@ -709,6 +709,13 @@ theorem measurePreserving_signBlocksHom :
     MeasurePreserving (signBlocksHom ε) (volume.prod volume) (haarK ε) :=
   MonoidHom.measurePreserving continuous_signBlocksHom signBlocksHom_surjective (by simp)
 
+/-- Fubini's theorem on `K = maxCompactU ε ≃ U(p) × U(q)`: the integral of a continuous function
+over `K` is the double integral over the unitary blocks. -/
+theorem integral_haarK_eq_integral_signBlocksHom {φ : maxCompactU ε → ℂ} (hφ : Continuous φ) :
+    ∫ k : maxCompactU ε, φ k ∂haarK ε = ∫ u : USign (1 : PosIndex ε → ℤˣ),
+      ∫ v : USign (1 : NegIndex ε → ℤˣ), φ (signBlocksHom ε (u, v)) :=
+  (measurePreserving_signBlocksHom.fubini (DiscreteSeries.integrable_of_compactSpace hφ)).right.symm
+
 omit [DecidableEq n] in
 /-- Let `p` select the indices of one sign. On these indices `-2 ρ_c`, minus the sum of the compact
 roots (those `e i - e j` with `ε i = ε j`) positive for `l`, is the sum `2 ρ` of all roots of the
@@ -787,8 +794,7 @@ theorem integral_haarK_mul_left_of_density {l : n → ℤ} (hl : l.Injective) {F
       refine hF_cont.comp_continuous (by fun_prop) fun k ↦ ⟨?_, ?_⟩
       · exact mul_mem signBlocks_mem_blockDiagAlg (mem_maxCompactU.1 k.prop)
       · simp [h_det, GeneralLinearGroup.det_ne_zero]
-    simp [(measurePreserving_signBlocksHom.fubini (DiscreteSeries.integrable_of_compactSpace h_cont)).right.symm,
-      coe_signBlocksHom, signBlocks_mul, f, Up,
+    simp [integral_haarK_eq_integral_signBlocksHom h_cont, coe_signBlocksHom, signBlocks_mul, f, Up,
       Uq]
   have h_swap (y : GL (PosIndex ε) ℂ) :
       ∫ u : Up, ∫ v : Uq, f (y * u) v = ∫ v : Uq, ∫ u : Up, f (y * u) v :=

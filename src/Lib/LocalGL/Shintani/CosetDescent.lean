@@ -1,6 +1,7 @@
 module
 
 import Mathlib.FieldTheory.Finite.Extension
+import TauCeti.LinearAlgebra.TensorProduct.Basis
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
 public import Lib.LocalGL.Shintani.CosetRootChoice
 public import Lib.LocalGL.Green.HallAlgebra
@@ -394,9 +395,9 @@ lemma Lift.mul (h : Lift Z F F') (h' : Lift Z G G') : Lift Z (F * G) (F' * G') :
       inv_mem' := fun {x} hx ↦ .map x.right⁻¹ ((parabolic _).inv_mem hx) }
   -- `β a i`: the diagonal block of level `i`, with the same Galois part.
   let β (a : ℕ) (i : Bool) : P a →* GalSemidirect k k' {j // b a j = i} :=
-    .mk' (fun s ↦ ⟨blockHom (b a) i ⟨s.1.left, s.2⟩, s.1.right⟩) fun x y ↦
-      SemidirectProduct.ext ((blockHom (b a) i).map_mul ⟨x.1.left, x.2⟩
-        ⟨galActionGL k k' _ x.1.right y.1.left, y.2.map x.1.right⟩) rfl
+    .mk' (fun s ↦ ⟨blockHom (b a) i ⟨s.val.left, s.property⟩, s.val.right⟩) fun x y ↦
+      SemidirectProduct.ext ((blockHom (b a) i).map_mul ⟨x.val.left, x.property⟩
+        ⟨galActionGL k k' _ x.val.right y.val.left, y.property.map x.val.right⟩) rfl
   refine ⟨∑ a ∈ Iic m, induceClassFn rightHom (P a).subtype (∏ i, Φ a i ∘ β a i),
     sum_mem fun a _ ↦ induceClassFn_mem_virtualChars (fun σ ↦ ⟨⟨inr σ, blockTriangular_one⟩, rfl⟩)
       (prod_mem fun i _ ↦ comp_mem_virtualChars (hΦ a i) _),
@@ -533,9 +534,8 @@ private lemma basis_repr_congr_one_apply (b : Basis (Fin m) k L) (σ : Gal(k'/k)
     (x : k' ⊗[k] L) (j : Fin m) :
     (basis k' b).repr (Algebra.TensorProduct.congr σ (1 : Gal(L/k)) x) j =
       σ ((basis k' b).repr x j) := by
-  induction x with
-  | tmul a l => aesop
-  | add x y hx hy => simp only [map_add, Finsupp.add_apply, hx, hy]
+  rw [show basis k' b = b.baseChange k' by ext i; simp]
+  exact (b.map_baseChange_repr σ.toLinearEquiv.toLinearMap x j).symm
 
 /-- Let `σ ∈ Gal(k'/k)` have fixed field `k` and act on `k' ⊗[k] L` through the factor `k'`. A unit
 of `k' ⊗[k] L` is `1 ⊗ y` for a unit `y` of `L` exactly when `σ` fixes it. -/
@@ -580,7 +580,7 @@ private lemma descendsTo_induceClassFn_greenCuspidal_mulMoebius [Finite k] (hran
   subst hρ
   intro σ hσ
   let B : Basis (Fin m) k' (k' ⊗[k] L) := basis k' b
-  have : Fintype (k' ⊗[k] L) := fintypeOfFintype B
+  let : Fintype (k' ⊗[k] L) := fintypeOfFintype B
   -- The units of `k' ⊗[k] L` fixed by `σ` are those of `L`.
   let ι : Lˣ →* (k' ⊗[k] L)ˣ :=
     Units.map (includeRight : L →ₐ[k] k' ⊗[k] L).toRingHom.toMonoidHom
@@ -646,7 +646,7 @@ private lemma descendsTo_induceClassFn_of_rankInner_eq (φ : k' ⊗[k] L →ₐ[
               Algebra.TensorProduct.map τ.toAlgHom (AlgHom.id k L) t.val))) *
             Y (simClassOf (mulLeft k' t.val))) :
     DescendsTo (induceClassFn rightHom ρ ϑ) X := by
-  have : Fintype (k' ⊗[k] L) := fintypeOfFintype B
+  let : Fintype (k' ⊗[k] L) := fintypeOfFintype B
   -- Here `σ = 1`, and every unit of `k' ⊗[k] L` is its own root.
   intro σ hσ
   obtain rfl : σ = 1 := σ.ext fun x ↦ hσ.le ⟨x, rfl⟩
@@ -705,7 +705,7 @@ lemma exists_torus_induced_descendsTo (hrank : finrank k L = m) (φ : k' ⊗[k] 
   -- induce from there the character `ϑ (a, σ) = ∏ τ, θ (φ (τ a))`.
   let b : Basis (Fin m) k L := finBasisOfFinrankEq k L hrank
   let B : Basis (Fin m) k' (k' ⊗[k] L) := basis k' b
-  have : Fintype (k' ⊗[k] L) := fintypeOfFintype B
+  let : Fintype (k' ⊗[k] L) := fintypeOfFintype B
   -- `σ` acts on `A` through the first factor, hence on coordinates in the basis `B`
   let g (σ : Gal(k'/k)) : k' ⊗[k] L ≃ₐ[k] k' ⊗[k] L := Algebra.TensorProduct.congr σ (1 : Gal(L/k))
   have hrepr (σ : Gal(k'/k)) (x : k' ⊗[k] L) (j : Fin m) : B.repr (g σ x) j = σ (B.repr x j) :=

@@ -614,7 +614,7 @@ lemma IsLargeLevel.dirichlet_fixedSUnits (Q : OpenNormalSubgroup G) :
   -- The orbits `X` are the places of the fixed field `F` of `Q` above `N` and infinity.
   let F : IntermediateField K Ω := fixedFieldOf Q.toOpenSubgroup.toSubgroup
   let S : Set (FinPlace F) := {v : FinPlace F | ↑N ∈ v.asIdeal}
-  have : Fintype S := (finite_natCast_mem N).fintype
+  let : Fintype S := (finite_natCast_mem N).fintype
   let e : S ⊕ InfinitePlace F ≃ X :=
     .ofBijective _ (PlaceAboveLevel.bijective_orbits _ N FinPlace.isPlaceOver_placeOver)
   -- `fixedSUnits N Q` is the image of the `S`-units of `F`, to which Dirichlet's theorem applies.

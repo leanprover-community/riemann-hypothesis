@@ -273,7 +273,8 @@ omit [Nonempty n] [DecidableEq J] [V.IsStd] in
 function that sends a system of level `L` to its `j`-th Hecke eigenvalue at `w.place`, a complex
 number moved to `PadicAlgCl ℓ` by the fixed isomorphism `ιℓ`, lies in the Hecke algebra, which is
 a ring of such `ℓ`-adic functions on systems. -/
-lemma heckeEigenvalues_mem_heckeAlgebra (w : FrobeniusDatum E) (hw : D.IsOffLevel (ℓ := ℓ) L w.place)
+lemma heckeEigenvalues_mem_heckeAlgebra (w : FrobeniusDatum E)
+    (hw : D.IsOffLevel (ℓ := ℓ) L w.place)
     (j : ℕ) :
     (fun x : D.Eigensystem L ↦ ιℓ (x.val.heckeEigenvalues w.place j)) ∈ D.heckeAlgebra L := by
   obtain ⟨-, -, hℓ, h_sys⟩ := hw
@@ -628,7 +629,8 @@ lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ
 by `a`, which is `1` at the tame generators (`hN`, `ha`). The norm over `GL_n(𝔽_w)` at
 `w = Q.place i` kills `tr[(γ - 1) g]`, where `γ` is the tame generator at `w` and `traceElement` is
 the trace of the `N x` as an element of the Hecke algebra. -/
-lemma norm_mul_traceElement_tameGenerator_eq_zero (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
+lemma norm_mul_traceElement_tameGenerator_eq_zero
+    (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (i : J) (g : Gal(Ω/E)) :
     (∑ k : GL (Fin (card n)) (ResField (Q.place i)), D.residueRep Q (mulSingle i k)) *

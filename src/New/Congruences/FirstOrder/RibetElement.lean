@@ -155,9 +155,10 @@ is the ring of integers of `ℚ̄_ℓ`. Let the `u x` be conjugate self-dual, an
 have the trace of the twisted main summand `ψ (R x)` plus the characters `O(-e)`, `e < t`. Let each
 `x ∈ 𝓧` have, over all large `O`, a model `R₀`, `ψ'`, `ζ'` with a property `Good x O R₀ ψ'`; here
 `IsTwistedLattice` says that `R₀` is a lattice in `R x`, that `ψ'` is `ψ` with values in `O`, and
-that the inertial element `γ x` acts on `ψ' R₀` by the scalar `ζ'`, with `ζ' - 1` a unit. Then over every large `O` there are such models `R₀ x`, `ψ' x`, `ζ' x`, whose twisted
-lattices span all matrices, and lattices `u' x` in all `u x` that are block diagonal for `x ∈ 𝓧`:
-the twisted lattice, then the characters. -/
+that the inertial element `γ x` acts on `ψ' R₀` by the scalar `ζ'`, with `ζ' - 1` a unit. Then over
+every large `O` there are such models `R₀ x`, `ψ' x`, `ζ' x`, whose twisted lattices span all
+matrices, and lattices `u' x` in all `u x` that are block diagonal for `x ∈ 𝓧`: the twisted lattice,
+then the characters. -/
 lemma eventually_exists_twistedLattice_and_block_lattices [PadicIso ℓ] {t : ℕ}
     {u : Y → GalRep ℓ D.E n} (hu : ∀ x : Y, IsConjSelfDual t (u x))
     {ψ : AbsGal D →* PadicAlgCl ℓ} {𝓧 : Set Y}
@@ -253,7 +254,8 @@ lemma exists_length_le_loss_add_crystallineSelmerLength {ν : ℕ} {w : K → Fi
     rw [← map_sum]
     exact normLength_mono
       (crystallineColength_le_sum_dualDefect hu_cl (fun v ↦ hT_cl v (some e)) ν)
-  -- The local defect and the Selmer length are both finite; choose the truncation after fixing their sum.
+  -- The local defect and the Selmer length are both finite; choose the truncation after fixing
+  -- their sum.
   have h_ne {a : ℕ∞} {b : ℝ≥0∞} (hb : b ≠ ⊤) (hab : O.normLength a ≤ b) : a ≠ ⊤ :=
     fun ha ↦ hb (by simpa [ha, normLength_top] using hab)
   obtain ⟨b₀, hb₀⟩ : ∃ b₀ : ℕ, b₀ = lossT + crystallineSelmerLength T Q γ :=
@@ -333,7 +335,7 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   -- `exists_isCommonRibetElement_addVal_le` over `O`, and add up the losses in its bound for `d`.
   obtain ⟨-, hψ : IsFromU1 (placesDividing D.E ℓ) Q ψ, -⟩ := id h_twist
   have : NeZero V.rankDiff := .of_pos hc.odd.2.pos
-  have ϵ : Sigma (SummandCoordIndex r (t := V.rankDiff)) ≃ n :=
+  let ϵ : Sigma (SummandCoordIndex r (t := V.rankDiff)) ≃ n :=
     equivOfCardEq (by simp! [V.rank_lt.le])
   have h_dual (x : Y) : IsConjSelfDual V.rankDiff (u x) := (h_type x).toIsConjSelfDual
   -- the models: at `π` the one of `h_sel`, with its Selmer bound; elsewhere those of `h_lat`

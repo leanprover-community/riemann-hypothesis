@@ -111,7 +111,7 @@ lemma exists_local_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E))
     L ⊓ L.comap (MulAut.conj t⁻¹) (IsTopologicalGroup.continuous_conj _)
   let U : Subgroup J := L'.subgroupOf J
   -- An open subgroup has finite index in the compact group `localIntGL`, hence in `J`.
-  have h_fin : Fintype (J ⧸ U) := U.fintypeOfIndexNeZero fun h_index ↦
+  let h_fin : Fintype (J ⧸ U) := U.fintypeOfIndexNeZero fun h_index ↦
     (isCompact_localIntGL _).relIndex_ne_zero L'.isOpen' (relIndex_eq_zero_of_le_right hJ h_index)
   let f (j : J) : ℂ := (χ j * Fintype.card (J ⧸ U))⁻¹
   let b : MonoidAlgebra ℂ (GL (Fin a) (𝔸f E)) := ∑ q : J ⧸ U, f q.out • .single (r q.out) 1

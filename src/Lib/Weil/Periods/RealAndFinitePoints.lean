@@ -34,34 +34,24 @@ lemma New.isMulRightInvariant_of_prod {A B : Type*} [Group A] [MeasurableSpace A
     [SigmaFinite μ] [SigmaFinite η] [NeZero μ] [NeZero η]
     (h_prod : (μ.prod η).IsMulRightInvariant) :
     μ.IsMulRightInvariant ∧ η.IsMulRightInvariant := by
-  -- Right translation by `(a, b)` keeps the measure of a rectangle `S × T`.
-  have h_rect (a : A) (b : B) {S : Set A} {T : Set B} (hS : MeasurableSet S)
-      (hT : MeasurableSet T) :
-      μ ((fun x : A ↦ x * a) ⁻¹' S) * η ((fun y : B ↦ y * b) ⁻¹' T) = μ S * η T := by
-    have h_meas : Measurable fun q : A × B ↦ q * (a, b) :=
-      (measurable_fst.mul_const a).prodMk (measurable_snd.mul_const b)
-    have h_preimage : (fun q : A × B ↦ q * (a, b)) ⁻¹' (S ×ˢ T) =
-        ((fun x : A ↦ x * a) ⁻¹' S) ×ˢ ((fun y : B ↦ y * b) ⁻¹' T) := Set.ext fun q ↦ by simp
-    calc _ = μ.prod η ((fun q : A × B ↦ q * (a, b)) ⁻¹' (S ×ˢ T)) := by rw [h_preimage, prod_prod]
-      _ = (μ.prod η).map (fun q : A × B ↦ q * (a, b)) (S ×ˢ T) :=
-        (map_apply h_meas (hS.prod hT)).symm
-      _ = μ S * η T := by rw [map_mul_right_eq_self, prod_prod]
-  -- Take `a = 1` or `b = 1` and cancel a side of finite positive measure.
-  obtain ⟨U, hU_meas, -, hU_pos, hU_fin⟩ :
-      ∃ U : Set A, MeasurableSet U ∧ U ⊆ Set.univ ∧ 0 < μ U ∧ μ U < ⊤ :=
-    μ.exists_subset_measure_lt_top MeasurableSet.univ (measure_univ_pos.2 (NeZero.ne μ))
-  obtain ⟨V, hV_meas, -, hV_pos, hV_fin⟩ :
-      ∃ V : Set B, MeasurableSet V ∧ V ⊆ Set.univ ∧ 0 < η V ∧ η V < ⊤ :=
-    η.exists_subset_measure_lt_top MeasurableSet.univ (measure_univ_pos.2 (NeZero.ne η))
+  have h_map (a : A) (b : B) :
+      (μ.map (· * a)).prod (η.map (· * b)) = μ.prod η :=
+    (map_prod_map μ η (measurable_mul_const a) (measurable_mul_const b)).trans
+      (h_prod.map_mul_right_eq_self (a, b))
+  -- Test rectangles whose other factor has finite positive measure, and cancel that factor.
+  obtain ⟨U, -, -, hU_pos, hU_fin⟩ := μ.exists_subset_measure_lt_top MeasurableSet.univ
+    (measure_univ_pos.2 (NeZero.ne μ))
+  obtain ⟨V, -, -, hV_pos, hV_fin⟩ := η.exists_subset_measure_lt_top MeasurableSet.univ
+    (measure_univ_pos.2 (NeZero.ne η))
   constructor
-  · refine (forall_measure_preimage_mul_right_iff μ).1 fun a S hS ↦ ?_
-    have h_left : μ ((fun x : A ↦ x * a) ⁻¹' S) * η V = μ S * η V := by
-      simpa only [mul_one, Set.preimage_id'] using h_rect a 1 hS hV_meas
-    exact (ENNReal.mul_left_inj hV_pos.ne' hV_fin.ne).1 h_left
-  · refine (forall_measure_preimage_mul_right_iff η).1 fun b T hT ↦ ?_
-    have h_right : μ U * η ((fun y : B ↦ y * b) ⁻¹' T) = μ U * η T := by
-      simpa only [mul_one, Set.preimage_id'] using h_rect 1 b hU_meas hT
-    exact (ENNReal.mul_right_inj hU_pos.ne' hU_fin.ne).1 h_right
+  · refine ⟨fun a ↦ Measure.ext fun S _ ↦ ?_⟩
+    refine (ENNReal.mul_left_inj hV_pos.ne' hV_fin.ne).1 ?_
+    simpa only [mul_one, map_id', prod_prod] using
+      congrArg (fun ρ : Measure (A × B) ↦ ρ (S ×ˢ V)) (h_map a 1)
+  · refine ⟨fun b ↦ Measure.ext fun T _ ↦ ?_⟩
+    refine (ENNReal.mul_right_inj hU_pos.ne' hU_fin.ne).1 ?_
+    simpa only [mul_one, map_id', prod_prod] using
+      congrArg (fun ρ : Measure (A × B) ↦ ρ (U ×ˢ T)) (h_map 1 b)
 
 namespace New.Grading
 

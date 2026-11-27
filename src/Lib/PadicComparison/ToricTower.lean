@@ -221,10 +221,14 @@ def TimesBNat.wangPow : freeAb.obj ((fst C ⋙ incl C ⋙ Y) ⊗ natWithShift) �
   freeAb.map ⟨fun D ↦ ↾fun x ↦ (shiftEnd Y x.2.down).asHom.app D.1 x.1,
     fun _ _ f ↦ by exact shiftEnd_naturality Y f⟩
 
+/-- The two maps of the Wang sequence compose to zero, as `γ^k (γ x) = γ^(k + 1) x`. -/
+lemma TimesBNat.wangSub_comp_wangPow : wangSub Y ≫ wangPow Y = 0 :=
+  (shortExact_induced Y).fst
+
 /-- The Wang sequence ℤ[Y × ℕ] → ℤ[Y × ℕ] → ℤ[Y] (`wangSub`, then `wangPow`), a short complex of
 functors from C × Bℕ to abelian groups. -/
 abbrev TimesBNat.wangComplex : ShortComplex (TimesBNat C ⥤ AddCommGrpCat.{1}) :=
-  .mk (wangSub Y) (wangPow Y) (shortExact_induced Y).fst
+  .mk (wangSub Y) (wangPow Y) (wangSub_comp_wangPow Y)
 
 /-- For Y on C × Bℕ with endomorphism γ, the Wang sequence 0 → ℤ[Y × ℕ] → ℤ[Y × ℕ] → ℤ[Y] → 0 is
 short exact (`wangComplex`): the first map is `(x, k) ↦ (γ x, k) - (x, k + 1)`, the second
@@ -791,8 +795,8 @@ lemma PadicTest.isLine_compatibleRoots
       map_mul' a b := by
         have h_x_mul (k : ℕ) :
             ((x (a * b)).val k).untilt = 1 * ((x a * x b).val k).untilt := by
-          rw [one_mul, Subalgebra.coe_mul, Pi.mul_apply, map_mul, hx, hx, hx, map_mul, map_mul, mul_pow,
-            mul_mul_mul_comm]
+          rw [one_mul, Subalgebra.coe_mul, Pi.mul_apply, map_mul, hx, hx, hx, map_mul, map_mul,
+            mul_pow, mul_mul_mul_comm]
         simpa using untilt_map_eq_mul_of_forall ϕ 1 (x (a * b)) (x a * x b) h_x_mul }
   have h_sys_one {D : PadicTest} (ϕ : Hom D) : sys ϕ (ofAdd 1) = (baseOfHom ϕ).1 (r (ofAdd 1)) := by
     -- `ζ 1 = 1`, so the sequence `x 1` lifts the constant `r 1`

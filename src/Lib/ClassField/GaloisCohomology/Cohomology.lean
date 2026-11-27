@@ -115,12 +115,12 @@ lemma smul_def (n : ℕ) (r : R) (x : A.H n) :
 /-- `H⁰(Γ, A)` is the module of invariants of `A`. -/
 def zeroEquiv : A.H 0 ≃ₗ[R] A.ρ.invariants where
   toFun x := ⟨((explicitH0IsoContinuousCohomology Γ A).inv x : A), fun g ↦
-    ((explicitH0IsoContinuousCohomology Γ A).inv x).2 g⟩
-  invFun m := (explicitH0IsoContinuousCohomology Γ A).hom ⟨m, fun g ↦ m.2 g⟩
+    ((explicitH0IsoContinuousCohomology Γ A).inv x).property g⟩
+  invFun m := (explicitH0IsoContinuousCohomology Γ A).hom ⟨m, fun g ↦ m.property g⟩
   left_inv x := (explicitH0IsoContinuousCohomology Γ A).inv_hom_id_apply x
   right_inv m := Subtype.ext <| congrArg Subtype.val
     ((explicitH0IsoContinuousCohomology Γ A).hom_inv_id_apply
-      (⟨m, fun g ↦ m.2 g⟩ : TauCeti.ContCohomology.H0 Γ A))
+      (⟨m, fun g ↦ m.property g⟩ : TauCeti.ContCohomology.H0 Γ A))
   map_add' x y := Subtype.ext <| congrArg Subtype.val
     (map_add (ConcreteCategory.hom (explicitH0IsoContinuousCohomology Γ A).inv) x y)
   map_smul' r x := by
@@ -156,8 +156,6 @@ def π₁ : Z1 A.ρ →ₗ[R] A.H 1 where
     refine (cocyclesMap1_apply Γ A.V Γ A.V (ContinuousMonoidHom.id Γ) _ _ _ _ g).trans ?_
     rfl
 
-lemma π₁_apply (z : Z1 A.ρ) : A.π₁ z = A.classMap z := rfl
-
 lemma π₁_surjective : Function.Surjective A.π₁ := A.classMap_surjective
 
 /-- A continuous 1-cocycle has class `0` in `H¹(Γ, A)` exactly when it is a coboundary. -/
@@ -190,8 +188,8 @@ variable {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] (φ : 
 /-- Restriction of continuous 1-cocycles along a continuous homomorphism `φ : G → Γ`:
 `z ↦ z ∘ φ`. -/
 def resZ1 : Z1 A.ρ →ₗ[R] Z1 (A.restrictAlong φ).ρ where
-  toFun z := ⟨fun g ↦ (z : Γ → A) (φ g), z.2.1.comp φ.continuous, fun g h ↦
-    (congrArg (z : Γ → A) (map_mul φ g h)).trans (z.2.2 (φ g) (φ h))⟩
+  toFun z := ⟨fun g ↦ (z : Γ → A) (φ g), z.property.1.comp φ.continuous, fun g h ↦
+    (congrArg (z : Γ → A) (map_mul φ g h)).trans (z.property.2 (φ g) (φ h))⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
@@ -256,7 +254,7 @@ explicit `H²`. -/
 def classMap₂ : Z2 A.ρ →+ continuousCohomology 2 A.toTopRep :=
   (explicitH2AddEquivContinuousCohomology Γ A).toAddMonoidHom.comp <|
     (QuotientAddGroup.mk' _).comp
-      { toFun z := ⟨z, A.Z2_toAddSubgroup ▸ z.2⟩
+      { toFun z := ⟨z, A.Z2_toAddSubgroup ▸ z.property⟩
         map_zero' := rfl
         map_add' _ _ := rfl }
 
@@ -278,13 +276,11 @@ def π₂ : Z2 A.ρ →ₗ[R] A.H 2 where
     refine (cocyclesMap2_apply Γ A.V Γ A.V (ContinuousMonoidHom.id Γ) _ _ _ _ g h).trans ?_
     rfl
 
-lemma π₂_apply (z : Z2 A.ρ) : A.π₂ z = A.classMap₂ z := rfl
-
 lemma π₂_surjective : Function.Surjective A.π₂ := by
   refine (explicitH2AddEquivContinuousCohomology Γ A).surjective.comp <|
     (QuotientAddGroup.mk'_surjective _).comp fun z ↦ ⟨⟨z, ?_⟩, rfl⟩
   rw [← Submodule.mem_toAddSubgroup, A.Z2_toAddSubgroup]
-  exact z.2
+  exact z.property
 
 /-- A continuous 2-cocycle has class `0` in `H²(Γ, A)` exactly when it is the coboundary of a
 continuous 1-cochain. -/

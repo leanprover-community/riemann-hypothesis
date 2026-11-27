@@ -271,7 +271,7 @@ lemma Cohomology.exists_val_eq_pow_index [h_galois : IsProGalois Γ k Ω]
     (h_decomp : ∀ g : Γ, g ∈ decompGroup Γ A) (x : Ω) :
     ∃ c : k, valuationVia k A c = A.valuation x ^ (stabilizer Γ x).index := by
   -- The product of the finitely many conjugates of `x` is fixed by `Γ`, so it comes from `k`.
-  have fintype_orbit : Fintype (orbit Γ x) := (isLocallyConstant_smul x).range_finite.fintype
+  let fintype_orbit : Fintype (orbit Γ x) := (isLocallyConstant_smul x).range_finite.fintype
   have h_fixed (g : Γ) : g • ∏ y : orbit Γ x, (y : Ω) = ∏ y : orbit Γ x, (y : Ω) :=
     smul_prod'.trans (Equiv.prod_comp (toPerm g) fun y : orbit Γ x ↦ (y : Ω))
   obtain ⟨c, hc⟩ : ∃ c : k, algebraMap k Ω c = ∏ y : orbit Γ x, (y : Ω) :=
@@ -606,7 +606,7 @@ lemma IsLocalGalois.exists_ordRat_eq_intCast {x : DiscreteUnits Ω}
   obtain ⟨π, hπ⟩ := h_ext.isLocalGalois.exists_isUniformizer
   -- In that field `x` has the valuation of an integral power `π ^ n`.
   obtain ⟨n, hn⟩ := hπ.exists_valuationVia_eq_zpow h_ext.isLocalGalois
-    ⟨x.toMul, fun g ↦ g.2⟩ (fun h ↦ x.toMul.ne_zero (congrArg Subtype.val h))
+    ⟨x.toMul, fun g ↦ g.property⟩ (fun h ↦ x.toMul.ne_zero (congrArg Subtype.val h))
   have h_eq := (hπ.valuation_pow_eq_zpow_iff_mul_ordRat_eq h_ext.isLocalGalois 1 n).mp
     ((pow_one _).trans hn)
   exact ⟨n, by simpa [h_data.ordRat_eq] using h_eq⟩

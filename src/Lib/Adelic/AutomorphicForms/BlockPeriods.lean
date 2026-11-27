@@ -65,6 +65,15 @@ lemma fst_blockEmb_one_one {σ : ι ⊕ Unit ≃ X}
   ext τ : 2
   simp [val_fst_blockEmb_one, GL.blockScalar]
 
+/-- `conjWeylMatrix κ e y` is `weylRep κ e` at the entrywise complex conjugate of `y`;
+`conjWeylRep κ e y v` is `conjWeylMatrix κ e y *ᵥ v`. -/
+lemma conjWeylMatrix_eq_weylRep_map_conj {E X : Type} [Field E] [CMType E] [Fintype X]
+    [DecidableEq X] (κ : InfinitePlace E → ℕ → ℕ) (e : InfinitePlace E → ℤ)
+    (y : GInf E (1 : X → ℤˣ)) :
+    conjWeylMatrix κ e y = weylRep κ e
+      fun τ : InfinitePlace E ↦ (y τ : GL X ℂ).map (starRingEnd ℂ) :=
+  rfl
+
 /-- The entrywise complex conjugate of a unitary matrix is unitary. -/
 lemma map_conj_mem_uSign_one {g : GL X ℂ} (hg : g.valᴴ * g.val = 1) :
     g.map (starRingEnd ℂ) ∈ USign (1 : X → ℤˣ) := by
@@ -131,7 +140,7 @@ lemma exists_eq_smul_of_intertwines {σ : ι ⊕ Unit ≃ X} (hσ : (1 : X → �
   refine ⟨x, hx, ?_⟩
   calc B * weylRep κ e x
     _ = conjWeylMatrix κ₀ e₀ y * B := hB y
-    _ = weylRep κ₀ e₀ g * B := by rw [← hy]; rfl
+    _ = weylRep κ₀ e₀ g * B := by rw [conjWeylMatrix_eq_weylRep_map_conj, hy]
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum Finset.prod Finset.univ in

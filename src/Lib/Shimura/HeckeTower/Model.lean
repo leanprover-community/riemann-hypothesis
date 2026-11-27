@@ -275,7 +275,8 @@ lemma mem_levelGU_of_map_evalAt_eq {g : GL n (𝔸f E)} (hGU : g ∈ GU E n) (hi
   -- there `g` agrees with an element `κ` of the level.
   have h_entry (i j : n) : (g.val - 1) i j ∈ Ô E ∙ algebraMap (𝓞 E) (𝔸f E) 𝔑 := by
     refine mem_span_iff_valuation_le.mpr ⟨?_, fun u hu ↦ ?_⟩
-    · aesop (add simp [mem_intGL, Matrix.one_apply])
+    · exact sub_mem ((mem_intGL.mp hint).1 i j)
+        ((mem_intGL.mp (one_mem (intGL n (Ô E)))).1 i j)
     obtain ⟨κ, hκ, h_loc⟩ := h_places u hu
     have hκ_entries : ∀ i j : n, (κ.val - 1) i j ∈ Ô E ∙ algebraMap (𝓞 E) (𝔸f E) 𝔑 :=
       (Subgroup.mem_inf.mp hκ).right.right

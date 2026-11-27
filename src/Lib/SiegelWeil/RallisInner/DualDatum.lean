@@ -66,7 +66,7 @@ lemma exists_skew_adele {A : Set (FinPlace E)} (hA : A.Finite) :
   -- `N` carries the adeles `ϖ_w⁻¹ j⁻¹`, for `w` in `A` and its conjugate, into `Ô E`; then
   -- `v (N) ≤ v (ϖ_w j) < v (j)` at `w`, so `j / N` is large there.
   obtain ⟨N, hN, h_int⟩ := exists_forall_mul_mem_Ô fun w : A.conjClosure ↦
-    singleAdele w.1 (uniformizer w.1).val⁻¹ * algebraMap E (𝔸f E) j⁻¹
+    singleAdele w.val (uniformizer w.val).val⁻¹ * algebraMap E (𝔸f E) j⁻¹
   refine ⟨idem A.conjClosure * algebraMap E (𝔸f E) (j / N), ?_, ?_, fun w hw ↦ ?_⟩
   · rw [star_mul', star_idem_conjClosure, star_algebraMap_finAdele, star_div₀, WeilData.star_j,
       star_natCast, neg_div, map_neg, mul_neg]

@@ -303,11 +303,6 @@ lemma frameX₀Part_eichlerShift_inv_mul {p p₀ : S.G E} (hp : S.frameProducts 
             id := by
   obtain ⟨t, rfl⟩ : ∃ t : 𝔰.UnipotentParams, u = unipotentOf t :=
     mem_besselU0_iff_unipotentOf.1 hu
-  have h_rows (Z : 𝔰.FrameMatrix) :
-      (inclMatrix ℂ (initialIsotropicIndex j))ᴴ * isotropicRows Z = (isotropicRows Z).submatrix
-        (initialIsotropicIndex j) id := by
-    ext l b
-    simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply]
   set Z : 𝔰.FrameMatrix := realFrameGram (S.ratToInf γ v) with hZ
   have h_moved : frameX₀Part ((unipotentOf t * S.eichlerShift j x v)⁻¹ * S.ratToInf p v) =
       frameX₀Part (S.ratToInf p v) + t.1ᴴ * isotropicRows Z +
@@ -316,7 +311,7 @@ lemma frameX₀Part_eichlerShift_inv_mul {p p₀ : S.G E} (hp : S.frameProducts 
     rw [_root_.mul_inv_rev, mul_assoc, eichlerShift, frameX₀Part_unipotentOf_inv_mul,
       realFrameGram_inv_mul_ratToInf hu hp, frameX₀Part_unipotentOf_inv_mul,
       realFrameGram_ratToInf_congr hp, conjTranspose_mul (inclMatrix ℂ _),
-      Matrix.mul_assoc _ _ᴴ, h_rows]
+      Matrix.mul_assoc _ _ᴴ, conjTranspose_inclMatrix_mul]
   have h_base : frameX₀Part ((unipotentOf t)⁻¹ * S.ratToInf p₀ v) =
       frameX₀Part (S.ratToInf p₀ v) + t.1ᴴ * isotropicRows Z := by
     rw [frameX₀Part_unipotentOf_inv_mul, realFrameGram_ratToInf_congr hp₀]

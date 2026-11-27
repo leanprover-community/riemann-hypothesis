@@ -268,7 +268,7 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
   have E_form : Eᴴ * latticeMiddleGram 𝔰 N * E = planeSumGram (hyperbolicGram (Fin m) 1) := by
     have h_ne (i : SplitIndex m ι) : (f i : 𝔰.κ) ≠ 𝔰.k₀ := (f i).prop.symm
     have h_trace : P.element + star P.element = 1 := P.element_add_star
-    rw [gram_mul, gram_inclMatrix]
+    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix]
     -- each entry reduces to `hc_norm`, `h_trace` or `hN_star`
     simp [← Matrix.ext_iff, Matrix.mul_apply, C, latticeMiddleGram, diagonal, h_ne,
       Subtype.val_inj, fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
@@ -715,7 +715,8 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
     Gauge F where
   ofSize j := {x : A | α ^ j * x ∈ integers}
   loss := 2 / P.modulus α
-  mul_mem_ofSize hx hy := by grind [integers.mul_mem hx hy]
+  mul_mem_ofSize hx hy := by
+    simpa only [Set.mem_ofPred_eq, pow_add, mul_mul_mul_comm] using integers.mul_mem hx hy
   sum_mem_ofSize := by simp_all [pow_succ', mul_assoc, mul_sum, mul_mem, sum_mem]
   neg_mem_iff_and_star_mem_iff := by
              refine ⟨by simp, fun hx ↦ ?_, fun hx ↦ ?_⟩ <;> simpa [sα] using isAdelic.1.1 hx

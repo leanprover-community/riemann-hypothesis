@@ -21,7 +21,8 @@ Neither side of Poisson's formula on the line has a term at `0`, so `𝒵` is an
 line. For `x ≥ 1` its value is, up to an explicit factor, `L(x)` times the theta integral of
 `(W, V)` at a cone integral (`New.Exchange.exists_zetaIntegral`). This gives the constant term for
 `e ≥ 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaLarge_cone`) and, through the other side of
-Poisson's formula, for `e < 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaLarge_dualCone`).
+Poisson's formula, for `e < 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaLarge` with
+`β = false`).
 
 ## Main definitions and results
 
@@ -29,8 +30,9 @@ Poisson's formula, for `e < 0` (`New.Exchange.exists_planeConstantTerm_eq_thetaL
   `rk W = card n` even, a Schwartz vector `v'` and integral `y`, the constant term along `A` of the
   theta integral of `(W', V')` is `γ` times the theta integral of `(W, V)` on
   `cone A X μ (z + 1) v'` and `stdRowDatum σ 𝔠.semilocalChar y`.
-* `New.Exchange.exists_planeConstantTerm_eq_thetaLarge_dualCone`: the same for
-  `rk V - rk W / 2 = -z - 1 < 0`, at `u = 1`, with `dualCone A X μ (z + 1) v'` in place of the cone.
+* `New.Exchange.exists_planeConstantTerm_eq_thetaLarge`: both cases at once, with a flag `β` for
+  the side of Poisson's formula; for `β = false`, `rk V - rk W / 2 = -z - 1 < 0` and the theta
+  integral of `(W, V)` is taken on `dualCone A X μ (z + 1) v'`.
 
 Notions from other files:
 * `𝔠 : SplitTameChar E μ` is a character `𝔠.character` of `[U(1)]` of positive weight `μ`, tamely
@@ -380,6 +382,14 @@ lemma stdKernelForm_apply (σ : b ⊕ r ≃ n) (y : Matrix b n (LocProd 𝔠.ram
       (localDatum W V v (stdRowDatum σ 𝔠.semilocalChar y) 𝔠.readsAt) (g, h) :=
   rfl
 
+/-- The integral over `[U(V)]` of the kernel `stdKernelForm` on a real vector `v` is the theta
+integral of `(W, V)` on `v` and the standard datum of `y`. -/
+lemma integral_stdKernelForm (σ : b ⊕ r ≃ n) (y : Matrix b n (LocProd 𝔠.ramifiedPlaces)) (g : G E s)
+    (v : PairFock E s t) :
+    ∫ h : G E t, stdKernelForm 𝔠 W V σ y g h v ∂V.quotMeasure =
+      thetaLarge W V 𝔠 v (stdRowDatum σ 𝔠.semilocalChar y) g :=
+  rfl
+
 /-- The datum factors. For integral `y`, the function of Tate's integral of `planeDatum 𝔠 A σ' v y`
 at `α α₀`, where `α₀ = scaleIdele E`, is `l β * γ` times the finite factor `lineFinFactor` shifted
 by the uniformiser `ϖ` times the kernel of `(W, V)` on the real line term at `α∞` of `k v`. Here `l`
@@ -488,7 +498,7 @@ theorem integral_coneKernel (hv : IsSchwartzVector v) {x : ℝ} (hx : 0 < x) :
       thetaLarge W V 𝔠 (∫ p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ,
         coneIntegrand A X μ β x v p ∂haar.prod haar)
         (stdRowDatum σ 𝔠.semilocalChar y) g := by
-  rw [integral_prod _ (integrable_coneKernel A X y g β hv hx)]
+  rw [integral_prod _ (integrable_coneKernel A X y g β hv hx), ← integral_stdKernelForm]
   exact integral_congr_ae (.of_forall fun h ↦ (stdKernelForm 𝔠 W V σ y g h).integral_comp_comm
     (integrable_coneIntegrand A X μ β hx hv).1)
 
@@ -810,7 +820,8 @@ or `1 - (z + 1)` (for `β = false`). There are `C > 0`, independent of `𝔠`, a
 `(W', V')` on `planeDatum` is `γ` times the theta integral of `(W, V)` on the datum with
 `stdRowDatum σ 𝔠.semilocalChar y` at `S` and real part the cone integral of side `β` of `v'`, which
 integrates `coneIntegrand` with exponent `z + 1` over `k` in the maximal compact subgroup of `U(V')`
-and the archimedean ideles. -/
+and the archimedean ideles. As Poisson's formula is applied before the integral is evaluated, only
+values of `L` at points `≥ 1` occur, and the functional equation of `L` is not needed. -/
 theorem exists_planeConstantTerm_eq_thetaLarge (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2 ∣ card n)
     (μ : InfinitePlace E → ℤ) (β : Bool) {z : ℕ}
     (hz : ((card r - card n / 2 : ℤ) + 1 : ℝ) = cond β (z + 1 : ℝ) (1 - (z + 1))) :
@@ -857,28 +868,6 @@ theorem exists_planeConstantTerm_eq_thetaLarge_cone (σ' : b ⊕ r' ≃ n') (σ 
           γ * thetaLarge W V 𝔠 (cone A X μ (z + 1) v') (stdRowDatum σ 𝔠.semilocalChar y) g := by
   simpa only [cone] using
     exists_planeConstantTerm_eq_thetaLarge A X σ' σ hn μ true (z := z) (by simp [hz])
-
-/-- One plane for `rk V - rk W / 2 = -z - 1 < 0`, with `rk W = card n` even: for a Schwartz vector
-`v'` and integral `y`, at `u = 1` (the case `rk V = rk W` cannot occur here), the constant term
-along `A` of the theta integral of `(W', V')` is `γ` times the theta integral of `(W, V)` on
-`dualCone A X μ (z + 1) v'` and `stdRowDatum σ 𝔠.semilocalChar y`. The cone integral is a real Tate
-integral over the isotropic cone of `V'`, and `dualCone` is this integral on the other side of
-Poisson's formula. Here `|γ| = C L♯(z + 1)` with `L♯(z) = |L^S(z, ν)| ∏_{w ∈ S} q_w ^ (z - 1/2)`
-(`lSharp`) for `ν = 𝔠.character` and `S = 𝔠.ramifiedPlaces`, and `C > 0` does not depend on `𝔠`. As
-Poisson's formula is applied before the integral is evaluated, only values of `L` at points `≥ 1`
-occur, and the functional equation of `L` is not needed. -/
-theorem exists_planeConstantTerm_eq_thetaLarge_dualCone (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n)
-    (hn : 2 ∣ card n)
-    (μ : InfinitePlace E → ℤ) {z : ℕ} (hz : (card r - card n / 2 : ℤ) = -(z + 1)) :
-    ∃ C > (0 : ℝ), ∀ 𝔠 : SplitTameChar E μ, ∃ γ : ℂ,
-      ‖γ‖ = C * lSharp 𝔠 (z + 1) ∧
-      ∀ v' : PairFock E s' t', IsSchwartzVector v' → ∀ y : Matrix b n (LocProd 𝔠.ramifiedPlaces),
-        IsIntMatrix O y →
-        ∀ (u : (𝔸 E)ˣ) (g : G E s), u = 1 ∨ card r = card n →
-          planeConstantTerm 𝔠 V' A σ' v' y u g =
-          γ * thetaLarge W V 𝔠 (dualCone A X μ (z + 1) v') (stdRowDatum σ 𝔠.semilocalChar y) g := by
-  simpa only [dualCone] using
-    exists_planeConstantTerm_eq_thetaLarge A X σ' σ hn μ false (z := z) (by simp [hz])
 
 end
 

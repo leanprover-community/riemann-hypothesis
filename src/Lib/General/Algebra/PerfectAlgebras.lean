@@ -189,7 +189,8 @@ lemma PerfectAlg.isClosedUnderColimitsOfShape_widePushoutShape (hp : (p : S) = 0
 some power `y^{p^n}` in the image of `e`. -/
 lemma exists_perfection_quotient (hp : (p : S) = 0) (B : Type) [CommRing B] [Algebra S B] (t : B) :
     ∃ (c : PerfectAlg p S) (e : B →ₐ[S] c.obj),
-      (∀ {d : PerfectAlg p S} (φ : B →ₐ[S] d.obj), φ t = 0 → ∃ ψ : c.obj →ₐ[S] d.obj, ψ.comp e = φ) ∧
+      (∀ {d : PerfectAlg p S} (φ : B →ₐ[S] d.obj), φ t = 0 →
+        ∃ ψ : c.obj →ₐ[S] d.obj, ψ.comp e = φ) ∧
       (∀ r s : B, e r = e s → ∃ n : ℕ, t ∣ r ^ p ^ n - s ^ p ^ n) ∧
       e t = 0 ∧
       ∀ y : c.obj, ∃ (n : ℕ) (r : B), e r = y ^ p ^ n := by
@@ -306,6 +307,7 @@ lemma exists_injective_algHom_perfect (hp : (p : S) = 0) (k : Type) [Field k] [A
   obtain ⟨n, hn⟩ := h_ker u 0 (by rw [hu, map_zero])
   exact eq_zero_of_pow_eq_zero (n := p ^ n) (by simpa [ne] using hn)
 
+omit [ThePrime p] in
 lemma bijective_pow_prime_pow (A : PerfectAlg p S) (n : ℕ) : Bijective fun x : A.obj ↦ x ^ p ^ n :=
   (A.property.pow _ p n).bijective_frobenius
 
@@ -377,7 +379,8 @@ lemma exists_eq_of_blowup_glue_eq {B B₁ B₂ B₀ : PerfectAlg p S} (f g : B.o
 E₁ : B[X] → B₁, and those that kill g - f X factor through E₂ : B[X] → B₂. Then every point
 a : B → k of B in a field becomes, after some injective map η from k to a perfect S-algebra, a
 point that factors through B → B₁ × B₂. -/
-lemma exists_factor_through_blowup_charts (hp : (p : S) = 0) {B B₁ B₂ : PerfectAlg p S} (f g : B.obj)
+lemma exists_factor_through_blowup_charts (hp : (p : S) = 0) {B B₁ B₂ : PerfectAlg p S}
+    (f g : B.obj)
     (E₁ : B.obj[X] →ₐ[S] B₁.obj) (E₂ : B.obj[X] →ₐ[S] B₂.obj)
     (h_lift₁ : ∀ {K : PerfectAlg p S} (φ : B.obj[X] →ₐ[S] K.obj), φ (C f - C g * X) = 0 →
       ∃ ψ : B₁.obj →ₐ[S] K.obj, ψ.comp E₁ = φ)

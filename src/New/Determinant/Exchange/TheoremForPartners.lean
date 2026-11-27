@@ -599,7 +599,6 @@ lemma exists_equalRankThetaRatio_ne_zero (μ : InfinitePlace E → ℤ) {k : ℕ
     simpa [detVector_of_isEmpty] using h_bottom 1 0 1 .one 1
   have h_value : stdRowDatum (sumEmpty m Empty) 𝔠.semilocalChar 1 0 = 1 := stdColDatum_one_one 𝔠
   rw [thetaLarge_stdSpace_empty_vacVector_one, h_value, mul_one, Complex.ofReal_eq_zero] at h_vanish
-  have : SecondCountableTopology (G E (1 : Empty → ℤˣ)) := inferInstance
   exact measureReal_univ_ne_zero h_vanish
 
 /-- Let `J` be positive definite. Let the integral of the theta kernel of `(J, J)` over the target
@@ -741,7 +740,6 @@ lemma exists_equalRankThetaRatio_sq_eq (μ : InfinitePlace E → ℤ) {k : ℕ} 
     ∃ D : ℝ, ∀ 𝔠 : SplitTameChar E μ, equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v ^ 2 = D := by
   let ratio (𝔠 : SplitTameChar E μ) : ℝ := equalRankThetaRatio (hyperbolicSum Unit X) 𝔠 v
   let vol : ℝ := (stdSpace E Empty).quotMeasure.real Set.univ
-  have : SecondCountableTopology (G E (1 : Empty → ℤˣ)) := inferInstance
   have h_vol : (vol : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 measureReal_univ_ne_zero
   obtain ⟨B, y, hy, h_forward_exchange⟩ :=
     exists_thetaLarge_eq_mul_quotMeasure μ hm J X A h_planes hv

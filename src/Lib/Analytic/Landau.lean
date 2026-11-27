@@ -227,7 +227,8 @@ Suppose `IsPolar E r`: `|E v| ≤ C e^v` for `v ≥ 0` and the transform
 in `re ρ > 0`. Let `β > 0`. If `E(v) ≤ A e^{(β-1)v}` for all large `v` and the residues at real points
 right of `β` have real part `≥ 0`, then there is no pole in `re s > β`, that is, `r ρ = 0`. -/
 lemma IsPolar.landau {r : ℂ → ℂ} (h : IsPolar E r) {A β : ℝ} (hβ : 0 < β)
-    (hr : ∀ x : ℝ, β < x → 0 ≤ (r x).re) (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v))
+    (hr : ∀ x : ℝ, β < x → 0 ≤ (r x).re)
+    (hE_le : ∀ᶠ v : ℝ in atTop, E v ≤ A * Real.exp ((β - 1) * v))
     {ρ : ℂ} (hρ : β < ρ.re) :
     r ρ = 0 := by
   -- `Ψ(s) = K / (s - β) - Φ(s)` continues the Laplace transform `F` of a measure. Let `a` be the

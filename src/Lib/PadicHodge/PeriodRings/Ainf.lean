@@ -148,7 +148,10 @@ lemma exists_tilt_lift_of_character (a : Multiplicative ℚ →* ℂ_[p])
     ∃ χ : Multiplicative ℚ →* OFlat, ∀ s : Multiplicative ℚ, (χ s).untilt = a s := by
   -- The values of `a` are roots of unity, so they lie in `OC`.
   have h_mem (s : Multiplicative ℚ) : a s ∈ valRingCp p := by
-    have h_den : s ^ s.toAdd.den = .ofAdd 1 ^ s.toAdd.num := by aesop
+    have h_den : s ^ s.toAdd.den = .ofAdd 1 ^ s.toAdd.num := by
+      exact congrArg Multiplicative.ofAdd (by
+        change s.toAdd.den • s.toAdd = s.toAdd.num • (1 : ℚ)
+        rw [nsmul_eq_mul, zsmul_eq_mul, Rat.den_mul_eq_num, mul_one])
     have h_fin : IsOfFinOrder (a s ^ s.toAdd.den) := by simp [← map_pow, h_den, ha]
     exact mem_valRingCp.mpr (h_fin.of_pow s.toAdd.den_nz).norm_eq_one.le
   -- Send `s` to the compatible sequence `a (s / p ^ n)` of `p`-power roots of `a s` in `OC`,

@@ -24,7 +24,7 @@ with signs ε. On this space U(ε) acts by the Weil representation ω₀ = `New.
   `New.Fock.raiseOp`, `New.Fock.lowerOp` (multiplication by X_a or differentiation, according to
   the sign ε_a) move across ω₀(u) in a matrix coefficient `New.Fock.fockMatrixCoeff`.
 * `New.Fock.fockInner_X_mul`, `New.Fock.fockInner_polyVector`: X_i is adjoint to ∂_i, so ⟨v_P, v_Q⟩
-  is the Fischer pairing (P̄(∂)Q)(0). For monomials see `New.Fock.fockInner_polyVector_monomial`.
+  is the Fischer pairing (P̄(∂)Q)(0).
 * `New.Fock.denseRange_polyVector`: the vectors v_P are dense.
 * `New.Fock.hasDerivAt_realWeil`: along a curve in U(ε) through 1 with velocity Y, ω₀ has derivative
   v_Q on v_P, where Q = `New.Fock.weilDeriv` ε Y P.

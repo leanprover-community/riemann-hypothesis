@@ -415,8 +415,8 @@ private lemma exists_isCompletionBijective_witt_tensor (G : Type) [AddCommMonoid
   have h_constantCoeff_comp :
       constantCoeff.comp (algebraMap W (WittVector p b)) = algebraMap W b := by
     -- on `Ainf`, and on the elements of `G`, sent to Teichmüller representatives
-    ext <;> simp [b, W, wittMap, wittCoeff, wittTeich, algebraMap_toAlgebra, ← AddMonoidAlgebra.one_def,
-      ← Algebra.TensorProduct.one_def]
+    ext <;> simp [b, W, wittMap, wittCoeff, wittTeich, algebraMap_toAlgebra,
+      ← AddMonoidAlgebra.one_def, ← Algebra.TensorProduct.one_def]
   let coeff₀ : WittVector p b →ₐ[W] b :=
     ⟨constantCoeff, fun a ↦ RingHom.congr_fun h_constantCoeff_comp a⟩
   obtain ⟨h_constantCoeff_surj, -⟩ := h_mod

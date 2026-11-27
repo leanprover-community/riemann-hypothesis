@@ -201,6 +201,15 @@ lemma map_augmentationIdeal_le_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : 
       tieIdeal u p τ φ ε ρ₀ :=
   le_sup_right.trans (le_sup_left.trans le_sup_left)
 
+/-- The tie `τ k - 1 - X j * (ε j)(φ k) * (φ k - 1)` of index `k = (j, b)` lies in the tie
+ideal. -/
+lemma tie_mem_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
+    (k : J × Bool) :
+    MonoidAlgebra.single (τ k) 1 - 1 - (MvPolynomial.X k.1 : MvPolynomial J O) •
+      (aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ k)) (ε k.1) *
+        (MonoidAlgebra.single (φ k) 1 - 1)) ∈ tieIdeal u p τ φ ε ρ₀ :=
+  mem_sup_left (mem_sup_right (subset_span ⟨k, rfl⟩))
+
 /-- For `r` in the augmentation ideal, `r ρ₀` lies in the tie ideal. -/
 lemma mul_mem_tieIdeal {p : O} {τ φ : J × Bool → G} {ε : J → O[X]} {ρ₀ : (MvPolynomial J O)[G]}
     {r : (MvPolynomial J O)[G]} (hr : r ∈ augmentationIdeal (O := O) (G := G) J) :
@@ -368,7 +377,7 @@ lemma coordRows_tau_sub_mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {
     simp only [map_sub, LinearMap.map_smul_of_tower, map_smul, smul_eq_mul, mul_sub, smul_sub]
     abel
   rw [mem_tiedRows, h_val]
-  refine add_mem (mem_sup_left (mem_sup_right (subset_span ⟨i, rfl⟩))) (ker_le_tieIdeal u ?_)
+  refine add_mem (tie_mem_tieIdeal u i) (ker_le_tieIdeal u ?_)
   exact sub_mem (h_ker (τ i))
     (Submodule.smul_of_tower_mem _ _ (Ideal.mul_mem_left _ c (h_ker (φ i))))
 

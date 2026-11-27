@@ -546,7 +546,7 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
       ∃ x : Matrix κ (Fin (Module.finrank E T)) E, ∃ b : GL (Fin (Module.finrank E T)) (𝔸f E),
         HasLeftInv x ∧ colSpan x = T ∧ m = finAdeleMatrix x * b.val :=
     exists_sublatticeBasis_eq_finAdeleMatrix_mul u.val.val_inv T
-  obtain ⟨y, a, ⟨l, hl⟩, hy, hy_prim⟩ : ∃ y : Matrix κ (Fin s) E, ∃ a : GL (Fin s) (𝔸f E),
+  obtain ⟨y, a, hy_inv, hy, hy_prim⟩ : ∃ y : Matrix κ (Fin s) E, ∃ a : GL (Fin s) (𝔸f E),
       HasLeftInv y ∧ colSpan y = xᴴ.mulVecLin.ker ∧
         IsPrimitiveMatrix (Ô E) (u.val.inv * (finAdeleMatrix y * a.val)) :=
     exists_isPrimitiveMatrix_mul_finAdeleMatrix u.val.val_inv _
@@ -558,8 +558,7 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
   -- At each infinite place make the columns of `y` orthonormal by `r v`.
   have h_orth (v : InfinitePlace E) :
       ∃ r : GL (Fin s) ℂ, (y.map (Φ v) * r.val)ᴴ * (y.map (Φ v) * r.val) = 1 :=
-    have h_inv : l.map (Φ v) * y.map (Φ v) = 1 := by simp [← Matrix.map_mul, hl]
-    (exists_orthonormal_mul id ⟨l.map (Φ v), h_inv⟩).imp fun _ ↦ And.right
+    (exists_orthonormal_mul id (hy_inv.map (Φ v))).imp fun _ ↦ And.right
   choose r hr using h_orth
   have h_vol : 1 ≤ ideleAbs (mkAdelicGL (r, a)).det * √(genIndex (mᴴ * m).det) := by
     rw [← h_jacobi]
@@ -573,7 +572,7 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
   · -- `u⁻¹ y Bᵀ = (u⁻¹ y a) (a⁻¹ Bᵀ)` is a product of integral matrices.
     obtain ⟨hy_int, -⟩ := hy_prim
     exact mulVec_mem_baseLattice u (by simpa [Matrix.mul_assoc] using hy_int.mul haB) i
-  · have hBi : B i = 0 := by simpa [hl] using congrArg (l *ᵥ ·) h_zero
+  · have hBi : B i = 0 := hy_inv.injective_mulVec (by simpa using h_zero)
     exact hB_det (det_eq_zero_of_row_eq_zero i (congrFun hBi))
   · -- Trade the determinant of `(r, a)` for the discriminant by `h_vol`.
     have h_rootDiscr_pos : 0 < rootDiscr E := rootDiscr_pos E

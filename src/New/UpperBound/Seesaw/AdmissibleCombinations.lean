@@ -464,7 +464,7 @@ lemma isUnimodular_gradedLatticeBasis_gram
     (hN : f (N : S) = π * star (π : R)) :
     IsUnimodular O ((gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f *
       gradedLatticeBasis e a π u) := by
-  have := Fintype.ofFinite X
+  let := Fintype.ofFinite X
   -- The Gram matrix is `gluedGram N 0`, reindexed by `e`; it and its inverse `gluedGram 0 N` have
   -- entries in `O`.
   let B : Matrix ι ι R := gradedLatticeBasis e a π u
@@ -483,6 +483,19 @@ lemma isUnimodular_gradedLatticeBasis_gram
 /-- The signs on a string of `s` vectors: `-1` at the first `⌊(s + 1) / 2⌋` indices and `1` at
 the others. -/
 def stringSign (s : ℕ) (b : Fin s) : ℤˣ := if (b : ℕ) < (s + 1) / 2 then -1 else 1
+
+private lemma stringSign_mid {s : ℕ} (a : Fin s) (ha : a = a.rev) :
+    ((stringSign s a : ℤ) : ℂ) = -1 := by
+  rw [Fin.ext_iff, Fin.val_rev] at ha
+  have h : (a : ℕ) < (s + 1) / 2 := by omega
+  simp [stringSign, h]
+
+private lemma rev_lt_half_iff {s : ℕ} (a : Fin s) (ha : a ≠ a.rev) :
+    (a.rev : ℕ) < (s + 1) / 2 ↔ ¬ (a : ℕ) < (s + 1) / 2 := by
+  have h_ne : (a : ℕ) ≠ s - 1 - a := fun h ↦ ha (Fin.ext (by rw [Fin.val_rev]; omega))
+  have hlt := a.isLt
+  rw [Fin.val_rev]
+  omega
 
 /-- A complex frame for a string of `s` vectors `e_b`, with `σ = stringSign s`. Column `b` is
 `(σ b • e_b + e_{s - 1 - b}) / √2`. At the middle index `b = s - 1 - b` these two terms cancel,
@@ -514,16 +527,8 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
     simp only [Real.sqrt_inv, Complex.ofReal_inv, ← mul_inv, ← Complex.ofReal_mul,
       Nat.cast_nonneg, Real.mul_self_sqrt, Complex.ofReal_natCast, ne_eq, Nat.cast_eq_zero,
       hN.ne', not_false_eq_true, inv_mul_cancel₀, r]
-  have hσ_mid (a : Fin s) (ha : a = a.rev) : σ a = -1 := by
-    rw [Fin.ext_iff, Fin.val_rev] at ha
-    have h_lt : (a : ℕ) < (s + 1) / 2 := by omega
-    simp only [stringSign, h_lt, ↓reduceIte, Units.val_neg, Units.val_one, Int.reduceNeg,
-      Int.cast_neg, Int.cast_one, σ]
   have hσ_rev (a : Fin s) (ha : a ≠ a.rev) : σ a * σ a.rev = -1 := by
-    have h_iff : (a.rev : ℕ) < (s + 1) / 2 ↔ ¬ (a : ℕ) < (s + 1) / 2 := by
-      have h_ne : (a : ℕ) ≠ s - 1 - a := fun h ↦ ha (Fin.ext (by rw [Fin.val_rev]; omega))
-      have hlt := a.isLt; rw [Fin.val_rev]; omega
-    simp only [σ, stringSign, h_iff]
+    simp only [σ, stringSign, rev_lt_half_iff a ha]
     by_cases h_lt : (a : ℕ) < (s + 1) / 2
     · simp only [h_lt, ↓reduceIte, Units.val_neg, Units.val_one, Int.reduceNeg, Int.cast_neg,
         Int.cast_one, not_true_eq_false, mul_one]
@@ -533,8 +538,8 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
       stringFrame s N i b = if i = b then r else 0 := by
     by_cases hi : i = b
     · simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
-        Complex.ofReal_add, Complex.ofReal_inv, hi, of_apply, ↓reduceIte, hσ_mid b hb,
-        neg_div, one_div, ← hb, neg_add_cancel_left, r, σ]
+        Complex.ofReal_add, Complex.ofReal_inv, hi, of_apply, ↓reduceIte, stringSign_mid b hb,
+        neg_div, one_div, ← hb, neg_add_cancel_left, r]
     · simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
         Complex.ofReal_add, Complex.ofReal_inv, of_apply, hi, ↓reduceIte, ← hb, add_zero]
   have h_col (b : Fin s) (hb : b ≠ b.rev) (i : Fin s) :
@@ -560,7 +565,7 @@ lemma gram_stringFrame_eq_signMatrix {s N : ℕ} (hN : 0 < N) :
   have rev_eq_self (x y : Fin s) (hx : x = x.rev) (hy : y = y.rev) : x = y := by
     rw [Fin.ext_iff, Fin.val_rev] at hx hy; exact Fin.ext (by omega)
   by_cases ha : a = a.rev
-  · simp only [h_col_mid a ha, ite_mul, zero_mul, Fintype.sum_ite_eq', ← ha, hσ_mid a ha]
+  · simp only [h_col_mid a ha, ite_mul, zero_mul, Fintype.sum_ite_eq', ← ha, σ, stringSign_mid a ha]
     by_cases hb : b = b.rev
     · have hab : a = b := rev_eq_self a b ha hb
       subst hab
@@ -601,16 +606,8 @@ lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFram
   have ht : t * t = 2⁻¹ := by
     simp only [Real.sqrt_inv, Complex.ofReal_inv, ← mul_inv, ← Complex.ofReal_mul,
       Nat.ofNat_nonneg, Real.mul_self_sqrt, Complex.ofReal_ofNat, t]
-  have hσ_mid (a : Fin s) (ha : a = a.rev) : σ a = -1 := by
-    rw [Fin.ext_iff, Fin.val_rev] at ha
-    have h_lt : (a : ℕ) < (s + 1) / 2 := by omega
-    simp only [stringSign, h_lt, ↓reduceIte, Units.val_neg, Units.val_one, Int.reduceNeg,
-      Int.cast_neg, Int.cast_one, σ]
   have hσ_rev (a : Fin s) (ha : a ≠ a.rev) : σ a + σ a.rev = 0 := by
-    have h_not : (a.rev : ℕ) < (s + 1) / 2 ↔ ¬ (a : ℕ) < (s + 1) / 2 := by
-      have h_ne : (a : ℕ) ≠ s - 1 - a := fun h ↦ ha (Fin.ext (by rw [Fin.val_rev]; omega))
-      have hlt := a.isLt; rw [Fin.val_rev]; omega
-    simp only [σ, stringSign, h_not]
+    simp only [σ, stringSign, rev_lt_half_iff a ha]
     by_cases h_lt : (a : ℕ) < (s + 1) / 2 <;>
       simp only [h_lt, ↓reduceIte, Units.val_neg, Units.val_one, Int.reduceNeg, Int.cast_neg,
         Int.cast_one, not_true_eq_false, not_false_eq_true, neg_add_cancel, add_neg_cancel]
@@ -619,8 +616,8 @@ lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFram
     by_cases hi : i = b <;>
       simp only [stringFrame, Complex.ofReal_div, Complex.ofReal_intCast, Real.sqrt_inv,
         Nat.cast_one, inv_one, Real.sqrt_one, Complex.ofReal_add, Complex.ofReal_inv,
-        hi, of_apply, ↓reduceIte, hσ_mid b hb, neg_div, one_div, ← hb, neg_add_cancel_left,
-        add_zero, Complex.ofReal_one, σ]
+        hi, of_apply, ↓reduceIte, stringSign_mid b hb, neg_div, one_div, ← hb, neg_add_cancel_left,
+        add_zero, Complex.ofReal_one]
   have h_col (b : Fin s) (hb : b ≠ b.rev) (i : Fin s) :
       stringFrame s 1 i b = (if i = b then σ b * t else 0) + if i = b.rev then t else 0 := by
     by_cases hi : i = b <;>
@@ -677,7 +674,7 @@ lemma exists_conjTranspose_mul_gradedGram_mul_eq_signMatrix [Finite X] (e : (X �
     (φ : R →+* ℂ) (hN : 0 < N) {ε : ι → ℤˣ} (hε : negCount ε = (s + 1) / 2) :
     ∃ y : Matrix ι ι ℂ, yᴴ * (gradedGram e (N : R)).map φ * y = signMatrix ε ∧
       (N = 1 → yᴴ * y = 1) := by
-  have := Fintype.ofFinite X
+  let := Fintype.ofFinite X
   -- Up to a bijection `f` of the indices the signs are `1` on `X ⊕ Unit` and `stringSign s` on
   -- the string. The frame is the identity on `X ⊕ Unit` and `stringFrame s N` on the string.
   let σ : (X ⊕ Unit) ⊕ Fin s → ℤˣ := 1 ⊕ᵥ stringSign s
@@ -1088,7 +1085,7 @@ lemma New.Seesaw.isAdmissibleCombination_weil_vacElem {E n : Type} [Field E] [CM
   have h_index_ne : H.index ≠ 0 := fun h_zero ↦ by
     simp only [h_zero, Nat.cast_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
       pow_eq_zero_iff, norm_eq_zero, finMultiplier_ne_zero] at h_index
-  have : Fintype (L ⧸ H) := fintypeOfIndexNeZero h_index_ne
+  let : Fintype (L ⧸ H) := fintypeOfIndexNeZero h_index_ne
   -- `ζ z` is the root of unity in the product of the translations by `g x` and `g z`.
   let ζ (z : L ⧸ H) : ℂ :=
     stdLattice.selfDualAddChar E (star stdLattice.traceOneAdele * star (M *ᵥ z.out) ⬝ᵥ M *ᵥ x)

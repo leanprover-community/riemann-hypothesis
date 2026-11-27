@@ -303,7 +303,7 @@ lemma IsPairEdge.exists_lift_eq_realConv (hP : IsPairEdge a b e e' P)
           (modDatum S T 𝔪 Ψ (polyVector (realSigns E (homSigns s s')) Q)) y =
         realConv α (pairLift S T (a i) (b i) P Ψ e e' y) := by
   -- The same `α` serves for every theta kernel with real part `realPairWeil γ γ'`, so for all data.
-  have ⟨γ, γ', ha, hb, h_edge⟩ := hP
+  let ⟨γ, γ', ha, hb, h_edge⟩ := hP
   obtain ⟨α, hα⟩ := h_edge.exists_lift_eq_realConv _ ⟨Q, rfl⟩
   refine ⟨α, fun i S T 𝔪 Ψ y ↦ ?_⟩
   -- the weights of `a i` and `b i` are used as instances
@@ -394,7 +394,7 @@ theorem IsEdgeFamily.petersson_lift_eq_mul_inner_modTransposedLift (h : IsEdgeFa
         κ * inner ℂ (modTransposedLift S T (a i) P x (k' !d) (k !d) z) y := by
   -- Conjugate the identity of `IsEdge.exists_petersson_lift_eq_mul` for the conjugate forms, and
   -- pass from the lift with `P` to its adjoint.
-  have ⟨hk, hk', γ, γ', ψ, hγ, hγ', h_edge⟩ := h
+  let ⟨hk, hk', γ, γ', ψ, hγ, hγ', h_edge⟩ := h
   obtain ⟨κ, hκ⟩ := h_edge.exists_petersson_lift_eq_mul
   refine ⟨star (κ Q), fun i S T 𝔪 x y z ↦ ?_⟩
   have ⟨hk_star, hk'_star⟩ : k (!d) = star (k d) ∧ k' (!d) = star (k' d) :=

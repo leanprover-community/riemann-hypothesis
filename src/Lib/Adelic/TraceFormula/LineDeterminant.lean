@@ -168,9 +168,9 @@ lemma charpoly_eq_of_finrank_maxGenEigenspace_eq
 
 lemma finrank_maxGenEigenspace_zero_of_det_ne_zero (h_det : T.det ≠ 0) :
     finrank ℂ (T.maxGenEigenspace 0) = 0 := by
-  rw [finrank_maxGenEigenspace_eq]
-  exact rootMultiplicity_eq_zero fun h_root ↦
-    h_det (by simp [det_eq_sign_charpoly_coeff, coeff_zero_eq_eval_zero, h_root.eq_zero])
+  have h_unit : IsUnit T := (isUnit_iff_isUnit_det T).2 h_det.isUnit
+  rw [T.maxGenEigenspace_eq_genEigenspace_finrank, End.genEigenspace_zero_nat,
+    (isUnit_iff_ker_eq_bot _).1 (h_unit.pow _), finrank_bot]
 
 /-- Two invertible operators with the same traces of all positive powers have the same
 characteristic polynomial. -/

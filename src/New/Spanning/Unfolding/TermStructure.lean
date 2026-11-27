@@ -266,6 +266,10 @@ lemma commonIsotropic_le_colSpan_frameImage_one (γ : S.G E) :
     commonIsotropic γ ≤ colSpan (frameImage 1) :=
   (commonIsotropic_le_isotropicSpan_one γ).trans (isotropicSpan_le_colSpan_frameImage 1)
 
+lemma commonIsotropic_le_colSpan_frameImage_coe (γ : S.G E) :
+    commonIsotropic γ ≤ colSpan (frameImage γ.val.val) :=
+  (commonIsotropic_le_isotropicSpan_coe γ).trans (isotropicSpan_le_colSpan_frameImage γ.val.val)
+
 /-- A vector `p` on two copies of the middle coordinates lies in the kernel of
 `zRowBlockDiagonal (S.ratMiddle E)` (two copies of the `z`-row of the Gram matrix) if and only if
 both `z`-coordinates of `p` are `0`. -/
@@ -381,15 +385,14 @@ theorem disjoint_colSpan_frameImage (h_disc : S.termDisc γ ≠ 0) :
 `A = ⟨e_1, …, e_ϱ⟩`. -/
 lemma commonIsotropic_eq_bot (h_disc : S.termDisc γ ≠ 0) : commonIsotropic γ = ⊥ :=
   disjoint_self.1 ((disjoint_colSpan_frameImage h_disc).mono
-    (commonIsotropic_le_colSpan_frameImage_one γ)
-    ((commonIsotropic_le_isotropicSpan_coe γ).trans (isotropicSpan_le_colSpan_frameImage γ.val.val)))
+    (commonIsotropic_le_colSpan_frameImage_one γ) (commonIsotropic_le_colSpan_frameImage_coe γ))
 
 /-- The span `γ A⁺` of the image under `γ` of the frame `e_1, …, e_ϱ, z_N` has the rank
 `n = ϱ + 1`. -/
 lemma finrank_colSpan_frameImage (γ : S.G E) :
     finrank E (colSpan (frameImage (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E))) = 𝔰.n := by
-  rw [LinearMap.finrank_range_of_inj ((injective_iff_map_eq_zero _).2 fun _ ↦
-    frameImage_mulVec_eq_zero_iff.1), finrank_fin_fun]
+  rw [colSpan, range_mulVecLin, finrank_span_eq_card (linearIndependent_col_frameImage γ),
+    Fintype.card_fin]
 
 /-- The ranks of `frameSum γ` = `A⁺_γ = A⁺ + γ A⁺` (the span of the frame and of its image under
 `γ`) and of its orthogonal complement `framePerp γ` add up to `𝔰.r`, the rank of the whole space. -/
@@ -473,15 +476,8 @@ lemma mem_isotropicSpan {M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E} :
 `e_1, …, e_ϱ, z_N` has rank `j`. -/
 lemma finrank_flagSpan_coe (γ : S.G E) (j : Fin (𝔰.ϱ + 2)) :
     finrank E (flagSpan (γ : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) j) = j := by
-  let g : GL 𝔰.BesselIndex E := γ
-  let e : Fin j → 𝔰.BesselIndex := 𝔰.besselFrame ∘ castLE j.is_le
-  have he : Injective e := besselFrame_injective.comp (castLE_injective j.is_le)
-  -- The rows of `γ⁻¹` at the indices `e` form a left inverse of the columns of `γ` at `e`.
-  have h_left : g⁻¹.val.submatrix e id * g.val.submatrix id e = 1 := by
-    rw [← submatrix_mul _ _ e id e bijective_id, g.inv_mul, submatrix_one e he]
-  rw [flagSpan, submatrix_submatrix, id_comp,
-    LinearMap.finrank_range_of_inj (HasLeftInv.injective_mulVec ⟨g⁻¹.val.submatrix e id, h_left⟩),
-    finrank_fin_fun]
+  rw [flagSpan, colSpan, range_mulVecLin, finrank_span_eq_card, Fintype.card_fin]
+  exact (linearIndependent_col_frameImage γ).comp _ (castLE_injective j.is_le)
 
 /-- A vector with the coefficients `x` in the frame `e_1, …, e_ϱ, z_N` and `x'` in its image under
 `γ` lies in `I_γ = A ∩ γ A` if one of its coefficients at `z_N` and `γ z_N` vanishes, because the

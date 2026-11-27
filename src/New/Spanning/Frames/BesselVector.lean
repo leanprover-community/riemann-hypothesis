@@ -395,6 +395,16 @@ theorem isCut_besselVector : F.IsCut Z.besselVector := by
   exact { toIsBoundedMeasurable := ⟨h_meas, _,
     h_bdd⟩, map_unipotent_mul := h_law, exists_mul_mem_box := h_supp }
 
+open scoped Classical in
+/-- The ascending Heisenberg convolution gives the coset `K c⁻¹` mass `F.unipotentMass`
+if it meets `T.besselU`, and zero otherwise, where `K = F.congruenceSubgroup`. -/
+lemma ascConv_congruenceSubgroup_coset (c : T.G) :
+    ascConv heisenbergMeasure (𝔰.ϱ + 2) {u : T.G | u * c ∈ F.congruenceSubgroup} =
+      if ∃ u ∈ T.besselU, u * c ∈ F.congruenceSubgroup then F.unipotentMass else 0 := by
+  simpa only [mconv_dirac_one, dirac_apply' _ measurableSet_exists_mul_mem_level, Set.indicator,
+    mem_ofPred_eq, one_mul, Pi.one_apply, mul_ite, mul_one, mul_zero] using
+    h.ascConv_mconv_unitaryLevel_coset (c := c) (θ := dirac 1) h.integral_data.2.2
+
 /-- The pairing of two translates of the finite Bessel vector as an integral over the Bessel
 unipotent group 𝖴. For a large lattice datum and K(g) ≤ Z ≤ K, let fl = `F.unipotentMass` be the
 mass of 𝖴 ∩ K(g), let W_Z = `Z.besselVector`, and let χ_g = `extendedBesselChar F.levelUnit` be the
@@ -415,10 +425,6 @@ theorem unipotentMass_mul_inner_besselVector (y x : T.G) :
   let a : Z.Cosets → ℂ := fun c ↦ Z.besselVector (y * x) c * star (Z.besselVector y c)
   have hS_meas (c : Z.Cosets) : MeasurableSet (S c) :=
     measurable_mul_const _ measurableSet_unitaryLevel
-  have hg : F.levelUnit.val ∈ integers ∧ star F.levelUnit.val = F.levelUnit := h.integral_data.2.2
-  have h_mass (c : Z.Cosets) : ν (S c) = F.unipotentMass *
-      dirac 1 {z : T.G | ∃ u ∈ T.besselU, u * (z * (y * c.out.val⁻¹)) ∈ F.congruenceSubgroup} := by
-    simpa only [mconv_dirac_one] using h.ascConv_mconv_unitaryLevel_coset (θ := dirac 1) hg
   have h_integrand (u : T.G) (hu : u ∈ T.besselU) :
       Set.indicator Z (fun z : T.G ↦ extendedBesselChar F.levelUnit (z * x * z⁻¹)) (u * y) =
         ∑ c : Z.Cosets, (S c).indicator (fun _ ↦ a c) u := by
@@ -450,22 +456,21 @@ theorem unipotentMass_mul_inner_besselVector (y x : T.G) :
       ∑ c : Z.Cosets, (S c).indicator (fun _ ↦ a c) u :=
     ae_ascConv_mem_unipotentBelow.mono fun u hu ↦ h_integrand u (unipotentBelow_le_besselU hu)
   have h_fin (c : Z.Cosets) : ν (S c) ≠ ∞ := by
-    rw [h_mass]
-    exact ENNReal.mul_ne_top unipotentMass_ne_zero_and_ne_top.2 (measure_ne_top _ _)
+    simp only [S, ν, h.ascConv_congruenceSubgroup_coset]
+    split
+    · exact unipotentMass_ne_zero_and_ne_top.2
+    · exact ENNReal.zero_ne_top
   rw [integral_congr_ae h_ae,
     integral_finsetSum _ fun c _ ↦ (integrableOn_const (h_fin c)).integrable_indicator (hS_meas c),
     PiLp.inner_apply, mul_sum]
   refine sum_congr rfl fun c _ ↦ ?_
   by_cases hc : Z.besselVector y c = 0
   · simp [a, hc]
-  -- Otherwise `y c⁻¹ ∈ u K(g)` for some `u`, so the Dirac mass in `h_mass` is `1`.
-  obtain ⟨u, hu, huy⟩ : ∃ u ∈ T.besselU, u⁻¹ * (y * c.out.val⁻¹) ∈ F.congruenceSubgroup :=
-    exists_besselU_of_extendedBesselChar_ne_zero hc
-  have h_one : (1 : T.G) ∈ {z : T.G | ∃ u ∈ T.besselU, u * (z *
-    (y * c.out.val⁻¹)) ∈ F.congruenceSubgroup} :=
-    ⟨u⁻¹, inv_mem hu, by simpa using huy⟩
-  rw [integral_indicator_const _ (hS_meas c), Measure.real, h_mass, dirac_apply_of_mem h_one,
-    mul_one]
+  -- A nonzero coordinate means that the coset meets the Bessel unipotent group.
+  have h_meets : ∃ u ∈ T.besselU, u * (y * c.out.val⁻¹) ∈ F.congruenceSubgroup :=
+    T.besselU.exists_inv_mem_iff_exists_mem.mp (exists_besselU_of_extendedBesselChar_ne_zero hc)
+  simp only [integral_indicator_const _ (hS_meas c), Measure.real, S, ν,
+    h.ascConv_congruenceSubgroup_coset, ite_eq_left h_meets]
   simp [a, Complex.real_smul]
 
 /-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, the set of `u` with `u y ∈ Z`
@@ -513,6 +518,13 @@ theorem enorm_sq_besselVector_mul_unipotentMass (y : T.G) :
     _ = ν {u : T.G | u * y ∈ Z.val} := by
       rw [h_unfold, eNorm_smul, h_phase, mul_one, Real.eNorm_of_nonneg measureReal_nonneg,
         ofReal_measureReal ((ascConv_setOf_mul_mem_le_one Z y).trans_lt one_lt_top).ne]
+
+/-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, the normalised Bessel vector
+`√fl W_Z` has norm at most one at every point, where `fl = F.unipotentMass` is the mass of 𝖴 ∩ K(g)
+and `W_Z = Z.besselVector`. -/
+theorem enorm_sq_besselVector_mul_le_one (y : T.G) :
+    ‖Z.besselVector y‖ₑ ^ 2 * F.unipotentMass ≤ 1 :=
+  (enorm_sq_besselVector_mul_unipotentMass Z y).trans_le (ascConv_setOf_mul_mem_le_one Z y)
 
 /-- For a large lattice datum `F` and a group `Z` with K(g) ≤ Z ≤ K, let `fl = F.unipotentMass` be
 the mass of 𝖴 ∩ K(g) and `W_Z = Z.besselVector`. The squared norm of `√fl W_Z` on 𝖴∖G is the measure
@@ -577,8 +589,7 @@ theorem lintegral_inner_besselVector_sq_mul_le (x : T.G) :
         ‖Z.besselVector x‖ₑ * ‖Z.besselVector y‖ₑ :=
       coe_le_coe.2 (nnNorm_inner_le_nnNorm _ _)
     rw [Set.indicator_of_mem (h_supp y hy)]
-    grw [h_schwarz, mul_pow, mul_assoc, enorm_sq_besselVector_mul_unipotentMass,
-      ascConv_setOf_mul_mem_le_one, mul_one]
+    grw [h_schwarz, mul_pow, mul_assoc, enorm_sq_besselVector_mul_le_one, mul_one]
   calc
     _ ≤ (∫⁻ y : T.G, S.indicator (fun _ ↦ ‖Z.besselVector x‖ₑ ^ 2) y ∂θ) * F.unipotentMass := by
       grw [lintegral_mul_const_le, lintegral_mono h_bound]

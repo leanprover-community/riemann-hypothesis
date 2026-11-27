@@ -37,7 +37,8 @@ Notions from other files:
 * `New.Lift.FrobGroup`: the group ℤ × Γ, acting on A_inf by (n, g) ↦ φ^n j(g).
 * `New.Lift.Chart.S`, `New.Lift.Chart.bicommutant`: for a chart, the Λ-subalgebra S of A_inf that is
   the image of the chart's map Λ[[X]] → A_inf, with `k.coord₀ : A_inf → S` an S-linear retraction of
-  A_inf onto S, and the subalgebra S_B of B^+, the closure of S[E/p] with p inverted.
+  A_inf onto S, and the subalgebra S_B of B^+ of the elements whose multiplication commutes with
+  every S-linear map of B^+ that keeps the image of A_max.
 * `New.Period.hodgeFil`: the step Fil^n = t^n B_dR^+ of the filtration of B_dR, for n in ℤ.
 
 ## Relation to the literature
@@ -405,7 +406,7 @@ lemma sum_phiInvToBdR_map_mul_mem_of_mem_valueField (f : Ainf →ₗ[k.S] k.S) {
           f.map_smul ⟨φ ^ a • s, by simp [phi_pow_smul, ← k.coe_phi_pow]⟩ (φ ^ a • x) }
   -- Applying the extension of `f'` to `BPlus` multiplies the weighted sum by some `u : BdRPlus`.
   let term (i : Σ l, q l) : BPlus :=
-    i.2.1.1 * Chart.ainfToBPlus ((φ ^ a)⁻¹ • i.2.1.2 • r i.1)
+    i.2.val.1 * Chart.ainfToBPlus ((φ ^ a)⁻¹ • i.2.val.2 • r i.1)
   obtain ⟨u, hu⟩ := k.isChartOf.dvd_extendToBPlus _
     (fun i : Σ l, q l ↦ (c i.1 i.2).property) f' term
   simp [term, f', k.extendToBPlus_mul, k.extendToBPlus_ainfToBPlus,

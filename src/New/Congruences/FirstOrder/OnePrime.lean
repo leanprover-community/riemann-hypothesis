@@ -191,6 +191,14 @@ noncomputable def familyCoeff {𝒜 : J → Subring R}
     (S : Finset J) : R :=
   commutingProd h𝒜 (S.piecewise der Nm)
 
+/-- An element that commutes with all the subrings `𝒜 j` commutes with every product
+`familyCoeff h𝒜 Nm der S = ∏_{j ∈ S} der j ∏_{j ∉ S} Nm j` of elements `der j`, `Nm j` of `𝒜 j`. -/
+lemma commute_familyCoeff {𝒜 : J → Subring R}
+    (h𝒜 : ∀ i j : J, i ≠ j → ∀ a ∈ 𝒜 i, ∀ b ∈ 𝒜 j, Commute a b) (Nm der : ∀ j : J, 𝒜 j)
+    {t : R} (ht : ∀ j : J, ∀ a ∈ 𝒜 j, Commute t a) (S : Finset J) :
+    Commute t (familyCoeff h𝒜 Nm der S) :=
+  MonoidHom.commute_noncommPiCoprod _ (fun j (a : 𝒜 j) ↦ ht j a a.property) (S.piecewise der Nm)
+
 /-- Let `𝒜 j` be pairwise commuting subrings of `R`, with elements `Nm j` and `der j`, so that
 `familyCoeff h𝒜 Nm der S` is the product `∏_{j ∈ S} der j ∏_{j ∉ S} Nm j`. Let `ρ` map the product
 of the finite groups `Γ j` to `R`, with `Γ j` going into `𝒜 j`. If `Nm j` is the sum of `ρ` over
@@ -242,8 +250,7 @@ lemma exists_empty_eq_sum_and_insert_eq_mul (ρ : (∀ j : J, Γ j) →* R) (�
         N S = N' * ∑ g : Γ j, ρ (Pi.mulSingle j g) ∧ N (insert j S) = N' * der j := by
   let Nm (j : J) : 𝒜 j := ⟨∑ g : Γ j, ρ (Pi.mulSingle j g), sum_mem fun g _ ↦ hρ j g⟩
   let der' (j : J) : 𝒜 j := ⟨der j, h_der j⟩
-  exact ⟨familyCoeff h𝒜 Nm der', fun t ht S ↦
-    MonoidHom.commute_noncommPiCoprod _ (fun j (a : 𝒜 j) ↦ ht j a a.property) (S.piecewise der' Nm),
+  exact ⟨familyCoeff h𝒜 Nm der', fun t ht ↦ commute_familyCoeff h𝒜 Nm der' ht,
     familyCoeff_empty ρ h𝒜 hρ (fun j ↦ rfl) der',
     fun j S hj ↦ exists_familyCoeff_eq_mul h𝒜 Nm der' hj⟩
 
@@ -445,7 +452,7 @@ lemma transfer_firstEntry_diagGL (x : Fˣ) :
   let H : Subgroup (GL (Fin N) F) := residueLineStabilizer F N
   set g : GL (Fin N) F := diagGL (Pi.mulSingle 0 x) with hg
   let Ω : Type := Quotient (MulAction.orbitRel (Subgroup.zpowers g) (GL (Fin N) F ⧸ H))
-  have : Fintype Ω := Fintype.ofFinite Ω
+  let : Fintype Ω := Fintype.ofFinite Ω
   have g_pow (f : ℕ) : g ^ f = diagGL (Pi.mulSingle 0 (x ^ f)) := by simp [hg, Pi.mulSingle_pow]
   have g_mem : g ∈ H := mem_residueLineStabilizer.2 fun i hi ↦ by simp [g, hi]
   let η₀ : GL (Fin N) F ⧸ H := ↑(1 : GL (Fin N) F)
@@ -477,7 +484,7 @@ transvections: `τ` sends the image of each transvection `t` to `1`. -/
 lemma map_toGL_transvection_eq_one {n : Type*} [Fintype n] [DecidableEq n] (τ : GL n F →* Fˣ)
     (t : TransvectionStruct n F) : τ (toGL t.toSpecialLinearGroup) = 1 := by
   -- `c ↦ τ (transvection c)` is a homomorphism from a group of order `q` to one of order `q - 1`.
-  have : Fintype F := Fintype.ofFinite F
+  let : Fintype F := Fintype.ofFinite F
   let ψ : F →+ Additive Fˣ :=
     .mk' (fun c ↦ .ofMul (τ (toGL (transvection t.hij c)))) (by simp [transvection_add])
   have pow_card : τ (toGL t.toSpecialLinearGroup) ^ Fintype.card F = 1 :=
@@ -509,7 +516,7 @@ lemma transfer_firstEntry (g : GL (Fin N) F) :
   set τ := (firstEntry (F := F) (N := N)).transfer
   have τ_diag : τ.comp diagGL = GeneralLinearGroup.det.comp diagGL := MonoidHom.pi_ext fun i x ↦
     (transfer_firstEntry_diagGL_mulSingle i x).trans <| Units.ext (by simp [← Units.coe_prod])
-  have ⟨g', h, h'⟩ := diagonal_transvection_induction_of_det_ne_zero
+  let ⟨g', h, h'⟩ := diagonal_transvection_induction_of_det_ne_zero
     (fun M ↦ ∃ g' : GL (Fin N) F, (g' : Matrix _ _ F) = M ∧ τ g' = GeneralLinearGroup.det g')
     g g.det_ne_zero
     (fun D hD ↦ ⟨diagGL fun i ↦ .mk0 (D i) (by simp_all [prod_ne_zero_iff]), rfl,

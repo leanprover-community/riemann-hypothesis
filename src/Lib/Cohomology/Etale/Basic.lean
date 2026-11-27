@@ -27,6 +27,7 @@ import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.LocalProperties.Reduced
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.RingTheory.Ideal.Maps
 public import Lib.General.Algebra.AbsIntegrallyClosed
 
 /-!
@@ -100,8 +101,8 @@ scoped instance {F G : D ⥤ T} : CoeFun (F ⟶ G) fun _ ↦ ∀ A : D, F A ⟶ 
 /-- A subfunctor is applied to an object. -/
 scoped instance {F : D ⥤ Type _} : CoeFun (Subfunctor F) fun _ ↦ ∀ A : D, Set (F A) := ⟨(·.obj)⟩
 
-/-- The category of covariant functors from C to abelian groups. -/
-abbrev AbFunctor : Type 2 := C ⥤ AddCommGrpCat.{1}
+/-- The category of covariant functors from `D` to abelian groups. -/
+abbrev AbFunctor (D : Type*) [Category* D] := D ⥤ AddCommGrpCat.{1}
 
 -- `HasAbFunctorExt` is a reducible `def` and not an `abbrev`: the kernel then compares these
 -- instances by `C` alone instead of unfolding them.
@@ -146,7 +147,7 @@ abbrev H : Type 2 := Abelian.Ext N F n
 
 /-- The functor sending a set-valued functor Y to Z[Y], whose value at A is the free abelian group
 on Y(A). -/
-def freeAb : (D ⥤ Type 1) ⥤ D ⥤ Ab.{1} := (whiskeringRight D (Type 1) Ab) free
+def freeAb : (D ⥤ Type 1) ⥤ AbFunctor D := (whiskeringRight D (Type 1) Ab) free
 
 /-- A functor from C to small abelian groups, regarded as taking values in abelian groups of the
 next universe. -/
@@ -388,6 +389,11 @@ variable (A : Type*) [CommRing A] (Λ : Ab.{0})
 polynomial of positive degree has a root. -/
 class IsAbsIntegrallyClosedLocal extends IsDomain A, IsLocalRing A, IsAbsIntegrallyClosed A
 
+-- The projections rank low, so that the instances on algebraically closed fields are found
+-- directly rather than through the instance of this class on such fields (below).
+attribute [instance 100] IsAbsIntegrallyClosedLocal.toIsDomain
+  IsAbsIntegrallyClosedLocal.toIsLocalRing IsAbsIntegrallyClosedLocal.toIsAbsIntegrallyClosed
+
 /-- A is a test ring: reduced, absolutely integrally closed, and any a, b admit an idempotent e
 with a ∣ eb and b ∣ (1 − e)a. -/
 structure IsTest extends IsAbsIntegrallyClosed A where
@@ -544,22 +550,9 @@ lemma locallyConstant_mem_of_indicator {Λ : Type*} [AddCommGroup Λ]
 /-- If divisibility in `A` is total, every element of the extension of an ideal `J` along
 `f : A →+* B` is a multiple of `f i` for a single `i ∈ J`. -/
 lemma exists_map_dvd_of_mem_map [PreValuationRing A] {J : Ideal A} {x : B}
-    (hx : x ∈ Ideal.map f J) : ∃ i ∈ J, f i ∣ x := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-    obtain ⟨i, hi, rfl⟩ := hx
-    exact ⟨i, hi, dvd_rfl⟩
-  | zero => exact ⟨0, J.zero_mem, dvd_zero _⟩
-  | add x y _ _ ih_x ih_y =>
-    -- of the two elements of `J`, one divides the other, and its image divides both terms
-    obtain ⟨i, hi, h_dvd_x⟩ := ih_x
-    obtain ⟨j, hj, h_dvd_y⟩ := ih_y
-    obtain h_ij | h_ji := dvd_total i j
-    · exact ⟨i, hi, dvd_add h_dvd_x ((map_dvd f h_ij).trans h_dvd_y)⟩
-    · exact ⟨j, hj, dvd_add ((map_dvd f h_ji).trans h_dvd_x) h_dvd_y⟩
-  | smul a x _ ih =>
-    obtain ⟨i, hi, h_dvd_x⟩ := ih
-    exact ⟨i, hi, h_dvd_x.mul_left a⟩
+    (hx : x ∈ Ideal.map f J) : ∃ i ∈ J, f i ∣ x :=
+  (Ideal.mem_map_iff_exists_dvd_of_dvd_total f
+    (fun a _ b _ ↦ (dvd_total a b).imp (map_dvd f) (map_dvd f))).mp hx
 
 /-- An absolutely integrally closed domain `A` in which of any two elements one divides the other
 (`PreValuationRing A`) is a test ring: the idempotent `e` can be taken to be `1` or `0`. -/
@@ -1211,7 +1204,7 @@ instance : Epi (abCoker.π α) where
 
 /-- For a subfunctor `U` of a set-valued functor `Y`, the functor to abelian groups ℤ[Y]/ℤ[U], the
 cokernel of the map ℤ[U] → ℤ[Y]. -/
-def relFreeAb : C ⥤ Ab := abCoker (freeAb.map U.ι)
+def relFreeAb : AbFunctor C := abCoker (freeAb.map U.ι)
 
 /-- For a subfunctor `U` of `Y`, the quotient morphism ℤ[Y] → ℤ[Y]/ℤ[U]. -/
 def relFreeAb.π : freeAb Y ⟶ relFreeAb U := abCoker.π (freeAb.map U.ι)

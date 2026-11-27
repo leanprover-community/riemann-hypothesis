@@ -302,6 +302,10 @@ lemma PointsIn.eq_of_left_eq {A : CommAlg k} {x y : PointsIn W A}
     (h_left : x.down.left = y.down.left) : x = y :=
   ULift.down_injective (OverMorphism.ext h_left)
 
+/-- The image of a point `x` under `φ : A → B` has underlying morphism `Spec φ ≫ x`. -/
+lemma PointsIn.map_left {A B : CommAlg k} (φ : A ⟶ B) (x : PointsIn W A) :
+    (x.map φ).down.left = specMap φ.hom ≫ x.down.left := rfl
+
 /-- A ring map `u : A → B` of `k`-algebras whose spectrum commutes with the structure maps to
 `Spec k` induces the same morphism of spectra as some map of `k`-algebras `A → B`. -/
 lemma exists_hom_specMap_eq {A B : CommAlg k} (u : CommRingCat.of A ⟶ CommRingCat.of B)
@@ -416,7 +420,7 @@ lemma hasAtlas_algPointsOf (d : ℕ) [IsProper W.hom]
   have t_map (A B : CommAlg k) (φ : A ⟶ B) (x : PointsIn W A) :
       t (x.map φ) = specMap φ.hom ≫ t x := by
     apply pullback.hom_ext
-    · rw [assoc, t_fst, t_fst]; rfl
+    · rw [assoc, t_fst, t_fst, PointsIn.map_left]
     · -- `φ` commutes with the structure maps from `k`.
       rw [assoc, t_snd, t_snd, ← φ.hom.comp_algebraMap]
       exact Spec.map_comp (CommRingCat.ofHom _) (CommRingCat.ofHom _)

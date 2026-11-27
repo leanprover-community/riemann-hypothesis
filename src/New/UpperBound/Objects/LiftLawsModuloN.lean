@@ -312,7 +312,8 @@ structure LiftLaw (L : (Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ) �
   /-- Passing in the direct datum from bases of the enlarged lattices (`lastRowDatum`) to bases of
   the original lattices (`directDatum`) costs the factor `γ`. -/
   diagNInv_lastRowDatum (φ : π) :
-    π'.ρ (diagNInv (P := P) (N := N)) (L lastRowDatum φ) = γ • L directDatum (π.ρ (diagNInv (P := P) (N := N)) φ)
+    π'.ρ (diagNInv (P := P) (N := N)) (L lastRowDatum φ) =
+        γ • L directDatum (π.ρ (diagNInv (P := P) (N := N)) φ)
 
 variable {π π'} {φ : π}
   {L : (Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π →ₗ[ℂ] π'} {γ : ℂ}
@@ -388,11 +389,13 @@ omit [WeilData E] in
 `D⁻¹ T D` is integral with last row the last basis vector modulo `N` (`lastRowDatum`) exactly if
 `T` is integral with last column the last basis vector modulo `N` (`directDatum`). -/
 lemma lastRowDatum_conj_diagNInv (T : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P)) :
-    lastRowDatum ((diagNInv (P := P) (N := N) (n := n'))⁻¹.val * T * (diagNInv (P := P) (N := N) (n := n)).val) =
+    lastRowDatum ((diagNInv (P := P) (N := N) (n := n'))⁻¹.val * T *
+      (diagNInv (P := P) (N := N) (n := n)).val) =
       directDatum T := by
   -- Conjugation multiplies the last row of `T` by `N` and the last column by `N⁻¹`, off the corner.
   set C : Matrix (n' ⊕ Unit) (n ⊕ Unit) (LocProd P) :=
-    (diagNInv (P := P) (N := N) (n := n'))⁻¹.val * T * (diagNInv (P := P) (N := N) (n := n)).val with hC
+    (diagNInv (P := P) (N := N) (n := n'))⁻¹.val * T * (diagNInv (P := P) (N := N) (n := n)).val
+        with hC
   have h_block (i : n') (j : n) : C (.inl i) (.inl j) = T (.inl i) (.inl j) := by
     simp only [hC, diagNInv, diagN, ← map_inv, inv_inv, coe_diagGL, Pi.inv_apply,
       Units.val_inv_eq_inv_val, mul_diagonal, diagonal_mul, Sum.isLeft_inl, Units.val_one, one_mul,
@@ -467,7 +470,8 @@ lemma exists_inclGL_eq_conj_diagNInv {g : GL (n ⊕ Unit) (LocProd P)} (hg : g �
       lastRowDatum ((diagNInv (P := P) (N := N))⁻¹ * a * (diagNInv (P := P) (N := N))).val ≠ 0 := by
     rw [Units.val_mul, Units.val_mul, lastRowDatum_conj_diagNInv]
     exact directDatum_ne_zero_of_mem_mirabolic ha
-  have h_conj_inv : lastRowDatum ((diagNInv (P := P) (N := N))⁻¹ * g * (diagNInv (P := P) (N := N)))⁻¹.val ≠ 0 := by
+  have h_conj_inv : lastRowDatum
+      ((diagNInv (P := P) (N := N))⁻¹ * g * (diagNInv (P := P) (N := N)))⁻¹.val ≠ 0 := by
     rw [_root_.mul_inv_rev, _root_.mul_inv_rev, inv_inv, ← mul_assoc]
     exact h_conj (inv_mem hg)
   obtain ⟨k, hk_row, hk⟩ := exists_inclGL_eq
@@ -817,14 +821,16 @@ lemma glued_eq_direct_direct_upOperator (H : LiftLaw π π' L γ) [DecidableEq n
     {π'' : Rep ℂ (GL (n'' ⊕ Unit) (LocProd P))}
     {L' : (Matrix (n'' ⊕ Unit) (n' ⊕ Unit) (LocProd P) → ℂ) →ₗ[ℂ] π' →ₗ[ℂ] π''} {γ' : ℂ}
     (H' : LiftLaw π' π'' L' γ') (hφ : φ ∈ ramified π) :
-    π''.ρ (diagNInv (P := P) (N := N)) (∑ y : n' ⊕ Unit → P → ZMod N, L' (charDatum y) (L (lastColDatum y) φ)) =
+    π''.ρ (diagNInv (P := P) (N := N))
+      (∑ y : n' ⊕ Unit → P → ZMod N, L' (charDatum y) (L (lastColDatum y) φ)) =
       (#(primitiveVectors (P := P) (N := N) (n' ⊕ Unit)) • (γ' * γ)) •
         L' directDatum (L directDatum (upOperator π φ)) := by
   -- Separate into a mirror lift after a direct lift, replace the mirror lift by a direct lift after
   -- `Up`, and move `Up` through the first lift.
   let c : ℕ := #(primitiveVectors (P := P) (N := N) (n' ⊕ Unit))
   have h_ramified : L directDatum φ ∈ ramified π' := H.mem_ramified _ hφ
-  calc π''.ρ (diagNInv (P := P) (N := N)) (∑ y : n' ⊕ Unit → P → ZMod N, L' (charDatum y) (L (lastColDatum y) φ))
+  calc π''.ρ (diagNInv (P := P) (N := N))
+          (∑ y : n' ⊕ Unit → P → ZMod N, L' (charDatum y) (L (lastColDatum y) φ))
       = c • π''.ρ (diagNInv (P := P) (N := N)) (L' mirrorDatum (L directDatum φ)) := by
         rw [H.sum_charDatum_lastColDatum H' hφ, map_nsmul]
     _ = c • γ' • L' directDatum (γ • L directDatum (upOperator π φ)) := by

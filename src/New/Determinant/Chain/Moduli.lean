@@ -354,6 +354,15 @@ lemma CriticalPair.isTameFor_mul (p : D.CriticalPair) (hp : p.IsRamified) (ξ : 
       (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart)) := by
   exact isTameFor_of_hasWeight ξ (by simpa using p.hasWeight.mul ξ.hasWeight) hp
 
+/-- For a ramified critical pair with character `ν` of weight `-negWeight`, a twist `ξ` of modulus
+`Q` and `e ≠ 0`, the character `(ν ξ)⁻¹` is tame for `𝔪 = ϖᵉ Q` with weight `negWeight`. -/
+lemma CriticalPair.isTameFor_mul_inv (p : D.CriticalPair) (hp : p.IsRamified) (ξ : D.Twist) (e : ℕ)
+    [NeZero e] :
+    IsTameFor (D.twistModulus ξ.toTameChar e) (p.character * ξ.toAutChar)⁻¹
+      (fun τ : NumberField.InfinitePlace D.E ↦ p.negWeight τ)
+      (charOfTamePart (D.twistModulus ξ.toTameChar e) (p.tamePart * ξ.tamePart))⁻¹ := by
+  simpa [Pi.neg_def] using (p.isTameFor_mul hp ξ e).inv
+
 /-- For a critical pair `(ν, z)`, a twist `ξ` of modulus `Q`, `e ≠ 0` and a sign, the number
 `lValueProd` up to `z` for `(ν ξ) ^ sign` and the places of `𝔪 = ϖᵉ Q` equals the number for `ν` and
 the chosen places, times `N(Q) ^ z ^ 2` and the square of the product of the ratios of Hecke
@@ -389,8 +398,7 @@ theorem CriticalPair.isTameFor_mul_and_lValueProd_eq (p : D.CriticalPair) (hp : 
         =
         lValueProd {w : FinPlace D.E | D.IsChosen w} p.character p.z *
           (ξ.normQ : ℝ) ^ p.z ^ 2 * D.lRatioProd p.character p.z ξ.toTameChar ^ 2 :=
-  ⟨p.isTameFor_mul hp ξ e, by simpa [Pi.neg_def] using (p.isTameFor_mul hp ξ e).inv,
-    p.lValueProd_mul_zpow_eq ξ e⟩
+  ⟨p.isTameFor_mul hp ξ e, p.isTameFor_mul_inv hp ξ e, p.lValueProd_mul_zpow_eq ξ e⟩
 
 /-- For a ramified critical pair `(ν, z)`, `1 ≤ n ≤ m` and `e ≠ 0`, the character `(ν ϑⁿ)⁻¹` is tame
 for the modulus `twistModulus ϑ e = ϖᵉ Q` ((ϖ) the product of the chosen places, Q the modulus of

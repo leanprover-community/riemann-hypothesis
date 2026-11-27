@@ -292,7 +292,6 @@ Real points `(x, y)` of a pair of unitary groups of signs `s`, `s'` act on the F
 
 * `New.realPairWeil_polyVector`: block diagonal points (`New.blockDiagAlg`) act on the vector
   `New.Fock.polyVector _ P` of a polynomial `P` by a substitution and a character.
-* `New.realPairWeil_vacVector`: they act on the vacuum by that character.
 -/
 
 section PairReal

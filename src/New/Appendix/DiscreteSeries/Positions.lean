@@ -168,6 +168,12 @@ lemma vec_orthogonal (hP : IsPosition ε η d v i₀) : vᴴ * signMatrix ε * i
 lemma initCols_orthogonal (hP : IsPosition ε η d v i₀) : (initCols v)ᴴ * signMatrix ε * i₀ = 0 :=
   show (vᴴ * signMatrix ε * i₀).submatrix Fin.castSucc id = 0 by simp [hP.vec_orthogonal]
 
+/-- In a position (`hP : IsPosition ε η d v i₀`), the span of all the columns of `v` is orthogonal,
+for the form `ε`, to the span of its first `d` columns `initCols v`:
+`vᴴ * signMatrix ε * initCols v = 0`. -/
+lemma orthogonal_initCols (hP : IsPosition ε η d v i₀) : vᴴ * signMatrix ε * initCols v = 0 :=
+  Matrix.ext fun a b ↦ hP.gram_eq_zero a b.castSucc (Or.inr b.castSucc_ne_last)
+
 /-- In a position (`hP : IsPosition ε η d v i₀`), the span of the first `d` columns `initCols v` of
 `v` is orthogonal, for the form `ε`, to the span of all the columns of `v`:
 `(initCols v)ᴴ * signMatrix ε * v = 0`. -/
@@ -301,8 +307,7 @@ lemma trace_mul_eq_trace_add_sum_of_inducesOn (hP : IsPosition ε η d v i₀) {
     have h_zero : (v.submatrix id t)ᴴ * signMatrix ε * A = 0 := congrArg (·.submatrix t id) hA
     simp only [Matrix.mul_assoc] at h_zero
     simp only [formAdjoint, hμ₁, ht, conjTranspose_mul, Matrix.mul_assoc, h_zero, Matrix.mul_zero]
-  have h_adj_flag : formAdjoint ε ε μ₁ * initCols v = 0 :=
-    h_adj_zero (Matrix.ext fun a b ↦ hP.gram_eq_zero a b.castSucc (Or.inr b.castSucc_ne_last))
+  have h_adj_flag : formAdjoint ε ε μ₁ * initCols v = 0 := h_adj_zero hP.orthogonal_initCols
   have h_adj_range : formAdjoint ε ε μ₁ * i₀ = 0 := h_adj_zero hP.vec_orthogonal
   -- The rest is self-adjoint and vanishes on `A`, so its image is orthogonal to `A`.
   set M : Matrix n n ℂ := μ - μ₁ - formAdjoint ε ε μ₁ with hM

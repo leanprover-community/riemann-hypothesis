@@ -149,6 +149,13 @@ section Edges
 variable {N k n : ℕ} {W O : Type} [NeZero N] [CommRing W] [IsLocalRing W] [CommRing O]
   (T : FrobeniusCycle N W O)
 
+/-- A coefficient vector `v` lies in `T.translatesIn n τ I B` if and only if its translates by the
+Levi subgroup of the labelling `τ` have their coefficients at the exponents in `B` in `I`. -/
+lemma mem_translatesIn_iff {τ : Fin k → ℕ} {I : Ideal O} {B : Set (Exponents N k n)}
+    {v : Exponents N k n → O} :
+    v ∈ T.translatesIn n τ I B ↔ ∀ g ∈ levi W τ, ∀ β ∈ B, (T.letterRep n g *ᵥ v) β ∈ I :=
+  Iff.rfl
+
 /-- Let `v` be a coefficient vector whose translates `T.letterRep n g *ᵥ v`, for `g` in the Levi
 subgroup of the labelling `τ`, have their coefficients at the exponents in `B` in the maximal ideal
 of `O`. Then the translates of the reduction of `v`, for the Frobenius cycle pushed to the residue
@@ -157,6 +164,7 @@ lemma residue_mem_translatesIn [IsLocalRing O] {τ : Fin k → ℕ} {B : Set (Ex
     {v : Exponents N k n → O} (hv : v ∈ T.translatesIn n τ (maximalIdeal O) B) :
     (fun β : Exponents N k n ↦ residue O (v β)) ∈
       (T.map (residue O)).translatesIn n τ (⊥ : Ideal (ResidueField O)) B := by
+  rw [mem_translatesIn_iff] at hv ⊢
   intro g hg β hβ
   have h_residue : ((T.map (residue O)).letterRep n g *ᵥ fun α ↦ residue O (v α)) β =
       residue O ((T.letterRep n g *ᵥ v) β) := by simp [letterRep_map, mulVec, dotProduct]
@@ -623,18 +631,25 @@ lemma pow_dvd_letterRep_mulVec_of_mem_allEdgesForms (ha : a < r) {v : Exponents 
   rw [← mul_dvd_mul_iff_left (pow_ne_zero m T.sqrtPrime_ne_zero), ← pow_add, h_translate]
   exact T.pow_add_dvd_of_le_defect i ha h_normalized hβ
 
+/-- Above any cutoff at least `defectThreshold k c`, every Levi translate of an all-edges
+form has coefficients divisible by `T.sqrtPrime ^ c`. -/
+private lemma allEdgesForms_le_defectConditions_of_threshold_le (ha : a < r) (c : ℕ)
+    {d : ℝ} (hd : (defectThreshold k c : ℝ) ≤ d) :
+    T.allEdgesForms k n r ≤ T.defectConditions n a r (span {T.sqrtPrime ^ c}) d := by
+  rintro v hv g hg β ⟨i, hi⟩
+  have hc : (3 * c : ℝ) ≤ defectThreshold k c := mod_cast three_mul_le_defectThreshold a.pos c
+  exact mem_span_singleton.2
+    (T.pow_dvd_letterRep_mulVec_of_mem_allEdgesForms ha hv hg (hc.trans (hd.trans hi.le)))
+
 /-- Let `O` be a domain of characteristic zero. The forms in the halfway lattices of all edges
 (`allEdgesForms`) satisfy the conditions on an edge (`defectConditions`): their block diagonal
 translates have, modulo `sqrtPrime ^ c`, no term of defect above `3 c*` along the root `(a, r)`,
 where `c* = 3 k c` is `defectThreshold k c` and `a < r` are indices, one in each block. -/
 lemma allEdgesForms_le_defectConditions (ha : a < r) (c : ℕ) :
     T.allEdgesForms k n r ≤ T.defectConditions n a r (span {T.sqrtPrime ^ c})
-      (3 * defectThreshold k c) := by
-  rintro v hv g hg β ⟨i, h_defect :
-    (3 * defectThreshold k c : ℝ) < (exponentOf β).weight (T.defectWeight i a r)⟩
-  have h_le : (3 * c : ℝ) ≤ defectThreshold k c := mod_cast three_mul_le_defectThreshold a.pos c
-  exact mem_span_singleton.2
-    (T.pow_dvd_letterRep_mulVec_of_mem_allEdgesForms ha hv hg (j := c) (by linarith))
+      (3 * defectThreshold k c) :=
+  T.allEdgesForms_le_defectConditions_of_threshold_le ha c
+    (le_mul_of_one_le_left (by positivity) (by norm_num))
 
 /-- Let `O` be a domain of characteristic zero, `w = T.sqrtPrime` (so `w ^ 2 = p`) and
 `ρ = T.letterRep n`. Let `(b, b')` be an edge pairing: `ρ(g)` and `ρ(gᵀ)` are adjoint for
@@ -659,9 +674,10 @@ lemma IsEdgePairing.pow_dvd_pairing_letterRep {b b' : Exponents N k n → O}
       (T.letterRep n (transposeGL g) *ᵥ v) β * b β := by
     rw [hb.dotProduct_letterRep_mulVec]
     simp [dotProduct, Pi.single_apply]
-  have h_le : (3 * c : ℝ) ≤ defectThreshold k c := mod_cast three_mul_le_defectThreshold a.pos c
+  have h_coeff := T.allEdgesForms_le_defectConditions_of_threshold_le ha c le_rfl hv
+    (transposeGL g) hg' β ⟨i, hβ⟩
   rw [h_pairing]
-  exact (T.pow_dvd_letterRep_mulVec_of_mem_allEdgesForms ha hv hg' (h_le.trans hβ.le)).mul_right _
+  exact (mem_span_singleton.1 h_coeff).mul_right _
 
 end FrobeniusCycle
 

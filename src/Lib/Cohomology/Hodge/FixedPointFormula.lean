@@ -296,6 +296,21 @@ lemma EtaleChart.mem_range_jetTangent_of_injective {X : CommAlg E ⥤ Type 1} (A
     w ∈ range (jetTangent v) := by
   exact (A.tangent_mem_range_of_jet hT v hv h_inj).left w hw
 
+/-- Let `v` be a jet of `X` with values in `k ⊕ T*`, where `T` has dimension `d`, whose base point
+lies in a chart `A` and whose tangent vectors in distinct directions are distinct. Then there is a
+linear isomorphism `D : T ≃ kᵈ` such that every `α` representing `jetTangent v φ` in the chart has
+`ε`-parts of its coordinates equal to `D φ`. -/
+lemma EtaleChart.exists_linearEquiv_coordinate_jetTangent {X : CommAlg E ⥤ Type 1}
+    (A : EtaleChart d X) {T : FGModuleCat k} (hT : finrank k T = d)
+    (v : (restrictAlg E k ⋙ X).obj (CommAlgCat.of k (TrivSqZeroExt k (Dual k T))))
+    (hv : (restrictAlg E k ⋙ X).map SqZeroExt.fst v ∈
+      A.locus.obj ((restrictAlg E k).obj (CommAlgCat.of k k)))
+    (h_inj : Function.Injective (jetTangent v)) :
+    ∃ D : T ≃ₗ[k] (Fin d → k), ∀ (φ : T) (α :
+      A.coordRing ⟶ (restrictAlg E k).obj (CommAlgCat.of k k[ε])),
+      X.map α A.point = jetTangent v φ → (fun i : Fin d ↦ (α (A.coordinate i)).snd) = D φ := by
+  exact (A.tangent_mem_range_of_jet hT v hv h_inj).right
+
 /-- Let every field-valued point of `W` lie in a chart with `d` coordinates. Let `P` be a tangent
 polynomial of `c`, `u` at `w`, that is `P t = P 0 * det (1 - t (dc)⁻¹ du)`, with `P 1 ≠ 0`. Then for
 every `t : k`, `HasJacobianRatio u c d t (P t / P 1) w` holds: in every chart of `X` containing
@@ -329,7 +344,7 @@ lemma IsTangentPoly.hasJacobianRatio_eval_div {X : CommAlg E ⥤ Type 1}
   obtain ⟨D, hD⟩ : ∃ D : T ≃ₗ[k] (Fin d → k), ∀ (φ : T)
       (α : A.coordRing ⟶ (restrictAlg E k).obj (CommAlgCat.of k k[ε])),
       X.map α A.point = jetTangent (c.app _ v) φ → ξ α = D φ :=
-    (A.tangent_mem_range_of_jet hT (c.app _ v) hv_chart hcv_inj).right
+    A.exists_linearEquiv_coordinate_jetTangent hT (c.app _ v) hv_chart hcv_inj
   let N : Module.End k T := (1 - t • (1 - S.toLinearMap)) ∘ₗ S.symm.toLinearMap
   refine ⟨(D.toLinearMap ∘ₗ N ∘ₗ D.symm.toLinearMap).toMatrix', ?_, fun x α γ hx hα hγ ↦ ?_⟩
   · -- The determinant is `det (1 - t B) / det S = P t / P 1`.

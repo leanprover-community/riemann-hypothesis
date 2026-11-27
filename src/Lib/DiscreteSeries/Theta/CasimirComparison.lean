@@ -23,8 +23,8 @@ The notions that the statements use:
   so `twoRho l ⊤` is `2ρ`, and `l.casimirValue` is `|λ|² - |ρ|²`;
 * `T.oscRows` is the oscillator action of `gl R` on polynomials, and `T.swap` is the same pair with
   rows and columns exchanged;
-* `T.centeredParam l r` is `2u_r = l r - 2γ + n'` with `γ = T.rowShift` the scalar on the diagonal of
-  the row action (`T.columnShift` is that of the column action `T.swap.oscRows`), and
+* `T.centeredParam l r` is `2u_r = l r - 2γ + n'` with `γ = T.rowShift` the scalar on the diagonal
+  of the row action (`T.columnShift` is that of the column action `T.swap.oscRows`), and
   `IsMatch T l l'` says that `l` and `l'` have gap `500 (n + n')³`, that each row is matched with a
   column or has `|2u_r| < n - n'`, and that each column is matched with a row or has
   `|2u'_c| < n' - n`; the row `r` and the column `c` are matched if `u_r = -u'_c` and
@@ -170,7 +170,8 @@ theorem IsMatch.three_mul_sum_sq_sub_of_le {T : FockDualPair ε ε' ι} {l : HCP
   have h_row_inj : Function.Injective (T.centeredParam l) :=
     T.centeredParam_injective hm.hasGap_row.injective
   have hm_inj : Function.Injective m := by
-    refine fun c c' hc ↦ T.swap.centeredParam_injective hm.hasGap_column.injective (neg_injective ?_)
+    refine fun c c' hc ↦
+        T.swap.centeredParam_injective hm.hasGap_column.injective (neg_injective ?_)
     rw [← h_opposite c, ← h_opposite c', hc]
   -- So the larger group has `n - n'` unmatched entries.
   set free : Finset R := (univ.image m)ᶜ with h_free

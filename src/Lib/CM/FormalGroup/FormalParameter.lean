@@ -284,7 +284,7 @@ lemma rescale_mem_range_seriesToCp {ϖ : ℂ_[p]} (hϖ : ‖ϖ‖ ≤ (p : ℝ) 
   have h_mem (n : ℕ) : rescale ϖ₀ C.formalParam ∈ integralBelow p (n + 1) := mem_integralBelow.2
     fun k _ ↦ by
       simpa [hY, coeff_seriesToCp] using
-        (mul_le_of_le_one_left (norm_nonneg _) h_le).trans (coeff k Y).2
+        (mul_le_of_le_one_left (norm_nonneg _) h_le).trans (coeff k Y).property
   refine mem_range_seriesToCp.2 fun n ↦ le_trans ?_ (mem_integralBelow.1
     (subst_seriesToCp_mem_integralBelow
       (by simp [constantCoeff_rescale, constantCoeff_formalParam]) (h_mem n) f) n n.lt_succ_self)

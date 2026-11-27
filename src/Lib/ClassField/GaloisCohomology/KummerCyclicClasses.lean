@@ -292,7 +292,7 @@ lemma New.Period.mem_span_fixed {G Γ A V R : Type*} [Group G] [Group Γ] [Field
   -- `∑ q, c q • τ q y`. The vectors `(j q • b)_q`, for `U`-fixed scalars `b`, span all coefficients
   -- and go to invariant vectors; the unit vector at the trivial coset goes to `y`.
   set U' : Subgroup Γ := U.comap j
-  have h_fintype : Fintype (Γ ⧸ U') := fintypeOfIndexNeZero ((U.index_comap j).trans_ne
+  let h_fintype : Fintype (Γ ⧸ U') := fintypeOfIndexNeZero ((U.index_comap j).trans_ne
     (mt index_eq_zero_of_relIndex_eq_zero index_ne_zero_of_finite))
   let Λ : (Γ ⧸ U' → A) →ₗ[A] V := (basisFun A _).constr A fun q ↦ τ q.out y
   let χ (q : Γ ⧸ U') : submonoid U A →* A := (toMonoidHom A (j q.out)).domRestrict _

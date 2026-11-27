@@ -29,8 +29,8 @@ definite space V_j.
   pair `New.Data.descentPair` when 1 ≤ j ≤ m and 0 otherwise.
 * `New.DescentPair.inner_thetaLift`: `New.DescentPair.normalizedDescent` is adjoint to
   `New.DescentPair.thetaLift`, for the Petersson product on `W` and the class sum product on `V`.
-* `New.Data.coe_adjoint_singleLift`, `New.Data.normalizedDescent_eq_zero_of_inner_eq_zero`: the adjoint of
-  Θ_{j,ξ} is the descent θ, so θ kills exactly the forms orthogonal to the lifts.
+* `New.Data.coe_adjoint_singleLift`, `New.Data.normalizedDescent_eq_zero_of_inner_eq_zero`: the
+  adjoint of Θ_{j,ξ} is the descent θ, so θ kills exactly the forms orthogonal to the lifts.
 * `New.Data.singleLift_injective`, `New.Data.exists_hasSum_rallisTerm_inner_singleLift`: Θ_{j,ξ} is
   injective, and its Gram form is a constant `A` times the factor `New.DescentPair.gramFactor` of
   the pair times the sum of the terms `New.Data.rallisTerm`.
@@ -801,24 +801,19 @@ the number `m = D.m` of lifts of the data. Then the theta lift `D.singleLift ϑ 
 twisted by `ϑ` is injective. -/
 theorem singleLift_injective (ϑ : D.TameChar) {j : D.LiftIndex} :
     Injective (D.singleLift ϑ j) := by
-  -- The block datum is sharp for `J_M`, so Rallis' formula gives the injectivity of the lift `L`.
+  -- The block datum is sharp for `J_M`, so Rallis' formula detects the kernel of the theta lift.
   let O : DescentPair D.E D.RowIndex (D.RowIndex ⊕ Fin D.t) := D.descentPair ϑ j
-  let L : O.W.Form (typeKernel D.paramW O.signs) →ₗ[ℂ]
-      (stdSpace D.E (D.RowIndex ⊕ Fin D.t)).Form (typeKernel O.paramV 1) :=
-    formLift O.pairThetaKernel (typeKernel D.paramW O.signs) (typeKernel O.paramV 1)
-      (O.fockDatum (highestVector O.columnCount O.paramV))
   obtain ⟨C, -, h_rallis⟩ := rallis_inner_product_cosetTerm (S := D.spaceW j)
     (T := stdSpace D.E (D.RowIndex ⊕ Fin D.t)) (D.fitsParams_descentPair ϑ j).isEdge
     D.two_mul_card_rowIndex_lt
   refine (injective_iff_map_eq_zero _).2 fun y hy ↦ ?_
-  have h_inj : L y.val = 0 → y.val = 0 :=
-    (h_rallis O.charW O.charV (O.isSharp_blockDatum (.inr nonempty_modulus_places)) y.val
-      (mem_levelSpace_formRep_iff.1 y.property)).left
-  have h_up : ofAlgForm O.paramV 1 (D.singleLift ϑ j y).val = L y.val := D.ofAlgForm_singleLift ϑ y
-  have h_zero : L y.val = 0 := Subtype.ext <| by
-    rw [← h_up, hy]
-    exact map_zero _
-  exact Subtype.ext (h_inj h_zero)
+  apply Subtype.ext
+  apply (h_rallis O.charW O.charV (O.isSharp_blockDatum (.inr nonempty_modulus_places)) y.val
+    (mem_levelSpace_formRep_iff.1 y.property)).left
+  apply Subtype.ext
+  refine (D.ofAlgForm_singleLift ϑ y).symm.trans ?_
+  rw [hy]
+  exact map_zero _
 
 /-- For `1 ≤ j ≤ m` there is a constant `A ≠ 0` such that for every tame character `ϑ` the Gram form
 `⟨Θ_j x, Θ_j y⟩` of the theta lift `Θ_j = D.singleLift ϑ j` on the forms of level `J_M` on `W_j` is

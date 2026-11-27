@@ -186,6 +186,14 @@ lemma mapDomain_fst_apply (γ : X × K →₀ ℕ) (x : X) :
   classical simp [Finsupp.mapDomain, Finsupp.sum_fintype, Finsupp.single_apply,
     Fintype.sum_prod_type]
 
+/-- For `γ : X × K →₀ ℕ`, let `γ.mapDomain Prod.fst` be the exponent on `X` that adds up `γ (x, k)`
+over `k`. Then `∏ x, (γ.mapDomain Prod.fst x)!` is `∏ y, (γ y)!` times the product over `x` of the
+multinomial coefficients of the exponents `γ (x, k)`, `k : K`. -/
+lemma prod_factorial_mapDomain_fst (γ : X × K →₀ ℕ) :
+    ∏ x : X, (γ.mapDomain Prod.fst x)! =
+      (∏ y : X × K, (γ y)!) * ∏ x : X, multinomial univ fun k : K ↦ γ (x, k) := by
+  simp only [mapDomain_fst_apply, ← multinomial_spec, Fintype.prod_prod_type, prod_mul_distrib]
+
 /-- Let `δ` be the exponent that adds up the copies of each variable in `γ`. Then `γ!` times the
 coefficient of `z ^ γ` in `F (∑ a_k z_k)` is `a ^ γ` times `δ!` times the coefficient of `z ^ δ`
 in `F`. -/
@@ -230,9 +238,7 @@ lemma coeff_copySubst [IsDomain R] [CharZero R] (a : K → R) (F : MvPowerSeries
       (∏ x : X, multinomial univ fun k : K ↦ γ (x, k) : ℕ) * coeff (γ.mapDomain Prod.fst) F := by
   have h_factorial : (∏ x : X, ((γ.mapDomain Prod.fst x)! : R)) = (∏ y : X × K, ((γ y)! : R)) *
       (∏ x : X, multinomial univ fun k : K ↦ γ (x, k) : ℕ) :=
-    mod_cast congrArg (Nat.cast (R := R)) (show ∏ x : X, (γ.mapDomain Prod.fst x)! =
-      (∏ y : X × K, (γ y)!) * ∏ x : X, multinomial univ fun k : K ↦ γ (x, k) by
-        simp only [mapDomain_fst_apply, ← multinomial_spec, Fintype.prod_prod_type, prod_mul_distrib])
+    mod_cast congrArg (Nat.cast (R := R)) (prod_factorial_mapDomain_fst γ)
   refine mul_left_cancel₀ (a := ∏ y : X × K, ((γ y)! : R))
     (by simp [prod_ne_zero_iff, factorial_ne_zero]) ?_
   rw [prod_factorial_mul_coeff_copySubst, h_factorial]

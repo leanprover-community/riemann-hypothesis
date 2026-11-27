@@ -219,9 +219,12 @@ lemma IsFrob.mul_iff (h : IsFrob A q σ) : IsFrob A (q * q') (σ * τ) ↔ IsFro
     _ ↔ (σ • A).valuation (σ • (τ • x - x ^ q')) < 1 := by rw [hσ_stab]
     _ ↔ A.valuation (τ • x - x ^ q') < 1 := smul_apply_smul_lt_one_iff σ
 
+lemma isFrob_one_one : IsFrob A 1 (1 : Γ) :=
+  ⟨one_mem _, fun x _ ↦ by simp⟩
+
 lemma IsFrob.pow (h : IsFrob A q σ) (n : ℕ) : IsFrob A (q ^ n) (σ ^ n) := by
   induction n with
-  | zero => simpa using show IsFrob A 1 (1 : Γ) from ⟨one_mem _, fun x _ ↦ by simp⟩
+  | zero => simpa using isFrob_one_one
   | succ n ih =>
     rw [pow_succ, pow_succ]
     exact ih.mul_iff.mpr h

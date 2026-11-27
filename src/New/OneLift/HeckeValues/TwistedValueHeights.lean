@@ -126,7 +126,7 @@ theorem _root_.New.exists_norm_le_norm_twisted_classSum {l : ℕ} [Fact l.Prime]
   have : Finite (_root_.Quotient (leftRel (Γ ⊔ K))) := by
     rw [← h_setoid]
     exact HasFiniteType.finite_classes
-  have : Fintype (Gf E Unit ⧸ Γ ⊔ K) := ofFinite (_root_.Quotient _)
+  let : Fintype (Gf E Unit ⧸ Γ ⊔ K) := ofFinite (_root_.Quotient _)
   have h_sum (f : Gf E Unit → ℂ) : classSum Γ K f = ∑ o : Gf E Unit ⧸ Γ ⊔ K, f o.out :=
     calc classSum Γ K f = ∑ᶠ c : _root_.Quotient (setoid Γ K), f c.out := by
           simp only [classSum, h_aut, Subgroup.card_bot, Nat.cast_one, inv_one, one_smul]
@@ -856,7 +856,7 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
   -- `ψ`, times values of pairs with empty row on the other three. `c₀` is the product of the
   -- number `t` of `exists_rpow_neg_localPrimeSumTotal_le_norm_coeff`, the untwisted value `L_twist`
   -- of the second block and the geometric mean `L` of the values of the last two blocks.
-  have fin : Fintype (tameChars D.finite_isChosen.toFinset) := ofFinite _
+  let fin : Fintype (tameChars D.finite_isChosen.toFinset) := ofFinite _
   have h_large : 10000 ≤ D.m := D.ten_thousand_le_m
   have h_free : ∀ g : Gf D.E Unit, classAut stdRatPoints D.chosenLevel g = ⊥ :=
     D.classAut_eq_bot_of_le_chosenLevel le_rfl (card_unit.trans_le D.nat_le_of_hasLogBound)

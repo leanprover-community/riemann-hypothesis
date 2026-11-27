@@ -550,13 +550,17 @@ lemma mem_commonIsotropic {γ : S.G E} {y : 𝔰.BesselIndex → E} :
   simp only [funext_iff, Sum.forall (α := 𝔰.MiddleIndex), elim_inl, elim_inr, Pi.zero_apply]
   rw [and_and_and_comm, and_comm]
 
+/-- The image of the Bessel frame under an isometry consists of distinct columns of its
+invertible matrix, hence is linearly independent. -/
+lemma linearIndependent_col_frameImage (γ : S.G E) :
+    LinearIndependent E (frameImage γ.val.val).col :=
+  (linearIndependent_cols_of_isUnit γ.val.isUnit).comp _ besselFrame_injective
+
 /-- The space `γ A`, spanned by `γ e_1, …, γ e_ϱ`, has rank `ϱ`. -/
 lemma finrank_isotropicSpan_coe (γ : S.G E) : finrank E (isotropicSpan γ.val.val) = 𝔰.ϱ := by
-  -- The first `ϱ` rows of `γ⁻¹` are a left inverse of the first `ϱ` columns of `γ`.
-  have h_inj : Injective ((frameImage γ.val.val).submatrix id castSucc).mulVecLin :=
-    HasLeftInv.injective_mulVec ⟨γ⁻¹.val.val.submatrix inl id, Matrix.ext fun a b ↦ by
-      simpa [Matrix.mul_apply, Matrix.one_apply] using congrFun₂ γ.val.inv_mul (inl a) (inl b)⟩
-  rw [isotropicSpan, LinearMap.finrank_range_of_inj h_inj, finrank_fin_fun]
+  rw [isotropicSpan, colSpan, range_mulVecLin, finrank_span_eq_card, Fintype.card_fin]
+  exact (linearIndependent_col_frameImage γ).comp _ (castSucc_injective 𝔰.ϱ)
+
 /-- The columns `e_1, …, e_ϱ, γ e_1, …, γ e_ϱ` of `isotropicFramePair γ` span `A + γ A`, where `A`
 is the span of `e_1, …, e_ϱ`. -/
 lemma colSpan_isotropicFramePair (γ : S.G E) :
@@ -888,12 +892,8 @@ lemma termDisc_eq_zero_iff_exists {γ : S.G E} :
 /-- The vectors `γ e_1, …, γ e_ϱ, γ z`, the columns of `frameImage γ`, are linearly independent. -/
 lemma frameImage_mulVec_eq_zero_iff {γ : S.G E} {y : Fin (𝔰.ϱ + 1) → E} :
     frameImage (𝔰 := 𝔰) γ *ᵥ y = 0 ↔ y = 0 := by
-  refine ⟨fun h ↦ ?_, fun h ↦ by rw [h, mulVec_zero]⟩
-  have h_one : frameImage 1 *ᵥ y = 0 :=
-    mulVec_injective_of_isUnit γ.val.isUnit (by rw [← frameImage_mulVec, h, mulVec_zero])
-  -- The columns of `frameImage 1` are distinct standard basis vectors.
-  exact funext fun a ↦ by simpa [mulVec, dotProduct, Matrix.one_apply,
-    besselFrame_injective.eq_iff] using congrFun h_one (𝔰.besselFrame a)
+  simpa only [mulVec_zero] using
+    (mulVec_injective_iff.mpr (linearIndependent_col_frameImage γ)).eq_iff (a := y) (b := 0)
 
 /-- The quantity `S.termDisc γ`, formed from the last two leading minors of the matrix of products
 of the frame `f = (e_1, …, e_ϱ, z)` with `γ f`, vanishes if the spans of `f` and of `γ f` have a

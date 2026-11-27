@@ -201,8 +201,7 @@ def IsGoodAt (w : Ideal (𝓞 E)) : Prop :=
 /-- The laws of a class `c` in the Picard group of `A`, for all points `x`, `y` of `A` with values
 in a scheme `T` over `S`: (a) the parallelogram law `New.Pic.ParallelogramLaw`; (b)
 `⟨β x, y⟩ = ⟨x, (1 - β) y⟩` for the pairing `New.Pic.pairing`, where `1 - β = star β`; (c) the
-pull-back of `c` along `y` is `⟨β y, y⟩` plus its pull-back along `0` (`x` plays no part here). The
-three laws are read with `HasClassLaws.parallelogramLaw`, `pairing_smul_beta` and `atPoint_eq`. -/
+pull-back of `c` along `y` is `⟨β y, y⟩` plus its pull-back along `0` (`x` plays no part here). -/
 def HasClassLaws {S : AlgebraicGeometry.Scheme} {A : CategoryTheory.Over S} [AddObj (S := S) A]
     [ModuleObj (𝓞 E) A] (c : Pic A.left) : Prop :=
   -- (a) the parallelogram law
@@ -1035,7 +1034,8 @@ lemma formSpan_eq_normBall (v : Valuation ℂ NNReal)
     (hG : HasGoodReduction x.automorphyForm x.multiplier v D.paddedNorm)
     (c : D.dualTorsion) (j : ℕ) :
     formSpan v.valuationSubring x.thetaCoord (D.paddedNorm ^ j) =
-    HasGoodReduction.normBall (D.paddedNorm ^ j • x.automorphyForm) (x.multiplier ^ D.paddedNorm ^ j) v
+    HasGoodReduction.normBall (D.paddedNorm ^ j • x.automorphyForm)
+        (x.multiplier ^ D.paddedNorm ^ j) v
         (x.thetaCoord c ^ D.paddedNorm ^ j) := by
   -- The span of the `x.thetaCoord t` holds the translates of `x.thetaCoord c` by the dual lattice,
   -- by `thetaShift_thetaCoord`.
@@ -1050,12 +1050,14 @@ lemma formSpan_eq_normBall (v : Valuation ℂ NNReal)
     exact smul_mem _ (⟨_, (x.valuation_multiplier_mul_bicharacter_eq_one v _).le⟩ : v.integer)
       (subset_span ⟨_, rfl⟩)
   -- So it holds the ball of `x.thetaCoord c`; conversely all `x.thetaCoord t` have the same norm.
-  have h_range : range x.thetaCoord ⊆ HasGoodReduction.normBall x.automorphyForm x.multiplier v (x.thetaCoord c) := by
+  have h_range : range x.thetaCoord ⊆ HasGoodReduction.normBall x.automorphyForm x.multiplier v
+      (x.thetaCoord c) := by
     simp [hG.mem_normBall, thetaNorm_thetaCoord, range_subset_iff]
   have h_lattice (u : V) (hu : D.paddedNorm • u ∈ x.periodLattice) :
     u ∈ x.latticeOver D.lagrangian :=
     x.latticeOver_mono D.torsion_mem_lagrangian ((x.nsmul_mem_latticeOver hG.one_lt.ne_bot).mp hu)
-  have h_span : span v.valuationSubring (range x.thetaCoord) = HasGoodReduction.normBall x.automorphyForm x.multiplier v (x.thetaCoord c) :=
+  have h_span : span v.valuationSubring (range x.thetaCoord) =
+      HasGoodReduction.normBall x.automorphyForm x.multiplier v (x.thetaCoord c) :=
     span_eq_of_le _ h_range fun f hf ↦
       hG.mem_of_mem_normBall (x.thetaCoord_mem_thetaSpace c) le_rfl hG.isAppellHumbert
         (x.thetaCoord_mem_thetaSpace c) hf.left h_shift hf

@@ -281,7 +281,7 @@ lemma isTestCohomEquiv_baseChangeTransition [ThePrime ℓ]
   -- constant functions and for the line formula).
   have h_inverts : InvertsPrime A ℓ := .mk hℓ
   -- The line formula holds because `A ⊆ Ω` embeds in `ℂ_[ℓ]`.
-  have algebra_Ω : Algebra Ω ℂ_[ℓ] :=
+  let algebra_Ω : Algebra Ω ℂ_[ℓ] :=
     ((algebraMap (PadicAlgCl ℓ) ℂ_[ℓ]).comp Classical.ofNonempty).toAlgebra
   have h_faithful : FaithfulSMul A ℂ_[ℓ] := A.faithfulSMul
   have h_line : (Theory.locallyConstant (A := A)).HasLineFormula := hasLineFormula_locallyConstant A

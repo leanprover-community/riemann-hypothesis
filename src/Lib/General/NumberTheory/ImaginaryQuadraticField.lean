@@ -15,6 +15,7 @@ import Mathlib.RingTheory.KrullDimension.PID
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
 import Lib.General.NumberTheory.EmbeddingsAndDifferent
+public import TauCeti.Data.Nat.Prime.Basic
 
 /-!
 # The imaginary quadratic field ℚ(√−d): characters, Frobenius and splitting of primes
@@ -62,8 +63,6 @@ section QuadField
 open NumberField Complex Polynomial InfinitePlace Module IntermediateField AddChar
 
 namespace New
-
-instance (d : Nat.Primes) : Fact d.val.Prime := ⟨d.prop⟩
 
 section Characters
 

@@ -82,7 +82,11 @@ lemma IsRelAffine.preimage (h : IsRelAffine U.ι) (f : X ⟶ Y) : IsRelAffine (U
   -- the preimage of `U` is its pull-back along `f`
   refine h.baseChange (?_ : IsPullback (fromPreimage U f) (U.preimage f).ι U.ι f)
   rw [isPullback_iff]
-  aesop (add simp [ExistsUnique, toFunctor])
+  refine ⟨fun _ _ ↦ rfl, fun B w x h_eq ↦ ?_⟩
+  change x.val = f.app B w at h_eq
+  have hw : f.app B w ∈ U.obj B := h_eq ▸ x.property
+  refine ⟨⟨w, hw⟩, ⟨rfl, Subtype.ext h_eq.symm⟩, ?_⟩
+  exact fun z hz ↦ Subtype.ext hz.1
 
 /-- Pull-back along `(f, -g) : M ⟶ N ⊞ N'` sends the class with components `x`, `y` to
 `f^* x - g^* y`. -/

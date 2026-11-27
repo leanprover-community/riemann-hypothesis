@@ -146,15 +146,6 @@ lemma IsWeakBaseChange.hasHeckePolyAt_of_decompGroup_le
   have h_matched : IsMatched (stepField χ) (ideleChar χ) w := hA.isMatched_of_decompGroup_le h_dec
   exact ⟨(h_matched.2 u h_below).1, (hs.2 w h_off u h_below).2 h_matched hw Q hQ⟩
 
-/-- A nonzero function has at most one Hecke polynomial at a split place. -/
-lemma HasHeckePolyAt.unique (hf : f ≠ 0) {w : FinPlace E} {hw hw' : w.IsSplit}
-    {Q Q' : Polynomial ℂ} (hQ : HasHeckePolyAt f w hw Q) (hQ' : HasHeckePolyAt f w hw' Q') :
-    Q = Q' := by
-  obtain ⟨-, t, rfl, ht⟩ := hQ
-  obtain ⟨-, t', rfl, ht'⟩ := hQ'
-  have h_eq : t = t' := funext fun j ↦ smul_left_injective ℂ hf ((ht j).symm.trans (ht' j))
-  rw [h_eq]
-
 private lemma QZChar.isOpenEmbedding_restrictScalarsHom_stepField (χ : QZChar Gal(Ω/E)) :
     Topology.IsOpenEmbedding (AlgEquiv.restrictScalarsHom E : Gal(Ω/stepField χ) →* Gal(Ω/E)) :=
   isOpenEmbedding_galois_restrict (AlgEquiv.restrictScalarsHom E) fun _ _ ↦ rfl
@@ -301,7 +292,7 @@ lemma New.GaloisRep.exists_weak_baseChange {E E' n : Type} [Field E] [CMType E] 
     localFormTranslation κ (1 : Unit →* Gf E n)
   have h_id : heckeFun π ⊤ 1 = 1 := by
     have := QuotientGroup.subsingleton_quotient_top (G := Unit)
-    have : Unique (Unit ⧸ (⊤ : Subgroup Unit)) := .mk' _
+    let : Unique (Unit ⧸ (⊤ : Subgroup Unit)) := .mk' _
     rw [heckeFun, finsum_unique, Pi.one_apply, one_smul]
     exact π.map_one
   have h_trace : HasNonzeroTraceAround π (heckeFun π ⊤ 1)

@@ -131,6 +131,14 @@ lemma isScalingAtM_of_eq_one_or_eq {κ : PairIndex X X'' → 𝔸f D.E}
       star_mul_mem := h_star
       selfOrConj_mul_mem := h_selfOrConj }
 
+/-- The scaling of a pair of edges other than the last: the factors `1` on all rows
+`PairIndex X X''` form a scaling for `β = D.piM` and `δ = D.chosenRatio`
+(see `isScalingAtM_of_eq_one_or_eq`). -/
+lemma isScalingAtM_one :
+    IsScalingAtM D.N (algebraMap (𝓞 D.E) (Ô D.E) D.piM) D.chosenRatio
+      (1 : PairIndex X X'' → 𝔸f D.E) :=
+  D.isScalingAtM_of_eq_one_or_eq (fun _ ↦ Or.inl rfl) fun _ ↦ rfl
+
 /-- The scaling of the last pair of edges: the factors `lastScaling`, equal to `δ` at the last row
 and to `1` elsewhere, form a scaling for `β = D.piM` and `δ = D.chosenRatio`. -/
 lemma isScalingAtM_lastScaling :
@@ -171,8 +179,7 @@ lemma isAdmissibleEval_doubleLiftEvalY (i : ℕ) (hi : i ≤ D.ϱ) :
     rw [D.latticeScale_two_mul hi, Submonoid.coe_mul, ← mul_assoc, D.flipScale_mul_divStar_ideleA]
   unfold doubleLiftEvalY
   split_ifs with h_middle h_last
-  · apply isAdmissibleEval_finEval (hP := D.isSplitLevel_piNPlaces)
-      (hκ := D.isScalingAtM_of_eq_one_or_eq (fun _ ↦ Or.inl rfl) fun _ ↦ rfl)
+  · apply isAdmissibleEval_finEval (hP := D.isSplitLevel_piNPlaces) (hκ := D.isScalingAtM_one)
       (hπ := D.isSplitSquarefree_piNIdele) (hL := D.spansLattice_gradingY (2 * i + 1) _)
     · apply liftsNeighbours_middleDoubleLift (h_scale := h_scale) <;> apply D.spansLattice_gradingY
     · apply matchesDenominators_middleDoubleLift

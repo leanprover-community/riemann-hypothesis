@@ -767,7 +767,9 @@ lemma polyVector_apply (P : MvPolynomial ι ℂ) (x : ι → ℂ) :
   rfl
 
 @[simp]
-lemma polyVector_one : polyVector ε 1 = vacVector := by aesop
+lemma polyVector_one : polyVector ε 1 = vacVector := by
+  ext x
+  simp [polyVector_apply, vacVector]
 
 /-- For v in ℂ^ι and a polynomial P with Fock vector v_P = `New.Fock.polyVector` ε P, the curve
 t ↦ `New.Fock.realHeisenbergOp`(tv)v_P (t real) has derivative at t = 0 equal to the Fock vector of

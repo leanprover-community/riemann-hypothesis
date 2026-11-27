@@ -543,14 +543,14 @@ lemma sphericalMean_apply [Fintype (GL n (ResField w))] (x : W) : sphericalMean 
 
 lemma sphericalMean_eq_self (hy_Kw : y ∈ levelSpace ρ (localIntGL n w)) :
     sphericalMean ρ y = y := by
-  have : Fintype (GL n (ResField w)) := Fintype.ofFinite _
+  let : Fintype (GL n (ResField w)) := Fintype.ofFinite _
   simp [sphericalMean_apply, apply_of_mem_levelSpace hy_Kw, ← Nat.cast_smul_eq_nsmul ℂ]
 
 /-- The operator `e_sph = sphericalMean ρ` takes a vector fixed by `J_line` to one fixed by
 `GL_n(𝒪) = localIntGL n w`. -/
 lemma sphericalMean_mem (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
     sphericalMean ρ y ∈ levelSpace ρ (localIntGL n w) := by
-  have : Fintype (GL n (ResField w)) := Fintype.ofFinite _
+  let : Fintype (GL n (ResField w)) := Fintype.ofFinite _
   refine mem_levelSpace.2 fun k ↦ ?_
   have h_term (g : GL n (ResField w)) :
       ρ k.val (ρ (liftMatrix g.val).val y) = ρ (liftMatrix (reduceGL k * g).val).val y := by
@@ -566,7 +566,7 @@ lemma sphericalMean_mem (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
 `e_sph = sphericalMean ρ`. -/
 lemma sphericalMean_apply_translate (hy : y ∈ levelSpace ρ (lineStabilizer w i))
     (k : localIntGL n w) : sphericalMean ρ (ρ k.val y) = sphericalMean ρ y := by
-  have : Fintype (GL n (ResField w)) := Fintype.ofFinite _
+  let : Fintype (GL n (ResField w)) := Fintype.ofFinite _
   have h_term (g : GL n (ResField w)) :
       ρ (liftMatrix g.val).val (ρ k.val y) = ρ (liftMatrix (g * reduceGL k).val).val y := by
     have h_reduce : reduceGL (liftMatrix g.val * k) = g * reduceGL k := by
@@ -708,7 +708,7 @@ theorem lineRaise_lineLower (hy : y ∈ levelSpace ρ (lineStabilizer w i)) :
       (y + ((w.q : ℂ) ^ Fintype.card n - 1) • sphericalMean ρ y) := by
   classical
   -- The line of `z` is reached once for each hyperplane that contains neither `e_i` nor `z`.
-  have : Fintype (ResField w) := Fintype.ofFinite _
+  let : Fintype (ResField w) := Fintype.ofFinite _
   calc lineRaise i ρ (lineLower i ρ y)
     _ = ∑ ξ : n → ResField w with ξ i = 1, ∑ z : n → ResField w with ξ ⬝ᵥ z = 1,
         lineTranslate i ρ y z := by
@@ -737,7 +737,7 @@ theorem inner_lineRaise {W : Type} [NormedAddCommGroup W] [InnerProductSpace ℂ
     ⟪lineRaise i ρ x, y⟫_ℂ = ⟪x, lineLower i ρ y⟫_ℂ := by
   classical
   -- The two double cosets are mutually inverse and have the same number of cosets.
-  have : Fintype (ResField w) := Fintype.ofFinite _
+  let : Fintype (ResField w) := Fintype.ofFinite _
   have h_inv : ⟪ρ (lineElement w i) x, y⟫_ℂ = ⟪x, ρ (lineElement w i)⁻¹ y⟫_ℂ := by
     rw [← hρ (lineElement w i) x, ρ.self_inv_apply]
   have h_raise : ⟪lineRaise i ρ x, y⟫_ℂ =
