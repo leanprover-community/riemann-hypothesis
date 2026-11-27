@@ -9,7 +9,7 @@ import TauCeti.Analysis.Normed.Ring.CompactMonoid
 public import Lib.GaloisRep.TaylorWiles
 public import Lib.LocalGL.SphericalChainLemma
 public import New.Congruences.FirstOrder.TraceRelations
-import Lib.Cyclotomic.Kolyvagin.DerivativeCocycles
+import Lib.Cyclotomic.Kolyvagin.ReciprocityComponentBounds
 import Lib.GaloisRep.Main.ThetaLift
 import Lib.General.LinearAlgebra.Eigenvalues
 import Lib.PadicComparison.ToricTower
