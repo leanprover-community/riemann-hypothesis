@@ -105,7 +105,7 @@ lemma lambdaKResidueClass_le_two_mul (n : ℕ) : lambdaKResidueClass d q n ≤ 2
 lemma sum_vonMangoldt_div_le (N : ℕ) : ∑ n ∈ Ioc 0 N, vonMangoldt n / n ≤ 2 * Real.log N := by
   -- Use `N / n ≤ 2 ⌊N / n⌋` for `n ≤ N` and `∑ Λ(n) ⌊N / n⌋ = log N! ≤ N log N`.
   obtain rfl | hN := N.eq_zero_or_pos
-  · simp [Finset.Ioc_self]
+  · simp
   have h_floor (n : ℕ) (hn : n ∈ Ioc 0 N) : (N : ℝ) / n ≤ 2 * (N / n : ℕ) := by
     obtain ⟨hn_pos, hn_le⟩ := mem_Ioc.1 hn
     have h_one : (1 : ℝ) ≤ (N / n : ℕ) := mod_cast Nat.div_pos hn_le hn_pos
