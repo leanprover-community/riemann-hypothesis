@@ -351,20 +351,21 @@ def published(artifact):
 
 
 def registered(cache, entries):
-    """Map entries already registered in this cache with the same artifact
-    (outputs/<scope>/<hash>.json naming it). Others are (re)written by `lake cache add`."""
-    wanted = dict(entries)
+    """Entries already registered for the GRH package by `lake cache add`.
+
+    Lake's local package scope (GRH) is distinct from the remote artifact scope (SCOPE).
+    Treat unrecognised or malformed output records as misses so Lake rewrites them.
+    """
     have = set()
-    for directory, _, files in os.walk(cache / "outputs"):
-        for name in files:
-            input_hash = name[:-5]
-            if name.endswith(".json") and input_hash in wanted and input_hash not in have:
-                try:
-                    text = (Path(directory) / name).read_text()
-                except (OSError, UnicodeDecodeError):
-                    continue
-                if wanted[input_hash][:-5] in text:
-                    have.add(input_hash)
+    for input_hash, artifact in entries:
+        path = cache / "outputs" / "GRH" / f"{input_hash}.json"
+        try:
+            output = decode(path.read_bytes())
+        except (OSError, UnicodeDecodeError, ValueError, RecursionError):
+            continue
+        if output == {"schemaVersion": "2026-02-25", "service": "grh-lean",
+                      "scope": SCOPE, "data": artifact}:
+            have.add(input_hash)
     return have
 
 
@@ -491,9 +492,12 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch, baseline=N
     env.update(LAKE_CONFIG=str(root / "lakefile.toml"), LAKE_CACHE_DIR=str(cache),
                LAKE_RESTORE_ARTIFACTS="true", ELAN_TOOLCHAIN=identity["toolchain"])
     env["RUST_MIN_STACK"] = str(max(int(env.get("RUST_MIN_STACK", "0")), 8388608))
-    service = tomllib.loads((root / "lakefile.toml").read_text()).get("cache", {}).get("defaultService")
+    config = tomllib.loads((root / "lakefile.toml").read_text())
+    service = config.get("cache", {}).get("defaultService")
     entries = [decode(line) for line in contents.splitlines()[1:]]
-    have = registered(cache, entries)
+    # Only use the shortcut for the known Lake package and service; otherwise let Lake
+    # determine the package scope and rewrite the mappings itself.
+    have = registered(cache, entries) if config.get("name") == "GRH" and service == "grh-lean" else set()
     fresh = [entry for entry in entries if entry[0] not in have]
     print(f"Fetching {PROJECT} build cache {record['candidate_head']} for "
           f"{'baseline' if baseline else 'current'} build inputs: "
