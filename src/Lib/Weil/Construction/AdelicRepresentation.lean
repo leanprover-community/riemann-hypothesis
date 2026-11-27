@@ -579,7 +579,7 @@ lemma summable_modelInner (f' f : Model (adelicHeisenberg E s)) :
   -- both steps: the sum is at most `M * ‖f‖` times the number of rational points in a compact set
   -- `B`, which is finite.
   have h_vac_ne : (IsVacuum.vacElem : Model (adelicHeisenberg E s)) 0 ≠ 0 := by simp [vacuumFn]
-  have h_int : Integrable f' vacuumMeasure := f'.prop.left
+  have h_int : Integrable f' vacuumMeasure := f'.integrable
   -- The coefficient of `f'` on a translate of the vacuum is a value of `f'`.
   have h_norm (z x : n → 𝔸 E) :
       ‖modelInner f' (heisenbergOp (z + ContinuousAddMonoidHom.id (n → 𝔸 E) x) IsVacuum.vacElem)‖ₑ =

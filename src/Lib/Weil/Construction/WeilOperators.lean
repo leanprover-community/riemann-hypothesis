@@ -1,10 +1,8 @@
 module
 
-import Mathlib.Topology.Compactness.Paracompact
-import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.Weil.Construction.HeisenbergModel
-import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.General.Measure.HaarNormalisation
+public import TauCeti.Analysis.HeisenbergModel.OrthogonalSum
+import TauCeti.Analysis.HeisenbergModel.Wiener
 
 /-!
 # Weil operators, orthogonal sums and transport of the reproducing model
@@ -70,7 +68,7 @@ Below, `B` is an action of `G` on `W` with multiplier `Δ` and cocycle `c`
 
 namespace New.Heisenberg.IsVacuum
 
-open MeasureTheory Heisenberg.Rep ContinuousLinearMap
+open MeasureTheory Heisenberg.Rep ContinuousLinearMap TauCeti
 
 variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
   {H : Heisenberg W} [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W]
@@ -82,11 +80,26 @@ variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
 
 /-! ### The operators of an action with a cocycle -/
 
+private lemma moveBy_toTauCeti :
+    (heisenbergRep.moveBy B g).toTauCeti =
+      (ReproducingModel.heisenbergRep (β := H.toDatum) (μ := μ) (e := e)).twist B.toTauCeti g :=
+  representation_ext fun x (v : ReproducingModel H.toDatum μ e) ↦
+    (congrArg (· v) (heisenbergOp_eq_tauCeti (g • x))).trans
+      (ReproducingModel.heisenbergRep.twist_apply B.toTauCeti g x v).symm
+
 /-- The Weil operator of `g` for the action `B`: the operator v ↦ Δ(g) ∫ v(y) ρ(g • y) vac dμ(y) on
 the model space, where `Δ = B.Δ`, `ρ = heisenbergOp` and `vac = vacElem`. The integral is the
 integrated action of `v` on `vac` for the representation `y ↦ ρ (g • y)`
 (`New.Heisenberg.Rep.moveBy`). -/
 def weilOp : Model H →L[ℂ] Model H := B.Δ g • (heisenbergRep.moveBy B g).integrated.flip vacElem
+
+private lemma weilOp_eq_tauCeti :
+    weilOp B g = ReproducingModel.weilOp e B.toTauCeti g := by
+  ext1 v
+  refine (congrArg (fun R : H.toDatum.Representation (ReproducingModel H.toDatum μ e) ↦
+    B.Δ g • R.integrated μ e v vacElem) (moveBy_toTauCeti B g)).trans ?_
+  rw [vacElem_eq_tauCeti]
+  exact (ReproducingModel.weilOp_apply_eq B.toTauCeti g v).symm
 
 /-- Write P_g(w) for the operator ∫ w(y) ρ(g • y) dμ(y) on the model space, the integrated action
 `(heisenbergRep.moveBy B g).integrated w` of `w`. For vectors `v`, `w`, `x` of the model space,
@@ -105,10 +118,12 @@ lemma integrated_moveBy_integrated (x v w : Model H) :
 the representation `y ↦ ρ (g • y)` is ∫ w(g⁻¹ • y) T(ρ(y) v) dμ(y). -/
 lemma map_integrated_moveBy (T : Model H →L[ℂ] ℂ) :
     T ((heisenbergRep.moveBy B g).integrated w v) =
-      ∫ y : W, w (g⁻¹ • y) * T (heisenbergOp y v) ∂μ := by
-  -- Substitute `y ↦ g • y`, which preserves `μ`.
-  rw [← (B.measurePreserving g).integral_comp' (f := .smul g)]
-  simp [map_integrated_eq_integral]
+      ∫ y : W, w (g⁻¹ • y) * T (heisenbergOp y v) ∂μ :=
+  (congrArg (fun R : H.toDatum.Representation (ReproducingModel H.toDatum μ e) ↦
+    T (R.integrated μ e w v)) (moveBy_toTauCeti B g)).trans <|
+    (ReproducingModel.map_integrated_twist B.toTauCeti g v w T).trans <|
+      integral_congr_ae (.of_forall fun y ↦
+        congrArg (fun f ↦ w (g⁻¹ • y) * T (f v)) (heisenbergOp_eq_tauCeti y).symm)
 
 /-- Let `e` be a vacuum for the Heisenberg datum `H` and Haar measure `μ`, and let `Model H` be the
 space of integrable `v` with v(x) = ∫ v(y) β(y,x) e(x−y) dμ(y). Then the pairing ∫ conj(e) v dμ
@@ -116,9 +131,10 @@ space of integrable `v` with v(x) = ∫ v(y) β(y,x) e(x−y) dμ(y). Then the p
 v(0). -/
 @[simp]
 lemma modelInner_vacElem : he.modelInner vacElem v = v 0 := by
-  simp [← modelInner_heisenbergOp_vacElem]
+  rw [vacElem_eq_tauCeti]
+  exact ReproducingModel.innerSL_vacuum v
 
-/-- Let `B` be a multiplier action of `G` on the vacuum datum (`H`, `μ`, `e`), let `g : G`, and on
+/-- Let `B` be a multiplier action of `G` on the vacuum datum (`H`, `μ`, `e`) with cocycle `c`. On
 the model space of `e` let ρ(y) = `heisenbergOp y` and vac = `vacElem`. If `T` is a bounded
 surjective operator on the model that preserves `modelInner` and satisfies T ρ(y) = ρ(g • y) T, then
 for every model vector `v`, ∫ v(y) ρ(g • y) vac dμ(y) = conj((T vac)(0)) · T v. So the overlap ⟨vac,
@@ -143,110 +159,44 @@ lemma integrated_moveBy_vacElem_eq_smul (T : Model H →L[ℂ] Model H)
 the scalar c(g, h). -/
 lemma weilOp_inv_mul_weilOp_mul_weilOp : weilOp B (g * h)⁻¹ * weilOp B g * weilOp B h = c g h •
   1 := by
-  have h_move (k : G) (y : W) :
-      weilOp B k * heisenbergOp y = heisenbergOp (k • y) * weilOp B k := by
-    ext1 v
-    simp [weilOp]
-  -- The product moves `ρ(y)` to `ρ((g * h)⁻¹ • g • h • y) = ρ(y)`, so by Schur's lemma it is a
-  -- scalar: the value at `0` of the image of the vacuum.
-  have h_commute (y : W) :
-      Commute (weilOp B (g * h)⁻¹ * weilOp B g * weilOp B h) (heisenbergOp y) := by
-    rw [commute_iff_eq, mul_assoc, h_move, ← mul_assoc, mul_assoc _ (weilOp B g), h_move,
-      ← mul_assoc, h_move, ← mul_smul g h, inv_smul_smul]
-    simp only [mul_assoc]
-  -- Write `P k w` for the operator `∫ w y • ρ (k • y)`. By `integrated_moveBy_integrated` the three
-  -- integrals rearrange into the double integral that defines the cocycle `c g h`.
-  let P (k : G) : Model H →L[ℂ] Model H →L[ℂ] Model H := (heisenbergRep.moveBy B k).integrated
-  have hP_apply (k : G) (w v : Model H) (x : W) :
-      P k w v x = ∫ y : W, w (k⁻¹ • y) * heisenbergOp y v x ∂μ :=
-    map_integrated_moveBy B k v w (valueAt x)
-  have hP_comp (k l : G) (x v w : Model H) : P k (P l w v) x = P (k * l) w (P k v x) :=
-    integrated_moveBy_integrated B k l x v w
-  have hP_one (w v : Model H) : P 1 w v = v 0 • w := by
-    simp only [P, moveBy_one, integrated_eq_smul]
-  have h_inner (x : W) : P (g * h)⁻¹ vacElem vacElem (-x) =
-      ∫ y : W, e ((g * h) • y) * (H.β x y * e (x + y)) ∂μ := by
-    simp only [hP_apply, inv_inv, vacElem_apply, heisenbergOp_apply, beta_neg_right, ← neg_add',
-      he.apply_neg]
-  have h_value : P h⁻¹ vacElem (P (g * h)⁻¹ vacElem vacElem) 0 =
-      ∫ x : W, ∫ y : W, e (h • x) * e ((g * h) • y) * H.β x y * e (x + y) ∂μ ∂μ := by
-    rw [hP_apply]
-    simp only [inv_inv, vacElem_apply, heisenbergOp_apply, beta_zero_right, one_mul, zero_sub,
-      h_inner,
-      mul_assoc, integral_const_mul]
-  have h_scalar : (weilOp B (g * h)⁻¹ * weilOp B g * weilOp B h) vacElem 0 = c g h := by
-    calc (weilOp B (g * h)⁻¹ * weilOp B g * weilOp B h) vacElem 0
-      _ = B.Δ g * B.Δ h * B.Δ (g * h)⁻¹ *
-            P (g * h)⁻¹ (P g (P h vacElem vacElem) vacElem) vacElem 0 := by
-        simp only [weilOp, P, mul_def, comp_apply, _root_.smul_apply, flip_apply,
-          map_smul, smul_apply]
-        ring
-      _ = B.Δ g * B.Δ h * B.Δ (g * h)⁻¹ *
-            P 1 vacElem (P h⁻¹ vacElem (P (g * h)⁻¹ vacElem vacElem)) 0 := by
-        rw [hP_comp g h, hP_comp, hP_comp, inv_mul_cancel, mul_inv_rev, inv_mul_cancel_right]
-      _ = c g h := by
-        rw [hP_one, smul_apply, vacElem_apply, he.apply_zero, mul_one, h_value, B.cocycle]
-  rw [eq_smul_one_of_commute _ h_commute, h_scalar]
+  simp_rw [weilOp_eq_tauCeti, ← B.cocycle_toTauCeti g h]
+  exact ReproducingModel.weilOp_inv_mul_weilOp_mul_weilOp B.toTauCeti g h
 
 omit [μ.IsAddHaarMeasure] in
 /-- For a representation R on the model space and a vector v, the operator sending w in the model
 space to ∫ w(y) R.ρ(y) v dμ(y) has norm at most ‖v‖. -/
-lemma norm_integrated_flip_le (R : H.Rep (Model H)) : ‖R.integrated.flip v‖ ≤ ‖v‖ := by
-  -- `integrated` is built by `LinearMap.mkContinuous₂` with the bound `1`; unfold it to use that.
-  grw [le_opNorm, opNorm_flip, integrated, kernelIntegral, LinearMap.mkContinuous₂_norm_le]
-  · rw [one_mul]
-  · exact zero_le_one
+lemma norm_integrated_flip_le (R : H.Rep (Model H)) : ‖R.integrated.flip v‖ ≤ ‖v‖ :=
+  opNorm_le_bound _ (norm_nonneg v) fun w ↦
+    ((R.integrated w).le_opNorm v).trans <| by
+      simpa [mul_comm] using mul_le_mul_of_nonneg_right (R.norm_integrated_le w) (norm_nonneg v)
 
 lemma weilOp_one : weilOp B 1 = 1 := by
-  refine hom_ext fun y ↦ ?_
-  simp [weilOp, he.apply_zero, MultiplierAction.Δ_one]
+  rw [weilOp_eq_tauCeti]
+  exact ReproducingModel.weilOp_one B.toTauCeti
 
 /-- Cocycle relation for the Weil operators ω = `weilOp B` of an action with cocycle c: if
 c(g, 1) = 1 for all g, then ω(g)ω(h) = c(g, h)·ω(gh). -/
 lemma weilOp_mul (hc_one : ∀ g : G, c g 1 = 1) (h : G) :
     weilOp B g * weilOp B h = c g h • weilOp B (g * h) := by
-  -- By `weilOp_inv_mul_weilOp_mul_weilOp` for `(g * h)⁻¹` and `1`, the operator of `g * h` is a
-  -- left inverse of that of `(g * h)⁻¹`; multiply `weilOp_inv_mul_weilOp_mul_weilOp` for `g` and
-  -- `h` by it.
-  have h_inv : weilOp B (g * h) * weilOp B (g * h)⁻¹ = 1 := by
-    simpa [weilOp_one, hc_one] using weilOp_inv_mul_weilOp_mul_weilOp B (g * h)⁻¹ 1
-  rw [← mul_smul_one, ← weilOp_inv_mul_weilOp_mul_weilOp B g h, ← mul_assoc, ← mul_assoc, h_inv,
-    one_mul]
+  simp_rw [weilOp_eq_tauCeti, ← B.cocycle_toTauCeti g h]
+  exact ReproducingModel.weilOp_mul B.toTauCeti g h fun k ↦
+    (B.cocycle_toTauCeti k 1).trans (hc_one k)
 
 /-- If c(g, 1) = 1, the Weil operator `weilOp B g` preserves the inner product
 `New.Heisenberg.IsVacuum.modelInner` (v, w) ↦ ∫ conj(v) w dμ of the model space. -/
 lemma modelInner_weilOp (hc_one : c g 1 = 1) :
     modelInner (weilOp B g v) (weilOp B g w) = modelInner v w := by
-  -- The operator of `g⁻¹` is both a left inverse and an adjoint of the operator of `g`.
-  have h_inv : weilOp B g⁻¹ (weilOp B g v) = v := by
-    simpa [weilOp_one, hc_one] using DFunLike.congr_fun (weilOp_inv_mul_weilOp_mul_weilOp B g 1) v
-  -- Both sides are `Δ g` times the integral of `w (g⁻¹ • y) * conj (u y)`, as `Δ g⁻¹ = conj (Δ g)`.
-  have h_coeff (u : he.Model) (y : W) :
-      modelInner u (heisenbergOp y vacElem) = starRingEnd ℂ (u y) := by
-    rw [← conj_modelInner, modelInner_heisenbergOp_vacElem]
-  have h_adjoint (u : he.Model) :
-      modelInner u (weilOp B g w) = starRingEnd ℂ (modelInner w (weilOp B g⁻¹ u)) := by
-    calc modelInner u (weilOp B g w)
-      _ = B.Δ g * ∫ y : W, w (g⁻¹ • y) * starRingEnd ℂ (u y) ∂μ := by
-        simp [weilOp, map_integrated_moveBy _ g, h_coeff]
-      _ = starRingEnd ℂ (modelInner w (weilOp B g⁻¹ u)) := by
-        simp [weilOp, map_integrated_eq_integral, h_coeff, ← integral_conj, mul_comm,
-          MultiplierAction.Δ_inv]
-  rw [h_adjoint, h_inv, conj_modelInner]
+  simp_rw [weilOp_eq_tauCeti]
+  exact ReproducingModel.innerSL_weilOp B.toTauCeti g v w
+    ((B.cocycle_toTauCeti g 1).trans hc_one)
 
 /-- For an action `B` with cocycle c such that c(g, 1) = 1 for all g, the subgroup of those s in G
 with c(g, s) = 1 for every g. -/
 def cocycleRadical (h1 : ∀ g : G, c g 1 = 1) : Subgroup G :=
-  have h_assoc (g h k : G) := mul_assoc (weilOp B g) (weilOp B h) (weilOp B k)
-  -- Apply both products to the vacuum and pair with the unit vector `weilOp B (g * h * k) vacElem`:
-  -- by `weilOp_mul` this is the cocycle identity for `c`.
-  have h_cocycle (g h k : G) : c g h * c (g * h) k = c h k * c g (h * k) := by
-    simpa [weilOp_mul, h1, he.apply_zero, mul_assoc g, modelInner_weilOp] using
-      congr(modelInner (weilOp B (g * h * k) vacElem) ($(h_assoc g h k) vacElem))
-  { carrier := {s : G | ∀ g : G, c g s = 1}
-    one_mem' := h1
-    mul_mem' {s t} hs ht g := by simpa [hs g, ht _] using (h_cocycle g s t).symm
-    inv_mem' {s} hs g := by simpa [hs _, h1] using h_cocycle g s⁻¹ s }
+  (ReproducingModel.cocycleRadical B.toTauCeti fun g ↦ (B.cocycle_toTauCeti g 1).trans (h1 g)).copy
+    {s : G | ∀ g : G, c g s = 1} <| by
+      ext s
+      simp [ReproducingModel.mem_cocycleRadical, B.cocycle_toTauCeti]
 
 /-! ### The Weil representation -/
 
@@ -255,6 +205,12 @@ g ↦ (v ↦ Δ(g) ∫ v(y) ρ(g • y) vac dμ(y)) from G to the bounded operat
 value at g is `weilOp A g`. -/
 def weilRep : G →* Model H →L[ℂ] Model H :=
   MonoidHom.mk ⟨weilOp A, weilOp_one A⟩ (by simp [weilOp_mul])
+
+private lemma weilRep_eq_tauCeti :
+    weilRep A g = ReproducingModel.weilRep e A.toTauCeti (fun g h ↦ A.cocycle_toTauCeti g h) g := by
+  ext1 v
+  exact (DFunLike.congr_fun (weilOp_eq_tauCeti A g) v).trans
+    (ReproducingModel.weilRep_apply_eq A.toTauCeti g v _).symm
 
 /-- Let `e` be a vacuum for `H` and `μ`, with model space `Model H` of integrable `v` satisfying
 v(x) = ∫ v(y) β(y,x) e(x−y) dμ(y). Let `A` be an action of `G` on `W` that preserves β and μ and has
@@ -270,7 +226,8 @@ attribute [simp] weilOp modelInner_weilRep
 `A` is an action of `G` on `W` that preserves β and μ and has multiplier Δ and cocycle 1. -/
 lemma weilRep_heisenbergOp :
     weilRep A g (heisenbergOp x v) = heisenbergOp (g • x) (weilRep A g v) := by
-  simp [weilRep]
+  simp_rw [weilRep_eq_tauCeti, heisenbergOp_eq_tauCeti]
+  exact ReproducingModel.weilRep_heisenbergRep A.toTauCeti g x v fun g h ↦ A.cocycle_toTauCeti g h
 
 /-- The Weil operator of `g` sends `v` to Δ(g) ∫ v(g⁻¹ • y) ρ(y) vac dμ(y). -/
 lemma weilRep_eq_integral :
@@ -284,7 +241,8 @@ lemma weilRep_eq_integral :
 dμ(y). -/
 lemma weilRep_apply_eq_integral :
     weilRep A g v x = A.Δ g * ∫ y : W, v y * (H.β (g • y) x * e (x - g • y)) ∂μ := by
-  simp [weilRep, integrated_apply_eq_integral]
+  rw [weilRep_eq_tauCeti]
+  exact ReproducingModel.weilRep_apply A.toTauCeti g x v fun g h ↦ A.cocycle_toTauCeti g h
 
 /-- Let `A` be a multiplier action of `G` on the vacuum datum (`H`, `μ`, `e`) with cocycle 1 and
 multiplier `A.Δ`, and let ω = `weilRep A` be its Weil representation on the model space of `e`. If
@@ -292,16 +250,9 @@ multiplier `A.Δ`, and let ω = `weilRep A` be its Weil representation on the mo
 substitution up to its multiplier: for every model vector `v`, `(ω g v) x = Δ g * v (g⁻¹ x)`. -/
 lemma weilRep_apply_of_vacuum_smul (hg : ∀ y : W, e (g • y) = e y) (x : W) :
     weilRep A g v x = A.Δ g * v (g⁻¹ • x) := by
-  -- Substituting `g` in the kernel turns the integral that defines `ω g v` at `x` into the
-  -- reproducing identity of `v` at `g⁻¹ x`.
-  have h_kernel (y : W) :
-      H.β (g • y) x * e (x - g • y) = H.β y (g⁻¹ • x) * e (g⁻¹ • x - y) := by
-    rw [← A.beta_smul g y, ← hg (g⁻¹ • x - y), smul_sub, smul_inv_smul]
-  calc weilRep A g v x
-    _ = A.Δ g * ∫ y : W, v y * (H.β (g • y) x * e (x - g • y)) ∂μ :=
-      weilRep_apply_eq_integral A g x v
-    _ = A.Δ g * ∫ y : W, v y * (H.β y (g⁻¹ • x) * e (g⁻¹ • x - y)) ∂μ := by simp_rw [h_kernel]
-    _ = A.Δ g * v (g⁻¹ • x) := by rw [v.integral_mul_beta_mul_eq (g⁻¹ • x)]
+  rw [weilRep_eq_tauCeti]
+  exact ReproducingModel.weilRep_apply_of_vacuum A.toTauCeti g x v
+    (fun g h ↦ A.cocycle_toTauCeti g h) hg
 
 /-- Let e be a vacuum for β and μ, and let `A` be a multiplier action of G on W with trivial
 cocycle, that is, an action preserving β and μ with multiplier Δ. Let ω = `weilRep A` be the Weil
@@ -309,24 +260,17 @@ representation on `Model H` (the integrable v with v(x) = ∫ v(y) β(y,x) e(x�
 ω(g)v = Δ(g) ∫ v(y) ρ(g • y) e dμ(y). Then the overlap ⟨vac, ω(g) vac⟩ = (ω(g) vac)(0) of the Weil
 operator of `g` is the inverse of conj Δ(g): conj Δ(g) · (ω(g) e)(0) = 1. -/
 lemma conj_delta_mul_weilRep_vacElem : starRingEnd ℂ (A.Δ g) * weilRep A g vacElem 0 = 1 := by
-  -- The overlap determines `ω(g)` (`integrated_moveBy_vacElem_eq_smul`); pair with `ω(g) vac`.
-  have h_eq : weilRep A g vacElem =
-      A.Δ g • (starRingEnd ℂ (weilRep A g vacElem 0) • weilRep A g vacElem) :=
-    congrArg (A.Δ g • ·) <| integrated_moveBy_vacElem_eq_smul A g vacElem (weilRep A g)
-      (fun v ↦ ⟨weilRep A g⁻¹ v, by
-        rw [rep_apply_apply, mul_inv_cancel, map_one, one_apply_eq_self]⟩)
-      (modelInner_weilRep A g) (weilRep_heisenbergOp A g)
-  simpa [modelInner_weilRep, modelInner_vacElem, vacElem_apply, he.apply_zero] using
-    congrArg (fun v ↦ starRingEnd ℂ (modelInner (weilRep A g vacElem) v)) h_eq.symm
+  rw [weilRep_eq_tauCeti, vacElem_eq_tauCeti]
+  exact ReproducingModel.conj_mul_weilRep_vacuum_apply_zero A.toTauCeti g
+    fun g h ↦ A.cocycle_toTauCeti g h
 
 /-- For a multiplier action `A` of `G` on `W` with cocycle 1, preserving β and `μ`, with vacuum `e`,
 consider the Weil operator `weilRep A g` on the model space `Model H`, which carries the L¹ norm.
 Its operator norm is at most the norm of `he.vacElem` (the vacuum `e` as an element of the model
 space) times the modulus of the complex multiplier `A.Δ g`. -/
 lemma norm_weilRep_le : ‖weilRep A g‖ ≤ ‖he.vacElem‖ * ‖A.Δ g‖ := by
-  have h_def : weilRep A g = A.Δ g • (heisenbergRep.moveBy A g).integrated.flip he.vacElem := rfl
-  rw [h_def, norm_smul, mul_comm]
-  exact mul_le_mul_of_nonneg_right (norm_integrated_flip_le he.vacElem _) (norm_nonneg _)
+  rw [weilRep_eq_tauCeti, vacElem_eq_tauCeti]
+  exact ReproducingModel.norm_weilRep_le A.toTauCeti g fun g h ↦ A.cocycle_toTauCeti g h
 
 /-- Let e be a vacuum for β and μ, and let `A` be a multiplier action of G on W with trivial
 cocycle, that is, a continuous action preserving β and μ with multiplier Δ. For a first countable
@@ -336,20 +280,13 @@ dμ(y), with the L¹ norm. -/
 @[fun_prop]
 lemma continuous_weilRep [FirstCountableTopology G] :
     Continuous ↿(fun (g : G) (v : Model H) ↦ weilRep A g v) := by
-  -- `weilRep A g v = Δ g • ∫ v y • heisenbergOp (g • y) vacElem`. The integral is Lipschitz in `v`
-  -- with the constant `‖vacElem‖` for every `g`, so it suffices to prove continuity in `g` for
-  -- fixed `v`.
-  have h_lip (g : G) : LipschitzWith ‖he.vacElem‖₊
-    ((heisenbergRep.moveBy A g).integrated.flip vacElem) :=
-    lipschitzWith_of_opNorm_le (norm_integrated_flip_le he.vacElem (heisenbergRep.moveBy A g))
-  -- Dominated convergence: `heisenbergOp` is isometric, so the integrand has the norm of
-  -- `v y • vacElem`.
-  have h_cont (v : Model H) :
-      Continuous fun g : G ↦ ∫ y : W, v y • he.heisenbergOp (g • y) vacElem ∂μ :=
-    continuous_of_dominated (bound := fun y ↦ ‖v y • he.vacElem‖) (by fun_prop)
-      (fun g ↦ .of_forall fun y ↦ by simp [norm_smul, Rep.norm_map])
-      (v.integrable.smul_const he.vacElem).norm (.of_forall (by fun_prop))
-  exact A.continuous_delta.fst'.smul (continuous_prod_of_continuous_lipschitzWith' _ _ h_lip h_cont)
+  have h : (fun p : G × Model H ↦ weilRep A p.1 p.2) =
+      fun p : G × ReproducingModel H.toDatum μ e ↦
+        ReproducingModel.weilRep e A.toTauCeti (fun g h ↦ A.cocycle_toTauCeti g h) p.1 p.2 :=
+    funext fun p ↦ DFunLike.congr_fun (weilRep_eq_tauCeti A p.1) p.2
+  change Continuous fun p : G × Model H ↦ weilRep A p.1 p.2
+  rw [h]
+  exact ReproducingModel.continuous_weilRep A.toTauCeti fun g h ↦ A.cocycle_toTauCeti g h
 
 attribute [irreducible] weilRep
 
@@ -369,7 +306,7 @@ end New.Heisenberg.IsVacuum
 
 namespace New.Heisenberg
 
-open MeasureTheory Heisenberg.Rep IsVacuum Measure ENNReal Set MultiplierAction
+open MeasureTheory Heisenberg.Rep IsVacuum Measure ENNReal Set MultiplierAction TauCeti
 
 variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
   {H : Heisenberg W} [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W]
@@ -393,15 +330,21 @@ structure OrthogonalSum (H : Heisenberg W) (H₁ : Heisenberg W₁) (H₂ : Heis
   /-- Along `equiv`, the function `e` is the product of the two vacua `e₁` and `e₂`. -/
   vac_equiv (x : W₁ × W₂) : e (equiv x) = e₁ x.1 * e₂ x.2
 
-variable (R : Rep H X) [IsVacuum H₁ μ₁ e₁] [IsVacuum H₂ μ₂ e₂]
-  (S : H.OrthogonalSum H₁ H₂ e) [he : H.IsVacuum μ e]
-  (v : Model H₁) (w : Model H₂) (x : W) (f : X)
+/-- View a `New.Heisenberg.OrthogonalSum` as a `TauCeti.HeisenbergDatum.OrthogonalSum`. -/
+def OrthogonalSum.toTauCeti [IsVacuum H₁ μ₁ e₁] [IsVacuum H₂ μ₂ e₂]
+    (S : OrthogonalSum H H₁ H₂ e) :
+    H.toDatum.OrthogonalSum H₁.toDatum H₂.toDatum e e₁ e₂ :=
+  ⟨S.equiv, S.beta_equiv, S.vac_equiv⟩
+
+variable [he : IsVacuum H μ e] [he₁ : IsVacuum H₁ μ₁ e₁] [he₂ : IsVacuum H₂ μ₂ e₂]
+  (S : OrthogonalSum H H₁ H₂ e) (R : H.Rep X) (v : Model H₁) (w : Model H₂) (x : W) (f : X)
 
 /-! ### Wiener's bound -/
 
-/-- Wiener's bound. Let `T` be a bounded map from the model space of the vacuum `e` to a space `X`,
-and let `W` act on the model space by `ρ = heisenbergOp`. Assume that a vector `u` has `u 0 ≠ 0`,
-that `W₁` is Hausdorff, that `κ : W₁ → W` is a continuous homomorphism, and that
+omit [he₁ : IsVacuum H₁ μ₁ e₁] in
+/-- Wiener's bound for a bounded map `T` from the model space `Model H` to a Banach space `X`. Let
+`u` be a model vector with `u 0 ≠ 0`, `κ : W₁ → W` a continuous homomorphism from a locally compact
+Hausdorff group `W₁` with Haar measure `μ₁`, and `ρ = heisenbergOp`. Assume
 `‖T ρ(z + κ x) u‖ = ‖g (t z + x)‖` for all `z` in `W` and `x` in `W₁`, with an integrable `g` on
 `W₁` and some function `t : W → W₁`. Then there are a compact set `B` in `W₁` and a constant `M`
 with the following property. For every additive group `I`, every homomorphism `φ : I → W₁` and
@@ -415,82 +358,8 @@ lemma IsVacuum.wiener_bound [LocallyCompactSpace W] [LocallyCompactSpace W₁]
       IsCompact B ∧
       ∃ M : NNReal, ∀ {I : Type*} [AddGroup I] (φ : I →+ W₁) (v : Model H),
         ∑' i : I, ‖T (heisenbergOp (κ (φ i)) v)‖ₑ ≤ (φ ⁻¹' B).encard * M * ‖v‖ₑ := by
-  -- Put `G s = ∫ ‖v z‖ ‖T heisenbergOp(z + κ s) u‖ dz`, so that `∫ G = ‖g‖ ‖v‖`. The value at `x`
-  -- is bounded by a multiple of the integral of `G` over `x + K`, `K` a compact neighbourhood of
-  -- `0`, and a point lies in at most `#φ⁻¹(B)` of the translates `φ i + K`, where `B = -K + K`.
-  obtain ⟨K, hK, hK₀⟩ : ∃ K : Set W₁, IsCompact K ∧ K ∈ nhds 0 := exists_compact_mem_nhds 0
-  obtain ⟨B, hB, mem_B⟩ : ∃ B : Set W₁, IsCompact B ∧ ∀ a ∈ K, ∀ b ∈ K, -a + b ∈ B :=
-    ⟨_, hK.neg.add hK, fun a ha b hb ↦ add_mem_add (neg_mem_neg.mpr ha) hb⟩
-  have u_cont : Continuous fun s : W₁ ↦ ‖u (-κ s)‖ₑ :=
-    (continuous u).eNorm.comp (map_continuous κ).neg
-  -- `u (-κ s) ≠ 0` for `s` near `0`, so the integral of its norm over `K` is positive.
-  obtain ⟨r, hr⟩ : ∃ r : ℕ, 1 < r * ∫⁻ s in K, ‖u (-κ s)‖ₑ ∂μ₁ := by
-    refine exists_nat_mul_gt ((setLIntegral_pos_iff u_cont.measurable).mpr ?_).ne' one_ne_top
-    have hu_zero : ‖u (-κ 0)‖ₑ ≠ 0 := by simpa using hu
-    exact μ₁.measure_pos_of_mem_nhds ((u_cont.continuousAt.eventually_ne hu_zero).and hK₀)
-  obtain ⟨M, hM⟩ : ∃ M : NNReal, ∫⁻ x : W₁, ‖g x‖ₑ ∂μ₁ = M :=
-    ⟨_, (coe_toNNReal hg.hasFiniteIntegral.ne).symm⟩
-  -- The constant is nonzero, so that the bound is trivial when `φ ⁻¹' B` is infinite.
-  refine ⟨B, hB, r * M + 1, fun {I} _ φ v ↦ ?_⟩
-  obtain hN | ⟨N, hN⟩ : (φ ⁻¹' B).encard = ⊤ ∨ ∃ N : ℕ, (φ ⁻¹' B).encard = N := by
-    cases (φ ⁻¹' B).encard <;> simp
-  · by_cases hv : v = 0 <;> simp [hN, hv]
-  -- If `y` lies in the translates of `K` by `φ i` and `φ i₀`, then `φ (i - i₀)` lies in `B`.
-  have h_encard_le (y : W₁) : {i : I | y ∈ (· - φ i) ⁻¹' K}.encard ≤ N := by
-    obtain h_empty | ⟨i₀, hi₀⟩ := {i : I | y ∈ (· - φ i) ⁻¹' K}.eq_empty_or_nonempty
-    · rw [h_empty, encard_empty]
-      exact zero_le
-    · have h_mem (i : I) (hi : y - φ i ∈ K) : φ (i - i₀) ∈ B := by
-        simpa using mem_B (y - φ i) hi (y - φ i₀) hi₀
-      rw [← hN]
-      exact encard_le_encard_of_injOn (f := (· - i₀)) h_mem sub_left_injective.injOn
-  let G (s : W₁) : ℝ≥0∞ := ∫⁻ z : W, ‖v z‖ₑ * ‖T (heisenbergOp (z + κ s) u)‖ₑ ∂μ
-  have G_int : ∫⁻ s : W₁, G s ∂μ₁ = M * ‖v‖ₑ := by
-    -- The norm of a model vector is its `L¹` norm.
-    have h_norm_toL1 : ‖Integrable.toL1 (v : W → ℂ) v.integrable‖ₑ = ‖v‖ₑ := rfl
-    -- For fixed `z` the integral over `s` is that of a translate of `g`.
-    have h_inner (z : W) :
-        ∫⁻ s : W₁, ‖v z‖ₑ * ‖T (heisenbergOp (z + κ s) u)‖ₑ ∂μ₁ = M * ‖v z‖ₑ := by
-      simp_rw [h_enorm_eq]
-      rw [lintegral_const_mul' _ _ eNorm_ne_top, lintegral_add_left_eq_self (‖g ·‖ₑ), hM, mul_comm]
-    calc ∫⁻ s : W₁, G s ∂μ₁
-      _ = ∫⁻ z : W, ∫⁻ s : W₁, ‖v z‖ₑ * ‖T (heisenbergOp (z + κ s) u)‖ₑ ∂μ₁ ∂μ :=
-        (lintegral_lintegral_swap (by fun_prop)).symm
-      _ = M * ∫⁻ z : W, ‖v z‖ₑ ∂μ := by
-        simp_rw [h_inner]
-        exact lintegral_const_mul' _ _ coe_ne_top
-      _ = M * ‖v‖ₑ := by rw [← h_norm_toL1, Integrable.eNorm_toL1]
-  -- By `integrated_eq_smul`, `∫ v z • heisenbergOp(z) heisenbergOp(κ s) u dz` is `v` times the
-  -- value of `heisenbergOp(κ s) u` at `0`, which has norm `‖u (-κ s)‖`; apply
-  -- `T ∘ heisenbergOp(κ x)`.
-  have G_ge (x s : W₁) : ‖u (-κ s)‖ₑ * ‖T (heisenbergOp (κ x) v)‖ₑ ≤ G (x + s) := by
-    have h_bound :
-        ‖(T ∘L heisenbergOp (κ x)) (heisenbergRep.integrated v (heisenbergOp (κ s) u))‖ₑ ≤
-          ∫⁻ z : W,
-            ‖v z • (T ∘L heisenbergOp (κ x)) (heisenbergOp z (heisenbergOp (κ s) u))‖ₑ ∂μ := by
-      rw [heisenbergRep.map_integrated_eq_integral (T ∘L heisenbergOp (κ x))]
-      exact eNorm_integral_le_lintegral_eNorm _
-    simpa [G, norm_smul, ← ofReal_norm, add_left_comm, mul, norm_eq_one] using h_bound
-  -- Multiply `G_ge` by `r`, integrate over `s ∈ K` and use `hr`.
-  have h_enorm_le_setLIntegral (i : I) :
-      ‖T (heisenbergOp (κ (φ i)) v)‖ₑ ≤ r * ∫⁻ s in (· - φ i) ⁻¹' K, G s ∂μ₁ := by
-    grw [← (measurePreserving_add_left μ₁ (φ i)).setLIntegral_comp_preimage_emb
-      (measurableEmbedding_addLeft (φ i)), ← one_mul ‖T (heisenbergOp (κ (φ i)) v)‖ₑ, hr, mul_assoc,
-      lintegral_mul_const_le]
-    gcongr
-    · simp [preimage]
-    · exact G_ge (φ i) _
-  calc ∑' i : I, ‖T (heisenbergOp (κ (φ i)) v)‖ₑ
-    _ ≤ ∑' i : I, r * ∫⁻ s in (· - φ i) ⁻¹' K, G s ∂μ₁ :=
-        tsum_le_tsum h_enorm_le_setLIntegral
-    _ = r * ∫⁻ s : W₁, G s ∂.sum fun i : I ↦ μ₁.restrict ((· - φ i) ⁻¹' K) := by
-      rw [lintegral_sum_measure, ENNReal.tsum_mul_left]
-    _ ≤ r * ∫⁻ s : W₁, G s ∂N • μ₁ := by
-      grw [sum_restrict_le (fun i ↦ measurable_sub_const (φ i) hK.measurableSet) h_encard_le,
-        μ₁.restrict_le_self]
-    _ = N * (r * M) * ‖v‖ₑ := by simp [G_int, mul_assoc, mul_left_comm]
-    _ ≤ (φ ⁻¹' B).encard * (r * M + 1 : NNReal) * ‖v‖ₑ := by
-      simp [hN, mul_le_mul_left, mul_le_mul_right]
+  simp_rw [heisenbergOp_eq_tauCeti] at h_enorm_eq ⊢
+  exact ReproducingModel.exists_isCompact_tsum_enorm_le T hu κ hg t h_enorm_eq
 
 /-! ### Tensor products along a splitting -/
 
@@ -518,54 +387,55 @@ integral `∫ v(y₁) ρ(φ(y₁, 0)) (∫ w(y₂) ρ(φ(0, y₂)) e dμ₂) dμ
 `e`. As a function it is `φ(x₁, x₂) ↦ v x₁ * w x₂`, see
 `New.Heisenberg.OrthogonalSum.tmul_apply`. -/
 noncomputable def OrthogonalSum.tmul : Model H₁ →L[ℂ] Model H₂ →L[ℂ] Model H :=
-  ((heisenbergRep.left S).integrated.flip ∘L (heisenbergRep.right S).integrated.flip vacElem).flip
+  (((heisenbergRep.left S).integrated).flip.comp
+    ((heisenbergRep.right S).integrated.flip vacElem)).flip
+
+omit [μ₁.IsAddHaarMeasure] [IsTopologicalAddGroup W₂] [BorelSpace W₂]
+  [SecondCountableTopology W₂] [μ₂.IsAddHaarMeasure] in
+private lemma OrthogonalSum.left_integrated_eq_tauCeti (v : Model H₁) (u : Model H) :
+    (heisenbergRep.left S).integrated v u =
+      ((ReproducingModel.heisenbergRep (β := H.toDatum) (μ := μ) (e := e)).restrictLeft
+        S.toTauCeti).integrated μ₁ e₁ v u :=
+  congrArg (fun R : H₁.toDatum.Representation (ReproducingModel H.toDatum μ e) ↦
+    R.integrated μ₁ e₁ v u) <|
+  representation_ext fun x (w : ReproducingModel H.toDatum μ e) ↦
+    (congrArg (· w) (heisenbergOp_eq_tauCeti (S.equiv (x, 0)))).trans
+      (ReproducingModel.heisenbergRep.restrictLeft_apply S.toTauCeti x w).symm
+
+private lemma OrthogonalSum.tmul_eq_tauCeti : S.tmul = S.toTauCeti.tmul μ := by
+  obtain ⟨r, hr1, hr2⟩ := S.toTauCeti.exists_restriction (μ := μ) (μ₁ := μ₁) (μ₂ := μ₂)
+  ext1 v
+  ext1 w
+  set u : Model H := (heisenbergRep.right S).integrated w vacElem
+  have hru : r u = w := ext fun b ↦
+    (hr1 u b).trans <|
+      ((heisenbergRep.right S).toTauCeti.map_integrated
+        (valueAt (S.equiv (0, b))) w vacElem).trans <| by
+        simp [Rep.toTauCeti, S.beta_equiv, ← map_sub, S.vac_equiv, he₁.apply_zero]
+        exact w.integral_mul_beta_mul_eq b
+  exact (S.left_integrated_eq_tauCeti v u).trans <|
+    (hr2 v u).trans (congrArg (S.toTauCeti.tmul μ v) hru)
 
 /-- Let `S` split `H` along `S.equiv : W₁ × W₂ ≃ W`, with `e` the product of the vacua `e₁` (for
 `μ₁`) and `e₂` (for `μ₂`). Then `e` is a vacuum for `H` and the image of `μ₁ × μ₂` under
 `S.equiv`. -/
 lemma OrthogonalSum.isVacuum [LocallyCompactSpace W₁] [LocallyCompactSpace W₂] :
     H.IsVacuum ((μ₁.prod μ₂).map S.equiv) e := by
-  -- Read through `S.equiv`, `e` is the product of the two vacua, and each property holds
-  -- factorwise.
-  have ⟨h₁, h₂⟩ : H₁.IsVacuum μ₁ e₁ ∧ H₂.IsVacuum μ₂ e₂ := ⟨inferInstance, inferInstance⟩
-  have he_eq : e = (fun x : W₁ × W₂ ↦ e₁ x.1 * e₂ x.2) ∘ S.equiv.symm :=
-    funext fun x ↦ by simp [← S.vac_equiv]
-  have h_cont := he_eq.symm ▸ (h₁.cont.fst'.mul h₂.cont.snd').comp S.equiv.symm.continuous
-  refine ⟨h_cont, by simp [he_eq, h₁.apply_zero, h₂.apply_zero],
-    by simp [he_eq, h₁.apply_neg, h₂.apply_neg], by simp [he_eq, h₁.conj_apply, h₂.conj_apply],
-    S.equiv.surjective.forall₂.mpr fun y x ↦ ?_, ?_⟩
-  · -- The convolution integral over the product is the product of the two convolutions.
-    rw [integral_map (by fun_prop) (by fun_prop), S.vac_equiv, S.vac_equiv, mul_mul_mul_comm,
-      ← h₁.twisted_conv, ← h₂.twisted_conv]
-    simp [← map_sub, ← map_add, vac_equiv, beta_equiv, ← integral_prod_mul, mul_comm, mul_assoc,
-      mul_left_comm]
-  · rw [integrable_map_measure (by fun_prop) (by fun_prop)]
-    simpa [Function.comp_def, vac_equiv] using h₁.integrable.mul_prod h₂.integrable
+  have h := S.toTauCeti.isVacuum he₁.toTauCeti he₂.toTauCeti
+  exact ⟨h.continuous, h.apply_zero, h.apply_neg, h.conj_apply, h.integral_mul_apply, h.integrable⟩
 
-/-- A vacuum fixes the normalisation of the Haar measure, so `S.equiv` carries `μ₁ × μ₂` to `μ`. -/
+/-- Let `S` split `H` along `S.equiv : W₁ × W₂ ≃ W`, with `e` the product of the vacua `e₁` (for
+`μ₁`) and `e₂` (for `μ₂`), and `e` a vacuum for `μ`. Then `S.equiv` sends `μ₁ × μ₂` to `μ`. -/
 lemma OrthogonalSum.measurePreserving_equiv [LocallyCompactSpace W] [LocallyCompactSpace W₁]
-    [LocallyCompactSpace W₂] : MeasurePreserving S.equiv (μ₁.prod μ₂) μ where
-  measurable := by fun_prop
-  map_eq :=
-    addHaar_eq_of_integral_eq_one he.integral_norm_sq_eq_one S.isVacuum.integral_norm_sq_eq_one
+    [LocallyCompactSpace W₂] : MeasurePreserving S.equiv (μ₁.prod μ₂) μ :=
+  S.toTauCeti.measurePreserving_equiv
 
 omit [CompleteSpace X] in
 lemma OrthogonalSum.integral_eq_integral_prod [LocallyCompactSpace W] [LocallyCompactSpace W₁]
     [LocallyCompactSpace W₂] (f : W → X) :
-    ∫ x : W, f x ∂μ = ∫ x : W₁ × W₂, f (S.equiv x) ∂μ₁.prod μ₂ := by
-  rw [← S.measurePreserving_equiv.map_eq]
-  exact S.equiv.isClosedEmbedding.integral_map f
+    ∫ x : W, f x ∂μ = ∫ x : W₁ × W₂, f (S.equiv x) ∂μ₁.prod μ₂ :=
+  S.toTauCeti.integral_eq_integral_prod f
 
-/-- Integrate a product of functions on the two factors of an orthogonal sum. -/
-private lemma OrthogonalSum.integral_eq_mul [LocallyCompactSpace W] [LocallyCompactSpace W₁]
-    [LocallyCompactSpace W₂] (F : W → ℂ) (f₁ : W₁ → ℂ) (f₂ : W₂ → ℂ)
-    (h : ∀ x : W₁ × W₂, F (S.equiv x) = f₁ x.1 * f₂ x.2) :
-    ∫ x, F x ∂μ = (∫ a, f₁ a ∂μ₁) * ∫ b, f₂ b ∂μ₂ := by
-  rw [S.integral_eq_integral_prod]
-  simp_rw [h]
-  exact integral_prod_mul _ _
-
-omit [μ₁.IsAddHaarMeasure] [μ₂.IsAddHaarMeasure] in
 /-- Let `S` be an orthogonal sum, that is, an isomorphism φ = `S.equiv` : W₁ × W₂ → W of topological
 groups under which β and e are the products β₁β₂ and e₁e₂. Let v and w lie in the model spaces of e₁
 and e₂, the integrable functions reproduced by e₁ and e₂. Read through φ, the tensor product
@@ -573,28 +443,8 @@ and e₂, the integrable functions reproduced by e₁ and e₂. Read through φ,
 v((φ⁻¹x).1) · w((φ⁻¹x).2). -/
 @[local simp]
 lemma OrthogonalSum.tmul_apply : S.tmul v w x = v (S.equiv.symm x).1 * w (S.equiv.symm x).2 := by
-  obtain ⟨⟨a, b⟩, rfl⟩ := S.equiv.surjective x
-  -- The translate of the vacuum by `S.equiv (y₁, y₂)` is the product of the two reproducing
-  -- kernels, so the double integral that defines `S.tmul` reproduces `v` at `a` and `w` at `b`.
-  have h_kernel (y₁ : W₁) (y₂ : W₂) :
-      (heisenbergRep.left S).ρ y₁ ((heisenbergRep.right S).ρ y₂ vacElem) (S.equiv (a, b)) =
-        H₁.β y₁ a * e₁ (a - y₁) * (H₂.β y₂ b * e₂ (b - y₂)) := by
-    simp [mul, beta_equiv, ← map_add, ← map_sub, vac_equiv, mul_mul_mul_comm]
-  have h_inner (y₂ : W₂) :
-      (heisenbergRep.left S).integrated v ((heisenbergRep.right S).ρ y₂ vacElem) (S.equiv (a, b)) =
-        v a * (H₂.β y₂ b * e₂ (b - y₂)) := by
-    rw [← valueAt_apply, map_integrated_eq_integral, ← v.integral_mul_beta_mul_eq a,
-      ← integral_mul_const]
-    simp_rw [valueAt_apply, h_kernel, smul_eq_mul, mul_assoc]
-  rw [S.equiv.symm_apply_apply]
-  calc S.tmul v w (S.equiv (a, b))
-    _ = ∫ y₂ : W₂, w y₂ * (heisenbergRep.left S).integrated v
-          ((heisenbergRep.right S).ρ y₂ vacElem) (S.equiv (a, b)) ∂μ₂ :=
-      (heisenbergRep.right S).map_integrated_eq_integral
-        (valueAt (S.equiv (a, b)) ∘L (heisenbergRep.left S).integrated v) w vacElem
-    _ = v a * ∫ y₂ : W₂, w y₂ * (H₂.β y₂ b * e₂ (b - y₂)) ∂μ₂ := by
-      simp_rw [h_inner, ← integral_const_mul, mul_left_comm (v a)]
-    _ = v a * w b := by rw [w.integral_mul_beta_mul_eq b]
+  rw [S.tmul_eq_tauCeti]
+  exact S.toTauCeti.tmul_apply v w x
 
 open scoped ComplexConjugate in
 /-- Let `S` be an orthogonal sum, that is, an isomorphism φ: W₁ × W₂ → W of topological groups under
@@ -604,13 +454,8 @@ w dμ: `⟨v ⊗ w, v' ⊗ w'⟩ = ⟨v, v'⟩ ⟨w, w'⟩`. -/
 lemma OrthogonalSum.modelInner_tmul [LocallyCompactSpace W] [LocallyCompactSpace W₁]
     [LocallyCompactSpace W₂] (v v' : Model H₁) (w w' : Model H₂) :
     modelInner (S.tmul v w) (S.tmul v' w') = modelInner v v' * modelInner w w' := by
-  -- Read through `S.equiv`, the integrand on `W₁ × W₂` is a function of the first coordinate
-  -- times a function of the second, and Fubini's theorem splits the integral.
-  simp only [modelInner_apply]
-  apply S.integral_eq_mul
-  intro x
-  simp only [S.tmul_apply, S.equiv.symm_apply_apply, map_mul]
-  ring
+  rw [S.tmul_eq_tauCeti]
+  exact S.toTauCeti.innerSL_tmul v v' w w'
 
 /-- The product rule for the Weil representation of an orthogonal sum. Identify `W` with
 `W₁ × W₂` by `S.equiv`, and let `A`, `A₁`, `A₂` be actions with cocycle 1 of groups `G`, `G₁`,
@@ -626,18 +471,10 @@ lemma OrthogonalSum.weilRep_tmul [LocallyCompactSpace W] [LocallyCompactSpace W�
     (h_smul_equiv : ∀ x : W₁ × W₂, g • S.equiv x = S.equiv (g₁ • x.1, g₂ • x.2)) (v : Model H₁)
     (w : Model H₂) :
     weilRep A g (S.tmul v w) = S.tmul (weilRep A₁ g₁ v) (weilRep A₂ g₂ w) := by
-  -- Evaluate at a point `S.equiv (a, b)`: the integral over `W` that defines `weilRep` splits into
-  -- the product of the two integrals over `W₁` and `W₂`.
-  ext x
-  obtain ⟨⟨a, b⟩, rfl⟩ := S.equiv.surjective x
-  rw [S.tmul_apply, S.equiv.symm_apply_apply, weilRep_apply_eq_integral,
-    weilRep_apply_eq_integral, weilRep_apply_eq_integral, h_delta_eq, mul_mul_mul_comm]
-  congr 1
-  apply S.integral_eq_mul
-  intro y
-  simp only [h_smul_equiv, ← map_sub, S.beta_equiv, S.vac_equiv, S.tmul_apply,
-    S.equiv.symm_apply_apply, Prod.mk_sub_mk]
-  ring
+  simp_rw [S.tmul_eq_tauCeti, weilRep_eq_tauCeti]
+  exact S.toTauCeti.weilRep_tmul v w A.toTauCeti A₁.toTauCeti A₂.toTauCeti
+    (fun g h ↦ A.cocycle_toTauCeti g h) (fun g h ↦ A₁.cocycle_toTauCeti g h)
+    (fun g h ↦ A₂.cocycle_toTauCeti g h) h_delta_eq h_smul_equiv
 
 /-- Integrating `v ⊗ w` against `R` is integrating `w` against the restriction `R.right S` of `R` to
 `W₂`, then `v` against its restriction `R.left S` to `W₁`. -/
@@ -652,13 +489,13 @@ lemma Rep.integrated_tmul [LocallyCompactSpace W] [LocallyCompactSpace W₁]
   simp_rw [map_integrated_eq_integral, ← integral_smul, smul_smul]
   simp [mul, OrthogonalSum.beta_equiv, ← map_add]
 
-omit [μ₁.IsAddHaarMeasure] [μ₂.IsAddHaarMeasure] in
 /-- Let `S` be an orthogonal sum: an isomorphism φ : W₁ × W₂ ≃ W of topological groups under which
 β = β₁β₂ and e = e₁e₂. Then the tensor product `S.tmul`, which sends `v`, `w` to the function φ(x₁,
 x₂) ↦ v(x₁) w(x₂) in `Model H`, takes the pair of vacua `vacElem` (e₁ and e₂) to the vacuum
 `vacElem` (e). -/
 lemma OrthogonalSum.tmul_vacElem : S.tmul vacElem vacElem = vacElem := by
-  simp [← S.vac_equiv, IsVacuum.ext_iff]
+  simp_rw [S.tmul_eq_tauCeti, vacElem_eq_tauCeti]
+  exact S.toTauCeti.tmul_vacuum
 
 /-- Let `S` be an orthogonal sum φ : W₁ × W₂ ≃ W, under which β = β₁β₂ and e = e₁e₂, and let
 v ⊗ w = `S.tmul v w` be the model vector φ(x₁, x₂) ↦ v(x₁) w(x₂). Then ρ(x) of `v ⊗ w` is ρ₁(x₁)
@@ -668,13 +505,15 @@ lemma OrthogonalSum.heisenbergOp_tmul :
     IsVacuum.heisenbergOp x (S.tmul v w) =
       S.tmul (IsVacuum.heisenbergOp (S.equiv.symm x).1 v)
         (IsVacuum.heisenbergOp (S.equiv.symm x).2 w) := by
-  simp [map_sub, mul_mul_mul_comm, ← S.beta_equiv, IsVacuum.ext_iff]
+  simp_rw [S.tmul_eq_tauCeti, heisenbergOp_eq_tauCeti]
+  exact S.toTauCeti.heisenbergRep_tmul v w x
 
 /-- A translate of the vacuum is the product of translates of the two vacua. -/
 lemma OrthogonalSum.heisenbergOp_equiv_vacElem (a : W₁) (b : W₂) :
     IsVacuum.heisenbergOp (S.equiv (a, b)) vacElem =
       S.tmul (IsVacuum.heisenbergOp a vacElem) (IsVacuum.heisenbergOp b vacElem) := by
-  rw [← S.tmul_vacElem, S.heisenbergOp_tmul, S.equiv.symm_apply_apply]
+  simp_rw [S.tmul_eq_tauCeti, heisenbergOp_eq_tauCeti, vacElem_eq_tauCeti]
+  exact S.toTauCeti.heisenbergRep_equiv_vacuum (μ := μ) (μ₁ := μ₁) (μ₂ := μ₂) a b
 
 /-- Restriction of functions to `W₂` along `φ = S.equiv` is a bounded map `r` from the model of `e`
 to the model of `e₂`, and ∫ v(y) ρ(φ(y, 0)) u dμ₁(y) = v ⊗ r u for `v` in the model of `e₁` and
@@ -683,42 +522,10 @@ lemma OrthogonalSum.exists_restriction :
     ∃ r : Model H →L[ℂ] Model H₂,
       (∀ (u : Model H) (b : W₂), r u b = u (S.equiv (0, b))) ∧
       ∀ (v : Model H₁) (u : Model H), (heisenbergRep.left S).integrated v u = S.tmul v (r u) := by
-  -- Translates of the vacuum are products, so their restrictions `K y` are bounded, and
-  -- superposition gives `r`. On products the formula is `integrated_eq_smul`.
-  let K (y : W) : Model H₂ :=
-    (heisenbergOp (S.equiv.symm y).1 vacElem : Model H₁) 0 • heisenbergOp (S.equiv.symm y).2 vacElem
-  have hK_bound (y : W) : ‖K y‖ ≤ ‖(vacElem : Model H₁)‖ * ‖(vacElem : Model H₂)‖ := by
-    rw [norm_smul, heisenbergRep.norm_map, ← heisenbergRep.norm_map (S.equiv.symm y).1]
-    exact mul_le_mul_of_nonneg_right (norm_apply_le 0 _) (norm_nonneg _)
-  have h_cont : Continuous e₁ := IsVacuum.cont H₁
-  have hK_cont : Continuous K := by
-    simp only [K, heisenbergOp_apply, vacElem_apply]
-    fun_prop
-  obtain ⟨r, hr⟩ : ∃ r : Model H →L[ℂ] Model H₂, ∀ (M : Model H₂ →L[ℂ] ℂ) (N : Model H →L[ℂ] ℂ),
-      (∀ y : W, M (K y) = N (heisenbergOp y vacElem)) → ∀ u : Model H, M (r u) = N u :=
-    exists_lift hK_cont hK_bound
-  have h_apply (u : Model H) (b : W₂) : r u b = u (S.equiv (0, b)) := by
-    refine hr (valueAt b) (valueAt (S.equiv (0, b))) (S.equiv.surjective.forall.mpr ?_) u
-    rintro ⟨a, c⟩
-    simp only [K, S.heisenbergOp_equiv_vacElem, valueAt_apply, IsVacuum.smul_apply, S.tmul_apply,
-      S.equiv.symm_apply_apply]
-  have h_tmul (v f : Model H₁) (w : Model H₂) :
-      (heisenbergRep.left S).integrated v (S.tmul f w) = S.tmul v (r (S.tmul f w)) := by
-    have h_restrict : r (S.tmul f w) = f 0 • w := by
-      ext b
-      rw [h_apply, S.tmul_apply, S.equiv.symm_apply_apply, IsVacuum.smul_apply]
-    have h_intertwine (y : W₁) (f : Model H₁) :
-        S.tmul.flip w (heisenbergRep.ρ y f) = (heisenbergRep.left S).ρ y (S.tmul.flip w f) := by
-      simpa using (S.heisenbergOp_tmul f w (S.equiv (y, 0))).symm
-    simpa [h_restrict] using
-      (map_integrated heisenbergRep (S.tmul.flip w) v f h_intertwine).symm
-  refine ⟨r, h_apply, fun v u ↦ ?_⟩
-  suffices h_eq : (heisenbergRep.left S).integrated v = S.tmul v ∘L r by
-    rw [h_eq, ContinuousLinearMap.comp_apply]
-  refine hom_ext (S.equiv.surjective.forall.mpr ?_)
-  rintro ⟨a, b⟩
-  rw [S.heisenbergOp_equiv_vacElem]
-  exact h_tmul v (heisenbergOp a vacElem) (heisenbergOp b vacElem)
+  obtain ⟨r, hr1, hr2⟩ := S.toTauCeti.exists_restriction (μ := μ) (μ₁ := μ₁) (μ₂ := μ₂)
+  exact ⟨r, hr1, fun v u ↦
+    (S.left_integrated_eq_tauCeti v u).trans <| (hr2 v u).trans <|
+      congrArg (fun f : Model H₁ →L[ℂ] Model H₂ →L[ℂ] Model H ↦ f v (r u)) S.tmul_eq_tauCeti.symm⟩
 
 end New.Heisenberg
 
@@ -735,7 +542,7 @@ the change of variables behind it.
 
 section ModelTransport
 
-open MeasureTheory Measure Complex
+open MeasureTheory Measure Complex TauCeti
 
 namespace New.Heisenberg.IsVacuum
 
@@ -752,15 +559,8 @@ include he he'
 variable (H H') in
 /-- Let `e`, `e'` be vacua for the Haar measures `μ`, `μ'`. An isomorphism of topological groups
 `φ : W' ≃ W` with `e ∘ φ = e'` carries `μ'` to `μ`. -/
-lemma measurePreserving_equiv (hφ : ∀ x : W', e (φ x) = e' x) : MeasurePreserving φ μ' μ := by
-  -- Both `μ` and the image of `μ'` are Haar measures, and both give `‖e‖ ^ 2` the integral `1`.
-  have h_one : ∫ x : W, ‖e x‖ ^ 2 ∂map φ μ' = 1 := by
-    calc ∫ x : W, ‖e x‖ ^ 2 ∂map φ μ'
-        = ∫ x : W', ‖e (φ x)‖ ^ 2 ∂μ' := φ.isClosedEmbedding.integral_map _
-      _ = ∫ x : W', ‖e' x‖ ^ 2 ∂μ' := by simp_rw [hφ]
-      _ = 1 := he'.integral_norm_sq_eq_one
-  have h_map : map φ μ' = μ := addHaar_eq_of_integral_eq_one he.integral_norm_sq_eq_one h_one
-  exact ⟨by fun_prop, h_map⟩
+lemma measurePreserving_equiv (hφ : ∀ x : W', e (φ x) = e' x) : MeasurePreserving φ μ' μ :=
+  ReproducingModel.measurePreserving_of_vacuum (β := H.toDatum) (β' := H'.toDatum) μ μ' hφ
 
 variable (H H') in
 /-- Let `e`, `e'` be vacua for the Haar measures `μ`, `μ'`. Change of variables along an isometric
@@ -788,35 +588,29 @@ lemma map_vacuum_comp_equiv (hφ : ∀ x : W', e (φ x) = e' x) (x : W') : σ (e
 variable (H H') in
 /-- Change of variables along an isometric ring map `σ` and a topological group isomorphism
 `φ : W' ≃ W` that matches the vacua. -/
-lemma map_integral_and_map_vacuum
-    (hφ : ∀ x : W', e (φ x) = e' x) :
+lemma map_integral_and_map_vacuum (hφ : ∀ x : W', e (φ x) = e' x) :
     (∀ f : W → ℂ, σ (integral μ f) = ∫ x : W', σ (f (φ x)) ∂μ') ∧
       ∀ x : W', σ (e (φ x)) = e' x :=
   ⟨map_integral_eq_integral_comp_equiv H H' hφ, map_vacuum_comp_equiv H' μ' hφ⟩
-
-variable [SecondCountableTopology W']
 
 /-- For a topological isomorphism `φ : W' ≃ W` matching the vacua and, up to `σ`, the
 bicharacters, the continuous `σ`-semilinear map `v ↦ σ ∘ v ∘ φ` between the reproducing spaces. -/
 noncomputable def transport (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β x y)
     (hφ : ∀ x : W', e (φ x) = e' x) : Model H →SL[σ] Model H' :=
-  have h_pres : MeasurePreserving φ μ' μ := measurePreserving_equiv H H' hφ
-  let σL : ℂ →SL[σ] ℂ := σ.toSemilinearMap.mkContinuous 1 (by simp)
+  let T := ReproducingModel.transport (β := H.toDatum) (β' := H'.toDatum) μ μ' hβ hφ
   LinearMap.mkContinuous
-    { toFun v :=
-        ⟨fun x ↦ σL ((v.1 ∘ φ) x), σL.integrable_comp (h_pres.integrable_comp_of_integrable v.2.1),
-          -- Apply `σ` to the reproducing formula of `v` at `φ x` and substitute `φ`.
-          fun x ↦ by
-            simpa [σL, map_integral_and_map_vacuum H H' hφ, ← map_sub, hβ] using
-              congrArg σ (v.property.2 (φ x))⟩
-      map_add' := by aesop
-      map_smul' := by aesop }
-    1 fun v ↦ by
-      -- `σ` is isometric and `φ` preserves the measure, so the `L¹` norm is kept.
-      refine le_of_eq ?_
-      rw [norm_eq_integral_norm, norm_eq_integral_norm, one_mul,
-        ← h_pres.integral_comp φ.measurableEmbedding]
-      exact integral_congr_ae (.of_forall fun _ ↦ RingHomIsometric.norm_map)
+    { toFun v := ⟨fun x ↦ σ (v (φ x)),
+        (congrArg (· ∈ reproducingSubmodule H'.toDatum μ' e')
+          (funext (ReproducingModel.transport_apply hβ hφ v))).mp (T v).property⟩
+      map_add' v w := ext fun x ↦ map_add σ (v (φ x)) (w (φ x))
+      map_smul' c v := ext fun x ↦ map_mul σ c (v (φ x)) }
+    1 fun v ↦
+      have h_eq : (⟨fun x ↦ σ (v (φ x)),
+          (congrArg (· ∈ reproducingSubmodule H'.toDatum μ' e')
+            (funext (ReproducingModel.transport_apply hβ hφ v))).mp (T v).property⟩ : Model H') =
+          T v := ext fun x ↦ (ReproducingModel.transport_apply hβ hφ v x).symm
+      le_of_eq (((congrArg (norm : Model H' → ℝ) h_eq).trans
+        (ReproducingModel.norm_transport hβ hφ v)).trans (one_mul ‖v‖).symm)
 
 @[simp]
 lemma transport_apply (hβ : ∀ x y : W', σ (H.β (φ x) (φ y)) = H'.β x y)

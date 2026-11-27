@@ -406,7 +406,9 @@ lemma fockMoment_realWeil_le (u : USign ε) :
     fockMoment N (realWeil u v) = ‖realMultiplier u‖ₑ * fockMoment N
         (∫ y, v y • realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : fockSpace ε)
           ∂normalizedVolume ι) := by
-      rw [realWeil, weilRep]
+      simp only [realWeil, weilRep, MonoidHom.coe_mk, OneHom.coe_mk, weilOp,
+        _root_.smul_apply, ContinuousLinearMap.flip_apply,
+        Heisenberg.Rep.integrated_apply, Heisenberg.Rep.moveBy_ρ]
       exact fockMoment_smul ..
     _ ≤ ‖realMultiplier u‖ₑ * ∫⁻ y, fockMoment N
         (v y • realHeisenbergOp ((u : Matrix ι ι ℂ) *ᵥ y) (vacVector : fockSpace ε))

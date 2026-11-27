@@ -849,11 +849,11 @@ def piTensor :
           (IsVacuum.valueAt (MeasurableEquiv.curry T ι ℂ x τ)).toLinearMap)
       (IsVacuum.modelSubmodule (realHeisenberg fun p ↦ ε p.2)) fun v ↦ by
         -- Integrability and the reproducing identity hold factor by factor, by Fubini.
-        refine ⟨(integrable_map_equiv ..).1
-          (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).property.1)), ?_⟩
+        refine IsVacuum.mem_modelSubmodule_iff.mpr ⟨(integrable_map_equiv ..).1
+          (pi_normalizedVolume.subst (.fintype_prod fun τ ↦ (v τ).integrable)), ?_⟩
         simpa [realHeisenberg, signMatrix, dotProduct, mulVec_diagonal, sum_prod_type, realVac,
           ← integral_fintype_prod_eq_prod, prod_mul_distrib, ← exp_sum, ← sum_div,
-          integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).property.2 _)))
+          integral_map_equiv] using! fun _ ↦ congr(∏ τ, $((v τ).integral_mul_beta_mul_eq _)))
     1 fun v ↦ by
       simp [norm_eq_integral_norm, integral_map_equiv, ← integral_fintype_prod_eq_prod, ← norm_prod,
         MeasurableEquiv.curry_apply_eq]
