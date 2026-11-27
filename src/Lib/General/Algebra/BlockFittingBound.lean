@@ -47,7 +47,7 @@ noncomputable def divQuot (a : O) : QuotSpan a →ₗ[O] DivisibleQuot O :=
   (Ideal.span {a}).liftQ ((1 : Submodule O (FractionRing O)).mkQ ∘ₗ
       LinearMap.toSpanSingleton O (FractionRing O) (algebraMap O (FractionRing O) a)⁻¹)
     (by
-      rw [Ideal.span_singleton_le_iff_mem, mem_ker, LinearMap.comp_apply]
+      rw [Ideal.span_singleton_le_iff_mem, LinearMap.mem_ker, LinearMap.comp_apply]
       rcases eq_or_ne a 0 with rfl | ha
       · simp
       · exact (Submodule.Quotient.mk_eq_zero _).2 (mem_one.2 ⟨1, by simp [Algebra.smul_def, ha]⟩))
