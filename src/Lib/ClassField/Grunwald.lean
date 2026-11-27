@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.NumberTheory.NumberField.InfinitePlace.ComplexExtension
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.Weil.Construction.WeilData
@@ -540,22 +541,21 @@ the norm of `x` from `L` to `E`. -/
 lemma New.prod_Φ_eq_Φ_norm {E L : Type} [Field E] [CMType E] [Field L] [Algebra E L]
     [h : CMTypeOver E L] (w : InfinitePlace E) (x : L) :
     ∏ u : InfinitePlace L with u.comap (algebraMap E L) = w, Φ u x = Φ w (Algebra.norm E x) := by
-  algebraize [Φ w]
-  -- with `ℂ` an `E`-algebra through `Φ w`, the norm is the product over the `E`-embeddings
-  have h_norm : Φ w (Algebra.norm E x) = ∏ σ : L →ₐ[E] ℂ, σ x :=
-    Algebra.norm_eq_prod_embeddings E ℂ x
-  rw [h_norm]
-  have h_chosen (σ : L →ₐ[E] ℂ) : Φ (InfinitePlace.mk σ) = (σ : L →+* ℂ) := by
-    rw [eq_comm, h.eq_chosen_iff]
-    simp [algebraMap_toAlgebra]
-  -- the bijection sends `u` to `Φ u` as an `E`-embedding, and an `E`-embedding `σ` to its place
-  refine prod_bij' (fun u hu ↦ ⟨Φ u, fun r ↦ ?_⟩) (fun σ _ ↦ .mk σ) ?_ ?_ ?_
-    (fun σ _ ↦ AlgHom.toRingHom_injective (h_chosen σ)) ?_
-  · simp_all [algebraMap_toAlgebra, Φ_algebraMap_eq_Φ_comap] -- `Φ u` extends `Φ w`
-  · simp
-  · simp_all [algebraMap_toAlgebra] -- the place of an `E`-embedding lies above `w`
-  · simp
-  · simp
+  let h_nonreal := IsTotallyComplex.complexEmbedding_not_isReal (Φ w)
+  let e := ComplexEmbedding.Extension.equivPlacesOver (L := L) h_nonreal
+  let := Fintype.ofFinite (InfinitePlace.placesOver L (InfinitePlace.mk (Φ w)))
+  have h_chosen (u : InfinitePlace.placesOver L (InfinitePlace.mk (Φ w))) :
+      (e.symm u).val = Φ u.val := by
+    have h_place := ComplexEmbedding.Extension.mk_equivPlacesOver_symm_apply h_nonreal u
+    have h_below := InfinitePlace.liesOver_iff_comap_eq.mp u.property
+    rw [← h_place, h.eq_chosen_iff, (e.symm u).comp_eq, h_place, h_below, mk_Φ]
+  calc
+    _ = ∏ u : InfinitePlace.placesOver L (InfinitePlace.mk (Φ w)), Φ u.val x := by
+      exact Finset.prod_subtype _ (fun u ↦ by
+        simp [InfinitePlace.placesOver, InfinitePlace.liesOver_iff_comap_eq, mk_Φ]) (fun u ↦ Φ u x)
+    _ = Φ w (Algebra.norm E x) := by
+      simpa [finprod_eq_prod_of_fintype, ← h_chosen] using
+        ComplexEmbedding.Extension.prod_equivPlacesOver_symm_apply h_nonreal x
 
 /-- Let the CM type of `L` restrict to that of `E` (`New.CMTypeOver E L`), and let `E` carry a
 splitting character `υ` (`New.SplittingChar`: a unitary Hecke character with `υ x̄ = (υ x)⁻¹` that
