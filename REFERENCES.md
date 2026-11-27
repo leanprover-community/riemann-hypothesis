@@ -1,11 +1,11 @@
 # References
 
-Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
+Only some of the citations were compared with their sources. The table lists the 225 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
-- compared, place confirmed: 66
+- compared, place confirmed: 65
 - not compared, no place given: 7
 - place confirmed at second hand: 36
-- work found, no place given: 119
+- work found, no place given: 117
 
 The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
 
@@ -20,7 +20,6 @@ The citations of 122 other files were not part of this check, nor were further c
 | A. Weil, Sur la formule de Siegel dans la théorie des groupes classiques | compared, place confirmed | `Lib/General/Measure/FibreMeasure` |
 | A. Weil, Sur la formule de Siegel dans la théorie des groupes classiques, Acta Math. 113 (1965) | compared, place confirmed | `Lib/Adelic/Reduction/FiniteVolume` |
 | Akin, Buchsbaum, Weyman, Schur functors and Schur complexes | work found, no place given | `Lib/GLn/SchurModule/TensorModel` |
-| Alon–Shapira, Lemma 4.1 | compared, place confirmed | `New/Reduction/Data/Existence` |
 | Arthur and Clozel (1989) | compared, place confirmed | `Lib/Adelic/TraceFormula/TraceComparison` |
 | Atiyah-Wall in Cassels-Fröhlich (1967) | place confirmed at second hand | `Lib/ClassField/GaloisCohomology/KummerCyclicClasses` |
 | Atiyah–Bott, holomorphic Lefschetz formula | work found, no place given | `Lib/Cohomology/WoodsHole` |
@@ -33,7 +32,6 @@ The citations of 122 other files were not part of this check, nor were further c
 | Bannai–Kobayashi, Integral structures on p-adic Fourier theory | work found, no place given | `New/Derivatives/FormalGroup/Exponent` |
 | Bannai–Kobayashi–Yasuda, The radius of convergence of the p-adic sigma function | work found, no place given | `New/Derivatives/FormalGroup/Exponent` |
 | Beauville, Theta functions, old and new | compared, place confirmed | `Lib/Weil/Construction/ThetaDictionary` |
-| Behrend, PNAS 32, 1946 | work found, no place given | `New/Reduction/Data/Existence` |
 | Benson–Doty, Schur–Weyl duality over finite fields, 2009 | work found, no place given | `New/UpperBound/ElementaryDivisors/AveragingMap`, `New/UpperBound/ElementaryDivisors/InvariantAverage` |
 | Bernstein, P-invariant distributions on GL(N), LNM 1041 (1984) | work found, no place given | `Lib/LocalGL/SphericalChainLemma` |
 | Bhatt, Scholze, Prismatic F-crystals and crystalline Galois representations (2023) | compared, place confirmed | `Lib/PadicHodge/RadiusLemma` |
@@ -205,7 +203,6 @@ The citations of 122 other files were not part of this check, nor were further c
 | Serre, Galois Cohomology (1997) | work found, no place given | `Lib/ClassField/GaloisCohomology/KummerCyclicClasses` |
 | Serre, Local Fields | compared, place confirmed | `Lib/General/NumberTheory/PadicLimitsValuation` |
 | Serre, Local Fields, 1979 | compared, place confirmed | `Lib/ClassField/Places/LocalFields` |
-| Shapira, Behrend-type constructions for sets of linear equations, Acta Arith. 2006 | work found, no place given | `New/Reduction/Data/Existence` |
 | Shimura, Introduction to the arithmetic theory of automorphic functions (1971) | place confirmed at second hand | `Lib/CM/ChowlaSelberg` |
 | Shimura, Theta functions with complex multiplication, Duke 43 (1976) 673–696 | work found, no place given | `Lib/Weil/DualPair/GaloisLaw` |
 | Siegel, Über die analytische Theorie der quadratischen Formen | work found, no place given | `Lib/DiscreteSeries/Bessel/FrameFibre` |
