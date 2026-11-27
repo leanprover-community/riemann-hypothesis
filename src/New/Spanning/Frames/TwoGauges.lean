@@ -208,13 +208,12 @@ lemma GaugesDifferLe.hasMatrixSize_sub_one (hr_star : star r.val = r)
   exact fun a b ↦ adjoint_apply_mem_ofSize h_adj a b fun n _ k ↦ h_col k n
 
 /-- A bound by Cramer's rule. Let K be a set of isometries of the form (elements of `T.G`) whose
-entries all have size 1, and let a < j ≤ ϱ, where ϱ is the number of hyperbolic pairs e_b, e*_b. Let
-s ∈ R^(j) with s g ∈ K, and let η w_p⁻¹ g ∈ K for some η ∈ R^(j). Then p₀ ⋯ p_a times the i-th entry
-of the column s e*_a has size 8 ϱ. -/
+entries all have size 1, and let a < min j ϱ, where ϱ is the number of hyperbolic pairs e_b, e*_b.
+Let s ∈ R^(j) with s g ∈ K, and let η w_p⁻¹ g ∈ K for some η ∈ R^(j). Then p₀ ⋯ p_a times the i-th
+entry of the column s e*_a has size 8 ϱ. -/
 lemma head_prod_mul_dual_mem_ofSize {S : Size T} {K : Set T.G} {j : ℕ} {p : ℕ → Aˣ} {s g : T.G}
     {a : Fin 𝔰.ϱ}
     (hK : ∀ ⦃x : T.G⦄, x ∈ K → S.HasMatrixSize 1 (x : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A))
-    (hj : j ≤ 𝔰.ϱ)
     (h_near : ∃ η : T.G, η ∈ partialUnitriangularGroup j ∧ η * ((weylElem j p)⁻¹ * g) ∈ K)
     (hs : s ∈ partialUnitriangularGroup j) (hsK : s * g ∈ K) (ha : a.val < j) (i : 𝔰.BesselIndex) :
     (∏ b ∈ Finset.range (a + 1), p b).val *
@@ -296,12 +295,11 @@ lemma head_products_mem_ofSize {K : Set T.G}
   exact leadingMinor_mem_ofSize hs hη (hK hsK) (hK hηK) hl
 
 /-- A bound for s e*_a, by Cramer's rule. Let `K` be a set of isometries whose matrices have size 1,
-and let a < j ≤ ϱ. Let η w_p⁻¹ g ∈ K for some η ∈ R^(j), and let s ∈ R^(j) with s g ∈ K. Let `p` be
-a head: the inverses of the products p₀ ⋯ p_(l-1), l ≤ j, have size 1. Then all entries of the
+and let a < min j ϱ. Let η w_p⁻¹ g ∈ K for some η ∈ R^(j), and let s ∈ R^(j) with s g ∈ K. Let `p`
+be a head: the inverses of the products p₀ ⋯ p_(l-1), l ≤ j, have size 1. Then all entries of the
 vector s e*_a have size 8 ϱ + 1. -/
 lemma dual_mem_vecsOfSize {K : Set T.G}
     (hK : ∀ ⦃x : T.G⦄, x ∈ K → S.HasMatrixSize 1 (x : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A))
-    (hj : j ≤ 𝔰.ϱ)
     (h_near : ∃ η : T.G, η ∈ partialUnitriangularGroup j ∧ η * ((weylElem j p)⁻¹ * g) ∈ K)
     (hs_near : s ∈ partialUnitriangularGroup j ∧ s * g ∈ K) (hp : S.IsHead j p) (ha : a < j) :
     (s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) *ᵥ Pi.single (eStar a) 1 ∈
@@ -312,7 +310,7 @@ lemma dual_mem_vecsOfSize {K : Set T.G}
   set P : Aˣ := ∏ b ∈ Finset.range (a + 1), p b
   have hP_inv : P⁻¹.val ∈ S.ofSize 1 := hp (a + 1) ha
   have h_cramer : P.val * M i (eStar a) ∈ S.ofSize (8 * 𝔰.ϱ) :=
-    head_prod_mul_dual_mem_ofSize hK hj h_near hs hsK ha i
+    head_prod_mul_dual_mem_ofSize hK h_near hs hsK ha i
   have h_entry : (M *ᵥ Pi.single (eStar a) 1) i = P⁻¹.val * (P.val * M i (eStar a)) := by simp
   rw [h_entry, add_comm (8 * 𝔰.ϱ)]
   exact S.mul_mem_ofSize hP_inv h_cramer
@@ -340,7 +338,7 @@ lemma head_entries_mem_ofSize {K : Set T.G}
   refine ⟨?_, ?_, fun i ↦ ?_⟩
   · simpa only [h_succ, inv_mul_cancel_left] using h_quot ha.le ha
   · simpa only [h_succ, _root_.mul_inv_rev, inv_mul_cancel_right] using h_quot ha ha.le
-  · simpa using mem_ofSize_mono (j := 10 * 𝔰.n) (dual_mem_vecsOfSize hK hj h_near hs_near hp ha i)
+  · simpa using mem_ofSize_mono (j := 10 * 𝔰.n) (dual_mem_vecsOfSize hK h_near hs_near hp ha i)
 
 omit [IsHermitianUnit T.splitGram] in
 /-- If p_a and its inverse have size i for all a < j with a < ϱ, then the inverse of the Weyl
@@ -355,11 +353,10 @@ lemma hasMatrixSize_weylElem_inv (hp : ∀ a : Fin 𝔰.ϱ, a < j → (p a : A) 
       star_mem_ofSize (hp ⟨_, hm.2⟩ hm.1), hp_inv ⟨_, hm.2⟩ hm.1]
   · simp [weylElem, weylOn, hm, apply_ite (· ∈ S.ofSize i), h_one, h_zero]
 
-/-- Let j ≤ ϱ and let the isometry s lie in R^(j) = `partialUnitriangularGroup j` and in
-`unipotentBelow j`. If the columns s e*_a, a < j, have size d, then s⁻¹ has size (4 (d + 1) + 12)
-j + 5. -/
+/-- Let j ≤ ϱ and let the isometry s lie in `unipotentBelow j`. If the columns s e*_a, a < j,
+have size d, then s⁻¹ has size (4 (d + 1) + 12) j + 5. -/
 lemma hasMatrixSize_inv_of_mem_unipotentBelow {d : ℕ} (hj : j ≤ 𝔰.ϱ)
-    (hs : s ∈ partialUnitriangularGroup j) (hs_unip : s ∈ unipotentBelow j)
+    (hs_unip : s ∈ unipotentBelow j)
     (h_col : ∀ a : Fin 𝔰.ϱ, a < j → ∀ i : 𝔰.BesselIndex,
       (s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i (eStar a) ∈ S.ofSize d) :
     S.HasMatrixSize ((4 * (d + 1) + 12) * j + 5)
@@ -376,7 +373,8 @@ lemma hasMatrixSize_inv_of_mem_unipotentBelow {d : ℕ} (hj : j ≤ 𝔰.ϱ)
     refine ⟨(1 * s⁻¹).val.val *ᵥ Pi.single (inl a) 1, fun k hk ↦ ?_,
       lengthLeAt_mulVec_iff.2 (single_mem_vecsOfSize (inl a))⟩
     simpa [Matrix.one_apply, Pi.single_apply] using
-      mem_partialUnitriangularGroup.1 (inv_mem hs) k (inl a) hk (.inl ⟨ha, ha⟩)
+      mem_partialUnitriangularGroup.1
+        (unipotentBelow_le_partialUnitriangularGroup (inv_mem hs_unip)) k (inl a) hk (.inl ⟨ha, ha⟩)
   have h_dual (a : Fin 𝔰.ϱ) (ha : a.val < j) : S.HasShortDual 1 (1 : T.G) (1 * s⁻¹) a c := by
     have h_diff : (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) *ᵥ Pi.single (eStar a) 1 -
         s.val.val *ᵥ Pi.single (eStar a) 1 ∈ S.vecsOfSize c := by
@@ -411,11 +409,11 @@ lemma hasMatrixSize_of_isHead {K : Set T.G}
         ∀ i, (s : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i (eStar a) ∈ S.ofSize (10 * 𝔰.n) :=
     head_entries_mem_ofSize hK hj h_near hs_near hp ha
   choose h_p h_p_inv h_col using h_entries
-  obtain ⟨hs, hsK⟩ := hs_near
+  obtain ⟨_, hsK⟩ := hs_near
   have h_g : S.HasMatrixSize (60 * 𝔰.n ^ 2) (g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) := by
     have h_prod : S.HasMatrixSize ((4 * (10 * 𝔰.n + 1) + 12) * j + 5 + 1 + 1)
         ((s⁻¹ * (s * g) : T.G) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) :=
-      (hasMatrixSize_inv_of_mem_unipotentBelow hj hs hs_unip h_col).mul (hK hsK)
+      (hasMatrixSize_inv_of_mem_unipotentBelow hj hs_unip h_col).mul (hK hsK)
     rw [inv_mul_cancel_left] at h_prod
     -- The size is rounded up using j ≤ ϱ.
     exact h_prod.mono (by nlinarith)

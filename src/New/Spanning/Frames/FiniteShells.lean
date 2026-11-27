@@ -134,13 +134,13 @@ theorem exists_generator_of_mem_idealShell {J : Ideal P.integers} {x : T.G}
 
 /-- An ideal of denominators of large index forces a deep vector. Let `F` be a large lattice datum
 with level unit `g = F.levelUnit`, and let `Γ = h.gauge α` be the gauge of scale `α`. Let `p`, `q`
-be heads of length `j ≤ 𝔰.ϱ` for `Γ`, and let `g⁻¹` have size 1 if `j ≠ 0`. Let `x` lie in the shell
+be heads of length `j` for `Γ`, and let `g⁻¹` have size 1 if `j ≠ 0`. Let `x` lie in the shell
 `F.idealShell J` of the ideal `J` of `R = P.integers`. Suppose `σ < 1` and
 `Γ.loss ^ (990 𝔰.n²) ≤ σ ^ (400 𝔰.n²) · J.cardQuot`. Then
 `F.HasDeepVector j p q Z.besselVector x (σ²)⁻¹` holds: at every point `y` that is active at `x` for
 the Bessel vector of `Z`, the depth `F.depth a y x` is at least `σ⁻²` for some index `a ≥ j`. -/
 theorem hasDeepVector_of_mem_idealShell {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGroup)
-    [h : IsLargeLatticeData F] {j : ℕ} {p q : ℕ → Aˣ} {Γ : Gauge F} (hj : j ≤ 𝔰.ϱ)
+    [h : IsLargeLatticeData F] {j : ℕ} {p q : ℕ → Aˣ} {Γ : Gauge F}
     {α : Aˣ} {hα : α.val ∈ integers} {hα_star : star α.val = α} (hΓ : Γ = h.gauge α hα hα_star)
     (hp_head : Γ.IsHead j p) (hq_head : Γ.IsHead j q)
     (hg_size : j ≠ 0 → F.levelUnit⁻¹.val ∈ Γ.ofSize 1)
@@ -160,7 +160,7 @@ theorem hasDeepVector_of_mem_idealShell {F : PlaceData ι T (m + 1)} (Z : F.Inte
       c⁻¹.val * ε ∈ integers :=
     (hx_den.trans hJ_eq).subset ⟨hε, h_den⟩
   exact hasDeepVector_inv_iff.2 fun y ⟨hy, h_near_p, h_near_q⟩ ↦
-    exists_volume_stableProducts_le Z hj hΓ hp_head hq_head hg_size hσ_lt h_root h_dvd hy h_near_p
+    exists_volume_stableProducts_le Z hΓ hp_head hq_head hg_size hσ_lt h_root h_dvd hy h_near_p
       h_near_q
 
 /-- Let `F` be a large lattice datum, `Γ` a gauge and `J` an ideal of finite index of
@@ -198,12 +198,12 @@ theorem two_pow_clog_le_two_mul {N : ℕ} (hN : N ≠ 0) : 2 ^ Nat.clog 2 N ≤ 
     omega
 
 /-- Let `F` be a large lattice datum with level unit `g = F.levelUnit`, let `Γ = h.gauge α` be the
-gauge of scale `α`, let `p`, `q` be heads of length `j ≤ ϱ` for `Γ`, and let `g⁻¹` have size 1
+gauge of scale `α`, let `p`, `q` be heads of length `j` for `Γ`, and let `g⁻¹` have size 1
 unless `j = 0`. Then `F.dyadicShell t` is a shell of height `2 ^ t` for the Bessel vector of `Z`: it
 is covered by the position balls of few gauges `Γ'` with `Γ'.loss ≤ Γ.loss (2 ^ t)²`, and a large
 height forces a deep vector. -/
 theorem isShell_dyadicShell {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGroup)
-    [h : IsLargeLatticeData F] {j : ℕ} {p q : ℕ → Aˣ} {Γ : Gauge F} (hj : j ≤ 𝔰.ϱ) {α : Aˣ}
+    [h : IsLargeLatticeData F] {j : ℕ} {p q : ℕ → Aˣ} {Γ : Gauge F} {α : Aˣ}
     {hα : α.val ∈ integers} {hα_star : star α.val = α} (hΓ : Γ = h.gauge α hα hα_star)
     (hp_head : Γ.IsHead j p) (hq_head : Γ.IsHead j q)
     (hg_size : j ≠ 0 → F.levelUnit⁻¹.val ∈ Γ.ofSize 1) (t : ℕ) :
@@ -261,7 +261,7 @@ theorem isShell_dyadicShell {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGrou
         _ ≤ 2 * (σ ^ (400 * 𝔰.n ^ 2) * J.cardQuot) := by grw [hσ, h_half, mul_left_comm]
     have h_large : Γ.loss ^ (10 * 𝔰.n * (99 * 𝔰.n)) ≤ σ ^ (400 * 𝔰.n ^ 2) * J.cardQuot := by
       rwa [ENNReal.mul_le_mul_iff_right two_ne_zero ofNat_ne_top] at h_double
-    exact hasDeepVector_of_mem_idealShell Z hj hΓ hp_head hq_head hg_size hxJ hσ_lt h_large
+    exact hasDeepVector_of_mem_idealShell Z hΓ hp_head hq_head hg_size hxJ hσ_lt h_large
 
 /-- The sum over the shells at the finite places. Let `F` be a large lattice datum with level unit
 `g = F.levelUnit`, let `Γ = h.gauge α` be the gauge of scale `α`, let `p`, `q` be heads of length
@@ -308,7 +308,7 @@ theorem lintegral_shells_le {F : PlaceData ι T (m + 1)} (Z : F.IntermediateGrou
   calc F.headDensity j p q * ∫⁻ x : T.G, f x ∂F.groupMeasure
       ≤ 2 ^ (99 * (𝔰.n * 13)) * min 1 e ^ r * Γ.loss ^ (4 * 10 ^ 8 * 𝔰.n ^ 4) *
           F.shellNormalization Z.besselVector :=
-        Γ.lintegral_le_of_shells (isShell_dyadicShell Z hj hΓ hp_head hq_head hg_size) h_cover
+        Γ.lintegral_le_of_shells (isShell_dyadicShell Z hΓ hp_head hq_head hg_size) h_cover
           (isCut_besselVector Z) hj hp_head hq_head h_mass one_le_mass (fun _ ↦ hf) h_gain h_exp
     _ ≤ min 1 e ^ r * Z.massRatio * Γ.loss ^ (99 * (𝔰.n * 13) + 4 * 10 ^ 8 * 𝔰.n ^ 4) := by
         grw [h_unit, Γ.two_le_loss]
@@ -616,7 +616,7 @@ theorem hasDeepVector_of_notMem_congruenceSubgroup {F : PlaceData ι T (m + 1)} 
       exact (h_big a ha).not_ge (hc_vol.trans (he c hc h_not))
     exact ⟨c, hc_mem, by simpa [Γ] using hc_inv⟩
   have h_size : Γ.HasMatrixSize (99 * 𝔰.n) (F.levelUnit⁻¹.val • (x.val.val - 1)) :=
-    Γ.hasMatrixSize_sub_one_of_stableProducts Γ bot_le h_head h_head (hM := by simp) (hS := by simp)
+    Γ.hasMatrixSize_sub_one_of_stableProducts Γ h_head h_head (hM := by simp) (hS := by simp)
       (exists_mem_boxSet_hasMatrixSize_of_inner_ne_zero Z hy) h_near_p h_near_q h_unit
   -- In the gauge of scale `1` every size means integral.
   have h_int : IsIntMatrix integers (F.levelUnit⁻¹.val • (x.val.val - 1)) := fun i k ↦ by

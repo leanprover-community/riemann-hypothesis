@@ -826,12 +826,12 @@ lemma hasMatrixSize_sub_one_of_forall_stableProducts
 
 -- Keeps definitional checks from unfolding the finite sums.
 seal Finset.sum in
-/-- Let j ≤ ϱ, let the heads p, q of length j be adapted (`Γ.IsHead`), and let the inverse of the
+/-- Let the heads p, q of length j be adapted (`Γ.IsHead`), and let the inverse of the
 level `F.levelUnit` have size 1 (`Γ.ofSize 1`). Let x, x y, w_p⁻¹ x and w_q⁻¹ x y be near at j
 (`F.IsNear`), where w_p = `weylElem j p` and w_q = `weylElem j q`. Then for a < j the set
 𝔡_a = `F.stableProducts a x y` contains a unit c whose inverse has size 10 n, that is, lies in
 `Γ.ofSize (10 * 𝔰.n)`. -/
-lemma exists_unit_mem_stableProducts_of_isHead {q : ℕ → Aˣ} (hj : j ≤ 𝔰.ϱ) (hp : Γ.IsHead j p)
+lemma exists_unit_mem_stableProducts_of_isHead {q : ℕ → Aˣ} (hp : Γ.IsHead j p)
     (hq : Γ.IsHead j q) (hM : ↑F.levelUnit⁻¹ ∈ Γ.ofSize 1) (hx : F.IsNear j x)
     (hy : F.IsNear j (x * y)) (h_near_x : F.IsNear j ((weylElem j p)⁻¹ * x))
     (h_near_y : F.IsNear j ((weylElem j q)⁻¹ * (x * y))) (ha : a < j) :
@@ -843,7 +843,7 @@ lemma exists_unit_mem_stableProducts_of_isHead {q : ℕ → Aˣ} (hj : j ≤ �
       Γ.LengthLeAt z (8 * 𝔰.ϱ + 7) (Pi.single (eStar a) 1) := by
     obtain ⟨s, hs, h_box⟩ : ∃ s ∈ partialUnitriangularGroup j, s * z ∈ F.boxSet := hz
     have h_col : s.val.val *ᵥ Pi.single (eStar a) 1 ∈ Γ.vecsOfSize (8 * 𝔰.ϱ + 1) :=
-      dual_mem_vecsOfSize Γ.hasMatrixSize_boxSet hj h_near ⟨hs, h_box⟩ hr ha
+      dual_mem_vecsOfSize Γ.hasMatrixSize_boxSet h_near ⟨hs, h_box⟩ hr ha
     have h_eq : z⁻¹.val.val *ᵥ Pi.single (eStar a) 1 =
         (s * z)⁻¹.val.val *ᵥ s.val.val *ᵥ Pi.single (eStar a) 1 := by
       rw [mulVec_mulVec]
@@ -863,14 +863,14 @@ lemma exists_unit_mem_stableProducts_of_isHead {q : ℕ → Aˣ} (hj : j ≤ �
     simp [ω, h_ne]
   exact ⟨c, ⟨ω, h_short.isStable h_orth, by simp [ω]⟩, mem_ofSize_mono hc_size⟩
 
-/-- Let j ≤ `𝔰.ϱ` and let the heads p, q of length j be adapted to the gauge S. If j ≠ 0, let the
+/-- Let the heads p, q of length j be adapted to the gauge S. If j ≠ 0, let the
 inverse of the level M = `F.levelUnit` have size 1 for S (`hM`), and let the numbers of size 10
 `𝔰.n` for S have size 1 for Γ (`hS`). Let u x and v x y lie in the box `F.boxSet` for some u, v in
 the Bessel unipotent group `T.besselU`, with (v x y - u x) / M of size 2. Let w_p⁻¹ x and w_q⁻¹ x y
 be near at j (`F.IsNear`), where w_p = `weylElem j p` and w_q = `weylElem j q`. If each
 𝔡_a = `F.stableProducts a x y` with a ≥ j contains a unit whose inverse has size 1, then (y - 1) / M
 has size 99 `𝔰.n`. Sizes refer to Γ unless S is named. -/
-lemma hasMatrixSize_sub_one_of_stableProducts {q : ℕ → Aˣ} (S : Gauge F) (hj : j ≤ 𝔰.ϱ)
+lemma hasMatrixSize_sub_one_of_stableProducts {q : ℕ → Aˣ} (S : Gauge F)
     (hp : S.IsHead j p) (hq : S.IsHead j q) (hM : j ≠ 0 → ↑F.levelUnit⁻¹ ∈ S.ofSize 1)
     (hS : j ≠ 0 → S.ofSize (10 * 𝔰.n) ⊆ Γ.ofSize 1)
     (h_pair : ∃ u ∈ T.besselU, ∃ v ∈ T.besselU,
@@ -890,7 +890,7 @@ lemma hasMatrixSize_sub_one_of_stableProducts {q : ℕ → Aˣ} (S : Gauge F) (h
     have hx_near : F.IsNear j x := ⟨u, mem_partialUnitriangularGroup_of_mem_besselU hu, hx⟩
     have hy_near : F.IsNear j (x * y) := ⟨v, mem_partialUnitriangularGroup_of_mem_besselU hv, hy⟩
     obtain ⟨c, hc, hc_size⟩ : ∃ c : Aˣ, ↑c ∈ F.stableProducts a x y ∧ ↑c⁻¹ ∈ S.ofSize (10 * 𝔰.n) :=
-      S.exists_unit_mem_stableProducts_of_isHead hj hp hq (hM hj_ne) hx_near hy_near h_near_x
+      S.exists_unit_mem_stableProducts_of_isHead hp hq (hM hj_ne) hx_near hy_near h_near_x
         h_near_y ha
     exact ⟨c, hc, hS hj_ne hc_size⟩
   · exact h_unit a (by lia)

@@ -298,13 +298,13 @@ lemma floorForm_eq_zero_of_lt (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤
 
 /-! ### Deep vectors and dyadic shells -/
 
-/-- Let `F` be a cut Bessel function, `p`, `q` heads of length `j ≤ ϱ` for the gauge of size
+/-- Let `F` be a cut Bessel function, `p`, `q` heads of length `j` for the gauge of size
 `L ≥ ρ`, and `x` not in the position ball at a scale `T ≥ L ^ (11 n)`. Suppose `⟪F y, F (y x)⟫ ≠ 0`
 and that `w_p⁻¹ y` and `w_q⁻¹ y x` are near at `j`, for the Weyl elements `weylElem j`. Then some
 e_a, `a ≥ j`, has `realDepth` at least `T ^ 2`: the infimum of the sum of the squared lengths at `y`
 and at `y x`, modulo the e_b with `b < a`, of the vectors ζ orthogonal to these e_b with h(e_a,
 ζ) = 1. -/
-lemma exists_sq_le_realDepth (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) {hL : ρ ≤ L}
+lemma exists_sq_le_realDepth (hF : IsCutBessel F rep ρ s b F₀ f) {hL : ρ ≤ L}
     (hp : (hF.gauge hL).IsHead j p) (hq : (hF.gauge hL).IsHead j q) {T : ℝ}
     (hT : L ^ (11 * 𝔰.n) ≤ T) {x y : 𝔰.G₁} (hx : x ∉ positionBall 𝔰 T)
     (hy : inner ℂ (F y) (F (y * x)) ≠ 0)
@@ -337,22 +337,22 @@ lemma exists_sq_le_realDepth (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 
       by simp [Γ, hF.mem_ofSize_gauge, abs_of_pos T_pos]⟩
     simpa [hF.stableProducts_eq, inv_mul_lt_one₀ (pow_pos T_pos 2)] using h_shallow a ha
   have h_size : Γ.HasMatrixSize (99 * 𝔰.n) (hF.complexData.levelUnit⁻¹.val • (x.val.val - 1)) :=
-    Γ.hasMatrixSize_sub_one_of_stableProducts (hF.gauge hL) hj hp hq (fun _ ↦ h_level)
+    Γ.hasMatrixSize_sub_one_of_stableProducts (hF.gauge hL) hp hq (fun _ ↦ h_level)
       (fun _ ↦ h_subset) ⟨u, hu, v, hv, u_box, v_box, h_diff⟩ near_p near_q h_disc
   exact hx fun a c ↦ by simpa [Γ, hF.mem_ofSize_gauge] using h_size a c
 
 /-- Far means deep at a real place. Let `F` be a cut Bessel function and `p`, `q` heads of length
-`j ≤ ϱ` for the gauge of size `L`. A point `y` is active if `⟪F y, F (y x)⟫ ≠ 0` and `w_p⁻¹ y`,
+`j` for the gauge of size `L`. A point `y` is active if `⟪F y, F (y x)⟫ ≠ 0` and `w_p⁻¹ y`,
 `w_q⁻¹ y x` are near at `j`. If `x` is not in `positionBall` at a scale `T ≥ L ^ (11 n)` and
 `T⁻¹ ≤ τ / 2`, then every active point has a vector e_a, `a ≥ j`, whose depth, the inverse area of
 the disc `stableProducts a`, is at least `τ⁻²`. -/
-lemma hasDeepVector_of_notMem (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) {hL : ρ ≤ L}
+lemma hasDeepVector_of_notMem (hF : IsCutBessel F rep ρ s b F₀ f) {hL : ρ ≤ L}
     (hp : (hF.gauge hL).IsHead j p) (hq : (hF.gauge hL).IsHead j q) {T τ : ℝ}
     (hT : L ^ (11 * 𝔰.n) ≤ T) (hτ : T⁻¹ ≤ τ / 2) {x : 𝔰.G₁} (hx : x ∉ positionBall 𝔰 T) :
     hF.complexData.HasDeepVector j p q F x (.ofReal τ ^ 2)⁻¹ := by
   rintro y ⟨hy, near_p, near_q⟩
   obtain ⟨a, ha, h_depth⟩ : ∃ a : Fin 𝔰.ϱ, j ≤ a ∧ T ^ 2 ≤ realDepth a y (y * x) :=
-    hF.exists_sq_le_realDepth hj hp hq hT hx hy near_p near_q
+    hF.exists_sq_le_realDepth hp hq hT hx hy near_p near_q
   have T_pos : 0 < T := (pow_pos (by linarith [hF.four_le]) _).trans_le hT
   have τ_pos : 0 < τ := by linarith [inv_pos.2 T_pos]
   have h_le : (τ ^ 2)⁻¹ ≤ realDepth a y (y * x) / π :=
@@ -404,13 +404,13 @@ lemma two_mul_div_pow_le_of_pow_le {n : ℕ} (hn : n ≠ 0) {L τ H : ℝ} (two_
     _ ≤ L ^ (2400 * n ^ 2) := pow_le_pow_right₀ one_le_L (by lia)
     _ ≤ τ ^ (400 * n ^ 2) * H := h_le
 
-/-- Let `F` be a cut Bessel function and `p`, `q` heads of length `j ≤ ϱ` for the gauge of size `L`,
+/-- Let `F` be a cut Bessel function and `p`, `q` heads of length `j` for the gauge of size `L`,
 whose `loss` is L². The dyadic shell of index `i` is a shell of height H = `2 ^ i` for this gauge.
 It is covered by the positions `x` with `x - 1` of size 1 for at most 2 H ^ (9 n) gauges of loss at
 most L² H². If σ < 1 and L ^ (2400 n²) ≤ σ ^ (400 n²) H, then at each of its positions every active
 point has a vector e_a, `a ≥ j`, of depth at least σ⁻². -/
 lemma isShell_dyadicShell
-    (hF : IsCutBessel F rep ρ s b F₀ f) (hj : j ≤ 𝔰.ϱ) {hL : ρ ≤ L}
+    (hF : IsCutBessel F rep ρ s b F₀ f) {hL : ρ ≤ L}
     (hp : (hF.gauge hL).IsHead j p) (hq : (hF.gauge hL).IsHead j q) (i : ℕ) :
     (hF.gauge hL).IsShell j p q F (dyadicShell 𝔰 i) (2 ^ i) := by
   have two_le_L : 2 ≤ L := by linarith [hF.four_le]
@@ -450,11 +450,11 @@ lemma isShell_dyadicShell
     gcongr
     exact two_le_L.trans (le_self_pow₀ one_le_L (by lia))
   have pow_le : L ^ (11 * 𝔰.n) ≤ T := (pow_le_pow_right₀ one_le_L (by lia)).trans h_scale
-  simpa only [ofReal_coe_nnreal] using hF.hasDeepVector_of_notMem hj hp hq pow_le h_radius h_far
+  simpa only [ofReal_coe_nnreal] using hF.hasDeepVector_of_notMem hp hq pow_le h_radius h_far
 
 /-! ### Summation over the shells -/
 
-/-- Let `F` be a cut Bessel function, `p`, `q` heads of length `j ≤ ϱ` for the gauge of size `L`,
+/-- Let `F` be a cut Bessel function, `p`, `q` heads of length `j` for the gauge of size `L`,
 and `1 ≤ t`. Let `φ` lie below the majorant of the form of floor `j` and, if `1 < t`, have a square
 at most `((π ρ ^ 24) ^ k ρ ^ (9999 n) / t ^ s) ^ 2` times the product of norms. Then the normalised
 integral of `φ`, times the dimension `card I` of the value space, is at most `scaledVolumeRatio * L
@@ -491,7 +491,7 @@ lemma formConst_mul_lintegral_le [Nonempty I]
   have h_shells : hF.complexData.headDensity j p q * ∫⁻ x, φ x ∂hF.complexData.groupMeasure ≤
       .ofReal V * min 1 (.ofReal t⁻¹) ^ r * (hF.gauge hL).loss ^ (4 * 10 ^ 8 * 𝔰.n ^ 4) *
         hF.complexData.shellNormalization F :=
-    (hF.gauge hL).lintegral_le_of_shells (hF.isShell_dyadicShell hj hp hq) h_cover
+    (hF.gauge hL).lintegral_le_of_shells (hF.isShell_dyadicShell hp hq) h_cover
       hF.isCut_complexData hj hp hq (hF.floorMassLe hj) hF.one_le_massBound hφ_le h_gain r_le
   -- At the place ℂ the level is `1`, `kernelBound` is `π ^ 2` and the `loss` is `L ^ 2`.
   have unit_le : hF.complexData.shellNormalization F ≤
@@ -547,7 +547,7 @@ lemma formConst_mul_setLIntegral_compl_positionBall_le [Nonempty I]
     gcongr
     exact two_le_L.trans (le_self_pow₀ one_le_L (by lia))
   have h_deep : hF.complexData.HasDeepVector j p q F x (.ofReal t⁻¹ ^ 2)⁻¹ :=
-    hF.hasDeepVector_of_notMem hj hp hq (le_mul_of_one_le_left (by positivity) ht) h_radius hx
+    hF.hasDeepVector_of_notMem hp hq (le_mul_of_one_le_left (by positivity) ht) h_radius hx
   have ρ_pos : 0 < ρ := by linarith [hF.four_le]
   let V : ℝ := (π * ρ ^ 24) ^ 𝔰.k * ρ ^ (9999 * 𝔰.n)
   rw [Set.indicator_of_mem hx]

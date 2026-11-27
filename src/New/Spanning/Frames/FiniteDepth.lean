@@ -449,13 +449,13 @@ subgroup of level `g` and the group of integral points, let `n = 𝔰.n`, and le
 scale `α`, in which size 1 means that `α` times the element lies in `integers` and
 `Γ.loss = 2 / modulus α`. Let `c` divide every common denominator in `integers` of the entries of
 `(x - 1) / g`, let `σ < 1` satisfy `modulus c * Γ.loss ^ (10 n · 99 n) ≤ σ ^ (400 n²)`, let `p`, `q`
-be heads of length `j ≤ ϱ` for `Γ`, and let `g⁻¹` have size 1 if `j ≠ 0`. Suppose that the Bessel
+be heads of length `j` for `Γ`, and let `g⁻¹` have size 1 if `j ≠ 0`. Suppose that the Bessel
 vectors of `Z` at `y` and `y * x` are not orthogonal and that these two points, moved back by the
 Weyl elements `weylElem j p` and `weylElem j q`, are near at `j`. Then for some `i ≥ j` the set
 `F.stableProducts i y x`, the coordinates at the dual of e_i of the vectors that are stable at `y`
 and `y * x`, has volume at most `σ ^ 2`. -/
 theorem exists_volume_stableProducts_le {F : PlaceData ι T (m + 1)} [h : IsLargeLatticeData F]
-    {x y : T.G} (Z : F.IntermediateGroup) {j : ℕ} {p q : ℕ → Aˣ} {Γ : Gauge F} (hj : j ≤ 𝔰.ϱ)
+    {x y : T.G} (Z : F.IntermediateGroup) {j : ℕ} {p q : ℕ → Aˣ} {Γ : Gauge F}
     {α : Aˣ} {hα_mem : α.val ∈ integers} {hα_star : star α.val = α.val}
     (hΓ : Γ = h.gauge α hα_mem hα_star) (hp_head : Γ.IsHead j p) (hq_head : Γ.IsHead j q)
     (hg_size : j ≠ 0 → F.levelUnit⁻¹.val ∈ Γ.ofSize 1) {c : Aˣ} {σ : ℝ≥0∞} (hσ_lt : σ < 1)
@@ -489,7 +489,7 @@ theorem exists_volume_stableProducts_le {F : PlaceData ι T (m + 1)} [h : IsLarg
   have hd_inv (i : Fin 𝔰.ϱ) (hi : j ≤ i) : (d i)⁻¹.val ∈ Γ'.ofSize 1 := by
     simpa [Γ', mul_assoc, div_eq_mul_inv] using mul_mem (pow_mem hα_mem _) (hC_div i hi)
   have h_size : Γ'.HasMatrixSize (99 * 𝔰.n) (F.levelUnit⁻¹.val • (x.val.val - 1)) :=
-    Γ'.hasMatrixSize_sub_one_of_stableProducts Γ hj hp_head hq_head hg_size (fun _ ↦ h_subset)
+    Γ'.hasMatrixSize_sub_one_of_stableProducts Γ hp_head hq_head hg_size (fun _ ↦ h_subset)
       (exists_mem_boxSet_hasMatrixSize_of_inner_ne_zero Z h_pair) hp_near hq_near
       fun i hi ↦ ⟨d i, hd_mem i, hd_inv i hi⟩
   -- That power of the scale is then a common denominator, so `c` divides it.
