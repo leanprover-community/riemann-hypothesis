@@ -480,7 +480,7 @@ lemma mem_besselGroup_iff {g : G E ε} :
         (Y.indexEquiv.symm i).isRight ∨ (Y.indexEquiv.symm k).isRight →
         V.ratCoordMatrix g i k = (1 : Matrix ι ι (𝔸 E)) i k := by
   refine ⟨fun hg i k hle h_string ↦ ?_,
-    fun h_one ↦ by simp_all [mem_besselGroup_iff_sub_one, reindex_equiv Y.indexEquiv]⟩
+    fun h_one ↦ Y.mem_besselGroup.2 fun i k hk _ hle ↦ h_one i k hle (.inr hk)⟩
   -- `mem_besselGroup_iff_sub_one` gives the entries `(i, k)` with `k` on the string and of weight
   -- `≥ 0`. For the others `i` is on the string and of weight `≤ 0`; they come from `g⁻¹`, since the
   -- adjoint of `g⁻¹ - 1` is `g - 1` and duality negates the weights.
@@ -500,8 +500,27 @@ lemma mem_besselGroup_iff {g : G E ε} :
       Y.gradeOf (Y.stringReversal k) ≤ Y.gradeOf (Y.stringReversal i) →
       (V.ratCoordMatrix g⁻¹ - 1) (Y.stringReversal k) (Y.stringReversal i) = 0 :=
     Y.mem_besselGroup_iff_sub_one.1 (inv_mem hg) (Y.stringReversal k) (Y.stringReversal i)
-  suffices (V.ratCoordMatrix g - 1) i k = 0 by simpa [sub_eq_zero]
-  grind [stringReversal, gradeOf_stringReversal]
+  suffices (V.ratCoordMatrix g - 1) i k = 0 by rwa [Matrix.sub_apply, sub_eq_zero] at this
+  have h_isRight {j : ι} (hj : Y.gradeOf j ≠ 0) : (Y.indexEquiv.symm j).isRight := by
+    cases h : Y.indexEquiv.symm j with
+    | inl _ => exact (hj (by simp only [gradeOf, h, Sum.elim_inl, Pi.zero_apply])).elim
+    | inr _ => rfl
+  have hi_rev :
+      (Y.indexEquiv.symm (Y.stringReversal i)).isRight = (Y.indexEquiv.symm i).isRight := by
+    simp only [stringReversal, Equiv.symm_apply_apply]
+    cases Y.indexEquiv.symm i <;> rfl
+  by_cases hi : (Y.indexEquiv.symm i).isRight ∧ Y.gradeOf i ≤ 0
+  · exact of_dual (dual
+      (by simp only [hi_rev, hi.1, ↓reduceIte, gradeOf_stringReversal]; omega)
+      (by rw [gradeOf_stringReversal, gradeOf_stringReversal]; omega))
+  · have hi0 : 0 ≤ Y.gradeOf i := by
+      by_contra hlt
+      exact hi ⟨h_isRight (by omega), by omega⟩
+    have hk_r : (Y.indexEquiv.symm k).isRight := by
+      by_cases h0 : Y.gradeOf k = 0
+      · exact h_string.resolve_left fun h ↦ hi ⟨h, by omega⟩
+      · exact h_isRight h0
+    exact direct (by simp only [hk_r, ↓reduceIte]; omega) hle
 
 /-- The matrix of an element of `New.Grading.besselGroup` in rational coordinates does not lower
 weights: its entry (i, k) is zero when weight(i) < weight(k). -/
@@ -544,7 +563,14 @@ lemma submatrix_inl_ratCoordMatrix_unitary {g : G E ε} (hg : g ∈ Y.besselGrou
       -- no entry from X to a string index of weight ≤ 0.
       simp [← ext_iff, Matrix.mul_apply, reindex_equiv Y.indexEquiv, Y.gram_eq, gradedGram,
         Matrix.one_apply]
-      grind -funext [star_zero, sum_eq_zero]
+      intro x y
+      refine Finset.sum_eq_zero fun a _ ↦ ?_
+      obtain ha | ha := le_or_gt s (2 * a.val + 1)
+      · rw [h_zero a y ha, mul_zero]
+      · rw [Finset.sum_eq_zero fun b _ ↦ ?_, zero_mul]
+        by_cases hb : b = a.rev
+        · rw [hb, h_zero a.rev x (by rw [Fin.val_rev]; omega), star_zero, zero_mul]
+        · simp only [hb, ↓reduceIte, map_zero, mul_zero]
     _ = _ := by
       rw [show (V.ratCoordMatrix g)ᴴ * V.J.map toAdele * V.ratCoordMatrix g = V.J.map toAdele from
         mem_unitaryGroupOf_iff.1 (V.toRatCoords g).property, Y.submatrix_inl_map_J]
@@ -599,10 +625,24 @@ lemma mem_unipotent_iff_besselProj_eq_one (r : Y.besselGroup) :
     (r : G E ε) ∈ Y.unipotent ↔ Y.besselProj r = 1 := by
   -- Off the `X`-block, the conditions for the unipotent and the Bessel group are the same.
   have hr := Y.mem_besselGroup_iff.1 r.property
-  rw [← (stdSpace E X).isEmbedding_ratCoordMatrix.injective.eq_iff]
-  simp_all [adeleMatrix_besselProj, ← ext_iff, reindex_equiv Y.indexEquiv, HasDegreeGe,
-    Matrix.one_apply,
-    sub_eq_zero]
+  rw [← (stdSpace E X).isEmbedding_ratCoordMatrix.injective.eq_iff, ratCoordMatrix_stdSpace,
+    map_one, adeleMatrix_besselProj]
+  constructor
+  · intro h
+    refine Matrix.ext fun x y ↦ ?_
+    have hxy := Y.mem_unipotent.1 h (Y.indexEquiv (.inl x)) (Y.indexEquiv (.inl y))
+      (by simp only [gradeOf_inl]; omega)
+    rw [Matrix.sub_apply, sub_eq_zero] at hxy
+    simpa only [submatrix_apply, Function.comp_apply, Matrix.one_apply,
+      Equiv.apply_eq_iff_eq, Sum.inl.injEq] using hxy
+  · intro h
+    refine Y.mem_unipotent.2 fun i k hlt ↦ sub_eq_zero.2 ?_
+    obtain ⟨x | a, rfl⟩ := Y.indexEquiv.surjective i <;>
+      obtain ⟨y | b, rfl⟩ := Y.indexEquiv.surjective k
+    · have hxy := congr_fun (congr_fun h x) y
+      simpa only [submatrix_apply, Function.comp_apply, Matrix.one_apply,
+        Equiv.apply_eq_iff_eq, Sum.inl.injEq] using hxy
+    all_goals exact hr _ _ (by omega) (by simp)
 
 /-- An element `r` of the Bessel group agrees with the embedding of its projection to U(X) up to a
 unipotent factor on the left. -/
@@ -804,11 +844,15 @@ theorem isIdempotentKernel_dsCoeffInFrame [Nonempty n] (hl_gap : l.HasLargeGap A
   have h_kernel : IsIdempotentKernel (-l).dsKernel :=
     HCParam.HasLargeGap.isIdempotentKernel_dsKernel hl_gap.neg
   have h_pullback : IsIdempotentKernel fun g : U J ↦ (-l).dsKernel (frameEquiv g) :=
-    { continuous := by fun_prop
+    { continuous := h_kernel.continuous.comp frameEquiv.continuous
       integrable := measurePreserving_frameEquiv.integrable_comp_of_integrable h_kernel.integrable
-      apply_inv g := by simp [← h_kernel.apply_inv]
-      apply_one_ne_zero := by simp [h_kernel.apply_one_ne_zero]
-      convolution_eq x y := by simp [← h_kernel.convolution_eq, ← integral_comp_frameEquiv] }
+      apply_inv g := by rw [map_inv, h_kernel.apply_inv]
+      apply_one_ne_zero := by rw [map_one]; exact h_kernel.apply_one_ne_zero
+      convolution_eq x y := by
+        simp only [map_mul, map_inv, map_one]
+        exact (integral_comp_frameEquiv fun w ↦ (-l).dsKernel w *
+          (-l).dsKernel ((w * frameEquiv x)⁻¹ * frameEquiv y)).trans
+          (h_kernel.convolution_eq (frameEquiv x) (frameEquiv y)) }
   simpa [dsKernel, HCParam.formalDegree, HCParam.dsCoeffInFrame] using h_pullback
 
 end New
@@ -843,16 +887,29 @@ lemma hasDegreeGe_zero_mul_stringMap_mul_sub {g : G E ε} {δ : G E ε'}
   have hT_string (b : ι') (a : ι) (h_ne : T b a ≠ 0) :
       (Y'.indexEquiv.symm b).isRight ∧ (Y.indexEquiv.symm a).isRight := by
     obtain ⟨x | b, rfl⟩ := Y'.indexEquiv.surjective b <;>
-      obtain ⟨y | a, rfl⟩ := Y.indexEquiv.surjective a <;> simp_all [T, stringMap]
+      obtain ⟨y | a, rfl⟩ := Y.indexEquiv.surjective a
+    · simp [T, stringMap] at h_ne
+    · simp [T, stringMap] at h_ne
+    · simp [T, stringMap] at h_ne
+    · simp only [Equiv.symm_apply_apply, Sum.isRight_inr, and_self]
   have h_left : HasDegreeGe Y'.gradeOf Y.gradeOf 0 ((V'.ratCoordMatrix δ - 1) * T) := by
     refine fun b a hlt ↦ Finset.sum_eq_zero fun y _ ↦ by_contra fun h_ne ↦ ?_
-    have hy : Y'.gradeOf b ≤ Y'.gradeOf y := by grind [HasDegreeGe]
-    simp_all [Y'.mem_besselGroup_iff.1 hδ b y hy
-      (.inr (hT_string y a (right_ne_zero_of_mul h_ne)).1)]
+    have hTy : T y a ≠ 0 := right_ne_zero_of_mul h_ne
+    have h_deg : ¬Y'.gradeOf y < Y.gradeOf a + -1 := mt (hT y a) hTy
+    have hy : Y'.gradeOf b ≤ Y'.gradeOf y := by omega
+    exact left_ne_zero_of_mul h_ne <| by
+      dsimp only
+      rw [Matrix.sub_apply, Y'.mem_besselGroup_iff.1 hδ b y hy (.inr (hT_string y a hTy).1),
+        sub_self]
   have h_right : HasDegreeGe Y'.gradeOf Y.gradeOf 0 (T * (V.ratCoordMatrix g - 1)) := by
     refine fun b a hlt ↦ Finset.sum_eq_zero fun z _ ↦ by_contra fun h_ne ↦ ?_
-    have hz : Y.gradeOf z ≤ Y.gradeOf a := by grind [HasDegreeGe]
-    simp_all [Y.mem_besselGroup_iff.1 hg z a hz (.inl (hT_string b z (left_ne_zero_of_mul h_ne)).2)]
+    have hTz : T b z ≠ 0 := left_ne_zero_of_mul h_ne
+    have h_deg : ¬Y'.gradeOf b < Y.gradeOf z + -1 := mt (hT b z) hTz
+    have hz : Y.gradeOf z ≤ Y.gradeOf a := by omega
+    exact right_ne_zero_of_mul h_ne <| by
+      dsimp only
+      rw [Matrix.sub_apply, Y.mem_besselGroup_iff.1 hg z a hz (.inl (hT_string b z hTz).2),
+        sub_self]
   have h_split : V'.ratCoordMatrix δ * (T * V.ratCoordMatrix g) - T =
       (V'.ratCoordMatrix δ - 1) * T * V.ratCoordMatrix g + T * (V.ratCoordMatrix g - 1) := by
     simp [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc]
@@ -881,9 +938,12 @@ lemma formAdjoint_stringMap :
   -- It remains to compare the rational entries; only those between two string vectors are nonzero.
   refine congrArg toAdele ?_
   obtain ⟨x | a, rfl⟩ := Y.indexEquiv.surjective i <;>
-    obtain ⟨y | b, rfl⟩ := Y'.indexEquiv.surjective k <;>
-    simp [stringReversal, gradedGram, apply_ite star, hN_star, hc_star]
-  grind
+    obtain ⟨y | b, rfl⟩ := Y'.indexEquiv.surjective k
+  · simp [stringReversal, gradedGram]
+  · simp [stringReversal, gradedGram]
+  · simp [stringReversal, gradedGram]
+  · simp [stringReversal, gradedGram, apply_ite star, hN_star, hc_star]
+    grind
 
 /-- Let `T = Y.stringMap Y'`, where `Y'` has a string of length `s - 1`. `T` is the rational map
 `V → V'` that kills `X` and sends each string vector of `Y` to a multiple of the one of `Y'` with
@@ -899,7 +959,8 @@ lemma formAdjoint_stringMap_mul_stringMap_eq_shift :
   congr 3
   ext a b
   by_cases hb : b.val < s - 1
-  · rw [Matrix.mul_apply, Fintype.sum_eq_single ⟨b, hb⟩ (by simp +contextual [Fin.ext_iff])]
+  · rw [Matrix.mul_apply, Fintype.sum_eq_single ⟨b, hb⟩ fun k hk ↦ by
+      simp only [Matrix.of_apply, Fin.val_ne_of_ne hk, ↓reduceIte, mul_zero]]
     by_cases hab : a.val = b + 1 <;> simp [hab]
     grind
   · simp [Matrix.mul_apply, show ∀ k : Fin (s - 1), k.val ≠ b by omega,
@@ -916,8 +977,9 @@ lemma stringMap_mul_formAdjoint_stringMap_eq_shift (hc : Y'.genericConst = Y.gen
   simp only [Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add]
   congr 3
   ext a b
-  rw [Matrix.mul_apply,
-    Fintype.sum_eq_single ⟨b + 1, by omega⟩ (by simp +contextual [Fin.ext_iff])]
+  rw [Matrix.mul_apply, Fintype.sum_eq_single ⟨b + 1, by omega⟩ fun k hk ↦ by
+    have hkb : (k : ℕ) ≠ b + 1 := Fin.val_ne_of_ne hk
+    simp only [Matrix.of_apply, hkb, ↓reduceIte, mul_zero]]
   by_cases hab : a.val = b + 1 <;> simp [hab]
   grind [a.isLt, b.isLt]
 
