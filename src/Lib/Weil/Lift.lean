@@ -505,9 +505,9 @@ theorem lift_piTensor_integratedRep {T : InfinitePlace E → FockDualPair s t ι
       ‖Θ.θ (Θ.ω (a, g) ψ) * y a‖ ≤ S'.height g ^ A * |C| * ‖ψ‖ :=
     Θ.exists_norm_theta_mul_le (hy.mem_rapidFunctions cusp)
   -- The double integral converges absolutely, as `typeKernel l s x • ω (x, 1) φ` is integrable.
-  have h_orbit : Integrable fun x : GInf E s ↦ typeKernel l s x • Θ.ω ((x, 1), 1) φ := by
-    simpa only [ContinuousLinearMap.flip_apply, h_real] using
-      (integral_typeKernel_smul_piTensor hp hΦ hΩ_left v (V.integrated.flip f)).1
+  obtain ⟨h_orbit, h_projection⟩ :=
+    integral_typeKernel_smul_piTensor hp hΦ hΩ_left v (V.integrated.flip f)
+  simp only [ContinuousLinearMap.flip_apply, h_real] at h_orbit h_projection
   let F (x : GInf E s) (a : G E s) : ℂ := e x * (Θ.θ (Θ.ω (a, g) φ) * y (a * (x, 1)))
   have h_bound (x : GInf E s) (a : G E s) :
       ‖F x a‖ ≤ S'.height g ^ A * |C| * ‖typeKernel l s x⁻¹ • Θ.ω ((x⁻¹, 1), 1) φ‖ := by
@@ -517,8 +517,8 @@ theorem lift_piTensor_integratedRep {T : InfinitePlace E → FockDualPair s t ι
     ((h_orbit.norm.comp_inv.const_mul _).comp_fst _).mono' (by fun_prop)
       (.of_forall fun p ↦ h_bound p.1 p.2)
   calc _ = ∫ x : GInf E s, typeKernel l s x * S.lift Θ (Θ.ω ((x, 1), 1) φ) y g := by
-        simpa [hL, h_real] using
-          (integral_typeKernel_smul_piTensor hp hΦ hΩ_left v (L g ∘L V.integrated.flip f)).2.symm
+        simpa only [hL, map_smul, smul_eq_mul] using
+          (((L g).integral_comp_comm h_orbit).trans (congrArg (L g) h_projection)).symm
     _ = ∫ x : GInf E s, ∫ a : G E s, F x a ∂S.quotMeasure := by
         -- substitute `x⁻¹` for `x`, then move `(x⁻¹, 1)` from the datum to `y`
         rw [← integral_inv_eq_self]
