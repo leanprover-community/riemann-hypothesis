@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
+import Mathlib.RingTheory.Valuation.Algebraic
 import Mathlib.NumberTheory.Multiplicity
 import Mathlib.NumberTheory.NumberField.Cyclotomic.Basic
 public import Lib.General.Topology
@@ -70,22 +71,19 @@ instance isClosed_decompGroup : IsClosed (decompGroup Γ A : Set Γ) := by
 the valuation of `A`: `σ • x` and `x` have the same valuation for every `x` in `Ω`. -/
 lemma decompGroup.val_smul (hσ : σ ∈ decompGroup Γ A) (x : Ω) :
     A.valuation (σ • x) = A.valuation x := by
-  -- Write `v = A.valuation`. It is enough to show `v y ≤ v (s • y)` for all `s` in
-  -- `decompGroup Γ A`: use it for `σ` and for `σ⁻¹`.
-  have le_smul {s : Γ} {y : Ω} (hs : s ∈ decompGroup Γ A) :
-      A.valuation y ≤ A.valuation (s • y) := by
-    -- The orbit of `y` is finite, so some `t` in `decompGroup Γ A` minimises `v (t • y)`.
-    have h_fin : ((fun t : Γ ↦ A.valuation (t • y)) '' decompGroup Γ A).Finite :=
-      ((isLocallyConstant_smul y).comp A.valuation).range_finite.subset (image_subset_range _ _)
-    obtain ⟨t, ht⟩ := h_fin.exists_minimalFor' _ _ ⟨s, hs⟩
-    have h_min : A.valuation (t • y) ≤ A.valuation (t • s • y) := by
-      simpa [mul_smul] using ht.le (mul_mem ht.prop hs)
-    -- Since `t` preserves `A`, the valuation `z ↦ v (t • z)` is equivalent to `v`.
-    have h_equiv : (A.valuation.comap (toRingHom Γ Ω t)).IsEquiv A.valuation :=
-      Valuation.isEquiv_of_val_le_one fun {z} ↦ by
-        simpa [ValuationSubring.valuation_le_one_iff] using mem_decompGroup_iff.mp ht.prop z
-    exact (h_equiv y (s • y)).mp h_min
-  exact le_antisymm (by simpa using le_smul (y := σ • x) (inv_mem hσ)) (le_smul hσ)
+  have h_equiv : (A.valuation.comap (toRingHom Γ Ω σ)).IsEquiv A.valuation :=
+    Valuation.isEquiv_of_val_le_one fun {z} ↦ by
+      simpa [ValuationSubring.valuation_le_one_iff] using mem_decompGroup_iff.mp hσ z
+  -- A positive power of the valuation of `x` is the valuation of an element of `K`.
+  obtain ⟨n, r, hn, -, h_pow⟩ :=
+    A.valuation.exists_map_pow_eq_map_algebraMap_of_isAlgebraic
+      (Algebra.IsAlgebraic.isAlgebraic (R := K) x)
+  -- The equivalent valuation obtained by applying `σ` satisfies the same equality, and `σ` fixes
+  -- the base element. Cancel the positive power to compare the original valuations.
+  have h_conj : A.valuation (σ • (x ^ n)) = A.valuation (σ • algebraMap K Ω r) :=
+    h_equiv.eq_iff.mpr (by simpa only [Valuation.map_pow] using h_pow)
+  rw [smul_pow', smul_algebraMap, Valuation.map_pow, ← h_pow] at h_conj
+  exact (pow_left_inj₀ zero_le zero_le hn.ne').mp h_conj
 
 /-- For the Galois group `Γ` of `Ω / K`, the inertia group of `A` is closed. -/
 instance isClosed_inertiaGroup : IsClosed (inertiaGroup Γ A : Set Γ) := by
