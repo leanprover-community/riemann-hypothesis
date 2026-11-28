@@ -261,7 +261,7 @@ lemma trace_mul_tupleIdem_eq [hs : ∀ v : D.Φ, (toHCParam s (D.paramW v)).HasG
   -- The element `f` of the group algebra of the finite points acts as `T e_c` on every space.
   let f : ℂ[Gf D.E D.RowIndex] :=
     mapDomain D.offLevelGroup.subtype a * D.liftGroupAlgebra (tupleIdem D.RowIndex c)
-  have hf_mem : f ∈ universalLevelAlgebra D.chosenLevel :=
+  have hf_mem : f ∈ universalLevelAlgebra ℂ D.chosenLevel :=
     mul_mem (D.mem_sphericalAlgebra.1 ha) (D.liftGroupAlgebra_mem_universalLevelAlgebra _)
   have hf_acts {s : D.RowIndex → ℤˣ} (W : Space D.E D.RowIndex s) (y : D.principalForms W) :
       ((T.val W * (D.principalRep W).asAlgebraHom (tupleIdem D.RowIndex c)) y).val =

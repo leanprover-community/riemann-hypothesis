@@ -50,18 +50,19 @@ open NumberField Matrix Finset Valued MonoidAlgebra Variety InnerProductSpace Do
 
 section DoubleCoset
 
-variable {G W ι : Type} [Group G] {J : Subgroup G} {t : G}
+variable {R : Type*} [CommRing R] {G W ι : Type} [Group G] {J : Subgroup G} {t : G}
 
-/-- The sum in the group algebra of the chosen representatives of the cosets in `J t J / J`. It is
-zero if there are infinitely many of them. -/
-def doubleCosetSum (J : Subgroup G) (t : G) : ℂ[G] :=
+variable (R) in
+/-- The sum in the group algebra `R[G]` of the chosen representatives of the cosets in `J t J / J`.
+It is zero if there are infinitely many of them. -/
+def doubleCosetSum (J : Subgroup G) (t : G) : R[G] :=
   ∑ᶠ q : G ⧸ J, .single q.out ((doubleCoset t J J).indicator 1 q.out)
 
 /-- If finitely many cosets of `J` meet `J t J`, the sum of their representatives is a finite
 sum. -/
 lemma doubleCosetSum_eq_sum
-    (h_fin : HasFiniteCosets J ((doubleCoset t J J).indicator (1 : G → ℂ))) :
-    doubleCosetSum J t =
+    (h_fin : HasFiniteCosets J ((doubleCoset t J J).indicator (1 : G → R))) :
+    doubleCosetSum R J t =
       ∑ q ∈ h_fin.toFinset, .single q.out ((doubleCoset t J J).indicator 1 q.out) := by
   refine finsum_eq_sum_of_support_subset _ fun q hq ↦ h_fin.mem_toFinset.2 fun h_zero ↦ hq ?_
   simp only [h_zero, MonoidAlgebra.single_zero]
@@ -69,8 +70,8 @@ lemma doubleCosetSum_eq_sum
 /-- If finitely many cosets of `J` meet `J t J`, the sum of their representatives in the group
 algebra is supported on `J t J`. -/
 lemma doubleCosetSum_mem_spanOn
-    (h_fin : HasFiniteCosets J ((doubleCoset t J J).indicator (1 : G → ℂ))) :
-    doubleCosetSum J t ∈ spanOn ℂ (doubleCoset t J J) := by
+    (h_fin : HasFiniteCosets J ((doubleCoset t J J).indicator (1 : G → R))) :
+    doubleCosetSum R J t ∈ spanOn R (doubleCoset t J J) := by
   rw [doubleCosetSum_eq_sum h_fin]
   refine sum_mem fun q hq ↦ ?_
   have h_mem : q.out ∈ doubleCoset t J J := Set.mem_of_indicator_ne_zero (h_fin.mem_toFinset.1 hq)
@@ -79,13 +80,13 @@ lemma doubleCosetSum_mem_spanOn
 
 section Module
 
-variable [AddCommGroup W] [Module ℂ W] {ρ : Representation ℂ G W} {y : W}
+variable [AddCommGroup W] [Module R W] {ρ : Representation R G W} {y : W}
 
 /-- If finitely many cosets of `J` meet `J t J`, the sum of their representatives acts in a
 representation `ρ` as the operator `heckeCoset ρ J t` of the double coset. -/
 lemma asAlgebraHom_doubleCosetSum
-    (h_fin : HasFiniteCosets J ((doubleCoset t J J).indicator (1 : G → ℂ))) :
-    ρ.asAlgebraHom (doubleCosetSum J t) = heckeCoset ρ J t := by
+    (h_fin : HasFiniteCosets J ((doubleCoset t J J).indicator (1 : G → R))) :
+    ρ.asAlgebraHom (doubleCosetSum R J t) = heckeCoset ρ J t := by
   ext y
   simp [doubleCosetSum_eq_sum h_fin, heckeCoset, heckeFun_eq_sum_toFinset h_fin]
 
@@ -115,10 +116,10 @@ lemma heckeCoset_eq_sum (hy : y ∈ levelSpace ρ J) {s : Finset ι} {r : ι →
     (h_cover : ∀ j ∈ J, ∃ a ∈ s, (r a)⁻¹ * (j * t) ∈ J) :
     heckeCoset ρ J t y = ∑ a ∈ s, ρ (r a) y := by
   -- The indicator of `J t J` is right `J`-invariant, and the cosets `r a J` cover its support.
-  have h_right (g : G) (k : J) : (doubleCoset t J J).indicator (1 : G → ℂ) (g * k) =
+  have h_right (g : G) (k : J) : (doubleCoset t J J).indicator (1 : G → R) (g * k) =
       (doubleCoset t J J).indicator 1 g := by
     classical simp [Set.indicator_apply, mul_mem_doubleCoset_iff_of_mem k.property]
-  have h_all (g : G) (hg : (doubleCoset t J J).indicator (1 : G → ℂ) g ≠ 0) :
+  have h_all (g : G) (hg : (doubleCoset t J J).indicator (1 : G → R) g ≠ 0) :
       ∃ a ∈ s, (r a : G ⧸ J) = g := by
     obtain ⟨j, hj, l, hl, rfl⟩ := mem_doubleCoset.1 (Set.mem_of_indicator_ne_zero hg)
     obtain ⟨a, ha, h_coset⟩ := h_cover j hj
@@ -415,11 +416,12 @@ variable {E n : Type} [Field E] [NumberField E] [Fintype n] [DecidableEq n] (w :
 
 /-- The sum in the group algebra of chosen representatives of the cosets in
 `J_line diag (ϖ, 1, …, 1) J_line / J_line`. -/
-def lineHecke : ℂ[GL n (LocField w)] := doubleCosetSum (lineStabilizer w i) (lineElement w i)
+def lineHecke : ℂ[GL n (LocField w)] := doubleCosetSum ℂ (lineStabilizer w i) (lineElement w i)
 
 /-- The sum in the group algebra of chosen representatives of the cosets in
 `J_line diag (ϖ, 1, …, 1)⁻¹ J_line / J_line`. It acts as `T⁻`. -/
-def lineHeckeLower : ℂ[GL n (LocField w)] := doubleCosetSum (lineStabilizer w i) (lineElement w i)⁻¹
+def lineHeckeLower : ℂ[GL n (LocField w)] :=
+  doubleCosetSum ℂ (lineStabilizer w i) (lineElement w i)⁻¹
 
 variable (n) in
 /-- The mean in the group algebra of chosen lifts to `GL_n(𝒪)` of all elements of `GL_n` of the

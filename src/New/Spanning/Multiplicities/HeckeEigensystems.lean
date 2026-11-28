@@ -75,8 +75,8 @@ elements with component `1` at the places of `S`. Let `J` be a subgroup of the m
 in every representation of `G_f`. -/
 lemma mapDomain_mem_universalLevelAlgebra {J : Subgroup (Gf E n)} (hJ_le : J ≤ stdLevel E n)
     (hJ_ge : stdLevel E n ⊓ trivialOn n S ≤ J) {a : ℂ[trivialOn n S]}
-    (ha : a ∈ universalLevelAlgebra ((stdLevel E n).subgroupOf (trivialOn n S))) :
-    mapDomain (trivialOn n S).subtype a ∈ universalLevelAlgebra J := by
+    (ha : a ∈ universalLevelAlgebra ℂ ((stdLevel E n).subgroupOf (trivialOn n S))) :
+    mapDomain (trivialOn n S).subtype a ∈ universalLevelAlgebra ℂ J := by
   refine mem_universalLevelAlgebra.2 fun W _ _ ρ ↦ mem_levelAlgebra.2 fun y hy ↦
     mem_levelSpace_iff_forall_apply_eq.2 fun k hk ↦ ?_
   rw [mem_levelSpace_iff_forall_apply_eq] at hy
@@ -168,17 +168,17 @@ lemma coe_principalHeckeSplit_apply {w : FinPlace D.E} (hw : D.IsSplitOffLevel w
 `G^M = D.offLevelGroup` that keep the vectors fixed by the principal level `J_M = D.chosenLevel` in
 every representation of `G_f`. -/
 def sphericalAlgebra : Subalgebra ℂ ℂ[D.offLevelGroup] :=
-  (universalLevelAlgebra D.chosenLevel).comap (mapDomainAlgHom ℂ ℂ D.offLevelGroup.subtype)
+  (universalLevelAlgebra ℂ D.chosenLevel).comap (mapDomainAlgHom ℂ ℂ D.offLevelGroup.subtype)
 
 lemma mem_sphericalAlgebra {a : ℂ[D.offLevelGroup]} :
     a ∈ D.sphericalAlgebra ↔
-      mapDomain D.offLevelGroup.subtype a ∈ universalLevelAlgebra D.chosenLevel := Iff.rfl
+      mapDomain D.offLevelGroup.subtype a ∈ universalLevelAlgebra ℂ D.chosenLevel := Iff.rfl
 
 /-- An element `a` of the group algebra of `G^M = D.offLevelGroup`, the elements of the finite
 adelic unitary group `G_f` that are `1` at the chosen places above the level `M`, is spherical away
 from `M` as soon as it keeps the vectors fixed by `K₀ ∩ G^M` in every representation of `G^M`. -/
 lemma mem_sphericalAlgebra_of_mem_universalLevelAlgebra {a : ℂ[D.offLevelGroup]}
-    (ha : a ∈ universalLevelAlgebra ((stdLevel D.E D.RowIndex).subgroupOf D.offLevelGroup)) :
+    (ha : a ∈ universalLevelAlgebra ℂ ((stdLevel D.E D.RowIndex).subgroupOf D.offLevelGroup)) :
     a ∈ D.sphericalAlgebra :=
   D.mem_sphericalAlgebra.2
     (mapDomain_mem_universalLevelAlgebra levelOf_le_stdLevel inf_trivialOn_le_levelOf ha)
@@ -417,7 +417,7 @@ lemma liftResidue_apply_mem_levelSpace {M : Type} [AddCommGroup M] [Module ℂ M
 /-- The lift to `G_f` of an element of the group algebra of `D.chosenGL` keeps the vectors fixed by
 the principal level `D.chosenLevel` in every representation. -/
 lemma liftGroupAlgebra_mem_universalLevelAlgebra (x : ℂ[D.chosenGL]) :
-    D.liftGroupAlgebra x ∈ universalLevelAlgebra D.chosenLevel := by
+    D.liftGroupAlgebra x ∈ universalLevelAlgebra ℂ D.chosenLevel := by
   induction x using induction_linear with
   | zero => simp [liftGroupAlgebra]
   | add x x' hx hx' => simpa only [liftGroupAlgebra_add] using add_mem hx hx'

@@ -73,15 +73,15 @@ of rank `N = card n ≥ 2` over `E` with signs `s`, `s'`, and let `l = 2λ` be a
 parameter whose `toHCParam s (l v)` and `toHCParam s' (l v)` have gap at least `500 N³ + 10 N⁵` at
 every infinite place `v` (`HasLargeGap A` means gap `500 N³ + A`). Let `K` be a level (`IsLevel K`,
 so `K` is open and compact), let `a` keep the `K`-fixed vectors in every representation
-(`universalLevelAlgebra K`), and let the test function `a ⋆ 1_K` (`convIndicator`) be cuspidal at a
-split place `w`. Then operators that act as `a` on the forms of parameter `l` and level `K`
+(`universalLevelAlgebra ℂ K`), and let the test function `a ⋆ 1_K` (`convIndicator`) be cuspidal at
+a split place `w`. Then operators that act as `a` on the forms of parameter `l` and level `K`
 (`levelSpace` of `formRep` at `typeKernel l s`, resp. `typeKernel l s'`, which the gap bound makes a
 cusp kernel by `isCuspKernel_typeKernel`) on `V` and on `V'` have the same trace. -/
 theorem trace_eq_of_isCuspidalAt (hE : Even (Core.numInfPlaces E)) (hn : 2 ≤ card n)
     (V : Space E n s) (V' : Space E n s') {l : InfinitePlace E → n → ℤ}
     (h_gap : ∀ v : InfinitePlace E, (toHCParam s (l v)).HasLargeGap (10 * card n ^ 5))
     (h_gap' : ∀ v : InfinitePlace E, (toHCParam s' (l v)).HasLargeGap (10 * card n ^ 5))
-    {K : Subgroup (Gf E n)} [hK : IsLevel K] {a : ℂ[Gf E n]} (ha : a ∈ universalLevelAlgebra K)
+    {K : Subgroup (Gf E n)} [hK : IsLevel K] {a : ℂ[Gf E n]} (ha : a ∈ universalLevelAlgebra ℂ K)
     {w : FinPlace E} (hw : w.IsSplit)
     (h_cusp : IsCuspidalAt hw (convIndicator hK.isOpen hK.isCompact a))
     {T : End ℂ (levelSpace (V.formRep (typeKernel l s)) K)}
