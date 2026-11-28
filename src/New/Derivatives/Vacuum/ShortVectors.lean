@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Data.Rat.Cast.OfScientific
+import TauCeti.Algebra.Ring.GeomSum
 public import New.Reduction.Data.AdmissibleData
 import New.Reduction.Data.Magnitudes
 
@@ -424,20 +425,11 @@ theorem exists_isTightFrame_coprime (P : Parameters) (s : ℕ) :
       have h_prod_sum :
           (∑ j : Fin (r ℓ), γ ^ j.val) * (∑ i : Fin ℓ.val, (γ ^ r ℓ) ^ i.val) =
             if σ = τ then (N : ℂ) else 0 := by
-        have h_bij :
-            ∑ m : Fin N, γ ^ m.val =
-              (∑ j : Fin (r ℓ), γ ^ j.val) * (∑ i : Fin ℓ.val, (γ ^ r ℓ) ^ i.val) := by
-          let eN : Fin ℓ.val × Fin (r ℓ) ≃ Fin N :=
-            finProdFinEquiv.trans (finCongr (hN_eq ℓ).symm)
-          rw [← eN.sum_comp, Fintype.sum_prod_type, Finset.sum_mul, Finset.sum_comm]
-          refine Finset.sum_congr rfl fun j _ ↦ ?_
-          rw [Finset.mul_sum]
-          refine Finset.sum_congr rfl fun i _ ↦ ?_
-          have hval : (eN (i, j)).val = r ℓ * i.val + j.val := by
-            simp [eN, finProdFinEquiv, add_comm, mul_comm]
-          rw [hval, pow_add, pow_mul, mul_comm]
-        rw [← h_bij]
-        simpa [γ, mul_pow, map_pow] using h_zeta_frame
+        calc
+          _ = ∑ m : Fin N, γ ^ m.val := by
+            simp_rw [Fin.sum_univ_eq_sum_range]
+            rw [← TauCeti.geom_sum_range_mul, ← hN_comm]
+          _ = _ := by simpa [γ, mul_pow, map_pow] using h_zeta_frame
       set W : ℂ := (1 - quadGen P.d + (n : ℂ) * (z : ℂ)) * (M ℓ : ℂ) / (N : ℂ)
       have h_αβ : α * β' = γ ^ r ℓ := by simp [α, β', γ, a, mul_pow, map_pow]
       have h_inner :
