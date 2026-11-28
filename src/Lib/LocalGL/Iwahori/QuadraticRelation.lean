@@ -288,6 +288,32 @@ lemma diagGL_conj_mem_proIwahori_of_v_eq_one {t : Fin N → Fˣ} {k : GL (Fin N)
   -- All entries of `t` have the same valuation, so every matrix is block triangular for it.
   exact diagGL_conj_mem_proIwahori hk fun i j hij ↦ by simp [ht] at hij
 
+/-- If a linear map `φ` is invariant under `New.proIwahori` and `t` is a diagonal element whose
+entries are units of the ring of integers, then the mean over `New.proIwahori` can be dropped
+before applying `φ ∘ ρ (diagGL t)`. -/
+private lemma apply_diagGL_compactMean_of_v_eq_one {W : Type*} [AddCommGroup W] [Module ℂ W]
+    [CompactSpace 𝒪[F]] {ρ : Rep ℂ (GL (Fin N) F)} [IsSmoothRep ρ.ρ] {φ : ρ →ₗ[ℂ] W}
+    (hφ : ∀ k ∈ proIwahori, ∀ z : ρ, φ (ρ k z) = φ z) {t : Fin N → Fˣ}
+    (ht : ∀ i : Fin N, v (t i).val = 1) (z : ρ) :
+    φ (ρ (diagGL t) (compactMean ρ.ρ proIwahori z)) = φ (ρ (diagGL t) z) :=
+  map_compactMean_of_factor hφ fun k hk ↦ ⟨k, diagGL_conj_mem_proIwahori_of_v_eq_one hk ht, by simp⟩
+
+/-- For a uniformizer `ϖ` and index `a`, the monomial matrix `permGL (finCycle a)⁻¹ * diagGL s`
+(where `s i = ϖ⁻¹` for `a ≤ i` and `1` otherwise) conjugates `New.proIwahori` into itself. -/
+private lemma conj_finCycle_inv_mul_diagGL_mem_proIwahori (hϖ : v ϖ.val = exp (-1)) (a : Fin N)
+    {k : GL (Fin N) F} (hk : k ∈ proIwahori) :
+    (permGL (finCycle a)⁻¹ * diagGL (fun i ↦ if a ≤ i then ϖ⁻¹ else 1))⁻¹ * k *
+      (permGL (finCycle a)⁻¹ * diagGL (fun i ↦ if a ≤ i then ϖ⁻¹ else 1)) ∈ proIwahori := by
+  refine mem_proIwahori_iff_blockParahoric.mpr
+    (conj_monomial_mem_blockParahoric _ _ _ (mem_proIwahori_iff_blockParahoric.mp hk) ?_)
+  -- The valuation condition is an inequality between indicator functions on `Fin N`.
+  suffices h_ind : ∀ i j : Fin N,
+      ((if a ≤ j then 1 else 0) + if j < i then 1 else 0 : ℤ) ≤
+        (if a ≤ i then 1 else 0) + if j - a < i - a then 1 else 0 by
+    simpa [apply_ite Units.val, apply_ite v, apply_ite log, hϖ] using
+      fun i j : Fin N ↦ Or.inr (h_ind i j)
+  fin_omega
+
 /-- Let `F` have a uniformiser `ϖ` (`v ϖ = exp (-1)`) and let `ρ` be a smooth representation of
 `GL_N(F)`. For dominant diagonal `t`, `U_t = iwahoriHeckeHom ρ t` acts on the vectors fixed by the
 pro-`p` Iwahori subgroup `New.proIwahori`: it applies `ρ (diagGL t)` and then takes the mean
@@ -315,20 +341,9 @@ lemma exists_iwahoriHeckeHom_injective [CompactSpace 𝒪[F]] (hϖ : v ϖ.val = 
   -- fixes `y`.
   let n : GL (Fin N) F := permGL (finCycle a)⁻¹ * diagGL (s a)
   let y : ρ := ρ n x
-  have h_conj (k : GL (Fin N) F) (hk : k ∈ proIwahori) : n⁻¹ * k * n ∈ proIwahori := by
-    refine mem_proIwahori_iff_blockParahoric.mpr
-      -- The torus element, the permutation and the set are inferred from the goal.
-      (conj_monomial_mem_blockParahoric _ _ _ (mem_proIwahori_iff_blockParahoric.mp hk) ?_)
-    -- The valuation condition is an inequality between indicator functions on `Fin N`, which
-    -- holds for every pair of indices.
-    suffices h_ind : ∀ i j : Fin N,
-        ((if a ≤ j then 1 else 0) + if j < i then 1 else 0 : ℤ) ≤
-          (if a ≤ i then 1 else 0) + if j - a < i - a then 1 else 0 by
-      simpa [s, apply_ite Units.val, apply_ite v, apply_ite log, hϖ] using
-        fun i j : Fin N ↦ Or.inr (h_ind i j)
-    fin_omega
   have hy : y ∈ levelSpace ρ.ρ proIwahori := by
-    simpa [y, Representation.inv_apply_eq_iff] using fun k hk ↦ x.prop ⟨_, h_conj k hk⟩
+    simpa [y, Representation.inv_apply_eq_iff] using fun (k : GL (Fin N) F) (hk : k ∈ proIwahori) ↦
+      x.prop ⟨n⁻¹ * k * n, conj_finCycle_inv_mul_diagGL_mem_proIwahori hϖ a hk⟩
   -- `U (s a) x = 0` says that `P` holds for the inverse of the cycle.
   let φ : Module.End ℂ ρ := compactMean ρ.ρ proIwahori
   let P (σ : Perm (Fin N)) : Prop := φ (ρ (permGL σ⁻¹) y) = 0
@@ -341,17 +356,13 @@ lemma exists_iwahoriHeckeHom_injective [CompactSpace 𝒪[F]] (hϖ : v ϖ.val = 
     let z : ρ := ρ (permGL σ⁻¹) y
     let w : Module.End ℂ ρ := ρ (permGL (swap i j))
     have hz : φ z = 0 := hP
-    -- a diagonal matrix of units normalises `proIwahori`, so `z` may be replaced by its mean
-    have h_diag (t : Fin N → Fˣ) (ht : ∀ i : Fin N, v (t i).val = 1) : φ (ρ (diagGL t) z) = 0 :=
-      calc
-        _ = φ (ρ (diagGL t) (φ z)) :=
-          (map_compactMean_of_factor (fun _ ↦ compactMean_apply) fun k hk ↦
-            ⟨k, diagGL_conj_mem_proIwahori_of_v_eq_one hk ht, by simp⟩).symm
-        _ = 0 := by simp [hz]
+    have h_diag (t : Fin N → Fˣ) (ht : ∀ i : Fin N, v (t i).val = 1) : φ (ρ (diagGL t) z) = 0 := by
+      simpa [φ, hz] using
+        (apply_diagGL_compactMean_of_v_eq_one (fun _ ↦ compactMean_apply) ht z).symm
     have h_quad : Nat.card 𝓀[F] • φ (w (φ z)) = φ (w z) + (Nat.card 𝓀[F] - 1) • 0 :=
       quadratic_relation hij 0 (fun _ ↦ compactMean_apply) (transvectionGL_apply_permGL_inv hy hσ)
         fun u hu ↦ h_diag _ (v_mulSingle_neg_inv_mul_mulSingle_eq_one hu)
-    -- the left side vanishes by `hz`, so the first term on the right does
+    -- The left side vanishes by `hz`, so the first term on the right does too.
     simpa [P, w, z, hz, ← map_inv] using h_quad.symm
   -- Sorting (`exists_antitone_of_swap`) ends at the monotone permutation `σ = 1`, where `P` says
   -- `y = 0`; and `ρ n` is injective.
@@ -386,8 +397,7 @@ lemma IsExponent.apply_diagGL_unit (hl : IsExponent ρ ξ l) (ht : ∀ a : Fin N
   -- `t` is dominant and normalises `proIwahori`, so the mean in the eigen-equation `hl` can be
   -- dropped.
   rw [← hl (t := t) fun i j _ ↦ by simp [ht]]
-  exact (map_compactMean_of_factor hl.apply_proIwahori fun k hk ↦
-    ⟨k, diagGL_conj_mem_proIwahori_of_v_eq_one hk ht, by simp⟩).symm
+  exact (apply_diagGL_compactMean_of_v_eq_one hl.apply_proIwahori ht z).symm
 
 /-- Let `ρ` be a smooth complex representation of `GL_N(F)`, and let `l` be an exponent with
 character `ξ`: `l (ρ(t) (mean of z over New.proIwahori)) = ξ(t) l z` for all vectors `z` and all
