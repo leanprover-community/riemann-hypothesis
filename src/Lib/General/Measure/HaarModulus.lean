@@ -241,13 +241,6 @@ end ScalingFactor
 variable {n R : Type _} [Fintype n] [DecidableEq n] [CommRing R] [TopologicalSpace R]
   [IsTopologicalRing R] [LocallyCompactSpace R]
 
-/-- The action of invertible matrices on vectors is jointly continuous. -/
-instance : ContinuousSMul (GL n R) (n → R) where
-  continuous_smul := by
-    -- unfold the action to multiplication of a matrix by a vector
-    unfold_projs
-    fun_prop
-
 /-- Each invertible matrix acts continuously on vectors. -/
 instance : ContinuousConstSMul (GL n R) (n → R) := inferInstance
 
