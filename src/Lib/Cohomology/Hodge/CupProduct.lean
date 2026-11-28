@@ -127,25 +127,12 @@ instance addCommGroupH : AddCommGroup (H N F a) := { Ext.instAddCommGroup with a
 abbrev TotalH (N F : AbFunctor C) : Type 2 := DirectSum ℕ (H (C := C) N F)
 
 /-- The biadditive map from total `Ext(M, N)` and total `Ext(N, F)` to total `Ext(M, F)` that
-extends the Yoneda composition of homogeneous classes. The `choose` makes no real choice: it only
-keeps the formula from unfolding. See `TotalH.comp_def` and `TotalH.comp_of`. -/
-@[irreducible]
-def TotalH.comp : TotalH M N →+ TotalH N F →+ TotalH M F :=
-  (@exists_eq (TotalH M N →+ TotalH N F →+ TotalH M F)
-    (toAddMonoid fun a ↦
-      (toAddMonoid fun b ↦
-        ((bilinearComp M N F a b (a + b) rfl).compr₂
-          (DirectSum.of (H M F) (a + b))).flip).flip)).choose
-
-/-- `comp` is the biadditive extension to the direct sums of the Yoneda compositions
-`Ext^a(M, N) × Ext^b(N, F) → Ext^(a + b)(M, F)`. -/
-lemma TotalH.comp_def :
-    (comp : TotalH M N →+ TotalH N F →+ TotalH M F) =
-      toAddMonoid fun a : ℕ ↦ (toAddMonoid fun b : ℕ ↦
-        ((bilinearComp M N F a b (a + b) rfl).compr₂
-          (DirectSum.of (H M F) (a + b))).flip).flip := by
-  unfold comp
-  exact exists_eq.choose_spec
+extends the Yoneda compositions `Ext^a(M, N) × Ext^b(N, F) → Ext^(a + b)(M, F)` of homogeneous
+classes. It is irreducible, so that the formula does not unfold; see `TotalH.comp_def` and
+`TotalH.comp_of`. -/
+irreducible_def TotalH.comp : TotalH M N →+ TotalH N F →+ TotalH M F :=
+  toAddMonoid fun a : ℕ ↦ (toAddMonoid fun b : ℕ ↦
+    ((bilinearComp M N F a b (a + b) rfl).compr₂ (DirectSum.of (H M F) (a + b))).flip).flip
 
 /-- On homogeneous classes `comp` is the Yoneda composition. -/
 @[local simp]
@@ -163,18 +150,12 @@ abbrev _root_.CategoryTheory.Abelian.Ext.toTotalH (x : H N F n) : TotalH N F :=
 namespace TotalH
 
 /-- For an exact functor `Φ`, the additive map from total `Ext(N, F)` to total `Ext(Φ N, Φ F)`
-obtained by applying `Φ` in each degree. See `TotalH.map_def` and `TotalH.map_of`. -/
-@[irreducible]
-def map : TotalH N F →+ TotalH (Φ.obj N) (Φ.obj F) :=
-  (@exists_eq (TotalH N F →+ TotalH (Φ N) (Φ F)) (DirectSum.map (Φ.mapExtAddHom N F))).choose
+obtained by applying `Φ` in each degree: the direct sum of the maps induced by `Φ` on `Ext`. It is
+irreducible, so that the formula does not unfold; see `TotalH.map_def` and `TotalH.map_of`. -/
+irreducible_def map : TotalH N F →+ TotalH (Φ.obj N) (Φ.obj F) :=
+  DirectSum.map (Φ.mapExtAddHom N F)
 
-/-- `map Φ` is the direct sum of the maps induced by `Φ` on `Ext` in each degree. -/
-@[local simp]
-lemma map_def :
-    map Φ =
-      (DirectSum.map (Φ.mapExtAddHom N F) : TotalH N F →+ TotalH (Φ.obj N) (Φ.obj F)) := by
-  unfold map
-  exact exists_eq.choose_spec
+attribute [local simp] map_def
 
 lemma map_map (Θ : (C' ⥤ Ab) ⥤ AbFunctor A) [IsExactFunctor (C' := A) Θ] (x : TotalH N F) :
     map Θ (map Φ x) = map (Φ ⋙ Θ) x := by aesop (add simp mapExactFunctor_mapExactFunctor)
