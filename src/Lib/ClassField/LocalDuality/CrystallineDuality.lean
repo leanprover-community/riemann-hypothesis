@@ -713,6 +713,7 @@ lemma Period.dual_reduction_equivariant [IsLocalGalois Γ (fixedFieldOf 𝒥.toG
         map_cyclotomicGp_smul u (fun _ ↦ nsmul_zmodPowToUnits _) (b x y) (𝒥.toGp g)
     _ = unitsRep (𝒥.toGp g) (r x (V.ρ g⁻¹ (q (L.ρ g y)))) := by simp [← hq_equivariant, hru]
 
+open scoped DiscreteModule in
 /-- Local duality for potentially crystalline Galois lattices `L`, `L'` (`hL`, `hL'`), with
 `b : L' ≃ Hom(L, ℤ_ℓ)` satisfying `b (g x) (g y) = χ g • b x y`, and `𝒥.toGp` an open embedding
 (`hj`). Let `V = L / ℓᵐ L` (via `q`), whose dual is `L' / ℓᵐ L'` through `r` (the reduction of `b`).
@@ -790,6 +791,7 @@ lemma Period.IsPotentiallyCrystalline.card_pairingAnnihilator_mul_card_dvd
     _ = ((ℓ ^ m) ^ finrank ℤ_[ℓ] L) ^ (2 + 𝒥.toGp.range.index) :=
         card_range_reducedCocycle_mul (L := ⟨L, σ⟩) (L' := ⟨L', σ'⟩) hj hσ hσ' b hbσ ..
 
+open scoped DiscreteModule in
 /-- The inequality of local duality. Suppose `𝒥.toGp` is an open embedding of `Γ` into the Galois
 group of `ℚ_ℓ`, `L` and `L'` are potentially crystalline lattices in perfect equivariant duality `b`
 into `ℤ_ℓ(1)`, and `q` presents the finite module `V = L / ℓᵐ L` as a `Γ`-module. Let `A` be the

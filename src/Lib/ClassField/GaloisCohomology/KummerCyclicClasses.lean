@@ -191,10 +191,16 @@ lemma card_pairingAnnihilator_mul_card (b : A →+ B →+ C) (e : QZ ≃+ C) (L 
 
 /-! ### Hom modules and cup products -/
 
-/-- Additive maps between two groups carry the discrete topology. -/
-instance : TopologicalSpace (A →+ B) := ⊥
+namespace DiscreteModule
 
-instance : DiscreteTopology (A →+ B) := ⟨rfl⟩
+/-- The discrete topology on the additive maps between two groups, which makes `Hom(M, Ω^×)` a
+discrete module (`New.DiscreteModule.cartierDual`). It is scoped to `New.DiscreteModule`, as it is
+not the natural topology on every group of additive maps. -/
+scoped instance instTopologicalSpaceAddMonoidHom : TopologicalSpace (A →+ B) := ⊥
+
+scoped instance instDiscreteTopologyAddMonoidHom : DiscreteTopology (A →+ B) := ⟨rfl⟩
+
+end DiscreteModule
 
 /-- For a finite discrete Γ-module `M`, the discrete Γ-module `Hom(M, Ω^×)` of additive maps to
 `New.unitsModule`, on which `g` acts by `(g f)(m) = g f(g⁻¹ m)`. -/

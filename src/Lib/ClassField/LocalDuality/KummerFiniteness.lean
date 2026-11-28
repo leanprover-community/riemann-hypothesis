@@ -350,6 +350,7 @@ lemma card_ker_natCast_Z1_unitsModule [IsLocalGalois Γ k A] (n : ℕ) [NeZero n
       n ^ 2 * Nat.card (valRingBelow k A ⧸ span {(n : valRingBelow k A)}) :=
   (card_kummer_cocycles n).right
 
+open scoped DiscreteModule in
 /-- If `k` is a local field with absolute Galois group `Γ` (`New.IsLocalGalois Γ k A`), then for
 every finite discrete `Γ`-module `M` over a commutative ring `R`, the module `Z¹(Γ, M)` of
 continuous 1-cocycles is finite.
