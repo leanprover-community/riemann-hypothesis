@@ -90,6 +90,12 @@ s on coordinate vectors of weight κ, acting by the matrices `New.conjWeylMatrix
 def conjWeylRep : Representation ℂ (Φ → USign s) (WeylIndex n κ → ℂ) :=
   toLinAlgEquiv'.toMonoidHom.comp (conjWeylMatrix κ e)
 
+/-- The representation `New.conjWeylRep` acts on a coordinate vector as multiplication by the matrix
+`New.conjWeylMatrix`. -/
+lemma conjWeylRep_apply (x : Φ → USign s) (v : WeylIndex n κ → ℂ) :
+    conjWeylRep κ e x v = conjWeylMatrix κ e x *ᵥ v :=
+  rfl
+
 /-! ### Highest vector and Harish-Chandra parameter -/
 
 /-- For an integer vector l and an index i, the number of indices j with l_j > l_i. -/
