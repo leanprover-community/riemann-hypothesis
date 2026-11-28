@@ -860,7 +860,7 @@ lemma coe_mem_levelSpace_sup_zpowers {P : Parameters} (D : Data P) {z : unitary 
     have h_apply :
         (algFormRep D.columnCount (D.lastEntry 0) (scalarFin (D.X 0) z) φ.val).val g = F g := by
       rw [h_fixed]
-    simpa using h_apply
+    exact h_apply
   refine mem_levelSpace.2 fun k ↦ ?_
   ext g a
   have h_eq : F (g * k) = F g := sup_le h_level (zpowers_le.2 h_scalar) k.property g

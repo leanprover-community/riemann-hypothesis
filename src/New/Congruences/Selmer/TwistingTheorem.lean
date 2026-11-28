@@ -241,7 +241,7 @@ lemma SelmerDatum.TwistedLengthLe.hasDivisibleSelmerLengthLe {ℓ : ℕ} [ThePri
     { isLatticeIn := h_lattice
       twist_eq := hψ'
       apply_eq_smul := h_scalar
-      isUnit_sub_one := by simpa using T.isUnit_ζ_sub_one.map e
+      isUnit_sub_one := T.isUnit_ζ_sub_one.map e
       mem_inertiaAbove := ⟨v, hvℓ, hγ⟩ }
   have h_length :
       crystallineSelmerLength (twistRep (.id O') ψ' u) Q T.γ ≤ T.divisibleLength Q e ψ' :=

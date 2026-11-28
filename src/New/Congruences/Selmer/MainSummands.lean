@@ -268,7 +268,7 @@ lemma IsMainSummandLike.exists_mem_inertiaAbove_eq_smul_one_isUnit
     have h_conj : (u γ).map O.val.val = y • 1 := (hQ γ).symm.trans (by simp [hRγ])
     exact ⟨u γ i i, by simpa using congrFun₂ h_conj i i⟩
   exact ⟨γ, hγ, ζ, hΦ_inj (by simpa [hΦ_u]),
-    (O.isUnit_iff_norm_eq_one _).2 (by simpa using hy_unit)⟩
+    (O.isUnit_iff_norm_eq_one _).2 hy_unit⟩
 
 /-- Main summands are Selmer data. Let `D` be the data for the parameters `P`, with field `D.E`, and
 let `n` be a finite index type. Fix a prime `ℓ` and an isomorphism `ℂ ≃ ℚ̄_ℓ` (`PadicIso ℓ`). Let

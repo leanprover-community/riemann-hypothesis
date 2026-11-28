@@ -477,7 +477,7 @@ lemma amplitudeSum_besselS_inv [HasPrimitiveRoot5040 E] [S.IsAdmissible] (c d : 
   · have h_empty : IsEmpty ↥(((S.ratMiddle E).besselS : Set (S.G E)) ∩ S.termsOver c s d) :=
       ⟨fun γ ↦ h ⟨γ, γ.property⟩⟩
     have h_empty_inv : IsEmpty ↥(((S.ratMiddle E).besselS : Set (S.G E)) ∩ S.termsOver d s⁻¹ c) :=
-      ⟨fun ⟨γ, hγ, hγ_over⟩ ↦ h ⟨γ⁻¹, inv_mem hγ, by simpa using termsOver.inv hγ_over⟩⟩
+      ⟨fun ⟨γ, hγ, hγ_over⟩ ↦ h ⟨γ⁻¹, inv_mem hγ, termsOver.inv hγ_over⟩⟩
     simp [amplitudeSum, tsum_empty]
 
 /-- Let `E` contain a primitive `5040`-th root of unity and let the filling `S` be admissible

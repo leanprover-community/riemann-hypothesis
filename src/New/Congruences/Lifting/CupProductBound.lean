@@ -939,7 +939,7 @@ lemma mem_liftIdeal_zero_of_mem_liftIdeal_one_letterFrob {S : PairingSide O} {r 
   induction h_exponent generalizing c with
   | refl =>
     have h_zero : (p : Ainf) ^ c * k.z.val ^ a ∈ S.liftIdeal r 0 i :=
-      p_pow_mul_z_pow_mem_liftIdeal_iff.1 (by simpa using h_mem)
+      p_pow_mul_z_pow_mem_liftIdeal_iff.1 h_mem
     exact mem_of_dvd _ (mul_dvd_mul_right (pow_dvd_pow _ (by omega)) _) h_zero
   | @step n _ ih =>
     obtain ⟨g, α, β, h_der⟩ := exists_monomial_lowering (k := k) c n

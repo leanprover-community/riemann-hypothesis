@@ -464,7 +464,7 @@ lemma twistedLengthLe_pointChar {O : CoeffRing ℓ} (T : SelmerDatum ℓ S₀ g�
   filter_upwards [eventually_ge_atTop O, CoeffRing.eventually_exists_toIntQpBar_eq ζ]
     with O' hO ⟨ζ', hζ'⟩
   obtain rfl : (fun v ↦ O'.toIntQpBar (ζ' v)) = ζ := funext hζ'
-  have hζ'_pow (v : σ) : ζ' v ^ q = 1 := Subtype.ext (by simpa using hζ v)
+  have hζ'_pow (v : σ) : ζ' v ^ q = 1 := Subtype.ext (hζ v)
   let value : O'.val := P.eval₂ (inclusion hO).toRingHom fun v ↦ ζ' v - 1
   have h_val : O'.normLength (addVal O'.val value) =
       ellVal (MvPolynomial.eval (fun v ↦ O'.toIntQpBar (ζ' v) - 1) (P.map O.toIntQpBar)).val := by
@@ -625,7 +625,7 @@ lemma nonempty_twistPolynomials_of_isTiedPrimes (T : ∀ i : ι, SelmerDatum ℓ
   exact ⟨{
     auxPrimes := J
     auxiliary := h_primes.auxiliary
-    two_mul_card_le := by simpa using h_card hc
+    two_mul_card_le := h_card hc
     primeChar := lam
     isFromU1_primeChar v := (h_primes.isAuxPrimeDataAt v v.property).toIsFromU1
     exists_eq_ofAdd_one := h_inertia

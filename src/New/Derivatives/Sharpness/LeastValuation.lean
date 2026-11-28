@@ -297,7 +297,7 @@ lemma isLowestTerm_thetaProd (C : CMLattice d) (μ : J → X → ℂ_[p]) (m : J
   intro β hβ
   obtain rfl : β = 0 := by
     simpa [← Finsupp.degree_eq_weight_one, Finsupp.degree_eq_zero_iff] using hβ
-  simpa using constantCoeff_thetaProd
+  exact constantCoeff_thetaProd
 
 /-- If `val_n(ν) ≤ r` and `r ≤ r'`, then `val_n(ν) ≤ r'`, where `val_n(ν)` is the least valuation
 of a coefficient of degree `ν` in a product `∏ (H_c Θ)(z_c)` over `n` copies of the variables. -/

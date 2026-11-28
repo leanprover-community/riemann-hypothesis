@@ -928,7 +928,7 @@ lemma IsWeakChainDatum.exists_lift_eq_chain_scaledHeckeOperator (H : IsWeakChain
     obtain ⟨hp_M, hp_N, -⟩ := hΛ.not_dvd_M_mul_N
     have h_standard : (D.translateDatum x j).val ∈ standardData (D.homX j) 1 :=
       H.translateDatum_mem_standardData hQ hp_N hx j (.inr hp_M)
-    simpa using hΛ.ω_ofSplitPlaces_mem_raises ϑ h_standard (by simpa using hg)
+    simpa using hΛ.ω_ofSplitPlaces_mem_raises ϑ h_standard hg
   | cons l L ih =>
     obtain ⟨hl, hL⟩ : l ∉ L ∧ L.Nodup := List.nodup_cons.1 hL
     choose t t_comm t_lift t_raises using ih hL

@@ -421,7 +421,7 @@ lemma dvd_depthScaling_mulVec_of_dvd_edgeRestriction {r : ℕ} {src : E → X} {
   -- Write `γ = u * g e` with `u` parahoric and `src e = y`.
   obtain ⟨e, rfl, he⟩ : ∃ e : E, src e = y ∧ g e * γ⁻¹ ∈ parahoric W (twoBlock k r) := by
     simpa [QuotientGroup.eq] using h_surj (y, ↑γ⁻¹)
-  have hu : γ * (g e)⁻¹ ∈ parahoric W (twoBlock k r) := by simpa using inv_mem he
+  have hu : γ * (g e)⁻¹ ∈ parahoric W (twoBlock k r) := inv_mem he
   obtain ⟨A, hA : T.depthScaling k n r * T.letterRep n (γ * (g e)⁻¹) = A * T.depthScaling k n r⟩ :=
     T.exists_depthScaling_mul_letterRep_eq hu
   have h_translate : T.depthScaling k n r * T.letterRep n γ =

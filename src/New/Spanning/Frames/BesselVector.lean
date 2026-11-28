@@ -136,7 +136,7 @@ theorem IntegralPlace.extendedBesselChar_besselS_mul {x y u : T.G} {g : Aˣ} (hx
   · rw [extendedBesselChar_eq_zero hy, mul_zero, extendedBesselChar_eq_zero]
     rintro ⟨v, hv, hvxy⟩
     exact hy ⟨x⁻¹ * (v * u⁻¹) * x,
-      by simpa using (besselS_le_normalizer_besselU (inv_mem hx) _).1 (mul_mem hv (inv_mem hu)),
+      (besselS_le_normalizer_besselU (inv_mem hx) _).1 (mul_mem hv (inv_mem hu)),
       by simpa [mul_assoc] using mul_mem (inv_mem hux) hvxy⟩
 
 /-- The function χ_g = `extendedBesselChar g` is invariant under right translation by the principal
