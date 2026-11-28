@@ -124,6 +124,17 @@ noncomputable def New.cosetMeasure (i : H →* G) : Measure G :=
   letI := compHom G i
   orbitMeasure ν μ
 
+/-- For a closed embedding, the coset measure is s-finite and unfolds to Haar measure. -/
+private lemma New.cosetMeasure_unfold [ν.IsMulRightInvariant]
+    {i : H →* G} (hi : IsClosedEmbedding i) :
+    SFinite (cosetMeasure μ ν i) ∧ MeasurePreserving (fun p : G × H ↦ i p.2 * p.1)
+      ((cosetMeasure μ ν i).prod ν) μ := by
+  let : MulAction H G := compHom G i
+  have : SMulInvariantMeasure H G μ := ⟨by simp [compHom_smul_def]⟩
+  have : ProperSMul H G := properSMul_of_isClosedEmbedding i hi fun _ _ ↦ rfl
+  have : HasCutoff ν G := hasCutoff_of_proper
+  exact ⟨inferInstanceAs (SFinite (orbitMeasure ν μ)), measurePreserving_orbitMeasure⟩
+
 /-- Integration in stages. Let `i : H → G` be a closed embedding, `Λ` a discrete subgroup of the
 unimodular group `H`, and `F` measurable, left `i(Λ)`-invariant and integrable on `i(Λ) \ G`. Then
 (a) the integral of `a ↦ F (i a * g)` over `Λ \ H` is integrable in `g` on `i(H) \ G` and (b) its
@@ -135,15 +146,8 @@ lemma New.integral_quotMeasure_eq_integral_cosetMeasure [T2Space H]
     Integrable (fun g : G ↦ ∫ a : H, F (i a * g) ∂Λ.quotMeasure ν) (cosetMeasure μ ν i) ∧
     ∫ g : G, F g ∂(Λ.map i).quotMeasure μ =
       ∫ g : G, ∫ a : H, F (i a * g) ∂Λ.quotMeasure ν ∂cosetMeasure μ ν i := by
-  let : MulAction H G := compHom G i
-  have : SMulInvariantMeasure H G μ := ⟨by simp [compHom_smul_def]⟩
-  have : ProperSMul H G := properSMul_of_isClosedEmbedding i hi fun _ _ ↦ rfl
-  have : HasCutoff ν G := hasCutoff_of_proper
   have : DiscreteTopology (Λ.map i) := (hi.isEmbedding.homeomorphImage Λ).discreteTopology
-  have : SFinite (cosetMeasure μ ν i) := inferInstanceAs (SFinite (orbitMeasure ν μ))
-  -- The quotient measure unfolds to `μ` along the action of `H` through `i`.
-  have h_unfold : MeasurePreserving (fun p : G × H ↦ i p.2 * p.1)
-      ((cosetMeasure μ ν i).prod ν) μ := measurePreserving_orbitMeasure
+  obtain ⟨h_sfinite, h_unfold⟩ := cosetMeasure_unfold μ ν hi
   exact integral_quotMeasure_stages Λ ν (T := fun g : G ↦ g) hi.injective h_unfold (hΓ := rfl) hF
     hF_inv hF_int
 
@@ -227,16 +231,10 @@ lemma New.integral_quotMeasure_eq_integral_cosetMeasure_prod {L : Type*} [Group 
       ∫ g : G, ∫ l : L, ∫ a : H, F (i (l, a) * g) ∂Λ.quotMeasure ν ∂κ
         ∂cosetMeasure μ (κ.prod ν) i := by
   -- Unfold `Γ \ G` over `((L × H) \ G) × L` with fibre `Λ \ H`, then integrate over `L` first.
-  let : MulAction (L × H) G := compHom G i
-  have : SMulInvariantMeasure (L × H) G μ := ⟨by simp [compHom_smul_def]⟩
-  have : ProperSMul (L × H) G := properSMul_of_isClosedEmbedding i hi fun _ _ ↦ rfl
-  have : HasCutoff (κ.prod ν) G := hasCutoff_of_proper
   have hi_inr : IsEmbedding (i ∘ Prod.mk 1) := hi.isEmbedding.comp (isEmbedding_prodMkRight 1)
   have : DiscreteTopology (Λ.map (i.comp (.inr L H))) := (hi_inr.homeomorphImage Λ).discreteTopology
   let m : Measure G := cosetMeasure μ (κ.prod ν) i -- the measure on the quotient by `L × H`
-  have : SFinite m := inferInstanceAs (SFinite (orbitMeasure (κ.prod ν) μ))
-  have h_orbit : MeasurePreserving (fun p : G × (L × H) ↦ i p.2 * p.1) (m.prod (κ.prod ν)) μ :=
-    measurePreserving_orbitMeasure
+  obtain ⟨h_sfinite, h_orbit⟩ := cosetMeasure_unfold μ (κ.prod ν) hi
   have h_unfold : MeasurePreserving
       (fun p : (G × L) × H ↦ i (1, p.2) * (i (p.1.2, 1) * p.1.1)) ((m.prod κ).prod ν) μ := by
     simpa [Function.comp_def, MeasurableEquiv.prodAssoc, ← mul_assoc, ← map_mul] using
