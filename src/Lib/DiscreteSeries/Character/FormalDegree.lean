@@ -109,15 +109,14 @@ lemma lowerCount_dotProduct_lt_of_coeff_ne_zero [Nonempty n] {ε : n → ℤˣ} 
   have γ_nonneg : 0 ≤ γ := (((mem_leadingMonomials_iff l).1 h_mem).2 γ hγ).left
   have h_right : 0 ≤ o ⬝ᵥ γ := dotProduct_nonneg_of_nonneg (lowerCount_nonneg _ Eq) γ_nonneg
   -- On the left every count is at most `n`, so the level is at most `n³ (1 + N)`.
-  set c : ℤ := (card n : ℤ)
+  set c : ℤ := card n
   have c_pos : 0 < c := Nat.cast_pos.2 Fintype.card_pos
-  have h_entry (a : n) :
-      o a * ((-l).compactForm.lowerCount r a + N * (-l).lowerCount Ne a) ≤ c * (c + N * c) := by
-    have compact_nonneg : 0 ≤ (-l).compactForm.lowerCount r a := lowerCount_nonneg _ r a
-    have noncompact_nonneg : 0 ≤ (-l).lowerCount Ne a := lowerCount_nonneg _ Ne a
-    gcongr <;> apply lowerCount_le_card
   calc o ⬝ᵥ ((-l).compactForm.lowerCount r + N • (-l).lowerCount Ne)
-      ≤ ∑ _a : n, c * (c + N * c) := sum_le_sum fun a _ ↦ by simpa using h_entry a
+      ≤ ∑ _a : n, c * (c + N * c) := sum_le_sum fun a _ ↦ by
+        have := lowerCount_nonneg (-l).compactForm r a
+        have := lowerCount_nonneg (-l) Ne a
+        simp only [Pi.add_apply, nsmul_eq_mul, Pi.mul_apply, Pi.natCast_apply]
+        gcongr <;> apply lowerCount_le_card
     _ = c ^ 3 + 4 * c ^ 5 := by simp [c, hN]; ring
     _ < o ⬝ᵥ γ + (500 * card n ^ 3 + 10 * card n ^ 5 : ℕ) := by
       push_cast
@@ -176,10 +175,8 @@ lemma coeff_top_of_isConeSeriesMultiple {ε : n → ℤˣ} {l : HCParam ε} {o a
         grind [dotProduct_add_gain_le_comp_perm o b o_anti w i, Perm.one_apply]
       rw [Perm.coe_one, Function.comp_id, Function.comp_id, ite_eq_right hβ] at le
       lia
-    calc ((D ^ k).coeff.sum fun β d ↦ d * t (-β + b))
-        = (D ^ k).coeff (k • δ) * t (-(k • δ) + b) :=
-          sum_eq_single (k • δ) (fun β _ hβ ↦ only_top β hβ) (by simp +contextual)
-      _ = 1 := by rw [coeff_top, one_mul, ← hab, add_comm a, neg_add_cancel_left, t_a]
+    refine (sum_eq_single (k • δ) (fun β _ hβ ↦ only_top β hβ) (by simp +contextual)).trans ?_
+    rw [coeff_top, one_mul, ← hab, add_comm a, neg_add_cancel_left, t_a]
   · obtain ⟨β, -, hβ⟩ := exists_ne_zero_of_sum_ne_zero hγ
     exact (exists_perm_level_le γ β hβ).imp fun w hw ↦ by lia
 
@@ -198,13 +195,10 @@ their number. -/
 lemma prod_noncompact_neg {ε : n → ℤˣ} {h : ℕ} {l : HCParam ε} (hgap : l.HasGap h) :
     (-l).rootProd Ne = ((-1) ^ #(oppositePairs ε) : ℂ) • l.rootProd Ne := by
   refine eq_of_torusEval_eq fun x ↦ ?_
-  have sign_eq : (∏ p ∈ oppositePairs ε, if (-l) p.2 < (-l) p.1 then (1 : ℂ) else -1) =
-      (-1) ^ #(oppositePairs ε) * ∏ p ∈ oppositePairs ε, if l p.2 < l p.1 then (1 : ℂ) else -1 := by
-    rw [← prod_neg]
-    exact prod_congr rfl fun p hp ↦ by
-      grind [oppositePairs, Pi.neg_apply, hgap.injective.eq_iff (a := p.1) (b := p.2)]
   rw [map_smul, smul_eq_mul, torusEval_rootProd_noncompact hgap.neg.injective,
-    torusEval_rootProd_noncompact hgap.injective, sign_eq, mul_assoc]
+    torusEval_rootProd_noncompact hgap.injective, ← mul_assoc, ← prod_neg]
+  exact congrArg (· * _) <| prod_congr rfl fun p hp ↦ by
+    grind [oppositePairs, Pi.neg_apply, hgap.injective.eq_iff (a := p.1) (b := p.2)]
 
 omit [DecidableEq n] in
 /-- The exponent `lowestKType + lowerCount Eq` in Weyl's formula for the lowest `K`-type, for any
@@ -261,8 +255,7 @@ lemma coeff_mul_alternant_of_level_le {ε : n → ℤˣ} {o κ : n → ℤ} {h m
       ε ∘ v = ε := by
     funext i
     by_contra ne
-    have gain : o ⬝ᵥ κ + |κ i - κ (v i)| ≤ o ⬝ᵥ κ ∘ v :=
-      dotProduct_add_gain_le_comp_perm o κ ho v i
+    have gain := dotProduct_add_gain_le_comp_perm o κ ho v i
     rw [hv, dotProduct_add, dotProduct_neg] at gain
     linarith [level β hβ, gap i (v i) (Ne.symm ne)]
   simp only [coeff_mul_apply_left, alternant_apply, Finsupp.sum]
@@ -287,9 +280,7 @@ lemma eq_smul_of_coeff_eq_of_level_le {ε : n → ℤˣ} {o : n → ℤ} {m : �
   by_contra ne
   obtain ⟨w, hw, low_w⟩ : ∃ w : Perm n, ε ∘ w = ε ∧ o ⬝ᵥ γ ∘ w ≤ m :=
     if P_γ : P.coeff γ = 0 then Q_low γ fun Q_γ ↦ ne (by simp [P_γ, Q_γ]) else P_low γ P_γ
-  have conj_eq : w.sign * P.coeff γ = c * (w.sign * Q.coeff γ) := by
-    rw [← P_anti w hw γ, ← Q_anti w hw γ, h_low _ low_w]
-  exact ne (by simpa [mul_left_comm c] using conj_eq)
+  exact ne (by simpa [P_anti w hw, Q_anti w hw, mul_left_comm c] using h_low _ low_w)
 
 omit [DecidableEq n] in
 /-- The number of entries of `l` above `l i` strictly reverses the order of `l`. -/
@@ -350,20 +341,15 @@ lemma coeff_pow_mul_alternant_one_of_level_le [Nonempty n] {ε : n → ℤˣ} {l
       (numeratorExponent l + (4 * card n ^ 2) • (-l).lowerCount Ne)) :
     ((-l).rootProd Ne ^ (4 * card n ^ 2) * alternant 1 (numeratorExponent l)).coeff γ =
       ((-l).rootProd Ne ^ (4 * card n ^ 2) * alternant ε (numeratorExponent l)).coeff γ := by
-  set h : ℕ := 500 * card n ^ 3 + 10 * card n ^ 5 with hh
-  set κ : n → ℤ := numeratorExponent l
-  have two_κ (a : n) : l a + card n - 1 = 2 * κ a := two_mul_numeratorExponent hgap a
-  have gap_κ (i j : n) (ne : ε i ≠ ε j) : h ≤ |κ i - κ j| := by
-    have double : |l i - l j| = 2 * |κ i - κ j| := by grind [two_κ i, two_κ j]
-    linarith [hgap.gap i j ne]
-  have level_anti (i j : n) (lt : κ j < κ i) :
-      (-l).compactForm.lowerCount Eq i < (-l).compactForm.lowerCount Eq j :=
-    lowerCount_neg_compactForm_lt l (by linarith [two_κ i, two_κ j])
-  refine coeff_mul_alternant_of_level_le level_anti gap_κ (fun β hβ ↦ ?_) γ hγ
+  have two_κ := two_mul_numeratorExponent hgap
+  refine coeff_mul_alternant_of_level_le (h := (500 * card n ^ 3 + 10 * card n ^ 5 : ℕ))
+    (fun i j lt ↦ lowerCount_neg_compactForm_lt l (by linarith [two_κ i, two_κ j]))
+    (fun i j ne ↦ by grind [two_κ i, two_κ j, hgap.gap i j ne]) (fun β hβ ↦ ?_) γ hγ
   -- The compact form has no noncompact roots, so the case `r = Ne` of
   -- `level_add_lt_of_coeff_ne_zero` bounds the exponents of `D ^ N`.
-  simpa [rootProd, lowerCount.eq_unfold, hh] using
-    level_add_lt_of_coeff_ne_zero hgap Ne κ (γ := β) (by simpa [rootProd] using hβ)
+  simpa [rootProd, lowerCount.eq_unfold] using
+    level_add_lt_of_coeff_ne_zero hgap Ne (numeratorExponent l) (γ := β)
+      (by simpa [rootProd] using hβ)
 
 /-- For injective `l`, a power of the product of the negative noncompact roots times the alternant
 of `κ` is antisymmetric under the permutations that fix the signs `ε`. -/
@@ -436,8 +422,7 @@ lemma formalDegree_mul_kTypeNormSq_and_isOrbitalLaurent [Nonempty n] {ε : n →
     add_smul_lowerCount_lt hgap two_κ i j lt
   have top_eq : l.lowestKType + l.lowerCount Eq + (N + 1) • δ = top := by
     rw [show l.lowestKType + l.lowerCount Eq = κ - δ from lowestKType_add_lowerCount_eq ε l,
-      succ_nsmul',
-      ← add_assoc, sub_add_cancel]
+      succ_nsmul', ← add_assoc, sub_add_cancel]
   obtain ⟨P_top, P_low⟩ : P.coeff top = 1 ∧
       ∀ γ : n → ℤ, P.coeff γ ≠ 0 → ∃ w : Perm n, ε ∘ w = ε ∧ o ⬝ᵥ γ ∘ w ≤ o ⬝ᵥ top :=
     coeff_top_of_isConeSeriesMultiple hgap.injective o_anti top_mono hP.isConeSeriesMultiple top_eq
@@ -510,24 +495,21 @@ theorem neg_one_pow_mul_sum_integral_dsKernel [Nonempty n] {ε : n → ℤˣ} {l
   have V_anti (w : Perm n) : torusEval (x ∘ w) V = w.sign * torusEval x V := by
     simp only [V, weyl_denominator (HasGap.signs_one hg).injective]
     exact (torusEval_comp_eq_mul_iff w).2 (isWeylAntisymm_alternant w rfl) x
-  have D_eq : D = s • l.rootProd Ne := prod_noncompact_neg hg
-  have V_eq : V = l.rootProd Eq * l.rootProd Ne := (prod_compact_mul_prod_noncompact l).symm
   have denom : l.rootProd Eq * D ^ (N + 1) = D ^ N * (s • V) := by
-    rw [V_eq, ← mul_smul_comm, ← D_eq, pow_succ, mul_left_comm]
+    dsimp only [V, D, s]
+    rw [← prod_compact_mul_prod_noncompact l, ← mul_smul_comm, ← prod_noncompact_neg hg,
+      pow_succ, mul_left_comm]
   -- Evaluate at `x ∘ τ` and cancel `D ^ N`.
   have integral_eq (τ : Perm n) : torusEval x V * s * l.formalDegree *
       ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :) =
         τ.sign * torusEval (x ∘ τ) (alternant ε κ) := by
+    have eval_P := hP.torusEval_eq (x ∘ τ)
     set I : ℂ := ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :)
-    have eval_P : torusEval (x ∘ τ) (D ^ N * alternant ε κ) =
-        torusEval (x ∘ τ) (l.rootProd Eq * D ^ (N + 1)) * (l.formalDegree * I) :=
-      hP.torusEval_eq (x ∘ τ)
-    have sign_sq : (τ.sign : ℂ) * τ.sign = 1 := by simp [← Int.cast_mul]
-    have D_ne : torusEval (x ∘ τ) D ≠ 0 :=
-      torusEval_rootProd_ne_zero (-l) Ne (x_inj.comp τ.injective)
+    have D_ne := torusEval_rootProd_ne_zero (-l) Ne (x_inj.comp τ.injective)
     simp only [denom, map_mul, map_pow, map_smul, smul_eq_mul, V_anti τ, mul_assoc] at eval_P
     rw [mul_left_cancel₀ (pow_ne_zero N D_ne) eval_P]
-    linear_combination -(torusEval x V * s * l.formalDegree * I) * sign_sq
+    linear_combination -(torusEval x V * s * l.formalDegree * I) *
+      (by simp [← Int.cast_mul] : (τ.sign : ℂ) * τ.sign = 1)
   -- Conjugate, multiply by the Weyl denominator, sum over `τ` and compare with Weyl's formula.
   have kernel (τ : Perm n) : star (∫ g : USign ε, l.dsKernel (g⁻¹ * diagTorus ε (x ∘ τ) * g)) =
       l.formalDegree * ∫ g : USign ε, l.dsCoeff (g⁻¹ * diagTorus ε (x ∘ τ) * g :) := by
