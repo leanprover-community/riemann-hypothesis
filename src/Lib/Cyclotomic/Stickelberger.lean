@@ -70,8 +70,9 @@ lemma sum_floorDiff (h_cop : m.Coprime r) (x : QZ) {v : ZMod r} (hv : IsUnit v) 
         ∑ b : ZMod r, (b.val + fract (r * x.fracRep)) / r := by
     refine Fintype.sum_equiv (hv.unit.mulLeft.trans (.addLeft ⌊r * x.fracRep⌋)) _ _ fun b ↦
       .trans ?_ (floor_add_fract _)
-    -- Without the `↓` flags, or without `-natCast_val`, `simp` stops with `ZMod.lift` unevaluated.
-    simp [← ofZMod_apply, -natCast_val, ofZMod, ← map_zsmul, add_assoc, ← div_eq_mul_inv, sub_div,
+    have h_intCast (a : ℤ) : ofZMod r (a : ZMod r) = QZ.mk ((a : ℚ) / r) :=
+      ZMod.toRatAddCircle_intCast r a
+    simp [← ofZMod_apply, -natCast_val, h_intCast, add_assoc, sub_div,
       ↓floor_div_natCast, ↓floor_natCast_add, ↓floor_fract, ediv_eq_zero_of_lt, val_lt,
       ← fracRep_mk, add_div, ← self_sub_fract, NeZero.ne]
   -- In `ℚ`, `⌊m ⟨y⟩⌋ = m ⟨y⟩ - ⟨m y⟩`, so `floorDiff m y = m ⟨y⟩ - ⟨m y⟩ - m ⟨-y⟩ + ⟨-(m y)⟩`.

@@ -1,5 +1,6 @@
 module
 
+public import TauCeti.Algebra.AddCircle
 public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
 public import Mathlib.Topology.Instances.ZMod
 import Mathlib.GroupTheory.FiniteAbelian.Duality
@@ -130,30 +131,22 @@ lemma eq_zero_of_forall_hom_eq_zero {a : A} (h_eval : ∀ u : A →+ QZ, u a = 0
 
 /-- The additive homomorphism `ℤ/n → ℚ/ℤ` sending the class of `k` to the class
 of `k / n`. For `n = 0`, this is the zero homomorphism. -/
-def ofZMod (n : ℕ) : ZMod n →+ QZ :=
-  ZMod.lift n ⟨zmultiplesHom QZ (mk (n : ℚ)⁻¹), int.divByNat_self n⟩
+def ofZMod (n : ℕ) : ZMod n →+ QZ := ZMod.toRatAddCircle n
+
+/-- The map `ofZMod n` sends a residue `b` to the class in `ℚ/ℤ` of `b.val / n`.
+For `n ≠ 0`, `b.val` is the representative of `b` below `n`. -/
+lemma ofZMod_apply (b : ZMod n) : ofZMod n b = mk (b.val / n) :=
+  ZMod.toRatAddCircle_apply n b
 
 variable [NeZero n]
 
-/-- The embedding `ofZMod n` sends a residue `b` to the class in `ℚ/ℤ` of `b.val / n`, where
-`b.val` is the representative of `b` below `n`. -/
-lemma ofZMod_apply (b : ZMod n) : ofZMod n b = mk (b.val / n) := by
-  change (b.cast : ℤ) • mk (n : ℚ)⁻¹ = mk (b.val / n)
-  simp [← map_zsmul, div_eq_mul_inv]
-
 @[simp]
-lemma ofZMod_injective : Injective (ofZMod n) := by
-  rw [ofZMod, lift_injective]
-  refine fun k hk ↦ (intCast_zmod_eq_zero_iff_dvd k n).2 ?_
-  -- An integer `k` kills the class of `1 / n` only if the order `n` of this class divides `k`.
-  change k • mk (n : ℚ)⁻¹ = 0 at hk
-  rwa [← addOrderOf_dvd_iff_zsmul_eq_zero, addOrderOf_mk_inv (pos n)] at hk
+lemma ofZMod_injective : Injective (ofZMod n) :=
+  ZMod.toRatAddCircle_injective n
 
 /-- An element of `ℚ/ℤ` killed by `n` is in the image of the embedding `ofZMod n` of `ℤ/n`. -/
-lemma exists_ofZMod {a : QZ} (ha : n • a = 0) : ∃ b : ZMod n, ofZMod n b = a := by
-  obtain ⟨m, hm, rfl⟩ : ∃ m : ℕ, m < n ∧ mk (m / n * 1) = a :=
-    (AddCircle.nsmul_eq_zero_iff (pos n)).1 ha
-  exact ⟨m, by simp [ofZMod_apply, mod_eq_of_lt hm]⟩
+lemma exists_ofZMod {a : QZ} (ha : n • a = 0) : ∃ b : ZMod n, ofZMod n b = a :=
+  ZMod.exists_toRatAddCircle_eq_of_nsmul_eq_zero n ha
 
 /-- If `A` is killed by `n`, composing with `New.QZ.ofZMod n` is a bijection from the
 homomorphisms `A →+ ZMod n` to the homomorphisms `A →+ ℚ/ℤ`. -/
