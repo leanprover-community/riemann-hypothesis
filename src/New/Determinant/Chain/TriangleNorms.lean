@@ -2,6 +2,8 @@ module
 
 public import New.UpperBound.Objects.RowChain
 
+import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.UpperTriangular.Block
+
 /-!
 # Orders of block triangular groups and Gram forms of chains in triangles
 
@@ -50,54 +52,27 @@ open Matrix Fintype
 
 variable {N T : Type}
 
-/-- A matrix indexed by `BlockIndex N T (j + 1) = BlockIndex N T j ⊕ T`, the union of `N` and
-`j + 1` copies of `T`, is block upper triangular for the numbering `blockNumber` of the blocks
-exactly when its upper left corner is block upper triangular and its lower left corner vanishes. -/
-lemma blockTriangular_fromBlocks_blockNumber_succ_iff {R : Type*} [Zero R] {j : ℕ}
-    {A : Matrix (BlockIndex N T j) (BlockIndex N T j) R} {B : Matrix (BlockIndex N T j) T R}
-    {C : Matrix T (BlockIndex N T j) R} {D : Matrix T T R} :
-    (fromBlocks A B C D).BlockTriangular (blockNumber (R := N) (T := T) (j + 1)) ↔
-      A.BlockTriangular (blockNumber (R := N) (T := T) j) ∧ C = 0 := by
-  refine ⟨fun h ↦ ⟨fun a b hlt ↦ h (i := .inl a) (j := .inl b) (by simpa [blockNumber] using hlt),
-    Matrix.ext fun a b ↦ h (i := .inr a) (j := .inl b) (by simp [blockNumber])⟩, ?_⟩
-  rintro ⟨hA, rfl⟩ (a | a) (b | b) hlt
-  · exact hA (by simpa [blockNumber] using hlt)
-  · simp [blockNumber, ← Fin.top_eq_last] at hlt
-  · simp
-  · simp [blockNumber] at hlt
+/-- Adding the last block leaves each earlier block unchanged as a type. -/
+private def blockFiberCastSucc {j : ℕ} (k : Fin (j + 1)) :
+    {a : BlockIndex N T (j + 1) // blockNumber (j + 1) a = k.castSucc} ≃
+      {a : BlockIndex N T j // blockNumber j a = k} := by
+  letI : IsEmpty {t : T // blockNumber (R := N) (j + 1) (Sum.inr t) = k.castSucc} :=
+    ⟨fun t ↦ Fin.ne_of_lt k.castSucc_lt_last (by simpa [blockNumber] using t.property.symm)⟩
+  exact (Equiv.subtypeSum.trans (Equiv.sumEmpty _ _)).trans
+    (Equiv.subtypeEquivRight fun _ ↦ by simp [blockNumber])
+
+/-- The last block is a copy of `T`. -/
+private def blockFiberLast (j : ℕ) :
+    {a : BlockIndex N T (j + 1) // blockNumber (j + 1) a = Fin.last (j + 1)} ≃ T := by
+  letI : IsEmpty {a : BlockIndex N T j //
+      blockNumber (T := T) (j + 1) (Sum.inl a) = Fin.last (j + 1)} :=
+    ⟨fun a ↦ by
+      have ha := a.property
+      simp [blockNumber] at ha⟩
+  exact (Equiv.subtypeSum.trans (Equiv.emptySum _ _)).trans
+    (Equiv.subtypeUnivEquiv fun _ ↦ by simp [blockNumber])
 
 variable (N T) [Fintype N] [Fintype T] [DecidableEq T] [DecidableEq N]
-
-/-- An invertible block upper triangular matrix with blocks `N` and `j + 1` copies of `T` is a
-triple: such a matrix with `j` copies of `T`, an arbitrary upper right block and an invertible last
-diagonal block. Hence the orders multiply. -/
-lemma card_parabolic_blockNumber_succ (R : Type*) [CommRing R] (j : ℕ) :
-    Nat.card (parabolic (R := R) (blockNumber (R := N) (T := T) (j + 1))) =
-      Nat.card (parabolic (R := R) (blockNumber (R := N) (T := T) j)) *
-        (Nat.card (Matrix (BlockIndex N T j) T R) * Nat.card (GL T R)) := by
-  let P (k : ℕ) : Subgroup (GL (BlockIndex N T k) R) := parabolic (blockNumber k)
-  let mat (u : P (j + 1)) : Matrix (BlockIndex N T j ⊕ T) (BlockIndex N T j ⊕ T) R :=
-    (u : GL (BlockIndex N T (j + 1)) R).val
-  have h_corners (u : P (j + 1)) :
-      (mat u).toBlocks₁₁.BlockTriangular (blockNumber j) ∧ (mat u).toBlocks₂₁ = 0 := by
-    rw [← blockTriangular_fromBlocks_blockNumber_succ_iff, fromBlocks_toBlocks]
-    exact u.property
-  have h_blocks (u : P (j + 1)) :
-      fromBlocks (mat u).toBlocks₁₁ (mat u).toBlocks₁₂ 0 (mat u).toBlocks₂₂ = mat u := by
-    rw [← (h_corners u).right, fromBlocks_toBlocks]
-  have h_unit (u : P (j + 1)) : IsUnit (mat u).toBlocks₁₁ ∧ IsUnit (mat u).toBlocks₂₂ := by
-    rw [← isUnit_fromBlocks_zero₂₁, h_blocks]
-    exact Units.isUnit _
-  let e : P (j + 1) ≃ P j × Matrix (BlockIndex N T j) T R × GL T R :=
-    { toFun u :=
-        (⟨(h_unit u).left.unit, (h_corners u).left⟩, (mat u).toBlocks₁₂, (h_unit u).right.unit)
-      invFun := fun (x, y, z) ↦
-        ⟨(isUnit_fromBlocks_zero₂₁ (B := y).mpr ⟨x.val.isUnit, z.isUnit⟩).unit,
-          blockTriangular_fromBlocks_blockNumber_succ_iff.mpr ⟨x.property, rfl⟩⟩
-      left_inv u := Subtype.ext (Units.ext (h_blocks u))
-      right_inv := fun (x, y, z) ↦
-        Prod.ext (Subtype.ext (Units.ext rfl)) (Prod.ext rfl (Units.ext rfl)) }
-  rw [Nat.card_congr e, Nat.card_prod, Nat.card_prod]
 
 /-- The group `parabolic (blockNumber j)` of invertible block upper triangular matrices with one
 diagonal block indexed by `N` and `j` diagonal blocks indexed by `T` has order
@@ -106,21 +81,32 @@ lemma exists_card_parabolic_blockNumber_eq.{u} (j : ℕ) :
     ∃ k : ℕ, ∀ (R : Type u) [CommRing R],
       Nat.card (parabolic (R := R) (blockNumber (R := N) (T := T) j)) =
         Nat.card (GL N R) * Nat.card (GL T R) ^ j * Nat.card R ^ k := by
+  suffices h_blocks : ∀ (R : Type u) [CommRing R],
+      (∏ a : Fin (j + 1), Nat.card (GL {i : BlockIndex N T j // blockNumber j i = a} R)) =
+        Nat.card (GL N R) * Nat.card (GL T R) ^ j by
+    let b := blockNumber (R := N) (T := T) j
+    refine ⟨Nat.card {p : BlockIndex N T j × BlockIndex N T j // b p.1 < b p.2}, fun R _ ↦ ?_⟩
+    have h_group : parabolic (R := R) b = TauCeti.blockTriangularGroup R b := by
+      ext g
+      exact TauCeti.mem_blockTriangularGroup_iff.symm
+    rw [h_group, TauCeti.natCard_blockTriangularGroup, h_blocks R]
+  intro R _
   induction j with
   | zero =>
-    refine ⟨0, fun R _ ↦ ?_⟩
-    have h_top : parabolic (R := R) (blockNumber (R := N) (T := T) 0) = (⊤ : Subgroup (GL N R)) :=
-      eq_top_iff.mpr fun g _ a b hlt ↦ by simp [blockNumber] at hlt
-    rw [h_top, pow_zero, pow_zero, mul_one, mul_one]
-    exact Subgroup.card_top
+    rw [Fin.prod_univ_one, pow_zero, mul_one]
+    exact Nat.card_congr
+      (GeneralLinearGroup.reindex (R := R) (Equiv.subtypeUnivEquiv fun _ ↦ rfl)).toEquiv
   | succ j ih =>
-    obtain ⟨k, hk⟩ := ih
-    refine ⟨k + card (BlockIndex N T j) * card T, fun R _ ↦ ?_⟩
-    have h_matrix : Nat.card (Matrix (BlockIndex N T j) T R) =
-        Nat.card R ^ (card (BlockIndex N T j) * card T) := by
-      simp [Matrix, Nat.card_fun, ← pow_mul, mul_comm]
-    rw [card_parabolic_blockNumber_succ, hk, h_matrix]
-    ring
+    rw [Fin.prod_univ_castSucc]
+    have h_prev (k : Fin (j + 1)) :
+        Nat.card (GL {a : BlockIndex N T (j + 1) // blockNumber (j + 1) a = k.castSucc} R) =
+          Nat.card (GL {a : BlockIndex N T j // blockNumber j a = k} R) :=
+      Nat.card_congr (GeneralLinearGroup.reindex (R := R) (blockFiberCastSucc k)).toEquiv
+    have h_last :
+        Nat.card (GL {a : BlockIndex N T (j + 1) // blockNumber (j + 1) a = Fin.last (j + 1)} R) =
+          Nat.card (GL T R) :=
+      Nat.card_congr (GeneralLinearGroup.reindex (R := R) (blockFiberLast (N := N) j)).toEquiv
+    simp only [h_prev, h_last, ih, pow_succ, mul_assoc]
 
 end New
 
