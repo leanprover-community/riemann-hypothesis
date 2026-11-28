@@ -887,6 +887,26 @@ lemma isCorepresentable_cech (m : ℕ) :
              $(e.prop _ 0))⟩
            left_inv g := Arrow.hom_ext _ _ rfl congr(↾fun _ ↦ $(g.w) _) } }⟩⟩
 
+/-- If `q` has cohomologically dense image, every map from one of the rings `R' o` to a test ring
+factors through the envelope map `θ : A → E A`, and `R' o` represents the pull-back of `D'` along
+`q`, then the composite
+`h_{E (R' o)} → h_{R' o} ≅ h_T ×_Y D' → D'` has cohomologically dense image in `D'`. -/
+private lemma hasCohomDenseImage_envelope {J : Type} {T : CommRingCat} {q : reprBy T ⟶ Y}
+    (hq : HasCohomDenseImage Λ q) (R' : Option J → CommRingCat)
+    (E : CommRingCat ⥤ CommRingCat) (θ : 𝟭 CommRingCat ⟶ E)
+    (h_univ : ∀ (o : Option J) (A : TestRing) (φ : (𝟭 CommRingCat).obj (R' o) ⟶ A.obj),
+      ∃ ψ : E (R' o) ⟶ A.obj, θ (R' o) ≫ ψ = φ)
+    {D' : Over Y} (o : Option J)
+    (e' : reprBy (R' o) ≅ (pullbackOver q ⋙ forget (reprBy T)).obj D') :
+    HasCohomDenseImage Λ (reprMap (θ.app (R' o)) ≫ e'.hom ≫ fiberProd.snd q D'.hom) := by
+  refine hq.of_preimage_le (mapOnTests D'.hom) fun A y h_y ↦ ?_
+  -- `y` over a point `x` of `h_T` gives the point `(x, y)` of the pull-back, which comes from
+  -- a map `R' o → A`, and that map factors through `θ`
+  obtain ⟨x, hx⟩ := h_y
+  obtain ⟨z, hz⟩ := (e'.app _).toEquiv.surjective.comp
+    (ULift.map_surjective.mpr (h_univ o A)) ⟨(x, y), hx⟩
+  exact ⟨z, congrArg (fun w ↦ w.val.snd) hz⟩
+
 /-- Let `q : h_T → Y` be relatively affine: its pull-back along every point h_A → Y is
 representable. Suppose the image of `q` on test rings is cohomologically dense in `Y` for the
 coefficient functor of locally constant functions Spec A → Λ (`HasCohomDenseImage`). Then, for every
@@ -924,14 +944,8 @@ lemma IsCohomContinuous.of_hasCohomDenseImage {T : CommRingCat} {q : reprBy T �
     -- on tests the image holds the preimage of the image of `q`
     have h_dense {D' : Over Y} (o : Option J)
         (e' : reprBy (R' o) ≅ (pullbackOver q ⋙ forget (reprBy T)).obj D') :
-        HasCohomDenseImage Λ (reprMap (θ.app (R' o)) ≫ e'.hom ≫ ε.app D') := by
-      refine hq.of_preimage_le (mapOnTests D'.hom) fun A y h_y ↦ ?_
-      -- `y` over a point `x` of `h_T` gives the point `(x, y)` of the pull-back, which comes from
-      -- a map `R' o → A`, and that map factors through `θ`
-      obtain ⟨x, hx⟩ := h_y
-      obtain ⟨z, hz⟩ := (e'.app _).toEquiv.surjective.comp (ULift.map_surjective.mpr (h_univ o A))
-        ⟨(x, y), hx⟩
-      exact ⟨z, congrArg (fun w ↦ w.val.snd) hz⟩
+        HasCohomDenseImage Λ (reprMap (θ.app (R' o)) ≫ e'.hom ≫ ε.app D') :=
+      hasCohomDenseImage_envelope hq R' E θ h_univ o e'
     -- the limit of the maps `p j`; its source is represented by the colimit of the test rings
     -- `E (B j)`, for which `continuousUpTo_locConstCoeff` gives continuity at every level
     let a : Cone (toArrowFunctor.obj (.mk p)) :=
