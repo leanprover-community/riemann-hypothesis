@@ -117,6 +117,11 @@ variable {p : ℕ} [Fact p.Prime] {d : ℕ} [PrimeSevenModEight d]
 lemma chiK_eq_zero_of_ramified (hd : p = d) : chiK d p = 0 :=
   (chiK_cases d p).elim (·.2) fun h ↦ absurd hd h.1
 
+/-- A ramified prime is non-split and has prime norm equal to the rational prime. -/
+private lemma not_split_and_primeNorm_of_ramified (hd : p = d) :
+    chiK d p ≠ 1 ∧ primeNorm d p = p := by
+  simp [primeNorm, chiK_eq_zero_of_ramified hd]
+
 /-- Let `d ≡ 7` mod `8` be a prime. A prime `p` with Legendre symbol `chiK d p = (p / d) ≠ 1` is
 ramified in `ℚ(√-d)`, with norm `q_p = primeNorm d p = p`, or inert, with `(p / d) = -1` and
 `q_p = p²`. -/
@@ -387,9 +392,7 @@ lemma exists_seriesToCp_eq_exponentSeries_of_ramified {ϖ : ℂ_[p]} {Y : (valRi
     ∃ (Ξ : (valRingCp p)⟦X⟧) (l : valRingCp p),
       seriesToCp Ξ = C.exponentSeries ϖ ∧
       PowerSeries.C (piPrimeInt d) ∣ Ξ - l • (Y ^ 2 - half • X ^ 2) := by
-  have h_chi : chiK d p = 0 := chiK_eq_zero_of_ramified hd
-  have hp : chiK d p ≠ 1 := by simp [h_chi]
-  have hq : primeNorm d p = p := by simp [primeNorm, h_chi]
+  obtain ⟨hp, hq⟩ := not_split_and_primeNorm_of_ramified hd
   have h_degree : leastFlatDegree d p = 2 := ite_eq_left hd
   obtain ⟨l, hl⟩ : ∃ l : valRingCp p, ∀ n : ℕ,
       ‖(1 - ιₚ (piPrime d p) ^ n / primeNorm d p) * coeff n (C.exponentSeries ϖ) -
@@ -613,9 +616,7 @@ lemma CMLattice.exists_exponentSeries_tsum_of_ramified {ϖ : ℂ_[p]} {Y : (valR
       PowerSeries.C (piPrimeInt d) ∣ Ξ - ∑' x : ↥(Set.univ : Set ℕ) × ℕ,
         (if (x.1 : ℕ) = 0 then if x.2 = 0 then l * half else l else 2 * l) •
           (X ^ p ^ (x.1 : ℕ) * X) ^ p ^ x.2 := by
-  have h_chi : chiK d p = 0 := chiK_eq_zero_of_ramified hd
-  have hp : chiK d p ≠ 1 := by simp [h_chi]
-  have hq : primeNorm d p = p := by simp [primeNorm, h_chi]
+  obtain ⟨hp, hq⟩ := not_split_and_primeNorm_of_ramified hd
   have hp_ne_two : p ≠ 2 := ne_two_of_chiK_ne_one hp
   set P : (valRingCp p)⟦X⟧ := primePowerSeries (valRingCp p) p Set.univ
   have hY_sq_congr : PowerSeries.C (piPrimeInt d) ∣ Y ^ 2 - P ^ 2 :=
