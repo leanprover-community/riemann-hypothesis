@@ -400,6 +400,8 @@ lemma exists_sub_residueOverN_mem_iff [h : IsSplitLevel P N] (z : 𝔸f E) :
     ∃ b : P → ZMod N, ∀ y : P → ZMod N,
       idem P * (z - residueOverN y) ∈ Ô E ↔ idem P * ((N : 𝔸f E) * z) ∈ Ô E ∧ b = y := by
   -- `b` is the residue of `N z` at `P` when `N z` is integral there.
+  -- Supply `Nonempty O` directly to avoid a slow typeclass search in `Function.invFun`.
+  have : Nonempty (O (F := LocProd P)) := ⟨0⟩
   let x : O (F := LocProd P) := Function.invFun Subtype.val (evalPlaces P (N * z))
   refine ⟨h.reduction x, fun y ↦ ?_⟩
   -- If `z - y / N` is integral at `P`, so is `N z = N (z - y / N) + y`.
@@ -445,9 +447,18 @@ lemma exists_sub_mem_and_sub_star_mem_iff [hP : IsSplitLevel P N] (hS : IsSplitL
       idem P * (t - residueOverN y) ∈ Ô E ∧ idem P * (s - star (residueOverN y)) ∈ Ô E ↔
         (idem P * (t * p) ∈ Ô E ∧ idem P * (((N : 𝔸f E) + 1 - p) * s) ∈ Ô E) ∧ b = y := by
   -- Integrality of an adele and its conjugate at `P` means integrality at all places above `N`.
+  have h_all {Q : Finset (FinPlace E)} (hQ : IsSplitLevel Q N) (x : 𝔸f E) :
+      idem Q * x ∈ Ô E ∧ idem Q * star x ∈ Ô E ↔
+        ∀ w : FinPlace E, ↑N ∈ w.asIdeal → Valued.v (x w) ≤ 1 := by
+    simp only [idem_mul_mem_Ô]
+    refine ⟨fun ⟨h₁, h₂⟩ w hw ↦ ((hQ.natCast_mem_iff w).1 hw).elim (h₁ w) fun h' ↦ ?_,
+      fun h ↦ ⟨fun w hw ↦ h w ((hQ.natCast_mem_iff w).2 (.inl hw)), fun w hw ↦ ?_⟩⟩
+    · simpa only [← v_star_apply, star_star] using h₂ (star w) h'
+    · simpa only [v_star_apply] using h (star w)
+        ((hQ.natCast_mem_iff (star w)).2 (.inr (by rwa [star_star])))
   have h_closure (x : 𝔸f E) : idem P * x ∈ Ô E ∧ idem P * star x ∈ Ô E ↔
-      idem S * x ∈ Ô E ∧ idem S * star x ∈ Ô E := by
-    grind [IsSplitLevel, star_star, idem_mul_mem_Ô, v_star_apply]
+      idem S * x ∈ Ô E ∧ idem S * star x ∈ Ô E :=
+    (h_all hP x).trans (h_all hS x).symm
   -- `b` is the class at `S` of the adele `z` that is `t` on `P` and `s̄` on the conjugates of `P`.
   let z : 𝔸f E := idem P * t + star (idem P * s)
   obtain ⟨b, hb⟩ := hS.exists_sub_residueOverN_mem_iff z
@@ -455,9 +466,45 @@ lemma exists_sub_mem_and_sub_star_mem_iff [hP : IsSplitLevel P N] (hS : IsSplitL
   -- Apply this to `z - y / N` and to `p z`.
   have h_sub := h_closure (z - residueOverN y)
   have h_mul := h_closure (p * z)
-  simp only [z, hp, star_sub, star_add, star_mul', star_star, star_one, star_natCast] at h_sub h_mul
-  grind [hb y, idem_mul_star hP.isConjDisjoint, idem_mul_star hS.isConjDisjoint,
-    hP.idem_add_star_eq hS, idem_mul_residueOverN, idem_mul_self, star_mul']
+  let ip : 𝔸f E := idem P
+  let iq : 𝔸f E := idem S
+  have hP2 : ip * ip = ip := idem_mul_self _
+  have hP0 : ip * star ip = 0 := idem_mul_star hP.isConjDisjoint
+  have hS2 : iq * iq = iq := idem_mul_self _
+  have hS0 : iq * star iq = 0 := idem_mul_star hS.isConjDisjoint
+  have hp' : p = 1 + iq * ((N : 𝔸f E) - 1) := hp
+  have hPS : ip * star iq = ip - ip * iq := by
+    have h : ip * (ip + star ip) = ip * (iq + star iq) :=
+      congrArg (ip * ·) (hP.idem_add_star_eq hS)
+    rw [mul_add, mul_add, hP2, hP0, add_zero] at h
+    exact eq_sub_of_add_eq' h.symm
+  have hzP : ip * z = ip * t := by
+    change ip * (ip * t + star (ip * s)) = ip * t
+    rw [mul_add, ← mul_assoc, hP2, star_mul', ← mul_assoc, hP0, zero_mul, add_zero]
+  have hzsP : ip * star z = ip * s := by
+    change ip * star (ip * t + star (ip * s)) = ip * s
+    rw [star_add, star_star, star_mul', mul_add, ← mul_assoc, hP0, zero_mul, zero_add,
+      ← mul_assoc, hP2]
+  have hp_star : ip * star p = ip * ((N : 𝔸f E) + 1 - p) := by
+    rw [hp', star_add, star_one, star_mul', star_sub, star_natCast, star_one]
+    linear_combination ((N : 𝔸f E) - 1) * hPS
+  change ip * _ ∈ _ ∧ ip * _ ∈ _ ↔ iq * _ ∈ _ ∧ iq * _ ∈ _ at h_sub h_mul
+  have hS_res : iq * star (residueOverN y) = 0 := by
+    rw [← idem_mul_residueOverN y, star_mul', ← mul_assoc]
+    exact (congrArg (· * _) hS0).trans (zero_mul _)
+  rw [mul_sub, mul_sub iq, star_sub, mul_sub, mul_sub iq, hzP, hzsP, hS_res, sub_zero,
+    ← mul_sub ip, ← mul_sub ip, ← mul_sub iq] at h_sub
+  rw [show ip * (p * z) = ip * (t * p) by linear_combination p * hzP,
+    show ip * star (p * z) = ip * (((N : 𝔸f E) + 1 - p) * s) by
+      rw [star_mul']; linear_combination star p * hzsP + s * hp_star,
+    show iq * (p * z) = iq * ((N : 𝔸f E) * z) by
+      rw [hp']; linear_combination ((N : 𝔸f E) - 1) * z * hS2,
+    show iq * star (p * z) = iq * star z by
+      rw [star_mul', hp', star_add, star_one, star_mul', star_sub, star_natCast, star_one]
+      linear_combination ((N : 𝔸f E) - 1) * star z * hS0] at h_mul
+  exact ⟨fun h ↦ let ⟨hB, hs⟩ := h_sub.1 h; let ⟨hC1, heq⟩ := (hb y).1 hB;
+    ⟨h_mul.2 ⟨hC1, hs⟩, heq⟩,
+    fun ⟨hC, heq⟩ ↦ let ⟨hC1, hs⟩ := h_mul.1 hC; h_sub.2 ⟨(hb y).2 ⟨hC1, heq⟩, hs⟩⟩
 
 open scoped Classical in
 /-- Let `P` and `S` each hold one place of every conjugate pair above the prime `N`, all unramified
@@ -486,40 +533,65 @@ lemma sum_translate_eq_gluedDatum [hP : IsSplitLevel P N] (hS : IsSplitLevel S N
     hP.exists_sub_mem_and_sub_star_mem_iff hS (p := p) rfl (T (i, .inr ())) (R (.inr (), i))
   have hD_S : (diagN (P := P) (N := N) n S).val =
       diagonal fun i ↦ evalPlaces P (if i.isLeft then 1 else p) := by
-    simp +contextual [diagN, funext_iff, apply_ite, p, idem_apply]
+    rw [diagN, coe_diagGL]; congr 1; ext (_ | ⟨⟩) w <;>
+      [simp; (by_cases hw : w.val ∈ S <;> simp [p, hw])]
   have hD_PS : (diagN (P := P) (N := N) m (P \ S)).val =
       diagonal fun i ↦ evalPlaces P (if i.isLeft then 1 else N + 1 - p) := by
-    simp +contextual [diagN, funext_iff, apply_ite, p, idem_apply]
+    rw [diagN, coe_diagGL]; congr 1; ext (_ | ⟨⟩) w <;>
+      [simp; (by_cases hw : w.val ∈ S <;> simp [p, hw])]
   have h_int (x : 𝔸f E) : evalPlaces P x ∈ O ↔ j * x ∈ Ô E := by
     simp [j, mem_O_locProd, idem_mul_mem_Ô]
   have h_norm (i : n') : star (residueOverN (b i)) * residueOverN (b i) = 0 :=
     hS.star_residueOverN_mul_self (b i)
   have hj_idem : j * j = j := idem_mul_self _
-  have hp_mul : p * (N + 1 - p) = N := by grind [idem_mul_self]
+  have hp_mul : p * (N + 1 - p) = N := by
+    let iq : 𝔸f E := idem S
+    change (1 + iq * ((N : 𝔸f E) - 1)) * ((N : 𝔸f E) + 1 - (1 + iq * ((N : 𝔸f E) - 1))) = N
+    linear_combination -((N : 𝔸f E) - 1) ^ 2 * (idem_mul_self _ : iq * iq = iq)
   -- Each term is a character value on a set given by integrality conditions, and zero off it.
   simp [gluedDatum, charDatum, poleColumn, poleRow, hD_S, hD_PS, h_int, ← map_mul, vecToMatrix,
     schrodingerAct, ← ite_and, mem_integralBox, ← AddChar.map_add_eq_mul, liftFn_apply, ← map_sum,
     sum_prod_type, dotProduct, mul_sum]
   -- Only the class `b` contributes.
-  rw [Fintype.sum_eq_single b fun y hy ↦ ite_eq_right fun h_y ↦
-    hy (funext fun i ↦ ((hb i (y i)).1 (by grind)).right.symm)]
+  rw [Fintype.sum_eq_single b fun y hy ↦ ite_eq_right fun h_y ↦ hy (funext fun i ↦ ((hb i (y i)).1
+    ⟨by simpa only [sub_eq_add_neg] using (h_y.2 i).2 (),
+      by simpa only [sub_eq_add_neg] using h_y.1.2 () i⟩).right.symm)]
   replace hb (i : n') := hb i (b i)
-  repeat split
-  · -- Let `c` be the residue of `N r ⬝ t`. The two phases differ by
+  split
+  · next hL =>
+    have hTR (i : n') :
+        j * (T (i, .inr ()) * p) ∈ Ô E ∧ j * ((N + 1 - p) * R (.inr (), i)) ∈ Ô E :=
+      ((hb i).1 ⟨by simpa only [sub_eq_add_neg] using (hL.2 i).2 (),
+        by simpa only [sub_eq_add_neg] using hL.1.2 () i⟩).1
+    rw [dite_eq_left fun i ↦ ⟨(hL.2 i).1, fun _ ↦ (hTR i).1⟩,
+      dite_eq_left ⟨hL.1.1, fun _ i ↦ (hTR i).2⟩]
+    -- Let `c` be the residue of `N r ⬝ t`. The two phases differ by
     -- `(t - b / N) ⬝ (r - b̄ / N) - (r ⬝ t - c / N)` at `P`, which is integral.
     generalize hc : hP.reduction _ = c
     have h_prod : ∑ i, j * (T (i, .inr ()) - residueOverN (b i)) *
         (j * (R (.inr (), i) - star (residueOverN (b i)))) ∈ Ô E :=
-      sum_mem fun i _ ↦ ((hb i).2 (by grind)).elim mul_mem
+      sum_mem fun i _ ↦ ((hb i).2 ⟨hTR i, rfl⟩).elim mul_mem
     have h_red : j * (∑ i, R (.inr (), i) * T (i, .inr ()) - residueOverN c) ∈ Ô E := by
       refine (reduction_eq_iff_idem_mul_mem ?_).1 hc
       simp [-map_mul, mul_sum]
-      grind
+      refine Finset.sum_congr rfl fun i _ ↦ congrArg (evalPlaces P) ?_
+      rw [mul_comm (T (i, .inr ())) p, ← mul_assoc _ p, mul_right_comm _ (R (.inr (), i)) p,
+        mul_comm ((N : 𝔸f E) + 1 - p) p, hp_mul, mul_assoc]
     apply selfDualAddChar_congr 0 (sub_mem h_prod h_red)
     simp [← sum_add_distrib, ← sum_neg_distrib, ← sum_sub_distrib, ← sub_add, mul_sub, mul_sum]
-    grind [idem_mul_residueOverN]
+    rw [idem_mul_residueOverN c, add_comm _ (residueOverN c), ← add_assoc, neg_add_cancel,
+      zero_add]
+    refine Finset.sum_congr rfl fun i _ ↦ ?_
+    linear_combination -j * (T (i, .inr ()) * star (residueOverN (b i)) +
+        R (.inr (), i) * residueOverN (b i)) * two_mul_half (E := E) +
+      (T (i, .inr ()) * star (residueOverN (b i)) + R (.inr (), i) * residueOverN (b i) -
+        T (i, .inr ()) * R (.inr (), i)) * hj_idem + (2 * half * j - j * j) * h_norm i
   -- By `hb` the two supports agree.
-  all_goals grind
+  · next hL =>
+    refine .symm (dite_eq_right_iff.2 fun hT ↦ dite_eq_right_iff.2 fun hR ↦ absurd ?_ hL)
+    exact ⟨⟨hR.1, fun _ i ↦ by simpa only [← sub_eq_add_neg] using
+        ((hb i).2 ⟨⟨(hT i).2 (), hR.2 () i⟩, rfl⟩).2⟩, fun i ↦ ⟨(hT i).1, fun _ ↦ by
+      simpa only [← sub_eq_add_neg] using ((hb i).2 ⟨⟨(hT i).2 (), hR.2 () i⟩, rfl⟩).1⟩⟩
 
 open scoped Classical in
 /-- **The glued datum in any model.** Let `P` and `S` each hold one place of every conjugate pair
@@ -559,7 +631,10 @@ lemma doubleLiftGluing_eq_sum_schrodingerOpAt [hP : IsSplitLevel P N] (hS : IsSp
   have h_supp (y : S → ZMod N) :
       (idem S + star (idem S)) * residueOverN y = residueOverN y ∧
       (idem S + star (idem S)) * star (residueOverN y) = star (residueOverN y) := by
-    grind [idem_mul_star hS.isConjDisjoint, idem_mul_residueOverN, star_mul']
+    have h₁ : (idem S + star (idem S)) * residueOverN y = residueOverN y := by
+      rw [add_mul, idem_mul_residueOverN, ← idem_mul_residueOverN y, ← mul_assoc,
+        mul_comm (star _), idem_mul_star hS.isConjDisjoint, zero_mul, add_zero]
+    exact ⟨h₁, by simpa [star_mul', star_add, mul_comm, add_comm] using congrArg star h₁⟩
   let applyModel := TensorProduct.map
     ((ContinuousLinearMap.apply ℂ _ v.val).toLinearMap ∘ₗ Space.schrodingerOp _ P)
     ((ContinuousLinearMap.apply ℂ _ v'.val).toLinearMap ∘ₗ Space.schrodingerOp _ P)
@@ -815,8 +890,10 @@ def restrictToY :
             (.matrix_reindex ?_ ..)
         -- each entry of `diag (g, 1)` is a constant or an entry of `g`
         simp only [U.sum, MonoidHom.inl_apply, MonoidHom.codRestrict_apply, MonoidHom.coe_comp,
-          MonoidHom.coe_prodMap, Function.comp_apply, val_blockGL_apply]
-        fun_prop
+          MonoidHom.coe_prodMap, Function.comp_apply, val_blockGL_apply, Prod.map_apply]
+        exact .matrix_fromBlocks
+          (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).continuous continuous_const
+          continuous_const continuous_const
       exact ((rightStabilizer ψ).comap D.borderU).isOpen_mono (fun _ hk ↦ by simp [hk _])
         (smooth.preimage cont)
     -- `branching` intertwines the action of `diag (γ, 1)` with that of `γ`
@@ -827,9 +904,9 @@ def restrictToY :
         (stdSpace D.E (D.InitIndex D.m ⊕ Unit)).embFin (U.block ε (γ, 1)) :=
       block_embFin ε γ
     rw [h_block]
-    refine (congrArg (D.branching.map (↑) *ᵥ ·)
+    refine (congrArg (D.branching.map ((↑) : ℤ → ℂ) *ᵥ ·)
       (equivariant (U.block ε (γ, 1)) (D.borderU g))).trans ?_
-    refine (congrArg (D.branching.map (↑) *ᵥ ·)
+    refine (congrArg (D.branching.map ((↑) : ℤ → ℂ) *ᵥ ·)
       (stdSpace_weightRep_apply (γ := U.block ε (γ, 1)) (v := ψ (D.borderU g)))).trans ?_
     rw [mulVec_mulVec, D.isBranchingMap_branching.mul_weylRep _ _ 1, Finset.prod_eq_one,
       one_smul] <;>
