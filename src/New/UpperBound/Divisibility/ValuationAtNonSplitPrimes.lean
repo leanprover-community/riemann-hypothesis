@@ -431,36 +431,17 @@ lemma IsMarked.norm_baseChange_atUniformizer (hΛ : D.IsMarked Λ) {l : FinPlace
     (ϑ : D.TameChar) (e : ℕ) :
     ‖ιₚ ((D.chainChar ϑ e).baseChange.atUniformizer l)‖ = 1 := by
   classical
-  have hp_pos : (0 : ℝ) < p := mod_cast hp.out.pos
-  -- As `p` is a uniformizer at `l`, the idele of the uniformizer has the norm of `p` at the
-  -- embeddings that induce `l`, and norm `1` at the others.
-  have h_unif (σ : D.E →+* ℂ_[p]) :
-      ‖adeleExtension σ (locIdele l (uniformizer l)).val‖ =
-        ‖adeleExtension (F := ℂ_[p]) σ (if placeOfEmb σ = l then p else 1)‖ := by
-    split_ifs with h
-    -- `↓` compares valuations before `simp` evaluates the right-hand side.
-    · subst h
-      simp [↓norm_adeleExtension_eq_iff, ← hΛ.valuation_natCast_eq_exp_neg_one hl,
-        ← v_algebraMap_eq_valuation]
-    · simp [h, ↓norm_adeleExtension_eq_iff]
-  -- Write `w e τ` for the weight `D.liftWeight e τ` of lift `e` at the infinite place `τ`.
-  -- The norm is `p` to the sum of `-w e τ` over the `τ` that induce `l` and of `w e τ` over those
-  -- that induce `star l`, and this sum is `0` by the balance.
-  set a : (𝔸f D.E)ˣ := locIdele l (uniformizer l)
-  have h_balance := hΛ.sum_inducedPlace_sub_star_eq_zero e fun c w ↦ if w = l then -c else 0
-  -- The base change at `l` is by definition the character at `a / star a`.
-  change ‖ιₚ ((D.chainChar ϑ e).val (divStar (finIdeleIncl a)))‖ = 1
-  have h_arch : ((divStar (finIdeleIncl a) : unitary (𝔸 D.E)) : 𝔸 D.E).fst = 1 :=
-    (unitary _).one_mem.2
-  rw [D.hasWeight_liftChar.norm_padic_eq_prod ιₚ _ h_arch, ← rpow_zero p, ← h_balance,
-    rpow_sum_of_pos hp_pos]
-  refine prod_congr rfl fun τ _ ↦ ?_
-  -- At each `τ` compare the norm of `a / star a` with the corresponding power of `p`.
-  change ‖adeleExtension (ιₚ.comp (Φ τ))
-    ((a : 𝔸f D.E) * star ((a⁻¹ : (𝔸f D.E)ˣ) : 𝔸f D.E))‖ ^ _ = _
-  rw [map_mul, adeleExtension_star, inducedPlace, ← placeOfEmb_comp_star, map_units_inv, norm_mul,
-    norm_inv, h_unif, h_unif]
-  split_ifs <;> simp_all [norm_p_eq_inv, NeZero.ne]
+  have same : (∑ τ : D.Φ with inducedPlace τ = l, (D.liftWeight e τ : ℤ)) =
+      ∑ τ : D.Φ with inducedPlace τ = star l, (D.liftWeight e τ : ℤ) := by
+    exact_mod_cast hΛ.sum_inducedPlace_eq_sum_star hl e (fun c ↦ (c : ℝ))
+  have hv : Valued.v (uniformizer l : LocField l) = Valued.v (p : LocField l) := by
+    simp [← hΛ.valuation_natCast_eq_exp_neg_one hl, ← v_algebraMap_eq_valuation]
+  change ‖ιₚ ((D.chainChar ϑ e).baseChange.finPart (locIdele l (uniformizer l)) : ℂ)‖ = 1
+  rw [D.hasWeight_liftChar.norm_baseChange_locIdele_of_valuation_eq_p ιₚ l (uniformizer l) hv]
+  change (p : ℝ) ^ ((∑ τ : D.Φ with inducedPlace τ = l, -(D.liftWeight e τ : ℤ)) -
+      ∑ τ : D.Φ with star (inducedPlace τ) = l, -(D.liftWeight e τ : ℤ)) = 1
+  have conj (b : FinPlace D.E) : star b = l ↔ b = star l := by rw [star_eq_iff_star_eq, eq_comm]
+  simp only [conj, sum_neg_distrib, same, sub_self, zpow_zero]
 
 /-- A marked prime has norm `p ^ (2 h)` with `2 h ≤ f`, for `f = D.f` the number of infinite places
 of `D.E`: the exponent is the order of `D.placeOfInt (-p)`, which is even. -/

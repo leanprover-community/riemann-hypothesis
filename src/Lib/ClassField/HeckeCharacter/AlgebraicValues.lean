@@ -370,6 +370,42 @@ lemma norm_padic_eq_prod {p : ℕ} [Fact p.Prime] (h : μ.HasWeight e ψ) (ι : 
     rw [adeleExtension_star, h_emb, map_units_inv]
   rw [map_mul, h_star, norm_mul, norm_inv, mul_zpow, inv_zpow', h_pos, h_neg]
 
+open scoped Classical in
+/-- On a local idele with the valuation of `p`, the norm of the base change is `p` to the
+sum of the weights above `l` minus their sum above its conjugate. This includes an unramified
+uniformizer above `p`. -/
+theorem norm_baseChange_locIdele_of_valuation_eq_p {p : ℕ} [hp : Fact p.Prime]
+    (h : μ.HasWeight e ψ) (ι : ℂ →+* ℂ_[p])
+    (l : FinPlace E) (u : (LocField l)ˣ)
+    (hu : Valued.v (u : LocField l) = Valued.v (p : LocField l)) :
+    ‖ι (μ.baseChange.finPart (locIdele l u) : ℂ)‖ =
+      (p : ℝ)^((∑ τ : InfinitePlace E with placeOfEmb (ι.comp (Φ τ)) = l, e τ) -
+        ∑ τ : InfinitePlace E with star (placeOfEmb (ι.comp (Φ τ))) = l, e τ) := by
+  classical
+  have hp0 : 0 < (p : ℝ) := by exact_mod_cast hp.out.pos
+  let a := locIdele l u
+  -- Only the component at the induced place sees the local element.
+  have local_norm (σ : E →+* ℂ_[p]) :
+      ‖adeleExtension σ a.val‖ =
+        ‖adeleExtension (F := ℂ_[p]) σ (if placeOfEmb σ = l then p else 1)‖ := by
+    dsimp only [a]
+    split_ifs with hσ
+    · subst l
+      simpa [↓norm_adeleExtension_eq_iff] using hu
+    · simp [hσ, ↓norm_adeleExtension_eq_iff]
+  change ‖ι (μ.val (divStar (finIdeleIncl a)) : ℂ)‖ = _
+  have arch : ((divStar (finIdeleIncl a) : unitary (𝔸 E)) : 𝔸 E).fst = 1 :=
+    (unitary _).one_mem.2
+  rw [h.norm_padic_eq_prod ι _ arch, sum_filter, sum_filter, ← sum_sub_distrib,
+      ← Real.rpow_intCast, Int.cast_sum, Real.rpow_sum_of_pos hp0]
+  -- The denominator of base change supplies the conjugate contribution with the opposite sign.
+  refine prod_congr rfl fun τ _ ↦ ?_
+  change ‖adeleExtension (ι.comp (Φ τ)) ((a : 𝔸f E) * star ((a⁻¹ : (𝔸f E)ˣ) : 𝔸f E))‖ ^ _ = _
+  rw [Real.rpow_intCast, map_mul, adeleExtension_star, map_units_inv, norm_mul, norm_inv,
+    local_norm, local_norm, placeOfEmb_comp_star]
+  split_ifs <;> simp_all [norm_p_eq_inv, zpow_neg, hp0.ne']
+
+
 end AutChar.HasWeight
 
 /-! ## The character `υ |·| ^ (-1 / 2)` on finite ideles -/
