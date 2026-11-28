@@ -24,7 +24,6 @@ infinite coefficient modules. This file relates the two. Let `π` be a map from 
   topological representation over `ℤ`, and the map from its continuous 1-cocycles onto its
   continuous cohomology `continuousCohomology 1`, with kernel `B¹` (`ker_classMap`), from Tau
   Ceti's comparison of the explicit `H¹` with Mathlib's.
-* `New.DiscreteModule.quotB1EquivH1`: the explicit `H¹ = Z¹ / B¹` is `continuousCohomology 1`.
 
 ## Relation to the literature
 
@@ -267,12 +266,6 @@ theorem ker_classMap : A.classMap.ker = (B1 A.ρ).toAddSubgroup := by
     QuotientAddGroup.eq_zero_iff, AddSubgroup.mem_addSubgroupOf,
     TauCeti.ContCohomology.mem_B1_iff, groupCohomology.IsCoboundary₁]
   rfl
-
-/-- The explicit `H¹`, continuous 1-cocycles modulo coboundaries, is Mathlib's
-`continuousCohomology 1`, as an additive equivalence. -/
-def quotB1EquivH1 : (Z1 A.ρ ⧸ B1 A.ρ) ≃+ continuousCohomology 1 A.toTopRep :=
-  QuotientAddGroup.liftEquiv (B1 A.ρ).toAddSubgroup A.classMap_surjective A.ker_classMap.symm
-
 
 end DiscreteModule
 
