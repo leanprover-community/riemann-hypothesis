@@ -207,18 +207,15 @@ omit [WeilData E] in
 /-- If `A₂` is disjoint from `A₁` and its conjugate, the points supported on `A₁` and its conjugate
 are trivial at `A₂`. -/
 lemma supportedOn_le_trivialOn_right (h_disj : Disjoint A₁.conjClosure A₂) :
-    supportedOn n A₁ ≤ trivialOn n A₂ := fun _ hg ↦
-  mem_trivialOn.2 fun w hw ↦ mem_supportedOn.1 hg w
-    (fun hw₁ ↦ h_disj.notMem_of_mem_left (.inl hw₁) hw)
-    (fun hw₁ ↦ h_disj.notMem_of_mem_left (.inr hw₁) hw)
+    supportedOn n A₁ ≤ trivialOn n A₂ :=
+  Gf.supportedOn_le_trivialOn_of_disjoint h_disj.conjClosure_right
 
 omit [WeilData E] in
 /-- If `A₂` is disjoint from `A₁` and its conjugate, the points supported on `A₂` and its conjugate
 are trivial at `A₁`. -/
 lemma supportedOn_le_trivialOn_left (h_disj : Disjoint A₁.conjClosure A₂) :
-    supportedOn n A₂ ≤ trivialOn n A₁ := fun g hg ↦
-  mem_trivialOn.2 fun w hw ↦ mem_supportedOn.1 hg w (h_disj.notMem_of_mem_left (.inl hw))
-    (h_disj.notMem_of_mem_left (.inr (by simpa)))
+    supportedOn n A₂ ≤ trivialOn n A₁ :=
+  Gf.supportedOn_le_trivialOn_of_disjoint h_disj.conjClosure_right.symm
 
 omit [WeilData E] in
 /-- Let `A₂` be disjoint from `A₁` and its conjugate, and let `u₁`, `u₂` be supported on `A₁`, `A₂`

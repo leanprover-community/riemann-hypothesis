@@ -137,7 +137,7 @@ lemma projOn_schrodingerOp_vacElem {T : Set (FinPlace E)} (hT : Disjoint S.conjC
       V.projOn T (V.ϱ (finVec (idem S.conjClosure • y)) f) =
         V.ϱ (finVec (idem S.conjClosure • y)) (V.projOn T f) :=
     V.projOn_rho (fun i w hw ↦ by
-      have hw_not : w ∉ S.conjClosure := by grind [star_star]
+      have hw_not := Set.disjoint_right.1 hT.conjClosure_right hw
       simp [finVec, idem_of_notMem hw_not]) f
   simp [schrodingerOp, h_comm, heisenbergCombination, Finsupp.sum]
 

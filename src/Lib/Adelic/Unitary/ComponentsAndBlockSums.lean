@@ -93,6 +93,12 @@ lemma _root_.Set.Finite.conjClosure (hS : S.Finite) : S.conjClosure.Finite := hS
 self-conjugate, and it holds at most one place of each conjugate pair. -/
 abbrev _root_.Set.IsConjDisjoint : Prop := Disjoint S (star ⁻¹' S)
 
+/-- If `S` and its conjugates are disjoint from `T`, they are also disjoint from its conjugates. -/
+lemma _root_.Disjoint.conjClosure_right {S T : Set (FinPlace E)}
+    (h : Disjoint S.conjClosure T) : Disjoint S.conjClosure T.conjClosure := by
+  rw [Set.disjoint_left] at h ⊢
+  grind [star_star]
+
 @[fun_prop]
 lemma Gf.continuous_atPlace : Continuous (Gf.atPlace (n := n) w) := by
   simp only [atPlace, MonoidHom.coe_comp]
@@ -168,6 +174,13 @@ are `1`. -/
 lemma Gf.supportedOn_compl : supportedOn n S.conjClosureᶜ = trivialOn n S := by
   ext g
   grind [mem_supportedOn, mem_trivialOn, atPlace_star_eq_one_iff, star_star]
+
+/-- Elements supported on `S` and its conjugates are trivial at `T` when the two conjugation
+closures are disjoint. -/
+lemma Gf.supportedOn_le_trivialOn_of_disjoint {T : Set (FinPlace E)}
+    (h : Disjoint S.conjClosure T.conjClosure) : supportedOn n S ≤ trivialOn n T := by
+  rw [← supportedOn_compl]
+  exact supportedOn_mono (Set.disjoint_left.1 (h.mono_left Set.subset_union_left))
 
 /-- An element supported on `S ∪ S̄` commutes with one that is trivial on `S`. -/
 lemma Gf.commute_supportedOn_trivialOn (hg : g ∈ supportedOn n S) (hk : k ∈ trivialOn n S) :
