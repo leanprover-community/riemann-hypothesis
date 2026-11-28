@@ -261,8 +261,6 @@ theorem PlaceData.exists_mem_congruenceSubgroup_of_inner_ne_zero (Z : F.Intermed
 theorem PlaceData.IntermediateGroup.isOpen : Z.val.IsOpen :=
   isOpen_mono Z.prop.1 unitaryLevel_open_compact.1
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let K(g) ≤ Z ≤ K, with K(g) = `F.congruenceSubgroup`. For `y` in `Z` there is exactly one coset
 `c` of K(g) in `Z` whose chosen representative `c.out` satisfies `y * c.out⁻¹ ∈ K(g)`. -/
 theorem PlaceData.IntermediateGroup.exists_forall_mul_inv_mem_congruenceSubgroup_iff_eq
@@ -272,7 +270,7 @@ theorem PlaceData.IntermediateGroup.exists_forall_mul_inv_mem_congruenceSubgroup
   refine ⟨⟦⟨y, hy⟩⟧, fun c ↦ Iff.symm ?_⟩
   calc c = ⟦⟨y, hy⟩⟧ ↔ rightRel (F.congruenceSubgroup.subgroupOf Z) c.out ⟨y, hy⟩ :=
          Quotient.eq_mk_iff_out
-    _ ↔ ⟨y, hy⟩ * c.out⁻¹ ∈ F.congruenceSubgroup.subgroupOf Z.val := rightRel_apply
+    _ ↔ ⟨y, hy⟩ * c.out⁻¹ ∈ F.congruenceSubgroup.subgroupOf Z.val := by rw [rightRel_apply]
     _ ↔ y * c.out.val⁻¹ ∈ F.congruenceSubgroup := mem_subgroupOf
 
 /-- The inverse modulus of a unit `u` is its generalised index `genIndex u` (the inverse of the

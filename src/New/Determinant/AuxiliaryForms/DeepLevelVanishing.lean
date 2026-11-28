@@ -229,8 +229,6 @@ noncomputable def New.Exchange.typeKernelMajorant (l : NumberField.InfinitePlace
     (A : ℕ) (u : GInf D.E s) : ℝ :=
   ∏ w : NumberField.InfinitePlace D.E, (l w).formalDegree * (2 / ‖(u w).val.val‖) ^ (2 * A)
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Let the parameters `l w` have large gaps for `4 A` and entries bounded by `L`. Then
 `typeKernelMajorant l A`, the product over the infinite places `w` of the formal degree of `l w`
 times `(2 / ‖u w‖) ^ (2 A)`, is integrable over the real points `u`. Under the size conditions for
@@ -251,7 +249,8 @@ lemma New.Exchange.integral_typeKernelMajorant_le {l : NumberField.InfinitePlace
   have tail (w : NumberField.InfinitePlace D.E) :
       Integrable (factor w) ∧ ∫ g : USign s, factor w g ≤ C :=
     integral_tail_le (hg := h_gap w) (hl w) (2 * A) (by lia)
-  refine ⟨.fintype_prod fun w ↦ (tail w).left, ?_⟩
+  -- `(… :)`: matching `∏ i, ?f i (u i)` against the goal would unfold the product.
+  refine ⟨(Integrable.fintype_prod fun w ↦ (tail w).left :), ?_⟩
   calc ∫ u : GInf D.E s, ∏ w, factor w (u w)
     _ = ∏ w, ∫ g : USign s, factor w g := integral_fintype_prod_volume_eq_prod factor
     _ ≤ C ^ D.f := (prod_le_prod₀ (fun w _ ↦ by positivity [formalDegree_pos (h_gap w)])

@@ -224,8 +224,6 @@ lemma skewMeasure_le_of_sub_mem_ofSize {S : Set (skewAdjoint A)} (u : Aˣ)
     · exact Γ.one_le_loss
     · lia
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- The integral over the skew variable in the Heisenberg group of floor a, with points
 n = `heisenbergElem a (ω, β)`; a vector part such as ω is extended by zero to the floors at most a
 (`inclMatrix`). Suppose that at each n with Φ(n) ≠ 0, w / u has size j for some w congruent to
@@ -259,7 +257,8 @@ lemma lintegral_heisenbergElem_skewMeasure_le {Φ : T.G → ℝ≥0∞} {Ψ : (�
     obtain ⟨h_vec, h_skew⟩ :
         u⁻¹.val • inclMatrix A Subtype.val *ᵥ (-(u.val • v)) ∈ Γ.vecsOfSize j ∧
         u⁻¹ * ((skewPart (Q (u.val • v)) - β).val - Q (-(u.val • v))) ∈ Γ.ofSize j :=
-      mem_vecsOfSize_of_congrBelow_heisenbergElem h_congr h_short
+      -- `(… :)`: matching this term against the stated type unfolds `Finset.sum`
+      (mem_vecsOfSize_of_congrBelow_heisenbergElem h_congr h_short :)
     refine ⟨?_, ?_, ?_⟩
     · simpa [mulVec_neg, vecsOfSize, mulVec_smul, neg_mem_iff_and_star_mem_iff] using h_vec
     · rwa [sub_right_comm]

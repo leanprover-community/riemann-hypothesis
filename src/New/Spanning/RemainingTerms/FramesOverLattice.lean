@@ -326,8 +326,6 @@ lemma IsFrameSet.encard_le_of_sharedVectors_eq (hB : S.IsFrameSet c B)
     _ = ENNReal.ofReal ((genIndex d.val ^ 𝔰.n) ^ 𝔰.ϱ) := by
         rw [submoduleIndex_smul_intVectors hd_int, Fintype.card_fin, Fintype.card_fin, mul_one]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- **The part in the isotropic space.** Let `E` be a CM field with a primitive 5040-th root of
 unity and `S` admissible filling data over `E`. Let `B` be a frame set for the class `c`: near terms
 whose frames differ modulo moves, the unipotent elements of level `M` that fix the standard frame.
@@ -348,7 +346,8 @@ lemma IsFrameSet.encard_le_of_framePartX₀_eq (hB : S.IsFrameSet c B)
       ENNReal.ofReal ((genIndex d.val ^ 𝔰.n) ^ 𝔰.ϱ) := by
   refine encard_le_of_encard_range_le (fun p : B ↦ S.sharedVectors j p.val.2)
     (hB.encard_range_sharedVectors_le h_cellRank)
-    (R := fun p q ↦ S.sharedVectors j p.2 = S.sharedVectors j q.2) (fun _ _ h ↦ h) ?_
+    (R := fun p q : S.Classes × S.G E ↦ S.sharedVectors j p.2 = S.sharedVectors j q.2)
+    (fun _ _ h ↦ h) ?_
   intro D hD _ _ h_shared
   exact (hB.mono hD).encard_le_of_sharedVectors_eq (fun p hp ↦ h_cellRank p (hD hp))
     (fun p hp ↦ hZ p (hD hp)) h_shared (fun p hp ↦ hu p (hD hp))
