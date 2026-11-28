@@ -196,6 +196,7 @@ instance : IsAddHaarMeasure (volume (α := LocField w)) := isAddHaarMeasure_addH
 @[simp]
 lemma volume_LocInt : volume (LocInt w : Set (LocField w)) = 1 := addHaarMeasure_self
 
+/-- The number `volÔ E` is nonzero. -/
 @[simp]
 lemma volÔ_ne_zero : volÔ E ≠ 0 := by simp [volÔ, discr_ne_zero]
 
