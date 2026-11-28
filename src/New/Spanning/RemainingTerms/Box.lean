@@ -118,33 +118,20 @@ lemma mem_levelMultiples {w : InfinitePlace E → ℂ} :
     w ∈ S.levelMultiples ↔ ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.M * (x : E))) = w :=
   .rfl
 
-/-- Let `S : Filling E 𝔰`, the data of the filling theorem, satisfy the standing hypotheses
-`S.IsAdmissible`. For `r ≥ 0` and a tuple `w` over the infinite places, only finitely many `l` in
-`S.levelMultiples` make all coordinates of `l + w` have modulus at most `r`. Here `S.levelMultiples`
-is the set of tuples `M x`, where `x` is an integer of `E` and `M = S.M` is the level. -/
-lemma finite_setOf_levelMultiples_add_le {r : ℝ} (hr : 0 ≤ r)
-    (w : InfinitePlace E → ℂ) :
+/-- For any real radius `r` and any tuple `w` over the infinite places, only finitely many
+`l` in `S.levelMultiples` make all coordinates of `l + w` have modulus at most `r`.
+Here `S.levelMultiples` consists of the tuples `M x` for integers `x` of `E`, where `M = S.M`. -/
+lemma finite_setOf_levelMultiples_add_le {r : ℝ} (w : InfinitePlace E → ℂ) :
     {l : S.levelMultiples | ∀ v : InfinitePlace E, ‖(l.val + w) v‖ ≤ r}.Finite := by
-  have h_integer (l : S.levelMultiples) :
-      ∃ x : 𝓞 E, (fun v : InfinitePlace E ↦ Φ v (S.M * (x : E))) = l.val :=
-    mem_levelMultiples.1 l.property
-  choose x hx using h_integer
-  let A : Set S.levelMultiples := {l | ∀ v : InfinitePlace E, ‖(l.val + w) v‖ ≤ r}
-  let f (l : S.levelMultiples) (_ : Unit) : E := S.M * (x l : E)
-  have h_bound : ∀ l ∈ A, ∀ i : Unit,
-      IsIntegral ℤ (f l i) ∧ ∀ v : InfinitePlace E, ‖Φ v (f l i)‖ ≤ r + ‖w‖ := by
-    refine fun l hl i ↦ ⟨(isIntegral_natCast _).mul (x l).isIntegral_coe, fun v ↦ ?_⟩
-    change ‖Φ v (S.M * (x l : E))‖ ≤ r + ‖w‖
-    rw [congrFun (hx l) v, ← add_sub_cancel_right (l.val v) (w v)]
-    exact norm_sub_le_of_le (hl v) (norm_le_pi_norm w v)
-  have h_inj : InjOn f A := by
-    intro l _ l' _ h_eq
-    have h_mul : S.M * (x l : E) = S.M * (x l' : E) := congrFun h_eq ()
-    ext1
-    rw [← hx l, ← hx l', h_mul]
-  have h_lt_top : (A.encard : ℝ≥0∞) < ⊤ :=
-    (encard_le_of_isIntegral_norm_le f (by positivity) h_bound h_inj).trans_lt ofReal_lt_top
-  exact encard_lt_top_iff.1 (mod_cast h_lt_top)
+  have h_fin := (Embeddings.finite_of_norm_le E ℂ (r + ‖w‖)).image
+    (fun z : E ↦ fun v : InfinitePlace E ↦ Φ v z)
+  refine (h_fin.preimage Subtype.val_injective.injOn).subset ?_
+  intro l hl
+  obtain ⟨x, hx⟩ := mem_levelMultiples.1 l.property
+  refine ⟨S.M * (x : E), ⟨(isIntegral_natCast _).mul x.isIntegral_coe, fun φ ↦ ?_⟩, hx⟩
+  rw [← InfinitePlace.apply, ← mk_Φ (InfinitePlace.mk φ), InfinitePlace.apply,
+    congrFun hx (InfinitePlace.mk φ), ← add_sub_cancel_right (l.val _) (w _)]
+  exact norm_sub_le_of_le (hl _) (norm_le_pi_norm w _)
 
 variable (S) in
 /-- Let `S : Filling E 𝔰`, the data of the filling theorem over `E`, satisfy the standing hypotheses
@@ -181,7 +168,7 @@ lemma exists_isResidueDomain [S.IsAdmissible] :
       _ = S.b ^ 26 := by ring
   -- Only finitely many integers have bounded conjugates.
   have h_finite (w : InfinitePlace E → ℂ) : {l : S.levelMultiples | l.val + w ∈ B}.Finite :=
-    finite_setOf_levelMultiples_add_le (by positivity) w
+    finite_setOf_levelMultiples_add_le w
   have hB : MeasurableSet B := by measurability
   obtain ⟨D, hDB, hD_meas, hD⟩ : ∃ D ⊆ B, MeasurableSet D ∧
       ∀ w : InfinitePlace E → ℂ, ∃! l : S.levelMultiples, l.val + w ∈ D :=
