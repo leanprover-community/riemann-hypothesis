@@ -127,7 +127,10 @@ the jump set `letterJumps` at each letter. -/
 lemma KummerChart.fitsWindows_letterJumps {η b W : ℕ} {ε : ℤˣ}
     (hU : ∀ g : O →ₐ[ℤ_[p]] ℂ_[p], FitsWindows η ε b W (U g)) (i : k.Letter) :
     FitsWindows η ε b W (k.letterJumps ζ U i) := by
-  grind [mem_letterJumps]
+  intro u hu
+  obtain rfl | ⟨g, -, hg⟩ := (k.mem_letterJumps ζ).1 hu
+  · exact .inl ⟨by omega, by omega⟩
+  · exact hU g u hg
 
 open scoped Classical in
 /-- Write `ω(i)` for the Teichmüller lift `k.letterTeich i` and `θ` for Fontaine's map `theta` from
@@ -141,7 +144,9 @@ lemma KummerChart.sum_card_algHom_le_finrank (k : KummerChart Γ) (ζ : k.Letter
   have theta_ne {i i' : k.Letter} (hi : i ≠ i') :
       (theta (k.letterTeich i) : ℂ_[p]) ≠ (theta (k.letterTeich i') : ℂ_[p]) := fun h_eq ↦ by
     have h_unit : IsUnit (theta (k.letterTeich i : Ainf) - theta (k.letterTeich i' : Ainf)) := by
-      simpa using ((PairingSide.isUnit_letterTeich_sub hi).map (algebraMap _ Ainf)).map theta
+      have h := ((PairingSide.isUnit_letterTeich_sub hi).map (algebraMap _ Ainf)).map theta
+      rwa [show (algebraMap (↥k.S) Ainf) (k.letterTeich i - k.letterTeich i') =
+          (k.letterTeich i : Ainf) - k.letterTeich i' from rfl, theta.map_sub] at h
     exact h_unit.ne_zero (sub_eq_zero.2 (Subtype.ext h_eq))
   -- So the sets of embeddings above different letters are disjoint.
   rw [← card_biUnion fun i _ i' _ hi ↦
@@ -244,7 +249,8 @@ lemma KummerChart.crysCocycles_le_cupOrthogonal_of_no_small_neg_jump [Topologica
   refine k.pow_smul_mem_cupOrthogonal_of_isScaledCupCoboundary ζ ho le_top le_rfl hL 0 ⟨x, hx⟩
     fun Y hY P c ↦ ?_
   have height_le (i : k.Letter) : (b i : ℤ) + (W + η : ℕ) ≤ ((p - 3) * a : ℕ) := by
-    grind [h_height i]
+    have := h_height i
+    omega
   have kills {S : k.PairingSide ⟨O, ζ⟩}
       (h_le : ∀ i, ∀ u ∈ S.jumpSet i, u ≤ ((p - 3) * a : ℕ)) (i : k.Letter) :
       S.KillsCokernel i 0 a :=
@@ -264,7 +270,11 @@ lemma KummerChart.crysCocycles_le_cupOrthogonal_of_no_small_neg_jump [Topologica
         u ∉ Ico (-a : ℤ) 0) ∨
       k.IsUnramified ∧ ∀ i : k.Letter, k.letterJumps ζ U' i ⊆ Icc (-η : ℤ) 0 := by
     refine h_small.imp (fun h_avoid i u hu ↦ ?_) fun h_low ↦ ⟨hk, fun i u hu ↦ ?_⟩
-    · grind [mem_letterJumps]
+    · obtain hu | hu := hu
+      · obtain rfl | ⟨g, -, hg⟩ := (k.mem_letterJumps ζ).1 hu
+        exacts [by simp, h_avoid g u (.inl hg)]
+      · obtain rfl | ⟨g, -, hg⟩ := (k.mem_letterJumps ζ).1 hu
+        exacts [by simp, h_avoid g u (.inr hg)]
     · obtain rfl | ⟨g, -, hg⟩ := (k.mem_letterJumps ζ).1 hu
       exacts [by simp, h_low g hg]
   have differentBound_eq : k.differentBound = 0 := hk.right.right
@@ -566,12 +576,13 @@ lemma hasCupExponent_of_isTameType [TopologicalSpace Γ] (ho : IsOpenEmbedding �
     (fun i ↦ ?_) (fun i ↦ ?_) (fun i ↦ ?_) (fun _ ↦ h_gap) (by simp) h_window h_window'
     (.inl (by simp))
     ?_ c ⟨x, hx⟩
-  · exact d.killsCokernel_of_isKilledBy h_killed tateDual_le hq'' he_le hp (cost_le (by nlinarith))
+  · exact d.killsCokernel_of_isKilledBy h_killed tateDual_le hq'' he_le hp
+      (cost_le ((hq''_deg.trans (Nat.mul_le_mul hq'_deg hq_deg)).trans (Nat.le_add_right _ _)))
   · exact d.killsCokernel_of_isKilledBy (hY.isKilledBy_of_isWeilPair hKq d.isWeilPair_tameGen)
       (fun i ↦ window_le (h_window i)) hq he_le hp (cost_le (by omega))
   · exact d.killsCokernel_of_isKilledBy (hL.isKilledBy_of_isWeilPair hKq' d.isWeilPair_tameGen)
       (fun i ↦ window_le (h_window' i)) hq' he_le hp (cost_le (by omega))
   · grw [d.differentBound_le_one]
-    lia
+    omega
 
 end New.Lift
