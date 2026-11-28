@@ -8,6 +8,7 @@ public import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Calculus.LineDeriv.Basic
 import Mathlib.MeasureTheory.Integral.Pi
+import TauCeti.MeasureTheory.Constructions.Pi
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Separation.CompletelyRegular
@@ -19,7 +20,6 @@ public import Lib.General.Analysis.GaussianIntegral
 import Lib.Base
 import Lib.General.Analysis.HolomorphicIntegrals
 import Lib.General.Measure.HaarModulus
-import Lib.General.Measure.IntegralOperators
 import Lib.General.Topology
 
 /-!
@@ -834,7 +834,9 @@ lemma pi_normalizedVolume :
     Measure.pi (fun _ : T ↦ normalizedVolume ι) =
       (normalizedVolume (T × ι)).map (MeasurableEquiv.curry T ι ℂ) := by
   refine Measure.pi_eq ?_
-  simp [normalizedVolume, pow_mul', -inv_pow, Measure.map_smul, measurePreserving_curry.map_eq,
+  have h_curry : MeasurePreserving (MeasurableEquiv.curry T ι ℂ) :=
+    TauCeti.measurePreserving_curry fun _ _ ↦ (volume : Measure ℂ)
+  simp [normalizedVolume, pow_mul', -inv_pow, Measure.map_smul, h_curry.map_eq,
     (MeasurableEquiv.measurable _).aemeasurable, prod_mul_distrib, ← volume_pi_pi]
 
 /-- The continuous multilinear map sending (for signs ε : ι → ℤˣ) a T-indexed family of Fock vectors

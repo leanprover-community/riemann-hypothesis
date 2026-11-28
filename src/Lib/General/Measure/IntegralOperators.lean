@@ -57,15 +57,11 @@ lemma New.measurePreserving_sigma (e : Sigma n ≃ Y) :
   (TauCeti.measurePreserving_piCurry (fun (i : ι) (_ : n i) ↦ (volume : Measure α))).comp
     (volume_measurePreserving_piCongrLeft (fun _ : Y ↦ α) e).symm
 
-/-- Currying, `α^(ι × κ) → (α^κ)^ι`, preserves the product volume measures. -/
-lemma New.measurePreserving_curry : MeasurePreserving (MeasurableEquiv.curry ι κ α) :=
-  measurePreserving_sigma (.sigmaEquivProd ι κ)
-
 /-- Exchanging the two indices, `(α^κ)^ι → (α^ι)^κ`, preserves the product volume measures. -/
 lemma New.measurePreserving_flip : MeasurePreserving (flip : (ι → κ → α) → κ → ι → α) :=
   -- Uncurry, then curry again with the two indices swapped.
   (measurePreserving_sigma ((Equiv.sigmaEquivProd κ ι).trans (.prodComm κ ι))).comp
-    measurePreserving_curry.symm
+    (TauCeti.measurePreserving_curry (fun (_ : ι) (_ : κ) ↦ (volume : Measure α))).symm
 
 end ProductMeasure
 

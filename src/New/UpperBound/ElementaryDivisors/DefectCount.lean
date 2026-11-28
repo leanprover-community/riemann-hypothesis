@@ -7,6 +7,7 @@ import Mathlib.Analysis.BoxIntegral.UnitPartition
 import Mathlib.Analysis.Convex.Measure
 import Mathlib.RingTheory.Etale.Weakly
 import Std.Tactic.BVDecide.Normalize.Bool
+import TauCeti.MeasureTheory.Constructions.Pi
 public import New.UpperBound.ElementaryDivisors.PieriCone
 public import New.UpperBound.ElementaryDivisors.RootLemma
 import Lib.General.Measure.IntegralOperators
@@ -849,8 +850,10 @@ lemma volume_degreeSlab_le {k : ℕ} {D : ZMod N → ℝ} {B : ℝ} (h_deg : ∀
     volume (degreeSlab (k + 1) D) ≤ volume (Set.univ.pi block) := by
       have h_subset : degreeSlab (k + 1) D ⊆ (fun β s b ↦ β (b, s)) ⁻¹' Set.univ.pi block :=
         fun β ⟨hβ_nonneg, hβ_deg⟩ s _ ↦ ⟨fun b ↦ hβ_nonneg (b, s), hβ_deg s⟩
+      have h_curry :=
+        TauCeti.measurePreserving_curry (fun (_ : Fin k.succ) (_ : ZMod N) ↦ (volume : Measure ℝ))
       exact (measure_mono h_subset).trans
-        ((measurePreserving_flip.comp measurePreserving_curry).measure_preimage_le _)
+        ((measurePreserving_flip.comp h_curry).measure_preimage_le _)
     _ = ∏ s : ZMod N, volume (block s) := volume_pi_pi block
     _ ≤ ∏ _s : ZMod N, ‖B ^ k / k !‖ₑ :=
         prod_le_prod fun s _ ↦ volume_sum_mem_Icc_le (h_deg s)
