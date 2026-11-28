@@ -117,11 +117,13 @@ lemma sum_vonMangoldt_div_le (N : ℕ) : ∑ n ∈ Ioc 0 N, vonMangoldt n / n �
       ≤ ∑ n ∈ Ioc 0 N, vonMangoldt n * (2 * (N / n : ℕ)) := by
         simp only [mul_sum, mul_div_left_comm (N : ℝ)]
         exact sum_le_sum fun n hn ↦ mul_le_mul_of_nonneg_left (h_floor n hn) vonMangoldt_nonneg
-    _ = 2 * ∑ n ∈ Ioc 0 N, Real.log n := by
+    _ = 2 * Real.log (N.factorial : ℝ) := by
         simp only [mul_left_comm _ (2 : ℝ), ← mul_sum, ← sum_Ioc_mul_zeta_eq_sum,
-          vonMangoldt_mul_zeta, log_apply]
-    _ ≤ 2 * ∑ _n ∈ Ioc 0 N, Real.log N := by gcongr with n hn <;> simp_all [mem_Ioc]
-    _ = N * (2 * Real.log N) := by simp [mul_left_comm]
+          vonMangoldt_mul_zeta, log_apply, Real.sum_log_eq_log_factorial]
+    _ ≤ 2 * Real.log ((N : ℝ) ^ N) :=
+      mul_le_mul_of_nonneg_left
+        (Real.log_le_log (by positivity) (by exact_mod_cast N.factorial_le_pow)) zero_le_two
+    _ = N * (2 * Real.log N) := by rw [Real.log_pow, mul_left_comm]
 
 
 /-- Growth of the partial sums. Let `d` be a prime, `q` any natural number, and
