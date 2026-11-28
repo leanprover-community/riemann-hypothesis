@@ -163,7 +163,8 @@ private lemma exists_det_mul_fromRows {a N c : Type} [Fintype a] [Fintype N] [Fi
     [DecidableEq a] [DecidableEq N] {h : ℕ} (e : a ⊕ N ≃ Fin h ⊕ c)
     (Z : Matrix (a ⊕ N) c ℂ) :
     ∃ (d : ℂ) (A : Matrix (Fin h) N ℂ),
-      (∀ X : Matrix N (Fin h) ℂ, ((fromCols (fromRows 0 X) Z).submatrix id e).det = d * (A * X).det) ∧
+      (∀ X : Matrix N (Fin h) ℂ,
+        ((fromCols (fromRows 0 X) Z).submatrix id e).det = d * (A * X).det) ∧
       ‖d‖ ^ 2 ≤ ∏ b : c, ∑ x : a ⊕ N, ‖Z x b‖ ^ 2 ∧
       (A * Aᴴ).det.re ≤ 1 := by
   classical
@@ -271,7 +272,6 @@ lemma New.exists_toPoly_eq_det_and_weylNormSq_le {a N c : Type} [Fintype a] [Dec
       simp [y, Pi.star_apply]
     rw [weylNormSq_smul, h_weyl]
     exact (mul_le_of_le_one_right (by positivity) h_A).trans h_d
-
 
 end SemiInvariantNorm
 
