@@ -241,7 +241,7 @@ lemma besselTranslate_mul [HasPrimitiveRoot5040 E] {s t : S.ResidueGL}
   obtain ⟨N, -, hN⟩ := exists_unitary_besselFn_mul (side := .full) hδ
   have hMN (y : NumberField.InfinitePlace E → 𝔰.G₁) :
       S.besselFn .full (S.ratToInf (γ * δ) * y) = (M * N) *ᵥ S.besselFn .full y := by
-    rw [map_mul, mul_assoc, hM, hN, mulVec_mulVec]
+    rw [S.ratToInf.map_mul, mul_assoc, hM, hN, mulVec_mulVec]
   have h_matrix : S.besselTranslate (s * t) φ (c, i) =
       ∑ k : S.BesselCoord, star ((M * N) i k) * φ (c'', k) :=
     besselTranslate_apply (mul_mem hγ hδ) (termsOver.mul hγ_over hδ_over) hMN φ i
@@ -877,15 +877,20 @@ lemma integral_extendedBesselChar_conj_eq {T : Finset (FinPlace E)} [T.StarStabl
     refine sum_congr rfl fun g _ ↦ ?_
     -- The integrand is `extendedBesselChar F.levelUnit` at the integral element
     -- `(σ g k) l (σ g k)⁻¹`.
-    simpa [φ, hσ, mul_assoc] using
+    simpa only [φ, Subgroup.coe_mul, Subgroup.coe_inv, (S.toPlaces T).map_mul,
+      (S.toPlaces T).map_inv, S.reduction.map_mul, S.reduction.map_inv, hσ, _root_.mul_inv_rev,
+      mul_assoc] using
       S.extendedBesselChar_toPlaces_eq_reducedChar hF (σ g * k * l * (σ g * k)⁻¹)
   refine mul_left_cancel₀ (a := (Fintype.card S.ResidueGL : ℂ)) (by simp) ?_
   calc Fintype.card S.ResidueGL * ∫ y in K, φ y ∂F.groupMeasure
       = ∑ g : S.ResidueGL, ∫ y in K, φ (S.toPlaces T (σ g) * y) ∂F.groupMeasure := by
         simp only [h_translate, sum_const, card_univ, nsmul_eq_mul]
     _ = ∫ y in K, ∑ g : S.ResidueGL, φ (S.toPlaces T (σ g) * y) ∂F.groupMeasure :=
-        (integral_finsetSum _ fun g _ ↦
-          ContinuousOn.integrableOn_compact unitaryLevel_open_compact.2 (by fun_prop)).symm
+        (integral_finsetSum _ fun g _ ↦ ContinuousOn.integrableOn_compact
+          unitaryLevel_open_compact.2 ((continuous_extendedBesselChar.comp
+            (((continuous_const.mul continuous_id).mul continuous_const).mul
+              (continuous_const.mul continuous_id).inv) :
+            Continuous fun y ↦ φ (S.toPlaces T (σ g) * y)).continuousOn)).symm
     _ = Fintype.card S.ResidueGL * F.groupMeasure.real K • S.reducedCharMean (S.reduction l) := by
         rw [setIntegral_congr_fun measurableSet_unitaryLevel h_const, setIntegral_const,
           mul_smul_comm]
