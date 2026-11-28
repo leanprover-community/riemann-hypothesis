@@ -150,8 +150,8 @@ lemma sum_coeff_labelIdem_radicalHom {c : k[X]} (hc : IsLabel (Fintype.card n) c
   have h_coeff (u : GL n k) : (labelIdem n c).coeff (y * (u * z)) =
       χ 1 / Nat.card (GL n k) * starRingEnd ℂ (χ (u * (z * y))) := by
     have h_conj : χ (y * (u * z)) = χ (u * (z * y)) := by
-      rw [show y * (u * z) = y * (u * (z * y)) * y⁻¹ by group]
-      exact isClassFunction_evalGL _ y
+      have hχ_class : IsClassFunction χ := isClassFunction_evalGL
+      simpa only [mul_assoc] using hχ_class.apply_mul_comm y (u * z)
     simp [← h_conj, labelIdem, hc, χ, groupAlgElem]
   calc ∑ᶠ Z : Matrix n n k, (labelIdem n c).coeff (y * (U (ofAdd Z) * z))
       = χ 1 / Nat.card (GL n k) *

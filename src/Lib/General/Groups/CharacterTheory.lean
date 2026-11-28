@@ -309,11 +309,14 @@ variable {ι : Type _} [Fintype ι] [DecidableEq ι]
   {x : ∀ i : ι, ℂ[G i]} {V : Type*} [AddCommGroup V] [Module ℂ V]
   (σ : Representation ℂ H V) {e : ℂ[H]} {ρ : Representation ℂ (∀ i : ι, G i) V}
 
+/-- A class function takes the same value on the products `a * b` and `b * a`. -/
+lemma IsClassFunction.apply_mul_comm {f : H → ℂ} (hf : IsClassFunction f) (a b : H) :
+    f (a * b) = f (b * a) := by
+  simpa [mul_assoc] using hf (b * a) a
+
 lemma IsClassFunction.commute (he : IsClassFunction e.coeff) (x : ℂ[H]) : Commute x e := by
-  have h_swap (t g : H) : e.coeff (g * t⁻¹) = e.coeff (t⁻¹ * g) := by
-    simpa [mul_assoc] using he (t⁻¹ * g) t
   ext g
-  simp only [coeff_mul_apply_left x e, coeff_mul_apply_right e x, h_swap, mul_comm]
+  simp only [coeff_mul_apply_left x e, coeff_mul_apply_right e x, he.apply_mul_comm g, mul_comm]
 
 /-- `e` is a central idempotent of the complex group algebra `ℂ[H]` of a group `H`: it is
 idempotent and its coefficients form a class function. -/
@@ -474,7 +477,7 @@ lemma IsIrreducibleChar.mul_classInner_translate (hχ : IsIrreducibleChar χ) {�
         = LinearMap.trace ℂ _ (asAlgebraHom V.ρ (z.val * single y 1)) := by
           rw [asAlgebraHom_eq_sum, map_sum]
           refine Fintype.sum_equiv (Equiv.inv G) _ _ fun x ↦ ?_
-          have h_swap : φ (y * x) = φ (x * y) := by simpa [mul_assoc] using hφ (x * y) y
+          have h_swap : φ (y * x) = φ (x * y) := hφ.apply_mul_comm y x
           rw [V.conj_char]
           simp [z, h_swap, FDRep.character, mul_comm]
       _ = TauCeti.Representation.centralCharacter V.ρ z * V.character y := by
