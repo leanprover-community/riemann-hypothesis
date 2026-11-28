@@ -1,6 +1,5 @@
 module
 
-import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.Unramified.LocalStructure
 public import Lib.Cohomology.ProjectiveLine.ConstantLineFormula
 public import Lib.PadicComparison.Duality.GoodPairs
@@ -87,9 +86,7 @@ lemma isBijective_algToBaseChange (F : AbFunctor TestRing) :
     ⟨Over.homMk _ (Spec.homEquiv.eq_symm_apply.2 congr($(y.property).down))⟩
   refine ⟨B, x, 𝟙 c, ?_, fun d z f hzf ↦ ?_, ?_⟩
   · -- The point `x` lies over `y`.
-    refine Eq.trans ?_
-      (ConcreteCategory.congr_hom ((testIncl ⋙ (geomPoints R A).obj Y).map_id c) y).symm
-    rfl
+    exact (ConcreteCategory.congr_hom ((testIncl ⋙ (geomPoints R A).obj Y).map_id c) y).symm
   · -- The ring map of `f` is a map of `A`-algebras, by the second component of `hzf`.
     have h_commutes (a : A) : f.hom.hom (algebraMap A c.obj a) = algebraMap A d.obj a :=
       congr($(hzf).val.2.down.hom' a).symm
@@ -129,10 +126,9 @@ lemma ComparedTheory.mem_of_isClosedClass_of_isCharting [PreValuationRing A]
       (hU : IsZariskiLocallyTop (ringOf (𝟭 _)) U)
       (h_mem : P (freeAb U.toFunctor)) : P (freeAb Y) := by
     -- A point of `U` lies in the range of `U.ι`.
-    have h_cover : IsZariskiLocallyTop (ringOf (𝟭 _)) (.range U.ι ⊔ offClosedFiber Y) := by
-      intro t y m hm
-      refine (hU t y m hm).imp fun _ ↦ .imp_right fun h_in_U B f hf ↦ ?_
-      simp [show Y.map f y ∈ U.obj B from h_in_U B f hf]
+    have h_cover : IsZariskiLocallyTop (ringOf (𝟭 _)) (.range U.ι ⊔ offClosedFiber Y) :=
+      fun t y m hm ↦ (hU t y m hm).imp fun _ ↦ .imp_right fun h B f hf ↦
+        Or.inl ⟨⟨_, h B f hf⟩, rfl⟩
     have h_inj : IsZariskiLocallyTop (ringOf (𝟭 _)) (sameClassLocus U.ι (offClosedFiber Y)) :=
       isZariskiLocallyTop_sameClassLocus_of_injective _ _ fun _ ↦ Subtype.val_injective
     exact h_iff.2 ((D.isFiniteLerayHirsch_iff_of_locally_bijective U.ι h_cover h_inj).1
@@ -198,9 +194,7 @@ private lemma maximalIdeal_le_radical_span {A : ClosurePlace} {p : ℕ} [Fact p.
     (hp : A.valuation p < 1) (a : A⁰) : IsLocalRing.maximalIdeal A ≤ radical (span {(a : A)}) := by
   -- `A` comes from `PadicAlgCl p`, whose valuation has rank one: a nonzero `a` divides a power of
   -- any nonunit.
-  obtain ⟨j, hj⟩ : ∃ j : Ω →+* PadicAlgCl p, (New.intQpBar p).comap j = A :=
-    exists_comap_intQpBar_eq hp
-  subst hj
+  obtain ⟨j, rfl⟩ := exists_comap_intQpBar_eq hp
   have h_int : (Valued.v.comap j).Integers ((New.intQpBar p).comap j) :=
     Valuation.integer.integers _
   -- A power of a value below one drops below any positive value. So a nonunit `b` (valuation
@@ -228,36 +222,30 @@ private lemma isBijective_restrict_restrictScalars_iff {A : ClosurePlace} {p : �
         ⟨x, eq_top_of_isUnit_mem _ (mem_map_of_mem _ ((A.valuation_lt_one_iff p).2 hp))
           ((NeZero.ne (p : Ω)).isUnit.map (algebraMap Ω c.obj))⟩ }
   -- Conversely, if a test `c` carries a point of `offClosedFiber X`, nonzero elements of `A` are
-  -- units in `c` (rank one), so `A → c` extends to `Ω` in exactly one way;
-  -- `hasUniversalPoints_structurePt` gives the test `B` over `Ω` that is universal under `c`.
-  have h_univ : κ.HasUniversalPoints u := fun c y ↦ by
-    have h_unit (a : A⁰) : IsUnit (algebraMap A c.obj a) := by
-      -- (the ring of `c` appears once as `c` and once as `(TestOver.toTest A).obj c`)
-      have h := radical_eq_top.1 (eq_top_mono
-        ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) y.property)
-      rw [← span_singleton_eq_top, ← Set.image_singleton (f := algebraMap A c.obj), ← map_span]
-      exact h
-    obtain ⟨B, x, s, -, h_uniq, h_bij⟩ :=
-      hasUniversalPoints_structurePt A Ω c
-        ⟨⟨CommAlg.homOfRingHom _ (IsLocalization.lift_eq h_unit)⟩⟩
-    refine ⟨B, _, s, rfl, fun d z f h_zf ↦ ?_, h_bij⟩
-    -- Two `A`-algebra maps out of the fraction field `Ω` agree, so the lift followed by `f` is the
-    -- structure map of `d`; `g` is the factorisation that this gives.
-    obtain ⟨g, ⟨-, hg_comp⟩, hg_uniq⟩ :=
-      h_uniq d ⟨⟩ f congr(⟨⟨CommAlgCat.ofHom $(IsLocalization.algHom_ext A⁰ (by ext))⟩⟩)
-    -- `h_zf` says that `z` is the image of `y` under `f`.
-    obtain rfl : z = X.map f y.val := congrArg Subtype.val h_zf
-    refine ⟨g, ⟨?_, hg_comp⟩, fun g' ⟨_, hg'_comp⟩ ↦ hg_uniq g' ⟨rfl, hg'_comp⟩⟩
-    -- `X.map g (X.map s y) = X.map (s ≫ g) y = X.map f y = z`. What is left holds by definition:
-    -- `(TestOver.restrictScalars A Ω ⋙ X).map g` is `X.map` of
-    -- `(Comparison.restrict _ _).functor.map g`.
-    rw [← hg_comp, X.map_comp_apply]
-    rfl
+  -- units in `c` (rank one), so `A → c` extends uniquely to `Ω`.
+  have h_unit {c : TestOver A} (hc : (IsLocalRing.maximalIdeal A).map (algebraMap A c.obj) = ⊤)
+      (a : A⁰) : IsUnit (algebraMap A c.obj a) := by
+    rw [← span_singleton_eq_top, ← Set.image_singleton (f := algebraMap A c.obj), ← map_span,
+      ← radical_eq_top]
+    exact eq_top_mono ((map_mono (maximalIdeal_le_radical_span hp a)).trans (map_radical_le _)) hc
+  -- Two `A`-algebra maps out of the fraction field `Ω` agree.
+  have h_sub (c : TestOver A) :
+      Subsingleton ((reprBy ⟨.of A Ω, isTest_of_preValuationRing⟩).obj c) :=
+    ⟨fun _ _ ↦ congr(⟨⟨CommAlgCat.ofHom $(IsLocalization.algHom_ext A⁰ (by ext))⟩⟩)⟩
+  -- Thus `u` is the pull-back of `TestOver.structurePt A Ω` along the map sending a point of
+  -- `offClosedFiber X` to that unique extension `Ω → c`, so `κ` is bijective along `u`.
+  let t : (offClosedFiber X).toFunctor ⟶ reprBy ⟨.of A Ω, isTest_of_preValuationRing⟩ :=
+    { app c := ↾fun y ↦ ⟨⟨CommAlg.homOfRingHom _ (IsLocalization.lift_eq (h_unit y.property))⟩⟩
+      naturality _ _ _ := by ext; exact Subsingleton.elim _ _ }
+  have h_bij : κ.IsBijective (freeAbMap u) :=
+    (hasUniversalPoints_structurePt A Ω).isBijective_of_isPullback (toUnit _) t <|
+      isPullback_iff.2 ⟨fun _ _ ↦ Subsingleton.elim _ _,
+        fun _ _ y _ ↦ ⟨y.val, ⟨rfl, rfl⟩, fun _ ⟨_, h⟩ ↦ congrArg Subtype.val h⟩⟩
   -- So `κ` is bijective on `X` iff `offClosedFiber X ⊆ X` is an equivalence iff the quotient is
   -- acyclic.
   calc κ.IsBijective (𝟙 (κ.functor ⋙ freeAb X))
     _ ↔ IsCohomEquiv (locConstAlong (𝟭 _)) (freeAb.map (offClosedFiber X).ι) := by
-      refine (h_univ.isBijective.trans_iff (c := .id _) ?_).trans isCohomEquiv_iff_isBijective.symm
+      refine (h_bij.trans_iff (c := .id _) ?_).trans isCohomEquiv_iff_isBijective.symm
       -- `u` followed by the inclusion of `offClosedFiber X` is the identity
       exact freeAb.hom_ext fun _ _ ↦ rfl
     _ ↔ ∀ n, Subsingleton (H (relFreeAb (offClosedFiber X)) (locConstAlong (𝟭 _)) n) :=
