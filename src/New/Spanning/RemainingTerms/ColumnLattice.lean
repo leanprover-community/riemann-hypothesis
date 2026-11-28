@@ -52,11 +52,13 @@ def conjColumnsAtInfinity : Matrix 𝔰.κ ι E →+ (InfinitePlace E → ι →
   map_zero' := by simp [funext_iff]
   map_add' q q' := by simp [funext_iff]
 
+/-- The evaluation of conjColumnsAtInfinity at an infinite place and matrix indices. -/
 @[simp]
 lemma conjColumnsAtInfinity_apply (q : Matrix 𝔰.κ ι E) (v : InfinitePlace E) (l : ι) (a : 𝔰.κ) :
     conjColumnsAtInfinity E 𝔰 ι q v l a = star (Φ v (q a l)) :=
   rfl
 
+/-- The additive map conjColumnsAtInfinity is injective. -/
 lemma conjColumnsAtInfinity_injective : Function.Injective (conjColumnsAtInfinity E 𝔰 ι) := by
   intro q q' h_eq
   ext a l
