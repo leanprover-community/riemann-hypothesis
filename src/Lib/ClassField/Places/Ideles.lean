@@ -142,6 +142,18 @@ lemma mem_idelesUnitOff :
     a ∈ idelesUnitOff S ↔ ∀ v : FinPlace K, v ∉ S → Valued.v (a.val v) = 1 := by
   simp [idelesUnitOff, ← val_inj, ideleAt]
 
+/-- Two finite ideles have the same valuations outside `S` exactly when their quotient is a
+unit outside `S`. -/
+lemma div_mem_idelesUnitOff_iff {b : (𝔸f K)ˣ} :
+    a / b ∈ idelesUnitOff S ↔
+      ∀ w : FinPlace K, w ∉ S → Valued.v (a.val w) = Valued.v (b.val w) := by
+  rw [mem_idelesUnitOff]
+  refine forall₂_congr fun w _ ↦ ?_
+  change Valued.v (↑(ideleAt w (a / b)) : LocField w) = 1 ↔
+    Valued.v (↑(ideleAt w a) : LocField w) = Valued.v (↑(ideleAt w b) : LocField w)
+  rw [map_div, Units.val_div_eq_div_val, map_div₀]
+  exact div_eq_one_iff_eq (by simp)
+
 lemma idelesUnitOff_mono {T : Set (FinPlace K)} (h_sub : S ⊆ T) :
     idelesUnitOff S ≤ idelesUnitOff T :=
   biInf_mono fun _ hv ↦ Set.notMem_subset h_sub hv

@@ -145,14 +145,12 @@ theorem norm_padic_eq_prod {p : ℕ} [Fact p.Prime] (ι : ℂ →+* ℂ_[p]) :
   obtain ⟨N, hN, γ, h_unit, (h_pow : (θ.val.fst y : ℂ) ^ N =
       ∏ τ : K →+* ℂ, τ γ ^ (-θ.val.snd.toAdd τ))⟩ := θ.exists_pow_eq_prod y
   have h_norm (τ : K →+* ℂ) : ‖ι (τ γ)‖ = ‖adeleExtension (ι.comp τ) y.val‖ ^ N := by
-    -- `y ^ N / γ` is a unit at the prime induced by `ι ∘ τ`.
-    have h_val : ‖adeleExtension (ι.comp τ) (y ^ N / principalIdele γ).val‖ =
-        ‖adeleExtension (ι.comp τ) 1‖ :=
-      (norm_adeleExtension_eq_iff _ _).2
-        (by simpa using mem_idelesUnitOff.1 h_unit _ (Set.notMem_empty _))
-    rw [← norm_pow, ← map_pow, ← Units.val_pow_eq_pow_val,
-      ← div_mul_cancel (y ^ N) (principalIdele γ), Units.val_mul, map_mul, norm_mul, h_val]
-    simp
+    -- The quotient has valuation one at the prime induced by `ι ∘ τ`.
+    rw [← norm_pow, ← map_pow, ← Units.val_pow_eq_pow_val]
+    have h_principal : adeleExtension (ι.comp τ) (principalIdele γ).val = ι (τ γ) :=
+      adeleExtension_algebraMap (ι.comp τ) γ.val
+    rw [← h_principal, norm_adeleExtension_eq_iff]
+    exact (div_mem_idelesUnitOff_iff.mp h_unit _ (Set.notMem_empty _)).symm
   refine (pow_left_inj₀ (norm_nonneg _) (by positivity) hN.ne').1 ?_
   calc ‖ι (θ.val.fst y)‖ ^ N
     _ = ∏ τ : K →+* ℂ, ‖ι (τ γ)‖ ^ (-θ.val.snd.toAdd τ) := by simp [← norm_pow, ← map_pow, h_pow]
@@ -417,14 +415,11 @@ lemma exists_chiFin_pow_eq_prod (x : (𝔸f E)ˣ) :
   obtain ⟨n, hn, y, h_unit, (h_pow : (chiFinAlgebraic.val.fst x : ℂ) ^ n =
       ∏ τ : E →+* ℂ, τ y ^ (-(chiFinAlgebraic (E := E)).val.snd.toAdd τ))⟩ :=
     chiFinAlgebraic.exists_pow_eq_prod x
-  refine ⟨n, hn, y, fun w ↦ ?_, ?_⟩
-  · have h_one := mem_idelesUnitOff.1 h_unit w id
-    rw [← div_mul_cancel (x ^ n) (principalIdele y), Units.val_mul]
-    simp [h_one]
-  · -- The exponents are `0` on the CM type and `-1` on its conjugate.
-    rw [← chiFinAlgebraic_apply, h_pow, prod_embeddings_eq_prod_pairs]
-    refine prod_congr rfl fun v _ ↦ ?_
-    simp [chiFinAlgebraic_exponent v, starRingEnd_apply (R := E), map_star_complex]
+  refine ⟨n, hn, y, fun w ↦ div_mem_idelesUnitOff_iff.mp h_unit w (Set.notMem_empty w), ?_⟩
+  -- The exponents are `0` on the CM type and `-1` on its conjugate.
+  rw [← chiFinAlgebraic_apply, h_pow, prod_embeddings_eq_prod_pairs]
+  refine prod_congr rfl fun v _ ↦ ?_
+  simp [chiFinAlgebraic_exponent v, starRingEnd_apply (R := E), map_star_complex]
 
 /-- For an embedding `ι` of `ℂ` into `ℂ_[p]`, the `p`-adic absolute value of
 `υ(x) |x| ^ (-1 / 2)` is the product over the infinite places `v` of the absolute values of `x`
