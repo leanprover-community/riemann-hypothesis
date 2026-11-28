@@ -615,29 +615,12 @@ end LocalExtension
 
 /-!
 ## Unramified characters with a given value at Frobenius
-
-* `New.exists_openNormalSubgroup_apply_eq`: a continuous map from `Γ × Y` (`Γ` a Galois group as in
-  `New.IsProGalois`, `Y` compact) to a discrete space satisfies `f (u, y) = f (1, y)` on an open
-  normal subgroup.
 -/
 
 section UnramifiedCharacters
 
 variable {Γ Ω k : Type*} [Group Γ] [TopologicalSpace Γ] [Field k] [Field Ω] [Algebra k Ω]
   [MulSemiringAction Γ Ω] {A : ValuationSubring Ω} [L : IsLocalGalois Γ k A]
-
-/-- For the Galois group `Γ` of `Ω` over `k` (`New.IsProGalois`), a compact space `Y`, a discrete
-space `X` and a continuous `f : Γ × Y → X`, there is an open normal subgroup `U` of `Γ` with
-`f (u, y) = f (1, y)` for all `u ∈ U` and all `y`. -/
-lemma exists_openNormalSubgroup_apply_eq {Y X : Type*} [IsProGalois Γ k Ω] [TopologicalSpace Y]
-    [CompactSpace Y] [TopologicalSpace X] [DiscreteTopology X] {f : Γ × Y → X} (hf : Continuous f) :
-    ∃ U : OpenNormalSubgroup Γ, ∀ u ∈ U, ∀ y : Y, f (u, y) = f (1, y) := by
-  -- The set of `(u, y)` with `f (u, y) ≠ f (1, y)` is closed, and so is its projection to `Γ`, as
-  -- `Y` is compact. The complement is an open neighbourhood of `1`.
-  have h_closed : IsClosed {p : Γ × Y | f p ≠ f (1, p.snd)} :=
-    (isClosed_discrete {x : X × X | x.fst ≠ x.snd}).preimage (hf.prodMk (by fun_prop))
-  simpa [Set.subset_def] using ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one
-    (isClosedMap_fst_of_compactSpace _ h_closed).isOpen_compl
 
 /-- Let `Γ` be the absolute Galois group of a local field `k` and `φ` an arithmetic Frobenius
 (`New.IsFrob` for `q = residueCard k A`). For every `r` in `QZ = ℚ/ℤ` there is exactly one

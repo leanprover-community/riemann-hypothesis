@@ -20,6 +20,9 @@ principal ideal `(a)` by divisibility of the difference by `a`.
 
 ## Main definitions and results
 
+* `New.exists_openNormalSubgroup_apply_eq`: a continuous map on a product of a compact
+  topological group and a compact space is constant in the first variable on some open
+  normal subgroup, when the target is discrete.
 * `IsCompact.eventually_forall_mem`: a form of the tube lemma for a jointly continuous map of two
   variables, with the continuity hypothesis discharged by `fun_prop` by default.
 * `New.Selmer.exists_procyclic_generator`: a continuous character of a compact group with values in
@@ -45,6 +48,23 @@ lemma IsCompact.eventually_forall_mem {X Y Z : Type*} [TopologicalSpace X] [Topo
     (h_nhds : ∀ y ∈ K, W ∈ nhds (f x₀ y)) (hf : Continuous f.uncurry := by fun_prop) :
     ∀ᶠ x : X in nhds x₀, ∀ y ∈ K, f x y ∈ W :=
   hK.eventually_forall_of_forall_eventually fun y hy ↦ hf.continuousAt (h_nhds y hy)
+
+/-- For a compact topological group `Γ`, a compact space `Y`, and a discrete space `X`,
+a continuous map `f : Γ × Y → X` satisfies `f (u, y) = f (1, y)` for all `y` on some open
+normal subgroup of `Γ`. -/
+lemma New.exists_openNormalSubgroup_apply_eq {Γ Y X : Type*} [Group Γ] [TopologicalSpace Γ]
+    [IsTopologicalGroup Γ] [CompactSpace Γ] [TopologicalSpace Y]
+    [CompactSpace Y] [TopologicalSpace X] [DiscreteTopology X] {f : Γ × Y → X} (hf : Continuous f) :
+    ∃ U : OpenNormalSubgroup Γ, ∀ u ∈ U, ∀ y : Y, f (u, y) = f (1, y) := by
+  -- Project the clopen set of failures to `Γ`. The projection is open and, since `Y` is compact,
+  -- closed, so its complement is a clopen neighbourhood of `1`.
+  have h_bad : IsClopen {p : Γ × Y | f p ≠ f (1, p.snd)} :=
+    (isClopen_discrete {x : X × X | x.fst ≠ x.snd}).preimage (hf.prodMk (by fun_prop))
+  have h_good : IsClopen (Prod.fst '' {p : Γ × Y | f p ≠ f (1, p.snd)})ᶜ :=
+    ⟨(isOpenMap_fst _ h_bad.isOpen).isClosed_compl,
+      (isClosedMap_fst_of_compactSpace _ h_bad.isClosed).isOpen_compl⟩
+  simpa [Set.subset_def] using
+    IsTopologicalGroup.exist_openNormalSubgroup_sub_clopen_nhds_of_one h_good (by simp)
 
 /-- Two elements x and y have the same class modulo the principal ideal (a) if and only if a divides
 x − y. -/
