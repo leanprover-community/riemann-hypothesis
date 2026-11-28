@@ -205,7 +205,7 @@ theorem orbitalIntegral_eq_zero [Nonempty n] (hB : 13 * card n ^ 3 ≤ B)
     refine IsConj.symm (isConj_diagonal_of_isRoot_charpoly fun j ↦ ?_)
     have hA : A = (V.x.map (evalInf w))⁻¹.val * γ.val.val.map (Φ w) * (V.x.map (evalInf w)).val :=
       V.coe_ratEmbed_fst γ w
-    rw [hA, charpoly_mul_comm, ← mul_assoc, Units.mul_inv, one_mul]
+    rw [hA, Matrix.coe_units_inv, charpoly_units_conj']
     exact isRoot_numberedRoots hγ.separable (Φ w) j
   let Q : Matrix n n ℂ := diagonal (Pi.single i 1) * k.val
   have hQ_ne : Q ≠ 0 := by simp [Q]

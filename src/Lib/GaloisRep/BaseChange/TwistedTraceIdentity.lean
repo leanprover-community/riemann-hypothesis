@@ -843,8 +843,8 @@ private lemma New.exists_isMatchingRoots (hσ : σ ≠ 1) {μ : (𝔸f E)ˣ →*
   have charpoly_conj (x : Gf E' n) (ν : U (1 : Matrix n n E')) :
       ((x⁻¹ * e ν * x : Gf E' n) : Matrix n n (𝔸f E')).charpoly =
         (q ν).map (algebraMap E' (𝔸f E')) := by
-    rw [← charpoly_e ν, Subgroup.coe_mul, Units.val_mul, Matrix.charpoly_mul_comm,
-      ← Units.val_mul, ← Subgroup.coe_mul, mul_inv_cancel_left]
+    change (x.val⁻¹ * (e ν).val * x.val).val.charpoly = _
+    rw [Units.val_mul, Units.val_mul, coe_units_inv, charpoly_units_conj', charpoly_e]
   let supp : Set (Gf E' n) :=
     baseChangeGf '' support f ∪ twistedNorm (galoisGf σ) (finrank E E') '' support φ
   let C (P : E'[X]) : Prop := P.map (algebraMap E' (𝔸f E')) ∈
