@@ -1,5 +1,7 @@
 module
 
+import TauCeti.NumberTheory.LocalField.Padic
+import TauCeti.NumberTheory.LocalField.Unramified.Existence
 import TauCeti.RingTheory.RootsOfUnity.LocalRing
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.NumberTheory.CoefficientRings
@@ -71,23 +73,15 @@ lemma addVal_ell_le_finrank (O : CoeffRing ℓ) (K : IntermediateField ℚ_[ℓ]
 `ℚ_ℓ`. -/
 lemma natDegree_minpoly_le_of_pow_eq_one {k : ℕ} [NeZero k] {ζ : PadicAlgCl ℓ}
     (hζ : ζ ^ (ℓ ^ k - 1) = 1) : (minpoly ℚ_[ℓ] ζ).natDegree ≤ k := by
-  -- The conjugates of `ζ` are among the `ζ ^ ℓ ^ j`, which depend only on `j` modulo `k`.
-  have h_frob : Function.IsPeriodicPt (· ^ ℓ) k ζ := by
-    simp only [Function.IsPeriodicPt, Function.IsFixedPt, pow_iterate]
-    rw [← Nat.sub_add_cancel (Nat.one_le_pow k ℓ (NeZero.pos ℓ)), pow_succ, hζ, one_mul]
-  have h_roots : (minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ) ⊆
-      Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.val := by
-    intro y hy
-    obtain ⟨σ, rfl⟩ : ∃ σ : Gp ℓ, σ ζ = y := minpoly.exists_algEquiv_of_root'
-      (Algebra.IsAlgebraic.isAlgebraic ζ) (aeval_eq_zero_of_mem_rootSet hy)
-    obtain ⟨j, hj⟩ : ∃ j : ℕ, σ ζ = ζ ^ ℓ ^ j := exists_apply_eq_pow not_dvd_pow_sub_one hζ σ
-    refine ⟨⟨j % k, Nat.mod_lt j (NeZero.pos k)⟩, ?_⟩
-    simpa [pow_iterate, hj] using h_frob.iterate_mod_apply j
-  calc (minpoly ℚ_[ℓ] ζ).natDegree = ((minpoly ℚ_[ℓ] ζ).rootSet (PadicAlgCl ℓ)).ncard := by
-        rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card,
-          card_rootSet_eq_natDegree (Algebra.IsSeparable.isSeparable _ ζ) (IsAlgClosed.splits _)]
-    _ ≤ (Set.range fun j : Fin k ↦ ζ ^ ℓ ^ j.val).ncard := Set.ncard_le_ncard h_roots
-    _ ≤ k := by simpa [Nat.card_coe_set_eq] using Finite.card_range_le fun j : Fin k ↦ ζ ^ ℓ ^ j.val
+  -- The `(ℓ ^ k - 1)`-st roots of unity lie in the degree-`k` unramified extension.
+  let U := TauCeti.unramifiedExtension ℚ_[ℓ] (PadicAlgCl ℓ) k
+  have h_mem : ζ ∈ U := by
+    change ζ ∈ TauCeti.unramifiedExtension ℚ_[ℓ] (PadicAlgCl ℓ) k
+    rw [TauCeti.unramifiedExtension_eq_adjoin_setOf_pow_eq_one (NeZero.ne k)]
+    exact subset_adjoin _ _ (by simpa [Padic.natCard_residueField] using hζ)
+  have h_degree : finrank ℚ_[ℓ] U = k := TauCeti.finrank_unramifiedExtension (NeZero.ne k)
+  have : FiniteDimensional ℚ_[ℓ] U := .of_finrank_pos (h_degree.symm ▸ NeZero.pos k)
+  simpa only [U.minpoly_eq, h_degree] using minpoly.natDegree_le (A := ℚ_[ℓ]) (⟨ζ, h_mem⟩ : U)
 
 /-- If a coefficient ring `O`, the ring of integers of a finite Galois extension of `ℚ_ℓ`, holds a
 primitive `m`-th root of unity `ζ` of `ℚ̄_ℓ` and `m` is prime to `ℓ`, then the residue field of
