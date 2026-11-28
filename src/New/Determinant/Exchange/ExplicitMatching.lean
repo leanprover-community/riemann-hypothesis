@@ -82,7 +82,7 @@ namespace New.Rows
 
 open NumberField Finset Matrix MvPolynomial Sum Fock Fintype Function Real ComplexOrder
 
-variable {E n m a b p l : Type} [Field E] [NumberField E] [Fintype n] [DecidableEq n] [Fintype m]
+variable {E n m a b p l : Type} [Field E] [Fintype n] [DecidableEq n] [Fintype m]
   [DecidableEq m] [Fintype a] [DecidableEq a] [Fintype b] [Fintype p] [DecidableEq p] [Fintype l]
   [DecidableEq l]
 
@@ -102,21 +102,18 @@ def posBlockEmb : GInf E (1 : m → ℤˣ) →* GInf E (blockSigns j) :=
 
 attribute [simp] val_posBlockEmb_apply_coe
 
-omit [NumberField E] in
 /-- At each place, the inverse of the image of `k` has the matrix of the image of `k⁻¹`. -/
 lemma coe_inv_posBlockEmb (τ : InfinitePlace E) (k : GInf E (1 : m → ℤˣ)) :
     (((posBlockEmb j k τ)⁻¹ : U (signMatrix (blockSigns j))) : Matrix n n ℂ) =
       (posBlockEmb j k⁻¹ τ : Matrix n n ℂ) := by
   simp
 
-omit [NumberField E] in
 /-- At each place, the image of `k` lies in `blockDiagAlg (blockSigns j)`, the algebra of matrices
 that commute with the diagonal matrix of the signs, that is, are block diagonal for them. -/
 lemma posBlockEmb_mem_blockDiagAlg (τ : InfinitePlace E) (k : GInf E (1 : m → ℤˣ)) :
     (posBlockEmb j k τ : Matrix n n ℂ) ∈ blockDiagAlg (blockSigns j) := by
   simp [mem_blockDiagAlg, reindex_equiv j]
 
-omit [NumberField E] in
 /-- At each place `τ`, the principal minor of `posBlockEmb j k τ` on the indices `i` with
 `blockSigns j i = 1` (the positive block) equals the determinant of `k τ`. -/
 lemma principalMinor_posBlockEmb_eq_det (τ : InfinitePlace E) (k : GInf E (1 : m → ℤˣ)) :
@@ -125,22 +122,24 @@ lemma principalMinor_posBlockEmb_eq_det (τ : InfinitePlace E) (k : GInf E (1 : 
   simp [← principalMinor_submatrix j, principalMinor_fromBlocks, principalMinor_of_forall,
     DiscreteSeries.principalMinor_of_forall_not]
 
-omit [NumberField E] in
 /-- At each place, the negative block of the image of `k` has determinant `1`. -/
 lemma principalMinor_posBlockEmb_eq_one (τ : InfinitePlace E) (k : GInf E (1 : m → ℤˣ)) :
     principalMinor (posBlockEmb j k τ) (fun i : n ↦ blockSigns j i = -1) = 1 := by
   simp [← principalMinor_submatrix j, principalMinor_fromBlocks, principalMinor_of_forall,
     DiscreteSeries.principalMinor_of_forall_not]
 
+lemma continuous_posBlockEmb : Continuous (posBlockEmb (E := E) j) := by
+  simp only [continuous_pi_iff, continuous_U_iff_matrix, val_posBlockEmb_apply_coe]
+  fun_prop
+
+section
+
+variable [NumberField E]
+
 omit [DecidableEq p] [DecidableEq l] in
 @[simp↓]
 lemma card_neg_blockSigns : card {i : b // blockSigns f i = -1} = card l := by
   simp [Fintype.card_subtype, card_filter, reindex_equiv f, -sum_boole]
-
-omit [NumberField E] in
-lemma continuous_posBlockEmb : Continuous (posBlockEmb (E := E) j) := by
-  simp only [continuous_pi_iff, continuous_U_iff_matrix, val_posBlockEmb_apply_coe]
-  fun_prop
 
 /-- The polynomial `∏_τ det (y⁻_τ) ^ (card (ι τ) + card n - 2 * card l) ∏_{τ, k} det (η_{τ k} y_τ)`,
 where `y⁻_τ` is the `l × l` block of variables with both signs negative and `y_τ` the `m × p` block
@@ -246,6 +245,8 @@ lemma realPairWeil_matchedPoly [DecidableEq b] {γ : InfinitePlace E → ℤ}
   · rw [sum_comm]
     simp only [Matrix.mul_apply, of_apply, transpose_apply, C_mul', sum_smul]
 
+end
+
 /-- The standard frame `(1 0)` for `m ≃ p ⊕ a`: the `p × m` matrix whose row `k` is the standard
 basis vector at `e (inl k)`. -/
 def standardFrame : Matrix p m ℂ := (1 : Matrix m m ℂ).submatrix (e ∘ inl) id
@@ -256,13 +257,13 @@ entries `z⁻¹ ^ 2` on `p` and `z⁻¹` on `a`, for `m ≃ p ⊕ a`. -/
 def frameTorus (z : Circle) : GInf E (1 : m → ℤˣ) :=
   fun _ : InfinitePlace E ↦ diagTorus 1 fun i : m ↦ z⁻¹ ^ (if (e.symm i).isLeft then 2 else 1)
 
-omit [NumberField E] [DecidableEq a] [DecidableEq p] in
+omit [DecidableEq a] [DecidableEq p] in
 /-- At each place, `frameTorus E e z` has determinant `z⁻¹ ^ (2 * card p + card a)`. -/
 lemma det_frameTorus (z : Circle) (τ : InfinitePlace E) :
     (frameTorus E e z τ : Matrix m m ℂ).det = ((z⁻¹ : Circle) : ℂ) ^ (2 * card p + card a) := by
   simp [frameTorus, diagTorus, reindex_equiv e, pow_add, pow_mul]
 
-omit [NumberField E] [Fintype m] in
+omit [Fintype m] in
 /-- For the standard frame `(1 0)`, the stacked determinant at `τ` is the minor of the variables in
 the columns `e ∘ inr`. -/
 lemma stackedDet_standardFrame (τ : InfinitePlace E) :
@@ -273,6 +274,8 @@ lemma stackedDet_standardFrame (τ : InfinitePlace E) :
   · simp [variableMinor]
 
 end Blocks
+
+variable [NumberField E]
 
 /-- Let `γ τ = card l - card (ι τ)` and let `y` lie in `PairFock`, the Fock space of the pair
 U(signs on `n`) × U(`a`), on which `(x, u)` acts by the real Weil representation `realPairWeil γ 0`,

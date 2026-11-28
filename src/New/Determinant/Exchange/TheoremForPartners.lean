@@ -95,7 +95,7 @@ section ExchangeCore
 open Matrix MeasureTheory NumberField Fintype Fock CoordChange Weil Seesaw
 
 variable {E : Type} [Field E] [CMType E] [WeilData E] {n r b : Type} [Fintype n] [DecidableEq n]
-  [Fintype r] [DecidableEq r] [Fintype b] [DecidableEq b] {s : n → ℤˣ} {t : r → ℤˣ} {u : b → ℤˣ}
+  [Fintype r] [Fintype b] [DecidableEq b] {s : n → ℤˣ} {t : r → ℤˣ} {u : b → ℤˣ}
 
 variable (E s u) in
 /-- Passing to adjoint maps: the change of coordinates that carries data for the pair `(U, W)` to
@@ -146,7 +146,6 @@ lemma neg_mem_flipSpace_Gamma_iff (U : Space E b u) (g : G E u) :
   simp [flipSpace, Space.mem_Gamma_iff_range, ← map_inv, ← smul_one_eq_diagonal, ← mul_assoc,
     ← star_mul]
 
-omit [DecidableEq r] in
 /-- Multiplying the argument by a unit `ε` of `O` divides the second of two matched functions by
 `χ ε ^ card b`, the value of `χ` at the determinant of the scalar matrix `ε` of size `b`. -/
 lemma _root_.New.AreMatched.right_eq_pow_mul_apply_smul {R : Type} [CommRing R] {O : Subring R}
@@ -157,7 +156,6 @@ lemma _root_.New.AreMatched.right_eq_pow_mul_apply_smul {R : Type} [CommRing R] 
   rw [h_smul, mul_comm]
   simpa [eq_comm] using h.right_mul _ ⟨.scalar b ε, rfl⟩ X
 
-omit [DecidableEq r] in
 /-- Let `σ` split `n` into `b` and `r`, let `𝔠` be a tame character: a character `ν = 𝔠.character`
 of `[U(1)]` of weight `μ`, tamely ramified exactly at a finite set `S = 𝔠.ramifiedPlaces` of split
 places, and let `y` lie in the real Fock space of `(U, W)`. There is a number `a` of modulus one
@@ -208,7 +206,6 @@ lemma exists_localDatum_adjointDatum_eq_smul (W : Space E n s) (U : Space E b u)
         ((vecToMatrix (f.finEquiv x)).map (evalPlaces 𝔠.ramifiedPlaces))) _)
   simp only [h_scale]
 
-omit [DecidableEq r] in
 /-- Let `W` have even rank, split by `σ` into `b` and `r`, let `𝔠` be a tame character: a character
 `ν = 𝔠.character` of `[U(1)]` of weight `μ`, tamely ramified exactly at a finite set
 `S = 𝔠.ramifiedPlaces` of split places, and put `γ = rankTwist ν⁻¹ n = ν⁻¹ υ ^ (rk W / 2)`. There is
@@ -250,6 +247,8 @@ lemma exists_mul_thetaSmall_adjointDatum_eq_mul_integral (W : Space E n s) (U : 
   rw [mul_assoc, ← h_flip _ _ h g h.neg (by simp [G.adeleMatrix_neg, G.adeleMatrix_one])]
   simp [pairTheta, pairWeil, pairChar_apply, circleChar_inv_apply, G.det_neg, rankTwist, hk,
     pow_mul', field]
+
+variable [DecidableEq r]
 
 /-- Let `W` have even rank `rk U + rk V` (`σ`, `h_even`), let `𝔠` be a tame character: a character
 `ν = 𝔠.character` of `[U(1)]` of weight `μ`, tamely ramified exactly at a finite set

@@ -55,6 +55,8 @@ namespace New
 
 open Rows Exchange WeilData Space Modulus SiegelWeil ComplexInnerProductSpace
 
+section
+
 variable {E N N' : Type} [Field E] [CMType E] [WeilData E] [Fintype N] [DecidableEq N] [Fintype N']
   [DecidableEq N'] {s : N → ℤˣ} {s' : N' → ℤˣ} (S : Space E N s) (T : Space E N' s') {I : Type*}
 
@@ -212,6 +214,8 @@ theorem Exchange.IsEdgeFamily.exists_inner_modLift_eq_inner_modTransposedLift
       y'⟫ := by
         rw [h_trade, inner_smul_left, map_mul, conj_conj, mul_assoc]
     _ = _ := by simp [b, y', modTransposedLift, modDatum, Pi.smul_comp, smul_smul]
+
+end
 
 namespace Data
 
@@ -512,7 +516,7 @@ theorem exists_hasSum_inner_triangleFirstLift {P : Parameters} (D : Data P) (z :
     apply (h_rallis ϑ y).1
     rw [← inner_self_eq_zero (𝕜 := ℂ), ← hv, hv_zero, inner_zero_left]
 
-omit [CMType E] [WeilData E] [Fintype N] [DecidableEq N] [Fintype N'] [DecidableEq N'] in
+variable {E N N' : Type} [Field E] in
 /-- Every polynomial `P` is the signed transpose `flipPoly s t` of the polynomial obtained from some
 `Q` by conjugating the coefficients. -/
 lemma exists_flipPoly_map_conj_eq (s : N → ℤˣ) (t : N' → ℤˣ)

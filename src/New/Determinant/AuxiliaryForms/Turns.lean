@@ -197,7 +197,7 @@ abbrev sumGL (g : NodeFamily ϑ) : GL (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ)
 
 end Definitions
 
-variable {D : Data P} {B T : Type} [Fintype T] [DecidableEq T]
+variable {D : Data P} {B T : Type}
   {c : D.Corner B T} {ϑ : D.MFoldTwist} {w : Finset (GridNode × GridNode)} {N : ℕ}
   {Ψ' : EdgeTuple ϑ → ℂ}
 
@@ -209,11 +209,11 @@ variable {S : EdgeTuple ϑ}
   (x : Matrix (D.NodeIndex c.high) (D.NodeIndex c.fst ⊕ B) (gridModulus ϑ).ResidueRing)
   (v' : Matrix T B (gridModulus ϑ).ResidueRing)
 
-omit [Fintype T] [DecidableEq T] in
 lemma oldColumn_oldTuple : c.oldColumn (c.oldTuple S y v) = v := by simp [oldColumn, oldTuple]
 
-omit [Fintype T] [DecidableEq T] in
 lemma newRow_newTuple : c.newRow (c.newTuple S x v') = v' := by simp [newRow, newTuple]
+
+variable [Fintype T] [DecidableEq T]
 
 namespace IsTurn
 
@@ -247,7 +247,7 @@ end IsTurn
 
 end Tuples
 
-variable [Fintype B] [DecidableEq B]
+variable [Fintype T] [DecidableEq T] [Fintype B] [DecidableEq B]
 
 namespace IsTurn
 

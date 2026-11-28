@@ -89,9 +89,13 @@ private lemma pi_mul_inv_apply {ι G : Type*} [Group G] (a b : ι → G) (w : ι
     (a * b)⁻¹ w = b⁻¹ w * a⁻¹ w := by
   rw [_root_.mul_inv_rev, Pi.mul_apply]
 
-variable {E n a b m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n]
+variable {E n a b m : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   [Fintype a] [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
   {s : n → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s}
+
+section
+
+variable [WeilData E]
 
 /-- Let `τ ≥ 0` be smooth, compactly supported and nonzero at some `y`, and let `v` be a Schwartz
 vector for `(W₁, V')`. Then there are a complex number `κ` and a Schwartz vector `Λ` for `(X, V')`
@@ -637,7 +641,8 @@ lemma exists_isSchwartzVector_exchangeSection (D : X.Splitting W₁ b) [IsBaseAd
   rw [realSlice_eq_slice_placeMatrices_symm, hΦ_slice, section_eq, Function.comp_apply,
     C.apply_symm_apply]
 
-omit [WeilData E] in
+end
+
 /-- For families `y`, `x` of frames, one for each infinite place `w`, and vectors `v₀`, `v₁` in the
 Fock spaces `PairFock` of the signs `(s, t')` and `(s, s)`, the value `exchangeSection σ k j M κ v₀
 v₁ y x` is `(σ y * σ x' * κ * ∏ w, conj (det (x' w)₁) ^ (2 * M w)) • ω (1, k ∘ y) (v₀ ⊠ v₁)`, where
@@ -672,7 +677,7 @@ lemma exchangeSection_frameProjection_mul {t' : b → ℤˣ}
   simp only [Function.comp_apply, frameProjection, hγA, hγx, A]
   exact mul_gram_inv_mul_of_isUnit_det _ (x w) _ (isUnits_det_units _)
 
-omit [CMType E] [WeilData E] in
+omit [CMType E] in
 /-- If each frame `(h v)⁻¹ * fromRows 1 0` is `k v * fromRows 1 0 * c` with `c` carrying the form
 with signs `t'` to its Gram matrix, then `c` is a unitary `u v`, and for some unitary `q v` one has
 `diag(u v, (q v)⁻¹) * h v * k v = 1`. -/
@@ -701,7 +706,6 @@ lemma exists_unitary_pair_of_frame {t' : b → ℤˣ}
   simp only [Prod.inv_mk, Prod.mk_mul_mk, one_mul, inv_one, mul_one, mul_inv_cancel,
     inv_mul_cancel, Prod.mk_one_one, φ.map_one]
 
-omit [WeilData E] in
 /-- Let `𝔠` be a tame character (`SplitTameChar`) of weight `μ ≥ 0` with automorphic character
 `ν = 𝔠.character` of the norm-one ideles, so that `ν` has weight `μ w` at each infinite place `w`,
 and let `z` be the idele with infinite part `ζ` and finite part 1. Then the product of the
@@ -739,7 +743,6 @@ lemma prod_conj_pow_eq_norm_div {μ : InfinitePlace E → ℕ}
   push_cast [h_lhs, h_char, h_abs, h_num, h_conj, norm_mul, norm_pow]
   field
 
-omit [WeilData E] in
 /-- For families `y`, `x` of frames, one for each infinite place `w`, and vectors `v`, `v₁` in the
 Fock spaces `PairFock` of the signs `(s, t')` and `(s, s)`, the value `exchangeSection σ k j M κ v
 v₁ y x` is `(σ y * σ x' * κ * ∏ w, conj (det (x' w)₁) ^ (2 * M w)) • ω (1, k ∘ y) (v ⊠ v₁)`, where
@@ -767,7 +770,6 @@ lemma realPairWeil_exchangeSection {t' : b → ℤˣ} {σ : (InfinitePlace E →
     one_mul, hg hσ, Prod.mk_one_one, ρ.map_one, one_apply_eq_self]
   simp only [toRows₁_fromRows, det_conjTranspose]
 
-omit [WeilData E] in
 /-- Let `h` be a point of `GInf E (t' ⊕ᵥ s)`, the unitary group for the signs `t' ⊕ᵥ s` at the
 infinite places. Let `u`, `q` be points of `GInf E t'` and `GInf E s`. All three are completed by
 `1` at the finite places to adelic points, and `G.sum` is the block sum of `u` and `q`. At each
@@ -814,7 +816,6 @@ lemma gram_signMatrix_fromRows_one_zero (t' : b → ℤˣ) (s : n → ℤˣ) :
   simp [← signMatrix_sum, conjTranspose_fromRows_eq_fromCols_conjTranspose,
     fromCols_mul_fromBlocks, fromCols_mul_fromRows]
 
-omit [WeilData E] in
 /-- Let `γ`, `k`, `σ` be smooth Witt data near `x₀ = fromRows 1 0` for the form with signs `t' ⊕ᵥ s`
 (`IsWittBump`): for each member `z` of a family of frames where the bump function `σ` is nonzero,
 `γ` inverts the Gram matrix of `z` and `z` lies in the span of `k z * x₀`, with `k z` unitary. Let
@@ -836,7 +837,6 @@ lemma IsWittBump.exists_mul_fromRows_mul_eq_of_ne_zero
   rw [← gram_signMatrix_fromRows_one_zero t' s]
   exact exists_mul_mul_eq_and_gram_eq _ hc (hW.det_gram_ne_zero _ hx w)
 
-omit [WeilData E] in
 /-- Let `γ`, `k`, `σ` be smooth Witt data near `x₀ = fromRows 1 0` for the form with signs `t' ⊕ᵥ s`
 (`IsWittBump`); in particular `γ` inverts the Gram matrix of `x₀` and the bump function `σ` is `1`
 at the constant family `x₀`. For `h` near `1` in `GInf`, the product of the unitary groups of the
@@ -876,6 +876,8 @@ lemma IsWittBump.eventually_bump_frameProjection_ne_zero
       Matrix.one_mul, proj_base]
   rw [h_at_one, hW.bump_base]
   exact one_ne_zero
+
+variable [WeilData E]
 
 /-- Let `γ`, `k`, `σ` be smooth Witt data near `x₀ = fromRows 1 0` (`IsWittBump`): for frames `y`
 where the bump function `σ` is nonzero, `y` lies in the span of `k y * x₀` with `k y` unitary, and

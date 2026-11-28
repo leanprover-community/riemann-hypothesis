@@ -185,8 +185,12 @@ lemma exists_add_eq_of_interlace {N : ℕ} (hN : 0 < N)
 
 end Interlacing
 
-variable {E n n' : Type} [Field E] [CMType E] [Fintype n] [Fintype n']
+variable {E n n' : Type} [Field E] [Fintype n] [Fintype n']
   {κ κ' : InfinitePlace E → ℕ → ℕ} {e e' : InfinitePlace E → ℤ}
+
+section
+
+variable [CMType E]
 
 /-- Cauchy–Schwarz for a duality pairing. Let the integer matrix `A` be a duality (`IsDualPairing`)
 between the weights `(κ', e')` and `(κ, e)` of `GL n` for the doubled Harish-Chandra parameter `l`:
@@ -314,7 +318,8 @@ lemma exists_isBranchingPairing [DecidableEq n'] [DecidableEq n] [Nonempty n]
     simpa [algFormCoeff, map_intCast_mul_mulVec] using!
       hc φ (ofAlgForm (-l) 1 η) u _ K (isAutomorphic_algFormCoeff η) (hA.ofAlgForm_eq_bilin 1 η)
 
-omit [CMType E] in
+end
+
 /-- Let the doubled parameters `l` and `l'` of definite groups (all signs `1`) of ranks `#n < #n'`
 correspond under a theta lift with exponents `γ`, `γ'` (`ParamsCorrespond`). This includes that at
 each place `w` the shifted entries `l' w j - 2 γ w + #n` are the shifted entries

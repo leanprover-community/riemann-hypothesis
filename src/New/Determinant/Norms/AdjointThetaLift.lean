@@ -75,10 +75,9 @@ section ThetaLift
 
 open Set MulChar Space stdLevel DescentPair
 
-variable {E r n : Type} [Field E] [CMType E] [WeilData E] [Fintype r] [DecidableEq r] [Fintype n]
+variable {E r n : Type} [Field E] [CMType E] [Fintype r] [DecidableEq r] [Fintype n]
   [DecidableEq n] (O : DescentPair E r n)
 
-omit [WeilData E] in
 /-- An element `s` of the finite group of the chosen places acts on a form on `V` as
 `∏_w ψ_w(det s_w)` times translation by the lift of the family `diag(s_w, 1)`, whose block `s_w`
 sits on the rows `O.incl`, the embedding of the indices of `W` into those of `V`. Translation is the
@@ -90,6 +89,8 @@ lemma DescentPair.coe_formAction (s : O.ChosenGL r) (Ξ : O.FormV) :
         O.detExp
         (liftResidue (firstBlockHom O.toLevelPlaces O.incl s) : stdLevel E n).val Ξ.val :=
   rfl
+
+variable [WeilData E]
 
 /-- If the parameter `l` on `W` fits the pair, the datum of the highest vector is an arrow from `W`
 to `V`: the theta lift by it takes forms of parameter `l` to forms of parameter `O.paramV`. -/

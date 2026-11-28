@@ -138,7 +138,7 @@ end RankZero
 
 variable {n n' r r' b : Type} [Fintype n]
   [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
-  [DecidableEq r'] [Fintype b] [DecidableEq b] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ}
+  [DecidableEq r'] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ}
   {t' : r' → ℤˣ} {μ : InfinitePlace E → ℤ} {𝔠 : SplitTameChar E μ}
 
 variable (𝔠) in
@@ -166,14 +166,12 @@ def ThetaLargeVanishesOnDetVectors (k : ℕ) (W : Space E n s) (V : Space E r t)
       thetaLarge W V 𝔠 (c • detVector s t k (fun w ↦ (μ w - k).toNat) F)
         (stdRowDatum σ 𝔠.semilocalChar y) g = 0
 
-omit [Fintype b] [DecidableEq b] in
 /-- A theta integral that vanishes on all Schwartz vectors vanishes on the multiples of the
 determinant vectors. -/
 lemma ThetaLargeVanishes.onDetVectors {W : Space E n s} {V : Space E r t} {σ : b ⊕ r ≃ n}
     (h_zero : ThetaLargeVanishes 𝔠 W V σ) (k : ℕ) : ThetaLargeVanishesOnDetVectors 𝔠 k W V σ :=
   fun c F ↦ h_zero _ (isSchwartzVector_smul_detVector c k _ F)
 
-omit [Fintype b] [DecidableEq b] in
 /-- Let `W`, `W₁` be hermitian spaces with the same signs `s`, and `V`, `V₁` with the same signs
 `t`. If, for the split tame character `𝔠`, the theta integral of `(W, V)` at every point of the
 unitary group of `W` vanishes on all multiples of determinant vectors and all standard data, so
@@ -186,6 +184,8 @@ lemma ThetaLargeVanishesOnDetVectors.congr_spaces {k : ℕ} {W : Space E n s} {V
   obtain ⟨u, h_eq_mul⟩ := (h_transport 𝔠).left
   intro c F y hy g
   rw [h_eq_mul, h_zero c F y hy, mul_zero]
+
+variable [Fintype b] [DecidableEq b]
 
 /-- Descent along one hyperbolic plane `H`. Let `A` and `X` be adapted splittings (orthonormal at
 the infinite and integral at the finite places) `W' = W ⊕ H` and `V' = V ⊕ H` of hermitian spaces.

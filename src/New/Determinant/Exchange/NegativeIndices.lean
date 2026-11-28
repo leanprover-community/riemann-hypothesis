@@ -52,7 +52,7 @@ section Rotation
 
 open MvPolynomial hiding funext_iff
 
-variable {E : Type} [Field E] [NumberField E] {a b n : Type} [Fintype a] [DecidableEq a]
+variable {E : Type} [Field E] {a b n : Type} [Fintype a] [DecidableEq a]
   [Fintype b] [DecidableEq b] [Fintype n] [DecidableEq n] {s : n → ℤˣ} {t : a → ℤˣ}
   {μ : NumberField.InfinitePlace E → ℤ}
 
@@ -143,12 +143,13 @@ lemma New.Exchange.exists_mem_maxCompactU_eq_rotation {r : n → ℂ}
 
 open NumberField (InfinitePlace)
 
-omit [NumberField E] in
 /-- An element of the maximal compact subgroup, placed at `τ`, is block diagonal at every place. -/
 lemma New.Exchange.mulSingle_mem_blockDiagAlg (τ : InfinitePlace E) {c : U (signMatrix s)}
     (c_mem : c ∈ maxCompactU s) (w : InfinitePlace E) :
     ((mulSingle τ c : GInf E s) w).val.val ∈ blockDiagAlg s := by
   obtain rfl | hw := eq_or_ne w τ <;> simp [mem_maxCompactU.mp c_mem, *]
+
+variable [NumberField E]
 
 /-- Let `c` be the rotation by `conj η`, `|η| = 1`, of the line of `star r`, for a unit vector `r`
 supported on the negative signs of `s`. Placed at `τ`, it acts on the vector of `P` by a
@@ -370,10 +371,9 @@ lemma New.Exchange.haar_map_mul_right_of_isCompact {H : Type*} [Group H] [Topolo
   rw [haarMeasure_unique (map _ _) K, h_eq, ← haarMeasure_unique]
 
 variable {E : Type} [Field E] [CMType E] [H : WeilData E] {a b m n : Type} [Fintype a]
-  [DecidableEq a] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m] [Fintype n]
+  [DecidableEq a] [Fintype b] [Fintype m] [DecidableEq m] [Fintype n]
   [DecidableEq n]
 
-omit [DecidableEq b] in
 /-- Let `C` be the elements of the stabiliser of an adelic frame `x'` that lie in the conjugate of
 `maxCompact E s` by `u⁻¹` at the real place `τ`, with an invariant probability measure `κ`. Suppose
 that only the zero functional on Fock space is invariant, for the weight `μ` of `ν`, under the
@@ -431,6 +431,8 @@ lemma New.Exchange.integral_theta_pairWeil_stabilizer_eq_zero {s : n → ℤˣ} 
       DFunLike.congr_fun (h_fock_zero ((Z.hom Y).finHeisenbergOp y (Z.hom Y).vacElem))
         (polyVector _ P)
   simpa [h_apply, A] using h_zero
+
+variable [DecidableEq b]
 
 /-- Let the splitting `D` write `X` as the sum of two dual isotropic subspaces of rank `#b` and of
 `Z`, orthogonal to both. The slice at `x'` (`D.homSlice`) is the map from data on `Hom(X, Y)` to
