@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Algebra.AffineMonoid.UniqueSums
+import Mathlib.Data.Finset.CastCard
 import Mathlib.LinearAlgebra.Matrix.Swap
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Henselian
@@ -123,51 +124,40 @@ lemma exists_col_eq (i : n) {z : n → F} (hz : z ≠ 0) :
   refine ⟨GeneralLinearGroup.mkOfDetNeZero (updateCol 1 j z) (by rwa [det_updateCol_one]) *
     GeneralLinearGroup.swap F j i, by ext; simp⟩
 
-/-- Every fibre of a surjective homomorphism `A → B` of finite groups has `#A / #B` elements. -/
-lemma card_fiber_mul_card {A B : Type} [AddGroup A] [Fintype A] [AddGroup B] [Fintype B]
-    [DecidableEq B] (φ : A →+ B) (hφ : Function.Surjective φ) (b : B) :
-    #{a : A | φ a = b} * Fintype.card B = Fintype.card A := by
-  have h_const (b' : B) : #{a : A | φ a = b'} = #{a : A | φ a = b} :=
-    AddMonoidHom.card_fiber_eq_of_mem_range φ (hφ b') (hφ b)
-  have h_fibers : Fintype.card A = ∑ b' : B, #{a : A | φ a = b'} :=
-    card_eq_sum_card_fiberwise fun a _ ↦ mem_univ (φ a)
-  simp [h_fibers, h_const, mul_comm]
+/-- A fibre of a surjective additive homomorphism has size `#A / #B`, viewed in `ℂ`. -/
+private lemma cast_card_fiber_of_surjective {A B : Type} [AddGroup A] [Fintype A] [AddGroup B]
+    [Fintype B] [DecidableEq B] (p : A →+ B) (hp : Function.Surjective p) (b : B) :
+    (#{a : A | p a = b} : ℂ) = Fintype.card A / Fintype.card B := by
+  apply (eq_div_iff (Nat.cast_ne_zero.2 Fintype.card_ne_zero)).2
+  rw [AddMonoidHom.card_fiber_eq_of_mem_range p (hp b) (hp 0)]
+  simpa [Nat.card_eq_fintype_card, Fintype.card_subtype] using
+    congrArg (Nat.cast : ℕ → ℂ) (AddSubgroup.card_ker_mul_card_of_surjective hp)
 
 variable [Fintype F] [DecidableEq F]
 
-/-- Over a field of `q` elements and in dimension `n` there are `q ^ (n - 1)` hyperplanes that do
-not contain `e_i`. Each of them is the kernel of one linear form `ξ` with `ξ e_i = 1`, and these
-forms are counted. -/
-lemma card_forms_missing_line (i : n) :
-    #{ξ : n → F | ξ i = 1} * Fintype.card F = Fintype.card F ^ Fintype.card n := by
-  rw [← Fintype.card_fun]
-  exact card_fiber_mul_card (Pi.evalAddMonoidHom (fun _ : n ↦ F) i) (Function.surjective_eval i) 1
+/-- There are `qⁿ / q` forms taking the value one at the coordinate vector `eᵢ`. -/
+private lemma card_normalized_forms (i : n) :
+    (#{ξ : n → F | ξ i = 1} : ℂ) = (Fintype.card F : ℂ) ^ Fintype.card n / Fintype.card F := by
+  simpa using cast_card_fiber_of_surjective (Pi.evalAddMonoidHom (fun _ : n ↦ F) i)
+    (Function.surjective_eval i) 1
 
-/-- Over a field of `q` elements and in dimension `n`, if `z j ≠ 0` for some `j ≠ i`, so that `z`
-is off the line of `e_i`, then there are `q ^ (n - 2)` linear forms with value `1` at `e_i` and at
-`z`. -/
-lemma card_forms_taking_one_at_two_vectors_mul_sq {z : n → F} {j : n} (hj : j ≠ i) (hz : z j ≠ 0) :
-    #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} * Fintype.card F ^ 2 = Fintype.card F ^ Fintype.card n := by
-  -- The forms are the fibre over `(1, 1)` of the surjection `φ : ξ ↦ (ξ e_i, ξ z)`.
-  let φ : (n → F) →+ F × F :=
-    (Pi.evalAddMonoidHom (fun _ : n ↦ F) i).prod
-      (AddMonoidHom.mk' (· ⬝ᵥ z) fun ξ η : n → F ↦ add_dotProduct ξ η z)
-  have hφ_apply : ∀ ξ : n → F, φ ξ = (ξ i, ξ ⬝ᵥ z) := fun _ ↦ rfl
-  have hφ : Function.Surjective φ := by
+/-- A form taking the value one at `eᵢ` takes that value on `qⁿ / q` vectors. -/
+private lemma card_affine_hyperplane {ξ : n → F} (hξ : ξ i = 1) :
+    (#{z : n → F | ξ ⬝ᵥ z = 1} : ℂ) = (Fintype.card F : ℂ) ^ Fintype.card n / Fintype.card F := by
+  simpa using cast_card_fiber_of_surjective (AddMonoidHom.mk' (ξ ⬝ᵥ ·) (dotProduct_add ξ))
+    (fun t ↦ ⟨Pi.single i t, by simpa using congrArg (· * t) hξ⟩) 1
+
+/-- For `z` off the line of `eᵢ`, evaluation at `eᵢ` and at `z` prescribes two independent
+coordinates of a form. There are `qⁿ / q²` forms taking the value one at both. -/
+private lemma card_normalized_forms_through {z : n → F} {j : n} (hj : j ≠ i) (hz : z j ≠ 0) :
+    (#{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} : ℂ) =
+      (Fintype.card F : ℂ) ^ Fintype.card n / (Fintype.card F : ℂ) ^ 2 := by
+  let p : (n → F) →+ F × F := (Pi.evalAddMonoidHom (fun _ : n ↦ F) i).prod
+    (AddMonoidHom.mk' (· ⬝ᵥ z) fun a b ↦ add_dotProduct a b z)
+  have onto : Function.Surjective p := by
     rintro ⟨a, b⟩
-    refine ⟨Pi.single i a + Pi.single j ((b - a * z i) / z j), ?_⟩
-    simp [hφ_apply, hj.symm, hz]
-  simpa only [hφ_apply, Prod.mk.injEq, Fintype.card_prod, Fintype.card_fun, ← sq] using
-    card_fiber_mul_card φ hφ (1, 1)
-
-/-- Over a field of `q` elements, the line of `e_i` has `q` elements. -/
-lemma card_line (i : n) : #{z : n → F | ∀ j ≠ i, z j = 0} = Fintype.card F := by
-  have h_line : ({z : n → F | ∀ j ≠ i, z j = 0} : Finset (n → F)) =
-      univ.image fun c : F ↦ c • Pi.single i 1 := by
-    ext z
-    simpa [eq_comm] using (exists_eq_smul_single_iff (i := i) (z := z)).symm
-  rw [h_line, card_image_of_injective _
-    (smul_left_injective F (Pi.single_ne_zero_iff.2 one_ne_zero)), card_univ]
+    exact ⟨Pi.single i a + Pi.single j ((b - a * z i) / z j), by simp [p, hj.symm, hz]⟩
+  simpa [p, Prod.mk.injEq, sq] using cast_card_fiber_of_surjective p onto (1, 1)
 
 /-- For a vector `z` let `N z` be the number of forms `ξ` with `ξ e_i = 1` and `ξ z = 1`. The sum
 of `f z` over the pairs `(ξ, z)` with `ξ e_i = 1` and `ξ z = 1` is the sum of `N z • f z` over all
@@ -177,33 +167,22 @@ lemma sum_forms_sum_eq_sum_card_smul {W : Type} [AddCommMonoid W] (i : n) (f : (
       ∑ z : n → F, #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} • f z := by
   simp [sum_comm' (t' := univ) (s' := fun z ↦ {ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1})]
 
-/-- A multiple `z ≠ e_i` of `e_i` has value `1` under no form `ξ` with `ξ e_i = 1`. -/
-lemma card_forms_eq_zero_of_ne_single {z : n → F} (hz : ∀ j ≠ i, z j = 0)
-    (h_ne : z ≠ Pi.single i 1) : #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} = 0 := by
-  obtain ⟨c, rfl⟩ := exists_eq_smul_single_iff.2 hz
-  refine card_eq_zero.2 (filter_eq_empty_iff.2 fun ξ _ ⟨h_one, h_dot⟩ ↦ ?_)
-  exact h_ne (by simp_all)
-
-/-- If `f` has the value `y` at the non-zero multiples of `e_i`, then its sum over the non-zero
-vectors is `(q - 1) • y` plus its sum off the line of `e_i`, over a field of `q` elements. -/
-lemma sum_ne_zero_eq_smul_add_sum_compl_line {W : Type} [AddCommGroup W] [Module ℂ W]
-    {f : (n → F) → W} {y : W} (hf : ∀ z : n → F, z ≠ 0 → (∀ j ≠ i, z j = 0) → f z = y) :
-    ∑ z : n → F with z ≠ 0, f z =
-      ((Fintype.card F : ℂ) - 1) • y +
-        ∑ z ∈ ({z : n → F | ∀ j ≠ i, z j = 0} : Finset (n → F))ᶜ, f z := by
-  let L : Finset (n → F) := {z : n → F | ∀ j ≠ i, z j = 0}
-  have h_zero : (0 : n → F) ∈ L := by simp [L]
-  have h_line : ∑ z ∈ L.erase 0, f z = ((Fintype.card F : ℂ) - 1) • y := by
-    rw [sum_eq_card_nsmul fun z hz ↦
-        hf z (ne_of_mem_erase hz) (by simpa [L] using mem_of_mem_erase hz),
-      card_erase_of_mem h_zero, card_line, ← Nat.cast_smul_eq_nsmul ℂ,
-      Nat.cast_pred Fintype.card_pos]
-  refine add_right_cancel (b := f 0) ?_
-  calc ∑ z : n → F with z ≠ 0, f z + f 0
-    _ = ∑ z ∈ L, f z + ∑ z ∈ Lᶜ, f z := by
-      rw [filter_ne', sum_erase_add _ _ (mem_univ _), sum_add_sum_compl L]
-    _ = ((Fintype.card F : ℂ) - 1) • y + ∑ z ∈ Lᶜ, f z + f 0 := by
-      rw [← sum_erase_add L f h_zero, h_line, add_right_comm]
+/-- If a weight vanishes on the nonzero multiples of `eᵢ`, the incidence sum counts each
+remaining nonzero vector with the same multiplicity `qⁿ / q²`. -/
+private lemma sum_incidence_of_vanishing_on_line {W : Type} [AddCommGroup W] [Module ℂ W]
+    (g : (n → F) → W) (hg : ∀ z, z ≠ 0 → (∀ j ≠ i, z j = 0) → g z = 0) :
+    ∑ ξ : n → F with ξ i = 1, ∑ z : n → F with ξ ⬝ᵥ z = 1, g z =
+      ((Fintype.card F : ℂ) ^ Fintype.card n / (Fintype.card F : ℂ) ^ 2) •
+        ∑ z : n → F with z ≠ 0, g z := by
+  classical
+  rw [sum_forms_sum_eq_sum_card_smul, filter_ne', ← sum_erase_add _ _ (mem_univ (0 : n → F))]
+  simp only [dotProduct_zero, zero_ne_one, and_false, filter_false, card_empty, zero_smul, add_zero,
+    smul_sum]
+  refine sum_congr rfl fun z hz ↦ ?_
+  by_cases h : ∀ j ≠ i, z j = 0
+  · simp [hg z (ne_of_mem_erase hz) h]
+  · obtain ⟨j, hj, hzj⟩ : ∃ j ≠ i, z j ≠ 0 := by simpa using h
+    rw [← Nat.cast_smul_eq_nsmul ℂ, card_normalized_forms_through hj hzj]
 
 /-- Over a field of `q` elements and in dimension `n`, let `f` have the value `y` at the non-zero
 multiples of `e_i`. Then the sum of `f z` over all forms `ξ` with `ξ e_i = 1` and all vectors `z`
@@ -213,33 +192,19 @@ lemma sum_sum_dotProduct_eq_one_eq_smul {W : Type} [AddCommGroup W] [Module ℂ 
     {y : W} (hf : ∀ z : n → F, z ≠ 0 → (∀ j ≠ i, z j = 0) → f z = y) :
     ∑ ξ : n → F with ξ i = 1, ∑ z : n → F with ξ ⬝ᵥ z = 1, f z =
       (Fintype.card F : ℂ) ^ (Fintype.card n - 2 : ℤ) • (y + ∑ z : n → F with z ≠ 0, f z) := by
-  -- Exchange the sums: a vector `z` occurs `N z` times. This is `q ^ (n - 1)` for `z = e_i`,
-  -- zero for its other multiples and `q ^ (n - 2)` off the line `L` of `e_i`.
-  rw [sum_forms_sum_eq_sum_card_smul i f, sum_ne_zero_eq_smul_add_sum_compl_line hf]
-  set q : ℂ := (Fintype.card F : ℂ)
-  have hq : q ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
-  set d : ℂ := q ^ (Fintype.card n - 2 : ℤ)
-  have hd : d * q ^ 2 = q ^ Fintype.card n := by simp [d, zpow_sub₀ hq, hq]
-  let L : Finset (n → F) := {z : n → F | ∀ j ≠ i, z j = 0}
-  let N (z : n → F) : ℕ := #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1}
-  have h_on : ∑ z ∈ L, N z • f z = (d * q) • y := by
-    rw [sum_eq_single_of_mem (Pi.single i 1) (by simp [L]) fun z hz hne ↦ by
-        simp [N, card_forms_eq_zero_of_ne_single (by simpa [L] using hz) hne],
-      hf _ (Pi.single_ne_zero_iff.2 one_ne_zero) (fun j hj ↦ Pi.single_eq_of_ne hj 1),
-      ← Nat.cast_smul_eq_nsmul ℂ]
-    refine congrArg (· • y) (mul_right_cancel₀ hq ?_)
-    simpa [N, mul_assoc, ← sq, hd, q] using
-      congrArg ((↑) : ℕ → ℂ) (card_forms_missing_line (F := F) i)
-  have h_off : ∑ z ∈ Lᶜ, N z • f z = d • ∑ z ∈ Lᶜ, f z := by
-    rw [smul_sum]
-    refine sum_congr rfl fun z hz ↦ ?_
-    obtain ⟨j, hj, hzj⟩ : ∃ j ≠ i, z j ≠ 0 := by simpa [L] using hz
-    rw [← Nat.cast_smul_eq_nsmul ℂ]
-    refine congrArg (· • f z) (mul_right_cancel₀ (pow_ne_zero 2 hq) ?_)
-    simpa [N, hd, q] using
-      congrArg ((↑) : ℕ → ℂ) (card_forms_taking_one_at_two_vectors_mul_sq hj hzj)
-  rw [← sum_add_sum_compl L, h_on, h_off]
-  module
+  -- Apply the incidence count to `f - y`, which vanishes on the nonzero multiples of `e_i`.
+  -- To add back the constant weight `y`, count the normalized forms and the vectors on each
+  -- affine hyperplane using `card_normalized_forms` and `card_affine_hyperplane`.
+  have centered := sum_incidence_of_vanishing_on_line (i := i) (fun z ↦ f z - y)
+    (fun z hz h ↦ sub_eq_zero.mpr (hf z hz h))
+  have hcard (ξ : n → F) (hξ : ξ ∈ ({ξ : n → F | ξ i = 1} : Finset _)) :=
+    card_affine_hyperplane (mem_filter.mp hξ).2
+  simp +contextual only [sum_sub_distrib, sum_const, ← Nat.cast_smul_eq_nsmul ℂ, hcard,
+    card_normalized_forms, filter_ne', cast_card_erase_of_mem (mem_univ _),
+    card_univ, Fintype.card_fun, Nat.cast_pow] at centered
+  have hq : (Fintype.card F : ℂ) ≠ 0 := Nat.cast_ne_zero.2 Fintype.card_ne_zero
+  rw [zpow_sub₀ hq, zpow_natCast, zpow_ofNat, filter_ne']
+  linear_combination (norm := module) centered
 
 end Field
 
