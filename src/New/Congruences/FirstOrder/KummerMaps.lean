@@ -284,10 +284,10 @@ lemma isOpen_ker_cyclotomicPlusMod (ν : ℕ) :
 variable (ℓ E) in
 /-- The module `ℤ/ℓ^ν` with `G_F` acting by `(cyc⁺) ^ (-e)`. -/
 abbrev tateTwistPlus (ν e : ℕ) : DiscreteModule (ZMod (ℓ ^ ν)) Gal(Ω/maximalRealSubfield E) :=
-  let χ := cyclotomicPlusMod ℓ E ν
-  have hχ : Continuous χ := by
-    exact χ.continuous_of_isOpen_ker (isOpen_ker_cyclotomicPlusMod ν)
-  .of (charRep (ZMod (ℓ ^ ν)) (χ ^ e)⁻¹) ((hχ.pow e).inv.fst'.smul continuous_snd)
+  .of (charRep (ZMod (ℓ ^ ν)) (cyclotomicPlusMod ℓ E ν ^ e)⁻¹)
+    (by
+      exact ((((cyclotomicPlusMod ℓ E ν).continuous_of_isOpen_ker
+        (isOpen_ker_cyclotomicPlusMod ν)).pow e).inv.fst'.smul continuous_snd))
 
 lemma tateTwistPlus_ρ (ν e : ℕ) (g : Gal(Ω/maximalRealSubfield E)) (a : ZMod (ℓ ^ ν)) :
     (tateTwistPlus ℓ E ν e).ρ g a = ((cyclotomicPlusMod ℓ E ν g ^ e)⁻¹).val * a := rfl
