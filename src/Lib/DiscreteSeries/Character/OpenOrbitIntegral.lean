@@ -120,6 +120,16 @@ lemma det_twoPowDiagConj_ne_zero : (twoPowDiagConj u f).det ≠ 0 := by
     mul_eq_zero, map_eq_zero, GeneralLinearGroup.det_ne_zero, prod_eq_zero_iff, mem_univ,
     OfNat.ofNat_ne_zero, not_false_eq_true, zpow_ne_zero, and_false, exists_false, or_self]
 
+/-- The `(i, i)` entry of `u* diag(2^(-f)) u` is the sum of `‖u k i‖² * 2 ^ (-f k)` over `k`, which
+for unitary `u` is the `(i, i)` entry of the inverse of `u* diag(2^f) u`. -/
+private lemma principalMinor_single_twoPowDiagConj_neg (u : GL n ℂ) (f : n → ℤ) (i : n) :
+    principalMinor (twoPowDiagConj u (-f)) (· = i) =
+      ((∑ k : n, ‖u k i‖ ^ 2 * 2 ^ (-f k) : ℝ) : ℂ) := by
+  simp only [principalMinor, toSquareBlockProp, twoPowDiagConj, diagonal, Pi.neg_apply,
+    _root_.zpow_neg, det_unique, default, toBlock_apply, Matrix.mul_apply, conjTranspose_apply,
+    star_def, of_apply, mul_ite, mul_zero, sum_ite_eq', mem_univ, ↓reduceIte, mul_right_comm,
+    ofReal_sum, ofReal_mul, ofReal_pow, ← conj_mul', ofReal_inv, ofReal_zpow, ofReal_ofNat]
+
 /-- Let `u` be unitary, let `f a + |m| ≤ f c` whenever `l c < l a`, let `h ≤ |l i - l j|` and
 `l j ≤ l i`, and let `t` exceed some value of `l`. The minor of `u* diag(2^f) u` on `{k | t ≤ l k}`
 is at least that of `diag(2^f)`, times `|u i j|² 2^m` if this set separates `i` from `j` with
@@ -145,13 +155,7 @@ lemma norm_principalMinor_mul_gain_le (h : ℕ) (u : GL n ℂ) (l f : n → ℤ)
     split_ifs with hsep
     · -- the `(j, j)` entry of the inverse is at least its term `‖u i j‖ ^ 2 * 2 ^ (-g i)`,
       -- and `m ≤ f c - g i` because `i` lies inside the minor
-      have h_entry : principalMinor (twoPowDiagConj u (-g)) (· = j) =
-          ((∑ k : n, ‖u k j‖ ^ 2 * 2 ^ (-g k) : ℝ) : ℂ) := by
-        simp only [principalMinor, toSquareBlockProp, twoPowDiagConj, diagonal, Pi.neg_apply,
-          _root_.zpow_neg, det_unique, default, toBlock_apply, Matrix.mul_apply,
-          conjTranspose_apply, star_def, of_apply, mul_ite, mul_zero, sum_ite_eq', mem_univ,
-          ↓reduceIte, mul_right_comm, ofReal_sum, ofReal_mul, ofReal_pow, ← conj_mul',
-          ofReal_inv, ofReal_zpow, ofReal_ofNat]
+      have h_entry := principalMinor_single_twoPowDiagConj_neg u g j
       have h_inside : f i + |m| ≤ f c :=
         inside i ((mem_filter.1 hc.1).2.trans_le (mem_Ioc.1 hsep).2)
       have h_exp : m ≤ f c + -g i := by
