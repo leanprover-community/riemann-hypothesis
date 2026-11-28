@@ -58,8 +58,8 @@ def runs(sha):
     return api(f"actions/workflows/build.yml/runs?head_sha={sha}&per_page=100").get("workflow_runs", [])
 
 
-def problem(run, sha):
-    """Why this run's artifact must not be published, or None."""
+def run_scope_problem(run, sha):
+    """Why this run is outside the scope of cache publication, or None."""
     if (run.get("repository", {}).get("full_name") != REPOSITORY or run.get("path") != WORKFLOW
             or run.get("head_sha") != sha):
         return "not a build.yml run of this commit in this repository"
@@ -67,6 +67,11 @@ def problem(run, sha):
         return f"event {run.get('event')}"
     if run.get("event") == "push" and run.get("head_branch") != "main":
         return f"a push to {run.get('head_branch')}"
+    return None
+
+
+def build_problem(run):
+    """Why an in-scope run cannot supply a build, or None."""
     if run.get("status") != "completed" or run.get("conclusion") != "success":
         return f"{run.get('status')} with conclusion {run.get('conclusion')}"
     jobs = api(f"actions/runs/{run['id']}/attempts/{run['run_attempt']}/jobs?per_page=100").get("jobs", [])
@@ -88,16 +93,19 @@ def find_run(args):
     sha = args.sha
     if not SHA.fullmatch(sha):
         raise ValueError("--sha must be a full commit hash")
-    deadline = time.time() + 60 * args.wait_minutes
+    deadline = time.monotonic() + 60 * args.wait_minutes
     while True:
         candidates = runs(sha)
-        if args.run_id:
+        if args.run_id is not None:
             candidates = [run for run in candidates if run.get("id") == args.run_id]
         order = {"merge_group": 0, "push": 1, "workflow_dispatch": 2}
         candidates.sort(key=lambda run: (order.get(run.get("event"), 9), -run.get("id", 0)))
         pending = False
         for run in candidates:
-            reason = problem(run, sha)
+            reason = run_scope_problem(run, sha)
+            if reason is None:
+                pending |= run.get("status") != "completed"
+                reason = build_problem(run)
             if reason is None:
                 name = artifact(run, sha)
                 if name:
@@ -105,16 +113,19 @@ def find_run(args):
                     return
                 reason = f"no unexpired artifact cache-{sha}"
             print(f"run {run.get('id')} ({run.get('event')}): {reason}", flush=True)
-            pending |= run.get("status") != "completed" and run.get("event") in ("push", "workflow_dispatch",
-                                                                                 "merge_group")
-        if not pending or time.time() > deadline:
+        # A different build may still appear when no run was selected explicitly.
+        may_appear = args.run_id is None or not candidates
+        remaining = deadline - time.monotonic()
+        if not (pending or may_appear) or remaining <= 0:
             raise ValueError(f"no successful self-hosted build of {sha} with a cache artifact")
-        print("waiting for a build of this commit to finish...", flush=True)
-        time.sleep(30)
+        print("waiting for an eligible build of this commit...", flush=True)
+        time.sleep(min(30, remaining))
 
 
 def queue_tested(args):
-    tested = any(run.get("event") == "merge_group" and problem(run, args.sha) is None for run in runs(args.sha))
+    tested = any(run.get("event") == "merge_group"
+                 and run_scope_problem(run, args.sha) is None
+                 and build_problem(run) is None for run in runs(args.sha))
     outputs(tested=str(tested).lower())
 
 
