@@ -64,6 +64,96 @@ section
 variable {O : DescentPair D.E r n} [DecidableEq n]
 
 open scoped Classical in
+/-- Placing an integral local matrix `k` at a split chosen place `O.chosenPlace i` whose reduction
+preserves the span of `O.incl` and acts on it by `g` yields an element `c` of `stdLevel D.E n`
+whose reduction at every chosen place `j` acts on the columns `O.incl` by `Pi.mulSingle i g j`. -/
+private lemma reduceAt_mul_inclMatrix_ofSplitPlace {i : O.ChosenIndex}
+    {hw : (O.chosenPlace i).IsSplit}
+    {k : intGL n (Valued.v.integer : Subring (LocField (O.chosenPlace i)))}
+    {g : GL r (ResField (O.chosenPlace i))}
+    (h_parab : reduceGL k ∈ parabolic (fun a : n ↦ if a ∈ Set.range O.incl then (0 : Fin 2) else 1))
+    (h_block : (reduceGL k).val.submatrix O.incl O.incl = g.val) (j : O.ChosenIndex) :
+    let c : stdLevel D.E n := ⟨ofSplitPlace hw k.val, (ofSplitPlace_mem_stdLevel hw k.val).2 k.prop⟩
+    (stdLevel.reduceAt (O.chosenPlace j) c).val * inclMatrix (ResField (O.chosenPlace j)) O.incl =
+      inclMatrix (ResField (O.chosenPlace j)) O.incl *
+        (Pi.mulSingle (M := fun l ↦ GL r (ResField (O.chosenPlace l))) i g j).val := by
+  intro c
+  obtain ⟨h_red_same, h_red_ne⟩ : stdLevel.reduceAt (O.chosenPlace i) c = reduceGL k ∧
+      ∀ l : O.ChosenIndex ⊕ O.TwistIndex, l ≠ .inl i → stdLevel.reduceAt (O.placeAt l) c = 1 :=
+    Function.eq_update_iff.mp (reduceFamily_ofSplitPlace (w := O.placeAt) (.inl i) k)
+  obtain rfl | hj := eq_or_ne j i
+  · rw [h_red_same, Pi.mulSingle_eq_same, ← h_block, mul_inclMatrix]
+    -- The columns of `reduceGL k` in `O.incl` vanish outside the block `g`, by `h_parab`.
+    exact (eq_inclMatrix_mul_iff _).2 fun a ha b ↦ h_parab (by
+      simp only [mem_range, EmbeddingLike.apply_eq_iff_eq, exists_eq, ↓reduceIte,
+        Fin.isValue, id_eq, ha, zero_lt_one])
+  · have hne : (Sum.inl j : O.ChosenIndex ⊕ O.TwistIndex) ≠ .inl i := by
+      simp only [ne_eq, Sum.inl.injEq, hj, not_false_eq_true]
+    have h_red : stdLevel.reduceAt (O.chosenPlace j) c = 1 := h_red_ne (.inl j) hne
+    rw [h_red, Pi.mulSingle_eq_of_ne hj]
+    simp only [Units.val_one, Matrix.one_mul, Matrix.mul_one]
+
+omit [DecidableEq n] in
+open scoped Classical in
+/-- Taking `Pi.mulSingle i g` on the chosen places and `1` on the twist places, the product of
+`(O.tamePart _)⁻¹ (det _)` over all places of `O` reduces to the single factor at `i`. -/
+private lemma prod_tamePart_inv_det_sum_mulSingle (i : O.ChosenIndex)
+    (g : GL r (ResField (O.chosenPlace i))) :
+    let s : ∀ j : O.ChosenIndex ⊕ O.TwistIndex, GL r (ResField (O.placeAt j))
+      | .inl j => Pi.mulSingle (M := fun l ↦ GL r (ResField (O.chosenPlace l))) i g j
+      | .inr _ => 1
+    (∏ j : O.ChosenIndex ⊕ O.TwistIndex, (O.tamePart (O.placeAt j))⁻¹ (s j).val.det) =
+      (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
+  intro s
+  rw [Fintype.prod_sum_type]
+  have h_l : (∏ j : O.ChosenIndex, (O.tamePart (O.chosenPlace j))⁻¹
+      (Pi.mulSingle (M := fun l ↦ GL r (ResField (O.chosenPlace l))) i g j).val.det) =
+      (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
+    rw [Fintype.prod_eq_single i]
+    · rw [Pi.mulSingle_eq_same]
+    · intro j hj
+      rw [Pi.mulSingle_eq_of_ne hj, Units.val_one, Matrix.det_one, map_one]
+  have h_r : (∏ j : O.TwistIndex,
+      (O.tamePart (O.twistPlace j))⁻¹ (1 : GL r (ResField (O.twistPlace j))).val.det) = 1 :=
+    Finset.prod_eq_one fun j _ ↦ by rw [Units.val_one, Matrix.det_one, map_one]
+  exact (congrArg₂ (· * ·) h_l h_r).trans (mul_one _)
+
+open scoped Classical in
+/-- For any representation `π` of `Gf D.E n` and a vector `u` of the level and character of `O`, an
+integral local matrix `k` at a split chosen place `O.chosenPlace i` whose reduction preserves the
+span of `O.incl` and acts on it by `g` acts on `u` as `(O.tamePart (O.chosenPlace i))⁻¹ (det g)`
+times `O.chosenGLRep π (Pi.mulSingle i g) u`. -/
+private lemma smul_chosenGLRep_mulSingle_eq_apply_ofSplitPlace
+    {W : Type*} [AddCommGroup W] [Module ℂ W] {π : Representation ℂ (Gf D.E n) W}
+    (u : levelSpace π (levelOf O.placeAt (descentResidueLevel O.toLevelPlaces O.incl)) O.levelChar)
+    {i : O.ChosenIndex} {hw : (O.chosenPlace i).IsSplit}
+    {k : intGL n (Valued.v.integer : Subring (LocField (O.chosenPlace i)))}
+    {g : GL r (ResField (O.chosenPlace i))}
+    (h_parab : reduceGL k ∈ parabolic (fun a : n ↦ if a ∈ Set.range O.incl then (0 : Fin 2) else 1))
+    (h_block : (reduceGL k).val.submatrix O.incl O.incl = g.val) :
+    (O.tamePart (O.chosenPlace i))⁻¹ g.val.det • (O.chosenGLRep π (Pi.mulSingle i g) u).val =
+      π (ofSplitPlace hw k.val) u.val := by
+  let c : stdLevel D.E n := ⟨ofSplitPlace hw k.val, (ofSplitPlace_mem_stdLevel hw k.val).2 k.prop⟩
+  have h_red_ne :
+      ∀ j : O.ChosenIndex ⊕ O.TwistIndex, j ≠ .inl i → stdLevel.reduceAt (O.placeAt j) c = 1 :=
+    (Function.eq_update_iff.mp (reduceFamily_ofSplitPlace (w := O.placeAt) (.inl i) k)).2
+  let s : ∀ j : O.ChosenIndex ⊕ O.TwistIndex, GL r (ResField (O.placeAt j))
+    | .inl j => Pi.mulSingle (M := fun l ↦ GL r (ResField (O.chosenPlace l))) i g j
+    | .inr _ => 1
+  have h_lower (j : O.TwistIndex) :
+      (stdLevel.reduceAt (O.placeAt (.inr j)) c).valᵀ *
+          inclMatrix (ResField (O.placeAt (.inr j))) O.incl =
+        inclMatrix (ResField (O.placeAt (.inr j))) O.incl * (s (.inr j)).valᵀ := by
+    have hne : (Sum.inr j : O.ChosenIndex ⊕ O.TwistIndex) ≠ .inl i := by
+      simp only [ne_eq, reduceCtorEq, not_false_eq_true]
+    have hs : s (.inr j) = 1 := rfl
+    rw [h_red_ne (.inr j) hne, hs]
+    simp only [Units.val_one, Matrix.transpose_one, Matrix.one_mul, Matrix.mul_one]
+  have h_tri := O.smul_chosenGLRep_eq_apply_of_triangular u c s
+    (reduceAt_mul_inclMatrix_ofSplitPlace h_parab h_block) h_lower
+  rwa [prod_tamePart_inv_det_sum_mulSingle i g] at h_tri
+
+open scoped Classical in
 /-- Let `w = O.chosenPlace i` be a chosen place of the pair `O`, assumed split (`hw`), and write
 `ψ_w` for the character `O.tamePart w` of its residue field `k_w`. The map `ofSplitPlace hw` places
 `GL_n(E_w)` in the finite adelic group. Let `π` be a representation of that group on a space `S` of
@@ -83,72 +173,12 @@ theorem hasParahoricType_chosenGLRep {S : Submodule ℂ (Gf D.E n → WeylIndex 
       (O.tamePart (O.chosenPlace i))⁻¹ (s := 1) 1 fun g : GL r (ResField (O.chosenPlace i)) ↦
         (O.chosenGLRep π (Pi.mulSingle i g) u).val.val := by
   refine ⟨by simp, fun k g h_parab h_block ↦ ?_⟩
-  -- Let `c` be `k` placed at `i`: its reductions are `reduceGL k` at `i` and `1` elsewhere.
-  let c : stdLevel D.E n := ⟨ofSplitPlace hw k.val, (ofSplitPlace_mem_stdLevel hw k.val).2 k.prop⟩
-  obtain ⟨h_red_same, h_red_ne⟩ : stdLevel.reduceAt (O.chosenPlace i) c = reduceGL k ∧
-      ∀ j : O.ChosenIndex ⊕ O.TwistIndex, j ≠ .inl i → stdLevel.reduceAt (O.placeAt j) c = 1 :=
-    Function.eq_update_iff.mp (reduceFamily_ofSplitPlace (w := O.placeAt) (.inl i) k)
-  -- These reductions are block triangular, with first block `g` at `i` and `1` elsewhere.
-  let s₀ : ∀ j : O.ChosenIndex, GL r (ResField (O.chosenPlace j)) := Pi.mulSingle i g
-  have hs₀_same : s₀ i = g :=
-    Pi.mulSingle_eq_same (M := fun j ↦ GL r (ResField (O.chosenPlace j))) i g
-  have hs₀_ne {j : O.ChosenIndex} (hj : j ≠ i) : s₀ j = 1 :=
-    Pi.mulSingle_eq_of_ne (M := fun j ↦ GL r (ResField (O.chosenPlace j))) hj g
-  let s : ∀ j : O.ChosenIndex ⊕ O.TwistIndex, GL r (ResField (O.placeAt j))
-    | .inl j => s₀ j
-    | .inr _ => 1
-  have h_upper (j : O.ChosenIndex) :
-      (stdLevel.reduceAt (O.placeAt (.inl j)) c).val *
-          inclMatrix (ResField (O.placeAt (.inl j))) O.incl =
-        inclMatrix (ResField (O.placeAt (.inl j))) O.incl * (s (.inl j)).val := by
-    obtain rfl | hj := eq_or_ne j i
-    · change (stdLevel.reduceAt (O.chosenPlace j) c).val *
-          inclMatrix (ResField (O.chosenPlace j)) O.incl =
-        inclMatrix (ResField (O.chosenPlace j)) O.incl * (s₀ j).val
-      rw [h_red_same, hs₀_same, ← h_block, mul_inclMatrix]
-      -- The columns of `reduceGL k` in `O.incl` vanish outside the block `g`, by `h_parab`.
-      exact (eq_inclMatrix_mul_iff _).2 fun a ha b ↦ h_parab (by
-        simp only [Nat.reduceAdd, mem_range, EmbeddingLike.apply_eq_iff_eq, exists_eq, ↓reduceIte,
-          Fin.isValue, id_eq, ha, zero_lt_one])
-    · have hne : (Sum.inl j : O.ChosenIndex ⊕ O.TwistIndex) ≠ .inl i := by
-        simp only [ne_eq, Sum.inl.injEq, hj, not_false_eq_true]
-      have hs : s (.inl j) = 1 := hs₀_ne hj
-      rw [h_red_ne (.inl j) hne, hs]
-      simp only [Units.val_one, Matrix.one_mul, Matrix.mul_one]
-  have h_lower (j : O.TwistIndex) :
-      (stdLevel.reduceAt (O.placeAt (.inr j)) c).valᵀ *
-          inclMatrix (ResField (O.placeAt (.inr j))) O.incl =
-        inclMatrix (ResField (O.placeAt (.inr j))) O.incl * (s (.inr j)).valᵀ := by
-    have hne : (Sum.inr j : O.ChosenIndex ⊕ O.TwistIndex) ≠ .inl i := by
-      simp only [ne_eq, reduceCtorEq, not_false_eq_true]
-    have hs : s (.inr j) = 1 := rfl
-    rw [h_red_ne (.inr j) hne, hs]
-    simp only [Units.val_one, Matrix.transpose_one, Matrix.one_mul, Matrix.mul_one]
-  -- So `c` acts as `chosenGLRep` times `∏ j, ψ⁻¹ (det (s j))`, where only `j = i` contributes.
-  have h_act : (O.tamePart (O.chosenPlace i))⁻¹ g.val.det •
-      (O.chosenGLRep π s₀ u).val = π c u := by
-    have h_tri := O.smul_chosenGLRep_eq_apply_of_triangular u c s h_upper h_lower
-    have h_prod : (∏ j : O.ChosenIndex ⊕ O.TwistIndex,
-        (O.tamePart (O.placeAt j))⁻¹ (s j).val.det) =
-        (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
-      rw [Fintype.prod_sum_type]
-      have h_l : (∏ j : O.ChosenIndex, (O.tamePart (O.chosenPlace j))⁻¹
-          (s₀ j).val.det) = (O.tamePart (O.chosenPlace i))⁻¹ g.val.det := by
-        rw [Fintype.prod_eq_single i]
-        · rw [hs₀_same]
-        · intro j hj
-          rw [hs₀_ne hj, Units.val_one, Matrix.det_one, map_one]
-      have h_r : (∏ j : O.TwistIndex,
-          (O.tamePart (O.twistPlace j))⁻¹ (1 : GL r (ResField (O.twistPlace j))).val.det) = 1 :=
-        Finset.prod_eq_one fun j _ ↦ by rw [Units.val_one, Matrix.det_one, map_one]
-      exact (congrArg₂ (· * ·) h_l h_r).trans (mul_one _)
-    rw [h_prod] at h_tri
-    exact h_tri
+  have h_act := smul_chosenGLRep_mulSingle_eq_apply_ofSplitPlace (hw := hw) u h_parab h_block
   refine (h_loc k).symm.trans ((congrArg Subtype.val h_act).symm.trans ?_)
   simp only [SetLike.val_smul, Finset.univ_unique, Fin.default_eq_zero, Fin.isValue, Pi.one_apply,
     Nat.reduceAdd, GeneralLinearGroup.val_det_apply, isUnit_iff_ne_zero, ne_eq,
     GeneralLinearGroup.det_ne_zero, not_false_eq_true, MulChar.one_apply, Finset.prod_const_one,
-    one_smul, s₀]
+    one_smul]
 
 /-- Let `v` have the level and character of the pair `O` under `π`, and let
 `ψ_i = O.tamePart (O.chosenPlace i)`, a character of the residue field of the `i`-th chosen place.
