@@ -452,13 +452,20 @@ private lemma IsBaseChangeLevel.eq_localIntGL_of_mem_sphericalAt {σ : Gal(E'/E)
   refine hm.eq_localIntGL w hw_unram ?_
   simpa [LE.le, funext_iff] using mem_levelSpace_formTranslation_iff.mp hf
 
+/-- The split places of `E` off `Z ∪ Z̄` that are matched in `E'` and at which `f` is spherical. -/
+private def transferPlaces (E' : Type _) [Field E'] [Algebra E E'] [CMTypeOver E E']
+    (μ : (𝔸f E)ˣ →* ℂˣ) {κ : Weight E} (f : (stdSpace E n).forms κ) (Z : Set (FinPlace E)) :
+    Set (FinPlace E) :=
+  {w | w ∉ Z.conjClosure ∧ w.IsSplit ∧ IsMatched E' μ w ∧
+    f ∈ sphericalAt ((stdSpace E n).formTranslation κ) w}
+
 /-- Facts about a level `𝓛` over `E'` used in the proof of
-`New.exists_isWeakBaseChange_of_matching`, for a form `f` over `E` and sets `Z`, `X` of places of
-`E`. The level `𝓛` is `L₁` intersected with the maximal level above the split matched places of
+`New.exists_isWeakBaseChange_of_matching`, for a form `f` over `E` and a set `Z` of places of `E`.
+With `X = transferPlaces E' μ f Z`, the level `𝓛` is `L₁` intersected with the maximal level above
 `X` and with a subgroup `C` for the remaining places, and `𝓛 ≤ K₁ ≤ New.stdLevel E' n`; matching
 pairs above `Z` have level `K`. -/
 private structure IsTransferLevel (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ) {κ : Weight E}
-    (f : (stdSpace E n).forms κ) (Z X : Set (FinPlace E)) (K L₁ K₁ C 𝓛 : Subgroup (Gf E' n)) :
+    (f : (stdSpace E n).forms κ) (Z : Set (FinPlace E)) (K L₁ K₁ C 𝓛 : Subgroup (Gf E' n)) :
     Prop where
   /-- `K₁` consists of integral elements. -/
   le_stdLevel : K₁ ≤ stdLevel E' n
@@ -472,25 +479,18 @@ private structure IsTransferLevel (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ)
   exists_coboundary (s : Gf E' n) (hs : s ∈ K₁)
     (hs_norm : twistedNorm (galoisGf σ) (finrank E E') s = 1) : ∃ t ∈ K₁, galoisGf σ t = s⁻¹ * t
   /-- `𝓛` is `L₁`, intersected with the maximal level above `X` and with `C`. -/
-  eq_inf : 𝓛 = L₁ ⊓ (localLevel n (placesAbove E' X) ⊓ C)
+  eq_inf : 𝓛 = L₁ ⊓ (localLevel n (placesAbove E' (transferPlaces E' μ f Z)) ⊓ C)
   /-- Elements supported above `Z ∪ Z̄` lie in the maximal level above `X` and in `C`. -/
-  supportedOn_le : supportedOn n (placesAbove E' Z) ≤ localLevel n (placesAbove E' X) ⊓ C
+  supportedOn_le :
+    supportedOn n (placesAbove E' Z) ≤ localLevel n (placesAbove E' (transferPlaces E' μ f Z)) ⊓ C
   /-- Elements supported above `X ∪ X̄` lie in `C`. -/
-  supportedOn_placesAbove_le : supportedOn n (placesAbove E' X) ≤ C
-  /-- The places of `X` are split. -/
-  isSplit (w : FinPlace E) (hw : w ∈ X) : w.IsSplit
-  /-- The places of `X` are matched. -/
-  isMatched (w : FinPlace E) (hw : w ∈ X) : IsMatched E' μ w
-  /-- The places of `X` lie off `Z ∪ Z̄`. -/
-  notMem_conjClosure (w : FinPlace E) (hw : w ∈ X) : w ∉ Z.conjClosure
-  /-- For `w ∈ X`, `𝓛` contains the integral elements supported above `w` and `w̄`. -/
-  kf_inf_supportedOn_le (w : FinPlace E) (hw : w ∈ X) {S : Set (FinPlace E')}
-    (hS : S ⊆ placesAbove E' {w}) : stdLevel E' n ⊓ supportedOn n S ≤ 𝓛
+  supportedOn_placesAbove_le : supportedOn n (placesAbove E' (transferPlaces E' μ f Z)) ≤ C
   /-- A product of a matching pair above `Z` of level `K`, a matching pair above `X` of maximal
   level and the indicator function of `C` is a matching pair of level `K₁`. -/
   isMatchingPair_mul {f₁ f₂ : Gf E n → ℂ} {φ₁ φ₂ : Gf E' n → ℂ}
     (h₁ : IsMatchingPairAbove σ μ Z K f₁ φ₁)
-    (h₂ : IsMatchingPairAbove σ μ X (localLevel n (placesAbove E' X)) f₂ φ₂) :
+    (h₂ : IsMatchingPairAbove σ μ (transferPlaces E' μ f Z)
+      (localLevel n (placesAbove E' (transferPlaces E' μ f Z))) f₂ φ₂) :
     IsMatchingPair (adeleMap_star σ) (finrank E E') 1 (kerCompNorm E' μ) baseChangeGf K₁
       (f₁ * (f₂ * (indicator C 1 ∘ baseChangeGf (E' := E')))) (φ₁ * (φ₂ * indicator C 1))
   /-- `f` is fixed by the elements of `𝓛` over `E` that are trivial on `Z`. -/
@@ -498,14 +498,10 @@ private structure IsTransferLevel (σ : Gal(E'/E)) (μ : (𝔸f E)ˣ →* ℂˣ)
     f ∈ levelSpace ((stdSpace E n).formTranslation κ) (trivialOn n Z ⊓ 𝓛.comap baseChangeGf)
   /-- For a place `w` off `Z ∪ Z̄` that is unramified in the step and at which `f` is spherical,
   `𝓛` contains the integral elements supported above `w` and `w̄`. -/
-  kf_inf_supportedOn_le_of_mem_sphericalAt (w : FinPlace E) (hw : w ∉ Z.conjClosure)
+  kf_inf_supportedOn_le (w : FinPlace E) (hw : w ∉ Z.conjClosure)
     (hw_unram : IsStepUnramifiedAt E' μ w)
     (hf : f ∈ sphericalAt ((stdSpace E n).formTranslation κ) w) {S : Set (FinPlace E')}
     (hS : S ⊆ placesAbove E' {w}) : stdLevel E' n ⊓ supportedOn n S ≤ 𝓛
-  /-- A split matched place off `Z ∪ Z̄` at which `f` is spherical lies in `X`. -/
-  mem_of_isMatched (w : FinPlace E) (hw : w ∉ Z.conjClosure) (hw_split : w.IsSplit)
-    (hw_matched : IsMatched E' μ w) (hf : f ∈ sphericalAt ((stdSpace E n).formTranslation κ) w) :
-    w ∈ X
 
 /-- Let `σ ≠ 1`, let `f` be a form of weight `κ` over `E`, and let `Z` be a set of places of `E`.
 Let `L₁` be an open `σ`-stable subgroup over `E'` that contains the elements trivial above
@@ -518,23 +514,18 @@ private lemma exists_isTransferLevel [hμ : IsStep (E := E) E' μ]
     (hL₁_σ : ∀ k : Gf E' n, galoisGf σ k ∈ L₁ ↔ k ∈ L₁) (hL₁_le : L₁ ≤ K)
     (hK_le : K ≤ localLevel n (placesAbove E' Z))
     (hK_coh : CocyclesSplit (finrank E E') (idem (placesAbove E' Z)) K (galoisGf σ)) :
-    ∃ (X : Set (FinPlace E)) (K₁ C 𝓛 : Subgroup (Gf E' n)),
-      IsTransferLevel σ μ f Z X K L₁ K₁ C 𝓛 := by
+    ∃ K₁ C 𝓛 : Subgroup (Gf E' n), IsTransferLevel σ μ f Z K L₁ K₁ C 𝓛 := by
   -- The level `𝓛` is `L₁` above `Z ∪ Z̄` and `N` elsewhere, where `N` is cut out by the local
-  -- levels `m u` that `exists_isBaseChangeLevel` gives for the stabiliser of `f`. `X` is the set
-  -- of split matched places off `Z ∪ Z̄` above which the `m u` are maximal, and `Y` the remaining
+  -- levels `m u` that `exists_isBaseChangeLevel` gives for the stabiliser of `f`. Above the split
+  -- matched spherical places `X` off `Z ∪ Z̄` the `m u` are maximal, and `Y` is the remaining
   -- places.
   obtain ⟨f_open, -⟩ := f.property
   obtain ⟨m, hm⟩ := exists_isBaseChangeLevel hσ f_open
-  let X : Set (FinPlace E) := {w | w ∉ Z.conjClosure ∧
-    (∀ u ∈ placesAbove E' {w}, m u = localIntGL n u) ∧ w.IsSplit ∧ IsMatched E' μ w}
-  have X_notMem (w : FinPlace E) : w ∈ X → w ∉ Z.conjClosure :=
-    fun ⟨hw_off, _hw_max, _hw_split, _hw_matched⟩ ↦ hw_off
-  have X_eq_Kw (w : FinPlace E) : w ∈ X → ∀ u ∈ placesAbove E' {w}, m u = localIntGL n u :=
-    fun ⟨_hw_off, hw_max, _hw_split, _hw_matched⟩ ↦ hw_max
+  let X : Set (FinPlace E) := transferPlaces E' μ f Z
   let N : Subgroup (Gf E' n) := localLevel n (placesAbove E' Z)ᶜ m
   obtain ⟨Y, idem_XY, on_X_le, XY_eq, idem_sum, h_level_eq⟩ :=
-    exists_remaining_places (fun w hw ↦ not_or.mp (X_notMem w hw)) fun x ↦ X_eq_Kw x x.property
+    exists_remaining_places (fun (w : FinPlace E) (hw : w ∈ X) ↦ not_or.mp hw.1) fun x ↦
+      hm.eq_localIntGL_of_mem_sphericalAt x.property.2.2.1.isStepUnramifiedAt x.property.2.2.2
   have N_eq : N = _ := h_level_eq
   have N_level : IsMatchingLevel σ μ (X ∪ Y) N := by
     simpa [N, ← XY_eq] using hm.isMatchingLevel (X ∪ Y)
@@ -542,31 +533,22 @@ private lemma exists_isTransferLevel [hμ : IsStep (E := E) E' μ]
     simpa [← XY_eq] using N_level.cocyclesSplit
   have Z_σ (u : FinPlace E') : u.comap σ ∈ placesAbove E' Z ↔ u ∈ placesAbove E' Z := by
     simp [placesAbove]
-  refine ⟨X, K ⊓ N, localLevel n (placesAbove E' Y) m, L₁ ⊓ N,
+  refine ⟨K ⊓ N, localLevel n (placesAbove E' Y) m, L₁ ⊓ N,
     { le_stdLevel := ?_
       le := inf_le_inf_right N hL₁_le
       isOpen := hL₁_open.inter N_level.isOpen
       comap_galoisGf := ?_
       -- `K` has no `σ`-cohomology above `Z ∪ Z̄` and `N` none elsewhere.
       exists_coboundary := exists_mem_inf_galoisGf_eq_inv_mul_of_cocyclesSplit Z_σ
-        (h_off.trans hL₁_le)
-        trivialOn_le_localLevel hK_coh N_coh
+        (h_off.trans hL₁_le) trivialOn_le_localLevel hK_coh N_coh
       eq_inf := by rw [← N_eq]
       supportedOn_le := ?_
       supportedOn_placesAbove_le := on_X_le
-      isSplit := fun _w ⟨_hw_off, _hw_max, hw_split, _hw_matched⟩ ↦ hw_split
-      isMatched := fun _w ⟨_hw_off, _hw_max, _hw_split, hw_matched⟩ ↦ hw_matched
-      notMem_conjClosure := X_notMem
-      kf_inf_supportedOn_le := fun w hw _ hS ↦
-        inf_supportedOn_le_inf_localLevel h_off (X_notMem w hw) (X_eq_Kw w hw) hS
       isMatchingPair_mul := ?_
       mem_levelSpace := ?_
-      kf_inf_supportedOn_le_of_mem_sphericalAt := fun w hw hw_unram hf _ hS ↦
+      kf_inf_supportedOn_le := fun w hw hw_unram hf _ hS ↦
         inf_supportedOn_le_inf_localLevel h_off hw (hm.eq_localIntGL_of_mem_sphericalAt hw_unram hf)
-          hS
-      mem_of_isMatched := fun w hw hw_split hw_matched hf ↦
-        ⟨hw, hm.eq_localIntGL_of_mem_sphericalAt hw_matched.isStepUnramifiedAt hf, hw_split,
-          hw_matched⟩ }⟩
+          hS }⟩
   · -- `K` is integral above `Z ∪ Z̄`, and `N` elsewhere.
     rintro g ⟨hg_K, hg_N⟩
     refine mem_stdLevel_iff.mpr fun u ↦ ?_
@@ -588,25 +570,28 @@ private lemma exists_isTransferLevel [hμ : IsStep (E := E) E' μ]
 
 section TransferLevel
 
-variable {σ : Gal(E'/E)} {κ : Weight E} {f : (stdSpace E n).forms κ} {Z X : Set (FinPlace E)}
+variable {σ : Gal(E'/E)} {κ : Weight E} {f : (stdSpace E n).forms κ} {Z : Set (FinPlace E)}
   {K L₁ K₁ C 𝓛 : Subgroup (Gf E' n)}
 
 /-- Let `G` be a retract at `Z` whose level `L` has preimage the pull-back of `L₁` to `E`, and let
 `F j` be `L`-bi-invariant functions with commuting operators. At the pull-back of `𝓛` to `E`, the
-operators of the `F j` and the spherical operators at the places of `X` form a commuting family
-with a relation to functions, as in `New.exists_isHeckeFunctionRelation`. -/
-private lemma IsTransferLevel.exists_isCommutingHeckeFamily_comap
-    (h_level : IsTransferLevel σ μ f Z X K L₁ K₁ C 𝓛) {W G J : Type*} [AddCommGroup W]
+operators of the `F j` and the spherical operators at `X = transferPlaces E' μ f Z` form a
+commuting family with a relation to functions, as in `New.exists_isHeckeFunctionRelation`. -/
+private lemma IsTransferLevel.exists_isCommutingHeckeFamily_comap [IsStep (E := E) E' μ]
+    (h_level : IsTransferLevel σ μ f Z K L₁ K₁ C 𝓛) {W G J : Type*} [AddCommGroup W]
     [Module ℂ W] (π : Representation ℂ (Gf E n) W) [Group G] {a : G →* Gf E n} {r : Gf E n →* G}
     {L : Subgroup G} {F : J → G → ℂ} (ha : IsLocalRetraction a r Z)
     (hL : L₁.comap baseChangeGf = L.comap r) (hF : ∀ j : J, IsHeckeFunction L (F j))
     (h_comm : ∀ i j : J, HeckeCommute (π.comp a) L (F i) (F j))
-    (hX : ∀ x : X, x.val.IsSplit) :
+    (hX : ∀ x : transferPlaces E' μ f Z, x.val.IsSplit) :
     ∃ h : IsCommutingHeckeFamily π Z a (𝓛.comap baseChangeGf) L F hX,
       ∃ R : J → End ℂ (levelSpace π (𝓛.comap baseChangeGf)) → (Gf E n → ℂ) → Prop,
         IsHeckeFunctionRelation π a r (𝓛.comap baseChangeGf) L
-          ((localLevel n (placesAbove E' X)).comap baseChangeGf) (C.comap baseChangeGf) F hX
-          (fun i : J ⊕ X × ℕ ↦ (heckeFamily π a L F hX i).restrict (h.heckeFamily_mem i)) R := by
+          ((localLevel n (placesAbove E' (transferPlaces E' μ f Z))).comap baseChangeGf)
+          (C.comap baseChangeGf) F hX
+          (fun i : J ⊕ transferPlaces E' μ f Z × ℕ ↦
+            (heckeFamily π a L F hX i).restrict (h.heckeFamily_mem i)) R := by
+  let X : Set (FinPlace E) := transferPlaces E' μ f Z
   have 𝓛_comap : 𝓛.comap baseChangeGf =
       L.comap r ⊓
         ((localLevel n (placesAbove E' X)).comap baseChangeGf ⊓ C.comap baseChangeGf) := by
@@ -617,10 +602,11 @@ private lemma IsTransferLevel.exists_isCommutingHeckeFamily_comap
       a g ∈ (localLevel n (placesAbove E' X)).comap baseChangeGf ⊓ C.comap baseChangeGf :=
     h_level.supportedOn_le (baseChangeGf_mem_supportedOn (ha.left g))
   have X_max (x : X) : maxCompactAt n x.val ≤ 𝓛.comap baseChangeGf := fun g hg ↦
-    h_level.kf_inf_supportedOn_le x x.property subset_rfl
+    h_level.kf_inf_supportedOn_le x.val x.property.1 x.property.2.2.1.isStepUnramifiedAt
+      x.property.2.2.2 subset_rfl
       (hg.imp baseChangeGf_mem_stdLevel.mpr baseChangeGf_mem_supportedOn)
   exact exists_isHeckeFunctionRelation a r (𝓛.comap baseChangeGf) hX ha 𝓛_comap 𝓛_comap_le a_mem hF
-    h_comm (fun x ↦ h_level.notMem_conjClosure x x.property) X_max
+    h_comm (fun x ↦ x.property.1) X_max
 
 end TransferLevel
 
@@ -670,10 +656,11 @@ private lemma apply_eq_of_twist_heckeSplit [IsGalois E E'] [Fact (finrank E E').
 operators of the `F j` commute, and so do those of the `F' j`) and a level `𝓛` as in
 `IsTransferLevel`. There is a form `g ≠ 0` over `E'` fixed by `𝓛` and `L'`: a `θ`-eigenvector of the
 `F' (o i)` in the image of `F' j₀`, a spherical eigenvector at split places off `Z ∪ Z̄` where `𝓛`
-is maximal, and with the eigenvalues of `f` at `w` at every split place above a place `w ∈ X`. -/
+is maximal, and with the eigenvalues of `f` at `w` at every split place above a place
+`w ∈ transferPlaces E' μ f Z`. -/
 private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ]
     {σ : Gal(E'/E)} (hσ : σ ≠ 1) {κ : Weight E}
-    (f : (stdSpace E n).forms κ) {Z X : Set (FinPlace E)} {K K₁ C 𝓛 : Subgroup (Gf E' n)}
+    (f : (stdSpace E n).forms κ) {Z : Set (FinPlace E)} {K K₁ C 𝓛 : Subgroup (Gf E' n)}
     {G G' : Type*} [Group G] [Group G'] {a : G →* Gf E n} {a' : G' →* Gf E' n}
     {r : Gf E n →* G} {r' : Gf E' n →* G'} {L : Subgroup G} {L' : Subgroup G'} {ι J : Type}
     {P : Set J} {F : J → G → ℂ} {F' : J → G' → ℂ}
@@ -681,7 +668,7 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
     (ha : IsLocalRetraction a r Z) (ha' : IsLocalRetraction a' r' (placesAbove E' Z))
     (hL : (L'.comap r').comap baseChangeGf = L.comap r)
     (hP : P ⊆ {j : J | IsMatchingPairAbove σ μ Z K (F j ∘ r) (F' j ∘ r')})
-    (h_level : IsTransferLevel σ μ f Z X K (L'.comap r') K₁ C 𝓛) (o : ι → J) (θ : ι → ℂ)
+    (h_level : IsTransferLevel σ μ f Z K (L'.comap r') K₁ C 𝓛) (o : ι → J) (θ : ι → ℂ)
     (j₀ : J) (hj₀ : j₀ ∈ P)
     (h_comm : ∀ i j : J,
       HeckeCommute (localFormTranslation κ a) L (F i) (F j) ∧
@@ -700,7 +687,7 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
       (∀ (u : FinPlace E') (hu : u.IsSplit), u ∉ placesAbove E' Z → maxCompactAt n u ≤ 𝓛 →
         ∃ t : ℕ → ℂ, ∀ i : ℕ,
           heckeSplit ((stdSpace E' n).formTranslation κ.baseChange) hu i g = t i • g) ∧
-      ∀ w ∈ X, ∀ (hw : w.IsSplit) (t : ℕ → ℂ),
+      ∀ w ∈ transferPlaces E' μ f Z, ∀ (hw : w.IsSplit) (t : ℕ → ℂ),
         (∀ i : ℕ, heckeSplit ((stdSpace E n).formTranslation κ) hw i f = t i • f) →
         ∀ (u : FinPlace E') (hu : u.IsSplit), u.below E = w → ∀ i : ℕ,
           heckeSplit ((stdSpace E' n).formTranslation κ.baseChange) hu i g = t i • g := by
@@ -708,6 +695,7 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
   -- twisted trace identity holds on a set `Q` of pairs of operators that is stable under matching
   -- generators. So `exists_eigenvector_of_trace_identity` gives an eigenvector `g` with the
   -- eigenvalues `θ` and those of `f`; the twist by `σ` carries the latter to every place above.
+  let X : Set (FinPlace E) := transferPlaces E' μ f Z
   let π : Representation ℂ (Gf E n) ((stdSpace E n).forms κ) := (stdSpace E n).formTranslation κ
   let π' : Representation ℂ (Gf E' n) ((stdSpace E' n).forms κ.baseChange) :=
     (stdSpace E' n).formTranslation κ.baseChange
@@ -719,11 +707,10 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
     simpa using x.property.right.left
   have X'_max (x : X') : maxCompactAt n x.val ≤ 𝓛 := x.property.right.right
   let above (u : FinPlace E') (hu : u.below E ∈ X) : X' :=
-    ⟨u, ne_of_apply_ne (FinPlace.below E)
-      (by simpa only [below_star] using h_level.isSplit (u.below E) hu),
-      h_level.notMem_conjClosure (u.below E) hu,
-      h_level.kf_inf_supportedOn_le (u.below E) hu (by simp [placesAbove])⟩
-  have X_split (x : X) : x.val.IsSplit := h_level.isSplit x x.property
+    ⟨u, ne_of_apply_ne (FinPlace.below E) (by simpa only [below_star] using hu.2.1), hu.1,
+      h_level.kf_inf_supportedOn_le (u.below E) hu.1 hu.2.2.1.isStepUnramifiedAt hu.2.2.2
+        (by simp [placesAbove])⟩
+  have X_split (x : X) : x.val.IsSplit := x.property.2.1
   -- The commuting operators over `E` and `E'`. `R k t φ` implies that `t` is the operator of the
   -- product of `F k ∘ r`, of `φ` (above `X`) and of the indicator of `C.comap baseChangeGf`.
   obtain ⟨h_fam, R, hR⟩ :=
@@ -745,8 +732,8 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
     (stdSpace E' n).finite_formTranslation_levelSpace κ.baseChange h_level.isOpen
   -- Matching pairs of functions above `X`, stable under the spherical operators at `w` and at
   -- `U w`, a place above `w`.
-  obtain ⟨D, hD⟩ := exists_isHeckeStableMatching (n := n) (S := X) hσ h_level.isSplit
-    h_level.isMatched
+  obtain ⟨D, hD⟩ := exists_isHeckeStableMatching (n := n) (S := X) hσ (fun _w hw ↦ hw.2.1)
+    (fun _w hw ↦ hw.2.2.1)
   choose U hU D_stable using fun w : X ↦ hD.exists_isHeckeStableAt (E' := E') w w.property
   have U_mem (x : X) : (U x).below E ∈ X := by simpa only [hU x] using x.property
   -- The generators: the local operators of index `o i`, and those spherical operators at places
@@ -785,7 +772,7 @@ private lemma exists_eigenvector_of_isTransferLevel [hμ : IsStep (E := E) E' μ
           (baseChangeGf_mem_supportedOn
               (supportedOn_mono (singleton_subset_iff.mpr w.property) hg))),
         hR'.spherical_mul hq' u' j
-          ((supportedOn_mono (by simp [u', above, placesAbove, U_mem w])).trans
+          ((supportedOn_mono (by simp [u', above, placesAbove, X, U_mem w])).trans
             h_level.supportedOn_placesAbove_le)⟩
   -- `Y`: the joint generalised eigenspace of the generators at the pulled-back level. The operator
   -- of `F j₀` preserves it and has non-zero trace on it.
@@ -879,7 +866,7 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
     obtain ⟨-, -, r'_ker⟩ := ha'
     rw [← r'_ker]
     exact L'.ker_le_comap r'
-  obtain ⟨X, K₁, C, 𝓛, h_level⟩ := exists_isTransferLevel hσ f h_off L'_open L'_σ L'_le_K K_le K_coh
+  obtain ⟨K₁, C, 𝓛, h_level⟩ := exists_isTransferLevel hσ f h_off L'_open L'_σ L'_le_K K_le K_coh
   obtain ⟨g, g_ne, g_fixed, g_local, g_image, g_eigen, g_agree⟩ :=
     exists_eigenvector_of_isTransferLevel hσ f hF ha ha' hL hP h_level o θ j₀ hj₀ h_comm h_stable
       h_trace
@@ -895,9 +882,9 @@ lemma exists_isWeakBaseChange_of_matching {μ : (𝔸f E)ˣ →* ℂˣ} [hμ : I
   · intro w hw hw_unram hf u hu_below
     have hu_above : {u} ⊆ placesAbove E' {w} := by simp [placesAbove, ← hu_below]
     have hu_max : maxCompactAt n u ≤ 𝓛 :=
-      h_level.kf_inf_supportedOn_le_of_mem_sphericalAt w hw hw_unram hf hu_above
+      h_level.kf_inf_supportedOn_le w hw hw_unram hf hu_above
     exact levelSpace_anti hu_max g_fixed
   · intro w hw hw_split hw_matched hf t ht
-    exact g_agree w (h_level.mem_of_isMatched w hw hw_split hw_matched hf) hw_split t ht
+    exact g_agree w ⟨hw, hw_split, hw_matched, hf⟩ hw_split t ht
 
 end New
