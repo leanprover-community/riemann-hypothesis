@@ -128,6 +128,23 @@ lemma toAlgAut_surjective : Surjective (toAlgAut Γ K Ω) := by
   obtain ⟨y, rfl⟩ : ∃ y : K, algebraMap K Ω y = x := G.isInvariant.isInvariant x h_fixed
   exact σ.commutes y
 
+/-- The action of a profinite Galois group identifies it with the automorphism group
+equipped with the Krull topology. -/
+noncomputable def proGaloisEquiv : Γ ≃ₜ* Gal(Ω/K) := by
+  let e := MulEquiv.ofBijective (toAlgAut Γ K Ω)
+    ⟨fun g h he ↦ G.faithful.eq_of_smul_eq_smul fun x ↦
+      congrArg (fun σ : Gal(Ω/K) ↦ σ x) he, toAlgAut_surjective Γ⟩
+  have he : Continuous e := continuous_of_equivariant_emb 1 fun _ _ ↦ rfl
+  have he_symm : Continuous e.symm := by
+    apply continuous_of_equivariant_emb (K := K) (L := K) (j := 1)
+    intro σ x
+    exact congrArg (fun τ : Gal(Ω/K) ↦ τ x) (e.apply_symm_apply σ)
+  exact ⟨e, he, he_symm⟩
+
+/-- Under `proGaloisEquiv`, evaluating an automorphism is the original group action. -/
+lemma proGaloisEquiv_apply (g : Γ) (x : Ω) :
+    proGaloisEquiv (K := K) Γ g x = g • x := rfl
+
 /-- The units of `K` are exactly the `Γ`-invariant units of `Ω`. -/
 lemma DiscreteUnits.ofBase_bijective : Bijective (ofBase Γ Ω (K := K)) := by
   refine ⟨coind_injective _ (map_injective (algebraMap K Ω).injective), fun x ↦ ?_⟩
