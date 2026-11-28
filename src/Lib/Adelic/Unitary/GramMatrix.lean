@@ -3,7 +3,7 @@ module
 public import Aesop.BuiltinRules
 public import Lib.Adelic.Unitary.Defs
 import Lib.Adelic.Adeles.StrongApproximation
-import Lib.General.LinearAlgebra.PartnerAlgebra
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 
 /-!
 # The Gram matrix of a space is invertible and hermitian; group elements from isometries
@@ -87,11 +87,11 @@ lemma map_J (V : Space E n s) : V.J.map toAdele = V.x⁻¹.valᴴ * stdForm E s 
 @[simp]
 lemma isUnit_J (V : Space E n s) : IsUnit V.J := by
   have h_adelic : IsUnit (toAdele.mapMatrix V.J) := by simp [map_J]
-  exact isUnit_of_mapMatrix toAdele h_adelic
+  exact (Matrix.isUnit_map_iff toAdele _).1 h_adelic
 
 lemma map_J_inv_mul_map_J (V : Space E n s) : V.J⁻¹.map toAdele * V.J.map toAdele = 1 := by
   have h_det : IsUnit V.J.det := (isUnit_iff_isUnit_det V.J).mp V.isUnit_J
-  simp [← Matrix.map_mul, nonsing_inv_mul V.J h_det]
+  simp [← Matrix.map_mul, nonsing_inv_mul V.J h_det, -map_nonsing_inv]
 
 lemma map_J_inv (V : Space E n s) :
     V.J⁻¹.map toAdele = V.x.val * stdForm E s * V.x.valᴴ := by

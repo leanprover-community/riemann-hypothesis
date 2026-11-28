@@ -1,6 +1,7 @@
 module
 
 import Std.Tactic.BVDecide.Normalize.Bool
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 public import New.Determinant.AuxiliaryForms.PathData
 import Lib.Adelic.AutomorphicForms.Cuspidality
 import Lib.Adelic.Unitary.RationalPoints
@@ -109,8 +110,8 @@ lemma exists_triangleGLCard_eq_mul_levelIndex (D : Data P) (j : ℕ) :
       card (GL (D.Y j) R) / card R ^ card (D.Y j) ^ 2 := by
     let π := (reduceToTriangle ϑ false).mapMatrix (m := D.Y j)
     have h_surj : Surjective (reduceToTriangle ϑ false) := factor_surjective _
-    have h_unit (x : Matrix (D.Y j) (D.Y j) R) : IsUnit (π x) ↔ IsUnit x := by
-      simp [π, isUnit_iff_isUnit_det, ← RingHom.map_det, -RingHom.mapMatrix_apply]
+    have h_unit (x : Matrix (D.Y j) (D.Y j) R) : IsUnit (π x) ↔ IsUnit x :=
+      Matrix.isUnit_map_iff _ x
     calc _ = finMean fun x ↦ if IsUnit (π x) then (1 : ℂ) else 0 :=
         finMean_isUnit_indicator.symm.trans (finMean_comp_surjective π.toAddMonoidHom
           h_surj.comp_left.comp_left fun x ↦ if IsUnit x then 1 else 0).symm
@@ -500,8 +501,8 @@ lemma hasLeftInv_of_edgePointDatum_ne_zero {ϑ : D.MFoldTwist} {b : ℕ}
   let J : Matrix (D.NodeIndex (false, 0, b + 1)) (D.NodeIndex (false, 0, b))
       (gridModulus ϑ).ResidueRing := inclMatrix _ u
   have h_red : y.map (reduceToTriangle ϑ false) = inclMatrix _ u := Pi.support_single_subset hy
-  have h_unit : IsUnit (Jᵀ * y) := isUnit_of_mapMatrix (reduceToTriangle ϑ false) <| by
-    simp only [J, RingHom.mapMatrix_apply, Matrix.map_mul, transpose_map]
+  have h_unit : IsUnit (Jᵀ * y) := (Matrix.isUnit_map_iff (reduceToTriangle ϑ false) _).1 <| by
+    simp only [J, Matrix.map_mul, transpose_map]
     rw [h_red, map_inclMatrix, inclMatrix_transpose_mul_self u]
     exact isUnit_one
   exact ⟨_ * Jᵀ, (Matrix.mul_assoc ..).trans h_unit.val_inv_mul⟩

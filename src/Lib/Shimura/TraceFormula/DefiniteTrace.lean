@@ -6,7 +6,7 @@ import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
 import Mathlib.Topology.Algebra.Group.Units
 public import Lib.Shimura.HeckeTower.HeckeData
 import Lib.Adelic.Reduction.FiniteVolume
-import Lib.General.LinearAlgebra.PartnerAlgebra
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 import Lib.Shimura.Transfer.MarkedPairs
 
 /-!
@@ -356,7 +356,7 @@ lemma New.Variety.finite_isSignedFrame_classes {E n : Type} [Field E] [CMBase E]
   -- The form `J₀` is positive definite at a place `v ≠ v₀`, so it is an invertible matrix `J`.
   obtain ⟨v, hv⟩ : ∃ v : NumberField.InfinitePlace E, v ≠ v₀ := exists_ne v₀
   have h_pos : (J₀.map (Φ v)).PosDef := by simpa [hv] using h_sig v
-  obtain ⟨J, rfl⟩ : IsUnit J₀ := isUnit_of_mapMatrix _ h_pos.isUnit
+  obtain ⟨J, rfl⟩ : IsUnit J₀ := (Matrix.isUnit_map_iff _ _).1 h_pos.isUnit
   -- Mahler's criterion applies to the adelic frame `g = (a, x)`, whose Gram matrix lies in `B`.
   obtain ⟨a, ha⟩ := h_gram_mem J x h_frame
   let g : GL n (𝔸 E) := mkAdelicGL (a, x)

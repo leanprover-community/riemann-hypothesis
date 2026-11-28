@@ -10,7 +10,7 @@ import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.GLn.SchurModule.SchurNorm
 import Lib.GaloisRep.BaseChange.GlobalRoot
 import Lib.General.LinearAlgebra.MatrixPolynomials
-import Lib.General.LinearAlgebra.PartnerAlgebra
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 import Lib.Shimura.TraceFormula.DefiniteTrace
 
 /-!
@@ -581,8 +581,8 @@ lemma New.exists_isRootQuotient_of_isNormRoot {E E' n : Type} [Field E] [CMType 
     simpa using (hb hν_C).left
   have h_unit_rat {ν : U 1} (hν_C : C (q ν)) : IsUnit (aeval (ν : Matrix n n E') (z₀ (q ν))) := by
     -- `e ν` is `ν` with `algebraMap E' (𝔸f E')` applied to the entries.
-    refine isUnit_of_mapMatrix (algebraMap E' (𝔸f E')) ?_
-    rw [RingHom.mapMatrix_apply, map_aeval_matrix]
+    refine (Matrix.isUnit_map_iff (algebraMap E' (𝔸f E')) _).1 ?_
+    rw [map_aeval_matrix]
     simpa [e, U.map] using (h_unit hν_C).left
   -- `A ν` and `B ν` are the unique roots for `z₀` at `ν` and for `x` at `e ν`.
   choose! A hA hA_uniq using fun ν (hν_C : C (q ν)) ↦ existsUnique_isRootQuotient (h_unit_rat hν_C)

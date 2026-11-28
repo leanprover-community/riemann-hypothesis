@@ -3,7 +3,7 @@ module
 public import Lib.Weil.DualPair.ShortIsotropicVectors
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Base
-import Lib.General.LinearAlgebra.PartnerAlgebra
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 import Lib.Weil.DualPair.ThetaLiftConvergence
 import Lib.Weil.DualPair.WeilAction
 
@@ -499,8 +499,8 @@ lemma Rows.isPrimitiveMatrix_of_liftFn_ne_zero {ι : Type*} {Ψ : (ι → 𝔪.R
   have hL' : L'.map (residue _) = L.map r := Matrix.ext fun _ _ ↦ surjInv_eq ..
   have hY : Y.map (residue _) = (e.map fun i ↦ 𝔪.reduction ⟨_, h_int i⟩).map r :=
     Matrix.ext fun _ _ ↦ (modulusResidue_reduction 𝔪 hw ⟨_, h_int _⟩).symm
-  have h_unit : IsUnit (L' * Y) := isUnit_of_mapMatrix (residue _) <| by
-    rw [RingHom.mapMatrix_apply, Matrix.map_mul, hL', hY, ← Matrix.map_mul, hL]
+  have h_unit : IsUnit (L' * Y) := (Matrix.isUnit_map_iff (residue _) _).1 <| by
+    rw [Matrix.map_mul, hL', hY, ← Matrix.map_mul, hL]
     simp
   obtain ⟨U, hU⟩ : ∃ U : Matrix n n (LocInt w), U * (L' * Y) = 1 := h_unit.exists_left_inv
   -- The idempotent `idem 𝔪.places` in the entries of `Y` is `1` at `w`.

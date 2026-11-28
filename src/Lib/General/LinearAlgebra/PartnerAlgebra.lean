@@ -4,6 +4,7 @@ public import Lib.General.LinearAlgebra.IntegralLattices
 import Lib.Adelic.Unitary.ComponentsAndBlockSums
 import Lib.Adelic.Witt.WittTheorem
 import Lib.General.LinearAlgebra.HermiteForm
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 
 /-!
 # Rows and columns of integral matrices, primitive matrices and the law of partners
@@ -46,15 +47,6 @@ Known; see `Lib.SiegelWeil.Tower.LargeSideConstantTerm` for sources.
 @[expose] public section
 
 noncomputable section
-
-/-! ## Invertibility detected after a local ring homomorphism -/
-
-/-- A square matrix is invertible if its image under a local ring homomorphism is invertible. -/
-lemma New.isUnit_of_mapMatrix {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n] {S : Type*}
-    [CommRing S] (f : R →+* S) [IsLocalHom f] {M : Matrix n n R}
-    (h_map : IsUnit (f.mapMatrix M)) : IsUnit M := by
-  rw [Matrix.isUnit_iff_isUnit_det] at h_map ⊢
-  exact isUnit_of_map_unit f M.det (by rwa [f.map_det])
 
 namespace New
 
@@ -289,13 +281,13 @@ lemma exists_map_coe_eq_firstCols {π : O →+* R} [IsLocalHom π] (hπ : Surjec
   let M : Matrix n n O := of fun i ↦ extend (e ∘ Sum.inl) (y i) (surjInv hπ ∘ k i)
   have hM_cols (i : n) (j : b) : M i (e (Sum.inl j)) = y i j :=
     (e.injective.comp Sum.inl_injective).extend_apply (y i) (surjInv hπ ∘ k i) j
-  have h_map : π.mapMatrix M = k := by
+  have h_map : M.map π = k := by
     refine Matrix.ext fun i c ↦ show π (M i c) = k.val i c from ?_
     by_cases hc : ∃ j : b, (e ∘ Sum.inl) j = c
     · obtain ⟨j, rfl⟩ := hc
       simpa [hM_cols] using congr_fun₂ hy_map i j
     · simp [M, extend_apply' (y i) (surjInv hπ ∘ k i) c hc, surjInv_eq hπ]
-  obtain ⟨j, hj⟩ : IsUnit M := isUnit_of_mapMatrix π (by simp [h_map])
+  obtain ⟨j, hj⟩ : IsUnit M := (isUnit_map_iff π M).1 (by simp [h_map])
   refine ⟨GeneralLinearGroup.map O.subtype j, MonoidHom.mem_range.2 ⟨j, rfl⟩, ?_⟩
   simp [hj, hM_cols, ← ext_iff]
 

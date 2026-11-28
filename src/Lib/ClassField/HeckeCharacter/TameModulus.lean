@@ -7,7 +7,7 @@ public import Lib.Adelic.Unitary.CongruenceLevels
 import Lib.ClassField.HeckeCharacter.SplittingCharacters
 import Lib.ClassField.Local.ArtinMap
 import Lib.Cohomology.Etale.Basic
-import Lib.General.LinearAlgebra.PartnerAlgebra
+import TauCeti.LinearAlgebra.Matrix.Nonsingular.Inverse
 
 /-!
 # Characters on determinants, local values and characters tame for a modulus
@@ -170,7 +170,7 @@ lemma Rows.exists_reductionGL_eq :
     fun i j ↦ ⟨(M i j).val w, mem_Ô.mp (M i j).property w⟩
   -- The residue of `Mloc w` is the invertible matrix `g` read modulo `w`.
   have h_unit (w : S) : IsUnit (Mloc w) :=
-    isUnit_of_mapMatrix (IsLocalRing.residue _)
+    (Matrix.isUnit_map_iff (IsLocalRing.residue _) _).1
       ⟨g.map (modulusResidue 𝔪 (hS.le w.property)), by
         ext i j
         have h_res : reduceAt w.val (M i j) = IsLocalRing.residue _ (Mloc w i j) := rfl
