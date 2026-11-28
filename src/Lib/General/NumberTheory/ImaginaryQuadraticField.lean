@@ -12,6 +12,7 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.NumberTheory.Multiplicity
 import Mathlib.RingTheory.Ideal.Int
 import Mathlib.RingTheory.KrullDimension.PID
+import TauCeti.NumberTheory.Multiquadratic.Legendre.PrimeDiscriminant.Basic
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
 import Lib.General.NumberTheory.EmbeddingsAndDifferent
@@ -398,18 +399,12 @@ lemma chiK_two {d : ℕ} [PrimeSevenModEight d] : chiK d 2 = 1 := by
 characteristic `p`, `x ^ (p - 1)` is the image in `R` of the Legendre symbol `(p / d)`. -/
 lemma chiK_eq_pow_of_sq_eq_neg (hp_ne_two : p ≠ 2) {x : R} (hx : x ^ 2 = -d) :
     chiK d p = x ^ (p - 1) := by
-  -- Quadratic reciprocity and Euler's criterion give `(-d) ^ (p / 2)`, which is `x ^ (p - 1)`.
-  have hd_half : Odd (d / 2) := by grind [PrimeSevenModEight]
   have hp_half : p - 1 = 2 * (p / 2) := by grind [hp.out.odd_of_ne_two hp_ne_two]
-  -- The sign `(-1) ^ (p / 2 * (d / 2))` is `(-1) ^ (p / 2)` because `d / 2` is odd.
-  have h_recip : chiK d p = (-1) ^ (p / 2) * legendreSym p d := by
-    simp [chiK_eq_legendreSym,
-      quadratic_reciprocity' hp_ne_two (show d ≠ 2 by grind [PrimeSevenModEight]),
-      neg_one_pow_eq_ite, Nat.even_mul, Nat.not_even_iff_odd.2 hd_half]
-  have h_euler : (legendreSym p d : R) = d ^ (p / 2) := by
-    simpa using congr_arg (castHom (dvd_refl p) R) (eq_pow p d)
-  rw [hp_half, pow_mul, hx, neg_pow (d : R)]
-  simp [h_recip, h_euler]
+  have h_recip := TauCeti.Multiquadratic.legendreSym_oddPrimeDiscriminant_eq_legendreSym
+    (p := d) (q := p) (by grind [PrimeSevenModEight]) hp_ne_two
+  rw [TauCeti.Multiquadratic.oddPrimeDiscriminant_of_mod_four_eq_three Fact.out] at h_recip
+  rw [hp_half, pow_mul, hx, chiK_eq_legendreSym, ← h_recip]
+  simpa using congr_arg (castHom (dvd_refl p) R) (eq_pow p (-(d : ℤ)))
 
 /-- For a prime `d ≡ 7 mod 8`, an odd prime `p` and a ring map `φ` from the integers of `ℚ(√-d)`
 to a ring of characteristic `p`, the `n`-th power of Frobenius sends `φ (betaK d)` to the `x` with
