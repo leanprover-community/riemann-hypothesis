@@ -99,14 +99,12 @@ lemma New.GaloisRep.exists_eigenform_rank_one {E : Type} [Field E] [CMType E]
       ∃ v : FinPlace E, v ≠ star w ∧ v ≠ w ∧ 2 ^ Module.finrank ℚ E < v.q := by
     simpa using (((Northcott.finite_le (h := FinPlace.q (E := E)) (2 ^ Module.finrank ℚ E)).insert
       w).insert (star w)).exists_notMem
-  let M : Submodule ℂ ((stdSpace E (Fin 1)).forms κ) :=
-    levelSpace ((stdSpace E (Fin 1)).formTranslation κ) (levelOf ![v] ⊥)
+  let M := levelSpace ((stdSpace E (Fin 1)).formTranslation κ) (levelOf ![v] ⊥)
   -- The level is free because `v.q > 2 ^ [E : ℚ]` (`classAut_eq_bot`), so a form of this level is
   -- an arbitrary family of values on the double cosets: `M` is finite-dimensional and nonzero.
   have h_free (g : Gf E (Fin 1)) : classAut (stdSpace E (Fin 1)).Γf (levelOf ![v] ⊥) g = ⊥ :=
     classAut_eq_bot (w := ![v]) (Function.injective_of_subsingleton _) (by simp [hv_norm]) le_rfl g
-  let e : M ≃ₗ[ℂ] (DoubleCosets (stdSpace E (Fin 1)).embFin.range (levelOf ![v] ⊥) →
-      WeylIndex (Fin 1) κ.1 → ℂ) := freeLevelEquiv _ _ _ h_free Quot.out_eq
+  let e : M ≃ₗ[ℂ] _ := freeLevelEquiv _ _ _ h_free Quot.out_eq
   have : FiniteDimensional ℂ M := e.symm.finiteDimensional
   -- `M` is stable under the Hecke operators off `v`, hence spanned by eigenforms.
   have h_sph : M ≤ levelSpace ((stdSpace E (Fin 1)).formTranslation κ)
@@ -115,7 +113,7 @@ lemma New.GaloisRep.exists_eigenform_rank_one {E : Type} [Field E] [CMType E]
   have h_span : M ≤ span ℂ {f ∈ M | ∃ P : FinPlace E → ℂ[X], IsSphericalOff {v} f.val P} :=
     le_span_isSphericalOff M h_sph fun u _ hu hu' j _ h ↦ heckeSplit_mem_levelSpace _ j
       (levelSpace_le_sphericalAt hu hu' (h_sph h)) levelOf_le_stdLevel h
-  obtain ⟨f, ⟨-, P, hf_ne, hf_fix, hf_poly⟩, -⟩ :
+  obtain ⟨f, ⟨-, P, hf_ne, -, hf_poly⟩, -⟩ :
       ∃ f ∈ {f ∈ M | ∃ P : FinPlace E → ℂ[X], IsSphericalOff {v} f.val P}, f ≠ 0 := by
     simpa only [ne_eq, span_eq_bot, not_forall, exists_prop] using
       ne_bot_of_le_ne_bot (nontrivial_iff_ne_bot.mp e.nontrivial) h_span
@@ -147,16 +145,11 @@ lemma New.GaloisRep.avatarCompatAt_of_isSplit {ℓ : ℕ} [ThePrime ℓ] [PadicI
     if inducedPrime σ = w then θ.val.2.toAdd σ else -θ.val.2.toAdd (star σ)
   obtain ⟨f, hf, P, h_eig, hP⟩ := exists_eigenform_rank_one hw (0, k ∘ Φ)
   obtain ⟨⟨r, hr⟩, h_local⟩ := sphericalCompat_of_odd odd_one w hf h_eig
-  obtain ⟨h_good, h_jump, h_frob⟩ : IsCompatibleAt (κ := (0, k ∘ Φ)) f 1 w r A :=
-    h_local hr hP.1 A hA
-  obtain ⟨h_fin, h_inertia⟩ :
-      IsFiniteTypeAt r A ∧ ∀ s ∈ inertiaGroup Gal(Ω/E) A, PolyKillsAt r A s (X - 1) :=
-    isGoodAt_iff.1 h_good
+  obtain ⟨h_good, h_jump, h_frob⟩ := h_local hr hP.1 A hA
+  obtain ⟨h_fin, h_inertia⟩ := isGoodAt_iff.1 h_good
   -- `det r` is the avatar of a character `θ₁` whose type at `Φ v` and its conjugate is `± k (Φ v)`
   -- and whose values at `w` are read off from `f`.
-  obtain ⟨θ₁, hθ₁, h_det⟩ : ∃ θ₁ : AlgHeckeChar E, IsRankOneCharacter (k ∘ Φ) f θ₁ ∧
-      ∀ g : Gal(Ω/E), (r g).val.det = θ₁.avatar g :=
-    hr.exists_det_eq_avatar hf h_eig
+  obtain ⟨θ₁, hθ₁, h_det⟩ := hr.exists_det_eq_avatar hf h_eig
   have h_zero (σ : E →+* ℂ) (hσ : inducedPrime σ = w) : (θ / θ₁).val.2.toAdd σ = 0 := by
     -- `σ` is `Φ (.mk σ)` or `star (Φ (.mk σ))`, and these induce different places since `w` is
     -- split.

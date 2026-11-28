@@ -92,13 +92,11 @@ lemma New.Exchange.exists_unit_dotProduct_col_eq_zero {a b n : Type} [Fintype a]
     [Fintype n] [DecidableEq n] {s : n → ℤˣ} {t : a → ℤˣ} {i : n} (hs_pos : s i = 1)
     (h_negCount : Fintype.card b + negCount t = negCount s) {x : Matrix n b ℂ} {v : b → ℂ}
     (hv : x *ᵥ v = Pi.single i 1) (y : n → a → ℂ) :
-    ∃ r : n → ℂ, (∀ j : b, (r ⬝ᵥ fun k : n ↦ x k j) = 0) ∧
-      (∀ j : a, t j = -1 → (r ⬝ᵥ fun k : n ↦ y k j) = 0) ∧
-      (∀ k : n, s k ≠ -1 → r k = 0) ∧ r ⬝ᵥ star r = 1 := by
+    ∃ r : n → ℂ, r ᵥ* x = 0 ∧ (∀ j, t j = -1 → (r ⬝ᵥ fun k ↦ y k j) = 0) ∧
+      (∀ k, s k ≠ -1 → r k = 0) ∧ r ⬝ᵥ star r = 1 := by
   -- the kernel of `f` is cut out by the three linear conditions
-  let f : (n → ℂ) →ₗ[ℂ] ((b → ℂ) × ({j // t j = -1} → ℂ)) × ({k // s k ≠ -1} → ℂ) :=
-    (x.vecMulLinear.prod (of fun k (j : {j // t j = -1}) ↦ y k j).vecMulLinear).prod
-      (.funLeft ℂ ℂ Subtype.val)
+  let f := (x.vecMulLinear.prod (of fun k (j : {j // t j = -1}) ↦ y k j).vecMulLinear).prod
+    (.funLeft ℂ ℂ (Subtype.val : {k // s k ≠ -1} → n))
   suffices h_ker : ∃ r ∈ f.ker, star r ⬝ᵥ (1 : Matrix n n ℂ) *ᵥ r = 1 by
     simpa [f, funext_iff, dotProduct_comm (star _), and_assoc, vecMul] using h_ker
   -- otherwise `f` is injective, so onto by `h_negCount`; but `hv` ties two of its coordinates
@@ -107,12 +105,11 @@ lemma New.Exchange.exists_unit_dotProduct_col_eq_zero {a b n : Type} [Fintype a]
     simpa [(dotProduct_star_self_nonneg r).ge_iff_eq'] using h_nonpos r hr
   have h_rank : Module.finrank ℂ (n → ℂ) =
       Module.finrank ℂ (((b → ℂ) × ({j // t j = -1} → ℂ)) × ({k // s k ≠ -1} → ℂ)) := by
-    have h_count : card b + card {j // t j = -1} = card {k // s k = -1} := h_negCount
-    simp [h_count, Nat.add_sub_cancel' (card_subtype_le _)]
+    simp [show card b + card {j // t j = -1} = card {k // s k = -1} from h_negCount,
+      Nat.add_sub_cancel' (card_subtype_le _)]
   obtain ⟨r, hr⟩ : ∃ r : n → ℂ, f r = (0, 1) := (f.linearEquivOfInjective f_inj h_rank).surjective _
-  obtain ⟨⟨r_x, -⟩, r_eq_one⟩ : (r ᵥ* x = 0 ∧ ∀ j : a, t j = -1 → (r ⬝ᵥ fun k ↦ y k j) = 0) ∧
-      ∀ k : n, s k ≠ -1 → r k = 1 := by
-    simpa [f, funext_iff, vecMul] using hr
+  have r_x : r ᵥ* x = 0 := congrArg (Prod.fst ∘ Prod.fst) hr
+  have r_eq_one : ∀ k, s k ≠ -1 → r k = 1 := fun k hk ↦ congrFun (congrArg Prod.snd hr) ⟨k, hk⟩
   have h_coord : r i = r ᵥ* x ⬝ᵥ v := by simp [← dotProduct_mulVec, hv]
   simp [r_x, r_eq_one i (by simp [hs_pos])] at h_coord
 
@@ -279,10 +276,9 @@ lemma New.Exchange.eq_zero_of_stabilizer_fixes_polyVector {τ : InfinitePlace E}
   obtain ⟨r, r_x, r_z, r_supp, r_unit⟩ :=
     exists_unit_dotProduct_col_eq_zero hs_pos h_negCount hv fun k j ↦ conj (z (τ, k, j))
   have rotation_fixes (δ : ℂ) : (1 + δ • vecMulVec (star r) r) * x = x := by
-    simp [← Matrix.ext_iff, r_x, Matrix.add_mul, vecMulVec_mul, vecMulVec_apply, vecMul]
-  have hz (j : a) (hj : t j = -1) : ∑ k : n, conj (r k) * z (τ, k, j) = 0 := by
+    simp [← Matrix.ext_iff, r_x, Matrix.add_mul, vecMulVec_mul, vecMulVec_apply]
+  refine eval_eq_zero_of_rotation_fixed hμ r_supp r_unit (fun c c_mem δ hc ↦ ?_) fun j hj ↦ by
     simpa [dotProduct] using congrArg conj (r_z j hj)
-  refine eval_eq_zero_of_rotation_fixed hμ r_supp r_unit (fun c c_mem δ hc ↦ ?_) hz
   exact h_fixed c c_mem (by rw [hc, rotation_fixes])
 
 /-- An element `c` of the maximal compact subgroup, placed at `τ`, maps the Fock vector of a

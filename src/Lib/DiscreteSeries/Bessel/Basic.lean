@@ -153,11 +153,9 @@ lemma exists_mem_besselU_frameMatrix_eq_one_add_row {A : Type} [CommRing A] [Sta
   -- `v` vanishes on the floors at most `a`, so it is a vector of the floors at least `a + 1`.
   have hv_floor (i : 𝔰.BesselIndex) (hi : ¬ (a : ℕ) + 1 ≤ floorOf i) : v i = 0 := by
     rcases i with c | (k | ⟨⟩) | c <;> simp [floorOf, v] at hi ⊢
-    have hc : c ≤ a := Fin.le_def.2 (by omega)
-    simp [hr_zero _ (Fin.castSucc_le_castSucc_iff.2 hc)]
-  have h_incl : inclMatrix A (Subtype.val : {i : 𝔰.BesselIndex // (a : ℕ) + 1 ≤ floorOf i} →
-      𝔰.BesselIndex) *ᵥ (fun i ↦ v i.val) = v := by
-    grind [inclMatrix_val_mulVec]
+    simp [hr_zero c.castSucc (Fin.castSucc_le_castSucc_iff.2 (Fin.le_def.2 (by omega)))]
+  have h_incl : inclMatrix A (Subtype.val : {i // (a : ℕ) + 1 ≤ floorOf i} → 𝔰.BesselIndex) *ᵥ
+      (fun i ↦ v i.val) = v := by grind [inclMatrix_val_mulVec]
   -- The column of the form at `z` is `-N` at `z`.
   have h_col : (𝔰.middleGram N).splitGram.col 𝔰.z = Pi.single 𝔰.z (-N) := by
     ext i
