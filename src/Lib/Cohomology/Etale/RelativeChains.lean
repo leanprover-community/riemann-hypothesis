@@ -393,9 +393,90 @@ lemma relFreeAb.shortExact_restrict_of_inf_eq {A B D : Subfunctor V} (hD : A ⊓
   rw [← range_homOfLe_eq_preimage_of_inf_eq hD]
   exact shortExact_triple ..
 
-/-- The inclusion of `A` in `B` followed by that of `B` in `D` is the inclusion of `A` in `D`. -/
-private lemma homOfLe_comp_homOfLe {A B D : Subfunctor V} (h₁ : A ≤ B) (h₂ : B ≤ D) :
-    homOfLe h₁ ≫ homOfLe h₂ = homOfLe (h₁.trans h₂) := rfl
+/-- Restricting along `A ≤ B` and then `B ≤ D` is restricting along `A ≤ D`. -/
+private lemma relFreeAb.restrict_comp_restrict {A B D : Subfunctor V} (h₁ : A ≤ B) (h₂ : B ≤ D) :
+    restrict U h₁ ≫ restrict U h₂ = restrict U (h₁.trans h₂) :=
+  hom_ext
+
+/-- Diagram chase for uniqueness on a morphism `(a, b, c) : L ⟶ L'` of long exact sequences:
+if `a n` is injective and `L'.C m` is trivial for `m < d`, then any `z : L.B n` (`n ≤ d`) killed by
+`b n` and `L.g n` is zero. -/
+private lemma longExactSeq_eq_zero_of_maps {L L' : LongExactSeq}
+    {a : (n : ℕ) → L.A n →+ L'.A n} {b : (n : ℕ) → L.B n →+ L'.B n}
+    {c : (n : ℕ) → L.C n →+ L'.C n} (h : L.Hom L' a b c) {d n : ℕ} (hn : n ≤ d)
+    (ha : Function.Injective (a n)) (h_vanish : ∀ m < d, Subsingleton (L'.C m))
+    {z : L.B n} (hb : b n z = 0) (hg : L.g n z = 0) : z = 0 := by
+  obtain ⟨w, rfl⟩ := (L.exact_f_g n z).1 hg
+  have hfw : L'.f n (a n w) = 0 := by rw [← h.comm_f n w, hb]
+  have haw : a n w = 0 := by
+    cases n with
+    | zero => exact (map_eq_zero_iff _ L'.injective_f).1 hfw
+    | succ m =>
+      obtain ⟨t, ht⟩ := (L'.exact_delta_f m _).1 hfw
+      rw [← ht, (h_vanish m hn).elim t 0, map_zero]
+  rw [(map_eq_zero_iff _ ha).1 haw, map_zero]
+
+/-- For the identity comparison, the ladder of long exact sequences has vertical maps `H.map F`. -/
+private lemma relFreeAb.pull_hom_contravariant_id {S S' : ShortComplex (AbFunctor C)}
+    (hS : S.ShortExact) (hS' : S'.ShortExact) (F : AbFunctor C)
+    (τ₁ : S'.X₁ ⟶ S.X₁) (τ₂ : S'.X₂ ⟶ S.X₂) (τ₃ : S'.X₃ ⟶ S.X₃)
+    (comm₁₂ : τ₁ ≫ S.f = S'.f ≫ τ₂) (comm₂₃ : τ₂ ≫ S.g = S'.g ≫ τ₃) :
+    (contravariant hS F).Hom (contravariant hS' F)
+      (H.map F τ₃) (H.map F τ₂) (H.map F τ₁) :=
+  have h := pull_hom_contravariant hS hS' (.id F) ⟨τ₁, τ₂, τ₃, comm₁₂, comm₂₃⟩
+  ⟨fun n x ↦ by simpa only [id_pull] using h.comm_f n x,
+   fun n x ↦ by simpa only [id_pull] using h.comm_g n x,
+   fun n x ↦ by simpa only [id_pull] using h.comm_delta n x⟩
+
+/-- Diagram chase on a morphism `(τ₁, τ₂, τ₃) : S' ⟶ S` of short exact sequences: if `τ₃` is a
+cohomology equivalence and `S'.X₁` has trivial cohomology below degree `d`, then a class on `S.X₂`
+vanishing on `S'.X₂` and `S.X₁` is zero, and compatible classes on `S'.X₂` and `S.X₁` in degree `d`
+glue. -/
+private lemma relFreeAb.gluing_chase {S S' : ShortComplex (AbFunctor C)} {F : AbFunctor C} {d : ℕ}
+    (hS : S.ShortExact) (hS' : S'.ShortExact)
+    (τ₁ : S'.X₁ ⟶ S.X₁) (τ₂ : S'.X₂ ⟶ S.X₂) (τ₃ : S'.X₃ ⟶ S.X₃)
+    (comm₁₂ : τ₁ ≫ S.f = S'.f ≫ τ₂) (comm₂₃ : τ₂ ≫ S.g = S'.g ≫ τ₃)
+    (h_exc : IsCohomEquiv F τ₃)
+    (h_vanish : ∀ n < d, Subsingleton (H S'.X₁ F n)) :
+    (∀ n ≤ d, ∀ {z : H S.X₂ F n},
+      H.map F τ₂ n z = 0 → H.map F S.f n z = 0 → z = 0) ∧
+    (∀ (xB : H S'.X₂ F d) (xA : H S.X₁ F d),
+      H.map F τ₁ d xA = H.map F S'.f d xB →
+      ∃ z : H S.X₂ F d, H.map F τ₂ d z = xB ∧ H.map F S.f d z = xA) :=
+  have ladder := pull_hom_contravariant_id hS hS' F τ₁ τ₂ τ₃ comm₁₂ comm₂₃
+  ⟨fun n hn _ hzB hzA ↦
+      longExactSeq_eq_zero_of_maps ladder hn (h_exc n).injective h_vanish hzB hzA,
+    fun xB xA h_compat ↦
+      ladder.exists_preimage (h_exc d).surjective (h_exc _).injective xB xA h_compat⟩
+
+/-- One Mayer–Vietoris gluing step for two subfunctors `A`, `B` with union `E` and intersection
+`D`. -/
+private lemma relFreeAb.mayerVietoris_step {F : AbFunctor C} {d : ℕ}
+    {A B D E : Subfunctor V} (hAB : A ⊔ B = E) (hD : A ⊓ B = D)
+    (h_inter_vanish : ∀ n < d, Subsingleton (H (relFreeAb (U.preimage D.ι)) F n)) :
+    (∀ n ≤ d, ∀ {z : H (relFreeAb (U.preimage E.ι)) F n},
+      H.map F (restrict U (le_sup_right.trans hAB.le)) n z = 0 →
+      H.map F (restrict U (le_sup_left.trans hAB.le)) n z = 0 → z = 0) ∧
+    (∀ (xB : H (relFreeAb (U.preimage B.ι)) F d)
+      (xA : H (relFreeAb (U.preimage A.ι)) F d),
+      H.map F (restrict U (hD.ge.trans inf_le_left)) d xA =
+        H.map F (restrict U (hD.ge.trans inf_le_right)) d xB →
+      ∃ z : H (relFreeAb (U.preimage E.ι)) F d,
+        H.map F (restrict U (le_sup_right.trans hAB.le)) d z = xB ∧
+        H.map F (restrict U (le_sup_left.trans hAB.le)) d z = xA) := by
+  have hB : B ≤ E := le_sup_right.trans hAB.le
+  have hA : A ≤ E := le_sup_left.trans hAB.le
+  have h_exc : IsCohomEquiv F (map (homOfLe hB)
+      (U := A.preimage E.ι ⊔ U.preimage E.ι) le_rfl) := by
+    refine excision _ (.of_top_le fun c v _ ↦ ?_) rfl
+    have hv : v.val ∈ A.obj c ∨ v.val ∈ B.obj c := hAB.ge c v.property
+    exact hv.elim (fun hvA ↦ Or.inr (Or.inl hvA)) fun hvB ↦ Or.inl ⟨⟨v.val, hvB⟩, rfl⟩
+  exact gluing_chase
+    (shortExact_restrict_of_inf_eq U (inf_of_le_left hA : A ⊓ E = A)).2
+    (shortExact_restrict_of_inf_eq U hD).2
+    (restrict U (hD.ge.trans inf_le_left)) (restrict U hB) (map (homOfLe hB) le_rfl)
+    ((restrict_comp_restrict U _ _).trans (restrict_comp_restrict U _ _).symm)
+    hom_ext h_exc h_inter_vanish
 
 /-- Gluing on the union of the `W i`. Let `S` be a set of subfunctors of `V`, closed under
 intersection, whose members `A` have `H^n(A, U ∩ A) = 0` for `n < d`, and let the `W i` lie in `S`.
@@ -422,50 +503,36 @@ lemma relFreeAb.eq_zero_and_exists_glued_of_iSup {F : AbFunctor C} {d : ℕ}
     -- Uniqueness on the union of the `W i.succ ⊓ W 0` (the family of zero classes is
     -- compatible); uniqueness and a glued class `y` on the union `A` of the `W i.succ`.
     let A : Subfunctor V := ⨆ i : Fin r, W i.succ
+    let D : Subfunctor V := ⨆ i : Fin r, W i.succ ⊓ W 0
     have hW_inter : ∀ i : Fin r, W i.succ ⊓ W 0 ∈ S := fun i ↦ hS (hW i.succ) (hW 0)
-    -- `inj_inter`, `inj_old` and `ladder` keep their inferred types; written out, they time out.
     have inj_inter := (ih _ hW_inter 0 (by simp)).1
     obtain ⟨inj_old, y, hy⟩ := ih _ (fun i ↦ hW i.succ) _ fun i j ↦ hx i.succ j.succ
-    -- `ladder`: restriction maps the long exact sequence of `A` in the larger union to that of
-    -- `A ⊓ W 0` in `W 0`.
-    have h_inter : A ⊓ W 0 = ⨆ i : Fin r, W i.succ ⊓ W 0 := iSup_min ..
-    have ladder :=
-      pull_hom_contravariant
-        (shortExact_restrict_of_inf_eq U (inf_of_le_left (iSup_comp_le W succ) : A ⊓ iSup W = A)).2
-        (shortExact_restrict_of_inf_eq U h_inter).2 (.id F)
-        ⟨restrict U (iSup_mono (by simp)), restrict U (le_iSup W 0),
-          map (homOfLe (le_iSup ..)) le_rfl, hom_ext, hom_ext⟩
-    simp at ladder
-    -- The relative terms of the two sequences agree, by excision.
-    have h_exc : IsCohomEquiv F (map (homOfLe (le_iSup W 0))
-        (U := A.preimage (Subfunctor.ι _) ⊔ U.preimage (Subfunctor.ι _)) le_rfl) := by
-      refine excision _ (.of_top_le fun _ v _ ↦ ?_) rfl
-      have hv : v.val ∈ (W 0).obj _ ∨ v.val ∈ A.obj _ := by
-        simpa [A, exists_fin_succ] using v.property
-      exact hv.imp (fun hv ↦ ⟨⟨_, hv⟩, rfl⟩) .inl
-    refine ⟨fun n hn z hz ↦ ?_, ?_⟩
-    · -- Diagram chase: `z` dies on `W 0` and on `A`, so it comes from a relative class; that
-      -- class is zero by excision and the vanishing in degree `n - 1` below.
-      refine ladder.rotate.eq_zero_of_delta_eq_zero (fun t ↦ ⟨0, sub_eq_zero.1 ?_⟩)
-        (h_exc n).injective z (hz 0)
-        (inj_old n hn fun i ↦
-          (H.map_comp ..).symm.trans (by simpa [homOfLe_comp_homOfLe] using hz i.succ))
-      -- The group of `A ⊓ W 0` in degree `n - 1 < d` is zero, as those of its pieces are.
-      cases n with
-      | zero => rfl
-      | succ n => exact inj_inter n (by lia) fun i ↦ (h_vanish _ (hW_inter i) _ hn).elim ..
-    · -- The glued class `y` and `x 0` agree on `A ⊓ W 0`, since they agree on its pieces; so a
-      -- diagram chase gives `z` on the larger union that restricts to both.
-      -- `+instances`, `using!`: the goal contains `map (𝟙 _) le_sup_right`, which is well typed
-      -- only after unfolding instances, so `rw` and plain `simpa` fail on it.
-      obtain ⟨z, hz, rfl⟩ :=
-        ladder.exists_preimage (h_exc d).surjective (h_exc _).injective (x 0) y <|
-          sub_eq_zero.1 <| inj_inter d le_rfl fun i ↦ by
-            simpa +instances [← hy, contravariant, ← H.map_comp, sub_eq_zero] using! hx i.succ 0
+    have hAB : A ⊔ W 0 = iSup W := le_antisymm
+      (sup_le (iSup_comp_le W succ) (le_iSup W 0))
+      (iSup_le (Fin.cases le_sup_right fun i ↦
+        (le_iSup (fun j : Fin r ↦ W j.succ) i).trans le_sup_left))
+    have hD : A ⊓ W 0 = D := iSup_min ..
+    have h_inter_vanish : ∀ n < d, Subsingleton (H (relFreeAb (U.preimage D.ι)) F n) :=
+      fun n hn ↦ subsingleton_of_forall_eq 0 fun z ↦
+        inj_inter n hn.le fun i ↦ (h_vanish _ (hW_inter i) n hn).elim _ 0
+    obtain ⟨h_uniq, h_glue⟩ := mayerVietoris_step U hAB hD h_inter_vanish
+    refine ⟨fun n hn z hz ↦ h_uniq n hn (hz 0) (inj_old n hn fun i ↦ ?_), ?_⟩
+    · rw [← H.map_comp, restrict_comp_restrict]
+      exact hz i.succ
+    · have h_compat :
+          H.map F (restrict U (hD.ge.trans inf_le_left)) d y =
+            H.map F (restrict U (hD.ge.trans inf_le_right)) d (x 0) := by
+        refine sub_eq_zero.1 (inj_inter d le_rfl fun i ↦ ?_)
+        rw [map_sub, ← H.map_comp, ← H.map_comp, restrict_comp_restrict, restrict_comp_restrict,
+          ← restrict_comp_restrict U inf_le_left (le_iSup (fun j : Fin r ↦ W j.succ) i),
+          H.map_comp, hy i, hx i.succ 0, sub_self]
+      obtain ⟨z, hz₀, hzA⟩ := h_glue (x 0) y h_compat
       refine ⟨z, fun i ↦ ?_⟩
       induction i using Fin.cases with
-      | zero => exact hz
-      | succ i => simpa [homOfLe_comp_homOfLe] using (H.map_comp ..).trans (hy i)
+      | zero => exact hz₀
+      | succ i =>
+        rw [← restrict_comp_restrict U (le_iSup (fun j : Fin r ↦ W j.succ) i)
+          (le_sup_left.trans hAB.le), H.map_comp, hzA, hy i]
 
 /-- Let `S` be a set of subfunctors of `V`, closed under intersection, whose members `A` have
 `H^n(A, U ∩ A) = 0` for `n < d`. Let finitely many `W i` lie in `S`, with the union of `U` and the
