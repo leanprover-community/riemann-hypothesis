@@ -369,81 +369,67 @@ lemma inv_mul_mem_partialCosets_iff (hϖ : v ϖ.val = exp (-1)) (r : Fin N)
   have h_inv_val : v ϖ⁻¹.val = exp 1 := by
     rw [Units.val_inv_eq_inv_val, map_inv₀, hϖ, WithZero.exp_neg, inv_inv]
   have h_mul (a b : Fin N) :
-      ((diagGL (mulSingle r ϖ))⁻¹ * g).val a b = (if a = r then ϖ⁻¹.val else 1) * g.val a b := by
-    rw [Units.val_mul, ← map_inv, coe_diagGL, diagonal_mul, Pi.inv_apply, mulSingle_apply]
-    split_ifs <;> simp
+      v (((diagGL (mulSingle r ϖ))⁻¹ * g).val a b) =
+        (if a = r then exp 1 else 1) * v (g.val a b) := by
+    rw [Units.val_mul, ← map_inv, coe_diagGL, diagonal_mul, map_mul, Pi.inv_apply, mulSingle_apply]
+    split_ifs <;> simp [h_inv_val]
   have h_im (a b : Fin N) :
-      (((diagGL (mulSingle r ϖ))⁻¹ * g)⁻¹).val a b =
-        g⁻¹.val a b * (if b = r then ϖ.val else 1) := by
-    rw [_root_.mul_inv_rev, inv_inv, Units.val_mul, coe_diagGL, mul_diagonal, mulSingle_apply]
-    split_ifs <;> simp
+      v ((((diagGL (mulSingle r ϖ))⁻¹ * g)⁻¹).val a b) =
+        v (g⁻¹.val a b) * if b = r then exp (-1) else 1 := by
+    rw [_root_.mul_inv_rev, inv_inv, Units.val_mul, coe_diagGL, mul_diagonal, map_mul,
+      mulSingle_apply]
+    split_ifs <;> simp [hϖ]
   have h_det : v ((diagGL (mulSingle r ϖ))⁻¹ * g).val.det = exp 1 * v g.val.det := by
     rw [Units.val_mul, Matrix.det_mul, map_mul, ← map_inv, coe_diagGL, Matrix.det_diagonal,
       map_prod, Finset.prod_eq_single r (fun i _ hi ↦ by simp [hi]) (by simp)]
-    simp only [Pi.inv_apply, mulSingle_eq_same, h_inv_val]
-  have h_exp1 : (exp (-1) : ℤᵐ⁰) * exp 1 = 1 := by rw [← exp_add, neg_add_cancel, exp_zero]
+    simp [h_inv_val]
+  have h_exp1 : (exp (-1) : ℤᵐ⁰) * exp 1 = 1 := by simp
   have h_le1 : (1 : ℤᵐ⁰) ≤ exp 1 := by rw [← exp_zero]; exact exp_le_exp.mpr (by decide)
-  have h_mul_exp_le_one (x : ℤᵐ⁰) : exp 1 * x ≤ 1 ↔ x < 1 := by
+  have h_mul_exp_le_one {x : ℤᵐ⁰} : exp 1 * x ≤ 1 ↔ x < 1 := by
     rw [mul_comm (exp 1), ← lt_mul_exp_iff_le one_ne_zero, mul_lt_mul_iff_left₀ exp_pos]
-  constructor
-  · rintro ⟨⟨h1, h2, h3⟩, h4⟩
-    have hg1 : ∀ a b : Fin N, v (g.val a b) ≤ 1 := fun a b ↦ by
-      have ha := h1 a b
-      rw [h_mul, map_mul] at ha
-      by_cases har : a = r
-      · subst har
-        simp only [↓reduceIte, h_inv_val] at ha
-        exact ((h_mul_exp_le_one _).mp ha).le
-      · simpa [har] using ha
-    have hg2 : ∀ a b : Fin N, v (g⁻¹.val a b) ≤ exp 1 := fun a b ↦ by
-      by_cases hbr : b = r
-      · subst hbr
-        have hb := h4 b a (Nat.lt_succ_self b.val)
-        simp only [h_im, ↓reduceIte, map_mul, hϖ] at hb
-        calc v (g⁻¹.val a b)
-            = v (g⁻¹.val a b) * exp (-1) * exp 1 := by rw [mul_assoc, h_exp1, mul_one]
-          _ ≤ 1 * exp 1 := mul_le_mul' hb le_rfl
-          _ = exp 1 := one_mul _
-      · simpa [h_im, hbr] using h2 a b
-    have hg3 : v g.val.det = exp (-(↑(j + 1) : ℤ)) := by
-      rw [h_det] at h3
-      calc v g.val.det
-          = exp (-1) * (exp 1 * v g.val.det) := by rw [← mul_assoc, h_exp1, one_mul]
-        _ = exp (-1) * exp (-↑j) := by rw [h3]
-        _ = exp (-(↑(j + 1) : ℤ)) := by rw [← exp_add]; congr 1; push_cast; ring
-    have hg4 : ∀ b a : Fin N, b.val < r.val → v (g⁻¹.val a b) ≤ 1 := fun b a hb ↦ by
-      have hne : b ≠ r := fun heq ↦ hb.ne (congrArg Fin.val heq)
-      simpa [h_im, hne] using h4 b a (hb.trans (Nat.lt_succ_self r.val))
-    refine ⟨⟨⟨hg1, hg2, hg3⟩, hg4⟩, funext fun b ↦ ?_⟩
-    rw [Matrix.map_apply, Pi.zero_apply, residueOrZero_eq_zero_iff_lt (hg1 r b)]
-    have hr := h1 r b
-    simp only [h_mul, ↓reduceIte, map_mul, h_inv_val] at hr
-    exact (h_mul_exp_le_one _).mp hr
-  · rintro ⟨⟨⟨hg1, hg2, hg3⟩, hg4⟩, hrow⟩
-    refine ⟨⟨fun a b ↦ ?_, fun a b ↦ ?_, ?_⟩, fun b a hb ↦ ?_⟩
-    · rw [h_mul, map_mul]
-      by_cases har : a = r
-      · subst har
-        simp only [↓reduceIte, h_inv_val]
-        exact (h_mul_exp_le_one _).mpr
-          ((residueOrZero_eq_zero_iff_lt (hg1 a b)).mp (congrFun hrow b))
-      · simpa [har] using hg1 a b
-    · rw [h_im, map_mul]
-      by_cases hbr : b = r
-      · subst hbr
-        simp only [↓reduceIte, hϖ]
-        exact ((mul_le_mul' (hg2 a b) le_rfl).trans_eq (by rw [mul_comm, h_exp1])).trans h_le1
-      · simpa [hbr] using hg2 a b
-    · rw [h_det, hg3, ← exp_add]
-      congr 1; push_cast; ring
-    · rw [h_im, map_mul]
-      by_cases hbr : b = r
-      · subst hbr
-        simp only [↓reduceIte, hϖ]
-        exact (mul_le_mul' (hg2 a b) le_rfl).trans_eq (by rw [mul_comm, h_exp1])
-      · have hlt : b.val < r.val :=
-          Nat.lt_of_le_of_ne (Nat.lt_succ_iff.mp hb) (fun h ↦ hbr (Fin.ext h))
-        simpa [hbr] using hg4 b a hlt
+  have h_mul_neg {x : ℤᵐ⁰} : x * exp (-1) ≤ 1 ↔ x ≤ exp 1 :=
+    ⟨fun h ↦ by simpa [mul_assoc, h_exp1] using mul_le_mul' h (le_refl (exp 1)),
+      fun h ↦ by simpa [mul_comm, h_exp1] using mul_le_mul' h (le_refl (exp (-1)))⟩
+  have h_int : (∀ a b : Fin N, v (((diagGL (mulSingle r ϖ))⁻¹ * g).val a b) ≤ 1) ↔
+      (∀ a b : Fin N, v (g.val a b) ≤ 1) ∧ g.val.map residueOrZero r = 0 := by
+    simp only [h_mul, funext_iff, Matrix.map_apply, Pi.zero_apply]
+    refine ⟨fun h ↦ ?_, fun ⟨h1, h2⟩ a b ↦ ?_⟩
+    · have h1 (a b : Fin N) : v (g.val a b) ≤ 1 := by
+        by_cases har : a = r
+        · subst har; exact (h_mul_exp_le_one.1 (by simpa using h a b)).le
+        · simpa [har] using h a b
+      exact ⟨h1, fun b ↦ (residueOrZero_eq_zero_iff_lt (h1 r b)).2
+        (h_mul_exp_le_one.1 (by simpa using h r b))⟩
+    · split_ifs with har
+      · subst har; exact h_mul_exp_le_one.2 ((residueOrZero_eq_zero_iff_lt (h1 a b)).1 (h2 b))
+      · simpa using h1 a b
+  have h_inv : ((∀ a b : Fin N, v ((((diagGL (mulSingle r ϖ))⁻¹ * g)⁻¹).val a b) ≤ exp 1) ∧
+      ∀ b a : Fin N, b.val < r.val + 1 → v ((((diagGL (mulSingle r ϖ))⁻¹ * g)⁻¹).val a b) ≤ 1) ↔
+      ((∀ a b : Fin N, v (g⁻¹.val a b) ≤ exp 1) ∧
+        ∀ b a : Fin N, b.val < r.val → v (g⁻¹.val a b) ≤ 1) := by
+    simp only [h_im]
+    refine ⟨fun ⟨h2, h4⟩ ↦ ⟨fun a b ↦ ?_, fun b a hb ↦ ?_⟩,
+      fun ⟨h2, h4⟩ ↦ ⟨fun a b ↦ ?_, fun b a hb ↦ ?_⟩⟩
+    · by_cases hbr : b = r
+      · subst hbr; exact h_mul_neg.1 (by simpa using h4 b a (Nat.lt_succ_self _))
+      · simpa [hbr] using h2 a b
+    · have hne : b ≠ r := fun h ↦ hb.ne (congrArg Fin.val h)
+      simpa [hne] using h4 b a (hb.trans (Nat.lt_succ_self _))
+    · split_ifs with hbr
+      · subst hbr; exact (h_mul_neg.2 (h2 a b)).trans h_le1
+      · simpa using h2 a b
+    · split_ifs with hbr
+      · subst hbr; exact h_mul_neg.2 (h2 a b)
+      · simpa using h4 b a (Nat.lt_of_le_of_ne (Nat.lt_succ_iff.1 hb) (fun h ↦ hbr (Fin.ext h)))
+  have h_det_iff : v ((diagGL (mulSingle r ϖ))⁻¹ * g).val.det = exp (-↑j) ↔
+      v g.val.det = exp (-↑(j + 1)) := by
+    rw [h_det]
+    refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
+    · calc v g.val.det = exp (-1) * (exp 1 * v g.val.det) := by rw [← mul_assoc, h_exp1, one_mul]
+        _ = exp (-↑(j + 1)) := by rw [h, ← exp_add]; congr 1; push_cast; ring
+    · rw [h, ← exp_add]; congr 1; push_cast; ring
+  simp only [partialCosets, basicDoubleCoset, Set.mem_ofPred_eq]
+  tauto
 
 /-- Let `g` lie in `basicDoubleCoset (Fin N) w j`. The lattice of `g` contains the first `m` basis
 vectors iff the rows that kill `g` modulo the maximal ideal vanish at the indices below `m`. -/
@@ -453,57 +439,30 @@ lemma mem_partialCosets_iff_residueKer (hg : g ∈ basicDoubleCoset (Fin N) w j)
   -- For integral `z`, `z * (gᵀ)⁻¹` is integral iff the kernel of `gᵀ` modulo the maximal ideal lies
   -- in that of `z`; take for `z` the projection to the first `m` coordinates.
   let z : Matrix (Fin N) (Fin N) (LocField w) := diagonal fun i ↦ if i.val < m then 1 else 0
-  have h_integral_iff : (∀ a b : Fin N, v ((z * (transposeGL g)⁻¹.val) a b) ≤ 1) ↔
-      (∀ a b : Fin N, v (z a b) ≤ 1) ∧ residueKer (transposeGL g).val ≤ residueKer z :=
-    v_mul_inv_le_one_iff (transposeGL_mem_basicDoubleCoset.mpr hg)
-  have hz : ∀ a b : Fin N, v (z a b) ≤ 1 := fun a b ↦ by
-    dsimp only [z]
-    by_cases hab : a = b
-    · subst hab
-      rw [diagonal_apply_eq]
-      split_ifs <;> simp
-    · rw [diagonal_apply_ne _ hab, map_zero]
-      exact _root_.zero_le
+  have hz (a b : Fin N) : v (z a b) ≤ 1 := by
+    simp only [z, diagonal_apply]; split_ifs <;> simp
   have h_lhs :
       g ∈ partialCosets m j ↔ ∀ a b : Fin N, v ((z * (transposeGL g)⁻¹.val) a b) ≤ 1 := by
     refine ⟨fun h a b ↦ ?_, fun h ↦ ⟨hg, fun b a hb ↦ ?_⟩⟩
-    · dsimp only [z]
-      rw [diagonal_mul]
+    · simp only [z, diagonal_mul]
       split_ifs with ha
-      · rw [one_mul]
-        exact h.2 a b ha
-      · rw [zero_mul, map_zero]
-        exact _root_.zero_le
+      · rw [one_mul]; exact h.2 a b ha
+      · simp
     · have hba := h b a
-      dsimp only [z] at hba
-      rw [diagonal_mul] at hba
-      simp only [hb, ↓reduceIte, one_mul] at hba
+      simp only [z, diagonal_mul, hb, ↓reduceIte, one_mul] at hba
       exact hba
   have h_rhs (u : Fin N → ResField w) : u ∈ residueKer z ↔ ∀ i : Fin N, i.val < m → u i = 0 := by
     have hz_map : z.map residueOrZero = diagonal fun i : Fin N ↦ if i.val < m then 1 else 0 := by
       ext a b
-      rw [Matrix.map_apply]
-      dsimp only [z]
-      by_cases hab : a = b
-      · subst hab
-        rw [diagonal_apply_eq, diagonal_apply_eq]
-        split_ifs
-        · exact (residueOrZero_coe 1).trans (IsLocalRing.residue _).map_one
-        · exact (residueOrZero_coe 0).trans (IsLocalRing.residue _).map_zero
-      · rw [diagonal_apply_ne _ hab, diagonal_apply_ne _ hab]
-        exact (residueOrZero_coe 0).trans (IsLocalRing.residue _).map_zero
-    rw [LinearMap.mem_ker, mulVecLin_apply, hz_map, funext_iff]
-    refine ⟨fun h i hi ↦ ?_, fun h i ↦ ?_⟩
-    · have hi' := h i
-      rw [mulVec_diagonal, Pi.zero_apply] at hi'
-      simp only [hi, ↓reduceIte, one_mul] at hi'
-      exact hi'
-    · rw [mulVec_diagonal, Pi.zero_apply]
-      split_ifs with hi
-      · rw [one_mul, h i hi]
-      · exact zero_mul _
-  rw [h_lhs, h_integral_iff, and_iff_right hz]
-  exact ⟨fun h u hu ↦ (h_rhs u).mp (h hu), fun h u hu ↦ (h_rhs u).mpr (h u hu)⟩
+      simp only [z, Matrix.map_apply, diagonal_apply]
+      split_ifs <;>
+        first | exact (residueOrZero_coe 1).trans (map_one _)
+              | exact (residueOrZero_coe 0).trans (map_zero _)
+    simp only [residueKer, LinearMap.mem_ker, mulVecLin_apply, hz_map, funext_iff,
+      mulVec_diagonal, Pi.zero_apply]
+    exact ⟨fun h i hi ↦ by simpa [hi] using h i, fun h i ↦ by split_ifs with hi <;> simp [h, hi]⟩
+  rw [h_lhs, v_mul_inv_le_one_iff (transposeGL_mem_basicDoubleCoset.mpr hg), and_iff_right hz]
+  simp [IsConcreteLE.le_iff, h_rhs]
 
 /-- The rows `(0, …, 0, 1, *, …, *)` over the residue field, with the entry `1` at the index `r`. -/
 def echelonRows : Finset (Fin N → ResField w) :=
