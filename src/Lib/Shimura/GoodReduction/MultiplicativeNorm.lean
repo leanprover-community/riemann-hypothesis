@@ -86,7 +86,8 @@ variable {V R : Type} [FinComplexSpace V] [CommRing R] [StarRing R] [IsDomain R]
 /-- The action of `a` on the points of `V` of finite order modulo `L`: `x ↦ F a x`, again of finite
 order because `F a` preserves `L`. -/
 abbrev torsionAction (a : R) (x : torsionPoints L) : torsionPoints L :=
-  ⟨F a x, x.property.imp (by grind [IsHermitianAction])⟩
+  ⟨F a x, x.property.imp fun _ ⟨hn0, hmem⟩ ↦
+    ⟨hn0, by rw [← map_nsmul]; exact h.map_mem a _ hmem⟩⟩
 
 include h
 
@@ -631,8 +632,9 @@ lemma hasShiftBound_of_torsionAction
       h.normShift (F c a) (t ∘ (F c).inverse) = h_pull.normShift a t ∘ (F c).inverse := by
     ext
     simp [normalizedShift, riemannForm, action_comm, canonicalMultiplier, thetaShift_apply]
-  have h_fixed : ∀ l ∈ L, h.normShift (F c l) (t ∘ (F c).inverse) = t ∘ (F c).inverse := by
-    grind [mem_thetaSpace_iff_normalizedShift.mp ht]
+  have h_fixed : ∀ l ∈ L, h.normShift (F c l) (t ∘ (F c).inverse) = t ∘ (F c).inverse :=
+    fun l hl ↦ (h_transl l t).trans <|
+      congrArg (· ∘ (F c).inverse) ((mem_thetaSpace_iff_normalizedShift.mp ht).2 l hl)
   -- The eigensum `s ξ` for a character `ξ` of the kernel of `c` has degree `B` and the multiplier
   -- `χ l = h.multiplier l * ξ (c⁻¹ l)`, of finite order.
   let s (ξ : AddChar (h.MulKernel c) ℂ) : V → ℂ :=
@@ -865,7 +867,9 @@ lemma _root_.New.ThetaTori.hasMultiplicativeNorm_of_expanding [CharZero R] {n p 
     (hp.coprime_iff_not_dvd.mpr hpi).cast.pow_left
   have h_cop_ni : IsCoprime c (n * i) := by
     exact_mod_cast h_cop_pow_p.mono h_dvd dvd_rfl
-  have h_finite : Finite (R ⧸ span {(n * i : R)}) := finiteQuotientOfFreeOfNeBot _ (by aesop)
+  have h_finite : Finite (R ⧸ span {(n * i : R)}) :=
+    finiteQuotientOfFreeOfNeBot _ fun h0 ↦
+      h_nonunit (isCoprime_zero_right.mp (span_singleton_eq_bot.mp h0 ▸ h_cop_ni))
   have h_unit : IsUnit (Ideal.Quotient.mk (span {(n * i : R)}) c) :=
     (h_cop_ni.map _).isUnit_of_dvd (by simp)
   obtain ⟨m, hm_pos, h_pow⟩ := h_unit.isOfFinOrder.exists_pow_eq_one
@@ -890,12 +894,16 @@ lemma _root_.New.ThetaTori.hasMultiplicativeNorm_of_expanding [CharZero R] {n p 
   -- `p ^ k` is a multiple of `c`
   have hy_p : p ^ k • (y : V) ∈ L := by
     obtain ⟨r, hr⟩ := h_dvd
-    have h_mem : F ((p ^ k : ℕ) : R) y ∈ L := by grind [action_comm, map_mem]
+    have h_mem : F ((p ^ k : ℕ) : R) y ∈ L := by
+      rw [Nat.cast_pow, hr, mul_comm, map_mul, mul_apply_eq_comp]
+      exact h.map_mem r _ hy
     simpa only [map_natCast, ContinuousLinearMap.natCast_apply] using h_mem
   have h_det_pow : v (LinearMap.det (F (star (c ^ (j + 1))) : V →ₗ[ℂ] V)) = 1 := by simp [h_det]
   exact (h.nsmul hi0).hasShiftBound_one_of_ker rfl
     (h_dual_of_dvd h_dvd_pow) (h_dual_of_dvd h_dvd_star) h_ne_star hp hv
-    h_det_pow h_pos (by grind [map_mem]) h_cop_pow hy_p
+    h_det_pow h_pos (by
+      rw [pow_succ, map_mul, mul_apply_eq_comp]
+      exact h.map_mem _ _ hy) h_cop_pow hy_p
 
 end New.ThetaTori.IsHermitianAction
 
@@ -979,7 +987,8 @@ lemma New.ThetaTori.ThetaTorus.hasGoodReduction_and_val_card_eq_one {E : Type} [
     (x.automorphyForm + x.automorphyForm.pullForm (Complex.I • 1))
   have hp_ndvd : ¬p ∣ Nat.card D.dualTorsion := fun h_dvd ↦ hT (mem_of_dvd _ h_dvd.natCast hp_mem)
   have h_dual_H : ∀ a ∈ H.dualLattice, Nat.card D.dualTorsion • a ∈ x.periodLattice := fun a ha ↦
-    h_tor a (by grind [RealComplexForm.dualLattice, x.riemannForm_smul_add_pullForm])
+    h_tor a (by
+      simpa only [RealComplexForm.dualLattice, H, x.riemannForm_smul_add_pullForm] using ha)
   have h_herm : IsHermitianAction x.periodLattice H x.intAction D.β :=
     x.isHermitianAction_smul_add_pullForm
   refine hasMultiplicativeNorm_of_expanding h_herm hp_ndvd h_dual_H hp hvp ?_
