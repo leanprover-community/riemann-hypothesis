@@ -362,9 +362,9 @@ lemma IsBoundedInCell.isUnit_det_and_norm_inv_le {Z : 𝔰.FrameMatrix} {T : ℝ
       simp [Matrix.mul_add, mul_nonsing_inv_cancel_left _ _ hZ_unit], det_mul]
     exact hZ_unit.mul ((isUnit_iff_isUnit_det _).1 (Units.oneSub _ h_lt).isUnit)
   have h_diff : ‖Y⁻¹ - Z⁻¹‖ ≤ ‖Y⁻¹‖ * (T * (T ^ 6)⁻¹) := by
-    have h_eq : Y⁻¹ - Z⁻¹ = Y⁻¹ * -((Y - Z) * Z⁻¹) := by
-      simp [sub_mul, mul_sub, mul_nonsing_inv _ hZ_unit, nonsing_inv_mul_cancel_left _ _ hY_unit]
-    grw [h_eq, norm_mul_le, norm_neg, norm_mul_le, hY, hZ.norm_inv_le, mul_comm T]
+    rw [Matrix.inv_sub_inv (iff_of_true ((isUnit_iff_isUnit_det _).2 hY_unit)
+      ((isUnit_iff_isUnit_det _).2 hZ_unit)), mul_assoc]
+    grw [norm_mul_le, norm_mul_le, norm_sub_rev Z Y, hY, hZ.norm_inv_le, mul_comm T]
   have hY_inv : ‖Y⁻¹‖ ≤ 2 * T := by
     grw [h_small] at h_diff
     linarith [norm_le_insert' Y⁻¹ Z⁻¹, hZ.norm_inv_le]
