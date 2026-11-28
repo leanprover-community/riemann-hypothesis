@@ -1,6 +1,7 @@
 module
 
 import TauCeti.NumberTheory.ArithmeticFunction.VonMangoldt
+import TauCeti.NumberTheory.LSeries.GaussianCutoff
 public import Mathlib.NumberTheory.LSeries.PrimesInAP
 import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Order.Star.Real
@@ -217,24 +218,6 @@ lemma New.norm_one_sub_mul_sum_div_totient_le {q : ℕ} [NeZero q] {z : ℂ}
   grw [norm_sub_le, norm_sum_le, norm_one]
   linarith
 
-/-- On the circle `‖z‖ = 1 / X` the real part of `2 - U z - X (1 + X z)² / 4`, the exponent in
-Newman's method, is at least (in fact equal to) that of `2 - (U + t) z` for some `t ∈ [0, X ^ 2]`,
-namely `t = X ^ 2 / 2 * (1 + X * re z)`: the quadratic term acts as a shift of `U` by `t`. -/
-lemma New.exists_shift_le_re_exponent (U : ℝ) {X : ℝ} (hX : 0 < X) {z : ℂ} (hz : ‖z‖ = X⁻¹) :
-    ∃ t : ℝ, 0 ≤ t ∧ t ≤ X ^ 2 ∧
-      2 - (U + t) * z.re ≤ (2 - U * z - 4⁻¹ * X * (1 + X * z) ^ 2 : ℂ).re := by
-  refine ⟨X ^ 2 / 2 * (1 + X * z.re), ?_⟩
-  obtain ⟨h_lower, h_upper⟩ : -1 ≤ X * z.re ∧ X * z.re ≤ 1 := by
-    rw [← abs_le, abs_mul, abs_of_pos hX]
-    grw [z.abs_re_le_norm, hz, mul_inv_cancel₀ hX.ne']
-  have h_im : X ^ 2 * z.im ^ 2 = 1 - (X * z.re) ^ 2 := by
-    rw [← z.sq_norm_sub_sq_re, hz]
-    field_simp
-  have h_exponent : (2 - U * z - 4⁻¹ * X * (1 + X * z) ^ 2 : ℂ).re =
-      2 - U * z.re - X / 4 * ((1 + X * z.re) ^ 2 - X ^ 2 * z.im ^ 2) := by simp [sq]; ring
-  refine ⟨mul_nonneg (by positivity) (by linarith), by nlinarith, le_of_eq ?_⟩
-  linear_combination -h_exponent - X / 4 * h_im
-
 section Circle
 
 variable {a : ℕ → ℝ} {b : ℕ → ℂ} {F : ℂ → ℂ} {X U C : ℝ}
@@ -297,8 +280,13 @@ lemma New.norm_sub_mul_sum_term_le (ha : ∀ n : ℕ, 0 ≤ a n)
   set E : ℝ := (2 - U * z - 4⁻¹ * X * (1 + X * z) ^ 2 : ℂ).re
   set P : ℂ := ∑ n ∈ .range ⌈rexp U⌉₊, term (fun n : ℕ ↦ (a n : ℂ)) (1 + z) n
   -- On the circle the Gaussian factor shifts the cut from `U` to a point `U + t` of the window.
-  obtain ⟨t, ht_nonneg, ht_le, hE⟩ : ∃ t : ℝ, 0 ≤ t ∧ t ≤ X ^ 2 ∧ 2 - (U + t) * z.re ≤ E :=
-    exists_shift_le_re_exponent U hX_pos hz
+  have hz_scaled : ‖(X : ℂ) * z‖ = 1 := by
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hX_pos.le, hz, mul_inv_cancel₀ hX_pos.ne']
+  let t := TauCeti.LSeries.gaussianShift X z
+  obtain ⟨ht_nonneg, ht_le⟩ := TauCeti.LSeries.gaussianShift_mem_Icc hz_scaled.le
+  have hE : 2 - (U + t) * z.re ≤ E := by
+    have h_factor : (X : ℂ) / 4 = 4⁻¹ * X := by ring
+    simpa only [h_factor] using (TauCeti.LSeries.re_gaussian_eq hz_scaled U).ge
   have h_unit : U * U⁻¹ = 1 := mul_inv_cancel₀ hU_pos.ne'
   have h_shift : t * U⁻¹ ≤ 1 := (div_le_one hU_pos).2 (ht_le.trans hU)
   have h_term_le_sum {n : ℕ} (h : Real.log n * (U⁻¹ - z.re) ≤ E) :
