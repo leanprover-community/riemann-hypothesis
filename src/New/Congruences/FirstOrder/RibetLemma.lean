@@ -122,29 +122,18 @@ lemma exists_mulVec_eq_add_mul_of_mem_tiedRows {ι : Type} [Fintype ι] {gen : �
     ∃ b ∈ traceLeftIdeal u 𝒥, ∃ m ∈ span (MvPolynomial J O)[G]
           (Set.range (MonoidAlgebra.of (MvPolynomial J O) G ∘ gen - 1)),
         (R *ᵥ (MonoidAlgebra.of (MvPolynomial J O) G ∘ gen - 1)) j = b + m * ρ₀ := by
-  let V : (ι → (MvPolynomial J O)[G]) →ₗ[(MvPolynomial J O)[G]] (MvPolynomial J O)[G] :=
-    rowValue J gen
-  have V_mem (w : ι → (MvPolynomial J O)[G]) :
-      V w ∈ span (MvPolynomial J O)[G]
-        (Set.range (MonoidAlgebra.of (MvPolynomial J O) G ∘ gen - 1)) := by
-    simp only [V, rowValue, Fintype.linearCombination_apply]
-    exact sum_mem fun i _ ↦ smul_mem _ _ (subset_span ⟨i, rfl⟩)
   have h_gen (g : G) : ∃ m ∈ span (MvPolynomial J O)[G]
       (Set.range (MonoidAlgebra.of (MvPolynomial J O) G ∘ gen - 1)),
       ∀ x : Y, polyAction J (u x) (.single g 1) = polyAction J (u x) m + 1 := by
-    refine ⟨V (coordRows J ι (z g)), V_mem _, fun x ↦ ?_⟩
-    rw [polyAction_rowValue_coordRows, hz g, polyAction_single, one_smul, map_sub, map_one,
-      sub_add_cancel]
-  obtain ⟨b, hb, m, hm, h_sum⟩ : ∃ b ∈ traceLeftIdeal u 𝒥,
-      ∃ m ∈ augmentationIdeal (O := O) (G := G) J, b + m * ρ₀ = V (R j) := by
-    obtain ⟨b, hb, _, ⟨m, hm, rfl⟩, h_sum⟩ := mem_sup.1 (tieIdeal_le u 𝒥 h𝒥 (mem_comap.1 (hR j)))
-    exact ⟨b, hb, m, hm, h_sum⟩
-  have h_row : (R *ᵥ (MonoidAlgebra.of (MvPolynomial J O) G ∘ gen - 1)) j = V (R j) := by
-    simp [V, rowValue, mulVec, dotProduct, Fintype.linearCombination_apply]
-  have h_aug (g : G) : polyChar J (1 : G →* O) (.single g 1) = 1 := by simp [polyChar_single]
-  rw [h_row, ← h_sum]
-  exact exists_mem_span_add_mul_eq_add_mul 𝒥 (fun x ↦ polyAction J (u x)) (polyChar J 1) h_aug _
-    h_gen ρ₀ hb (RingHom.mem_ker.1 hm)
+    refine ⟨rowValue J gen (coordRows J ι (z g)),
+      (Fintype.range_linearCombination _ _).le ⟨_, rfl⟩, fun x ↦ ?_⟩
+    rw [polyAction_rowValue_coordRows_of_areCoordinates u hz, sub_add_cancel]
+  obtain ⟨b, hb, _, ⟨m, hm, rfl⟩, h_sum⟩ :=
+    mem_sup.1 (tieIdeal_le u 𝒥 h𝒥 (mem_comap.1 (hR j)))
+  change ∃ b ∈ _, ∃ m ∈ _, rowValue J gen (R j) = b + m * ρ₀
+  rw [← h_sum]
+  exact exists_mem_span_add_mul_eq_add_mul 𝒥 (fun x ↦ polyAction J (u x)) (polyChar J 1)
+    (by simp [polyChar_single]) _ h_gen ρ₀ hb (RingHom.mem_ker.1 hm)
 
 /-- If `S` holds the variables `X j`, the map from `O[X j]` to the constant families factors through
 `S`. -/
@@ -279,13 +268,10 @@ lemma exists_traceIdeal_multiplier_eq_sum_det {r : Type} [Fintype r] [DecidableE
   refine ⟨∑ i, κS (wt i) * f i, fun ω ↦ ?_, fun x ↦ ?_⟩
   · -- `det (∑ ω g (u x g - 1))` is the determinant of `w` acting through `u x`.
     let w : Λ[G] := rowValue J gen (coordRows J ι (linearCombination O z ω))
-    have hw : w ∈ span Λ[G] (Set.range gen_sub_one) := by
-      simp only [w, rowValue, Fintype.linearCombination_apply]
-      exact sum_mem fun j _ ↦ smul_mem _ _ (subset_span ⟨j, rfl⟩)
     rw [← det_polyAction_rowValue u hz, ← smul_eq_mul, ← Subalgebra.smul_def, Finset.sum_smul]
     refine sum_mem fun i _ ↦ ?_
     rw [mul_smul, Subalgebra.smul_def (f i), smul_eq_mul]
-    exact 𝒥.smul_mem _ (hf_mem i w hw)
+    exact 𝒥.smul_mem _ (hf_mem i w ((Fintype.range_linearCombination _ _).le ⟨_, rfl⟩))
   · -- On `𝓧`, `(1 - k) • B₀ + k • M i` is `B₀` on the block and `M i` on the characters.
     have hκS_apply (c : Λ) : (κS c).val x = algebraMap Λ (MvPolynomial J L) c :=
       congrFun (RingHom.congr_fun hκS c) x

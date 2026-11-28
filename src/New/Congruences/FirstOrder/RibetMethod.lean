@@ -293,12 +293,8 @@ lemma Selmer.exists_ribet_polynomial [Nonempty σ] (ρ : Λ →ₐ[R] Matrix σ 
   -- right multiplication with `ρ₀`. As `B' B_X = P` after applying `ρ`, `P` kills `y` too.
   have h_coeff : ∀ (w : Λ) (k : ℕ), (ρ w).charpoly.coeff k ∈ (algebraMap R L).range :=
     amitsur_charpoly_mem_of_span ρ hρ_span
-  have h_rows : ∀ i : N, ∃ a ∈ 𝔞, ∃ c : N → Λ, (B *ᵥ y) i = a + (c ⬝ᵥ y) * ρ₀ := by
-    intro i
-    obtain ⟨a, ha, z, hz, h_split⟩ := hB i
-    obtain ⟨c, rfl⟩ : ∃ c : N → Λ, ∑ j, c j • y j = z := (mem_span_range_iff_exists_fun Λ).1 hz
-    exact ⟨a, ha, c, h_split⟩
-  choose a ha B₁ h_split using h_rows
+  choose a ha z hz h_split using hB
+  choose B₁ hB₁ using fun i ↦ (mem_span_range_iff_exists_fun Λ).1 (hz i)
   let B_X : Matrix N N Λ[X] := B.map C - (X : Λ[X]) • (of B₁).map C
   obtain ⟨P, B', hP, hB'⟩ := Selmer.exists_adjugate_polynomial ρ h_coeff B_X
   let π : Λ →+* 𝔞.ringCon.Quotient := 𝔞.ringCon.mk'
@@ -306,19 +302,17 @@ lemma Selmer.exists_ribet_polynomial [Nonempty σ] (ρ : Λ →ₐ[R] Matrix σ 
   have hπρ (w w' : Λ) (h : ρ w = ρ w') : π w = π w' :=
     (hπ w w').2 (hρ_ker _ (by rw [map_sub, h, sub_self]))
   have h_kill (i : N) : π ((B *ᵥ y) i) = π ((of B₁ *ᵥ y) i * ρ₀) := by
-    have h_row : (of B₁ *ᵥ y) i = B₁ i ⬝ᵥ y := rfl
-    rw [hπ, h_split, h_row, add_sub_cancel_right]
+    change π ((B *ᵥ y) i) = π ((∑ j, B₁ i j • y j) * ρ₀)
+    rw [hπ, h_split, hB₁, add_sub_cancel_right]
     exact ha i
   have hy (i : N) : y i * aeval ρ₀ P ∈ 𝔞 := by
     rw [← sub_zero (y i * aeval ρ₀ P), ← hπ, map_zero]
     exact Selmer.mul_aeval_eq_zero_of_adjugate π y ρ₀ B (of B₁) h_kill P B'
       (fun i j m ↦ hπρ _ _ (hB' i j m)) i
+  -- Right multiplication by P(ρ₀) is left-linear, so it suffices to check the generators.
   have h_mem (w : Λ) (hw : w ∈ span Λ (Set.range y)) : w * aeval ρ₀ P ∈ 𝔞 := by
-    obtain ⟨c, rfl⟩ : ∃ c : N → Λ, ∑ j, c j • y j = w := (mem_span_range_iff_exists_fun Λ).1 hw
-    rw [Finset.sum_mul]
-    refine sum_mem fun i _ ↦ ?_
-    rw [smul_eq_mul, mul_assoc]
-    exact 𝔞.mul_mem_left _ _ (hy i)
+    change w ∈ Submodule.comap (LinearMap.mulRight Λ (aeval ρ₀ P)) (TwoSidedIdeal.asIdeal 𝔞)
+    exact span_le.2 (Set.range_subset_iff.2 hy) hw
   refine ⟨P, ?_, h_mem, fun ρ₁ ↦ ?_, fun ρ₁ δ ⟨z₀, hz₀, hz₀_eq⟩ ↦ ?_⟩
   · have h_const : (B_X.map fun p ↦ ρ (p.coeff 0)) = B.map ρ := by
       ext i j : 2
@@ -552,11 +546,8 @@ the `f (y i)`. -/
 lemma Selmer.map_mem_span_range {A B ι : Type*} [Ring A] [Ring B] [Fintype ι] (f : A →+* B)
     (y : ι → A) {w : A} (hw : w ∈ span A (Set.range y)) :
     f w ∈ span B (Set.range (f ∘ y)) := by
-  obtain ⟨c, rfl⟩ : ∃ c : ι → A, ∑ i : ι, c i • y i = w := (mem_span_range_iff_exists_fun A).1 hw
-  rw [map_sum]
-  refine sum_mem fun i _ ↦ ?_
-  rw [smul_eq_mul, map_mul]
-  exact smul_mem _ (f (c i)) (subset_span ⟨i, rfl⟩)
+  simpa only [Ideal.map_span, Set.range_comp] using
+    (Ideal.mem_map_of_mem f (I := Ideal.span (Set.range y)) hw)
 
 /-- Let `χ` be, after reindexing by `blockEquiv`, the block sum of `ψ` and the characters `η e`. If
 `ρ₁` vanishes under `ψ` and under every character but `η 0`, and `ρ₀` vanishes under `η 0`, then
