@@ -330,8 +330,7 @@ lemma isLocalArtin_localArtin {p : ℕ} [Fact p.Prime] [Algebra (LocField w) (Pa
     -- (b)
     IsLocalArtin (decompGroup Γ A) (fixedFieldOf (decompGroup Γ A)) A
       (f.comp (Units.map (algebraMap K (LocField w)).toMonoidHom)) := by
-  obtain ⟨L, -, -⟩ := h.isLocalGalois_and_residueCard_eq_and_isUniformizer Γ
-  obtain ⟨h_inj, -⟩ := L.isClassOfInvariant_classOfInvariant
+  have h_inj := (h.isLocalGalois_decompGroup Γ).isClassOfInvariant_classOfInvariant.left
   let D := decompGroup Γ A
   -- Pontryagin duality gives `f` on `K_wˣ` with `χ (f x) = -inv (χ, x)`, the invariant of `K_w`.
   let inv := (AddEquiv.ofBijective _ emb.classOfInvariant_bijective).symm

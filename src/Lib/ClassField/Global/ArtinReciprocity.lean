@@ -406,8 +406,7 @@ lemma resH2_ker_cyclicClass_eq_zero {ξ χ : QZChar Γ} {x : Kˣ} (U : OpenSubgr
   have h_cls :
       (unitsModule (decompGroup Γ A)).resH2 V
         (classOfInvariant _ (fixedFieldOf (K := K) (decompGroup Γ A)) A (s v).toAdd) = 0 :=
-    (hv.isLocalGalois_and_residueCard_eq_and_isUniformizer Γ).left.resH2_classOfInvariant_eq_zero V
-      hr
+    (hv.isLocalGalois_decompGroup Γ).resH2_classOfInvariant_eq_zero V hr
   -- The restricted class lives in `restrictTo` of the module, which is
   -- `unitsModule (decompGroup Γ A)` only after unfolding, so `map_neg` is used as an equation.
   rw [hv.abelianLift_artinAt_principal] at h_cls
@@ -433,8 +432,7 @@ lemma abelianLift_artinAt_eq_of_cyclicClass_eq {ξ χ : QZChar Γ} {x y : Kˣ}
           (cyclicClass (unitsModule Γ).ρ ψ (DiscreteUnits.ofBase Γ Ω (.ofMul z))) :=
     v.isPlaceOver_placeOver.abelianLift_artinAt_principal (Γ := Γ) ψ z
   apply Multiplicative.toAdd.injective
-  apply (v.isPlaceOver_placeOver.isLocalGalois_and_residueCard_eq_and_isUniformizer
-    Γ).left.isClassOfInvariant_classOfInvariant.left
+  apply (v.isPlaceOver_placeOver.isLocalGalois_decompGroup Γ).isClassOfInvariant_classOfInvariant.1
   rw [h_inv, h_inv, h_eq]
 
 /-- The characters `χ : Γ → ℚ/ℤ` that satisfy the reciprocity law over `K`: `χ` kills the Artin

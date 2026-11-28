@@ -94,7 +94,7 @@ lemma exists_isTameGeneratorFor (h : IsPlaceOver B v) : ∃ γ : G, IsTameGenera
   -- is transitive on these roots.
   have same_pow : ((ζ + y).toMul : Ω) ^ m = (y.toMul : Ω) ^ m :=
     mod_cast by simp [ζ, mul_pow, (isPrimitiveRoot_rootPowHom_one ..).pow_eq_one]
-  obtain ⟨h_galois, -, -⟩ := h.isLocalGalois_and_residueCard_eq_and_isUniformizer G
+  have h_galois := h.isLocalGalois_decompGroup G
   -- so some `γ` in inertia carries `y` to `ζ * y`
   obtain ⟨γ, hγ, hγy⟩ := h_galois.exists_inertia_smul_eq_of_pow_eq hπ_local (pos m) hy_pow same_pow
   have h_act : unitsRep (γ : G) y = ζ + y := Additive.toMul.injective (Units.ext hγy)
@@ -193,7 +193,7 @@ theorem finite_cocycles_unramified_outside (V : DiscreteModule R G) [Finite V]
   -- The decomposition group at each `w ∈ T` has finitely many continuous cocycles.
   have h_local (w : T) :
       Finite (Z1 ((V.restrictTo U).restrictTo (decompGroup U (placeOver w.val))).ρ) :=
-    (w.val.isPlaceOver_placeOver.isLocalGalois_and_residueCard_eq_and_isUniformizer U).1.finite_Z1 _
+    (w.val.isPlaceOver_placeOver.isLocalGalois_decompGroup U).finite_Z1 _
   -- `res` maps the unramified cocycles into a finite set, and is injective on them.
   refine (finite_univ.prod (.pi' h_local)).of_injOn (f := res) ?_ ?_
   · exact fun z ⟨⟨hz_cont, hz_mul⟩, _⟩ ↦
