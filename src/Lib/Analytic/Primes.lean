@@ -102,7 +102,9 @@ lemma New.factorsThrough_sq_of_sq_eq_one {M k : ℕ} [NeZero M] (hM : 4 ∣ M) (
     (P := C ((M : ZMod (M ^ k)) * m * t) + X ^ 2 + X)
     ⟨k, by simp [mul_pow, natCast_pow_eq_zero_of_le]⟩ (by simp)
   replace ht := congrArg (Int.cast : ℤ → ZMod (M ^ k)) ht
-  simp at ht hc
+  simp only [Int.cast_sub, Int.cast_one, intCast_cast, cast_id', id_eq, Nat.cast_pow, Int.cast_mul,
+    Int.cast_pow, Int.cast_natCast, map_mul, map_natCast, map_intCast, coe_aeval_eq_eval, eval_add,
+    eval_mul, eval_natCast, eval_intCast, eval_pow, eval_X] at ht hc
   have u_eq : (u : ZMod (M ^ k)) = (1 + 2 * c) ^ 2 := by
     linear_combination -ht - 4 * hc - M * t * (by simp [hm] : (M : ZMod (M ^ k)) = 4 * m)
   exact Units.ext <| by simpa [u_eq, ← pow_apply', hχ] using one_apply_coe u
