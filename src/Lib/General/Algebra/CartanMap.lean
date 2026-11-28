@@ -301,7 +301,8 @@ lemma isHigmanProjective_diagonalPermModule [IsTopologicalGroup G] [CompactSpace
 constants in another such module satisfying Higman's criterion. The inclusion and quotient form
 a short exact sequence. -/
 lemma FiniteKilledFixedInj.exists_shortExact_higmanProjective [IsTopologicalGroup G]
-    [CompactSpace G] {l : ℕ} [Fact l.Prime] {U : OpenNormalSubgroup G} {z : G} {A : DiscreteModule R G}
+    [CompactSpace G] {l : ℕ} [Fact l.Prime] {U : OpenNormalSubgroup G}
+    {z : G} {A : DiscreteModule R G}
     (hA : A.FiniteKilledFixedInj l U z 1) (hz_central : ∀ g : G, ⁅z, g⁆ ∈ U) :
     ∃ (B C : DiscreteModule R G) (ι : A.Hom B) (π : B.Hom C),
       IsShortExact ι π ∧ B.FiniteKilledFixedInj l U z 1 ∧ B.IsHigmanProjective U := by
