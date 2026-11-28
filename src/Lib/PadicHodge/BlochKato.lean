@@ -9,6 +9,7 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.Algebra.Group.Units
 import TauCeti.FieldTheory.Galois.IsometricAction
+public import TauCeti.NumberTheory.Padics.RingHoms
 public import Lib.PadicHodge.Crystalline.HodgeTateJumps
 public import Lib.ClassField.GaloisCohomology.ShapiroCorestriction
 public import Lib.ClassField.Places.DecompositionCyclotomic
@@ -425,9 +426,7 @@ abbrev pPowMultiples (m : ℕ) : AddSubgroup T := (lsmul ℤ_[p] T (p ^ m)).rang
 lemma index_pPowMultiples (m : ℕ) : (pPowMultiples T m).index = (p ^ m) ^ finrank ℤ_[p] T := by
   -- `T / p ^ m T` is the base change of `T` to `ℤ_[p] / p ^ m`, a ring with `p ^ m` elements.
   have h_card_quot : Nat.card (ℤ_[p] ⧸ Ideal.span {(p : ℤ_[p]) ^ m}) = p ^ m := by
-    rw [← ker_toZModPow,
-      card_congr (RingHom.quotientKerEquivOfSurjective (ZMod.ringHom_surjective _)).toEquiv]
-    simp
+    rw [card_congr (quotientSpanPowEquivZMod (p := p) m).toEquiv, Nat.card_zmod]
   have h_sub : pPowMultiples T m =
       (Submodule.map (lsmul ℤ_[p] T ((p : ℤ_[p]) ^ m)) ⊤).toAddSubgroup := by
     rw [pPowMultiples, range_eq_map]
@@ -442,8 +441,12 @@ that sends the class of a to ζ^a, where ζ is the primitive p^m-th root of unit
 `New.rootPowHom`. -/
 def zmodPowToUnits (m : ℕ) : QuotSpan (p ^ m : ℤ_[p]) →+ DiscreteUnits (PadicAlgCl p) :=
   (rootPowHom (PadicAlgCl p) (p ^ m)).val.comp
-    (Ideal.Quotient.lift (Ideal.span {(p : ℤ_[p]) ^ m}) (toZModPow m)
-      (by simp [← ker_toZModPow])).toAddMonoidHom
+    (quotientSpanPowEquivZMod (p := p) m).toAddMonoidHom
+
+/-- Distinct classes modulo `p ^ m` give distinct powers of the chosen primitive root. -/
+lemma zmodPowToUnits_injective (m : ℕ) : Injective (zmodPowToUnits (p := p) m) :=
+  (rootPowHom (PadicAlgCl p) (p ^ m)).property.1.comp
+    (quotientSpanPowEquivZMod (p := p) m).injective
 
 /-- An additive map `f` from a `ℤ_[p]`-module to the `p ^ n`-th roots of unity turns multiplication
 by the cyclotomic character of `g` into the Galois action of `g`. -/

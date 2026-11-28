@@ -521,8 +521,8 @@ lemma Period.exists_dual_reduction (b : L' ≃ₗ[ℤ_[ℓ]] Dual ℤ_[ℓ] L) {
     -- `x` is in the kernel when all values `b x y` are divisible by `ℓᵐ`, and a linear form all
     -- of whose values are divisible by `ℓᵐ` is `ℓᵐ` times a linear form
     have h_ker_iff : x ∈ r.ker ↔ ∀ y : L, ∃ a : ℤ_[ℓ], a * (ℓ : ℤ_[ℓ]) ^ m = b x y := by
-      simp [u, ext_iff, hq_surj.forall, hr, zmodPowToUnits, (rootPowHom ..).property,
-        map_eq_zero_iff, ← RingHom.mem_ker, ker_toZModPow, mem_span_singleton]
+      simp [u, ext_iff, hq_surj.forall, hr, map_eq_zero_iff, zmodPowToUnits_injective,
+        Ideal.Quotient.eq_zero_iff_mem, mem_span_singleton]
     have h_mult_iff : x ∈ pPowMultiples L' m ↔
         ∃ f : Dual ℤ_[ℓ] L, ∀ y : L, f y * (ℓ : ℤ_[ℓ]) ^ m = b x y := by
       simp [b.symm.surjective.exists, ← b.injective.eq_iff, ext_iff, mul_comm (_ ^ m)]
