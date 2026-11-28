@@ -52,6 +52,8 @@ Notions from other files:
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 noncomputable section
 
 open Finset Set NumberField MeasureTheory Matrix Real Fintype Fin Complex Valued
@@ -568,7 +570,7 @@ class IsAdmissible : Prop where
 of the entry (i, j) of γ times the quotient `basisScale v j / basisScale v i` of the scales. -/
 lemma adelicToInf_apply (γ : S.G (𝔸 E)) (v : InfinitePlace E) (i j : 𝔰.BesselIndex) :
     (S.adelicToInf γ v).val i j = (γ.val i j).1 v * (S.basisScale v j / S.basisScale v i) := by
-  simp! [adelicToInf, basisScaleGL, U.map, diagGL, fieldEq]
+  simp! [adelicToInf, basisScaleGL, U.map, diagGL_coe, ← map_inv, fieldEq]
 
 /-- For a rational γ, an infinite place v and indices i, j, the (i, j) entry of `ratToInf γ v` is
 `Φ v` of the (i, j) entry of γ times `basisScale v j / basisScale v i`. Here `ratToInf γ v` is the

@@ -53,6 +53,8 @@ compactness and finite covolume see `Lib.Adelic.Reduction.FiniteVolume`.
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 noncomputable section
 
 /-! ## Minkowski's first theorem with multiplicity -/
@@ -217,7 +219,7 @@ lemma ideleAbs_det_dyadicDiag (x : n → ℤ) :
   have h_two : ideleAbs (twoAtInfinity E) = 2 ^ (2 * numInfPlaces E) := by
     simp [ideleAbs, twoAtInfinity, pow_mul]
   have h_det : (dyadicDiag x : GL n (𝔸 E)).det = ∏ i : n, twoAtInfinity E ^ x i :=
-    Units.ext (by simp [dyadicDiag, diagGL])
+    Units.ext (by simp [dyadicDiag])
   simp [h_det, h_two, DiscreteSeries.zpow_sum_of_ne_zero]
 
 /-- The matrix `dyadicDiag x` for natural exponents `x i` has determinant of adelic absolute value
@@ -241,7 +243,7 @@ lemma dyadicDiag_inv_mem (x : n → ℕ) :
 `twoAtInfinity E ^ (-x i)`. -/
 lemma dyadicDiag_inv_mulVec_apply (x : n → ℤ) (v : n → 𝔸 E) (i : n) :
     ((dyadicDiag x)⁻¹.val *ᵥ v) i = (twoAtInfinity E ^ (-x i)).val * v i := by
-  simp [dyadicDiag, diagGL, mulVec_diagonal, ← map_inv, -map_zpow]
+  simp [dyadicDiag, diagGL_coe, mulVec_diagonal, ← map_inv, -map_zpow]
 
 /-- An invertible matrix with entries in `E` has, over the adeles, a determinant of absolute value
 `1`: this is the product formula for `det Y`. -/

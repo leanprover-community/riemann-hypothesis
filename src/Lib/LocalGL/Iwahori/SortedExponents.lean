@@ -53,6 +53,8 @@ Known; see `Lib.LocalGL.Iwahori.SphericalExponents` for sources.
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 /-!
 ## Sorting exponents, and sorted exponents from a parahoric type
 
@@ -449,7 +451,8 @@ private lemma IsExponent.eventually_apply_diagGL_pow_eq_zero (hl : IsExponent ρ
     have conj_mem : MulAut.conj (diagGL (s ^ n)) u ∈ proIwahori := by
       -- (`map_pow` is kept out here and below: it would turn `diagGL (s ^ n)` into a power of
       -- operators, a form that the lemmas used are not stated for)
-      simp_all [mem_proIwahori_iff_of_unitriangular, diagGL, field, -map_pow, Matrix.one_apply]
+      simp_all [mem_proIwahori_iff_of_unitriangular, TauCeti.diagGL_mul_mul_inv_apply, field,
+        -map_pow, Matrix.one_apply]
     calc l (ρ (diagGL (s ^ n)) (ρ g x))
         = l (ρ (MulAut.conj (diagGL (s ^ n)) u) (ρ (diagGL (s ^ n * t) * permGL σ) x)) := by
           simp [iwasawa, -map_pow]

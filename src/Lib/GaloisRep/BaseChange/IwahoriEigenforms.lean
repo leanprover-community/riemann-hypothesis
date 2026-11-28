@@ -46,7 +46,8 @@ Notions from other files:
   finite idele with component `x` at `v` and `1` elsewhere.
 * `New.iwahoriDoubleCoset t`: the double coset `K t K` of the diagonal matrix `t`, where `K` is
   `New.proIwahori`.
-* `New.diagGL t`: the diagonal matrix with the units `t i` on the diagonal, as an element of `GL`.
+* `TauCeti.diagGL t`: the diagonal matrix with the units `t i` on the diagonal, as an element of
+  `GL`.
 
 ## Relation to the literature
 
@@ -54,6 +55,8 @@ Known; see `Lib.GaloisRep.BaseChange.PrimeDegreeTransfer` for sources.
 -/
 
 @[expose] public section
+
+open TauCeti (diagGL diagGL_coe)
 
 namespace New
 
@@ -393,7 +396,7 @@ lemma proIwahori_doubleCoset_match [CompactSpace 𝒪[F]]
       k * diagGL (t * d₀) * k⁻¹ = a := by
     have h_diag : (k⁻¹ * γ * k).val = diagonal (ρ d) := by rw [h_conj, hν]
     rw [Units.ext_iff, ha, aeval_eq_conj_diagonal_eval hγ h_diag (h_inj hd) z, funext hz,
-      Units.val_mul, Units.val_mul, coe_diagGL]
+      Units.val_mul, Units.val_mul, diagGL_coe]
   simp only [hP]
   refine ⟨z, charpoly_diagonal_dvd_twistedNorm_sub_X hσ (h_inj hd₀) (fun i ↦ rfl) hz,
     ?_, fun γ a hγ ha δ hδ hδ_norm ↦ ?_⟩

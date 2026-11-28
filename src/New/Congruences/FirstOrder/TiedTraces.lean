@@ -58,6 +58,8 @@ See `New.Congruences.FirstOrder.AuxiliaryPrimeTie` for related work.
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 open Pi Fintype Polynomial Nat Group Submodule ComplexOrder
 
 attribute [local instance low] Fintype.ofFinite
@@ -138,7 +140,7 @@ lemma transfer_indLine : (P.indLine (N := N)).transfer = P.indDet :=
 
 lemma indDet_diamond : P.indDet (P.diamond (N := N)) = .ofAdd 1 := by
   rw [MonoidHom.comp_apply, show Matrix.GeneralLinearGroup.det (P.diamond (N := N)) =
-    residueUnit P.tameUnit.val from Units.ext (by simp [diamond, ← Units.coe_prod]), P.ind_tameUnit]
+    residueUnit P.tameUnit.val from Units.ext (by simp [diamond]), P.ind_tameUnit]
 
 end LocalChoice
 

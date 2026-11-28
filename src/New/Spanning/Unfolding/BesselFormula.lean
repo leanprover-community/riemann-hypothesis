@@ -119,7 +119,8 @@ lemma adelicToInf_mem_besselU (h : S.Fits V l kw Y η) {g : New.G E ε} (hg : g 
     (v : InfinitePlace E) :
     S.adelicToInf (h.adelicEquiv g) v ∈ besselU :=
   -- The diagonal change of basis at `v` keeps a matrix unitriangular.
-  conj_mem_unitriangular (blockTriangular_diagonal _)
+  conj_mem_unitriangular
+    (by simp only [basisScaleGL, TauCeti.diagGL_coe]; exact blockTriangular_diagonal _)
     ((h.mem_unipotent_iff_mem_besselU.mp hg).map_mem_agreeWithOneOn _)
 
 /-- Suppose the hermitian space `V` of signs `ε` with grading `Y` fits the filling data `S` (the

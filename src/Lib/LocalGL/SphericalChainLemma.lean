@@ -45,6 +45,8 @@ GL(N), LNM 1041 (1983) for the inequality at the ends of segments.
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 open ComplexOrder Finset Module New Pi Polynomial Valued Complex
 
 /-- P has the chain of roots d, dq, …, dq^{t−1}, and the other factor divides e after scaling:
@@ -137,7 +139,7 @@ lemma New.Patching.compactMean_apply_inv_partialHecke_one_succ
     dual₁ i (by lia : 1 + (i + (j + 1)) = N)] at h_count
   have inv_diag (t : Fin N → (LocField w)ˣ) :
       invTransposeGL (diagGL t) = diagGL (t⁻¹ : Fin N → (LocField w)ˣ) :=
-    Units.ext (Matrix.diagonal_transpose _)
+    Units.ext <| by simp [invTransposeGL_apply, transposeGL, ← map_inv]
   -- `partialHecke ρ.ρ 1 i x` is fixed by `proIwahori`, so the mean leaves it unchanged
   have h_fixed : compactMean ρ.ρ proIwahori (partialHecke ρ.ρ 1 i x) = partialHecke ρ.ρ 1 i x :=
     compactMean_eq_self _ (levelSpace_anti (proIwahori_le_blockParahoric fun _ _ h ↦ by omega)

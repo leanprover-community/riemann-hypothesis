@@ -3,6 +3,7 @@ module
 public import Mathlib.Analysis.Matrix.MeasurableSpace
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import TauCeti.Data.Matrix.Countable
+public import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Diagonal.Basic
 public import TauCeti.LinearAlgebra.Matrix.IndefiniteUnitaryGroup
 public import TauCeti.MeasureTheory.Constructions.Polish.Units
 public import TauCeti.Topology.Instances.Matrix
@@ -161,14 +162,6 @@ lemma one_map_ringHom (f : R →+* S) : (1 : Matrix n n R).map f = 1 :=
 /-- The diagonal matrix of a vector of signs ε is its own inverse. -/
 lemma signMatrix_mul_self (ε : n → ℤˣ) : signMatrix ε * signMatrix ε = 1 := by
   simp [signMatrix, ← Int.cast_mul]
-
-/-- The homomorphism sending a family of units of R to the diagonal matrix in GL_n(R) with these
-entries. -/
-def diagGL : (n → Rˣ) →* GL n R :=
-  (Units.map (diagonalRingHom n R).toMonoidHom).comp MulEquiv.piUnits.symm.toMonoidHom
-
-@[simp]
-lemma coe_diagGL (t : n → Rˣ) : (diagGL t).val = Matrix.diagonal fun i : n ↦ ↑(t i) := rfl
 
 /-- The transpose of g, as an element of GL_n(R). -/
 @[simps -isSimp]

@@ -274,7 +274,9 @@ lemma gridSpace_diag (hj : j ≤ D.m) :
   cases j
   · rfl
   · -- a sum of two diagonal forms is the diagonal form of the combined signs
-    refine signedSpace_eq_reindex _ (Units.ext ((fromBlocks_diagonal ..).trans ?_))
+    refine signedSpace_eq_reindex _ (Units.ext ?_)
+    change fromBlocks (TauCeti.diagGL _).val 0 0 (TauCeti.diagGL _).val = (TauCeti.diagGL _).val
+    rw [TauCeti.diagGL_coe, TauCeti.diagGL_coe, TauCeti.diagGL_coe, fromBlocks_diagonal]
     exact congrArg diagonal (funext fun x ↦ by rcases x with _ | _ <;> rfl)
 
 /-- The hermitian space `Ỹ^{j+1}_j` is the node `(j, j + 1)` of the grid `true`, and `Y^{j+1}_j` is

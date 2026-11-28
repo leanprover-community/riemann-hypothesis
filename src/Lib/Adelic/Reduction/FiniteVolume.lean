@@ -65,6 +65,8 @@ For the adelic points of unitary groups and their Haar measures, see
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 /-! ## Reduced rational bases in a compact set of adelic matrices -/
 
 section CompactBases
@@ -91,7 +93,9 @@ lemma exists_mul_twoAtInfinity_pow_mul_eq_toAdele {a : (𝔸 E)ˣ} {N : ℕ}
   obtain ⟨h_ball, h_integral⟩ := h_box 0
   refine ⟨ξ 0, by simpa [funext_iff] using hξ, (y⁻¹.val *ᵥ toAdele ∘ ξ) 0,
     ⟨Metric.ball_subset_closedBall h_ball, h_integral⟩, ?_⟩
-  simp [y, dyadicDiag, mul_assoc]
+  simp [y, dyadicDiag, mul_assoc, diagonal_pow, mulVec_diagonal]
+  rw [← mul_assoc (_ ^ N), ← mul_pow, Units.mul_inv, one_pow, one_mul,
+    Units.mul_inv_cancel_left]
 
 open Pointwise in
 /-- For a compact set `M` of adelic `n × n` matrices and `c > 0`, the invertible matrices `A` that

@@ -46,6 +46,8 @@ Notions from other files:
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
 /-!
 ## Units along non-unital ring maps and invertible matrices from spanning sets
 
@@ -332,7 +334,8 @@ lemma distribHaarChar_diagGL (d : n → Rˣ) :
   -- A diagonal matrix maps the box `B = C ^ n` to the product of the `d i • C`.
   let B : Set (n → R) := univ.pi fun _ : n ↦ (C : Set R)
   have h_box : diagGL d • B = univ.pi fun i : n ↦ d i • (C : Set R) :=
-    (image_congr' rfl fun x ↦ funext (Matrix.mulVec_diagonal _ x)).trans (piMap_image_univ_pi _ _)
+    (image_congr' rfl fun x ↦ funext fun i ↦ by simp [Matrix.mulVec_diagonal]).trans
+      (piMap_image_univ_pi _ _)
   -- Compare measures, for the product of the Haar measures that give `C` measure `1`.
   let μ : Measure (n → R) := Measure.pi fun _ : n ↦ addHaarMeasure C
   have h_left : μ (diagGL d • B) = distribHaarChar (n → R) (diagGL d) := by
@@ -353,7 +356,7 @@ lemma inv_distribHaarChar_GL_eq_genIndex_det (hO_open : IsOpen (O : Set R))
   -- are multiplicative, trivial on `intGL n O`, and equal on diagonal matrices.
   obtain ⟨k, hk, k', hk', d, hg⟩ := hO_val.smith_normal_form g.val
   lift d to n → Rˣ using by simpa [hg] using g.det.isUnit
-  obtain rfl : g = k * diagGL d * k' := Units.ext hg
+  obtain rfl : g = k * diagGL d * k' := Units.ext (by simpa using hg)
   have h_left : distribHaarChar (n → R) (k * diagGL d * k') = ∏ i : n, distribHaarChar R (d i) := by
     simp [distribHaarChar_eq_one_of_mem_intGL hO_open hO_compact, hk, hk', distribHaarChar_diagGL]
   have h_right : genIndex (k * diagGL d * k').val.det = ∏ i : n, genIndex (d i : R) := by

@@ -34,6 +34,8 @@ Notions from other files:
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 /-! ## A nonvanishing minor of the matrix of variables -/
 
 section LetterMinor
@@ -209,7 +211,7 @@ lemma twistedNorm_diagGL {σ : R →+* R} (d : n → Rˣ) (p : ℕ) :
   | succ p ih =>
     have h_prod (a : R) : ∏ l ∈ range (p + 1), (σ ^ l) a = a * σ (∏ l ∈ range p, (σ ^ l) a) := by
       simp [prod_range_succ', Function.iterate_succ_apply', mul_comm]
-    rw [twistedNorm_succ', Units.val_mul, GeneralLinearGroup.val_map_apply, ih, coe_diagGL,
+    rw [twistedNorm_succ', Units.val_mul, GeneralLinearGroup.val_map_apply, ih, diagGL_coe,
       diagonal_map (map_zero σ), diagonal_mul_diagonal]
     simp only [h_prod]
 

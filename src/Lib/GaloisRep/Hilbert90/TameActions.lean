@@ -622,11 +622,14 @@ lemma IsTameAtLevel.hilbert90_unit (h_tame : IsTameAtLevel σ p m)
     ∃ g : Rˣ, m ∣ g - 1 ∧ x * σ g = g := by
   -- apply `hilbert90_gl` to the `1 × 1` matrix `x` and take the determinant of the solution
   obtain ⟨y, hy⟩ : ∃ y : R, x - 1 = m * y := hx_one
-  let c : GL Unit R := diagGL fun _ : Unit ↦ hx.unit
+  let c : GL Unit R := TauCeti.diagGL fun _ : Unit ↦ hx.unit
   have hc_val : c.val = 1 + m • of fun _ _ ↦ y := by
     ext i j
     simpa [c] using eq_add_of_sub_eq' hy
-  have hc_norm : twistedNorm (GeneralLinearGroup.map σ) p c = 1 := by aesop
+  have hc_norm : twistedNorm (GeneralLinearGroup.map σ) p c = 1 := Units.ext <| by
+    simp only [c, twistedNorm_diagGL]
+    ext i j
+    simpa using hx_norm
   obtain ⟨k, W, hk, hW⟩ := h_tame.hilbert90_gl hR c hc_val hc_norm
   -- `k` is a `1 × 1` matrix, so its determinant is its only entry
   refine ⟨k.det, ?_, ?_⟩

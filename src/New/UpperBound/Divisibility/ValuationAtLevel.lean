@@ -82,7 +82,7 @@ lemma norm_detCharAt_diagN_le {i : ℕ} (hi : i ≤ 2 * D.m) (k j : ℕ) (S : Fi
         (D.liftWeight i τ : ℤ) ≤
         if star (D.inducedPlace τ) ∈ S then (D.N : ℝ) ^ (2 * D.b) else 1 := by
     have h_det : adeleExtension (ιₚ.comp (Φ τ)) (G.det (s := 1) (1, D.diagPoint j S)).val.2 =
-        ((diagGL fun l : D.X j ↦ if l.isLeft then 1
+        ((TauCeti.diagGL fun l : D.X j ↦ if l.isLeft then 1
           else if star (D.inducedPlace τ) ∈ S then .mk0 ↑D.N NeZero.out else 1)⁻¹).val.det := by
       -- `g` is unitary, so `det g` at `τ` is `det g⁻¹` at the conjugate embedding. The rewriting is
       -- using the determinant formula for the unitary group.

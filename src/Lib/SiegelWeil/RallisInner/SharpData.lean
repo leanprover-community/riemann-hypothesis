@@ -91,6 +91,11 @@ inner product formula and p-adic L-functions (2005); Finis, Ann. of Math. 163 (2
 
 @[expose] public section
 
+open TauCeti (diagGL)
+
+-- Proofs below unfold `diagGL` of a constant rank-one family as a diagonal matrix.
+attribute [-simp] TauCeti.diagGL_const
+
 noncomputable section
 
 /-!

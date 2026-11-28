@@ -58,6 +58,8 @@ the block diagonal subgroup.
 
 @[expose] public section
 
+open TauCeti (diagGL diagGL_coe)
+
 open NumberField Polynomial Matrix Topology Filter Pointwise Multiplicative MeasureTheory
 
 namespace New
@@ -248,7 +250,7 @@ lemma columnSpace_diagonal {d : n → F} {T : Finset n} (hT : ∀ i : n, i ∈ T
   classical
   let t : n → Fˣ := fun i ↦ if h : d i = 0 then 1 else Units.mk0 (d i) h
   have h_factor : coordProjector T * (diagGL t).val = (1 : GL n F).val * diagonal d := by
-    rw [Units.val_one, one_mul, coordProjector, coe_diagGL, diagonal_mul_diagonal]
+    rw [Units.val_one, one_mul, coordProjector, diagGL_coe, diagonal_mul_diagonal]
     refine congrArg diagonal (funext fun i ↦ ?_)
     by_cases hi : d i = 0 <;> simp [t, hT, hi]
   rw [columnSpace_eq_smul 1 (diagGL t) h_factor, one_smul]

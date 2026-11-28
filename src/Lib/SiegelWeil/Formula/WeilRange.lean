@@ -362,8 +362,9 @@ lemma exists_summable_zeroTerm_bound (hm : 2 * Fintype.card p < Fintype.card m) 
   let InK (L : Lagrangian S) (ρ : U S.J) : Prop :=
     P.radicalElement 0 ((b L).map toAdele) * P.levi (diagT L, 1) * S.ratEmbed ρ⁻¹ ∈ K
   have h_inK (L : Lagrangian S) : InK L (δ L) :=
-    ⟨_, ⟨_, b_mem L, rfl⟩, _, ⟨_, hκ L, rfl⟩, by simp [diagT, ← inl_apply, -coe_diagGL,
-      ↓ ← radicalElement_zero_mul, dyadicDiag, mul_assoc, _root_.zpow_add, ↓ ← Pi.mul_def]⟩
+    ⟨_, ⟨_, b_mem L, rfl⟩, _, ⟨_, hκ L, rfl⟩, by
+      simp [diagT, ← inl_apply, -TauCeti.diagGL_coe, ↓ ← radicalElement_zero_mul, dyadicDiag,
+        mul_assoc, _root_.zpow_add, ↓ ← Pi.mul_def]⟩
   have lag_eq (L : Lagrangian S) :
       CompleteSplitting.lagrangian ((isometrySplitting (δ L)).comp P) = L :=
     lagrangian_isometrySplitting_comp_eq P L (hγ L) (hy L)

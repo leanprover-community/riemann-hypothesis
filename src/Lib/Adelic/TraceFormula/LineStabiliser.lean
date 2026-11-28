@@ -162,7 +162,7 @@ def hyperplaneStabilizer : Subgroup (GL n (LocField w)) :=
 
 /-- The matrix `diag (ϖ, 1, …, 1)`, with the uniformiser `ϖ` of `w` at the index `i` and `1`
 elsewhere. -/
-def lineElement : GL n (LocField w) := diagGL fun j : n ↦ if j = i then uniformizer w else 1
+def lineElement : GL n (LocField w) := TauCeti.diagGL fun j : n ↦ if j = i then uniformizer w else 1
 
 lemma lineStabilizer_le_localIntGL : lineStabilizer w i ≤ localIntGL n w :=
   Subgroup.map_subtype_le _
