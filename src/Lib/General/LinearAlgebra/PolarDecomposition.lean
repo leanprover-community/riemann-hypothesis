@@ -1,6 +1,7 @@
 module
 
 import TauCeti.Analysis.Matrix.LDL
+import TauCeti.Analysis.Matrix.PosDef
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
 import Mathlib.RingTheory.Etale.Weakly
@@ -155,17 +156,14 @@ theorem New.exists_polar {ε : n → ℤˣ} (g : USign ε) :
 
 /-- The accretive matrices, those with `z + zᴴ` positive definite, form a neighbourhood of each
 accretive matrix `z`. -/
-theorem Matrix.IsAccretive.setOf_mem_nhds {z : Matrix n n ℂ} (hz : z.IsAccretive) :
+theorem Matrix.IsAccretive.setOf_mem_nhds {n : Type*} [Finite n]
+    {z : Matrix n n ℂ} (hz : z.IsAccretive) :
     {y : Matrix n n ℂ | y.IsAccretive} ∈ nhds z := by
-  -- `y` is accretive exactly when the real spectrum of `y + star y` lies in the open set
-  -- `(0, ∞)`, and the spectrum is upper hemicontinuous.
-  have h_spec : UpperHemicontinuous fun y : Matrix n n ℂ ↦ spectrum ℝ (y + star y) :=
-    (upperHemicontinuous_spectrum ℝ _).comp (continuous_id.add continuous_star)
-  have h_iff (y : Matrix n n ℂ) : y.IsAccretive ↔ spectrum ℝ (y + star y) ⊆ Set.Ioi 0 := by
-    simp [IsAccretive, ← star_eq_conjTranspose, ← isStrictlyPositive_iff_posDef, Set.subset_def,
-      CStarAlgebra.isStrictlyPositive_iff_isSelfAdjoint_and_spectrum_pos]
-  filter_upwards [h_spec z (Set.Ioi 0) (isOpen_Ioi.mem_nhdsSet.2 ((h_iff z).1 hz))] with y hy
-  exact (h_iff y).2 (isOpen_Ioi.mem_nhdsSet.1 hy)
+  let hermitianSum (y : Matrix n n ℂ) : selfAdjoint (Matrix n n ℂ) :=
+    ⟨y + star y, IsSelfAdjoint.add_star_self y⟩
+  have hcont : Continuous hermitianSum :=
+    (continuous_id.add continuous_star).subtype_mk _
+  exact (Matrix.isOpen_setOfPred_posDef_selfAdjoint.preimage hcont).mem_nhds hz
 
 /-- If `z` is accretive (`z + zᴴ` positive definite) and `w` assigns integer weights to the indices,
 then `weightMinors w z` is non-zero. Here `weightMinors w z` is the product over `t : ℤ` of the
