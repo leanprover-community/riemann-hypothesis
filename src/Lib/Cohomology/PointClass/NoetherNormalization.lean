@@ -267,26 +267,21 @@ lemma isIntegralElem_of_no_common_zero [Finite ι]
     IsScalarTower.toAlgHom k V (IsLocalRing.ResidueField V)
   have h_res {y : V} : red y = 0 ↔ V.valuation y < 1 := by simp [red, V.valuation_lt_one_iff]
   -- the reduction of `x` lies on the cone, since `incl ∘ x` is a multiple of `v`
-  have h_ker (r : V) (hr : incl r = 0) : red r = 0 := by
-    rw [show r = 0 from Subtype.ext hr, map_zero]
-  have h_incl : IsHomogeneousSolution k g (incl ∘ x) := by
+  have h_cone : IsHomogeneousSolution k g (red ∘ x) := by
+    refine .of_ker incl red (fun r hr ↦ by rw [show r = 0 from Subtype.ext hr, map_zero]) ?_
     rw [h_quot]
     exact hv.smul (AlgHom.id k K) (v j)⁻¹
-  have h_cone : IsHomogeneousSolution k g (red ∘ x) := .of_ker incl red h_ker h_incl
   -- `Λ l x = (v j)⁻¹ * φ (p l)` has valuation less than one
   have h_zero (l : Fin (d + 1)) : (Λ l).val.aeval (red ∘ x) = 0 := by
-    have h_incl_l : (((Λ l).val.aeval x : V) : K) = (v j)⁻¹ * φ (p l) := by
-      calc (((Λ l).val.aeval x : V) : K) = evalForms Λ (incl ∘ x) l :=
-            comp_aeval_apply x incl (Λ l).val
-        _ = ((v j)⁻¹ • evalForms Λ v) l := by rw [h_quot, evalForms_smul]
-        _ = (v j)⁻¹ * φ (p l) := by simp [h_val]
-    have h_le : V.valuation (φ (p l)) ≤ 1 := V.valuation_le_one ⟨φ (p l), hV (p l)⟩
-    have h_lt_one : V.valuation ((v j)⁻¹ * φ (p l)) < 1 := by
-      simpa [inv_mul_lt_one₀ h_big.pos] using h_le.trans_lt h_big
+    have h_incl_l : (((Λ l).val.aeval x : V) : K) = (v j)⁻¹ * φ (p l) :=
+      (comp_aeval_apply x incl (Λ l).val).trans <| by
+        rw [← Function.comp_def, h_quot, aeval_smul_of_isHomogeneous (Λ l).prop, pow_one]
+        exact congrArg ((v j)⁻¹ * ·) (congrFun h_val l)
     -- `Λ l (red ∘ x) = red (Λ l x)`
     refine (comp_aeval_apply x red (Λ l).val).symm.trans ?_
     rw [h_res, h_incl_l]
-    exact h_lt_one
+    simpa [inv_mul_lt_one₀ h_big.pos] using
+      (V.valuation_le_one ⟨φ (p l), hV (p l)⟩).trans_lt h_big
   have h_lt : V.valuation (x j) < 1 := h_res.mp (congrFun (h_no_common_zero _ h_cone h_zero) j)
   -- but `x j = (v j)⁻¹ * v j = 1`
   have h_xj : ((x j : V) : K) = 1 := (congrFun h_quot j).trans (inv_mul_cancel₀ hvj)
@@ -479,13 +474,11 @@ lemma IsNoetherNormalization.nonempty_galoisClosure (hΛ : IsNoetherNormalizatio
   algebraize [(aeval (R := k) (evalForms Λ (t • inc ∘ g))).toRingHom]
   -- The values of `Λ` at `t • g` are `t` times those at `g`, which satisfy no nonzero homogeneous
   -- relation. (`using!`: the algebra instance comes from `algebraize`.)
-  have h_faithful : FaithfulSMul A Ω := by
-    refine (faithfulSMul_iff_algebraMap_injective A Ω).mpr
-      (algebraicIndependent_iff.mpr fun F ↦ ?_)
-    simpa [aeval_X_left_apply] using! h_no_rel.aeval_eq_zero_of_transcendental ht
-  have h_forms_X : evalForms Λ (t • inc ∘ g) = aeval (R := k) (evalForms Λ (t • inc ∘ g)) ∘ X :=
-    funext fun l ↦ (aeval_X _ l).symm
-  have h_int (i : ι) : IsIntegral A ((t • inc ∘ g) i) := h_integral (aeval _) X _ h_tg h_forms_X i
+  have h_faithful : FaithfulSMul A Ω :=
+    (faithfulSMul_iff_algebraMap_injective A Ω).mpr <| algebraicIndependent_iff.mpr fun F ↦ by
+      simpa [aeval_X_left_apply] using! h_no_rel.aeval_eq_zero_of_transcendental ht
+  have h_int (i : ι) : IsIntegral A ((t • inc ∘ g) i) :=
+    h_integral (aeval _) X _ h_tg (funext fun l ↦ (aeval_X _ l).symm) i
   -- `incA : B → Ω` is an injective `A`-algebra map with `incA ∘ x = t • inc ∘ g`
   obtain ⟨B, fintypeGal, incA, x, hinv, hfin, h_incA_inj, h_incA_x⟩ := exists_galois_hull h_int
   algebraize [(algebraMap A B).comp C]
@@ -499,10 +492,9 @@ lemma IsNoetherNormalization.nonempty_galoisClosure (hΛ : IsNoetherNormalizatio
   have hj_ker : ∀ r : B, j r = 0 → r = 0 := fun r hr ↦ h_incA_inj (hr.trans (map_zero incA).symm)
   have hb (σ : Gal(B/A)) : IsHomogeneousSolution k g (b σ) :=
     .of_ker j _ (fun r hr ↦ by rw [hj_ker r hr, map_zero]) (by rwa [h_jx])
-  have hx_forms : evalForms Λ x = f ∘ X := by
-    apply h_incA_inj.comp_left
-    calc incA ∘ evalForms Λ x = evalForms Λ (j ∘ x) := (evalForms_map Λ j x).symm
-      _ = incA ∘ f ∘ X := by rw [h_jx]; exact hjf.symm
+  have hx_forms : evalForms Λ x = f ∘ X := h_incA_inj.comp_left <| by
+    change j ∘ evalForms Λ x = j ∘ f ∘ X
+    rw [← evalForms_map Λ j x, h_jx, hjf]
   -- `σ` fixes the image of `A`
   have hΛb (σ : Gal(B/A)) : evalForms Λ (b σ) = f ∘ X := by
     rw [evalForms_map, hx_forms]
@@ -522,8 +514,8 @@ lemma IsNoetherNormalization.nonempty_galoisClosure (hΛ : IsNoetherNormalizatio
     exists_algHom_comp_eq_smul ht ht_ne j hj_ker b hw_int f hfin 1 (hΛb 1) φ u
   have hχf : χ ∘ f ∘ X = u • φ ∘ f ∘ X := by
     simpa [hΛb] using congrArg (evalForms Λ) (hχb 1)
-  have h_agree : χ.comp f = ψ.comp f := algHom_ext (congrFun (hχf.trans hu))
-  obtain ⟨τ, hτ⟩ : ∃ τ : Gal(B/A), ∀ a : B, ψ a = χ (τ a) := exists_algEquiv_of_comp_eq hinv h_agree
+  obtain ⟨τ, hτ⟩ : ∃ τ : Gal(B/A), ∀ a : B, ψ a = χ (τ a) :=
+    exists_algEquiv_of_comp_eq hinv (algHom_ext (congrFun (hχf.trans hu)))
   refine ⟨τ, fun σ ↦ ?_⟩
   rw [← hχb (τ * σ)]
   exact funext fun i ↦ hτ (b σ i)
@@ -594,11 +586,8 @@ lemma IsCoordsWithUnit.exists_chart_coords (hK : IsField A) {d : ℕ}
   have hU : IsOpenSubfunctor U :=
     isOpenSubfunctor_of_landsIn (fun y ↦ y.down.left) h_map_left U fun _ _ ↦ .rfl
   obtain ⟨c, ⟨κ, hκ⟩, hc⟩ := hU.exists_mem_locus_and_point_mem hK hi
-  have h_coords : L.IsHomogeneousCoords c.point.down.left
-      (fun j : ι ↦ L.transition i j _ c.point.down.left) :=
-    hL.out.isLinearSystem.isHomogeneousCoords_transition hc
-  exact ⟨c, _, fun j ↦ L.transition i j _ c.point.down.left, hκ, h_coords, i,
-    L.isUnit_transition hc hc⟩
+  exact ⟨c, _, fun j ↦ L.transition i j _ c.point.down.left, hκ,
+    hL.out.isLinearSystem.isHomogeneousCoords_transition hc, i, L.isUnit_transition hc hc⟩
 
 variable {L x x' v} {ξ : PointsIn Y (of k F)} {g : ι → of k F} {i : ι}
 
@@ -627,9 +616,7 @@ lemma IsCoordsWithUnit.map_unit_smul (hv : IsCoordsWithUnit L x v) (φ : A ⟶ B
     IsCoordsWithUnit L (x.map φ) (u • φ ∘ v) := by
   obtain ⟨h_lifts, i, hi⟩ := hv
   -- the coordinates map along `φ` and scale by `u`; the entry `i` stays a unit
-  have h_coords : L.IsHomogeneousCoords (x.map φ).down.left (u • φ ∘ v) :=
-    (h_lifts.map hL.out.isLinearSystem hi _).smul u.isUnit
-  exact ⟨h_coords, i, u.isUnit.mul (hi.map φ.hom)⟩
+  exact ⟨(h_lifts.map hL.out.isLinearSystem hi _).smul u.isUnit, i, u.isUnit.mul (hi.map φ.hom)⟩
 
 lemma IsCoordsWithUnit.comp (h : IsCoordsWithUnit L x v) (φ : A ⟶ B) :
     IsCoordsWithUnit L (x.map φ) (φ ∘ v) := by
@@ -776,13 +763,14 @@ lemma IsCoordsWithUnit.exists_app_eq_algebraMap_of_isHomogeneousSolution
   -- largest valuation shows that `ξ` comes from a point over `V`. So it is integral over `k`.
   have h_integral : (algebraMap k F).IsIntegralElem ((f.app _ ξ).down 0) := by
     refine isIntegralElem_of_valuationSubring fun V hV ↦ ?_
-    have h_max : ∃ i : ι, ∀ l : ι, ∃ x : V, x • g i = g l := Finite.exists_max (V.valuation ∘ g)
-    choose i w hw using h_max
+    obtain ⟨i, hi⟩ : ∃ i : ι, ∀ l : ι, ∃ x : V, x • g i = g l :=
+      Finite.exists_max (V.valuation ∘ g)
+    choose w hw using hi
     -- the inclusion of `V`, as a subalgebra of `F`
     let toF : of k (⟨V.toSubsemiring, hV⟩ : Subalgebra k F) ⟶ of k F :=
       ofHom (Subalgebra.val ⟨V.toSubsemiring, hV⟩)
-    have h_scaled : g i • ⇑toF ∘ w = g := funext fun l ↦ (mul_comm _ _).trans (hw l)
-    obtain ⟨y, -, rfl⟩ := hξ.exists_descend_of_injective toF Subtype.val_injective h_scaled
+    obtain ⟨y, -, rfl⟩ := hξ.exists_descend_of_injective toF Subtype.val_injective
+      (funext fun l ↦ (mul_comm _ _).trans (hw l))
     rw [h_f_map]
     exact Subtype.prop _
   -- As `k` is algebraically closed, this value is a constant `c`.
@@ -815,15 +803,12 @@ lemma IsCoordsWithUnit.exists_mem_open_of_isUnit (hξ : IsCoordsWithUnit L ξ g)
   obtain ⟨D, z, -, G, -, h_spec⟩ := hξ.exists_universal_chart .refl hi.ne_zero
   -- `z` specialises to `ξ` itself along `φ₀`, so this specialisation lies in `V`
   obtain ⟨φ₀, hφ₀, h_gen⟩ := h_spec .refl hi
-  have h_eq : z.map φ₀ = ξ := h_gen.ext hξ
-  have hz : z.map φ₀ ∈ V.obj _ := by rwa [h_eq]
+  have hz : z.map φ₀ ∈ V.obj _ := by rwa [h_gen.ext hξ]
   obtain ⟨b, hb, h_open⟩ := hV.exists_basicOpen φ₀ z (Field.toIsField _) hz
-  refine ⟨G b * X i, ?_, fun hw h_unit ↦ ?_⟩
-  · have h_Gb : aeval g (G b) ≠ 0 := (hφ₀ b).ne_zero_iff.mpr hb
-    simpa using mul_ne_zero h_Gb hi.ne_zero
-  · rw [map_mul, aeval_X, IsUnit.mul_iff] at h_unit
-    obtain ⟨h_Gb_unit, h_wi_unit⟩ := h_unit
-    obtain ⟨φ, hφ, h_coord⟩ := h_spec hw h_wi_unit
-    exact ⟨z.map φ, h_open _ φ ((hφ b).isUnit h_Gb_unit), h_coord⟩
+  refine ⟨G b * X i, by simpa using mul_ne_zero ((hφ₀ b).ne_zero_iff.mpr hb) hi.ne_zero,
+    fun hw h_unit ↦ ?_⟩
+  rw [map_mul, aeval_X, IsUnit.mul_iff] at h_unit
+  obtain ⟨φ, hφ, h_coord⟩ := h_spec hw h_unit.2
+  exact ⟨z.map φ, h_open _ φ ((hφ b).isUnit h_unit.1), h_coord⟩
 
 end New.Variety
