@@ -114,7 +114,8 @@ noncomputable def removePlanes : (hyperbolicSum p V).Splitting V p := by
 instance : IsBaseAdapted (removePlanes p V) where
   isOrthoIntegral := by
     -- The frame is the block matrix of the inverse base point of hyperbolic space and `1`.
-    refine (isOrthoIntegral_hyperbolicSpace.right.block_diag .one).of_eq_submatrix_mul id .one ?_
+    convert (isOrthoIntegral_hyperbolicSpace (E := E) (p := p)).right.block_diag
+      (.one (n := n)) using 1
     simp [← ext_iff, Matrix.mul_apply, lAdelic, kAdelic, iAdelic, Space.ratMap, removePlanes,
       hyperbolicSum, sum, blockGL, fromRows_map, fromBlocks_mul_fromRows, Matrix.one_apply]
 
@@ -236,10 +237,8 @@ variable {E : Type} [Field E] [CMType E] [WeilData E]
 instance [hD : IsBaseAdapted D] : IsBaseAdapted D.symm where
   isOrthoIntegral := by
     -- Exchanging `k` and `l` permutes the columns of the adelic frame.
-    have h_frame : (D.symm.lAdelic.fromCols D.symm.kAdelic).fromCols D.symm.iAdelic =
-        ((D.lAdelic.fromCols D.kAdelic).fromCols D.iAdelic).submatrix id (Sum.map Sum.swap id) *
-          (1 : Matrix ((p ⊕ p) ⊕ n) ((p ⊕ p) ⊕ n) (𝔸 E)) := by aesop
-    exact hD.isOrthoIntegral.of_eq_submatrix_mul (Sum.map Sum.swap id) .one h_frame
+    convert hD.isOrthoIntegral.submatrix_cols (Sum.map Sum.swap id) using 1
+    aesop
 
 omit [WeilData E] in
 /-- For an adapted splitting `D`, the adelic matrices `D.kAdelic` (the frame `k` in standard
@@ -269,11 +268,9 @@ lemma exists_isBaseAdapted_reindex [hD : IsBaseAdapted D] (e : Unit ≃ p) :
     aesop (add simp hyperbolicSum)
   let A' : V'.Splitting V Unit :=
     splittingOfGram (M.submatrix id ε) h_gram (by rw [card_congr e, D.card_eq])
-  have h_frame : (A'.lAdelic.fromCols A'.kAdelic).fromCols A'.iAdelic =
-      ((D.lAdelic.fromCols D.kAdelic).fromCols D.iAdelic).submatrix id ε *
-        (1 : Matrix ((Unit ⊕ Unit) ⊕ n) ((Unit ⊕ Unit) ⊕ n) (𝔸 E)) := by
-    aesop
-  exact ⟨A', ⟨hD.isOrthoIntegral.of_eq_submatrix_mul ε .one h_frame⟩, rfl, rfl⟩
+  refine ⟨A', ⟨?_⟩, rfl, rfl⟩
+  convert hD.isOrthoIntegral.submatrix_cols ε using 1
+  aesop
 
 /-- Let `D` be an adapted splitting (`IsBaseAdapted`) of `V'` over `V` with `card p` hyperbolic
 planes. A splitting is a Witt decomposition with isotropic frames `l`, `k` and an embedding `i` of
@@ -324,9 +321,9 @@ instance [hD : IsBaseAdapted D] {r : n₁ → ℤˣ} {W : Space E n₁ r} {A : V
   isOrthoIntegral := by
     -- Up to the order of the columns, the frame of the composite is the frame of `D` times the
     -- block matrix of `1` and the frame of `A`.
-    refine (hD.isOrthoIntegral.mul (.block_diag (.one (n := p ⊕ p))
-      hA.isOrthoIntegral)).of_eq_submatrix_mul
-      (sumAssoc (p ⊕ p) (q ⊕ q) n₁ ∘ Sum.map (sumSumSumComm p q p q) id) .one ?_
+    convert (hD.isOrthoIntegral.mul (.block_diag (.one (n := p ⊕ p))
+      hA.isOrthoIntegral)).submatrix_cols
+      (sumAssoc (p ⊕ p) (q ⊕ q) n₁ ∘ Sum.map (sumSumSumComm p q p q) id) using 1
     -- The frames `k`, `l` of the composite are `(k, i k')`, `(l, i l')`, its embedding is `i i'`.
     aesop (add simp [lAdelic, Splitting.comp, fromCols_map, kAdelic, iAdelic, ratMap,
       Matrix.mul_assoc, fromCols_mul_fromBlocks])

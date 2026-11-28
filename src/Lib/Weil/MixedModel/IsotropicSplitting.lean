@@ -203,20 +203,23 @@ lemma block_diag {B : Matrix p q (𝔸 E)} (hB : IsOrthoIntegral B) :
   · -- Each entry is an entry of `A`, an entry of `B`, or zero.
     simp [Sum.forall, hA.snd_mem_Ô, hB.snd_mem_Ô]
 
+omit [Fintype p] in
+/-- Selecting distinct columns preserves orthonormality at the infinite places and integrality
+at the finite places. -/
+lemma submatrix_cols (e : p → n) (he : e.Injective := by simp [Function.Injective]) :
+    IsOrthoIntegral (A.submatrix id e) := by
+  refine ⟨fun w ↦ ?_, fun i j ↦ hA.snd_mem_Ô i (e j)⟩
+  rw [← submatrix_map, conjTranspose_submatrix, ← submatrix_mul _ _ e id e Function.bijective_id,
+    hA.conjTranspose_map_mul_map w, submatrix_one e he]
+
 /-- If `B = A.submatrix id e * C`, that is, the matrix of the columns `e j` of `A` times `C`, where
 `e` is injective, and `A` and `C` are orthonormal at infinity and integral, then so is `B`. When
 `he` is not given, `simp` proves that `e` is injective. -/
 lemma of_eq_submatrix_mul {C : Matrix p q (𝔸 E)} (e : p → n) (hC : IsOrthoIntegral C)
     {B : Matrix m q (𝔸 E)} (h_eq : B = A.submatrix id e * C)
     (he : e.Injective := by simp [Function.Injective]) : IsOrthoIntegral B := by
-  -- Selecting distinct columns of `A` keeps them orthonormal and integral: at `w` the Gram matrix
-  -- of the chosen columns is the `(e, e)` block of that of `A`, which is `1` as `e` is injective.
-  have h_cols : IsOrthoIntegral (A.submatrix id e) := by
-    refine ⟨fun w ↦ ?_, fun i j ↦ hA.snd_mem_Ô i (e j)⟩
-    rw [← submatrix_map, conjTranspose_submatrix, ← submatrix_mul _ _ e id e Function.bijective_id,
-      hA.conjTranspose_map_mul_map w, submatrix_one e he]
-  subst h_eq
-  exact h_cols.mul hC
+  rw [h_eq]
+  exact (hA.submatrix_cols e he).mul hC
 
 end
 
