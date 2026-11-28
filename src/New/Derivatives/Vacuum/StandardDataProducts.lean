@@ -165,22 +165,25 @@ lemma finiteImage_resolutionVectors_mem [DecidableEq n] {I : Type} {w : I → P.
   · simpa [finiteImage, hc] using hw j.1
   · simp [finiteImage, hc]
 
-variable [Fintype n]
-
-/-- A finite adelic vector that is integral at the places above `p` becomes integral everywhere
-when it is multiplied by a suitable number prime to `p`. -/
-lemma exists_coprime_mul_mem_of_mem_integralAfter {x : n → 𝔸f (P.E s)}
-    (hx : x ∈ integralAfter (1 : 𝓞 P.K) fun u : FinPlace (P.E s) ↦ ↑p ∈ u.asIdeal) :
-    ∃ m : ℕ, p.Coprime m ∧ ∀ c : n, m * x c ∈ Ô (P.E s) := by
+/-- If `δ x` is integral at the places above `p`, then a suitable number prime to `p` makes
+`δ x` integral everywhere. Only finiteness of the coordinates is needed. -/
+lemma exists_coprime_mul_mem_of_mem_integralAfter [Finite n] {δ : 𝓞 P.K}
+    {x : n → 𝔸f (P.E s)}
+    (hx : x ∈ integralAfter δ fun u : FinPlace (P.E s) ↦ ↑p ∈ u.asIdeal) :
+    ∃ m : ℕ, p.Coprime m ∧
+      ∀ c : n, m * ((algebraMap P.K (P.E s) δ : 𝔸f (P.E s)) * x c) ∈ Ô (P.E s) := by
   have hp : p.Prime := Fact.out
-  obtain ⟨m₀, hm₀, h_clear⟩ := exists_forall_mul_mem_Ô x
+  obtain ⟨m₀, hm₀, h_clear⟩ :=
+    exists_forall_mul_mem_Ô fun c ↦ (algebraMap P.K (P.E s) δ : 𝔸f (P.E s)) * x c
   obtain ⟨e, m, hm, rfl⟩ : ∃ e m : ℕ, ¬p ∣ m ∧ m₀ = p ^ e * m :=
     WfDvdMonoid.max_power_factor hm₀ hp
   refine ⟨m, hp.coprime_iff_not_dvd.2 hm, fun c ↦ mem_Ô.2 fun u ↦ ?_⟩
   by_cases hu : ↑p ∈ u.asIdeal
-  · simpa using nsmul_mem hx m c u hu
+  · simpa [mul_left_comm] using nsmul_mem hx m c u hu
   · have h_unit : Valued.v (p : LocField u) = 1 := by simpa using v_algebraMap_eq_one hu
     simpa [h_unit] using mem_Ô.1 (h_clear c) u
+
+variable [Fintype n]
 
 /-- Let `V` be a standard space over `E = P.E s` (its signs `ε` are `+1` and its point is the
 identity), and let `F` lie in the finite part of its Weil model `𝒮 V`, the span of the translates of
@@ -200,10 +203,7 @@ lemma exists_rho_finiteImage_eq_and_coprime_mul_mem [DecidableEq n]
   obtain ⟨γ, hγ, h_translate⟩ := exists_finiteImage_approx hF x
   have h_int : finiteImage γ ∈ integralAfter δ fun u ↦ ↑p ∈ u.asIdeal := by
     simpa only [sub_add_cancel] using add_mem (integralAfter.stdLattice_le hγ) hx
-  have h_scaled : finiteImage (fun c ↦ algebraMap P.K (P.E s) δ * γ c) ∈
-      integralAfter (1 : 𝓞 P.K) fun u ↦ ↑p ∈ u.asIdeal := fun c u hu ↦ by
-    simpa [finiteImage, mul_left_comm, mul_assoc] using h_int c u hu
-  obtain ⟨m, hm, h_clear⟩ := exists_coprime_mul_mem_of_mem_integralAfter h_scaled
+  obtain ⟨m, hm, h_clear⟩ := exists_coprime_mul_mem_of_mem_integralAfter h_int
   exact ⟨γ, m, h_translate, hm, fun c ↦ by simpa [finiteImage, mul_left_comm] using h_clear c⟩
 
 end RationalTranslates
