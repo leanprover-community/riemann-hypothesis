@@ -7,6 +7,8 @@ import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.RingTheory.DualNumber
 import Mathlib.Tactic.Linter.Style
+import TauCeti.RingTheory.Derivation.MinimalPrime
+import TauCeti.RingTheory.Derivation.TrivSqZeroExt
 public import Lib.General.Geometry.PointsOfProperSchemes
 public import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
 public import Lib.Shimura.Uniformisation.HolomorphicFamilies
@@ -81,30 +83,22 @@ variable {V : Type} [CommRing V] {A B : Over (Spec ⟨V⟩)} [AddObj A] [AddObj 
 lemma point_snd_eq_zero_of_section {K R : Type*} [Field K] [CharZero K] [CommRing R] [Algebra K R]
     [Module.Finite K R] (c : R →ₐ[K] K) (ρ : R →ₐ[K] R[ε]) (hρ : ∀ r : R, (ρ r).fst = r) (f : R) :
     c (ρ f).snd = 0 := by
-  -- `g` has the same derivative as `f` and vanishes at `c`. By induction on `n`, whatever kills
-  -- `g ^ n` sends the derivative of `g` into the kernel of `c`.
-  let g : R := f - c f • 1
-  have h_ann_snd (n : ℕ) (s : R) (hs : s * g ^ n = 0) : c (s * (ρ g).snd) = 0 := by
-    induction n generalizing s with
-    | zero => simp_all
-    | succ n ih =>
-      -- Differentiate `s * g ^ (n + 1) = 0` and multiply by `s` to remove the term `(ρ s).snd`.
-      have h_der : s * ((n + 1) • (g ^ n * (ρ g).snd)) + (ρ s).snd * g ^ (n + 1) = 0 := by
-        simpa [hρ] using congrArg (fun r ↦ (ρ r).snd) hs
-      have h_ann : (n + 1) • s * s * (ρ g).snd * g ^ n = 0 := by
-        linear_combination s * h_der - (ρ s).snd * hs
-      -- By induction `(n + 1) * c (s * (ρ g).snd) ^ 2 = 0`, and the characteristic is `0`.
-      have h_sq : ((n + 1 : ℕ) : K) * c (s * (ρ g).snd) ^ 2 = 0 := by
-        rw [← ih _ h_ann, nsmul_eq_mul]
-        simp only [map_mul, map_natCast]
-        ring
-      simpa [Nat.cast_add_one_ne_zero] using h_sq
-  -- `R` is Artinian, so `g ^ n` is killed by an element `1 - g * y`, which is `1` at `c`.
-  obtain ⟨n, y, hy⟩ : ∃ (n : ℕ) (y : R), g ^ (n + 1) * y = g ^ n * 1 :=
-    (IsArtinianRing.of_finite K R).exists_pow_succ_smul_dvd g (1 : R)
-  have h_at_c : c ((1 - g * y) * (ρ g).snd) = 0 := h_ann_snd n _ (by linear_combination -hy)
-  -- `g` and `f` differ by a constant, and `g` vanishes at `c`.
-  simpa [g] using h_at_c
+  -- Sections of the dual numbers over the identity correspond to derivations.
+  let D : Derivation K R R := (TauCeti.derivationToTrivSqZeroExtEquivLift K R R).symm
+    ⟨ρ, AlgHom.ext hρ⟩
+  -- Over an Artinian algebra the kernel of a field point is a minimal prime.
+  have : IsArtinianRing R := IsArtinianRing.of_finite K R
+  have : Nontrivial K := GroupWithZero.toNontrivial
+  have : (RingHom.ker c).IsPrime := RingHom.ker_isPrime c
+  have hm : RingHom.ker c ∈ (⊥ : Ideal R).minimalPrimes :=
+    IsArtinianRing.mem_minimalPrimes bot_le
+  -- The derivation preserves this prime, so the derivative of f vanishes at c.
+  have h := D.apply_mem_of_mem_minimalPrimes (I := ⊥) (by simp) hm
+    (fun n hn ↦ by simpa [RingHom.mem_ker] using hn)
+    (x := f - algebraMap K R (c f)) (by simp [RingHom.mem_ker])
+  change c (D (f - algebraMap K R (c f))) = 0 at h
+  rw [map_sub D, D.map_algebraMap, sub_zero] at h
+  simpa only [D, TauCeti.derivationToTrivSqZeroExtEquivLift_symm_apply] using h
 
 /-- **Cartier's theorem.** Let `V` embed in an algebraically closed field `K` of characteristic
 `0`, let `S` be a finite flat `V`-algebra and `ι : Spec S ⟶ A` a monomorphism to a commutative
