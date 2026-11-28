@@ -439,7 +439,10 @@ private lemma Modulus.exists_pairWeil_vacTranslate (V : Space E m (-t)) (a b : A
   simp [u, boxIndicator, mem_integralBox, mem_Ô, vecToMatrix, scalarFin, idem_apply, coe_divStar,
     matrixToVec]
   congr! 6
-  grind [generator_spec]
+  split_ifs with hw
+  · rw [𝔪.generator_apply_of_notMem (𝔪.not_le_star _ hw), map_one]
+    ring
+  · rfl
 
 /-- Let c be a unit of Ô such that −c satisfies c̄c = −1 (the form in which the flip takes it), V a
 space of rank m with signs −t, and v an integral n × m matrix. The flip φ = `New.flipCoords` for
@@ -463,7 +466,8 @@ private lemma Modulus.flipCoords_map_vacTranslate {c : (Ô E)ˣ}
       (flipCoords (s := s) hc_neg (neg_neg t).symm).finEquiv
         (star (idem 𝔪.places • (↑𝔪.generator⁻¹ : 𝔸f E) • Subtype.val ∘ y)) := by
     simp [y, flipCoords, starCoordEquiv, funext_iff, matrixToVec]
-    grind
+    intro i j
+    linear_combination (-(idem 𝔪.places * ((↑𝔪.generator⁻¹ : 𝔸f E) * (v i j : 𝔸f E)))) * hc
   rw [vacTranslate, h_vec, ← apply_finVec, map_rho, map_vacElem, ← projOn_vacElem (S := 𝔪.places),
     ← 𝔪.schrodingerOp_char_eq_translate_projOn, projOn_vacElem]
   congr with x
@@ -502,7 +506,8 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
   have h_point : (T.x : Matrix m m (𝔸 E)) * l.adeleMatrix = star (flipIdele (-c) 1 : 𝔸 E) •
     V.x := by
     simp [l, ← hV, val_flipIdele, smul_smul, Prod.star_def, adeleMatrix_scalarFin, coe_divStar]
-    grind
+    congr 2
+    linear_combination (star ((α : (𝔸f E)ˣ) : 𝔸f E) * ↑(α : (𝔸f E)ˣ)⁻¹) * hc
   have hc_neg : star ((-c : (Ô E)ˣ) : 𝔸f E) * ((-c : (Ô E)ˣ) : 𝔸f E) = -1 := by simpa using hc
   -- `exists_pairTheta_flip`: a number `z` of modulus one relates the theta function of `(V, S)` at
   -- `(g, h)` to that of `(S, T)` at `(h, l g)`, for the datum moved by `flipCoords`.
@@ -518,9 +523,10 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
     obtain ⟨v, rfl⟩ := 𝔪.reduction_surjective.comp_left.comp_left v
     have h_mat : (g * (1, 𝔪.flipScalar m)).adeleMatrix = l.adeleMatrix *
       (G.neg g * (1, u)).adeleMatrix := by
-      -- `-map_mul` keeps the image of a product whole, in the form that `grind` matches.
+      -- `-map_mul` keeps the image of a product whole, in the form that `ring` closes.
       simp [l, u, flipScalar, -map_mul, smul_smul, adeleMatrix_scalarFin, coe_divStar]
-      grind
+      congr 2
+      ring
     -- Move `(1, u)` from the datum into the group argument (`hC`, `pairTheta_mul`), then flip.
     calc
       _ = z * pairTheta V S a b
