@@ -396,11 +396,6 @@ theorem inclMatrix_gram_eq_zero (h_ne : ∀ (i : l) (j : m), e' i ≠ e j) :
     (inclMatrix ℂ e')ᴴ * inclMatrix ℂ e = 0 := by
   aesop (add simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply])
 
-/-- The basis columns selected by an injective map are orthonormal. -/
-lemma inclMatrix_gram_eq_one [DecidableEq m] (h_inj : ∀ i j : m, e i = e j → i = j) :
-    (inclMatrix ℂ e)ᴴ * inclMatrix ℂ e = 1 := by
-  aesop (add simp [inclMatrix, Matrix.mul_apply, Matrix.one_apply])
-
 variable [Fintype m]
 
 omit [DecidableEq n] in

@@ -147,6 +147,13 @@ lemma conjTranspose_inclMatrix_mul [StarRing R] {l : Type*} (u : l → n) (M : M
   rw [inclMatrix, conjTranspose_submatrix, conjTranspose_one]
   exact one_submatrix_mul u (Equiv.refl n) M
 
+/-- The basis columns selected by an injective map are orthonormal. -/
+lemma inclMatrix_gram_eq_one [StarRing R] [DecidableEq m] {e : m → n}
+    (he : ∀ i j, e i = e j → i = j) :
+    (inclMatrix R e)ᴴ * inclMatrix R e = 1 := by
+  rw [conjTranspose_inclMatrix_mul]
+  exact Matrix.submatrix_one e he
+
 /-- Multiplying by inclusion matrices on both sides selects a submatrix. -/
 lemma conjTranspose_inclMatrix_mul_mul_inclMatrix [StarRing R] {l p : Type*} [Fintype m]
     [DecidableEq m] (M : Matrix n m R) (u : l → n) (v : p → m) :
