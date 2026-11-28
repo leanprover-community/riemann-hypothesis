@@ -102,11 +102,17 @@ lemma IsAppellHumbert.summable_and_analyticAt_tsum {P : Type*} {b : P} [FinCompl
   -- A homogenised bound on the unit sphere of `ℝ × V`, with a small extra parameter `ε`: here
   -- `r = (ε, c, ξ, u, z)`, so `r.2.1 = c` and `r.2.2 = (ξ, u, z)`, and `y = (s, x)`. At `ε = 0` it
   -- says `-Re (B x (T b x)) / 2 < s ^ 2`, true as `(s, x) ≠ 0`; it persists nearby.
+  -- Supply the `ℝ`-scalar action directly to avoid slow `ContinuousSMul` instance search.
+  have _ : ContinuousSMul ℝ (StrongDual ℂ V) := ⟨by
+    rw [show (fun p : ℝ × StrongDual ℂ V ↦ p.1 • p.2) = fun p ↦ (p.1 : ℂ) • p.2 from
+      funext fun p ↦ (algebraMap_smul ℂ p.1 p.2).symm]
+    exact (continuous_smul : Continuous fun p : ℂ × StrongDual ℂ V ↦ p.1 • p.2).comp
+      ((Complex.continuous_ofReal.comp continuous_fst).prodMk continuous_snd)⟩
   have on_sphere :
       ∀ᶠ r : ℝ × P × StrongDual ℂ V × V × V in nhds (0, b, p), ∀ y ∈ Metric.sphere (0 : ℝ × V) 1,
         (exponent (r.2.1, (y.1 * r.1) • r.2.2) y.2).re + y.1 * r.1 * ‖y.2‖ < y.1 ^ 2 := by
     refine (isCompact_sphere 0 1).eventually_forall_of_forall_eventually fun (s, x) hx ↦
-      ContinuousAt.eventually_lt (by fun_prop) (by fun_prop) ?_
+      ContinuousAt.eventually_lt (by fun_prop) (continuousAt_snd.fst.pow 2) ?_
     -- At `r = (0, b, p)` the left side is `-Re (B x (T b x)) / 2`: negative if `x ≠ 0`, and zero
     -- if `x = 0`, when `s ≠ 0` as `(s, x)` lies on the sphere.
     have h_base : -((B x (T b x)).re / 2) < s ^ 2 := by
@@ -155,8 +161,8 @@ lemma IsAppellHumbert.summable_and_analyticAt_tsum {P : Type*} {b : P} [FinCompl
   have h_analytic_integral :
       AnalyticAt ℂ (fun q ↦ ∫ l, term q l ∂Measure.count) (b, p) :=
     analyticAt_of_eventually_differentiableAt
-      (eventually_differentiableAt_integral (integrable_count_iff.2 g_summable.abs) (by fun_prop)
-        dominated)
+      (eventually_differentiableAt_integral (integrable_count_iff.2 g_summable.abs)
+        (fun _ ↦ .of_discrete) dominated)
   simpa [integral_count_eq_tsum] using h_analytic_integral
 
 /-- Let `L` be a full-rank lattice in a finite-dimensional complex space `V`, and let (B, χ) be
@@ -540,6 +546,8 @@ lemma IsAppellHumbert.relIndex_dualLattice_eq_finrank_end :
   have := hB.finite_dualLattice_quotient
   let h_fintype_quot : Fintype (B.dualLattice ⧸ N) := Fintype.ofFinite (B.dualLattice ⧸ N)
   have h_finite : Module.Finite ℂ (B.thetaSpace χ) := hB.finite_thetaSpace
+  -- Supply `Module.Finite` on endomorphisms directly to avoid slow instance search.
+  have _ : Module.Finite ℂ (End ℂ (B.thetaSpace χ)) := Module.Finite.linearMap ℂ ℂ _ _
   have card_le : card (B.dualLattice ⧸ N) ≤ finrank ℂ (End ℂ (B.thetaSpace χ)) :=
     hB.linearIndependent_thetaShiftEnd_out.fintype_card_le_finrank
   -- A basis of the theta functions gives `n` independent ones, so the `n`-tuples embed.
@@ -622,7 +630,11 @@ lemma IsAppellHumbert.schur_lemma {Q : End ℂ (B.thetaSpace χ)}
   have central (A : End ℂ (B.thetaSpace χ)) : Commute A Q :=
     Commute.span_left (Set.forall_mem_range.mpr h_comm) A
       (hB.span_range_thetaShiftEnd_eq_top.ge mem_top)
-  exact (Algebra.IsCentral.mem_center_iff ℂ).mp (Subring.mem_center_iff.mpr central)
+  -- Supply `Module.Free` directly to avoid slow vector-space freeness search.
+  have _ : Module.Free ℂ (B.thetaSpace χ) := .of_divisionRing ℂ _
+  have ⟨c, _, hc⟩ := Module.End.mem_subsemiringCenter_iff.mp
+    (Subsemiring.mem_center_iff.mpr central)
+  exact ⟨c, hc.trans (LinearMap.ext fun _ ↦ rfl)⟩
 
 /-- For Appell–Humbert data with positive Riemann form, some positive integer `N` multiplies every
 vector of the dual lattice into `L`. -/
@@ -682,7 +694,12 @@ lemma New.IsAppellHumbert.exists_mem_thetaSpace_nsmul_apply_ne_zero (hB : IsAppe
   have h_multiplier (a l : V) :
       (χ ^ m) l * (m • B).riemannPhase l a * (χ l * B.riemannPhase l (-(m : ℝ) • a)) =
         (χ ^ (m + 1)) l := by
-    simp [exp_neg, field, pow_succ]
+    have h_sum : (m • B).riemannForm l a + B.riemannForm l (-(m : ℝ) • a) = 0 := by
+      rw [map_nsmul, LinearMap.smul_apply, LinearMap.smul_apply, nsmul_eq_mul,
+        map_smul, smul_eq_mul, neg_mul, add_neg_cancel]
+    rw [mul_mul_mul_comm, RealComplexForm.riemannPhase, RealComplexForm.riemannPhase,
+      ← Circle.coe_mul, ← AddChar.map_add_eq_mul, h_sum, AddChar.map_zero_eq_one,
+      Circle.coe_one, mul_one, pow_succ, Pi.mul_apply]
   have h_mem (a : V) : thetaShift (m • B) a (f ^ m) * thetaShift B (-(m : ℝ) • a) f ∈
       ((m + 1) • B).thetaSpace (χ ^ (m + 1)) := by
     refine (mul (thetaShift_mem (pow hf m) a) (thetaShift_mem hf _)).imp_right
