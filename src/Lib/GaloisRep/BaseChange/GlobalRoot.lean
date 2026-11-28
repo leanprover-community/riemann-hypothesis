@@ -784,8 +784,7 @@ private lemma New.IsStep.exists_isSelfAdjoint_principalIdele_of_dvd_pow {E E' : 
     {σ : Gal(E'/E)} (hp : p.Prime) (hσ_pow : σ ^ p = 1) (hσ : σ ≠ 1) {q v : E'[X]}
     [Fact (Irreducible q)] [IsCMField (AdjoinRoot q)]
     {θ : (𝔸f E')[X] →ₐ[𝔸f E'] 𝔸f (AdjoinRoot q)} (hθ : θ = aeval (root q : 𝔸f (AdjoinRoot q)))
-    (hθ_surj : Surjective θ)
-    (hθ_dvd : ∀ f : (𝔸f E')[X], q.map (algebraMap E' (𝔸f E')) ∣ f → θ f = 0)
+    (hpres : IsFinAdelePresentation q θ)
     (hθ_star : ∀ f : (𝔸f E')[X],
       θ ((f.map conj).comp (v.map (algebraMap E' (𝔸f E')))) = star (θ f))
     {z : (𝔸f E')[X]} (hz_unit : IsUnit (θ z))
@@ -810,7 +809,7 @@ private lemma New.IsStep.exists_isSelfAdjoint_principalIdele_of_dvd_pow {E E' : 
     X * ((T^[p] 1).map conj).comp (v.map (algebraMap E' (𝔸f E'))) - T^[p] 1 with hD
   have h_pow : θ D ^ m = 0 := by
     rw [← map_pow, hD, norm_eq]
-    exact hθ_dvd _ h_dvd
+    exact (hpres.eq_zero_iff _).2 h_dvd
   have h_zero : θ D = 0 := IsNilpotent.eq_zero ⟨m, h_pow⟩
   have h_norm : root q * star (θ (T^[p] 1)) = θ (T^[p] 1) := by
     rwa [hD, map_sub, map_mul, θ_X, hθ_star, sub_eq_zero] at h_zero
@@ -844,7 +843,7 @@ private lemma New.IsStep.exists_isSelfAdjoint_principalIdele_of_dvd_pow {E E' : 
       exact h_norm.symm
     obtain ⟨y, c, hc, h_adj⟩ :=
       hμ.exists_isSelfAdjoint_of_mem_kerCompNorm g_root adjoinRoot_eq_top _ z_mem h_prod
-    obtain ⟨c, rfl⟩ := hθ_surj c
+    obtain ⟨c, rfl⟩ := hpres.surjective c
     refine ⟨y, c, hc, ?_⟩
     have h_eq : (principalIdele y).val * θ (T^[1] c) =
         (principalIdele y * hz_unit.unit).val * adeleMap g (θ c) := by
@@ -909,11 +908,7 @@ private lemma New.exists_isUnit_aeval_and_isRootQuotient_of_isSelfAdjoint {E E' 
     [∀ q : primeFactors P, IsCMField (AdjoinRoot q.val)]
     (θ : ∀ q : primeFactors P, (𝔸f E')[X] →ₐ[𝔸f E'] 𝔸f (AdjoinRoot q.val))
     (hθ : ∀ q : primeFactors P, θ q = aeval (root q.val : 𝔸f (AdjoinRoot q.val)))
-    (hθ_surj : ∀ q : primeFactors P, Surjective (θ q))
-    (hθ_ker : ∀ (q : primeFactors P) (f : (𝔸f E')[X]),
-      θ q f = 0 ↔ q.val.map (algebraMap E' (𝔸f E')) ∣ f)
-    (hθ_rat : ∀ (q : primeFactors P) (f : E'[X]),
-      θ q (f.map (algebraMap E' (𝔸f E'))) = AdjoinRoot.mk q.val f)
+    (hpres : ∀ q : primeFactors P, IsFinAdelePresentation q.val (θ q))
     (hθ_star : ∀ (q : primeFactors P) (f : (𝔸f E')[X]),
       θ q ((f.map conj).comp (v.map (algebraMap E' (𝔸f E')))) = star (θ q f))
     {σ : Gal(E'/E)} (τ : primeFactors P ≃ primeFactors P)
@@ -932,26 +927,24 @@ private lemma New.exists_isUnit_aeval_and_isRootQuotient_of_isSelfAdjoint {E E' 
   obtain ⟨y, c₀, h_local⟩ :=
     exists_isSelfAdjoint_principalIdele_of_forall_minimalPeriod θ hθ τ hτ hz_unit hT h_hasse
   -- choose `c` and `w` by the Chinese remainder theorem, and an inverse `x'` of `x` modulo each `q`
-  obtain ⟨c, hc⟩ : ∃ c : (𝔸f E')[X], ∀ q : primeFactors P,
-      q.val.map (algebraMap E' (𝔸f E')) ∣ c - c₀ q :=
-    exists_forall_map_dvd_sub (algebraMap E' (𝔸f E')) P c₀
-  obtain ⟨w, hw⟩ : ∃ w : E'[X], ∀ q : primeFactors P,
-      q.val.map (RingHom.id E') ∣ w - (y q).val.out :=
-    exists_forall_map_dvd_sub (RingHom.id E') P fun q ↦ (y q).val.out
+  have congr_iff (q : primeFactors P) (a b : (𝔸f E')[X]) :
+      θ q a = θ q b ↔ q.val.map (algebraMap E' (𝔸f E')) ∣ a - b := by
+    rw [← (hpres q).eq_zero_iff, map_sub, sub_eq_zero]
+  have lift (a : ∀ q : primeFactors P, 𝔸f (AdjoinRoot q.val)) :
+      ∃ c : (𝔸f E')[X], ∀ q, θ q c = a q := by
+    choose b hb using fun q ↦ (hpres q).surjective (a q)
+    obtain ⟨c, hc⟩ := exists_forall_map_dvd_sub (algebraMap E' (𝔸f E')) P b
+    exact ⟨c, fun q ↦ ((congr_iff q _ _).2 (hc q)).trans (hb q)⟩
+  obtain ⟨c, hc_eq⟩ := lift fun q ↦ θ q (c₀ q)
+  obtain ⟨w, hw⟩ := exists_forall_map_dvd_sub (RingHom.id E') P fun q ↦ (y q).val.out
   refine ⟨w, c, fun γ hγ ↦ ?_⟩
   set x : (𝔸f E')[X] := w.map (algebraMap E' (𝔸f E')) * T c with hx
-  obtain ⟨x', hx'⟩ : ∃ x' : (𝔸f E')[X], ∀ q : primeFactors P,
-      q.val.map (algebraMap E' (𝔸f E')) ∣ x' - surjInv (hθ_surj q) (θ q x)⁻¹ʳ :=
-    exists_forall_map_dvd_sub (algebraMap E' (𝔸f E')) P fun q ↦ surjInv (hθ_surj q) (θ q x)⁻¹ʳ
-  -- read the congruences modulo `q` as equalities in `AdjoinRoot q.val` and its adeles
-  have hc_eq (q : primeFactors P) : θ q c = θ q (c₀ q) := by
-    simpa only [← hθ_ker, map_sub, sub_eq_zero] using hc q
+  obtain ⟨x', hx'_eq⟩ := lift fun q ↦ (θ q x)⁻¹ʳ
   have hw_eq (q : primeFactors P) : AdjoinRoot.mk q.val w = (y q).val := by
     have h_mk : AdjoinRoot.mk q.val w = AdjoinRoot.mk q.val (y q).val.out := by
       simpa only [Polynomial.map_id, ← mk_eq_mk] using hw q
     exact h_mk.trans (Quot.out_eq _)
-  have hx'_eq (q : primeFactors P) : θ q x' = (θ q x)⁻¹ʳ := by
-    simpa only [← hθ_ker, map_sub, sub_eq_zero, surjInv_eq] using hx' q
+  have hθ_rat (q : primeFactors P) := (hpres q).apply_map
   have local_prop (q : primeFactors P) :
       IsUnit (θ q x) ∧ IsSelfAdjoint (star (θ q c) * θ q x) := by
     have θ_x : θ q x = (principalIdele (y q)).val * θ q (T c) := by
@@ -961,9 +954,8 @@ private lemma New.exists_isUnit_aeval_and_isRootQuotient_of_isSelfAdjoint {E E' 
   choose x_unit x_adj using local_prop
   -- an identity under all `θ q` holds modulo the radical of `P`, hence at `γ`
   have glue {f f' : (𝔸f E')[X]} (h_eq : ∀ q : primeFactors P, θ q f = θ q f') :
-      aeval γ.val.val f = aeval γ.val.val f' := by
-    refine aeval_eq_of_forall_map_dvd_sub _ hγ fun q hq ↦ (hθ_ker ⟨q, hq⟩ _).mp ?_
-    rw [map_sub, h_eq, sub_self]
+      aeval γ.val.val f = aeval γ.val.val f' :=
+    aeval_eq_of_forall_map_dvd_sub _ hγ fun q hq ↦ (congr_iff ⟨q, hq⟩ _ _).mp (h_eq _)
   -- `P` is a multiple of its radical, so `γ` is a root of `P`
   have hγP : aeval γ.val.val (P.map (algebraMap E' (𝔸f E'))) = 0 :=
     aeval_eq_zero_of_dvd_aeval_eq_zero (Polynomial.map_dvd _ (radical_dvd_self (a := P))) hγ
@@ -1042,11 +1034,6 @@ lemma New.exists_global_root {E E' n : Type} [Field E] [CMType E] [Field E'] [Nu
       IsFinAdelePresentation q.val (θ q) :=
     adjoinRoot_cm_presentation (monic q) (unit_root q)
   choose isCM root_star θ_presents using h_presentation
-  have surj (q : primeFactors P) : Surjective (θ q) := (θ_presents q).surjective
-  have ker (q : primeFactors P) (f : (𝔸f E')[X]) : θ q f = 0 ↔ q.val.map k ∣ f :=
-    (θ_presents q).eq_zero_iff f
-  have θ_rat (q : primeFactors P) (f : E'[X]) : θ q (f.map k) = mk q.val f :=
-    (θ_presents q).apply_map f
   have θ_comp_v_eq_star (q : primeFactors P) (f : (𝔸f E')[X]) :
       θ q ((f.map conj).comp (v.map k)) = star (θ q f) := by
     have h_bezout : mk q.val (v' * P + v * X) = 1 := by rw [hv, map_one]
@@ -1062,7 +1049,7 @@ lemma New.exists_global_root {E E' n : Type} [Field E] [CMType E] [Field E'] [Nu
     obtain ⟨-, hz_roots⟩ := hz
     obtain ⟨h_det, -⟩ := hz_roots γ₀ hγ₀
     exact exists_mem_coe_eq_norm_aeval_of_forall_det_aeval_mem h_det
-      ((ker q _).mpr (map_dvd k (dvd_P q)))
+      (((θ_presents q).eq_zero_iff _).mpr (map_dvd k (dvd_P q)))
   have z_unit (q : primeFactors P) : IsUnit (θ q z) := by
     obtain ⟨d, -, hd_norm⟩ := z_norm q
     exact lmul_isUnit_iff.mp ((LinearMap.isUnit_iff_isUnit_det _).mpr ⟨d, hd_norm⟩)
@@ -1074,11 +1061,11 @@ lemma New.exists_global_root {E E' n : Type} [Field E] [CMType E] [Field E'] [Nu
       obtain h_fix | h_move := eq_or_ne (τ q) q
       · exact .inl ⟨congrArg Subtype.val h_fix, minimalPeriod_eq_one_iff_isFixedPt.mpr h_fix⟩
       · exact .inr (minimalPeriod_eq_prime τ_pow h_move)
-    exact IsStep.exists_isSelfAdjoint_principalIdele_of_dvd_pow hp hσ_pow hσ rfl (surj q)
-      (fun f hf ↦ (ker q f).mpr hf) (θ_comp_v_eq_star q) (z_unit q) (z_norm q) rfl
+    exact IsStep.exists_isSelfAdjoint_principalIdele_of_dvd_pow hp hσ_pow hσ rfl (θ_presents q)
+      (θ_comp_v_eq_star q) (z_unit q) (z_norm q) rfl
       ((map_dvd k (dvd_P q)).trans norm_dvd) h_period
   -- transport along the orbits of `τ`, and glue by the Chinese remainder theorem
-  exact exists_isUnit_aeval_and_isRootQuotient_of_isSelfAdjoint (n := n) hv θ (fun _ ↦ rfl) surj
-    ker θ_rat θ_comp_v_eq_star τ (fun _ ↦ rfl) z_unit T rfl hasse
+  exact exists_isUnit_aeval_and_isRootQuotient_of_isSelfAdjoint (n := n) hv θ (fun _ ↦ rfl)
+    θ_presents θ_comp_v_eq_star τ (fun _ ↦ rfl) z_unit T rfl hasse
 
 end GlobalRoot
