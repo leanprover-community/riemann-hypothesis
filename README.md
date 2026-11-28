@@ -57,6 +57,20 @@ This needs Python 3.11 or newer and curl 7.71 or newer. (No credentials are nece
 
 See [`CACHE.md`](CACHE.md) for details.
 
+## Finding duplicate proofs
+
+Contributors can use [dry-lint](https://github.com/gigaverse-app/dry-lint) to find similar declarations in
+different files under `src/`. From the repository root, run:
+
+```sh
+uvx --from 'dry-lint[lean]>=1.18,<2' dry-lint scan --limit 20
+```
+
+To review changed declarations, replace `scan --limit 20` with `check --base origin/main`.
+After `lake build`, use `lean-upstream --source-root src --dependency .lake/packages/TauCeti/TauCeti`
+to find Tau Ceti docstrings that cite a local declaration. Compare the hypotheses and conclusions
+and check the replacement with Lean.
+
 ## Layout
 
 *For now, this section is copied from https://github.com/lsernau/grh-lean. It may be out of date and is subject to change.*

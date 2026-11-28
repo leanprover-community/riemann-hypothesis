@@ -1,0 +1,6 @@
+include = ["src/*.lean"]
+extractors = [{ use = "lean", min_lines = 5 }]
+judge = "none"
+
+[models]
+enabled = false
