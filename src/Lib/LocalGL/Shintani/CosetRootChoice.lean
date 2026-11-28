@@ -584,13 +584,18 @@ lemma DescendsOnCoset.induce [Finite Γ]
     rw [R.map_conj, h_conj_snd _ _ (R.apply_emb_eq_one v)]
   -- `F` is a class function, so the mean over `δ` of the count at `r δ` times `F δ` is `F γ`
   have h_mean_count : classInner (conjCount π s ∘ r) F = F γ := by
-    -- each `v` contributes `F (v⁻¹ * γ * v) = F γ`
-    have h_sum : ∑ δ : G, conj (conjCount π s (r δ)) * F δ = Nat.card G * F γ := by
-      -- `sum_boole` is left out so that the count stays a sum over `v` and the sums can be swapped;
-      -- `inv_inv` is left out so that `hF_class` matches `v⁻¹ * γ * v⁻¹⁻¹`
-      simp [h_count, apply_ite conj, -sum_boole, sum_comm (γ := G), ← map_inv,
-        hF_class, -inv_inv, sum_mul]
-    simp [classInner, finMean_eq, h_sum, ← Nat.card_eq_fintype_card, Nat.card_pos.ne']
+    -- For each `v`, the indicator selects one conjugate of `γ`.
+    have h_term (v : G) :
+        finMean (fun δ : G ↦ if δ = (MulAut.conj v)⁻¹ • γ then F δ else 0) =
+          F γ / Nat.card G := by
+      have h_value : F ((MulAut.conj v)⁻¹ • γ) = F γ := by
+        rw [← map_inv]
+        exact hF_class γ v⁻¹
+      simp only [finMean_eq, sum_ite_eq', mem_univ, ite_true, h_value, Nat.card_eq_fintype_card]
+    simp only [classInner, comp_apply, h_count, map_sum, apply_ite conj, map_one, map_zero,
+      sum_mul, ite_mul, one_mul, zero_mul, finMean_sum, h_term]
+    rw [sum_const, card_univ, nsmul_eq_mul, ← Nat.card_eq_fintype_card, ← mul_div_assoc,
+      mul_div_cancel_left₀ _ (Nat.cast_ne_zero.mpr Nat.card_pos.ne')]
   calc induceClassFn π ρ h s
       = classInner ((conjCount π s ∘ r) ∘ ρ₀) f := h_induce
     _ = conj (classInner f ((conjCount π s ∘ r) ∘ ρ₀)) := (conj_classInner _ _).symm
