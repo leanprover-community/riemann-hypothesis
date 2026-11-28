@@ -69,6 +69,7 @@ def coboundaryZ1 (hρ : ∀ m : M, Continuous fun g : G ↦ ρ g m) : M →ₗ[R
   (coboundaryMap ρ).codRestrict (Z1 ρ) fun m ↦
     ⟨(hρ m).sub continuous_const, fun g h ↦ by simp [map_sub]⟩
 
+/-- The value of the coboundary 1-cocycle `coboundaryZ1 hρ m` at `g` is `ρ g m - m`. -/
 lemma coe_coboundaryZ1_apply (hρ : ∀ m : M, Continuous fun g : G ↦ ρ g m) (m : M) (g : G) :
     (coboundaryZ1 hρ m : G → M) g = ρ g m - m :=
   rfl
@@ -103,6 +104,7 @@ variable (ρ) in
 def vanishingAt (γ : G) : Submodule R (Z1 ρ) :=
   LinearMap.ker ((LinearMap.proj γ).comp (Z1 ρ).subtype)
 
+/-- A 1-cocycle `z` lies in `vanishingAt ρ γ` iff its evaluation at `γ` is zero. -/
 @[simp]
 lemma mem_vanishingAt {γ : G} {z : Z1 ρ} : z ∈ vanishingAt ρ γ ↔ (z : G → M) γ = 0 :=
   Iff.rfl
