@@ -323,7 +323,7 @@ lemma polyMatrixCoeff_paddedMinorProd (γ : D.Φ → ℤ) (h : GInf D.E (1 ⊕�
     ext w (_ | _)
     · simp [ν, holomorphicWeight]
     · simp [holomorphicWeight, ↓card_rowIndex]
-      grind
+      have := j.property.2; omega
   have antiholomorphicWeight_eq : antiholomorphicWeight j = fun (w : D.Φ) (i : D.CarrierIndex) ↦
       if (1 ⊕ᵥ -1 : _ → ℤˣ) i = 1 then (0 : ℤ) else κ w + D.m := by
     ext w (_ | _)
@@ -353,10 +353,11 @@ lemma flatKernelWeight_antiholomorphicWeight_bounds (o : D.CarrierIndex → ℤ)
     lia
   · simp [antiholomorphicWeight, -Nat.cast_sum, HasHolGap]
     grind [reducedHalfGap]
-  · have h_le : D.m ≤ card (FirstFactorIndex j) := by grind [card_firstFactorIndex j]
+  · have h_le : D.m ≤ card (FirstFactorIndex j) := by rw [card_firstFactorIndex]; omega
     grw [← two_mul_card_detIndex_add_le j w]
     norm_cast
-    cases i <;> simp [antiholomorphicWeight, -card_sum] <;> grind
+    cases i <;> simp [antiholomorphicWeight, -card_sum] <;>
+      [omega; (rw [abs_of_nonneg (by positivity)]; omega)]
 
 /-- The character `carrierChar j` of the kernels on `(S, W̃)` and `(S, W̃ ⊕ W♭)` has weight
 `m - μ₁⁺`, with `μ₁⁺ = #(DetIndex j w)` at the place `w`, and trivial tame part. -/
@@ -364,7 +365,7 @@ lemma carrierChar_hasWeight_sub_card :
     (carrierChar j).HasWeight (fun w : D.Φ ↦ D.m - card (DetIndex j w)) 1 := by
   have h_weight (w : D.Φ) :
       (D.m : ℤ) - card (DetIndex j w) = (D.m + firstFactorCharExp j : ℕ) - D.liftWeight j w := by
-    grind [card_detIndex_add_firstFactorCharExp j w]
+    have := card_detIndex_add_firstFactorCharExp j w; omega
   simpa only [h_weight] using carrierChar_hasWeight j
 
 variable (D) in
@@ -383,7 +384,7 @@ lemma exists_isPeak_carrierForm {o : D.CarrierIndex → ℤ} (ho : IsPosFirstOrd
   obtain ⟨g₁, hg₁⟩ := exists_isPeak_of_mem_rapidOfLevel (h_level 1) carrierForm_ne_zero
   have h_gap (w : D.Φ) : HasHolGap (1 ⊕ᵥ -1) (0 ⊕ᵥ 3 * D.m : D.CarrierIndex → ℤ) 1 := by
     simp [HasHolGap]
-    grind
+    have := D.ten_thousand_le_m; omega
   have h_wt (w : D.Φ) :
       ∀ i : D.CarrierIndex, |((0 ⊕ᵥ 3 * D.m : D.CarrierIndex → ℤ) i : ℝ)| ≤ 5 * D.b := by
     simpa [Real.exp_nonneg] using D.le_of_hasLogBound
@@ -544,7 +545,8 @@ the `3 m` indices of the padding. -/
 lemma card_carrierIndex_le_and_card_sum_padIndex_le :
     card D.CarrierIndex ≤ D.t ∧ card (D.RowIndex ⊕ PadIndex j) ≤ D.t := by
   simp [↓card_rowIndex]
-  grind
+  have := D.hundred_mul_m_add_nine_lt_k
+  have := D.r_add_one; have := D.t_eq_five_mul_r; have := j.property.2; omega
 
 /-- Let `f` be holomorphic of weight `(0; 3 m)` on the real group of the space `S` of signature
 `(2 m, m)`, for an order `o` with the signs `+1` first. Let `1 ≤ j ≤ m` and let `W̃` be the padded
@@ -586,7 +588,7 @@ lemma integral_mul_polyMatrixCoeff_paddedMinorProd {o : D.CarrierIndex → ℤ}
       (fun _ ↦ (0 ⊕ᵥ 3 * D.m : D.CarrierIndex → ℤ)) + flatKernelWeight D +
         holomorphicWeight j := by
     ext w (_ | _) <;> simp [antiholomorphicWeight, flatKernelWeight, holomorphicWeight, -card_sum]
-    grind [card_firstFactorIndex j]
+    have := card_firstFactorIndex j; omega
   have h_const : IsHolOfWeight (1 ⊕ᵥ -1) o (holomorphicWeight j) fun h ↦ cP 1 1 * m₂ h := by
     simpa using IsHolOfWeight.sum (T := {()}) (fun _ : Unit ↦ cP 1 1)
       fun _ ↦ isHolOfWeight_holMinorsPi ho h_dom₂
@@ -803,7 +805,7 @@ lemma integral_mul_sum_choiceFn_eq_zero (F : D.goodForms (D.spaceW j))
     mul_choiceFn_mem_rapidOfLevel F i
   have rank_lt : 2 * card D.RowIndex < card D.SecondFactorIndex := by
     rw [D.card_rowIndex, card_sum, D.card_rowIndex, Fintype.card_fin, D.t_eq_five_mul_r]
-    grind [D.hundred_mul_m_add_nine_lt_k, D.r_add_one]
+    have := D.hundred_mul_m_add_nine_lt_k; have := D.r_add_one; omega
   -- Reproduction on `(W_j, V°)`, for the basis polynomials `Q` in the negative letters; their span
   -- holds the translates of the highest vector.
   let Q := fockLetters (D.signsW j) (untwistedDescentPair j).numbering (-1) ∘
@@ -820,9 +822,13 @@ lemma integral_mul_sum_choiceFn_eq_zero (F : D.goodForms (D.spaceW j))
     (fun _ _ ↦ by
       -- `letterPoly` is `fockLetters` after `toPoly`.
       rw [letterPoly, LinearMap.comp_apply, AlgHom.toLinearMap_apply, realPairWeil_fockLetters]
-      -- The translate of a `toPoly` is a combination of the `Q`; `clear` keeps the search short.
-      clear * -
-      aesop (add safe sum_mem, simp [Q, toPoly, linearCombination_apply])) g
+      -- The translate of a `toPoly` is a combination of the `Q`.
+      simp only [toPoly, LinearMap.comp_apply, linearCombination_apply,
+        ← sum_schur_smul_nablaBasis FitsRanks.refl, schurDetExp_self, detPow_zero,
+        mul_one, map_sum, map_smul]
+      exact Submodule.sum_mem _ fun i _ ↦ Submodule.smul_mem _ _
+        (Submodule.sum_mem _ fun k _ ↦ Submodule.smul_mem _ _
+          (Submodule.subset_span ⟨k, rfl⟩))) g
   refine (repro _ (mul_sum_mem_rapidOfLevel prod_level)).trans
     (sum_eq_zero fun p _ ↦ mul_eq_zero_of_right _ ?_)
   -- The pairing of `F ∑ c_i F_i` with a kernel is a combination of the pairings of the `F F_i`,
@@ -872,7 +878,7 @@ theorem eq_zero_of_integral_choiceFn_thetaKernelPairing (F : D.goodForms (D.spac
   -- Suppose `F ≠ 0`. The peaks of `conj F` lie away from the cusp, where a combination of the
   -- `F_i` is close to a fixed `F₀`. Then `norm_apply_one_le_of_forall_isPeak` makes `F₀ 1` too
   -- small.
-  have h_rank : card D.RowIndex ≤ D.t := by grind [D.card_rowIndex, D.t_eq_five_mul_r]
+  have h_rank : card D.RowIndex ≤ D.t := by rw [D.card_rowIndex, D.t_eq_five_mul_r]; omega
   obtain ⟨F₀, C, F₀_ne, F₀_le, near⟩ := exists_choiceFn_approx j
   suffices h_star : star (F : New.G D.E (D.signsW j) → ℂ) = 0 from
     Subtype.ext (Subtype.ext (Subtype.ext (star_eq_zero.1 h_star)))
