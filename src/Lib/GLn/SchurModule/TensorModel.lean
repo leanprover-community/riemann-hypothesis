@@ -131,17 +131,7 @@ end Tensors
 section Action
 
 variable {Φ R : Type} [CommRing R] {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] {κ : Φ → ℕ → ℕ}
-  [Fintype Φ]
 
-/-- The action `minorsMatrix` of transposed matrices on tensors is the transpose of the action. -/
-lemma minorsMatrix_transpose (z : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
-    minorsMatrix κ (fun τ : Φ ↦ (z τ)ᵀ) = (minorsMatrix κ z)ᵀ := by
-  ext T T'
-  simp only [minorsMatrix, of_apply, transpose_apply, ← transpose_submatrix, det_transpose]
-
-variable [DecidableEq Φ]
-
-omit [DecidableEq Φ] [Fintype Φ] in
 /-- Substituting `z y` for the variables `y` in the minor with rows `J` at the place `τ` gives the
 sum, over increasing row numbers `I`, of the minor of `z τ` with rows `J` and columns `I` times the
 minor of `y` with rows `I`. -/
@@ -152,6 +142,16 @@ lemma rowSubst_minor_comp_sigmaMk (z : ∀ τ : Φ, Matrix (n τ) (n τ) R) (τ 
         minor R (Sigma.mk τ ∘ (rowEquivFin n τ).symm ∘ I.val) := by
   refine Eq.trans ?_ (det_sum_smul_X τ ((z τ).submatrix J id))
   simp [minor, AlgHom.map_det, rowSubst, Matrix.map]
+
+variable [Fintype Φ]
+
+/-- The action `minorsMatrix` of transposed matrices on tensors is the transpose of the action. -/
+lemma minorsMatrix_transpose (z : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
+    minorsMatrix κ (fun τ : Φ ↦ (z τ)ᵀ) = (minorsMatrix κ z)ᵀ := by
+  ext T T'
+  simp only [minorsMatrix, of_apply, transpose_apply, ← transpose_submatrix, det_transpose]
+
+variable [DecidableEq Φ]
 
 /-- For a family of tableaux `U`, substituting `z y` for the variables `y` in the product of the
 minors on the columns of `U` gives the sum over column fillings `T` of the product of minors
@@ -179,7 +179,7 @@ end Action
 section Embedding
 
 variable {Φ R : Type} [CommRing R] {n : Φ → Type} [∀ τ : Φ, Fintype (n τ)] {κ : Φ → ℕ → ℕ}
-  [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)]
+  [Fintype Φ] [DecidableEq Φ]
 
 variable (n κ) in
 /-- The integral matrix of the embedding of the Weyl module into tensors: row `T` holds the
@@ -196,6 +196,8 @@ omit [(τ : Φ) → DecidableEq (n τ)] in
 lemma fillingMatrixOver_int : fillingMatrixOver ℤ n κ = fillingMatrix n κ := by
   ext T i
   simp
+
+variable [∀ τ : Φ, DecidableEq (n τ)]
 
 /-- For a column filling `T` (an increasing sequence of rows in each column of the diagram `κ`), the
 row `T` of the embedding `fillingMatrixOver` of the Weyl module into tensors is the coordinate

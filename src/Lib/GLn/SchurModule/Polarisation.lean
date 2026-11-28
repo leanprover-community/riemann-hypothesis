@@ -64,14 +64,68 @@ open Matrix MvPolynomial Submodule Fintype ComplexOrder New.GL
 
 namespace New
 
-variable {Φ n : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n] {κ : Φ → ℕ → ℕ}
+variable {Φ n : Type} [Fintype Φ] [Fintype n] {κ : Φ → ℕ → ℕ}
+
+variable {p : Type} [Fintype p] [DecidableEq p] {ι : Φ → Type} [∀ τ : Φ, Fintype (ι τ)]
+
+/-- An algebra map `φ` carries `pairedDetProd Y η`, the product over `τ` and `k` of the
+`det (η τ k * Y τ)`, to the same product for the images of the matrices `Y τ` under `φ`. -/
+lemma map_pairedDetProd {S S' : Type} [CommRing S] [Algebra ℂ S] [CommRing S'] [Algebra ℂ S']
+    (φ : S →ₐ[ℂ] S') (Y : Φ → n → p → S) (η : (τ : Φ) → ι τ → Matrix p n ℂ) :
+    φ (pairedDetProd Y η) = pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ φ (Y τ i k)) η := by
+  simp [pairedDetProd, det_apply', Matrix.mul_apply]
+
+/-- Let `card p < card n` and let `Y τ` be the `n × p` matrix formed by the first `card p` columns
+of the variables at `τ`, numbered by `equivFin p`. The product `pairedDetProd Y η` of the
+`det (η τ k * Y τ)` lies in the module `New.nablaFamily` of Borel semi-invariants whose diagram at
+`τ` has `card (ι τ)` columns of height `card p`. -/
+lemma pairedDetProd_mem_nablaFamily (hp : card p < card n) (η : (τ : Φ) → ι τ → Matrix p n ℂ) :
+    pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ X (⟨τ, i⟩, (equivFin p k : ℕ))) η ∈
+      nablaFamily ℂ (fun _ : Φ ↦ n) fun τ : Φ ↦ Pi.single (card p) (card (ι τ)) := by
+  -- By the Cauchy–Binet formula each factor is a combination of maximal minors of `Y τ`.
+  let Y (τ : Φ) (i : n) (k : p) : MatrixPoly (Σ _ : Φ, n) ℂ := X (⟨τ, i⟩, (equivFin p k : ℕ))
+  have h_factor (τ : Φ) (c : Matrix p n ℂ) :
+      (c.map (algebraMap ℂ (MatrixPoly (Σ _ : Φ, n) ℂ)) * of (Y τ)).det ∈
+        nabla ℂ (Sigma.fst (β := fun _ : Φ ↦ n))
+          (∑ i ∈ Finset.range (card p), Finsupp.single (τ, i) 1) := by
+    have h_det : (c.map (algebraMap ℂ (MatrixPoly (Σ _ : Φ, n) ℂ)) * of (Y τ)).det =
+        (of fun s t : Fin (card p) ↦ ∑ i : n, c.submatrix (equivFin p).symm id s i •
+          X (R := ℂ) ((⟨τ, i⟩ : Σ _ : Φ, n), (t : ℕ))).det := by
+      rw [← det_submatrix_equiv_self (equivFin p).symm]
+      simp [Y, Matrix.mul_apply, smul_eq_C_mul, Matrix.submatrix]
+    rw [h_det, det_sum_smul_X]
+    exact sum_mem fun I _ ↦ smul_mem _ _ (minor_mem_nabla fun _ ↦ rfl)
+  have h_weight :
+      diagramWeight (rankAt fun _ : Φ ↦ n) (fun τ : Φ ↦ Pi.single (card p) (card (ι τ))) =
+        ∑ τ : Φ, ∑ _k : ι τ, ∑ i ∈ Finset.range (card p), Finsupp.single (τ, i) 1 := by
+    simp [diagramWeight, Pi.single_apply, hp]
+  rw [nablaFamily, h_weight]
+  -- Semi-invariants multiply and their weights add.
+  exact SetLike.prod_mem_graded _ _ _ fun τ _ ↦
+    SetLike.prod_mem_graded _ _ _ fun k _ ↦ h_factor τ (η τ k)
+
+/-- Let `Y τ` be the `n × p` matrix formed by the first `card p` columns of the variables at `τ`,
+numbered by `equivFin p`. The substitution `rowSubst z` of `z y` for `y` takes `pairedDetProd Y η`,
+the product of the `det (η τ k * Y τ)`, to the product of the `det (η τ k * z τ * Y τ)`. -/
+lemma rowSubst_pairedDetProd_X (z : Φ → Matrix n n ℂ) (η : (τ : Φ) → ι τ → Matrix p n ℂ) :
+    rowSubst z (pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ X (⟨τ, i⟩, (equivFin p k : ℕ))) η) =
+      pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ X (⟨τ, i⟩, (equivFin p k : ℕ)))
+        fun (τ : Φ) (k : ι τ) ↦ η τ k * z τ := by
+  rw [map_pairedDetProd]
+  simp only [pairedDetProd, Matrix.map_mul, Matrix.mul_assoc]
+  congr! 4
+  -- Entry by entry, the substitution takes the matrix `Y τ` of variables to `z τ * Y τ`.
+  ext : 2
+  simp [rowSubst, Matrix.mul_apply, smul_eq_C_mul]
+
+variable [DecidableEq n]
 
 /-- The representation `New.conjWeylRep κ e` of the product over `Φ` of copies of U(n) (`USign 1`),
 acting on complex coordinate vectors `WeylIndex n κ → ℂ` (`WeylIndex n κ` indexes a basis of the
 Weyl module below, whose dimension is `card (WeylIndex n κ)`) by the matrices `New.conjWeylMatrix`,
 is irreducible: the translates of any non-zero vector `v` span the whole space. This is the Weyl
 module with `κ τ h` columns of height `h` at `τ`, twisted by the powers `e` of the determinants. -/
-lemma span_conjWeylRep_eq_top (e : Φ → ℤ) {v : WeylIndex n κ → ℂ} (hv : v ≠ 0) :
+lemma span_conjWeylRep_eq_top [DecidableEq Φ] (e : Φ → ℤ) {v : WeylIndex n κ → ℂ} (hv : v ≠ 0) :
     span ℂ (Set.range fun x : Φ → USign (1 : n → ℤˣ) ↦ conjWeylRep κ e x v) = ⊤ := by
   -- If `w` is outside the span, some linear form `f` kills all translates of `v` and has `f w ≠ 0`.
   -- By Schur orthogonality `(dim ρ)⁻¹ ⟨v, v⟩ f w` is the integral of `f (ρ(x) v) ⟨v, ρ(x⁻¹) w⟩`.
@@ -84,7 +138,6 @@ lemma span_conjWeylRep_eq_top (e : Φ → ℤ) {v : WeylIndex n κ → ℂ} (hv 
     simp [-card_pi, ← schur_orthogonality e f v w v, h_kill]
   simp [-card_pi, h_norm, hf_ne] at h_zero
 
-omit [DecidableEq Φ] in
 /-- The module `New.nablaFamily` of Borel semi-invariant polynomials of weight `κ` is irreducible
 under U(n)^Φ: if `f` is a non-zero member (a polynomial in `MatrixPoly (Σ _ : Φ, n) ℂ`, whose
 variables are `X (⟨τ, i⟩, t)` with row `(τ, i)` and column `t : ℕ`), each member `g` is a linear
@@ -118,62 +171,6 @@ lemma mem_span_rowSubst_unitary {f g : MatrixPoly (Σ _ : Φ, n) ℂ}
   rintro _ ⟨-, ⟨x, rfl⟩, rfl⟩
   exact ⟨bar ∘ x, (h_translate x).symm⟩
 
-variable {p : Type} [Fintype p] [DecidableEq p] {ι : Φ → Type} [∀ τ : Φ, Fintype (ι τ)]
-
-omit [DecidableEq Φ] [DecidableEq n] in
-/-- An algebra map `φ` carries `pairedDetProd Y η`, the product over `τ` and `k` of the
-`det (η τ k * Y τ)`, to the same product for the images of the matrices `Y τ` under `φ`. -/
-lemma map_pairedDetProd {S S' : Type} [CommRing S] [Algebra ℂ S] [CommRing S'] [Algebra ℂ S']
-    (φ : S →ₐ[ℂ] S') (Y : Φ → n → p → S) (η : (τ : Φ) → ι τ → Matrix p n ℂ) :
-    φ (pairedDetProd Y η) = pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ φ (Y τ i k)) η := by
-  simp [pairedDetProd, det_apply', Matrix.mul_apply]
-
-omit [DecidableEq Φ] [DecidableEq n] in
-/-- Let `card p < card n` and let `Y τ` be the `n × p` matrix formed by the first `card p` columns
-of the variables at `τ`, numbered by `equivFin p`. The product `pairedDetProd Y η` of the
-`det (η τ k * Y τ)` lies in the module `New.nablaFamily` of Borel semi-invariants whose diagram at
-`τ` has `card (ι τ)` columns of height `card p`. -/
-lemma pairedDetProd_mem_nablaFamily (hp : card p < card n) (η : (τ : Φ) → ι τ → Matrix p n ℂ) :
-    pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ X (⟨τ, i⟩, (equivFin p k : ℕ))) η ∈
-      nablaFamily ℂ (fun _ : Φ ↦ n) fun τ : Φ ↦ Pi.single (card p) (card (ι τ)) := by
-  -- By the Cauchy–Binet formula each factor is a combination of maximal minors of `Y τ`.
-  let Y (τ : Φ) (i : n) (k : p) : MatrixPoly (Σ _ : Φ, n) ℂ := X (⟨τ, i⟩, (equivFin p k : ℕ))
-  have h_factor (τ : Φ) (c : Matrix p n ℂ) :
-      (c.map (algebraMap ℂ (MatrixPoly (Σ _ : Φ, n) ℂ)) * of (Y τ)).det ∈
-        nabla ℂ (Sigma.fst (β := fun _ : Φ ↦ n))
-          (∑ i ∈ Finset.range (card p), Finsupp.single (τ, i) 1) := by
-    have h_det : (c.map (algebraMap ℂ (MatrixPoly (Σ _ : Φ, n) ℂ)) * of (Y τ)).det =
-        (of fun s t : Fin (card p) ↦ ∑ i : n, c.submatrix (equivFin p).symm id s i •
-          X (R := ℂ) ((⟨τ, i⟩ : Σ _ : Φ, n), (t : ℕ))).det := by
-      rw [← det_submatrix_equiv_self (equivFin p).symm]
-      simp [Y, Matrix.mul_apply, smul_eq_C_mul, Matrix.submatrix]
-    rw [h_det, det_sum_smul_X]
-    exact sum_mem fun I _ ↦ smul_mem _ _ (minor_mem_nabla fun _ ↦ rfl)
-  have h_weight :
-      diagramWeight (rankAt fun _ : Φ ↦ n) (fun τ : Φ ↦ Pi.single (card p) (card (ι τ))) =
-        ∑ τ : Φ, ∑ _k : ι τ, ∑ i ∈ Finset.range (card p), Finsupp.single (τ, i) 1 := by
-    simp [diagramWeight, Pi.single_apply, hp]
-  rw [nablaFamily, h_weight]
-  -- Semi-invariants multiply and their weights add.
-  exact SetLike.prod_mem_graded _ _ _ fun τ _ ↦
-    SetLike.prod_mem_graded _ _ _ fun k _ ↦ h_factor τ (η τ k)
-
-omit [DecidableEq Φ] [DecidableEq n] in
-/-- Let `Y τ` be the `n × p` matrix formed by the first `card p` columns of the variables at `τ`,
-numbered by `equivFin p`. The substitution `rowSubst z` of `z y` for `y` takes `pairedDetProd Y η`,
-the product of the `det (η τ k * Y τ)`, to the product of the `det (η τ k * z τ * Y τ)`. -/
-lemma rowSubst_pairedDetProd_X (z : Φ → Matrix n n ℂ) (η : (τ : Φ) → ι τ → Matrix p n ℂ) :
-    rowSubst z (pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ X (⟨τ, i⟩, (equivFin p k : ℕ))) η) =
-      pairedDetProd (fun (τ : Φ) (i : n) (k : p) ↦ X (⟨τ, i⟩, (equivFin p k : ℕ)))
-        fun (τ : Φ) (k : ι τ) ↦ η τ k * z τ := by
-  rw [map_pairedDetProd]
-  simp only [pairedDetProd, Matrix.map_mul, Matrix.mul_assoc]
-  congr! 4
-  -- Entry by entry, the substitution takes the matrix `Y τ` of variables to `z τ * Y τ`.
-  ext : 2
-  simp [rowSubst, Matrix.mul_apply, smul_eq_C_mul]
-
-omit [DecidableEq Φ] in
 /-- Polarisation. Let `card p < card n`, and let `η₀` be the `p × n` matrix whose row `k` is the
 standard basis vector at `r k`, for an injective `r`. For all complex `p × n` matrices `η τ k`, the
 product `pairedDetProd Y η` of the `det (η τ k * Y τ)` is a finite combination of the products

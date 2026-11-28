@@ -165,16 +165,24 @@ open MeasureTheory Matrix ComplexConjugate Finset Fintype Fin Norms.Operator New
 
 namespace New
 
-variable {Φ n : Type} [Fintype Φ] [DecidableEq Φ] [Fintype n] [DecidableEq n]
+variable {Φ n : Type} [Fintype Φ] [Fintype n]
   {κ : Φ → ℕ → ℕ} {e : Φ → ℤ} {l : Φ → n → ℤ} {s : n → ℤˣ}
 
-/-- The index type `WeylIndex n κ` is never empty: it indexes the coordinates of a vector of norm
-one. -/
-instance : Nonempty (WeylIndex n κ) := by
-  by_contra! h_empty
-  simpa [weylNormSq] using weylNormSq_weylEval_permArray (κ := κ) (rowEquivFin fun _ ↦ n)
+/-- For injective l, the position in decreasing order is a bijection onto {0, …, |n| − 1}, and
+that for −l is the reversed one. -/
+lemma exists_equiv_decreasingPosition {l : n → ℤ} (hl : l.Injective) :
+    ∃ e : n ≃ Fin (Fintype.card n), ∀ a : n,
+      decreasingPosition l a = e a ∧ decreasingPosition (-l) a = (e a).rev := by
+  -- Enumerate `n` by `e` in the decreasing order of `l`; then `a` indices precede `e a` and
+  -- `card n - 1 - a` follow it.
+  obtain ⟨e, he⟩ : ∃ e : Fin (card n) ≃ n, ∀ a b, l (e b) < l (e a) ↔ a < b := by
+    simpa using exists_equiv_fin_lt_iff (neg_injective.comp hl)
+  refine ⟨e.symm, e.forall_congr_right.1 fun a ↦ ?_⟩
+  simp [decreasingPosition, card_filter, ← e.sum_comp, filter_gt_eq_Iio, he, filter_lt_eq_Ioi,
+    Nat.sub_sub, add_comm 1]
 
-omit [DecidableEq Φ] in
+variable [DecidableEq n]
+
 /-- For any integer labels `l w : n → ℤ` of the rows at each place `w`, `highestVector κ l` is the
 complex evaluation vector of weight `κ` at the array whose block `w` has entry 1 in row `a` exactly
 at column `#{j : l w j > l w a}`, and 0 elsewhere. This highest vector has real (integer)
@@ -183,6 +191,14 @@ lemma star_highestVector : star (highestVector κ l) = highestVector κ l := by
   refine (star_weylEval _).trans ?_
   rcongr
   simp [permArray]
+
+variable [DecidableEq Φ]
+
+/-- The index type `WeylIndex n κ` is never empty: it indexes the coordinates of a vector of norm
+one. -/
+instance : Nonempty (WeylIndex n κ) := by
+  by_contra! h_empty
+  simpa [weylNormSq] using weylNormSq_weylEval_permArray (κ := κ) (rowEquivFin fun _ ↦ n)
 
 /-- The form `gramForm` is hermitian: swapping the arguments conjugates the value. -/
 lemma conj_gramForm (ξ η : WeylIndex n κ → ℂ) : conj (gramForm ξ η) = gramForm η ξ :=
@@ -196,20 +212,6 @@ lemma ext_gramForm_left {ξ η : WeylIndex n κ → ℂ}
     rw [← gramForm_apply, map_sub, h, sub_self]
   by_contra h_ne
   exact (weylGramOver_posDef.dotProduct_mulVec_pos (sub_ne_zero.2 h_ne)).ne' h_self
-
-omit [DecidableEq n] in
-/-- For injective l, the position in decreasing order is a bijection onto {0, …, |n| − 1}, and
-that for −l is the reversed one. -/
-lemma exists_equiv_decreasingPosition {l : n → ℤ} (hl : l.Injective) :
-    ∃ e : n ≃ Fin (Fintype.card n), ∀ a : n,
-      decreasingPosition l a = e a ∧ decreasingPosition (-l) a = (e a).rev := by
-  -- Enumerate `n` by `e` in the decreasing order of `l`; then `a` indices precede `e a` and
-  -- `card n - 1 - a` follow it.
-  obtain ⟨e, he⟩ : ∃ e : Fin (card n) ≃ n, ∀ a b, l (e b) < l (e a) ↔ a < b := by
-    simpa using exists_equiv_fin_lt_iff (neg_injective.comp hl)
-  refine ⟨e.symm, e.forall_congr_right.1 fun a ↦ ?_⟩
-  simp [decreasingPosition, card_filter, ← e.sum_comp, filter_gt_eq_Iio, he, filter_lt_eq_Ioi,
-    Nat.sub_sub, add_comm 1]
 
 /-- For each vector `ξ`, the map `g ↦ conjWeylRep κ e g ξ` is continuous on the product of unitary
 groups of signs `s`. -/

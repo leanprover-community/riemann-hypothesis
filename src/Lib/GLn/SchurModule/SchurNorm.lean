@@ -66,9 +66,40 @@ namespace New
 
 open Finset Matrix ComplexOrder MatrixOrder «GL» Complex
 
-variable {Φ : Type} [Fintype Φ] [DecidableEq Φ]
-  {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] [∀ τ : Φ, DecidableEq (n τ)]
-  [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)] {κ : Φ → ℕ → ℕ}
+variable {Φ : Type} {n n' : Φ → Type} [∀ τ : Φ, Fintype (n τ)] {κ : Φ → ℕ → ℕ}
+
+/-- The rows in one column of a column filling are distinct. -/
+lemma fillingRows_injective (T : ColumnFilling n κ) (τ : Φ) (h : Fin (rankAt n τ))
+    (j : Fin (κ τ h)) : Function.Injective (fillingRows T τ h j) :=
+  (rowEquivFin n τ).symm.injective.comp (T τ h j).property.injective
+
+variable [Fintype Φ] [∀ τ : Φ, DecidableEq (n τ)]
+
+/-- Diagonal matrices act diagonally on tensors: `minorsMatrix` multiplies the basis tensor of a
+column filling `T` by the product of the diagonal entries at the rows that occur in `T`. -/
+lemma minorsMatrix_diagonal {R : Type} [CommRing R] (x : ∀ τ : Φ, n τ → R)
+    [DecidableEq (ColumnFilling n κ)] :
+    minorsMatrix κ (fun τ : Φ ↦ diagonal (x τ)) =
+      diagonal fun T : ColumnFilling n κ ↦ ∏ τ : Φ, ∏ h : Fin (rankAt n τ), ∏ j : Fin (κ τ h),
+        ∏ s : Fin h, x τ (fillingRows T τ h j s) := by
+  ext T T'
+  rw [minorsMatrix, of_apply, diagonal_apply]
+  split_ifs with h_eq
+  · subst h_eq
+    simp [submatrix_diagonal _ _ (fillingRows_injective T _ _ _)]
+  · -- Two different increasing sequences have different ranges, so that minor has a zero line.
+    obtain ⟨τ, h, j, h_ne⟩ : ∃ τ h j, T τ h j ≠ T' τ h j := by simpa [funext_iff] using h_eq
+    have h_range : Set.range (T τ h j).val ≠ Set.range (T' τ h j).val :=
+      mt ((T τ h j).2.range_inj_of_wellFoundedLT (T' τ h j).2).1 (Subtype.coe_ne_coe.2 h_ne)
+    refine prod_eq_zero (mem_univ τ) (prod_eq_zero (mem_univ h) (prod_eq_zero (mem_univ j) ?_))
+    simp only [Ne, Set.Subset.antisymm_iff, not_and_or, Set.range_subset_iff, not_forall] at h_range
+    obtain ⟨s, hs⟩ | ⟨t, ht⟩ := h_range
+    · exact det_eq_zero_of_row_eq_zero s fun t ↦
+        diagonal_apply_ne _ fun h_row ↦ hs ⟨t, ((Equiv.injective _) h_row).symm⟩
+    · exact det_eq_zero_of_column_eq_zero t fun s ↦
+        diagonal_apply_ne _ fun h_row ↦ ht ⟨s, (Equiv.injective _) h_row⟩
+
+variable [DecidableEq Φ] [∀ τ : Φ, Fintype (n' τ)] [∀ τ : Φ, DecidableEq (n' τ)]
 
 /-- The adjoint formula: let `w`, `z` be families of complex `n' τ × n τ` matrices, and assume
 `FitsRanks n n' κ`: at each `τ`, `#(n τ) ≤ #(n' τ)` and `κ τ h = 0` for `#(n τ) < h < #(n' τ)`. Let
@@ -126,37 +157,6 @@ lemma exists_enum_prod_le {ι : Type*} [DecidableEq ι] (d : ι → NNReal) (S :
             h_max c ((mem_insert.mp (h_A_subset hc)).resolve_left fun hca ↦ haA (hca ▸ hc))⟩
       rw [← prod_erase_mul A d hb, ← card_erase_add_one hb, prod_range_succ']
       exact mul_le_mul' (h_prod _ h_sub) h_le
-
-omit [Fintype Φ] [DecidableEq Φ] [∀ τ : Φ, DecidableEq (n τ)] in
-/-- The rows in one column of a column filling are distinct. -/
-lemma fillingRows_injective (T : ColumnFilling n κ) (τ : Φ) (h : Fin (rankAt n τ))
-    (j : Fin (κ τ h)) : Function.Injective (fillingRows T τ h j) :=
-  (rowEquivFin n τ).symm.injective.comp (T τ h j).property.injective
-
-omit [DecidableEq Φ] in
-/-- Diagonal matrices act diagonally on tensors: `minorsMatrix` multiplies the basis tensor of a
-column filling `T` by the product of the diagonal entries at the rows that occur in `T`. -/
-lemma minorsMatrix_diagonal {R : Type} [CommRing R] (x : ∀ τ : Φ, n τ → R)
-    [DecidableEq (ColumnFilling n κ)] :
-    minorsMatrix κ (fun τ : Φ ↦ diagonal (x τ)) =
-      diagonal fun T : ColumnFilling n κ ↦ ∏ τ : Φ, ∏ h : Fin (rankAt n τ), ∏ j : Fin (κ τ h),
-        ∏ s : Fin h, x τ (fillingRows T τ h j s) := by
-  ext T T'
-  rw [minorsMatrix, of_apply, diagonal_apply]
-  split_ifs with h_eq
-  · subst h_eq
-    simp [submatrix_diagonal _ _ (fillingRows_injective T _ _ _)]
-  · -- Two different increasing sequences have different ranges, so that minor has a zero line.
-    obtain ⟨τ, h, j, h_ne⟩ : ∃ τ h j, T τ h j ≠ T' τ h j := by simpa [funext_iff] using h_eq
-    have h_range : Set.range (T τ h j).val ≠ Set.range (T' τ h j).val :=
-      mt ((T τ h j).2.range_inj_of_wellFoundedLT (T' τ h j).2).1 (Subtype.coe_ne_coe.2 h_ne)
-    refine prod_eq_zero (mem_univ τ) (prod_eq_zero (mem_univ h) (prod_eq_zero (mem_univ j) ?_))
-    simp only [Ne, Set.Subset.antisymm_iff, not_and_or, Set.range_subset_iff, not_forall] at h_range
-    obtain ⟨s, hs⟩ | ⟨t, ht⟩ := h_range
-    · exact det_eq_zero_of_row_eq_zero s fun t ↦
-        diagonal_apply_ne _ fun h_row ↦ hs ⟨t, ((Equiv.injective _) h_row).symm⟩
-    · exact det_eq_zero_of_column_eq_zero t fun s ↦
-        diagonal_apply_ne _ fun h_row ↦ ht ⟨s, (Equiv.injective _) h_row⟩
 
 /-- Let `d τ a ≥ 0`, and let `ρ τ 0 ⋯ ρ τ (h - 1)` bound every product of `h` of the `d τ a`. For
 the diagonal matrices `D τ` with entries `d τ a`, the form `η* G S(D) η` is at most `η* G η` times

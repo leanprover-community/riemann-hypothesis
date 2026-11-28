@@ -82,15 +82,13 @@ section Duality
 
 open ComplexOrder Finset Matrix MvPolynomial «GL» SetLike Equiv
 
-variable {Φ : Type} {n : Φ → Type} [Fintype Φ] [∀ τ, Fintype (n τ)]
-  [∀ τ, DecidableEq (n τ)] {κ κ' : Φ → ℕ → ℕ}
+variable {Φ : Type} {n : Φ → Type} [∀ τ, Fintype (n τ)] {κ κ' : Φ → ℕ → ℕ}
 
-omit [Fintype Φ] in
 /-- For an enumeration `e` of the rows, every family `A` of square matrices is the square part
 `New.GL.squarePart e y` of some array `y`, the family whose matrix at `τ` has the entry
 `y ((τ, a), e_τ b)` at `(a, b)`. -/
-lemma GL.exists_squarePart_eq {R : Type} [CommRing R] (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ))
-    (A : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
+lemma GL.exists_squarePart_eq [∀ τ, DecidableEq (n τ)] {R : Type} [CommRing R]
+    (e : ∀ τ : Φ, n τ ≃ Fin (rankAt n τ)) (A : ∀ τ : Φ, Matrix (n τ) (n τ) R) :
     ∃ y : (Σ τ : Φ, n τ) × ℕ → R, squarePart e y = A := by
   refine ⟨fun ⟨⟨τ, b⟩, t⟩ ↦ ∑ a with e τ a = t, A τ b a, ?_⟩
   ext τ b a
@@ -98,14 +96,12 @@ lemma GL.exists_squarePart_eq {R : Type} [CommRing R] (e : ∀ τ : Φ, n τ ≃
 
 /-- The value at `(τ, 0)` of the weight of the diagram `κ` counts the columns of height `h` with
 `0 < h < N τ`; the factor `min 1 h` drops the term `h = 0`. -/
-lemma GL.diagramWeight_zero_eq_sum_min_mul (N : Φ → ℕ) (κ : Φ → ℕ → ℕ) (τ : Φ) :
+lemma GL.diagramWeight_zero_eq_sum_min_mul [Fintype Φ] (N : Φ → ℕ) (κ : Φ → ℕ → ℕ) (τ : Φ) :
     diagramWeight N κ (τ, 0) = ∑ h : Fin (N τ), min 1 (h : ℕ) * κ τ h := by
   have h_Ioo : Ioo 0 (N τ) = {h ∈ range (N τ) | 0 < h} := by grind
   rw [diagramWeight_apply, h_Ioo, sum_filter, sum_range]
   refine sum_congr rfl ?_
   rintro ⟨_ | h, -⟩ - <;> simp
-
-variable [DecidableEq Φ]
 
 /-- If `c'` counts the columns of the diagram complementary to that of `c`, then `c` counts those
 of the diagram complementary to that of `c'`. -/
@@ -204,7 +200,6 @@ noncomputable def fillingComplement
     (T τ ⟨rankAt n τ - h', by omega⟩
       (Fin.cast (hκ τ h' (mem_Ico.2 ⟨Nat.pos_of_ne_zero h_zero, h'.isLt⟩)) j))
 
-omit [Fintype Φ] [DecidableEq Φ] [∀ τ, DecidableEq (n τ)] in
 /-- The column `j` of height `h'` of the complementary filling is the complement of the column `j`
 of height `h`, when `h + h' = |n_τ|`. -/
 lemma fillingComplement_apply
@@ -218,7 +213,8 @@ lemma fillingComplement_apply
   obtain rfl : j = j' := hj
   exact dite_eq_right (by omega)
 
-omit [∀ τ, DecidableEq (n τ)] in
+variable [Fintype Φ] [DecidableEq Φ]
+
 /-- For complementary diagrams `κ`, `κ'`, replacing every column by its complement
 (`New.fillingComplement`) is a bijection from the fillings of `κ` to those of `κ'`. -/
 lemma fillingComplement_bijective
@@ -241,6 +237,8 @@ lemma fillingComplement_bijective
   refine (Fintype.bijective_iff_injective_and_card _).2 ⟨h_injective hκ, le_antisymm ?_ ?_⟩
   · exact Fintype.card_le_of_injective _ (h_injective hκ)
   · exact Fintype.card_le_of_injective _ (h_injective fun τ ↦ complementary_columns_symm (hκ τ))
+
+variable [∀ τ, DecidableEq (n τ)]
 
 /-- The product of the Hodge stars of all columns. Let `κ`, `κ'` be complementary diagrams and `e'`
 the enumeration `e` of the rows reversed. There is an integer matrix `P` from the basis tensors of
@@ -646,15 +644,35 @@ namespace New.Rows
 
 open Finset Matrix Fintype Kronecker Sum «GL»
 
-variable {Φ n N m R L : Type} [CommRing R] [Fintype Φ] [DecidableEq Φ] [Fintype n]
-  [Fintype N] [Fintype m] {kp km : Φ → ℕ → ℕ} [NormedField L] [IsUltrametricDist L]
+variable {Φ n N m R L : Type} [CommRing R] [Fintype N] [Fintype m]
 
-omit [Fintype n] in
 /-- Casting an integer matrix product entrywise to `R` and applying it to `v` is applying the
 casts of the two factors in turn. -/
 lemma _root_.New.map_intCast_mul_mulVec (A : Matrix n m ℤ) (B : Matrix m N ℤ) (v : N → R) :
     (A * B).map (↑) *ᵥ v = A.map (↑) *ᵥ B.map (↑) *ᵥ v := by
   simp [← Int.coe_castRingHom]
+
+variable [Fintype n] {kp km : Φ → ℕ → ℕ}
+
+/-- `New.FitsRanks` holds and `New.schurDetExp` vanishes: `card N ≤ card n`, and `kp τ h = 0` for
+every column height `h` with `card N ≤ h < card n`. -/
+abbrev HasColumnsBelow {Φ : Type} (n N : Type) [Fintype n] [Fintype N] (kp : Φ → ℕ → ℕ) : Prop :=
+  FitsRanks (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp ∧
+    schurDetExp (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp = 0
+
+/-- If `HasColumnsBelow n N kp`, then `kp` fits the ranks (`New.FitsRanks`): `card N ≤ card n`,
+and `kp` has no column of height strictly between the two. -/
+lemma HasColumnsBelow.fitsRanks (hkp : HasColumnsBelow n N kp) :
+    FitsRanks (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp :=
+  hkp.left
+
+/-- If `HasColumnsBelow n N kp`, then the determinant exponent `New.schurDetExp` of `kp` for
+`n × N` matrices is zero. -/
+lemma HasColumnsBelow.schurDetExp_eq_zero (hkp : HasColumnsBelow n N kp) :
+    schurDetExp (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp = 0 :=
+  hkp.right
+
+variable [Fintype Φ] [DecidableEq Φ] [NormedField L] [IsUltrametricDist L]
 
 /-- A chosen left inverse, with integer entries, of the matrix of `mixedCartan n kp km`. -/
 noncomputable def mixedCartanLeftInv {Φ : Type} (n : Type) [Fintype Φ] [DecidableEq Φ] [Fintype n]
@@ -708,26 +726,6 @@ lemma norm_schur_mulVec_le [DecidableEq n] [DecidableEq N]
     rw [show schur kp A = (schur kp A₀).map 𝒪.subtype from schur_map hF A₀ 𝒪.subtype]
     exact (schur kp A₀ i j).prop
   exact (norm_mulVec_le h_entry v).trans_eq (one_mul ‖v‖)
-
-/-- `New.FitsRanks` holds and `New.schurDetExp` vanishes: `card N ≤ card n`, and `kp τ h = 0` for
-every column height `h` with `card N ≤ h < card n`. -/
-abbrev HasColumnsBelow {Φ : Type} (n N : Type) [Fintype n] [Fintype N] (kp : Φ → ℕ → ℕ) : Prop :=
-  FitsRanks (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp ∧
-    schurDetExp (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp = 0
-
-omit [Fintype Φ] [DecidableEq Φ] in
-/-- If `HasColumnsBelow n N kp`, then `kp` fits the ranks (`New.FitsRanks`): `card N ≤ card n`,
-and `kp` has no column of height strictly between the two. -/
-lemma HasColumnsBelow.fitsRanks (hkp : HasColumnsBelow n N kp) :
-    FitsRanks (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp :=
-  hkp.left
-
-omit [Fintype Φ] [DecidableEq Φ] in
-/-- If `HasColumnsBelow n N kp`, then the determinant exponent `New.schurDetExp` of `kp` for
-`n × N` matrices is zero. -/
-lemma HasColumnsBelow.schurDetExp_eq_zero (hkp : HasColumnsBelow n N kp) :
-    schurDetExp (fun _ : Φ ↦ N) (fun _ : Φ ↦ n) kp = 0 :=
-  hkp.right
 
 variable [DecidableEq n] [DecidableEq N] [DecidableEq m] (ε : N ⊕ m ≃ n)
 
