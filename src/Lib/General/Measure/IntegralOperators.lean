@@ -78,6 +78,16 @@ open MeasureTheory Set Real Filter
 variable {S : Type*} [MeasurableSpace S] {ν : Measure S} {u : S → ℝ} {K A c : ℝ} {e d : ℕ}
   {V : ENNReal}
 
+/-- Express the sublevel-set bound in the form used by the layer-cake estimates. -/
+private lemma measure_sublevel_le_rpow (hK : 0 ≤ K)
+    (h_vol : ∀ R ≥ (1 : ℝ), ν {s : S | u s ≤ R} ≤ ENNReal.ofReal ((K * R ^ e) ^ d) * V)
+    (R : ℝ) (hR : 1 ≤ R) :
+    ν {s : S | u s ≤ R} ≤
+      ENNReal.ofReal (R ^ ((e * d : ℕ) : ℝ)) * (ENNReal.ofReal (K ^ d) * V) := by
+  refine (h_vol R hR).trans_eq ?_
+  rw [← mul_assoc, mul_comm (ENNReal.ofReal (R ^ _)), ← ENNReal.ofReal_mul (pow_nonneg hK d),
+    Real.rpow_natCast, mul_pow, ← pow_mul]
+
 /-- Layer cake bound for a negative power. Let `u ≥ 1` be measurable and suppose that
 `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where `K ≥ 0`. If `e d < A` and `A ≤ c (A - e d)`, then
 the Lebesgue integral of `u^(-A)` is at most `K^d c V`. -/
@@ -88,16 +98,10 @@ lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
     ∫⁻ s : S, ENNReal.ofReal (u s ^ (-A)) ∂ν ≤ ENNReal.ofReal (K ^ d * c) * V := by
   have hA_pos : 0 < A := (show (0 : ℝ) ≤ e * d by positivity).trans_lt hA
   have hc_nonneg : 0 ≤ c := by nlinarith
-  -- The growth hypothesis is the one of Tau Ceti's bound with `ε = e d` and `C = K^d V`.
-  have h_growth (R : ℝ) (hR : 1 ≤ R) : ν {s : S | u s ≤ R} ≤
-      ENNReal.ofReal (R ^ ((e * d : ℕ) : ℝ)) * (ENNReal.ofReal (K ^ d) * V) := by
-    refine (h_vol R hR).trans_eq ?_
-    rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), Real.rpow_natCast, mul_pow, ← pow_mul,
-      mul_comm (K ^ d)]
   calc ∫⁻ s : S, ENNReal.ofReal (u s ^ (-A)) ∂ν
       ≤ ENNReal.ofReal (A / (A - ((e * d : ℕ) : ℝ))) * (ENNReal.ofReal (K ^ d) * V) :=
         TauCeti.lintegral_ofReal_rpow_neg_le_of_measure_le_rpow hu_meas.aemeasurable
-          (.of_forall hu) hA_pos (by simpa using hA) h_growth
+          (.of_forall hu) hA_pos (by simpa using hA) (measure_sublevel_le_rpow _hK h_vol)
     _ ≤ ENNReal.ofReal c * (ENNReal.ofReal (K ^ d) * V) := by
         gcongr
         rw [Nat.cast_mul, div_le_iff₀ (by linarith)]
@@ -112,14 +116,9 @@ lemma New.integrable_rpow_neg_of_measure_sublevel_le (hu_meas : Measurable u)
     (h_vol : ∀ R ≥ (1 : ℝ), ν {s : S | u s ≤ R} ≤ ENNReal.ofReal ((K * R ^ e) ^ d) * V)
     (hA : e * d < A) :
     Integrable (fun s : S ↦ u s ^ (-A)) ν := by
-  -- The layer cake bound with `c = A / (A - e d)` is finite.
-  have h_le : ∫⁻ s : S, .ofReal (u s ^ (-A)) ∂ν ≤ .ofReal (K ^ d * (A / (A - e * d))) * V :=
-    lintegral_rpow_neg_le_of_measure_sublevel_le hu_meas hu hK h_vol hA
-      (div_mul_cancel₀ A (sub_pos.2 hA).ne').ge
-  refine ⟨(hu_meas.pow_const (-A)).aestronglyMeasurable, ?_⟩
-  rw [hasFiniteIntegral_iff_ofReal
-    (.of_forall fun s ↦ rpow_nonneg (zero_le_one.trans (hu s)) (-A))]
-  exact h_le.trans_lt (by finiteness)
+  exact TauCeti.integrable_rpow_neg_of_measure_le_rpow hu_meas.aemeasurable (.of_forall hu)
+    ((show (0 : ℝ) ≤ e * d by positivity).trans_lt hA) (by simpa using hA)
+    (by finiteness) (measure_sublevel_le_rpow hK h_vol)
 
 /-- Let `u ≥ 1` be measurable and suppose that `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where
 `K ≥ 0` and `V` is finite. If `e d < A` and `A ≤ c (A - e d)`, then `∫ u^(-A) dν ≤ K^d c V`. -/
