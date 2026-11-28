@@ -104,14 +104,17 @@ lemma formAdjoint_mul {p : Type} [Fintype p] {κ : p → ℤˣ} [DecidableEq p] 
   simp only [formAdjoint, conjTranspose_mul, Matrix.mul_assoc]
   rw [← Matrix.mul_assoc (signMatrix η) (signMatrix η), signMatrix_mul_self, Matrix.one_mul]
 
+/-- The form adjoint of a difference is the difference of the form adjoints. -/
 lemma formAdjoint_sub (A A' : Matrix n m ℂ) :
     formAdjoint ε η (A - A') = formAdjoint ε η A - formAdjoint ε η A' := by
   simp only [formAdjoint, conjTranspose_sub, Matrix.mul_sub, Matrix.sub_mul]
 
+/-- Double application of the form adjoint operator returns the original matrix `A`. -/
 lemma formAdjoint_formAdjoint (A : Matrix n m ℂ) : formAdjoint η ε (formAdjoint ε η A) = A := by
   simp [formAdjoint, conjTranspose_mul, IsHermitianInvolution.isHermitian.eq, Matrix.mul_assoc,
     signMatrix_mul_self, ← Matrix.mul_assoc (signMatrix ε) (signMatrix ε)]
 
+/-- The trace of the form adjoint `formAdjoint ε ε Y` is the complex conjugate of the trace. -/
 lemma trace_formAdjoint (Y : Matrix n n ℂ) : (formAdjoint ε ε Y).trace = conj Y.trace := by
   rw [formAdjoint, trace_mul_cycle, signMatrix_mul_self, Matrix.one_mul, trace_conjTranspose,
     starRingEnd_apply]
