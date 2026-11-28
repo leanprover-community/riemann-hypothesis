@@ -454,15 +454,20 @@ lemma linSubst_eq_bind₁ : linSubst A = aeval Aᵀ.toMvPolynomial := by
   ext s : 1
   simp [linSubst, Matrix.toMvPolynomial, smul_eq_C_mul, C_mul_X_eq_monomial]
 
+/-- Linear substitution `linSubst` by the identity matrix is the identity map. -/
 @[simp]
 lemma linSubst_one : linSubst 1 f = f := by
   simp [linSubst_eq_bind₁, aeval_X_left_apply]
 
 omit [DecidableEq σ] in
+/-- Substitution by `A * B` is substitution by `B` followed by substitution by `A`:
+`linSubst (A * B) f = linSubst A (linSubst B f)`. -/
 lemma linSubst_mul : linSubst (A * B) f = linSubst A (linSubst B f) := by
   simp [linSubst_eq_bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
 
 omit [DecidableEq σ] in
+/-- Applying a ring homomorphism `ψ` to the coefficients commutes with linear substitution,
+with `ψ` also applied to the entries of `A`. -/
 lemma map_linSubst :
     MvPolynomial.map ψ (linSubst A f) = linSubst (A.map ψ) (MvPolynomial.map ψ f) := by
   simp [linSubst, ← C_mul', aeval_def, eval₂_map, MvPolynomial.algebraMap_eq, hom_eval₂, map_comp_C]
