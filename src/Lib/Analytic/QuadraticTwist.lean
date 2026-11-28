@@ -17,7 +17,7 @@ import Lib.Analytic.ZeroSymmetry
 /-!
 # A prime `d` in a class whose quadratic twists have no zero in a box
 
-Fix a class modulo `N` whose primes are `≡ 7` modulo `8` and prime to `N`, and a box
+Fix a character level `N`, a residue class modulo `Q`, and a box
 `re s ≥ β = 1/2 + 9 δ`, `|im s| ≤ H`. A prime `d` of the class is bad (`IsBadPrime`) if some
 `L(s, ξ (·/d))`, with `ξ` modulo `N`, has a zero in the box. The main estimate is the count
 `zero_density_quadTwist`: there are `O(X ^ (1 - δ / 2))` bad primes up to `X`. Such a count also
@@ -37,10 +37,11 @@ Pólya–Vinogradov inequality, because theta series keep all sums short.
    part of `n`, are small (`sum_sq_thetaSeries_jacobiSym_le`): expand the square, bound the pairs
    with `(n n')°` a square trivially and the others by Pólya–Vinogradov. So the sum of the `J` is
    `≪ T ^ (2 + δ)`.
-4. By reciprocity `(n/d) = (-d/n°)`, so 2 and 3 give the count, with `T² = N X`, after passing from
-   `ξ` to the primitive character that induces it.
-5. If all primes of an invertible class were bad, the sum of `log p / p` over the class would
-   converge; it diverges, so some prime of the class is not bad
+4. In each of the four odd classes modulo eight, reciprocity writes `(n/d)` as `(-d/n°)` times a
+   fixed sign depending on `n`. Absorb that sign into the bounded coefficients of 3. Sum the four
+   bounds and pass to the primitive character inducing each `ξ`, with `T² = N X`.
+5. If all sufficiently large primes of an invertible class were bad, the class sum of
+   `log p / p` would converge. Its divergence gives arbitrarily large good primes
    (`exists_entireL_quadTwist_ne_zero`).
 
 Notions from other files:
@@ -637,21 +638,38 @@ lemma sum_thetaTailIntegral_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
     sum_add_distrib, add_mul]
   exact add_le_add (hC T hT α hα) (hC T hT _ (norm_mul_moebius_le_one hα))
 
-/-- For a prime `d ≡ 7 mod 8` and `n ≠ 0`, `(2/d) = 1` and reciprocity give `(n/d) = (-d/n°)`, with
-`n°` the odd part of `n`. -/
-lemma legendreSym_eq_jacobiSym_ordCompl {d : ℕ} [Fact d.Prime] (h8 : d % 8 = 7) {n : ℕ}
-    (hn : n ≠ 0) : legendreSym d n = J(-d | ordCompl[2] n) := by
+/-- For `n = 2^k m` with `m` odd, the correction for denominator class `r` is
+`(2/r)^k (-χ₄(r)/m)`. Multiplying by `(-d/m)` restores the Legendre coefficient
+at an odd prime `d`. -/
+def twistReciprocityFactor (r n : ℕ) : ℤ :=
+  J(2 | r) ^ n.factorization 2 * J(-(χ₄ (r : ZMod 4)) | ordCompl[2] n)
+
+/-- In a fixed odd denominator class modulo eight, the correction converts the Jacobi symbol on the
+odd part of the numerator back to the original coefficient. This also holds at common factors. -/
+lemma jacobiSym_eq_twistReciprocityFactor_mul {d r n : ℕ} (hd : Odd d) (hclass : d ≡ r [MOD 8])
+    (hn : n ≠ 0) : J(n | d) = twistReciprocityFactor r n * J(-d | ordCompl[2] n) := by
+  have hr : Odd r := Nat.odd_iff.2 <|
+    Eq.trans (hclass.of_dvd (by decide : 2 ∣ 8)).symm (Nat.odd_iff.1 hd)
+  have htwo : J(2 | d) = J(2 | r) := by
+    rw [at_two hd, at_two hr, χ₈_nat_mod_eight d, χ₈_nat_mod_eight r, hclass]
+  have hfour : χ₄ (d : ZMod 4) = χ₄ (r : ZMod 4) := by
+    rw [χ₄_nat_mod_four d, χ₄_nat_mod_four r, hclass.of_dvd (by decide : 4 ∣ 8)]
   obtain ⟨k, m, hm, rfl⟩ := exists_eq_two_pow_mul_odd hn
-  have hd : Odd d := odd_iff.2 (by omega)
-  have h_two : J(2 | d) = 1 := by
-    rw [jacobiSym.at_two hd, χ₈_nat_mod_eight, h8]
-    rfl
-  calc legendreSym d (2 ^ k * m : ℕ)
-    _ = J(m | d) := by simp [to_jacobiSym, mul_left, pow_left, h_two]
-    _ = J(-1 | m) * J(d | m) := by
-      rw [quadratic_reciprocity' hm hd, qrSign, χ₄_nat_three_mod_four (by omega)]
-    _ = J(-d | ordCompl[2] (2 ^ k * m)) := by
-      rw [ordCompl_pow_mul_of_not_dvd k prime_two hm.not_two_dvd_nat, ← mul_left, neg_one_mul]
+  have hk : (2 ^ k * m).factorization 2 = k := by
+    rw [Nat.factorization_mul (pow_ne_zero _ (by decide)) hm.pos.ne',
+      Finsupp.add_apply, factorization_pow_self (by decide : Nat.Prime 2),
+      factorization_eq_zero_of_not_dvd hm.not_two_dvd_nat, add_zero]
+  rw [twistReciprocityFactor, ordCompl_pow_mul_of_not_dvd k prime_two hm.not_two_dvd_nat, hk,
+    Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat, mul_left, pow_left, htwo,
+    quadratic_reciprocity' hm hd, qrSign, hfour, mul_assoc]
+  congr 1
+  rw [← mul_left, ← mul_left, neg_mul_neg]
+
+/-- Every reciprocity correction has absolute value at most one. -/
+lemma norm_twistReciprocityFactor_le_one (r n : ℕ) : ‖(twistReciprocityFactor r n : ℂ)‖ ≤ 1 := by
+  rw [twistReciprocityFactor, Int.cast_mul, Int.cast_pow, norm_mul, norm_pow]
+  simpa only [one_mul] using mul_le_mul (pow_le_one₀ (norm_nonneg _) (norm_jacobiSym_le_one _ _))
+    (norm_jacobiSym_le_one _ _) (norm_nonneg _) zero_le_one
 
 /-- The twist `quadTwist ψ d` of a primitive character `ψ` mod `M` by the Legendre symbol of an odd
 prime `d` that does not divide `M` is primitive. -/
@@ -678,95 +696,147 @@ structure IsPrimeWithTwistZero (ψ : DirichletCharacter ℂ N) (β H : ℝ) (d :
 
 open scoped Classical in
 /-- Let `ψ` be primitive modulo `M`, `δ > 0` and `H` real. Then only `O(T ^ (2 - δ))` primes
-`d ≡ 7 mod 8` with `M d ≤ T²` and prime to `M` have a twist `ψ (·/d)` whose `L`-function has a zero
+`d ≠ 2` with `M d ≤ T²` and prime to `M` have a twist `ψ (·/d)` whose `L`-function has a zero
 in the box `re s ≥ 1/2 + 9 δ`, `|im s| ≤ H` (`IsPrimeWithTwistZero`): each has
 `thetaTailIntegral > T ^ (2 δ)`, and the sum of these integrals is `≪ T ^ (2 + δ)`. -/
 lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ} [NeZero M]
     {ψ : DirichletCharacter ℂ M} (hψ : ψ.IsPrimitive) :
     ∃ C : ℝ, ∀ᶠ T : ℝ in atTop,
-      #{d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d % 8 = 7 ∧ M.Coprime d ∧ M * d ≤ T ^ 2 ∧
+      #{d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d ≠ 2 ∧ M.Coprime d ∧ M * d ≤ T ^ 2 ∧
         IsPrimeWithTwistZero ψ (1 / 2 + 9 * δ) H d} ≤ C * T ^ (2 - δ) := by
-  -- The parity `j` of the twists does not depend on `d`: it is opposite to that of `ψ`.
-  obtain ⟨j, hj⟩ : ∃ j : Fin 2, ψ (-1) = -(-1) ^ j.val := ψ.even_or_odd.elim
-    (fun h ↦ ⟨1, h.trans (by norm_num)⟩) fun h ↦ ⟨0, h.trans (by norm_num)⟩
-  obtain ⟨C, hC⟩ := sum_thetaTailIntegral_le j hδ
-  refine ⟨C, ?_⟩
-  filter_upwards [eventually_rpow_lt_thetaTailIntegral j hδ H, eventually_gt_atTop 0]
-    with T h_lines hT
-  let F (v : ℕ) : ℝ := thetaTailIntegral j (fun n : ℕ ↦ ψ n * J(-v | ordCompl[2] n)) T
-  have h_large (d : ℕ) (h8 : d % 8 = 7) (hM : M.Coprime d) (hd : M * d ≤ T ^ 2)
-      (h_twist : IsPrimeWithTwistZero ψ (1 / 2 + 9 * δ) H d) : T ^ (2 * δ) < F d := by
-    have : Fact d.Prime := h_twist.prime
-    obtain ⟨s, h_re, h_im, h_zero⟩ := h_twist.exists_zero
-    have h_par : quadTwist ψ d (-1) = (-1) ^ j.val := by
-      simpa [hj, legendreSym.at_neg_one (show d ≠ 2 by omega),
-        χ₄_nat_three_mod_four (show d % 4 = 3 by omega)] using quadTwist_apply ψ d (-1)
-    have h_coeff (n : ℕ+) : quadTwist ψ d n = ψ n * J(-d | ordCompl[2] (n : ℕ)) := by
-      simpa [legendreSym_eq_jacobiSym_ordCompl h8 n.ne_zero] using quadTwist_apply ψ d (n : ℕ)
-    simpa only [F, thetaTailIntegral, thetaSeries, gaussianTheta, h_coeff] using
-      h_lines (isPrimitive_quadTwist hψ (by omega) hM) (quadTwist_ne_one ψ d (by omega) hM)
-        h_par (mod_cast hd) h_re h_im h_zero
-  have hF (v : ℕ) : 0 ≤ F v := setIntegral_nonneg measurableSet_Ioi fun u hu ↦
+  -- In each odd class modulo eight the twist parity and the weight attached to each n are fixed.
+  let residue (i : Fin 4) : ℕ := 2 * i.val + 1
+  have parity (i : Fin 4) : ∃ j : Fin 2,
+      ψ (-1) * (χ₄ (residue i) : ℤ) = (-1 : ℂ) ^ j.val := by
+    have hr : Odd (residue i) := ⟨i.val, rfl⟩
+    have hs := jacobiSym.eq_one_or_neg_one (show Int.gcd (-1) (residue i) = 1 by simp)
+    rw [jacobiSym.at_neg_one hr] at hs
+    rcases (show ψ (-1) = 1 ∨ ψ (-1) = -1 from ψ.even_or_odd) with h | h <;>
+      rcases hs with hs | hs <;> rw [h, hs]
+    · exact ⟨0, by norm_num⟩
+    · exact ⟨1, by norm_num⟩
+    · exact ⟨1, by norm_num⟩
+    · exact ⟨0, by norm_num⟩
+  choose j hj using parity
+  let α (i : Fin 4) (n : ℕ) : ℂ := ψ n * twistReciprocityFactor (residue i) n
+  have hα (i : Fin 4) (n : ℕ) : ‖α i n‖ ≤ 1 := by
+    simpa only [α, norm_mul, one_mul] using mul_le_mul (ψ.norm_le_one n)
+      (norm_twistReciprocityFactor_le_one (residue i) n) (norm_nonneg _) zero_le_one
+  choose C hC using fun i : Fin 4 ↦ sum_thetaTailIntegral_le (j i) hδ
+  refine ⟨∑ i, C i, ?_⟩
+  filter_upwards [eventually_all.2 (fun i ↦ eventually_rpow_lt_thetaTailIntegral (j i) hδ H),
+    eventually_gt_atTop 0] with T h_lines hT
+  let F (i : Fin 4) (v : ℕ) : ℝ :=
+    thetaTailIntegral (j i) (fun n : ℕ ↦ α i n * J(-v | ordCompl[2] n)) T
+  have hF (i : Fin 4) (v : ℕ) : 0 ≤ F i v := setIntegral_nonneg measurableSet_Ioi fun u hu ↦
     div_nonneg (by positivity) ((inv_pos.2 hT).trans hu).le
-  -- The number of these primes times `T ^ (2 δ)` is at most `∑ F v`.
-  refine le_of_mul_le_mul_right ?_ (rpow_pos_of_pos hT (2 * δ))
-  let S : Finset ℕ := {d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d % 8 = 7 ∧ M.Coprime d ∧ M * d ≤ T ^ 2 ∧
+  have h_large (d : ℕ) (h2 : d ≠ 2) (hM : M.Coprime d) (hd : M * d ≤ T ^ 2)
+      (h_twist : IsPrimeWithTwistZero ψ (1 / 2 + 9 * δ) H d) : T ^ (2 * δ) ≤ ∑ i, F i d := by
+    have : Fact d.Prime := h_twist.prime
+    have hodd := this.out.odd_of_ne_two h2
+    let i : Fin 4 := ⟨d % 8 / 2, by omega⟩
+    have hclass : d ≡ residue i [MOD 8] := by
+      have := Nat.odd_iff.1 hodd
+      change d % 8 = (2 * (d % 8 / 2) + 1) % 8
+      omega
+    have hfour : χ₄ d = χ₄ (residue i) := by
+      rw [χ₄_nat_mod_four d, χ₄_nat_mod_four (residue i), hclass.of_dvd (by decide : 4 ∣ 8)]
+    have h_par : quadTwist ψ d (-1) = (-1) ^ (j i).val := by
+      rw [← hj i]
+      simpa [legendreSym.at_neg_one h2, hfour] using quadTwist_apply ψ d (-1)
+    have h_coeff (n : ℕ+) : quadTwist ψ d n = α i n * J(-d | ordCompl[2] (n : ℕ)) := by
+      simpa [α, to_jacobiSym, jacobiSym_eq_twistReciprocityFactor_mul hodd hclass n.ne_zero,
+        ← mul_assoc] using quadTwist_apply ψ d (n : ℕ)
+    obtain ⟨s, h_re, h_im, h_zero⟩ := h_twist.exists_zero
+    have hlt : T ^ (2 * δ) < F i d := by
+      simpa only [F, thetaTailIntegral, thetaSeries, gaussianTheta, h_coeff] using
+        h_lines i (isPrimitive_quadTwist hψ h2 hM) (quadTwist_ne_one ψ d h2 hM)
+          h_par (mod_cast hd) h_re h_im h_zero
+    exact hlt.le.trans <| Finset.single_le_sum (fun u _ ↦ hF u d) (Finset.mem_univ i)
+  let S : Finset ℕ := {d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d ≠ 2 ∧ M.Coprime d ∧ M * d ≤ T ^ 2 ∧
     IsPrimeWithTwistZero ψ (1 / 2 + 9 * δ) H d}
+  refine le_of_mul_le_mul_right ?_ (rpow_pos_of_pos hT (2 * δ))
   calc #S * T ^ (2 * δ)
-    _ ≤ ∑ d ∈ S, F d := by
-      simpa using card_nsmul_le_sum S F _ fun d hd_mem ↦
-        have ⟨_, h8, hM, hd, h_twist⟩ := mem_filter.1 hd_mem
-        (h_large d h8 hM hd h_twist).le
-    _ ≤ ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, F v :=
-      sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun v _ _ ↦ hF v
-    _ ≤ C * T ^ (2 + δ) := hC T hT _ fun n ↦ ψ.norm_le_one n
-    _ = C * T ^ (2 - δ) * T ^ (2 * δ) := by
+    _ ≤ ∑ d ∈ S, ∑ i, F i d := by
+      simpa using card_nsmul_le_sum S (fun d ↦ ∑ i, F i d) _ fun d hd_mem ↦
+        have ⟨_, h2, hM, hd, h_twist⟩ := mem_filter.1 hd_mem
+        h_large d h2 hM hd h_twist
+    _ ≤ ∑ d ∈ Ioc 0 ⌊T ^ 2⌋₊, ∑ i, F i d :=
+      sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun d _ _ ↦ sum_nonneg fun i _ ↦ hF i d
+    _ ≤ (∑ i, C i) * T ^ (2 + δ) := by
+      rw [sum_comm, sum_mul]
+      exact sum_le_sum fun i _ ↦ hC i T hT (α i) (hα i)
+    _ = (∑ i, C i) * T ^ (2 - δ) * T ^ (2 * δ) := by
       rw [mul_assoc, ← rpow_add hT]
       ring_nf
 
-/-- A prime `d` of the class `a` modulo `N` is bad if some `L(s, ξ (·/d))`, with `ξ` modulo `N`, has
-a zero in the box `re s ≥ β`, `|im s| ≤ H`. -/
-def IsBadPrime (a : ZMod N) (β H : ℝ) (d : ℕ) : Prop :=
-  (d : ZMod N) = a ∧ ∃ ξ : DirichletCharacter ℂ N, IsPrimeWithTwistZero ξ β H d
+/-- A prime of class a modulo Q is bad for level N if one of the twists of the characters modulo
+N has a zero in the box. By default the character level is the progression modulus. -/
+def IsBadPrime {Q : ℕ} (a : ZMod Q) (β H : ℝ) (d : ℕ) (N : ℕ := Q) [NeZero N] : Prop :=
+  (d : ZMod Q) = a ∧ ∃ ξ : DirichletCharacter ℂ N, IsPrimeWithTwistZero ξ β H d
 
 open scoped Classical in
-/-- **Bad primes are rare.** Let `β = 1/2 + 9 δ` with `δ > 0`, and let `a` be a class modulo `N` all
-of whose primes are `≡ 7 mod 8` and prime to `N` (this holds if `8 ∣ N` and `a ≡ 7 mod 8` is prime
-to `N`). The number of primes `d ≤ X` of the class that are bad (`IsBadPrime`: some `L(s, ξ (·/d))`
-with `ξ` modulo `N` has a zero with `re s ≥ β`, `|im s| ≤ H`) is `O(X ^ (1 - δ / 2))`. -/
-lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {a : ZMod N}
-    (h_class : ∀ d : ℕ, d.Prime → (d : ZMod N) = a → d % 8 = 7 ∧ N.Coprime d) :
-    (fun X : ℕ ↦ (#{d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d} : ℝ)) =O[atTop]
+/-- **Bad primes are rare.** For characters of a fixed level N and any residue class a modulo Q,
+the count of bad primes up to X is O(X^(1 - δ/2)) in the box starting at β = 1/2 + 9δ.
+The finitely many primes dividing 2N can be counted separately. -/
+lemma zero_density_quadTwist {N Q : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {a : ZMod Q} :
+    (fun X : ℕ ↦ (#{d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d N} : ℝ)) =O[atTop]
       fun X : ℕ ↦ (X : ℝ) ^ (1 - δ / 2) := by
+  -- If the box lies strictly to the right of one, there are no exceptional primes.
+  by_cases hright : 1 < 1 / 2 + 9 * δ
+  · have no_bad (d : ℕ) : ¬IsBadPrime a (1 / 2 + 9 * δ) H d N := by
+      rintro ⟨_, ξ, h⟩
+      have : Fact d.Prime := h.prime
+      obtain ⟨z, hz, _, hz0⟩ := h.exists_zero
+      have hz1 : 1 < z.re := hright.trans_le hz
+      exact (quadTwist ξ d).LFunction_ne_zero_of_one_le_re
+        (.inr (fun eq ↦ by simp [eq] at hz1)) hz1.le hz0
+    have hempty (X : ℕ) : {d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d N} = ∅ := by
+      ext d
+      simp only [mem_filter, notMem_empty, iff_false]
+      exact fun hit ↦ no_bad d hit.2
+    simp only [hempty, card_empty, Nat.cast_zero]
+    exact Asymptotics.isBigO_zero _ _
+  have hexp : 0 ≤ 1 - δ / 2 := by linarith
   -- Take `T² = N X`, pass from each `ξ` to the primitive character that induces it, and sum.
   have hN : (0 : ℝ) < N := Nat.cast_pos.2 (NeZero.pos N)
   choose M hMN ψ hM hψ h_induced using
     fun ξ : DirichletCharacter ℂ N ↦ exists_isPrimitive_changeLevel_eq ξ
   let S (ξ : DirichletCharacter ℂ N) (T : ℝ) : Finset ℕ :=
-    {d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d % 8 = 7 ∧ (M ξ).Coprime d ∧ M ξ * d ≤ T ^ 2 ∧
+    {d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d ≠ 2 ∧ (M ξ).Coprime d ∧ M ξ * d ≤ T ^ 2 ∧
       IsPrimeWithTwistZero (ψ ξ) (1 / 2 + 9 * δ) H d}
   choose C hC using fun ξ ↦ exists_card_zero_quadTwist_le hδ H (hψ ξ)
   have h_tendsto : Tendsto (fun X : ℕ ↦ √(N * X)) atTop atTop :=
     tendsto_sqrt_atTop.comp (tendsto_natCast_atTop_atTop.const_mul_atTop hN)
-  refine .of_bound ((∑ ξ, C ξ) * N ^ (1 - δ / 2)) ?_
+  refine .of_bound (((N + 3 : ℕ) : ℝ) + (∑ ξ, C ξ) * N ^ (1 - δ / 2)) ?_
   -- The bounds for all `ξ` hold at `T = √(N X)` once `X` is large.
-  filter_upwards [h_tendsto.eventually (eventually_all.2 hC)] with X hX
+  filter_upwards [h_tendsto.eventually (eventually_all.2 hC), eventually_ge_atTop 1] with X hX hX1
   set T : ℝ := √(N * X)
   have hT : T ^ 2 = N * X := sq_sqrt (by positivity)
   have h_pow : T ^ (2 - δ) = N ^ (1 - δ / 2) * X ^ (1 - δ / 2) := by
     rw [← mul_rpow hN.le X.cast_nonneg, ← hT, ← rpow_natCast_mul (sqrt_nonneg _), Nat.cast_ofNat,
       mul_one_sub, mul_div_cancel₀ δ two_ne_zero]
-  suffices h_subset : {d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d} ⊆ univ.biUnion (S · T) by
-    rw [Real.norm_natCast, norm_of_nonneg (by positivity), mul_assoc, ← h_pow, sum_mul]
-    calc (#{d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d} : ℝ)
-      _ ≤ ∑ ξ, (#(S ξ T) : ℝ) := mod_cast (card_le_card h_subset).trans card_biUnion_le
-      _ ≤ ∑ ξ, C ξ * T ^ (2 - δ) := sum_le_sum fun ξ _ ↦ hX ξ
+  suffices h_subset : {d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d N} ⊆
+      range (N + 3) ∪ univ.biUnion (S · T) by
+    rw [Real.norm_natCast, norm_of_nonneg (by positivity), add_mul, mul_assoc, ← h_pow, sum_mul]
+    calc (#{d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d N} : ℝ)
+      _ ≤ ((N + 3 : ℕ) : ℝ) + ∑ ξ, (#(S ξ T) : ℝ) := by
+        exact_mod_cast (card_le_card h_subset).trans <| (card_union_le _ _).trans <| by
+          simpa only [card_range] using
+            Nat.add_le_add_left (card_biUnion_le (s := univ) (t := fun ξ ↦ S ξ T)) (N + 3)
+      _ ≤ _ := add_le_add (le_mul_of_one_le_right (by positivity)
+        (one_le_rpow (by exact_mod_cast hX1) hexp)) (sum_le_sum fun ξ _ ↦ hX ξ)
   intro d hd
-  obtain ⟨hd_mem, hd_class, ξ, h_twist⟩ := mem_filter.1 hd
+  by_cases hsmall : d < N + 3
+  · exact mem_union_left _ (mem_range.mpr hsmall)
+  apply mem_union_right
+  obtain ⟨hd_mem, _, ξ, h_twist⟩ := mem_filter.1 hd
   have hd_prime : Fact d.Prime := h_twist.prime
   obtain ⟨s, h_re, h_im, h_zero⟩ := h_twist.exists_zero
   obtain ⟨hd_pos, hd_le⟩ := mem_Ioc.1 hd_mem
-  obtain ⟨h8, h_coprime⟩ := h_class d hd_prime.out hd_class
+  have h2 : d ≠ 2 := by omega
+  have h_coprime : N.Coprime d := (hd_prime.out.coprime_iff_not_dvd.mpr
+    (fun h ↦ (by omega : ¬ d ≤ N) (Nat.le_of_dvd (NeZero.pos N) h))).symm
   have h_coprime' : (M ξ).Coprime d := h_coprime.of_dvd_left (hMN ξ)
   have h_cond : M ξ * d ≤ N * X := Nat.mul_le_mul (le_of_dvd (NeZero.pos N) (hMN ξ)) hd_le
   -- The `L`-functions of the two twists differ by Euler factors, which do not vanish at `s`.
@@ -775,62 +845,60 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
     conv_lhs => rw [← h_induced ξ]
     simp [quadTwist, ← changeLevel_trans]
   have h_zero' : (quadTwist (ψ ξ) d).LFunction s = 0 := by
-    rw [h_level, LFunction_changeLevel _ _ (.inl (quadTwist_ne_one _ d (by omega) h_coprime'))]
+    rw [h_level, LFunction_changeLevel _ _ (.inl (quadTwist_ne_one _ d h2 h_coprime'))]
       at h_zero
     exact (mul_eq_zero.1 h_zero).resolve_right (prod_euler_factor_ne_zero _ (by linarith))
   have h_cond' : (M ξ : ℝ) * d ≤ T ^ 2 :=
     (mod_cast h_cond : (M ξ : ℝ) * d ≤ N * X).trans hT.ge
   refine mem_biUnion.2 ⟨ξ, mem_univ ξ, mem_filter.2 ⟨mem_Ioc.2 ⟨hd_pos, ?_⟩,
-    h8, h_coprime', h_cond', ⟨s, h_re, h_im, h_zero'⟩⟩⟩
+    h2, h_coprime', h_cond', ⟨s, h_re, h_im, h_zero'⟩⟩⟩
   rw [hT, ← Nat.cast_mul, floor_natCast]
   exact (Nat.le_mul_of_pos_left d (NeZero.pos _)).trans h_cond
 
-/-- **Choice of the prime.** Let `β > 1/2`, `H` real and `a` an invertible class mod `N` all of
-whose primes are `≡ 7 mod 8` and prime to `N`. For some prime `d` of the class no `L(s, ξ (·/d))`,
-`ξ` mod `N`, vanishes in `β ≤ re s`, `|im s| ≤ H`. Here `quadTwist ξ d` is `ξ (·/d)`, and
-`entireL` is `L`, as the twists are not principal.
-
-The bound on bad primes is played against the divergence of `∑ log p / p` over the class
-(Dirichlet), so the prime number theorem for progressions is not needed. -/
-lemma exists_entireL_quadTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ) {a : ZMod N}
-    (hβ : 1 / 2 < β) (ha : IsUnit a)
-    (h_class : ∀ d : Primes, ((d : ℕ) : ZMod N) = a → (d : ℕ) % 8 = 7 ∧ N.Coprime d) :
-    ∃ d : Primes, ((d : ℕ) : ZMod N) = a ∧ ∀ (ξ : DirichletCharacter ℂ N) (s : ℂ),
-      β ≤ s.re → |s.im| ≤ H → entireL (quadTwist ξ d) s ≠ 0 := by
+/-- **Choice of the prime.** In any invertible class modulo Q, there are arbitrarily large
+odd primes
+coprime to N for which none of the twists of characters modulo N have a zero in the given box.
+The character level N and the search modulus Q can be chosen independently. -/
+lemma exists_entireL_quadTwist_ne_zero {N Q : ℕ} [NeZero N] [NeZero Q] {β : ℝ} (H : ℝ)
+    {a : ZMod Q} (hβ : 1 / 2 < β) (ha : IsUnit a) (B : ℕ) :
+    ∃ d : Primes, B < (d : ℕ) ∧ ((d : ℕ) : ZMod Q) = a ∧ (d : ℕ) ≠ 2 ∧ N.Coprime d ∧
+      ∀ (ξ : DirichletCharacter ℂ N) (s : ℂ),
+        β ≤ s.re → |s.im| ≤ H → entireL (quadTwist ξ d) s ≠ 0 := by
   classical
-  -- We may assume `β < 1`, as a smaller `β` gives a larger box.
-  wlog hβ_lt : β < 1 generalizing β with h_lt_one
-  · obtain ⟨d, hd, h_ne⟩ := h_lt_one (β := 3 / 4) (by norm_num) (by norm_num)
-    exact ⟨d, hd, fun ξ s h_re ↦ h_ne ξ s (by linarith)⟩
+  wlog hβ_lt : β < 1 generalizing β with smaller
+  · obtain ⟨d, hB, hd, h2, hcop, good⟩ := smaller (β := 3 / 4) (by norm_num) (by norm_num)
+    exact ⟨d, hB, hd, h2, hcop, fun ξ s hs ↦ good ξ s (by linarith)⟩
   obtain ⟨δ, rfl⟩ : ∃ δ, β = 1 / 2 + 9 * δ := ⟨(β - 1 / 2) / 9, by ring⟩
   have hδ : 0 < δ := by linarith
-  -- If every prime of the class were bad, only `O(X ^ (1 - δ / 2))` of them would be at most `X`,
-  -- so `∑ log d / d` over the class would converge.
+  -- If every sufficiently large prime in the class failed, the weighted prime sum would converge.
+  let K := max (max B N) 2
   by_contra! h_all
-  have h_bad (d : Primes) (hd_class : ((d : ℕ) : ZMod N) = a) :
-      IsBadPrime a (1 / 2 + 9 * δ) H d := by
-    obtain ⟨ξ, s, h_re, h_im, h_zero⟩ := h_all d hd_class
-    obtain ⟨h8, h_coprime⟩ := h_class d hd_class
-    rw [entireL, ite_eq_right (quadTwist_ne_one ξ _ (by omega) h_coprime)] at h_zero
-    exact ⟨hd_class, ξ, ⟨s, h_re, h_im, h_zero⟩⟩
-  let f (n : ℕ) : ℂ := if n.Prime ∧ n = a then 1 else 0
+  have h_bad (d : Primes) (large : K < (d : ℕ)) (hd : ((d : ℕ) : ZMod Q) = a) :
+      IsBadPrime a (1 / 2 + 9 * δ) H d N := by
+    have hB : B < (d : ℕ) := lt_of_le_of_lt ((le_max_left B N).trans (le_max_left _ _)) large
+    have hN : N < (d : ℕ) := lt_of_le_of_lt ((le_max_right B N).trans (le_max_left _ _)) large
+    have h2 : (d : ℕ) ≠ 2 := (lt_of_le_of_lt (le_max_right _ _) large).ne'
+    have hcop := (d.prop.coprime_iff_not_dvd.mpr
+      (fun h ↦ (not_le_of_gt hN) (Nat.le_of_dvd (NeZero.pos N) h))).symm
+    obtain ⟨ξ, s, hs, hi, hz⟩ := h_all d hB hd h2 hcop
+    rw [entireL, ite_eq_right (quadTwist_ne_one ξ d h2 hcop)] at hz
+    exact ⟨hd, ξ, ⟨s, hs, hi, hz⟩⟩
+  let f (n : ℕ) : ℂ := if n.Prime ∧ (n : ZMod Q) = a ∧ K < n then 1 else 0
   have h_count : (fun X ↦ ∑ n ∈ Icc 1 X, ‖f n‖) =O[atTop] fun X : ℕ ↦ (X : ℝ) ^ (1 - δ / 2) := by
-    refine .trans (.of_norm_le fun X ↦ ?_)
-      (zero_density_quadTwist hδ H fun d hd ↦ h_class ⟨d, hd⟩)
+    refine .trans (.of_norm_le fun X ↦ ?_) (zero_density_quadTwist (N := N) (a := a) hδ H)
     simp only [f, apply_ite norm, norm_one, norm_zero, sum_boole, Real.norm_natCast, Nat.cast_le]
-    -- Every prime of the class is bad, so it is counted by `zero_density_quadTwist`.
     refine card_le_card fun d hd ↦ ?_
-    obtain ⟨hd_mem, hd_prime, hd_class⟩ := mem_filter.1 hd
-    exact mem_filter.2 ⟨by simpa [Nat.one_le_iff_ne_zero, Nat.pos_iff_ne_zero] using hd_mem,
-      h_bad ⟨d, hd_prime⟩ hd_class⟩
+    obtain ⟨hit, prime, cls, large⟩ := mem_filter.1 hd
+    exact mem_filter.2 ⟨by simpa [Nat.one_le_iff_ne_zero, Nat.pos_iff_ne_zero] using hit,
+      h_bad ⟨d, prime⟩ large cls⟩
   have h_conv : LSeriesSummable f (1 - δ / 2 / 2) :=
     LSeriesSummable_of_sum_norm_bigO h_count (by linarith) (by simpa)
   have h_log : LSeriesSummable (logMul f) 1 := LSeriesSummable_logMul_of_lt_re
     (h_conv.abscissaOfAbsConv_le.trans_lt (mod_cast by simpa))
-  -- The terms `Λ(p) / p` of the divergent series are those of this one, as `Λ(p) = log p`.
-  refine not_summable_residueClass_prime_div ha (h_log.norm.of_norm_bounded fun n ↦ ?_)
+  refine not_summable_residueClass_prime_div ha (h_log.norm.of_norm_bounded_eventually_nat ?_)
+  filter_upwards [eventually_gt_atTop K] with n hn
   change ‖(if n.Prime then residueClass a n else 0) / n‖ ≤ ‖term (logMul f) 1 n‖
-  simp +contextual [f, Set.indicator, term, apply_ite, ite_and, ← natCast_log,
+  simp +contextual [f, hn, Set.indicator, term, apply_ite, ite_and, ← natCast_log,
     vonMangoldt_apply_prime]
 
 end New

@@ -21,7 +21,7 @@ of the Dirichlet `L`-functions modulo `q` and of their twists by `χ_K`.
 * `New.primeRemainder`: `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - re G_q(1)`.
 * `New.LSeries_lambdaKResidueClass_eq_add_logDerivMean`: for odd `d` prime to `q`, the Dirichlet
   series of `λ` is `s / (φ(q) (s - 1)) + G_q(s)` in `re s > 1`.
-* `New.isPolar_primeRemainder`: for `d ≡ 7` modulo `8` prime to `q`, the transform of
+* `New.isPolar_primeRemainder`: for an odd prime `d` prime to `q`, the transform of
   `v ↦ R_q(e ^ v)` has at most simple poles in `re s > 0`, none at `1`, and at `s ≠ 1` with the
   residue `(n(s) - n'(s)) / (φ(q) s (1 - s))`, where `n(s)` and `n'(s)` are the sums of the orders
   at `s` of these `L`-functions and of their twists.
@@ -418,8 +418,8 @@ lemma tendsto_logDerivMean_residue (κ : ℂ) {ρ : ℂ} (hρ₀ : ρ ≠ 0) (h�
   · simp only [m, sum_sub_distrib]
     field [sub_ne_zero.2 hρ₁, sub_ne_zero.2 hρ₁.symm]
 
-/-- **Poles.** Let `d ≡ 7 mod 8` be a prime coprime to `q ≥ 1`, `χ_K = (·/d)` the character of
-`K = ℚ(√-d)`, and `R_q = primeRemainder d q`. The conclusion `IsPolar` says three things. The
+/-- **Poles.** Let `d` be an odd prime coprime to `q`, let `χ_K = (·/d)` be its Legendre character,
+and set `R_q = primeRemainder d q`. The conclusion `IsPolar` says three things. The
 function `v ↦ R_q(e ^ v)` is measurable. There is a constant `C` with `|R_q(e ^ v)| ≤ C e ^ v` for
 `v ≥ 0`. The transform `∫₀^∞ R_q(e ^ v) e ^ ((1 - s) v) dv` continues from `re s > 2` to a
 meromorphic function on `ℂ` with at most simple poles in `re s > 0` and the following residues
@@ -427,13 +427,12 @@ there. It has no pole at `1`, where the formula below is a division by zero, of 
 residue at `s ≠ 1` is `∑_ψ (ord_s E_ψ - ord_s E_{ψ χ_K}) / (φ(q) s (1 - s))`, summed over the
 characters `ψ` mod `q`, where `quadTwist ψ d = ψ χ_K` and `E_χ = entireL χ` is `L(s, χ)`, times
 `s - 1` if `χ` is principal. -/
-lemma isPolar_primeRemainder (hd : d % 8 = 7) (h_cop : q.Coprime d) :
+lemma isPolar_primeRemainder (hd_ne : d ≠ 2) (h_cop : q.Coprime d) :
     IsPolar (fun v : ℝ ↦ primeRemainder d q (Real.exp v)) fun s : ℂ ↦
       (∑ ψ : DirichletCharacter ℂ q,
         (analyticOrderNatAt (entireL ψ) s - analyticOrderNatAt (entireL (quadTwist ψ d)) s : ℂ)) /
         φ q / (s * (1 - s)) := by
   -- The continuation is `F s / (s - 1)` with `F s = G_q(s) / s - c_q`, which vanishes at `1`.
-  have hd_ne : d ≠ 2 := by lia
   let c : ℝ := re (logDerivMean d q 1)
   let F (s : ℂ) : ℂ := logDerivMean d q s / s - c
   have h_meas : Measurable fun v : ℝ ↦ primeRemainder d q (rexp v) := by

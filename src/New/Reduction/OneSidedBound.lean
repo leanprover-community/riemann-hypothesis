@@ -272,8 +272,8 @@ theorem grh : DirichletLNonvanishingRightOfHalf := by
     rw [h_criterion_exponent]
     exact eventually_primeRemainder_le_mul_rpow (dvd_mul_right 18480 q) hd (sub_pos.2 hβ)
   have h_induced_nonvanishing : (χ.changeLevel (dvd_mul_left q 18480)).LFunction ρ ≠ 0 :=
-    LFunction_ne_zero_of_primeRemainder_le (by omega) (by omega) hd₀_cop hβ
-      h_criterion_bound _ hρ_ne hβρ
+    LFunction_ne_zero_of_primeRemainder_le hd₀_cop hβ 0
+      (fun d _ hd ↦ h_criterion_bound d hd) _ hρ_ne hβρ
   -- Inducing multiplies `L(s, χ)` by finitely many factors `1 - χ(p) p ^ (-s)`.
   rw [LFunction_changeLevel _ χ h_pole] at h_induced_nonvanishing
   exact left_ne_zero_of_mul h_induced_nonvanishing
