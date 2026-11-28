@@ -269,11 +269,8 @@ radical is the element whose parameter is multiplied by the adele that is 1 on S
 elsewhere. -/
 lemma closurePart_radicalCentre (M : Matrix p p (𝔸 E)) :
     closurePart S (D.radicalCenter M) = D.radicalCenter (idemAdele S.conjClosure • M) := by
-  apply ext_adeleMatrix
-  simp only [adeleMatrix_closurePart, adeleMatrix_radicalCenter, conjTranspose_smul,
-    star_idemAdele_conjClosure,
-    Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc, smul_add, Matrix.mul_smul, smul_mul]
-  module
+  simpa only [radicalCenter, AddChar.coe_mk, smul_zero, smul_comm (idemAdele S.conjClosure)] using
+    closurePart_radicalElement (S := S) (D := D) 0 (-toAdele (j * 2 : E) • M)
 
 /-! ### Fourier coefficients -/
 
