@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
 public import Mathlib.Topology.Instances.ZMod
+public import TauCeti.Analysis.SpecialFunctions.Complex.Circle.Basic
 import Mathlib.GroupTheory.FiniteAbelian.Duality
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Topology.Compactness.Paracompact
@@ -83,34 +84,14 @@ lemma addOrderOf_mk_inv (hn : 0 < n) : addOrderOf (mk (n : ℚ)⁻¹) = n := by
 /-- Every element of `ℚ/ℤ` is the class of a rational number. -/
 lemma mk_surjective : Surjective mk := mk'_surjective (AddSubgroup.zmultiples 1)
 
-/-- The class of a rational number in `ℚ/ℤ` is zero exactly when the number is an integer. -/
-lemma mk_eq_zero_iff {x : ℚ} : mk x = 0 ↔ ∃ k : ℤ, x = k :=
-  (coe_eq_zero_iff 1).trans (by simp [eq_comm])
-
 /-- The group homomorphism from `ℚ/ℤ`, written multiplicatively, to `ℂˣ` sending the class of `x`
 to `exp (2 π i x)`. -/
 def expUnit : Multiplicative QZ →* ℂˣ :=
-  Circle.toUnits.comp
-    (toCircle_addChar.compAddMonoidHom
-      (map (AddSubgroup.zmultiples 1) (AddSubgroup.zmultiples 1) (Rat.castHom ℝ)
-        (by simp))).toMonoidHom
-
-/-- The value of `expUnit` at the class of a rational number `x` is `exp (2 π i x)`. -/
-lemma coe_expUnit_ofAdd_mk (x : ℚ) :
-    (expUnit (.ofAdd (mk x)) : ℂ) = Complex.exp (x * (2 * Real.pi * Complex.I)) := by
-  change Complex.exp ((2 * Real.pi / 1 * (x : ℝ) : ℝ) * Complex.I) = _
-  congr 1
-  push_cast
-  ring
+  TauCeti.expCircle.toMonoidHom.toHomUnits
 
 /-- The homomorphism `expUnit : x ↦ exp (2 π i x)` from `ℚ/ℤ` to `ℂˣ` has trivial kernel. -/
-lemma expUnit_eq_one_iff {a : Multiplicative QZ} : expUnit a = 1 ↔ a = 1 := by
-  obtain ⟨x, rfl⟩ : ∃ x : ℚ, Multiplicative.ofAdd (mk x) = a := mk_surjective a.toAdd
-  -- `exp (2 π i x) = 1` exactly when the rational number `x` is an integer.
-  rw [Units.ext_iff, coe_expUnit_ofAdd_mk, Units.val_one, Complex.exp_eq_one_iff, ofAdd_eq_one,
-    mk_eq_zero_iff]
-  simp only [mul_left_inj' Complex.two_pi_I_ne_zero]
-  norm_cast
+lemma expUnit_eq_one_iff {a : Multiplicative QZ} : expUnit a = 1 ↔ a = 1 :=
+  Units.ext_iff.trans (TauCeti.expCircle_eq_one_iff (x := a.toAdd))
 
 /-- Let `A`, `B` and `W` be abelian groups with `W` divisible and `f : A →+ B` a homomorphism, not
 necessarily injective. Every homomorphism `u : A →+ W` that kills the kernel of `f` is equal to
