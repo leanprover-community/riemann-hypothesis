@@ -22,7 +22,7 @@ The last gives a condition under which a Hermitian form takes the value `1` on a
 
 ## Main definitions and results
 
-* `New.exists_orthonormal_mul`: the columns of a complex matrix with a left inverse
+* `New.exists_orthonormal_mul`: the columns of a real or complex matrix with a left inverse
   (`New.HasLeftInv`) become orthonormal after right multiplication by an invertible matrix `b` that
   is block triangular for a given weight `wt` on the columns: `b i j = 0` whenever `wt j < wt i`.
 * `New.IsTightFrame`: vectors of `𝔞₀`, with multiplicities, that form a tight frame of `ℂ^Φ`.
@@ -49,12 +49,12 @@ section GramSchmidt
 
 open Matrix InnerProductSpace ComplexOrder
 
-/-- Gram–Schmidt: if the complex n × k matrix X has a left inverse and wt is a weight on its
+/-- Gram–Schmidt: if a real or complex n × k matrix X has a left inverse and wt is a weight on its
 columns with values in a linear order, then there is an invertible matrix b, block upper triangular
 for wt, such that the columns of X b are orthonormal. -/
-lemma New.exists_orthonormal_mul {n k α : Type*} [Fintype n] [Fintype k] [DecidableEq k]
-    [LinearOrder α] (wt : k → α) {X : Matrix n k ℂ} (hX : HasLeftInv X) :
-    ∃ b : GL k ℂ, b.val.BlockTriangular wt ∧ (X * b.val)ᴴ * (X * b.val) = 1 := by
+lemma New.exists_orthonormal_mul {n k α 𝕜 : Type*} [RCLike 𝕜] [Fintype n] [Fintype k]
+    [DecidableEq k] [LinearOrder α] (wt : k → α) {X : Matrix n k 𝕜} (hX : HasLeftInv X) :
+    ∃ b : GL k 𝕜, b.val.BlockTriangular wt ∧ (X * b.val)ᴴ * (X * b.val) = 1 := by
   -- Refine `wt` to a linear order on `k` and normalise the positive-definite Gram matrix `Xᴴ * X`
   -- by an upper-triangular change of basis.
   obtain ⟨L, hL⟩ := hX
