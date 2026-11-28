@@ -240,6 +240,92 @@ lemma TimesBNat.shortExact_wangComplex : (wangComplex Y).ShortExact :=
 abbrev KoszulExact {A : Sort*} {B : Type*} [Sub B] (i : A → B) (g : B → B) : Prop :=
   Injective i ∧ fixedPoints g ⊆ Set.range i ∧ Surjective (g - id)
 
+/-- For `e : ψ ⋙ reprBy E ≅ incl C ⋙ Y`, the projection `Y × ℕ → Y` composed with `e⁻¹` on
+`C × Bℕ`, giving a map `(Y × ℕ) ⟶ Hom(E, ψ ∘ fst −)`. -/
+private abbrev TimesBNat.wangProj {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'} {E : C'}
+    (e : ψ ⋙ reprBy E ≅ incl C ⋙ Y) :
+    (TimesBNat.fst C ⋙ incl C ⋙ Y) ⊗ natWithShift ⟶ TimesBNat.fst C ⋙ ψ ⋙ reprBy E :=
+  SemiCartesianMonoidalCategory.fst _ natWithShift ≫ (TimesBNat.fst C).whiskerLeft e.inv
+
+/-- If `ψ` is acyclic at `E` for `F'` (`IsAcyclicAt ψ F' E`), then pulling back along
+`TimesBNat.wangProj e : Y × ℕ ⟶ Hom(E, ψ ∘ fst −)` is bijective on cohomology. -/
+private lemma TimesBNat.isBijective_wangProj {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'} {E : C'}
+    (e : ψ ⋙ reprBy E ≅ incl C ⋙ Y) (hψ : IsAcyclicAt ψ F' E) :
+    (Comparison.restrict (TimesBNat.fst C ⋙ ψ) F').IsBijective
+      (freeAbMap (Y := reprBy E) (wangProj e)) := by
+  refine (hψ.precomp_of_bijective _ rfl fun D ↦ (e.app D).toEquiv.symm.bijective).trans
+    isLine_fst ?_
+  exact freeAb.hom_ext fun _ _ ↦ rfl
+
+/-- Under `z ↦ homOfValue … (wangProj e) z`, precomposition with `wangSub Y` (the map
+`(x, k) ↦ (γ x, k) - (x, k + 1)`) acts as `F'(g) - 1`. -/
+private lemma TimesBNat.wangSub_comp_homOfValue_wangProj {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'}
+    {E : C'} (e : ψ ⋙ reprBy E ≅ incl C ⋙ Y) {g : E ⟶ E}
+    (h_shift_square : CommSq (ψ.whiskerLeft (reprMap g)) e.hom e.hom (shiftEnd Y 1).asHom)
+    (z : F'.obj E) :
+    wangSub Y ≫ homOfValue (.restrict (TimesBNat.fst C ⋙ ψ) F') (wangProj e) z =
+      homOfValue (.restrict (TimesBNat.fst C ⋙ ψ) F') (wangProj e) (F'.map g z - z) := by
+  let r := homOfValue (.restrict (TimesBNat.fst C ⋙ ψ) F') (wangProj e)
+  have r_app (D : TimesBNat C) (x : (incl C ⋙ Y).obj D.1) (k : natWithShift.obj D) (w : F'.obj E) :
+      (r w).app D (.of (x, k)) = F'.map (e.inv.app D.1 x).down w := homOfValue_app ..
+  refine hom_ext fun D ⟨x, k⟩ ↦ ?_
+  -- the square `h_shift_square` at `x`: `e⁻¹ (t x) = g ≫ e⁻¹ x`, with `t = shiftEnd Y 1`
+  have h_square :
+      (e.inv.app D.1 ((shiftEnd Y 1).asHom.app D.1 x)).down = g ≫ (e.inv.app D.1 x).down :=
+    congrArg (fun α ↦ (α.app D.1 x).down) h_shift_square.vert_inv.w
+  calc (wangSub Y ≫ r z).app D (.of (x, k))
+      = (r z).app D (.of ((shiftEnd Y 1).asHom.app D.1 x, k)) -
+          (r z).app D (.of (x, k.map .succ)) :=
+        (congrArg ((r z).app D) (congrArg₂ HSub.hSub (freeAb.map_of _ _ _)
+          (freeAb.map_of _ _ _))).trans (map_sub ((r z).app D).hom _ _)
+    _ = (r (F'.map g z - z)).app D (.of (x, k)) := by
+        refine (congrArg₂ HSub.hSub (r_app D _ k z) (r_app D x (k.map .succ) z)).trans ?_
+        rw [r_app, h_square, map_sub, F'.map_comp_apply]
+
+/-- Pulling a section `y ∈ F'(ψ A)` back along `q : Y ⟶ Hom(A, −)` and then along
+`wangPow Y : ℤ[Y × ℕ] ⟶ ℤ[Y]` gives the section on `ℤ[Y × ℕ]` associated to `F'(i) y` via
+`wangProj e`. -/
+private lemma TimesBNat.wangPow_comp_homOfValue {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'} {A : C}
+    {E : C'} {q : Y ⟶ TimesBNat.fst C ⋙ reprBy A} (e : ψ ⋙ reprBy E ≅ incl C ⋙ Y)
+    {i : ψ.obj A ⟶ E}
+    (hq_eq_comp : ∀ (D : C) (f : (ψ ⋙ reprBy E).obj D),
+      ψ.map (q ((incl C).obj D) (e.hom D f)).down = i ≫ f.down)
+    (y : (ψ ⋙ F').obj A) :
+    wangPow Y ≫ homOfValue (.restrict _ (ψ ⋙ F')) q y =
+      homOfValue (.restrict (TimesBNat.fst C ⋙ ψ) F') (wangProj e) (F'.map i y) := by
+  refine hom_ext fun D ⟨x, k⟩ ↦ (homOfValue_app (c := .restrict ..) q y D _).trans ?_
+  let shift : (incl C).obj D.1 ⟶ D := (𝟙 D.1, k.down)
+  have h_shift : q.app D ((shiftEnd Y k.down).asHom.app D.1 x) = q.app ((incl C).obj D.1) x := by
+    change q.app D (Y.map shift x) = q.app ((incl C).obj D.1) x
+    simp [shift]
+  have h_comp : ψ.map (q.app ((incl C).obj D.1) x).down = i ≫ (e.inv.app D.1 x).down := by
+    simpa using hq_eq_comp D.1 (e.inv.app D.1 x)
+  have r_app : (homOfValue (.restrict (TimesBNat.fst C ⋙ ψ) F') (wangProj e) (F'.map i y)).app D
+      (.of (x, k)) = F'.map (e.inv.app D.1 x).down (F'.map i y) := homOfValue_app ..
+  change F'.map (ψ.map (q.app D ((shiftEnd Y k.down).asHom.app D.1 x)).down) y = _
+  calc
+    _ = F'.map (i ≫ (e.inv.app D.1 x).down) y := by rw [h_shift, h_comp]
+    _ = _ := (F'.map_comp_apply _ _ _).trans r_app.symm
+
+/-- For a short exact sequence `0 → S.X₁ → S.X₂ → S.X₃ → 0` and coefficients `G`, if all higher
+cohomology of `S.X₁` vanishes, `H^{n+1}(S.X₂, G)` vanishes, and precomposition with `S.f` is
+surjective on `Hom(S.X₂, G) → Hom(S.X₁, G)`, then `H^{n+1}(S.X₃, G)` vanishes. -/
+private lemma subsingleton_H_succ_of_shortExact {D : Type 1} [Category D]
+    {S : ShortComplex (AbFunctor D)} (hS : S.ShortExact) (G : AbFunctor D)
+    (h_high₁ : ∀ m : ℕ, Subsingleton (H S.X₁ G (m + 1)))
+    (h_surj₀ : Surjective fun φ : S.X₂ ⟶ G ↦ S.f ≫ φ)
+    {n : ℕ} (h_high₂ : Subsingleton (H S.X₂ G (n + 1))) :
+    Subsingleton (H S.X₃ G (n + 1)) := by
+  have hf_surj : ∀ m : ℕ, Surjective (H.map G S.f m)
+    | 0, x => by
+      obtain ⟨φ, rfl⟩ : ∃ φ, mk₀ φ = x := (mk₀_bijective ..).surjective x
+      obtain ⟨ψ, rfl⟩ := h_surj₀ φ
+      exact ⟨mk₀ ψ, mk₀_comp_mk₀ _ _⟩
+    | m + 1, x => ⟨0, (h_high₁ m).elim _ x⟩
+  have hg_inj : Injective (H.map G S.g (n + 1)) :=
+    (contravariant hS _).f_injective_of_g_surjective fun m _ ↦ hf_surj m
+  exact ⟨fun _ _ ↦ hg_inj (h_high₂.elim _ _)⟩
+
 /-- Let `Y` be a set-valued functor on `C × Bℕ`, let `ψ : C ⥤ C'`, `A : C` and `E : C'`, and let
 `F'` be an abelian-group-valued functor on `C'`. Let `e` identify the restriction of `Y` to `C` with
 `Hom(E, ψ −)`, let `q : Y → Hom(A, −)` be induced by `i : ψ A → E` (`hq_eq_comp`), and let the
@@ -262,52 +348,17 @@ lemma IsLine.of_acyclic {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'} {A : C} {E 
   -- `h_koszul` gives the cohomology of `Y`.
   let S : ShortComplex (TimesBNat C ⥤ AddCommGrpCat.{1}) := wangComplex Y
   have hS : S.ShortExact := shortExact_wangComplex Y
-  -- `r z` is the section `(x, k) ↦ F'(e⁻¹ x) z` on `S.X₂` (`r_app`). By `isBijective_reprBy_iff`, a
+  -- `r z` is the section `(x, k) ↦ F'(e⁻¹ x) z` on `S.X₂`. By `isBijective_reprBy_iff`, a
   -- comparison from `reprBy E` is bijective iff this map is and the higher cohomology vanishes.
-  let u : (TimesBNat.fst C ⋙ incl C ⋙ Y) ⊗ natWithShift ⟶ TimesBNat.fst C ⋙ ψ ⋙ reprBy E :=
-    SemiCartesianMonoidalCategory.fst _ natWithShift ≫ (TimesBNat.fst C).whiskerLeft e.inv
   let r : F'.obj E →+ (S.X₂ ⟶ TimesBNat.fst C ⋙ ψ ⋙ F') :=
-    homOfValue (.restrict (TimesBNat.fst C ⋙ ψ) F') u
-  -- Restriction along `ψ` composed with the projection from `Y × ℕ`, which `e` makes bijective.
-  have h_restrict : (Comparison.restrict (TimesBNat.fst C ⋙ ψ) F').IsBijective
-      (freeAbMap (Y := reprBy E) u) := by
-    refine (hψ.precomp_of_bijective _ rfl fun D ↦ (e.app D).toEquiv.symm.bijective).trans
-      isLine_fst ?_
-    exact freeAb.hom_ext fun _ _ ↦ rfl
+    homOfValue (.restrict (TimesBNat.fst C ⋙ ψ) F') (wangProj e)
   obtain ⟨hr_bij, h_high⟩ :
       Bijective r ∧ ∀ n : ℕ, Subsingleton (H S.X₂ (TimesBNat.fst C ⋙ ψ ⋙ F') (n + 1)) :=
-    isBijective_reprBy_iff.mp h_restrict
-  have r_app (D : TimesBNat C) (x : (incl C ⋙ Y).obj D.1) (k : natWithShift.obj D) (z : F'.obj E) :
-      (r z).app D (.of (x, k)) = F'.map (e.inv.app D.1 x).down z := homOfValue_app ..
-  -- Under `r`, the map `S.f` acts as `F'.map g - 1` and pull-back from `reprBy A` as `F'.map i`.
-  have hf (z : F'.obj E) : S.f ≫ r z = r (F'.map g z - z) := by
-    refine hom_ext fun D ⟨x, k⟩ ↦ ?_
-    -- the square `h_shift_square` at `x`: `e⁻¹ (t x) = g ≫ e⁻¹ x`, with `t = shiftEnd Y 1`
-    have h_square :
-        (e.inv.app D.1 ((shiftEnd Y 1).asHom.app D.1 x)).down = g ≫ (e.inv.app D.1 x).down :=
-      congrArg (fun α ↦ (α.app D.1 x).down) h_shift_square.vert_inv.w
-    calc (S.f ≫ r z).app D (.of (x, k))
-        = (r z).app D (.of ((shiftEnd Y 1).asHom.app D.1 x, k)) -
-            (r z).app D (.of (x, k.map .succ)) :=
-          (congrArg ((r z).app D) (congrArg₂ HSub.hSub (freeAb.map_of _ _ _)
-            (freeAb.map_of _ _ _))).trans (map_sub ((r z).app D).hom _ _)
-      _ = (r (F'.map g z - z)).app D (.of (x, k)) := by
-          refine (congrArg₂ HSub.hSub (r_app D _ k z) (r_app D x (k.map .succ) z)).trans ?_
-          rw [r_app, h_square, map_sub, F'.map_comp_apply]
-  have hq (y : (ψ ⋙ F').obj A) : S.g ≫ homOfValue (.restrict _ (ψ ⋙ F')) q y = r (F'.map i y) := by
-    refine hom_ext fun D ⟨x, k⟩ ↦ (homOfValue_app (c := .restrict ..) q y D _).trans ?_
-    let shift : (incl C).obj D.1 ⟶ D := (𝟙 D.1, k.down)
-    have h_shift : q.app D ((shiftEnd Y k.down).asHom.app D.1 x) =
-        q.app ((incl C).obj D.1) x := by
-      change q.app D (Y.map shift x) = q.app ((incl C).obj D.1) x
-      simp [shift]
-    have h_comp : ψ.map (q.app ((incl C).obj D.1) x).down =
-        i ≫ (e.inv.app D.1 x).down := by
-      simpa using hq_eq_comp D.1 (e.inv.app D.1 x)
-    change F'.map (ψ.map (q.app D ((shiftEnd Y k.down).asHom.app D.1 x)).down) y = _
-    calc
-      _ = F'.map (i ≫ (e.inv.app D.1 x).down) y := by rw [h_shift, h_comp]
-      _ = _ := (F'.map_comp_apply _ _ _).trans (r_app D x k (F'.map i y)).symm
+    isBijective_reprBy_iff.mp (isBijective_wangProj e hψ)
+  have hf (z : F'.obj E) : S.f ≫ r z = r (F'.map g z - z) :=
+    wangSub_comp_homOfValue_wangProj e h_shift_square z
+  have hq (y : (ψ ⋙ F').obj A) : S.g ≫ homOfValue (.restrict _ (ψ ⋙ F')) q y = r (F'.map i y) :=
+    wangPow_comp_homOfValue e hq_eq_comp y
   obtain ⟨h_inj, h_ker, h_surj⟩ : Injective (F'.map i) ∧
       fixedPoints (F'.map g) ⊆ Set.range (F'.map i) ∧
       Surjective fun z : F'.obj E ↦ F'.map g z - z := h_koszul
@@ -321,16 +372,10 @@ lemma IsLine.of_acyclic {Y : TimesBNat C ⥤ Type 1} {ψ : C ⥤ C'} {A : C} {E 
     obtain ⟨y, rfl⟩ : z ∈ Set.range (F'.map i) := h_ker (sub_eq_zero.mp hz_fixed)
     exact ⟨y, hS.epi_g.left_cancellation _ _ ((hq y).trans hz)⟩
   · -- `S.f` is onto on cohomology in all degrees, so that of `Y` embeds in that of `S.X₂`.
-    have hf_surj : ∀ m : ℕ, Surjective (H.map (TimesBNat.fst C ⋙ ψ ⋙ F') S.f m)
-      | 0, x => by
-        -- a class of degree `0` is some `r (F'.map g z - z)`, the image of `r z`
-        obtain ⟨φ, rfl⟩ : ∃ φ, mk₀ φ = x := (mk₀_bijective ..).surjective x
-        obtain ⟨z, rfl⟩ : ∃ z : F'.obj E, r (F'.map g z - z) = φ := hr_bij.surjective.comp h_surj φ
-        exact ⟨mk₀ (r z), (mk₀_comp_mk₀ _ _).trans (congrArg mk₀ (hf z))⟩
-      | m + 1, x => ⟨0, (h_high m).elim _ x⟩
-    have hg_inj : Injective (H.map (TimesBNat.fst C ⋙ ψ ⋙ F') S.g (n + 1)) :=
-      (contravariant hS _).f_injective_of_g_surjective fun m _ ↦ hf_surj m
-    exact ⟨fun _ _ ↦ hg_inj ((h_high n).elim _ _)⟩
+    refine subsingleton_H_succ_of_shortExact hS _ h_high (fun φ ↦ ?_) (h_high n)
+    -- a class of degree `0` is some `r (F'.map g z - z)`, the image of `r z`
+    obtain ⟨z, rfl⟩ : ∃ z : F'.obj E, r (F'.map g z - z) = φ := hr_bij.surjective.comp h_surj φ
+    exact ⟨r z, hf z⟩
 
 end New.Variety
 
