@@ -578,7 +578,8 @@ lemma pFlat_ne_zero : pFlat ≠ 0 := not_p_dvd_xi ∘ Witt.p_dvd_iff.mpr
 
 /-- The element `p♭ = ξ mod p` of `O^♭` is not a unit, since `ξ` is prime in `A_inf` and a Witt
 vector is a unit exactly when its zeroth coefficient is. -/
-lemma not_isUnit_pFlat : ¬IsUnit pFlat := prime_xi.not_isUnit ∘ isUnit_iff_isUnit_constantCoeff.mpr
+lemma not_isUnit_pFlat : ¬IsUnit pFlat := by
+  simpa [pFlat] using (mt WittVector.isUnit_iff_isUnit_coeff_zero.mpr prime_xi.not_isUnit)
 
 /-- Reduction modulo `m` is kept by tensoring on the left: if `f : M → M'` is reduction modulo `m`
 (`New.Variety.IsReductionMod`: onto, with kernel `m M`), then so is `L ⊗ f`. -/

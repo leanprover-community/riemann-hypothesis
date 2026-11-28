@@ -83,7 +83,9 @@ lemma isUnit_geom_sum {x : Ainf} {m : ℕ} (hx : ¬IsUnit (x - 1)) (hm : ¬p ∣
   -- The sum is `m` modulo `x - 1`, and `A_inf` is `(x - 1)`-adically complete.
   have h_complete : IsAdicComplete (span {x - 1}) Ainf := isAdicComplete_span_singleton hx
   have hm_unit : IsUnit (m : Ainf) := by
-    simp [Ainf.isUnit_iff_isUnit_constantCoeff, CharP.isUnit_natCast_iff (out : p.Prime), hm]
+    rwa [WittVector.isUnit_iff_isUnit_coeff_zero, ← WittVector.constantCoeff_apply,
+      map_natCast,
+      CharP.isUnit_natCast_iff (out : p.Prime)]
   have h_sum : x - 1 ∣ ∑ i ∈ .range m, x ^ i - m := by
     simpa using (Finset.range m).dvd_sum fun i _ ↦ sub_one_dvd_pow_sub_one x i
   exact isUnit_of_dvd_sub hm_unit h_sum

@@ -2,6 +2,7 @@ module
 
 import TauCeti.RingTheory.WittVector.ArtinSchreier
 import TauCeti.RingTheory.WittVector.Complete
+public import TauCeti.RingTheory.WittVector.Units
 public import Mathlib.FieldTheory.IsAlgClosed.Classification
 public import Mathlib.RingTheory.WittVector.Compare
 public import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
@@ -461,12 +462,6 @@ if its zeroth coordinate vanishes. -/
 lemma Witt.p_dvd_iff : ↑p ∣ a ↔ constantCoeff a = 0 := by
   simp [← Ideal.mem_span_singleton, ← ker_constantCoeff]
 
-omit [PerfectRing k p] in
-/-- A Witt vector `a` in W(k), for `k` of characteristic `p`, is a unit if and only if its zeroth
-coordinate is a unit in k. -/
-lemma Ainf.isUnit_iff_isUnit_constantCoeff : IsUnit a ↔ IsUnit (constantCoeff a) :=
-  ⟨fun h ↦ h.map constantCoeff, fun h ↦ ⟨mkUnit h.unit_spec.symm, rfl⟩⟩
-
 /-- Let `F`, `G` be ring endomorphisms of a perfect ring `k` of characteristic `p` and `s₀` the
 reduction of `s ∈ W(k)` modulo `p`. If `x ↦ F x - s₀ * G x` is onto `k`, then
 `b ↦ W(F) b - s * W(G) b` is onto `W(k)`. -/
@@ -563,7 +558,7 @@ lemma constantCoeff_iterate_frobEnd (n : ℕ) :
 
 variable {c a δ y : Ainf}
 
-open Ainf Multiplicative
+open Multiplicative
 
 /-- Let `a ∈ A_inf` divide each of its conjugates `g' • a` under the Galois group `G_p`. Then
 for every `g ∈ G_p` the conjugate `g • a` is associated to `a`. -/
@@ -606,7 +601,7 @@ lemma isUnit_algebraMap_wittCFlat_of_not_p_dvd (h : ¬↑p ∣ a) :
   -- The constant coefficient `a₀` of `a` is not zero, so it is a unit of the field `C^♭`; and a
   -- Witt vector over a perfect field is a unit when its constant coefficient is.
   have h_ne : constantCoeff a ≠ 0 := mt p_dvd_iff.mpr h
-  simp_all [WittCFlat, algebraMap_toAlgebra, isUnit_iff_isUnit_constantCoeff]
+  simp_all [WittCFlat, algebraMap_toAlgebra, WittVector.isUnit_iff_isUnit_coeff_zero]
 
 /-- A Witt vector over a domain of characteristic `p` whose coordinates are fixed by `x ↦ x ^ p` is
 a `p`-adic integer. -/
@@ -670,7 +665,8 @@ lemma toWittResidue_tau : toWittResidue tau = 0 := by
     have h_mu : IsUnit mu := by simpa using h_unit.map frobEnd
     exact (h_mu.map theta).ne_zero theta_mu
   -- so the constant coefficient `ε^{1/p} - 1` of `τ` is not a unit, and `ε^{1/p}` has residue `1`
-  have h_coeff : ¬IsUnit (constantCoeff tau) := mt isUnit_iff_isUnit_constantCoeff.mpr h_tau
+  have h_coeff : ¬IsUnit (constantCoeff tau) := by
+    simpa using (mt WittVector.isUnit_iff_isUnit_coeff_zero.mpr h_tau)
   rw [tau, map_sub, map_one, constantCoeff_apply, teichmuller_coeff_zero] at h_coeff
   have h_res : residue OFlat epsRoot = 1 := by
     have h_zero : residue OFlat (epsRoot - 1) = 0 := by
@@ -711,7 +707,7 @@ lemma toWittResidue_smul_of_isFrob {n : ℕ} (h_isFrob : IsFrob (intQpBar p) (p 
   have h_unit : IsUnit ((ofAdd n, g) • x - x) := (residue_ne_zero_iff_isUnit _).mp h_ne
   -- it is the constant coefficient of a difference of Teichmüller lifts, which is then a unit
   have hx : IsUnit (teichmuller p ((ofAdd n, g) • x) - teichmuller p x) := by
-    rwa [isUnit_iff_isUnit_constantCoeff, map_sub]
+    simpa [WittVector.isUnit_iff_isUnit_coeff_zero, WittVector.sub_coeff_zero] using h_unit
   -- so its image under `θ` has norm at least `1`, against `h_frob` at the point `y₀ = g • x^♯`
   let y₀ : ℂ_[p] := ((g • x.untilt : OC) : ℂ_[p])
   have h_norm_ge : 1 ≤ dist (g⁻¹ • y₀ - y₀ ^ p ^ n) 0 := by
@@ -884,12 +880,15 @@ lemma Ainf.prime_p : Prime (p : Ainf) :=
   (span_singleton_prime (p_ne_zero p OFlat)).mp
     (ker_constantCoeff (k := OFlat) ▸ ker_isPrime constantCoeff)
 
+open Ainf
+
 /-- If `p` does not divide `δ`, every non-unit of `A_inf` lies in the radical of `(p, δ)`. -/
 lemma Ainf.mem_radical_of_not_isUnit (h : ¬IsUnit a) (hδ : ¬↑p ∣ δ) :
     a ∈ radical (span {↑p, δ}) := by
   -- The constant coefficient `a₀` of `a` is a non-unit of `O^♭` and that of `δ` is not zero, so
   -- `δ₀ ∣ a₀ ^ n` for some `n`, which says `a ^ n ∈ (p, δ)`.
-  have h_a0 : ¬IsUnit (constantCoeff a) := mt isUnit_iff_isUnit_constantCoeff.mpr h
+  have h_a0 : ¬IsUnit (constantCoeff a) := by
+    simpa using (mt WittVector.isUnit_iff_isUnit_coeff_zero.mpr h)
   have h_δ0 : constantCoeff δ ≠ 0 := mt p_dvd_iff.mpr hδ
   obtain ⟨n, hn⟩ : ∃ n : ℕ, constantCoeff δ ∣ constantCoeff a ^ n := OFlat.exists_dvd_pow h_a0 h_δ0
   exact ⟨n, by rwa [mem_span_pair_iff, map_pow]⟩
@@ -945,7 +944,8 @@ lemma Ainf.shiftDiff_surjective (h : ¬IsUnit a) : Surjective (shiftDiff Ainf a)
   have h_perfect : PerfectRing (ℕ → OFlat) p := ⟨(bijective_frobenius _ p).comp_left⟩
   let shift : (ℕ → OFlat) →+* (ℕ → OFlat) := .pi fun n ↦ evalRingHom _ (n + 1)
   have h_mod_p : Surjective (shiftDiff OFlat (constantCoeff a)) :=
-    OFlat.shiftDiff_surjective_of_not_isUnit (mt isUnit_iff_isUnit_constantCoeff.mpr h)
+    OFlat.shiftDiff_surjective_of_not_isUnit
+      (by simpa using (mt WittVector.isUnit_iff_isUnit_coeff_zero.mpr h))
   -- the Witt vector over `ℕ → O^♭` whose `i`-th coordinate is `n ↦ (b n).coeff i`
   let B : WittVector p (ℕ → OFlat) := WittVector.mk p fun i n ↦ (b n).coeff i
   obtain ⟨y, hy⟩ := exists_map_sub_mul_map_eq (a := B) 1 shift

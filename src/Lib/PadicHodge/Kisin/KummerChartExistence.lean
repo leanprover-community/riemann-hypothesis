@@ -154,7 +154,7 @@ omit Γ
 of their Teichmüller lifts is a unit of W(F_{p^f}). -/
 lemma isUnit_teichmuller_sub {a b : flatFq f} (h_ne : a ≠ b) :
     IsUnit (teichmuller p a - teichmuller p b) := by
-  simpa [Ainf.isUnit_iff_isUnit_constantCoeff, map_sub, sub_eq_zero]
+  simpa [WittVector.isUnit_iff_isUnit_coeff_zero, WittVector.sub_coeff_zero, sub_eq_zero]
 
 instance : HasEnoughRootsOfUnity (flatFq f) (p ^ f.val - 1) :=
   of_card_le (by simp [← card_flatFq, ← Nat.card_units])
