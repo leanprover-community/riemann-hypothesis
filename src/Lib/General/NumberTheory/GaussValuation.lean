@@ -5,6 +5,7 @@ import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
 import Mathlib.RingTheory.Valuation.LocalSubring
 import Mathlib.Topology.Algebra.Valued.LocallyCompact
 import TauCeti.Algebra.Ring.GeomSum
+import TauCeti.RingTheory.RootsOfUnity.Ultrametric
 public import Lib.GaloisRep.Main.SelmerModules
 import Lib.General.NumberTheory.PadicLimitsValuation
 
@@ -442,7 +443,8 @@ lemma ellVal_sub_one_of_isPrimitiveRoot {h : ℕ} {ζ : intQpBar ℓ}
     (hζ : IsPrimitiveRoot ζ (ℓ ^ (h + 1))) :
     ellVal (ζ - 1).val = (Nat.totient (ℓ ^ (h + 1)) : ℝ≥0∞)⁻¹ := by
   have h_norm : ‖(ζ.val - 1) ^ Nat.totient (ℓ ^ (h + 1))‖ = ‖(ℓ : PadicAlgCl ℓ)‖ := by
-    rw [norm_pow, Period.norm_zeta_sub_one_pow (IsPrimitiveRoot.coe_submonoidClass_iff.2 hζ)]
+    rw [norm_pow,
+      (IsPrimitiveRoot.coe_submonoidClass_iff.2 hζ).norm'_sub_one_pow_totient_prime_pow]
   refine ENNReal.eq_inv_of_mul_eq_one_left ?_
   simpa [ellVal_pow, ellVal_ell, mul_comm] using ellVal_congr_norm h_norm
 

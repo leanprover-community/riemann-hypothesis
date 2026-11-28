@@ -5,6 +5,7 @@ import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.RingTheory.RootsOfUnity.Ultrametric
 public import Lib.PadicHodge.Crystalline.Basic
 public import Lib.General.Topology
 import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
@@ -470,7 +471,8 @@ lemma exists_inertia_cyclotomicGp_eq (a : ℕ) (h_cop : p.Coprime a) :
     simpa [T, NeZero.pos] using hξ.pow_of_coprime a (h_cop.symm.pow_right _)
   suffices ∃ g ∈ inertiaGroup (Gp p) (intQpBar p), g • (ξ - 1) = ξ ^ a - 1 by simpa
   refine exists_inertia_smul_eq_of_orbit_subset isUniformizer_ell card_T ?_ (fun g ↦ ?_) mem_T
-  · simp [← map_pow, le_antisymm_iff, valuation_intQpBar_le_iff, norm_zeta_sub_one_pow hξ]
+  · simp [← map_pow, le_antisymm_iff, valuation_intQpBar_le_iff,
+      hξ.norm'_sub_one_pow_totient_prime_pow]
   · simp [T, hξ.map_of_injective, AlgEquiv.injective, NeZero.pos]
 
 end CyclotomicRamification

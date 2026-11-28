@@ -3,8 +3,6 @@ module
 public import Lib.General.Algebra.AbsIntegrallyClosed
 public import Lib.General.Algebra.AdicCompletion
 public import TauCeti.Analysis.Normed.Ring.Ultra
-
-import TauCeti.RingTheory.RootsOfUnity.Ultrametric
 public import Lib.ClassField.Places.GaloisDefs
 public import Mathlib.RingTheory.Perfectoid.FontaineTheta
 public import TauCeti.NumberTheory.Padics.AlgebraicClosure.Basic
@@ -315,13 +313,6 @@ open Polynomial Finset IsAlgClosed IsPrimitiveRoot IsUltrametricDist Multiset Na
 namespace New.Period
 
 variable {p : ℕ} [Fact p.Prime]
-  {F : Type*} [NormedField F] [IsUltrametricDist F] {ζ : F}
-
-/-- If `ζ` is a primitive `p ^ (m + 1)`-th root of unity in an ultrametric normed field `F`, then
-`‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖p‖`, where `φ (p ^ (m + 1)) = p ^ m (p - 1)`. -/
-lemma norm_zeta_sub_one_pow {m : ℕ} (hζ : IsPrimitiveRoot ζ (p ^ (m + 1))) :
-    ‖ζ - 1‖ ^ φ (p ^ (m + 1)) = ‖(p : F)‖ :=
-  hζ.norm'_sub_one_pow_totient_prime_pow
 
 /-- Let K be algebraically closed, L a normed field over K, f in K[X] with leading coefficient
 a, x in L, r ≥ 0. If ‖x − w‖ ≥ r for every root w of f, then ‖f(x)‖ ≥ ‖a‖ r^(deg f). -/

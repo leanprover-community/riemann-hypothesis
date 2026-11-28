@@ -90,7 +90,6 @@ Each declaration below adapts or closely follows, in whole or in part and with c
 | `src/Lib/PadicHodge/Crystalline/HodgeTateJumps.lean` | `Matrix.det_eq_mul_det_updateCol_of_mulVec_eq_smul_of_apply_eq_one` | `Matrix.mulVec_cramer` | `Mathlib/LinearAlgebra/Matrix/Adjugate.lean` |
 | `src/Lib/PadicHodge/Kisin/Modules.lean` | `New.Lift.KummerChart.JumpLattice.ainfLattice_eq_span_basis` | `Module.Basis.ofZLatticeBasis` | `Mathlib/Algebra/Module/ZLattice/Basic.lean` |
 | `src/Lib/PadicHodge/PeriodRings/Ainf.lean` | `New.Period.smul_frobEnd` | `MulAction.prodEquiv` | `Mathlib/Algebra/Group/Action/Prod.lean` |
-| `src/Lib/PadicHodge/PeriodRings/AxTheorem.lean` | `New.Period.norm_zeta_sub_one_pow` | `IsCyclotomicExtension.Rat.associated_zeta_sub_one_pow_prime` | `Mathlib/NumberTheory/NumberField/Cyclotomic/Ideal.lean` |
 | `src/Lib/PadicHodge/PeriodRings/AxTheorem.lean` | `New.Variety.wittVector_ringHom_ext_of_teichmuller` | `WittVector.eq_of_apply_teichmuller_eq` | `Mathlib/RingTheory/WittVector/TeichmullerSeries.lean` |
 | `src/Lib/PadicHodge/PeriodRings/AxTheorem.lean` | `intQpBar` | `PadicComplexInt` | `Mathlib/NumberTheory/Padics/Complex.lean` |
 | `src/Lib/PadicHodge/PeriodRings/AxTheorem.lean` | instance `IsDomain (PreTilt R p)` | `PreTilt.isDomain` | `Mathlib/RingTheory/Perfection.lean` |
