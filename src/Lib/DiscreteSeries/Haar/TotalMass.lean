@@ -3,19 +3,17 @@ module
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import Mathlib.Order.CompletePartialOrder
 import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.ExtremallyDisconnected
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected
+import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup.NormBall
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Haar.CayleyChart
 public import Lib.DiscreteSeries.Haar.GramCoordinates
 import Lib.Adelic.Witt.WittTheorem
 import Lib.DiscreteSeries.Haar.GramPolar
 import Lib.General.Analysis.GaussianIntegral
-import Lib.General.Analysis.PackingAndSobolev
-import Lib.General.Measure.IntegralOperators
 
 /-!
 # Haar measure on U(J): U(n) has mass one, covering bounds for norm balls
@@ -386,6 +384,51 @@ lemma New.measure_sublevel_ne_zero (ν : Measure S) [TopologicalSpace S] [ν.IsO
 
 namespace New.DiscreteSeries
 
+/-- Conjugate transpose sends `U J` to itself for a hermitian involution `J`, reversing
+multiplication and preserving operator norms. -/
+private def conjTransU (g : U J) : U J :=
+  ⟨⟨g.val.val.conjTranspose, (g.val⁻¹.val).conjTranspose,
+      by rw [← Matrix.conjTranspose_mul, Units.inv_mul, Matrix.conjTranspose_one],
+      by rw [← Matrix.conjTranspose_mul, Units.mul_inv, Matrix.conjTranspose_one]⟩,
+    Matrix.mem_unitaryGroupOf_iff.mpr <| by
+      have hinv : g.val.val * (J * g.val.val.conjTranspose * J) = 1 := by
+        rw [← U.coe_inv (IsHermitianInvolution.mul_self (J := J)) g]; exact g.val.mul_inv
+      simpa [← Matrix.star_eq_conjTranspose, Matrix.mul_assoc,
+        IsHermitianInvolution.mul_self (J := J)] using congrArg (· * J) hinv⟩
+
+/-- Opposite-group homomorphism `s ↦ (j s)ᴴ` turning right translation into left translation. -/
+private def conjTransHom (j : S →* U J) : Sᵐᵒᵖ →* U J where
+  toFun s := conjTransU (j s.unop)
+  map_one' := Subtype.ext (Units.ext (by simp [conjTransU]))
+  map_mul' a b := Subtype.ext (Units.ext (by simp [conjTransU, Matrix.conjTranspose_mul]))
+
+omit [MeasurableSpace S] in
+private lemma norm_conjTransHom_mul (j : S →* U J) (y : U J) (s : S) :
+    ‖((conjTransU y * conjTransHom j (.op s) : U J) : Matrix n n ℂ)‖ =
+      ‖((j s * y : U J) : Matrix n n ℂ)‖ := by
+  simpa [conjTransHom, conjTransU, Matrix.star_eq_conjTranspose, Matrix.conjTranspose_mul] using
+    norm_star ((j s * y : U J) : Matrix n n ℂ)
+
+omit [MeasurableSpace S] in
+private lemma norm_conjTransHom_sub_one (j : S →* U J) (s : S) :
+    ‖((conjTransHom j (.op s) : U J) : Matrix n n ℂ) - 1‖ = ‖(j s : Matrix n n ℂ) - 1‖ := by
+  simpa [conjTransHom, conjTransU, Matrix.star_eq_conjTranspose] using
+    norm_star ((j s : Matrix n n ℂ) - 1)
+
+private def opMeasurableEquiv (S : Type) [MeasurableSpace S] : S ≃ᵐ Sᵐᵒᵖ where
+  toEquiv := MulOpposite.opEquiv
+  measurable_toFun := measurable_mul_op
+  measurable_invFun := measurable_mul_unop
+
+private lemma isMulLeftInvariant_map_op (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant] :
+    (ν.map (opMeasurableEquiv S)).IsMulLeftInvariant := by
+  refine ⟨fun a ↦ ?_⟩
+  let e := opMeasurableEquiv S
+  rw [Measure.map_map (measurable_const_mul a) e.measurable,
+    show (fun x : Sᵐᵒᵖ ↦ a * x) ∘ e = e ∘ (· * a.unop) from
+      funext fun s ↦ (MulOpposite.op_mul s a.unop).symm,
+    ← Measure.map_map e.measurable (measurable_mul_const a.unop), map_mul_right_eq_self ν a.unop]
+
 /-- Covering bound. For `D, R ≥ 1` and `3 D R² ≤ K`, the set where `‖j s * y‖ ≤ R` has measure
 at most `K ^ (2 n²)` times the measure of the set where `‖j s - 1‖ ≤ 1 / D`. Here `ν` is a
 right invariant measure on `S`, `j` is a homomorphism to the unitary group `U J` of a hermitian
@@ -394,42 +437,31 @@ theorem measure_ball_le_covering (ν : Measure S) [MeasurableMul S] [ν.IsMulRig
     (j : S →* U J) (y : U J) {D R K : ℝ} (hD : 1 ≤ D) (hR : 1 ≤ R) (hK : 3 * D * R ^ 2 ≤ K) :
     ν {s : S | ‖((j s * y : U J) : Matrix n n ℂ)‖ ≤ R} ≤
       ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹} := by
-  -- Among the `s` with `‖j s * y‖ ≤ R` take a maximal family `M` whose matrices `j s * y` are
-  -- `1 / (D R)`-separated. The packing bound counts `M`, and by maximality the right translates
-  -- of the small ball `B` by the points of `M` cover the set on the left.
-  let f (s : S) : Matrix n n ℂ := ((j s * y : U J) : Matrix n n ℂ)
-  set B : Set S := {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹}
-  let IsFar (s t : {s : S // ‖f s‖ ≤ R}) : Prop := D⁻¹ / R ≤ ‖f s - f t‖
-  obtain ⟨M, h_sep, h_max⟩ : ∃ M, IsMaxChain IsFar M := ⟨maxChain IsFar, maxChain_spec⟩
-  have h_card : M.encard ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) := by
-    have h_pairwise : M.Pairwise IsFar := by simpa [IsChain, IsFar, norm_sub_rev] using h_sep
-    have h_base : 1 + 2 * R / (D⁻¹ / R) ≤ K :=
-      calc _ = 1 + 2 * D * R ^ 2 := by field
-        _ ≤ K := by linarith [show 1 ≤ D * R ^ 2 by bound]
-    calc _ ≤ ENNReal.ofReal ((1 + 2 * R / (D⁻¹ / R)) ^ Module.finrank ℝ (Matrix n n ℂ)) :=
-          encard_le_of_separated (by positivity) (by positivity) h_pairwise fun s _ ↦ s.property
-      _ ≤ ENNReal.ofReal (K ^ Module.finrank ℝ (Matrix n n ℂ)) := by gcongr
-      _ = _ := by simp [Module.finrank_matrix, ← sq, mul_comm 2]
-  have : Finite M := Set.Finite.to_subtype (by simpa using h_card.trans_lt ofReal_lt_top)
-  have h_cover : {s : S | ‖f s‖ ≤ R} ⊆ ⋃ k : M, (· * (k : S)⁻¹) ⁻¹' B := by
-    intro g hg
-    by_contra h_not_mem
-    -- Otherwise `g` is far from all of `M`: `j (g k⁻¹) - 1 = (f g - f k) (j k * y)⁻¹`, and an
-    -- element of `U J` has the norm of its inverse.
-    have h_far (k : M) : IsFar ⟨g, hg⟩ k := (div_le_iff₀ (by positivity)).2 <|
-      calc D⁻¹ ≤ ‖(j (g * (k : S)⁻¹) : Matrix n n ℂ) - 1‖ :=
-          le_of_not_ge fun h ↦ h_not_mem (Set.mem_iUnion.2 ⟨k, h⟩)
-        _ = ‖(f g - f k) * (((j k * y)⁻¹ : U J) : Matrix n n ℂ)‖ := by simp [f, sub_mul, mul_assoc]
-        _ ≤ ‖f g - f k‖ * R := by grw [norm_mul_le, U.norm_inv, k.val.property]
-    -- Maximality puts `g` into `M`, so `g` is far from itself.
-    have h_mem : ⟨g, hg⟩ ∈ M := Set.insert_eq_self.1
-      (h_max (h_sep.insert fun k hk _ ↦ .inl (h_far ⟨k, hk⟩)) (Set.subset_insert ..)).symm
-    have h_self : D⁻¹ / R ≤ 0 := by simpa [IsFar] using h_far ⟨_, h_mem⟩
-    exact h_self.not_gt (by positivity)
-  calc ν {s : S | ‖f s‖ ≤ R} ≤ ∑' k : M, ν ((· * (k : S)⁻¹) ⁻¹' B) :=
-        (measure_mono h_cover).trans (measure_iUnion_le _)
-    _ = M.encard * ν B := by simp only [measure_preimage_mul_right, tsum_set_const]
-    _ ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν B := by gcongr
+  -- Pass to `Sᵐᵒᵖ` with `s ↦ (j s)ᴴ` so right invariance becomes left invariance, then apply
+  -- Tau Ceti's covering bound `Matrix.unitaryGroupOf.measure_setOf_norm_mul_le_le`.
+  have : (ν.map (opMeasurableEquiv S)).IsMulLeftInvariant := isMulLeftInvariant_map_op ν
+  let e := opMeasurableEquiv S
+  have hcov := Matrix.unitaryGroupOf.measure_setOf_norm_mul_le_le (ν.map e)
+    (IsHermitianInvolution.mem_unitary (J := J)) (conjTransHom j) (conjTransU y)
+    (R := R) (ε := D⁻¹) (by positivity)
+  have h1 : e ⁻¹' {s : Sᵐᵒᵖ | ‖((conjTransU y * conjTransHom j s : U J) : Matrix n n ℂ)‖ ≤ R} =
+      {s : S | ‖((j s * y : U J) : Matrix n n ℂ)‖ ≤ R} :=
+    Set.ext fun s ↦ by
+      change ‖((conjTransU y * conjTransHom j (.op s) : U J) : Matrix n n ℂ)‖ ≤ R ↔ _
+      rw [norm_conjTransHom_mul]; rfl
+  have h2 : e ⁻¹' {s : Sᵐᵒᵖ | ‖((conjTransHom j s : U J) : Matrix n n ℂ) - 1‖ ≤ D⁻¹} =
+      {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹} :=
+    Set.ext fun s ↦ by
+      change ‖((conjTransHom j (.op s) : U J) : Matrix n n ℂ) - 1‖ ≤ D⁻¹ ↔ _
+      rw [norm_conjTransHom_sub_one]; rfl
+  rw [← h1, ← h2, ← e.map_apply, ← e.map_apply]
+  refine hcov.trans ?_
+  have hbase : 1 + 2 * R ^ 2 / D⁻¹ ≤ K :=
+    calc 1 + 2 * R ^ 2 / D⁻¹ = 1 + 2 * D * R ^ 2 := by field
+      _ ≤ K := by linarith [show 1 ≤ D * R ^ 2 by bound]
+  rw [show Module.finrank ℝ (Matrix n n ℂ) = 2 * card n ^ 2 by
+    simp [Module.finrank_matrix, ← sq, mul_comm 2]]
+  gcongr
 
 /-- For a proper homomorphism `j` to `U J` and a measure `ν` that is finite on compact sets, the
 ball `‖j s - 1‖ ≤ R` in the operator norm has finite measure. -/
@@ -439,6 +471,80 @@ lemma measure_ball_ne_top_of_isProperMap (ν : Measure S)
   have h_eq : {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ R} = j ⁻¹' Metric.closedBall 1 R :=
     Set.ext fun s ↦ (mem_closedBall_iff_norm (b := (j s : Matrix n n ℂ))).symm
   simpa only [h_eq] using (hj.isCompact_preimage (isCompact_closedBall 1 R)).measure_ne_top
+
+/-- The bound of `integral_decay_le` for the lower Lebesgue integral: for a proper `j : S →* U J`,
+`ν` right invariant and finite on compact sets, `n ≥ 1` and `c > 8 n²`, the integral of
+`(2 / ‖j s * y‖) ^ c` is at most `16 ^ c` times the measure of the set where `‖j s - 1‖ ≤ 1`. -/
+theorem lintegral_decay_le (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
+    {j : S →* U J} [TopologicalSpace S] [IsFiniteMeasureOnCompacts ν] [BorelSpace S] [Nonempty n]
+    (hj : IsProperMap j) {c : ℕ} (hc : 8 * card n ^ 2 < c) (y : U J) :
+    ∫⁻ s : S, ENNReal.ofReal ((2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ∂ν ≤
+      ENNReal.ofReal (16 ^ c) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
+  -- Pass to `Sᵐᵒᵖ` with `s ↦ (j s)ᴴ` and apply Tau Ceti's `lintegral_norm_mul_rpow_neg_le`.
+  have : (ν.map (opMeasurableEquiv S)).IsMulLeftInvariant := isMulLeftInvariant_map_op ν
+  have : OpensMeasurableSpace Sᵐᵒᵖ :=
+    ⟨MeasurableSpace.generateFrom_le fun _ hs ↦
+      (hs.preimage MulOpposite.continuous_op).measurableSet⟩
+  let e := opMeasurableEquiv S
+  have hcont : Continuous (conjTransHom j) :=
+    Continuous.subtype_mk (Units.continuous_iff.mpr
+      ⟨show Continuous fun s : Sᵐᵒᵖ ↦ star (j s.unop : Matrix n n ℂ) from
+        continuous_star.comp (Units.continuous_val.comp
+          (continuous_subtypeVal.comp (hj.continuous.comp MulOpposite.continuous_unop))),
+       show Continuous fun s : Sᵐᵒᵖ ↦ star ((j s.unop).val⁻¹.val : Matrix n n ℂ) from
+        continuous_star.comp (Units.continuous_coe_inv.comp
+          (continuous_subtypeVal.comp (hj.continuous.comp MulOpposite.continuous_unop)))⟩) _
+  have hdim : Module.finrank ℝ (Matrix n n ℂ) = 2 * card n ^ 2 := by
+    simp [Module.finrank_matrix, ← sq, mul_comm 2]
+  have hA : 2 * (Module.finrank ℝ (Matrix n n ℂ) : ℝ) < (c : ℝ) := by
+    rw [hdim]; exact_mod_cast (by lia : 2 * (2 * card n ^ 2) < c)
+  have hlin := Matrix.unitaryGroupOf.lintegral_norm_mul_rpow_neg_le (ν.map e)
+    (IsHermitianInvolution.mem_unitary (J := J)) hcont (conjTransU y) hA
+  have hsplit (s : S) :
+      ENNReal.ofReal ((2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) =
+        ENNReal.ofReal ((2 : ℝ) ^ c) *
+          ENNReal.ofReal (‖((conjTransU y * conjTransHom j (e s) : U J) : Matrix n n ℂ)‖ ^
+            (-(c : ℝ))) := by
+    rw [← ENNReal.ofReal_mul (by positivity), show e s = .op s from rfl, norm_conjTransHom_mul,
+      Real.rpow_neg (norm_nonneg _), Real.rpow_natCast, div_pow, div_eq_mul_inv]
+  have h2 : e ⁻¹' {s : Sᵐᵒᵖ | ‖((conjTransHom j s : U J) : Matrix n n ℂ) - 1‖ ≤ 1} =
+      {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} :=
+    Set.ext fun s ↦ by
+      change ‖((conjTransHom j (.op s) : U J) : Matrix n n ℂ) - 1‖ ≤ 1 ↔ _
+      rw [norm_conjTransHom_sub_one]; rfl
+  have hconst : (2 : ℝ) ^ c *
+      (3 ^ Module.finrank ℝ (Matrix n n ℂ) * (c : ℝ) /
+        ((c : ℝ) - 2 * Module.finrank ℝ (Matrix n n ℂ))) ≤ 16 ^ c := by
+    rw [hdim]
+    set d : ℕ := 2 * card n ^ 2
+    have hdiv : (c : ℝ) / ((c : ℝ) - 2 * (d : ℝ)) ≤ 3 := by
+      have hc_real : (4 * d : ℝ) < c := by exact_mod_cast (show 4 * d < c by lia)
+      rw [div_le_iff₀ (by linarith)]; linarith
+    calc (2 : ℝ) ^ c * (3 ^ d * (c : ℝ) / ((c : ℝ) - 2 * (d : ℝ)))
+        = (2 : ℝ) ^ c * (3 ^ d * ((c : ℝ) / ((c : ℝ) - 2 * (d : ℝ)))) := by ring
+      _ ≤ (2 : ℝ) ^ c * (3 ^ d * 3) := by gcongr
+      _ ≤ (2 : ℝ) ^ c * 3 ^ c := by
+          grw [← pow_succ, pow_le_pow_right₀ (by norm_num) (show d + 1 ≤ c by lia)]
+      _ ≤ 16 ^ c := by grw [← mul_pow, show (2 * 3 : ℝ) ≤ 16 by norm_num]
+  have hmeas : Measurable (fun s : Sᵐᵒᵖ ↦ ENNReal.ofReal
+      (‖((conjTransU y * conjTransHom j s : U J) : Matrix n n ℂ)‖ ^ (-(c : ℝ)))) :=
+    (((Units.continuous_val.comp (continuous_subtypeVal.comp
+      (continuous_const.mul hcont))).norm.measurable).pow_const _).ennreal_ofReal
+  calc ∫⁻ s : S, ENNReal.ofReal ((2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ∂ν
+      = ENNReal.ofReal ((2 : ℝ) ^ c) *
+          ∫⁻ s : Sᵐᵒᵖ, ENNReal.ofReal
+            (‖((conjTransU y * conjTransHom j s : U J) : Matrix n n ℂ)‖ ^ (-(c : ℝ)))
+              ∂(ν.map e) := by
+        simp only [hsplit]
+        rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, ← lintegral_map hmeas e.measurable]
+    _ ≤ ENNReal.ofReal ((2 : ℝ) ^ c) *
+          (ENNReal.ofReal (3 ^ Module.finrank ℝ (Matrix n n ℂ) * (c : ℝ) /
+            ((c : ℝ) - 2 * Module.finrank ℝ (Matrix n n ℂ))) *
+            (ν.map e) {s : Sᵐᵒᵖ | ‖((conjTransHom j s : U J) : Matrix n n ℂ) - 1‖ ≤ 1}) := by
+        gcongr
+    _ ≤ ENNReal.ofReal (16 ^ c) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), ← h2, ← e.map_apply]
+        gcongr
 
 /-- Let `J` be a hermitian involution of size `n ≥ 1`, let `j : S →* U J` be proper, let `ν` be
 right invariant and finite on compact sets, and let `c > 8 n²` be a natural number. Then
@@ -450,52 +556,20 @@ theorem integral_decay_le (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvar
     Integrable (fun s : S ↦ (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ν ∧
       ∫ s : S, (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c ∂ν ≤
         16 ^ c * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
-  -- By `measure_ball_le_covering` with `D = 1`, the set `‖j s * y‖ ≤ R` has measure at most
-  -- `(3 R²) ^ (2 n²)` times that of `‖j s - 1‖ ≤ 1`. As `‖j s * y‖ ≥ 1` and `c ≤ 3 (c - 4 n²)`,
-  -- integration by layers gives the factor `3 ^ (2 n²) * 3`.
-  let N (s : S) : ℝ := ‖((j s * y : U J) : Matrix n n ℂ)‖
-  have h_layers (R : ℝ) (hR : 1 ≤ R) : ν {s : S | N s ≤ R} ≤
-      ENNReal.ofReal ((3 * 1 * R ^ 2) ^ (2 * card n ^ 2)) *
-        ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1⁻¹} :=
-    measure_ball_le_covering ν j y le_rfl hR le_rfl
-  have hc_real : 8 * (card n : ℝ) ^ 2 < c := mod_cast hc
-  have h_exp : (2 : ℕ) * (2 * card n ^ 2 : ℕ) < (c : ℝ) := mod_cast by lia
-  have h_factor : (c : ℝ) ≤ 3 * (c - (2 : ℕ) * (2 * card n ^ 2 : ℕ)) := by grind
-  obtain ⟨h_int, h_le⟩ : Integrable (fun s : S ↦ N s ^ (-c : ℝ)) ν ∧
-      ∫ s : S, N s ^ (-c : ℝ) ∂ν ≤
-        (3 * 1) ^ (2 * card n ^ 2) * 3 * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1⁻¹} :=
-    integral_rpow_neg_le_of_measure_le (Continuous.measurable (by fun_prop)) (fun _ ↦ one_le_norm _)
-      (by norm_num) (measure_ball_ne_top_of_isProperMap ν hj 1⁻¹) h_layers h_exp h_factor
-  have h_split (s : S) :
-      (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c = 2 ^ c * N s ^ (-c : ℝ) := by
-    rw [Real.rpow_neg (norm_nonneg _), Real.rpow_natCast, div_pow, div_eq_mul_inv]
-  have h_const : (2 : ℝ) ^ c * (3 ^ (2 * card n ^ 2) * 3) ≤ 16 ^ c :=
-    calc _ ≤ (2 : ℝ) ^ c * 3 ^ c := by
-          grw [← pow_succ, pow_le_pow_right₀ (by norm_num) (show 2 * card n ^ 2 + 1 ≤ c by lia)]
-      _ ≤ 16 ^ c := by grw [← mul_pow, show (2 * 3 : ℝ) ≤ 16 by norm_num]
-  simp only [h_split]
-  refine ⟨h_int.const_mul _, ?_⟩
-  calc ∫ s : S, 2 ^ c * N s ^ (-c : ℝ) ∂ν
-      ≤ 2 ^ c * (3 ^ (2 * card n ^ 2) * 3) * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
-        grw [integral_const_mul, h_le, mul_one, inv_one, ← mul_assoc]
-    _ ≤ 16 ^ c * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by gcongr
-
-/-- The bound of `integral_decay_le` for the lower Lebesgue integral: for a proper `j : S →* U J`,
-`ν` right invariant and finite on compact sets, `n ≥ 1` and `c > 8 n²`, the integral of
-`(2 / ‖j s * y‖) ^ c` is at most `16 ^ c` times the measure of the set where `‖j s - 1‖ ≤ 1`. -/
-theorem lintegral_decay_le (ν : Measure S) [MeasurableMul S] [ν.IsMulRightInvariant]
-    {j : S →* U J} [TopologicalSpace S] [IsFiniteMeasureOnCompacts ν] [BorelSpace S] [Nonempty n]
-    (hj : IsProperMap j) {c : ℕ} (hc : 8 * card n ^ 2 < c) (y : U J) :
-    ∫⁻ s : S, ENNReal.ofReal ((2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ∂ν ≤
-      ENNReal.ofReal (16 ^ c) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
-  obtain ⟨h_int, h_le⟩ := integral_decay_le ν hj hc y
-  calc _ = ENNReal.ofReal (∫ s : S, (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c ∂ν) :=
-        (ofReal_integral_eq_lintegral_ofReal h_int (.of_forall fun s ↦ by positivity)).symm
-    _ ≤ ENNReal.ofReal (16 ^ c * ν.real {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1}) :=
-        ENNReal.ofReal_le_ofReal h_le
-    _ = ENNReal.ofReal (16 ^ c) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} := by
-        rw [ENNReal.ofReal_mul (by positivity),
-          ofReal_measureReal (measure_ball_ne_top_of_isProperMap ν hj 1)]
+  have hlin := lintegral_decay_le ν hj hc y
+  have hfin : ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ 1} ≠ ⊤ :=
+    measure_ball_ne_top_of_isProperMap ν hj 1
+  have hcont : Continuous (fun s : S ↦ (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) :=
+    (continuous_const.div (by fun_prop) fun s ↦ (zero_lt_one.trans_le (one_le_norm _)).ne').pow c
+  have hint : Integrable (fun s : S ↦ (2 / ‖((j s * y : U J) : Matrix n n ℂ)‖) ^ c) ν := by
+    refine ⟨hcont.measurable.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_ofReal (.of_forall fun s ↦ by positivity)]
+    exact hlin.trans_lt (by finiteness)
+  refine ⟨hint, ?_⟩
+  rw [← ENNReal.ofReal_le_ofReal_iff (by positivity),
+    ofReal_integral_eq_lintegral_ofReal hint (.of_forall fun s ↦ by positivity),
+    ENNReal.ofReal_mul (by positivity), ofReal_measureReal hfin]
+  exact hlin
 
 end New.DiscreteSeries
 
