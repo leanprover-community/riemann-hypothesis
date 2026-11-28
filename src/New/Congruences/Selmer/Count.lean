@@ -193,7 +193,9 @@ lemma mem_selmerModule_erase (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (ha : a
   obtain ⟨side, B, -, h_side⟩ := exists_conj_side_detects (nsmul_quot_eq_zero ha)
     h_aux.isPlaceOver h_aux.notMem h_unr hv₀
   rw [h_tame] at h_side
-  exact (h_side z hz (T.apply_first_tameGenerator_eq_zero_of_mem_tiedSelmer hp hz side)).1
+  obtain ⟨h_cocycle, -, -, h_lc⟩ := mem_selmerModule_iff.1 hz
+  exact (h_side z h_cocycle h_lc
+    (T.apply_first_tameGenerator_eq_zero_of_mem_tiedSelmer hp hz side)).1
 
 open scoped Classical in
 /-- The setting of global duality for the tied Selmer group modulo `a`: the module `T / a`, the
@@ -312,11 +314,11 @@ lemma exists_length_localCocycles_tied_le (hp : IsTiedPrimes ℓ S₀ V W N P₀
   have h_detects : ∀ c ∈ Z, c (idOrConjInv side (x w).1.frob) = 0 →
       ∀ g : decompGroup Gal(Ω/E) B, c g = 0 := by
     intro c hc hφ
-    obtain ⟨-, -, h_obeys : c ∈ obeying (tieRelations J x i) (QuotSpan a), -⟩ :=
+    obtain ⟨h_cocycle, -, h_obeys : c ∈ obeying (tieRelations J x i) (QuotSpan a), h_lc⟩ :=
       mem_selmerModule_iff.1 (mem_selmerModule_of_subset hc Set.subset_union_right .rfl)
     have hγ : c (idOrConjInv side (x w).1.tameGenerator) = 0 := by
       rw [mem_obeying_tieRelations_iff.1 h_obeys w hw side, hφ, smul_zero]
-    exact (h_side c hc hγ).2 _ h_aux.isFrob hφ
+    exact (h_side c h_cocycle h_lc hγ).2 _ h_aux.isFrob hφ
   refine ⟨B, hB, ?_⟩
   let res : (Gal(Ω/E) → n → QuotSpan a) →ₗ[O] decompGroup Gal(Ω/E) B → n → QuotSpan a :=
     .funLeft O _ (decompGroup Gal(Ω/E) B).subtype

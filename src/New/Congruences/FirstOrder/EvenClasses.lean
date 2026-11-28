@@ -217,7 +217,8 @@ lemma IsTameGeneratorFamily.mem_selmerModule_of_tame_eq_zero {ℓ : ℕ} [ThePri
   have h_torsion : ∀ x : QuotSpan (ℓ ^ e : Λ), ℓ ^ e • x = 0 := nsmul_quot_eq_zero dvd_rfl
   obtain ⟨b, A', -, h_side⟩ := exists_conj_side_detects h_torsion hA h_off h_unram hvj
   rw [hτ] at h_side
-  exact (h_side c hc (hτ_zero (j, b))).1
+  obtain ⟨h_cocycle, -, -, h_lc⟩ := mem_selmerModule_iff.1 hc
+  exact (h_side c h_cocycle h_lc (hτ_zero (j, b))).1
 
 end New.Selmer
 

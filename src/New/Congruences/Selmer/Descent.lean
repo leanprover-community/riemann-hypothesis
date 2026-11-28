@@ -335,7 +335,8 @@ lemma selmerModule_inf_ker_le (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (ha : 
   obtain ⟨b, _, -, h_side⟩ := exists_conj_side_detects (nsmul_quot_eq_zero ha)
     h_anti.isPlaceOver h_anti.notMem h_unr hvw
   rw [hγ] at h_side
-  obtain ⟨h_inertia, -⟩ := h_side c hc (h_zero b)
+  obtain ⟨h_cocycle, -, -, h_lc⟩ := mem_selmerModule_iff.1 hc
+  obtain ⟨h_inertia, -⟩ := h_side c h_cocycle h_lc (h_zero b)
   exact h_inertia
 
 /-- Slope `0` means unramified. Let `T` be a Selmer datum: a lattice `O ^ n` with Galois action

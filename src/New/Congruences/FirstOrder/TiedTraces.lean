@@ -493,15 +493,15 @@ end Traces
 variable {Q} in
 /-- The tame generator `γ` at `w = Q.place j` acts as a diamond operator. Let the auxiliary places
 be off the base level, let `N x` be the twist of `x.galRep` by a character `a` trivial at the tame
-generators, and let `P` be a local choice at `w`: a unit `P.tameUnit` of residue `z̄` and a
+generator at `w`, and let `P` be a local choice at `w`: a unit `P.tameUnit` of residue `z̄` and a
 logarithm `P.ind` modulo `ℓ ^ ν` on `𝔽_wˣ` with `P.ind z̄ = 1`; put `P.indDet = P.ind ∘ det` and
 `⟨γ⟩ = P.diamond = diag (z̄, 1, …, 1)`. On a form `y` of the system `x` on which `GL_n(𝔽_w)` acts by
 `ψ ∘ P.indDet`, we have `tr[(γ - 1) g p(φ)] = (⟨γ⟩ - 1) tr[g p(φ)]`, where `φ` is the Frobenius
 element and the traces are those of `N x`. -/
 lemma tameTrace_smul_eq_diamond_sub_one (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
     {N : Isotypic V κ → GalRep ℓ E n} [V.IsStd] [WeilData E] {a : Gal(Ω/E) →* EllAdicIntegers}
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
-    {j : J} (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E))
+    (hN : IsGalRepTwist N a) {j : J} (ha : a (Q.frobData j).isPlaceOver.tameGenerator = 1)
+    (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E))
     {x : D.Eigensystem Q.place} (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ) {y : D.formsOfLevel Q.place}
     (hx : (y : V.forms κ) ∈ (x : Isotypic V κ).val)
     (hy : ∀ k : GL (Fin (card n)) (ResField (Q.place j)),
@@ -557,15 +557,15 @@ section OnePlace
 variable {Q} {j : J}
 
 /-- Dictionary for the Frobenius element `φ`. Let the auxiliary places be off the base level (`hQ`),
-let `N x` be the twist of `x.galRep` by `a` (`hN`), let `a` be `1` at the tame generators (`ha`),
-and let `P` be a local choice at `w = Q.place j`, with uniformiser `ϖ` and logarithm `P.ind` modulo
-`ℓ ^ ν` on `𝔽_wˣ`; put `P.indLine g = P.ind g₁₁`. If the stabiliser of a line in `GL_n(𝔽_w)` acts on
-a form `y` of the system `x` through `ψ ∘ P.indLine`, where `ψ ((card n)!) ≠ 1`, then
+let `N x` be the twist of `x.galRep` by `a` (`hN`), let `a` be `1` at the tame generator at `w`
+(`ha`), and let `P` be a local choice at `w = Q.place j`, with uniformiser `ϖ` and logarithm `P.ind`
+modulo `ℓ ^ ν` on `𝔽_wˣ`; put `P.indLine g = P.ind g₁₁`. If the stabiliser of a line in `GL_n(𝔽_w)`
+acts on a form `y` of the system `x` through `ψ ∘ P.indLine`, where `ψ ((card n)!) ≠ 1`, then
 `tr[(γ - 1) g p(φ)] = p(Ũ) tr[(γ - 1) g]` on `y`. Here `γ` is the tame generator at `w`,
 `tr[(γ - 1) g p(φ)]` is `tameTrace`, and `p(Ũ)` is `aevalHecke`, for `Ũ = a(φ) U` with `U` the Hecke
 operator of `diag (ϖ, 1, …, 1)` for the pro-unipotent Iwahori subgroup. -/
 lemma tameTrace_smul_eq_aevalHecke (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
+    (hN : IsGalRepTwist N a) (ha : a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E))
     {x : D.Eigensystem Q.place} {ψ : AddChar (ZMod (ℓ ^ ν)) ℂ} (hψ : ψ (card n)! ≠ 1)
     {y : D.formsOfLevel Q.place} (hx : (y : V.forms κ) ∈ (x : Isotypic V κ).val)
@@ -597,13 +597,13 @@ lemma tameTrace_smul_eq_aevalHecke (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![
 
 /-- The dictionary for the tame generator `γ` at `w = Q.place j` on weighted norms. Let the
 auxiliary places be off the base level (`hQ`), let `N x` be the twist of `x.galRep` by `a` (`hN`),
-let `a` be `1` at the tame generators (`ha`), and let `P` be a local choice at `w`, whose
+let `a` be `1` at the tame generator at `w` (`ha`), and let `P` be a local choice at `w`, whose
 logarithm `P.ind` on `𝔽_wˣ` gives `P.indDet = P.ind ∘ det` with values modulo `ℓ ^ ν`. If `L` is
 the norm over `GL_n(𝔽_w)` with weight `f ∘ P.indDet`, then
 `L tr[(γ - 1) g p(φ)] = (⟨γ⟩ - 1) L tr[g p(φ)]`, where `φ` is the Frobenius element at `w`,
 `⟨γ⟩ = P.diamond`, and the traces are `tameTrace` and `traceElement`. -/
 lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
+    (hN : IsGalRepTwist N a) (ha : a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (P : Q.LocalChoice j) (p : EllAdicIntegers[X]) (g : Gal(Ω/E)) (f : ZMod (ℓ ^ ν) → ℤ) :
     weightedSum (D.placeRep Q j) P.indDet f * heckeAction (tameTrace Q hN j p g) =
       (D.placeRep Q j P.diamond - 1) * weightedSum (D.placeRep Q j) P.indDet f *
@@ -614,25 +614,19 @@ lemma weightedSum_indDet_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ
   let B : D.formsOfLevel Q.place →ₗ[ℂ] V.forms κ :=
     (formsOfLevel _).subtype ∘ₗ (D.placeRep Q j P.diamond - 1).val
   -- It suffices to compare the traces on eigenvectors, where `γ` acts as the diamond element.
-  have dict (x : D.Eigensystem Q.place) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ)
-      (z : D.formsOfLevel Q.place) (hz : (z : V.forms κ) ∈ (x : Isotypic V κ).val)
-      (hz_eigen : ∀ k : GL (Fin (card n)) (ResField (Q.place j)),
-        (D.placeRep Q j k).val z = ψ (P.indDet k).toAdd • z) :
-      ιℓ.symm ((tameTrace Q hN j p g).val x) • (z : V.forms κ) =
-        ιℓ.symm ((traceElement hN p (Q.frobData j).frob g : D.heckeAlgebra Q.place).val x) • B z :=
-    tameTrace_smul_eq_diamond_sub_one hQ hN ha P p g ψ hz hz_eigen
   exact weightedSum_mul_heckeAction_eq_of_eigen Q (shift := 0) (root := 0) (B := B) placeRep_mem
     (fun _ ↦ rfl) (f := fun s ↦ (f s : ℂ))
-    (fun x ψ z hz hz_eigen _ ↦ dict x ψ z hz hz_eigen) (by simp)
+    (fun _ ψ _ hz hz_eigen _ ↦
+      tameTrace_smul_eq_diamond_sub_one hQ hN ha P p g ψ hz hz_eigen) (by simp)
 
 /-- Let the auxiliary places be off the base level (`hQ`), and let `N x` be the twist of `x.galRep`
-by `a`, which is `1` at the tame generators (`hN`, `ha`). The norm over `GL_n(𝔽_w)` at
+by `a`, which is `1` at the tame generator at `w` (`hN`, `ha`). The norm over `GL_n(𝔽_w)` at
 `w = Q.place i` kills `tr[(γ - 1) g]`, where `γ` is the tame generator at `w` and `traceElement` is
 the trace of the `N x` as an element of the Hecke algebra. -/
 lemma norm_mul_traceElement_tameGenerator_eq_zero
     (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
-    (i : J) (g : Gal(Ω/E)) :
+    (hN : IsGalRepTwist N a) (i : J) (ha : a (Q.frobData i).isPlaceOver.tameGenerator = 1)
+    (g : Gal(Ω/E)) :
     (∑ k : GL (Fin (card n)) (ResField (Q.place i)), D.residueRep Q (mulSingle i k)) *
       heckeAction (traceElement hN (X - 1) (Q.frobData i).isPlaceOver.tameGenerator g) = 0 := by
   obtain ⟨P⟩ := Q.nonempty_localChoice i
@@ -683,8 +677,8 @@ variable {P : Q.LocalChoice j} {p : EllAdicIntegers[X]}
   {B : (ZMod (ℓ ^ ν) → ℤ) →+ D.integralEnd Q.place}
 
 /-- Let the auxiliary places be off the base level (`hQ`), and let `N x` be the twist of `x.galRep`
-by `a`, which is `1` at the tame generators (`hN`, `ha`). Fix an index `j` and a local choice `P`
-at `Q.place j`, with tame generator `γ` and Frobenius element `φ`. Let `B f` be `p(Ũ)`
+by `a`, which is `1` at the chosen tame generator (`hN`, `ha`). Fix an index `j` and a local choice
+`P` at `Q.place j`, with tame generator `γ` and Frobenius element `φ`. Let `B f` be `p(Ũ)`
 (`aevalHecke V κ P a p`: forms on `V` of weight `κ`, `Ũ = a(φ) U`, `U` the Hecke operator of
 `diag (P.ϖ, 1, …, 1)`) after the norm over the stabiliser of the line with weight `f ∘ P.indLine`
 (`hB`). Then `p(Ũ) L tr[(γ - 1) g]` and `L tr[(γ - 1) g p(φ)]` have the same image under a ring map
@@ -692,7 +686,7 @@ at `Q.place j`, with tame generator `γ` and Frobenius element `φ`. Let `B f` b
 The traces are `tameTrace`, and `L` is the norm whose weight is the logarithm `P.indLine` lifted to
 `ℤ` by `valMinAbs`. -/
 lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ := ℓ) ![] (Q.place j))
-    (hN : IsGalRepTwist N a) (ha : ∀ j : J, a (Q.frobData j).isPlaceOver.tameGenerator = 1)
+    (hN : IsGalRepTwist N a) (ha : a (Q.frobData j).isPlaceOver.tameGenerator = 1)
     (hB : ∀ (f : ZMod (ℓ ^ ν) → ℤ) (y : D.formsOfLevel Q.place), ((B f).val y : V.forms κ) =
       aevalHecke V κ P a p ((weightedSum (D.lineRep Q j) P.indLine f).val y))
     {R : Type*} [Ring R] {σ : D.integralEnd Q.place →+* R}
@@ -716,16 +710,10 @@ lemma map_aevalHecke_valMinAbs_mul_tameTrace (hQ : ∀ j : J, D.IsOffLevel (ℓ 
     residueRep_mem_localOperators hQ _
   let U : D.formsOfLevel Q.place →ₗ[ℂ] V.forms κ :=
     LinearMap.domRestrict (aevalHecke V κ P a p) _
-  have dict (x : D.Eigensystem Q.place) (ψ : AddChar (ZMod (ℓ ^ ν)) ℂ)
-      (z : D.formsOfLevel Q.place) (hz : (z : V.forms κ) ∈ (x : Isotypic V κ).val)
-      (hz_eigen : ∀ k : residueLineStabilizer (ResField (Q.place j)) (card n),
-        (D.lineRep Q j k).val z = ψ (P.indLine k).toAdd • z)
-      (hψ : ψ ((card n)! : ZMod (ℓ ^ ν)) ≠ 1) :
-      ιℓ.symm ((tameTrace Q hN j p g).val x) • (z : V.forms κ) =
-        ιℓ.symm ((tameTrace Q hN j 1 g).val x) • U z :=
-    tameTrace_smul_eq_aevalHecke hQ hN ha P p g hψ hz hz_eigen
   exact weightedSum_mul_heckeAction_eq_of_eigen Q (shift := ((card n)! : ZMod (ℓ ^ ν))) (root := 1)
-    (B := U) lineRep_mem (hB _) (f := fun s ↦ (f s : ℂ)) dict (by simp)
+    (B := U) lineRep_mem (hB _) (f := fun s ↦ (f s : ℂ))
+    (fun _ _ _ hz hz_eigen hψ ↦ tameTrace_smul_eq_aevalHecke hQ hN ha P p g hψ hz hz_eigen)
+    (by simp)
 
 omit [V.IsStd] [WeilData E] in
 /-- Let the auxiliary places be off the base level (`hQ`), let `P` be a local choice at

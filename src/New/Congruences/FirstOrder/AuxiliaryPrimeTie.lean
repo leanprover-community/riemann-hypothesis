@@ -171,7 +171,7 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
   have der_mem : cosetDerivative ρ K B ∈ D.localOperators Q j :=
     neg_mem (mul_mem (mul_mem Tr_mem (B_mem _)) Tr'_mem)
   refine ⟨cosetDerivative ρ K B, der_mem,
-    norm_mul_traceElement_tameGenerator_eq_zero hQ hN ha j, fun g ↦ ?_, fun g ↦ ?_⟩
+    norm_mul_traceElement_tameGenerator_eq_zero hQ hN j (ha j), fun g ↦ ?_, fun g ↦ ?_⟩
   · -- Replace `p(Ũ)` by `p(φ)`, sum the logarithms over the lines to that of the determinant,
     -- and read `γ` as the diamond element.
     have comm (s : D.heckeAlgebra Q.place) : Commute (σ (cosetNormInv ρ K)) (σ (heckeAction s)) :=
@@ -185,14 +185,14 @@ theorem exists_mul_traceElement_tameGenerator_eq_frob
           simp only [cosetDerivative, neg_mul, map_neg, map_mul, mul_assoc, (comm _).eq]
       _ = -(σ (cosetNorm ρ K * weightedSum (D.lineRep Q j) P.indLine ZMod.valMinAbs *
             cosetNormInv ρ K) * σ (heckeAction (tameTrace Q hN j p g))) := by
-          rw [map_aevalHecke_valMinAbs_mul_tameTrace hQ hN ha hB hσ]
+          rw [map_aevalHecke_valMinAbs_mul_tameTrace hQ hN (ha j) hB hσ]
           simp only [map_mul, mul_assoc, (comm _).eq]
       _ = -σ (weightedSum ρ P.indDet ZMod.valMinAbs * heckeAction (tameTrace Q hN j p g)) := by
           rw [lineRep, map_cosetNorm_mul_weightedSum_mul_cosetNormInv ρ hσ_char, P.transfer_indLine,
             map_mul]
       _ = -(σ ((ρ P.diamond - 1) * weightedSum ρ P.indDet ZMod.valMinAbs) *
             σ (heckeAction (traceElement hN p (Q.frobData j).frob g))) := by
-          rw [weightedSum_indDet_mul_tameTrace hQ hN ha, map_mul]
+          rw [weightedSum_indDet_mul_tameTrace hQ hN (ha j), map_mul]
       _ = _ := by
           rw [map_sub_one_mul_weightedSum_valMinAbs ρ hσ_char _ P.indDet_diamond,
             map_traceElement_sub_pow_mul Q hN σ q_one H t' g, neg_mul, neg_neg, map_mul]

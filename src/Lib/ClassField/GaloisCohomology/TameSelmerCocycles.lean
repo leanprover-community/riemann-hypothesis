@@ -237,59 +237,55 @@ lemma eq_zero_on_inertiaAbove {A' : ClosurePlace} {v : FinPlace E} (hA' : IsPlac
   obtain ⟨v', rfl : v' = v, A'', hA'', hg⟩ := hg_above
   -- The inertia groups above `v` are conjugate: `A'` is `s • A''` for some `s`.
   obtain ⟨s, rfl⟩ := hA''.exists_smul Gal(Ω/E) hA'
-  exact add_eq_right.mp <| calc
-    c g + c s⁻¹ = c (g * s⁻¹) := by rw [hc, h_triv, one_smul]
-    _ = c (s⁻¹ * (s * g * s⁻¹)) := by simp [mul_assoc]
-    _ = c s⁻¹ := by rw [hc, h_zero _ (hg.conj s), smul_zero, add_zero]
+  exact ((Group.isUnit s).map ρ).smul_eq_zero.mp <|
+    (cocycle_conj_eq_smul hc (g := g) (γ := s) (by rw [h_triv, one_smul])).symm.trans
+      (h_zero _ (hg.conj s))
 
-/-- Let `A` be a place of `Ω` over `P`, prime to `ℓ`, let `ℓ ^ M` kill `B`, let `θ` be an
-endomorphism of `Gal(Ω/E)` and let `ρ ∘ θ` be trivial on inertia at `A`. A locally constant cocycle
-for `ρ ∘ θ` that vanishes at the tame generator vanishes on inertia at `A`. -/
+/-- Let `A` be a place of `Ω` over `P`, prime to `ℓ`, let `ℓ ^ M` kill `B` and let `ρ` be trivial
+on inertia at `A`. A locally constant cocycle for `ρ` that vanishes at the tame generator vanishes
+on inertia at `A`. -/
 lemma eq_zero_on_inertiaGroup_of_tameGenerator (hB : ∀ b : B, ℓ ^ M • b = 0) (hA : IsPlaceOver A P)
-    (hP : P ∉ placesDividing E ℓ) (θ : Gal(Ω/E) →* Gal(Ω/E))
-    (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ (θ g) • c h)
-    (hθ : ∀ g ∈ inertiaGroup Gal(Ω/E) A, ρ (θ g) = 1)
+    (hP : P ∉ placesDividing E ℓ)
+    (hc : ∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h)
+    (hρ : ∀ g ∈ inertiaGroup Gal(Ω/E) A, ρ g = 1)
     (hc_lc : IsLocallyConstant c) (h_zero : c hA.tameGenerator = 0) :
     ∀ g ∈ inertiaGroup Gal(Ω/E) A, c g = 0 := fun g hg ↦
   -- The case `m = 1` of `cocycle_eq_zero_on_inertia_of_tameGenerator`, as `ℓ` is a unit at `A`.
-  cocycle_eq_zero_on_inertia_of_tameGenerator hB hA (ρ := ρ.comp θ) hc (m := 1) (by simpa)
-    (.of_forall hθ) ⟨g, hg⟩ (by simp [hA.valuation_natCast_eq_one_iff.2 hP]) hc_lc h_zero
+  cocycle_eq_zero_on_inertia_of_tameGenerator hB hA hc (m := 1) (by simpa)
+    (.of_forall hρ) ⟨g, hg⟩ (by simp [hA.valuation_natCast_eq_one_iff.2 hP]) hc_lc h_zero
 
 /-- Let `P` be a place of the CM field `E` prime to `ℓ`, let `A` be a place of `Ω` over `P` and let
 `ℓ ^ M` kill `B`. Let `v` be `P` or its complex conjugate, and let `ρ` be unramified at `v`. For a
 side `b`, write `idOrConjInv b g` for `g` or `(conjGal g)⁻¹` according to `b`, where `conjGal g` is
 the conjugate of `g` by complex conjugation. Then vanishing at two elements detects vanishing at
-`v`. Precisely, there are a side `b` and a place `A'` over `v` such that every cocycle `c` in
-`selmerModule ρ S L B` that is zero at `idOrConjInv b` of the tame generator at `A` is unramified at
+`v`. Precisely, there are a side `b` and a place `A'` over `v` such that every locally constant
+cocycle `c` for `ρ` that is zero at `idOrConjInv b` of the tame generator at `A` is unramified at
 `v`. If it is also zero at `idOrConjInv b φ` for a Frobenius element `φ` at `A`, it is zero on the
-decomposition group at `A'`. Here `selmerModule ρ S L B` consists of the locally constant cocycles
-for `ρ` in `B ^ n` that are zero on inertia above places outside `S` and obey the relations `L`. -/
+decomposition group at `A'`. -/
 lemma exists_conj_side_detects [NumberField.IsCMField E] (hB : ∀ b : B, ℓ ^ M • b = 0)
     (hA : IsPlaceOver A P) (hP : P ∉ placesDividing E ℓ) {v : FinPlace E}
     (hρ : ∀ g : Gal(Ω/E), g ∈ inertiaAbove {v} → ρ g = 1) (hv : v = P ∨ v = star P) :
     ∃ (b : Bool) (A' : ClosurePlace), IsPlaceOver A' v ∧
-      ∀ {S : Set (FinPlace E)} {L : Set (Gal(Ω/E) →₀ Matrix n n O)},
-      ∀ c : Gal(Ω/E) → n → B, c ∈ selmerModule ρ S L B →
+      ∀ c : Gal(Ω/E) → n → B,
+        (∀ g h : Gal(Ω/E), c (g * h) = c g + ρ g • c h) → IsLocallyConstant c →
         c (idOrConjInv b hA.tameGenerator) = 0 →
         (∀ g : Gal(Ω/E), g ∈ inertiaAbove {v} → c g = 0) ∧
         ∀ φ : Gal(Ω/E), IsFrob A P.q φ → c (idOrConjInv b φ) = 0 →
           ∀ g : decompGroup Gal(Ω/E) A', c g = 0 := by
   -- The side `v = P` uses `A`, and the side `v = star P` the conjugate place.
   obtain rfl | rfl := hv
-  · refine ⟨true, A, hA, fun {S L} c hc h_gen ↦ ?_⟩
-    obtain ⟨h_cocycle, -, -, h_locConst⟩ := mem_selmerModule_iff.1 hc
+  · refine ⟨true, A, hA, fun c h_cocycle h_locConst h_gen ↦ ?_⟩
     have h_unram : ∀ g ∈ inertiaGroup Gal(Ω/E) A, c g = 0 :=
-      eq_zero_on_inertiaGroup_of_tameGenerator hB hA hP (MonoidHom.id Gal(Ω/E)) h_cocycle
+      eq_zero_on_inertiaGroup_of_tameGenerator hB hA hP h_cocycle
         (fun g hg ↦ hρ g ⟨v, rfl, A, hA, hg⟩) h_locConst h_gen
     exact ⟨eq_zero_on_inertiaAbove hA hρ h_cocycle h_unram,
       fun φ hφ hφ_zero ↦ eq_zero_on_decompGroup hA h_cocycle h_locConst h_unram hφ hφ_zero⟩
   · -- Argue as in the first case with `c ∘ conjGal`, a cocycle for `ρ ∘ conjGal`.
-    refine ⟨false, conjPlace A, hA.conjPlace_star, fun {S L} c hc h_gen ↦ ?_⟩
-    obtain ⟨h_cocycle, -, -, h_locConst⟩ := mem_selmerModule_iff.1 hc
+    refine ⟨false, conjPlace A, hA.conjPlace_star, fun c h_cocycle h_locConst h_gen ↦ ?_⟩
     have h_of_inv (g : Gal(Ω/E)) (hg : c (conjGal g)⁻¹ = 0) : c (conjGal g) = 0 := by
       simpa [hg] using cocycle_apply_inv h_cocycle (conjGal g)⁻¹
     have h_conj_unram : ∀ g ∈ inertiaGroup Gal(Ω/E) A, c (conjGal g) = 0 :=
-      eq_zero_on_inertiaGroup_of_tameGenerator hB hA hP conjGal (c := c ∘ conjGal)
+      eq_zero_on_inertiaGroup_of_tameGenerator hB hA hP (ρ := ρ.comp conjGal) (c := c ∘ conjGal)
         (by simp [h_cocycle])
         (fun g hg ↦ hρ _ ⟨star P, rfl, conjPlace A, hA.conjPlace_star, hg.conjPlace_conjGal⟩)
         (h_locConst.comp_continuous continuous_conjGal) (h_of_inv hA.tameGenerator h_gen)
