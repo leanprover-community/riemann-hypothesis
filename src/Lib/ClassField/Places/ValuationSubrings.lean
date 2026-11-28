@@ -180,6 +180,20 @@ lemma unique (h : IsPlaceOver A v) (h' : IsPlaceOver A v') : v = v' :=
   -- Both primes are the centre of `A` in `𝓞 Ω`, pulled back to `𝓞 K`.
   v.ext (h.centerPrime_liesOver.over.trans h'.centerPrime_liesOver.over.symm)
 
+include h in
+/-- In a tower of fields `K ⊆ L ⊆ Ω`, if `A` lies over the finite place `v` of `K`, then
+it lies over a finite place of `L` above `v`. -/
+lemma exists_above :
+    ∃ u : FinPlace L, IsPlaceOver A u ∧ u.below K = v := by
+  have := h.centerPrime_liesOver
+  -- The centre on the integers of `Ω` contracts to a nonzero prime on the integers of `L`,
+  -- since its contraction to the integers of `K` is `v`.
+  let u : FinPlace L := ⟨(centerPrime Ω A).under (𝓞 L), inferInstance,
+    Ideal.ne_bot_of_liesOver_of_ne_bot v.ne_bot _⟩
+  have hu : IsPlaceOver A u := fun x ↦
+    (mem_centerPrime (x := algebraMap (𝓞 L) (𝓞 Ω) x)).symm
+  exact ⟨u, hu, hu.isPlaceOver_below.unique h⟩
+
 lemma valuation_natCast_lt_one_iff (h : IsPlaceOver A v) {n : ℕ} : A n < 1 ↔ ↑n ∈ v.asIdeal :=
   mod_cast h n
 
@@ -329,20 +343,6 @@ lemma finite_ramified {U : Subgroup Γ} (hU : U.IsOpen) :
 variable (Γ)
 
 include h
-
-omit [Algebra.IsAlgebraic K Ω] in
-/-- If `A` lies over the prime `v` of `K` (the section hypothesis `h : IsPlaceOver A v`), it lies
-over some prime `u` of `L` above `v`, for `Ω / L` algebraic. -/
-lemma IsPlaceOver.exists_above [Algebra.IsAlgebraic L Ω] :
-    ∃ u : FinPlace L, IsPlaceOver A u ∧ u.below K = v := by
-  -- The norm of `v` is nonzero and of value below `1`, so `A` lies over some place `u` of `L`.
-  -- `↓`: `map_ne_zero` applies before simp unfolds the casts.
-  have h_ne : algebraMap K Ω (absNorm v.asIdeal : 𝓞 K) ≠ 0 := by simp [↓map_ne_zero, v.ne_bot]
-  have h_val : A.valuation (algebraMap K Ω (absNorm v.asIdeal : 𝓞 K)) < 1 :=
-    (h _).mpr (absNorm_mem _)
-  obtain ⟨u, hu⟩ : ∃ u : FinPlace L, IsPlaceOver A u :=
-    exists_isPlaceOver_of_val_ne_one L h_ne h_val.ne
-  exact ⟨u, hu, hu.isPlaceOver_below.unique h⟩
 
 /-- The Galois group acts transitively on the places over `v`: if `A` lies over `v` (the section
 hypothesis `h : IsPlaceOver A v`) and so does `A'`, then `g • A = A'` for some `g` in `Γ`. Here
