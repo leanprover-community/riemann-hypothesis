@@ -100,18 +100,13 @@ lemma New.Rows.span_piM {P : Parameters} (D : Data P) :
   -- The image of `x` reduces to `0` at a place exactly if the place contains `x`.
   exact forall_congr' fun i ↦ by simp
 
-/-! ## Stacked determinants, the trivial modulus, the carrier φ° and the coefficients 𝖺 -/
+/-! ## The trivial modulus, the carrier φ° and the coefficients 𝖺 -/
 
 namespace New.Rows
 
 open Matrix MvPolynomial WeilData NumberField
 
-variable {Φ l n n' : Type} [Fintype l] [DecidableEq l] [Fintype n'] [DecidableEq n']
-
-/-- The determinant of the square matrix formed by the columns `j` of the constant matrix `η` (rows
-`l`) stacked over the matrix of variables `X (τ, a, b)` (rows `n'`), both with columns `n`. -/
-def stackedDet (τ : Φ) (η : Matrix l n ℂ) (j : l ⊕ n' → n) : MvPolynomial (Φ × n' × n) ℂ :=
-  (((η.map C).fromRows (of fun (a : n') (b : n) ↦ X (τ, a, b))).submatrix id j).det
+variable {n' : Type} [Fintype n'] [DecidableEq n']
 
 variable (E : Type) [Field E] [CMType E] [WeilData E] (m : ℕ)
 

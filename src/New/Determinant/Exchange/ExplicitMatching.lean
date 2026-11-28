@@ -3,6 +3,10 @@ module
 import Mathlib.Analysis.Complex.MeanValue
 import Mathlib.Topology.UniformSpace.Uniformizable
 public import New.OneLift.ComparisonOperator.DeterminantProducts
+public import Lib.Adelic.AutomorphicForms.PAdicGauge
+public import Lib.ClassField.HeckeCharacter.TameModulus
+public import Lib.General.LinearAlgebra.BlockEmbeddings
+import Lib.Weil.DualPair.ThetaLiftConvergence
 public import Lib.SiegelWeil.Tower.FiniteTateIntegral
 public import New.Determinant.Exchange.MatchingPartners
 import Lib.DiscreteSeries.Haar.TotalMass

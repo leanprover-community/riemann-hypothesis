@@ -3,6 +3,8 @@ module
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Data.Rat.Cast.OfScientific
 public import New.OneLift.ComparisonOperator.DeterminantProducts
+public import Lib.Weil.DualPair.KernelLaws
+import New.Reduction.Data.LevelAndTwists
 public import New.UpperBound.Kernels.JetConjugatesAndBounds
 import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 import Lib.GLn.SchurModule.SchurNorm

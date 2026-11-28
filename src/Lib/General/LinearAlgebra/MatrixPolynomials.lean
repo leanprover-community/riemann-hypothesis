@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Resultant
 import TauCeti.LinearAlgebra.Matrix.Polynomial
 import Mathlib.LinearAlgebra.PiTensorProduct.Generators
@@ -8,9 +9,9 @@ public import Lib.GaloisRep.BaseChange.Defs
 /-!
 # Minors, polynomials of matrices and twisted norms
 
-This file contains general lemmas on matrices over commutative rings, and three definitions used
-elsewhere: a minor of a matrix of variables, a non-degeneracy condition on a trace form and a
-freeness condition on a family of integers.
+This file contains general lemmas on matrices over commutative rings. It defines variable minors,
+`New.Rows.stackedDet` for a constant matrix stacked above a matrix of variables, a non-degeneracy
+condition on a trace form and a freeness condition on a family of integers.
 
 ## Main definitions and results
 
@@ -39,6 +40,12 @@ Notions from other files:
 section LetterMinor
 
 open Matrix MvPolynomial
+
+/-- The determinant of the square matrix formed by the columns `j` of the constant matrix `η` (rows
+`l`) stacked over the matrix of variables `X (τ, a, b)` (rows `n'`), both with columns `n`. -/
+noncomputable def New.Rows.stackedDet {Φ l n n' : Type} [Fintype l] [DecidableEq l] [Fintype n']
+    [DecidableEq n'] (τ : Φ) (η : Matrix l n ℂ) (j : l ⊕ n' → n) : MvPolynomial (Φ × n' × n) ℂ :=
+  (((η.map C).fromRows (of fun (a : n') (b : n) ↦ X (τ, a, b))).submatrix id j).det
 
 variable {Φ : Type*} {l : Type*} {n n' : Type*} [Fintype l] [DecidableEq l]
 

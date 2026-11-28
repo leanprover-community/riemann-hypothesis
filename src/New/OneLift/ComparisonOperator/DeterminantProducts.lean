@@ -1,7 +1,8 @@
 module
 
 import Mathlib.Algebra.AffineMonoid.UniqueSums
-public import New.OneLift.ComparisonOperator.ExchangeData
+public import Lib.General.LinearAlgebra.MatrixPolynomials
+public import Lib.GLn.SchurModule.SchurMatrix
 import Lib.General.LinearAlgebra.HermiteForm
 
 /-!

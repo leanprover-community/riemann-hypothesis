@@ -6,6 +6,7 @@ public import Lib.Adelic.AutomorphicForms.PAdicGauge
 public import Lib.ClassField.HeckeCharacter.TameModulus
 public import Lib.General.LinearAlgebra.MatrixPolynomials
 public import Lib.Weil.Unramified.HeckeTransfer
+import Lib.General.Algebra.LevelModulus
 import Lib.ClassField.Avatar.HeckeBaseChange
 import Lib.PadicComparison.Descent.TestCategory
 import New.UpperBound.Kernels.DefiniteKernelSize

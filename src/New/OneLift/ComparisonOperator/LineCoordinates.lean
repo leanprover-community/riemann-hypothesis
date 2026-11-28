@@ -5,6 +5,7 @@ import Mathlib.Data.Rat.Cast.OfScientific
 import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 public import New.OneLift.ComparisonOperator.DeterminantProducts
+public import New.OneLift.ComparisonOperator.ExchangeData
 public import New.OneLift.ComparisonOperator.GluedLattices
 public import Lib.General.LinearAlgebra.MinorProducts
 import Lib.PadicComparison.Descent.TestCategory
