@@ -170,11 +170,10 @@ lemma exists_monoidHom_units_zmod_eq_ofAdd_one {q : Nat.Primes} {k : ℕ} (hq : 
     ∃ L : (ZMod q)ˣ →* Multiplicative (ZMod k), ∃ g : (ZMod q)ˣ, L g = ofAdd 1 := by
   obtain ⟨g, gen⟩ := (isCyclic_units_prime q.prop).exists_zpow_surjective
   have h_gen (x : (ZMod q)ˣ) : x ∈ Subgroup.zpowers g := Subgroup.mem_zpowers_iff.mpr (gen x)
-  -- `1` has order `k` in `ℤ/k`, and `k` divides `q - 1`, the order of `g`.
-  have h_order : orderOf (ofAdd (1 : ZMod k)) ∣ orderOf g := by
+  have h_order : k ∣ orderOf g := by
     simp [orderOf_eq_card_of_forall_mem_zpowers h_gen, Nat.totient_prime q.prop, hq.symm.dvd']
-  exact ⟨monoidHomOfForallMemZpowers h_gen h_order, g,
-    monoidHomOfForallMemZpowers_apply_gen h_gen h_order⟩
+  obtain ⟨L, hL⟩ := exists_zmod_log_of_dvd_orderOf h_gen h_order
+  exact ⟨L, g, hL⟩
 
 /-- An `m`-th root of unity `u` of `Ω` is moved alike by `γ` and by its conjugate `g γ g⁻¹`. -/
 lemma galUnitsRep_conj_of_nsmul_eq_zero (γ g : Gal(Ω/ℚ)) {u : DiscreteUnits Ω} (hu : m • u = 0) :

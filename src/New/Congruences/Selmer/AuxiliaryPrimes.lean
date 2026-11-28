@@ -156,11 +156,12 @@ lemma New.Selmer.exists_discreteLog {E : Type*} [Field E] [NumberField E] {P : F
     rw [orderOf_eq_card_of_forall_mem_zpowers h_gen, card_units, ← tsub_eq_of_eq_add_rev hk,
       ← card_ResField P]
     rfl
-  have h_order_dvd : orderOf (ofAdd (1 : ZMod q)) ∣ orderOf g := by simp [h_order]
-  -- `lg` is `residueUnit` followed by the character of the residue units that sends `g` to `1`
-  let lg : (LocField P)ˣ →* Multiplicative (ZMod q) :=
-    (monoidHomOfForallMemZpowers h_gen h_order_dvd).comp residueUnit
-  have hlg_u : lg u = ofAdd 1 := by simp [lg, residueUnit, unitPart, hu_unit, g]
+  have h_order_dvd : q ∣ orderOf g := by simp [h_order]
+  obtain ⟨log, h_log⟩ := exists_zmod_log_of_dvd_orderOf h_gen h_order_dvd
+  let lg : (LocField P)ˣ →* Multiplicative (ZMod q) := log.comp residueUnit
+  have hlg_u : lg u = ofAdd 1 := by
+    change log (residueUnit u) = ofAdd 1
+    rw [show residueUnit u = g by simp [residueUnit, unitPart, hu_unit, g], h_log]
   refine ⟨lg, hlg_u, fun t ht ↦ by simp [lg, h_residue_one t ht], fun t ht ↦ ?_⟩
   -- `residueUnit t = g ^ e` has `k`-th power `1`, so the order `q * k` of `g` divides `e * k`
   obtain ⟨e, he⟩ : ∃ e : ℤ, g ^ e = residueUnit t := h_gen (residueUnit t)
@@ -170,7 +171,7 @@ lemma New.Selmer.exists_discreteLog {E : Type*} [Field E] [NumberField E] {P : F
       using h_residue_pow
   have hk_ne : k ≠ 0 := fun h ↦ hp.one_lt.ne' (by simpa [h] using hk)
   have hq_dvd : (q : ℤ) ∣ e := Int.dvd_of_mul_dvd_mul_right (Int.natCast_ne_zero.2 hk_ne) h_dvd
-  simpa [lg, ← he, ← orderOf_dvd_iff_zpow_eq_one] using hq_dvd
+  simpa [lg, ← he, h_log, ← orderOf_dvd_iff_zpow_eq_one] using hq_dvd
 
 /-- Let `σ` be a Frobenius at a place above `P`, with `P.q = 1 + n * k`. If `σ` fixes an `n`-th root
 of a `T`-unit `u`, where `P ∉ T`, then `u ^ k ≡ 1` modulo `P`. -/

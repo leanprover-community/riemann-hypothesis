@@ -3,6 +3,7 @@ module
 public import Mathlib.GroupTheory.Transfer
 import Mathlib.Algebra.GroupWithZero.Action.Regular
 import Mathlib.RingTheory.PiTensorProduct
+import Lib.General.Groups.ProfiniteCharacters
 public import Lib.Weil.Unramified.HeckeGL
 public import Lib.LocalGL.Iwahori.ParahoricStructure
 
@@ -606,12 +607,8 @@ units to `ℤ/m` that sends `z` to `1`. -/
 lemma exists_residue_log {m : ℕ} (hm : m ∣ w.q - 1) {z : (ResField w)ˣ}
     (hz : ∀ x : (ResField w)ˣ, x ∈ Subgroup.zpowers z) :
     ∃ ind : (ResField w)ˣ →* Multiplicative (ZMod m), ind z = .ofAdd 1 := by
-  have order_z : orderOf z = w.q - 1 := by
-    rw [orderOf_eq_card_of_forall_mem_zpowers hz, Nat.card_units, card_ResField]
-  have order_dvd : orderOf (Multiplicative.ofAdd (1 : ZMod m)) ∣ orderOf z := by
-    rwa [order_z, orderOf_ofAdd_eq_addOrderOf, ZMod.addOrderOf_one]
-  exact ⟨monoidHomOfForallMemZpowers hz order_dvd,
-    monoidHomOfForallMemZpowers_apply_gen hz order_dvd⟩
+  apply exists_zmod_log_of_dvd_orderOf hz
+  rwa [orderOf_eq_card_of_forall_mem_zpowers hz, Nat.card_units, card_ResField]
 
 end Residue
 
