@@ -16,8 +16,9 @@ Mathlib's cache and before the project's, does four things:
 3. runs `lake build` on the Tau Ceti modules that `src` needs: those imported anywhere under
    `src`, together with every Tau Ceti module they import in turn, publicly or not. Lake restores
    a cached module without the modules it imports only privately, but a later
-   `lake build --no-build` checks those too, so they are fetched explicitly. This downloads and
-   unpacks exactly the oleans needed, without compiling.
+   `lake build --no-build` checks those too, so they are fetched explicitly. In the cache
+   publication acceptance job, RH_REQUIRE_TAUCETI_CACHE=1 also makes this step fail if Lake
+   would need to compile a module.
 
 It only reads from Tau Ceti's cache; it never uploads. It verifies nothing about proofs.
 """
@@ -128,7 +129,10 @@ def main():
         say("no Tau Ceti module is imported under src; nothing more to fetch")
         return 0
     say(f"fetching oleans for those {len(modules)} Tau Ceti module(s)")
-    code = run_lake(["-q", "build", *modules], env)
+    build_args = ["-q", "build"]
+    if env.get("RH_REQUIRE_TAUCETI_CACHE") == "1":
+        build_args.append("--no-build")
+    code = run_lake([*build_args, *modules], env)
     if code:
         say("fetching Tau Ceti oleans failed")
     return code

@@ -133,6 +133,8 @@ jobs:
 
       - name: lake exe cache get
         # It ends with lake build --no-build itself; run it again to show the result.
+        env:
+          RH_REQUIRE_TAUCETI_CACHE: "1"
         run: |
           lake exe cache get
           lake build --no-build
