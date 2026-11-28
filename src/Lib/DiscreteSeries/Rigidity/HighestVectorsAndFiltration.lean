@@ -570,6 +570,60 @@ theorem New.map_mem_orthogonal_filtration {n : Type} [Fintype n] [DecidableEq n]
   simp only [LinearMap.sum_apply, LinearMap.smul_apply]
   exact sum_mem fun c _ ↦ sum_mem fun d _ ↦ smul_mem _ (X c d) (h_unit c d)
 
+/-- The squared commutator terms for compact matrix units cost at most `4 card n` times the
+sum of squared norms of the images of the matrix units. -/
+private theorem New.sum_norm_sq_lie_E_le {n : Type} [Fintype n] [DecidableEq n] {H : Type*}
+    [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : n → ℤˣ}
+    (ρ : GlModule n H) (P : Module.End ℂ H) (y : H) :
+    (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d, ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2) ≤
+      4 * Fintype.card n * ∑ p : n, ∑ q : n, ‖P (ρ.E q p y)‖ ^ 2 := by
+  -- Each term in the difference defining the commutator survives for at most `n` pairs `(c, d)`.
+  calc
+    _ ≤ ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n,
+        2 * (‖P ((if c = q then ρ.E d p else 0) y)‖ ^ 2 +
+          ‖P ((if p = d then ρ.E q c else 0) y)‖ ^ 2) := by
+        simp only [lie_def, ← map_bracket, map_sub, map_single_mul_single, LinearMap.sub_apply]
+        grw [filter_subset, norm_sub_le, add_sq_le]
+    _ = _ := by
+        simp [DFunLike.ite_apply, apply_ite (‖P ·‖), sum_add_distrib, ← mul_sum, mul_add,
+          sum_comm (f := fun p q : n ↦ ‖P (ρ.E p q y)‖ ^ 2)]
+        ring
+
+/-- Expanding the squared norms after commuting the compact matrix unit past the other one
+gives a Casimir term, the real cross terms, and the squared commutator terms. -/
+private theorem New.sum_norm_sq_compact_comp_eq {n : Type} [Fintype n] [DecidableEq n] {H : Type*}
+    [NormedAddCommGroup H] [InnerProductSpace ℂ H] {ε : n → ℤˣ}
+    (ρ : GlModule n H) (P : Module.End ℂ H)
+    (P_comm : ∀ c d : n, ε c = ε d → ∀ v : H, P (ρ.E c d v) = ρ.E c d (P v))
+    (κ : ℝ)
+    (casimir_zero : ∀ a : H,
+      (∑ c : n, ∑ d : n, if ε c = ε d then ‖ρ.E d c (P a)‖ ^ 2 else 0) = κ * ‖P a‖ ^ 2)
+    (y : H) :
+    (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) =
+      κ * (∑ p : n, ∑ q : n, ‖P (ρ.E q p y)‖ ^ 2) +
+        2 * (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d,
+          re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ) +
+        ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d, ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
+  -- Expand the square of `P (E_qp E_dc y) = E_dc (P (E_qp y)) + P (⁅E_qp, E_dc⁆ y)`.
+  have h_square (p q c d : n) (hcd : ε d = ε c) : ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 =
+      ‖ρ.E d c (P (ρ.E q p y))‖ ^ 2 +
+        2 * re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ +
+        ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
+    simp [lie_def, P_comm d c hcd, norm_sub_sq (𝕜 := ℂ), ← ofReal_pow]
+    ring
+  -- Sum `h_square` over the compact pairs `(c, d)`. The first terms add up to `casimir_zero`.
+  have h_inner (p q : n) :
+      (∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) =
+        κ * ‖P (ρ.E q p y)‖ ^ 2 +
+          2 * (∑ c : n, ∑ d : n with ε c = ε d,
+            re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ) +
+          ∑ c : n, ∑ d : n with ε c = ε d, ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
+    rw [← casimir_zero, mul_sum, ← sum_add_distrib, ← sum_add_distrib]
+    refine sum_congr rfl fun c _ ↦ ?_
+    rw [← sum_filter, mul_sum, ← sum_add_distrib, ← sum_add_distrib]
+    exact sum_congr rfl fun d hd ↦ h_square p q c d (mem_filter.1 hd).2.symm
+  simp only [h_inner, sum_add_distrib, mul_sum]
+
 /-- Let `l` have a large gap, the inner product be invariant with the lower bound for the Casimir
 operator (`New.IsUnitaryCasimirGe l ρ`), and `x` be `K`-highest of weight
 `Λ = l.lowestKType`. Let `P` commute with the compact `ρ.E c d`, have kernel `M_0ᗮ`, where
@@ -628,39 +682,10 @@ theorem New.sum_norm_sq_le_sum_re_inner_lie {n : Type} [Fintype n] [DecidableEq 
         inf_le_left hU_stable (P_adj.mul_E h) ⟨hy, ha⟩ fun w ⟨u, hu, hu_high, h_inner⟩ hw ↦ by
           simpa using Int.cast_mono (R := ℝ)
             (casimirKValue_lowestKType_add_le h hu.2 hw hu_high h_inner)
-  -- By `map_single_mul_single` a commutator is a difference of two terms, each zero for all but
-  -- `n` pairs `(c, d)`.
-  have upper : R ≤ 4 * Fintype.card n * N := by
-    calc R ≤ ∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n,
-          2 * (‖P ((if c = q then ρ.E d p else 0) y)‖ ^ 2 +
-            ‖P ((if p = d then ρ.E q c else 0) y)‖ ^ 2) := by
-          simp only [R, lie_def, ← map_bracket, map_sub, map_single_mul_single,
-            LinearMap.sub_apply]
-          grw [filter_subset, norm_sub_le, add_sq_le]
-      _ = 4 * Fintype.card n * N := by
-          simp [N, DFunLike.ite_apply, apply_ite (‖P ·‖), sum_add_distrib, ← mul_sum, mul_add,
-            sum_comm (f := fun p q : n ↦ ‖P (ρ.E p q y)‖ ^ 2)]
-          ring
-  -- Expand the square of `P (E_qp E_dc y) = E_dc (P (E_qp y)) + P (⁅E_qp, E_dc⁆ y)`.
-  have h_square (p q c d : n) (hcd : ε d = ε c) : ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 =
-      ‖ρ.E d c (P (ρ.E q p y))‖ ^ 2 +
-        2 * re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ +
-        ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
-    simp [lie_def, P_comm d c hcd, norm_sub_sq (𝕜 := ℂ), ← ofReal_pow]
-    ring
+  have upper : R ≤ 4 * Fintype.card n * N := sum_norm_sq_lie_E_le (ε := ε) ρ P y
   have expand : (∑ p : n, ∑ q : n, ∑ c : n, ∑ d : n with ε c = ε d,
-      ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) = l.casimirKValue l.lowestKType * N + 2 * C + R := by
-    -- Sum `h_square` over the compact pairs `(c, d)`; the first terms add up to `casimir_zero`.
-    have h_inner (p q : n) : ∑ c : n, ∑ d : n with ε c = ε d, ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2 =
-        l.casimirKValue l.lowestKType * ‖P (ρ.E q p y)‖ ^ 2 +
-          2 * ∑ c : n, ∑ d : n with ε c = ε d,
-            re ⟪ρ.E d c (P (ρ.E q p y)), P (⁅ρ.E q p, ρ.E d c⁆ y)⟫_ℂ +
-          ∑ c : n, ∑ d : n with ε c = ε d, ‖P (⁅ρ.E d c, ρ.E q p⁆ y)‖ ^ 2 := by
-      rw [← casimir_zero, mul_sum, ← sum_add_distrib, ← sum_add_distrib]
-      refine sum_congr rfl fun c _ ↦ ?_
-      rw [← sum_filter, mul_sum, ← sum_add_distrib, ← sum_add_distrib]
-      exact sum_congr rfl fun d hd ↦ h_square p q c d (mem_filter.1 hd).2.symm
-    simp only [N, C, R, h_inner, sum_add_distrib, mul_sum]
+      ‖P (ρ.E q p (ρ.E d c y))‖ ^ 2) = l.casimirKValue l.lowestKType * N + 2 * C + R :=
+    sum_norm_sq_compact_comp_eq ρ P P_comm _ casimir_zero y
   linarith
 
 /-- A finite family `J` of operators detects step `k` of the filtration
