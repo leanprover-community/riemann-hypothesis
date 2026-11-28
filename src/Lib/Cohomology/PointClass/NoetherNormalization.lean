@@ -3,11 +3,11 @@ module
 public import Aesop.BuiltinRules
 public import Mathlib.RingTheory.Invariant.Defs
 import Mathlib.FieldTheory.PurelyInseparable.Exponent
-import Mathlib.GroupTheory.CosetCover
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.Invariant.Galois
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.RingTheory.Invariant.Basic
 import TauCeti.RingTheory.MvPolynomial.Homogeneous
 public import Lib.General.Geometry.ProjectiveSpace
 public import Lib.General.Geometry.EtaleCharts
@@ -335,37 +335,6 @@ lemma exists_isNoetherNormalization [CharZero k] [Finite ι] (hg : g ≠ 0) :
       exact ih (fun j ↦ Λ j.succ - (a j.succ / a 0) • Λ 0) fun x hx h_zero ↦
         h_base x hx (aeval_eq_zero_of_eliminated_forms hf h_rel hfa ha₀ hx h_zero)
 
-/-- Let `A` be the ring of invariants of the finite group of `A`-automorphisms of `B`. Two maps
-of `k`-algebras from `B` to a field (`k` of characteristic zero) that agree on `A` differ by such an
-automorphism. -/
-lemma exists_algEquiv_of_comp_eq [CharZero k] [Algebra A B] [IsScalarTower k A B] [Fintype Gal(B/A)]
-    (hinv : Algebra.IsInvariant A B Gal(B/A)) {χ ψ : B →ₐ[k] L}
-    (h_agree : χ.comp (toAlgHom k A B) = ψ.comp (toAlgHom k A B)) :
-    ∃ τ : Gal(B/A), ∀ a : B, ψ a = χ (τ a) := by
-  -- A vector space over the infinite field `k` is not a finite union of proper subspaces, so it
-  -- is enough to find, for each `a`, some `τ` with `ψ a = χ (τ a)`.
-  suffices hcover : ∀ a : B, ∃ τ : Gal(B/A), ψ a = χ (τ a) by
-    have h_mem (a : B) :
-        a ∈ ⋃ τ : Gal(B/A), ((ψ.equalizer (χ.comp (τ.restrictScalars k))).toSubmodule : Set B) := by
-      simpa using hcover a
-    simpa [Submodule.eq_top_iff'] using Subspace.exists_eq_top_of_iUnion_eq_univ
-      (p := fun τ : Gal(B/A) ↦ (ψ.equalizer (χ.comp (τ.restrictScalars k))).toSubmodule)
-      (Set.eq_univ_of_forall h_mem)
-  intro a
-  -- The polynomial `∏ τ, (X - τ a)` comes from some `P` over `A`.
-  obtain ⟨P, hP : P.map (algebraMap A B) = MulSemiringAction.charpoly Gal(B/A) a⟩ :
-    MulSemiringAction.charpoly (B ≃ₐ[A] B) a ∈ Polynomial.lifts (algebraMap A B) :=
-    hinv.charpoly_mem_lifts (b := a)
-  have hroot (θ : B →ₐ[k] L) :
-      P.eval₂ (θ.comp (toAlgHom k A B)).toRingHom (ψ a) = 0 ↔ ∃ τ : Gal(B/A), ψ a = θ (τ a) := by
-    rw [show (θ.comp (toAlgHom k A B)).toRingHom = θ.toRingHom.comp (algebraMap A B) from rfl,
-      ← P.eval₂_map, hP, MulSemiringAction.charpoly_eq, Polynomial.eval₂_finsetProd,
-      prod_eq_zero_iff]
-    simp [sub_eq_zero]
-  -- `ψ a` is a root of the image of `P` under `ψ`, which is also its image under `χ`.
-  rw [← hroot χ, h_agree, hroot ψ]
-  exact ⟨1, rfl⟩
-
 /-- Let `t` be transcendental over `L`, `j : B → Ω` a map of `k`-algebras with zero kernel, and `b`
 a tuple over `B` with `j ∘ b = t • w` for a tuple `w` of elements of `Ω` integral over `L`. Every
 polynomial relation of `b` holds for `u • φ ∘ b`, for every map `φ` of `k`-algebras from `B` to a
@@ -523,10 +492,11 @@ lemma IsNoetherNormalization.nonempty_galoisClosure (hΛ : IsNoetherNormalizatio
   have hχf : χ ∘ f ∘ X = u • φ ∘ f ∘ X := by
     simpa [hΛb] using congrArg (evalForms Λ) (hχb 1)
   have h_agree : χ.comp f = ψ.comp f := algHom_ext (congrFun (hχf.trans hu))
-  obtain ⟨τ, hτ⟩ : ∃ τ : Gal(B/A), ∀ a : B, ψ a = χ (τ a) := exists_algEquiv_of_comp_eq hinv h_agree
+  obtain ⟨τ, hτ⟩ := TauCeti.Algebra.IsInvariant.exists_comp_eq_of_comp_algebraMap_eq A Gal(B/A)
+    χ.toRingHom ψ.toRingHom (congrArg AlgHom.toRingHom h_agree)
   refine ⟨τ, fun σ ↦ ?_⟩
   rw [← hχb (τ * σ)]
-  exact funext fun i ↦ hτ (b σ i)
+  exact funext fun i ↦ (RingHom.congr_fun hτ (b σ i)).symm
 
 /-- The Galois closure of a Noether normalisation `Λ` of a finite tuple `g` with entries in a field
 `L`, over a field `k` of characteristic zero. There are a finite group `G`, a map of `k`-algebras
