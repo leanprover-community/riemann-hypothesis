@@ -832,6 +832,159 @@ lemma exists_root_prod_integralAlgebraicPart {n : Type} [Fintype n] [DecidableEq
   grw [h_le, map_mul, norm_mul, norm_map_integralAlgebraicPart_le (hq₃ φ),
     norm_map_integralAlgebraicPart_le (hq₁ χ), sq]
 
+/-- For every tame character `χ = (μ, ψ)` of weight zero, some critical pair `(ν, 2)` has an empty
+row on `Fin 4`, tame part `ψ`, and `ν υ ^ 2 = μ` for its character `ν` (`New.rankTwist`). -/
+lemma exists_hasEmptyRow_fin_four (χ : tameChars D.finite_isChosen.toFinset) :
+    ∃ q : D.CriticalPair,
+      (rankTwist q.character (Fin 4) = χ.val.1 ∧ q.tamePart = χ.val.2) ∧ q.HasEmptyRow (Fin 4) :=
+  D.exists_hasEmptyRow (Fin 4) (by simp) ((Fintype.card_fin 4).trans_le D.nat_le_of_hasLogBound)
+    (by simp) χ
+
+/-- Let `p` be a main pair for `j`, so that `2 z - 20 ≥ 4` for its point `z = p.z`. For every tame
+character `χ = (μ, ψ)` of weight zero, some critical pair has an empty row on `Fin (2 z - 20)`,
+tame part `ψ`, and `ν υ ^ (z - 10) = μ` for its character `ν` (`New.rankTwist`). -/
+lemma CriticalPair.IsMainPair.exists_hasEmptyRow_fin_two_mul_z_sub_twenty {j : ℕ}
+    {p : D.CriticalPair} (hp : p.IsMainPair j) (χ : tameChars D.finite_isChosen.toFinset) :
+    ∃ q : D.CriticalPair,
+      (rankTwist q.character (Fin (2 * p.z - 20)) = χ.val.1 ∧ q.tamePart = χ.val.2) ∧
+        q.HasEmptyRow (Fin (2 * p.z - 20)) := by
+  have h_large : 10000 ≤ D.m := D.ten_thousand_le_m
+  obtain ⟨hz_gt : D.m < p.z, hz_le : p.z ≤ D.r⟩ := hp.z_mem
+  have h_card : card (Fin (2 * p.z - 20)) = 2 * (p.z - 10) := by
+    rw [Fintype.card_fin]
+    lia
+  have h_card_le : card (Fin (2 * p.z - 20)) ≤ D.t := by
+    rw [h_card, Data.t]
+    lia
+  exact D.exists_hasEmptyRow (Fin (2 * p.z - 20)) (by lia) h_card_le ⟨p.z - 10, h_card⟩ χ
+
+/-- The stabilisers of the classes of `U(1)(𝔸_f)` at the chosen level are trivial, so the class sum
+of `1` at that level is the number of classes. -/
+lemma stdClassSum_chosenLevel_one :
+    stdClassSum D.chosenLevel (1 : Gf D.E Unit → ℂ) =
+      Nat.card (StdClasses (n := Unit) D.chosenLevel) := by
+  have h_free : ∀ g : Gf D.E Unit, classAut stdRatPoints D.chosenLevel g = ⊥ :=
+    D.classAut_eq_bot_of_le_chosenLevel le_rfl (card_unit.trans_le D.nat_le_of_hasLogBound)
+  simp [classSum, h_free, ↓ finsum_eq_sum_of_fintype]
+  rfl
+
+/-- The Taylor coefficient at `α` of the theta function `twelveTaylor` of the datum that is the
+indicator of `x₀` modulo `𝔪` is `(π̄_M jetScale) ^ deg α / α!` times the theta kernel `modKernel`
+at the identity of the indicator of `x₀` and the monomial `α`, for any character `χ`. Here
+`π̄_M = D.piMBar`. -/
+private lemma coeff_twelveTaylor_indicatorDatum (𝔪 : Modulus D.E)
+    (x₀ : Matrix (Fin 12) Unit 𝔪.ResidueRing) (α : D.Φ × Fin 12 × Unit →₀ ℕ) (χ : AutChar D.E) :
+    MvPowerSeries.coeff α (D.twelveTaylor (D.indicatorDatum 𝔪 x₀)) =
+      (starRingEnd ℂ D.piMBar.1.1 * P.jetScale D.towerExp) ^ α.degree /
+          (α.prod fun _ k ↦ (k.factorial : ℂ)) *
+        modKernel (stdSpace D.E Unit) (stdSpace D.E (Fin 12)) 1 χ 𝔪 (Pi.single x₀ 1)
+          (.monomial α 1) (1, 1) 1 := by
+  have h_vac0 :
+      (Fock.vacVector (ε := realSigns D.E (homSigns (1 : Unit → ℤˣ) (1 : Fin 12 → ℤˣ))) :
+        _ → ℂ) 0 = 1 := by
+    simp [Fock.realVac]
+  simp only [MvPowerSeries.coeff_apply, Space.jetSeries_apply, modKernel, pairTheta, modDatum,
+    Prod.mk_one_one, map_one, one_apply_eq_self, Space.integrated_integrated, h_vac0, one_smul]
+  rfl
+
+/-- Unfolding the lift. Let `p` be a main pair for `j`, `ϑ` a twist and `X` the lift data of `p` at
+`ϑ`, with `N` the class sum of `1` over `X.chosenLevel` and `V = vacuumScale`. If the pairings of a
+form `Ξ` with the theta kernels satisfy `⟪Ξ, X.kernelForm g⟫ N ^ 3 V ^ (2 z - 12) = C f g` for every
+`g`, where `z = p.z`, then `N ^ 2 ⟪Ξ, φ⟫` is `V ^ 12 J C` times the mean over the classes of
+`g ↦ f (g y)`, for every point `y` of `U(1)(𝔸_f)`. Here `φ` is the lift `trivialLift` of the
+character of `p` times `ϑ`, and `J = (π̄_M jetScale) ^ p.rowLengthSum` its scale of derivatives. -/
+lemma mul_inner_trivialLift_eq_of_inner_kernelForm_mul_eq {j : ℕ} {p : D.CriticalPair}
+    (hp : p.IsMainPair j) {ϑ : D.Twist} {Ξ : (lValueData hp.hasLiftRank ϑ).descentPair.FormV}
+    {C : ℂ} {f : Gf D.E Unit → ℂ}
+    (h : ∀ g : Gf D.E Unit, inner ℂ Ξ ((lValueData hp.hasLiftRank ϑ).kernelForm g) *
+        (stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1 ^ 3 *
+          P.vacuumScale D.towerExp ^ (2 * p.z - 20 + 8)) = C * f g)
+    (y : Gf D.E Unit) :
+    stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1 ^ 2 *
+        inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ) =
+      P.vacuumScale D.towerExp ^ 12 *
+          (starRingEnd ℂ D.piMBar.1.1 * P.jetScale D.towerExp) ^ p.rowLengthSum * C *
+        (stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel (fun g ↦ f (g * y)) /
+          stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1) := by
+  set V : ℂ := P.vacuumScale D.towerExp
+  set J : ℂ := (starRingEnd ℂ D.piMBar.1.1 * P.jetScale D.towerExp) ^ p.rowLengthSum
+  have hN_ne : stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel (1 : Gf D.E Unit → ℂ) ≠ 0 := by
+    rw [show (lValueData hp.hasLiftRank ϑ).chosenLevel = D.chosenLevel from rfl,
+      stdClassSum_chosenLevel_one]
+    exact Nat.cast_ne_zero.2 Nat.card_pos.ne'
+  -- By adjointness the pairing with `trivialLift` is the class sum of the pairings with the kernel.
+  have h_sum : inner ℂ Ξ (lValueData hp.hasLiftRank ϑ).trivialLift *
+      (stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1 ^ 3 * V ^ (2 * p.z - 20 + 8)) =
+        C * stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel fun g ↦ f (g * y) := by
+    have h_adjoint : inner ℂ Ξ (lValueData hp.hasLiftRank ϑ).trivialLift =
+        stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel fun g ↦
+          inner ℂ Ξ ((lValueData hp.hasLiftRank ϑ).kernelForm (g * y)) := by
+      rw [trivialLift_eq_stdClassSum_translate _ y]
+      exact map_classSum (innerSL ℂ Ξ) _
+    rw [h_adjoint, classSum_mul, mul_classSum]
+    simp only [h]
+  -- The scalar of `trivialLift` is `V ^ (2 z) J`.
+  have h_lift : inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ) =
+      V ^ 12 * V ^ (2 * p.z - 20 + 8) * J *
+        inner ℂ Ξ (lValueData hp.hasLiftRank ϑ).trivialLift := by
+    have h_card : card (RankOneIndex p.z) = 12 + (2 * p.z - 20 + 8) := by
+      simp only [card_sum, Fintype.card_fin]
+      ring
+    rw [CriticalPair.trivialLift, inner_smul_right, h_card, pow_add]
+    rfl
+  rw [h_lift, mul_div_assoc', eq_div_iff hN_ne]
+  linear_combination (V ^ 12 * J) * h_sum
+
+open MvPolynomial Nat in
+/-- Seesaw factorisation and unfolding of the lift. Let `p` be a main pair for `j` with point
+`z = p.z`, `ϑ` a twist with modulus prime to `l` and `X` the lift data of `p` at `ϑ`, with `N` the
+class sum of `1` over `X.chosenLevel` and `V = vacuumScale`. Let `q₂`, `q₃`, `q` have empty rows on
+blocks of sizes `4`, `4` and `2 z - 20`, `q₂` at `ϑ` and the other two at the trivial character. Let
+the monomial `α` have degree `X.rowLength τ` at each infinite place `τ`, and let `χ / ψ` and the
+characters of the three blocks multiply to that of `X`. Let `s g` be the theta kernel `modKernel`
+at `g` of `χ`, the indicator of `x₀` and `α`. Then some test form `Ξ` at `l` has
+`N ^ 2 ⟪Ξ, φ⟫ = V ^ 12 J C A`, for the lift `φ = trivialLift` of `p` at `ϑ`, its scale of
+derivatives `J = (π̄_M jetScale) ^ p.rowLengthSum`, the product `C` of `∏ (X.rowLength τ)! / α!` and
+the three numbers `integralAlgebraicPart`, and the mean `A` over the classes of
+`g ↦ ψ (det (g y)) * s (g y)`, for any point `y` of `U(1)(𝔸_f)`. -/
+theorem exists_isTestForm_mul_inner_trivialLift_eq {l : ℕ} [Fact l.Prime]
+    {p q q₂ q₃ : D.CriticalPair} (hq : q.HasEmptyRow (Fin (2 * p.z - 20)))
+    (hq₂ : q₂.HasEmptyRow (Fin 4)) (hq₃ : q₃.HasEmptyRow (Fin 4)) {j : ℕ}
+    {α : NumberField.InfinitePlace D.E × Fin 12 × Unit →₀ ℕ} {χ ψ : AutChar D.E} [PadicPlace l]
+    (hp : p.IsMainPair j) (ϑ : D.Twist) (hl : l.Coprime ϑ.normQ)
+    (x₀ : Matrix (Fin 12) Unit ((lValueData hp.hasLiftRank ϑ).levelModulus 1 false).ResidueRing)
+    (hα : ∀ τ : NumberField.InfinitePlace D.E,
+      ∑ i : Fin 12, α (τ, i, ()) = (lValueData hp.hasLiftRank ϑ).rowLength τ)
+    (h_char : χ / ψ * ((lValueData hq₂.hasLiftRank ϑ).descentPair.charV *
+        (lValueData hq₃.hasLiftRank .one).descentPair.charV) *
+          (lValueData hq.hasLiftRank .one).descentPair.charV =
+      (lValueData hp.hasLiftRank ϑ).descentPair.charV)
+    {s : Gf D.E Unit → ℂ}
+    (hs : ∀ g : Gf D.E Unit, s g = modKernel (stdSpace D.E Unit) (stdSpace D.E (Fin 12)) 1 χ
+      ((lValueData hp.hasLiftRank ϑ).levelModulus 1 false) (Pi.single x₀ 1) (monomial α 1) (1, g)
+      (1, 1))
+    (y : Gf D.E Unit) :
+    ∃ Ξ : (lValueData hp.hasLiftRank ϑ).descentPair.FormV,
+      (lValueData hp.hasLiftRank ϑ).descentPair.IsTestForm l Ξ ∧
+      stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1 ^ 2 *
+          inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ) =
+        P.vacuumScale D.towerExp ^ 12 *
+            (starRingEnd ℂ D.piMBar.1.1 * P.jetScale D.towerExp) ^ p.rowLengthSum *
+            ((∏ τ, (p.negWeight τ - p.z).factorial :) / (α.prod fun _ k ↦ (k.factorial : ℂ)) *
+              q.integralAlgebraicPart hq.hasLiftRank .one *
+              q₃.integralAlgebraicPart hq₃.hasLiftRank .one *
+              q₂.integralAlgebraicPart hq₂.hasLiftRank ϑ) *
+          (stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel
+              (fun g ↦ ψ.val (detFin 1 (g * y)) * s (g * y)) /
+            stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1) := by
+  -- The pairings with the kernels are those of `exists_isTestForm_inner_kernelForm_eq`, where
+  -- dividing the character by `ψ` multiplies the kernel at `g` by `ψ (det g)`.
+  obtain ⟨Ξ, h_pair, h_test⟩ :=
+    exists_isTestForm_inner_kernelForm_eq hq hq₂ hq₃ hp ϑ hl x₀ hα h_char
+  refine ⟨Ξ, h_test, mul_inner_trivialLift_eq_of_inner_kernelForm_mul_eq hp
+    (f := fun g ↦ ψ.val (detFin 1 g) * s g) (fun g ↦ ?_) y⟩
+  rw [h_pair, modKernel_div_apply, hs]
+
 /-- A form with small pairing. Let `1 ≤ j ≤ m`, let `p` be a main pair for `j` (`IsMainPair`) and
 `q₂ = (ν₂, 2)` a pair with empty row on `Fin 4`. There is a number `c₀ ≠ 0` whose conjugates have
 size at most `exp (f m b / k + 3 x ^ 34)` such that, for every prime `l`, every embedding
@@ -857,27 +1010,11 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
   -- number `t` of `exists_rpow_neg_localPrimeSumTotal_le_norm_coeff`, the untwisted value `L_twist`
   -- of the second block and the geometric mean `L` of the values of the last two blocks.
   let fin : Fintype (tameChars D.finite_isChosen.toFinset) := ofFinite _
-  have h_large : 10000 ≤ D.m := D.ten_thousand_le_m
   have h_free : ∀ g : Gf D.E Unit, classAut stdRatPoints D.chosenLevel g = ⊥ :=
     D.classAut_eq_bot_of_le_chosenLevel le_rfl (card_unit.trans_le D.nat_le_of_hasLogBound)
-  obtain ⟨hz_gt : D.m < p.z, hz_le : p.z ≤ D.r⟩ := hp.z_mem
   -- Pairs with empty row for the last two blocks, one over every tame character.
-  have h_card : card (Fin (2 * p.z - 20)) = 2 * (p.z - 10) := by
-    rw [Fintype.card_fin]
-    lia
-  have h_card_le : card (Fin (2 * p.z - 20)) ≤ D.t := by
-    rw [h_card, Data.t]
-    lia
-  have h_four_le : card (Fin 4) ≤ D.t := (Fintype.card_fin 4).trans_le D.nat_le_of_hasLogBound
-  have exists_last (χ : tameChars D.finite_isChosen.toFinset) : ∃ q : D.CriticalPair,
-      (rankTwist q.character (Fin (2 * p.z - 20)) = χ.val.1 ∧ q.tamePart = χ.val.2) ∧
-        q.HasEmptyRow (Fin (2 * p.z - 20)) :=
-    D.exists_hasEmptyRow (Fin (2 * p.z - 20)) (by lia) h_card_le ⟨p.z - 10, h_card⟩ χ
-  have exists_third (χ : tameChars D.finite_isChosen.toFinset) : ∃ q : D.CriticalPair,
-      (rankTwist q.character (Fin 4) = χ.val.1 ∧ q.tamePart = χ.val.2) ∧ q.HasEmptyRow (Fin 4) :=
-    D.exists_hasEmptyRow (Fin 4) (by simp) h_four_le (by simp) χ
-  choose q₁ hχ₁ hq₁ using exists_last
-  choose q₃ hχ₃ hq₃ using exists_third
+  choose q₁ hχ₁ hq₁ using hp.exists_hasEmptyRow_fin_two_mul_z_sub_twenty
+  choose q₃ hχ₃ hq₃ using exists_hasEmptyRow_fin_four (D := D)
   -- The jet degrees `p.negWeight τ - p.z` of `p` lie in the range where
   -- `exists_rpow_neg_localPrimeSumTotal_le_norm_coeff` applies.
   obtain ⟨t, ht_ne, ht, h_depth⟩ := D.exists_rpow_neg_localPrimeSumTotal_le_norm_coeff
@@ -915,15 +1052,14 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
     h_chosen ιₚ s le_rfl le_rfl h_free
   obtain ⟨ψ₃, ψ₁, hψ, hL_l⟩ := exists_mul_eq_norm_map_le_norm_map_mul ιₚ hL_pow ψ
   -- The characters of the four blocks multiply to that of the lift data of `p`, as `ψ = ψ₃ ψ₁`.
-  obtain ⟨Ξ, h_pair, h_test⟩ := exists_isTestForm_inner_kernelForm_eq (hq₁ ψ₁) hq₂ (hq₃ ψ₃)
-    (χ := χ₀ / ψ.val.1) hp ϑ hl x₀ hα
+  -- By adjointness the test form pairs with `trivialLift` to the class sum of `ψ` times `s`.
+  obtain ⟨Ξ, h_test, h_pair⟩ := exists_isTestForm_mul_inner_trivialLift_eq (hq₁ ψ₁) hq₂ (hq₃ ψ₃)
+    (ψ := ψ.val.1) hp ϑ hl x₀ hα
     (by simp [χ₀, DescentPair.charV, ← hψ, hχ₁, hχ₃, toAutChar_one_and_toTwist_one_and_Q_one,
-      div_div, mul_assoc])
+      div_div, mul_assoc]) (s := s) (fun _ ↦ rfl) z
   refine ⟨Ξ, h_test, ?_⟩
-  have hN : stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1 = (N : ℂ) := by
-    rw [show (lValueData hp.hasLiftRank ϑ).chosenLevel = D.chosenLevel from rfl]
-    simp [classSum, h_free, N, ↓ finsum_eq_sum_of_fintype]
-    rfl
+  have hN : stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1 = (N : ℂ) :=
+    stdClassSum_chosenLevel_one
   -- The scaled Taylor coefficient bounded below in `h_coeff` is `s 1` times the scalar `c`.
   let c : ℂ := P.vacuumScale D.towerExp ^ 12 / t * (∏ τ, (p.negWeight τ - p.z).factorial :) *
     ((starRingEnd ℂ D.piMBar.1.1 * P.jetScale D.towerExp) ^ α.degree / α.prod fun _ k ↦
@@ -931,67 +1067,38 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
   have h_lower : (l : ℝ) ^ (-D.localPrimeSumTotal l) ≤ ‖ιₚ c‖ * ‖ιₚ (s 1)‖ := by
     rw [← norm_mul, ← map_mul]
     refine h_coeff.trans_eq (congrArg (‖ιₚ ·‖) ?_)
-    have h_vac0 :
-        (Fock.vacVector (ε := realSigns D.E (homSigns (1 : Unit → ℤˣ) (1 : Fin 12 → ℤˣ))) :
-          _ → ℂ) 0 = 1 := by
-      simp [Fock.realVac]
-    simp only [c, s, MvPowerSeries.coeff_apply, Space.jetSeries_apply, modKernel, pairTheta,
-      modDatum, Prod.mk_one_one, map_one, one_apply_eq_self, Space.integrated_integrated,
-      h_vac0, one_smul, mul_assoc]
-    rfl
+    rw [coeff_twelveTaylor_indicatorDatum _ _ _ χ₀]
+    simp only [c, s, mul_assoc]
   set W : ℂ := (q₃ ψ₃).integralAlgebraicPart (hq₃ ψ₃).2 .one * (q₁ ψ₁).integralAlgebraicPart
-    (hq₁ ψ₁).2 .one
+    (hq₁ ψ₁).2 .one with hW
   set A : ℂ :=
     stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel
         (fun g ↦ ψ.val.1.val (detFin 1 (g * z)) * s (g * z)) /
       stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1
-  -- By adjointness the pairing with `trivialLift` is the class sum of the pairings of `h_pair`,
-  -- whose kernels are `ψ` times `s`. The factor `t` cancels the `/ t` of `c`, and dividing by
-  -- `q₂.ratio` turns the twisted value `q₂.integralAlgebraicPart hq₂.2 ϑ` into the untwisted value
-  -- `L_twist`.
+  -- The factor `t` cancels the `/ t` of `c`, and dividing by `q₂.ratio` turns the twisted value
+  -- `q₂.integralAlgebraicPart hq₂.2 ϑ` into the untwisted value `L_twist`.
   have h_inner : t * L_twist * W * (c * A) =
       N ^ 2 * inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ) / q₂.ratio ϑ := by
     let V : ℂ := P.vacuumScale D.towerExp
     let J : ℂ := (starRingEnd ℂ D.piMBar.1.1 * P.jetScale D.towerExp) ^ p.rowLengthSum
     let T : ℂ := (∏ τ, (p.negWeight τ - p.z).factorial :) / α.prod fun _ k ↦ (k.factorial : ℂ)
-    let I : ℂ := inner ℂ Ξ (lValueData hp.hasLiftRank ϑ).trivialLift
-    have hN_ne : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.2 Nat.card_pos.ne'
-    -- Each pairing with the kernel is a constant times `ψ (det g) * s g`; sum over the classes.
-    have h_term (g : Gf D.E Unit) :
-        inner ℂ Ξ ((lValueData hp.hasLiftRank ϑ).kernelForm g) * (N ^ 3 * V ^ (2 * p.z - 20 + 8)) =
-          T * W * q₂.integralAlgebraicPart hq₂.2 ϑ * (ψ.val.1.val (detFin 1 g) * s g) := by
-      rw [← hN, h_pair, modKernel_div_apply, mul_assoc (_ / _),
-        mul_comm (integralAlgebraicPart (hq₁ ψ₁).2 _)]
-      rfl
-    have h_sum : I * (N ^ 3 * V ^ (2 * p.z - 20 + 8)) =
-        T * W * q₂.integralAlgebraicPart hq₂.2 ϑ * (A * N) := by
-      have h_adjoint : I = stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel fun g ↦
-          inner ℂ Ξ ((lValueData hp.hasLiftRank ϑ).kernelForm (g * z)) := by
-        unfold I
-        rw [trivialLift_eq_stdClassSum_translate _ z]
-        exact map_classSum (innerSL ℂ Ξ) _
-      rw [← hN, div_mul_cancel₀ _ (hN.trans_ne hN_ne), hN, h_adjoint, classSum_mul, mul_classSum]
-      simp only [h_term]
+    have h_unfold : stdClassSum (lValueData hp.hasLiftRank ϑ).chosenLevel 1 ^ 2 *
+        inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ) =
+          V ^ 12 * J * (T * (q₁ ψ₁).integralAlgebraicPart (hq₁ ψ₁).2 .one *
+            (q₃ ψ₃).integralAlgebraicPart (hq₃ ψ₃).2 .one * q₂.integralAlgebraicPart hq₂.2 ϑ) * A :=
+      h_pair
     -- The scalars of `c` and of `trivialLift` agree up to `T / t` and a power of `V`.
     have h_c : c = V ^ 12 / t * T * J := by
       have h_degree : α.degree = p.rowLengthSum := by
         simp [α.degree_eq_sum, sum_prod_type, hα]
       simp only [c, V, T, J, h_degree]
       ring
-    have h_lift : inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ) =
-        V ^ 12 * V ^ (2 * p.z - 20 + 8) * J * I := by
-      have h_card : card (RankOneIndex p.z) = 12 + (2 * p.z - 20 + 8) := by
-        simp only [card_sum, Fintype.card_fin]
-        ring
-      rw [CriticalPair.trivialLift, inner_smul_right, h_card, pow_add]
-      rfl
     have h_twist_ne : q₂.integralAlgebraicPart hq₂.2 ϑ ≠ 0 := by simp
-    rw [ratio_eq_integralAlgebraicPart_div hq₂.2, h_lift, h_c, div_div_eq_mul_div,
-      eq_div_iff h_twist_ne]
-    apply mul_left_cancel₀ hN_ne
-    linear_combination -(L_twist * V ^ 12 * J) * h_sum +
-      N * L_twist * W * V ^ 12 * T * J * A * q₂.integralAlgebraicPart hq₂.2 ϑ *
-        mul_inv_cancel₀ ht_ne
+    rw [ratio_eq_integralAlgebraicPart_div hq₂.2, h_c, div_div_eq_mul_div,
+      eq_div_iff h_twist_ne, ← hN, h_unfold, hW]
+    linear_combination L_twist * (q₃ ψ₃).integralAlgebraicPart (hq₃ ψ₃).2 .one *
+      (q₁ ψ₁).integralAlgebraicPart (hq₁ ψ₁).2 .one * V ^ 12 * T * J * A *
+        q₂.integralAlgebraicPart hq₂.2 ϑ * mul_inv_cancel₀ ht_ne
   rw [norm_map_mul_le_iff_le_div ιₚ (q₂.ratio_ne_zero ϑ 1)]
   calc ‖ιₚ (t * L_twist * L)‖ * (l : ℝ) ^ (-D.localPrimeSumTotal l)
       ≤ ‖ιₚ (t * L_twist)‖ * ‖ιₚ W‖ * (‖ιₚ c‖ * ‖ιₚ A‖) := by
@@ -1002,6 +1109,157 @@ theorem exists_isTestForm_le_norm_inner_trivialLift {j : D.LiftIndex} {p q₂ : 
         -- the class number `N` is an integer
         rw [mul_div_assoc, ← Nat.cast_pow, map_mul, norm_mul, map_natCast]
         exact mul_le_of_le_one_left (norm_nonneg _) (norm_natCast_le_one ..)
+
+/-- Some ramified critical pair `q = (ν, 2)` has an empty row on `Fin 4`: take the tame part
+`D.chiMLocal`, which is non-trivial exactly at the chosen places. -/
+lemma exists_hasEmptyRow_fin_four_and_isRamified :
+    ∃ q : D.CriticalPair, q.HasEmptyRow (Fin 4) ∧ q.IsRamified := by
+  have h_large : 10000 ≤ D.m := D.ten_thousand_le_m
+  have h_tame (w : FinPlace D.E) (hw : w ∉ D.finite_isChosen.toFinset) : D.chiMLocal w = 1 :=
+    D.chiMLocal_eq_one_of_not_isChosen (by simpa using hw)
+  obtain ⟨q₂, hχ₂, hq₂⟩ :=
+    exists_hasEmptyRow_fin_four ⟨(D.chiM, D.chiMLocal), D.chiM_hasWeight, h_tame⟩
+  refine ⟨q₂, hq₂, ?_⟩
+  simpa [CriticalPair.IsRamified, hχ₂] using
+    D.chiMLocal_zpow_ne_one_iff_isChosen 1 one_ne_zero (by omega)
+
+/-- The bounds of `exists_isTestForm_le_norm_inner_trivialLift`, at `ι` and at its conjugate,
+multiplied. Let `c₀` satisfy them for a main pair `p` and a pair `q₂`, and let `ϑ` be a twist with
+modulus prime to the prime `l` of `ι`. Then some test forms `Ξ`, `Ξ'` at `l` have
+`‖ι (c₀ c̄₀ ρ ^ 2)‖ (l ^ (-S_l)) ^ 2 ≤ ‖ι (⟪Ξ, φ⟫ ⟪φ, Ξ'⟫)‖`. Here `ρ = q₂.ratio ϑ` is real, `φ` is
+the lift of the character of `p` times `ϑ` and `S_l = localPrimeSumTotal l`. -/
+lemma exists_isTestForm_le_norm_inner_mul_inner_trivialLift {j : D.LiftIndex}
+    {p q₂ : D.CriticalPair} (hp : p.IsMainPair j) {c₀ : ℂ}
+    (h_test : ∀ (l : ℕ) [Fact l.Prime] [PadicPlace l] (ϑ : D.Twist), l.Coprime ϑ.normQ →
+      ∃ Ξ : (lValueData hp.hasLiftRank ϑ).descentPair.FormV,
+        (lValueData hp.hasLiftRank ϑ).descentPair.IsTestForm l Ξ ∧
+        ‖ιₚ (c₀ * q₂.ratio ϑ)‖ * (l : ℝ) ^ (-D.localPrimeSumTotal l) ≤
+          ‖ιₚ (inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ))‖)
+    (ι : PrimePadicIso) (ϑ : D.Twist) (hϑ : Nat.Coprime ι.prime ϑ.normQ) :
+    ∃ Ξ Ξ' : (lValueData hp.hasLiftRank ϑ).descentPair.FormV,
+      (lValueData hp.hasLiftRank ϑ).descentPair.IsTestForm ι.prime Ξ ∧
+      (lValueData hp.hasLiftRank ϑ).descentPair.IsTestForm ι.prime Ξ' ∧
+      ‖ι.iso (c₀ * star c₀ * q₂.ratio ϑ ^ 2)‖ *
+          ((ι.prime : ℝ) ^ (-D.localPrimeSumTotal ι.prime)) ^ 2 ≤
+        ‖ι.iso (inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ) *
+          inner ℂ (CriticalPair.trivialLift hp.hasLiftRank ϑ) Ξ')‖ := by
+  obtain ⟨Ξ, hΞ, h_le⟩ := @h_test ι.prime _ ⟨complexToCp ι.iso⟩ ϑ hϑ
+  obtain ⟨Ξ', hΞ', h_le'⟩ := @h_test ι.prime _ ⟨(complexToCp ι.iso).comp starRingAut.toRingHom⟩
+    ϑ hϑ
+  refine ⟨Ξ, Ξ', hΞ, hΞ', ?_⟩
+  have h_mul : ‖ι.iso (c₀ * q₂.ratio ϑ)‖ * ι.prime ^ (-D.localPrimeSumTotal ι.prime) *
+      (‖ι.iso (star c₀ * q₂.ratio ϑ)‖ * ι.prime ^ (-D.localPrimeSumTotal ι.prime)) ≤
+      ‖ι.iso (inner ℂ Ξ (CriticalPair.trivialLift hp.hasLiftRank ϑ))‖ *
+        ‖ι.iso (inner ℂ (CriticalPair.trivialLift hp.hasLiftRank ϑ) Ξ')‖ := by
+    simpa [star_ratio] using
+      mul_le_mul h_le h_le' (by positivity) (norm_nonneg _)
+  simp only [map_mul, map_pow, norm_mul, norm_pow] at h_mul ⊢
+  exact le_trans (le_of_eq (by ring)) h_mul
+
+/-- Few congruences. Let `θ` be a regular family of twists, `p` a main pair for `j`, and let
+`Ξ ι`, `Ξ' ι` be test forms at the prime of `ι` for the lift data of `p` at `(θ ι) ^ j`. Then the
+inner products of the projections of `Ξ ι` and `Ξ' ι` to the line of the lift `trivialLift` of the
+character of `p` times `(θ ι) ^ j` have height at most `denominatorBudget`. -/
+lemma heightLe_inner_starProjection_trivialLift {θ : PrimePadicIso → D.MFoldTwist}
+    (hθ : D.IsRegularFamily θ) {j : D.LiftIndex} {p : D.CriticalPair} (hp : p.IsMainPair j)
+    {Ξ Ξ' : ∀ ι : PrimePadicIso, (lValueData hp.hasLiftRank ((θ ι).powTwist j)).descentPair.FormV}
+    (hΞ : ∀ ι : PrimePadicIso,
+      (lValueData hp.hasLiftRank ((θ ι).powTwist j)).descentPair.IsTestForm ι.prime (Ξ ι))
+    (hΞ' : ∀ ι : PrimePadicIso,
+      (lValueData hp.hasLiftRank ((θ ι).powTwist j)).descentPair.IsTestForm ι.prime (Ξ' ι)) :
+    HeightLe D.denominatorBudget fun ι ↦
+      inner ℂ
+        ((ℂ ∙ CriticalPair.trivialLift hp.hasLiftRank ((θ ι).powTwist j)).starProjection (Ξ ι))
+        ((ℂ ∙ CriticalPair.trivialLift hp.hasLiftRank ((θ ι).powTwist j)).starProjection
+          (Ξ' ι)) := by
+  obtain ⟨γ, hγ⟩ := hθ.exists_denominator_bound j
+  refine .of_le hγ.sum_le fun ι ↦ ?_
+  have h_line : (ℂ ∙ (lValueData hp.hasLiftRank ((θ ι).powTwist j)).trivialLift) =
+      ℂ ∙ CriticalPair.trivialLift hp.hasLiftRank ((θ ι).powTwist j) :=
+    (span_singleton_smul_eq
+      (left_ne_zero_of_smul (trivialLift_ne_zero hp.hasLiftRank .one)).isUnit _).symm
+  have h_proj_eq :
+      (ℂ ∙ (lValueData hp.hasLiftRank ((θ ι).powTwist j)).trivialLift).starProjection =
+        (ℂ ∙ CriticalPair.trivialLift hp.hasLiftRank ((θ ι).powTwist j)).starProjection := by
+    have h_aux : ∀ {K₁ K₂ : Submodule ℂ
+          (lValueData hp.hasLiftRank ((θ ι).powTwist j)).descentPair.FormV}
+        [K₁.HasOrthogonalProjection] [K₂.HasOrthogonalProjection],
+        K₁ = K₂ → K₁.starProjection = K₂.starProjection := by
+      rintro K _ _ _ rfl
+      rfl
+    exact h_aux h_line
+  rw [← h_proj_eq]
+  exact (hγ.hasDenominatorsLe ι).mainPair p hp (hΞ ι) (hΞ' ι)
+
+/-- Small pairings. Let `c₀ ≠ 0` have conjugates of size at most `exp denominatorBudget`, and let
+`a ι`, `b ι` be numbers with `‖ι (c₀ c̄₀ a ι)‖ (l ^ (-S_l)) ^ 2 ≤ ‖ι (b ι)‖ ≠ 0` at every `ι`, of
+prime `l`, where `S_l = localPrimeSumTotal l`. Then the quotients `a ι / b ι` have height at most
+`2 denominatorBudget + ∑ τ, primeSum (κ τ) τ`. -/
+lemma heightLe_div_of_norm_map_mul_le {c₀ : ℂ} (hc₀_ne : c₀ ≠ 0)
+    (hc₀_le : ∀ σ : ℂ ≃+* ℂ, ‖σ c₀‖ ≤ exp D.denominatorBudget) {a b : PrimePadicIso → ℂ}
+    (h_pos : ∀ ι : PrimePadicIso, 0 < ‖ι.iso (b ι)‖)
+    (h_le : ∀ ι : PrimePadicIso, ‖ι.iso (c₀ * star c₀ * a ι)‖ *
+      ((ι.prime : ℝ) ^ (-D.localPrimeSumTotal ι.prime)) ^ 2 ≤ ‖ι.iso (b ι)‖) :
+    HeightLe (2 * D.denominatorBudget + ∑ τ, D.primeSum (D.weight τ) τ) fun ι ↦ a ι / b ι := by
+  refine .of_mul_le (H := c₀ * star c₀) (α := D.denominatorBudget + D.denominatorBudget)
+    (e := fun l ↦ 2 • (D.localPrimeSumTotal l * log l))
+      (mul_ne_zero hc₀_ne (star_ne_zero.2 hc₀_ne))
+    (fun σ ↦ ?_) (fun ι ↦ ?_) fun T hT ↦ ?_
+  · rw [exp_add, map_mul]
+    exact norm_mul_le_of_le (hc₀_le σ) (hc₀_le (.trans starRingAut σ))
+  · have h_exp : ((ι.prime : ℝ) ^ (-D.localPrimeSumTotal ι.prime)) ^ 2 =
+        (exp (2 • (D.localPrimeSumTotal ι.prime * log ι.prime)))⁻¹ := by
+      rw [rpow_def_of_pos (mod_cast ι.prime.property.pos), Real.exp_nsmul, ← inv_pow,
+        ← Real.exp_neg, mul_neg, mul_comm]
+    rw [← mul_div_assoc, map_div₀, norm_div, div_le_iff₀' (h_pos ι), ← div_le_iff₀ (exp_pos _),
+      div_eq_mul_inv, ← h_exp]
+    exact h_le ι
+  · linarith only [D.sum_localPrimeSumTotal_mul_log_le T hT]
+
+/-- Let `p` have lift rank on `n` and let `ϑ` be a tame character with modulus `Q`. Up to the power
+`N(Q) ^ (card n - 1)`, the inverse ratio `(p.ratio ϑ)⁻¹` is `‖φ₁‖² / ‖φ‖²` for the untwisted lift
+`φ₁ = trivialLift H 1` and the twisted lift `φ = trivialLift H ϑ`. -/
+lemma CriticalPair.inv_ratio_eq_mul_norm_sq_div {n : Type} [Fintype n] [DecidableEq n]
+    {p : D.CriticalPair} (H : p.HasLiftRank n) (ϑ : D.TameChar) :
+    (p.ratio ϑ)⁻¹ = (ϑ.normQ ^ (card n - 1) : ℕ) *
+      ((‖CriticalPair.trivialLift H .one‖ : ℂ) ^ 2 / (‖CriticalPair.trivialLift H ϑ‖ : ℂ) ^ 2) := by
+  have h_one : (TameChar.one : D.TameChar).normQ = 1 := by
+    simp [TameChar.normQ, toAutChar_one_and_toTwist_one_and_Q_one]
+  rw [ratio_eq_algPart_div H, inv_div, algPart, algPart, h_one, Nat.cast_one, one_pow,
+    div_one, div_div_eq_mul_div, Nat.cast_pow, mul_comm, mul_div_assoc]
+
+/-- Let `p` have lift rank on `n`, let `ϑ` be a tame character with modulus `Q`, and let
+`φ = trivialLift H ϑ` and `φ₁ = trivialLift H 1` be the twisted and the untwisted lift. For forms
+`Ξ`, `Ξ'` with `⟪Ξ, φ⟫ ⟪φ, Ξ'⟫ ≠ 0` and for `ρ ≠ 0`, the inverse ratio `(p.ratio ϑ)⁻¹` is
+`N(Q) ^ (card n - 1)` times the product of four factors: `‖φ₁‖²`, the inner product of the
+projections of `Ξ` and `Ξ'` to the line of `φ`, `ρ⁻²` and `ρ² / (⟪Ξ, φ⟫ ⟪φ, Ξ'⟫)`. -/
+lemma CriticalPair.inv_ratio_eq_mul_inner_starProjection_mul {n : Type} [Fintype n]
+    [DecidableEq n] {p : D.CriticalPair} (H : p.HasLiftRank n) (ϑ : D.TameChar)
+    {Ξ Ξ' : (lValueData H ϑ).descentPair.FormV} {ρ : ℂ} (hρ : ρ ≠ 0)
+    (h_ne :
+      inner ℂ Ξ (CriticalPair.trivialLift H ϑ) * inner ℂ (CriticalPair.trivialLift H ϑ) Ξ' ≠ 0) :
+    (p.ratio ϑ)⁻¹ = (ϑ.normQ ^ (card n - 1) : ℕ) *
+      ((‖CriticalPair.trivialLift H .one‖ : ℂ) ^ 2 *
+        inner ℂ ((ℂ ∙ CriticalPair.trivialLift H ϑ).starProjection Ξ)
+          ((ℂ ∙ CriticalPair.trivialLift H ϑ).starProjection Ξ') *
+        ρ⁻¹ ^ 2 * (ρ ^ 2 / (inner ℂ Ξ (CriticalPair.trivialLift H ϑ) *
+          inner ℂ (CriticalPair.trivialLift H ϑ) Ξ'))) := by
+  -- `‖φ‖²` is the product of the two pairings over the pairing of the projections.
+  have h_norm : inner ℂ ((ℂ ∙ CriticalPair.trivialLift H ϑ).starProjection Ξ)
+        ((ℂ ∙ CriticalPair.trivialLift H ϑ).starProjection Ξ') =
+      inner ℂ Ξ (CriticalPair.trivialLift H ϑ) * inner ℂ (CriticalPair.trivialLift H ϑ) Ξ' /
+        (‖CriticalPair.trivialLift H ϑ‖ : ℂ) ^ 2 := by
+    rw [inner_starProjection_left_eq_right,
+      starProjection_eq_self_iff.2 (starProjection_apply_mem ..), starProjection_singleton,
+      inner_smul_right]
+    simp [field]
+  set pairings :=
+    inner ℂ Ξ (CriticalPair.trivialLift H ϑ) * inner ℂ (CriticalPair.trivialLift H ϑ) Ξ'
+  have h_cancel (a b : ℂ) : a * (pairings / b) * ρ⁻¹ ^ 2 * (ρ ^ 2 / pairings) = a / b := by
+    rw [inv_pow, div_eq_mul_inv (ρ ^ 2), mul_assoc _ (ρ ^ 2)⁻¹,
+      inv_mul_cancel_left₀ (pow_ne_zero 2 hρ),
+      ← mul_div_assoc, div_mul_eq_mul_div, mul_inv_cancel_right₀ h_ne]
+  rw [inv_ratio_eq_mul_norm_sq_div H, h_norm, h_cancel]
 
 /-- Let `θ ι` be `m`-fold twists (characters of weight zero whose first `m` powers are ramified at
 every place of the modulus), one for each prime `l` and isomorphism `ι : ℂ ≃ ℚ̄_l`. Let them form a
@@ -1020,17 +1278,9 @@ theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegu
   -- the twisted lift `φ`. With test forms `Ξ`, `Ξ'` at `ι` and at its conjugate it is the product
   -- of four factors: `‖φ₁‖²`, `⟪pr Ξ, pr Ξ'⟫`, `1 / ρ²` and `ρ² / (⟪Ξ, φ⟫ ⟪φ, Ξ'⟫)`, where `pr`
   -- projects to the line of `φ` and `ρ = q₂.ratio`. Their heights add.
-  have h_large : 10000 ≤ D.m := D.ten_thousand_le_m
   have h_rank : p.HasLiftRank (RankOneIndex p.z) := hp.hasLiftRank
   -- The pair `q₂` with empty row over `D.chiM` is ramified and gives the ratio `ρ`.
-  have h_tame (w : FinPlace D.E) (hw : w ∉ D.finite_isChosen.toFinset) : D.chiMLocal w = 1 :=
-    D.chiMLocal_eq_one_of_not_isChosen (by simpa using hw)
-  have h_four_le : card (Fin 4) ≤ D.t := (Fintype.card_fin 4).trans_le D.nat_le_of_hasLogBound
-  obtain ⟨q₂, hχ₂, hq₂⟩ := D.exists_hasEmptyRow (Fin 4) (by simp) h_four_le (by simp)
-    ⟨(D.chiM, D.chiMLocal), D.chiM_hasWeight, h_tame⟩
-  have h_ram : q₂.IsRamified := by
-    simpa [CriticalPair.IsRamified, hχ₂] using
-      D.chiMLocal_zpow_ne_one_iff_isChosen 1 one_ne_zero (by omega)
+  obtain ⟨q₂, hq₂, h_ram⟩ := exists_hasEmptyRow_fin_four_and_isRamified (D := D)
   obtain ⟨c₀, hc₀_ne, hc₀_small, h_test⟩ := exists_isTestForm_le_norm_inner_trivialLift hp hq₂
   have h_budget : D.f * D.m / D.k * D.b + 3 * D.x ^ 34 ≤ D.denominatorBudget := D.le_of_hasLogBound
   have hc₀_le (σ : ℂ ≃+* ℂ) : ‖σ c₀‖ ≤ exp D.denominatorBudget :=
@@ -1038,96 +1288,25 @@ theorem heightLe_inv_ratio {θ : PrimePadicIso → D.MFoldTwist} (hθ : D.IsRegu
   let φ (ι : PrimePadicIso) := CriticalPair.trivialLift h_rank ((θ ι).powTwist j)
   let ρ (ι : PrimePadicIso) : ℂ := q₂.ratio ((θ ι).powTwist j)
   -- Multiply the bounds at `ι` and at its conjugate; `ρ` is real.
-  have exists_tests (ι : PrimePadicIso) :
-      ∃ Ξ Ξ', (lValueData h_rank ((θ ι).powTwist j)).descentPair.IsTestForm ι.prime Ξ ∧
-        (lValueData h_rank ((θ ι).powTwist j)).descentPair.IsTestForm ι.prime Ξ' ∧
-        ‖ι.iso (c₀ * star c₀ * ρ ι ^ 2)‖ * ((ι.prime : ℝ) ^ (-D.localPrimeSumTotal ι.prime)) ^ 2 ≤
-          ‖ι.iso (inner ℂ Ξ (φ ι) * inner ℂ (φ ι) Ξ')‖ := by
-    obtain ⟨Ξ, hΞ, h_le⟩ := @h_test ι.prime _ ⟨complexToCp ι.iso⟩ ((θ ι).powTwist j) (hθ.coprime ι)
-    obtain ⟨Ξ', hΞ', h_le'⟩ := @h_test ι.prime _ ⟨(complexToCp ι.iso).comp starRingAut.toRingHom⟩
-      ((θ ι).powTwist j) (hθ.coprime ι)
-    refine ⟨Ξ, Ξ', hΞ, hΞ', ?_⟩
-    have h_mul : ‖ι.iso (c₀ * ρ ι)‖ * ι.prime ^ (-D.localPrimeSumTotal ι.prime) *
-        (‖ι.iso (star c₀ * ρ ι)‖ * ι.prime ^ (-D.localPrimeSumTotal ι.prime)) ≤
-        ‖ι.iso (inner ℂ Ξ (φ ι))‖ * ‖ι.iso (inner ℂ (φ ι) Ξ')‖ := by
-      simpa [φ, ρ, star_ratio] using
-        mul_le_mul h_le h_le' (by positivity) (norm_nonneg _)
-    simp only [map_mul, map_pow, norm_mul, norm_pow] at h_mul ⊢
-    exact le_trans (le_of_eq (by ring)) h_mul
-  choose Ξ Ξ' hΞ hΞ' h_both using exists_tests
+  choose Ξ Ξ' hΞ hΞ' h_both using fun ι ↦
+    exists_isTestForm_le_norm_inner_mul_inner_trivialLift hp h_test ι ((θ ι).powTwist j)
+      (hθ.coprime ι)
   have hρ (ι : PrimePadicIso) : ρ ι ≠ 0 := q₂.ratio_ne_zero ((θ ι).powTwist j) 1
   have h_pos (ι : PrimePadicIso) : 0 < ‖ι.iso (inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι))‖ := by
     have h_ne : ι.iso (c₀ * star c₀ * ρ ι ^ 2) ≠ 0 := by simp [hc₀_ne, hρ]
     exact lt_of_lt_of_le (by have := ι.prime.property.pos; positivity) (h_both ι)
-  -- The second factor: few congruences.
-  obtain ⟨γ, hγ⟩ := hθ.exists_denominator_bound j
-  have h_proj : HeightLe D.denominatorBudget fun ι ↦
-      inner ℂ ((ℂ ∙ φ ι).starProjection (Ξ ι)) ((ℂ ∙ φ ι).starProjection (Ξ' ι)) := by
-    refine .of_le hγ.sum_le fun ι ↦ ?_
-    have h_line : (ℂ ∙ (lValueData h_rank ((θ ι).powTwist j)).trivialLift) = ℂ ∙ φ ι :=
-      (span_singleton_smul_eq
-        (left_ne_zero_of_smul (trivialLift_ne_zero h_rank .one)).isUnit _).symm
-    have h_proj_eq :
-        (ℂ ∙ (lValueData h_rank ((θ ι).powTwist j)).trivialLift).starProjection =
-          (ℂ ∙ φ ι).starProjection := by
-      have h_aux : ∀ {K₁ K₂ : Submodule ℂ (lValueData h_rank ((θ ι).powTwist j)).descentPair.FormV}
-          [K₁.HasOrthogonalProjection] [K₂.HasOrthogonalProjection],
-          K₁ = K₂ → K₁.starProjection = K₂.starProjection := by
-        rintro K _ _ _ rfl
-        rfl
-      exact h_aux h_line
-    rw [← h_proj_eq]
-    exact (hγ.hasDenominatorsLe ι).mainPair p hp (hΞ ι) (hΞ' ι)
-  -- The fourth factor: small pairings, with the multiplier `c₀ * star c₀`.
-  have h_pair : HeightLe (2 * D.denominatorBudget + ∑ τ, D.primeSum (D.weight τ) τ) fun ι ↦
-      ρ ι ^ 2 / (inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι)) := by
-    refine .of_mul_le (H := c₀ * star c₀) (α := D.denominatorBudget + D.denominatorBudget)
-      (e := fun l ↦ 2 • (D.localPrimeSumTotal l * log l))
-        (mul_ne_zero hc₀_ne (star_ne_zero.2 hc₀_ne))
-      (fun σ ↦ ?_) (fun ι ↦ ?_) fun T hT ↦ ?_
-    · rw [exp_add, map_mul]
-      exact norm_mul_le_of_le (hc₀_le σ) (hc₀_le (.trans starRingAut σ))
-    · have h_exp : ((ι.prime : ℝ) ^ (-D.localPrimeSumTotal ι.prime)) ^ 2 =
-          (exp (2 • (D.localPrimeSumTotal ι.prime * log ι.prime)))⁻¹ := by
-        rw [rpow_def_of_pos (mod_cast ι.prime.property.pos), Real.exp_nsmul, ← inv_pow,
-          ← Real.exp_neg, mul_neg, mul_comm]
-      rw [← mul_div_assoc, map_div₀, norm_div, div_le_iff₀' (h_pos ι), ← div_le_iff₀ (exp_pos _),
-        div_eq_mul_inv, ← h_exp]
-      exact h_both ι
-    · linarith only [D.sum_localPrimeSumTotal_mul_log_le T hT]
-  refine ((((heightLe_norm_trivialLift_sq hp).mul h_proj).mul
-    ((hθ.height_le j q₂ 1 h_ram).pow 2)).mul h_pair).mono ?_ fun ι ↦ ?_
+  -- The second factor: few congruences. The fourth factor: small pairings, with the multiplier
+  -- `c₀ * star c₀`.
+  refine ((((heightLe_norm_trivialLift_sq hp).mul
+    (heightLe_inner_starProjection_trivialLift hθ hp hΞ hΞ')).mul
+    ((hθ.height_le j q₂ 1 h_ram).pow 2)).mul
+    (heightLe_div_of_norm_map_mul_le hc₀_ne hc₀_le h_pos h_both)).mono ?_ fun ι ↦ ?_
   · rw [directionAmount, sum_sub_distrib, Nat.cast_ofNat]
     linarith only [(D.le_of_hasLogBound : D.x₁ ≤ D.denominatorBudget)]
-  -- `‖φ‖²` is the product of the two pairings over the pairing of the projections.
   have h_ne : inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι) ≠ 0 := fun h ↦ by simpa [h] using h_pos ι
-  have h_norm : inner ℂ ((ℂ ∙ φ ι).starProjection (Ξ ι)) ((ℂ ∙ φ ι).starProjection (Ξ' ι)) =
-      inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι) / (‖φ ι‖ : ℂ) ^ 2 := by
-    rw [inner_starProjection_left_eq_right,
-      starProjection_eq_self_iff.2 (starProjection_apply_mem ..), starProjection_singleton,
-      inner_smul_right]
-    simp [field]
-  have h_four : (p.ratio ((θ ι).powTwist j))⁻¹ =
-      (((θ ι).powTwist j).normQ ^ (card (RankOneIndex p.z) - 1) : ℕ) *
-        ((‖CriticalPair.trivialLift h_rank .one‖ : ℂ) ^ 2 *
-          inner ℂ ((ℂ ∙ φ ι).starProjection (Ξ ι)) ((ℂ ∙ φ ι).starProjection (Ξ' ι)) *
-          (ρ ι)⁻¹ ^ 2 * (ρ ι ^ 2 / (inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι)))) := by
-    have h_value : (p.ratio ((θ ι).powTwist j))⁻¹ =
-        (((θ ι).powTwist j).normQ ^ (card (RankOneIndex p.z) - 1) : ℕ) *
-          ((‖CriticalPair.trivialLift h_rank .one‖ : ℂ) ^ 2 / (‖φ ι‖ : ℂ) ^ 2) := by
-      have h_one : (TameChar.one : D.TameChar).normQ = 1 := by
-        simp [TameChar.normQ, toAutChar_one_and_toTwist_one_and_Q_one]
-      rw [ratio_eq_algPart_div h_rank, inv_div, algPart, algPart, h_one, Nat.cast_one, one_pow,
-        div_one, div_div_eq_mul_div, Nat.cast_pow, mul_comm, mul_div_assoc]
-    set pairings := inner ℂ (Ξ ι) (φ ι) * inner ℂ (φ ι) (Ξ' ι)
-    have h_cancel (a b : ℂ) : a * (pairings / b) * (ρ ι)⁻¹ ^ 2 * (ρ ι ^ 2 / pairings) = a / b := by
-      rw [inv_pow, div_eq_mul_inv (ρ ι ^ 2), mul_assoc _ (ρ ι ^ 2)⁻¹,
-        inv_mul_cancel_left₀ (pow_ne_zero 2 (hρ ι)),
-        ← mul_div_assoc, div_mul_eq_mul_div, mul_inv_cancel_right₀ h_ne]
-    rw [h_value, h_norm, h_cancel]
   -- The power of `N(Q)` is an integer, so it has norm at most one.
-  refine (congrArg (‖ι.iso ·‖) h_four).trans_le ?_
-  rw [map_mul, norm_mul, map_natCast]
+  rw [inv_ratio_eq_mul_inner_starProjection_mul h_rank _ (hρ ι) h_ne, map_mul, norm_mul,
+    map_natCast]
   exact mul_le_of_le_one_left (norm_nonneg _) (norm_natCast_le_one ..)
 
 /-- Let `1 ≤ j ≤ m`, and let `exchangePair j none = (ν_j, z_*)` be the pair made from the character
