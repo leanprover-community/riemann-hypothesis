@@ -4,6 +4,7 @@ import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import Mathlib.Topology.Algebra.ClopenNhdofOne
 import Mathlib.Topology.Connected.Separation
+import TauCeti.Algebra.Module.ZMod.Dual
 public import Lib.General.Algebra.SharpMinors
 public import New.Congruences.Selmer.AuxiliaryPrimes
 import New.Congruences.Selmer.SelmerData
@@ -207,14 +208,6 @@ end Relations
 variable {E G n σ Λ O O' : Type} [Field E] [EmbeddedNumberField E] [Monoid G] [Fintype n]
   [DecidableEq n] [Fintype σ] [CommRing Λ] [CommRing O] [CommRing O'] {q : ℕ} {S : Set (FinPlace E)}
 
-/-- Let `B` be an abelian group killed by `m ≠ 0`. An element of `B` that is killed by every
-homomorphism `B → ℤ / m` is zero. -/
-lemma eq_zero_of_forall_hom_zmod_eq_zero {B : Type} [AddCommGroup B] {m : ℕ} [NeZero m]
-    (hm : ∀ b : B, m • b = 0) {b : B} (hb : ∀ χ : B →+ ZMod m, χ b = 0) : b = 0 := by
-  refine QZ.eq_zero_of_forall_hom_eq_zero fun u ↦ ?_
-  obtain ⟨χ, rfl⟩ := (QZ.bijective_ofZMod_comp hm).surjective u
-  simp [hb]
-
 /-- Finitely many locally constant functions on an open subgroup `G'` of `Gal(Ω/E)` are all constant
 on some open normal subgroup `G''` of `Gal(Ω/E)` that is contained in `G'`. -/
 lemma exists_openNormalSubgroup_forall_apply_eq_apply_one (G' : OpenSubgroup Gal(Ω/E)) {V : Type}
@@ -262,7 +255,9 @@ lemma exists_openNormalSubgroup_forall_eq_zero (G' : OpenSubgroup Gal(Ω/E)) (m 
   refine ⟨G'', fun B _ hm z hz_const hz_add hz_unr g hg ↦ ?_⟩
   have hz_one : z 1 = 0 := by simpa using hz_add 1 (one_mem G') 1 (one_mem G')
   -- The homomorphisms `χ : B → ℤ / m` separate the points of `B`, and `χ ∘ z` lies in `Y`.
-  refine eq_zero_of_forall_hom_zmod_eq_zero hm fun χ ↦ ?_
+  by_contra h_ne
+  obtain ⟨χ, hχ⟩ := TauCeti.exists_addMonoidHom_zmod_apply_ne_zero hm h_ne
+  refine hχ ?_
   have h_cocycle : (fun u : H ↦ χ (z u)) ∈ Z1 V.ρ := by
     refine ⟨(hz_const.comp χ).continuous.comp continuous_subtypeVal, fun u u' ↦ ?_⟩
     simp [V, hz_add u u.property u' u'.property]
