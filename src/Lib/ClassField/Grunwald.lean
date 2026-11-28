@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Algebra.Group.Units
+import TauCeti.NumberTheory.NumberField.ComplexConjugation.AlgebraicClosure
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
 public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.Weil.Construction.WeilData
@@ -15,7 +16,6 @@ public import Lib.ClassField.Global.CMSplittingCharacters -- shake: keep (needed
 import Lib.ClassField.Global.Chebotarev
 import Lib.ClassField.Global.ExistenceTheorem
 import Lib.ClassField.Global.NormTheorems
-import Lib.General.NumberTheory.CMFields
 import Lib.General.NumberTheory.FrobeniusOrbits
 import Lib.General.NumberTheory.SUnitsAndClassNumber
 
@@ -330,39 +330,35 @@ variable [IsCMField E] (χ : QZChar Gal(Ω/E))
 is, the fixed field of its kernel. -/
 noncomputable abbrev QZChar.stepField : IntermediateField E Ω := fixedFieldOf (ker (symmetrize χ))
 
-/-- The field `New.QZChar.stepField χ` is a CM field: the complex conjugation `cmConj` of `Ω` maps
-it to itself and restricts on it to complex conjugation under every embedding into `ℂ`. -/
+open TauCeti.NumberField in
+/-- The field `New.QZChar.stepField χ` is CM. Any product of two complex conjugations of `Ω`
+fixes it, and it contains the totally complex field `E`. -/
 instance : IsCMField (stepField χ) := by
-  refine isCMField_of_forall_exists_conj E fun y ↦ ⟨⟨cmConj y, fun g ↦ ?_⟩, fun φ ↦ ?_⟩
-  · -- `cmConj y` is fixed by `g`, since `y` is fixed by `conjGal g`, which is again in the kernel
-    have h_conj : conjGal g.val ∈ ker (symmetrize χ) := by
-      have hg_ker : χ.val g.val + χ.val (conjGal g.val) = 0 := g.prop
-      change χ.val (conjGal g.val) + χ.val (conjGal (conjGal g.val)) = 0
-      rwa [conjGal_conjGal, add_comm]
-    have h_fix : conjGal g.val • (y : Ω) = y := y.prop ⟨conjGal g.val, h_conj⟩
-    -- `conjGal g` acts as `cmConj ∘ g ∘ cmConj`
-    have h_conjGal_smul : conjGal g.val • (y : Ω) = cmConj (g.val • cmConj (y : Ω)) := rfl
-    change g.val • cmConj (y : Ω) = cmConj (y : Ω)
-    rw [← cmConj_cmConj (g.val • cmConj (y : Ω)), ← h_conjGal_smul, h_fix]
-  · -- Extend `φ` to `J` on `Ω`. Then `J ∘ cmConj` and the conjugate of `J` agree on `E`, so they
-    -- differ by some `g`. As `conjGal g * g = 1`, this `g` lies in the kernel and fixes `y`.
-    rw [← lift_comp_algebraMap Ω φ]
-    let J : Ω →+* ℂ := lift Ω φ
-    have h_agree : (J.comp cmConj).comp (algebraMap E Ω) = (star J).comp (algebraMap E Ω) := by
-      ext e
-      simpa using map_star_complex (J.comp _) _
-    obtain ⟨g, hg⟩ : ∃ g : Gal(Ω/E), ∀ x : Ω, J.comp cmConj (g • x) = star J x :=
-      exists_apply_smul_eq_of_comp_algebraMap_eq _ (J.comp cmConj) (star J) h_agree
-    -- by `hg` at `cmConj (g • x)` and at `x`, `J` agrees at `(conjGal g * g) • x` and at `x`
+  have : IsTotallyComplex (stepField χ) := isTotallyComplex_of_algebra E _
+  refine ((isTotallyReal_or_isCMField_iff (algebraMap (stepField χ) Ω)).mpr
+    ?_).resolve_left IsTotallyComplex.not_isTotallyReal
+  -- For each conjugation `c` of `Ω`, the product `c * cmConj` is over `E`, and conjugation
+  -- by `cmConj` inverts it. Hence the symmetrized character vanishes on this product.
+  have h_fix (c : Gal(Ω/ℚ)) (hc : c ∈ complexConjugations Ω)
+      (y : stepField χ) : c (cmConj (y : Ω)) = y := by
+    let g : Gal(Ω/E) :=
+      { c * cmConj with
+        commutes' e := by
+          change c (cmConj (algebraMap E Ω e)) = algebraMap E Ω e
+          rw [cmConj_algebraMap,
+            apply_eq_complexConj_of_isCMField hc (algebraMap E Ω)]
+          exact congrArg (algebraMap E Ω) (star_star e) }
     have h_inv : conjGal g * g = 1 := by
-      ext x
-      have hg_x := hg x
-      have hg_conj := hg (cmConj (g • x))
-      simp_all [← J.injective.eq_iff, conjGal]
-    have hg_ker : g ∈ ker (symmetrize χ) := map_mul_eq_one (toHom χ) (mul_eq_one_symm h_inv)
-    have h_fix : g • (y : Ω) = y := y.prop ⟨g, hg_ker⟩
-    have h_conj_emb : J.comp cmConj (g • (y : Ω)) = star J (y : Ω) := hg y
-    rwa [h_fix] at h_conj_emb
+      ext z
+      change cmConj (c (cmConj (cmConj (c (cmConj z))))) = z
+      rw [cmConj_cmConj, apply_apply_of_mem_complexConjugations hc, cmConj_cmConj]
+    have hg : g ∈ ker (symmetrize χ) := map_mul_eq_one (toHom χ) (mul_eq_one_symm h_inv)
+    exact y.prop ⟨g, hg⟩
+  -- Thus every conjugation agrees with `cmConj` on the step field, and any two compose to 1.
+  intro c₁ hc₁ c₂ hc₂ y
+  change c₁ (c₂ (y : Ω)) = y
+  rw [apply_eq_of_apply_eq_of_mem_complexConjugations hc₂ (h_fix c₂ hc₂ y)]
+  exact h_fix c₁ hc₁ y
 
 end
 
