@@ -558,6 +558,12 @@ lemma splitGram_mulVec_apply (i : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ) :
     Pi.zero_apply, add_lt_iff_neg_left, not_lt_zero, IsEmpty.forall_iff,
     lt_self_iff_false, and_self]
 
+omit [StarRing A] in
+/-- Multiplying by the split Gram matrix reads the opposite row at a hyperbolic basis index. -/
+lemma splitGram_mul_apply_inl (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (a : Fin 𝔰.ϱ)
+    (j : 𝔰.BesselIndex) : (T.splitGram * M) (inl a) j = M (eStar a) j :=
+  splitGram_mulVec_apply (e := M.col j) (inl a) a.is_lt
+
 /-- At an index of a hyperbolic pair, the coordinate of `e J`, where `J = T.splitGram`, is the
 coordinate of `e` at the other index of the pair. -/
 lemma vecMul_splitGram_apply (i : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ) :
@@ -921,27 +927,14 @@ lemma leadingMinor_frameGram_weylElem {l : ℕ} (hl : l ≤ 𝔰.ϱ) (p : ℕ �
   have h_block : (T.frameGram (weylElem l p : T.G).val.val).submatrix (Fin.castLE j.is_le)
       (Fin.castLE j.is_le) = diagonal fun a : Fin j ↦ (p a).val := by
     ext a b
-    have hb : b.val < l := by lia
-    have h_col (x : 𝔰.BesselIndex) (b' : Fin 𝔰.ϱ) (hb' : b'.val < l) :
-        (weylElem l p : T.G).val x (inl b') = if x = eStar b' then (p b').val else 0 := by
-      rw [weylElem, weylOn_apply_of_swapped x
-        ⟨by simp only [floorOf]; exact hb',
-         by simp only [floorOf]; exact b'.is_lt, (p _).isUnit⟩]
-      simp only [oppositeIndex, level, elim_inl, Fin.is_lt, ↓reduceIte, floorOf]
-    simp only [frameGram, submatrix_apply, h_frame, Matrix.mul_apply, diagonal_apply]
-    set a' : Fin 𝔰.ϱ := ⟨a, by lia⟩
-    set b' : Fin 𝔰.ϱ := ⟨b, by lia⟩
-    rw [Fintype.sum_eq_single (eStar b') (fun x hx ↦ by
-        rw [h_col x b' hb, ite_eq_right hx, mul_zero]),
-      h_col _ b' hb, ite_eq_left rfl,
-      splitGram_eq_ite_oppositeIndex _ _ (.inl (by simp only [floorOf, Fin.is_lt])),
-      oppositeIndex]
-    have h_iff : (eStar a' : 𝔰.BesselIndex) = eStar b' ↔ a = b := by
-      simp only [inr.injEq, Fin.ext_iff, a', b']
-    simp only [h_iff]
-    split_ifs with h_eq
-    · rw [one_mul, h_eq]
-    · rw [zero_mul]
+    simp only [frameGram, submatrix_apply, h_frame]
+    rw [splitGram_mul_apply_inl]
+    let k : Fin 𝔰.ϱ := ⟨b, by lia⟩
+    rw [weylElem, weylOn_apply_of_swapped _ (k := inl k)
+      ⟨show b.val < l by lia, k.is_lt, (p _).isUnit⟩]
+    simp only [oppositeIndex, level, floorOf, elim_inl, Fin.is_lt, ↓reduceIte, diagonal_apply,
+      inr.injEq, Fin.ext_iff]
+    by_cases h : a = b <;> simp_all [k, Fin.ext_iff]
   rw [leadingMinor, h_block, det_diagonal, Units.coe_prod, Finset.prod_range]
 
 /-! ### Action on coordinates of vectors -/

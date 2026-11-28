@@ -74,15 +74,6 @@ private lemma group_eq_inv_mul_of_one_mul {G : Type*} [Group G] {w₁ w₂ σ τ
 variable {A : Type} [CommRing A] [StarRing A] {𝔰 : Shape} {T : 𝔰.Form A} {γ σ : T.G} {p q : ℕ → Aˣ}
 
 omit [StarRing A] in
-private lemma splitGram_mul_apply_inl (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (a : Fin 𝔰.ϱ)
-    (j : 𝔰.BesselIndex) : (T.splitGram * M) (inl a) j = M (eStar a) j := by
-  rw [Matrix.mul_apply, Fintype.sum_sum_type, Fintype.sum_sum_type]
-  simp only [Shape.Form.splitGram, hyperbolicGram, fromBlocks_apply₁₁, fromBlocks_apply₁₂,
-    fromCols_apply_inl, fromCols_apply_inr, Matrix.zero_apply, Matrix.one_apply, zero_mul,
-    Finset.sum_const_zero, zero_add, ite_mul, one_mul, Finset.sum_ite_eq, Finset.mem_univ,
-    ↓reduceIte, eStar]
-
-omit [StarRing A] in
 private lemma splitGram_mul_apply_inr_inl (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)
     (m : 𝔰.MiddleIndex) (j : 𝔰.BesselIndex) :
     (T.splitGram * M) (inr (inl m)) j = ∑ m' : 𝔰.MiddleIndex, T m m' * M (inr (inl m')) j := by
