@@ -169,12 +169,13 @@ lemma rootCoeffEval_map (f : R →+* S) (q : MvPolynomial (Fin a) ℤ) :
     RingHom.ext_int (f.comp (algebraMap ℤ R)) (algebraMap ℤ S)]
   simp [← coeff_map, Polynomial.map_multiset_prod]
 
-/-- The bialternant formula over a domain `R`: the Schur polynomial `genericSchur l`, evaluated at
-the coefficients of `∏ (X - r i)`, times the Vandermonde determinant of `r` is the generalised
-Vandermonde determinant `det (r i ^ l j)`. -/
-lemma rootCoeffEval_genericSchur_mul_det [IsDomain R] :
+/-- The bialternant formula over a commutative ring `R`: the Schur polynomial `genericSchur l`,
+evaluated at the coefficients of `∏ (X - r i)`, times the Vandermonde determinant of `r` is the
+generalised Vandermonde determinant `det (r i ^ l j)`. -/
+lemma rootCoeffEval_genericSchur_mul_det :
     rootCoeffEval (univ.val.map r) (genericSchur l) * (vandermonde r).det =
       (of fun i j : Fin a ↦ r i ^ l j).det := by
+  nontriviality R
   -- Specialise `freeMonic ℤ a` to `nodal univ r = ∏ (X - r k)` via `φ = rootCoeffEval`.
   let φ := (MvPolynomial.mapEquivMonic ℤ R a).symm (.mk (nodal univ r) nodal_monic (by simp))
   have hφ : (freeMonic ℤ a).map φ = nodal univ r :=
