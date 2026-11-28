@@ -335,6 +335,7 @@ lemma surjective_blowup_difference (hp : (p : S) = 0) {B B₁ B₂ B₀ : Perfec
     _ = j₁ (E₁ P) + j₂ (E₂ (X * Q)) := by rw [← map_pow, ← map_pow, hy, hz]
     _ = w ^ p ^ n := by rw [hj₁, hj₂, ← hw, map_add]
 
+omit [ThePrime p] in
 /-- Let B, B₁, B₂, B₀ be perfect S-algebras (x ↦ x^p is bijective on them). Let E₁, E₂ map B[X] to
 B₁, B₂, let E₀ map B[T, T⁻¹] to B₀, and let j₁, j₂ satisfy j₁ (E₁ P) = E₀ (P(T)) and j₂ (E₂ P) = E₀
 (P(T⁻¹)). Suppose E₁, E₂ kill f - g X, respectively g - f X, every element of B₁, B₂ has a p^n-th
