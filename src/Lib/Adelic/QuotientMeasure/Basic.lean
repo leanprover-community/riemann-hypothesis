@@ -9,6 +9,7 @@ import Mathlib.Topology.Algebra.ProperAction.Torsor
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Sheaves.Presheaf
 public import Lib.Speed
+public import TauCeti.MeasureTheory.Measure.Count.Topology
 import Lib.General.Measure.IdempotentKernel
 
 /-!
@@ -394,14 +395,6 @@ instance hasCutoff_of_proper [TopologicalSpace X] [c : SigmaCompactSpace X] [T2S
   simp only [hβ]
   rw [lintegral_indicator_const (measurable_smul_const x (hK n).measurableSet)]
   exact ENNReal.inv_mul_cancel (Nat.find_spec (h_pos x)).ne' (h_fin n x)
-
-/-- On a discrete group `H` with measurable singletons, the counting measure is a Haar measure. -/
-@[to_additive /-- On a discrete additive group with measurable singletons, the counting measure is
-a Haar measure. -/]
-instance [DiscreteTopology H] : IsHaarMeasure (count (α := H)) where
-  lt_top_of_isCompact _ hK := count_apply_lt_top.2 hK.finite_of_discrete
-  map_mul_left_eq_self := map_mul_left_eq_self count
-  open_pos _ _ hU := count_ne_zero hU
 
 /-! ### Cosets of a subgroup and subgroups of discrete subgroups -/
 
