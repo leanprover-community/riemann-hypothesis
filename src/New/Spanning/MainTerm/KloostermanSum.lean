@@ -150,11 +150,8 @@ lemma PlaceData.mem_unitaryLevel_one_of_inv_mul_mul_inv_mem {s a b : T.G}
 
 omit [IsHermitianUnit T.splitGram] in
 /-- For a unit `g` let `K(g)` be the subgroup of points integral over `P.integers` and congruent to
-`1` modulo `g`, and let `𝖴 = T.besselU` be the Bessel unipotent group. The finite Bessel function
-`extendedBesselChar g` is zero off `𝖴 K(g)`; at a point of `𝖴 K(g)`, written as `u k` with a chosen
-`u` in `𝖴`, its value is `ψ(σ(u) / g)`, where `ψ = P.ψ` is the additive character of the place and
-`σ(u)` is the sum of the entries of `u` at the simple roots. It takes the same value at two points
-of a coset `y K(g)`. -/
+`1` modulo `g`. The finite Bessel function `extendedBesselChar g` is constant on the cosets
+`y K(g)`: if `y⁻¹ z` lies in `K(g)`, it takes the same value at `z` as at `y`. -/
 lemma IntegralPlace.extendedBesselChar_eq_of_inv_mul_mem {g : Aˣ} {y z : T.G}
     (hyz : y⁻¹ * z ∈ unitaryLevel P.integers g T.splitGram) :
       extendedBesselChar g z = extendedBesselChar g y := by
