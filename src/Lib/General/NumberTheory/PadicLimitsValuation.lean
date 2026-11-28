@@ -7,13 +7,13 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 public import Mathlib.Topology.Algebra.Ring.Compact -- shake: keep (needed public by an exposed definition)
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Analysis.Complex.FieldEmbedding
 import TauCeti.NumberTheory.NumberField.Countable
 import TauCeti.RingTheory.Huber.Normed
 public import Lib.GaloisRep.Main.SelmerModules
 public import Lib.General.NumberTheory.CoefficientRings
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
-import Lib.General.Geometry.GaloisCovers
 import Lib.PadicComparison.Descent.TestCategory
 import Lib.PadicHodge.Crystalline.Basic
 
@@ -57,7 +57,7 @@ II.
 ## An ℓ-adic criterion for algebraicity of complex numbers
 
 A transcendental number can be sent to any transcendental element of `PadicAlgCl ℓ` by
-`New.exists_ringEquiv_extend`, and these elements have unbounded norm. The isomorphisms here are
+a field isomorphism, and these elements have unbounded norm. The isomorphisms here are
 of abstract fields; no continuity is required. This is the algebraicity input used for the
 common multiplier in `New.HeightLe.nonneg_of_one`.
 -/
@@ -73,16 +73,10 @@ lemma New.isAlgebraic_of_norm_complexToCp_le {ℓ : ℕ} [Fact ℓ.Prime] {x : �
   obtain ⟨y, hy, hcy⟩ : ∃ y : PadicAlgCl ℓ, ¬IsAlgebraic ℚ y ∧ c < ‖y‖ :=
     ((Algebraic.countable ℚ (PadicAlgCl ℓ)).dense_compl ℚ_[ℓ]).exists_mem_open
       (isOpen_Ioi.preimage continuous_norm) (NormedField.exists_lt_norm _ c)
-  -- Transcendence is precisely injectivity of the two evaluations on `ℚ[X]`.
-  -- Relative Steinitz (`Lib.General.Geometry.GaloisCovers`) extends their identification to
-  -- a field isomorphism, since the two ambient fields have the same uncountable cardinality.
-  have : Countable (Polynomial ℚ) := (Polynomial.basisMonomials ℚ).repr.injective.countable
-  rw [isAlgebraic_iff_not_injective, not_not] at hx hy
-  obtain ⟨ι, hι⟩ : ∃ ι : ℂ ≃+* PadicAlgCl ℓ, ∀ P : Polynomial ℚ,
-      ι (Polynomial.aeval x P) = Polynomial.aeval y P :=
-    exists_ringEquiv_extend mk_complex_eq_mk_padicAlgCl _ _ hx hy
-  have h_image : ι x = y := by simpa using hι .X
-  exact hcy.not_ge (by simpa [h_image] using h_bound ι)
+  obtain ⟨σ, hσ⟩ := TauCeti.Complex.exists_algEquiv_apply_eq
+    ((mk_complex_eq_mk_padicAlgCl (p := ℓ)).symm.trans Cardinal.mk_complex) hy hx
+  have h_image : σ.symm x = y := σ.symm_apply_eq.mpr hσ.symm
+  exact hcy.not_ge (by simpa [h_image] using h_bound σ.symm.toRingEquiv)
 
 namespace New
 
