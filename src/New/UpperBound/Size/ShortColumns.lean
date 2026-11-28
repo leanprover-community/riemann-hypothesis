@@ -7,6 +7,7 @@ import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.Topology.Algebra.Ring.Compact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.LinearAlgebra.Dimension.Submodule
 public import Lib.CM.FormalGroup.PrimeNotation
 public import New.UpperBound.Objects.Columns
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
@@ -916,11 +917,8 @@ lemma finrank_ker_one_sub_scalingGenerator_le {P : Parameters} (D : Data P) (w :
 the sum of the dimensions of the two kernels. -/
 lemma _root_.New.finrank_ker_mul_le {V : Type} [AddCommGroup V] [Module ℂ V] [Module.Finite ℂ V]
     (f g : End ℂ V) : finrank ℂ (f * g).ker ≤ finrank ℂ f.ker + finrank ℂ g.ker := by
-  have h_rank : Module.rank ℂ (f.ker.comap g) ≤ Module.rank ℂ f.ker + Module.rank ℂ g.ker := by
-    simpa only [Cardinal.lift_id] using g.lift_rank_comap_le f.ker
-  simp only [← finrank_eq_rank] at h_rank
-  rw [End.mul_eq_comp, LinearMap.ker_comp]
-  exact_mod_cast h_rank
+  rw [End.mul_eq_comp, LinearMap.ker_comp, LinearMap.finrank_comap]
+  exact Nat.add_le_add_right (Submodule.finrank_mono inf_le_right) _
 
 lemma ramifyingOp_empty {P : Parameters} (D : Data P) : D.ramifyingOp ∅ = 1 := by
   simp [ramifyingOp]
@@ -948,14 +946,11 @@ lemma finrank_ker_ramifyingOp_le {P : Parameters} (D : Data P) (s : Finset D.piN
   induction s using cons_induction with
   | empty => simp [ramifyingOp_empty, End.one_eq_id]
   | cons w s hw ih =>
-    have h_ker : finrank ℂ (D.ramifyingOp (cons w s hw)).ker ≤
-        finrank ℂ (1 - D.centralRep (D.scalingGenerator w)).ker +
-          finrank ℂ (D.ramifyingOp s).ker := by
-      exact (congrArg (fun f : Module.End ℂ D.SourceForm ↦ finrank ℂ f.ker)
-        (D.ramifyingOp_cons w hw)).trans_le (finrank_ker_mul_le _ _)
     calc (finrank ℂ (D.ramifyingOp (cons w s hw)).ker : ℝ)
         ≤ finrank ℂ (1 - D.centralRep (D.scalingGenerator w)).ker +
-            finrank ℂ (D.ramifyingOp s).ker := by exact_mod_cast h_ker
+            finrank ℂ (D.ramifyingOp s).ker := by
+          rw [D.ramifyingOp_cons w hw]
+          exact_mod_cast finrank_ker_mul_le _ _
       _ ≤ (D.N - 1 : ℝ)⁻¹ * finrank ℂ D.SourceForm +
             #s * ((D.N - 1 : ℝ)⁻¹ * finrank ℂ D.SourceForm) :=
           add_le_add (D.finrank_ker_one_sub_scalingGenerator_le w) ih
