@@ -8,13 +8,13 @@ import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.ExtremallyDisconnected
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected
+import TauCeti.Analysis.Normed.Module.CoveringNumber
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Haar.CayleyChart
 public import Lib.DiscreteSeries.Haar.GramCoordinates
 import Lib.Adelic.Witt.WittTheorem
 import Lib.DiscreteSeries.Haar.GramPolar
 import Lib.General.Analysis.GaussianIntegral
-import Lib.General.Analysis.PackingAndSobolev
 import Lib.General.Measure.IntegralOperators
 
 /-!
@@ -394,42 +394,44 @@ theorem measure_ball_le_covering (ν : Measure S) [MeasurableMul S] [ν.IsMulRig
     (j : S →* U J) (y : U J) {D R K : ℝ} (hD : 1 ≤ D) (hR : 1 ≤ R) (hK : 3 * D * R ^ 2 ≤ K) :
     ν {s : S | ‖((j s * y : U J) : Matrix n n ℂ)‖ ≤ R} ≤
       ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹} := by
-  -- Among the `s` with `‖j s * y‖ ≤ R` take a maximal family `M` whose matrices `j s * y` are
-  -- `1 / (D R)`-separated. The packing bound counts `M`, and by maximality the right translates
-  -- of the small ball `B` by the points of `M` cover the set on the left.
   let f (s : S) : Matrix n n ℂ := ((j s * y : U J) : Matrix n n ℂ)
-  set B : Set S := {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹}
-  let IsFar (s t : {s : S // ‖f s‖ ≤ R}) : Prop := D⁻¹ / R ≤ ‖f s - f t‖
-  obtain ⟨M, h_sep, h_max⟩ : ∃ M, IsMaxChain IsFar M := ⟨maxChain IsFar, maxChain_spec⟩
-  have h_card : M.encard ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) := by
-    have h_pairwise : M.Pairwise IsFar := by simpa [IsChain, IsFar, norm_sub_rev] using h_sep
-    have h_base : 1 + 2 * R / (D⁻¹ / R) ≤ K :=
-      calc _ = 1 + 2 * D * R ^ 2 := by field
-        _ ≤ K := by linarith [show 1 ≤ D * R ^ 2 by bound]
-    calc _ ≤ ENNReal.ofReal ((1 + 2 * R / (D⁻¹ / R)) ^ Module.finrank ℝ (Matrix n n ℂ)) :=
-          encard_le_of_separated (by positivity) (by positivity) h_pairwise fun s _ ↦ s.property
-      _ ≤ ENNReal.ofReal (K ^ Module.finrank ℝ (Matrix n n ℂ)) := by gcongr
-      _ = _ := by simp [Module.finrank_matrix, ← sq, mul_comm 2]
-  have : Finite M := Set.Finite.to_subtype (by simpa using h_card.trans_lt ofReal_lt_top)
-  have h_cover : {s : S | ‖f s‖ ≤ R} ⊆ ⋃ k : M, (· * (k : S)⁻¹) ⁻¹' B := by
-    intro g hg
-    by_contra h_not_mem
-    -- Otherwise `g` is far from all of `M`: `j (g k⁻¹) - 1 = (f g - f k) (j k * y)⁻¹`, and an
-    -- element of `U J` has the norm of its inverse.
-    have h_far (k : M) : IsFar ⟨g, hg⟩ k := (div_le_iff₀ (by positivity)).2 <|
-      calc D⁻¹ ≤ ‖(j (g * (k : S)⁻¹) : Matrix n n ℂ) - 1‖ :=
-          le_of_not_ge fun h ↦ h_not_mem (Set.mem_iUnion.2 ⟨k, h⟩)
-        _ = ‖(f g - f k) * (((j k * y)⁻¹ : U J) : Matrix n n ℂ)‖ := by simp [f, sub_mul, mul_assoc]
-        _ ≤ ‖f g - f k‖ * R := by grw [norm_mul_le, U.norm_inv, k.val.property]
-    -- Maximality puts `g` into `M`, so `g` is far from itself.
-    have h_mem : ⟨g, hg⟩ ∈ M := Set.insert_eq_self.1
-      (h_max (h_sep.insert fun k hk _ ↦ .inl (h_far ⟨k, hk⟩)) (Set.subset_insert ..)).symm
-    have h_self : D⁻¹ / R ≤ 0 := by simpa [IsFar] using h_far ⟨_, h_mem⟩
-    exact h_self.not_gt (by positivity)
-  calc ν {s : S | ‖f s‖ ≤ R} ≤ ∑' k : M, ν ((· * (k : S)⁻¹) ⁻¹' B) :=
-        (measure_mono h_cover).trans (measure_iUnion_le _)
-    _ = M.encard * ν B := by simp only [measure_preimage_mul_right, tsum_set_const]
-    _ ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν B := by gcongr
+  let T := {s : S | ‖f s‖ ≤ R}
+  let B := {s : S | ‖(j s : Matrix n n ℂ) - 1‖ ≤ D⁻¹}
+  -- Choose a finite net inside the matrix image, so each center lifts to an element of T.
+  have hε : 0 < D⁻¹ / R := by positivity
+  have hA : f '' T ⊆ Metric.closedBall 0 R.toNNReal := by
+    rintro _ ⟨s, hs, rfl⟩
+    simpa [T, Real.coe_toNNReal _ (zero_le_one.trans hR)] using hs
+  obtain ⟨N, hN, hcov, hcard⟩ := TauCeti.exists_finset_isCover_of_subset_closedBall
+    (ε := (D⁻¹ / R).toNNReal) (by rwa [ne_eq, Real.toNNReal_eq_zero, not_le]) hA
+  choose! k hk hkf using fun c (hc : c ∈ N) ↦ hN hc
+  have h_cover : T ⊆ ⋃ c ∈ N, (· * (k c)⁻¹) ⁻¹' B := by
+    intro s hs
+    obtain ⟨c, hc, hsc⟩ := Set.mem_iUnion₂.1 <| Metric.isCover_iff_subset_iUnion_closedBall.1
+      hcov (Set.mem_image_of_mem f hs)
+    refine Set.mem_iUnion₂.2 ⟨c, hc, ?_⟩
+    have hdist : ‖f s - f (k c)‖ ≤ D⁻¹ / R := by
+      simpa [hkf c hc, dist_eq_norm, Real.coe_toNNReal _ hε.le] using hsc
+    calc ‖(j (s * (k c)⁻¹) : Matrix n n ℂ) - 1‖
+        = ‖(f s - f (k c)) * (((j (k c) * y)⁻¹ : U J) : Matrix n n ℂ)‖ := by
+            simp [f, sub_mul, mul_assoc]
+      _ ≤ D⁻¹ / R * R := (norm_mul_le ..).trans <| mul_le_mul hdist
+        ((U.norm_inv (j (k c) * y)).trans_le (show ‖f (k c)‖ ≤ R from hk c hc))
+        (norm_nonneg _) hε.le
+      _ = D⁻¹ := div_mul_cancel₀ _ (by positivity)
+  have h_base : 1 + 2 * R / (D⁻¹ / R) ≤ K :=
+    calc _ = 1 + 2 * D * R ^ 2 := by field
+         _ ≤ K := by linarith [show 1 ≤ D * R ^ 2 by bound]
+  calc ν T ≤ ∑ c ∈ N, ν ((· * (k c)⁻¹) ⁻¹' B) :=
+        (measure_mono h_cover).trans (measure_biUnion_finset_le _ _)
+    _ = N.card * ν B := by simp [measure_preimage_mul_right]
+    _ ≤ ENNReal.ofReal (K ^ (2 * card n ^ 2)) * ν B := by
+      gcongr
+      rw [← ENNReal.ofReal_natCast]
+      refine ENNReal.ofReal_le_ofReal (hcard.trans ?_)
+      simpa [Real.coe_toNNReal _ hε.le, Real.coe_toNNReal _ (zero_le_one.trans hR),
+        Module.finrank_matrix, ← sq, mul_comm 2] using
+        pow_le_pow_left₀ (by positivity) h_base (Module.finrank ℝ (Matrix n n ℂ))
 
 /-- For a proper homomorphism `j` to `U J` and a measure `ν` that is finite on compact sets, the
 ball `‖j s - 1‖ ≤ R` in the operator norm has finite measure. -/
