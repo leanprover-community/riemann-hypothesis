@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Dynamics.Ergodic.Action.Regular
+import Mathlib.MeasureTheory.Measure.Haar.MulEquivHaarChar
 import Mathlib.Order.Interval.Finset.Box
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.ClassField.Avatar.HeckeBaseChange
@@ -278,20 +279,36 @@ lemma realIdele_mul_finIdeleIncl_ideleParts (a : (𝔸 E)ˣ) :
   Units.ext (Prod.fst_mul_snd _)
 
 variable (E) in
-/-- Haar measure on the ideles, read in the variable `a` or `ā⁻¹` of either side of Poisson's
-formula and split by `ideleParts` into the archimedean and the finite part, is the product of the
-Haar measure `haar` on the archimedean ideles and a Haar measure `ρ` on the finite ideles. -/
-lemma exists_haar_ideleParts (β : Bool) : ∃ ρ : Measure (𝔸f E)ˣ, IsHaarMeasure ρ ∧
-    MeasurePreserving ((poissonVariable E β).trans (ideleParts E)) haar (haar.prod ρ) := by
-  -- The image of Haar measure is a positive multiple of the product of two Haar measures.
-  let e : (𝔸 E)ˣ ≃ₜ* (InfinitePlace E → ℂ)ˣ × (𝔸f E)ˣ := (poissonVariable E β).trans (ideleParts E)
+/-- The Poisson change of variable preserves Haar measure: it is an involution, so its positive
+Haar scaling factor has square one. -/
+lemma measurePreserving_poissonVariable (β : Bool) :
+    MeasurePreserving (poissonVariable E β) haar haar := by
+  let e := poissonVariable E β
+  have h_square : e.trans e = .refl (𝔸 E)ˣ := by
+    ext1 a
+    cases β <;> simp [e, ContinuousMulEquiv.trans_apply, poissonVariable_false,
+      poissonVariable_true, ← star_inv]
+  have h_one : mulEquivHaarChar e = 1 := by
+    apply (pow_eq_one_iff_of_nonneg (zero_le : 0 ≤ mulEquivHaarChar e) (by decide : (2 : ℕ) ≠ 0)).1
+    rw [pow_two, ← mulEquivHaarChar_trans, h_square, mulEquivHaarChar_refl]
+  exact ⟨by fun_prop, by simpa [h_one] using mulEquivHaarChar_smul_map haar e⟩
+
+variable (E) in
+/-- In either Poisson variable, splitting the ideles carries Haar measure to the product of
+archimedean Haar measure and the same Haar measure on the finite ideles. -/
+lemma exists_haar_ideleParts : ∃ ρ : Measure (𝔸f E)ˣ, IsHaarMeasure ρ ∧
+    ∀ β : Bool,
+      MeasurePreserving ((poissonVariable E β).trans (ideleParts E)) haar (haar.prod ρ) := by
   let m : Measure ((InfinitePlace E → ℂ)ˣ × (𝔸f E)ˣ) := haar.prod haar
   have : IsHaarMeasure m := prod.instIsHaarMeasure haar haar
-  let c : NNReal := haarScalarFactor (haar.map e) m
-  have h_map : haar.map e = haar.prod (c • haar) :=
-    (isMulLeftInvariant_eq_smul (haar.map e) m).trans (prod_smul_right c).symm
-  exact ⟨c • haar, .nnreal_smul haar (haarScalarFactor_pos_of_isHaarMeasure (haar.map e) m).ne',
-    by fun_prop, h_map⟩
+  let c : NNReal := haarScalarFactor (haar.map (ideleParts E)) m
+  have h_map : haar.map (ideleParts E) = haar.prod (c • haar) :=
+    (isMulLeftInvariant_eq_smul (haar.map (ideleParts E)) m).trans (prod_smul_right c).symm
+  have h_parts : MeasurePreserving (ideleParts E) haar (haar.prod (c • haar)) :=
+    ⟨by fun_prop, h_map⟩
+  exact ⟨c • haar, .nnreal_smul haar
+    (haarScalarFactor_pos_of_isHaarMeasure (haar.map (ideleParts E)) m).ne',
+    fun β ↦ h_parts.comp (measurePreserving_poissonVariable E β)⟩
 
 /-- The principal idele of a unit of `E`. -/
 abbrev principalAdeleUnit (ξ : Eˣ) : (𝔸 E)ˣ := ξ.map (toAdele (E := E)).toMonoidHom

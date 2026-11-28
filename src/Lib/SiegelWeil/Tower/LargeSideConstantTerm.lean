@@ -769,24 +769,24 @@ theorem exists_zetaIntegral (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2
   -- sum over `Eˣ` unfolds to a product; by continuity the value is the same at `x = 1`.
   obtain ⟨cUnfold, h_cUnfold, h_unfold⟩ := exists_planeConstantTerm_eq_integral A X σ' hn
   obtain ⟨lineConst, h_lineConst⟩ := exists_lineValue_eq A X σ' σ μ
-  choose ρ hρ_haar hρ using exists_haar_ideleParts E
-  let vol (β : Bool) : ℝ := (ρ β).real (idelesUnitOff (K := E) ∅)
-  have h_vol (β : Bool) : 0 < vol β := measureReal_idelesUnitOff_empty_pos (ρ β)
-  refine ⟨fun β ↦ |cUnfold| * ‖(lineConst β).val‖ * vol β, fun β ↦ ?_, fun 𝔠 ↦ ?_⟩
-  · exact mul_pos (mul_pos (abs_pos.2 h_cUnfold) (norm_pos_iff.2 (lineConst β).ne_zero)) (h_vol β)
+  obtain ⟨ρ, hρ_haar, hρ⟩ := exists_haar_ideleParts E
+  let vol : ℝ := ρ.real (idelesUnitOff (K := E) ∅)
+  have h_vol : 0 < vol := measureReal_idelesUnitOff_empty_pos ρ
+  refine ⟨fun β ↦ |cUnfold| * ‖(lineConst β).val‖ * vol, fun β ↦ ?_, fun 𝔠 ↦ ?_⟩
+  · exact mul_pos (mul_pos (abs_pos.2 h_cUnfold) (norm_pos_iff.2 (lineConst β).ne_zero)) h_vol
   obtain ⟨γ, hγ, hγ_factor⟩ := h_lineConst 𝔠
   obtain ⟨c, hc_abs, hc⟩ := exists_lineFinFactor_uniformizer_eq 𝔠
   let K : (𝔸 E)ˣ := shiftIdele c
   let Q : ℝ := ∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ)
   have hQ : 0 < Q := Finset.prod_pos fun w _ ↦ by simp [FinPlace.q_bounds]
   -- The Gauss sum `γ` has modulus `Q ^ (-1/2)`, and `|K| = Q |α₀|`.
-  refine ⟨fun β ↦ cUnfold * lineConst β * vol β * (γ * √Q) * 𝔠.character.baseChange.val K, fun β ↦
+  refine ⟨fun β ↦ cUnfold * lineConst β * vol * (γ * √Q) * 𝔠.character.baseChange.val K, fun β ↦
     ?_,
     fun v hv y hy u g hu ↦ ?_⟩
   · have h_norm : ‖γ‖ * √Q = 1 := by
       rw [← sqrt_sq (norm_nonneg γ), hγ, ← sqrt_mul (by positivity), inv_mul_cancel₀ hQ.ne',
         Real.sqrt_one]
-    simp [abs_of_pos (h_vol β), abs_of_nonneg (sqrt_nonneg Q), h_norm, Circle.norm_coe]
+    simp [abs_of_pos h_vol, abs_of_nonneg (sqrt_nonneg Q), h_norm, Circle.norm_coe]
   have h_factor : LineValueFactors 𝔠 A X σ v y g (planeDatum 𝔠 A σ' v y)
       fun β ↦ lineConst β * γ := hγ_factor v y hy g
   let f : 𝒮 (W'.hom V') := planeDatum 𝔠 A σ' v y
