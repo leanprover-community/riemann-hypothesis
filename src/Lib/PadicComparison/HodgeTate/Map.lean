@@ -403,12 +403,15 @@ def hodgeTateMap {q : ℕ} (h : ℕ) : HodgeH N q →ₗ[k] PairH N where
   toFun x := comp ((Comparison.restrict toHodgeTest hodgeCoeff).pull
     (Functor.whiskerRight toSqZero N) q x).toTotalH (contractionPow h)
   map_add' := by simp
-  -- the scalar acts through the coefficients, and `act_comp_contractionPow` moves it past
-  -- `contractionPow h`
-  map_smul' := by
-    simp [← comp_smul, ← act_comp_contractionPow, comp_assoc_of_eq, of_comp_homClass,
-      Comparison.pull, H.map, H.push, Functor.mapExtAddHom, H.smul_eq_push,
-      Ext.mapExactFunctor_comp, Ext.mapExactFunctor_mk₀]
+  -- the scalar acts by pushing along its action on the coefficients, which commutes with the
+  -- pull-back (`pull_push`); `act_comp_contractionPow` then moves it past `contractionPow h`.
+  -- Rewriting with these lemmas, rather than unfolding `pull` and `push` into `Ext` compositions,
+  -- keeps the proof term small for the kernel.
+  map_smul' t x := by
+    rw [RingHom.id_apply, H.smul_eq_push,
+      Comparison.pull_push (Comparison.restrict toHodgeTest hodgeCoeff) (𝟙 _) _
+        (toHodgeTest.whiskerLeft (CoeffAction.act t).asHom) rfl, Ext.toTotalH, Ext.toTotalH,
+      ← of_comp_homClass, comp_assoc, act_comp_contractionPow, comp_smul]
 
 /-- For `α : N' ⟶ N`, the `k`-linear pull-back from `PairH N` to `PairH N'` along the natural map
 `N'(B_{S,M}) → N(B_{S,M})` induced by `α`. -/
@@ -424,9 +427,12 @@ def restrictToPairs {n : ℕ} : H (genericOver ⋙ N) genericCoeff n →ₗ[k] P
     (Comparison.restrict toTest genericCoeff).pull (Functor.whiskerRight toGeneric N) n
   map_add' := by simp
   map_smul' t x := by
-    -- both scalar actions are composition with the action of `t` on the coefficients
-    simp [smul_eq_comp, of_comp_homClass, Comparison.pull, H.map, H.push, Functor.mapExtAddHom,
-      H.smul_eq_push, Ext.mapExactFunctor_comp, Ext.mapExactFunctor_mk₀]
+    -- both scalar actions are composition with the action of `t` on the coefficients: on the left
+    -- after moving the push-forward past the pull-back (`pull_push`), on the right by definition
+    rw [RingHom.id_apply, H.smul_eq_push, Function.comp_apply, Function.comp_apply,
+      Comparison.pull_push (Comparison.restrict toTest genericCoeff) (𝟙 _) _
+        (toTest.whiskerLeft (CoeffAction.act t).asHom) rfl, Ext.toTotalH, Ext.toTotalH,
+      ← of_comp_homClass, smul_eq_comp]
     rfl
 
 /-- `restrictToPairs` is natural in `N`: for `α : N' ⟶ N`, restricting the pull-back of `x` along
@@ -484,8 +490,12 @@ lemma hodgeTateMap_scale {q h : ℕ} (t : k) (x : HodgeH N q) :
       mapExactFunctor_naturality
         ((Functor.whiskeringLeft ..).map (HodgeTest.scaleModule t (𝟭 (HodgeTest k)))) x
   rw [← h_nat]
-  simp [hodgeTateMap, comp_assoc_of_eq, of_comp_homClass, Comparison.pull, H.map, H.push,
-    Functor.mapExtAddHom, Ext.mapExactFunctor_comp, Ext.mapExactFunctor_mk₀]
+  -- the push-forward along the scaling commutes with the pull-back to pairs, and is then
+  -- composition with its class
+  show comp ((Comparison.restrict _ _).pull _ q (H.push _ _ q x)).toTotalH (contractionPow h) = _
+  rw [Comparison.pull_push (Comparison.restrict toHodgeTest hodgeCoeff) (𝟙 _) _
+      (toHodgeTest.whiskerLeft (HodgeTest.scaleModule t hodgeCoeff)) rfl, Ext.toTotalH,
+    Ext.toTotalH, ← of_comp_homClass, comp_assoc]
 
 /-- For functors `M`, `L` on pairs (`M` with flat values) and `y` in the total cohomology of `L`
 with coefficients `scalarCoeff` (`(S, M) ↦ T`), the `k`-linear map `x ↦ x × y` to the total
