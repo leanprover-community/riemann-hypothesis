@@ -86,6 +86,7 @@ variable {E ι ι' ι'' X X' X'' X₀ q : Type} [Field E] [CMType E] [WeilData E
   {Y : Grading V N X s} {Y' : Grading V' N X' s'} {Y'' : Grading V'' N X₀ s''}
 
 omit [WeilData E] in
+@[fun_prop]
 private lemma continuous_pairChar (a b : AutChar E) :
     Continuous (pairChar (E := E) (s := ε) (s' := ε') a b) :=
   continuous_subtypeVal.comp
@@ -96,39 +97,8 @@ private lemma continuous_theta_tripleWeil (a b : AutChar E)
     (f : 𝒮 (V'.hom (flipSum V V''))) :
     Continuous fun p : G E ε × G E ε' × G E ε'' ↦
       θ (V'.hom (flipSum V V'')) (tripleWeil (V := V) (V' := V') (V'' := V'') a b p f) := by
-  have h_sum : Continuous (G.sum : G E (-ε) × G E ε'' → G E (-ε ⊕ᵥ ε'')) := by
-    rw [G.continuous_iff]
-    simp only [G.adeleMatrix_sum]
-    refine continuous_pi fun i ↦ continuous_pi fun j ↦ ?_
-    rcases i with i | i <;> rcases j with j | j
-    · exact ((continuous_apply j).comp ((continuous_apply i).comp
-        G.continuous_adeleMatrix)).comp continuous_fst
-    · exact continuous_const
-    · exact continuous_const
-    · exact ((continuous_apply j).comp ((continuous_apply i).comp
-        G.continuous_adeleMatrix)).comp continuous_snd
-  have h_c1 : Continuous fun p : G E ε × G E ε' × G E ε'' ↦
-      pairChar (rankTwist a ι) (rankTwist a ι') (p.1, p.2.1) :=
-    (continuous_pairChar _ _).comp (continuous_fst.prodMk (continuous_fst.comp continuous_snd))
-  have h_c2 : Continuous fun p : G E ε × G E ε' × G E ε'' ↦
-      pairChar (rankTwist b ι') (rankTwist b ι'') p.2 :=
-    (continuous_pairChar _ _).comp continuous_snd
-  have h_c3 : Continuous fun p : G E ε × G E ε' × G E ε'' ↦
-      pairChar (WeilData.upsilonU1 ^ card ι') (WeilData.upsilonU1 ^ card ι) (p.2.1, p.1) :=
-    (continuous_pairChar _ _).comp ((continuous_fst.comp continuous_snd).prodMk continuous_fst)
-  have h_onHom : Continuous fun p : G E ε × G E ε' × G E ε'' ↦
-      G.onHom (p.2.1, G.sum (p.1.neg, p.2.2)) :=
-    G.continuous_onHom.comp ((continuous_fst.comp continuous_snd).prodMk
-      (h_sum.comp ((G.continuous_neg.comp continuous_fst).prodMk
-        (continuous_snd.comp continuous_snd))))
-  have h_ω : Continuous fun p : G E ε × G E ε' × G E ε'' ↦
-      θ (V'.hom (flipSum V V''))
-        ((V'.hom (flipSum V V'')).ω (G.onHom (p.2.1, G.sum (p.1.neg, p.2.2))) f) :=
-    (θ _).continuous.comp
-      ((Space.continuous_omega (V := V'.hom (flipSum V V''))).comp
-        (h_onHom.prodMk continuous_const))
-  simpa only [tripleWeil, _root_.smul_apply, map_smul, smul_eq_mul, Pi.mul_def, Pi.mul_apply] using
-    ((h_c1.mul h_c2).mul h_c3).mul h_ω
+  simp only [tripleWeil, _root_.smul_apply, map_smul]
+  fun_prop
 
 /-- A coefficient of an algebraic form times the theta function of a triple Weil translate is
 integrable over the compact quotients of the two definite unitary groups. -/
