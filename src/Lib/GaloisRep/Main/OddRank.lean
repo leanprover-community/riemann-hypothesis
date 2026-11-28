@@ -338,6 +338,58 @@ lemma New.GaloisRep.isStepUnramifiedAt_of_decompGroup_le {E : Type} [Field E]
   change QZ.expUnit (abelianLift χ (artinMap Gal(Ω/E) (locIdele (v.below E) (localNorm E v y)))) = 1
   rw [artinMap_locIdele, h_units _ hv_norm, QZ.expUnit.map_one]
 
+/-- Two representations on normal subgroups `N₀` and `N₁` of `Gal(Ω/E)` attached to the same
+system `P` are conjugate on `N₀ ⊓ N₁`. -/
+private lemma New.GaloisRep.Attached.exists_conj_on_inf {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    {E n : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
+    {P : FinPlace E → Polynomial ℂ} {N₀ N₁ : Subgroup Gal(Ω/E)} [N₀.Normal] [N₁.Normal]
+    {ρ₀ : N₀ →* GL n (PadicAlgCl ℓ)} {ρ₁ : N₁ →* GL n (PadicAlgCl ℓ)}
+    (hρ₀ : Attached P ρ₀ N₀.subtype) (hρ₁ : Attached P ρ₁ N₁.subtype) :
+    ∃ Q : GL n (PadicAlgCl ℓ), ∀ g : ↥(N₀ ⊓ N₁),
+      (ρ₀ (inclusion inf_le_left g)).val * Q.val = Q.val * (ρ₁ (inclusion inf_le_right g)).val := by
+  have normal_range {M : Subgroup Gal(Ω/E)} (h_le : N₀ ⊓ N₁ ≤ M) :
+      (inclusion h_le).range.Normal := by
+    rw [inclusion_range]
+    infer_instance
+  have h_left : IsTraceNondeg (ρ₀.comp (inclusion (inf_le_left : N₀ ⊓ N₁ ≤ N₀))) :=
+    hρ₀.isTraceNondeg.comp _ (normal_range inf_le_left)
+  have h_right : IsTraceNondeg (ρ₁.comp (inclusion (inf_le_right : N₀ ⊓ N₁ ≤ N₁))) :=
+    hρ₁.isTraceNondeg.comp _ (normal_range inf_le_right)
+  have h_trace (g : ↥(N₀ ⊓ N₁)) :
+      (ρ₀ (inclusion inf_le_left g)).val.trace = (ρ₁ (inclusion inf_le_right g)).val.trace :=
+    hρ₀.trace_eq hρ₁ _ rfl
+  exact h_left.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _)
+    h_right.hasSemiprimeSpan h_trace
+
+/-- A continuous, trace-nondegenerate representation `R` of `Gal(Ω/E)` that is conjugate on each
+open subgroup `N T` to a representation `ρ T` attached to `P` is itself attached to `P`, provided
+every prime-norm Frobenius element lies in some `N T`. -/
+private lemma New.GaloisRep.attached_of_locally_conj {ℓ : ℕ} [ThePrime ℓ] [PadicIso ℓ]
+    {E n : Type} [Field E] [EmbeddedNumberField E] [Fintype n] [DecidableEq n]
+    {P : FinPlace E → Polynomial ℂ} {N : ℕ → Subgroup Gal(Ω/E)} (N_open : ∀ T : ℕ, (N T).IsOpen)
+    {ρ : (T : ℕ) → N T →* GL n (PadicAlgCl ℓ)} (hρ : ∀ T : ℕ, Attached P (ρ T) (N T).subtype)
+    {R : GalRep ℓ E n} (R_cont : Continuous R) (R_nondeg : IsTraceNondeg R)
+    (Q : ℕ → GL n (PadicAlgCl ℓ)) (R_conj : ∀ (T : ℕ) (g : N T), R g = Q T * ρ T g * (Q T)⁻¹)
+    (h_frob : ∀ (y : FinPlace E) (A : ClosurePlace) (s : Gal(Ω/E)),
+      y.q.Prime → IsPlaceOver A y → IsFrob A y.q s → ∃ T : ℕ, s ∈ N T) :
+    Attached P R := by
+  refine ⟨R_cont, R_nondeg, .id, fun η hη V hV hV_ne ↦ ?_⟩
+  -- By Chebotarev `V` holds a Frobenius element at a place of prime norm, so `V` meets some
+  -- `N T`. The estimate for `ρ T` on an open part `O` of `V ∩ N T` passes to its conjugate `R`.
+  obtain ⟨y, -, hy, A, hA, s, s_mem_V, s_frob, -⟩ := chebotarev hV hV_ne Set.finite_empty
+  obtain ⟨T, s_mem_N⟩ : ∃ T : ℕ, s ∈ N T := h_frob y A s hy hA s_frob
+  obtain ⟨O, hO, O_open, O_nonempty, h_close⟩ :=
+    (hρ T).eventually_norm_coeff_le hη (V ∩ N T) (hV.inter (N_open T)) ⟨s, s_mem_V, s_mem_N⟩
+  refine ⟨O, hO.trans Set.inter_subset_left, O_open, O_nonempty, ?_⟩
+  filter_upwards [h_close] with v hv B g hv_prime hB g_frob hg
+  have g_mem : g ∈ N T := Set.mem_of_mem_inter_right (hO hg)
+  have h_charpoly : (R g).val.charpoly = (ρ T ⟨g, g_mem⟩).val.charpoly := by
+    rw [R_conj T ⟨g, g_mem⟩, Units.val_mul, Units.val_mul, Matrix.coe_units_inv,
+      Matrix.charpoly_units_conj]
+  rintro x (rfl : x = g) i
+  rw [h_charpoly]
+  exact hv B x hv_prime hB g_frob hg ⟨x, g_mem⟩ rfl i
+
 /-- Let `ρ₀` on a normal subgroup `N₀` of `Gal(Ω/E)` and the `ρ T` on open normal subgroups `N T`
 be attached to the same system `P` along the inclusions (`New.GaloisRep.Attached`: the
 representation is continuous with non-degenerate trace form, the inclusion is open, and the
@@ -361,22 +413,9 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
     ∃ R : GalRep ℓ E n, Attached P R := by
   -- Extend `ρ₀` by `1` on the largest normal subgroup `K` inside the kernels of all the `ρ T`.
   let K : Subgroup Gal(Ω/E) := (⨅ T : ℕ, (ρ T).ker.map (N T).subtype).normalCore
-  -- `ρ₀` and `ρ T` are attached to the same `P`, so where both are defined they have the same
-  -- traces and are conjugate, by `Q T`; and `ρ T` is trivial on `K`.
-  have exists_conj (T : ℕ) :=
-    have normal_range {M : Subgroup Gal(Ω/E)} (h_le : N₀ ⊓ N T ≤ M) :
-        (inclusion h_le).range.Normal := by
-      rw [inclusion_range]
-      infer_instance
-    have h_left : IsTraceNondeg (ρ₀.comp (inclusion (inf_le_left : N₀ ⊓ N T ≤ N₀))) :=
-      hρ₀.isTraceNondeg.comp _ (normal_range inf_le_left)
-    have h_right : IsTraceNondeg ((ρ T).comp (inclusion (inf_le_right : N₀ ⊓ N T ≤ N T))) :=
-      (hρ T).isTraceNondeg.comp _ (normal_range inf_le_right)
-    have h_trace (g : ↥(N₀ ⊓ N T)) :
-        (ρ₀ (inclusion inf_le_left g)).val.trace = (ρ T (inclusion inf_le_right g)).val.trace :=
-      hρ₀.trace_eq (hρ T) _ rfl
-    h_left.exists_conj_of_trace_eq _ (AlgHom.id (PadicAlgCl ℓ) _) h_right.hasSemiprimeSpan h_trace
-  choose Q hQ using exists_conj
+  -- `ρ₀` and `ρ T` are attached to the same `P`, so they are conjugate on `N₀ ⊓ N T` by `Q T`,
+  -- and `ρ T` is trivial on `K`.
+  choose Q hQ using fun T ↦ hρ₀.exists_conj_on_inf (hρ T)
   have h_conj (T : ℕ) (g : N T) (y : Gal(Ω/E)) (hy : y ∈ K) (hgy : g.val * y ∈ N₀) :
       ρ₀ ⟨g.val * y, hgy⟩ = Q T * ρ T g * (Q T)⁻¹ := by
     obtain ⟨y, hy_ker, rfl⟩ := mem_iInf.1 (normalCore_le _ hy) T
@@ -422,22 +461,7 @@ lemma New.GaloisRep.exists_attached_of_open_subgroups {ℓ : ℕ} [ThePrime ℓ]
     exact hρ₀.isTraceNondeg x (Submodule.span_mono h_range hx) fun g ↦ by rw [R_eq, h_zero]
   have R_conj (T : ℕ) (g : N T) : R g = Q T * ρ T g * (Q T)⁻¹ :=
     h_conj T g (σ g) (σ_mem g) (mul_σ_mem g)
-  refine ⟨R, R_cont, R_nondeg, .id, fun η hη V hV hV_ne ↦ ?_⟩
-  -- By Chebotarev `V` holds a Frobenius element at a place of prime norm, so `V` meets some
-  -- `N T`. The estimate for `ρ T` on an open part `O` of `V ∩ N T` passes to its conjugate `R`.
-  obtain ⟨y, -, hy, A, hA, s, s_mem_V, s_frob, -⟩ := chebotarev hV hV_ne Set.finite_empty
-  obtain ⟨T, s_mem_N⟩ : ∃ T : ℕ, s ∈ N T := h_frob y A s hy hA s_frob
-  obtain ⟨O, hO, O_open, O_nonempty, h_close⟩ :=
-    (hρ T).eventually_norm_coeff_le hη (V ∩ N T) (hV.inter (N_open T)) ⟨s, s_mem_V, s_mem_N⟩
-  refine ⟨O, hO.trans Set.inter_subset_left, O_open, O_nonempty, ?_⟩
-  filter_upwards [h_close] with v hv B g hv_prime hB g_frob hg
-  have g_mem : g ∈ N T := Set.mem_of_mem_inter_right (hO hg)
-  have h_charpoly : (R g).val.charpoly = (ρ T ⟨g, g_mem⟩).val.charpoly := by
-    rw [R_conj T ⟨g, g_mem⟩, Units.val_mul, Units.val_mul, Matrix.coe_units_inv,
-      Matrix.charpoly_units_conj]
-  rintro x (rfl : x = g) i
-  rw [h_charpoly]
-  exact hv B x hv_prime hB g_frob hg ⟨x, g_mem⟩ rfl i
+  exact ⟨R, attached_of_locally_conj N_open hρ R_cont R_nondeg Q R_conj h_frob⟩
 
 open scoped Pointwise in
 /-- Let `a` be odd, `E` a CM field containing a primitive 5040th root of unity, and `w` any finite
