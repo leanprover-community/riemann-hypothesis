@@ -185,11 +185,21 @@ lemma Gf.eq_of_supportedOn (hg : g ∈ supportedOn n S) (hk : k ∈ supportedOn 
     exact Units.ext (by simp only [atPlace_star (star_star u), h_eq (star u) hu_star])
   · rw [mem_supportedOn.1 hg u hu hu_star, mem_supportedOn.1 hk u hu hu_star]
 
+/-- If a finite adelic unitary matrix is integral outside `S ∪ S̄`, it is integral everywhere
+exactly when it is integral on `S`. Unitarity transfers integrality to the conjugate place. -/
+lemma Gf.mem_stdLevel_iff_of_integral_off (h_off : g ∈ localLevel n S.conjClosureᶜ) :
+    g ∈ stdLevel E n ↔ ∀ w ∈ S, g.atPlace w ∈ localIntGL n w := by
+  refine ⟨fun h w _ ↦ mem_stdLevel_iff.1 h w, fun h ↦ mem_stdLevel_iff.2 fun w ↦ ?_⟩
+  by_cases hw : w ∈ S.conjClosure
+  · exact Or.elim hw (h w) (fun hw_star ↦ atPlace_star_mem_iff.1 (h (star w) hw_star))
+  · exact mem_localLevel.1 h_off w hw
+
 /-- An element supported on `S ∪ S̄` is integral if and only if its components at the places
 of `S` are integral. -/
 lemma Gf.mem_stdLevel_iff_of_supportedOn (hg : g ∈ supportedOn n S) :
     g ∈ stdLevel E n ↔ ∀ w ∈ S, g.atPlace w ∈ localIntGL n w := by
-  grind [atPlace_star_mem_iff, mem_stdLevel_iff, mem_supportedOn, one_mem]
+  apply mem_stdLevel_iff_of_integral_off
+  grind [mem_localLevel, mem_supportedOn, one_mem]
 
 /-! ### The part supported on `S ∪ S̄`, and generation by local elements -/
 

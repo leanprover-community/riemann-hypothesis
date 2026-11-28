@@ -653,7 +653,7 @@ lemma SiegelWeil.IsSharpFn.weilMatrixCoeff_eq_zero_of_notMem_stdLevel (hΨ : IsS
         simpa [Matrix.map_mul] using! hΨ.isPrimitiveMatrix hw hxg
       exact (isPrimitiveMatrix_iff_mem_intGL _).1 ((hΨ.isPrimitiveMatrix hw hx).mul_iff.1 h_prod)
     -- Integrality passes from a place to its conjugate by unitarity.
-    grind [mem_stdLevel_iff, atPlace_star_mem_iff, mem_localLevel]
+    exact hg ((g.mem_stdLevel_iff_of_integral_off g_off).2 h_integral)
   -- The point `g` translates `Ψ` (`omega_schrodingerOp`), so the matrix coefficient is a multiple
   -- of the integral of `conj (Ψ x) * Ψ (x g)`, whose integrand vanishes.
   let p : G E (homSigns s t) := G.onHom ((1, g), 1)
