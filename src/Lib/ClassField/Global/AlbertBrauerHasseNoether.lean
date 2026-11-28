@@ -626,8 +626,7 @@ lemma exists_map_norm_eq_of_abelianLift_artinAt_eq_one [IsGalois K L]
   -- lie in the kernel of `τ`, and a count shows that the two groups have the same index.
   -- `S` holds the ramified places, the divisor of `x`, the divisors of the norms of ideles `rep c`
   -- that represent the ideal classes of `L`, and generators of the class group of `K`.
-  obtain ⟨cl, h_cl : cl.ker = principalIdele.range ⊔ idelesUnitOff ∅⟩ :=
-    exists_idele_classGroup_hom (K := L)
+  let cl := finIdeleClassGroup (K := L)
   let rep : ClassGroup (𝓞 L) → (𝔸f L)ˣ := invFun cl
   have h_rep : (⋃ c : ClassGroup (𝓞 L), {v | Valued.v (adeleNorm K L (rep c).val v) ≠ 1}).Finite :=
     Set.finite_iUnion fun c ↦ finite_setOf_valued_val_ne_one (.map (adeleNorm K L) (rep c))
@@ -656,7 +655,7 @@ lemma exists_map_norm_eq_of_abelianLift_artinAt_eq_one [IsGalois K L]
   have h_norms (y : (𝔸f L)ˣ) : Units.map (adeleNorm K L) y ∈ W := by
     obtain ⟨_, ⟨z, rfl⟩, u, hu, h_eq⟩ :
         ∃ a ∈ principalIdele.range, ∃ u ∈ idelesUnitOff ∅, a * u = (rep (cl y))⁻¹ * y :=
-      mem_sup.mp (h_cl.le (cl.eq_iff.mp (invFun_eq ⟨y, rfl⟩).symm))
+      mem_sup.mp (ker_finIdeleClassGroup.le (cl.eq_iff.mp (invFun_eq ⟨y, rfl⟩).symm))
     rw [← mul_eq_of_eq_inv_mul h_eq, mul_rotate', map_mul]
     -- The norm of `rep (cl y)` times a unit idele is killed by `τ` and is a unit off `S`.
     have hu_val (w : FinPlace L) : Valued.v (u.val w) = 1 :=
