@@ -97,9 +97,7 @@ variable {𝔰 : Shape}
 /-- The Gaussian exp(−π Σ_{b<l}(Σ_i |g_{i,e*_b}|² + (Im g_{e_b,e*_b})²)) on G₁, the inner sum over
 the indices i of floor greater than b. -/
 noncomputable abbrev dualColumnGaussian (l : ℕ) (g : 𝔰.G₁) : ENNReal :=
-  ‖rexp
-    (-π *
-      ∑ b : Fin 𝔰.ϱ with b.val < l,
+  ‖rexp (-π * ∑ b : Fin 𝔰.ϱ with b.val < l,
         let w : 𝔰.BesselIndex → ℂ := g.val.val *ᵥ Pi.single (eStar b) 1
         ∑ i : 𝔰.BesselIndex with b < floorOf i, ‖w i‖ ^ 2 + (w (Sum.inl b)).im ^ 2)‖ₑ
 
@@ -136,9 +134,8 @@ lemma dualColumnGaussian_succ_mul_heisenbergElem {a : Fin 𝔰.ϱ} {ν : 𝔰.G�
         (β : ℂ).im ^ 2))‖ₑ * dualColumnGaussian a ν := by
   -- The element `n` puts `v` and `Im β` into the free entries of column `e*_a` and fixes the
   -- earlier vectors `e*_b`; the element `ν` keeps the free entries of column `e*_a`.
-  let col : 𝔰.BesselIndex → ℂ :=
-    ((TraceOne.heisenbergElem a (v, β) : 𝔰.G₁) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) *ᵥ
-      Pi.single (eStar a) 1
+  let col := ((TraceOne.heisenbergElem a (v, β) : 𝔰.G₁) : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) *ᵥ
+    Pi.single (eStar a) 1
   have col_free (i : {i : 𝔰.BesselIndex // a + 1 ≤ floorOf i}) : col i = v i := by
     have h_ne (j : 𝔰.BesselIndex) (hj : floorOf j = a) : i.val ≠ j :=
       fun h ↦ by simpa [h, hj] using i.property
@@ -197,8 +194,7 @@ lemma lintegral_dualColumnGaussian_ascConv {l : ℕ} (hl : l ≤ 𝔰.ϱ) :
     calc
       ∫⁻ ν, dualColumnGaussian (a + 1) ν ∂η ∗ₘ complexPlace.heisenbergMeasure a
         = ∫⁻ x, ∫⁻ ν, dualColumnGaussian (a + 1) (ν * n x) ∂η := by
-        rw [lintegral_mconv_symm (by fun_prop),
-          lintegral_heisenbergMeasure_complex a (by fun_prop)]
+        rw [lintegral_mconv_symm (by fun_prop), lintegral_heisenbergMeasure_complex a (by fun_prop)]
       _ = ∫⁻ x, ∫⁻ ν, gauss x * dualColumnGaussian a ν ∂η := by
         refine lintegral_congr fun x ↦
           lintegral_congr_of_ae_imp ae_ascConv_mem_unipotentBelow fun ν hν ↦ ?_
@@ -238,8 +234,7 @@ lemma lintegral_dualColumnGaussian_inv_besselHaar :
   let gauss (x : (Subtype (IsFreeEntry (𝔰 := 𝔰)) → ℂ) × (Fin 𝔰.ϱ → ℝ)) : ENNReal :=
     ‖rexp (-π * (∑ p, ‖x.1 p‖ ^ 2 + ∑ a, x.2 a ^ 2))‖ₑ
   calc
-    ∫⁻ y : (𝔰.middleGram (1 : ℂ)).besselU, dualColumnGaussian 𝔰.ϱ (y : 𝔰.G₁)⁻¹ ∂𝔰.besselHaar
-      = ∫⁻ y, gauss (freeEntries IsFreeEntry (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ))
+    _ = ∫⁻ y, gauss (freeEntries IsFreeEntry (y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ))
           ∂𝔰.besselHaar := by
       refine lintegral_congr fun y ↦ ?_
       rw [dualColumnGaussian_inv, ← sum_subtype_eq_sum_filter, subtype_univ]
@@ -356,28 +351,23 @@ def RealPlaceSizes.complexData : PlaceData {i // i ≠ 𝔰.k₀} (𝔰.middleGr
   boxSet := {x : (𝔰.middleGram (1 : ℂ)).G | ‖x.val.val‖ ≤ ρ}
   positions := Set.univ
   topFloorMeasure_mem_and_map_eq := by
-                        refine ⟨ae_mem_mconv ?_ ?_ measurableSet_floorGroup,
-                          map_orbitPoint_cellLaw_top (by simp [hF.k_eq])⟩
-                        · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
-                            (.of_forall fun _ ↦ inv_mem cellChart_mem_floorGroup)
-                        · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
-                            (.of_forall embedH_mem_floorGroup)
+    refine ⟨ae_mem_mconv ?_ ?_ measurableSet_floorGroup,
+      map_orbitPoint_cellLaw_top (by simp [hF.k_eq])⟩
+    · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
+        (.of_forall fun _ ↦ inv_mem cellChart_mem_floorGroup)
+    · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2 (.of_forall embedH_mem_floorGroup)
   measureH_mem_and_invariant_and_le_one := by
-                            refine ⟨?_, fun s hs ↦ ?_, fun _ ↦ prob_le_one⟩
-                            · exact (ae_map_iff (by fun_prop) measurableSet_floorGroup).2
-                                (.of_forall toBesselH_mem)
-                            · obtain ⟨u, rfl⟩ : ∃ u : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ),
-                                s = toBesselH 𝔰 1 u :=
-                                exists_eq_toBesselH hs isUnit_one
-                              exact map_embedH_mconv_dirac u
+    refine ⟨(ae_map_iff (by fun_prop) measurableSet_floorGroup).2 (.of_forall toBesselH_mem),
+      fun s hs ↦ ?_, fun _ ↦ prob_le_one⟩
+    obtain ⟨u, rfl⟩ : ∃ u : U (1 : Matrix 𝔰.κ 𝔰.κ ℂ), s = toBesselH 𝔰 1 u :=
+      exists_eq_toBesselH hs isUnit_one
+    exact map_embedH_mconv_dirac u
   star_levelUnit := by simp
   isOpen_closePairs_and_zero_mem_and_isCompact_closure := by
-                                         refine ⟨isOpen_lt (by fun_prop) continuous_const, by simp,
-                                           ((isBounded_closedBall (x := 0) (r := 1)).subset fun u
-                                             hu ↦ ?_).isCompact_closure⟩
-                                         simpa [Prod.norm_def, pi_norm_le_iff_of_nonneg, forall_and]
-                                           using
-                                           norm_apply_le_one_of_sq_add_sq_lt_one hu
+    refine ⟨isOpen_lt (by fun_prop) continuous_const, by simp,
+      ((isBounded_closedBall (x := 0) (r := 1)).subset fun u hu ↦ ?_).isCompact_closure⟩
+    simpa [Prod.norm_def, pi_norm_le_iff_of_nonneg, forall_and] using
+      norm_apply_le_one_of_sq_add_sq_lt_one hu
   isCompact_boxSet_and_measurableSet_positions := ⟨isCompact_U_norm_le ρ, MeasurableSet.univ⟩
 
 /-- A chosen constant c in [0, ∞] with 𝖬 = c · dy, where 𝖬 is the product `groupMeasure` of the
@@ -524,8 +514,7 @@ lemma RealPlaceSizes.haarRatio_le (hF : RealPlaceSizes 𝔰 ρ s b) :
     simp [hF.groupMeasure_eq_haarRatio_smul, Measure.inv, Measure.map_smul,
       measurable_inv.aemeasurable]
   have h_smul_le : hF.haarRatio • (volume : Measure 𝔰.G₁) ≤
-      ENNReal.ofReal (volU 𝔰.r / volU 𝔰.k) • volume :=
-    h_inv.symm.trans_le hF.inv_groupMeasure_le
+      ENNReal.ofReal (volU 𝔰.r / volU 𝔰.k) • volume := h_inv.symm.trans_le hF.inv_groupMeasure_le
   let B : Set 𝔰.G₁ := {g | ‖(g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ 2}
   have hB_ne_zero : volume B ≠ 0 := measure_sublevel_ne_zero volume
   have hB_ne_top : volume B ≠ ∞ := (isCompact_U_norm_le (J := 𝔰.J₁) 2).measure_ne_top
@@ -727,17 +716,15 @@ lemma exists_orthonormal_ker_lintegral_le {𝔰 : Shape} {s : ℕ} {L : ℝ} {m 
     simpa only [Φ, μ, h_coord, card_coe, D_card] using measurePreserving_normSq_prod_compl Q D
   let R : ℝ := L * (L * L ^ j) ^ 2
   let B : Set ({i : ι // i ∉ D} → ℂ) := closedBall 0 (L * L ^ j)
-  have box_subset : {u : ι → ℂ | ∀ i : ι, ‖u i‖ ≤ L ^ j} ⊆ Φ ⁻¹' Iic R ×ˢ B := by
-    intro u hu
+  have box_subset : {u : ι → ℂ | ∀ i : ι, ‖u i‖ ≤ L ^ j} ⊆ Φ ⁻¹' Iic R ×ˢ B := fun u hu ↦ by
     have coord_le (i : ι) : ‖(Q.valᴴ *ᵥ u) i‖ ≤ L * L ^ j := by
       grw [norm_unitary_conjTranspose_mulVec_le Q hu i, hL]
     refine ⟨?_, mem_closedBall_zero_iff.2
       ((pi_norm_le_iff_of_nonneg (by positivity)).2 fun i ↦ coord_le i)⟩
     calc ‖star (Oᴴ *ᵥ u) ⬝ᵥ Oᴴ *ᵥ u‖ = ∑ i : D, ‖(Q.valᴴ *ᵥ u) i‖ ^ 2 := by
           rw [star_dotProduct_self_eq_norm_sq, norm_pow, norm_real, norm_norm, norm_sq_eq, h_coord]
-      _ ≤ ∑ _i : D, (L * L ^ j) ^ 2 := by
-          gcongr with i
-          exact coord_le i
+      _ ≤ ∑ _i : D, (L * L ^ j) ^ 2 :=
+          Finset.sum_le_sum fun i _ ↦ pow_le_pow_left₀ (norm_nonneg _) (coord_le i) 2
       _ = D.card * (L * L ^ j) ^ 2 := by simp
       _ ≤ L * (L * L ^ j) ^ 2 := by grw [D.card_le_univ, hL]
   have hB : volume B = ENNReal.ofReal ((π * (L * L ^ j) ^ 2) ^ (3 * 𝔰.n)) := by
@@ -745,18 +732,15 @@ lemma exists_orthonormal_ker_lintegral_le {𝔰 : Shape} {s : ℕ} {L : ℝ} {m 
     rw [volume_closedBall_pi_complex (by positivity), h_compl]
   have const_le : 4 * 3 ^ 144 * R * (π * (L * L ^ j) ^ 2) ^ (3 * 𝔰.n) ≤
       (L ^ 2) ^ (99 * 𝔰.n * (j + 1)) := by
-    have h3 : 3 ≤ L := by linarith
-    have h_exp : 145 + (2 * j + 3) * (3 * 𝔰.n + 1) ≤ 2 * (99 * 𝔰.n * (j + 1)) := by
-      nlinarith only [Nat.succ_pos 𝔰.ϱ, show 𝔰.n = 𝔰.ϱ + 1 from rfl]
-    calc 4 * 3 ^ 144 * R * (π * (L * L ^ j) ^ 2) ^ (3 * 𝔰.n)
-        ≤ L * L ^ 144 * R * (L * (L * L ^ j) ^ 2) ^ (3 * 𝔰.n) := by
-          gcongr
-          exact pi_le_four.trans h4
+    calc _ ≤ L * L ^ 144 * R * (L * (L * L ^ j) ^ 2) ^ (3 * 𝔰.n) := by
+          gcongr <;> linarith [pi_le_four]
       _ = L ^ (145 + (2 * j + 3) * (3 * 𝔰.n + 1)) := by
           simp only [R]
           ring
-      _ ≤ L ^ (2 * (99 * 𝔰.n * (j + 1))) := pow_le_pow_right₀ (by linarith) h_exp
-      _ = (L ^ 2) ^ (99 * 𝔰.n * (j + 1)) := pow_mul ..
+      _ ≤ (L ^ 2) ^ (99 * 𝔰.n * (j + 1)) := by
+          rw [← pow_mul]
+          exact pow_le_pow_right₀ (by linarith)
+            (by nlinarith only [Nat.succ_pos 𝔰.ϱ, show 𝔰.n = 𝔰.ϱ + 1 from rfl])
   calc
     _ ≤ ∫⁻ u in Φ ⁻¹' Iic R ×ˢ B, (ENNReal.ofReal ((Φ u).1 / 36))⁻¹ ^ s :=
       lintegral_mono_set box_subset
@@ -975,30 +959,17 @@ lemma RealPlaceSizes.exists_isCommonBound (hF : RealPlaceSizes 𝔰 ρ s b) (hρ
   -- At most `3 n` linear conditions on `w` give `v w = 0` and put `x⁻¹ w` and `(x y)⁻¹ w` into the
   -- space on which `J₁` is the identity; the columns of `O` are orthonormal solutions, and
   -- `φ u = 36 / |Oᴴ u|²`.
-  let e : Matrix 𝔰.BesselIndex hF.complexData.FreeIndex ℂ := hF.complexData.orthonormalPart
-  obtain ⟨C, rank_le, hC⟩ :
-      ∃ C : Matrix (Fin 𝔰.ϱ ⊕ (Fin 𝔰.ϱ ⊕ Unit) ⊕ Fin 𝔰.ϱ ⊕ Unit) hF.complexData.FreeIndex ℂ,
-        C.rank ≤ 3 * 𝔰.n ∧ ∀ w : hF.complexData.FreeIndex → ℂ, C *ᵥ w = 0 →
-          v *ᵥ w = 0 ∧ ∀ g ∈ ({x⁻¹, (x * y)⁻¹} : Set 𝔰.G₁),
-            𝔰.J₁ *ᵥ g.val.val *ᵥ e *ᵥ w = g.val.val *ᵥ e *ᵥ w :=
-    hF.exists_rank_le_and_fixed_of_mulVec_eq_zero x y v (by simp)
+  obtain ⟨C, rank_le, hC⟩ := hF.exists_rank_le_and_fixed_of_mulVec_eq_zero x y v (by simp)
   have exponent_eq : hF.complexData.volumeExponent = s := by
     rw [PlaceData.volumeExponent, hF.card_freeIndex_complexData]
     lia
-  obtain ⟨D, O, hCO, hO, h_int⟩ :
-      ∃ (D : Finset hF.complexData.FreeIndex) (O : Matrix hF.complexData.FreeIndex D ℂ),
-        C * O = 0 ∧ Oᴴ * O = 1 ∧ ∀ j : ℕ,
-          ∫⁻ u in {u | ∀ i, ‖u i‖ ≤ L ^ j},
-              (ENNReal.ofReal (‖star (Oᴴ *ᵥ u) ⬝ᵥ Oᴴ *ᵥ u‖ / 36))⁻¹ ^ s ≤
-            (ENNReal.ofReal L ^ 2) ^ (99 * 𝔰.n * (j + 1)) :=
-    exists_orthonormal_ker_lintegral_le C hF.card_freeIndex_complexData (hF.four_le.trans hρ)
-      rank_le (hF.card_freeIndex_complexData_le.trans hρ)
+  obtain ⟨D, O, hCO, hO, h_int⟩ := exists_orthonormal_ker_lintegral_le C
+    hF.card_freeIndex_complexData (hF.four_le.trans hρ) rank_le
+    (hF.card_freeIndex_complexData_le.trans hρ)
   have h_ker (t : D → ℂ) : C *ᵥ O *ᵥ t = 0 := by rw [mulVec_mulVec, hCO, zero_mulVec]
-  have hv : v * O = 0 := by
-    refine Matrix.ext_iff_mulVec.2 fun t ↦ ?_
+  have hv : v * O = 0 := Matrix.ext_iff_mulVec.2 fun t ↦ by
     rw [← mulVec_mulVec, (hC _ (h_ker t)).1, zero_mulVec]
-  have h_fix (g : 𝔰.G₁) (hg : g ∈ ({x⁻¹, (x * y)⁻¹} : Set 𝔰.G₁)) (t : D → ℂ) :
-      𝔰.J₁ *ᵥ g.val.val *ᵥ e *ᵥ O *ᵥ t = g.val.val *ᵥ e *ᵥ O *ᵥ t :=
+  have h_fix (g : 𝔰.G₁) (hg : g ∈ ({x⁻¹, (x * y)⁻¹} : Set 𝔰.G₁)) (t : D → ℂ) :=
     (hC _ (h_ker t)).2 g hg
   let q (u : hF.complexData.FreeIndex → ℂ) : ℝ := ‖star (Oᴴ *ᵥ u) ⬝ᵥ Oᴴ *ᵥ u‖
   have h_disc (u : hF.complexData.FreeIndex → ℂ) (hu : 0 < q u) : closedBall 0 (√(q u) / 2) ⊆
@@ -1009,8 +980,7 @@ lemma RealPlaceSizes.exists_isCommonBound (hF : RealPlaceSizes 𝔰 ρ s b) (hρ
     { measurable := by fun_prop
       inv_volume_le u := ?_
       volume_le u := ?_
-      lintegral_le j := by
-        simpa only [vecsOfSize, hS, mem_ofPred_eq, exponent_eq] using h_int j }⟩
+      lintegral_le j := by simpa only [vecsOfSize, hS, mem_ofPred_eq, exponent_eq] using h_int j }⟩
   · obtain h_zero | h_pos : 0 = q u ∨ 0 < q u := (norm_nonneg _).eq_or_lt
     · simp [← h_zero]
     · exact inv_volume_le_of_closedBall_subset h_pos (h_disc u h_pos)
@@ -1018,8 +988,7 @@ lemma RealPlaceSizes.exists_isCommonBound (hF : RealPlaceSizes 𝔰 ρ s b) (hρ
     · simp [← h_zero]
     refine volume_le_of_subset_closedBall h_pos fun c hc ↦ ?_
     -- Test `c` on a common vector `w` whose product with `u` is `√(q u) / 2`.
-    obtain ⟨w, hw, hw_eq⟩ :
-        ∃ w ∈ hF.complexData.commonVectors x y v, star u ⬝ᵥ w = √(q u) / 2 :=
+    obtain ⟨w, hw, hw_eq⟩ : ∃ w ∈ hF.complexData.commonVectors x y v, star u ⬝ᵥ w = √(q u) / 2 :=
       h_disc u h_pos (by simp [abs_of_nonneg])
     have h_test : ‖c‖ * (√(q u) / 2) ≤ 1 := by
       simpa [hw_eq, abs_of_nonneg] using hF.norm_le_of_mem_productDifferences (hc w hw)
@@ -1064,87 +1033,72 @@ at most `L ^ j`, and the constant whose powers bound moduli and volumes is the f
 to `L²`. -/
 def RealPlaceSizes.gauge (hρ : ρ ≤ L := by rfl) : Gauge hF.complexData := by
   obtain ⟨hk, hr, h4⟩ := hF.k_eq, hF.eight_mul_r_le_rho, hF.four_le.trans hρ
-  refine
+  exact
     { ofSize j := {x | ‖x‖ ≤ L ^ j}
       loss := .ofReal L ^ 2
       mul_mem_ofSize hx hy := (norm_mul_le_of_le hx hy).trans_eq (pow_add ..).symm
-      sum_mem_ofSize := fun h_card hf ↦ ?sum
+      sum_mem_ofSize h_card hf := by
+        rify at h_card
+        simp_all [pow_succ']
+        grw [norm_sum_le, hf]
+        simp
+        bound
       neg_mem_iff_and_star_mem_iff := by simp
       zero_one_mem_ofSize i :=
         ⟨by simpa using by positivity, by simpa using one_le_pow₀ (by linarith)⟩
       splitGram_and_inv_mem := by
-              simp [inv_eq_left_inv IsHermitianInvolution.mul_self, h4.trans',
-                (entry_norm_bound_of_unitary IsHermitianInvolution.mem_unitary ..).trans]
+        simp [inv_eq_left_inv IsHermitianInvolution.mul_self, h4.trans',
+          (entry_norm_bound_of_unitary IsHermitianInvolution.mem_unitary ..).trans]
       isCompact_ofSize _ := by simpa [closedBall] using isCompact_closedBall (0 : ℂ) _
-      two_le_loss := ?le
+      two_le_loss := by
+        simp (disch := positivity)
+        bound [sq_nonneg (L - 1)]
       loss_ne_top := by simp
       pairs_le := by simp
       one_le_kernelBound := by simpa [abs_of_pos pi_pos] using by linarith [two_le_pi]
       levelUnit_mem_ofSize := by simpa using by linarith
-      hasMatrixSize_basisMatrix := ?basis
-      traceOne_div_mem_ofSize := ?trace
-      hasMatrixSize_boxSet := ?box
-      mem_vecsOfSize_of_mem_closePairs := fun ω₁ ω₂ h_close ↦ ?close
+      hasMatrixSize_basisMatrix := by
+        simp [HasMatrixSize, apply_ite, complexBasis, Pi.single_apply, Matrix.one_apply]
+        grind [norm_add_le, norm_one, norm_I]
+      traceOne_div_mem_ofSize := by
+        simp
+        linarith
+      hasMatrixSize_boxSet := by
+        simp +contextual [HasMatrixSize, (norm_apply_le_l2_opNorm ..).trans, hρ.trans']
+      mem_vecsOfSize_of_mem_closePairs ω₁ ω₂ h_close := by
+        have h_e (k : 𝔰.BesselIndex) := norm_apply_le_one_of_sq_add_sq_lt_one h_close k
+        exact ⟨fun k ↦ by simpa using (h_e k).1.trans (by linarith),
+          fun k ↦ by simpa using (norm_sub_le_of_le (h_e k).1 (h_e k).2).trans (by linarith)⟩
       exists_unit_smul_mem_closePairs i _ :=
         ⟨(Units.mk0 ((L : ℂ) ^ (i + 2)) (by simpa using by linarith))⁻¹,
           by simp [abs_of_nonneg, h4.trans'],
           fun _ h₁ _ h₂ ↦ hF.smul_mem_closePairs hρ h₁ h₂⟩
-      modulus_le := ?md
-      volume_ofSize_le := ?vol
+      modulus_le := by
+        simp (disch := positivity) [← ofReal_norm, pow_right_comm]
+        bound
+      volume_ofSize_le := by
+        simp (disch := positivity) [← mem_closedBall_zero_iff, -mem_closedBall]
+        grw [pi_le_four, h4]
+        ring_nf
+        bound
       two_mul_blockRank_le := by simp [hk, PlaceData.blockRank]
-      exists_blockKernel := ?block
+      exists_blockKernel := by
+        -- the spheres of ℂ² have mass at most `4 π² L ^ (2 j)` in size `j`
+        obtain ⟨l, h_f, h_dis, h_m⟩ :=
+          exists_isDisintegration_le_sphereDensity (κ := Fin 2) (by simp)
+        refine ⟨l, h_f, h_dis, fun β j ↦ (h_m β (L ^ j)).trans ?_⟩
+        have h_one : 1 ≤ L ^ j := one_le_pow₀ (by linarith)
+        have h_sphere : sphereDensity 2 (2 * (L ^ j) ^ 2) ≤ (L ^ 2) ^ (2 * (j + 1)) :=
+          calc sphereDensity 2 (2 * (L ^ j) ^ 2) = 4 * π ^ 2 * (L ^ j) ^ 2 := by
+                simp only [sphereDensity]
+                norm_num
+                ring
+            _ ≤ L ^ 2 * L ^ 2 * (L ^ j) ^ 4 := by
+                gcongr <;> first | nlinarith | exact pi_le_four.trans h4
+            _ = (L ^ 2) ^ (2 * (j + 1)) := by ring
+        rw [← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_pow (by positivity)]
+        exact ENNReal.ofReal_le_ofReal (by simpa using h_sphere)
       exists_commonBound x _ y _ := hF.exists_isCommonBound hρ (fun _ ↦ rfl) x y }
-  case block =>
-    -- the spheres of ℂ² have mass at most `4 π² L ^ (2 j)` in size `j`
-    obtain ⟨l, h_finite, h_dis, h_mass⟩ :=
-      exists_isDisintegration_le_sphereDensity (κ := Fin 2) (by simp)
-    refine ⟨l, h_finite, h_dis, fun β j ↦ (h_mass β (L ^ j)).trans ?_⟩
-    have h_one : 1 ≤ L ^ j := one_le_pow₀ (by linarith)
-    have h_sphere : sphereDensity 2 (2 * (L ^ j) ^ 2) ≤ (L ^ 2) ^ (2 * (j + 1)) :=
-      calc sphereDensity 2 (2 * (L ^ j) ^ 2) = 4 * π ^ 2 * (L ^ j) ^ 2 := by
-            simp only [sphereDensity]
-            norm_num
-            ring
-        _ ≤ L ^ 2 * L ^ 2 * (L ^ j) ^ 4 := by
-            gcongr
-            exacts [by nlinarith, pi_le_four.trans h4, by norm_num]
-        _ = (L ^ 2) ^ (2 * (j + 1)) := by ring
-    rw [← ENNReal.ofReal_pow (by linarith), ← ENNReal.ofReal_pow (by positivity)]
-    exact ENNReal.ofReal_le_ofReal (by simpa using h_sphere)
-  case sum =>
-    rify at h_card
-    simp_all [pow_succ']
-    grw [norm_sum_le, hf]
-    simp
-    bound
-  case le =>
-    exact by
-      simp (disch := positivity)
-      bound [sq_nonneg (L - 1)]
-  case basis =>
-    simp [HasMatrixSize, apply_ite, complexBasis, Pi.single_apply, Matrix.one_apply]
-    grind [norm_add_le, norm_one, norm_I]
-  case trace =>
-    simp
-    linarith
-  case box =>
-    simp +contextual [HasMatrixSize, (norm_apply_le_l2_opNorm ..).trans, hρ.trans']
-  case close =>
-    have h_entry (k : 𝔰.BesselIndex) : ‖ω₁ k‖ ≤ 1 ∧ ‖ω₂ k‖ ≤ 1 :=
-      norm_apply_le_one_of_sq_add_sq_lt_one h_close k
-    refine ⟨fun k ↦ ?_, fun k ↦ ?_⟩
-    · simpa using (h_entry k).1.trans (by linarith)
-    · simpa using (norm_sub_le_of_le (h_entry k).1 (h_entry k).2).trans (by linarith)
-  case md =>
-    exact by
-      simp (disch := positivity) [← ofReal_norm, pow_right_comm]
-      bound
-  case vol =>
-    exact by
-      simp (disch := positivity) [← mem_closedBall_zero_iff, -mem_closedBall]
-      grw [pi_le_four, h4]
-      ring_nf
-      bound
 
 /-! ### Lengths and the depth at the complex place -/
 
@@ -1216,8 +1170,7 @@ lemma RealPlaceSizes.mem_stableProducts_iff (hF : RealPlaceSizes 𝔰 ρ s b) {a
       ∃ ω ω' : 𝔰.BesselIndex → ℂ, IsOrthogonalBelow a ω ∧ ω (eStar a) = c ∧ CongrBelow a ω ω' ∧
         lengthAt x ω ^ 2 + lengthAt (x * y) ω' ^ 2 < 1 := by
   simp only [PlaceData.stableProducts, PlaceData.IsStable, complexData_closePairs, lengthAt,
-    mem_image,
-    mem_ofPred_eq]
+    mem_image, mem_ofPred_eq]
   tauto
 
 /-- Assume the numerical hypotheses `hF`. For the place datum `complexData` at ℂ, the set
