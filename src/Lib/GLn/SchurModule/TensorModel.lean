@@ -2,6 +2,7 @@ module
 
 public import Aesop.BuiltinRules
 public import Lib.GLn.SchurModule.Basic
+import TauCeti.Order.Hom.Basic
 import Lib.GLn.SchurModule.SchurMatrix
 import Lib.General.LinearAlgebra.MinorProducts
 
@@ -63,15 +64,10 @@ lemma det_mul_eq_sum_increasing {N h : ℕ}
     (A * B).det =
       ∑ I : IncreasingMap N h, (A.submatrix id I.val).det * (B.submatrix I.val id).det := by
   -- A set `S` of `h` indices is the same as its increasing enumeration `enumSubset S`.
-  let enum (S : Set.powersetCard (Fin N) h) : IncreasingMap N h :=
-    ⟨enumSubset S, (Set.powersetCard.ofFinEmbEquiv.symm S).strictMono⟩
-  have h_bij : Function.Bijective enum :=
-    ⟨fun S S' h_eq ↦ Set.powersetCard.ofFinEmbEquiv.symm.injective
-        (DFunLike.coe_injective (congrArg Subtype.val h_eq)),
-      fun ⟨f, hf⟩ ↦ ⟨Set.powersetCard.ofFinEmbEquiv (.ofStrictMono f hf),
-        by simp [enum, enumSubset]⟩⟩
   rw [det_mul_eq_sum_minors]
-  exact Fintype.sum_bijective enum h_bij _ _ fun _ ↦ mul_comm _ _
+  exact Fintype.sum_equiv
+    (Set.powersetCard.ofFinEmbEquiv.symm.trans OrderEmbedding.equivSubtypeStrictMono)
+    _ _ fun _ ↦ mul_comm _ _
 
 /-- For an `h` by `n τ` matrix `c`, the determinant of `c y`, where `y` consists of the first `h`
 columns of the variables at the place `τ`, is the sum over increasing row numbers `I` of the minor
