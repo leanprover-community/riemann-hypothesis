@@ -10,6 +10,7 @@ public import Lib.Adelic.Adeles.Basic
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Cohomology.Etale.Basic
 import Lib.General.Measure.HaarModulus
+import Lib.General.Topology
 
 /-!
 # Adelic frames over a CM field, torsion classes, period lattices and period maps
@@ -497,24 +498,30 @@ lemma denseRange_toRealVectors : DenseRange (toRealVectors (E := E) (n := n)) :=
 /-- The lattice `classLattice g ⊥ Q` of rational vectors `y` with `g⁻¹ y` integral is discrete in
 `V`. -/
 instance : DiscreteTopology (classLattice g ⊥ Q) := by
-  -- A compact set `K` holds finitely many lattice points: they come from rational vectors in the
-  -- compact adelic set `Q⁻¹ K × g Ô ^ n`, and the rational vectors form a lattice
-  -- (`isCovolOneLattice_ratVectors`).
-  refine continuous_subtypeVal.discrete_of_tendsto_cofinite_cocompact
-    (tendsto_cofinite_cocompact_iff.mpr fun K hK ↦ ?_)
-  let f (p : V × (n → 𝔸f E)) (i : n) : (InfinitePlace E → ℂ) × 𝔸f E :=
-    (Q.symm p.fst i, ((g : Matrix n n (𝔸f E)) *ᵥ p.snd) i)
-  have h_compact : IsCompact (f '' K ×ˢ {x : n → 𝔸f E | ∀ i : n, x i ∈ Ô E}) :=
-    (hK.prod (isCompact_pi_infinite fun _ : n ↦ isCompact_Ô)).image_of_continuous _
-  refine isCovolOneLattice_ratVectors.finite_preimage h_compact
-    |>.image (fun y : n → E ↦ Q (toRealVectors y)) |>.preimage injOn_subtypeVal |>.subset ?_
-  rintro ⟨_, y, hy, rfl⟩ hy_mem
-  -- `y` comes from the pair `(Q y, g⁻¹ y)` of the compact set, since `g⁻¹ y` is integral.
-  have h_image : f (Q (toRealVectors y), frameCoords g y) =
-      (toAdele (E := E)).toAddMonoidHom.compLeft n y := by
-    aesop (add simp frameCoords)
-  exact ⟨y, ⟨(Q (toRealVectors y), frameCoords g y), ⟨hy_mem, torsionClass_eq_zero.mp hy⟩, h_image⟩,
-    rfl⟩
+  -- Restrict the finite coordinate to its compact integral box before projecting.
+  let K : Set (n → 𝔸f E) := {x | ∀ j, x j ∈ Ô E}
+  let _ : CompactSpace K := isCompact_iff_compactSpace.mp
+    (isCompact_pi_infinite fun _ : n ↦ isCompact_Ô)
+  let f (p : V × K) (j : n) : (InfinitePlace E → ℂ) × 𝔸f E :=
+    (Q.symm p.fst j, ((g : Matrix n n (𝔸f E)) *ᵥ p.snd.val) j)
+  have hf : Continuous f := by
+    dsimp only [f]
+    fun_prop
+  have h_inj : Function.Injective f := by
+    intro p q h
+    refine Prod.ext (Q.symm.injective (funext fun j ↦ congrArg Prod.fst (congrFun h j))) ?_
+    apply Subtype.ext
+    exact (Matrix.mulVec_injective_of_isUnit g.isUnit)
+      (funext fun j ↦ congrArg Prod.snd (congrFun h j))
+  let _ : DiscreteTopology (ratVectors E n) := isCovolOneLattice_ratVectors.toDiscreteTopology
+  have h_rat : IsDiscrete (ratVectors E n : Set (n → 𝔸 E)) := ⟨inferInstance⟩
+  have h_closed : IsClosed (ratVectors E n : Set (n → 𝔸 E)) :=
+    AddSubgroup.isClosed_of_discreteTopology
+  refine ((isDiscrete_image_of_isClosedMap (h_rat.preimage hf.continuousOn h_inj)
+    (h_closed.preimage hf) isClosedMap_fst_of_compactSpace).mono ?_).to_subtype
+  rintro _ ⟨y, hy, rfl⟩
+  refine ⟨(Q (toRealVectors y), ⟨frameCoords g y, torsionClass_eq_zero.mp hy⟩), ⟨y, ?_⟩, rfl⟩
+  aesop (add simp frameCoords)
 
 /-- A discrete `classLattice g S Q` is a full lattice in `V`: it spans `V` over `ℝ`. -/
 instance [DiscreteTopology (classLattice g S Q)] : IsZLattice ℝ (classLattice g S Q) := by

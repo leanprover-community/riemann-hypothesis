@@ -31,6 +31,16 @@ principal ideal `(a)` by divisibility of the difference by `a`.
 
 @[expose] public section
 
+open Set Topology in
+/-- The image of a closed discrete set under a closed map is discrete. -/
+lemma New.isDiscrete_image_of_isClosedMap {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
+    {f : X → Y} {S : Set X} (hS : IsDiscrete S) (h_closed : IsClosed S) (hf : IsClosedMap f) :
+    IsDiscrete (f '' S) := by
+  -- Each subset of the image is the image of a closed subset of S.
+  refine isDiscrete_iff_forall_mem_exists_isClosed.2 fun t ht ↦ ⟨t, ?_, inter_eq_left.2 ht⟩
+  rw [← inter_eq_right.mpr ht, ← image_inter_preimage]
+  exact hf _ (isClosed_of_subset_discrete_closed inter_subset_left hS h_closed)
+
 /-! ## Open subgroups, a tube lemma, and congruence modulo a principal ideal -/
 
 /-- The subgroup U of G is an open subset of G. -/

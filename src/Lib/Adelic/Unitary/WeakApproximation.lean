@@ -6,6 +6,7 @@ import Mathlib.Topology.Algebra.Group.Units
 import TauCeti.Analysis.Matrix.IndefiniteUnitaryGroup
 public import Lib.Adelic.Unitary.GramMatrix
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
+import Lib.General.Topology
 import Lib.Adelic.Adeles.StrongApproximation
 
 /-!
@@ -86,17 +87,13 @@ lemma G.continuous_iff {X : Type*} [TopologicalSpace X] {f : X → G E s} :
 /-- For a space `W` whose signs are all `1`, the finite parts of the rational points form a
 discrete subgroup `W.Γf` of `G_f`. -/
 instance {E : Type*} [Field E] [CMType E] (W : Space E n 1) : DiscreteTopology W.Γf := by
-  -- The rational points are discrete in `G E 1`, so a compact set holds only finitely many.
-  have h_emb : Filter.Tendsto W.ratEmbed .cofinite (.cocompact (G E 1)) :=
-    W.ratEmbed.tendsto_coe_cofinite_of_isDiscrete W.ratEmbed_injective ⟨W.discreteTopology_Gamma⟩
-  -- All signs are `1`, so the infinite part of `G E 1` is compact and can be dropped.
-  have h_fin : Filter.Tendsto (fun γ : U W.J ↦ (W.ratEmbed γ).2) .cofinite
-    (.cocompact (Gf E n)) := by
-    simpa [← Filter.coprod_cocompact, Function.comp_def] using h_emb
-  -- `W.Γf` is the range of `W.embFin γ = (W.ratEmbed γ).2`.
-  refine continuous_subtypeVal.discrete_of_tendsto_cofinite_cocompact
-    (.mono_left ?_ (Set.rangeFactorization_surjective (f := W.embFin)).le_map_cofinite)
-  exact h_fin
+  -- The infinite factor is compact, so the finite projection is a closed map.
+  change DiscreteTopology (Set.range (Prod.snd ∘ W.ratEmbed))
+  rw [Set.range_comp]
+  have hΓ : IsDiscrete (W.Γ : Set (G E (1 : n → ℤˣ))) :=
+    isDiscrete_iff_discreteTopology.2 W.discreteTopology_Gamma
+  exact (isDiscrete_image_of_isClosedMap hΓ (W.Γ.isClosed_of_isDiscrete hΓ)
+    isClosedMap_snd_of_compactSpace).to_subtype
 
 end New
 
