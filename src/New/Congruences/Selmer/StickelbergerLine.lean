@@ -140,16 +140,13 @@ lemma ellVal_one_sub_mul_one_sub_inv_le {q : PadicAlgCl ℓ} (k : ℤ) (ha : ‖
     (hq_norm : ‖q‖ = 1) (hab : M ≤ ellVal (a - b)) (hq : M ≤ ellVal (q - 1))
     (hM : ellVal (b - 1) < M) :
     ellVal ((1 - a * q ^ k) * (1 - a⁻¹ * q ^ k)) ≤ 2 * ellVal (b - 1) := by
-  have hq_zpow : M ≤ ellVal (q ^ k - 1) :=
-    hq.trans (ellVal_sub_one_le_ellVal_zpow_sub_one hq_norm k)
-  have hab_inv : M ≤ ellVal (a⁻¹ - b⁻¹) := hab.trans (ellVal_inv_sub_inv ha hb).ge
-  have hb_inv : ellVal (b⁻¹ - 1) = ellVal (b - 1) := by
-    rw [← ellVal_inv_sub_inv hb norm_one, inv_one]
+  have hq_zpow := hq.trans (ellVal_sub_one_le_ellVal_zpow_sub_one hq_norm k)
+  have hb_inv : ellVal (b⁻¹ - 1) = ellVal (b - 1) := by simpa using ellVal_inv_sub_inv hb norm_one
   calc ellVal ((1 - a * q ^ k) * (1 - a⁻¹ * q ^ k))
       ≤ ellVal (1 - a * q ^ k) + ellVal (1 - a⁻¹ * q ^ k) := ellVal_mul_le
     _ = ellVal (b - 1) + ellVal (b⁻¹ - 1) := by
-        rw [ellVal_one_sub_mul_eq ha hab hq_zpow hM,
-          ellVal_one_sub_mul_eq (by simp [ha]) hab_inv hq_zpow (hb_inv.trans_lt hM)]
+        rw [ellVal_one_sub_mul_eq ha hab hq_zpow hM, ellVal_one_sub_mul_eq (by simp [ha])
+          (hab.trans (ellVal_inv_sub_inv ha hb).ge) hq_zpow (hb_inv.trans_lt hM)]
     _ = 2 * ellVal (b - 1) := by rw [hb_inv, two_mul]
 
 /-- Let `a`, `b` and `q` be `ℓ`-adic units with `a ≡ b` and `q ≡ 1` up to valuation `M`, and let

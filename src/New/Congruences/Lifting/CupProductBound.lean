@@ -712,23 +712,16 @@ lemma constantAt_mem_stdOrdersPart {S : PairingSide O} {l : ℕ} {i : Letter}
 `(k.letterFrob ^ l) i = i ^ p ^ l` iff `s` lies in `S.liftIdeal r 0 i`. -/
 lemma phi_pow_smul_mem_liftIdeal_iff {S : PairingSide O} {r : ℕ} {i : Letter} {s : Ainf} (l : ℕ) :
     φ ^ l • s ∈ S.liftIdeal r l ((k.letterFrob ^ l) i) ↔ s ∈ S.liftIdeal r 0 i := by
-  -- `φ ^ l` carries the letter and the standard exponents at level 0 to those at level `l`.
-  have h_std (x : S.extensionLattice.Ambient) :
-      φ ^ l • x ∈ S.extensionLattice.withOrders ((k.letterFrob ^ l) i) (stdOrders l) ↔
-        x ∈ S.extensionLattice.withOrders i (stdOrders 0) := by
-    simp [mem_withOrders_stdOrders_iff, frobKisinAinf, phi_pow_smul_mem_letterPart_iff]
-  -- `φ ^ l` also carries the defining equation of a lift from the letter `i` to the new letter.
-  have h_lift (t : Ainf) (c : S.paramLattice.Carrier) (x : S.extensionLattice.Ambient) :
-      S.projTrivial.wittMap (φ ^ l • x) =
-          (φ ^ l • s - r • φ ^ l • t) • S.constantAt ((k.letterFrob ^ l) i) c ↔
-        S.projTrivial.wittMap x = (s - r • t) • S.constantAt i c := by
-    simp [smul_left_cancel_iff, ← phi_pow_smul_constantAt, smul_comm r, ← smul_sub,
-      ← frobGroup_smul_smul, -nsmul_eq_mul]
-  -- So substitute `φ ^ l • t` for the witness at level `l` and `φ ^ l • x` for each lift.
+  -- Substitute `φ ^ l • t` for the witness at level `l` and `φ ^ l • x` for each lift.
   rw [mem_liftIdeal_iff, mem_liftIdeal_iff, (MulAction.surjective (φ ^ l)).exists]
   refine exists_congr fun t ↦ forall_congr' fun c ↦ ?_
   rw [(MulAction.surjective (φ ^ l)).exists]
-  simp only [h_std, h_lift]
+  refine exists_congr fun x ↦ and_congr ?_ ?_
+  · -- `φ ^ l` carries the letter and the standard exponents at level 0 to those at level `l`.
+    simp [mem_withOrders_stdOrders_iff, frobKisinAinf, phi_pow_smul_mem_letterPart_iff]
+  · -- `φ ^ l` also carries the defining equation of a lift from the letter `i` to the new letter.
+    simp [smul_left_cancel_iff, ← phi_pow_smul_constantAt, smul_comm r, ← smul_sub,
+      ← frobGroup_smul_smul, -nsmul_eq_mul]
 
 /-- For the letters `i` and `σ(i) = k.letterFrob i` and the coordinate `z = k.z`, the element
 `p ^ c * z ^ (p * a)` lies in the ideal `S.liftIdeal r 1 σ(i)` iff `p ^ c * z ^ a` lies in

@@ -182,16 +182,12 @@ lemma mem_selmerModule_erase (hp : IsTiedPrimes ℓ S₀ V W N P₀ J x) (ha : a
     z ∈ selmerModule T.ρ (unionWithConj T.places (R.erase P₀))
       (T.classRelations ∪ tieRelations J x i) (QuotSpan a) := by
   refine mem_selmerModule_of_eq_zero_on_inertiaAbove hz .rfl fun v hv ↦ ?_
-  obtain ⟨hvS, hv₀⟩ : v ∉ T.places ∧ (v = P₀ ∨ v = star P₀) := by
-    grind only [unionWithConj, = mem_union, = mem_image, = mem_erase, = Set.mem_sdiff, = mem_coe]
-  have h_aux : IsAuxPrimeDataAt (placesDividing E ℓ) P₀ (x P₀).1 :=
-    hp.isAuxPrimeDataAt P₀ hp.first_mem
-  have h_unr : ∀ g ∈ inertiaAbove {v}, T.ρ g = 1 :=
-    fun g ⟨u, hu, h_inertia⟩ ↦ T.unramified g ⟨u, by simp_all, h_inertia⟩
+  obtain ⟨hvS, hv₀⟩ : v ∉ T.places ∧ (v = P₀ ∨ v = star P₀) := by grind [unionWithConj]
+  have h_aux := hp.isAuxPrimeDataAt P₀ hp.first_mem
   obtain ⟨-, -, h_tame : h_aux.isPlaceOver.tameGenerator = (x P₀).1.tameGenerator⟩ :=
     h_aux.tame_gen
-  obtain ⟨side, B, -, h_side⟩ := exists_conj_side_detects (nsmul_quot_eq_zero ha)
-    h_aux.isPlaceOver h_aux.notMem h_unr hv₀
+  obtain ⟨side, _, -, h_side⟩ := exists_conj_side_detects (nsmul_quot_eq_zero ha) h_aux.isPlaceOver
+    h_aux.notMem (fun g ⟨u, hu, h⟩ ↦ T.unramified g ⟨u, by simp_all, h⟩) hv₀
   rw [h_tame] at h_side
   exact (h_side z hz (T.apply_first_tameGenerator_eq_zero_of_mem_tiedSelmer hp hz side)).1
 

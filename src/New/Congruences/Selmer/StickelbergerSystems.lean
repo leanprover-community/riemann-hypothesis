@@ -152,22 +152,15 @@ lemma _root_.New.IsFromU1.apply_galoisLift {C : Type*} [CommMonoid C] {S : Set (
     (hy : artinMap Gal(Ω/E) y = g) : χ (galoisLift (divStarClass Q y)) = χ g := by
   -- On norm-one ideles the idele character of `χ` factors through a homomorphism `η'` on `Cl_Q`;
   -- both sides are the value of `η'` at the class of `y / ȳ`.
-  obtain ⟨η, η_principal, η_unit, η_artin⟩ : ∃ η : (𝔸f E)ˣ →* C,
-      (∀ x : Eˣ, η (principalIdele x) = 1) ∧ (∀ a ∈ idelesUnitOff (Set.conjClosure S),
-        (∀ w ∈ (Q : Set _) \ S.conjClosure, Valued.v ((ideleAt w a).val - 1) < 1) → η a = 1) ∧
-      ∀ (x : (𝔸f E)ˣ) (h : Gal(Ω/E)), artinMap Gal(Ω/E) x = h → χ h = η (x / star x) :=
-    hχ.exists_ideleChar
-  let η' : U1ClassGroup Q →* C := QuotientGroup.lift _ (η.comp Unitary.toUnits) <| by
-    refine (Subgroup.closure_le (MonoidHom.ker _)).2 ?_
-    rintro u (⟨x, hx⟩ | ⟨h_unit, h_one⟩)
-    · simpa [← hx] using η_principal x
-    · exact η_unit _ (idelesUnitOff_mono bot_le h_unit) fun w ⟨hw, _⟩ ↦ h_one w hw
-  have hη' (x : (𝔸f E)ˣ) : η' (divStarClass Q x) = η (x / star x) :=
-    congrArg η (Units.ext rfl : Unitary.toUnits (divStar x) = x / star x)
+  obtain ⟨η, η_principal, η_unit, η_artin⟩ := hχ.exists_ideleChar
+  let η' : U1ClassGroup Q →* C := QuotientGroup.lift _ (η.comp Unitary.toUnits) <|
+    (Subgroup.closure_le (MonoidHom.ker _)).2 fun _ hu ↦ hu.elim
+      (fun ⟨x, hx⟩ ↦ by simpa [← hx] using η_principal x)
+      (fun ⟨h_unit, h1⟩ ↦ η_unit _ (idelesUnitOff_mono bot_le h_unit) fun w hw ↦ h1 w hw.1)
+  have hη' (x : (𝔸f E)ˣ) : η' (divStarClass Q x) = η (x / star x) := congrArg η (Units.ext rfl)
   -- By definition, `galoisLift` lifts the Artin symbol of a chosen preimage `z` of the class.
-  let z : (𝔸f E)ˣ := Function.surjInv (divStarClass_surjective Q) (divStarClass Q y)
-  have h_lift : artinMap Gal(Ω/E) z = galoisLift (divStarClass Q y) := (Quotient.out_eq _).symm
-  calc χ (galoisLift (divStarClass Q y)) = η (z / star z) := η_artin z _ h_lift
+  let z := Function.surjInv (divStarClass_surjective Q) (divStarClass Q y)
+  calc χ (galoisLift (divStarClass Q y)) = η (z / star z) := η_artin z _ (Quotient.out_eq _).symm
     _ = η' (divStarClass Q y) := by rw [← hη', Function.surjInv_eq (divStarClass_surjective Q)]
     _ = χ g := by rw [hη', η_artin y g hy]
 
