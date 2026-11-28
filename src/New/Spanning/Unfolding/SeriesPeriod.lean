@@ -271,7 +271,7 @@ lemma sourceFn_classSection [WeilData E] (h : S.Fits V l kw Y η)
       h.besselChar (s.val, 1) *
         t (conjWeylRep kw 0 (Y.leviPart ⟨(s.val, 1), s.property⟩).1⁻¹ (ψ.val c.out)) := by
   have h_split : h.classSection c s =
-      ⟨(s.1, 1), s.2⟩ * ⟨Y.inclX (1, c.out * η⁻¹), Y.inclX_mem_besselGroup _⟩ := Subtype.ext <| by
+      ⟨(s.val, 1), s.2⟩ * ⟨Y.inclX (1, c.out * η⁻¹), Y.inclX_mem_besselGroup _⟩ := Subtype.ext <| by
     simp [classSection, Grading.besselProdEquiv, classPoint_eq_inclXFin, Y.inclX_inr]
   have h_levi : (Y.leviPart ⟨(s.val, 1), s.property⟩).2 = 1 := Y.leviPart_snd_eq_one rfl
   rw [h_split, Y.sourceFn_mul_inclX, h.sourceFn_eq_besselChar_mul hj_genericConst,
@@ -302,7 +302,7 @@ theorem exists_dotProduct_besselFn_eq_integral [WeilData E] (h : S.Fits V l kw Y
   rw [h_formula, ← integral_inv_eq_self]
   refine integral_congr_ae (.of_forall fun s ↦ ?_)
   let s' : Y.besselGroup := ⟨(s.val, 1), s.property⟩
-  have h_inv : (⟨((s⁻¹).1, 1), (s⁻¹).2⟩ : Y.besselGroup) = s'⁻¹ := Subtype.ext (by simp [s'])
+  have h_inv : (⟨((s⁻¹).1, 1), (s⁻¹).property⟩ : Y.besselGroup) = s'⁻¹ := Subtype.ext (by simp [s'])
   have h_char : (h.besselChar ((s⁻¹).val, 1))⁻¹ = h.besselChar (s.val, 1) :=
     inv_eq_of_mul_eq_one_left <| by
       simp [s', ← h.besselChar_mul s'.property (r' := ((s⁻¹).val, 1)) (s⁻¹).property,
