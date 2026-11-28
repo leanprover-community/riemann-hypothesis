@@ -347,25 +347,17 @@ lemma exists_isPrimitiveMatrix_localSection_eq (χ : MulChar F ℂ) (y : Matrix 
 unit of `O` for every `t` in `O`. -/
 lemma isIntegralUnit_one_sub_uniformizer_mul {t : F} (ht : t ∈ O) :
     IsIntegralUnit (1 - (ϖ : Fˣ) * t) := by
-  -- With `x = ϖ t`, the multiples of `1 - x` by `O` form a compact set. It contains the
-  -- `1 - x ^ k`, and so their limit `1`.
-  set x : F := (ϖ : Fˣ) * t with hx
-  have hx_mem : x ∈ O := mul_mem ϖ_mem ht
-  have h_closed : IsClosed ((fun s : F ↦ s * (1 - x)) '' (O : Subring F)) :=
-    (isCompact_O.image (continuous_mul_const (1 - x))).isClosed
-  have h_geom (k : ℕ) : 1 - x ^ k ∈ (fun s : F ↦ s * (1 - x)) '' (O : Subring F) :=
-    ⟨∑ i ∈ Finset.range k, x ^ i, sum_mem fun i _ ↦ pow_mem hx_mem i, geom_sum_mul_neg x k⟩
-  -- The powers `x ^ k = ϖ ^ k * t ^ k` tend to zero, because `t ^ k` stays in the compact `O`.
-  have h_pow : Filter.Tendsto (fun k : ℕ ↦ x ^ k) Filter.atTop (nhds 0) := by
-    refine Filter.tendsto_def.2 fun U hU ↦ ?_
-    have h_tube : ∀ᶠ c : F in nhds 0, ∀ u ∈ (O : Subring F), c * u ∈ U :=
-      isCompact_O.eventually_forall_of_forall_eventually fun u _ ↦
-        (continuous_mul.tendsto' (0, u) 0 (zero_mul u)).eventually_mem hU
-    filter_upwards [isTopologicallyNilpotent_ϖ.eventually h_tube] with k hk
-    simpa [hx, mul_pow] using hk (t ^ k) (pow_mem ht k)
-  have h_lim : Filter.Tendsto (fun k : ℕ ↦ 1 - x ^ k) Filter.atTop (nhds 1) := by
-    simpa using h_pow.const_sub 1
-  exact ⟨sub_mem (one_mem O) hx_mem, h_closed.mem_of_tendsto h_lim (.of_forall h_geom)⟩
+  let x : F := (ϖ : Fˣ) * t
+  have hx : x ∈ O := mul_mem ϖ_mem ht
+  -- Along a convergent subsequence of the powers of `t`, the powers of `x` tend to zero.
+  obtain ⟨b, -, φ, hφ, hb⟩ := isCompact_O.tendsto_subseq (fun n : ℕ ↦ pow_mem ht n)
+  have hlim := ((isTopologicallyNilpotent_ϖ.comp hφ.tendsto_atTop).mul hb).const_sub 1
+  simp only [Function.comp_def, ← mul_pow, zero_mul, sub_zero] at hlim
+  -- The multiples of `1 - x` form a closed set containing the geometric-sum products.
+  refine ⟨sub_mem (one_mem _) hx, ?_⟩
+  apply (isCompact_O.image (continuous_mul_const (1 - x))).isClosed.mem_of_tendsto hlim
+  exact .of_forall fun n ↦ ⟨∑ i ∈ Finset.range (φ n), x ^ i, sum_mem fun i _ ↦ pow_mem hx i,
+    geom_sum_mul_neg x _⟩
 
 /-- The units of the ring of integers `O` of a semilocal field `F` form an open subset of `F`. -/
 lemma isOpen_setOf_isIntegralUnit : IsOpen {x : F | IsIntegralUnit x} := by
