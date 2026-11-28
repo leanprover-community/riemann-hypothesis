@@ -167,7 +167,7 @@ def rootVar : Fin k × ZMod N := (if T.isEven s then a' else a, s)
 root `(a, a')`; the defect is the sum of these weights over the monomial. Write
 `u_s = T.rootVar a a' s` and `ū_s = T.rootVar a' a s`. The weight is `P ^ ((s - i) mod N) / (q - 1)`
 times `[x = u_s] - [x = ū_s]`, plus `1` if `x = u_i`. For the recursive description of the defect
-see `New.FrobeniusCycle.defectWeight_dotProduct_permStep`. -/
+see `New.FrobeniusCycle.defectWeight_dotProduct_pieriStepMap`. -/
 def defectWeight : ℝ :=
   ((if x = T.rootVar a a' x.2 then (T.P : ℝ) ^ (1 + (x.2 - 1 - i).val) else 0) -
     if x = T.rootVar a' a x.2 then (T.P : ℝ) ^ (x.2 - i).val else 0) / (T.q - 1)

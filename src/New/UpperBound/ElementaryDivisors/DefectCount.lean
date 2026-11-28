@@ -7,7 +7,7 @@ import Mathlib.Analysis.BoxIntegral.UnitPartition
 import Mathlib.Analysis.Convex.Measure
 import Mathlib.RingTheory.Etale.Weakly
 import Std.Tactic.BVDecide.Normalize.Bool
-public import New.UpperBound.ElementaryDivisors.PieriCone
+public import TauCeti.MeasureTheory.Measure.Lebesgue.PieriCone
 public import New.UpperBound.ElementaryDivisors.RootLemma
 import Lib.General.Measure.IntegralOperators
 import Lib.LocalGL.Green.CuspidalFunctions
@@ -51,8 +51,8 @@ Notions from other files:
   blocks of sizes a', k − a' and every β of defect above h along (a, a') at some letter, the
   coefficient of g·F at β lies in a given ideal I. In this file I = ⊥.
 * `levi W (twoBlock k r)`: The block diagonal matrices with blocks r and k − r.
-* `degreeSlab k D`: The real vectors β ≥ 0 whose degree ∑_b β(b,s) in each letter s lies in [D
-  s − 1, D s].
+* `TauCeti.degreeSlab k D`: The real vectors β ≥ 0 whose degree ∑_b β(b,s) in each letter s lies
+  in [D s − 1, D s].
 
 ## Notation
 
@@ -81,6 +81,9 @@ section FlagsAndVolume
 open Subgroup MvPolynomial Matrix Finset Module Nat Fintype Finsupp MeasureTheory Set Filter
 
 namespace New
+
+open TauCeti (pieriStepMap pieriStepMap_apply pieriCone mem_pieriCone degreeSlab mem_degreeSlab
+  isBounded_degreeSlab isClosed_degreeSlab prod_mul_volume_real_inter_degreeSlab)
 
 variable {N k : ℕ}
   {W K : Type} [NeZero N] [CommRing W] [IsLocalRing W] [Field K]
@@ -129,8 +132,8 @@ root `(b, b')`, is the linear form with coefficients `T.defectWeight i b b'`, na
 `s`, and `v = (b', i)` for even `i`, `v = (b, i)` for odd `i`. The set `T.defectCone a h` consists
 of the real vectors `β` whose defect, at every letter, is at most `h` along the simple root
 `(a, a + 1)` and at most `0` along the other simple roots `(b, b + 1)`. For `h = 0` these are
-Pieri's inequalities, see `New.FrobeniusCycle.permStep_mem_defectCone_iff`. The condition `β ≥ 0` is
-not part of this set; it comes with the slab. -/
+Pieri's inequalities, see `New.FrobeniusCycle.pieriStepMap_mem_defectCone_iff`. The condition
+`β ≥ 0` is not part of this set; it comes with the slab. -/
 def FrobeniusCycle.defectCone (T : FrobeniusCycle N W K) (a : Fin k) (h : ℝ) :
     Set (Fin k × ZMod N → ℝ) :=
   {β : Fin k × ZMod N → ℝ |
@@ -143,7 +146,10 @@ roots `(b, b + 1)`, form a convex set. -/
 lemma FrobeniusCycle.convex_defectCone_inter_degreeSlab (T : FrobeniusCycle N W K) (a : Fin k)
     (h : ℝ) (D : ZMod N → ℝ) :
     Convex ℝ (T.defectCone a h ∩ degreeSlab k D) := by
-  rintro x ⟨hx_cone, hx_nonneg, hx_deg⟩ y ⟨hy_cone, hy_nonneg, hy_deg⟩ s t hs ht hst
+  intro x hx y hy s t hs ht hst
+  rw [mem_inter_iff, mem_degreeSlab] at hx hy ⊢
+  obtain ⟨hx_cone, hx_nonneg, hx_deg⟩ := hx
+  obtain ⟨hy_cone, hy_nonneg, hy_deg⟩ := hy
   refine ⟨fun i b b' hb ↦ ?_, add_nonneg (smul_nonneg hs hx_nonneg) (smul_nonneg ht hy_nonneg),
     fun j ↦ ?_⟩
   · rw [dotProduct_add, dotProduct_smul, dotProduct_smul]
@@ -497,12 +503,12 @@ lemma FrobeniusCycle.exists_coeff_ne_zero_weight_defectWeight_nonpos (T : Froben
 root `(a, a')`, is the linear form with coefficients `T.defectWeight i a a'`, namely `β v + ∑ s, ± P
 ^ ((s - i) mod N) * (β (a', s) - β (a, s)) / (q - 1)`, with the sign `+` at even `s`, where
 `v = T.rootVar a a' i` is `(a', i)` for even `i` and `(a, i)` for odd `i`. Let
-`β = permStep T.isEven T.P 1 ν`, that is, `β (b, s) = ± (P * ν (b, s + 1) - ν (b, s))` with the same
-signs. Then the defect of `β` is `β v - (ν (a, i) - ν (a', i))`. -/
-lemma FrobeniusCycle.defectWeight_dotProduct_permStep (T : FrobeniusCycle N W K) {a a' : Fin k}
+`β = pieriStepMap T.isEven T.P 1 ν`, that is, `β (b, s) = ± (P * ν (b, s + 1) - ν (b, s))` with
+the same signs. Then the defect of `β` is `β v - (ν (a, i) - ν (a', i))`. -/
+lemma FrobeniusCycle.defectWeight_dotProduct_pieriStepMap (T : FrobeniusCycle N W K) {a a' : Fin k}
     (i : ZMod N) (ν : Fin k × ZMod N → ℝ) :
-    T.defectWeight i a a' ⬝ᵥ permStep T.isEven T.P 1 ν =
-      permStep T.isEven T.P 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i)) := by
+    T.defectWeight i a a' ⬝ᵥ pieriStepMap T.isEven T.P 1 ν =
+      pieriStepMap T.isEven T.P 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i)) := by
   -- Each letter `s` contributes `telescope (s - 1) - telescope s`, and these terms cancel in the
   -- sum over all letters. The letter `i` contributes the right side in addition.
   have hq : ((T.p : ℝ) ^ T.frobExp) ^ N - 1 ≠ 0 := mod_cast (sub_pos.2 T.one_lt_q).ne'
@@ -512,9 +518,9 @@ lemma FrobeniusCycle.defectWeight_dotProduct_permStep (T : FrobeniusCycle N W K)
       T.P ^ (if s = i then N else (s - i).val) * (ν (a, s) - ν (a', s)) / (T.q - 1) := by
     simp [telescope, one_add_val_sub_one_sub]
   have h_letter (s : ZMod N) :
-      ∑ b : Fin k, T.defectWeight i a a' (b, s) * permStep T.isEven T.P 1 ν (b, s) =
+      ∑ b : Fin k, T.defectWeight i a a' (b, s) * pieriStepMap T.isEven T.P 1 ν (b, s) =
         telescope (s - 1) - telescope s +
-        if s = i then permStep T.isEven T.P 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i))
+        if s = i then pieriStepMap T.isEven T.P 1 ν (T.rootVar a a' i) - (ν (a, i) - ν (a', i))
         else 0 := by
     rw [h_prev]
     simp only [telescope, defectWeight, rootVar, one_add_val_sub_one_sub]
@@ -524,7 +530,7 @@ lemma FrobeniusCycle.defectWeight_dotProduct_permStep (T : FrobeniusCycle N W K)
   have h_circle : ∑ s : ZMod N, telescope (s - 1) = ∑ s : ZMod N, telescope s :=
     (Equiv.subRight 1).sum_comp telescope
   rw [dotProduct, Fintype.sum_prod_type_right, sum_congr rfl fun s _ ↦ h_letter s]
-  simp [sum_add_distrib, h_circle, -permStep_apply]
+  simp [sum_add_distrib, h_circle, -pieriStepMap_apply]
 
 /-- There is an integral vector `σ ≥ 0` of degree `∑ b, σ (b, s)` at most `P ^ (2 (a + 1)) - 1` in
 each letter `s` that lies in `T.defectCone a (-1)`: its defect, at every letter, is at most `-1`
@@ -535,7 +541,7 @@ lemma FrobeniusCycle.exists_mem_defectCone_sum_le (T : FrobeniusCycle N W K) (a 
       (∀ x : Fin k × ZMod N, ∃ z : ℤ, σ x = z) ∧
       ∀ s : ZMod N, ∑ b : Fin k, σ (b, s) ≤ (T.P ^ (2 * (a.val + 1)) - 1 : ℝ) := by
   -- Let `μ = (P ^ (2 a), …, P ^ 2, 1, 0, …, 0)`, and let `ν` be `μ` at even and `P μ` at odd
-  -- letters. Then `σ = permStep ν` is `(P ^ 2 - 1) μ` at even and `0` at odd letters.
+  -- letters. Then `σ = pieriStepMap ν` is `(P ^ 2 - 1) μ` at even and `0` at odd letters.
   have hP_sq : (0 : ℝ) ≤ T.P ^ 2 - 1 := sub_nonneg.2 (one_le_pow₀ T.one_lt_P.le)
   let μ (b : Fin k) : ℝ := if b ≤ a then (T.P ^ 2) ^ (a.val - b) else 0
   let ν (x : Fin k × ZMod N) : ℝ := (if T.isEven x.2 then 1 else T.P : ℝ) * μ x.1
@@ -554,13 +560,13 @@ lemma FrobeniusCycle.exists_mem_defectCone_sum_le (T : FrobeniusCycle N W K) (a 
     · simp [μ, show ¬b' ≤ b by omega]
     · simp [μ, h_gt.ne', show ¬b' ≤ a by omega, h_gt.not_ge]
   have hσ (b : Fin k) (i : ZMod N) :
-      permStep T.isEven T.P 1 ν (b, i) = if T.isEven i then (T.P ^ 2 - 1) * μ b else 0 := by
+      pieriStepMap T.isEven T.P 1 ν (b, i) = if T.isEven i then (T.P ^ 2 - 1) * μ b else 0 := by
     by_cases h_even : T.isEven i <;> simp [ν, T.isEven_succ, h_even]; ring
-  refine ⟨permStep T.isEven T.P 1 ν, fun i b b' hb ↦ ?_, fun (b, i) ↦ ?_, fun (b, i) ↦ ?_,
+  refine ⟨pieriStepMap T.isEven T.P 1 ν, fun i b b' hb ↦ ?_, fun (b, i) ↦ ?_, fun (b, i) ↦ ?_,
     fun s ↦ ?_⟩
   · -- The defects are `P ^ 2 μ b' - μ b` at even and `P (μ b' - μ b)` at odd letters.
     have h_gap : 0 ≤ (T.P ^ 2 - 1) * μ b' := mul_nonneg hP_sq (hμ_nonneg b')
-    rw [defectWeight_dotProduct_permStep]
+    rw [defectWeight_dotProduct_pieriStepMap]
     by_cases h_even : T.isEven i
     · simp only [rootVar, hσ, ν, h_even, ite_true, hμ_succ b b' hb]
       split_ifs <;> linarith
@@ -587,6 +593,7 @@ lemma FrobeniusCycle.smul_add_mem_defectCone_inter_degreeSlab (T : FrobeniusCycl
     (hβ : β ∈ T.defectCone a h ∩ degreeSlab k fun _ : ZMod N ↦ d) :
     h • σ + β ∈
       T.defectCone a 0 ∩ degreeSlab k fun s : ZMod N ↦ d + ∑ b : Fin k, (h • σ) (b, s) := by
+  rw [mem_inter_iff, mem_degreeSlab] at hβ ⊢
   obtain ⟨h_cone, h_nonneg, h_deg⟩ := hβ
   refine ⟨fun i b b' hb ↦ ?_, add_nonneg (smul_nonneg h_factor hσ_nonneg) h_nonneg, fun s ↦ ?_⟩
   · have hβ_le : T.defectWeight i b b' ⬝ᵥ β ≤ if b = a then h else 0 := h_cone i b b' hb
@@ -631,6 +638,7 @@ lemma FrobeniusCycle.div_mem_defectCone_inter_degreeSlab (T : FrobeniusCycle N W
     (fun y : Fin k × ZMod N ↦ (α y : ℝ) / m) ∈
       T.defectCone a (4 * t) ∩ degreeSlab k fun _ : ZMod N ↦ n + k + 1 := by
   have hm_pos : (0 : ℝ) < m := by simpa [hm] using pow_pos (one_pos.trans T.one_lt_q) j
+  rw [mem_inter_iff, mem_degreeSlab]
   refine ⟨fun i b b' hb ↦ ?_, fun _ ↦ by positivity, fun s ↦ ?_⟩
   · have h_dot : (T.defectWeight i b b' ⬝ᵥ fun y ↦ (α y : ℝ) / m) =
         weight (T.defectWeight i b b') α / m := by
@@ -647,7 +655,6 @@ lemma FrobeniusCycle.div_mem_defectCone_inter_degreeSlab (T : FrobeniusCycle N W
   · obtain ⟨h_low, h_up⟩ := T.sum_mem_Icc_of_coeff_polyAction_powerPacking hm hα s
     rw [← sum_div, ← cast_sum, Set.mem_Icc, le_div_iff₀' hm_pos, div_le_iff₀' hm_pos,
       add_sub_cancel_right]
-    beta_reduce
     exact ⟨mod_cast h_low, mod_cast h_up⟩
 
 open Pointwise in
@@ -698,7 +705,8 @@ lemma FrobeniusCycle.finrank_defectConditions_mul_pow_le (T : FrobeniusCycle N W
   obtain ⟨R, hR, -⟩ :=
     ((parahoric W Fin.val).subgroupOf (levi W (twoBlock k a'))).exists_isComplement_right 1
   let : Fintype R := hR.finite_right.fintype
-  let : Fintype Λ := ((ZSpan.setFinite_inter _ (isBounded_inter_degreeSlab ..)).subset
+  let : Fintype Λ := ((ZSpan.setFinite_inter _
+      ((isBounded_degreeSlab ..).subset inter_subset_right)).subset
     (inf_le_inf_left _ (ZSpan.smul _ (NeZero.ne _)).le)).fintype
   let pack : ((Fin k × ZMod N → Fin m) → S) →ₗ[K] MvPolynomial (Fin k × ZMod N) K :=
     powerPacking a n m ∘ₗ S.subtype.compLeft _
@@ -773,13 +781,15 @@ lemma FrobeniusCycle.exists_finrank_defectConditions_le_volume (T : FrobeniusCyc
   -- by `m ^ (k N)`, tends to its volume. It suffices to bound the dimension along `m = q ^ j`.
   set Y : Set (Fin k × ZMod N → ℝ) := T.defectCone a 0 ∩ degreeSlab k D
   have h_meas : MeasurableSet Y := by
-    simp only [Y, defectCone, degreeSlab, dotProduct]
+    refine MeasurableSet.inter ?_ (isClosed_degreeSlab k D).measurableSet
+    simp only [defectCone, dotProduct]
     measurability
   have h_frontier : volume (frontier Y) = 0 :=
     (T.convex_defectCone_inter_degreeSlab a 0 D).addHaar_frontier _
   have h_limit := Filter.Tendsto.const_mul
     ((parahoric W Fin.val).relIndex (levi W (twoBlock k a')) : ℝ)
-    (tendsto_card_div_pow_atTop_volume Y (isBounded_inter_degreeSlab ..) h_meas h_frontier)
+    (tendsto_card_div_pow_atTop_volume Y ((isBounded_degreeSlab ..).subset inter_subset_right)
+      h_meas h_frontier)
   refine ge_of_tendsto_of_frequently h_limit
     (frequently_atTop'.2 fun j ↦ ⟨T.q ^ j, j.lt_pow_self (mod_cast T.one_lt_q), ?_⟩)
   rw [← mul_div_assoc, le_div_iff₀ (pow_pos (mod_cast pow_pos (one_pos.trans T.one_lt_q) j) _),
@@ -797,6 +807,9 @@ section BoundedDefect
 open Finset Module MeasureTheory Measure Real Nat Subgroup Set Matrix
 
 namespace New
+
+open TauCeti (pieriStepMap pieriStepMap_apply pieriCone mem_pieriCone degreeSlab mem_degreeSlab
+  isBounded_degreeSlab isClosed_degreeSlab prod_mul_volume_real_inter_degreeSlab)
 
 variable {N k : ℕ}
   {W K : Type} [NeZero N] [CommRing W] [IsLocalRing W] [Field K]
@@ -848,7 +861,7 @@ lemma volume_degreeSlab_le {k : ℕ} {D : ZMod N → ℝ} {B : ℝ} (h_deg : ∀
   calc
     volume (degreeSlab (k + 1) D) ≤ volume (Set.univ.pi block) := by
       have h_subset : degreeSlab (k + 1) D ⊆ (fun β s b ↦ β (b, s)) ⁻¹' Set.univ.pi block :=
-        fun β ⟨hβ_nonneg, hβ_deg⟩ s _ ↦ ⟨fun b ↦ hβ_nonneg (b, s), hβ_deg s⟩
+        fun β hβ s _ ↦ ⟨fun b ↦ (mem_degreeSlab.1 hβ).1 (b, s), (mem_degreeSlab.1 hβ).2 s⟩
       exact (measure_mono h_subset).trans
         ((measurePreserving_flip.comp measurePreserving_curry).measure_preimage_le _)
     _ = ∏ s : ZMod N, volume (block s) := volume_pi_pi block
@@ -891,19 +904,18 @@ lemma FrobeniusCycle.index_mul_relIndex_le (T : FrobeniusCycle N W K) (r : ℕ) 
     relIndex_le_of_le_right le_top index_ne_zero_of_finite, relIndex_top_right,
     index_borel_le, T.card_residueField, cast_pow]
 
-/-- The image of `ν` under `New.permStep` with trivial permutations, that is, the vector
+/-- The image of `ν` under `TauCeti.pieriStepMap` with trivial permutations, that is, the vector
 `± (P ν (b, s + 1) - ν (b, s))` with the sign `+` at even letters, has defect at most `0` along all
-simple roots if and only if `ν` lies in `New.pieriCone`, the cone of Pieri's inequalities in the
+simple roots if and only if `ν` lies in `TauCeti.pieriCone`, the cone of Pieri's inequalities in the
 coordinates `ν`. The index `a'` does not matter, as the bound is `0` at every root. -/
-lemma FrobeniusCycle.permStep_mem_defectCone_iff (T : FrobeniusCycle N W K) {a' : Fin k}
+lemma FrobeniusCycle.pieriStepMap_mem_defectCone_iff (T : FrobeniusCycle N W K) {a' : Fin k}
     (ν : Fin k × ZMod N → ℝ) :
-    permStep T.isEven T.P 1 ν ∈ T.defectCone a' 0 ↔ ν ∈ pieriCone T.isEven (T.P : ℝ) := by
-  change (∀ (i : ZMod N) (b b' : Fin k), b.val + 1 = b' →
-      T.defectWeight i b b' ⬝ᵥ permStep T.isEven T.P 1 ν ≤ if b = a' then (0 : ℝ) else 0) ↔
-    ∀ (i : ZMod N) (b b' : Fin k), b.val + 1 = b' →
-      permStep T.isEven T.P 1 ν ((if T.isEven i then b' else b), i) ≤ ν (b, i) - ν (b', i)
+    pieriStepMap T.isEven T.P 1 ν ∈ T.defectCone a' 0 ↔ ν ∈ pieriCone T.isEven (T.P : ℝ) := by
+  rw [mem_pieriCone]
   refine forall₄_congr fun i b b' hb ↦ ?_
-  rw [defectWeight_dotProduct_permStep, ite_self, sub_nonpos, rootVar]
+  rw [defectWeight_dotProduct_pieriStepMap, ite_self, sub_nonpos, rootVar]
+  cases h_even : T.isEven i <;> simp [h_even]
+  constructor <;> intro <;> linarith
 
 /-- For a Frobenius cycle `T` with `q = T.P ^ N`, the cone `T.defectCone a 0` of Pieri's
 inequalities fills the part `∏ (q - 1) / (q ^ (l + 1) - 1)`, over `l < k`, of the volume of every
@@ -912,7 +924,7 @@ lemma FrobeniusCycle.prod_mul_volume_defectCone_inter_degreeSlab (T : FrobeniusC
     {a : Fin k} (D : ZMod N → ℝ) :
     (∏ l : Fin k, (((T.P : ℝ) ^ N) ^ (l.val + 1) - 1) / (T.P ^ N - 1)) *
       volume.real (T.defectCone a 0 ∩ degreeSlab k D) = volume.real (degreeSlab k D) :=
-  prod_mul_volume_real_inter_degreeSlab T.one_lt_P D T.permStep_mem_defectCone_iff
+  prod_mul_volume_real_inter_degreeSlab T.one_lt_P D (Set.ext T.pieriStepMap_mem_defectCone_iff)
 
 /-- Few forms have bounded defect. Let `T` be a Frobenius cycle from the local ring `W` to the field
 `K` of characteristic `T.p`: ring maps `ι s : W → K`, one for each letter `s ∈ ℤ/N`, with
