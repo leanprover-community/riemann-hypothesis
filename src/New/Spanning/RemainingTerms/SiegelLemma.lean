@@ -118,12 +118,8 @@ lemma exists_isKernelExtension {A : Matrix σ P k} {x : Matrix P σ k} (h_det : 
   let C : Matrix σ P k := (A * x)⁻¹ * A
   have hCx : C * x = 1 := by simp [C, Matrix.mul_assoc, h_det]
   have hCy : C * y = 0 := by simp [C, Matrix.mul_assoc, hAy]
-  have hDx : (l - l * x * C) * x = 0 := by simp [Matrix.sub_mul, Matrix.mul_assoc, hCx]
-  have hDy : (l - l * x * C) * y = 1 := by simp [Matrix.sub_mul, Matrix.mul_assoc, hCy, hl]
-  have h_left : fromRows C (l - l * x * C) * fromCols x y = 1 := by
-    simp [*]
   refine ⟨_, y, {
-    hasLeftInv := ⟨_, h_left⟩
+    hasLeftInv := ⟨_, fromRows_mul_fromCols_eq_one hCx hCy hl⟩
     colSpan_fromCols := le_antisymm ?_ fun v hv ↦ ?_
     colSpan_le := hyL
     mul_eq_zero := hAy
@@ -137,8 +133,8 @@ lemma exists_isKernelExtension {A : Matrix σ P k} {x : Matrix P σ k} (h_det : 
     have h_sum : x *ᵥ C *ᵥ v + y *ᵥ d = v := add_eq_of_eq_sub' hd
     exact ⟨C *ᵥ v ⊕ᵥ d, by rw [mulVecLin_apply, fromCols_mulVec_sumElim, h_sum]⟩
   · rintro t ⟨r, hr : x *ᵥ r = y *ᵥ t⟩
-    calc t = (l - l * x * C) *ᵥ y *ᵥ t := by rw [mulVec_mulVec, hDy, one_mulVec]
-      _ = 0 := by rw [← hr, mulVec_mulVec, hDx, zero_mulVec]
+    have hr0 : r = 0 := by simpa [mulVec_mulVec, hCx, hCy] using congrArg (C *ᵥ ·) hr
+    simpa [hr0, mulVec_mulVec, hl] using congrArg (l *ᵥ ·) hr.symm
 
 /-! ### The discriminant of the integral points of a subspace -/
 
