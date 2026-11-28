@@ -59,10 +59,8 @@ lemma pow_smul_mem_range_BPlus (y : Bmax) (a : ℕ) {ν : Ainf} (hν : mu ∣ ν
     ∃ c : BPlus, c = ν ^ a • y := by
   -- Write `ν = μ s` and `μ ^ N ν ^ a y = c` with `c` in `BPlus`. As long as `N > 0`, `μ` divides
   -- `c` and can be cancelled, so `N` goes down to `0`.
-  obtain ⟨s, hs⟩ : ∃ s : Ainf, ν = mu * s := hν
-  obtain ⟨N, c, hc⟩ : ∃ (N : ℕ) (c : BPlus),
-      ν ^ a • y * algebraMap BPlus Bmax (mu : BPlus) ^ N = algebraMap BPlus Bmax c :=
-    surj (mu : BPlus) (ν ^ a • y)
+  obtain ⟨s, hs⟩ := hν
+  obtain ⟨N, c, hc⟩ := surj (mu : BPlus) (ν ^ a • y)
   induction N generalizing c with
   | zero => exact ⟨c, by simpa using hc.symm⟩
   | succ N ih =>
@@ -75,12 +73,9 @@ lemma pow_smul_mem_range_BPlus (y : Bmax) (a : ℕ) {ν : Ainf} (hν : mu ∣ ν
       -- apply `φ^n` to `hc` and map it to `BdR`
       have h_eq :
           (((frobEnd^[n] c : BPlus) : BdRPlus) : BdR) = ↑((⟨.ofAdd n, 1⟩ : FrobGal) • y) * ↑w := by
-        have hc_frob : (((⟨.ofAdd n, 1⟩ : FrobGal) • algebraMap BPlus Bmax c : Bmax) : BdR) =
-            (((⟨.ofAdd n, 1⟩ : FrobGal) •
-              (ν ^ a • y * algebraMap BPlus Bmax (mu : BPlus) ^ (N + 1)) : Bmax) : BdR) := by
-          rw [hc]
         simpa [hs, hw, smul_def, ← algebraMap_apply, FrobGal.smul_def, pow_add, mul_pow,
-          mul_comm, mul_assoc] using hc_frob
+          mul_comm, mul_assoc] using
+          congrArg (fun z : Bmax ↦ (((⟨.ofAdd n, 1⟩ : FrobGal) • z : Bmax) : BdR)) hc.symm
       -- `ξ` divides `φ^n μ`, so `w ∈ hodgeFil (a + N + 1)`, while `φ^n y ∈ hodgeFil (-a)`
       have h_xi : xi ∣ frobEnd^[n] mu := theta_eq_zero_iff_xi_dvd.mp (theta_iterate_frobEnd_mu n)
       have hw_mem : (w : BdR) ∈ hodgeFil (a + (N + 1) : ℕ) :=
@@ -100,20 +95,13 @@ lemma Bmax.exists_padic_eq_of_frobEnd_fixed {y : Bmax} (hy : frobEnd y = y) {x :
   -- All `φ^n y = y` lie in `hodgeFil 0`, so `y` comes from a `φ`-fixed `c` in `BPlus`. A multiple
   -- `p ^ m c` comes from `Amax`, so by contraction `p ^ (m + 1) c` comes from `Ainf`, where the
   -- fixed points of `φ` lie in `ℤ_[p]`.
-  have h_mem (n : ℕ) :
-      ↑((⟨Multiplicative.ofAdd n, 1⟩ : FrobGal) • y) ∈ hodgeFil (-((0 : ℕ) : ℤ)) := by
-    simp [FrobGal.smul_def, iterate_fixed hy, hx]
   obtain ⟨c, rfl⟩ : ∃ c : BPlus, c = y := by
-    simpa using pow_smul_mem_range_BPlus y 0 dvd_rfl h_mem
+    simpa using pow_smul_mem_range_BPlus y 0 dvd_rfl fun n ↦ by
+      simp [FrobGal.smul_def, iterate_fixed hy, hx]
   have hc : frobEnd c = c := by simpa [injective_BPlus_Bmax.eq_iff] using hy
-  obtain ⟨m, w, hw⟩ : ∃ (m : ℕ) (w : Amax), p ^ m * c = w := c.exists_p_pow_mul_eq_amax
-  have h_amax : ∀ v ∈ ({p ^ m * c} : Set BPlus), v ∈ amaxImage :=
-    fun v hv ↦ ⟨w, hw.symm.trans hv.symm⟩
-  have h_frob : ∀ v ∈ ({p ^ m * c} : Set BPlus),
-      ∃ w ∈ ({p ^ m * c} : Set BPlus), xi ^ 0 • v = (1 : Ainf) • frobEnd w := by
-    simp [hc]
-  obtain ⟨a, ha⟩ : ∃ a : Ainf, a = p ^ 1 * (p ^ m * c) :=
-    exists_Ainf_eq_of_contraction {p ^ m * c} 0 1 h_amax h_frob _ rfl
+  obtain ⟨m, w, hw⟩ := c.exists_p_pow_mul_eq_amax
+  obtain ⟨a, ha⟩ := exists_Ainf_eq_of_contraction {p ^ m * c} 0 1
+    (fun _ hv ↦ ⟨w, hw.symm.trans hv.symm⟩) (by simp [hc]) _ rfl
   have ha_fixed : frobEnd a = a := (coe_inj _ BPlus).mp (by simp [← frobEnd_algebraMap, ha, hc])
   obtain ⟨b, rfl⟩ : ∃ b : ℤ_[p], algebraMap ℤ_[p] Ainf b = a :=
     exists_algebraMap_eq_of_frobenius_eq a (by rwa [← frobEnd_eq_frobenius])
@@ -198,8 +186,7 @@ lemma Lift.Chart.IsChartOf.dvd_extendToBPlus (hc : c.IsChartOf 𝒥.toGp) {ι : 
       have h_const : FixesLambda c.f g := fun b ↦ by
         simpa [smul_algebraMap_wittFq_eq_iff, thetaPhiInv, ← coe_wittToQpBar] using
           h_fix ⟨_, c.S.algebraMap_mem b⟩
-      have h_range : g ∈ 𝒥.toGp.range := hc g ⟨h_const, Subtype.ext (h_fix c.z)⟩
-      exact ha l ⟨g, h_range⟩
+      exact ha l ⟨g, hc g ⟨h_const, Subtype.ext (h_fix c.z)⟩⟩
     obtain ⟨t, ht, h_theta⟩ : (a l : ℂ_[p]) ∈ T.map thetaBPlus :=
       c.mem_of_fixed_thetaPhiInvS ha_fixed
     -- so `ξ ∣ t - a l`, which Newton's iteration improves to `ξ ^ m`
@@ -402,8 +389,7 @@ lemma Period.Bmax.exists_witt_ratio {a b : Bmax} (hb : b ≠ 0)
     ∃ (f : ℕ+) (n : ℕ), ∃ w : WittFq f, p ^ n * a = (w : Ainf) * b := by
   -- The relation holds on an open subgroup `U`; apply `exists_pow_mul_eq_wittFq_mul_of_isChartOf`
   -- to a chart for `U`.
-  obtain ⟨U, hU⟩ : ∃ U : OpenSubgroup (Gp p), (U : Set (Gp p)) ⊆ {g | b * g • a = g • b * a} :=
-    NonarchimedeanGroup.is_nonarchimedean _ h_ratio
+  obtain ⟨U, hU⟩ := NonarchimedeanGroup.is_nonarchimedean _ h_ratio
   let instU : OverGp U.toSubgroup p := ⟨U.toSubgroup.subtype, ⟨by simpa using U.isOpen⟩⟩
   obtain ⟨k, -⟩ := exists_kummerChart U.toSubgroup
   exact ⟨_, exists_pow_mul_eq_wittFq_mul_of_isChartOf k.chart_isChartOf hb fun g ↦ hU g.property⟩
