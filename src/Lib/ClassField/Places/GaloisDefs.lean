@@ -188,6 +188,23 @@ lemma IsFrob.map (h_equivariant : ∀ (g : Γ') (x : Ω), j (φ g • x) = g •
 
 /-! ### The calculus of Frobenius elements -/
 
+open IsLocalRing Polynomial in
+/-- On an infinite residue field, a Frobenius element determines its exponent. The two power maps
+agree on every residue, so their monomials have equal degree. -/
+lemma IsFrob.exponent_eq [Infinite (ResidueField A)] (h : IsFrob A q σ) (h' : IsFrob A q' σ) :
+    q = q' := by
+  have power {n : ℕ} (hn : IsFrob A n σ) (x : A) :
+      residue A ⟨σ • (x : Ω), (mem_decompGroup_iff.mp hn.1 _).2 x.2⟩ = residue A x ^ n := by
+    rw [← map_pow]
+    exact (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).2 <| (A.valuation_lt_one_iff _).2 <|
+      hn.valuation_sub_pow_lt_one ((A.valuation_le_one_iff _).2 x.2)
+  have eq : (X : (ResidueField A)[X]) ^ q = X ^ q' := by
+    apply Polynomial.funext
+    intro z
+    obtain ⟨x, rfl⟩ := residue_surjective z
+    simpa only [eval_pow, eval_X] using (power h x).symm.trans (power h' x)
+  simpa only [natDegree_X_pow] using congrArg natDegree eq
+
 /-- If `σ` is a Frobenius element for `q` at `A`, then `g * σ * g⁻¹` is one at `g • A`. -/
 lemma IsFrob.conj (h : IsFrob A q σ) (g : Γ) : IsFrob (g • A) q (g * σ * g⁻¹) := by
   refine ⟨conj_mem_decompGroup_smul h.mem_decompGroup, fun x hx ↦ ?_⟩

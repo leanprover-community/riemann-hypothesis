@@ -5,6 +5,7 @@ import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Topology.Algebra.Valued.ResidueField
 public import Lib.PadicHodge.Crystalline.Basic
 public import Lib.General.Topology
 import Lib.ClassField.GaloisCohomology.KummerCyclicClasses
@@ -504,14 +505,8 @@ lemma pow (h : IsWeilPair (j s) m) (n : ℕ) : IsWeilPair (j (s ^ n)) (n * m) :=
 `q = p ^ m`. -/
 lemma eq_pow_of_isFrob (h : IsWeilPair (j s) m) {q : ℕ} (hq : IsFrob (intQpBar p) q (j s)⁻¹) :
     q = p ^ m := by
-  -- The `l`-adic cyclotomic character of `(j s)⁻¹`, for a prime `l > p`, is both `q` and `p ^ m`
-  -- (`IsFrob.cyclotomicChar_eq`: on `l`-power roots of unity a Frobenius for `q` acts as
-  -- `x ↦ x ^ q`).
-  obtain ⟨l, hpl, hl⟩ : ∃ l : ℕ, p.succ ≤ l ∧ l.Prime := p.succ.exists_infinite_primes
-  have hl_fact : Fact l.Prime := ⟨hl⟩
-  have h_not_dvd : ¬p ∣ l := (Nat.prime_dvd_prime_iff_eq ι.out hl).not.mpr (by omega)
-  have hval : (intQpBar p).valuation l = 1 := Selmer.valuation_natCast_eq_one h_not_dvd
-  exact_mod_cast (hq.cyclotomicChar_eq l hval).symm.trans (h.cyclotomicChar_eq l hval)
+  have : IsAlgClosed (IsLocalRing.ResidueField (intQpBar p)) := Valued.instIsAlgClosedResidueField
+  exact hq.exponent_eq h
 
 end New.Period.IsWeilPair
 
