@@ -566,11 +566,8 @@ lemma one_add_inv_pow_twelve_sq_add_le (hb : 2 ≤ b) :
 measures is at most `1`. -/
 lemma IsCutBessel.enorm_formConst_mul_le_one (hF : IsCutBessel F rep ρ s b W f) :
     ‖(hF.formConst : ℂ)‖ₑ * hF.haarRatio * (hF.haarRatio * card I) ^ 2 ≤ 1 := by
-  obtain ⟨⟨ratio_ne_zero : hF.haarRatio ≠ 0, ratio_ne_top : hF.haarRatio ≠ ∞⟩, -, -,
-    ratio_le : .ofReal (volU 𝔰.k / volU 𝔰.r) * hF.haarRatio ≤ 1⟩ :=
-      hF.haarRatio_ne_zero_and_groupMeasure_eq_smul
-  simpa [← toReal_le_toReal, field, formConst, mul_eq_top, le_of_lt, ratio_ne_zero,
-    ratio_ne_top, abs_of_pos] using ratio_le
+  obtain ⟨-, -, -, ratio_le⟩ := hF.haarRatio_ne_zero_and_groupMeasure_eq_smul
+  simpa only [mul_right_comm _ hF.haarRatio _, hF.enorm_formConst_mul_sq] using ratio_le
 
 /-- The mass at a real place. Let `F` be the cut of `W` in degree `f ≥ 4000 n`, and `deg > 0`.
 Suppose that the matrix coefficient `quotientPairing W W` has squared `L²` norm at most

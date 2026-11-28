@@ -135,6 +135,18 @@ measures. -/
 def formConst (hF : IsCutBessel F rep ρ s b F₀ f) : ℝ :=
   volU 𝔰.k / volU 𝔰.r / (hF.haarRatio.toReal * card I) ^ 2
 
+/-- The squared Haar and index factors in the shell mass cancel the denominator of `formConst`. -/
+lemma enorm_formConst_mul_sq [Nonempty I] (hF : IsCutBessel F rep ρ s b F₀ f) :
+    ‖(hF.formConst : ℂ)‖ₑ * (hF.haarRatio * card I) ^ 2 = .ofReal (volU 𝔰.k / volU 𝔰.r) := by
+  obtain ⟨⟨h₀, htop⟩, -⟩ := hF.haarRatio_ne_zero_and_groupMeasure_eq_smul
+  apply (toReal_eq_toReal_iff' (by finiteness) ofReal_ne_top).mp
+  have hv := div_pos (volU_pos 𝔰.k) (volU_pos 𝔰.r)
+  have hr := toReal_ne_zero.mpr ⟨h₀, htop⟩
+  unfold formConst
+  rw [toReal_mul, toReal_pow, toReal_mul, toReal_natCast, toReal_ofReal hv.le, toReal_eNorm,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  field_simp
+
 section
 
 /-- A cut Bessel function `F` is cut for the place datum at ℂ: it is a Bessel function of frequency
@@ -473,8 +485,6 @@ lemma formConst_mul_lintegral_le [Nonempty I]
   -- Sum over the dyadic shells with the mass bound `V`, the gain `t⁻¹` and `r = s - 10 ^ 8 n ^ 4`.
   obtain ⟨one_le_ρ, one_le_L⟩ : 1 ≤ ρ ∧ 1 ≤ L := by grind [hF.four_le]
   have one_le_π : 1 ≤ π := one_le_two.trans two_le_pi
-  obtain ⟨⟨ratio_ne_zero : hF.haarRatio ≠ 0, ratio_ne_top : hF.haarRatio ≠ ∞⟩, -⟩ :=
-    hF.haarRatio_ne_zero_and_groupMeasure_eq_smul
   obtain ⟨r, hr⟩ : ∃ r : ℕ, s = 10 ^ 8 * 𝔰.n ^ 4 + r :=
     exists_add_of_le ((by lia : 10 ^ 8 * 𝔰.n ^ 4 ≤ 10 ^ 10 * 𝔰.n ^ 4).trans hF.mul_pow_four_le_s)
   let V : ℝ := (π * ρ ^ 24) ^ 𝔰.k * ρ ^ (9999 * 𝔰.n)
@@ -500,6 +510,12 @@ lemma formConst_mul_lintegral_le [Nonempty I]
     simp [floorModulus, PlaceData.blockRank, Nat.sub_sub, ← pow_mul, pi_pos.le]
   have scale_eq : (hF.gauge hL).loss = .ofReal L ^ 2 := by simp [RealPlaceSizes.gauge]
   grw [h_shells, min_le_right, unit_le, scale_eq]
+  have normalize (A B : ℝ≥0∞) :
+      card I * (‖(hF.formConst : ℂ)‖ₑ * (A * (B * (hF.haarRatio ^ 2 * card I)))) =
+        .ofReal (volU 𝔰.k / volU 𝔰.r) * (A * B) := by
+    rw [← hF.enorm_formConst_mul_sq, mul_pow, pow_two (card I : ℝ≥0∞)]
+    ac_rfl
+  rw [normalize]
   -- `haarRatio`, `card I` and the volumes cancel: it remains to compare powers of `π`, `ρ` and `L`.
   suffices h_powers :
       π ^ 𝔰.k * ρ ^ (9999 * 𝔰.n) * L ^ (2 * (400000000 * 𝔰.n ^ 4)) *
@@ -507,9 +523,11 @@ lemma formConst_mul_lintegral_le [Nonempty I]
         π ^ ((2 * 𝔰.ϱ + 1) * 𝔰.k) * L ^ (1000000000 * 𝔰.n ^ 4) by
     have t_pow : t ^ s = t ^ (10 ^ 8 * 𝔰.n ^ 4) * t ^ r := by rw [← pow_add, ← hr]
     rw [t_pow]
-    simpa (disch := finiteness) [V, ← toReal_le_toReal, toReal_ne_zero, ratio_ne_zero,
-      ratio_ne_top, formConst, scaledVolumeRatio, volU, field, mul_pow, ← pow_mul, abs_of_nonneg]
-      using h_powers
+    rw [scaledVolumeRatio]
+    generalize hv : volU 𝔰.k / volU 𝔰.r = v
+    have hv_pos : 0 < v := hv ▸ div_pos (volU_pos _) (volU_pos _)
+    simpa (disch := first | positivity | finiteness) [V, ← toReal_le_toReal, toReal_ofReal, field,
+      mul_pow, ← pow_mul] using h_powers
   calc
     _ ≤ π ^ 𝔰.k * L ^ (9999 * 𝔰.n) * L ^ (2 * (400000000 * 𝔰.n ^ 4)) *
         π ^ (2 * (𝔰.k * 𝔰.ϱ)) := by
