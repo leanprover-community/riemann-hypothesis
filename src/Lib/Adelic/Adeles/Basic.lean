@@ -15,6 +15,7 @@ import TauCeti.NumberTheory.NumberField.Countable
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.BorelSpace
 public import Lib.Speed
+import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.CompletedIdeal
 
 /-!
 # Finite adeles of number fields: topology, idempotents, functoriality and base change
@@ -719,15 +720,13 @@ lemma denseRange_algebraMap_Ô : DenseRange (algebraMap (𝓞 E) (Ô E)) :=
 of finite adeles integral at every finite place) is congruent modulo a to an algebraic integer b. -/
 lemma exists_dvd_algebraMap_sub {a : 𝓞 E} (ha : a ≠ 0) (x : Ô E) :
     ∃ b : 𝓞 E, algebraMap (𝓞 E) (Ô E) a ∣ algebraMap (𝓞 E) (Ô E) b - x := by
-  -- `a` is a unit of the finite adeles, so `x + a Ô` is open; `𝓞 E` is dense in `Ô E`.
-  have h_unit : IsUnit (a : 𝔸f E) :=
-    (Ne.isUnit (by simpa using ha : (a : E) ≠ 0)).map (algebraMap E (𝔸f E))
-  have h_open : IsOpen {y : Ô E | y.val - x.val ∈ (fun t : 𝔸f E ↦ (a : 𝔸f E) • t) '' Ô E} :=
-    ((h_unit.isOpenMap_smul _ isOpen_Ô).preimage (continuous_sub_right _)).preimage
-      continuous_subtypeVal
-  obtain ⟨b, z, hz, hb⟩ :=
-    denseRange_algebraMap_Ô.exists_mem_open h_open ⟨x, 0, zero_mem _, by simp⟩
-  exact ⟨b, ⟨z, hz⟩, Subtype.ext (by simpa [smul_eq_mul] using hb.symm)⟩
+  -- Apply density modulo the completed principal ideal, then reverse the difference.
+  obtain ⟨b, hb⟩ := FiniteAdeleRing.exists_sub_mem_completedIdeal (K := E)
+    (N := Ideal.span {a}) (by simpa only [ne_eq, Ideal.span_singleton_eq_bot] using ha) x
+  rw [FiniteAdeleRing.completedIdeal_def, Ideal.map_span, Set.image_singleton,
+    Ideal.mem_span_singleton] at hb
+  refine ⟨b, ?_⟩
+  rwa [← neg_sub x, dvd_neg]
 
 /-- The number field `E` is dense in its ring `𝔸f E` of finite adeles (strong approximation). -/
 lemma denseRange_algebraMap_finAdele : DenseRange ((↑) : E → 𝔸f E) :=

@@ -5,6 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.Sheaves.Presheaf
 import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.CompletedIdeal
 public import Lib.Adelic.Unitary.Defs
 public import Lib.General.LinearAlgebra.IntegralLattices
 import Lib.Adelic.Unitary.ComponentsAndBlockSums
@@ -419,6 +420,7 @@ end LevelsAtPlaces
 section CongruenceLevel
 
 open Nat Circle NumberField Ideal Quotient RingOfIntegers Subgroup stdLevel algebraMap
+  IsDedekindDomain
 
 variable {E : Type*} [Field E] [NumberField E] {n : Type*} [Fintype n] [DecidableEq n]
   {a b : 𝓞 E} {ι : Type*} [Fintype ι] {w : ι → FinPlace E}
@@ -467,12 +469,11 @@ lemma mem_prod_finPlace_iff (hw : w.Injective) {x : 𝓞 E} :
 
 /-- For integers a ≠ 0 and b of E, a divides b in Ô if and only if it does so in 𝓞_E. -/
 lemma dvd_iff_Ô (ha_ne : a ≠ 0) : (a : Ô E) ∣ b ↔ a ∣ b := by
-  refine ⟨fun ⟨y, hy⟩ ↦ ?_, map_dvd _⟩
-  -- The quotient `b / a ∈ E` equals `y ∈ Ô` in the adeles, so it is an integer.
-  have h_int : algebraMap E (𝔸f E) ((a : E)⁻¹ * b) ∈ Ô E := by
-    simp_all [← mul_assoc, ← map_mul _ _⁻¹, Subtype.ext_iff]
-  exact ⟨⟨(a : E)⁻¹ * b, algebraMap_mem_Ô.1 h_int⟩,
-    RingOfIntegers.ext (mul_inv_cancel_left₀ (coe_ne_zero_iff.2 ha_ne) _).symm⟩
+  have hI : span ({a} : Set (𝓞 E)) ≠ ⊥ := span_singleton_eq_bot.not.mpr ha_ne
+  have h := FiniteAdeleRing.algebraMap_mem_completedIdeal_iff (K := E) hI (r := b)
+  simp only [FiniteAdeleRing.completedIdeal_def, map_span, Set.image_singleton,
+    mem_span_singleton] at h
+  exact h
 
 /-- If an ideal I of Ô contracts to the ideal J of 𝓞_E and J contains a nonzero element a, then
 𝓞_E/J → Ô/I is bijective. -/
@@ -498,10 +499,12 @@ lemma map_under_Ô (ha_ne : a ≠ 0) {I : Ideal (Ô E)} (hI : algebraMap (𝓞 E
 norm of (a). -/
 lemma card_Ô_quot_span (ha_ne : a ≠ 0) :
     Nat.card (Ô E ⧸ span {(a : Ô E)}) = absNorm (span {a}) := by
-  have h_comap : (span {algebraMap _ (Ô E) a}).comap (algebraMap (𝓞 E) (Ô E)) = span {a} :=
-    Ideal.ext (by simp [dvd_iff_Ô ha_ne, mem_span_singleton])
+  have hI : span ({a} : Set (𝓞 E)) ≠ ⊥ := span_singleton_eq_bot.not.mpr ha_ne
   rw [Ideal.absNorm_eq_natCard]
-  exact (card_eq_of_bijective _ (bijective_quot_Ô ha_ne h_comap (by simp))).symm
+  have e := FiniteAdeleRing.quotientEquivQuotientCompletedIdeal (K := E) hI
+  have h := Nat.card_congr e.toEquiv.symm
+  simp only [FiniteAdeleRing.completedIdeal_def, map_span, Set.image_singleton] at h
+  exact h
 
 /-- For a CM field `E` and an integer `a` of `E`, the principal level K(a) (the g in K₀ with g -
 1 ≡ 0 mod aÔ) is the kernel of reduction K₀ → GL_n(Ô/aÔ). Here K₀ = `stdLevel E n` is G_f ∩ GL_n(Ô),
