@@ -733,14 +733,13 @@ lemma congruenceTerm_le [Nonempty n] (hρ : span O (Set.range ρ) = ⊤) {g : Ga
   have h_maps : ∀ η ∈ conjDualHom ℓ ρ a, ev η ∈ torsionBy O _ Δ := fun η hη ↦
     (mem_torsionBy_iff Δ (ev η)).2 (smul_apply_eq_zero_of_mem_conjDualHom hα hα' hη e)
   -- A `G`-map that vanishes at `e` vanishes on the translates of `e`, which span `n → QuotSpan a`.
-  have h_inj : ∀ η ∈ conjDualHom ℓ ρ a, ev η = 0 → η = 0 := by
-    intro η hη (h_e : η e = 0)
+  have h_inj : Function.Injective (ev.restrict h_maps) := by
+    refine (injective_iff_map_eq_zero _).mpr fun ⟨η, hη⟩ h_e ↦ Subtype.ext ?_
     refine LinearMap.ext_on_range (span_range_smul_single_eq_top hρ a i) fun k ↦ ?_
     ext m
-    exact (hη k e m).trans (by rw [h_e]; rfl)
-  calc _ ≤ length O (torsionBy O (CharacterModule (n → QuotSpan a)) Δ) := by
-        rw [← relLength_bot, ← relLength_bot]
-        exact relLength_le_of_mapsTo ev h_maps h_inj
+    exact (hη k e m).trans (by rw [show η e = 0 from congrArg Subtype.val h_e]; rfl)
+  calc _ ≤ length O (torsionBy O (CharacterModule (n → QuotSpan a)) Δ) :=
+        length_le_of_injective (ev.restrict h_maps) h_inj
     _ ≤ length O (torsionBy O (n → QuotSpan a) Δ) := length_torsionBy_characterModule_le (ℓ := ℓ) Δ
     _ ≤ Fintype.card n * addVal O Δ := length_torsionBy_pi_quot_le a Δ
 
