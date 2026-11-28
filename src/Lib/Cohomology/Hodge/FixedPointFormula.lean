@@ -112,6 +112,17 @@ def IsCoincidenceSet (u c : W ⟶ X) (s : Finset (W.obj (CommAlgCat.of k k))) : 
   ∀ K : CommAlg k, IsField K → ∀ x : W.obj K, c.app K x = u.app K x →
     ∃ w ∈ s, x = W.map structureMap w
 
+/-- If all dual-number points cut out by `I` are constant, Nakayama gives a `b` nonzero at `ζ`
+that multiplies its kernel into `I`. Thus the two ideals agree locally at `ζ`. -/
+private lemma exists_mem_colon_of_const_tangents (a : EtaleChart d W) {I : Ideal a.coordRing}
+    (ζ : a.coordRing →ₐ[k] k) (hζ : I ≤ RingHom.ker ζ)
+    (h_const : ∀ p : a.coordRing →ₐ[k] k[ε], I ≤ RingHom.ker p →
+      W.map (ofHom p) a.point = W.map (SqZeroExt.fst ≫ structureMap) (W.map (ofHom p) a.point)) :
+    ∃ b ∈ I.colon (RingHom.ker ζ), ζ b ≠ 0 := by
+  refine exists_mem_colon_of_tangent (k := k) rfl hζ fun p _ hp r ↦ ?_
+  exact congrArg TrivSqZeroExt.snd
+    (ConcreteCategory.congr_hom (a.eq_comp_of_map_point_eq _ (h_const p hp)) r)
+
 /-- Let `k` be algebraically closed, `X` separated (`IsSeparatedFunctor X`) and `u c : W ⟶ X` two
 maps. Suppose that every `k[ε]`-valued coincidence of `u` and `c` is constant (`h_red`) and that
 finitely many charts `a i` of `W`, affine opens with `d` étale coordinates, contain all
@@ -157,18 +168,9 @@ lemma exists_isCoincidenceSet (u c : W ⟶ X) [IsAlgClosed k] [hX : IsSeparatedF
     have : IsDomain K := hK.isDomain
     have : (RingHom.ker φ.hom).IsPrime := RingHom.ker_isPrime φ.hom
     obtain ⟨p, hp, hp_ker⟩ := exists_minimalPrimes_le ((hJ i K φ).mp hx)
-    -- A tangent vector at the point `o hp` that kills `J i` is a coincidence, hence constant: its
-    -- `ε`-coordinates vanish.
-    have h_tangent : ∀ v : (a i).coordRing →ₐ[k] k[ε], (∀ r : (a i).coordRing, (v r).fst = o hp r) →
-        J i ≤ RingHom.ker v → ∀ r : (a i).coordRing, (v r).snd = 0 := by
-      rintro v - hv_ker r
-      have h_const : ofHom v = ofHom v ≫ SqZeroExt.fst ≫ structureMap :=
-        (a i).eq_comp_of_map_point_eq _ (h_red _ ((hJ i _ (ofHom v)).mpr hv_ker))
-      have h_const_r : v r = algebraMap k k[ε] (v r).fst := ConcreteCategory.congr_hom h_const r
-      rw [h_const_r, algebraMap_eq_inl', snd_inl]
-    -- So by Nakayama some `b` with `o hp b ≠ 0` multiplies the ideal of that point into `J i`.
-    obtain ⟨b, hb, hb_ne⟩ : ∃ b ∈ (J i).colon (RingHom.ker (o hp)), o hp b ≠ 0 :=
-      exists_mem_colon_of_tangent (k := k) rfl (hp.le.trans (ho hp)) h_tangent
+    -- Constant tangents make the chart ideal agree locally with the ideal of the point.
+    obtain ⟨b, hb, hb_ne⟩ := exists_mem_colon_of_const_tangents (a i) (o hp)
+      (hp.le.trans (ho hp)) fun v hv ↦ h_red _ ((hJ i _ (ofHom v)).mpr hv)
     -- Since `b ∉ p`, that ideal lies in `p`, so `φ` factors through the point.
     have h_ker : RingHom.ker (o hp) ≤ p := fun r hr ↦
       (hp.isPrime.mem_or_mem (hp.le (Submodule.mem_colon.mp hb r hr))).resolve_left
@@ -488,18 +490,8 @@ lemma ker_le_of_cuts_out_coincidences {u c : W ⟶ X} {s : Finset (W.obj (of k k
       I ≤ ker α.hom ↔ c.app C (W.map α a.point) = u.app C (W.map α a.point)) :
     ker ζ.hom ≤ I := by
   obtain ⟨h_red, h_coin, h_field⟩ := hs
-  -- Nakayama: a tangent vector that kills `I` is a coincidence, hence constant, so `I` generates
-  -- `ker ζ` near `ζ`.
-  have h_tangent : ∀ p : a.coordRing →ₐ[k] DualNumber k, (∀ r : a.coordRing, (p r).fst = ζ r) →
-      I ≤ ker p → ∀ r : a.coordRing, (p r).snd = 0 := by
-    rintro p - hp r
-    have h_const : ofHom p = ofHom p ≫ SqZeroExt.fst ≫ structureMap :=
-      a.eq_comp_of_map_point_eq _ (h_red _ ((h_cut (ofHom p)).mp hp))
-    have h_const_r : p r = algebraMap k (DualNumber k) (p r).fst :=
-      ConcreteCategory.congr_hom h_const r
-    rw [h_const_r, algebraMap_eq_inl', snd_inl]
-  obtain ⟨b, hb_colon, hb_ne⟩ : ∃ b ∈ I.colon (ker ζ.hom), ζ b ≠ 0 :=
-    exists_mem_colon_of_tangent (k := k) rfl ((h_cut ζ).mpr (h_coin _ hw)) h_tangent
+  obtain ⟨b, hb_colon, hb_ne⟩ := exists_mem_colon_of_const_tangents a ζ.hom
+    ((h_cut ζ).mpr (h_coin _ hw)) fun p hp ↦ h_red _ ((h_cut (ofHom p)).mp hp)
   -- A field point `κ` that kills the colon ideal is a coincidence in the chart `a`, so it comes
   -- from `ζ`, against `ζ b ≠ 0`. Hence the colon ideal is `⊤`.
   have colon_top : (I.colon (ker ζ.hom)).map (𝟙 a.coordRing :).hom = ⊤ := by
