@@ -453,7 +453,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/Cite/Bib` (152): The BibTeX file
 - `Lib/Cite` (215): Citations
 - `Lib/Cite/Report` (90): The citations that a declaration depends on
-- `Lib/Cite/Export` (145): Citations as Literature Links annotations
+- `Lib/Cite/Export` (150): Citations as Literature Links annotations
 
 ### Adelic: Adeles, unitary groups and automorphic forms
 

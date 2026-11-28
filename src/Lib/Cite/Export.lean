@@ -99,6 +99,14 @@ def cslType : String → String
   | "techreport" => "report"
   | _ => "document"
 
+/-- The CSL-JSON variable for the BibTeX field `number` of an entry of type `type`: the issue of
+a journal, the number of a book in its series, and otherwise the number of the work itself, such
+as that of a report. -/
+def cslNumber : String → String
+  | "article" => "issue"
+  | "book" | "incollection" | "inbook" | "inproceedings" | "proceedings" => "collection-number"
+  | _ => "number"
+
 /-- The value of the identifier `name` of the entry, when it has a well-formed one. -/
 def BibEntry.identifier? (e : BibEntry) (name : String) : Option String :=
   match e.identifiers with
@@ -115,7 +123,8 @@ def BibEntry.csl (e : BibEntry) : Json :=
     opt "container-title" (((e.field? "journal").orElse fun _ => e.field? "booktitle").map
       fun t => squash (unbrace t)) ++
     opt "collection-title" ((e.field? "series").map fun t => squash (unbrace t)) ++
-    opt "volume" ((e.field? "volume").orElse (fun _ => e.field? "number") |>.map squash) ++
+    opt "volume" ((e.field? "volume").map squash) ++
+    opt (cslNumber e.type) ((e.field? "number").map squash) ++
     opt "page" ((e.field? "pages").map fun p => (squash p).replace "--" "–") ++
     opt "publisher" ((e.field? "publisher").map fun t => squash (unbrace t)) ++
     opt "issued" (year.map fun y => json% { "date-parts" : [[$(y.toNat!)]] }) ++
