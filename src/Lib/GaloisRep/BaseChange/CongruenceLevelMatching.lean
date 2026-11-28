@@ -322,6 +322,127 @@ lemma New.exists_isNormRoot_and_mem_of_mem {O R n : Type} [CommRing O] [CommRing
     conjTranspose_add, conjTranspose_one, conjTranspose_smul, hm_star, mul_add, mul_one,
     mul_smul_comm, algebraMap_smul, smul_add, add_assoc, add_sub_cancel_left]
 
+/-- Let `ι = algebraMap O R`, `m = u * M`, `ι m * v = ι u` and `ι u * v = v`. These relations
+determine `ι u` and `v` from `ι m`, so a ring endomorphism of `R` that fixes `ι m` fixes `ι u` and
+`v`. -/
+private lemma New.apply_eq_self_of_mul_eq {O R : Type} [CommRing O] [CommRing R] [Algebra O R]
+    {u M m : O} {v : R} (hm_eq : u * M = m) (hmv : algebraMap O R m * v = algebraMap O R u)
+    (huv : algebraMap O R u * v = v) {φ : R →+* R}
+    (hφ : φ (algebraMap O R m) = algebraMap O R m) :
+    φ (algebraMap O R u) = algebraMap O R u ∧ φ v = v := by
+  set ι : O →+* R := algebraMap O R
+  have hu : ι u * ι u = ι u := by linear_combination (1 - ι u) * hmv + ι m * huv
+  have hum : ι u * ι m = ι m := by rw [← hm_eq, map_mul, ← mul_assoc, hu]
+  have h_unique {a b : R} (hmb : ι m * b = a) (hab : a * b = b) (ham : a * ι m = ι m) :
+      a = ι u ∧ b = v := by
+    have ha : a = ι u := by linear_combination (ι u - 1) * hmb - b * hum + (1 - a) * hmv + v * ham
+    exact ⟨ha, by linear_combination (b + v) * ha - hab - b * hmv + v * hmb + huv⟩
+  apply h_unique
+  · rw [← hmv, map_mul φ, hφ]
+  · rw [← map_mul φ, huv]
+  · rw [← hφ, ← map_mul φ, hum]
+
+/-- If `σ` commutes with `star` and fixes the self-adjoint idempotent `e`, then the endomorphism
+`New.U.cutAt` at `e` commutes with applying `σ` to the entries. -/
+private lemma New.U.cutAt_mapEnd {R n : Type} [CommRing R] [StarRing R] [Fintype n]
+    [DecidableEq n] {σ : R →+* R} (hσ : ∀ x : R, σ (star x) = star (σ x)) {e : R}
+    (he : IsIdempotentElem e) (he_star : star e = e) (hσe : σ e = e)
+    (δ : U (1 : Matrix n n R)) :
+    cutAt he he_star (mapEnd hσ δ) = mapEnd hσ (cutAt he he_star δ) :=
+  Subtype.ext (Units.ext (by
+    change e • δ.val.val.map σ + (1 - e) • 1 = (e • δ.val.val + (1 - e) • 1).map σ
+    rw [← RingHom.mapMatrix_apply σ (e • δ.val.val + (1 - e) • 1), map_add,
+      RingHom.mapMatrix_apply, RingHom.mapMatrix_apply, map_smul' (hf := map_mul σ),
+      map_smul' (hf := map_mul σ), ← RingHom.mapMatrix_apply σ 1, map_one, map_sub,
+      map_one, hσe]))
+
+/-- Let `ι = algebraMap O R` be injective, with `ι m * v = ι u` for the self-adjoint idempotent
+`ι u`. A unitary `s` over `R` with `v • (s - 1) = ι Y` for some `Y` over `O` has the lift
+`1 + m • Y`: a unitary matrix over `O` whose image over `R` is the `u`-part `cutAt s` of `s`. -/
+private lemma New.exists_eq_one_add_smul_and_map_eq_cutAt {O R n : Type} [CommRing O]
+    [CommRing R] [Algebra O R] [StarRing O] [StarRing R] [StarModule O R] [Fintype n]
+    [DecidableEq n] (h_inj : (⇑(algebraMap O R)).Injective) {u m : O} {v : R}
+    (hmv : algebraMap O R m * v = algebraMap O R u)
+    (hu : IsIdempotentElem (algebraMap O R u))
+    (hu_star : star (algebraMap O R u) = algebraMap O R u)
+    {s : U (1 : Matrix n n R)} {Y : Matrix n n O}
+    (hY : Y.map (algebraMap O R) = v • (s.val.val - 1)) :
+    ∃ S : U (1 : Matrix n n O), S.val.val = 1 + m • Y ∧
+      map (algebraMap O R) algebraMap_star_comm (one_map_ringHom (algebraMap O R)) S =
+        cutAt hu hu_star s := by
+  refine mem_range_map algebraMap_star_comm h_inj isUnit_one _ ?_
+  simp [hY, hmv, Matrix.map_add, map_smul', smul_smul, cutAt, cutGL]
+  module
+
+/-- Part (a) of `New.cocyclesSplit_and_isMatchingPair_of_congruence`. Let `O` be profinite and
+integrally closed in `R`, let `τ` be tame on `O` at the levels `0` and `m = u * M` (`star m = m`),
+commute with `star`, and fix some `c` with `c - star c` a unit, and let `ι = algebraMap O R` carry
+`τ` to `σ`. Let `L` be the `σ`-stable group of unitary `g` over `R` with `v • (g - 1)` over `O`,
+where `m * v = u` and `u * v = v`. Then the cocycles in `L` split on the support of `u`: the lift
+`1 + m • Y` over `O` of such a cocycle has twisted norm `1`, so it is a coboundary by Hilbert 90 at
+level `m`. -/
+lemma New.cocyclesSplit_of_congruence {O R n : Type} [CommRing O] [CommRing R]
+    [Algebra O R] [StarRing O] {τ : O →+* O} {p : ℕ} {m c : O} (u : O) (hO : IsProfiniteRing O)
+    (hτ_tame : IsTameAtLevel τ p 0) (hc : τ c = c) (h_unit : IsUnit (c - star c))
+    (hm_star : star m = m) (hm_tame : IsTameAtLevel τ p m) (hτ : ∀ x : O, τ (star x) = star (τ x))
+    [Fintype n] [DecidableEq n] [StarRing R] (h_starModule : StarModule O R)
+    (h_closed : IsIntegrallyClosedIn O R) {σ : R →+* R} (hσ : ∀ (x : R), σ (star x) = star (σ x))
+    {v : R} {M : O} {L : Subgroup (U (1 : Matrix n n R))} (hm_eq : u * M = m)
+    (hιτ : ∀ x : O, algebraMap O R (τ x) = σ (algebraMap O R x))
+    (hmv : algebraMap O R m * v = algebraMap O R u) (huv : algebraMap O R u * v = v)
+    (hL : ∀ g : U (1 : Matrix n n R),
+      g ∈ L ↔ ∃ Y : Matrix n n O, Matrix.map Y (algebraMap O R) = v • (g.val.val - 1)) :
+    CocyclesSplit p (algebraMap O R u) L (mapEnd hσ) := by
+  set ι : O →+* R := algebraMap O R
+  have hι : ∀ x : O, ι (star x) = star (ι x) := algebraMap_star_comm
+  have h_inj : (⇑ι).Injective := h_closed.algebraMap_injective
+  have hu : ι u * ι u = ι u := by linear_combination (1 - ι u) * hmv + ι m * huv
+  have hum : ι u * ι m = ι m := by rw [← hm_eq, map_mul, ← mul_assoc, hu]
+  have hu_star : star (ι u) = ι u :=
+    (apply_eq_self_of_mul_eq hm_eq hmv huv (φ := starRingEnd R)
+      (by rw [starRingEnd_apply, ← hι, hm_star])).1
+  have hσu : σ (ι u) = ι u :=
+    (apply_eq_self_of_mul_eq hm_eq hmv huv (by rw [← hιτ, hm_tame.apply_eq_self])).1
+  let e : U (1 : Matrix n n O) →* U (1 : Matrix n n R) := map ι hι (one_map_ringHom ι)
+  choose Y hY using fun s ↦ (hL s).mp
+  choose S hS hS_cut using fun s hs ↦
+    exists_eq_one_add_smul_and_map_eq_cutAt h_inj hmv hu hu_star (hY s hs)
+  intro s hs hN
+  -- The lift of `s` has norm `1` too, so it is a coboundary of some `t ≡ 1` mod `m`.
+  -- `e` and `cutAt` commute with the twists, so `e` carries the norm of `S s` to that of `s`.
+  have h_e_comm (δ : U (1 : Matrix n n O)) : e (mapEnd hτ δ) = mapEnd hσ (e δ) :=
+    Subtype.ext (Units.ext (Matrix.ext fun _ _ ↦ hιτ _))
+  have h_norm : e (twistedNorm (mapEnd hτ) p (S s hs)) = e 1 := by
+    rw [map_twistedNorm (σ := mapEnd hσ) e h_e_comm, hS_cut,
+      ← map_twistedNorm (cutAt hu hu_star) (U.cutAt_mapEnd hσ hu hu_star hσu), hN, map_one,
+      map_one]
+  obtain ⟨t, W, ht : S s hs * mapEnd hτ t = t, hW : t.val.val = 1 + m • W⟩ :=
+    unitary_hilbert90_at_level hO hτ_tame hc h_unit hτ (S s hs) hm_star hm_tame (hS s hs)
+      (map_injective h_inj (congrArg (fun x : U (1 : Matrix n n R) ↦ x.val.val) h_norm))
+  have h_et_mem : e t ∈ L := (hL (e t)).mpr ⟨u • W, by
+    change (u • W).map ι = v • ((t.val.val).map ι - 1)
+    rw [map_smul' (hf := map_mul ι), hW, ← RingHom.mapMatrix_apply ι (1 + m • W), map_add,
+      map_one, RingHom.mapMatrix_apply, map_smul' (hf := map_mul ι), add_sub_cancel_left,
+      smul_smul, mul_comm v, hmv]⟩
+  have h_et_off : (1 - ι u) • (e t).val.val = (1 - ι u) • 1 := by
+    change (1 - ι u) • (t.val.val).map ι = (1 - ι u) • 1
+    rw [hW, ← RingHom.mapMatrix_apply, map_add, map_one, RingHom.mapMatrix_apply,
+      map_smul' (hf := map_mul ι), smul_add, smul_smul, sub_mul, one_mul, hum, sub_self,
+      zero_smul, add_zero]
+  refine ⟨e t, h_et_mem, h_et_off, ?_⟩
+  -- On the `u`-part, `t⁻¹ * s * τ t = 1` is `e` applied to `t⁻¹ * S * τ t = 1`.
+  have h_cut_u : ι u • (cutAt hu hu_star s).val.val = ι u • s.val.val := by
+    change ι u • (ι u • s.val.val + (1 - ι u) • 1) = ι u • s.val.val
+    rw [smul_add, smul_smul, smul_smul, hu, mul_sub, mul_one, hu, sub_self, zero_smul, add_zero]
+  have h_cob : ι u • (e (t⁻¹ * (S s hs * mapEnd hτ t))).val.val = ι u • 1 := by
+    rw [ht, inv_mul_cancel, map_one]
+    rfl
+  rw [map_mul, map_mul, map_inv, hS_cut, h_e_comm, Subgroup.coe_mul, Subgroup.coe_mul,
+    Units.val_mul, Units.val_mul, ← mul_smul_comm, ← smul_mul_assoc, h_cut_u,
+    smul_mul_assoc, mul_smul_comm, ← Units.val_mul, ← Units.val_mul,
+    ← Subgroup.coe_mul, ← Subgroup.coe_mul, ← mul_assoc] at h_cob
+  exact h_cob
+
 /-- Let `O` be profinite and integrally closed in `R`. Let `τ`, with `τ ^ p = 1`, be tame on `O` at
 the levels `0` and `m = u * M` (`star m = m`), commute with `star`, and fix some `c` with
 `c - star c` a unit. `ι = algebraMap O R` carries `τ` to a `σ` that commutes with `star`;
@@ -355,76 +476,22 @@ lemma New.cocyclesSplit_and_isMatchingPair_of_congruence {O R n : Type} [CommRin
   -- the first is Hilbert 90 at level `m`, the second uses the root that
   -- `New.exists_isNormRoot_and_mem_of_mem` gives.
   set ι : O →+* R := algebraMap O R
-  have hι : ∀ x : O, ι (star x) = star (ι x) := algebraMap_star_comm
   have h_inj : (⇑ι).Injective := h_closed.algebraMap_injective
   -- `ι u` is an idempotent with `ι u * ι m = ι m`. The relations with `ι m` determine `ι u` and
   -- `v`, so `star` and `σ`, which fix `ι m`, fix them too.
   have hu : ι u * ι u = ι u := by linear_combination (1 - ι u) * hmv + ι m * huv
   have hum : ι u * ι m = ι m := by rw [← hm_eq, map_mul, ← mul_assoc, hu]
-  have h_unique {a b : R} (hmb : ι m * b = a) (hab : a * b = b) (ham : a * ι m = ι m) :
-      a = ι u ∧ b = v := by
-    have ha : a = ι u := by linear_combination (ι u - 1) * hmb - b * hum + (1 - a) * hmv + v * ham
-    exact ⟨ha, by linear_combination (b + v) * ha - hab - b * hmv + v * hmb + huv⟩
-  have h_fixed (φ : R →+* R) (hφ : φ (ι m) = ι m) : φ (ι u) = ι u ∧ φ v = v := by
-    apply h_unique
-    · rw [← hmv, map_mul φ, hφ]
-    · rw [← map_mul φ, huv]
-    · rw [← hφ, ← map_mul φ, hum]
   obtain ⟨hu_star, hv_star⟩ : star (ι u) = ι u ∧ star v = v :=
-    h_fixed (starRingEnd R) (by rw [starRingEnd_apply, ← hι, hm_star])
-  obtain ⟨hσu, hσv⟩ := h_fixed σ (by rw [← hιτ, hm_tame.apply_eq_self])
-  let e : U (1 : Matrix n n O) →* U (1 : Matrix n n R) := map ι hι (one_map_ringHom ι)
+    apply_eq_self_of_mul_eq hm_eq hmv huv (φ := starRingEnd R)
+      (by rw [starRingEnd_apply, ← algebraMap_star_comm, hm_star])
+  obtain ⟨-, hσv⟩ := apply_eq_self_of_mul_eq hm_eq hmv huv (by rw [← hιτ, hm_tame.apply_eq_self])
   choose Y hY using fun s ↦ (hL s).mp
-  have h_lift (s : U (1 : Matrix n n R)) (hs : s ∈ L) :
-      ∃ S : U (1 : Matrix n n O), S.val.val = 1 + m • Y s hs ∧ e S = cutAt hu hu_star s := by
-    refine mem_range_map hι h_inj isUnit_one _ ?_
-    simp [hY, hmv, Matrix.map_add, map_smul', smul_smul, cutAt, cutGL]
-    module
-  choose S hS hS_cut using h_lift
+  choose S hS hS_cut using fun s hs ↦
+    exists_eq_one_add_smul_and_map_eq_cutAt h_inj hmv hu hu_star (hY s hs)
   have h_norm_mem {δ : U (1 : Matrix n n R)} : δ ∈ L → twistedNorm (mapEnd hσ) p δ ∈ L :=
     twistedNorm_mem (mapEnd hσ) p hL_tw
-  refine ⟨fun s hs hN ↦ ?_, ?_, ?_⟩
-  · -- the lift of `s` has norm `1` too, so it is a coboundary of some `t ≡ 1` mod `m`
-    -- `e` and `cutAt` commute with the twists, so `e` carries the norm of `S s` to that of `s`.
-    have h_e_comm (δ : U (1 : Matrix n n O)) : e (mapEnd hτ δ) = mapEnd hσ (e δ) :=
-      Subtype.ext (Units.ext (Matrix.ext fun _ _ ↦ hιτ _))
-    have h_cut_comm (δ : U (1 : Matrix n n R)) :
-        cutAt hu hu_star (mapEnd hσ δ) = mapEnd hσ (cutAt hu hu_star δ) :=
-      Subtype.ext (Units.ext (by
-        change ι u • δ.val.val.map σ + (1 - ι u) • 1 = (ι u • δ.val.val + (1 - ι u) • 1).map σ
-        rw [← RingHom.mapMatrix_apply σ (ι u • δ.val.val + (1 - ι u) • 1), map_add,
-          RingHom.mapMatrix_apply, RingHom.mapMatrix_apply, map_smul' (hf := map_mul σ),
-          map_smul' (hf := map_mul σ), ← RingHom.mapMatrix_apply σ 1, map_one, map_sub,
-          map_one, hσu]))
-    have h_norm : e (twistedNorm (mapEnd hτ) p (S s hs)) = e 1 := by
-      rw [map_twistedNorm (σ := mapEnd hσ) e h_e_comm, hS_cut,
-        ← map_twistedNorm (cutAt hu hu_star) h_cut_comm, hN, map_one, map_one]
-    obtain ⟨t, W, ht : S s hs * mapEnd hτ t = t, hW : t.val.val = 1 + m • W⟩ :=
-      unitary_hilbert90_at_level hO hτ_tame hc h_unit hτ (S s hs) hm_star hm_tame (hS s hs)
-        (map_injective h_inj (congrArg (fun x : U (1 : Matrix n n R) ↦ x.val.val) h_norm))
-    have h_et_mem : e t ∈ L := (hL (e t)).mpr ⟨u • W, by
-      change (u • W).map ι = v • ((t.val.val).map ι - 1)
-      rw [map_smul' (hf := map_mul ι), hW, ← RingHom.mapMatrix_apply ι (1 + m • W), map_add,
-        map_one, RingHom.mapMatrix_apply, map_smul' (hf := map_mul ι), add_sub_cancel_left,
-        smul_smul, mul_comm v, hmv]⟩
-    have h_et_off : (1 - ι u) • (e t).val.val = (1 - ι u) • 1 := by
-      change (1 - ι u) • (t.val.val).map ι = (1 - ι u) • 1
-      rw [hW, ← RingHom.mapMatrix_apply, map_add, map_one, RingHom.mapMatrix_apply,
-        map_smul' (hf := map_mul ι), smul_add, smul_smul, sub_mul, one_mul, hum, sub_self,
-        zero_smul, add_zero]
-    refine ⟨e t, h_et_mem, h_et_off, ?_⟩
-    -- On the `u`-part, `t⁻¹ * s * τ t = 1` is `e` applied to `t⁻¹ * S * τ t = 1`.
-    have h_cut_u : ι u • (cutAt hu hu_star s).val.val = ι u • s.val.val := by
-      change ι u • (ι u • s.val.val + (1 - ι u) • 1) = ι u • s.val.val
-      rw [smul_add, smul_smul, smul_smul, hu, mul_sub, mul_one, hu, sub_self, zero_smul, add_zero]
-    have h_cob : ι u • (e (t⁻¹ * (S s hs * mapEnd hτ t))).val.val = ι u • 1 := by
-      rw [ht, inv_mul_cancel, map_one]
-      rfl
-    rw [map_mul, map_mul, map_inv, hS_cut, h_e_comm, Subgroup.coe_mul, Subgroup.coe_mul,
-      Units.val_mul, Units.val_mul, ← mul_smul_comm, ← smul_mul_assoc, h_cut_u,
-      smul_mul_assoc, mul_smul_comm, ← Units.val_mul, ← Units.val_mul,
-      ← Subgroup.coe_mul, ← Subgroup.coe_mul, ← mul_assoc] at h_cob
-    exact h_cob
+  refine ⟨cocyclesSplit_of_congruence u hO hτ_tame hc h_unit hm_star hm_tame hτ h_starModule
+    h_closed hσ hm_eq hιτ hmv huv hL, ?_, ?_⟩
   · -- the indicator of `L` is invariant under twisted conjugation by `L`
     simp +contextual [mul_mem_cancel_left, mul_mem_cancel_right, hL_tw, indicator]
   -- The polynomial is that of some `g`, which lies in `L` by the supports.
