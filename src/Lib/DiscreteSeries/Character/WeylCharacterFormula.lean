@@ -237,7 +237,12 @@ section
 omit [DecidableEq n]
 
 @[fun_prop]
-lemma continuous_torusEval : Continuous fun x : n → Circle ↦ torusEval x P := by continuity
+lemma continuous_torusEval : Continuous fun x : n → Circle ↦ torusEval x P := by
+  simp_rw [torusEval_eq_sum]
+  refine continuous_finsetSum _ fun γ _ ↦ continuous_const.mul <|
+    continuous_finsetProd _ fun i _ ↦ ?_
+  exact (continuous_subtypeVal.comp (continuous_apply i)).zpow₀ _
+    fun x ↦ .inl (Circle.coe_ne_zero _)
 
 /-- A Laurent polynomial is determined by its values on the torus. -/
 lemma eq_of_torusEval_eq (h_eval : ∀ x : n → Circle, torusEval x P = torusEval x Q) : P = Q := by
@@ -324,7 +329,9 @@ lemma apply_comp_perm_of_conj_invariant {w : Perm n} (x : n → Circle) (hw : ε
   have h_conj : y * diagTorusK (x ∘ w) * y⁻¹ = diagTorusK x := by
     ext
     simp [y, g, diagTorus, ← map_inv, diagonal, Matrix.mul_apply, sum_ite]
-  rw [← h_inv y, h_conj, ← h_inv 1, one_mul, inv_one, mul_one]
+  calc f (x ∘ w) = d (y * diagTorusK (x ∘ w) * y⁻¹) := (h_inv y _).symm
+    _ = d (diagTorusK x) := by rw [h_conj]
+    _ = f x := by simpa only [one_mul, inv_one, mul_one] using h_inv 1 x
 
 /-- For injective `l`, the product `l.rootProd Ne` of `x a - x b` over `ε a ≠ ε b` and `l b < l a`
 (the positive noncompact roots) is, up to a sign that does not depend on `x`, the product of
@@ -377,7 +384,9 @@ lemma alternant_coeff_of_isKDominant {l : HCParam ε} {ν ν' : n → ℤ} (hl :
       (hji : l j < l i) : (μ + δ) j < (μ + δ) i := by
     -- `δ j < δ i`: the indices below `j` are below `i`, and `j` is below `i` but not below itself.
     exact add_lt_add_of_le_of_lt (hμ i j hε (neg_lt_neg hji)) (ofNat_lt.2 (card_lt_card
-      ((ssubset_iff_of_subset (by grind)).2 ⟨j, by simp [hε, hji], by simp⟩)))
+      ((ssubset_iff_of_subset fun b hb ↦ by
+        simp only [mem_filter, mem_univ, true_and] at hb ⊢
+        exact ⟨hε.trans hb.1, hb.2.trans hji⟩).2 ⟨j, by simp [hε, hji], by simp⟩)))
   rw [alternant_apply, sum_eq_single 1 (fun w _ h_ne ↦ ite_eq_right ?_) (by simp)]
   · simp [comm]
   rintro ⟨hw, h_eq⟩
@@ -388,7 +397,9 @@ lemma alternant_coeff_of_isKDominant {l : HCParam ε} {ν ν' : n → ℤ} (hl :
   have hwi_ne : w i ≠ i := Perm.mem_support.1 hi
   have hwi : l (w i) < l i :=
     (h_max (w i) (Perm.apply_mem_support.2 hi)).lt_of_ne (hl.ne hwi_ne)
-  have hji : l j < l i := (h_max j (by grind [Perm.mem_support])).lt_of_ne (hl.ne (by grind))
+  have hj_ne_i : j ≠ i := fun h ↦ hwi_ne (h ▸ hj)
+  have hj_supp : j ∈ w.support := Perm.mem_support.2 fun h ↦ hj_ne_i (h.symm.trans hj)
+  have hji : l j < l i := (h_max j hj_supp).lt_of_ne (hl.ne hj_ne_i)
   apply lt_irrefl ((ν' + δ) i)
   calc (ν' + δ) i = (ν + δ) (w i) := (congrFun h_eq i).symm
     _ < (ν + δ) i := h_strict hν (congrFun hw i).symm hwi
@@ -424,15 +435,30 @@ lemma isKDominant_sub_lowerCount {l : HCParam ε} (hl : l.Injective) {γ : n →
   -- `[γ j, γ i)`, so there are at most `γ i - γ j` of them.
   let below (a : n) : Finset n := {b | ε a = ε b ∧ l b < l a}
   replace hji : l j < l i := by simpa using hji
-  have h_maps : Set.MapsTo γ ↑(below i \ below j) ↑(Ico (γ j) (γ i)) := fun _ ↦ by grind
-  have h_injOn : Set.InjOn γ ↑(below i \ below j) := fun _ ↦ by grind
-  have h_card : #(below i \ below j) ≤ #(Ico (γ j) (γ i)) :=
-    card_le_card_of_injOn γ h_maps h_injOn
-  have h_sdiff : (#(below i \ below j) : ℤ) = #(below i) - #(below j) := cast_card_sdiff (by grind)
+  have h_sub : below j ⊆ below i := fun b hb ↦ by
+    simp only [below, mem_filter, mem_univ, true_and] at hb ⊢
+    exact ⟨hε.trans hb.1, hb.2.trans hji⟩
+  have h_maps : Set.MapsTo γ ↑(below i \ below j) ↑(Ico (γ j) (γ i)) := by
+    intro b hb
+    simp only [below, mem_coe, mem_sdiff, mem_filter, mem_univ, true_and, mem_Ico] at hb ⊢
+    have hjb : l j ≤ l b := le_of_not_gt fun hlt ↦ hb.2 ⟨hε.symm.trans hb.1.1, hlt⟩
+    rcases lt_or_eq_of_le hjb with h_lt | h_eq
+    · exact ⟨(h_strict j b (hε.symm.trans hb.1.1) h_lt).le, h_strict b i hb.1.1.symm hb.1.2⟩
+    · exact ⟨(hl h_eq) ▸ le_rfl, h_strict b i hb.1.1.symm hb.1.2⟩
+  have h_injOn : Set.InjOn γ ↑(below i \ below j) := by
+    intro a ha b hb h_eq
+    simp only [below, mem_coe, mem_sdiff, mem_filter, mem_univ, true_and] at ha hb
+    rcases lt_trichotomy (l a) (l b) with hlt | heq | hgt
+    · exact ((h_strict a b (ha.1.1.symm.trans hb.1.1) hlt).ne h_eq).elim
+    · exact hl heq
+    · exact ((h_strict b a (hb.1.1.symm.trans ha.1.1) hgt).ne h_eq.symm).elim
+  have h_card : (#(below i \ below j) : ℤ) ≤ #(Ico (γ j) (γ i)) :=
+    Int.ofNat_le.2 (card_le_card_of_injOn γ h_maps h_injOn)
+  have h_sdiff : (#(below i \ below j) : ℤ) = #(below i) - #(below j) := cast_card_sdiff h_sub
   have h_Ico : (#(Ico (γ j) (γ i)) : ℤ) = γ i - γ j :=
     card_Ico_of_le _ _ (h_strict j i hε.symm hji).le
   change γ j - #(below j) ≤ γ i - #(below i)
-  lia
+  omega
 
 /-- Let `l` be injective and let `l.lowerCount Eq a` count the `b` with `ε a = ε b` and `l b < l a`.
 For every exponent `γ` there are an integer `s` and a weight `ν`, monotone in `l` on each class of
@@ -607,19 +633,43 @@ lemma kTypeChar_diagTorusK_eq_trace_schur {κ : ℤˣ → ℕ → ℕ} {e : ℤ�
     rw [← dotProduct_mulVec, ← prod_weightMinors_toSquareBlock k]
     refine (weylRep_coeff_eq_prod_weightMinors p (blocks k)).trans (prod_congr rfl fun τ _ ↦ ?_)
     exact congrArg₂ weightMinors (funext fun i ↦ (hν τ i).symm) rfl
+  have h_blk_eq (k : maxCompactU ε) (τ : ℤˣ) (i j : m τ) :
+      (blocks k τ : Matrix (m τ) (m τ) ℂ) i j = (k.1 : Matrix n n ℂ) i.1 j.1 := by
+    simp [blocks, toParabolic, blockHom, toSquareBlock_def]
+  have h_blk : Continuous fun k : maxCompactU ε ↦
+      fun τ : ℤˣ ↦ (blocks k τ : Matrix (m τ) (m τ) ℂ) := by
+    refine continuous_pi fun τ ↦ continuous_pi fun i ↦ continuous_pi fun j ↦ ?_
+    simp_rw [h_blk_eq]
+    exact (continuous_apply j.1).comp ((continuous_apply i.1).comp
+      (continuous_U_iff_matrix.1 continuous_subtypeVal))
+  have h_det (τ : ℤˣ) : Continuous fun k : maxCompactU ε ↦
+      ((blocks k τ : Matrix (m τ) (m τ) ℂ).det) ^ e τ :=
+    (Continuous.matrix_det ((continuous_apply τ).comp h_blk)).zpow₀ _
+      fun k ↦ .inl (blocks k τ).det_ne_zero
   have h_cont : Continuous fun k : maxCompactU ε ↦ R k := by
-    simp [R, blocks, toParabolic, weylRep, Units.smul_def, blockHom, toSquareBlock_def]
-    -- `try` is needed as the discharger is run on other side conditions as well
-    fun_prop (disch := try exact fun k ↦ .inl (blocks k _).det_ne_zero)
+    simp only [R, MonoidHom.comp_apply, weylRep, MonoidHom.coe_mk, OneHom.coe_mk,
+      Units.smul_def, Units.coe_prod, Units.val_zpow_eq_zpow_val,
+      GeneralLinearGroup.val_det_apply]
+    exact continuous_smul.comp
+      ((continuous_finsetProd _ fun τ _ ↦ h_det τ).prodMk (continuous_schur.comp h_blk))
   -- The mean `A` of `R g (v wᵀ) R g⁻¹` over `K` commutes with `R`, hence is a scalar `z`;
   -- `h_mean L` says that `L A` is the mean of `L (R g (v wᵀ) R g⁻¹)` for a linear map `L`.
   obtain ⟨A, hA, h_mean⟩ :=
-    exists_intertwining_mean (haarK ε) R R (vecMulVec v w) (by fun_prop)
+    exists_intertwining_mean (haarK ε) R R (vecMulVec v w)
+      ((h_cont.mul continuous_const).mul (h_cont.comp continuous_inv))
   obtain ⟨z, rfl⟩ : A ∈ Set.range (scalar (WeylIndexFamily m κ)) :=
     mem_range_scalar_of_commute_schur fun g hg ↦ by
-      obtain ⟨y, -, rfl⟩ := exists_maxCompactU_of_blocks g hg
-      -- the two sides differ from those of `A * R y = R y * A` by a nonzero scalar
-      simpa [R, weylRep, Units.smul_def, GeneralLinearGroup.det_ne_zero, zpow_ne_zero] using! hA y
+      obtain ⟨y, -, hy⟩ := exists_maxCompactU_of_blocks g hg
+      have h_blk_y : (fun τ ↦ (blocks y τ : Matrix (m τ) (m τ) ℂ)) = g := by
+        rw [← hy]
+        ext τ i j
+        exact (h_blk_eq y τ i j).trans (by simp [toSquareBlock_def])
+      have h_comm : A * R y = R y * A := hA y
+      dsimp only [R, MonoidHom.comp_apply, weylRep, MonoidHom.coe_mk, OneHom.coe_mk] at h_comm
+      rw [h_blk_y, mul_smul_comm, smul_mul_assoc] at h_comm
+      replace h_comm := congrArg ((∏ τ : ℤˣ, (blocks y τ).det ^ e τ)⁻¹ • ·) h_comm
+      simp only [inv_smul_smul] at h_comm
+      exact h_comm
   have h_one : w ⬝ᵥ v = 1 := by simpa using h_coeff 1
   -- Apply the functionals `X ↦ tr (X R k)` and `X ↦ wᵀ X v` to the mean; the second takes the
   -- value `z` on the scalar, because `wᵀ v = weightMinors ν 1 = 1`.
@@ -628,9 +678,13 @@ lemma kTypeChar_diagTorusK_eq_trace_schur {κ : ℤˣ → ℕ → ℕ} {e : ℤ�
     have h_trace_conj (g : maxCompactU ε) :
         (R g * vecMulVec v w * R g⁻¹ * R k).trace = weightMinors ν (g⁻¹ * k * g).val := by
       rw [← h_coeff]
-      simp [mul_vecMulVec, vecMulVec_mul, ← dotProduct_mulVec, dotProduct_comm (_ *ᵥ _)]
-    simpa [h_trace_conj, ← smul_one_eq_diagonal] using
-      h_mean (traceLinearMap _ ℂ ℂ ∘ₗ .mulRight ℂ (R k))
+      simp only [mul_vecMulVec, vecMulVec_mul, trace_vecMulVec, dotProduct_comm (_ *ᵥ _),
+        ← dotProduct_mulVec, mulVec_mulVec, ← map_mul, mul_assoc]
+    have h := h_mean (traceLinearMap _ ℂ ℂ ∘ₗ .mulRight ℂ (R k))
+    simp only [LinearMap.comp_apply, LinearMap.mulRight_apply, traceLinearMap_apply,
+      h_trace_conj, scalar_apply, ← smul_one_eq_diagonal, smul_mul_assoc, one_mul,
+      trace_smul, smul_eq_mul] at h
+    exact h
   have h_norm : ν.kTypeNormSq = z := by
     -- the functional `X ↦ wᵀ X v`
     let coeffMap : Matrix (WeylIndexFamily m κ) (WeylIndexFamily m κ) ℂ →ₗ[ℂ] ℂ :=
@@ -651,7 +705,10 @@ lemma kTypeChar_diagTorusK_eq_trace_schur {κ : ℤˣ → ℕ → ℕ} {e : ℤ�
     simp [m, blocks, toParabolic, blockHom, toSquareBlock_def, diagTorus, diagonal_apply,
       Subtype.val_inj]
   rw [h_trace]
-  simp [R, weylRep, Units.smul_def, GeneralLinearGroup.val_det_apply, h_blocks, m, prod_zpow]
+  dsimp only [R, MonoidHom.comp_apply, weylRep, MonoidHom.coe_mk, OneHom.coe_mk]
+  simp only [Units.smul_def, Units.coe_prod, Units.val_zpow_eq_zpow_val,
+    GeneralLinearGroup.val_det_apply, h_blocks, det_diagonal, trace_smul, smul_eq_mul, prod_zpow]
+  rfl
 
 omit [DecidableEq n] in
 /-- If `q τ` enumerates the block of sign `τ` by increasing `l`, then the indices of this block at
@@ -685,9 +742,11 @@ lemma torusEval_rootProd_eq_prod_vandermonde
     _ = ∏ j : Fin (Fintype.card {i : n // ε i = τ}), ∏ i ∈ Iio j,
           (x (q τ j) - x (q τ i) : ℂ) := by
       rw [← (q τ).prod_comp]
-      simp [(q τ _).property, filter_lt_eq_map_Iio q hq]
+      simp only [(q τ _).property, filter_lt_eq_map_Iio q hq, prod_map]
+      rfl
     _ = ∏ i : Fin (Fintype.card {i : n // ε i = τ}), ∏ j ∈ Ioi i,
-          (x (q τ j) - x (q τ i) : ℂ) := prod_comm' (by simp)
+          (x (q τ j) - x (q τ i) : ℂ) := prod_comm' fun _ _ ↦ by
+            simp only [mem_Iio, mem_Ioi, mem_univ, true_and, and_true]
     _ = _ := (det_vandermonde _).symm
 
 /-- Let `l` be injective and `ν` dominant for the order of `l`. Enumerate each block `{i | ε i = τ}`
@@ -919,7 +978,9 @@ lemma New.weyl_dimension_formula {n : Type} [Fintype n] [DecidableEq n] {l : HCP
     simpa [prod_mul_distrib] using
       tendsto_finsetProd univ fun i _ ↦ tendsto_finsetProd {j | l j < l i} fun j _ ↦ h_slope i j
   -- The limits of the two sides of `h_swap` agree, and at the identity `χ Λ 1 = Λ.kTypeNormSq⁻¹`.
-  have h_cont : Continuous fun t ↦ χ Λ (x δ t) := by fun_prop
+  have h_cont : Continuous fun t ↦ χ Λ (x δ t) := Λ.kTypeChar.continuous.comp
+    ((continuous_diagTorus.subtype_mk _).comp
+      (continuous_pi fun i ↦ Circle.exp.continuous.zpow _))
   have h_scaled : Filter.Tendsto
       (fun t : ℝ ↦ (∏ i, (t : ℂ) ^ #{j | l j < l i})⁻¹ * Δ (x δ t ·) * χ Λ (x δ t))
       (nhdsWithin 0 {0}ᶜ) (nhds ((∏ i, Complex.I ^ #{j | l j < l i}) * Δ ((Λ + δ) ·))) :=
@@ -928,8 +989,10 @@ lemma New.weyl_dimension_formula {n : Type} [Fintype n] [DecidableEq n] {l : HCP
     have h_id : χ Λ (x δ 0) = (Λ.kTypeNormSq : ℂ)⁻¹ := by
       simp [χ, kTypeChar, x, diagTorusK, diagTorus]
     -- cancel the powers of `I`
-    simpa [h_id, prod_eq_zero_iff, mul_assoc] using
-      tendsto_nhds_unique ((h_lim δ).mul h_cont.continuousWithinAt) h_scaled
+    have h := tendsto_nhds_unique ((h_lim δ).mul h_cont.continuousWithinAt) h_scaled
+    dsimp only at h
+    rw [h_id, mul_assoc] at h
+    exact mul_left_cancel₀ (prod_ne_zero_iff.2 fun _ _ ↦ pow_ne_zero _ Complex.I_ne_zero) h
   -- `Λ + δ` differs from `l / 2` by the constant `(n - 1) / 2`.
   have h_shift (i : n) : (2 * (Λ + δ) i + 1 : ℂ) = l i + Fintype.card n := by
     have h_two : 2 * Λ i = l i - (#{j | l j < l i} - #{j | l i < l j}) := by
