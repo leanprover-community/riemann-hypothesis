@@ -184,10 +184,9 @@ lemma apply_sqrt_eq_or_eq_neg {E : Type*} [Field E] [EmbeddedNumberField E] (g :
 
 section KummerSign
 
-open scoped Classical
-
 variable {E : Type} [Field E] [EmbeddedNumberField E] {b c : Ω} {x : E}
 
+open scoped Classical in
 /-- The Kummer sign homomorphism `Gal(Ω/E) →* ℤˣ` (`{±1}`) sending `g` to `g c / c`. -/
 private noncomputable def sqrtSign (hc : c ^ 2 = algebraMap E Ω x) (hc_ne : c ≠ 0) :
     Gal(Ω/E) →* ℤˣ :=
@@ -233,6 +232,7 @@ private lemma signToQZ_eq_one_iff (u : ℤˣ) : signToQZ u = 1 ↔ u = 1 := by
   · simp
   · simpa [signToQZ] using (QZ.ofZMod_injective (n := 2)).ne (by decide : (1 : ZMod 2) ≠ 0)
 
+open scoped Classical in
 /-- The quadratic character `Gal(Ω/E) → ℚ/ℤ` of `E(b)`, composing `sqrtSign` with `ℤˣ ↪ ℚ/ℤ`. -/
 private noncomputable def sqrtChar (hb : b ^ 2 = algebraMap E Ω x) (hb_ne : b ≠ 0) :
     QZChar Gal(Ω/E) :=

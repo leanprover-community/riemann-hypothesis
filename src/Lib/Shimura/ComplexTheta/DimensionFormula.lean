@@ -497,7 +497,8 @@ lemma IsAppellHumbert.linearIndependent_thetaShiftEnd_out :
     intro q q' h_eq
     -- Equal characters give `𝐞 (E (-q + q', y)) = 1` for all `y`, so `-q + q'` lies in `L`.
     refine out_equiv_out.mp (leftRel_apply.mpr (hp.isDualFamily.mem_of_forall_eq_one _ ?_))
-    show ∀ y : B.dualLattice, (𝐞 (B.riemannForm ((-out q + out q' : B.dualLattice) : V) y) : ℂ) = 1
+    change ∀ y : B.dualLattice,
+        (𝐞 (B.riemannForm ((-out q + out q' : B.dualLattice) : V) y) : ℂ) = 1
     intro y
     have h_phase : (𝐞 (B.riemannForm ((q.out : B.dualLattice) : V) y) : ℂ) =
         𝐞 (B.riemannForm ((q'.out : B.dualLattice) : V) y) :=

@@ -35,7 +35,6 @@ noncomputable section
 
 open Complex Real Set Filter Topology MeasureTheory Metric Asymptotics DirichletCharacter
   HadamardThreeLines
-open scoped Classical
 
 namespace New
 

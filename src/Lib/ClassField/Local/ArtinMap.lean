@@ -220,7 +220,6 @@ namespace New
 
 open Filter WithZero Units Module LinearMap Subgroup Cohomology DFunLike QZChar
   IsProGalois Valued
-open scoped Classical
 
 variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [NumberField K] {w : FinPlace K}
 

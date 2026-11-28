@@ -163,7 +163,7 @@ instance isAppellHumbert_hermitianForm : IsAppellHumbert L.hermitianForm (sigmaS
       ring
     have h_sum : (a * L.ω₁ + b * L.ω₂ + (c * L.ω₁ + d * L.ω₂)) / 2 ∈ L.lattice ↔
         Even (a + c) ∧ Even (b + d) := by
-      rw [← half_mem_lattice_iff_even]
+      rw [← half_mem_lattice_iff_even L]
       push_cast
       ring_nf
     have hk_odd : ¬ Even k := by fin_cases hk <;> simp

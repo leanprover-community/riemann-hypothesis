@@ -302,7 +302,6 @@ Several objects are chosen by `epsilon` from their characteristic property. `New
 section LocalDefs
 
 open NumberField Units
-open scoped Classical
 
 namespace New
 
