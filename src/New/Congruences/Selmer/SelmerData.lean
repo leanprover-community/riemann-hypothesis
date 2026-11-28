@@ -678,26 +678,34 @@ lemma span_range_smul_single_eq_top {G : Type} [Monoid G] {ρ : G →* Matrix n 
   exact eq_top_of_stable_of_isUnit hρ (Set.forall_mem_range.2 h_stable)
     (subset_span ⟨1, by simp⟩ : Pi.single i 1 ∈ X) (j := i) (by simp)
 
-/-- Let `O` be the integer ring of a finite extension of `ℚ_ℓ`, and let `X` be a finite `O`-module.
-The `ε`-torsion of its character module `CharacterModule X` (the dual `Hom(X, ℚ/ℤ)`) has length at
-most that of the `ε`-torsion of `X`. -/
-lemma length_torsionBy_characterModule_le {ℓ : ℕ} [ThePrime ℓ] [PadicIntegerRing O ℓ] {X : Type}
+/-- Over a ring of `ℓ`-adic integers, the `ε`-torsion of a finite module and the
+`ε`-torsion of its character module have equal length. The latter is the dual of `X / ε X`. -/
+lemma length_torsionBy_characterModule_eq {ℓ : ℕ} [ThePrime ℓ] [PadicIntegerRing O ℓ] {X : Type}
     [AddCommGroup X] [Module O X] [Finite X] (ε : O) :
-    length O (torsionBy O (CharacterModule X) ε) ≤ length O (torsionBy O X ε) := by
-  -- A character killed by `ε` is a character of `X / ε X`, which has as many elements as `X[ε]`.
+    length O (torsionBy O (CharacterModule X) ε) = length O (torsionBy O X ε) := by
   let δ : X →ₗ[O] X := LinearMap.lsmul O X ε
-  have h_range : torsionBy O (CharacterModule X) ε ≤ map (CharacterModule.dual δ.range.mkQ) ⊤ := by
-    intro χ hχ
-    have h_vanish : δ.range.toAddSubgroup ≤ AddMonoidHom.ker χ := by
-      rintro _ ⟨m, rfl⟩
-      exact (DFunLike.congr_fun ((mem_torsionBy_iff ε χ).1 hχ) m : χ (ε • m) = 0)
-    -- The lift of `χ`, composed with the quotient map, is `χ`.
-    exact ⟨QuotientAddGroup.lift δ.range.toAddSubgroup χ h_vanish, mem_top, by ext; rfl⟩
+  let pullback := CharacterModule.dual δ.range.mkQ
+  -- Pullback identifies the characters of `X / ε X` with those that vanish on `ε X`.
+  have h_range : torsionBy O (CharacterModule X) ε = LinearMap.range pullback := by
+    ext χ
+    constructor
+    · intro hχ
+      have h_vanish : δ.range.toAddSubgroup ≤ AddMonoidHom.ker χ := by
+        rintro _ ⟨m, rfl⟩
+        exact (DFunLike.congr_fun ((mem_torsionBy_iff ε χ).1 hχ) m : χ (ε • m) = 0)
+      exact ⟨QuotientAddGroup.lift δ.range.toAddSubgroup χ h_vanish, by ext; rfl⟩
+    · rintro ⟨χ, rfl⟩
+      refine (mem_torsionBy_iff ε _).2 (DFunLike.ext _ _ fun x ↦ ?_)
+      change χ ((δ.range.mkQ.comp δ) x) = 0
+      rw [LinearMap.range_mkQ_comp, LinearMap.zero_apply, map_zero]
+  have h_injective : Function.Injective pullback :=
+    CharacterModule.dual_injective_of_surjective _ δ.range.mkQ_surjective
+  -- The dual has the same cardinality as the quotient, which has the cardinality of `X[ε]`.
   have : Finite (X ⧸ δ.range) := .of_surjective _ δ.range.mkQ_surjective
-  have h_card : Nat.card (CharacterModule (X ⧸ δ.range)) = Nat.card (torsionBy O X ε) :=
-    (card_hom_QZ _).trans (AddSubgroup.index_range (f := δ.toAddMonoidHom))
-  grw [length_le_of_le_map _ _ h_range, length_top]
-  exact length_le_of_card_dvd_or_le ℓ (.inl h_card.dvd)
+  have h_card : Nat.card (torsionBy O (CharacterModule X) ε) = Nat.card (torsionBy O X ε) := by
+    rw [h_range, ← Nat.card_congr (LinearEquiv.ofInjective pullback h_injective).toEquiv]
+    exact (card_hom_QZ _).trans (AddSubgroup.index_range (f := δ.toAddMonoidHom))
+  exact le_antisymm (length_le_of_card_dvd ℓ h_card.dvd) (length_le_of_card_dvd ℓ h_card.symm.dvd)
 
 variable {ℓ : ℕ} [ThePrime ℓ] [PadicIntegerRing O ℓ] {E : Type} [Field E]
   [EmbeddedNumberField E] [NumberField.IsCMField E] {ρ : Gal(Ω/E) →* Matrix n n O}
@@ -741,7 +749,7 @@ lemma congruenceTerm_le [Nonempty n] (hρ : span O (Set.range ρ) = ⊤) {g : Ga
   calc _ ≤ length O (torsionBy O (CharacterModule (n → QuotSpan a)) Δ) := by
         rw [← relLength_bot, ← relLength_bot]
         exact relLength_le_of_mapsTo ev h_maps h_inj
-    _ ≤ length O (torsionBy O (n → QuotSpan a) Δ) := length_torsionBy_characterModule_le (ℓ := ℓ) Δ
+    _ = length O (torsionBy O (n → QuotSpan a) Δ) := length_torsionBy_characterModule_eq (ℓ := ℓ) Δ
     _ ≤ Fintype.card n * addVal O Δ := length_torsionBy_pi_quot_le a Δ
 
 end Global
