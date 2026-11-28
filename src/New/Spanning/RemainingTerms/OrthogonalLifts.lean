@@ -223,12 +223,8 @@ lemma IsOrthogonalLift.toCols₁_mul_framePair (hu : IsOrthogonalLift j γ v u) 
 /-- The first columns of an orthogonal lift are orthogonal to all its columns. -/
 lemma IsOrthogonalLift.toCols₁_mul_self (hu : IsOrthogonalLift j γ v u) :
     u.toCols₁ᴴ * S.ratGram * u = 0 := by
-  have h_row (a : Fin 𝔰.ϱ) (b : IndexNotBelow j ⊕ τ) : u (inr (inr a)) b = 0 := by
-    simpa [Matrix.mul_apply, Matrix.one_apply, splitGram, apply_ite star] using
-      congrFun₂ hu.orthogonal (inl a) b
-  conv_lhs => rw [hu.toCols₁_eq_fromRows]
-  ext a b
-  simp [Matrix.mul_apply, Matrix.one_apply, splitGram, h_row]
+  simpa [hu.linkMatrix_mul_toCols₁] using
+    (gram_linkMatrix_mul hu.orthogonal_toCols₁ hu.orthogonal 1 0).symm
 
 /-- The isometry: the Gram matrix of the lifts of `v`, corrected by `N⁻¹` times their products with
 `z` and `γ z`, is the Gram matrix of `v` for the positive form `S.linkMetric` on pairs of middle
@@ -243,11 +239,8 @@ lemma IsOrthogonalLift.gram_add_border (hu : IsOrthogonalLift j γ v u) :
   have h_link : linkMatrix γ * u.toCols₂ = v := congrArg toCols₂ hu.linkMatrix_mul
   have h_half : vᴴ * fromBlocks ((2⁻¹ : E) • S.ratMiddle E) 0 0 ((2⁻¹ : E) • S.ratMiddle E) * v =
       u.toCols₂ᴴ * S.ratGram * u.toCols₂ := by
-    -- the product formula for `linkMatrix γ`, with the scalars `2⁻¹` and `-2⁻¹`
-    have h := gram_linkMatrix_mul h_orth h_orth 2⁻¹ (-2⁻¹)
-    rw [neg_neg, mul_inv_cancel, OneMemClass.coe_one, Units.val_one, Matrix.one_mul, ← sub_smul,
-      show (2⁻¹ - -2⁻¹ : E) = 1 by norm_num, one_smul, h_link] at h
-    exact h
+    simpa [h_link, sub_neg_eq_add, ← add_smul, show (2⁻¹ + 2⁻¹ : E) = 1 by norm_num] using
+      gram_linkMatrix_mul h_orth h_orth 2⁻¹ (-2⁻¹)
   have h_last :
       (lastPair γ)ᴴ * S.ratGram * u.toCols₂ = zRowBlockDiagonal (S.ratMiddle E) * v := by
     rw [framePair_last_eq_zRowBlockDiagonal_mul, Matrix.mul_assoc, h_link]
