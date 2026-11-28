@@ -11,6 +11,11 @@ import Lib.Analytic.QuadraticTwist
 the remainder of a sum over prime powers `≡ 1` mod `q` with weights depending on a prime `d`, for
 all `d` of a suitable class, excludes zeros `s ≠ 1` of the `L(s, ψ)`, `ψ` mod `q`, in `re s > β`.
 
+There are three steps: choose one quadratic twist with no zeros in the region relevant to the
+candidate zero; use this to identify the residues of the transform with a sum of untwisted
+zero orders divided by `φ(q) s (1 - s)`; then use Landau's lemma to make the residue vanish.
+Since the zero orders are nonnegative integers, their sum can vanish only if each vanishes.
+
 Notions from other files:
 * `primeRemainder d q x`: the remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`,
   where `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `0` otherwise, and `c_q` is a constant.
@@ -80,11 +85,15 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
   have h_exp : ∀ᶠ v : ℝ in atTop, primeRemainder d q₀ v.exp ≤ A * Real.exp ((β - 1) * v) := by
     filter_upwards [tendsto_exp_atTop.eventually hA] with v hv
     rwa [mul_comm (β - 1) v, Real.exp_mul]
-  have h_landau : r ρ = 0 := h_polar.landau (by linarith) h_nonneg h_exp hρ_re
+  -- The one-sided estimate and the real-axis sign condition force the residue to vanish.
+  have h_residue_zero : r ρ = 0 := h_polar.landau (by linarith) h_nonneg h_exp hρ_re
   have hρ_ne_zero : ρ ≠ 0 := ne_zero_of_re_pos (by linarith)
-  rw [hr ρ hρ_re le_rfl] at h_landau
-  have h_count : n ρ = 0 := by
-    simpa [hρ_ne_zero, sub_ne_zero.2 hρ_ne.symm, NeZero.ne] using h_landau
-  have h_entire : entireL ψ ρ ≠ 0 := (analyticOrderNatAt_entireL_eq_zero_iff ψ ρ).1
-    (Finset.sum_eq_zero_iff.1 h_count ψ (Finset.mem_univ ψ))
+  rw [hr ρ hρ_re le_rfl] at h_residue_zero
+  have h_total_order_zero : n ρ = 0 := by
+    simpa [hρ_ne_zero, sub_ne_zero.2 hρ_ne.symm, NeZero.ne] using h_residue_zero
+  -- No cancellation between the untwisted zero orders is possible.
+  have h_order_zero : analyticOrderNatAt (entireL ψ) ρ = 0 :=
+    Finset.sum_eq_zero_iff.1 h_total_order_zero ψ (Finset.mem_univ ψ)
+  have h_entire : entireL ψ ρ ≠ 0 :=
+    (analyticOrderNatAt_entireL_eq_zero_iff ψ ρ).1 h_order_zero
   exact (entireL_ne_zero_iff ψ hρ_ne).1 h_entire

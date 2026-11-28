@@ -206,7 +206,8 @@ lemma nonneg_of_one (h_one : HeightLe c 1) : 0 ≤ c := by
   have h_padic (l : ℕ) [hl : Fact l.Prime] (ι : ℂ ≃+* PadicAlgCl l) :
       ‖ι H‖ ≤ exp (e l * log l) := by
     simpa [rpow_def_of_pos, hl.out.pos, mul_comm] using he ⟨⟨l, hl.out⟩, ι⟩
-  -- `H` is algebraic, because its `2`-adic size is bounded uniformly in `ι`.
+  -- Uniform boundedness over all embeddings at the prime `2` makes `H` algebraic,
+  -- allowing us to take its field norm.
   have h_alg : IsAlgebraic ℚ H := isAlgebraic_of_norm_complexToCp_le (by simpa using h_padic 2)
   have : FiniteDimensional ℚ ℚ⟮H⟯ := adjoin.finiteDimensional h_alg.isIntegral
   let q : ℚ := Algebra.norm ℚ (gen ℚ H)

@@ -12,7 +12,13 @@ The target forms `D.targetForms` have no evident integral structure, so a target
 integral if its lifts are. The maps `Θ_ϑ`, with the inner products, conjugates and integrality of
 algebraic forms, make the target a twisted lattice (`New.Data.targetLattice`). Its twists are the
 `m`-fold twists `ϑ`, and `ϑ` is allowed at `l` if the norm of its modulus is prime to `l`. The file
-identifies the integral vectors, the conjugate norms and the volumes of this lattice.
+identifies the integral vectors and the conjugate norms of this lattice.
+
+The integrality condition is tested on every allowed lift, not on coordinates of the target.
+Trivial stabilizers on `Y_m` serve two purposes: they remove the denominators in the inner
+product of integral forms and identify the coordinate Gram norm with the norm of the lift.
+Injectivity of the chain is the remaining input for the nonzero Gram determinant in
+`TwistedLattice.covolume_add_index_nonneg`.
 
 Notions from other files:
 * `New.TwistedLattice`: maps `Θ_ϑ` from a space to inner product spaces with integral structures.
@@ -75,6 +81,7 @@ def targetLattice : TwistedLattice D.targetForms D.MFoldTwist where
   lattice (_ : D.MFoldTwist) (ι : PrimePadicIso) := integralForms ι.place
   norm_inner_le_one {ϑ} ι _ φ hφ φ' hφ' := by
     -- The place of `ῑ` is that of `ι` composed with complex conjugation.
+    -- The class stabilizers are trivial, so no stabilizer denominators have to be cleared.
     have hφ_conj : φ ∈ integralForms ⟨ι.place.ιₚ.comp (starRingEnd ℂ)⟩ := hφ
     have h_card (g : Gf D.E (D.Y D.m)) : Nat.card (classAut stdRatPoints
         (levelOf (D.levelPlaces ϑ.toTameChar).placeAt (lastResidueLevel ϑ.toTameChar)) g) ∣ 1 := by

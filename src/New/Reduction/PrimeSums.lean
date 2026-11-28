@@ -14,6 +14,12 @@ total remainder through the remainders `R_q` of prime sums (`totalRemainder_eq`)
 `s_∞`, the direction amount and the main amount (`primeSum_le`, `jetSize_mem_Icc`,
 `directionAmount_mem_Icc`, `le_mainAmount`). The modulus `q₀` is `P.q₀`.
 
+The residue-class restriction arises from the weights of the places. Start with the cutoff
+`x₁` at every place; replace it by `x` at the places sent into `Φ_b`. This replacement occurs
+exactly `#Φ_b` times for `n ≡ 1 mod q₀` and never otherwise (`card_filter_mem_bPlaces`).
+After summing over `n`, the logarithmic terms coincide with `#Φ_a * mainPrimeSum`, leaving
+`totalRemainder_eq`, the identity used in `OneSidedBound`.
+
 Notions from other files:
 * `lambdaKResidueClass d q n` is `Λ_K(n) = Λ(n) (1 - chiK d n)` if `n ≡ 1` modulo `q`, and `0`
   otherwise; `Λ` is the von Mangoldt function and `chiK d` is the Legendre symbol `(·/d)`.
@@ -144,6 +150,8 @@ lemma sum_aPlaces_primeSum :
           #D.aPlaces * primeRemainder P.d 1 D.x₁) +
         D.a * (#D.aPlaces * (D.logX₁ + (logDerivMean P.d 1 1).re) +
           #D.bPlaces * ((D.logX - D.logX₁) / P.q₀.totient)) := by
+  -- Sum first over places to isolate the unrestricted sum at `x₁` and the two
+  -- residue-class sums at `x` and `x₁`.
   simp only [primeSum]
   rw [sum_comm, sum_congr rfl fun n _ ↦ D.sum_aPlaces_lambdaKResidueClass_mul_posPart n]
   simp only [sum_add_distrib, sum_sub_distrib, ← mul_sum]
@@ -184,6 +192,7 @@ lemma totalRemainder_eq :
     D.totalRemainder =
       D.a * (#D.bPlaces * (primeRemainder P.d P.q₀ D.x - primeRemainder P.d P.q₀ D.x₁) +
         #D.aPlaces * primeRemainder P.d 1 D.x₁) := by
+  -- The expected value is exactly the logarithmic main term, not an asymptotic substitute.
   rw [totalRemainder, sum_sub_distrib, sum_const, nsmul_eq_mul, sum_aPlaces_primeSum,
     card_aPlaces_mul_mainPrimeSum, add_sub_cancel_right]
 
