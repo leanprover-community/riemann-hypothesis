@@ -164,32 +164,25 @@ lemma exists_comp_eq_tau_smul_id {p : ℕ} [ThePrime p] (S : Type*) [CommRing S]
     ext
     simp [Algebra.algebraMap_eq_smul_one]
 
-/-- The completed step of `CoeffCompBijective.periodAlg_of_almostCoeff`. Let `ψ`, `ψ'` be functors
-to `O♭`-algebras with perfect values on which `pFlat` is regular, compared by `β` along `φ`, and let
-`S` be a `p`-torsion-free `A_inf`-algebra; `α : N' ⟶ φ ⋙ N` compares `N` and `N'`, the functors on
-`C` and `C'` whose cohomology is taken. If the comparison is bijective for the coefficients
-`b ↦ b ⊗ (O♭ ⊗ S) ⊗ 𝔪`, then it is bijective for the coefficients `b ↦ ((S ⊗ W(𝔪)) ⊗ W(b))^`. Here
-`𝔪` is the maximal ideal of `O♭`, `W(𝔪) = wittOfMaxIdeal`, and `^` is the `p`-adic completion. -/
-private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' : Type 1}
-    [Category C] [Category C'] {p : ℕ} [ThePrime p] {N : AbFunctor C} {N' : AbFunctor C'}
-    {φ : C' ⥤ C} {α : N' ⟶ φ ⋙ N} {S : Type} [CommRing S] [Algebra Ainf S]
-    (h_reg : IsSMulRegular S p) {ψ : C ⥤ CommAlg OFlat} {ψ' : C' ⥤ CommAlg OFlat}
-    {β : φ ⋙ ψ ⟶ ψ'} (hψ : ∀ A : C, IsPerfectTorsionFree (ψ A))
-    (hψ' : ∀ A : C', IsPerfectTorsionFree (ψ' A))
-    (h_red : CoeffCompBijective β α (almostCoeff (OFlat ⊗[Ainf] S))) :
-    CoeffCompBijective β α ((asModules (wittFunctor (k := OFlat)) ⋙
-      tensorWith S (S ⊗[Ainf] wittOfMaxIdeal)) ⋙ moduleCompletion S p) := by
-  -- Put `P b = (S ⊗ W(𝔪)) ⊗ W(b)`. The zeroth coordinates give a natural map
-  -- `red b : P b → b ⊗ (O♭ ⊗ S) ⊗ 𝔪` that kills `p` and is reduction modulo `p` for perfect `b`.
-  -- It induces `redCompl` on the completion of `P`, to which the adic step lifts `h_red`.
-  obtain ⟨(h_modW : IsReductionMod p (constantCoeff : Ainf →+* OFlat)),
-    (h_witt : IsCompleteTorsionFree Ainf), -⟩ :=
-      isReductionMod_constantCoeff_and_isCompleteTorsionFree OFlat OFlat
+/-- The zeroth coordinates give a natural map `red b : (S ⊗ W(𝔪)) ⊗ W(b) → b ⊗ (O♭ ⊗ S) ⊗ 𝔪`
+that kills `p` and is reduction modulo `p` for perfect `b`. Here `𝔪` is the maximal ideal of `O♭`
+and `W(𝔪) = wittOfMaxIdeal`. -/
+private lemma exists_isReductionMod_tensor_wittOfMaxIdeal {p : ℕ} [ThePrime p] (S : Type)
+    [CommRing S] [Algebra Ainf S] :
+    let P : CommAlg OFlat ⥤ ModuleCat S :=
+      asModules (wittFunctor (k := OFlat)) ⋙ tensorWith S (S ⊗[Ainf] wittOfMaxIdeal)
+    ∃ red : ∀ b : CommAlg OFlat, P.obj b →+ (almostCoeff (OFlat ⊗[Ainf] S)).obj b,
+      (∀ b : CommAlg OFlat,
+        ∀ x ∈ Ideal.span {(p : S)} ^ 1 • (⊤ : Submodule S (P.obj b)), red b x = 0) ∧
+      (∀ {b b' : CommAlg OFlat} (f : b ⟶ b'),
+        (red b').comp (P.map f).hom.toAddMonoidHom =
+          ((almostCoeff (OFlat ⊗[Ainf] S)).map f).hom.toAddMonoidHom.comp (red b)) ∧
+      ∀ (b : CommAlg OFlat) [PerfectRing b p], IsReductionMod p (red b) := by
+  intro P
+  obtain ⟨(h_modW : IsReductionMod p (constantCoeff : Ainf →+* OFlat)), -, -⟩ :=
+    isReductionMod_constantCoeff_and_isCompleteTorsionFree OFlat OFlat
   obtain ⟨c, hc⟩ : ∃ c : wittOfMaxIdeal →ₗ[Ainf] MaxIdealFlat, IsReductionMod p c :=
     exists_isReductionMod_wittOfMaxIdeal
-  let P : CommAlg OFlat ⥤ ModuleCat S :=
-    asModules (wittFunctor (k := OFlat)) ⋙ tensorWith S (S ⊗[Ainf] wittOfMaxIdeal)
-  let Q : ModuleCat S ⥤ ModuleCat S := moduleCompletion S p
   -- `red b` takes zeroth coordinates, applies `c`, then rearranges the factors.
   have h_smul : TensorProduct.CompatibleSMul Ainf OFlat (OFlat ⊗[Ainf] S) MaxIdealFlat :=
     CompatibleSMul.of_algebraMap_surjective (OFlat ⊗[Ainf] S) MaxIdealFlat h_modW.left
@@ -223,6 +216,25 @@ private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' 
       (isReductionMod_constantCoeff_and_isCompleteTorsionFree OFlat b).left.lTensor _
     exact ⟨h_bij.surjective.comp h_mod.left,
       fun x ↦ (map_eq_zero_iff _ h_bij.injective).trans (h_mod.right x)⟩
+  exact ⟨red, h_red_zero, h_red_nat, h_red_mod⟩
+
+/-- Let `red b : P b → b ⊗ (O♭ ⊗ S) ⊗ 𝔪` be natural in `b`, kill `p`, and be reduction modulo `p`
+for perfect `b`, where `𝔪` is the maximal ideal of `O♭`. Then `red` induces a natural map `redCompl`
+on the `p`-adic completion of `P`, which is again reduction modulo `p` for perfect `b`. -/
+private lemma exists_isReductionMod_moduleCompletion {p : ℕ} [ThePrime p] {S : Type} [CommRing S]
+    [Algebra Ainf S] {P : CommAlg OFlat ⥤ ModuleCat S}
+    (red : ∀ b : CommAlg OFlat, P.obj b →+ (almostCoeff (OFlat ⊗[Ainf] S)).obj b)
+    (h_red_zero : ∀ b : CommAlg OFlat,
+      ∀ x ∈ Ideal.span {(p : S)} ^ 1 • (⊤ : Submodule S (P.obj b)), red b x = 0)
+    (h_red_nat : ∀ {b b' : CommAlg OFlat} (f : b ⟶ b'),
+      (red b').comp (P.map f).hom.toAddMonoidHom =
+        ((almostCoeff (OFlat ⊗[Ainf] S)).map f).hom.toAddMonoidHom.comp (red b))
+    (h_red_mod : ∀ (b : CommAlg OFlat) [PerfectRing b p], IsReductionMod p (red b)) :
+    ∃ redCompl : (P ⋙ moduleCompletion S p) ⋙ forget₂ _ Ab ⟶
+        almostCoeff (OFlat ⊗[Ainf] S) ⋙ forget₂ _ Ab,
+      ∀ (b : CommAlg OFlat) [PerfectRing b p],
+        IsReductionMod p fun y : (P ⋙ moduleCompletion S p).obj b ↦ redCompl.app b y := by
+  let Q : ModuleCat S ⥤ ModuleCat S := moduleCompletion S p
   -- As `red b` kills `p P b`, it induces a natural map on the completion, via `P b / p`.
   let redCompl : (P ⋙ Q) ⋙ forget₂ _ Ab ⟶ almostCoeff (OFlat ⊗[Ainf] S) ⋙ forget₂ _ Ab :=
     { app b := ofHom <| (QuotientAddGroup.lift _ (red b) (h_red_zero b)).comp
@@ -248,6 +260,64 @@ private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' 
     change redCompl.app b y = 0 ↔ ∃ z, p • z = y
     rw [hxy, (h_red_mod b).right x]
     exact h_rep_zero.symm.trans h_ker
+  exact ⟨redCompl, h_compl_mod⟩
+
+/-- The adic step: let `F` have a map `r` to the almost coefficients `b ↦ b ⊗ (O♭ ⊗ S) ⊗ 𝔪` that,
+on values with `IsPerfectTorsionFree`, completes `p` to a short exact sequence, and let the
+cohomology with coefficients `F` be derived `p`-complete. If the comparison `β`, `α` is bijective
+for the almost coefficients, then it is bijective for `F`. -/
+private lemma CoeffCompBijective.of_almostCoeff_of_modShortExact {C C' : Type 1} [Category C]
+    [Category C'] {p : ℕ} [ThePrime p] {N : AbFunctor C} {N' : AbFunctor C'} {φ : C' ⥤ C}
+    {α : N' ⟶ φ ⋙ N} {S : Type} [CommRing S] [Algebra Ainf S] {ψ : C ⥤ CommAlg OFlat}
+    {ψ' : C' ⥤ CommAlg OFlat} {β : φ ⋙ ψ ⟶ ψ'} (hψ : ∀ A : C, IsPerfectTorsionFree (ψ A))
+    (hψ' : ∀ A : C', IsPerfectTorsionFree (ψ' A))
+    (h_red : CoeffCompBijective β α (almostCoeff (OFlat ⊗[Ainf] S)))
+    {F : CommAlg OFlat ⥤ ModuleCat S}
+    (r : F ⋙ forget₂ _ Ab ⟶ almostCoeff (OFlat ⊗[Ainf] S) ⋙ forget₂ _ Ab)
+    (h : ∀ {D : Type 1} [Category D] {χ : D ⥤ CommAlg OFlat},
+      (∀ A : D, IsPerfectTorsionFree (χ.obj A)) →
+        ModShortExact (Φ := χ ⋙ F) (G := moduleCoeff (χ ⋙ almostCoeff (OFlat ⊗[Ainf] S)))
+          (p : S) (whiskerRight (χ.whiskerLeft r) uliftFunctor))
+    (h' : ∀ {D : Type 1} [Category D] (χ : D ⥤ CommAlg OFlat) (L : AbFunctor D) (n : ℕ),
+      IsDerivedComplete (p : S) (H L (moduleCoeff (χ ⋙ F)) n)) :
+    CoeffCompBijective β α F := by
+  refine .of_mod (h hψ) (h hψ') ?_ (fun n _ ↦ h' ψ N n) (h' ψ' N') h_red
+  -- The square of `r` and `β` commutes: it is its naturality, read in `ULift`.
+  ext A x
+  exact congrArg ULift.up (ConcreteCategory.congr_hom (r.naturality (β.app A)) x.down)
+
+/-- The completed step of `CoeffCompBijective.periodAlg_of_almostCoeff`. Let `ψ`, `ψ'` be functors
+to `O♭`-algebras with perfect values on which `pFlat` is regular, compared by `β` along `φ`, and let
+`S` be a `p`-torsion-free `A_inf`-algebra; `α : N' ⟶ φ ⋙ N` compares `N` and `N'`, the functors on
+`C` and `C'` whose cohomology is taken. If the comparison is bijective for the coefficients
+`b ↦ b ⊗ (O♭ ⊗ S) ⊗ 𝔪`, then it is bijective for the coefficients `b ↦ ((S ⊗ W(𝔪)) ⊗ W(b))^`. Here
+`𝔪` is the maximal ideal of `O♭`, `W(𝔪) = wittOfMaxIdeal`, and `^` is the `p`-adic completion. -/
+private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' : Type 1}
+    [Category C] [Category C'] {p : ℕ} [ThePrime p] {N : AbFunctor C} {N' : AbFunctor C'}
+    {φ : C' ⥤ C} {α : N' ⟶ φ ⋙ N} {S : Type} [CommRing S] [Algebra Ainf S]
+    (h_reg : IsSMulRegular S p) {ψ : C ⥤ CommAlg OFlat} {ψ' : C' ⥤ CommAlg OFlat}
+    {β : φ ⋙ ψ ⟶ ψ'} (hψ : ∀ A : C, IsPerfectTorsionFree (ψ A))
+    (hψ' : ∀ A : C', IsPerfectTorsionFree (ψ' A))
+    (h_red : CoeffCompBijective β α (almostCoeff (OFlat ⊗[Ainf] S))) :
+    CoeffCompBijective β α ((asModules (wittFunctor (k := OFlat)) ⋙
+      tensorWith S (S ⊗[Ainf] wittOfMaxIdeal)) ⋙ moduleCompletion S p) := by
+  -- Put `P b = (S ⊗ W(𝔪)) ⊗ W(b)`. The zeroth coordinates give a natural map
+  -- `red b : P b → b ⊗ (O♭ ⊗ S) ⊗ 𝔪` that kills `p` and is reduction modulo `p` for perfect `b`.
+  -- It induces `redCompl` on the completion of `P`, to which the adic step lifts `h_red`.
+  obtain ⟨(h_modW : IsReductionMod p (constantCoeff : Ainf →+* OFlat)),
+    (h_witt : IsCompleteTorsionFree Ainf), -⟩ :=
+      isReductionMod_constantCoeff_and_isCompleteTorsionFree OFlat OFlat
+  obtain ⟨c, hc⟩ : ∃ c : wittOfMaxIdeal →ₗ[Ainf] MaxIdealFlat, IsReductionMod p c :=
+    exists_isReductionMod_wittOfMaxIdeal
+  let P : CommAlg OFlat ⥤ ModuleCat S :=
+    asModules (wittFunctor (k := OFlat)) ⋙ tensorWith S (S ⊗[Ainf] wittOfMaxIdeal)
+  let Q : ModuleCat S ⥤ ModuleCat S := moduleCompletion S p
+  obtain ⟨red, h_red_zero, h_red_nat, h_red_mod⟩ :=
+    exists_isReductionMod_tensor_wittOfMaxIdeal (p := p) S
+  -- As `red b` kills `p P b`, it induces a natural map `redCompl` on the completion.
+  obtain ⟨redCompl, h_compl_mod⟩ :=
+    exists_isReductionMod_moduleCompletion red h_red_zero h_red_nat h_red_mod
+  have h_fg : (Ideal.span {(p : S)}).FG := fg_span_singleton _
   -- So on values with `IsPerfectTorsionFree` the sequence of `p` and `redCompl` is short exact.
   have h_exact {D : Type 1} [Category D] {χ : D ⥤ CommAlg OFlat}
       (hχ : ∀ A : D, IsPerfectTorsionFree (χ.obj A)) :
@@ -264,22 +334,8 @@ private lemma CoeffCompBijective.completion_wittOfMaxIdeal_of_almostCoeff {C C' 
   have h_dc {D : Type 1} [Category D] (χ : D ⥤ CommAlg OFlat) (L : AbFunctor D) (n : ℕ) :
       IsDerivedComplete (p : S) (H L (moduleCoeff (χ ⋙ P ⋙ Q)) n) :=
     .cohomology (fun _ ↦ .of_isAdicComplete (isAdicComplete h_fg)) L n
-  -- The adic step is stated for any functor `F` with a map `r` to the almost coefficients, in
-  -- place of `P ⋙ Q` and `redCompl`.
-  have h_adic {F : CommAlg OFlat ⥤ ModuleCat S}
-      (r : F ⋙ forget₂ _ Ab ⟶ almostCoeff (OFlat ⊗[Ainf] S) ⋙ forget₂ _ Ab)
-      (h : ∀ {D : Type 1} [Category D] {χ : D ⥤ CommAlg OFlat},
-        (∀ A : D, IsPerfectTorsionFree (χ.obj A)) →
-          ModShortExact (Φ := χ ⋙ F) (G := moduleCoeff (χ ⋙ almostCoeff (OFlat ⊗[Ainf] S)))
-            (p : S) (whiskerRight (χ.whiskerLeft r) uliftFunctor))
-      (h' : ∀ {D : Type 1} [Category D] (χ : D ⥤ CommAlg OFlat) (L : AbFunctor D) (n : ℕ),
-        IsDerivedComplete (p : S) (H L (moduleCoeff (χ ⋙ F)) n)) :
-      CoeffCompBijective β α F := by
-    refine .of_mod (h hψ) (h hψ') ?_ (fun n _ ↦ h' ψ N n) (h' ψ' N') h_red
-    -- The square of `r` and `β` commutes: it is its naturality, read in `ULift`.
-    ext A x
-    exact congrArg ULift.up (ConcreteCategory.congr_hom (r.naturality (β.app A)) x.down)
-  exact h_adic redCompl h_exact h_dc
+  -- The adic step lifts `h_red` (`CoeffCompBijective.of_almostCoeff_of_modShortExact`).
+  exact CoeffCompBijective.of_almostCoeff_of_modShortExact hψ hψ' h_red redCompl h_exact h_dc
 
 /-- After `p`-adic completion and `K ⊗ –`, the functors `b ↦ (S ⊗ W(𝔪)) ⊗ W(b)` and
 `b ↦ S ⊗ W(b)` are isomorphic, for a period ring pair `(S, K)`: tensored with `W(b)`, the maps of
