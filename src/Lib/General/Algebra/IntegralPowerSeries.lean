@@ -155,18 +155,19 @@ namespace New
 
 variable {p : ℕ} [hp : Fact p.Prime] {σ : Type*}
 
-/-- The series `exp a`, obtained by substituting `a` into the exponential series over `ℂ_[p]`. It is
-meaningful when `a` has no constant term. -/
-noncomputable abbrev expSubst (a : MvPowerSeries σ ℂ_[p]) : MvPowerSeries σ ℂ_[p] :=
-  (exp ℂ_[p]).subst a
+/-- The series `exp a`, obtained by substituting `a` into the exponential series over a
+`ℚ`-algebra `R`. It is meaningful when `a` has no constant term. -/
+noncomputable abbrev expSubst {R : Type*} [CommRing R] [Algebra ℚ R] (a : MvPowerSeries σ R) :
+    MvPowerSeries σ R :=
+  (exp R).subst a
 
 /-- The functional equation `exp (a + b) = exp a * exp b` for series `a`, `b` without constant
-term. -/
-lemma expSubst_add (a : MvPowerSeries σ ℂ_[p]) {b : MvPowerSeries σ ℂ_[p]}
-    (ha : a.constantCoeff = 0) (hb : b.constantCoeff = 0) :
+term over a characteristic-zero field. -/
+lemma expSubst_add {R : Type*} [Field R] [CharZero R] (a : MvPowerSeries σ R)
+    {b : MvPowerSeries σ R} (ha : a.constantCoeff = 0) (hb : b.constantCoeff = 0) :
     expSubst (a + b) = expSubst a * expSubst b := by
   -- The universal case in two variables: `exp (X 0 + X 1) = exp (X 0) * exp (X 1)`.
-  have h_univ : expSubst (.X 0 + .X 1 : MvPowerSeries (Fin 2) ℂ_[p]) =
+  have h_univ : expSubst (.X 0 + .X 1 : MvPowerSeries (Fin 2) R) =
       expSubst (.X 0) * expSubst (.X 1) := by
     ext e
     -- The coefficients agree: `(m + n).choose m / (m + n)! = 1 / m! * (1 / n!)`.
@@ -176,7 +177,7 @@ lemma expSubst_add (a : MvPowerSeries σ ℂ_[p]) {b : MvPowerSeries σ ℂ_[p]}
   -- Substituting `a` for `X 0` and `b` for `X 1` commutes with the exponential.
   have hab : MvPowerSeries.HasSubst ![a, b] :=
     MvPowerSeries.hasSubst_of_constantCoeff_zero (by simp [ha, hb])
-  have h_comm (F : MvPowerSeries (Fin 2) ℂ_[p]) (hF : F.constantCoeff = 0) :
+  have h_comm (F : MvPowerSeries (Fin 2) R) (hF : F.constantCoeff = 0) :
       (expSubst F).subst ![a, b] = expSubst (F.subst ![a, b]) :=
     -- `PowerSeries.subst` is `MvPowerSeries.subst` for a family indexed by `Unit`
     MvPowerSeries.subst_comp_subst_apply (HasSubst.of_constantCoeff_zero hF).const hab _
@@ -185,8 +186,8 @@ lemma expSubst_add (a : MvPowerSeries σ ℂ_[p]) {b : MvPowerSeries σ ℂ_[p]}
 
 /-- The exponential of a finite sum of series without constant term is the product of their
 exponentials. -/
-lemma expSubst_sum {I : Type*} {t : Finset I} {a : I → MvPowerSeries σ ℂ_[p]}
-    (h_const : ∀ i : I, (a i).constantCoeff = 0) :
+lemma expSubst_sum {R I : Type*} [Field R] [CharZero R] {t : Finset I}
+    {a : I → MvPowerSeries σ R} (h_const : ∀ i : I, (a i).constantCoeff = 0) :
     expSubst (t.sum a) = ∏ i ∈ t, expSubst (a i) := by
   induction t using Finset.cons_induction with
   | empty => simp [subst_zero_eq_C_constantCoeff]
@@ -218,8 +219,8 @@ lemma padicValNat_factorial_mem_Icc {n K : ℕ} (hn : n < p ^ K) :
     (TauCeti.div_sub_log_le_multiplicity_factorial p n)
 
 /-- Substituting `a` into the rescaled series `f(c X)` is substituting `c • a` into `f`. -/
-lemma subst_rescale_eq_subst_smul {c : ℂ_[p]} (a : MvPowerSeries σ ℂ_[p]) (ha : HasSubst a)
-    (f : ℂ_[p]⟦X⟧) :
+lemma subst_rescale_eq_subst_smul {R : Type*} [CommRing R] {c : R} (a : MvPowerSeries σ R)
+    (ha : HasSubst a) (f : R⟦X⟧) :
     (rescale c f).subst a = f.subst (c • a) := by
   rw [rescale_eq_subst, subst_comp_subst_apply (.smul_X' c) ha, subst_smul ha, subst_X ha]
 
