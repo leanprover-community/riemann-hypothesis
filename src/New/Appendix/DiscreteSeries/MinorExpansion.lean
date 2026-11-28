@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
+import TauCeti.LinearAlgebra.Matrix.Triangular
 public import Lib.General.LinearAlgebra.MatricesNearIdentity
 import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
 import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
@@ -251,13 +252,6 @@ variable {n : Type} [Fintype n] [DecidableEq n] {ε : n → ℤˣ} {h : ℕ} {l 
 
 attribute [local simp] mul_add add_mul mul_assoc lie_def principalMinor_eq_det coordProj
 
-/-- The determinant of a matrix that is triangular for an injective order `o` is the product of
-its diagonal entries. -/
-lemma det_eq_prod_diag_of_blockTriangular {b : Matrix n n ℂ} {o : n → ℤ} (ho : o.Injective) :
-    b.BlockTriangular o → b.det = ∏ i, b i i :=
-  let := LinearOrder.lift' o ho
-  det_of_isUpperTriangular
-
 /-- The value of `l.flenstedJensen 1` at `zᴴ` is the conjugate of its value at `z`. -/
 lemma conj_flenstedJensen_one (z : Matrix n n ℂ) :
     conj (l.flenstedJensen 1 z) = l.flenstedJensen 1 zᴴ := by
@@ -355,8 +349,8 @@ lemma exists_principalMinor_eq_exp (hl : l.HasGap h) (g : USign ε)
       principalMinor (y l) p = principalMinor (g : Matrix n n ℂ) p := by
     clear * - hp hl
     rw [principalMinor_mul, principalMinor_mul, principalMinor_eq_det,
-      det_eq_prod_diag_of_blockTriangular hl.injective, mul_comm, principalMinor_eq_det,
-      det_eq_prod_diag_of_blockTriangular hl.neg.injective] <;>
+      BlockTriangular.det_eq_prod_diag (hb := hl.injective), mul_comm, principalMinor_eq_det,
+      BlockTriangular.det_eq_prod_diag (hb := hl.neg.injective)] <;>
       simp [u, r, BlockTriangular, Matrix.one_apply] <;> grind
   refine ⟨y l, h_coeff, fun p _ hp κ ↦ ?_⟩
   -- Step 3: one minor. Notation: `P` projects to `p`, `Q = k P kᴴ`, and `A`, `B`, `C` are the
