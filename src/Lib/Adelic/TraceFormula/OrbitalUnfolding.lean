@@ -14,20 +14,18 @@ import Lib.DiscreteSeries.Haar.GramPolar
 import Lib.Weil.Periods.Grading
 
 /-!
-# Kernels of levels as forms, and unfolding of orbital integrals
+# Kernel expansions and unfolding of orbital integrals
 
-This file shows that the conjugate of the kernel of a level `K` is a form of type `e`. It expands
-the kernel of `e ⊗ (a ⋆ 1_K)` in an orthonormal basis of forms. It writes `vol K` times the trace
-on forms as the integral over `[G] = Γ \ G` of the kernel on the diagonal. It introduces classes
-of pairs (finite frame, rational matrix) and orbital integrals, and it unfolds the term of an
-irreducible characteristic polynomial into orbital integrals. It ends with triple kernels, the
-rotation of triples and the trace property of this rotation.
+This file expands the kernel of `e ⊗ (a ⋆ 1_K)` in an orthonormal basis of forms. It writes
+`vol K` times the trace on forms as the integral of the diagonal kernel over `[G] = Γ \ G`.
+Classes of pairs (finite frame, rational matrix) index the orbital integrals in the term of an
+irreducible characteristic polynomial. The file ends with triple kernels, the rotation of triples
+and the trace property of this rotation.
 
 ## Main definitions and results
 
-* `New.Space.exists_kernel_form`, `New.Space.partialKernel_convIndicator_eq_sum`: the conjugate of
-  the kernel of a level `K` is a form, and the kernel of `e ⊗ (a ⋆ 1_K)`, for `a` in the group
-  algebra of `G_f`, expands in an orthonormal basis.
+* `New.Space.partialKernel_convIndicator_eq_sum` expands the kernel of `e ⊗ (a ⋆ 1_K)` in an
+  orthonormal basis for `a` in the group algebra of `G_f`.
 * `New.Space.volume_mul_trace_eq`: the volume of the level times the trace on forms is the integral
   over `Γ \ G` of the kernel on the diagonal.
 * `New.frameClass`, `New.Space.orbitalIntegral_unfold`: classes of pairs (finite frame, rational
@@ -54,60 +52,9 @@ Known; see `Lib.Adelic.TraceFormula.TraceComparison` for sources.
 
 noncomputable section
 
-/-! ## The kernel of a level is a form -/
-
-open MeasureTheory Fintype
-
-/-- Let `e` be a cusp kernel of order `B > 8 n ^ 2` on the real group of a space `V` and `K` a
-level, that is, an open subgroup of the standard compact subgroup of `G_f`. For fixed `x` there is a
-form of type `e` (a bounded automorphic function fixed by `e`) of level `K` whose conjugate is the
-kernel `g ↦ ∑_γ (e ⊗ 1_K)(x γ g)`, the sum over the rational points. -/
-theorem New.Space.exists_kernel_form {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
-    [Nonempty n] {s : n → ℤˣ} (V : Space E n s) {e : GInf E s → ℂ} {B : ℕ} (hB : 8 * card n ^ 2 < B)
-    (he : IsCuspKernel B e) (x : G E s) (K : Subgroup (Gf E n)) [hK : IsLevel K] :
-    ∃ k : levelSpace (V.formRep e) K, ∀ g : G E s, starRingEnd ℂ (k.val g) =
-      ∑' γ : V.Γ, e (x * γ * g).1 * Set.indicator K 1 (x * γ * g).2 := by
-  classical
-  -- The conjugate is `F g = ∑_γ (e ⊗ 1_K)(g⁻¹ γ x⁻¹)`. The moduli of its terms have a bounded sum,
-  -- each term is fixed by `e`, and `F` is left invariant under `V.Γ` and of level `K`.
-  let φ : TestFunction (Gf E n) := TestFunction.indicator hK.isOpen hK.isCompact
-  let F (g : G E s) : ℂ := V.partialKernel e φ .univ g x⁻¹
-  obtain ⟨C, hC, h_bound⟩ := V.exists_tsum_enorm_kernelTerm_le_height hB φ he.decay
-  have h_height : 0 < V.height x⁻¹ := V.height_pos x⁻¹
-  have he_meas : Measurable e := he.continuous.measurable
-  have hF_bdd : IsBoundedMeasurable F :=
-    ⟨Measurable.stronglyMeasurable (by fun_prop [partialKernel]), _, fun g ↦
-      norm_tsum_le_of_tsum_enorm_le (by positivity) (h_bound .univ g x⁻¹)⟩
-  have hF_fix : realConv e F = F :=
-    V.realConv_partialKernel φ he.toIsIdempotentKernel fun g ↦ h_bound .univ g x⁻¹
-  have hF_rat : V.Γ.FixesLeft F := by
-    rintro _ ⟨ν, rfl⟩ g
-    exact V.partialKernel_ratEmbed_mul φ (fun _ ↦ .rfl) g x⁻¹
-  have hF_level : HasLevel F K := V.hasLevel_partialKernel
-    (fun u hu y ↦ by simp [φ, TestFunction.indicator, Set.indicator,
-      K.mul_mem_cancel_left (inv_mem hu)]) .univ x⁻¹
-  obtain ⟨k, hk⟩ : ∃ k : levelSpace (V.formRep e) K, k.val.val = realConv e F :=
-    exists_form_eq_realConv ⟨K, hK.isOpen⟩ hF_bdd hF_rat hF_level he.toIsIdempotentKernel
-  refine ⟨k, fun g ↦ ?_⟩
-  -- Conjugate term by term and replace `γ` by `γ⁻¹`, using `e y⁻¹ = conj (e y)`.
-  have hφ_inv (y : Gf E n) : starRingEnd ℂ (φ.val y⁻¹) = Set.indicator K 1 y := by
-    simp [φ, TestFunction.indicator, Set.indicator]
-  have h_term (γ : U V.J) :
-      starRingEnd ℂ (V.kernelTerm e φ (Set.univ.indicator 1) g γ⁻¹ x⁻¹) =
-        e (x * V.ratEmbed γ * g).1 * Set.indicator K 1 (x * V.ratEmbed γ * g).2 := by
-    rw [kernelTerm, show g⁻¹ * V.ratEmbed γ⁻¹ * x⁻¹ = (x * V.ratEmbed γ * g)⁻¹ by simp [mul_assoc],
-      Prod.fst_inv, Prod.snd_inv, he.apply_inv, map_mul, map_mul, hφ_inv, Complex.conj_conj,
-      Set.indicator_univ, Pi.one_apply, map_one, one_mul]
-  let i : U V.J ≃ V.Γ := (MonoidHom.ofInjective V.ratEmbed_injective).toEquiv
-  calc starRingEnd ℂ (k.val g) = starRingEnd ℂ (F g) := by rw [← hF_fix, ← hk]
-    _ = starRingEnd ℂ (∑' γ : U V.J, V.kernelTerm e φ (Set.univ.indicator 1) g γ⁻¹ x⁻¹) :=
-        congrArg _ ((Equiv.inv (U V.J)).tsum_eq fun γ ↦ V.kernelTerm e φ _ g γ x⁻¹).symm
-    _ = ∑' γ : V.Γ, e (x * γ * g).1 * Set.indicator K 1 (x * γ * g).2 := by
-        rw [Complex.conj_tsum, ← i.tsum_eq]
-        exact tsum_congr h_term
-
 /-! ## Orbital integrals and the comparison of traces -/
 
+open MeasureTheory Fintype
 open NumberField Measure Matrix Polynomial Module Subgroup Complex MulAction New.Variety Finset
   Equiv Real ConjAct ENNReal
 open scoped Norms.L2Operator InnerProductSpace ComplexOrder

@@ -45,6 +45,8 @@ term, is a form.
   `e`; `New.Space.exists_form_eq_tsum` is the case of a sum over `V.Γ` of translates of one
   function. `New.levelSpace (V.formRep e) K` is the space of forms of type `e` fixed by the open
   subgroup `K` of the finite points.
+* `New.Space.exists_kernel_form_of_bump` constructs the level kernel from a compactly supported
+  bump that reproduces the real kernel. `New.Space.exists_kernel_form` gives the cusp-kernel case.
 
 Notions from other files:
 * `New.Space.IsAutomorphic`: continuous, left invariant under the rational points `V.Γ`, and right
@@ -623,3 +625,96 @@ theorem New.Space.exists_form_eq_tsum (he : IsIdempotentKernel e) (K : OpenSubgr
   exact exists_form_eq_tsum_of_fixesLeft he K hW_meas h_invariant h_level hM h_le
 
 end Poincare
+
+/-! ## The kernel of a level is a form -/
+
+open MeasureTheory Set ENNReal Fintype
+open scoped Pointwise
+
+namespace New.Space
+
+/-- Projecting a compactly supported bump that reproduces `e` gives the level kernel as a form.
+This construction uses properness of the rational action to bound the number of nonzero terms. -/
+theorem exists_kernel_form_of_bump {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    {s : n → ℤˣ} (V : Space E n s) {e : GInf E s → ℂ} (he : IsIdempotentKernel e)
+    (h_bump : ∃ α : CompactlySupportedContinuousMap (GInf E s) ℂ,
+      ∀ y : GInf E s, ∫ t : GInf E s, α t * e (t⁻¹ * y) = e y)
+    (x : G E s) (K : Subgroup (Gf E n)) [hK : IsLevel K] :
+    ∃ k : levelSpace (V.formRep e) K, ∀ g : G E s, starRingEnd ℂ (k.val g) =
+      ∑' γ : V.Γ, e (x * γ * g).1 * Set.indicator K 1 (x * γ * g).2 := by
+  classical
+  obtain ⟨α, hα⟩ := h_bump
+  let S : Set (G E s) := (fun u ↦ x * u) ⁻¹' (tsupport α ×ˢ (K : Set (Gf E n)))
+  have hS : IsCompact S := (Homeomorph.mulLeft x).isClosedEmbedding.isCompact_preimage
+    (α.hasCompactSupport.prod hK.isCompact)
+  let c : G E s → ℂ := S.indicator fun u ↦ starRingEnd ℂ (α (x.1 * u.1))
+  have hc (u : G E s) : c u = (starRingEnd ℂ (α (x.1 * u.1))) *
+      Set.indicator K 1 (x.2 * u.2) := by
+    by_cases h : x.1 * u.1 ∈ tsupport α
+    · simp [c, S, Set.indicator, h, Prod.mul_def]
+    · simp [c, S, Set.indicator, h, image_eq_zero_of_notMem_tsupport h, Prod.mul_def]
+  have hmeas : Measurable c := Measurable.indicator (by fun_prop) hS.measurableSet
+  have hlevel : HasLevel c K := fun k hk g ↦ by
+    simp [hc, Set.indicator, ← mul_assoc, K.mul_mem_cancel_right hk]
+  -- Fix one rational translate meeting the support. Every other such translate differs
+  -- from it by an element carrying the compact support into contact with itself.
+  let I :=
+    (ProperSMul.isCompact_setOfPred_inter_nonempty (G := V.Γ) hS hS).finite_of_discrete.toFinset
+  let M : ℝ≥0∞ := ‖α.toBoundedContinuousFunction‖₊
+  have hbound (g : G E s) : ∑' γ : V.Γ, ‖c (γ.val * g)‖ₑ ≤ ∑ _ ∈ I, M := by
+    by_cases h : ∃ γ : V.Γ, γ.val * g ∈ S
+    · obtain ⟨γ₀, h₀⟩ := h
+      rw [← (Equiv.mulRight γ₀).tsum_eq]
+      have hmem (δ : V.Γ) (hδ : (δ * γ₀).val * g ∈ S) : δ ∈ I := by
+        change δ ∈ Set.Finite.toFinset _
+        simp only [Set.Finite.mem_toFinset]
+        refine ⟨_, ⟨γ₀.val * g, h₀, rfl⟩, ?_⟩
+        simpa [Subgroup.smul_def, mul_assoc] using hδ
+      rw [tsum_eq_sum (s := I) fun δ hδ ↦ by
+        change ‖S.indicator _ ((δ * γ₀).val * g)‖ₑ = 0
+        rw [Set.indicator_of_notMem (mt (hmem δ) hδ)]
+        exact eNorm_zero]
+      apply Finset.sum_le_sum
+      intro δ _
+      by_cases hu : (δ * γ₀).val * g ∈ S
+      · change ‖S.indicator _ ((δ * γ₀).val * g)‖ₑ ≤ M
+        rw [Set.indicator_of_mem hu]
+        simpa [M] using α.toBoundedContinuousFunction.nnNorm_coe_le_nnNorm
+          (x.1 * ((δ * γ₀).val * g).1)
+      · change ‖S.indicator _ ((δ * γ₀).val * g)‖ₑ ≤ M
+        rw [Set.indicator_of_notMem hu]
+        simp
+    · push Not at h
+      simp [c, h]
+  obtain ⟨k, hk⟩ := exists_form_eq_tsum (V := V) he ⟨K, hK.isOpen⟩
+    (c := c) (W := fun (γ : V.Γ) g ↦ c (γ.val * g)) (fun γ ↦ hmeas.comp (measurable_const_mul _))
+    hlevel (fun _ ↦ rfl) (M := ∑ _ ∈ I, M) (ENNReal.sum_ne_top.2 fun _ _ ↦ ENNReal.coe_ne_top)
+    hbound
+  refine ⟨k, fun g ↦ ?_⟩
+  rw [congrFun hk g, Complex.conj_tsum]
+  apply tsum_congr
+  intro γ
+  -- After integrating over the real group, the bump reproduces the kernel term by term.
+  let y := x * γ * g
+  have hconv : starRingEnd ℂ (∫ z : GInf E s, e z * starRingEnd ℂ (α (y.1 * z))) = e y.1 := by
+    rw [← integral_conj, ← hα y.1,
+      ← integral_mul_left_eq_self (fun t ↦ α t * e (t⁻¹ * y.1)) y.1]
+    simp [mul_comm, he.apply_inv]
+  by_cases hy : y.2 ∈ K
+  · simp [y, mul_assoc] at hy
+    simpa [realConv, hc, y, Set.indicator, mul_assoc, hy] using hconv
+  · simp [realConv, hc, Set.indicator, mul_assoc, y] at hy ⊢
+    simp [hy]
+
+end New.Space
+
+/-- Let `e` be a cusp kernel of order `B > 8 n ^ 2` on the real group of a space `V` and `K` a
+level, that is, an open subgroup of the standard compact subgroup of `G_f`. For fixed `x` there is a
+form of type `e` (a bounded automorphic function fixed by `e`) of level `K` whose conjugate is the
+kernel `g ↦ ∑_γ (e ⊗ 1_K)(x γ g)`, the sum over the rational points. -/
+theorem New.Space.exists_kernel_form {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n]
+    [Nonempty n] {s : n → ℤˣ} (V : Space E n s) {e : GInf E s → ℂ} {B : ℕ} (hB : 8 * card n ^ 2 < B)
+    (he : IsCuspKernel B e) (x : G E s) (K : Subgroup (Gf E n)) [hK : IsLevel K] :
+    ∃ k : levelSpace (V.formRep e) K, ∀ g : G E s, starRingEnd ℂ (k.val g) =
+      ∑' γ : V.Γ, e (x * γ * g).1 * Set.indicator K 1 (x * γ * g).2 :=
+  V.exists_kernel_form_of_bump he.toIsIdempotentKernel he.exists_bump x K

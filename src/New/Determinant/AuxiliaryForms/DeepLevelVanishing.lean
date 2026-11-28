@@ -6,7 +6,7 @@ import Mathlib.MeasureTheory.Integral.Pi
 public import New.Determinant.AuxiliaryForms.DeepLevelPoincarePeriod
 public import New.Determinant.AuxiliaryForms.PathData
 public import Lib.Adelic.AutomorphicForms.Cuspidality
-import Lib.Adelic.TraceFormula.OrbitalUnfolding
+import Lib.Adelic.AutomorphicForms.RealConvolution
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import New.Appendix.DiscreteSeries.PositionGroup
 import New.OneLift.ComparisonOperator.ExchangeData
@@ -381,7 +381,7 @@ lemma New.Exchange.poincare_period_translatedCoeff_eq_zero
         ((G.inlLine D.E s x)⁻¹ * γ * G.inlLine D.E s h) * y h ∂V.quotMeasure = 0 := by
   -- The Poincaré series is, up to the nonzero formal degrees, the conjugate of the value at
   -- `G.sum (h, 1) * (ω, 1)` of a form `Q` of type `l'` and level `K` on `Z`; the series converges
-  -- to a form by the decay of the coefficient.
+  -- to a form by projecting a compactly supported bump.
   let Z : Space D.E (n ⊕ Unit) (s ⊕ᵥ 1) := V.sum (signedSpace D.E 1)
   let term (γ : Z.Γ) (h : G D.E s) : ℂ :=
     poincareKernel (translatedCoeff l' α ω) K ((G.inlLine D.E s x)⁻¹ * γ.val * G.inlLine D.E s h)
