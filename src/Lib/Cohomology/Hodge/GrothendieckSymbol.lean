@@ -209,20 +209,15 @@ def detCochain : freeAb.obj (witnessed R d) ⟶ hodgeCoeff :=
 
 /-- If every row of t has dot product 1 with f, then the signed sum over j of the minors of t
 without row j and column i is f i · det t. -/
-lemma sum_minor_eq_mul_det (t : Matrix (Fin (d + 1)) (Fin (d + 1)) c.baseAlg)
-    (f : Fin (d + 1) → c.baseAlg) (i : Fin (d + 1)) (h : ∀ j : Fin (d + 1), t j ⬝ᵥ f = 1) :
+lemma sum_minor_eq_mul_det {A : Type*} [CommRing A] (t : Matrix (Fin (d + 1)) (Fin (d + 1)) A)
+    (f : Fin (d + 1) → A) (i : Fin (d + 1)) (h : ∀ j : Fin (d + 1), t j ⬝ᵥ f = 1) :
     ∑ j : Fin d.succ, (-1) ^ (j.val + i.val) • (t.submatrix j.succAbove i.succAbove).det =
       f i * t.det := by
-  -- Replacing column `i` of `t` by `t *ᵥ f`, the column of ones, multiplies the determinant by
-  -- `f i`; the left side is the Laplace expansion of the new determinant along column `i`.
-  have h_col : (fun j ↦ ∑ l, f l • t j l) = fun _ ↦ (1 : c.baseAlg) := by
-    ext j
-    simpa [dotProduct, mul_comm] using h j
-  have h_scale : (t.updateCol i fun _ ↦ 1).det = f i * t.det := by
-    rw [← h_col, t.det_updateCol_sum i f, smul_eq_mul]
-  rw [← h_scale, Matrix.det_succ_column _ i]
-  refine sum_congr rfl fun j _ ↦ ?_
-  simp [submatrix_updateCol_succAbove]
+  -- Apply the adjugate to the column of ones and take its `i`th coordinate.
+  have h_adj := congrArg (t.adjugate *ᵥ ·) (show t *ᵥ f = 1 from funext h)
+  rw [mulVec_mulVec, adjugate_mul, smul_mulVec, one_mulVec] at h_adj
+  simpa [mulVec, dotProduct, adjugate_fin_succ_eq_det_submatrix, mul_comm, add_comm] using
+    (congrFun h_adj i).symm
 
 /-- The map (v, l_1, …, l_d) ↦ det(l_1, …, l_d)·ω(v), on points with d witnesses for
 `New.Variety.jouanolouRel` f, kills boundaries. This is the induced map on the cokernel. -/
