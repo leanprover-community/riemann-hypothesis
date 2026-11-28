@@ -569,6 +569,7 @@ lemma schur_mul_left (h_fits : FitsRanks n n' κ) (z : ∀ τ : Φ, Matrix (n' �
   simpa [schurDetExp_self, detPow_zero, ← sum_schur_smul_nablaBasis h_fits z,
     Matrix.mul_apply, sum_smul, smul_sum, mul_smul] using sum_comm
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Assume `FitsRanks n n' κ`: at every place τ, |n_τ| ≤ |n'_τ| and κ_τ(h) = 0 for
 |n_τ| < h < |n'_τ|. Let S_κ(z) = `schur κ z` be the matrix whose row i holds the coordinates of
 b'_i(z y) in the family b_j(y)·∏_τ det(y_τ)^{d_τ}, where b and b' are `nablaBasis` for n and n', and
@@ -591,6 +592,7 @@ lemma schur_mul_right (h_fits : FitsRanks n n' κ) (z : ∀ τ : Φ, Matrix (n' 
         simp only [← sum_schur_smul_nablaBasis h_fits z i, map_sum, map_smul]
     _ = rowSubst (fun τ : Φ ↦ z τ * g τ) (nablaBasis R n' κ i) := rowSubst_rowSubst ..
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Assume `FitsRanks n n' κ`: at every place τ, |n_τ| ≤ |n'_τ| and κ_τ(h) = 0 for
 |n_τ| < h < |n'_τ|. For matrices z_τ of size n'_τ × n_τ, row i of the Schur matrix `schur κ z` holds
 the coordinates of b'_i(z y) in the family b_j(y)·∏_τ det(y_τ)^{d_τ}, where b and b' are
@@ -748,6 +750,7 @@ lemma GL.eval_rowSubst (z : ∀ τ : Φ, Matrix (n' τ) (n τ) R) (y : ((τ : Φ
   simp only [rowSubst, ← aeval_eq_eval, comp_aeval_apply]
   simp
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Assume `FitsRanks n n' κ`: for every τ, |n_τ| ≤ |n'_τ| and κ_τ(h) = 0 for |n_τ| < h < |n'_τ|.
 Let z_τ be matrices of size n'_τ × n_τ, let y be an array with rows (τ, a), and let zy be the array
 with entries (zy)_{(τ,b),k} = Σ_a z_τ(b,a) y_{(τ,a),k}. Write ev_y for the vector of values b_j(y)
@@ -767,6 +770,7 @@ lemma schur_mulVec_weylEval [DecidableEq Φ]
   simpa [weylEval, GL.eval_rowSubst, mulVec, dotProduct, mul_sum, mul_rotate'] using
     congrArg (eval y) (sum_schur_smul_nablaBasis h_fits z i)
 
+omit [(τ : Φ) → DecidableEq (n' τ)] in
 /-- Suppose the sizes fit κ (`New.FitsRanks`) and the determinant exponents `New.schurDetExp` are
 all zero. Then the Schur matrix S_κ(z) carries the evaluation vector `New.weylEval` at y to the
 evaluation vector at the product array zy. -/
