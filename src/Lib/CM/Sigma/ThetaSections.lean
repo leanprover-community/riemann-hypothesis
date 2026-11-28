@@ -371,16 +371,20 @@ lemma sigma_sq_eq_translatedX_mul_theta_sq {z : ℂ} (hz : z + C.t ∉ C.Λ) :
     simpa (disch := fun_prop) [show C.translatedX 0 = 0 by simp [translatedX]] using h_second
   linear_combination hK z hz - C.σ z ^ 2 / 2 * h_two
 
+/-- The square of θ in terms of the translate of the curve coordinate x by t. -/
+lemma theta_sq_eq_translatedX_add_t_mul_sigma_sq {z : ℂ} (hz : z ∉ C.Λ) :
+    C.θ z ^ 2 = C.translatedX (z + C.t) * C.σ z ^ 2 := by
+  rw [C.theta_sq hz, translatedX, add_assoc, C.weierstrassP_add_coe z ⟨C.t + C.t, C.two_t_mem⟩]
+
 /-- Let ℘ be the Weierstrass function of the lattice `Λ` of `C`, and let `t` be its point of order
 two modulo `Λ`, normalised so that ℘''(t) = 2. For `x(z) = ℘(z + t) - ℘(t)`, the identity
 `x(z) x(z + t) = 1` holds away from the zeros `Λ` and the poles `t + Λ` of `x`. -/
 lemma translatedX_mul_translatedX_add_t {z : ℂ} (hz : z ∉ C.Λ) (hzt : z + C.t ∉ C.Λ) :
     C.translatedX z * C.translatedX (z + C.t) = 1 := by
   -- Multiply θ² = x(z + t)σ² and σ² = x(z)θ².
-  have hθ : C.θ z ^ 2 = C.translatedX (z + C.t) * C.σ z ^ 2 := by
-    rw [C.theta_sq hz, translatedX, add_assoc, C.weierstrassP_add_coe z ⟨C.t + C.t, C.two_t_mem⟩]
   refine mul_right_cancel₀ (pow_ne_zero 2 (mt C.theta_eq_zero_iff.1 hzt)) ?_
-  linear_combination -hθ - C.translatedX (z + C.t) * C.sigma_sq_eq_translatedX_mul_theta_sq hzt
+  linear_combination -C.theta_sq_eq_translatedX_add_t_mul_sigma_sq hz -
+    C.translatedX (z + C.t) * C.sigma_sq_eq_translatedX_mul_theta_sq hzt
 
 /-- Let t be the point of order two of C, a₁ the chosen square root of 12℘(t), σ the sigma function
 of Λ, and θ its normalised translate by t. For z with z + t ∉ Λ, the entire function

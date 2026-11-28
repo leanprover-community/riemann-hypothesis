@@ -90,8 +90,7 @@ lemma theta_add_t (z : ℂ) :
 of unity: `c₀ ^ 4 = 1`. Here `T_t` is the twisted translation of degree `1` by `t`, so
 `c₀ = exp(−π |t|² / (2A)) σ(t)`, where `A` is the area of `Λ`. -/
 lemma twistedTranslate_t_sigma_zero_pow_four : C.twistedTranslate 1 C.t C.σ 0 ^ 4 = 1 := by
-  -- Translation by `t` turns `x θ² = σ²` into `x(z + t) σ² = c₀ ^ 4 θ²`, so that
-  -- `c₀ ^ 4 = x(z) x(z + t) = 1`. We take `z = t / 2`.
+  -- Compare the translation formulas at z = t / 2, where θ(z) is nonzero.
   set c₀ : ℂ := C.twistedTranslate 1 C.t C.σ 0
   let z : ℂ := C.t / 2
   have hz : z ∉ C.Λ := fun h ↦ C.t_notMem (by simpa only [z, add_halves] using add_mem h h)
@@ -103,26 +102,17 @@ lemma twistedTranslate_t_sigma_zero_pow_four : C.twistedTranslate 1 C.t C.σ 0 ^
     exact sub_mem (add_mem h h) C.two_t_mem
   have hztt : z + C.t + C.t ∉ C.Λ := by rwa [add_assoc, add_mem_cancel_right C.two_t_mem]
   set e : ℂ := exp (C.hermitianForm C.t z + C.hermitianForm C.t C.t / 2)
-  have h_translate : C.translatedX (z + C.t) * C.σ z ^ 2 = c₀ ^ 4 * C.θ z ^ 2 := by
-    have h_sq : C.σ (z + C.t) ^ 2 = C.translatedX (z + C.t) * C.θ (z + C.t) ^ 2 :=
-      C.sigma_sq_eq_translatedX_mul_theta_sq hztt
-    have hσ : C.σ (z + C.t) = e * (c₀ * C.θ z) := C.sigma_add_t z
-    have hθ : c₀ * C.θ (z + C.t) = -e * C.σ z := C.theta_add_t z
-    refine mul_left_cancel₀ (pow_ne_zero 2 (exp_ne_zero _ : e ≠ 0)) ?_
-    calc e ^ 2 * (C.translatedX (z + C.t) * C.σ z ^ 2)
-        = C.translatedX (z + C.t) * (-e * C.σ z) ^ 2 := by ring
-      _ = c₀ ^ 2 * (C.translatedX (z + C.t) * C.θ (z + C.t) ^ 2) := by
-        rw [← hθ]
-        ring
-      _ = e ^ 2 * (c₀ ^ 4 * C.θ z ^ 2) := by
-        rw [← h_sq, hσ]
-        ring
+  have hσ : C.σ (z + C.t) = e * (c₀ * C.θ z) := C.sigma_add_t z
+  have hθ : c₀ * C.θ (z + C.t) = -e * C.σ z := C.theta_add_t z
   have hθ_ne : C.θ z ≠ 0 := mt C.theta_eq_zero_iff.1 hzt
-  refine mul_right_cancel₀ (pow_ne_zero 2 hθ_ne) ?_
-  calc c₀ ^ 4 * C.θ z ^ 2 = C.translatedX z * C.translatedX (z + C.t) * C.θ z ^ 2 := by
-        rw [← h_translate, C.sigma_sq_eq_translatedX_mul_theta_sq hzt]
-        ring
-    _ = 1 * C.θ z ^ 2 := by rw [C.translatedX_mul_translatedX_add_t hz hzt]
+  refine mul_right_cancel₀ (pow_ne_zero 2 (mul_ne_zero (exp_ne_zero _ : e ≠ 0) hθ_ne)) ?_
+  calc c₀ ^ 4 * (e * C.θ z) ^ 2 = c₀ ^ 2 * C.σ (z + C.t) ^ 2 := by rw [hσ]; ring
+    _ = C.translatedX (z + C.t) * (c₀ * C.θ (z + C.t)) ^ 2 := by
+      rw [C.sigma_sq_eq_translatedX_mul_theta_sq hztt]
+      ring
+    _ = 1 * (e * C.θ z) ^ 2 := by
+      rw [hθ, mul_pow e, C.theta_sq_eq_translatedX_add_t_mul_sigma_sq hz]
+      ring
 
 /-- Doubling for the normalised twisted translate `θ` of the sigma function `σ` of `C`:
 `θ(2 z) = θ(z) ^ 4 - σ(z) ^ 4`. -/
