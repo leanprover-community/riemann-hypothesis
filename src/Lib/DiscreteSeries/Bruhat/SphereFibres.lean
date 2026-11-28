@@ -3,6 +3,7 @@ module
 import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
 import Mathlib.MeasureTheory.Order.Group.Lattice
 import Mathlib.Probability.Kernel.WithDensity
+import TauCeti.MeasureTheory.Integral.Dilation
 public import Lib.DiscreteSeries.Bruhat.ComplexPlace
 import Lib.DiscreteSeries.Bruhat.QuadricBlocks
 import Lib.DiscreteSeries.Haar.TotalMass
@@ -30,14 +31,6 @@ Elementary: polar coordinates.
 namespace New.Floors
 
 open MeasureTheory Measure ProbabilityTheory Matrix Real Fintype Set RealPlace
-
-/-- Substitution of `r = 2 t` in a Lebesgue integral over the real line. -/
-lemma lintegral_eq_lintegral_two_mul {G : ℝ → ENNReal} (hG : Measurable G) :
-    ∫⁻ r : ℝ, G r = ∫⁻ t : ℝ, 2 * G (2 * t) := by
-  conv_lhs => rw [← smul_map_volume_mul_left two_ne_zero, lintegral_smul_measure,
-    lintegral_map hG (by fun_prop)]
-  rw [lintegral_const_mul _ (by fun_prop)]
-  simp
 
 /-- If the entries of a vector of ℂ^κ have modulus at most R, then its squared norm is at most
 |κ| R². -/
@@ -99,24 +92,27 @@ theorem exists_isDisintegration_le_sphereDensity {κ : Type} [Fintype κ] [Decid
     exact continuous_lintegral_and_lt_top isCompact_univ (F := integrand) (by fun_prop)
       fun β h _ ↦ mem_univ h
   · -- polar coordinates, then the substitution `r = 2 t`
+    let rhs (r : ℝ) : ENNReal := mass r * ∫⁻ h : U (1 : Matrix κ κ ℂ), f (r, point r h)
+    have h_im (t : ℝ) : ((t : ℂ) * Complex.I).im = t := by simp
+    have h_level (t : ℝ) : complexPlace.skewUnit⁻¹.val * (t * Complex.I) = (2 * t : ℝ) := by
+      simp [field]
     simp (disch := fun_prop) only [h_lintegral]
     rw [lintegral_eq_polar i₀ (by fun_prop), ← lintegral_indicator measurableSet_Ioi,
-      lintegral_eq_lintegral_two_mul (.indicator (by fun_prop) measurableSet_Ioi),
       complexPlace_skewMeasure, lintegral_map (by fun_prop) (by fun_prop)]
-    refine lintegral_congr fun t ↦ ?_
-    have h_im : ((t : ℂ) * Complex.I).im = t := by simp
-    obtain ht | ht := le_or_gt (2 * t) 0
-    · rw [indicator_of_notMem (notMem_Ioi.2 ht), h_im, h_zero ht, mul_zero, zero_mul]
-    · have h_level : complexPlace.skewUnit⁻¹.val * (t * Complex.I) = (2 * t : ℝ) := by
-        simp [field]
-      have h_point (h : U (1 : Matrix κ κ ℂ)) :
-          f (star (point (2 * t) h) ⬝ᵥ (1 : Matrix κ κ ℂ) *ᵥ point (2 * t) h, point (2 * t) h) =
-            f (((2 * t : ℝ) : ℂ), point (2 * t) h) := by
-        rw [h_form ht.le h]
-      rw [indicator_of_mem (mem_Ioi.2 ht), ← mul_assoc, h_level, ENNReal.ofReal_div_of_pos two_pos,
-        ENNReal.ofReal_ofNat, ENNReal.mul_div_cancel two_ne_zero ENNReal.ofNat_ne_top]
-      simp only [h_im, mass, posPart_eq_self.2 ht.le]
-      rw [← lintegral_congr h_point]
+    simp_rw [h_im, h_level]
+    change _ = ∫⁻ t : ℝ, rhs ((2 : ℝ) • t)
+    rw [Measure.lintegral_comp_smul volume rhs two_ne_zero,
+      ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    refine lintegral_congr fun r ↦ ?_
+    obtain hr | hr := le_or_gt r 0
+    · simp [rhs, indicator_of_notMem (notMem_Ioi.2 hr), h_zero hr]
+    · have h_half : ENNReal.ofReal |((2 : ℝ) ^ Module.finrank ℝ ℝ)⁻¹| * mass r =
+          .ofReal (sphereDensity (card κ) r / 2) := by
+        rw [ENNReal.ofReal_div_of_pos two_pos, ENNReal.ofReal_ofNat, div_eq_mul_inv,
+          mul_comm (ENNReal.ofReal (sphereDensity (card κ) r)) 2⁻¹]
+        simp [mass, posPart_eq_self.2 hr.le]
+      simp only [rhs, indicator_of_mem (mem_Ioi.2 hr), ← mul_assoc, h_half]
+      exact congrArg _ (lintegral_congr fun h ↦ by rw [h_form hr.le h])
   · -- if the box meets the sphere of squared radius `2 * β.val.im`, that is at most `card κ * R²`
     rw [Kernel.withDensity_apply _ (by fun_prop), withDensity_const, hl, smul_apply,
       smul_eq_mul, Measure.map_apply (by fun_prop) (by measurability)]
