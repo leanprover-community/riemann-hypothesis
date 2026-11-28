@@ -213,6 +213,10 @@ lemma coe_weylRatio :
 lemma weylRatio_inv : (weylRatio j p q : T.G)⁻¹ = weylRatio j q p := by
   rw [weylRatio, weylRatio, _root_.mul_inv_rev, inv_inv]
 
+/-- A Weyl ratio commutes with the fixer of the floors below its length. -/
+lemma commute_weylRatio (hs : s ∈ floorGroup j) : Commute (weylRatio j p q : T.G) s :=
+  (commute_weylElem (p := q) hs).inv_left.mul_left (commute_weylElem (p := p) hs)
+
 /-- For a < ϱ, the number of basis indices of floor at least a + 1 is k + 1 + 2(ϱ − (a + 1)), the
 rank of the orthogonal complement of the first a + 1 hyperbolic planes. Here k + 1 is the rank of
 the middle block. -/

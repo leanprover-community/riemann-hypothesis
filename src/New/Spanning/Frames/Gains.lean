@@ -386,7 +386,7 @@ theorem Gauge.formMajorant_sq_le_of_hasDeepVector (hk : F.IsCut W) (hj : j ≤ �
       ∃ a : Fin 𝔰.ϱ, j ≤ a ∧ σ⁻¹ ≤ F.depth a (ρ * y) x := by
     have h_inner : ⟪W (ρ * y), W (ρ * y * x)⟫_ℂ ≠ 0 := by simpa [mul_assoc] using h_pair
     obtain ⟨near_p, near_q⟩ := hk.isNear_pair_of_pivot_ne_zero
-      (by intro τ hτ; simp [weylRatio, mul_assoc, weylElem_mul_left_comm hτ])
+      (fun τ hτ ↦ (commute_weylRatio hτ).left_comm _)
       (right_ne_zero_of_mul h_ne) hρ
     apply h_deep (ρ * y)
     exact ⟨h_inner, by simpa only [weylElem_mul_left_comm hρ] using near_p,

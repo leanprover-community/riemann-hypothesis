@@ -226,7 +226,7 @@ theorem prod_mem_of_formMajorant_ne_zero (Z : F.IntermediateGroup) {j : ℕ}
   obtain ⟨h_py, h_qyx⟩ : F.IsNear j ((weylElem j p)⁻¹ * y) ∧
       F.IsNear j ((weylElem j q)⁻¹ * (y * x)) := by
     simpa [weylRatio, mul_assoc] using cut.isNear_pair_of_pivot_ne_zero
-      (by intro τ hτ; simp [weylRatio, mul_assoc, weylElem_mul_left_comm hτ])
+      (fun τ hτ ↦ (commute_weylRatio hτ).left_comm _)
       (right_ne_zero_of_mul hy) (ρ := 1) (one_mem _)
   -- In the gauge of scale `1` every size means integral.
   have h_minor {r : ℕ → Aˣ} {z : T.G} (hz : F.IsNear j z)

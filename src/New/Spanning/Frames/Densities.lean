@@ -392,7 +392,7 @@ lemma Gauge.isPairingKernel_frameCorrelation (Γ : Gauge F) (hW : F.IsCut W) (j 
     rw [h_sum_left, h_sum_right, inner_smul_left, inner_smul_right, mul_sub, P.ψ.map_sub_eq_div,
       ← inv_eq_conj (P.norm_psi _), div_eq_mul_inv]
     ring
-  · simp [weylRatio, weylElem_mul_left_comm hσ, mul_assoc]
+  · exact (commute_weylRatio hσ).mul_inv_cancel
   · -- The kernel is bounded and lives on near points, whose mass on each floor is at most the
     -- finite number `V` given by `floorMassLe_one`.
     obtain ⟨V, hV_ne, hV⟩ : ∃ V : ℝ≥0∞, V ≠ ∞ ∧ ∀ a : Fin 𝔰.n, F.FloorMassLe a V 1 := by
