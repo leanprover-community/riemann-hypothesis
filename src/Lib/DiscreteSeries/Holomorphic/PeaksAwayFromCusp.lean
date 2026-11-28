@@ -175,6 +175,20 @@ lemma New.Rows.exists_unitary_mul_triangular_of_pos {n : Type} [Fintype n] [Deci
   have c_diag : c k k = Real.exp (-L k / 2) := by simp [c, r, (p_pos _).ne']
   rw [c_tri.inv_apply_diag o_inj, c_diag, ← Complex.ofReal_inv, ← Real.exp_neg, neg_div, neg_neg]
 
+/-- A zero-sum weighted sum bounded by `A - c` on the `+1` signs and `A` on the `-1` signs is at
+most `-c` times the sum of weights on the `+1` signs. -/
+private lemma New.Rows.sum_mul_le_of_split {n : Type} [Fintype n] {s : n → ℤˣ} {u : n → ℤ}
+    {L : n → ℝ} {A c : ℝ} (sum_L : ∑ k : n, L k = 0)
+    (h_pos : ∀ k : n, s k = 1 → L k * u k ≤ L k * (A - c))
+    (h_neg : ∀ k : n, s k = -1 → L k * u k ≤ L k * A) :
+    ∑ k : n, L k * u k ≤ -(c * ∑ k : n with s k = 1, L k) := by
+  have term_le (k : n) : L k * u k ≤ L k * A - c * if s k = 1 then L k else 0 := by
+    obtain hk | hk := Int.units_eq_one_or (s k)
+    · simpa [hk, mul_sub, mul_comm c] using h_pos k hk
+    · simpa [hk] using h_neg k hk
+  refine (sum_le_sum fun k _ ↦ term_le k).trans_eq ?_
+  rw [sum_sub_distrib, ← sum_mul, sum_L, ← mul_sum, ← sum_filter, zero_mul, zero_sub]
+
 /-- If the real numbers `L k` sum to `0` and have the signs `s k`, and the integer vector `u` has
 gap `1` for `s`, then `∑ L k * u k` is at most minus the sum of `L k` over the signs `+1`. -/
 lemma New.Rows.sum_mul_le_of_sign_mul_nonneg {n : Type} [Fintype n] [Nonempty n] {s : n → ℤˣ}
@@ -182,15 +196,13 @@ lemma New.Rows.sum_mul_le_of_sign_mul_nonneg {n : Type} [Fintype n] [Nonempty n]
     (h_sign : ∀ k : n, 0 ≤ (s k : ℝ) * L k) :
     ∑ k : n, L k * u k ≤ -∑ k : n with s k = 1, L k := by
   obtain ⟨A, hA_pos, hA_neg⟩ := exists_int_separating hu
-  have term_le (k : n) : L k * u k ≤ L k * A - if s k = 1 then L k else 0 := by
-    obtain hk | hk := Int.units_eq_one_or (s k)
-    · have h_le : (u k : ℝ) + 1 ≤ A := mod_cast hA_pos k hk
-      simp only [hk, ite_true]
-      nlinarith [show 0 ≤ L k by simpa [hk] using h_sign k]
-    · have h_nonpos : L k ≤ 0 := by simpa [hk] using h_sign k
-      simpa [hk] using mul_le_mul_of_nonpos_left (mod_cast hA_neg k hk : (A : ℝ) ≤ u k) h_nonpos
-  refine (sum_le_sum fun k _ ↦ term_le k).trans_eq ?_
-  rw [sum_sub_distrib, ← sum_mul, sum_L, ← sum_filter, zero_mul, zero_sub]
+  simpa using sum_mul_le_of_split (A := (A : ℝ)) (c := 1) sum_L
+    (fun k hk ↦ mul_le_mul_of_nonneg_left
+      (by linarith [show (u k : ℝ) + 1 ≤ A from mod_cast hA_pos k hk])
+      (by simpa [hk] using h_sign k))
+    (fun k hk ↦ mul_le_mul_of_nonpos_left
+      (mod_cast hA_neg k hk : (A : ℝ) ≤ u k)
+      (by simpa [hk] using h_sign k))
 
 /-- If the real numbers `L k` sum to `0` and have the signs `-s k`, and the entries of the integer
 vector `u` have absolute value at most `B`, then `∑ L k * u k` is at most `-2 B` times the sum of
@@ -198,16 +210,14 @@ vector `u` have absolute value at most `B`, then `∑ L k * u k` is at most `-2 
 lemma New.Rows.sum_mul_le_of_sign_mul_nonpos {n : Type} [Fintype n] {s : n → ℤˣ} {u : n → ℤ}
     {L : n → ℝ} {B : ℝ} (hB : ∀ k : n, |(u k : ℝ)| ≤ B) (sum_L : ∑ k : n, L k = 0)
     (h_sign : ∀ k : n, (s k : ℝ) * L k ≤ 0) :
-    ∑ k : n, L k * u k ≤ -(2 * B * ∑ k : n with s k = 1, L k) := by
-  have term_le (k : n) : L k * u k ≤ L k * B - 2 * B * if s k = 1 then L k else 0 := by
-    obtain ⟨h_lower, h_upper⟩ := abs_le.1 (hB k)
-    obtain hk | hk := Int.units_eq_one_or (s k)
-    · simp only [hk, ite_true]
-      nlinarith [show L k ≤ 0 by simpa [hk] using h_sign k]
-    · have h_nonneg : 0 ≤ L k := by simpa [hk] using h_sign k
-      simpa [hk] using mul_le_mul_of_nonneg_left h_upper h_nonneg
-  refine (sum_le_sum fun k _ ↦ term_le k).trans_eq ?_
-  rw [sum_sub_distrib, ← sum_mul, sum_L, ← mul_sum, ← sum_filter, zero_mul, zero_sub]
+    ∑ k : n, L k * u k ≤ -(2 * B * ∑ k : n with s k = 1, L k) :=
+  sum_mul_le_of_split (A := B) (c := 2 * B) sum_L
+    (fun k hk ↦ mul_le_mul_of_nonpos_left
+      (by linarith [(abs_le.1 (hB k)).1])
+      (by simpa [hk] using h_sign k))
+    (fun k hk ↦ mul_le_mul_of_nonneg_left
+      (abs_le.1 (hB k)).2
+      (by simpa [hk] using h_sign k))
 
 /-- Let `o` put the signs `1` first and let `x` have total `0` and the signs `s`. If
 `τ ∑ |x l| < 1`, then `1 - τ ∑ (x l, o l < a)` is positive for every `a`. -/
