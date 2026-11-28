@@ -57,6 +57,28 @@ This needs Python 3.11 or newer and curl 7.71 or newer. (No credentials are nece
 
 See [`CACHE.md`](CACHE.md) for details.
 
+## Tau Ceti
+
+This project depends on [Tau Ceti](https://github.com/TauCetiProject/TauCeti), pinned in
+`lakefile.toml`. Where a file under `src/` proves something Tau Ceti already has, a pull request
+that uses Tau Ceti's result instead is welcome. Please follow these rules:
+
+- If Tau Ceti's lemma states the same thing as ours, delete ours and update the files that use
+  it. Keep our statement only where it differs, for example a special case that many files use,
+  and prove it from Tau Ceti's lemma.
+- Import the Tau Ceti module in the file that needs it, not in `Lib/Base` or another file that
+  most of the project imports. An import brings Tau Ceti's `simp` lemmas and instances into every
+  file downstream, and that can break a proof in a file you did not edit. If it does, fix that
+  file in the same pull request.
+- Don't import Tau Ceti in `src/Statements.lean`, `src/Main.lean` or `Challenge.lean`. The five
+  statements depend on Mathlib alone, and `lake exe cache get` stops if one of these files
+  imports a Tau Ceti module.
+- Use what Tau Ceti has at the pinned revision and leave the pin as it is. Moving it rebuilds
+  every file that imports Tau Ceti, directly or through another file, so it gets a pull request
+  of its own.
+- After adding an import of a Tau Ceti module, run `lake exe cache get` again. Otherwise Lake
+  compiles that module from source. [`CACHE.md`](CACHE.md#tau-ceti) explains how the cache works.
+
 ## Layout
 
 *For now, this section is copied from https://github.com/lsernau/grh-lean. It may be out of date and is subject to change.*
