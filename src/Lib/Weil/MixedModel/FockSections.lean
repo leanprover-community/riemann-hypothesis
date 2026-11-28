@@ -3,11 +3,10 @@ module
 public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
 public import Mathlib.Analysis.Fourier.FourierTransform
 public import Mathlib.Topology.Separation.CompletelyRegular
-import Mathlib.Algebra.Order.Star.Real
+import TauCeti.Analysis.Fourier.Continuous
 import Mathlib.Analysis.Calculus.ContDiff.WithLp
 import Mathlib.Analysis.Distribution.TemperateGrowth
 import Mathlib.Analysis.Fourier.Inversion
-import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.Weil.Fock.WeightedNorms
 import Lib.General.Analysis.FourierTransforms
 import Lib.General.Analysis.MeanValueAndTaylor
@@ -398,8 +397,8 @@ lemma MixedModel.exists_isSchwartzVector_slice_eq {τ : (p → ℂ) → ℂ} (h�
           simp [k, ← mulVec_smul, mulVec_neg]
         simp only [F, χ, h_kb, h_slice_heisOp_K, Circle.smul_def, map_smul,
           realHeisenberg_β_eq_fourierChar]
-      _ = h.slice x (∫ b, χ b • Ĝ y b) := (h.slice x).integral_comp_comm
-        (Ĝ_int.mono (by fun_prop) (.of_forall fun b ↦ by simp))
+      _ = h.slice x (∫ b, χ b • Ĝ y b) :=
+        (h.slice x).integral_comp_comm (Ĝ_int.fourierChar_smul (by fun_prop))
       _ = _ := by rw [← fourierInv_eq, fourierInv_fourier_eq (by fun_prop) (G_int y) Ĝ_int]
   rw [← integral_comp_comm _ F_int, integral_prod _ (by fun_prop),
     integral_congr_ae (F_int.prod_right_ae.mono h_inv)]
