@@ -13,6 +13,7 @@ public import Lib.General.NumberTheory.ImaginaryQuadraticField
 import Lib.Analytic.EntireLFunction
 import Lib.Analytic.PolyaVinogradov
 import Lib.Analytic.ZeroSymmetry
+import TauCeti.NumberTheory.LegendreSymbol.JacobiSymbol.OddPart
 
 /-!
 # A prime `d` in a class whose quadratic twists have no zero in a box
@@ -637,22 +638,6 @@ lemma sum_thetaTailIntegral_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ) :
     sum_add_distrib, add_mul]
   exact add_le_add (hC T hT α hα) (hC T hT _ (norm_mul_moebius_le_one hα))
 
-/-- For a prime `d ≡ 7 mod 8` and `n ≠ 0`, `(2/d) = 1` and reciprocity give `(n/d) = (-d/n°)`, with
-`n°` the odd part of `n`. -/
-lemma legendreSym_eq_jacobiSym_ordCompl {d : ℕ} [Fact d.Prime] (h8 : d % 8 = 7) {n : ℕ}
-    (hn : n ≠ 0) : legendreSym d n = J(-d | ordCompl[2] n) := by
-  obtain ⟨k, m, hm, rfl⟩ := exists_eq_two_pow_mul_odd hn
-  have hd : Odd d := odd_iff.2 (by omega)
-  have h_two : J(2 | d) = 1 := by
-    rw [jacobiSym.at_two hd, χ₈_nat_mod_eight, h8]
-    rfl
-  calc legendreSym d (2 ^ k * m : ℕ)
-    _ = J(m | d) := by simp [to_jacobiSym, mul_left, pow_left, h_two]
-    _ = J(-1 | m) * J(d | m) := by
-      rw [quadratic_reciprocity' hm hd, qrSign, χ₄_nat_three_mod_four (by omega)]
-    _ = J(-d | ordCompl[2] (2 ^ k * m)) := by
-      rw [ordCompl_pow_mul_of_not_dvd k prime_two hm.not_two_dvd_nat, ← mul_left, neg_one_mul]
-
 /-- The twist `quadTwist ψ d` of a primitive character `ψ` mod `M` by the Legendre symbol of an odd
 prime `d` that does not divide `M` is primitive. -/
 lemma isPrimitive_quadTwist {M d : ℕ} [NeZero M] [Fact d.Prime] {ψ : DirichletCharacter ℂ M}
@@ -702,7 +687,9 @@ lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ
       simpa [hj, legendreSym.at_neg_one (show d ≠ 2 by omega),
         χ₄_nat_three_mod_four (show d % 4 = 3 by omega)] using quadTwist_apply ψ d (-1)
     have h_coeff (n : ℕ+) : quadTwist ψ d n = ψ n * J(-d | ordCompl[2] (n : ℕ)) := by
-      simpa [legendreSym_eq_jacobiSym_ordCompl h8 n.ne_zero] using quadTwist_apply ψ d (n : ℕ)
+      simpa [legendreSym.to_jacobiSym,
+        TauCeti.jacobiSym_eq_jacobiSym_neg_ordCompl_two h8 n.ne_zero] using
+        quadTwist_apply ψ d (n : ℕ)
     simpa only [F, thetaTailIntegral, thetaSeries, gaussianTheta, h_coeff] using
       h_lines (isPrimitive_quadTwist hψ (by omega) hM) (quadTwist_ne_one ψ d (by omega) hM)
         h_par (mod_cast hd) h_re h_im h_zero
