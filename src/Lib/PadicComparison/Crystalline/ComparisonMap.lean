@@ -180,7 +180,7 @@ lemma exists_crysPeriodAlgebra {N : ℕ} {y : OC} (hy : ↑p ∣ y ^ N) :
     simp [σ, compHom_algebraMap_eq, smul_smul, mul_comm]
   · -- Write `y = t♯`; its image is the class of `σ [t]`, which is in `(p, ξ)` since the constant
     -- coefficient `σ t` has untilt `y ^ p ^ max N 3`, a multiple of `y ^ N`, hence of `p`.
-    obtain ⟨t, rfl⟩ := untilt_surjective_of_isAbsIntegrallyClosed (p := p) y
+    obtain ⟨t, rfl⟩ := untilt_surjective_of_isAbsolutelyIntegrallyClosed (p := p) y
     have hσt : σ • (teichmuller p t : Ainf) ∈ span {↑p, xi} := by
       -- Compare constant coefficients, then their untilts; that of `ξ` divides `p`.
       have h_xi : (constantCoeff xi).untilt ∣ (p : OC) :=

@@ -386,7 +386,7 @@ lemma exists_period_twist {p : ℕ} [ThePrime p] [hP : CrysPeriodAlgebra] (a : �
     (adicMap_algebraMap ..).trans (congrArg _ ((ht ..).trans (congrArg₂ _ hb hw)))
   refine ⟨τ, hτ, fun c y ↦ ?_⟩
   -- Untilts exhaust the test, and `τ` raises a Teichmüller element to the power `p ^ a`.
-  obtain ⟨b, rfl⟩ := untilt_surjective_of_isAbsIntegrallyClosed (p := p) y
+  obtain ⟨b, rfl⟩ := untilt_surjective_of_isAbsolutelyIntegrallyClosed (p := p) y
   rw [← fontaineTheta_teichmuller]
   refine (congrArg (pdQuotientMap (τ.app c).hom) (testToPdReduction_theta ..)).trans ?_
   refine (congrArg _ (hτ (map_one _) (map_teichmuller ..))).trans ?_
@@ -405,7 +405,7 @@ private lemma exists_dvd_pow_and_pow_dvd {p : ℕ} [ThePrime p] {R : Type} [Comm
   -- `O_C` is a Bézout ring in which every element has an `(M + 1)`-th root: take `x ^ (M + 1)`
   -- generating the image of `𝔭`. It is not a unit, so `p` divides a power of `x`.
   obtain ⟨y, hy⟩ := IsBezout.isPrincipal_of_FG _ (𝔭.fg_of_isNoetherianRing.map σ)
-  obtain ⟨x, rfl⟩ := IsAbsIntegrallyClosed.exists_pow_eq (M + 1) y
+  obtain ⟨x, rfl⟩ := TauCeti.IsAbsolutelyIntegrallyClosed.exists_pow_nat_eq y M.succ_pos
   have hx_nonunit : ¬IsUnit x := fun hx ↦
     map_le_of_le_comap h𝔭 (hy.ge (subset_span rfl)) (hx.pow _)
   obtain ⟨N, hN⟩ := OC.exists_dvd_pow hx_nonunit (NeZero.ne (p : OC))
@@ -511,7 +511,8 @@ private lemma toRingHom_algebraMap_witt_eq {p : ℕ} [ThePrime p] {R : CommRingC
   -- By `ha`, the map `F ∘ algebraMap` lifts the same map `ℓ` as `algebraMap`.
   refine RingHom.congr_fun (h_lift_unique (F.comp (algebraMap (WittVector p k) Amax)) fun w ↦ ?_) w
   obtain ⟨y, hy⟩ := hπk (w.coeff 0)
-  obtain ⟨b : OFlat, hb⟩ := untilt_surjective_of_isAbsIntegrallyClosed (p := p) (algebraMap R OC y)
+  obtain ⟨b : OFlat, hb⟩ :=
+    untilt_surjective_of_isAbsolutelyIntegrallyClosed (p := p) (algebraMap R OC y)
   have h_inv : μ.2 • algebraMap R OC y = algebraMap R OC y :=
     Subtype.ext (by simp [μ, ← he_algebraMap, he_smul])
   calc

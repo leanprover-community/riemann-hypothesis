@@ -31,8 +31,8 @@ overlap is a difference of functions from the charts.
   charts.
 
 Notions from other files:
-* `New.Variety.IsAbsIntegrallyClosed`: A is absolutely integrally closed: every monic polynomial
-  over A of positive degree has a root in A.
+* `TauCeti.IsAbsolutelyIntegrallyClosed`: A is absolutely integrally closed: every monic
+  polynomial over A of positive degree has a root in A.
 * `New.ThePrime`: `ThePrime ℓ` fixes the prime `ℓ` (it extends `Fact ℓ.Prime`).
 * `New.Variety.locConstSpec`: For an abelian group Λ, the functor on commutative rings sending A to
   the group of locally constant functions Spec A → Λ; it sends a ring map to pull-back along the map
@@ -48,7 +48,7 @@ Known; see `Lib.Cohomology.ProperBaseChange.Theorem` for sources.
 namespace New.Variety
 
 open PrimeSpectrum Polynomial CommRingCat Ideal.Quotient IsLocalization IsLocalRing
-  IsAbsIntegrallyClosed Submodule
+  TauCeti.IsAbsolutelyIntegrallyClosed Submodule
   Algebra AlgebraMonoidAlgebra Pointwise IsScalarTower Subring Set Filter algebraMap
 
 variable {ι A B C D : Type} [CommRing A] [CommRing B] [CommRing C] [CommRing D] [Algebra A B]
@@ -420,8 +420,9 @@ every `ℓ`-th root of `1` in `D ⧸ K` lifts to some `W` with `W ^ ℓ = a * b`
 `b ≡ 1` in `C ⧸ L` (`h_factor`), then every locally constant `ZMod ℓ`-valued function on
 `Spec (D ⧸ K)` is a difference of pull-backs from `Spec (B ⧸ J)` and `Spec (C ⧸ L)`. -/
 lemma exists_locallyConstant_eq_sub_of_pow_eq_mul [IsDomain A] [IsDomain D] {ℓ : ℕ} [ThePrime ℓ]
-    (hℓ : IsUnit (ℓ : A)) [IsAbsIntegrallyClosed A] [IsAbsIntegrallyClosed B]
-    [IsAbsIntegrallyClosed C] {J : Ideal B} {L : Ideal C} {K : Ideal D}
+    (hℓ : IsUnit (ℓ : A)) [TauCeti.IsAbsolutelyIntegrallyClosed A]
+    [TauCeti.IsAbsolutelyIntegrallyClosed B] [TauCeti.IsAbsolutelyIntegrallyClosed C]
+    {J : Ideal B} {L : Ideal C} {K : Ideal D}
     (hJK : J ≤ K.comap (algebraMap B D)) (hLK : L ≤ K.comap (algebraMap C D))
     (h_factor : ∀ w : D ⧸ K, w ^ ℓ = 1 → ∃ (a : B) (b : C) (W : D),
       W ^ ℓ = a * b ∧ mk J a = 1 ∧ mk L b = 1 ∧ w = mk K W)
@@ -450,8 +451,8 @@ lemma exists_locallyConstant_eq_sub_of_pow_eq_mul [IsDomain A] [IsDomain D] {ℓ
   obtain ⟨a, b, W, hW : W ^ ℓ = a * b, ha_one : mk J a = 1, hb_one : mk L b = 1,
       h_lift : φ z = mk K W⟩ :=
     h_factor (φ z) (by rw [← map_pow, h_root, map_one])
-  obtain ⟨x, rfl⟩ : ∃ x : B, x ^ ℓ = a := exists_pow_eq ℓ a
-  obtain ⟨y, rfl⟩ : ∃ y : C, y ^ ℓ = b := exists_pow_eq ℓ b
+  obtain ⟨x, rfl⟩ : ∃ x : B, x ^ ℓ = a := exists_pow_nat_eq a (NeZero.pos ℓ)
+  obtain ⟨y, rfl⟩ : ∃ y : C, y ^ ℓ = b := exists_pow_nat_eq b (NeZero.pos ℓ)
   -- `W` and `x * y` have the same `ℓ`-th power in the domain `D`.
   have hζ_D : IsPrimitiveRoot (algebraMap A D ζ) ℓ :=
     isPrimitiveRoot_map_of_isRoot_cyclotomic hℓ hζ (algebraMap A D)
@@ -597,7 +598,8 @@ of the image of one element of `I` (`hI`). The ideals `J`, `L`, `K` are the exte
 lemma exists_eq_locConstSpec_map_sub_map (hts : (t * s : D) = 1)
     (hD : ∀ x : D, IsIntegral A[(t : D), (s : D)] x)
     [IsDomain A] [IsDomain D] {ℓ : ℕ} [ThePrime ℓ] (hℓ : IsUnit (ℓ : A))
-    [IsAbsIntegrallyClosed A] [IsAbsIntegrallyClosed B] [IsAbsIntegrallyClosed C]
+    [TauCeti.IsAbsolutelyIntegrallyClosed A] [TauCeti.IsAbsolutelyIntegrallyClosed B]
+    [TauCeti.IsAbsolutelyIntegrallyClosed C]
     (h_cases : (∃ a : A, algebraMap A B a * (1 - t) = 1 ∧ (algebraMap A C a - 1) * (s - 1) = 1 ∧
       Away a B ∧ IsLineChartCase I a) ∨ IsAbsIntegrallyClosedLocal A)
     (hI : ∀ {E : Type} [CommRing E] (ψ : A →+* E), ∀ x ∈ I.map ψ, ∃ i ∈ I, ψ i ∣ x)

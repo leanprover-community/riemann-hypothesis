@@ -89,7 +89,7 @@ x^{p^f} = x has p^f elements. -/
 lemma card_flatFq : Nat.card (flatFq f) = p ^ f.val := open Polynomial in by
   -- The elements of `flatFq f` are the roots of the separable polynomial `X ^ p ^ f - X`, which
   -- splits over `OFlat`: its roots in the algebraically closed fraction field `CFlat` are integral
-  -- over `OFlat`, hence lie in `OFlat` (`OFlat.isAbsIntegrallyClosed`).
+  -- over `OFlat`, hence lie in `OFlat` (`OFlat.isAbsolutelyIntegrallyClosed`).
   let P : Polynomial OFlat := Polynomial.X ^ p ^ f.val - Polynomial.X
   have h_monic : P.IsMonicOfDegree (p ^ f.val) :=
     (isMonicOfDegree_X_pow OFlat (p ^ f.val)).sub (by simp [elim])
@@ -99,7 +99,7 @@ lemma card_flatFq : Nat.card (flatFq f) = p ^ f.val := open Polynomial in by
       IsIntegral OFlat x :=
     ⟨P, h_monic.monic, (mem_roots_map_of_injective h_inj h_monic.ne_zero).mp hx⟩
   have h_splits : P.Splits := (IsAlgClosed.splits _).of_splits_map_of_injective h_inj
-    fun x hx ↦ OFlat.isAbsIntegrallyClosed.mem_range_of_isIntegralElem (h_integral x hx)
+    fun x hx ↦ OFlat.isAbsolutelyIntegrallyClosed.mem_range_of_isIntegralElem (h_integral x hx)
   have h_mem (x : OFlat) : x ∈ P.roots ↔ x ∈ flatFq f := by
     aesop (add simp [h_monic.ne_zero, sub_eq_zero, P])
   calc Nat.card (flatFq f) = P.roots.card := Nat.subtype_card ⟨P.roots, h_nodup⟩ h_mem
@@ -181,7 +181,8 @@ lemma exists_chart_of_pow_mul_eq_neg (f : ℕ+) {x : OC} {e : ℕ} (v : OCˣ) (h
         c.unitSeries ≍ A := by
   -- Write `x = u^♯` and evaluate power series at `z = [u]`; the generator of `ker θ` is the
   -- value of `E₀ = X ^ e * A + p`.
-  obtain ⟨u, hu⟩ : ∃ u : OFlat, u.untilt = x := Variety.untilt_surjective_of_isAbsIntegrallyClosed x
+  obtain ⟨u, hu⟩ : ∃ u : OFlat, u.untilt = x :=
+    Variety.untilt_surjective_of_isAbsolutelyIntegrallyClosed x
   -- `[u]` is not a unit, or else `x ^ e * v = -p` would be one.
   have h_nonunit : ¬IsUnit (teichmuller p u : Ainf) := by
     intro h_unit
@@ -762,7 +763,7 @@ lemma mem_of_fixed_thetaPhiInvS {K : Subalgebra ℚ_[p] ℂ_[p]} {y : PadicAlgCl
     (Submodule.fg_range ((c.thetaPhiInvS n).toLinearMap ∘ₗ poly.restrictScalars ℤ_[p])).of_le
       (forall_mem_range.mpr h_rem)
   obtain ⟨x', rfl⟩ : x ∈ (algebraMap (PadicAlgCl p) ℂ_[p]).range :=
-    Variety.IsAbsIntegrallyClosed.mem_range_of_isIntegralElem
+    TauCeti.IsAbsolutelyIntegrallyClosed.mem_range_of_isIntegralElem
       (IsIntegral.of_mem_of_fg _ h_fg _ hx).tower_top
   -- `g` fixes `x'`, which lies in the field of `K`.
   have h_fix : (g : Gp p) x' = x' := g.property ⟨x', hxK⟩

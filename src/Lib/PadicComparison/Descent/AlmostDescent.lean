@@ -99,7 +99,8 @@ lemma MaxIdealFlat.exists_smul_eq (m : MaxIdealFlat) {t : OFlat} (ht_ne : t ≠ 
     ∃ (s : OFlat) (k : MaxIdealFlat), s • k = m ∧ ∃ n : ℕ, t ∣ s ^ n := by
   -- Take `s = k` a square root of `m`; it is not a unit, and every `t ≠ 0` divides a power of a
   -- non-unit (`OFlat.exists_dvd_pow`).
-  obtain ⟨s, hs_sq⟩ : ∃ s : OFlat, s ^ 2 = m := OFlat.isAbsIntegrallyClosed.exists_pow_eq 2 m
+  obtain ⟨s, hs_sq⟩ : ∃ s : OFlat, s ^ 2 = m :=
+    OFlat.isAbsolutelyIntegrallyClosed.exists_pow_nat_eq m two_pos
   have hs_nonunit : ¬IsUnit s := fun hs_unit ↦
     (IsLocalRing.mem_maximalIdeal _).mp m.property (by simpa only [hs_sq] using hs_unit.pow 2)
   exact ⟨s, ⟨s, hs_nonunit⟩, Subtype.ext ((sq s).symm.trans hs_sq),

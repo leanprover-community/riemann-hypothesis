@@ -25,8 +25,8 @@ Mayer–Vietoris sequence of locally constant `ZMod ℓ`-valued functions on the
   the spectra modulo `J`.
 
 Notions from other files:
-* `New.Variety.IsAbsIntegrallyClosed`: A is absolutely integrally closed: every monic polynomial
-  over A of positive degree has a root in A.
+* `TauCeti.IsAbsolutelyIntegrallyClosed`: A is absolutely integrally closed: every monic
+  polynomial over A of positive degree has a root in A.
 * `New.ThePrime`: `ThePrime ℓ` fixes the prime `ℓ` (it extends `Fact ℓ.Prime`).
 * `New.Variety.locConstSpec`: For an abelian group Λ, the functor on commutative rings sending A to
   the group of locally constant functions Spec A → Λ; it sends a ring map to pull-back along the map
@@ -53,13 +53,13 @@ variable {ℓ : ℕ} {K : Type} [ThePrime ℓ] [Field K] {S T U : Subring K}
 
 /-- The absolutely integrally closed subrings of `K` that contain the image of `γ`. -/
 def absIntegrallyClosedSubrings : Set (Subring K) :=
-  {B : Subring K | γ.range ≤ B ∧ IsAbsIntegrallyClosed B}
+  {B : Subring K | γ.range ≤ B ∧ TauCeti.IsAbsolutelyIntegrallyClosed B}
 
 lemma absIntegrallyClosedSubrings.range_le {γ : D →+* K} (B : absIntegrallyClosedSubrings γ) :
   γ.range ≤ B.val := B.prop.1
 
-lemma absIntegrallyClosedSubrings.isAbsIntegrallyClosed {γ : D →+* K}
-    (B : absIntegrallyClosedSubrings γ) : IsAbsIntegrallyClosed B.val := B.prop.2
+lemma absIntegrallyClosedSubrings.isAbsolutelyIntegrallyClosed {γ : D →+* K}
+    (B : absIntegrallyClosedSubrings γ) : TauCeti.IsAbsolutelyIntegrallyClosed B.val := B.prop.2
 
 /-- For `B` in `absIntegrallyClosedSubrings γ`, the map `γ : D → K` with its values in `B`. -/
 def absIntegrallyClosedSubrings.toRingHom {γ : D →+* K} (B : absIntegrallyClosedSubrings γ) :
@@ -110,23 +110,24 @@ instance [Fact (T ≤ U)] [Fact (S ≤ U)] : IsScalarTower S T U := .of_algebraM
 
 variable [IsAlgClosed K] in
 /-- An absolutely integrally closed subring of `K` is integrally closed in `K`. -/
-local instance [a : IsAbsIntegrallyClosed S] : IsIntegrallyClosedIn S K :=
+local instance [a : TauCeti.IsAbsolutelyIntegrallyClosed S] : IsIntegrallyClosedIn S K :=
   isIntegrallyClosedIn_iff.mpr ⟨S.subtype_injective, a.mem_range_of_isIntegralElem⟩
 
 /-- Let `S ≤ T` be subrings of `K` with `S` absolutely integrally closed, and let `y ∈ T` be the
 inverse of `x ∈ S`. If `T` lies in every absolutely integrally closed subring that contains `S` and
 `y`, then `T` is the localisation of `S` away from `x`. Here `T` is an `S`-algebra through the
 inclusion. -/
-lemma IsAbsIntegrallyClosed.isLocalization_away {S T : Subring K} [h : Fact (S ≤ T)]
-    (hS : IsAbsIntegrallyClosed S) (x : S) {y : K} (hy : y ∈ T) (h_inv : (x : K) * y = 1)
-    (h_min : ∀ {U : Subring K}, IsAbsIntegrallyClosed U → S ≤ U → y ∈ U → T ≤ U) :
+lemma _root_.TauCeti.IsAbsolutelyIntegrallyClosed.isLocalization_away {S T : Subring K}
+    [h : Fact (S ≤ T)] (hS : TauCeti.IsAbsolutelyIntegrallyClosed S) (x : S) {y : K} (hy : y ∈ T)
+    (h_inv : (x : K) * y = 1)
+    (h_min : ∀ {U : Subring K}, TauCeti.IsAbsolutelyIntegrallyClosed U → S ≤ U → y ∈ U → T ≤ U) :
     IsLocalization.Away x T := by
   let φ := Localization.awayLift S.subtype x (.of_mul_eq_one y h_inv)
   have hφ (r : S) : φ (algebraMap S _ r) = r := lift_eq x _ r
   -- Every `z ∈ T` lies in `φ.range`, so `z = r / x ^ n` with `r ∈ S`; and `x` is a unit of `T`.
   refine .mk x (.of_mul_eq_one ⟨y, hy⟩ (Subtype.ext h_inv)) (fun z ↦ ?_)
     fun a b hab ↦ ⟨0, by rw [inclusion_injective h.out hab]⟩
-  obtain ⟨u, hu⟩ := h_min ((hS.of_isLocalization (.powers x)).of_surjective
+  obtain ⟨u, hu⟩ := h_min ((hS.of_isLocalization (.powers x)).of_surjective _
     φ.rangeRestrict_surjective) (fun r hr ↦ ⟨_, hφ ⟨r, hr⟩⟩)
     ⟨invSelf x, mul_left_cancel₀ (left_ne_zero_of_mul_eq_one h_inv)
       (by rw [h_inv, ← hφ x, ← map_mul, mul_invSelf, map_one])⟩ z.prop
@@ -162,8 +163,9 @@ equation `ε + r * ε ^ 2 = 1` has a solution `ε ∈ S` for every `r ∈ I` (`I
 `S` is local (`IsAbsIntegrallyClosedLocal S`).
 
 These are the two cases that `exists_eq_locConstSpec_map_sub_map` allows. -/
-lemma IsAbsIntegrallyClosed.exists_notMem_and_inv_notMem
-    (hS : IsAbsIntegrallyClosed S) (I : Ideal S) (h_not_val : ¬∀ x : K, x ∈ S ∨ x⁻¹ ∈ S) :
+lemma _root_.TauCeti.IsAbsolutelyIntegrallyClosed.exists_notMem_and_inv_notMem
+    (hS : TauCeti.IsAbsolutelyIntegrallyClosed S) (I : Ideal S)
+    (h_not_val : ¬∀ x : K, x ∈ S ∨ x⁻¹ ∈ S) :
     ∃ t : K, t ∉ S ∧ t⁻¹ ∉ S ∧
       ((∃ b : S, b * (1 - t) = 1 ∧ IsLineChartCase I b) ∨ IsAbsIntegrallyClosedLocal S) := by
   -- Suppose that no `t` works. Then `S` is local, and any `t` with `t, t⁻¹ ∉ S`, which exists as
@@ -206,8 +208,8 @@ lemma integralClosureAdjoin_le_iff {s : K} [IsIntegrallyClosedIn U K] :
 
 /-- The integral closure of `S[s]` in the algebraically closed field `K` is absolutely integrally
 closed. -/
-lemma isAbsIntegrallyClosed_integralClosureAdjoin [IsAlgClosed K] (S : Subring K) (s : K) :
-    IsAbsIntegrallyClosed (integralClosureAdjoin S s) := by
+lemma isAbsolutelyIntegrallyClosed_integralClosureAdjoin [IsAlgClosed K] (S : Subring K) (s : K) :
+    TauCeti.IsAbsolutelyIntegrallyClosed (integralClosureAdjoin S s) := by
   unfold integralClosureAdjoin
   exact .of_isIntegrallyClosedIn K
 
@@ -215,23 +217,23 @@ lemma isAbsIntegrallyClosed_integralClosureAdjoin [IsAlgClosed K] (S : Subring K
 lemma le_integralClosureAdjoin [IsAlgClosed K]
     (S : Subring K) (s : K) : S ≤ integralClosureAdjoin S s := by
   -- gives the instance `IsIntegrallyClosedIn` that `integralClosureAdjoin_le_iff` needs
-  have := isAbsIntegrallyClosed_integralClosureAdjoin S s
+  have := isAbsolutelyIntegrallyClosed_integralClosureAdjoin S s
   exact (integralClosureAdjoin_le_iff.mp le_rfl).left
 
 /-- The integral closure of `S[s]` in `K` contains `s`. -/
 lemma mem_integralClosureAdjoin [IsAlgClosed K]
     (S : Subring K) (s : K) : s ∈ integralClosureAdjoin S s := by
   -- gives the instance `IsIntegrallyClosedIn` that `integralClosureAdjoin_le_iff` needs
-  have := isAbsIntegrallyClosed_integralClosureAdjoin S s
+  have := isAbsolutelyIntegrallyClosed_integralClosureAdjoin S s
   exact (integralClosureAdjoin_le_iff.mp le_rfl).right
 
 /-- Let `S` be an absolutely integrally closed subring of `K`, and `t ∈ K` with `b * (1 - t) = 1`
 for some `b ∈ S`. Then the integral closure of `S[t]` is the localisation of `S` away from `b`; it
 is an `S`-algebra through the inclusion. -/
-lemma IsAbsIntegrallyClosed.isLocalization_away_integralClosureAdjoin [IsAlgClosed K]
-    {S : Subring K}
-    (hS : IsAbsIntegrallyClosed S) {t : K} [h : Fact (S ≤ integralClosureAdjoin S t)] (b : S)
-    (hb : b * (1 - t) = 1) : IsLocalization.Away b (integralClosureAdjoin S t) := by
+lemma _root_.TauCeti.IsAbsolutelyIntegrallyClosed.isLocalization_away_integralClosureAdjoin
+    [IsAlgClosed K] {S : Subring K} (hS : TauCeti.IsAbsolutelyIntegrallyClosed S) {t : K}
+    [h : Fact (S ≤ integralClosureAdjoin S t)] (b : S) (hb : b * (1 - t) = 1) :
+    IsLocalization.Away b (integralClosureAdjoin S t) := by
   refine hS.isLocalization_away b (sub_mem (one_mem _) (mem_integralClosureAdjoin S t)) hb
     fun {U} _ hU h_mem ↦ integralClosureAdjoin_le_iff.mpr ⟨hU, ?_⟩
   -- `t = 1 - (1 - t)` lies in `U`.
@@ -360,7 +362,8 @@ lemma absIntegrallyClosedSubrings.IsSplitting.inf_eq
     (h_split : IsSplitting B B₁ B₂ B₃) :
     B₁.val ⊓ B₂.val = B.val := by
   -- `B` is integrally closed, so it is the intersection of the valuation rings that contain it.
-  have hB_aic : IsAbsIntegrallyClosed B.val := absIntegrallyClosedSubrings.isAbsIntegrallyClosed B
+  have hB_aic : TauCeti.IsAbsolutelyIntegrallyClosed B.val :=
+    absIntegrallyClosedSubrings.isAbsolutelyIntegrallyClosed B
   refine le_antisymm ?_ (le_inf h_split.lt_left.le h_split.lt_right.le)
   refine (le_iInf fun ⟨V, hBV⟩ ↦ ?_).trans eq_iInf_of_isIntegrallyClosedIn.ge
   exact (h_split.le_or_le V hBV).elim inf_le_of_left_le inf_le_of_right_le
@@ -387,8 +390,8 @@ lemma absIntegrallyClosedSubrings.isSplitting_of_integralClosureAdjoin [IsAlgClo
     exact ⟨le_integralClosureAdjoin B.val s, s, mem_integralClosureAdjoin B.val s, hs⟩
   refine ⟨lt_of_notMem ht hB₁, lt_of_notMem ht_inv hB₂, hB₃, fun V hV ↦ ?_⟩
   -- A valuation ring of `K` contains `t` or `t⁻¹`, and it is integrally closed in `K`.
-  have hV_aic : IsAbsIntegrallyClosed V.toSubring :=
-    (inferInstance : IsAbsIntegrallyClosedLocal V).toIsAbsIntegrallyClosed
+  have hV_aic : TauCeti.IsAbsolutelyIntegrallyClosed V.toSubring :=
+    (inferInstance : IsAbsIntegrallyClosedLocal V).toIsAbsolutelyIntegrallyClosed
   rw [hB₁, hB₂, integralClosureAdjoin_le_iff, integralClosureAdjoin_le_iff]
   exact (V.mem_or_inv_mem t).imp (And.intro hV) (And.intro hV)
 
@@ -453,7 +456,8 @@ lemma absIntegrallyClosedSubrings.exists_isSplitting_isMayerVietorisExact [IsAlg
   -- generate. The spectra of `B₁`, `B₂` modulo `J` cover that of `B`, which gives exactness on the
   -- left; `exists_eq_basicOpen_of_isClopen_of_preimage_eq` gives it in the middle and
   -- `exists_eq_locConstSpec_map_sub_map` on the right.
-  have hB_aic : IsAbsIntegrallyClosed B.val := absIntegrallyClosedSubrings.isAbsIntegrallyClosed B
+  have hB_aic : TauCeti.IsAbsolutelyIntegrallyClosed B.val :=
+    absIntegrallyClosedSubrings.isAbsolutelyIntegrallyClosed B
   obtain ⟨t, ht, ht_inv, h_case⟩ : ∃ t : K, t ∉ B.val ∧ t⁻¹ ∉ B.val ∧
       ((∃ b : B.val, b * (1 - t) = 1 ∧ IsLineChartCase (extendedIdeal J γ B) b) ∨
         IsAbsIntegrallyClosedLocal B.val) :=
@@ -464,8 +468,10 @@ lemma absIntegrallyClosedSubrings.exists_isSplitting_isMayerVietorisExact [IsAlg
   let S₃ : Subring K := S₁ ⊔ S₂
   let t₁ : S₁ := ⟨t, mem_integralClosureAdjoin B.val t⟩
   let t₂ : S₂ := ⟨t⁻¹, mem_integralClosureAdjoin B.val t⁻¹⟩
-  have hS₁_aic : IsAbsIntegrallyClosed S₁ := isAbsIntegrallyClosed_integralClosureAdjoin B.val t
-  have hS₂_aic : IsAbsIntegrallyClosed S₂ := isAbsIntegrallyClosed_integralClosureAdjoin B.val t⁻¹
+  have hS₁_aic : TauCeti.IsAbsolutelyIntegrallyClosed S₁ :=
+    isAbsolutelyIntegrallyClosed_integralClosureAdjoin B.val t
+  have hS₂_aic : TauCeti.IsAbsolutelyIntegrallyClosed S₂ :=
+    isAbsolutelyIntegrallyClosed_integralClosureAdjoin B.val t⁻¹
   -- The inclusions as algebras; `S₃` is a localisation of each of `S₁`, `S₂`.
   have hB_le₁ : Fact (B.val ≤ S₁) := ⟨le_integralClosureAdjoin B.val t⟩
   have hB_le₂ : Fact (B.val ≤ S₂) := ⟨le_integralClosureAdjoin B.val t⁻¹⟩

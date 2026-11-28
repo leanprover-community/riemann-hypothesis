@@ -731,7 +731,7 @@ private lemma PadicTest.exists_rootSystem_periodicSeq (c : PadicTest) {v : c.Pro
         ((x n).val k).untilt =
           (c.structureMap.toMonoidHom.comp (untilt.comp epsPowNNRat)) n ^ k * r n := by
   have h_untilt_surj : ∀ y : c.ProdRing, ∃ b : c.TiltRing, b.untilt = y :=
-    untilt_surjective_of_isAbsIntegrallyClosed (R := c.ProdRing) (p := p)
+    untilt_surjective_of_isAbsolutelyIntegrallyClosed (R := c.ProdRing) (p := p)
   choose σ hσ using h_untilt_surj
   -- The ring of `c` is absolutely integrally closed, so `v` has a compatible system `s` of roots;
   -- `r` is its restriction to `ℚ≥0`.

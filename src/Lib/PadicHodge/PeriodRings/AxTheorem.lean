@@ -35,8 +35,8 @@ elements fixed by `J`.
   `PreTilt R p` functorial. For `p`-adically complete `R`, the untilt `x ↦ x^♯` and Fontaine's `θ`
   are natural in `R` (`New.Variety.untilt_tiltMap`, `New.Variety.fontaineTheta_map_tiltMap`). Both
   are onto if `R` is absolutely integrally closed
-  (`New.Variety.fontaineTheta_surjective_of_isAbsIntegrallyClosed`). The tilt of a `p`-adically
-  complete valuation ring is a valuation ring.
+  (`New.Variety.fontaineTheta_surjective_of_isAbsolutelyIntegrallyClosed`). The tilt of a
+  `p`-adically complete valuation ring is a valuation ring.
 * The Galois group `New.Gp` of `ℚ̄_p / ℚ_p` and its cyclotomic character `New.cyclotomicGp`.
 * The continuous isometric action of `New.Gp` on `ℂ_p` (Tau Ceti's
   `UniformSpace.Completion.instMulSemiringAction`), which restricts to an action by ring
@@ -188,23 +188,26 @@ lemma untilt_eq_zero_iff [IsDomain R] [IsIntegrallyClosed R] {x : PreTilt R p} :
 /-- Let R be a p-adically complete ring in which p is not a unit. If R is absolutely integrally
 closed (every monic polynomial of positive degree over R has a root in R), then every element of R
 is the untilt x^♯ of an element x of the tilt. -/
-lemma untilt_surjective_of_isAbsIntegrallyClosed [h : IsAbsIntegrallyClosed R] :
+lemma untilt_surjective_of_isAbsolutelyIntegrallyClosed
+    [h : TauCeti.IsAbsolutelyIntegrallyClosed R] :
     (PreTilt.untilt : PreTilt R p → R).Surjective := by
   -- choose successive `p`-th roots of `r`; the untilt of this sequence is its first term `r`
   intro r
-  let pthRoot : R → R := Function.surjInv (h.exists_pow_eq p)
+  have h_pow : Function.Surjective fun x : R ↦ x ^ p := fun x ↦ h.exists_pow_nat_eq x (NeZero.pos p)
+  let pthRoot : R → R := Function.surjInv h_pow
   have h_roots (n : ℕ) : pthRoot^[n + 1] r ^ p = pthRoot^[n] r := by
-    rw [Function.iterate_succ_apply', Function.surjInv_eq (h.exists_pow_eq p)]
+    rw [Function.iterate_succ_apply', Function.surjInv_eq h_pow]
   let seq : Perfection R p := ⟨fun n ↦ pthRoot^[n] r, h_roots⟩
   exact ⟨quotientMulEquiv p (span {(p : R)}) seq, teichmuller₀_mapMonoidHom_idealQuotientMk⟩
 
 /-- Let R be a p-adically complete ring in which p is not a unit. If R is absolutely integrally
 closed, then Fontaine's `θ : W(tilt R) → R` is onto. -/
-lemma fontaineTheta_surjective_of_isAbsIntegrallyClosed [IsAbsIntegrallyClosed R] :
+lemma fontaineTheta_surjective_of_isAbsolutelyIntegrallyClosed
+    [TauCeti.IsAbsolutelyIntegrallyClosed R] :
     (⇑(fontaineTheta R p)).Surjective := by
   -- every `r ∈ R` is an untilt `y^♯`, and `θ` maps the Teichmüller lift `[y]` to `y^♯`
   intro r
-  obtain ⟨y, rfl⟩ := untilt_surjective_of_isAbsIntegrallyClosed (p := p) r
+  obtain ⟨y, rfl⟩ := untilt_surjective_of_isAbsolutelyIntegrallyClosed (p := p) r
   exact ⟨teichmuller p y, fontaineTheta_teichmuller y⟩
 
 variable [IsDomain R] [ValuationRing R]
@@ -294,7 +297,7 @@ instance : Away (p : OC) ℂ_[p] := by
 
 /-- `O_C` is absolutely integrally closed: every monic polynomial of positive degree over `O_C`
 has a root in `O_C`. -/
-instance : IsAbsIntegrallyClosed OC := .of_isIntegrallyClosedIn ℂ_[p]
+instance : TauCeti.IsAbsolutelyIntegrallyClosed OC := .of_isIntegrallyClosedIn ℂ_[p]
 
 end New
 
