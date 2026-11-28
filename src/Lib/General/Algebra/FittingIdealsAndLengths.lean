@@ -77,6 +77,16 @@ variable {O O' Γ n A : Type*} [CommRing O] [CommRing O'] [Fintype n] [Decidable
 /-- O is a discrete valuation ring (in particular a domain). -/
 class DVR (O : Type*) [CommRing O] extends IsDomain O, IsDiscreteValuationRing O
 
+/-- In a discrete valuation ring, a nonzero `a` divides the `v(a)`-th power of every nonunit.
+Each factor contributes at least one to the valuation. -/
+lemma dvd_pow_addVal_of_not_isUnit [IsDomain O] [IsDiscreteValuationRing O] {a b : O}
+    (ha : a ≠ 0) (hb : ¬ IsUnit b) : a ∣ b ^ (addVal O a).toNat := by
+  have h_b : (1 : ℕ∞) ≤ addVal O b :=
+    Order.one_le_iff_ne_zero.mpr (mt addVal_eq_zero_iff.mp hb)
+  rw [← addVal_le_iff_dvd, addVal_pow]
+  simpa [nsmul_eq_mul, ENat.natCast_toNat (mt addVal_eq_top_iff.mp ha)] using
+    nsmul_le_nsmul_right h_b (addVal O a).toNat
+
 /-- The quotient ring O/aO. -/
 abbrev QuotSpan (a : O) : Type _ := O ⧸ Ideal.span {a}
 

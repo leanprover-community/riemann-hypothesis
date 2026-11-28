@@ -5,6 +5,7 @@ import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Algebra.Module.Compact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.NumberTheory.Padics.Complex.Basic
 public import New.Congruences.Selmer.SelmerData
 public import New.Congruences.GaloisRepresentations.SelmerHypotheses
 import New.Congruences.GaloisRepresentations.AttachedRepresentations
@@ -43,12 +44,8 @@ open NumberField Matrix Period Fintype IsDiscreteValuationRing LinearMap Finset 
 /-- A nonzero element `a` of a coefficient ring `O` divides some power of `ℓ`. -/
 lemma exists_dvd_ell_pow (ℓ : ℕ) [ThePrime ℓ] {O : CoeffRing ℓ} {a : ↑O} (ha : a ≠ 0) :
     ∃ M : ℕ, a ∣ ℓ ^ M := by
-  have h_ell : ‖(ℓ : PadicAlgCl ℓ)‖ < 1 := by
-    rw [← map_natCast (algebraMap ℚ_[ℓ] (PadicAlgCl ℓ)), PadicAlgCl.norm_extends]
-    exact Padic.norm_p_lt_one
-  obtain ⟨M, hM⟩ : ∃ M : ℕ, ‖(ℓ : PadicAlgCl ℓ)‖ ^ M < ‖(a : PadicAlgCl ℓ)‖ :=
-    exists_pow_lt_of_lt_one (by simpa) h_ell
-  exact ⟨M, (O.dvd_iff_norm_le _ _).2 (by simpa using hM.le)⟩
+  refine ⟨_, dvd_pow_addVal_of_not_isUnit ha ?_⟩
+  exact fun hu ↦ (PadicAlgCl.norm_p_lt_one ℓ).ne ((O.isUnit_iff_norm_eq_one _).1 hu)
 
 /-- A length `k` over `O` whose normalisation `O.normLength k` has a finite bound is finite. -/
 lemma ne_top_of_normLength_le {ℓ : ℕ} [ThePrime ℓ] {O : CoeffRing ℓ} {k : ℕ∞} {b : ENNReal}

@@ -730,10 +730,10 @@ lemma exists_period_of_character [TopologicalSpace Γ]
     (CoeffRing.eventually_mem ha_near.le).exists
   -- `a₀` is `a` as an element of `O`
   let a₀ : O.val := 1 - ⟨1 - a, hO⟩
+  -- The valuation of p in O bounds the nilpotence exponent of 1 - a₀ modulo p.
   have h_nilp : ∃ n : ℕ, (p : O.val) ∣ (1 - a₀) ^ n := by
-    obtain ⟨n, hn⟩ :=
-      exists_pow_lt_of_lt_one (norm_pos_iff.mpr (NeZero.ne (p : PadicAlgCl p))) ha_near
-    exact ⟨n, by simpa [a₀, O.dvd_iff_norm_le] using hn.le⟩
+    refine ⟨_, dvd_pow_addVal_of_not_isUnit (NeZero.ne (p : O.val)) ?_⟩
+    exact fun hu ↦ ha_near.ne (by simpa [a₀] using (O.isUnit_iff_norm_eq_one _).1 hu)
   obtain ⟨y, hy, h_line, h_weil⟩ := exists_unramified_period a₀ h_nilp
   refine ⟨O, y, hy, fun s k hs ↦ (h_weil s k hs).1, U, U.mem_nhds_one, fun g hg ↦ ?_⟩
   obtain ⟨o, ho⟩ : ∃ o : O.val, toGp g • y = 1 ⊗ₜ o * y := h_line (1, toGp g)
