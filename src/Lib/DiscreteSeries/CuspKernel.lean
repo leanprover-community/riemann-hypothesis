@@ -246,25 +246,41 @@ lemma eq_zero_of_mem_fixed_invariant {G : Type*} [Group G] [TopologicalSpace G]
   -- Translation by `a` multiplies `χ` by `exp (i π / n)`, so `U` anticommutes with `S ^ n`.
   have hχ_shift (g : G) : χ (a * g) = exp (1 / n * Real.pi * I) * χ g := by
     have h_angle : H (a * g) * θ = H g * θ + 1 / n * Real.pi := by
-      simp [θ, hD_shift (a, z) ha, τ, field]
+      rw [hD_shift (a, z) ha]
+      have hlog : Real.log ‖(z : ℂ)‖ ≠ 0 := hτ
+      have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hn_pos.ne'
+      dsimp only [θ, τ]
+      field_simp
+      ring
     simp only [χ, coe_ofNormedAddCommGroup, circleMap, h_angle]
     simp [exp_add, mul_comm, mul_add]
   have h_semi : SemiconjBy U S (exp (1 / n * Real.pi * I) • S) := by
-    ext
-    simp [hU, hS, hT, ← integral_const_mul, hχ_shift, mul_left_comm, mul_assoc]
+    ext φ y
+    change (U (S φ)).val y = exp (1 / n * Real.pi * I) * (S (U φ)).val y
+    rw [hU, hS, hT, hS, hT, ← integral_const_mul]
+    refine integral_congr_ae (.of_forall fun g ↦ ?_)
+    dsimp only
+    rw [mul_apply, mul_apply, hU, mul_assoc a y g, hχ_shift]
+    ring
   have h_anti : U * S ^ n = -(S ^ n * U) := by
     have h_exp : exp (1 / n * Real.pi * I) ^ n = -1 := by
-      simp [← exp_natCast_mul, hn_pos.ne', field, mul_assoc]
+      have h_mul : (n : ℂ) * (1 / n * Real.pi * I) = Real.pi * I := by
+        have hn0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn_pos.ne'
+        field_simp
+      rw [← exp_natCast_mul, h_mul]
+      exact exp_pi_mul_I
     rw [(h_semi.pow_right n).eq, smul_pow, h_exp, neg_one_smul, neg_mul]
   have h_nil : S ^ n = 0 :=
     eq_zero_of_anticommute (norm_one_sub_left_translation_le he hT hV ha hb hb_dist hU) h_anti
   have h_inj : Function.Injective S := by
     refine (injective_iff_map_eq_zero S).2 fun ⟨φ, hφ⟩ hSφ ↦ Subtype.ext ?_
     have h_zero : T (χ * φ) = 0 := by simpa [hSφ] using (hS ⟨φ, hφ⟩).symm
-    have hθ : |θ| * (∫ g : G, ‖e g‖ * ℓ g) = c / n := by simp [θ, c, abs_div, field]
+    have hθ : |θ| * (∫ g : G, ‖e g‖ * ℓ g) = c / n := by
+      simp only [θ, c, abs_div, abs_neg, Nat.abs_cast]
+      ring
     exact eq_zero_of_map_phase_mul_eq_zero hT hℓ hH_lip (by rwa [hθ, div_lt_one (by positivity)])
       (fun _ ↦ rfl) ((hV φ).1 hφ).1 h_zero
-  exact h_inj.iterate n (by simpa [pow_apply_eq_iterate] using show (S ^ n) ψ = 0 by simp [h_nil])
+  exact h_inj.iterate n (by simp only [← pow_apply_eq_iterate, h_nil, zero_apply])
 
 /-- Vanishing of constant terms. Let `G` be a second countable locally compact group with left Haar
 measure and let `e` be a minimal idempotent kernel (continuous, integrable, self-adjoint, with
@@ -329,12 +345,14 @@ lemma New.DiscreteSeries.exists_isStarProjection_mul_eq_zero_iff {n m : Type} [F
     ∃ p : Matrix n n ℂ, IsStarProjection p ∧
       ∀ {l : Type} (v : Matrix n l ℂ), p * v = 0 ↔ B * v = 0 := by
   classical
-  let p : Matrix n n ℂ := (toEuclideanCLM (𝕜 := ℂ)).symm B.toEuclideanLin.kerᗮ.starProjection
+  let e : (EuclideanSpace ℂ n →L[ℂ] EuclideanSpace ℂ n) ≃⋆ₐ[ℂ] Matrix n n ℂ :=
+    (toEuclideanCLM (𝕜 := ℂ)).symm
+  let p : Matrix n n ℂ := e B.toEuclideanLin.kerᗮ.starProjection
   have h_vec (u : n → ℂ) : p *ᵥ u = 0 ↔ B *ᵥ u = 0 := by
     -- `starProjection_orthogonal_val` would rewrite the projection to a difference first.
-    simp [← p.ofLp_toEuclideanCLM (.toLp 2 u), p, -starProjection_orthogonal_val,
+    simp [← p.ofLp_toEuclideanCLM (.toLp 2 u), p, e, -starProjection_orthogonal_val,
       starProjection_apply_eq_zero_iff]
-  refine ⟨p, .map isStarProjection_starProjection (toEuclideanCLM (𝕜 := ℂ)).symm, fun v ↦ ?_⟩
+  refine ⟨p, .map isStarProjection_starProjection e, fun v ↦ ?_⟩
   simp_rw [Matrix.ext_col_iff]
   -- The columns of `p * v` are the images under `p` of the columns of `v`.
   exact forall_congr' fun j ↦ h_vec (v.col j)
