@@ -71,7 +71,8 @@ lemma IsBoundedMeasurable.memLp_top (hF : IsBoundedMeasurable F) : MemLp F ∞ �
 
 /-- If `F` is strongly measurable and bounded, `c` is `ν`-integrable and `j` is measurable, then
 `a ↦ c a * F (j a)` is `ν`-integrable. -/
-lemma IsBoundedMeasurable.integrable_mul_comp {F : Z → ℂ} (hF : IsBoundedMeasurable F) {c : W → ℂ}
+lemma IsBoundedMeasurable.integrable_mul_comp {𝕜 : Type*} [NormedRing 𝕜]
+    {F : Z → 𝕜} (hF : IsBoundedMeasurable F) {c : W → 𝕜}
     (hc : Integrable c ν) (j : W → Z) (hj : Measurable j := by fun_prop) :
     Integrable (fun a : W ↦ c a * F (j a)) ν :=
   hc.mul_of_top_left (hF.comp hj).memLp_top
@@ -140,19 +141,22 @@ lemma integral_integral_skew_product [NormedSpace ℝ X] {T : W → Z → Z}
 
 omit [SFinite μ] [SFinite ν] in
 /-- For integrable `k` and `α`, strongly measurable bounded `F` and measurable `j : W → Z` into a
-group, the function `(x, g) ↦ (k x * α g) • F (j x * g)` is integrable on the product. -/
-lemma integrable_mul_smul_comp_mul [Group Z] [MeasurableMul₂ Z] [NormedSpace ℂ X] (j : W → Z)
-    {k : W → ℂ} {α : Z → ℂ} (hk : Integrable k ν) (hα : Integrable α μ)
+type with measurable multiplication, the function `(x, g) ↦ (k x * α g) • F (j x * g)` is
+integrable on the product. -/
+lemma integrable_mul_smul_comp_mul {𝕜 : Type*} [NormedRing 𝕜] [Mul Z] [MeasurableMul₂ Z]
+    [Module 𝕜 X] [IsBoundedSMul 𝕜 X] (j : W → Z)
+    {k : W → 𝕜} {α : Z → 𝕜} (hk : Integrable k ν) (hα : Integrable α μ)
     (hF : IsBoundedMeasurable F) (hj : Measurable j := by fun_prop) :
     Integrable (fun z : W × Z ↦ (k z.1 * α z.2) • F (j z.1 * z.2)) (ν.prod μ) :=
   have h_meas : Measurable fun z : W × Z ↦ j z.1 * z.2 := by fun_prop
   (hk.mul_prod hα).smul_of_top_left (hF.comp h_meas).memLp_top
 
 /-- For integrable `k` and `α`, strongly measurable bounded `F` and measurable `j : W → Z` into a
-group, the iterated integral of `k x • α g • F (j x * g)` does not depend on the order of
-integration. -/
-lemma integral_smul_integral_swap [Group Z] [MeasurableMul₂ Z] [NormedSpace ℂ X]
-    (j : W → Z) {k : W → ℂ} {α : Z → ℂ} (hk : Integrable k ν)
+type with measurable multiplication, the iterated integral of `k x • α g • F (j x * g)` does not
+depend on the order of integration. The scalar field can be `ℝ` or `ℂ`. -/
+lemma integral_smul_integral_swap {𝕜 : Type*} [RCLike 𝕜] [Mul Z] [MeasurableMul₂ Z]
+    [NormedSpace ℝ X] [NormedSpace 𝕜 X] [IsScalarTower ℝ 𝕜 X]
+    (j : W → Z) {k : W → 𝕜} {α : Z → 𝕜} (hk : Integrable k ν)
     (hα : Integrable α μ) (hF : IsBoundedMeasurable F) (hj : Measurable j := by fun_prop) :
     ∫ x : W, k x • ∫ g : Z, α g • F (j x * g) ∂μ ∂ν =
       ∫ g : Z, α g • ∫ x : W, k x • F (j x * g) ∂ν ∂μ := by
@@ -166,9 +170,10 @@ lemma integral_smul_integral_swap [Group Z] [MeasurableMul₂ Z] [NormedSpace �
 `F` strongly measurable and bounded. Then `∫ k(x) ∫ α(g) F(j(x) g) dμ(g) dν(x)` equals
 `∫ β(g) F(g) dμ(g)`, where `β(g) = ∫ k(x) α(j(x)⁻¹ g) dν(x)` is the convolution of `k`, carried
 along `j`, and `α`. -/
-lemma integral_smul_integral_eq_integral_conv_smul [Group Z] [MeasurableMul₂ Z]
-    [MeasurableInv Z] [μ.IsMulLeftInvariant] [NormedSpace ℂ X] [CompleteSpace X] (j : W → Z)
-    {k : W → ℂ} {α : Z → ℂ} (hk : Integrable k ν) (hα : Integrable α μ)
+lemma integral_smul_integral_eq_integral_conv_smul {𝕜 : Type*} [RCLike 𝕜] [Group Z]
+    [MeasurableMul₂ Z] [MeasurableInv Z] [μ.IsMulLeftInvariant] [NormedSpace ℝ X]
+    [NormedSpace 𝕜 X] [IsScalarTower ℝ 𝕜 X] [CompleteSpace X] (j : W → Z)
+    {k : W → 𝕜} {α : Z → 𝕜} (hk : Integrable k ν) (hα : Integrable α μ)
     (hF : IsBoundedMeasurable F) (hj : Measurable j := by fun_prop) :
     ∫ x : W, k x • ∫ g : Z, α g • F (j x * g) ∂μ ∂ν =
       ∫ g : Z, (∫ x : W, k x * α ((j x)⁻¹ * g) ∂ν) • F g ∂μ := by
@@ -183,8 +188,9 @@ lemma integral_smul_integral_eq_integral_conv_smul [Group Z] [MeasurableMul₂ Z
 /-- For left invariant `μ`, the double integral `∫ k(x) ∫ α(g) F(j(x) g) dμ(g) dν(x)` equals both
 the integral in the opposite order and the integral of `F` against the convolution of `k`, carried
 along `j`, and `α`. -/
-lemma integral_conv [Group Z] [MeasurableMul₂ Z] [MeasurableInv Z] [μ.IsMulLeftInvariant]
-    [NormedSpace ℂ X] [CompleteSpace X] (j : W → Z) {k : W → ℂ} {α : Z → ℂ} (hk : Integrable k ν)
+lemma integral_conv {𝕜 : Type*} [RCLike 𝕜] [Group Z] [MeasurableMul₂ Z] [MeasurableInv Z]
+    [μ.IsMulLeftInvariant] [NormedSpace ℝ X] [NormedSpace 𝕜 X] [IsScalarTower ℝ 𝕜 X]
+    [CompleteSpace X] (j : W → Z) {k : W → 𝕜} {α : Z → 𝕜} (hk : Integrable k ν)
     (hα : Integrable α μ) (hF : IsBoundedMeasurable F) (hj : Measurable j := by fun_prop) :
     ∫ x : W, k x • ∫ g : Z, α g • F (j x * g) ∂μ ∂ν =
       ∫ g : Z, α g • ∫ x : W, k x • F (j x * g) ∂ν ∂μ ∧
