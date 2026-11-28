@@ -413,7 +413,6 @@ function. -/
 lemma schrodingerAct_boxIndicator {y : n → 𝔸f E} (hy : y ∈ integralBox n S.conjClosure) :
     semichar (idem S.conjClosure • y) • schrodingerAct S y (boxIndicator n S) =
       boxIndicator n S := by
-  classical
   -- Translation by `y` preserves the box, and on the box the phase of
   -- `semichar_smul_schrodingerAct` is `selfDualAddChar E` of an integral element.
   have h_idem : star (idem S.conjClosure) * idem S = idem S := by

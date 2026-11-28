@@ -382,7 +382,6 @@ lemma exists_isUnit_add_Ô (a x y : Matrix n n (Ô E)) :
     ∃ c : Matrix n n (Ô E), IsUnit (a + (1 - a * x) * c * (1 - y * a)) := by
   -- Write `a = p * D * q` in Smith form and take `c = p * e * q`, where the diagonal idempotent `e`
   -- has `i`-th entry `1` at the places where `d i` reduces to zero, and `0` at the others.
-  classical
   obtain ⟨p, -, q, -, d, rfl : a = p.val * diagonal d * q.val⟩ :=
     isValuationPair_Ô.top.smith_normal_form a
   set D : Matrix n n (Ô E) := diagonal d

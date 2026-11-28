@@ -144,7 +144,6 @@ theorem Space.map_eq_zero_of_support_not_orthogonal {E n X : Type*} [Field E] [C
     {A : 𝒮 V →L[ℂ] X} (hA : ∀ z ∈ I, ∀ f : 𝒮 V, A (V.ϱ z f) = A f)
     (h_supp : ∀ y : n → 𝔸f E, Ψ y ≠ 0 → ∃ z ∈ I, star (fun k : n ↦ (z k).2) ⬝ᵥ y ≠ 0)
     (f : 𝒮 V) : A (V.schrodingerOp P Ψ f) = 0 := by
-  classical
   -- It is enough to kill the indicators of small cosets near a point `y` of the support. Some
   -- `ϱ z`, with `z` in `I` above the conjugate of `P`, multiplies them by a constant other than
   -- `1`, while `A` is invariant under it.

@@ -66,7 +66,6 @@ variable {E n n' : Type} [Field E] [NumberField E] [Fintype n] [Fintype n']
 lemma New.IsHCParam.image_comp_eq (h : IsHCParam κ ec l) (w : InfinitePlace E) (f : ℤ → ℤ) :
     univ.image (fun i : n ↦ f (l w i)) =
       (range (card n)).image (fun p : ℕ ↦ f (hcParameter κ ec (card n) w p)) := by
-  classical
   simpa [image_image, Function.comp_def] using congrArg (image f) (h.image_eq w)
 
 /-- Theta correspondence of definite spaces of ranks `n < n'`. Let `E` be a number field, let
@@ -80,7 +79,6 @@ its conditions: the entries `l' w - 2 ea w + card n` are those of `l w - 2 eb w 
 of U(1) of weights `ea`, `eb`) exactly when `l'` is the parameter of `(κ, ea)`. -/
 lemma New.IsHCParam.paramsCorrespond_iff (hl : IsHCParam κ ec l) (hκ : IsLiftWeight n n' κ eb ec) :
     ParamsCorrespond (n := n) (n' := n') ea eb l l' 1 1 ↔ IsHCParam κ ea l' := by
-  classical
   obtain ⟨fits, h_lt, rfl⟩ := hκ
   -- No column has height strictly between the two ranks.
   have sum_eq (w : InfinitePlace E) (p : ℕ) :

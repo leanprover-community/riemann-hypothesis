@@ -491,7 +491,6 @@ lemma Modulus.exists_modKernel_flip (c : (Ô E)ˣ) (hc : star (c : 𝔸f E) * c 
           C * modKernel S T (b⁻¹ * upsilonU1 ^ card n) (a⁻¹ * upsilonU1 ^ card m) 𝔪
             (matrixFourier (𝔪.primAddChar.mulShift (𝔪.reduction (-star c))) D) (flipPoly t s P) h
             (g * (1, 𝔪.flipScalar m)) := by
-  classical
   -- By linearity take for `D` the indicator of one class `v`. The scalar `u` carries a translate
   -- of the vacuum to `C` times the datum of `D`; `exists_pairTheta_flip` flips the kernel of that
   -- translate, and the flipped translate is the datum of the character `ρ ↦ ψ (tr (ρ v))`.

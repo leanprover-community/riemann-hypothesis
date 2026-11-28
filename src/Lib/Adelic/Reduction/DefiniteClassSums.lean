@@ -295,7 +295,6 @@ lemma integral_indicator_univ_prod_coset {F : G E (1 : n → ℤˣ) → W} {f : 
     (h_int : Integrable ((univ ×ˢ ((u * ·) '' (K : Set (Gf E n)))).indicator F)) :
     ∫ g : GInf E (1 : n → ℤˣ) × Gf E n, (univ ×ˢ ((u * ·) '' (K : Set (Gf E n)))).indicator F g =
       (stdLevelIndex K : W)⁻¹ * f u := by
-  classical
   let Φ : G E (1 : n → ℤˣ) → W := (univ ×ˢ ((u * ·) '' K)).indicator F
   -- As `f` is constant on `u K`, the integral is `vol K * f u`.
   have h_slice (k : Gf E n) :

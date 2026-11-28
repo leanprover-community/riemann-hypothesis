@@ -703,7 +703,6 @@ theorem exists_planeConstantTerm_eq_integral (A : W'.Splitting W Unit) (X : V'.S
       Integrable Θ (zetaMeasure V t') →
         planeConstantTerm 𝔠 V' A σ' v y u g =
           c * ∫ p : ((𝔸 E)ˣ × G E t) × maxCompact E t', Θ p ∂zetaMeasure V t' := by
-  classical
   obtain ⟨c, hc, h_unfold⟩ := exists_unfold_constant_term A X
   refine ⟨c, hc, ?_⟩
   intro μ 𝔠 v hv y g u hu Θ h_int

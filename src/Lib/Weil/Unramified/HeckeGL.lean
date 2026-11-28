@@ -247,7 +247,6 @@ lemma index_stabilizer_line {F : Type*} [Field F] [Finite F] (i : n) {H : Subgro
 elsewhere lies in the double coset `New.basicDoubleCoset` n w #s. -/
 lemma diagGL_ite_mem_basicDoubleCoset (hϖ : v ϖ.val = exp (-1)) (s : Finset n) :
     diagGL (fun i : n ↦ if i ∈ s then ϖ else 1) ∈ basicDoubleCoset n w #s := by
-  classical
   -- Each condition is read off the diagonal entries. `coe_units_inv` is left out so that the
   -- inverse stays the image of a unit under `diagGL`.
   simp +decide [basicDoubleCoset, -coe_units_inv, ← map_inv, diagonal_apply, apply_ite, hϖ,

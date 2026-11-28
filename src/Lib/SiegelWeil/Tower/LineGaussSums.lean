@@ -160,7 +160,6 @@ vanish off the last rows `a` of `k⁻¹`, resp. the first columns `b` of `k`, fo
 the first at `invLastRows e k` is `χ (det k)` times the second at `firstCols e k`. -/
 lemma areMatched_stdRowDatum_stdColDatum [Fintype a] (hs : IsIntMatrix O s) :
     AreMatched O e χ (stdRowDatum e χ s) (stdColDatum χ s) := by
-  classical
   refine ⟨fun x (hx : stdColDatum χ 1 ((s.fromRows x).submatrix e.symm id) ≠ 0) ↦ ?_,
     fun y hy ↦ ?_, fun k hk ↦ ?_⟩
   · -- The matrix with rows `s` and `x` is some `g` in `intGL n O`; take `k = g⁻¹`.
@@ -244,7 +243,6 @@ lemma New.Exchange.map_shear_stdColDatum_eq {F b n : Type} [V : SemilocalField F
     (h_std : stdColDatum χ s ∈ M)
     (h_shear : (fun y : Matrix n b F ↦ stdColDatum χ s (y + u * (r * y))) ∈ M) :
     Λ (fun y : Matrix n b F ↦ stdColDatum χ s (y + u * (r * y))) = Λ (stdColDatum χ s) := by
-  classical
   -- Average over the shears `τ t`, for `t` an integral matrix. This does not change `Λ`, and the
   -- two functions have the same average.
   let Ψ (y : Matrix n b F) : ℂ := stdColDatum χ s (y + u * (r * y))
@@ -341,7 +339,6 @@ lemma stdColDatum_one_mul_mul {m : Type} [Fintype m] [DecidableEq m] {G P : Matr
     (hG : IsPrimitiveMatrix O G) (hP : IsIntMatrix O P) (hR : IsIntMatrix O R) (hPR : P * R = 1)
     (hRP : R * P = 1) (T : Matrix m m F) :
     stdColDatum χ 1 (G * T * R) = invOnUnits χ (R * G).det * stdColDatum χ 1 T := by
-  classical
   obtain ⟨G_int, G', G'_int, hG' : G' * G = 1⟩ := hG
   have h_det : (G * T * R).det = (R * G).det * T.det := by
     rw [← det_comm' hRP hPR, ← Matrix.mul_assoc, det_mul]
