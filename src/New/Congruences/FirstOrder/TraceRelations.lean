@@ -516,23 +516,19 @@ lemma IsTwistedLattice.twistRep_apply_eq_of_eq_one (h_model : IsTwistedLattice �
   ext
   simp [twistRep, h_model.twist_eq, hg]
 
-/-- Let `R₀`, `ψ'`, `ζ'` be a model over `O` (`IsTwistedLattice`): `R₀` is a lattice in `R`, `ψ'`
-is `ψ` with values in `O`, and the inertial element `γ` acts on the twisted
-lattice `ψ' R₀` by the scalar `ζ'`. Let `ψ` come from the norm-one torus with modulus `Q`
-(`IsFromU1`). Let `R` be a main summand (`IsMainSummandLike`): a conjugate self-dual representation
-of twist `t` and empty level, with Hodge–Tate jumps `J` read through the isomorphism `ℂ ≃ ℚ̄_ℓ`
-fixed by `PadicIso ℓ`; only that `R` is unramified outside `ℓ p₀ p₁` (`p₀ p₁ = D.M`) is used. Then
-`ψ' R₀` is unramified outside `ℓ p₀ p₁`, `Q` and `Q̄`. -/
-lemma IsTwistedLattice.twistRep_eq_one_of_mem_inertiaAbove [PadicIso ℓ]
+/-- The twist of a lattice by a character from the norm-one torus with modulus `Q` is
+unramified outside `ℓ p₀ p₁`, `Q` and `Q̄` if the original representation is unramified outside
+`ℓ p₀ p₁`. Here `R₀` and `ψ'` are the lattice and character of `IsTwistedLattice`. -/
+lemma IsTwistedLattice.twistRep_eq_one_of_mem_inertiaAbove
     (h_model : IsTwistedLattice ψ R γ R₀ ψ' ζ')
-    (hψ : IsFromU1 (placesDividing D.E ℓ) Q ψ) {J : (D.E →+* ℂ) → Multiset ℤ}
-    (h_summand : IsMainSummandLike D t J R) (g : AbsGal D)
+    (hψ : IsFromU1 (placesDividing D.E ℓ) Q ψ)
+    (h_unr : ∀ g ∈ inertiaAbove (placesDividing D.E ℓ ∪ placesAboveM D)ᶜ, R g = 1)
+    (g : AbsGal D)
     (hg : g ∈ inertiaAbove (placesDividing D.E ℓ ∪ placesAboveM D ∪ .conjClosure Q)ᶜ) :
     twistRep (.id O) ψ' R₀ g = 1 := by
   obtain ⟨v, hv, hg⟩ := hg
   rw [h_model.twistRep_apply_eq_of_eq_one (hψ.eq_one_of_mem_inertiaAbove g ⟨v, mt .inr hv, hg⟩)]
-  exact h_model.isLatticeIn.eq_one
-    (h_summand.eq_one_of_mem_inertiaAbove g ⟨v, by simpa using mt .inl hv, hg⟩)
+  exact h_model.isLatticeIn.eq_one (h_unr g ⟨v, mt .inl hv, hg⟩)
 
 end Model
 

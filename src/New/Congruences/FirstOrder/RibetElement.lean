@@ -368,7 +368,8 @@ lemma ribet_columns {ν : ℕ} {w : K → FinPlace D.E} {τ φ : K → AbsGal D}
   have hw : IsTameGeneratorFamily ν w τ φ := h_tri.isTameGeneratorFamily
   obtain ⟨b₀, lossT, hb₀, hb₀_eq, h_loc⟩ :=
     exists_length_le_loss_add_crystallineSelmerLength hw hu_cl hT_cl h_sum hu'_cont hu'_unr
-      ((h_tw π).twistRep_eq_one_of_mem_inertiaAbove hψ (h_summand π)) (γ π) h_selT h_fin
+      ((h_tw π).twistRep_eq_one_of_mem_inertiaAbove hψ fun g hg ↦
+        (h_summand π).eq_one_of_mem_inertiaAbove g (by simpa using hg)) (γ π) h_selT h_fin
   -- the tame places, and the test points `s`, which detect cocycles together with `g₀`
   obtain ⟨W, _, q, δ, o, hq, hq_cover, hδ, ho⟩ :=
     exists_tame_relations hc h_twist h_type h_quad hu' (h_tw π).twist_eq
