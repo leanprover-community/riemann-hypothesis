@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.BigOperators.Ring.Nat
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
 import Mathlib.CategoryTheory.Shift.Basic
+import TauCeti.NumberTheory.Cyclotomic.CyclotomicCharacter
 public import Lib.ClassField.HeckeL.EulerProduct
 public import Lib.ClassField.Local.ArtinMap
 import Lib.Adelic.Hecke.ClassSums
@@ -71,7 +72,7 @@ stands for `δχ ∪ w`. For `w` coming from `x : Kˣ` with coefficients `Ωˣ`,
 namespace New
 
 open NumberField Complex DiscreteUnits Cohomology QZChar DiscreteModule ComplexEmbedding NeZero
-  PadicInt Units
+  Units
 
 variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K]
 
@@ -154,32 +155,35 @@ lemma IsComplexConj.false_of_isTotallyComplex (hc : IsComplexConj c) [t : IsTota
   exact t.complexEmbedding_not_isReal _ (isReal_comp_algebraMap hj)
 
 omit [TopologicalSpace Γ] in
+/-- A complex conjugation sends every root of unity to its inverse. -/
+private lemma IsComplexConj.smul_mul_eq_one_of_pow_eq_one (hc : IsComplexConj c)
+    {N : ℕ} (hN : N ≠ 0) {ζ : Ω} (hζ : ζ ^ N = 1) : (c • ζ) * ζ = 1 := by
+  obtain ⟨j, hj⟩ : ∃ j : Ω →+* ℂ, ∀ x : Ω, j (c • x) = star (j x) := hc
+  have h_norm : ‖j ζ‖ = 1 :=
+    norm_eq_one_of_pow_eq_one (by rw [← map_pow, hζ, map_one]) hN
+  apply j.injective
+  simp [hj, conj_mul', h_norm]
+
+omit [TopologicalSpace Γ] in
 /-- A complex conjugation `c` (`hc`) inverts the `N`-th roots of unity: the cyclotomic character
 mod `N` (`New.cyclotomicCharMod`) is `-1` at `c`. Here `Ω` is the field `New.Ω`, the algebraic
 closure of `ℚ`. -/
 lemma IsComplexConj.cyclotomicCharMod_eq_neg_one (hc : IsComplexConj c) {N : ℕ} [NeZero N] :
     cyclotomicCharMod Ω N c = -1 := by
-  -- For an `N`-th root of unity `ζ`, both `c • ζ` and `ζ ^ (N - 1)` are inverse to `ζ`.
-  obtain ⟨j, hj⟩ : ∃ j : Ω →+* ℂ, ∀ x : Ω, j (c • x) = star (j x) := hc
-  have h_val : (New.cyclotomicCharMod Ω N c).val = (N - 1 : ℕ) := by
+  -- The exponent representing `-1` modulo `N` is `N - 1`, which also inverts each root.
+  have h_exp : (cyclotomicCharMod Ω N c).val = (N - 1 : ℕ) := by
     refine cyclotomicCharMod_eq_iff.mpr fun ζ hζ ↦
-      left_inv_eq_right_inv (a := ζ) (j.injective ?_) ?_
-    · have h_norm : ‖j ζ‖ = 1 :=
-        norm_eq_one_of_pow_eq_one (by simp [← map_pow, hζ]) (NeZero.ne N)
-      simp [hj, conj_mul', h_norm]
-    · rw [mul_pow_sub_one (NeZero.ne N), hζ]
-  ext
-  simp [h_val, NeZero.pos, ZMod.natCast_self]
+      left_inv_eq_right_inv (hc.smul_mul_eq_one_of_pow_eq_one (NeZero.ne N) hζ) ?_
+    rw [mul_pow_sub_one (NeZero.ne N), hζ]
+  exact Units.ext (by simpa [NeZero.pos, ZMod.natCast_self] using h_exp)
 
 omit [TopologicalSpace Γ] in
 /-- The `l`-adic cyclotomic character `New.cyclotomicChar` is `-1` at a complex conjugation `c`
 (`hc`). -/
 lemma IsComplexConj.cyclotomicChar_eq_neg_one (hc : IsComplexConj c) (l : ℕ) [Fact (Nat.Prime l)] :
     cyclotomicChar Ω l c = -1 := by
-  -- The value is `-1` modulo every `l ^ r`.
-  refine ext (ext_of_toZModPow.mp fun r ↦ ?_)
-  simpa [cyclotomicCharMod_prime_pow_eq, ← val_inj] using
-    hc.cyclotomicCharMod_eq_neg_one (N := l ^ r)
+  exact TauCeti.cyclotomicCharacter_eq_neg_one l fun n _ hζ ↦
+    hc.smul_mul_eq_one_of_pow_eq_one (pow_ne_zero n (Fact.out : l.Prime).ne_zero) hζ
 
 end New
 
