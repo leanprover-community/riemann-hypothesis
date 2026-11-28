@@ -1,13 +1,13 @@
 # References
 
-Only some of the citations were compared with their sources. The table lists the 228 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
+Only some of the citations were compared with their sources. The table lists the 230 citations that were part of the comparison. A place is a theorem, section or page number; places that were looked for and could not be confirmed were dropped. At second hand means from a table of contents, a catalogue or a citation in another work.
 
-- compared, place confirmed: 66
+- compared, place confirmed: 68
 - not compared, no place given: 7
 - place confirmed at second hand: 36
 - work found, no place given: 119
 
-The citations of 122 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 68 of these files give places. They are listed at the end.
+The citations of 120 other files were not part of this check, nor were further citations in the files below that stand outside the checked paragraphs; 67 of these files give places. They are listed at the end.
 
 | citation | state | files |
 |---|---|---|
@@ -53,6 +53,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Böcherer, Über die Fourier-Jacobi-Entwicklung Siegelscher Eisensteinreihen, Math. Z. 183 (1983) | work found, no place given | `Lib/SiegelWeil/Reproduction` |
 | C. F. Gauss, Disquisitiones Arithmeticae | not compared, no place given | `Lib/CM/ChowlaSelberg` |
 | C. Greither, Class groups of abelian fields, and the main conjecture | compared, place confirmed | `Lib/Cyclotomic/OddSha` |
+| C. L. Siegel, [On Advanced Analytic Number Theory](https://mathweb.tifr.res.in/Documents/Publications/Lectures/tifr23.pdf#page=17), TIFR lecture notes 23 (first published 1961), TIFR reprint, Chapter I, §1, Theorem 1, p. 13 | compared, place confirmed | `Lib/CM/KroneckerLimit` |
 | C. L. Siegel, Über die analytische Theorie der quadratischen Formen | work found, no place given | `Lib/DiscreteSeries/Haar/GramFibre`, `Lib/DiscreteSeries/Haar/GramPolar` |
 | Carter, Finite groups of Lie type (1985) | work found, no place given | `Lib/LocalGL/Green/CuspidalFunctions` |
 | Coates–Sinnott, An analogue of Stickelberger's theorem for the higher K-groups, Invent. Math. 24 (1974) | place confirmed at second hand | `Lib/Cyclotomic/Kolyvagin/ReciprocityComponentBounds` |
@@ -74,6 +75,7 @@ The citations of 122 other files were not part of this check, nor were further c
 | Edixhoven, van der Geer, Moonen, Abelian Varieties, (5.1)–(5.2) | compared, place confirmed | `Lib/Shimura/AbelianScheme/IsogenyFlatness` |
 | Edixhoven, van der Geer, Moonen, Abelian Varieties, ch. VI §1 | compared, place confirmed | `Lib/Shimura/AbelianScheme/IsogenyFlatness` |
 | Erez, Matchings of theta lifts associated to non-trivial automorphic characters of odd orthogonal groups, arXiv 2401.13469 | work found, no place given | `New/Determinant/Exchange/TheoremForPartners` |
+| F. Chamizo, [A simple evaluation of a theta value, the Kronecker limit formula and a formula of Ramanujan](https://doi.org/10.1007/s11139-022-00586-0), Ramanujan J. 59 (2022), §3, Proposition 1, p. 949 | compared, place confirmed | `Lib/CM/KroneckerLimit` |
 | Faltings, Scholze, primitive comparison (no titles) | work found, no place given | `Lib/PadicComparison/Duality/GoodPairs` |
 | Faltings, p-adic Hodge theory, JAMS 1 (1988) | work found, no place given | `Lib/Cohomology/PointClass/LinearIndependence` |
 | Faltings; Scholze; Bhatt-Morrow-Scholze (no titles) | work found, no place given | `Lib/PadicComparison/CrystallineFrobenius` |
@@ -251,7 +253,6 @@ A star marks a file that gives places.
 - `Lib/Adelic/Unitary/WeakApproximation`*
 - `Lib/Analytic/Landau`*
 - `Lib/CM/FormalGroup/IntegralParameter`
-- `Lib/CM/KroneckerLimit`*
 - `Lib/CM/Sigma/Basic`*
 - `Lib/ClassField/Global/AlbertBrauerHasseNoether`*
 - `Lib/ClassField/Global/Chebotarev`
