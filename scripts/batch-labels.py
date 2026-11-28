@@ -26,6 +26,9 @@ LATEST = "latest batch"
 MEMBER = "batch-building"
 # Handed back to the pull request's author.
 WAITING = "awaiting-author"
+# A reviewer (Triage role or more) has approved the pull request's head commit. `label-pr.yml` takes
+# it off when new commits are pushed, so it never stands for a head nobody reviewed.
+APPROVED = "approved"
 
 # The start of the name of a branch that holds a batch.
 PREFIX = "batch/"

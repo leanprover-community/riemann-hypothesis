@@ -18,6 +18,11 @@ name: Label PR
 # whoever added them.
 # Since labels can be removed, only the run for the PR's current head may apply them: newer
 # pushes cancel older runs, and a run whose head has moved on exits without changes.
+#
+# A second job takes `approved` off when commits are pushed to a PR, so that the label only ever
+# stands for a head commit a reviewer approved. It goes by the labels the PR had when it was pushed
+# to, as GitHub sends them with the event: a reviewer who approves the new head before the job runs
+# keeps the label. Any push counts, a merge of main into the PR's branch included.
 
 on:
   pull_request_target:
@@ -30,6 +35,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  approval:
+    name: Take `approved` off after a push
+    if: >-
+      ${{ github.event.action == 'synchronize' &&
+          contains(github.event.pull_request.labels.*.name, 'approved') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Take `approved` off
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          APPROVED: approved
+        run: |
+          # Someone may have taken the label off since the push, which GitHub answers with 404.
+          if out=$(gh api --method DELETE "repos/$GITHUB_REPOSITORY/issues/$PR/labels/$APPROVED" --silent 2>&1); then
+            echo "Took '$APPROVED' off: $HEAD was pushed after the approval."
+          elif grep -q 'HTTP 404' <<< "$out"; then
+            echo "'$APPROVED' is already off."
+          else
+            printf '%s\n' "$out"
+            echo "::error::Could not take '$APPROVED' off pull request $PR."
+            exit 1
+          fi
+
   label:
     runs-on: ubuntu-latest
     timeout-minutes: 10

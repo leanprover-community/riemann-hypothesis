@@ -1,9 +1,16 @@
 name: review commands
 
-# Two comments hand a pull request back and forth between its author and the maintainers.
+# Three comments hand a pull request back and forth between its author and the maintainers.
 #
 # Commenting `aa` hands a pull request back to its author: it adds the `awaiting-author` label and
-# nothing else. The inbox workflow takes a pull request with that label out of the inbox.
+# takes `approved` off, if it is on. The inbox workflow takes a pull request with that label out of
+# the inbox.
+#
+# Commenting `approve` approves the pull request's head commit: it adds the `approved` label and
+# takes `awaiting-author` off, if it is on. `approve` followed by the commit the reviewer read, such
+# as `approve 1a2b3c4` (seven or more digits of its hash), does nothing if the pull request has
+# moved on to another commit since. New commits take `approved` off again (see label-pr.yml), and
+# the inbox keeps a pull request with that label out. Nobody can approve their own pull request.
 #
 # Commenting `ready` hands it back to the maintainers: it takes `awaiting-author` off and nothing
 # else. The pull request's author can do this as well as maintainers. The inbox workflow counts
@@ -11,15 +18,17 @@ name: review commands
 # that pull request, so it goes back in the inbox within a minute or so. Without the label there
 # is nothing to take off, and `ready` does nothing.
 #
-# Only a comment whose whole text is `aa` or `ready` counts, letter case and blank space after the
-# word aside. A comment that starts with blank space is ignored. `aa` needs triage access to this repository or more, and so does `ready`, except
-# from the pull request's author. Reviewers are the people given the Triage role: it lets them hand
-# pull requests back without write access. Every other comment is ignored.
+# Only a comment whose whole text is `aa`, `approve` (with or without a commit) or `ready` counts,
+# letter case and blank space after the text aside. A comment that starts with blank space is
+# ignored. `aa` and `approve` need triage access to this repository or more, and so does `ready`,
+# except from the pull request's author. Reviewers are the people given the Triage role: it lets
+# them hand pull requests back and approve them without write access. Every other comment is
+# ignored.
 #
 # GitHub runs this workflow from the default branch, so a pull request cannot change what it does.
 # Nothing from a pull request is checked out or run: everything goes through GitHub's API.
 #
-# The batch-queue workflow on branch alpoge handled these two comments together with the batch
+# The batch-queue workflow on branch alpoge handled `aa` and `ready` together with the batch
 # commands, which are not restored here.
 
 on:
@@ -30,13 +39,14 @@ permissions: {}
 
 jobs:
   label:
-    name: Act on an `aa` or `ready` comment
+    name: Act on an `aa`, `approve` or `ready` comment
     # A first filter, so that most comments start no runner: pull requests only, and the comment
     # has to start with one of the words. startsWith ignores letter case. The step below makes the
     # exact comparison.
     if: >-
       ${{ github.event_name == 'issue_comment' && github.event.issue.pull_request &&
-          (startsWith(github.event.comment.body, 'aa') || startsWith(github.event.comment.body, 'ready')) }}
+          (startsWith(github.event.comment.body, 'aa') || startsWith(github.event.comment.body, 'approve') ||
+           startsWith(github.event.comment.body, 'ready')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     # `actions: write` is for starting the inbox workflow after `ready`.
@@ -45,7 +55,7 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: Check the comment and its author, then add or remove the label
+      - name: Check the comment and its author, then add or remove the labels
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -54,19 +64,30 @@ jobs:
           OPENER: ${{ github.event.issue.user.login }}
           BODY: ${{ github.event.comment.body }}
           WAITING: awaiting-author
+          APPROVED: approved
         run: |
           # The comment text arrives in an environment variable. It is compared and never run.
           text=$(printf '%s' "$BODY" | tr -d '\r' | tr '[:upper:]' '[:lower:]')
           # Drop blank space, line breaks included, from both ends.
           text="${text#"${text%%[![:space:]]*}"}"
           text="${text%"${text##*[![:space:]]}"}"
+          pin=''
+          if [[ "$text" =~ ^approve[[:space:]]+([0-9a-f]{7,40})$ ]]; then
+            pin=${BASH_REMATCH[1]}
+            text=approve
+          fi
           case "$text" in
-            aa | ready) ;;
+            aa | approve | ready) ;;
             *)
-              echo "The comment is not just 'aa' or 'ready': nothing to do."
+              echo "The comment is not just 'aa', 'approve' or 'ready': nothing to do."
               exit 0
               ;;
           esac
+
+          if [ "$text" = approve ] && [ "$AUTHOR" = "$OPENER" ]; then
+            echo "$AUTHOR opened pull request $PR and cannot approve it."
+            exit 0
+          fi
 
           # Triage access or higher. The API reports the maintain role as write and triage as read
           # under `permission`, so triage is told apart by `role_name`. The pull request's author
@@ -86,38 +107,84 @@ jobs:
             *)
               if [ "$role" = triage ]; then
                 :
-              elif [ "$text" = aa ]; then
-                echo "$AUTHOR has '${role:-$permission}' access. Labelling a pull request '$WAITING' needs triage access."
+              elif [ "$text" = ready ]; then
+                echo "$AUTHOR did not open pull request $PR and has '${role:-$permission}' access. Taking '$WAITING' off someone else's pull request needs triage access."
                 exit 0
               else
-                echo "$AUTHOR did not open pull request $PR and has '${role:-$permission}' access. Taking '$WAITING' off someone else's pull request needs triage access."
+                label=$WAITING
+                if [ "$text" = approve ]; then label=$APPROVED; fi
+                echo "$AUTHOR has '${role:-$permission}' access. Labelling a pull request '$label' needs triage access."
                 exit 0
               fi
               ;;
           esac
 
-          if [ "$text" = aa ]; then
-            # Back to the author. The label is all this does. Adding a label that does not exist
-            # creates it, so a renamed `awaiting-author` should fail here instead.
-            if ! gh api "repos/$REPO/labels/$(jq -rn --arg label "$WAITING" '$label | @uri')" --silent; then
-              echo "::error::There is no '$WAITING' label in $REPO. Was it renamed?"
+          uri() { jq -rn --arg label "$1" '$label | @uri'; }
+          # Adding a label that does not exist creates it, so a renamed label should fail here
+          # instead.
+          add() {
+            if ! gh api "repos/$REPO/labels/$(uri "$1")" --silent; then
+              echo "::error::There is no '$1' label in $REPO. Was it renamed?"
               exit 1
             fi
-            gh api -X POST "repos/$REPO/issues/$PR/labels" -f "labels[]=$WAITING" --silent
-            echo "Added '$WAITING' to pull request $PR, as $AUTHOR asked."
+            gh api -X POST "repos/$REPO/issues/$PR/labels" -f "labels[]=$1" --silent
+            echo "Added '$1' to pull request $PR, as $AUTHOR asked."
+          }
+          # Fails when the pull request does not carry the label. `bash -e` does not stop inside a
+          # function called from `if` or `||`, so a failed removal exits by itself.
+          remove() {
+            gh api --paginate "repos/$REPO/issues/$PR/labels" --jq '.[].name' | grep -qxF -- "$1" || return 1
+            if ! gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(uri "$1")" --silent; then
+              echo "::error::Could not take '$1' off pull request $PR."
+              exit 1
+            fi
+            echo "Removed '$1' from pull request $PR."
+          }
+
+          if [ "$text" = aa ]; then
+            # Back to the author, and no longer approved.
+            add "$WAITING"
+            remove "$APPROVED" || true
+            exit 0
+          fi
+
+          if [ "$text" = approve ]; then
+            if ! pull=$(gh api "repos/$REPO/pulls/$PR" --jq '.state + " " + .head.sha'); then
+              echo "::error::Could not read pull request $PR."
+              exit 1
+            fi
+            read -r state head <<< "$pull"
+            if [ "$state" != open ]; then
+              echo "Pull request $PR is $state: nothing to do."
+              exit 0
+            fi
+            if [ -n "$pin" ] && [[ "$head" != "$pin"* ]]; then
+              echo "The head of pull request $PR is $head, not $pin: nothing to do."
+              exit 0
+            fi
+            add "$APPROVED"
+            # label-pr.yml takes the label off a pull request pushed to while it carried the label.
+            # A push between reading the head and adding the label would escape it, so look again.
+            now=$(gh api "repos/$REPO/pulls/$PR" --jq .head.sha)
+            if [ "$now" != "$head" ]; then
+              remove "$APPROVED" || true
+              echo "Pull request $PR moved on from $head to $now meanwhile, so it is not approved."
+              exit 0
+            fi
+            echo "Approved $head."
+            # The inbox counts `awaiting-author` coming off as the pull request entering review,
+            # but keeps one labelled `approved` out, so this starts no inbox run.
+            remove "$WAITING" || true
             exit 0
           fi
 
           # `ready`: back to the maintainers. The inbox workflow counts the label coming off as the
           # pull request entering review again. A label change made with this job's token starts no
           # run of it, so this asks for one.
-          if gh api "repos/$REPO/issues/$PR/labels" --jq '.[].name' | grep -qxF -- "$WAITING"; then
-            gh api -X DELETE "repos/$REPO/issues/$PR/labels/$(jq -rn --arg label "$WAITING" '$label | @uri')" --silent
-            echo "Removed '$WAITING' from pull request $PR, as $AUTHOR asked."
+          if remove "$WAITING"; then
             if ! gh workflow run inbox.yml --repo "$REPO" -f "pr=$PR"; then
               echo "::warning::Could not start the inbox workflow for pull request $PR."
             fi
           else
             echo "Pull request $PR does not carry '$WAITING': nothing to do."
           fi
-        
