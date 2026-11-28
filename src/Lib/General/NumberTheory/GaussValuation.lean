@@ -2,7 +2,7 @@ module
 
 import Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero
 import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
-import Mathlib.RingTheory.Valuation.LocalSubring
+import TauCeti.RingTheory.Valuation.AbsolutelyIntegrallyClosed
 import Mathlib.Topology.Algebra.Valued.LocallyCompact
 import TauCeti.Algebra.Ring.GeomSum
 public import Lib.GaloisRep.Main.SelmerModules
@@ -132,18 +132,10 @@ lemma ellVal_prod (s : Finset ι) (f : ι → intQpBar ℓ) :
 
 /-! ### Roots of monic polynomials -/
 
-/-- A monic polynomial over `ℤ̄_ℓ = intQpBar ℓ` splits: its roots in `ℚ̄_ℓ` are integral over this
-valuation ring, which is integrally closed. -/
-lemma splits_of_monic {g : (intQpBar ℓ)[X]} (hg : g.Monic) : g.Splits := by
-  have h_splits : (g.map (algebraMap (intQpBar ℓ) (PadicAlgCl ℓ))).Splits := IsAlgClosed.splits _
-  refine h_splits.of_splits_map_of_injective Subtype.val_injective fun α hα ↦ ?_
-  exact IsIntegrallyClosed.algebraMap_eq_of_integral
-    ⟨g, hg, (eval₂_eq_eval_map _).trans (isRoot_of_mem_roots hα)⟩
-
 /-- A monic polynomial of nonzero degree over `ℤ̄_ℓ = intQpBar ℓ` has a root in this ring. -/
 lemma exists_eval_eq_zero_of_monic {g : (intQpBar ℓ)[X]} (hg : g.Monic) (h_deg : g.degree ≠ 0) :
     ∃ α : intQpBar ℓ, g.eval α = 0 :=
-  (splits_of_monic hg).exists_eval_eq_zero h_deg
+  (TauCeti.IsAbsolutelyIntegrallyClosed.splits hg).exists_eval_eq_zero h_deg
 
 /-- Every nonnegative rational number `ρ` is the valuation `v = ellVal`, normalised by `v(ℓ) = 1`,
 of some element `π` of `ℤ̄_ℓ = intQpBar ℓ`. -/
@@ -399,7 +391,7 @@ lemma exists_one_add_pow_eq {m j : ℕ} (hj : j ∈ Set.Icc 1 m) {x : intQpBar �
   let g : (intQpBar ℓ)[X] := (X + C 1) ^ j - C (1 + x)
   have hg : g.IsMonicOfDegree j := by
     simpa [g] using ((isMonicOfDegree_X_add_one 1).pow j).sub (q := C (1 + x)) (by simpa)
-  have h_splits : g.Splits := splits_of_monic hg.monic
+  have h_splits : g.Splits := TauCeti.IsAbsolutelyIntegrallyClosed.splits hg.monic
   have h_card : g.roots.card = j := h_splits.natDegree_eq_card_roots.symm.trans hg.natDegree_eq
   have h_prod : -x = (g.roots.map fun α ↦ -α).prod := by
     simpa [g] using h_splits.eval_eq_prod_roots_of_monic hg.monic 0
