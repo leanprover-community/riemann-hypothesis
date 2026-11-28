@@ -618,6 +618,16 @@ lemma isPullback_iff :
   · obtain ⟨z, ⟨hq, hv⟩, _⟩ := hu B w x hx
     exact ⟨z, hv, hq⟩
 
+/-- The preimage of a subfunctor, with its two natural maps, is a pullback of the inclusion. -/
+lemma isPullback_subfunctor_preimage.{w} {D : Type*} [Category D] {X Z : D ⥤ Type w}
+    (U : Subfunctor Z) (f : X ⟶ Z) :
+    IsPullback (U.fromPreimage f) (U.preimage f).ι U.ι f := by
+  rw [IsPullback.iff_app]
+  intro B
+  refine (Types.isPullback_iff ..).mpr ⟨rfl, fun _ _ h ↦ Subtype.ext h.2, ?_⟩
+  intro x w (hx : x.val = f.app B w)
+  exact ⟨⟨w, (hx ▸ x.property : f.app B w ∈ U.obj B)⟩, Subtype.ext hx.symm, rfl⟩
+
 /-- The fibre product of `u : W ⟶ Y` and `p : E ⟶ Y` with its two projections is a pull-back
 square. -/
 lemma isPullback_fiberProd : IsPullback (snd u p) (fst u p) p u :=
@@ -965,12 +975,9 @@ lemma HasUniversalPoints.isBijective (h_points : c.HasUniversalPoints u) :
 bijective in all degrees along the restricted map u⁻¹(U∘φ) → U∘φ. -/
 lemma HasUniversalPoints.isBijective_subfunctor (h_points : c.HasUniversalPoints u)
     (U : Subfunctor Y) :
-    c.IsBijective (freeAbMap (Y := toFunctor U) ((U.whisker c.functor).fromPreimage u)) := by
-  -- the map from the preimage of `U` to `U` is the base change of `u` along the inclusion
-  refine h_points.isBijective_of_isPullback (Subfunctor.ι _) U.ι (isPullback_iff.mpr ?_)
-  exact ⟨fun _ _ ↦ rfl, fun B w x (hx : x.val = u.app B w) ↦
-    ⟨⟨w, (hx ▸ x.property : u.app B w ∈ U.obj (c.functor.obj B))⟩,
-      ⟨rfl, Subtype.ext hx.symm⟩, fun _ ⟨hz, _⟩ ↦ Subtype.ext hz⟩⟩
+    c.IsBijective (freeAbMap (Y := toFunctor U) ((U.whisker c.functor).fromPreimage u)) :=
+  h_points.isBijective_of_isPullback (Subfunctor.ι _) U.ι
+    (isPullback_subfunctor_preimage (U.whisker c.functor) u)
 
 /-- With universal points, a subfunctor `U` of `Y` has the cohomology of `Y` for `F` if and only
 if its preimage `S` in `Y'` has the cohomology of `Y'` for `F'`. -/
