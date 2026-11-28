@@ -520,54 +520,57 @@ lemma exists_maximal_tensorPush_ne_zero (hz : z ≠ 0) :
     zorn_le_nonempty₀ good h_chain _ ⟨a, AlgHom.id S a.obj, h_id.trans_ne hz, rfl⟩
   exact ⟨m, h_max⟩
 
-/-- Let S be an O^♭-algebra, and ψ: a → d, k: d → b be maps of perfect S-algebras with k ≠ 0,
-such that for any two elements of a one of their images under ψ divides the other, and likewise
-for k on d. Then kψ factors, by S-linear maps α: a → V and β: V → b, through a perfect S-algebra
-V that is a valuation domain. -/
-lemma exists_perfect_valuationRing_factor {ψ : a.obj →ₐ[S] d.obj} {k : d.obj →ₐ[S] b.obj}
-    (hk : k.toLinearMap ≠ 0) (hψ_total : ∀ x y : a.obj, ψ x ∣ ψ y ∨ ψ y ∣ ψ x)
-    (hk_total : ∀ x y : d.obj, k x ∣ k y ∨ k y ∣ k x) :
-    ∃ (V : PerfectAlg p S) (α : a.obj →ₗ[S] V.obj) (β : V.obj →ₗ[S] b.obj),
-      (k.comp ψ).toLinearMap = β ∘ₗ α ∧ ∃ _ : IsDomain V.obj, ValuationRing V.obj := by
-  -- `d ⧸ ker k` is a perfect domain. Inside it, `V` is the saturation of the image of `a`: the
-  -- `y` with `v * y` in the image for some `v ≠ 0` in the image.
-  have hb_reduced : IsReduced b.obj := isReduced_of_perfectRing b.property
-  have h_prime : (RingHom.ker k).IsPrime := by
-    refine ⟨fun h_top ↦ hk (LinearMap.ext fun x ↦
-      (eq_top_iff.mp h_top trivial : x ∈ RingHom.ker k)),
-      fun {x y} hxy ↦ ?_⟩
-    -- If `k (x * y) = 0` and `k y ∣ k x`, then `k x ^ 2 = 0`; and symmetrically.
-    have h_mul : k x * k y = 0 := (map_mul k x y).symm.trans hxy
-    rcases hk_total y x with ⟨w, hw⟩ | ⟨w, hw⟩
-    · refine .inl (IsReduced.eq_zero (k x) ⟨2, ?_⟩)
-      rw [sq]
-      nth_rw 2 [hw]
-      rw [← mul_assoc, h_mul, zero_mul]
-    · refine .inr (IsReduced.eq_zero (k y) ⟨2, ?_⟩)
-      rw [sq]
-      nth_rw 1 [hw]
-      rw [mul_right_comm, h_mul, zero_mul]
-  have h_perf : PerfectRing (d.obj ⧸ RingHom.ker k) p := by
-    refine perfectRing_of_pow_surjective natCast_eq_zero_of_algebra_oFlat fun y ↦ ?_
-    obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y
-    obtain ⟨x, rfl⟩ := d.property.bijective_frobenius.surjective y
-    exact ⟨mkₐ S _ x, rfl⟩
-  let f : a.obj →ₐ[S] d.obj ⧸ RingHom.ker k := (mkₐ S (RingHom.ker k)).comp ψ
-  let V : Subalgebra S (d.obj ⧸ RingHom.ker k) :=
-    f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors _) inf_le_left
-  -- `V` is perfect: if `v * y ^ p` is in the image, so is `(v * y) ^ p`, say `f x ^ p`; then
-  -- `v * y = f x`.
-  have hV_perf : PerfectRing V p := by
-    refine perfectRing_of_pow_surjective natCast_eq_zero_of_algebra_oFlat fun ⟨y, hy⟩ ↦ ?_
-    obtain ⟨y, rfl⟩ := h_perf.bijective_frobenius.surjective y
-    obtain ⟨v, ⟨hv_range, hv_nzd⟩, hvy⟩ := hy
-    obtain ⟨x, hx : f x = v ^ (p - 1) * (v * y ^ p)⟩ := mul_mem (pow_mem hv_range (p - 1)) hvy
-    obtain ⟨x, rfl⟩ : ∃ r : a.obj, r ^ p = x := a.property.bijective_frobenius.surjective x
-    have h_pow : f x ^ p = (v * y) ^ p := by
-      rw [← map_pow, hx, ← mul_assoc, pow_sub_one_mul out, mul_pow]
-    exact ⟨⟨y, v, ⟨hv_range, hv_nzd⟩, x, h_perf.bijective_frobenius.injective h_pow⟩, rfl⟩
+/-- If `k : R →ₐ[S₀] B` maps into a reduced ring, is nonzero, and for any two elements of `R` one of
+their images under `k` divides the other, then `ker k` is a prime ideal. -/
+private lemma isPrime_ker_of_dvd_total {S₀ R B : Type*} [CommRing S₀] [CommRing R] [CommRing B]
+    [IsReduced B] [Algebra S₀ R] [Algebra S₀ B] (k : R →ₐ[S₀] B) (hk : k.toLinearMap ≠ 0)
+    (h_total : ∀ x y : R, k x ∣ k y ∨ k y ∣ k x) :
+    (RingHom.ker k).IsPrime := by
+  refine ⟨fun h_top ↦ hk (LinearMap.ext fun x ↦ (eq_top_iff.mp h_top trivial : x ∈ RingHom.ker k)),
+    fun {x y} hxy ↦ ?_⟩
+  -- If `k (x * y) = 0` and `k y ∣ k x`, then `k x ^ 2 = 0`; and symmetrically.
+  have h_mul : k x * k y = 0 := (map_mul k x y).symm.trans hxy
+  rcases h_total y x with ⟨w, hw⟩ | ⟨w, hw⟩
+  · refine .inl (IsReduced.eq_zero (k x) ⟨2, ?_⟩)
+    rw [sq]
+    nth_rw 2 [hw]
+    rw [← mul_assoc, h_mul, zero_mul]
+  · refine .inr (IsReduced.eq_zero (k y) ⟨2, ?_⟩)
+    rw [sq]
+    nth_rw 1 [hw]
+    rw [mul_right_comm, h_mul, zero_mul]
+
+/-- For a map `f : R →ₐ[S₀] A` of perfect `S₀`-algebras with `(p : A) = 0`, the saturation of the
+image of `f` by its nonzerodivisors in `A` is again a perfect ring. -/
+private lemma perfectRing_saturation_range {S₀ R A : Type} [CommRing S₀] [CommRing R] [CommRing A]
+    [Algebra S₀ R] [Algebra S₀ A] [hR : PerfectRing R p] [hA : PerfectRing A p]
+    (hA_char : (p : A) = 0) (f : R →ₐ[S₀] A) :
+    PerfectRing (f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors A) inf_le_left) p := by
+  have : IsReduced A := isReduced_of_perfectRing hA
+  have : IsReduced (f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors A) inf_le_left) :=
+    ⟨fun ⟨x, _⟩ ⟨n, hn⟩ ↦ Subtype.ext (IsReduced.eq_zero x ⟨n, congrArg Subtype.val hn⟩)⟩
+  have hV_char :
+      (p : f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors A) inf_le_left) = 0 :=
+    Subtype.ext hA_char
+  refine perfectRing_of_pow_surjective hV_char fun ⟨y, hy⟩ ↦ ?_
+  obtain ⟨y, rfl⟩ := hA.bijective_frobenius.surjective y
+  obtain ⟨v, ⟨hv_range, hv_nzd⟩, hvy⟩ := hy
+  obtain ⟨x, hx : f x = v ^ (p - 1) * (v * y ^ p)⟩ := mul_mem (pow_mem hv_range (p - 1)) hvy
+  obtain ⟨x, rfl⟩ : ∃ r : R, r ^ p = x := hR.bijective_frobenius.surjective x
+  have h_pow : f x ^ p = (v * y) ^ p := by
+    rw [← map_pow, hx, ← mul_assoc, pow_sub_one_mul out, mul_pow]
+  exact ⟨⟨y, v, ⟨hv_range, hv_nzd⟩, x, hA.bijective_frobenius.injective h_pow⟩, rfl⟩
+
+/-- Let `f : R →ₐ[S₀] A` map into an integral domain `A` so that for any two elements of `R` one of
+their images under `f` divides the other. Then the saturation of `f.range` by its nonzerodivisors
+in `A` is a valuation ring. -/
+private lemma valuationRing_saturation_range {S₀ R A : Type*} [CommRing S₀] [CommRing R]
+    [CommRing A] [IsDomain A] [Algebra S₀ R] [Algebra S₀ A] (f : R →ₐ[S₀] A)
+    (h_total : ∀ x y : R, f x ∣ f y ∨ f y ∣ f x) :
+    ValuationRing (f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors A) inf_le_left) := by
+  let V := f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors A) inf_le_left
   -- Divisibility in the domain passes to `V`: a quotient of two elements of `V` lies in `V`.
-  have h_dvd {y z : V} (h_yz : (y : d.obj ⧸ RingHom.ker k) ∣ z) : y ∣ z := by
+  have h_dvd {y z : V} (h_yz : (y : A) ∣ z) : y ∣ z := by
     obtain ⟨w, hw⟩ := h_yz
     obtain rfl | hy := eq_or_ne y 0
     · refine ⟨0, Subtype.ext ?_⟩
@@ -580,28 +583,49 @@ lemma exists_perfect_valuationRing_factor {ψ : a.obj →ₐ[S] d.obj} {k : d.ob
     have hw_mem : w ∈ V := f.range.mem_saturation_of_mul_mem_left h_mem
       ⟨hvy, mul_mem hv_nzd (mem_nonZeroDivisors_of_ne_zero (Subtype.coe_ne_coe.mpr hy))⟩
     exact ⟨⟨w, hw_mem⟩, Subtype.ext hw⟩
-  -- If `f u = v' * v * y` and `f u' = v * v' * z` with `v' * v` a nonzerodivisor, then `ψ u ∣ ψ u'`
-  -- gives `f u ∣ f u'` in `d ⧸ ker k`, hence `y ∣ z` after cancelling `v' * v`.
-  have h_dvd_of_image {y z v v' : d.obj ⧸ RingHom.ker k} {u u' : a.obj}
-      (h_nzd : v' * v ∈ nonZeroDivisors _) (hu : f u = v' * (v * y)) (hu' : f u' = v * (v' * z))
-      (huu' : ψ u ∣ ψ u') : y ∣ z := by
-    have h_image : f u ∣ f u' := map_dvd (mkₐ S (RingHom.ker k)) huu'
+  -- Cancelling a common nonzerodivisor `v' * v` reduces divisibility in `V` to `f u ∣ f u'`.
+  have h_dvd_of_image {y z v v' : A} {u u' : R} (h_nzd : v' * v ∈ nonZeroDivisors A)
+      (hu : f u = v' * (v * y)) (hu' : f u' = v * (v' * z)) (huu' : f u ∣ f u') : y ∣ z := by
     rwa [hu, hu', ← mul_assoc, ← mul_assoc, mul_comm v v',
-      dvd_cancel_left_mem_nonZeroDivisors h_nzd] at h_image
-  -- Given `y, z ∈ V`, the multiples `v' * v * y` and `v * v' * z` are images of `u`, `u'` in `a`,
-  -- and one of `ψ u`, `ψ u'` divides the other.
-  have hV_total : Std.Total fun y z : V ↦ y ∣ z := by
-    refine ⟨fun ⟨y, v, ⟨hv, hv_nzd⟩, hy⟩ ⟨z, v', ⟨hv', hv'_nzd⟩, hz⟩ ↦ ?_⟩
-    obtain ⟨u, hu⟩ := mul_mem hv' hy
-    obtain ⟨u', hu'⟩ := mul_mem hv hz
-    exact (hψ_total u u').imp
-      (fun huu' ↦ h_dvd (h_dvd_of_image (mul_mem hv'_nzd hv_nzd) hu hu' huu'))
-      fun huu' ↦ h_dvd (h_dvd_of_image (mul_mem hv_nzd hv'_nzd) hu' hu huu')
+      dvd_cancel_left_mem_nonZeroDivisors h_nzd] at huu'
+  refine iff_dvd_total.mpr ⟨fun ⟨y, v, ⟨hv, hv_nzd⟩, hy⟩ ⟨z, v', ⟨hv', hv'_nzd⟩, hz⟩ ↦ ?_⟩
+  obtain ⟨u, hu⟩ := mul_mem hv' hy
+  obtain ⟨u', hu'⟩ := mul_mem hv hz
+  exact (h_total u u').imp
+    (fun huu' ↦ h_dvd (h_dvd_of_image (mul_mem hv'_nzd hv_nzd) hu hu' huu'))
+    fun huu' ↦ h_dvd (h_dvd_of_image (mul_mem hv_nzd hv'_nzd) hu' hu huu')
+
+/-- Let S be an O^♭-algebra, and ψ: a → d, k: d → b be maps of perfect S-algebras with k ≠ 0,
+such that for any two elements of a one of their images under ψ divides the other, and likewise
+for k on d. Then kψ factors, by S-linear maps α: a → V and β: V → b, through a perfect S-algebra
+V that is a valuation domain. -/
+lemma exists_perfect_valuationRing_factor {ψ : a.obj →ₐ[S] d.obj} {k : d.obj →ₐ[S] b.obj}
+    (hk : k.toLinearMap ≠ 0) (hψ_total : ∀ x y : a.obj, ψ x ∣ ψ y ∨ ψ y ∣ ψ x)
+    (hk_total : ∀ x y : d.obj, k x ∣ k y ∨ k y ∣ k x) :
+    ∃ (V : PerfectAlg p S) (α : a.obj →ₗ[S] V.obj) (β : V.obj →ₗ[S] b.obj),
+      (k.comp ψ).toLinearMap = β ∘ₗ α ∧ ∃ _ : IsDomain V.obj, ValuationRing V.obj := by
+  -- `d ⧸ ker k` is a perfect domain. Inside it, `V` is the saturation of the image of `a`: the
+  -- `y` with `v * y` in the image for some `v ≠ 0` in the image.
+  have : IsReduced b.obj := isReduced_of_perfectRing b.property
+  have h_prime : (RingHom.ker k).IsPrime :=
+    isPrime_ker_of_dvd_total k hk hk_total
+  have h_perf : PerfectRing (d.obj ⧸ RingHom.ker k) p := by
+    refine perfectRing_of_pow_surjective natCast_eq_zero_of_algebra_oFlat fun y ↦ ?_
+    obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y
+    obtain ⟨x, rfl⟩ := d.property.bijective_frobenius.surjective y
+    exact ⟨mkₐ S _ x, rfl⟩
+  let f : a.obj →ₐ[S] d.obj ⧸ RingHom.ker k := (mkₐ S (RingHom.ker k)).comp ψ
+  let V : Subalgebra S (d.obj ⧸ RingHom.ker k) :=
+    f.range.saturation (f.range.toSubmonoid ⊓ nonZeroDivisors _) inf_le_left
+  have : PerfectRing a.obj p := a.property
+  have hV_perf : PerfectRing V p :=
+    perfectRing_saturation_range natCast_eq_zero_of_algebra_oFlat f
+  have hV_val : ValuationRing V := valuationRing_saturation_range f fun x y ↦
+    (hψ_total x y).imp (map_dvd (mkₐ S (RingHom.ker k))) (map_dvd (mkₐ S (RingHom.ker k)))
   -- `α` is `f` with values in `V`, and `β` is `k` on `V`; `k ∘ ψ = β ∘ α` by definition.
   let α : a.obj →ₐ[S] V := f.codRestrict V fun x ↦ f.range.le_saturation ⟨x, rfl⟩
   let β : V →ₐ[S] b.obj := (kerLiftAlg k).comp V.val
-  exact ⟨⟨.of S V, hV_perf⟩, α.toLinearMap, β.toLinearMap, rfl, inferInstance,
-    iff_dvd_total.mpr hV_total⟩
+  exact ⟨⟨.of S V, hV_perf⟩, α.toLinearMap, β.toLinearMap, rfl, inferInstance, hV_val⟩
 
 /-- Let φ: b → d be a map of perfect S-algebras, a a perfect S-algebra, and let p^♭ kill the
 O^♭-module N. Let I be an ideal of a such that the image of p^♭ in a divides every element of I,
