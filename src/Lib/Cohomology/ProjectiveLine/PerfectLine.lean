@@ -533,7 +533,165 @@ lemma isCohomEquiv_gluing_generic (c : PadicTest) :
   -- `by exact` delays elaborating `θ` until the expected type is known.
   exact ((coeffCompBijective_id_iff_restrict (by exact θ)).1 h_lift).eqv
 
-open Algebra.TensorProduct Functor in
+/-- For tests `c j` and `O^♭`-algebras `B b`, the map from `⊔_j ⊔_b Hom((c j)^♭ ⊗ B b, –^♭)` to
+`(⊔_j h_{c j}) × ⊔_b Hom(B b, –^♭)`, with `h_c = reprBy c` the functor represented by `c`, sending a
+map out of `(c j)^♭ ⊗ B b` to its two restrictions. The restriction to `(c j)^♭` is read as a map
+out of `c j` since `tilt` is fully faithful. -/
+def restrictTensor {ι : Type 1} (c : ι → PadicTest) (B : ULift.{1} Bool → CommAlg OFlat) :
+    (sigma fun j ↦ tiltPointsSum B (tensorLeft (tilt (c j)))) ⟶
+      (sigma fun j ↦ reprBy (c j)) ⊗ tiltPointsSum B where
+  app _ := ↾fun ⟨j, b, t⟩ ↦
+    (⟨j, ⟨tilt.preimage (tensorInl ≫ t.down)⟩⟩, ⟨b, ⟨tensorInr ≫ t.down⟩⟩)
+  naturality d d' f := by
+    ext ⟨j, b, t⟩
+    have h_restrict : tilt.preimage ((tensorInl ≫ t.down) ≫ tilt.map f) =
+        tilt.preimage (tensorInl ≫ t.down) ≫ f := by
+      rw [Functor.preimage_comp, Functor.preimage_map]
+    exact Prod.ext (Sigma.ext rfl (heq_of_eq (congrArg ULift.up h_restrict))) rfl
+
+open Algebra.TensorProduct in
+/-- `restrictTensor` is bijective on every test: an algebra map out of `(c j)^♭ ⊗ B b` is the same
+as a pair of algebra maps out of the two factors. -/
+lemma restrictTensor_app_bijective {ι : Type 1} (c : ι → PadicTest)
+    (B : ULift.{1} Bool → CommAlg OFlat) (d : PadicTest) : Bijective (restrictTensor c B d) := by
+  -- The inverse sends a pair of maps to the induced map on the tensor product.
+  let inverse : ((sigma fun j ↦ reprBy (c j)) ⊗ tiltPointsSum B).obj d →
+      (sigma fun j ↦ tiltPointsSum B (tensorLeft (tilt (c j)))).obj d :=
+    fun (⟨j, ⟨f⟩⟩, ⟨b, ⟨t⟩⟩) ↦ ⟨j, b, ⟨ofHom (productMap (tilt.map f).hom t.hom)⟩⟩
+  refine bijective_iff_has_inverse.mpr ⟨inverse, fun ⟨j, b, ⟨t⟩⟩ ↦ ?_, fun ⟨⟨j, ⟨f⟩⟩, b, ⟨t⟩⟩ ↦ ?_⟩
+  · -- An algebra map out of `(c j)^♭ ⊗ B b` is determined by its two restrictions.
+    have h_product :
+        productMap (t.hom.comp includeLeft) (t.hom.comp includeRight) = t.hom :=
+      Algebra.TensorProduct.ext (productMap_left ..) (productMap_right ..)
+    exact Sigma.ext rfl <| heq_of_eq <| Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up <| by
+      change ofHom (productMap (tilt.map (tilt.preimage (tensorInl ≫ t))).hom
+        (tensorInr ≫ t).hom) = t
+      rw [Functor.map_preimage]
+      exact CommAlgCat.hom_ext h_product
+  · refine Prod.ext (Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up ?_)
+        (Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up ?_)
+    · change tilt.preimage (tensorInl ≫ ofHom (productMap (tilt.map f).hom t.hom)) = f
+      exact (congrArg tilt.preimage (CommAlgCat.hom_ext (productMap_left ..))).trans
+        (Functor.preimage_map f)
+    · change tensorInr ≫ ofHom (productMap (tilt.map f).hom t.hom) = t
+      exact CommAlgCat.hom_ext (productMap_right ..)
+
+/-- Restricting maps out of `(c j)^♭ ⊗ –` to the two factors turns the gluing map for
+`ψ = (c j)^♭ ⊗ –` into the tensor product of `ℤ[⊔_k h_{c k}]` with the gluing map: on the summand
+`j`, the maps induced by `restrictTensor` and `[(x, y)] ↦ [x] ⊗ [y]` form a commutative square. -/
+lemma gluing_comp_restrictTensor {ι : Type 1} (c : ι → PadicTest) (j : ι) :
+    gluing (tensorLeft (tilt (c j))) ≫
+        freeAb.map (sigma.ι (fun k ↦ twoDiscs (tensorLeft (tilt (c k)))) j) ≫
+          freeAb.map (restrictTensor c _) ≫ freeAb.prod _ _ =
+      freeAb.map (sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (tensorLeft (tilt (c k)))) j) ≫
+        freeAb.map (restrictTensor c pointOrTorus) ≫ freeAb.prod _ _ ≫
+          (abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing := by
+  -- The square commutes already on generators of the sources, since the maps `discToTorus` and
+  -- `evalZero` do not change the restriction to `(c j)^♭`.
+  let ψ (k : ι) : CommAlg OFlat ⥤ CommAlg OFlat := tensorLeft (tilt (c k))
+  let lhsMap : freeAb (twoDiscs (ψ j)) ⟶
+      abTensor (freeAb (sigma fun k ↦ reprBy (c k))) (freeAb twoDiscs) :=
+    freeAb.map (sigma.ι (fun k ↦ twoDiscs (ψ k)) j) ≫
+      freeAb.map (restrictTensor c fun _ ↦ monoidAlg ℚ≥0) ≫ freeAb.prod _ _
+  let rhsMap : freeAb (tiltPointsSum pointOrTorus (ψ j)) ⟶
+      abTensor (freeAb (sigma fun k ↦ reprBy (c k))) (freeAb (tiltPointsSum pointOrTorus)) :=
+    freeAb.map (sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j) ≫
+      freeAb.map (restrictTensor c pointOrTorus) ≫ freeAb.prod _ _
+  have h_lhs (A : PadicTest) (b : ULift.{1} Bool) (t : ψ j (monoidAlg ℚ≥0) ⟶ tilt A) :
+      lhsMap.app A (ofDisc b t) =
+        (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+            (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+          ofDisc (ψ := 𝟭 _) b (tensorInr ≫ t) := by
+    change (freeAb.prod _ _).app A (FreeAddCommGroup.of
+      ((restrictTensor c fun _ ↦ monoidAlg ℚ≥0).app A
+        ((sigma.ι (fun k ↦ twoDiscs (ψ k)) j).app A ⟨b, ⟨t⟩⟩))) = _
+    exact freeAb.desc_of ..
+  have h_rhs_point (A : PadicTest) (t : ψ j (CommAlgCat.of OFlat OFlat) ⟶ tilt A) :
+      ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+          (rhsMap.app A (ofPoint t)) =
+        (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+            (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+          gluing.app A (ofPoint (ψ := 𝟭 _) (tensorInr ≫ t)) := by
+    have h_prod : rhsMap.app A (ofPoint t) =
+        (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+            (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+          ofPoint (ψ := 𝟭 _) (tensorInr ≫ t) := by
+      change (freeAb.prod _ _).app A (FreeAddCommGroup.of
+        ((restrictTensor c pointOrTorus).app A
+          ((sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j).app A
+            ⟨⟨false⟩, ⟨t⟩⟩))) = _
+      exact freeAb.desc_of ..
+    exact congrArg (((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A) h_prod
+  have h_rhs_torus (A : PadicTest) (t : ψ j (monoidAlg ℚ) ⟶ tilt A) :
+      ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+          (rhsMap.app A (ofTorus t)) =
+        (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+            (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+          gluing.app A (ofTorus (ψ := 𝟭 _) (tensorInr ≫ t)) := by
+    have h_prod : rhsMap.app A (ofTorus t) =
+        (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
+            (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+          ofTorus (ψ := 𝟭 _) (tensorInr ≫ t) := by
+      change (freeAb.prod _ _).app A (FreeAddCommGroup.of
+        ((restrictTensor c pointOrTorus).app A
+          ((sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j).app A
+            ⟨⟨true⟩, ⟨t⟩⟩))) = _
+      exact freeAb.desc_of ..
+    exact congrArg (((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A) h_prod
+  have h_inl {X Y : CommAlg OFlat} (f : X ⟶ Y) :
+      tensorInl ≫ (ψ j).map f = tensorInl :=
+    CommAlgCat.hom_ext (Algebra.TensorProduct.map_comp_includeLeft (AlgHom.id _ _) f.hom)
+  have h_inr {X Y : CommAlg OFlat} (f : X ⟶ Y) :
+      tensorInr ≫ (ψ j).map f = f ≫ tensorInr :=
+    CommAlgCat.hom_ext (Algebra.TensorProduct.map_comp_includeRight (AlgHom.id _ _) f.hom)
+  apply freeAb.hom_ext
+  rintro A ⟨⟨_ | _⟩, ⟨t⟩⟩
+  · let t' : ψ j (CommAlgCat.of OFlat OFlat) ⟶ tilt A := t
+    change lhsMap.app A ((gluing (ψ j)).app A (ofPoint t')) =
+      ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+        (rhsMap.app A (ofPoint t'))
+    rw [gluing_ofPoint, h_lhs, h_rhs_point, gluing_ofPoint]
+    rw [← Category.assoc, h_inl, ← Category.assoc, h_inr, Category.assoc]
+    rfl
+  · let t' : ψ j (monoidAlg ℚ) ⟶ tilt A := t
+    change lhsMap.app A ((gluing (ψ j)).app A (ofTorus t')) =
+      ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
+        (rhsMap.app A (ofTorus t'))
+    have h_term (g : monoidAlg ℚ≥0 ⟶ monoidAlg ℚ) (b : ULift.{1} Bool) :
+        (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ ((ψ j).map g ≫ t'))⟩⟩ :
+            (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+          ofDisc (ψ := 𝟭 _) b (tensorInr ≫ ((ψ j).map g ≫ t')) =
+        (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t')⟩⟩ :
+            (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
+          ofDisc (ψ := 𝟭 _) b ((𝟭 (CommAlg OFlat)).map g ≫ (tensorInr ≫ t')) := by
+      rw [← Category.assoc, h_inl, ← Category.assoc, h_inr, Category.assoc]
+      rfl
+    rw [gluing_ofTorus, _root_.map_sub, h_lhs, h_lhs, h_rhs_torus, gluing_ofTorus, tmul_sub]
+    exact congrArg₂ (· - ·) (h_term _ _) (h_term _ _)
+
+/-- Suppose that for every `j` the gluing map formed with `ψ = (c j)^♭ ⊗ –` is an equivalence for
+`F`. Then so is the tensor product of `ℤ[⊔_j h_{c j}]` with the gluing map, where `h_c = reprBy c`
+is the functor represented by `c`: on cohomology, `restrictTensor` identifies it with the product
+of these gluing maps. -/
+lemma isCohomEquiv_abTensor_sigma_reprBy_map_gluing {F : AbFunctor PadicTest} {ι : Type 1}
+    (c : ι → PadicTest) (h_rep : ∀ j, IsCohomEquiv F (gluing (tensorLeft (tilt (c j))))) :
+    IsCohomEquiv F ((abTensor (freeAb (sigma fun j ↦ reprBy (c j)))).map gluing) := by
+  intro n
+  -- The cohomology of `ℤ[⊔ h_{c j}] ⊗ ℤ[⊔ Hom(B b, –^♭)]` is the product over `j` of that of the
+  -- `ℤ[⊔ Hom((c j)^♭ ⊗ B b, –^♭)]`.
+  have h_product (B : ULift.{1} Bool → CommAlg OFlat) : Bijective fun x j ↦
+      map F (freeAb.map (sigma.ι (fun j ↦ tiltPointsSum B (tensorLeft (tilt (c j)))) j)) n
+        (map F (freeAb.map (restrictTensor c B) ≫ freeAb.prod _ _) n x) :=
+    have h_eqv : IsCohomEquiv F (freeAb.map (restrictTensor c B) ≫ freeAb.prod _ _) :=
+      (IsCohomEquiv.of_bijective (restrictTensor_app_bijective c B)).comp_iff.2 (.of_isIso _)
+    (sigma_bijective ..).comp (h_eqv n)
+  -- Under these bijections the tensor product with the gluing map becomes the product of the
+  -- gluing maps for the `(c j)^♭ ⊗ –`, by `gluing_comp_restrictTensor`.
+  refine (bijective_iff_of_comm_sq (fun x ↦ ?_) (h_product _) (h_product _)).2
+    (.piMap fun j ↦ h_rep j n)
+  ext j
+  simpa [← H.map_comp] using congrArg (fun φ ↦ map F φ n x) (gluing_comp_restrictTensor c j)
+
 /-- The perfect projective line has the cohomology of a point. For an endofunctor ψ of
 `O^♭`-algebras, `gluing ψ` is the map ℤ[torus ⊔ point] → ℤ[two discs] of functors on p-adic tests,
 where the discs are the points of ψ(O^♭[ℚ≥0]) in tilts; it sends t in the torus to t⁻¹ in the disc
@@ -553,140 +711,8 @@ lemma subsingleton_H_cokernel_gluing {F : AbFunctor PadicTest}
     (isCohomEquiv_iff_subsingleton (.map ⟨ShortComplex.exact_cokernel gluing⟩ (abTensor S))).1 h_eqv
   -- Dévissage of the comparison along `– ⊗ gluing`.
   have h_devissage := (Comparison.id F).devissage (abTensor.flip _) (abTensor.flip.map gluing)
-  refine Comparison.IsBijective.eqv (h_devissage.allBijective_of_allBijective_sigma_reprBy
-    (fun ι c n ↦ ?_) S)
-  let ψ (j : ι) : CommAlg OFlat ⥤ CommAlg OFlat := tensorLeft (tilt (c j))
-  -- A map out of `(c j)^♭ ⊗ B b` is sent to its two restrictions; `tilt` is fully faithful.
-  let u (B : ULift.{1} Bool → CommAlg OFlat) :
-      (sigma fun j ↦ tiltPointsSum B (ψ j)) ⟶ (sigma fun j ↦ reprBy (c j)) ⊗ tiltPointsSum B :=
-    { app _ := ↾fun ⟨j, b, t⟩ ↦
-        (⟨j, ⟨tilt.preimage (tensorInl ≫ t.down)⟩⟩, ⟨b, ⟨tensorInr ≫ t.down⟩⟩)
-      naturality d d' f := by
-        ext ⟨j, b, t⟩
-        have h_restrict : tilt.preimage ((tensorInl ≫ t.down) ≫ tilt.map f) =
-            tilt.preimage (tensorInl ≫ t.down) ≫ f := by
-          rw [Functor.preimage_comp, Functor.preimage_map]
-        exact Prod.ext (Sigma.ext rfl (heq_of_eq (congrArg ULift.up h_restrict))) rfl }
-  have hu_bijective (B : ULift.{1} Bool → CommAlg OFlat) (d : PadicTest) : Bijective (u B d) := by
-    -- The inverse sends a pair of maps to the induced map on the tensor product.
-    let uInv : ((sigma fun j ↦ reprBy (c j)) ⊗ tiltPointsSum B).obj d →
-        (sigma fun j ↦ tiltPointsSum B (ψ j)).obj d :=
-      fun (⟨j, ⟨f⟩⟩, ⟨b, ⟨t⟩⟩) ↦ ⟨j, b, ⟨ofHom (productMap (tilt.map f).hom t.hom)⟩⟩
-    refine bijective_iff_has_inverse.mpr ⟨uInv, fun ⟨j, b, ⟨t⟩⟩ ↦ ?_, fun ⟨⟨j, ⟨f⟩⟩, b, ⟨t⟩⟩ ↦ ?_⟩
-    · -- An algebra map out of `(c j)^♭ ⊗ B b` is determined by its two restrictions.
-      have h_product :
-          productMap (t.hom.comp includeLeft) (t.hom.comp includeRight) = t.hom :=
-        Algebra.TensorProduct.ext (productMap_left ..) (productMap_right ..)
-      exact Sigma.ext rfl <| heq_of_eq <| Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up <| by
-        change ofHom (productMap (tilt.map (tilt.preimage (tensorInl ≫ t))).hom
-          (tensorInr ≫ t).hom) = t
-        rw [Functor.map_preimage]
-        exact CommAlgCat.hom_ext h_product
-    · refine Prod.ext (Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up ?_)
-          (Sigma.ext rfl <| heq_of_eq <| congrArg ULift.up ?_)
-      · change tilt.preimage (tensorInl ≫ ofHom (productMap (tilt.map f).hom t.hom)) = f
-        exact (congrArg tilt.preimage (CommAlgCat.hom_ext (productMap_left ..))).trans
-          (Functor.preimage_map f)
-      · change tensorInr ≫ ofHom (productMap (tilt.map f).hom t.hom) = t
-        exact CommAlgCat.hom_ext (productMap_right ..)
-  -- So the cohomology of `ℤ[⊔ h_{c j}] ⊗ ℤ[⊔ Hom(B b, –^♭)]` is the product over `j` of that of
-  -- the `ℤ[⊔ Hom((c j)^♭ ⊗ B b, –^♭)]`.
-  let v (B : ULift.{1} Bool → CommAlg OFlat) :
-      freeAb (sigma fun j ↦ tiltPointsSum B (ψ j)) ⟶
-        abTensor (freeAb (sigma fun j ↦ reprBy (c j))) (freeAb (tiltPointsSum B)) :=
-    freeAb.map (u B) ≫ freeAb.prod _ _
-  have hv_bijective (B : ULift.{1} Bool → CommAlg OFlat) : Bijective fun x j ↦
-      map F (freeAb.map (sigma.ι (fun j ↦ tiltPointsSum B (ψ j)) j)) n (map F (v B) n x) :=
-    have hv_eqv : IsCohomEquiv F (v B) :=
-      (IsCohomEquiv.of_bijective (hu_bijective B)).comp_iff.2 (.of_isIso _)
-    (sigma_bijective ..).comp (hv_eqv n)
-  -- The square commutes already on generators of the sources, since the maps `discToTorus` and
-  -- `evalZero` do not change the restriction to `(c j)^♭`.
-  have h_square (j : ι) :
-      gluing (ψ j) ≫ freeAb.map (sigma.ι (fun k ↦ twoDiscs (ψ k)) j) ≫ v (fun _ ↦ monoidAlg ℚ≥0) =
-        freeAb.map (sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j) ≫ v pointOrTorus ≫
-          (abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing := by
-    let lhsMap : freeAb (twoDiscs (ψ j)) ⟶
-        abTensor (freeAb (sigma fun k ↦ reprBy (c k))) (freeAb twoDiscs) :=
-      freeAb.map (sigma.ι (fun k ↦ twoDiscs (ψ k)) j) ≫ v (fun _ ↦ monoidAlg ℚ≥0)
-    let rhsMap : freeAb (tiltPointsSum pointOrTorus (ψ j)) ⟶
-        abTensor (freeAb (sigma fun k ↦ reprBy (c k))) (freeAb (tiltPointsSum pointOrTorus)) :=
-      freeAb.map (sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j) ≫ v pointOrTorus
-    have h_lhs (A : PadicTest) (b : ULift.{1} Bool) (t : ψ j (monoidAlg ℚ≥0) ⟶ tilt A) :
-        lhsMap.app A (ofDisc b t) =
-          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
-              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
-            ofDisc (ψ := 𝟭 _) b (tensorInr ≫ t) := by
-      change (freeAb.prod _ _).app A (FreeAddCommGroup.of
-        ((u (fun _ ↦ monoidAlg ℚ≥0)).app A
-          ((sigma.ι (fun k ↦ twoDiscs (ψ k)) j).app A ⟨b, ⟨t⟩⟩))) = _
-      exact freeAb.desc_of ..
-    have h_rhs_point (A : PadicTest) (t : ψ j (CommAlgCat.of OFlat OFlat) ⟶ tilt A) :
-        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
-            (rhsMap.app A (ofPoint t)) =
-          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
-              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
-            gluing.app A (ofPoint (ψ := 𝟭 _) (tensorInr ≫ t)) := by
-      have h_prod : rhsMap.app A (ofPoint t) =
-          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
-              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
-            ofPoint (ψ := 𝟭 _) (tensorInr ≫ t) := by
-        change (freeAb.prod _ _).app A (FreeAddCommGroup.of
-          ((u pointOrTorus).app A
-            ((sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j).app A
-              ⟨⟨false⟩, ⟨t⟩⟩))) = _
-        exact freeAb.desc_of ..
-      exact congrArg (((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A) h_prod
-    have h_rhs_torus (A : PadicTest) (t : ψ j (monoidAlg ℚ) ⟶ tilt A) :
-        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
-            (rhsMap.app A (ofTorus t)) =
-          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
-              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
-            gluing.app A (ofTorus (ψ := 𝟭 _) (tensorInr ≫ t)) := by
-      have h_prod : rhsMap.app A (ofTorus t) =
-          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t)⟩⟩ :
-              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
-            ofTorus (ψ := 𝟭 _) (tensorInr ≫ t) := by
-        change (freeAb.prod _ _).app A (FreeAddCommGroup.of
-          ((u pointOrTorus).app A
-            ((sigma.ι (fun k ↦ tiltPointsSum pointOrTorus (ψ k)) j).app A
-              ⟨⟨true⟩, ⟨t⟩⟩))) = _
-        exact freeAb.desc_of ..
-      exact congrArg (((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A) h_prod
-    have h_inl {X Y : CommAlg OFlat} (f : X ⟶ Y) :
-        tensorInl ≫ (ψ j).map f = tensorInl :=
-      CommAlgCat.hom_ext (Algebra.TensorProduct.map_comp_includeLeft (AlgHom.id _ _) f.hom)
-    have h_inr {X Y : CommAlg OFlat} (f : X ⟶ Y) :
-        tensorInr ≫ (ψ j).map f = f ≫ tensorInr :=
-      CommAlgCat.hom_ext (Algebra.TensorProduct.map_comp_includeRight (AlgHom.id _ _) f.hom)
-    apply freeAb.hom_ext
-    rintro A ⟨⟨_ | _⟩, ⟨t⟩⟩
-    · let t' : ψ j (CommAlgCat.of OFlat OFlat) ⟶ tilt A := t
-      change lhsMap.app A ((gluing (ψ j)).app A (ofPoint t')) =
-        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
-          (rhsMap.app A (ofPoint t'))
-      rw [gluing_ofPoint, h_lhs, h_rhs_point, gluing_ofPoint]
-      rw [← Category.assoc, h_inl, ← Category.assoc, h_inr, Category.assoc]
-      rfl
-    · let t' : ψ j (monoidAlg ℚ) ⟶ tilt A := t
-      change lhsMap.app A ((gluing (ψ j)).app A (ofTorus t')) =
-        ((abTensor (freeAb (sigma fun k ↦ reprBy (c k)))).map gluing).app A
-          (rhsMap.app A (ofTorus t'))
-      have h_term (g : monoidAlg ℚ≥0 ⟶ monoidAlg ℚ) (b : ULift.{1} Bool) :
-          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ ((ψ j).map g ≫ t'))⟩⟩ :
-              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
-            ofDisc (ψ := 𝟭 _) b (tensorInr ≫ ((ψ j).map g ≫ t')) =
-          (FreeAddCommGroup.of ⟨j, ⟨tilt.preimage (tensorInl ≫ t')⟩⟩ :
-              (freeAb (sigma fun k ↦ reprBy (c k))).obj A) ⊗ₜ[ℤ]
-            ofDisc (ψ := 𝟭 _) b ((𝟭 (CommAlg OFlat)).map g ≫ (tensorInr ≫ t')) := by
-        rw [← Category.assoc, h_inl, ← Category.assoc, h_inr, Category.assoc]
-        rfl
-      rw [gluing_ofTorus, _root_.map_sub, h_lhs, h_lhs, h_rhs_torus, gluing_ofTorus, tmul_sub]
-      exact congrArg₂ (· - ·) (h_term _ _) (h_term _ _)
-  refine (bijective_iff_of_comm_sq (fun x ↦ ?_) (hv_bijective _) (hv_bijective _)).2
-    (.piMap fun j ↦ h_rep (c j) n)
-  ext j
-  simpa [← H.map_comp] using congrArg (fun φ ↦ map F φ n x) (h_square j)
+  exact Comparison.IsBijective.eqv (h_devissage.allBijective_of_allBijective_sigma_reprBy
+    (fun ι c ↦ (isCohomEquiv_abTensor_sigma_reprBy_map_gluing c fun j ↦ h_rep (c j)).bij) S)
 
 end PerfectLine
 
