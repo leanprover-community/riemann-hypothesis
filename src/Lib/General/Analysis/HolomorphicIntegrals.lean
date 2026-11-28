@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Analysis.Analytic.ContinuousMap
 import TauCeti.Analysis.Complex.CauchyIntegralPolydisc
 import TauCeti.Analysis.Complex.WeaklyHolomorphic
 import TauCeti.MeasureTheory.Function.StronglyMeasurable.FiniteDimensional
@@ -230,15 +231,12 @@ analytic at p ∈ E as a map to C(K, ℂ), that is, an `IsAnalyticFamily` at p. 
 lemma DiscreteSeries.IsAnalyticFamily.of_analyticAt {ι : K → F} (hι : Continuous ι)
     (Θ : E × F → ℂ) (hΘ : ∀ k : K, AnalyticAt ℂ Θ (p, ι k)) :
     IsAnalyticFamily (fun (x : E) (k : K) ↦ Θ (x, ι k)) p := by
-  -- By compactness of `K`, `Θ` is analytic at `(x, ι k)` for all `k` and all `x` near `p`.
-  have h_near : ∀ᶠ x : E in nhds p, ∀ k : K, AnalyticAt ℂ Θ (x, ι k) := by
-    simpa using isCompact_univ.eventually_forall_mem (fun x k ↦ (x, ι k))
-      {y | AnalyticAt ℂ Θ y} fun k _ ↦ (hΘ k).eventually_analyticAt
-  refine isAnalyticFamily_of_continuousAt_of_differentiableAt ?_
-    (h_near.mono fun x hx k ↦ (hx k).differentiableAt.comp x (by fun_prop))
-  filter_upwards [h_near] with x hx k
-  have h_an : AnalyticAt ℂ Θ (x, ι k) := hx k
-  fun_prop
+  obtain ⟨q, r, h_series, h_point⟩ := TauCeti.exists_hasFPowerSeriesOnBall_compact hι hΘ
+  refine ⟨_, h_series.analyticAt, ?_⟩
+  filter_upwards [eball_mem_nhds p h_series.r_pos] with x hx
+  -- Evaluating the continuous-map series and the scalar series at the same point gives equal sums.
+  funext k
+  exact ((evalCLM ℂ k).comp_hasFPowerSeriesOnBall h_series).unique (h_point k) hx
 
 /-- Let E and F be finite-dimensional complex normed spaces. A map f : E → F that is complex
 differentiable at every point near p is analytic at p. -/
