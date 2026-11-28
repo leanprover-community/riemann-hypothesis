@@ -74,6 +74,15 @@ lemma prime_of_mem_smallNonsplitPrimes_union {l : ℕ} (hl : l ∈ D.smallNonspl
 lemma invGainFactor_pos : 0 < D.invGainFactor :=
   prod_pos fun _ hl ↦ zpow_pos (mod_cast (D.prime_of_mem_smallNonsplitPrimes_union hl).pos) _
 
+/-- The level prime is at least the cutoff, so adjoining it contributes exactly one extra term. -/
+private lemma sum_smallNonsplitPrimes_union_level {A : Type*} [AddCommMonoid A] (f : ℕ → A) :
+    ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, f l = ∑ l ∈ D.smallNonsplitPrimes, f l + f D.N := by
+  have hN : D.N ∉ D.smallNonsplitPrimes := by
+    intro h
+    exact (not_lt_of_ge (show D.x₁ ≤ D.N from D.le_of_hasLogBound))
+      (mem_smallNonsplitPrimes_iff_isSmallNonsplit.1 h).1
+  rw [sum_union (disjoint_singleton_right.mpr hN), sum_singleton]
+
 /-- The sum of `log l` over the non-split primes `l` below `x₁` and `l = N` is at most the
 weight `b = D.b`, which is `exp D.logB`. It bounds the loss from rounding the exponents `g_l` down
 to integers. -/
@@ -84,9 +93,7 @@ lemma sum_log_smallNonsplitPrimes_union_le : ∑ l ∈ D.smallNonsplitPrimes ∪
     exact (log_le_self l.cast_nonneg).trans (Nat.lt_ceil.1 h_lt).le
   have h_card : #D.smallNonsplitPrimes ≤ ⌈D.x₁⌉₊ := (card_filter_le _ _).trans_eq (card_range _)
   calc ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, log l
-      ≤ ∑ l ∈ D.smallNonsplitPrimes, log l + log D.N := by
-        rw [← sum_singleton (fun l : ℕ ↦ log l) D.N, ← sum_union_inter]
-        exact le_add_of_nonneg_right (sum_nonneg fun l _ ↦ log_natCast_nonneg l)
+      = ∑ l ∈ D.smallNonsplitPrimes, log l + log D.N := D.sum_smallNonsplitPrimes_union_level _
     _ ≤ ⌈D.x₁⌉₊ * D.x₁ + log D.N := by grw [sum_le_card_nsmul _ _ _ h_term, nsmul_eq_mul, h_card]
     _ ≤ D.b := D.le_of_hasLogBound
 
@@ -97,11 +104,7 @@ lemma log_invGainFactor_le :
   have h_ne : ∀ l ∈ D.smallNonsplitPrimes ∪ {D.N}, (l : ℝ) ^ (-D.gainExponent l) ≠ 0 := fun l hl ↦
     zpow_ne_zero _ (mod_cast (D.prime_of_mem_smallNonsplitPrimes_union hl).ne_zero)
   -- The level `N` is at least `x₁`, so it has no gain.
-  have h_gain : ∑ l ∈ D.smallNonsplitPrimes, D.gain l * log l =
-      ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, D.gain l * log l := by
-    refine sum_subset subset_union_left fun l hl hl_notMem ↦ ?_
-    rw [mem_singleton.1 ((mem_union.1 hl).resolve_left hl_notMem),
-      D.gain_eq_zero (.inr D.le_of_hasLogBound), zero_mul]
+  have h_gain : D.gain D.N = 0 := D.gain_eq_zero (.inr D.le_of_hasLogBound)
   calc log D.invGainFactor = ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, -D.gainExponent l * log l := by
         push_cast [invGainFactor, log_prod h_ne, log_zpow]
         rfl
@@ -112,7 +115,9 @@ lemma log_invGainFactor_le :
     _ = -∑ l ∈ D.smallNonsplitPrimes, D.gain l * log l +
           ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, D.allowedLoss l * log l +
           ∑ l ∈ D.smallNonsplitPrimes ∪ {D.N}, log l := by
-        simp only [h_gain, add_mul, neg_mul, one_mul, sum_add_distrib, sum_neg_distrib]
+        simp only [add_mul, neg_mul, one_mul, sum_add_distrib, sum_neg_distrib]
+        rw [D.sum_smallNonsplitPrimes_union_level (fun l ↦ D.gain l * log l), h_gain, zero_mul,
+          add_zero]
     _ ≤ -∑ l ∈ D.smallNonsplitPrimes, D.gain l * log l + D.errorUnit + D.b := by
         grw [sum_allowedLoss_mul_log_le, sum_log_smallNonsplitPrimes_union_le]
 
