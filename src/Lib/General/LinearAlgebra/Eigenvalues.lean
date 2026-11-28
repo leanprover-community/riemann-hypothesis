@@ -31,6 +31,7 @@ polynomial.
 * `New.exists_eigenvector_of_trace_mul_eq`: if twisted traces of a commuting family `A'` are
   proportional to traces of a commuting family `A`, a generalised eigensystem of `A` on which one
   operator has non-zero trace extends to an eigensystem of `A'` that is invariant under the twist.
+  This holds over any algebraically closed field.
 * `New.amitsur_charpoly_mem_of_span` (Amitsur): for an algebra map to matrices, it suffices to check
   on a spanning set that the coefficients of the characteristic polynomials lie in the base ring.
   The proof works with det (1 - t ρ(w)) modulo a power of t and factors 1 - t ρ(w) step by step.
@@ -268,56 +269,60 @@ lemma New.exists_eigencharacter {M : Type*} [CommMonoid M] (ρ : M →* End k W)
 
 end CommonEigenvectors
 
-/-! ## Eigensystems from a twisted trace identity -/
+/-! ## Eigensystems from a twisted trace identity
+
+The results of this section hold over any field `K`. The existence of eigenvectors needs `K` to be
+algebraically closed, and `New.trace_restrict_ne_zero` needs characteristic zero. -/
 
 section EigensystemTransfer
 open Module End LinearMap Submodule
 
 namespace New
 
-variable {V V' I I' : Type*} [AddCommGroup V] [Module ℂ V] [AddCommGroup V'] [Module ℂ V']
+variable {K V V' I I' : Type*} [Field K] [AddCommGroup V] [Module K V] [AddCommGroup V']
+  [Module K V']
 
 /-- If `p ≠ ⊥` is finite dimensional, stable under `b` and contained in the generalised eigenspace
-of `b` for `c ≠ 0`, then `b` has non-zero trace on `p`. -/
-lemma trace_restrict_ne_zero {p : Submodule ℂ V} [FiniteDimensional ℂ p] {b : End ℂ V} {c : ℂ}
-    (hc : c ≠ 0) (hp_ne : p ≠ ⊥) (hp_le : p ≤ maxGenEigenspace b c)
+of `b` for `c ≠ 0`, then `b` has non-zero trace on `p`, in characteristic zero. -/
+lemma trace_restrict_ne_zero [CharZero K] {p : Submodule K V} [FiniteDimensional K p]
+    {b : End K V} {c : K} (hc : c ≠ 0) (hp_ne : p ≠ ⊥) (hp_le : p ≤ maxGenEigenspace b c)
     (h_stable : ∀ x ∈ p, b x ∈ p) :
-    trace ℂ p (restrict b h_stable) ≠ 0 := by
-  -- `b - c` is nilpotent on `p`, so it has trace zero: the trace of `b` is `c * finrank ℂ p`.
+    trace K p (restrict b h_stable) ≠ 0 := by
+  -- `b - c` is nilpotent on `p`, so it has trace zero: the trace of `b` is `c * finrank K p`.
   have h_nil : IsNilpotent (restrict b h_stable - c • 1) :=
     isNilpotent_iff_of_finite.2 fun v ↦ mem_genEigenspace_top.1
       ((genEigenspace_restrict b p ⊤ c h_stable).ge (hp_le v.property))
-  have h_trace : trace ℂ p (restrict b h_stable) = c * finrank ℂ p := by
+  have h_trace : trace K p (restrict b h_stable) = c * finrank K p := by
     simpa [sub_eq_zero] using isNilpotent_trace_of_isNilpotent h_nil
   simp [h_trace, hc, hp_ne]
 
-/-- Generalised eigenspaces for different eigenvalues meet trivially: in a complex vector space
+/-- Generalised eigenspaces for different eigenvalues meet trivially: in a vector space
 `V`, a vector killed by a power of `f - μ` that lies in the generalised eigenspace of `f` for
 `ν ≠ μ` is zero. -/
-lemma eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace {f : End ℂ V} {μ ν : ℂ} (hne : μ ≠ ν)
+lemma eq_zero_of_pow_apply_eq_zero_of_mem_maxGenEigenspace {f : End K V} {μ ν : K} (hne : μ ≠ ν)
     {N : ℕ} {v : V} (hμ : ((f - μ • 1) ^ N) v = 0) (hν : v ∈ maxGenEigenspace f ν) : v = 0 :=
   disjoint_def.1 (disjoint_genEigenspace f hne ⊤ ⊤) v ((mem_maxGenEigenspace f μ v).2 ⟨N, hμ⟩) hν
 
 /-- If `s` intertwines `f` and `g`, that is `s * f = g * s`, and `u` commutes with `g`, then
 `f * (u * s)` and `g * (u * s)` have the same trace. -/
-lemma trace_mul_mul_eq_of_mul_eq_mul {f g s u : End ℂ V} (hs : s * f = g * s) (hu : Commute u g) :
-    trace ℂ V (f * (u * s)) = trace ℂ V (g * (u * s)) := by
+lemma trace_mul_mul_eq_of_mul_eq_mul {f g s u : End K V} (hs : s * f = g * s) (hu : Commute u g) :
+    trace K V (f * (u * s)) = trace K V (g * (u * s)) := by
   rw [trace_mul_comm, mul_assoc, hs, ← mul_assoc, hu.eq, mul_assoc]
 
-/-- Let `G a` be commuting elements of a complex algebra `R`, and let `S` be a finite-dimensional
-subspace of `R` that is stable under left multiplication by the `G a`. If `τ` is a non-zero linear
-form on `S`, then `τ z ≠ 0` for some joint generalised eigenvector `z ∈ S` of these
-multiplications. -/
-lemma exists_pow_sub_smul_mul_eq_zero_of_commute {R : Type*} {κ : Sort*} [Ring R] [Algebra ℂ R]
-    {S : Submodule ℂ R} [FiniteDimensional ℂ S] {G : κ → R}
+/-- Let `G a` be commuting elements of a `K`-algebra `R`, `K` algebraically closed, and let `S` be a
+finite-dimensional subspace of `R` that is stable under left multiplication by the `G a`. If `τ` is
+a non-zero linear form on `S`, then `τ z ≠ 0` for some joint generalised eigenvector `z ∈ S` of
+these multiplications. -/
+lemma exists_pow_sub_smul_mul_eq_zero_of_commute [IsAlgClosed K] {R : Type*} {κ : Sort*} [Ring R]
+    [Algebra K R] {S : Submodule K R} [FiniteDimensional K S] {G : κ → R}
     (hG_comm : ∀ a a' : κ, Commute (G a) (G a')) (hG_maps : ∀ a : κ, ∀ z ∈ S, G a * z ∈ S)
-    {τ : S →ₗ[ℂ] ℂ} (hτ : τ.ker ≠ ⊤) :
-    ∃ (χ : κ → ℂ) (z : S), τ z ≠ 0 ∧ ∀ a : κ, ∃ N : ℕ, (G a - χ a • 1) ^ N * (z : R) = 0 := by
-  let L (a : κ) : End ℂ R := Algebra.lmul ℂ R (G a)
+    {τ : S →ₗ[K] K} (hτ : τ.ker ≠ ⊤) :
+    ∃ (χ : κ → K) (z : S), τ z ≠ 0 ∧ ∀ a : κ, ∃ N : ℕ, (G a - χ a • 1) ^ N * (z : R) = 0 := by
+  let L (a : κ) : End K R := Algebra.lmul K R (G a)
   have hL_comm (a a' : κ) : ∀ z ∈ S, L a (L a' z) = L a' (L a z) :=
     fun z _ ↦ (hG_comm a a').left_comm z
   -- Some joint generalised eigenspace of the left multiplications is not in the kernel of `τ`.
-  obtain ⟨χ, h_not_le⟩ : ∃ χ : κ → ℂ,
+  obtain ⟨χ, h_not_le⟩ : ∃ χ : κ → K,
       ¬⨅ a : κ, maxGenEigenspace ((L a).restrict (hG_maps a)) (χ a) ≤ τ.ker :=
     (exists_eigenvector_of_commute L hG_maps hL_comm hτ).imp fun _ hχ ↦ hχ.left
   obtain ⟨z, hz, hτ_ne⟩ :
@@ -329,15 +334,16 @@ lemma exists_pow_sub_smul_mul_eq_zero_of_commute {R : Type*} {κ : Sort*} [Ring 
   obtain ⟨N, hN⟩ := (mem_maxGenEigenspace (L a) (χ a) z).1 h_mem
   refine ⟨N, ?_⟩
   -- The power of `L a - χ a` is multiplication by the power of `G a - χ a`.
-  rwa [show L a = Algebra.lmul ℂ R (G a) from rfl, ← map_one (Algebra.lmul ℂ R), ← map_smul,
+  rwa [show L a = Algebra.lmul K R (G a) from rfl, ← map_one (Algebra.lmul K R), ← map_smul,
     ← map_sub, ← map_pow] at hN
 
-/-- A commuting family `A'`, indexed by `I'`, of operators on a finite-dimensional complex space
-`V'` has a common eigenvector in the range of any non-zero operator `f` that commutes with it. -/
-lemma exists_eigenvector_mem_range_of_commute [FiniteDimensional ℂ V'] {A' : I' → End ℂ V'}
-    (hA' : ∀ a b : I', Commute (A' a) (A' b)) {f : End ℂ V'} (hf : ∀ a : I', Commute f (A' a))
-    (hf_ne : f ≠ 0) :
-    ∃ (Θ : I' → ℂ) (v : V'), f v ≠ 0 ∧ ∀ a : I', A' a (f v) = Θ a • f v := by
+/-- A commuting family `A'`, indexed by `I'`, of operators on a finite-dimensional space `V'` over
+an algebraically closed field has a common eigenvector in the range of any non-zero operator `f`
+that commutes with it. -/
+lemma exists_eigenvector_mem_range_of_commute [IsAlgClosed K] [FiniteDimensional K V']
+    {A' : I' → End K V'} (hA' : ∀ a b : I', Commute (A' a) (A' b)) {f : End K V'}
+    (hf : ∀ a : I', Commute f (A' a)) (hf_ne : f ≠ 0) :
+    ∃ (Θ : I' → K) (v : V'), f v ≠ 0 ∧ ∀ a : I', A' a (f v) = Θ a • f v := by
   have : Nontrivial f.range := nontrivial_iff_ne_bot.2 (mt range_eq_bot.1 hf_ne)
   have h_stable (a : I') : ∀ u ∈ f.range, A' a u ∈ f.range :=
     Set.forall_mem_range.2 fun v ↦ ⟨A' a v, LinearMap.congr_fun (hf a).eq v⟩
@@ -348,8 +354,8 @@ lemma exists_eigenvector_mem_range_of_commute [FiniteDimensional ℂ V'] {A' : I
 
 /-- An operator `g` that commutes with every `f a` preserves the joint generalised eigenspace of
 the `f a` for any system of eigenvalues `θ`. -/
-lemma apply_mem_iInf_maxGenEigenspace_of_commute {f : I → End ℂ V} {g : End ℂ V}
-    (hg : ∀ a : I, Commute g (f a)) (θ : I → ℂ) (v : V)
+lemma apply_mem_iInf_maxGenEigenspace_of_commute {f : I → End K V} {g : End K V}
+    (hg : ∀ a : I, Commute g (f a)) (θ : I → K) (v : V)
     (hv : v ∈ ⨅ a : I, maxGenEigenspace (f a) (θ a)) :
     g v ∈ ⨅ a : I, maxGenEigenspace (f a) (θ a) :=
   (mem_iInf _).2 fun a ↦ mapsTo_maxGenEigenspace_of_comm (hg a).symm (θ a) ((mem_iInf _).1 hv a)
@@ -357,10 +363,10 @@ lemma apply_mem_iInf_maxGenEigenspace_of_commute {f : I → End ℂ V} {g : End 
 /-- Let the operators `f a` and `g` on `V` preserve a subspace `p`. If the restriction of `g` to `p`
 commutes with those of the `f a`, then `g` preserves the part in `p` of the joint generalised
 eigenspace of the `f a` for any system of eigenvalues `θ`. -/
-lemma apply_mem_inf_iInf_maxGenEigenspace_of_commute_restrict {p : Submodule ℂ V}
-    {f : I → End ℂ V} {g : End ℂ V} (hf_maps : ∀ a : I, ∀ v ∈ p, f a v ∈ p)
+lemma apply_mem_inf_iInf_maxGenEigenspace_of_commute_restrict {p : Submodule K V}
+    {f : I → End K V} {g : End K V} (hf_maps : ∀ a : I, ∀ v ∈ p, f a v ∈ p)
     (hg_maps : ∀ v ∈ p, g v ∈ p)
-    (h_comm : ∀ a : I, Commute (g.restrict hg_maps) ((f a).restrict (hf_maps a))) (θ : I → ℂ)
+    (h_comm : ∀ a : I, Commute (g.restrict hg_maps) ((f a).restrict (hf_maps a))) (θ : I → K)
     (v : V) (hv : v ∈ p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a)) :
     g v ∈ p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a) := by
   -- The space is the image in `V` of the joint generalised eigenspace of the restrictions.
@@ -373,21 +379,21 @@ part in `p` of the joint generalised `θ`-eigenspace of the `f a` and has non-ze
 the restriction of `g` to `p` has non-zero trace on the joint generalised `θ`-eigenspace of the
 restrictions of the `f a`. The hypothesis `h_stable_restrict` serves to state the conclusion; it is
 equivalent to `h_stable`. -/
-lemma trace_restrict_iInf_maxGenEigenspace_ne_zero {p : Submodule ℂ V} {f : I → End ℂ V}
-    {g : End ℂ V} (hf_maps : ∀ a : I, ∀ v ∈ p, f a v ∈ p) (hg_maps : ∀ v ∈ p, g v ∈ p) (θ : I → ℂ)
+lemma trace_restrict_iInf_maxGenEigenspace_ne_zero {p : Submodule K V} {f : I → End K V}
+    {g : End K V} (hf_maps : ∀ a : I, ∀ v ∈ p, f a v ∈ p) (hg_maps : ∀ v ∈ p, g v ∈ p) (θ : I → K)
     (h_stable : ∀ v ∈ p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a),
       g v ∈ p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a))
     (h_trace_ne :
-      trace ℂ ↥(p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a)) (g.restrict h_stable) ≠ 0)
+      trace K ↥(p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a)) (g.restrict h_stable) ≠ 0)
     (h_stable_restrict : ∀ v ∈ ⨅ a : I, maxGenEigenspace ((f a).restrict (hf_maps a)) (θ a),
       g.restrict hg_maps v ∈ ⨅ a : I, maxGenEigenspace ((f a).restrict (hf_maps a)) (θ a)) :
-    trace ℂ ↥(⨅ a : I, maxGenEigenspace ((f a).restrict (hf_maps a)) (θ a))
+    trace K ↥(⨅ a : I, maxGenEigenspace ((f a).restrict (hf_maps a)) (θ a))
       ((g.restrict hg_maps).restrict h_stable_restrict) ≠ 0 := by
   -- The eigenspace in `V` is the image of `U`, on which `g` is conjugate to its restriction.
-  let U : Submodule ℂ p := ⨅ a : I, maxGenEigenspace ((f a).restrict (hf_maps a)) (θ a)
+  let U : Submodule K p := ⨅ a : I, maxGenEigenspace ((f a).restrict (hf_maps a)) (θ a)
   have h_image : p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a) = U.map p.subtype :=
     inf_iInf_maxGenEigenspace_of_forall_mapsTo f p hf_maps
-  let e : ↥(p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a)) ≃ₗ[ℂ] U :=
+  let e : ↥(p ⊓ ⨅ a : I, maxGenEigenspace (f a) (θ a)) ≃ₗ[K] U :=
     (LinearEquiv.ofEq _ _ h_image).trans (p.equivSubtypeMap U).symm
   have h_conj : e.conj (g.restrict h_stable) = (g.restrict hg_maps).restrict h_stable_restrict :=
     rfl
@@ -396,13 +402,13 @@ lemma trace_restrict_iInf_maxGenEigenspace_ne_zero {p : Submodule ℂ V} {f : I 
 /-- For families `A` and `A'` of operators on spaces `W` and `W'`, the pairs `(x, y)` such that
 `x` commutes with `A`, `y` with `A'`, and `tr (y * t.2 * s) = c * tr (x * t.1)` for all `t` in `Q`
 whose second component commutes with `A'`. -/
-def traceIdentityMultipliers {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module ℂ W]
-    [AddCommGroup W'] [Module ℂ W'] (A : J → End ℂ W) (A' : J' → End ℂ W') (s : End ℂ W') (c : ℂ)
-    (Q : Set (End ℂ W × End ℂ W')) : Submodule ℂ (End ℂ W × End ℂ W') where
-  carrier := {z : End ℂ W × End ℂ W' |
+def traceIdentityMultipliers {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module K W]
+    [AddCommGroup W'] [Module K W'] (A : J → End K W) (A' : J' → End K W') (s : End K W') (c : K)
+    (Q : Set (End K W × End K W')) : Submodule K (End K W × End K W') where
+  carrier := {z : End K W × End K W' |
     (∀ a : J, Commute z.1 (A a)) ∧ (∀ a : J', Commute z.2 (A' a)) ∧
     ∀ t ∈ Q, (∀ a : J', Commute t.2 (A' a)) →
-      trace ℂ W' (z.2 * t.2 * s) = c * trace ℂ W (z.1 * t.1)}
+      trace K W' (z.2 * t.2 * s) = c * trace K W (z.1 * t.1)}
   zero_mem' := by simp
   add_mem' := fun ⟨hx, hy, htr⟩ ⟨hx', hy', htr'⟩ ↦
     ⟨fun a ↦ (hx a).add_left (hx' a), fun a ↦ (hy a).add_left (hy' a), fun t ht ht_comm ↦ by
@@ -413,56 +419,56 @@ def traceIdentityMultipliers {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Mod
 
 section Multipliers
 
-variable {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module ℂ W] [AddCommGroup W'] [Module ℂ W']
-  {A : J → End ℂ W} {A' : J' → End ℂ W'} {s : End ℂ W'} {c : ℂ} {Q : Set (End ℂ W × End ℂ W')}
+variable {W W' : Type*} {J J' : Sort*} [AddCommGroup W] [Module K W] [AddCommGroup W'] [Module K W']
+  {A : J → End K W} {A' : J' → End K W'} {s : End K W'} {c : K} {Q : Set (End K W × End K W')}
 
 /-- The multipliers of a trace identity are stable under left multiplication by a pair
 `(A a, A' a')` that maps `Q` into itself, if each of the families `A`, `A'` commutes. -/
 lemma mk_mul_mem_traceIdentityMultipliers (hA : ∀ a b : J, Commute (A a) (A b))
     (hA' : ∀ a b : J', Commute (A' a) (A' b)) {a : J} {a' : J'}
-    (hQ : ∀ t ∈ Q, (A a, A' a') * t ∈ Q) {z : End ℂ W × End ℂ W'}
+    (hQ : ∀ t ∈ Q, (A a, A' a') * t ∈ Q) {z : End K W × End K W'}
     (hz : z ∈ traceIdentityMultipliers A A' s c Q) :
     (A a, A' a') * z ∈ traceIdentityMultipliers A A' s c Q := by
   obtain ⟨hx, hy, htr⟩ := hz
   refine ⟨fun b ↦ (hA a b).mul_left (hx b), fun b ↦ (hA' a' b).mul_left (hy b),
     fun t ht ht_comm ↦ ?_⟩
-  have h_shift : trace ℂ W' (z.2 * (A' a' * t.2) * s) = c * trace ℂ W (z.1 * (A a * t.1)) :=
+  have h_shift : trace K W' (z.2 * (A' a' * t.2) * s) = c * trace K W (z.1 * (A a * t.1)) :=
     htr _ (hQ t ht) fun b ↦ (hA' a' b).mul_left (ht_comm b)
-  change trace ℂ W' (A' a' * z.2 * t.2 * s) = c * trace ℂ W (A a * z.1 * t.1)
+  change trace K W' (A' a' * z.2 * t.2 * s) = c * trace K W (A a * z.1 * t.1)
   rwa [← mul_assoc z.2, ← mul_assoc z.1, (hx a).eq, (hy a').eq] at h_shift
 
 /-- If `s * A' a = A' a' * s` in a commuting family `A'`, the multipliers of a trace identity are
 stable under left multiplication by `(0, A' a - A' a')`. -/
 lemma zero_sub_mul_mem_traceIdentityMultipliers (hA' : ∀ a b : J', Commute (A' a) (A' b))
-    {a a' : J'} (h_twist : s * A' a = A' a' * s) {z : End ℂ W × End ℂ W'}
+    {a a' : J'} (h_twist : s * A' a = A' a' * s) {z : End K W × End K W'}
     (hz : z ∈ traceIdentityMultipliers A A' s c Q) :
-    ((0 : End ℂ W), A' a - A' a') * z ∈ traceIdentityMultipliers A A' s c Q := by
+    ((0 : End K W), A' a - A' a') * z ∈ traceIdentityMultipliers A A' s c Q := by
   obtain ⟨-, hy, -⟩ := hz
   refine ⟨by simp, fun b ↦ ((hA' a b).sub_left (hA' a' b)).mul_left (hy b),
     fun t _ ht_comm ↦ ?_⟩
-  have h_cycle : trace ℂ W' (A' a * (z.2 * t.2 * s)) = trace ℂ W' (A' a' * (z.2 * t.2 * s)) :=
+  have h_cycle : trace K W' (A' a * (z.2 * t.2 * s)) = trace K W' (A' a' * (z.2 * t.2 * s)) :=
     trace_mul_mul_eq_of_mul_eq_mul h_twist ((hy a').mul_left (ht_comm a'))
-  change trace ℂ W' ((A' a - A' a') * z.2 * t.2 * s) = c * trace ℂ W (0 * z.1 * t.1)
+  change trace K W' ((A' a - A' a') * z.2 * t.2 * s) = c * trace K W (0 * z.1 * t.1)
   simpa [sub_mul, mul_assoc, sub_eq_zero] using h_cycle
 
 end Multipliers
 
-/-- Let `G a` be operators on a finite-dimensional complex space `V'`. Suppose that the image of a
-non-zero operator `f`, commuting with a commuting family `A'` indexed by a type `I'`, lies in the
-generalised `χ a`-eigenspace of each `G a`. Then `A'` has a common eigenvector in that image, and
-the only eigenvalue that `G a` can have at it is `χ a`. -/
-lemma exists_eigenvector_and_forall_eigenvalue_eq [FiniteDimensional ℂ V'] {κ : Sort*}
-    {A' : I' → End ℂ V'} (hA' : ∀ a a' : I', Commute (A' a) (A' a')) {f : End ℂ V'}
-    (hf : ∀ a : I', Commute f (A' a)) (hf_ne : f ≠ 0) {G : κ → End ℂ V'} {χ : κ → ℂ}
+/-- Let `G a` be operators on a finite-dimensional space `V'` over an algebraically closed field.
+Suppose that the image of a non-zero operator `f`, commuting with a commuting family `A'` indexed by
+a type `I'`, lies in the generalised `χ a`-eigenspace of each `G a`. Then `A'` has a common
+eigenvector in that image, and the only eigenvalue that `G a` can have at it is `χ a`. -/
+lemma exists_eigenvector_and_forall_eigenvalue_eq [IsAlgClosed K] [FiniteDimensional K V']
+    {κ : Sort*} {A' : I' → End K V'} (hA' : ∀ a a' : I', Commute (A' a) (A' a')) {f : End K V'}
+    (hf : ∀ a : I', Commute f (A' a)) (hf_ne : f ≠ 0) {G : κ → End K V'} {χ : κ → K}
     (h_range : ∀ (a : κ) (v : V'), f v ∈ maxGenEigenspace (G a) (χ a)) :
-    ∃ (Θ : I' → ℂ) (v : V'), f v ≠ 0 ∧ (∀ a : I', A' a (f v) = Θ a • f v) ∧
-      ∀ (a : κ) (z : ℂ), G a (f v) = z • f v → χ a = z := by
+    ∃ (Θ : I' → K) (v : V'), f v ≠ 0 ∧ (∀ a : I', A' a (f v) = Θ a • f v) ∧
+      ∀ (a : κ) (z : K), G a (f v) = z • f v → χ a = z := by
   obtain ⟨Θ, v, hv, hΘ⟩ := exists_eigenvector_mem_range_of_commute hA' hf hf_ne
   refine ⟨Θ, v, hv, hΘ, fun a z hz ↦ by_contra fun h_ne ↦ ?_⟩
   exact hv (disjoint_def.1 (disjoint_genEigenspace (G a) h_ne ⊤ ⊤) _ (h_range a v)
     (eigenspace_le_maxGenEigenspace (mem_eigenspace_iff.2 hz)))
 
-/-- Let `A` and `A'` be commuting families of operators on finite-dimensional complex spaces `V`
+/-- Let `A` and `A'` be commuting families of operators on finite-dimensional spaces `V`
 and `V'`, and let `s` be an operator on `V'`. Suppose that `A b` has non-zero trace on the joint
 generalised `θ`-eigenspace of the `A (k a)`. Let `Q` be a set of pairs of operators that contains
 `(A b, A' i)` and is stable under left multiplication by the `(A (k a), A' (j a))`. Suppose that
@@ -470,31 +476,31 @@ generalised `θ`-eigenspace of the `A (k a)`. Let `Q` be a set of pairs of opera
 the image of `A' i` whose system of eigenvalues `Θ` satisfies `Θ ∘ j = θ`, and `Θ a = Θ a'` whenever
 `s * A' a = A' a' * s`. The hypothesis `h_stable` serves to state the trace hypothesis; it follows
 from `hA` by `New.apply_mem_iInf_maxGenEigenspace_of_commute`. -/
-lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimensional ℂ V']
-    {J : Sort*} {A : J → End ℂ V} {A' : I' → End ℂ V'} (hA : ∀ a a' : J, Commute (A a) (A a'))
-    (hA' : ∀ a a' : I', Commute (A' a) (A' a')) (k : I → J) (j : I → I') (b : J) (i : I')
-    (θ : I → ℂ)
+lemma exists_eigenvector_of_trace_mul_eq [IsAlgClosed K] [FiniteDimensional K V]
+    [FiniteDimensional K V'] {J : Sort*} {A : J → End K V} {A' : I' → End K V'}
+    (hA : ∀ a a' : J, Commute (A a) (A a')) (hA' : ∀ a a' : I', Commute (A' a) (A' a')) (k : I → J)
+    (j : I → I') (b : J) (i : I') (θ : I → K)
     (h_stable : ∀ v ∈ ⨅ a : I, maxGenEigenspace (A (k a)) (θ a),
       A b v ∈ ⨅ a : I, maxGenEigenspace (A (k a)) (θ a))
     (h_trace_ne :
-      trace ℂ ↥(⨅ a : I, maxGenEigenspace (A (k a)) (θ a)) ((A b).restrict h_stable) ≠ 0)
-    {s : End ℂ V'} {c : ℂ} (hc : c ≠ 0) {Q : Set (End ℂ V × End ℂ V')} (hQ_mem : (A b, A' i) ∈ Q)
-    (hQ_trace : ∀ t ∈ Q, trace ℂ V' (t.2 * s) = c * trace ℂ V t.1)
+      trace K ↥(⨅ a : I, maxGenEigenspace (A (k a)) (θ a)) ((A b).restrict h_stable) ≠ 0)
+    {s : End K V'} {c : K} (hc : c ≠ 0) {Q : Set (End K V × End K V')} (hQ_mem : (A b, A' i) ∈ Q)
+    (hQ_trace : ∀ t ∈ Q, trace K V' (t.2 * s) = c * trace K V t.1)
     (hQ_stable : ∀ t ∈ Q, ∀ a : I, (A (k a), A' (j a)) * t ∈ Q) :
-    ∃ (Θ : I' → ℂ) (v w : V'), (∀ a a' : I', s * A' a = A' a' * s → Θ a = Θ a') ∧
+    ∃ (Θ : I' → K) (v w : V'), (∀ a a' : I', s * A' a = A' a' * s → Θ a = Θ a') ∧
       Θ ∘ j = θ ∧
       v = A' i w ∧ v ≠ 0 ∧ ∀ a : I', A' a v = Θ a • v := by
   -- The multipliers `(x, y)` of the trace identity form a space `S` on which commuting pairs `G a`
   -- act. A joint generalised eigenvector `(x, y)` with `tr (x * A b | U) ≠ 0` has `y * A' i ≠ 0`,
   -- and a common eigenvector of `A'` in the range of `y * A' i` has the required eigenvalues.
   -- `U` is the generalised `θ`-eigenspace of `A ∘ k`.
-  let U : Submodule ℂ V := ⨅ a : I, maxGenEigenspace (A (k a)) (θ a)
-  have hU {g : End ℂ V} (hg : ∀ a : J, Commute g (A a)) (v : V) (hv : v ∈ U) : (g * A b) v ∈ U :=
+  let U : Submodule K V := ⨅ a : I, maxGenEigenspace (A (k a)) (θ a)
+  have hU {g : End K V} (hg : ∀ a : J, Commute g (A a)) (v : V) (hv : v ∈ U) : (g * A b) v ∈ U :=
     apply_mem_iInf_maxGenEigenspace_of_commute (fun a ↦ (hg (k a)).mul_left (hA b (k a))) θ v hv
-  let S : Submodule ℂ (End ℂ V × End ℂ V') := traceIdentityMultipliers A A' s c Q
+  let S : Submodule K (End K V × End K V') := traceIdentityMultipliers A A' s c Q
   -- The commuting pairs: `(A (k a), A' (j a))`, and `(0, A' a - A' a')` if `s` intertwines the two.
   let κ : Type _ := I ⊕ {e : I' × I' // s * A' e.1 = A' e.2 * s}
-  let G : κ → End ℂ V × End ℂ V' :=
+  let G : κ → End K V × End K V' :=
     Sum.elim (fun a ↦ (A (k a), A' (j a))) fun ⟨(a, a'), _⟩ ↦ (0, A' a - A' a')
   have hG_comm : ∀ a a' : κ, Commute (G a) (G a') := by simp [κ, G, hA, hA', Prod.commute_iff]
   have hGS : ∀ a : κ, ∀ z ∈ S, G a * z ∈ S := by
@@ -502,19 +508,19 @@ lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimens
     · exact mk_mul_mem_traceIdentityMultipliers hA hA' (fun t ht ↦ hQ_stable t ht a) hz
     · exact zero_sub_mul_mem_traceIdentityMultipliers hA' h_twist hz
   -- The form `τ (x, y) = tr (x * A b | U)` on `S` is not zero at `1`, by `h_trace_ne`.
-  let ρ : S →ₗ[ℂ] End ℂ U :=
-    { toFun := fun z ↦ ((z : End ℂ V × End ℂ V').1 * A b).restrict (hU z.property.left)
+  let ρ : S →ₗ[K] End K U :=
+    { toFun := fun z ↦ ((z : End K V × End K V').1 * A b).restrict (hU z.property.left)
       map_add' := fun _ _ ↦ rfl
       map_smul' := fun _ _ ↦ rfl }
-  let τ : S →ₗ[ℂ] ℂ := trace ℂ U ∘ₗ ρ
-  have one_mem : (1 : End ℂ V × End ℂ V') ∈ S :=
+  let τ : S →ₗ[K] K := trace K U ∘ₗ ρ
+  have one_mem : (1 : End K V × End K V') ∈ S :=
     ⟨fun _ ↦ .one_left _, fun _ ↦ .one_left _, fun t ht _ ↦ by simpa using hQ_trace t ht⟩
-  have h_one : τ ⟨1, one_mem⟩ = trace ℂ U ((A b).restrict h_stable) := rfl
+  have h_one : τ ⟨1, one_mem⟩ = trace K U ((A b).restrict h_stable) := rfl
   have hτ : τ.ker ≠ ⊤ := fun h_top ↦
     h_trace_ne (h_one.symm.trans (LinearMap.congr_fun (ker_eq_top.1 h_top) ⟨1, one_mem⟩))
   -- A generalised eigenvector `(x, y) ∈ S` of multiplication by the `G a` with `τ (x, y) ≠ 0`.
-  obtain ⟨χ, ⟨⟨x, y⟩, hx, hy, htr⟩, hτ_ne, h_nil⟩ : ∃ (χ : κ → ℂ) (z : S), τ z ≠ 0 ∧
-      ∀ a : κ, ∃ N : ℕ, (G a - χ a • 1) ^ N * (z : End ℂ V × End ℂ V') = 0 :=
+  obtain ⟨χ, ⟨⟨x, y⟩, hx, hy, htr⟩, hτ_ne, h_nil⟩ : ∃ (χ : κ → K) (z : S), τ z ≠ 0 ∧
+      ∀ a : κ, ∃ N : ℕ, (G a - χ a • 1) ^ N * (z : End K V × End K V') = 0 :=
     exists_pow_sub_smul_mul_eq_zero_of_commute hG_comm hGS hτ
   choose N hN using h_nil
   have hN_fst (a : κ) (v : V) : (((G a).1 - χ a • 1) ^ N a) (x v) = 0 :=
@@ -538,17 +544,17 @@ lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimens
   -- range in `U`, so this trace is `τ (x, y)`.
   have h_ne : y * A' i ≠ 0 := by
     intro hzero
-    have h_identity : trace ℂ V' (y * A' i * s) = c * trace ℂ V (x * A b) := htr _ hQ_mem (hA' i)
-    have htrace : trace ℂ V (x * A b) = 0 := by simpa [hzero, hc] using h_identity
+    have h_identity : trace K V' (y * A' i * s) = c * trace K V (x * A b) := htr _ hQ_mem (hA' i)
+    have htrace : trace K V (x * A b) = 0 := by simpa [hzero, hc] using h_identity
     have h_range (v : V) : (x * A b) v ∈ U :=
       (mem_iInf _).2 fun a ↦
         (mem_maxGenEigenspace (A (k a)) (θ a) _).2 ⟨N (.inl a), hN_fst (.inl a) (A b v)⟩
     exact hτ_ne ((trace_restrict_eq_of_forall_mem U (x * A b) h_range).trans htrace)
   -- A common eigenvector of the `A' a` in the range of `y * A' i`. It lies in the range of `y`, so
   -- an eigenvalue of `(G a).2` on it is `Sum.elim θ 0 a`.
-  obtain ⟨Θ, v, hv, hΘ, eigval_eq⟩ : ∃ (Θ : I' → ℂ) (v : V'),
+  obtain ⟨Θ, v, hv, hΘ, eigval_eq⟩ : ∃ (Θ : I' → K) (v : V'),
       (y * A' i) v ≠ 0 ∧ (∀ a : I', A' a ((y * A' i) v) = Θ a • (y * A' i) v) ∧
-      ∀ (a : κ) (z : ℂ), (G a).2 ((y * A' i) v) = z • (y * A' i) v → Sum.elim θ 0 a = z :=
+      ∀ (a : κ) (z : K), (G a).2 ((y * A' i) v) = z • (y * A' i) v → Sum.elim θ 0 a = z :=
     exists_eigenvector_and_forall_eigenvalue_eq hA' (fun a ↦ (hy a).mul_left (hA' i a)) h_ne
       fun a v ↦ (mem_maxGenEigenspace _ _ _).2 ⟨N a, hN_snd a (A' i v)⟩
   have h_invariant (a a' : I') (h_twist : s * A' a = A' a' * s) : Θ a = Θ a' := by
@@ -558,7 +564,7 @@ lemma exists_eigenvector_of_trace_mul_eq [FiniteDimensional ℂ V] [FiniteDimens
   have h_extends : Θ ∘ j = θ := funext fun a ↦ (eigval_eq (.inl a) (Θ (j a)) (hΘ (j a))).symm
   exact ⟨Θ, (y * A' i) v, y v, h_invariant, h_extends, LinearMap.congr_fun (hy i).eq v, hv, hΘ⟩
 
-/-- The form of `New.exists_eigenvector_of_trace_mul_eq` for operators `B a` on a complex vector
+/-- The form of `New.exists_eigenvector_of_trace_mul_eq` for operators `B a` on a vector
 space `V` that preserve a finite-dimensional subspace `p` and commute on it. Let `A'` be a commuting
 family on a finite-dimensional space `V'` and `s` an operator on `V'`. Suppose that `B b` has
 non-zero trace on the part in `p` of the joint generalised `θ`-eigenspace of the `B (k a)`. Let `Q`
@@ -568,26 +574,26 @@ all `t` in `Q`, where `c ≠ 0`. Then `A'` has a common eigenvector in the image
 system of eigenvalues `Θ` satisfies `Θ ∘ j = θ`, and `Θ a = Θ a'` whenever `s * A' a = A' a' * s`.
 The hypothesis `h_stable` serves to state the trace hypothesis; it follows from `hB_comm` by
 `New.apply_mem_inf_iInf_maxGenEigenspace_of_commute_restrict`. -/
-lemma exists_eigenvector_of_trace_identity {p : Submodule ℂ V} [FiniteDimensional ℂ p]
-    [FiniteDimensional ℂ V'] {J : Sort*} {B : J → End ℂ V} {A' : I' → End ℂ V'}
-    (hB_maps : ∀ a : J, ∀ v ∈ p, B a v ∈ p)
+lemma exists_eigenvector_of_trace_identity [IsAlgClosed K] {p : Submodule K V}
+    [FiniteDimensional K p] [FiniteDimensional K V'] {J : Sort*} {B : J → End K V}
+    {A' : I' → End K V'} (hB_maps : ∀ a : J, ∀ v ∈ p, B a v ∈ p)
     (hB_comm : ∀ a a' : J, Commute ((B a).restrict (hB_maps a)) ((B a').restrict (hB_maps a')))
     (hA' : ∀ a a' : I', Commute (A' a) (A' a')) (k : I → J) (j : I → I') (b : J) (i : I')
-    (θ : I → ℂ)
+    (θ : I → K)
     (h_stable : ∀ v ∈ p ⊓ ⨅ a : I, maxGenEigenspace (B (k a)) (θ a),
       B b v ∈ p ⊓ ⨅ a : I, maxGenEigenspace (B (k a)) (θ a))
     (h_trace_ne :
-      trace ℂ ↥(p ⊓ ⨅ a : I, maxGenEigenspace (B (k a)) (θ a)) ((B b).restrict h_stable) ≠ 0)
-    {s : End ℂ V'} {c : ℂ} (hc : c ≠ 0) {Q : Set (End ℂ p × End ℂ V')}
+      trace K ↥(p ⊓ ⨅ a : I, maxGenEigenspace (B (k a)) (θ a)) ((B b).restrict h_stable) ≠ 0)
+    {s : End K V'} {c : K} (hc : c ≠ 0) {Q : Set (End K p × End K V')}
     (hQ_mem : ((B b).restrict (hB_maps b), A' i) ∈ Q)
-    (hQ_trace : ∀ t ∈ Q, trace ℂ V' (t.2 * s) = c * trace ℂ p t.1)
+    (hQ_trace : ∀ t ∈ Q, trace K V' (t.2 * s) = c * trace K p t.1)
     (hQ_stable : ∀ t ∈ Q, ∀ a : I, ((B (k a)).restrict (hB_maps (k a)), A' (j a)) * t ∈ Q) :
-    ∃ (Θ : I' → ℂ) (v w : V'), (∀ a a' : I', s * A' a = A' a' * s → Θ a = Θ a') ∧
+    ∃ (Θ : I' → K) (v w : V'), (∀ a a' : I', s * A' a = A' a' * s → Θ a = Θ a') ∧
       Θ ∘ j = θ ∧
       v = A' i w ∧ v ≠ 0 ∧ ∀ a : I', A' a v = Θ a • v := by
   -- Pass to the restrictions `A a` to `p` and their joint generalised `θ`-eigenspace `U`.
-  let A (a : J) : End ℂ p := (B a).restrict (hB_maps a)
-  let U : Submodule ℂ p := ⨅ a : I, maxGenEigenspace (A (k a)) (θ a)
+  let A (a : J) : End K p := (B a).restrict (hB_maps a)
+  let U : Submodule K p := ⨅ a : I, maxGenEigenspace (A (k a)) (θ a)
   have hU_stable : ∀ v ∈ U, A b v ∈ U :=
     apply_mem_iInf_maxGenEigenspace_of_commute (fun a ↦ hB_comm b (k a)) θ
   exact exists_eigenvector_of_trace_mul_eq (A := A) hB_comm hA' k j b i θ hU_stable
