@@ -120,21 +120,18 @@ lemma pairWeil_inv_localDatum (hn : 2 ∣ card n) (v : PairFock E s t)
   rw [𝔠.readsAt.pairWeil_localDatum_of_mem_supportedOn W V _ _ v hΦ (one_mem _) (inv_mem hk)]
   simp [spaceChar_rankTwist hn, atPlaces_star]
 
+omit [DecidableEq b] in
 /-- Let `𝔠` be a split tame character, with character `ν` of the norm-one ideles and finite set `S`
-of ramified places. Let `rk W = card b + rk V` (`σ`) be even, and let `χ` be the character
-`t ↦ ν (t / t̄) |t| ^ (rk W / 2)` at `S` (`localChar`). Let `(Φ, Ψ)` be a same-section pair for `χ`
-and `σ`: both are Schwartz–Bruhat on matrices of full rank, and for each invertible `k` the coset
-sum `localSection χ` of `y ↦ Φ yᵀ` at the transposed rows `a` of `k⁻¹` is `χ (det k)` times that of
-`Ψ` at the columns `b` of `k`. By `thetaLarge W V 𝔠 v Φ` is meant the function on `U(W)` that
-integrates over `[U(V)]` the theta kernel of the datum `v` at the infinite places, `Φ` at `S`, the
-vacuum elsewhere, both characters being `ν⁻¹ υ ^ ⌊rk W / 2⌋` for the splitting character `υ` of the
-Weil data. Let `g ∈ U(W)` be finite, supported at `S` and its conjugate, with component `g_S` at
-`S`. Then `thetaLarge` of `y ↦ χ (det g_S⁻¹) Φ (y g_S⁻¹)` at `x g` is that of `Φ` at `x` divided by
-`(υ |·| ^ (1 / 2)) (det g_S) ^ card b`. -/
+of ramified places. Let `rk W = card b + rk V` (`σ`) be even and write `χ` for the character
+`t ↦ ν (t / t̄) |t| ^ (rk W / 2)` at `S` (`localChar`). Let `g ∈ U(W)` be finite, supported at `S`
+and its conjugate, with component `g_S` at `S`. For any Schwartz–Bruhat function `Φ`, the value of
+`thetaLarge` for `y ↦ χ (det g_S⁻¹) Φ (y g_S⁻¹)` at `x g` equals that for `Φ` at `x` divided by
+`(υ |·| ^ (1 / 2)) (det g_S) ^ card b`, where `υ` is the splitting Hecke character. -/
 lemma thetaLarge_translate_mul (σ : b ⊕ a ≃ n) (hn : 2 ∣ card n) (v : PairFock E s t)
-    {Φ : Matrix a n (LocProd 𝔠.ramifiedPlaces) → ℂ} {Ψ : Matrix n b (LocProd 𝔠.ramifiedPlaces) → ℂ}
-    (hp : (Φ, Ψ) ∈ sameSectionPairs (localChar 𝔠.ramifiedPlaces 𝔠.character.baseChange (card n)) σ)
-    {g : Gf E n} (hg : g ∈ Gf.supportedOn n 𝔠.ramifiedPlaces) (x : G E s) :
+    {U : Set (Matrix a n (LocProd 𝔠.ramifiedPlaces))}
+    {Φ : Matrix a n (LocProd 𝔠.ramifiedPlaces) → ℂ}
+    (hΦ : Φ ∈ schwartzBruhat U) {g : Gf E n} (hg : g ∈ Gf.supportedOn n 𝔠.ramifiedPlaces)
+    (x : G E s) :
     thetaLarge W V 𝔠 v
         (localChar 𝔠.ramifiedPlaces 𝔠.character.baseChange (card n)
           (atPlaces 𝔠.ramifiedPlaces g⁻¹).val.det •
@@ -142,7 +139,9 @@ lemma thetaLarge_translate_mul (σ : b ⊕ a ≃ n) (hn : 2 ∣ card n) (v : Pai
             Φ (y * (atPlaces 𝔠.ramifiedPlaces g⁻¹).val)) (x * (1, g)) =
       thetaLarge W V 𝔠 v Φ x / localChar 𝔠.ramifiedPlaces υ 1 (atPlaces 𝔠.ramifiedPlaces g).val.det
         ^ card b := by
-  obtain ⟨⟨h_sb, -⟩, -⟩ := sameSectionPairs.translate_mem _ σ hp (atPlaces 𝔠.ramifiedPlaces g⁻¹)
+  let k := atPlaces 𝔠.ramifiedPlaces g⁻¹
+  have h_trans : (fun y ↦ Φ (y * k.val)) ∈ schwartzBruhat Set.univ :=
+    schwartzBruhat.comp hΦ (fun y ↦ y * k⁻¹.val) (fun y ↦ by simp) (Set.mapsTo_univ _ _)
   have h_char : (rankTwist 𝔠.character⁻¹ n).spaceChar (card a) = 𝔠.character⁻¹.baseChange * υ ^ card
     b := by
     rw [← spaceChar_rankTwist (n := n) hn]
@@ -156,9 +155,10 @@ lemma thetaLarge_translate_mul (σ : b ⊕ a ≃ n) (hn : 2 ∣ card n) (v : Pai
     rw [localChar_det, localChar_det, ← card_congr σ]
     simp [mul_pow, zpow_add₀, field]
   rw [thetaLarge, ← thetaIntegral_pairWeil ((1, g), 1, 1),
-    𝔠.readsAt.pairWeil_localDatum_of_mem_supportedOn W V _ _ v h_sb hg (one_mem _), h_char,
+    𝔠.readsAt.pairWeil_localDatum_of_mem_supportedOn W V _ _ v
+      (Submodule.smul_mem _ _ h_trans) hg (one_mem _), h_char,
     div_eq_inv_mul (thetaLarge W V 𝔠 v Φ x), ← h_scalar, ← thetaIntegral_smul, mul_smul]
-  simp [d, localDatum, atPlaces_star, ← Pi.smul_def, -smul_eq_mul, -localChar_det]
+  simp [k, d, localDatum, atPlaces_star, ← Pi.smul_def, -smul_eq_mul, -localChar_det]
 
 /-- By `thetaSmall W V' 𝔠 v' Ψ` is meant the function on `U(W)` that integrates over `[U(V')]` the
 theta kernel of the datum `v'` at the infinite places and `y ↦ Ψ yᵀ` at the conjugates of the
@@ -339,7 +339,8 @@ lemma exists_isEquivariantLift_eq_thetaLarge_sub_smul (σ : b ⊕ a ≃ n) (hn :
     refine ⟨⟨_, hq, rfl⟩, fun x ↦ ?_⟩
     simp only [LinearMap.snd_apply, h_diff hp, h_diff hq, Pi.sub_apply, Pi.smul_apply]
     rw [thetaSmall_translate_mul W V' 𝔠 v' hg (h_sb hq).right,
-      thetaLarge_translate_mul W V 𝔠 σ hn v hp hg, sub_div, smul_eq_mul, smul_eq_mul, mul_div_assoc]
+      thetaLarge_translate_mul W V 𝔠 σ hn v (h_sb hp).left hg, sub_div, smul_eq_mul, smul_eq_mul,
+      mul_div_assoc]
   · rintro _ ⟨⟨Φ, Ψ⟩, hp, rfl⟩ k ⟨hk_int, hk_triv⟩ x
     simp only [LinearMap.snd_apply, h_diff hp, Pi.sub_apply, Pi.smul_apply]
     rw [thetaLarge_mul_of_mem_stdLevel W V 𝔠 v (h_sb hp).left hk_int hk_triv,
