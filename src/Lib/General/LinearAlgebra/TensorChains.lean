@@ -92,6 +92,48 @@ A chain of bilinear steps `b j : S j → M j → M (j + 1)` is multilinear in it
 through the tensor product of the spaces `S j`, and so extends from pure data to arbitrary tensors.
 -/
 
+section LiftInPairs
+
+open TensorProduct LinearMap
+
+namespace New.TensorChain
+
+variable {R : Type*} [CommRing R] {S M : ℕ → Type*}
+  [∀ j : ℕ, AddCommGroup (S j)] [∀ j : ℕ, Module R (S j)]
+  [∀ j : ℕ, AddCommGroup (M j)] [∀ j : ℕ, Module R (M j)]
+  (b : ∀ j : ℕ, S j →ₗ[R] M j →ₗ[R] M (j + 1))
+
+/-- Two steps at once: the linear map from `S (2 * i) ⊗ S (2 * i + 1)` to
+`Hom (M (2 * i), M (2 * i + 2))` sending `s ⊗ s'` to `b (2 * i + 1) s' ∘ b (2 * i) s`. -/
+def liftInPairs (i : ℕ) :
+    S (2 * i) ⊗[R] S (2 * i + 1) →ₗ[R] M (2 * i) →ₗ[R] M (2 * (i + 1)) :=
+  TensorProduct.lift ((llcomp R (M (2 * i)) (M (2 * i + 1)) (M (2 * i + 1 + 1))).compl₁₂
+    (b (2 * i + 1)) (b (2 * i))).flip
+
+/-- The double step with datum `s ⊗ s'` is the step `b (2 * i) s` followed by
+`b (2 * i + 1) s'`. -/
+lemma liftInPairs_tmul (i : ℕ) (s : S (2 * i)) (s' : S (2 * i + 1)) (y : M (2 * i)) :
+    liftInPairs b i (s ⊗ₜ s') y = b (2 * i + 1) s' (b (2 * i) s y) :=
+  rfl
+
+/-- Let `b j : S j →ₗ M j →ₗ M (j + 1)` be bilinear steps and `f j : S j`. Composing the double
+steps `liftInPairs b i (f (2 * i) ⊗ₜ f (2 * i + 1))` for `i < p` gives the same value at `x` as
+composing the single steps `b j (f j)` for `j < 2 * p`. -/
+lemma compUpTo_liftInPairs_tmul (f : ∀ j : ℕ, S j) (p : ℕ) (x : M 0) :
+    compUpTo (M := fun i : ℕ ↦ M (2 * i))
+        (fun i : ℕ ↦ liftInPairs b i (f (2 * i) ⊗ₜ[R] f (2 * i + 1))) p x =
+      compUpTo (fun j : ℕ ↦ b j (f j)) (2 * p) x := by
+  induction p with
+  | zero => rfl
+  | succ p ih =>
+    -- The right side has `2 * (p + 1) = 2 * p + 1 + 1` steps.
+    rw [compUpTo_succ_apply, ih, liftInPairs_tmul]
+    rfl
+
+end New.TensorChain
+
+end LiftInPairs
+
 section TensorChain
 
 open TensorProduct LinearMap Finset
@@ -122,12 +164,6 @@ lemma pure_zero : pure f 0 = (1 : ℂ) :=
 
 lemma pure_succ (j : ℕ) : pure f (j + 1) = f j ⊗ₜ[ℂ] pure f j :=
   rfl
-
-/-- Two steps at once: the linear map from `S (2 * i) ⊗ S (2 * i + 1)` to
-`Hom (M (2 * i), M (2 * i + 2))` sending `s ⊗ s'` to `b (2 * i + 1) s' ∘ b (2 * i) s`. -/
-def liftInPairs (i : ℕ) : S (2 * i) ⊗[ℂ] S (2 * i + 1) →ₗ[ℂ] M (2 * i) →ₗ[ℂ] M (2 * (i + 1)) :=
-  lift ((llcomp ℂ (M (2 * i)) (M (2 * i + 1)) (M (2 * i + 1 + 1))).compl₁₂ (b (2 * i + 1))
-    (b (2 * i))).flip
 
 /-- For bilinear maps `b i : S i → M i → M (i + 1)` and `x` in `M 0`, the linear map from
 `S (j-1) ⊗ ⋯ ⊗ S 0` to `M j` that sends `f (j-1) ⊗ ⋯ ⊗ f 0` to
@@ -214,26 +250,6 @@ lemma pure_sum {Y : ℕ → Type*} [∀ j : ℕ, Fintype (Y j)] (g : ∀ j : ℕ
     refine sum_congr rfl fun a _ ↦ ?_
     rw [h_init a, tmul_sum]
     exact sum_congr rfl fun z _ ↦ by rw [pure_succ, h_last]
-
-/-- The double step with datum `s ⊗ s'` is the step `b (2 * i) s` followed by
-`b (2 * i + 1) s'`. -/
-lemma liftInPairs_tmul (i : ℕ) (s : S (2 * i)) (s' : S (2 * i + 1)) (y : M (2 * i)) :
-    liftInPairs b i (s ⊗ₜ s') y = b (2 * i + 1) s' (b (2 * i) s y) :=
-  rfl
-
-/-- Let `b j : S j →ₗ M j →ₗ M (j + 1)` be bilinear steps and `f j : S j`. Composing the double
-steps `liftInPairs b i (f (2 * i) ⊗ₜ f (2 * i + 1))` for `i < p` gives the same value at `x` as
-composing the single steps `b j (f j)` for `j < 2 * p`. -/
-lemma compUpTo_liftInPairs_tmul (p : ℕ) (x : M 0) :
-    compUpTo (M := fun i : ℕ ↦ M (2 * i))
-        (fun i : ℕ ↦ liftInPairs b i (f (2 * i) ⊗ₜ[ℂ] f (2 * i + 1))) p x =
-      compUpTo (fun j : ℕ ↦ b j (f j)) (2 * p) x := by
-  induction p with
-  | zero => rfl
-  | succ p ih =>
-    -- The right side has `2 * (p + 1) = 2 * p + 1 + 1` steps.
-    rw [compUpTo_succ_apply, ih, liftInPairs_tmul]
-    rfl
 
 /-- For data `τ i` in `S (2 * i) ⊗ S (2 * i + 1)` of `p` double steps, the tensor
 `τ (p-1) ⊗ ⋯ ⊗ τ 0` regrouped into `2 * p` single factors. -/
