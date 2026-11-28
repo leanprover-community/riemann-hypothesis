@@ -239,18 +239,24 @@ lemma New.Patching.aeval_conj_eq_zero {U U' : End ℂ ρ} {T : ℕ → ρ} {R : 
     (kills_T : ∀ j : ℕ, aeval U R (T j) = 0) (U'_first : U' (T 0) = a • T n)
     (rec_U' : ∀ i < n, U' (T i.succ) = b i • (c i • U' (T 0) - T i)) :
     aeval U' (R.map (starRingEnd ℂ)) (T 0) = 0 := by
-  have kills_span (F : ℂ[X]) : ∀ j ≤ n, aeval U R (aeval U' F (T j)) = 0 := by
-    induction F using recOnHorner with
-    | M0 => simp
-    | MC F a _ _ ih => simp +contextual [ih, kills_T]
-    | MX F _ ih =>
-      rintro (_ | j) hj
-      · simp [U'_first, ih]
-      · simp [rec_U' j hj, U'_first, ih n, ih j (by lia)]
+  let S := Submodule.span ℂ (T '' Set.Iic n)
+  have hT {j : ℕ} (hj : j ≤ n) : T j ∈ S := Submodule.subset_span ⟨j, hj, rfl⟩
+  have kills_span : S ≤ LinearMap.ker (aeval U R) :=
+    Submodule.span_le.mpr fun _ ⟨j, _, hj⟩ ↦ hj ▸ kills_T j
+  have h_first : U' (T 0) ∈ S := U'_first ▸ S.smul_mem a (hT le_rfl)
+  have stable : S ≤ S.comap U' := by
+    apply Submodule.span_le.mpr
+    rintro _ ⟨(_ | j), hj, rfl⟩
+    · exact h_first
+    · change U' (T (j + 1)) ∈ S
+      rw [rec_U' j hj]
+      exact S.smul_mem _ (S.sub_mem (S.smul_mem _ h_first) (hT (Nat.le_of_succ_le hj)))
   -- The vector of the statement lies in that span, so it is orthogonal to itself.
+  have killed : aeval U R (aeval U' (R.map (starRingEnd ℂ)) (T 0)) = 0 :=
+    kills_span (aeval_apply_smul_mem_of_le_comap (hT (Nat.zero_le n)) _ U' stable)
   refine by_contra fun hne ↦ (hB _ hne).ne' ?_
   rw [adjoint_aeval_map_starRingEnd ⊤ (fun y _ ↦ ⟨trivial, fun z ↦ adj z y⟩) R _ _ trivial,
-    kills_span _ 0 (Nat.zero_le n), map_zero]
+    killed, map_zero]
 
 /-- The Hecke polynomial of degree `m + 1` is `X` times that of degree `m`, plus the constant
 `(-1) ^ (m + 1) * q ^ ((m + 1).choose 2) * t (m + 1)`. -/
@@ -418,12 +424,14 @@ lemma New.Patching.chain_lemma_of_adjoint (U U' : End ℂ ρ) (T : ℕ → ρ)
     have eigen_z : U' (z c) = c⁻¹ • (q ^ n / q : ℂ) • z c := by
       simpa [eq_inv_smul_iff₀ hc, hqc.eq_zero] using U'_z c
     have orth_x : B x (z c) = 0 := by simpa [hqc.eq_zero, hc, pow_sub_pos.ne'] using pair_x c root
-    have orth (G : ℂ[X]) : B (aeval U G x) (z c) = 0 := by
-      induction G using recOnHorner with
-      | M0 => simp
-      | MC G a _ _ ih => simp [ih, orth_x]
-      | MX G _ ih => simp [← X_mul, adj', eigen_z, ih]
-    exact by_contra fun hz ↦ (hB _ hz).ne' (orth _)
+    -- By adjointness, `U` preserves the vectors orthogonal to `z c`.
+    let K := LinearMap.ker (B.flip (z c))
+    have stable : K ≤ K.comap U := by
+      intro y (hy : B y (z c) = 0)
+      change B (U y) (z c) = 0
+      simp [adj', eigen_z, hy]
+    exact by_contra fun hz ↦ (hB _ hz).ne'
+      (aeval_apply_smul_mem_of_le_comap (show x ∈ K from orth_x) (D c) U stable)
   intro d hd k R hroot hP
   have kills_x : aeval U R x = 0 := aeval_cofactor_eq_zero hq aeval_P two_roots hd k R hroot hP
   refine aeval_conj_eq_zero hB adj (fun j ↦ ?_) (U'_first.trans (smul_smul _ _ (T n))) rec_U'
