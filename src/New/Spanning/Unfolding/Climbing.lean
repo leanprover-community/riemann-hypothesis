@@ -189,13 +189,6 @@ lemma mem_vectorFixer_true {i : Fin 2} {w : S.chosenPlaces i}
   change (J⁻¹ * invTransposeGL (s i w) * J⁻¹⁻¹) • x = x ↔ invTransposeGL (s i w) • J • x = J • x
   rw [inv_inv, mul_smul, mul_smul, inv_smul_eq_iff]
 
-/-- The matrix `g` applied to the combination of the frame vectors with coordinates `x` is the
-combination of their images with the same coordinates. -/
-lemma mulVec_frameImage_one_mulVec {R : Type*} [CommRing R]
-    (g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) (x : Fin (𝔰.ϱ + 1) → R) :
-    g *ᵥ frameImage 1 *ᵥ x = frameImage g *ᵥ x := by
-  rw [mulVec_mulVec]
-  exact congrArg (fun N ↦ N *ᵥ x) (mul_inclMatrix g 𝔰.besselFrame)
 
 /-- The element `s` meets at the place `p` of `E` above `M`: modulo `p`, the span of the frame and
 its image under `s` share a nonzero vector. -/
@@ -212,7 +205,7 @@ def meetNorm (s : S.ResidueGL) : ℕ :=
 /-- An element that fixes a nonzero vector of the span of the frame modulo a place meets there. -/
 lemma meetsAt_of_mem_vectorFixer {i : Fin 2} {w : S.chosenPlaces i} {d : S.FrameVector w}
     {s : S.ResidueGL} (hs : s ∈ S.vectorFixer w d) : S.MeetsAt s (⟨i, w⟩, d.1) := by
-  rw [mem_vectorFixer, mulVec_frameImage_one_mulVec] at hs
+  rw [mem_vectorFixer, ← frameImage_mulVec] at hs
   exact ⟨d.2.val, d.2.val, d.2.property, hs.symm⟩
 
 open scoped Classical in
@@ -896,7 +889,7 @@ lemma vecMul_frameImage_dotProduct_cons_init_eq_of_agrees {k : S.latticeStabiliz
     obtain rfl | hq := eq_or_ne q p
     · -- Both sides are `γ + r (f x) (m γ)`.
       have h_vec : γ *ᵥ frameImage 1 *ᵥ y = frameImage 1 *ᵥ x := by
-        rw [hxy, mulVec_frameImage_one_mulVec]
+        rw [hxy, ← frameImage_mulVec]
       simp [actionAt_mul, hu_at, hu'_at, ← hγ, add_mul, mul_add, vecMulVec_mul, mul_vecMulVec,
         h_vec]
     · simp [actionAt_mul, hu_ne q hq, hu'_ne q hq]
