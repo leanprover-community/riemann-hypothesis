@@ -136,8 +136,11 @@ lemma coordMatrix_mul_fromBlocks_eq_fromCols (c : Matrix n b (𝔸 E)) (z : Matr
       (D.iAdelic * g.adeleMatrix + D.kAdelic * (cᴴ * stdForm E s * g.adeleMatrix))
     · simp [kAdelic, iAdelic, Space.ratMap, fromCols_map, fromCols_mul_fromBlocks,
         Matrix.mul_assoc, add_comm]
-    · simp [p, G.adeleMatrix, G.ofMatrix, radicalElement, Splitting.levi, ↓mul_fromCols,
-        Matrix.mul_assoc, Matrix.add_mul, Matrix.sub_mul]
+    · conv_rhs =>
+        rw [G.adeleMatrix_mul, mul_fromCols, Matrix.mul_assoc, D.actsOnFrame_levi,
+          ← Matrix.mul_assoc, D.actsOnFrame_radicalElement, Matrix.mul_one, Matrix.mul_assoc,
+          D.levi_mul_iAdelic, ← Matrix.mul_assoc, D.radicalElement_mul_iAdelic, Matrix.add_mul,
+          Matrix.mul_assoc]
   rw [coordMatrix, Matrix.mul_assoc, h_image, ← Matrix.mul_assoc]
   simp [G.adeleMatrix]
 
@@ -953,7 +956,18 @@ lemma exists_integral_thetaTerm_eq_of_periods {σ' : b ⊕ b ⊕ n ≃ m} {v : P
   rw [abs_inf, det_inf, ← cut_star, h_twist]
   simp [HeckeChar.finPart, rankTwist, AutChar.spaceChar, AutChar.baseChange_toUnits, det_y, κ₀, hN,
     B, G.adeleMatrix, Matrix.mul_assoc]
-  field (disch := simp)
+  rw [div_eq_mul_inv, div_eq_mul_inv, mul_inv, mul_inv, mul_inv, mul_inv, inv_inv, inv_inv,
+    pow_add _ (card b), pow_add _ (card b), mul_pow, ← pow_mul]
+  refine (mul_inv_cancel_right₀ (Units.ne_zero (vacuumFactor (isAdapted_homSource D V')))
+    _).symm.trans ?_
+  refine .trans ?_ (mul_inv_cancel_right₀ (pow_ne_zero (2 * N)
+    (mul_ne_zero (Circle.coe_ne_zero (υ.val (scaleIdele E • V'.x).det))
+      (Circle.coe_ne_zero (υ.val Y.det)))) _)
+  refine .trans ?_ (mul_inv_cancel_right₀ (pow_ne_zero (2 * N)
+    (Complex.ofReal_ne_zero.2 (ne_of_gt (Real.sqrt_pos.2 (ideleAbs_pos (x := Y.det)))))) _)
+  refine .trans ?_ (mul_inv_cancel_right₀
+    (Circle.coe_ne_zero (𝔠.character.baseChange.val Y.det)) _)
+  ring
 
 /-- Let `D` split `X` as `W₁` plus a hyperbolic space, let `𝔠` be a tame character, let `v` be a
 Schwartz vector in the real (Fock) data `PairFock` of `(X, V' ⊕ W₁)`, and take the row datum
