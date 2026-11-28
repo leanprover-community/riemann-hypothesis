@@ -1,8 +1,8 @@
 module
 
 public import New.Spanning.Frames.StandardLevel
+import TauCeti.Topology.Instances.ENNReal
 import Lib.Base
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import Lib.SiegelWeil.OneVector.StandardQuadrics
 
 /-!
@@ -65,7 +65,7 @@ lemma Place.IsDisintegration.continuous_integral {μ : Measure (ι → A)} {J : 
     obtain ⟨h_cont, h_fin⟩ : (Continuous fun b ↦ ∫⁻ x, (φ (f x)).toNNReal ∂l b) ∧
         ∀ b, ∫⁻ x, (φ (f x)).toNNReal ∂l b < ∞ :=
       h.continuous_and_lt_top (by fun_prop) h_supp_pos
-    exact continuousOn_toReal.comp_continuous h_cont fun b ↦ (h_fin b).ne
+    exact h_cont.ennreal_toReal fun b ↦ (h_fin b).ne
   have real_part (φ : ℂ →L[ℝ] ℝ) : Continuous fun b : skewAdjoint A ↦ ∫ x, φ (f x) ∂l b := by
     have neg_part : Continuous fun b ↦ (∫⁻ x, ENNReal.ofReal (-φ (f x)) ∂l b).toReal := by
       simpa using pos_part (-φ)
@@ -177,19 +177,26 @@ its Gram matrix is `diag(1, …, 1, -1)`. -/
 lemma gram_middleBasisMatrix {N : A} (hN : π * star (π : A) = N) :
     (middleBasisMatrix 𝔰 π)ᴴ * latticeMiddleGram 𝔰 N * middleBasisMatrix 𝔰 π = fromBlocks 1 0 0
       (-1) := by
-  have h_inv : star (↑π⁻¹ : A) * star (π : A) = 1 := by rw [← star_mul, π.mul_inv, star_one]
-  have h_cancel : star (↑π⁻¹ : A) * N = π := by rw [← hN, mul_left_comm, h_inv, mul_one]
-  ext (i | ⟨⟩) (j | ⟨⟩)
-  · simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
-      diagonal, Matrix.one_apply, apply_ite star, h_cancel, eq_comm]
-    split_ifs <;> simp_all
-  · by_cases hi : i = 𝔰.k₀ <;>
-      simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
-        diagonal, apply_ite star, h_cancel, hi, eq_comm]
-  · by_cases hj : j = 𝔰.k₀ <;>
-      simp [middleBasisMatrix, middleInclusionMatrix, latticeMiddleGram, Matrix.mul_apply,
-        diagonal, h_cancel, h_inv, hj, eq_comm]
-  · simp [middleBasisMatrix, latticeMiddleGram, Matrix.mul_apply, h_cancel]
+  -- Change to the standard basis via `(besselLatticeBasis 𝔰 π)⁻¹`, then scale `z` by `π⁻¹`.
+  let ι₀ : Matrix 𝔰.BesselIndex 𝔰.MiddleIndex A := inclMatrix A (inr ∘ inl)
+  let D : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex A := fromBlocks 1 0 0 (scalar Unit (↑π⁻¹ : A))
+  have h_factor : ι₀ * middleBasisMatrix 𝔰 π = (besselLatticeBasis 𝔰 π)⁻¹.val * (ι₀ * D) := by
+    ext (a | (k | ⟨⟩) | a) (j | ⟨⟩) <;>
+      simp [ι₀, D, middleBasisMatrix, besselLatticeBasis, inclMatrix, Matrix.mul_apply,
+        Matrix.one_apply]
+  calc (middleBasisMatrix 𝔰 π)ᴴ * latticeMiddleGram 𝔰 N * middleBasisMatrix 𝔰 π
+      = (ι₀ * middleBasisMatrix 𝔰 π)ᴴ * (latticeMiddleGram 𝔰 N).splitGram *
+          (ι₀ * middleBasisMatrix 𝔰 π) := by
+        rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix]; rfl
+    _ = Dᴴ * 𝔰.middleGram N * D := by
+        rw [h_factor, ← gram_besselLatticeBasis π N hN, ← gram_mul,
+          ← Matrix.mul_assoc (besselLatticeBasis 𝔰 π).val, Units.mul_inv, Matrix.one_mul,
+          gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix]; rfl
+    _ = fromBlocks 1 0 0 (-1) := by
+        have h_cancel : star (↑π⁻¹ : A) * N * ↑π⁻¹ = 1 := by
+          rw [← hN, mul_left_comm, ← star_mul, π.mul_inv, star_one, mul_one, Units.mul_inv]
+        simp [D, Shape.middleGram, fromBlocks_conjTranspose, fromBlocks_multiply,
+          ← Matrix.ext_iff, h_cancel]
 
 /-- In the basis `middleBasisMatrix`, the orthonormal basis of `X₀` followed by `π⁻¹ z`, the vector
 `vectorOfLastEntry π t x = x - (π π̄)⁻¹ t z` has the coordinates `x` on `X₀` and `-π̄⁻¹ t` at
@@ -476,10 +483,8 @@ theorem HyperbolicBasis.integral_floorQuadricMeasure_top
       (F.floorQuadricMeasure 𝔰.top) := F.measurePreserving_vectorOfLastEntry_flatChart hN h_rank hB
   have : IsFiniteMeasureOnCompacts (F.floorQuadricMeasure 𝔰.top) :=
     (F.isDisintegration_floorVolume 𝔰.top rfl).isFiniteMeasureOnCompacts _
-  have h_int : Integrable (fun p ↦ f (K p))
-      (((P.modulus π)⁻¹ • volume).prod (volume.prod P.skewMeasure)) :=
-    h_pres.integrable_comp_of_integrable (hf.integrable_of_hasCompactSupport h_supp)
   -- Fubini in the coordinates `(t, p)`; the inner integral is the one over the sphere.
+  obtain ⟨h_int, h_fubini⟩ := h_pres.fubini (hf.integrable_of_hasCompactSupport h_supp)
   let G (t : A) : ℂ := ∫ p, f (K (t, p)) ∂volume.prod P.skewMeasure
   have h_sphere (t : A) : ∫ x, f (vectorOfLastEntry π t x) ∂P.normFiberMeasure 𝔰.κ
     (lastEntrySphereIndex π t) = G t := by
@@ -494,13 +499,8 @@ theorem HyperbolicBasis.integral_floorQuadricMeasure_top
     exact (integrable_smul_measure h_ne_zero h_ne_top).1 h_smul
   simp only [h_sphere]
   refine ⟨G_int.const_mul _, ?_⟩
-  calc
-    ∫ t, (P.modulus π)⁻¹.toReal * G t = ∫ t, G t ∂(P.modulus π)⁻¹ • volume := by
-      rw [integral_const_mul, integral_smul_measure, Complex.real_smul]
-    _ = ∫ p, f (K p) ∂((P.modulus π)⁻¹ • volume).prod (volume.prod P.skewMeasure) :=
-      (integral_prod _ h_int).symm
-    _ = ∫ e, f e ∂F.floorQuadricMeasure 𝔰.top := by
-      rw [← h_pres.map_eq, integral_map h_pres.aemeasurable hf.aestronglyMeasurable]
+  rw [integral_const_mul, ← Complex.real_smul, ← integral_smul_measure]
+  exact h_fubini
 
 end New.Floors
 
