@@ -5,7 +5,6 @@ public import New.Spanning.Multiplicities.HeckeEigensystems
 public import Lib.Adelic.AutomorphicForms.AutomorphicAsAlgebraic
 public import New.Determinant.Norms.VectorKernel
 import Lib.GLn.SchurModule.SchurNorm
-import Lib.General.Groups.IndexOfProduct
 import New.OneLift.HeckeValues.CharacterLift
 
 /-!

@@ -6,7 +6,6 @@ public import New.Spanning.Unfolding.FrameMass
 public import New.Spanning.Unfolding.PoincareSeries
 public import New.UpperBound.Seesaw.EdgePairEvaluation
 public import New.UpperBound.Size.ShortColumns
-import Lib.General.Groups.IndexOfProduct
 import New.Spanning.Unfolding.Climbing
 import New.Spanning.Unfolding.ReducedGroups
 
