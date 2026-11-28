@@ -682,6 +682,160 @@ lemma exists_star_leftSideSeries_eq_classSum (j : D.LiftIndex) :
   rw [Pi.star_apply, Pi.smul_apply, smul_eq_mul, h_scalar, h_series]
   simp [h_coord, map_classSum, θ, ← Int.cast_smul_eq_zsmul ℂ H]
 
+/-- Let `c` normalise the theta kernels of (W^add, V″) for polynomials of degree `n`
+(`New.Rows.IsModKernelScale`), and let every `H • stackedDetProdCoords j i Y l` be homogeneous of
+degree `n` with coefficients in every subring of ℂ that contains the conjugates of the entries of
+`Y` (`New.Data.IsHomogeneousOverEntries`). Let 𝖪 be the kernel of (W^add, V″) with both characters
+`firstFactorChar ϑ j` and the datum `addedDatum ϑ j u` modulo ϖ²Q, and g the point with blocks `1`,
+the representative of the class of `i` and `w`. For every prime `p` coprime to `ϑ.normQ`, with an
+embedding `ιₚ : ℂ → ℂ_[p]`, the vector conj(c 𝖪[H·ζ](g, h)) with
+ζ = `stackedDetProdCoords j i (D.shortRows i)` has gauge (`New.weylGauge`) at most one at every
+`h`. -/
+lemma weylGauge_modKernelBilin_addedDatum_le_one {j : D.LiftIndex} {n : ℕ} {H : ℤ} {c : ℂ}
+    (hc : IsModKernelScale (AddedIndex j) (FirstFactorIndex j) D n c) {i : D.RowChoice}
+    (h_denom : ∀ (Y : Matrix D.FlatIndex D.FlatIndex D.E)
+      (l : WeylIndex (FirstFactorIndex j) (untwistedDescentPair j).colsPlus),
+      IsHomogeneousOverEntries j Y n (H • stackedDetProdCoords j i Y l))
+    (u : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    {p : ℕ} [Fact p.Prime] [PadicPlace p] (hp : p.Coprime ϑ.normQ) (w : Gf D.E D.CarrierIndex)
+    (h : Gf D.E (FirstFactorIndex j)) :
+    weylGauge (untwistedDescentPair j).colsPlus 0 h
+      (star (c • modKernelBilin (stdSpace D.E (AddedIndex j)) (stdSpace D.E (FirstFactorIndex j))
+        (firstFactorChar ϑ j) (firstFactorChar ϑ j) (D.twistModulus ϑ 2)
+          (1, U.blockSumOne (1, U.blockSumOne (i.classRep, w))) (1, h)
+        (addedDatum ϑ j u) ∘ (H • stackedDetProdCoords j i (D.shortRows i)))) ≤ 1 := by
+  have hb : (firstFactorChar ϑ j).HasWeight (firstFactorCharExp j + -D.liftWeight j ·)
+      (D.liftTamePart ϑ j) := inferInstance
+  have h𝔪 : ↑(ϑ.normQ * D.M ^ 2) ∈ (D.twistModulus ϑ 2).ideal := normQ_mul_M_pow_mem_modulus
+  -- The vector is a complex conjugate, so the kernel is read at the place `ιₚ ∘ conj`.
+  refine weylGauge_modKernelBilin_stackedDetProdCoords_le_one j i _ c H
+    (fun g' hg' h' hh' Y hY l ↦ ?_) w h
+  let _ : PadicPlace p := ⟨ιₚ.comp conj⟩
+  exact hc.norm_le_one hb hb h𝔪 (addedDatum_mem_integralAway j u · ϑ.normQ)
+    (isHomogeneous_iff_aeval_smul_X.2 (h_denom Y l).aeval_smul_X) hp hg' hh'
+    ((h_denom Y l).mem_range _ hY)
+
+/-- The terms of the double class sum of `New.Data.exists_star_leftSideSeries_eq_classSum` are
+integral away from `ϑ.normQ`. Let `c₀`, `c₁` and `c₂` normalise the theta kernels of (E^m, E^{3m}),
+(E^j, V″) and (W^add, V″) (`New.Rows.IsModKernelScale`), the last for polynomials of degree `n`, and
+let every `H • stackedDetProdCoords j i Y l` be homogeneous of degree `n` with coefficients in every
+subring of ℂ that contains the conjugates of the entries of `Y`. Then for every prime `p` coprime to
+`ϑ.normQ` the term conj(k₀ · conj k₁ · c₂ 𝖪[H·ζ]) at `w` and `v` has gauge (`New.weylGauge`) at
+most one at `h`. -/
+lemma weylGauge_star_mul_smul_modKernelBilin_le_one {j : D.LiftIndex} {n : ℕ} {H : ℤ}
+    {c₀ c₁ c₂ : ℂ} (hc₀ : IsModKernelScale (Fin D.m) D.CarrierIndex D 0 c₀)
+    (hc₁ : IsModKernelScale (Fin j) (FirstFactorIndex j) D 0 c₁)
+    (hc₂ : IsModKernelScale (AddedIndex j) (FirstFactorIndex j) D n c₂) {i : D.RowChoice}
+    (h_denom : ∀ (Y : Matrix D.FlatIndex D.FlatIndex D.E)
+      (l : WeylIndex (FirstFactorIndex j) (untwistedDescentPair j).colsPlus),
+      IsHomogeneousOverEntries j Y n (H • stackedDetProdCoords j i Y l))
+    (u : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    {p : ℕ} [Fact p.Prime] [PadicPlace p] (hp : p.Coprime ϑ.normQ)
+    (h : Gf D.E (FirstFactorIndex j)) (w : Gf D.E D.CarrierIndex) (v : Gf D.E (Fin D.m)) :
+    let Ψ : Matrix (FirstFactorIndex j) (Fin j) (D.twistModulus ϑ 2).ResidueRing → ℂ := fun x ↦
+      (conj ∘ Pi.single (inclMatrix (D.twistModulus ϑ 2).ResidueRing (inl ∘ inr ∘ inl)) 1)
+        ((D.twistModulus ϑ 2).normNegOne • x)
+    let b' : AutChar D.E := (firstFactorChar ϑ j)⁻¹ * WeilData.upsilonU1 ^ Nat.card
+      (FirstFactorIndex j)
+    let k₀ : ℂ := c₀ * modKernelStdSpace (stdSpace D.E (Fin D.m)) (twistedChiMPow ϑ j) 1
+      (unitModulus D.E) 1 1 (1, v) w
+    let k₁ : ℂ := c₁ * modKernelStdSpace (stdSpace D.E (Fin j)) 1 b' (D.twistModulus ϑ 2) Ψ 1
+      (1, 1) h
+    weylGauge (untwistedDescentPair j).colsPlus 0 h
+      (star ((k₀ * conj k₁) • c₂ •
+        modKernelBilin (stdSpace D.E (AddedIndex j)) (stdSpace D.E (FirstFactorIndex j))
+          (firstFactorChar ϑ j) (firstFactorChar ϑ j) (D.twistModulus ϑ 2)
+          (1, U.blockSumOne (1, U.blockSumOne (i.classRep, w))) (1, h) (addedDatum ϑ j u) ∘
+        (H • stackedDetProdCoords j i (D.shortRows i)))) ≤ 1 := by
+  intro Ψ b' k₀ k₁
+  -- The characters and the data of the kernels; the data are integral away from `ϑ.normQ`.
+  have hb : (firstFactorChar ϑ j).HasWeight (firstFactorCharExp j + -D.liftWeight j ·)
+      (D.liftTamePart ϑ j) := inferInstance
+  have hb' : b'.HasWeight _ (D.liftTamePart ϑ j)⁻¹ := hb.inv.mul_upsilonU1_pow _
+  have hΨ (x : Matrix (FirstFactorIndex j) (Fin j) (D.twistModulus ϑ 2).ResidueRing) :
+      Ψ x ∈ Seesaw.integralAway ϑ.normQ := by
+    simp [Ψ, apply_ite, Pi.single_apply]
+  have h𝔪 : ↑(ϑ.normQ * D.M ^ 2) ∈ (D.twistModulus ϑ 2).ideal := normQ_mul_M_pow_mem_modulus
+  -- The vector is a complex conjugate, so its factors are read at the place ι = `ιₚ ∘ conj`.
+  let ι : ℂ →+* ℂ_[p] := ιₚ.comp conj
+  have int₀ : ‖ι k₀‖ ≤ 1 :=
+    let _ : PadicPlace p := ⟨ι⟩
+    norm_mul_modKernelStdSpace_twistedChiMPow_le_one hc₀ v w
+  have int₁ : ‖ιₚ k₁‖ ≤ 1 := norm_mul_modKernelStdSpace_one_le_one hc₁ hb' h𝔪 hΨ hp h
+  rw [star_smul, weylGauge_smul]
+  refine (mul_le_of_le_one_left (norm_nonneg _) ?_).trans
+    (weylGauge_modKernelBilin_addedDatum_le_one hc₂ h_denom u hp w h)
+  simpa [ι] using (mul_le_of_le_one_left (norm_nonneg _) int₀).trans int₁
+
+/-- The terms of the double class sum of `New.Data.exists_star_leftSideSeries_eq_classSum` are small
+if `ϑ.Q` is empty. Let `c₀`, `c₁` and `c₂` normalise the theta kernels of (E^m, E^{3m}), (E^j, V″)
+and (W^add, V″) (`New.Rows.IsModKernelScale`), the last for polynomials of degree `n ≤ M`, where
+M = `D.M`, let every `H • stackedDetProdCoords j i (D.shortRows i) l` be homogeneous of degree `n`,
+and let `q` bound the number of determinants. Then every conjugate of the term
+conj(k₀ · conj k₁ · c₂ 𝖪[H·ζ]) at `w` and `v` has norm at most
+exp(3 x₁) |GL_{3m}(O_E/ϖ²)| √(H² M^{9 (12 m + 1) q}), with x₁ = `D.x₁`. -/
+lemma sqrt_weylNormSq_star_mul_smul_modKernelBilin_le {j : D.LiftIndex} {n q : ℕ} {H : ℤ}
+    {c₀ c₁ c₂ : ℂ} (hc₀ : IsModKernelScale (Fin D.m) D.CarrierIndex D 0 c₀)
+    (hc₁ : IsModKernelScale (Fin j) (FirstFactorIndex j) D 0 c₁)
+    (hc₂ : IsModKernelScale (AddedIndex j) (FirstFactorIndex j) D n c₂) (hn : n ≤ D.M)
+    (hq : ∑ τ : D.Φ, card (DetIndex j τ) ≤ q) {i : D.RowChoice}
+    (h_hom : ∀ l : WeylIndex (FirstFactorIndex j) (untwistedDescentPair j).colsPlus,
+      (H • stackedDetProdCoords j i (D.shortRows i) l).IsHomogeneous n) (hQ_empty : ϑ.Q = ∅)
+    (u : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    (φ : ℂ ≃+* ℂ) (h : Gf D.E (FirstFactorIndex j)) (w : Gf D.E D.CarrierIndex)
+    (v : Gf D.E (Fin D.m)) :
+    let Ψ : Matrix (FirstFactorIndex j) (Fin j) (D.twistModulus ϑ 2).ResidueRing → ℂ := fun x ↦
+      (conj ∘ Pi.single (inclMatrix (D.twistModulus ϑ 2).ResidueRing (inl ∘ inr ∘ inl)) 1)
+        ((D.twistModulus ϑ 2).normNegOne • x)
+    let b' : AutChar D.E := (firstFactorChar ϑ j)⁻¹ * WeilData.upsilonU1 ^ Nat.card
+      (FirstFactorIndex j)
+    let k₀ : ℂ := c₀ * modKernelStdSpace (stdSpace D.E (Fin D.m)) (twistedChiMPow ϑ j) 1
+      (unitModulus D.E) 1 1 (1, v) w
+    let k₁ : ℂ := c₁ * modKernelStdSpace (stdSpace D.E (Fin j)) 1 b' (D.twistModulus ϑ 2) Ψ 1
+      (1, 1) h
+    √(weylNormSq (φ ∘ star ((k₀ * conj k₁) • c₂ •
+        modKernelBilin (stdSpace D.E (AddedIndex j)) (stdSpace D.E (FirstFactorIndex j))
+          (firstFactorChar ϑ j) (firstFactorChar ϑ j) (D.twistModulus ϑ 2)
+          (1, U.blockSumOne (1, U.blockSumOne (i.classRep, w))) (1, h) (addedDatum ϑ j u) ∘
+        (H • stackedDetProdCoords j i (D.shortRows i))))) ≤
+      rexp D.x₁ * rexp D.x₁ *
+        (rexp D.x₁ * card (GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing) *
+          √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q))) := by
+  intro Ψ b' k₀ k₁
+  have hb : (firstFactorChar ϑ j).HasWeight (firstFactorCharExp j + -D.liftWeight j ·)
+      (D.liftTamePart ϑ j) := inferInstance
+  have hb' : b'.HasWeight _ (D.liftTamePart ϑ j)⁻¹ := hb.inv.mul_upsilonU1_pow _
+  have h𝔪 : ↑(ϑ.normQ * D.M ^ 2) ∈ (D.twistModulus ϑ 2).ideal := normQ_mul_M_pow_mem_modulus
+  -- With σ = φ ∘ conj, bound the σ-conjugates of the three kernels.
+  let σ : ℂ ≃+* ℂ := starRingAut.trans φ
+  have h_level : ϑ.normQ = 1 := by simp [hQ_empty]
+  rw [h_level, one_mul] at h𝔪
+  obtain ⟨hm, h_carrier, hj, h_first, h_added⟩ := card_le_gap j
+  have size₀ : ‖σ k₀‖ ≤ rexp D.x₁ := by
+    simpa [k₀] using hc₀.norm_map_le hm h_carrier (Nat.zero_le _) (twistedChiMPow_hasWeight ϑ j)
+      .one (𝔪 := unitModulus D.E) (Ψ := 1) (A := 1) (B := 1) Submodule.mem_top (by simp)
+      (isHomogeneous_one _ _) σ (by simp) v w
+  have size₁ : ‖σ (conj k₁)‖ ≤ rexp D.x₁ := by
+    simpa [k₁] using hc₁.norm_map_le hj h_first (Nat.zero_le _) .one hb' h𝔪 (Ψ := Ψ) (A := 1)
+      (B := 1) (by simp [Ψ, apply_ite, ite_apply, Pi.single_apply]) (isHomogeneous_one _ _)
+      (starRingAut.trans σ) (by simp) 1 h
+  -- `θ` is the third kernel as a linear map on polynomials. N bounds the datum `addedDatum`, and B
+  -- the vector H·`stackedDetProdCoords` at small points.
+  let θ : MvPolynomial (D.Φ × FirstFactorIndex j × AddedIndex j) ℂ →ₗ[ℂ] ℂ :=
+    modKernelBilin (stdSpace D.E (AddedIndex j)) (stdSpace D.E (FirstFactorIndex j))
+      (firstFactorChar ϑ j) (firstFactorChar ϑ j) (D.twistModulus ϑ 2)
+      (1, U.blockSumOne (1, U.blockSumOne (i.classRep, w))) (1, h) (addedDatum ϑ j u)
+  let N : ℕ := card (GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing)
+  let B : ℝ := √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q))
+  -- By duality it is enough to bound the kernel at every Q that is small at the small points.
+  refine sqrt_weylNormSq_comp_le_of_eval_le σ ((k₀ * conj k₁) • c₂ • θ)
+    (S := {z | ∀ x, ‖σ (z x)‖ ≤ D.M ^ 4}) h_hom
+    (fun z hz ↦ sqrt_weylNormSq_smul_eval_stackedDetProdCoords_le j i hq H σ hz)
+    fun Q hQ_hom hQ_le ↦ ?_
+  have size₂ : ‖σ (c₂ * θ Q)‖ ≤ rexp D.x₁ * N * B :=
+    hc₂.norm_map_le h_added h_first hn hb hb h𝔪 (norm_map_addedDatum_le j u) hQ_hom σ hQ_le _ h
+  simpa [mul_assoc] using norm_mul_le_of_le (norm_mul_le_of_le size₀ size₁) size₂
+
 /-- For 1 ≤ j ≤ m there is one c ≠ 0, independent of i, ϑ and h, such that every vector y = conj
 (c · Υ) is integral and small in the sense of `New.Data.IsIntegralAndSmall`: for every prime p that
 does not divide `ϑ.normQ`, the product of the norms of the places in `ϑ.Q`, the coordinates of
@@ -718,87 +872,13 @@ lemma exists_isIntegralAndSmall_leftSideSeries (j : D.LiftIndex) :
   refine ⟨scale, ?_, ?_⟩
   · simp [scale, H_pos.ne', ne, ← norm_pos_iff, hc, hc₀, hc₁, hc₂]
   intro ⟨u, i⟩ ϑ h
-  -- The characters and the data of the kernels; the data are integral away from `ϑ.normQ`.
-  let 𝔪 : Modulus D.E := D.twistModulus ϑ 2
-  let b' : AutChar D.E := (firstFactorChar ϑ j)⁻¹ * WeilData.upsilonU1 ^ Nat.card
-    (FirstFactorIndex j)
-  have hb : (firstFactorChar ϑ j).HasWeight (firstFactorCharExp j + -D.liftWeight j ·)
-    (D.liftTamePart ϑ j) :=
-    inferInstance
-  have hb' : b'.HasWeight _ (D.liftTamePart ϑ j)⁻¹ := hb.inv.mul_upsilonU1_pow _
-  let Ψ : Matrix (FirstFactorIndex j) (Fin j) 𝔪.ResidueRing → ℂ := fun x ↦
-    (conj ∘ Pi.single (inclMatrix 𝔪.ResidueRing (inl ∘ inr ∘ inl)) 1) (𝔪.normNegOne • x)
-  have hΨ (x : Matrix (FirstFactorIndex j) (Fin j) 𝔪.ResidueRing) :
-    Ψ x ∈ Seesaw.integralAway ϑ.normQ := by
-    simp [Ψ, apply_ite, Pi.single_apply]
-  have h𝔪 : ↑(ϑ.normQ * D.M ^ 2) ∈ 𝔪.ideal := normQ_mul_M_pow_mem_modulus
-  -- The kernels: `k₀`, `k₁` with their constants, and `θ w` as a linear map on polynomials.
-  let k₀ (v : Gf D.E (Fin D.m)) (w : Gf D.E D.CarrierIndex) : ℂ :=
-    c₀ * modKernelStdSpace (stdSpace D.E (Fin D.m)) (twistedChiMPow ϑ j) 1 (unitModulus D.E) 1 1
-      (1, v)
-      w
-  let k₁ : ℂ := c₁ * modKernelStdSpace (stdSpace D.E (Fin j)) 1 b' 𝔪 Ψ 1 (1, 1) h
-  let θ (w : Gf D.E D.CarrierIndex) : MvPolynomial (D.Φ × FirstFactorIndex j × AddedIndex j) ℂ →ₗ[ℂ]
-    ℂ :=
-    modKernelBilin (stdSpace D.E (AddedIndex j)) (stdSpace D.E (FirstFactorIndex j))
-      (firstFactorChar ϑ j)
-      (firstFactorChar ϑ j) 𝔪 (1, U.blockSumOne (1, U.blockSumOne (i.classRep, w))) (1, h)
-      (addedDatum ϑ j u)
-  have hy : star (scale • leftSideSeries ϑ j (u, i) h) =
-      (D.chosenGroupOrder ^ 2 : ℂ) •
-        stdClassSum (stdLevel D.E D.CarrierIndex) fun w ↦
-          stdClassSum (stdLevel D.E (Fin D.m)) fun v ↦
-          star ((k₀ v w * conj k₁) • c₂ • θ w ∘ (H • stackedDetProdCoords j i (D.shortRows i))) :=
-    h_expand c₀ c₁ c₂ H u i ϑ h
-  rw [hy]
-  refine ⟨fun p _ _ hp ↦ ?_, fun hQ_empty φ ↦ ?_⟩
-  · -- Integrality of each term of the double class sum.
-    refine weylGauge_stdClassSum_stdClassSum_le_one h fun w v ↦ ?_
-    -- The vector is a complex conjugate, so its factors are read at the place ι = `ιₚ ∘ conj`.
-    let ι : ℂ →+* ℂ_[p] := ιₚ.comp conj
-    have int₀ : ‖ι (k₀ v w)‖ ≤ 1 :=
-      let _ : PadicPlace p := ⟨ι⟩
-      norm_mul_modKernelStdSpace_twistedChiMPow_le_one K₀ v w
-    have int₁ : ‖ιₚ k₁‖ ≤ 1 := norm_mul_modKernelStdSpace_one_le_one K₁ hb' h𝔪 hΨ hp h
-    have gauge₂ : weylGauge (untwistedDescentPair j).colsPlus 0 h
-        (star (c₂ • θ w ∘ (H • stackedDetProdCoords j i (D.shortRows i)))) ≤ 1 := by
-      refine weylGauge_modKernelBilin_stackedDetProdCoords_le_one j i _ c₂ H
-        (fun g' hg' h' hh' Y hY l ↦ ?_) w h
-      let _ : PadicPlace p := ⟨ι⟩
-      exact K₂.norm_le_one hb hb h𝔪 (addedDatum_mem_integralAway j u · ϑ.normQ)
-        (isHomogeneous_iff_aeval_smul_X.2 (h_denom i Y l).aeval_smul_X) hp hg' hh'
-        ((h_denom i Y l).mem_range _ hY)
-    rw [star_smul, weylGauge_smul]
-    refine (mul_le_of_le_one_left (norm_nonneg _) ?_).trans gauge₂
-    simpa [ι] using (mul_le_of_le_one_left (norm_nonneg _) int₀).trans int₁
-  · -- Size. With σ = φ ∘ conj, bound the σ-conjugates of the three kernels.
-    let σ : ℂ ≃+* ℂ := starRingAut.trans φ
-    have h_level : ϑ.normQ = 1 := by simp [hQ_empty]
-    rw [h_level, one_mul] at h𝔪
-    obtain ⟨hm, h_carrier, hj, h_first, h_added⟩ := card_le_gap j
-    have size₀ (v : Gf D.E (Fin D.m)) (w : Gf D.E D.CarrierIndex) : ‖σ (k₀ v w)‖ ≤ rexp D.x₁ := by
-      simpa [k₀] using K₀.norm_map_le hm h_carrier (Nat.zero_le _) (twistedChiMPow_hasWeight ϑ j)
-        .one
-        (𝔪 := unitModulus D.E) (Ψ := 1) (A := 1) (B := 1) Submodule.mem_top (by simp)
-        (isHomogeneous_one _ _) σ (by simp) v w
-    have size₁ : ‖σ (conj k₁)‖ ≤ rexp D.x₁ := by
-      simpa [k₁] using K₁.norm_map_le hj h_first (Nat.zero_le _) .one hb' h𝔪 (Ψ := Ψ) (A := 1)
-        (B := 1) (by simp [Ψ, apply_ite, ite_apply, Pi.single_apply]) (isHomogeneous_one _ _)
-        (starRingAut.trans σ) (by simp) 1 h
-    -- N bounds the datum `addedDatum`, and B the vector H·`stackedDetProdCoords` at small points.
-    let N : ℕ := card (GL D.CarrierIndex (D.untwistedModulus 2).ResidueRing)
-    let B : ℝ := √((H : ℝ) ^ 2 * (D.M ^ 9) ^ ((12 * D.m + 1) * q))
-    -- By duality it is enough to bound the kernel at every Q that is small at the small points.
-    refine weylNormSq_stdClassSum_stdClassSum_le rfl hn hn_le_M H_pos H_le φ fun w v ↦
-      sqrt_weylNormSq_comp_le_of_eval_le σ ((k₀ v w * conj k₁) • c₂ • θ w)
-        (S := {z | ∀ x, ‖σ (z x)‖ ≤ D.M ^ 4})
-        (fun l ↦ isHomogeneous_iff_aeval_smul_X.2 (h_denom i (D.shortRows i) l).aeval_smul_X)
-        (fun z hz ↦ sqrt_weylNormSq_smul_eval_stackedDetProdCoords_le j i h_detCount H σ hz)
-        fun Q hQ_hom hQ_le ↦ ?_
-    have size₂ : ‖σ (c₂ * θ w Q)‖ ≤ rexp D.x₁ * N * B :=
-      K₂.norm_map_le h_added h_first hn_le_M hb hb h𝔪 (norm_map_addedDatum_le j u) hQ_hom σ hQ_le
-        _ h
-    simpa [mul_assoc] using norm_mul_le_of_le (norm_mul_le_of_le (size₀ v w) size₁) size₂
+  -- Expand y by `h_expand`; each term of the double class sum is integral and small.
+  rw [h_expand c₀ c₁ c₂ H u i ϑ h]
+  exact ⟨fun p _ _ hp ↦ weylGauge_stdClassSum_stdClassSum_le_one h
+      (weylGauge_star_mul_smul_modKernelBilin_le_one K₀ K₁ K₂ (h_denom i) u hp h),
+    fun hQ_empty φ ↦ weylNormSq_stdClassSum_stdClassSum_le rfl hn hn_le_M H_pos H_le φ
+      (sqrt_weylNormSq_star_mul_smul_modKernelBilin_le K₀ K₁ K₂ hn_le_M h_detCount
+        (fun l ↦ isHomogeneous_iff_aeval_smul_X.2 (h_denom i _ l).aeval_smul_X) hQ_empty u φ h)⟩
 
 end New.Data
 
