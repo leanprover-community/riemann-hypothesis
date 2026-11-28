@@ -8,19 +8,15 @@ import Mathlib.NumberTheory.LSeries.Nonvanishing
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
 
 /-!
-# Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions
+# Polar functions and logarithmic derivatives of Dirichlet L-functions
 
-This part shows that the twist of a Dirichlet character by the Legendre symbol of an odd prime not
-dividing the modulus is not principal. It defines `New.IsPolar`, the condition that a Laplace-type
-transform of an error term continues meromorphically with at most simple poles in the right
-half-plane. It also expresses `∑ χ(n) Λ(n) n^{-s}` through the logarithmic derivative of
-`New.entireL χ` and identifies the residues of that logarithmic derivative with the orders of the
-zeros of `New.entireL χ`.
+This part defines `New.IsPolar`, the condition that a Laplace-type transform of an error term
+continues meromorphically with at most simple poles in the right half-plane. It also expresses
+`∑ χ(n) Λ(n) n^{-s}` through the logarithmic derivative of `New.entireL χ` and identifies the
+residues of that logarithmic derivative with the orders of the zeros of `New.entireL χ`.
 
 ## Main definitions and results
 
-* `New.quadTwist_ne_one`: the twist of a character modulo `N` by the Legendre symbol `(·/d)`, for an
-  odd prime `d` prime to `N`, is not principal.
 * `New.IsPolar`: `E` is measurable, `|E v| ≤ C e^v` for `v ≥ 0`, and `∫₀^∞ E(v) e^{(1-s)v} dv`
   continues to a meromorphic function of `s` with at most simple poles of residue `r ρ` in
   `re ρ > 0`.
@@ -45,36 +41,7 @@ open ArithmeticFunction DirichletCharacter Complex Set Filter MeasureTheory Metr
 
 namespace New
 
-variable {N : ℕ} (χ : DirichletCharacter ℂ N) (d : ℕ) [Fact d.Prime]
-
-/-! ### The quadratic twist of a character -/
-
-/-- The twist of `χ` by the Legendre symbol takes the value `χ(n) (n/d)` at an integer `n`. -/
-lemma quadTwist_apply (n : ℤ) : quadTwist χ d n = χ n * legendreSym d n := by
-  -- Both sides vanish unless `n` is prime to `N` and to `d`; then the change of level keeps values.
-  rw [show (legendreSym d n : ℂ) = (chiK d).ringHomComp (algebraMap ℤ ℂ) n from rfl]
-  by_cases h_cop : IsCoprime n (N * d : ℕ)
-  · rw [quadTwist, MulChar.mul_apply, changeLevel_eq_cast_of_dvd' _ _ h_cop,
-      changeLevel_eq_cast_of_dvd' _ _ h_cop]
-  · rw [(apply_eq_zero_iff (quadTwist χ d) n).2 h_cop, zero_eq_mul, apply_eq_zero_iff,
-      apply_eq_zero_iff]
-    rwa [Nat.cast_mul, IsCoprime.mul_right_iff, not_and_or] at h_cop
-
-/-- For a Dirichlet character `χ` mod `N` and an odd prime `d` coprime to `N`, the twist of `χ` by
-the Legendre symbol `(·/d)`, a character mod `N * d`, is not principal. -/
-lemma quadTwist_ne_one (hd : d ≠ 2) (hN : N.Coprime d) : quadTwist χ d ≠ 1 := by
-  -- Take a non-residue `a` mod `d`, and `n` with `n ≡ 1` mod `N` and `n ≡ a` mod `d`. The twist is
-  -- `-1` at `n`, while a value `x` of the trivial character satisfies `x * x = x`.
-  intro h_one
-  obtain ⟨a, ha⟩ := quadraticChar_exists_neg_one (F := ZMod d) (by rwa [ZMod.ringChar_zmod_n])
-  obtain ⟨n, (hn_N : n ≡ 1 [MOD N]), (hn_d : n ≡ a.val [MOD d])⟩ := chineseRemainder hN 1 a.val
-  have hn_one : (n : ZMod N) = 1 := by simpa [← ZMod.natCast_eq_natCast_iff] using hn_N
-  have hn_a : (n : ZMod d) = a := by simpa [← ZMod.natCast_eq_natCast_iff] using hn_d
-  have h_val : quadTwist χ d n = -1 := by
-    simpa [hn_one, legendreSym, hn_a, ha] using quadTwist_apply χ d n
-  have h_sq : quadTwist χ d n * quadTwist χ d n = quadTwist χ d n := by
-    simp [← MulChar.mul_apply, h_one]
-  norm_num [h_val] at h_sq
+variable {N : ℕ} (χ : DirichletCharacter ℂ N)
 
 /-! ### Polar functions and Laplace integrals -/
 

@@ -17,7 +17,8 @@ of the Dirichlet `L`-functions modulo `q` and of their twists by `χ_K`.
 * `New.lambdaKResidueClass`: the weight `λ(n) = Λ(n) (1 - χ_K(n))` on `n ≡ 1` modulo `q`; it is
   nonnegative.
 * `New.logDerivMean`: the mean `G_q` over the characters `ψ` modulo `q` of the differences of the
-  logarithmic derivatives of `New.entireL (New.quadTwist ψ d)` and `New.entireL ψ`, less `1 / φ(q)`.
+  logarithmic derivatives of `New.entireL (ψ.legendreTwist d)` and `New.entireL ψ`, less
+  `1 / φ(q)`.
 * `New.primeRemainder`: `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - re G_q(1)`.
 * `New.LSeries_lambdaKResidueClass_eq_add_logDerivMean`: for odd `d` prime to `q`, the Dirichlet
   series of `λ` is `s / (φ(q) (s - 1)) + G_q(s)` in `re s > 1`.
@@ -26,9 +27,9 @@ of the Dirichlet `L`-functions modulo `q` and of their twists by `χ_K`.
   residue `(n(s) - n'(s)) / (φ(q) s (1 - s))`, where `n(s)` and `n'(s)` are the sums of the orders
   at `s` of these `L`-functions and of their twists.
 
-Here `New.entireL ψ` is `L(s, ψ)`, times `s - 1` if `ψ` is principal, `New.quadTwist ψ d` is the
-character `ψ χ_K`, and `New.chowlaSelbergConst d` is, for odd `d`, `γ - re L'/L(1, χ_K)`, with `γ`
-Euler's constant.
+Here `New.entireL ψ` is `L(s, ψ)`, times `s - 1` if `ψ` is principal, `ψ.legendreTwist d` (Tau
+Ceti's `DirichletCharacter.legendreTwist`) is the character `ψ χ_K`, and `New.chowlaSelbergConst d`
+is, for odd `d`, `γ - re L'/L(1, χ_K)`, with `γ` Euler's constant.
 
 ## Relation to the literature
 
@@ -59,12 +60,12 @@ def lambdaKSum (r : ℕ) (y : ℝ) : ℝ :=
   (∑ n ∈ Icc 1 ⌊y⌋₊, lambdaKResidueClass d q n / n * n ^ r) / y ^ r
 
 /-- The function `G_q` with `φ(q) G_q = (L_q^K)' / L_q^K - L_q' / L_q - 1` away from the zeros of
-`L_q` and `L_q^K`, which are the products of the `entireL ψ` and of the `entireL (quadTwist ψ d)`
-over all characters `ψ` mod `q`. For odd `d` prime to `q` and `re s > 1` it is
-`∑ λ(n) n ^ (-s) - s / (φ(q) (s - 1))`. -/
+`L_q` and `L_q^K`, which are the products of the `entireL ψ` and of the
+`entireL (ψ.legendreTwist d)` over all characters `ψ` mod `q`. For odd `d` prime to `q` and
+`re s > 1` it is `∑ λ(n) n ^ (-s) - s / (φ(q) (s - 1))`. -/
 def logDerivMean [NeZero q] (s : ℂ) : ℂ :=
   (∑ ψ : DirichletCharacter ℂ q,
-    (logDeriv (entireL (quadTwist ψ d)) s - logDeriv (entireL ψ) s) - 1) / φ q
+    (logDeriv (entireL (ψ.legendreTwist d)) s - logDeriv (entireL ψ) s) - 1) / φ q
 
 /-- The remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`, with
 `λ = lambdaKResidueClass d q` and `c_q = re G_q(1)`, `G_q = logDerivMean d q`; see
@@ -148,12 +149,12 @@ lemma abs_lambdaKSum_exp_le (r : ℕ) (v : ℝ) : |lambdaKSum d q r (rexp v)| �
 
 variable [NeZero q]
 
-/-- Let `d` be a prime and `χ_K = quadTwist 1 d` the Legendre symbol `(·/d)` as a complex character
-mod `1 * d`. Let `E = entireL χ_K`, which is `L(s, χ_K)` if `d` is odd and `(s - 1) L(s, χ_K)` if
-`d = 2`. For the modulus `q = 1`, `G₁ = logDerivMean d 1` is `E'/E - Z'/Z - 1` with
-`Z(s) = (s - 1) ζ(s)`, and `re G₁(1) = -1 - γ + re E'/E(1)`. -/
+/-- Let `d` be a prime and `χ_K = legendreTwist 1 d` the Legendre symbol `(·/d)` as a complex
+character mod `1 * d`. Let `E = entireL χ_K`, which is `L(s, χ_K)` if `d` is odd and
+`(s - 1) L(s, χ_K)` if `d = 2`. For the modulus `q = 1`, `G₁ = logDerivMean d 1` is
+`E'/E - Z'/Z - 1` with `Z(s) = (s - 1) ζ(s)`, and `re G₁(1) = -1 - γ + re E'/E(1)`. -/
 lemma re_logDerivMean_one_eq_add_re_logDeriv : (logDerivMean d 1 1).re =
-    -1 - eulerMascheroniConstant + (logDeriv (entireL (quadTwist (N := 1) 1 d)) 1).re := by
+    -1 - eulerMascheroniConstant + (logDeriv (entireL (legendreTwist (N := 1) 1 d)) 1).re := by
   -- For the trivial character mod `1`, `entireL` is `(s - 1) ζ(s)`, whose logarithmic derivative at
   -- `1` is `γ`.
   have h_zeta : entireL (1 : DirichletCharacter ℂ 1) = riemannZeta₁ := by
@@ -161,7 +162,7 @@ lemma re_logDerivMean_one_eq_add_re_logDeriv : (logDerivMean d 1 1).re =
       rw [riemannZeta_eq_inv_sub_mul hs, mul_inv_cancel_left₀ (sub_ne_zero.2 hs)]
     simpa [entireL, Function.update_eq_iff] using h_eq
   have h_mean : (logDerivMean d 1 1).re =
-      (logDeriv (entireL (quadTwist (N := 1) 1 d)) 1).re - eulerMascheroniConstant - 1 := by
+      (logDeriv (entireL (legendreTwist (N := 1) 1 d)) 1).re - eulerMascheroniConstant - 1 := by
     simp [logDerivMean, logDeriv, level_one, h_zeta]
   linarith
 
@@ -173,11 +174,11 @@ lemma re_logDerivMean_one : (logDerivMean d 1 1).re = -1 - chowlaSelbergConst d 
 
 variable {d q} in
 /-- For a character `ψ` mod `q` let `L_ψ = entireL ψ` be `L(s, ψ)`, times `s - 1` if `ψ` is
-principal, and let `ψ' = quadTwist ψ d` be `ψ (·/d)`. The function `logDerivMean d q`, that is
+principal, and let `ψ' = ψ.legendreTwist d` be `ψ (·/d)`. The function `logDerivMean d q`, that is
 `(∑_ψ (logDeriv L_ψ' - logDeriv L_ψ) - 1) / φ(q)`, is analytic at every point where no `L_ψ` and no
 `L_ψ'` vanishes. -/
 lemma analyticAt_logDerivMean {s : ℂ} (h_char : ∀ ψ : DirichletCharacter ℂ q, entireL ψ s ≠ 0)
-    (h_twist : ∀ ψ : DirichletCharacter ℂ q, entireL (quadTwist ψ d) s ≠ 0) :
+    (h_twist : ∀ ψ : DirichletCharacter ℂ q, entireL (ψ.legendreTwist d) s ≠ 0) :
     AnalyticAt ℂ (logDerivMean d q) s := by
   unfold logDerivMean
   fun_prop (disch := simp only [h_char, h_twist, ne_eq, not_false_eq_true]) [logDeriv]
@@ -187,7 +188,7 @@ vanishes. -/
 lemma analyticAt_logDerivMean_of_one_le_re {s : ℂ} (hs : 1 ≤ s.re) :
     AnalyticAt ℂ (logDerivMean d q) s :=
   analyticAt_logDerivMean (fun ψ ↦ entireL_ne_zero ψ hs)
-    (fun ψ ↦ entireL_ne_zero (quadTwist ψ d) hs)
+    (fun ψ ↦ entireL_ne_zero (ψ.legendreTwist d) hs)
 
 /-- Growth of the remainder: for a prime `d`, `q ≥ 1` and `v ≥ 0`,
 `|R_q(e ^ v)| ≤ (|re G_q(1)| + 5) e ^ v`. -/
@@ -282,21 +283,18 @@ lemma LSeries_lambdaKResidueClass_eq_add_logDerivMean (hd : d ≠ 2) (h_cop : q.
       s / (φ q * (s - 1)) + logDerivMean d q s := by
   -- Orthogonality of the characters mod `q` expresses `λ` through `ψ Λ - ψ χ_K Λ`.
   let a (ψ : DirichletCharacter ℂ q) : ℕ → ℂ :=
-    (fun n : ℕ ↦ ψ n * vonMangoldt n) - fun n : ℕ ↦ quadTwist ψ d n * vonMangoldt n
+    (fun n : ℕ ↦ ψ n * vonMangoldt n) - fun n : ℕ ↦ ψ.legendreTwist d n * vonMangoldt n
   have h_orth (n : ℕ) :
       (lambdaKResidueClass d q n : ℂ) = ((φ q : ℂ)⁻¹ • ∑ ψ : DirichletCharacter ℂ q, a ψ) n := by
-    have h_twist (ψ : DirichletCharacter ℂ q) : quadTwist ψ d n = ψ n * legendreSym d n :=
-      mod_cast quadTwist_apply ψ d n
-    simp [a, lambdaKResidueClass, chiK_eq_legendreSym, residueClass_apply, h_twist, ← sum_mul,
-      field]
+    simp [a, lambdaKResidueClass, chiK_eq_legendreSym, residueClass_apply, ← sum_mul, field]
   -- No twist is principal, so only `ψ = 1` contributes the term `1 / (s - 1)`.
   let D (ψ : DirichletCharacter ℂ q) : ℂ :=
-    logDeriv (entireL (quadTwist ψ d)) s - logDeriv (entireL ψ) s
+    logDeriv (entireL (ψ.legendreTwist d)) s - logDeriv (entireL ψ) s
   have h_series (ψ : DirichletCharacter ℂ q) :
       LSeriesHasSum (a ψ) s ((if ψ = 1 then 1 else 0) / (s - 1) + D ψ) := by
     convert (LSeriesHasSum_mul_vonMangoldt ψ hs).sub
-      (LSeriesHasSum_mul_vonMangoldt (quadTwist ψ d) hs)
-    rw [ite_eq_right (quadTwist_ne_one ψ d hd h_cop)]
+      (LSeriesHasSum_mul_vonMangoldt (ψ.legendreTwist d) hs)
+    rw [ite_eq_right (legendreTwist_ne_one ψ d hd h_cop)]
     ring
   have h_total : LSeriesHasSum (∑ ψ : DirichletCharacter ℂ q, a ψ) s (1 / (s - 1) + ∑ ψ, D ψ) := by
     simpa [sum_add_distrib, ite_div] using LSeriesHasSum.sum (S := univ) fun ψ _ ↦ h_series ψ
@@ -371,42 +369,43 @@ lemma ofReal_re_logDerivMean_one (hd : d ≠ 2) (h_cop : q.Coprime d) :
 
 /-! ### The poles of the Laplace transform -/
 
-/-- Let `d` be a prime, `q ≥ 1`, `χ_K = (·/d)` the Legendre symbol, `quadTwist ψ d = ψ χ_K`, and let
-`E_χ = entireL χ` be `L(s, χ)`, times `s - 1` if `χ` is principal. The function
+/-- Let `d` be a prime, `q ≥ 1`, `χ_K = (·/d)` the Legendre symbol, `ψ.legendreTwist d = ψ χ_K`, and
+let `E_χ = entireL χ` be `L(s, χ)`, times `s - 1` if `χ` is principal. The function
 `G_q = logDerivMean d q`, that is `(∑_ψ (E_{ψ χ_K}' / E_{ψ χ_K} - E_ψ' / E_ψ) - 1) / φ(q)` summed
 over the characters `ψ` mod `q`, has at most a simple pole at `ρ`. Its residue is the mean over `ψ`
 of `ord_ρ E_{ψ χ_K} - ord_ρ E_ψ`. -/
 lemma tendsto_sub_mul_logDerivMean (ρ : ℂ) :
     Tendsto (fun z : ℂ ↦ (z - ρ) * logDerivMean d q z) (𝓝[≠] ρ)
-      (𝓝 ((∑ ψ : DirichletCharacter ℂ q, (analyticOrderNatAt (entireL (quadTwist ψ d)) ρ -
+      (𝓝 ((∑ ψ : DirichletCharacter ℂ q, (analyticOrderNatAt (entireL (ψ.legendreTwist d)) ρ -
         analyticOrderNatAt (entireL ψ) ρ : ℂ)) / φ q)) := by
   have h_term (ψ : DirichletCharacter ℂ q) : Tendsto
-      (fun z : ℂ ↦ (z - ρ) * (logDeriv (entireL (quadTwist ψ d)) z - logDeriv (entireL ψ) z))
-      (𝓝[≠] ρ) (𝓝 (analyticOrderNatAt (entireL (quadTwist ψ d)) ρ -
+      (fun z : ℂ ↦ (z - ρ) * (logDeriv (entireL (ψ.legendreTwist d)) z - logDeriv (entireL ψ) z))
+      (𝓝[≠] ρ) (𝓝 (analyticOrderNatAt (entireL (ψ.legendreTwist d)) ρ -
         analyticOrderNatAt (entireL ψ) ρ)) := by
     simpa only [mul_sub] using
-      (tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt (quadTwist ψ d) ρ).sub
+      (tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt (ψ.legendreTwist d) ρ).sub
         (tendsto_sub_mul_logDeriv_entireL_analyticOrderNatAt ψ ρ)
   have h_sub : Tendsto (fun z : ℂ ↦ z - ρ) (𝓝[≠] ρ) (𝓝 0) :=
     tendsto_sub_nhds_zero_iff.2 nhdsWithin_le_nhds
   have h_eq (z : ℂ) : (z - ρ) * logDerivMean d q z =
       (∑ ψ : DirichletCharacter ℂ q, (z - ρ) *
-        (logDeriv (entireL (quadTwist ψ d)) z - logDeriv (entireL ψ) z) - (z - ρ)) / φ q := by
+        (logDeriv (entireL (ψ.legendreTwist d)) z - logDeriv (entireL ψ) z) - (z - ρ)) / φ q := by
     simp [logDerivMean, ← mul_sum, field]
   simpa only [h_eq, sub_zero] using
     ((tendsto_finsetSum univ fun ψ _ ↦ h_term ψ).sub h_sub).div_const (φ q : ℂ)
 
-/-- Let `d` be a prime, `q ≥ 1`, `χ_K = (·/d)` the Legendre symbol, `quadTwist ψ d = ψ χ_K`, and let
-`E_χ = entireL χ` be `L(s, χ)`, times `s - 1` if `χ` is principal. At `ρ ≠ 0, 1` and for any
+/-- Let `d` be a prime, `q ≥ 1`, `χ_K = (·/d)` the Legendre symbol, `ψ.legendreTwist d = ψ χ_K`, and
+let `E_χ = entireL χ` be `L(s, χ)`, times `s - 1` if `χ` is principal. At `ρ ≠ 0, 1` and for any
 constant `κ`, the function `(G_q(z) / z - κ) / (z - 1)` has at most a simple pole, of residue `∑_ψ
 (ord_ρ E_ψ - ord_ρ E_{ψ χ_K}) / (φ(q) ρ (1 - ρ))`. -/
 lemma tendsto_logDerivMean_residue (κ : ℂ) {ρ : ℂ} (hρ₀ : ρ ≠ 0) (hρ₁ : ρ ≠ 1) :
     Tendsto (fun z : ℂ ↦ (z - ρ) * ((logDerivMean d q z / z - κ) / (z - 1))) (𝓝[≠] ρ)
       (𝓝 ((∑ ψ : DirichletCharacter ℂ q,
-        (analyticOrderNatAt (entireL ψ) ρ - analyticOrderNatAt (entireL (quadTwist ψ d)) ρ : ℂ)) /
+        (analyticOrderNatAt (entireL ψ) ρ -
+          analyticOrderNatAt (entireL (ψ.legendreTwist d)) ρ : ℂ)) /
         φ q / (ρ * (1 - ρ)))) := by
   -- The pole is that of `G_q`, with residue `m`; it is divided by `z (z - 1)`.
-  let m : ℂ := (∑ ψ : DirichletCharacter ℂ q, (analyticOrderNatAt (entireL (quadTwist ψ d)) ρ -
+  let m : ℂ := (∑ ψ : DirichletCharacter ℂ q, (analyticOrderNatAt (entireL (ψ.legendreTwist d)) ρ -
     analyticOrderNatAt (entireL ψ) ρ : ℂ)) / φ q
   have h_id : Tendsto (fun z : ℂ ↦ z) (𝓝[≠] ρ) (𝓝 ρ) := tendsto_id.mono_left nhdsWithin_le_nhds
   have h_lim : Tendsto (fun z : ℂ ↦ ((z - ρ) * logDerivMean d q z / z - (z - ρ) * κ) / (z - 1))
@@ -425,12 +424,13 @@ function `v ↦ R_q(e ^ v)` is measurable. There is a constant `C` with `|R_q(e 
 meromorphic function on `ℂ` with at most simple poles in `re s > 0` and the following residues
 there. It has no pole at `1`, where the formula below is a division by zero, of value `0`. The
 residue at `s ≠ 1` is `∑_ψ (ord_s E_ψ - ord_s E_{ψ χ_K}) / (φ(q) s (1 - s))`, summed over the
-characters `ψ` mod `q`, where `quadTwist ψ d = ψ χ_K` and `E_χ = entireL χ` is `L(s, χ)`, times
+characters `ψ` mod `q`, where `ψ.legendreTwist d = ψ χ_K` and `E_χ = entireL χ` is `L(s, χ)`, times
 `s - 1` if `χ` is principal. -/
 lemma isPolar_primeRemainder (hd : d % 8 = 7) (h_cop : q.Coprime d) :
     IsPolar (fun v : ℝ ↦ primeRemainder d q (Real.exp v)) fun s : ℂ ↦
       (∑ ψ : DirichletCharacter ℂ q,
-        (analyticOrderNatAt (entireL ψ) s - analyticOrderNatAt (entireL (quadTwist ψ d)) s : ℂ)) /
+        (analyticOrderNatAt (entireL ψ) s -
+          analyticOrderNatAt (entireL (ψ.legendreTwist d)) s : ℂ)) /
         φ q / (s * (1 - s)) := by
   -- The continuation is `F s / (s - 1)` with `F s = G_q(s) / s - c_q`, which vanishes at `1`.
   have hd_ne : d ≠ 2 := by lia

@@ -199,16 +199,17 @@ lemma eulerFactor_mul_eq_prod_inv {p : ℕ} [hp : Fact p.Prime] {w J : FinPlace 
 -- Keeps definitional checks from unfolding the finite products.
 seal Finset.prod in
 /-- The Euler product over the primes of `K = ℚ(√-d)` with all coefficients `1`, that is, the
-Dedekind zeta function of `K`, is `ζ(s) L(s, χ)` for real `s > 1`. Here `quadTwist (N := 1) 1 d` is
-the trivial character modulo `1` twisted by the Legendre symbol, that is, the character
-`χ = (· / d)` modulo `1 * d`, and `entireL` is its L-function, continued to an entire function. -/
+Dedekind zeta function of `K`, is `ζ(s) L(s, χ)` for real `s > 1`. Here
+`legendreTwist (N := 1) 1 d` is the trivial character modulo `1` twisted by the Legendre symbol,
+that is, the character `χ = (· / d)` modulo `1 * d`, and `entireL` is its L-function, continued to
+an entire function. -/
 lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
-    eulerProd (K := QuadField d) 1 s = riemannZeta s * entireL (quadTwist (N := 1) 1 d) s := by
+    eulerProd (K := QuadField d) 1 s = riemannZeta s * entireL (legendreTwist (N := 1) 1 d) s := by
   classical
   -- Group the primes of `K` by the rational prime `p` below them and compare Euler factors.
   have hs_re : 1 < (s : ℂ).re := by simpa
-  rw [entireL, ite_eq_right (quadTwist_ne_one 1 d (by grind [PrimeSevenModEight]) (by simp)),
-    (quadTwist (N := 1) 1 d).LFunction_eq_LSeries hs_re]
+  rw [entireL, ite_eq_right (legendreTwist_ne_one 1 d (by grind [PrimeSevenModEight]) (by simp)),
+    (legendreTwist (N := 1) 1 d).LFunction_eq_LSeries hs_re]
   let below (v : FinPlace (QuadField d)) : Subtype Nat.Prime :=
     ⟨ringChar (ResField v), CharP.prime_ringChar (ResField v)⟩
   -- `h_left`: the product over the primes of `K`, indexed by `p` and a prime above it; `h_right`:
@@ -218,10 +219,10 @@ lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
         (-s : ℂ))⁻¹) (eulerProd 1 s) :=
     (Equiv.sigmaFiberEquiv below).hasProd_iff.2 (hasProd_eulerProd (a := 1) (by simp) hs)
   have h_right : HasProd (fun p : Nat.Primes ↦ (1 - (p : ℂ) ^ (-s : ℂ))⁻¹ *
-      (1 - quadTwist (N := 1) 1 d p * (p : ℂ) ^ (-s : ℂ))⁻¹)
-      (riemannZeta s * LSeries (fun n : ℕ ↦ quadTwist (N := 1) 1 d n) s) :=
+      (1 - legendreTwist (N := 1) 1 d p * (p : ℂ) ^ (-s : ℂ))⁻¹)
+      (riemannZeta s * LSeries (fun n : ℕ ↦ legendreTwist (N := 1) 1 d n) s) :=
     (riemannZeta_eulerProduct_hasProd hs_re).mul
-      ((quadTwist (N := 1) 1 d).LSeries_eulerProduct_hasProd hs_re)
+      ((legendreTwist (N := 1) 1 d).LSeries_eulerProduct_hasProd hs_re)
   refine (h_left.sigma fun ⟨p, hp⟩ ↦ ?_).unique h_right
   have : Fact p.Prime := Fact.mk hp
   obtain ⟨w, hw⟩ := FinPlace.exists_natCast_mem (QuadField d) p
@@ -231,9 +232,8 @@ lemma eulerProd_one_eq_zeta_mul {s : ℝ} (hs : 1 < s) :
   have h_factor : (1 - (p : ℂ) ^ (-s : ℂ))⁻¹ * (1 - chiK d p * (p : ℂ) ^ (-s : ℂ))⁻¹ =
       (∏ v ∈ {w, J}, (1 - (v.q : ℂ) ^ (-s : ℂ)))⁻¹ :=
     eulerFactor_mul_eq_prod_inv hw h_split s
-  have h_char : quadTwist (N := 1) 1 d p = chiK d p := by
-    simpa [Subsingleton.elim (p : ZMod 1) 1, chiK_eq_legendreSym] using
-      quadTwist_apply (N := 1) 1 d p
+  have h_char : legendreTwist (N := 1) 1 d p = chiK d p := by
+    simp [Subsingleton.elim (p : ZMod 1) 1, chiK_eq_legendreSym]
   have h_fibre (v : FinPlace (QuadField d)) : below v = ⟨p, hp⟩ ↔ v ∈ ({w, J} : Finset _) := by
     simp [below, ringChar.eq_iff, charP_iff_prime_eq_zero hp, ← algebraMap_ResField_eq_zero,
       ← h_above]
@@ -540,7 +540,8 @@ lemma CMLattice.latticeModule_galConjugate_eq_mul (σ : Gal(ℂ/QuadField d)) {C
 each class once, and let `F c` be the sum of `(s - 1) (|l|² / (k · area))^(-s)` over the lattice of
 `E c`, `k = 2/√d`, for a real `s` with `1 < s`; the term at `l = 0` is `0`. Then
 `∑ c, F c = (s - 1) ζ(s) #𝓞ˣ L(s, χ)`, where `riemannZeta₁` is `(s - 1) ζ(s)`,
-`entireL (quadTwist (N := 1) 1 d)` is `L(s, χ)` and `χ` is the Legendre symbol modulo `d`. -/
+`entireL (DirichletCharacter.legendreTwist (N := 1) 1 d)` is `L(s, χ)` and `χ` is the Legendre
+symbol modulo `d`. -/
 lemma CMLattice.riemannZeta₁_mul_entireL_eq_sum {E : ClassGroup (𝓞 (QuadField d)) → CMLattice d}
     {v : ClassGroup (𝓞 (QuadField d)) →
       ℂˣ × (FractionalIdeal (nonZeroDivisors (𝓞 (QuadField d))) (QuadField d))ˣ}
@@ -550,7 +551,8 @@ lemma CMLattice.riemannZeta₁_mul_entireL_eq_sum {E : ClassGroup (𝓞 (QuadFie
     {s : ℝ} (hs : 1 < s) {F : ClassGroup (𝓞 (QuadField d)) → ℝ}
     (hF : ∀ c : ClassGroup (𝓞 (QuadField d)), HasSum (fun l : (E c).periodPair.lattice ↦
       (s - 1) * (‖l.val‖ ^ 2 / (2 / √d) / (E c).periodPair.area) ^ (-s)) (F c)) :
-    riemannZeta₁ s * (Nat.card (𝓞 (QuadField d))ˣ * entireL (quadTwist (N := 1) 1 d) s) =
+    riemannZeta₁ s *
+        (Nat.card (𝓞 (QuadField d))ˣ * entireL (DirichletCharacter.legendreTwist (N := 1) 1 d) s) =
       ↑(∑ c : ClassGroup (𝓞 (QuadField d)), F c) := by
   have hd_pos : 0 < d := NeZero.pos d
   -- the lattice `u 𝔞` has area `|u|² N𝔞 √d / 2`, so `|u y|² / (k · area) = |N y| / N𝔞`
@@ -596,7 +598,7 @@ lemma CMLattice.sum_kronecker_terms {E : ClassGroup (𝓞 (QuadField d)) → CML
   -- its value is `π k` (`hF₁`), its right derivative `π k` times the summand of the claim (`hF`)
   choose F hF₁ hF hS using
     fun c ↦ kronecker_limit (E c).periodPair (2 / √d) (by positivity)
-  set L : ℂ → ℂ := entireL (quadTwist (N := 1) 1 d) with hL
+  set L : ℂ → ℂ := entireL (DirichletCharacter.legendreTwist (N := 1) 1 d) with hL
   set U : ℂ := (Nat.card (𝓞 (QuadField d))ˣ : ℂ)
   let Z (s : ℝ) : ℂ := riemannZeta₁ s * (U * L s)
   -- on `(1, 2)` both `Z s` and `∑ c, F c s` are `(s - 1) ζ_K(s)` times the number of units

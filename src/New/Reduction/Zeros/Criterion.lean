@@ -15,7 +15,7 @@ Notions from other files:
 * `primeRemainder d q x`: the remainder `R_q(x) = ∑_{n ≤ x} λ(n) (1/n - 1/x) - log x / φ(q) - c_q`,
   where `λ(n) = Λ(n) (1 - (n/d))` for `n ≡ 1` mod `q` and `0` otherwise, and `c_q` is a constant.
 * `entireL ψ`: the entire function `L(s, ψ)`, times `s - 1` if `ψ` is principal.
-* `quadTwist ψ d`: the product of `ψ` and the Legendre symbol `(·/d)`.
+* `ψ.legendreTwist d`: the product of `ψ` and the Legendre symbol `(·/d)`.
 * `IsPolar E r`: the transform `∫₀^∞ E(v) e^{(1-s)v} dv` continues meromorphically, with at most
   simple poles in `re s > 0` and residues `r`.
 
@@ -55,16 +55,17 @@ theorem New.LFunction_ne_zero_of_primeRemainder_le {q₀ : ℕ} [NeZero q₀] (h
     exact ⟨h_mod_eight.trans hd₀_mod, Coprime.symm ((h_mod d hd).gcd_eq.trans hd₀_cop)⟩
   obtain ⟨d, hd, h_twist⟩ : ∃ d : Primes, ((d : ℕ) : ZMod q₀) = d₀ ∧
       ∀ (χ : DirichletCharacter ℂ q₀) (s : ℂ),
-        β ≤ re s → |im s| ≤ |ρ.im| → entireL (quadTwist χ d) s ≠ 0 :=
-    exists_entireL_quadTwist_ne_zero |ρ.im| hβ ((ZMod.isUnit_iff_coprime d₀ q₀).2 hd₀_cop) h_class
+        β ≤ re s → |im s| ≤ |ρ.im| → entireL (χ.legendreTwist d) s ≠ 0 :=
+    exists_entireL_legendreTwist_ne_zero |ρ.im| hβ ((ZMod.isUnit_iff_coprime d₀ q₀).2 hd₀_cop)
+      h_class
   obtain ⟨hd_mod, hd_cop⟩ := h_class d hd
   let n (s : ℂ) : ℕ := ∑ χ : DirichletCharacter ℂ q₀, analyticOrderNatAt (entireL χ) s
   obtain ⟨r, h_polar, hr⟩ : ∃ r : ℂ → ℂ, IsPolar (fun v : ℝ ↦ primeRemainder d q₀ v.exp) r ∧
       ∀ s : ℂ, β < s.re → |s.im| ≤ |ρ.im| → r s = n s / φ q₀ / (s * (1 - s)) := by
     refine ⟨_, isPolar_primeRemainder hd_mod hd_cop, fun s h_re h_im ↦ ?_⟩
     have h_twist_order (χ : DirichletCharacter ℂ q₀) :
-        analyticOrderNatAt (entireL (quadTwist χ d)) s = 0 :=
-      (analyticOrderNatAt_entireL_eq_zero_iff (quadTwist χ d) s).2 (h_twist χ s h_re.le h_im)
+        analyticOrderNatAt (entireL (χ.legendreTwist d)) s = 0 :=
+      (analyticOrderNatAt_entireL_eq_zero_iff (χ.legendreTwist d) s).2 (h_twist χ s h_re.le h_im)
     simp [n, h_twist_order]
   -- `x (1 - x) ≥ 0` for `0 ≤ x ≤ 1`, and there is no zero at `x ≥ 1`.
   have h_nonneg (x : ℝ) (hx : β < x) : 0 ≤ (r x).re := by

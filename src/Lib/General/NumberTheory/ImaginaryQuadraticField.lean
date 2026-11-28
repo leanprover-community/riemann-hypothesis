@@ -16,6 +16,7 @@ import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Adeles.Basic
 import Lib.General.NumberTheory.EmbeddingsAndDifferent
 public import TauCeti.Data.Nat.Prime.Basic
+public import TauCeti.NumberTheory.DirichletCharacter.Quadratic.LegendreTwist
 
 /-!
 # The imaginary quadratic field ℚ(√−d): characters, Frobenius and splitting of primes
@@ -31,8 +32,9 @@ consequences of lifting the exponent at `2` for integers, which do not involve `
 
 ## Main definitions and results
 
-* `New.chiK`, `New.quadTwist`: the Legendre symbol `(·/d)` as an integer-valued character, and its
-  product with a complex character `χ` modulo `N`, a character modulo `N * d`.
+* `New.chiK`: the Legendre symbol `(·/d)` as an integer-valued character. Its product with a
+  complex character `χ` modulo `N`, a character modulo `N * d`, is Tau Ceti's
+  `DirichletCharacter.legendreTwist`.
 * `New.QuadField`: the field. For `d ≡ 3` modulo `4` it is a quadratic CM field
   (the degree is `New.QuadField.finrank_eq_two`). For a prime `d ≡ 3` modulo `4` it embeds in any
   field of characteristic zero with a primitive `d`-th root of unity
@@ -76,11 +78,6 @@ def chiK : DirichletCharacter ℤ d := quadraticChar (ZMod d)
 
 lemma chiK_eq_legendreSym (n : ℕ) : chiK d n = legendreSym d n := by simp [chiK, legendreSym]
 
-/-- The product of `χ`, a character modulo `N`, and the Legendre symbol `(·/d)`, as a character
-modulo `N * d`. -/
-def quadTwist : DirichletCharacter ℂ (N * d) :=
-  χ.changeLevel ⟨d, rfl⟩ * .changeLevel (by simp) ((chiK d).ringHomComp (algebraMap ℤ ℂ))
-
 /-- The entire function equal to L(s, χ) if χ is not principal, and to the continuation of
 (s − 1)L(s, χ) if χ is principal. -/
 def entireL : ℂ → ℂ := if χ = 1 then DirichletCharacter.LFunctionTrivChar₁ N else χ.LFunction
@@ -89,7 +86,8 @@ def entireL : ℂ → ℂ := if χ = 1 then DirichletCharacter.LFunctionTrivChar
 the twist by `(·/d)` of the character modulo `1`, which for `d ≡ 3 mod 4` is `χ_K` at level
 `1 * d`. For odd `d` it is not principal, so `New.entireL` of it is its `L`-function. -/
 def chowlaSelbergConst : ℝ :=
-  Real.eulerMascheroniConstant - (logDeriv (entireL (quadTwist (N := 1) 1 d)) 1).re
+  Real.eulerMascheroniConstant -
+    (logDeriv (entireL (DirichletCharacter.legendreTwist (N := 1) 1 d)) 1).re
 end Characters
 
 /-- If a number field `M` contains primitive roots of unity of coprime orders `n` and `d`, then its

@@ -20,8 +20,8 @@ import Lib.Analytic.ZeroSymmetry
 Fix a class modulo `N` whose primes are `≡ 7` modulo `8` and prime to `N`, and a box
 `re s ≥ β = 1/2 + 9 δ`, `|im s| ≤ H`. A prime `d` of the class is bad (`IsBadPrime`) if some
 `L(s, ξ (·/d))`, with `ξ` modulo `N`, has a zero in the box. The main estimate is the count
-`zero_density_quadTwist`: there are `O(X ^ (1 - δ / 2))` bad primes up to `X`. Such a count also
-follows from the large sieve inequality for real characters; the proof here needs only the
+`zero_density_legendreTwist`: there are `O(X ^ (1 - δ / 2))` bad primes up to `X`. Such a count
+also follows from the large sieve inequality for real characters; the proof here needs only the
 Pólya–Vinogradov inequality, because theta series keep all sums short.
 
 1. For a primitive character `χ ≠ 1` of conductor `q ≤ T²` let `J(χ, T)` be the integral over
@@ -41,13 +41,14 @@ Pólya–Vinogradov inequality, because theta series keep all sums short.
    `ξ` to the primitive character that induces it.
 5. If all primes of an invertible class were bad, the sum of `log p / p` over the class would
    converge; it diverges, so some prime of the class is not bad
-   (`exists_entireL_quadTwist_ne_zero`).
+   (`exists_entireL_legendreTwist_ne_zero`).
 
 Notions from other files:
 * `gaussianMonomial j` is the weight `w(z) = z ^ j e^(-π z²)` of parity `j`, and `gaussianMellin j`
   is its Mellin transform `Γ_j(s) = ∫_0^∞ w(z) z ^ s dz / z`.
 * `thetaSeries j c u` is `θ_c(u) = u ^ (1/2) ∑_{n ≥ 1} c(n) w(n u)`.
-* `quadTwist χ d` is the character `χ (·/d)` modulo `N d`, for `χ` modulo `N` and a prime `d`.
+* `χ.legendreTwist d` (Tau Ceti's `DirichletCharacter.legendreTwist`) is the character `χ (·/d)`
+  modulo `N d`, for `χ` modulo `N` and a prime `d`.
 
 ## Relation to the literature
 
@@ -329,9 +330,9 @@ lemma exists_dirichletCharacter_eq_jacobiSym (b : ℕ) :
     obtain ⟨ψ, hψ⟩ := ih
     have : Fact p.Prime := ⟨hp⟩
     rw [mul_comm p]
-    refine ⟨quadTwist ψ p, fun hbp v ↦ ?_⟩
+    refine ⟨ψ.legendreTwist p, fun hbp v ↦ ?_⟩
     have hb : b ≠ 0 := left_ne_zero_of_mul hbp
-    rw [quadTwist_apply, hψ hb, to_jacobiSym, mul_right' _ hb hp.ne_zero, Int.cast_mul]
+    rw [legendreTwist_apply, hψ hb, to_jacobiSym, mul_right' _ hb hp.ne_zero, Int.cast_mul]
 
 /-- If the odd number `m` is not a square, a character modulo `m` whose values are the Jacobi
 symbols `(·/m)` is not principal. -/
@@ -351,7 +352,7 @@ lemma dirichletCharacter_jacobiSym_ne_one {m : ℕ} (h_odd : Odd m) (h_not_sq : 
   obtain ⟨ψb, hψb⟩ := exists_dirichletCharacter_eq_jacobiSym b
   -- On units mod `m` we have `(u/c)² = 1`, so the twist of `(·/b)` by `p` would be principal.
   have h_dvd : b * p ∣ c ^ 2 * (p * b) := by simp [mul_comm]
-  refine quadTwist_ne_one ψb p hp_two h_coprime ?_
+  refine legendreTwist_ne_one ψb p hp_two h_coprime ?_
   refine (changeLevel_eq_one_iff h_dvd).1 (MulChar.ext fun u ↦ ?_)
   let v : ℤ := u.val.cast
   have h_symbol : J(v | c) ^ 2 * (J(v | p) * J(v | b)) = 1 := by
@@ -361,9 +362,9 @@ lemma dirichletCharacter_jacobiSym_ne_one {m : ℕ} (h_odd : Odd m) (h_not_sq : 
     exact_mod_cast h_unit
   have h_sq : J(v | c) ^ 2 = 1 := by
     obtain h_c | h_c | h_c := trichotomy v c <;> simp [h_c] at h_symbol ⊢
-  have h_twist : quadTwist ψb p v = 1 := by
+  have h_twist : ψb.legendreTwist p v = 1 := by
     rw [h_sq, one_mul, mul_comm] at h_symbol
-    rw [quadTwist_apply, hψb hb, to_jacobiSym]
+    rw [legendreTwist_apply, hψb hb, to_jacobiSym]
     exact_mod_cast h_symbol
   rwa [changeLevel_eq_cast_of_dvd, ← intCast_cast, MulChar.one_apply_coe]
 
@@ -653,35 +654,50 @@ lemma legendreSym_eq_jacobiSym_ordCompl {d : ℕ} [Fact d.Prime] (h8 : d % 8 = 7
     _ = J(-d | ordCompl[2] (2 ^ k * m)) := by
       rw [ordCompl_pow_mul_of_not_dvd k prime_two hm.not_two_dvd_nat, ← mul_left, neg_one_mul]
 
-/-- The twist `quadTwist ψ d` of a primitive character `ψ` mod `M` by the Legendre symbol of an odd
-prime `d` that does not divide `M` is primitive. -/
-lemma isPrimitive_quadTwist {M d : ℕ} [NeZero M] [Fact d.Prime] {ψ : DirichletCharacter ℂ M}
-    (hψ : ψ.IsPrimitive) (h2 : d ≠ 2) (hM : M.Coprime d) : (quadTwist ψ d).IsPrimitive := by
+/-- The twist `χ.legendreTwist d` of a character `χ` mod `M` by the Legendre symbol of a prime `d`
+is the product of `χ` and the Legendre character mod `d`, both changed to the level `M * d`. -/
+lemma legendreTwist_eq_mul {M d : ℕ} [Fact d.Prime] (χ : DirichletCharacter ℂ M) :
+    χ.legendreTwist d = χ.changeLevel (dvd_mul_right M d) *
+      changeLevel (dvd_mul_left d M) ((chiK d).ringHomComp (algebraMap ℤ ℂ)) := by
+  refine MulChar.ext fun u ↦ ?_
+  obtain ⟨n, hn⟩ := ZMod.intCast_surjective (u : ZMod (M * d))
+  have h_cop : IsCoprime n (M * d : ℕ) :=
+    ((ZMod.isUnit_intCast_iff_isCoprime n (M * d)).1 (hn ▸ u.isUnit)).symm
+  rw [← hn, legendreTwist_apply, MulChar.mul_apply, changeLevel_eq_cast_of_dvd' _ _ h_cop,
+    changeLevel_eq_cast_of_dvd' _ _ h_cop]
+  rfl
+
+/-- The twist `ψ.legendreTwist d` of a primitive character `ψ` mod `M` by the Legendre symbol of an
+odd prime `d` that does not divide `M` is primitive. -/
+lemma isPrimitive_legendreTwist {M d : ℕ} [NeZero M] [Fact d.Prime] {ψ : DirichletCharacter ℂ M}
+    (hψ : ψ.IsPrimitive) (h2 : d ≠ 2) (hM : M.Coprime d) : (ψ.legendreTwist d).IsPrimitive := by
   -- The twist is the product of `ψ` and the Legendre character `ε` mod `d`, whose conductors `M`
   -- and `d` are coprime, so its conductor is `M * d`.
   let ε : DirichletCharacter ℂ d := (chiK d).ringHomComp (algebraMap ℤ ℂ)
-  have h_twist (χ : DirichletCharacter ℂ M) :
-      quadTwist χ d = χ.changeLevel ⟨d, rfl⟩ * ε.changeLevel (by simp) := rfl
-  have hε_ne : ε ≠ 1 := fun h ↦ quadTwist_ne_one 1 d h2 hM (by simp [h_twist, h])
+  have hε_ne : ε ≠ 1 := fun h ↦ legendreTwist_ne_one 1 d h2 hM <| by
+    rw [legendreTwist_eq_mul]
+    change _ * ε.changeLevel _ = 1
+    simp [h]
   have hε : ε.conductor = d := isPrimitive_of_ne_one_of_prime Fact.out hε_ne
+  rw [IsPrimitive, legendreTwist_eq_mul]
   change (ψ.changeLevel _ * ε.changeLevel _).conductor = M * d
   rw [conductor_mul_of_coprime, conductor_changeLevel, conductor_changeLevel, hψ, hε]
   simpa only [conductor_changeLevel, show ψ.conductor = M from hψ, hε] using hM
 
-/-- The number `d` is a prime, and the `L`-function of the twist `ψ (·/d)` (`quadTwist ψ d`) has a
-zero in the box `re s ≥ β`, `|im s| ≤ H`. -/
+/-- The number `d` is a prime, and the `L`-function of the twist `ψ (·/d)` (`ψ.legendreTwist d`) has
+a zero in the box `re s ≥ β`, `|im s| ≤ H`. -/
 structure IsPrimeWithTwistZero (ψ : DirichletCharacter ℂ N) (β H : ℝ) (d : ℕ) : Prop where
   /-- The number `d` is prime. -/
   [prime : Fact d.Prime]
   /-- The function `L(s, ψ (·/d))` vanishes at a point of the box. -/
-  exists_zero : ∃ s : ℂ, β ≤ s.re ∧ |s.im| ≤ H ∧ (quadTwist ψ d).LFunction s = 0
+  exists_zero : ∃ s : ℂ, β ≤ s.re ∧ |s.im| ≤ H ∧ (ψ.legendreTwist d).LFunction s = 0
 
 open scoped Classical in
 /-- Let `ψ` be primitive modulo `M`, `δ > 0` and `H` real. Then only `O(T ^ (2 - δ))` primes
 `d ≡ 7 mod 8` with `M d ≤ T²` and prime to `M` have a twist `ψ (·/d)` whose `L`-function has a zero
 in the box `re s ≥ 1/2 + 9 δ`, `|im s| ≤ H` (`IsPrimeWithTwistZero`): each has
 `thetaTailIntegral > T ^ (2 δ)`, and the sum of these integrals is `≪ T ^ (2 + δ)`. -/
-lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ} [NeZero M]
+lemma exists_card_zero_legendreTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ} [NeZero M]
     {ψ : DirichletCharacter ℂ M} (hψ : ψ.IsPrimitive) :
     ∃ C : ℝ, ∀ᶠ T : ℝ in atTop,
       #{d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d % 8 = 7 ∧ M.Coprime d ∧ M * d ≤ T ^ 2 ∧
@@ -698,13 +714,13 @@ lemma exists_card_zero_quadTwist_le {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {M : ℕ
       (h_twist : IsPrimeWithTwistZero ψ (1 / 2 + 9 * δ) H d) : T ^ (2 * δ) < F d := by
     have : Fact d.Prime := h_twist.prime
     obtain ⟨s, h_re, h_im, h_zero⟩ := h_twist.exists_zero
-    have h_par : quadTwist ψ d (-1) = (-1) ^ j.val := by
+    have h_par : ψ.legendreTwist d (-1) = (-1) ^ j.val := by
       simpa [hj, legendreSym.at_neg_one (show d ≠ 2 by omega),
-        χ₄_nat_three_mod_four (show d % 4 = 3 by omega)] using quadTwist_apply ψ d (-1)
-    have h_coeff (n : ℕ+) : quadTwist ψ d n = ψ n * J(-d | ordCompl[2] (n : ℕ)) := by
-      simpa [legendreSym_eq_jacobiSym_ordCompl h8 n.ne_zero] using quadTwist_apply ψ d (n : ℕ)
+        χ₄_nat_three_mod_four (show d % 4 = 3 by omega)] using legendreTwist_apply ψ d (-1)
+    have h_coeff (n : ℕ+) : ψ.legendreTwist d n = ψ n * J(-d | ordCompl[2] (n : ℕ)) := by
+      simp [legendreSym_eq_jacobiSym_ordCompl h8 n.ne_zero]
     simpa only [F, thetaTailIntegral, thetaSeries, gaussianTheta, h_coeff] using
-      h_lines (isPrimitive_quadTwist hψ (by omega) hM) (quadTwist_ne_one ψ d (by omega) hM)
+      h_lines (isPrimitive_legendreTwist hψ (by omega) hM) (legendreTwist_ne_one ψ d (by omega) hM)
         h_par (mod_cast hd) h_re h_im h_zero
   have hF (v : ℕ) : 0 ≤ F v := setIntegral_nonneg measurableSet_Ioi fun u hu ↦
     div_nonneg (by positivity) ((inv_pos.2 hT).trans hu).le
@@ -734,7 +750,7 @@ open scoped Classical in
 of whose primes are `≡ 7 mod 8` and prime to `N` (this holds if `8 ∣ N` and `a ≡ 7 mod 8` is prime
 to `N`). The number of primes `d ≤ X` of the class that are bad (`IsBadPrime`: some `L(s, ξ (·/d))`
 with `ξ` modulo `N` has a zero with `re s ≥ β`, `|im s| ≤ H`) is `O(X ^ (1 - δ / 2))`. -/
-lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {a : ZMod N}
+lemma zero_density_legendreTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H : ℝ) {a : ZMod N}
     (h_class : ∀ d : ℕ, d.Prime → (d : ZMod N) = a → d % 8 = 7 ∧ N.Coprime d) :
     (fun X : ℕ ↦ (#{d ∈ Ioc 0 X | IsBadPrime a (1 / 2 + 9 * δ) H d} : ℝ)) =O[atTop]
       fun X : ℕ ↦ (X : ℝ) ^ (1 - δ / 2) := by
@@ -745,7 +761,7 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
   let S (ξ : DirichletCharacter ℂ N) (T : ℝ) : Finset ℕ :=
     {d ∈ Ioc 0 ⌊T ^ 2⌋₊ | d % 8 = 7 ∧ (M ξ).Coprime d ∧ M ξ * d ≤ T ^ 2 ∧
       IsPrimeWithTwistZero (ψ ξ) (1 / 2 + 9 * δ) H d}
-  choose C hC using fun ξ ↦ exists_card_zero_quadTwist_le hδ H (hψ ξ)
+  choose C hC using fun ξ ↦ exists_card_zero_legendreTwist_le hδ H (hψ ξ)
   have h_tendsto : Tendsto (fun X : ℕ ↦ √(N * X)) atTop atTop :=
     tendsto_sqrt_atTop.comp (tendsto_natCast_atTop_atTop.const_mul_atTop hN)
   refine .of_bound ((∑ ξ, C ξ) * N ^ (1 - δ / 2)) ?_
@@ -770,13 +786,13 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
   have h_coprime' : (M ξ).Coprime d := h_coprime.of_dvd_left (hMN ξ)
   have h_cond : M ξ * d ≤ N * X := Nat.mul_le_mul (le_of_dvd (NeZero.pos N) (hMN ξ)) hd_le
   -- The `L`-functions of the two twists differ by Euler factors, which do not vanish at `s`.
-  have h_level : quadTwist ξ d =
-      (quadTwist (ψ ξ) d).changeLevel (Nat.mul_dvd_mul_right (hMN ξ) d) := by
+  have h_level : ξ.legendreTwist d =
+      ((ψ ξ).legendreTwist d).changeLevel (Nat.mul_dvd_mul_right (hMN ξ) d) := by
     conv_lhs => rw [← h_induced ξ]
-    simp [quadTwist, ← changeLevel_trans]
-  have h_zero' : (quadTwist (ψ ξ) d).LFunction s = 0 := by
-    rw [h_level, LFunction_changeLevel _ _ (.inl (quadTwist_ne_one _ d (by omega) h_coprime'))]
-      at h_zero
+    simp [legendreTwist_eq_mul, ← changeLevel_trans]
+  have h_zero' : ((ψ ξ).legendreTwist d).LFunction s = 0 := by
+    rw [h_level,
+      LFunction_changeLevel _ _ (.inl (legendreTwist_ne_one _ d (by omega) h_coprime'))] at h_zero
     exact (mul_eq_zero.1 h_zero).resolve_right (prod_euler_factor_ne_zero _ (by linarith))
   have h_cond' : (M ξ : ℝ) * d ≤ T ^ 2 :=
     (mod_cast h_cond : (M ξ : ℝ) * d ≤ N * X).trans hT.ge
@@ -787,16 +803,16 @@ lemma zero_density_quadTwist {N : ℕ} [NeZero N] {δ : ℝ} (hδ : 0 < δ) (H :
 
 /-- **Choice of the prime.** Let `β > 1/2`, `H` real and `a` an invertible class mod `N` all of
 whose primes are `≡ 7 mod 8` and prime to `N`. For some prime `d` of the class no `L(s, ξ (·/d))`,
-`ξ` mod `N`, vanishes in `β ≤ re s`, `|im s| ≤ H`. Here `quadTwist ξ d` is `ξ (·/d)`, and
+`ξ` mod `N`, vanishes in `β ≤ re s`, `|im s| ≤ H`. Here `ξ.legendreTwist d` is `ξ (·/d)`, and
 `entireL` is `L`, as the twists are not principal.
 
 The bound on bad primes is played against the divergence of `∑ log p / p` over the class
 (Dirichlet), so the prime number theorem for progressions is not needed. -/
-lemma exists_entireL_quadTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ) {a : ZMod N}
+lemma exists_entireL_legendreTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ) {a : ZMod N}
     (hβ : 1 / 2 < β) (ha : IsUnit a)
     (h_class : ∀ d : Primes, ((d : ℕ) : ZMod N) = a → (d : ℕ) % 8 = 7 ∧ N.Coprime d) :
     ∃ d : Primes, ((d : ℕ) : ZMod N) = a ∧ ∀ (ξ : DirichletCharacter ℂ N) (s : ℂ),
-      β ≤ s.re → |s.im| ≤ H → entireL (quadTwist ξ d) s ≠ 0 := by
+      β ≤ s.re → |s.im| ≤ H → entireL (ξ.legendreTwist d) s ≠ 0 := by
   classical
   -- We may assume `β < 1`, as a smaller `β` gives a larger box.
   wlog hβ_lt : β < 1 generalizing β with h_lt_one
@@ -811,14 +827,14 @@ lemma exists_entireL_quadTwist_ne_zero {N : ℕ} [NeZero N] {β : ℝ} (H : ℝ)
       IsBadPrime a (1 / 2 + 9 * δ) H d := by
     obtain ⟨ξ, s, h_re, h_im, h_zero⟩ := h_all d hd_class
     obtain ⟨h8, h_coprime⟩ := h_class d hd_class
-    rw [entireL, ite_eq_right (quadTwist_ne_one ξ _ (by omega) h_coprime)] at h_zero
+    rw [entireL, ite_eq_right (legendreTwist_ne_one ξ _ (by omega) h_coprime)] at h_zero
     exact ⟨hd_class, ξ, ⟨s, h_re, h_im, h_zero⟩⟩
   let f (n : ℕ) : ℂ := if n.Prime ∧ n = a then 1 else 0
   have h_count : (fun X ↦ ∑ n ∈ Icc 1 X, ‖f n‖) =O[atTop] fun X : ℕ ↦ (X : ℝ) ^ (1 - δ / 2) := by
     refine .trans (.of_norm_le fun X ↦ ?_)
-      (zero_density_quadTwist hδ H fun d hd ↦ h_class ⟨d, hd⟩)
+      (zero_density_legendreTwist hδ H fun d hd ↦ h_class ⟨d, hd⟩)
     simp only [f, apply_ite norm, norm_one, norm_zero, sum_boole, Real.norm_natCast, Nat.cast_le]
-    -- Every prime of the class is bad, so it is counted by `zero_density_quadTwist`.
+    -- Every prime of the class is bad, so it is counted by `zero_density_legendreTwist`.
     refine card_le_card fun d hd ↦ ?_
     obtain ⟨hd_mem, hd_prime, hd_class⟩ := mem_filter.1 hd
     exact mem_filter.2 ⟨by simpa [Nat.one_le_iff_ne_zero, Nat.pos_iff_ne_zero] using hd_mem,
