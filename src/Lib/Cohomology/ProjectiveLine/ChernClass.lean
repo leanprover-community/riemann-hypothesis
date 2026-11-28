@@ -137,6 +137,7 @@ def compatibleRootsOfUnity :
       exists_compatible_roots _
     exact ⟨(ℓ • χ).toMultiplicativeLeft, by simp [hχ], by simpa [← map_nsmul, hχ] using hζ⟩
 
+/-- The homomorphism `compatibleRootsOfUnity` takes the value `1` at `1`. -/
 lemma compatibleRootsOfUnity_ofAdd_one :
     (compatibleRootsOfUnity (A := A) (ℓ := ℓ)).val (Multiplicative.ofAdd 1) = 1 :=
   compatibleRootsOfUnity.property.left
