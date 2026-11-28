@@ -201,7 +201,6 @@ private lemma map_colVector_eq_sum
     (hφ : ∀ k ∈ blockParahoric (min N), ∀ z : ρ, φ (ρ k z) = φ z) (c : Fin N → 𝓀[F]) :
     φ (colVector m x c) =
       ∑ j ≥ m with c j ≠ 0 ∧ ∀ r > j, c r = 0, φ (ρ (permGL (swap m j)) x) := by
-  classical
   by_cases! h_vanish : ∀ r ≥ m, c r = 0
   · -- Column `m` of `p ∈ blockParahoric (min m)` has a unit entry in a row `r ≥ m`: take `r`
     -- with `p⁻¹ m r` and `p r m` units; `r < m` is excluded as `p⁻¹ ∈ blockParahoric (min m)`.

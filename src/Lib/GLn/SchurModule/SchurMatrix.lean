@@ -105,7 +105,6 @@ enumeration e of ι and every x : ι → ℂ, (Σ_{T∈s} x^T)·a_0(x) = a_λ(x)
 over the entries of T, a is the alternant `New.GL.alternant`, and λ(i) = Σ_{i<h<M} k(h). -/
 lemma exists_isTableauBasis {ι : Type} [Fintype ι] {M : ℕ} {k : ℕ → ℕ} :
     ∃ s : Finset (Tableau ι M k), IsTableauBasis s := by
-  classical
   -- `exists_isStdMinorFamily`, with one colour and `k h` columns of each height `h`, gives a
   -- standard family `I` of fillings: its minor products are independent and span `nabla` over
   -- every ring and satisfy the character formula. Read it as a set of fillings.

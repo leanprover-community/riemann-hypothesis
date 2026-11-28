@@ -953,7 +953,6 @@ parameter of `(κ', e')` is minus entry `q` of that of `(κ, e)`. -/
 lemma IsHCParam.hcParameter_rev (hl : IsHCParam κ e l) (hl_neg : IsHCParam κ' e' (-l)) (w : Φ)
     {p q : ℕ} (hpq : p + q + 1 = card n) :
     hcParameter κ' e' (card n) w p = -hcParameter κ e (card n) w q := by
-  classical
   -- Entry `q` of the parameter of `(κ, e)` sits at the index `i` of position `q` for `l`; for
   -- `-l` that index has the reversed position `p`.
   obtain ⟨f, hf⟩ : ∃ f : n ≃ Fin (card n), ∀ a : n,

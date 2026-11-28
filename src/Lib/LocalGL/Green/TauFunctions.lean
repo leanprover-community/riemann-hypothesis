@@ -736,7 +736,6 @@ classes. There is a natural number `B ≤ q ^ r` such that the pairing of `label
 private lemma exists_le_rankInner_labelChar_mul_eq (hc : IsLabel r c) :
     ∃ B ≤ Nat.card k ^ r,
       rankInner r (labelChar T c) (identityIndicator k).mulMoebius * B = (-1) ^ r := by
-  classical
   -- Induction over the irreducible factors, each contributing `q ^ deg P - 1` to `B`.
   refine hc.induction_irreducible_mul K ⟨1, ?_⟩ fun P m c' _ξ hm hP _hP_coeff _hξ ih ↦ ?_
   · simp [identityIndicator, mulMoebius, moebius_eq_one_of_dim_eq_zero, rankInner, finMean,

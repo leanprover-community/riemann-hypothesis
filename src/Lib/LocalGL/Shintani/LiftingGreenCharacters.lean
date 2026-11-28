@@ -715,7 +715,6 @@ injective (`IsFaithfulMulChar`) and `c` a label over `k` (`IsLabel`: monic, squa
 `k'`. -/
 lemma shintani_lift_labelChar (hc : IsLabel r c) :
     Lift ℕ (labelChar T c) (labelChar T (c.map (algebraMap k k'))) := by
-  classical
   -- Lifts multiply, so it is enough to treat an irreducible label `P`, with a root `x`.
   refine hc.induction_irreducible_mul (p := fun _ c ↦
       Lift ℕ (labelChar T c) (labelChar T (c.map (algebraMap k k')))) K (by simp)

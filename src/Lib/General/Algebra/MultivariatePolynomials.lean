@@ -196,7 +196,6 @@ theorem New.exists_le_weight_of_mem_vanishingIdeal_pow {K ι S : Type} [Field K]
     (hg_eval : ∀ (u : ι) (t : S), eval (z t) (g u) = z t u ^ κ u)
     (d : ℕ) (f : MvPolynomial ι K) (hf_ne : f ≠ 0) (hf : ∀ t : S, f ∈ vanishingIdeal K {z t} ^ d) :
     ∃ α ∈ f.support, (d : ℝ) ≤ weight (fun u : ι ↦ (κ u : ℝ))⁻¹ α := by
-  classical
   -- Put `ψ u = X u ^ κ u - g u`, which vanishes at the points. The products `X ^ α * ψ ^ γ` with
   -- `α < κ`, `|γ| < d` span modulo the kernel of the jet map `J` and are at most as many as the
   -- jets, so they are independent modulo that kernel. A polynomial of cost below `d` lies in their

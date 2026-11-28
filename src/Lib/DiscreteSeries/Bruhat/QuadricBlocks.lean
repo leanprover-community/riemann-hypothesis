@@ -81,7 +81,6 @@ lemma exists_kernel_eq_map {X Y Z : Type*} [MeasurableSpace X] [MeasurableSpace 
 /-- Joining two vectors along a bijection of indices preserves the volume. -/
 lemma measurePreserving_sumElim_comp_symm {η : Type} [Fintype η] (e : η ⊕ B ≃ κ) :
     MeasurePreserving (fun p : (η → A) × (B → A) ↦ (p.1 ⊕ᵥ p.2) ∘ e.symm) (volume.prod volume) := by
-  classical
   exact (volume_measurePreserving_piCongrLeft (fun _ : η ⊕ B ↦ A) e.symm).symm.comp
     measurePreserving_sumElim
 
@@ -236,7 +235,6 @@ theorem IsDisintegration.isSolvedIn_quadricMeasure [DecidableEq B] [DecidableEq 
     IsSolvedIn (inr ∘ blk) (quadricMeasure T β) S M := by
   -- Split `T` as `T₂` plus the block. In `flatChart` the part `z` in the block is free, and the
   -- rest lies on a quadric of the plane plus `T₂`. Exchange the roles of the two parts.
-  classical
   obtain ⟨κ₂, _, e, rfl⟩ := exists_equiv_comp_inr_eq h_inj
   let T₂ : Matrix κ₂ κ₂ A := T.submatrix (e ∘ inl) (e ∘ inl)
   have hT₂ : T₂ᴴ = T₂ := by rw [conjTranspose_submatrix, hT]

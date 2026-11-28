@@ -366,7 +366,6 @@ lemma exists_tightFrame : ∃ η : ColumnFilling n κ → WeylIndexFamily n κ �
   -- Take for `η T` the hook number times the orthogonal projection of `T` to the Weyl module.
   -- With `F` the embedding into tensors and `G = Fᵀ F`, this means `G (η T) = hk Fᵀ T`, so
   -- `⟨η T, ξ⟩` is `hk` times the coordinate `T` of the tensor `F ξ`.
-  classical
   set hk : ℤ := hookNumber κ (rankAt n)
   let F : Matrix (ColumnFilling n κ) (WeylIndexFamily n κ) ℂ := fillingMatrixOver ℂ n κ
   have h_exists (T : ColumnFilling n κ) :

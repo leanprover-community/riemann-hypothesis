@@ -330,7 +330,6 @@ lemma map_map_structureMap (φ : A ⟶ B) (z : X.obj (of k k)) :
 subfunctor of points none of whose values in fields comes from `s`, is open. -/
 lemma isOpenSubfunctor_offPoints [IsSeparatedFunctor X] {s : Set (X.obj (of k k))} [Finite s] :
     IsOpenSubfunctor (offPoints s) := by
-  classical
   refine isOpenSubfunctor_fieldLocus fun A x ↦ ?_
   -- Separatedness: for each `k`-point `z`, an ideal `J z` cuts out the locus where `x` equals `z`.
   choose J hJ using fun z : X.obj (of k k) ↦

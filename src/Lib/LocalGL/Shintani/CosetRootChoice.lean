@@ -149,7 +149,6 @@ induction `induceClassFn π ρ h` to `E`. -/
 lemma induceClassFn_mem_virtualChars [Finite Γ] {Z : Type*} [CommSemiring Z] [Algebra Z ℂ]
     (h_surj : Surjective (π.comp ρ)) (h_virtual : h ∈ virtualChars Z E') :
     induceClassFn π ρ h ∈ virtualChars Z E := by
-  classical
   -- `induceClassFn π ρ h` is a class function: conjugation by `y` is matched by conjugation by an
   -- element `u` of `E'` with the same image in `Γ`.
   have h_class (s y : E) : induceClassFn π ρ h (y * s * y⁻¹) = induceClassFn π ρ h s := by
@@ -513,7 +512,6 @@ omit [Finite G] in
 private lemma IsRootChoice.conjCount_root (R : IsRootChoice π σ j r) [Fintype G] [DecidableEq G]
     (γ δ : G) :
     conjCount π (r γ) (r δ) = ∑ v : G, if δ = (MulAut.conj v)⁻¹ • γ then 1 else 0 := by
-  classical
   have h_r_inj : Injective r :=
     fun a b h_eq ↦ R.injective (by rw [← R.pow_orderOf a, ← R.pow_orderOf b, h_eq])
   -- only the elements of `j G` contribute, by `IsRootChoice.mem_range_of_conj`
