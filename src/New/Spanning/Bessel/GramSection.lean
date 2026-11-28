@@ -629,22 +629,11 @@ off-diagonal blocks `Z(γ) = realFrameGram γ` and `Z(γ)ᴴ`. -/
 lemma conjTranspose_framePair_mul_mul (γ : 𝔰.G₁) :
     (framePair γ)ᴴ * 𝔰.J₁ * framePair γ =
       fromBlocks (diagLast 0 - 1) (realFrameGram γ) (realFrameGram γ)ᴴ (diagLast 0 - 1) := by
-  let g : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ := ↑(γ : GL 𝔰.BesselIndex ℂ)
-  have h_pair : framePair γ = fromCols 𝔰.frameCols (g * 𝔰.frameCols) := by
-    rw [mul_inclMatrix]
-    rfl
-  have h_upper : 𝔰.frameColsᴴ * 𝔰.J₁ * (g * 𝔰.frameCols) = realFrameGram γ :=
-    (realFrameGram_eq_conjTranspose_mul γ).symm
-  have h_lower : (g * 𝔰.frameCols)ᴴ * 𝔰.J₁ * 𝔰.frameCols = (realFrameGram γ)ᴴ := by
-    simp [← h_upper, show 𝔰.J₁ᴴ = 𝔰.J₁ from isHermitian, Matrix.mul_assoc]
-  -- The Gram matrix of `γ F` is that of `F` because `γ` is an isometry.
-  have h_last : (g * 𝔰.frameCols)ᴴ * 𝔰.J₁ * (g * 𝔰.frameCols) = diagLast 0 - 1 :=
-    calc _ = 𝔰.frameColsᴴ * (gᴴ * 𝔰.J₁ * g) * 𝔰.frameCols := by simp [Matrix.mul_assoc]
-      _ = diagLast 0 - 1 := by
-        rw [show gᴴ * 𝔰.J₁ * g = 𝔰.J₁ from mem_unitaryGroupOf_iff.1 γ.property,
-            frameCols_gram_frameCols]
-  rw [h_pair, conjTranspose_fromCols_eq_fromRows_conjTranspose, fromRows_mul,
-    fromRows_mul_fromCols, frameCols_gram_frameCols, h_upper, h_lower, h_last]
+  have h_diag : (single 𝔰.top 𝔰.top (-1) : 𝔰.FrameMatrix) = diagLast 0 - 1 := by
+    ext i j
+    cases i using lastCases <;> cases j using lastCases <;>
+      simp [diagLast, Matrix.one_apply, diagonal_apply, (castSucc_ne_last _).symm]
+  simpa only [h_diag] using gram_framePair (1 : ℂ) (star_one ℂ) γ
 
 /-- Let `γ ∈ G₁` have frame Gram matrix `Z(γ) = Fᴴ J₁ γ F` (`realFrameGram`) equal to `Z ∈ Ω`. Then
 `γ = u k γ_Z (u' l)⁻¹`, where `γ_Z = gramSection Z`, `u = unipotentOf q` and `u' = unipotentOf r`.
