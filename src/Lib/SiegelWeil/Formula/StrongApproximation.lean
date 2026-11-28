@@ -87,12 +87,16 @@ lemma New.Exchange.exists_torus_mul_quasiReflection_fixes {D : G E s → ℂ}
   let M (x : E) : G E s := H.symm.radicalElement (toAdele x • c)
     (toAdele (-j * x * (j * σ + 1)) • 1)
   let u : G E s := M σ⁻¹ * H.radicalElement 0 1 * M j
-  -- The product `u` keeps the isotropic line, acting on it by `-j * σ`.
-  have h_line : H.ActsOnFrame u (toAdele (-j * σ : E) • 1) := by
-    -- Associating to the right first multiplies the three factors of `u` into `kAdelic` one at a
-    -- time, which keeps the expanded terms small.
-    simp only [ActsOnFrame, u, adeleMatrix_mul, Matrix.mul_assoc]
-    simp only [radicalElement, symm_iAdelic, Matrix.mul_smul, symm_lCoord, smul_mul,
+  have h_reflection : (W₀.ratEmbed ρ).adeleMatrix = 1 - toAdele (σ : E)⁻¹ •
+    (c * (cᴴ * stdForm E s₀)) := by
+    simp [c, ρ, quasiReflection, Matrix.map_sub, map_smul', vecMulVec_eq Unit, W₀.map_J,
+      replicateRow_vecMul, adeleMatrix_ratEmbed, Matrix.mul_assoc, Matrix.mul_sub, Matrix.sub_mul]
+  -- The same expansion computes the action of `u` on the isotropic line and its `W₀` block.
+  have h_coordinates : H.ActsOnFrame u (toAdele (-j * σ : E) • 1) ∧
+      H.iCoord * (u.adeleMatrix * H.iAdelic) = (W₀.ratEmbed ρ).adeleMatrix := by
+    -- Associating to the right applies each radical factor to a column in turn.
+    constructor <;> simp only [ActsOnFrame, u, adeleMatrix_mul, Matrix.mul_assoc]
+    all_goals simp only [radicalElement, symm_iAdelic, Matrix.mul_smul, symm_lCoord, smul_mul,
       Matrix.mul_assoc, symm_kAdelic, conjTranspose_smul, star_toAdele, symm_iCoord, neg_mul,
       map_neg, map_mul, map_add, map_one, neg_smul, conjTranspose_neg, star_mul', star_j, star_add,
       star_one, conjTranspose_one, neg_neg, smul_add, smul_neg, smul_smul, hc, Matrix.mul_add,
@@ -101,41 +105,19 @@ lemma New.Exchange.exists_torus_mul_quasiReflection_fixes {D : G E s → ℂ}
       add_zero, mul_neg, Matrix.sub_mul, Matrix.one_mul, kCoord_mul_kAdelic, iCoord_mul_kAdelic,
       smul_zero, neg_zero, Matrix.mul_sub, lCoord_mul_kAdelic, lCoord_mul_iAdelic_mul,
       lCoord_mul_lAdelic, kCoord_mul_iAdelic_mul, iCoord_mul_iAdelic_mul, kCoord_mul_lAdelic,
-      iCoord_mul_lAdelic, M]
-    -- Compare coefficients; each is the image of an identity in `E`, proved in `E`. The context is
-    -- cleared because the local facts slow the automation down.
-    clear * -
-    match_scalars
+      iCoord_mul_lAdelic, kCoord_mul_iAdelic, iCoord_mul_iAdelic, mul_one, lCoord_mul_iAdelic,
+      lCoord_mul_lAdelic_mul, kCoord_mul_lAdelic_mul, iCoord_mul_lAdelic_mul, mul_zero,
+      kCoord_mul_kAdelic_mul, iCoord_mul_kAdelic_mul, zero_sub, neg_add_rev, h_reflection, M]
+    -- Compare coefficients in `E`, clearing the local facts that slow the automation down.
     all_goals
-      simp only [← map_mul, ← map_add, ← map_neg, ← map_sub, ← map_one toAdele,
-        (toAdele (E := E)).injective.eq_iff, map_eq_zero_iff _ (toAdele (E := E)).injective]
-      grind [σ.ne_zero, star_eq_zero]
-  -- So it is a point of the radical of `H` times `H.levi (t, x)`, with `x` its `W₀`-block.
+      clear * -
+      match_scalars
+    all_goals simp only [← map_mul, ← map_add, ← map_neg, ← map_sub, ← map_one toAdele,
+      (toAdele (E := E)).injective.eq_iff, map_eq_zero_iff _ (toAdele (E := E)).injective]
+    all_goals grind [σ.ne_zero, star_eq_zero]
+  -- The line gives the radical–Levi factorisation. The block identifies the Levi component.
+  obtain ⟨h_line, h_block⟩ := h_coordinates
   obtain ⟨c', z', t, x, h_eq, -, hx⟩ := H.exists_eq_radicalElement_mul_levi h_line
-  have h_reflection : (W₀.ratEmbed ρ).adeleMatrix = 1 - toAdele (σ : E)⁻¹ •
-    (c * (cᴴ * stdForm E s₀)) := by
-    simp [c, ρ, quasiReflection, Matrix.map_sub, map_smul', vecMulVec_eq Unit, W₀.map_J,
-      replicateRow_vecMul, adeleMatrix_ratEmbed, Matrix.mul_assoc, Matrix.mul_sub, Matrix.sub_mul]
-  -- That block is the quasi-reflection.
-  have h_block : H.iCoord * (u.adeleMatrix * H.iAdelic) = (W₀.ratEmbed ρ).adeleMatrix := by
-    -- As for `h_line`: associate to the right, expand, and compare coefficients in `E`.
-    simp only [u, adeleMatrix_mul, Matrix.mul_assoc]
-    simp only [radicalElement, symm_iAdelic, Matrix.mul_smul, symm_lCoord, smul_mul,
-      Matrix.mul_assoc, symm_kAdelic, conjTranspose_smul, star_toAdele, symm_iCoord, neg_mul,
-      map_neg, map_mul, map_add, map_one, neg_smul, conjTranspose_neg, star_mul', star_j, star_add,
-      star_one, conjTranspose_one, neg_neg, smul_add, smul_neg, smul_smul, hc, Matrix.mul_add,
-      Matrix.mul_neg, Matrix.mul_one, Matrix.add_mul, Matrix.neg_mul, star_inv₀,
-      adeleMatrix_ofMatrix, Matrix.mul_zero, Matrix.zero_mul, sub_zero, conjTranspose_zero,
-      add_zero, mul_neg, Matrix.sub_mul, Matrix.one_mul, kCoord_mul_iAdelic, smul_zero,
-      iCoord_mul_iAdelic, mul_one, neg_zero, lCoord_mul_iAdelic, lCoord_mul_lAdelic_mul,
-      Matrix.mul_sub, kCoord_mul_lAdelic_mul, iCoord_mul_lAdelic_mul, mul_zero,
-      kCoord_mul_kAdelic_mul, iCoord_mul_kAdelic_mul, iCoord_mul_iAdelic_mul, zero_sub, neg_add_rev,
-      h_reflection, M]
-    clear * -
-    match_scalars <;>
-      simp only [← map_mul, ← map_add, ← map_neg, ← map_one toAdele,
-        (toAdele (E := E)).injective.eq_iff]
-    grind
   obtain rfl : x = W₀.ratEmbed ρ := ext_adeleMatrix (hx.trans h_block)
   refine ⟨t, fun g ↦ ?_⟩
   -- Cut `h_eq` to `R`: cut points of the radicals are points of the radicals, which fix `D`.
