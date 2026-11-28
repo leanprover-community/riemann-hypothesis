@@ -126,7 +126,6 @@ when the second space has rank `m`. These numbers are absolutely summable over t
 theorem summable_norm_vacuumCoeff (h_rank : 2 * card n < card m) (b : AutChar E)
     (A : Set (FinPlace E)) :
     Summable fun q : Gf E n ⧸ localLevel n A ↦ ‖vacuumCoeff (card m) b (cosetRep q).val‖ := by
-  classical
   -- The norms do not see `b`, and the cosets at `A` inject into the cosets at all places.
   let ι (q : Gf E n ⧸ localLevel n A) : Gf E n ⧸ localLevel n Set.univ := ((cosetRep q).val : _)
   have hι : Function.Injective ι := by

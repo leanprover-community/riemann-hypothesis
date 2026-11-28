@@ -103,7 +103,6 @@ some indices but not for all, some entry in a row with `p` and a column without 
 lemma exists_ne_zero_of_irreducible_charpoly {F : Type*} [Field F] {A : Matrix n n F}
     (hA : Irreducible A.charpoly) {p : n → Prop} (h₁ : ∃ j : n, p j) (h₂ : ∃ i : n, ¬p i) :
     ∃ j i : n, p j ∧ ¬p i ∧ A j i ≠ 0 := by
-  classical
   let := Prop.linearOrder
   by_contra! h_zero
   have h_block : A.BlockTriangular p := by
