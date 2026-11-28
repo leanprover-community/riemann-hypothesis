@@ -444,9 +444,8 @@ lemma measurePreserving_orbitPoint {F : PlaceData ι T m} (b : Fin 𝔰.n) :
     _ = ∫⁻ u : V, ∫⁻ β : skewAdjoint A, Φ (χ t u β) ∂P.skewMeasure := by
       -- scaling the higher floors by `t` has modulus `modulus t` to the power of their dimension
       have h_scale : (volume : Measure V).map (t.val • ·) = (modulus t.val ^ d)⁻¹ • volume := by
-        simpa [↓card_subtype_succ_le_floorOf_eq, smul_mulVec] using
-          map_mulVec_volume _ (t.val • (1 : Matrix {i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} _ A))
-            (by simp [t.isUnit.pow])
+        simpa only [card_subtype_succ_le_floorOf_eq] using
+          Place.map_smul_volume_pi {i : 𝔰.BesselIndex // a + 1 ≤ floorOf i} t
       rw [eq_comm, lintegral_eq_mul_lintegral_map h_scale (by simp) (by simp),
         lintegral_map (by fun_prop) (by fun_prop)]
 

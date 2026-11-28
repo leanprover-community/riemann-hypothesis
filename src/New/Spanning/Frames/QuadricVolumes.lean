@@ -298,12 +298,11 @@ lemma lintegral_heisenbergMeasure_le {Φ : T.G → ℝ≥0∞} {Ψ : (𝔰.Besse
     (hΨ : Measurable Ψ := by fun_prop) :
     ∫⁻ n : T.G, Φ n ∂heisenbergMeasure a ≤ C * B := by
   -- Scale the coordinates `ω` of `V_(a+1)` by `u`, and integrate first over the skew variable.
-  let D : Matrix {k : 𝔰.BesselIndex // a + 1 ≤ floorOf k} {k : 𝔰.BesselIndex // a + 1 ≤ floorOf k}
-    A := u.val • 1
-  have hD : IsUnit D.det := by simp [D, IsUnit.pow]
   set r : ℕ := 𝔰.k + 1 + 2 * (𝔰.ϱ - (a + 1))
-  have h_jacobian : Place.modulus D.det = Place.modulus u.val ^ r := by
-    rw [det_smul, det_one, mul_one, card_subtype_succ_le_floorOf_eq, map_pow]
+  have h_scale : (volume : Measure ({k : 𝔰.BesselIndex // a + 1 ≤ floorOf k} → A)).map
+      (u.val • ·) = (Place.modulus u.val ^ r)⁻¹ • volume := by
+    simpa only [r, card_subtype_succ_le_floorOf_eq] using
+      Place.map_smul_volume_pi {k : 𝔰.BesselIndex // a + 1 ≤ floorOf k} u
   let χ : (𝔰.BesselIndex → A) → ℝ≥0∞ := (Γ.vecsOfSize j).indicator (C * Ψ ·)
   have hχ : Measurable χ := .indicator (by fun_prop) measurableSet_vecsOfSize
   have h_integral : ∫⁻ v : {k : 𝔰.BesselIndex // a + 1 ≤ floorOf k} → A,
@@ -314,14 +313,14 @@ lemma lintegral_heisenbergMeasure_le {Φ : T.G → ℝ≥0∞} {Ψ : (𝔰.Besse
       ≤ ∫⁻ ω, ∫⁻ β, Φ (heisenbergElem a (ω, β)) ∂skewMeasure := by
         rw [heisenbergMeasure, dite_eq_left a.isLt]
         grw [lintegral_map_le _ (by fun_prop), lintegral_prod_le]
-    _ ≤ Place.modulus u.val ^ r * ∫⁻ v, ∫⁻ β, Φ (heisenbergElem a (D *ᵥ v, β)) ∂skewMeasure := by
-        grw [lintegral_eq_mul_lintegral_map (map_mulVec_volume _ D hD) (by simp [h_jacobian])
-          (by simp [h_jacobian]), lintegral_map_le _ (by fun_prop), h_jacobian]
+    _ ≤ Place.modulus u.val ^ r * ∫⁻ v, ∫⁻ β, Φ (heisenbergElem a (u.val • v, β)) ∂skewMeasure := by
+        grw [lintegral_eq_mul_lintegral_map h_scale (by simp) (by simp),
+          lintegral_map_le _ (by fun_prop)]
     _ ≤ Place.modulus u.val ^ r * ∫⁻ v : {k : 𝔰.BesselIndex // a + 1 ≤ floorOf k} → A,
           Place.modulus u.val ^ (2⁻¹ : ℝ) *
             (Γ.loss ^ (j + 2) * χ (inclMatrix A Subtype.val *ᵥ v)) := by
         gcongr with v
-        simpa [D, smul_mulVec] using lintegral_heisenbergElem_skewMeasure_le u hΦ v
+        exact lintegral_heisenbergElem_skewMeasure_le u hΦ v
     _ ≤ F.floorModulus a u * (Γ.loss ^ (j + 2) * (C * I)) := by
         grw [lintegral_const_mul' _ _ (by simp), lintegral_const_mul' _ _ (by simp [loss_ne_top]),
           h_integral, floorModulus, mul_assoc]

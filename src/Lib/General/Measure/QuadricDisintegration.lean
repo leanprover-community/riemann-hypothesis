@@ -314,6 +314,14 @@ lemma map_mul_volume (u : Aˣ) : volume.map (u.val * ·) = (P.modulus u)⁻¹ �
   rw [h_conj]
   exact ((h_eval.smul_measure _).comp (h_det.comp (h_eval.symm e))).map_eq
 
+/-- Scaling each of `card ι` coordinates by a unit multiplies the pushforward volume by the
+inverse modulus to that power. -/
+lemma map_smul_volume_pi (ι : Type) [Fintype ι] (u : Aˣ) :
+    (volume : Measure (ι → A)).map (u.val • ·) = (P.modulus u ^ Fintype.card ι)⁻¹ • volume := by
+  classical
+  simpa [smul_mulVec] using P.map_mulVec_volume ι
+    (u.val • (1 : Matrix ι ι A)) (by simp [u.isUnit.pow])
+
 @[simp]
 lemma star_skewUnit_inv : star P.skewUnit⁻¹.val = -P.skewUnit⁻¹.val := by
   have h_star : star P.skewUnit = -P.skewUnit := Units.ext star_skewUnit
