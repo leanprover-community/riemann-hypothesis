@@ -244,6 +244,13 @@ variable {R : Type*} [CommRing R] {𝔰 : Shape} {b : Matrix 𝔰.BesselIndex �
   {M : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex R}
 
 open scoped Classical in
+private lemma freeEntry_cross_eq_zero
+    (hb : b = fromBlocks 1 0 0 (fromBlocks M 0 0 1)) (a : Fin 𝔰.ϱ) :
+    ∀ i, ¬IsFreeEntry (a, i) → ∀ j, IsFreeEntry (a, j) → b i j = 0 := by
+  simp [Matrix.one_apply, hb]
+  omega
+
+open scoped Classical in
 /-- If `b` differs from the identity only in its middle block, then its square block on the free
 columns (`IsFreeEntry`) of the row e_a has the determinant of `b`. -/
 lemma det_toSquareBlockProp_isFreeEntry (hb : b = fromBlocks 1 0 0 (fromBlocks M 0 0 1))
@@ -251,10 +258,8 @@ lemma det_toSquareBlockProp_isFreeEntry (hb : b = fromBlocks 1 0 0 (fromBlocks M
     (b.toSquareBlockProp fun j : 𝔰.BesselIndex ↦ IsFreeEntry (a, j)).det = b.det := by
   have h_rest : (b.toSquareBlockProp fun j ↦ ¬IsFreeEntry (a, j)) = 1 := by
     simp [Matrix.one_apply, toSquareBlockProp, ← ext_iff, hb]
-  have h_triangular : ∀ i, ¬IsFreeEntry (a, i) → ∀ j, IsFreeEntry (a, j) → b i j = 0 := by
-    simp [Matrix.one_apply, hb]
-    omega
-  simp [b.twoBlockTriangular_det (fun j ↦ IsFreeEntry (a, j)) h_triangular, h_rest]
+  simp [b.twoBlockTriangular_det (fun j ↦ IsFreeEntry (a, j)) (freeEntry_cross_eq_zero hb a),
+    h_rest]
 
 open scoped Classical in
 /-- If `b` differs from the identity only in its middle block, then the entries of `l ᵥ* b` in the
@@ -263,10 +268,9 @@ lemma transpose_toSquareBlockProp_mulVec (hb : b = fromBlocks 1 0 0 (fromBlocks 
     (a : Fin 𝔰.ϱ) (l : 𝔰.BesselIndex → R) (j : {j : 𝔰.BesselIndex // IsFreeEntry (a, j)}) :
     ((b.toSquareBlockProp fun j : 𝔰.BesselIndex ↦ IsFreeEntry (a, j))ᵀ *ᵥ l ∘ Subtype.val) j =
       (l ᵥ* b) j := by
-  refine sum_of_injective _ Subtype.val_injective _ _ ?_ fun k ↦ mul_comm _ (l k)
-  revert j
-  simp [Matrix.one_apply, hb]
-  lia
+  refine sum_of_injective _ Subtype.val_injective _ _ (fun k hk ↦ ?_) fun k ↦ mul_comm _ (l k)
+  have hk_free : ¬IsFreeEntry (a, k) := fun h ↦ hk ⟨⟨k, h⟩, rfl⟩
+  exact mul_eq_zero_of_right _ (freeEntry_cross_eq_zero hb a k hk_free j j.property)
 
 end FreeBlock
 
