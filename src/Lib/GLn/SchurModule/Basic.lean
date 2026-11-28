@@ -460,12 +460,14 @@ lemma linSubst_one : linSubst 1 f = f := by
   simp [linSubst_eq_bind₁, aeval_X_left_apply]
 
 omit [DecidableEq σ] in
-/-- Linear substitution is functorial with respect to matrix multiplication: `linSubst (A * B)`. -/
+/-- Substitution by `A * B` is substitution by `B` followed by substitution by `A`:
+`linSubst (A * B) f = linSubst A (linSubst B f)`. -/
 lemma linSubst_mul : linSubst (A * B) f = linSubst A (linSubst B f) := by
   simp [linSubst_eq_bind₁, comp_aeval_apply, ← toMvPolynomial_mul]
 
 omit [DecidableEq σ] in
-/-- Linear substitution commutes with scalar ring homomorphisms. -/
+/-- Applying a ring homomorphism `ψ` to the coefficients commutes with linear substitution,
+with `ψ` also applied to the entries of `A`. -/
 lemma map_linSubst :
     MvPolynomial.map ψ (linSubst A f) = linSubst (A.map ψ) (MvPolynomial.map ψ f) := by
   simp [linSubst, ← C_mul', aeval_def, eval₂_map, MvPolynomial.algebraMap_eq, hom_eval₂, map_comp_C]
