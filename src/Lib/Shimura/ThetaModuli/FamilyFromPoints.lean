@@ -253,9 +253,10 @@ lemma smooth_of_allSpecializeTo_isReduced {A : Over S} [AddObj A] [Flat A.hom] [
           (Spec.map (π.appLE U W hWU) _))) h_fibre))
   exact h_alg_smooth.formallySmooth
 
+omit [IsReduced S] [Finite ι] in
 /-- Group and module laws by density. Let `V` be a finite-dimensional complex space, `O` a
-commutative ring and `S` reduced and locally noetherian with complex points `η i`, the finite
-subfamily `η ∘ j` being dense. Let `A` be flat and proper over `S` with a reduced geometric fibre at
+commutative ring and `S` locally noetherian with complex points `η i` and a dense subfamily
+`η ∘ j`. Let `A` be flat and proper over `S` with a reduced geometric fibre at
 a specialisation of every point, and let maps `e i : V → A(η i)` be such that all points `e i z`
 separate `A` and, for each `i`, the `e i v` separate the fibre of `A` over `η i`. If the addition,
 the zero and the action `F i` of `O` on `V` extend to morphisms `m`, `o` and `f c` of `A`, then `A`
