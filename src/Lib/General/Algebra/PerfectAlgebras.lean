@@ -1,6 +1,7 @@
 module
 
 import TauCeti.RingTheory.Smooth.Lifting
+import TauCeti.Algebra.Polynomial.Laurent.Symmetric
 import TauCeti.AlgebraicGeometry.Frobenius.Perfect
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Mathlib.FieldTheory.IsPerfectClosure
@@ -146,16 +147,16 @@ that is, H¹(ℙ¹, 𝒪) = 0. -/
 lemma surjective_toLaurent_add_invert :
     Surjective fun ((P, Q) : S[X] × S[X]) ↦ P.toLaurent + invert (X * Q).toLaurent := by
   intro f
-  induction f using LaurentPolynomial.induction_on' with
-  | add u v hu hv =>
-    obtain ⟨⟨P₁, Q₁⟩, rfl⟩ := hu
-    obtain ⟨⟨P₂, Q₂⟩, rfl⟩ := hv
-    exact ⟨(P₁ + P₂, Q₁ + Q₂), by simp [mul_add, add_add_add_comm]⟩
-  | C_mul_T n a =>
-    -- it remains to treat the monomials `a Tⁿ` and `a T⁻⁽ⁿ⁺¹⁾`
-    obtain n | n := n
-    · exact ⟨(monomial n a, 0), by simp⟩
-    · exact ⟨(0, monomial n a), by simp [Int.negSucc_eq]⟩
+  -- Truncating the inversion gives the nonpositive part. Remove its constant term using `divX`.
+  let Q := trunc (invert f)
+  have h_negative : invert (X * Q.divX).toLaurent + LaurentPolynomial.C (f.coeff 0) =
+      invert Q.toLaurent := by
+    simpa [Q, coeff_trunc] using
+      congrArg (fun q : S[X] ↦ invert q.toLaurent) (X_mul_divX_add Q)
+  refine ⟨(trunc f, Q.divX), ?_⟩
+  change (trunc f).toLaurent + invert (X * Q.divX).toLaurent = f
+  rw [eq_sub_of_add_eq h_negative, ← add_sub_assoc]
+  exact toLaurent_trunc_add_invert f
 
 /-! ### Algebras over a ring with p = 0: colimits and perfection -/
 
