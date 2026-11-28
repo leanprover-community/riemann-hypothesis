@@ -553,7 +553,9 @@ private lemma exists_valuationSubring_eq_finiteValueSubring {x : placeSpace z �
   · -- `φ` is local, and `t⁻¹` is not a unit of `V` when `t ∉ V`
     have h_nonunit (h_inv : (algebraMap P _ t)⁻¹ ∈ V) : ¬IsUnit (⟨_, h_inv⟩ : V) := by
       simp [Submonoid.isUnit_iff_and, ht]
-    simp [denominator, ht]
+    simp only [ofHom_comp, CommRingCat.hom_comp, ConcreteCategory.hom_ofHom, coe_comp,
+      Function.comp_apply, evalRingHom_apply, denominator, ht, ↓reduceDIte, isUnit_map_iff,
+      ValuationSubring.mem_toSubring, iff_false]
     exact h_nonunit _
 
 /-- Let `x` be a point of the space of places in a local ring that kills the maximal ideal `q`. The
