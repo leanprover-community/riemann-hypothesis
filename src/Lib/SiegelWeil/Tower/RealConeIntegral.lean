@@ -218,8 +218,8 @@ lemma exists_integrable_fockMoment_coneIntegrand_le (β : Bool) {z : ℝ} (hz : 
     _ ≤ K k * ‖L a‖ₑ := by grw [fockMoment_realWeil_le]
     _ = ‖(K k).toReal * L a‖ₑ := by rw [eNorm_mul (K k).toReal, eNorm_toReal (hK k)]
 
-/-- For `z > 0` the cone integrand is continuous in `p = (k, a)`. -/
-lemma continuous_coneIntegrand (β : Bool) {z : ℝ} (hz : 0 < z) (v : PairFock E s' t') :
+/-- For every real exponent the cone integrand is continuous in `p = (k, a)`. -/
+lemma continuous_coneIntegrand (β : Bool) (z : ℝ) (v : PairFock E s' t') :
     Continuous (coneIntegrand A X μ β z v) := by
   have h_coord (w : InfinitePlace E) :
       Continuous fun p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ ↦ p.2.val w :=
@@ -227,7 +227,10 @@ lemma continuous_coneIntegrand (β : Bool) {z : ℝ} (hz : 0 < z) (v : PairFock 
   -- Unfolded, the line term is a continuous linear map applied to a Heisenberg translate of `k v`.
   unfold coneIntegrand lineTermReal Splitting.IsAdapted.mixedModel
   dsimp
-  simp only [ideleAbs_realIdele_eq_prod]
+  have h_norm : Continuous fun p : maxCompact E t' × (InfinitePlace E → ℂ)ˣ ↦
+      ideleAbs (realIdele p.2) ^ z :=
+    (continuous_ideleAbs_realIdele.comp continuous_snd).rpow_const fun p ↦
+      Or.inl ideleAbs_pos.ne'
   fun_prop (disch := simp)
 
 /-- Convergence of the cone integral. Let `A` and `X` be base-adapted splittings, by one hyperbolic
@@ -246,7 +249,7 @@ lemma integrable_coneIntegrand (β : Bool) {z : ℝ} (hz : 0 < z) {v : PairFock 
       fockMoment N (coneIntegrand A X μ β z v p) ∂haar.prod haar ≠ ⊤ := by
     obtain ⟨φ, hφ, h_le⟩ := exists_integrable_fockMoment_coneIntegrand_le A X μ β hz hv N
     exact ((lintegral_mono h_le).trans_lt hφ.hasFiniteIntegral).ne
-  exact isSchwartzVector_integral (continuous_coneIntegrand A X μ β hz v).aestronglyMeasurable
+  exact isSchwartzVector_integral (continuous_coneIntegrand A X μ β z v).aestronglyMeasurable
     h_moment
 
 /-- For `z > 0` and a vector `v` all of whose moments are finite, all moments of the integral of the
