@@ -864,9 +864,7 @@ lemma leadingMinor_submatrix_mul_of_mem_partialUnitriangularGroup {l : ℕ} {s :
       have := floorOf_level_cases i; have := b.is_lt; lia
     exact hi ⟨⟨level i, h_lt.trans b.is_lt⟩, (eq_besselFrame_of_floorOf_eq h_floor le_rfl).symm⟩
   have h_block : (M * s.val.val).submatrix f f = M.submatrix f f * s.val.val.submatrix f f := by
-    ext a b
-    rw [submatrix_apply, Matrix.mul_apply, Matrix.mul_apply]
-    refine (sum_of_injective f f_injective _ _ (fun i hi ↦ ?_) fun _ ↦ rfl).symm
+    refine submatrix_mul_of_eq_zero_outside _ _ f f f f_injective fun _ b i hi ↦ ?_
     rw [h_column i b (h_level i hi b), one_apply_ne fun h_eq ↦ hi ⟨b, h_eq.symm⟩, mul_zero]
   have h_det : (s.val.val.submatrix f f).det = 1 := by
     refine det_eq_one_of_unitriangular (lev := Fin.val) fun a b hba ↦ ?_

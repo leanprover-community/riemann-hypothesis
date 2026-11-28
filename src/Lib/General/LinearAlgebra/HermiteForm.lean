@@ -168,8 +168,10 @@ lemma IsValuationPair.hermite (hR : IsValuationPair R) (ι : k ↪ n) (y : Matri
   have hrows (i : n) (hi : i ∉ Set.range ι) (j : k) : (U.val * y) i j = 0 :=
     hzero j (mem_univ j) i (by tauto)
   calc y = U⁻¹.val * (U.val * y) := by simp [← Matrix.mul_assoc]
-    _ = U⁻¹.val.submatrix id ι * (U.val * y).submatrix ι id := ext fun i j ↦
-      (Fintype.sum_of_injective ι ι.injective _ _ (by simp +contextual [hrows]) fun _ ↦ rfl).symm
+    _ = U⁻¹.val.submatrix id ι * (U.val * y).submatrix ι id :=
+      submatrix_mul_of_eq_zero_outside _ _ id ι id ι.injective fun a j i hi ↦ by
+        change U⁻¹.val a i * (U.val * y) i j = 0
+        rw [hrows i hi j, mul_zero]
 
 /-- If (A, R) satisfies `New.IsValuationPair` (any u, v in A are R-multiples of u - e(u - v) for
 some idempotent e of R) and the n × k matrix X over A has a left inverse, there is an invertible

@@ -239,25 +239,24 @@ lemma head_prod_mul_dual_mem_ofSize {S : Size T} {K : Set T.G} {j : ℕ} {p : �
   have det_C : C.det = 1 := det_eq_one_of_unitriangular (lev := id) fun b d hbd ↦
     (column (inl (c b)) d hbd).trans (by simp [c, Matrix.one_apply])
   have Z_eq : Z = L * C := by
-    ext b d
+    let f (d : Fin (a + 1)) : 𝔰.BesselIndex := inl (c d)
+    have h_f : Function.Injective f := inl_injective.comp (Fin.castLE_injective _)
     -- Rows other than e_0, …, e_a have level at least d, so the column e_d of η⁻¹ vanishes there.
-    have h_zero (m : 𝔰.BesselIndex) (hm : m ∉ Set.range fun e ↦ inl (c e)) :
-        η⁻¹.val.val m (inl (c d)) = 0 := by
+    have h_zero (d : Fin (a + 1)) (m : 𝔰.BesselIndex) (hm : m ∉ Set.range f) :
+        η⁻¹.val.val m (f d) = 0 := by
+      change η⁻¹.val.val m (inl (c d)) = 0
       have h_level : ↑d ≤ level m := by
         obtain e | (e | e) := m
         · exact le_of_not_gt fun he ↦ hm ⟨⟨e, Nat.lt_trans he d.is_lt⟩, rfl⟩
         · exact (c d).is_lt.le
         · exact (c d).is_lt.le.trans (le_level_eStar e)
       rw [column m d h_level, one_apply_ne fun h_eq ↦ hm ⟨d, h_eq.symm⟩]
-    have h_weyl (e : Fin (a + 1)) : (s * weylElem j p).val.val (R b) (inl (c e)) = L b e := by
+    have h_weyl : (s * weylElem j p).val.val.submatrix R f = L := Matrix.ext fun b e ↦ by
       have he_lt : e.val < j ∧ e.val < 𝔰.ϱ := by lia
-      simp [L, Matrix.mul_apply, c, he_lt, weylElem, weylOn, level]
-    calc Z b d = ∑ m, (s * weylElem j p).val.val (R b) m * η⁻¹.val.val m (inl (c d)) := by
-          simp only [Z, submatrix_apply, Subgroup.coe_mul, Units.val_mul, Matrix.mul_apply]
-      _ = ∑ e, (s * weylElem j p).val.val (R b) (inl (c e)) * C e d :=
-          (sum_of_injective _ (inl_injective.comp (Fin.castLE_injective _)) _ _
-            (fun m hm ↦ by rw [h_zero m hm, mul_zero]) fun _ ↦ rfl).symm
-      _ = (L * C) b d := by simp only [h_weyl, Matrix.mul_apply]
+      simp [L, f, Matrix.mul_apply, c, he_lt, weylElem, weylOn, level]
+    change ((s * weylElem j p).val.val * η⁻¹.val.val).submatrix R f = L * C
+    rw [submatrix_mul_of_eq_zero_outside _ _ R f f h_f
+      (fun _ d m hm ↦ by rw [h_zero d m hm, mul_zero]), h_weyl]
   -- The row of s at e*_b agrees with that of 1 outside the columns e*_d, d < b; so L is lower
   -- triangular, with p b on the diagonal for b < a.
   have s_row (b d : Fin (a + 1)) (hbd : b ≤ d) :

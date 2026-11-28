@@ -229,11 +229,8 @@ f selects columns of T. -/
 lemma submatrix_mul_of_mem_rangeParabolic (u : r ↪ n) {x : GL n R} {f : ι → n'}
     (hx : x ∈ rangeParabolic u) :
     (x.val * T).submatrix u f = x.val.submatrix u u * T.submatrix u f := by
-  ext i j
-  -- in `∑ k, x (u i) k * T k (f j)` the terms with `k` outside the image of `u` vanish
-  have h_zero (k : n) (hk : k ∉ range u) : x (u i) k * T k (f j) = 0 := by
-    simp [(mem_rangeParabolic_iff u).1 hx i k hk]
-  exact (Fintype.sum_of_injective u u.injective _ _ h_zero fun _ ↦ rfl).symm
+  refine submatrix_mul_of_eq_zero_outside _ _ u u f u.injective fun i _ k hk ↦ ?_
+  rw [(mem_rangeParabolic_iff u).1 hx i k hk, zero_mul]
 
 omit [Fintype r] in
 /-- The opposite parabolic `New.rangeParabolic u` has the same index in GL_n(R) as the block upper

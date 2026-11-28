@@ -60,6 +60,17 @@ Witt's extension theorem for unimodular hermitian lattices and for the Iwasawa d
 
 noncomputable section
 
+/-- A submatrix of a product can be computed by restricting the summation index to an injective
+selection when every summand off its range vanishes. -/
+lemma Matrix.submatrix_mul_of_eq_zero_outside {R m n k a b c : Type*}
+    [AddCommMonoid R] [Mul R] [Fintype n] [Fintype b]
+    (A : Matrix m n R) (B : Matrix n k R) (u : a → m) (e : b → n) (v : c → k)
+    (he : Function.Injective e)
+    (h_zero : ∀ i j t, t ∉ Set.range e → A (u i) t * B t (v j) = 0) :
+    (A * B).submatrix u v = A.submatrix u e * B.submatrix e v := by
+  ext i j
+  exact (Fintype.sum_of_injective e he _ _ (h_zero i j) fun _ ↦ rfl).symm
+
 /-!
 ## Generalised inverses and matrix factorisations over a field
 
