@@ -1,5 +1,6 @@
 module
 
+import TauCeti.LinearAlgebra.Determinant.Basic
 import TauCeti.LinearAlgebra.Submodule.CardFinrank
 public import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.RingTheory.Polynomial.UniversalFactorizationRing
@@ -241,24 +242,21 @@ lemma sum_lagrange_smul_rootCoeffEval (l : Fin a → ℕ) (r : Fin a ↪ K) :
     ext k j : 1
     by_cases hk : k = i <;> simp [hk, sum_aeval_lagrange_basis_mul_C_pow, Finset.sum_apply]
   -- So each term on the left becomes a generalised Vandermonde determinant with one row changed.
+  let A := of fun k j : Fin a ↦ C (r k) ^ l j
   have h_left (i : Fin a) : aeval (X * C (r i)) (Lagrange.basis univ r i) •
       rootCoeffEval (univ.val.map fun k : Fin a ↦ (if k = i then X else 1) * C (r k))
         (genericSchur l) * (vandermonde (C ∘ r)).det =
-      (of fun k j : Fin a ↦ ((if k = i then X else 1) * C (r k)) ^ l j).det := by
+      (A.updateRow i fun j ↦ X ^ l j * A i j).det := by
     rw [smul_mul_assoc, ← mul_smul_comm, replace_row, rootCoeffEval_genericSchur_mul_det]
-  rw [sum_mul, mul_right_comm, h_schur, Finset.sum_congr rfl fun i _ ↦ h_left i]
-  -- It remains to show that the sum of these determinants is `det (r k ^ l j) * ∑ j, X ^ l j`.
-  -- Expand the determinants: the term of a permutation `σ` gains the factor `X ^ l j`, `j` the
-  -- column used in row `i`, and each `j` occurs once as `i` varies.
-  have h_term (σ : Equiv.Perm (Fin a)) (i : Fin a) :
-      ∏ j, ((if σ j = i then X else 1) * C (r (σ j))) ^ l j =
-        X ^ l (σ.symm i) * ∏ j, C (r (σ j)) ^ l j := by
-    simp_rw [mul_pow, prod_mul_distrib]
-    simp [← Equiv.eq_symm_apply]
-  simp_rw [det_apply', of_apply, h_term]
-  rw [Finset.sum_comm, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun σ _ ↦ ?_
-  simp [← Finset.sum_mul, σ.symm.sum_comp fun j ↦ X ^ l j, mul_assoc, mul_comm]
+    congr 1
+    ext k j : 1
+    by_cases hk : k = i
+    · subst k
+      simpa [A, Matrix.updateRow_apply, mul_pow] using
+        (mul_comm (C (r i) ^ l j) ((X : K[X]) ^ l j))
+    · simp [A, Matrix.updateRow_apply, hk]
+  rw [sum_mul, mul_right_comm, h_schur, Finset.sum_congr rfl fun i _ ↦ h_left i,
+    Matrix.sum_det_updateRow_mul_row, mul_comm]
 
 open MvPolynomial RingOfIntegers Finsupp
 
