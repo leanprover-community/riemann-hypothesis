@@ -1,5 +1,7 @@
 module
 
+import TauCeti.Analysis.Normed.Unbundled.SpectralNorm.Basic
+import TauCeti.NumberTheory.Padics.PadicIntegers
 import TauCeti.RingTheory.RootsOfUnity.LocalRing
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.NumberTheory.CoefficientRings
@@ -37,13 +39,11 @@ variable {ℓ : ℕ} [ThePrime ℓ]
 lemma norm_pow_natDegree_minpoly_le {x : PadicAlgCl ℓ} (hx : ‖x‖ < 1) :
     ‖x‖ ^ (minpoly ℚ_[ℓ] x).natDegree ≤ ‖(ℓ : PadicAlgCl ℓ)‖ := by
   -- `‖x‖ ^ d` is the norm of the constant coefficient, an element of `ℚ_ℓ` of norm less than `1`.
-  have h_pos : (minpoly ℚ_[ℓ] x).natDegree ≠ 0 :=
-    (minpoly.natDegree_pos (Algebra.IsIntegral.isIntegral x)).ne'
-  have h_coeff : ‖x‖ ^ (minpoly ℚ_[ℓ] x).natDegree = ‖(minpoly ℚ_[ℓ] x).coeff 0‖ := by
-    rw [← PadicAlgCl.spectralNorm_eq, spectralNorm.spectralNorm_eq_norm_coeff_zero_rpow, one_div,
-      Real.rpow_inv_natCast_pow (norm_nonneg _) h_pos]
+  have h_coeff := NormedAlgebra.norm_pow_natDegree_minpoly_eq_norm_coeff_zero ℚ_[ℓ]
+    (Algebra.IsAlgebraic.isAlgebraic x)
   have h_lt : ‖(minpoly ℚ_[ℓ] x).coeff 0‖ < (ℓ : ℝ) ^ (0 : ℤ) := by
-    simpa [← h_coeff] using pow_lt_one₀ (norm_nonneg x) hx h_pos
+    simpa [← h_coeff] using pow_lt_one₀ (norm_nonneg x) hx
+      (minpoly.natDegree_pos (Algebra.IsIntegral.isIntegral x)).ne'
   rw [h_coeff, ← map_natCast (algebraMap ℚ_[ℓ] (PadicAlgCl ℓ)), PadicAlgCl.norm_extends]
   simpa using (Padic.norm_lt_pow_iff_norm_le_pow_sub_one _ 0).1 h_lt
 
@@ -94,14 +94,10 @@ primitive `m`-th root of unity `ζ` of `ℚ̄_ℓ` and `m` is prime to `ℓ`, th
 `O` has at least `m` elements. -/
 lemma le_card_residueField_of_isPrimitiveRoot {O : CoeffRing ℓ} {m : ℕ} (hm : ¬ℓ ∣ m) {ζ : ↑O}
     (hζ : IsPrimitiveRoot (ζ : PadicAlgCl ℓ) m) : m ≤ Nat.card (ResidueField O) := by
-  have : Finite (ResidueField O) := Ring.HasFiniteQuotients.finiteQuotient (not_a_field O)
+  have : Finite (ResidueField O) := PadicIntegerRing.finite_residueField ℓ
   have hm_unit : IsUnit (m : ↑O) := by
-    have h : IsUnit (m : ℤ_[ℓ]) :=
-      PadicInt.isUnit_iff.mpr (PadicInt.norm_natCast_eq_one_iff.mpr
-        ((Nat.Prime.coprime_iff_not_dvd Fact.out).mpr hm))
-    simpa only [map_natCast] using h.map (algebraMap ℤ_[ℓ] O)
-  have hζO : IsPrimitiveRoot ζ m :=
-    .of_map_of_injective (f := O.val.val) hζ Subtype.val_injective
+    simpa only [map_natCast] using (PadicInt.isUnit_natCast_iff.mpr hm).map (algebraMap ℤ_[ℓ] O)
+  have hζO : IsPrimitiveRoot ζ m := .coe_submonoidClass_iff.1 hζ
   exact (hζO.map_residue hm_unit).eq_orderOf.le.trans orderOf_le_card
 
 variable (ℓ) in
