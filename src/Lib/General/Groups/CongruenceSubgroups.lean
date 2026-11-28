@@ -420,14 +420,10 @@ lemma U_one_mem_unitaryGroup (g : U (1 : Matrix n n ℂ)) :
   simpa [mem_unitaryGroup_iff', star_eq_conjTranspose] using mem_unitaryGroupOf_iff.mp g.prop
 
 instance : CompactSpace (U (1 : Matrix n n ℂ)) := by
-  -- The entries of a unitary matrix lie in the closed unit disc, so the group is the preimage of
-  -- a compact set of matrices under a closed embedding.
-  have h_compact : IsCompact
-      {g : U (1 : Matrix n n ℂ) | (g : Matrix n n ℂ) ∈ (Metric.closedBall 0 1).matrix} :=
+  -- Pull back Tau Ceti's compact set of unitary matrices along the closed embedding.
+  simpa [← isCompact_univ_iff, Set.preimage, U_one_mem_unitaryGroup] using
     (Matrix.unitaryGroupOf.isClosedEmbedding_val isUnit_one).isCompact_preimage
-        (isCompact_closedBall 0 1).matrix
-  simpa [← isCompact_univ_iff, mem_matrix, entry_norm_bound_of_unitary, U_one_mem_unitaryGroup]
-    using h_compact
+      (TauCeti.Matrix.isCompact_unitaryGroup (n := n) (𝕜 := ℂ))
 
 instance : CompactSpace (U (signMatrix (n := n) 1)) := signMatrix_one.substr inferInstance
 
