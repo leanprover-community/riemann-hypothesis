@@ -1,12 +1,6 @@
 module
 
-import Mathlib.Algebra.Module.StablyFree.Basic
-import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
-import Mathlib.LinearAlgebra.PiTensorProduct.Generators
-import Mathlib.RingTheory.Coalgebra.CoassocSimps
-import Mathlib.RingTheory.Coalgebra.IsFrobenius
-import Mathlib.RingTheory.HopfAlgebra.Basic
-import Mathlib.RingTheory.SimpleRing.Principal
+import TauCeti.Analysis.Normed.Module.Bases.Auerbach
 public import Lib.GLn.SchurModule.GramMatrix
 import Lib.GLn.SchurModule.WeylKernel
 
@@ -19,9 +13,7 @@ This file collects norm estimates for linear maps and matrices.
 
 * `New.exists_auerbach`: linear forms indexed by a compact space that vanish together only at `0`,
   with images in a normed field depending continuously on the index, contain the coordinate forms
-  of a basis on whose vectors all forms of the family take values of image norm at most `1`. These
-  forms are chosen to maximise the norm of the image of their determinant; Cramer's rule gives the
-  bound.
+  of a basis on whose vectors all forms of the family take values of image norm at most `1`.
 * `New.norm_mulVec_le_of_nonneg`, `New.norm_mulVec_le`: over an ultrametric seminormed ring, a
   matrix whose entries have norm at most `c ≥ 0` multiplies the sup norm of a vector by at most `c`,
   whatever its size.
@@ -56,39 +48,13 @@ lemma New.exists_auerbach {K U A L ι : Type*} [Field K] [AddCommGroup U] [Modul
   classical
   have : Finite ι := Module.Finite.finite_basis b
   let := Fintype.ofFinite ι
-  -- Choose `S` to maximise `‖φ (det (ℓ ∘ S))‖` and let `z` be the basis dual to `ℓ ∘ S`. By
-  -- Cramer's rule `ℓ a (z k)` is the determinant with `S k` replaced by `a` over the maximal one.
-  -- First, the forms span the dual space, so the determinant is nonzero on some family of them.
-  have h_span : Submodule.span K (Set.range ℓ) = ⊤ :=
-    Submodule.span_eq_top_of_ne_zero fun v hv ↦ by simpa using mt (h_sep v) hv
-  obtain ⟨S₀, hS₀⟩ : ∃ S₀ : ι → A, b.dualBasis.det (ℓ ∘ S₀) ≠ 0 := by
-    by_contra! h_zero
-    exact b.dualBasis.det_ne_zero (AlternatingMap.coe_multilinearMap_injective
-      (MultilinearMap.ext_of_span_eq_top (fun _ ↦ h_span) h_zero))
-  -- `φ` of the determinant is a polynomial in the `φ (ℓ (S k) (b j))`, so its norm has a maximum.
-  let D (S : ι → A) : K := b.dualBasis.det (ℓ ∘ S)
-  have h_det_eq (S : ι → A) : φ (D S) = (Matrix.of fun j k ↦ φ (ℓ (S k) (b j))).det := by
-    simp [D, det_apply, Matrix.det_apply, toMatrix]
-  have h_cont : Continuous fun S : ι → A ↦ φ (D S) := by
-    simp only [h_det_eq]
-    exact (continuous_matrix fun j k ↦ (hℓ_cont (b j)).comp (continuous_apply k)).matrix_det
-  obtain ⟨S, hS⟩ : ∃ S : ι → A, ∀ S' : ι → A, ‖φ (D S')‖ ≤ ‖φ (D S)‖ :=
-    h_cont.norm.exists_forall_ge' S₀ (by simp [Filter.cocompact_eq_bot])
-  have h_pos : 0 < ‖φ (D S)‖ := lt_of_lt_of_le (by simpa [D] using hS₀) (hS S₀)
-  obtain ⟨h_indep, h_top⟩ :
-      LinearIndependent K (ℓ ∘ S) ∧ Submodule.span K (Set.range (ℓ ∘ S)) = ⊤ :=
-    b.dualBasis.is_basis_iff_det.2 (by simpa [D] using h_pos)
-  let z : Basis ι K U := (Basis.mk h_indep h_top.ge).dualBasis.map (evalEquiv K U).symm
-  refine ⟨S, z, fun k ↦ by ext; simp [z], fun a k ↦ ?_⟩
-  have cramer : D S * ℓ a (z k) = D (Function.update S k a) := by
-    -- Cramer's rule in the dual space, evaluated at the form `ℓ a`
-    simpa [D, z, Function.comp_update] using DFunLike.congr_fun
-      (b.dualBasis.det_smul_mk_coord_eq_det_update h_indep h_top.ge k) (ℓ a)
-  -- maximality of `S` against `S` with `S k` replaced by `a`; cancel the positive factor
-  have h_max : ‖φ (D S)‖ * ‖φ (ℓ a (z k))‖ ≤ ‖φ (D S)‖ := by
-    rw [← norm_mul, ← map_mul, cramer]
-    exact hS (Function.update S k a)
-  exact (mul_le_iff_le_one_right h_pos).1 h_max
+  obtain ⟨a, z₀, h_dual, h_bound⟩ := φ.exists_auerbachBasis ℓ hℓ_cont h_sep
+  let e : Fin (Module.finrank K U) ≃ ι :=
+    (Fintype.equivFinOfCardEq (Module.finrank_eq_card_basis b).symm).symm
+  refine ⟨a ∘ e.symm, z₀.reindex e, fun k ↦ ?_, fun x k ↦ ?_⟩
+  · refine (z₀.reindex e).ext fun j ↦ ?_
+    simp [h_dual, Finsupp.single_apply, eq_comm]
+  · simpa using h_bound x (e.symm k)
 
 end Auerbach
 
