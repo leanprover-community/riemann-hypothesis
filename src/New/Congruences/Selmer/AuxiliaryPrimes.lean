@@ -119,11 +119,11 @@ section AnticyclotomicChar
 open NeZero Nat Subgroup QuotientGroup MonoidHom Valued Multiplicative
 open scoped Pointwise
 
-/-- A discrete logarithm at `P`: let `P.q = 1 + q * k` be prime and let the residue of the local
-unit `u` generate the units of the residue field. Then some character of `E_Pˣ` to `ℤ/q` sends `u`
-to the generator `1` and is trivial on every `t` with `t ≡ 1` or `t ^ k ≡ 1` modulo `P`. -/
+/-- A discrete logarithm at `P`: let `P.q = 1 + q * k` and let the residue of the local unit `u`
+generate the units of the residue field. Then some character of `E_Pˣ` to `ℤ/q` sends `u` to the
+generator `1` and is trivial on every `t` with `t ≡ 1` or `t ^ k ≡ 1` modulo `P`. -/
 lemma New.Selmer.exists_discreteLog {E : Type*} [Field E] [NumberField E] {P : FinPlace E}
-    {q k : ℕ} (hp : P.q.Prime) (hk : P.q = 1 + q * k) {u : (LocField P)ˣ}
+    {q k : ℕ} (hk : P.q = 1 + q * k) {u : (LocField P)ˣ}
     (hu : u ∈ (LocInt P).unitGroup)
     (h_gen : ∀ z : (IsLocalRing.ResidueField (LocInt P))ˣ,
       z ∈ zpowers ((LocInt P).unitGroupToResidueFieldUnits ⟨u, hu⟩)) :
@@ -168,7 +168,7 @@ lemma New.Selmer.exists_discreteLog {E : Type*} [Field E] [NumberField E] {P : F
   have h_dvd : (q * k : ℤ) ∣ e * k := by
     simpa [← he, ← zpow_natCast, ← zpow_mul, ← orderOf_dvd_iff_zpow_eq_one, h_order]
       using h_residue_pow
-  have hk_ne : k ≠ 0 := fun h ↦ hp.one_lt.ne' (by simpa [h] using hk)
+  have hk_ne : k ≠ 0 := fun h ↦ P.one_lt_q.ne' (by simpa [h] using hk)
   have hq_dvd : (q : ℤ) ∣ e := Int.dvd_of_mul_dvd_mul_right (Int.natCast_ne_zero.2 hk_ne) h_dvd
   simpa [lg, ← he, ← orderOf_dvd_iff_zpow_eq_one] using hq_dvd
 
@@ -226,7 +226,7 @@ lemma New.Selmer.exists_ideleClassChar_of_local {E : Type*} [Field E] [NumberFie
 
 /-- Let `E` be a CM field, `Ω` the algebraic closure of `ℚ` containing it, and `T` a set of finite
 places such that the ideles that are units off `T` (the `T`-ideles) and the principal ideles
-generate all finite ideles. Let `P ∉ T`, `P ≠ P̄`, have prime norm `1 + q * k`, and let a Frobenius
+generate all finite ideles. Let `P ∉ T`, `P ≠ P̄`, have norm `1 + q * k`, and let a Frobenius
 `σ` at a place `A` over `P` fix a `q`-th root of each element of a finite set `s` that generates the
 `T`-units. Then there is a continuous character `χ` of `Gal(Ω/E)` with values in `ℤ/q` that takes
 the value `1` at `hA.tameGenerator`, the generator of tame inertia at `A` fixed in
@@ -237,7 +237,7 @@ lemma New.Selmer.exists_anticyclotomicChar_of_frob_fixes_roots {E : Type} [Field
     [EmbeddedNumberField E] [NumberField.IsCMField E] {q k : ℕ} [NeZero q] {T : Set (FinPlace E)}
     (h_gen : principalIdele.range ⊔ idelesUnitOff T = ⊤) {s : Finset (Additive (T.unit E))}
     (hs : Submodule.span ℤ (s : Set (Additive (T.unit E))) = ⊤) {P : FinPlace E}
-    (hp : P.q.Prime) (hk : P.q = 1 + q * k) (hPT : P ∉ T) (hP_ne_star : star P ≠ P)
+    (hk : P.q = 1 + q * k) (hPT : P ∉ T) (hP_ne_star : star P ≠ P)
     {A : ClosurePlace} (hA : IsPlaceOver A P) {σ : Gal(Ω/E)} (hσ : IsFrob A P.q σ)
     (h_fix : ∀ u ∈ s, ∃ y : Ω, y ^ q = algebraMap E Ω (u.toMul : Eˣ) ∧ σ • y = y) :
     ∃ (χ : Gal(Ω/E) →* Multiplicative (ZMod q)) (θ : (𝔸f E)ˣ →* Multiplicative (ZMod q)),
@@ -249,7 +249,7 @@ lemma New.Selmer.exists_anticyclotomicChar_of_frob_fixes_roots {E : Type} [Field
   -- The discrete logarithm at `P` kills the `T`-units, so extends to a character `θ` of the idele
   -- classes; the existence theorem turns `θ (x / star x)` into a Galois character.
   obtain ⟨u₀, hu₀_mem, hu₀_art, hu₀_gen, hu₀_unit⟩ := hA.exists_isTameUnit
-  obtain ⟨lg, hlg_u₀, hlg_one, hlg_pow⟩ := exists_discreteLog hp hk hu₀_mem hu₀_gen
+  obtain ⟨lg, hlg_u₀, hlg_one, hlg_pow⟩ := exists_discreteLog hk hu₀_mem hu₀_gen
   have hlg_gen (u : Additive (T.unit E)) (hu : u ∈ s) :
       lg (ideleAt P (principalIdele u.toMul)) = 1 := by
     obtain ⟨y, hy, hy_fix⟩ := h_fix u hu
@@ -376,7 +376,7 @@ lemma New.Selmer.exists_isAuxPrimeDataAt {E : Type} [Field E]
   have h_norm : P.q ≡ 1 [MOD ℓ ^ N] := (hσ.mem_ker_cyclotomicCharMod_iff (hℓ hPT hA)).1 hσ_cyc
   obtain ⟨k, hk⟩ : ∃ k : ℕ, P.q = 1 + ℓ ^ N * k := (modEq_iff_exists_eq_add hp.pos).1 h_norm.symm
   obtain ⟨χ, θ, hχ_cont, hχ_tg, hθ_rat, hθ_one, hχ⟩ :=
-    exists_anticyclotomicChar_of_frob_fixes_roots h_gen hs hp hk hPT hP_ne_star hA hσ
+    exists_anticyclotomicChar_of_frob_fixes_roots h_gen hs hk hPT hP_ne_star hA hσ
       fun u hu ↦ ⟨y (u.toMul : Eˣ), hy _, mem_iInf.1 hσ_root ⟨u, hu⟩⟩
   -- multiply `σ` by a power of the tame generator to get a Frobenius `τ` at which `χ` is trivial
   let τ : Gal(Ω/E) := σ * hA.tameGenerator.val ^ (χ σ⁻¹).toAdd.val
