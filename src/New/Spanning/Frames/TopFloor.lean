@@ -64,7 +64,9 @@ variable {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A] {m : ℕ} 
 open scoped Classical in
 /-- The pairing of the scaled orbital integrals of `Z` with heads `p` and `q` at `k * l`, integrated
 over `k` in `besselH`, the fixer of the last frame vector `z` in the floor group G^(ϱ), as a
-function of the vector `e = l⁻¹ z` for `l` in G^(ϱ); it is zero off the orbit of `z`. -/
+function of the vector `e = l⁻¹ z` for `l` in G^(ϱ); it is zero off the orbit of `z`. The definition
+uses a chosen `l` with `l⁻¹ z = e`, and the value does not depend on the choice
+(`PlaceData.fiberPairing_orbitPoint`). -/
 def PlaceData.fiberPairing (e : 𝔰.BesselIndex → A) : ℂ :=
   if h : ∃ l ∈ T.floorGroup 𝔰.ϱ, orbitPoint 𝔰.top l = e then
     ∫ k : T.G, ⟪scaledOrbitalIntegral Z p (k * h.choose),
