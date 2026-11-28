@@ -6,9 +6,10 @@ name: build
 # from a batch/ branch of this repository (the batcher's batch pull requests) on the self-hosted
 # rh-big runner (see CACHE.md, "Self-hosted runners"), with the shared build cache (CACHE.md). So
 # the merge queue and batch pull requests never wait behind other pull requests. It fails if the
-# build fails, if any module reports `sorry`, or if one of the five theorems of src/Main.lean
-# depends on an axiom other than propext, Classical.choice and Quot.sound. The job is called
-# `lake build` in every case: it is the merge queue's required check.
+# build fails, if any module reports `sorry`, if a project module emits an unexpected info
+# message, or if a theorem of src/Main.lean depends on an axiom other than propext,
+# Classical.choice and Quot.sound. The job is called `lake build`: it is the merge queue's
+# required check.
 #
 # Pull requests run their own code, so they use `pull_request` (not `pull_request_target`), a
 # read-only token and no secrets. A pull request from a fork runs only on the rh-pr-fork runners,
@@ -113,6 +114,10 @@ jobs:
         # import no Tau Ceti module, then fetches the oleans of the imported Tau Ceti modules.
         run: python3 scripts/tauceti-cache-get.py
 
+      - name: Test the Lean info diagnostic check
+        if: steps.queue.outputs.tested != 'true'
+        run: python3 -I scripts/tests/test_check_build_log.py
+
       - name: Restore this project's cache
         if: steps.queue.outputs.tested != 'true'
         # Exit 0: the exact build inputs were restored, and nothing should compile.
@@ -147,6 +152,7 @@ jobs:
             echo "::error::The build reports declarations that use sorry."
             exit 1
           fi
+          python3 -I scripts/check-build-log.py build.log
 
       - name: Check the axioms of the five theorems
         if: steps.queue.outputs.tested != 'true'
