@@ -20,6 +20,7 @@ import Mathlib.Topology.Algebra.Module.Cardinality
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.RingTheory.Perfectoid.Cyclotomic.Basic
+import TauCeti.RingTheory.Perfectoid.Cyclotomic.SpecializationKernel
 import TauCeti.RingTheory.Perfectoid.Padic
 public import Lib.PadicHodge.PeriodRings.AxTheorem
 
@@ -815,58 +816,27 @@ lemma OFlat.shiftDiff_surjective_of_not_isUnit (h : ¬IsUnit t) :
   let y : ℕ → OFlat := fun n ↦ ⟨fun k ↦ u k n, fun k ↦ congrFun (h_frob k) n⟩
   exact ⟨y, funext fun n ↦ Perfection.ext fun k ↦ congrFun (hu k) n⟩
 
-/-- Let `a ∈ A_inf` be killed by `θ ∘ φ ^ j` for every `j`, write `x₀` for the constant coefficient
-in `O^♭` of `x ∈ A_inf`, and let `μ₀ = a₀ * c` with `c ∈ O^♭`. Then `c ^ p ^ n` divides `μ₀` for
-every `n`. -/
-private lemma pow_pow_dvd_constantCoeff_mu_of_eq_mul (n : ℕ) (a : Ainf)
-    (ha : ∀ j : ℕ, theta (frobEnd^[j] a) = 0) (c : OFlat)
-    (h_eq : constantCoeff mu = constantCoeff a * c) : c ^ p ^ n ∣ constantCoeff mu := by
-  -- Induction on `n`: `a = ξ * b`, and `φ b` satisfies the hypotheses with `c ^ p` in place of `c`.
-  induction n generalizing a c with
-  | zero => simp [h_eq]
-  | succ n ih =>
-    obtain ⟨b, rfl⟩ : xi ∣ a := theta_eq_zero_iff_xi_dvd.mp (ha 0)
-    -- `θ (φ ^ (j + 1) ξ) = p ≠ 0`, so `θ (φ ^ (j + 1) b) = 0`
-    have hb (j : ℕ) : theta (frobEnd^[j] (frobEnd b)) = 0 := by
-      have h_prod : theta (frobEnd^[j + 1] xi) * theta (frobEnd^[j + 1] b) = 0 := by
-        simpa [← RingHom.coe_pow] using ha (j + 1)
-      rw [theta_iterate_frobEnd_xi, mul_eq_zero] at h_prod
-      exact h_prod.resolve_left (NeZero.ne (p : OC))
-    -- `μ = ξ * τ` gives `τ₀ = b₀ * c`; raise this to the power `p`, using `φ τ = μ`
-    have h_tau : constantCoeff tau = constantCoeff b * c := by
-      rw [← xi_mul_tau, map_mul, map_mul, mul_assoc] at h_eq
-      exact mul_left_cancel₀ (mt p_dvd_iff.mpr not_p_dvd_xi) h_eq
-    have h_eq' : constantCoeff mu = constantCoeff (frobEnd b) * c ^ p := by
-      rw [← frobEnd_tau, constantCoeff_frobEnd, constantCoeff_frobEnd, h_tau, mul_pow]
-    simpa [← pow_mul, ← pow_succ'] using ih (frobEnd b) hb (c ^ p) h_eq'
-
 /-- If a ∈ A_inf satisfies θ(φ^j a) = 0 for all j ≥ 0, then μ divides a in A_inf. -/
 lemma mu_dvd_of_theta_frobEnd {a : Ainf} (h_theta : ∀ j : ℕ, theta (frobEnd^[j] a) = 0) :
     mu ∣ a := by
-  -- Let `I` be the ideal of all elements killed by every `θ ∘ φ ^ j`, and write `x₀` for the
-  -- constant coefficient of `x`. By `dvd_of_mem_of_constantCoeff_dvd` it is enough to show
-  -- `μ₀ ∣ x₀` for `x ∈ I`.
-  let I : Ideal Ainf := ⨅ j : ℕ, ker (theta.comp (frobEnd ^ j))
-  have h_mu : mu ∈ I := by
-    simp [I, theta_iterate_frobEnd_mu]
-  -- `I` is saturated for `p`, since `φ p = p` and `p ≠ 0` in `O_C` (`NeZero.ne p`).
-  have h_sat : ∀ x : Ainf, (p : Ainf) * x ∈ I → x ∈ I := by simp [I, NeZero.ne p, iterate_fixed]
-  have ha : a ∈ I := by simpa [I] using h_theta
-  refine dvd_of_mem_of_constantCoeff_dvd h_mu h_sat (fun x hx ↦ ?_) a ha
-  -- `O^♭` is a valuation ring, so if `μ₀ ∤ x₀` then `μ₀ = x₀ * c` with `c` a non-unit. Every power
-  -- of `c` divides `μ₀`, and `O^♭` is `c`-adically separated, so `μ₀ = 0`, which is false.
-  by_contra h_not_dvd
-  obtain ⟨c, h_eq⟩ : constantCoeff x ∣ constantCoeff mu :=
-    (ValuationRing.dvd_total (constantCoeff mu) (constantCoeff x)).resolve_left h_not_dvd
-  have hc : ¬IsUnit c := fun hc ↦ h_not_dvd (by rw [h_eq, hc.mul_right_dvd])
-  have hx_theta : ∀ j : ℕ, theta (frobEnd^[j] x) = 0 := by simpa [I] using hx
-  have h_dvd (n : ℕ) : c ^ n ∣ constantCoeff mu :=
-    (pow_dvd_pow c (n.lt_pow_self (Fact.out : p.Prime).one_lt).le).trans
-      (pow_pow_dvd_constantCoeff_mu_of_eq_mul n x hx_theta c h_eq)
-  have h_smod (n : ℕ) : constantCoeff mu ≡ 0 [SMOD (span {c} ^ n • ⊤ : Ideal OFlat)] :=
-    (TauCeti.sModEq_span_singleton_pow_iff ..).mpr (by simpa using h_dvd n)
-  exact constantCoeff_mu_ne_zero
-    ((OFlat.isHausdorff_span_singleton_of_not_isUnit hc).haus' _ h_smod)
+  have hε : IsPrimitiveRoot
+      (PreTilt.untilt ((frobeniusEquiv OFlat p).symm epsTilt)) p := by
+    rw [frobeniusEquiv_symm_epsTilt]
+    exact isPrimitiveRoot_untilt_epsRoot
+  have hφ : (WittVector.frobeniusEquiv p OFlat : Ainf → Ainf) = frobEnd := by
+    funext x
+    rw [WittVector.frobeniusEquiv_apply, ← frobEnd_eq_frobenius]
+  have h_theta' (j : ℕ) : fontaineTheta OC p
+      ((⇑(WittVector.frobeniusEquiv p OFlat))^[j] a) = 0 := by
+    rw [hφ]
+    exact h_theta j
+  -- The library uses the integers for the norm valuation on `ℂ_[p]`, which are `OC`.
+  have hp_nonunit : Fact ¬IsUnit (p : OC) := inferInstance
+  have hcomplete : IsAdicComplete (span {(p : OC)}) OC := inferInstance
+  have h_mu : TauCeti.Perfectoid.mu p epsTilt ∣ a :=
+    @PreTilt.mu_dvd_of_forall_fontaineTheta_iterate_eq_zero p _ (ℂ_[p]) _ _ _ _
+      hp_nonunit hcomplete epsTilt hε a h_theta'
+  simpa only [mu_eq, TauCeti.Perfectoid.mu_eq] using h_mu
 
 /-- If a in A_inf satisfies θ(φ^j a) = 0 for all j ≥ 1, then τ = [ε^{1/p}] − 1 divides a in
 A_inf. -/
