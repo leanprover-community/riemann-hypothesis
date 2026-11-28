@@ -3,6 +3,7 @@ module
 public import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Topology.Algebra.Group.Matrix
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
@@ -204,7 +205,7 @@ lemma exists_integrable_fockMoment_coneIntegrand_le (β : Bool) {z : ℝ} (hz : 
     simp [K, u, toReal_add, pairHomInf, realMultiplier, New.Fock.coe_pairHom]
     fun_prop [kroneckerMap]
   refine ⟨fun p ↦ (K p.1).toReal * L p.2,
-    .mul_prod (DiscreteSeries.integrable_of_compactSpace hK_cont) hL, fun ⟨k, a⟩ ↦ ?_⟩
+    .mul_prod hK_cont.integrable_of_compactSpace hL, fun ⟨k, a⟩ ↦ ?_⟩
   have h_enorm : ‖(∏ w, ‖a.val w‖ ^ 2) ^ z‖ₑ ≤ (1 + ‖a.val‖ₑ) ^ M * ‖L a‖ₑ := by
     have h_abs : |(∏ w, ‖a.val w‖ ^ 2) ^ z| ≤ (1 + ‖a.val‖) ^ M * |L a| := by
       simpa (disch := positivity) only [abs_of_nonneg, L] using h_scalar a

@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
@@ -331,7 +332,8 @@ theorem integratedRep_eq_zero_of_notMem_rootCone (hg : l.HasLargeGap A)
     obtain ⟨on_vec, on_psi⟩ :=
       integral_conv (fun k : maxCompactU ε ↦ (y * k.val)⁻¹) (ν := haarK ε)
         (k := fun k : maxCompactU ε ↦ conj (weightMinors ν k))
-        (integrable_of_compactSpace (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))
+        (Continuous.integrable_of_compactSpace
+          (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))
         (hg.integrable l.dsGenerator) h_bdd
     have h_exchange :
         ∫ g : USign ε, l.dsCoeff g *
@@ -420,7 +422,7 @@ theorem re_integratedRep_dsKernel_pos (hg : l.HasLargeGap A) (hu : IsUnitaryRep 
     simp only [Φ, Ψ, dsKernel, h_coeff, map_smul, smul_eq_mul]
     simp only [integral_mul_const, integral_const_mul, integral_div, mul_assoc]
   have Ψ_int : Integrable Ψ.uncurry (μ.prod (haarK ε)) :=
-    integrable_of_compactSpace (by fun_prop (disch :=
+    Continuous.integrable_of_compactSpace (by fun_prop (disch :=
       simp [conj_pos, GeneralLinearGroup.det_ne_zero, weightMinors_pos, ne_of_gt]))
   -- For fixed `u`, substitute `(κ u k₁, u k₂)` for `(k₁, k₂)` and use `h_left`, `h_right`.
   have h_inner (u : maxCompactU ε) :
@@ -436,7 +438,8 @@ theorem re_integratedRep_dsKernel_pos (hg : l.HasLargeGap A) (hu : IsUnitaryRep 
         Matrix.mul_inv_rev]
       ring
     rw [← integral_mul_left_eq_self _ (κ * u, u), integral_prod_symm _
-      (integrable_of_compactSpace (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))]
+      (Continuous.integrable_of_compactSpace
+        (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))]
     simp only [h_subst, integral_const_mul, h_left, mul_left_comm _ (ofReal Λ.kTypeNormSq), h_right]
     simp [c, field]
   -- Each factor on the right of `h_inner` is positive, `u⁻¹ z u` being positive definite.

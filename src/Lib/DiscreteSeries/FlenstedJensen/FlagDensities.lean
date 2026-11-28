@@ -2,6 +2,7 @@ module
 
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Holomorphic.HighestVectorExtension
@@ -493,7 +494,7 @@ lemma integrable_mul_left_of_isFlagDensity (ho : o.Injective) (ε : n → ℤˣ)
   have h_norm : IsFlagDensity o fun y : Matrix n n ℂ ↦ ‖F y‖ :=
     fun y b hb ↦ by simp [hF_density y b hb]
   have int_K : Integrable fun k : USign (1 : n → ℤˣ) ↦ F k :=
-    DiscreteSeries.integrable_of_compactSpace (hF_cont.comp' continuous_subtypeVal)
+    (hF_cont.comp' continuous_subtypeVal).integrable_of_compactSpace
   refine ⟨(hF_cont.comp' (f := fun g : USign ε ↦ x * g) (by fun_prop)).aestronglyMeasurable, ?_⟩
   simpa [HasFiniteIntegral, ← ofReal_norm, lintegral_mul_left_eq_setLIntegral_openOrbit ho ε h_norm]
     using int_K.restrict.hasFiniteIntegral
@@ -507,7 +508,7 @@ lemma integral_mul_left_eq_setIntegral_openOrbit (ho : o.Injective) (ε : n → 
     ∫ g : USign ε, F (x * g) =
       ∫ k in {k : USign (1 : n → ℤˣ) | (x : Matrix n n ℂ)⁻¹ * k ∈ openOrbit ε o}, F k := by
   have int_K : Integrable fun k : USign (1 : n → ℤˣ) ↦ F k :=
-    DiscreteSeries.integrable_of_compactSpace (hF_cont.comp' continuous_subtypeVal)
+    (hF_cont.comp' continuous_subtypeVal).integrable_of_compactSpace
   have int_G := integrable_mul_left_of_isFlagDensity ho ε hF_density hF_cont x
   -- Test against real linear forms `φ`, and split `φ ∘ F` into its positive and negative parts.
   refine (SeparatingDual.eq_iff_forall_dual_eq (R := ℝ)).2 fun φ ↦ ?_
@@ -714,7 +715,7 @@ over `K` is the double integral over the unitary blocks. -/
 theorem integral_haarK_eq_integral_signBlocksHom {φ : maxCompactU ε → ℂ} (hφ : Continuous φ) :
     ∫ k : maxCompactU ε, φ k ∂haarK ε = ∫ u : USign (1 : PosIndex ε → ℤˣ),
       ∫ v : USign (1 : NegIndex ε → ℤˣ), φ (signBlocksHom ε (u, v)) :=
-  (measurePreserving_signBlocksHom.fubini (DiscreteSeries.integrable_of_compactSpace hφ)).right.symm
+  (measurePreserving_signBlocksHom.fubini hφ.integrable_of_compactSpace).right.symm
 
 omit [DecidableEq n] in
 /-- Let `p` select the indices of one sign. On these indices `-2 ρ_c`, minus the sum of the compact
@@ -798,7 +799,7 @@ theorem integral_haarK_mul_left_of_density {l : n → ℤ} (hl : l.Injective) {F
       Uq]
   have h_swap (y : GL (PosIndex ε) ℂ) :
       ∫ u : Up, ∫ v : Uq, f (y * u) v = ∫ v : Uq, ∫ u : Up, f (y * u) v :=
-    integral_integral_swap (DiscreteSeries.integrable_of_compactSpace (by fun_prop))
+    integral_integral_swap (Continuous.integrable_of_compactSpace (by fun_prop))
   obtain ⟨a, b, rfl⟩ := exists_eq_signBlocks hx_mem
   obtain ⟨⟨y, rfl⟩, ⟨z, rfl⟩⟩ : IsUnit a ∧ IsUnit b := by
     simpa [det_signBlocks, isUnit_iff_isUnit_det] using hx_det

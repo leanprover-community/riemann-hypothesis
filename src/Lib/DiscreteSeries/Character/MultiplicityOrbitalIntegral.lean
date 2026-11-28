@@ -11,6 +11,7 @@ import Mathlib.Topology.Compactness.CompactlyGeneratedSpace
 import Mathlib.Topology.ContinuousMap.SecondCountableSpace
 import Mathlib.Topology.Metrizable.ContinuousMap
 import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Character.WeylCharacterFormula
@@ -91,7 +92,8 @@ lemma integral_mul_conj_kTypeChar {f : maxCompactU ε → ℂ} (hf : Continuous 
       ∫ y, ∫ k, F y k ∂haarK ε ∂haarK ε :=
     (integral_skew_product (f := F.uncurry)
       (fun y ↦ ((measurePreserving_mul_left _ y⁻¹).mul_right _ y).map_eq)
-      (integrable_of_compactSpace (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))).2
+      (Continuous.integrable_of_compactSpace
+        (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))).2
   have h_integrand (k : maxCompactU ε) : f k * conj (ν.kTypeChar k) =
       (∫ y : maxCompactU ε, F y (y⁻¹ * k * y) ∂haarK ε) / ν.kTypeNormSq := by
     simp [F, kTypeChar, ← integral_conj, mul_div, mul_assoc, integral_const_mul]
@@ -236,7 +238,7 @@ lemma mean_coefficient_eq_sum_norm_sq [Nonempty n] [hg : l.HasLargeGap A]
   have hφ (w : Lp ℂ 2 volume) : φ w = ∫ k : maxCompactU ε, conj (weightMinors ν k) *
       ⟪hg.toL2 l.dsGenerator, rightRegularL2 x (rightRegularL2 k w)⟫_ℂ ∂haarK ε :=
     strongIntegral_apply _ _ (fun _ ↦ by
-      simpa using integrable_of_compactSpace
+      simpa using Continuous.integrable_of_compactSpace
         (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))) w
   obtain ⟨v, v_mem, v_high, v_rep⟩ := exists_isKHighest_inner_eq_mean_coefficient hν hs hφ
   have norm_eq (g : USign ε) (y : l.DsModule) : ‖rightRegularL2 g (hg.toL2 y)‖ = ‖y‖ :=

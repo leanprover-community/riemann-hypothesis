@@ -102,12 +102,6 @@ a measure ν finite on compact sets. Continuity is proved automatically by defau
 lemma HasCompactSupport.integrable (hc : HasCompactSupport f) (hf : Continuous f := by fun_prop) :
     Integrable f ν := hf.integrable_of_hasCompactSupport hc
 
-/-- A continuous function from a compact space `X` to a normed group is integrable for every measure
-ν on `X` that is finite on compact sets. Continuity is proved automatically by default. -/
-lemma New.DiscreteSeries.integrable_of_compactSpace [CompactSpace X]
-    (hf : Continuous f := by fun_prop (disch := simp)) : Integrable f ν :=
-  HasCompactSupport.integrable (.of_compactSpace f) hf
-
 namespace New
 
 section Matrices

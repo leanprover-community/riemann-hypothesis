@@ -9,6 +9,7 @@ import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.MeasureTheory.Integral.CurveIntegral.Basic
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.LinearAlgebra.Matrix.Triangular
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
@@ -1073,7 +1074,7 @@ theorem IsHolOfWeight.integral_mul_conj_weightMinors {F : (Unit → USign ε) �
   refine (integral_eq_of_circle_mean (T := fun θ k ↦ T θ * k)
     ((hT_cont.comp continuous_fst).mul continuous_snd).measurable
     (fun θ ↦ measurePreserving_mul_left _ (T θ))
-    (integrable_of_compactSpace h_int_cont) h_mean).trans ?_
+    h_int_cont.integrable_of_compactSpace h_mean).trans ?_
   rw [integral_mul_const]
   congr 1
   unfold HCParam.kTypeNormSq

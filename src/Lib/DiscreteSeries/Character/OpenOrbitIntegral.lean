@@ -5,6 +5,7 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Topology.Algebra.Group.Matrix
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Character.WeylCharacterFormula
@@ -355,7 +356,7 @@ lemma sign_mul_orbital_eq_integral_weightMinors_div (hg : l.HasGap h) (x : n →
     _ = ∫ k, ∫ g : USign ε, w k * F g ∂volume ∂haarK ε :=
         integral_integral_skew_product (T := fun (k : maxCompactU ε) (g : USign ε) ↦ g * k)
           (f := fun z ↦ w z.1 * F z.2) (fun k ↦ map_mul_right_eq_self _ k.val)
-          ((integrable_of_compactSpace (f := w) (by
+          ((Continuous.integrable_of_compactSpace (f := w) (by
             fun_prop (disch := simp only [GeneralLinearGroup.det_ne_zero, ne_eq,
               not_false_eq_true, implies_true]))).mul_prod h_int)
     -- `w` has integral one
@@ -410,9 +411,10 @@ lemma kTypeNormSq_mul_kTypeChar_eq_integral (hg : l.HasGap h) (x : n → Circle)
   let Φ (z : K × K) : ℂ :=
     weightMinors Λ (z.1⁻¹ * (signMatrix ε)⁻¹ * z.1 * z.2) * starRingEnd ℂ (weightMinors Λ z.2) /
       weightMinors (-paramAddRho l) ((z.2 : Matrix n n ℂ)ᴴ * (z.1⁻¹ * A * z.1) * z.2)
-  have Φ_int : Integrable Φ ((haarK 1).prod (haarK 1)) := integrable_of_compactSpace <| by
-    fun_prop (disch := simp (disch := simp [*, GeneralLinearGroup.det_ne_zero]) [A,
-      maxCompactU.coe_inv, GeneralLinearGroup.det_ne_zero, IsHermitianInvolution.det_ne_zero])
+  have Φ_int : Integrable Φ ((haarK 1).prod (haarK 1)) :=
+    Continuous.integrable_of_compactSpace <| by
+      fun_prop (disch := simp (disch := simp [*, GeneralLinearGroup.det_ne_zero]) [A,
+        maxCompactU.coe_inv, GeneralLinearGroup.det_ne_zero, IsHermitianInvolution.det_ne_zero])
   have expand (y : K) :
       weightMinors Λ (y⁻¹ * diagTorusK x * y).val = (∫ k, Φ (y, k) ∂haarK 1) / Λ.kTypeNormSq := by
     -- split `y⁻¹ x y = a * z` with `a = y⁻¹ J⁻¹ y` and `z = y⁻¹ A y` accretive

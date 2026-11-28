@@ -2,6 +2,7 @@ module
 
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.Rigidity.RepresentationsAndCasimirs
@@ -395,9 +396,10 @@ private theorem New.eventually_integral_conj_weightMinors_mul_dsCoeff (hg : l.Ha
     weightMinors l.lowestKType (blockDiagPart ε x * j) * conj (weightMinors l.lowestKType k) /
       weightMinors (-paramAddRho l) (S ((blockDiagPart ε x)⁻¹ * x) j * y)
   let H (j k : maxCompactU ε) : ℂ := weightMinors ν (k * j⁻¹).val * G j k (S b k)
-  have hH_int : Integrable H.uncurry ((haarK ε).prod (haarK ε)) := integrable_of_compactSpace <| by
-    unfold H G S
-    fun_prop (disch := simp [h_acc, GeneralLinearGroup.det_ne_zero])
+  have hH_int : Integrable H.uncurry ((haarK ε).prod (haarK ε)) :=
+    Continuous.integrable_of_compactSpace <| by
+      unfold H G S
+      fun_prop (disch := simp [h_acc, GeneralLinearGroup.det_ne_zero])
   let F (k : maxCompactU ε) : ℂ := weightMinors l.lowestKType k *
     conj (weightMinors l.lowestKType k) / weightMinors (-paramAddRho l) (S b k)
   -- The mean of `H j (k t_s)` over the circle.

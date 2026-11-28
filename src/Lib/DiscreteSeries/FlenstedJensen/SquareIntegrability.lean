@@ -14,6 +14,7 @@ import Mathlib.RingTheory.Etale.Weakly
 import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.RingTheory.TotallySplit
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.FlenstedJensen.CasimirEigenfunction
@@ -299,7 +300,7 @@ theorem norm_dsCoeff_sq_mul_det_pow_le_one {h : ℕ} (hg : l.HasGap h) {c : ℕ}
   have hD_pos : 0 < D := by simp [hD]
   let f (u : maxCompactU ε) : ℝ := ‖weightMinors l.lowestKType u.val‖ ^ 2
   have h_int : Integrable f (haarK ε) :=
-    DiscreteSeries.integrable_of_compactSpace
+    Continuous.integrable_of_compactSpace
       (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))
   -- Factors from `K` on either side do not change `|det a|`, `a` the block diagonal part; so
   -- `g = k * z` and `u⁻¹ * z * u` have the same `D`.
@@ -451,7 +452,8 @@ theorem integral_mul_dsCoeff_translate (hg : l.HasLargeGap A) {w : USign ε → 
     -- both sides are the double integral over `K` and the group
     obtain ⟨h_on_coeff, h_on_w⟩ :=
       integral_conv (k := fun k ↦ conj (weightMinors l.lowestKType k)) (ν := haarK ε) (↑)
-        (integrable_of_compactSpace (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))
+        (Continuous.integrable_of_compactSpace
+          (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero])))
         hw_int (.of_continuous ⟨1, fun g ↦ norm_dsCoeff_le_one hg (x * g * a)⟩)
     simpa [hw_type, h_proj, mul_assoc] using h_on_w.symm.trans h_on_coeff
   -- cancel the constant `kTypeNormSq`

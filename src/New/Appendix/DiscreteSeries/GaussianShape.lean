@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 public import Lib.General.LinearAlgebra.MatricesNearIdentity
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
@@ -66,7 +67,7 @@ lemma one_le_pow_mul_kTypeNormSq [Nonempty n] (hl : l.HasLargeGap A) (hL : ∀ i
       ENNReal.ofReal ((2000 * (card n + L + 1) ^ 6 * 1 ^ 2) ^ (2 * card n ^ 2)) *
         ENNReal.ofReal (∫ k : maxCompactU ε, 4 * ‖l.dsCoeff k‖ ^ 2 ∂haarK ε) :=
     measure_ball_le_integral_dsCoeff (hg := hl) hL (haarK ε) (maxCompactU ε).subtype
-      integrable_of_compactSpace 1 le_rfl
+      (Continuous.integrable_of_compactSpace (by fun_prop (disch := simp))) 1 le_rfl
   rw [← ENNReal.one_le_ofReal, ENNReal.ofReal_mul (by positivity)]
   simpa [h_univ, dsCoeff_of_mem_maxCompactU, integral_const_mul] using h_ball
 
@@ -277,7 +278,7 @@ lemma flenstedJensen_div_exp_sub {y : Matrix n n ℂ} {θ : ℂ} {r : maxCompact
       weightMinors (-paramAddRho l) ((k : Matrix n n ℂ)ᴴ * y * k)
   have h_def : l.flenstedJensen 1 y =
       (∫ k : maxCompactU ε, F k ∂haarK ε) / l.lowestKType.kTypeNormSq := rfl
-  have hF : Integrable F (haarK ε) := integrable_of_compactSpace <| by
+  have hF : Integrable F (haarK ε) := Continuous.integrable_of_compactSpace <| by
     fun_prop (disch := simp [h_denom, hy, GeneralLinearGroup.det_ne_zero])
   have h_point (k : maxCompactU ε) :
       (‖weightMinors l.lowestKType k‖ ^ 2 * Real.exp (-q) : ℝ) * (cexp (r k) - 1) =
@@ -287,7 +288,8 @@ lemma flenstedJensen_div_exp_sub {y : Matrix n n ℂ} {θ : ℂ} {r : maxCompact
     field_simp
   have h_sq : Integrable (fun k : maxCompactU ε ↦
       ((‖weightMinors l.lowestKType k‖ ^ 2 : ℝ) * Real.exp (-q) : ℂ)) (haarK ε) :=
-    integrable_of_compactSpace (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))
+    Continuous.integrable_of_compactSpace
+      (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))
   have h_int : ∫ k : maxCompactU ε,
       (‖weightMinors l.lowestKType k‖ ^ 2 * Real.exp (-q) : ℝ) * (cexp (r k) - 1) ∂haarK ε =
         (∫ k : maxCompactU ε, F k ∂haarK ε) / cexp θ -
@@ -363,7 +365,8 @@ lemma exists_norm_dsCoeff_div_cexp_sub_le [Nonempty n] (hl : l.HasLargeGap A)
   -- Integrate this bound, and use the lower bound for `l.lowestKType.kTypeNormSq`.
   have h_sq : Integrable (fun k : maxCompactU ε ↦
       Real.exp (-q) / 10 * ‖weightMinors l.lowestKType k‖ ^ 2) (haarK ε) :=
-    integrable_of_compactSpace (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))
+    Continuous.integrable_of_compactSpace
+      (by fun_prop (disch := simp [GeneralLinearGroup.det_ne_zero]))
   have h_pos : 0 < l.lowestKType.kTypeNormSq := kTypeNormSq_pos l.lowestKType
   rw [h_mean, norm_div, Complex.norm_of_nonneg h_pos.le, div_le_iff₀ h_pos]
   calc _ ≤ ∫ k : maxCompactU ε, Real.exp (-q) / 10 * ‖weightMinors l.lowestKType k‖ ^ 2 +

@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Int
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.Topology.Algebra.Group.Matrix
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.DiscreteSeries.FlenstedJensen.Defs
@@ -233,11 +234,12 @@ lemma exists_intertwining_mean {G : Type*} [Group G] [TopologicalSpace G] [IsTop
       (∀ y : G, B * R y = S y * B) ∧
       ∀ L : Matrix Φ n ℂ →ₗ[ℂ] ℂ, ∫ g : G, L (S g * M * R g⁻¹) ∂ν = L B := by
   let B : Matrix Φ n ℂ := ∫ g, S g * M * R g⁻¹ ∂ν
+  have h_int := h_cont.integrable_of_compactSpace (μ := ν)
   -- Linear maps commute with the integral of a continuous function on a compact group.
   have h_lin (L : Matrix Φ n ℂ →ₗ[ℂ] Matrix Φ n ℂ) : ∫ g, L (S g * M * R g⁻¹) ∂ν = L B :=
-    L.toContinuousLinearMap.integral_comp_comm DiscreteSeries.integrable_of_compactSpace
+    L.toContinuousLinearMap.integral_comp_comm h_int
   refine ⟨B, fun y ↦ ?_,
-    fun L ↦ L.toContinuousLinearMap.integral_comp_comm DiscreteSeries.integrable_of_compactSpace⟩
+    fun L ↦ L.toContinuousLinearMap.integral_comp_comm h_int⟩
   -- Substitute `y * g` for `g`: then `S y` comes out on the left and `R y⁻¹ * R y` cancels.
   calc
     B * R y = ∫ g, S g * M * R g⁻¹ * R y ∂ν := (h_lin (mulRightLinearMap _ ℂ (R y))).symm

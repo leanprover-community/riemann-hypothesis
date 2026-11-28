@@ -1,5 +1,6 @@
 module
 
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.CompactLift.ThetaKernelDefs
@@ -405,7 +406,7 @@ lemma isThetaLift_thetaKernel [Nonempty n] [Nonempty n'] [DecidableEq n'] [Decid
     rw [← h_realPart, Prod.mk_one_one, lift_omega_left _ (isAutomorphic_algFormCoeff φ),
       hβ (ha o) (hb o) K] at h_mean
     have T_int (v : WeylIndex n' κ → ℂ) : Integrable fun u : GInf E (1 : n' → ℤˣ) ↦ T u v := by
-      refine DiscreteSeries.integrable_of_compactSpace (f := fun u ↦ T u v) ?_
+      refine Continuous.integrable_of_compactSpace (f := fun u ↦ T u v) ?_
       change Continuous fun u : GInf E (1 : n' → ℤˣ) ↦
         (α u * (β / stdLevelIndex K)) *
           gramForm (highestVector κ l') (conjWeylRep κ ea (s := 1) u⁻¹ v)

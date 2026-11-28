@@ -3,6 +3,7 @@ module
 import Mathlib.Analysis.Convex.Integral
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.RingTheory.PicardGroup
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Periods.DescentVanishing
@@ -251,7 +252,7 @@ lemma New.Exchange.apply_eq_zero_of_forall_fixed_eq_zero {G V : Type*} [Group G]
   borelize G
   let κ : Measure G := haarMeasure ⊤
   have : IsProbabilityMeasure κ := ⟨haarMeasure_self⟩
-  have h_int : Integrable (fun g : G ↦ ρ g v) κ := integrable_of_compactSpace h_cont
+  have h_int : Integrable (fun g : G ↦ ρ g v) κ := h_cont.integrable_of_compactSpace
   have mean_mem : ∫ g : G, ρ g v ∂κ ∈ W :=
     (W.restrictScalars ℝ).convex.integral_mem W.isClosed_of_finiteDimensional
       (.of_forall fun g ↦ h_stable g v hv) h_int
@@ -406,7 +407,7 @@ lemma New.Exchange.integral_theta_pairWeil_stabilizer_eq_zero {s : n → ℤˣ} 
     simp only [A, ContinuousLinearMap.comp_apply]
     fun_prop
   have h_apply (f : 𝒮 (Z.hom Y)) : strongIntegral κ A f = ∫ c : C, A c f ∂κ :=
-    strongIntegral_apply κ A (fun f' ↦ integrable_of_compactSpace (hA f')) f
+    strongIntegral_apply κ A (fun f' ↦ (hA f').integrable_of_compactSpace) f
   -- the functional `v ↦ mean (v ⊗ f)` on Fock space is zero
   have h_fock_zero (f : 𝒮 (Z.hom Y)) : strongIntegral κ A ∘L (Z.hom Y).integrated.flip f = 0 := by
     refine h_no_invariant_functional _ fun c hc hcx v ↦ ?_

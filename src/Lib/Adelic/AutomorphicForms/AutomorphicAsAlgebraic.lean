@@ -2,6 +2,7 @@ module
 
 import Mathlib.MeasureTheory.SpecificCodomains.Pi
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.MeasureTheory.Integral.ContinuousMap
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.AutomorphicForms.Basic
@@ -145,7 +146,7 @@ lemma toAlgFormFun_mem_algForm {y : G E (1 : n → ℤˣ) → ℂ}
         simp [hy_rat _ ⟨γ, rfl⟩, weightRep]
       _ = weightRep κ e (stdSpace E n) γ (toAlgFormFun κ e l y g) :=
         (weightRep κ e (stdSpace E n) γ).toContinuousLinearMap.integral_comp_comm
-          integrable_of_compactSpace
+          (Continuous.integrable_of_compactSpace (by fun_prop (disch := simp)))
 
 /-- Let `l` be twice the Harish-Chandra parameter of the weight `(κ, e)`. The convolution over
 `G_∞` of a continuous `y` with `typeKernel l 1` is `(x, g) ↦ ⟨v, x⁻¹ y♭(g)⟩`, where `v` is the
@@ -164,7 +165,8 @@ lemma realConv_typeKernel (h : IsHCParam (n := n) κ e l) {y : G E (1 : n → �
   symm
   calc L (toAlgFormFun κ e l y g)
       = ∫ z, L ((card (WeylIndex n κ) * y (z, g)) • conjWeylRep κ e z (highestVector κ l)) :=
-        (L.toContinuousLinearMap.integral_comp_comm integrable_of_compactSpace).symm
+        (L.toContinuousLinearMap.integral_comp_comm (Continuous.integrable_of_compactSpace
+          (by fun_prop (disch := simp)))).symm
     _ = ∫ z, L ((card (WeylIndex n κ) * y (x * z, g)) •
           conjWeylRep κ e (x * z) (highestVector κ l)) :=
         (integral_mul_left_eq_self _ x).symm
@@ -186,7 +188,7 @@ lemma toAlgFormFun_ofAlgForm (h : IsHCParam (n := n) κ e l) (ψ : AlgForm n κ 
     ((stdSpace E n).isAutomorphic_algFormCoeff ψ).continuous
   have h_int (b : WeylIndex n κ) : Integrable fun x : GInf E (1 : n → ℤˣ) ↦
       ((card (WeylIndex n κ) * ofAlgForm (κ := κ) l 1 ψ (x, g)) • conjWeylRep κ e x v) b :=
-    integrable_of_compactSpace (by fun_prop (disch := simp))
+    Continuous.integrable_of_compactSpace (by fun_prop (disch := simp))
   calc toAlgFormFun κ e l (ofAlgForm l 1 ψ) g a
     _ = card (WeylIndex n κ) * ∫ x, LinearMap.proj (R := ℂ) a (conjWeylRep κ e (s := 1) x v) *
           gramForm v (conjWeylRep κ e x⁻¹ (ψ.val g)) := by
@@ -231,7 +233,7 @@ def toAlgForm [hV : V.IsStd] (h : IsHCParam (n := n) κ e l) :
     refine ⟨φ, Subtype.ext ?_⟩
     calc ofAlgForm l 1 φ = realConv (typeKernel l 1) y :=
           funext fun g ↦ (realConv_typeKernel h hy.continuous g).symm
-      _ = y := hy.realConv_eq integrable_of_compactSpace
+      _ = y := hy.realConv_eq (Continuous.integrable_of_compactSpace (by fun_prop (disch := simp)))
 
 /-- Let `V` be a standard space and `l` twice the Harish-Chandra parameter of `(κ, e)`. Let `y` be a
 form of type `typeKernel l s` on `V`, and let `φ = V.toAlgForm h y` be its algebraic form of weight
@@ -344,7 +346,8 @@ theorem integral_mul_eq_classIntegral_toAlgFormFun (K : Subgroup (Gf E n)) [hK :
         refine integral_congr_ae (.of_forall fun x ↦ ?_)
         simp [hy'_eq, mul_comm, mul_assoc]
       _ = L g (toAlgFormFun κ e l y g) :=
-        (L g).toContinuousLinearMap.integral_comp_comm integrable_of_compactSpace
+        (L g).toContinuousLinearMap.integral_comp_comm (Continuous.integrable_of_compactSpace
+          (by fun_prop (disch := simp)))
   rw [← integral_const_mul, integral_eq_classIntegral_of_isLevel
     (hy'.map₂ hy fun a b ↦ d * (a * b)) hK]
   simp only [h_infinite]
