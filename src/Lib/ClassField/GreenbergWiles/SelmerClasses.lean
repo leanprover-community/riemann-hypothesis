@@ -10,21 +10,13 @@ import Lib.ClassField.GreenbergWiles.SelmerRelations
 The Selmer cocycles `New.selmerZ1` are cut out by conditions on cocycles. This file defines the
 corresponding group of classes `New.selmerH1` in `H¹(Gal(Ω/K), M)`, cut out by the local conditions
 on classes, and shows that the Selmer cocycles are exactly the cocycles whose class is a Selmer
-class when the conditions contain the coboundaries. The Greenberg–Wiles bound
-`New.selmerZ1.card_mul_pow_le` for cocycles then becomes a bound for classes in the usual shape,
-with the orders of `H⁰` in place of the coboundaries.
+class when the conditions contain the coboundaries.
 
 * `New.classCondition`: the classes in `H¹` of the cocycles in a module of functions.
 * `New.selmerH1`: the classes that are unramified outside `S ∪ P`, whose restriction to the
   decomposition group of `A v` lies in the class condition of `L v` for `v ∈ S`, and whose
   restriction to each complex conjugation is zero.
 * `New.selmerH1.comap_π₁_eq`: the Selmer cocycles are the cocycles with Selmer class.
-* `New.selmerH1.card_selmerZ1_eq`, `New.selmerH1.card_localCocycles_eq`: the Selmer cocycles number
-  `#H¹_L · #B¹`, and the local cocycles `#L_v · #B¹_v`.
-* `New.selmerH1.card_mul_pow_le`, `New.selmerH1.card_relations_ge`: the Greenberg–Wiles bounds for
-  Selmer classes, for instance
-  `#H¹_L · #M ^ (f + 1) · ∏_{v ∈ S} #H⁰_v ≤ #M ^ k · #H⁰ · ∏_{v ∈ S} #L_v`, where `f` is the
-  number of infinite places and `L_v` the local class conditions.
 
 ## Relation to the literature
 
@@ -160,127 +152,6 @@ theorem comap_π₁_eq (hu : ∀ g ∈ inertiaAbove Sᶜ, M.ρ g = 1)
     Set.mem_ofPred_eq]
   exact ⟨fun ⟨⟨h1, h2⟩, h3⟩ ↦ ⟨⟨z.property, h1⟩, fun v hv ↦ h2 v hv, h3⟩,
     fun ⟨⟨_, h1⟩, h2, h3⟩ ↦ ⟨⟨h1, h2⟩, h3⟩⟩
-
-/-- Let `L` be a module of functions `G → N` that contains the coboundaries. The cocycles in `L`
-number the classes of those cocycles times the coboundaries. -/
-theorem _root_.New.DiscreteModule.card_inf_Z1_eq {G : Type} [Group G] [TopologicalSpace G]
-    [IsTopologicalGroup G] (N : DiscreteModule R G) {L : Submodule R (G → N)}
-    (hL : ∀ z ∈ B1 N.ρ, (z : G → N) ∈ L) :
-    Nat.card ↥(L ⊓ Z1 N.ρ) =
-      Nat.card ((L.comap (Z1 N.ρ).subtype).map N.π₁) * Nat.card (B1 N.ρ) := by
-  rw [← Nat.card_congr (Submodule.comapSubtypeEquivOfLe (inf_le_right : L ⊓ Z1 N.ρ ≤ _)).toEquiv,
-    Submodule.comap_inf, Submodule.comap_subtype_self, inf_top_eq,
-    N.card_eq_card_map_π₁_mul_card_inf_B1, inf_eq_right.2 fun z hz ↦ hL z hz]
-
-/-- Under the hypotheses of `New.selmerH1.comap_π₁_eq`, the Selmer cocycles number the Selmer
-classes times the coboundaries. -/
-theorem card_selmerZ1_eq (hu : ∀ g ∈ inertiaAbove Sᶜ, M.ρ g = 1)
-    (hL : ∀ v ∈ S, LinearMap.range (coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ) ≤
-      L v)
-    (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) :
-    Nat.card (selmerZ1 M S A L P) = Nat.card (selmerH1 M S A L P) * Nat.card (B1 M.ρ) := by
-  have h_eq := comap_π₁_eq (P := P) hu hL hcM
-  have h_le : selmerZ1 M S A L P ≤ Z1 M.ρ := fun _ hz ↦ hz.1.1
-  have h_B1 : ∀ z ∈ B1 M.ρ, (z : Gal(Ω/K) → M) ∈ selmerZ1 M S A L P := fun z hz ↦ by
-    have : z ∈ (selmerH1 M S A L P).comap M.π₁ := by
-      have hz0 : M.π₁ z = 0 := by rwa [← LinearMap.mem_ker, M.ker_π₁]
-      rw [Submodule.mem_comap, hz0]
-      exact zero_mem _
-    rw [h_eq] at this
-    exact this
-  rw [← inf_eq_left.2 h_le, M.card_inf_Z1_eq h_B1, ← h_eq,
-    Submodule.map_comap_eq_of_surjective M.π₁_surjective]
-
-/-- If the local condition `L` at `D` contains the coboundaries, its cocycles number its classes
-times the coboundaries. -/
-theorem card_localCocycles_eq {D : Subgroup Gal(Ω/K)} {L : Submodule R (D → M)}
-    (hL : LinearMap.range (coboundaryMap (M.restrictTo D).ρ) ≤ L) :
-    Nat.card ↥(L ⊓ Z1 (M.restrictTo D).ρ) =
-      Nat.card (classCondition M L) * Nat.card (B1 (M.restrictTo D).ρ) :=
-  (M.restrictTo D).card_inf_Z1_eq fun z hz ↦ by
-    obtain ⟨b, hb⟩ := mem_B1_iff.1 hz
-    exact hL ⟨b, funext hb⟩
-
-/-- The arithmetic that turns a count of cocycles into a count of classes. Let `b · h = m` and
-`b_v · h_v = m` for `v ∈ S`, where `b`, `b_v` are numbers of coboundaries and `h`, `h_v` of
-invariants. If `c · b · m ^ (#S + f) ≤ Y · ∏_{v ∈ S} l_v · b_v`, then
-`c · m ^ (f + 1) · ∏_{v ∈ S} h_v ≤ Y · h · ∏_{v ∈ S} l_v`. -/
-theorem mul_pow_le_of_le {ι : Type*} (S : Finset ι) {c b h m f Y : ℕ} {l bv hv : ι → ℕ}
-    (hb : b * h = m) (hbv : ∀ v ∈ S, bv v * hv v = m) (hm : 0 < m)
-    (h_le : c * b * m ^ (#S + f) ≤ Y * ∏ v ∈ S, l v * bv v) :
-    c * m ^ (f + 1) * ∏ v ∈ S, hv v ≤ Y * h * ∏ v ∈ S, l v := by
-  refine Nat.le_of_mul_le_mul_right ?_ (pow_pos hm #S)
-  calc c * m ^ (f + 1) * (∏ v ∈ S, hv v) * m ^ #S
-      = c * b * m ^ (#S + f) * (h * ∏ v ∈ S, hv v) := by
-        rw [show c * b * m ^ (#S + f) * (h * ∏ v ∈ S, hv v) =
-          c * (b * h) * m ^ (#S + f) * ∏ v ∈ S, hv v by ring, hb]
-        ring
-    _ ≤ Y * (∏ v ∈ S, l v * bv v) * (h * ∏ v ∈ S, hv v) := by gcongr
-    _ = Y * h * (∏ v ∈ S, l v) * ∏ v ∈ S, bv v * hv v := by
-        rw [prod_mul_distrib, prod_mul_distrib]
-        ring
-    _ = Y * h * (∏ v ∈ S, l v) * m ^ #S := by rw [prod_congr rfl hbv, prod_const]
-
-/-- The Greenberg–Wiles bound for Selmer classes. Under the hypotheses of
-`New.selmerZ1.card_mul_pow_le`, the Selmer classes `H¹_L` that may ramify at the split primes of `s`
-satisfy `#H¹_L · #M ^ (f + 1) · ∏_{v ∈ S} #H⁰_v ≤ #M ^ k · #H⁰ · ∏_{v ∈ S} #L_v`. Here `f` is the
-number of infinite places of `K`, `H⁰` and `H⁰_v` are the invariants of `Gal(Ω/K)` and of the
-decomposition group of `A v`, and `L_v` is the module of classes of the local conditions. -/
-theorem card_mul_pow_le {S : Finset (FinPlace K)}
-    (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, M.ρ g = 1)
-    (hA : ∀ v : FinPlace K, IsPlaceOver (A v) v)
-    (L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → M))
-    (hL : ∀ v ∈ S, (coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ).range ≤ L v)
-    (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] [Finite M]
-    {k N : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
-    {ι : Type} [NeZero N] (s : IsLargeLevel.SplitPlaces m N I U ι)
-    (hk : M.HasFewCocycles (PlaceAboveLevel N) I k) (hT : ∀ v ∈ S, ↑N ∈ v.asIdeal) :
-    Nat.card (selmerH1 M S A L (Set.range s.v)) *
-        Nat.card M ^ (Fintype.card (InfinitePlace K) + 1) *
-        ∏ v ∈ S, Nat.card (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ.invariants ≤
-      Nat.card M ^ k * Nat.card M.ρ.invariants * ∏ v ∈ S, Nat.card (classCondition M (L v)) := by
-  -- The cocycle bound, with each count of cocycles written as classes times coboundaries.
-  have h_cocycles := selmerZ1.card_mul_pow_le hu hA L hL hcM s hk hT
-  rw [card_selmerZ1_eq hu hL hcM, prod_congr rfl fun v hv ↦ card_localCocycles_eq (hL v hv)]
-    at h_cocycles
-  exact mul_pow_le_of_le S (card_B1_mul_card_invariants M.continuous_orbit)
-    (fun v _ ↦ card_B1_mul_card_invariants (M.restrictTo _).continuous_orbit) Nat.card_pos
-    h_cocycles
-
-/-- `New.selmerZ1.card_relations_ge` for classes. Under its hypotheses, the Selmer classes `H¹_L`
-without extra ramification satisfy `#H¹_L · #M ^ f · ∏_{v ∈ S} #H⁰_v ≤ #F · #H⁰ · ∏_{v ∈ S} #L_v`,
-where `F` is the set of families of maps `n i : M → ℚ/ℤ` with `∑ i, n i (x (γ i)) = 0` for all
-Selmer cocycles `x` that may ramify at the `s.v i`, `f` is the number of infinite places of `K`, and
-`L_v` is the module of classes of the local conditions. -/
-theorem card_relations_ge {S : Finset (FinPlace K)}
-    (hu : ∀ g ∈ inertiaAbove (S : Set (FinPlace K))ᶜ, M.ρ g = 1)
-    (hA : ∀ v : FinPlace K, IsPlaceOver (A v) v)
-    (L : ∀ v : FinPlace K, Submodule R (decompGroup Gal(Ω/K) (A v) → M))
-    (hL : ∀ v ∈ S, (coboundaryMap (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ).range ≤ L v)
-    (hcM : ∀ {c : Gal(Ω/K)}, IsComplexConj c → M.ρ c = 1) {m : ℕ} [NeZero m] [Finite M]
-    {q : ℕ} {U : OpenNormalSubgroup Gal(Ω/K)} {I : Set Gal(Ω/K)}
-    {ι : Type} [NeZero q] [Fintype ι] (s : IsLargeLevel.SplitPlaces m q I U ι)
-    (γ : ι → Gal(Ω/K)) (hS : ∀ v ∈ S, ↑q ∈ v.asIdeal)
-    (h_few : M.HasFewCocycles (PlaceAboveLevel q) I (Fintype.card ι + 1))
-    (h_le : selmerZ1 M S A L ∅ ≤ selmerZ1 M S A L (Set.range s.v))
-    (h_zero : ∀ x ∈ selmerZ1 M S A L ∅, ∀ i : ι, x (γ i) = 0) :
-    Nat.card (selmerH1 M S A L ∅) * Nat.card M ^ Fintype.card (InfinitePlace K) *
-        ∏ v ∈ S, Nat.card (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ.invariants ≤
-      Nat.card {n : ι → M →+ QZ | ∀ x ∈ selmerZ1 M S A L (Set.range s.v),
-          ∑ i : ι, n i (x (γ i)) = 0} *
-        Nat.card M.ρ.invariants * ∏ v ∈ S, Nat.card (classCondition M (L v)) := by
-  have h_cocycles := selmerZ1.card_relations_ge hu hA L hL hcM s γ hS h_few h_le h_zero
-  rw [card_selmerZ1_eq hu hL hcM, prod_congr rfl fun v hv ↦ card_localCocycles_eq (hL v hv)]
-    at h_cocycles
-  have h := mul_pow_le_of_le S (card_B1_mul_card_invariants M.continuous_orbit)
-    (fun v _ ↦ card_B1_mul_card_invariants (M.restrictTo _).continuous_orbit) Nat.card_pos
-    h_cocycles
-  refine Nat.le_of_mul_le_mul_left ?_ (Nat.card_pos (α := M))
-  calc Nat.card M * (Nat.card (selmerH1 M S A L ∅) * Nat.card M ^ Fintype.card (InfinitePlace K) *
-        ∏ v ∈ S, Nat.card (M.restrictTo (decompGroup Gal(Ω/K) (A v))).ρ.invariants)
-      = _ := by ring
-    _ ≤ _ := h
-    _ = _ := by ring
 
 end selmerH1
 
