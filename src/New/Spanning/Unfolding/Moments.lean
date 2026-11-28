@@ -87,15 +87,6 @@ attribute [local instance low] Fintype.ofFinite
 variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰} [ok : S.IsAdmissible]
   {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 
-/-- In a unitary representation `ρ` of a finite group, a central idempotent `z` of the group algebra
-(an idempotent whose coefficients form a class function) acts as an orthogonal projection. -/
-lemma _root_.New.IsCentralProj.isSymmetricProjection {H : Type} [Group H] [Fintype H]
-    {ρ : Representation ℂ H V} (hρ : ∀ (s : H) (x y : V), ⟪ρ s x, ρ s y⟫_ℂ = ⟪x, y⟫_ℂ)
-    {z : MonoidAlgebra ℂ H} (hz : IsCentralProj z) :
-    (ρ.asAlgebraHom z).IsSymmetricProjection :=
-  have h_idem : IsIdempotentElem z := hz.1
-  ⟨h_idem.map ρ.asAlgebraHom, hz.self_adjoint ρ 1 (innerₛₗ ℂ) hρ⟩
-
 open scoped Classical in
 variable (S) in
 /-- Let `Ḡ = S.ResidueGL` be the product of the general linear groups over the residue fields at the

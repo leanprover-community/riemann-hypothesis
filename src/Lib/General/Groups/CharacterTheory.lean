@@ -18,6 +18,7 @@ import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import TauCeti.RepresentationTheory.CharacterTable.CentralCharacter
 import TauCeti.RepresentationTheory.CharacterTable.Completeness
+import TauCeti.RepresentationTheory.Unitary
 public import Lib.Speed
 
 /-!
@@ -701,6 +702,7 @@ end ProjectionCharacter
 section CentralConvolution
 
 open LinearMap LinearIsometryEquiv
+open scoped InnerProductSpace
 
 namespace New.IsCentralProj
 
@@ -725,6 +727,16 @@ lemma self_adjoint {V : Type*} [AddCommGroup V] [Module ℂ V] (ρ : Representat
   simp only [Representation.asAlgebraHom_eq_sum, LinearMap.sum_apply, map_sum]
   exact Fintype.sum_equiv (.inv G) _ _ h_term
 
+/-- In a unitary representation, a central idempotent of the complex group algebra acts as an
+orthogonal projection. -/
+lemma isSymmetricProjection {H : Type*} [Group H] [Fintype H]
+    {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
+    {ρ : Representation ℂ H V} (hρ : ∀ (s : H) (x y : V), ⟪ρ s x, ρ s y⟫_ℂ = ⟪x, y⟫_ℂ)
+    {z : MonoidAlgebra ℂ H} (hz : IsCentralProj z) :
+    (ρ.asAlgebraHom z).IsSymmetricProjection :=
+  ρ.isSymmetricProjection_asAlgebraHom hρ (fun s ↦ by
+    simpa using hz.isChar_card_mul_coeff.apply_inv s) hz.isIdempotentElem
+
 /-- Convolution with a central idempotent e of ℂ[G], along a homomorphism φ : G → H of finite
 groups, is a contraction of ℓ²(H, V): ∑_s ‖∑_t e(t) f(φ(t)⁻¹ s)‖² ≤ ∑_s ‖f(s)‖². -/
 lemma sum_norm_sq_conv_le {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
@@ -744,11 +756,9 @@ lemma sum_norm_sq_conv_le {V : Type*} [NormedAddCommGroup V] [InnerProductSpace 
         ext f s
         change f ((φ (t * u))⁻¹ * s) = f ((φ u)⁻¹ * ((φ t)⁻¹ * s))
         simp [mul_assoc] }
-  -- for `σ = 1` the map `σ⁻¹ ∘ conj ∘ σ` of `self_adjoint` is `conj` by definition
-  have h_symm : (ρ.asAlgebraHom e).IsSymmetric :=
-    he.self_adjoint ρ 1 (innerₛₗ ℂ) fun t ↦ (L t).inner_map_map
   obtain ⟨K, _, hK : ρ.asAlgebraHom e = K.starProjection⟩ :=
-    isSymmetricProjection_iff_eq_coe_starProjection.1 ⟨he.isIdempotentElem.map _, h_symm⟩
+    isSymmetricProjection_iff_eq_coe_starProjection.1
+      (he.isSymmetricProjection (ρ := ρ) fun t ↦ (L t).inner_map_map)
   have h_norm : ‖ρ.asAlgebraHom e (.toLp 2 f)‖ ≤ ‖WithLp.toLp 2 f‖ := by
     simpa [hK] using K.norm_starProjection_apply_le _
   -- write both norms in coordinates and square
