@@ -57,80 +57,50 @@ lemma norm_det_sq_le_exp (Y : Matrix n n ℂ) :
           linarith only [Real.add_one_le_exp (hY.eigenvalues i - 1)]
     _ = Real.exp (Yᴴ * Y - 1).trace.re := by rw [trace_eq, Real.exp_sum]
 
-/-- The principal minor of `X` on the indices satisfying `p` is `det (1 + P (X - 1))`, where `P` is
-the diagonal projection to these indices. -/
-lemma principalMinor_eq_det_coordProj (X : Matrix n n ℂ) (p : n → Prop) [DecidablePred p] :
-    principalMinor X p = (1 + coordProj p * (X - 1)).det := by
-  rw [principalMinor_eq_det, coordProj, sub_eq_add_neg, ← mul_neg, neg_sub]
+/-- The entry `(i, j)` of the commutator of `X` with the diagonal projection to the indices
+satisfying `p` has the norm of `X i j` if exactly one of `p i`, `p j` holds, else it is `0`. -/
+lemma norm_lie_coordProj_apply (X : Matrix n n ℂ) (i j : n) :
+    ‖⁅coordProj p, X⁆ i j‖ = if p i ↔ p j then 0 else ‖X i j‖ := by
+  by_cases hi : p i <;> by_cases hj : p j <;> simp [coordProj, Ring.lie_def, hi, hj]
 
-/-- For a unitary matrix `k` and an orthogonal projection `P`, the crossing block
-`M = (1 - P) k P` satisfies `Mᴴ M = P - P kᴴ P k P`. -/
-lemma conjTranspose_mul_self_one_sub_mul_mul (hP : IsStarProjection P) (hk : kᴴ * k = 1) :
-    ((1 - P) * k * P)ᴴ * ((1 - P) * k * P) = P - P * kᴴ * P * k * P := by
-  have hPP : P * P = P := hP.isIdempotentElem
-  have hP_adj : Pᴴ = P := hP.isSelfAdjoint
-  simp only [conjTranspose_mul, conjTranspose_sub, conjTranspose_one, hP_adj]
-  linear_combination (norm := noncomm_ring) P * kᴴ * hPP * k * P + P * hk * P + hPP
+/-- The squared Frobenius norm of the commutator with the coordinate projection is the sum of the
+squared Frobenius norms of the two off-diagonal blocks. -/
+private lemma norm_lie_coordProj_sq_eq_blocks (p : n → Prop) [DecidablePred p] (X : Matrix n n ℂ) :
+    ‖⁅coordProj p, X⁆‖ ^ 2 =
+      ‖X.toBlock p (fun i ↦ ¬p i)‖ ^ 2 + ‖X.toBlock (fun i ↦ ¬p i) p‖ ^ 2 := by
+  have hp (i : {i // p i}) : p i := i.property
+  have hn (i : {i // ¬p i}) : ¬p i := i.property
+  simp [frobenius_norm_sq_eq_sum_norm_sq, ← Fintype.sum_subtype_add_sum_subtype p,
+    norm_lie_coordProj_apply, hp, hn]
 
-/-- For a unitary matrix `k` and an orthogonal projection `P`, the Frobenius norms of the
-commutator and of the block `(1 - P) k P` satisfy `‖[P, k]‖² = 2 ‖(1 - P) k P‖²`. -/
-lemma norm_lie_sq_of_unitary (hP : IsStarProjection P) (hk : kᴴ * k = 1) :
-    ‖⁅P, k⁆‖ ^ 2 = 2 * ‖(1 - P) * k * P‖ ^ 2 := by
-  have hk' : k * kᴴ = 1 := mul_eq_one_symm hk
-  have hPP : P * P = P := hP.isIdempotentElem
-  have hP_adj : Pᴴ = P := hP.isSelfAdjoint
-  -- Both sides are `2 (tr P - tr (P kᴴ P k))`.
-  have lie_eq : ⁅P, k⁆ᴴ * ⁅P, k⁆ = kᴴ * (P * k) - kᴴ * (P * k * P) - P * kᴴ * P * k + P := by
-    rw [Ring.lie_def, conjTranspose_sub, conjTranspose_mul, conjTranspose_mul, hP_adj]
-    linear_combination (norm := noncomm_ring) kᴴ * hPP * k + P * hk * P + hPP
-  have trace_conj : (kᴴ * (P * k)).trace = P.trace := by
-    rw [trace_mul_comm, mul_assoc, hk', mul_one]
-  have trace_left : (kᴴ * (P * k * P)).trace = (P * kᴴ * P * k).trace := by
-    simp only [← mul_assoc, trace_mul_comm _ P]
-  have trace_right : (P * kᴴ * P * k * P).trace = (P * kᴴ * P * k).trace := by
-    simp only [trace_mul_comm _ P, ← mul_assoc, hPP]
-  have block_eq : ((1 - P) * k * P)ᴴ * ((1 - P) * k * P) = P - P * kᴴ * P * k * P :=
-    conjTranspose_mul_self_one_sub_mul_mul hP hk
-  rw [← ofReal_inj, ofReal_mul, ← trace_star_mul_self_eq_norm_sq,
-    ← trace_star_mul_self_eq_norm_sq, lie_eq, block_eq]
-  simp only [trace_add, trace_sub, trace_conj, trace_left, trace_right, ofReal_ofNat]
-  ring
+/-- The two blocks of a unitary matrix on the columns indexed by `p` have total squared Frobenius
+norm equal to the number of those columns. -/
+private lemma norm_sq_add_norm_sq_block (p : n → Prop) [DecidablePred p]
+    {k : Matrix n n ℂ} (hk : kᴴ * k = 1) :
+    ‖k.toBlock p p‖ ^ 2 + ‖k.toBlock (fun i ↦ ¬p i) p‖ ^ 2 = Fintype.card {i // p i} := by
+  have h : (k.toBlock p p)ᴴ * k.toBlock p p +
+      (k.toBlock (fun i ↦ ¬p i) p)ᴴ * k.toBlock (fun i ↦ ¬p i) p = 1 :=
+    (toBlock_mul_eq_add p p p kᴴ k).symm.trans (by rw [hk, toBlock_one_self])
+  have hs {m : Type} [Fintype m] (X : Matrix m {i // p i} ℂ) :
+      (Xᴴ * X).trace.re = ‖X‖ ^ 2 := by
+    rw [← frobenius_inner_eq_trace_conjTranspose_mul]
+    exact inner_self_eq_norm_sq (𝕜 := ℂ) X
+  simpa [hs] using congrArg (fun M ↦ M.trace.re) h
 
 /-- Size of one minor: let `k` be a unitary matrix, `S` the set of indices satisfying `p`, and
 `P = coordProj p` the diagonal projection to `S`. Then the principal minor of `k` on `S` satisfies
 `|det_S k|² ≤ exp (-‖[P, k]‖² / 2)`. -/
 theorem norm_principalMinor_sq_le_exp (p : n → Prop) [DecidablePred p] (hk : kᴴ * k = 1) :
     ‖principalMinor k p‖ ^ 2 ≤ Real.exp (-(‖⁅coordProj p, k⁆‖ ^ 2 / 2)) := by
-  -- With `M = (1 - P) k P` and `Y = (1 - P) + P k P` we have `det_S k = det Y` and
-  -- `Yᴴ Y = (1 - P) + P kᴴ P k P = 1 - Mᴴ M`, while `‖[P, k]‖² = 2 ‖M‖²`.
-  have hP : IsStarProjection (coordProj p) := isStarProjection_coordProj p
-  set P : Matrix n n ℂ := coordProj p
-  have hPP : P * P = P := hP.isIdempotentElem
-  let M : Matrix n n ℂ := (1 - P) * k * P
-  let Y : Matrix n n ℂ := 1 - P + P * k * P
-  have minor_eq : principalMinor k p = Y.det := by
-    have Y_eq : Y = 1 + P * (k - 1) * P := by
-      simp [Y, mul_sub, sub_mul, hPP, sub_add_eq_add_sub, add_sub_assoc]
-    rw [principalMinor_eq_det_coordProj, Y_eq, det_one_add_mul_comm (P * (k - 1)), ← mul_assoc, hPP]
-  have Y_sq : Yᴴ * Y = 1 - P + P * kᴴ * P * k * P := by
-    simp [Y, hP.isSelfAdjoint.star_eq, ← star_eq_conjTranspose, add_mul, mul_add, mul_sub, sub_mul,
-      ← mul_assoc, mul_assoc _ P P, hPP]
-  have gram_eq : Yᴴ * Y - 1 = -(Mᴴ * M) := by
-    rw [Y_sq, conjTranspose_mul_self_one_sub_mul_mul hP hk]
-    abel
-  calc ‖principalMinor k p‖ ^ 2 ≤ Real.exp (Yᴴ * Y - 1).trace.re := by
-        rw [minor_eq]
-        exact norm_det_sq_le_exp Y
-    _ = Real.exp (-‖M‖ ^ 2) := by
-        rw [gram_eq, trace_neg, trace_star_mul_self_eq_norm_sq, neg_re, ofReal_re]
-    _ = Real.exp (-(‖⁅P, k⁆‖ ^ 2 / 2)) := by
-        rw [norm_lie_sq_of_unitary hP hk, mul_div_cancel_left₀ _ two_ne_zero]
-
-/-- The entry `(i, j)` of the commutator of `X` with the diagonal projection to the indices
-satisfying `p` has the norm of `X i j` if exactly one of `p i`, `p j` holds, else it is `0`. -/
-lemma norm_lie_coordProj_apply (X : Matrix n n ℂ) (i j : n) :
-    ‖⁅coordProj p, X⁆ i j‖ = if p i ↔ p j then 0 else ‖X i j‖ := by
-  by_cases hi : p i <;> by_cases hj : p j <;> simp [coordProj, Ring.lie_def, hi, hj]
+  -- Apply the column identity to the matrix and its adjoint to account for both crossing blocks.
+  have hcol := norm_sq_add_norm_sq_block p hk
+  have hrow := norm_sq_add_norm_sq_block p (k := kᴴ) (by simpa using mul_eq_one_symm hk)
+  change ‖(k.toBlock p p)ᴴ‖ ^ 2 + ‖(k.toBlock p (fun i ↦ ¬p i))ᴴ‖ ^ 2 = _ at hrow
+  simp only [frobenius_norm_conjTranspose] at hrow
+  refine (norm_det_sq_le_exp (k.toBlock p p)).trans_eq (congrArg Real.exp ?_)
+  rw [trace_sub, sub_re, trace_star_mul_self_eq_norm_sq, ofReal_re, trace_one,
+    norm_lie_coordProj_sq_eq_blocks, natCast_re]
+  linarith only [hcol, hrow]
 
 end New.DiscreteSeries
 
