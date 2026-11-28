@@ -155,6 +155,7 @@ lemma im_sub_re_skewOfReal_swap_div (y : Matrix n n ℝ) {i j : n} (h_ne : i ≠
     ((skewOfReal y j i).im - (skewOfReal y j i).re) / √2 = y i j := by
   simp [skewOfReal, h_ne.symm, ← sub_div, div_div]
 
+/-- The imaginary part of a diagonal entry of `skewOfReal y` equals `y i i`. -/
 lemma im_skewOfReal_diag (y : Matrix n n ℝ) (i : n) : (skewOfReal y i i).im = y i i := by
   simp [skewOfReal]
 
@@ -332,6 +333,7 @@ lemma hasFDerivAt_unitary_factor_of_mem_openOrbit (ho : o.Injective) (ε : n →
       (L.hasFDerivAt.comp 1 ψ_deriv)
   exact ((exp_deriv.comp y A.hasFDerivAt).const_mul (Φ y)).congr_of_eventuallyEq near
 
+/-- The set `openOrbit ε o` of products `g * b` is open in the space of complex matrices. -/
 lemma isOpen_openOrbit (ε : n → ℤˣ) (o : n → ℤ) : IsOpen (openOrbit ε o) :=
   isOpen_iff_mem_nhds.2 fun _ hy ↦ openOrbit_mem_nhds ε hy
 
@@ -592,6 +594,7 @@ section
 variable {a a' : Matrix (PosIndex ε) (PosIndex ε) ℂ} {b b' : Matrix (NegIndex ε) (NegIndex ε) ℂ}
 
 omit [DecidableEq n] in
+/-- The block matrix construction `signBlocks` is multiplicative across block factors. -/
 theorem signBlocks_mul :
     signBlocks ε a b * signBlocks ε a' b' = signBlocks ε (a * a') (b * b') := by
   simp [signBlocks, fromBlocks_multiply]
