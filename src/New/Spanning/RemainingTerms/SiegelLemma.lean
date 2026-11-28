@@ -223,6 +223,19 @@ lemma exists_finAdeleMatrix_mul_eq_sublatticeBasis_mul (hLH : L * H = 1) {V : Su
     ((isUnit_iff_isUnit_det B).2 hB_det.isUnit).map (algebraMap E (𝔸f E)).mapMatrix
   exact ⟨a⁻¹ * b * w, by simp [hm, hb, Matrix.mul_assoc]⟩
 
+/-- If `H x w` is integral, the coordinates of `x w` in the saturated lattice basis are integral. -/
+lemma exists_integral_sublatticeBasis_factor (hLH : L * H = 1) {V : Submodule E (σ → E)}
+    {x : Matrix σ (Fin (finrank E V)) E} (hx : colSpan x ≤ V) (hx_det : (xᴴ * x).det ≠ 0)
+    (w : GL (Fin (finrank E V)) (𝔸f E))
+    (h_int : IsIntMatrix (Ô E) (H * (finAdeleMatrix x * w.val))) :
+    ∃ A : GL (Fin (finrank E V)) (𝔸f E), IsIntMatrix (Ô E) A.val ∧
+      finAdeleMatrix x * w.val = (sublatticeBasis hLH V).val * A.val := by
+  obtain ⟨A, hA⟩ := exists_finAdeleMatrix_mul_eq_sublatticeBasis_mul hLH hx hx_det w
+  obtain ⟨l, hl_int, hl⟩ := (isPrimitiveMatrix_mul_sublatticeBasis hLH V).right
+  refine ⟨A, ?_, hA⟩
+  rw [hA, ← Matrix.mul_assoc] at h_int
+  simpa only [← Matrix.mul_assoc, hl, Matrix.one_mul] using hl_int.mul h_int
+
 /-- Let `E` be a CM field containing a primitive `5040`-th root of unity, and let the finite adelic
 matrix `H` have a left inverse `L`. Let `m = sublatticeBasis hLH V` be the chosen `Ô`-basis of the
 adelic points of the subspace `V` that `H` makes integral. Let `δ = √[det mᴴ m]` be its discriminant
@@ -283,15 +296,10 @@ lemma sublatticeDiscriminant_mul_index_sq_le (hLH : L * H = 1) (V : Submodule E 
   -- the index of the column lattice of `A` in `Ô ^ s`. It bounds `i`, since `Y H m` maps that
   -- lattice into `K` and `Ô ^ s` onto the span of the columns of `Y H m`.
   subst hs
-  obtain ⟨A, hA⟩ := exists_finAdeleMatrix_mul_eq_sublatticeBasis_mul hLH hx hx_det w
+  obtain ⟨A, hA_int, hA⟩ := exists_integral_sublatticeBasis_factor hLH hx hx_det w h_int
   rw [← sublatticeDiscriminant_sq_mul_genIndex_sq hLH hA]
-  rw [hA] at h_int h_mem
+  rw [hA] at h_mem
   set m : Matrix σ (Fin (finrank E V)) (𝔸f E) := (sublatticeBasis hLH V).val
-  obtain ⟨-, l, hl_int, hl⟩ := isPrimitiveMatrix_mul_sublatticeBasis hLH V
-  -- `A = l H m A` is integral, so `[det A]` is an index of lattices.
-  have hA_int : IsIntMatrix (Ô E) A.val := by
-    have h_prod : IsIntMatrix (Ô E) (l * (H * (m * A.val))) := hl_int.mul h_int
-    rwa [← H.mul_assoc, ← l.mul_assoc, hl, Matrix.one_mul] at h_prod
   let n : ℕ := submoduleIndex (colLattice (Ô E) A.val) (intVectors (Ô E) (Fin (finrank E V)))
   have hn : (n : ℝ) = genIndex A.val.det := submoduleIndex_colLattice_intVectors hA_int
   have hn_ne : n ≠ 0 := Nat.cast_ne_zero.1 (hn.trans_ne (genIndex_pos A.det).ne')

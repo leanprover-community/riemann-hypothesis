@@ -639,30 +639,15 @@ lemma IsLatticeOfRank.exists_eq_colLattice_sublatticeBasis_mul {L : Submodule (�
       colLattice (Ô E) ((sublatticeBasis h_left_inv W).val * A.val) = L ∧
       discriminant r L = sublatticeDiscriminant h_left_inv W * genIndex A.val.det := by
   classical
-  -- Let `x a` be a basis of `L`, and `S = y b` the basis of the saturated lattice of the span `W`
-  -- of `x`. Then `x = y T` with `T` invertible, and `A = b⁻¹ T a`.
+  -- Take the rational column space of a basis of the lattice.
   obtain ⟨x, a, hx, rfl⟩ := hL
   obtain ⟨W, hW⟩ : ∃ W : Submodule E (κ → E), colSpan x = W := ⟨colSpan x, rfl⟩
   obtain rfl : finrank E W = r := by
     rw [← hW, LinearMap.finrank_range_of_inj hx.injective_mulVec, Module.finrank_fin_fun]
-  obtain ⟨y, b, -, hy_span, h_basis⟩ := exists_sublatticeBasis_eq_finAdeleMatrix_mul h_left_inv W
-  set S : Matrix κ (Fin (finrank E W)) (𝔸f E) := (sublatticeBasis h_left_inv W).val with hS
-  obtain ⟨T, hT : y * T = x⟩ := exists_mul_eq_of_range_le fun i ↦
-    hy_span.ge (hW.le ⟨Pi.single i 1, x.mulVec_single_one i⟩)
-  let ⟨xInv, hxInv⟩ := hx
-  have hT_unit : IsUnit T := .of_mul_eq_one_right (xInv * y) (by rw [Matrix.mul_assoc, hT, hxInv])
-  let A : GL (Fin (finrank E W)) (𝔸f E) :=
-    b⁻¹ * GeneralLinearGroup.map (algebraMap E (𝔸f E)) hT_unit.unit * a
-  have hA : S * A.val = finAdeleMatrix x * a.val := by simp [h_basis, ← hT, A, Matrix.mul_assoc]
-  -- `A` is integral: it is an integral left inverse of `H S` times the integral matrix `H (x a)`.
-  have hA_int : IsIntMatrix (Ô E) A.val := by
-    obtain ⟨p, hp_int, hp : p * (H * S) = 1⟩ :=
-      (isPrimitiveMatrix_mul_sublatticeBasis h_left_inv W).right
-    have h_int : IsIntMatrix (Ô E) (p * (H * (finAdeleMatrix x * a.val))) :=
-      hp_int.mul (colLattice_le_preimageLattice_iff.1 h_le)
-    rwa [← hA, ← Matrix.mul_assoc H, ← Matrix.mul_assoc p, hp, Matrix.one_mul] at h_int
-  refine ⟨W, A, rfl, hA_int, by rw [← hS, hA], ?_⟩
-  rw [discriminant_colLattice hx, ← hA, sqrt_genIndex_det_gram_mul, sublatticeDiscriminant, ← hS]
+  obtain ⟨A, hA_int, hA⟩ := exists_integral_sublatticeBasis_factor h_left_inv hW.le
+    (det_gram_ne_zero hx) a (colLattice_le_preimageLattice_iff.1 h_le)
+  refine ⟨W, A, rfl, hA_int, by rw [← hA], ?_⟩
+  rw [discriminant_colLattice hx, hA, sqrt_genIndex_det_gram_mul, sublatticeDiscriminant]
 
 end Saturated
 
