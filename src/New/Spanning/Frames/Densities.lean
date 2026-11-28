@@ -470,6 +470,69 @@ theorem PlaceData.floorForm_zero_eq_integral (Γ : Gauge F) (hW : F.IsCut W) (p 
     (measurableEmbedding_prod_mk_right 1).integral_map, ← integral_complex_ofReal]
   simp only [h_point, toReal_one, Complex.ofReal_one, one_mul]
 
+/-- Substitution on one fiber, the key step of `integrable_and_integral_succ_eq_mul_floorForm`. Let
+the place datum `F` have a gauge, let `W` be a cut Bessel function and let `F.floorMeasure b` be the
+image under `(c, n) ↦ (v c)⁻¹ * n` of the product of `volume.withDensity ρ` and `ζ`, where `v` and
+`φ` are measurable and `ζ` is carried by `partialUnitriangularGroup (b + 1) ⊓ floorGroup b`. Write
+Z(y) for the Gram entry `T.frameGram y b b`, and let `σ ∈ floorGroup b`. The substitution
+`τ = (v c)⁻¹ n σ`, `g' = n σ g` turns the integral over `n` and `c` of `f` at φ(Z(v c)) times
+`F.partialCorrelationProduct (b + 1) W x (weylRatio b p q) (weylElem b p * v c) (n σ g)` into the
+integral over `τ` against `F.floorMeasure b` of `f` at φ(Z(σ τ⁻¹)) times
+`F.partialCorrelationProduct (b + 1) W x (weylRatio b p q) (σ * weylElem b p * τ⁻¹) (σ g)`. -/
+lemma PlaceData.lintegral_lintegral_succ_eq_lintegral_floorMeasure {W : T.G → EuclideanSpace ℂ I}
+    (Γ : Gauge F) (hW : F.IsCut W) (b : Fin 𝔰.n) {ζ : Measure T.G} [SFinite ζ] {v : A → T.G}
+    {ρ : A → ℝ≥0∞} {φ : A → ℂ}
+    (hζ : ∀ᵐ n : T.G ∂ζ, n ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b)
+    (h_conv : F.floorMeasure b = (volume.withDensity ρ).map (fun c : A ↦ (v c)⁻¹) ∗ₘ ζ)
+    (hφ : Measurable φ) (hv : Measurable v) {f : ℂ → ℝ≥0∞} (hf : Measurable f) (x g : T.G)
+    {σ : T.G} (hσ : σ ∈ floorGroup b) :
+    ∫⁻ n : T.G, ∫⁻ c : A, f (φ (T.frameGram (v c) b b) *
+        F.partialCorrelationProduct (b + 1) W x (weylRatio b p q) (weylElem b p * v c) (n * σ * g))
+        ∂volume.withDensity ρ ∂ζ =
+      ∫⁻ τ : T.G, f (φ (T.frameGram (σ * τ⁻¹) b b) * F.partialCorrelationProduct (b + 1) W x
+        (weylRatio b p q) (σ * weylElem b p * τ⁻¹) (σ * g)) ∂F.floorMeasure b := by
+  let χ (y : T.G) : ℂ := φ (T.frameGram y b b)
+  have hχ : Measurable χ := by fun_prop [frameGram]
+  have hχ_left {n : T.G} (hn : n ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) (y : T.G) :
+      χ (n * y) = χ y := congrArg φ (frameGram_diag_mul hn y).1
+  have hχ_right {n : T.G} (hn : n ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) (y : T.G) :
+      χ (y * n) = χ y := congrArg φ (frameGram_diag_mul hn y).2
+  have h_plain : F.IsPairingKernel b (frameCorrelation W 1) 1 :=
+    Γ.isPairingKernel_frameCorrelation_one hW b
+  have h_twisted : F.IsPairingKernel b (frameCorrelation W (weylRatio b p q)) (weylRatio b p q) :=
+    Γ.isPairingKernel_frameCorrelation hW b p q
+  let succTerm : (T.G × T.G) × A → ℂ := fun (z, c) ↦
+    χ (v c) * F.partialCorrelationProduct (b + 1) W z.1 (weylRatio b p q) (weylElem b p * v c) z.2
+  let formTerm : ((T.G × T.G) × T.G) × T.G → ℂ := fun (((x, g), σ), τ) ↦
+    χ (σ * τ⁻¹) * F.partialCorrelationProduct (b + 1) W x (weylRatio b p q) (σ * weylElem b p * τ⁻¹)
+      (σ * g)
+  have h_form_meas : Measurable formTerm := by
+    unfold formTerm
+    fun_prop [partialCorrelationProduct]
+  have h_invariant (τ : T.G) {s : T.G} (hs : s ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) :
+      formTerm (((x, g), σ), s * τ) = formTerm (((x, g), σ), τ) := by
+    simp [formTerm, partialCorrelationProduct, mul_assoc s, ← mul_assoc σ, hχ_right (inv_mem hs),
+      h_twisted.partialCorrelation_mul_left (b : ℕ).le_succ hs]
+  have h_subst (c : A) {n : T.G} (hn : n ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) :
+      formTerm (((x, g), σ), (v c)⁻¹ * n * σ) = succTerm ((x, n * σ * g), c) := by
+    simp [formTerm, succTerm, partialCorrelationProduct, weylElem_mul_left_comm hn.2,
+      weylElem_mul_left_comm hσ, h_plain.partialCorrelation_mul_left (b : ℕ).le_succ hn,
+      hχ_left (inv_mem hn), mul_assoc]
+  change ∫⁻ n : T.G, ∫⁻ c : A, f (succTerm ((x, n * σ * g), c)) ∂volume.withDensity ρ ∂ζ =
+    ∫⁻ τ : T.G, f (formTerm (((x, g), σ), τ)) ∂F.floorMeasure b
+  -- Translate `τ` by `σ`, then expand `F.floorMeasure b` by `h_conv`.
+  calc
+    _ = ∫⁻ n : T.G, ∫⁻ c : A, f (formTerm (((x, g), σ), (v c)⁻¹ * n * σ))
+          ∂volume.withDensity ρ ∂ζ :=
+      lintegral_congr_of_ae_imp hζ fun n hn ↦ by simp only [h_subst _ hn]
+    _ = ∫⁻ τ : T.G, f (formTerm (((x, g), σ), τ * σ)) ∂F.floorMeasure b := by
+      rw [h_conv, lintegral_mconv_symm (by fun_prop)]
+      exact lintegral_congr fun n ↦ by rw [lintegral_map (by fun_prop) (by fun_prop)]
+    _ = ∫⁻ τ : T.G, f (formTerm (((x, g), σ), τ)) ∂F.floorMeasure b :=
+      lintegral_floorMeasure_mul_right (f := fun τ : T.G ↦ f (formTerm (((x, g), σ), τ))) le_rfl
+        (fun s hs τ ↦ congrArg f (h_invariant τ hs))
+        ⟨mem_partialUnitriangularGroup_of_mem_floorGroup hσ, hσ⟩
+
 /-- The form of floor `b` as an integral of products of correlations from floor `b + 1` on. Let the
 place datum `F` have a gauge, let `W` be a cut Bessel function whose majorant
 `F.formMajorant b p q W`, for sequences of units `p q : ℕ → Aˣ`, has a finite integral against
@@ -504,10 +567,6 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
   -- measure; Fubini does the rest.
   let χ (x : T.G) : ℂ := φ (T.frameGram x b b)
   have hχ : Measurable χ := by fun_prop [frameGram]
-  have hχ_left {n : T.G} (hn : n ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) (y : T.G) :
-      χ (n * y) = χ y := congrArg φ (frameGram_diag_mul hn y).1
-  have hχ_right {n : T.G} (hn : n ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) (y : T.G) :
-      χ (y * n) = χ y := congrArg φ (frameGram_diag_mul hn y).2
   have h_plain : F.IsPairingKernel b (frameCorrelation W 1) 1 :=
     Γ.isPairingKernel_frameCorrelation_one hW b
   have h_twisted : F.IsPairingKernel b (frameCorrelation W (weylRatio b p q)) (weylRatio b p q) :=
@@ -529,32 +588,11 @@ lemma PlaceData.integrable_and_integral_succ_eq_mul_floorForm {W : T.G → Eucli
   let μ_form : Measure (((T.G × T.G) × T.G) × T.G) :=
     ((F.groupMeasure.prod (F.partialGroupMeasure 0 b)).prod (F.floorMeasure b)).prod
       (F.floorMeasure b)
-  have h_invariant (x g σ τ : T.G) {s : T.G}
-      (hs : s ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) :
-      formTerm (((x, g), σ), s * τ) = formTerm (((x, g), σ), τ) := by
-    simp [formTerm, partialCorrelationProduct, mul_assoc s, ← mul_assoc σ, hχ_right (inv_mem hs),
-      h_twisted.partialCorrelation_mul_left (b : ℕ).le_succ hs]
-  have h_subst (x g : T.G) (c : A) {σ n : T.G} (hσ : σ ∈ floorGroup b)
-      (hn : n ∈ partialUnitriangularGroup (b + 1) ⊓ floorGroup b) :
-      formTerm (((x, g), σ), (v c)⁻¹ * n * σ) = succTerm ((x, n * σ * g), c) := by
-    simp [formTerm, succTerm, partialCorrelationProduct, weylElem_mul_left_comm hn.2,
-      weylElem_mul_left_comm hσ, h_plain.partialCorrelation_mul_left (b : ℕ).le_succ hn,
-      hχ_left (inv_mem hn), mul_assoc]
-  -- For fixed `x`, `g`, `σ`: translate `τ` by `σ`, then expand `F.floorMeasure b` by `h_conv`.
+  -- For fixed `x`, `g`, `σ`: the substitution `τ = (v c)⁻¹ n σ`.
   have h_fiber {f : ℂ → ℝ≥0∞} (hf : Measurable f) (x g : T.G) {σ : T.G} (hσ : σ ∈ floorGroup b) :
       ∫⁻ n : T.G, ∫⁻ c : A, f (succTerm ((x, n * σ * g), c)) ∂volume.withDensity ρ ∂ζ =
         ∫⁻ τ : T.G, f (formTerm (((x, g), σ), τ)) ∂F.floorMeasure b :=
-    calc
-      _ = ∫⁻ n : T.G, ∫⁻ c : A, f (formTerm (((x, g), σ), (v c)⁻¹ * n * σ))
-            ∂volume.withDensity ρ ∂ζ :=
-        lintegral_congr_of_ae_imp hζ fun n hn ↦ by simp only [h_subst x g _ hσ hn]
-      _ = ∫⁻ τ : T.G, f (formTerm (((x, g), σ), τ * σ)) ∂F.floorMeasure b := by
-        rw [h_conv, lintegral_mconv_symm (by fun_prop)]
-        exact lintegral_congr fun n ↦ by rw [lintegral_map (by fun_prop) (by fun_prop)]
-      _ = ∫⁻ τ : T.G, f (formTerm (((x, g), σ), τ)) ∂F.floorMeasure b :=
-        lintegral_floorMeasure_mul_right (f := fun τ : T.G ↦ f (formTerm (((x, g), σ), τ))) le_rfl
-          (fun s hs τ ↦ congrArg f (h_invariant x g σ τ hs))
-          ⟨mem_partialUnitriangularGroup_of_mem_floorGroup hσ, hσ⟩
+    lintegral_lintegral_succ_eq_lintegral_floorMeasure Γ hW b hζ h_conv hφ hv hf x g hσ
   have h_law : ProbabilityTheory.IdentDistrib succTerm formTerm μ_succ μ_form := by
     refine ⟨h_succ_meas.aemeasurable, h_form_meas.aemeasurable, ext_of_lintegral _ fun f hf ↦ ?_⟩
     rw [lintegral_map hf h_succ_meas, lintegral_map hf h_form_meas]
