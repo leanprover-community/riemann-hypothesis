@@ -53,7 +53,9 @@ lake exe cache get
 lake build
 ```
 
-This needs Python 3.11 or newer and curl 7.71 or newer. (No credentials are necessary.) It fetches Mathlib's cache, then this project's, and unpacks it. `lake exe mathlib/cache get` fetches Mathlib alone.
+This needs Python 3.11 or newer and curl 7.71 or newer. (No credentials are necessary.) It fetches the Mathlib, Tau Ceti and project caches in that order. `lake exe mathlib/cache get` fetches Mathlib alone.
+
+If `lake exe cache get` exits with status 3 after a source change has been committed, the project has no matching cache for that commit. Continue with `lake build`, or [restore a baseline](CACHE.md#baseline) first to reuse build outputs from `main`.
 
 See [`CACHE.md`](CACHE.md) for details.
 
