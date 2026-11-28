@@ -135,12 +135,12 @@ structure IntegralFrame (F : Type*) [SemilocalField F] (m n p : Type) [Fintype m
 
 -- `Type _` lets each declaration fix the universe of `F`: some need `Type`, others stay general.
 variable {F : Type _} [SemilocalField F] {m n p a : Type} [Fintype m] [DecidableEq m] [Fintype n]
-  [DecidableEq n] [Fintype p] [DecidableEq p]
 
-omit [DecidableEq n] [Fintype p] [DecidableEq p] in
 /-- Selecting rows of `M` and then multiplying by `N` selects the same rows of `M * N`. -/
 @[simp] lemma submatrix_id_mul {c : Type*} (f : c → a) (M : Matrix a n F) (N : Matrix n p F) :
     M.submatrix f id * N = (M * N).submatrix f id := rfl
+
+variable [DecidableEq n] [Fintype p] [DecidableEq p]
 
 open scoped Classical in
 /-- Dividing by `invOnUnits χ x` multiplies by `χ x` if `x` is a unit of `O`; otherwise it is a

@@ -250,20 +250,21 @@ section Edge
 open NumberField MeasureTheory Matrix ComplexConjugate MvPolynomial Fock Fintype Norms.L2Operator
   Complex CompactlySupported Set Heisenberg.IsVacuum
 
-variable {E n n' ι : Type} [Field E] [CMType E] [WeilData E]
+variable {E n n' ι : Type} [Field E] [CMType E]
   [Fintype n] [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype ι] [DecidableEq ι]
-  {s : n → ℤˣ} {t : n' → ℤˣ} (γ γ' : InfinitePlace E → ℤ) (l : InfinitePlace E → n → ℤ)
-  (l' : InfinitePlace E → n' → ℤ) {η : ι → ℤˣ}
-  (Ω : GInf E s × GInf E t → fockSpace (realSigns E η) →L[ℂ] fockSpace (realSigns E η))
-  (e : GInf E s → ℂ) (e' : GInf E t → ℂ) (Φ : fockSpace (realSigns E η))
+  {s : n → ℤˣ} {t : n' → ℤˣ}
 
-omit [WeilData E] in
 private lemma star_typeKernel_of_hasGap {a : Type} [Fintype a] [DecidableEq a]
     {σ : a → ℤˣ} {μ : InfinitePlace E → HCParam σ} {h : InfinitePlace E → ℕ}
     (hg : ∀ w, (μ w).HasGap (h w)) :
     star (typeKernel μ σ) = typeKernel (-μ) σ := by
   funext x
   simp [typeKernel, ← conj_dsKernel_neg (hg _)]
+
+variable [WeilData E] (γ γ' : InfinitePlace E → ℤ) (l : InfinitePlace E → n → ℤ)
+  (l' : InfinitePlace E → n' → ℤ) {η : ι → ℤˣ}
+  (Ω : GInf E s × GInf E t → fockSpace (realSigns E η) →L[ℂ] fockSpace (realSigns E η))
+  (e : GInf E s → ℂ) (e' : GInf E t → ℂ) (Φ : fockSpace (realSigns E η))
 
 /-! ### Corresponding parameters and the chosen joint harmonic -/
 
