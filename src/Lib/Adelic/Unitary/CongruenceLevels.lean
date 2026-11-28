@@ -5,6 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.Sheaves.Presheaf
 import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Adelic.Unitary.Defs
 public import Lib.General.LinearAlgebra.IntegralLattices
 import Lib.Adelic.Unitary.ComponentsAndBlockSums
@@ -359,7 +360,7 @@ K₀. -/
 @[simp]
 lemma relIndex_ne_zero_of_isLevel (K : Subgroup (Gf E n)) [IsLevel K] :
     K.relIndex (stdLevel E n) ≠ 0 :=
-  isCompact_stdLevel.relIndex_ne_zero IsLevel.isOpen
+  relIndex_ne_zero_of_isOpen_of_isCompact IsLevel.isOpen isCompact_stdLevel
 
 /-- For distinct places `w i`, none conjugate to a `w j` (`IsConjApart w`, whose field `star_ne`
 says that `w i` is split), a matrix `k` in `localIntGL n (w i)` = GL_n(O_{w i}) put at the split

@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Weil.DualPair.FiniteAction
 import Lib.Adelic.Witt.WittTheorem
 import Lib.Cohomology.Etale.Basic
@@ -293,8 +294,8 @@ lemma map_omega_of_unit {a : (Ô E)ˣ} (hL : V.ScalesTranslations σ a.val.val L
   let Λ : AddSubgroup (n → 𝔸f E) := stdLattice E n
   let Λ' : AddSubgroup Λ := (Λ.comap g.val.val.mulVecLin).addSubgroupOf Λ
   have h_finite : Finite (Λ ⧸ Λ') :=
-    Nat.finite_of_card_ne_zero (isCompact_stdLattice.relIndex_ne_zero_add
-      (isOpen_stdLattice.preimage (f := g.val.val.mulVec) (by fun_prop)))
+    Nat.finite_of_card_ne_zero (AddSubgroup.relIndex_ne_zero_of_isOpen_of_isCompact
+      (isOpen_stdLattice.preimage (f := g.val.val.mulVec) (by fun_prop)) isCompact_stdLattice)
   have h_term (y : n → 𝔸f E) :
       L (V.finHeisenbergOp y V.vacElem) = c • V.finHeisenbergOp (a.val.val • y) V.vacElem := by
     rw [hL.map_finHeisenbergOp vacElem_mem_finitePart, hc, map_smul]

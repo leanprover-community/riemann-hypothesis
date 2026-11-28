@@ -2,6 +2,7 @@ module
 
 import Mathlib.MeasureTheory.SpecificCodomains.Pi
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.AutomorphicForms.Basic
@@ -408,7 +409,7 @@ theorem classSum_gramForm_eq_mul_petersson [hV : V.IsStd] (h : IsHCParam (n := n
     simp [h_left, h_right, ← mul_assoc, RCLike.mul_conj, (hχ ⟨k, hk⟩).norm_eq_one]
   have h_card : (card (WeylIndex n κ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr card_ne_zero
   have h_index : (stdLevelIndex K : ℂ) ≠ 0 :=
-    Nat.cast_ne_zero.mpr (isCompact_stdLevel.relIndex_ne_zero IsLevel.isOpen)
+    Nat.cast_ne_zero.mpr (relIndex_ne_zero_of_isOpen_of_isCompact IsLevel.isOpen isCompact_stdLevel)
   rw [h_pet, ← classIntegral_eq_classSum h_fix]
   field_simp
 

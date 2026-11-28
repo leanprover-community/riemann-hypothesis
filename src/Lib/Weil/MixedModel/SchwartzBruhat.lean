@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Topology.LocallyConstant.Algebra
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Weil.Construction.FiniteMultiplier
 import Lib.General.Measure.HaarNormalisation
 
@@ -531,7 +532,7 @@ lemma _root_.New.Space.mem_range_schrodingerCombination {S : Set (FinPlace E)}
     comap (smulAddHom (𝔸f E) (n → 𝔸f E) (star t⁻¹.val)) (continuous_const_smul _)
       ⟨stdLattice E n, isOpen_stdLattice⟩
   let h_fintype : Fintype (stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) :=
-    fintypeOfIndexNeZero (isCompact_stdLattice.relIndex_ne_zero_add B.isOpen)
+    fintypeOfIndexNeZero (relIndex_ne_zero_of_isOpen_of_isCompact B.isOpen isCompact_stdLattice)
   let f (q : stdLattice E n ⧸ B.toAddSubgroup.addSubgroupOf (stdLattice E n)) : (n → 𝔸f E) → ℂ :=
     schrodingerAct S (idem S • -z)
       (schrodingerAct S (star (idem S) • -(star t⁻¹.val • (q.out : n → 𝔸f E))) (boxIndicator n S))

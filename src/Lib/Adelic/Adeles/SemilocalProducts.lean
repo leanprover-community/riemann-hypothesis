@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Integral.Layercake
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.SiegelWeil.Mass
 public import Lib.Adelic.Adeles.LocalFactors
@@ -283,7 +284,8 @@ lemma map_evalPlaces_restrict_volume :
 /-- In the ring of integers `O` of `LocProd S`, the `r` with `a * r ∈ O` form a subgroup of finite
 index: its index `denomIndex O a` is nonzero (an infinite index is `0`). -/
 lemma denomIndex_ne_zero (a : LocProd S) : denomIndex (O : Subring (LocProd S)) a ≠ 0 :=
-  isCompact_O.relIndex_ne_zero_add (isOpen_O.preimage (continuous_const_mul _))
+  AddSubgroup.relIndex_ne_zero_of_isOpen_of_isCompact (isOpen_O.preimage (continuous_const_mul _))
+    isCompact_O
 
 /-- Let `a` in the completion at `w` have norm greater than `1`, and let `0 < t`. The level set of
 the `x` with `√(‖x‖⁻¹ - 1) ≥ t`, that is with `0 < ‖x‖ ≤ (1 + t ^ 2)⁻¹`, has volume at most

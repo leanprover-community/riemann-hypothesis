@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Topology.Algebra.ProperConstSMul
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Weil.Construction.FiniteMultiplier
 public import Lib.Weil.Construction.WeilOperators
 import Lib.Adelic.Adeles.StrongApproximation
@@ -213,7 +214,7 @@ lemma exists_gauss_sum_finProjAction (g s : Gf E ι) :
   have hL : IsOpen (SetLike.coe (L.prod L).toAddSubgroup) :=
     isOpen_stdLattice.prod isOpen_stdLattice
   let h_fin : Fintype (M.toAddSubgroup ⧸ (L.prod L).toAddSubgroup.addSubgroupOf M.toAddSubgroup) :=
-    AddSubgroup.fintypeOfIndexNeZero (hM.relIndex_ne_zero_add hL)
+    AddSubgroup.fintypeOfIndexNeZero (AddSubgroup.relIndex_ne_zero_of_isOpen_of_isCompact hL hM)
   have h_integrand (x y : ι → 𝔸f E) : (SetLike.coe M.toAddSubgroup).indicator
     (selfDualAddChar E ∘ F) (x, y) =
       finVac (s • x) * finVac ((g * s) • y) * (finHeisenberg E ι).β x y * finVac (x + y) := by

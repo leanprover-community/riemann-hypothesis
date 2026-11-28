@@ -1,6 +1,7 @@
 module
 
 import TauCeti.RepresentationTheory.Induction.Mackey.Subgroup
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Mathlib.GroupTheory.DoubleCoset
 public import Mathlib.RepresentationTheory.Coinduced
 import Mathlib.Algebra.FiniteSupport.Basic
@@ -172,15 +173,6 @@ lemma finite_quotient_image_of_isCompact (hH : IsOpen (H : Set G)) {C : Set G} (
   have : DiscreteTopology (G ⧸ H) := QuotientGroup.discreteTopology hH
   exact (hC.image continuous_quotient_mk').finite_of_discrete
 
-/-- For a compact subgroup `K` and an open subgroup `H` of a topological group, the index
-`[K : H ∩ K]` is finite, so it is nonzero as a natural number. -/
-@[to_additive relIndex_ne_zero_add]
-lemma _root_.IsCompact.relIndex_ne_zero (hK : IsCompact (K : Set G))
-    (hH : IsOpen (H : Set G)) : H.relIndex K ≠ 0 := by
-  -- An open subgroup of a compact group has finite index.
-  have : CompactSpace K := isCompact_iff_compactSpace.1 hK
-  exact (quotient_finite_of_isOpen (H.subgroupOf K) hH.preimage_val).card_pos.ne'
-
 /-- For `K` compact, `H` open and `μ` left invariant, `[K : H ∩ K] · μ (H ∩ K) = μ K`. -/
 @[to_additive]
 lemma relIndex_mul_measure_inf (hK : IsCompact (K : Set G)) (hH : IsOpen (H : Set G))
@@ -189,7 +181,7 @@ lemma relIndex_mul_measure_inf (hK : IsCompact (K : Set G)) (hH : IsOpen (H : Se
   -- Pull `μ` back to the group `K`; there `H ⊓ K` is a measurable subgroup of finite index,
   -- and its cosets, all of the same measure, partition `K`.
   have h_emb : MeasurableEmbedding K.subtype := .subtypeVal hK.measurableSet
-  have : (H.subgroupOf K).FiniteIndex := ⟨hK.relIndex_ne_zero hH⟩
+  have : (H.subgroupOf K).FiniteIndex := ⟨relIndex_ne_zero_of_isOpen_of_isCompact hH hK⟩
   have : (μ.comap K.subtype).IsMulLeftInvariant := .comap _ h_emb
   have h_index :
       (H.subgroupOf K).index * μ.comap K.subtype (H.subgroupOf K) = μ.comap K.subtype Set.univ :=

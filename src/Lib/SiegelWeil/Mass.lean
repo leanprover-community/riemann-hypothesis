@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Weil.Construction.FiniteMultiplier
 public import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.Reduction.DefiniteClassSums
@@ -305,7 +306,7 @@ noncomputable def conductorIdeal {E : Type*} [Field E] [NumberField E] (b : 𝔸
 /-- The conductor ideal of a finite adele `b`, the largest ideal of `Ô` on which `v ↦ ψ_f(b v)` is
 trivial, has finite index. -/
 lemma cardQuot_conductorIdeal_ne_zero (b : 𝔸f E) : (conductorIdeal b).cardQuot ≠ 0 :=
-  isCompact_Ô.relIndex_ne_zero_add (isOpen_characterKernel b)
+  relIndex_ne_zero_of_isOpen_of_isCompact (isOpen_characterKernel b) isCompact_Ô
 
 /-- Let `E` be a CM field. Take a self-adjoint finite adele `b`, a finite adele `Γ`, and
 `I = conductorIdeal b`, the largest ideal of `Ô` on which `v ↦ ψ_f(b v)` is trivial. Then the Gauss

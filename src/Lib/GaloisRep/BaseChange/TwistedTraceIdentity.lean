@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.FiniteSupport.Basic
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 public import Lib.GaloisRep.BaseChange.CommutingHeckeFamilies
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.AutomorphicForms.HeckeEigenforms
 import Lib.Adelic.Landherr
@@ -265,7 +266,8 @@ lemma New.Space.isSampleTotal_twisted_trace {K L : Subgroup (Gf E n)} (σ : Gf E
   intro j ρ hτ s hs
   have hK_fin : HasFiniteType V.Γf K := V.hasFiniteType_of_isLevel.of_le hK (isOpen_mono hL hL_open)
   have hL_fin : HasFiniteType V.Γf L := hK_fin.of_le hL hL_open
-  refine ⟨L.relIndex K, Nat.cast_ne_zero.2 (hK_fin.isCompact.relIndex_ne_zero hL_open),
+  refine ⟨L.relIndex K,
+    Nat.cast_ne_zero.2 (relIndex_ne_zero_of_isOpen_of_isCompact hL_open hK_fin.isCompact),
     fun ψ hψ ↦ V.compLeft_comp_funLeft_mem_forms κ σ hσ_cont τ hτ s hs hψ,
     fun ψ hψ ↦ V.restrict_compLeft_comp_funLeft_mem_levelSpace κ σ hσ s _ hψ, ?_⟩
   rintro φ T ⟨a, rfl, hT⟩

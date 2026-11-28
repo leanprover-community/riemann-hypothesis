@@ -4,6 +4,7 @@ import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Topology.Algebra.ProperAction.Torsor
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Weil.Periods.BesselIntegral
@@ -168,7 +169,8 @@ lemma exists_index_stabilizer_dvd_pow {S A J : Subgroup (Gf E ι)} [hA : IsLevel
       exact hJA (h_conj hz)
     have hA'_compact : IsCompact (A' : Set (Gf E ι)) := hA.isCompact.smul (ConjAct.toConjAct x)
     have h_relIndex : (A.subgroupOf S).relIndex (A'.subgroupOf S) ≠ 0 :=
-      relIndex_comap_ne_zero S.subtype (hA'_compact.relIndex_ne_zero hA.isOpen)
+      relIndex_comap_ne_zero S.subtype
+        (relIndex_ne_zero_of_isOpen_of_isCompact hA.isOpen hA'_compact)
     exact ⟨fun h_zero ↦ h_relIndex (relIndex_eq_zero_of_le_right hZ_le h_zero)⟩
   refine exists_index_dvd_pow_of_pow_mem (n := n) fun ⟨z, hz⟩ ↦ ?_
   have h_pow : (z : Gf E ι) ^ q ^ n ∈ A := by
@@ -292,7 +294,8 @@ lemma integral_indicator_smul_quotient {J : Subgroup (Gf E ι)} [hJ : IsLevel J]
     ⟨MeasurableSpace.generateFrom_le fun s hs ↦
       measurableSet_quotient.2 (QuotientGroup.continuous_mk.isOpen_preimage s hs).measurableSet⟩
   have : MeasurableSingletonClass (Gf E ι ⧸ J) := ⟨fun t ↦ (isOpen_discrete {t}).measurableSet⟩
-  have h_index : stdLevelIndex J ≠ 0 := isCompact_stdLevel.relIndex_ne_zero hJ.isOpen
+  have h_index : stdLevelIndex J ≠ 0 :=
+    relIndex_ne_zero_of_isOpen_of_isCompact hJ.isOpen isCompact_stdLevel
   -- `stdLevel E ι` has volume one, so `J` has volume one over its index.
   have h_vol : volume (J : Set (Gf E ι)) = (↑(stdLevelIndex J))⁻¹ := by
     simpa [inter_eq_left.mpr hJ.le, stdLevelIndex] using
@@ -494,7 +497,8 @@ lemma _root_.New.Grading.exists_integral_eq_sum_over_cut (A : Subgroup (Gf E ι)
       _ = ∫⁻ u : Y.besselFin, ψ (u⁻¹ • (t.2 : Gf E ι ⧸ J)) ∂η :=
         lintegral_besselGroup_cutoff_mul hβ_meas hβ η hψ_meas.coe_nnreal_ennreal t
       _ = _ := lintegral_indicator_inv_coverMultiplicity haarMeasure_self hT_stable t.2
-  have h_index : stdLevelIndex J ≠ 0 := isCompact_stdLevel.relIndex_ne_zero hJ.isOpen
+  have h_index : stdLevelIndex J ≠ 0 :=
+    relIndex_ne_zero_of_isOpen_of_isCompact hJ.isOpen isCompact_stdLevel
   have h_finite_part : ∫ g : Gf E ι, ψ g • b g = (stdLevelIndex J : ℂ)⁻¹ *
       ∑ t ∈ T, (coverMultiplicity Y.besselFin A T t : ℂ)⁻¹ * b t :=
     (integral_indicator_smul_quotient T _ b).trans (by

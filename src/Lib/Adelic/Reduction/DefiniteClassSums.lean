@@ -2,6 +2,7 @@ module
 
 import Mathlib.Dynamics.Ergodic.Action.Regular
 import Mathlib.Topology.Algebra.ProperConstSMul
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.Reduction.FiniteVolume
@@ -408,8 +409,8 @@ theorem classIntegral_eq_integral {V : Space E n 1} {y : Gf E n → W}
       (stdLevelIndex (rightStabilizer y ⊓ K) : W)⁻¹ * classSum V.Γf (rightStabilizer y ⊓ K) y :=
     integral_quotMeasure_eq_classSum h_left (fun g ↦ by simp) _ inf_le_left
       (isLocallyConstant_of_eventually_mul <| hy_open.mem_nhds (one_mem _)).continuous.snd'
-  rw [h_integral, h_index, mul_inv_rev, mul_assoc,
-    mul_inv_cancel_left₀ (Nat.cast_ne_zero.2 (isCompact_stdLevel.relIndex_ne_zero hK.isOpen)),
+  rw [h_integral, h_index, mul_inv_rev, mul_assoc, mul_inv_cancel_left₀
+      (Nat.cast_ne_zero.2 (relIndex_ne_zero_of_isOpen_of_isCompact hK.isOpen isCompact_stdLevel)),
     classIntegral, inv_natCast_smul_eq ℚ W, smul_eq_mul]
 
 end Space

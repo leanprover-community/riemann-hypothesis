@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Order.Star.Rat
 public import Lib.LocalGL.Iwahori.ParahoricStructure
 public import Lib.Shimura.HeckeTower.HeckeData
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import Lib.LocalGL.Iwahori.QuadraticRelation
 import Lib.PadicComparison.Descent.TestCategory
 import Lib.Shimura.HeckeTower.Model
@@ -112,7 +113,8 @@ lemma exists_local_hecke_element (π : Representation ℂ (GL (Fin a) (𝔸f E))
   let U : Subgroup J := L'.subgroupOf J
   -- An open subgroup has finite index in the compact group `localIntGL`, hence in `J`.
   let h_fin : Fintype (J ⧸ U) := U.fintypeOfIndexNeZero fun h_index ↦
-    (isCompact_localIntGL _).relIndex_ne_zero L'.isOpen' (relIndex_eq_zero_of_le_right hJ h_index)
+    relIndex_ne_zero_of_isOpen_of_isCompact L'.isOpen' (isCompact_localIntGL _)
+      (relIndex_eq_zero_of_le_right hJ h_index)
   let f (j : J) : ℂ := (χ j * Fintype.card (J ⧸ U))⁻¹
   let b : MonoidAlgebra ℂ (GL (Fin a) (𝔸f E)) := ∑ q : J ⧸ U, f q.out • .single (r q.out) 1
   have h_supp : b ∈ spanOn ℂ (range r) :=

@@ -4,6 +4,7 @@ import Mathlib.Algebra.Order.Star.Rat
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.SimpleRing.Principal
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Adelic.Hecke.Basic
 public import Lib.Adelic.QuotientMeasure.Basic
 
@@ -199,7 +200,7 @@ lemma HasFiniteType.of_le [H : HasFiniteType Γ K] [IsTopologicalGroup G] (h_le 
   · -- The open subgroup `K'` has finite index in the compact group `K`, and every class for `K'`
     -- comes from a class for `K` and a coset of `K'` in `K`.
     have h_index : Finite (K ⧸ K'.subgroupOf K) :=
-      Nat.finite_of_card_ne_zero (H.isCompact.relIndex_ne_zero h_open)
+      Nat.finite_of_card_ne_zero (relIndex_ne_zero_of_isOpen_of_isCompact h_open H.isCompact)
     exact .of_surjective _ (surjective_doubleCoset_mk_mul Γ K K')
   · have h_aut : classAut Γ K' g ≤ classAut Γ K g := inf_le_inf_left Γ (comap_mono h_le)
     exact .of_injective _ (Subgroup.inclusion_injective h_aut)
@@ -276,7 +277,7 @@ lemma classSum_eq_relIndex_smul [H : HasFiniteType Γ K] [J : HasFiniteType Γ K
   subst hL
   set L : Subgroup G := K'.comap (conj a) with hL
   have h_finite : Finite (K ⧸ L.subgroupOf K) := Nat.finite_of_card_ne_zero
-    (H.isCompact.relIndex_ne_zero (J.isOpen.preimage (continuous_conj a)))
+    (relIndex_ne_zero_of_isOpen_of_isCompact (J.isOpen.preimage (continuous_conj a)) H.isCompact)
   have h_transporter (U : Subgroup G) [HasFiniteType Γ U] (g h : G) : ∃ T : Finset G,
       (∀ γ : G, γ ∈ T ↔ γ ∈ Γ ∧ g⁻¹ * γ * h ∈ U) ∧
       #T = if mk Γ U g = mk Γ U h then Nat.card (classAut Γ U g) else 0 :=
@@ -356,7 +357,8 @@ lemma classIntegral_eq_classSum_mul [H : HasFiniteType Γ K] [J : HasFiniteType 
         _ = (L.relIndex S : ℚ) • classSum Γ S 1 := classSum_eq_relIndex_smul h_le a rfl fun _ ↦ rfl
         _ = _ := by rw [classSum_one_of_le inf_le_right, Rat.smul_def, Rat.cast_natCast, mul_assoc]
     exact_mod_cast mul_right_cancel₀ classSum_one_pos.ne' h_mass
-  have h_ne : (L.relIndex S : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (HS.isCompact.relIndex_ne_zero hL_open)
+  have h_ne : (L.relIndex S : ℚ) ≠ 0 :=
+    Nat.cast_ne_zero.2 (relIndex_ne_zero_of_isOpen_of_isCompact hL_open HS.isCompact)
   calc classIntegral Γ K f = (S.relIndex K : ℚ)⁻¹ • classSum Γ S f := by
         rw [classIntegral, hS, inf_relIndex_right]
     _ = (K'.relIndex K : ℚ)⁻¹ • classSum Γ K' fun g : G ↦ f (g * a) := by

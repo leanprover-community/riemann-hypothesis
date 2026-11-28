@@ -10,6 +10,7 @@ import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 public import Lib.CM.FormalGroup.PrimeNotation
 public import New.UpperBound.Objects.Columns
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import Lib.GLn.Dual
 import Lib.GLn.SchurModule.SchurNorm
 import Lib.PadicComparison.Descent.TestCategory
@@ -840,7 +841,7 @@ lemma N_sub_one_le_relIndex_levelX {P : Parameters} (D : Data P) (w : D.piNPlace
     D.N - 1 ≤ (D.levelX 0).relIndex K := by
   -- Some power `z_w ^ i` with `0 < i ≤ index` lies in `levelX 0`, and then `N - 1 ∣ i`.
   obtain ⟨i, hi_pos, hi_le, hi_mem, -⟩ := exists_pow_mem_of_relIndex_ne_zero
-    (hK.isCompact.relIndex_ne_zero D.isLevel_levelX.isOpen) h_mem
+    (relIndex_ne_zero_of_isOpen_of_isCompact D.isLevel_levelX.isOpen hK.isCompact) h_mem
   exact (Nat.le_of_dvd hi_pos
     ((D.scalarFin_scalingGenerator_pow_mem_levelX_iff w i).1 hi_mem)).trans hi_le
 

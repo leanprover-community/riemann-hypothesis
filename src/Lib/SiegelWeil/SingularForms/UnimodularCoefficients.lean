@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.Topology.Instances.Matrix
 public import Lib.SiegelWeil.SingularForms.CentreCoefficients
 public import Lib.Weil.MixedModel.AdaptedSplitting
@@ -331,7 +332,8 @@ lemma denomIndex_lt_of_mul_mem_of_mul_notMem {a b u y : 𝔸f E} (hu : u ∈ Ô 
   have mem_H (c : 𝔸f E) (x : (Ô E).toAddSubgroup) : x ∈ H c ↔ c * x.val ∈ Ô E := Iff.rfl
   -- An open subgroup of the compact group `Ô E` has finite index.
   have : (H b).FiniteIndex :=
-    ⟨isCompact_Ô.relIndex_ne_zero_add (isOpen_Ô.preimage (continuous_const_mul b))⟩
+    ⟨relIndex_ne_zero_of_isOpen_of_isCompact (isOpen_Ô.preimage (continuous_const_mul b))
+      isCompact_Ô⟩
   have h_le : H b ≤ H a := fun x hx ↦ by
     simpa [mem_H, h_eq, mul_assoc] using (Ô E).mul_mem hu ((mem_H b x).1 hx)
   change (H a).index < (H b).index

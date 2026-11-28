@@ -1,6 +1,7 @@
 module
 
 import Mathlib.MeasureTheory.Group.IntegralConvolution
+public import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import New.Spanning.Frames.Densities
@@ -214,8 +215,8 @@ instance : Fintype Z.Cosets :=
   -- The open subgroup K(g) has finite index in the compact integral group, hence in `Z`.
   letI : Fintype (Z ⧸ F.congruenceSubgroup.subgroupOf Z) :=
     fintypeOfIndexNeZero fun h_zero ↦
-      unitaryLevel_open_compact.2.relIndex_ne_zero unitaryLevel_open_compact.1
-        (relIndex_eq_zero_of_le_right Z.le_unitaryLevel_one h_zero)
+      relIndex_ne_zero_of_isOpen_of_isCompact unitaryLevel_open_compact.1
+        unitaryLevel_open_compact.2 (relIndex_eq_zero_of_le_right Z.le_unitaryLevel_one h_zero)
   fintypeQuotientRightRel
 
 /-- The number vol(Z) · vol(K(g)) / fl² for a group `Z` with K(g) ≤ Z ≤ K, where

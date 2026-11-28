@@ -3,6 +3,7 @@ module
 import Mathlib.Data.Finset.Functor
 import Mathlib.Order.Interval.Finset.Box
 import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.Topology.Algebra.Group.Units
 import TauCeti.Topology.Instances.Matrix
 public import Lib.ClassField.HeckeCharacter.TameModulus
@@ -129,7 +130,8 @@ lemma IsSharp.isOpen_level (hF : IsSharp b S₀ F J c) : IsOpen (J : Set (Gf E n
   exact J.isOpen_of_mem_nhds (mem_nhds_iff.2 ⟨U, h_sub, h_open, h_one⟩)
 
 lemma IsSharp.mass_ne_zero (hF : IsSharp b S₀ F J c) : c ≠ 0 := by
-  simp [← hF.mass_eq, hF.self_ne_zero, isCompact_stdLevel.relIndex_ne_zero hF.isOpen_level]
+  simp [← hF.mass_eq, hF.self_ne_zero,
+    Subgroup.relIndex_ne_zero_of_isOpen_of_isCompact hF.isOpen_level isCompact_stdLevel]
 
 open scoped Classical in
 /-- For `F` sharp for `J`, of mass `c`, the function equal to `⟨F, F⟩` on `J ⊓ stdLevel E n` and to

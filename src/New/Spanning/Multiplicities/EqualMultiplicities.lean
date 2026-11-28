@@ -1,6 +1,7 @@
 module
 
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Newton
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import Mathlib.Data.Rat.Cast.OfScientific
 import Mathlib.LinearAlgebra.PID
 import Mathlib.Topology.Connected.Separation
@@ -98,7 +99,8 @@ lemma exists_heckeAlgebra_inner_eq_inner_translate {γ : Gf D.E D.RowIndex}
   have h_open : IsOpen (K.comap (MulAut.conj g⁻¹).toMonoidHom : Set D.offLevelGroup) :=
     (IsTopologicalGroup.continuous_conj g⁻¹).isOpen_preimage _
       (isOpen_stdLevel.preimage continuous_subtypeVal)
-  let h_fin := H.fintypeOfIndexNeZero (h_compact.relIndex_ne_zero h_open)
+  let h_fin :=
+    H.fintypeOfIndexNeZero (Subgroup.relIndex_ne_zero_of_isOpen_of_isCompact h_open h_compact)
   let a : ℂ[D.offLevelGroup] := ∑ q : K ⧸ H, .single (q.out * g) 1
   have h_act {M : Type} [AddCommGroup M] [Module ℂ M] (ρ : Representation ℂ D.offLevelGroup M)
       (y : M) : ρ.asAlgebraHom a y = ∑ q : K ⧸ H, ρ (q.out * g) y := by

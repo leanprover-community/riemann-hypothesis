@@ -2,6 +2,7 @@ module
 
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.General.Measure.HaarModulus
 public import Lib.Adelic.Adeles.Basic
@@ -411,7 +412,8 @@ lemma finiteIndex_idele_subgroup_of_isOpen (H : Subgroup (𝔸f K)ˣ) (h_open : 
   refine mul_ne_zero ?_ (mul_ne_zero ?_
     (finiteIndex_of_le (hc.trans_le (sup_le_sup_right le_sup_right _))).index_ne_zero)
   · simpa [P, ← index_comap] using (sgn.ker.finiteIndex_of_le h_ker_le).index_ne_zero
-  · simpa using isCompact_idelesUnitOff_empty.relIndex_ne_zero (isOpen_mono le_sup_left h_open)
+  · simpa using relIndex_ne_zero_of_isOpen_of_isCompact (isOpen_mono le_sup_left h_open)
+      isCompact_idelesUnitOff_empty
 
 /-- The finite ideles form a nonarchimedean group: they have the compact open subgroup
 `idelesUnitOff ∅`. -/

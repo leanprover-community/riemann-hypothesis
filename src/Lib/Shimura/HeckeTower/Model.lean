@@ -6,6 +6,7 @@ import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Algebra.Group.Units
 import TauCeti.Analysis.Normed.Ring.Ultra
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Shimura.HeckeTower.HeckeData
 public import Lib.Shimura.ThetaModuli.ThetaFamilyRigidity
 import Lib.Shimura.AbelianScheme.IsogenyFlatness
@@ -890,7 +891,8 @@ instance : ((levelGU n 𝔪).subgroupOf (levelGU n 𝔑)).FiniteIndex := by
     -- contains `levelGU n 𝔑`.
     have h_le : levelGU n 𝔑 ≤ intGL n (Ô E) := fun g hg ↦ (Subgroup.mem_inf.mp hg).right.left
     exact mt (relIndex_eq_zero_of_le_right h_le)
-      ((isCompact_intGL isCompact_Ô).relIndex_ne_zero (isOpen_congruenceGL_span (by simp)))
+      (Subgroup.relIndex_ne_zero_of_isOpen_of_isCompact (isOpen_congruenceGL_span (by simp))
+        (isCompact_intGL isCompact_Ô))
 
 end New.Variety
 

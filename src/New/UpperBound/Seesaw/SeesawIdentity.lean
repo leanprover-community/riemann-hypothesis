@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import New.UpperBound.Objects.PoincareMap
 public import New.UpperBound.Seesaw.Cut
 import Lib.Adelic.AutomorphicForms.BlockPeriods
@@ -373,7 +374,8 @@ lemma integral_mul_liftY_poincareAt (ϑ : D.TameChar)
   have h_index : J.relIndex D.chosenLevel * stdLevelIndex (D.chosenLevel (n := D.Y 0)) =
       stdLevelIndex J :=
     Subgroup.relIndex_mul_relIndex J _ _ (levelY_le_chosenLevel ϑ 0) levelOf_le_stdLevel
-  have h_ne : stdLevelIndex J ≠ 0 := isCompact_stdLevel.relIndex_ne_zero IsLevel.isOpen
+  have h_ne : stdLevelIndex J ≠ 0 :=
+    Subgroup.relIndex_ne_zero_of_isOpen_of_isCompact IsLevel.isOpen isCompact_stdLevel
   have h_rel_ne : J.relIndex D.chosenLevel ≠ 0 := left_ne_zero_of_mul (h_index.trans_ne h_ne)
   let : Fintype (D.chosenLevel ⧸ J.subgroupOf D.chosenLevel) :=
     Subgroup.fintypeOfIndexNeZero h_rel_ne

@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Algebra.Order.Star.Rat
+import TauCeti.Topology.Algebra.Group.OpenSubgroup.FiniteIndex
 public import Lib.Adelic.AutomorphicForms.SmoothAlgebraicForms
 import Lib.Adelic.Reduction.DefiniteClassSums
 import Lib.Cohomology.Etale.Basic
@@ -338,7 +339,8 @@ lemma exists_isUnitary_formTranslation :
   have h_sum : 0 < classSum V.Γf (rightStabilizer f ⊓ stdLevel E n) f :=
     classSum_pos hf_nonneg ((apply_doubleCoset_out hf_left inf_le_left g).trans_gt hf_pos)
   change 0 < classIntegral V.Γf (stdLevel E n) f
-  exact smul_pos (by positivity [isCompact_stdLevel.relIndex_ne_zero hf_open]) h_sum
+  exact smul_pos
+    (by positivity [relIndex_ne_zero_of_isOpen_of_isCompact hf_open isCompact_stdLevel]) h_sum
 
 /-- For an open subgroup K of the finite adelic points and a character χ of K, the forms of
 weight κ on a positive definite V on which K acts through χ form a finite-dimensional
