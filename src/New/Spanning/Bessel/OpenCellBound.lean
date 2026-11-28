@@ -12,7 +12,6 @@ import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
 import Lib.DiscreteSeries.Bruhat.ComplexPlace
 import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.General.Analysis.GaussianIntegral
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.Bessel.MeanValue
 import New.Spanning.Unfolding.Link
 

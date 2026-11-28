@@ -2,7 +2,6 @@ module
 
 public import New.Spanning.Frames.StandardLevel
 import Lib.Base
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import Lib.SiegelWeil.OneVector.StandardQuadrics
 
 /-!

@@ -15,7 +15,6 @@ import Lib.DiscreteSeries.Haar.TotalMass
 import Lib.GLn.SchurModule.GramMatrix
 import Lib.GLn.SchurModule.WeylKernel
 import Lib.General.LinearAlgebra.MinorProducts
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # Algebraic representations of GL(n) on unitary groups: Schur orthogonality

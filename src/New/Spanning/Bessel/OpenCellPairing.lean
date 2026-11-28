@@ -11,7 +11,6 @@ import Lib.Cohomology.Etale.Basic
 import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
 import Lib.DiscreteSeries.Bruhat.ComplexPlace
 import Lib.DiscreteSeries.Haar.TotalMass
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.Bessel.OpenCellBound
 
 /-!

@@ -5,7 +5,6 @@ import Mathlib.Algebra.Order.Star.Real
 public import New.Spanning.RemainingTerms.BorderedDeterminant
 import Lib.Cohomology.Etale.Basic
 import Lib.General.Analysis.HolomorphicIntegrals
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # The weight of Schur's test at one real place

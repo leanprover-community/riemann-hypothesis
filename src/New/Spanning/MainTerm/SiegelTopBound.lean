@@ -7,7 +7,6 @@ import TauCeti.NumberTheory.NumberField.Countable
 public import Lib.SiegelWeil.OneVector.SiegelClassSum
 public import New.Spanning.Frames.TopFloor
 public import New.Spanning.MainTerm.FillingLevel
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.MainTerm.GlobalToLocal
 import New.Spanning.Unfolding.Climbing
 import New.Spanning.Unfolding.ReducedGroups

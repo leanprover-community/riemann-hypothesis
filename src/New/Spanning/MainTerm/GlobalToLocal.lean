@@ -11,7 +11,6 @@ public import New.Spanning.MainTerm.FillingLevel
 public import New.Spanning.MainTerm.KloostermanSum
 import Lib.DiscreteSeries.Bessel.SchurBound
 import Lib.DiscreteSeries.Bruhat.BigCell
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.Unfolding.AmplitudeSums
 import New.Spanning.Unfolding.Link
 import New.Spanning.Unfolding.Packing

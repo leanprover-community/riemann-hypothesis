@@ -10,7 +10,6 @@ public import New.Spanning.MainTerm.Frequencies
 public import New.Spanning.Unfolding.BesselLevelStructure
 public import Lib.Adelic.Adeles.SemilocalProducts
 import Lib.Cohomology.Etale.Basic
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 import New.Spanning.RemainingTerms.Box
 
 /-!

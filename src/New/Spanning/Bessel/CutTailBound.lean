@@ -7,7 +7,6 @@ import Lib.DiscreteSeries.Bessel.SchurBound
 import Lib.DiscreteSeries.Bessel.UnipotentHaarMeasure
 import Lib.DiscreteSeries.FlenstedJensen.PsiKTypes
 import Lib.DiscreteSeries.FlenstedJensen.SquareIntegrability
-import Lib.Shimura.ComplexTheta.AppellHumbertData
 
 /-!
 # The Bessel function at a real place: decay and cut
