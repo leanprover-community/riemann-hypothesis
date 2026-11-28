@@ -120,7 +120,7 @@ def normOneLatticeVectors (g : Gf E κ) : Set (κ → E) :=
 private lemma replicateCol_gram_eq_one {R : Type*} [CommRing R] [StarRing R] {x : κ → R}
     (hx : star x ⬝ᵥ x = 1) :
     (replicateCol Unit x)ᴴ * (1 : Matrix κ κ R) * replicateCol Unit x = 1 := by
-  simpa [← ext_iff, Matrix.mul_apply, dotProduct] using hx
+  rw [gram_replicateCol, one_mulVec, hx, map_one]
 
 /-- Witt's theorem for vectors: the unitary group over `E` moves any vector of norm `1` to any
 other. -/

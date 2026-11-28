@@ -135,6 +135,15 @@ lemma signMatrix_one : signMatrix (n := n) 1 = 1 := by simp [signMatrix]
 lemma conjTranspose_signMatrix {ε : n → ℤˣ} : (signMatrix ε)ᴴ = signMatrix ε := by
   simp [signMatrix]
 
+/-- Pairing two one-column matrices under a form gives a one-by-one matrix whose entry
+is the pairing of the corresponding vectors. -/
+lemma gram_replicateCol {ι A : Type*} [Fintype ι] [Semiring A] [Star A]
+    (J : Matrix ι ι A) (x y : ι → A) :
+    (replicateCol Unit x)ᴴ * J * replicateCol Unit y =
+      Matrix.scalar Unit (star x ⬝ᵥ J *ᵥ y) := by
+  ext ⟨⟩ ⟨⟩
+  exact (dotProduct_mulVec (star x) J y).symm
+
 variable [Fintype n] [CommRing R] [CommRing S] {O : Subring R}
 
 /-- Multiplying M on the right by the inclusion matrix of u selects the columns u(j) of M. -/

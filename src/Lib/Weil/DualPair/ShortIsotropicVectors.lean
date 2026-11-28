@@ -120,8 +120,8 @@ lemma Space.exists_short_isotropic (h_ht : 2 < S.height g) :
     (S.move g).form_eq_zero_of_norm_mul_lt_one hx hx (by simp [← sq, hx_short.trans h_small])
   have hx_le : ‖(S.move g).archCoords x‖ ≤ 2 / S.height g :=
     hx_short.le.trans_eq (by simp [height])
-  have h_gram : (replicateCol Unit x)ᴴ * S.J * replicateCol Unit x = 0 :=
-    Matrix.ext fun _ _ ↦ (dotProduct_mulVec (star x) S.J x).symm.trans hx_iso
+  have h_gram : (replicateCol Unit x)ᴴ * S.J * replicateCol Unit x = 0 := by
+    rw [gram_replicateCol, hx_iso, map_zero]
   exact ⟨replicateCol Unit x, by simpa using hx_ne, h_gram, fun _ ↦ ⟨hx, hx_le⟩⟩
 
 variable [WeilData E] [Fintype q] {S T}

@@ -80,9 +80,7 @@ lemma New.Exchange.exists_unitary_mulVec_eq_single {i : n} (hs_pos : s i = 1) {x
       u.val.val * replicateCol Unit (x *ᵥ v) = replicateCol Unit (basisFun ℂ n i) := by
     refine witt ⟨.I, by simp⟩ hs_herm IsHermitianInvolution.isUnit
       (.of_ne_zero fun h ↦ by simp [h] at x_length) (.of_ne_zero ((basisFun ℂ n).ne_zero i)) ?_
-    ext
-    simp only [conjTranspose_replicateCol, ← replicateRow_vecMul,
-      replicateRow_mul_replicateCol_apply, ← dotProduct_mulVec, x_length, i_length]
+    rw [gram_replicateCol, gram_replicateCol, x_length, i_length]
   exact ⟨u, v, by simpa [← replicateCol_mulVec] using hu⟩
 
 /-- Let `s` have `card b` more negative signs than `t`, and let the positive basis vector `i` be in
