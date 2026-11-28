@@ -2,6 +2,7 @@ module
 
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.Topology
 import TauCeti.Topology.Algebra.Group.Units
 public import Lib.General.Measure.HaarModulus
 public import Lib.Adelic.Adeles.Basic
@@ -107,25 +108,19 @@ lemma continuous_ideleAt : Continuous (ideleAt v) := (continuous_evalAt v).units
 lemma finite_setOf_valued_val_ne_one : {v : FinPlace K | Valued.v (a.val v) ≠ 1}.Finite :=
   unitsEquiv_finite_valued_eq_one a
 
+private lemma idelesUnitOff_eq_sIntegralUnits :
+    idelesUnitOff S = sIntegralUnits (NumberField.RingOfIntegers K) K S := by
+  ext a
+  simp [idelesUnitOff, ← val_inj, ideleAt]
+
 /-- The ideles that are units at every place are the units of the ring of integral adeles. -/
 lemma idelesUnitOff_empty : idelesUnitOff ∅ = (Ô K).units := by
-  -- both sides consist of the ideles whose components all have valuation one
-  ext a
-  have h_mem : a ∈ idelesUnitOff ∅ ↔ ∀ w : FinPlace K, Valued.v (a.val w) = 1 := by
-    simp [idelesUnitOff, ← val_inj, ideleAt]
-  simp only [h_mem, Submonoid.mem_units_iff, Subring.mem_toSubmonoid, mem_Ô]
-  refine ⟨fun h ↦ ⟨fun w ↦ (h w).le, fun w ↦ ?_⟩, fun ⟨h, h_inv⟩ w ↦ ?_⟩ <;>
-    obtain ⟨h_eq, h_ne⟩ := idele_inv_apply_and_ne_zero w a
-  · simp [h_eq, h w]
-  · have h_le := h_inv w
-    rw [h_eq, map_inv₀, inv_le_one₀ ((Valuation.pos_iff _).2 h_ne)] at h_le
-    exact le_antisymm (h w) h_le
+  rw [idelesUnitOff_eq_sIntegralUnits, sIntegralUnits_empty]
+  exact integralUnits_eq_units_integralAdeles (NumberField.RingOfIntegers K) K
 
 lemma isOpen_idelesUnitOff : (idelesUnitOff S).IsOpen := by
-  -- It contains the open subgroup `idelesUnitOff ∅`, the units of `Ô K`.
-  have h_le : idelesUnitOff ∅ ≤ idelesUnitOff S := biInf_mono fun v _ ↦ Set.notMem_empty v
-  refine Subgroup.isOpen_mono h_le ?_
-  simpa only [idelesUnitOff_empty] using Submonoid.isOpen_units isOpen_Ô
+  rw [idelesUnitOff_eq_sIntegralUnits]
+  exact TauCeti.isOpen_sIntegralUnits (NumberField.RingOfIntegers K) K S
 
 variable {S a v} {w : FinPlace K}
 
@@ -140,7 +135,7 @@ lemma ideleAt_locIdele_of_ne (h_ne : w ≠ v) (x : (LocField v)ˣ) : ideleAt w (
 @[simp]
 lemma mem_idelesUnitOff :
     a ∈ idelesUnitOff S ↔ ∀ v : FinPlace K, v ∉ S → Valued.v (a.val v) = 1 := by
-  simp [idelesUnitOff, ← val_inj, ideleAt]
+  rw [idelesUnitOff_eq_sIntegralUnits, mem_sIntegralUnits_iff]
 
 lemma idelesUnitOff_mono {T : Set (FinPlace K)} (h_sub : S ⊆ T) :
     idelesUnitOff S ≤ idelesUnitOff T :=
