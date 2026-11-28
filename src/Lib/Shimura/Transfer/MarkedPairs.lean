@@ -3,6 +3,7 @@ module
 public import Lib.Shimura.HeckeTower.HeckeData
 import Lib.Adelic.TraceFormula.ChangingSigns
 import Lib.General.LinearAlgebra.Eigenvalues
+import TauCeti.LinearAlgebra.Matrix.Diagonal
 
 /-!
 # Eigenline reflections of a separable matrix, and the term of the count at a marked triple
@@ -145,10 +146,8 @@ lemma exists_eq_markedReflection_iff_of_ratConj_eq (hy_sep : y.val.charpoly.Sepa
     rw [ratConj, units_smul_def, ofConjAct_toConjAct, Units.mul_inv_eq_iff_eq_mul] at h_fix
     simpa [hy_diag, ← smul_mul', mul_sub, sub_mul, smul_left_cancel_iff] using h_fix
   have h_diag (a b : n) : a = b ∨ u a = 0 ∨ w b = 0 := by
-    have h_entry : ρ a * (u a * w b) = u a * w b * ρ b := by
-      simpa [diagonal_mul, mul_diagonal, vecMulVec_apply] using congrFun₂ h_comm a b
-    have h_prod : (ρ a - ρ b) * (u a * w b) = 0 := by linear_combination h_entry
-    simpa [sub_eq_zero] using h_prod
+    exact or_iff_not_imp_left.mpr fun hab ↦
+      mul_eq_zero.mp (TauCeti.apply_eq_zero_of_commute_diagonal h_comm (ρ.injective.ne hab))
   -- Some term `w i * u i` of `w ⬝ᵥ u = 2` is not zero; by `h_diag`, `u` and `w` vanish off `i`.
   obtain ⟨i, -, h_wu_ne⟩ := exists_ne_zero_of_sum_ne_zero (h_dot.trans_ne two_ne_zero)
   have h_off (b : n) (hb : b ≠ i) : w b * u b = 0 := by grind [h_diag b i]
