@@ -135,14 +135,10 @@ lemma JumpLattice.mem_withOrders_of_add_E_smul_mem (hl : 0 < l) {ξ y : L.Ambien
   have hEy : k.E • y ∈ L.withOrders i (shiftedStdOrders l fun u : ℤ ↦ min 1 (o u)) := by
     rw [← frobEUnit_zero_smul, ← zpow_one (k.frobEUnit 0)]
     exact frobEUnit_zpow_smul_mem_withOrders 0 1 hy (by grind)
-  have h_min : ξ ∈ L.withOrders i (shiftedStdOrders l fun u : ℤ ↦ min 1 (o u)) := by
-    rw [← add_mem_cancel_right hEy]
-    exact mem_withOrders_shiftedStdOrders_of_le h_exp fun u ↦ min_le_right 1 (o u)
-  have h_improved : ∀ a : ℕ, ∀ u ∈ L.jumpSet (i.stepBack a),
-      shiftedStdOrders l (fun v : ℤ ↦ if o v ≤ 0 then 0 else A) a u ≤
-        improvedOrders (shiftedStdOrders l fun v : ℤ ↦ min 1 (o v))
-          (shiftedStdOrders l fun _ : ℤ ↦ A) a u := by grind
-  exact mem_withOrders_of_le (mem_withOrders_improvedOrders h_min hξ_inv) h_improved
+  have h_min : ξ ∈ L.withOrders i (shiftedStdOrders l fun u : ℤ ↦ min 1 (o u)) :=
+    (add_mem_cancel_right hEy).1
+      (mem_withOrders_shiftedStdOrders_of_le h_exp fun u ↦ min_le_right 1 (o u))
+  exact mem_withOrders_of_le (mem_withOrders_improvedOrders h_min hξ_inv) (by grind)
 
 /-- Let `0 < l`, let all `ξ n` be constants modulo `E ^ A` and let `y` have the standard orders. If
 `∑ n ≤ N, E ^ n • ξ n + E ^ (N + 1) • y` has the standard orders raised by `o ≤ A` at `E`, then
@@ -163,10 +159,8 @@ lemma JumpLattice.mem_withOrders_of_expansion_mem (hl : 0 < l) {ξ : ℕ → L.A
       rw [sum_range_succ', add_right_comm, add_comm]
       simp only [hy', smul_add, smul_sum, pow_succ', mul_smul, pow_zero, one_smul]
     rw [h_split] at h_exp
-    have hy'_std : y' ∈ L.withOrders i (stdOrders l) := by
-      refine add_mem (sum_mem fun n _ ↦ ?_) (smul_of_tower_mem _ _ hy)
-      obtain ⟨⟨-, h_std⟩, -⟩ := hξ (n + 1)
-      exact smul_of_tower_mem _ _ h_std
+    have hy'_std : y' ∈ L.withOrders i (stdOrders l) :=
+      add_mem (sum_mem fun n _ ↦ smul_of_tower_mem _ _ (hξ (n + 1)).1.2) (smul_of_tower_mem _ _ hy)
     have h_le : ∀ u : ℤ, o u ≤ (if o u ≤ 0 then 0 else A : ℤ) := by grind
     have h_const : ξ 0 ∈ L.withOrders i (shiftedStdOrders l o) :=
       mem_withOrders_shiftedStdOrders_of_le
@@ -255,15 +249,11 @@ lemma JumpLattice.exists_taylor_expansion_of_mem_stdOrdersPart (hl : 0 < l)
   obtain ⟨m, r, v, h_sum⟩ : ∃ (m : ℕ) (r : Fin m → k.S) (v : Fin m → almostFixed),
       ∑ a : Fin m, r a • (v a : L.Ambient) = p ^ (4 * δ) • x := mem_span_set'.1 hx_span
   let b : Fin m → L.Ambient := fun a ↦ L.letterProj i (v a)
-  have hb (a : Fin m) : b a ∈ L.constantsModE l A i := by
-    obtain ⟨hv_points, hv_forms⟩ := (v a).property
-    exact letterProj_mem_constantsModE hl i hv_points hv_forms
+  have hb (a : Fin m) : b a ∈ L.constantsModE l A i :=
+    letterProj_mem_constantsModE hl i (v a).2.1 (v a).2.2
   have h_comb : p ^ (4 * δ) • x = ∑ a : Fin m, r a • b a := by
     simpa [mem_letterPart_iff_letterProj.1 h_letter] using congrArg (L.letterProj i) h_sum.symm
-  have h_expand : ∀ a : Fin m, ∃ w : ℕ → WittFq k.f, ∀ N : ℕ, ∃ t : k.S,
-      r a = ∑ n ∈ range N, k.E ^ n * (w n : k.S) + k.E ^ N * t :=
-    fun a ↦ exists_expansion_pow_E hk (r a)
-  choose w t h_digits using h_expand
+  choose w t h_digits using fun a ↦ exists_expansion_pow_E hk (r a)
   refine ⟨fun n : ℕ ↦ ∑ a : Fin m, (w a n : k.S) • b a,
     fun n ↦ sum_mem fun a _ ↦ wittFq_smul_mem_constantsModE (w a n) (hb a),
     fun N ↦ ⟨∑ a : Fin m, t a N • b a, sum_smul_mem _ _ fun a _ ↦ (hb a).left, ?_⟩⟩
@@ -347,7 +337,7 @@ lemma PairingSide.projTrivial_coeff_sub_mem_withOrders {S : PairingSide O} (hl :
   have hη_exp : η N ∈ S.trivialLattice.withOrders i
       (shiftedStdOrders l fun _ : ℤ ↦ if (A : ℤ) ≤ N then 0 else A) :=
     mem_withOrders_of_expansion_mem hl hη (S.projTrivial.wittMap_mem_withOrders hU hy)
-      (fun _ ↦ le_rfl) (by simp only [h_zero, ZeroMemClass.zero_mem])
+      (fun _ ↦ le_rfl) (h_zero ▸ Submodule.zero_mem _)
   have h_lead : f.coeff N = 1 := by rw [← hf.natDegree_eq, hf.monic.coeff_natDegree]
   simpa only [hη_def, h_lead, one_smul, Nat.cast_le, hA.not_ge, ite_false] using hη_exp
 
@@ -394,20 +384,11 @@ lemma PairingSide.exists_wittMap_sub_smul_constantAt_mem_of_long_gap {l A s g δ
   have h_shifted (a : ℕ) (u : ℤ) (hu : u ∈ S.jumpSet (i.stepBack a)) :
       shiftedStdOrders l (fun v : ℤ ↦ min (A : ℤ) (g - v)) a u ≤ (if a < l then g else 0) - u := by
         grind
-  obtain ⟨y, hy, hy_over, hy_exp, -⟩ :
-      (S.pointsOver c i 0 (raisedOrdersAtZero (-s)) (raisedOrdersAtZero (-s))).Nonempty :=
-    pointsOver_nonempty_of_killsCokernel h_kill c
-  obtain ⟨f, hf, hfy⟩ : ∃ f : ℤ[X], f.IsMonicOfDegree N ∧
-      aeval k.E f • y ∈ S.extensionLattice.withOrders i
-        fun (a : ℕ) (u : ℤ) ↦ (if a < l then g else 0) - u := by
-    rw [← hN]
-    exact exists_isMonicOfDegree_aeval_smul_mem hk g l hy_exp
+  obtain ⟨y, hy, hy_over, hy_exp, -⟩ := pointsOver_nonempty_of_killsCokernel h_kill c
+  obtain ⟨f, hf, hfy⟩ := hN ▸ exists_isMonicOfDegree_aeval_smul_mem hk g l hy_exp
   have hfy_part : aeval k.E f • y ∈ S.extensionLattice.stdOrdersPart l i :=
     ⟨smul_mem _ _ hy, mem_withOrders_of_le hfy h_std⟩
-  obtain ⟨ξ, hξ, h_taylor⟩ : ∃ ξ : ℕ → S.extensionLattice.Ambient,
-      (∀ n : ℕ, ξ n ∈ S.extensionLattice.constantsModE l A i) ∧
-      ∀ M : ℕ, ∃ y' ∈ S.extensionLattice.stdOrdersPart l i,
-        p ^ (4 * δ) • aeval k.E f • y = ∑ n ∈ range M, k.E ^ n • ξ n + k.E ^ M • y' :=
+  obtain ⟨ξ, hξ, h_taylor⟩ :=
     exists_taylor_expansion_of_mem_stdOrdersPart hl hk h_three h_depth hfy_part
   obtain ⟨y', ⟨-, hy'⟩, h_sum⟩ := h_taylor (N + 1)
   -- The exponents of `ξ N` at `E`, from the exponents `min A (g - u)` of `f(E) y`.
@@ -438,12 +419,7 @@ lemma PairingSide.pointsOver_nonempty_of_long_gap {l A κ s g δ N : ℕ} {i : k
   -- Take the Taylor coefficient `ξ` over `p^(4δ) c` up to an error `w` divisible by `E^A`. The
   -- killer `p^κ` lifts the error, so it can be removed.
   have hl : 0 < l := Nat.pos_of_ne_zero fun h_zero ↦ by simp [h_zero] at h_three
-  obtain ⟨ξ, ⟨⟨hξ_loc, -⟩, hξ_inv⟩, hξ_order, hw_exp⟩ :
-      ∃ ξ ∈ S.extensionLattice.constantsModE l A i,
-        ξ ∈ S.extensionLattice.withOrders i (shiftedStdOrders l fun u : ℤ ↦ if u < -N then A else 0)
-          ∧
-        S.projTrivial.wittMap ξ - p ^ (4 * δ) • S.constantAt i c ∈
-          S.trivialLattice.withOrders i (shiftedStdOrders l fun _ : ℤ ↦ A) :=
+  obtain ⟨ξ, ⟨⟨hξ_loc, -⟩, hξ_inv⟩, hξ_order, hw_exp⟩ :=
     exists_wittMap_sub_smul_constantAt_mem_of_long_gap hl hk h_three h_depth h_kill h_jumps hN
       h_long c
   set w : S.trivialLattice.Ambient := S.projTrivial.wittMap ξ - p ^ (4 * δ) • S.constantAt i c with
@@ -459,23 +435,14 @@ lemma PairingSide.pointsOver_nonempty_of_long_gap {l A κ s g δ N : ℕ} {i : k
     simpa [shiftedStdOrders_zero] using frobEUnit_zpow_smul_mem_withOrders_shiftedStdOrders (-A)
       hw_exp
   have hEx_exp : k.frobEUnit 0 ^ (A : ℤ) • x ∈
-      S.extensionLattice.withOrders i (shiftedStdOrders l fun _ : ℤ ↦ A) := by
-    rw [← shiftedStdOrders_zero] at hx_exp
-    simpa only [zero_add] using frobEUnit_zpow_smul_mem_withOrders_shiftedStdOrders A hx_exp
-  set z : S.extensionLattice.Ambient := p ^ κ • ξ - k.frobEUnit 0 ^ (A : ℤ) • x with hz
-  have hz_loc : z ∈ S.extensionLattice.kisinLoc :=
-    sub_mem (nsmul_mem hξ_loc _) (frobEUnit_zpow_smul_mem_kisinLoc_iff.2 hx)
-  have hz_over : S.projTrivial.wittMap z = p ^ (κ + 4 * δ) • S.constantAt i c := by
-    have h_over : S.projTrivial.wittMap ξ = w + p ^ (4 * δ) • S.constantAt i c := by simp [hw]
-    simp [hz, h_over, hx_over, smul_comm (_ ^ A) (p ^ κ), pow_add, mul_smul, smul_add,
-      -nsmul_eq_mul]
-  have hz_exp : z ∈
-      S.extensionLattice.withOrders i (shiftedStdOrders l fun u : ℤ ↦ if u < -N then A else 0) :=
-    sub_mem (nsmul_mem hξ_order _) (mem_withOrders_shiftedStdOrders_of_le hEx_exp fun u ↦ by omega)
-  have hz_inv : z ∈ invariantsMod (S.extensionLattice.withOrders i
-    (shiftedStdOrders l fun _ : ℤ ↦ A)) :=
-    sub_mem (nsmul_mem hξ_inv _) (smul_sub_mem_withOrders hEx_exp)
-  exact ⟨z, hz_loc, hz_over, hz_exp, hz_inv⟩
+      S.extensionLattice.withOrders i (shiftedStdOrders l fun _ : ℤ ↦ A) :=
+    frobEUnit_zpow_smul_mem_withOrders 0 A hx_exp fun _ _ _ ↦ le_rfl
+  refine ⟨p ^ κ • ξ - k.frobEUnit 0 ^ (A : ℤ) • x,
+    sub_mem (nsmul_mem hξ_loc _) (frobEUnit_zpow_smul_mem_kisinLoc_iff.2 hx), ?_,
+    sub_mem (nsmul_mem hξ_order _) (mem_withOrders_shiftedStdOrders_of_le hEx_exp fun u ↦ by omega),
+    sub_mem (nsmul_mem hξ_inv _) (smul_sub_mem_withOrders hEx_exp)⟩
+  have h_over : S.projTrivial.wittMap ξ = w + p ^ (4 * δ) • S.constantAt i c := by simp [hw]
+  simp [h_over, hx_over, smul_comm (_ ^ A) (p ^ κ), pow_add, mul_smul, smul_add, -nsmul_eq_mul]
 
 end LongGap
 
