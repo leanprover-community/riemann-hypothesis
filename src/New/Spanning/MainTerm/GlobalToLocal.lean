@@ -377,14 +377,11 @@ lemma mem_termsOfLink_bigCell {σ : S.G E} {Λ : Submodule E (𝔰.MiddleIndex �
     (hΛ : Λ = link (weylElem 𝔰.ϱ 1 * σ)) (p : ℕ → Eˣ) {u u' : S.G E}
     (hu : u ∈ besselU) (hu' : u' ∈ besselU) :
     u * (weylElem 𝔰.ϱ p * σ) * u'⁻¹ ∈ S.termsOfLink Λ := by
-  -- Both conditions hold for `w_p σ` and are invariant under 𝖴 on either side.
-  rw [← inv_inv u]
+  rw [← inv_inv u, isStable_termsOfLink Λ u⁻¹ (inv_mem hu) u'⁻¹ (inv_mem hu') _]
   constructor
-  · rw [termDisc, frameDisc_frameGram_inv_mul_mul_of_mem_besselU (inv_mem hu) (inv_mem hu'),
-      frameDisc_weylElem_mul hσ]
+  · rw [termDisc, frameDisc_weylElem_mul hσ]
     exact mul_ne_zero (by simp [Finset.prod_eq_zero_iff]) hθ
-  · rw [link_inv_mul_mul_of_mem_besselU (inv_mem hu) (inv_mem hu'), hΛ,
-      link_weylElem_mul_eq_iff hσ hσ]
+  · rw [hΛ, link_weylElem_mul_eq_iff hσ hσ]
 
 /-- A sum of amplitudes is a finite sum of orbit sums over 𝖴 × 𝖴, with 𝖴 = `besselU`. Let `S`
 satisfy the standing hypotheses `New.Filling.IsAdmissible`, and let the elements of the finite set
@@ -412,19 +409,19 @@ lemma exists_amplitudeSum_eq_sum_cosetAmplitude [WeilData E] [S.IsAdmissible] {c
   -- Take a contributing term γ₀ and write γ₀ = u₀⁻¹ w_{p₀} σ u₀' in the big cell. The contributing
   -- terms γ over (c, s, c') with link Λ and `termDisc γ ≠ 0` are among the u w_p σ u'⁻¹ with p in
   -- 𝒯, each occurring once; sum over (u, u') for fixed p.
-  obtain ⟨⟨γ₀, ⟨h_disc₀, hΛ⟩, hγ₀⟩, h_amp₀⟩ :
+  obtain ⟨⟨γ₀, h_terms, hγ₀⟩, h_amp₀⟩ :
       ∃ γ : ↥(S.termsOfLink Λ ∩ S.termsOver c s c'), S.amplitude .cut c c' γ.val ≠ 0 := by
     by_contra! h_zero
     exact h_sum_ne (by simp [amplitudeSum, h_zero])
   obtain ⟨u₀, hu₀, u₀', hu₀', p₀, σ, hσ, rfl⟩ := exists_big_cell_decomp (h_minors _ hγ₀)
+  obtain ⟨h_disc₀, hΛ⟩ := (isStable_termsOfLink Λ u₀ hu₀ u₀' hu₀' _).mp h_terms
   have h_link : Λ = link (weylElem 𝔰.ϱ 1 * σ) := by
-    rw [← hΛ, link_inv_mul_mul_of_mem_besselU hu₀ hu₀', link_weylElem_mul_eq_iff hσ hσ]
+    rw [← hΛ, link_weylElem_mul_eq_iff hσ hσ]
   -- With θ the last diagonal entry of `S.frameProducts σ`, the number θ θ̄ - N² is a factor of
-  -- `termDisc γ₀`, which is nonzero.
+  -- the nonzero discriminant of `weylElem 𝔰.ϱ p₀ * σ`.
   let θ : E := S.frameProducts σ 𝔰.top 𝔰.top
   have hθ_norm : θ * star θ - S.N ^ 2 ≠ 0 := by
-    rw [termDisc, frameDisc_frameGram_inv_mul_mul_of_mem_besselU hu₀ hu₀',
-      frameDisc_weylElem_mul hσ] at h_disc₀
+    rw [termDisc, frameDisc_weylElem_mul hσ] at h_disc₀
     exact right_ne_zero_of_mul h_disc₀
   have hθ_gt (v : InfinitePlace E) : S.N ^ 2 < ‖Φ v θ‖ ^ 2 :=
     sq_lt_norm_sq_last_frameProducts hσ hθ_norm v

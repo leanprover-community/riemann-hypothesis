@@ -770,14 +770,9 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
   -- The square of the block of one link is bounded by pairs of near representatives in the same
   -- link class.
   let Link : Type := Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E)
-  let terms (Λ : Link) : Set (S.G E) := {γ : S.G E | S.termDisc γ ≠ 0} ∩ link ⁻¹' {Λ}
-  have h_stable (Λ : Link) : S.IsStable (terms Λ) := by
-    intro u hu u' hu' γ
-    simp [terms, frameDisc_frameGram_inv_mul_mul_of_mem_besselU hu hu',
-      link_inv_mul_mul_of_mem_besselU hu hu']
-  have h_sub (Λ : Link) : terms Λ ⊆ S.remainingTerms := fun γ ⟨h_disc, _⟩ ↦ .inl h_disc
+  have h_sub (Λ : Link) : S.termsOfLink Λ ⊆ S.remainingTerms := fun γ ⟨h_disc, _⟩ ↦ .inl h_disc
   let nearRepsInLink (c c' : S.Classes) (p : Ω × Link) : Set (S.G E) :=
-    S.nearRepresentativesOver (terms p.2) c p.1 c'
+    S.nearRepresentativesOver (S.termsOfLink p.2) c p.1 c'
   let sameLinkPairs (c c' : S.Classes) : Set (S.G E × S.G E) :=
     {q : S.G E × S.G E | S.IsNearPairOverAgreeingBlock c c' q ∧ S.InSameLinkClass q.1 q.2 ∧
       ∃ s : S.ResidueGL, z ≤ S.meetNorm s ∧ q.1 ∈ S.termsOver c s c'}
@@ -796,7 +791,7 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
     have h_class : S.InSameLinkClass γ γ' := ⟨h_disc, h_disc', h_link.trans h_link'.symm⟩
     exact ⟨h_pair, h_class, s, h_meet s hs, mem_termsOver_of_mem_nearRepresentativesOver hγ⟩
   have h_blocks (c c' : S.Classes) :
-      ∑' (s : Ω) (Λ : Link), ‖S.amplitudeSum .cut (terms Λ) c s c'‖ₑ ^ 2 ≤
+      ∑' (s : Ω) (Λ : Link), ‖S.amplitudeSum .cut (S.termsOfLink Λ) c s c'‖ₑ ^ 2 ≤
         .ofReal (S.unipotentCovolume ^ 2) * ∑' q : sameLinkPairs c c', size c c' q := by
     rw [← tsum_prod]
     apply tsum_le_of_pair_blocks (size c c') (h_mem (c := c) (c' := c'))
@@ -808,11 +803,12 @@ theorem linkSecondMoment_le_of_le_meetNorm {E : Type} [Field E] [CMType E]
         (mem_of_mem_nearRepresentativesOver hq').2
     · intro p
       rw [sq]
-      exact enorm_amplitudeSum_mul_le (h_stable p.2) (h_stable p.2) (h_sub p.2) (h_sub p.2)
+      have hs := isStable_termsOfLink (S := S) p.2
+      exact enorm_amplitudeSum_mul_le hs hs (h_sub p.2) (h_sub p.2)
   calc
     _ = ∑ c : S.Classes, ∑ c' : S.Classes,
-        ∑' (s : Ω) (Λ : Link), ‖S.amplitudeSum .cut (terms Λ) c s c'‖ₑ ^ 2 := by
-      simp only [linkSecondMoment, tsum_fintype (β := S.Classes), terms, Link]
+        ∑' (s : Ω) (Λ : Link), ‖S.amplitudeSum .cut (S.termsOfLink Λ) c s c'‖ₑ ^ 2 := by
+      simp [linkSecondMoment, termsOfLink, Set.inter_def, Link]
     _ ≤ .ofReal (S.unipotentCovolume ^ 2) *
         ∑ c : S.Classes, ∑ c' : S.Classes, ∑' q : sameLinkPairs c c', size c c' q := by
       grw [h_blocks]

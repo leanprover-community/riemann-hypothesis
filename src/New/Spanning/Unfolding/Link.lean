@@ -248,6 +248,14 @@ lemma Filling.frameDisc_frameGram_inv_mul_mul_of_mem_besselU {F : Type} [CommRin
     leadingMinor_frameGram_besselU_mul hu hu' ⊤
   simp only [frameDisc, h_det, leadingMinor_frameGram_besselU_mul hu hu']
 
+/-- Terms with nonzero discriminant and a fixed link are stable under the Bessel unipotent group. -/
+lemma Filling.isStable_termsOfLink {E : Type} [Field E] [CMType E] {S : Filling E 𝔰}
+    (Λ : Submodule E (𝔰.MiddleIndex ⊕ 𝔰.MiddleIndex → E)) :
+    S.IsStable (S.termsOfLink Λ) := by
+  intro u hu u' hu' γ
+  simp [termsOfLink, frameDisc_frameGram_inv_mul_mul_of_mem_besselU hu hu',
+    link_inv_mul_mul_of_mem_besselU hu hu']
+
 /-- Let `D_l` be the leading minors of the frame Gram matrix `S.frameProducts γ`, the matrix of the
 products `h(f_b, γ f_l)` of the frame `f = (e₁, …, e_ϱ, z_N)` with its image under `γ`, so that
 `S.termDisc γ = |D_{ϱ+1}|² - N² |D_ϱ|²`. The cell of rank `j` consists of the `γ` in `S.G E` such
