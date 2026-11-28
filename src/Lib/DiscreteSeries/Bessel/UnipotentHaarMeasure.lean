@@ -130,11 +130,22 @@ theorem exists_dilation {T : ℝ} (hT : 1 ≤ T) :
       d.val.val = diagonal fun i : 𝔰.BesselIndex ↦ (T : ℂ) ^ (𝔰.ϱ - level i : ℤ) := by
     refine exists_U_coe_eq ?_
     -- The form pairs e_a with e*_a, and the exponents at these two indices add up to `0`.
-    simp [← ext_iff, level, ← zpow_add₀ hT_ne]
+    simp only [level, diagonal_conjTranspose, ← ext_iff, mul_diagonal, diagonal_mul, Pi.star_apply,
+      star_zpow₀, star_def, conj_ofReal, Sum.forall, floorOf.eq_1, is_lt, or_true,
+      splitGram_eq_ite_oppositeIndex, mul_ite, mul_one, mul_zero, Sum.elim_inl, ite_mul,
+      ← zpow_add₀ hT_ne, zero_mul, Sum.elim_inr, sub_self, zpow_ofNat, pow_zero, floorOf.eq_2,
+      oppositeIndex.eq_1, reduceCtorEq, ↓reduceIte, implies_true, floorOf.eq_3,
+      add_lt_iff_neg_left, _root_.not_lt_zero, or_false, Sum.inr.injEq, floorOf.eq_4,
+      lt_self_iff_false, and_self, true_and, oppositeIndex.eq_3, one_mul, oppositeIndex.eq_2,
+      Sum.inl.injEq, and_true]
     grind [zpow_zero]
   have h_conj (u : 𝔰.G₁) (i j : 𝔰.BesselIndex) :
       (d⁻¹ * u * d).val.val i j = T ^ (level i - level j : ℤ) * u.val.val i j := by
-    simp [inv_diagonal, Ring.inverse, Pi.isUnit_iff, zpow_sub₀, field, hd, hT_ne]
+    simp only [Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, coe_units_inv, hd, ne_eq,
+      hT_ne, not_false_eq_true, zpow_sub₀, zpow_natCast, inv_diagonal, Ring.inverse, Pi.isUnit_iff,
+      isUnit_iff_ne_zero, _root_.div_eq_zero_iff, pow_eq_zero_iff', false_and, or_self,
+      implies_true, ↓reduceDIte, Units.val_inv_eq_inv_val, IsUnit.unit_spec, mul_diagonal,
+      diagonal_mul, Pi.inv_apply, inv_div, fieldEq]
   refine ⟨d, h_conj, fun u hu ↦ ?_⟩
   -- For `u` in `besselU` the entries of `d⁻¹ * u * d - 1` vanish unless `level i < level j`,
   -- and are then those of `u` divided by a positive power of `T`.
@@ -142,11 +153,16 @@ theorem exists_dilation {T : ℝ} (hT : 1 ≤ T) :
     rw [Matrix.sub_apply, h_conj]
     obtain hij | hij := le_or_gt (level j) (level i)
     · rw [mem_besselU.1 hu i j hij]
-      by_cases h_eq : i = j <;> simp [h_eq, div_nonneg, hT_pos.le]
+      by_cases h_eq : i = j
+      · simp only [h_eq, sub_self, zpow_ofNat, pow_zero, one_mul, norm_zero, norm_nonneg,
+          hT_pos.le, div_nonneg]
+      · simp only [ne_eq, h_eq, not_false_eq_true, one_apply_ne, mul_zero, sub_self, norm_zero,
+          norm_nonneg, hT_pos.le, div_nonneg]
     · suffices T ^ (level i - level j : ℤ) * ‖u.val.val i j‖ ≤ ‖u.val.val‖ / T by
-        simpa [ne_of_apply_ne level hij.ne, abs_of_pos hT_pos]
+        simpa only [ne_eq, ne_of_apply_ne level hij.ne, not_false_eq_true, one_apply_ne, sub_zero,
+          Complex.norm_mul, norm_zpow, norm_real, Real.norm_eq_abs, abs_of_pos hT_pos, ge_iff_le]
       grw [norm_apply_le_l2_opNorm, show (level i - level j : ℤ) ≤ -1 by lia]
-      simp [field]
+      simp only [Int.reduceNeg, _root_.zpow_neg, zpow_ofNat, pow_one, fieldLe, Std.le_refl]
   calc ‖(d⁻¹ * u * d).val.val‖
       ≤ ‖(1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ + ‖(d⁻¹ * u * d).val.val - 1‖ :=
         norm_le_insert' _ 1
@@ -170,11 +186,13 @@ lemma measurePreserving_conj_bessel {S : Subgroup 𝔰.G₁} {P : 𝔰.BesselInd
   let conj (t : normalizer (S : Set 𝔰.G₁)) : S ≃ₜ* S := by
     use S.normalizerMonoidHom t <;> exact .subtype_mk (by fun_prop) _
   let χ : normalizer (S : Set 𝔰.G₁) →* NNRealˣ :=
-    .mk' (fun t ↦ Units.mk0 _ (mulEquivHaarChar_pos (conj t)).ne') fun t t' ↦ by
-      -- `conj (t * t')` is by definition the composite of `conj t'` and `conj t`.
-      rw [mul_comm (Units.mk0 ..)]
-      simp [Units.ext_iff, ← mulEquivHaarChar_trans, conj]
-      rfl
+    .mk' (fun t ↦ Units.mk0 _ (mulEquivHaarChar_pos (conj t)).ne') fun t t' ↦ Units.ext <| by
+      have h_eq : conj (t * t') = (conj t').trans (conj t) := ContinuousMulEquiv.ext fun x ↦ by
+        simp only [conj, ContinuousMulEquiv.trans_apply, ContinuousMulEquiv.coe_mk, map_mul,
+          MulAut.mul_apply]
+        rfl
+      rw [Units.val_mul, Units.val_mk0, Units.val_mk0, Units.val_mk0, h_eq,
+        mulEquivHaarChar_trans, mul_comm]
   let ball (r : ℝ) : Set S := {y | ‖y.val.val.val‖ ≤ r}
   let C : ℝ := 1 + 𝔰.r ^ 2
   have h_bound (t : besselS) : χ (inclusion h_norm t) * μ (ball 2) ≤ μ (ball (C * 2 * C)) := by
@@ -187,7 +205,10 @@ lemma measurePreserving_conj_bessel {S : Subgroup 𝔰.G₁} {P : 𝔰.BesselInd
       simp_rw [hS, d_entry, Matrix.one_apply]
       congr! 3
       -- The factor is `1` on the diagonal and nonzero elsewhere.
-      split <;> simp [*, zpow_ne_zero]
+      split
+      · simp only [*, sub_self, zpow_zero, one_mul]
+      · simp only [mul_eq_zero, zpow_ne_zero _ (Complex.ofReal_ne_zero.2
+          (one_pos.trans_le (U.one_le_norm u)).ne'), false_or]
     -- As `χ` has commuting values, `χ (u * h) = χ (h * (d⁻¹ * u * d))`, and this last element
     -- `z` has norm at most `C`, so conjugation by it maps `ball 2` into `ball (C * 2 * C)`.
     let u' : normalizer (S : Set 𝔰.G₁) :=
@@ -195,7 +216,10 @@ lemma measurePreserving_conj_bessel {S : Subgroup 𝔰.G₁} {P : 𝔰.BesselInd
     let h : normalizer (S : Set 𝔰.G₁) :=
       ⟨_, h_norm (mem_partialUnitriangularGroup_of_mem_floorGroup (toBesselH_mem w))⟩
     let z : normalizer (S : Set 𝔰.G₁) := h * (⟨d, hd⟩⁻¹ * u' * ⟨d, hd⟩)
-    have h_scale : χ (u' * h) = χ z := by simp [z, mul_comm (χ u'), mul_assoc]
+    have h_scale : χ (u' * h) = χ z := by
+      dsimp only [z]
+      rw [map_mul, map_mul, map_mul, map_mul, map_inv,
+        mul_right_comm (χ ⟨d, hd⟩)⁻¹ (χ u'), inv_mul_cancel, one_mul, mul_comm]
     have hz : ‖z.val.val.val‖ ≤ C := (norm_embedH_mul _).trans_le <|
       (d_norm u hu).trans (by grw [div_self_le_one, mul_one])
     have h_maps : ball 2 ⊆ conj z ⁻¹' ball (C * 2 * C) := fun y hy ↦
@@ -204,17 +228,29 @@ lemma measurePreserving_conj_bessel {S : Subgroup 𝔰.G₁} {P : 𝔰.BesselInd
         ≤ χ z * μ (conj z ⁻¹' ball (C * 2 * C)) := by grw [h_scale, h_maps]
       _ = μ (ball (C * 2 * C)) := mulEquivHaarChar_smul_preimage ..
   let b : ℝ≥0∞ := ⨆ t : besselS, χ (inclusion h_norm t) * μ (ball 2)
-  have hb_pos : b ≠ 0 := by simpa [b] using measure_sublevel_ne_zero μ (by simp)
+  have h_ball2_pos : 0 < μ (ball 2) := pos_iff_ne_zero.2 <|
+    measure_sublevel_ne_zero μ
+      (by simp only [OneMemClass.coe_one, Units.val_one, norm_one, _root_.one_lt_two])
+      (continuous_U_iff_matrix.1 continuous_subtypeVal).norm
+  have hb_pos : b ≠ 0 := by
+    refine ne_of_gt (lt_of_lt_of_le ?_ (le_iSup (fun t : besselS ↦
+      (χ (inclusion h_norm t) : ℝ≥0∞) * μ (ball 2)) 1))
+    simpa only [map_one, Units.val_one, ENNReal.coe_one, one_mul] using h_ball2_pos
   have hb_fin : b ≠ ∞ :=
     ne_top_of_le_ne_top (isCompact_U_norm_le _).preimage_val.measure_ne_top (iSup_le h_bound)
   -- Left multiplication by `s` permutes `besselS`.
-  have h_fix : χ (inclusion h_norm ⟨s, hs⟩) * b = b :=
-    .trans (by simp [b, mul_iSup, mul_assoc]) (Equiv.mulLeft (⟨s, hs⟩ : besselS)).iSup_comp
+  have h_fix : χ (inclusion h_norm ⟨s, hs⟩) * b = b := by
+    dsimp only [b]
+    rw [ENNReal.mul_iSup]
+    refine Eq.trans (iSup_congr fun t ↦ ?_) (Equiv.mulLeft (⟨s, hs⟩ : besselS)).iSup_comp
+    rw [← mul_assoc, ← ENNReal.coe_mul, ← Units.val_mul, ← map_mul]
+    rfl
   have χ_eq : mulEquivHaarChar (conj ⟨s, h_norm hs⟩) = 1 :=
     mod_cast (ENNReal.mul_eq_right hb_pos hb_fin).1 h_fix
   have h_map : μ.map (conj ⟨s, h_norm hs⟩) = μ := by
-    simpa [χ_eq] using mulEquivHaarChar_smul_map μ (conj ⟨s, h_norm hs⟩)
-  exact ⟨by fun_prop, h_map⟩
+    simpa only [χ_eq, Units.val_one, NNReal.coe_one, one_smul] using
+      mulEquivHaarChar_smul_map μ (conj ⟨s, h_norm hs⟩)
+  exact ⟨(conj ⟨s, h_norm hs⟩).continuous.measurable, h_map⟩
 
 /-! ### Lebesgue measure in the free entries is a two-sided Haar measure -/
 
@@ -238,7 +274,8 @@ theorem exists_measurePreserving_freeEntries {S : Subgroup 𝔰.G₁}
   -- the matrix `linMatrix`, unitriangular for the levels; on the real ones it is a shear.
   let gCol (a : Fin 𝔰.ϱ) (j : 𝔰.BesselIndex) (x : Subtype p) : ℂ :=
     if x.val.1 = a then (g.val.val - 1) x.val.2 j else 0
-  let linMatrix : Matrix (Subtype p) (Subtype p) ℂ := 1 + of fun x ↦ gCol x.val.1 x.val.2
+  let linMatrix : Matrix (Subtype p) (Subtype p) ℂ :=
+    1 + of fun (x : Subtype p) ↦ gCol x.val.1 x.val.2
   have h_det : linMatrix.det = 1 :=
     det_eq_one_of_unitriangular (lev := fun x ↦ -(level x.val.2 : ℤ)) fun x y hxy ↦ by
       simp [linMatrix, gCol, mem_besselU.1 hg y.val.2 x.val.2 (by lia)]
@@ -303,19 +340,24 @@ theorem IsUnimodularHaar.of_freeEntries {S : Subgroup 𝔰.G₁}
     IsUnimodularHaar ν := by
   have h_closed : IsClosed (S : Set 𝔰.G₁) := isClosed_of_entries_eq_one hS
   have := h_closed.polishSpace
+  have : StandardBorelSpace S := ⟨⟨inferInstance, inferInstance, h_closed.polishSpace⟩⟩
   -- Conjugation by `g⁻¹` keeps the left Haar measure, so it is right invariant too.
   have h_haar_right : (haar : Measure S).IsMulRightInvariant := ⟨fun ⟨g, hg⟩ ↦ by
     have h_conj := measurePreserving_conj_bessel (μ := (haar : Measure S)) hS h_norm
       (mem_partialUnitriangularGroup_of_mem_besselU (h_le (inv_mem hg)))
     -- `x * g` is `g` times the conjugate `g⁻¹ * x * g`.
     convert (h_conj.mul_left _ (⟨g, hg⟩ : S)).map_eq using 2
-    exact funext fun x ↦ Subtype.ext (by simp [mul_assoc])⟩
+    exact funext fun x ↦ Subtype.ext (by simp only [Subgroup.coe_mul, mul_assoc,
+      mul_inv_cancel_left, inv_inv])⟩
   -- Right translation acts on the coordinates by a volume preserving map.
   have h_right : ν.IsMulRightInvariant := ⟨fun g ↦ by
     obtain ⟨T, hT, hT_act⟩ := exists_measurePreserving_freeEntries hS hp (h_le g.property)
     refine (hν.measurable.measurableEmbedding h_inj).map_injective ?_
-    simpa [map_map hν.measurable, measurable_mul_const, hν.map_eq, comp_def, hT_act] using
-      (hT.comp hν).map_eq⟩
+    have h_comp : (fun u : S ↦ freeEntries p (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)) ∘
+        (· * g) = T ∘ fun u : S ↦ freeEntries p (u : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) :=
+      funext fun u ↦ hT_act u u.property
+    rw [Measure.map_map hν.measurable (measurable_mul_const g), h_comp,
+      ← Measure.map_map hT.measurable hν.measurable, hν.map_eq, hT.map_eq]⟩
   have := hν.sigmaFinite
   obtain ⟨c, rfl⟩ : ∃ c : ℝ≥0∞, ν = c • haar := exists_eq_smul_haar haar h_right
   -- A Gaussian in the coordinates has integral `1`, so `c` is neither `0` nor `∞`.
@@ -324,7 +366,10 @@ theorem IsUnimodularHaar.of_freeEntries {S : Subgroup 𝔰.G₁}
       (lintegral_gaussian_eq_one (V := (Subtype p → ℂ) × (Fin 𝔰.ϱ → ℝ)))
     rw [lintegral_smul_measure, smul_eq_mul] at h_int
     exact isUnit_iff.1 (.of_mul_eq_one _ h_int)
+  have : MeasurableConstSMul S S := ⟨fun _ ↦ measurable_const_mul _⟩
   have := IsHaarMeasure.smul (G := S) haar hc.1 hc.2
+  have : MeasurableSMul₂ S 𝔰.G₁ :=
+    ⟨(continuous_subtypeVal.fst'.mul continuous_snd).measurable⟩
   exact { hasCutoff_of_proper with }
 
 /-- `New.RealPlace.unipotentOf`, the parametrisation of 𝖴⁰, is continuous. -/
@@ -367,11 +412,15 @@ lemma sum_isFreeEntry₀_add_sum_diag (w : Fin 𝔰.ϱ × 𝔰.BesselIndex → �
       ∑ a : Fin 𝔰.ϱ, ∑ i : 𝔰.κ, w (a, 𝔰.indexX₀ i) + ∑ a : Fin 𝔰.ϱ, ∑ b : Fin 𝔰.ϱ, y b a := by
   have h_split : ∑ x : Subtype IsFreeEntry₀, w x.val =
       ∑ a, ∑ i, w (a, 𝔰.indexX₀ i) + ∑ a, ∑ b ∈ Ioi a, (y b a + y a b) := by
-    simp +contextual [← subtype_univ, sum_filter, sum_prod_type, ← filter_lt_eq_Ioi, h_pair,
-      ite_add_zero, sum_add_distrib]
+    simp +contextual only [← subtype_univ, sum_subtype_eq_sum_filter, IsFreeEntry₀, gt_iff_lt,
+      sum_filter, sum_prod_type, sum_sum_type, reduceCtorEq, exists_false, and_false, or_self,
+      ↓reduceIte, sum_const_zero, Sum.inr.injEq, Sum.inl.injEq, or_false, exists_eq', univ_unique,
+      PUnit.default_eq_unit, add_zero, exists_eq_right', false_or, h_pair, ite_add_zero,
+      sum_add_distrib, zero_add, ← filter_lt_eq_Ioi]
   -- The pairs `a < b` give the entries of `y` off the diagonal.
   rw [h_split, sum_sum_Ioi_add_eq_sum_sum_off_diag, add_assoc]
-  simp [compl_eq_univ_sdiff]
+  simp only [compl_eq_univ_sdiff, subset_univ, sum_sdiff_eq_sub, sum_singleton, sum_sub_distrib,
+    sub_add_cancel]
 
 open scoped Classical in
 /-- For q = (a, b) in `𝔰.UnipotentParams`, with a a complex ϱ×κ matrix and b a real ϱ×ϱ matrix, take
@@ -393,13 +442,27 @@ lemma exists_measurePreserving_linearEquiv_freeEntries :
     (freeEntries IsFreeEntry₀).toLinearMap ∘ₗ mulLeftLinearMap _ ℝ 𝔰.isotropicCols ∘ₗ rows
   have h_definite (q : 𝔰.UnipotentParams) (a : Fin 𝔰.ϱ) (i : 𝔰.κ) :
       rows q a (𝔰.indexX₀ i) = q.1 a i := by
-        simp [rows, Matrix.mul_apply, inclMatrix, Matrix.one_apply]
+    simp only [inclMatrix, conjTranspose_submatrix, conjTranspose_one, LinearMap.coprod_apply,
+      mulRightLinearMap_apply, LinearMap.coe_comp, Function.comp_apply, Matrix.add_apply,
+      Matrix.mul_apply, submatrix_apply, Matrix.one_apply, id_eq, Sum.inr.injEq, Sum.inl.injEq,
+      mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', mem_univ, ↓reduceIte, reduceCtorEq,
+      sum_const_zero, add_zero, rows]
   have h_dual (q : 𝔰.UnipotentParams) (a b : Fin 𝔰.ϱ) :
       rows q a (eStar b) = skewOfReal q.2 a b := by
-    simp [rows, Matrix.mul_apply, inclMatrix, Matrix.one_apply]
+    simp only [inclMatrix, conjTranspose_submatrix, conjTranspose_one, LinearMap.coprod_apply,
+      mulRightLinearMap_apply, LinearMap.coe_comp, Function.comp_apply, Matrix.add_apply,
+      Matrix.mul_apply, submatrix_apply, Matrix.one_apply, id_eq, Sum.inr.injEq,
+      mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', mem_univ, ↓reduceIte, reduceCtorEq,
+      sum_const_zero, zero_add, rows]
   have hE₀ (q : 𝔰.UnipotentParams) : E₀ q = (fun x ↦ rows q x.val.1 x.val.2, fun a ↦ q.2 a a) := by
-    simp [E₀, Matrix.mul_apply, h_dual, skewOfReal, inclMatrix, Prod.ext_iff, funext_iff,
-      Matrix.one_apply]
+    simp only [inclMatrix, LinearMap.coe_comp, ContinuousLinearMap.coe_coe, Function.comp_apply,
+      mulLeftLinearMap_apply, Prod.ext_iff, funext_iff, freeEntries_apply_fst, Matrix.mul_apply,
+      submatrix_apply, Matrix.one_apply, id_eq, Sum.inl.injEq, ite_mul, one_mul, zero_mul,
+      Finset.sum_ite_eq, mem_univ, ↓reduceIte, implies_true, freeEntries_apply_snd, h_dual,
+      skewOfReal, LinearMap.coe_mk, AddHom.coe_mk, of_apply, Complex.ofReal_ofNat, div_ofNat_im,
+      sub_im, mul_im, add_re, one_re, I_re, add_zero, ofReal_im, mul_zero, add_im, one_im, I_im,
+      zero_add, ofReal_re, sub_re, sub_zero, zero_sub, neg_mul, sub_neg_eq_add, add_self_div_two,
+      and_self, E₀]
   have h_isometry (q : 𝔰.UnipotentParams) : ∑ x, ‖(E₀ q).1 x‖ ^ 2 + ∑ a, (E₀ q).2 a ^ 2 =
       ∑ a, ∑ i, ‖q.1 a i‖ ^ 2 + ∑ a, ∑ b, q.2 a b ^ 2 := by
     -- `skewOfReal` turns the real entries `(a, b)`, `(b, a)` into one complex entry with the same
@@ -408,20 +471,32 @@ lemma exists_measurePreserving_linearEquiv_freeEntries :
         ‖rows q a (eStar b)‖ ^ 2 = q.2 a b ^ 2 + q.2 b a ^ 2 := by
       suffices ((q.2 a b - q.2 b a) ^ 2 + (q.2 a b + q.2 b a) ^ 2) / 2 =
           q.2 a b ^ 2 + q.2 b a ^ 2 by
-        simpa [h_dual, skewOfReal, hab.ne, div_pow, RCLike.norm_sq_eq_def, ← sq]
+        simpa only [h_dual, skewOfReal, LinearMap.coe_mk, AddHom.coe_mk, of_apply, hab.ne,
+          ↓reduceIte, Complex.norm_div, norm_real, Real.norm_eq_abs, div_pow,
+          RCLike.norm_sq_eq_def, RCLike.re_to_complex, sub_re, mul_re, add_re, one_re, I_re,
+          add_zero, ofReal_re, one_mul, add_im, one_im, I_im, zero_add, ofReal_im, mul_zero,
+          sub_zero, sub_im, zero_sub, ← sq, RCLike.im_to_complex, mul_im, neg_mul,
+          sub_neg_eq_add, sq_abs, Nat.ofNat_nonneg, Real.sq_sqrt]
       ring
     simpa only [hE₀, h_definite] using sum_isFreeEntry₀_add_sum_diag
       (fun x ↦ ‖rows q x.1 x.2‖ ^ 2) (fun a b ↦ q.2 b a ^ 2) h_pair
   have h_inj : Injective E₀ := (injective_iff_map_eq_zero E₀).2 fun q hq ↦ by
-    have h_zero : ∑ a, ∑ i, ‖q.1 a i‖ ^ 2 + ∑ a, ∑ b, q.2 a b ^ 2 = 0 := by simp [← h_isometry, hq]
+    have h_zero : ∑ a, ∑ i, ‖q.1 a i‖ ^ 2 + ∑ a, ∑ b, q.2 a b ^ 2 = 0 := by
+      simp only [← h_isometry, hq, Prod.fst_zero, Pi.zero_apply, norm_zero, ne_eq,
+        OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, sum_const_zero, Prod.snd_zero, add_zero]
     rw [add_eq_zero_iff_of_nonneg (by positivity) (by positivity)] at h_zero
-    simpa [Finset.sum_eq_zero_iff_of_nonneg, Finset.sum_nonneg, sq_nonneg, ← Matrix.ext_iff,
-      Prod.ext_iff] using h_zero
+    simpa only [Prod.ext_iff, Prod.fst_zero, ← ext_iff, Matrix.zero_apply, Prod.snd_zero,
+      mem_univ, sq_nonneg, imp_self, implies_true, Finset.sum_nonneg,
+      Finset.sum_eq_zero_iff_of_nonneg, norm_nonneg, pow_succ_nonneg, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, pow_eq_zero_iff, norm_eq_zero, forall_const] using h_zero
   -- Each complex coordinate counts twice in the dimension.
   have h_dim : Module.finrank ℝ 𝔰.UnipotentParams =
       Module.finrank ℝ ((Subtype (IsFreeEntry₀ (𝔰 := 𝔰)) → ℂ) × (Fin 𝔰.ϱ → ℝ)) := by
     rify
-    simpa [Module.finrank_matrix, mul_assoc, Module.finrank_pi_fintype] using
+    simpa only [Module.finrank_prod, Module.finrank_matrix, Fintype.card_fin, finrank_real_complex,
+      mul_assoc, Module.finrank_self, mul_one, Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat,
+      Module.finrank_pi_fintype, Finset.sum_const, card_univ, smul_eq_mul,
+      Module.finrank_fintype_fun_eq_card, nsmul_eq_mul] using
       (sum_isFreeEntry₀_add_sum_diag (𝔰 := 𝔰) (fun _ ↦ 2) (fun _ _ ↦ 1)
         fun _ _ _ ↦ one_add_one_eq_two.symm).symm
   have : (volume (α := (Subtype (IsFreeEntry₀ (𝔰 := 𝔰)) → ℂ) × (Fin 𝔰.ϱ → ℝ))).IsAddHaarMeasure :=
@@ -449,27 +524,41 @@ lemma exists_freeEntries_unipotentOf_eq_shear :
   -- The quadratic term of `unipotentOf (a, b)` only shifts `b`, by the amount `(shift a).2`.
   let shift (a : Matrix (Fin 𝔰.ϱ) 𝔰.κ ℂ) : 𝔰.UnipotentParams :=
     E.symm.toLinearMap (freeEntries IsFreeEntry₀ (unipotentOf (a, 0)).val.val)
+  have h_cont_f : Continuous fun a : Matrix (Fin 𝔰.ϱ) 𝔰.κ ℂ ↦
+      freeEntries IsFreeEntry₀ (unipotentOf (a, 0)).val.val :=
+    (freeEntries IsFreeEntry₀).continuous.comp
+      (continuous_U_iff_matrix.1 (continuous_unipotentOf.comp
+        (continuous_id.prodMk continuous_const)))
   refine ⟨E, fun a ↦ (shift a).2, hE,
-    (E.symm.toLinearMap.continuous_of_finiteDimensional.comp (by fun_prop)).snd, fun q ↦ ?_⟩
+    (E.symm.toLinearMap.continuous_of_finiteDimensional.comp h_cont_f).snd, fun q ↦ ?_⟩
   have h_shift : E (shift q.1) = freeEntries IsFreeEntry₀ (unipotentOf (q.1, 0)).val.val :=
     E.apply_symm_apply _
   -- The entries in the columns x_i show that `shift` keeps the first parameter.
   have h_fst : (shift q.1).1 = q.1 := by
     ext a i
-    have h_entry : (E (shift q.1)).1 ⟨(a, 𝔰.indexX₀ i), by simp⟩ =
+    have h_entry : (E (shift q.1)).1 ⟨(a, 𝔰.indexX₀ i), Or.inl ⟨i, rfl⟩⟩ =
         (unipotentOf (q.1, 0)).val.val (.inl a) (𝔰.indexX₀ i) :=
       congrFun (congrArg Prod.fst h_shift) _
-    simpa [hE_apply, unipotentOf, Matrix.mul_apply, inclMatrix, Matrix.one_apply] using h_entry
+    simpa only [hE_apply, inclMatrix, conjTranspose_submatrix, conjTranspose_one,
+      freeEntries_apply_fst, Matrix.mul_apply, submatrix_apply, Matrix.one_apply, id_eq,
+      Sum.inl.injEq, Matrix.add_apply, Sum.inr.injEq, mul_ite, mul_one, mul_zero,
+      Finset.sum_ite_eq', mem_univ, ↓reduceIte, ne_eq, reduceCtorEq, not_false_eq_true,
+      one_apply_ne, sum_const_zero, add_zero, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
+      unipotentOf, map_zero, zero_sub, Matrix.mul_neg, Matrix.mul_smul, Matrix.neg_mul, smul_mul,
+      U.val_of_coe, Matrix.sub_apply, zero_add, conjTranspose_apply, star_def, sub_zero,
+      Matrix.neg_apply, Matrix.smul_apply, smul_eq_mul, neg_zero] using h_entry
   -- The free entries of `unipotentOf q` are affine in `q.2`, with linear part `b ↦ E (0, b)`.
   have h_affine : freeEntries IsFreeEntry₀ (unipotentOf q).val.val =
       freeEntries IsFreeEntry₀ (unipotentOf (q.1, 0)).val.val + E (0, q.2) := by
     have h_matrix : (unipotentOf q).val.val = (unipotentOf (q.1, 0)).val.val +
         𝔰.isotropicCols * (skewOfReal q.2 * 𝔰.dualColsᴴ) := by
-      simp [unipotentOf, Matrix.mul_add, Matrix.add_mul, Matrix.mul_assoc, sub_eq_neg_add,
-        add_assoc]
+      simp only [unipotentOf, Matrix.mul_assoc, sub_eq_neg_add, Matrix.mul_add, Matrix.mul_neg,
+        Matrix.mul_smul, Matrix.add_mul, Matrix.neg_mul, smul_mul, add_assoc, U.val_of_coe,
+        map_zero, add_zero]
     rw [h_matrix, map_add, hE_apply, Matrix.zero_mul, zero_add]
   rw [h_affine, ← h_shift, ← map_add]
-  exact congrArg E (Prod.ext (by simp [h_fst]) (add_comm _ _))
+  exact congrArg E (Prod.ext (by simp only [Prod.fst_add, h_fst, add_zero])
+    (add_comm _ _))
 
 /-- The free-entry coordinates (`New.RealPlace.freeEntries` at `New.RealPlace.IsFreeEntry₀`: the
 entries in row e_a and column x_i or e*_b with b > a, together with the imaginary parts at
@@ -499,12 +588,20 @@ theorem measurePreserving_freeEntries_besselHaar₀ :
   obtain ⟨E, c, hE, hc_cont, h_coord⟩ := exists_freeEntries_unipotentOf_eq_shear (𝔰 := 𝔰)
   -- The shear translates each fibre of the first projection, so it preserves volume.
   have h_shear : MeasurePreserving fun q : 𝔰.UnipotentParams ↦ (q.1, q.2 + c q.1) :=
-    .skew_product (.id _) (g := fun a b ↦ b + c a) (Continuous.measurable (by fun_prop))
+    .skew_product (.id _) (g := fun a b ↦ b + c a)
+      (continuous_snd.add (hc_cont.comp continuous_fst)).measurable
       (.of_forall fun a ↦ map_add_right_eq_self _ _)
+  have h_param_m : Measurable fun q : 𝔰.UnipotentParams ↦
+      freeEntries IsFreeEntry₀ (unipotentOf q).val.val :=
+    ((freeEntries IsFreeEntry₀).continuous.comp
+      (continuous_U_iff_matrix.1 continuous_unipotentOf)).measurable
   have h_param : MeasurePreserving fun q : 𝔰.UnipotentParams ↦
       freeEntries IsFreeEntry₀ (unipotentOf q).val.val :=
-    (hE.comp h_shear).congr (by fun_prop) (.of_forall fun q ↦ (h_coord q).symm)
-  exact .map_of_comp h_param (by fun_prop) (by fun_prop)
+    (hE.comp h_shear).congr h_param_m (.of_forall fun q ↦ (h_coord q).symm)
+  exact .map_of_comp h_param
+    ((freeEntries IsFreeEntry₀).continuous.comp
+      (continuous_U_iff_matrix.1 continuous_subtypeVal)).measurable
+    (continuous_unipotentOf.subtype_mk unipotentOf_mem_besselU0).measurable
 
 /-- `New.Shape.besselHaar₀` is a two-sided Haar measure on 𝖴⁰ with a cutoff for the action on G₁,
 in the sense of `New.RealPlace.IsUnimodularHaar`. -/
@@ -523,21 +620,37 @@ theorem injective_freeEntries_besselU :
   intro u v huv
   classical
   -- Multiply on the right by `v⁻¹`: the element `w = u * v⁻¹` has the coordinates of `1`.
-  obtain ⟨T, -, hT_act⟩ : ∃ T, MeasurePreserving T volume volume ∧ ∀ x ∈ besselU,
-      freeEntries IsFreeEntry (x * (v⁻¹).val).val.val = T (freeEntries IsFreeEntry x.val.val) :=
+  obtain ⟨T, -, hT_act⟩ :=
     exists_measurePreserving_freeEntries mem_besselU isFreeEntry_iff_level v⁻¹.property
   let w : 𝔰.G₁ := u * v⁻¹
   have hw_one : freeEntries IsFreeEntry w.val.val = freeEntries IsFreeEntry 1 := by
-    simpa [w, ← hT_act] using congrArg T huv
+    have hw_coe : w.val.val = u.val.val * (v⁻¹).val.val.val := by
+      simp only [w, Units.val_mul, Subgroup.coe_mul]
+    change freeEntries IsFreeEntry u.val.val.val = freeEntries IsFreeEntry v.val.val.val at huv
+    rw [hw_coe, hT_act u.val u.property, huv, ← hT_act v.val v.property]
+    simp only [← Subgroup.coe_mul, ← Units.val_mul, mul_inv_cancel, OneMemClass.coe_one,
+      Units.val_one]
   have hw_entry {a : Fin 𝔰.ϱ} {j : 𝔰.BesselIndex} (h_free : IsFreeEntry (a, j)) :
       w.val.val (.inl a) j = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ) (.inl a) j :=
     congrFun (congrArg Prod.fst hw_one) ⟨(a, j), h_free⟩
   -- The frame columns above the level diagonal are free entries, so `w` fixes the frame.
   have h_frame : ∀ i j : 𝔰.BesselIndex, level i < level j → j ∈ Set.range 𝔰.besselFrame →
       ∃ a : Fin 𝔰.ϱ, i = .inl a ∧ IsFreeEntry (a, j) := by
-    -- An index outside the rows e_a has level at least ϱ, and the frame has level at most ϱ.
-    simp [IsFreeEntry, level, exists_fin_succ']
-    lia
+    rintro i j hij ⟨k, rfl⟩
+    obtain a | (m | ⟨_⟩) | a := i
+    · refine ⟨a, rfl, ?_⟩
+      revert hij
+      refine k.lastCases (fun _ ↦ ?_) (fun b hij ↦ ?_)
+      · rw [besselFrame_top]; trivial
+      · rw [besselFrame_castSucc] at hij ⊢
+        simpa only [IsFreeEntry, level, Sum.elim_inl, Fin.lt_def] using hij
+    · rw [level_besselFrame] at hij; simp only [level, Sum.elim_inr, Sum.elim_inl] at hij
+      exact absurd hij (not_lt_of_ge k.is_le)
+    · rw [level_besselFrame] at hij; simp only [level, Sum.elim_inr, Sum.elim_inl] at hij
+      exact absurd hij (not_lt_of_ge k.is_le)
+    · rw [level_besselFrame] at hij; simp only [level, Sum.elim_inr] at hij
+      have hk := k.is_le
+      omega
   have hw_mem : w ∈ besselU0 := by
     refine mem_besselU0_iff_apply.2 fun i j hij ↦ ?_
     obtain h_le | h_lt := le_or_gt (level j) (level i)
@@ -545,13 +658,14 @@ theorem injective_freeEntries_besselU :
     · obtain ⟨a, rfl, h_free⟩ := h_frame i j h_lt (hij.resolve_left h_lt.not_ge)
       exact hw_entry h_free
   -- On 𝖴⁰ the coordinates are injective, and its free positions are among those of 𝖴.
-  have h_sub : ∀ x : Fin 𝔰.ϱ × 𝔰.BesselIndex, IsFreeEntry₀ x → IsFreeEntry x := by simp
+  have h_sub : ∀ x : Fin 𝔰.ϱ × 𝔰.BesselIndex, IsFreeEntry₀ x → IsFreeEntry x := by
+    rintro ⟨a, i⟩ (⟨m, rfl⟩ | ⟨b, hb, rfl⟩) <;> [trivial; exact hb]
   have hw_one₀ : freeEntries IsFreeEntry₀ w.val.val = freeEntries IsFreeEntry₀ 1 :=
     Prod.ext (funext fun x ↦ hw_entry (h_sub _ x.property)) (congrArg Prod.snd hw_one :)
   -- So `w = 1`, that is `u = v`.
   have h_eq : (⟨w, hw_mem⟩ : (𝔰.middleGram (1 : ℂ)).besselU0) = 1 :=
     injective_freeEntries_besselU0 hw_one₀
-  simpa [w, mul_inv_eq_one] using h_eq
+  exact SetLike.coe_eq_coe.1 <| mul_inv_eq_one.1 (congrArg (Subtype.val : _ → 𝔰.G₁) h_eq)
 
 open scoped Classical in
 /-- The free entries of 𝖴 are those of 𝖴⁰ together with the entries above the diagonal
@@ -569,17 +683,53 @@ lemma exists_measurableEquiv_freeEntries_eq_prod :
     (y.val.1.castPred (Fin.ne_last_of_lt y.property), 𝔰.besselFrame y.val.2)
   have h_free : ∀ x : {y : Fin 𝔰.n × Fin 𝔰.n // y.1 < y.2} ⊕ Subtype IsFreeEntry₀,
       IsFreeEntry (Sum.elim frame Subtype.val x) := by
-    -- The columns of the frame to the right of row a have level between a + 1 and ϱ.
-    simp [frame, IsFreeEntry, forall_fin_succ']
-    lia
+    rintro (⟨⟨i, j⟩, hij⟩ | ⟨⟨a, i⟩, hi⟩)
+    · simp only [Sum.elim_inl, frame]
+      revert hij
+      refine j.lastCases (fun _ ↦ ?_) (fun b hij ↦ ?_)
+      · rw [besselFrame_top]; trivial
+      · rw [besselFrame_castSucc]
+        simpa only [IsFreeEntry, Fin.lt_def, Fin.coe_castPred, Fin.val_castSucc] using hij
+    · simp only [Sum.elim_inr]
+      obtain ⟨k, rfl⟩ | ⟨b, hb, rfl⟩ := hi <;> [trivial; exact hb]
   have h_bij : Bijective (Subtype.coind (Sum.elim frame Subtype.val) h_free) := by
     refine ⟨?_, ?_⟩
-    · -- The columns of the frame are not free positions of 𝖴⁰.
-      simp [frame, Injective, Subtype.coind, forall_fin_succ']
-      lia
-    · -- A free position of 𝖴 has its column in the frame or is free for 𝖴⁰.
-      simp [frame, Surjective, Subtype.coind, exists_fin_succ']
-      lia
+    · rintro (⟨⟨i₁, j₁⟩, h₁⟩ | ⟨⟨a₁, i₁⟩, hx₁⟩) (⟨⟨i₂, j₂⟩, h₂⟩ | ⟨⟨a₂, i₂⟩, hx₂⟩) h
+      · simp only [Subtype.coind, Subtype.mk.injEq, Sum.elim_inl, Prod.mk.injEq, frame] at h
+        have hi : i₁ = i₂ := by
+          have h' := congrArg Fin.castSucc h.1
+          rwa [Fin.castSucc_castPred, Fin.castSucc_castPred] at h'
+        have hj : j₁ = j₂ := besselFrame_injective h.2
+        subst hi; subst hj; rfl
+      · simp only [Subtype.coind, Subtype.mk.injEq, Sum.elim_inl, Sum.elim_inr,
+          Prod.mk.injEq, frame] at h
+        exfalso
+        refine j₁.lastCases (fun h' ↦ ?_) (fun b h' ↦ ?_) h.2
+        · rw [besselFrame_top] at h'
+          obtain ⟨k, hk⟩ | ⟨b, -, hk⟩ := hx₂ <;> simp [← h', Shape.indexX₀] at hk
+        · rw [besselFrame_castSucc] at h'
+          obtain ⟨k, hk⟩ | ⟨b', -, hk⟩ := hx₂ <;> simp [← h', Shape.indexX₀] at hk
+      · simp only [Subtype.coind, Subtype.mk.injEq, Sum.elim_inr, Sum.elim_inl,
+          Prod.mk.injEq, frame] at h
+        exfalso
+        refine j₂.lastCases (fun h' ↦ ?_) (fun b h' ↦ ?_) h.2.symm
+        · rw [besselFrame_top] at h'
+          obtain ⟨k, hk⟩ | ⟨b, -, hk⟩ := hx₁ <;> simp [← h', Shape.indexX₀] at hk
+        · rw [besselFrame_castSucc] at h'
+          obtain ⟨k, hk⟩ | ⟨b', -, hk⟩ := hx₁ <;> simp [← h', Shape.indexX₀] at hk
+      · simp only [Subtype.coind, Subtype.mk.injEq, Sum.elim_inr] at h
+        exact congrArg Sum.inr (Subtype.ext h)
+    · rintro ⟨⟨a, i⟩, hi⟩
+      obtain b | (k | ⟨_⟩) | b := i
+      · exact ⟨.inl ⟨⟨a.castSucc, b.castSucc⟩, by simpa only [IsFreeEntry, Fin.lt_def,
+            Fin.val_castSucc] using hi⟩,
+          Subtype.ext (Prod.ext (by simp only [Subtype.coind, Sum.elim_inl, frame,
+            Fin.castPred_castSucc]) (besselFrame_castSucc b))⟩
+      · exact ⟨.inr ⟨(a, 𝔰.indexX₀ k), Or.inl ⟨k, rfl⟩⟩, rfl⟩
+      · exact ⟨.inl ⟨⟨a.castSucc, 𝔰.top⟩, Fin.castSucc_lt_last a⟩,
+          Subtype.ext (Prod.ext (by simp only [Subtype.coind, Sum.elim_inl, frame,
+            Fin.castPred_castSucc]) besselFrame_top)⟩
+      · exact ⟨.inr ⟨(a, eStar b), Or.inr ⟨b, hi, rfl⟩⟩, rfl⟩
   let idx := Equiv.ofBijective _ h_bij
   let splitEntries : (Subtype (IsFreeEntry (𝔰 := 𝔰)) → ℂ) ≃ᵐ
       UpperEntries 𝔰.n × (Subtype (IsFreeEntry₀ (𝔰 := 𝔰)) → ℂ) :=
@@ -616,10 +766,15 @@ theorem measurePreserving_freeEntries_besselHaar :
     -- `T`.
     obtain ⟨T, hT, hT_act⟩ := exists_measurePreserving_freeEntries mem_besselU0_iff_apply
       isFreeEntry₀_iff_level (liftUnitriangular_mem_besselU x)
-    exact ((hT.comp measurePreserving_freeEntries_besselHaar₀).congr (by fun_prop)
+    have h_cx : Measurable (coord x) := ((freeEntries IsFreeEntry₀).continuous.comp
+      (continuous_U_iff_matrix.1 (continuous_subtypeVal.mul continuous_const))).measurable
+    exact ((hT.comp measurePreserving_freeEntries_besselHaar₀).congr h_cx
       (.of_forall fun u ↦ (hT_act u u.property).symm)).map_eq
+  have h_coord_m : Measurable (uncurry coord) := ((freeEntries IsFreeEntry₀).continuous.comp
+    (continuous_U_iff_matrix.1 ((continuous_subtypeVal.comp continuous_snd).mul
+      (continuous_liftUnitriangular.comp continuous_fst)))).measurable
   have h_skew : MeasurePreserving (fun q ↦ (q.1, coord q.1 q.2)) (volume.prod 𝔰.besselHaar₀) :=
-    .skew_product (.id _) (by fun_prop) (.of_forall h_fibre)
+    .skew_product (.id _) h_coord_m (.of_forall h_fibre)
   let entries (q : UpperEntries 𝔰.n × (𝔰.middleGram 1).besselU0) :=
     freeEntries IsFreeEntry (q.2.val * liftUnitriangular q.1).val.val
   have h_eq (q) : (q.1, coord q.1 q.2) = regroup (entries q) := by
@@ -629,10 +784,19 @@ theorem measurePreserving_freeEntries_besselHaar :
     -- above the diagonal are `x`.
     change q.1 y = frameMatrix (q.2.val * liftUnitriangular q.1) y.val.1 y.val.2
     rw [frameMatrix_mul (liftUnitriangular_mem_besselU q.1)]
-    simp [mem_besselU0_iff.1, unitriangularMatrix, y.property]
+    simp only [mem_besselU0_iff.1 q.2.property, one_mul, frameMatrix_liftUnitriangular,
+      unitriangularMatrix, of_apply, y.property, ↓reduceDIte]
+  have h_ent_m : Measurable entries := ((freeEntries IsFreeEntry).continuous.comp
+    (continuous_U_iff_matrix.1 ((continuous_subtypeVal.comp continuous_snd).mul
+      (continuous_liftUnitriangular.comp continuous_fst)))).measurable
   have h_entries : MeasurePreserving entries (volume.prod 𝔰.besselHaar₀) :=
-    h_regroup.comp_left_iff.1 (h_skew.congr (by fun_prop) (.of_forall h_eq))
-  exact .map_of_comp h_entries (by fun_prop) (by fun_prop)
+    h_regroup.comp_left_iff.1
+      (h_skew.congr (regroup.measurable.comp h_ent_m) (.of_forall h_eq))
+  exact .map_of_comp h_entries
+    ((freeEntries IsFreeEntry).continuous.comp
+      (continuous_U_iff_matrix.1 continuous_subtypeVal)).measurable
+    ((continuous_subtypeVal.comp continuous_snd).mul
+      (continuous_liftUnitriangular.comp continuous_fst)).measurable.subtype_mk
 
 /-- `New.Shape.besselHaar` is a two-sided Haar measure on 𝖴 with a cutoff for the action on G₁, in
 the sense of `New.RealPlace.IsUnimodularHaar`. -/
@@ -766,21 +930,27 @@ theorem besselHaar₀_homogeneousBall {ρ : ℝ} (hρ : 0 < ρ) :
     ⟨unipotentOf q, unipotentOf_mem_besselU0 q⟩
   have h_volume (t : ℝ) :
       𝔰.besselHaar₀ (homogeneousBall t) = volume (param ⁻¹' homogeneousBall t) :=
-    map_apply (by fun_prop) (isClosed_homogeneousBall t).measurableSet
+    map_apply (continuous_unipotentOf.subtype_mk unipotentOf_mem_besselU0).measurable
+      (isClosed_homogeneousBall t).measurableSet
   let D : 𝔰.UnipotentParams →ₗ[ℝ] 𝔰.UnipotentParams := .prodMap (ρ • .id) (ρ ^ 2 • .id)
   have h_det : D.det = ρ ^ (2 * 𝔰.ϱ * (𝔰.k + 𝔰.ϱ)) := by
-    simp [D, LinearMap.det_prodMap, Module.finrank_matrix]
+    simp only [LinearMap.det_prodMap, LinearMap.det_smul, Module.finrank_matrix, Fintype.card_fin,
+      finrank_real_complex, LinearMap.det_id, mul_one, Module.finrank_self, D]
     ring
   have h_vectors (q : 𝔰.UnipotentParams) :
       eichlerVectors (unipotentOf (D q)) = ρ • eichlerVectors (unipotentOf q) := by
-    simp [D, eichlerVectors_unipotentOf, star_trivial ρ]
+    simp only [LinearMap.prodMap_apply, LinearMap.smul_apply, LinearMap.id_coe, id_eq,
+      eichlerVectors_unipotentOf, conjTranspose_smul, star_trivial ρ, D]
   have h_scalars (q : 𝔰.UnipotentParams) :
       eichlerScalars (unipotentOf (D q)) = ρ ^ 2 • eichlerScalars (unipotentOf q) := by
-    simp [D, eichlerScalars_unipotentOf]
+    simp only [LinearMap.prodMap_apply, LinearMap.smul_apply, LinearMap.id_coe, id_eq,
+      eichlerScalars_unipotentOf, conjTranspose_smul, Matrix.mul_smul, smul_mul, map_smul, D]
     module
   have h_ball : D ⁻¹' (param ⁻¹' homogeneousBall ρ) = param ⁻¹' homogeneousBall 1 := by
     ext q
-    simp [param, homogeneousBall, h_vectors, h_scalars, norm_smul, hρ, abs_of_pos]
+    simp only [homogeneousBall, Set.preimage_ofPred_eq, h_vectors, norm_smul, Real.norm_eq_abs, hρ,
+      abs_of_pos, mul_le_iff_le_one_right, h_scalars, norm_pow, pow_succ_pos, Set.mem_ofPred_eq,
+      one_pow, param]
   have h_surj : Surjective D := (D.equivOfDetNeZero (h_det.trans_ne (by positivity))).surjective
   have : (volume (α := 𝔰.UnipotentParams)).IsAddHaarMeasure := prod.instIsAddHaarMeasure ..
   rw [h_volume, h_volume, ← h_ball, ← abs_of_pos (pow_pos hρ _), ← h_det,
@@ -790,9 +960,17 @@ lemma besselHaar₀_homogeneousBall_ne_zero {ρ : ℝ} (hρ : 0 < ρ) :
     𝔰.besselHaar₀ (homogeneousBall ρ) ≠ 0 := by
   -- The ball is a neighbourhood of `1`, where ω and μ vanish.
   have h_nhds : homogeneousBall ρ ∈ nhds (1 : (𝔰.middleGram (1 : ℂ)).besselU0) := by
-    apply Filter.Eventually.and <;> apply (ContinuousAt.tendsto (by fun_prop)).eventually_le_const
-    · simpa [eichlerVectors, inclMatrix_gram_eq_zero]
-    · simpa [eichlerScalars, inclMatrix_gram_eq_zero] using pow_pos hρ 2
+    refine Filter.Eventually.and ?_ ?_
+    · exact (continuous_eichlerVectors.comp continuous_subtypeVal).norm.continuousAt.tendsto
+        |>.eventually_le_const <| by
+          simpa only [Function.comp_apply, eichlerVectors, OneMemClass.coe_one, Units.val_one,
+            Matrix.mul_one, ne_eq, Sum.inr.injEq, reduceCtorEq, not_false_eq_true, implies_true,
+            inclMatrix_gram_eq_zero, neg_zero, norm_zero]
+    · exact (continuous_eichlerScalars.comp continuous_subtypeVal).norm.continuousAt.tendsto
+        |>.eventually_le_const <| by
+          simpa only [Function.comp_apply, eichlerScalars, OneMemClass.coe_one, Units.val_one,
+            Matrix.mul_one, ne_eq, reduceCtorEq, not_false_eq_true, implies_true,
+            inclMatrix_gram_eq_zero, neg_zero, norm_zero] using pow_pos hρ 2
   exact (measure_pos_of_mem_nhds _ h_nhds).ne'
 
 /-- An element of 𝖴⁰ of operator norm at most t lies in the ball of radius t. -/
@@ -915,6 +1093,8 @@ theorem exists_tube {T : ℝ} (hT : 8 * 𝔰.r ≤ T) :
   let Ω : Set (𝔰.middleGram (1 : ℂ)).besselU0 := homogeneousBall ρ
   have hΩ : IsCompact Ω := isCompact_homogeneousBall ρ
   let B : Set 𝔰.G₁ := Ω • {y : 𝔰.G₁ | ‖(y : Matrix 𝔰.BesselIndex 𝔰.BesselIndex ℂ)‖ ≤ T}
+  have : ContinuousSMul (𝔰.middleGram (1 : ℂ)).besselU0 𝔰.G₁ :=
+    ⟨continuous_subtypeVal.fst'.mul continuous_snd⟩
   refine ⟨B, Ω,
     { isCompact := hΩ.smul_set (isCompact_U_norm_le T)
       measurableSet := hΩ.measurableSet
@@ -939,7 +1119,9 @@ theorem exists_tube {T : ℝ} (hT : 8 * 𝔰.r ≤ T) :
       rintro u ⟨s, -, z, hz, huy⟩
       refine ⟨s⁻¹ * u, fun v hv ↦ mem_homogeneousBall_of_mul_mem_smul hz ?_⟩
       rwa [show (v / (s⁻¹ * u)).val * z = v * y by
-        simp [eq_inv_mul_of_mul_eq huy, div_eq_mul_inv, mul_assoc]]
+        simp only [div_eq_mul_inv, _root_.mul_inv_rev, inv_inv, Subgroup.coe_mul,
+          InvMemClass.coe_inv, eq_inv_mul_of_mul_eq huy, mul_assoc, mul_inv_cancel_left,
+          inv_mul_cancel_left]]
     calc 𝔰.besselHaar₀ slice
         ≤ 𝔰.besselHaar₀ (homogeneousBall (ρ + T ^ 2)) := measure_le_of_div_mem h_translate
       _ ≤ 3 * 𝔰.besselHaar₀ Ω := besselHaar₀_homogeneousBall_add_le (by positivity)
