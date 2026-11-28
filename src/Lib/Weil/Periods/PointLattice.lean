@@ -92,6 +92,7 @@ def formFin (y z : ι → 𝔸f E) : 𝔸f E := star y ⬝ᵥ V.J.map (algebraMa
 
 variable {V} {x x' g : Gf E ι} {y z : ι → 𝔸f E}
 
+/-- Characterizing membership in the point lattice `V.lattice x` by component integrality. -/
 lemma mem_lattice : y ∈ V.lattice x ↔ ∀ i : ι, ((V.xFin * x.val)⁻¹.val *ᵥ y) i ∈ Ô E := Iff.rfl
 
 /-- The lattice of `x` consists of the images of the integral vectors in the frame
@@ -234,6 +235,8 @@ def stringMapFin {X' ι' : Type} [Fintype ι'] [DecidableEq ι'] [DecidableEq X'
 
 variable {Y} {x x' : Gf E ι} {y z : ι → 𝔸f E} {c : 𝔸f E}
 
+/-- The projection `Y.stringProj` to `X^⊥` vanishes at the indices
+`Y.indexEquiv (.inl a)` coming from `X`. -/
 lemma stringProj_apply_inl (y : ι → 𝔸f E) (a : X) :
     Y.stringProj y (Y.indexEquiv (.inl a)) = 0 := by
   simp [stringProj, mulVec_diagonal]
