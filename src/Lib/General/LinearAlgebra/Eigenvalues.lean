@@ -3,7 +3,7 @@ module
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Roots
 public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Lie.Weights.Linear
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
+import TauCeti.RingTheory.PolynomialLaw.Determinant
 import Mathlib.LinearAlgebra.Matrix.FiniteDimensional
 import Mathlib.LinearAlgebra.PID
 import Mathlib.RingTheory.Coalgebra.IsFrobenius
@@ -706,15 +706,8 @@ lemma amitsur_charpoly_mem_of_span
 characteristic polynomial by `a ^ (card n - k)`. -/
 lemma charpoly_smul_coeff (a : A) (M : Matrix n n A) (k : ℕ) :
     (a • M).charpoly.coeff k = a ^ (Fintype.card n - k) * M.charpoly.coeff k := by
-  nontriviality A
-  by_cases! h : card n < k
-  · simp [coeff_eq_zero_of_natDegree_lt, h]
-  -- The universal coefficient of degree `k` is homogeneous of degree `card n - k` in the entries.
-  have eval (B : Matrix n n A) : _ = B.charpoly.coeff k :=
-    Matrix.charpoly.univ_coeff_eval₂Hom n (RingHom.id A) (Function.uncurry B) k
-  rw [← eval (a • M), ← eval M]
-  exact (Matrix.charpoly.univ_coeff_isHomogeneous A n k _ (Nat.add_sub_cancel' h)).eval_smul
-    a (Function.uncurry M)
+  simpa using
+    (TauCeti.Determinant.algHomDet (AlgHom.id A (Matrix n n A))).coeff_charpoly_smul a M k
 
 end New
 
