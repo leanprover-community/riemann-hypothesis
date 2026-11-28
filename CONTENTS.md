@@ -390,7 +390,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `New/Congruences/Selmer/AuxiliaryPrimes` (307): Auxiliary primes, anticyclotomic characters, slopes and ties
 - `New/Congruences/Selmer/SelmerData` (421): Selmer data, tied Selmer groups and classes as functions
 - `New/Congruences/Selmer/Count` (382): The dual of a tied Selmer group and the count
-- `New/Congruences/Selmer/TiedClasses` (99): The tied Selmer group as a group of cohomology classes
 - `New/Congruences/Selmer/Mirror` (497): Reciprocity at conjugate primes
 - `New/Congruences/Selmer/OneSystem` (290): The universal twist and one system of equations for all twists
 - `New/Congruences/Selmer/Descent` (428): The descent
@@ -398,7 +397,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `New/Congruences/Selmer/StickelbergerSystems` (162): Stickelberger systems
 - `New/Congruences/Selmer/StickelbergerLine` (383): Stickelberger systems on a line
 - `New/Congruences/Selmer/Line` (421): Restriction to a line
-- `New/Congruences/Selmer/TiedClassCounts` (90): The descent bounds for tied Selmer groups, stated for classes
 - `New/Congruences/Selmer/RootsOfUnity` (353): Roots of unity `ζ` with polynomials hardly more divisible at `ζ - 1` than at given points
 - `New/Congruences/Selmer/GeneralTheorem` (279): Twisting, general form
 - `New/Congruences/Selmer/MainSummands` (230): Main summands are Selmer data
@@ -588,8 +586,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 **GaloisCohomology**: Continuous Galois cohomology
 
 - `Lib/ClassField/GaloisCohomology/ContinuousCocycles` (340): Continuous cohomology of discrete modules: cocycles, H², cyclic classes, local Artin map
-- `Lib/ClassField/GaloisCohomology/ClassCounts` (178): Counting cocycles through their cohomology classes
-- `Lib/ClassField/GaloisCohomology/Cohomology` (170): The cohomology of a discrete module as Mathlib's continuous cohomology, with its R-module structure and low-degree API
 - `Lib/ClassField/GaloisCohomology/ShapiroCorestriction` (230): Shapiro's lemma, corestriction and reduction of H² statements to steps of prime index
 - `Lib/ClassField/GaloisCohomology/TateIndexFormula` (311): Coker/ker indices and Tate's index formula for cyclic actions of prime order
 - `Lib/ClassField/GaloisCohomology/KummerCyclicClasses` (437): Cup products, Hilbert 90, Kummer cocycles and cyclic symbols in Galois cohomology
@@ -612,8 +608,6 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/ClassField/GreenbergWiles/CocycleCounts` (539): Counts of trivialised Galois cocycles for projective modules and central scalars
 - `Lib/ClassField/GreenbergWiles/SelmerRelations` (343): Relations at split primes and their number (Greenberg–Wiles)
 - `Lib/ClassField/GreenbergWiles/Relations` (414): Relations at split primes
-- `Lib/ClassField/GreenbergWiles/SelmerClasses` (190): Selmer groups of cohomology classes and the Greenberg–Wiles bound for them
-- `Lib/ClassField/GreenbergWiles/RelationClasses` (50): The Greenberg–Wiles bound for classes in a relation setting
 - `Lib/ClassField/GreenbergWiles/RelationsModL` (319): Relations modulo ℓ
 
 **HeckeCharacter**: Hecke characters and characters of U(1)
