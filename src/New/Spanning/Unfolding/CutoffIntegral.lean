@@ -85,11 +85,16 @@ lemma enorm_besselKernel (y : InfinitePlace E → 𝔰.G₁) :
         ∏ v : InfinitePlace E, ‖(S.besselSystem v).besselFn side (((S.ratToInf γ)⁻¹ * y) v)‖ₑ := by
   -- Square both sides: the sum over pairs of tuples of indices of the squared coordinates factors
   -- as a product over the places, for each of the two tensor factors.
+  have h_sq (z : InfinitePlace E → 𝔰.G₁) :
+      ∏ v : InfinitePlace E, ‖(S.besselSystem v).besselFn side (z v)‖₊ ^ 2 =
+        ∑ i : S.BesselCoord, ‖S.besselFn side z i‖₊ ^ 2 := by
+    simp only [EuclideanSpace.nnNorm_eq, NNReal.sq_sqrt, Fintype.prod_sum, besselFn, nnNorm_prod,
+      Finset.prod_pow]
   simp only [eNorm_eq_nnNorm]
   norm_cast
-  rw [← sq_eq_sq₀ zero_le zero_le]
-  simp [EuclideanSpace.nnNorm_eq, besselKernel, besselFn, mul_pow, ← Finset.prod_pow, sum_prod_type,
-    prod_sum, sum_mul_sum]
+  rw [← sq_eq_sq₀ zero_le zero_le, EuclideanSpace.nnNorm_eq, NNReal.sq_sqrt, mul_pow,
+    ← Finset.prod_pow, ← Finset.prod_pow, h_sq, h_sq, Fintype.sum_prod_type, Finset.sum_mul_sum]
+  simp only [besselKernel, WithLp.ofLp_toLp, nnNorm_mul, nnNorm_star, mul_pow]
 
 /-- The norm of the amplitude `∫ β_c(y) β_c'(γ⁻¹ y) W(y) ⊗ W(γ⁻¹ y)^* dy` is at most the integral of
 the norm of its integrand. -/
@@ -149,9 +154,15 @@ lemma besselU_mul_apply_eq_add {𝔰 : Shape} (x u : (𝔰.middleGram (1 : ℂ))
       (hl : ∀ d, l ≠ eStar d) : U' k l = if k = l then 1 else 0 := by
     have h_low (hkl : BesselIndex.level l ≤ BesselIndex.level k) :
         U' k l = if k = l then 1 else 0 := mem_besselU.1 u.property k l hkl
-    rcases k with b | i | b <;> rcases l with b' | i' | b' <;>
-      simp only [BesselIndex.level, elim_inl, elim_inr] at h_low <;>
-      grind [IsFreeEntry]
+    rcases k with b | i | b <;> rcases l with b' | i' | b'
+    · by_cases h : b' ≤ b
+      · exact h_low (by simpa [BesselIndex.level] using h)
+      · have h_lt : b < b' := lt_of_not_ge h
+        simp [h_zero b (inl b') (hk b rfl) h_lt, h_lt.ne]
+    · simp [h_zero b (inr (inl i')) (hk b rfl) trivial]
+    all_goals first
+      | exact (hl _ rfl).elim
+      | exact h_low (by simp only [BesselIndex.level, elim_inl, elim_inr]; omega)
   refine sum_eq_zero fun k _ ↦ mul_eq_zero.2 ?_
   by_cases hk : BesselIndex.level k ≤ BesselIndex.level (inl a : 𝔰.BesselIndex)
   · exact .inl (sub_eq_zero.2 (mem_besselU.1 x.property _ k hk))
@@ -179,7 +190,14 @@ lemma besselU_mul_apply_eq_add {𝔰 : Shape} (x u : (𝔰.middleGram (1 : ℂ))
       simpa [h_col] using h_unitary
     have had : a < d := by simpa [BesselIndex.level] using hk
     suffices U' (inl d) (eStar c) = 0 by simpa
-    grind [conj_eq_iff_im, IsFreeEntry]
+    rcases lt_trichotomy d c with hdc | rfl | hcd
+    · exact h_zero d (eStar c) (.inl had) hdc
+    · have h_re : starRingEnd ℂ (U' (inl d) (eStar d)) = U' (inl d) (eStar d) :=
+        conj_eq_iff_im.2 (h_im d had)
+      rw [h_re, ← two_mul] at h_skew
+      exact (mul_eq_zero.1 h_skew).resolve_left two_ne_zero
+    · have hc : U' (inl c) (eStar d) = 0 := h_zero c (eStar d) (.inr rfl) hcd
+      simpa [hc] using h_skew
   · simpa [h_col] using h_unitary
   · simpa [h_col, Matrix.one_apply] using h_unitary
 
@@ -278,7 +296,8 @@ variable {E : Type} [Field E] [CMType E] {𝔰 : Shape} {S : Filling E 𝔰}
 infinite places of the Bessel unipotent group of G₁. -/
 noncomputable def classUnipotentToInf (c : S.Classes) :
     S.classUnipotent c →* InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU :=
-  .mk' (fun γ v ↦ ⟨S.ratToInf γ v, γ.property.1.ratToInf_mem_agreeWithOneOn v⟩) (by aesop)
+  .mk' (fun γ v ↦ ⟨S.ratToInf γ v, γ.property.1.ratToInf_mem_agreeWithOneOn v⟩)
+    fun x y ↦ funext fun v ↦ Subtype.ext (congrFun (S.ratToInf.map_mul x.val y.val) v)
 
 lemma coe_classUnipotentToInf_apply {c : S.Classes} (γ : S.classUnipotent c) (v : InfinitePlace E) :
     (classUnipotentToInf c γ v : 𝔰.G₁) = S.ratToInf γ v := rfl
@@ -359,8 +378,8 @@ lemma lintegral_classCutoff_eq_measure [HasPrimitiveRoot5040 E] [S.IsAdmissible]
       (.pi fun _ ↦ 𝔰.besselHaar) :=
     ⟨fun γ s _ ↦ measure_preimage_mul _ γ.val s⟩
   -- The translates of the cutoff add up to 1, and the measure is inversion invariant.
-  rw [h_fund.lintegral_eq_tsum'', ← lintegral_tsum (by fun_prop), lintegral_congr h_sum]
-  simp [Set.univ_inter]
+  rw [h_fund.lintegral_eq_tsum'', ← lintegral_tsum (by fun_prop), lintegral_congr h_sum,
+    setLIntegral_one, Measure.measure_inv]
 
 /-- Let `γ ∈ S.classUnipotent c`. If, at an infinite place `v`, right multiplication by `γ` adds the
 (e_a, e*_a) entry of `γ` to that of every unipotent `x`, then the (e_a, e*_a) entry of `γ` divided
@@ -594,7 +613,8 @@ lemma exists_rowCoords_fst_eq (c : S.Classes) (a : Fin 𝔰.ϱ)
   refine ⟨γ, ?_, fun d hd ↦ ?_, fun d hd ↦ ?_⟩
   · simp [funext_iff, mul_assoc, ← hxl, freeRowCoords, coe_classUnipotentToInf_apply, basisScale,
       field, inl_ne_coe_isFreeEntry, coe_isFreeEntry_ne_eStar, hγ]
-  · have h_col (j : {j : 𝔰.BesselIndex // IsFreeEntry (d, j)}) : j.val ≠ eStar a := by grind
+  · have h_col (j : {j : 𝔰.BesselIndex // IsFreeEntry (d, j)}) : j.val ≠ eStar a :=
+      fun h ↦ hd.not_gt (by simpa [h] using j.property)
     simp [funext_iff, freeRowCoords, coe_classUnipotentToInf_apply, inl_ne_coe_isFreeEntry, hγ,
       h_col, hd.ne']
   · simp [funext_iff, imRowCoords, coe_classUnipotentToInf_apply, hγ, hd.ne']
@@ -690,13 +710,17 @@ lemma exists_box_existsUnique_rowCoords_mem [HasPrimitiveRoot5040 E]
   have h_low_inl {x : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU} {a : Fin 𝔰.ϱ}
       (h_low : ∀ i, deg i < deg (inl a) → coord x i = coord 1 i) :
       (∀ d, a < d → freeRowCoords x d = 0) ∧ ∀ d, a < d → imRowCoords x d = 0 :=
-    ⟨fun d hd ↦ (h_low (inl d) (by grind)).trans (h_coord_one_inl d),
-      fun d hd ↦ (h_low (inr d) (by grind)).trans (h_coord_one_inr d)⟩
+    ⟨fun d hd ↦ (h_low (inl d) (by dsimp [deg]; have := Fin.rev_lt_rev.2 hd; omega)).trans
+        (h_coord_one_inl d),
+      fun d hd ↦ (h_low (inr d) (by dsimp [deg]; have := Fin.rev_lt_rev.2 hd; omega)).trans
+        (h_coord_one_inr d)⟩
   have h_low_inr {x : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).besselU} {a : Fin 𝔰.ϱ}
       (h_low : ∀ i, deg i < deg (inr a) → coord x i = coord 1 i) :
       (∀ d, a ≤ d → freeRowCoords x d = 0) ∧ ∀ d, a < d → imRowCoords x d = 0 :=
-    ⟨fun d hd ↦ (h_low (inl d) (by grind)).trans (h_coord_one_inl d),
-      fun d hd ↦ (h_low (inr d) (by grind)).trans (h_coord_one_inr d)⟩
+    ⟨fun d hd ↦ (h_low (inl d) (by dsimp [deg]; have := Fin.rev_le_rev.2 hd; omega)).trans
+        (h_coord_one_inl d),
+      fun d hd ↦ (h_low (inr d) (by dsimp [deg]; have := Fin.rev_lt_rev.2 hd; omega)).trans
+        (h_coord_one_inr d)⟩
   refine (existsUnique_congr fun _ ↦ Sum.forall).1
     (existsUnique_mul_mem_box deg coord h_coord_inj (classUnipotentToInf c).range
       (Sum.rec (freeLattice c)
@@ -719,8 +743,13 @@ lemma exists_box_existsUnique_rowCoords_mem [HasPrimitiveRoot5040 E]
     · obtain ⟨γ, hγ, h_free, h_im⟩ := exists_rowCoords_fst_eq c a hl
       refine ⟨⟨_, γ, rfl⟩, hγ, ?_⟩
       rintro (d | d) h_ne h_deg
-      · exact (h_free d (by grind)).trans (h_coord_one_inl d).symm
-      · exact (h_im d (by grind)).trans (h_coord_one_inr d).symm
+      · simp only [deg, Sum.elim_inl] at h_deg
+        refine (h_free d ?_).trans (h_coord_one_inl d).symm
+        exact lt_of_le_of_ne (Fin.rev_le_rev.1 (Fin.le_def.2 (by omega))) fun h ↦
+          h_ne (congrArg inl h.symm)
+      · simp only [deg, Sum.elim_inl, Sum.elim_inr] at h_deg
+        refine (h_im d ?_).trans (h_coord_one_inr d).symm
+        exact Fin.rev_lt_rev.1 (Fin.lt_def.2 (by omega))
     · obtain ⟨γ, hγ, h_free, h_im⟩ := exists_rowCoords_snd_eq c a hl
       refine ⟨⟨_, γ, rfl⟩, hγ, ?_⟩
       rintro (d | d) h_ne -
