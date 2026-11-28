@@ -11,7 +11,8 @@ Mathlib's cache and before the project's, does four things:
 1. checks that the Tau Ceti revision pinned in `lake-manifest.json` was built against the Mathlib
    commit pinned there, since otherwise none of Tau Ceti's cached oleans match and Lake would
    compile every imported Tau Ceti module from source;
-2. downloads Tau Ceti's input-to-output mappings for the pinned revision
+2. checks the imported modules with `lake build --no-build` and, if work is needed, downloads
+   Tau Ceti's input-to-output mappings for the pinned revision
    (`lake cache get --mappings-only`; about 135 MB the first time);
 3. runs `lake build` on the Tau Ceti modules that `src` needs: those imported anywhere under
    `src`, together with every Tau Ceti module they import in turn, publicly or not. Lake restores
@@ -117,16 +118,21 @@ def main():
                 "LAKE_CACHE_SERVICE", "LAKE_ARTIFACT_CACHE"):
             env.pop(key)
     env["LAKE_CONFIG"] = str(ROOT / "lakefile.toml")
+    modules = imported_modules()
+    if not modules:
+        say("no Tau Ceti module is imported under src; nothing more to fetch")
+        return 0
+    # A prehydrated runner may already contain these modules. Ask Lake about the current
+    # source imports, which can change even when the toolchain and manifest do not.
+    if run_lake(["-q", "build", "--no-build", *modules], env) == 0:
+        say("the imported Tau Ceti modules are up to date")
+        return 0
     say("fetching Tau Ceti's cache mappings")
     code = run_lake(["cache", "get", "--package", "TauCeti", "--service", "tauceti-public",
                      "--repo", "TauCetiProject/TauCeti", "--mappings-only"], env)
     if code:
         say("fetching the mappings failed; Lake would compile Tau Ceti modules from source")
         return code
-    modules = imported_modules()
-    if not modules:
-        say("no Tau Ceti module is imported under src; nothing more to fetch")
-        return 0
     say(f"fetching oleans for those {len(modules)} Tau Ceti module(s)")
     code = run_lake(["-q", "build", *modules], env)
     if code:

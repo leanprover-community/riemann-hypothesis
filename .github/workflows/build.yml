@@ -19,8 +19,9 @@ name: build
 # repository and branch in the event payload. publish-ci-cache.yml never takes a pull request run's
 # artifact: scripts/ci-github.py accepts only merge_group, push to main and workflow_dispatch runs
 # whose job ran on the rh-big runner, and pull request runs upload nothing. No job here publishes
-# anything: the cache is only read, over public HTTPS, and every artifact is checked against the
-# SHA-256 in the record it was selected from. On the rh-big runner, except for pull requests, the
+# anything. Dependencies can come from a read-only seed in the runner image (see CACHE.md).
+# Each project artifact fetched over HTTPS is checked against its SHA-256 in the selected
+# record. On the rh-big runner, except for pull requests, the
 # job uploads the new cache outputs (scripts/ci-cache-stage.py) as the artifact cache-<commit>;
 # after the merge queue has moved main to that commit, .github/workflows/publish-ci-cache.yml
 # verifies them with main's code and publishes them.
@@ -87,6 +88,14 @@ jobs:
           BASELINE_START: ${{ github.event.pull_request.base.sha || 'refs/heads/main' }}
         run: git fetch --no-tags --depth=200 origin "+$BASELINE_START:refs/ci/cache-baseline"
 
+      - name: Restore prehydrated Lean dependencies
+        if: steps.queue.outputs.tested != 'true'
+        id: packages
+        uses: gigaverse-app/ci-esta/actions/restore-lean-packages@c6e463ddf8a6763f95c08d8d428ace23e902b0fa
+        with:
+          seed-directory: /opt/rh-runner/lean-seed
+          link-elan-toolchains: 'true'
+
       - name: Install elan and the toolchain in lean-toolchain
         if: steps.queue.outputs.tested != 'true'
         run: |
@@ -101,7 +110,7 @@ jobs:
         run: python3 -I scripts/tests/test_ci_cache_baseline.py
 
       - name: Restore Mathlib's cache
-        if: steps.queue.outputs.tested != 'true'
+        if: steps.queue.outputs.tested != 'true' && steps.packages.outputs.cache-hit != 'true'
         # As in scripts/lake-cache-get.sh, which `lake exe cache get` runs.
         env:
           MATHLIB_CACHE_GET_URL: https://cache.mathlib.org/mathlib4

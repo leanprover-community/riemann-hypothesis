@@ -159,6 +159,42 @@ setup of all three is in `scripts/runner/`:
   for nothing else, so the hosts never hold a GitHub token. If the workstation stops, each runner
   runs the jobs its spool still allows (within 20 hours), then waits.
 
+### Prehydrating runner dependencies
+
+Each host can serve its ephemeral jobs a read-only Lean dependency seed at
+`/opt/rh-runner/lean-seed`. In a clean checkout of a **trusted main revision**, use the
+same Linux image and architecture as the runner and run the following as an unprivileged
+image-builder account, without Git credentials. With Elan on `PATH`, give this checkout
+its own toolchain store:
+
+```sh
+export ELAN_HOME="$PWD/.elan"
+elan toolchain install "$(cat lean-toolchain)"
+MATHLIB_CACHE_GET_URL=https://cache.mathlib.org/mathlib4 lake exe mathlib/cache get
+python3 scripts/tauceti-cache-get.py
+```
+
+After provisioning succeeds, publish the checkout at that path (or switch a symlink to it
+atomically). The runner users need read access and must have no write access to the seed
+or its parents. Keep it outside home directories hidden by the job's systemd sandbox,
+and keep the previous target until jobs using it finish. Put the seed on the
+same reflink-capable filesystem as the runner homes for fast copy-on-write copies.
+
+CI-esta copies `.lake/packages` into the fresh workspace when the toolchain, Lake
+configuration and dependency manifest match. It also links the seed's installed Lean
+toolchain into a private Elan home. Elan still selects the version in `lean-toolchain`.
+With a missing or mismatched seed the job fetches Mathlib as usual. Tau Ceti's pin and statement-import checks run on every build.
+Lake checks the current set of Tau Ceti imports and fetches any missing outputs. The
+project cache, proof build, sorry scan and five axiom checks follow as before.
+The job keeps Lake's writable artifact cache in its own workspace when it uses a
+linked toolchain.
+
+On the fork's hosted Linux benchmark with Btrfs, the same batch proof passed its
+build and five axiom checks in 110 seconds with the seed and in 234 seconds with
+normal hydration, measured from the start of checkout. Preparing the seed took
+195 seconds once per image. On the ordinary ext4 benchmark the gain was smaller.
+See [the paired benchmark](https://github.com/aviadr1/riemann-hypothesis/actions/runs/45881900524).
+
 ## Tau Ceti
 
 The project depends on [Tau Ceti](https://github.com/TauCetiProject/TauCeti), pinned in `lakefile.toml`
@@ -172,7 +208,8 @@ cache:
   otherwise none of its cached oleans match;
 - stops if `src/Statements.lean`, `src/Main.lean` or `Challenge.lean` imports a Tau Ceti module,
   so that the five statements keep depending on Mathlib alone;
-- downloads Tau Ceti's mappings for the pinned revision (about 135 MB the first time);
+- checks whether the Tau Ceti modules that `src` needs are up to date and, if not, downloads
+  Tau Ceti's mappings for the pinned revision (about 135 MB the first time);
 - runs `lake build` on the Tau Ceti modules imported under `src` together with every Tau Ceti
   module they import in turn, publicly or privately, which downloads exactly those oleans into
   `.lake/packages/TauCeti`. Lake restores a cached module without the modules it imports only
