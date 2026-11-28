@@ -517,29 +517,11 @@ lemma apply_invLastRows_eq_of_isPrimitiveMatrix {R a b n : Type} [CommRing R] [F
     {i j : GL n R} (hi : i ∈ intGL n O) (h_rows : invLastRows e j = invLastRows e i)
     (hj_prim : IsPrimitiveMatrix O (firstCols e j)) :
     Φ (invLastRows e j) = χ j.val.det * Ψ (firstCols e j) := by
-  classical
-  -- Both blocks of columns span the kernel of the common rows, so they differ by some `g`.
-  have h_span {k l : GL n R} (hkl : invLastRows e l = invLastRows e k) :
-      firstCols e l * (invFirstRows e l * firstCols e k) = firstCols e k :=
-    firstCols_mul_invFirstRows_mul e l (by rw [hkl, invLastRows_mul_firstCols])
-  have h_inv {k l : GL n R} (hkl : invLastRows e l = invLastRows e k) :
-      invFirstRows e k * firstCols e l * (invFirstRows e l * firstCols e k) = 1 := by
-    rw [Matrix.mul_assoc, h_span hkl, invFirstRows_mul_firstCols]
-  let g : GL b R := ⟨invFirstRows e j * firstCols e i, invFirstRows e i * firstCols e j,
-    h_inv h_rows.symm, h_inv h_rows⟩
-  have h_cols : firstCols e j * g.val = firstCols e i := h_span h_rows
+  obtain ⟨g, h_cols, h_det⟩ := Exchange.exists_firstCols_eq_mul_of_invLastRows_eq h_rows
   -- `g` is integral, since it carries primitive columns to primitive columns.
   have hg : g ∈ intGL b O := by
-    rw [← isPrimitiveMatrix_iff_mem_intGL, ← hj_prim.mul_iff, h_cols]
+    rw [← isPrimitiveMatrix_iff_mem_intGL, ← hj_prim.mul_iff, ← h_cols]
     exact isPrimitiveMatrix_firstCols e hi
-  -- By `det_fromRows_invLastRows`, the determinant of the rows `invFirstRows e j` stacked on the
-  -- common rows times `det j` is `1`, and times `det i` is `det g`.
-  have h_det : i.val.det = j.val.det * g.val.det := by
-    let s : Matrix n n R := ((invFirstRows e j).fromRows (invLastRows e i)).submatrix e.symm id
-    have h_j : s.det * j.val.det = 1 := by
-      simp only [s, ← h_rows, det_fromRows_invLastRows, invFirstRows_mul_firstCols, det_one]
-    have h_i : s.det * i.val.det = g.val.det := det_fromRows_invLastRows e i (invFirstRows e j)
-    rw [← h_i, ← mul_assoc, mul_comm j.val.det, h_j, one_mul]
   calc Φ (invLastRows e j)
     _ = χ j.val.det * (Ψ (firstCols e j * g.val) * χ g.val.det) := by
       rw [h_rows, hΦΨ.apply_eq i hi, h_cols, h_det, map_mul, mul_right_comm, mul_assoc]

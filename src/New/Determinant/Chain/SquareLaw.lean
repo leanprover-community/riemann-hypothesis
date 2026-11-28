@@ -241,25 +241,6 @@ def matchOf (χ : MulChar R ℂ) (e : b ⊕ a ≃ n) (Ψ : Matrix n b R → ℂ)
 
 variable {χ : MulChar R ℂ} {e : b ⊕ a ≃ n} {Φ Φ' : Matrix a n R → ℂ} {Ψ : Matrix n b R → ℂ}
 
-omit [Fintype R] [DecidableEq a] in
-/-- If the rows `a` of `γ⁻¹` and `γ'⁻¹` agree, then the columns `b` of `γ'` are those of `γ`
-multiplied on the right by an invertible `h` with `det γ' = det γ * det h`. -/
-lemma exists_firstCols_eq_mul_of_invLastRows_eq {γ γ' : GL n R}
-    (h_eq : invLastRows e γ = invLastRows e γ') :
-    ∃ h : GL b R, firstCols e γ' = firstCols e γ * h.val ∧ γ'.val.det = γ.val.det * h.val.det := by
-  have h_cols : firstCols e γ * (invFirstRows e γ * firstCols e γ') = firstCols e γ' :=
-    firstCols_mul_invFirstRows_mul e γ (by rw [h_eq, invLastRows_mul_firstCols])
-  let h : GL b R := .mk'' (invFirstRows e γ * firstCols e γ') <|
-    isUnit_det_of_left_inverse (B := invFirstRows e γ' * firstCols e γ) <| by
-      rw [Matrix.mul_assoc, h_cols, invFirstRows_mul_firstCols]
-  refine ⟨h, h_cols.symm, ?_⟩
-  let d : R := ((fromRows (invFirstRows e γ) (invLastRows e γ)).submatrix e.symm id).det
-  have h_one : d * γ.val.det = 1 := by
-    rw [det_fromRows_invLastRows, invFirstRows_mul_firstCols, det_one]
-  have h_mixed : d * γ'.val.det = h.val.det := by
-    simp only [d, h, h_eq, det_fromRows_invLastRows, GeneralLinearGroup.val_mk'']
-  linear_combination γ.val.det * h_mixed - γ'.val.det * h_one
-
 omit [DecidableEq a] [Fintype R] in
 /-- If `Ψ` vanishes off the matrices `firstCols e γ` (the columns `b` of an invertible `γ`) and
 satisfies `χ (det h) Ψ (y h) = Ψ y` for invertible `b × b` matrices `h`, then `Φ = matchOf χ e Ψ` is

@@ -193,6 +193,25 @@ lemma firstCols_mul_invFirstRows_mul [Finite a] (h_kill : invLastRows e k * y = 
     simp [lastCols, Matrix.mul_apply, ← e.sum_comp, Fintype.sum_sum_type]
   simpa [Matrix.add_mul, Matrix.mul_assoc, h_kill] using congrArg (· * y) h_sum
 
+/-- If the rows `a` of `γ⁻¹` and `γ'⁻¹` agree, then the columns `b` of `γ'` are those of `γ`
+multiplied on the right by an invertible `h` with `det γ' = det γ * det h`. -/
+lemma Exchange.exists_firstCols_eq_mul_of_invLastRows_eq {R a b n : Type} [Fintype a] [Fintype b]
+    [DecidableEq b] [Fintype n] [DecidableEq n] [CommRing R] {e : b ⊕ a ≃ n} {γ γ' : GL n R}
+    (h_eq : invLastRows e γ = invLastRows e γ') :
+    ∃ h : GL b R, firstCols e γ' = firstCols e γ * h.val ∧ γ'.val.det = γ.val.det * h.val.det := by
+  have h_cols : firstCols e γ * (invFirstRows e γ * firstCols e γ') = firstCols e γ' :=
+    firstCols_mul_invFirstRows_mul e γ (by rw [h_eq, invLastRows_mul_firstCols])
+  let h : GL b R := .mk'' (invFirstRows e γ * firstCols e γ') <|
+    isUnit_det_of_left_inverse (B := invFirstRows e γ' * firstCols e γ) <| by
+      rw [Matrix.mul_assoc, h_cols, invFirstRows_mul_firstCols]
+  refine ⟨h, h_cols.symm, ?_⟩
+  let d : R := ((fromRows (invFirstRows e γ) (invLastRows e γ)).submatrix e.symm id).det
+  have h_one : d * γ.val.det = 1 := by
+    rw [det_fromRows_invLastRows, invFirstRows_mul_firstCols, det_one]
+  have h_mixed : d * γ'.val.det = h.val.det := by
+    simp only [d, h, h_eq, det_fromRows_invLastRows, GeneralLinearGroup.val_mk'']
+  linear_combination γ.val.det * h_mixed - γ'.val.det * h_one
+
 variable [DecidableEq a] [DecidableEq b]
 
 /-- For `g ∈ GL b O`, `f ∈ GL a O` and `k ∈ GL n O`, the matrices `firstCols e k * g` and
