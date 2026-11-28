@@ -50,17 +50,6 @@ Known; see `Lib.Weil.Fock.OscillatorPair` and `Lib.Weil.MixedModel.ZeroTerm` for
 
 namespace New.Space
 
-private lemma continuous_sum {α ι M : Type*} [TopologicalSpace α] [AddCommMonoid M]
-    [TopologicalSpace M] [ContinuousAdd M] (s : Finset ι) {f : ι → α → M}
-    (hf : ∀ i ∈ s, Continuous (f i)) : Continuous fun a ↦ ∑ i ∈ s, f i a := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa only [Finset.sum_empty] using continuous_const
-  | insert a s ha ih =>
-    simpa only [Finset.sum_insert ha] using
-      (hf a (Finset.mem_insert_self a s)).fun_add
-        (ih fun i hi ↦ hf i (Finset.mem_insert_of_mem hi))
-
 /-! ## Inner products and theta values of real data -/
 
 section RealData
@@ -239,7 +228,7 @@ lemma differentiable_entireTheta (hs : s = 1) (h_projReal : V.projReal f = f) :
       AEStronglyMeasurable
         (fun w ↦ (∑ p, z p * conj (w p)).exp * (realVac w * f (realVec w)))
         (normalizedVolume _) :=
-    (((continuous_sum univ fun p _ ↦
+    (((continuous_finsetSum univ fun p _ ↦
         continuous_const.mul (Complex.continuous_conj.comp (continuous_apply p))).cexp).mul
       h_vac_f).aestronglyMeasurable
   intro y
@@ -470,9 +459,9 @@ lemma IsAdapted.omega_projReal_of_isMixedLaw (hT : D.IsMixedLaw T) {g : G E s}
       left_inv y := by dsimp only; rw [mulVec_mulVec, h_orth, one_mulVec]
       right_inv y := by dsimp only; rw [mulVec_mulVec, h_orth', one_mulVec]
       map_add' := mulVec_add _
-      continuous_toFun := continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
+      continuous_toFun := continuous_pi fun i ↦ continuous_finsetSum Finset.univ fun j _ ↦
         continuous_const.mul (continuous_apply j)
-      continuous_invFun := continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
+      continuous_invFun := continuous_pi fun i ↦ continuous_finsetSum Finset.univ fun j _ ↦
         continuous_const.mul (continuous_apply j) }
   have h_frame : MeasurePreserving (realMatrix (D.frameAt g t) *ᵥ ·) (normalizedVolume _)
       (normalizedVolume _) :=
@@ -633,18 +622,18 @@ lemma IsAdapted.exists_apply_zero_omega_integrated_eq (hT : D.IsMixedLaw T) {g :
       realHeisenbergOp (realMatrix (D.iCoord * g.adeleMatrix) *ᵥ y) Fock.vacVector
   have h_vec (M : Matrix p n (𝔸 E)) :
       Continuous fun y : InfinitePlace E × n → ℂ ↦ M *ᵥ realVec y :=
-    continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
+    continuous_pi fun i ↦ continuous_finsetSum Finset.univ fun j _ ↦
       continuous_const.mul ((continuous_apply j).comp continuous_realVec)
   have hχ_cont : Continuous χ := (adelicHeisenberg E 1).cont.comp₂ (h_vec _) (h_vec _)
   have ha_cont : Continuous a :=
-    continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
+    continuous_pi fun i ↦ continuous_finsetSum Finset.univ fun j _ ↦
       continuous_const.mul (continuous_apply j)
   have hi_cont : Continuous fun y : InfinitePlace E × n → ℂ ↦
       realMatrix (D.iCoord * g.adeleMatrix) *ᵥ y :=
-    continuous_pi fun i ↦ continuous_sum Finset.univ fun j _ ↦
+    continuous_pi fun i ↦ continuous_finsetSum Finset.univ fun j _ ↦
       continuous_const.mul (continuous_apply j)
   have h_dot_cont : Continuous fun y : InfinitePlace E × n → ℂ ↦ star (a y) ⬝ᵥ a y :=
-    continuous_sum Finset.univ fun i _ ↦
+    continuous_finsetSum Finset.univ fun i _ ↦
       (Complex.continuous_conj.comp ((continuous_apply i).comp ha_cont)).mul
         ((continuous_apply i).comp ha_cont)
   have hK_cont : Continuous K :=
