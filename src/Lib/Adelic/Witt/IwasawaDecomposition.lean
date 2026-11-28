@@ -177,7 +177,6 @@ lemma New.Space.exists_splitting {E : Type} [Field E] [CMType E] [WeilData E] {n
     [Fintype n] [DecidableEq n] {s : n → ℤˣ} {p : Type} [Fintype p] [DecidableEq p]
     (V : Space E n s) {k : Matrix n p E} (hk : HasLeftInv k) (h_iso : kᴴ * V.J * k = 0) :
     ∃ (m : ℕ) (s₀ : Fin m → ℤˣ) (V₀ : Space E (Fin m) s₀) (D : V.Splitting V₀ p), D.k = k := by
-  classical
   -- Each sign occurs at least `card p` times, so coordinates split into hyperbolic signs + `s₀`.
   obtain ⟨m, s₀, e, h_signs⟩ :=
     exists_equiv_hyperbolicSigns (V.card_le_card_preimage_of_isotropic hk h_iso)

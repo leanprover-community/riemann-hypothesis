@@ -170,7 +170,6 @@ polynomials `R` of its parts given by the `γ` with characteristic polynomial `R
 theorem hasSum_geometricSide (hB : 13 * Fintype.card n ^ 3 ≤ B) (he : IsCuspKernel B k)
     (φ : TestFunction (Gf E n)) :
     HasSum (fun R : E[X] ↦ V.geometricSide hB he {R} φ) (V.geometricSide hB he .univ φ) := by
-  classical
   -- Let `F` increase through the finite sets of polynomials. The sums over the `γ` with
   -- polynomial in `F` converge at each point and are uniformly bounded.
   have : Countable E[X] := (AddMonoidAlgebra.coeff_injective.comp Function.injective_id).countable
