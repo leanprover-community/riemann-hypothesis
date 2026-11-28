@@ -254,7 +254,7 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
   -- `E` makes the plane of `𝔰.k₀` and z hyperbolic, turns `2 * m` orthonormal vectors into `m`
   -- hyperbolic pairs by means of `c` with `star c * c = -1`, and keeps the others.
   obtain ⟨c, hc, hc_norm⟩ : ∃ c ∈ P.integers, star c * c = -1 := P.isAdelic.exists_norm_neg_one
-  have f : SplitIndex m ι ≃ {i : 𝔰.κ // 𝔰.k₀ ≠ i} := equivOfCardEq (by simp +arith [hm])
+  let f : SplitIndex m ι ≃ {i : 𝔰.κ // 𝔰.k₀ ≠ i} := equivOfCardEq (by simp +arith [hm])
   let C : Matrix (SplitIndex m ι) (SplitIndex m ι) A :=
     fromBlocks 1 (fromCols 0 (P.element • 1)) (fromRows 0 (c • 1))
       (fromBlocks 1 0 0 ((-star P.element * c) • 1))
@@ -667,7 +667,7 @@ lemma exists_isCommonBound {α : Aˣ} (hα : α.val ∈ integers) {S : Size T}
   obtain ⟨-, hm, h_card⟩ := h.zeta_le_and_le_card
   simp only [h.volume_le_and_boxSet_closePairs_positions_eq] at hx hz
   obtain ⟨_, ⟨y, n, hn, rfl⟩, k, hk, rfl⟩ := Set.mem_mul.1 hz
-  have σ : SplitIndex 𝔰.ϱ (Fin 𝔰.ϱ) ⊕ Fin (F.volumeExponent + (m + 5)) ≃ F.FreeIndex :=
+  let σ : SplitIndex 𝔰.ϱ (Fin 𝔰.ϱ) ⊕ Fin (F.volumeExponent + (m + 5)) ≃ F.FreeIndex :=
     equivOfCardEq <| by
       simp only [volumeExponent, Fintype.card_sum, Fintype.card_fin]
       lia
