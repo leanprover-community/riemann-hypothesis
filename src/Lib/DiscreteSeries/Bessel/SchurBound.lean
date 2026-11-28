@@ -226,6 +226,17 @@ theorem IsBoundedMeasurable.identDistrib_norm_translate (hν : orbitMeasure ρ v
     hF.stronglyMeasurable.norm.measurable
   rw [Subgroup.smul_def, smul_eq_mul, hF_left _ s.property, norm_smul, hc, one_mul]
 
+omit [CompleteSpace E] [SFinite ν] in
+/-- If `F` is bounded, strongly measurable, `ν`-integrable, and transforms under `S` by factors
+`c s` of modulus one, then every right translate `y ↦ F (y * a)` is `ν`-integrable. -/
+private lemma IsBoundedMeasurable.integrable_translate (hν : orbitMeasure ρ volume = ν)
+    (hc : ∀ s : G, ‖c s‖ = 1) (hF : IsBoundedMeasurable F)
+    (hF_left : ∀ s ∈ S, ∀ y : G, F (s * y) = c s • F y) (hF_int : Integrable F ν) (a : G) :
+    Integrable (fun y : G ↦ F (y * a)) ν :=
+  (integrable_norm_iff
+    (hF.comp (measurable_mul_const a)).stronglyMeasurable.aestronglyMeasurable).1
+    ((hF.identDistrib_norm_translate hν hc hF_left a).integrable_iff.2 hF_int.norm)
+
 omit [CompleteSpace E] in
 /-- If `x` is integrable and `F` is bounded, transforms under `S` by factors `c s` of modulus one
 and is integrable for the measure `ν` of `S \ G`, then `(a, y) ↦ x a⁻¹ • F (y * a)` is integrable
@@ -236,16 +247,13 @@ theorem IsBoundedMeasurable.integrable_prod_translate (hν : orbitMeasure ρ vol
     (hx : Integrable x) :
     Integrable (fun p : G × G ↦ x p.1⁻¹ • F (p.2 * p.1)) (volume.prod ν) := by
   have hF_meas : StronglyMeasurable F := hF.stronglyMeasurable
-  have shift (a : G) : ProbabilityTheory.IdentDistrib (fun y : G ↦ ‖F (y * a)‖)
-      (fun y : G ↦ ‖F y‖) ν ν :=
-    hF.identDistrib_norm_translate hν hc hF_left a
   have h_meas : AEStronglyMeasurable (fun p : G × G ↦ x p.1⁻¹ • F (p.2 * p.1)) (volume.prod ν) :=
     hx.comp_inv.1.comp_fst.smul (StronglyMeasurable.aestronglyMeasurable (by fun_prop))
-  refine (integrable_prod_iff h_meas).2 ⟨.of_forall fun a ↦ Integrable.smul (x a⁻¹) ?_, ?_⟩
-  · exact (integrable_norm_iff (StronglyMeasurable.aestronglyMeasurable (by fun_prop))).1
-      ((shift a).integrable_iff.2 hF_int.norm)
-  · simp only [norm_smul, integral_const_mul, (shift _).integral_eq]
-    exact hx.comp_inv.norm.mul_const _
+  refine (integrable_prod_iff h_meas).2 ⟨.of_forall fun a ↦
+    (hF.integrable_translate hν hc hF_left hF_int a).smul (x a⁻¹), ?_⟩
+  simp only [norm_smul, integral_const_mul,
+    (hF.identDistrib_norm_translate hν hc hF_left _).integral_eq]
+  exact hx.comp_inv.norm.mul_const _
 
 /-- Let `F` be bounded, integrable for the measure `ν` of `S \ G` and transform under `S` by
 factors `c s` of modulus one, and let `x` be integrable. Then the `ν`-pairing with a bounded
@@ -574,6 +582,51 @@ theorem IsIdempotentKernel.apply_one_nonneg (hψ : IsIdempotentKernel ψ) (hψ_o
   rw [Complex.ofReal_injective h]
   positivity
 
+omit [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
+  [(volume : Measure G).IsMulRightInvariant] [LocallyCompactSpace G] [PolishSpace G]
+  [BorelSpace G] [(volume : Measure G).IsHaarMeasure] [CompleteSpace E] [SFinite ν] in
+/-- The inner product in `L²(ν)` of two `MemLp` functions is the `ν`-integral of their pointwise
+inner product. -/
+private lemma inner_toLp {f g : G → E} (hf : MemLp f 2 ν) (hg : MemLp g 2 ν) :
+    ⟪hf.toLp f, hg.toLp g⟫_ℂ = ∫ y, ⟪f y, g y⟫_ℂ ∂ν :=
+  integral_congr_ae (hf.coeFn_toLp.comp₂ _ hg.coeFn_toLp)
+
+/-- If `w : G → Lp E 2 ν` is bounded strongly measurable and each `w a` represents the right
+translate `y ↦ F (y * a)` a.e. in `L²(ν)`, then for any integrable `Z : G → ℂ`, the squared
+`L²(ν)` norm of the pointwise convolution `convolve F Z` is at most the squared norm of the
+`L²(ν)`-valued convolution `convolve w Z 1`. -/
+private lemma IsBoundedMeasurable.lintegral_enorm_sq_convolve_le
+    (hν : orbitMeasure ρ volume = ν) (hc : ∀ s : G, ‖c s‖ = 1) (hF : IsBoundedMeasurable F)
+    (hF_left : ∀ s ∈ S, ∀ y : G, F (s * y) = c s • F y) (hF_int : Integrable F ν)
+    {w : G → Lp E 2 ν} (hw_bdd : IsBoundedMeasurable w)
+    (hw_ae : ∀ a : G, (w a : G → E) =ᵐ[ν] fun y : G ↦ F (y * a))
+    {Z : G → ℂ} (hZ : Integrable Z) :
+    ∫⁻ y : G, ‖convolve F Z y‖ₑ ^ 2 ∂ν ≤ ‖convolve w Z 1‖ₑ ^ 2 := by
+  -- Fubini's theorem gives `⟪Φ, Φ⟫ = ⟪Φ, convolve w Z 1⟫` for `Φ = convolve F Z` in `L²(ν)`,
+  -- hence `‖Φ‖ ≤ ‖convolve w Z 1‖` by Cauchy–Schwarz.
+  have Φ_bdd : IsBoundedMeasurable (convolve F Z) := hF.convolve_right hZ
+  have Φ_int : Integrable (convolve F Z) ν :=
+    (hF.integrable_prod_translate hν hc hF_left hF_int hZ).integral_prod_right
+  let Φ : Lp E 2 ν := (Φ_bdd.memLp_two Φ_int).toLp _
+  have Φ_inner : ⟪Φ, Φ⟫_ℂ = ⟪Φ, convolve w Z 1⟫_ℂ := by
+    rw [inner_toLp, hF.integral_inner_convolve hν hc hF_left hF_int hZ Φ_bdd,
+      hw_bdd.inner_convolve hZ]
+    refine integral_congr_ae (.of_forall fun a ↦ congrArg (Z a⁻¹ * ·) ?_)
+    rw [one_mul]
+    exact (integral_congr_ae ((Φ_bdd.memLp_two Φ_int).coeFn_toLp.comp₂ _ (hw_ae a))).symm
+  have Φ_le : ‖Φ‖ ≤ ‖convolve w Z 1‖ := by
+    have h : ‖Φ‖ * ‖Φ‖ ≤ ‖Φ‖ * ‖convolve w Z 1‖ := by
+      grw [← inner_self_eq_norm_mul_norm (𝕜 := ℂ), Φ_inner, re_inner_le_norm]
+    nlinarith [norm_nonneg Φ, norm_nonneg (convolve w Z 1)]
+  have Φ_norm : ∫ y, ‖convolve F Z y‖ ^ 2 ∂ν = ‖Φ‖ ^ 2 := by
+    apply Complex.ofReal_injective
+    have h : ⟪Φ, Φ⟫_ℂ = ∫ y : G, ⟪convolve F Z y, convolve F Z y⟫_ℂ ∂ν := inner_toLp _ _
+    simpa [inner_self_eq_norm_sq_to_K, ← integral_complex_ofReal] using h.symm
+  calc
+    _ = .ofReal (‖Φ‖ ^ 2) := by
+      rw [lintegral_enorm_sq Φ_int Φ_bdd.memLp_top, Φ_norm]
+    _ ≤ ‖convolve w Z 1‖ₑ ^ 2 := by grw [Φ_le, ofReal_pow (norm_nonneg _), ofReal_norm]
+
 /-- Schur's bound in `L²(S ∖ G)`, for the vector `F * x` in the closed span of the right translates
 of `F`, where `G` is a locally compact Polish group with Haar measure `volume`. Here
 `ν = orbitMeasure ρ volume` is a measure on `G` that integrates over `S ∖ G`, for an s-finite,
@@ -590,50 +643,28 @@ theorem IsBoundedMeasurable.lintegral_sq_convolve_convolve_le
     ∫⁻ y : G, ‖convolve (convolve F x) (fun a : G ↦ z a⁻¹) y‖ₑ ^ 2 ∂ν ≤
       ENNReal.ofReal ((∫ y : G, ‖x y‖ ^ 2) / d) *
         (ENNReal.ofReal d⁻¹ * ∫⁻ y : G, ‖F y‖ₑ ^ 2 ∂ν) * ∫⁻ y : G, ‖z y‖ₑ ^ 2 := by
-  -- Let `w a` be the translates of `F` in `L²(ν)` and `Z = x * (a ↦ z a⁻¹)`. Schur's bound holds
-  -- for the vector `convolve w Z 1 = ∫ Z a⁻¹ • w a`. The function `Φ = F * Z` on the left has
-  -- `⟪Φ, Φ⟫ = ⟪Φ, convolve w Z 1⟫` by Fubini's theorem, so `‖Φ‖ ≤ ‖convolve w Z 1‖`.
+  -- Let `w a` be the right translates of `F` in `L²(ν)` and `Z = x * (a ↦ z a⁻¹)`.
   have translate_memLp (a : G) : MemLp (fun y : G ↦ F (y * a)) 2 ν :=
-    have h_bdd : IsBoundedMeasurable fun y : G ↦ F (y * a) := hF.comp (measurable_mul_const a)
-    h_bdd.memLp_two ((integrable_norm_iff h_bdd.stronglyMeasurable.aestronglyMeasurable).1
-      ((hF.identDistrib_norm_translate hν hc hF_left a).integrable_iff.2 hF_int.norm))
+    (hF.comp (measurable_mul_const a)).memLp_two (hF.integrable_translate hν hc hF_left hF_int a)
   let w (a : G) : Lp E 2 ν := (translate_memLp a).toLp _
-  have inner_toLp {f g : G → E} (hf : MemLp f 2 ν) (hg : MemLp g 2 ν) :
-      ⟪hf.toLp f, hg.toLp g⟫_ℂ = ∫ y, ⟪f y, g y⟫_ℂ ∂ν :=
-    integral_congr_ae (hf.coeFn_toLp.comp₂ _ hg.coeFn_toLp)
   have hw (a b : G) : ⟪w a, w b⟫_ℂ = ψ (a⁻¹ * b) / d * (∫ y : G, ‖F y‖ ^ 2 ∂ν : ℝ) :=
-    (inner_toLp ..).trans (hF.integral_inner_translate hν hc hF_left hF_int hψ hψ_one hF_conv a b)
+    (inner_toLp ..).trans
+      (hF.integral_inner_translate hν hc hF_left hF_int hψ hψ_one hF_conv a b)
   have w_bdd : IsBoundedMeasurable w := hψ.isBoundedMeasurable_of_inner_eq hψ_one hw
   let Z : G → ℂ := convolve x fun a : G ↦ z a⁻¹
-  have Z_int : Integrable Z := integrable_convolve hx hz.comp_inv
-  have Φ_bdd : IsBoundedMeasurable (convolve F Z) := hF.convolve_right Z_int
-  have Φ_int : Integrable (convolve F Z) ν :=
-    (hF.integrable_prod_translate hν hc hF_left hF_int Z_int).integral_prod_right
-  let Φ : Lp E 2 ν := (Φ_bdd.memLp_two Φ_int).toLp _
   have hd_nonneg : 0 ≤ d := hψ.apply_one_nonneg hψ_one
-  have schur_le : ‖convolve w Z 1‖ₑ ^ 2 ≤ .ofReal ((∫ y, ‖x y‖ ^ 2) / d) *
-      (.ofReal d⁻¹ * .ofReal (∫ y, ‖F y‖ ^ 2 ∂ν)) * ∫⁻ y, ‖z y‖ₑ ^ 2 := by
-    have schur := hψ.enorm_integral_convolve_sq_le hx hψ_one hψ_bdd hx_conv hw hz
-    rwa [w_bdd.integral_smul_convolve hx hz, hψ.norm_convolve_sq hx hψ_one hx_conv hw,
-      mul_div_assoc, div_eq_inv_mul (∫ y, ‖F y‖ ^ 2 ∂ν), ofReal_mul (by positivity),
-      ofReal_mul (by positivity)] at schur
-  have Φ_inner : ⟪Φ, Φ⟫_ℂ = ⟪Φ, convolve w Z 1⟫_ℂ := by
-    rw [inner_toLp, hF.integral_inner_convolve hν hc hF_left hF_int Z_int Φ_bdd,
-      w_bdd.inner_convolve Z_int]
-    simp only [Φ, w, inner_toLp, one_mul]
-  have Φ_le : ‖Φ‖ ≤ ‖convolve w Z 1‖ := by
-    have h : ‖Φ‖ * ‖Φ‖ ≤ ‖Φ‖ * ‖convolve w Z 1‖ := by
-      grw [← inner_self_eq_norm_mul_norm (𝕜 := ℂ), Φ_inner, re_inner_le_norm]
-    nlinarith [norm_nonneg Φ, norm_nonneg (convolve w Z 1)]
-  have Φ_norm : ∫ y, ‖convolve F Z y‖ ^ 2 ∂ν = ‖Φ‖ ^ 2 := by
-    apply Complex.ofReal_injective
-    have h : ⟪Φ, Φ⟫_ℂ = ∫ y : G, ⟪convolve F Z y, convolve F Z y⟫_ℂ ∂ν := inner_toLp _ _
-    simpa [inner_self_eq_norm_sq_to_K, ← integral_complex_ofReal] using h.symm
+  -- Compare the pointwise convolution `F * Z` with the `L²(ν)` convolution `convolve w Z 1`,
+  -- then apply the abstract Schur bound to `w`.
   calc
-    _ = .ofReal (‖Φ‖ ^ 2) := by
-      rw [hF.convolve_assoc hx hz.comp_inv, lintegral_enorm_sq Φ_int Φ_bdd.memLp_top, Φ_norm]
-    _ ≤ ‖convolve w Z 1‖ₑ ^ 2 := by grw [Φ_le, ofReal_pow (norm_nonneg _), ofReal_norm]
-    _ ≤ _ := by rwa [lintegral_enorm_sq hF_int hF.memLp_top]
+    _ = ∫⁻ y : G, ‖convolve F Z y‖ₑ ^ 2 ∂ν := by rw [hF.convolve_assoc hx hz.comp_inv]
+    _ ≤ ‖convolve w Z 1‖ₑ ^ 2 :=
+      hF.lintegral_enorm_sq_convolve_le hν hc hF_left hF_int w_bdd
+        (fun a ↦ (translate_memLp a).coeFn_toLp) (integrable_convolve hx hz.comp_inv)
+    _ ≤ _ := by
+      have schur := hψ.enorm_integral_convolve_sq_le hx hψ_one hψ_bdd hx_conv hw hz
+      rwa [w_bdd.integral_smul_convolve hx hz, hψ.norm_convolve_sq hx hψ_one hx_conv hw,
+        mul_div_assoc, div_eq_inv_mul (∫ y, ‖F y‖ ^ 2 ∂ν), ofReal_mul (by positivity),
+        ofReal_mul (by positivity), ← lintegral_enorm_sq hF_int hF.memLp_top] at schur
 
 end New
 
