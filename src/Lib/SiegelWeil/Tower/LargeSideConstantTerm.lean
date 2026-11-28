@@ -778,7 +778,7 @@ theorem exists_zetaIntegral (σ' : b ⊕ r' ≃ n') (σ : b ⊕ r ≃ n) (hn : 2
   obtain ⟨c, hc_abs, hc⟩ := exists_lineFinFactor_uniformizer_eq 𝔠
   let K : (𝔸 E)ˣ := shiftIdele c
   let Q : ℝ := ∏ w : 𝔠.ramifiedPlaces, (w.val.q : ℝ)
-  have hQ : 0 < Q := Finset.prod_pos fun w _ ↦ by simp [FinPlace.q_bounds]
+  have hQ : 0 < Q := Finset.prod_pos fun w _ ↦ by simp
   -- The Gauss sum `γ` has modulus `Q ^ (-1/2)`, and `|K| = Q |α₀|`.
   refine ⟨fun β ↦ cUnfold * lineConst β * vol β * (γ * √Q) * 𝔠.character.baseChange.val K, fun β ↦
     ?_,

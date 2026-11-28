@@ -73,7 +73,7 @@ noncomputable def LevelPlaces.levelModulus (c : ℕ) (b := true) : Modulus E whe
   ideal :=
     (∏ i : S.ChosenIndex, (S.chosenPlace i).asIdeal) ^ c *
       if b then ∏ i : S.TwistIndex, (S.twistPlace i).asIdeal else 1
-  ne_bot := by simp [← absNorm_eq_zero_iff, prod_eq_zero_iff, ite_eq_iff]
+  ne_bot := by simp [← absNorm_eq_zero_iff, prod_eq_zero_iff, ite_eq_iff, FinPlace.q_ne_zero]
   not_le_star := by
     -- A place that divides the modulus is a chosen place or a twist place, and none of these is
     -- conjugate to itself or to another.

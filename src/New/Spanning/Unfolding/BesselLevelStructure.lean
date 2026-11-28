@@ -102,6 +102,11 @@ instance : Floors.IsHermitianUnit (S.ratMiddle E) where
   conjTranspose_eq := by aesop (add simp fromBlocks_conjTranspose)
   isUnit := by simp [isUnit_iff_isUnit_det, middleGram, Nat.Prime.ne_zero]
 
+/-- The matrix of products `Z(γ) = S.frameProducts γ` satisfies `Z(γ⁻¹) = Z(γ)ᴴ`. -/
+@[simp]
+lemma frameProducts_inv (γ : S.G E) : S.frameProducts γ⁻¹ = (S.frameProducts γ)ᴴ :=
+  frameGram_inv
+
 /-- A finite adelic point lies in the unipotent group `besselU` in rational coordinates iff it does
 in the lattice basis; `S.toLatticeBasis` is the change to the lattice basis. -/
 lemma toLatticeBasis_mem_besselU {x : S.G (𝔸f E)} : S.toLatticeBasis x ∈ besselU ↔ x ∈ besselU := by

@@ -194,7 +194,6 @@ def resZ1 : Z1 A.ρ →ₗ[R] Z1 (A.restrictAlong φ).ρ where
   map_smul' _ _ := rfl
 
 omit [IsTopologicalGroup Γ] [IsTopologicalGroup G] in
-@[simp]
 lemma coe_resZ1_apply (z : Z1 A.ρ) (g : G) : (A.resZ1 φ z : G → A) g = (z : Γ → A) (φ g) := rfl
 
 omit [IsTopologicalGroup Γ] [IsTopologicalGroup G] in

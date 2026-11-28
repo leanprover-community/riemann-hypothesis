@@ -403,7 +403,7 @@ lemma weylNormSq_restrictedChain_le {P : Parameters} {D : Data P} {Ψ : D.Transl
           √(weylNormSq (σ ∘ kernelProduct (D.liftKernel (1 : D.Twist).toTameChar)
             (D.translateDatum t) φ.val (classPoints c g) D.m)) := by
         grw [sqrt_weylNormSq_sum_le, sqrt_weylNormSq_sum_le]
-        simp
+        simp [weylNormSq_comp_smul]
       _ ≤ exp (D.x ^ 30) ^ D.m * (exp (D.x ^ 60) * R) := by
         grw [h_term]
         simp only [← sum_mul, sum_const, card_univ, nsmul_eq_mul]
@@ -551,7 +551,7 @@ lemma normSqAt_goodProjTranslate_le {P : Parameters} {D : Data P} {σ : ℂ ≃+
     have h_term (t : D.chosenGL) : √(weylNormSq (σ ∘ ((Nat.card D.chosenGL * D.e₀.coeff t) • v t)))
         ≤ Nat.card D.chosenGL * √(exp B) := by
       calc _ = Nat.card D.chosenGL * ‖σ (D.e₀.coeff t)‖ * √(weylNormSq (σ ∘ v t)) := by
-            simp [-Fintype.card_pi, sqrt_sq_eq_abs]
+            simp [weylNormSq_comp_smul, -Fintype.card_pi, sqrt_sq_eq_abs]
         _ ≤ Nat.card D.chosenGL * √(exp B) := by grw [hB, h_coeff, mul_one]
     rw [coe_lowerChainAtLevel_apply, lowerChain_goodProjTranslate_apply]
     grw [sqrt_weylNormSq_sum_le, sum_le_sum fun t _ ↦ h_term t]

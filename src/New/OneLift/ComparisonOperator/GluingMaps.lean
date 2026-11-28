@@ -824,7 +824,7 @@ lemma normSqAt_glue_le (ζ : FormTuples j) (σ : ℂ ≃+* ℂ) :
   calc (glue j (1 : D.Twist) ζ).normSqAt σ
       = c * classSum stdRatPoints K fun g ↦ weylNormSq (σ ∘ v g) := by
         simp only [glue_apply, LevelForm.normSqAt, apply_eq_evalForm]
-        simp [hc, v, K, ← mul_classSum, map_classSum]
+        simp [weylNormSq_comp_smul, hc, v, K, ← mul_classSum, map_classSum]
     _ ≤ c * (exp D.b * (N • (exp D.b * √(D.chosenGroupOrder ^ 2 * S))) ^ 2) := by
         grw [classSum_le_card_mul_sq h_value, h_classes]
     _ = c * (exp D.b * (N * (exp D.b * D.chosenGroupOrder)) ^ 2) * S := by

@@ -149,15 +149,15 @@ abbrev FinPlace.q : ℕ := w.asIdeal.absNorm
 
 lemma FinPlace.q_sub_one_pos : 0 < w.q - 1 := Nat.sub_pos_of_lt w.one_lt_q
 
-lemma FinPlace.one_le_q : 1 ≤ w.q := w.one_lt_q.le
+@[simp] lemma FinPlace.one_le_q : 1 ≤ w.q := w.one_lt_q.le
 
-lemma FinPlace.q_pos : 0 < w.q := zero_lt_one.trans w.one_lt_q
+@[simp] lemma FinPlace.q_pos : 0 < w.q := zero_lt_one.trans w.one_lt_q
 
 lemma FinPlace.q_ne_zero : w.q ≠ 0 := w.q_pos.ne'
 
-/-- The four consequences of `1 < w.q` for the order `w.q` of the residue field at `w`, collected
-for `simp`. -/
-@[simp] lemma FinPlace.q_bounds : 0 < w.q - 1 ∧ w.q ≠ 0 ∧ 1 ≤ w.q ∧ 0 < w.q :=
+/-- The four consequences of `1 < w.q` for the order `w.q` of the residue field at `w`, to be
+passed to `simp`. It is not a simp lemma: `simp` rewrites `w.q = 0` to `w.asIdeal = ⊥` first. -/
+lemma FinPlace.q_bounds : 0 < w.q - 1 ∧ w.q ≠ 0 ∧ 1 ≤ w.q ∧ 0 < w.q :=
   ⟨w.q_sub_one_pos, w.q_ne_zero, w.one_le_q, w.q_pos⟩
 
 /-- A chosen uniformiser of the completion of E at the finite place w. -/
@@ -901,7 +901,6 @@ noncomputable instance : StarRing (Ô E) := starRing ⟨_, star_mem_Ô⟩
 lemma coe_star_Ô (x : Ô E) : (star x : Ô E) = star x.val := rfl
 
 /-- The valuation of a conjugate adele at a place is that of the adele at the conjugate place. -/
-@[simp]
 lemma v_star_apply : v (star x w) = v (x (star w)) := by simp
 
 /-- Conjugate places have residue fields of the same order. -/

@@ -298,7 +298,7 @@ lemma Rows.weylNormSq_deltaForm_le (hχ : ∀ k : K, IsOfFinOrder (χ k)) (σ : 
           χ ⟨x⁻¹ * stdEmbFin γ * g, h⟩ • (stdSpace E n).weightRep κ e γ⁻¹ v else 0)) ≤
         √(weylNormSq (σ ∘ v)) := by
     split
-    · simp [h_inv, h_norm]
+    · simp [weylNormSq_comp_smul, h_inv, h_norm]
     · simp [weylNormSq]
   -- It is enough to compare the square roots; the sum has at most `#Aut(x)` terms.
   have h_card : (transporter K stdEmbFin x g).card ≤ Nat.card (classAut stdEmbFin.range K x) := by
@@ -885,7 +885,7 @@ lemma sqrt_weylNormSq_classSum_le (σ : ℂ ≃+* ℂ) (hf : ∀ x : G, √(weyl
     _ ≤ ∑ c : DoubleCosets Γ K,
         (Nat.card (classAut Γ K c.out) : ℝ)⁻¹ * √(weylNormSq (σ ∘ f c.out)) := by
       grw [classSum, finsum_eq_sum_of_fintype, sqrt_weylNormSq_sum_le]
-      simp [← algebraMap_smul ℂ]
+      simp [weylNormSq_comp_smul, ← algebraMap_smul ℂ]
     _ ≤ ∑ _ : DoubleCosets Γ K, 1 * B := by grw [cast_inv_le_one, hf]
     _ = _ := by simp
 

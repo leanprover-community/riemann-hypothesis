@@ -83,7 +83,7 @@ theorem SplitTameChar.L_ne_zero {z : ℝ} (hz : 1 ≤ z) : 𝔠.character.L 𝔠
 
 theorem lSharp_pos {z : ℝ} (hz : 1 ≤ z) : 0 < lSharp 𝔠 z :=
   mul_pos (norm_pos_iff.2 (𝔠.L_ne_zero hz))
-    (Finset.prod_pos fun w _ ↦ rpow_pos_of_pos (by simp [FinPlace.q_bounds]) _)
+    (Finset.prod_pos fun w _ ↦ rpow_pos_of_pos (by simp) _)
 
 /-- The recursion `L_*(z + 1) = L♯(z + 1) ^ 2 * L_*(z)` for natural `z`. -/
 theorem lValueProd_succ (z : ℕ) :
