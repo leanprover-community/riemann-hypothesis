@@ -680,10 +680,12 @@ u e* = e* − x ω − e μ. -/
 def eichlerScalars (u : 𝔰.G₁) : Matrix (Fin 𝔰.ϱ) (Fin 𝔰.ϱ) ℂ :=
   -(𝔰.isotropicColsᴴ * u.val.val * 𝔰.dualCols)
 
+/-- The Eichler vector parameter assignment map is continuous. -/
 @[fun_prop]
 lemma continuous_eichlerVectors : Continuous (eichlerVectors (𝔰 := 𝔰)) := by
   fun_prop [eichlerVectors]
 
+/-- The Eichler scalar parameter assignment map is continuous. -/
 @[fun_prop]
 lemma continuous_eichlerScalars : Continuous (eichlerScalars (𝔰 := 𝔰)) := by
   fun_prop [eichlerScalars]
@@ -692,6 +694,7 @@ section
 
 variable {u : 𝔰.G₁} {ω : Matrix 𝔰.κ (Fin 𝔰.ϱ) ℂ} {μ : Matrix (Fin 𝔰.ϱ) (Fin 𝔰.ϱ) ℂ}
 
+/-- The vector parameter extracted from an Eichler matrix equals its defining vector `ω`. -/
 lemma eichlerVectors_eq_of_coe_eq (hu : u.val.val = eichlerMatrix ω μ) : eichlerVectors u = ω := by
   simp [eichlerVectors, hu, eichlerMatrix, Matrix.mul_assoc, Matrix.mul_add, Matrix.mul_sub,
     Matrix.sub_mul, inclMatrix_gram_mul_eq_self, inclMatrix_gram_mul_eq_zero,
