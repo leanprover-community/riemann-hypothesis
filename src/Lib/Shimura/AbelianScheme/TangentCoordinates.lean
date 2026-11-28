@@ -393,6 +393,106 @@ lemma IsLieChart.of_isEtaleChart {s : Spec B ⟶ S} {V : A.left.Opens} {z : ι �
   ⟨h_chart, fun _ _ _ ht ↦ ⟨h_zero ht, fun _ _ _ _ hy ↦
     ⟨h_smul ht hy, fun _ hx ↦ h_add ht hy hx⟩⟩⟩
 
+/-- Given a `B`-algebra `C` and a vector `L : Fin g ⊕ Fin g → C` in the square-zero kernel of
+`ψ : C ⟶ C'`, the `B`-algebra map `B ⊕ B^{2g} → C` sending the basis vectors to `L`. -/
+private def sqZeroPairAlgHom {g : ℕ} [Algebra B C] {ψ : C ⟶ C'} [hψ : IsSqZeroExt ψ]
+    (L : Fin g ⊕ Fin g → C) (hL : ∀ i, ψ (L i) = 0) :
+    TrivSqZeroExt B (Fin g ⊕ Fin g → B) →ₐ[B] C :=
+  liftEquivOfComm ⟨Fintype.linearCombination B L, fun v v' ↦
+    hψ.mul_eq_zero (by simp [Fintype.linearCombination_apply, Algebra.smul_def, hL])
+      (by simp [Fintype.linearCombination_apply, Algebra.smul_def, hL])⟩
+
+omit [ModuleObj O A] in
+/-- Pulling a universal infinitesimal point over `B ⊕ B^{2g}` with basis coordinates `c` back along
+`sqZeroPairAlgHom L hL` recovers the unique `ψ`-infinitesimal point over `Spec C` with coordinates
+`L ∘ c`. -/
+private lemma IsEtaleChart.sqZeroPair_pullback_eq {g : ℕ} {V : A.left.Opens}
+    {z : Fin g → Γ(A.left, V)} (hz : IsEtaleChart A.hom V z)
+    (h_in : ∀ {C : CommRingCat} {φ : B ⟶ C}, LandsIn (0 : mk (map φ ≫ s) ⟶ A).left V)
+    [Algebra B C] {ψ : C ⟶ C'} [hψ : IsSqZeroExt ψ] {L : Fin g ⊕ Fin g → C}
+    (hL : ∀ i, ψ (L i) = 0) {c : Fin g → Fin g ⊕ Fin g}
+    {Y : mk (map (ofHom (inlHom B (Fin g ⊕ Fin g → B))) ≫ s) ⟶ A}
+    (hY : IsInfinitesimal (ofHom (fstHom B B (Fin g ⊕ Fin g → B)).toRingHom) Y)
+    (hY_coords : tangentCoords z Y = inr ∘ (Pi.single · 1) ∘ c)
+    {x : mk (map (ofHom (algebraMap B C)) ≫ s) ⟶ A} (hx : IsInfinitesimal ψ x)
+    (hx_coords : tangentCoords z x = L ∘ c) :
+    (Over.map s).map (specOver.map (sqZeroPairAlgHom (B := B) L hL)) ≫ Y = x := by
+  let q : mk (map (ofHom (algebraMap B C)) ≫ s) ⟶
+      mk (map (ofHom (inlHom B (Fin g ⊕ Fin g → B))) ≫ s) :=
+    (Over.map s).map (specOver.map (sqZeroPairAlgHom (B := B) L hL))
+  refine (hz.existsUnique_tangentCoords_eq h_in hψ (tangentCoords z x)
+      (IsEtaleChart.map_tangentCoords_eq_zero h_in hx)).unique
+    ⟨hY.precomp q rfl (ofHom (algebraMap B C) ≫ ψ) ?_, ?_⟩ ⟨hx, rfl⟩
+  · refine hom_ext (RingHom.ext fun _ ↦ ?_)
+    simp [sqZeroPairAlgHom, lift, Fintype.linearCombination_apply, Algebra.smul_def, hL]
+  · rw [IsEtaleChart.tangentCoords_comp (z := z) h_in hY q rfl]
+    simp [hY_coords, hx_coords, sqZeroPairAlgHom, funext_iff]
+
+/-- Over an étale chart `(V, z)` containing all zero sections, pulling back the universal pair
+`Y .inl`, `Y .inr` over `B ⊕ B^{2g}` expresses `tangentCoords z (c • (y + y'))` as a `B`-linear
+form in `tangentCoords z y` and `tangentCoords z y'`. -/
+private lemma IsEtaleChart.tangentCoords_smul_add_eq_dotProduct {g : ℕ} {V : A.left.Opens}
+    {z : Fin g → Γ(A.left, V)} (hz : IsEtaleChart A.hom V z)
+    (h_in : ∀ {C : CommRingCat} {φ : B ⟶ C}, LandsIn (0 : mk (map φ ≫ s) ⟶ A).left V)
+    {Y : (Fin g → Fin g ⊕ Fin g) → (mk (map (ofHom (inlHom B (Fin g ⊕ Fin g → B))) ≫ s) ⟶ A)}
+    (hY : ∀ c, IsInfinitesimal (ofHom (fstHom B B (Fin g ⊕ Fin g → B)).toRingHom) (Y c))
+    (hY_coords : ∀ c, tangentCoords z (Y c) = inr ∘ (Pi.single · 1) ∘ c)
+    (c : O) {C C' : CommRingCat} {φ : B ⟶ C} {ψ : C ⟶ C'} [hψ : IsSqZeroExt ψ]
+    {y y' : mk (map φ ≫ s) ⟶ A} (hy : IsInfinitesimal ψ y) (hy' : IsInfinitesimal ψ y') :
+    tangentCoords z (c • (y + y')) = fun k ↦
+      φ ∘ (snd ∘ tangentCoords z (c • (Y .inl + Y .inr))) k ⬝ᵥ
+        (tangentCoords z y ⊕ᵥ tangentCoords z y') := by
+  let L : Fin g ⊕ Fin g → C := tangentCoords z y ⊕ᵥ tangentCoords z y'
+  have hL (i : Fin g ⊕ Fin g) : ψ (L i) = 0 := by
+    cases i <;> simp [L, IsEtaleChart.map_tangentCoords_eq_zero h_in hy,
+      IsEtaleChart.map_tangentCoords_eq_zero h_in hy']
+  have h_univ : IsInfinitesimal (ofHom (fstHom B B _).toRingHom) (c • (Y .inl + Y .inr)) :=
+    IsInfinitesimal.smul (by rw [IsInfinitesimal, comp_add, hY, hY, add_zero]) c
+  algebraize [φ.hom]
+  let q : mk (map φ ≫ s) ⟶ mk (map (ofHom (inlHom B (Fin g ⊕ Fin g → B))) ≫ s) :=
+    (Over.map s).map (specOver.map (sqZeroPairAlgHom (B := B) L hL))
+  have h_inl : q ≫ Y .inl = y :=
+    hz.sqZeroPair_pullback_eq (fun {_ _} ↦ h_in) hL (hY .inl) (hY_coords .inl) hy rfl
+  have h_inr : q ≫ Y .inr = y' :=
+    hz.sqZeroPair_pullback_eq (fun {_ _} ↦ h_in) hL (hY .inr) (hY_coords .inr) hy' rfl
+  have h_fst : ∀ k : Fin g, (tangentCoords z (c • Y .inl + c • Y .inr) k).fst = 0 := by
+    simpa using IsEtaleChart.map_tangentCoords_eq_zero h_in h_univ
+  -- `using!`: the two sides agree only after unfolding `Fintype.linearCombination`.
+  simpa [sqZeroPairAlgHom, h_inl, h_inr, lift, h_fst, funext_iff, comp_add] using!
+    IsEtaleChart.tangentCoords_comp (z := z) h_in h_univ q rfl
+
+/-- An étale chart `(V, z)` over `s : Spec B ⟶ S` containing all zero sections in which
+`tangentCoords z (c • (y + y'))` is given by `B`-linear forms `b c` is a Lie chart with action
+matrices `toCols₁ ∘ b`. -/
+private lemma IsLieChart.of_tangentCoords_smul_add {g : ℕ} {V : A.left.Opens}
+    {z : Fin g → Γ(A.left, V)} (hz : IsEtaleChart A.hom V z)
+    (h_in : ∀ {C : CommRingCat} {φ : B ⟶ C}, LandsIn (0 : mk (map φ ≫ s) ⟶ A).left V)
+    {b : O → Fin g → Fin g ⊕ Fin g → B}
+    (h_coords_smul_add : ∀ (c : O) {C C' : CommRingCat} {φ : B ⟶ C} {ψ : C ⟶ C'}
+      [IsSqZeroExt ψ] {y y' : mk (map φ ≫ s) ⟶ A}, IsInfinitesimal ψ y → IsInfinitesimal ψ y' →
+        tangentCoords z (c • (y + y')) =
+          fun k ↦ φ ∘ b c k ⬝ᵥ (tangentCoords z y ⊕ᵥ tangentCoords z y'))
+    {C : CommRingCat} {t : Spec C ⟶ S} {φ : B ⟶ C} (ht : Spec.map φ ≫ s = t) :
+    IsLieChart A t V z fun a : O ↦ (toCols₁ (b a)).map φ := by
+  refine IsLieChart.of_isEtaleChart hz ?_ ?_ ?_
+  · intro C₁ φ₁ t₁ ht₁
+    obtain rfl : map (φ ≫ φ₁) ≫ s = t₁ := by rw [map_comp_assoc, ht, ht₁]
+    exact h_in
+  · intro C₁ φ₁ t₁ ht₁ D ψ _ y hy a
+    obtain rfl : map (φ ≫ φ₁) ≫ s = t₁ := by rw [map_comp_assoc, ht, ht₁]
+    -- Take `y' = 0`: only the first `g` columns of `b a` remain.
+    -- `using!`: the sum matches `mulVec` of the first `g` columns only up to unfolding.
+    simpa [dotProduct] using! h_coords_smul_add a hy (comp_zero _)
+  · intro C₁ φ₁ t₁ ht₁ D ψ _ y x hy hx
+    obtain rfl : map (φ ≫ φ₁) ≫ s = t₁ := by rw [map_comp_assoc, ht, ht₁]
+    -- The linear form for `c = 1` at `(y, x)` is the sum of those at `(y, 0)`, `(0, x)`.
+    have h_split : tangentCoords z ((1 : O) • (y + x)) =
+        tangentCoords z ((1 : O) • (y + 0)) + tangentCoords z ((1 : O) • (0 + x)) := by
+      simp only [h_coords_smul_add 1 hy hx, h_coords_smul_add 1 hy (comp_zero _),
+        h_coords_smul_add 1 (comp_zero _) hx]
+      simp [funext_iff, dotProduct]
+    simpa using h_split
+
 /-- Coordinates at 0 exist. Let `A` be a commutative group scheme over `S` with an action of `O`,
 smooth of relative dimension `g`, and let `s : Spec B → S` with `B` local. Then there are an open
 `V` of `A`, functions `z : Fin g → Γ(A, V)` and `g × g` matrices `m(a)` over `B` (for `a` in `O`)
@@ -419,60 +519,10 @@ lemma exists_isLieChart {g : ℕ} (hd : SmoothOfRelativeDimension g A.hom) [IsLo
           tangentCoords z Y = inr ∘ (Pi.single · 1) ∘ c :=
     (hz.existsUnique_tangentCoords_eq h_in isSqZeroExt_fstHom _ (by simp)).exists
   choose Y hY hY_coords using h_univ_point
-  -- The coefficients of the linear forms: the `B^{2g}`-parts of the universal coordinates.
   let b (c : O) : Fin g → Fin g ⊕ Fin g → B := snd ∘ tangentCoords z (c • (Y .inl + Y .inr))
-  have h_coords_smul_add (c : O) {C C' : CommRingCat} {φ : B ⟶ C} {ψ : C ⟶ C'} [hψ : IsSqZeroExt ψ]
-      {y y' : mk (map φ ≫ s) ⟶ A} (hy : IsInfinitesimal ψ y) (hy' : IsInfinitesimal ψ y') :
-      tangentCoords z (c • (y + y')) =
-        fun k ↦ φ ∘ b c k ⬝ᵥ (tangentCoords z y ⊕ᵥ tangentCoords z y') := by
-    let L : Fin g ⊕ Fin g → C := tangentCoords z y ⊕ᵥ tangentCoords z y'
-    have h_univ : IsInfinitesimal (ofHom (fstHom B B _).toRingHom) (c • (Y .inl + Y .inr)) :=
-      IsInfinitesimal.smul (by rw [IsInfinitesimal, comp_add, hY, hY, add_zero]) c
-    have h_ker (v : Fin g ⊕ Fin g → C) : ψ (v ⬝ᵥ L) = 0 := by
-      simp [L, dotProduct, IsEtaleChart.map_tangentCoords_eq_zero h_in hy,
-        IsEtaleChart.map_tangentCoords_eq_zero h_in hy']
-    algebraize [φ.hom]
-    -- The entries of `L` lie in the square-zero kernel of `ψ`, so sending the basis vectors to them
-    -- is a `B`-algebra map `B ⊕ B^{2g} → C`; `q` is the induced map of schemes over `S`.
-    have h_mul_eq_zero (v v' : Fin g ⊕ Fin g → B) :
-        Fintype.linearCombination B L v * Fintype.linearCombination B L v' = 0 :=
-      -- `Fintype.linearCombination B L v` is `(φ ∘ v) ⬝ᵥ L`, which lies in `ker ψ` by `h_ker`.
-      hψ.mul_eq_zero (h_ker (φ ∘ v)) (h_ker (φ ∘ v'))
-    let q : mk (map φ ≫ s) ⟶ mk (map (ofHom (inlHom B (Fin g ⊕ Fin g → B))) ≫ s) :=
-      (Over.map s).map
-        (specOver.map (liftEquivOfComm ⟨Fintype.linearCombination B L, h_mul_eq_zero⟩))
-    -- Coordinates determine the point, so `q` pulls the universal pair back to `y`, `y'`.
-    have h_pull (c : Fin g → Fin g ⊕ Fin g) {x : mk (map φ ≫ s) ⟶ A} (hx : IsInfinitesimal ψ x)
-        (hL : tangentCoords z x = L ∘ c) : q ≫ Y c = x := by
-      refine (hz.existsUnique_tangentCoords_eq h_in hψ (tangentCoords z x)
-          (IsEtaleChart.map_tangentCoords_eq_zero h_in hx)).unique
-        ⟨(hY c).precomp q rfl (φ ≫ ψ) ?_, ?_⟩ ⟨hx, rfl⟩
-      · exact hom_ext (RingHom.ext fun _ ↦ (map_add _ _ _).trans (add_eq_left.2 (h_ker _)))
-      · simp [IsEtaleChart.tangentCoords_comp (z := z) h_in (hY c) q rfl, hY_coords, hL, funext_iff]
-    -- The universal coordinates have no `B`-part; pull them back along `q`.
-    have h_fst : ∀ k : Fin g, (tangentCoords z (c • Y .inl + c • Y .inr) k).fst = 0 := by
-      simpa using IsEtaleChart.map_tangentCoords_eq_zero h_in h_univ
-    -- `using!`: the two sides agree only after unfolding `Fintype.linearCombination`.
-    simpa [b, h_pull .inl hy rfl, h_pull .inr hy' rfl, lift, h_fst, funext_iff, comp_add] using!
-      IsEtaleChart.tangentCoords_comp (z := z) h_in h_univ q rfl
-  refine ⟨V, z, toCols₁ ∘ b, fun {C t φ} ht ↦ IsLieChart.of_isEtaleChart hz ?_ ?_ ?_⟩
-  · intro C₁ φ₁ t₁ ht₁
-    obtain rfl : map (φ ≫ φ₁) ≫ s = t₁ := by rw [map_comp_assoc, ht, ht₁]
-    exact h_in
-  · intro C₁ φ₁ t₁ ht₁ D ψ _ y hy a
-    obtain rfl : map (φ ≫ φ₁) ≫ s = t₁ := by rw [map_comp_assoc, ht, ht₁]
-    -- Take `y' = 0`: only the first `g` columns of `b a` remain.
-    -- `using!`: the sum matches `mulVec` of the first `g` columns only up to unfolding.
-    simpa [dotProduct] using! h_coords_smul_add a hy (comp_zero _)
-  · intro C₁ φ₁ t₁ ht₁ D ψ _ y x hy hx
-    obtain rfl : map (φ ≫ φ₁) ≫ s = t₁ := by rw [map_comp_assoc, ht, ht₁]
-    -- The linear form for `c = 1` at `(y, x)` is the sum of those at `(y, 0)`, `(0, x)`.
-    have h_split : tangentCoords z ((1 : O) • (y + x)) =
-        tangentCoords z ((1 : O) • (y + 0)) + tangentCoords z ((1 : O) • (0 + x)) := by
-      simp only [h_coords_smul_add 1 hy hx, h_coords_smul_add 1 hy (comp_zero _),
-        h_coords_smul_add 1 (comp_zero _) hx]
-      simp [funext_iff, dotProduct]
-    simpa using h_split
+  exact ⟨V, z, toCols₁ ∘ b, fun ht ↦
+    IsLieChart.of_tangentCoords_smul_add hz (fun {_ _} ↦ h_in)
+      (fun c ↦ hz.tangentCoords_smul_add_eq_dotProduct (fun {_ _} ↦ h_in) hY hY_coords c) ht⟩
 
 /-- Let A → S be smooth of constant relative dimension, let t : Spec C → S factor through
 s : Spec B → S with B local, let the C-point y of A vanish modulo the square-zero ideal ker ψ,
