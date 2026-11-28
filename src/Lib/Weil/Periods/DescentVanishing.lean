@@ -38,7 +38,7 @@ matrix, Witt's theorem writes them as integrals modulo a stabiliser.
 
 * `New.SiegelWeil.DescentsVanish`: the descents of `Y` vanish for all data that are vacua above the
   places of `S`.
-* `New.Space.Splitting.centreCoeff_integral_eq_tsum`: the coefficient at `j β` keeps the frames `x`
+* `New.Space.Splitting.centerCoeff_integral_eq_tsum`: the coefficient at `j β` keeps the frames `x`
   with Gram matrix `β`.
 * `New.SiegelWeil.integral_blockEmb_eq_zero_of_descentsVanish`: split `V = V″ ⊕ V°` into blocks of
   ranks `n₁` and `n₂`. Let `o₁` be the frame of `V″` and `I(h)` the period over `[U(V°)]` of the
@@ -216,7 +216,7 @@ variable {E n n₀ m p : Type} [Field E] [CMType E] [H : WeilData E] [Fintype n]
 
 /-- By definition `radicalCenter z` is the element `radicalElement` of the unipotent radical with
 zero vector and central part `-2 j z`. -/
-lemma radicalCentre_apply (z : Matrix p p (𝔸 E)) :
+lemma radicalCenter_apply (z : Matrix p p (𝔸 E)) :
     D.radicalCenter z = D.radicalElement 0 (-toAdele (H.j * 2 : E) • z) :=
   rfl
 
@@ -229,7 +229,7 @@ lemma hasSum_thetaTerm (h : G E t) :
 /-- Multiplying `g` on the left by the central unipotent element `radicalCenter z` multiplies the
 term of the frame `x` in the theta kernel by `ψ (tr (-j β z))`, where `β` is the Gram matrix of `x`
 and `ψ` the standard additive character of the adeles. -/
-lemma thetaTerm_radicalCentre_mul (z : Matrix p p (𝔸 E)) (x : Matrix m p E) (h : G E t) :
+lemma thetaTerm_radicalCenter_mul (z : Matrix p p (𝔸 E)) (x : Matrix m p E) (h : G E t) :
     D.thetaTerm V a b f (D.radicalCenter z * g) x h =
       stdAddChar E ((-H.j • (xᴴ * V.J * x)).map toAdele * z).trace * D.thetaTerm V a b f g x h := by
   have h_scalar : toAdele (2⁻¹ : E) * -toAdele (H.j * 2 : E) = toAdele (-H.j) := by
@@ -242,7 +242,7 @@ lemma thetaTerm_radicalCentre_mul (z : Matrix p p (𝔸 E)) (x : Matrix m p E) (
   have h_split : pairWeil W V a b (D.radicalCenter z * g, h) f =
       pairWeil W V a b (D.radicalCenter z, 1) (pairWeil W V a b (g, h) f) := by
     simp [rep_apply_apply]
-  rw [thetaTerm, h_split, radicalCentre_apply, homSlice_radicalElement, gram_at_point_eq_map,
+  rw [thetaTerm, h_split, radicalCenter_apply, homSlice_radicalElement, gram_at_point_eq_map,
     h_phase]
   -- The Heisenberg translation in `homSlice_radicalElement` is by the zero vector.
   simp [thetaTerm]
@@ -267,7 +267,7 @@ lemma fixesLeft_thetaTerm_mul (hΓ : V.Γ.FixesLeft y) (x : Matrix m p E) :
 integrable against `y`. Then the theta lift of `y` at `radicalCenter z * g` is the sum over all
 rational frames `x` of `ψ (tr (-j β(x) z))` times the integral over `[U(V)]` of the term of `x` at
 `g` against `y`, where `β(x)` is the Gram matrix of `x`. -/
-lemma integral_pairTheta_radicalCentre_mul (h_int : D.HasIntegrableTerms V a b f g y)
+lemma integral_pairTheta_radicalCenter_mul (h_int : D.HasIntegrableTerms V a b f g y)
     (hy : Continuous y) (z : Matrix p p (𝔸 E)) :
     ∫ h : G E t, pairTheta W V a b f (D.radicalCenter z * g, h) * y h ∂V.quotMeasure =
       ∑' x : Matrix m p E, stdAddChar E ((-H.j • (xᴴ * V.J * x)).map toAdele * z).trace *
@@ -277,7 +277,7 @@ lemma integral_pairTheta_radicalCentre_mul (h_int : D.HasIntegrableTerms V a b f
   let χ (x : Matrix m p E) : ℂ := stdAddChar E ((-H.j • (xᴴ * V.J * x)).map toAdele * z).trace
   have h_expand (h : G E t) : pairTheta W V a b f (D.radicalCenter z * g, h) * y h =
       ∑' x : Matrix m p E, χ x * (D.thetaTerm V a b f g x h * y h) := by
-    simp_rw [← (D.hasSum_thetaTerm h).tsum_eq, D.thetaTerm_radicalCentre_mul, ← tsum_mul_right,
+    simp_rw [← (D.hasSum_thetaTerm h).tsum_eq, D.thetaTerm_radicalCenter_mul, ← tsum_mul_right,
       mul_assoc, χ]
   have h_swap : ∑' x : Matrix m p E, ∫ h, χ x * (D.thetaTerm V a b f g x h * y h) ∂V.quotMeasure =
       ∫ h, ∑' x : Matrix m p E, χ x * (D.thetaTerm V a b f g x h * y h) ∂V.quotMeasure :=
@@ -292,7 +292,7 @@ integrable against `y` (`HasIntegrableTerms`). Then the Fourier coefficient alon
 unipotent radical, at `j β` and `g`, of the theta lift of `y` is the sum, over the rational frames
 `x` with Gram matrix `β`, of the integrals over `[U(V)]` of the term of `x` times `y`. Here `j` is
 the imaginary element of `E` given by `WeilData`. -/
-lemma centreCoeff_integral_eq_tsum (h_int : D.HasIntegrableTerms V a b f g y)
+lemma centerCoeff_integral_eq_tsum (h_int : D.HasIntegrableTerms V a b f g y)
     (hy : Continuous y) (β : Matrix p p E) :
     D.centerCoeff (H.j • β)
         (fun k : G E s ↦ ∫ h : G E t, pairTheta W V a b f (k, h) * y h ∂V.quotMeasure) g =
@@ -309,7 +309,7 @@ lemma centreCoeff_integral_eq_tsum (h_int : D.HasIntegrableTerms V a b f g y)
   rw [isDualFamily_ratMatrices.tsum_coeff_eq_quotMean _ h_freq h_summable, centerCoeff]
   congr with z
   -- The means over `z` have the same integrand: the characters of `j β` and of `x` multiply.
-  simp_rw [D.integral_pairTheta_radicalCentre_mul h_int hy, ← tsum_mul_left,
+  simp_rw [D.integral_pairTheta_radicalCenter_mul h_int hy, ← tsum_mul_left,
     isDualFamily_ratMatrices.add_left, mul_assoc, mul_left_comm]
 
 /-- Unfolding. Let `y` be continuous on `U(V)(𝔸)` and left invariant under the rational points, and
@@ -317,7 +317,7 @@ let the terms of the theta kernel at `g` be absolutely integrable against `y`. L
 frame with invertible Gram matrix `β`. Then the term of `x` times `y` is integrable modulo the
 rational stabiliser of `x`, and its integral is the Fourier coefficient along the centre of the
 unipotent radical, at `j β` and `g`, of the theta lift of `y`. -/
-lemma centreCoeff_eq_integral_ratStabilizer (h_int : D.HasIntegrableTerms V a b f g y)
+lemma centerCoeff_eq_integral_ratStabilizer (h_int : D.HasIntegrableTerms V a b f g y)
     (hy : Continuous y) (hΓ : V.Γ.FixesLeft y) {x : Matrix m p E}
     (h_gram : IsUnit (xᴴ * V.J * x)) :
     Integrable (fun h : G E t ↦ D.thetaTerm V a b f g x h * y h) (V.ratStabilizer x).quotMeasure ∧
@@ -325,8 +325,8 @@ lemma centreCoeff_eq_integral_ratStabilizer (h_int : D.HasIntegrableTerms V a b 
         (fun k : G E s ↦ ∫ h : G E t, pairTheta W V a b f (k, h) * y h ∂V.quotMeasure) g =
       ∫ h : G E t, D.thetaTerm V a b f g x h * y h ∂(V.ratStabilizer x).quotMeasure := by
   -- By Witt's theorem the frames with the Gram matrix of `x` form one orbit of `U V.J`, and the
-  -- sum of `centreCoeff_integral_eq_tsum` over it unfolds.
-  rw [D.centreCoeff_integral_eq_tsum h_int hy]
+  -- sum of `centerCoeff_integral_eq_tsum` over it unfolds.
+  rw [D.centerCoeff_integral_eq_tsum h_int hy]
   obtain ⟨h_integrable, -, h_sum⟩ := integral_tsum_orbit_of_lt_top_or_integrable (Γ := V.Γ)
     (μ := volume)
     (S := V.ratStabilizer x) (D := {z : Matrix m p E | zᴴ * V.J * z = xᴴ * V.J * x})
@@ -340,7 +340,7 @@ invariant under the rational points, and let the terms of the theta kernel at `g
 integrable against `y`. Then the term of `x₀` times `y` is left invariant under `S` and integrable
 modulo `S`, and its integral is the Fourier coefficient at `j β` and `g` of the theta lift of
 `y`. -/
-lemma centreCoeff_eq_integral_stabilizer (h_int : D.HasIntegrableTerms V a b f g y)
+lemma centerCoeff_eq_integral_stabilizer (h_int : D.HasIntegrableTerms V a b f g y)
     (hy : Continuous y) (hΓ : V.Γ.FixesLeft y) {x₀ : Matrix m p E}
     (h_gram : IsUnit (x₀ᴴ * V.J * x₀)) {S : Subgroup (G E t)}
     (hS : ∀ k : G E t, k ∈ S ↔ ∃ γ : U V.J, (γ : Matrix m m E) * x₀ = x₀ ∧ V.ratEmbed γ = k) :
@@ -351,7 +351,7 @@ lemma centreCoeff_eq_integral_stabilizer (h_int : D.HasIntegrableTerms V a b f g
       ∫ h : G E t, D.thetaTerm V a b f g x₀ h * y h ∂S.quotMeasure := by
   obtain rfl : S = V.ratStabilizer x₀ := S.ext fun k ↦ (hS k).trans mem_ratStabilizer.symm
   exact ⟨D.fixesLeft_thetaTerm_mul hΓ x₀,
-    D.centreCoeff_eq_integral_ratStabilizer h_int hy hΓ h_gram⟩
+    D.centerCoeff_eq_integral_ratStabilizer h_int hy hΓ h_gram⟩
 
 end New.Space.Splitting
 
@@ -747,7 +747,7 @@ lemma DescentsVanish.integral_frameChar_eq_zero {T : Set (FinPlace E)} {Y : G E 
   have h_gram : IsUnit (x₀ᴴ * V.J * x₀) :=
     ⟨1, by simp [x₀, V, inclMatrix, Matrix.mul_apply, ← ext_iff, Matrix.one_apply]⟩
   obtain ⟨h_int, h_coeff⟩ :=
-    (A.centreCoeff_eq_integral_stabilizer h_terms hY_cont hY_inv h_gram
+    (A.centerCoeff_eq_integral_stabilizer h_terms hY_cont hY_inv h_gram
       (mem_map_Gamma_secondBlock o hs)).right
   have h_zero : ∫ g, A.thetaTerm V υ 1 f g₀ x₀ g * Y g ∂ν = 0 := by
     rw [← h_coeff, h_killed]

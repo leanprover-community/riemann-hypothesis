@@ -258,7 +258,7 @@ lemma centreCoeff_thetaIntegral_localDatum_eq_zero (hπ : ReadsAt A π) (β γ :
       ∑' x : {x : Matrix a b E | xᴴ * V.J * x = T},
         ∫ k : G E t, D.thetaTerm V β γ f p x.val k ∂V.quotMeasure := by
     unfold thetaIntegral
-    simpa using D.centreCoeff_integral_eq_tsum h_int continuous_const T
+    simpa using D.centerCoeff_integral_eq_tsum h_int continuous_const T
   suffices h_terms : ∀ (x : {x : Matrix a b E | xᴴ * V.J * x = T}) (k : G E t),
       D.thetaTerm V β γ f p x.val k = 0 by simp [h_sum, h_terms]
   rintro ⟨x, hx⟩ k
@@ -1076,10 +1076,10 @@ lemma exists_centreCoeff_eq_mul_of_isPeriodIdentity {σ' : b ⊕ b ⊕ n ≃ m}
   · -- At `V'.J` each coefficient is the integral of one term: that of `fromRows 1 0`, whose
     -- stabiliser is `W₁.Γ`, and that of `1`, whose stabiliser is trivial.
     obtain ⟨inv_large, integrable_large, coeff_large⟩ :=
-      D.centreCoeff_eq_integral_stabilizer int_large continuous_const (by simp)
+      D.centerCoeff_eq_integral_stabilizer int_large continuous_const (by simp)
         (by simpa only [gram_sum_fromRows_one_zero] using V'.isUnit_J)
         (mem_map_sum_iff_fixes_cols V')
-    obtain ⟨-, -, coeff_small⟩ := D.centreCoeff_eq_integral_stabilizer int_small continuous_const
+    obtain ⟨-, -, coeff_small⟩ := D.centerCoeff_eq_integral_stabilizer int_small continuous_const
       (by simp) (x₀ := 1) (S := ⊥) (by simp) (by simp [eq_comm])
     simp only [mul_one, conjTranspose_one, one_mul, quotMeasure_bot, gram_sum_fromRows_one_zero]
       at inv_large integrable_large coeff_large coeff_small

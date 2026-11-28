@@ -478,7 +478,7 @@ lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {�
       fun k ↦ ∫ h, pairTheta X Y δ δ f (k, h) * 1 ∂Y.quotMeasure := funext (by simp [thetaIntegral])
   rw [h_integral]
   obtain h_empty | ⟨x, rfl⟩ := isEmpty_or_nonempty {x : Matrix n b E | xᴴ * Y.J * x = T}
-  · rw [D.centreCoeff_integral_eq_tsum h_int continuous_const T, tsum_empty]
+  · rw [D.centerCoeff_integral_eq_tsum h_int continuous_const T, tsum_empty]
   let x' : Matrix n b (𝔸 E) := Y.x⁻¹.val * x.map toAdele
   let S : Subgroup (G E s) := stabilizer (G E s) x'
   have hS : IsClosed (S : Set (G E s)) :=
@@ -516,7 +516,7 @@ lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {�
   have h_unfold : D.centerCoeff (H.j • (xᴴ * Y.J * x))
         (fun k ↦ ∫ h, pairTheta X Y δ δ f (k, h) * 1 ∂Y.quotMeasure) g =
       ∫ h, D.thetaTerm Y δ δ f g x h * 1 ∂(Y.ratStabilizer x).quotMeasure :=
-    (D.centreCoeff_eq_integral_ratStabilizer h_int continuous_const h_fixesLeft_one hT_unit).right
+    (D.centerCoeff_eq_integral_ratStabilizer h_int continuous_const h_fixesLeft_one hT_unit).right
   rw [h_unfold]
   -- translation by `C` scales the measure by `d = 1`, while the mean is `a = 0` times the term
   exact integral_quotMeasure_eq_zero_of_mean volume
