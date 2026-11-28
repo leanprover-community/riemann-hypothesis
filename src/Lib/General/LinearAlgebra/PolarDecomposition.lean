@@ -3,20 +3,16 @@ module
 import TauCeti.Analysis.Matrix.LDL
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Basic
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
-import Mathlib.RingTheory.TotallySplit
-public import Lib.Weil.Construction.WeilData
+public import Lib.General.LinearAlgebra.IntegralLattices
 public import Lib.DiscreteSeries.FlenstedJensen.Defs
 public import Lib.General.Analysis.GaussianIntegral
 import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 
 /-!
-# Gram–Schmidt, tight frames, polar decomposition in U(p,q), forms representing one
+# Gram–Schmidt, polar decomposition in U(p,q), and forms representing one
 
-This file collects four topics of linear algebra. The first is a Gram–Schmidt process
-whose change of basis is block triangular for a weight on the columns. The second concerns tight
-frames of `ℂ^Φ` made of vectors of the lattice `𝔞₀` attached to a CM field. The third is the polar
+This file collects three topics of linear algebra. The first is a Gram–Schmidt process
+whose change of basis is block triangular for a weight on the columns. The second is the polar
 decomposition in the unitary group of a diagonal sign form, with properties of accretive matrices.
 The last gives a condition under which a Hermitian form takes the value `1` on a subspace.
 
@@ -25,7 +21,6 @@ The last gives a condition under which a Hermitian form takes the value `1` on a
 * `New.exists_orthonormal_mul`: the columns of a complex matrix with a left inverse
   (`New.HasLeftInv`) become orthonormal after right multiplication by an invertible matrix `b` that
   is block triangular for a given weight `wt` on the columns: `b i j = 0` whenever `wt j < wt i`.
-* `New.IsTightFrame`: vectors of `𝔞₀`, with multiplicities, that form a tight frame of `ℂ^Φ`.
 * `New.exists_polar`: `g = k * z` with `k` unitary and `z` positive definite and an exponential.
 * `New.isAccretive_blockDiagPart_inv_mul`: the block diagonal part of `g` is invertible and
   `(blockDiagPart ε g)⁻¹ * g` is accretive.
@@ -38,7 +33,6 @@ Notions from other files:
 * `New.unitaryLie J`: the Lie algebra of this group for `J = signMatrix ε`: the real vector space
   of complex matrices `X` with `Xᴴ * J + J * X = 0`; `New.expU X` is `exp X` in the group.
 * `Matrix.IsAccretive z`: the matrix `z + zᴴ` is positive definite.
-* `New.WeilData E`: data on a CM field `E`; only its finite idele `α` is used here.
 -/
 
 @[expose] public section
@@ -70,41 +64,6 @@ lemma New.exists_orthonormal_mul {n k α : Type*} [Fintype n] [Fintype k] [Decid
   exact ⟨(Units.mkOfMulEqOne ((X * G)ᴴ * X) G (by rw [Matrix.mul_assoc, h_orth]))⁻¹, h_tri, h_orth⟩
 
 end GramSchmidt
-
-/-!
-## Tight frames in the lattice 𝔞₀
-
-For a CM field `E` with CM type `Φ` (`New.CMType`) and the finite idele `α` of `New.WeilData`,
-`𝔞₀ = E ∩ α Ô` is a lattice in `ℂ^Φ`; `New.Ô` is the ring of integral finite adeles.
--/
-
-namespace New
-
-variable {E I : Type} [Field E] [CMType E] [WeilData E] (w : I → E) [Fintype I]
-
-/-- The finite image of a family w of elements of E: the finite adelic vector α⁻¹w, with α the
-idele of the Weil data. -/
-noncomputable def finiteImage : (I → E) →ₗ[E] I → 𝔸f E :=
-  ((WeilData.α (E := E))⁻¹.val • Algebra.linearMap E (𝔸f E)).compLeft I
-
-/-- The w_i lie in the lattice E ∩ αÔ and, taken m_i times, form a tight frame with frame bound M.
-That is, ∑ m_i Φσ(w_i)·conj(Φτ(w_i)) = Mδ_{στ} for all infinite places σ, τ of E, with Φ the CM
-type. -/
-structure IsTightFrame (m : I → ℕ) (M : ℕ) : Prop where
-  /-- Each w_i lies in the lattice E ∩ αÔ. -/
-  finiteImage_mem : ∀ i : I, finiteImage w i ∈ Ô E
-  /-- The matrix ∑ m_i Φσ(w_i)·conj(Φτ(w_i)) is M times the identity. -/
-  sum_mul_conj : ∀ σ τ : NumberField.InfinitePlace E,
-    ∑ i : I, m i * (Φ σ (w i) * starRingEnd ℂ (Φ τ (w i))) = if σ = τ then (M : ℂ) else 0
-
-/-- Let E be a CM field with CM type Φ and Weil data. If the w_i, taken with multiplicities m_i, are
-a tight frame with bound M (they lie in the lattice E ∩ αÔ and ∑ m_i Φσ(w_i)·conj(Φτ(w_i)) = Mδ_στ),
-then so is the family with each w_i repeated m_i times, all with multiplicity one. -/
-lemma IsTightFrame.repeat_vectors {m : I → ℕ} {M : ℕ} (hw : IsTightFrame w m M) :
-    IsTightFrame (fun x : Σ i : I, Fin (m i) ↦ w x.1) 1 M :=
-  ⟨fun x ↦ hw.finiteImage_mem x.1, fun σ τ ↦ by simpa [Fintype.sum_sigma] using hw.sum_mul_conj σ τ⟩
-
-end New
 
 /-! ## Polar decomposition in U(p,q) and accretive matrices -/
 

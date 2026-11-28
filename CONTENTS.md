@@ -907,7 +907,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 - `Lib/General/LinearAlgebra/HermiteForm` (139): Hermite forms over valuation pairs and integral matrices over valued fields
 - `Lib/General/LinearAlgebra/MatrixNormBounds` (80): Auerbach's lemma, ultrametric matrix bounds and Gram norms
 - `Lib/General/LinearAlgebra/PartnerAlgebra` (207): Rows and columns of integral matrices, primitive matrices and the law of partners
-- `Lib/General/LinearAlgebra/PolarDecomposition` (122): Gram–Schmidt, tight frames, polar decomposition in U(p,q), forms representing one
+- `Lib/General/LinearAlgebra/PolarDecomposition` (108): Gram–Schmidt, polar decomposition in U(p,q), forms representing one
 - `Lib/General/LinearAlgebra/BlockEmbeddings` (241): Extending columns, block matrices and block embeddings
 
 **Measure**: Measure theory, Haar measures and integration
@@ -1169,7 +1169,7 @@ The heads of these files give an overview of a theory: `Lib/ClassField/Global/Ar
 
 - `Lib/Weil/Construction/HeisenbergModel` (425): Heisenberg cocycles, vacua, the reproducing model and Schur's lemma
 - `Lib/Weil/Construction/WeilOperators` (541): Weil operators, orthogonal sums and transport of the reproducing model
-- `Lib/Weil/Construction/WeilData` (87): Splitting characters, Weil data, and the adelic Heisenberg cocycle and vacuum
+- `Lib/Weil/Construction/WeilData` (91): Splitting characters, Weil data, the adelic Heisenberg cocycle and vacuum, and tight frames
 - `Lib/Weil/Construction/FiniteMultiplier` (600): Finite Heisenberg datum, its lattice vacuum and the finite multiplier
 - `Lib/Weil/Construction/FiniteCocycle` (300): The finite cocycle as a finite Gauss sum, and its triviality
 - `Lib/Weil/Construction/AdelicRepresentation` (565): The adelic Weil representation on 𝒮(V) and its theta functional
