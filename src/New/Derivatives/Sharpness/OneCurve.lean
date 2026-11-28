@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric
+import TauCeti.NumberTheory.Padics.Distribution.Amice.Norm
 public import Lib.CM.FormalGroup.FormalParameter
 import Lib.General.Algebra.SeriesBounds
 import New.Derivatives.FormalGroup.ThetaProducts
@@ -256,11 +257,14 @@ lemma pow_le_maxDerivNorm_of_eq_primeNorm_pow {n j : ℕ} (hn : n + 1 = primeNor
     ((p : ℝ) ^ (-gammaPrime d p)) ^ n ≤ C.maxDerivNorm (p := p) (n + 1) := by
   have hp : (0 : ℝ) < p := mod_cast (Fact.out : p.Prime).pos
   calc ((p : ℝ) ^ (-gammaPrime d p)) ^ n
-      = ((p : ℝ) ^ (-(1 / (p - 1)) : ℝ)) ^ n * ((p : ℝ) ^ varpiValuation d p) ^ n := by
-        rw [← mul_pow, ← Real.rpow_add hp, neg_add_eq_sub, gammaPrime, neg_sub]
+      = TauCeti.amiceRadius p 0 ^ n * ((p : ℝ) ^ varpiValuation d p) ^ n := by
+        rw [TauCeti.amiceRadius_def, pow_zero, mul_one, ← mul_pow, ← Real.rpow_add hp,
+          neg_add_eq_sub, gammaPrime, neg_sub]
     _ ≤ ‖(n + 1)! * coeff (n + 1) C.formalParam‖ := by
-        grw [norm_mul, C.norm_coeff_formalParam_of_eq_primeNorm_pow hn,
-          rpow_pow_le_norm_factorial_succ]
+        rw [norm_mul, C.norm_coeff_formalParam_of_eq_primeNorm_pow hn]
+        exact mul_le_mul_of_nonneg_right (by simpa using
+          TauCeti.amiceRadius_zero_pow_sub_one_le_norm_factorial (L := ℂ_[p]) n.succ_ne_zero)
+          (by positivity)
     _ ≤ C.maxDerivNorm (n + 1) :=
         norm_deriv_le_maxDerivNorm C.isSeriesGenerator_formalParam.generator_mem _
 
