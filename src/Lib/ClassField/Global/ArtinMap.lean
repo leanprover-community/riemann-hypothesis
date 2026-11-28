@@ -4,6 +4,7 @@ import Mathlib.Topology.Algebra.Group.Units
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.Separation.CompletelyRegular
 public import Lib.ClassField.Local.ArtinMap
+import TauCeti.NumberTheory.RamificationInertia.Galois
 
 /-!
 # The global Artin map: product of local symbols, continuity, splitting and norms
@@ -41,6 +42,16 @@ namespace New
 
 open Module QZChar Set FinPlace IsGalois
 
+open scoped Pointwise in
+/-- Pulling back a finite place applies the inverse pointwise action to its prime ideal. -/
+private lemma inverse_smul_asIdeal {K L : Type*} [Field K] [Field L] [Algebra K L]
+    (u : FinPlace L) (σ : Gal(L/K)) :
+    σ⁻¹ • u.asIdeal = (u.comap σ).asIdeal := by
+  rw [Ideal.pointwise_smul_eq_comap]
+  let ρ := MulSemiringAction.toRingAut Gal(L/K) (NumberField.RingOfIntegers L)
+  change u.asIdeal.comap (ρ σ⁻¹)⁻¹ = u.asIdeal.comap (ρ σ)
+  rw [map_inv, inv_inv]
+
 variable {Γ K : Type} [Group Γ] [TopologicalSpace Γ] [Field K] [EmbeddedNumberField K]
 
 /-- g lies in the kernel of χ exactly when `abelianLift χ` kills the class of g. -/
@@ -76,6 +87,7 @@ lemma ncard_above_mul_relIndex_eq_finrank :
 
 variable {U}
 
+open scoped Pointwise in
 /-- Let `L / K` be Galois with `U = Gal(Ω/L)`, and let `A` be a place of `Ω` over `v` whose
 decomposition group lies in `U`. Then `v` splits completely: a place `u` of `L` over `v` has the
 residue cardinality of `v`, and no nontrivial element of `Gal(L/K)` fixes `u`. -/
@@ -86,24 +98,24 @@ lemma q_eq_and_comap_ne_self_of_decompGroup_le (h_dec : decompGroup Γ A ≤ U) 
   -- over `v`.
   have h_card : {u : FinPlace L | u.below K = v}.ncard = finrank K L := by
     simp [← h.ncard_above_mul_relIndex_eq_finrank (L := L) U, Subgroup.relIndex_eq_one.mpr h_dec]
+  have h_efg := u.ncard_mul_ramificationIdx_mul_inertiaDeg (K := K)
+  have h_ef : u.asIdeal.ramificationIdx (NumberField.RingOfIntegers K) *
+      u.asIdeal.inertiaDeg (NumberField.RingOfIntegers K) = 1 := by
+    rw [hu, h_card] at h_efg
+    simpa [finrank_pos.ne'] using h_efg
   refine ⟨?_, fun σ hσ h_fix ↦ hσ ?_⟩
-  · -- In `e f g = n` (`ncard_mul_ramificationIdx_mul_inertiaDeg`) we have `g = n`, so the residue
-    -- degree `f` is `1`, and the norm of `u` is the norm of `v` to the power `f`.
-    have h_efg := u.ncard_mul_ramificationIdx_mul_inertiaDeg (K := K)
-    have h_ef : u.asIdeal.ramificationIdx (NumberField.RingOfIntegers K) *
-        u.asIdeal.inertiaDeg (NumberField.RingOfIntegers K) = 1 := by
-      rw [hu, h_card] at h_efg
-      simpa [finrank_pos.ne'] using h_efg
+  · -- In `e f g = n` we have `g = n`, so the residue degree `f` is `1`.
     obtain ⟨-, h_f⟩ := mul_eq_one.mp h_ef
     simp [← hu, ← (u.below K).asIdeal.absNorm_pow_inertiaDeg, h_f]
-  · -- The orbit of `u` contains all `[L : K]` places over `v`, so the orbit map is injective.
-    let orbit (σ : Gal(L/K)) : FinPlace L := u.comap σ
-    have h_le : Nat.card Gal(L/K) ≤ (range orbit).ncard := by
-      rw [card_aut_eq_finrank, ← h_card]
-      exact ncard_le_ncard fun u' hu' ↦ exists_gal_comap_eq (hu.trans hu'.symm)
-    have h_inj : Function.Injective (rangeFactorization orbit) :=
-      (rangeFactorization_surjective.bijective_of_nat_card_le h_le).injective
-    exact h_inj (Subtype.ext h_fix)
+  · -- The stabilizer has order `e f = 1`, so only the identity fixes `u`.
+    have h_bot : MulAction.stabilizer Gal(L/K) u.asIdeal = ⊥ :=
+      Subgroup.card_eq_one.mp
+        ((Ideal.card_stabilizer_eq_ramificationIdx_mul_inertiaDeg
+          (R := NumberField.RingOfIntegers K) (G := Gal(L/K)) u.asIdeal).trans h_ef)
+    have h_mem : σ⁻¹ ∈ MulAction.stabilizer Gal(L/K) u.asIdeal := by
+      rw [MulAction.mem_stabilizer_iff, inverse_smul_asIdeal]
+      exact congrArg IsDedekindDomain.HeightOneSpectrum.asIdeal h_fix
+    simpa [h_bot] using h_mem
 
 /-- Let `A` be a place of `Ω` over `v`. The values of a character `χ` on the local symbols at `v`
 are its values on the decomposition group of `A`. -/
