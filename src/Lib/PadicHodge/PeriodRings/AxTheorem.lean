@@ -157,25 +157,20 @@ lemma untilt_dvd_iff [IsDomain R] [IsIntegrallyClosed R] {x y : PreTilt R p} :
       PreTilt.untilt (quotientMulEquiv p (span {(p : R)}) z) = coeffMonoidHom R p 0 z :=
     teichmuller₀_mapMonoidHom_idealQuotientMk
   rw [h_untilt, h_untilt] at h_untilt_dvd
-  have hp_pow (n : ℕ) : p ^ n ≠ 0 := pow_ne_zero n (NeZero.ne p)
-  have h_dvd (n : ℕ) : ∃ e : R, coeffMonoidHom R p n y = coeffMonoidHom R p n x * e := by
-    -- `xₙ ^ p ^ n = x₀`, and in an integrally closed domain `a ^ m ∣ b ^ m` implies `a ∣ b`
-    refine (IsIntegrallyClosed.pow_dvd_pow_iff (hp_pow n)).mp ?_
-    rwa [coeffMonoidHom_pow_p_pow_self, coeffMonoidHom_pow_p_pow_self]
-  choose e hy_eq using h_dvd
-  -- as `zₙ ^ p ^ n = z₀`, the term `zₙ` is zero if and only if `z₀` is
-  have h_zero_iff (z : Perfection R p) (n : ℕ) :
-      coeffMonoidHom R p n z = 0 ↔ coeffMonoidHom R p 0 z = 0 := by
-    rw [← coeffMonoidHom_pow_p_pow_self z n, pow_eq_zero_iff (hp_pow n)]
+  -- `xₙ ^ p ^ n = x₀`, and in an integrally closed domain `a ^ m ∣ b ^ m` implies `a ∣ b`
+  choose e hy_eq using fun n ↦
+    show ∃ e, coeffMonoidHom R p n y = coeffMonoidHom R p n x * e from
+      (IsIntegrallyClosed.pow_dvd_pow_iff (pow_ne_zero n (NeZero.ne p))).mp <| by
+        rwa [coeffMonoidHom_pow_p_pow_self, coeffMonoidHom_pow_p_pow_self]
+  -- as `xₙ ^ p ^ n = x₀`, the term `xₙ` is zero if and only if `x₀` is
+  have h_zero_iff (n : ℕ) : coeffMonoidHom R p n x = 0 ↔ coeffMonoidHom R p 0 x = 0 := by
+    rw [← coeffMonoidHom_pow_p_pow_self x n, pow_eq_zero_iff (pow_ne_zero n (NeZero.ne p))]
   by_cases hx_zero : coeffMonoidHom R p 0 x = 0
   · -- every `xₙ` is zero, hence so is every `yₙ = xₙ * eₙ`, and `y = x * 1`
-    refine ⟨1, extMonoid fun n ↦ ?_⟩
-    rw [mul_one, hy_eq, (h_zero_iff x n).mpr hx_zero, zero_mul]
+    exact ⟨1, extMonoid fun n ↦ by rw [mul_one, hy_eq, (h_zero_iff n).mpr hx_zero, zero_mul]⟩
   · -- cancel `xₙ` in `yₙ₊₁ ^ p = yₙ` to get `eₙ₊₁ ^ p = eₙ`; then `y = x * e`
-    have he_pow (n : ℕ) : e (n + 1) ^ p = e n := by
-      refine mul_left_cancel₀ ((h_zero_iff x n).not.mpr hx_zero) ?_
-      rw [← hy_eq, ← coeffMonoidHom_pow_p' y n, hy_eq (n + 1), mul_pow, coeffMonoidHom_pow_p' x n]
-    exact ⟨⟨e, he_pow⟩, extMonoid hy_eq⟩
+    refine ⟨⟨e, fun n ↦ mul_left_cancel₀ ((h_zero_iff n).not.mpr hx_zero) ?_⟩, extMonoid hy_eq⟩
+    rw [← hy_eq, ← coeffMonoidHom_pow_p' y n, hy_eq (n + 1), mul_pow, coeffMonoidHom_pow_p' x n]
 
 /-- Let R be a p-adically complete, integrally closed domain in which p is not a unit. An element
 x of the tilt of R has untilt x^♯ = 0 exactly when x = 0. -/

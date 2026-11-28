@@ -304,18 +304,13 @@ the same `F`, for `extensionRep a`, the representation `g(y, c) = (ρ(g) y + a(c
 given by an `R`-linear family `a` of crystalline cocycles. -/
 lemma isAdmissible_extensionRep {F : Filter Γ} (h : IsAdmissible ρ F) :
     IsAdmissible (extensionRep a) F := by
-  refine isAdmissible_of_one_tmul_mem_span ?_
-  rintro ⟨l, x⟩
-  obtain ⟨y, hy⟩ : ∃ y : TensorProduct ℤ_[p] Bmax T,
-      ∀ g : Γ, 1 ⊗ₜ (a x : Γ → T) g = tensorAction Bmax (toGp g) (ρ g) y - y :=
-    (a x).prop
+  refine isAdmissible_of_one_tmul_mem_span fun ⟨l, x⟩ ↦ ?_
+  obtain ⟨y, hy⟩ := (a x).prop
   -- Let `i` be the equivariant inclusion of `Bmax ⊗ T` in `Bmax ⊗ (T × C)`, and `y` a period
   -- whose coboundary is `1 ⊗ a x`. Then `1 ⊗ (l, x)` is the sum of `i (1 ⊗ l + y)`, which lies in
   -- the span of the invariants because `ρ` is admissible, and an element fixed by all of `Γ`.
-  have h_inl (g : Γ) (t : T) : inl ℤ_[p] T C (ρ g t) = extensionRep a g (inl ℤ_[p] T C t) := by
-    simp
-  let i : TensorProduct ℤ_[p] Bmax T →ₗ[Bmax] TensorProduct ℤ_[p] Bmax (T × C) :=
-    periodTensorMap Bmax Bmax (inl ℤ_[p] T C)
+  have h_inl g t : inl ℤ_[p] T C (ρ g t) = extensionRep a g (inl ℤ_[p] T C t) := by simp
+  let i := periodTensorMap Bmax Bmax (inl ℤ_[p] T C)
   have h_image : i (1 ⊗ₜ l + y) ∈ span Bmax (fixedPeriods (extensionRep a) Bmax F) :=
     h.periodTensorMap_mem_span_fixedPeriods (.of_forall h_inl) _
   have h_fixed : 1 ⊗ₜ (l, x) - i (1 ⊗ₜ l + y) ∈ fixedPeriods (extensionRep a) Bmax F := by

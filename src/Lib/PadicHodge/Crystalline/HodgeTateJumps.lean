@@ -782,22 +782,18 @@ lemma linearIndependent_algHom_coord (h_inj : ∀ x : T', (∀ i : ι, f i x = 0
     simpa [smul_sum] using congrArg (fun y : ℂ_[p] ↦ g • y)
       (congrFun ha ⟨(i, (MulSemiringAction.toAlgHom _ _ g⁻¹).comp γ), l⟩)
   intro a _ h_rel h_norm _ _ h_fix
-  obtain ⟨b, rfl⟩ : ∃ b : κ → ℚ_[p], (fun k ↦ algebraMap ℚ_[p] (PadicAlgCl p) (b k)) = a := by
-    choose b hb using fun k ↦ (InfiniteGalois.mem_bot_iff_fixed (a k)).2 (h_fix k)
-    exact ⟨b, funext hb⟩
-  let c (k : κ) : ℤ_[p] := ⟨b k, by simpa using h_norm k⟩
+  choose b hb using fun k ↦ (InfiniteGalois.mem_bot_iff_fixed (a k)).2 (h_fix k)
+  let c (k : κ) : ℤ_[p] := ⟨b k, by simpa [← hb] using h_norm k⟩
   -- One embedding `γ` is enough: it is injective, as `R` is an algebraic domain.
   let γ : R →ₐ[ℤ_[p]] ℂ_[p] := IsAlgClosed.lift
   algebraize [γ.toRingHom]
   have hγ : Function.Injective γ := (faithfulSMul_tower_top ℤ_[p] R _).algebraMap_injective
-  have h_coord (i : ι) (l : Fin (finrank R (S i))) :
-      (finBasis R (S i)).coord l (f i (∑ k, c k • e k)) = 0 :=
-    -- the relation `h_rel` at the embedding `γ`
-    (map_eq_zero_iff γ hγ).1 (by simpa [smul_def'] using! congrFun h_rel ⟨(i, γ), l⟩)
   have h_sum : ∑ k, c k • e k = 0 :=
-    h_inj _ fun i ↦ (finBasis R (S i)).forall_coord_eq_zero_iff.1 (h_coord i)
+    h_inj _ fun i ↦ (finBasis R (S i)).forall_coord_eq_zero_iff.1 fun l ↦
+      -- the relation `h_rel` at the embedding `γ`
+      (map_eq_zero_iff γ hγ).1 (by simpa [smul_def', ← hb] using! congrFun h_rel ⟨(i, γ), l⟩)
   have hc (k : κ) : c k = 0 := linearIndependent_iff.1 e.linearIndependent c h_sum k
-  simpa [c, funext_iff] using fun k ↦ congrArg Subtype.val (hc k)
+  simpa [c, funext_iff, ← hb] using fun k ↦ congrArg Subtype.val (hc k)
 
 /-- For Z_p-linear maps f_i: T' → S_i and a pair (i, k) in ι × κ, the map f_i regarded as semilinear
 along the structure map Z_p → R; it does not depend on k. -/
