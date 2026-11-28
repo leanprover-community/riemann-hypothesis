@@ -9,6 +9,7 @@ import Mathlib.RingTheory.Invariant.Galois
 import Mathlib.RingTheory.PicardGroup
 import Mathlib.RingTheory.Valuation.LocalSubring
 import TauCeti.RingTheory.MvPolynomial.Homogeneous
+import TauCeti.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 public import Lib.General.Geometry.ProjectiveSpace
 public import Lib.General.Geometry.EtaleCharts
 import Lib.General.Algebra.MultivariatePolynomials
@@ -670,10 +671,11 @@ lemma IsCoordsWithUnit.exists_descend_of_injective (hξ : IsCoordsWithUnit L ξ 
   have hv : IsUnit (v i) := by simp [hvi]
   obtain ⟨j, _, hj, rfl⟩ := hL.out.exists_isClosedImmersion
   obtain ⟨t, ht_over, ht⟩ := exists_isHomogeneousCoords (Opposite.unop ((specAlg k R).obj A)).hom hv
+  let q := Spec.map (CommRingCat.ofHom φ.hom.toRingHom)
   -- `ξ` and the image of `t` both have coordinates `g` and lie over the same point of `Spec R`.
-  have h_image : ξ.down.left ≫ j = Spec.map (CommRingCat.ofHom φ.hom.toRingHom) ≫ t := by
+  have h_image : ξ.down.left ≫ j = q ≫ t := by
     have h_coords_image : LineBundle.IsHomogeneousCoords ((hyperplaneBundle ι).pull Limits.prod.fst)
-        (Spec.map (CommRingCat.ofHom φ.hom.toRingHom) ≫ t) g :=
+        (q ≫ t) g :=
       h_coord ▸ (ht.map (isLinearSystem_hyperplaneBundle.pull _) hv _).smul hgi_unit
     refine isProjEmbedding_projSpace.eq_of_isHomogeneousCoords ?_ hξ.left h_coords_image
       (LineBundle.exists_landsIn _ _)
@@ -685,14 +687,13 @@ lemma IsCoordsWithUnit.exists_descend_of_injective (hξ : IsCoordsWithUnit L ξ 
       _ = u.left ≫ (t ≫ Limits.prod.snd) :=
         ξ.down.w.trans (u.w.symm.trans (congrArg (u.left ≫ ·) ht_over).symm)
       _ = _ := (assoc ..).symm
-  -- The ideal `J` cutting out the locus where `t` lies in `Y` is killed by `φ`, hence is zero.
-  obtain ⟨J, -, hJ⟩ := exists_ideal_le_ker_iff_factors j t
-  have h_ker_le : RingHom.ker φ.hom.toRingHom ≤ RingHom.ker (RingHom.id A) :=
-    ((RingHom.injective_iff_ker_eq_bot _).mp φ_inj).le.trans bot_le
-  have hJ0 : J ≤ RingHom.ker (RingHom.id A) :=
-    ((hJ φ.hom.toRingHom).mpr ⟨ξ.down.left, h_image⟩).trans h_ker_le
-  obtain ⟨x, rfl⟩ : ∃ x : Spec (CommRingCat.of A) ⟶ Y.left, x ≫ j = t := by
-    simpa using (hJ (RingHom.id A)).mp hJ0
+  -- Schematic dominance of `q` implies that `t` and `q ≫ t` have the same kernel ideal sheaf.
+  have : IsSchemeTheoreticallyDominant q := (isSchemeTheoreticallyDominant_SpecMap_iff _).mpr φ_inj
+  have h_ker : j.ker ≤ t.ker := by
+    rw [← q.ker_comp_of_isSchemeTheoreticallyDominant t, ← h_image]
+    exact Scheme.Hom.le_ker_comp _ _
+  obtain ⟨x, rfl⟩ : ∃ x : Spec (CommRingCat.of A) ⟶ Y.left, x ≫ j = t :=
+    ⟨IsClosedImmersion.lift j t h_ker, IsClosedImmersion.lift_fac j t h_ker⟩
   -- `x` lies over `Spec R`, since `x ≫ j` does
   have h_x_over : x ≫ Y.hom = (Opposite.unop ((specAlg k R).obj A)).hom := by
     rw [← hj, ← Category.assoc]
