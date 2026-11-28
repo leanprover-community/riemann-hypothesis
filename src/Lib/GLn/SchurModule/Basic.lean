@@ -204,7 +204,7 @@ abbrev WeylIndexFamily : Type := ∀ τ : Φ, BasisTableau (n τ) (rankAt n τ) 
 
 /-- The type of families of chosen standard fillings over the places, in the case where the row
 type is the same finite type n at every place. -/
-abbrev WeylIndex (n : Type) [Fintype n] [DecidableEq n] (κ : Φ → ℕ → ℕ) :
+abbrev WeylIndex (n : Type) [Fintype n] (κ : Φ → ℕ → ℕ) :
     Type := WeylIndexFamily (fun _ : Φ ↦ n) κ
 
 /-- The module of Borel semi-invariant polynomials in rows (τ,a), coloured by τ, whose weight is
