@@ -464,34 +464,28 @@ def IsMultiplicative {n : ℕ} {Q : Subgroup G} {z : G} {m : ℕ}
     φ B hB = φ A (hB.left_of_isShortExact h_exact) * φ D (hB.right_of_isShortExact h_exact)
 
 section Multiplicative
-variable {l : ℕ} {U : OpenNormalSubgroup G} {z : G} [IsTopologicalGroup G] [CompactSpace G]
-  {φ : ∀ A : DiscreteModule R G, A.FiniteKilledFixedInj l U z 1 → ℚ≥0}
+variable {l m : ℕ} {Q : Subgroup G} {z : G}
+  {φ : ∀ A : DiscreteModule R G, A.FiniteKilledFixedInj l Q z m → ℚ≥0}
 
-/-- Let `φ` be a function of the modules that are finite, killed by `l` and fixed by `U`, with
-`ρ z - 1` injective. If `φ` is multiplicative in short exact sequences and `1` on the modules with
-Higman's property relative to `U`, then it takes the same value on isomorphic modules. -/
+/-- A multiplicative `φ` takes the same value on isomorphic modules. -/
 lemma apply_eq_of_equiv (h_mul : IsMultiplicative φ)
-    (h_higman : ∀ {B : DiscreteModule R G} (hB : B.FiniteKilledFixedInj l U z 1),
-      B.IsHigmanProjective U → φ B hB = 1)
-    {A B : DiscreteModule R G} {hA : A.FiniteKilledFixedInj l U z 1}
-    {hB : B.FiniteKilledFixedInj l U z 1} (u : A.ρ.Equiv B.ρ) : φ A hA = φ B hB := by
-  -- `0 → Z → A → B → 0` is short exact for the zero module `Z`, which has Higman's property
+    {A B : DiscreteModule R G} {hA : A.FiniteKilledFixedInj l Q z m}
+    {hB : B.FiniteKilledFixedInj l Q z m} (u : A.ρ.Equiv B.ρ) : φ A hA = φ B hB := by
+  -- The short exact sequences for `u` and the identity of `B` have the same endpoints.
   let Z : DiscreteModule R G := of (V := Unit) 1
-  have h_exact : IsShortExact (0 : Z.Hom A) u.toIntertwiningMap :=
-    ⟨injective_of_subsingleton _, fun a ↦ by simp, u.surjective⟩
-  rw [h_mul h_exact hA, h_higman (hA.left_of_isShortExact h_exact) ⟨0, fun _ ↦ rfl⟩, one_mul]
+  have h_exact {X Y : DiscreteModule R G} (e : X.ρ.Equiv Y.ρ) :
+      IsShortExact (0 : Z.Hom X) e.toIntertwiningMap :=
+    ⟨injective_of_subsingleton _, fun x ↦ by simp, e.surjective⟩
+  exact (h_mul (h_exact u) hA).trans (h_mul (h_exact (.refl B.ρ)) hB).symm
 
-/-- Let `φ` be a function of the modules that are finite, killed by the prime `l` and fixed by `U`,
-with `ρ z - 1` injective, that is multiplicative in short exact sequences and `1` on the modules
-with Higman's property relative to `U`. If `s t : G → H` agree modulo a normal subgroup `P` killed
-by `l`, then the restrictions of an `H`-module along `s` and `t` have the same `φ`. -/
+/-- Let `φ` be multiplicative in short exact sequences of finite modules killed by the prime `l`
+and fixed by `Q`, with `ρ z - m` injective. If `s t : G → H` agree modulo a normal subgroup
+`P` killed by `l`, then restricting an `H`-module along `s` or `t` gives the same `φ`. -/
 lemma apply_restrictAlong_eq_of_inv_mul_mem [Fact l.Prime] (h_mul : IsMultiplicative φ)
-    (h_higman : ∀ {B : DiscreteModule R G} (hB : B.FiniteKilledFixedInj l U z 1),
-      B.IsHigmanProjective U → φ B hB = 1)
     {H : Type} [Group H] [TopologicalSpace H] (P : Subgroup H) [P.Normal]
     (hP_pow : ∀ g ∈ P, g ^ l = 1) {s t : G →ₜ* H} (h_st : ∀ g : G, (t g)⁻¹ * s g ∈ P)
-    (B : DiscreteModule R H) (hs : (B.restrictAlong s).FiniteKilledFixedInj l U z 1)
-    (ht : (B.restrictAlong t).FiniteKilledFixedInj l U z 1) :
+    (B : DiscreteModule R H) (hs : (B.restrictAlong s).FiniteKilledFixedInj l Q z m)
+    (ht : (B.restrictAlong t).FiniteKilledFixedInj l Q z m) :
     φ (B.restrictAlong s) hs = φ (B.restrictAlong t) ht := by
   -- By dévissage we may assume that `P` acts trivially. With `Q = ⊥`, `z = 1` and `m = 0` only
   -- "finite and killed by `l`" is asked of `B`.
@@ -503,19 +497,20 @@ lemma apply_restrictAlong_eq_of_inv_mul_mem [Fact l.Prime] (h_mul : IsMultiplica
   · intro B _ hB_fixed hs ht
     have h_action (g : G) : B.ρ (s g) = B.ρ (t g) :=
       B.ρ.eq_iff.2 (LinearMap.ext (hB_fixed.trivialOn _ (h_st g)))
-    exact apply_eq_of_equiv h_mul h_higman (.mk 1 h_action)
+    exact apply_eq_of_equiv h_mul (.mk 1 h_action)
   · intro A B C ι π h_exact _ ihA ihC hs ht
     rw [h_mul (h_exact.restrictAlong s) hs, h_mul (h_exact.restrictAlong t) ht, ihA, ihC]
 
-/-- Let `φ` be a function of the modules that are finite, killed by the prime `l` and fixed by `U`,
-with `ρ z - 1` injective, that is multiplicative in short exact sequences and `1` on the modules
-with Higman's property relative to `U`. Let `V` be a finite abelian group killed by `l` with two
-actions `α`, `β` of `(G ⧸ U) ⧸ S`, where `α` is additive and `β` is affine with linear part `α`.
+end Multiplicative
+
+variable {l : ℕ} {U : OpenNormalSubgroup G} {z : G} [IsTopologicalGroup G]
+  {φ : ∀ A : DiscreteModule R G, A.FiniteKilledFixedInj l U z 1 → ℚ≥0} in
+/-- Let `φ` be multiplicative in short exact sequences of finite modules killed by the prime `l`
+and fixed by `U`, with `ρ z - 1` injective. Let `V` be a finite abelian group killed by `l` with
+two actions `α`, `β` of `(G ⧸ U) ⧸ S`, where `α` is additive and `β` is affine with linear part `α`.
 Then for a `G`-module `B` the functions `V → B` with the diagonal action of `G`
 (`diagonalPermModule`) have the same `φ` for `α` and for `β`. -/
 lemma apply_diagonalPermModule_eq_of_affine [Fact l.Prime] (h_mul : IsMultiplicative φ)
-    (h_higman : ∀ {B : DiscreteModule R G} (hB : B.FiniteKilledFixedInj l U z 1),
-      B.IsHigmanProjective U → φ B hB = 1)
     {S : Subgroup (G ⧸ (U : Subgroup G))} [S.Normal] {V : Type} [AddCommGroup V] [Finite V]
     (hV_killed : ∀ x : V, l • x = 0) {α β : MulAction ((G ⧸ (U : Subgroup G)) ⧸ S) V}
     (hα_sub : ∀ (δ : (G ⧸ (U : Subgroup G)) ⧸ S) (x y : V),
@@ -555,10 +550,8 @@ lemma apply_diagonalPermModule_eq_of_affine [Fact l.Prime] (h_mul : IsMultiplica
   have h_st (g : G) : (t g)⁻¹ * s g ∈ P := inv_mul_cancel g
   -- by definition the two modules are the restrictions, along `s` and `t`, of the `H`-module of
   -- functions `V → B`
-  exact apply_restrictAlong_eq_of_inv_mul_mem h_mul h_higman P hP_pow h_st
+  exact apply_restrictAlong_eq_of_inv_mul_mem h_mul P hP_pow h_st
     ((B.permModule (Δ := Perm V) V).restrictTo H) hα hβ
-
-end Multiplicative
 
 variable (R) in
 /-- Let `l` be prime, `G` a compact topological group and `U` open normal, and let every commutator
@@ -611,16 +604,16 @@ lemma IsMultiplicative.eq_one_of_eq_one_on_isHigmanProjective (l : ℕ) [Fact l.
     have hV_killed (x : V) : l • x = 0 := by simp [Subtype.ext_iff, funext_iff, ZMod.natCast_self]
     -- curry, then pass from the hyperplane through `0` to the one through `e₁`
     calc f (V × Δ ⧸ K) = φ (C 0) (hC 0) :=
-        apply_eq_of_equiv h_mul h_higman (.mk (.curry R A V (Δ ⧸ K)) fun _ ↦ rfl)
+        apply_eq_of_equiv h_mul (.mk (.curry R A V (Δ ⧸ K)) fun _ ↦ rfl)
       _ = φ (C e₁) (hC e₁) :=
-        apply_diagonalPermModule_eq_of_affine h_mul h_higman hV_killed
+        apply_diagonalPermModule_eq_of_affine h_mul hV_killed
           (hyperplaneAction_toPerm_sub 0) (hyperplaneAction_toPerm_sub e₁) B (hC 0) (hC e₁)
       _ = 1 := h_higman (hC e₁) hC_higman
   -- `A` is the module of functions on the point `Δ ⧸ ⊤`
   have h_point : φ A hA = f (Δ ⧸ (⊤ : Subgroup Δ)) := by
     have : Subsingleton (Δ ⧸ (⊤ : Subgroup Δ)) := subsingleton_quotient_top
     let : Unique (Δ ⧸ (⊤ : Subgroup Δ)) := uniqueOfSubsingleton ⟦1⟧
-    exact apply_eq_of_equiv h_mul h_higman (.mk (LinearEquiv.funUnique _ R A).symm fun _ ↦ rfl)
+    exact apply_eq_of_equiv h_mul (.mk (LinearEquiv.funUnique _ R A).symm fun _ ↦ rfl)
   have h_zero : (0 : V) ∈ MulAction.fixedPoints Δ V := fun g ↦
     Subtype.ext <| funext fun d ↦ (hyperplaneAction_toPerm_apply 0 g 0 d).trans (by simp)
   exact h_point.trans (eq_one_of_prod_quotient Δ f ⟨0, h_zero⟩ h_empty h_orbit h_prod ⊤)
