@@ -103,7 +103,9 @@ lemma exists_isComplexConj {w : InfinitePlace K} (hw : w.IsReal) :
   -- An extension `j` of the real embedding to `Ω` and its conjugate agree on `K`, so they differ
   -- by an element `c` of `Γ`.
   let j : Ω →+* ℂ := lift Ω w.embedding
-  have h_agree : j.comp (algebraMap K Ω) = (star j).comp (algebraMap K Ω) := by aesop
+  have h_agree : j.comp (algebraMap K Ω) = (star j).comp (algebraMap K Ω) :=
+    RingHom.ext fun x ↦ by
+      simpa [j] using (DFunLike.congr_fun (InfinitePlace.isReal_iff.mp hw) x).symm
   obtain ⟨c, hc⟩ := exists_apply_smul_eq_of_comp_algebraMap_eq Γ (K := K) j (star j) h_agree
   exact ⟨c, j, hc⟩
 
@@ -230,7 +232,7 @@ lemma New.exists_hasPrimeDensity_addChar_uniformizer (f : AddChar (Additive ((�
         ((if f = 0 then 1 else 0) - m) := by
   split_ifs with hf
   · -- The trivial character is `1` everywhere, with mean `1`.
-    exact ⟨0, by simp_all [hasPrimeDensity_const]⟩
+    exact ⟨0, by simpa [hf] using hasPrimeDensity_const (K := K) 1⟩
   let ψ : (𝔸f K)ˣ →* ℂ := f.toMonoidHom.comp (mk' W)
   have hW : W ≤ ψ.ker := le_comap_mk' W f.toMonoidHom.ker
   -- Let `Φ w` be the embedding into `ℂ` at the infinite place `w`. On `Kˣ`, `ψ` is trivial where no
@@ -252,7 +254,8 @@ lemma New.exists_hasPrimeDensity_addChar_uniformizer (f : AddChar (Additive ((�
     -- The kernel of `ψ` contains the open subgroup `W`, and on `Kˣ` the product of `ψ` and the
     -- `sgn w` with `w ∈ T` is `1` (`hT`).
     refine ⟨by simpa [ψ.ker_toHomUnits] using isOpen_mono hW hW_open, ?_⟩
-    simp_all [sgn, piecewise, ext_iff, Finset.univ_inter]
+    intro x
+    simpa [sgn, piecewise, Finset.univ_inter] using DFunLike.congr_fun hT x
   have h_ne : ψ.toHomUnits ≠ 1 := by
     refine fun h_one ↦ hf (AddChar.ext _ _ (Quot.ind fun a ↦ ?_))
     exact congrArg Units.val (DFunLike.congr_fun h_one a)
@@ -385,7 +388,8 @@ idele of the norm of `x`. -/
 @[local simp]
 lemma map_adeleNorm_principalIdele (x : Lˣ) :
     (principalIdele x).map (adeleNorm K L) = principalIdele (x.map (Algebra.norm K)) := by
-  aesop
+  ext v
+  simp
 
 /-- For a finite adele `y` of `L` and a finite place `v` of `K`, the `v`-component of the adelic
 norm of `y` is a limit, in the completion of `K` at `v`, of norms of elements of `L`. -/
@@ -442,8 +446,9 @@ lemma exists_localNorm_of_abelianLift_artinAt {w : FinPlace L} {x : (LocField (w
   rw [w.isPlaceOver_placeOver.isPlaceOver_below.abelianLift_artinAt] at hx
   -- Inside the decomposition group, `χ` kills exactly the elements that come from `Gal(Ω/L)`.
   have h_ker (g : decompGroup Γ (placeOver w)) :
-      (χ : Γ → QZ) g = 0 ↔ ∃ g' : decompGroup (ker χ) (placeOver w), (ker χ).subtype g' = g := by
-    aesop
+      (χ : Γ → QZ) g = 0 ↔
+        ∃ g' : decompGroup (ker χ) (placeOver w), (ker χ).subtype g' = g :=
+    ⟨fun h ↦ ⟨⟨⟨g.1, h⟩, g.2⟩, rfl⟩, fun ⟨g', hg'⟩ ↦ hg' ▸ g'.1.2⟩
   exact (w.isPlaceOver_placeOver.isNormCompatible (ker χ).subtype 1 (fun _ _ ↦ rfl)
     (IsScalarTower.algebraMap_apply K L Ω)).exists_localNorm_eq
     (χ := QZChar.comap (subgroupIncl _) χ) h_ker hx
@@ -599,8 +604,8 @@ private lemma relIndex_ker_localSymbols_pow_mul_pow [IsGalois K L]
     obtain ⟨y, hy⟩ : ∃ y, (abelianLift χ).comp (artinAt Γ v) y = a v := (a v).prop
     refine ⟨locIdele v.val y, ?_, eq_update_iff.mpr ?_⟩
     · simp +contextual [← and_forall_ne v.val]
-    · unfold localSymbols
-      aesop
+    · refine ⟨Subtype.ext (by simpa [localSymbols] using hy), fun w hw ↦ Subtype.ext ?_⟩
+      simp [localSymbols, hw]
   -- So the index of the kernel is the order of the product of the ranges.
   have h_index : (localSymbols χ S).ker.relIndex (idelesUnitOff S) =
       ∏ v ∈ S, Nat.card ((abelianLift χ).comp (artinAt Γ v)).range := by
