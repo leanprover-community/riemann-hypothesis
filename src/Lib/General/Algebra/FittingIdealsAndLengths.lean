@@ -3,6 +3,7 @@ module
 public import Mathlib.LinearAlgebra.Matrix.Module
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 import TauCeti.LinearAlgebra.Determinant.Basic
+import TauCeti.RingTheory.Length.Endomorphism
 public import Aesop.BuiltinRules
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Order.CompletePartialOrder
@@ -221,6 +222,35 @@ lemma length_le_of_le_map (S : Submodule A M) (h_le : T' ≤ Submodule.map f S) 
     length A T' ≤ length A S :=
   (length_mono h_le).trans (length_le_of_surjective _ (f.submoduleMap_surjective S))
 
+omit [Fintype n] [DecidableEq n] in
+/-- If division by a nonzero scalar preserves the lattice, coordinatewise reduction of the
+lattice has precisely the length of a free module of its rank reduced by that scalar. -/
+lemma length_map_mkQ_of_saturated [IsDomain O] [IsNoetherianRing O] [Ring.KrullDimLE 1 O]
+    (Z : Submodule O (Γ → n → O)) [Module.Finite O Z] (ha : a ≠ 0)
+    (hsat : ∀ w : Γ → n → O, a • w ∈ Z → w ∈ Z) :
+    length O (Z.map (((Ideal.span {a}).mkQ.compLeft n).compLeft Γ)) =
+      finrank O Z * length O (QuotSpan a) := by
+  let red := (((Ideal.span {a}).mkQ.compLeft n).compLeft Γ)
+  let f := red ∘ₗ Z.subtype
+  -- The coordinates of an element of the kernel can be divided by a. Saturation
+  -- is exactly what puts the quotient back in Z.
+  have ker_eq : f.ker = (lsmul O Z a).range := by
+    ext z
+    constructor
+    · intro hz
+      have divides (g : Γ) (j : n) : a ∣ z.val g j :=
+        (Ideal.Quotient.eq_zero_iff_dvd a _).1 (congrFun (congrFun hz g) j)
+      choose w hw using divides
+      have eq : z.val = a • w := funext fun g ↦ funext (hw g)
+      exact ⟨⟨w, hsat w (eq ▸ z.property)⟩, Subtype.ext eq.symm⟩
+    · rintro ⟨w, rfl⟩
+      exact funext fun g ↦ funext fun j ↦ (Ideal.Quotient.eq_zero_iff_dvd a _).2 ⟨w.val g j, rfl⟩
+  have hrange : f.range = Z.map red :=
+    (LinearMap.range_comp Z.subtype red).trans (by rw [range_subtype])
+  change length O (Z.map red) = _
+  rw [← hrange, ← f.quotKerEquivRange.length_eq, (quotEquivOfEq _ _ ker_eq).length_eq]
+  exact TauCeti.length_quotient_lsmul_eq_finrank_mul_ord ha
+
 variable [DVR O]
 
 /-! ### Length bounds over a discrete valuation ring -/
@@ -261,6 +291,26 @@ lemma length_obeying_relationsOn_le [Nonempty n] [Module.Finite O Z] :
 
 @[simp]
 lemma length_quot_span_eq_addVal : length O (QuotSpan a) = addVal O a := Ring.ord_eq_addVal a
+
+/-- Reducing a finitely generated lattice saturated for a nonzero modulus gives exactly the
+functions over the quotient which satisfy its integral matrix relations. -/
+theorem map_mkQ_eq_obeying_relationsOn (Z : Submodule O (Γ → n → O)) [Module.Finite O Z]
+    (ha : a ≠ 0) (hsat : ∀ w : Γ → n → O, a • w ∈ Z → w ∈ Z) :
+    Z.map (((Ideal.span {a}).mkQ.compLeft n).compLeft Γ) =
+      obeying (relationsOn Z) (QuotSpan a) := by
+  cases isEmpty_or_nonempty n with
+  | inl h => exact Subsingleton.elim _ _
+  | inr h =>
+    have forward : Z.map (((Ideal.span {a}).mkQ.compLeft n).compLeft Γ) ≤
+        obeying (relationsOn Z) (QuotSpan a) :=
+      map_le_iff_le_comap.2 mkQ_mem_obeying_relationsOn
+    have len := length_map_mkQ_of_saturated Z ha hsat
+    apply Submodule.eq_of_le_of_length_eq forward
+    · rw [len, length_quot_span_eq_addVal]
+      lift addVal O a to ℕ using (addVal_eq_top_iff.not.2 ha) with v hv
+      simpa only [← Nat.cast_mul] using (ENat.natCast_ne_top (finrank O Z * v))
+    · exact (length_mono forward).antisymm
+        ((length_obeying_relationsOn_le (Z := Z) (B := QuotSpan a)).trans_eq len.symm)
 
 lemma addVal_prod (f : m → O) : addVal O (∏ i : m, f i) = ∑ i : m, addVal O (f i) := by
   induction (Finset.univ : Finset m) using Finset.cons_induction with
