@@ -1,10 +1,12 @@
 module
 
 import TauCeti.RingTheory.AdicCompletion.DiscreteValuationRing
+import TauCeti.RingTheory.AdjoinRoot.Basic
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
 import TauCeti.RingTheory.Perfectoid.Integral.Tilt
+import TauCeti.RingTheory.Regular.Pair
 public import Lib.PadicHodge.PeriodRings.Ainf
 
 /-!
@@ -137,20 +139,19 @@ lemma p_mul_X : p * Amax.xiDivP = xi :=
 
 /-- The prime p is not a zero divisor in the period ring A, so A is p-torsion free. -/
 lemma Amax.p_mem_nonZeroDivisors : ↑p ∈ Amax⁰ := by
-  -- The ring obtained by adjoining a root of `p X - ξ` has no `p`-torsion, and this passes to its
-  -- `p`-adic completion.
+  -- The prime `p` is regular on `Ainf`, and `ξ` is regular modulo `p` since `p ∤ ξ`.
+  have h_pair : RingTheory.Sequence.IsWeaklyRegular Ainf [(p : Ainf), xi] := by
+    rw [RingTheory.Sequence.isWeaklyRegular_cons_iff,
+      RingTheory.Sequence.isWeaklyRegular_singleton_iff, TauCeti.isSMulRegular_quotSMulTop_iff]
+    refine ⟨IsSMulRegular.of_ne_zero Ainf.prime_p.ne_zero, fun x y h ↦ ?_⟩
+    have h_dvd : (p : Ainf) ∣ xi * x := ⟨y, h.symm⟩
+    obtain ⟨z, hz⟩ := (Ainf.prime_p.dvd_mul.mp h_dvd).resolve_left not_p_dvd_xi
+    exact (Submodule.mem_smul_pointwise_iff_exists x (p : Ainf) ⊤).mpr
+      ⟨z, Submodule.mem_top, hz.symm⟩
   have h_reg : IsSMulRegular (AdjoinRoot (C (p : Ainf) * .X - C xi)) p := by
-    refine .of_right_eq_zero_of_smul fun y hy ↦ ?_
-    obtain ⟨f, rfl⟩ := mk_surjective y
-    have h_dvd : C (p : Ainf) * .X - C xi ∣ C (p : Ainf) * f :=
-      mk_eq_zero.mp ((nsmul_eq_mul p _).symm.trans hy)
-    -- `p` is prime in the polynomial ring: it divides `p X - ξ`, or `p X - ξ` divides `f`
-    rcases (prime_C_iff.mpr Ainf.prime_p).left_dvd_or_dvd_right_of_dvd_mul h_dvd with
-      hp_dvd | h_dvd_f
-    · -- impossible: on constant coefficients, `p` would divide `ξ`
-      have h_const : (p : Ainf) ∣ xi := by simpa using map_dvd constantCoeff hp_dvd
-      exact absurd h_const not_p_dvd_xi
-    · exact mk_eq_zero.mpr h_dvd_f
+    simpa only [IsSMulRegular, Algebra.smul_def, map_natCast, ← nsmul_eq_mul] using
+      h_pair.isSMulRegular_adjoinRoot_C_mul_X_sub_C
+  -- Regularity of `p` passes to the `p`-adic completion.
   refine mem_nonZeroDivisors_iff_left.mpr fun x hx ↦ ?_
   exact (isSMulRegular_completion h_reg).right_eq_zero_of_smul ((nsmul_eq_mul p x).trans hx)
 
