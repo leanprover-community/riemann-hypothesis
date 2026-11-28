@@ -7,6 +7,7 @@ import Lib.Adelic.Landherr
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.Adelic.Unitary.WeakApproximation
 import Lib.Adelic.Witt.WittTheorem
+import Lib.DiscreteSeries.Holomorphic.MaximalCompactMinors
 import Lib.Cohomology.Etale.Basic
 import Lib.General.LinearAlgebra.HermiteForm
 import Lib.General.LinearAlgebra.PolarDecomposition
@@ -361,21 +362,11 @@ lemma exists_unitary_mul_eq_of_isotropic {s : n → ℤˣ} {A B : Matrix n p ℂ
   -- The two matrices are the diagonal blocks of κ.
   let σ : n ≃ Σ ε : ℤˣ, {i : n // s i = ε} := (Equiv.sigmaFiberEquiv s).symm
   let K : Matrix n n ℂ := (blockDiagonal' fun ε ↦ (g ε).val.val).submatrix σ σ
-  have h_unitary : Kᴴ * K = 1 := by
-    have h_block (ε : ℤˣ) : (g ε).val.valᴴ * (g ε).val.val = 1 := by
-      simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 (g ε).prop
-    simp [K, ← blockDiagonal'_mul, h_block, ← Pi.one_def]
-  have h_comm : signMatrix s * K = K * signMatrix s := by
-    ext i j
-    by_cases h : s i = s j
-    · simp [signMatrix, h, mul_comm]
-    · simp [signMatrix, K, σ, blockDiagonal'_apply, h]
-  have h_form : Kᴴ * signMatrix s * K = signMatrix s := by
-    rw [Matrix.mul_assoc, h_comm, ← Matrix.mul_assoc, h_unitary, Matrix.one_mul]
-  have h_mem : U.of IsHermitianInvolution.isUnit K h_form ∈ maxCompactU s := by
-    simpa [maxCompactU, Subgroup.mem_subgroupOf, mem_unitaryGroupOf_iff,
-        star_eq_conjTranspose] using h_unitary
-  refine ⟨_, h_mem, ?_⟩
+  obtain ⟨κ, hκ, -⟩ := Orbital.exists_maxCompactU_of_blocks (ε := s) (fun ε ↦ (g ε).val.val)
+    fun ε ↦ by simpa [star_eq_conjTranspose] using mem_unitaryGroupOf_iff.1 (g ε).prop
+  refine ⟨κ.val, κ.property, ?_⟩
+  rw [hκ]
+  change K * A = B
   ext i j
   -- Row i of κ A is the row i of the block of sign s i.
   calc (K * A) i j
