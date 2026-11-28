@@ -64,6 +64,28 @@ namespace New.Space.Splitting
 
 open Matrix Exchange MeasureTheory QuotientAddGroup IsDualFamily
 
+private lemma continuous_quotMean {X B : Type*} [TopologicalSpace X] [LocallyCompactSpace X]
+    [FirstCountableTopology X] [AddCommGroup B] [TopologicalSpace B] [IsTopologicalAddGroup B]
+    {B₀ : AddSubgroup B} [CompactSpace (B ⧸ B₀)] {F : X → B → ℂ}
+    (hF : ∀ x, IsContPeriodic B₀ (F x)) (hcont : Continuous (Function.uncurry F)) :
+    Continuous fun x ↦ quotMean B₀ (F x) := by
+  -- The mean is an integral over a compact quotient, so it is enough that the integrand is jointly
+  -- continuous; this can be tested before passing to the quotient.
+  unfold quotMean
+  refine (continuous_parametric_integral_of_continuous
+    ((isQuotientMap_mk B₀).continuous_lift_prod_right ?_) isCompact_univ).congr
+      fun _ ↦ setIntegral_univ
+  -- by periodicity the choice of coset representatives does not matter
+  simp only [Function.uncurry_apply_pair, (hF _).apply_out_mk]
+  exact hcont
+
+private lemma quotMean_sub_const_mul {B : Type*} [AddCommGroup B] [TopologicalSpace B]
+    [IsTopologicalAddGroup B] {B₀ : AddSubgroup B} [CompactSpace (B ⧸ B₀)] {F G : B → ℂ}
+    (hF : IsContPeriodic B₀ F) (hG : IsContPeriodic B₀ G) (c : ℂ) :
+    quotMean B₀ (fun x ↦ F x - c * G x) = quotMean B₀ F - c * quotMean B₀ G := by
+  rw [← quotMean_const_mul]
+  exact integral_sub hF.integrable_out (hG.integrable_out.const_mul c)
+
 variable {E : Type*} [Field E] [CMType E] [WeilData E]
   {n p n₀ : Type*} [Fintype n] [DecidableEq n] [Fintype p] [DecidableEq p] [Fintype n₀]
   [DecidableEq n₀] {s : n → ℤˣ}
@@ -91,11 +113,10 @@ lemma centreCoeff_mul_right_sub_smul {D' : G E s → ℂ} (hD : IsAutFunction W 
     H.centerCoeff T ((fun x : G E s ↦ D (x * Y)) - c • D') g =
       H.centerCoeff T D (g * Y) - c * H.centerCoeff T D' g := by
   -- the mean is linear, both integrands being periodic and continuous, hence integrable
-  simp only [centerCoeff, Pi.sub_apply, mul_assoc, Pi.smul_apply, smul_eq_mul, mul_sub,
-    mul_left_comm _ c, ← quotMean_const_mul]
-  exact integral_sub
-    (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD (g * Y)) T).integrable_out
-    ((isContPeriodic_mul (H.isContPeriodic_radicalCentre hD' g) T).integrable_out.const_mul c)
+  simpa only [centerCoeff, Pi.sub_apply, mul_assoc, Pi.smul_apply, smul_eq_mul, mul_sub,
+    mul_left_comm _ c] using quotMean_sub_const_mul
+      (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD (g * Y)) T)
+      (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD' g) T) c
 
 /-- The coefficient at T is additive on functions that are continuous and left invariant under the
 rational points. -/
@@ -111,17 +132,9 @@ include hD
 along the centre of the radical, the mean of ψ(tr TM) D(z(M) g) over M modulo rational matrices, is
 a continuous function of g. -/
 @[fun_prop]
-lemma continuous_centreCoeff : Continuous (H.centerCoeff T D) := by
-  -- The mean is an integral over a compact quotient, so it is enough that the integrand is jointly
-  -- continuous; this can be tested before passing to the quotient.
-  unfold centerCoeff quotMean
-  refine (continuous_parametric_integral_of_continuous
-    ((isQuotientMap_mk _).continuous_lift_prod_right ?_) isCompact_univ).congr
-      fun _ ↦ setIntegral_univ
-  -- by periodicity the choice of coset representatives does not matter
-  simp only [Function.uncurry_apply_pair,
-    (isContPeriodic_mul (H.isContPeriodic_radicalCentre hD _) T).apply_out_mk]
-  exact (continuous_stdAddChar.subtypeVal.comp (by fun_prop)).mul (hD.1.comp (by fun_prop))
+lemma continuous_centreCoeff : Continuous (H.centerCoeff T D) :=
+  continuous_quotMean (fun g ↦ isContPeriodic_mul (H.isContPeriodic_radicalCentre hD g) T)
+    ((continuous_stdAddChar.subtypeVal.comp (by fun_prop)).mul (hD.1.comp (by fun_prop)))
 
 /-- For D continuous and left invariant under the rational points, left translation by
 z(M) = `H.radicalCenter M` divides the coefficient at T by ψ(tr TM), ψ the standard additive
@@ -283,6 +296,9 @@ lemma symm_iCoord (H : W.Splitting W₂ p) : H.symm.iCoord = H.iCoord := rfl
 @[simp]
 lemma symm_symm (H : W.Splitting W₂ p) : H.symm.symm = H := rfl
 
+@[simp] private lemma symm_lAdelic (H : W.Splitting W₂ p) : H.symm.lAdelic = H.kAdelic := rfl
+@[simp] private lemma symm_kCoord (H : W.Splitting W₂ p) : H.symm.kCoord = H.lCoord := rfl
+
 /-- For the composite of the splittings A of W and B of the complement W₀, the coordinate
 `lCoord` (which reads off the coefficients of the dual frame l) has the block rows of A and of B,
 the latter after the projection `A.iCoord` to W₀. -/
@@ -440,8 +456,7 @@ private lemma lineShiftTerm_mul_symm (a b : Matrix Unit p (𝔸 E)) :
       -(A.iAdelic * B.kAdelic * (aᴴ * b) * (B.lCoord * A.iCoord)) := by
   unfold lineShiftTerm
   rw [Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_sub]
-  simp only [Matrix.mul_assoc, symm_iAdelic, symm_iCoord,
-    show A.symm.lAdelic = A.kAdelic from rfl, show A.symm.kCoord = A.lCoord from rfl,
+  simp only [Matrix.mul_assoc, symm_iAdelic, symm_iCoord, symm_lAdelic, symm_kCoord,
     A.iCoord_mul_kAdelic_mul, A.iCoord_mul_iAdelic_mul, B.lCoord_mul_kAdelic_mul,
     A.kCoord_mul_kAdelic_mul, A.kCoord_mul_iAdelic_mul, Matrix.mul_zero, sub_zero, zero_sub]
 
@@ -465,8 +480,6 @@ lemma lineShift_mul_lineShift_symm (hD : D.kAdelic = A.iAdelic * B.kAdelic)
   refine G.ext_adeleMatrix ?_
   -- Both shifts are 1 plus terms of square zero; the cross terms differ by k (bᴴ a − aᴴ b) k*ε.
   have hDl : D.lCoord = B.lCoord * A.iCoord := lCoord_eq_lCoord_mul_iCoord hD
-  have h_l : A.symm.lAdelic = A.kAdelic := rfl
-  have h_k : A.symm.kCoord = A.lCoord := rfl
   let X := A.lineShiftTerm B a
   let Y := A.symm.lineShiftTerm B b
   set Z : Matrix n n (𝔸 E) := D.kAdelic * (-(aᴴ * b) - (-(aᴴ * b))ᴴ) * D.lCoord
@@ -485,7 +498,8 @@ lemma lineShift_mul_lineShift_symm (hD : D.kAdelic = A.iAdelic * B.kAdelic)
       sub_neg_eq_add, neg_add_eq_sub, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc,
       Matrix.mul_assoc]
   rw [G.adeleMatrix_mul, G.adeleMatrix_mul, G.adeleMatrix_mul, adeleMatrix_radicalCenter,
-    adeleMatrix_lineShift, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+    adeleMatrix_lineShift, adeleMatrix_lineShift, symm_lAdelic, symm_iAdelic, symm_kCoord,
+    symm_iCoord]
   change (1 + X) * (1 + Y) = (1 + Z) * ((1 + Y) * (1 + X))
   rw [h_prod X Y, h_prod Y X, h_prod Z (Y + X + Y * X)]
   have hZ_all : Z * (Y + X + Y * X) = 0 := by
@@ -518,15 +532,9 @@ lemma isContPeriodic_centreCoeff_lineShift (hD : D.kAdelic = A.iAdelic * B.kAdel
 /-- If the frame of D is the image of the frame of B and f is automorphic, the partial mean f⁺ is
 continuous. -/
 lemma continuous_partialMean (hD : D.kAdelic = A.iAdelic * B.kAdelic) (hf : IsAutFunction W f) :
-    Continuous (A.partialMean B D T f) := by
-  -- The mean is an integral over a compact quotient of a jointly continuous function.
-  unfold partialMean quotMean
-  refine (continuous_parametric_integral_of_continuous
-    ((QuotientAddGroup.isQuotientMap_mk _).continuous_lift_prod_right ?_) isCompact_univ).congr
-      fun _ ↦ MeasureTheory.setIntegral_univ
-  simp only [Function.uncurry_apply_pair,
-    (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf _).apply_out_mk]
-  exact (D.continuous_centreCoeff hf).comp (by fun_prop)
+    Continuous (A.partialMean B D T f) :=
+  continuous_quotMean (isContPeriodic_centreCoeff_lineShift (A := A.symm) hD hf)
+    ((D.continuous_centreCoeff hf).comp (by fun_prop))
 
 /-- If the frame of D is the image of the frame of B, the partial mean is additive on automorphic
 functions. -/
@@ -619,9 +627,8 @@ lemma centreCoeff_eq_mul_of_shiftedMean_eq_smul (hD : D.kAdelic = A.iAdelic * B.
   calc quotMean (ratMatrices E Unit p) (fun b ↦ χ b * (F g' b - c * F g b))
     _ = quotMean (ratMatrices E Unit p) (fun b ↦ χ b * F g' b) -
           c * quotMean (ratMatrices E Unit p) fun b ↦ χ b * F g b := by
-      simp only [mul_sub, mul_left_comm _ c, ← quotMean_const_mul]
-      exact MeasureTheory.integral_sub (isContPeriodic_mul (hF g') _).integrable_out
-        ((isContPeriodic_mul (hF g) _).integrable_out.const_mul c)
+      simpa only [mul_sub, mul_left_comm _ c] using
+        quotMean_sub_const_mul (isContPeriodic_mul (hF g') _) (isContPeriodic_mul (hF g) _) c
     _ = A.shiftedMean B D T f g' (a₀.map toAdele + a) -
           c * A.shiftedMean B D T f g (a₀.map toAdele + a) := by
       rw [shiftedMean_rat_add hD hf, shiftedMean_rat_add hD hf]
@@ -707,8 +714,6 @@ lemma radicalCentre_comp_fromBlocks (hD : D.kAdelic = A.iAdelic * B.kAdelic)
       D.radicalCenter N * (A.symm.lineShift B (b - cᴴ) * A.radicalCenter z) := by
   refine G.ext_adeleMatrix ?_
   have hDl : D.lCoord = B.lCoord * A.iCoord := lCoord_eq_lCoord_mul_iCoord hD
-  have h_l : A.symm.lAdelic = A.kAdelic := rfl
-  have h_k : A.symm.kCoord = A.lCoord := rfl
   set U : Matrix n n (𝔸 E) := D.kAdelic * (N - Nᴴ) * D.lCoord
   set V : Matrix n n (𝔸 E) :=
     A.kAdelic * (b - cᴴ) * (B.lCoord * A.iCoord) - A.iAdelic * B.kAdelic * (b - cᴴ)ᴴ * A.lCoord
@@ -727,7 +732,8 @@ lemma radicalCentre_comp_fromBlocks (hD : D.kAdelic = A.iAdelic * B.kAdelic)
     simp only [Matrix.add_mul, Matrix.mul_add, Matrix.one_mul, Matrix.mul_one, hVZ, hUV, hUZ,
       add_zero]
   rw [G.adeleMatrix_mul, G.adeleMatrix_mul, adeleMatrix_radicalCenter, adeleMatrix_radicalCenter,
-    adeleMatrix_radicalCenter, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+    adeleMatrix_radicalCenter, adeleMatrix_lineShift, symm_lAdelic, symm_iAdelic, symm_kCoord,
+    symm_iCoord]
   change 1 + (A.comp B).kAdelic * (fromBlocks z b c N - (fromBlocks z b c N)ᴴ) *
       (A.comp B).lCoord = (1 + U) * ((1 + V) * (1 + Z))
   rw [h_rhs, comp_kAdelic, comp_lCoord, fromBlocks_conjTranspose,
@@ -854,9 +860,8 @@ lemma ShearInvariant.partialMean_radicalCentre_mul (hD : D.kAdelic = A.iAdelic *
         A.symm.lineShift B b * A.radicalCenter (Y.map toAdele) =
           A.radicalCenter (Y.map toAdele) * A.symm.lineShift B b := by
       have h_frame : A.ActsOnFrame (A.symm.lineShift B b) 1 := by
-        have h_l : A.symm.lAdelic = A.kAdelic := rfl
-        have h_k : A.symm.kCoord = A.lCoord := rfl
-        rw [ActsOnFrame, adeleMatrix_lineShift, h_l, symm_iAdelic, h_k, symm_iCoord]
+        rw [ActsOnFrame, adeleMatrix_lineShift, symm_lAdelic, symm_iAdelic, symm_kCoord,
+          symm_iCoord]
         simp only [Matrix.add_mul, Matrix.one_mul, Matrix.sub_mul, Matrix.mul_assoc,
           A.iCoord_mul_kAdelic, A.lCoord_mul_kAdelic, Matrix.mul_zero, Matrix.mul_one,
           sub_zero, add_zero]
