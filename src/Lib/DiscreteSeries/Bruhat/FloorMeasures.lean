@@ -578,21 +578,18 @@ variable [H : IsHermitianUnit T.splitGram] in
 instance : SFinite (heisenbergMeasure l : Measure T.G) := by
   fun_cases heisenbergMeasure <;> infer_instance
 
-/-- The unitary group is closed in the space of matrices, with the subspace topology. -/
-lemma isClosedEmbedding_unitary_coe [H : IsHermitianUnit T.splitGram] :
-    Topology.IsClosedEmbedding fun g : T.G ↦ (g : GL 𝔰.BesselIndex A).val :=
-  Matrix.unitaryGroupOf.isClosedEmbedding_val H.isUnit
-
 /-- A function with values in the unitary group is measurable if it is measurable as a function
 with values in matrices. -/
 lemma measurable_unitary_of_coe [H : IsHermitianUnit T.splitGram] {f : Z → T.G}
     (hf : Measurable fun z : Z ↦ (f z : GL 𝔰.BesselIndex A).val) : Measurable f :=
-  isClosedEmbedding_unitary_coe.measurableEmbedding.measurable_comp_iff.1 hf
+  (Matrix.unitaryGroupOf.isClosedEmbedding_val H.isUnit)
+    |>.measurableEmbedding.measurable_comp_iff.1 hf
 
 @[fun_prop]
 lemma continuous_weylElem [H : IsHermitianUnit T.splitGram] :
     Continuous (weylElem 𝔰.ϱ : (ℕ → Aˣ) → T.G) := by
-  refine isClosedEmbedding_unitary_coe.continuous_iff.2 (continuous_matrix fun i j ↦ ?_)
+  refine (Matrix.unitaryGroupOf.isClosedEmbedding_val H.isUnit).continuous_iff.2
+    (continuous_matrix fun i j ↦ ?_)
   simp only [Function.comp_apply, weylElem, weylOn, Units.isUnit, and_true, and_self,
     ↓inverse_star_unit, Pi.star_apply, isUnit_star, star_star, Ring.inverse_invertible, invOf_units,
     of_apply]
@@ -615,7 +612,7 @@ lemma measurable_floorWeyl [H : IsHermitianUnit T.splitGram] :
 @[fun_prop]
 lemma continuous_heisenbergElem [H : IsHermitianUnit T.splitGram]
     {a : Fin 𝔰.ϱ} : Continuous (heisenbergElem (T := T) a) := by
-  refine isClosedEmbedding_unitary_coe.continuous_iff.2 ?_
+  refine (Matrix.unitaryGroupOf.isClosedEmbedding_val H.isUnit).continuous_iff.2 ?_
   simp only [↓comp_def, heisenbergElem, eichlerMap, star_neg, mulVec_mulVec, Pi.star_single,
     star_one, single_vecMul, one_smul, val_of_coe]
   fun_prop
