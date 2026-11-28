@@ -5,6 +5,7 @@ import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.Topology.UniformSpace.Uniformizable
+import TauCeti.Analysis.Calculus.ContDiff.Matrix
 public import New.Determinant.Exchange.LargeTriple
 import Lib.Adelic.Unitary.RationalPoints
 import Lib.General.Analysis.MeanValueAndTaylor
@@ -68,22 +69,10 @@ private lemma continuous_mat_mul {X l o k : Type*} [TopologicalSpace X] [Fintype
     (hf : Continuous f) (hg : Continuous g) : Continuous fun x ↦ f x * g x :=
   (contDiff_matrix_mul (N := 0)).continuous.comp (hf.prodMk hg)
 
-private lemma contDiff_finset_prod {ι X : Type*} {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X]
-    {s : Finset ι} {f : ι → X → ℂ} (hf : ∀ i ∈ s, ContDiff ℝ N (f i)) :
-    ContDiff ℝ N fun x ↦ ∏ i ∈ s, f i x := by
-  classical
-  induction s using Finset.induction with
-  | empty => simpa only [Finset.prod_empty] using contDiff_const
-  | insert a s ha ih =>
-    simp only [Finset.prod_insert ha]
-    exact (hf a (Finset.mem_insert_self a s)).mul (ih fun i hi ↦ hf i (Finset.mem_insert_of_mem hi))
-
 private lemma contDiff_mat_det {X k : Type*} {N : ℕ∞ω} [NormedAddCommGroup X] [NormedSpace ℝ X]
     [Fintype k] [DecidableEq k] {f : X → Matrix k k ℂ} (hf : ContDiff ℝ N f) :
-    ContDiff ℝ N fun x ↦ (f x).det := by
-  simp only [det_apply, Units.smul_def, zsmul_eq_mul]
-  exact ContDiff.sum fun σ _ ↦ contDiff_const.mul
-    (contDiff_finset_prod fun i _ ↦ contDiff_pi.1 (contDiff_pi.1 hf (σ i)) i)
+    ContDiff ℝ N fun x ↦ (f x).det :=
+  ContDiff.matrix_det fun i j ↦ contDiff_pi.1 (contDiff_pi.1 hf i) j
 
 private lemma pi_mul_inv_apply {ι G : Type*} [Group G] (a b : ι → G) (w : ι) :
     (a * b)⁻¹ w = b⁻¹ w * a⁻¹ w := by
@@ -512,7 +501,7 @@ lemma exists_isSchwartzVector_realSlice_bump (D : X.Splitting W₁ b) [IsBaseAda
   have τ_smooth : ContDiff ℝ ∞ (τ ∘ C) :=
     (hσ.comp (contDiff_pi.2 fun w ↦ contDiff_mat_mul contDiff_const
       (contDiff_pi.1 C.contDiff w))).mul
-      (.norm_sq ℂ (contDiff_finset_prod fun w _ ↦
+      (.norm_sq ℂ (contDiff_prod fun w _ ↦
         (contDiff_mat_det (contDiff_pi.1 C.contDiff w)).pow (N w)))
   -- `x` is recovered from the frame `(x, 0)`, which lies in the support of `σ`.
   have τ_cpt : HasCompactSupport (τ ∘ C) := by
