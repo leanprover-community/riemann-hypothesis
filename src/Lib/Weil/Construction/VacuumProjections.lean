@@ -13,8 +13,9 @@ This file studies the projection P^S = `New.Space.projOn` S on the vectors that 
 set S of finite places. It shows that P^S is a self-adjoint projection and relates it to the
 Heisenberg operators and to the Weil representation. It defines the finite part
 `New.Space.finitePart` and shows that this subspace is stable under ϱ_f, under the projections and
-under the finite unitary group. It also shows that the translates of the vacuum by representatives
-modulo Ô^n form an orthonormal spanning family of the finite part.
+under the finite unitary group. It also computes the vacuum coefficient ⟨ϱ_f(y) vac, vac⟩, the
+indicator of Ô^n at y, and shows that the vectors of the finite part are smooth: fixed by ω(1, k)
+for all k near 1 in the finite unitary group.
 
 The Weil representation ω of the adelic unitary group acts on 𝒮(V) = `New.𝒮`, together with the
 Heisenberg operators ϱ(y) = `New.Space.ϱ` y. The operators of finite vectors,
@@ -36,6 +37,8 @@ above S. The finite part `New.Space.finitePart` is the span of the ϱ_f-translat
   fixes it.
 * `New.Space.exists_eq_smul_omega_vacElem`: a vector of the finite part fixed by the lattice `g Ô^n`
   is a multiple of `ω(g) vacElem`.
+* `New.Space.dataInner_finHeisenbergOp_vacElem_vacElem`: ⟨ϱ_f(y) vac, vac⟩ is the indicator of Ô^n.
+* `New.Space.eventually_omega_eq_self`: vectors of the finite part are smooth.
 
 Notions from other files:
 * `New.Space`: a hermitian space with a point, given by a matrix J over E and x in GL_n(𝔸) with xᴴJx
