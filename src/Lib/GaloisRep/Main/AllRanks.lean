@@ -455,7 +455,9 @@ private lemma New.GaloisRep.exists_attached_mul_prod_X_sub_C {ℓ : ℕ} {E n : 
         ← range_val, ← sum_multiset_singleton, ← Multiset.coe_mapAddMonoidHom, sum_range,
         Fin.sum_univ_add]
       -- Both sides are now a sum over `Fin (card n)` plus a sum over `Fin t`; compare each.
-      refine congrArg₂ (· + ·) (by grind) ?_
+      refine congrArg₂ (· + ·) (sum_congr rfl fun _ _ ↦ ?_) ?_
+      · simp only [(Nat.zero_le _).trans_lt ht, ↓reduceIte]
+        split <;> congr 1 <;> ring
       -- The last `t` jumps match in the same order if `τ` is in the CM type, reversed otherwise.
       split
       · ring_nf
