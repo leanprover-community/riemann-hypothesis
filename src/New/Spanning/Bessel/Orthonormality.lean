@@ -74,6 +74,18 @@ lemma New.IsBesselFunction.integral_mul_conj_embedH_mul {𝔰 : Shape} {I : Type
   -- Equivariance: `s * (u * y) = (s * u * s⁻¹) * (s * y)`.
   simp [Subgroup.smul_def, ← mul_assoc]
 
+/-- Pairing two linear combinations of the coordinates of `W` uses the matrix
+of integrals of `Wᵢ conj Wⱼ`. -/
+private lemma integral_dotProduct_mul_conj {X I : Type*} [MeasurableSpace X] [Fintype I]
+    {μ : Measure X} {W : X → I → ℂ}
+    (h : ∀ i j, Integrable (fun y ↦ W y i * conj (W y j)) μ) (a b : I → ℂ) :
+    ∫ y, (a ⬝ᵥ W y) * conj (b ⬝ᵥ W y) ∂μ =
+      ∑ j, ∑ i, a i * (∫ y, W y i * conj (W y j) ∂μ) * conj (b j) := by
+  have expand (y : X) : (a ⬝ᵥ W y) * conj (b ⬝ᵥ W y) =
+      ∑ j, ∑ i, a i * (W y i * conj (W y j)) * conj (b j) := by
+    simp [dotProduct, Finset.mul_sum, Finset.sum_mul, mul_assoc, mul_comm (conj (W y _))]
+  simp (disch := fun_prop) only [expand, integral_finsetSum, integral_mul_const, integral_const_mul]
+
 /-- Let `W : 𝔰.G₁ → ℂ^I` be a Bessel function of type `rep`: it is bounded and measurable,
 `W (u y) = ψ(u) W y` for `u` in the unipotent subgroup 𝖴 of `𝔰.G₁`, with ψ a fixed character, and
 `W (h y) = rep h (W y)` for `h` in the compact unitary group `U(κ)` = `U (1 : Matrix 𝔰.κ 𝔰.κ ℂ)`
@@ -101,17 +113,12 @@ lemma New.IsBesselFunction.integral_mul_conj_eq {𝔰 : Shape} {I : Type} [Finty
     suffices h_conj : R * M * star R = M from
       ((commute_unitary_iff_star_right_conjugate (SetLike.coe_mem (rep s))).2 h_conj).symm
     ext p q
-    have h_expand (y : 𝔰.G₁) :
-        W (RealPlace.embedH s * y) p * conj (W (RealPlace.embedH s * y) q) =
-          ∑ l, ∑ k, R p k * (W y k * conj (W y l)) * conj (R q l) := by
-      simp [R, hW.map_unitary_mul, mulVec, dotProduct, Finset.sum_mul, Finset.mul_sum, mul_assoc,
-        mul_comm (conj (W y _))]
     calc (R * M * star R) p q
-        = ∑ l, ∑ k, R p k * M k l * conj (R q l) := by simp [Matrix.mul_apply, Finset.sum_mul]
-      _ = ∫ y, ∑ l, ∑ k, R p k * (W y k * conj (W y l)) * conj (R q l) ∂besselQuotMeasure := by
-        simp (disch := fun_prop) only [M, of_apply, integral_finsetSum, integral_mul_const,
-          integral_const_mul]
-      _ = M p q := by simp only [← h_expand, hW.integral_mul_conj_embedH_mul, M, of_apply]
+        = ∫ y, W (RealPlace.embedH s * y) p * conj (W (RealPlace.embedH s * y) q)
+            ∂besselQuotMeasure := by
+          simpa [R, hW.map_unitary_mul, mulVec, M, Matrix.mul_apply, Finset.sum_mul] using
+            (integral_dotProduct_mul_conj h_int_prod (R p) (R q)).symm
+      _ = M p q := hW.integral_mul_conj_embedH_mul s p q
   have h_trace : M.trace = (∫ y, ‖W y‖ ^ 2 ∂besselQuotMeasure : ℝ) := by
     calc M.trace = ∫ y, ∑ k, W y k * conj (W y k) ∂besselQuotMeasure :=
         (integral_finsetSum _ fun k _ ↦ h_int_prod k k).symm
@@ -206,21 +213,13 @@ theorem New.IsCutPair.lintegral_sq_inner_cut_le {𝔰 : Shape} {I : Type} [Finty
   have h_int_prod (i j : I) :
       Integrable (fun y ↦ W .cut y i * conj (W .cut y j)) besselQuotMeasure :=
     (h_int.eval_piLp i).mul_of_top_left (h_memLp_top.eval_piLp j).star
-  have h_expand (y : 𝔰.G₁) : ((‖inner ℂ v (W .cut y)‖ ^ 2 : ℝ) : ℂ) =
-      ∑ i, ∑ j, conj (v i) * v j * (W .cut y i * conj (W .cut y j)) := by
-    rw [ofReal_pow, ← mul_conj', PiLp.inner_apply, map_sum, Finset.sum_mul_sum]
-    refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ ?_
-    simp only [RCLike.inner_apply, map_mul, conj_conj]
-    ring
   have h_integral : ∫ y, ‖inner ℂ v (W .cut y)‖ ^ 2 ∂besselQuotMeasure = c * ‖v‖ ^ 2 := by
-    refine ofReal_injective ?_
-    calc ((∫ y, ‖inner ℂ v (W .cut y)‖ ^ 2 ∂besselQuotMeasure : ℝ) : ℂ)
-        = ∑ i, ∑ j, conj (v i) * v j *
-            ∫ y, W .cut y i * conj (W .cut y j) ∂besselQuotMeasure := by
-          simp (disch := fun_prop) only [← integral_complex_ofReal, h_expand, integral_finsetSum,
-            integral_const_mul]
-      _ = ∑ i, conj (v i) * v i * c := by simp [h_scalar]
-      _ = ((c * ‖v‖ ^ 2 : ℝ) : ℂ) := by
-          simp [conj_mul', PiLp.norm_sq_eq_of_L2, Finset.sum_mul, mul_comm (c : ℂ)]
+    apply ofReal_injective
+    rw [← integral_complex_ofReal]
+    simp_rw [ofReal_pow, ← mul_conj', EuclideanSpace.inner_eq_star_dotProduct,
+      dotProduct_comm _ (star v.ofLp)]
+    rw [integral_dotProduct_mul_conj h_int_prod]
+    simp [h_scalar, PiLp.norm_sq_eq_of_L2, Finset.mul_sum, mul_comm (c : ℂ),
+      mul_right_comm _ (c : ℂ), conj_mul']
   grw [lintegral_enorm_sq (h_int.const_inner v) (h_memLp_top.const_inner v), h_integral, hc_le,
     one_mul, ENNReal.ofReal_pow (norm_nonneg v), ofReal_norm]
