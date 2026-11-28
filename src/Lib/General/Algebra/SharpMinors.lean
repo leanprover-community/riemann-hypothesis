@@ -1,6 +1,7 @@
 module
 
 import TauCeti.LinearAlgebra.Determinant.Basic
+import TauCeti.LinearAlgebra.Pi.Orthogonal
 import TauCeti.RingTheory.Length.Determinant
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 import Mathlib.Algebra.Module.PID
@@ -86,27 +87,19 @@ linear maps to `O / a` from the quotient of `O ^ k` by `rowLattice A a`, the spa
 lemma length_matrixKernel_eq_length_linearMap (A : Matrix r k O) (a : O) :
     length O (matrixKernel A (QuotSpan a)) =
       length O (((k → O) ⧸ rowLattice A a) →ₗ[O] QuotSpan a) := by
-  let val : (((k → O) ⧸ rowLattice A a) →ₗ[O] QuotSpan a) →ₗ[O] k → QuotSpan a :=
-    LinearMap.pi fun j ↦ LinearMap.applyₗ ((rowLattice A a).mkQ (Pi.single j 1))
-  have h_inj : Function.Injective val := fun g g' h_val ↦
-    linearMap_qext _ ((Pi.basisFun O k).ext fun j ↦ by simpa [val] using congrFun h_val j)
-  have h_range : val.range = matrixKernel A (QuotSpan a) := by
+  -- The extra rows of a • 1 impose no equations over O / a.
+  have h_orth : matrixKernel A (QuotSpan a) = (rowLattice A a).orthogonalBilin
+      (Fintype.bilinearCombination O O (M := QuotSpan a)).flip := by
     ext w
-    rw [mem_matrixKernel]
-    refine ⟨?_, fun hw ↦ ?_⟩
-    · rintro ⟨g, rfl⟩ i
-      have h_row : (rowLattice A a).mkQ (A i) = 0 :=
-        (Quotient.mk_eq_zero _).2 (subset_span ⟨.inl i, rfl⟩)
-      calc ∑ j, A i j • val g j
-        _ = g ((rowLattice A a).mkQ (∑ j, A i j • Pi.single j 1)) := by simp [val]
-        _ = 0 := by rw [← pi_eq_sum_univ', h_row, map_zero]
-    · have h_kill : rowLattice A a ≤ (Fintype.linearCombination O w).ker := span_le.2 <| by
-        rintro _ ⟨i | i, rfl⟩
-        · exact hw i
-        · change ∑ j : k, (a * (1 : Matrix k k O) i j) • w j = 0
-          exact Finset.sum_eq_zero fun j _ ↦ smul_quot_eq_zero_of_dvd (dvd_mul_right a _) (w j)
-      exact ⟨liftQ _ _ h_kill, funext fun j : k ↦ by simp [val]⟩
-  rw [← h_range, (LinearEquiv.ofInjective val h_inj).length_eq]
+    delta rowLattice
+    rw [mem_matrixKernel, mem_orthogonalBilin_span, Set.forall_mem_range]
+    refine ⟨fun hw i ↦ ?_, fun hw i ↦ hw (.inl i)⟩
+    rcases i with i | i
+    · exact hw i
+    · change ∑ j : k, (a * (1 : Matrix k k O) i j) • w j = 0
+      exact Finset.sum_eq_zero fun j _ ↦ smul_quot_eq_zero_of_dvd (dvd_mul_right a _) (w j)
+  rw [h_orth]
+  exact ((rowLattice A a).orthogonalPiEquiv (QuotSpan a)).length_eq
 
 variable [DVR O]
 
