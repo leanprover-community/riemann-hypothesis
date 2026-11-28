@@ -111,25 +111,35 @@ section SplittingExists
 
 open Matrix ComplexOrder New Exchange Fintype
 
+/-- Each sign contributes half of the ordinary Gram matrix of an isotropic frame. -/
+private lemma New.twice_gram_signRows {n p : Type*} [Fintype n] [DecidableEq n] [Fintype p]
+    {s : n → ℤˣ} {X : Matrix n p ℂ} (h_iso : Xᴴ * signMatrix s * X = 0) (ε : ℤˣ) :
+    let Y := X.submatrix (fun i : {i // s i = ε} ↦ i.val) id
+    (2 : ℂ) • Yᴴ * Y = Xᴴ * X := by
+  calc
+    _ = Xᴴ * X + (ε : ℂ) • (Xᴴ * signMatrix s * X) := by
+      ext a b
+      simp only [signMatrix, Matrix.mul_apply, Matrix.add_apply, Matrix.smul_apply,
+        conjTranspose_apply, submatrix_apply, id, diagonal_apply, mul_ite, mul_zero,
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true, smul_eq_mul, Finset.mul_sum,
+        ← Finset.sum_add_distrib]
+      rw [← Finset.sum_subtype (Finset.univ.filter (s · = ε)) (by simp)
+        fun i ↦ 2 * star (X i a) * X i b, Finset.sum_filter]
+      refine Finset.sum_congr rfl fun i _ ↦ ?_
+      rcases Int.units_eq_one_or ε with rfl | rfl <;>
+        rcases Int.units_eq_one_or (s i) with h | h <;> simp [h, two_mul, add_mul]
+    _ = _ := by rw [h_iso, smul_zero, add_zero]
+
 open scoped Classical in
 /-- If a complex matrix `X` is isotropic for the form diag(s), then its rank is at most the number
 of coordinates `i` with `s i = ε`, for either sign `ε`. -/
 lemma New.rank_le_card_preimage_of_isotropic {n p : Type*} [Fintype n] [DecidableEq n] [Fintype p]
     {s : n → ℤˣ} {X : Matrix n p ℂ} (h_iso : Xᴴ * signMatrix s * X = 0) (ε : ℤˣ) :
     X.rank ≤ card (s ⁻¹' {ε}) := by
-  -- XᴴX = ε Xᴴ (diag s + ε) X, and diag s + ε vanishes where s ≠ ε.
-  let d : n → ℂ := fun i ↦ s i + ε
-  have hd : diagonal d = signMatrix s + (ε : Matrix n n ℂ) := (diagonal_add _ _).symm
-  have h_gram : Xᴴ * X = ε • Xᴴ * diagonal d * X := by
-    rcases Int.units_eq_one_or ε with rfl | rfl <;>
-      simp [hd, Matrix.mul_add, Matrix.add_mul, h_iso]
-  have h_supp (i : n) (hi : d i ≠ 0) : i ∈ s ⁻¹' {ε} := by
-    contrapose hi
-    simp [d, Int.units_ne_iff_eq_neg.1 hi]
-  calc X.rank = (ε • Xᴴ * diagonal d * X).rank := by rw [← h_gram, rank_conjTranspose_mul_self]
-    _ ≤ (diagonal d).rank := (rank_mul_le_left _ _).trans (rank_mul_le_right _ _)
-    _ = card {i : n // d i ≠ 0} := rank_diagonal d
-    _ ≤ card (s ⁻¹' {ε}) := card_subtype_mono _ _ h_supp
+  rw [← rank_conjTranspose_mul_self X, ← twice_gram_signRows h_iso ε]
+  calc
+    _ ≤ card {i // s i = ε} := (rank_mul_le_right _ _).trans (rank_le_card_height _)
+    _ = card (s ⁻¹' {ε}) := Fintype.card_congr (Equiv.refl _)
 
 open scoped Classical in
 /-- If each sign occurs at least `card p` times in `s`, then the coordinates can be numbered by
@@ -336,27 +346,13 @@ lemma exists_unitary_mul_eq_of_isotropic {s : n → ℤˣ} {A B : Matrix n p ℂ
   -- An isotropic subspace is the graph of an isometry between the coordinates of sign 1 and those
   -- of sign -1: the rows of either sign of such a frame have the Gram matrix ½.
   let rows (ε : ℤˣ) (X : Matrix n p ℂ) : Matrix {i : n // s i = ε} p ℂ := X.submatrix (↑) id
-  have h_half (ε : ℤˣ) {X : Matrix n p ℂ} (hX : Xᴴ * X = 1) (hX₀ : Xᴴ * signMatrix s * X = 0) :
-      (2 : ℂ) • (rows ε X)ᴴ * rows ε X = 1 := by
-    have h_sum : (2 : ℂ) • (rows ε X)ᴴ * rows ε X =
-        Xᴴ * X + (ε : ℂ) • (Xᴴ * signMatrix s * X) := by
-      ext a b
-      simp only [rows, signMatrix, Matrix.mul_apply, Matrix.add_apply, Matrix.smul_apply,
-        conjTranspose_apply, submatrix_apply, id, diagonal_apply, mul_ite, mul_zero,
-        Finset.sum_ite_eq', Finset.mem_univ, ite_true, smul_eq_mul, Finset.mul_sum,
-        ← Finset.sum_add_distrib]
-      rw [← Finset.sum_subtype (Finset.univ.filter (s · = ε)) (by simp)
-        fun i ↦ 2 * star (X i a) * X i b, Finset.sum_filter]
-      refine Finset.sum_congr rfl fun i _ ↦ ?_
-      rcases Int.units_eq_one_or ε with rfl | rfl <;>
-        rcases Int.units_eq_one_or (s i) with h | h <;> simp [h, two_mul, add_mul]
-    rw [h_sum, hX, hX₀, smul_zero, add_zero]
   -- So for each sign a unitary matrix carries the rows of A to the rows of B.
   have h_witt (ε : ℤˣ) : ∃ g : U (1 : Matrix {i : n // s i = ε} {i : n // s i = ε} ℂ),
       g.val.val * rows ε A = rows ε B := by
-    refine witt ⟨.I, by simp⟩ (by simp) isUnit_one ⟨_, h_half ε hA hA₀⟩ ⟨_, h_half ε hB hB₀⟩ ?_
-    have h_two := (h_half ε hA hA₀).trans (h_half ε hB hB₀).symm
-    simpa [Matrix.smul_mul, smul_right_inj (two_ne_zero' ℂ)] using h_two
+    have ha := (twice_gram_signRows hA₀ ε).trans hA
+    have hb := (twice_gram_signRows hB₀ ε).trans hB
+    refine witt ⟨.I, by simp⟩ (by simp) isUnit_one ⟨_, ha⟩ ⟨_, hb⟩ ?_
+    simpa [rows, Matrix.smul_mul, smul_right_inj (two_ne_zero' ℂ)] using ha.trans hb.symm
   choose g hg using h_witt
   -- The two matrices are the diagonal blocks of κ.
   let σ : n ≃ Σ ε : ℤˣ, {i : n // s i = ε} := (Equiv.sigmaFiberEquiv s).symm
