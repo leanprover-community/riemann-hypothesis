@@ -185,9 +185,8 @@ def floorWeyl (c : A) : T.G := weylOn (· = l) fun _ ↦ c
 /-- The inverse, in the sense of `Ring.inverse`, of the conjugate of a unit `u` is the conjugate of
 `u⁻¹`. -/
 @[simp↓]
-lemma inverse_star_unit (u : Aˣ) : (star ↑u)⁻¹ʳ = star u⁻¹.val :=
-  Ring.inverse_unit ⟨star u.val, star u⁻¹.val,
-    by rw [← star_mul, u.inv_mul, star_one], by rw [← star_mul, u.mul_inv, star_one]⟩
+lemma inverse_star_unit (u : Aˣ) : (star ↑u)⁻¹ʳ = star u⁻¹.val := by
+  rw [Ring.inverse_star, Ring.inverse_unit]
 
 /-! ### The subgroups and their entries -/
 
