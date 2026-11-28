@@ -74,15 +74,9 @@ lemma gridChar_detFin_eq_one (z : Bool) (ϑ : D.MFoldTwist) (i : ℕ) (n' : Type
   have h_unramified (w : FinPlace D.E) (hw : w ∉ (triangleModulus z ϑ).places) :
       gridTamePart ϑ (!z) i w = 1 := by
     -- The places of the modulus are the chosen and twist places, outside which the part is trivial.
-    cases z <;> rw [Rows.places_levelModulus] at hw
-    · exact (D.descentPair (ϑ.pow (i + 1)) (i + 1)).tame_eq_one w hw
-    · exact (D.descentPair .one (i + 1)).tame_eq_one w hw
-  have h_value : ((gridChar ϑ (!z) i n').val (detFin s u.val) : ℂ) =
-      (triangleModulus z ϑ).charOfTamePart (gridTamePart ϑ (!z) i)
-        ((triangleModulus z ϑ).reductionGL u).val.det :=
-    (gridChar_hasWeight ϑ (!z) i n').apply_det_eq_charOfTamePart h_unramified u
+    cases z <;> exact (descentPair ..).tame_eq_one w fun hw' ↦ hw (Rows.places_levelModulus.ge hw')
   ext
-  simp [h_value, hu]
+  simp [(gridChar_hasWeight ϑ (!z) i n').apply_det_eq_charOfTamePart h_unramified u, hu]
 
 /-- Let `S` and `T` be the hermitian spaces `D.gridSpace 0 z 0 i` and `D.gridSpace 0 z 0 (i + 1)` at
 the nodes `i` and `i + 1` of the first column of the grid of the `Y` (`z = false`) or of the `Ỹ`
@@ -130,7 +124,7 @@ lemma formRep_transposedChain_eq_self (z : Bool) (ϑ : D.MFoldTwist) {i : ℕ} (
     -- As `(u, 1)` fixes the datum, `u` fixes every transposed lift.
     have h_datum := D.pairWeil_gridChar_modDatum_eq_self z ϑ i hu (u' := 1) (map_one _)
     simp only [pointTransposedLift, LinearMap.smul_apply, map_smul]
-    apply congrArg ((triangleGLCard z ϑ i : ℂ) • ·)
+    congr 1
     simpa using! h_arrow.formRep_formLift_of_eq_smul (c := 1)
       ((h_datum _ _).trans (one_smul ℂ _).symm) x
   rw [transposedChain_of_lt ϑ hi_lt, LinearMap.comp_apply, h_pointLift_fixed]
@@ -148,7 +142,7 @@ lemma triangleRep_weightedChain_eq_self (z : Bool) (ϑ : D.MFoldTwist) {i : ℕ}
       y) =
       Exchange.weightedChain (D.triangleGLCard z) (D.triangleLift z) ϑ 0 i y := by
   -- The last lift has a datum that `(1, u)` fixes.
-  obtain ⟨i, rfl⟩ : ∃ j : ℕ, i = j + 1 := Nat.exists_eq_succ_of_ne_zero hi_ne
+  obtain ⟨i, rfl⟩ := Nat.exists_eq_add_one_of_ne_zero hi_ne
   have h_lift (x : D.TriangleForm z 0 i) :
       D.triangleRep z 0 (i + 1) u.val (D.triangleLift z ϑ 0 i x) = D.triangleLift z ϑ 0 i x := by
     obtain ⟨h_arrow, -⟩ := (isEdgeFamily_grid_succ_right (z := z) id zero_le hi_le).isArrow_modDatum
@@ -296,7 +290,8 @@ lemma exists_forall_diagonalPeriodForm_ne_zero :
           (fun x ↦ F (G.reindex (.refl (D.Y 0 ⊕ Unit)) D.gridSigns_true_zero.symm (.sum (x, 1)) *
             (g₀, 1))) =
         diagonalPeriodForm 1 zero_le g₀ (conjForm D.gridKernel_zero_true_eq_star y) F := by
-    simp [petersson, periodPairing]
+    simp only [petersson, Pi.one_apply, diagonalPeriodForm, periodPairing, ContinuousMap.one_apply,
+      one_mul, pow_zero, ContinuousMap.coe_mk, LinearMap.mk₂_apply]
     rfl
   exact (h_period _).trans (h_zero φ hφ)
 
@@ -386,7 +381,7 @@ lemma IsFlatRestriction.integral_lowerChainUpTo {g : GInf D.E (D.gridSigns true 
   -- The chain of lifts is `weightedChain` with the weight written as the order of a group.
   have h_chain : D.lowerChainUpTo ϑ D.m (r φ) =
       weightedChain (D.triangleGLCard false) (D.triangleLift false) ϑ 0 D.m (r φ).val := by
-    simp +unfoldPartialApp [liftY, lowerChainUpTo, ← LevelPlaces.card_GL_levelModulus]
+    simp +unfoldPartialApp only [liftY, lowerChainUpTo, ← LevelPlaces.card_GL_levelModulus]
     rfl
   -- By transposition the left side is `∫ y'Lift x * r φ x`.
   refine Eq.trans ?_ h_restrict
