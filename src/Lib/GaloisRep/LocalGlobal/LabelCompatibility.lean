@@ -331,6 +331,65 @@ private lemma New.GaloisRep.Attached.isLabelledAt_one (hf : f ∈ (stdSpace E n)
   exact (hr.local_global_of_eigencharacter h_eig hez h_sorted hA
     ⟨σ, hσ.1⟩ x 0 (inv_mem hσ) hxσ hx).2.2
 
+omit [ThePrime ℓ] [PadicIso ℓ] [Nonempty n] [CMType E] [Fintype n] [DecidableEq n] [WeilData E] in
+/-- Multiplying a Shintani lift `Lift ℕ F F'` by rank parts of determinant characters whose names
+match along `algebraMap (ResField w) k'` preserves the lift. -/
+private lemma lift_mul_prod_rankPart {k' : Type} [Field k'] [Finite k'] [Algebra (ResField w) k']
+    [Algebra k' K] [IsScalarTower (ResField w) k' K] {F : Hall (ResField w)} {F' : Hall k'}
+    (h : Lift ℕ F F') {η : Fin s → MulChar k' ℂ}
+    (hη : ∀ l, (charName T (η l) : k') = algebraMap (ResField w) k' (charName T (χ l))) :
+    Lift ℕ (F * ∏ l, (detChar (χ l)).rankPart (t l))
+      (F' * ∏ l, (detChar (η l)).rankPart (t l)) :=
+  h.mul (prod_hom_rel .one fun l _ _ h_rest ↦
+    .mul (.rankPart_of_hasCommonLift (lift_detChar T (hη l) (t l))) h_rest)
+
+omit [WeilData E] in
+/-- Given an inert prime-degree cyclic base change `μ` at `w` with residue-field embedding
+`ResField w → ResField u → K`, base-changing a form `f` with product label `(c, χ, t)` produces an
+eigenform `f'` over `stepField μ` with an attached representation `r'` descending to `r` and with
+product label `(c.map j, χ', t)` at `u`. -/
+private lemma New.GaloisRep.exists_baseChange_productLabel_of_inertStep {p : ℕ} (hp : p.Prime)
+    {μ : QZChar Gal(Ω/E)} {u : FinPlace (stepField μ)} {η : (LocField w)ˣ →* Multiplicative QZ}
+    (h_step : GaloisRep.IsStepOfLocalChar A η p μ u)
+    [Algebra (ResField w) (ResField u)] [Algebra (ResField u) K]
+    [IsScalarTower (ResField w) (ResField u) K]
+    (h_res : ∀ x : 𝓞 E,
+      algebraMap (ResField w) (ResField u) (algebraMap (𝓞 E) (ResField w) x) =
+        algebraMap (𝓞 (stepField μ)) (ResField u) (algebraMap (𝓞 E) _ x))
+    (h_res_rank : finrank (ResField w) (ResField u) = p)
+    (hf : f ∈ (stdSpace E n).forms κ) (he : IsEigenform f P) (hr : Attached P r)
+    (h_prod_label : HasProductLabel f hw T d c χ t) :
+    let j : ResField w →+* ResField u := algebraMap (ResField w) (ResField u)
+    let χ' : Fin s → MulChar (ResField u) ℂ :=
+      fun l ↦ (charName T).symm (Units.map j.toMonoidHom (charName T (χ l)))
+    ∃ (f' : Gf (stepField μ) n → WeylIndex n κ.baseChange.1 → ℂ)
+      (P' : FinPlace (stepField μ) → ℂ[X]) (r' : GalRep ℓ (stepField μ) n),
+      letI : IsStep (stepField μ) (ideleChar μ) := h_step.isStep
+      letI : WeilData (stepField μ) := h_step.nonempty_weilData.some
+      f' ∈ (stdSpace (stepField μ) n).forms κ.baseChange ∧
+      IsEigenform f' P' ∧ Attached P' r' ∧ DescendsAt μ r' r A ∧
+      HasProductLabel f' h_step.isSplit T d (c.map j) χ' t := by
+  obtain ⟨h_label, h_sep, h_deg, h_has⟩ := h_prod_label
+  obtain ⟨_⟩ := h_step.nonempty_weilData
+  have : IsStep (stepField μ) (ideleChar μ) := h_step.isStep
+  let j : ResField w →+* ResField u := algebraMap (ResField w) (ResField u)
+  let χ' (l : Fin s) : MulChar (ResField u) ℂ :=
+    (charName T).symm (Units.map j.toMonoidHom (charName T (χ l)))
+  have hχ' (l : Fin s) : (charName T (χ' l)).val = j (charName T (χ l)).val := by simp [χ']
+  obtain ⟨f', hf', P', he', h_bc, h_has'⟩ := exists_baseChange_hasLabel hw h_step.isSplit
+    h_step.below_eq_iff (fun _ ↦ by simp [h_step.abelianLift_artinAt]) h_res
+    (h_res_rank.trans h_step.finrank_eq.symm) hf
+    (isChar_of_mem_virtualChars
+      (lift_mul_prod_rankPart (K := K) (lift_labelChar_self T h_label)
+        fun _ ↦ rfl).evalGL_mem_virtualChars)
+    (lift_mul_prod_rankPart (K := K)
+      (shintani_lift_labelChar (by rwa [h_res_rank]) T h_label) hχ') h_has
+  obtain ⟨r', hr'⟩ := (sphericalCompat_std u hf' he').1
+  have h_sep' : (c.map j * ∏ l, (X - C (charName T (χ' l)).val)).Separable := by
+    simpa [hχ', Polynomial.map_prod] using h_sep.map (f := j)
+  exact ⟨f', P', r', hf', he', hr', h_bc.descendsAt hr' he' he hr A,
+    ⟨h_label.map _, h_sep', h_deg, h_has'⟩⟩
+
 /-- Level-`g` case (`g ≠ 0`) of `New.GaloisRep.Attached.isLabelledAt`. -/
 private lemma New.GaloisRep.Attached.isLabelledAt_of_root_pow_eq_one {g : ℕ}
     (hf : f ∈ (stdSpace E n).forms κ) (he : IsEigenform f P) (hr : Attached P r)
@@ -344,7 +403,6 @@ private lemma New.GaloisRep.Attached.isLabelledAt_of_root_pow_eq_one {g : ℕ}
   | zero => exact absurd rfl hg
   | one => exact hr.isLabelledAt_one hf he hA h_prod_label (by simpa using h_roots)
   | prime_mul p g hp ih =>
-    obtain ⟨h_label, h_sep, h_deg, h_has⟩ := h_prod_label
     obtain ⟨μ, u, ⟨_, h_step⟩, h_inert⟩ := exists_inertStep hw hA hp
     obtain ⟨h_unram, h_ram, hq⟩ := h_inert
     obtain ⟨_⟩ := h_step.nonempty_weilData
@@ -365,36 +423,18 @@ private lemma New.GaloisRep.Attached.isLabelledAt_of_root_pow_eq_one {g : ℕ}
         ∃ r' : GalRep ℓ (stepField μ) n, DescendsAt μ r' r A ∧
           IsLabelledAt A T g (PolyKillsAt r' A)
             ((c * ∏ l, (X - C (charName T (χ l)).val) ^ t l).map j) := by
-      let χ' (l : Fin s) : MulChar (ResField u) ℂ :=
-        (charName T).symm (Units.map j.toMonoidHom (charName T (χ l)))
-      have hχ' (l : Fin s) : (charName T (χ' l)).val = j (charName T (χ l)).val := by simp [χ']
-      have lift_prod {k' : Type} [Field k'] [Finite k'] [Algebra (ResField w) k'] [Algebra k' K]
-          [IsScalarTower (ResField w) k' K] {F : Hall (ResField w)} {F' : Hall k'} (h : Lift ℕ F F')
-          {η : Fin s → MulChar k' ℂ}
-          (hη : ∀ l, (charName T (η l) : k') = algebraMap (ResField w) k' (charName T (χ l))) :
-          Lift ℕ (F * ∏ l, (detChar (χ l)).rankPart (t l))
-            (F' * ∏ l, (detChar (η l)).rankPart (t l)) :=
-        h.mul (prod_hom_rel .one fun l _ _ h_rest ↦
-          .mul (.rankPart_of_hasCommonLift (lift_detChar T (hη l) (t l))) h_rest)
-      obtain ⟨f', hf', P', h_f'⟩ := exists_baseChange_hasLabel hw h_step.isSplit
-        h_step.below_eq_iff (fun _ ↦ by simp [h_step.abelianLift_artinAt]) h_res
-        (h_res_rank.trans h_step.finrank_eq.symm) hf
-        (isChar_of_mem_virtualChars
-          (lift_prod (lift_labelChar_self T h_label) fun _ ↦ rfl).evalGL_mem_virtualChars)
-        (lift_prod (shintani_lift_labelChar (by rwa [h_res_rank]) T h_label) hχ') h_has
-      obtain ⟨he', h_bc, h_has'⟩ := h_f'
-      obtain ⟨r', hr'⟩ := (sphericalCompat_std u hf' he').1
-      have h_sep' : (c.map j * ∏ l, (X - C (charName T (χ' l)).val)).Separable := by
-        simpa [hχ', Polynomial.map_prod] using h_sep.map (f := j)
-      obtain ⟨h_fin, h_jump, h_lab⟩ := ih hf' he' hr' hAu ⟨h_label.map _, h_sep', h_deg, h_has'⟩
+      obtain ⟨f', P', r', hf', he', hr', h_down, h_prod_label'⟩ :=
+        New.GaloisRep.exists_baseChange_productLabel_of_inertStep hp h_step h_res h_res_rank
+          hf he hr h_prod_label
+      obtain ⟨h_fin, h_jump, h_lab⟩ := ih hf' he' hr' hAu h_prod_label'
         (right_ne_zero_of_mul hg) fun x hx ↦ by
           rw [← hq, ← pow_mul]
           exact h_roots x ((c.aeval_map_algebraMap (ResField u) x).symm.trans hx)
-      have h_down : DescendsAt μ r' r A := h_bc.descendsAt hr' he' he hr A
       refine ⟨⟨h_down.isFiniteTypeAt h_fin, h_down.hasJumpsAt _ h_jump⟩, r', h_down, ?_⟩
-      rwa [show c.map j * ∏ l, (X - C (charName T (χ' l)).val) ^ t l =
+      rwa [show c.map j * ∏ l, (X - C (charName T ((charName T).symm
+          (Units.map j.toMonoidHom (charName T (χ l))))).val) ^ t l =
           (c * ∏ l, (X - C (charName T (χ l)).val) ^ t l).map j by
-            simp [hχ', Polynomial.map_prod]] at h_lab
+            simp [Polynomial.map_prod]] at h_lab
     obtain ⟨h_fin, h_jump⟩ : IsFiniteTypeAt r A ∧ HasJumpsAt r A (jumps κ (Fintype.card n)) := by
       let φ : ResField u →ₐ[ResField w] K := IsAlgClosed.lift
       algebraize [φ.toRingHom]
