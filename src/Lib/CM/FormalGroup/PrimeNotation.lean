@@ -288,6 +288,11 @@ lemma piPrime_mul_conj (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime]
   · exact absurd h_one hp
   · simp [piPrime, primeNorm, hd, h_neg_one, sq]
 
+/-- At `p = d`, the image of `π_p = √-d` in `ℂ_p` has square `-p`. -/
+lemma piPrime_sq_of_ramified {p : ℕ} [Fact p.Prime] {d : ℕ} [PadicPlace p] (hd : p = d) :
+    ιₚ (piPrime d p) ^ 2 = -(p : ℂ_[p]) := by
+  rw [piPrime, ite_eq_left hd, map_I_mul_sqrt_sq, ← hd]
+
 /-- Under the embedding `ιₚ : ℂ →+* ℂ_[p]` given by a `PadicPlace p`, the number `π_p` (`√-d` if
 `p = d`, else `p`) has valuation `piPrimeValuation d p`, which is `1 / 2` for `p = d` and `1`
 otherwise. -/
@@ -296,7 +301,7 @@ lemma norm_piPrime (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] [Pa
   obtain rfl | hd := eq_or_ne p d
   · have h_norm_sq : ‖ιₚ (piPrime p p)‖ ^ 2 = ((p : ℝ) ^ (-piPrimeValuation p p)) ^ 2 :=
       calc
-        _ = ‖-(p : ℂ_[p])‖ := by rw [piPrime, ite_eq_left rfl, ← norm_pow, map_I_mul_sqrt_sq]
+        _ = ‖-(p : ℂ_[p])‖ := by rw [← norm_pow, piPrime_sq_of_ramified rfl]
         _ = (p : ℝ) ^ (-1 : ℝ) := by rw [norm_neg, norm_p_eq_inv, Real.rpow_neg_one]
         _ = _ := by norm_num [← Real.rpow_mul_natCast p.cast_nonneg, piPrimeValuation_self]
     exact (pow_left_inj₀ (norm_nonneg _) (by positivity) two_ne_zero).1 h_norm_sq
@@ -340,7 +345,7 @@ lemma norm_piPrimeInt (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime] 
 lemma piPrimeInt_dvd_natCast (d : ℕ) {p : ℕ} [PrimeSevenModEight d] [Fact p.Prime]
     [PadicPlace p] : piPrimeInt d ∣ (p : valRingCp p) := by
   obtain rfl | hd := eq_or_ne p d
-  · have h_sq : ιₚ (piPrime p p) ^ 2 = -p := by rw [piPrime, ite_eq_left rfl, map_I_mul_sqrt_sq]
+  · have h_sq := piPrime_sq_of_ramified (p := p) rfl
     exact ⟨-piPrimeInt p, Subtype.ext (by simp [coe_piPrimeInt, ← sq, h_sq])⟩
   · exact ⟨1, Subtype.ext (by simp [coe_piPrimeInt, piPrime, hd])⟩
 

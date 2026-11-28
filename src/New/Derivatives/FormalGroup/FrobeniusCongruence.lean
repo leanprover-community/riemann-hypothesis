@@ -84,7 +84,7 @@ variable [PadicPlace p]
 `|q_p| = |π_p| ^ 2` in `ℂ_[p]`, as `q_p = ± π_p ^ 2`. -/
 lemma norm_primeNorm (hp : chiK d p ≠ 1) : ‖(primeNorm d p : ℂ_[p])‖ = ‖ιₚ (piPrime d p)‖ ^ 2 := by
   obtain ⟨rfl, h_ram⟩ | ⟨hd, h_split | h_inert⟩ := chiK_cases d p
-  · rw [piPrime, ite_eq_left rfl, ← norm_pow, map_I_mul_sqrt_sq, norm_neg, primeNorm, h_ram,
+  · rw [← norm_pow, piPrime_sq_of_ramified rfl, norm_neg, primeNorm, h_ram,
       ite_eq_right (by norm_num)]
   · exact absurd h_split hp
   · rw [piPrime, ite_eq_right hd, map_natCast, primeNorm, ite_eq_left h_inert, Nat.cast_pow,

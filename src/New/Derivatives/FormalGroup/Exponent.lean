@@ -169,10 +169,6 @@ lemma norm_piPrime_mul_pow_leastFlatDegree_div (hp : chiK d p ≠ 1) {ϖ : ℂ_[
     rw [leastFlatDegree, piPrime, ite_eq_right hpd_ne, ite_eq_right hpd_ne, hq, map_natCast,
       Nat.cast_pow, h_eq, norm_one]
 
-omit [PrimeSevenModEight d] in
-lemma piPrime_sq_of_ramified (hd : p = d) : ιₚ (piPrime d p) ^ 2 = -(p : ℂ_[p]) := by
-  rw [piPrime, ite_eq_left hd, map_I_mul_sqrt_sq, ← hd]
-
 /-- Let `d ≡ 7` mod `8` be a prime and `p` a prime that is non-split in `ℚ(√-d)`. Let
 `π_p = piPrime d p` be `√-d` if `p = d` and `p` otherwise, mapped to `ℂ_p` by the place `ιₚ`, and
 let `q_p = primeNorm d p` be the norm of a prime above `p`. For `n > 2` we have
