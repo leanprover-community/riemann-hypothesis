@@ -1,6 +1,7 @@
 module
 
 import TauCeti.RingTheory.AdicCompletion.DiscreteValuationRing
+import TauCeti.RingTheory.AdicCompletion.Nilpotent
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.RingTheory.PicardGroup
@@ -556,23 +557,6 @@ lemma exists_tau_dvd_xi_sub_p_mul : ∃ b : Ainf, tau ∣ xi - p * b :=
 
 /-! ### `A_inf ∩ y B⁺ = y A_inf`: reduction modulo `(y, p ^ n)` extends to `Amax` -/
 
-omit [ThePrime p] in
-/-- A commutative ring in which a power of `p` vanishes is `p`-adically complete. -/
-lemma isAdicComplete_of_p_pow_eq_zero {Q : Type*} [CommRing Q] {n : ℕ}
-    (h_zero : (p : Q) ^ n = 0) : IsAdicComplete (span {(p : Q)}) Q := by
-  -- From `n` on, the powers of the ideal `(p)` are zero.
-  have h_bot (k : ℕ) (h_le : n ≤ k) : (span {(p : Q)} ^ k • ⊤ : Submodule Q Q) = ⊥ := by
-    simp [span_singleton_pow, pow_eq_zero_of_le h_le h_zero]
-  refine { haus' := fun x hx ↦ ?_, prec' := fun f hf ↦ ⟨f n, fun k ↦ ?_⟩ }
-  · have hx_n : x ≡ 0 [SMOD (span {(p : Q)} ^ n • ⊤ : Submodule Q Q)] := hx n
-    rwa [h_bot n le_rfl, SModEq.bot] at hx_n
-  · rcases le_total k n with h_le | h_le
-    · exact hf h_le
-    · have h_eq : f n ≡ f k [SMOD (span {(p : Q)} ^ n • ⊤ : Submodule Q Q)] := hf h_le
-      rw [h_bot n le_rfl, SModEq.bot] at h_eq
-      rw [h_bot k h_le, SModEq.bot]
-      exact h_eq.symm
-
 /-- Let `ξ ≡ p b` modulo `y` in `A_inf`. Then for every `n` the reduction of `A_inf` modulo the
 ideal `(y, p ^ n)` extends to a ring homomorphism on the period ring `Amax`. -/
 lemma Amax.exists_lift_quotient {y b : Ainf} (hb : y ∣ xi - p * b) (n : ℕ) :
@@ -586,7 +570,7 @@ lemma Amax.exists_lift_quotient {y b : Ainf} (hb : y ∣ xi - p * b) (n : ℕ) :
     simpa using Ideal.Quotient.eq_zero_iff_mem.mpr hp_mem
   have h_complete : IsAdicComplete (span {(p : Ainf ⧸ span {y, (p : Ainf) ^ n})})
       (Ainf ⧸ span {y, (p : Ainf) ^ n}) :=
-    isAdicComplete_of_p_pow_eq_zero h_pow
+    TauCeti.isAdicComplete_of_pow_smul_eq_bot (k := n) (by simp [span_singleton_pow, h_pow])
   -- In the quotient `ξ = p b`.
   have h_xi : Ideal.Quotient.mk (span {y, (p : Ainf) ^ n}) xi =
       p * Ideal.Quotient.mk (span {y, (p : Ainf) ^ n}) b := by
