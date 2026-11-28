@@ -824,8 +824,6 @@ lemma hasMatrixSize_sub_one_of_forall_stableProducts
       (fun a ha ↦ (isBalanced_of_isNear h_near_y ha).inducedLengthLe) fun a _ ↦ h_dual a
   exact (h_differ.hasMatrixSize_sub_one F.star_levelUnit).mono
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let j ≤ ϱ, let the heads p, q of length j be adapted (`Γ.IsHead`), and let the inverse of the
 level `F.levelUnit` have size 1 (`Γ.ofSize 1`). Let x, x y, w_p⁻¹ x and w_q⁻¹ x y be near at j
 (`F.IsNear`), where w_p = `weylElem j p` and w_q = `weylElem j q`. Then for a < j the set

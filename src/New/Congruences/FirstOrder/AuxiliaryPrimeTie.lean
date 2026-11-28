@@ -71,6 +71,7 @@ open Pi Fintype Polynomial Nat Group Submodule ComplexOrder
 
 attribute [local instance low] Fintype.ofFinite
 
+-- Ring homomorphisms are additive and multiplicative: the direct instances are tried first.
 attribute [local instance 1100] RingHomClass.toAddMonoidHomClass MonoidHomClass.toMulHomClass
 
 namespace New.Patching.BaseLevel

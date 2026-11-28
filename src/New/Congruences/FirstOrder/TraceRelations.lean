@@ -256,8 +256,6 @@ lemma ribetCocycles.mem_selmerModule [Fintype Y] {u : Y → AbsGal D →* Matrix
   ext
   simp [← hv]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let every `u x` be conjugate self-dual with twist `t`. Let `w j` be new places with tame
 generators `τ j` and elements `φ j` that fix the `ℓ ^ ν`-th roots of unity. Let `𝒥` be a trace
 ideal. Then `𝒥` is also a trace ideal for the doubled families `withConjInv τ`, `withConjInv φ`,

@@ -587,8 +587,6 @@ lemma siegel_lemma (u : Gf E κ) {T : Submodule E (κ → E)} {s : ℕ}
         gcongr
         norm_num
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- Siegel's lemma, raised to the power `k + 1` with `k = #κ`, as a bound for one term of the height
 zeta function. A subspace `T` of `E^κ` of codimension `s` is the hermitian orthogonal of `s` nonzero
 vectors `X i` of `E^κ ∩ u Ô^κ` with `(d T)⁻¹ ^ (k + 1) ≤ ∏ (‖X i‖⁻¹ ^ (2 n) C)`, where

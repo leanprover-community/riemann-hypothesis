@@ -788,8 +788,6 @@ private lemma eq_of_mul_kAdelic_of_mul_iAdelic_of_mul_lAdelic {M N : Matrix n n 
   rw [← M.mul_one, ← N.mul_one, ← D.sum_frame_mul_coord_eq_one]
   simp only [Matrix.mul_add, ← Matrix.mul_assoc, h_k, h_i, h_l]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Levi decomposition of the stabiliser of `range k`. Let `g` in `G` act on the adelic frame `k` by
 an adelic `p × p` matrix `a`, that is `g k = k a`. Then `g = radicalElement c b * levi (t, g₀)` for
 some parameters `c`, `b`, where `t` in `GL_p(𝔸)` has matrix `a` and `g₀` in `G(V₀)` has as matrix
@@ -969,8 +967,6 @@ lemma exists_isAdapted_and_frame_eq :
 
 /-! ### Rational elements -/
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 omit [WeilData E] in
 /-- The Levi element of a rational matrix `a` in `GL_p(E)` and a rational point `g₀` of `V₀` is a
 rational point of `V`. -/

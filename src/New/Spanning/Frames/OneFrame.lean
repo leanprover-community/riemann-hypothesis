@@ -447,8 +447,6 @@ lemma Gauge.exists_centre_of_isNear (Γ : Gauge F) (a : Fin 𝔰.ϱ) {g y n₀ �
     simpa [mul_assoc] using hy₀
   simpa [mul_assoc] using Γ.exists_lift_of_mem_closeBelow a h_box h_start h_move h_close
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- One floor up. Let `Γ` be a gauge (size bounds for the place data `F`), `k` a pairing kernel for
 `F` whose twist `d` commutes with G^(j) = `floorGroup j`, and `j ≤ l ≤ ϱ`. The cut square
 `Γ.cutSquare k l g y` is the squared modulus of the correlation `k` above floor `l`. It is set to

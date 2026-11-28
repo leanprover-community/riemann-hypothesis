@@ -137,8 +137,6 @@ lemma exists_compact_parabolic_normal_form :
     simp [hδ, ← (adeleMatrix _).mul_assoc, Matrix.mul_assoc, actsOnFrame_levi,
       actsOnFrame_radicalElement]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Siegel sets for a hermitian space `S` with complete splitting `P`: there is a compact `Ω` such
 that every adelic point `g` of the unitary group is a rational point (embedded by `S.ratEmbed`)
 times the Levi element of `dyadicDiag x`, the diagonal matrix with entries `2 ^ x i` at infinity and

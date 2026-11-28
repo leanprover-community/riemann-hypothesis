@@ -340,8 +340,6 @@ lemma polyAction_polyOfCoeffs (T : FrobeniusCycle N W R) {n : ℕ} {g : GL (Fin 
         simp [mono, monomial_eq, polyOfCoeffs, exponentOf, prod_prod_type_right, mulVec_eq_sum,
           smul_eq_C_mul, Finset.mul_sum]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- The matrix of `g` on forms for the Frobenius cycle `T.map φ`, obtained from `T` along the ring
 map `φ : R →+* R'`, is the entrywise image under `φ` of the matrix of `g` for `T`. -/
 lemma letterRep_map : (T.map φ).letterRep n g = (T.letterRep n g).map φ := by
