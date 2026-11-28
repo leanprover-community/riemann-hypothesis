@@ -8,6 +8,7 @@ import Mathlib.RingTheory.Regular.IsSMulRegular
 import Mathlib.RingTheory.RootsOfUnity.CyclotomicUnits
 import Mathlib.RingTheory.TotallySplit
 import TauCeti.RingTheory.Perfectoid.Integral.Tilt
+import TauCeti.RingTheory.Smooth.Lifting
 public import Lib.PadicComparison.Primitive.PeriodCoefficients
 public import Lib.PadicComparison.Completion
 public import Lib.PadicComparison.Descent.TestCovers
@@ -487,9 +488,9 @@ lemma hasCrysComparison_of_etale (G : Type) [AddCommMonoid.{0} G] [Module ℚ≥
   -- perfect ring. A map `T → W(b)` that is bijective on `p`-adic completions feeds
   -- `hasCrysComparison_of_witt`.
   let W : Type := Ainf[G]
-  obtain ⟨T, h_etale, ⟨liftIso⟩⟩ :
-      ∃ T : CommAlg W, Etale W T ∧ Nonempty (OC[G] ⊗[W] T ≃ₐ[OC[G]] B) :=
-    exists_etale_lift W OC[G] B (map_surjective _ theta_surjective)
+  obtain ⟨T, _, _, h_etale, ⟨liftIso⟩⟩ :=
+    Algebra.Etale.exists_tensorProduct_algEquiv_of_surjective W OC[G] B
+      (map_surjective _ theta_surjective)
   algebraize [(algebraMap W T).comp (algebraMap Ainf W)]
   let bc S [CommRing S] [Algebra Ainf S] : S[G] ⊗[W] T ≃ₐ[S] S ⊗[Ainf] T :=
     IsPushout.cancelBaseChangeAlg Ainf S W S[G] T
@@ -501,7 +502,7 @@ lemma hasCrysComparison_of_etale (G : Type) [AddCommMonoid.{0} G] [Module ℚ≥
     (Module.Flat.trans _ OFlat[G] _).isTorsionFree.isSMulRegular (.of_ne_zero pFlat_ne_zero)
   obtain ⟨k, hk⟩ : ∃ k : CommAlgCat.of Ainf T ⟶ wittFunctor.obj b,
       IsCompletionBijective p k.hom.toLinearMap :=
-    exists_isCompletionBijective_witt_tensor G T h_perf
+    exists_isCompletionBijective_witt_tensor G (.of W T) h_perf
   -- `B ≅ OC ⊗ T`, so `Hom(B, -)` on `OC`-algebras is `Hom(T, -)` over `Ainf`.
   let iso : reprBy B ≅ restrictAlg Ainf OC ⋙ reprBy (.of Ainf T) :=
     reprFunctor.mapIso (CommAlgCat.isoMk ((bc OC).symm.trans (liftIso.restrictScalars OC))).op ≪≫

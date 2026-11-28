@@ -1,6 +1,5 @@
 module
 
-import TauCeti.RingTheory.Smooth.Lifting
 import TauCeti.AlgebraicGeometry.Frobenius.Perfect
 import Mathlib.CategoryTheory.Limits.Shapes.Connected
 import Mathlib.FieldTheory.IsPerfectClosure
@@ -30,8 +29,6 @@ constant.
   with p = 0, perfected charts B₁ (where g ∣ f) and B₂ (where f ∣ g) form an exact sequence
   B → B₁ × B₂ → B₀ → 0; the proof splits Laurent polynomials by
   `New.Variety.surjective_toLaurent_add_invert`.
-* `New.Variety.exists_etale_lift`: an étale algebra over a quotient of C lifts to an étale algebra
-  over C.
 * `New.Variety.perfectRing_of_etale`: an étale algebra over a perfect ring in which p = 0 is
   perfect.
 
@@ -445,16 +442,6 @@ section EtalePerfect
 open Function Algebra RingHom NeZero TensorProduct FormallyUnramified Etale IsLocalization Away
 
 variable [ThePrime p] (C D : Type) [CommRing C] [CommRing D] [Algebra C D]
-
-/-- Étale algebras lift along surjections: if C → D is onto and B is étale over D, then
-B ≅ D ⊗_C T as D-algebras for some étale C-algebra T. -/
-@[stacks 04D1 "stated for a surjective ring map"]
-lemma exists_etale_lift (B : Type*) [CommRing B] [Algebra D B] [h_etale : Etale D B]
-    (h_surj : Surjective (algebraMap C D)) :
-    ∃ T : CommAlg C, Algebra.Etale C T ∧ Nonempty (D ⊗[C] T ≃ₐ[D] B) := by
-  obtain ⟨T, _, _, h_etale_T, e⟩ :=
-    Algebra.Etale.exists_tensorProduct_algEquiv_of_surjective C D B h_surj
-  exact ⟨.of _ T, h_etale_T, e⟩
 
 open AlgebraicGeometry in
 /-- An étale algebra over a perfect ring in which p = 0 is perfect. -/
