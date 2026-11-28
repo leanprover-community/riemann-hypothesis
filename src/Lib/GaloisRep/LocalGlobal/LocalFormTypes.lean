@@ -165,27 +165,22 @@ lemma IsEigenform.of_mem_cyclicSpan {y : localFormRep V κ hw} {P : FinPlace E �
   intro u hu hx_at hq
   obtain ⟨hsplit, hx_hecke⟩ := hx_at hq
   obtain ⟨h_fixed, t, hP, h_hecke⟩ := (hasHeckePolyAt_iff hsplit).mp hx_hecke
+  have h_triv (g : GL (Fin (card n)) (LocField w)) : embedAtSplit hw g ∈ Gf.trivialOn n {u} := by
+    aesop (add simp atPlace_ofSplitPlace_of_ne)
   rw [mem_span] at hy
   refine ⟨hsplit, (hasHeckePolyAt_iff hsplit).mpr
     ⟨hy (sphericalAt (V.formTranslation κ) u) ?_, t, hP, fun j ↦ ?_⟩⟩
   · -- an element `k` of the compact subgroup at `u` moves past the translation and fixes `x`
     rintro _ ⟨g, rfl⟩
-    refine mem_levelSpace.mpr fun k ↦ ?_
-    obtain ⟨-, hk_supp⟩ := k.prop
-    have h_triv : embedAtSplit hw g ∈ Gf.trivialOn n {u} := by
-      aesop (add simp atPlace_ofSplitPlace_of_ne)
-    have h_comm : Commute k.val (embedAtSplit hw g) := commute_supportedOn_trivialOn hk_supp h_triv
-    have h_swap :
-        V.formTranslation κ k (V.formTranslation κ (embedAtSplit hw g) x) =
-          V.formTranslation κ (embedAtSplit hw g) (V.formTranslation κ k x) := by
-      rw [← mul_apply_eq_comp, ← map_mul, h_comm.eq, map_mul, mul_apply_eq_comp]
-    simpa [mem_levelSpace.mp h_fixed k] using h_swap
+    exact map_mem_levelSpace_of_commute h_fixed fun k ↦
+      (commute_supportedOn_trivialOn k.prop.2 (h_triv g)).map (V.formTranslation κ)
   · -- the Hecke operators at `u` commute with the translations at `w`, so each translate of `x`
     -- is an eigenvector with eigenvalue `t j`
-    have h_range : Set.range (fun g ↦ (localFormRep V κ hw).ρ g x) ⊆
-        eigenspace (heckeSplit (V.formTranslation κ) hsplit j) (t j) := by
-      simp_all [← heckeSplit_comm_of_trivialOn, range_subset_iff, atPlace_ofSplitPlace_of_ne]
-    simpa using hy _ h_range
+    apply End.mem_eigenspace_iff.mp (hy ((heckeSplit _ hsplit j).eigenspace (t j)) ?_)
+    rintro _ ⟨g, rfl⟩
+    apply End.mem_eigenspace_iff.mpr
+    simpa [h_hecke j] using
+      (heckeSplit_comm_of_trivialOn (π := V.formTranslation κ) (v := x) hsplit j (h_triv g)).symm
 
 /-- At a split place w, a form x has Hecke polynomial P if and only if, in the local
 representation of GL_n(E_w) on forms, GL_n(O_w) fixes x, the j-th Hecke operator scales x by
