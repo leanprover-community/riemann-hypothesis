@@ -672,11 +672,11 @@ lemma exists_algebraMap_eq_of_isIntegral_of_smooth {P A : Type} [CommRing P]
   exact ⟨x, congrArg Subtype.val hw⟩
 
 /-- Let `Spec B` be the pull-back of a Galois covering `c : W ⟶ Z` with group `Δ` along
-`u : Spec A ⟶ Z`, where `A` has field-valued points of characteristic zero, `B` is integral over `A`
-and `p : Spec B ⟶ W` is a monomorphism. Let `σ` be the action of `Δ` on `B` compatible with the
-action `s` on `W` (`specMap f` is the morphism of spectra induced by `f`). If an ideal `I` of `B`
-contains the image of no nonzero element of `A` and contains all the conjugates `σ g b`, then `b` is
-nilpotent. -/
+`u : Spec A ⟶ Z`. Assume `K` has characteristic zero for every field-valued point
+`Spec K ⟶ Spec A`, `B` is integral over `A`, and `p : Spec B ⟶ W` is a monomorphism.
+Let `σ` be the action of `Δ` on `B` compatible with the action `s` on `W` (`specMap f` is the
+morphism of spectra induced by `f`). If an ideal `I` of `B` contains the image of no nonzero element
+of `A` and contains all the conjugates `σ g b`, then `b` is nilpotent. -/
 lemma IsGaloisCovering.isNilpotent_of_forall_mem {R : CommRingCat} {W Z : Over (Spec R)}
     {c : W ⟶ Z} {Δ : FiniteGrp} {s : Δ →* CategoryTheory.End W} (hG : IsGaloisCovering c s)
     {A B : Type} [CommRing A] [CommRing B] [Algebra A B] [Algebra.IsIntegral A B]
@@ -710,9 +710,10 @@ lemma mem_range_algebraMap_of_forall_apply_eq {A B K Ω : Type*} [CommRing A] [C
   (InfiniteGalois.mem_bot_iff_fixed _).mpr fun τ ↦ hz ((τ.restrictScalars A).toAlgHom.comp χ)
 
 /-- Let `c : W ⟶ Z` be a Galois covering with group `Δ`, with `W` proper and `Z` separated over
-`R`. Let `A` be étale over a normal domain `P`, with field-valued points of characteristic zero, and
-let `Spec B` be the pull-back of `c` along `u : Spec A ⟶ Z`. If `B` is reduced and finite over `A`
-and the projection `p : Spec B ⟶ W` is a monomorphism, then `B` is étale over `A`.
+`R`. Let `A` be étale over a normal domain `P` and suppose `K` has characteristic zero for every
+field-valued point `Spec K ⟶ Spec A`. Let `Spec B` be the pull-back of `c` along `u : Spec A ⟶ Z`.
+If `B` is reduced and finite over `A` and the projection `p : Spec B ⟶ W` is a
+monomorphism, then `B` is étale over `A`.
 (Galois covering: `c` is surjective and `Δ`, acting through `s`, is simply transitive on its fibres
 of points in fields of characteristic zero; `specMap f` is the morphism of spectra induced by the
 ring map `f`.) -/
