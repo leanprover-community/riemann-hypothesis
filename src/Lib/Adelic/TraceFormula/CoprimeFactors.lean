@@ -3,7 +3,6 @@ module
 import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 import Mathlib.Topology.Connected.Separation
-import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import Mathlib.Topology.Separation.CompletelyRegular
 import TauCeti.LinearAlgebra.Trace.Idempotent
@@ -539,18 +538,14 @@ lemma exists_testFunction_eq_indicator_of_isCompact {V : Set (GL n (LocField w))
     (hV_open : IsOpen V) (hV_compact : IsCompact V) (φ : TestFunction (Gf E n)) :
     ∃ Ψ : TestFunction (GL n (LocField w) × Gf E n), ∀ (g : GL n (LocField w)) (y : Gf E n),
       Ψ.val (g, y) = V.indicator 1 g * φ.val (ofSplitPlace hw g * y * (ofSplitPlace hw g)⁻¹) := by
-  obtain ⟨hφ_const, hφ_compact, -⟩ := φ.property
-  have hV_const : IsLocallyConstant (V.indicator (1 : GL n (LocField w) → ℂ)) :=
-    (LocallyConstant.indicator 1 ⟨hV_compact.isClosed, hV_open⟩).isLocallyConstant
-  have h_shear : Continuous fun z : GL n (LocField w) × Gf E n ↦
-      (z.1, (ofSplitPlace hw z.1)⁻¹ * z.2 * ofSplitPlace hw z.1) := by fun_prop
-  refine ⟨⟨fun z ↦ V.indicator 1 z.1 * φ.val (ofSplitPlace hw z.1 * z.2 * (ofSplitPlace hw z.1)⁻¹),
-    (hV_const.comp_continuous continuous_fst).mul (hφ_const.comp_continuous (by fun_prop)),
-    .of_support_subset_isCompact ((hV_compact.prod hφ_compact).image h_shear) fun z hz ↦ ?_,
-    Set.subset_univ _⟩, fun _ _ ↦ rfl⟩
-  exact ⟨(z.1, ofSplitPlace hw z.1 * z.2 * (ofSplitPlace hw z.1)⁻¹),
-    ⟨Set.mem_of_indicator_ne_zero (left_ne_zero_of_mul hz),
-      subset_tsupport _ (right_ne_zero_of_mul hz)⟩, by simp [mul_assoc]⟩
+  let f := TestFunction.tensor (TestFunction.setIndicator hV_open hV_compact) φ
+  let conjugate (z : GL n (LocField w) × Gf E n) :=
+    (z.1, ofSplitPlace hw z.1 * z.2 * (ofSplitPlace hw z.1)⁻¹)
+  refine ⟨⟨f.val ∘ conjugate, schwartzBruhat.comp f.property
+    (fun z ↦ (z.1, (ofSplitPlace hw z.1)⁻¹ * z.2 * ofSplitPlace hw z.1)) ?_ (Set.mapsTo_univ _ _)⟩,
+    fun _ _ ↦ rfl⟩
+  rintro ⟨g, y⟩
+  simp [conjugate, mul_assoc]
 
 /-- Let `w` be a split finite place of the CM field `E`, let `ε` be an idempotent matrix over `E_w`,
 and let `iwasawaSet hε O_w` be the set `GL_n(O_w) N`, with `N` the unipotent radical of the

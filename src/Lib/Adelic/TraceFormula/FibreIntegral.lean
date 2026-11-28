@@ -1,7 +1,6 @@
 module
 
 import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
-import Mathlib.Topology.LocallyConstant.Algebra
 import Mathlib.Topology.Separation.CompletelyRegular
 import Mathlib.Topology.Separation.Connected
 public import Lib.Adelic.TraceFormula.TestFunction
@@ -116,9 +115,7 @@ lemma TestFunction.integrable_prodMk_left [MeasurableSpace Y] [OpensMeasurableSp
 /-- The characteristic function of a compact open set. -/
 noncomputable def TestFunction.setIndicator {V : Set Y} (hV_open : IsOpen V)
     (hV_compact : IsCompact V) : TestFunction Y :=
-  ⟨V.indicator 1,
-    (LocallyConstant.indicator 1 ⟨hV_compact.isClosed, hV_open⟩).isLocallyConstant,
-    HasCompactSupport.intro hV_compact fun _ hy ↦ indicator_of_notMem hy _, subset_univ _⟩
+  TestFunction.clopenIndicator ⟨hV_compact.isClosed, hV_open⟩ hV_compact
 
 /-- The characteristic function of `V`, as a test function, is `V.indicator 1`. -/
 lemma TestFunction.setIndicator_apply {V : Set Y} (hV_open : IsOpen V) (hV_compact : IsCompact V)

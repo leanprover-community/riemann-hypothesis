@@ -63,12 +63,17 @@ def TestFunction.translate : Representation ℂ (G × G) (TestFunction G) where
 @[simp] lemma TestFunction.translate_apply (g : G × G) (f : TestFunction G) (x : G) :
     (translate g f : G → ℂ) x = (f : G → ℂ) (g.1⁻¹ * x * g.2) := rfl
 
+/-- The characteristic function of a compact clopen set, as a test function. -/
+noncomputable def TestFunction.clopenIndicator {Y : Type} [TopologicalSpace Y] {V : Set Y}
+    (hV : IsClopen V) (hc : IsCompact V) : TestFunction Y :=
+  ⟨V.indicator 1, (LocallyConstant.indicator 1 hV).isLocallyConstant,
+    HasCompactSupport.intro' hc hV.1 fun _ hy ↦ Set.indicator_of_notMem hy _, Set.subset_univ _⟩
+
 /-- The characteristic function of a compact open subgroup. -/
 noncomputable def TestFunction.indicator {K : Subgroup G} (hK_open : IsOpen (K : Set G))
     (hK_compact : IsCompact (K : Set G)) : TestFunction G :=
-  ⟨Set.indicator K 1,
-    (LocallyConstant.indicator 1 ⟨K.isClosed_of_isOpen hK_open, hK_open⟩).isLocallyConstant,
-    HasCompactSupport.intro hK_compact fun _ hx ↦ Set.indicator_of_notMem hx _, Set.subset_univ _⟩
+  -- Keep the characteristic function visible when proofs unfold `indicator`.
+  delta% TestFunction.clopenIndicator ⟨K.isClosed_of_isOpen hK_open, hK_open⟩ hK_compact
 
 /-- The linear map `a ↦ a ⋆ 1_K` from the group algebra to the test functions, for a compact open
 subgroup `K`: the group element `b` goes to the characteristic function of the coset `b K`. -/
