@@ -806,7 +806,7 @@ theorem New.Rows.exists_int_weylRep_invariant_fockPoly_eq_smul_monomial {P : Par
           ← Finsupp.prod_finsetSum_index, prod_prod_type, ← prod_pow_eq_pow_sum, Pi.single_apply,
           ↓ pow_add]
       rw [weight_eq, aeval_monomial, aeval_monomial, prod_δ, prod_δ]
-      simp [borelMul, mul_pow, mul_comm]
+      simpa [borelMul, mul_pow] using mul_comm _ _
     have star_eq (v : WeylIndex n κ → ℤ) : star (Int.cast ∘ v) = (Int.cast ∘ v : _ → ℂ) := by
       ext; simp
     -- `fockPoly` is determined by `toPoly` through the injective renaming `ι`
