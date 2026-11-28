@@ -72,6 +72,13 @@ namespace New
 
 variable {E : Type*} [Field E] [NumberField E] {x : (𝔸 E)ˣ}
 
+/-- The component of an idele at an infinite place is nonzero. -/
+@[simp]
+lemma val_fst_apply_ne_zero (x : (𝔸 E)ˣ) (w : InfinitePlace E) : (x : 𝔸 E).1 w ≠ 0 := by
+  have h_mul : (x : 𝔸 E).1 w * ((x⁻¹ : (𝔸 E)ˣ) : 𝔸 E).1 w = 1 :=
+    congrFun (congrArg Prod.fst x.mul_inv) w
+  exact left_ne_zero_of_mul_eq_one h_mul
+
 /-- The module `|x|` of an element of `(𝔸 E)ˣ`, as a homomorphism to `ℝ`: the product of the
 squared norms of the components at the infinite places (each a copy of `ℂ`) and of the norms at the
 finite places. For a totally complex `E` this is the idelic module. -/

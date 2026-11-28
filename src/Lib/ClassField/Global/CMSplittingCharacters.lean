@@ -357,11 +357,6 @@ places and at infinity (`exists_quadraticIdeleChar_eq_neg_one`). -/
 noncomputable def quadraticIdeleChar (x : (𝔸 E)ˣ) : ℂ :=
   if IsRealTimesNorm E x then 1 else -1
 
-private lemma val_fst_apply_ne_zero (x : (𝔸 E)ˣ) (w : InfinitePlace E) : (x : 𝔸 E).1 w ≠ 0 := by
-  have h_mul : (x : 𝔸 E).1 w * ((x⁻¹ : (𝔸 E)ˣ) : 𝔸 E).1 w = 1 :=
-    congrFun (congrArg Prod.fst x.mul_inv) w
-  exact left_ne_zero_of_mul_eq_one h_mul
-
 /-- Let `w = w̄` be a finite place of `E`, above the place `v` of the maximal real subfield `F`. The
 quadratic character `η` of `E/F` is not trivial on `F_v^×`: it is `-1` at some finite idele `t` that
 is fixed by conjugation and has the component `1` at all finite places other than `w`. Here

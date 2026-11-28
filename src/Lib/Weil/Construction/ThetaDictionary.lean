@@ -93,9 +93,6 @@ lemma realImage_apply (γ : n → E) (x : InfinitePlace E × n) :
     realImage γ x = Φ x.1 (γ x.2) / (scaleIdele E : 𝔸 E).1 x.1 := by
   simp [realImage, realCoord]
 
-lemma scaleIdele_fst_ne_zero (w : InfinitePlace E) : (scaleIdele E : 𝔸 E).1 w ≠ 0 := fun h_zero ↦
-  by simpa [h_zero] using conj_scaleIdele_mul E w
-
 /-- The real image of rational vectors as an additive map. -/
 noncomputable def realImageHom : (n → E) →+ InfinitePlace E × n → ℂ :=
   .mk' realImage fun γ γ' ↦ funext fun x ↦ by simp [realImage_apply, add_div]
@@ -111,7 +108,7 @@ lemma realImage_zero : realImage (0 : n → E) = 0 := realImageHom.map_zero
 lemma injective_realImageHom : Function.Injective (realImageHom (E := E) (n := n)) := by
   refine (injective_iff_map_eq_zero _).2 fun γ hγ ↦ funext fun i ↦ ?_
   obtain ⟨w⟩ : Nonempty (InfinitePlace E) := inferInstance
-  simpa [realImageHom, realImage_apply, scaleIdele_fst_ne_zero] using congrFun hγ (w, i)
+  simpa [realImageHom, realImage_apply] using congrFun hγ (w, i)
 
 variable (E n) in
 /-- The lattice `𝔞₀ⁿ` of `Eⁿ`: the vectors `γ` whose finite image `α⁻¹ γ` lies in `Ôⁿ`. -/
@@ -347,7 +344,7 @@ lemma mem_realLattice {x : InfinitePlace E × n → ℂ} :
 /-- The image of `𝔞₀ⁿ` is a lattice of full rank in `ℂ^(Φ × n)`. -/
 instance : IsFullRankLattice (realLattice E n) := by
   have h_unit : IsUnit (realImage fun _ : n ↦ (1 : E)) := by
-    simp [Pi.isUnit_iff, realImage_apply, scaleIdele_fst_ne_zero]
+    simp [Pi.isUnit_iff, realImage_apply]
   -- The image is the lattice `Variety.classLattice` of the trivial torsion class `⊥` for the scalar
   -- matrix `α`, in the real coordinates scaled by the image of `1`.
   let Q : Variety.RealVectors E n ≃L[ℝ] (InfinitePlace E × n → ℂ) :=
