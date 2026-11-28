@@ -4,12 +4,12 @@ public import Mathlib.LinearAlgebra.Lagrange
 public import Lib.Speed
 
 /-!
-# Sums of residues at simple real poles
+# Sums of residues at simple poles
 
-This file computes sums of residues of rational functions whose denominator has simple real roots.
-Let `p = nodal univ x` be the monic polynomial with the distinct roots `x i`. The residue of `F / p`
-at `x i` is `F (x i) / p' (x i)`. This file also determines the sign of `p' (x i)` when the roots
-are ordered.
+This file computes sums of residues of rational functions whose denominator has simple roots over a
+field. Let `p = nodal univ x` be the monic polynomial with the distinct roots `x i`. The residue of
+`F / p` at `x i` is `F (x i) / p' (x i)`. Over a strictly ordered ring, this file also determines
+the sign of `p' (x i)` when the roots are ordered.
 
 ## Main definitions and results
 
@@ -35,13 +35,15 @@ namespace New.DiscreteSeries
 
 section Residues
 
-variable {ι : Type*} [Fintype ι] [DecidableEq ι] {x : ι → ℝ} {F : ℝ[X]}
+variable {ι R K : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- The derivative of `nodal univ x`, the monic polynomial with roots `x j`, at the root `x i` is
 the product of the `x i - x j` over `j ≠ i`. -/
-lemma eval_derivative_nodal (x : ι → ℝ) (i : ι) :
+lemma eval_derivative_nodal [CommRing R] (x : ι → R) (i : ι) :
     (derivative (nodal univ x)).eval (x i) = ∏ j ∈ univ.erase i, (x i - x j) := by
   rw [eval_nodal_derivative_eval_node_eq (mem_univ i), eval_nodal]
+
+variable [Field K] {x : ι → K} {F : K[X]}
 
 /-- Let `p = nodal univ x` be the monic polynomial with the distinct roots `x i` and let `F` be
 monic of smaller degree. The residues `F (x i) / p' (x i)` of `F / p` add up to `1` if
@@ -60,7 +62,7 @@ theorem sum_eval_div_eval_derivative_nodal (hx : Function.Injective x) (hF : F.M
 /-- Let `p = nodal univ x` have the distinct roots `x i`, let `deg F < deg p` and let `c` not be a
 root. The residues of `F / ((t - c) p)` at the roots of `p` add up to minus the residue
 `F (c) / p (c)` at the only other pole. -/
-theorem sum_eval_div_sub_mul_eval_derivative_nodal (hx : Function.Injective x) {c : ℝ}
+theorem sum_eval_div_sub_mul_eval_derivative_nodal (hx : Function.Injective x) {c : K}
     (hc : ∀ i : ι, c ≠ x i) (h_degree : F.natDegree < Fintype.card ι) :
     ∑ i : ι, F.eval (x i) / ((x i - c) * (derivative (nodal univ x)).eval (x i)) =
       -(F.eval c / (nodal univ x).eval c) := by
@@ -77,7 +79,7 @@ end Residues
 
 section Signs
 
-variable {M : ℕ} {x : Fin M → ℝ}
+variable {M : ℕ} {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R] {x : Fin M → R}
 
 /-- For decreasing roots `x 0 > x 1 > …` of `p = nodal univ x` the number `p' (x i)` has the sign
 `(-1) ^ i`. -/
@@ -98,7 +100,7 @@ sign `(-1) ^ (M - 1 - i)`. -/
 lemma derivative_nodal_sign_of_strictMono (hx : StrictMono x) (i : Fin M) :
     0 < (-1) ^ (M - 1 - (i : ℕ)) * (derivative (nodal univ x)).eval (x i) := by
   have h_nodal : nodal univ (x ∘ Fin.rev) = nodal univ x :=
-    (EquivLike.bijective (Fin.revPerm (n := M))).prod_comp (fun j ↦ (X : ℝ[X]) - C (x j))
+    (EquivLike.bijective (Fin.revPerm (n := M))).prod_comp (fun j ↦ (X : R[X]) - C (x j))
   rw [Nat.sub_sub, Nat.add_comm 1]
   simpa only [Function.comp_apply, Fin.rev_rev, Fin.val_rev, h_nodal] using
     derivative_nodal_sign_of_strictAnti (hx.comp_strictAnti Fin.rev_strictAnti) i.rev
