@@ -90,10 +90,7 @@ lemma New.integrable_tsum_of_lintegral_lt_top {X Y : Type*} [MeasurableSpace X] 
     integrable_prod_count_of_lintegral_lt_top hk_meas h_fin
   simpa only [integral_count_eq_tsum] using h_prod.integral_prod_left
 
-variable {Λ G Y : Type*} [Group Λ] [Group G] [TopologicalSpace G] [MeasurableSpace G]
-  [MulAction Λ Y] [Countable Y] {i : Λ →* G}
-
-omit [Group G] [TopologicalSpace G] in
+variable {G Y : Type*} [MeasurableSpace G] [Countable Y] in
 /-- If the `k y` are almost everywhere strongly measurable and `∑ ‖k y‖` has finite integral, then
 the integrals of the `k y` sum to the integral of `∑ k y`. -/
 lemma New.hasSum_integral_of_lintegral_tsum_lt_top {k : Y → G → ℂ} {ν : Measure G}
@@ -106,8 +103,9 @@ lemma New.hasSum_integral_of_lintegral_tsum_lt_top {k : Y → G → ℂ} {ν : M
     tsum_le_tsum fun y ↦ eNorm_integral_le_lintegral_eNorm (k y)
   exact (Summable.of_eNorm (h_le.trans_lt h_fin).ne).hasSum
 
+variable {Λ G Y : Type*} [Group Λ] [Group G] [TopologicalSpace G] [MulAction Λ Y] {i : Λ →* G}
+
 open scoped Classical in
-omit [MeasurableSpace G] [Countable Y] in
 /-- Let `i` map `Λ` isomorphically onto `Γ`, let `γ` carry a point of `C` into `C` exactly when
 `i γ` lies in the subgroup `S` of `Γ`, and let `D` be the union of the translates of `C`. If `β` has
 sum `1` over each `S`-orbit in `G`, then the sum of `β (i γ * x)` over the `γ` that carry `y` into
@@ -123,8 +121,8 @@ lemma New.tsum_cutoff_smul_mem_block (hi : Function.Injective i) {Γ S : Subgrou
     exact tsum_cutoff_smul_mem_eq_one hi hS hC hβ_one hγ₀ x
   · simp [not_exists.1 (mt (hD y).2 hy)]
 
-variable [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G]
-  [BorelSpace G]
+variable [MeasurableSpace G] [Countable Y] [IsTopologicalGroup G] [LocallyCompactSpace G]
+  [SecondCountableTopology G] [T2Space G] [BorelSpace G]
 
 /-- Unfolding of a sum of nonnegative terms over the translates of a block. Let `i` map `Λ`
 isomorphically onto the discrete subgroup `Γ`, let `γ` carry a point of `C` into `C` exactly when

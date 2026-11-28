@@ -334,11 +334,8 @@ open Matrix NumberField
 
 namespace New
 
-variable {E n k : Type*} [Field E] [NumberField E] [IsCMField E]
-variable [Fintype n] [DecidableEq n]
-variable [Fintype k] [DecidableEq k]
+variable {E n k : Type*} [Field E] [NumberField E] [Fintype n] [DecidableEq k]
 
-omit [DecidableEq n] [Fintype k] in
 /-- A matrix that is primitive over the subring `O` (it and some left inverse have entries in `O`)
 comes from a left invertible matrix over the ring `O`. -/
 lemma IsPrimitiveMatrix.exists_map_subtype_eq {R : Type*} [CommRing R] {O : Subring R}
@@ -352,6 +349,8 @@ lemma IsPrimitiveMatrix.exists_map_subtype_eq {R : Type*} [CommRing R] {O : Subr
     rw [Matrix.map_mul, hLX, Matrix.map_one _ (map_zero _) (map_one _)]
   exact ⟨X', ⟨L', map_injective O.subtype_injective h_map⟩, rfl⟩
 
+variable [DecidableEq n]
+
 /-- A square matrix is primitive over the subring `O` (it and some left inverse have entries in `O`)
 iff it is invertible and both it and its inverse have entries in `O`. -/
 lemma isPrimitiveMatrix_iff {R : Type*} [CommRing R] {O : Subring R} {g : Matrix n n R} :
@@ -364,7 +363,6 @@ lemma isPrimitiveMatrix_iff {R : Type*} [CommRing R] {O : Subring R} {g : Matrix
     obtain ⟨hx_int, hx_inv_int⟩ := mem_intGL.1 hx
     exact ⟨hx_int, ↑x⁻¹, hx_inv_int, x.inv_mul⟩
 
-omit [IsCMField E] in
 /-- A square matrix over the ring `Ô E` of integral finite adeles is invertible if its reduction
 to the residue field at every finite place is invertible. -/
 lemma isUnit_of_forall_isUnit_reduceAt {M : Matrix n n (Ô E)}
@@ -375,7 +373,6 @@ lemma isUnit_of_forall_isUnit_reduceAt {M : Matrix n n (Ô E)}
     simpa [RingHom.map_det] using ((isUnit_iff_isUnit_det _).1 (hM w)).ne_zero
   exact (mem_Ô.1 M.det.property w).eq_of_not_lt (by rwa [← reduceAt_eq_zero])
 
-omit [IsCMField E] in
 /-- For square matrices `a`, `x`, `y` over the ring `Ô E` of integral finite adeles of a number
 field `E`, there is a matrix `c` such that `a + (1 - a * x) * c * (1 - y * a)` is invertible. -/
 lemma exists_isUnit_add_Ô (a x y : Matrix n n (Ô E)) :
@@ -403,6 +400,8 @@ lemma exists_isUnit_add_Ô (a x y : Matrix n n (Ô E)) :
   simp [D, e, r, diagonal_map (map_zero _), isUnit_iff_isUnit_det, Finset.prod_ne_zero_iff,
     -reduceAt_eq_zero]
   grind
+
+variable [IsCMField E] [Fintype k]
 
 /-- For left invertible matrices `X`, `Y` over the ring `Ô E` of integral finite adeles of a CM
 field `E` with `Xᴴ X = Yᴴ Y`, some invertible `a` sends `X` to `Y` while its adjoint sends `Y`

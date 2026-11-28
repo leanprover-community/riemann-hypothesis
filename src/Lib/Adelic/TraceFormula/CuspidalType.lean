@@ -42,7 +42,7 @@ namespace New
 
 section FiniteField
 
-variable {n k : Type} [Fintype n] [DecidableEq n] [Field k] [Finite k]
+variable {n k : Type} [Fintype n] [DecidableEq n] [Field k]
 
 /-- For a set `T` of coordinates, the block of a matrix with rows in `T` and columns outside `T`,
 as a linear map. -/
@@ -51,7 +51,6 @@ noncomputable def upperRightBlock (T : Finset n) :
   AddMonoidHom.mk' (fun Z : Matrix n n k ↦ toLin' (Z.submatrix Subtype.val Subtype.val))
     fun Y Z : Matrix n n k ↦ by simp [submatrix_add]
 
-omit [Finite k] in
 /-- Every linear map from the coordinates outside `T` to those in `T` is the upper right block of
 some matrix. -/
 lemma upperRightBlock_surjective (T : Finset n) :
@@ -63,7 +62,6 @@ lemma upperRightBlock_surjective (T : Finset n) :
     ext i j; simp [Z, i.property, j.property]
   exact ⟨Z, by simp [upperRightBlock, h_block]⟩
 
-omit [Finite k] in
 /-- The element `radicalHom _ (ofAdd Z)` of the radical of `T` has the similarity class of the block
 triangular endomorphism with identity blocks on the diagonal and the upper right block of `Z` off
 it. -/
@@ -86,6 +84,8 @@ lemma simClassOf_radicalHom (T : Finset n) (Z : Matrix n n k) :
     ext i
     simp [fromBlocks_mulVec, upperRightBlock, Function.comp_def,
       LinearEquiv.sumArrowLequivProdArrow, Equiv.sumArrowEquivProdArrow]
+
+variable [Finite k]
 
 /-- A function of the upper right block of a matrix has the same mean over all matrices as over all
 linear maps. -/
@@ -162,12 +162,13 @@ lemma sum_coeff_labelIdem_radicalHom {c : k[X]} (hc : IsLabel (Fintype.card n) c
 end FiniteField
 
 variable {E n ι : Type} [Field E] [NumberField E] [IsCMField E] [Fintype n] [DecidableEq n]
-  {w : ι → FinPlace E} [Fintype ι]
+  {w : ι → FinPlace E}
 
-omit [Fintype ι] in
 lemma coe_mem_levelOf_bot {k : stdLevel E n} :
     k.val ∈ levelOf w ⊥ ↔ stdLevel.reduceFamily w k = 1 := by
   rw [mem_levelOf, exists_prop_of_true k.property, Subgroup.mem_bot]
+
+variable [Fintype ι]
 
 /-- For places `w i`, none conjugate to another or to itself, lift an element `a` of the group
 algebra of their finite groups by `liftResidue` and convolve it with the indicator of `levelOf w ⊥`.

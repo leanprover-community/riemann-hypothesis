@@ -112,11 +112,7 @@ instance : Fact ((1 : K →* ℂ) =ᶠ[nhds 1] 1) := ⟨.rfl⟩
 
 variable (e ρ χ)
   [o : Fact (χ =ᶠ[nhds 1] 1)] -- `χ` is trivial near `1`
-  [H : HasFiniteType e.range K] -- `K` is compact open, with finitely many classes and finite
-                                -- stabilisers
-  [i : Fact (Injective e)] -- `e` is injective
 
-omit H i in
 /-- Let `K` be an open subgroup of `G` and `χ` a character of `K` that is trivial near `1` (given as
 a `Fact`). A function `f : G → W` on which each `k ∈ K` acts by right translation (`rightRegular`)
 as multiplication by `χ k` is smooth, that is, has an open right stabiliser. -/
@@ -130,6 +126,10 @@ lemma mem_smoothFunctions_of_eigen [IsTopologicalGroup G] (hK : IsOpen (K : Set 
   exact (rightStabilizer f).isOpen_of_mem_nhds (hK.isOpenMap_subtypeVal.nhds_le 1 h_fix)
 
 /-! ### Forms supported on one class -/
+
+variable [H : HasFiniteType e.range K] -- `K` is compact open, with finitely many classes and finite
+                                       -- stabilisers
+  [i : Fact (Injective e)] -- `e` is injective
 
 variable (K) in
 /-- For injective `e` and `K` of finite type for `e(Γ)`, the finite set of the `γ : Γ` with

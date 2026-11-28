@@ -234,10 +234,9 @@ end Mean
 
 section Haar
 
-variable {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] [T2Space Γ]
-  {Y : Type} [TopologicalSpace Y] [T2Space Y]
+variable {Γ : Type} [Group Γ] [TopologicalSpace Γ] [IsTopologicalGroup Γ] {Y : Type}
+  [TopologicalSpace Y]
 
-omit [T2Space Γ] [T2Space Y] in
 /-- There is an open subgroup of `Γ` whose elements fix a given test function `Ψ` on `Γ × Y` under
 right translation in the first variable. -/
 lemma TestFunction.exists_isOpen_subgroup_forall_mul_right_eq (Ψ : TestFunction (Γ × Y)) :
@@ -253,6 +252,8 @@ lemma TestFunction.exists_isOpen_subgroup_forall_mul_right_eq (Ψ : TestFunction
       (fun (o : Γ) (p : Γ × Y) ↦ (p.1 * o⁻¹, p.2)) (fun o p ↦ by rw [mul_inv_cancel_right])
   refine ⟨S, S.isOpen_of_mem_nhds (g := 1) ?_, fun o ho ↦ ho⟩
   filter_upwards [h_const.eventually_eq 1] with o ho g y using by simpa using congrFun ho (g, y)
+
+variable [T2Space Γ] [T2Space Y]
 
 /-- If `Γ` has a compact open subgroup `K`, every test function on `Γ × Y` is a finite sum of
 products `(g, y) ↦ 1_{a O} g * ψ y`, for one compact open subgroup `O`, cosets `a O` and test

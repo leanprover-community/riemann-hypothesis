@@ -59,9 +59,8 @@ lemma isUnit_stdForm : IsUnit (stdForm E s) := .of_mul_eq_one _ stdForm_mul_self
 
 end
 
-variable {E : Type*} [Field E] [CMType E] {n : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
+variable {E : Type*} [Field E] [CMType E] {n : Type*} [DecidableEq n] {s : n → ℤˣ}
 
-omit [Fintype n] in
 /-- The standard form `stdForm E s`, a diagonal matrix with the signs `s` at the infinite places
 and `1` at the finite places, is hermitian. -/
 @[simp]
@@ -69,6 +68,8 @@ lemma conjTranspose_stdForm : (stdForm E s)ᴴ = stdForm E s := by
   rw [stdForm, diagonal_conjTranspose, diagonal_eq_diagonal_iff]
   intro i
   ext <;> simp
+
+variable [Fintype n]
 
 /-- The diagonal embedding `toAdele` of `E` in its adeles, given at the infinite places by the CM
 type, commutes with the conjugate transpose of matrices. -/

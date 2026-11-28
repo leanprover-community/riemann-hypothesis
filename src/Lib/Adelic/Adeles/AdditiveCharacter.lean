@@ -311,12 +311,13 @@ lemma toAdele_inv_mul_cancel {x : E} (hx : x ≠ 0) : toAdele x⁻¹ * toAdele x
   simp [← map_mul, hx]
 
 variable [IsTotallyComplex E] [Fintype n] [IsTopologicalAddGroup B]
-  [SecondCountableTopology B] [T2Space B] [LocallyCompactSpace B]
-  [(volume (α := B)).IsAddHaarMeasure]
 
 /-! ### From a fundamental domain to a lattice -/
 
-omit [T2Space B] in
+section
+
+variable [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
+
 /-- If a compact set `C` contains a fundamental domain of volume one for `f : I →+ B`
 (`HasFundDomain f C`), then for a finite index type `n` the power `C^n` contains one for the
 coordinatewise map `(n → I) →+ (n → B)`. -/
@@ -329,6 +330,7 @@ lemma HasFundDomain.pi (h : HasFundDomain f C) :
   choose a ha ha_uniq using fun i : n ↦ h_uniq (x i)
   exact ⟨a, fun i _ ↦ ha i, fun b hb ↦ funext fun i ↦ ha_uniq i (b i) (hb i trivial)⟩
 
+variable [T2Space B] in
 /-- Let `f : I →+ B` be additive, `B` a second countable locally compact Hausdorff abelian group
 with Haar measure. If the compact set `C` contains a measurable `D` of volume one whose translates
 by the `f a` partition `B` (`HasFundDomain f C`), then the image of `f` is a lattice of covolume
@@ -369,6 +371,8 @@ lemma HasFundDomain.isCovolOneLattice [BorelSpace B]
   exact
     { toDiscreteTopology := h_disc, toCompactSpace := h_cpt,
       toIsProbabilityMeasure := ⟨h_mass⟩, exists_compact_cover := ⟨C, hC, h_cover⟩ }
+
+end
 
 /-! ### The rational points of the adeles and finiteness in compact sets -/
 
@@ -465,8 +469,6 @@ lemma finite_preimage_of_discreteTopology_range {B I : Type*} [AddCommGroup B] [
   -- `f` tends to infinity along the cofinite filter
   simpa using f.tendsto_coe_cofinite_of_isDiscrete hf_inj ⟨h_disc⟩ hC.compl_mem_cocompact
 
-omit [SecondCountableTopology B] [LocallyCompactSpace B] [(volume (α := B)).IsAddHaarMeasure]
-    [T2Space B] in
 /-- Let `f : I →+ B` be an injective additive map whose image is a lattice of covolume one in `B`
 (discrete, with compact quotient of measure one). Then for every compact set `C`, only finitely many
 `a` in `I` have `f a ∈ C`. -/
@@ -494,7 +496,7 @@ lemma finite_setOf_map_toAdele_mem [Fintype m] {K : Set (Matrix m n (𝔸 E))} (
   (isCovolOneLattice_ratMatrices (E := E) (m := m) (n := n)).finite_preimage
     (Matrix.map_injective (toAdele (E := E)).injective) hK
 
-variable [StarAddMonoid B] [ContinuousStar B]
+variable [T2Space B] [StarAddMonoid B] [ContinuousStar B]
 
 instance : IsClosed (X := B) (selfAdjoint B) := isClosed_fixedPoints continuous_star
 

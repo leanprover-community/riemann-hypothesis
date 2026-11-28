@@ -395,10 +395,8 @@ open NumberField Matrix MeasureTheory New.Core Set ENNReal Finset Fintype Functi
 
 section
 
-variable {E n : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
-  (V : Space E n s)
+variable {E n : Type*} [Field E] [CMType E] {s : n → ℤˣ}
 
-omit [Fintype n] [DecidableEq n] in
 /-- If `θ - star θ` is invertible, then `S + θ • T` determines the hermitian matrices `S`, `T`. -/
 lemma Core.eq_of_add_smul_eq_of_hermitian {θ : E} (hθ : IsUnit (θ - star θ))
     {S T S' T' : Matrix n n E} (hS : Sᴴ = S) (hT : Tᴴ = T) (hS' : S'ᴴ = S') (hT' : T'ᴴ = T')
@@ -410,6 +408,8 @@ lemma Core.eq_of_add_smul_eq_of_hermitian {θ : E} (hθ : IsUnit (θ - star θ))
     linear_combination (norm := module) h_eq - h_star
   obtain rfl : T = T' := hθ.smul_left_cancel.1 h_sub
   rw [add_right_cancel h_eq]
+
+variable [Fintype n] [DecidableEq n] (V : Space E n s)
 
 /-- For a compact set `B` of adelic matrices there is a finite constant `C` such that, for all
 `x : n → ℤ`, at most `C * (2 ^ numInfPlaces E) ^ ∑ i, ∑ j, (x i + x j)₊` hermitian matrices `T`

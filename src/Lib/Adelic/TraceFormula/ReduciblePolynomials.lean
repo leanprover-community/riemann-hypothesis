@@ -104,14 +104,13 @@ lemma tsum_polyTerm_ratEmbed_mul (φ : Gf E n → ℂ) (S : Set E[X]) (δ : U V.
   simp only [MulEquiv.toEquiv_eq_coe, MulEquiv.coe_toEquiv, MulAut.conj_apply, kernelTerm,
     h_charpoly, h_point]
 
-variable [Nonempty n]
-
-omit [Nonempty n] in
 /-- For a measurable `k` and a test function `φ`, the sum of the values of `k ⊗ φ` at `x⁻¹ γ x`,
 over the rational points `γ` with characteristic polynomial in `S`, is measurable in `x`. -/
 lemma measurable_tsum_polyTerm (hk : Measurable k) (φ : TestFunction (Gf E n)) (S : Set E[X]) :
     Measurable fun x : G E s ↦ ∑' γ : U V.J, V.polyTerm k φ S γ x := by
   fun_prop
+
+variable [Nonempty n]
 
 /-- Let `k` be a cusp kernel of order `B ≥ 13 * card n ^ 3` (`IsCuspKernel`), and `φ` a test
 function. The sum of the values of `k ⊗ φ` at `x⁻¹ γ x`, over the rational points `γ` with
