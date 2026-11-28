@@ -43,9 +43,8 @@ row, the exponents below are built from the following numbers.
   of lifts keeps integrality.
 * `New.Data.IsWeakChainDatum.gaugeLe_restrictedChain_collisionSum`: at a non-split prime `p < x₁`
   the bounds for single lifts add up to the gain, less the loss and `m` times the collision sum.
-* `New.Data.IsWeakChainDatum.gaugeLe_restrictedChain_of_isFullMark`: for a full mark Λ, the bound
-  for `New.Data.restrictedChain` on the image of the m-th power of the product of the operators
-  `New.Data.IsMarked.scaledHeckeOperator`.
+* `New.Data.IsWeakChainDatum.gaugeLe_restrictedChain_of_isMarked`: the bound on the image of the
+  `m`-th power of the marked Hecke product includes one collision sum per lift.
 * `New.Data.IsMarked.isOntoUpToColength_prod_scaledHeckeOperator_pow`: this power keeps the integral
   source forms and is onto modulo `p ^ j_p` up to a small colength.
 * `New.Data.exists_colengthDvd_gaugeLe_compositeLift`: there is a module of source forms whose
@@ -252,46 +251,43 @@ lemma IsWeakChainDatum.gaugeLe_pow_collisionExponent_smul (hΨ : IsWeakChainDatu
   rw [map_smul]
   exact h_gauge.rpow_mono (by linarith)
 
-/-- **Valuation.** Let `Ψ` be a weak chain datum for the twist `ϑ` (`New.Data.IsWeakChainDatum`) and
-let `p` be prime to the norm of the level of `ϑ`. Let `Λ` be a full mark: a set of primes above `p`,
-disjoint from its conjugate and induced by a-places, that contains the prime of each a-place or its
-conjugate, where `p < x₁` is exceptional and non-split. Let `Y` be the product over `l ∈ Λ` of
-`scaledHeckeOperator l`, the Hecke operator at `l` of index `D.ceilLogLifts p` scaled by
-`p ^ heckeScalingExponent l`.
-
-For an integral source form `v`, the image of `(Y ^ m) v` under the combination
-`restrictedChain ϑ Ψ` of chains of `m` theta lifts has valuation at least `gain p - 2 * loss p`,
-that is, `p`-adic gauge at most `p ^ (2 * loss p - gain p)`. Here `gain p` is the divisibility asked
-of the chain and `loss p = f a (log b)² / p`, times `m` if `p ≡ ±1` modulo `m`. -/
-theorem IsWeakChainDatum.gaugeLe_restrictedChain_of_isFullMark (hΨ : IsWeakChainDatum ϑ Ψ)
-    (hQ : p.Coprime ϑ.normQ)
-    {v : D.SourceForm} (hv : v ∈ D.integralSourceForms) (hΛ : D.IsFullMark Λ) :
-    GaugeLe 1 (p ^ (2 * D.loss p - D.gain p))
+/-- **Valuation.** Let `Λ` be a marked set of primes above an exceptional prime `p` below `x₁`,
+and let `Y` be the product of the scaled Hecke operators at its members. The restricted chain on
+`(Y ^ m) v`, for an integral source form `v`, has valuation at least
+`gain p - 2 * loss p - m * C`. Each lift pays the collision sum `C` outside the places inducing
+`Λ`. A full mark covers every conjugate pair and gives `C = 0`. Equivalently, the `p`-adic
+gauge is at most `p ^ (m * C + 2 * loss p - gain p)`. Here `gain p` is the divisibility asked of
+the chain. At an exceptional prime `loss p = f a (log b)² / p` since `p ≢ ±1` modulo `m`. -/
+theorem IsWeakChainDatum.gaugeLe_restrictedChain_of_isMarked (hΨ : IsWeakChainDatum ϑ Ψ)
+    (hQ : p.Coprime ϑ.normQ) {v : D.SourceForm} (hv : v ∈ D.integralSourceForms)
+    (hΛ : D.IsMarked Λ) :
+    GaugeLe 1 (p ^ (D.m * D.collisionSum p (placesInducing Λ) + 2 * D.loss p - D.gain p))
       (restrictedChain ϑ Ψ (((Λ.attach.toList.map hΛ.scaledHeckeOperator).prod ^ D.m) v)) := by
-  have hm_pos : (0 : ℝ) < D.m := HasLogBound.pos D
-  -- No collision is left. The surplus `a / x₁` at each a-place inducing a prime of `Λ`, with
-  -- `loss p / m`, pays for the low columns (`lowColumns`) and for the powers
-  -- `p ^ transferExponent p`.
+  have hm_pos : 0 < (D.m : ℝ) := HasLogBound.pos D
+  let C := D.collisionSum p (placesInducing Λ)
+  -- Each lift loses C. The surplus at the marked places and the loss allowance pay for the
+  -- low columns and the transfer exponents.
   have h_lift (j : ℕ) (hj : j ∈ range D.m) :
-      #Λ * D.transferExponent p + liftLoss Λ j ≤ (2 * D.loss p - D.gain p) / D.m := by
-    have h_bound : D.gain p / D.m + #(D.aPlaces ∩ placesInducing Λ) * (D.a / D.x₁) -
+      #Λ * D.transferExponent p + liftLoss Λ j ≤ C + (2 * D.loss p - D.gain p) / D.m := by
+    have h_bound : D.gain p / D.m - C + #(D.aPlaces ∩ placesInducing Λ) * (D.a / D.x₁) -
         D.f * D.logB ^ 2 * (D.a / p) / D.m ≤ D.divisibilityBound p j (placesInducing Λ) := by
       have h_ne : p ≠ P.d := ne_of_chiK_ne_zero (by simp [hΛ.isExceptional.chiK_eq_neg_one])
-      simpa [hΛ.collisionSum_placesInducing_eq_zero, piPrimeValuation_of_ne h_ne] using
+      simpa [C, piPrimeValuation_of_ne h_ne] using
         le_divisibilityBound (mem_range.1 hj) hΛ.isSmallNonsplit (placesInducing Λ)
     have h_low : #Λ * D.transferExponent p + D.ceilLogLifts p * ∑ σ ∈ placesInducing Λ,
-          D.lowColumns j σ ≤
-        D.loss p / D.m + #(D.aPlaces ∩ placesInducing Λ) * (D.a / D.x₁) :=
+        D.lowColumns j σ ≤ D.loss p / D.m + #(D.aPlaces ∩ placesInducing Λ) * (D.a / D.x₁) :=
       hΛ.card_mul_transferExponent_add_sum_lowColumns_le (mem_range.1 hj)
     have h_loss : D.f * D.logB ^ 2 * (D.a / p) / D.m ≤ D.loss p / D.m :=
       div_le_div_of_nonneg_right (D.le_loss p) hm_pos.le
     rw [liftLoss, sub_div, mul_div_assoc]
     linarith
-  refine (hΨ.gaugeLe_scaledHeckeOperator_pow hQ hΛ.toIsMarked hv).rpow_mono ?_
+  refine (hΨ.gaugeLe_scaledHeckeOperator_pow hQ hΛ hv).rpow_mono ?_
   calc ∑ j ∈ range D.m, (#Λ * D.transferExponent p + liftLoss Λ j)
-      ≤ ∑ _j ∈ range D.m, (2 * D.loss p - D.gain p) / D.m := sum_le_sum h_lift
-    _ = 2 * D.loss p - D.gain p := by
-        rw [sum_const, card_range, nsmul_eq_mul, mul_div_cancel₀ _ hm_pos.ne']
+      ≤ ∑ _j ∈ range D.m, (C + (2 * D.loss p - D.gain p) / D.m) := sum_le_sum h_lift
+    _ = D.m * D.collisionSum p (placesInducing Λ) + 2 * D.loss p - D.gain p := by
+      rw [sum_const, card_range, nsmul_eq_mul, mul_add, mul_div_cancel₀ _ hm_pos.ne']
+      dsimp [C]
+      ring
 
 /-! ## The index of the image of the scaled Hecke operators -/
 
@@ -411,7 +407,9 @@ lemma IsChainDatum.gaugeLe_compositeLift_of_isFullMark (hΨ : IsChainDatum ϑ Ψ
     obtain ⟨_, ⟨u, hu, rfl⟩, _, ⟨v, hv, rfl⟩, h_sum⟩ := mem_sup.1 hφ
     exact ⟨u, hu, v, hv, h_sum⟩
   rw [h_eq, map_add]
-  exact (hΨ'.gaugeLe_restrictedChain_of_isFullMark hQ hu hΛ).add
+  have h_mark := hΨ'.gaugeLe_restrictedChain_of_isMarked hQ hu hΛ.toIsMarked
+  rw [hΛ.collisionSum_placesInducing_eq_zero, mul_zero, zero_add] at h_mark
+  exact h_mark.add
     ((hΨ'.gaugeLe_pow_collisionExponent_smul hQ hv hΛ.isSmallNonsplit).rpow_mono (by linarith))
 
 end FixedPrime
