@@ -141,6 +141,7 @@ section Projections
 
 variable {F K U Y}
 
+/-- The representation of a lattice in the class is admissible for `nearOne Γ ⊔ F`. -/
 lemma InClass.isAdmissible (h : InClass F K U Y) : IsAdmissible Y.ρ (nearOne Γ ⊔ F) := h.left
 
 /-- The jumps of a lattice in the class at the embedding `g` lie in `U g`. -/
