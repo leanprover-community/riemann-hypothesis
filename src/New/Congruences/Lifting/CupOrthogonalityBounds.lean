@@ -274,8 +274,8 @@ lemma KummerChart.crysCocycles_le_cupOrthogonal_of_no_small_neg_jump [Topologica
   · exact fun i _ hu ↦ ((hU' i).le_add le_rfl hu).trans (height_le i)
 
 /-- Few low jumps. Let `Γ → Gp p` be an open embedding, let the chart be unramified, `p ≥ 5`,
-`η ≥ 1`, and at each letter `i` let `b i + W + η ≤ (p - 3) a`, `6 (a + η + W) < b i`, and let `p`
-divide no nonzero integer within `6 (a + η + W)` of `0` or `± b i` (`NoMultipleNear`). Let `L` be
+`η ≥ 1`, and at each letter `i` let `b i + W + η ≤ (p - 3) a`, `2 (a + η + W) < b i`, and let `p`
+divide no nonzero integer within `2 (a + η + W)` of `0` or `± b i` (`NoMultipleNear`). Let `L` be
 crystalline with jumps in `U'`, and at each letter let the jump sets of `U` and `U'` lie in
 `[-η, η]` and in far windows `[b i, b i + W]` of opposite signs. If `L` has at most `m` jumps in
 `[-η, η]` at each embedding, then the defect `dualDefect`, the length of the crystalline cocycles of
@@ -285,8 +285,8 @@ lemma KummerChart.dualDefect_le_of_few_low_weights [TopologicalSpace Γ] (k : Ku
     (ζ : k.LetterRoot O) (ho : IsOpenEmbedding Γ.overGp.toGp) (hk : k.IsUnramified) (hp : 5 ≤ p)
     {a η W m : ℕ} {b : k.Letter → ℕ} {ε : k.Letter → ℤˣ}
     (h_height : ∀ i : k.Letter, b i + W + η ≤ (p - 3) * a) (hη : 1 ≤ η)
-    (h_far : ∀ i : k.Letter, 6 * (a + η + W) < b i)
-    (h_gap : ∀ i : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b i)) (hL : InClass ⊤ ⊥ U' L)
+    (h_far : ∀ i : k.Letter, 2 * (a + η + W) < b i)
+    (h_gap : ∀ i : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b i)) (hL : InClass ⊤ ⊥ U' L)
     (hU : ∀ i : k.Letter, FitsWindows η (-ε i) (b i) W (k.letterJumps ζ U i))
     (hU' : ∀ i : k.Letter, FitsWindows η (ε i) (b i) W (k.letterJumps ζ U' i))
     (hm : ∀ g : O →ₐ[ℤ_[p]] ℂ_[p], ∑ u ∈ Icc (-η : ℤ) η, jump L.ρ g u ≤ m) :
@@ -331,8 +331,8 @@ lemma KummerChart.dualDefect_le_of_few_low_weights [TopologicalSpace Γ] (k : Ku
 
 /-- The defect at generic primes. Let `Γ → Gp p` be an open embedding, and let the root `ζ` assign
 the embeddings of `O` to the letters of the chart `k`. Let `k` be unramified, `p ≥ 5`, `η ≥ 1`, and
-at each letter `i` let `b i + W + η ≤ (p - 3) a`, `6 (a + η + W) < b i`, and let `p` divide no
-nonzero integer within `6 (a + η + W)` of `0` or `± b i`. Let `L` be crystalline with jumps in `U'`,
+at each letter `i` let `b i + W + η ≤ (p - 3) a`, `2 (a + η + W) < b i`, and let `p` divide no
+nonzero integer within `2 (a + η + W)` of `0` or `± b i`. Let `L` be crystalline with jumps in `U'`,
 where `U` and `U'` lie at each letter in `[-η, η]` and in the opposite far windows
 `∓ε i [b i, b i + W]`.
 
@@ -344,8 +344,8 @@ lemma KummerChart.dualDefect_eq_zero_and_dualDefect_le [TopologicalSpace Γ] (k 
     (ζ : k.LetterRoot O) (ho : IsOpenEmbedding Γ.overGp.toGp) (hk : k.IsUnramified) (hp : 5 ≤ p)
     {a η W : ℕ} {b : k.Letter → ℕ} {ε : k.Letter → ℤˣ}
     (h_height : ∀ i : k.Letter, b i + W + η ≤ (p - 3) * a) (hη : 1 ≤ η)
-    (h_far : ∀ i : k.Letter, 6 * (a + η + W) < b i)
-    (h_gap : ∀ i : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b i)) (hL : InClass ⊤ ⊥ U' L)
+    (h_far : ∀ i : k.Letter, 2 * (a + η + W) < b i)
+    (h_gap : ∀ i : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b i)) (hL : InClass ⊤ ⊥ U' L)
     (hU : ∀ i : k.Letter, FitsWindows η (-ε i) (b i) W (k.letterJumps ζ U i))
     (hU' : ∀ i : k.Letter, FitsWindows η (ε i) (b i) W (k.letterJumps ζ U' i)) :
     -- (a) the defect vanishes, if `U` and `U'` avoid `[-a, 0)` or `U'` lies in `[-η, 0]`

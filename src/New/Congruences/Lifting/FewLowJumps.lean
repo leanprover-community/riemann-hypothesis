@@ -439,31 +439,30 @@ lemma relLength_deepConstants_le (c' : ℕ → ℤ → ℤ) (hk : k.IsUnramified
 end DeepConstants
 
 /-- Let the chart `k` be unramified, `p ≥ 5`, and let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± b j`, for every letter `j`. Let `X` be a side over the coefficients
+`n` of `0` or `± b`. Let `X` be a side over the coefficients
 `O`, all of whose jumps, the elements of its sets `X.jumpSet j`, are at most `(p - 3) (κ + s)`, so
 that `p ^ κ * E ^ s` kills its cokernels (`E = z + p`). Let the integers in `[-s - u, t - u)` lie
-within `6 (a + η + W)` of `0` or `± b i` for the jumps `u` at the letter `i`. Then `X` has an
+within `n` of `0` or `± b` for the jumps `u` at the letter `i`. Then `X` has an
 element of the extension over `p ^ κ • x` at `i` of depth `raisedOrdersAtZero t`, that is, its
 differences with its translates by the group of the chart have order `t - u` at the level `0` and
 `-u` above on the line of the jump `u`. Its own orders are `t - u` at the level `0` if `u < -s`,
 else `min (t - u) 0`, and `-u` above. -/
 lemma pointsOver_raisedOrdersAtZero_nonempty {k : KummerChart Γ} {O : k.Coeffs}
-    (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ} {b : Letter → ℕ}
-    (hb_gap : ∀ j : Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
+    (hk : k.IsUnramified) (hp : 5 ≤ p) {n b : ℕ} (h_gap : NoMultipleNear p n b)
     {X : PairingSide O} (x : X.paramLattice) (i : Letter) (κ s : ℕ) (t : ℤ)
     (h_top : ∀ j : Letter, ∀ u ∈ X.jumpSet j, u ≤ ((p - 3) * (κ + s) : ℕ))
     (h_near : ∀ u ∈ X.jumpSet i, ∀ y : ℤ, -s - u ≤ y → y < t - u →
-      y ∈ twoWindows (6 * (a + η + W)) (b i) ∪ twoWindows (6 * (a + η + W)) (-b i)) :
+      y ∈ twoWindows n b ∪ twoWindows n (-b : ℤ)) :
     (X.pointsOver x i κ (improvedOrders (raisedOrdersAtZero (-s)) (raisedOrdersAtZero t))
       (raisedOrdersAtZero t)).Nonempty := by
-  refine pointsOver_nonempty_of_near_steps hk (hb_gap i) (pointsOver_nonempty_of_killsCokernel
+  refine pointsOver_nonempty_of_near_steps hk h_gap (pointsOver_nonempty_of_killsCokernel
     (killsCokernel_of_isUnramified κ s h_top hk hp) x) ?_ fun _ _ _ ↦ le_rfl
   rintro (_ | l) u hu y hy_ge hy_lt
   · exact ⟨rfl, h_near u hu y hy_ge hy_lt⟩
   · exact absurd hy_lt (not_lt.2 hy_ge)
 
 /-- Let `S` be a side on an unramified chart `k` and `p ≥ 5`; at every letter `j` let
-`b j + W + η ≤ (p - 3) a`, let `p` divide no nonzero integer within `6 (a + η + W)` of `0` or
+`b j + W + η ≤ (p - 3) a`, let `p` divide no nonzero integer within `2 (a + η + W)` of `0` or
 `± b j`, and let the jumps lie in `[-η, η]` or in `ε j • [b j, b j + W]`. Then there is an element
 of the extension over `p ^ s • d` at the letter `i` of depth `raisedOrdersAtZero (2a + η)`: its
 differences with its translates by the group of the chart have order `2a + η - u` at the level `0`
@@ -473,13 +472,13 @@ lemma pointsOver_raisedOrdersAtZero_nonempty_of_fitsWindows {k : KummerChart Γ}
     {S : k.PairingSide O} {i : Letter} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b : Letter → ℕ} {ε : Letter → ℤˣ}
     (hb_le : ∀ j : Letter, b j + W + η ≤ (p - 3) * a)
-    (hb_gap : ∀ j : Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
+    (hb_gap : ∀ j : Letter, NoMultipleNear p (2 * (a + η + W)) (b j))
     (h_window : ∀ j : Letter, FitsWindows η (ε j) (b j) W (S.jumpSet j)) (s : ℕ)
     (d : S.paramLattice) :
     (S.pointsOver d i s (improvedOrders (raisedOrdersAtZero (-(a - s : ℕ)))
       (raisedOrdersAtZero (2 * a + η)))
       (raisedOrdersAtZero (2 * a + η))).Nonempty := by
-  refine pointsOver_raisedOrdersAtZero_nonempty hk hp hb_gap d i s (a - s) _ (fun j u hu ↦ ?_)
+  refine pointsOver_raisedOrdersAtZero_nonempty hk hp (hb_gap i) d i s (a - s) _ (fun j u hu ↦ ?_)
     fun u hu y hy_ge hy_lt ↦ ?_
   · grw [← le_add_tsub]
     grind [low_or_far_of_fitsWindows (h_window j) hu]
@@ -487,7 +486,7 @@ lemma pointsOver_raisedOrdersAtZero_nonempty_of_fitsWindows {k : KummerChart Γ}
 
 /-- Let `S` be a side on an unramified chart `k` and `p ≥ 5`; at every letter `j` let
 `b j + W + η ≤ (p - 3) a`, let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± b j`, and let the jumps of `S` lie in `[-η, η]` or in
+`2 (a + η + W)` of `0` or `± b j`, and let the jumps of `S` lie in `[-η, η]` or in
 `ε j • [b j, b j + W]`. Write `raisedOrdersAtZero t` for the orders that on the line of a jump `u`
 are `t - u` at the level `0` and `-u` above. With `a - s` taken in `ℕ`, a point with orders
 `raisedOrdersAtZero (-(a - s))` and depth `raisedOrdersAtZero (2a + η)` has the improved orders:
@@ -498,7 +497,7 @@ orders `raisedOrdersAtZero t` and depth `raisedOrdersAtZero (2a + η)`. -/
 lemma pow_smul_constantAt_mem_deepConstants {k : KummerChart Γ} {O : k.Coeffs}
     {S : k.PairingSide O} {i : k.Letter} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b : k.Letter → ℕ} {ε : k.Letter → ℤˣ} (hb_le : ∀ j : k.Letter, b j + W + η ≤ (p - 3) * a)
-    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
+    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b j))
     (h_window : ∀ j : k.Letter, FitsWindows η (ε j) (b j) W (S.jumpSet j)) (s : ℕ)
     (d : S.paramLattice) {t : ℤ}
     (ht : ∀ l : ℕ, ∀ u ∈ S.jumpSet (i.stepBack l), raisedOrdersAtZero t l u ≤
@@ -561,8 +560,8 @@ lemma relLength_deepConstants_add_one_le {k : KummerChart Γ} {O : k.Coeffs}
   exact ⟨β, j, hβ_one, mem_map_of_mem ⟨h_exp, h_deep⟩⟩
 
 /-- Removing the pole. Let `S` be a side on an unramified chart `k` and `p ≥ 5`; at every letter `j`
-let `b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j`, let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± b j`, let the jumps of `S` lie in `[-η, η]` or in
+let `b j + W + η ≤ (p - 3) a` and `2 (a + η + W) < b j`, let `p` divide no nonzero integer within
+`2 (a + η + W)` of `0` or `± b j`, let the jumps of `S` lie in `[-η, η]` or in
 `ε j • [b j, b j + W]`, and let `n j` bound the residue degree `k.f` times the number of jumps in
 `[-η, η]`, counted with multiplicity. The constants at the letter `i` are the letter-`i` parts
 `S.constantAt i d` of `1 ⊗ d`. Their quotient by those that lie below elements of the extension
@@ -571,8 +570,8 @@ length at most `a * n i`. -/
 lemma relLength_constantAt_range_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
     {S : k.PairingSide O} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b n : Letter → ℕ} {ε : Letter → ℤˣ} (hb_le : ∀ j : Letter, b j + W + η ≤ (p - 3) * a)
-    (hb_gt : ∀ j : Letter, 6 * (a + η + W) < b j)
-    (hb_gap : ∀ j : Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
+    (hb_gt : ∀ j : Letter, 2 * (a + η + W) < b j)
+    (hb_gap : ∀ j : Letter, NoMultipleNear p (2 * (a + η + W)) (b j))
     (h_window : ∀ j : Letter, FitsWindows η (ε j) (b j) W (S.jumpSet j))
     (hn : ∀ j : Letter, ∑ u ∈ Icc (-η : ℤ) η, k.f * S.jumpMultiplicity j u ≤ n j) (i : Letter) :
     relLength (S.constantAt i).range (S.deepConstants i 0 (raisedOrdersAtZero (2 * a + η))) ≤
@@ -588,7 +587,7 @@ lemma relLength_constantAt_range_deepConstants_le {k : KummerChart Γ} {O : k.Co
     refine pow_smul_constantAt_mem_deepConstants hk hp hb_le hb_gap h_window 0 d
       fun l u hu ↦ ?_
     -- No jump lies in `[-a, -η)`.
-    have h_far : 6 * (a + η + W) < b (i.stepBack l) := hb_gt _
+    have h_far : 2 * (a + η + W) < b (i.stepBack l) := hb_gt _
     simp only [raisedOrdersAtZero, improvedOrders]
     obtain h_low | h_pos | h_neg := low_or_far_of_fitsWindows (h_window _) hu <;> omega
   have h_kill (t : ℤ) (ht : t ≤ 0) (d : S.paramLattice) :
@@ -629,13 +628,13 @@ lemma sum_cost_zero_le {k : KummerChart Γ} (hk : k.IsUnramified) {N m : ℕ} (h
 
 /-- Let the Kummer chart `k` of the prime `p ≥ 5` be unramified, so that the cost `k.cost 0 y` of
 the step `y` at the level `0` is `v_p(y)`, with `v_p(0) = 0`. Let `β + W + η ≤ (p - 3) a`, let `p`
-divide no nonzero integer within `6 (a + η + W)` of `0` or `± β`, and let `t` be a multiple
+divide no nonzero integer within `2 (a + η + W)` of `0` or `± β`, and let `t` be a multiple
 of `p` below `β + W + a + η + p`. For `u` in `[-η, η]` or in `-[β, β + W]`, the steps `y`
 with `2a + η - u ≤ y < t` cost at most `a + 1` together, and nothing if `u` is not in
 `[-η, η]`. -/
 lemma sum_cost_zero_Ico_multiple_le {k : KummerChart Γ} (hk : k.IsUnramified) (hp : 5 ≤ p)
     {a η W β : ℕ} {u t : ℤ}
-    (h_top : β + W + η ≤ (p - 3) * a) (h_gap : NoMultipleNear p (6 * (a + η + W)) (β : ℤ))
+    (h_top : β + W + η ≤ (p - 3) * a) (h_gap : NoMultipleNear p (2 * (a + η + W)) (β : ℤ))
     (hu : (-η ≤ u ∧ u ≤ η) ∨ (β ≤ -u ∧ -u ≤ β + W)) (ht_dvd : (p : ℤ) ∣ t)
     (ht_lt : t < β + W + a + η + p) :
     ∑ y ∈ Ico (2 * a + η - u) t, k.cost 0 y ≤ if u ∈ Icc (-η : ℤ) η then a + 1 else 0 := by
@@ -655,14 +654,14 @@ lemma sum_cost_zero_Ico_multiple_le {k : KummerChart Γ} (hk : k.IsUnramified) (
     grind [mem_twoWindows_union_iff]
 
 /-- Let the Kummer chart `k` be unramified, so that the cost `k.cost 1 y` of the step `y` at the
-level `1` is `v_p(y) + 3`. Let `6 (a + η + W) < β`, let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± β`, and let `u` lie in `[-η, η]` or in `σ • [β, β + W]`. The depth
+level `1` is `v_p(y) + 3`. Let `p` divide no nonzero integer within
+`2 (a + η + W)` of `0` or `± β`, and let `u` lie in `[-η, η]` or in `σ • [β, β + W]`. The depth
 `negativeWindowDepth a η W β' 1 u` is `W + 1 - u`, plus `2a` if `|u| ≤ η`; the window start `β'`
 enters this function only at the level `0`, so it is arbitrary here. The steps `y ≥ -u` below this
 depth cost at most `3 (W + 1)`, plus `6a` if `|u| ≤ η`. -/
 lemma sum_cost_one_Ico_negativeWindowDepth_le {k : KummerChart Γ} (hk : k.IsUnramified)
-    {a η W β : ℕ} (β' : ℕ) {σ : ℤˣ} {U : Finset ℤ} {u : ℤ} (h_far : 6 * (a + η + W) < β)
-    (h_gap : NoMultipleNear p (6 * (a + η + W)) (β : ℤ)) (h_window : FitsWindows η σ β W U)
+    {a η W β : ℕ} (β' : ℕ) {σ : ℤˣ} {U : Finset ℤ} {u : ℤ}
+    (h_gap : NoMultipleNear p (2 * (a + η + W)) (β : ℤ)) (h_window : FitsWindows η σ β W U)
     (hu : u ∈ U) :
     ∑ y ∈ Ico (-u) (negativeWindowDepth a η W β' 1 u), k.cost 1 y ≤
       3 * (W + 1) + if u ∈ Icc (-η : ℤ) η then 6 * a else 0 := by
@@ -678,8 +677,8 @@ lemma sum_cost_one_Ico_negativeWindowDepth_le {k : KummerChart Γ} (hk : k.IsUnr
   split_ifs <;> omega
 
 /-- Let `S` be a side on an unramified Kummer chart `k` and `p ≥ 5`. At every letter `j` let
-`b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j`, let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± b j`, let the jumps of `S` lie in `[-η, η]` or in
+`b j + W + η ≤ (p - 3) a` and `2 (a + η + W) < b j`, let `p` divide no nonzero integer within
+`2 (a + η + W)` of `0` or `± b j`, let the jumps of `S` lie in `[-η, η]` or in
 `ε j • [b j, b j + W]`, and let `n j` and `r j` bound the residue degree `k.f` times the numbers of
 low jumps and of all jumps, counted with multiplicity. Let `ε i = -1` and let `m = i.stepBack 1` be
 the previous letter. `S.deepConstants i 0 o` consists of the constants at `i` below elements of the
@@ -691,8 +690,8 @@ those for the second has length at most `(a + 1) n i + 3 (W + 1) r m + 6a n m`. 
 lemma relLength_deepConstants_negativeWindowDepth_le {k : KummerChart Γ} {O : k.Coeffs}
     {S : k.PairingSide O} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b n r : k.Letter → ℕ} {ε : k.Letter → ℤˣ} (hb_le : ∀ j : k.Letter, b j + W + η ≤ (p - 3) * a)
-    (hb_gt : ∀ j : k.Letter, 6 * (a + η + W) < b j)
-    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
+    (hb_gt : ∀ j : k.Letter, 2 * (a + η + W) < b j)
+    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b j))
     (h_window : ∀ j : k.Letter, FitsWindows η (ε j) (b j) W (S.jumpSet j))
     (hn : ∀ j : k.Letter, ∑ u ∈ Icc (-η : ℤ) η, k.f * S.jumpMultiplicity j u ≤ n j)
     (hr : ∀ j : k.Letter, ∑ u ∈ S.jumpSet j, k.f * S.jumpMultiplicity j u ≤ r j)
@@ -728,14 +727,14 @@ lemma relLength_deepConstants_negativeWindowDepth_le {k : KummerChart Γ} {O : k
       omega
   -- Level `1`: a line has `W + 1` steps, `2 * a` more if it is low; each costs at most `3`.
   set m : Letter := i.stepBack 1
-  have hm_far : 6 * (a + η + W) < b m := hb_gt m
   have h_cost_one : ∀ u ∈ S.jumpSet m, ∑ y ∈ Ico (d 1 u) (negativeWindowDepth a η W (b i) 1 u),
     k.cost 1 y ≤
       3 * (W + 1) + if u ∈ Icc (-η : ℤ) η then 6 * a else 0 := fun u hu ↦ by
     simpa [d] using
-      sum_cost_one_Ico_negativeWindowDepth_le hk (b i) hm_far (hb_gap m) (h_window m) hu
+      sum_cost_one_Ico_negativeWindowDepth_le hk (b i) (hb_gap m) (h_window m) hu
   have h_anti : AntitoneOn (negativeWindowDepth a η W (b i) 1) (S.jumpSet m) := fun u hu v hv h_le ↦
     by
+    have := hb_gt m
     have hu_win := low_or_far_of_fitsWindows (h_window m) hu
     simp only [negativeWindowDepth, one_ne_zero, ite_false, ite_true, abs_le]
     lia
@@ -759,8 +758,8 @@ lemma relLength_deepConstants_negativeWindowDepth_le {k : KummerChart Γ} {O : k
   simpa using relLength_trans h_level_zero h_level_one
 
 /-- Let `S` be a side on an unramified Kummer chart `k` and `p ≥ 5`. At every letter `j` let
-`b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j`, let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± b j`, let the jumps of `S` lie in `[-η, η]` or in
+`b j + W + η ≤ (p - 3) a` and `2 (a + η + W) < b j`, let `p` divide no nonzero integer within
+`2 (a + η + W)` of `0` or `± b j`, let the jumps of `S` lie in `[-η, η]` or in
 `ε j • [b j, b j + W]`, and let `n j` and `r j` bound the residue degree `k.f` times the numbers of
 low jumps and of all jumps, counted with multiplicity. The constants at the letter `i` are the
 letter-`i` parts `S.constantAt i d` of `1 ⊗ d` for `d` in `S.paramLattice`. Their quotient by those
@@ -770,8 +769,8 @@ group of the chart have orders `fewLowJumpsDepth a η W (b i) (ε i)` has length
 lemma relLength_constantAt_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
     {S : k.PairingSide O} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b n r : k.Letter → ℕ} {ε : k.Letter → ℤˣ} (hb_le : ∀ j : k.Letter, b j + W + η ≤ (p - 3) * a)
-    (hb_gt : ∀ j : k.Letter, 6 * (a + η + W) < b j)
-    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
+    (hb_gt : ∀ j : k.Letter, 2 * (a + η + W) < b j)
+    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b j))
     (h_window : ∀ j : k.Letter, FitsWindows η (ε j) (b j) W (S.jumpSet j))
     (hn : ∀ j : k.Letter, ∑ u ∈ Icc (-η : ℤ) η, k.f * S.jumpMultiplicity j u ≤ n j)
     (hr : ∀ j : k.Letter, ∑ u ∈ S.jumpSet j, k.f * S.jumpMultiplicity j u ≤ r j) (i : k.Letter) :
@@ -788,12 +787,12 @@ lemma relLength_constantAt_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
     hb_gap
       h_window hn hr i ((units_eq_one_or _).resolve_left hε))).trans (mod_cast by lia)
 
-/-- Let `b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j` at every letter `j`. If the jumps of the
+/-- Let `b j + W + η ≤ (p - 3) a` and `2 (a + η + W) < b j` at every letter `j`. If the jumps of the
 paired sides `T` and `S` lie in `[-η, η]` or in far windows `∓ε j [b j, b j + W]` of opposite signs,
 then the jumps of the Tate dual side are at most `(p - 3) a`. -/
 lemma tateDualSide_jump_le {k : KummerChart Γ} {O : k.Coeffs} {S : k.PairingSide O} {a η W : ℕ}
     {b : Letter → ℕ} {ε : Letter → ℤˣ}
-    (hb_le : ∀ i : Letter, b i + W + η ≤ (p - 3) * a) (hb_gt : ∀ i : Letter, 6 * (a + η + W) < b i)
+    (hb_le : ∀ i : Letter, b i + W + η ≤ (p - 3) * a) (hb_gt : ∀ i : Letter, 2 * (a + η + W) < b i)
     (hS_window : ∀ i : Letter, FitsWindows η (ε i) (b i) W (S.jumpSet i))
     {T : PairingSide O} (P : SidePairing T S)
     (hT_window : ∀ j : Letter, FitsWindows η (-ε j) (b j) W (T.jumpSet j)) (j : Letter) (u : ℤ)
@@ -802,7 +801,7 @@ lemma tateDualSide_jump_le {k : KummerChart Γ} {O : k.Coeffs} {S : k.PairingSid
   simp only [abs_eq_max_neg] at h
   grind [hb_le j, hb_gt j]
 
-/-- The inequality for a safe move at the level `1`. Let `6 (a + η + W) < β`, let the jump `u` of
+/-- The inequality for a safe move at the level `1`. Let `2 (a + η + W) < β`, let the jump `u` of
 the moving side lie in `[-η, η]` or in `-σ • [β, β + W]`, and the jump `v` of the resting side in
 `[-η, η]` or in `σ • [β, β + W]`; then `-u - v - 1` is the jump of the Tate dual side that pairs
 with them. Write `e t w` for `improvedOrders (raisedOrdersAtZero (-a)) (raisedOrdersAtZero t) 0 w`,
@@ -811,7 +810,7 @@ of the dual point and `min (-u) (e (2a + η) u)` of the move and of the depth
 `negativeWindowDepth a η W β' 1 v` of the resting point is positive. -/
 lemma improvedOrders_add_negativeWindowDepth_one_pos {a η W : ℕ} {σ : ℤˣ} {β β' : ℕ}
     {U V : Finset ℤ}
-    {u v : ℤ} (h_far : 6 * (a + η + W) < β) (hU_window : FitsWindows η (-σ) β W U) (hu : u ∈ U)
+    {u v : ℤ} (h_far : 2 * (a + η + W) < β) (hU_window : FitsWindows η (-σ) β W U) (hu : u ∈ U)
     (hV_window : FitsWindows η σ β W V) (hv : v ∈ V) :
     0 < improvedOrders (raisedOrdersAtZero (-a)) (raisedOrdersAtZero a) 0 (-u - v - 1) +
       min (-u) (improvedOrders (raisedOrdersAtZero (-a)) (raisedOrdersAtZero (2 * a + η)) 0 u) +
@@ -839,8 +838,8 @@ lemma improvedOrders_add_negativeWindowDepth_one_pos {a η W : ℕ} {σ : ℤˣ}
     omega
 
 /-- Let the chart `k` be unramified, `p ≥ 5` and `η ≥ 1`; at every letter `j` let
-`b j + W + η ≤ (p - 3) a` and `6 (a + η + W) < b j`, let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± b j`, and let the jumps of the paired sides `S` and `T` lie in
+`b j + W + η ≤ (p - 3) a` and `2 (a + η + W) < b j`, let `p` divide no nonzero integer within
+`2 (a + η + W)` of `0` or `± b j`, and let the jumps of the paired sides `S` and `T` lie in
 `[-η, η]` or in the opposite far windows `± ε j • [b j, b j + W]`. Let `x₀` and `x` be points of `T`
 over `c` at the letter before `i` and at `i`, of depth `raisedOrdersAtZero (2a + η)`. At the level
 `0` their own orders are `2a + η - u` if `u < -a`, else `min (2a + η - u) 0`, and `-u` above. Let
@@ -853,8 +852,8 @@ components in the lattices of `T` and `S` of `φ x₀ - x` and `g • x' - x'` i
 lemma isSafeMoveFst_of_negativeWindowDepth {k : KummerChart Γ} {O : k.Coeffs} {S : k.PairingSide O}
     (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ} {b : k.Letter → ℕ} {ε : k.Letter → ℤˣ}
     (hb_le : ∀ j : k.Letter, b j + W + η ≤ (p - 3) * a)
-    (hb_gt : ∀ j : k.Letter, 6 * (a + η + W) < b j)
-    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b j))
+    (hb_gt : ∀ j : k.Letter, 2 * (a + η + W) < b j)
+    (hb_gap : ∀ j : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b j))
     (hS_window : ∀ j : k.Letter, FitsWindows η (ε j) (b j) W (S.jumpSet j))
     (hη : 1 ≤ η) {T : k.PairingSide O} (P : T.SidePairing S)
     (hT_window : ∀ j : k.Letter, FitsWindows η (-ε j) (b j) W (T.jumpSet j)) {c : T.paramLattice}
@@ -874,7 +873,8 @@ lemma isSafeMoveFst_of_negativeWindowDepth {k : KummerChart Γ} {O : k.Coeffs} {
   let o : ℕ → ℤ → ℤ := improvedOrders (raisedOrdersAtZero (-a)) (raisedOrdersAtZero (2 * a + η))
   obtain ⟨x'', hx''⟩ : (P.tateDualSide.pointsOver 1 (i.stepBack 1) 0 z
     (raisedOrdersAtZero a)).Nonempty := by
-    refine pointsOver_raisedOrdersAtZero_nonempty hk hp hb_gap 1 (i.stepBack 1) 0 a a
+    refine pointsOver_raisedOrdersAtZero_nonempty hk hp (hb_gap (i.stepBack 1))
+      1 (i.stepBack 1) 0 a a
       (by simpa only [zero_add] using tateDualSide_jump_le hb_le hb_gt hS_window P hT_window)
       fun u hu y hy_ge hy_lt ↦ ?_
     rw [mem_twoWindows_union_iff]
@@ -894,7 +894,7 @@ lemma isSafeMoveFst_of_negativeWindowDepth {k : KummerChart Γ} {O : k.Coeffs} {
   rcases l with _ | _ | m
   · -- At the level `0` the depth `b i + W + a + η` exceeds the pole of `x`.
     change 0 < 0 + min (o 0 u) 0 + (b i + W + a + η)
-    have h_far : 6 * (a + η + W) < b i := hb_gt i
+    have h_far : 2 * (a + η + W) < b i := hb_gt i
     simp only [o, improvedOrders, raisedOrdersAtZero, ite_true]
     obtain h_low | h_pos | h_neg := low_or_far_of_fitsWindows (hT_window i) hu <;> omega
   · change 0 < z 0 (-u - v - 1) + min (o (0 + 1) u) (o 0 u) + negativeWindowDepth a η W (b i) 1 v
@@ -906,8 +906,8 @@ lemma isSafeMoveFst_of_negativeWindowDepth {k : KummerChart Γ} {O : k.Coeffs} {
     omega
 
 /-- Let `S` be a side on an unramified chart `k` and `p ≥ 5`. At every letter `i` let
-`b i + W + η ≤ (p - 3) a` and `6 (a + η + W) < b i`, let `p` divide no nonzero integer within
-`6 (a + η + W)` of `0` or `± b i`, let the jumps lie in `[-η, η]` or in `ε i • [b i, b i + W]`, and
+`b i + W + η ≤ (p - 3) a` and `2 (a + η + W) < b i`, let `p` divide no nonzero integer within
+`2 (a + η + W)` of `0` or `± b i`, let the jumps lie in `[-η, η]` or in `ε i • [b i, b i + W]`, and
 let `n i` and `r i` bound the residue degree `k.f` times the numbers of low jumps and of all jumps,
 counted with multiplicity. Take the `d` in `S.paramLattice` such that at every letter `i` the
 letter-`i` part `S.constantAt i d` of `1 ⊗ d` lies below an element of the extension without pole
@@ -917,8 +917,8 @@ quotient of length at most `∑ i, (n i (8a + 1) + 3 r i (W + 1))`. -/
 lemma relLength_iInf_comap_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
     {S : k.PairingSide O} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b n r : k.Letter → ℕ} {ε : k.Letter → ℤˣ} (hb_le : ∀ i : k.Letter, b i + W + η ≤ (p - 3) * a)
-    (hb_gt : ∀ i : k.Letter, 6 * (a + η + W) < b i)
-    (hb_gap : ∀ i : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b i))
+    (hb_gt : ∀ i : k.Letter, 2 * (a + η + W) < b i)
+    (hb_gap : ∀ i : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b i))
     (h_window : ∀ i : k.Letter, FitsWindows η (ε i) (b i) W (S.jumpSet i))
     (hn : ∀ i : k.Letter, ∑ u ∈ Icc (-η : ℤ) η, k.f * S.jumpMultiplicity i u ≤ n i)
     (hr : ∀ i : k.Letter, ∑ u ∈ S.jumpSet i, k.f * S.jumpMultiplicity i u ≤ r i) :
@@ -942,8 +942,8 @@ lemma relLength_iInf_comap_deepConstants_le {k : KummerChart Γ} {O : k.Coeffs}
 `S` be a side over the coefficients `O`: a Galois lattice `Y`, a linear map `S.cocycleMap` from a
 lattice `S.paramLattice` to the crystalline cocycles of `Y`, and sets `S.jumpSet i` that contain the
 Hodge–Tate jumps of `Y` at the letters `i`. Suppose that at every letter `i`
-* `b i + W + η ≤ (p - 3) a` and `6 (a + η + W) < b i`;
-* `p` divides no nonzero integer within `6 (a + η + W)` of `0`, `b i` or `-b i`;
+* `b i + W + η ≤ (p - 3) a` and `2 (a + η + W) < b i`;
+* `p` divides no nonzero integer within `2 (a + η + W)` of `0`, `b i` or `-b i`;
 * `S.jumpSet i` lies in the union of the low window `[-η, η]` and the far window
 `ε i • [b i, b i + W]`;
 * `n i` and `r i` bound `k.f` times the number of jumps of `Y` at `i` in `[-η, η]` and in
@@ -961,8 +961,8 @@ lemma exists_relLength_le_and_isScaledCupCoboundary {k : KummerChart Γ} {O : k.
     {S : k.PairingSide O} (hk : k.IsUnramified) (hp : 5 ≤ p) {a η W : ℕ}
     {b n r : k.Letter → ℕ} {ε : k.Letter → ℤˣ}
     (hb_le : ∀ i : k.Letter, b i + W + η ≤ (p - 3) * a)
-    (hb_gt : ∀ i : k.Letter, 6 * (a + η + W) < b i)
-    (hb_gap : ∀ i : k.Letter, NoMultipleNear p (6 * (a + η + W)) (b i))
+    (hb_gt : ∀ i : k.Letter, 2 * (a + η + W) < b i)
+    (hb_gap : ∀ i : k.Letter, NoMultipleNear p (2 * (a + η + W)) (b i))
     (h_window : ∀ i : k.Letter, FitsWindows η (ε i) (b i) W (S.jumpSet i))
     (hn_low : ∀ i : k.Letter, ∑ u ∈ Icc (-η : ℤ) η, k.f * S.jumpMultiplicity i u ≤ n i)
     (hr_all : ∀ i : k.Letter, ∑ u ∈ S.jumpSet i, k.f * S.jumpMultiplicity i u ≤ r i) (hη : 1 ≤ η) :
@@ -1001,7 +1001,7 @@ lemma exists_relLength_le_and_isScaledCupCoboundary {k : KummerChart Γ} {O : k.
     (plainDepth a η 1 0) := by
     have h_gap : ∀ u ∈ T.jumpSet i, -(a : ℤ) ≤ u → -(η : ℤ) ≤ u := by
       intro u hu hu_ge
-      have h_far : 6 * (a + η + W) < b i := hb_gt i
+      have h_far : 2 * (a + η + W) < b i := hb_gt i
       obtain h_low | h_pos | h_neg := low_or_far_of_fitsWindows (hT_window i) hu <;> omega
     have h_pole : x i ∈ T.pointsOver c i 0 (raisedOrdersAtZero (-η))
       (raisedOrdersAtZero (2 * a + η)) :=
@@ -1016,7 +1016,7 @@ lemma exists_relLength_le_and_isScaledCupCoboundary {k : KummerChart Γ} {O : k.
       fun l u hu ↦ ?_
     have hu_ge : l = 0 → -u ≤ b i + W := by
       rintro rfl
-      have h_far : 6 * (a + η + W) < b i := hb_gt i
+      have h_far : 2 * (a + η + W) < b i := hb_gt i
       obtain h_low | h_pos | h_neg := low_or_far_of_fitsWindows (h_window i) hu <;> omega
     simp only [δ, fewLowJumpsDepth, ite_apply, standardDepth, raisedOrdersAtZero,
       negativeWindowDepth]

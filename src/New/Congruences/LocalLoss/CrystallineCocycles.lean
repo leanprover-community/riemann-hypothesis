@@ -491,7 +491,7 @@ embeddings `g : O → ℂ_ℓ` such that `g ζ` is the Teichmüller root of unit
 * `h_jumps`: either the negative members of all `U g` and `U' g` are at most `-h / 2` and at most
   `μ` jumps of `L` at each `g` lie in `[-η, η]`, or every `U' g` lies in `[-η, 0]`;
 * `2 b < ℓ (v + 1)`, `v < h³` and `2 v < (K + 1) Q`;
-* `h_gap`: `ℓ` divides no nonzero integer within `6 (2 (v + 1) + η + W)` of `0` or `± a`.
+* `h_gap`: `ℓ` divides no nonzero integer within `2 (2 (v + 1) + η + W)` of `0` or `± a`.
 
 Then the defect of `L` for the class of `U`, the length of the crystalline cocycles modulo those
 orthogonal, under cup products, to the crystalline cocycles of the lattices in the class, normalised
@@ -511,7 +511,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
     (h_jumps : HasFewLowJumps L h μ η U U' ∨ ∀ g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ], U' g ⊆ Icc (-η : ℤ) 0)
     (h_loss : 2 * b < ℓ * (v + 1)) (hv : v < h ^ 3) (hK : 2 * v < K * Q + Q)
     (h_gap : ∀ i : k.Letter,
-      NoMultipleNear ℓ (6 * (2 * (v + 1) + η + W)) (if T i then b + δ else G + δ : ℕ))
+      NoMultipleNear ℓ (2 * (2 * (v + 1) + η + W)) (if T i then b + δ else G + δ : ℕ))
     {y : NNReal} (hy : (3200 * (finrank O L * (K * m)) + 33 * (μ * v) : ℕ) ≤ y) :
     O.normLength (dualDefect (InClass ⊤ ⊥ U) L) ≤ Γ.overGp.toGp.range.index * y := by
   have ⟨hQ_pos, (hQ : 99 * (Q * Q + (W + 1) * Q + Q + W + m) ≤ h), (hG : 99 * h ^ 3 ≤ G),
@@ -521,7 +521,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
       (if T i then b + δ else G + δ) + W + η ≤ (ℓ - 3) * (2 * (v + 1)) := by
     grw [ite_le_sup, mul_left_comm, tsub_mul]
     omega
-  have h_far (i : k.Letter) : 6 * (2 * (v + 1) + η + W) < if T i then b + δ else G + δ := by
+  have h_far (i : k.Letter) : 2 * (2 * (v + 1) + η + W) < if T i then b + δ else G + δ := by
     split_ifs <;> omega
   -- The two bounds of `dualDefect_eq_zero_and_dualDefect_le`, for the length `2 (v + 1)`. The
   -- defect vanishes if `U` and `U'` avoid `[-2 (v + 1), 0)` or `U'` lies in `[-η, 0]`. If at most
@@ -647,6 +647,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
     obtain ⟨-, he_one : k.e = 1, -⟩ := h_un
     rw [← h_chart.e_mul_f_eq_index, he_one, one_mul]
   exact normLength_dualDefect_le_of_noMultipleNear h_sizes h_un h_seven h_index ζ h_open hL
-    h_winU h_winU' h_jumps h_loss (not_le.1 hv) hK (fun i ↦ h_gap (theta (k.letterTeich i))) hy
+    h_winU h_winU' h_jumps h_loss (not_le.1 hv) hK
+    (fun i y hy₀ h_near ↦ h_gap (theta (k.letterTeich i)) y hy₀ (by omega)) hy
 
 end CrystallineBound
