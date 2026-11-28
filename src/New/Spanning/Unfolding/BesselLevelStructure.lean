@@ -81,9 +81,9 @@ attribute [local aesop simp] selfDualChar ideleM splitGram middleGram latticeMid
 `R'`: `S.latticeMiddle R` is the middle block of this matrix and `splitGram` the whole matrix. -/
 lemma map_splitGram_latticeMiddle (f : R →+* R') :
     (S.latticeMiddle R).splitGram.map f = (S.latticeMiddle R').splitGram := by
-  ext i j
-  aesop (add simp [fromBlocks_map, fromCols_map, fromRows_map, Function.swap, diagonal_apply,
-    Matrix.one_apply, apply_ite])
+  ext (i | (i | ⟨⟩) | i) (j | (j | ⟨⟩) | j) <;>
+    simp [latticeMiddle, splitGram, latticeMiddleGram, scaleAt, Matrix.one_apply, diagonal_apply,
+      apply_ite f]
 
 /-- If `γ` agrees with the identity matrix at the entries `(i, j)` with `r i j`, then so does its
 image under a ring homomorphism `f`; `agreeWithOneOn` is the group of such invertible matrices. -/
@@ -92,7 +92,10 @@ lemma _root_.Membership.mem.map_mem_agreeWithOneOn (f : R →+* R')
     {hr : ∀ i k j : 𝔰.BesselIndex, r i j → r i k ∨ r k j} {H : Subgroup (GL 𝔰.BesselIndex R)}
     {γ : H} (hγ : γ ∈ (agreeWithOneOn r R hr).subgroupOf H) :
     GeneralLinearGroup.map f γ.val ∈ agreeWithOneOn r R' hr := by
-  aesop (add simp [Subgroup.mem_subgroupOf, Matrix.one_apply])
+  intro i j hij
+  have h : (γ.val : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) i j =
+      (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex R) i j := hγ i j hij
+  simp [GeneralLinearGroup.map, h, Matrix.one_apply, apply_ite f]
 
 variable (S) in
 lemma isUnit_natCast_N : IsUnit (S.N : E) := (Nat.cast_ne_zero.2 S.N_prime.ne_zero).isUnit
@@ -195,13 +198,18 @@ lemma termsOver.mul {c : S.Classes} {s : S.ResidueGL} {c' : S.Classes} {t : S.Re
     γ * δ ∈ S.termsOver c (s * t) c'' := by
   obtain ⟨(k : S.latticeStabilizer), rfl, hk⟩ := hγ
   obtain ⟨(k' : S.latticeStabilizer), rfl, hk'⟩ := hδ
-  exact ⟨k * k', map_mul .., by simp [hk, hk', translateByClassReps, mul_assoc]⟩
+  refine ⟨k * k', S.reduction.map_mul k k', ?_⟩
+  rw [Subgroup.coe_mul, hk, hk', translateByClassReps, translateByClassReps,
+    translateByClassReps, S.ratToFin.map_mul]
+  group
 
 /-- The inverse of a term over `(c, s, c')` is a term over `(c', s⁻¹, c)`. -/
 lemma termsOver.inv {c : S.Classes} {s : S.ResidueGL} {c' : S.Classes} {γ : S.G E}
     (hγ : γ ∈ S.termsOver c s c') : γ⁻¹ ∈ S.termsOver c' s⁻¹ c := by
   obtain ⟨(k : S.latticeStabilizer), rfl, hk⟩ := hγ
-  exact ⟨k⁻¹, map_inv .., by simp [hk, translateByClassReps, mul_assoc]⟩
+  refine ⟨k⁻¹, S.reduction.map_inv k, ?_⟩
+  rw [InvMemClass.coe_inv, hk, translateByClassReps, translateByClassReps, S.ratToFin.map_inv]
+  group
 
 /-! ### The unipotent transformation law -/
 
@@ -238,7 +246,10 @@ lemma _root_.Membership.mem.ratToInf_mem_agreeWithOneOn {γ : S.G E}
     {hr : ∀ i k j : 𝔰.BesselIndex, r i j → r i k ∨ r k j}
     (hγ : γ ∈ (agreeWithOneOn r E hr).subgroupOf (S.G E)) (v : InfinitePlace E) :
     S.ratToInf γ v ∈ (agreeWithOneOn r ℂ hr).subgroupOf 𝔰.G₁ := by
-  aesop (add simp [Subgroup.mem_subgroupOf, Matrix.one_apply])
+  intro i j hij
+  have h : (γ.val : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) i j =
+      (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex E) i j := hγ i j hij
+  rcases eq_or_ne i j with rfl | hne <;> simp [*]
 
 variable (S) in
 /-- For adelic `x` and an infinite place `v`, `simpleRootSum (S.adelicToInf x v)` is the sum of the
@@ -251,7 +262,9 @@ lemma simpleRootSum_adelicToInf (x : S.G (𝔸 E)) (v : InfinitePlace E) :
   have h_entry (a : Fin 𝔰.ϱ) :
       (S.adelicToInf x v).val (𝔰.besselFrame a.castSucc) (𝔰.besselFrame a.succ) =
         (x.val (𝔰.besselFrame a.castSucc) (𝔰.besselFrame a.succ)).1 v * (S.realM v : ℂ)⁻¹ := by
-    have h_exp : 𝔰.ϱ - (a.castSucc : ℕ) = 𝔰.ϱ - (a.succ : ℕ) + 1 := by grind
+    have h_exp : 𝔰.ϱ - (a.castSucc : ℕ) = 𝔰.ϱ - (a.succ : ℕ) + 1 := by
+      simp only [Fin.val_castSucc, Fin.val_succ]
+      omega
     simp only [adelicToInf_apply, basisScale_besselFrame, h_exp]
     have hN : (√S.N : ℂ) ≠ 0 := by simp [S.N_prime.ne_zero]
     simp [field, pow_succ']
@@ -378,15 +391,20 @@ lemma isUnimodular_latticeMiddleGram [StarRing A] (𝔰 : Shape) {N : A} (hN : N
   let inv : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex A :=
     latticeMiddleGram 𝔰 0 + diagonal (Pi.single (inl 𝔰.k₀) N)
   have h_inv : latticeMiddleGram 𝔰 N * inv = 1 := by
-    ext i j
-    aesop (add simp [inv, latticeMiddleGram, Matrix.mul_apply, diagonal, Matrix.one_apply,
-      Function.swap])
+    ext (i | ⟨⟩) (j | ⟨⟩) <;>
+      simp [inv, latticeMiddleGram, Filling.scaleAt, Matrix.mul_apply, Fintype.sum_sum_type,
+        diagonal, Matrix.one_apply, Pi.single_apply, ite_mul, mul_ite, Function.swap] <;>
+      grind
   -- hermitian, as `N` is fixed by `star`; the entries of both matrices are `0`, `±1`, `±N`
   have h_herm : (latticeMiddleGram 𝔰 N)ᴴ = latticeMiddleGram 𝔰 N := by
-    ext i j
-    aesop (add simp [latticeMiddleGram, diagonal, Function.swap])
+    ext (i | ⟨⟩) (j | ⟨⟩) <;>
+      simp [latticeMiddleGram, Filling.scaleAt, diagonal_apply, Function.swap, hN.2] <;>
+      split_ifs <;> simp_all
   have h_mem (a b : 𝔰.MiddleIndex) : latticeMiddleGram 𝔰 N a b ∈ R ∧ inv a b ∈ R := by
-    aesop (add simp [latticeMiddleGram, diagonal, Function.swap])
+    rcases a with i | ⟨⟩ <;> rcases b with j | ⟨⟩ <;>
+      simp [inv, latticeMiddleGram, Filling.scaleAt, diagonal_apply, Pi.single_apply,
+        Function.swap, apply_ite (· ∈ R), zero_mem, one_mem, neg_mem_iff, hN.1]
+    split_ifs <;> simp [zero_mem, one_mem, hN.1]
   let u : GL 𝔰.MiddleIndex A := ⟨latticeMiddleGram 𝔰 N, inv, h_inv, mul_eq_one_comm.1 h_inv⟩
   exact ⟨h_herm, u, mem_intGL.2 ⟨fun a b ↦ (h_mem a b).1, fun a b ↦ (h_mem a b).2⟩, rfl⟩
 
@@ -441,7 +459,8 @@ lemma exists_mem_besselU_eq_eichlerMap {v : 𝔰.BesselIndex → A} [hJ : IsHerm
   -- `a ≤ b`, and `j b = 0`, or `c < a`, and that coordinate is `0`.
   have h_low (b c : Fin 𝔰.ϱ) (hcb : c ≤ b) : j b.castSucc = 0 ∨ v (inr (inr c)) = 0 := by
     refine (le_or_gt a b.castSucc).imp (hj _) fun hb ↦ ?_
-    simpa [← hm, splitGram, vecMul, dotProduct, Matrix.one_apply] using hm_low c.castSucc (by grind)
+    simpa [← hm, splitGram, vecMul, dotProduct, Matrix.one_apply] using
+      hm_low c.castSucc ((Fin.castSucc_le_castSucc_iff.2 hcb).trans_lt hb)
   have hxx : star x ⬝ᵥ T.splitGram *ᵥ x = 0 := by
     simp [hx, splitGram, mulVec, dotProduct]
   have hvx : star v ⬝ᵥ T.splitGram *ᵥ x = 0 := by
@@ -455,11 +474,19 @@ lemma exists_mem_besselU_eq_eichlerMap {v : 𝔰.BesselIndex → A} [hJ : IsHerm
   · -- block by block, the entries on and below the diagonal are those of `1`, by `h_low`
     suffices h_below : ∀ p q : 𝔰.BesselIndex, BesselIndex.level q ≤ BesselIndex.level p →
         eichlerMap T.splitGram x v ς p q = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) p q by
-      simpa [mem_besselU, hu] using h_below
-    simp [eichlerMap, hx, vecMulVec, BesselIndex.level, splitGram, vecMul, dotProduct,
-      Matrix.one_apply, sub_eq_zero]
-    -- each product left contains `j b` and `v (e*_c)` with `c ≤ b`, so one factor is zero
-    grind [star_zero]
+      rw [mem_besselU]
+      simpa only [hu] using h_below
+    rintro (b | p | c) (c' | q | b') hpq
+    all_goals simp only [BesselIndex.level, Sum.elim_inl, Sum.elim_inr] at hpq
+    all_goals try omega
+    all_goals rw [eichlerMap, hx_form]
+    all_goals simp only [hx, Matrix.add_apply, Matrix.sub_apply, vecMulVec_apply, Sum.elim_inl,
+      Sum.elim_inr, Pi.zero_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, zero_mul, mul_zero,
+      sub_zero, add_zero]
+    · have h_val : (star v ᵥ* T.splitGram) (inl c') = star (v (inr (inr c'))) := by
+        simp [splitGram, vecMul, dotProduct, Matrix.one_apply]
+      obtain h | h := h_low b c' (Fin.le_def.2 hpq) <;> simp [h_val, h]
+    · obtain h | h := h_low b' c (Fin.le_def.2 (by omega)) <;> simp [h]
   · have h_entry (b : Fin 𝔰.ϱ) : u.val (𝔰.besselFrame b.castSucc) (𝔰.besselFrame b.succ) =
         r * m (𝔰.besselFrame b.succ) * j b.castSucc := by
       rw [hu, eichlerMap, hx_form, hx, hm]
@@ -800,7 +827,10 @@ lemma mem_termsOver_reduction_iff {c d : S.Classes} {γ : S.G E} {k : S.latticeS
       (k : S.GFin)⁻¹ * S.translateByClassReps c d γ ∈ S.principalLevel := by
   constructor
   · rintro ⟨k', h_reduction, h_position⟩
-    exact ⟨k⁻¹ * k', by simp [h_reduction, ← h_position]⟩
+    refine ⟨k⁻¹ * k', ?_, ?_⟩
+    · rw [SetLike.mem_coe, MonoidHom.mem_ker, S.reduction.map_mul, S.reduction.map_inv,
+        h_reduction, inv_mul_cancel]
+    · rw [Subgroup.coe_subtype, Subgroup.coe_mul, InvMemClass.coe_inv, h_position]
   · rintro ⟨k', h_kernel, h_position⟩
     exact ⟨k * k', by simp [MonoidHom.mem_ker.1 h_kernel], eq_inv_mul_iff_mul_eq.1 h_position⟩
 
@@ -821,7 +851,9 @@ lemma eq_and_mem_classUnipotent_of_besselS [hS : S.IsAdmissible] {c d : S.Classe
   -- `K(M)` too, and relates the representatives of `c` and `d` modulo `S.sourceLevel`.
   have h_split : S.translateByClassReps c d (u * toBesselH 𝔰 (S.N : E) η) =
       S.translateByClassReps c c u * S.inclHFin (c.out⁻¹ * stdEmbFin η * d.out) := by
-    simp [translateByClassReps, ratToFin_toBesselH, mul_assoc]
+    rw [translateByClassReps, translateByClassReps, classRep, classRep, S.ratToFin.map_mul,
+      ratToFin_toBesselH, S.inclHFin.map_mul, S.inclHFin.map_mul, S.inclHFin.map_inv]
+    group
   have h_level : c.out⁻¹ * stdEmbFin η * d.out ∈ S.sourceLevel := by
     rw [h_split, principalLevel_eq_unitaryLevel] at hγ_level
     exact hS.sourceLevel_eq.ge (S.principalLevel_eq_unitaryLevel.ge (mem_unitaryLevel_of_besselU_mul
@@ -849,7 +881,11 @@ lemma exists_rat_approx_unipotentChar_eq (c : S.Classes) {u : S.GFin}
     (besselS_le_normalizer_besselU (classRep_mem_besselS c) u).1 hu
   obtain ⟨u₀, hu₀, h_approx⟩ := exists_besselU_approx h_conj (S.classRep c)
   have h_level : u⁻¹ * S.translateByClassReps c c u₀ ∈ S.principalLevel := by
-    simpa [translateByClassReps, mul_assoc] using h_approx
+    have h_eq : (S.classRep c)⁻¹ * ((S.classRep c * u * (S.classRep c)⁻¹)⁻¹ * S.ratToFin u₀) *
+        S.classRep c = u⁻¹ * S.translateByClassReps c c u₀ := by
+      rw [translateByClassReps]
+      group
+    exact h_eq ▸ h_approx
   exact ⟨u₀, hu₀, h_level,
     unipotentChar_eq_of_mem_principalLevel hu (ratToFin_mem_besselU_iff.2 hu₀) c.out h_level⟩
 
@@ -877,8 +913,11 @@ lemma exists_besselS_mem_termsOver [hS : S.IsAdmissible] (c : S.Classes) {s : S.
   -- `h_c⁻¹ γ h_d` is `k` times an element of `S.principalLevel`, which reduces to `1`.
   have h_quotient : (k : S.GFin)⁻¹ * S.translateByClassReps c d γ =
       (S.inclHFin g)⁻¹ * (u⁻¹ * S.ratToFin x) * S.inclHFin g * (S.inclHFin a)⁻¹ := by
-    simp [eq_mul_inv_of_mul_eq h_split.symm, hg, γ, translateByClassReps, ratToFin_toBesselH η,
-      mul_assoc]
+    have hk_eq : (k : S.GFin) = (S.classRep c)⁻¹ * (u * S.inclHFin g) :=
+      eq_inv_mul_of_mul_eq h_split
+    rw [hk_eq, translateByClassReps, S.ratToFin.map_mul, ratToFin_toBesselH η, hg,
+      S.inclHFin.map_mul, S.inclHFin.map_mul, show S.inclHFin d.out = S.classRep d from rfl]
+    group
   refine ⟨d, γ, mem_besselS.2 ⟨x, hx, _, toBesselH_mem η, rfl⟩, ?_⟩
   rw [mem_termsOver_reduction_iff, h_quotient]
   exact mul_mem h_approx (inv_mem (hS.sourceLevel_eq.le a.property))
