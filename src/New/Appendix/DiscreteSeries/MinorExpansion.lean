@@ -271,28 +271,17 @@ lemma flenstedJensen_shift_eq_conj (hl : l.HasGap h) {u : Matrix n n ℂ}
     (huX : ((1 - u) * X).IsAccretive) :
     l.flenstedJensen 1 ((1 - u) * X)ᴴ = conj (l.flenstedJensen 1 X) := by
   have h_det : (1 - u).det ≠ 0 ∧ X.det ≠ 0 := by simpa [det_mul] using huX.det_ne_zero
-  -- `1 - u` is block diagonal and triangular, with diagonal entries `1`.
   have hu_mem : 1 - u ∈ blockDiagAlg ε := mem_blockDiagAlg.2 fun i j hij ↦ by
     simp [one_apply_ne (show i ≠ j by rintro rfl; exact hij rfl), hu i j (by tauto)]
-  have hu_borel : IsBorelMatrix (-(-l)) (1 - u) := ⟨fun i j hij ↦ by
-    have h_lt : l j < l i := by simpa using hij
-    simp [one_apply_ne (show i ≠ j by rintro rfl; exact lt_irrefl _ h_lt),
-      hu i j fun h' ↦ lt_asymm h_lt h'.1], h_det.1⟩
-  -- Move the factor `1 - u` from the second argument to the first, where it acts by a character
-  -- with value `1`.
-  have h_move : l.flenstedJensen (1 - u) X = l.flenstedJensen 1 ((1 - u) * X) := by
-    have := flenstedJensen_eq_of_accretive hl (one_mem _) (by simpa using huX) hu_mem
-      (g := (1 - u) * X) (by simp_all)
-    simp_all
-  have h_char : l.flenstedJensen (1 - u) X = l.flenstedJensen 1 X := by
-    have h_minors (k : maxCompactU ε) :
-        weightMinors l.lowestKType ((1 - u) * (k : Matrix n n ℂ)) =
-          weightMinors l.lowestKType (k : Matrix n n ℂ) := by
-      rw [hl.isKDominant_lowestKType.weightMinors_oppBorel_mul hl.neg.injective
-        ((Matrix.isUnit_iff_isUnit_det _).1 k.val.val.isUnit).ne_zero hu_mem hu_borel]
-      simp [diagChar, show ∀ i, u i i = 0 from fun i ↦ hu i i (by simp)]
-    simp [flenstedJensen, h_minors]
-  rw [← conj_flenstedJensen_one, ← h_move, h_char]
+  have hu_borel : IsBorelMatrix l (1 - u) := ⟨fun i j hij ↦ by
+    simp [one_apply_ne (show i ≠ j by rintro rfl; exact lt_irrefl _ hij),
+      hu i j fun h' ↦ lt_asymm hij h'.1], h_det.1⟩
+  rw [← conj_flenstedJensen_one]
+  congr 1
+  -- The triangular factor has diagonal entries 1, so its character is trivial.
+  have h := flenstedJensen_triangular_mul_mul_triangular hl hu_mem hu_borel (b := 1)
+    (one_mem _) ⟨blockTriangular_one, by simp⟩ hX (by simpa using huX)
+  simpa [diagChar, show ∀ i, u i i = 0 from fun i ↦ hu i i (by simp)] using h
 
 /-- Let `l` have gap `h` and let `X = g - 1` have norm less than `1 / 1000`. There is a matrix `y`
 with `l.dsCoeff g = l.flenstedJensen 1 y` such that, for `k ∈ K = maxCompactU ε` and the diagonal
