@@ -10,6 +10,7 @@ import Mathlib.RingTheory.HopfAlgebra.Basic
 import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.RingTheory.TotallySplit
 import TauCeti.Algebra.BigOperators.ZPow
+import TauCeti.RingTheory.MvPolynomial.Evaluation.Homogeneous
 public import Lib.GLn.SchurModule.Basic
 public import Lib.General.Groups.BesselGroups
 
@@ -291,17 +292,6 @@ lemma map_C_mul_mul_C {O σ : Type} [CommRing O] [Fintype σ] {ν : Type*} (A B 
   ext i j
   simp [mul_comm (∑ _, _), C_mul', Matrix.mul_apply]
 
-/-- A form of Nakayama's lemma: a submodule `V` of a finite module `M` over a local ring `W` is
-everything if every linear map from `M ⧸ V` to the residue field is zero. -/
-lemma eq_top_of_forall_linearMap_residueField_eq_zero {W : Type} [CommRing W] [IsLocalRing W]
-    {M : Type*} [AddCommGroup M] [Module W M] [Module.Finite W M] {V : Submodule W M}
-    (h_zero : ∀ l : (M ⧸ V) →ₗ[W] ResidueField W, l = 0) :
-    V = ⊤ := by
-  rw [← Submodule.Quotient.subsingleton_iff, ← subsingleton_tensorProduct (R := W),
-    ← subsingleton_dual_iff (ResidueField W),
-    ← (liftBaseChangeEquiv (ResidueField W)).subsingleton_congr]
-  exact subsingleton_of_forall_eq 0 h_zero
-
 /-- Zariski density over local rings. Let the polynomial `g` over the local ring `W` be homogeneous
 of degree `e` and take a unit value at some point `b₀`, and let `n + e ≤ Nat.card` of the residue
 field of `W`. Let `γ` run over `Monomials σ n`, the exponent vectors of degree `n`, and let
@@ -313,39 +303,22 @@ lemma eq_top_of_eval_monomial {W O σ : Type} [CommRing W] [IsLocalRing W] [Comm
     (hb₀ : IsUnit (eval b₀ g)) {V : Submodule O (Monomials σ n → O)}
     (hV : ∀ b : σ → W, IsUnit (eval b g) →
       (fun γ : Monomials σ n ↦ ι (eval b (monomial γ.val 1))) ∈ V) : V = ⊤ := by
-  -- Pull `V` back to a submodule `V'` over `W`; if `V'` is everything, then `V` contains a basis.
-  let ιPi : (Monomials σ n → W) →ₛₗ[ι] Monomials σ n → O :=
-    { toFun v := ι ∘ v, map_add' := by simp, map_smul' := by simp [_root_.funext_iff] }
-  let V' : Submodule W (Monomials σ n → W) := V.comap ιPi
-  suffices hV' : V' = ⊤ by
-    refine (eq_top_iff_forall_basis_mem (Pi.basisFun O (Monomials σ n))).2 fun γ ↦ ?_
-    simpa [Pi.single, Function.comp_update, ιPi, V'] using hV'.ge (mem_top (x := Pi.single γ 1))
-  -- By Nakayama's lemma it suffices that every linear map `l` from the quotient to the residue
-  -- field is zero. Its values are the coefficients of a form `F` of degree `n`.
-  refine eq_top_of_forall_linearMap_residueField_eq_zero fun l ↦ ?_
-  let F : MvPolynomial σ (ResidueField W) :=
-    ∑ γ : Monomials σ n, monomial γ.val (l (V'.mkQ (Pi.single γ 1)))
-  suffices hF_zero : F = 0 by
-    ext γ
-    simpa [F, coeff_sum] using congrArg (·.coeff γ.val) hF_zero
-  have hF_hom : F.IsHomogeneous n := .sum _ _ _ fun γ _ ↦ isHomogeneous_monomial _ γ.degree_eq
-  have hg_ne : g.map (residue W) ≠ 0 := fun h ↦ by simpa [h, map_eval] using hb₀.map (residue W)
-  -- Where `g` is a unit the vector of values of the monomials lies in `V'`, so `F` vanishes there.
-  have h_eval (z : σ → ResidueField W) : eval z (F * g.map (residue W)) = 0 := by
-    obtain ⟨b, rfl⟩ : ∃ b : σ → W, residue W ∘ b = z := residue_surjective.comp_left z
-    let v : Monomials σ n → W := fun γ ↦ eval b (monomial γ.val 1)
-    have h_value : eval (residue W ∘ b) F = l (V'.mkQ v) := calc
-      eval (residue W ∘ b) F = ∑ γ : Monomials σ n, v γ • l (V'.mkQ (Pi.single γ 1)) := by
-        simp [F, v, mul_comm, Algebra.smul_def, eval_monomial]
-      _ = l (V'.mkQ v) := by simp_rw [← map_smul, ← map_sum, ← pi_eq_sum_univ' v]
-    rw [map_mul, h_value, ← map_eval]
-    by_cases hb : IsUnit (eval b g)
-    · simp [(Quotient.mk_eq_zero V').2 (show v ∈ V' from hV b hb)]
-    · simp [(residue_eq_zero_iff _).2 hb]
-  -- A form of degree `n + e` that vanishes on a field with at least `n + e` elements is zero.
-  refine (mul_eq_zero_iff_right hg_ne).1 ?_
-  exact (hF_hom.mul (hg.map _)).eq_zero_of_forall_eval_eq_zero_of_le_card h_eval
-    ((Nat.cast_le.2 hW).trans (Cardinal.natCast_toNat_le _))
+  -- Reindex exponents from `Monomials σ n` to `{γ // γ.degree = n}`.
+  let e_mon : Monomials σ n ≃ {γ : σ →₀ ℕ // γ.degree = n} :=
+    Equiv.subtypeEquivRight fun γ ↦ by simp [mem_finsuppAntidiag, degree_eq_sum]
+  -- Transport functions along `e_mon` via `LinearEquiv.funCongrLeft`.
+  let L : ({γ : σ →₀ ℕ // γ.degree = n} → O) ≃ₗ[O] (Monomials σ n → O) :=
+    LinearEquiv.funCongrLeft O O e_mon
+  -- Apply `span_range_prod_pow_eq_top` using `Nat.card ≤ Cardinal.mk`.
+  have h_span := hg.span_range_prod_pow_eq_top ι
+    ((Nat.cast_le.2 hW).trans (Cardinal.natCast_toNat_le _)) ⟨b₀, hb₀⟩
+  -- Map the spanning set along `L` and reduce to `V`.
+  rw [← top_le_iff, ← LinearMap.range_eq_top.2 L.surjective, ← Submodule.map_top, ← h_span,
+    Submodule.map_span, Submodule.span_le]
+  rintro _ ⟨_, ⟨⟨b, hb⟩, rfl⟩, rfl⟩
+  -- Each mapped generator evaluates `monomial γ.val 1` at `b` as `∏ i, b i ^ γ.val i`.
+  change (fun γ : Monomials σ n ↦ ι (∏ i, b i ^ γ.val i)) ∈ V
+  simpa [eval_monomial, prod_fintype] using hV b hb
 
 section SchurAlgebra
 
