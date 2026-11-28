@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Algebra.MonoidAlgebra.MapDomain
 public import Lib.Adelic.Hecke.Basic
 
 /-!
@@ -33,11 +34,8 @@ variable {G M : Type*} [Group G] [AddCommGroup M] [Module ℂ M]
 /-- Pushing an element of `H`'s group algebra forward along `f : H →* G` and letting it act by `ρ`
 is letting it act by the restricted representation `ρ ∘ f`. -/
 lemma asAlgebraHom_mapDomain {H : Type*} [Group H] (f : H →* G) (a : ℂ[H]) :
-    ρ.asAlgebraHom (mapDomain f a) = Representation.asAlgebraHom (ρ.comp f) a := by
-  induction a using induction_linear with
-  | zero => simp
-  | add a b ha hb => simp [mapDomain_add, ha, hb]
-  | single h c => simp
+    ρ.asAlgebraHom (mapDomain f a) = Representation.asAlgebraHom (ρ.comp f) a :=
+  lift_mapDomain ρ f a
 
 /-- The elements of the group algebra that map `K`-fixed vectors of `ρ` to `K`-fixed vectors. -/
 def levelAlgebra : Subalgebra ℂ ℂ[G] where
