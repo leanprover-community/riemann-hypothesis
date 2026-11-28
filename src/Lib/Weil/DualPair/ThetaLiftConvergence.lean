@@ -234,8 +234,7 @@ theorem _root_.New.exists_norm_pairWeil_mul_real_le [WeilData E] (S : Space E n 
             (Fintype.card n * Fintype.card n') := by
   -- The operators are bounded on `Ξ`; at a real point the characters have modulus one and the
   -- multiplier is a product of minors of size at most `n n'`.
-  obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ z ∈ Ξ, ‖pairWeil S T a b z‖ ≤ C :=
-    (pairThetaKer S T a b).exists_norm_le_of_isCompact hΞ
+  obtain ⟨C, hC⟩ := (pairThetaKer S T a b).exists_norm_le_of_isCompact hΞ
   refine ⟨C * ‖(S.hom T).vacElem‖, fun z hz y y' ↦ ?_⟩
   have h_char : ‖pairWeil S T a b ((y, 1), (y', 1))‖ =
       ‖(S.hom T).ω (G.onHom ((y, 1), (y', 1)))‖ := by
@@ -332,11 +331,8 @@ lemma moderate_growth :
   -- under left multiplication by a rational pair `(γ, δ)`, and `K.ω (γ * g, δ * h)` is the product
   -- of `K.ω (γ * g, 1)` and `K.ω (1, δ * h)`, each bounded by
   -- `eventually_exists_norm_omega_le_mul_height_pow`.
-  obtain ⟨A, h_left, h_right⟩ : ∃ A : ℕ,
-      (∀ g : G E s, ∃ γ ∈ S.Γ, ‖K.swap.ω (1, γ * g)‖ ≤ 2 ^ A * S.height g ^ A) ∧
-      ∀ h : G E t, ∃ δ ∈ T.Γ, ‖K.ω (1, δ * h)‖ ≤ 2 ^ A * T.height h ^ A :=
-    ((K.swap.eventually_exists_norm_omega_le_mul_height_pow 1).and
-      (K.eventually_exists_norm_omega_le_mul_height_pow 1)).exists
+  obtain ⟨A, h_left, h_right⟩ := ((K.swap.eventually_exists_norm_omega_le_mul_height_pow 1).and
+    (K.eventually_exists_norm_omega_le_mul_height_pow 1)).exists
   refine ⟨‖K.θ‖ * 2 ^ A * 2 ^ A, A, fun g h φ ↦ ?_⟩
   obtain ⟨γ, hγ, hγ_le⟩ := h_left g
   obtain ⟨δ, hδ, hδ_le⟩ := h_right h
@@ -378,10 +374,7 @@ datum `φ`. -/
 lemma lift_omega_left (hy : S.IsAutomorphic y) (k : G E s) :
     lift K (K.ω (k, 1) φ) y = lift K φ fun g : G E s ↦ y (g * k⁻¹) := by
   funext h
-  have h_eq : lift K (K.ω (k, 1) φ) y (h * 1) =
-      lift K (K.ω (k⁻¹, 1) (K.ω (k, 1) φ)) (fun g : G E s ↦ y (g * k⁻¹)) h :=
-    K.lift_equivariant hy (K.ω (k, 1) φ) k⁻¹ 1 h
-  simpa [lift, rep_apply_apply] using h_eq
+  simpa [lift, rep_apply_apply] using K.lift_equivariant hy (K.ω (k, 1) φ) k⁻¹ 1 h
 
 end
 
@@ -435,8 +428,7 @@ continuous function on the group of `T`. -/
 lemma continuous_lift (hy : y ∈ S.rapidFunctions) : Continuous (lift K φ y) := by
   -- The value at `h` is the value at `1` of the lift with datum `K.ω (1, h) φ`, and the value at
   -- `1` is a continuous linear functional of the datum.
-  obtain ⟨L, hL⟩ : ∃ L : G E t → X →L[ℂ] ℂ, ∀ (ψ : X) (h : G E t), lift K ψ y h = L h ψ :=
-    K.exists_clm_lift hy
+  obtain ⟨L, hL⟩ := K.exists_clm_lift hy
   have h_value (h : G E t) : lift K φ y h = L 1 (K.ω (1, h) φ) := by
     rw [← hL, ← lift_mul_right, one_mul]
   have h_orbit : Continuous fun h : G E t ↦ K.ω (1, h) φ := by fun_prop
@@ -448,9 +440,7 @@ group of `T`: its norm is at most a constant times a power of the height. -/
 lemma isModerate_lift (hy : y ∈ S.rapidFunctions) : T.IsModerate (lift K φ y) := by
   -- The integrand is bounded by a constant times a power of the height of `h`, and the quotient
   -- `[S]` has finite volume.
-  obtain ⟨C, A, h_bound⟩ : ∃ (C : ℝ) (A : ℕ), ∀ (ψ : X) (g : G E s) (h : G E t),
-      ‖K.θ (K.ω (g, h) ψ) * y g‖ ≤ T.height h ^ A * |C| * ‖ψ‖ :=
-    K.exists_norm_theta_mul_le hy
+  obtain ⟨C, A, h_bound⟩ := K.exists_norm_theta_mul_le hy
   refine ⟨S.quotMeasure.real Set.univ * |C| * ‖φ‖, A, fun h ↦ ?_⟩
   calc ‖lift K φ y h‖
       = ‖∫ g : G E s, K.θ (K.ω (g, h) φ) * y g ∂S.quotMeasure‖ := rfl
@@ -462,8 +452,7 @@ lemma isModerate_lift (hy : y ∈ S.rapidFunctions) : T.IsModerate (lift K φ y)
 is linear in the datum. -/
 lemma isLinearMap_petersson_lift (hy : y ∈ S.rapidFunctions) (hy' : y' ∈ T.rapidFunctions) :
     IsLinearMap ℂ fun φ : X ↦ T.petersson y' (lift K φ y) := by
-  obtain ⟨L, hL⟩ : ∃ L : G E t → X →L[ℂ] ℂ, ∀ (φ : X) (h : G E t), lift K φ y h = L h φ :=
-    K.exists_clm_lift hy
+  obtain ⟨L, hL⟩ := K.exists_clm_lift hy
   obtain ⟨h_aut, h_decay⟩ := star_mem_rapidFunctions hy'
   have h_int (φ : X) : Integrable (fun h : G E t ↦ star (y' h) * L h φ) T.quotMeasure := by
     have h_rapid : T.IsRapid (lift K φ y * star y') := h_decay.mul (K.isModerate_lift hy)
