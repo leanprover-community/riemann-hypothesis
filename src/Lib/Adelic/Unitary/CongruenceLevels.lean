@@ -3,6 +3,7 @@ module
 public import Mathlib.Analysis.Complex.Circle
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.Sheaves.Presheaf
+import TauCeti.Algebra.Order.GroupWithZero.WithZeroInt
 import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Lift
 import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 public import Lib.Adelic.Unitary.Defs
@@ -451,8 +452,7 @@ lemma dvd_iff_reduceAt_eq_zero
       Valued.v (y.val u) ≤ u.valuation E (a : E) ↔ (a ∈ u.asIdeal → Valued.v (y.val u) < 1) := by
     by_cases ha : a ∈ u.asIdeal
     · -- here `v_u(a) = exp (-1)`, and `x ≤ exp (-1)` means `x < 1`
-      simp [ha, u.valuation_of_algebraMap, h_val ha, ← WithZero.lt_mul_exp_iff_le,
-        ← WithZero.exp_add]
+      simp [ha, u.valuation_of_algebraMap, h_val ha, ← TauCeti.lt_one_iff_le_exp_neg_one]
     · -- here `v_u(a) = 1`, and `y` is integral
       simp [ha, u.valuation_of_algebraMap, u.intValuation_eq_one_iff.2 ha, mem_Ô.1 y.property]
   simp [exists_eq_mul_iff_v_le, reduceAt_eq_zero, h_local, dvd_def, Subtype.ext_iff]

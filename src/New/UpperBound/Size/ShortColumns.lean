@@ -7,6 +7,7 @@ import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.Topology.Algebra.Ring.Compact
 import Mathlib.Topology.Connected.Separation
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
+import TauCeti.Algebra.Order.GroupWithZero.WithZeroInt
 public import Lib.CM.FormalGroup.PrimeNotation
 public import New.UpperBound.Objects.Columns
 public import Lib.Adelic.AutomorphicForms.PAdicGauge
@@ -700,14 +701,12 @@ lemma scalarFin_scalingGenerator_pow_mem_levelX_iff {P : Parameters} (D : Data P
     scalarFin (D.X j) (D.scalingGenerator w) ^ i ∈ D.levelX j ↔ D.N - 1 ∣ i := by
   rw [← D.valuation_scalingGenerator_pow_sub_one_lt_one_iff w i, mem_levelX,
     and_iff_right (pow_mem (D.scalarFin_scalingGenerator_mem_chosenLevel w) i)]
-  have h_lt (x : WithZero (Multiplicative ℤ)) : x < 1 ↔ x ≤ .exp (-1) := by
-    simp [← WithZero.lt_mul_exp_iff_le, ← WithZero.exp_add]
   -- At a place `u` the matrix `z_w ^ i - 1` is the scalar `(z_w u) ^ i - 1`.
   have h_entry (u : FinPlace D.E) :
       ((scalarFin (D.X j) (D.scalingGenerator w) ^ i).atPlace u).val - 1 =
         Matrix.diagonal fun _ ↦ (D.scalingGenerator w).val u ^ i - 1 := by
     simp [← map_pow, scalarFin_atPlace, ← diagonal_one, diagonal_sub]
-  simp only [h_entry, h_lt]
+  simp only [h_entry, TauCeti.lt_one_iff_le_exp_neg_one]
   -- The congruence at `w` is the condition on the right; at the other `u ∣ π` the scaling is `1`.
   refine ⟨fun h_cong ↦ ?_, fun h_cong u hu b ↦ ?_⟩
   · simpa only [diagonal_apply_eq] using h_cong w w.property (.inr ())

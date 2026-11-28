@@ -1,5 +1,6 @@
 module
 
+import TauCeti.Algebra.Order.GroupWithZero.WithZeroInt
 import TauCeti.NumberTheory.NumberField.Ideal.DegreeOne
 public import Mathlib.RingTheory.Valuation.Extension
 import Mathlib.NumberTheory.RamificationInertia.Galois
@@ -108,7 +109,7 @@ theorem isUniformizer_iff_of_isEquiv (h_equiv : (A.valuation.comap (algebraMap K
     IsUniformizer A π ↔ w π = exp (-1) := by
   -- Both sides of `IsUniformizer` transfer to `w`, where `w x < 1` means `w x ≤ exp (-1)`.
   have h_lt (x : K) : A.valuation (algebraMap K Ω x) < 1 ↔ w x ≤ exp (-1) :=
-    h_equiv.lt_one_iff_lt_one.trans (lt_mul_exp_iff_le (exp_ne_zero (a := -1)))
+    h_equiv.lt_one_iff_lt_one.trans TauCeti.lt_one_iff_le_exp_neg_one
   have h_le (x : K) :
       A.valuation (algebraMap K Ω x) ≤ A.valuation (algebraMap K Ω π) ↔ w x ≤ w π :=
     h_equiv x π
