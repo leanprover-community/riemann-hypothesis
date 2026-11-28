@@ -123,6 +123,34 @@ lemma lift_polyVector_blockDatum_eq_zero {l₀ : NumberField.InfinitePlace E →
   simpa [lift_pairThetaKer_swap_apply, pairWeil_apply, mul_left_comm _ _⁻¹, mul_assoc,
     integral_const_mul] using congrFun h_poly g
 
+omit [WeilData E] in
+/-- Let `w` be a finite place off the places of the level and their conjugates. A form `Ξ` on `I_n`
+is spherical at `w`, and so is its conjugate matrix coefficient at any vector `ζ`: the level at `w`
+fixes `Ξ`, hence every coefficient of `Ξ`. -/
+lemma star_algFormCoeff_mem_sphericalAt {Ξ : O.FormV} {w : FinPlace E}
+    (hw_off : w ∉ O.places.conjClosure) (ζ : WeylIndex n O.columnCount → ℂ) :
+    star (algFormCoeff 1 (gramForm ζ) Ξ.val) ∈ sphericalAt (finRightRep E 1) w := by
+  have h_fix (k : ↥(stdLevel E n ⊓ supportedOn n {w})) :
+      algFormRep O.columnCount O.detExp k Ξ.val = Ξ.val := by
+    simpa using mem_levelSpace.1 (Ξ.mem_sphericalAt hw_off) k
+  simp [funext_iff, ← algFormCoeff_algFormRep, h_fix]
+
+omit [WeilData E] in
+/-- If the Hecke polynomial at the number `z`, for the split place `w` off the level, kills the form
+`Ξ`, then the Hecke polynomial at `conj z` kills the conjugate matrix coefficient of `Ξ` at any
+vector `ζ`: taking the conjugate coefficient is a conjugate-linear map on forms that commutes with
+the Hecke operators. -/
+lemma heckePolyOp_star_algFormCoeff_eq_zero {Ξ : O.FormV} {w : FinPlace E} {hw : star w ≠ w}
+    {hw_off : w ∉ O.places.conjClosure} {z : ℂ} (h_hecke : O.heckePolyOnForms hw hw_off z Ξ = 0)
+    (ζ : WeylIndex n O.columnCount → ℂ) :
+    heckePolyOp (finRightRep E 1) hw (conj z) (star (algFormCoeff 1 (gramForm ζ) Ξ.val)) = 0 := by
+  let L : AlgForm (E := E) n O.columnCount O.detExp →ₗ⋆[ℂ] G E 1 → ℂ :=
+    (starLinearEquiv ℂ).toLinearMap ∘ₛₗ algFormCoeff 1 (gramForm ζ)
+  calc _ = L (heckePolyOp (algFormRep O.columnCount O.detExp) hw z Ξ.val) :=
+      (map_heckePolyOp L _ (by simp [L, funext_iff, algFormCoeff_algFormRep])).symm
+    _ = L 0 := congrArg L (congrArg Subtype.val h_hecke)
+    _ = 0 := map_zero L
+
 open scoped Classical in
 /-- Let the archimedean parameter `l₀` on `W` correspond to the parameter `O.paramV` on `I_n`,
 compatibly with the weights of `O` (`O.FitsParams`), and let the residue characters
@@ -157,21 +185,11 @@ lemma descentsVanish_hyperbolicSum {l₀ : NumberField.InfinitePlace E → r →
     descentsVanish_of_hyperplaneSumsAnnihilate _ h_ramified h_hyperplane
       (lift_polyVector_blockDatum_eq_zero h_fits h_theta)
   have h_disj : O.places.IsConjDisjoint := by grind [O.apart.star_ne]
-  have h_sph : y ζ₀ ∈ sphericalAt (finRightRep E 1) w := by
-    have h_fix (k : ↥(stdLevel E n ⊓ supportedOn n {w})) :
-        algFormRep O.columnCount O.detExp k Ξ.val = Ξ.val := by
-      simpa using mem_levelSpace.1 (Ξ.mem_sphericalAt hw_off) k
-    simp [y, funext_iff, ← algFormCoeff_algFormRep, h_fix]
+  have h_sph : y ζ₀ ∈ sphericalAt (finRightRep E 1) w := star_algFormCoeff_mem_sphericalAt hw_off ζ₀
   have h_norm : ‖conj (O.liftHeckeRoot w)‖ = (√w.q ^ card r * w.q ^ (card n - card r - 1))⁻¹ := by
     simp [liftHeckeRoot, frobValue]
-  have hy_hecke : heckePolyOp (finRightRep E 1) hw (conj (O.liftHeckeRoot w)) (y ζ₀) = 0 := by
-    -- The conjugate coefficient is a conjugate-linear equivariant map `L` on forms.
-    let L : AlgForm (E := E) n O.columnCount O.detExp →ₗ⋆[ℂ] G E 1 → ℂ :=
-      (starLinearEquiv ℂ).toLinearMap ∘ₛₗ algFormCoeff 1 (gramForm ζ₀)
-    calc _ = L (heckePolyOp (algFormRep O.columnCount O.detExp) hw (O.liftHeckeRoot w) Ξ.val) :=
-        (map_heckePolyOp L _ (by simp [L, funext_iff, algFormCoeff_algFormRep])).symm
-      _ = L 0 := congrArg L (congrArg Subtype.val h_hecke)
-      _ = 0 := map_zero L
+  have hy_hecke : heckePolyOp (finRightRep E 1) hw (conj (O.liftHeckeRoot w)) (y ζ₀) = 0 :=
+    heckePolyOp_star_algFormCoeff_eq_zero h_hecke ζ₀
   have h_top : DescentsVanish (hyperbolicSum N O.W) (stdSpace E n) (O.charW * upsilonU1 ^ card N)
       O.places.conjClosureᶜ (y ζ₀) :=
     descentsVanish_add_planes h_disj h_bottom (removePlanes N O.W) (hy ζ₀) hw hw_off
