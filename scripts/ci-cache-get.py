@@ -205,6 +205,18 @@ def matching_record(data, identity):
     return record
 
 
+def load_candidate(path, identity):
+    """Read an explicit candidate receipt handed off by the staging job."""
+    with path.open("rb") as handle:
+        data = handle.read(MAX_RECEIPT + 1)
+    if len(data) > MAX_RECEIPT:
+        raise ValueError("candidate receipt exceeds size limit")
+    record = matching_record(data, identity)
+    if record is None:
+        raise ValueError("candidate receipt does not match the current build inputs")
+    return data, record
+
+
 def find_record(identity, fetcher=fetch):
     data = fetcher(f"{PREFIX}/inputs/{fingerprint(identity)}.json", MAX_RECEIPT)
     return None if data is None else matching_record(data, identity)
@@ -552,7 +564,10 @@ def main():
     parser.add_argument("--project", type=Path, default=Path.cwd())
     parser.add_argument("--cache-dir", type=Path)
     parser.add_argument("--jobs", type=int, default=24)
-    parser.add_argument("--baseline", metavar="REF",
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument("--candidate", type=Path, metavar="RECEIPT",
+                           help="restore this exact staged receipt for clean-runner acceptance")
+    selection.add_argument("--baseline", metavar="REF",
                         help="on a miss, restore the nearest record on REF's first-parent history (exit 4)")
     parser.add_argument("--baseline-depth", type=int, default=200, help="commits of REF to try (default 200)")
     parser.add_argument("--print-identity", action="store_true",
@@ -565,7 +580,11 @@ def main():
     if args.print_identity:
         print(json.dumps({**identity, "input_fingerprint": fingerprint(identity)}, indent=2))
         return 0
-    record, baseline = find_record(identity), None
+    baseline = None
+    if args.candidate is not None:
+        _, record = load_candidate(args.candidate, identity)
+    else:
+        record = find_record(identity)
     if record is None:
         print("No equivalent successful cache found for the current build inputs.", flush=True)
         if args.baseline is None:

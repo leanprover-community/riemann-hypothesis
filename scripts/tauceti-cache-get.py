@@ -21,6 +21,7 @@ Mathlib's cache and before the project's, does four things:
 
 It only reads from Tau Ceti's cache; it never uploads. It verifies nothing about proofs.
 """
+import argparse
 import json
 import os
 from pathlib import Path
@@ -44,10 +45,10 @@ def package(manifest, name):
     raise ValueError(f"{name} is not in {manifest.get('name', 'the')} manifest")
 
 
-def check_mathlib_pin():
-    ours = json.loads((ROOT / "lake-manifest.json").read_text())
+def check_mathlib_pin(root):
+    ours = json.loads((root / "lake-manifest.json").read_text())
     tauceti = package(ours, "TauCeti")
-    theirs_path = ROOT / ".lake" / "packages" / "TauCeti" / "lake-manifest.json"
+    theirs_path = root / ".lake" / "packages" / "TauCeti" / "lake-manifest.json"
     if not theirs_path.is_file():
         raise ValueError(f"{theirs_path} is missing; run `lake update TauCeti` or `lake build` first")
     theirs = json.loads(theirs_path.read_text())
@@ -64,9 +65,9 @@ def check_mathlib_pin():
 TRUSTED_FILES = ("src/Statements.lean", "src/Main.lean", "Challenge.lean")
 
 
-def check_trusted_files():
+def check_trusted_files(root):
     for name in TRUSTED_FILES:
-        for line in (ROOT / name).read_text(encoding="utf-8").splitlines():
+        for line in (root / name).read_text(encoding="utf-8").splitlines():
             if IMPORT.match(line):
                 raise ValueError(f"{name} imports a Tau Ceti module: {line.strip()}")
 
@@ -80,14 +81,14 @@ def tauceti_imports(path):
     return imports
 
 
-def imported_modules():
+def imported_modules(root):
     """The Tau Ceti modules imported under `src`, closed under Tau Ceti's own imports (public,
     private and `meta` alike)."""
     pending = set()
-    for path in (ROOT / "src").rglob("*.lean"):
+    for path in (root / "src").rglob("*.lean"):
         pending |= tauceti_imports(path)
     direct = len(pending)
-    source = ROOT / ".lake" / "packages" / "TauCeti"
+    source = root / ".lake" / "packages" / "TauCeti"
     modules = set()
     while pending:
         module = pending.pop()
@@ -102,13 +103,16 @@ def imported_modules():
     return sorted(modules)
 
 
-def run_lake(args, env):
-    return subprocess.run(["lake", *args], cwd=ROOT, env=env).returncode
+def run_lake(root, args, env):
+    return subprocess.run(["lake", *args], cwd=root, env=env).returncode
 
 
 def main():
-    check_trusted_files()
-    check_mathlib_pin()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--project", type=Path, default=ROOT)
+    root = parser.parse_args().project.resolve()
+    check_trusted_files(root)
+    check_mathlib_pin(root)
     env = os.environ.copy()
     for key in list(env):
         # Read-only use of a public cache: never pass upload credentials to Lake.
@@ -116,19 +120,19 @@ def main():
                 "LAKE_CACHE_KEY", "LAKE_CACHE_ARTIFACT_ENDPOINT", "LAKE_CACHE_REVISION_ENDPOINT",
                 "LAKE_CACHE_SERVICE", "LAKE_ARTIFACT_CACHE"):
             env.pop(key)
-    env["LAKE_CONFIG"] = str(ROOT / "lakefile.toml")
+    env["LAKE_CONFIG"] = str(root / "lakefile.toml")
     say("fetching Tau Ceti's cache mappings")
-    code = run_lake(["cache", "get", "--package", "TauCeti", "--service", "tauceti-public",
+    code = run_lake(root, ["cache", "get", "--package", "TauCeti", "--service", "tauceti-public",
                      "--repo", "TauCetiProject/TauCeti", "--mappings-only"], env)
     if code:
         say("fetching the mappings failed; Lake would compile Tau Ceti modules from source")
         return code
-    modules = imported_modules()
+    modules = imported_modules(root)
     if not modules:
         say("no Tau Ceti module is imported under src; nothing more to fetch")
         return 0
     say(f"fetching oleans for those {len(modules)} Tau Ceti module(s)")
-    code = run_lake(["-q", "build", *modules], env)
+    code = run_lake(root, ["-q", "build", *modules], env)
     if code:
         say("fetching Tau Ceti oleans failed")
     return code

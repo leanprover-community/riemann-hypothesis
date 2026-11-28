@@ -8,10 +8,11 @@ name: publish cache
 # build of the commit, waiting for it to finish. It downloads that run's artifact cache-<commit>,
 # checks it with the code of main (scripts/publish-ci-cache.py, which runs nothing from the
 # artifact or the commit), and then publishes the new artifacts, the map, the module manifest
-# and the record to R2, never overwriting anything. Only the `publish` job, on a fresh
-# GitHub-hosted runner in the environment ci-cache-publish (deployable from main only), sees
-# R2_ACCOUNT_TOKEN. The `accept` job then restores the published cache on another fresh runner,
-# as a user would with `lake exe cache get`, and requires `lake build --no-build` to succeed.
+# to R2, never overwriting anything. The `accept` job then restores the selected receipt,
+# existing or new, on a fresh runner and requires `lake build --no-build` to succeed.
+# `activate` then confirms or creates exactly that public lookup record. The stage and
+# activation steps see R2_ACCOUNT_TOKEN from the ci-cache-publish environment
+# (deployable from main only).
 #
 # A manual run publishes a given commit's build (any successful self-hosted build.yml run of it
 # with a cache artifact, for example a workflow_dispatch of build.yml on a test branch). With
@@ -45,14 +46,15 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
-    name: ${{ (github.event_name == 'push' || inputs.publish) && 'publish' || 'verify' }}
+  stage:
+    name: ${{ (github.event_name == 'push' || inputs.publish) && 'stage' || 'verify' }}
     if: github.repository == 'leanprover-community/riemann-hypothesis'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     environment: ${{ (github.event_name == 'push' || inputs.publish) && 'ci-cache-publish' || '' }}
     outputs:
       sha: ${{ steps.target.outputs.sha }}
+      receipt: ${{ steps.stage.outputs.receipt }}
     steps:
       - name: Check out main's publishing code
         uses: actions/checkout@v4
@@ -100,7 +102,8 @@ jobs:
           "$HOME/.elan/bin/elan" toolchain install "$toolchain"
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      - name: Verify, then publish
+      - name: Verify and stage the cache
+        id: stage
         env:
           SHA: ${{ steps.target.outputs.sha }}
           PUBLISH: ${{ github.event_name == 'push' || inputs.publish }}
@@ -109,20 +112,34 @@ jobs:
           # An artifact without new files has no artifacts/ directory.
           mkdir -p "$RUNNER_TEMP/staging/artifacts"
           extra=()
-          [[ "$PUBLISH" == true ]] && extra+=(--publish)
+          receipt="$RUNNER_TEMP/candidate.json"
+          if [[ "$PUBLISH" == true ]]; then
+            extra+=(--stage-receipt "$receipt")
+          fi
           python3 -I scripts/publish-ci-cache.py --sha "$SHA" --staging "$RUNNER_TEMP/staging" "${extra[@]}"
+          if [[ "$PUBLISH" == true ]]; then
+            printf 'receipt=%s\n' "$(base64 -w 0 "$receipt")" >> "$GITHUB_OUTPUT"
+          fi
 
   accept:
     name: accept
-    needs: publish
+    needs: stage
     if: github.event_name == 'push' || inputs.publish
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - name: Check out the published commit
+      - name: Check out the candidate's commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.publish.outputs.sha }}
+          ref: ${{ needs.stage.outputs.sha }}
+          path: project
+          persist-credentials: false
+
+      - name: Check out main's cache restore code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: cache-tools
           persist-credentials: false
 
       - name: Install elan
@@ -131,8 +148,52 @@ jobs:
           sh "$RUNNER_TEMP/elan-init.sh" -y --default-toolchain none --no-modify-path
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      - name: lake exe cache get
-        # It ends with lake build --no-build itself; run it again to show the result.
+      - name: Restore dependencies and accept the selected cache
+        working-directory: project
+        env:
+          RECEIPT: ${{ needs.stage.outputs.receipt }}
+          MATHLIB_CACHE_GET_URL: https://cache.mathlib.org/mathlib4
         run: |
-          lake exe cache get
-          lake build --no-build
+          [[ -n "$RECEIPT" ]]
+          printf '%s' "$RECEIPT" | base64 --decode > "$RUNNER_TEMP/candidate.json"
+          ulimit -Sn "$(ulimit -Hn)"
+          lake exe mathlib/cache get
+          export LAKE_CACHE_DIR="$PWD/.lake/cache"
+          if [[ -d .lake/packages/TauCeti ]]; then
+            python3 -I ../cache-tools/scripts/tauceti-cache-get.py --project "$PWD"
+          fi
+          if ! python3 -I ../cache-tools/scripts/ci-cache-get.py --candidate "$RUNNER_TEMP/candidate.json"; then
+            echo "::error::Cache acceptance failed. If staging selected an active record, see CACHE.md#recovering-a-published-record."
+            exit 1
+          fi
+
+  activate:
+    name: activate
+    needs: [stage, accept]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ci-cache-publish
+    steps:
+      - name: Check out main's publishing code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Fetch the accepted commit if needed
+        env:
+          SHA: ${{ needs.stage.outputs.sha }}
+        run: |
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::sha must be a full commit hash"; exit 1; }
+          git cat-file -e "$SHA^{commit}" 2>/dev/null || git fetch --no-tags origin "$SHA"
+
+      - name: Activate the accepted cache
+        env:
+          SHA: ${{ needs.stage.outputs.sha }}
+          RECEIPT: ${{ needs.stage.outputs.receipt }}
+          R2_ACCOUNT_TOKEN: ${{ secrets.R2_ACCOUNT_TOKEN }}
+        run: |
+          [[ -n "$RECEIPT" ]]
+          printf '%s' "$RECEIPT" | base64 --decode > "$RUNNER_TEMP/candidate.json"
+          python3 -I scripts/publish-ci-cache.py --sha "$SHA" --activate "$RUNNER_TEMP/candidate.json"
