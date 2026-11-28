@@ -179,6 +179,98 @@ open CategoryTheory Functor TotalH HodgeTatePair
 
 variable {p : ℕ} {k E : Type} [Field k] [EmbeddedInQpBar p k] {g : Gp p} [Field E] [Algebra E k]
 
+/-- The map of thickenings induced by a morphism `u` of `p`-adic tests agrees with that of its
+`g`-twist: both are induced by the map on Witt vectors of the tilts with `p` inverted, without
+using the structure maps. -/
+private lemma mapThickening_twist {c d : PadicTest (p := p)} (u : c ⟶ d) :
+    ∀ b : c.Thickening,
+      PadicTest.mapThickening u b = PadicTest.mapThickening ((PadicTest.twist g).map u) b := by
+  have h_can {c' d' : PadicTest} (u' : c' ⟶ d')
+      (y : Localization.Away (p : WittVector p c'.TiltRing)) :
+      PadicTest.mapThickening u' (Ideal.Quotient.mk _ y) =
+        Ideal.Quotient.mk (RingHom.ker d'.thetaGeneric ^ 2)
+          (IsLocalization.map (Localization.Away (p : WittVector p d'.TiltRing))
+            (WittVector.map (p := p) (tiltMap u'.toRingHom : c'.TiltRing →+* d'.TiltRing))
+            (powers_le_comap_powers p _) y) :=
+    rfl
+  exact Ideal.Quotient.mk_surjective.forall.2 fun y ↦
+    (h_can u y).trans (h_can ((PadicTest.twist g).map u) y).symm
+
+/-- When `g` fixes `E` and `t : k` maps to `χ(g⁻¹)`, any natural `E`-algebra map `S` from the
+square-zero extension functor to its `g`-twist that fixes the base ring and scales the module by
+`t` lifts via the identity on `thickeningOver` to a natural transformation `T` from
+`pairAlg ⋙ restrictAlg E k` to its `g`-twist. -/
+private lemma exists_pairAlg_galTwist_natTrans
+    (hg : ∀ z : E, g (algebraMap k (PadicAlgCl p) (algebraMap E k z)) =
+      algebraMap k (PadicAlgCl p) (algebraMap E k z))
+    {t : k}
+    (ht : algebraMap k (PadicAlgCl p) t = algebraMap ℤ_[p] (PadicAlgCl p) (cyclotomicGp g⁻¹).val)
+    {S : (toHodgeTest ⋙ (HodgeTest.baseComparison (k := k) (E := E)).functor) ⋙
+          HodgeTest.sqZeroExt ⟶
+        galTwist g ⋙ (toHodgeTest ⋙ (HodgeTest.baseComparison (k := k) (E := E)).functor) ⋙
+          HodgeTest.sqZeroExt}
+    (hS_fst : ∀ (X : HodgeTatePair)
+      (r : TrivSqZeroExt X.GenericRing (Fin X.rank → X.GenericRing)), (S X r).fst = r.fst)
+    (hS_snd : ∀ (X : HodgeTatePair)
+      (r : TrivSqZeroExt X.GenericRing (Fin X.rank → X.GenericRing)), (S X r).snd = t • r.snd) :
+    let A : HodgeTatePair ⥤ CommAlg E := pairAlg ⋙ restrictAlg E k
+    ∃ T : A ⟶ galTwist g ⋙ A,
+      ∀ (X : HodgeTatePair) (x : A.obj X), (T X x).val.snd = S X x.val.snd := by
+  intro A
+  -- The components of `T`: the identity on `thickeningOver` and `S` on the square-zero extension.
+  -- They are `E`-linear because `g` fixes `E`.
+  let T₀ (X : HodgeTatePair) : A.obj X ⟶ (galTwist g ⋙ A).obj X := CommAlg.homOfRingHom
+    ((RingHom.prodMap (.id _) (S X).hom.toRingHom).restrict _ _ fun _ hx ↦
+      hx.trans (hS_fst X _).symm) fun z ↦
+      Subtype.ext (Prod.ext ((congrArg _ (hg z).symm).trans (DFunLike.congr_fun
+        (PadicTest.uniqueLift_comp_eq_uniqueLift_twist g X.test) _)) ((S X).hom.commutes' z))
+  have h_nat (X Y : HodgeTatePair) (f : X ⟶ Y) :
+      A.map f ≫ T₀ Y = T₀ X ≫ (galTwist g ⋙ A).map f := by
+    -- The factor `t` from `hS_snd` is the factor `cyclotomicGp g⁻¹` by which the twist changes
+    -- `mulMu` (`thickeningOver.mulMu_twist`).
+    have h_scal (m : Fin X.rank → X.GenericRing) :
+        Y.test.genericStructureMap (algebraMap ℤ_[p] (PadicAlgCl p) (cyclotomicGp g⁻¹).val) *
+          (show Y.test.GenericRing from (f.snd m).1) = (f.snd (t • m)).1 := by
+      rw [← ht, ← algebraMap_smul X.GenericRing, map_smulₛₗ, RingHom.coe_coe, AlgHom.commutes]
+      rfl
+    -- first component: `mapThickening_twist`, `mulMu_twist` and `h_scal`; second: `S` is natural
+    ext z
+    refine Subtype.ext (Prod.ext ?_ (ConcreteCategory.congr_hom (S.naturality f) _))
+    have h_snd : (S X z.val.snd).snd = t • z.val.snd.snd := hS_snd X z.val.snd
+    exact congrArg₂ (fun b c : Y.test.Thickening ↦ b + c) (mapThickening_twist (g := g) f.1 _)
+      ((thickeningOver.mulMu_twist g Y.test _).trans
+        (congrArg _ ((h_scal _).trans (congrArg (fun m ↦ (f.snd m).1) h_snd.symm))))
+  exact ⟨⟨T₀, h_nat⟩, fun _ _ ↦ rfl⟩
+
+/-- Restricting the `g`-twisted class of `ξ` from `p`-adic tests to `HodgeTatePair` via
+`restrictToPairs` agrees with twisting `restrictToPairs ξ` along `T` and `twistGenericCoeff g`,
+whenever `T` agrees with `τ` on the base ring component of `pairAlg`. -/
+private lemma restrictToPairs_pull_galTwist {N : AbFunctor (CommAlg E)} {n : ℕ}
+    (τ : genericOver ⋙ restrictAlg E k ⟶ PadicTest.twist g ⋙ genericOver ⋙ restrictAlg E k)
+    (T : pairAlg ⋙ restrictAlg E k ⟶ galTwist g ⋙ pairAlg ⋙ restrictAlg E k)
+    (hT : ∀ (X : HodgeTatePair) (z : (pairAlg ⋙ restrictAlg E k).obj X),
+      (T X z).val.snd.fst = τ X.test z.val.snd.fst)
+    (ξ : H (genericOver ⋙ restrictAlg E k ⋙ N) genericCoeff n) :
+    let A : HodgeTatePair ⥤ CommAlg E := pairAlg ⋙ restrictAlg E k
+    let α : TotalH (A ⋙ N) (galTwist g ⋙ A ⋙ N) := homClass (whiskerRight T N)
+    let β : TotalH (galTwist g ⋙ scalarCoeff) scalarCoeff :=
+      homClass (toTest.whiskerLeft (twistGenericCoeff g))
+    restrictToPairs
+        ((Comparison.of (PadicTest.twist g) (twistGenericCoeff g)).pull (whiskerRight τ N) n ξ :
+          H (genericOver ⋙ restrictAlg E k ⋙ N) genericCoeff n) =
+      TotalH.comp α
+        (TotalH.comp (TotalH.map (restrictAlong (galTwist g)) (restrictToPairs ξ)) β) := by
+  intro A α β
+  -- The classes live over `(restrictAlong F).obj G` on one side and `F ⋙ G` on the other,
+  -- which agree only up to unfolding, so `M` is given and the lemmas are applied by unification
+  refine .trans ?_ ((pullbackAlong_of _).symm.trans (congrArg _
+    ((of_comp_homClass (M := (restrictAlong (galTwist g)).obj _) _).symm.trans
+      (congrArg (TotalH.comp · β) (map_of ..).symm))))
+  simp [restrictToPairs, Comparison.pull, H.map, H.push, mapExactFunctor_mapExactFunctor,
+    mapExtAddHom, Abelian.Ext.mapExactFunctor_comp, Abelian.Ext.mapExactFunctor_mk₀]
+  congr 3 with : 2
+  exact (N.map_commSq ⟨by ext; apply hT⟩).w.symm
+
 /-- Let `g` in `Gal(ℚ̄_p/ℚ_p)` fix the subfield `E` of `k ⊆ ℚ̄_p`. Let `x` be a Hodge class of `N`
 over `E`, meaning a degree-`q` Ext class from `(A, M) ↦ N(A ⊕ M)` to `(A, M) ↦ ⋀_A M`. Let `ξ` be a
 degree-`n` class on `p`-adic tests `S` (families of valuation rings over O_C) with coefficients
@@ -213,47 +305,11 @@ theorem hodgeTateMap_galois_twist
   let φ : HodgeTest k ⥤ HodgeTest E := (HodgeTest.baseComparison (k := k) (E := E)).functor
   let σ : toHodgeTest ⋙ φ ⟶ galTwist g ⋙ toHodgeTest ⋙ φ :=
     toHodgeTest.whiskerLeft (HodgeTest.scaleModule t φ) ≫ .mk fun X ↦ ⟨τ X.test, .id⟩
-  let B : HodgeTatePair ⥤ CommAlg E := (toHodgeTest ⋙ φ) ⋙ HodgeTest.sqZeroExt
-  let S : B ⟶ galTwist g ⋙ B := whiskerRight σ HodgeTest.sqZeroExt
-  -- The components of `T`: the identity on `thickeningOver` and `S` on the square-zero extension.
-  -- They are `E`-linear because `g` fixes `E`.
+  let S : (toHodgeTest ⋙ φ) ⋙ HodgeTest.sqZeroExt ⟶
+      galTwist g ⋙ (toHodgeTest ⋙ φ) ⋙ HodgeTest.sqZeroExt :=
+    whiskerRight σ HodgeTest.sqZeroExt
   let A : HodgeTatePair ⥤ CommAlg E := pairAlg ⋙ restrictAlg E k
-  let T₀ (X : HodgeTatePair) : A.obj X ⟶ (galTwist g ⋙ A).obj X := CommAlg.homOfRingHom
-    ((RingHom.prodMap (.id _) (S X).hom.toRingHom).restrict _ _ (by tauto)) fun z ↦
-      Subtype.ext (Prod.ext ((congrArg _ (hg z).symm).trans (DFunLike.congr_fun
-        (PadicTest.uniqueLift_comp_eq_uniqueLift_twist g X.test) _)) ((S X).hom.commutes' z))
-  have h_nat (X Y : HodgeTatePair) (f : X ⟶ Y) :
-      A.map f ≫ T₀ Y = T₀ X ≫ (galTwist g ⋙ A).map f := by
-    -- The factor `t` from `HodgeTest.scaleModule` is the factor `cyclotomicGp g⁻¹` by which the
-    -- twist changes `mulMu` (`thickeningOver.mulMu_twist`).
-    have h_scal (m : Fin X.rank → X.GenericRing) :
-        Y.test.genericStructureMap (algebraMap ℤ_[p] (PadicAlgCl p) (cyclotomicGp g⁻¹).val) *
-          (show Y.test.GenericRing from (f.snd m).1) = (f.snd (t • m)).1 := by
-      rw [← ht, ← algebraMap_smul X.GenericRing, map_smulₛₗ, RingHom.coe_coe, AlgHom.commutes]
-      rfl
-    -- The map of thickenings induced by a map `u` of tests sends the class of `y` to the class of
-    -- the image of `y` under the map of Witt vectors of the tilts, with `p` inverted. This does
-    -- not involve the structure maps, so it is the same for `f` and for its twist.
-    have h_can {c d : PadicTest} (u : c ⟶ d) (y : Localization.Away (p : WittVector p c.TiltRing)) :
-        PadicTest.mapThickening u (Ideal.Quotient.mk _ y) =
-          Ideal.Quotient.mk (RingHom.ker d.thetaGeneric ^ 2)
-            (IsLocalization.map (Localization.Away (p : WittVector p d.TiltRing))
-              (WittVector.map (p := p) (tiltMap u.toRingHom : c.TiltRing →+* d.TiltRing))
-              (powers_le_comap_powers p _) y) :=
-      rfl
-    have h_map : ∀ b : X.test.Thickening, PadicTest.mapThickening f.1 b =
-        PadicTest.mapThickening ((PadicTest.twist g).map f.1) b :=
-      Ideal.Quotient.mk_surjective.forall.2 fun y ↦
-        (h_can f.1 y).trans (h_can ((PadicTest.twist g).map f.1) y).symm
-    -- first component: `h_map`, `mulMu` and `h_scal`; second component: `S` is natural
-    ext z
-    refine Subtype.ext (Prod.ext ?_ (ConcreteCategory.congr_hom (S.naturality f) _))
-    exact congrArg₂ (fun b c : Y.test.Thickening ↦ b + c) (h_map _)
-      ((thickeningOver.mulMu_twist g Y.test _).trans (congrArg _ (h_scal _)))
-  -- Only the second component of `T` is used below.
-  obtain ⟨T, hT⟩ : ∃ T : A ⟶ galTwist g ⋙ A,
-      ∀ (X : HodgeTatePair) (x : A.obj X), (T X x).val.snd = S X x.val.snd :=
-    ⟨⟨T₀, h_nat⟩, fun _ _ ↦ rfl⟩
+  obtain ⟨T, hT⟩ := exists_pairAlg_galTwist_natTrans hg ht (S := S) (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
   let y : H (A ⋙ N) (toHodgeTest ⋙ hodgeCoeff) q :=
     (Comparison.restrict toHodgeTest _).pull (whiskerRight toSqZero (restrictAlg E k ⋙ N)) q
       x.baseChange
@@ -276,16 +332,9 @@ theorem hodgeTateMap_galois_twist
   -- Here `restrictToPairs ξ = TotalH.comp y.toTotalH (contractionPow h)` by `hξ`.
   calc
     _ = TotalH.comp α
-        (TotalH.comp (TotalH.map (restrictAlong (galTwist g)) (restrictToPairs ξ)) β) := by
-      -- The classes live over `(restrictAlong F).obj G` on one side and `F ⋙ G` on the other,
-      -- which agree only up to unfolding, so `M` is given and the lemmas are applied by unification
-      refine .trans ?_ ((pullbackAlong_of _).symm.trans (congrArg _
-        ((of_comp_homClass (M := (restrictAlong (galTwist g)).obj _) _).symm.trans
-          (congrArg (TotalH.comp · β) (map_of ..).symm))))
-      simp [restrictToPairs, Comparison.pull, H.map, H.push, mapExactFunctor_mapExactFunctor,
-        mapExtAddHom, Abelian.Ext.mapExactFunctor_comp, Abelian.Ext.mapExactFunctor_mk₀]
-      congr 3 with : 2
-      exact (N.map_commSq ⟨by ext; apply congrArg TrivSqZeroExt.fst (hT ..)⟩).w.symm
+        (TotalH.comp (TotalH.map (restrictAlong (galTwist g)) (restrictToPairs ξ)) β) :=
+      restrictToPairs_pull_galTwist τ T (fun X z ↦
+        show (T X z).val.snd.fst = (S X z.val.snd).fst from congrArg TrivSqZeroExt.fst (hT X z)) ξ
     _ = TotalH.comp α (TotalH.comp (TotalH.map (restrictAlong (galTwist g)) y.toTotalH) u) := by
       rw [← hξ]
       exact congrArg _ (TotalH.map_comp_assoc ..)
