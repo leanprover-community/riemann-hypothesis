@@ -102,14 +102,14 @@ jobs:
 
       - name: Restore Mathlib's cache
         if: steps.queue.outputs.tested != 'true'
-        # As in scripts/lake-cache-get.sh, which `lake exe cache get` runs.
+        # As in scripts/lake-cache-get.py, which `lake exe cache get` runs.
         env:
           MATHLIB_CACHE_GET_URL: https://cache.mathlib.org/mathlib4
         run: lake exe mathlib/cache get
 
       - name: Restore Tau Ceti's cache
         if: steps.queue.outputs.tested != 'true'
-        # As in scripts/lake-cache-get.sh: checks the Mathlib pins agree and that the statements
+        # As in scripts/lake-cache-get.py: checks the Mathlib pins agree and that the statements
         # import no Tau Ceti module, then fetches the oleans of the imported Tau Ceti modules.
         run: python3 scripts/tauceti-cache-get.py
 

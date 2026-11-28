@@ -29,7 +29,7 @@ def commit(root, files, message):
     for name, text in files.items():
         path = root / name
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
+        path.write_bytes(text.encode("utf-8"))
     run(root, "add", "-A")
     run(root, "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-q", "-m", message)
     return subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()

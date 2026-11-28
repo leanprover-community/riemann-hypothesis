@@ -534,7 +534,7 @@ def consume(root, cache, record, identity, workers=24, fetcher=fetch, baseline=N
     clear_output_hashes(root, modules)
     lean = Path(subprocess.check_output(["elan", "which", "lean"], cwd=root, env=env, text=True).strip())
     print(f"Unpacking {len(jobs)} modules with stock leantar ({workers} workers)...", flush=True)
-    subprocess.run([str(lean.with_name("leantar")), "--jobs", str(workers), "-f", "-x", "-j", "-"],
+    subprocess.run([str(lean.with_name("leantar" + lean.suffix)), "--jobs", str(workers), "-f", "-x", "-j", "-"],
                    input=json.dumps(jobs), text=True, cwd=root, env=env, check=True)
     if baseline:
         print(f"Restored {len(jobs)} of {len(modules)} baseline modules; lake build compiles those whose"
