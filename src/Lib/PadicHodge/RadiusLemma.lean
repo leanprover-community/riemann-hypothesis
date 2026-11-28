@@ -49,7 +49,7 @@ namespace New.Lift.Chart
 
 open Period BPlus Matrix Algebra PowerSeries WittVector Ideal Function NeZero RingHom Finset Nat
 
-variable {p : ℕ} [ThePrime p] {c : Chart} {d : Type} [Fintype d] [DecidableEq d] {t : Gp p}
+variable {p : ℕ} [ThePrime p] {c : Chart} {d : Type} [Fintype d] {t : Gp p}
 
 /-- `E` divides `xi - p * b` for some `b` in `Ainf` (for `b = 0`, as `E` and `xi` are
 associates). -/
@@ -189,11 +189,12 @@ def natCongruentSet (c : Chart) (M : Matrix d d BPlus) (A : ℕ) : Set (d → c.
   {y : d → c.S |
     ∃ r : d → ℕ, ∀ i : d, ainfToBPlus c.E ^ A ∣ (M *ᵥ fun k : d ↦ ainfToBPlus (y k)) i - r i}
 
-omit [DecidableEq d] in
 lemma mem_natCongruentSet {M : Matrix d d BPlus} {A : ℕ} {y : d → c.S} :
     y ∈ natCongruentSet c M A ↔
       ∃ r : d → ℕ, ∀ i : d, ainfToBPlus c.E ^ A ∣ (M *ᵥ fun k : d ↦ ainfToBPlus (y k)) i - r i :=
   Iff.rfl
+
+variable [DecidableEq d]
 
 /-- Let `ev` evaluate at `X = z ^ N / p ^ 2` with values in `Amax`, and let `V` be a unit over
 `S⟦X⟧`. For `e * A ≤ N * δ`, the `y` with `ev V y` congruent to a vector in `ℕ ^ d` modulo `E ^ A`

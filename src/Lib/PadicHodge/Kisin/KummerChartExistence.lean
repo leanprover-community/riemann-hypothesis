@@ -146,7 +146,13 @@ lemma phi_smul_wittCFlat (x : WittCFlat) : FrobGroup.φ • x = WittVector.frobe
 lemma FrobGroup.phi_pow_smul (n : ℕ) (x : Ainf) : φ ^ n • x = frobEnd^[n] x := by
   simp [← funext phi_smul_ainf]
 
-omit Γ
+end FrobeniusGroup
+
+section TeichmullerRoots
+
+open Period WittVector MulSemiringAction HasEnoughRootsOfUnity OFlat
+
+variable {p : ℕ} [ThePrime p] {f : ℕ+}
 
 /-! ### Teichmüller roots of unity -/
 
@@ -199,7 +205,7 @@ lemma fixes_roots_iff_fixesLambda (g : Gp p) :
     obtain ⟨a, rfl⟩ := exists_flatFq_teichmuller_eq wittToQpBar.toRingHom ζ fun _ ↦ hζ
     exact smul_algebraMap_wittFq_eq_iff.mp (h_fixes (teichmuller p a))
 
-end FrobeniusGroup
+end TeichmullerRoots
 
 /-!
 ## Existence of Kummer charts

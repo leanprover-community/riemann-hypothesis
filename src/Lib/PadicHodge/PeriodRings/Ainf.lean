@@ -452,20 +452,21 @@ applies the residue map O^♭ → k to each Witt coordinate. -/
 noncomputable def toWittResidue : Ainf →ₐ[ℤ_[p]] WittVector p (ResidueField OFlat) :=
   ⟨map (residue OFlat), wittVector_map_algebraMap (residue OFlat)⟩
 
-variable {k : Type*} [CommRing k] [CharP k p] [PerfectRing k p] {a c : WittVector p k}
+variable {k : Type*} [CommRing k] [CharP k p] {a c : WittVector p k}
 
 /-! ### Witt vectors over a perfect ring: lifting from the reduction modulo `p` -/
+
+/-- A Witt vector `a` in W(k), for `k` of characteristic `p`, is a unit if and only if its zeroth
+coordinate is a unit in k. -/
+lemma Ainf.isUnit_iff_isUnit_constantCoeff : IsUnit a ↔ IsUnit (constantCoeff a) :=
+  ⟨fun h ↦ h.map constantCoeff, fun h ↦ ⟨mkUnit h.unit_spec.symm, rfl⟩⟩
+
+variable [PerfectRing k p]
 
 /-- For k perfect of characteristic p, the prime p divides a Witt vector `a` in W(k) if and only
 if its zeroth coordinate vanishes. -/
 lemma Witt.p_dvd_iff : ↑p ∣ a ↔ constantCoeff a = 0 := by
   simp [← Ideal.mem_span_singleton, ← ker_constantCoeff]
-
-omit [PerfectRing k p] in
-/-- A Witt vector `a` in W(k), for `k` of characteristic `p`, is a unit if and only if its zeroth
-coordinate is a unit in k. -/
-lemma Ainf.isUnit_iff_isUnit_constantCoeff : IsUnit a ↔ IsUnit (constantCoeff a) :=
-  ⟨fun h ↦ h.map constantCoeff, fun h ↦ ⟨mkUnit h.unit_spec.symm, rfl⟩⟩
 
 /-- Let `F`, `G` be ring endomorphisms of a perfect ring `k` of characteristic `p` and `s₀` the
 reduction of `s ∈ W(k)` modulo `p`. If `x ↦ F x - s₀ * G x` is onto `k`, then

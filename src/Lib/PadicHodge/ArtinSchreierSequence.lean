@@ -302,7 +302,27 @@ namespace New.Lift
 
 open Period Algebra TensorProduct Ideal Ideal.Quotient FrobGroup algebraMap WittVector Witt
 
-variable {p : ℕ} [ThePrime p] [Γ : GroupOverGp p]
+variable {p : ℕ} [ThePrime p]
+
+/-- A constant of `ℤ_[p]` that lies in `W(𝔪)` modulo `p ^ m` is divisible by `p ^ m`. -/
+lemma pow_dvd_of_pow_dvd_algebraMap_sub {m : ℕ} (c : ℤ_[p]) {a : Ainf} (ha : a ∈ wittOfMaxIdeal)
+    (h_dvd : (p : WittCFlat) ^ m ∣ algebraMap ℤ_[p] WittCFlat c - algebraMap Ainf WittCFlat a) :
+    (p : ℤ_[p]) ^ m ∣ c := by
+  -- Compare the first `m` Witt coordinates: those of `c` lie in `𝔽_p`, those of `a` are not units.
+  change (p : WittVector p CFlat) ^ m ∣
+    algebraMap ℤ_[p] (WittVector p CFlat) c - algebraMap Ainf (WittVector p CFlat) a at h_dvd
+  rw [← wittVector_map_algebraMap (algebraMap OFlat CFlat), Witt.pow_dvd_sub_iff_coeff_eq] at h_dvd
+  rw [← map_dvd_iff (equiv p).symm, map_pow, map_natCast, ← sub_zero ((equiv p).symm _),
+    Witt.pow_dvd_sub_iff_coeff_eq]
+  -- Now `h_dvd` says that `c` and `a` have the same first `m` coordinates in `CFlat`, and the
+  -- goal is that the first `m` coordinates of `c` in `W(𝔽_p)` vanish.
+  intro i hi
+  have h_coeff : (algebraMap ℤ_[p] Ainf c).coeff i = a.coeff i := (coe_inj ..).mp (h_dvd i hi)
+  -- A nonzero element of `𝔽_p` is a unit, so it would make `a.coeff i` a unit.
+  suffices h_not_unit : ¬IsUnit (((equiv p).symm c).coeff i) by simpa using h_not_unit
+  exact fun hu ↦ mem_wittOfMaxIdeal.mp ha i (h_coeff.subst (hu.map _))
+
+variable [Γ : GroupOverGp p]
 
 /-- The `A_inf`-submodule `W(𝔪^♭) • (1 ⊗ 1)` of `W(C^♭) ⊗ ℤ_p/p^m(1)`: the image of the ideal
 `New.Lift.wittOfMaxIdeal` under `a ↦ a • (1 ⊗ 1)`. -/
@@ -363,25 +383,6 @@ lemma exists_const_of_frobenius_sub {m : ℕ} (x : WittCFlat) {a : Ainf} (ha : a
   · -- `e - c` reduces to `0`, by the choice of `c`.
     simp [wittOfMaxIdeal, ← hc]
   · simp [hc']
-
-omit Γ in
-/-- A constant of `ℤ_[p]` that lies in `W(𝔪)` modulo `p ^ m` is divisible by `p ^ m`. -/
-lemma pow_dvd_of_pow_dvd_algebraMap_sub {m : ℕ} (c : ℤ_[p]) {a : Ainf} (ha : a ∈ wittOfMaxIdeal)
-    (h_dvd : (p : WittCFlat) ^ m ∣ algebraMap ℤ_[p] WittCFlat c - algebraMap Ainf WittCFlat a) :
-    (p : ℤ_[p]) ^ m ∣ c := by
-  -- Compare the first `m` Witt coordinates: those of `c` lie in `𝔽_p`, those of `a` are not units.
-  change (p : WittVector p CFlat) ^ m ∣
-    algebraMap ℤ_[p] (WittVector p CFlat) c - algebraMap Ainf (WittVector p CFlat) a at h_dvd
-  rw [← wittVector_map_algebraMap (algebraMap OFlat CFlat), Witt.pow_dvd_sub_iff_coeff_eq] at h_dvd
-  rw [← map_dvd_iff (equiv p).symm, map_pow, map_natCast, ← sub_zero ((equiv p).symm _),
-    Witt.pow_dvd_sub_iff_coeff_eq]
-  -- Now `h_dvd` says that `c` and `a` have the same first `m` coordinates in `CFlat`, and the
-  -- goal is that the first `m` coordinates of `c` in `W(𝔽_p)` vanish.
-  intro i hi
-  have h_coeff : (algebraMap ℤ_[p] Ainf c).coeff i = a.coeff i := (coe_inj ..).mp (h_dvd i hi)
-  -- A nonzero element of `𝔽_p` is a unit, so it would make `a.coeff i` a unit.
-  suffices h_not_unit : ¬IsUnit (((equiv p).symm c).coeff i) by simpa using h_not_unit
-  exact fun hu ↦ mem_wittOfMaxIdeal.mp ha i (h_coeff.subst (hu.map _))
 
 /-- `p ^ m` kills `W(C^♭) ⊗ ℤ_p/p^m(1)`. -/
 lemma TateTwist.pow_smul_eq_zero {m : ℕ}

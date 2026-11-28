@@ -91,12 +91,8 @@ section HodgeFrame
 open Matrix nonZeroDivisors BdRPlus IsDiscreteValuationRing IsScalarTower Finset RingHom Function
   Units Filter algebraMap
 
-variable {p : ℕ} [ThePrime p] {ι : Type*} [Fintype ι] [DecidableEq ι] {A : Type*} [CommRing A]
+variable {p : ℕ} [ThePrime p] {ι : Type*} [Fintype ι] {A : Type*} [CommRing A]
   [Algebra A (PadicAlgCl p)] [Algebra A BdR] [IsScalarTower A (PadicAlgCl p) BdR]
-
-/-- The matrix `W · diag (t ^ k i)` over `B_dR`, where `t` is the period `tUnit`. -/
-noncomputable def hodgeMatrix (W : Matrix ι ι BdRPlus) (k : ι → ℤ) : Matrix ι ι BdR :=
-  W.map (↑) * diagonal fun i ↦ ((tUnit ^ k i : BdRˣ) : BdR)
 
 /-- The columns of `P` are Hodge–Tate vectors of weights `k` for the semilinear map
 `v ↦ N (g • v)` of `ℂ_p ^ ι`: it multiplies the column `j` by `χ(g) ^ (-k j)`, where `χ` is the
@@ -104,7 +100,6 @@ cyclotomic character. -/
 def IsHodgeTateFrame (N P : Matrix ι ι ℂ_[p]) (k : ι → ℤ) (g : Gp p) : Prop :=
   ∀ j : ι, N *ᵥ (g • P.col j) = ((cyclotomicGp g ^ (-k j) : ℤ_[p]ˣ) : ℤ_[p]) • P.col j
 
-omit [DecidableEq ι] in
 /-- In the coordinates given by a Hodge–Tate frame `P`, the map `v ↦ N (g • v)` acts on the
 coordinate `j` by `x ↦ χ(g) ^ (-k j) • g • x`. -/
 lemma IsHodgeTateFrame.mulVec_twist {N P : Matrix ι ι ℂ_[p]} {k : ι → ℤ} {g : Gp p}
@@ -120,6 +115,12 @@ lemma IsHodgeTateFrame.mulVec_twist {N P : Matrix ι ι ℂ_[p]} {k : ι → ℤ
     _ = ∑ j, ∑ m, N i m * g • P m j * g • w j := by simp only [h_entry, sum_mul]
     _ = ∑ m, ∑ j, N i m * g • P m j * g • w j := sum_comm
     _ = (N *ᵥ (g • (P *ᵥ w))) i := by simp [mulVec, dotProduct, smul_sum, mul_sum, mul_assoc]
+
+variable [DecidableEq ι]
+
+/-- The matrix `W · diag (t ^ k i)` over `B_dR`, where `t` is the period `tUnit`. -/
+noncomputable def hodgeMatrix (W : Matrix ι ι BdRPlus) (k : ι → ℤ) : Matrix ι ι BdR :=
+  W.map (↑) * diagonal fun i ↦ ((tUnit ^ k i : BdRˣ) : BdR)
 
 /-- `Y`, `W`, `k` form a Hodge frame for the matrix `U` over `B_dR` and the family `N` along the
 filter `F` on `Γ`: the algebraic, integral, fixed change of basis `Y` turns `U` into the invariant

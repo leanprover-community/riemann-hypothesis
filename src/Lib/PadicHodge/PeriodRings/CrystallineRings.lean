@@ -521,7 +521,25 @@ namespace New.Period
 
 open algebraMap Adic Ideal Polynomial IsLocalization.Away IsScalarTower Algebra Amax Function BPlus
 
-variable {p : ℕ} {R : Type*} [ThePrime p]
+variable {p : ℕ}
+
+/-- A commutative ring in which a power of `p` vanishes is `p`-adically complete. -/
+lemma isAdicComplete_of_p_pow_eq_zero {Q : Type*} [CommRing Q] {n : ℕ}
+    (h_zero : (p : Q) ^ n = 0) : IsAdicComplete (span {(p : Q)}) Q := by
+  -- From `n` on, the powers of the ideal `(p)` are zero.
+  have h_bot (k : ℕ) (h_le : n ≤ k) : (span {(p : Q)} ^ k • ⊤ : Submodule Q Q) = ⊥ := by
+    simp [span_singleton_pow, pow_eq_zero_of_le h_le h_zero]
+  refine { haus' := fun x hx ↦ ?_, prec' := fun f hf ↦ ⟨f n, fun k ↦ ?_⟩ }
+  · have hx_n : x ≡ 0 [SMOD (span {(p : Q)} ^ n • ⊤ : Submodule Q Q)] := hx n
+    rwa [h_bot n le_rfl, SModEq.bot] at hx_n
+  · rcases le_total k n with h_le | h_le
+    · exact hf h_le
+    · have h_eq : f n ≡ f k [SMOD (span {(p : Q)} ^ n • ⊤ : Submodule Q Q)] := hf h_le
+      rw [h_bot n le_rfl, SModEq.bot] at h_eq
+      rw [h_bot k h_le, SModEq.bot]
+      exact h_eq.symm
+
+variable {R : Type*} [ThePrime p]
   {y : BPlus} [CommRing R] [Algebra R BPlus] {x : BdRPlus} {a : Ainf}
 
 /-- The natural map from the period ring `Amax` (Colmez's `A_max`, the p-adic completion of
@@ -555,23 +573,6 @@ lemma exists_tau_dvd_xi_sub_p_mul : ∃ b : Ainf, tau ∣ xi - p * b :=
   ⟨1, by simpa using tau_dvd_xi_sub_p⟩
 
 /-! ### `A_inf ∩ y B⁺ = y A_inf`: reduction modulo `(y, p ^ n)` extends to `Amax` -/
-
-omit [ThePrime p] in
-/-- A commutative ring in which a power of `p` vanishes is `p`-adically complete. -/
-lemma isAdicComplete_of_p_pow_eq_zero {Q : Type*} [CommRing Q] {n : ℕ}
-    (h_zero : (p : Q) ^ n = 0) : IsAdicComplete (span {(p : Q)}) Q := by
-  -- From `n` on, the powers of the ideal `(p)` are zero.
-  have h_bot (k : ℕ) (h_le : n ≤ k) : (span {(p : Q)} ^ k • ⊤ : Submodule Q Q) = ⊥ := by
-    simp [span_singleton_pow, pow_eq_zero_of_le h_le h_zero]
-  refine { haus' := fun x hx ↦ ?_, prec' := fun f hf ↦ ⟨f n, fun k ↦ ?_⟩ }
-  · have hx_n : x ≡ 0 [SMOD (span {(p : Q)} ^ n • ⊤ : Submodule Q Q)] := hx n
-    rwa [h_bot n le_rfl, SModEq.bot] at hx_n
-  · rcases le_total k n with h_le | h_le
-    · exact hf h_le
-    · have h_eq : f n ≡ f k [SMOD (span {(p : Q)} ^ n • ⊤ : Submodule Q Q)] := hf h_le
-      rw [h_bot n le_rfl, SModEq.bot] at h_eq
-      rw [h_bot k h_le, SModEq.bot]
-      exact h_eq.symm
 
 /-- Let `ξ ≡ p b` modulo `y` in `A_inf`. Then for every `n` the reduction of `A_inf` modulo the
 ideal `(y, p ^ n)` extends to a ring homomorphism on the period ring `Amax`. -/

@@ -50,7 +50,37 @@ namespace New.Lift.Chart
 open Period BPlus Algebra Matrix MulSemiringAction Function Witt RingHom Ideal Quotient PreTilt
 open WittVector renaming constantCoeff → π
 
-variable {p : ℕ} [ThePrime p] {d : Type _} {c : Chart} [Fintype d] [DecidableEq d]
+variable {p : ℕ} [ThePrime p] {d : Type _} {c : Chart} [Fintype d]
+
+/-- Let `m ∈ FrobGal` and `C = ρ m(Q)` for matrices over `A_inf`. Then `m` maps the kernel of the
+reduction of `Q` modulo `p` into the kernel of the reduction of `C`: if `π(Q) a = 0` then
+`π(C) m(a) = 0`. -/
+lemma map_mulVec_comp_eq_zero_of_eq_mul_smul {Q ρ C : Matrix d d Ainf} {m : FrobGal}
+    {a : d → OFlat} (hC : C = ρ * m • Q) (ha : Q.map π *ᵥ a = 0) :
+    C.map π *ᵥ toRingHom FrobGal OFlat m ∘ a = 0 := by
+  -- `π` commutes with the action of `m`
+  have h_map_smul : (m • Q).map WittVector.constantCoeff = Q.map fun x ↦ m • x.coeff 0 := rfl
+  simpa [hC, ← Pi.zero_def, comp_def, map_mulVec, h_map_smul] using
+    congrArg (fun v ↦ ρ.map π *ᵥ toRingHom FrobGal OFlat m ∘ v) ha
+
+/-- Apply `m` to `U Z = E ^ h Q`, given `ρ m(U) = U F` and `w m(E) = E r`: then
+`U w ^ h F m(Z) = E ^ h r ^ h ρ m(Q)`. Here `m` in `FrobGal` acts entrywise on matrices. -/
+lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
+    (hUZ : U * Z = c.E.val ^ h • Q.map ainfToBPlus) (m : FrobGal) (ρ : Matrix d d Ainf)
+    (F : Matrix d d BPlus) (w : BPlus) (r : Ainf) (hU : ρ.map ainfToBPlus * m • U = U * F)
+    (hE : w * ainfToBPlus (m • c.E.val) = ainfToBPlus (c.E.val * r)) :
+    U * w ^ h • (F * m • Z) = c.E.val ^ h • (r ^ h • ρ * m • Q).map ainfToBPlus := by
+  classical
+  rw [mul_smul_comm, ← mul_assoc, ← hU, mul_assoc]
+  -- `m` acts on matrices entrywise, through the ring map `(toRingHom _ _ m).mapMatrix`
+  change w ^ h • (ρ.map ainfToBPlus * ((toRingHom FrobGal BPlus m).mapMatrix U *
+    (toRingHom FrobGal BPlus m).mapMatrix Z)) = _
+  rw [← map_mul]
+  ext
+  simp [smul_def (A := BPlus), Matrix.mul_apply, Finset.mul_sum, mul_left_comm (ainfToBPlus _), *,
+    ← mul_assoc, ← mul_pow]
+
+variable [DecidableEq d]
 
 /-- Let R: S → D be a homomorphism to a nontrivial semiring and X a set of vectors over S. If
 R(t·x) = 0 for all x in X forces R(t) = 0, some square matrix N with rows in X has R(det N)
@@ -159,18 +189,6 @@ lemma _root_.RingHom.map_det_eq_zero_of_map_mulVec_eq_zero {S T : Type*} [CommRi
   exact (ψ.map_det M).trans
     (det_eq_zero_of_mulVec_eq_zero_of_mem_nonZeroDivisors h_mulVec_zero (i := ν) (by simp [hν]))
 
-omit [DecidableEq d] in
-/-- Let `m ∈ FrobGal` and `C = ρ m(Q)` for matrices over `A_inf`. Then `m` maps the kernel of the
-reduction of `Q` modulo `p` into the kernel of the reduction of `C`: if `π(Q) a = 0` then
-`π(C) m(a) = 0`. -/
-lemma map_mulVec_comp_eq_zero_of_eq_mul_smul {Q ρ C : Matrix d d Ainf} {m : FrobGal}
-    {a : d → OFlat} (hC : C = ρ * m • Q) (ha : Q.map π *ᵥ a = 0) :
-    C.map π *ᵥ toRingHom FrobGal OFlat m ∘ a = 0 := by
-  -- `π` commutes with the action of `m`
-  have h_map_smul : (m • Q).map WittVector.constantCoeff = Q.map fun x ↦ m • x.coeff 0 := rfl
-  simpa [hC, ← Pi.zero_def, comp_def, map_mulVec, h_map_smul] using
-    congrArg (fun v ↦ ρ.map π *ᵥ toRingHom FrobGal OFlat m ∘ v) ha
-
 /-- Let `Q` over `Ainf` be `p`-saturated over `S` (`p` divides every entry of `Q t`, for `t` over
 `S`, only if `p` divides every entry of `t`), with `Q B` a left multiple of the Frobenius twist of
 `Q`, `p ∤ det B`, and `Q` a left multiple of `(1, g) • Q` for each `g` in `Gp p` fixing `S` (`g`
@@ -251,24 +269,6 @@ lemma not_dvd_det_of_frobenius {Q ρ : Matrix d d Ainf} {B : Matrix d d c.S}
   have h_map : coeff (M + n) (K * R C.det) ∣ coeff (M + n) (K ^ p ^ n) := map_dvd _ hCK
   rw [h_zero, zero_dvd_iff, h_pow] at h_map
   exact h_map.trans (map_zero _).symm
-
-omit [DecidableEq d] in
-/-- Apply `m` to `U Z = E ^ h Q`, given `ρ m(U) = U F` and `w m(E) = E r`: then
-`U w ^ h F m(Z) = E ^ h r ^ h ρ m(Q)`. Here `m` in `FrobGal` acts entrywise on matrices. -/
-lemma mul_smul_mul_smul_eq_smul_map_of_mul_eq {U Z : Matrix d d BPlus} {Q : Matrix d d Ainf} {h : ℕ}
-    (hUZ : U * Z = c.E.val ^ h • Q.map ainfToBPlus) (m : FrobGal) (ρ : Matrix d d Ainf)
-    (F : Matrix d d BPlus) (w : BPlus) (r : Ainf) (hU : ρ.map ainfToBPlus * m • U = U * F)
-    (hE : w * ainfToBPlus (m • c.E.val) = ainfToBPlus (c.E.val * r)) :
-    U * w ^ h • (F * m • Z) = c.E.val ^ h • (r ^ h • ρ * m • Q).map ainfToBPlus := by
-  classical
-  rw [mul_smul_comm, ← mul_assoc, ← hU, mul_assoc]
-  -- `m` acts on matrices entrywise, through the ring map `(toRingHom _ _ m).mapMatrix`
-  change w ^ h • (ρ.map ainfToBPlus * ((toRingHom FrobGal BPlus m).mapMatrix U *
-    (toRingHom FrobGal BPlus m).mapMatrix Z)) = _
-  rw [← map_mul]
-  ext
-  simp [smul_def (A := BPlus), Matrix.mul_apply, Finset.mul_sum, mul_left_comm (ainfToBPlus _), *,
-    ← mul_assoc, ← mul_pow]
 
 /-- Let `c` be a chart, let `E` be the image of its series X^e A + p (ξ times a unit),
 `τ = [ε^{1/p}] - 1`, and `B⁺ = A_max[1/p]`. Let `U`, `U'` over `B⁺` satisfy `U U' = (E τ) ^ h`. If
