@@ -358,6 +358,30 @@ noncomputable def normBall (f : V → ℂ) :
       Submodule.comap ((LinearMap.proj 0 ∘ₗ B.thetaShift x).restrictScalars v.valuationSubring)
         (v.leSubmodule (B.thetaNorm v f))
 
+omit [IsFullRankLattice L] in
+/-- The `n`-th power of the theta norm ball of `f` lies in the theta norm ball of `f ^ n` for
+the form `n • B`. This follows by multiplying the pointwise bounds at torsion points. -/
+lemma pow_normBall_le (n : ℕ) :
+    normBall B χ v f ^ n ≤ normBall (n • B) (χ ^ n) v (f ^ n) := by
+  simp only [normBall]
+  induction n with
+  | zero =>
+    simp only [thetaNorm_pow]
+    have h_unit : (1 : ℂ) ∈ v.leSubmodule 1 := v.map_one.le
+    simpa [thetaShift_apply_apply, h_unit] using thetaSpace.pow (zero_mem (B.thetaSpace χ)) 0
+  | succ n ih =>
+    refine (mul_le_mul_left ih _).trans ?_
+    rw [Submodule.mul_le, thetaNorm_pow, thetaNorm_pow]
+    -- A product of theta functions is again a theta function, and the sizes multiply pointwise.
+    intro x hx y hy
+    rw [Submodule.mem_inf, Submodule.restrictScalars_mem, Submodule.mem_iInf] at hx hy ⊢
+    refine ⟨?_, fun i ↦ ?_⟩
+    · rw [add_smul, one_smul, pow_add, pow_one]
+      exact thetaSpace.mul hx.1 hy.1
+    · change ((n + 1) • B).sizeAt v (x * y) i ≤ B.thetaNorm v f ^ (n + 1)
+      rw [add_smul, one_smul, pow_add, pow_one, sizeAt_mul, Pi.mul_apply]
+      exact mul_le_mul' (hx.2 i) (hy.2 i)
+
 variable (G : HasGoodReduction B χ v r)
 
 include G in
@@ -496,31 +520,11 @@ lemma normBall_pow [IsFullRankLattice L₀] (hAH : IsAppellHumbert (L := L₀) B
     (hf_L₀ : f ∈ B.thetaSpace (L := L₀) ζ)
     (h_div : ∀ u : V, r • u ∈ L → u ∈ L₀) (G_nsmul : HasGoodReduction (r • B) (χ ^ r) v r) :
     normBall B χ v f ^ r = normBall (r • B) (χ ^ r) v (f ^ r) := by
-  -- ≤ is submultiplicativity of the norm. For ≥, by `mem_of_mem_normBall` it is enough to put each
-  -- shift of f ^ r by a vector b of the dual of L for r • B into the r-th power of the ball;
-  -- `mem_of_mem_normBall` again, now for L₀, reduces this to the shifts of t = f ^ (r - 1) * (shift
-  -- of f by r • b).
+  refine le_antisymm (pow_normBall_le r) ?_
+  -- For the reverse inclusion, `mem_of_mem_normBall` reduces the claim to shifts of f ^ r by
+  -- vectors b in the dual lattice for r • B. Applying it again over L₀ reduces to the shifts of
+  -- t = f ^ (r - 1) * (shift of f by r • b).
   obtain ⟨a, rfl⟩ : ∃ a : ℕ, r = a + 1 := le_iff_exists_add'.mp G.one_lt.le
-  apply le_antisymm
-  · -- Only the definition of the balls is used; the hypotheses that mention `a` go before the
-    -- induction.
-    simp only [normBall]
-    clear G_nsmul h_div G
-    induction a with
-    | zero => simp
-    | succ n ih =>
-      refine (mul_le_mul_left ih _).trans ?_
-      rw [Submodule.mul_le, thetaNorm_pow, thetaNorm_pow]
-      -- A product of theta functions is one, and the sizes multiply point by point. The bounds
-      -- range over the type `torsionPoints L`, on which `sizeAt_mul` is stated.
-      intro x hx y hy
-      rw [Submodule.mem_inf, Submodule.restrictScalars_mem, Submodule.mem_iInf] at hx hy ⊢
-      refine ⟨?_, fun i ↦ ?_⟩
-      · rw [add_smul, one_smul, pow_add, pow_one]
-        exact thetaSpace.mul hx.1 hy.1
-      · change ((n + 1 + 1) • B).sizeAt v (x * y) i ≤ B.thetaNorm v f ^ (n + 1 + 1)
-        rw [add_smul, one_smul, pow_add, pow_one, sizeAt_mul, Pi.mul_apply]
-        exact mul_le_mul' (hx.2 i) (hy.2 i)
   intro x hx
   have hAH_pow : IsAppellHumbert (L := L₀) ((a + 1) • B) (ζ ^ (a + 1)) := hAH.nsmul (a + 1)
   have hf_mem : f ∈ normBall B χ v f := G.mem_normBall.mpr ⟨hf, le_rfl⟩
