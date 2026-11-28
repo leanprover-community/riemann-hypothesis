@@ -264,8 +264,8 @@ lemma gluedGram_mul_eq_one [Fintype X] {K : Type*} [CommRing K] (p : K) :
       Finset.univ_unique, PUnit.default_eq_unit, Fin.rev_rev, zero_add, true_and]
     intro b c
     by_cases hbc : b = c <;> simp only [hbc, ↓reduceIte, eq_comm]
-    · split_ifs with h1; exact False.elim (ne_rev_of_not_odd hs c h1); rfl
-    · split_ifs with h1; exact False.elim (ne_rev_of_not_odd hs c h1); rfl
+    · split_ifs with h1; exacts [False.elim (ne_rev_of_not_odd hs c h1), rfl]
+    · split_ifs with h1; exacts [False.elim (ne_rev_of_not_odd hs c h1), rfl]
 
 /-- A ring homomorphism carries the graded Gram matrix with parameter `r` to the one with `f r`. -/
 lemma map_gradedGram (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S : Type*} [CommRing S] (f : S →+* R) (r : S) :

@@ -668,35 +668,37 @@ lemma exists_rowColExchangeIdentity_removing_planes (U : Space E b u) (V' : Spac
     {y : PairFock E s' u} (h_rel : RowColExchangeIdentity W' V' U μ σ' x y ℓ) :
     ∃ x₀ : PairFock E s t, RowColExchangeIdentity W V U μ σ x₀ (realSlice A U 0 y) ℓ := by
   -- Strong induction on the number of planes.
-  induction' hd : card p using Nat.strongRec with d ih generalizing p n n' r r'
-  obtain _ | _ | d := d
-  · cases card_ne_zero hd
-  · -- One plane: index it by `Unit`.
-    let e : Unit ≃ p := equivOfCardEq (by simp [hd])
-    obtain ⟨B, _, hBA⟩ := exists_isBaseAdapted_reindex A e
-    rw [realSlice_zero_congr U A hBA]
-    exact exists_rowColExchangeIdentity_removing_plane U V' B V σ (by simp [h_negCount, hd]) hn_even
-      h_rel
-  · -- `B` removes `d + 1` planes, down to `W` plus one plane; `removePlanes` removes the last one.
-    let e : Fin (d + 1) ⊕ Fin 1 ≃ p := finSumFinEquiv.trans (equivFinOfCardEq hd).symm
-    obtain ⟨B, _, hBA⟩ : ∃ B : W'.Splitting (hyperbolicSum (Fin 1) W) (Fin (d + 1)),
-        IsBaseAdapted B ∧ (B.comp (removePlanes (Fin 1) W)).k = A.k.submatrix id e ∧
-          (B.comp (removePlanes (Fin 1) W)).i = A.i :=
-      exists_isBaseAdapted_comp_removePlanes A e
-    -- The partner of `W` plus one plane is `Y`, the space `V` plus one plane.
-    let Y := hyperbolicSum (Fin 1) V
-    let τ : b ⊕ (Fin 1 ⊕ Fin 1) ⊕ r ≃ (Fin 1 ⊕ Fin 1) ⊕ n :=
-      equivOfCardEq (by simp +arith [← card_congr σ])
-    have h_neg : negCount (hyperbolicSigns (Fin 1) ⊕ᵥ t) = card (Fin 1) + negCount t :=
-      negCount_sumElim_hyperbolicSigns t
-    obtain ⟨x₁, h_above⟩ : ∃ x₁ : PairFock E (hyperbolicSigns (Fin 1) ⊕ᵥ s)
-      (hyperbolicSigns (Fin 1) ⊕ᵥ t),
-        RowColExchangeIdentity (hyperbolicSum (Fin 1) W) Y U μ τ x₁ (realSlice B U 0 y) ℓ :=
-      ih (d + 1) (by simp) V' B Y τ (by simp +arith [h_negCount, hd, h_neg])
-        (by simpa using hn_even.add (dvd_refl 2)) h_rel
-        (card_fin _)
-    rw [realSlice_zero_congr U A hBA, realSlice_zero_comp]
-    exact ih 1 (by simp) Y (removePlanes (Fin 1) W) V σ h_neg hn_even h_above (card_fin _)
+  induction hd : card p using Nat.strongRec generalizing p n n' r r' with
+  | ind d ih =>
+    obtain _ | _ | d := d
+    · cases card_ne_zero hd
+    · -- One plane: index it by `Unit`.
+      let e : Unit ≃ p := equivOfCardEq (by simp [hd])
+      obtain ⟨B, _, hBA⟩ := exists_isBaseAdapted_reindex A e
+      rw [realSlice_zero_congr U A hBA]
+      exact exists_rowColExchangeIdentity_removing_plane U V' B V σ (by simp [h_negCount, hd])
+        hn_even h_rel
+    · -- `B` removes `d + 1` planes, down to `W` plus one plane;
+      -- `removePlanes` removes the last one.
+      let e : Fin (d + 1) ⊕ Fin 1 ≃ p := finSumFinEquiv.trans (equivFinOfCardEq hd).symm
+      obtain ⟨B, _, hBA⟩ : ∃ B : W'.Splitting (hyperbolicSum (Fin 1) W) (Fin (d + 1)),
+          IsBaseAdapted B ∧ (B.comp (removePlanes (Fin 1) W)).k = A.k.submatrix id e ∧
+            (B.comp (removePlanes (Fin 1) W)).i = A.i :=
+        exists_isBaseAdapted_comp_removePlanes A e
+      -- The partner of `W` plus one plane is `Y`, the space `V` plus one plane.
+      let Y := hyperbolicSum (Fin 1) V
+      let τ : b ⊕ (Fin 1 ⊕ Fin 1) ⊕ r ≃ (Fin 1 ⊕ Fin 1) ⊕ n :=
+        equivOfCardEq (by simp +arith [← card_congr σ])
+      have h_neg : negCount (hyperbolicSigns (Fin 1) ⊕ᵥ t) = card (Fin 1) + negCount t :=
+        negCount_sumElim_hyperbolicSigns t
+      obtain ⟨x₁, h_above⟩ : ∃ x₁ : PairFock E (hyperbolicSigns (Fin 1) ⊕ᵥ s)
+        (hyperbolicSigns (Fin 1) ⊕ᵥ t),
+          RowColExchangeIdentity (hyperbolicSum (Fin 1) W) Y U μ τ x₁ (realSlice B U 0 y) ℓ :=
+        ih (d + 1) (by simp) V' B Y τ (by simp +arith [h_negCount, hd, h_neg])
+          (by simpa using hn_even.add (dvd_refl 2)) h_rel
+          (card_fin _)
+      rw [realSlice_zero_congr U A hBA, realSlice_zero_comp]
+      exact ih 1 (by simp) Y (removePlanes (Fin 1) W) V σ h_neg hn_even h_above (card_fin _)
 
 end RemovingPlanes
 

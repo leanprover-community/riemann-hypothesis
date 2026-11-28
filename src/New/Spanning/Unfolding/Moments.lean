@@ -682,7 +682,6 @@ end Moments
 section BesselTrace
 
 open NumberField Pi MeasureTheory Floors IntegralPlace Finset ENNReal Complex
-open scoped Classical
 
 open scoped BigOperators
 
@@ -736,6 +735,7 @@ lemma mem_besselU_of_reduction_eq_one {c : S.Classes} {γ : S.G E} {j : Fin 2}
   -- Now `δ = 1`, hence `y = 1` and `k = k y⁻¹`.
   simpa [y] using hy
 
+open scoped Classical in
 /-- The character `ψ_U` on the image `Ū₀` of the integral unipotent elements in the finite group
 `S.ResidueGL`, extended by `0`. Its value at `s` is `S.unipotentChar k` for a unipotent `k` that
 reduces to `s`; the choice does not matter (`extendedBesselChar_toPlaces_eq_reducedChar`). -/
@@ -1034,6 +1034,7 @@ theorem sum_norm_reducedCharMean_sq_le [ok : S.IsAdmissible] :
   exact le_of_mul_le_mul_left h_sq (pow_pos hK_pos 2)
 
 attribute [local instance low] Fintype.ofFinite in
+open scoped Classical in
 /-- **The trace.** Let `S` be admissible filling data for a unitary group `G` over the CM field `E`,
 which carries Weil data, and let `Ḡ = S.ResidueGL` be the product of the general linear groups over
 the residue fields at the chosen places above the two level primes `p₀`, `p₁`. Let

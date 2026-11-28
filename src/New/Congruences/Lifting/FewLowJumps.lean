@@ -365,42 +365,43 @@ lemma relLength_deepConstants_le_sum_cost (hk : k.IsUnramified) {a : ℕ} {c' : 
         k.cost a s.snd * (k.f * S.jumpMultiplicity (i.stepBack a) s.fst) : ℕ) := by
   -- Induct on the set of steps left, taking the first step on the least line that is not yet at
   -- its target.
-  induction' h_steps : (S.jumpSet (i.stepBack a)).sigma fun u ↦ Ico (c a u) (c' a u)
-    using eraseInduction with I ih generalizing c
-  subst h_steps
-  by_cases! h_left : ∀ v ∈ S.jumpSet (i.stepBack a), c' a v ≤ c a v
-  · -- No step is left: the depth `c` implies the depth `c'`.
-    have h_all_le : ∀ l : ℕ, ∀ v ∈ S.jumpSet (i.stepBack l), c' l v ≤ c l v := by
-      intro l v hv
-      obtain rfl | hl := eq_or_ne l a
-      exacts [h_left v hv, hc'_le l hl v hv]
-    have h_le : S.deepElements i c ≤ S.deepElements i c' :=
-      fun x ⟨h_const, h_inv⟩ ↦ ⟨h_const, fun g ↦ mem_withOrders_of_le (h_inv g) h_all_le⟩
-    exact (relLength_eq_zero.2 (map_mono (inf_le_inf_left _ h_le))).trans_le bot_le
-  obtain ⟨u, ⟨hu, hu_lt⟩, h_min⟩ : ∃ u : ℤ, (u ∈ S.jumpSet (i.stepBack a) ∧ c a u < c' a u) ∧
-      ∀ v ∈ S.jumpSet (i.stepBack a), c a v < c' a v → u ≤ v := by
-    simpa using exists_min_image _ id (filter_nonempty_iff.2 h_left)
-  have h_ord : ∀ v ∈ S.jumpSet (i.stepBack a), v < u → c a u < c a v := fun v hv hvu ↦
-    calc c a u < c' a u := hu_lt
-      _ ≤ c' a v := h_anti hv hu hvu.le
-      _ ≤ c a v := not_lt.1 fun hv_lt ↦ (h_min v hv hv_lt).not_gt hvu
-  have h_free_raised : ∀ v : ℤ, ∀ n ∈ Ioo (raiseOrder c a u 0 v)
-      (raiseOrder c a u 0 v + p ^ a), ¬(p : ℤ) ∣ n := by
-    obtain rfl | ha := eq_or_ne a 0
-    · simp only [mem_Ioo, pow_zero]
+  induction h_steps : (S.jumpSet (i.stepBack a)).sigma fun u ↦ Ico (c a u) (c' a u)
+    using eraseInduction generalizing c with
+  | H I ih =>
+    subst h_steps
+    by_cases! h_left : ∀ v ∈ S.jumpSet (i.stepBack a), c' a v ≤ c a v
+    · -- No step is left: the depth `c` implies the depth `c'`.
+      have h_all_le : ∀ l : ℕ, ∀ v ∈ S.jumpSet (i.stepBack l), c' l v ≤ c l v := by
+        intro l v hv
+        obtain rfl | hl := eq_or_ne l a
+        exacts [h_left v hv, hc'_le l hl v hv]
+      have h_le : S.deepElements i c ≤ S.deepElements i c' :=
+        fun x ⟨h_const, h_inv⟩ ↦ ⟨h_const, fun g ↦ mem_withOrders_of_le (h_inv g) h_all_le⟩
+      exact (relLength_eq_zero.2 (map_mono (inf_le_inf_left _ h_le))).trans_le bot_le
+    obtain ⟨u, ⟨hu, hu_lt⟩, h_min⟩ : ∃ u : ℤ, (u ∈ S.jumpSet (i.stepBack a) ∧ c a u < c' a u) ∧
+        ∀ v ∈ S.jumpSet (i.stepBack a), c a v < c' a v → u ≤ v := by
+      simpa using exists_min_image _ id (filter_nonempty_iff.2 h_left)
+    have h_ord : ∀ v ∈ S.jumpSet (i.stepBack a), v < u → c a u < c a v := fun v hv hvu ↦
+      calc c a u < c' a u := hu_lt
+        _ ≤ c' a v := h_anti hv hu hvu.le
+        _ ≤ c a v := not_lt.1 fun hv_lt ↦ (h_min v hv hv_lt).not_gt hvu
+    have h_free_raised : ∀ v : ℤ, ∀ n ∈ Ioo (raiseOrder c a u 0 v)
+        (raiseOrder c a u 0 v + p ^ a), ¬(p : ℤ) ∣ n := by
+      obtain rfl | ha := eq_or_ne a 0
+      · simp only [mem_Ioo, pow_zero]
+        omega
+      · simpa [raiseOrder, ha.symm] using h_free
+    have h_le_raised (l : ℕ) (v : ℤ) : c l v ≤ raiseOrder c a u l v := by
+      rw [raiseOrder]
       omega
-    · simpa [raiseOrder, ha.symm] using h_free
-  have h_le_raised (l : ℕ) (v : ℤ) : c l v ≤ raiseOrder c a u l v := by
-    rw [raiseOrder]
-    omega
-  have h_mem : ⟨u, c a u⟩ ∈ (S.jumpSet (i.stepBack a)).sigma fun v ↦ Ico (c a v) (c' a v) :=
-    mem_sigma.2 ⟨hu, left_mem_Ico.2 hu_lt⟩
-  rw [← add_sum_erase _ _ h_mem]
-  -- The raised depth still satisfies the hypotheses, and has one step less.
-  exact relLength_trans (relLength_deepConstants_raiseOrder_le hk h_free hc_ge h_ord)
-    (ih _ h_mem h_free_raised (fun l v hv ↦ (hc_ge l v hv).trans (h_le_raised l v))
-      (fun l hl v hv ↦ (hc'_le l hl v hv).trans (h_le_raised l v))
-      (sigma_Ico_raiseOrder _ a u (c' a)))
+    have h_mem : ⟨u, c a u⟩ ∈ (S.jumpSet (i.stepBack a)).sigma fun v ↦ Ico (c a v) (c' a v) :=
+      mem_sigma.2 ⟨hu, left_mem_Ico.2 hu_lt⟩
+    rw [← add_sum_erase _ _ h_mem]
+    -- The raised depth still satisfies the hypotheses, and has one step less.
+    exact relLength_trans (relLength_deepConstants_raiseOrder_le hk h_free hc_ge h_ord)
+      (ih _ h_mem h_free_raised (fun l v hv ↦ (hc_ge l v hv).trans (h_le_raised l v))
+        (fun l hl v hv ↦ (hc'_le l hl v hv).trans (h_le_raised l v))
+        (sigma_Ico_raiseOrder _ a u (c' a)))
 
 /-- Raising the depth at one level `a` costs bounded length. Let `S` be a side on an unramified
 chart `k`, `i` a letter, and `S.deepConstants i 0 c` the constants at `i` below elements of the

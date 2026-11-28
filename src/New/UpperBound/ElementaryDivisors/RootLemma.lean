@@ -417,11 +417,11 @@ variable {D}
 
 lemma ne_varX (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varX s := by
   intro h; have h1 := congrArg Prod.fst h
-  simp only [varX, rootVar] at h1; split_ifs at h1; exact hz.1 h1; exact hz.2 h1
+  simp only [varX, rootVar] at h1; split_ifs at h1; exacts [hz.1 h1, hz.2 h1]
 
 lemma ne_varY (hz : D.IsFixed z) (s : ZMod N) : z ≠ D.varY s := by
   intro h; have h1 := congrArg Prod.fst h
-  simp only [varY, rootVar] at h1; split_ifs at h1; exact hz.2 h1; exact hz.1 h1
+  simp only [varY, rootVar] at h1; split_ifs at h1; exacts [hz.2 h1, hz.1 h1]
 
 lemma swapVar_eq (hz : D.IsFixed z) : D.swapVar z = z := by
   rw [swapVar, Equiv.swap_apply_of_ne_of_ne hz.1 hz.2]
