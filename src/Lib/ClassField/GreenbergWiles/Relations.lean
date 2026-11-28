@@ -274,12 +274,9 @@ lemma form_eq_add (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
   -- Substitute the values of `z` into `∑ n, ν n (z (γ n)) = 0`.
   simpa [z_val, apply_ite (ν _), sub_eq_iff_eq_add'] using hν z hz
 
-/-- Let the primes of `S` divide `q`, let elements in one coset of `O` act alike on the `m`-th roots
-of the `q`-units fixed by `U`, let the split primes `s` be indexed by the cosets of `O`, let the
-Frobenius element at the coset of `g ∈ U` lie in that coset, and let `ν` kill the values at the tame
-generators `γ i` of the cocycles in `Z(range s.v)`. Then the coefficient of `ν` at the trivial coset
-is zero. -/
-lemma form_one_eq_zero (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
+-- The next identities share the hypotheses on split primes indexed by cosets, their tame
+-- generators, and the linear relation among cocycle values at those generators.
+variable (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
     {O : OpenNormalSubgroup Gal(Ω/K)} [Fintype (Gal(Ω/K) ⧸ O.toSubgroup)]
     (hO : ∀ g h : Gal(Ω/K), (g : Gal(Ω/K) ⧸ O.toSubgroup) = h →
       ∀ y : DiscreteUnits Ω, m • y ∈ fixedSUnits q D.subgroup → unitsRep h y = unitsRep g y)
@@ -290,6 +287,15 @@ lemma form_one_eq_zero (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
     {ν : Gal(Ω/K) ⧸ O.toSubgroup → CharacterModule M}
     (hν : ∀ z ∈ D.cocycles (range s.v),
       ∑ i : Gal(Ω/K) ⧸ (O.toOpenSubgroup : Subgroup Gal(Ω/K)), ν i (z (γ i)) = 0)
+
+include hS hO φ_coset hγ hν
+
+/-- Let the primes of `S` divide `q`, let elements in one coset of `O` act alike on the `m`-th roots
+of the `q`-units fixed by `U`, let the split primes `s` be indexed by the cosets of `O`, let the
+Frobenius element at the coset of `g ∈ U` lie in that coset, and let `ν` kill the values at the tame
+generators `γ i` of the cocycles in `Z(range s.v)`. Then the coefficient of `ν` at the trivial coset
+is zero. -/
+lemma form_one_eq_zero
     (a : M) : ν 1 a = 0 := by
   have h_coset : (s.φ 1 : Gal(Ω/K) ⧸ O.toSubgroup) = ↑(s.φ 1 * (1 * s.φ 1 * 1⁻¹)) := by
     simpa using φ_coset 1
@@ -302,17 +308,7 @@ of the `q`-units fixed by `U`, let the split primes `s` be indexed by the cosets
 `s.φ g ∈ g O` for `g ∈ U`, and let `ν` kill the values at the tame generators `γ i` of the cocycles
 in `Z(range s.v)`. Then the coefficient of `ν` at the coset of an element `τ` of the inertia group
 at a place `A` above a prime `v` that does not divide `q` is zero. -/
-lemma form_eq_zero_of_mem_inertiaGroup (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
-    {O : OpenNormalSubgroup Gal(Ω/K)} [Fintype (Gal(Ω/K) ⧸ O.toSubgroup)]
-    (hO : ∀ g h : Gal(Ω/K), (g : Gal(Ω/K) ⧸ O.toSubgroup) = h →
-      ∀ y : DiscreteUnits Ω, m • y ∈ fixedSUnits q D.subgroup → unitsRep h y = unitsRep g y)
-    {I : Set Gal(Ω/K)} {s : SplitPlaces m q I D.subgroup (Gal(Ω/K) ⧸ O.toSubgroup)}
-    (φ_coset : ∀ g ∈ D.subgroup, (s.φ g : Gal(Ω/K) ⧸ O.toSubgroup) = g)
-    {γ : Gal(Ω/K) ⧸ O.toSubgroup → Gal(Ω/K)}
-    (hγ : ∀ i : Gal(Ω/K) ⧸ O.toSubgroup, IsTameGeneratorFor (K := K) m (s.valuationSubring i) (γ i))
-    {ν : Gal(Ω/K) ⧸ O.toSubgroup → CharacterModule M}
-    (hν : ∀ z ∈ D.cocycles (range s.v),
-      ∑ i : Gal(Ω/K) ⧸ (O.toOpenSubgroup : Subgroup Gal(Ω/K)), ν i (z (γ i)) = 0)
+lemma form_eq_zero_of_mem_inertiaGroup
     {v : FinPlace K} (hv : ↑q ∉ v.asIdeal) {A : ClosurePlace} (hA : IsPlaceOver A v)
     {τ : Gal(Ω/K)} (hτ : τ ∈ inertiaGroup Gal(Ω/K) A) (a : M) : ν τ a = 0 := by
   -- `τ` lies in `U` and fixes the `m`-th roots of the `q`-units, as `s.φ 1` does.
@@ -343,17 +339,7 @@ the values at the tame generators `γ i` of the cocycles in `Z(range s.v)`. Then
 of distinct split primes, prime to `q` and different from those of `s`, and any cocycle `x` in `Z`
 of the primes of `p`, we have `∑ j, ν (p j).frob (x (p j).tameGenerator) = 0` (`ν` taken at the
 coset of `(p j).frob` modulo `O`). -/
-lemma form_sum_eq_zero (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
-    {O : OpenNormalSubgroup Gal(Ω/K)} [Fintype (Gal(Ω/K) ⧸ O.toSubgroup)]
-    (hO : ∀ g h : Gal(Ω/K), (g : Gal(Ω/K) ⧸ O.toSubgroup) = h →
-      ∀ y : DiscreteUnits Ω, m • y ∈ fixedSUnits q D.subgroup → unitsRep h y = unitsRep g y)
-    {I : Set Gal(Ω/K)} {s : SplitPlaces m q I D.subgroup (Gal(Ω/K) ⧸ O.toSubgroup)}
-    (φ_coset : ∀ g ∈ D.subgroup, (s.φ g : Gal(Ω/K) ⧸ O.toSubgroup) = g)
-    {γ : Gal(Ω/K) ⧸ O.toSubgroup → Gal(Ω/K)}
-    (hγ : ∀ i : Gal(Ω/K) ⧸ O.toSubgroup, IsTameGeneratorFor (K := K) m (s.valuationSubring i) (γ i))
-    {ν : Gal(Ω/K) ⧸ O.toSubgroup → CharacterModule M}
-    (hν : ∀ z ∈ D.cocycles (range s.v),
-      ∑ i : Gal(Ω/K) ⧸ (O.toOpenSubgroup : Subgroup Gal(Ω/K)), ν i (z (γ i)) = 0)
+lemma form_sum_eq_zero
     {J : Type} [Fintype J] (p : J → SplitPrime m D.subgroup)
     (p_inj : Injective fun j : J ↦ (p j).prime) (p_notMem : ∀ j : J, ↑q ∉ (p j).prime.asIdeal)
     (p_ne : ∀ (i : Gal(Ω/K) ⧸ O.toSubgroup) (j : J), s.v i ≠ (p j).prime) {x : Gal(Ω/K) → M}
@@ -419,17 +405,7 @@ off `S` and the `s.v i`. Then `g ↦ ν (g O)` on `U`, zero off `U`, is a relati
 containing the primes dividing `q` and those of `s`: a continuous equivariant map to `Hom(M, ℚ/ℤ)`,
 unramified off `T`, whose Frobenius values give linear relations among cocycle values at tame
 generators. -/
-lemma isRelation_ite_form (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
-    {O : OpenNormalSubgroup Gal(Ω/K)} [Fintype (Gal(Ω/K) ⧸ O.toSubgroup)]
-    (hO : ∀ g h : Gal(Ω/K), (g : Gal(Ω/K) ⧸ O.toSubgroup) = h →
-      ∀ y : DiscreteUnits Ω, m • y ∈ fixedSUnits q D.subgroup → unitsRep h y = unitsRep g y)
-    {I : Set Gal(Ω/K)} {s : SplitPlaces m q I D.subgroup (Gal(Ω/K) ⧸ O.toSubgroup)}
-    (φ_coset : ∀ g ∈ D.subgroup, (s.φ g : Gal(Ω/K) ⧸ O.toSubgroup) = g)
-    {γ : Gal(Ω/K) ⧸ O.toSubgroup → Gal(Ω/K)}
-    (hγ : ∀ i : Gal(Ω/K) ⧸ O.toSubgroup, IsTameGeneratorFor (K := K) m (s.valuationSubring i) (γ i))
-    {ν : Gal(Ω/K) ⧸ O.toSubgroup → CharacterModule M}
-    (hν : ∀ z ∈ D.cocycles (range s.v),
-      ∑ i : Gal(Ω/K) ⧸ (O.toOpenSubgroup : Subgroup Gal(Ω/K)), ν i (z (γ i)) = 0)
+lemma isRelation_ite_form
     [DecidablePred (· ∈ D.subgroup)] {T : Finset (FinPlace K)}
     (hqT : ∀ v : FinPlace K, ↑q ∈ v.asIdeal → v ∈ T)
     (hsT : ∀ i : Gal(Ω/K) ⧸ O.toSubgroup, s.v i ∈ T) :
@@ -475,17 +451,7 @@ of the `q`-units fixed by `U`, let the split primes `s` be indexed by the cosets
 `s.φ g ∈ g O` for `g ∈ U`, and let `ν` kill the values at the tame generators `γ i` of the cocycles
 in `Z(range s.v)`. Then the coefficient of `ν` at the coset of the Frobenius element `s.φ i` is the
 coefficient at `i`. -/
-lemma form_frobenius_eq (hS : ∀ v ∈ D.localPrimes, ↑q ∈ v.asIdeal)
-    {O : OpenNormalSubgroup Gal(Ω/K)} [Fintype (Gal(Ω/K) ⧸ O.toSubgroup)]
-    (hO : ∀ g h : Gal(Ω/K), (g : Gal(Ω/K) ⧸ O.toSubgroup) = h →
-      ∀ y : DiscreteUnits Ω, m • y ∈ fixedSUnits q D.subgroup → unitsRep h y = unitsRep g y)
-    {I : Set Gal(Ω/K)} {s : SplitPlaces m q I D.subgroup (Gal(Ω/K) ⧸ O.toSubgroup)}
-    (φ_coset : ∀ g ∈ D.subgroup, (s.φ g : Gal(Ω/K) ⧸ O.toSubgroup) = g)
-    {γ : Gal(Ω/K) ⧸ O.toSubgroup → Gal(Ω/K)}
-    (hγ : ∀ i : Gal(Ω/K) ⧸ O.toSubgroup, IsTameGeneratorFor (K := K) m (s.valuationSubring i) (γ i))
-    {ν : Gal(Ω/K) ⧸ O.toSubgroup → CharacterModule M}
-    (hν : ∀ z ∈ D.cocycles (range s.v),
-      ∑ i : Gal(Ω/K) ⧸ (O.toOpenSubgroup : Subgroup Gal(Ω/K)), ν i (z (γ i)) = 0)
+lemma form_frobenius_eq
     (i : Gal(Ω/K) ⧸ O.toSubgroup) : ν (s.φ i) = ν i := by
   -- Compare the coefficients at `i`, at the coset of `s.φ i` and at `1`.
   have φ_one : s.φ 1 ∈ O.toSubgroup := by simpa using φ_coset 1
