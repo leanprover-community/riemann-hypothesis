@@ -780,8 +780,6 @@ lemma hasDerivAt_realHeisenbergOp (v : ι → ℂ) (P : MvPolynomial ι ℂ) :
     HasDerivAt (fun t : ℝ ↦ realHeisenbergOp (t • v) (polyVector ε P)) (heisenbergDeriv ε v P) 0 :=
   (exists_hasDerivAt_realHeisenbergOp (P := P) v (Subtype.prop (polyVector ε P))).choose_spec
 
-attribute [irreducible] polyVector
-
 /-- The map P ↦ v_P = `New.Fock.polyVector` ε P from polynomials to the Fock space is injective. -/
 @[simp]
 lemma polyVector_injective : (⇑(polyVector ε)).Injective := by

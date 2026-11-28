@@ -155,7 +155,6 @@ instance [IsAdditive f] : IsAdditive (c • f) := by
 /-! ### Structures on the pullback, and properties of morphisms over the base -/
 
 /-- The pull-back of a commutative group object A along b is a commutative group object. -/
-@[irreducible]
 instance pullbackAddObj : AddObj ((pullback b).obj A) where
   -- `↓` rewrites with `map_comp` backwards before `simp` visits the subterms
   add_comm := by simp [← LaxBraided.braided_assoc, ↓← map_comp, IsCommAddMonObj.add_comm]

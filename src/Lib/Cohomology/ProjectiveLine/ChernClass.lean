@@ -762,7 +762,6 @@ open projLine
 
 /-- The class `η` in `Ext²(ℤ[ℙ¹], T)`, with `T` the Tate module: the product of the extension class
 of the cocycle of `O(1)` and the extension class of the Kummer sequence. -/
-@[irreducible]
 def etaClass : H (freeAb (projLineAlong g)) (tateModule g) 2 :=
   (cocycle g).shortExact_extension.extClass.comp (shortExact_kummerSeq g).extClass rfl
 
@@ -940,7 +939,6 @@ variable [InvertsPrime A ℓ]
 /-- The product with `η` at `b : ℤ[pt] ⟶ ℤ[ℙ¹]`, an additive map in `b`: the class in `Ext²(M, M)`
 of the composite `M → M ⊗ ℤ[ℙ¹] → (M ⊗ T)[2] → M[2]` of `x ↦ x ⊗ b` (`tensorPoint b`), of `M ⊗ η`
 (`etaTensorClass`) and of the action `M.tateAction` of the Tate module `T`. -/
-@[irreducible]
 def etaAt : (freeAb (onePointFunctor C) ⟶ freeAb (projLineAlong g)) →+ H M.functor M.functor 2 :=
   AddMonoidHom.mk'
     (fun b ↦ H.map M.functor (tensorPoint b M.functor) 2

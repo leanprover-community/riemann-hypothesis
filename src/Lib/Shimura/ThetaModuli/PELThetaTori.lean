@@ -939,8 +939,6 @@ lemma exists_thetaCoord_sign_smul (m : ℤˣ) :
       smul_eq_mul, h_reflect]
     simp [canonicalMultiplier, field]
 
-attribute [irreducible] thetaCoord bicharacter
-
 /-- Let `v` be a valuation on `ℂ`, let `u` lie in the lattice over `T` and let `t ∈ T`. The product
 `χ(u) · c_u(t)` of the multiplier and of the character `x.bicharacter` attached to `u` has
 valuation `1`: both factors are roots of unity. -/

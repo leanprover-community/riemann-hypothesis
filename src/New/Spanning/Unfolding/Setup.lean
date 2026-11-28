@@ -673,7 +673,6 @@ lemma exists_cutoff_classUnipotent {c : S.Classes} (K : Subgroup (S.classUnipote
 /-- The function β_c at the infinite places: a chosen cutoff for 𝖴⁰_c(M) times the indicator
 `New.Filling.reducedIndicator` of the reduced points. The properties of the first factor are
 stated in `exists_classCutoff_eq_mul`. -/
-@[irreducible]
 def classCutoff (c : S.Classes) : (InfinitePlace E → 𝔰.G₁) → ENNReal :=
   (S.exists_cutoff_classUnipotent ((S.classUnipotent₀ c).subgroupOf (S.classUnipotent c))).choose *
     S.reducedIndicator

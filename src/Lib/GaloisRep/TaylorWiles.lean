@@ -435,7 +435,6 @@ lemma formsOfLevel_le_levelSpace :
 open scoped Classical in
 /-- For a function `t` from systems to `PadicAlgCl ℓ`, a chosen endomorphism of the space of forms
 acting on the isotypic space of each system `x` by the scalar `ιℓ.symm (t x)`. -/
-@[irreducible]
 def diagOp : End ℂ (V.forms κ) :=
   DFinsupp.lsum ℕ (fun x ↦ ιℓ.symm (t x) • x.val.val.subtype) ∘ₗ
     (DFinsupp.lsum ℕ fun x : D.Eigensystem L ↦ x.val.val.subtype).leftInverse

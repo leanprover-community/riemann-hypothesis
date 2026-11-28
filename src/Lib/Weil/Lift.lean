@@ -918,8 +918,6 @@ lemma eq_formLift_of_coe_eq (hφ : IsArrow K e e' φ) {y : S.Form e} (z : T.Form
   have h_lift : z.val = K.liftBilin φ' (R.subtype.leftInverse y.val) := by rwa [h_rapid]
   exact (leftInverse_apply_of_inj (ker_subtype _) z).symm.trans (congrArg _ h_lift)
 
-attribute [irreducible] formLift
-
 /-- If the datum φ is an arrow from type e to type e' (forms of type e are rapid and lift to forms
 of type e'), then the function underlying `formLift K e e' φ y` is the theta lift of y by φ. -/
 lemma coe_formLift (hφ : IsArrow K e e' φ) (y : S.Form e) : formLift K e e' φ y = lift K φ y :=

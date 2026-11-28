@@ -164,7 +164,6 @@ open scoped Classical in
 /-- Let `H` have a left inverse `L`. This is a chosen matrix `m = y a`, with the columns of `y` a
 basis of `V` over `E`, `a` invertible over `𝔸_f` and `H m` primitive over `Ô` (integral, with an
 integral left inverse); it exists by `exists_isPrimitiveMatrix_mul_finAdeleMatrix`. -/
-@[irreducible]
 def sublatticeBasis (hLH : L * H = 1) (V : Submodule E (σ → E)) :
     {m : Matrix σ (Fin (finrank E V)) (𝔸f E) //
       IsPrimitiveMatrix (Ô E) (H * m) ∧

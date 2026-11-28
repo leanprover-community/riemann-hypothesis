@@ -338,7 +338,7 @@ def seriesEquiv : (WittFq c.f)⟦X⟧ ≃ₐ[WittFq c.f] c.S :=
 lemma coe_seriesEquiv_apply (F : (WittFq c.f)⟦X⟧) : (c.seriesEquiv F : Ainf) = c.seriesMap F := rfl
 
 /-- For a chart, the image E in S of the series X^e A + p; it equals ξ times a unit of A_inf. -/
-@[irreducible, local simp]
+@[local simp]
 def E : c.S := c.z ^ c.e * c.seriesEquiv c.unitSeries + p
 
 lemma associated_E_xi : Associated c.E.val xi := by

@@ -129,7 +129,7 @@ variable {M : Type*} [AddCommGroup M] [Module ℂ M] {N : Type*} [AddCommGroup N
 
 /-- The action induced on the range of a linear map `ι` whose kernel is stable under the action,
 through `M ⧸ ker ι ≃ range ι`: `X` sends `ι x` to `ι (X x)` (see `GlModule.onRange_apply`). -/
-@[irreducible] def GlModule.onRange (ρ : GlModule n M) (ι : M →ₗ[ℂ] N)
+def GlModule.onRange (ρ : GlModule n M) (ι : M →ₗ[ℂ] N)
     (h_ker : ∀ X : Matrix n n ℂ, ι.ker ≤ ι.ker.comap (ρ X)) :
     GlModule n ι.range where
   ρ :=
