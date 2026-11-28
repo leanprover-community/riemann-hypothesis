@@ -31,12 +31,12 @@ when `W₁` splits off a hyperbolic plane.
 
 ## Main definitions and results
 
-* `New.Exchange.thetaTerm_eq_and_centreCoeff_eq_zero`: the terms are integrable
+* `New.Exchange.thetaTerm_eq_and_centerCoeff_eq_zero`: the terms are integrable
   (`hasIntegrableTerms_localDatum_of_eq_stdDatum`), each is an explicit factor times a value of
   `New.Exchange.thetaOnRealData` (`thetaTerm_localDatum_of_eq_stdDatum`), and the Fourier
   coefficient of the theta integral at `j • T` (`j` the purely imaginary element of the Weil data)
   vanishes if some signs represent the Gram matrices of all points with non-zero real slice but do
-  not represent the matrix T (`centreCoeff_thetaIntegral_localDatum_eq_zero`).
+  not represent the matrix T (`centerCoeff_thetaIntegral_localDatum_eq_zero`).
 * `New.Exchange.thetaOnRealData_boxProd_eq_mul`: on a product of real data, the functional of the
   datum built from a vector for (W₁, V') and a vector for (W₁, W₁) is the one for (W₁, V') times the
   theta kernel `New.pairTheta` of the pair (W₁, W₁).
@@ -240,7 +240,7 @@ the Fourier coefficient at `j • T` of the theta integral of `v ⊗ Φ` vanishe
 `D.radicalElement c z * D.levi (q, g)`. Here `j` is the purely imaginary element of the Weil data,
 and `centerCoeff T F p` is the mean of ψ(tr TM) F(z(M) p) over adelic matrices M modulo rational
 ones, with z(M) in the centre of the unipotent radical. -/
-lemma centreCoeff_thetaIntegral_localDatum_eq_zero (hπ : ReadsAt A π) (β γ : AutChar E)
+lemma centerCoeff_thetaIntegral_localDatum_eq_zero (hπ : ReadsAt A π) (β γ : AutChar E)
     (hΦ : Φ ∈ schwartzBruhat Ω)
     (hΦ_std : Φ = (adaptedFrame hπ D).stdDatum fun y : Matrix a (b ⊕ n) (LocProd P) ↦
       ε * invOnUnits χ (y * N).det)
@@ -301,7 +301,7 @@ with vacuum elsewhere (`namedVector`), evaluated at the real slice of v at k⁻�
 non-zero real slice have Gram matrix represented by the signs t' at the real places
 (`SlicesVanishOutside`), and T is not, then the Fourier coefficient at `j • T` of the theta integral
 of f vanishes at p (`j` is the purely imaginary element of the Weil data). -/
-lemma thetaTerm_eq_and_centreCoeff_eq_zero {P : Finset (FinPlace E)} {A : Set (FinPlace E)}
+lemma thetaTerm_eq_and_centerCoeff_eq_zero {P : Finset (FinPlace E)} {A : Set (FinPlace E)}
     {π : 𝔸f E →+* LocProd P} [Nontrivial (LocProd P)] (hπ : ReadsAt A π) [IsBaseAdapted D]
     {Φ : Matrix a m (LocProd P) → ℂ} {Ω : Set (Matrix a m (LocProd P))} {v : PairFock E r t}
     {β β' : AutChar E} (γ : AutChar E) (χ : MulChar (LocProd P) ℂ) (ε : ℂ)
@@ -332,7 +332,7 @@ lemma thetaTerm_eq_and_centreCoeff_eq_zero {P : Finset (FinPlace E)} {A : Set (F
       D.centerCoeff ((j : E) • T) (thetaIntegral X V β' γ f) p = 0 := by
   exact ⟨⟨hasIntegrableTerms_localDatum_of_eq_stdDatum W₁ D V hπ β' γ hΦ hΦ_std hv c z q g,
       fun x x' Y hx hY ↦ thetaTerm_localDatum_of_eq_stdDatum W₁ D V hπ γ hΦ hΦ_std hβ' c z g hx hY⟩,
-    fun t' T ↦ centreCoeff_thetaIntegral_localDatum_eq_zero W₁ D V hπ β' γ hΦ hΦ_std hv c z q g⟩
+    fun t' T ↦ centerCoeff_thetaIntegral_localDatum_eq_zero W₁ D V hπ β' γ hΦ hΦ_std hv c z q g⟩
 
 /-!
 ## A product formula for the theta functional on real data
@@ -963,7 +963,7 @@ kernel, that of `(X, V' ⊕ W₁)`, are integrable, and (b) the Fourier coeffici
 `j • T`, with `j` the purely imaginary element of the Weil data, vanishes under two conditions: `T`
 is not of the form `yᴴ diag(t') y` at some infinite place (`¬RepresentedBy`), while the Gram matrix
 of every `x` at which the real slice of `v` is non-zero has this form at all infinite places. -/
-lemma hasIntegrableTerms_and_centreCoeff_thetaLarge_eq_zero (σ' : b ⊕ b ⊕ n ≃ m)
+lemma hasIntegrableTerms_and_centerCoeff_thetaLarge_eq_zero (σ' : b ⊕ b ⊕ n ≃ m)
     {v : PairFock E r (t' ⊕ᵥ s)} (hv : IsSchwartzVector v) (c : Matrix n b (𝔸 E))
     (z : Matrix b b (𝔸 E)) (q : GL b (𝔸 E)) (g : G E s) :
     let Φ : Matrix (b ⊕ n) m (LocProd 𝔠.ramifiedPlaces) → ℂ :=
@@ -976,7 +976,7 @@ lemma hasIntegrableTerms_and_centreCoeff_thetaLarge_eq_zero (σ' : b ⊕ b ⊕ n
         D.centerCoeff ((j : E) • T) (thetaLarge X (V'.sum W₁) 𝔠 v Φ) p = 0 := by
   obtain ⟨ε, -, h_std⟩ := (adaptedFrame 𝔠.readsAt D).exists_stdRowDatum_eq_stdDatum
     (χ := 𝔠.semilocalChar) σ'
-  obtain ⟨⟨h_int, -⟩, h_zero⟩ := thetaTerm_eq_and_centreCoeff_eq_zero W₁ D (V'.sum W₁) 𝔠.readsAt
+  obtain ⟨⟨h_int, -⟩, h_zero⟩ := thetaTerm_eq_and_centerCoeff_eq_zero W₁ D (V'.sum W₁) 𝔠.readsAt
     (rankTwist 𝔠.character⁻¹ m) 𝔠.semilocalChar ε 1 (stdRowDatum_mem σ' 𝔠.semilocalChar)
       (by simpa using h_std) hv
     (rankTwist_eq_mul_of_splitting (ν := 𝔠.character⁻¹) D) c z q g
@@ -989,7 +989,7 @@ conjugates of the ramified places. At the point `radicalElement c z * levi (q, g
 the small theta kernel, that of `(X, V')`, are integrable, and (b) the Fourier coefficient of
 `thetaSmall` at `j • T`, with `j` the purely imaginary element of the Weil data, vanishes if the
 signs `t'` do not represent `T` at the infinite places. -/
-lemma hasIntegrableTerms_and_centreCoeff_thetaSmall_eq_zero {v' : PairFock E r t'}
+lemma hasIntegrableTerms_and_centerCoeff_thetaSmall_eq_zero {v' : PairFock E r t'}
     (hv' : IsSchwartzVector v') (c : Matrix n b (𝔸 E)) (z : Matrix b b (𝔸 E)) (q : GL b (𝔸 E))
     (g : G E s) :
     let Ψ : Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ :=
@@ -1000,7 +1000,7 @@ lemma hasIntegrableTerms_and_centreCoeff_thetaSmall_eq_zero {v' : PairFock E r t
           ∧
       ∀ T : Matrix b b E, ¬RepresentedBy t' (T.map toAdele) →
         D.centerCoeff ((j : E) • T) (thetaSmall X V' 𝔠 v' Ψ) p = 0 := by
-  obtain ⟨⟨h_int, -⟩, h_zero⟩ := thetaTerm_eq_and_centreCoeff_eq_zero W₁ D V' 𝔠.readsAt.star
+  obtain ⟨⟨h_int, -⟩, h_zero⟩ := thetaTerm_eq_and_centerCoeff_eq_zero W₁ D V' 𝔠.readsAt.star
     (upsilonU1 ^ card b) 𝔠.semilocalChar 1 (fromRows 1 0)
       (stdColDatum_mem_schwartzBruhat 𝔠.semilocalChar
       (adaptedFrame 𝔠.readsAt D).blockRelations.isIntMatrix_dualL).transpose_mem_schwartzBruhat
@@ -1023,7 +1023,7 @@ integral of `(X, V' ⊕ W₁)` on `v` and the row datum `stdRowDatum σ'` of the
 and the column datum `stdColDatum` of that frame, if `(T, q)` is a test pair for `V'`: (a) `T` is
 the form of `V'` and `q` is `scaleIdele E` times a basis of a lattice that is self-dual for `T`, or
 (b) `T` is invertible and outside the real class of `V'`. -/
-lemma exists_centreCoeff_eq_mul_of_isPeriodIdentity {σ' : b ⊕ b ⊕ n ≃ m}
+lemma exists_centerCoeff_eq_mul_of_isPeriodIdentity {σ' : b ⊕ b ⊕ n ≃ m}
     {v : PairFock E r (t' ⊕ᵥ s)}
     {v' : PairFock E r t'} (hn : 2 ∣ card n) {ρ : GInf E (t' ⊕ᵥ s) → ℝ} (hρ₀ : 0 ≤ ρ)
     (hρ_ne_near_one : ∀ᶠ h : GInf E (t' ⊕ᵥ s) in nhds 1, ρ h ≠ 0) (hv : IsSchwartzVector v)
@@ -1069,9 +1069,9 @@ lemma exists_centreCoeff_eq_mul_of_isPeriodIdentity {σ' : b ⊕ b ⊕ n ≃ m}
     by simp [hε, mul_assoc, Circle.norm_coe],
     fun T c z q g hT ↦ ?_⟩
   obtain ⟨int_large, zero_large⟩ :=
-    hasIntegrableTerms_and_centreCoeff_thetaLarge_eq_zero X D V' 𝔠 σ' hv c z q g
+    hasIntegrableTerms_and_centerCoeff_thetaLarge_eq_zero X D V' 𝔠 σ' hv c z q g
   obtain ⟨int_small, zero_small⟩ :=
-    hasIntegrableTerms_and_centreCoeff_thetaSmall_eq_zero X D V' 𝔠 hv' c z q g
+    hasIntegrableTerms_and_centerCoeff_thetaSmall_eq_zero X D V' 𝔠 hv' c z q g
   obtain ⟨Y, k, hk, rfl, hY, rfl⟩ | ⟨h_unit, h_real⟩ := hT
   · -- At `V'.J` each coefficient is the integral of one term: that of `fromRows 1 0`, whose
     -- stabiliser is `W₁.Γ`, and that of `1`, whose stabiliser is trivial.
@@ -1090,11 +1090,11 @@ lemma exists_centreCoeff_eq_mul_of_isPeriodIdentity {σ' : b ⊕ b ⊕ n ≃ m}
     rw [← coeff_small, ← mul_assoc R] at h_unfold
     exact coeff_large.trans h_unfold
   · -- Outside the real class both coefficients vanish: for the large side either by the support
-    -- of the slices or, when `t' = -1`, by the signs (`centreCoeff_eq_zero_of_not_representedBy`).
+    -- of the slices or, when `t' = -1`, by the signs (`centerCoeff_eq_zero_of_not_representedBy`).
     rw [zero_small T h_real, mul_zero]
     obtain h_supp | ⟨ht', ⟨i, hi⟩, h_neg⟩ := h_vanish_or_signs
     · exact zero_large T h_real h_supp
-    refine centreCoeff_eq_zero_of_not_representedBy (.inr i) (fun τ ↦ ?_) hi (by simp [ht'])
+    refine centerCoeff_eq_zero_of_not_representedBy (.inr i) (fun τ ↦ ?_) hi (by simp [ht'])
       (rankTwist_eq_mul_of_splitting D) h_unit (by rwa [← ht']) int_large
     obtain ⟨N, hN⟩ : ∃ N : ℕ, card n = 2 * N := hn
     suffices (N : ℤ) < negCount (-s) + μ τ by simpa [hN]
@@ -1123,10 +1123,10 @@ lemma exists_thetaLarge_eq_smul_of_isPeriodIdentity [IsBaseAdapted D₁] {σ' : 
         thetaLarge X (V'.sum W₁) 𝔠 v (stdRowDatum σ' 𝔠.semilocalChar z) =
           C • thetaSmall X V' 𝔠 v' (stdColDatum 𝔠.semilocalChar z) := by
   -- The difference `𝒟` of the two sides is a linear map on data for `V'`. At one standard datum
-  -- it vanishes at self-dual lattices (`exists_centreCoeff_eq_mul_of_isPeriodIdentity`);
+  -- it vanishes at self-dual lattices (`exists_centerCoeff_eq_mul_of_isPeriodIdentity`);
   -- `IsEquivariantLift.apply_eq_zero_of_areMatched` then gives `𝒟 = 0` on all standard data.
   obtain ⟨K, hK, h_coeff⟩ :=
-    exists_centreCoeff_eq_mul_of_isPeriodIdentity X D V' (μ := μ) (σ' := σ') hn hρ₀ hρ_ne_near_one
+    exists_centerCoeff_eq_mul_of_isPeriodIdentity X D V' (μ := μ) (σ' := σ') hn hρ₀ hρ_ne_near_one
       hv hv'
       h_vanish_or_signs
   refine ⟨K, hK, fun 𝔠 I₀ h_period ↦ ?_⟩

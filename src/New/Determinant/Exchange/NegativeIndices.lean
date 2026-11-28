@@ -22,7 +22,7 @@ measure. Here `New.Exchange.negCount s` is the number of signs `-1`.
 
 ## Main definitions and results
 
-* `New.Exchange.centreCoeff_eq_zero_of_not_representedBy`: a Fourier coefficient of the theta
+* `New.Exchange.centerCoeff_eq_zero_of_not_representedBy`: a Fourier coefficient of the theta
   integral `New.Exchange.thetaIntegral` vanishes, under conditions on weights, signs and
   integrability, at an invertible form that fails to be negative definite at some real place. After
   unfolding, the coefficient is an integral modulo the stabiliser of a frame, and the mean of the
@@ -461,7 +461,7 @@ representation of `(X, Y)` in which `δ` is the character of `U(1)` for both spa
 the action of `U(Y)`, the second that of `U(X)`. Then `centerCoeff` at `H.j • T` of this function on
 `U(X)`, its Fourier coefficient along the centre of the unipotent radical of `D`, vanishes at `g`.
 -/
-lemma New.Exchange.centreCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {ν : AutChar E}
+lemma New.Exchange.centerCoeff_eq_zero_of_not_representedBy {r : m → ℤˣ} {ν : AutChar E}
     {X : Space E m r} {s : n → ℤˣ} {Y : Space E n s} {t : a → ℤˣ} {Z : Space E a t}
     {D : X.Splitting Z b} {μ : InfinitePlace E → ℤ} {ψ : (w : FinPlace E) → MulChar (ResField w) ℂ}
     {δ : AutChar E} {f : 𝒮 (X.hom Y)} {g : G E r} {T : Matrix b b E} [AutChar.HasWeight ν μ ψ]

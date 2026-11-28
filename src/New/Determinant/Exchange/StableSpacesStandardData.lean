@@ -431,7 +431,7 @@ centre of the unipotent radical of the parabolic of `D`, at a skew-hermitian ind
 every point `(1, g)`, with `g` trivial at `S`, whenever `(invDifferentIdele E)⁻¹ • T` lies in
 `GL_b(O)` at `S`. Then `𝒟` kills every locally constant datum `Ψ` that has a matched function
 `Φ`. -/
-lemma New.Exchange.IsEquivariantLift.apply_eq_zero_of_centreCoeff_eq_zero
+lemma New.Exchange.IsEquivariantLift.apply_eq_zero_of_centerCoeff_eq_zero
     {E : Type} [Field E] [CMType E] [H : WeilData E] {n b m : Type}
     [Fintype n] [DecidableEq n] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
     {s : n → ℤˣ} {r : m → ℤˣ} {μ : NumberField.InfinitePlace E → ℤ} {𝔠 : SplitTameChar E μ}
@@ -566,7 +566,7 @@ the finite part of `Y` times some `k ∈ GL_b(Ô)` is unitary, or (b) `T` is inv
 infinite place not of the form `aᴴ diag(t') a`. Let `det β ≠ 0`, and let the columns of `q * k`,
 with `k ∈ GL_b(Ô)`, be orthonormal for `β` at the finite places. Then the coefficient at `j • β`
 vanishes at `D.radicalElement l z * D.levi (scaleIdele E • q, g)`. -/
-lemma New.Space.Splitting.centreCoeff_eq_zero_of_orthonormal
+lemma New.Space.Splitting.centerCoeff_eq_zero_of_orthonormal
     {E : Type} [Field E] [CMType E] [H : WeilData E] {n b m : Type}
     [Fintype n] [DecidableEq n] [Fintype b] [DecidableEq b] [Fintype m] [DecidableEq m]
     {s : n → ℤˣ} {r : m → ℤˣ} {X : Space E m r} {W₁ : Space E n s} (D : X.Splitting W₁ b)
@@ -798,12 +798,12 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
   -- It is enough that the coefficients along `D` of the image under `𝒟` of the standard datum of
   -- the frame vanish at the indices `T` for which `invDifferentIdele⁻¹ T` is unimodular at
   -- `𝔠.ramifiedPlaces`.
-  refine h_lift.apply_eq_zero_of_centreCoeff_eq_zero D h_frame hΨ hΦΨ fun T hT hP g₀ hg₀ ↦ ?_
+  refine h_lift.apply_eq_zero_of_centerCoeff_eq_zero D h_frame hΨ hΦΨ fun T hT hP g₀ hg₀ ↦ ?_
   let f : G E r → ℂ := 𝒟 (stdColDatum 𝔠.semilocalChar (adaptedFrame 𝔠.readsAt D).dualL)
   have h_aut : IsAutFunction X f := h_lift.isAutFunction h_frame
   -- The index is skew-hermitian and invertible. By the invariance under shears it suffices to
   -- show vanishing at the points of the parabolic where the Gram matrix is unimodular; there
-  -- `centreCoeff_eq_zero_of_orthonormal` applies.
+  -- `centerCoeff_eq_zero_of_orthonormal` applies.
   obtain ⟨-, hdet_unit⟩ := isPrimitiveMatrix_iff_int_and_unit_det.1 hP
   have hdet : T.det ≠ 0 := fun h_zero ↦ by
     simp [← mapMatrix_apply, ← map_det, h_zero] at hdet_unit
@@ -862,6 +862,6 @@ theorem New.Exchange.IsEquivariantLift.apply_eq_zero_of_areMatched
   have hβ_det : β.det ≠ 0 := by simpa [j_ne_zero] using hdet
   have h_orth_β : k.valᴴ * ((q.valᴴ * (β.map toAdele * q.val)).map Prod.snd * k.val) = 1 := by
     simpa [Q_eq, siegelBracket, δ_eq, Units.smul_def, map_smul', smul_smul, mul_assoc] using h_orth
-  exact D.centreCoeff_eq_zero_of_orthonormal V' h_aut h_van hβ_det k_int h_orth_β l z g
+  exact D.centerCoeff_eq_zero_of_orthonormal V' h_aut h_van hβ_det k_int h_orth_β l z g
 
 end StandardCoefficients
