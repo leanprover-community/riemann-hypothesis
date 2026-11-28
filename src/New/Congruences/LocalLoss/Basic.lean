@@ -271,18 +271,17 @@ lemma notMem_bPlaces_of_short_arc {e : D.E →+* PadicAlgCl ℓ} {g g' g₁ : Gp
   have h_coprime : (ℓ ^ a).Coprime (ordCompl[ℓ] D.q₁) :=
     (Nat.coprime_ordCompl hp.out (NeZero.ne D.q₁)).pow_left a
   let place (γ : Gp ℓ) : P.Φ D.towerExp := NumberField.InfinitePlace.mk (complexEmbeddingOf e γ)
-  have h_ratio₁ : (P.placeClass (Nat.ordCompl_dvd D.q₁ ℓ) (place g₁ / place g')).val =
-      (cmSign (complexEmbeddingOf e g₁) * cmSign (complexEmbeddingOf e g') : ℤ) * ℓ ^ i :=
-    placeClass_eq_cmSign_mul_pow e g₁ g' a i h_act₁ _ _ h_coprime
-      (mul_div_cancel (place g') (place g₁))
-  have h_ratio : (P.placeClass (Nat.ordCompl_dvd D.q₁ ℓ) (place g / place g')).val =
-      (cmSign (complexEmbeddingOf e g) * cmSign (complexEmbeddingOf e g') : ℤ) * ℓ ^ n :=
-    placeClass_eq_cmSign_mul_pow e g g' a n h_act _ _ h_coprime
-      (mul_div_cancel (place g') (place g))
+  have h_ratio (γ : Gp ℓ) (j : ℕ)
+      (h : (g' * γ⁻¹) (e (P.ζ D.towerExp) ^ ℓ ^ a) = (e (P.ζ D.towerExp) ^ ℓ ^ a) ^ ℓ ^ j) :
+      (P.placeClass (Nat.ordCompl_dvd D.q₁ ℓ) (place γ / place g')).val =
+        (cmSign (complexEmbeddingOf e γ) * cmSign (complexEmbeddingOf e g') : ℤ) * ℓ ^ j :=
+    placeClass_eq_cmSign_mul_pow e γ g' a j h _ (Nat.ordCompl_dvd D.q₁ ℓ) h_coprime
+      (mul_div_cancel (place g') (place γ))
   exact D.sparse ℓ hp.out hℓ_le i n hi_pos hi_lt hn_lt
     ⟨place g', h_mem', place g₁, h_mem₁, place g, h_mem,
       cmSign (complexEmbeddingOf e g₁) * cmSign (complexEmbeddingOf e g'),
-      cmSign (complexEmbeddingOf e g) * cmSign (complexEmbeddingOf e g'), h_ratio₁, h_ratio⟩
+      cmSign (complexEmbeddingOf e g) * cmSign (complexEmbeddingOf e g'),
+      h_ratio g₁ i h_act₁, h_ratio g n h_act⟩
 
 /-- Let the prime `ℓ` divide `D.cyclotomicConductor = q₁ d`, let `e : E → ℚ̄_ℓ`, and let `g`, `g'`
 be in `Gp ℓ = Gal(ℚ̄_ℓ/ℚ_ℓ)`. Suppose the complex embeddings
