@@ -246,7 +246,8 @@ conjugates of `Ξ` and of `S ⟨·, φ⟩` are matching local data (`New.IsLocal
 Here `GL n` at `w` and at `u` is embedded by `New.ofSplitPlace`, at level `≡ 1` mod the maximal
 ideal. -/
 lemma isLocalMatching_shintani {S : GalSemidirect (ResField w) (ResField u) n → ℂ}
-    (hS : IsClassFunction S) (h_lf : DescendsTo S Ξ) :
+    (hS : S ∈ TauCeti.ClassFunction ℂ (GalSemidirect (ResField w) (ResField u) n))
+    (h_lf : DescendsTo S Ξ) :
     ∃ φ : Gal(ResField u/ResField w),
       IsLocalMatching μ {w} (ofSplitPlace hw) (ofSplitPlace hu) (localCongruence n w 0)
         (localCongruence n u 0) {()} (fun _ ↦ inflateConj Ξ.evalGL)
@@ -297,7 +298,8 @@ lemma isLocalMatching_shintani {S : GalSemidirect (ResField w) (ResField u) n �
       Matrix.GeneralLinearGroup.ext_iff, Matrix.one_apply, atPlace_baseChangeGf,
       mem_localCongruence_zero, map_locMap_mem_intGL_iff]
   · -- Twisted conjugation by `x` is conjugation by `inl x⁻¹` on the coset of `φ`.
-    have h_conj (δ x : GL n (ResField u)) : S ⟨x⁻¹ * δ * x.map φ, φ⟩ = S ⟨δ, φ⟩ := hS ⟨δ, φ⟩ (inl _)
+    have h_conj (δ x : GL n (ResField u)) : S ⟨x⁻¹ * δ * x.map φ, φ⟩ = S ⟨δ, φ⟩ :=
+      TauCeti.ClassFunction.mem_iff.1 hS ⟨δ, φ⟩ (inl _)
     have h_inv (a : GL n (LocField u)) ha : reduceGL ⟨a⁻¹, inv_mem ha⟩ = (reduceGL ⟨a, ha⟩)⁻¹ :=
       reduceGL.map_inv ⟨a, ha⟩
     have hk_int : k.atPlace u ∈ intGL n Valued.v.integer := hk
@@ -356,7 +358,7 @@ lemma exists_baseChange_hasLabel [HasPrimitiveRoot5040 E'] {κ : Weight E}
   obtain ⟨S, hS, h_lift, h_lift'⟩ := h_shintani.hasCommonLift n
   have hS_char : IsChar S := isChar_of_mem_virtualChars hS
   obtain ⟨φ, h_match⟩ := isLocalMatching_shintani hw hu h_unique hμ_trivial h_residue h_degree
-    hS_char.isClassFunction h_lift
+    hS_char.mem_classFunction h_lift
   let π := ((stdSpace E n).formTranslation κ).comp (ofSplitPlace hw)
   let K := levelSpace π (localCongruence n w 0)
   let T := heckeFun π (localCongruence n w 0) (inflateConj Ξ.evalGL)
@@ -389,9 +391,9 @@ lemma exists_baseChange_hasLabel [HasPrimitiveRoot5040 E'] {κ : Weight E}
   refine ⟨_, x.val.prop, P, h_eig, h_same, h_label_iff.mpr fun h_zero ↦ h_eig.1 ?_⟩
   -- The group algebra element `a` of `conj (S ⟨·, φ⟩)` acts as zero in every representation whose
   -- character is orthogonal to `S ∘ inl`. So `a = c * b * a`, with `b` the element of
-  -- `conj (S ∘ inl) = conj Ξ'.evalGL` (`IsClassFunction.exists_eq_mul_groupAlgElem_mul`). If `b`
-  -- killed `x = a y`, then `x = 0`.
-  obtain ⟨c, hc⟩ := (hS_char.comp inl).star.isClassFunction.exists_eq_mul_groupAlgElem_mul _
+  -- `conj (S ∘ inl) = conj Ξ'.evalGL` (`New.exists_eq_mul_groupAlgElem_mul`). If `b` killed
+  -- `x = a y`, then `x = 0`.
+  obtain ⟨c, hc⟩ := exists_eq_mul_groupAlgElem_mul (hS_char.comp inl).star.mem_classFunction _
     fun _ hV ↦ hS_char.star.asAlgebraHom_groupAlgElem_eq_zero inl (inr φ)
       ((hS_char.comp inl).asAlgebraHom_groupAlgElem_eq_zero_iff.1 hV)
   rw [← DescendsTo.iff_comp_inl_eq_evalGL.1 h_lift'] at h_zero

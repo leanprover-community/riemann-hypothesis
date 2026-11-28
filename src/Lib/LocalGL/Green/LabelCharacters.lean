@@ -268,8 +268,8 @@ lemma IsLabel.isIrreducibleChar_labelChar (hc : IsLabel (Fintype.card n) c) :
   have h_degree : 0 ≤ ((labelChar T c).evalGL (n := n) 1).re := (labelChar_degree_bounds K hc).1
   -- With the function itself as test function: norm `1`, a value at `1` with nonnegative real part
   -- and integer inner products with all characters make it irreducible.
-  exact isClassFunction_evalGL.isIrreducibleChar_of_classInner_eq_intCast
-    isClassFunction_evalGL (h_norm.trans_ne one_ne_zero) h_norm h_degree
+  exact isIrreducibleChar_of_classInner_eq_intCast evalGL_mem_classFunction
+    evalGL_mem_classFunction (h_norm.trans_ne one_ne_zero) h_norm h_degree
     fun χ hχ _ _ ↦ hχ.exists_classInner_eq h_virtual
 
 /-- Green's function with label `c` is a character of `GL n k` for every `n`. -/
@@ -337,7 +337,7 @@ lemma labelIdem_orthogonal : OrthogonalIdempotents (labelIdem (k := k) n) := by
   ext x
   -- Convolution identity of the irreducible character `Ξ d` paired with `Ξ c`.
   have h_conv := (hd.isIrreducibleChar_labelChar (n := n) (faithfulChar k)).mul_classInner_translate
-    (φ := (labelChar (faithfulChar k) c).evalGL) isClassFunction_evalGL x⁻¹
+    (φ := (labelChar (faithfulChar k) c).evalGL) evalGL_mem_classFunction x⁻¹
   simp only [classInner_evalGL, rankInner_labelChar _ hd c hc, finMean,
     finsum_eq_sum_of_fintype, Nat.card_eq_fintype_card] at h_conv
   simp [hc, hd, apply_ite (coeff · x), eq_comm (a := c),
@@ -348,9 +348,11 @@ lemma labelIdem_orthogonal : OrthogonalIdempotents (labelIdem (k := k) n) := by
 
 /-- The coefficients of `e_c = New.labelIdem n c` form a class function on `GL_n(k)`: they are
 constant on conjugacy classes. -/
-lemma isClassFunction_labelIdem_coeff (c : Polynomial k) :
-    IsClassFunction (labelIdem n c).coeff := by
-  aesop (add simp [labelIdem, isClassFunction_evalGL])
+lemma labelIdem_coeff_mem_classFunction (c : Polynomial k) :
+    ⇑(labelIdem n c).coeff ∈ TauCeti.ClassFunction ℂ (GL n k) := by
+  have h_class := TauCeti.ClassFunction.mem_iff.1
+    (evalGL_mem_classFunction (F := labelChar (faithfulChar k) c) (n := n))
+  aesop (add simp labelIdem)
 
 /-- Let χ be a multiplicative character of k whose name x_χ ∈ kˣ (`New.charName`) is not a root of
 the polynomial c, and let l be a nonzero vector. Here e_c = `labelIdem n c` is ∑ (Ξ_c(1)/|G|)·conj
@@ -366,7 +368,7 @@ lemma hyperplaneSum_mul_labelIdem {c : Polynomial k} {χ : MulChar k ℂ}
   -- orthogonal to `χ ∘ det`: in a suitable basis `N` consists of the block triangular matrices with
   -- diagonal blocks a scalar and `1`, so the inner product is a value of the skew function, which
   -- vanishes by `skew_detChar_labelChar_eq_zero`.
-  rw [IsClassFunction.commute (isClassFunction_labelIdem_coeff c)]
+  rw [commute_of_coeff_mem_classFunction (labelIdem_coeff_mem_classFunction c)]
   obtain hc | hc := em' (IsLabel (Fintype.card n) c)
   · -- If `c` is not a label of degree `|n|`, then `e_c = 0`.
     simp [hc, labelIdem]
@@ -462,7 +464,7 @@ be the tensor product of the label idempotents `e_{c_w}`, an element of the comp
 `∏_w GL_n(k w)`. This element is a central idempotent (`New.IsCentralProj`): it is idempotent and
 its coefficients form a class function on `∏_w GL_n(k w)`. -/
 lemma isCentralProj_tupleIdem : IsCentralProj (tupleIdem n c) :=
-  .piTensorElem fun w ↦ ⟨labelIdem_orthogonal.idem (c w), isClassFunction_labelIdem_coeff (c w)⟩
+  .piTensorElem fun w ↦ ⟨labelIdem_orthogonal.idem (c w), labelIdem_coeff_mem_classFunction (c w)⟩
 
 /-- For each tuple (c_w) of polynomials over the finite fields k_w, `tupleIdem` is the tensor
 product ⊗_w e_{c_w} of the label idempotents of the group algebras of GL_n(k_w). It lies in the
@@ -482,7 +484,9 @@ a class function. -/
 lemma isCentralProj_sum_tupleIdem {s : Finset ((w : ι) → Polynomial (k w))} :
     IsCentralProj (∑ c ∈ s, tupleIdem (k := k) n c) :=
   -- A sum of class functions is a class function.
-  ⟨tupleIdem_orthogonal.isIdempotentElem_sum, by simp [(isCentralProj_tupleIdem _).right]⟩
+  ⟨tupleIdem_orthogonal.isIdempotentElem_sum, by
+    simpa only [MonoidAlgebra.coeff_sum, Finsupp.coe_finsetSum] using
+      sum_mem fun c _ ↦ (isCentralProj_tupleIdem c).coeff_mem_classFunction⟩
 
 end LabelIdempotents
 

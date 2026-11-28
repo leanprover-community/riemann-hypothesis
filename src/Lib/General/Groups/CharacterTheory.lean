@@ -1,6 +1,7 @@
 module
 
 public import TauCeti.RepresentationTheory.AsAlgebraHom
+public import TauCeti.RepresentationTheory.CharacterTable.ClassFunction
 import TauCeti.RepresentationTheory.Simple.Basic
 import TauCeti.RepresentationTheory.CharacterTable.Values
 public import Aesop.BuiltinRules
@@ -34,9 +35,9 @@ This file sets up the character theory of a finite group `G` that is used for th
 * `New.IsCentralProj`: central idempotents e of the group algebra ℂ[H] of any group H. Their
   coefficients are class functions; 1 − e, the image of e under a ring endomorphism of ℂ and tensor
   products are again central idempotents.
-* `New.IsClassFunction.isIrreducibleChar_of_classInner_eq_intCast`,
-  `New.IsClassFunction.mem_virtualChars`, `New.IsClassFunction.exists_eq_mul_groupAlgElem_mul`:
-  criteria for a class function `f` to be an irreducible character, for `f` to be a combination of
+* `New.isIrreducibleChar_of_classInner_eq_intCast`, `New.mem_virtualChars_of_mem_classFunction`,
+  `New.exists_eq_mul_groupAlgElem_mul`: criteria for a class function `f` (a member of Tau Ceti's
+  `TauCeti.ClassFunction ℂ G`) to be an irreducible character, for `f` to be a combination of
   characters with coefficients in a given semiring, and for an element of `ℂ[G]` to be recovered
   from its product with `New.groupAlgElem f`.
 * `New.IsCentralProj.isChar_card_mul_coeff`: for a central idempotent `e` of `ℂ[G]`, the function
@@ -55,12 +56,14 @@ This file sets up the character theory of a finite group `G` that is used for th
 
 noncomputable section
 
+open TauCeti (ClassFunction)
+
 /-!
 ## Averages, inner products, characters and group algebra elements
 
 The basic definitions: `New.finMean`, `New.classInner`, `New.groupAlgElem` (a function `f` as the
-element `∑ g, f g • g` of the group algebra), `New.IsChar`, `New.IsClassFunction` and
-`New.IsIrreducibleChar`.
+element `∑ g, f g • g` of the group algebra), `New.IsChar` and `New.IsIrreducibleChar`. Class
+functions are the members of Tau Ceti's submodule `TauCeti.ClassFunction ℂ G`.
 -/
 
 namespace New
@@ -84,13 +87,9 @@ def groupAlgElem : MonoidAlgebra ℂ G := ⟨Finsupp.equivFunOnFinite.symm f⟩
 of G. -/
 def IsChar : Prop := ∃ V : FDRep ℂ G, V.character = f
 
-/-- The function f : G → ℂ is a class function: f(xgx⁻¹) = f(g) for all g, x in G. -/
-@[simp]
-abbrev IsClassFunction : Prop := ∀ g x : G, f (x * g * x⁻¹) = f g
-
 /-- The function `f` is an irreducible character: the character of a simple finite-dimensional
-complex representation of `G`. `New.IsClassFunction.isIrreducibleChar_of_classInner_eq_intCast`
-gives a criterion. -/
+complex representation of `G`. `New.isIrreducibleChar_of_classInner_eq_intCast` gives a
+criterion. -/
 def IsIrreducibleChar : Prop := ∃ V : FDRep ℂ G, CategoryTheory.Simple V ∧ V.character = f
 
 end New
@@ -215,9 +214,9 @@ lemma IsChar.comp (hχ : IsChar χ) {H : Type*} [Group H] (p : H →* G) : IsCha
 
 lemma IsChar.mem_virtualChars (hχ : IsChar χ) : χ ∈ virtualChars S G := subset_span hχ
 
-lemma IsChar.isClassFunction (hχ : IsChar χ) : IsClassFunction χ := by
+lemma IsChar.mem_classFunction (hχ : IsChar χ) : χ ∈ ClassFunction ℂ G := by
   obtain ⟨V, rfl⟩ := hχ
-  exact V.char_conj
+  exact ClassFunction.mem_iff.2 V.char_conj
 
 lemma IsIrreducibleChar.isChar (hχ : IsIrreducibleChar χ) : IsChar χ :=
   hχ.imp fun _ h ↦ h.2
@@ -279,12 +278,13 @@ lemma comp_mem_virtualChars (hf : f ∈ virtualChars S G) {H : Type*} [Group H]
   mapsTo_span (f := funLeft S ℂ p) (s := {χ | IsChar χ}) (fun _ hχ ↦ IsChar.comp hχ p) hf
 
 omit [Finite G] in
-lemma isClassFunction_of_mem_virtualChars (hf : f ∈ virtualChars S G) : IsClassFunction f := by
+lemma mem_classFunction_of_mem_virtualChars (hf : f ∈ virtualChars S G) :
+    f ∈ ClassFunction ℂ G := by
   induction hf using span_induction with
-  | mem χ hχ => exact IsChar.isClassFunction hχ
-  | zero => simp
-  | add χ ψ _ _ hχ hψ => exact fun g x ↦ by simp [hχ g x, hψ g x]
-  | smul a χ _ hχ => exact fun g x ↦ by simp [hχ g x]
+  | mem χ hχ => exact IsChar.mem_classFunction hχ
+  | zero => exact zero_mem _
+  | add χ ψ _ _ hχ hψ => exact add_mem hχ hψ
+  | smul a χ _ hχ => exact Submodule.smul_of_tower_mem _ a hχ
 
 end VirtualCharacters
 
@@ -309,19 +309,22 @@ variable {ι : Type _} [Fintype ι] [DecidableEq ι]
   {x : ∀ i : ι, ℂ[G i]} {V : Type*} [AddCommGroup V] [Module ℂ V]
   (σ : Representation ℂ H V) {e : ℂ[H]} {ρ : Representation ℂ (∀ i : ι, G i) V}
 
-lemma IsClassFunction.commute (he : IsClassFunction e.coeff) (x : ℂ[H]) : Commute x e := by
+lemma commute_of_coeff_mem_classFunction (he : ⇑e.coeff ∈ ClassFunction ℂ H) (x : ℂ[H]) :
+    Commute x e := by
   have h_swap (t g : H) : e.coeff (g * t⁻¹) = e.coeff (t⁻¹ * g) := by
-    simpa [mul_assoc] using he (t⁻¹ * g) t
+    simpa [mul_assoc] using ClassFunction.mem_iff.1 he (t⁻¹ * g) t
   ext g
   simp only [coeff_mul_apply_left x e, coeff_mul_apply_right e x, h_swap, mul_comm]
 
 /-- `e` is a central idempotent of the complex group algebra `ℂ[H]` of a group `H`: it is
 idempotent and its coefficients form a class function. -/
-def IsCentralProj (e : ℂ[H]) : Prop := IsIdempotentElem e ∧ IsClassFunction e.coeff
+def IsCentralProj (e : ℂ[H]) : Prop := IsIdempotentElem e ∧ ⇑e.coeff ∈ ClassFunction ℂ H
 
 lemma IsCentralProj.isIdempotentElem (h : IsCentralProj e) : IsIdempotentElem e := h.left
 
-lemma IsCentralProj.isClassFunction (h : IsCentralProj e) : IsClassFunction e.coeff := h.right
+lemma IsCentralProj.coeff_mem_classFunction (h : IsCentralProj e) :
+    ⇑e.coeff ∈ ClassFunction ℂ H :=
+  h.right
 
 open scoped Classical in
 /-- The multiplicative map sending a family `x i ∈ ℂ[G i]` to its tensor product in the group
@@ -378,17 +381,19 @@ namespace IsCentralProj
 
 open scoped Classical in
 lemma one_sub (h : IsCentralProj e) : IsCentralProj (1 - e) :=
-  ⟨h.isIdempotentElem.one_sub, fun g x ↦ by
-    simp [h.isClassFunction g x, eq_comm, one_def, single_apply]⟩
+  ⟨h.isIdempotentElem.one_sub, by
+    simp [ClassFunction.mem_iff.1 h.coeff_mem_classFunction, eq_comm, one_def, single_apply]⟩
 
 /-- Applying a ring endomorphism `σ` of `ℂ` to the coefficients of a central idempotent `e` of
 `ℂ[H]` (`H` any group) gives a central idempotent. -/
 lemma map (h : IsCentralProj e) (σ : ℂ →+* ℂ) : IsCentralProj (mapRingHom H σ e) :=
-  ⟨h.isIdempotentElem.map (mapRingHom H σ), fun g x ↦ by simp [h.isClassFunction g x]⟩
+  ⟨h.isIdempotentElem.map (mapRingHom H σ), by
+    simp [ClassFunction.mem_iff.1 h.coeff_mem_classFunction]⟩
 
 lemma piTensorElem (h : ∀ i : ι, IsCentralProj (x i)) : IsCentralProj (New.piTensorElem x) := by
   have h_idem : IsIdempotentElem x := funext fun i ↦ (h i).isIdempotentElem
-  exact ⟨h_idem.map New.piTensorElem, fun g s ↦ by simp [(h _).isClassFunction _ _]⟩
+  exact ⟨h_idem.map New.piTensorElem, by
+    simp [fun i ↦ ClassFunction.mem_iff.1 (h i).coeff_mem_classFunction]⟩
 
 end IsCentralProj
 
@@ -459,22 +464,24 @@ lemma IsIrreducibleChar.classInner_self (hχ : IsIrreducibleChar χ) : classInne
 /-- A class function `φ` acts by a scalar in an irreducible representation; on characters this
 reads `χ 1 * mean (conj χ · φ (· * y)) = ⟨χ, φ⟩ * χ y`. -/
 lemma IsIrreducibleChar.mul_classInner_translate (hχ : IsIrreducibleChar χ) {φ : G → ℂ}
-    (hφ : IsClassFunction φ) (y : G) :
+    (hφ : φ ∈ ClassFunction ℂ G) (y : G) :
     χ 1 * finMean (fun t ↦ conj (χ t) * φ (t * y)) = classInner χ φ * χ y := by
   classical
   obtain ⟨V, hV, rfl⟩ := hχ
   have := FDRep.isIrreducible_of_simple V
-  have hφ_inv : IsClassFunction (fun t : G ↦ φ t⁻¹) := fun g x ↦ by
-    simpa [mul_assoc] using hφ g⁻¹ x
+  have hφ_inv : (fun t : G ↦ φ t⁻¹) ∈ ClassFunction ℂ G := ClassFunction.mem_iff.2 fun g x ↦ by
+    simpa [mul_assoc] using ClassFunction.mem_iff.1 hφ g⁻¹ x
   let z : Subalgebra.center ℂ ℂ[G] :=
-    ⟨groupAlgElem fun t ↦ φ t⁻¹, Subalgebra.mem_center_iff.2 hφ_inv.commute⟩
+    ⟨groupAlgElem fun t ↦ φ t⁻¹,
+      Subalgebra.mem_center_iff.2 (commute_of_coeff_mem_classFunction hφ_inv)⟩
   have h_translate (y : G) : ∑ x : G, conj (V.character x) * φ (x * y) =
       TauCeti.Representation.centralCharacter V.ρ z * V.character y := by
     calc ∑ x : G, conj (V.character x) * φ (x * y)
         = LinearMap.trace ℂ _ (asAlgebraHom V.ρ (z.val * single y 1)) := by
           rw [asAlgebraHom_eq_sum, map_sum]
           refine Fintype.sum_equiv (Equiv.inv G) _ _ fun x ↦ ?_
-          have h_swap : φ (y * x) = φ (x * y) := by simpa [mul_assoc] using hφ (x * y) y
+          have h_swap : φ (y * x) = φ (x * y) := by
+            simpa [mul_assoc] using ClassFunction.mem_iff.1 hφ (x * y) y
           rw [V.conj_char]
           simp [z, h_swap, FDRep.character, mul_comm]
       _ = TauCeti.Representation.centralCharacter V.ρ z * V.character y := by
@@ -491,7 +498,7 @@ structure IsExpansionFamily {ι : Type*} [Fintype ι] (χ : ι → G → ℂ) : 
   /-- Each `χ i` is an irreducible character. -/
   isIrreducibleChar (i : ι) : IsIrreducibleChar (χ i)
   /-- A class function `φ` is the sum of the `⟨χ i, φ⟩ • χ i`. -/
-  eq_sum {φ : G → ℂ} (hφ : IsClassFunction φ) : φ = ∑ i : ι, classInner (χ i) φ • χ i
+  eq_sum {φ : G → ℂ} (hφ : φ ∈ ClassFunction ℂ G) : φ = ∑ i : ι, classInner (χ i) φ • χ i
 
 variable (G) in
 /-- A finite group has a finite family of characters in which every class function expands. -/
@@ -504,19 +511,18 @@ lemma exists_isExpansionFamily : ∃ (n : ℕ) (χ : Fin n → G → ℂ), IsExp
   refine ⟨Fintype.card (ConjClasses G), χ,
     fun i ↦ ⟨.of (ρ (e.symm i)), (FDRep.simple_iff_isIrreducible _).2 (hirr _), rfl⟩,
     fun {φ} hφ ↦ funext fun g ↦ ?_⟩
-  let Φ : TauCeti.ClassFunction ℂ G := ⟨φ, TauCeti.ClassFunction.mem_iff.2 hφ⟩
+  let Φ : ClassFunction ℂ G := ⟨φ, hφ⟩
   have h_pair (i : Fin (Fintype.card (ConjClasses G))) :
-      TauCeti.ClassFunction.characterPairing
-          (TauCeti.ClassFunction.ofCharacter (ρ (e.symm i))) Φ =
+      ClassFunction.characterPairing (ClassFunction.ofCharacter (ρ (e.symm i))) Φ =
         classInner (χ i) φ := by
-    rw [TauCeti.ClassFunction.characterPairing_apply, classInner, finMean,
-      finsum_eq_sum_of_fintype, div_eq_inv_mul]
+    rw [ClassFunction.characterPairing_apply, classInner, finMean, finsum_eq_sum_of_fintype,
+      div_eq_inv_mul]
     congr 1
     refine Fintype.sum_equiv (Equiv.inv G) _ _ fun x ↦ ?_
     simp [Φ, χ]
-  have hexp := TauCeti.ClassFunction.apply_eq_sum_characterPairing_mul_character ρ hind rfl Φ g
+  have hexp := ClassFunction.apply_eq_sum_characterPairing_mul_character ρ hind rfl Φ g
   have hsum : ∑ i, classInner (χ i) φ * χ i g =
-      ∑ C, TauCeti.ClassFunction.characterPairing (TauCeti.ClassFunction.ofCharacter (ρ C)) Φ *
+      ∑ C, ClassFunction.characterPairing (ClassFunction.ofCharacter (ρ C)) Φ *
         (ρ C).character g :=
     Fintype.sum_equiv e.symm _ _ fun i ↦ by simp [h_pair i, χ]
   simpa [Φ, Finset.sum_apply] using hexp.trans hsum.symm
@@ -525,8 +531,8 @@ lemma exists_isExpansionFamily : ∃ (n : ℕ) (χ : Fin n → G → ℂ), IsExp
 `0 ≤ re (f 1)`, where `⟨ , ⟩` is the inner product `New.classInner`. Suppose `⟨χ, f⟩` is an integer
 for every character `χ` with `⟨χ, I⟩ ≠ 0` and `χ 1 * ⟨χ, I (· * y)⟩ = ⟨χ, I⟩ * χ y` for all `y`.
 Then `f` is an irreducible character. -/
-lemma IsClassFunction.isIrreducibleChar_of_classInner_eq_intCast {I : G → ℂ}
-    (hf : IsClassFunction f) (hI : IsClassFunction I) (h_inner_ne : classInner I f ≠ 0)
+lemma isIrreducibleChar_of_classInner_eq_intCast {I : G → ℂ}
+    (hf : f ∈ ClassFunction ℂ G) (hI : I ∈ ClassFunction ℂ G) (h_inner_ne : classInner I f ≠ 0)
     (h_norm : classInner f f = 1) (h_re : 0 ≤ (f 1).re)
     (h_int : ∀ χ : G → ℂ, IsChar χ → classInner χ I ≠ 0 →
       (∀ y : G, χ 1 * classInner χ (fun x : G ↦ I (x * y)) = classInner χ I * χ y) →
@@ -547,7 +553,7 @@ lemma IsClassFunction.isIrreducibleChar_of_classInner_eq_intCast {I : G → ℂ}
 variable {Z} in
 /-- Let `f` be a class function on a finite group `G`. If the inner product of every character with
 `f` comes from the semiring `Z`, then `f` is a `Z`-combination of characters. -/
-lemma IsClassFunction.mem_virtualChars (hf : IsClassFunction f)
+lemma mem_virtualChars_of_mem_classFunction (hf : f ∈ ClassFunction ℂ G)
     (h_coeff : ∀ χ : G → ℂ, IsChar χ → ∃ m : Z, classInner χ f = algebraMap Z ℂ m) :
     f ∈ virtualChars Z G := by
   -- Every coefficient of the expansion of `f` in characters comes from `Z`.
@@ -561,7 +567,7 @@ lemma IsClassFunction.mem_virtualChars (hf : IsClassFunction f)
 /-- Let `f` be a class function on a finite group `G`. Suppose `a ∈ ℂ[G]` acts as zero in every
 finite-dimensional representation in which `New.groupAlgElem f = ∑ g, f g • g` acts as zero. Then
 `a = u * New.groupAlgElem f * a` for some `u ∈ ℂ[G]`. -/
-lemma IsClassFunction.exists_eq_mul_groupAlgElem_mul (hf : IsClassFunction f) (a : ℂ[G])
+lemma exists_eq_mul_groupAlgElem_mul (hf : f ∈ ClassFunction ℂ G) (a : ℂ[G])
     (ha : ∀ V : FDRep ℂ G, asAlgebraHom V.ρ (groupAlgElem f) = 0 → asAlgebraHom V.ρ a = 0) :
     ∃ u : ℂ[G], a = u * groupAlgElem f * a := by
   -- Wedderburn: `e` identifies `ℂ[G]` with a product of matrix algebras, and the `i`-th block of
@@ -569,7 +575,8 @@ lemma IsClassFunction.exists_eq_mul_groupAlgElem_mul (hf : IsClassFunction f) (a
   obtain ⟨n, d, hd, ⟨e⟩⟩ := IsSemisimpleRing.exists_algEquiv_pi_matrix_of_isAlgClosed ℂ ℂ[G]
   have := hd
   have (i : Fin n) := TauCeti.isIrreducible_blockRepresentation e i
-  let z : Subalgebra.center ℂ ℂ[G] := ⟨groupAlgElem f, Subalgebra.mem_center_iff.2 hf.commute⟩
+  let z : Subalgebra.center ℂ ℂ[G] :=
+    ⟨groupAlgElem f, Subalgebra.mem_center_iff.2 (commute_of_coeff_mem_classFunction hf)⟩
   let c : Fin n → ℂ := fun i ↦
     TauCeti.Representation.centralCharacter (TauCeti.blockRepresentation e i) z
   have hc (i : Fin n) : e (groupAlgElem f) i = algebraMap ℂ _ (c i) := by
@@ -652,12 +659,13 @@ lemma New.IsCentralProj.isChar_card_mul_coeff (h : IsCentralProj e) :
     IsChar fun g : G ↦ Nat.card G * e.coeff g := by
   -- The pairing of |G|·e with a character χ is the trace of e on a representation with character
   -- conj χ. As e acts there by an idempotent, this trace is a natural number, the rank.
-  have h_class : IsClassFunction fun g ↦ Nat.card G * e.coeff g := by simp [h.isClassFunction _ _]
+  have h_class : (fun g ↦ Nat.card G * e.coeff g) ∈ ClassFunction ℂ G :=
+    Submodule.smul_mem _ (Nat.card G : ℂ) h.coeff_mem_classFunction
   -- A class function whose pairing with every character is in `ℕ` is an `ℕ`-combination of
   -- characters, hence a character.
   suffices h_nat : ∀ χ : G → ℂ, IsChar χ →
       ∃ m : ℕ, classInner χ (fun g ↦ Nat.card G * e.coeff g) = algebraMap ℕ ℂ m from
-    isChar_of_mem_virtualChars (h_class.mem_virtualChars h_nat)
+    isChar_of_mem_virtualChars (mem_virtualChars_of_mem_classFunction h_class h_nat)
   intro χ hχ
   obtain ⟨ρ, hρ⟩ : ∃ ρ : FDRep ℂ G, ρ.character = fun g ↦ starRingEnd ℂ (χ g) := hχ.star
   have h_trace :

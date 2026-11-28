@@ -151,7 +151,7 @@ lemma sum_coeff_labelIdem_radicalHom {c : k[X]} (hc : IsLabel (Fintype.card n) c
       χ 1 / Nat.card (GL n k) * starRingEnd ℂ (χ (u * (z * y))) := by
     have h_conj : χ (y * (u * z)) = χ (u * (z * y)) := by
       rw [show y * (u * z) = y * (u * (z * y)) * y⁻¹ by group]
-      exact isClassFunction_evalGL _ y
+      exact TauCeti.ClassFunction.mem_iff.1 evalGL_mem_classFunction _ y
     simp [← h_conj, labelIdem, hc, χ, groupAlgElem]
   calc ∑ᶠ Z : Matrix n n k, (labelIdem n c).coeff (y * (U (ofAdd Z) * z))
       = χ 1 / Nat.card (GL n k) *

@@ -51,6 +51,7 @@ section CosetRoots
 
 open Finset Function Subgroup ComplexConjugate SemidirectProduct AddMonoidAlgebra
   ZMod
+open TauCeti (ClassFunction)
 
 attribute [local instance low] Fintype.ofFinite
 
@@ -114,7 +115,7 @@ function on `E'`, and `χ` a class function on `E`. Then the inner product of `�
 of `h` equals the inner product of `χ ∘ ρ` with `h`. Here `induceClassFn π ρ h` at `s` is the index
 of ker(π∘ρ) times the mean over t ∈ E' of h(t)·#{x ∈ ker π : xρ(t)x⁻¹ = s}. -/
 lemma classInner_induceClassFn_of_surjective [Finite Γ] (h_surj : Surjective (π.comp ρ)) {χ : E → ℂ}
-    (hχ : IsClassFunction χ) : classInner χ (induceClassFn π ρ h) = classInner (χ ∘ ρ) h := by
+    (hχ : χ ∈ ClassFunction ℂ E) : classInner χ (induceClassFn π ρ h) = classInner (χ ∘ ρ) h := by
   classical
   -- The sum over `s` of `conj (χ s) * conjCount π s t` is `#π.ker * conj (χ t)`, and both `π.ker`
   -- and `(π.comp ρ).ker` have index `#Γ`, so the factors `#Γ * #π.ker = #E` cancel.
@@ -126,7 +127,7 @@ lemma classInner_induceClassFn_of_surjective [Finite Γ] (h_surj : Surjective (�
     -- exchange the sums; the conjugate `x * t * x⁻¹` has the same value of `χ` as `t`
     simp only [conjCount, mul_sum, mul_ite, mul_one, mul_zero]
     rw [sum_comm]
-    simp [ite_and, hχ, ← sum_filter, Fintype.card_subtype]
+    simp [ite_and, ClassFunction.mem_iff.1 hχ, ← sum_filter, Fintype.card_subtype]
   have h_conj_count (s t : E) : conj (conjCount π s t) = conjCount π s t := by
     simp [conjCount]
   simp only [classInner, finMean, induceClassFn, h_index, h_conj_count, comp_apply,
@@ -157,14 +158,16 @@ lemma induceClassFn_mem_virtualChars [Finite Γ] {Z : Type*} [CommSemiring Z] [A
     have h_term (t : E') :
         conj (conjCount π (y * s * y⁻¹) (ρ (MulAut.conj u t))) * h (MulAut.conj u t) =
           conj (conjCount π s (ρ t)) * h t := by
-      simp [conjCount_conj hu, isClassFunction_of_mem_virtualChars h_virtual]
+      simp [conjCount_conj hu,
+        ClassFunction.mem_iff.1 (mem_classFunction_of_mem_virtualChars h_virtual)]
     unfold induceClassFn classInner
     congr 1
     exact finMean_equiv (MulAut.conj u) h_term
   -- a class function whose pairings with all characters come from `Z` is a `Z`-combination of them
-  refine IsClassFunction.mem_virtualChars h_class fun (χ : E → ℂ) (hχ : IsChar χ) ↦ ?_
+  refine mem_virtualChars_of_mem_classFunction (ClassFunction.mem_iff.2 h_class)
+    fun (χ : E → ℂ) (hχ : IsChar χ) ↦ ?_
   -- Frobenius reciprocity moves the pairing to `E'`, where `h` is a `Z`-combination of characters
-  rw [classInner_induceClassFn_of_surjective h_surj hχ.isClassFunction]
+  rw [classInner_induceClassFn_of_surjective h_surj hχ.mem_classFunction]
   exact (hχ.comp ρ).exists_classInner_eq h_virtual
 
 /-! ### Semidirect products: existence of roots, extension of characters -/
@@ -289,19 +292,23 @@ lemma IsIrreducibleChar.extend_semidirect [Finite Γ] (hY : IsIrreducibleChar Y)
     (h_self : Nat.card Γ * classInner Φ Φ = classInner (Φ ∘ inl) (Φ ∘ inl) + (Nat.card Γ - 1))
     (m : ℤ) (h_pair : classInner Y (Φ ∘ inl) = 1 + Nat.card Γ * m) :
     IsIrreducibleChar fun x : G ⋊[α] Γ ↦ if x.right = 1 then Y x.left else Φ x := by
-  -- Apply `IsClassFunction.isIrreducibleChar_of_classInner_eq_intCast` to the function
+  -- Apply `isIrreducibleChar_of_classInner_eq_intCast` to the function
   -- f of the statement, with the test function I equal to Y on G and to 0 off G. It asks that f and
   -- I be class functions, ⟨I, f⟩ ≠ 0, ⟨f, f⟩ = 1, 0 ≤ re f(1), and ⟨χ, f⟩ ∈ ℤ for every character χ
   -- with ⟨χ, I⟩ ≠ 0 and χ(1) ⟨χ, I(· y)⟩ = ⟨χ, I⟩ χ(y). Means over G ⋊ Γ are split by the simp
   -- lemma `finMean_ite`.
   have hY_char := hY.isChar
   have hY_norm := hY.classInner_self
-  have hf_class : IsClassFunction fun x : G ⋊[α] Γ ↦ if x.right = 1 then Y x.left else Φ x := by
-    simp +contextual [hY_char.isClassFunction, isClassFunction_of_mem_virtualChars hΦ, h_stable]
-  have hI_class : IsClassFunction fun x : G ⋊[α] Γ ↦ if x.right = 1 then Y x.left else 0 := by
-    simp +contextual [hY_char.isClassFunction, h_stable]
+  have hY_class := ClassFunction.mem_iff.1 hY_char.mem_classFunction
+  have hf_class : (fun x : G ⋊[α] Γ ↦ if x.right = 1 then Y x.left else Φ x) ∈
+      ClassFunction ℂ (G ⋊[α] Γ) := by
+    simp +contextual [hY_class, ClassFunction.mem_iff.1 (mem_classFunction_of_mem_virtualChars hΦ),
+      h_stable]
+  have hI_class : (fun x : G ⋊[α] Γ ↦ if x.right = 1 then Y x.left else 0) ∈
+      ClassFunction ℂ (G ⋊[α] Γ) := by
+    simp +contextual [hY_class, h_stable]
   have h_card_ne : (Nat.card Γ : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Nat.card_pos.ne'
-  refine hf_class.isIrreducibleChar_of_classInner_eq_intCast hI_class ?_ ?_ ?_
+  refine isIrreducibleChar_of_classInner_eq_intCast hf_class hI_class ?_ ?_ ?_
     fun χ hχ h_ne h_conv ↦ ?_
   · -- the pairing with I is ⟨Y, Y⟩ / |Γ|
     have h_inner :
@@ -334,7 +341,7 @@ lemma IsIrreducibleChar.extend_semidirect [Finite Γ] (hY : IsIrreducibleChar Y)
     -- `IsIrreducibleChar.mul_classInner_translate` for χ|G at g⁻¹, translated by g and conjugated
     have h_convY : conj (Y 1 * finMean fun t ↦ conj (Y (t * g)) * χ (inl (t * g * g⁻¹))) =
         conj (classInner Y (χ ∘ inl) * Y g⁻¹) := by
-      rw [← hY.mul_classInner_translate (hχ.comp inl).isClassFunction]
+      rw [← hY.mul_classInner_translate (hχ.comp inl).mem_classFunction]
       congr 2
       exact (finMean_equiv (.mulRight g) (by simp)).symm
     have h_conv_g : χ 1 * (finMean fun t : G ↦ conj (χ (inl t)) * Y (t * g)) =
@@ -532,11 +539,11 @@ choices of roots on both sides. If the class function `h` descends to `f`, and t
 `induceClassFn π ρ h` (the index of ker(π∘ρ) times the mean over t of h(t)·#{x ∈ ker π :
 xρ(t)x⁻¹ = s}) descends to `F`. -/
 lemma DescendsOnCoset.induce [Finite Γ]
-    (R : IsRootChoice π σ j r) (h_class : IsClassFunction h) (ρ₀ : G' → G)
+    (R : IsRootChoice π σ j r) (h_class : h ∈ ClassFunction ℂ E') (ρ₀ : G' → G)
     {j' : G' →* E'} (h_comm : ∀ γ : G', ρ (j' γ) = j (ρ₀ γ)) {f : G' → ℂ} {r' : G' → E'}
     (R' : IsRootChoice (π.comp ρ) σ j' r') (h_lift : DescendsOnCoset (π.comp ρ) σ j' h f)
-    {F : G → ℂ} (hF_class : IsClassFunction F)
-    (hF : ∀ χ : G → ℂ, IsClassFunction χ → classInner F χ = classInner f (χ ∘ ρ₀)) :
+    {F : G → ℂ} (hF_class : F ∈ ClassFunction ℂ G)
+    (hF : ∀ χ ∈ ClassFunction ℂ G, classInner F χ = classInner f (χ ∘ ρ₀)) :
     DescendsOnCoset π σ j (induceClassFn π ρ h) F := by
   classical
   -- By `IsRootChoice.index_mul_finMean_eq_classInner` for the roots r', the value of the induced
@@ -572,14 +579,15 @@ lemma DescendsOnCoset.induce [Finite Γ]
     change ((π.comp ρ).ker.index : ℂ) * finMean (fun t ↦ conj (conjCount π s (ρ t)) * h t) = _
     rw [h_coset]
     exact R'.index_mul_finMean_eq_classInner h_lifts h_lift
-      (fun t x hx ↦ by simpa using h_conj_snd (ρ t) (ρ x) hx) fun t x _ ↦ h_class t x
+      (fun t x hx ↦ by simpa using h_conj_snd (ρ t) (ρ x) hx)
+      fun t x _ ↦ ClassFunction.mem_iff.1 h_class t x
   have h_count (δ : G) :
       conjCount π s (r δ) = ∑ v : G, if δ = (MulAut.conj v)⁻¹ • γ then 1 else 0 := by
     -- `s` may be replaced by the root `r γ`
     have h_at_root : conjCount π s (r δ) = conjCount π (r γ) (r δ) :=
       R.descendsOnCoset_comp (g := fun t ↦ conjCount π t (r δ)) (h_conj_fst _) s γ hs hγ
     rw [h_at_root, R.conjCount_root γ δ]
-  have h_count_class : IsClassFunction (conjCount π s ∘ r) := fun γ v ↦ by
+  have h_count_class : conjCount π s ∘ r ∈ ClassFunction ℂ G := ClassFunction.mem_iff.2 fun γ v ↦ by
     change conjCount π s (r (v * γ * v⁻¹)) = conjCount π s (r γ)
     rw [R.map_conj, h_conj_snd _ _ (R.apply_emb_eq_one v)]
   -- `F` is a class function, so the mean over `δ` of the count at `r δ` times `F δ` is `F γ`
@@ -589,7 +597,7 @@ lemma DescendsOnCoset.induce [Finite Γ]
       -- `sum_boole` is left out so that the count stays a sum over `v` and the sums can be swapped;
       -- `inv_inv` is left out so that `hF_class` matches `v⁻¹ * γ * v⁻¹⁻¹`
       simp [h_count, apply_ite conj, -sum_boole, sum_comm (γ := G), ← map_inv,
-        hF_class, -inv_inv, sum_mul]
+        ClassFunction.mem_iff.1 hF_class, -inv_inv, sum_mul]
     simp [classInner, finMean_eq, h_sum, ← Nat.card_eq_fintype_card, Nat.card_pos.ne']
   calc induceClassFn π ρ h s
       = classInner ((conjCount π s ∘ r) ∘ ρ₀) f := h_induce

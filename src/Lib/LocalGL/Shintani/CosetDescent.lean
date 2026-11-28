@@ -157,8 +157,8 @@ lemma Lift.hasCommonLift (h : Lift Z F F') (n : Type*) [Fintype n] [DecidableEq 
 
 /-- The restriction `F.evalGL` of a function on similarity classes to `GL n k` is a class
 function. -/
-lemma isClassFunction_evalGL : IsClassFunction (F.evalGL (n := n)) := by
-  intro g x
+lemma evalGL_mem_classFunction : F.evalGL (n := n) ∈ TauCeti.ClassFunction ℂ (GL n k) := by
+  refine TauCeti.ClassFunction.mem_iff.2 fun g x ↦ ?_
   -- Multiplication by `x` intertwines `g` with `x * g * x⁻¹`.
   have h_sim : simClassOf g.val.toLin' = simClassOf (x * g * x⁻¹).val.toLin' :=
     simClassOf_eq_of_equiv x.toLin.toLinearEquiv fun v ↦ by simp
@@ -238,7 +238,7 @@ lemma Lift.exists_lift_of_descendsTo
   choose Φ h_virt h_desc using h
   -- The restriction of `Φ m` to `GL m k'` is a class function, so it comes from some `X m`.
   have h_exists (m : ℕ) : ∃ X : Hall k', (fun g : GL (Fin m) k' ↦ Φ m (inl g)) = X.evalGL :=
-    exists_eq_evalGL (isClassFunction_of_mem_virtualChars (comp_mem_virtualChars (h_virt m) inl))
+    exists_eq_evalGL (mem_classFunction_of_mem_virtualChars (comp_mem_virtualChars (h_virt m) inl))
   choose X hX using h_exists
   -- Use `X m` on the classes of dimension `m`.
   refine ⟨fun c ↦ X c.dim c, fun m ↦ ⟨Φ m, h_virt m, h_desc m, ?_⟩⟩
@@ -343,14 +343,14 @@ lemma DescendsTo.induceClassFn_parabolic {ι : Type*} [Fintype ι] [LinearOrder 
       Subgroup.comap (MonoidHom.comp inl (GeneralLinearGroup.map (algebraMap k₀ k'))) P =
         parabolic b := by
     simp [Subgroup.ext_iff, hP, parabolic, BlockTriangular]
-  have h_class : IsClassFunction (∏ i : ι, Ψ i ∘ β i) :=
-    isClassFunction_of_mem_virtualChars (prod_mem fun i _ ↦ comp_mem_virtualChars (hΨ i) _)
+  have h_class : (∏ i : ι, Ψ i ∘ β i) ∈ TauCeti.ClassFunction ℂ P :=
+    mem_classFunction_of_mem_virtualChars (prod_mem fun i _ ↦ comp_mem_virtualChars (hΨ i) _)
   -- Descent commutes with induction (`DescendsOnCoset.induce`), and the product of the `Y i` is
   -- induced from the parabolic subgroup (`classInner_evalGL_prod`). This reduces the claim to `P`,
   -- where it holds block by block.
   refine DescendsOnCoset.induce hr h_class (fun γ : parabolic (R := k₀) b ↦ (γ : GL n k₀))
     (fun _ ↦ rfl) (hr.restrict_subgroup P h_comap hr_mem) (fun s γ hs hpow ↦ ?_)
-      isClassFunction_evalGL
+      evalGL_mem_classFunction
     (classInner_evalGL_prod b Y fun j ↦ mem_univ (b j))
   simp only [Finset.prod_apply]
   refine prod_congr rfl fun i _ ↦ ?_
@@ -605,8 +605,8 @@ private lemma descendsTo_induceClassFn_greenCuspidal_mulMoebius [Finite k] (hran
     ext i j
     · simp [B, ι, leftMulMatrix_eq_repr_mul]
     · rfl
-  refine .induce hr_GL hϑ_char.isClassFunction (Units.map (leftMulMatrix b).toMonoidHom) h_comm
-    hr_units (fun s γ ↦ hϑ_descends σ hσ s (ι γ)) isClassFunction_evalGL fun χ hχ ↦ ?_
+  refine .induce hr_GL hϑ_char.mem_classFunction (Units.map (leftMulMatrix b).toMonoidHom) h_comm
+    hr_units (fun s γ ↦ hϑ_descends σ hσ s (ι γ)) evalGL_mem_classFunction fun χ hχ ↦ ?_
   obtain ⟨Y, rfl⟩ := exists_eq_evalGL hχ
   -- `μ` is real, so it moves to the other side of the inner product
   have h_rank_eq : rankInner m (greenCuspidal k θ).mulMoebius Y =
@@ -664,8 +664,8 @@ private lemma descendsTo_induceClassFn_of_rankInner_eq (φ : k' ⊗[k] L →ₐ[
         (t.map (leftMulMatrix B)) := by simp [hρ]
   have h_lift : DescendsOnCoset (rightHom.comp ρ) 1 inl ϑ (ϑ ∘ inl) := by simp_all [DescendsOnCoset]
   -- Descent commutes with induction; the inner products with class functions are those of `hX`.
-  refine .induce hr_GL hϑ_char.isClassFunction (fun t ↦ t.map (leftMulMatrix B)) h_comm hr_units
-    h_lift isClassFunction_evalGL fun χ hχ ↦ ?_
+  refine .induce hr_GL hϑ_char.mem_classFunction (fun t ↦ t.map (leftMulMatrix B)) h_comm hr_units
+    h_lift evalGL_mem_classFunction fun χ hχ ↦ ?_
   obtain ⟨Y, rfl⟩ := exists_eq_evalGL hχ
   have h_summand (t : (k' ⊗[k] L)ˣ) :
       ϑ (inl t) =

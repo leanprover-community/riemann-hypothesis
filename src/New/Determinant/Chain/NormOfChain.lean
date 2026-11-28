@@ -468,7 +468,7 @@ lemma range_tupleIdem_le {f : MonoidAlgebra ℂ D.chosenGL →ₐ[ℂ] End ℂ U
     (f (tupleIdem D.RowIndex c)).range ≤ (f D.e₀).range := by
   -- the idempotent of `c` is its product with the central idempotent `e₀`
   have h_mul : D.e₀ * tupleIdem D.RowIndex c = tupleIdem D.RowIndex c := by
-    rw [← (D.isCentralProj_e₀.2 : IsClassFunction D.e₀.coeff).commute]
+    rw [← commute_of_coeff_mem_classFunction D.isCentralProj_e₀.coeff_mem_classFunction]
     exact tupleIdem_orthogonal.mul_sum_of_mem hc
   rw [← h_mul, map_mul]
   exact range_comp_le_range _ _

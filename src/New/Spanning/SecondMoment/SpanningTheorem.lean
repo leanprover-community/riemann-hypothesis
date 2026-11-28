@@ -346,7 +346,8 @@ theorem isSpread_goodPoincare : IsSpread D.goodPoincare (3 / 2 * (8 * D.b ^ 2)�
   have h_unitary (s : D.chosenGL) (x y : D.principalForms (D.spaceY 0)) :
       inner ℂ (ρ s x) (ρ s y) = inner ℂ x y := Space.inner_formRep ..
   have h_comm (s : D.chosenGL) : Commute (ρ.asAlgebraHom D.e₀) (ρ s) := by
-    simpa using ((D.isCentralProj_e₀.2.commute (.single s 1)).map ρ.asAlgebraHom).symm
+    simpa using ((commute_of_coeff_mem_classFunction D.isCentralProj_e₀.coeff_mem_classFunction
+      (.single s 1)).map ρ.asAlgebraHom).symm
   -- Relax the two different error bounds to the common tolerance `ε₀ = b⁻² / 8`.
   -- Near-isometry controls the preimage dimension; the second moment controls the mean.
   have h_isom : IsNearIsometry (ρ.asAlgebraHom D.e₀ ∘ₗ D.scaledPoincare) (8 * D.b ^ 2)⁻¹ :=

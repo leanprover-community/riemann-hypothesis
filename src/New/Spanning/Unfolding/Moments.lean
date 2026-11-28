@@ -1062,7 +1062,8 @@ lemma re_sum_coeff_mul_trace_besselTranslate_le {i : Fin 2}
       refine Fintype.sum_equiv (MulAut.conj (g i)) _ _ fun s ↦ ?_
       have h_single : g * mulSingle i s * g⁻¹ = mulSingle i (g i * s * (g i)⁻¹) :=
         Function.eq_update_iff.2 (by simp +contextual)
-      rw [h_single, EquivLike.coe_coe, MulAut.conj_apply, hx.2]
+      rw [h_single, EquivLike.coe_coe, MulAut.conj_apply,
+        TauCeti.ClassFunction.mem_iff.1 hx.coeff_mem_classFunction]
     simp only [reducedCharMean, mul_expect, ← expect_sum_comm, h_conj, Fintype.expect_const]
   have h_sq : ∑ s, ‖S.reducedCharMean (mulSingle i s)‖ ^ 2 ≤ 2 := by
     refine .trans ?_ S.sum_norm_reducedCharMean_sq_le
@@ -1081,7 +1082,7 @@ lemma re_sum_coeff_mul_trace_besselTranslate_le {i : Fin 2}
       = (S.sourceDim * ∑ s, x.coeff s * S.reducedCharMean (mulSingle i s)).re := by
         simp only [← h_mean, h_trace, mul_left_comm (x.coeff _), mul_sum]
     _ ≤ S.sourceDim * ‖∑ s, x.coeff s * S.reducedCharMean (mulSingle i s)‖ := by
-        grw [re_le_norm, norm_mul, norm_natCast]
+        grw [re_le_norm, norm_mul, Complex.norm_natCast]
     _ ≤ (S.b ^ 4)⁻¹ * S.sourceDim := by
         grw [h_bound, mul_comm]
 

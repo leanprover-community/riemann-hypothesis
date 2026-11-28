@@ -1055,14 +1055,14 @@ lemma simClassOf_submatrix [DecidableEq m] (e : m ≃ n) (M : Matrix n n k) :
 
 /-- A function on `GL n k` that is invariant under conjugation is the restriction of a function on
 similarity classes. -/
-lemma exists_eq_evalGL {Y : GL n k → ℂ} (h_conj : IsClassFunction Y) :
+lemma exists_eq_evalGL {Y : GL n k → ℂ} (h_conj : Y ∈ TauCeti.ClassFunction ℂ (GL n k)) :
     ∃ X : Hall k, Y = Hall.evalGL X := by
   -- Matrices in the same similarity class are conjugate, by the matrix of the intertwiner `e`.
   refine (factorsThrough_iff Y).1 fun g l h_cls ↦ ?_
   obtain ⟨e, he⟩ := simClassOf_eq_iff.1 h_cls.symm
   have h_g : g = toLin.symm (.ofLinearEquiv e) * l * (toLin.symm (.ofLinearEquiv e))⁻¹ := by
     simp_all [← toLin.injective.eq_iff, eq_mul_inv_iff_mul_eq, Units.ext_iff, DFunLike.ext_iff]
-  rw [h_g, h_conj l]
+  rw [h_g, TauCeti.ClassFunction.mem_iff.1 h_conj l]
 
 /-- **Frobenius reciprocity.** Let `k` be a finite field. Each `F a` is a complex function on
 similarity classes of square matrices over `k` of all sizes, in `Hall k`, whose product is parabolic
@@ -1071,7 +1071,7 @@ each `F a`, `a ∈ s`, to classes of the size of the block of level `a`, and tak
 mean over `GL n k` of conj of this product times `Y` equals the mean over block upper triangular `g`
 of `conj (∏ a ∈ s, F a (g_a)) * Y g`. Here `g_a` is the diagonal block of level `a`. -/
 lemma classInner_evalGL_prod [Finite k] {s : Finset ι} (hs : ∀ i : n, b i ∈ s) (Y : GL n k → ℂ)
-    (hY : IsClassFunction Y) :
+    (hY : Y ∈ TauCeti.ClassFunction ℂ (GL n k)) :
     classInner (∏ a ∈ s, (F a).rankPart (Fintype.card {i // b i = a})).evalGL Y =
       classInner (∏ a ∈ s, (F a).evalGL ∘ blockHom b a) fun g : parabolic (R := k) b ↦ Y g.val := by
   obtain ⟨X, rfl⟩ := exists_eq_evalGL hY

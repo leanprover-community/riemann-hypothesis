@@ -113,7 +113,8 @@ lemma sum_evalGL_prod_eq_zero_iff [Finite k]
   have hκ : IsChar κ := isChar_of_mem_virtualChars
     (prod_mem fun a _ ↦ comp_mem_virtualChars (hF a).evalGL_mem_virtualChars (blockHom b a))
   have h_frob : classInner χ ρ.character = classInner κ (character (ρ.domRestrict (parabolic b))) :=
-    classInner_evalGL_prod b F (fun i ↦ mem_univ (b i)) _ ρ.char_conj
+    classInner_evalGL_prod b F (fun i ↦ mem_univ (b i)) _
+      (TauCeti.ClassFunction.mem_iff.2 ρ.char_conj)
   -- `∑ conj (χ g) g` acts as zero in a representation iff `χ` is orthogonal to its character.
   have h_kill : ρ.asAlgebraHom (groupAlgElem (starRingEnd ℂ ∘ χ)) = 0 ↔
       asAlgebraHom (ρ.domRestrict (parabolic b)) (groupAlgElem (starRingEnd ℂ ∘ κ)) = 0 := by
@@ -130,7 +131,8 @@ lemma sum_evalGL_prod_eq_zero_iff [Finite k]
     -- `y`.
     have h_apply : A y (∑ᶠ g : GL n k, star (χ g) • A g v) = A y 0 := congrArg (A y) h_one
     rw [finsum_eq_sum_of_fintype, ← (MulAut.conj y).sum_comp]
-    simpa [hA_mul, hχ.isClassFunction, finsum_eq_sum_of_fintype] using h_apply
+    simpa [hA_mul, TauCeti.ClassFunction.mem_iff.1 hχ.mem_classFunction, finsum_eq_sum_of_fintype]
+      using h_apply
   · -- the case `y = 1` of the right side is the left side
     simpa using h_all 1
 
@@ -451,9 +453,8 @@ private lemma lift_brauerLift_pow_of_forall_eq_one [Algebra k' k']
     (η : K → ℂ) : Lift ℂ (brauerLift k' fun y : K ↦ η (y ^ a)) (brauerLift k' η) := by
   intro m
   have h_span : (brauerLift k' η).evalGL ∈ virtualChars ℂ (GL (Fin m) k') := by
-    -- `IsClassFunction.mem_virtualChars`: every inner product with a character is a complex number
-    exact (isClassFunction_evalGL (F := brauerLift k' η) (n := Fin m)).mem_virtualChars
-      fun χ _ ↦ ⟨_, rfl⟩
+    -- every inner product with a character is a complex number
+    exact mem_virtualChars_of_mem_classFunction evalGL_mem_classFunction fun χ _ ↦ ⟨_, rfl⟩
   refine hasCommonLift_of_gal_trivial h_gal h_span fun g ↦ ?_
   simp [Hall.evalGL, charpoly_map, h_roots]
 
@@ -615,7 +616,8 @@ lemma hasFixedField_iff_ne_one {σ : Gal(k'/k)} : HasFixedField k σ ↔ σ ≠ 
 `Ψ` is the inner product of their restrictions to `GL n k'`, plus `#Gal(k'/k) - 1` times the inner
 product of `F` and `G` in rank `#n`. -/
 lemma DescendsTo.card_mul_classInner {F G : Hall k} {Φ Ψ : GalSemidirect k k' n → ℂ}
-    (hΦ : IsClassFunction Φ) (hΨ : IsClassFunction Ψ)
+    (hΦ : Φ ∈ TauCeti.ClassFunction ℂ (GalSemidirect k k' n))
+    (hΨ : Ψ ∈ TauCeti.ClassFunction ℂ (GalSemidirect k k' n))
     (hΦF : DescendsTo Φ F) (hΨG : DescendsTo Ψ G) :
     Nat.card Gal(k'/k) * classInner Φ Ψ =
       classInner (Φ ∘ inl) (Ψ ∘ inl) + (Nat.card Gal(k'/k) - 1) * rankInner (Nat.card n) F G := by
@@ -635,7 +637,8 @@ lemma DescendsTo.card_mul_classInner {F G : Hall k} {Φ Ψ : GalSemidirect k k' 
     obtain ⟨root, h_root, -⟩ := exists_isRootChoice_GL (n := n) h_fixed
     rw [← classInner_evalGL]
     exact h_root.index_mul_finMean_eq_classInner (hΦF σ h_fixed) (hΨG σ h_fixed)
-      (fun s x _ ↦ hΦ s x) fun s x _ ↦ hΨ s x
+      (fun s x _ ↦ TauCeti.ClassFunction.mem_iff.1 hΦ s x)
+      fun s x _ ↦ TauCeti.ClassFunction.mem_iff.1 hΨ s x
   calc Nat.card Gal(k'/k) * New.classInner Φ Ψ
     _ = ∑ σ, coset σ := by
       simp [h_coset, hπ, New.classInner, index_ker, rightHom_surjective, ← mul_sum, ← finMean_sum,
@@ -674,7 +677,7 @@ private lemma lift_labelChar_of_not_isRoot_one {P : k[X]} {m : ℕ} (hL : IsLabe
   obtain ⟨Φ, hΦ, hΦ_down, hΦ_up⟩ := hB.rankPart_mulMoebius_mul_constOne (m := m) m
   set C : Hall k' := (-1 : ℂ) ^ m • rankPart m (B.mulMoebius * constOne)
   rw [← greenCuspidal, ← h_labelChar_eq] at hΦ_down
-  have hΦ_class : IsClassFunction Φ := isClassFunction_of_mem_virtualChars hΦ
+  have hΦ_class : Φ ∈ TauCeti.ClassFunction ℂ _ := mem_classFunction_of_mem_virtualChars hΦ
   have hΦ_res : Φ ∘ inl = C.evalGL := DescendsTo.iff_comp_inl_eq_evalGL.mp hΦ_up
   obtain ⟨N, hN⟩ : ∃ N : ℤ, classInner J β = N := hJ.exists_classInner_eq hβ
   -- The two inner products in `DescendsTo.card_mul_classInner` for `J` and `β`, over `k` and over
@@ -691,8 +694,8 @@ private lemma lift_labelChar_of_not_isRoot_one {P : k[X]} {m : ℕ} (hL : IsLabe
         DescendsTo.iff_comp_inl_eq_evalGL.mp hJ_up
       have hβ_res : β ∘ inl = B.evalGL := DescendsTo.iff_comp_inl_eq_evalGL.mp hβ_up
       simpa only [hJ_res, hβ_res, classInner_evalGL, Fintype.card_fin, Nat.card_fin, hN, h_down,
-        h_up, mul_one] using hJ_down.card_mul_classInner hp hJ.isClassFunction
-          (isClassFunction_of_mem_virtualChars hβ) hβ_down
+        h_up, mul_one] using hJ_down.card_mul_classInner hp hJ.mem_classFunction
+          (mem_classFunction_of_mem_virtualChars hβ) hβ_down
     rw [hΦ_res, classInner_evalGL, Fintype.card_fin]
     push_cast
     linear_combination -h_split
