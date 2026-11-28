@@ -382,29 +382,23 @@ lemma classIntegral_sum [H : HasFiniteType Γ K] {ι : Type*} {F : G → W'} (s 
     classIntegral Γ K F = ∑ i ∈ s, φ i (classIntegral Γ K (f i)) := by
   -- Compute every integral at one level `M`: the `k ∈ K` such that, for each `i ∈ s`, the
   -- conjugate `(a i)⁻¹ * k * a i` lies in `K` and fixes `f i`.
-  have hf_left (i : ι) : Γ.FixesLeft (f i) := (hf i).1
-  have hf_open (i : ι) : IsOpen (rightStabilizer (f i) : Set G) := (hf i).2
   let M : Subgroup G := K ⊓ ⨅ i : s, (rightStabilizer (f i) ⊓ K).comap (conj (a i)⁻¹)
-  have hM_open : IsOpen (M : Set G) := by
+  have hM : HasFiniteType Γ M := H.of_le inf_le_left <| by
     rw [coe_inf, coe_iInf]
-    exact H.isOpen.inter (isOpen_iInter_of_finite fun i ↦
-      ((hf_open i).inter H.isOpen).preimage (continuous_conj _))
-  have hM : HasFiniteType Γ M := H.of_le inf_le_left hM_open
-  have h_conj (i : ι) (hi : i ∈ s) : M.comap (conj (a i)) ≤ rightStabilizer (f i) ⊓ K :=
-    fun k hk ↦ by simpa [mul_assoc] using mem_iInf.1 (Subgroup.mem_inf.1 hk).2 ⟨i, hi⟩
-  have hF_left : Γ.FixesLeft F := fun γ hγ g ↦ by simp only [hF, mul_assoc, hf_left _ γ hγ]
-  have hF_right : M ≤ rightStabilizer F := fun k hk g ↦ by
-    rw [hF, hF]
-    refine sum_congr rfl fun i hi ↦ congrArg (φ i) ?_
-    have h_mem : (a i)⁻¹ * k * a i ∈ rightStabilizer (f i) :=
-      (h_conj i hi (by simpa [mul_assoc] using hk)).1
-    simpa [mul_assoc] using h_mem (g * a i)
+    exact H.isOpen.inter <| isOpen_iInter_of_finite fun i ↦
+      ((hf i).2.inter H.isOpen).preimage (continuous_conj _)
+  have h_conj {i} (hi : i ∈ s) : M.comap (conj (a i)) ≤ rightStabilizer (f i) ⊓ K :=
+    fun _ hk ↦ by simpa [mul_assoc] using mem_iInf.1 (Subgroup.mem_inf.1 hk).2 ⟨i, hi⟩
+  have hF_left : Γ.FixesLeft F := fun γ hγ g ↦ by simp only [hF, mul_assoc, (hf _).1 γ hγ]
+  have hF_right : M ≤ rightStabilizer F := fun _ hk g ↦ by
+    simpa only [hF] using sum_congr rfl fun i hi ↦ congrArg (φ i) <| by
+      simpa [mul_assoc] using (mem_iInf.1 (Subgroup.mem_inf.1 hk).2 ⟨i, hi⟩).1 (g * a i)
   -- Class sums are finite rational combinations of values, so the `φ i` commute with them.
   rw [classIntegral_eq_inv_smul_classSum hF_left hF_right inf_le_left, funext hF, classSum_sum,
     smul_sum]
-  refine sum_congr rfl fun i hi ↦ ?_
-  rw [classIntegral_eq_classSum_mul (hf_left i) (a i) (h_conj i hi) inf_le_left, map_rat_smul,
-    map_classSum]
+  exact sum_congr rfl fun i hi ↦ by
+    rw [classIntegral_eq_classSum_mul (hf i).1 (a i) (h_conj hi) inf_le_left, map_rat_smul,
+      map_classSum]
 
 end New
 

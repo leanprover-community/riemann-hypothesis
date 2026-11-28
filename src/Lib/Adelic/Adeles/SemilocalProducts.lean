@@ -270,15 +270,9 @@ lemma map_evalPlaces_restrict_volume :
     fun y ↦ ⟨adeleOfLocal S y, by simp [add_mem_cancel_left, add_mem_cancel_right]⟩
   have preimage : evalPlaces S ⁻¹' (O : Subring (LocProd S)) ∩ integralOff S = Ô E :=
     Set.ext fun _ ↦ (mem_Ô_iff S).symm
-  have h_map :
-      volume ((O : Subring (LocProd S)) : Set (LocProd S)) •
-          (volume.restrict (integralOff S : Set (𝔸f E))).map (evalPlaces S).toAddMonoidHom =
-        volume (Ô E : Set (𝔸f E)) • (volume : Measure (LocProd S)).neg := by
-    rw [← preimage]
-    exact measure_smul_map_restrict_eq_smul_neg volume volume (by measurability)
-      (isOpen_integralOff S).measurableSet lift isCompact_O.measurableSet
   -- `O` has volume one, and Haar measure on `LocProd S` is invariant under negation.
-  simpa [volume_O] using h_map
+  simpa [preimage, volume_O] using measure_smul_map_restrict_eq_smul_neg volume volume
+    (by measurability) (isOpen_integralOff S).measurableSet lift isCompact_O.measurableSet
 
 /-- In the ring of integers `O` of `LocProd S`, the `r` with `a * r ∈ O` form a subgroup of finite
 index: its index `denomIndex O a` is nonzero (an infinite index is `0`). -/

@@ -150,15 +150,10 @@ lemma card_forms_taking_one_at_two_vectors_mul_sq {z : n → F} {j : n} (hj : j 
     #{ξ : n → F | ξ i = 1 ∧ ξ ⬝ᵥ z = 1} * Fintype.card F ^ 2 = Fintype.card F ^ Fintype.card n := by
   -- The forms are the fibre over `(1, 1)` of the surjection `φ : ξ ↦ (ξ e_i, ξ z)`.
   let φ : (n → F) →+ F × F :=
-    (Pi.evalAddMonoidHom (fun _ : n ↦ F) i).prod
-      (AddMonoidHom.mk' (· ⬝ᵥ z) fun ξ η : n → F ↦ add_dotProduct ξ η z)
-  have hφ_apply : ∀ ξ : n → F, φ ξ = (ξ i, ξ ⬝ᵥ z) := fun _ ↦ rfl
-  have hφ : Function.Surjective φ := by
-    rintro ⟨a, b⟩
-    refine ⟨Pi.single i a + Pi.single j ((b - a * z i) / z j), ?_⟩
-    simp [hφ_apply, hj.symm, hz]
-  simpa only [hφ_apply, Prod.mk.injEq, Fintype.card_prod, Fintype.card_fun, ← sq] using
-    card_fiber_mul_card φ hφ (1, 1)
+    AddMonoidHom.mk' (fun ξ ↦ (ξ i, ξ ⬝ᵥ z)) fun ξ η ↦ by simp [add_dotProduct]
+  have hφ : Function.Surjective φ := fun ⟨a, b⟩ ↦
+    ⟨Pi.single i a + Pi.single j ((b - a * z i) / z j), by simp [φ, hj.symm, hz]⟩
+  simpa [φ, ← sq] using card_fiber_mul_card φ hφ (1, 1)
 
 /-- Over a field of `q` elements, the line of `e_i` has `q` elements. -/
 lemma card_line (i : n) : #{z : n → F | ∀ j ≠ i, z j = 0} = Fintype.card F := by

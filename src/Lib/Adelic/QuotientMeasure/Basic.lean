@@ -568,22 +568,16 @@ lemma isMulRightInvariant_of_finite_covolume (_h_finite : IsFiniteMeasure (Γ.qu
   -- Right translation by `g` scales `μ` by the modular character. It commutes with the left action
   -- of `Γ`, so the quotient has the same volume for `μ` and for the scaled measure.
   refine ⟨fun g ↦ ?_⟩
-  have h_mod : μ.map (· * g) = modularCharacterFun g • μ :=
-    map_right_mul_eq_modularCharacterFun_smul μ g
-  have h_equiv (γ : Γ) (x : G) : γ • x * g = γ • (x * g) := smul_mul_assoc γ x g
-  have h_translate : MeasurePreserving (· * g) μ (modularCharacterFun g • μ) :=
-    ⟨measurable_mul_const g, h_mod⟩
+  have h_mod := map_right_mul_eq_modularCharacterFun_smul μ g
   have h_vol : ∫⁻ _ : G, 1 ∂Γ.quotMeasure (modularCharacterFun g • μ) =
       ∫⁻ _ : G, 1 ∂Γ.quotMeasure μ :=
-    (identDistrib_orbitMeasure_comp (.id (count : Measure Γ)) h_translate h_equiv
-      (fun _ _ ↦ rfl) measurable_one).symm.lintegral_eq
+    (identDistrib_orbitMeasure_comp (.id _) ⟨measurable_mul_const g, h_mod⟩
+      (fun γ x ↦ smul_mul_assoc γ x g) (fun _ _ ↦ rfl) measurable_one).symm.lintegral_eq
   -- The volume is finite and nonzero, so the factor is one. (`withDensity_apply` would expand the
   -- quotient measures, so it is removed from `simp`.)
-  have h_scale : (modularCharacterFun g : ENNReal) * Γ.quotMeasure μ univ =
-      Γ.quotMeasure μ univ := by
-    simpa [← coe_nnreal_smul, -withDensity_apply, withDensity_smul_measure] using h_vol
   have h_one : modularCharacterFun g = 1 := by
-    simpa [ne, ENNReal.mul_eq_right, -withDensity_apply] using h_scale
+    simpa [← coe_nnreal_smul, -withDensity_apply, withDensity_smul_measure,
+      ne, ENNReal.mul_eq_right] using h_vol
   rw [h_mod, h_one, one_smul]
 
 instance [CompactSpace G] : IsMulRightInvariant μ := by
@@ -636,11 +630,8 @@ lemma exists_eq_smul_haar [μ.IsMulRightInvariant] {ν : Measure G} [SFinite ν]
     ∃ d : ENNReal, ν = d • μ := by
   -- Compare the left invariant measures `ν.inv` and `(μ V)⁻¹ • μ`, for a set `V` of finite positive
   -- measure, by `measure_mul_lintegral_eq`.
-  obtain ⟨V, hV_meas, -, hV_pos, hV_fin⟩ :
-      ∃ V : Set G, MeasurableSet V ∧ V ⊆ univ ∧ 0 < μ V ∧ μ V < ⊤ :=
-    μ.exists_subset_measure_lt_top .univ (NeZero.pos _)
-  refine ⟨ν.inv V * (μ V)⁻¹, Eq.symm ?_⟩
-  refine ext_of_lintegral _ fun f hf ↦ ?_
+  obtain ⟨V, hV_meas, -, hV_pos, hV_fin⟩ := μ.exists_subset_measure_lt_top .univ (NeZero.pos _)
+  refine ⟨ν.inv V * (μ V)⁻¹, (ext_of_lintegral _ fun f hf ↦ ?_).symm⟩
   have h_compare : ν.inv V * ∫⁻ y : G, f y ∂(μ V)⁻¹ • μ =
       ∫⁻ x : G, ((μ V)⁻¹ • μ) ((· * x) ⁻¹' V) * f x⁻¹ ∂ν.inv :=
     measure_mul_lintegral_eq ν.inv ((μ V)⁻¹ • μ) hV_meas f hf
