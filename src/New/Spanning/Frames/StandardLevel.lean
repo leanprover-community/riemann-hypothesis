@@ -124,8 +124,11 @@ end TailVector
 /-! ### The lattice datum of integral vectors -/
 
 variable {ι : Type} {𝔰 : Shape} [Fintype ι] [DecidableEq ι] {m : ℕ}
-  {A : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A]
-  {T : 𝔰.Form A} [IsHermitianUnit T.splitGram] {g : Aˣ} (F : PlaceData ι T m)
+  {A : Type} [SemilocalField A] [StarRing A] [P : IntegralPlace A] {T : 𝔰.Form A} {g : Aˣ}
+
+section
+
+variable [IsHermitianUnit T.splitGram] (F : PlaceData ι T m)
 
 /-- The principal congruence subgroup K(g) of the place datum `F`: the integral isometries congruent
 to 1 modulo the unit `g = F.levelUnit`. -/
@@ -198,7 +201,8 @@ class IntegralPlace.IsLargeLatticeData (F : PlaceData ι T (m + 1)) :
   /-- The unitary group is unimodular: some left Haar measure is right invariant. -/
   unimodular : ∃ ν : Measure T.G, ν.IsHaarMeasure ∧ ν.IsMulRightInvariant
 
-omit [IsHermitianUnit T.splitGram] in
+end
+
 /-- Let `T.G` be the unitary group of the form with middle block `T` over the finite place `A`, and
 K = `unitaryLevel integers 1 T.splitGram` its subgroup of isometries over the ring of integers.
 Let H = `T.besselH` be the fixer of the basis vectors outside `𝔰.κ`, and 𝖴 = `T.besselU` the group
@@ -280,7 +284,6 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
   refine ⟨⟨E, E_form, by lia, h_det⟩, E_int, ?_⟩
   simp [E, funext_iff, Matrix.mul_apply, inclMatrix, Matrix.one_apply]
 
-omit [IsHermitianUnit T.splitGram] in
 /-- If a hyperbolic basis of the middle block is integral, so is the basis of each floor. -/
 lemma IntegralPlace.isIntMatrix_floorBasis {B : HyperbolicBasis ι T m}
     (hB : IsIntMatrix P.integers B.basisMatrix) (b : Fin 𝔰.n) :
@@ -290,7 +293,6 @@ lemma IntegralPlace.isIntMatrix_floorBasis {B : HyperbolicBasis ι T m}
   · simp [IsIntMatrix, hB _, diagonal, ite_mem]
   · simp [IsIntMatrix, inclMatrix, Matrix.one_apply, ite_mem]
 
-omit [IsHermitianUnit T.splitGram] in
 /-- A combination of the columns of `B.floorBasis b`, the basis of the space of the floor `b`,
 vanishes at every basis index whose floor (`floorOf`) is below `b`. -/
 lemma HyperbolicBasis.floorBasis_mulVec_eq_zero (B : HyperbolicBasis ι T m) {b : Fin 𝔰.n}
@@ -348,6 +350,7 @@ lemma IntegralPlace.flatChart_mem_intVectors {J : Matrix ι ι A} (hJ : IsIntMat
     · exact ht
   · exact hw i
 
+variable [IsHermitianUnit T.splitGram]
 
 /-- Let `T.splitGram` be unimodular over `P.integers`. Let `u` be an integral vector with
 `star u ᵥ* T.splitGram` equal to the dual of the last frame vector z, and with z-coordinate `0`. Let

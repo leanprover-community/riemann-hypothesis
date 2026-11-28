@@ -58,16 +58,10 @@ open Matrix MeasureTheory Measure ENNReal Fintype FloorGroups InnerProductSpace 
 variable {A ι : Type} {𝔰 : Shape} [SemilocalField A] [StarRing A] [P : IntegralPlace A]
   [Fintype ι] [DecidableEq ι] {m : ℕ} {T : 𝔰.Form A} [IsHermitianUnit T.splitGram]
 
-variable {F : PlaceData ι T (m + 1)} {x y : T.G} (Z : F.IntermediateGroup)
+variable {F : PlaceData ι T (m + 1)}
 
 namespace IntegralPlace.IsLargeLatticeData
 
-variable [h : IsLargeLatticeData F]
-
-variable {j K : ℕ} (r t : ℕ) {p q : ℕ → Aˣ} {ξ : Aˣ} {Γ : Gauge F} (hj : j ≤ 𝔰.ϱ)
-  (hr : r + 10 ^ 8 * 𝔰.n ^ 4 ≤ 𝔰.k) (ht : t + 10 ^ 10 * 𝔰.n ^ 4 ≤ 𝔰.k)
-
-omit h in
 /-- The shell of an ideal `J` of `R = P.integers`: the positions `x` for which `J` is the set of the
 common denominators in `R` of the entries of `(x - 1) / g`, where `g = F.levelUnit`. -/
 def _root_.New.Floors.PlaceData.idealShell (F : PlaceData ι T (m + 1)) (J : Ideal P.integers) :
@@ -77,7 +71,6 @@ def _root_.New.Floors.PlaceData.idealShell (F : PlaceData ι T (m + 1)) (J : Ide
       ∀ i k : 𝔰.BesselIndex, ε * (F.levelUnit⁻¹.val • (x.val.val - 1)) i k ∈ integers} =
     integers.subtype '' J}
 
-omit h in
 /-- For `x` in the group `T.G` and `g = F.levelUnit`, the common denominators in `R = P.integers` of
 the entries of `(x - 1) / g` form a principal ideal `J = c R`, where `c ∈ R` is a unit of `A`, and
 `J` has finite index `(modulus c)⁻¹`. -/
@@ -115,7 +108,6 @@ theorem exists_denominator_ideal (x : T.G) :
   rw [hJ, inv_inv]
   exact Set.ext h_den
 
-omit h in
 /-- If the shell `F.idealShell J` has a point `x`, then `J = c R` for a unit `c` of `A` that lies in
 `R = P.integers`, and the index of `J` is `(modulus c)⁻¹`. -/
 theorem exists_generator_of_mem_idealShell {J : Ideal P.integers} {x : T.G}
@@ -183,7 +175,6 @@ theorem exists_gauge_idealShell_subset {F : PlaceData ι T (m + 1)} [h : IsLarge
   · grw [h_card, ← Γ.two_le_loss]
     simp [div_eq_mul_inv, sq, ENNReal.mul_inv]
 
-omit h in
 /-- The dyadic shell of height `2 ^ t`: the positions for which `2 ^ t` is the least of `1, 2, 4, …`
 that bounds the index of the ideal of the common denominators of the entries of `(x - 1) / g`. -/
 def _root_.New.Floors.PlaceData.dyadicShell (F : PlaceData ι T (m + 1)) (t : ℕ) : Set T.G :=
