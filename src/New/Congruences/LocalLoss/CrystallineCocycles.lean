@@ -190,17 +190,17 @@ section CrystallineBound
 open New Lift Nat Module Finset Period Real
 
 /-- The crystalline loss `crystallineLoss h b ℓ` is the `ℓ`-adic valuation of `(2 b)!` times the
-`h³`-th power of the product of the positive integers in `(b - 30 h³, b + 30 h³]`. If `ℓ ^ n`
+`h³`-th power of the product of the positive integers in `(b - 5 h³, b + 5 h³]`. If `ℓ ^ n`
 divides this number, then `n ≤ crystallineLoss h b ℓ`. -/
 lemma New.Selmer.le_crystallineLoss_of_pow_dvd {ℓ h b n : ℕ} [ThePrime ℓ]
-    (hn : ℓ ^ n ∣ (2 * b)! * (∏ k ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3), k) ^ h ^ 3) :
+    (hn : ℓ ^ n ∣ (2 * b)! * (∏ k ∈ Ioc (b - 5 * h ^ 3) (b + 5 * h ^ 3), k) ^ h ^ 3) :
     n ≤ crystallineLoss h b ℓ := by
   rwa [crystallineLoss, Nat.padicValNat_def,
     ← multiplicity_dvd_iff_le (by simp [factorial_ne_zero, prod_eq_zero_iff])]
 
 /-- The bound `2 b < ℓ (crystallineLoss h b ℓ + 1)` on the crystalline loss `crystallineLoss h b ℓ`,
 the `ℓ`-adic valuation of `(2 b)! (∏ k) ^ h³`, where `k` runs over the positive integers in
-`(b - 30 h³, b + 30 h³]`. The factor `(2 b)!` alone gives it. -/
+`(b - 5 h³, b + 5 h³]`. The factor `(2 b)!` alone gives it. -/
 lemma New.Selmer.two_mul_lt_mul_crystallineLoss_succ {ℓ : ℕ} [hp : ThePrime ℓ] (h b : ℕ) :
     2 * b < ℓ * (crystallineLoss h b ℓ + 1) := by
   have h_val : multiplicity ℓ (2 * b)! ≤ crystallineLoss h b ℓ :=
@@ -211,10 +211,10 @@ lemma New.Selmer.two_mul_lt_mul_crystallineLoss_succ {ℓ : ℕ} [hp : ThePrime 
   calc 2 * b < ℓ * (2 * b / ℓ + 1) := lt_mul_div_succ _ hp.out.pos
     _ ≤ ℓ * (crystallineLoss h b ℓ + 1) := by grw [h_div, h_val]
 
-/-- If `ℓ` divides some positive integer in `(b - 30 h³, b + 30 h³]`, then the crystalline loss
+/-- If `ℓ` divides some positive integer in `(b - 5 h³, b + 5 h³]`, then the crystalline loss
 `crystallineLoss h b ℓ` is at least `h³`. -/
 lemma New.Selmer.cube_le_crystallineLoss_of_dvd {ℓ h b n : ℕ} [ThePrime ℓ]
-    (hn : n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3)) (hℓ : ℓ ∣ n) : h ^ 3 ≤ crystallineLoss h b ℓ :=
+    (hn : n ∈ Ioc (b - 5 * h ^ 3) (b + 5 * h ^ 3)) (hℓ : ℓ ∣ n) : h ^ 3 ≤ crystallineLoss h b ℓ :=
   le_crystallineLoss_of_pow_dvd
     ((pow_dvd_pow_of_dvd (hℓ.trans (dvd_prod_of_mem _ hn)) _).mul_left _)
 
@@ -464,17 +464,17 @@ lemma New.Selmer.CrystallineSizes.hasCupExponent_of_cube_le {ℓ : ℕ} [ThePrim
     Nat.mul_le_mul_right (ℓ.log (2 * (b + δ + (W + 4 * η)))) hK_pos, hK_pos])
 
 /-- The gap condition for small loss. Under the size conditions `h_sizes`, let `2 b < ℓ (v + 1)`
-with `v < h³`, and let `ℓ` divide no integer in `(b - 30 h³, b + 30 h³]`. Then `ℓ` divides no
-nonzero integer within `6 (2 (v + 1) + η + W)` of `0` or `± a`, for `a = b + δ` and `a = G + δ`. -/
+with `v < h³`, and let `ℓ` divide no integer in `(b - 5 h³, b + 5 h³]`. Then `ℓ` divides no
+nonzero integer within `2 (2 (v + 1) + η + W)` of `0` or `± a`, for `a = b + δ` and `a = G + δ`. -/
 lemma New.Selmer.CrystallineSizes.noMultipleNear {ℓ Q m h G b δ η W v a : ℕ}
     (h_sizes : CrystallineSizes Q m h G b δ η W) (h_loss : 2 * b < ℓ * (v + 1)) (hv : v < h ^ 3)
-    (h_not : ∀ u ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3), ¬ℓ ∣ u) (ha : a = b + δ ∨ a = G + δ) :
-    NoMultipleNear ℓ (6 * (2 * (v + 1) + η + W)) a := by
+    (h_not : ∀ u ∈ Ioc (b - 5 * h ^ 3) (b + 5 * h ^ 3), ¬ℓ ∣ u) (ha : a = b + δ ∨ a = G + δ) :
+    NoMultipleNear ℓ (2 * (2 * (v + 1) + η + W)) a := by
   have ⟨_, (hQ : 99 * (Q * Q + (W + 1) * Q + Q + W + m) ≤ h), (hG : 99 * h ^ 3 ≤ G),
     (hb : 99 * (G * h ^ 3 + G) ≤ b), _, (hδ : δ < η),
     (hη : 99 * ((η + W) * Q + η + h) ≤ h ^ 3)⟩ := h_sizes
   have h_large : 9 * G ≤ ℓ := by nlinarith only [h_loss, hv, hb]
-  have h_lt : G + δ + 6 * (2 * (v + 1) + η + W) < ℓ := by omega
+  have h_lt : G + δ + 2 * (2 * (v + 1) + η + W) < ℓ := by omega
   exact noMultipleNear_of_forall_not_dvd h_lt (by omega) h_not ha
 
 /-- Let `Γ → G_ℓ` be an open embedding, `ℓ ≥ 7`, and `O` the ring of integers of a finite Galois
@@ -491,7 +491,7 @@ embeddings `g : O → ℂ_ℓ` such that `g ζ` is the Teichmüller root of unit
 * `h_jumps`: either the negative members of all `U g` and `U' g` are at most `-h / 2` and at most
   `μ` jumps of `L` at each `g` lie in `[-η, η]`, or every `U' g` lies in `[-η, 0]`;
 * `2 b < ℓ (v + 1)`, `v < h³` and `2 v < (K + 1) Q`;
-* `h_gap`: `ℓ` divides no nonzero integer within `6 (2 (v + 1) + η + W)` of `0` or `± a`.
+* `h_gap`: `ℓ` divides no nonzero integer within `2 (2 (v + 1) + η + W)` of `0` or `± a`.
 
 Then the defect of `L` for the class of `U`, the length of the crystalline cocycles modulo those
 orthogonal, under cup products, to the crystalline cocycles of the lattices in the class, normalised
@@ -511,7 +511,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
     (h_jumps : HasFewLowJumps L h μ η U U' ∨ ∀ g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ], U' g ⊆ Icc (-η : ℤ) 0)
     (h_loss : 2 * b < ℓ * (v + 1)) (hv : v < h ^ 3) (hK : 2 * v < K * Q + Q)
     (h_gap : ∀ i : k.Letter,
-      NoMultipleNear ℓ (6 * (2 * (v + 1) + η + W)) (if T i then b + δ else G + δ : ℕ))
+      NoMultipleNear ℓ (2 * (2 * (v + 1) + η + W)) (if T i then b + δ else G + δ : ℕ))
     {y : NNReal} (hy : (3200 * (finrank O L * (K * m)) + 33 * (μ * v) : ℕ) ≤ y) :
     O.normLength (dualDefect (InClass ⊤ ⊥ U) L) ≤ Γ.overGp.toGp.range.index * y := by
   have ⟨hQ_pos, (hQ : 99 * (Q * Q + (W + 1) * Q + Q + W + m) ≤ h), (hG : 99 * h ^ 3 ≤ G),
@@ -521,7 +521,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_noMultipleNear {ℓ : ℕ} [ThePrim
       (if T i then b + δ else G + δ) + W + η ≤ (ℓ - 3) * (2 * (v + 1)) := by
     grw [ite_le_sup, mul_left_comm, tsub_mul]
     omega
-  have h_far (i : k.Letter) : 6 * (2 * (v + 1) + η + W) < if T i then b + δ else G + δ := by
+  have h_far (i : k.Letter) : 2 * (2 * (v + 1) + η + W) < if T i then b + δ else G + δ := by
     split_ifs <;> omega
   -- The two bounds of `dualDefect_eq_zero_and_dualDefect_le`, for the length `2 (v + 1)`. The
   -- defect vanishes if `U` and `U'` avoid `[-2 (v + 1), 0)` or `U'` lies in `[-η, 0]`. If at most
@@ -574,7 +574,7 @@ whose jumps at each `g` lie in `U g`. Assume:
   constant. If `ℓ ≤ Q`, no three values with `T` follow one another at distances at most `log_ℓ h³`
   along `z ↦ z ^ ℓ`;
 * `v`, `K`: `2 b < ℓ (v + 1)` and `2 v < (K + 1) Q`. If `ℓ` divides some positive integer in
-  `(b - 30 h³, b + 30 h³]`, also assume `h³ ≤ v`;
+  `(b - 5 h³, b + 5 h³]`, also assume `h³ ≤ v`;
 * `hy`: `y ≥ 3200 rank L · K m + 33 μ v`.
 
 The defect `dualDefect (InClass ⊤ ⊥ U) L` is the length of the crystalline cocycles of `L` modulo
@@ -589,7 +589,7 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
     (hL : InClass ⊤ ⊥ U' L)
     (h_jumps : HasFewLowJumps L h μ η U U' ∨ ∀ g : O →ₐ[ℤ_[ℓ]] ℂ_[ℓ], U' g ⊆ Icc (-η : ℤ) 0)
     {v K : ℕ} (h_loss : 2 * b < ℓ * (v + 1)) (hK : 2 * v < K * Q + Q)
-    (h_cube : ∀ ⦃n : ℕ⦄, n ∈ Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3) → ℓ ∣ n → h ^ 3 ≤ v)
+    (h_cube : ∀ ⦃n : ℕ⦄, n ∈ Ioc (b - 5 * h ^ 3) (b + 5 * h ^ 3) → ℓ ∣ n → h ^ 3 ≤ v)
     {y : NNReal} (hy : (3200 * (finrank O L * (K * m)) + 33 * (μ * v) : ℕ) ≤ y)
     (h_open : Topology.IsOpenEmbedding Γ.overGp.toGp)
     (k : KummerChart Γ) (ζ : k.LetterRoot O) {T : ℂ_[ℓ] → Prop} {s : ℂ_[ℓ] → ℤˣ}
@@ -638,9 +638,8 @@ lemma New.Selmer.normLength_dualDefect_le_of_crystallineSizes {ℓ : ℕ} [hp : 
   · exact normLength_dualDefect_le_of_hasCupExponent hL.isPotentiallyCrystalline (h_exp le_rfl)
       (h_sizes.hasCupExponent_of_cube_le h_un h_seven (not_le.1 hℓ) ζ h_open hL h_winU h_winU'
         h_loss hv hK)
-  -- If `v < h³`, then `ℓ` divides no integer near `b`.
   have h_gap (z : ℂ_[ℓ]) :
-      NoMultipleNear ℓ (6 * (2 * (v + 1) + η + W)) (if T z then b + δ else G + δ : ℕ) :=
+      NoMultipleNear ℓ (2 * (2 * (v + 1) + η + W)) (if T z then b + δ else G + δ : ℕ) :=
     h_sizes.noMultipleNear h_loss (not_le.1 hv) (fun u hu h_dvd ↦ hv (h_cube hu h_dvd))
       (ite_eq_or_eq (T z) (b + δ) (G + δ))
   have h_index : k.f = Γ.overGp.toGp.range.index := by

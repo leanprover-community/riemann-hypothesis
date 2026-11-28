@@ -121,11 +121,11 @@ lemma lt_natAbs_of_abs_add_liftWeight_le {D : Data P} {j B : ℕ} {σ : D.E →+
 
 /-- The crystalline loss of three natural numbers h, b, l: the l-adic valuation of the product of
 (2b)! and P^(h³), where P is the product of the natural numbers k with
-max(b − 30h³, 0) < k ≤ b + 30h³. -/
+max(b − 5h³, 0) < k ≤ b + 5h³. -/
 @[irreducible]
 def crystallineLoss (h b l : ℕ) : ℕ :=
   padicValNat l
-    ((2 * b).factorial * (∏ k ∈ Finset.Ioc (b - 30 * h ^ 3) (b + 30 * h ^ 3), k) ^ h ^ 3)
+    ((2 * b).factorial * (∏ k ∈ Finset.Ioc (b - 5 * h ^ 3) (b + 5 * h ^ 3), k) ^ h ^ 3)
 
 /-- The unit at `l` of the bound on the loss of a lift, for the data `D`:
 `10⁶ (m/k) (natB v_l(M) + crystallineLoss halfGap natB l)`, where `v_l` is the `l`-adic valuation

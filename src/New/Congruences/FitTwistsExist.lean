@@ -95,39 +95,36 @@ lemma New.Selmer.sum_half_pow_mul_log_le (T : Finset ℕ) :
     _ = 2 := by norm_num
 
 /-- Let `natB` be the weight `b` of the data `D` as a natural number, and `halfGap = r ^ 8`. The
-product of the natural numbers `k` with `natB - 30 halfGap³ < k ≤ natB + 30 halfGap³` (truncated
+product of the natural numbers `k` with `natB - 5 halfGap³ < k ≤ natB + 5 halfGap³` (truncated
 subtraction), which enters the crystalline loss `crystallineLoss`, is at most
-`(natB + 30 halfGap³) ^ (60 halfGap³)`. -/
+`(natB + 5 halfGap³) ^ (10 halfGap³)`. -/
 lemma New.Selmer.prod_Ioc_natB_le_pow {P : Parameters} (D : Data P) :
-    ∏ k ∈ Finset.Ioc (D.natB - 30 * D.halfGap ^ 3) (D.natB + 30 * D.halfGap ^ 3), k ≤
-      (D.natB + 30 * D.halfGap ^ 3) ^ (60 * D.halfGap ^ 3) := by
+    ∏ k ∈ Finset.Ioc (D.natB - 5 * D.halfGap ^ 3) (D.natB + 5 * D.halfGap ^ 3), k ≤
+      (D.natB + 5 * D.halfGap ^ 3) ^ (10 * D.halfGap ^ 3) := by
   have h_pos : 0 < D.halfGap := Nat.zero_lt_of_lt D.k_add_t_add_one_le_halfGap
-  set hCube : ℕ := D.halfGap ^ 3
-  have h_card : #(Finset.Ioc (D.natB - 30 * hCube) (D.natB + 30 * hCube)) ≤ 60 * hCube := by
-    rw [Nat.card_Ioc]
-    omega
-  calc _ ≤ (D.natB + 30 * hCube) ^ #(Finset.Ioc (D.natB - 30 * hCube) (D.natB + 30 * hCube)) :=
-      prod_le_pow_card _ _ _ fun k hk ↦ (Finset.mem_Ioc.1 hk).2
-    _ ≤ (D.natB + 30 * hCube) ^ (60 * hCube) := Nat.pow_le_pow_right (by positivity) h_card
+  refine (prod_le_pow_card _ _ _ fun k hk ↦ (Finset.mem_Ioc.1 hk).2).trans ?_
+  apply Nat.pow_le_pow_right (by positivity)
+  rw [Nat.card_Ioc]
+  omega
 
 /-- Let `m` be the number of lifts, `r` the rank of the target, `k = r + 1 - m` the rank of the
 source, `b = D.natB` the weight as a natural number, `h = D.halfGap = r ^ 8`, and `M = D.M` the
 product of the two level primes. The local loss `defectBound D l` is
 `10⁶ (m / k) (b v_l(M) + v_l((2 b)! Π ^ h³))`, where `v_l` is the `l`-adic valuation and `Π` is the
-product of the positive integers in `(b - 30 h³, b + 30 h³]`. Summed over any finite set `T` of
+product of the positive integers in `(b - 5 h³, b + 5 h³]`. Summed over any finite set `T` of
 primes `l` with weights `log l`, these losses are at most
-`10⁶ (m / k) (b log M + log ((2 b)! (b + 30 h³) ^ (60 h⁶)))`. -/
+`10⁶ (m / k) (b log M + log ((2 b)! (b + 5 h³) ^ (10 h⁶)))`. -/
 lemma New.Selmer.sum_defectBound_mul_log_le {P : Parameters} (D : Data P) (T : Finset ℕ)
     (hT : ∀ l ∈ T, l.Prime) :
     ∑ l ∈ T, (defectBound D l : ℝ) * log l ≤
       10 ^ 6 * ((D.m : ℝ) / D.k) * (D.natB * log D.M +
         log ((2 * D.natB).factorial *
-          ((D.natB + 30 * D.halfGap ^ 3) ^ (60 * D.halfGap ^ 3)) ^ D.halfGap ^ 3 : ℕ)) := by
+          ((D.natB + 5 * D.halfGap ^ 3) ^ (10 * D.halfGap ^ 3)) ^ D.halfGap ^ 3 : ℕ)) := by
   -- `defectBound` is a combination of two valuations; bound each weighted sum by a logarithm
   set hCube : ℕ := D.halfGap ^ 3
   let N : ℕ := (2 * D.natB).factorial *
-    (∏ k ∈ Finset.Ioc (D.natB - 30 * hCube) (D.natB + 30 * hCube), k) ^ hCube
-  have hN : N ≤ (2 * D.natB).factorial * ((D.natB + 30 * hCube) ^ (60 * hCube)) ^ hCube :=
+    (∏ k ∈ Finset.Ioc (D.natB - 5 * hCube) (D.natB + 5 * hCube), k) ^ hCube
+  have hN : N ≤ (2 * D.natB).factorial * ((D.natB + 5 * hCube) ^ (10 * hCube)) ^ hCube :=
     Nat.mul_le_mul_left _ (Nat.pow_le_pow_left (prod_Ioc_natB_le_pow D) _)
   calc ∑ l ∈ T, (defectBound D l : ℝ) * log l
       = 10 ^ 6 * ((D.m : ℝ) / D.k) * (D.natB * ∑ l ∈ T, (padicValNat l D.M : ℝ) * log l +
@@ -150,7 +147,7 @@ lemma New.Selmer.sum_localDefectBound_mul_log_le {P : Parameters} (D : Data P) (
     ∑ l ∈ T, (localDefectBound D l : ℝ) * log l ≤
       4 * 10 ^ 6 * exp 180 * (D.f * ((D.m : ℝ) / D.k) * D.b * D.logB) := by
   have h_bracket : D.natB * log D.M + log ((2 * D.natB).factorial *
-      ((D.natB + 30 * D.halfGap ^ 3) ^ (60 * D.halfGap ^ 3)) ^ D.halfGap ^ 3 : ℕ) ≤
+      ((D.natB + 5 * D.halfGap ^ 3) ^ (10 * D.halfGap ^ 3)) ^ D.halfGap ^ 3 : ℕ) ≤
         exp 180 * D.b * D.logB := by
     push_cast
     exact D.le_of_hasLogBound (by scale_grind D)
