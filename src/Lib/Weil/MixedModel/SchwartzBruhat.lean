@@ -236,9 +236,7 @@ lemma eq_sum_cosetIndicator (t : (𝔸f E)ˣ)
       (mem_box_iff.mp (by simp +contextual [mem_integralBox, idem_mul_mem_Ô])).trans q.out_eq⟩
   refine ⟨h_fin.toFinset.image out, by simp, ?_⟩
   -- At `x` only the class of `x` contributes, and `Ψ` is constant on each class.
-  suffices h : ∀ x : n → 𝔸f E, Ψ x = if Ψ (out (x : (n → 𝔸f E) ⧸ U.toAddSubgroup)) = 0 then 0
-      else Ψ (out (x : (n → 𝔸f E) ⧸ U.toAddSubgroup)) by
-    simpa [funext_iff, mem_box_iff] using h
+  simp [funext_iff, mem_box_iff]
   intro x
   split_ifs with hq
   · exact by_contra fun hx ↦ hx ((h_per x hx _ (mem_box_iff.mpr (out_eq _))).symm.trans hq)

@@ -230,9 +230,7 @@ lemma New.Exchange.IsAutFunction.apply_eq_apply_one {S : Set (FinPlace E)}
   have h_levi (R : Set (FinPlace E)) (hR : R.Finite) (t : GL Unit (𝔸 E)) (x : G E s₀) :
       D (closurePart R (H.levi (t, x))) = D 1 := by
     refine (W₀.weak_approximation hR).induction_on x (isClosed_singleton.preimage (hD.1.comp <| by
-      simp only [↓continuous_iff, Splitting.levi, Matrix.mul_assoc, coe_units_inv, inv_subsingleton,
-        diagonal_conjTranspose, MonoidHom.mk'_apply, adeleMatrix_closurePart, adeleMatrix_ofMatrix,
-        smul_add]; fun_prop))
+      simp [↓continuous_iff, Splitting.levi, Matrix.mul_assoc]; fun_prop))
       fun ⟨⟨_, γ, rfl⟩, k, hk⟩ ↦ ?_
     obtain ⟨a, ha⟩ := exists_torus_mul_rational_fixes H h_rad R γ
     have hk' : componentOn m R k = 1 := eq_of_supportedOn componentOn_mem_supportedOn (one_mem _)

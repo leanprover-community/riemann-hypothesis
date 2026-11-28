@@ -340,9 +340,7 @@ lemma continuous_realPairWeil :
     Continuous fun q : (GInf E s × GInf E s') × PairFock E s s' ↦ realPairWeil γ γ' q.1 q.2 := by
   have h_pairHomInf : Continuous (pairHomInf : GInf E s × GInf E s' →
       USign fun (p : NumberField.InfinitePlace E × n' × n) ↦ homSigns s s' p.2) := by
-    simp only [continuous_U_iff_matrix, pairHomInf, coe_pairHom, Prod.map, MonoidHom.coe_comp,
-      Function.comp_apply, MonoidHom.pi_apply, MonoidHom.coe_prodMap, Pi.coe_evalMonoidHom,
-      val_blockU_apply_coe]
+    simp [continuous_U_iff_matrix, pairHomInf, coe_pairHom, Prod.map]
     simp only [← Matrix.coe_units_inv]
     fun_prop [kroneckerMap, Units.continuous_coe_inv]
   simp only [realPairWeil_apply_apply]
@@ -612,9 +610,7 @@ lemma exists_level_pairWeil {E : Type*} {n n' : Type} {s : n → ℤˣ} {s' : n'
     (((b⁻¹).val.toMonoidHom.comp G.det).coprod (a.val.toMonoidHom.comp G.det)).comp
       embed.toMonoidHom
   have h_χ_cont : Continuous χ := by
-    simp only [InvMemClass.coe_inv, ContinuousMonoidHom.coe_toMonoidHom, MonoidHom.coe_comp,
-      MonoidHom.coe_ofClass, Function.comp_def, MonoidHom.coprod_apply, Function.comp_apply,
-      circleChar_inv_apply, χ]
+    simp [χ, Function.comp_def]
     fun_prop
   have h_char : ∀ᶠ k in nhds 1, pairChar a b (embed k) = 1 :=
     (char_eventually_eq_one χ h_χ_cont).mono fun k hk ↦
