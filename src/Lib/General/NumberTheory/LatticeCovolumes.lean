@@ -1,7 +1,8 @@
 module
 
 public import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
-import TauCeti.Algebra.Module.ZLattice.Basic
+import TauCeti.Algebra.Module.ZLattice.Determinant
+import TauCeti.MeasureTheory.Measure.Haar.OfBasis
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.PiTensorProduct
@@ -762,29 +763,35 @@ lemma exists_isAddFundamentalDomain_of_integral {V σ : Type*} [NormedAddCommGro
     (L : Submodule ℤ V) [DiscreteTopology L] [IsZLattice ℝ L]
     (h_int : ∀ x ∈ L, ∀ y ∈ L, ∃ n : ℤ, ∑ s : σ, e.repr x s * e.repr y s = n) :
     ∃ D : Set V, MeasurableSet D ∧ IsAddFundamentalDomain L D μ ∧ 1 ≤ μ D ∧ μ D ≠ ⊤ := by
-  -- The measure is `|det M|` for the matrix `M` of a basis `b` of `L`, and `Mᵀ M` is an integer
-  -- matrix with nonzero determinant.
   classical
-  have := ZLattice.module_finite ℝ L
-  have := ZLattice.module_free ℝ L
-  let b : Basis σ ℤ L := (Free.chooseBasis ℤ L).reindex <| equivOfCardEq <| by
-    rw [← finrank_eq_card_chooseBasisIndex, ZLattice.rank ℝ L, finrank_eq_card_basis e]
-  let M : Matrix σ σ ℝ := e.toMatrix (b.ofZLatticeBasis ℝ L)
-  have h_det : M.det ≠ 0 := (e.isUnit_det (b.ofZLatticeBasis ℝ L)).ne_zero
-  have h_entry (s t : σ) : ∃ n : ℤ, (Mᵀ * M) s t = n := by
-    simpa [M, Matrix.mul_apply, Basis.toMatrix_apply] using h_int _ (b s).property _ (b t).property
-  choose N hN using h_entry
-  have h_map : (Int.castRingHom ℝ).mapMatrix (of N) = Mᵀ * M := ext fun s t ↦ (hN s t).symm
-  have h_cast : ((of N).det : ℝ) = M.det ^ 2 := by
-    rw [← eq_intCast (Int.castRingHom ℝ), RingHom.map_det, h_map, det_mul, det_transpose, sq]
-  have h_one_le : (1 : ℝ) ≤ M.det ^ 2 := by
-    have h_pos : (0 : ℝ) < (of N).det := by simpa [h_cast, sq_pos_iff] using h_det
-    rw [← h_cast]
-    exact_mod_cast h_pos
-  refine ⟨fundamentalDomain (b.ofZLatticeBasis ℝ L), fundamentalDomain_measurableSet _,
-    ZLattice.isAddFundamentalDomain b μ, ?_, (fundamentalDomain_isBounded _).measure_lt_top.ne⟩
-  rw [measure_fundamentalDomain _ μ e, he, mul_one, Basis.det_apply]
-  exact ENNReal.one_le_ofReal.2 ((one_le_sq_iff_one_le_abs _).1 h_one_le)
+  -- Put the lattice in Euclidean coordinates, where the normalized Haar measure is volume.
+  let b₀ := EuclideanSpace.basisFun σ ℝ
+  let f := (b₀.toBasis.equiv e (Equiv.refl σ)).toContinuousLinearEquiv
+  have hf : MeasurePreserving f volume μ := by
+    have he' : e.addHaar = μ := (e.addHaar_eq_iff μ).2
+      ((measure_congr (fundamentalDomain_ae_parallelepiped e μ)).symm.trans he)
+    simpa only [f, LinearEquiv.coe_toContinuousLinearEquiv', b₀.addHaar_eq_volume, he'] using
+      b₀.toBasis.measurePreserving_equiv e (Equiv.refl σ)
+  let L' := ZLattice.comap ℝ L f.toLinearMap
+  have h_integral : ZLattice.IsIntegral L' := ZLattice.isIntegral_iff.2 fun x hx y hy ↦ by
+    have h_coord (z : EuclideanSpace ℝ σ) (i : σ) : e.repr (f z) i = z i := by
+      simp [f, Basis.equiv]
+      rfl
+    simpa [h_coord, PiLp.inner_apply, starRingEnd_apply, star_trivial, mul_comm] using
+      h_int (f x) hx (f y) hy
+  -- The Gram determinant bound gives the desired lower bound on covolume.
+  have h_covolume : 1 ≤ ZLattice.covolume L μ := by
+    rw [← ZLattice.covolume_comap L μ volume hf]
+    exact (one_le_pow_iff_of_nonneg (ZLattice.covolume_nonneg L' volume)
+      two_ne_zero).1 (ZLattice.det_def L' ▸ h_integral.one_le_det)
+  let b := Module.Free.chooseBasis ℤ L
+  let D := fundamentalDomain (b.ofZLatticeBasis ℝ L)
+  have hD := ZLattice.isAddFundamentalDomain b μ
+  have h_finite : μ D ≠ ⊤ := (fundamentalDomain_isBounded _).measure_lt_top.ne
+  refine ⟨D, fundamentalDomain_measurableSet _, hD, ?_, h_finite⟩
+  rw [ZLattice.covolume_eq_measure_fundamentalDomain L μ hD] at h_covolume
+  exact (ENNReal.toReal_le_toReal (by simp) h_finite).1
+    (by simpa only [ENNReal.toReal_one, measureReal_def] using h_covolume)
 
 end IntegralLattice
 
