@@ -235,6 +235,124 @@ noncomputable def oFlatLocConstOfSelfIso [IsAbsIntegrallyClosedLocal Ω] :
   CommAlgCat.isoMk (.ofBijective _ (Algebra.TensorProduct.includeLeft_bijective
     ((bijective_const_of_isDomain (B := .of Ω)).of_comp_left up_injective)))
 
+/-- `M ⊗[ZMod p] L ≅ (OFlat ⊗[ZMod p] L) ⊗[OFlat] M` for `L` the locally constant functions on tests
+over `Ω`, as coefficients. -/
+private noncomputable abbrev locConstTensorIso [Module (ZMod p) M]
+    [IsScalarTower (ZMod p) OFlat M] :
+    moduleCoeff (asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg) ⋙ tensorWith OFlat M) ≅
+      TestOver.toTest Ω ⋙ oFlatLocConst ⋙ moduleCoeff (tensorCoeff M) :=
+  let γ₀ : asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg) ⋙ tensorWith OFlat M ≅
+      (TestOver.toTest Ω ⋙ oFlatLocConst) ⋙ tensorCoeff M :=
+    NatIso.ofComponents
+      (fun _ ↦ ((cancelBaseChange ..).symm ≪≫ₗ TensorProduct.comm ..).toModuleIso)
+      fun _ ↦ ModuleCat.hom_ext (tmul_ext fun _ _ ↦ by rfl)
+  isoWhiskerRight γ₀ (moduleCoeff (𝟭 _))
+
+/-- The comparison of `A ↦ O^♭ ⊗ LC(Spec A) ⊗ M` on tests over `Ω` with the coefficients of the
+tilted theory, along `genericTestOver Ω`, induced by `primitiveMap`. -/
+private noncomputable abbrev primitiveComparison (h_inverts : InvertsPrime Ω p)
+    (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) :
+    Comparison (TestOver.toTest Ω ⋙ oFlatLocConst ⋙ moduleCoeff (tensorCoeff M))
+      (tiltTheory Ω M ac).functor :=
+  ⟨genericTestOver Ω, whiskerRight primitiveMap (moduleCoeff _)⟩
+
+/-- The tilted theory along `genericTestOver Ω`, compared with the locally constant theory by the
+classes `x ↦ b i ⊗ x` of degree zero, for the chosen basis `b` of `M` over `ZMod p`. Both theories
+satisfy the projective line formula. -/
+private noncomputable abbrev primitiveComparedTheory (h_inverts : InvertsPrime Ω p)
+    (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) : ComparedTheory (genericTestOver Ω) :=
+  letI : Module (ZMod p) M := Module.restrictScalars (ZMod p) OFlat M
+  let γ := locConstTensorIso Ω (M := M)
+  let b := Module.Free.chooseBasis (ZMod p) M
+  let θ (i : Module.Free.ChooseBasisIndex (ZMod p) M) :=
+    mk₀ (whiskerLeft _ (tensorWith.mk _ (b i) _ ≫ γ.hom) ≫
+      (primitiveComparison Ω h_inverts ac).coeffHom)
+  haveI : FaithfulSMul Ω ℂ_[p] :=
+    (faithfulSMul_iff_algebraMap_injective Ω ℂ_[p]).mpr (algebraMap Ω ℂ_[p]).injective
+  ⟨tiltTheory Ω M ac, _, θ, hasLineFormula_tiltTheory _ ac, hasLineFormula_locallyConstant Ω⟩
+
+/-- For `X` with flat base change and `u : X' ≅ c.functor ⋙ X`, where `c` is the comparison
+induced by `primitiveMap`, the classes of `primitiveComparedTheory` form a Leray–Hirsch basis at
+`ℤ[X]` iff `c` is bijective along `u`. -/
+private lemma isLerayHirschBasis_primitiveComparedTheory_iff (h_inverts : InvertsPrime Ω p)
+    (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) {X : TestOver Ω ⥤ Type 1}
+    {X' : PadicTest ⥤ Type 1} (hX : HasFlatBaseChange (freeAb X))
+    (u : X' ≅ (primitiveComparison Ω h_inverts ac).functor ⋙ X) :
+    IsLerayHirschBasis (primitiveComparedTheory Ω h_inverts ac).comparison (freeAb X) ↔
+      (primitiveComparison Ω h_inverts ac).IsBijective (freeAbMap u.hom) := by
+  let module_ZMod : Module (ZMod p) M := Module.restrictScalars (ZMod p) OFlat M
+  let γ := locConstTensorIso Ω (M := M)
+  let b := Module.Free.chooseBasis (ZMod p) M
+  let c := primitiveComparison Ω h_inverts ac
+  let D := primitiveComparedTheory Ω h_inverts ac
+  -- By the basis `b`, flat base change and `γ`, the cohomology of `M ⊗ L` is a sum of copies
+  -- of that of `L`.
+  let E₀ : (_ →₀ TotalH (freeAb X) _) ≃+ TotalH (freeAb X) _ :=
+    ((equivFinsuppOfBasisLeft b).symm ≪≫ₗ directSumRight ..).toAddEquiv.trans
+      (congrAddEquiv fun n ↦
+        .trans (.ofBijective _ (hX ..))
+          (.ofBijective _ (H.push_bijective_of_isIso γ.isIso_hom n)))
+  -- The `i`-th copy is mapped by pushing along `x ↦ b i ⊗ x` and `γ`.
+  have hE (i : Module.Free.ChooseBasisIndex (ZMod p) M) (n : ℕ)
+      (x : H (freeAb X)
+        (moduleCoeff (asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg))) n) :
+      E₀ (.single i (.of _ n x)) =
+        TotalH.comp (.comp (.of _ n x) (.homClass (tensorWith.mk _ (b i) _)))
+          (.homClass γ.hom) := by
+    simp [E₀, ← lof_eq_of (ZMod p)]
+    -- on the summand `n`: base change sends `b i ⊗ x` to the push of `x` along `x ↦ b i ⊗ x`,
+    -- and pushing along a map is composing with its class (`of_comp_homClass`)
+    simp only [lof_eq_of, of_comp_homClass, ← AddEquiv.coe_toAddMonoidHom, coe_congrAddEquiv,
+      DirectSum.map_of]
+    rfl
+  -- `E` is `E₀` with its source written as the source of the Leray–Hirsch map of `D`.
+  let E : (D.Index →₀ TotalH (freeAb X) Theory.locallyConstant.functor) ≃+ _ := E₀
+  -- Under `E` the Leray–Hirsch map is restriction along `genericTestOver Ω` followed by
+  -- `c.coeffHom`.
+  have key : (lerayHirsch D.comparison (freeAb X)).toAddMonoidHom =
+      (mapThenComp (restrictAlong (genericTestOver Ω)) (.homClass c.coeffHom)).comp
+        E.toAddMonoidHom := by
+    ext i n x : 3
+    refine (lerayHirsch_single ..).trans (.trans ?_ congr(mapThenComp _ _ $(hE i n x)).symm)
+    -- unfold `mapThenComp`: restrict the composite along `genericTestOver Ω`, then compose
+    simp only [mapThenComp, AddMonoidHom.coe_comp, Function.comp_apply, AddMonoidHom.flip_apply]
+    rw [TotalH.map_comp_assoc, TotalH.map_comp_assoc]
+    simp_rw [map_homClass, ← homClass_comp]
+    rfl
+  -- Pull-back along the isomorphism `u` is bijective, and so is `E`.
+  have : IsIso (freeAbMap u.hom) := Functor.map_isIso freeAb u.hom
+  exact (Iff.of_eq (congrArg (fun f : _ →+ _ ↦ Bijective f) key)).trans <|
+    (E.bijective.of_comp_iff _).trans <|
+      ((IsCohomEquiv.of_isIso
+        (freeAbMap u.hom)).bijective_pullbackAlong.of_comp_iff' _).symm.trans
+        bijective_totalH_iff_isBijective
+
+/-- The point satisfies `IsFiniteLerayHirsch` for `primitiveComparedTheory` (Leray–Hirsch and
+finiteness): `OFlat` and `Ω` are both initial, `ac` holds at `OFlat`, and the values of the two
+coefficients agree because the locally constant functions on `Spec Ω` are constant. -/
+private lemma isFiniteLerayHirsch_primitiveComparedTheory_reprBy (h_inverts : InvertsPrime Ω p)
+    [IsAlgClosed Ω]
+    (ac : IsAcyclicOnPerfect (moduleCoeff (tensorCoeff M))) :
+    (primitiveComparedTheory Ω h_inverts ac).IsFiniteLerayHirsch (freeAb (reprBy (.ofSelf Ω))) := by
+  let c := primitiveComparison Ω h_inverts ac
+  let u : tilt ⋙ reprBy (.of OFlat OFlat) ≅ c.functor ⋙ reprBy (.ofSelf Ω) :=
+    tiltReprIsoGenericRepr Ω
+  have h_bij : c.IsBijective (freeAbMap u.hom) := by
+    refine .transfer (ac _)
+      (bijective_of_isIso ((moduleCoeff _).map (oFlatLocConstOfSelfIso Ω).hom)) fun A y x ↦ ?_
+    -- Both sides are induced by a map of algebras out of the initial `OFlat`.
+    let F := moduleCoeff (tensorCoeff M)
+    have h_hom : y.down = (oFlatLocConstOfSelfIso Ω).hom ≫
+        (TestOver.toTest Ω ⋙ oFlatLocConst).map (u.hom.app A y).down ≫ primitiveMap.app A :=
+      CommAlgCat.isInitialSelf.hom_ext _ _
+    exact (congrArg (fun f ↦ F.map f x) h_hom).trans
+      ((F.map_comp_apply _ _ x).trans (F.map_comp_apply _ _ _))
+  -- The cohomology of the point with coefficients `L` consists of the constants `ZMod p`.
+  exact ⟨(isLerayHirschBasis_primitiveComparedTheory_iff Ω h_inverts ac
+      (hasFlatBaseChange_freeAb_reprBy _) u).2 h_bij,
+    .of_surjective _ ((sectionEquiv ..).surjective.comp
+      (bijective_const_of_isDomain (B := .of Ω)).2)⟩
+
 /-- Primitive comparison. Let `Ω` be algebraically closed with a map to `ℂ_p`, `Y` proper over `R`
 and charted over `Ω` (`IsCharted`), and `M` an `O^♭`-module. Assume `ac`: for each perfect
 `O^♭`-algebra `b`, the functor `S ↦ Hom(b, S^♭)` on p-adic tests, with coefficients `S ↦ S^♭ ⊗ M`,
@@ -262,101 +380,17 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
             whiskerLeft (genericTestOver Ω) (whiskerLeft _ (algToBaseChange Ω Y))))
         (tensorCoeff M) := by
   -- The comparison `c` induced by `primitiveMap` is bijective iff a basis of `M` over `ZMod p`
-  -- gives a bijective Leray–Hirsch map. This holds at the point `Ω`, so at `Y` by
-  -- `ComparedTheory.mem_of_isClosedClass_of_isCharting`.
+  -- gives a bijective Leray–Hirsch map (`isLerayHirschBasis_primitiveComparedTheory_iff`). This
+  -- holds at the point `Ω`, so at `Y` by `ComparedTheory.mem_of_isClosedClass_of_isCharting`.
   have h_inverts : InvertsPrime Ω p :=
     InvertsPrime.mk (NeZero.nat_of_neZero (algebraMap Ω ℂ_[p])).out.isUnit
-  let module_ZMod : Module (ZMod p) M := Module.restrictScalars (ZMod p) OFlat M
-  -- `M ⊗[ZMod p] L ≅ (OFlat ⊗[ZMod p] L) ⊗[OFlat] M` for `L` the locally constant functions.
-  let γ₀ : asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg) ⋙ tensorWith OFlat M ≅
-      (TestOver.toTest Ω ⋙ oFlatLocConst) ⋙ tensorCoeff M :=
-    NatIso.ofComponents
-      (fun _ ↦ ((cancelBaseChange ..).symm ≪≫ₗ TensorProduct.comm ..).toModuleIso)
-      fun _ ↦ ModuleCat.hom_ext (tmul_ext fun _ _ ↦ by rfl)
-  let γ : moduleCoeff (asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg) ⋙ tensorWith _ M) ≅
-      TestOver.toTest Ω ⋙ oFlatLocConst ⋙ moduleCoeff (tensorCoeff M) :=
-    isoWhiskerRight γ₀ (moduleCoeff (𝟭 _))
-  let b := Module.Free.chooseBasis (ZMod p) M
-  let c : Comparison (TestOver.toTest Ω ⋙ oFlatLocConst ⋙ moduleCoeff (tensorCoeff M))
-      (tiltTheory Ω M ac).functor :=
-    ⟨genericTestOver Ω, whiskerRight primitiveMap (moduleCoeff _)⟩
-  -- The tilted theory, with the classes `x ↦ b i ⊗ x` of degree zero. It and the locally
-  -- constant theory satisfy the projective line formula.
-  let θ (i : Module.Free.ChooseBasisIndex (ZMod p) M) :=
-    mk₀ (whiskerLeft _ (tensorWith.mk _ (b i) _ ≫ γ.hom) ≫ c.coeffHom)
-  have : FaithfulSMul Ω ℂ_[p] :=
-    (faithfulSMul_iff_algebraMap_injective Ω ℂ_[p]).mpr (algebraMap Ω ℂ_[p]).injective
-  let D : ComparedTheory (genericTestOver Ω) :=
-    ⟨tiltTheory Ω M ac, _, θ, hasLineFormula_tiltTheory _ ac, hasLineFormula_locallyConstant Ω⟩
-  have lh_iff {X : TestOver Ω ⥤ Type 1} {X' : PadicTest ⥤ Type 1}
-      (hX : HasFlatBaseChange (freeAb X)) (u : X' ≅ c.functor ⋙ X) :
-      IsLerayHirschBasis D.comparison (freeAb X) ↔ c.IsBijective (freeAbMap u.hom) := by
-    -- By the basis `b`, flat base change and `γ`, the cohomology of `M ⊗ L` is a sum of copies
-    -- of that of `L`.
-    let E₀ : (_ →₀ TotalH (freeAb X) _) ≃+ TotalH (freeAb X) _ :=
-      ((equivFinsuppOfBasisLeft b).symm ≪≫ₗ directSumRight ..).toAddEquiv.trans
-        (congrAddEquiv fun n ↦
-          .trans (.ofBijective _ (hX ..))
-            (.ofBijective _ (H.push_bijective_of_isIso γ.isIso_hom n)))
-    -- The `i`-th copy is mapped by pushing along `x ↦ b i ⊗ x` and `γ`.
-    have hE (i : Module.Free.ChooseBasisIndex (ZMod p) M) (n : ℕ)
-        (x : H (freeAb X)
-          (moduleCoeff (asModules (TestOver.toTest Ω ⋙ testIncl ⋙ locConstAlg))) n) :
-        E₀ (.single i (.of _ n x)) =
-          TotalH.comp (.comp (.of _ n x) (.homClass (tensorWith.mk _ (b i) _)))
-            (.homClass γ.hom) := by
-      simp [E₀, ← lof_eq_of (ZMod p)]
-      -- on the summand `n`: base change sends `b i ⊗ x` to the push of `x` along `x ↦ b i ⊗ x`,
-      -- and pushing along a map is composing with its class (`of_comp_homClass`)
-      simp only [lof_eq_of, of_comp_homClass, ← AddEquiv.coe_toAddMonoidHom, coe_congrAddEquiv,
-        DirectSum.map_of]
-      rfl
-    -- `E` is `E₀` with its source written as the source of the Leray–Hirsch map of `D`.
-    let E : (D.Index →₀ TotalH (freeAb X) Theory.locallyConstant.functor) ≃+ _ := E₀
-    -- Under `E` the Leray–Hirsch map is restriction along `genericTestOver Ω` followed by
-    -- `c.coeffHom`.
-    have key : (lerayHirsch D.comparison (freeAb X)).toAddMonoidHom =
-        (mapThenComp (restrictAlong (genericTestOver Ω)) (.homClass c.coeffHom)).comp
-          E.toAddMonoidHom := by
-      ext i n x : 3
-      refine (lerayHirsch_single ..).trans (.trans ?_ congr(mapThenComp _ _ $(hE i n x)).symm)
-      -- unfold `mapThenComp`: restrict the composite along `genericTestOver Ω`, then compose
-      simp only [mapThenComp, AddMonoidHom.coe_comp, Function.comp_apply, AddMonoidHom.flip_apply]
-      rw [TotalH.map_comp_assoc, TotalH.map_comp_assoc]
-      simp_rw [map_homClass, ← homClass_comp]
-      rfl
-    -- Pull-back along the isomorphism `u` is bijective, and so is `E`.
-    have : IsIso (freeAbMap u.hom) := Functor.map_isIso freeAb u.hom
-    exact (Iff.of_eq (congrArg (fun f : _ →+ _ ↦ Bijective f) key)).trans <|
-      (E.bijective.of_comp_iff _).trans <|
-        ((IsCohomEquiv.of_isIso
-          (freeAbMap u.hom)).bijective_pullbackAlong.of_comp_iff' _).symm.trans
-          bijective_totalH_iff_isBijective
-  -- The point satisfies `D.IsFiniteLerayHirsch` (Leray–Hirsch and finiteness): `OFlat` and `Ω` are
-  -- both initial, `ac` holds at `OFlat`, and the values of the two coefficients agree because the
-  -- locally constant functions on `Spec Ω` are constant.
-  have h_point : D.IsFiniteLerayHirsch (freeAb (reprBy (.ofSelf Ω))) := by
-    let u : tilt ⋙ reprBy (.of OFlat OFlat) ≅ c.functor ⋙ reprBy (.ofSelf Ω) :=
-      tiltReprIsoGenericRepr Ω
-    have h_bij : c.IsBijective (freeAbMap u.hom) := by
-      refine .transfer (ac _)
-        (bijective_of_isIso ((moduleCoeff _).map (oFlatLocConstOfSelfIso Ω).hom)) fun A y x ↦ ?_
-      -- Both sides are induced by a map of algebras out of the initial `OFlat`.
-      let F := moduleCoeff (tensorCoeff M)
-      have h_hom : y.down = (oFlatLocConstOfSelfIso Ω).hom ≫
-          (TestOver.toTest Ω ⋙ oFlatLocConst).map (u.hom.app A y).down ≫ primitiveMap.app A :=
-        CommAlgCat.isInitialSelf.hom_ext _ _
-      exact (congrArg (fun f ↦ F.map f x) h_hom).trans
-        ((F.map_comp_apply _ _ x).trans (F.map_comp_apply _ _ _))
-    -- The cohomology of the point with coefficients `L` consists of the constants `ZMod p`.
-    exact ⟨(lh_iff (hasFlatBaseChange_freeAb_reprBy _) u).2 h_bij,
-      .of_surjective _ ((sectionEquiv ..).surjective.comp
-        (bijective_const_of_isDomain (B := .of Ω)).2)⟩
+  let D := primitiveComparedTheory Ω h_inverts ac
   -- So on the charted `Y` the Leray–Hirsch map is bijective and the mod `p` cohomology is finite.
   obtain ⟨h_lh, h_fin⟩ :=
     D.mem_of_isClosedClass_of_isCharting D.isClosedClass_isFiniteLerayHirsch
       D.isFiniteLerayHirsch_freeAb_iff_relFreeAb
-      (IsCharted.exists_isCharting (Y := Y) (k := Ω)) h_point
+      (IsCharted.exists_isCharting (Y := Y) (k := Ω))
+      (isFiniteLerayHirsch_primitiveComparedTheory_reprBy Ω h_inverts ac)
   -- So far `Y` lives on tests over `Ω`, where it has flat base change. Restriction from all
   -- tests to these is bijective on cohomology (`isBijective_algToBaseChange`), which carries over
   -- each claim.
@@ -366,7 +400,8 @@ lemma finite_and_primitive_comparison [IsAlgClosed Ω]
     exact (isBijective_algToBaseChange ..).finite_iff.2 h_fin_n
   · -- `toGenericPoints` is bijective by the valuative criterion.
     exact (isBijective_algToBaseChange Ω Y _).trans
-      ((lh_iff (hasFlatBaseChange_algPointsOf Ω Y)
+      ((isLerayHirschBasis_primitiveComparedTheory_iff Ω h_inverts ac
+        (hasFlatBaseChange_algPointsOf Ω Y)
         (isoOfAppBijective (toGenericPoints Ω he Y) (·.bijective_generic_points))).1 h_lh)
       (freeAb.hom_ext fun _ _ ↦ rfl)
 
