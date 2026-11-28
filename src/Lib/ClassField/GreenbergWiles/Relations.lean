@@ -205,6 +205,7 @@ instance finite_relations [Finite M] (T : Finset (FinPlace K)) : Finite (D.relat
     · exact congrFun h ⟨g, hg⟩
     · rw [hy.eq_zero_of_notMem g hg, hy'.eq_zero_of_notMem g hg]
 
+/-- The cocycles submodule `D.cocycles` is monotone with respect to the set of places `P`. -/
 lemma cocycles_mono : Monotone D.cocycles := fun _ _ hP _ ⟨⟨hz_cocycle, hz_unram⟩, hz_local⟩ ↦
   ⟨⟨hz_cocycle, fun τ ⟨v, hv, hτ⟩ ↦
     hz_unram τ ⟨v, fun h ↦ hv (Set.union_subset_union_right _ hP h), hτ⟩⟩, hz_local⟩
