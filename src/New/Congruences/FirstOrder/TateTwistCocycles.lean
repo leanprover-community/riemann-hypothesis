@@ -2,6 +2,7 @@ module
 
 public import New.Congruences.FirstOrder.EvenClasses
 public import New.Congruences.FirstOrder.FittingBlock
+public import New.Congruences.LocalLoss.Basic
 import Lib.ClassField.GaloisCohomology.TameSelmerCocycles
 import Lib.PadicHodge.BlochKato
 

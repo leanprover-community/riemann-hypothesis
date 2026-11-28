@@ -3,6 +3,7 @@ module
 import Mathlib.Algebra.Azumaya.Basic
 import Mathlib.RingTheory.TotallySplit
 public import Lib.GaloisRep.Main.LocalConditions
+public import Lib.General.Algebra.FittingIdealsAndLengths
 public import Lib.General.NumberTheory.PadicLimitsValuation
 public import New.Reduction.Data.AdmissibleData
 import Lib.ClassField.Places.TameInertia
@@ -360,35 +361,6 @@ section Cocycles
 
 variable {O X G σ d : Type*} [CommRing O] [Group G] [Fintype σ] [DecidableEq σ] [Fintype d]
   [DecidableEq d] (u : X → G →* Matrix σ σ O) (ρ : G →* Matrix d d O)
-
-/-- The cocycles `c : G → B ^ d` for `ρ`, with values in any `O`-module `B`, that obey the linear
-relations among the families `(u x g - 1)_x`: for finitely supported `θ : G → O`, if
-`∑ θ g • (u x g - 1) = 0` for all `x`, then `∑ θ g • c g = 0`. -/
-def ribetCocyclesIn (B : Type*) [AddCommGroup B] [Module O B] : Submodule O (G → d → B) where
-  carrier := {c ∈ obeying (cocycleRelations ρ) B | ∀ θ : G →₀ O,
-    linearCombination O (fun (g : G) (x : X) ↦ u x g - 1) θ = 0 → linearCombination O c θ = 0}
-  zero_mem' := by simp
-  add_mem' := by
-    rintro c c' ⟨h_coc, h_rel⟩ ⟨h_coc', h_rel'⟩
-    refine ⟨add_mem h_coc h_coc', fun θ hθ ↦ ?_⟩
-    simpa [h_rel θ hθ, h_rel' θ hθ] using (bilinearCombination O O).map_add₂ c c' θ
-  smul_mem' := by
-    rintro s c ⟨h_coc, h_rel⟩
-    refine ⟨smul_mem _ s h_coc, fun θ hθ ↦ ?_⟩
-    exact ((bilinearCombination O O).map_smul₂ s c θ).trans (smul_eq_zero_of_right s (h_rel θ hθ))
-
-/-- The cocycles `c : G → (O / a) ^ d` for `ρ` that obey the linear relations among the families
-`(u x g - 1)_x`: the case `B = O / a` of `ribetCocyclesIn`. -/
-abbrev ribetCocycles (a : O) : Submodule O (G → d → QuotSpan a) :=
-  ribetCocyclesIn u ρ (QuotSpan a)
-
-variable {u ρ} in
-lemma mem_ribetCocycles {a : O} {c : G → d → QuotSpan a} :
-    c ∈ ribetCocycles u ρ a ↔
-      (∀ g h : G, c (g * h) = c g + ρ g • c h) ∧
-      ∀ θ : G →₀ O,
-        linearCombination O (fun (g : G) (x : X) ↦ u x g - 1) θ = 0 → linearCombination O c θ = 0 :=
-  and_congr_left' mem_obeying_cocycleRelations
 
 /-- For finite `X` and noetherian `O`, a cocycle `c : G → (O/a)^d` in `ribetCocycles u ρ a` extends
 to an equivariant map on a submodule: for some `k` there is a subrepresentation `Y` of (families of

@@ -1,9 +1,9 @@
 module
 
+public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Mathlib.Algebra.MvPolynomial.Comap -- shake: keep (`open ... hiding comap`)
 public import Mathlib.RingTheory.MvPolynomial.Basic -- shake: keep
 public import Lib.General.Algebra.BlockFittingBound
-public import New.Congruences.LocalLoss.Basic
 
 /-!
 # Modules of functions, Fitting ideals and trace ideals for Ribet's method
