@@ -202,7 +202,7 @@ lemma isFrob_iff {q : ℕ} {s : decompGroup Gal(Ω/E) A} :
   -- as the closedness argument above is stated with the open unit ball.
   calc IsFrob (intQpBar ℓ) q g
       ↔ ∀ x : PadicAlgCl ℓ, ‖x‖₊ ≤ 1 → g • x - x ^ q ∈ Metric.ball 0 1 := by
-        simp [IsFrob, isLocalGalois_padic.mem_decompGroup, ← mem_ball_zero_iff, -Metric.mem_ball]
+        simp [isFrob_intQpBar_iff, ← mem_ball_zero_iff, -Metric.mem_ball, ← NNReal.coe_le_coe]
     _ ↔ ∀ x : Ω, ‖e x‖₊ ≤ 1 → g (e x) - e x ^ q ∈ Metric.ball 0 1 :=
         ⟨fun h_all x ↦ h_all (e x), isClosed_property (denseRange_emb_padicAlgCl e) h_closed⟩
     _ ↔ IsFrob ((intQpBar ℓ).comap e) q s.val := by

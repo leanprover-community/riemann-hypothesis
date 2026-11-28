@@ -257,6 +257,18 @@ Tau Ceti's (`TauCeti.NumberTheory.Padics.Complex.GaloisAction`). -/
 instance : UniformContinuousConstSMul ℤ_[p] (PadicAlgCl p) :=
   ⟨fun a ↦ uniformContinuous_const_smul a.val⟩
 
+/-- The absolute Galois group of `ℚ_p` stabilises the valuation ring of `ℚ̄_p`. -/
+lemma mem_decompGroup_intQpBar (g : Gp p) : g ∈ decompGroup (Gp p) (intQpBar p) :=
+  mem_decompGroup_iff.mpr fun x ↦ by simp [← nndist_zero_right, ← nndist_smul g x]
+
+/-- On `ℚ̄_p`, the Frobenius congruence for `q` is the norm bound `‖g • x - x ^ q‖ < 1` on
+the closed unit ball. -/
+lemma isFrob_intQpBar_iff {q : ℕ} {g : Gp p} :
+    IsFrob (intQpBar p) q g ↔ ∀ x : PadicAlgCl p, ‖x‖ ≤ 1 → ‖g • x - x ^ q‖ < 1 := by
+  have h_le (x : PadicAlgCl p) : intQpBar p x ≤ 1 ↔ ‖x‖ ≤ 1 := by
+    simpa using Selmer.valuation_intQpBar_le_iff x 1
+  simp only [IsFrob, mem_decompGroup_intQpBar, true_and, h_le, Selmer.valuation_intQpBar_lt_one_iff]
+
 variable {p : ℕ} [ThePrime p] (g : Gp p) (x : OC)
 
 instance : MulSemiringAction (Gp p) OC := (IsInvariantSubring.mk (by simp)).toMulSemiringAction

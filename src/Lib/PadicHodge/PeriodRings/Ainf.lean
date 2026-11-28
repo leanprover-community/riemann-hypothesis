@@ -694,11 +694,9 @@ lemma toWittResidue_smul_of_isFrob {n : ℕ} (h_isFrob : IsFrob (intQpBar p) (p 
       exact isClosed_imp (isOpen_closedBall _ one_ne_zero) <| (isClosed_ball 0 1).preimage <|
         (continuous_const_smul _).fun_sub (continuous_pow _)
     | ih y =>
-      obtain ⟨-, h_cong⟩ := h_isFrob
       intro h_le
-      have h_y_le : (intQpBar p).valuation y ≤ 1 := by
-        simpa using (Selmer.valuation_intQpBar_le_iff y 1).mpr (by simpa using h_le)
-      have h_norm : ‖g⁻¹ • y - y ^ p ^ n‖ < 1 := by simpa using h_cong y h_y_le
+      have h_norm : ‖g⁻¹ • y - y ^ p ^ n‖ < 1 :=
+        isFrob_intQpBar_iff.mp h_isFrob y (by simpa using h_le)
       -- the embedding of `ℚ̄_p` in `ℂ_p` commutes with `g⁻¹`, powers and differences
       simpa [↓UniformSpace.Completion.algEquiv_smul_coe, coe_eq, ← map_pow, ← map_sub] using h_norm
   refine WittVector.ext fun i ↦ ?_

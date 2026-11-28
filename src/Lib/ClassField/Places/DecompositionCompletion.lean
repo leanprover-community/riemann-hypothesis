@@ -102,9 +102,7 @@ lemma Selmer.residueCard_padic : residueCard ℚ_[p] (intQpBar p) = p := by
 ring of `ℚ̄_p` to itself, and this ring meets `ℚ_p` in `ℤ_p`, a discrete valuation ring with
 finite residue field. -/
 instance isLocalGalois_padic : IsLocalGalois (Gp p) ℚ_[p] (intQpBar p) where
-  mem_decompGroup g := by
-    -- The Galois group acts by isometries, so it maps the valuation ring to itself.
-    exact mem_decompGroup_iff.mpr fun x ↦ by simp [← nndist_zero_right, ← nndist_smul g x]
+  mem_decompGroup := mem_decompGroup_intQpBar
   isDiscreteValuationRing :=
     IsDiscreteValuationRing.RingEquivClass.isDiscreteValuationRing valRingBelowEquivPadicInt.symm
   finite_residue := finite_of_card_ne_zero (residueCard_padic.trans_ne NeZero.out)
