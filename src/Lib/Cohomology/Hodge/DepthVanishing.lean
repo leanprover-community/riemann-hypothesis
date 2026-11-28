@@ -156,6 +156,140 @@ private lemma IsClosedClass.relFreeAb_iSup_commaUnitLocus {f : ι → c.baseAlg}
       (fun _ ↦ (Equiv.subtypeUnivEquiv (by simp [commaUnitLocus])).bijective) (h_freeAb 1)
   exact (hQ.2 _ (relFreeAb.shortExact _).2 h_union).mp h_ambient
 
+/-- To treat pairs and flat algebras at once, use the comma category of sets `S` with a family
+`S → (c ⟶ d)` of points of h_c. For a functor `φ : C ⥤ HodgeTest k`, an object `x` of `C` and a
+point `s : c ⟶ φ.obj x`, this functor sends `B` to the family `(x ⟶ B) → (c ⟶ φ B)`,
+`t ↦ s ≫ φ.map t`. -/
+private def commaOfPoint {C : Type 1} [Category.{0} C] (φ : C ⥤ HodgeTest k) (x : C)
+    (s : c ⟶ φ.obj x) : C ⥤ Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) where
+  obj B := ⟨x ⟶ B, φ.obj B, ↾fun t ↦ s ≫ φ.map t⟩
+  map a := .mk (↾fun t ↦ t ≫ a) (φ.map a)
+
+variable (c) in
+/-- Pairs in the comma category: a pair `d` goes to the family of all points `c ⟶ d` of h_c. -/
+private abbrev pairsComma : HodgeTest k ⥤ Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) :=
+  commaOfPoint (𝟭 (HodgeTest k)) c (𝟙 c)
+
+variable (c) in
+/-- The comparison along `B ↦ (B, B ^ c.Index)` from Hodge coefficients on pairs to coefficients
+on flat `A`-algebras `B`, `A = c.baseAlg`: it reads `⋀ (B ^ c.Index)` in its standard basis, as a
+product of copies of `A ⊗ B`. -/
+private noncomputable def flatComparison :
+    Comparison (hodgeCoeff (k := k)) (piAbFunctor fun _ : Finset c.Index ↦
+      moduleCoeff (asModules (flatAlgebras c.baseAlg).ι ⋙ tensorWith c.baseAlg c.baseAlg)) :=
+  ⟨(flatAlgebras c.baseAlg).ι ⋙ restrictAlg k _ ⋙ HodgeTest.withIndex c.Index,
+    fun B ↦ (AddEquiv.ulift.trans
+      ((Pi.basisFun B.obj c.Index).ExteriorAlgebra.equivFun.toAddEquiv.trans
+        (.piCongrRight fun _ ↦ (TensorProduct.lid c.baseAlg _).symm.toAddEquiv.trans
+          (.symm .ulift)))).toAddCommGrpIso.hom,
+    fun B D a ↦ by
+      ext
+      congrm (⟨1 ⊗ₜ $(HodgeTest.repr_withIndex_map a.hom _ ·)⟩)⟩
+
+variable (c) in
+/-- Flat `c.baseAlg`-algebras in the comma category: `B` goes to the family of points
+`c ⟶ (B, B ^ c.Index)` given by the maps `c.baseAlg → B`. -/
+private noncomputable abbrev flatComma :
+    (flatAlgebras c.baseAlg).FullSubcategory ⥤ Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) :=
+  commaOfPoint (flatComparison c).functor ⟨.of _ c.baseAlg, .self⟩ ⟨ofHom ⟨.id _, by tauto⟩, .id⟩
+
+variable (c) in
+/-- The map from `flatComma c` to `pairsComma c` along the functor of `flatComparison c`: at `B`
+it includes the points given by the maps `c.baseAlg → B` into all points `c ⟶ (B, B ^ c.Index)`. -/
+private noncomputable def flatCommaHom : flatComma c ⟶ (flatComparison c).functor ⋙ pairsComma c :=
+  .mk fun B ↦ .mk ((flatComma c).obj B).hom (𝟙 _)
+
+/-- `flatLocalCohom f n N`: for `A = c.baseAlg`, the cohomology on flat `A`-algebras `B` of
+`(h_A, V)`, `V` the locus where some `f i` is a unit, with coefficients `B ↦ N ⊗ B`. It plays the
+part of the local cohomology of `N` along `(f)`. -/
+private noncomputable def flatLocalCohom (f : ι → c.baseAlg) (n : ℕ) (N : ModuleCat c.baseAlg) :
+    ModuleCat c.baseAlg :=
+  ModuleCat.of c.baseAlg (H (flatComma c ⋙ relFreeAb (iSup (commaUnitLocus ∘ f)))
+    (moduleCoeff (asModules (flatAlgebras c.baseAlg).ι ⋙ tensorWith c.baseAlg N)) n)
+
+/-- On flat algebras, `relFreeAb V` for the locus `V` where some `f i` is a unit has flat base
+change: the property holds on each `ℤ[commaUnitLocus g]`, which is representable, and passes
+from these to `relFreeAb V`. -/
+private lemma hasFlatBaseChange_flatComma_comp_relFreeAb {f : ι → c.baseAlg} :
+    HasFlatBaseChange (flatComma c ⋙ relFreeAb (iSup (commaUnitLocus ∘ f))) :=
+  -- (`(… :)`: the term is elaborated from its arguments, then compared with the predicate)
+  IsClosedClass.relFreeAb_iSup_commaUnitLocus (f := f) _
+    (HasFlatBaseChange.isClosedClass.comap (restrictAlong (flatComma c))) fun g ↦
+    (HasFlatBaseChange.isClosedClass.freeAb_of_bijective _
+      (bijective_pointMap_flatToAway ⟨.of .., .self⟩ g) (hasFlatBaseChange_freeAb_reprBy _) :)
+
+/-- For the coefficients `B ↦ A[1/a] ⊗ N ⊗ B` on flat `A`-algebras, `A = c.baseAlg`, the locus of
+`a` is dense: they do not change from `B` to `B[1/a]`, which represents the locus over `B`. -/
+private lemma isCohomDense_commaUnitLocus_whisker_flatComma (N : ModuleCat c.baseAlg)
+    (a : c.baseAlg) :
+    IsCohomDense
+      (moduleCoeff ((asModules (flatAlgebras c.baseAlg).ι ⋙ tensorWith c.baseAlg N) ⋙
+        tensorWith c.baseAlg (Away a)))
+      ((commaUnitLocus a).whisker (flatComma c)) := by
+  rintro B ⟨⟨y⟩⟩
+  -- the only point of `h_A` at `B` is the structure map `A → B`
+  obtain rfl : y = structureMap := by ext
+  exact (Comparison.isBijective_of_repr _ (bijective_pointMap_flatToAway B _)
+    (ULift.map_bijective.2 (bijective_lTensor_lTensor_toAlgHom_away (B := B.obj) N a))).eqv
+
+/-- A power of each `f i` kills each class of `flatLocalCohom f n N`: localized at `f i` the group
+vanishes, by flat base change. -/
+private lemma span_le_radical_torsionOf_flatLocalCohom {f : ι → c.baseAlg} (n : ℕ)
+    (N : ModuleCat c.baseAlg) (x : flatLocalCohom f n N) :
+    span (.range f) ≤ (torsionOf c.baseAlg (flatLocalCohom f n N) x).radical := by
+  refine span_le.2 (Set.range_subset_iff.2 fun i ↦ ?_)
+  -- a power of `f i` kills `x` once `1 ⊗ x` vanishes in `A[1/f i] ⊗ flatLocalCohom f n N`
+  have h_ker : x ∈ ker (TensorProduct.mk c.baseAlg (Away (f i)) (flatLocalCohom f n N) 1) := by
+    have V_dense : IsCohomDense _ ((iSup (commaUnitLocus ∘ f)).whisker (flatComma c)) :=
+      (isCohomDense_commaUnitLocus_whisker_flatComma N (f i)).mono fun _ ↦
+        le_iSup (commaUnitLocus ∘ f) i _
+    -- the flat base change map out of `A[1/f i] ⊗ flatLocalCohom f n N` is injective, and its
+    -- target group vanishes
+    exact (hasFlatBaseChange_flatComma_comp_relFreeAb (f := f) _ c.baseAlg ..).injective
+      (((relFreeAb.isCohomEquiv_iff_subsingleton_rel _).1 V_dense.isCohomEquiv n).elim ..)
+  exact exists_exists_eq_and.1 ((mem_ker_iff (.powers (f i))).1 h_ker)
+
+omit [Fintype ι] in
+/-- An `N`-regular `r` is regular on `flatLocalCohom f n N` once `flatLocalCohom f m (N / r N)`
+vanishes for all `m < n`: use the long exact sequence of `0 → N → N → N / r N → 0`, which stays
+exact over flat `B`. -/
+private lemma isSMulRegular_flatLocalCohom {f : ι → c.baseAlg} (n : ℕ) (N : ModuleCat c.baseAlg)
+    (r : c.baseAlg) (hr : IsSMulRegular N r)
+    (ih : ∀ m < n, Subsingleton (flatLocalCohom f m (.of _ (QuotSMulTop r N)))) :
+    IsSMulRegular (flatLocalCohom f n N) r :=
+  -- `(… :)`: the term is elaborated from its arguments, then compared with `r • ·`
+  fun _ _ ↦ (eq_of_tensorPush_eq (exact_lsmul_mkQ_smul_top N r) Quot.exists_rep
+    (fun B ↦ B.property.rTensor_preserves_injective_linearMap _ hr) ih :)
+
+/-- The comparison `flatComparison c` is bijective on the cohomology relative to the locus `V`
+where some `f i` is a unit. It suffices to check it on each `commaUnitLocus g`: both sites
+represent it by inverting `g`, and there the coefficient map of the comparison is an
+isomorphism. -/
+private lemma isBijective_flatComparison {f : ι → c.baseAlg} :
+    (flatComparison c).IsBijective (N := pairsComma c ⋙ relFreeAb (iSup (commaUnitLocus ∘ f)))
+      (whiskerRight (flatCommaHom c) (relFreeAb (iSup (commaUnitLocus ∘ f)))) :=
+  IsClosedClass.relFreeAb_iSup_commaUnitLocus (f := f) _
+    ((flatComparison c).isClosedClass (flatCommaHom c)) fun g ↦
+    -- replace the locus of `g` by the object that represents it, on pairs and on flat algebras
+    (((flatComparison c).isBijective_congr
+        (pointMap_comp _ (whiskerRight (flatCommaHom c) (commaUnitLocus g).toFunctor))
+        (.of_bijective
+          (pointMap_bijective_of_existsUnique ((commaUnitLocus g).whisker (pairsComma c)) _
+            (HodgeTest.existsUnique_lift_away _ g isLocalization.toIsLocalizationMap)))
+        (.of_bijective (bijective_pointMap_flatToAway ⟨.of .., .self⟩ g))).2
+      -- for representable functors only the coefficients at the representing objects count
+      ((flatComparison c).isBijective_of_repr (u := pointMap ⟨𝟙 _⟩) ⟨𝟙 _⟩
+        (pointMap_id_bijective_of_fullyFaithful (𝟭 _) _)
+        (.comp (AddEquiv.bijective _) (bijective_of_isIso (hodgeCoeff.map (_ ≫ _))))) :)
+
+omit [Fintype ι] in
+/-- On pairs, the locus in the comma category where some `f i` is a unit is `someUnitLocus f`. -/
+private lemma iSup_commaUnitLocus_whisker_pairsComma {f : ι → c.baseAlg} :
+    (iSup (commaUnitLocus ∘ f)).whisker (pairsComma c) = someUnitLocus f := by
+  ext
+  simp [Subfunctor.whisker]
+  rfl
+
 /-- Depth vanishing for Hodge coefficients. Let `c = (A, M)` be a pair, `f` a finite family in `A`
 and `l` a weakly `A`-regular sequence in the ideal generated by the `f i`. Then the cohomology of
 h_c with coefficients `⋀ M`, relative to the locus where some `f i` is a unit, vanishes in every
@@ -167,100 +301,14 @@ lemma DepthVanishing.subsingleton_of_isWeaklyRegular {f : ι → c.baseAlg} (l :
   -- Compare with the flat `A`-algebras `B`, `A = c.baseAlg`, along `B ↦ (B, B ^ c.Index)`: the
   -- group is a product of copies of local cohomology of `A` along `(f)`, which vanishes below the
   -- depth.
-  -- To treat both sites at once, use sets `S` with a family `S → (c ⟶ d)` of points of `h_c`:
-  -- `L φ x s` sends `B` to the family `(x ⟶ B) → (c ⟶ φ B)` given by `s`.
-  let L {C : Type 1} [Category.{0} C] (φ : C ⥤ HodgeTest k) (x : C) (s : c ⟶ φ.obj x) :
-      C ⥤ Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) :=
-    { obj B := ⟨x ⟶ B, φ.obj B, ↾fun t ↦ s ≫ φ.map t⟩
-      map a := .mk (↾fun t ↦ t ≫ a) (φ.map a) }
-  let ψ : HodgeTest k ⥤ Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) := L (𝟭 (HodgeTest k)) c (𝟙 c)
-  let P : ObjectProperty (CommAlg c.baseAlg) := flatAlgebras c.baseAlg
-  -- `V` is the locus where some `f i` is a unit.
-  let V : Subfunctor (Comma.fst (𝟭 Type) (coyoneda.obj ⟨c⟩) ⋙ uliftFunctor) :=
-    iSup (commaUnitLocus ∘ f)
-  -- The comparison `γ` along `B ↦ (B, B ^ c.Index)` reads `⋀ (B ^ c.Index)` in its standard basis,
-  -- as a product of copies of `A ⊗ B`.
-  let γ :
-      Comparison hodgeCoeff
-        (piAbFunctor fun _ ↦ moduleCoeff (asModules P.ι ⋙ tensorWith c.baseAlg _)) :=
-    ⟨P.ι ⋙ restrictAlg k _ ⋙ HodgeTest.withIndex c.Index,
-      fun B ↦ (AddEquiv.ulift.trans
-        ((Pi.basisFun B.obj c.Index).ExteriorAlgebra.equivFun.toAddEquiv.trans
-          (.piCongrRight fun _ ↦ (TensorProduct.lid c.baseAlg _).symm.toAddEquiv.trans
-            (.symm .ulift)))).toAddCommGrpIso.hom,
-      fun B D a ↦ by
-        ext
-        congrm (⟨1 ⊗ₜ $(HodgeTest.repr_withIndex_map a.hom _ ·)⟩)⟩
-  let ψ' : P.FullSubcategory ⥤ Comma (𝟭 Type) (coyoneda.obj ⟨c⟩) :=
-    L γ.functor ⟨.of _ c.baseAlg, .self⟩ ⟨ofHom ⟨.id _, by tauto⟩, .id⟩
-  let η : ψ' ⟶ γ.functor ⋙ ψ := .mk fun B ↦ .mk (ψ'.obj B).hom (𝟙 _)
-  -- `coeffAway N a`: the coefficients `B ↦ A[1/a] ⊗ N ⊗ B` on flat algebras.
-  let coeffAway (N : ModuleCat c.baseAlg) (a : c.baseAlg) : AbFunctor P.FullSubcategory :=
-    moduleCoeff ((asModules P.ι ⋙ tensorWith c.baseAlg N) ⋙ tensorWith c.baseAlg (Away a))
-  -- `HN n N`: cohomology of `(h_A, V)` on flat algebras with coefficients `B ↦ N ⊗ B`.
-  let HN (n : ℕ) (N : ModuleCat c.baseAlg) : ModuleCat c.baseAlg := ModuleCat.of c.baseAlg
-    (H (ψ' ⋙ relFreeAb V) (moduleCoeff (asModules P.ι ⋙ tensorWith c.baseAlg N)) n)
-  have hasFlatBaseChange_V : HasFlatBaseChange (ψ' ⋙ relFreeAb V) :=
-    -- it holds on each `ℤ[commaUnitLocus g]`, which is representable, and passes to `relFreeAb V`
-    -- (`(… :)`: the term is elaborated from its arguments, then compared with the predicate)
-    IsClosedClass.relFreeAb_iSup_commaUnitLocus (f := f) _
-      (HasFlatBaseChange.isClosedClass.comap (restrictAlong ψ')) fun g ↦
-      (HasFlatBaseChange.isClosedClass.freeAb_of_bijective _
-        (bijective_pointMap_flatToAway ⟨.of .., .self⟩ g) (hasFlatBaseChange_freeAb_reprBy _) :)
-  -- For the coefficients `B ↦ A[1/a] ⊗ N ⊗ B` the locus of `a` is dense: they do not change
-  -- from `B` to `B[1/a]`, which represents the locus over `B`.
-  have isCohomDense_unitLocus (N : ModuleCat c.baseAlg) (a : c.baseAlg) :
-      IsCohomDense (coeffAway N a) ((commaUnitLocus a).whisker ψ') := by
-    rintro B ⟨⟨y⟩⟩
-    -- the only point of `h_A` at `B` is the structure map `A → B`
-    obtain rfl : y = structureMap := by ext
-    exact (Comparison.isBijective_of_repr _ (bijective_pointMap_flatToAway B _)
-      (ULift.map_bijective.2 (bijective_lTensor_lTensor_toAlgHom_away (B := B.obj) N a))).eqv
-  -- So `HN n N` localized at `f i` is zero, by flat base change: a power of `f i` kills each class.
-  have le_radical_torsionOf (n : ℕ) (N : ModuleCat c.baseAlg) (x : HN n N) :
-      span (.range f) ≤ (torsionOf c.baseAlg (HN n N) x).radical := by
-    refine span_le.2 (Set.range_subset_iff.2 fun i ↦ ?_)
-    -- a power of `f i` kills `x` once `1 ⊗ x` vanishes in `A[1/f i] ⊗ HN n N`
-    have h_ker : x ∈ ker (TensorProduct.mk c.baseAlg (Away (f i)) (HN n N) 1) := by
-      have V_dense : IsCohomDense (coeffAway N (f i)) (V.whisker ψ') :=
-        (isCohomDense_unitLocus N (f i)).mono fun _ ↦ le_iSup (commaUnitLocus ∘ f) i _
-      -- the flat base change map out of `A[1/f i] ⊗ HN n N` is injective, and its target group
-      -- vanishes
-      exact (hasFlatBaseChange_V _ c.baseAlg ..).injective
-        (((relFreeAb.isCohomEquiv_iff_subsingleton_rel _).1 V_dense.isCohomEquiv n).elim ..)
-    exact exists_exists_eq_and.1 ((mem_ker_iff (.powers (f i))).1 h_ker)
-  -- The long exact sequence of `0 → N → N → N / r → 0`, which stays exact over flat `B`.
-  have isSMulRegular_HN (n : ℕ) (N : ModuleCat c.baseAlg) (r : c.baseAlg) (hr : IsSMulRegular N r)
-      (ih : ∀ m < n, Subsingleton (HN m (.of _ (QuotSMulTop r N)))) : IsSMulRegular (HN n N) r :=
-    -- `(… :)`: the term is elaborated from its arguments, then compared with `r • ·`
-    fun y z ↦ (eq_of_tensorPush_eq (exact_lsmul_mkQ_smul_top N r) Quot.exists_rep
-      (fun B ↦ B.property.rTensor_preserves_injective_linearMap _ hr) ih :)
-  have HN_subsingleton : Subsingleton (HN n (.of _ c.baseAlg)) :=
-    depth_vanishing HN le_radical_torsionOf isSMulRegular_HN hl_le hn _ h_reg
-  -- The comparison is bijective on each `commaUnitLocus g`: both sites represent it by inverting
-  -- `g`, and there the coefficient map of `γ` is an isomorphism.
-  have comparison_bijective :
-      γ.IsBijective (N := ψ ⋙ relFreeAb V) (N' := ψ' ⋙ relFreeAb V) (whiskerRight η _) :=
-    IsClosedClass.relFreeAb_iSup_commaUnitLocus (f := f) _ (γ.isClosedClass η) fun g ↦
-      -- replace the locus of `g` by the object that represents it, on pairs and on flat algebras
-      ((γ.isBijective_congr (pointMap_comp _ (whiskerRight η (commaUnitLocus g).toFunctor))
-          (.of_bijective
-            (pointMap_bijective_of_existsUnique ((commaUnitLocus g).whisker ψ) _
-              (HodgeTest.existsUnique_lift_away _ g isLocalization.toIsLocalizationMap)))
-          (.of_bijective (bijective_pointMap_flatToAway ⟨.of .., .self⟩ g))).2
-        -- for representable functors only the coefficients at the representing objects count
-        (γ.isBijective_of_repr (u := pointMap ⟨𝟙 _⟩) ⟨𝟙 _⟩
-          (pointMap_id_bijective_of_fullyFaithful (𝟭 _) _)
-          (.comp (AddEquiv.bijective _) (bijective_of_isIso (hodgeCoeff.map (_ ≫ _))))) :)
-  have V_eq : V.whisker ψ = someUnitLocus f := by
-    ext
-    simp [V, Subfunctor.whisker]
-    rfl
-  rw [← V_eq]
-  -- the group embeds into a product of copies of `HN n A`, which vanishes
+  have h_local : Subsingleton (flatLocalCohom f n (.of _ c.baseAlg)) :=
+    depth_vanishing (flatLocalCohom f) span_le_radical_torsionOf_flatLocalCohom
+      isSMulRegular_flatLocalCohom hl_le hn _ h_reg
+  rw [← iSup_commaUnitLocus_whisker_pairsComma]
+  -- the group embeds into a product of copies of `flatLocalCohom f n A`, which vanishes
   refine ⟨fun x y ↦ ?_⟩
-  apply (H.pi_bijective ..).injective.comp (comparison_bijective n).injective
-  exact funext fun i ↦ HN_subsingleton.elim ..
+  apply (H.pi_bijective ..).injective.comp (isBijective_flatComparison n).injective
+  exact funext fun i ↦ h_local.elim ..
 
 /-- Let `c = (A, M)` be a pair and `f` a finite family that generates the unit ideal of `A`. Then
 the inclusion into h_c of the locus where some `f i` is a unit induces bijections on the
