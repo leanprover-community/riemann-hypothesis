@@ -206,6 +206,7 @@ variable (S) in
 /-- The chosen set of representatives modulo the level lattice at the infinite places. -/
 noncomputable def residueDomain : Set (InfinitePlace E → ℂ) := Classical.epsilon S.IsResidueDomain
 
+/-- The standard residue domain of an admissible structure is a residue domain. -/
 lemma isResidueDomain_residueDomain [S.IsAdmissible] : S.IsResidueDomain S.residueDomain :=
   Classical.epsilon_spec S.exists_isResidueDomain
 
