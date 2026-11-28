@@ -615,9 +615,7 @@ lemma sum_cost_zero_eq_padicValNat_factorial {k : KummerChart Γ} (hk : k.IsUnra
   | zero => simp [show Ico (0 : ℤ) 1 = {0} from rfl, Nat.padicValNat_def]
   | succ N ih =>
     rw [Nat.cast_succ, ← insert_Ico_right_eq_Ico_add_one (by positivity), sum_insert (by simp), ih,
-      ← Nat.cast_succ, padicValInt.of_nat, Nat.factorial_succ]
-    simp only [Nat.padicValNat_def]
-    rw [Nat.multiplicity_mul N.succ_ne_zero N.factorial_ne_zero]
+      ← Nat.cast_succ, padicValInt.of_nat, ← Nat.padicValNat_def, padicValNat_factorial_succ]
 
 /-- In the unramified chart the steps `0, …, N` at the level `0` together cost at most `m` if
 `N ≤ (p - 1) m`, by Legendre's formula. -/

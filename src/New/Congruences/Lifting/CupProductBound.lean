@@ -924,6 +924,12 @@ private lemma exists_monomial_lowering (c n : ℕ) :
   push_cast
   linear_combination ↑p ^ c * k.z.val ^ (n + 1) * h_lift
 
+/-- Passing from `n!` to `(n + 1)!` adds the valuation of `n + 1` to the cost. -/
+lemma padicValNat_factorial_succ {p : ℕ} [Fact p.Prime] (n : ℕ) :
+    padicValNat p (n + 1).factorial = padicValNat p (n + 1) + padicValNat p n.factorial := by
+  simp only [Nat.factorial_succ, Nat.padicValNat_def,
+    Nat.multiplicity_mul n.succ_ne_zero n.factorial_ne_zero]
+
 /-- Going down a level, on a Kummer chart `k` with ring `k.S ⊂ A_inf` and coordinate `z = k.z`: if
 `p^c z^n` lies in `S.liftIdeal r 1 (σ i)`, where `σ i = i^p` is `k.letterFrob i` for the letter `i`
 (a unit of the field with `p ^ k.f` elements), if `p a ≤ n` and `c + v_p(n!) ≤ κ + v_p((p a)!)`,
@@ -944,9 +950,7 @@ lemma mem_liftIdeal_zero_of_mem_liftIdeal_one_letterFrob {S : PairingSide O} {r 
   | @step n _ ih =>
     obtain ⟨g, α, β, h_der⟩ := exists_monomial_lowering (k := k) c n
     -- The cost of the step is `v(n + 1)`, and `v((n + 1)!) = v(n + 1) + v(n!)`.
-    rw [Nat.factorial_succ, Nat.padicValNat_def,
-      Nat.multiplicity_mul n.add_one_ne_zero n.factorial_ne_zero, ← Nat.padicValNat_def,
-      ← Nat.padicValNat_def] at h_cost
+    rw [padicValNat_factorial_succ] at h_cost
     exact ih _ (mem_liftIdeal_of_eq_mul_smul_sub α β g h_mem h_der) (by omega)
 
 /-- Trading `E` for `z` at level one, on a Kummer chart `k` with ring `k.S ⊂ A_inf`, coordinate
@@ -1004,10 +1008,7 @@ lemma mem_liftIdeal_of_mul_E_pow {S : PairingSide O} {r : ℕ} {i : Letter} {a c
     -- The cost of the step is `v(n + 1) + d`, and `v((n + 1)!) = v(n + 1) + v(n!)`.
     have h_step_cost : cost 0 (n + 1) = padicValNat p (n + 1) + k.differentBound := by
       rw [cost, ← Nat.cast_succ, padicValInt.of_nat, Nat.padicValNat_def]; simp
-    rw [mul_add, mul_one, Nat.factorial_succ,
-      Nat.padicValNat_def,
-      Nat.multiplicity_mul n.add_one_ne_zero n.factorial_ne_zero, ← Nat.padicValNat_def,
-      ← Nat.padicValNat_def] at h_cost
+    rw [mul_add, mul_one, padicValNat_factorial_succ] at h_cost
     exact ih h_step (by omega) (by omega)
 
 /-- Lowering by one the power of the coordinate `z = k.z` of the Kummer chart `k`: for a side `S`
@@ -1049,9 +1050,7 @@ lemma p_pow_mul_z_pow_mem_liftIdeal_of_le {S : PairingSide O} {r c κ m n : ℕ}
     have h_pred : (p : Ainf) ^ (c + padicValNat p (n + 1) + 1) * k.z.val ^ n ∈
         S.liftIdeal r 0 i :=
       p_pow_mul_z_pow_pred_mem_liftIdeal n.succ_pos h_mem
-    rw [Nat.factorial_succ, Nat.padicValNat_def,
-      Nat.multiplicity_mul n.add_one_ne_zero n.factorial_ne_zero, ← Nat.padicValNat_def,
-      ← Nat.padicValNat_def] at h_cost
+    rw [padicValNat_factorial_succ] at h_cost
     exact ih h_pred (by omega)
 
 /-- Passing to the letter before, on a Kummer chart `k` with coordinate `z = k.z` in `Ainf`, the
