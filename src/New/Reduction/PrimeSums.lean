@@ -113,6 +113,16 @@ lemma card_filter_mem_bPlaces (n : ℕ) :
   · simpa [filter_eq_empty_iff] using
       fun τ hτa hτb ↦ hn ((D.mem_aPlaces_iff_of_mul_mem_bPlaces (τ := τ) hτb).1 hτa)
 
+private lemma sum_apply_weight (s : Finset D.Φ) (place : D.Φ → D.Φ) (g : ℝ → ℝ) :
+    ∑ τ ∈ s, g (D.weight (place τ)) =
+      #s * g (D.a / D.x₁) +
+        #{τ ∈ s | place τ ∈ D.bPlaces} * (g (D.a / D.x) - g (D.a / D.x₁)) := by
+  have h (σ : D.Φ) : g (D.weight σ) = g (D.a / D.x₁) +
+      if σ ∈ D.bPlaces then g (D.a / D.x) - g (D.a / D.x₁) else 0 := by
+    rw [cast_weight]
+    split_ifs <;> ring
+  simp only [h, sum_add_distrib, ← sum_filter, sum_const, nsmul_eq_mul]
+
 /-- The contribution of one integer `n` to the sum of the prime sums `D.primeSum D.a τ` over the
 places `τ ≡ 1` modulo `q₀` (the set `D.aPlaces`). So every `τ` gives the term of weight `a / x₁`,
 and if `n ≡ 1` modulo `q₀` there is one correction to the weight `a / x` for each place of
@@ -123,15 +133,8 @@ lemma sum_aPlaces_lambdaKResidueClass_mul_posPart (n : ℕ) :
       #D.aPlaces * (lambdaKResidueClass P.d 1 n * (D.a / n - D.a / D.x₁ : ℝ)⁺) +
         #D.bPlaces * (lambdaKResidueClass P.d P.q₀ n * (D.a / n - D.a / D.x : ℝ)⁺ -
           lambdaKResidueClass P.d P.q₀ n * (D.a / n - D.a / D.x₁ : ℝ)⁺) := by
-  have h_term (σ : D.Φ) : (D.a / n - D.weight σ : ℝ)⁺ = (D.a / n - D.a / D.x₁ : ℝ)⁺ +
-      if σ ∈ D.bPlaces then (D.a / n - D.a / D.x : ℝ)⁺ - (D.a / n - D.a / D.x₁ : ℝ)⁺ else 0 := by
-    rw [cast_weight]
-    split_ifs <;> ring
-  have h_sum : ∑ τ ∈ D.aPlaces, (D.a / n - D.weight (D.placeOfInt (-n) * τ) : ℝ)⁺ =
-      #D.aPlaces * (D.a / n - D.a / D.x₁ : ℝ)⁺ +
-        #{τ ∈ D.aPlaces | D.placeOfInt (-n) * τ ∈ D.bPlaces} *
-        ((D.a / n - D.a / D.x : ℝ)⁺ - (D.a / n - D.a / D.x₁ : ℝ)⁺) := by
-    simp only [h_term, sum_add_distrib, ← sum_filter, sum_const, nsmul_eq_mul]
+  have h_sum := D.sum_apply_weight D.aPlaces (fun τ ↦ D.placeOfInt (-n) * τ)
+    (fun w ↦ (D.a / n - w)⁺)
   rw [← mul_sum, h_sum, card_filter_mem_bPlaces, lambdaKResidueClass_eq_ite (q := P.q₀)]
   split_ifs <;> simp [mul_add, mul_sub, mul_left_comm]
 
@@ -158,11 +161,9 @@ holds since the weight `κ = D.weight` is `a / x` on the set `Φ_b = D.bPlaces` 
 `a / x₁` elsewhere. -/
 lemma sum_log_weight :
     ∑ τ : D.Φ, log (D.weight τ) = D.f * (log D.a - D.logX₁) - #D.bPlaces * (D.logX - D.logX₁) := by
-  have h_log (τ : D.Φ) :
-      log (D.weight τ) = log D.a - D.logX₁ - if τ ∈ D.bPlaces then D.logX - D.logX₁ else 0 := by
-    rw [cast_weight]
-    split_ifs <;> simp [log_div, (HasLogBound.pos D).ne']
-  simp [h_log, sum_sub_distrib, mul_sub, Finset.univ_inter]
+  rw [D.sum_apply_weight univ (fun τ ↦ τ) log]
+  simp [log_div, (HasLogBound.pos D).ne']
+  ring
 
 /-- Let `s_main = D.mainPrimeSum = a (log a - f⁻¹ ∑_τ log κ(τ) + c₁)`, the sum running over all `f`
 places with weights `κ = D.weight`. Then `#Φ_a s_main` equals
