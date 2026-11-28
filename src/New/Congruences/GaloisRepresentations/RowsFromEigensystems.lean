@@ -418,12 +418,9 @@ lemma exists_isMainSummand_of_isRepOfType (ι : PadicIso ℓ) [DecidableEq n]
   -- the avatar of `θ₀` is `ϑ.invAvatar`
   let θ₀ : AlgHeckeChar D.E := ϑ.hasWeight.inv.toAlgebraic 0 0
   -- `S` is attached to `H`, and `normalizingAvatar V` is continuous
-  have lim_lift : Tendsto
-      (fun x ↦ -((normalizingAvatar V x.frob).val * ι.ιℓ ((H x.place).coeff (card n - 1))))
-      (mostFrobeniiAt D.E g)
-      (nhds (-((normalizingAvatar V g).val * (S g).val.charpoly.coeff (card n - 1)))) :=
-    ((tendsto_mostFrobeniiAt fun s ↦ (normalizingAvatar V s).val).mul
-      (hS.tendsto_charpoly_coeff g (card n - 1))).neg
+  let _ : Nonempty n := Fintype.card_pos_iff.mp O.rank_lt.pos
+  have lim_lift := (tendsto_mostFrobeniiAt (g := g) fun s ↦ (normalizingAvatar V s).val).mul
+    (hS.tendsto_trace g)
   have lim_summand : Tendsto
       (fun x ↦ (θ₀.avatar x.frob).val * ((θ.avatar x.frob).val * ι.ιℓ (b x.place 1)))
       (mostFrobeniiAt D.E g) (nhds ((θ₀.avatar g).val * ((θ.avatar g).val * (R g).val.trace))) :=
@@ -433,15 +430,10 @@ lemma exists_isMainSummand_of_isRepOfType (ι : PadicIso ℓ) [DecidableEq n]
     ∑ e ∈ .range V.rankDiff, cyclotomicInv ℓ D.E (PadicAlgCl ℓ) s ^ e
   have lim_string : Tendsto (fun x : FrobeniusDatum D.E ↦ string x.frob) (mostFrobeniiAt D.E g)
       (nhds (string g)) := tendsto_mostFrobeniiAt string
-  have trace_eq : -((normalizingAvatar V g).val * (S g).val.charpoly.coeff (card n - 1)) =
-      (θ₀.avatar g).val * ((θ.avatar g).val * (R g).val.trace) + string g :=
-    tendsto_nhds_unique_of_eventuallyEq lim_lift (lim_summand.add lim_string)
-      ((eventually_trace_frob_eq_of_hasLiftHeckePolynomial ι hO ha hμ hy_lifts hy_eig).filter_mono
-        inf_le_left)
-  -- the trace of `S g` is minus the coefficient of `X ^ (n - 1)` in its characteristic polynomial
-  have trace_S : (S g).val.trace = -(S g).val.charpoly.coeff (card n - 1) := by
-    simp [trace_eq_neg_charpoly_nextCoeff (S g).val, nextCoeff, O.rank_lt.pos.ne']
-  simpa [trace_S, TameChar.invAvatar, Units.smul_def] using trace_eq
+  have trace_eq := tendsto_nhds_unique_of_eventuallyEq lim_lift (lim_summand.add lim_string)
+    (((eventually_trace_frob_eq_of_hasLiftHeckePolynomial ι hO ha hμ hy_lifts hy_eig).filter_mono
+      inf_le_left).mono fun x hx ↦ by simpa only [mul_neg] using hx)
+  simpa [TameChar.invAvatar, Units.smul_def] using trace_eq
 
 /-- Let the weight `(d, κ)` give at each infinite place `v` of the CM field `D.E` (the type `D.Φ`) a
 shape `d v` and an integer `κ v`, and suppose that its doubled Harish-Chandra parameter is

@@ -237,6 +237,14 @@ lemma GaloisRep.Attached.tendsto_charpoly_coeff [PadicIso ℓ] (hρ : Attached P
   -- every point of an ultrametric ball is a centre of it
   rwa [closedBall_eq_of_mem hz, mem_closedBall_iff_norm']
 
+/-- As Frobenius elements tend to `j x`, minus the coefficient of degree `card n - 1` of the
+attached Frobenius polynomials tends to the trace of `ρ x`. -/
+lemma GaloisRep.Attached.tendsto_trace [PadicIso ℓ] [Nonempty n] (hρ : Attached P ρ j) (x : H) :
+    Tendsto (fun y : FrobeniusDatum E ↦ -ιℓ ((P y.place).coeff (Fintype.card n - 1)))
+      (mostFrobeniiAt E (j x)) (𝓝 (ρ x).val.trace) := by
+  rw [Matrix.trace_eq_neg_charpoly_coeff]
+  exact (hρ.tendsto_charpoly_coeff x _).neg
+
 /-- If `ρ` on `H` and `σ` on `G`, of the same rank, are attached to the same system `P` through maps
 `j`, `j'` to `Gal(Ω/E)`, then `ρ x` and `σ y` have the same trace whenever `j x = j' y`. -/
 lemma GaloisRep.Attached.trace_eq [PadicIso ℓ] {G : Type} [Group G] [TopologicalSpace G]
@@ -420,10 +428,6 @@ lemma New.GaloisRep.Attached.exists_det_eq_avatar {E : Type} [Field E] [CMType E
     have h_coeff : heckeCoeff χ ∅ y.place = -(P y.place).coeff 0 := by
       simpa [heckeCoeff] using hθ.apply_uniformizer hw _ (v_uniformizer y.place) hQ
     rw [h_av, h_coeff, map_neg]
-  have h_det : (r g).val.det = -(r g).val.charpoly.coeff 0 := by
-    simpa using det_eq_sign_charpoly_coeff (r g).val
-  have h_lim : Tendsto (fun y : FrobeniusDatum E ↦ -ιℓ ((P y.place).coeff 0)) (mostFrobeniiAt E g)
-      (nhds (θ.avatar g).val) :=
-    (tendsto_mostFrobeniiAt fun s ↦ (θ.avatar s).val).congr' (h_frob.filter_mono inf_le_left)
-  rw [h_det]
-  exact tendsto_nhds_unique (hr.tendsto_charpoly_coeff g 0).neg h_lim
+  simpa [Matrix.det_fin_one, Matrix.trace_fin_one] using
+    (tendsto_nhds_unique_of_eventuallyEq (tendsto_mostFrobeniiAt fun s ↦ (θ.avatar s).val)
+      (hr.tendsto_trace g) (h_frob.filter_mono inf_le_left)).symm

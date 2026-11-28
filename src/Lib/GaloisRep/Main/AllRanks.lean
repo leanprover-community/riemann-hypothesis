@@ -260,12 +260,7 @@ lemma New.GaloisRep.Attached.tendsto_trace_sub {ℓ : ℕ} {E n m T : Type} [The
       (mostFrobeniiAt E g) (nhds ((ρ g).val.trace - ∑ l : T, (ψ l g).val)) := by
   -- `tr ρ g` is minus the coefficient of degree `card m - 1` of `det (X - ρ g)`, the limit of that
   -- coefficient of `P w * ∏ l, (X - c l w)`; this coefficient is additive for monic products.
-  rw [trace_eq_neg_charpoly_coeff]
   let R (w : FinPlace E) : ℂ[X] := ∏ l : T, (X - C (c l w))
-  have h_charpoly : Tendsto
-      (fun y : FrobeniusDatum E ↦ ιℓ ((P y.place * R y.place).coeff (card m - 1)))
-      (mostFrobeniiAt E g) (nhds ((ρ g).val.charpoly.coeff (card m - 1))) :=
-    hρ.tendsto_charpoly_coeff g (card m - 1)
   have h_chars : Tendsto (fun y : FrobeniusDatum E ↦ ∑ l : T, (ψ l y.frob).val)
       (mostFrobeniiAt E g) (nhds (∑ l : T, (ψ l g).val)) :=
     tendsto_mostFrobeniiAt fun g : Gal(Ω/E) ↦ ∑ l : T, (ψ l g).val
@@ -280,7 +275,7 @@ lemma New.GaloisRep.Attached.tendsto_trace_sub {ℓ : ℕ} {E n m T : Type} [The
     simpa [R, hy_val, ↓prod_X_sub_C_nextCoeff, nextCoeff, hy_monic.monic.natDegree_mul,
       hy_monic.natDegree_eq, hcard, monic_prod_X_sub_C, sub_eq_iff_eq_add'] using
       congrArg (fun z : ℂ ↦ -ιℓ z) h_next
-  exact (h_charpoly.neg.sub h_chars).congr' (mem_inf_of_left h_coeff)
+  exact ((hρ.tendsto_trace g).sub h_chars).congr' (mem_inf_of_left h_coeff)
 
 /-- Let `ρ` be attached to `P * R`, where at most Frobenii `ιℓ (R w)` is `∏ l, (X - ψ l s)`, with
 `s` the Frobenius element and `ψ l` continuous characters. A representation `r` with
@@ -347,8 +342,7 @@ lemma New.GaloisRep.Attached.exists_attached_of_mul_prod {ℓ : ℕ} {E n m T : 
   · filter_upwards [hψ_val] with y hy_val
     simp [hy_val, Polynomial.map_prod]
   · -- The trace of `r` is the same limit.
-    rw [trace_eq_neg_charpoly_coeff]
-    exact tendsto_nhds_unique (hr.tendsto_charpoly_coeff g (Fintype.card n - 1)).neg (htrace g i)
+    exact tendsto_nhds_unique (hr.tendsto_trace g) (htrace g i)
 
 /-- Let `σ` be attached to `Q` and let `ν` be a continuous character. Suppose that at most Frobenii
 `ν` takes the value `ιℓ (z w)`, `Q w` is monic of degree `card m`, and `Q w` with its roots
