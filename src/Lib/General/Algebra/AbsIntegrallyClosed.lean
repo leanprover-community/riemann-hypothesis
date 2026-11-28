@@ -91,6 +91,21 @@ lemma exists_root_of_coeffs_subset_range [hA : IsAbsIntegrallyClosed A] {f : A �
   obtain ⟨x, hx⟩ := hA.exists_root Q hQ (by lia)
   exact ⟨f x, hx.map f⟩
 
+/-- A nonempty directed union of absolutely integrally closed subrings is absolutely integrally
+closed. The coefficients of a monic polynomial all occur in one member of the family. -/
+lemma iSup_of_directed {ι : Type*} [Nonempty ι] {S : ι → Subring A}
+    (hS : Directed (· ≤ ·) S) (h_closed : ∀ i, IsAbsIntegrallyClosed (S i)) :
+    IsAbsIntegrallyClosed (⨆ i, S i : Subring A) := by
+  classical
+  let U : Subring A := ⨆ i, S i
+  refine ⟨fun (P : U[X]) ↦ ?_⟩
+  choose stage h_stage using fun x : U ↦ (Subring.mem_iSup_of_directed hS).mp x.property
+  obtain ⟨i, hi⟩ := hS.finset_le (P.coeffs.image stage)
+  have h_coeffs (x : U) (hx : x ∈ P.coeffs) : (x : A) ∈ S i :=
+    hi (stage x) (Finset.mem_image_of_mem stage hx) (h_stage x)
+  exact (h_closed i).exists_root_of_coeffs_subset_range (f := Subring.inclusion (le_iSup S i))
+    fun x hx ↦ ⟨⟨x, h_coeffs x hx⟩, rfl⟩
+
 /-- In an absolutely integrally closed ring, every element has an `n`-th root for `n ≠ 0`. -/
 lemma exists_pow_eq [hA : IsAbsIntegrallyClosed A] (n : ℕ) [hn : NeZero n] (a : A) :
     ∃ x : A, x ^ n = a := by

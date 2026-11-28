@@ -116,16 +116,12 @@ lemma New.Variety.absIntegrallyClosedSubrings.exists_cocone_iSup {Λ : Ab} {F : 
       IsFilteredColimit ((quotientFunctor J γ ⋙ locConstSpec Λ).mapCocone m) := by
   let φ (B : c) : Subring F := B.val.val
   have h_mem (B : c) : γ.range ≤ φ B ∧ IsAbsIntegrallyClosed (φ B) := B.val.prop
-  -- An element of the union lies in all large members, hence so do finitely many elements.
+  -- An element of the union lies in all sufficiently large members.
   have h_ev (x : ↥(iSup φ)) : ∀ᶠ B : c in atTop, x.val ∈ φ B := by
     obtain ⟨B, hB⟩ := (mem_iSup_of_directed hc.directed).mp x.prop
     exact eventually_atTop.mpr ⟨B, fun B' hBB' ↦ hBB' hB⟩
-  have h_aic : IsAbsIntegrallyClosed ↥(iSup φ) := by
-    refine ⟨fun p ↦ ?_⟩
-    obtain ⟨B, hB⟩ : ∃ B : c, ∀ y ∈ p.coeffs, (y : F) ∈ φ B :=
-      (p.coeffs.eventually_all.mpr fun y _ ↦ h_ev y).exists
-    exact (h_mem B).2.exists_root_of_coeffs_subset_range (f := inclusion (le_iSup φ B))
-      fun y hy ↦ ⟨⟨y, hB y hy⟩, rfl⟩
+  have h_aic : IsAbsIntegrallyClosed ↥(iSup φ) :=
+    IsAbsIntegrallyClosed.iSup_of_directed hc.directed fun B ↦ (h_mem B).2
   let S : absIntegrallyClosedSubrings γ :=
     ⟨iSup φ, le_iSup_of_le hne.some (h_mem hne.some).1, h_aic⟩
   -- It is enough that `S / J S` is the colimit of the rings `B / J B`; check this on elements.
