@@ -7,6 +7,7 @@ import Mathlib.RingTheory.PicardGroup
 import TauCeti.LinearAlgebra.Matrix.Range
 public import New.Spanning.RemainingTerms.Cut
 import Lib.Base
+import Lib.General.LinearAlgebra.HermitianMatrices
 
 /-!
 # The gain: a discriminant bound for the common lattice of two terms over one block
@@ -126,37 +127,34 @@ lemma abs_norm_det_gram_sub_le {i : ℕ} {b b' : Matrix 𝔰.MiddleIndex (Fin i)
     |(Algebra.norm ℚ ((b - b')ᴴ * S.positiveGram * (b - b')).det : ℝ)| ≤
       (2 ^ 2) ^ (2 * i * numInfPlaces E) *
         |(Algebra.norm ℚ (bᴴ * S.positiveGram * b).det : ℝ)| := by
-  -- The Gram matrices of `b - b'` and `b + b'` are positive and add up to `4` times that of `b`,
-  -- which is `Θ + Θᴴ`. Ostrowski–Taussky bounds the first determinant by `2 ^ i ‖det Θ‖`.
-  let Θ : Matrix (Fin i) (Fin i) E := (2 : E) • (bᴴ * S.positiveGram * b)
-  have h_herm : S.positiveGramᴴ = S.positiveGram := by
-    ext (a | a) (a' | a') <;> simp [positiveGram, diagonal_apply, eq_comm, apply_ite star]
-  have h_sum : Θ + Θᴴ - (b - b')ᴴ * S.positiveGram * (b - b') =
+  -- The Gram matrix of the sum is positive, so that of the difference is bounded
+  -- by four times the common Gram matrix.
+  let C : Matrix (Fin i) (Fin i) E := (4 : E) • (bᴴ * S.positiveGram * b)
+  have h_sum : C - (b - b')ᴴ * S.positiveGram * (b - b') =
       (b + b')ᴴ * S.positiveGram * (b + b') := by
-    simp only [Θ, conjTranspose_mul, conjTranspose_conjTranspose, h_herm,
-      conjTranspose_sub, conjTranspose_add, Matrix.sub_mul, Matrix.mul_sub, Matrix.add_mul,
-      Matrix.mul_add, ← Matrix.mul_assoc, h_gram, two_smul]
+    have h_four : (4 : E) = 2 + 2 := by norm_num
+    simp only [C, h_four, add_smul, two_smul, conjTranspose_sub, conjTranspose_add,
+      Matrix.sub_mul, Matrix.mul_sub, Matrix.add_mul, Matrix.mul_add, h_gram]
     abel
   have h_pos (w : InfinitePlace E) (a : Matrix 𝔰.MiddleIndex (Fin i) E) :
       ((aᴴ * S.positiveGram * a).map (Φ w)).PosSemidef := by
     simpa [map_conjTranspose] using
       (positiveGram_posDef w).posSemidef.conjTranspose_mul_mul_same (a.map (Φ w))
   have h_place (w : InfinitePlace E) :
-      ‖Φ w ((b - b')ᴴ * S.positiveGram * (b - b')).det‖ ≤ 2 ^ i * ‖Φ w Θ.det‖ := by
-    have h_rest : ((Θ + Θᴴ - (b - b')ᴴ * S.positiveGram * (b - b')).map (Φ w)).PosSemidef := by
+      ‖Φ w ((b - b')ᴴ * S.positiveGram * (b - b')).det‖ ≤ ‖Φ w C.det‖ := by
+    have h_rest : ((C - (b - b')ᴴ * S.positiveGram * (b - b')).map (Φ w)).PosSemidef := by
       rw [h_sum]
       exact h_pos w (b + b')
-    rw [Matrix.map_sub _ (map_sub _), Matrix.map_add _ (map_add _), map_conjTranspose] at h_rest
-    simpa [RingHom.map_det] using (h_pos w (b - b')).norm_det_le_two_pow_mul h_rest
-  have h_two (w : InfinitePlace E) : ‖Φ w (2 : E)‖ = 2 := by simp [map_ofNat]
+    rw [Matrix.map_sub _ (map_sub _)] at h_rest
+    simpa [RingHom.map_det] using norm_det_le_norm_det_of_posSemidef (h_pos w (b - b')) h_rest
+  have h_four (w : InfinitePlace E) : ‖Φ w (4 : E)‖ = 4 := by simp [map_ofNat]
   calc
-    _ ≤ 2 ^ (2 * i * numInfPlaces E) * |(Algebra.norm ℚ Θ.det : ℝ)| := by
+    _ ≤ |(Algebra.norm ℚ C.det : ℝ)| := by
       rw [abs_norm_eq_prod_norm_sq, abs_norm_eq_prod_norm_sq]
       grw [h_place]
-      simp [mul_pow, Finset.prod_mul_distrib, ← pow_mul, mul_comm]
-    _ = (2 ^ 2) ^ (2 * i * numInfPlaces E) *
-        |(Algebra.norm ℚ (bᴴ * S.positiveGram * b).det : ℝ)| := by
-      rw [abs_norm_det_smul h_two, ← mul_assoc, ← mul_pow, sq]
+    _ = _ := by
+      simpa only [C, show (2 : ℝ) ^ 2 = 4 by norm_num] using
+        abs_norm_det_smul h_four (bᴴ * S.positiveGram * b)
 
 /-- The matrix whose columns are the vectors `y₀ + λ z⁺` of `X₀ ⊥ E z⁺` attached to the columns
 `(y₀ + λ' z, y₀' + λ z)` of `y`. -/
