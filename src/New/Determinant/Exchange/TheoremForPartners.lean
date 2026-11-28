@@ -280,14 +280,15 @@ lemma thetaLarge_eq_smul_of_areMatched (W : Space E n s) (V : Space E r t) (U : 
     exists_isEquivariantLift_eq_thetaLarge_sub_smul W V U 𝔠 σ h_even hv hy c
   obtain ⟨h_primitive, z, hz, h_inv⟩ :=
     isPrimitiveMatrix_firstCols σ (one_mem _ : (1 : GL n (LocProd 𝔠.ramifiedPlaces)) ∈ _)
+  have h_std_sb := stdColDatum_mem_schwartzBruhat 𝔠.semilocalChar hz
   obtain ⟨h_mem, h_value⟩ :=
-    h_diff (stdColDatum_mem_schwartzBruhat _ hz).1 (areMatched_stdRowDatum_stdColDatum σ hz)
+    h_diff h_std_sb.1 (areMatched_stdRowDatum_stdColDatum σ hz)
   have h_std_ker : stdColDatum 𝔠.semilocalChar z ∈ M ⊓ 𝒟.ker :=
     ⟨h_mem, by simp [h_value, h_std z hz]⟩
   -- The standard datum is taken with multiplicity `1`.
   obtain ⟨hΨ_mem, hΨ_ker : 𝒟 Ψ = 0⟩ :=
-    match_mem_of_stdColDatum h𝒟.comp_mul_mem_ker (inf_le_left.trans h𝒟.le_schwartzBruhat) hΨ hΦΨ
-      h_std_ker h_primitive hz h_inv 1 (by simp) one_ne_zero
+    match_mem_of_stdColDatum h𝒟.comp_mul_mem_ker hΨ hΦΨ
+      h_std_ker h_std_sb.1 h_std_sb.2.1 h_primitive hz h_inv 1 (by simp) one_ne_zero
   obtain ⟨-, hΨ_value⟩ := h_diff hΨ hΦΨ
   exact ⟨h𝒟.le_schwartzBruhat hΨ_mem, sub_eq_zero.1 (hΨ_value.symm.trans hΨ_ker)⟩
 

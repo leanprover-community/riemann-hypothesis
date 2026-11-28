@@ -153,17 +153,19 @@ lemma match_mul_stdColDatum_translate (hΦΨ : AreMatched V.O e χ Φ Ψ) {p : M
   rw [hΨy, h_value]
   simp [h_norm, field]
 
-/-- Let χ be tame and let P be a GL_n(F)-stable space of functions on n × b matrices that are
-locally constant, compactly supported and zero outside a set U. Suppose that P contains
-p = r · `stdColDatum χ s`, where `stdColDatum χ s` is the standard datum of the integral matrix s
-(χ⁻¹(det s y) at integral y with det s y a unit of O, 0 elsewhere), and r is an ℕ-valued function
-with r(x) ≠ 0 at an integral x with s x = 1. Then P contains every locally constant Ψ that has a
-matched function Φ for χ over O (with the n indices split as b ⊕ a by e, Φ at the rows a of k⁻¹ is
-χ(det k) times Ψ at the columns b of k, for k in GL_n(O), and both vanish elsewhere). -/
+/-- Let χ be tame and let P be a GL_n(F)-stable space of functions on n × b matrices.
+Suppose that P contains a locally constant, compactly supported function p = r · `stdColDatum χ s`.
+The standard datum of the integral matrix s is χ⁻¹(det s y) at integral y with det s y a unit of O,
+and 0 elsewhere.
+Assume r is ℕ-valued with r(x) ≠ 0 at an integral x with s x = 1. Then P contains every locally
+constant Ψ that has a matched function Φ for χ over O. With the n indices split as b ⊕ a by e, Φ
+at the rows a of k⁻¹ is χ(det k) times Ψ at the columns b of k, for k in GL_n(O), and both vanish
+elsewhere. -/
 lemma match_mem_of_stdColDatum
     (hP_stable : ∀ g : GL n F, ∀ f ∈ P, (fun y : Matrix n b F ↦ f (g.val * y)) ∈ P)
-    (hP_le : P ≤ schwartzBruhat U) (hΨ : IsLocallyConstant Ψ) (hΦΨ : AreMatched V.O e χ Φ Ψ)
+    (hΨ : IsLocallyConstant Ψ) (hΦΨ : AreMatched V.O e χ Φ Ψ)
     {p : Matrix n b F → ℂ} {x : Matrix n b F} {s : Matrix b n F} (hp : p ∈ P)
+    (hp_const : IsLocallyConstant p) (hp_compact : HasCompactSupport p)
     (hx : IsIntMatrix O x) (hs : IsIntMatrix O s) (hsx : s * x = 1) (r : Matrix n b F → ℕ)
     (hp_eq : ∀ y : Matrix n b F, p y = r y • stdColDatum χ s y) (hr : r x ≠ 0) : Ψ ∈ P := by
   classical
@@ -177,7 +179,8 @@ lemma match_mem_of_stdColDatum
   have : CompactSpace (intGL n V.O) := isCompact_iff_compactSpace.1 (isCompact_intGL isCompact_O)
   have h_translates :
       IsLocallyConstant fun (k : intGL n V.O) (y : Matrix n b F) ↦ p ((d * k : GL n F).val * y) :=
-    isLocallyConstant_curry (hP_le hp) (fun (k : intGL n V.O) y ↦ d.val * (k : GL n F).val * y)
+    isLocallyConstant_curry (s := Set.univ) ⟨hp_const, hp_compact, Set.subset_univ _⟩
+      (fun (k : intGL n V.O) y ↦ d.val * (k : GL n F).val * y)
       (fun k y ↦ (k : GL n F).inv * d.inv * y) (fun k y ↦ by simp [Matrix.mul_assoc])
       (hg := by simp only [Units.inv_eq_val_inv]; fun_prop)
   -- The integral `I y` of `‖p (d * k * y)‖` over `k` is constant where `Ψ y ≠ 0`: these `y` are in
@@ -393,8 +396,10 @@ lemma IntegralFrame.match_mem_of_isPrimitiveMatrix_vanishing
     -- the term `r = 1` is `stdColDatum χ A.dualK A.K = 1` there
     simp [f, g, l, ← Units.smul_def, S, invOnUnits, hK, hK'K, hK'L, stdColDatum,
       Matrix.mul_add, Matrix.mul_sub]
-  refine match_mem_of_stdColDatum hP_stable hP_le hΨ hΦΨ (hP_stable g _ h_avg)
-    (hL.sub (hK.smul ϖ_mem)) hL'
+  have h_translated := hP_stable g _ h_avg
+  have h_translated_sb := hP_le h_translated
+  refine match_mem_of_stdColDatum hP_stable hΨ hΦΨ h_translated
+    h_translated_sb.1 h_translated_sb.2.1 (hL.sub (hK.smul ϖ_mem)) hL'
     (by simp [hL'K, hL'L, Matrix.mul_sub]) (fun y ↦ #{r | f r (g.val * y) ≠ 0}) (fun y ↦ ?_)
     (card_ne_zero.2 ⟨1, by simpa using h_ne_one⟩)
   rw [Finset.sum_apply, ← sum_filter_ne_zero]
