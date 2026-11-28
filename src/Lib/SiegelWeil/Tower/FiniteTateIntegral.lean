@@ -73,6 +73,7 @@ its analytic continuation. -/
 def lSharp (z : ℝ) : ℝ := ‖𝔠.character.L 𝔠.ramifiedPlaces z‖ * ∏ w : 𝔠.ramifiedPlaces,
   (w.val.q : ℝ) ^ (z - 1 / 2)
 
+/-- The weight of a split tame character `SplitTameChar E` is strictly nonzero. -/
 theorem SplitTameChar.weight_ne_zero (𝔠 : SplitTameChar E μ) : μ ≠ 0 := fun h ↦
   (𝔠.weight_pos (Classical.arbitrary _)).ne' (congrFun h _)
 
@@ -81,6 +82,7 @@ of the character is not zero. -/
 theorem SplitTameChar.L_ne_zero {z : ℝ} (hz : 1 ≤ z) : 𝔠.character.L 𝔠.ramifiedPlaces z ≠ 0 :=
   𝔠.hasWeight.L_ne_zero 𝔠.ramifiedPlaces.finite_toSet 𝔠.weight_ne_zero hz
 
+/-- Positivity of the L-factor `lSharp 𝔠 z` at real arguments `1 ≤ z`. -/
 theorem lSharp_pos {z : ℝ} (hz : 1 ≤ z) : 0 < lSharp 𝔠 z :=
   mul_pos (norm_pos_iff.2 (𝔠.L_ne_zero hz))
     (Finset.prod_pos fun w _ ↦ rpow_pos_of_pos (by simp [FinPlace.q_bounds]) _)
@@ -99,11 +101,13 @@ theorem lValueProd_succ (z : ℕ) :
     h_power, h_norm, Finset.prod_Icc_succ_top (by simp), Nat.cast_succ]
   ring
 
+/-- For the character and ramified places of `𝔠`, the product `L_*(e)` of `L`-values is positive. -/
 theorem lValueProd_pos (e : ℕ) : 0 < lValueProd 𝔠.ramifiedPlaces 𝔠.character e := by
   induction e with
   | zero => simp [lValueProd]
   | succ e ih => simp [lValueProd_succ, ih, pow_pos (lSharp_pos 𝔠 (z := e + 1) (by simp))]
 
+/-- The integer-evaluated product `lValueProdInt` is strictly positive for `e : ℤ`. -/
 theorem lValueProdInt_pos (e : ℤ) : 0 < lValueProdInt 𝔠 e :=
   div_pos (lValueProd_pos 𝔠 _) (lValueProd_pos 𝔠 _)
 
