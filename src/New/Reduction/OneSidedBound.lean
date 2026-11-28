@@ -12,14 +12,15 @@ public import TauCeti.NumberTheory.DirichletCharacter.LFunction.ZeroReflection -
 /-!
 # The one-sided bound, and the theorem in half-plane form
 
-For admissible data at an integer `x`, the main inequality and the prime number theorem at a much
-larger cut-off `x₁` give the bound `R_{q₀}(x) ≤ (128 φ(q₀) + 32) x ^ (-1/2 + ε)` for large `x`.
-The one-sided criterion gives non-vanishing of Dirichlet `L`-functions in `re s > 1/2`.
+For admissible data at an integer cutoff, the main inequality and the prime number theorem at a
+larger cutoff give an upper bound for the prime remainder. Rounding a real cutoff up then gives
+`R_{q₀}(y) ≤ (64 φ(q₀) + 4) y ^ (-1/2 + ε)` for large real `y`. The one-sided criterion gives
+non-vanishing of Dirichlet `L`-functions in `re s > 1/2`.
 
 The exponent `-1/2 + 6 ε` comes from the term `log⁶ b / m`: choose `log b ≤ 2 x^ε` and
 `m ≥ √x`. The auxiliary cutoff is large enough for the prime number theorem to bound both
-remainders there by `x^(-2)`. The passage to real `x` and the choice of a smaller `ε` preserve
-the resulting exponent bound.
+remainders there by `x^(-2)`. The smoothed prime sum is nondecreasing, so only the logarithmic
+main term contributes to the rounding error.
 
 Notions from other files:
 * `Parameters`: a multiple `q₀ = P.q₀` of `18480` and a prime `d = P.d ≡ q₀ / 2 - 1` modulo `q₀`.
@@ -168,30 +169,33 @@ lemma eventually_primeRemainder_natCast_le (P : Parameters) {ε : ℝ} (hε : 0 
       rw [mul_pow, mul_div_assoc, mul_div_assoc, h_main_exponent]
       linarith
 
-/-- Let `d` be a prime, `q > 0`, and `R_q(y) = primeRemainder d q y = ∑_{n ≤ y} λ(n) (1/n - 1/y) -
-log y / φ(q) - c_q`. Then `R_q(y) - R_q(⌊y⌋) ≤ 26 / y` for `y ≥ 2`. -/
-lemma primeRemainder_sub_primeRemainder_floor_le {d : ℕ} [Fact d.Prime] {q : ℕ} [NeZero q] {y : ℝ}
-    (hy : 2 ≤ y) : primeRemainder d q y - primeRemainder d q ⌊y⌋₊ ≤ 26 / y := by
-  have h_le : (⌊y⌋₊ : ℝ) ≤ y := Nat.floor_le (zero_le_two.trans hy)
-  have h_half := Nat.div_two_lt_floor (one_le_two.trans hy)
-  calc primeRemainder d q y - primeRemainder d q ⌊y⌋₊ ≤ 13 * ((y - ⌊y⌋₊) / ⌊y⌋₊) :=
-        (le_abs_self _).trans (abs_primeRemainder_sub_le (by linarith) h_le)
-    _ ≤ 13 * (1 / (y / 2)) := by gcongr; linarith [Nat.self_sub_floor_lt_one y]
-    _ = 26 / y := by field
+/-- The smoothed prime sum is nondecreasing, so the decrease in the remainder is at most
+the increase in its logarithmic main term. -/
+lemma primeRemainder_sub_le_log_ratio {d : ℕ} [Fact d.Prime] {q : ℕ} [NeZero q]
+    {y z : ℝ} (hy : 0 < y) (hyz : y ≤ z) :
+    primeRemainder d q y - primeRemainder d q z ≤ log (z / y) / q.totient := by
+  have hz := hy.trans_le hyz
+  rw [primeRemainder_eq_sum_posPart (A := ⌊z⌋₊) hy (Nat.floor_mono hyz),
+    primeRemainder_eq_sum_posPart (A := ⌊z⌋₊) hz le_rfl, log_div hz.ne' hy.ne', sub_div]
+  have hkernel (n : ℕ) : (1 / (n : ℝ) - 1 / y)⁺ ≤ (1 / (n : ℝ) - 1 / z)⁺ :=
+    sup_le_sup_right (sub_le_sub_left (one_div_le_one_div_of_le hy hyz) _) 0
+  grw [hkernel]
+  · linarith
+  · apply lambdaKResidueClass_nonneg
 
-/-- For `y ≥ 2` and `-1 ≤ t ≤ 0` we have `⌊y⌋ ^ t ≤ 2 y ^ t`, since `y / 2 ≤ ⌊y⌋`. -/
-lemma natFloor_rpow_le_two_mul_rpow {y t : ℝ} (hy : 2 ≤ y) (ht_ge : -1 ≤ t) (ht_le : t ≤ 0) :
-    (⌊y⌋₊ : ℝ) ^ t ≤ 2 * y ^ t := by
-  have hy_pos : 0 < y := two_pos.trans_le hy
-  calc (⌊y⌋₊ : ℝ) ^ t ≤ (y / 2) ^ t :=
-    rpow_le_rpow_of_nonpos (half_pos hy_pos) (Nat.div_two_lt_floor (one_le_two.trans hy)).le ht_le
-    _ = y ^ t / 2 ^ t := div_rpow hy_pos.le zero_le_two t
-    _ ≤ y ^ t / 2 ^ (-1 : ℝ) := by
-        gcongr
-        exact one_le_two
-    _ = 2 * y ^ t := by
-        rw [rpow_neg_one]
-        field
+/-- Rounding a positive real cutoff up to the next integer costs at most its reciprocal. -/
+lemma primeRemainder_le_ceil_add {d : ℕ} [Fact d.Prime] {q : ℕ} [NeZero q] {y : ℝ} (hy : 0 < y) :
+    primeRemainder d q y ≤ primeRemainder d q ⌈y⌉₊ + 1 / y := by
+  have hratio : 1 ≤ (⌈y⌉₊ : ℝ) / y := (one_le_div hy).2 (Nat.le_ceil _)
+  apply sub_le_iff_le_add'.mp
+  calc primeRemainder d q y - primeRemainder d q ⌈y⌉₊
+      ≤ log (⌈y⌉₊ / y) / q.totient := primeRemainder_sub_le_log_ratio hy (Nat.le_ceil _)
+    _ ≤ log (⌈y⌉₊ / y) :=
+      div_le_self (log_nonneg hratio) (by exact_mod_cast Nat.totient_pos.2 (NeZero.pos q))
+    _ ≤ ⌈y⌉₊ / y - 1 := log_le_sub_one_of_pos (zero_lt_one.trans_le hratio)
+    _ ≤ 1 / y := by
+      rw [div_sub_one hy.ne', div_le_div_iff_of_pos_right hy]
+      linarith [Nat.ceil_lt_add_one hy.le]
 
 /-- If `q₀ > 0` is even and `d ≡ q₀ / 2 - 1` modulo `q₀`, then `q₀` divides `2 (d + 1)` but not
 `d + 1`. This is the form of the congruence in `Parameters`. -/
@@ -209,10 +213,10 @@ lemma dvd_two_mul_succ_and_not_dvd_succ {q₀ d : ℕ} (hq₀_pos : 0 < q₀) (h
 
 /-- **One-sided bound.** Let `q₀ > 0` be a multiple of `18480`, let `d ≡ q₀ / 2 - 1` modulo `q₀` be
 a prime, and let `ε > 0`. Then `R = primeRemainder d q₀` satisfies
-`R(y) ≤ (128 φ(q₀) + 32) y ^ (-1/2 + ε)` for all large real `y`. -/
+`R(y) ≤ (64 φ(q₀) + 4) y ^ (-1/2 + ε)` for all large real `y`. -/
 theorem eventually_primeRemainder_le_mul_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ : 18480 ∣ q₀) {d : ℕ}
     [hd_prime : Fact d.Prime] (hd : d ≡ q₀ / 2 - 1 [MOD q₀]) {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ y ≤ (128 * q₀.totient + 32) * y ^ (-1 / 2 + ε) := by
+    ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ y ≤ (64 * q₀.totient + 4) * y ^ (-1 / 2 + ε) := by
   let P : Parameters :=
     { q₀ := q₀
       d := d
@@ -228,21 +232,18 @@ theorem eventually_primeRemainder_le_mul_rpow {q₀ : ℕ} [NeZero q₀] (hq₀ 
   set t : ℝ := -1 / 2 + 6 * δ with ht
   have ht_ge : -1 ≤ t := by linarith
   have ht_le : t ≤ 0 := by linarith
-  have h_integer_bound : ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ ⌊y⌋₊ ≤ C * (⌊y⌋₊ : ℝ) ^ t :=
-    tendsto_nat_floor_atTop.eventually (eventually_primeRemainder_natCast_le P hδ hδ_lt)
-  filter_upwards [h_integer_bound, eventually_ge_atTop 2] with y hy_floor hy
-  have hy_one : 1 ≤ y := one_le_two.trans hy
+  have h_integer_bound : ∀ᶠ y : ℝ in atTop, primeRemainder d q₀ ⌈y⌉₊ ≤ C * (⌈y⌉₊ : ℝ) ^ t :=
+    tendsto_nat_ceil_atTop.eventually (eventually_primeRemainder_natCast_le P hδ hδ_lt)
+  filter_upwards [h_integer_bound, eventually_ge_atTop 1] with y hy_ceil hy
+  have hy_pos := zero_lt_one.trans_le hy
   calc primeRemainder d q₀ y
-      ≤ primeRemainder d q₀ ⌊y⌋₊ + 26 / y :=
-        sub_le_iff_le_add'.1 (primeRemainder_sub_primeRemainder_floor_le hy)
-    _ ≤ C * (⌊y⌋₊ : ℝ) ^ t + 26 * y ^ (-1 : ℝ) := by grw [hy_floor, rpow_neg_one, div_eq_mul_inv]
-    _ ≤ C * (2 * y ^ t) + 26 * y ^ t := by
-        gcongr
-        exact natFloor_rpow_le_two_mul_rpow hy ht_ge ht_le
-    _ = (128 * q₀.totient + 32) * y ^ t := by dsimp [C]; ring
-    _ ≤ (128 * q₀.totient + 32) * y ^ (-1 / 2 + ε) :=
-      mul_le_mul_of_nonneg_left (rpow_le_rpow_of_exponent_le hy_one (by linarith [ht]))
-          (by positivity)
+      ≤ primeRemainder d q₀ ⌈y⌉₊ + 1 / y := primeRemainder_le_ceil_add hy_pos
+    _ ≤ C * (⌈y⌉₊ : ℝ) ^ t + y ^ (-1 : ℝ) := by grw [hy_ceil, rpow_neg_one, one_div]
+    _ ≤ C * y ^ t + y ^ t := by
+      grw [rpow_le_rpow_of_nonpos hy_pos (Nat.le_ceil _) ht_le,
+        rpow_le_rpow_of_exponent_le hy ht_ge]
+    _ = (64 * q₀.totient + 4) * y ^ t := by dsimp [C]; ring
+    _ ≤ (64 * q₀.totient + 4) * y ^ (-1 / 2 + ε) := by gcongr; linarith [ht]
 
 /-- **Main theorem**, in half-plane form: no Dirichlet `L`-function vanishes in `re s > 1/2`
 (with `s ≠ 1` for a principal character). -/
@@ -265,7 +266,7 @@ theorem grh : DirichletLNonvanishingRightOfHalf := by
   -- The one-sided bound is the hypothesis of the criterion.
   have h_criterion_bound (d : Nat.Primes) (hd : (d : ℕ) ≡ d₀ [MOD 18480 * q]) :
       ∃ A : ℝ, ∀ᶠ x : ℝ in atTop, primeRemainder d (18480 * q) x ≤ A * x ^ (β - 1) := by
-    refine ⟨128 * (18480 * q).totient + 32, ?_⟩
+    refine ⟨64 * (18480 * q).totient + 4, ?_⟩
     have hd₀_eq : d₀ = 18480 * q / 2 - 1 := by omega
     have h_criterion_exponent : β - 1 = -1 / 2 + (β - 1 / 2) := by ring
     rw [hd₀_eq] at hd
