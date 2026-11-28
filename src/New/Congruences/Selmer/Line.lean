@@ -92,17 +92,16 @@ lemma exists_smul_eq_zero_of_mem_selmerModule (ρ : Gal(Ω/E) → Matrix n n O) 
 /-- Let `O` be a discrete valuation ring with valuation `v = addVal O` and let `a ∈ O` be nonzero.
 Consider the Selmer groups of locally constant cocycles for `ρ` that are unramified outside `S` and
 obey the relations `L`. If the group with coefficients in `QuotSpan a = O / a` has length less than
-`v(a)`, then the group with coefficients in `DivisibleQuot O = Frac(O) / O` is no longer than it,
+`v(a)`, then the group with coefficients in `DivisibleQuot O = Frac(O) / O` has the same length,
 because `a` kills the second group. -/
-lemma length_selmerModule_divisibleQuot_le (ρ : Gal(Ω/E) → Matrix n n O) (S : Set (FinPlace E))
-    (L : Set (Gal(Ω/E) →₀ Matrix n n O)) {a : O} (ha : a ≠ 0)
+lemma length_selmerModule_divisibleQuot_eq_of_lt (ρ : Gal(Ω/E) → Matrix n n O)
+    (S : Set (FinPlace E)) (L : Set (Gal(Ω/E) →₀ Matrix n n O)) {a : O} (ha : a ≠ 0)
     (h_lt : length O (selmerModule ρ S L (QuotSpan a)) < addVal O a) :
-    length O (selmerModule ρ S L (DivisibleQuot O)) ≤
+    length O (selmerModule ρ S L (DivisibleQuot O)) =
       length O (selmerModule ρ S L (QuotSpan a)) := by
   rw [← length_torsionBy_selmerModule_divisibleQuot ρ S L ha] at h_lt ⊢
-  have h_top : torsionBy O (selmerModule ρ S L (DivisibleQuot O)) a = ⊤ := by_contra fun h_ne ↦
-    h_lt.not_ge (addVal_le_length_torsionBy (exists_smul_eq_zero_of_mem_selmerModule ρ S L) h_ne)
-  rw [h_top, length_top]
+  rw [torsionBy_eq_top_of_length_lt_addVal (exists_smul_eq_zero_of_mem_selmerModule ρ S L) h_lt,
+    length_top]
 
 end Levels
 
@@ -380,8 +379,8 @@ lemma divisibleLength_pointChar_le {O : Type} [CommRing O] [PadicIntegerRing O �
     rw [twistedSelmer, coe_twistRep_pointChar]
     exact hP O' e _
   rw [twistedSelmer] at h_level
-  exact (length_selmerModule_divisibleQuot_le _ _ _ (NeZero.ne _)
-    (h_level.trans_lt h_lt)).trans h_level
+  exact (length_selmerModule_divisibleQuot_eq_of_lt _ _ _ (NeZero.ne _)
+    (h_level.trans_lt h_lt)).trans_le h_level
 
 open scoped Classical in
 /-- The choice of the polynomial `P` of a Selmer datum `T` over a coefficient ring `O`, the ring of

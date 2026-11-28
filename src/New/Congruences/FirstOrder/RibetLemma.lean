@@ -511,12 +511,8 @@ lemma length_ribetCocyclesVanishingOn_divisibleQuot_le [DVR O] [Fintype Y] {r : 
     calc (b : ℕ∞) + 1 = (b + 1 : ℕ) • (1 : ℕ∞) := by simp
       _ ≤ (b + 1 : ℕ) • addVal O p := nsmul_le_nsmul_right h_one _
       _ = addVal O a := (addVal_pow p (b + 1)).symm
-  have h_top : torsionBy O V a = ⊤ := by
-    by_contra h_ne
-    have h_cast : ((b + 1 : ℕ) : ℕ∞) ≤ b := by
-      rw [Nat.cast_succ]
-      exact h_va.trans ((addVal_le_length_torsionBy h_torsion h_ne).trans h_length)
-    exact absurd (Nat.cast_le.1 h_cast) (by omega)
+  have h_lt : (b : ℕ∞) < addVal O a := lt_of_lt_of_le (by exact_mod_cast Nat.lt_succ_self b) h_va
+  have h_top := torsionBy_eq_top_of_length_lt_addVal h_torsion (h_length.trans_lt h_lt)
   rw [← length_top, ← h_top]
   exact h_length
 
