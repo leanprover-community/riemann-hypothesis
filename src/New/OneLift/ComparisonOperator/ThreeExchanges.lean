@@ -200,8 +200,8 @@ namespace New.Rows
 ## Equal-rank theta class sums and the twisted carrier identity
 
 The first two exchanges, for characters that are tame for a modulus 𝔪 (`New.Exchange.IsTameFor`).
-Here m is positive. The two exchange lemmas also assume that m is even; the lemma on conjugating a
-constant class sum does not.
+Here m is positive. The first exchange and the carrier identity also assume that m is even; the
+second exchange and the lemma on conjugating a constant class sum do not.
 
 Notation: θ_{a,b}[Ψ,P] is the theta kernel with characters a, b, a function Ψ on matrices mod 𝔪 and
 a polynomial P. I_m is the standard definite space, `New.stdClassSum` is the class sum on it, and
@@ -285,6 +285,124 @@ lemma exists_stdClassSum_modKernelStdSpace_neg_eq_one {m : ℕ} :
       star_inj.2 (h_sum (G.neg.symm y))
   simpa [← smul_eq_mul, ← smul_def, ← modKernelBilin_apply, ← smul_assoc] using h_star
 
+/-- The second exchange. Let `E` be a CM field, `m > 0`, and `W = I_m ⊕ S`, where
+`I_m = stdSpace E (Fin m)` and `S = signedSpace E (1 ⊕ᵥ -1)` has signature `(2m, m)`. There is a
+constant `C` such that each character `α` of `U(1)(𝔸)` of weight `m` that is tame for `(𝔪, χ)` has a
+`γ` with (a) `‖γ‖ ^ 2 = C / lValueProd 𝔪.places (α⁻¹ υ ^ (2m)) m`, and (b)
+`γ Σ_h θ_{α,β}[Φ, 1](g, h) = ∫ θ'_{α/β,α}[Ψ, ∏_τ det (y⁻_τ) ^ (2m)](y, g) dy` for `Φ`, `Ψ` matched
+for `χ⁻¹` (`AreMatched`), every character `β` and every `g` in the adelic unitary group of `W`.
+Here `θ` is the theta kernel of `(W, I_{3m})` and `Σ_h = stdClassSum` the class sum over `I_{3m}`;
+`θ'` is the kernel of `(I_m⁻, W)`, integrated over `U(I_m⁻)` modulo its rational points, and `y⁻_τ`
+is the `m × m` block of variables in the rows of sign `-1` of `S`. -/
+lemma exists_mul_stdClassSum_modKernelStdSpace_sum_eq_integral {m : ℕ} [NeZero m] :
+    ∃ C : ℝ, ∀ {𝔪 : Modulus E} {α : AutChar E} {χ : MulChar 𝔪.ResidueRing ℂ},
+      IsTameFor 𝔪 α (fun _ ↦ m) χ → ∃ γ : ℂ,
+        -- (a)
+        ‖γ‖ ^ 2 = C / lValueProd 𝔪.places (α⁻¹ * upsilonU1 ^ (2 * m)) m ∧
+        -- (b)
+        ∀ {Φ : Matrix (Fin (2 * m) ⊕ Fin m) (Fin m ⊕ Fin (2 * m) ⊕ Fin m) 𝔪.ResidueRing → ℂ}
+          {Ψ : Matrix (Fin m ⊕ Fin (2 * m) ⊕ Fin m) (Fin m) 𝔪.ResidueRing → ℂ},
+          AreMatched ⊤ 1 χ⁻¹ Φ Ψ → ∀ (β : AutChar E) (g : G E (1 ⊕ᵥ (1 ⊕ᵥ -1))),
+            γ * stdClassSum (stdLevel E (Fin (2 * m) ⊕ Fin m))
+              (modKernelStdSpace ((stdSpace E (Fin m)).sum (signedSpace E (1 ⊕ᵥ -1))) α β 𝔪 Φ 1
+                g) =
+              ∫ y, modKernel (stdSpace E (Fin m)).neg
+                ((stdSpace E (Fin m)).sum (signedSpace E (1 ⊕ᵥ -1))) (α / β) α 𝔪 Ψ
+                (renameRowsCols Sum.inr id (∏ τ, variableMinor τ Sum.inr id ^ (2 * m))) y g
+                ∂(stdSpace E (Fin m)).neg.quotMeasure := by
+  obtain ⟨C, h_match⟩ := exists_mul_stdClassSum_eq_integral_modKernel
+    ((stdSpace E (Fin m)).sum (signedSpace E (1 ⊕ᵥ -1 : Fin (2 * m) ⊕ Fin m → ℤˣ)))
+    (.emptySum Empty _) (stdSpace E (Fin m)).neg 1 (.trans (.emptySum ..) (.sumComm ..))
+    (.sumAssoc ..) (by ext1 (_ | (_ | _)) <;> rfl) (d := m) (by simp +arith)
+    (by simp [Fintype.card_sum, Fintype.card_fin]; have := NeZero.pos m; omega)
+    fun _ : InfinitePlace E ↦ Empty
+  refine ⟨C, fun {𝔪 α χ} h_tame ↦ ?_⟩
+  obtain ⟨γ, h_norm, h_sum⟩ := h_match (by simpa using h_tame)
+  refine ⟨γ, by rwa [Fintype.card_fin, ← two_mul] at h_norm, fun {Φ Ψ} h_matched β g ↦ ?_⟩
+  -- With no matrices `η`, `stackedDetProd` is `1` and `matchedPoly` is `∏_τ det (y⁻_τ) ^ (2m)`.
+  simpa [det_apply, two_mul, ← tsub_tsub, variableMinor, stackedDetProd, matchedPoly,
+    pairedDetProd] using! h_sum 0 h_matched β g
+
+section
+
+variable {E} {n : Type} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
+
+/-- For the constant function `1` modulo `𝔪`, the datum `modDatum S T 𝔪 1 v` is the datum of the
+Fock vector `v` and of the vacuum at every finite place. In particular it does not depend on the
+modulus `𝔪`. -/
+lemma modDatum_one {n' : Type} [Fintype n'] [DecidableEq n'] {s' : n' → ℤˣ} (S : Space E n s)
+    (T : Space E n' s') (𝔪 : Modulus E)
+    (v : Heisenberg.IsVacuum.Model (Fock.realHeisenberg (realSigns E (homSigns s s')))) :
+    modDatum S T 𝔪 1 v = (S.hom T).integrated v (S.hom T).vacElem := by
+  simp only [modDatum, Pi.one_comp, Modulus.liftFn_one, Modulus.isConjDisjoint_places,
+    schrodingerOp_boxIndicator, Space.projOn_vacElem]
+
+/-- Let `T` be a hermitian space with basis indexed by `n`, and `I_m`, `I_n` the standard definite
+spaces on `Fin m` and `n`. Let `c`, `b` be characters of `U(1)(𝔸)`, `χ` a character of the residue
+ring of `𝔪`, `x` a point of the adelic unitary group of `T` and `h` a finite point of that of `I_n`.
+The class sum over the finite points `g` of `U(I_m)`, at the level `stdLevel`, of the theta kernel
+of `(I_m ⊕ T, I_n)` with characters `c b, 1`, datum `χ ∘ det` on the columns of `T` and polynomial
+`1`, at `((1, g) ⊕ x, h)`, is `c (det x)` times `carrierCoeff m c h` times the kernel of `(T, I_n)`
+with characters `b, c` at `(x, h)`. -/
+lemma stdClassSum_modKernelStdSpace_sum_eq_mul_carrierCoeff {m : ℕ} (T : Space E n s)
+    {𝔪 : Modulus E} (c b : AutChar E) (χ : MulChar 𝔪.ResidueRing ℂ) (x : G E s) (h : Gf E n) :
+    stdClassSum (stdLevel E (Fin m)) (fun g : Gf E (Fin m) ↦
+      modKernelStdSpace ((stdSpace E (Fin m)).sum T) (c * b) 1 𝔪 (fun y ↦ χ y.toCols₂.det) 1
+        (.sum ((1, g), x)) h) =
+      ((c.val x.det : Circle) : ℂ) *
+        (carrierCoeff m c h * modKernelStdSpace T b c 𝔪 (fun y ↦ χ y.det) 1 x h) := by
+  -- The kernel on `I_m ⊕ T` is a product of two kernels.
+  have h_seesaw (g : Gf E (Fin m)) :
+      modKernelStdSpace ((stdSpace E (Fin m)).sum T) (c * b) 1 𝔪 (χ ·.toCols₂.det) 1
+          (.sum ((1, g), x)) h =
+        modKernelStdSpace (stdSpace E (Fin m)) c 1 𝔪 1 1 (1, g) h *
+          modKernelStdSpace T b 1 𝔪 (χ ·.det) 1 x h := by
+    simpa using modKernel_sum_left (stdSpace E (Fin m)) (stdSpace E n) c 1 𝔪 T b 1 (χ ·.det) 1 1
+      (1, g) x (1, h)
+  -- The kernel on `I_m` has datum 1, so it does not depend on `𝔪`.
+  have h_mod1 (g : Gf E (Fin m)) :
+      modKernelStdSpace (stdSpace E (Fin m)) c 1 𝔪 1 1 (1, g) h =
+        modKernelStdSpace (stdSpace E (Fin m)) c 1 (unitModulus E) 1 1 (1, g) h := by
+    simp only [modKernelStdSpace, modKernel, modDatum_one]
+  -- Twisting the second character of the kernel on `T` by `c` divides it by `c (det x)`.
+  have h_mod2 :
+      modKernelStdSpace T b 1 𝔪 (χ ·.det) 1 x h =
+        ((c.val x.det : Circle) : ℂ) * modKernelStdSpace T b c 𝔪 (χ ·.det) 1 x h := by
+    have ht := modKernel_twist T (stdSpace E n) b 1 𝔪 1 c (χ ·.det) 1 x (1, h)
+    rw [mul_one, one_mul] at ht
+    change modKernel T (stdSpace E n) b 1 𝔪 (χ ·.det) 1 x (1, h) =
+      ((c.val x.det : Circle) : ℂ) * modKernel T (stdSpace E n) b c 𝔪 (χ ·.det) 1 x (1, h)
+    rw [ht]
+    have h1 : (((1 : AutChar E).val (G.det (s := 1) (1, h)) : Circle) : ℂ) = 1 := rfl
+    rw [h1, one_div, mul_inv_cancel_left₀ (Circle.coe_ne_zero _)]
+  simp_rw [h_seesaw, h_mod1, h_mod2, carrierCoeff, classSum_mul, mul_classSum]
+  congr 1 with g
+  ring
+
+end
+
+/-- Let `E` be a CM field, `c` a character of `U(1)(𝔸)` and `𝔪` a modulus. For `x` in the adelic
+unitary group of the space `S = signedSpace E (1 ⊕ᵥ -1)` of signature `(2m, m)`, the integral over
+`U(I_m⁻)` modulo its rational points of the theta kernel of `(I_m⁻, S)` with characters
+`c υ ^ m, 1`, the constant function `1` modulo `𝔪` and the polynomial `∏_τ det (y⁻_τ) ^ (2m)` is
+`c (det x)` times the carrier `carrierForm E m x`. -/
+lemma integral_modKernel_eq_mul_carrierForm {m : ℕ} (𝔪 : Modulus E) (c : AutChar E)
+    (x : G E (1 ⊕ᵥ -1)) :
+    ∫ y, modKernel (stdSpace E (Fin m)).neg (signedSpace E (1 ⊕ᵥ -1)) (c * upsilonU1 ^ m) 1 𝔪 1
+        (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x ∂(stdSpace E (Fin m)).neg.quotMeasure =
+      ((c.val x.det : Circle) : ℂ) * carrierForm E m x := by
+  rw [carrierForm, lift, ← integral_const_mul]
+  refine integral_congr_ae (.of_forall fun y ↦ ?_)
+  -- Twisting by `c` multiplies the kernel by `c (det x)`, and the datum 1 does not depend on `𝔪`.
+  have ht := modKernel_twist (stdSpace E (Fin m)).neg (signedSpace E (1 ⊕ᵥ -1)) (upsilonU1 ^ m) 1
+    𝔪 c 1 1 (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x
+  rw [mul_one] at ht
+  have h1 : (((1 : AutChar E).val y.det : Circle) : ℂ) = 1 := rfl
+  dsimp only
+  rw [mul_one, mul_comm c, ht, h1, div_one]
+  congr 1
+  simp only [modKernel, pairTheta, modDatum_one]
+
 /-- Let `E` be a CM field and `m = 2e > 0`. There is a constant `C` such that each character `c` of
 `U(1)(𝔸)` of weight 0 that is tame for `(𝔪, χ)` has a `γ` with (a) `‖γ‖ ^ 2 = C / (lValueProd (c⁻¹ υ
 ^ m, m) * lValueProd (c υ ^ e, e))`, and (b) `γ Σ_h carrierCoeff m c h · θ_{υ^m,c}[χ ∘ det, 1](x,
@@ -305,18 +423,11 @@ lemma exists_mul_stdClassSum_eq_carrierForm {m : ℕ} [NeZero m] (hm_even : Even
               1 x h) = carrierForm E m x := by
   -- Two exchanges are chained by `mul_stdClassSum_eq_integral_mul_modKernel`. The first is
   -- `exists_mul_stdClassSum_modKernelStdSpace_eq_one` for `c⁻¹`, conjugated so that it lives on
-  -- `I_m⁻`; the second is `exists_mul_stdClassSum_eq_integral_modKernel` with `W = I_m ⊕ S`,
-  -- `V' = I_m⁻` and `V = I_{3m}`. The kernel on `W` then splits into the summand of `carrierCoeff`
-  -- and the kernel on `S`. Below, `J` is `I_m` and `H` is `S`.
-  let J : Space E (Fin m) 1 := stdSpace E (Fin m)
-  let H := signedSpace E (1 ⊕ᵥ -1 : Fin (2 * m) ⊕ Fin m → ℤˣ)
+  -- `I_m⁻`; the second is `exists_mul_stdClassSum_modKernelStdSpace_sum_eq_integral`, the exchange
+  -- for `W = I_m ⊕ S`, `V' = I_m⁻` and `V = I_{3m}`. The kernel on `W` then splits into the summand
+  -- of `carrierCoeff` and the kernel on `S`.
   obtain ⟨C₁, h_full⟩ := exists_mul_stdClassSum_modKernelStdSpace_eq_one (m := m) E hm_even 0
-  obtain ⟨C₂, h_match⟩ :=
-    exists_mul_stdClassSum_eq_integral_modKernel (J.sum H) (.emptySum Empty _) J.neg 1
-      (.trans (.emptySum ..) (.sumComm ..))
-      (.sumAssoc ..) (by ext1 (_ | (_ | _)) <;> rfl) (d := m) (by simp +arith)
-      (by simp [Fintype.card_sum, Fintype.card_fin]; have := NeZero.pos m; omega)
-      fun _ : InfinitePlace E ↦ Empty
+  obtain ⟨C₂, h_match⟩ := exists_mul_stdClassSum_modKernelStdSpace_sum_eq_integral E (m := m)
   obtain ⟨n, hn_norm, h_conj⟩ := exists_stdClassSum_modKernelStdSpace_neg_eq_one E (m := m)
   refine ⟨C₁ * C₂, fun {𝔪 c χ} h_tame ↦ ?_⟩
   obtain ⟨γ₁, h_norm₁, h_sum₁⟩ := h_full h_tame.inv
@@ -327,86 +438,24 @@ lemma exists_mul_stdClassSum_eq_carrierForm {m : ℕ} [NeZero m] (hm_even : Even
   refine ⟨γ₂ * star γ₁ * n / χ 𝔪.normNegOne ^ m, ?_, fun x ↦ ?_⟩
   · rw [inv_inv] at h_norm₁
     -- the character of the second exchange is `(c υ ^ m)⁻¹ υ ^ (2m) = c⁻¹ υ ^ m`
-    rw [Fintype.card_fin, pow_add, mul_inv, mul_assoc, inv_mul_cancel_left] at h_norm₂
+    rw [two_mul, pow_add, mul_inv, mul_assoc, inv_mul_cancel_left] at h_norm₂
     -- `n` and `χ η` have norm 1, so the square norms of `γ₁` and `γ₂` multiply.
     simp [mul_pow, hn_norm, h_eta_norm, h_norm₁, h_norm₂, field]
   -- The conjugate of the first exchange: the class sum on `I_m` of kernels of `(I_m⁻, I_m)` is
   -- constant on `U(I_m⁻)`.
   have h_neg := h_conj 𝔪 c χ γ₁ (by simpa using h_sum₁)
-  -- The kernel on `I_m ⊕ H` is a product of two kernels.
-  have h_seesaw (b : AutChar E) (g : G E (1 : Fin m → ℤˣ)) (h : G E 1) :
-      modKernel (J.sum H) (stdSpace E _) (c * b) 1 𝔪 (χ ·.toCols₂.det) 1 (.sum (g, x)) h =
-        modKernel J (stdSpace E _) c 1 𝔪 1 1 g h *
-          modKernel H (stdSpace E (Fin (2 * m) ⊕ Fin m)) b 1 𝔪 (χ ·.det) 1 x h := by
-    simpa using modKernel_sum_left J (stdSpace E _) c 1 𝔪 H b 1 (χ ·.det) 1 1 g x h
   -- The second exchange, with the datum `Ψ' = 1`, is summed over the classes of `I_m` by `h_neg`:
   -- a multiple of a double class sum of kernels of `(W, I_{3m})` is the integral of the kernel of
-  -- `(I_m⁻, H)` with datum 1.
-  have h_move := mul_stdClassSum_eq_integral_mul_modKernel J.neg H (β' := 1) h_tame.1
-    (P := ∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) (g := x) h_neg
-    (Ψ' := 1) (fun _ _ ↦ rfl) fun Φ Ψ h_partner h ↦ by
-      simpa [det_apply, two_mul, ← tsub_tsub, variableMinor, stackedDetProd, matchedPoly,
-        pairedDetProd] using! h_sum₂ 0 h_partner 1 (.sum ((1, h), x))
-  simp_rw [mul_classSum, classSum_comm (G := Gf E (Fin m))] at h_move
-  -- Split the kernel on `W`; the result is the claim times `c (det x)` on both sides.
-  have h_split :
-      stdClassSum (stdLevel E (Fin (2 * m) ⊕ Fin m)) (fun h ↦
-        stdClassSum (stdLevel E (Fin m)) fun g ↦ γ₂ * star γ₁ * (n * (χ 𝔪.normNegOne ^ m)⁻¹ *
-          (modKernelStdSpace J c 1 𝔪 1 1 (1, g) h *
-            modKernelStdSpace H (upsilonU1 ^ m) 1 𝔪 (χ ·.det) 1 x h))) =
-        ∫ y : G E (-1), modKernel J.neg H (c * upsilonU1 ^ m) 1 𝔪 1
-          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x ∂J.neg.quotMeasure := by
-    simpa [h_seesaw] using h_move
-  let cx : ℂ := ((c.val x.det : Circle) : ℂ)
-  have hcx_ne : cx ≠ 0 := Circle.coe_ne_zero _
-  have h_mod1 (g : Gf E (Fin m)) (h : Gf E (Fin (2 * m) ⊕ Fin m)) :
-      modKernelStdSpace J c 1 𝔪 1 1 (1, g) h =
-        modKernelStdSpace J c 1 (unitModulus E) 1 1 (1, g) h := by
-    simp only [modKernelStdSpace, modKernel, modDatum, Pi.one_comp, Modulus.liftFn_one,
-      Modulus.isConjDisjoint_places, schrodingerOp_boxIndicator, Space.projOn_vacElem]
-  have h_mod2 (h : Gf E (Fin (2 * m) ⊕ Fin m)) :
-      modKernelStdSpace H (upsilonU1 ^ m) 1 𝔪 (χ ·.det) 1 x h =
-        cx * modKernelStdSpace H (upsilonU1 ^ m) c 𝔪 (χ ·.det) 1 x h := by
-    have ht := modKernel_twist H (stdSpace E (Fin (2 * m) ⊕ Fin m)) (upsilonU1 ^ m) 1 𝔪 1 c
-      (χ ·.det) 1 x (1, h)
-    rw [mul_one, one_mul] at ht
-    change modKernel H (stdSpace E (Fin (2 * m) ⊕ Fin m)) (upsilonU1 ^ m) 1 𝔪 (χ ·.det) 1 x (1, h) =
-      cx * modKernel H (stdSpace E (Fin (2 * m) ⊕ Fin m)) (upsilonU1 ^ m) c 𝔪 (χ ·.det) 1 x (1, h)
-    rw [ht]
-    have h1 : (((1 : AutChar E).val (G.det (s := 1) (1, h)) : Circle) : ℂ) = 1 := rfl
-    rw [h1, one_div, mul_inv_cancel_left₀ hcx_ne]
-  have h_mod3 (y : G E (-1)) :
-      modKernel J.neg H (c * upsilonU1 ^ m) 1 𝔪 1
-          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x =
-        cx * modKernel J.neg H (upsilonU1 ^ m) 1 (unitModulus E) 1
-          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x := by
-    have ht := modKernel_twist J.neg H (upsilonU1 ^ m) 1 𝔪 c 1 1
-      (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x
-    rw [mul_one] at ht
-    rw [mul_comm c, ht]
-    have h1 : (((1 : AutChar E).val y.det : Circle) : ℂ) = 1 := rfl
-    rw [h1, div_one]
-    congr 1
-    simp only [modKernel, modDatum, Pi.one_comp, Modulus.liftFn_one,
-      Modulus.isConjDisjoint_places, schrodingerOp_boxIndicator, Space.projOn_vacElem]
-  have h_factor : cx * (γ₂ * star γ₁ * n / χ 𝔪.normNegOne ^ m *
-      stdClassSum (stdLevel E (Fin (2 * m) ⊕ Fin m)) (fun h ↦ carrierCoeff m c h *
-        modKernelStdSpace H (upsilonU1 ^ m) c 𝔪 (fun y ↦ χ y.det) 1 x h)) =
-      cx * carrierForm E m x := by
-    rw [carrierForm, lift, ← integral_const_mul]
-    have h_rhs : ∫ y : G E (-1), cx * (modKernel J.neg H (upsilonU1 ^ m) 1 (unitModulus E) 1
-          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x * 1) ∂J.neg.quotMeasure =
-        ∫ y : G E (-1), modKernel J.neg H (c * upsilonU1 ^ m) 1 𝔪 1
-          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x ∂J.neg.quotMeasure :=
-      MeasureTheory.integral_congr_ae (.of_forall fun y ↦ by dsimp only; rw [mul_one, h_mod3 y])
-    change _ = ∫ y : G E (-1), cx * (modKernel J.neg H (upsilonU1 ^ m) 1 (unitModulus E) 1
-          (∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) y x * 1) ∂J.neg.quotMeasure
-    rw [h_rhs, ← h_split]
-    simp_rw [h_mod1, h_mod2, carrierCoeff, div_eq_mul_inv, mul_classSum, classSum_mul]
-    congr 1; funext h
-    rw [mul_classSum, mul_classSum]
-    congr 1; funext g; ring
-  exact mul_left_cancel₀ hcx_ne h_factor
+  -- `(I_m⁻, S)` with datum 1.
+  have h_move := mul_stdClassSum_eq_integral_mul_modKernel (stdSpace E (Fin m)).neg
+    (signedSpace E (1 ⊕ᵥ -1 : Fin (2 * m) ⊕ Fin m → ℤˣ)) (β' := 1) h_tame.1
+    (P := ∏ τ, variableMinor τ Sum.inr id ^ (2 * m)) (g := x) h_neg (Ψ' := 1) (fun _ _ ↦ rfl)
+    fun Φ Ψ h_partner h ↦ by simpa using h_sum₂ h_partner 1 (.sum ((1, h), x))
+  -- Split the kernel on `W`: both sides are `c (det x)` times those of the claim.
+  simp only [Pi.one_apply, mul_one, one_mul, ← mul_classSum, classSum_comm (G := Gf E (Fin m)),
+    stdClassSum_modKernelStdSpace_sum_eq_mul_carrierCoeff,
+    integral_modKernel_eq_mul_carrierForm] at h_move
+  exact mul_left_cancel₀ (Circle.coe_ne_zero _) (by linear_combination h_move)
 
 end Carrier
 
@@ -871,6 +920,121 @@ def productDatum {a : Type}
     if FixesColsOff (r := D.RowIndex) (.trans .inl .inl) x.toCols₂ then
       invariantTraceChar ϑ j Λ x.toCols₁ else 0
 
+/-- Read through `regroupEquiv j`, the signs of `W = E^{3m} ⊕ W'` are those of
+`W_j ⊕ (E^j)⁻ ⊕ W^add`: `D.signsW j` on `W_j`, `-1` on `(E^j)⁻` and `1` on the definite space
+`W^add` on `AddedIndex j`. -/
+lemma signs_comp_regroupEquiv :
+    ((1 : D.CarrierIndex → ℤˣ) ⊕ᵥ (padSigns j ⊕ᵥ 1)) ∘ regroupEquiv j =
+      D.signsW j ⊕ᵥ (-1 ⊕ᵥ 1) := by
+  ext1 (_ | _ | _ | _ | _) <;> rfl
+
+/-- Relabelled by `regroupEquiv j`, the space `W = E^{3m} ⊕ W'` of the third exchange, with
+`W' = enlargedSpace j`, is `W_j ⊕ (E^j)⁻ ⊕ W^add`, where `W^add` is the standard definite space on
+`AddedIndex j`. -/
+lemma reindex_stdSpace_sum_enlargedSpace :
+    ((stdSpace D.E D.CarrierIndex).sum (enlargedSpace j)).reindex (regroupEquiv j).symm
+        (signs_comp_regroupEquiv j) =
+      (D.spaceW j).sum ((stdSpace D.E (Fin j)).neg.sum (stdSpace D.E (AddedIndex j))) := by
+  ext1
+  simp [GeneralLinearGroup.ext_iff, Space.reindex, Space.sum, regroupEquiv, Matrix.one_apply]
+
+/-- A square matrix `z` satisfies `FixesColsOff e z` exactly when its columns outside the image of
+`e` are those of `1`. -/
+lemma _root_.New.Rows.fixesColsOff_iff {R r N : Type} [CommRing R] [Fintype r] [DecidableEq r]
+    [Fintype N] [DecidableEq N] {e : r ↪ N} {z : Matrix N N R} :
+    FixesColsOff e z ↔ ∀ a b, (∀ i, b ≠ e i) → z a b = (1 : Matrix N N R) a b := by
+  -- the projection `1 - e eᵀ` has the columns of `1` off the image of `e` and zero columns on it
+  have h_proj (a b : N) : (1 - inclMatrix R e * (inclMatrix R e)ᵀ : Matrix N N R) a b =
+      if ∀ i, b ≠ e i then (1 : Matrix N N R) a b else 0 := by
+    split_ifs with hb
+    · simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, fun i ↦ (hb i).symm]
+    · obtain ⟨i, rfl⟩ := not_forall_not.1 hb
+      simp [Matrix.mul_apply, inclMatrix, Matrix.one_apply, e.injective.eq_iff]
+  simp only [FixesColsOff, ← Matrix.ext_iff, Matrix.mul_apply, h_proj, mul_ite, mul_zero,
+    Matrix.one_apply]
+  constructor
+  · intro h a b hb
+    have h_ab := h a b
+    simp only [eq_true hb, ↓reduceIte, mul_one, Finset.sum_ite_eq', Finset.mem_univ] at h_ab
+    exact h_ab
+  · intro h a b
+    by_cases hb : ∀ i, b ≠ e i
+    · simp only [eq_true hb, ↓reduceIte, mul_one, Finset.sum_ite_eq', Finset.mem_univ]
+      exact h a b hb
+    · simp only [eq_false hb, ↓reduceIte, Finset.sum_const_zero]
+
+-- Keeps definitional checks from unfolding `Finset.univ`.
+seal Finset.univ in
+/-- Relabelled by `regroupEquiv j`, the datum `productDatum ϑ j w Λ` at `x` is `columnDatum` of `w`
+on the columns of `x` at `W_j`, times `addedDatum ϑ j Λ` on its columns at `W^add` if its columns at
+`(E^j)⁻` are those of `1`, and `0` otherwise. -/
+lemma productDatum_submatrix_regroupEquiv_symm {a : Type}
+    (w : Matrix a (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    (Λ : Matrix D.CarrierIndex (FirstFactorIndex j) (D.untwistedModulus 2).ResidueRing)
+    (x : Matrix (FirstFactorIndex j) (D.RowIndex ⊕ Fin j ⊕ AddedIndex j)
+      (D.twistModulus ϑ 2).ResidueRing) :
+    productDatum ϑ j w Λ (x.submatrix id (regroupEquiv j).symm) =
+      columnDatum (twistedChiMod ϑ j) (forgetTwist ϑ.toTameChar) w (.trans .inl .inl) x.toCols₁ *
+        if x.toCols₂.toCols₁ = inclMatrix (D.twistModulus ϑ 2).ResidueRing (inl ∘ inr ∘ inl) then
+          addedDatum ϑ.toTameChar j Λ x.toCols₂.toCols₂
+        else 0 := by
+  unfold productDatum
+  congr! 1
+  simp only [addedDatum, invariantTraceChar, ← ite_and, regroupEquiv]
+  congr 1
+  rw [fixesColsOff_iff]
+  apply propext
+  constructor
+  · intro h
+    refine ⟨Matrix.ext fun a b ↦ ?_, Matrix.ext fun a b ↦ ?_⟩
+    · exact h a (inl (inr (inl b))) (by simp)
+    · rcases b with b | b
+      · exact h a (inl (inr (inr b))) (by simp)
+      · exact h a (inr b) (by simp)
+  · rintro ⟨h1, h2⟩ a ((r | (p | p)) | f) hne
+    · exact absurd rfl (hne r)
+    · exact congrFun (congrFun h1 a) p
+    · exact congrFun (congrFun h2 a) (inl p)
+    · exact congrFun (congrFun h2 a) (inr f)
+
+/-- Relabelled by `regroupEquiv j`, the point `((1, h'), enlargedPoint j i g)` of the adelic unitary
+group of `W = E^{3m} ⊕ W'` is the point of that of `W_j ⊕ (E^j)⁻ ⊕ W^add` with components `g` on
+`W_j`, `1` on `(E^j)⁻`, and on `W^add = E^{3m-j} ⊕ W♭ ⊕ E^{3m}` the point with archimedean
+component `1` and the block diagonal finite component `1 ⊕ h♭ ⊕ h'` (`U.blockSumOne`), where `h♭`
+is the class representative of `i`. -/
+lemma reindex_sum_enlargedPoint (i : ChoiceIndex j) (g : New.G D.E (D.signsW j))
+    (h' : Gf D.E D.CarrierIndex) :
+    G.reindex (regroupEquiv j).symm (signs_comp_regroupEquiv j)
+        (.sum ((1, h'), enlargedPoint j i g)) =
+      .sum (g, .sum (1, 1, U.blockSumOne (1, U.blockSumOne (i.rowChoice.classRep, h')))) := by
+  -- compare the matrices entry by entry
+  apply G.ext_adeleMatrix
+  have h_blk : G.adeleMatrix (s := (1 : AddedIndex j → ℤˣ))
+        (1, U.blockSumOne (1, U.blockSumOne (i.rowChoice.classRep, h'))) =
+      (1 : Matrix (Fin (2 * D.m + (D.m - j))) _ (𝔸 D.E)).fromBlocks 0 0
+        ((G.adeleMatrix (s := (1 : D.FlatIndex → ℤˣ)) (1, i.rowChoice.classRep)).fromBlocks 0 0
+          (G.adeleMatrix (s := (1 : D.CarrierIndex → ℤˣ)) (1, h'))) := by
+    refine Matrix.ext fun a b ↦ Prod.ext (funext fun w ↦ ?_) ?_
+    · rcases a with a | a | a <;> rcases b with b | b | b
+      all_goals simp [G.adeleMatrix_fst, Matrix.one_apply]
+      split_ifs <;> rfl
+    · rcases a with a | a | a <;> rcases b with b | b | b
+      all_goals first
+        | rfl
+        | (simp [G.adeleMatrix_snd, U.blockSumOne, U.sum, Matrix.one_apply]
+           split_ifs <;> rfl)
+  simp only [G.adeleMatrix_reindex, G.adeleMatrix_sum, G.adeleMatrix_one, h_blk]
+  refine Matrix.ext fun a b ↦ ?_
+  rcases a with a | a | a | a | a <;> rcases b with b | b | b | b | b
+  all_goals first
+    | rfl
+    | (change (1 : Matrix (PadIndex j) (PadIndex j) (𝔸 D.E)) (inl a) (inl b) =
+        (1 : Matrix (Fin j) (Fin j) (𝔸 D.E)) a b
+       simp only [Matrix.one_apply, inl.injEq])
+    | (change (1 : Matrix (PadIndex j) (PadIndex j) (𝔸 D.E)) (inr a) (inr b) =
+        (1 : Matrix (Fin (2 * D.m + (D.m - j))) (Fin (2 * D.m + (D.m - j))) (𝔸 D.E)) a b
+       simp only [Matrix.one_apply, inr.injEq])
+
 -- Keeps definitional checks from unfolding `Finset.univ`.
 seal Finset.univ in
 /-- Let `D` be admissible data, `ϑ` a twist, `j` a lift index, `W_j = D.spaceW j`, and `V″` the
@@ -909,113 +1073,26 @@ lemma stdClassSum_thirdExchangeKernel_productDatum {a : Type}
     ← classSum_sum, mul_left_comm (modKernel ..), mul_assoc, -mul_ite, ← Finset.mul_sum,
     mul_comm (modKernel (.sum ..) ..), ← modKernel_sum_left, Pi.single_apply]
   congr! with h'
-  have h_sign : ((1 : D.CarrierIndex → ℤˣ) ⊕ᵥ (padSigns j ⊕ᵥ 1)) ∘ regroupEquiv j =
-      D.signsW j ⊕ᵥ (-1 ⊕ᵥ 1) := by
-    ext1 (_ | _ | _ | _ | _) <;> rfl
-  rw [← modKernel_reindex (regroupEquiv ..).symm h_sign (.refl _) rfl]
+  rw [← modKernel_reindex (regroupEquiv ..).symm (signs_comp_regroupEquiv j) (.refl _) rfl]
   conv_rhs =>
     simp only [← modKernelBilin_apply]
     rw [← map_sum, modKernelBilin_apply]
   -- compare the two kernels argument by argument
   congr! 1
   · -- the first spaces
-    ext1
-    simp [GeneralLinearGroup.ext_iff, Space.reindex, Space.sum, regroupEquiv, Matrix.one_apply]
+    exact reindex_stdSpace_sum_enlargedSpace j
   · -- the first characters: `W_j` has `m - j` negative signs, and `υ ^ m = υ ^ (m - j) * υ ^ j`
     rw [firstFactorChar, DescentPair.charW, descentPair, negCount_signsW,
       ← mul_assoc (upsilonU1 ^ (D.m - j)), pow_sub_mul_pow _ j.prop.2,
       mul_left_comm (upsilonU1 ^ D.m), mul_comm (upsilonU1 ^ D.m)]
   · -- the finite data
-    unfold productDatum
-    congr! 2
-    simp only [addedDatum, invariantTraceChar, ← ite_and, regroupEquiv]
-    congr 1
-    have h_fixes (A : Matrix (FirstFactorIndex j) (FirstFactorIndex j)
-        (D.twistModulus ϑ 2).ResidueRing) :
-        FixesColsOff (r := D.RowIndex) (.trans .inl .inl) A ↔
-          ∀ a (b : FirstFactorIndex j), (∀ r : D.RowIndex, b ≠ inl (inl r)) →
-            A a b = (1 : Matrix _ _ _) a b := by
-      let P : Matrix (FirstFactorIndex j) (FirstFactorIndex j) (D.twistModulus ϑ 2).ResidueRing :=
-        1 - inclMatrix (D.twistModulus ϑ 2).ResidueRing
-              (Function.Embedding.inl.trans Function.Embedding.inl) *
-            (inclMatrix (D.twistModulus ϑ 2).ResidueRing
-              (Function.Embedding.inl.trans Function.Embedding.inl))ᵀ
-      have h_rhs (a b : FirstFactorIndex j) :
-          P a b = if ∀ r : D.RowIndex, b ≠ inl (inl r) then (1 : Matrix _ _ _) a b else 0 := by
-        change (1 : Matrix (FirstFactorIndex j) (FirstFactorIndex j) _) a b -
-            ∑ r' : D.RowIndex,
-              inclMatrix (D.twistModulus ϑ 2).ResidueRing
-                (Function.Embedding.inl.trans Function.Embedding.inl) a r' *
-              inclMatrix (D.twistModulus ϑ 2).ResidueRing
-                (Function.Embedding.inl.trans Function.Embedding.inl) b r' = _
-        rcases b with (r | p) | f
-        · simp only [inclMatrix, Matrix.submatrix_apply, Matrix.one_apply, id_eq,
-            Embedding.trans_apply, Embedding.inl_apply, inl.injEq, mul_ite, mul_one, mul_zero,
-            Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte, sub_self, ne_eq]
-          exact (ite_eq_right fun h' ↦ False.elim (h' r rfl)).symm
-        · simp only [inclMatrix, Matrix.submatrix_apply, Matrix.one_apply, id_eq,
-            Embedding.trans_apply, Embedding.inl_apply, inl.injEq, reduceCtorEq, ↓reduceIte,
-            mul_zero, Finset.sum_const_zero, sub_zero, ne_eq, not_false_eq_true, implies_true]
-        · simp only [inclMatrix, Matrix.submatrix_apply, Matrix.one_apply, id_eq,
-            Embedding.trans_apply, Embedding.inl_apply, reduceCtorEq, ↓reduceIte, mul_zero,
-            Finset.sum_const_zero, sub_zero, ne_eq, not_false_eq_true, implies_true]
-      change A * P = P ↔ _
-      simp only [← Matrix.ext_iff, Matrix.mul_apply, h_rhs, mul_ite, mul_zero, Matrix.one_apply]
-      constructor
-      · intro h a b hb
-        have h_ab := h a b
-        simp only [eq_true hb, ↓reduceIte, mul_one, Finset.sum_ite_eq', Finset.mem_univ] at h_ab
-        exact h_ab
-      · intro h a b
-        by_cases hb : ∀ r : D.RowIndex, b ≠ inl (inl r)
-        · simp only [eq_true hb, ↓reduceIte, mul_one, Finset.sum_ite_eq', Finset.mem_univ]
-          exact h a b hb
-        · simp only [eq_false hb, ↓reduceIte, Finset.sum_const_zero]
-    rw [h_fixes]
-    apply propext
-    constructor
-    · intro h
-      refine ⟨Matrix.ext fun a b ↦ ?_, Matrix.ext fun a b ↦ ?_⟩
-      · exact h a (inl (inr (inl b))) (by simp)
-      · rcases b with b | b
-        · exact h a (inl (inr (inr b))) (by simp)
-        · exact h a (inr b) (by simp)
-    · rintro ⟨h1, h2⟩ a ((r | (p | p)) | f) hne
-      · exact absurd rfl (hne r)
-      · exact congrFun (congrFun h1 a) p
-      · exact congrFun (congrFun h2 a) (inl p)
-      · exact congrFun (congrFun h2 a) (inr f)
+    exact funext (productDatum_submatrix_regroupEquiv_symm ϑ j w i.matrix)
   · -- the polynomials: the stacked determinants are the sum over the coordinates of
     -- `paddedMinorProd`
     simpa [signOrder, Prod.map_comp_map, ← comp_assoc] using!
       renameRowsCols_stackedDetProd_eq_sum j _ inl (inr ∘ inr)
-  · -- the points, entry by entry
-    apply G.ext_adeleMatrix
-    have h_blk : G.adeleMatrix (s := (1 : AddedIndex j → ℤˣ))
-          (1, U.blockSumOne (1, U.blockSumOne (i.rowChoice.classRep, h'))) =
-        (1 : Matrix (Fin (2 * D.m + (D.m - j))) _ (𝔸 D.E)).fromBlocks 0 0
-          ((G.adeleMatrix (s := (1 : D.FlatIndex → ℤˣ)) (1, i.rowChoice.classRep)).fromBlocks 0 0
-            (G.adeleMatrix (s := (1 : D.CarrierIndex → ℤˣ)) (1, h'))) := by
-      refine Matrix.ext fun a b ↦ Prod.ext (funext fun w ↦ ?_) ?_
-      · rcases a with a | a | a <;> rcases b with b | b | b
-        all_goals simp [G.adeleMatrix_fst, Matrix.one_apply]
-        split_ifs <;> rfl
-      · rcases a with a | a | a <;> rcases b with b | b | b
-        all_goals first
-          | rfl
-          | (simp [G.adeleMatrix_snd, U.blockSumOne, U.sum, Matrix.one_apply]
-             split_ifs <;> rfl)
-    simp only [G.adeleMatrix_reindex, G.adeleMatrix_sum, G.adeleMatrix_one, h_blk]
-    refine Matrix.ext fun a b ↦ ?_
-    rcases a with a | a | a | a | a <;> rcases b with b | b | b | b | b
-    all_goals first
-      | rfl
-      | (change (1 : Matrix (PadIndex j) (PadIndex j) (𝔸 D.E)) (inl a) (inl b) =
-          (1 : Matrix (Fin j) (Fin j) (𝔸 D.E)) a b
-         simp only [Matrix.one_apply, inl.injEq])
-      | (change (1 : Matrix (PadIndex j) (PadIndex j) (𝔸 D.E)) (inr a) (inr b) =
-          (1 : Matrix (Fin (2 * D.m + (D.m - j))) (Fin (2 * D.m + (D.m - j))) (𝔸 D.E)) a b
-         simp only [Matrix.one_apply, inr.injEq])
+  · -- the points
+    exact reindex_sum_enlargedPoint j i g h'
 
 -- Keeps definitional checks from unfolding `Finset.prod`.
 seal Finset.prod in
