@@ -181,16 +181,9 @@ lemma Selmer.exists_adjugate_polynomial (ρ : Λ →ₐ[R] Matrix σ σ L)
     (blockFlattenAlgEquiv N).toAlgHom.comp ρX.mapMatrix
   obtain ⟨B', P, hP, hB', -⟩ :=
     exists_adjugate_of_charpoly_mem φX (amitsur_charpoly_comp_coeff_mem_range ρX h_coeffX) B
-  have h_mul : φX (B' * B) = φX (P • 1) := by rw [map_mul, hB', map_smul, map_one]
-  have hφX (M : Matrix N N Λ[X]) (i j : N) (a b : σ) : φX M (i, a) (j, b) = ρX (M i j) a b := rfl
-  have h_entry (i j : N) : ρX ((B' * B) i j) = ρX ((P • (1 : Matrix N N Λ[X])) i j) :=
-    Matrix.ext fun a b ↦ by rw [← hφX, ← hφX, h_mul]
-  have h_one : P • (1 : Matrix N N Λ[X]) = diagonal fun _ ↦ P.map (algebraMap R Λ) := by
-    ext i j
-    rw [Matrix.smul_apply, Matrix.one_apply, diagonal_apply]
-    split_ifs
-    · rw [Algebra.smul_def, mul_one]; rfl
-    · rw [smul_zero]
+  have h_mul : φX (B' * B) = φX (diagonal fun _ : N ↦ P.map (algebraMap R Λ)) := by
+    change φX (B' * B) = φX (algebraMap R[X] _ P)
+    rw [map_mul, hB', AlgHom.commutes, Algebra.algebraMap_eq_smul_one]
   refine ⟨P, B', ?_, fun i j m ↦ ?_⟩
   · -- The constant terms: `P(0)` and the determinant of `φX B` at `X = 0`.
     have h_map : (φX B).map constantCoeff = comp N N σ σ L (B.map fun p ↦ ρ (p.coeff 0)) := by
@@ -203,7 +196,8 @@ lemma Selmer.exists_adjugate_polynomial (ρ : Λ →ₐ[R] Matrix σ σ L)
       _ = (comp N N σ σ L (B.map fun p ↦ ρ (p.coeff 0))).det := by
           rw [RingHom.map_det, RingHom.mapMatrix_apply, h_map]
   · ext a b
-    rw [← hρX, ← hρX, h_entry, h_one]
+    rw [← hρX, ← hρX]
+    exact congrArg (fun M ↦ (M (i, a) (j, b)).coeff m) h_mul
 
 /-- Let `Λ[X]` act on `Q` through a ring homomorphism `π : Λ → Q`, with `Λ` acting by left
 multiplication and `X` by right multiplication with `π ρ₀`. Suppose that `B - X B₁` kills the image
