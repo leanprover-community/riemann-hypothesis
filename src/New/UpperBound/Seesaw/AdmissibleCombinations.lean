@@ -307,7 +307,7 @@ lemma gram_gradedLatticeBasis_eq_gluedGram
     (hN : f (N : S) = π * star (π : R)) :
     (gradedLatticeBasis e a π u)ᴴ * (gradedGram e (N : S)).map f * gradedLatticeBasis e a π u =
       reindex e e (gluedGram (N : R) 0) := by
-  have := Fintype.ofFinite X
+  let := Fintype.ofFinite X
   -- The blocks of the basis are `T`, `0`, `Z`, `D`; the form is `G` on the string.
   let T : Matrix (X ⊕ Unit) (X ⊕ Unit) R :=
     if Odd s then diagonal (1 ⊕ᵥ fun _ : Unit ↦ ((star π)⁻¹ : Rˣ).val) else 1
