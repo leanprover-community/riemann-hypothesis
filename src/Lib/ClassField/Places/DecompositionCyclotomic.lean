@@ -117,6 +117,31 @@ section
 
 /-! ### Roots of unity modulo a valuation -/
 
+open Finset in
+/-- A ring homomorphism from an integral domain preserves primitivity of an `N`-th root of unity
+when `N` is nonzero in the target ring. -/
+lemma _root_.IsPrimitiveRoot.map_of_neZero_natCast {R S : Type*} [CommRing R] [IsDomain R]
+    [CommRing S] [NeZero (N : S)] {x : R} (hx : IsPrimitiveRoot x N) (f : R →+* S) :
+    IsPrimitiveRoot (f x) N := by
+  have : NeZero N := NeZero.of_neZero_natCast S
+  let d := orderOf (f x)
+  have h_dvd : d ∣ N := orderOf_dvd_iff_pow_eq_one.mpr (by rw [← map_pow, hx.pow_eq_one, map_one])
+  have hd : d ≠ 0 := ne_zero_of_dvd_ne_zero (NeZero.ne N) h_dvd
+  rw [IsPrimitiveRoot.iff_orderOf]
+  change d = N
+  by_contra h_ne
+  have hk : 1 < N / d := by
+    have h_pos : 0 < N / d :=
+      Nat.div_pos (Nat.le_of_dvd (NeZero.pos N) h_dvd) (Nat.pos_of_ne_zero hd)
+    have h_ne_one : N / d ≠ 1 := fun h ↦ h_ne (Nat.eq_of_dvd_of_div_eq_one h_dvd h)
+    omega
+  -- The geometric sum of the primitive `(N / d)`-th root `x ^ d` is zero. Under `f`,
+  -- every term becomes one, since `d` is the order of `f x`.
+  have h_sum := congrArg f ((hx.pow_of_dvd hd h_dvd).geom_sum_eq_zero hk)
+  have h_zero : (↑(N / d) : S) = 0 := by
+    simpa [map_sum, map_pow, d, pow_orderOf_eq_one] using h_sum
+  exact NeZero.ne (N : S) (by rw [← Nat.div_mul_cancel h_dvd, Nat.cast_mul, h_zero, zero_mul])
+
 /-- Let `A` be a valuation subring of a field `Ω` and `x`, `y` in `Ω` with `x ^ N = y ^ N = 1`. If
 the multiplicative `A`-valuation of `x - y` is strictly smaller than that of `N`, then `x = y`. -/
 lemma eq_of_pow_eq_one_of_val_sub_lt {x y : Ω} (hx : x ^ N = 1) (hy : y ^ N = 1)

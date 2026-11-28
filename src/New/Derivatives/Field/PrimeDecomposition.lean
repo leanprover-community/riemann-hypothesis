@@ -528,17 +528,17 @@ lemma chiK_pow_eq_one_or_neg_one (hp_not_dvd : ¬p ∣ P.d) (n : ℕ) :
   · simpa [h_chi] using neg_one_pow_eq_or ℤ n
 
 omit [Fact p.Prime] in
-/-- Let `φ : 𝓞 E → R` be a ring map to a domain whose characteristic `p` does not divide `q₁`.
+/-- Let `φ : 𝓞 E → R` be a ring map to a ring whose characteristic `p` does not divide `q₁`.
 For infinite places `u v : P.Φ s`, write `σ v = galOfPlaceInt v` for the Galois element of `E/K`
 attached to `v`, a ring endomorphism of `𝓞 E`. Let `ζ = zetaInt` be the chosen primitive `q₁`-th
 root of unity in `𝓞 E`. Then `φ (σ v ζ) = φ (σ u ζ)` if and only if `v = u`. -/
-lemma map_galOfPlaceInt_zetaInt_inj [IsDomain R] (φ : 𝓞 (P.E s) →+* R) (hp_not_dvd : ¬p ∣ P.q₁ s)
+lemma map_galOfPlaceInt_zetaInt_inj (φ : 𝓞 (P.E s) →+* R) (hp_not_dvd : ¬p ∣ P.q₁ s)
     (u : P.Φ s) :
     φ (galOfPlaceInt v (P.zetaInt s)) = φ (galOfPlaceInt u (P.zetaInt s)) ↔ v = u := by
   -- `φ zetaInt` is still a primitive `q₁`-th root of unity
   have : NeZero (P.q₁ s : R) := of_not_dvd R hp_not_dvd
-  have primitive : IsPrimitiveRoot (φ (P.zetaInt s)) (P.q₁ s) := isRoot_cyclotomic_iff.1 <| by
-    simpa using (isPrimitiveRoot_zetaInt.isRoot_cyclotomic one_le).map (f := φ)
+  have primitive : IsPrimitiveRoot (φ (P.zetaInt s)) (P.q₁ s) :=
+    isPrimitiveRoot_zetaInt.map_of_neZero_natCast φ
   -- `σ_t` raises `ζ` to the residue modulo `q₁` that names `t`
   let residue (t : P.Φ s) : ZMod (P.q₁ s) := P.placeMulEquiv s t
   have gal_zeta (t : P.Φ s) : galOfPlaceInt t (P.zetaInt s) = P.zetaInt s ^ (residue t).val :=

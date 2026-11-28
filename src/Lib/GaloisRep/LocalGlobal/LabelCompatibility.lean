@@ -182,8 +182,8 @@ lemma exists_isTameExponent [IsFaithfulMulChar K T] (hA : IsPlaceOver A w) (f : 
   obtain ⟨ρ, hρ_cen, hρ_int⟩ := exists_ringHom_centrePrime_le_ker (K := K) hA
   obtain ⟨π, z, hπz⟩ := hA.exists_isPrimitiveRoot_tameGenerator_smul_div hN_val
   obtain ⟨hπ, hz, hζ⟩ := hπz
-  have hρζ : IsPrimitiveRoot (ρ hζ.toInteger) N := isRoot_cyclotomic_iff.1 <|
-    map_cyclotomic N ρ ▸ (isRoot_cyclotomic_iff.2 hζ.toInteger_isPrimitiveRoot).map ρ
+  have hρζ : IsPrimitiveRoot (ρ hζ.toInteger) N :=
+    hζ.toInteger_isPrimitiveRoot.map_of_neZero_natCast ρ
   obtain ⟨j, -, hj, hTj⟩ :
       ∃ j < N, j.Coprime N ∧ T (ρ hζ.toInteger) ^ j = Complex.exp (2 * Real.pi * Complex.I / N) :=
     (hρζ.map_of_injective IsFaithfulMulChar.injective).isPrimitiveRoot_iff.1
