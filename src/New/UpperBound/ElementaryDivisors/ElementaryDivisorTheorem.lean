@@ -253,8 +253,8 @@ lemma colengthDvd_mul_mul_of_smul_top_le (d' A d : Matrix E E O) {a : O} {s : Fi
   set G : Submodule O (E → O) := span O (s : Set (E → O))
   have h_det (B : Matrix E E O) : ColengthDvd ⊤ B.mulVecLin.range B.det :=
     .of_det_dvd dvd_rfl le_rfl
-  have h_middle : ColengthDvd ⊤ (A.mulVecLin.range ⊔ G) (a ^ Fintype.card E) := by
-    simpa only [mul_one] using (colengthDvd_top_smul_top a).trans (ColengthDvd.of_le (z := 1) h_le)
+  have h_middle : ColengthDvd ⊤ (A.mulVecLin.range ⊔ G) (a ^ Fintype.card E) :=
+    (colengthDvd_top_smul_top a).mono_right h_le
   have h_origin : ColengthDvd (A.mulVecLin.range ⊔ G) ((A * d).mulVecLin.range ⊔ G) d.det :=
     (h_det d).map A.mulVecLin (by simp [le_sup_of_le_right]) (by simp [LinearMap.range_comp])
   have h_chain : ColengthDvd ⊤ ((A * d).mulVecLin.range ⊔ z • ⊤)

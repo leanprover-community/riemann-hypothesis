@@ -44,6 +44,11 @@ def ColengthDvd : Prop :=
 lemma ColengthDvd.of_le (hMN : M ≤ N) : ColengthDvd M N z := fun _ _ hΦ ↦
   ⟨1, by simp, fun i ↦ by simpa [Matrix.one_apply] using hMN (hΦ i)⟩
 
+/-- Enlarging the target submodule preserves a colength divisibility bound. -/
+lemma ColengthDvd.mono_right (hMN : ColengthDvd M N z) (hNP : N ≤ P) :
+    ColengthDvd M P z := fun n Φ hΦ ↦
+  (hMN n Φ hΦ).imp fun _ ⟨hm_det, hm_mem⟩ ↦ ⟨hm_det, fun i ↦ hNP (hm_mem i)⟩
+
 lemma ColengthDvd.of_dvd (hMN : ColengthDvd M N z) (hz : z ∣ z') : ColengthDvd M N z' :=
   fun n Φ hΦ ↦ (hMN n Φ hΦ).imp fun _ ⟨h_det, h_mem⟩ ↦ ⟨h_det.trans hz, h_mem⟩
 
@@ -187,7 +192,7 @@ lemma ColengthDvd.of_det_dvd [IsDomain O] [ValuationRing O] [Fintype ι] [Decida
       funext fun j ↦ by simpa [f, mulVec_diagonal] using (hw j).symm
     exact ⟨g'⁻¹.val *ᵥ w, by simp [mul_assoc, h_diag]⟩
   have h_prod : ∏ j, d j ∣ z := .trans (by simp) h_dvd
-  simpa using ((h_chain univ).of_dvd h_prod).trans (of_le (z := 1) (h_image.trans h_le))
+  exact ((h_chain univ).of_dvd h_prod).mono_right (h_image.trans h_le)
 
 /-- Over a valuation domain `O`, the submodule `a • O ^ ι` of `O ^ ι` has colength dividing
 `a ^ #ι` in the sense of `ColengthDvd`: every finite family in `O ^ ι` is carried into `a • O ^ ι`
