@@ -522,12 +522,27 @@ lemma exists_carry_eq_one_sub_ite {Q : Type*} [Group Q] [Finite Q] [DecidableEq 
   qify
   grind [mul_eq_right, QZ.fracRep, Equiv.injective, toAdd_mul]
 
+/-- The integer carry after pulling back along a character of `Q`. -/
+private abbrev characterCarry {Q : Type*} [Group Q] (f : Q →* Multiplicative QZ) (p q : Q) : ℤ :=
+  carry (f p).toAdd (f q).toAdd
+
 private lemma carry_mul_right {Q : Type*} [Group Q] (f : Q →* Multiplicative QZ) (p q r : Q) :
-    carry (f p).toAdd (f (q * r)).toAdd =
-      carry (f p).toAdd (f q).toAdd - (carry (f q).toAdd (f r).toAdd -
-        carry (f (p * q)).toAdd (f r).toAdd) := by
-  simp only [map_mul, toAdd_mul]
+    characterCarry f p (q * r) =
+      characterCarry f p q - (characterCarry f q r - characterCarry f (p * q) r) := by
+  simp only [characterCarry, map_mul, toAdd_mul]
   linarith only [QZ.carry_add_add_carry (f p).toAdd (f q).toAdd (f r).toAdd]
+
+/-- Choose `γ` whose character value has largest representative. Under translation by `γ`,
+the carry with `p` gains one at the identity and loses one at `p⁻¹`. These cancel when `p = 1`. -/
+private lemma exists_characterCarry_step {Q : Type*} [Group Q] [Finite Q] [DecidableEq Q]
+    (f : Q →* Multiplicative QZ) (hf : Injective f) :
+    ∃ γ : Q, ∀ p q : Q, characterCarry f p (q * γ) =
+      characterCarry f p q - ((if p * q = 1 then 1 else 0) - if q = 1 then 1 else 0) := by
+  obtain ⟨γ, hγ⟩ := exists_carry_eq_one_sub_ite f hf
+  refine ⟨γ, fun p q ↦ ?_⟩
+  rw [carry_mul_right]
+  simp only [characterCarry, hγ]
+  abel
 
 include K in
 /-- Hilbert 90 for functions on cosets: for an open subgroup `U` of `Γ`, every continuous
@@ -556,16 +571,11 @@ lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (
   let U : OpenSubgroup Γ := OpenSubgroup.mk (ker χ) (isOpen_ker χ)
   have h_finite : Finite (Γ ⧸ U.toSubgroup) := U.toSubgroup.quotient_finite_of_isOpen U.isOpen
   -- `f` is the injective character of `Γ ⧸ U` induced by `χ`; the symbol has cocycle `c g l • w`.
-  let f (q : Γ ⧸ U.toSubgroup) : QZ := (kerLift (toHom χ) q).toAdd
-  let c (p q : Γ ⧸ U.toSubgroup) : ℤ := carry (f p) (f q)
-  have χ_eq (g : Γ) : χ.val g = f g := rfl
+  let f : Γ ⧸ U.toSubgroup →* Multiplicative QZ := kerLift (toHom χ)
+  let c := characterCarry f
+  have χ_eq (g : Γ) : χ.val g = (f (g : Γ ⧸ U.toSubgroup)).toAdd := rfl
   have smul_eq (g : Γ) (q : Γ ⧸ U.toSubgroup) : g • q = mk' U g * q := rfl
-  obtain ⟨γ, carry_max⟩ :
-      ∃ γ : Γ ⧸ U.toSubgroup, ∀ q : Γ ⧸ U.toSubgroup, c q γ = 1 - if q = 1 then 1 else 0 :=
-    exists_carry_eq_one_sub_ite _ (kerLift_injective (toHom χ))
-  have carry_cocycle (p q r : Γ ⧸ U.toSubgroup) :
-      c p (q * r) = c p q - (c q r - c (p * q) r) :=
-    carry_mul_right (kerLift (toHom χ)) p q r
+  obtain ⟨γ, carry_step⟩ := exists_characterCarry_step f (kerLift_injective _)
   let M : DiscreteModule ℤ Γ := unitsModule Γ
   let N : DiscreteModule ℤ Γ := M.funModule U.toSubgroup
   -- `D F q = F (q * γ) - F q`
@@ -601,12 +611,12 @@ lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (
   -- Sum `hε l` against `c g`; summing by parts on the left, only `q = g⁻¹` and `q = 1` survive.
   have h_parts : ∑ q, c g q • D (a l) q = a l (g⁻¹ • γ) - a l γ := by
     linear_combination (norm :=
-      simp [D, smul_eq, carry_cocycle, carry_max, smul_sub, mul_eq_one_iff_inv_eq, sub_smul])
+      simp [D, c, smul_eq, carry_step, smul_sub, mul_eq_one_iff_inv_eq, sub_smul])
       sum_shift (c g • a l)
   -- On the right, translate by `q ↦ l * q`.
   have h_translate : ∑ q, c g q • N.ρ l ε q = M.ρ l (c g l • M.sum U ε - s l + s (g * l)) := by
     rw [← (mulLeft_bijective (l : Γ ⧸ U.toSubgroup)).sum_comp]
-    simp [N, s, carry_cocycle, smul_eq, Finset.smul_sum, sub_add, sub_smul, sum]
+    simp [N, s, c, carry_mul_right, smul_eq, Finset.smul_sum, sub_add, sub_smul, sum]
   -- `D (a l) = N.ρ l ε - ε` (`hε l`), and `s g` is the sum of `c g q • ε q`.
   have h_diff_eq : a l (g⁻¹ • γ) - a l γ = M.ρ l (c g l • M.sum U ε - s l + s (g * l)) - s g := by
     rw [← h_parts, ← h_translate, hε l]
@@ -614,7 +624,7 @@ lemma QZChar.exists_eq_cyclicClass_of_resH2_eq_zero (χ : ↥(QZChar Γ)) (x : (
   -- Evaluate `ha g l` at `γ` and replace `a l (g⁻¹ • γ)` by `h_diff_eq`.
   have ha_γ : z.val (g, l) = N.ρ g (a l) γ - a (g * l) γ + a g γ := congrFun (ha g l) γ
   linear_combination (norm :=
-    (simp [N, c, χ_eq, sub_eq_zero]
+    (simp [N, c, characterCarry, χ_eq, sub_eq_zero]
      abel)) ha_γ + c g l • sum_invariant (g * l) + congrArg (M.ρ g) h_diff_eq
 
 include K in
@@ -635,12 +645,10 @@ lemma QZChar.exists_corestrictH0_eq_of_cyclicClass_eq_zero (χ : ↥(QZChar Γ))
   let U : OpenSubgroup Γ := OpenSubgroup.mk (ker χ) (isOpen_ker χ)
   have h_finite : Finite (Γ ⧸ U.toSubgroup) := U.toSubgroup.quotient_finite_of_isOpen U.isOpen
   -- `f` is the injective character of `Γ ⧸ U` induced by `χ`; the symbol has cocycle `c g l • w`.
-  let f (q : Γ ⧸ U.toSubgroup) : QZ := (kerLift (toHom χ) q).toAdd
-  let c (p q : Γ ⧸ U.toSubgroup) : ℤ := carry (f p) (f q)
+  let f : Γ ⧸ U.toSubgroup →* Multiplicative QZ := kerLift (toHom χ)
+  let c := characterCarry f
   have smul_eq (g : Γ) (q : Γ ⧸ U.toSubgroup) : g • q = mk' U g * q := rfl
-  obtain ⟨γ, carry_max⟩ :
-      ∃ γ : Γ ⧸ U.toSubgroup, ∀ q : Γ ⧸ U.toSubgroup, c q γ = 1 - if q = 1 then 1 else 0 :=
-    exists_carry_eq_one_sub_ite _ (kerLift_injective (toHom χ))
+  obtain ⟨γ, carry_step⟩ := exists_characterCarry_step f (kerLift_injective _)
   let M : DiscreteModule ℤ Γ := unitsModule Γ
   let N : DiscreteModule ℤ Γ := M.funModule U.toSubgroup
   -- `D F q = F (q * γ) - F q`
@@ -664,24 +672,25 @@ lemma QZChar.exists_corestrictH0_eq_of_cyclicClass_eq_zero (χ : ↥(QZChar Γ))
        abel)) -ha g l - carry_cocycle g l (l⁻¹ • g⁻¹ • q) • w.val
   obtain ⟨η, hη : ∀ g : Γ, z g = N.ρ g η - η⟩ :=
     hilbert90_funModule (K := K) U ⟨z, by fun_prop, z_cocycle⟩
-  -- By `carry_max` the function below is `w` at `q = 1` and `0` elsewhere, minus `D η`, so its
-  -- sum is `w`. It is invariant, so its sum is a norm by `shapiro_H0`.
-  have h_invariant : (fun q : Γ ⧸ U.toSubgroup ↦ w.val - c q γ • w.val) - D η ∈ N.H0 := by
+  -- The point mass at the identity has sum `w`. Subtracting `D η` makes it invariant,
+  -- so its sum is a norm by `shapiro_H0`.
+  let δ : Γ ⧸ U.toSubgroup → M := Pi.single 1 w.val
+  have h_invariant : δ - D η ∈ N.H0 := by
     refine fun g ↦ funext fun q ↦ ?_
     have hD_hη : D (z g) q = D (N.ρ g η - η) q := by rw [hη g]
-    -- `hη g` and the carry cocycle at `(g, g⁻¹ • q, γ)`
+    -- The difference of the carry in `z g` gives exactly the two translated point masses.
     linear_combination (norm :=
-      (simp [z, N, D, smul_eq, mul_assoc, hw_fixed, sub_smul]
-       abel)) hD_hη - carry_cocycle g (g⁻¹ • q) γ • w.val
+      (simp [z, N, D, c, δ, Pi.single_apply, smul_eq, mul_assoc, apply_ite (M.ρ g),
+        hw_fixed, sub_smul]
+       abel)) hD_hη - (carry_step g (g⁻¹ • q)) • w.val
   obtain ⟨y, hy⟩ : ∃ y : ↥(M.restrictTo U.toSubgroup).H0,
-      (fun q : Γ ⧸ U.toSubgroup ↦ M.ρ q.out y) =
-        (fun q : Γ ⧸ U.toSubgroup ↦ w.val - c q γ • w.val) - D η :=
+      (fun q : Γ ⧸ U.toSubgroup ↦ M.ρ q.out y) = δ - D η :=
     shapiro_H0 U ⟨_, h_invariant⟩
   -- Summing `hy` over the cosets: the left side is the norm of `y`, the right side is `w`.
   refine ⟨y, ?_⟩
   change M.sum U (fun q ↦ M.ρ q.out y) = w.val
   rw [hy]
-  simp [U, D, carry_max, sum_shift, sum, sub_smul]
+  simp [D, δ, sum_shift, sum]
 
 /-- Let `χ : Γ → ℚ/ℤ` be a continuous character and `U` its kernel, an open subgroup of `Γ`. A class
 in `H²(Γ, Ωˣ)` dies on `U` exactly when it is a symbol `(χ, w)` with `w` in `Kˣ`; and for a
