@@ -117,6 +117,7 @@ power `max(⌈t⌉, 0)`. -/
   zero_mem' := by simp only [Set.mem_ofPred_eq, dvd_zero]
   neg_mem' := by simp only [Set.mem_ofPred_eq, dvd_neg, imp_self, implies_true]
 
+/-- Membership in the adic filtration: `x ∈ adicFiltration w t` if and only if `w ^ ⌈t⌉₊ ∣ x`. -/
 lemma mem_adicFiltration_iff {w : R} {t : ℝ} {x : R} : x ∈ adicFiltration w t ↔ w ^ ⌈t⌉₊ ∣ x :=
   Iff.rfl
 
@@ -146,6 +147,7 @@ def gaussFiltration (F : ℝ → AddSubgroup R) (c : σ → ℝ) (t : ℝ) :
 
 variable {F : ℝ → AddSubgroup R} {c : σ → ℝ} {w : R} {t : ℝ}
 
+/-- Membership criterion for the Gauss filtration on multivariate polynomials. -/
 lemma mem_gaussFiltration_iff {f : MvPolynomial σ R} :
     f ∈ gaussFiltration F c t ↔ ∀ α : σ →₀ ℕ, f.coeff α ∈ F (t - weight c α) := Iff.rfl
 
