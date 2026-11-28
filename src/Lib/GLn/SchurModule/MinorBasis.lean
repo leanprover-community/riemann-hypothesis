@@ -1,55 +1,45 @@
 module
 
-import Mathlib.Algebra.Order.Sub.Prod
-import Mathlib.Algebra.Polynomial.Bivariate
-import Mathlib.Data.Finsupp.Pointwise
-import Mathlib.Order.Grade
+import TauCeti.Combinatorics.Young.OfRowLens
+import TauCeti.RepresentationTheory.ClassicalGroups.DualWeylModule.Basis
+import TauCeti.RingTheory.MvPolynomial.Symmetric.Schur.Bialternant
 public import Lib.GLn.SchurModule.Basic
-public import TauCeti.RingTheory.MvPolynomial.HasLeadingTerm
 
 /-!
-# A basis of minor products for Borel semi-invariants over any ring, by induction on rows
+# A basis of minor products for Borel semi-invariants over any ring
 
 Polynomials are in variables `X (a, i)`, where `a` is a row with colour `c a` and `i : ℕ` is a
 column (`New.MatrixPoly`). For finitely many rows and `l = New.GL.columnWeight τ h`, the module
 `New.nabla R c l` of Borel semi-invariants has a basis of products of minors that does not depend on
-the ring `R`. The proof takes leading terms in one row: bordering lifts a family of minor products,
-and a leading-term analysis describes the leading term of a semi-invariant.
+the ring `R`.
 
 ## Main definitions and results
 
-* Leading terms are Tau Ceti's `MonomialOrder.HasLeadingTerm` for `New.GL.columnOrder`;
-  `New.GL.rowExpansion x` expands in row `x`.
 * `New.GL.columnWeight`, `New.GL.ColoredTableau`, `New.GL.minorProduct`: the weight of a family of
   coloured columns, its fillings by rows, and the product of the minors of a filling.
-* `New.GL.interlacing l`: the exponents `γ` with `γ i ≤ l i - l (i + 1)` (truncated subtraction).
-  For antitone `l`, these are the `γ ≤ l` such that `l - γ` interlaces `l`.
-* `New.GL.exists_bordering`: a filling that avoids `x` is lifted to one whose product of minors has,
-  in the variables of row `x`, leading term `X ^ γ` times the old product.
-* `New.GL.degree_rowExpansion_mem_interlacing`: the leading exponent of a Borel semi-invariant in
-  the variables of one row `x` lies in `New.GL.interlacing` of its weight at the colour of `x`.
-* `New.GL.HasLeadingTerm.leadingCoeff_mem_nabla`: the leading coefficient of a semi-invariant in row
-  `x` is a semi-invariant in the other rows, of the weight lowered by that exponent.
-* `New.GL.exists_isStdMinorFamily`: some finite family of fillings has products of minors that are
-  linearly independent and span the semi-invariants of its weight over every ring, recorded as
-  `New.GL.IsStdMinorFamily`.
+* `New.GL.IsStdMinorFamily`: records that a finite family of fillings has minor products that are
+  linearly independent and span `New.nabla R c (New.GL.columnWeight τ h)` over every commutative
+  ring `R`, and satisfy the Weyl character identity when there is a single colour.
+* `New.GL.exists_isStdMinorFamily`: existence of a standard family of minor products, deduced for a
+  single colour from Tau Ceti's standard basis for dual Weyl modules
+  (`TauCeti.DualWeylModule.linearIndependent_bideterminant_ssytFilling`,
+  `TauCeti.DualWeylModule.dualWeylModule_le_span_bideterminant_ssytFilling`) and Jacobi's
+  bialternant formula (`TauCeti.diagramSchurPoly_mul_alternant`), then lifted to multiple colours
+  by induction on the number of active colours.
 
 Notions from other files:
-* `New.nabla`: For a row colouring c and weight l, the module of Borel semi-invariants: polynomials
-  f with f(yβ) = ∏β_{τ,ii}^{l(τ,i)} f(y) for generic upper triangular matrices β_τ, one per colour.
-* `New.minor`: For an h-tuple I of rows, the polynomial determinant of the h×h matrix of variables
-  in rows I and the first h columns.
-* `New.GL.alternant`: For x in ℂ^N and l : ℕ → ℕ, the alternant det(x_i^{l(N−1−j)+j}), 0 ≤ i, j < N,
-  if l(N) = 0, and zero otherwise.
+* `New.nabla`: For a row colouring `c` and weight `l`, the module of Borel semi-invariants:
+  polynomials `f` with `f(yβ) = ∏ β_{τ,ii}^{l(τ,i)} f(y)` for generic upper triangular
+  matrices `β_τ`, one per colour.
+* `New.minor`: For an `h`-tuple `I` of rows, the polynomial determinant of the `h × h` matrix of
+  variables in rows `I` and the first `h` columns.
+* `New.GL.alternant`: For `x` in `ℂ^N` and `l : ℕ → ℕ`, the alternant
+  `det(x_i^{l(N−1−j)+j})`, `0 ≤ i, j < N`, if `l(N) = 0`, and zero otherwise.
 
 ## Relation to the literature
 
 Known result: The standard basis theorem for Schur (dual Weyl) modules over any ring, with their
-character. Here the module is the space of polynomials on matrices that are semi-invariant under a
-triangular group, for several row colours at once. It lies in the span of a set of products of
-minors built one row at a time rather than the semistandard tableaux, and this set is linearly
-independent over every ring. For a single colour its character is given by Weyl's quotient of
-alternants. Source: De Concini, Eisenbud, Procesi, Young diagrams and determinantal varieties,
+character. Source: De Concini, Eisenbud, Procesi, Young diagrams and determinantal varieties,
 Invent. Math. 56 (1980); Akin, Buchsbaum, Weyman, Schur functors and Schur complexes, Adv. Math. 44
 (1982), II.2.16, II.4.11.
 
@@ -60,73 +50,31 @@ See also `Lib.DiscreteSeries.Character.WeylCharacterFormula`.
 
 noncomputable section
 
-/-! ## Leading terms of products of minors and bordering -/
+section MinorBasis
 
-section Bordering
-
-open MvPolynomial Finset MonomialOrder Finsupp Matrix Fin
+open MvPolynomial Finset Finsupp Matrix Submodule TauCeti DualWeylModule
 
 namespace New.GL
 
-variable {Φ J m R : Type} [DecidableEq m] [CommRing R] {γ : ℕ →₀ ℕ}
-
-/-! ### Leading terms -/
-
-/-- The lexicographic monomial order on variables indexed by ℕ that compares exponents at the
-highest index first, so that x₀ ≺ x₁ ≺ …. -/
-def columnOrder : MonomialOrder ℕ := lex (σ := ℕᵒᵈ)
-
-/-- If the exponents `γ` and `δ` agree in the columns beyond `i` and `γ i < δ i`, then `γ` is
-below `δ` in `New.GL.columnOrder`. -/
-lemma columnOrder_lt_of_eq_above {γ : ℕ →₀ ℕ} (i : ℕ) (δ : ℕ →₀ ℕ) (h_eq : ∀ j > i, γ j = δ j)
-    (h_lt : γ i < δ i) : γ ≺[columnOrder] δ :=
-  ⟨OrderDual.toDual i, h_eq, h_lt⟩
-
-/-- If each `u j` has leading term `b j` times the variable `x j` (exponent `single j 1`),
-then the product of the powers `u j ^ n j` has leading term `∏ b j ^ n j` times the monomial of
-exponent `n`. -/
-lemma HasLeadingTerm.finsuppProd_pow {u : ℕ → MvPolynomial ℕ R} {b : ℕ → R}
-    (hu_lead : ∀ j : ℕ, columnOrder.HasLeadingTerm (u j) (Finsupp.single j 1) (b j)) (n : ℕ →₀ ℕ) :
-    columnOrder.HasLeadingTerm (n.prod fun j e : ℕ ↦ u j ^ e) n (n.prod fun j e : ℕ ↦ b j ^ e) := by
-  have h_pow (j : ℕ) :
-      columnOrder.HasLeadingTerm (u j ^ n j) (Finsupp.single j (n j)) (b j ^ n j) := by
-    simpa using HasLeadingTerm.prod (s := range (n j)) fun _ _ ↦ hu_lead j
-  have h_sum_single : ∑ j ∈ n.support, Finsupp.single j (n j) = n := n.sum_single
-  simpa only [Finsupp.prod, h_sum_single] using
-    HasLeadingTerm.prod (s := n.support) fun j _ ↦ h_pow j
-
-variable [Fintype J] {c : m → Φ} {τ : J → Φ} {h : J → ℕ} {x : m} (l : ℕ →₀ ℕ)
-
 /-! ### Columns, fillings and products of minors -/
 
-/-- For a row x, the R-algebra isomorphism writing a polynomial in the y_{a,i} as a polynomial
-in the y_{x,i}, i ∈ ℕ, over the polynomials in the other rows. -/
-def rowExpansion (x : m) : MatrixPoly m R ≃ₐ[R] MvPolynomial ℕ (MatrixPoly {a // a ≠ x} R) :=
-  -- split the variables into those of row `x` and the others
-  (renameEquiv R (((Equiv.optionSubtypeNe x).symm.prodCongr 1).trans optionProdEquiv)).trans
-    (sumAlgEquiv R ℕ ({a // a ≠ x} × ℕ))
+section Defs
 
-/-- The finite set of the `γ` with `γ i ≤ l i - l (i + 1)` (truncated subtraction) for all `i`. For
-antitone `l` these are the `γ ≤ l` such that `μ = l - γ` interlaces `l`: `l (i + 1) ≤ μ i ≤ l i`. -/
-def interlacing : Finset (ℕ →₀ ℕ) := Icc 0 (l - l.comapDomain Nat.succ (by simp))
+variable {Φ J m R : Type} [Fintype J] [CommRing R] {c : m → Φ} {τ : J → Φ} {h : J → ℕ}
 
-lemma mem_interlacing_iff {γ : ℕ →₀ ℕ} : γ ∈ interlacing l ↔ ∀ i : ℕ, γ i ≤ l i - l (i + 1) := by
-  simp [interlacing, Finsupp.le_def]
-
-/-- For finitely many columns j with colour τ_j and height h_j, the weight whose value at (τ,i)
-counts the columns of colour τ with height exceeding i. -/
+/-- For finitely many columns `j` with colour `τ j` and height `h j`, the weight whose value at
+`(τ, i)` counts the columns of colour `τ` with height exceeding `i`. -/
 def columnWeight (τ : J → Φ) (h : J → ℕ) : Φ × ℕ →₀ ℕ :=
   ∑ j : J, ∑ i ∈ range (h j), Finsupp.single ((τ j : Φ), i) 1
 
-/-- The type of assignments giving each column j an h_j-tuple of rows, all of colour τ_j. -/
+/-- The type of assignments giving each column `j` an `h j`-tuple of rows, all of colour `τ j`. -/
 abbrev ColoredTableau (c : m → Φ) (τ : J → Φ) (h : J → ℕ) : Type :=
   ∀ j : J, Fin (h j) → {a // c a = τ j}
 
-variable (S : Type) [CommRing S] (I : ColoredTableau c τ h)
-
-/-- For a coloured column filling I, the polynomial over S that is the product over columns j of
-the minor with rows I_j on the first h_j columns. -/
-def minorProduct : MatrixPoly m S := ∏ j : J, minor S fun s ↦ (I j s).val
+/-- For a coloured column filling `I`, the polynomial over `S` that is the product over columns `j`
+of the minor with rows `I j` on the first `h j` columns. -/
+def minorProduct (S : Type) [CommRing S] (I : ColoredTableau c τ h) : MatrixPoly m S :=
+  ∏ j : J, minor S fun s ↦ (I j s).val
 
 /-- The weight `New.diagramWeight N κ` equals the weight `New.GL.columnWeight` of the family having
 `κ τ h` columns of colour `τ` and height `h`, for every `τ` and `h < N τ`: its columns are the
@@ -138,464 +86,15 @@ lemma diagramWeight_eq_columnWeight [Fintype Φ] (N : Φ → ℕ) (κ : Φ → �
   -- `↓`: the sums over the sigma type must be split before the definitions unfold
   simp [↓Fintype.sum_sigma, diagramWeight, sum_range, columnWeight]
 
-omit [DecidableEq m] in
-/-- For an assignment I of h_j rows of colour τ_j to each column j, the product of minors
-`New.GL.minorProduct` of I is a Borel semi-invariant: it lies in `New.nabla` for the weight
-`New.GL.columnWeight` of τ, h. -/
-lemma minorProduct_mem_nabla : minorProduct R I ∈ nabla R c (columnWeight τ h) := by
+/-- For an assignment `I` of `h j` rows of colour `τ j` to each column `j`, the product of minors
+`New.GL.minorProduct` of `I` is a Borel semi-invariant: it lies in `New.nabla` for the weight
+`New.GL.columnWeight` of `τ, h`. -/
+lemma minorProduct_mem_nabla (I : ColoredTableau c τ h) :
+    minorProduct R I ∈ nabla R c (columnWeight τ h) := by
   -- each minor is a semi-invariant, and semi-invariants form a graded monoid
   rw [minorProduct, columnWeight]
   apply SetLike.prod_mem_graded
   exact fun j _ ↦ minor_mem_nabla fun s ↦ (I j s).prop
-
-/-- Bordering one minor: take a tuple `I` of `k` rows other than `x` and append the row `x` if
-`e = 1`. After `New.GL.rowExpansion x`, the new minor has leading term `X k ^ e` times the old
-minor, where `X k` is the variable of row `x` in column `k`. -/
-lemma hasLeadingTerm_rowExpansion_minor_border {k e : ℕ} (I : Fin k → {a : m // a ≠ x})
-    (he_le_one : e ≤ 1) :
-    columnOrder.HasLeadingTerm
-      (rowExpansion x (minor S fun s : Fin (k + e) ↦ if hs : s < k then (I ⟨s, hs⟩).val else x))
-      (Finsupp.single k e) (minor S I) := by
-  interval_cases e
-  · -- the minor does not involve row `x`
-    have h_const : rowExpansion x (minor S fun s : Fin (k + 0) ↦
-        if hs : s < k then (I ⟨s, hs⟩).val else x) = monomial (Finsupp.single k 0) (minor S I) := by
-      simp [rowExpansion, (I _).prop, monomial_eq, minor, det_apply']
-    rw [h_const]
-    exact hasLeadingTerm_monomial _ _
-  · -- Expand along the last row: column `s` contributes a cofactor times `X (x, s)`.
-    let cofactor (s : Fin (k + 1)) : MatrixPoly {a // a ≠ x} S :=
-      (-1) ^ (k + s.val) * det (of fun a t ↦ X (I a, (s.succAbove t).val))
-    -- The variable of the last column is the largest.
-    have h_lt (s : Fin (k + 1)) (hs : s ≠ last k) :
-        Finsupp.single s.val 1 ≺[columnOrder] Finsupp.single k 1 := by
-      grind [columnOrder_lt_of_eq_above k]
-    have h_expand : rowExpansion x (minor S fun s : Fin (k + 1) ↦
-        if hs : s < k then (I ⟨s, hs⟩).val else x) =
-          ∑ s : Fin (k + 1), monomial (Finsupp.single s.val 1) (cofactor s) := by
-      rw [minor, det_succ_row _ (last k), map_sum]
-      refine sum_congr rfl fun s _ ↦ ?_
-      simp [cofactor, rowExpansion, (I _).prop, monomial_eq, mul_comm, mul_left_comm,
-        mul_assoc, det_apply']
-    have h_last : cofactor (last k) = minor S I := by simp [cofactor, minor]
-    rw [h_expand, ← h_last]
-    exact .sum (γ := fun s : Fin (k + 1) ↦ Finsupp.single s.val 1) (a := cofactor)
-      (fun s ↦ hasLeadingTerm_monomial _ _) (last k) (fun s _ ↦ h_lt s) (absurd (mem_univ (last k)))
-
-/-- Bordering. Let `γ` lie in `interlacing` of the weight `l` of the columns at the colour of the
-row `x`, that is `γ i ≤ l i - l (i + 1)` for all `i`, so `γ` is the amount by which `l` is lowered
-to an interlacing weight. Then (a) there are heights `k` whose column weight is that of `h` minus
-`γ` placed in colour `c x`. For every filling `I` of heights `k` by rows other than `x` there is a
-filling `K` of heights `h` such that (b) over every commutative ring `R`, the expansion of
-`minorProduct R K` in the variables of row `x` has no monomial above the one of exponent `γ` in
-`columnOrder`, and the coefficient of that monomial is `minorProduct R I`, and (c) the entries of
-`K` are those of `I` together with `degree γ` copies of `x`. -/
-lemma exists_bordering (h : J → ℕ) (hγ : γ ∈ interlacing ((columnWeight τ h).curry (c x))) :
-    ∃ k : J → ℕ,
-      -- (a)
-      columnWeight τ h = γ.mapDomain (fun i : ℕ ↦ (c x, i)) + columnWeight τ k ∧
-      -- every filling `I` of heights `k` that avoids `x` has a lift `K` of heights `h` such that
-      ∀ I : ColoredTableau (c ∘ ((↑) : {a : m // a ≠ x} → m)) τ k, ∃ K : ColoredTableau c τ h,
-        -- (b)
-        (∀ (R : Type) [CommRing R],
-          columnOrder.HasLeadingTerm (rowExpansion x (minorProduct R K)) γ (minorProduct R I)) ∧
-        -- (c)
-        ∀ y : m → ℂ,
-          ∏ j : J, ∏ s : Fin (h j), y (K j s) =
-            y x ^ Finsupp.degree γ * ∏ j : J, ∏ s : Fin (k j), y (I j s) := by
-  classical
-  -- Among the columns of the colour of `x` and of height `i + 1` choose `γ i` and shorten them by
-  -- one. A filling `I` of the shortened columns is lifted by putting `x` back at the end.
-  let taller (i : ℕ) : Finset J := {j ∈ {j | τ j = c x} | i < h j}
-  have h_weight (i : ℕ) : (columnWeight τ h).curry (c x) i = #(taller i) := by
-    simp [columnWeight, taller, Finsupp.single_apply, sum_ite, ite_and]
-  -- interlacing says that at least `γ i` columns of this colour have height exactly `i + 1`
-  have h_count (i : ℕ) : γ i ≤ #(taller i) - #(taller (i + 1)) := by
-    simpa only [h_weight] using (mem_interlacing_iff _).mp hγ i
-  have h_exists_S (i : ℕ) : ∃ S ⊆ taller i \ taller (i + 1), #S = γ i :=
-    exists_subset_card_eq ((h_count i).trans (le_card_sdiff (taller (i + 1)) (taller i)))
-  choose S h_S_sub card_S using h_exists_S
-  have h_of_mem_S {i : ℕ} {j : J} (hj : j ∈ S i) : τ j = c x ∧ h j = i + 1 := by grind
-  clear hγ h_S_sub h_count h_weight taller
-  -- `e j = 1` for the chosen columns and `0` for the others; `k` are the new heights.
-  let e (j : J) : ℕ := if ∀ i, j ∉ S i then 0 else 1
-  have h_e_le_one (j : J) : e j ≤ 1 := by grind
-  obtain ⟨k, rfl⟩ : ∃ k : J → ℕ, h = k + e := le_iff_exists_add'.mp (by grind [Pi.le_def])
-  -- `γ i` counts the columns chosen at height `i + 1`, which now have height `k j = i`
-  have h_γ_eq : γ = ∑ j, Finsupp.single (k j) (e j) := by
-    ext i
-    have h_chosen (j : J) : (if j ∈ S i then 1 else 0) = Finsupp.single (k j) (e j) i := by
-      grind [Pi.add_apply]
-    simp [Finsupp.finsetSum_apply, ← h_chosen, card_S, Finset.univ_inter]
-  subst h_γ_eq
-  refine ⟨k, ?weights, fun I ↦
-    ⟨fun j s ↦ ⟨if hs : s < k j then I j ⟨s, hs⟩ else x, ?colour⟩, fun R _ ↦ ?lead, ?entries⟩⟩
-  case weights =>
-    -- a chosen column loses the entry `(c x, k j)` of its weight
-    have h_column (j : J) :
-        ∑ i ∈ range (k j + e j), Finsupp.single (τ j, i) 1 =
-          Finsupp.single (c x, k j) (e j) + ∑ i ∈ range (k j), Finsupp.single (τ j, i) 1 := by
-      rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (h_e_le_one j) with h_e_zero | h_e_one
-      · simp [h_e_zero]
-      · have h_colour : τ j = c x := by grind
-        rw [h_e_one, sum_range_succ, h_colour, add_comm]
-    simp only [columnWeight, mapDomain_finsetSum, mapDomain_single, Pi.add_apply, h_column,
-      sum_add_distrib]
-  case colour =>
-    -- the appended row `x` has the colour of its column
-    grind [Pi.add_apply]
-  case lead =>
-    -- leading terms multiply, column by column
-    simp only [minorProduct, map_prod]
-    exact .prod fun j ↦ by simpa using hasLeadingTerm_rowExpansion_minor_border R
-                             (fun s ↦ (I j s).val) (h_e_le_one j)
-  case entries =>
-    -- in each column, the lifted filling adds `e j` copies of `x`
-    simp [prod_univ_add, mul_comm, prod_mul_distrib, prod_pow_eq_pow_sum]
-
-/-! ### The recursion for alternants -/
-
-/-- Column reduction for a matrix of powers. Let `p` be a monotone family of exponents and `i` a
-row. Subtracting from each column `j + 1` the power `x i ^ (p (j + 1) - p j)` times column `j`
-keeps the determinant of `(x a ^ p j)`, and turns the entry `x a ^ p (j + 1)` into `x a - x i`
-times the sum of `x a ^ k * x i ^ (p (j + 1) - 1 - k)` over `p j ≤ k < p (j + 1)`. -/
-lemma _root_.Matrix.det_pow_eq_det_sub_mul_geom_sum {N : ℕ} (x : Fin (N + 1) → R)
-    (i : Fin (N + 1)) (p : Fin (N + 1) → ℕ) (h_mono : ∀ j : Fin N, p j.castSucc ≤ p j.succ) :
-    det (of fun a j : Fin (N + 1) ↦ x a ^ p j) =
-      det (of fun a : Fin (N + 1) ↦ vecCons (x a ^ p 0) fun j : Fin N ↦ (x a - x i) *
-        ∑ k ∈ Ico (p j.castSucc) (p j.succ), x a ^ k * x i ^ (p j.succ - 1 - k)) := by
-  refine det_eq_of_forall_col_eq_smul_add_pred (fun j ↦ x i ^ (p j.succ - p j.castSucc))
-    (fun _ ↦ rfl) fun a j ↦ ?_
-  simp only [of_apply, cons_val_succ, mul_geom_sum₂_Ico _ _ (h_mono j)]
-  ring
-
-/-- The branching rule for alternants. Here `alternant x l` for `x : Fin (N + 1) → ℂ` is
-`det (x a ^ (l (N - j) + j))` over `0 ≤ a, j ≤ N`, or zero if `l (N + 1) ≠ 0`, and `interlacing l`
-is the set of `γ` with `γ k ≤ l k - l (k + 1)` for all `k`, so that `l - γ` interlaces `l`. For
-antitone `l` and an index `i`, the alternant of `l` is `(-1) ^ i * ∏ a ≠ i, (x a - x i)` times the
-sum, over `γ ∈ interlacing l`, of `x i ^ |γ|` times the alternant of `l - γ` in the other `N`
-variables. -/
-lemma alternant_succ {N : ℕ} (hl_anti : Antitone l) (i : Fin (N + 1)) (x : Fin (N + 1) → ℂ) :
-    alternant x l =
-      (-1) ^ i.val * (∏ a : Fin N, (x (i.succAbove a) - x i)) *
-        ∑ γ ∈ interlacing l, x i ^ Finsupp.degree γ * alternant (x ∘ i.succAbove) (l - γ) := by
-  -- Column `j` has exponent `p j`. Subtract from each column but the first a power of `x i` times
-  -- the column before: row `i` becomes `(x i ^ l N, 0, …, 0)` and the entry `(a, j + 1)` becomes
-  -- `x a - x i` times a geometric sum. Expand along row `i`, then each geometric sum.
-  -- used by `grind` in the bijection below
-  have h_beyond {n : ℕ} (hn : N + 1 ≤ n) : l n ≤ l (N + 1) := hl_anti hn
-  let p (j : Fin (N + 1)) : ℕ := l j.rev + j
-  have h_mono (j : Fin N) : p j.castSucc ≤ p j.succ := add_le_add (hl_anti (by grind)) (by simp)
-  rw [alternant, interlacing, det_pow_eq_det_sub_mul_geom_sum x i p h_mono, det_succ_row _ i]
-  -- Write both sides as sums over permutations, the left side also over the exponents `g`.
-  simp [p, alternant, sum_univ_succ, det_apply', prod_univ_sum, Finset.mul_sum,
-    Equiv.prod_comp _ fun a ↦ x (i.succAbove a) - x i, -val_rev, prod_mul_distrib,
-    prod_pow_eq_pow_sum]
-  rw [univ.sum_comm, ite_sum_zero, ← sum_filter, ← sum_filter]
-  -- Both sides are now sums over permutations `σ` of `Fin N`: on the left also over the exponents
-  -- `g j` chosen from the geometric sums, on the right also over the interlacing `γ`.
-  change ∑ g ∈ Fintype.piFinset (fun j : Fin N ↦ Ico (p j.castSucc) (p j.succ)) with l (N + 1) = 0,
-      ∑ σ : Equiv.Perm (Fin N), (-1) ^ (i : ℕ) * x i ^ l N * (((Equiv.Perm.sign σ : ℤ) : ℂ) *
-        ((∏ a : Fin N, (x (i.succAbove a) - x i)) * ((∏ j : Fin N, x (i.succAbove (σ j)) ^ g j) *
-          x i ^ ∑ j : Fin N, (l (j.succ.rev : ℕ) + (j : ℕ) - g j)))) =
-    ∑ γ ∈ interlacing l with l N - γ N = 0,
-      ∑ σ : Equiv.Perm (Fin N), ((-1) ^ (i : ℕ) * ∏ a : Fin N, (x (i.succAbove a) - x i)) *
-        (x i ^ Finsupp.degree γ * (((Equiv.Perm.sign σ : ℤ) : ℂ) *
-          ∏ j : Fin N, x (i.succAbove (σ j)) ^ (l (j.rev : ℕ) - γ (j.rev : ℕ) + (j : ℕ))))
-  -- A choice of one exponent `g j` from each geometric sum is the same as an interlacing `γ` with
-  -- `γ N = l N`: the partition `μ = l - γ` has `μ (N - 1 - j) + j = g j`.
-  -- (`alternant` of `μ` vanishes unless `μ N = 0`. If `l (N + 1) ≠ 0` there is no such `γ`, and
-  -- the left side is zero too.)
-  clear h_mono
-  let μ (g : Fin N → ℕ) (n : ℕ) : ℕ := if hn : n < N then g (rev ⟨n, hn⟩) - rev ⟨n, hn⟩ else 0
-  refine sum_bij' (fun g hg ↦ onFinset (range (N + 1)) (fun n ↦ l n - μ g n) ?support)
-    (fun γ _ j ↦ (l - γ) j.rev + j) ?to_mem ?inv_mem ?left_inv ?right_inv ?terms
-  case support => grind
-  -- the four conditions of the bijection are one computation with `μ`
-  case to_mem | inv_mem | left_inv | right_inv =>
-    simp [μ, interlacing, le_tsub_iff_left (hl_anti _), -val_rev, Finsupp.le_def]
-    grind
-  case terms =>
-    simp [μ, degree_eq_weight_one, weight_apply, sum_range_succ, sum_range,
-      ← rev_bijective.sum_comp (l · - _), -val_rev]
-    grind
-
-end New.GL
-
-end Bordering
-
-/-!
-## The leading term of a semi-invariant in one row
-
-Throughout, `f` is a Borel semi-invariant and `G * X_x ^ γ` is its leading term in the variables
-`X (x, i)` of one row `x`, where `X_x ^ γ` is the monomial of exponent `γ` in these variables.
--/
-
-section Interlacing
-
-open MvPolynomial Finset Finsupp Algebra MonomialOrder
-
-namespace New.GL
-
-/-- Let the exponents `n` and `γ` agree outside the columns `i` and `i + 1` and have the same sum
-`n i + n (i + 1) = γ i + γ (i + 1)`, in the pointwise form that a comparison of coefficients
-gives. If `n i ≤ γ i` and `n ≠ γ`, then `γ` is below `n` for `columnOrder`. -/
-private lemma columnOrder_lt_of_forall_add_ite_eq {γ n : ℕ →₀ ℕ} {i : ℕ}
-    (h_eq : ∀ a : ℕ, (if i + 1 = a then n i else 0) + ((if i = a then n (i + 1) else 0) + n a) =
-      (if i + 1 = a then γ i else 0) + ((if i = a then γ (i + 1) else 0) + γ a))
-    (h_le : n i ≤ γ i) (h_ne : n ≠ γ) : γ ≺[columnOrder] n := by
-  have h_sum : n (i + 1) + n i = γ (i + 1) + γ i := by simpa using h_eq i
-  have h_off (a : ℕ) (ha : a ≠ i) (ha' : a ≠ i + 1) : n a = γ a := by
-    simpa [Ne.symm ha, Ne.symm ha'] using h_eq a
-  -- `n i = γ i` would force `n = γ`, so `n i < γ i` and hence `γ (i + 1) < n (i + 1)`.
-  have h_lt_i : n i < γ i := by
-    refine h_le.lt_of_ne fun h_eq_i ↦ h_ne (Finsupp.ext fun a ↦ ?_)
-    rcases eq_or_ne a i with rfl | ha
-    · exact h_eq_i
-    rcases eq_or_ne a (i + 1) with rfl | ha'
-    · lia
-    exact h_off a ha ha'
-  have h_lt_succ : γ (i + 1) < n (i + 1) := by lia
-  exact columnOrder_lt_of_eq_above (i + 1) n (fun a ha ↦ (h_off a (by lia) (by lia)).symm) h_lt_succ
-
-variable {Φ m : Type} [DecidableEq m] {R : Type} [CommRing R]
-  {c : m → Φ} {x : m} {l : Φ × ℕ →₀ ℕ} {f : MatrixPoly m R}
-
-/-- Let `f` be a Borel semi-invariant of weight `l` for the row colouring `c` (`f ∈ nabla R c l`),
-and let `γ` be the leading exponent of `f` in the variables `X (x, i)` of the row `x`, for the order
-`columnOrder` (which compares the highest column first). Then `γ i ≤ l (c x, i) - l (c x, i + 1)`
-for every column `i`, with truncated subtraction: `γ` lies in `interlacing` of the weight at the
-colour of `x`. -/
-lemma degree_rowExpansion_mem_interlacing (hf : f ∈ nabla R c l) :
-    columnOrder.degree (rowExpansion x f) ∈ interlacing (l.curry (c x)) := by
-  classical
-  -- Let `v, v'` be the columns `i, i + 1` of the colour of `x`. Semi-invariance under the block
-  -- `!![s, -1; 0, T]` gives `f (s v + s T v', -v) = s ^ l i * T ^ l (i + 1) * f (v + T v', v')`.
-  -- On the left `T` enters only as `s T`, so no term has more `T` than `s`. On the right, if
-  -- `G X_x ^ γ` is the leading term of `f` in row `x`, then `G` is a coefficient of
-  -- `T ^ (l (i + 1) + γ i) * s ^ l i`.
-  set γ : ℕ →₀ ℕ := columnOrder.degree (rowExpansion x f)
-  suffices h_bound : ∀ i : ℕ, γ i ≤ l.curry (c x) i - l.curry (c x) (i + 1) by
-    exact (mem_interlacing_iff _).mpr h_bound
-  intro i
-  rw [Finsupp.curry_apply, Finsupp.curry_apply]
-  by_contra! h_lt : l (c x, i) - l (c x, i + 1) < γ i
-  -- As `γ ≠ 0`, the polynomial `rowExpansion x f` is not zero, nor is its leading coefficient `G`.
-  have hG : (rowExpansion x f).coeff γ ≠ 0 := by grind [degree_zero, coeff_degree_eq_zero_iff]
-  -- Coefficients lie in `P`, polynomials in `s` and `T`: `T` is `Polynomial.X` and `s` is `.C .X`.
-  -- `θ` replaces `v` by `v + T v'` in the rows other than `x`.
-  let P : Type _ := Polynomial (Polynomial (MatrixPoly {a // a ≠ x} R))
-  let θ : MatrixPoly {a // a ≠ x} R →ₐ[R] P :=
-    aeval fun y ↦ .CC (X y) + .X * .CC (single (c x, i) (X (y.1, i + 1)) (c y.1, y.2))
-  have hθ (p : MatrixPoly {a // a ≠ x} R) : (θ p).coeff 0 = .C p := by
-    induction p using MvPolynomial.induction_on with
-    | C r => simp [P, θ, Polynomial.algebraMap_apply]
-    | add p q hp hq => rw [map_add, Polynomial.coeff_add, hp, hq, map_add]
-    | mul_X p y hp =>
-      have h_X : (θ (X y)).coeff 0 = .C (X y) := by simp [P, θ]
-      rw [map_mul, Polynomial.mul_coeff_zero, hp, h_X, map_mul]
-  -- `Ψ` does the same in row `x`, at `v = 0` and `v' = X i * X (i + 1)`.
-  let Ψ : MatrixPoly m R →ₐ[R] MvPolynomial ℕ P :=
-    (aevalTower ((mapAlgHom θ).comp
-        (algHom R (MatrixPoly {a // a ≠ x} R) (MvPolynomial ℕ (MatrixPoly {a // a ≠ x} R)))) fun j ↦
-        (C Polynomial.X * X (i + 1)) ^ single i 1 j * X i ^ single (i + 1) 1 j * X j).comp
-      (rowExpansion x).toAlgHom
-  -- `b` is the identity matrix but for the block `!![s, -1; 0, T]`.
-  let b : Φ × ℕ × ℕ → MvPolynomial ℕ P := fun (τ, j, k) ↦
-    single j (C (.C .X ^ single (c x, i) 1 (τ, j) * .X ^ single (c x, i + 1) 1 (τ, j))) k -
-      single (c x, i) (single (j + 1) 1 k) (τ, j)
-  -- `Ψ` sends `X_x ^ γ` to `T ^ γ i` times the monomial of exponent `δ`.
-  let δ : ℕ →₀ ℕ := single (i + 1) (γ i) + (single i (γ (i + 1)) + γ)
-  -- Left side: the substitution factors through `scale : T ↦ s T`. An entry of `y b` (`y = Ψ ∘ X`)
-  -- is `scale` of the entry of `y` plus the value at `T = 0` of the entry of `y b - y`.
-  let scale : P →ₐ[R] P :=
-    .restrictScalars R (Polynomial.aeval (R := Polynomial (MatrixPoly {a // a ≠ x} R)) (.C .X * .X))
-  have h_factor : aeval (borelMul c b (Ψ ∘ X)) = (mapAlgHom scale).comp
-      (aeval (mapAlgHom (Polynomial.aeval 0) ∘ (borelMul c b (Ψ ∘ X) - Ψ ∘ X) + Ψ ∘ X)) := by
-    -- Multiplying by `b` scales the columns `i` and `i + 1` of the colour of `x` by `s` and `T`,
-    -- and subtracts column `i` from column `i + 1`.
-    have h_mul (Y : m × ℕ → MvPolynomial ℕ P) (y : m) (j : ℕ) : borelMul c b Y (y, j) =
-        Y (y, j) * C (.C .X ^ single (c x, i) 1 (c y, j) * .X ^ single (c x, i + 1) 1 (c y, j)) -
-          if (c x, i + 1) = (c y, j) then Y (y, i) else 0 := by
-      rcases eq_or_ne (i + 1) j with rfl | hj
-      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and]
-      · simp [borelMul, b, mul_sub, sum_sub_distrib, single_apply, ite_and, hj]
-    -- The values of `Ψ` on the variables of the row `x` and of another row `y`.
-    have hΨx (j : ℕ) : Ψ (X (x, j)) =
-        (C Polynomial.X * X (i + 1)) ^ single i 1 j * X i ^ single (i + 1) 1 j * X j := by
-      simp [Ψ, rowExpansion]
-    have hΨy (y : m) (hy : y ≠ x) (j : ℕ) : Ψ (X (y, j)) = C (θ (X (⟨y, hy⟩, j))) := by
-      simp [Ψ, rowExpansion, hy, algHom]
-    refine algHom_ext fun ⟨y, j⟩ ↦ ?_
-    by_cases hy : y = x
-    · -- Row `x`: casework on the column `j` against `i` and `i + 1`; each case is a ring identity.
-      by_cases hj : j = i
-      · simp [h_mul, hΨx, scale, P, hy, hj]
-        ring
-      by_cases hj' : j = i + 1
-      · simp [h_mul, hΨx, scale, P, hy, hj']
-        ring
-      · simp [h_mul, hΨx, scale, P, hy, Ne.symm hj, Ne.symm hj']
-    · -- Another row: the entries are constants `C p`, so this is an identity in `P`. Casework on
-      -- `(c y, j)` against `(c x, i)` and `(c x, i + 1)`.
-      simp only [aeval_X, AlgHom.comp_apply, mapAlgHom_apply, Pi.add_apply, Pi.sub_apply,
-        Function.comp_apply, h_mul, hΨy _ hy, ← apply_ite C, ← C_0, ← C_mul, ← C_sub, ← C_add,
-        map_C]
-      refine congrArg C ?_
-      by_cases hα : (c x, i) = (c y, j)
-      · obtain ⟨hc, rfl⟩ := Prod.mk.inj hα
-        simp [θ, scale, P, hc]
-        ring
-      by_cases hβ : (c x, i + 1) = (c y, j)
-      · obtain ⟨hc, rfl⟩ := Prod.mk.inj hβ
-        simp [θ, scale, P, hc]
-      · simp [θ, scale, P, hα, hβ]
-  -- After `T ↦ s T` the coefficient of `T ^ a` is divisible by `s ^ a`.
-  have h_scale (p : P) {a k : ℕ} (hk : k < a) : ((scale p).coeff a).coeff k = 0 := by
-    simp [P, scale, ← Polynomial.comp_eq_aeval, Polynomial.coeff_mul_X_pow', hk.not_ge]
-  have h_left : (((aeval (borelMul c b (Ψ ∘ X)) f).coeff δ).coeff (l (c x, i + 1) + γ i)).coeff
-      (l (c x, i)) = 0 := by
-    have h_deg_lt : l (c x, i) < l (c x, i + 1) + γ i := by lia
-    rw [h_factor, AlgHom.comp_apply, mapAlgHom_apply, coeff_map]
-    exact h_scale _ h_deg_lt
-  -- Right side: the weight factor, and the coefficient of `T ^ γ i` at `δ` in `Ψ f`.
-  have h_weight :
-      (l.prod fun p k ↦ b (p.1, p.2, p.2) ^ k) = C (.C .X ^ l (c x, i) * .X ^ l (c x, i + 1)) := by
-    -- The flags stop `simp` from splitting the powers `s ^ [p = (c x, i)]` into cases, and from
-    -- rewriting `C (a ^ n)` as `C a ^ n`.
-    simp [b, prod_mul_distrib, -pow_ite, -Prod.mk.injEq, prod_pow_eq_pow_sum, ↓if_mem_support, prod,
-      single_apply, mul_pow, ← pow_mul, -C_pow]
-  have h_top : (((Ψ f).coeff δ).coeff (γ i)).coeff 0 = (rowExpansion x f).coeff γ := by
-    -- Expand `f` along row `x` and apply `Ψ` term by term; only the term of `γ` contributes.
-    have h_expand : (Ψ f).coeff δ = ∑ n ∈ (rowExpansion x f).support,
-        θ ((rowExpansion x f).coeff n) *
-          (.X ^ n i * (X (i + 1) ^ n i * (X i ^ n (i + 1) * monomial n 1) : MvPolynomial ℕ P).coeff
-            δ) := by
-      rw [AlgHom.comp_apply]
-      change (eval₂ _ _ ((rowExpansion x).toAlgHom f) : MvPolynomial ℕ P).coeff δ = _
-      rw [eval₂_eq]
-      -- Flags as in `h_weight`; `-map_aeval` keeps `θ` applied to the coefficients.
-      simp [prod_mul_distrib, -pow_ite, prod_pow_eq_pow_sum, -map_aeval, ↓if_mem_support,
-        algHom, single_apply, mul_pow, ← map_pow, mul_assoc, ← pow_mul, ← map_prod, -C_pow]
-    rw [h_expand, Polynomial.finsetSum_coeff, Polynomial.finsetSum_coeff, Finset.sum_eq_single γ]
-    · simp [P, δ, hθ, X_pow_eq_monomial, Polynomial.coeff_mul_X_pow']
-    · -- Another exponent `n` reaching `δ` with `n i ≤ γ i` has `n i < γ i`, hence
-      -- `γ (i + 1) < n (i + 1)` and equal entries beyond: it exceeds the leading exponent `γ`.
-      intro n hn hne
-      have h_not_lt : ¬ γ ≺[columnOrder] n := fun h_lt ↦
-        MvPolynomial.mem_support_iff.mp hn (coeff_eq_zero_of_lt h_lt)
-      -- The term of `n` is nonzero only if `n` reaches `δ` with `n i ≤ γ i`.
-      suffices h_vanish : (∀ a : ℕ,
-          (if i + 1 = a then n i else 0) + ((if i = a then n (i + 1) else 0) + n a) =
-            (if i + 1 = a then γ i else 0) + ((if i = a then γ (i + 1) else 0) + γ a)) →
-          n i ≤ γ i → ((θ ((rowExpansion x f).coeff n)).coeff (γ i - n i)).coeff 0 = 0 by
-        simpa [P, δ, X_pow_eq_monomial, Polynomial.coeff_mul_X_pow', Finsupp.ext_iff,
-          apply_ite AddMonoidAlgebra.coeff, DFunLike.ite_apply, single_apply, ite_apply] using
-          h_vanish
-      intro h_shape h_le
-      exact absurd (columnOrder_lt_of_forall_add_ite_eq h_shape h_le hne) h_not_lt
-    · intro hγ
-      exact absurd (MvPolynomial.mem_support_iff.mpr hG) hγ
-  -- By semi-invariance the coefficient in `h_left` is the one in `h_top`, so `G = 0`.
-  apply hG
-  rw [← h_top, ← h_left, mem_nabla.mp hf (MvPolynomial ℕ P) b (Ψ ∘ X), h_weight, ← aeval_unique]
-  -- `← map_pow` gathers powers inside `C`, which `C_pow` would undo.
-  simp [P, Polynomial.coeff_X_pow_mul', ← map_pow, mul_assoc, -C_pow]
-
-/-- Let `γ` be the leading exponent of `f` in the variables of the row `x` (for `columnOrder`, the
-lexicographic order that compares exponents at the highest column first), and let `f` be a Borel
-semi-invariant of weight `γ + l`, where `γ` is placed at the colour `c x` (`γ.mapDomain (c x, ·)`).
-Then the leading coefficient `G` of `f` in the row `x`, a polynomial in the other rows, is a Borel
-semi-invariant of weight `l` for the colouring `c` restricted to the rows other than `x`. -/
-lemma HasLeadingTerm.leadingCoeff_mem_nabla
-    (hf : f ∈ nabla R c
-      ((columnOrder.degree (rowExpansion x f)).mapDomain (fun i : ℕ ↦ (c x, i)) + l)) :
-    columnOrder.leadingCoeff (rowExpansion x f) ∈ nabla R (c ∘ (↑)) l := by
-  -- Let `G X_x ^ γ` be the leading term of `f` in row `x`. Compare the coefficients of `X_x ^ γ`
-  -- in `f (y β) = ∏ β ^ (γ + l) * f y` for a generic upper triangular `β`. As `(y β) (x, j)` is
-  -- `β j j * y (x, j)` plus smaller terms, the left one is `G (y β) * ∏ β j j ^ γ j`; the factor
-  -- `∏ β j j ^ γ j` cancels.
-  set γ : ℕ →₀ ℕ := columnOrder.degree (rowExpansion x f)
-  let A : Type _ := MatrixPoly {a // a ≠ x} (MvPolynomial (Φ × ℕ × ℕ) R)
-  let β : Φ × ℕ × ℕ → A := C ∘ X
-  -- `ρ` substitutes `y β` in the rows other than `x`; `u j` is the entry `(x, j)` of `y β`.
-  let ρ : MatrixPoly {a // a ≠ x} R →ₐ[R] A := aeval (borelMul (c ∘ (↑)) β X)
-  let u (j : ℕ) : MvPolynomial ℕ A := borelMul c (C ∘ β) (fun p ↦ X p.2) (x, j)
-  have hu_lead (j : ℕ) : columnOrder.HasLeadingTerm (u j) (single j 1) (β (c x, j, j)) := by
-    -- `u j` is the sum of the `X i * C (β (c x, i, j))` over `i ≤ j`.
-    have h_term (i : ℕ) :
-        columnOrder.HasLeadingTerm (X i * C (β (c x, i, j))) (single i 1) (β (c x, i, j)) := by
-      rw [X, C_apply, monomial_mul_monomial, add_zero, one_mul]
-      exact hasLeadingTerm_monomial _ _
-    have h_lt : ∀ i ∈ range (j + 1), i ≠ j → single i 1 ≺[columnOrder] single j 1 := by
-      grind [columnOrder_lt_of_eq_above j]
-    simpa only [u, borelMul, Function.comp_apply] using
-      HasLeadingTerm.sum (s := range (j + 1)) h_term j h_lt (absurd (self_mem_range_succ j))
-  -- `subst` substitutes `y β` in `f` and expands along row `x`; by the definitions of
-  -- `aevalTower` and `eval₂`, `subst f` is a sum over the exponents of `f` in row `x`.
-  let subst : MatrixPoly m R →ₐ[R] MvPolynomial ℕ A :=
-    (aevalTower ((algHom R A (MvPolynomial ℕ A)).comp ρ) u).comp (rowExpansion x).toAlgHom
-  have h_eval : subst f = ∑ n ∈ (rowExpansion x f).support,
-      C (ρ ((rowExpansion x f).coeff n)) * n.prod fun j e ↦ u j ^ e :=
-    rfl
-  -- In this sum the term of `γ` leads.
-  have h_lead : columnOrder.HasLeadingTerm (subst f) γ
-      (ρ ((rowExpansion x f).coeff γ) * γ.prod fun j e ↦ β (c x, j, j) ^ e) := by
-    rw [h_eval]
-    refine HasLeadingTerm.sum (γ := fun n ↦ n)
-      (a := fun n ↦ ρ ((rowExpansion x f).coeff n) * n.prod _) (fun n ↦ ?_) γ
-      (fun n hn hne ↦ ?_) fun hγ ↦ ?_
-    · simpa using (hasLeadingTerm_monomial 0 _).mul (finsuppProd_pow hu_lead n)
-    · exact lt_of_le_of_ne (columnOrder.le_degree hn) (columnOrder.toSyn.injective.ne hne)
-    · simp [MvPolynomial.notMem_support_iff.mp hγ]
-  -- The semi-invariance of `f`, with both sides expanded along row `x`; `W` is the weight factor.
-  let Ψ : MatrixPoly m R →ₐ[R] MvPolynomial ℕ A :=
-    (mapAlgHom (aeval X)).comp (rowExpansion x).toAlgHom
-  let W : MvPolynomial ℕ A := (γ.mapDomain (fun i : ℕ ↦ (c x, i)) + l).prod
-    fun (p : Φ × ℕ) (k : ℕ) ↦ (C ∘ β) (p.1, p.2, p.2) ^ k
-  have h_subst : aeval (borelMul c (C ∘ β) (Ψ ∘ X)) = subst := by
-    refine algHom_ext fun ⟨y, j⟩ ↦ ?_
-    by_cases hy : y = x <;> simp [rowExpansion, Ψ, ρ, u, subst, hy, borelMul, algHom]
-  have h_semi : subst f = W * Ψ f := by
-    have h_nabla : aeval (borelMul c (C ∘ β) (Ψ ∘ X)) f = W * aeval (Ψ ∘ X) f :=
-      mem_nabla.mp hf (MvPolynomial ℕ A) (C ∘ β) (Ψ ∘ X)
-    rwa [← aeval_unique, h_subst] at h_nabla
-  -- The factor to cancel is a monomial in the generic entries, hence regular.
-  have h_reg : IsRegular (γ.prod fun j e ↦ β (c x, j, j) ^ e) := by
-    simpa [β, Finsupp.prod, ← map_pow, ← map_prod, -C_pow] using .monomial (.prod (by simp))
-  -- Membership in `nabla` is by definition the identity `ρ G = ∏ β ^ l * G` for the generic `β`.
-  -- Multiplied by the regular factor, its left side is the coefficient at `γ` of `subst f` (by
-  -- `h_lead`), and the right side that of `W * Ψ f`.
-  have h_rhs : (W * Ψ f).coeff γ =
-      ((l.prod fun (p : Φ × ℕ) (k : ℕ) ↦ (X (p.1, p.2, p.2) : MvPolynomial (Φ × ℕ × ℕ) R) ^ k) •
-        (aeval X : MatrixPoly {a // a ≠ x} R →ₐ[R] A)
-          (columnOrder.leadingCoeff (rowExpansion x f))) *
-        γ.prod fun j e ↦ β (c x, j, j) ^ e := by
-    -- `W` is a constant, so it comes out of the coefficient; it is the product of the factors for
-    -- `l` and for `γ`. `↓` splits this product before the definitions unfold.
-    simp [A, β, Ψ, γ, W, leadingCoeff, ↓prod_add_index', pow_add, ↓prod_mapDomain_index,
-      ← map_pow, Finsupp.prod, ← map_prod, mul_assoc, coeff_map, -C_pow, Algebra.smul_def,
-      MvPolynomial.algebraMap_eq]
-    ring
-  rw [← h_semi, h_lead.coeff_eq] at h_rhs
-  exact h_reg.right h_rhs
-
-end New.GL
-
-end Interlacing
-
-/-!
-## The basis theorem and the character identity
-
-The proof of `New.GL.exists_isStdMinorFamily` is an induction on the number of rows by leading
-terms in one row.
--/
-
-section MinorBasis
-
-open MvPolynomial Finset MonomialOrder Submodule Finsupp Nat
-
-namespace New.GL
 
 /-- A standard family of fillings `I` for rows coloured by `c` and columns `j` of colour `τ j` and
 height `h j`: each `I i` (a `ColoredTableau`) gives column `j` an `h j`-tuple of rows of colour
@@ -617,163 +116,645 @@ structure IsStdMinorFamily {Φ J m ι : Type} [Fintype m] [Fintype J] [Fintype �
     (∑ i : ι, ∏ j : J, ∏ s : Fin (h j), x (I i j s)) * alternant (x ∘ e) 0 =
       alternant (x ∘ e) fun k : ℕ ↦ columnWeight τ h (t, k)
 
-section LeadingTerms
+end Defs
 
-variable {Φ m R : Type} [DecidableEq m] [CommRing R] {y : m}
+/-! ### Helper lemmas for Borel action and column weights -/
 
-/-- If `p i` has leading term `q i` times the monomial of exponent `γ` in the row `y` for every `i`,
-then a combination of the `p i` has as leading term the same combination of the `q i`, times that
-monomial. Here `columnOrder.HasLeadingTerm F γ G` says that no exponent of `F` exceeds `γ` for
-`columnOrder` (lexicographic, comparing exponents at the highest column first) and that the
-coefficient of the monomial of exponent `γ` is `G`; `rowExpansion y` writes a polynomial as one in
-the variables of the row `y` over the polynomials in the other rows. -/
-lemma HasLeadingTerm.rowExpansion_combination {ι : Type} {γ : ℕ →₀ ℕ} {p : ι → MatrixPoly m R}
-    {q : ι → MatrixPoly {a : m // a ≠ y} R}
-    (h_lead : ∀ i : ι, columnOrder.HasLeadingTerm (rowExpansion y (p i)) γ (q i)) (a : ι →₀ R) :
-    columnOrder.HasLeadingTerm (rowExpansion y (a.sum fun (i : ι) (r : R) ↦ r • p i)) γ
-      (a.sum fun (i : ι) (r : R) ↦ r • q i) := by
-  have h_above (i : ι) (δ : ℕ →₀ ℕ) (hδ : γ ≺[columnOrder] δ) :
-      (rowExpansion y (p i)).coeff δ = 0 :=
-    coeff_eq_zero_of_lt ((h_lead i).degree_le.trans_lt hδ)
-  refine .mk ?_ ?_
-  · -- No exponent above `γ` occurs in any `p i`, hence none in the combination.
-    simp +contextual [Finsupp.sum, degree_le_iff, not_imp_comm, h_above]
-  · simp [Finsupp.sum, fun i ↦ (h_lead i).coeff_eq]
+section Helpers
 
-/-- Polynomials `p γ i` with leading terms `q γ i` times the monomial of exponent `γ` in the row `y`
-(`columnOrder.HasLeadingTerm`), for distinct exponents `γ` from a finite set `Γ`, are linearly
-independent if for each exponent `γ` the coefficients `q γ i` are. -/
-lemma linearIndependent_of_hasLeadingTerm {Γ : Finset (ℕ →₀ ℕ)} {ι : Γ → Type}
-    {p : ∀ γ : Γ, ι γ → MatrixPoly m R} {q : ∀ γ : Γ, ι γ → MatrixPoly {a : m // a ≠ y} R}
-    (h_lead : ∀ (γ : Γ) (i : ι γ), columnOrder.HasLeadingTerm (rowExpansion y (p γ i)) γ (q γ i))
-    (h_indep : ∀ γ : Γ, LinearIndependent R (q γ)) :
-    LinearIndependent R fun i : Σ γ : Γ, ι γ ↦ p i.fst i.snd := by
-  -- In a relation `a ≠ 0` take the largest `γ` that occurs. The coefficient of that monomial is a
-  -- relation among the `q γ i`, so the `γ`-part of `a` vanishes.
-  refine linearIndependent_iff.mpr fun a ha ↦ by_contra fun ha_ne ↦ ?_
-  have h_nonempty : a.splitSupport.Nonempty := by simpa [splitSupport] using ha_ne
-  obtain ⟨γ, hγ, hγ_max⟩ :=
-    a.splitSupport.exists_max_image (fun δ ↦ columnOrder.toSyn δ.val) h_nonempty
-  have h_lt : ∀ δ ∈ a.splitSupport, δ ≠ γ → δ.val ≺[columnOrder] γ.val := fun δ hδ h_ne ↦
-    lt_of_le_of_ne (hγ_max δ hδ) fun h_eq ↦ h_ne (Subtype.ext (columnOrder.toSyn.injective h_eq))
-  have h_top : columnOrder.HasLeadingTerm
-      (∑ δ ∈ a.splitSupport, rowExpansion y ((a.split δ).sum fun i r ↦ r • p δ i))
-      γ ((a.split γ).sum fun i r ↦ r • q γ i) :=
-    .sum (fun δ ↦ HasLeadingTerm.rowExpansion_combination (h_lead δ) (a.split δ)) γ h_lt (absurd hγ)
-  have h_rel : (a.split γ).sum (fun i r ↦ r • q γ i) = 0 := by
-    rw [linearCombination_apply, sigma_sum] at ha
-    simp [← h_top.coeff_eq, ← map_sum, ha]
-  exact (mem_splitSupport_iff_ne_zero a γ).mp hγ (linearIndependent_iff.mp (h_indep γ) _ h_rel)
+/-- Evaluating `borelMul` on a matrix `b` that vanishes strictly above the diagonal multiplies each
+variable `y (a, i)` by the diagonal entry `b (c a, i, i)`. -/
+private lemma borelMul_of_diag {Φ m S : Type} [CommRing S] {c : m → Φ}
+    {b : Φ × ℕ × ℕ → S} {y : m × ℕ → S} {a : m} {i : ℕ}
+    (hb : ∀ j < i, b (c a, j, i) = 0) :
+    borelMul c b y (a, i) = y (a, i) * b (c a, i, i) := by
+  rw [borelMul, Finset.sum_eq_single i]
+  · intro j hj hji
+    rw [hb j (lt_of_le_of_ne (Nat.lt_succ_iff.1 (mem_range.1 hj)) hji), mul_zero]
+  · intro hnot; exact absurd (mem_range.2 (Nat.lt_succ_self i)) hnot
 
-/-- Let `γ` run over the exponents interlacing the weight `l` at the colour of the row `y`, and let
-`l' γ` be `l` lowered by `γ`. Borel semi-invariants (`nabla`) `p γ i` of weight `l` with leading
-terms `q γ i` times the monomial of exponent `γ` in the row `y` span all semi-invariants of weight
-`l`, if for each `γ` the span of the `q γ i` contains the semi-invariants of weight `l' γ` in the
-other rows. -/
-lemma nabla_le_span_of_hasLeadingTerm {c : m → Φ} {l : Φ × ℕ →₀ ℕ}
-    {ι : interlacing (l.curry (c y)) → Type} {l' : interlacing (l.curry (c y)) → Φ × ℕ →₀ ℕ}
-    {p : ∀ γ : interlacing (l.curry (c y)), ι γ → MatrixPoly m R}
-    {q : ∀ γ : interlacing (l.curry (c y)), ι γ → MatrixPoly {a : m // a ≠ y} R}
-    (h_weight : ∀ γ : interlacing (l.curry (c y)),
-      l = γ.val.mapDomain (fun k : ℕ ↦ (c y, k)) + l' γ)
-    (h_mem : ∀ (γ : interlacing (l.curry (c y))) (i : ι γ), p γ i ∈ nabla R c l)
-    (h_lead : ∀ (γ : interlacing (l.curry (c y))) (i : ι γ),
-      columnOrder.HasLeadingTerm (rowExpansion y (p γ i)) γ (q γ i))
-    (h_span : ∀ γ : interlacing (l.curry (c y)),
-      nabla R (fun a : {a : m // a ≠ y} ↦ c a) (l' γ) ≤ span R (Set.range (q γ))) :
-    nabla R c l ≤
-      span R (Set.range fun i : Σ γ : interlacing (l.curry (c y)), ι γ ↦ p i.fst i.snd) := by
-  -- Induction on the leading exponent of `f` in the variables of row `y`.
-  intro f
-  induction f using (wellFounded_lt.onFun
-    (f := fun f ↦ columnOrder.toSyn (columnOrder.degree (rowExpansion y f)))).induction with
-  | h f ih =>
-    intro hf
-    -- The leading exponent `γ` interlaces, and the leading coefficient is a semi-invariant for
-    -- the other rows, hence a combination `a` of the `q γ i`.
-    let γ : interlacing (l.curry (c y)) :=
-      ⟨columnOrder.degree (rowExpansion y f), degree_rowExpansion_mem_interlacing hf⟩
-    have h_coeff_mem : columnOrder.leadingCoeff (rowExpansion y f) ∈
-        nabla R (fun a : {a : m // a ≠ y} ↦ c a) (l' γ) :=
-      HasLeadingTerm.leadingCoeff_mem_nabla (by rwa [← h_weight γ])
-    obtain ⟨a, ha⟩ : ∃ a : ι γ →₀ R,
-        (a.sum fun i r ↦ r • q γ i) = columnOrder.leadingCoeff (rowExpansion y f) :=
-      mem_span_range_iff_exists_finsupp.mp (h_span γ h_coeff_mem)
-    -- The same combination `g` of the `p γ i` has the same leading term as `f`.
-    let g : MatrixPoly m R := a.sum fun i r ↦ r • p γ i
-    have hg_span :
-        g ∈ span R (Set.range fun i : Σ δ : interlacing (l.curry (c y)), ι δ ↦ p i.fst i.snd) :=
-      mem_span_range_iff_exists_finsupp.mpr
-        ⟨a.mapDomain (Sigma.mk γ), sum_mapDomain_index_inj sigma_mk_injective⟩
-    have hg_mem : g ∈ nabla R c l := sum_mem fun i _ ↦ smul_mem _ _ (h_mem γ i)
-    have hg_lead :
-        columnOrder.HasLeadingTerm (rowExpansion y g) γ
-          (columnOrder.leadingCoeff (rowExpansion y f)) := by
-      rw [← ha]
-      exact HasLeadingTerm.rowExpansion_combination (h_lead γ) a
-    -- So `f - g` has a smaller leading exponent or is zero.
-    have h_le : columnOrder.degree (rowExpansion y (f - g)) ≼[columnOrder] γ.val := by
-      rw [map_sub]
-      exact degree_sub_le.trans (sup_le le_rfl hg_lead.degree_le)
-    have h_coeff : (rowExpansion y (f - g)).coeff γ = 0 := by
-      rw [map_sub, AddMonoidAlgebra.coeff_sub_apply, hg_lead.coeff_eq]
-      exact sub_self _
-    refine (sub_mem_iff_left _ hg_span).mp ?_
-    rcases h_le.lt_or_eq with h_lt | h_eq
-    · exact ih (f - g) h_lt (sub_mem hf hg_mem)
-    · -- The leading coefficient of `f - g` vanishes, so `f - g = 0`.
-      rw [← columnOrder.toSyn.injective h_eq, coeff_degree_eq_zero_iff,
-        EmbeddingLike.map_eq_zero_iff] at h_coeff
-      simp [h_coeff]
+/-- The product of powers of `g p` weighted by `columnWeight τ h` equals the double product over
+columns `j` and indices `i < h j`. -/
+private lemma prod_columnWeight_pow {Φ J S : Type} [Fintype J] [CommMonoid S]
+    (τ : J → Φ) (h : J → ℕ) (g : Φ × ℕ → S) :
+    ((columnWeight τ h).prod fun p k ↦ g p ^ k) =
+      ∏ j : J, ∏ i ∈ range (h j), g (τ j, i) := by
+  rw [columnWeight,
+    ← Finsupp.prod_finsetSum_index (fun _ ↦ pow_zero _) (fun _ _ _ ↦ pow_add _ _ _)]
+  refine prod_congr rfl fun j _ ↦ ?_
+  rw [← Finsupp.prod_finsetSum_index (fun _ ↦ pow_zero _) (fun _ _ _ ↦ pow_add _ _ _)]
+  exact prod_congr rfl fun i _ ↦ by simp [Finsupp.prod_single_index]
 
-end LeadingTerms
-
-/-- At each colour `t` the number of columns of height above `k` does not increase with `k`. -/
-lemma antitone_columnWeight_curry {Φ J : Type} [Fintype J] (τ : J → Φ) (h : J → ℕ) (t : Φ) :
-    Antitone ((columnWeight τ h).curry t) := by
+/-- The column weight of `h` at the unique colour `t` counts columns of height exceeding `i`. -/
+private lemma columnWeight_apply_subsingleton {Φ J : Type} [Subsingleton Φ] [Fintype J]
+    (τ : J → Φ) (h : J → ℕ) (t : Φ) (i : ℕ) :
+    columnWeight τ h (t, i) = #{j : J | i < h j} := by
   classical
-  have h_count (k : ℕ) : (columnWeight τ h).curry t k = #{j : J | τ j = t ∧ k < h j} := by
-    simp [columnWeight, card_filter, ite_and, single_apply]
-  intro a b hab
-  rw [h_count, h_count]
-  -- A column of height above `b` also has height above any `a ≤ b`.
-  gcongr
+  change Finsupp.applyAddHom (t, i) (columnWeight τ h) = _
+  simp only [columnWeight, map_sum, Finsupp.applyAddHom_apply, Finsupp.single_apply,
+    Prod.mk.injEq, Subsingleton.elim _ t, true_and, Finset.sum_ite_eq', mem_range,
+    Finset.sum_boole, Nat.cast_id]
 
-/-- Rows `m` are coloured by `c`; column `j : J` has colour `τ j` and height `h j`, and a
-`ColoredTableau c τ h` gives it an `h j`-tuple of rows of colour `τ j`. With no rows there is a
-standard family (`IsStdMinorFamily`) of these: the one empty filling if all heights are zero, and
-the empty family otherwise. -/
-lemma exists_isStdMinorFamily_of_isEmpty {Φ J m : Type} [Fintype m] [IsEmpty m] [Fintype J]
-    (c : m → Φ) (τ : J → Φ) (h : J → ℕ) :
+/-- Build the Young diagram whose `i`-th row length is `#{j : J | i < h j}` (for `h : J → ℕ`),
+together with a height-preserving bijection between `{j : J // 0 < h j}` and the columns
+`Fin (μ.rowLen 0)`. -/
+private lemma exists_youngDiagram_of_heights {J : Type} [Fintype J] (h : J → ℕ) :
+    ∃ (n : ℕ) (μ : YoungDiagram) (_ : μ.colLen 0 ≤ n)
+      (σ : {j : J // 0 < h j} ≃ Fin (μ.rowLen 0)),
+      (∀ i : ℕ, μ.rowLen i = #{j : J | i < h j}) ∧
+      (∀ j : {j : J // 0 < h j}, h j.val = μ.colLen (σ j)) := by
+  classical
+  let n : ℕ := univ.sup h
+  let f : Fin n → ℕ := fun i ↦ #{j : J | (i : ℕ) < h j}
+  have hf : Antitone f := fun a b hab ↦
+    card_le_card fun j hj ↦ mem_filter.2 ⟨mem_univ _, lt_of_le_of_lt hab (mem_filter.1 hj).2⟩
+  let μ : YoungDiagram := YoungDiagram.ofRowLensFin f hf
+  have hrow (i : ℕ) : μ.rowLen i = #{j : J | i < h j} := by
+    by_cases hi : i < n
+    · exact YoungDiagram.rowLen_ofRowLensFin f hf ⟨i, hi⟩
+    · rw [YoungDiagram.rowLen_ofRowLensFin_eq_zero_of_le f hf (not_lt.1 hi)]
+      exact (card_eq_zero.2 (filter_eq_empty_iff.2 fun j _ ↦
+        by have := le_sup (f := h) (mem_univ j); omega)).symm
+  have hcard_add {α : Type} [Fintype α] (g : α → ℕ) (d : ℕ) :
+      #{a : α | g a = d + 1} + #{a : α | d + 1 < g a} = #{a : α | d < g a} := by
+    rw [← card_union_of_disjoint (disjoint_filter.2 fun _ _ h1 h2 ↦ by omega)]
+    congr 1; ext a; simp; omega
+  have hcount (s : ℕ) : #{r : Fin (μ.rowLen 0) | s < μ.colLen r} = μ.rowLen s := by
+    rw [← Fintype.card_subtype, ← Fintype.card_fin (μ.rowLen s)]
+    refine Fintype.card_congr
+      ⟨fun r ↦
+         ⟨r.val, YoungDiagram.mem_iff_lt_rowLen.1 (YoungDiagram.mem_iff_lt_colLen.2 r.2)⟩,
+       fun k ↦ ⟨⟨k, lt_of_lt_of_le k.2 (μ.rowLen_anti 0 s (Nat.zero_le s))⟩,
+         YoungDiagram.mem_iff_lt_colLen.1 (YoungDiagram.mem_iff_lt_rowLen.2 k.2)⟩,
+       fun _ ↦ rfl, fun _ ↦ rfl⟩
+  have hcard_fiber (k : ℕ) :
+      Fintype.card {j : {j : J // 0 < h j} // h j.val = k} =
+        Fintype.card {r : Fin (μ.rowLen 0) // μ.colLen r = k} := by
+    rcases k with _ | d
+    · have : IsEmpty {j : {j : J // 0 < h j} // h j.val = 0} :=
+        ⟨fun ⟨⟨_, hj⟩, hk⟩ ↦ Nat.ne_of_gt hj hk⟩
+      have : IsEmpty {r : Fin (μ.rowLen 0) // μ.colLen r = 0} :=
+        ⟨fun ⟨r, hr⟩ ↦ by
+          have := YoungDiagram.mem_iff_lt_colLen.1 (YoungDiagram.mem_iff_lt_rowLen.2 r.2); omega⟩
+      simp
+    · have hA : Fintype.card {j : {j : J // 0 < h j} // h j.val = d + 1} =
+          #{j : J | h j = d + 1} := by
+        rw [← Fintype.card_subtype]
+        exact Fintype.card_congr
+          ⟨fun a ↦ ⟨a.val.val, a.2⟩,
+           fun b ↦ ⟨⟨b.val, by have := b.2; omega⟩, b.2⟩,
+           fun _ ↦ rfl, fun _ ↦ rfl⟩
+      have h1 := hcard_add h d
+      have h2 := hcard_add (fun r : Fin (μ.rowLen 0) ↦ μ.colLen r) d
+      rw [hcount d, hcount (d + 1), hrow d, hrow (d + 1)] at h2
+      rw [hA, Fintype.card_subtype]; omega
+  let σ : {j : J // 0 < h j} ≃ Fin (μ.rowLen 0) :=
+    (Equiv.sigmaFiberEquiv (fun j : {j : J // 0 < h j} ↦ h j.val)).symm.trans <|
+      (Equiv.sigmaCongrRight fun k ↦ Fintype.equivOfCardEq (hcard_fiber k)).trans <|
+        Equiv.sigmaFiberEquiv (fun r : Fin (μ.rowLen 0) ↦ μ.colLen r)
+  exact ⟨n, μ, YoungDiagram.colLen_zero_ofRowLensFin_le f hf, σ, hrow,
+    fun j ↦ ((Fintype.equivOfCardEq (hcard_fiber (h j.val)) ⟨j, rfl⟩).prop).symm⟩
+
+end Helpers
+
+/-! ### Single-colour standard basis via Tau Ceti's dual Weyl module basis -/
+
+section SingleColour
+
+/-- For a single colour, restricting a Borel semi-invariant of weight `μ.rowLen` (with
+`μ.colLen 0 ≤ n`) to the first `n` columns lands in Tau Ceti's `dualWeylModule`, and the
+polynomial is recovered from its restriction by `rename (Prod.map e Fin.val)`. -/
+private lemma proj_mem_dualWeylModule {Φ J m R : Type} [Subsingleton Φ] [Fintype m] [Fintype J]
+    [CommRing R] {c : m → Φ} {τ : J → Φ} {h : J → ℕ} {N n : ℕ} (e : Fin N ≃ m)
+    {μ : YoungDiagram} (hrow : ∀ i : ℕ, μ.rowLen i = #{j : J | i < h j})
+    (hμ : μ.colLen 0 ≤ n) {f : MatrixPoly m R} (hf : f ∈ nabla R c (columnWeight τ h)) :
+    let proj : MatrixPoly m R →ₐ[R] MvPolynomial (Fin N × Fin n) R :=
+      aeval fun p ↦ if hi : p.2 < n then X (e.symm p.1, ⟨p.2, hi⟩) else 0
+    rename (Prod.map e Fin.val) (proj f) = f ∧
+      proj f ∈ dualWeylModule R N (fun s : Fin n ↦ μ.rowLen s) := by
+  classical
+  intro proj
+  have hw_eq (t : Φ) (i : ℕ) : columnWeight τ h (t, i) = μ.rowLen i := by
+    rw [columnWeight_apply_subsingleton, hrow]
+  -- Step 1: `f` only involves columns `< n`, via `borelMul` with the `< n` projection matrix.
+  have h_retract : rename (Prod.map e Fin.val) (proj f) = f := by
+    let b : Φ × ℕ × ℕ → MatrixPoly m R :=
+      fun p ↦ if p.2.1 = p.2.2 ∧ p.2.1 < n then 1 else 0
+    have h1 := mem_nabla.1 hf (MatrixPoly m R) b X
+    have h_prod : ((columnWeight τ h).prod fun p k ↦ b (p.1, p.2, p.2) ^ k) = 1 := by
+      refine prod_eq_one fun p hp ↦ ?_
+      have hpos : 0 < μ.rowLen p.2 := by
+        rw [← hw_eq p.1]; exact Nat.pos_of_ne_zero (Finsupp.mem_support_iff.1 hp)
+      simp [b, lt_of_lt_of_le (YoungDiagram.rowLen_pos_iff.1 hpos) hμ]
+    have h_lhs : aeval (borelMul c b X) f = rename (Prod.map e Fin.val) (proj f) := by
+      rw [rename_eq_aeval, ← AlgHom.comp_apply]
+      refine AlgHom.congr_fun (MvPolynomial.algHom_ext fun p ↦ ?_) f
+      simp only [AlgHom.comp_apply, aeval_X, proj]
+      rw [borelMul_of_diag (fun j hj ↦ by simp [b, ne_of_lt hj])]
+      by_cases hlt : p.2 < n <;> simp [b, hlt]
+    rw [h_lhs, h_prod, one_mul, aeval_X_left] at h1
+    exact h1
+  refine ⟨h_retract, mem_dualWeylModule.2 ⟨?homog, ?unip⟩⟩
+  · -- Step 2: Column homogeneity, scaling column `s` by `Polynomial.X`.
+    intro d hd s
+    let S := MvPolynomial (Fin N × Fin n) (Polynomial R)
+    let y : m × ℕ → S := fun p ↦ if hi : p.2 < n then X (e.symm p.1, ⟨p.2, hi⟩) else 0
+    let b : Φ × ℕ × ℕ → S :=
+      fun p ↦ if p.2.1 = p.2.2 then (if p.2.1 = (s : ℕ) then C Polynomial.X else 1) else 0
+    have h2 := mem_nabla.1 hf S b y
+    have hy_eval : aeval y f = map Polynomial.C (proj f) := by
+      conv_lhs => rw [← h_retract, aeval_rename]
+      change aeval (y ∘ Prod.map e Fin.val) (proj f) =
+        MvPolynomial.mapAlgHom (Algebra.ofId R (Polynomial R)) (proj f)
+      refine AlgHom.congr_fun (MvPolynomial.algHom_ext fun p ↦ ?_) (proj f)
+      simp [y, p.2.2]; exact (MvPolynomial.map_X Polynomial.C p).symm
+    have h_wt : ((columnWeight τ h).prod fun p k ↦ b (p.1, p.2, p.2) ^ k) =
+        C (Polynomial.X ^ μ.rowLen s) := by
+      rcases isEmpty_or_nonempty Φ with hΦ | ⟨⟨t⟩⟩
+      · have : IsEmpty J := ⟨fun j ↦ hΦ.false (τ j)⟩
+        have h0 : μ.rowLen s = 0 := by rw [hrow]; simp
+        simp [columnWeight, h0, Fintype.sum_empty]
+      · rw [Finsupp.prod_eq_single (t, (s : ℕ))]
+        · simp [b, hw_eq]
+        · intro p _ hp
+          have hne : p.2 ≠ (s : ℕ) := fun h ↦ hp (Prod.ext (Subsingleton.elim _ _) h)
+          simp [b, hne]
+        · intro _; simp
+    have h_term (m' : Fin N × Fin n →₀ ℕ) :
+        aeval (borelMul c b y ∘ Prod.map e Fin.val) (monomial m' ((proj f).coeff m')) =
+          monomial m'
+            (Polynomial.C ((proj f).coeff m') * Polynomial.X ^ (∑ a : Fin N, m' (a, s))) := by
+      rw [aeval_monomial]
+      have h_bm (p : Fin N × Fin n) :
+          borelMul c b y (Prod.map e Fin.val p) =
+            C (if p.2 = s then Polynomial.X else 1) * (X p : S) := by
+        rcases p with ⟨a, j⟩
+        rw [Prod.map_apply, borelMul_of_diag (fun k hk ↦ by simp [b, ne_of_lt hk])]
+        simp only [b, y, j.2, dite_true, ite_true, Equiv.symm_apply_apply, Fin.val_inj]
+        by_cases hjs : j = s <;> simp [hjs, mul_comm]
+      have hpow : (m'.prod fun p k ↦
+            (C (if p.2 = s then (Polynomial.X : Polynomial R) else 1) : S) ^ k) =
+          C (Polynomial.X ^ (∑ a : Fin N, m' (a, s))) := by
+        rw [Finsupp.prod_fintype _ _ (fun _ ↦ pow_zero _), Fintype.prod_prod_type]
+        have hcol (a : Fin N) :
+            ∏ j : Fin n,
+              (C (if j = s then (Polynomial.X : Polynomial R) else 1) : S) ^ m' (a, j) =
+              C (Polynomial.X ^ m' (a, s)) := by
+          rw [Finset.prod_eq_single s]
+          · simp
+          · intro j _ hjs; simp [hjs]
+          · intro hnot; exact absurd (mem_univ s) hnot
+        simp_rw [hcol, ← map_prod, prod_pow_eq_pow_sum]
+      simp only [Function.comp_apply, h_bm, mul_pow, Finsupp.prod_mul, hpow]
+      rw [show (m'.prod fun p k ↦ (X p : S) ^ k) = monomial m' 1 from by
+        rw [monomial_eq, map_one, one_mul], ← mul_assoc,
+        show algebraMap R S ((proj f).coeff m') = C (Polynomial.C ((proj f).coeff m')) from rfl,
+        ← map_mul, C_mul_monomial, mul_one]
+    have h_lhs : (aeval (borelMul c b y) f).coeff d =
+        Polynomial.C ((proj f).coeff d) * Polynomial.X ^ (∑ a : Fin N, d (a, s)) := by
+      conv_lhs => rw [← h_retract, aeval_rename, (proj f).as_sum]
+      rw [map_sum, coeff_sum]
+      simp_rw [h_term, coeff_monomial]
+      rw [Finset.sum_ite_eq' (proj f).support d, ite_eq_left hd]
+    have hcoeff := congrArg (fun P : S ↦ (P.coeff d).coeff (∑ a : Fin N, d (a, s))) h2
+    rw [h_lhs, h_wt, hy_eval, coeff_C_mul, coeff_map, mul_comm (Polynomial.X ^ _),
+      Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_C_mul_X_pow, ite_eq_left rfl] at hcoeff
+    by_contra hne
+    rw [ite_eq_right hne] at hcoeff
+    exact (Finsupp.mem_support_iff.1 hd) hcoeff
+  · -- Step 3: Unipotent invariance, via `borelMul` with `I + Polynomial.X * E_{s, t'}`.
+    intro s t' hst
+    let S := Polynomial (MvPolynomial (Fin N × Fin n) R)
+    let y : m × ℕ → S :=
+      fun p ↦ if hi : p.2 < n then Polynomial.C (X (e.symm p.1, ⟨p.2, hi⟩)) else 0
+    let b : Φ × ℕ × ℕ → S := fun p ↦
+      if p.2.1 = p.2.2 then 1
+      else if p.2.1 = (s : ℕ) ∧ p.2.2 = (t' : ℕ) then Polynomial.X else 0
+    have h3 := mem_nabla.1 hf S b y
+    have hy_eval : aeval y f = Polynomial.C (proj f) := by
+      conv_lhs => rw [← h_retract, aeval_rename]
+      change aeval (y ∘ Prod.map e Fin.val) (proj f) =
+        (Polynomial.CAlgHom (R := MvPolynomial (Fin N × Fin n) R)).restrictScalars R (proj f)
+      refine AlgHom.congr_fun (MvPolynomial.algHom_ext fun p ↦ ?_) (proj f)
+      simp [y, p.2.2]
+    have h_wt : ((columnWeight τ h).prod fun p k ↦ b (p.1, p.2, p.2) ^ k) = 1 :=
+      prod_eq_one fun _ _ ↦ by simp [b]
+    have h_lhs : aeval (borelMul c b y) f = columnOperation R s t' (proj f) := by
+      conv_lhs => rw [← h_retract, aeval_rename]
+      refine AlgHom.congr_fun (MvPolynomial.algHom_ext fun ⟨a, j⟩ ↦ ?_) (proj f)
+      simp only [aeval_X, Function.comp_apply, Prod.map_apply]
+      rw [columnOperation_X]
+      have hst_ne : (s : ℕ) ≠ (t' : ℕ) := ne_of_lt hst
+      by_cases hpt : j = t'
+      · subst hpt
+        have hs_mem : (s : ℕ) ∈ range ((j : ℕ) + 1) := mem_range.2 (Nat.lt_succ_of_lt hst)
+        have ht_mem : (j : ℕ) ∈ range ((j : ℕ) + 1) := mem_range.2 (Nat.lt_succ_self _)
+        rw [borelMul, ← Finset.add_sum_erase _ _ ht_mem,
+          ← Finset.add_sum_erase _ _ (mem_erase.2 ⟨hst_ne, hs_mem⟩)]
+        have hzero : ∑ i ∈ ((range ((j : ℕ) + 1)).erase j).erase s,
+            y (e a, i) * b (c (e a), i, j) = 0 :=
+          sum_eq_zero fun i hi ↦ by
+            simp [b, (mem_erase.1 hi).1, (mem_erase.1 (mem_erase.1 hi).2).1]
+        rw [hzero, add_zero]
+        simp only [y, b, s.2, j.2, dite_true, ite_true, hst_ne, ite_false, and_self,
+          Equiv.symm_apply_apply, mul_one]
+        ring
+      · have hpt_val : (j : ℕ) ≠ (t' : ℕ) := fun h ↦ hpt (Fin.ext h)
+        rw [borelMul_of_diag (fun k hk ↦ by simp [b, ne_of_lt hk, hpt_val])]
+        simp [y, b, j.2, hpt]
+    rw [h_lhs, h_wt, one_mul, hy_eval] at h3
+    exact h3
+
+/-- Reindexing the rows of `New.GL.alternant` by a permutation multiplies it by the sign. -/
+private lemma alternant_comp_perm {N : ℕ} (x : Fin N → ℂ) (l : ℕ → ℕ)
+    (σ : Equiv.Perm (Fin N)) :
+    alternant (x ∘ σ) l = (Equiv.Perm.sign σ : ℂ) * alternant x l := by
+  simp only [alternant]
+  split_ifs with h0
+  · exact Matrix.det_permute σ (of fun i j : Fin N ↦ x i ^ (l j.rev + j))
+  · simp
+
+/-- `New.GL.alternant y μ.rowLen` equals `Perm.sign Fin.revPerm` times the evaluation of
+Tau Ceti's `alternant (Fin N) ℂ (fun j ↦ μ.betaNumber N j)` at `y` when `μ.colLen 0 ≤ N`. -/
+private lemma alternant_eq_sign_mul_eval_tauCeti_alternant {N : ℕ} (y : Fin N → ℂ)
+    (μ : YoungDiagram) (hμ : μ.colLen 0 ≤ N) :
+    alternant y μ.rowLen =
+      (Equiv.Perm.sign (Fin.revPerm (n := N)) : ℂ) *
+        eval y (TauCeti.alternant (Fin N) ℂ fun j : Fin N ↦ μ.betaNumber N j) := by
+  have hN : μ.rowLen N = 0 := YoungDiagram.rowLen_eq_zero_iff.2 hμ
+  rw [alternant, ite_eq_left hN, TauCeti.alternant_def, RingHom.map_det]
+  have hmat : (of fun i j : Fin N ↦ y i ^ (μ.rowLen j.rev + j)) =
+      ((eval y).mapMatrix (of fun i j : Fin N ↦ (X i : MvPolynomial (Fin N) ℂ) ^
+        μ.betaNumber N j)).submatrix id Fin.revPerm := by
+    ext i j
+    simp only [of_apply, submatrix_apply, id_eq, Fin.revPerm_apply, RingHom.mapMatrix_apply,
+      Matrix.map_apply, map_pow, eval_X, YoungDiagram.betaNumber_def, Fin.val_rev]
+    congr 1; omega
+  rw [hmat, Matrix.det_permute']
+
+/-- Single-colour existence of a standard family of minor products, directly from Tau Ceti's
+standard basis of `dualWeylModule` and Jacobi's bialternant formula. -/
+private lemma exists_isStdMinorFamily_of_subsingleton {Φ J m : Type} [Subsingleton Φ]
+    [Fintype m] [Fintype J] (c : m → Φ) (τ : J → Φ) (h : J → ℕ) :
     ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColoredTableau c τ h), IsStdMinorFamily I := by
-  -- Polynomials are constants, and an enumeration `Fin N ≃ m` forces `N = 0`.
-  rcases eq_or_ne h 0 with rfl | h_ne
-  · refine ⟨Unit, inferInstance, nofun, ⟨?indep, ?span, ?character⟩⟩
-    case indep =>
-      intro R _
-      simp [Fintype.linearIndependent_iff, minorProduct, minor, ← C_mul', Unique.forall_iff]
-    case span =>
-      intro R _ f _
-      rw [f.eq_C_of_isEmpty]
-      simp [minorProduct, minor, ← one_eq_span]
-    case character =>
-      intro _ t N e x
-      obtain rfl : N = 0 := by simpa using Fintype.card_congr e
-      simp [alternant, columnWeight, univ_eq_empty]
-  · have h_sum : ∑ j, h j ≠ 0 := by simpa using Function.ne_iff.mp h_ne
-    refine ⟨Empty, inferInstance, nofun,
-      fun R _ ↦ linearIndependent_empty_type, fun R _ f hf ↦ ?_, fun t N e x ↦ ?_⟩
-    · -- The weight is not zero, so semi-invariance for the zero matrix kills every constant.
-      obtain ⟨r, rfl⟩ : ∃ r : R, f = C r := ⟨f.coeff 0, f.eq_C_of_isEmpty⟩
-      have h_semi : r = ((columnWeight τ h).prod fun (p : Φ × ℕ) (k : ℕ) ↦ (0 : R) ^ k) * r := by
-        simpa using mem_nabla.mp hf R 0 0
-      have h_prod_zero : ((columnWeight τ h).prod fun (p : Φ × ℕ) (k : ℕ) ↦ (0 : R) ^ k) = 0 := by
-        simp [columnWeight, pow_add, ← prod_finsetSum_index, prod_pow_eq_pow_sum, h_sum]
-      have h_r : r = 0 := by rwa [h_prod_zero, zero_mul] at h_semi
-      simp [h_r]
-    · obtain rfl : N = 0 := by simpa using Fintype.card_congr e
-      simpa [alternant, columnWeight, univ_eq_empty, Subsingleton.elim _ t, single_apply] using
-        Function.ne_iff.mp h_ne
+  classical
+  let N : ℕ := Fintype.card m
+  let e : Fin N ≃ m := (Fintype.equivFin m).symm
+  obtain ⟨n, μ, hμ, σ, hrow, hσ⟩ := exists_youngDiagram_of_heights h
+  -- Build a `ColoredTableau` from each bounded semistandard tableau `T : BoundedSSYT N μ`.
+  let I : BoundedSSYT N μ → ColoredTableau c τ h := fun T j s ↦
+    if hj : 0 < h j then
+      ⟨e (ssytFilling T s (σ ⟨j, hj⟩)
+        (by rw [YoungDiagram.mem_iff_lt_colLen, ← hσ ⟨j, hj⟩]; exact s.2)),
+        Subsingleton.elim _ _⟩
+    else
+      False.elim (Nat.not_lt_zero _ (lt_of_lt_of_le s.2 (Nat.le_of_not_lt hj)))
+  -- Under `rename (Prod.map e Fin.val)`, Tau Ceti's bideterminant of `T` is `minorProduct R (I T)`.
+  have h_minor_eq (R : Type) [CommRing R] (T : BoundedSSYT N μ) :
+      minorProduct R (I T) =
+        rename (Prod.map e Fin.val) (bideterminant R μ hμ (ssytFilling T)) := by
+    rw [bideterminant_eq_prod_range R μ hμ (ssytFilling T) le_rfl, map_prod, minorProduct,
+      ← Fintype.prod_subtype_mul_prod_subtype (fun j : J ↦ 0 < h j)]
+    have hzero : ∏ j : {j : J // ¬ 0 < h j}, minor R (fun s ↦ (I T j.val s).val) = 1 :=
+      prod_eq_one fun j _ ↦ by
+        have : IsEmpty (Fin (h j.val)) := ⟨fun s ↦ by have := s.2; have := j.2; omega⟩
+        simp [minor]
+    rw [hzero, mul_one]
+    refine prod_bij (fun j _ ↦ (σ j : ℕ)) (fun j _ ↦ mem_range.2 (σ j).2)
+      (fun _ _ _ _ heq ↦ σ.injective (Fin.ext heq))
+      (fun k hk ↦ ⟨σ.symm ⟨k, mem_range.1 hk⟩, mem_univ _, by simp⟩) fun j _ ↦ ?_
+    rw [columnMinor_def, Matrix.mvPolynomialMinor_eq_det_submatrix, minor, AlgHom.map_det]
+    have hdet_eq : ∀ {k₁ k₂ : ℕ} (hk : k₁ = k₂)
+        (A : Matrix (Fin k₁) (Fin k₁) (MatrixPoly m R))
+        (B : Matrix (Fin k₂) (Fin k₂) (MatrixPoly m R)),
+        (∀ a b : Fin k₁, A a b = B (a.cast hk) (b.cast hk)) → A.det = B.det := by
+      rintro k _ rfl A B hAB
+      exact congr_arg Matrix.det (Matrix.ext fun a b ↦ hAB a b)
+    refine hdet_eq (hσ j) _ _ fun a b ↦ ?_
+    simp [I, j.2, Matrix.map_apply, Matrix.mvPolynomialX]
+  refine ⟨BoundedSSYT N μ, inferInstance, I, ⟨?indep, ?span, ?char⟩⟩
+  case indep =>
+    intro R _
+    have hinj : Function.Injective (rename (R := R) (Prod.map e (Fin.val (n := n)))) :=
+      rename_injective _ (e.injective.prodMap Fin.val_injective)
+    have hli := (linearIndependent_bideterminant_ssytFilling (R := R) N μ hμ).map'
+      (rename (R := R) (Prod.map e (Fin.val (n := n)))).toLinearMap (LinearMap.ker_eq_bot.2 hinj)
+    simpa only [Function.comp_def, AlgHom.toLinearMap_apply, ← h_minor_eq R] using hli
+  case span =>
+    intro R _ f hf
+    obtain ⟨h_retract, h_mem⟩ := proj_mem_dualWeylModule e hrow hμ hf
+    have h_in_span := dualWeylModule_le_span_bideterminant_ssytFilling (R := R) N μ hμ h_mem
+    have h_map := Submodule.mem_map_of_mem
+      (f := (rename (R := R) (Prod.map e Fin.val)).toLinearMap) h_in_span
+    rw [Submodule.map_span, ← Set.range_comp] at h_map
+    simpa only [AlgHom.toLinearMap_apply, h_retract, Function.comp_def, ← h_minor_eq R]
+      using h_map
+  case char =>
+    intro _ t N' e' x
+    obtain rfl : N' = N := (Fintype.card_fin N').symm.trans (Fintype.card_congr e')
+    have hw_fun : (fun k : ℕ ↦ columnWeight τ h (t, k)) = μ.rowLen := by
+      ext k; rw [columnWeight_apply_subsingleton, hrow]
+    rw [hw_fun]
+    by_cases hμN : μ.colLen 0 ≤ N
+    · -- Evaluate `diagramSchurPoly_mul_alternant` at `x ∘ e` and adjust row order to `e'`.
+      have h_entry_prod (T : BoundedSSYT N μ) :
+          (∏ j : J, ∏ s : Fin (h j), x (I T j s)) =
+            ∏ i : Fin N, (x (e i)) ^ BoundedSSYT.weight T i := by
+        rw [← Fintype.prod_subtype_mul_prod_subtype (fun j : J ↦ 0 < h j)]
+        have hzero : ∏ j : {j : J // ¬ 0 < h j}, ∏ s : Fin (h j.val), x (I T j.val s) = 1 :=
+          prod_eq_one fun j _ ↦ by
+            have : IsEmpty (Fin (h j.val)) := ⟨fun s ↦ by have := s.2; have := j.2; omega⟩
+            exact Fintype.prod_empty _
+        let x' : ℕ → ℂ := fun k ↦ if hk : k < N then x (e ⟨k, hk⟩) else 1
+        have h_cells : (∏ j : {j : J // 0 < h j}, ∏ s : Fin (h j.val), x (I T j.val s)) =
+            ∏ p ∈ μ.cells, x' (T.val p.1 p.2) := by
+          rw [show (∏ j : {j : J // 0 < h j}, ∏ s : Fin (h j.val), x (I T j.val s)) =
+            ∏ p : Σ j : {j : J // 0 < h j}, Fin (h j.val), x (I T p.1.val p.2) from
+            (Fintype.prod_sigma (fun p : Σ j : {j : J // 0 < h j}, Fin (h j.val) ↦
+              x (I T p.1.val p.2))).symm]
+          refine prod_bij (fun p _ ↦ ((p.2 : ℕ), (σ p.1 : ℕ)))
+            (fun p _ ↦ (YoungDiagram.mem_cells _).2
+              (by rw [YoungDiagram.mem_iff_lt_colLen, ← hσ p.1]; exact p.2.2))
+            ?_ ?_ fun p _ ↦ ?_
+          · intro ⟨j₁, s₁⟩ _ ⟨j₂, s₂⟩ _ heq
+            have hj : j₁ = j₂ := σ.injective (Fin.ext (congrArg Prod.snd heq))
+            subst hj; congr 1; exact Fin.ext (congrArg Prod.fst heq)
+          · intro q hq
+            have hqμ : q ∈ μ := (YoungDiagram.mem_cells _).1 hq
+            have hq2 : q.2 < μ.rowLen 0 :=
+              lt_of_lt_of_le (YoungDiagram.mem_iff_lt_rowLen.1 hqμ)
+                (μ.rowLen_anti 0 _ (Nat.zero_le _))
+            let j₀ := σ.symm ⟨q.2, hq2⟩
+            have hq1 : q.1 < h j₀.val := by
+              rw [hσ j₀]; simpa [j₀] using YoungDiagram.mem_iff_lt_colLen.1 hqμ
+            exact ⟨⟨j₀, ⟨q.1, hq1⟩⟩, mem_univ _, Prod.ext rfl (by simp [j₀])⟩
+          · have hmem : ((p.2 : ℕ), (σ p.1 : ℕ)) ∈ μ := by
+              rw [YoungDiagram.mem_iff_lt_colLen, ← hσ p.1]; exact p.2.2
+            simp only [I, p.1.2, dite_true, x', BoundedSSYT.entry_lt T hmem]
+            congr 2; exact Fin.ext (val_ssytFilling T _ _ _)
+        rw [hzero, mul_one, h_cells,
+          ← Finset.prod_fiberwise_of_maps_to (t := range N) (g := fun p ↦ T.val p.1 p.2)
+            (fun p hp ↦ mem_range.2 (BoundedSSYT.entry_lt T ((YoungDiagram.mem_cells _).1 hp))),
+          ← Fin.prod_univ_eq_prod_range
+            (fun k ↦ ∏ p ∈ μ.cells with T.val p.1 p.2 = k, x' (T.val p.1 p.2)) N]
+        refine prod_congr rfl fun i _ ↦ ?_
+        rw [prod_congr rfl (fun p hp ↦ by rw [(mem_filter.1 hp).2]), prod_const,
+          ← SemistandardYoungTableau.content_apply]
+        simp [x', i.2, BoundedSSYT.weight_apply]
+      have h_schur : (∑ T : BoundedSSYT N μ, ∏ j : J, ∏ s : Fin (h j), x (I T j s)) =
+          eval (x ∘ e) (diagramSchurPoly N ℂ μ) := by
+        rw [eval_diagramSchurPoly]; exact sum_congr rfl fun T _ ↦ h_entry_prod T
+      have h_bialt :=
+        congrArg (eval (x ∘ e)) (diagramSchurPoly_mul_alternant (R := ℂ) N μ hμN)
+      rw [map_mul] at h_bialt
+      have h_alt0 : alternant (x ∘ e) 0 =
+          (Equiv.Perm.sign (Fin.revPerm (n := N)) : ℂ) *
+            eval (x ∘ e) (TauCeti.alternant (Fin N) ℂ fun j : Fin N ↦ N - 1 - (j : ℕ)) := by
+        have hbot := alternant_eq_sign_mul_eval_tauCeti_alternant (x ∘ e) ⊥ (by simp)
+        have hrow0 : (⊥ : YoungDiagram).rowLen = 0 := funext fun _ ↦ YoungDiagram.rowLen_bot _
+        simpa only [hrow0, YoungDiagram.betaNumber_def, YoungDiagram.rowLen_bot, zero_add]
+          using hbot
+      have h_e : (∑ T : BoundedSSYT N μ, ∏ j : J, ∏ s : Fin (h j), x (I T j s)) *
+          alternant (x ∘ e) 0 = alternant (x ∘ e) μ.rowLen := by
+        rw [h_schur, h_alt0, alternant_eq_sign_mul_eval_tauCeti_alternant (x ∘ e) μ hμN]
+        linear_combination (Equiv.Perm.sign (Fin.revPerm (n := N)) : ℂ) * h_bialt
+      have h_perm : x ∘ e' = (x ∘ e) ∘ (e'.trans e.symm) := by ext i; simp
+      rw [h_perm, alternant_comp_perm, alternant_comp_perm, mul_left_comm, h_e]
+    · -- `N < μ.colLen 0`: there are no bounded SSYT of shape `μ`, and `μ.rowLen N ≠ 0`.
+      have hlt : N < μ.colLen 0 := not_le.1 hμN
+      have : IsEmpty (BoundedSSYT N μ) := BoundedSSYT.isEmpty_of_lt_colLen hlt
+      have hpos : μ.rowLen N ≠ 0 := (YoungDiagram.rowLen_pos_iff.2 hlt).ne'
+      simp [alternant, hpos, Fintype.sum_empty]
+
+end SingleColour
+
+/-! ### Multi-colour lift by induction on the number of active colours -/
+
+section MultiColour
+
+/-- Splitting the variables of `MatrixPoly m R` into rows of colour `φ₀` and the remaining
+rows. -/
+private def splitColourEquiv {Φ m R : Type} [DecidableEq Φ] [CommRing R] (c : m → Φ)
+    (φ₀ : Φ) :
+    MatrixPoly m R ≃ₐ[R]
+      MatrixPoly {a : m // c a = φ₀} (MatrixPoly {a : m // c a ≠ φ₀} R) :=
+  let e_row : m ≃ {a : m // c a = φ₀} ⊕ {a : m // c a ≠ φ₀} :=
+    (Equiv.sumCompl (fun a : m ↦ c a = φ₀)).symm
+  (renameEquiv R ((e_row.prodCongr (.refl ℕ)).trans (Equiv.sumProdDistrib _ _ _))).trans
+    (sumAlgEquiv R ({a : m // c a = φ₀} × ℕ) ({a : m // c a ≠ φ₀} × ℕ))
+
+/-- Evaluating `splitColourEquiv c φ₀ f` with coefficient homomorphism `ψ` and inner variables
+`z₀` equals evaluating `f` directly at the combined variable assignment. -/
+private lemma aevalTower_splitColourEquiv {Φ m R S : Type} [DecidableEq Φ] [CommRing R]
+    [CommRing S] [Algebra R S] (c : m → Φ) (φ₀ : Φ)
+    (ψ : MatrixPoly {a : m // c a ≠ φ₀} R →ₐ[R] S)
+    (z₀ : {a : m // c a = φ₀} × ℕ → S) (f : MatrixPoly m R) :
+    aevalTower ψ z₀ (splitColourEquiv c φ₀ f) =
+      aeval (fun p : m × ℕ ↦ if ha : c p.1 = φ₀ then z₀ (⟨p.1, ha⟩, p.2)
+        else ψ (X (⟨p.1, ha⟩, p.2))) f := by
+  change (aevalTower ψ z₀).comp (splitColourEquiv c φ₀).toAlgHom f = _
+  refine AlgHom.congr_fun (MvPolynomial.algHom_ext fun ⟨a, i⟩ ↦ ?_) f
+  by_cases ha : c a = φ₀ <;> simp [splitColourEquiv, ha]
+
+/-- Splitting a weighted product over `columnWeight τ h` into colour `φ₀` and other colours. -/
+private lemma prod_columnWeight_split {Φ J S : Type} [DecidableEq Φ] [Fintype J] [CommMonoid S]
+    (τ : J → Φ) (h : J → ℕ) (φ₀ : Φ) (g : Φ × ℕ → S) :
+    ((columnWeight τ h).prod fun p k ↦ g p ^ k) =
+      ((columnWeight (fun _ : {j : J // τ j = φ₀} ↦ ()) (fun j ↦ h j.val)).prod
+          fun p k ↦ g (φ₀, p.2) ^ k) *
+        ((columnWeight (fun j : {j : J // τ j ≠ φ₀} ↦ τ j.val) (fun j ↦ h j.val)).prod
+          fun p k ↦ g p ^ k) := by
+  rw [prod_columnWeight_pow, prod_columnWeight_pow, prod_columnWeight_pow,
+    ← Fintype.prod_subtype_mul_prod_subtype (fun j : J ↦ τ j = φ₀)]
+  congr 1
+  exact prod_congr rfl fun j _ ↦ prod_congr rfl fun i _ ↦ by rw [j.2]
+
+/-- Existence of a family of fillings whose minor products are linearly independent and span
+`New.nabla R c (columnWeight τ h)` over every commutative ring `R`. -/
+private lemma exists_minorBasis_multi {Φ J m : Type} [Fintype m] [Fintype J]
+    (c : m → Φ) (τ : J → Φ) (h : J → ℕ) :
+    ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColoredTableau c τ h),
+      (∀ (R : Type) [CommRing R], LinearIndependent R fun i : ι ↦ minorProduct R (I i)) ∧
+      (∀ (R : Type) [CommRing R],
+        nabla R c (columnWeight τ h) ≤
+          span R (Set.range fun i : ι ↦ minorProduct R (I i))) := by
+  classical
+  induction hk : (univ.image c ∪ univ.image τ).card using Nat.strongRec
+      generalizing m J c τ h with | ind k ih =>
+  by_cases h_empty : (univ.image c ∪ univ.image τ) = ∅
+  · have : IsEmpty m := ⟨fun a ↦ by
+      have : c a ∈ (univ.image c ∪ univ.image τ) :=
+        mem_union_left _ (mem_image_of_mem _ (mem_univ a))
+      simp [h_empty] at this⟩
+    have : IsEmpty J := ⟨fun j ↦ by
+      have : τ j ∈ (univ.image c ∪ univ.image τ) :=
+        mem_union_right _ (mem_image_of_mem _ (mem_univ j))
+      simp [h_empty] at this⟩
+    refine ⟨Unit, inferInstance, fun _ j ↦ isEmptyElim j, fun R _ ↦ ?_, fun R _ f _ ↦ ?_⟩
+    · simp [Fintype.linearIndependent_iff, minorProduct, univ_eq_empty, ← C_mul',
+        Unique.forall_iff]
+    · rw [f.eq_C_of_isEmpty]; simp [minorProduct, univ_eq_empty, ← one_eq_span]
+  obtain ⟨φ₀, hφ₀⟩ := Finset.ne_empty_iff_nonempty.1 h_empty
+  -- Split rows and columns into colour `φ₀` and all other colours.
+  let m₀ := {a : m // c a = φ₀}; let m' := {a : m // c a ≠ φ₀}
+  let J₀ := {j : J // τ j = φ₀}; let J' := {j : J // τ j ≠ φ₀}
+  let c₀ : m₀ → Unit := fun _ ↦ (); let τ₀ : J₀ → Unit := fun _ ↦ ()
+  let h₀ : J₀ → ℕ := fun j ↦ h j.val
+  let c' : m' → Φ := fun a ↦ c a.val; let τ' : J' → Φ := fun j ↦ τ j.val
+  let h' : J' → ℕ := fun j ↦ h j.val
+  obtain ⟨ι₀, _, I₀, hI₀⟩ := exists_isStdMinorFamily_of_subsingleton c₀ τ₀ h₀
+  have hsub :
+      (univ.image c' ∪ univ.image τ') ⊆ (univ.image c ∪ univ.image τ).erase φ₀ := by
+    intro φ hφ
+    rcases mem_union.1 hφ with h1 | h2
+    · rcases mem_image.1 h1 with ⟨⟨a, ha⟩, _, rfl⟩
+      exact mem_erase.2 ⟨ha, mem_union_left _ (mem_image_of_mem _ (mem_univ a))⟩
+    · rcases mem_image.1 h2 with ⟨⟨j, hj⟩, _, rfl⟩
+      exact mem_erase.2 ⟨hj, mem_union_right _ (mem_image_of_mem _ (mem_univ j))⟩
+  have hlt : (univ.image c' ∪ univ.image τ').card < k :=
+    hk ▸ lt_of_le_of_lt (card_le_card hsub) (card_erase_lt_of_mem hφ₀)
+  obtain ⟨ι', _, I', hI'_indep, hI'_span⟩ := ih _ hlt c' τ' h' rfl
+  let I : ι₀ × ι' → ColoredTableau c τ h := fun ⟨i₀, i'⟩ j s ↦
+    if hj : τ j = φ₀ then
+      ⟨(I₀ i₀ ⟨j, hj⟩ s).val.val, (I₀ i₀ ⟨j, hj⟩ s).val.prop.trans hj.symm⟩
+    else ⟨(I' i' ⟨j, hj⟩ s).val.val, (I' i' ⟨j, hj⟩ s).prop⟩
+  -- Under `splitColourEquiv`, `minorProduct R (I (i₀, i'))` factors into the two pieces.
+  have h_split_prod (R : Type) [CommRing R] (i₀ : ι₀) (i' : ι') :
+      splitColourEquiv c φ₀ (minorProduct R (I (i₀, i'))) =
+        C (minorProduct R (I' i')) * minorProduct (MatrixPoly m' R) (I₀ i₀) := by
+    rw [minorProduct, map_prod,
+      ← Fintype.prod_subtype_mul_prod_subtype (fun j : J ↦ τ j = φ₀),
+      mul_comm, minorProduct, map_prod, minorProduct]
+    congr 1
+    · refine prod_congr rfl fun j _ ↦ ?_
+      simp only [minor, I, j.2, dite_false]
+      change (splitColourEquiv c φ₀).toRingHom _ = _
+      rw [RingHom.map_det, RingHom.map_det]
+      exact congr_arg Matrix.det <| Matrix.ext fun a b ↦ by
+        simp [splitColourEquiv, Matrix.map_apply, (I' i' j a).val.prop]
+    · refine prod_congr rfl fun j _ ↦ ?_
+      simp only [minor, I, j.2, dite_true]
+      change (splitColourEquiv c φ₀).toRingHom _ = _
+      rw [RingHom.map_det]
+      exact congr_arg Matrix.det <| Matrix.ext fun a b ↦ by
+        simp [splitColourEquiv, Matrix.map_apply, (I₀ i₀ j a).val.prop]
+  refine ⟨ι₀ × ι', inferInstance, I, ?indep, ?span⟩
+  case indep =>
+    intro R _
+    rw [Fintype.linearIndependent_iff]
+    intro g hg
+    have hsplit : ∑ i₀ : ι₀, (∑ i' : ι', g (i₀, i') • minorProduct R (I' i')) •
+        minorProduct (MatrixPoly m' R) (I₀ i₀) = 0 := by
+      have h0 := congrArg (splitColourEquiv c φ₀) hg
+      simp only [map_sum, map_smul, map_zero, h_split_prod, Fintype.sum_prod_type] at h0
+      rw [← h0]
+      refine sum_congr rfl fun i₀ _ ↦ by
+        rw [sum_smul]; exact sum_congr rfl fun i' _ ↦ by simp [Algebra.smul_def, mul_assoc]
+    have hcoeff :=
+      Fintype.linearIndependent_iff.1 (hI₀.linearIndependent (MatrixPoly m' R)) _ hsplit
+    intro ⟨i₀, i'⟩
+    exact Fintype.linearIndependent_iff.1 (hI'_indep R) (fun j' ↦ g (i₀, j')) (hcoeff i₀) i'
+  case span =>
+    intro R _ f hf
+    let F : MatrixPoly m₀ (MatrixPoly m' R) := splitColourEquiv c φ₀ f
+    -- First show `F` is a Borel semi-invariant in colour `φ₀` over `MatrixPoly m' R`.
+    have hF_mem : F ∈ nabla (MatrixPoly m' R) c₀ (columnWeight τ₀ h₀) := by
+      rw [mem_nabla]
+      intro S _ _ b₀ y₀
+      let _ : Algebra R S := Algebra.compHom S (algebraMap R (MatrixPoly m' R))
+      have _ : IsScalarTower R (MatrixPoly m' R) S := IsScalarTower.of_algebraMap_eq' rfl
+      let b : Φ × ℕ × ℕ → S := fun p ↦
+        if p.1 = φ₀ then b₀ ((), p.2.1, p.2.2) else if p.2.1 = p.2.2 then 1 else 0
+      let y : m × ℕ → S := fun p ↦
+        if ha : c p.1 = φ₀ then y₀ (⟨p.1, ha⟩, p.2)
+        else algebraMap (MatrixPoly m' R) S (X (⟨p.1, ha⟩, p.2))
+      have h1 := mem_nabla.1 hf S b y
+      have h_bm : borelMul c b y = fun p : m × ℕ ↦
+          if ha : c p.1 = φ₀ then borelMul c₀ b₀ y₀ (⟨p.1, ha⟩, p.2)
+          else algebraMap (MatrixPoly m' R) S (X (⟨p.1, ha⟩, p.2)) := by
+        funext ⟨a, i⟩
+        by_cases ha : c a = φ₀
+        · simp [borelMul, ha, b, y]
+        · rw [borelMul_of_diag (fun j hj ↦ by simp [b, ha, ne_of_lt hj])]; simp [ha, b, y]
+      have h_wt : ((columnWeight τ h).prod fun p k ↦ b (p.1, p.2, p.2) ^ k) =
+          (columnWeight τ₀ h₀).prod fun p k ↦ b₀ (p.1, p.2, p.2) ^ k := by
+        rw [prod_columnWeight_split τ h φ₀ (fun p ↦ b (p.1, p.2, p.2))]
+        have h2 : ((columnWeight τ' h').prod fun p k ↦ b (p.1, p.2, p.2) ^ k) = 1 := by
+          rw [prod_columnWeight_pow]
+          exact prod_eq_one fun j _ ↦ prod_eq_one fun _ _ ↦ by simp [b, τ', j.2]
+        rw [h2, mul_one]; exact Finsupp.prod_congr fun p _ ↦ by simp [b]
+      have h_ev (z₀ : m₀ × ℕ → S) :
+          aeval (fun p : m × ℕ ↦ if ha : c p.1 = φ₀ then z₀ (⟨p.1, ha⟩, p.2)
+            else algebraMap (MatrixPoly m' R) S (X (⟨p.1, ha⟩, p.2))) f = aeval z₀ F :=
+        (aevalTower_splitColourEquiv c φ₀
+          (IsScalarTower.toAlgHom R (MatrixPoly m' R) S) z₀ f).symm
+      rw [h_bm, h_wt, h_ev, h_ev] at h1; exact h1
+    -- Expand `F` in the standard basis `I₀` over `MatrixPoly m' R`.
+    obtain ⟨g, hg⟩ := (Submodule.mem_span_range_iff_exists_fun (MatrixPoly m' R)).1
+      (hI₀.nabla_le_span (MatrixPoly m' R) hF_mem)
+    -- Each coefficient `g i₀` is a Borel semi-invariant in the remaining colours.
+    have hg_mem (i₀ : ι₀) : g i₀ ∈ nabla R c' (columnWeight τ' h') := by
+      rw [mem_nabla]
+      intro S _ _ b' y'
+      let T := MatrixPoly m₀ S
+      let b : Φ × ℕ × ℕ → T := fun p ↦
+        if p.1 = φ₀ then (if p.2.1 = p.2.2 then 1 else 0) else C (b' p)
+      let y : m × ℕ → T := fun p ↦
+        if ha : c p.1 = φ₀ then X (⟨p.1, ha⟩, p.2) else C (y' (⟨p.1, ha⟩, p.2))
+      have h2 := mem_nabla.1 hf T b y
+      have h_eval_g (z' : m' × ℕ → S) :
+          aeval (fun p : m × ℕ ↦ if ha : c p.1 = φ₀ then (X (⟨p.1, ha⟩, p.2) : T)
+            else C (z' (⟨p.1, ha⟩, p.2))) f =
+          ∑ j₀ : ι₀, aeval z' (g j₀) • minorProduct S (I₀ j₀) := by
+        let ψ : MatrixPoly m' R →ₐ[R] T := (IsScalarTower.toAlgHom R S T).comp (aeval z')
+        have h_ev :
+            aeval (fun p : m × ℕ ↦ if ha : c p.1 = φ₀ then (X (⟨p.1, ha⟩, p.2) : T)
+              else C (z' (⟨p.1, ha⟩, p.2))) f = aevalTower ψ X F := by
+          rw [show F = splitColourEquiv c φ₀ f from rfl, aevalTower_splitColourEquiv]
+          congr 2; funext p; by_cases ha : c p.1 = φ₀
+          · simp [ha]
+          · simp [ha, ψ, T, MatrixPoly, algebraMap_eq]
+        rw [h_ev, ← hg, map_sum]
+        refine sum_congr rfl fun j₀ _ ↦ ?_
+        rw [smul_eq_C_mul, map_mul, aevalTower_C]
+        change C (aeval z' (g j₀)) * _ = _
+        rw [smul_eq_C_mul]; congr 1
+        simp only [minorProduct, map_prod, minor, AlgHom.map_det]
+        refine prod_congr rfl fun j _ ↦ congr_arg Matrix.det <| Matrix.ext fun a b ↦ by
+          simp [Matrix.map_apply]
+      have h_bm : borelMul c b y = fun p : m × ℕ ↦
+          if ha : c p.1 = φ₀ then (X (⟨p.1, ha⟩, p.2) : T)
+          else C (borelMul c' b' y' (⟨p.1, ha⟩, p.2)) := by
+        funext ⟨a, i⟩
+        by_cases ha : c a = φ₀
+        · rw [borelMul_of_diag (fun j hj ↦ by simp [b, ha, ne_of_lt hj])]; simp [ha, b, y]
+        · simp [borelMul, ha, b, y, c', map_sum, map_mul]
+      have h_wt : ((columnWeight τ h).prod fun p k ↦ b (p.1, p.2, p.2) ^ k) =
+          C ((columnWeight τ' h').prod fun p k ↦ b' (p.1, p.2, p.2) ^ k) := by
+        rw [prod_columnWeight_split τ h φ₀ (fun p ↦ b (p.1, p.2, p.2))]
+        have h1' : ((columnWeight τ₀ h₀).prod fun p k ↦ b (φ₀, p.2, p.2) ^ k) = 1 :=
+          prod_eq_one fun _ _ ↦ by simp [b]
+        rw [h1', one_mul, prod_columnWeight_pow, prod_columnWeight_pow, map_prod]
+        exact prod_congr rfl fun j _ ↦ by
+          rw [map_prod]; exact prod_congr rfl fun _ _ ↦ by simp [b, j.2, τ']
+      rw [h_bm, h_eval_g, h_eval_g, h_wt, Finset.mul_sum] at h2
+      have hdiff : ∑ j₀ : ι₀, (aeval (borelMul c' b' y') (g j₀) -
+          ((columnWeight τ' h').prod fun p k ↦ b' (p.1, p.2, p.2) ^ k) * aeval y' (g j₀)) •
+          minorProduct S (I₀ j₀) = 0 := by
+        simp_rw [sub_smul, sum_sub_distrib, mul_smul, smul_eq_C_mul]
+        exact sub_eq_zero.2 (by simpa only [smul_eq_C_mul, mul_assoc] using h2)
+      exact sub_eq_zero.1
+        (Fintype.linearIndependent_iff.1 (hI₀.linearIndependent S) _ hdiff i₀)
+    -- Apply the induction hypothesis to each `g i₀` and pull back along `splitColourEquiv`.
+    choose r hr using fun i₀ ↦
+      (Submodule.mem_span_range_iff_exists_fun R).1 (hI'_span R (hg_mem i₀))
+    rw [Submodule.mem_span_range_iff_exists_fun R]
+    refine ⟨fun p : ι₀ × ι' ↦ r p.1 p.2, (splitColourEquiv c φ₀).injective ?_⟩
+    simp only [map_sum, map_smul, h_split_prod, Fintype.sum_prod_type]
+    rw [show splitColourEquiv c φ₀ f = F from rfl, ← hg]
+    refine sum_congr rfl fun i₀ _ ↦ ?_
+    rw [smul_eq_C_mul, ← hr i₀, map_sum, Finset.sum_mul]
+    exact sum_congr rfl fun i' _ ↦ by simp [Algebra.smul_def, mul_assoc]
 
 /-- Take finitely many rows coloured by `c`, and finitely many columns `j` of colour `τ j` and
 height `h j`. Then there is a finite type `ι` and a family `I` of fillings indexed by it that is
@@ -781,75 +762,18 @@ standard in the sense of `IsStdMinorFamily`. Each `I i` gives column `j` an `h j
 colour `τ j`, and has minor product `minorProduct R (I i)`: the product of the minors on these rows
 and the first `h j` columns.
 
-This is an existence form of the standard basis theorem for Schur modules (Akin–Buchsbaum–Weyman),
-stated for products of minors with coloured rows; the index type is not identified with the
-semistandard tableaux. -/
+This is an existence form of the standard basis theorem for Schur modules
+(Akin–Buchsbaum–Weyman), stated for products of minors with coloured rows. -/
 lemma exists_isStdMinorFamily {Φ J m : Type} [Fintype m] [Fintype J] (c : m → Φ)
     (τ : J → Φ) (h : J → ℕ) :
     ∃ (ι : Type) (_ : Fintype ι) (I : ι → ColoredTableau c τ h), IsStdMinorFamily I := by
-  classical
-  -- Induction on the number of rows. Fix a row `y` and expand polynomials in its variables. For
-  -- each exponent `γ` interlacing the weight, take the family for the other rows and the weight
-  -- lowered by `γ`, and lift its members by `exists_bordering`; the lifts have leading terms `y^γ`
-  -- times the smaller products, which gives independence and spanning.
-  induction h_card : Nat.card m using Nat.strongRec generalizing m h with | ind n ih => ?_
-  rcases isEmpty_or_nonempty m with hm | ⟨⟨y⟩⟩
-  · exact exists_isStdMinorFamily_of_isEmpty c τ h
-  -- For each `γ`, the heights `k γ` give the weight lowered by `γ` (`h_weight`), and `lift γ`
-  -- borders the fillings that avoid `y` (`h_lift`, `h_monomial`), by `exists_bordering`.
-  have h_border (γ : interlacing ((columnWeight τ h).curry (c y))) :=
-    exists_bordering h γ.prop
-  choose k h_weight lift h_lift h_monomial using h_border
-  -- The induction hypothesis: standard families `I γ` for the other rows.
-  have h_fewer : Nat.card {a : m // a ≠ y} < n :=
-    h_card.subst (Finite.card_subtype_lt (x := y) (not_not_intro rfl))
-  have h_family : ∀ γ : interlacing ((columnWeight τ h).curry (c y)),
-      ∃ (ι : Type) (_ : Fintype ι)
-        (I : ι → ColoredTableau (c ∘ (↑) : {a : m // a ≠ y} → Φ) τ (k γ)), IsStdMinorFamily I :=
-    fun γ ↦ ih _ h_fewer (c ∘ (↑) : {a : m // a ≠ y} → Φ) (k γ) rfl
-  choose ι hι_fintype I hI using h_family
-  refine ⟨Sigma ι, inferInstance, fun i ↦ lift i.fst (I i.fst i.snd), fun R _ ↦ ?_,
-    fun R _ ↦ ?_, ?_⟩
-  · exact linearIndependent_of_hasLeadingTerm (p := fun γ i ↦ minorProduct R (lift γ (I γ i)))
-      (fun γ i ↦ h_lift γ (I γ i) R) fun γ ↦ (hI γ).linearIndependent R
-  · exact nabla_le_span_of_hasLeadingTerm (p := fun γ i ↦ minorProduct R (lift γ (I γ i)))
-      h_weight (fun γ i ↦ minorProduct_mem_nabla (lift γ (I γ i)))
-      (fun γ i ↦ h_lift γ (I γ i) R) fun γ ↦ (hI γ).nabla_le_span R
-  · -- The character: both sides obey the same recursion `alternant_succ` in the row `y`.
-    intro _ t N e x
-    rcases N with _ | N
-    · exact nomatch e.symm y
-    have h_only : interlacing 0 = {0} := by simp [interlacing]
-    obtain rfl : t = c y := Subsingleton.elim t (c y)
-    -- Write both weights as finitely supported functions, the form that `alternant_succ` takes.
-    change _ * alternant (x ∘ e) ⇑(0 : ℕ →₀ ℕ) =
-      alternant (x ∘ e) ⇑((columnWeight τ h).curry (c y))
-    -- Expand both alternants at the index of `y`; the common factor `± ∏ (x a - x y)` cancels and
-    -- the two sums over `γ` are compared term by term.
-    rw [alternant_succ _ (antitone_columnWeight_curry τ h (c y)) (e.symm y),
-      ← (interlacing _).sum_coe_sort, alternant_succ 0 antitone_const (e.symm y),
-      h_only, mul_left_comm, Fintype.sum_sigma, univ.sum_mul]
-    congr with γ
-    -- For each `γ` use the identity for the other rows, enumerated by `e` with `y` left out.
-    let e' : Fin N ≃ {a : m // a ≠ y} :=
-      .optionSubtype _ ⟨(finSuccEquiv' (e.symm y)).symm.trans e, e.apply_symm_apply y⟩
-    have h_rest := (hI γ).character (c y) N e' fun a ↦ x a
-    -- `e'` is `e` composed with the embedding that skips the index of `y`.
-    have h_e' : (fun a : {a : m // a ≠ y} ↦ x a) ∘ e' =
-        (x ∘ e) ∘ (e.symm y).succAbove := by
-      simp [funext_iff, e', finSuccEquiv'_symm_some]
-    rw [h_e'] at h_rest
-    -- The weight lowered by `γ` is that of `k γ` (`h_weight γ`), and a lift adds `x y ^ |γ|` to the
-    -- product over the entries (`h_monomial`); so both sides are `x y ^ |γ|` times the sides of
-    -- `h_rest`.
-    have h_lowered : (⇑((columnWeight τ h).curry (c y)) - ⇑γ.val) =
-        fun n : ℕ ↦ columnWeight τ (k γ) (c y, n) := by
-      simp [funext_iff, h_weight γ, Prod.mk_right_injective]
-    rw [h_lowered, ← h_rest]
-    simp [h_monomial, ← univ.mul_sum, mul_assoc]
+  by_cases hsub : Subsingleton Φ
+  · exact exists_isStdMinorFamily_of_subsingleton c τ h
+  · obtain ⟨ι, _, I, hindep, hspan⟩ := exists_minorBasis_multi c τ h
+    exact ⟨ι, inferInstance, I, hindep, hspan, fun [hs : Subsingleton Φ] ↦ absurd hs hsub⟩
+
+end MultiColour
 
 end New.GL
 
 end MinorBasis
-
-end
