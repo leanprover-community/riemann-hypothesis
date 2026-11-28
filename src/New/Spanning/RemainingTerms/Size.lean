@@ -345,7 +345,8 @@ theorem enorm_integral_besselKernel_le {γ : S.G E} (h_near : S.IsNear γ)
   have h_kernel (σ : FullOrCut) (y : NumberField.InfinitePlace E → 𝔰.G₁) :
       S.besselKernel σ γ y = BesselSystem.pairKernel S.besselSystem σ (S.ratToInf γ) y := by
     ext
-    simp [besselKernel, besselFn, BesselSystem.pairKernel, prod_mul_distrib]
+    simp [besselKernel, besselFn, BesselSystem.pairKernel, BesselSystem.piKernel,
+      prod_mul_distrib]
   have h_pos (v : NumberField.InfinitePlace E) :
       0 < RealPlace.gramDiscReal (realFrameGram (S.ratToInf γ v)) := by
     simp [gramDiscReal_realFrameGram_ratToInf, prod_pos, h_disc]
