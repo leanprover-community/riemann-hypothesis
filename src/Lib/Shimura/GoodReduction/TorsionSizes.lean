@@ -195,6 +195,16 @@ lemma mul_shift_mem_sizes (hφ : φ ∈ B.sizes v) (hψ : ψ ∈ B'.sizes v) (w 
     rw [sizeAt_mul, Pi.mul_apply, hB'.sizeAt_thetaShift ⟨w, r, hr, hrw⟩ x]
   exact h_eq.subst (IsSize.of_mem_thetaSpace h_ample (mul hf (hB'.thetaShift_mem hg w)))
 
+/-- If `(B, χ)` and `(B', ζ)` satisfy `New.ThetaTori.IsAmpleType` and the Riemann form of
+`B + -B'` is positive, then `(B + -B', χ * ζ⁻¹)` satisfies `IsAmpleType`. -/
+lemma IsAmpleType.add_neg {ζ : V → ℂ} (h_ample : IsAmpleType B χ) (h_ample' : IsAmpleType B' ζ)
+    (h_pos : IsPosRiemann (B + -B')) : IsAmpleType (B + -B') (χ * ζ⁻¹) := by
+  obtain ⟨n, hn, hχ⟩ := h_ample.finite_order
+  obtain ⟨m, hm, hζ⟩ := h_ample'.finite_order
+  refine ⟨h_ample.add h_ample'.isAppellHumbert.neg, h_pos, n * m, mul_ne_zero hn hm, fun l hl ↦ ?_⟩
+  simp only [Pi.mul_apply, Pi.inv_apply, mul_pow, inv_pow]
+  rw [pow_mul, hχ l hl, one_pow, one_mul, mul_comm n m, pow_mul, hζ l hl, one_pow, inv_one]
+
 variable [IsFullRankLattice L]
 
 /-! ### Finiteness and density of torsion points -/
@@ -436,6 +446,50 @@ lemma IsAmpleType.thetaNorm_pos (h_ample : IsAmpleType B χ) (hf : f ∈ B.theta
   simpa [sizeAt, thetaShift, lt_ciSup_iff (bddAbove_of_mem_sizes ⟨h_ample, hf⟩), v.pos_iff]
     using h_not_zero
 
+/-- Given an Appell–Humbert datum `(B, χ)` with positive Riemann form on a full-rank lattice `L`,
+theta functions `f` of Appell–Humbert type `(B', ζ)` and `g` of type `(B + -B', χ * ζ⁻¹)`, and a
+vector `t` in `V` torsion modulo `L`, there is a vector `u` in `V` torsion modulo `L` such that
+the product of translates `B'.thetaShift (u - t) f * (B + -B').thetaShift u g` is a theta
+function of type `(B, χ)`. -/
+lemma exists_torsion_thetaShift_mul_mem {ζ : V → ℂ} (hB : IsAppellHumbert B χ)
+    (h_pos : IsPosRiemann B) (hζ : IsAppellHumbert B' ζ) (hf : f ∈ B'.thetaSpace ζ)
+    (hg : g ∈ (B + -B').thetaSpace (χ * ζ⁻¹)) (t : torsionPoints L) :
+    ∃ u : torsionPoints L,
+      B'.thetaShift (u - t) f * (B + -B').thetaShift u g ∈ B.thetaSpace χ := by
+  -- With `E`, `E'` the Riemann forms of `B`, `B'`, solve `E(u, ·) = E'(t, ·)`. If `r • t ∈ L`,
+  -- then `r • u` lies in the dual lattice of `B`, so `u` is torsion.
+  obtain ⟨N, hN, hNL⟩ := hB.exists_nsmul_mem_of_mem_dualLattice (hp := h_pos)
+  let u₀ : V := (B.riemannForm.toDual h_pos.nondegenerate).symm (B'.riemannForm t)
+  have hu₀ (y : V) : B.riemannForm u₀ y = B'.riemannForm t y := by simp [u₀]
+  obtain ⟨r, hr, hrt⟩ := t.property
+  have h_dual : r • u₀ ∈ B.dualLattice := fun l hl ↦ by
+    simpa [hu₀] using hζ.le_dualLattice hrt l hl
+  let u : torsionPoints L := ⟨u₀, N * r, mul_ne_zero hN hr,
+    by simpa [mul_smul] using hNL _ h_dual⟩
+  refine ⟨u, ?_⟩
+  -- The exponents `E'(l, u - t)` and `E(l, u) - E'(l, u)` that twist the multipliers cancel.
+  suffices B'.thetaShift (u - t) f * (B + -B').thetaShift u g ∈ (B' + (B + -B')).thetaSpace χ by
+    rwa [show B' + (B + -B') = B by rw [add_left_comm, add_neg_cancel, add_zero]] at this
+  refine (mul (hζ.thetaShift_mem hf (u - t)) ((hB.add hζ.neg).thetaShift_mem hg u)).imp_right
+    fun h_per l hl z ↦ ?_
+  rw [h_per l hl z]
+  refine congrArg (· * _) (congrArg (· * _) ?_)
+  have h_eq : B'.riemannForm l (↑u - ↑t) + (B + -B').riemannForm l ↑u = 0 := by
+    simp only [map_add, map_neg, LinearMap.add_apply, LinearMap.neg_apply, map_sub]
+    rw [riemannForm_swap (B := B) (↑u) l, hu₀ l, ← riemannForm_swap (B := B') (↑t) l]
+    ring
+  simp only [Pi.mul_apply, RealComplexForm.riemannPhase, coe_fourierChar_eq_exp, Pi.inv_apply]
+  have h_mul_exp :
+      cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t))) *
+        cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u)) = 1 := by
+    rw [← exp_add, ← mul_add, ← Complex.ofReal_add, h_eq, Complex.ofReal_zero, mul_zero, exp_zero]
+  calc (ζ l * cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t)))) *
+        (χ l * (ζ l)⁻¹ * cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u)))
+      = χ l * (ζ l * (ζ l)⁻¹) *
+          (cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t))) *
+            cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u))) := by ring
+    _ = χ l := by rw [mul_inv_cancel₀ (hζ.ne_zero hl), mul_one, h_mul_exp, mul_one]
+
 /-- Let L be a lattice of full rank in the finite-dimensional complex space V, let (L, B, χ) satisfy
 `New.ThetaTori.IsAmpleType`, and let the Riemann form of B − B' be positive. If the bound of
 `New.ThetaTori.LatticeForm.HasShiftBound` for w with constant C holds for the sizes of all theta
@@ -451,68 +505,32 @@ lemma LatticeForm.HasShiftBound.of_isPosRiemann_sub (h_ample : IsAmpleType B χ)
   -- of `f` and `g` with multiplier `χ`, bound the two factors `σ` on the right by `iSup σ`, take
   -- the sup over `s` on the left, and cancel `iSup σ ^ 2 > 0`.
   intro φ₀ hφ₀ x
-  obtain @⟨ζ, f, ⟨hζ, hB', m, hm, hζm⟩, hf⟩ := hφ₀
-  have hφ : B'.sizeAt v f ∈ B'.sizes v := IsSize.of_mem_thetaSpace ⟨hζ, hB', m, hm, hζm⟩ hf
-  have h_ample' : IsAmpleType (B + -B') (χ * ζ⁻¹) := by
-    refine ⟨h_ample.add hζ.neg, h_pos, h_ample.finite_order.imp' (fun n ↦ n * m) ?_⟩
-    rintro n ⟨hn, hχ⟩
-    refine ⟨mul_ne_zero hn hm, fun l hl ↦ ?_⟩
-    simp only [Pi.mul_apply, Pi.inv_apply, mul_pow, inv_pow]
-    rw [pow_mul, hχ l hl, one_pow, one_mul, mul_comm n m, pow_mul, hζm l hl, one_pow, inv_one]
+  obtain @⟨ζ, f, h_ample_B', hf⟩ := hφ₀
+  have hφ : B'.sizeAt v f ∈ B'.sizes v := IsSize.of_mem_thetaSpace h_ample_B' hf
+  have h_ample' : IsAmpleType (B + -B') (χ * ζ⁻¹) := h_ample.add_neg h_ample_B' h_pos
   obtain ⟨g, hg, hg0⟩ := h_ample'.exists_mem_thetaSpace_ne_zero
-  obtain ⟨N, hN, hNL⟩ := h_ample.exists_nsmul_mem_of_mem_dualLattice (hp := h_ample.isPosRiemann)
   have hσ : (B + -B').sizeAt v g ∈ (B + -B').sizes v := ⟨h_ample', hg⟩
   have hσ_pos : 0 < iSup ((B + -B').sizeAt v g) := h_ample'.thetaNorm_pos hg hg0
   set φ : torsionPoints L → ℝ≥0 := B'.sizeAt v f
   set σ : torsionPoints L → ℝ≥0 := (B + -B').sizeAt v g
   set S : ℝ≥0 := ⨆ z, φ z * φ (z + w)
   have h_sq_le (s : torsionPoints L) : φ x ^ 2 * σ s ^ 2 ≤ C * (S * iSup σ ^ 2) := by
-    -- With `E`, `E'` the Riemann forms of `B`, `B'`, solve `E(u, ·) = E'(t, ·)`. If `r • t ∈ L`,
-    -- then `r • u` lies in the dual lattice of `B`, so `u` is torsion.
     let t : torsionPoints L := s - x
-    let u₀ : V := (B.riemannForm.toDual h_ample.nondegenerate).symm (B'.riemannForm t)
-    have hu₀ (y : V) : B.riemannForm u₀ y = B'.riemannForm t y := by simp [u₀]
-    obtain ⟨r, hr, hrt⟩ := t.property
-    have h_dual : r • u₀ ∈ B.dualLattice := fun l hl ↦ by
-      simpa [hu₀] using hζ.le_dualLattice hrt l hl
-    let u : torsionPoints L := ⟨u₀, N * r, mul_ne_zero hN hr,
-      by simpa [mul_smul] using hNL _ h_dual⟩
-    -- the exponents `E'(l, u - t)` and `E(l, u) - E'(l, u)` that twist the multipliers cancel
-    have h_mem :
-        B'.thetaShift (u - t) f * (B + -B').thetaShift u g ∈ (B' + (B + -B')).thetaSpace χ := by
-      refine (mul (hζ.thetaShift_mem hf (u - t)) (h_ample'.thetaShift_mem hg u)).imp_right
-        fun h_per l hl ↦ ?_
-      intro z
-      rw [h_per l hl z]
-      refine congrArg (· * _) (congrArg (· * _) ?_)
-      have h_eq : B'.riemannForm l (↑u - ↑t) + (B + -B').riemannForm l ↑u = 0 := by
-        simp only [map_add, map_neg, LinearMap.add_apply, LinearMap.neg_apply, map_sub]
-        rw [riemannForm_swap (B := B) (↑u) l, hu₀ l, ← riemannForm_swap (B := B') (↑t) l]
-        ring
-      simp only [Pi.mul_apply, RealComplexForm.riemannPhase, coe_fourierChar_eq_exp, Pi.inv_apply]
-      have h_mul_exp :
-          cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t))) *
-            cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u)) = 1 := by
-        rw [← exp_add, ← mul_add, ← Complex.ofReal_add, h_eq, Complex.ofReal_zero, mul_zero,
-          exp_zero]
-      calc (ζ l * cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t)))) *
-            (χ l * (ζ l)⁻¹ * cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u)))
-          = χ l * (ζ l * (ζ l)⁻¹) *
-              (cexp (2 * ↑Real.pi * I * ↑(B'.riemannForm l (↑u - ↑t))) *
-                cexp (2 * ↑Real.pi * I * ↑((B + -B').riemannForm l ↑u))) := by ring
-        _ = χ l := by rw [mul_inv_cancel₀ (hζ.ne_zero hl), mul_one, h_mul_exp, mul_one]
+    obtain ⟨u, h_mem⟩ := exists_torsion_thetaShift_mul_mem h_ample.isAppellHumbert
+      h_ample.isPosRiemann h_ample_B'.isAppellHumbert hf hg t
     have h_size (y : torsionPoints L) :
-        (B' + (B + -B')).sizeAt v (B'.thetaShift (u - t) f * (B + -B').thetaShift u g) y =
+        B.sizeAt v (B'.thetaShift (u - t) f * (B + -B').thetaShift u g) y =
           φ (y + (u - t)) * σ (y + u) := by
-      rw [sizeAt_mul, Pi.mul_apply]
-      exact congrArg₂ (· * ·) (hζ.sizeAt_thetaShift (u - t) y) (h_ample'.sizeAt_thetaShift u y)
+      rw [show B.sizeAt v = (B' + (B + -B')).sizeAt v by
+        rw [← sub_eq_add_neg, add_sub_cancel], sizeAt_mul, Pi.mul_apply]
+      exact congrArg₂ (· * ·) (h_ample_B'.sizeAt_thetaShift (u - t) y)
+        (h_ample'.sizeAt_thetaShift u y)
     calc
       φ x ^ 2 * σ s ^ 2 = (φ (s - u + (u - t)) * σ (s - u + u)) ^ 2 := by
         dsimp only [t]
         rw [sub_add_sub_cancel, sub_add_cancel, sub_sub_cancel, mul_pow]
       _ ≤ C * ⨆ z, φ (z + (u - t)) * σ (z + u) * (φ (z + w + (u - t)) * σ (z + w + u)) := by
         simp only [← h_size]
-        rw [← sub_eq_add_neg, add_sub_cancel] at h_mem ⊢
         exact h_shift _ h_mem _
       _ ≤ C * (S * iSup σ ^ 2) := by
         gcongr
