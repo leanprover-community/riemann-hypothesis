@@ -377,6 +377,122 @@ private lemma Model.exists_isFixedPair_of_point_eq
   exact ⟨_, h_fixed_u.conj hw, (triple_class_eq_iff (h_fixed_u.conj hw).reflection_eq
     ht.reflection_eq).mpr ⟨w, rfl, hw.mem_level, hw.reflection_eq, by simp⟩⟩
 
+/-- At a neat level and for a regular `b`, a fixed pair `t` of `p` is determined by the coset of
+`invAutInFrame t.fst p.frame` (`existsUnique_isFixedPair`). -/
+private lemma IsFixedPair.eq_of_invAutInFrame_eq (h_neat : IsNeat n 𝔑) {b : heckeAlgebra n ℂ 𝔑}
+    (h_reg : IsRegularHecke b) {α : Fin ν → 𝓞 E} {p : ModuliPoint E n ν} {t t' : GL n E × n}
+    (ht : IsFixedPair b α p t) (ht' : IsFixedPair b α p t')
+    (h : (invAutInFrame t.fst p.frame : GL n (𝔸f E) ⧸ levelGU n 𝔑) = invAutInFrame t'.fst p.frame) :
+    t = t' :=
+  (existsUnique_isFixedPair h_neat h_reg α ht.heckeCosetFn_ne_zero rfl
+    (by simp [ht.reflection_eq, ratConj_eigenReflection]) ht.mem_solutionLattice).unique
+    ⟨ht, rfl⟩ ⟨ht', h.symm⟩
+
+/-- At a neat level, two fixed pairs of `p` with the same class of triples are equal. -/
+private lemma IsFixedPair.eq_of_tripleClass_eq (h_neat : IsNeat n 𝔑) {b : heckeAlgebra n ℂ 𝔑}
+    {α : Fin ν → 𝓞 E} {p : ModuliPoint E n ν} {t t' : GL n E × n} (ht : IsFixedPair b α p t)
+    (ht' : IsFixedPair b α p t') (h_cl : tripleClass 𝔑 p.frame t = tripleClass 𝔑 p.frame t') :
+    t = t' := by
+  -- An element `w` conjugating `t'` to `t` is an automorphism of `p`, so `w = 1` by neatness.
+  obtain ⟨w, e, hw⟩ := (triple_class_eq_iff ht.reflection_eq ht'.reflection_eq).mp h_cl
+  obtain rfl : w = 1 := h_neat.eq_one_of_mem_levelGU p.isSignedFrame hw.mem_level hw.reflection_eq
+  simpa using e.symm
+
+/-- At a neat level and for a regular `b`, let the Hecke function of `b` be non-zero at `γ`, with
+`γ.out` in `X.legIndices i`. The point `X.point i p` is a coincidence of `X.leg i ⟦1⟧` and
+`X.leg i ⟦γ.out⟧ ≫ X.mulMap (2 * α)` exactly when `p` has a fixed pair `t` with
+`invAutInFrame t.fst p.frame` in `γ`. -/
+private lemma Model.point_comp_leg_eq_iff_exists_isFixedPair (h_neat : IsNeat n 𝔑)
+    {b : heckeAlgebra n ℂ 𝔑} (h_reg : IsRegularHecke b)
+    (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) {γ : GL n (𝔸f E) ⧸ levelGU n 𝔑}
+    (hγ : heckeCosetFn b γ ≠ 0) (hγi : γ.out ∈ X.legIndices i) (α : Fin ν → 𝓞 E)
+    (p : ModuliPoint E n ν) :
+    X.point i p ≫ X.leg i ⟦1⟧ = X.point i p ≫ X.leg i ⟦γ.out⟧ ≫ X.mulMap (2 * α) ↔
+      ∃ t : GL n E × n, IsFixedPair b α p t ∧
+        (invAutInFrame t.fst p.frame : GL n (𝔸f E) ⧸ levelGU n 𝔑) = γ := by
+  have hγ_mem : γ.out ∈ GUPlus E n := heckeAlgebra.mem_GUPlus_of_ne_zero (f := b) (by simpa)
+  -- Coincidences in terms of the uniformisation (`isLevelIso_act_iff`).
+  have h_iff : X.point i p ≫ X.leg i ⟦1⟧ = X.point i p ≫ X.leg i ⟦γ.out⟧ ≫ X.mulMap (2 * α) ↔
+      ∃ z : GL n E, (invAutInFrame z p.frame : GL n (𝔸f E) ⧸ levelGU n 𝔑) = γ ∧
+        ratConj z p.reflection = p.reflection ∧
+        ∀ j : Fin ν, p.markedPoint j ∈ solutionLattice p.frame z (α j) := by
+    refine eq_comm.trans ?_
+    -- `using!`: `point_leg` writes the coset as `↑g`, the sum as `⟦g⟧`; they agree by unfolding.
+    simpa only [hγi, ← point_leg] using!
+      (X.point_eq_iff i _ p).trans (exists_congr (isLevelIso_act_iff hγ_mem α))
+  -- A solution `z` has exactly one mark (`existsUnique_isFixedPair`).
+  refine h_iff.trans ⟨fun ⟨z, hzγ, hzℓ, hzP⟩ ↦
+    (existsUnique_isFixedPair h_neat h_reg α hγ hzγ hzℓ hzP).exists, fun ⟨t, ht, htγ⟩ ↦
+    ⟨t.fst, htγ, by simp [ht.reflection_eq, ratConj_eigenReflection], ht.mem_solutionLattice⟩⟩
+
+/-- Let `t` be a fixed pair of `p` for a regular `b`, with `invAutInFrame t.fst p.frame` in the
+coset `γ` and `γ.out` in `GUPlus E n` and in `X.legIndices i`. Then the local term at `2 α` is a
+tangent polynomial of `X.leg i ⟦1⟧` and `X.leg i ⟦γ.out⟧ ≫ X.mulMap (2 * α)` at the point
+`X.point i p` (`X.tangent`), and it does not vanish at `1`. -/
+private lemma Model.isTangentPoly_localTerm (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n))
+    {b : heckeAlgebra n ℂ 𝔑} (h_reg : IsRegularHecke b) {α : Fin ν → 𝓞 E}
+    {p : ModuliPoint E n ν} {t : GL n E × n} (ht : IsFixedPair b α p t)
+    {γ : GL n (𝔸f E) ⧸ levelGU n 𝔑} (hγ : γ.out ∈ GUPlus E n) (hγi : γ.out ∈ X.legIndices i)
+    (htγ : (invAutInFrame t.fst p.frame : GL n (𝔸f E) ⧸ levelGU n 𝔑) = γ) :
+    IsTangentPoly X.dimension ((algPoints ℂ (CommRingCat.of R)).map (X.leg i ⟦1⟧))
+        ((algPoints ℂ (CommRingCat.of R)).map (X.leg i ⟦γ.out⟧ ≫ X.mulMap (2 * α)))
+        ⟨X.point i p⟩ (localTerm (2 * α) (t.fst : Matrix n n E).charpoly t.snd) ∧
+      (localTerm (2 * α) (t.fst : Matrix n n E).charpoly t.snd).eval 1 ≠ 0 := by
+  have h_iso := (isLevelIso_act_iff hγ α t.fst).mpr
+    ⟨htγ, by simp [ht.reflection_eq, ratConj_eigenReflection], ht.mem_solutionLattice⟩
+  exact ⟨X.tangent i ⟨_, hγ⟩ (2 * α) p t.fst t.snd hγi (h_reg ht.heckeCosetFn_ne_zero)
+    ht.reflection_eq h_iso, eval_one_localTerm_ne_zero ht⟩
+
+/-- Let `q` lift the complex points of level `i` and let `t` be a fixed pair of `p`, at a neat
+level. The pairs `⟨c, y⟩` such that `q y` has a fixed pair with coset `c` in the class of triples
+of `t` biject, through `y`, with the points of `p` with solutions as vectors, moved by deck
+transformations. -/
+private lemma Model.bijOn_setOf_isFixedPair (h_neat : IsNeat n 𝔑)
+    (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) {b : heckeAlgebra n ℂ 𝔑}
+    {α : Fin ν → 𝓞 E} {q : (specOver R ℂ ⟶ X.cover i) → ModuliPoint E n ν}
+    (hq : ∀ y, X.point i (q y) = y) {p : ModuliPoint E n ν} {t : GL n E × n}
+    (ht : IsFixedPair b α p t) :
+    {s : Σ _ : (heckeCosetFn b).support, PointsIn (X.cover i) (CommAlgCat.of ℂ ℂ) |
+      ∃ t' : GL n E × n, IsFixedPair b α (q s.snd.down) t' ∧
+        invAutInFrame t'.fst (q s.snd.down).frame = (s.fst : GL n (𝔸f E) ⧸ levelGU n 𝔑) ∧
+        tripleClass 𝔑 (q s.snd.down).frame t' = tripleClass 𝔑 p.frame t}.BijOn
+      (fun s ↦ s.snd.down)
+      (Set.range fun u : (∀ j : Fin ν, SolutionQuotient p.frame t.fst (α j)) × X.deckGroup i ↦
+        X.point i {p with markedPoint j := (u.fst j).out} ≫ (X.deck i u.snd).asHom) := by
+  refine ⟨?_, ?_, ?_⟩
+  · rintro ⟨c, ⟨y⟩⟩ ⟨t', ht', -, h_cl⟩
+    dsimp only
+    rw [← hq y]
+    exact X.point_mem_range_of_class_eq i ht ht' h_cl
+  · -- The point `y` and the class determine the fixed pair at `q y`, hence the coset.
+    rintro ⟨c, ⟨y⟩⟩ ⟨t₁, ht₁, hc₁, h_cl₁⟩ ⟨c', ⟨y'⟩⟩ ⟨t₂, ht₂, hc₂, h_cl₂⟩ h_points
+    obtain rfl : y = y' := h_points
+    obtain rfl : t₁ = t₂ := ht₁.eq_of_tripleClass_eq h_neat ht₂ (h_cl₁.trans h_cl₂.symm)
+    obtain rfl : c = c' := Subtype.ext (hc₁.symm.trans hc₂)
+    rfl
+  · rintro y ⟨u, hu⟩
+    obtain ⟨t', ht', h_cl⟩ := X.exists_isFixedPair_of_point_eq i ht u (hu.trans (hq y).symm)
+    exact ⟨⟨⟨_, Finsupp.mem_support_iff.mpr ht'.heckeCosetFn_ne_zero⟩, ⟨y⟩⟩,
+      ⟨t', ht', rfl, h_cl⟩, rfl⟩
+
+/-- Let `q` lift the complex points of level `i` and let `t` be a fixed pair of `p`, at a neat
+level. The number of pairs `⟨c, y⟩` such that `q y` has a fixed pair with coset `c` in the class
+of triples of `t` is (number of solutions modulo the lattice) · `|X.deckGroup i|`. -/
+private lemma Model.card_setOf_isFixedPair (h_neat : IsNeat n 𝔑)
+    (i : Finset (nonZeroDivisors (𝓞 E) × GUPlus E n)) {b : heckeAlgebra n ℂ 𝔑}
+    {α : Fin ν → 𝓞 E} {q : (specOver R ℂ ⟶ X.cover i) → ModuliPoint E n ν}
+    (hq : ∀ y, X.point i (q y) = y) {p : ModuliPoint E n ν} {t : GL n E × n}
+    (ht : IsFixedPair b α p t) :
+    Nat.card {s : Σ _ : (heckeCosetFn b).support, PointsIn (X.cover i) (CommAlgCat.of ℂ ℂ) |
+      ∃ t' : GL n E × n, IsFixedPair b α (q s.snd.down) t' ∧
+        invAutInFrame t'.fst (q s.snd.down).frame = (s.fst : GL n (𝔸f E) ⧸ levelGU n 𝔑) ∧
+        tripleClass 𝔑 (q s.snd.down).frame t' = tripleClass 𝔑 p.frame t} =
+      Nat.card (∀ j : Fin ν, SolutionQuotient p.frame t.fst (α j)) * Nat.card (X.deckGroup i) := by
+  rw [card_congr (X.bijOn_setOf_isFixedPair h_neat i hq ht).equiv,
+    card_range_of_injective (X.point_comp_deck_injective h_neat i _
+      fun j ↦ solutionLattice p.frame t.fst (α j)),
+    card_prod]
+
 /-- The Lefschetz formula as a sum over marked pairs. Let `𝔑` be neat. If on all large levels `i`
 and for all `α` the combination of the maps `X.leg i q ≫ X.mulMap α`, `q` a coset with coefficient
 the value of `b` at `q`, is `h`-null in the geometric sense (`New.Variety.IsNullFamily`, dimension
@@ -407,72 +523,40 @@ lemma Model.isNullHecke_of_isNullFamily [Nonempty n] (h_neat : IsNeat n 𝔑)
   -- `S` is the set of coincidences `⟨c, y⟩`: `c` in the support of `b`, `y` a point of level `i`.
   specialize h_null (2 * α) (X.leg i ⟦1⟧)
   extract_lets S at h_null
-  -- Coincidences in terms of the uniformisation (`isLevelIso_act_iff`).
+  -- A coincidence `⟨c, y⟩` amounts to a fixed pair at `q y` with coset `c`.
   have mem_S_iff (c : (heckeCosetFn b).support) (y : specOver R ℂ ⟶ X.cover i) :
-      ⟨c, ⟨y⟩⟩ ∈ S ↔ ∃ z : GL n E, invAutInFrame z (q y).frame = (c : GL n (𝔸f E) ⧸ levelGU n 𝔑) ∧
-        ratConj z (q y).reflection = (q y).reflection ∧
-        ∀ j : Fin ν, (q y).markedPoint j ∈ solutionLattice (q y).frame z (α j) := by
-    refine eq_comm.trans ?_
-    -- `using!`: `point_leg` writes the coset as `↑g`, the sum as `⟦g⟧`; they agree by unfolding.
-    simpa only [hq, h_level, ← point_leg] using!
-      (X.point_eq_iff i _ (q y)).trans (exists_congr (isLevelIso_act_iff (h_out_mem c) α))
-  -- A coincidence has exactly one fixed pair `(z, μ)` (`existsUnique_isFixedPair`).
-  have exists_pair s (hs : s ∈ S) :
-      ∃! t : GL n E × n, IsFixedPair b α (q s.snd.down) t ∧
-        invAutInFrame t.fst (q s.snd.down).frame = (s.fst : GL n (𝔸f E) ⧸ levelGU n 𝔑) := by
-    obtain ⟨z, hzγ, hzℓ, hzP⟩ := (mem_S_iff s.fst s.snd.down).mp hs
-    exact existsUnique_isFixedPair h_neat h_reg α (Finsupp.mem_support_iff.mp s.fst.prop) hzγ hzℓ
-      hzP
-  choose! r hr r_unique using exists_pair
-  -- Every coincidence is simple, with tangent polynomial `localTerm` (`X.tangent`), so `h_null`
-  -- applies.
+      ⟨c, ⟨y⟩⟩ ∈ S ↔ ∃ t : GL n E × n, IsFixedPair b α (q y) t ∧
+        invAutInFrame t.fst (q y).frame = (c : GL n (𝔸f E) ⧸ levelGU n 𝔑) := by
+    simpa only [hq] using! X.point_comp_leg_eq_iff_exists_isFixedPair h_neat h_reg i
+      (Finsupp.mem_support_iff.mp c.prop) (h_level c) α (q y)
+  choose! r hr using fun s (hs : s ∈ S) ↦ (mem_S_iff s.fst s.snd.down).mp hs
+  -- Every coincidence is simple, with tangent polynomial `localTerm`, so `h_null` applies.
   obtain ⟨S_finite, sum_zero⟩ :=
     h_null (fun s ↦ localTerm (2 * α) ((r s).fst : Matrix n n E).charpoly (r s).snd) fun s hs ↦ by
-      obtain ⟨ht, hγ⟩ := hr s hs
-      have h_iso := (isLevelIso_act_iff (h_out_mem s.fst) α (r s).fst).mpr
-        ⟨hγ, by simp [ht.reflection_eq, ratConj_eigenReflection], ht.mem_solutionLattice⟩
-      refine ⟨?_, eval_one_localTerm_ne_zero ht⟩
-      have h_tan := X.tangent i ⟨_, h_out_mem s.fst⟩ (2 * α) (q s.snd.down) (r s).fst (r s).snd
-        (h_level s.fst) (h_reg ht.heckeCosetFn_ne_zero) ht.reflection_eq h_iso
+      have h_tan := X.isTangentPoly_localTerm i h_reg (hr s hs).left (h_out_mem s.fst)
+        (h_level s.fst) (hr s hs).right
       rwa [hq s.snd.down] at h_tan
-  -- Each fibre of `tripleClass` over a fixed pair `(p, t)` bijects with solutions × deck group.
-  have h_bij {p : ModuliPoint E n ν} {t : GL n E × n} (ht : IsFixedPair b α p t) :
-      {s ∈ S | tripleClass 𝔑 (q s.snd.down).frame (r s) = tripleClass 𝔑 p.frame t}.BijOn
-        (fun s ↦ s.snd.down)
-        (Set.range fun u : (∀ j : Fin ν, SolutionQuotient p.frame t.fst (α j)) × X.deckGroup i ↦
-          X.point i {p with markedPoint j := (u.fst j).out} ≫ (X.deck i u.snd).asHom) := by
-    refine ⟨?_, ?_, ?_⟩
-    · rintro ⟨c, ⟨y⟩⟩ ⟨hs, h_cl⟩
-      dsimp only
-      rw [← hq y]
-      exact X.point_mem_range_of_class_eq i ht (hr _ hs).left h_cl
-    · rintro ⟨c, ⟨y⟩⟩ ⟨hs, h_cl⟩ ⟨c', ⟨y'⟩⟩ ⟨hs', h_cl'⟩ h_points
-      obtain rfl : y = y' := h_points
-      obtain ⟨w, e, hw⟩ := (triple_class_eq_iff (hr _ hs').left.reflection_eq
-        (hr _ hs).left.reflection_eq).mp (h_cl'.trans h_cl.symm)
-      obtain rfl : w = 1 :=
-        h_neat.eq_one_of_mem_levelGU (q y).isSignedFrame hw.mem_level hw.reflection_eq
-      have h_pair : r ⟨c, ⟨y⟩⟩ = r ⟨c', ⟨y⟩⟩ := by simpa using e
-      have h_coset := (hr _ hs).right
-      rw [h_pair] at h_coset
-      rw [show c = c' from Subtype.ext (h_coset.symm.trans (hr _ hs').right)]
-    · rintro y ⟨u, hu⟩
-      obtain ⟨t', h_fixed, h_cl'⟩ :=
-        X.exists_isFixedPair_of_point_eq i ht u (hu.trans (hq y).symm)
-      let c : (heckeCosetFn b).support :=
-        ⟨_, Finsupp.mem_support_iff.mpr h_fixed.heckeCosetFn_ne_zero⟩
-      have h_mem : ⟨c, ⟨y⟩⟩ ∈ S := (mem_S_iff c y).mpr
-        ⟨_, rfl, by simp [h_fixed.reflection_eq, ratConj_eigenReflection],
-          h_fixed.mem_solutionLattice⟩
-      exact ⟨⟨c, ⟨y⟩⟩, ⟨h_mem, by rwa [← r_unique _ h_mem _ ⟨h_fixed, rfl⟩]⟩, rfl⟩
+  -- The coincidences whose pair has the class of triples of a fixed pair `t` of `p`, without `r`.
+  have h_fibre (p : ModuliPoint E n ν) (t : GL n E × n) :
+      {s ∈ S | tripleClass 𝔑 (q s.snd.down).frame (r s) = tripleClass 𝔑 p.frame t} =
+        {s | ∃ t' : GL n E × n, IsFixedPair b α (q s.snd.down) t' ∧
+          invAutInFrame t'.fst (q s.snd.down).frame = (s.fst : GL n (𝔸f E) ⧸ levelGU n 𝔑) ∧
+          tripleClass 𝔑 (q s.snd.down).frame t' = tripleClass 𝔑 p.frame t} := by
+    ext s
+    refine ⟨fun ⟨hs, h_cl⟩ ↦ ⟨r s, (hr s hs).left, (hr s hs).right, h_cl⟩,
+      fun ⟨t', ht', hc, h_cl⟩ ↦ ?_⟩
+    have hs : s ∈ S := (mem_S_iff s.fst s.snd.down).mpr ⟨t', ht', hc⟩
+    exact ⟨hs, by rwa [(hr s hs).left.eq_of_invAutInFrame_eq h_neat h_reg ht'
+      ((hr s hs).right.trans hc.symm)]⟩
   -- A class with non-zero term comes from a coincidence: take the vectors `P = 0`.
   have support_subset (ω : E[X] → n → ℂ)
       (c : MulAction.orbitRel.Quotient (GL n E) (MarkedTriple (levelGU n 𝔑) n))
       (hc : countTerm True b ω c ≠ 0) :
       c ∈ (fun s ↦ tripleClass 𝔑 (q s.snd.down).frame (r s)) '' S := by
     obtain ⟨p, h_fixed, h_cl_p⟩ := exists_isFixedPair_of_countTerm_ne_zero h_reg α hc
-    obtain ⟨s, ⟨hs, h_cl⟩, -⟩ := (h_bij h_fixed).surjOn ⟨(0, 1), rfl⟩
-    exact ⟨s, hs, h_cl.trans h_cl_p⟩
+    obtain ⟨s, hs, -⟩ := (X.bijOn_setOf_isFixedPair h_neat i hq h_fixed).surjOn ⟨(0, 1), rfl⟩
+    rw [← h_fibre] at hs
+    exact ⟨s, hs.left, hs.right.trans h_cl_p⟩
   refine ⟨(S_finite.image _).subset (support_subset _), ?_⟩
   -- Sum over the fibres (`finsum_image_eq_zero_of_fibers`): the term of a class divided by the
   -- size of its fibre is the local term of the coincidence divided by `|X.deckGroup i|`.
@@ -482,17 +566,8 @@ lemma Model.isNullHecke_of_isNullFamily [Nonempty n] (h_neat : IsNeat n 𝔑)
     refine finsum_image_eq_zero_of_fibers S_finite _ sum_zero (D := Nat.card (X.deckGroup i)) fun s
       hs ↦ ?_
     obtain ⟨h_fixed, hγ⟩ := hr s hs
-    have h_card :
-        Nat.card {s' ∈ S | tripleClass 𝔑 (q s'.snd.down).frame (r s') =
-            tripleClass 𝔑 (q s.snd.down).frame (r s)} =
-          Nat.card (∀ j : Fin ν, SolutionQuotient (q s.snd.down).frame (r s).fst (α j)) *
-            Nat.card (X.deckGroup i) := by
-      rw [card_congr (h_bij h_fixed).equiv,
-        card_range_of_injective (X.point_comp_deck_injective h_neat i _
-          fun j ↦ solutionLattice (q s.snd.down).frame (r s).fst (α j)),
-        card_prod]
-    rw [h_card, countTerm_mk, ite_eq_left h_fixed.isSignedFrame, hγ, cast_mul,
-      ← eval_one_localTerm h_fixed, div_div]
+    rw [h_fibre, X.card_setOf_isFixedPair h_neat i hq h_fixed, countTerm_mk,
+      ite_eq_left h_fixed.isSignedFrame, hγ, cast_mul, ← eval_one_localTerm h_fixed, div_div]
   rwa [finsum_mem_def, Set.indicator_eq_self.mpr (support_subset _)] at h_sum
 
 end New.Variety
