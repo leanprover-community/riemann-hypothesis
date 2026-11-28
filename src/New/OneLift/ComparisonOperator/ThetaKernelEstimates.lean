@@ -478,7 +478,6 @@ lemma modKernel_expect_traceChar {a b : AutChar E} {γ γ' : InfinitePlace E →
           (modDatum S T 𝔪 (traceChar t) (realPairWeil γ γ' (u, u') v))) *
         conj ((S.hom T).θ ((S.hom T).ω (G.onHom (g, h)) (modDatum S T 𝔪 (traceChar t) v)))) /
         Fintype.card (Matrix n n' 𝔪.ResidueRing) := by
-  classical
   -- The unit scalar that `a`, `b` contribute at `(g, h)` cancels against its conjugate.
   have phase_cancel (f f' : 𝒮 (S.hom T)) :
       pairWeil S T a b (g, h) f 0 * conj (pairWeil S T a b (g, h) f' 0) =

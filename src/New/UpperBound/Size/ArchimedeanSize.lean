@@ -537,7 +537,6 @@ lemma normSqAt_goodProjTranslate_le {P : Parameters} {D : Data P} {σ : ℂ ≃+
     (hB : ∀ g : Gf D.E (D.Y D.m), weylNormSq (σ ∘ (D.lowerChain TameChar.one z).val g) ≤ exp B) :
     (D.lowerChainAtLevel TameChar.one (D.goodProjTranslate s z).val).normSqAt σ ≤
       exp (D.x ^ 99 + B) := by
-  classical
   -- The coefficients of the central idempotent `σ e₀` have norm at most `1`, since `|𝖦| σ e₀` is
   -- the character of a representation of dimension at most `|𝖦|`.
   have h_coeff (t : D.chosenGL) : ‖σ (D.e₀.coeff t)‖ ≤ 1 := by
