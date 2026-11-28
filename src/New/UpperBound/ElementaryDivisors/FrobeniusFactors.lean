@@ -794,7 +794,7 @@ lemma degree_le_of_coeff_substitutionOperator {β γ : Exponents N k n}
     (α := 0) (x := 0) (u := T.P ^ ℓ) (β := β) (γ := γ) (r := r) (ℓ := ℓ) (n := n)
     (ψ := T.frobGenericMatrix) (hα_zero := by simp) (hα_sum := by simp) (hx := by simp)
     (hu := by positivity) (hψ := fun s d hd b c => by
-      refine antitone (le_trans ?_ (nsmul_le_nsmul_right (a := (-1 : ℝ)) (by grind) _))
+      refine antitone (le_trans ?_ (nsmul_le_nsmul_right (a := (-1 : ℝ)) (by aesop) _))
         (pow_mem_graded _ X_mem_gaussFiltration)
       simpa using pow_le_pow_right₀ T.one_lt_P.le hd)
   rify

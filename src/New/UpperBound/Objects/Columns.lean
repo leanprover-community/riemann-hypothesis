@@ -510,7 +510,7 @@ lemma sum_translate_eq_gluedDatum [hP : IsSplitLevel P N] (hS : IsSplitLevel S N
     generalize hc : hP.reduction _ = c
     have h_prod : ∑ i, j * (T (i, .inr ()) - residueOverN (b i)) *
         (j * (R (.inr (), i) - star (residueOverN (b i)))) ∈ Ô E :=
-      sum_mem fun i _ ↦ ((hb i).2 (by grind)).elim mul_mem
+      sum_mem fun i _ ↦ ((hb i).2 (by aesop)).elim mul_mem
     have h_red : j * (∑ i, R (.inr (), i) * T (i, .inr ()) - residueOverN c) ∈ Ô E := by
       refine (reduction_eq_iff_idem_mul_mem ?_).1 hc
       simp [-map_mul, mul_sum]

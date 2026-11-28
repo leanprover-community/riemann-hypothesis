@@ -464,7 +464,7 @@ lemma rowCoords_mul_fst (x : InfinitePlace E → (𝔰.middleGram (1 : ℂ)).bes
   refine besselU_mul_apply_eq_add (x v) (u v) (.inr j.property) (fun d hd ↦ congrFun (h_im d hd) v)
     fun d k hd hk ↦ congrFun₂ (h_free d ?_) ⟨k, hk⟩ v
   -- If the free column `j` is e*_d, then d > a.
-  grind
+  aesop
 
 omit [CMType E] in
 /-- If the free entries of `u` vanish in the rows e_d with d ≥ a and the imaginary parts at

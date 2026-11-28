@@ -295,7 +295,7 @@ lemma exists_squareLaw_triangleReversedLift {P : Parameters} (D : Data P) {i n :
   case chars =>
     intro ϑ p q _ _ h_card
     rw [inv_inv, ← add_assoc]
-    exact D.gridChar_mul_leftPairChar false ϑ hn (by simpa using h_card) (by grind)
+    exact D.gridChar_mul_leftPairChar false ϑ hn (by simpa using h_card) (by aesop)
   -- the two middle spaces have equal rank, so the product of `L`-values is empty
   have h_empty (S : Set (FinPlace D.E)) (ν : AutChar D.E) : lValueProd S ν 0 = 1 := by
     simp [lValueProd]

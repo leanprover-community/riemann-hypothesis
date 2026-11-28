@@ -382,7 +382,7 @@ lemma hasMatrixSize_inv_of_mem_unipotentBelow {d : ℕ} (hj : j ≤ 𝔰.ϱ)
         s.val.val *ᵥ Pi.single (eStar a) 1 ∈ S.vecsOfSize c := by
       rw [one_mulVec, mulVec_single_one]
       exact sub_mem_vecsOfSize (single_mem_vecsOfSize (eStar a)) (h_col a ha)
-    exact ⟨Pi.single (eStar a) 1, fun b hb ↦ Pi.single_eq_of_ne (by grind) 1, by simp,
+    exact ⟨Pi.single (eStar a) 1, fun b hb ↦ Pi.single_eq_of_ne (by aesop) 1, by simp,
       lengthLeAt_one_iff.2 (single_mem_vecsOfSize (eStar a)), Pi.single (eStar a) 1, .refl _ _,
       by simpa using h_diff⟩
   have h_differ : S.GaugesDifferLe 1 (1 : T.G) (1 * s⁻¹) 0 (0 + (4 * c + 12) * j) :=

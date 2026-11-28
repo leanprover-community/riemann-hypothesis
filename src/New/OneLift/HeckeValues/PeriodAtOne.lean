@@ -243,7 +243,7 @@ lemma sum_heckePolyCoeff_smul_modDatum_eq_modDatum
   set f := modDatum (stdSpace E n) (stdSpace E n) 𝔪 (𝔪.charOfTamePart ψ ·.det) P with hf
   have h_vac : ((stdSpace E n).hom (stdSpace E n)).projOn {v} f = f := by
     rw [hf, modDatum, projOn_integrated,
-      projOn_schrodingerOp_vacElem _ (show Disjoint 𝔪.places.conjClosure {v} by grind)]
+      projOn_schrodingerOp_vacElem _ (show Disjoint 𝔪.places.conjClosure {v} by aesop)]
   -- Hence the sum puts in, at `v`, the product of `1 - q ^ l` over `l < corank`. This is the
   -- indicator of the invertible matrices, that is `ψ v ∘ det`, as `ψ v` is trivial.
   rw [(sum_heckePolyCoeff_smul_pairWeil h_unr h_unr h_split h_vac (α.frobValue n v)⁻¹).1]

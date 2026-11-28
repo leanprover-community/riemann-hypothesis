@@ -483,7 +483,7 @@ lemma exists_sum_length_localCocycles_tied_le (hp : IsTiedPrimes ℓ S₀ V W N 
     by_cases hv : v ∈ S' \ T.places
     · obtain ⟨B, hB, h_le⟩ := T.exists_length_localCocycles_tied_le (x := x) (i := i) hp ha
         (v := v) (by grind) (mem_sdiff.1 hv).2
-      exact ⟨⟨B, hB⟩, by grind, fun _ ↦ h_le⟩
+      exact ⟨⟨B, hB⟩, by aesop, fun _ ↦ h_le⟩
     · exact ⟨⟨placeOver v, v.isPlaceOver_placeOver⟩, by grind⟩
   choose A hA h_tied using h_places
   refine ⟨A, ?_⟩

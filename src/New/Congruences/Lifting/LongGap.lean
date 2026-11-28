@@ -176,7 +176,7 @@ lemma JumpLattice.mem_withOrders_of_expansion_mem (hl : 0 < l) {ξ : ℕ → L.A
       simpa only [zpow_neg_one, inv_smul_smul] using
         frobEUnit_zpow_smul_mem_withOrders_shiftedStdOrders (-1) h_exp
     have h_index : ∀ u : ℤ, (if o u ≤ (N + 1 : ℕ) then 0 else A : ℤ) ≤
-        (if o u + -1 ≤ N then 0 else A : ℤ) := by grind
+        (if o u + -1 ≤ N then 0 else A : ℤ) := by aesop
     exact mem_withOrders_shiftedStdOrders_of_le (ih (fun n ↦ hξ (n + 1)) (by grind) hy'_exp) h_index
 
 /-- The forms of `L` are the `A_inf`-linear maps `μ : W(C^♭) ⊗ L → B_dR` that are equivariant on
