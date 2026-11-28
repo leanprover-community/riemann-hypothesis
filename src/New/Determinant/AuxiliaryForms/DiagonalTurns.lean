@@ -53,7 +53,9 @@ section Subdiagonal
 
 variable {P : Parameters} (D : Data P) (j : ℕ)
 
-/-- The renumbering of the bases that identifies `Ỹ^(j+1)_j` with `Y^(j+1)_j`. -/
+/-- A renumbering of the bases that identifies `Ỹ^(j+1)_j` with `Y^(j+1)_j`, chosen by
+`gridSpace_subdiag`: it keeps the signs (`gridSigns_subdiagEquiv`), and `Ỹ^(j+1)_j` is `Y^(j+1)_j`
+with its basis renumbered along it (`gridSpace_subdiagEquiv`). -/
 def subdiagEquiv : D.GridIndex true j (j + 1) ≃ D.GridIndex false (j + 1) j :=
   (gridSpace_subdiag (D := D) j).choose
 
