@@ -410,11 +410,8 @@ lemma integrable_theta_mul (hy : y ∈ S.rapidFunctions) (φ : X) (h : G E t) :
   obtain ⟨hy_aut, hy_rapid⟩ : S.IsAutomorphic y ∧ S.IsRapid y := hy
   exact (hy_rapid.mul (K.isModerate φ h)).integrable (.mul (by fun_prop) hy_aut.continuous)
 
-variable (hr : y ∈ S.rapidFunctions) in
-include hr in
 /-- The theta lift (φ, y) ↦ `New.Space.lift` K φ y as a ℂ-bilinear map from X and rapidly
-decaying automorphic functions for S to functions on the group of T. The definition also takes an
-argument `hr : y ∈ S.rapidFunctions` for a function `y` that the map does not use. -/
+decaying automorphic functions for S to functions on the group of T. -/
 def liftBilin : X →ₗ[ℂ] S.rapidFunctions.toSubmodule →ₗ[ℂ] G E t → ℂ :=
   LinearMap.mk₂ ℂ (fun φ y ↦ lift K φ y)
     (by simp [add_mul, funext_iff, integral_add, integrable_theta_mul, lift])
