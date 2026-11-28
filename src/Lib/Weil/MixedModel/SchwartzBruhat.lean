@@ -47,8 +47,8 @@ open NumberField Filter MeasureTheory Matrix ComplexConjugate AddSubgroup Quotie
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E]
-  (n : Type*) [Fintype n] [DecidableEq n] (S : Set (FinPlace E))
+variable {E : Type*} [Field E] [NumberField E] (n : Type*) [Fintype n] [DecidableEq n]
+  (S : Set (FinPlace E))
 
 /-! ### The box, coset functions and the partial determinant -/
 
@@ -84,20 +84,25 @@ def detOn : GL n (𝔸f E) →* (𝔸 E)ˣ :=
 every place of S. -/
 abbrev cosetIndicator (t : (𝔸f E)ˣ) (z x : n → 𝔸f E) : ℂ := boxIndicator n S (t⁻¹.val • (x - z))
 
-variable {S} (g : Gf E n) (hS : S.IsConjDisjoint) {Φ Ψ : (n → 𝔸f E) → ℂ} [hΨ : IsSchwartzBruhat S Ψ]
+end
+
+section
+
+variable {E : Type*} [Field E] [NumberField E] {n : Type*} {S : Set (FinPlace E)}
 
 open scoped Classical in
-omit [IsCMField E] [Fintype n] [DecidableEq n] in
 @[simp]
 lemma boxIndicator_apply (x : n → 𝔸f E) :
     boxIndicator n S x = (if x ∈ integralBox n S then 1 else 0) :=
   rfl
 
-omit [IsCMField E] [Fintype n] [DecidableEq n] in
 lemma mem_integralBox {x : n → 𝔸f E} : x ∈ integralBox n S ↔ ∀ i : n, idem S * x i ∈ Ô E := .rfl
 
-omit [IsCMField E] [DecidableEq n] in
+variable [Fintype n]
+
 lemma isOpen_integralBox : (integralBox n S).IsOpen := isOpen_stdLattice.preimage (by continuity)
+
+variable [IsCMField E] [DecidableEq n] (g : Gf E n)
 
 open scoped Classical in
 /-- The component of the idele `detOn S g` (`g` a finite adelic unitary point) at a finite place
@@ -130,8 +135,8 @@ end
 
 attribute [local grind] IsSchwartzBruhat
 
-variable {E : Type*} [Field E] [CMType E] {n : Type*} [Fintype n] [DecidableEq n]
-  (S : Set (FinPlace E)) (g : Gf E n) (hS : S.IsConjDisjoint) {Ψ : (n → 𝔸f E) → ℂ}
+variable {E : Type*} [Field E] [CMType E] {n : Type*} [Fintype n]
+  (S : Set (FinPlace E)) (hS : S.IsConjDisjoint) {Ψ : (n → 𝔸f E) → ℂ}
   [hΨ : IsSchwartzBruhat S Ψ]
 
 /-! ### The Schrödinger model -/
@@ -143,7 +148,6 @@ def schrodingerAct [WeilData E] (y : n → 𝔸f E) : Module.End ℂ ((n → �
   LinearMap.pi fun x ↦ selfDualAddChar E (half * star y ⬝ᵥ idem S • (x + (x + y))) • LinearMap.proj
     (x + y)
 
-omit [DecidableEq n] in
 /-- The value of the Schrödinger operator of `y` on `f` at `x`. -/
 lemma schrodingerAct_apply [WeilData E] (y x : n → 𝔸f E) (f : (n → 𝔸f E) → ℂ) :
     schrodingerAct S y f x = selfDualAddChar E (half * star y ⬝ᵥ idem S • (x + (x + y))) * f
@@ -162,7 +166,7 @@ def localInner (Ψ Ψ' : (n → 𝔸f E) → ℂ) : ℂ :=
 
 variable {S}
 
-omit [Fintype n] [DecidableEq n] in
+omit [Fintype n] in
 /-- A vector integral off `S` and integral on `S` is integral everywhere. -/
 lemma integralBox_compl_inter :
     SetLike.coe (integralBox n Sᶜ) ∩ integralBox n S = stdLattice E n := by
@@ -186,10 +190,6 @@ instance isSchwartzBruhat_boxIndicator : IsSchwartzBruhat S (boxIndicator n S) w
 
 namespace IsSchwartzBruhat
 
-section
-
-omit [DecidableEq n]
-
 /-- Let `Ψ` be Schwartz–Bruhat above `S` (instance `hΨ`), `A` a matrix with a left inverse `B`
 (`B A y = y` for all `y`), and `y` a vector. Then `x ↦ Ψ (A x + y)` is
 Schwartz–Bruhat above `S`. -/
@@ -203,10 +203,12 @@ lemma comp {m : Type*} [Fintype m] {A : Matrix n m (𝔸f E)} (B : Matrix m n (�
   rw [← hΨ.idem_smul (A *ᵥ (idem S • x) + y), ← hΨ.idem_smul (A *ᵥ x + y)]
   simp [smul_add, mulVec_smul, smul_smul, idem_mul_self]
 
+variable [DecidableEq n] in
 /-- A translate of a Schwartz–Bruhat function above `S` is Schwartz–Bruhat above `S`. -/
 instance comp_add (y : n → 𝔸f E) : IsSchwartzBruhat S fun x : n → 𝔸f E ↦ Ψ (x + y) := by
   simpa using comp (A := diagonal 1) 1 (by simp) y
 
+variable [DecidableEq n] in
 /-- The composite of a Schwartz–Bruhat function above `S` with an invertible matrix over the finite
 adeles is Schwartz–Bruhat above `S`. -/
 instance comp_mulVec (g : GL n (𝔸f E)) :
@@ -321,10 +323,9 @@ lemma mem_of_cosets (P : Submodule ℂ ((n → 𝔸f E) → ℂ))
     fun x hx ↦ (hy x hx).right hy_ne
   exact h_coset_mem y hy_ne t q ht_int h_coset
 
-end
-
 end IsSchwartzBruhat
 
+variable [DecidableEq n] in
 open scoped Classical in
 /-- The coset functions are Schwartz–Bruhat above `S`. -/
 instance (t : (𝔸f E)ˣ) (z : n → 𝔸f E) :
@@ -344,10 +345,6 @@ lemma idem_conjClosure_eq_add_star : idem S.conjClosure = idem S + star (idem S)
   aesop (add simp [disjoint_left, idem_apply])
 
 variable [WeilData E]
-
-section
-
-omit [DecidableEq n]
 
 include hS in
 /-- The Heisenberg law, for `S` disjoint from its conjugate (hypothesis `hS`): the operators compose
@@ -439,12 +436,9 @@ lemma schrodingerAct_boxIndicator {y : n → 𝔸f E} (hy : y ∈ integralBox n 
   · simp only [boxIndicator_apply, h_box, hx, ↓reduceIte, mul_one, h_phase x hx]
   · simp [h_box, hx]
 
-end
-
 namespace IsSchwartzBruhat
 
 include hS in
-omit [DecidableEq n] in
 /-- For `S` disjoint from its conjugate (hypothesis `hS`) and `Ψ` Schwartz–Bruhat above `S`
 (instance `hΨ`), a vector supported on `S` acts on `Ψ` by translation. -/
 lemma schrodingerAct_idem (y : n → 𝔸f E) :
@@ -462,7 +456,6 @@ lemma schrodingerAct_idem (y : n → 𝔸f E) :
   rw [schrodingerAct_apply, h_exp x, map_zero_eq_one, one_mul, h_part x]
 
 include hS in
-omit [DecidableEq n] in
 /-- Let `E` be a CM number field with Weil data (instances `CMType E`, `WeilData E`; they fix the
 character `selfDualAddChar E`), `n` a finite index type and `S` a set of finite places disjoint
 from its conjugate (hypothesis `hS`), and let `Ψ` be Schwartz–Bruhat above `S` (instance `hΨ`).
@@ -484,6 +477,8 @@ lemma schrodingerAct_star_idem_smul (y : n → 𝔸f E) :
       idem_mul_star hS, zero_smul, add_zero]
   funext x
   rw [schrodingerAct_apply, h_exp x, h_part x]
+
+variable [DecidableEq n]
 
 include hS in
 /-- The Schrödinger operators keep the Schwartz–Bruhat functions above `S`. -/

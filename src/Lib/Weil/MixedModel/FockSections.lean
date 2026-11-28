@@ -159,10 +159,9 @@ section RapidSections
 open MeasureTheory Function ContinuousLinearMap Real Complex Heisenberg IsVacuum Matrix Finset
   Exchange Norms.Elementwise ContDiff Continuous ENNReal
 
-variable {ι ι' : Type} [Fintype ι] [DecidableEq ι] [Fintype ι'] [DecidableEq ι']
-  {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {p : Type} [Fintype p] [DecidableEq p] (h : MixedModel ε' ε p)
+variable {ι ι' : Type} [Fintype ι] [Fintype ι'] [DecidableEq ι'] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ}
+  {p : Type} [Fintype p]
 
-omit [DecidableEq ι] [DecidableEq p] in
 /-- Let `A x` be a smooth family of real-linear maps from `ℂ ^ ι` to `ℂ ^ ι'`. The value at `w` of
 the coherent state at `A x y` (the translate `realHeisenbergOp (A x y) vacVector` of the vacuum) is
 `exp q`, with `q` smooth in `((y, w), x)` and homogeneous of degree two in `(y, w)`. -/
@@ -187,7 +186,6 @@ lemma exists_smooth_exponent_coherent {A : EuclideanSpace ℂ p → (ι → ℂ)
     have hr_ne : (r : ℂ) ≠ 0 := mod_cast hr.ne'
     simp [mulVec_smul, star_trivial, field]
 
-omit [DecidableEq ι] [DecidableEq p] in
 /-- For `d` smooth of compact support and `A x` a smooth family of real-linear maps, the Fourier
 transform in `x` of `d x` times the value at `w` of the coherent state
 `realHeisenbergOp (A x y) vacVector` decays rapidly in `b` and `w`, with polynomial growth in `y`:
@@ -252,7 +250,8 @@ lemma exists_norm_fourier_coherent_le {d : EuclideanSpace ℂ p → ℂ} (d_smoo
     _ ≤ C * (D / ρ ^ m) * ρ ^ m := by gcongr
     _ = _ := by simp [D, field]
 
-omit [DecidableEq p] in
+variable [DecidableEq ι]
+
 /-- Finite moments of the superposition that `MixedModel.exists_isSchwartzVector_slice_eq`
 integrates. Let `d` be smooth with compact support on `ℂ ^ p`, let `A x` be a smooth family of
 real-linear maps from `ℂ ^ ι` to `ℂ ^ ι'`, let `ξ` be a Schwartz vector of the small Fock space and
@@ -323,6 +322,8 @@ lemma lintegral_fockMoment_realHeisenbergOp_fourier_ne_top {d : EuclideanSpace �
   -- (`↓` moves the comparison to real numbers, where `h_point` lives, before the other lemmas)
   simpa (disch := finiteness) [↓← toReal_le_toReal, toReal_add, abs_of_pos, ← mul_assoc] using
     h_point y b w
+
+variable [DecidableEq p] (h : MixedModel ε' ε p)
 
 /-- At `(x + x, -π i b)`, the bicharacter of the positive signature is the Fourier character: both
 are `exp (π i ∑ₖ (xₖ b̄ₖ + x̄ₖ bₖ))`. -/

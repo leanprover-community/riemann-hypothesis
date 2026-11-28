@@ -131,15 +131,15 @@ section EntireTheta
 
 open MeasureTheory Matrix ComplexConjugate Fock Complex Finset Prod
 
-variable {E : Type _} [Field E] [CMType E] [WeilData E] {n : Type _} [Fintype n] [DecidableEq n]
-  {s : n → ℤˣ} {V : Space E n s} (f : 𝒮 V)
+variable {E : Type _} [Field E] [CMType E] [WeilData E] {n : Type _}
 
-omit [Fintype n] [DecidableEq n] in
 @[fun_prop]
 lemma continuous_realVec :
     Continuous (realVec : (NumberField.InfinitePlace E × n → ℂ) → n → 𝔸 E) := by
   refine continuous_pi fun i ↦ Continuous.prodMk ?_ continuous_const
   exact continuous_const.mul (continuous_pi fun w ↦ continuous_apply (w, i))
+
+variable [Fintype n] [DecidableEq n] {s : n → ℤˣ} {V : Space E n s} (f : 𝒮 V)
 
 /-- For f in 𝒮(V), the function Θ_f(y) = θ(ϱ(y)f)·exp(|y|²/2) of a real vector y in Fock
 coordinates, placed in the adelic vectors with finite part zero. -/

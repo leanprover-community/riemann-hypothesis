@@ -158,21 +158,17 @@ lemma Exchange.isOrthoIntegral_hyperbolicSpace :
 
 namespace Exchange.IsOrthoIntegral
 
-omit [WeilData E] in
+omit [WeilData E]
+
 lemma of_stdForm [Fintype n] (s : n → ℤˣ) : IsOrthoIntegral (stdForm E s) := by
   simp [stdForm, apply_ite, ← Int.cast_mul, diagonal_apply]
 
-omit [WeilData E] in
 lemma one [Fintype n] :
     IsOrthoIntegral (1 : Matrix n n (𝔸 E)) := by aesop (add simp Matrix.one_apply)
 
 variable {A : Matrix m n (𝔸 E)} (hA : IsOrthoIntegral A)
 
 include hA
-
-section
-
-omit [WeilData E]
 
 /-- The first half of `IsOrthoIntegral A`: `A_wᴴ A_w = 1` at each infinite place `w`, where `A_w` is
 the complex matrix `A.map (evalInf w)`. -/
@@ -218,8 +214,6 @@ lemma of_eq_submatrix_mul {C : Matrix p q (𝔸 E)} (e : p → n) (hC : IsOrthoI
   subst h_eq
   exact h_cols.mul hC
 
-end
-
 end Exchange.IsOrthoIntegral
 
 end New
@@ -234,20 +228,21 @@ open NumberField Matrix WeilData Exchange Fintype G Function
 
 section
 
-variable {E : Type*} [Field E] [NumberField E] [IsCMField E] {n n₁ : Type*} [Fintype n]
-  [DecidableEq n] {s : n → ℤˣ} (g : G E s)
+variable {E : Type*} [Field E] [NumberField E] {n n₁ : Type*} [Fintype n] [DecidableEq n]
+  {s : n → ℤˣ}
+
+/-- The standard form `S = stdForm E s` is its own inverse: `S (S a) = a`. -/
+@[simp]
+lemma stdForm_mul_stdForm_mul (a : Matrix n n₁ (𝔸 E)) : stdForm E s * (stdForm E s * a) = a := by
+  simp [← Matrix.mul_assoc]
+
+variable [IsCMField E] (g : G E s)
 
 /-- An element `g` of the adelic unitary group preserves the standard form: `gᴴ S g = S`, with
 `S = stdForm E s`. -/
 lemma G.conjTranspose_adeleMatrix_mul_stdForm_mul_adeleMatrix :
     g.adeleMatrixᴴ * stdForm E s * g.adeleMatrix = stdForm E s :=
   mem_unitaryGroupOf_iff.1 g.toUnitary.prop
-
-omit [IsCMField E] in
-/-- The standard form `S = stdForm E s` is its own inverse: `S (S a) = a`. -/
-@[simp]
-lemma stdForm_mul_stdForm_mul (a : Matrix n n₁ (𝔸 E)) : stdForm E s * (stdForm E s * a) = a := by
-  simp [← Matrix.mul_assoc]
 
 /-- The inverse of `g` has the matrix `S gᴴ S`, with `S = stdForm E s`. -/
 lemma G.adeleMatrix_inv : g⁻¹.adeleMatrix = stdForm E s * g.adeleMatrixᴴ * stdForm E s :=
@@ -334,11 +329,14 @@ open NumberField Matrix WeilData Exchange Fintype G Function
 
 variable {E : Type*} [Field E] [CMType E] {n n₁ : Type*} [Fintype n] [DecidableEq n] {s : n → ℤˣ}
   [Fintype n₁] [DecidableEq n₁] {s₁ : n₁ → ℤˣ} {g : G E s} {V₁ : Space E n₁ s₁} {V : Space E n s}
-  [WeilData E] {n₀ p q : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
-  {s₀ : n₀ → ℤˣ} {V₀ : Space E n₀ s₀} (D : V.Splitting V₀ p) {a : Matrix p p (𝔸 E)}
-  (c : Matrix n₀ p (𝔸 E)) (b : Matrix p p (𝔸 E))
+  {n₀ p q : Type*} [Fintype n₀] [DecidableEq n₀] [Fintype p] [DecidableEq p]
+  {s₀ : n₀ → ℤˣ} {V₀ : Space E n₀ s₀}
 
 namespace Space.Splitting
+
+section
+
+variable (D : V.Splitting V₀ p) {a : Matrix p p (𝔸 E)}
 
 /-! ### Adelic frames and dual coordinates -/
 
@@ -353,10 +351,6 @@ def lAdelic : Matrix n p (𝔸 E) := V.x⁻¹.val * D.l.map toAdele
 /-- For a splitting of V over V₀, the adelic matrix ι = x⁻¹ i x₀, with x, x₀ the adelic frames:
 the embedding i in standard coordinates. -/
 def iAdelic : Matrix n n₀ (𝔸 E) := V.ratMap V₀ D.i
-
-section
-
-omit [WeilData E]
 
 lemma gram_kl : D.kᴴ * V.J * D.l = 1 := by
   rw [V.conjTranspose_mul_J_mul_swap, D.gram_lk, conjTranspose_one]
@@ -381,8 +375,6 @@ def symm : V.Splitting V₀ p where
 lemma gram_li : D.lᴴ * V.J * D.i = 0 := by
   rw [V.conjTranspose_mul_J_mul_swap, D.gram_il, conjTranspose_zero]
 
-end
-
 attribute [simp high] gram_kk gram_ll gram_lk gram_kl gram_ii gram_ik gram_il gram_ki gram_li
 
 /-- For a splitting, the adelic `p × n` matrix `lAdelicᴴ ε`, with `ε = stdForm E s`; it sends
@@ -402,10 +394,6 @@ def lCoord : Matrix p n (𝔸 E) := D.kAdelicᴴ * stdForm E s
 -- `Aᴴ J B` of two of `k`, `l`, `i` (`Space.gram_at_point_eq_map`), which a relation of `D` gives.
 -- For `iCoord`, the frame `x₀` of `V₀` and the standard form `ε₀` of `V₀` stand on the left;
 -- then `x₀ᴴ J₀ x₀ = ε₀` and `ε₀ ε₀ = 1`.
-
-section
-
-omit [WeilData E]
 
 lemma kCoord_mul_kAdelic : D.kCoord * D.kAdelic = 1 := by
   simpa [kCoord, lAdelic, kAdelic, D.gram_lk] using V.gram_at_point_eq_map D.l D.k
@@ -468,9 +456,6 @@ lemma conjTranspose_lCoord : D.lCoordᴴ = stdForm E s * D.kAdelic := by simp [l
 lemma conjTranspose_iCoord : D.iCoordᴴ = stdForm E s * D.iAdelic * stdForm E s₀ := by
   simp [iCoord, Matrix.mul_assoc]
 
-end
-
-omit [WeilData E] in
 /-- The adjoints of the three coordinate matrices, written through the adelic frames and the
 standard forms. -/
 @[local simp]
@@ -483,10 +468,6 @@ lemma conjTranspose_coord :
 -- The relations above followed by a further factor `X`, in the right-bracketed form that `simp`
 -- meets: a coordinate matrix applied to a combination of the columns of one frame gives its
 -- coefficients.
-
-section
-
-omit [WeilData E]
 
 lemma kCoord_mul_kAdelic_mul {m : Type*} (X : Matrix p m (𝔸 E)) :
     D.kCoord * (D.kAdelic * X) = X := by simp [← Matrix.mul_assoc, D.kCoord_mul_kAdelic]
@@ -604,8 +585,6 @@ lemma ActsOnFrame.isUnit (hk : D.ActsOnFrame g a) : IsUnit a := by
     simp [adeleMatrix, coord_mul_frame]
   exact .of_mul_eq_one_right _ h_left_inv
 
-end
-
 /-! ### The Levi subgroup, and composition of splittings -/
 
 /-- The Levi homomorphism `GL_p(𝔸) × G(V₀) → G(V)` of a splitting. The pair `(m, g₀)` goes to the
@@ -627,10 +606,6 @@ def levi : GL p (𝔸 E) × G E s₀ →* G E s :=
       simp only [G.adeleMatrix_mul, adeleMatrix_ofMatrix]
       simp [Matrix.mul_assoc, conjTranspose_nonsing_inv, Matrix.mul_add, Matrix.add_mul]
 
-section
-
-omit [WeilData E]
-
 /-- The Levi element of `(a, g)` sends the adelic frame `l` to `l (a⁻¹)ᴴ`. -/
 lemma levi_mul_lAdelic (a : GL p (𝔸 E)) (g : G E s₀) :
     (D.levi (a, g)).adeleMatrix * D.lAdelic = D.lAdelic * a⁻¹.valᴴ := by
@@ -649,8 +624,6 @@ lemma actsOnFrame_levi (a : GL p (𝔸 E)) (g : G E s₀) : D.ActsOnFrame (D.lev
   simp only [ActsOnFrame, levi, MonoidHom.mk'_apply, adeleMatrix_ofMatrix]
   simp [Matrix.mul_assoc, Matrix.add_mul]
 
-end
-
 /-- Composition of splittings. From a splitting `D` of `V` over `V₀` with frames of `p` columns and
 a splitting `D'` of `V₀` over `V₁` with frames of `q` columns, the splitting of `V` over `V₁` with
 frames `(k, i k')` and `(l, i l')` and embedding `i i'`. -/
@@ -662,6 +635,13 @@ def comp [Fintype q] [DecidableEq q] (D' : V₀.Splitting V₁ q) : V.Splitting 
     simp +arith [D.card_eq, D'.card_eq, ← Matrix.mul_assoc,
       conjTranspose_fromCols_eq_fromRows_conjTranspose] <;>
     simp [Matrix.mul_assoc]
+
+end
+
+attribute [local simp] conjTranspose_coord levi
+
+variable [WeilData E] (D : V.Splitting V₀ p) {a : Matrix p p (𝔸 E)} (c : Matrix n₀ p (𝔸 E))
+  (b : Matrix p p (𝔸 E))
 
 /-- The three frames `l`, `k`, `i` of a splitting, side by side in one matrix `M`, have the Gram
 matrix of the orthogonal sum of hyperbolic space of rank `2 p` and `V₀`. -/

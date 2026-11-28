@@ -193,7 +193,7 @@ open Matrix Splitting
 
 variable {E n n₀ p n₁ q : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {s : n → ℤˣ} [Fintype n₀] [DecidableEq n₀] {s₀ : n₀ → ℤˣ}
-  (V : Space E n s) (V₀ : Space E n₀ s₀) [Fintype n₁] [DecidableEq n₁] [Fintype q] [DecidableEq q]
+  (V : Space E n s) (V₀ : Space E n₀ s₀) [Fintype n₁] [DecidableEq n₁]
   {s₁ : n₁ → ℤˣ} {V₁ : Space E n₁ s₁}
 
 /-- The rational map of a matrix i carries the frame x₀⁻¹k of V₀, for a rational matrix k, to the
@@ -208,13 +208,15 @@ lemma ratMap_mul_ratMap (i : Matrix n n₀ E) (k : Matrix n₀ n₁ E) :
     V.ratMap V₀ i * V₀.ratMap V₁ k = V.ratMap V₁ (i * k) := by
   simp [ratMap, Matrix.mul_assoc]
 
-variable [Fintype p] [DecidableEq p] {V V₀} (D : V.Splitting V₀ p) (D' : V₀.Splitting V₁ q)
+variable [Fintype p]
 
-omit [DecidableEq p] [Fintype q] [DecidableEq q] in
 lemma map_mulVec_mem_ratVectors (c : Matrix q p E) :
     ∀ b ∈ New.ratVectors E p, c.map toAdele *ᵥ b ∈ New.ratVectors E q := by
   rintro _ ⟨a, rfl⟩
   exact ⟨c *ᵥ a, funext (toAdele.map_mulVec c a)⟩
+
+variable [DecidableEq p] [Fintype q] [DecidableEq q] {V V₀} (D : V.Splitting V₀ p)
+  (D' : V₀.Splitting V₁ q)
 
 namespace Splitting
 

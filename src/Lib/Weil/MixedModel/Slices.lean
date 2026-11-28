@@ -277,9 +277,9 @@ section NamedSlices
 
 open Matrix MeasureTheory SemilocalField Space Splitting WeilData stdLattice
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} {p : Type _} [Fintype n]
+variable {E : Type} [Field E] [CMType E] {n n' r r' : Type} {p : Type _} [Fintype n]
   [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
-  [DecidableEq r'] [Fintype p] [DecidableEq p] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ}
+  [DecidableEq r'] [Fintype p] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ}
   {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'} {T : Space E r t} {T' : Space E r' t'}
   {F : Type} [V : SemilocalField F] {S : Set (FinPlace E)} {π : 𝔸f E →+* F}
 
@@ -288,24 +288,24 @@ the idempotent of `𝔸f E` that is 1 at the places of `S` and 0 elsewhere
 (`ReadsAt.continuous_lift_and_apply_lift`). -/
 def ReadsAt.lift (h : ReadsAt S π) : F →+ 𝔸f E := h.exists_section.2.choose
 
-omit [WeilData E] in
 lemma ReadsAt.continuous_lift_and_apply_lift (h : ReadsAt S π) :
     Continuous h.lift ∧ (∀ y : F, π (h.lift y) = y) ∧ ∀ x : 𝔸f E, h.lift (π x) = idem S * x :=
   h.exists_section.2.choose_spec
 
-omit [WeilData E] in
 lemma ReadsAt.continuous_lift (h : ReadsAt S π) : Continuous h.lift :=
   h.continuous_lift_and_apply_lift.1
 
-omit [WeilData E] in
 lemma ReadsAt.apply_lift (h : ReadsAt S π) (y : F) : π (h.lift y) = y := by
   obtain ⟨-, h_section, -⟩ := h.continuous_lift_and_apply_lift
   exact h_section y
 
-omit [WeilData E] in
 lemma ReadsAt.lift_apply (h : ReadsAt S π) (x : 𝔸f E) : h.lift (π x) = idem S * x := by
   obtain ⟨-, -, h_idem⟩ := h.continuous_lift_and_apply_lift
   exact h_idem x
+
+section
+
+variable [WeilData E]
 
 /-- The additive character `y ↦ selfDualAddChar E (σ y)` of `F` (`selfDualAddChar E` is the
 character of `𝔸f E` for which `Ô E` is self-dual), where `σ = h.lift` is a chosen section of `π`
@@ -328,7 +328,8 @@ lemma ReadsAt.hasIntegralConductor_psi (h : ReadsAt S π) : HasIntegralConductor
     rw [← map_mul, h.psi_apply, ← idem_mul_self S, mul_mul_mul_comm]
     exact h_triv (idem S * h.lift s) ((h.mem_iff _).1 hs)
 
-omit [WeilData E] [DecidableEq p] in
+end
+
 /-- If `π : 𝔸f E →+* F` reads the components at `S`, then applying it coordinatewise carries the
 Haar measure of finite adelic vectors (mass one on the integral vectors), restricted to the
 vectors integral at the places outside `S`, to the volume on `p → F`. -/
@@ -355,6 +356,8 @@ lemma ReadsAt.measurePreserving_comp (h : ReadsAt S π) :
     exact measure_smul_map_restrict_eq_smul_neg (latticeMeasure E p) volume h_meas
       isOpen_integralBox.measurableSet h_lift (.univ_pi fun _ ↦ isCompact_O.measurableSet)
   simpa [volume_O, volume_pi, latticeMeasure_stdLattice] using h_proportional
+
+variable [WeilData E] [DecidableEq p]
 
 open scoped Classical in
 /-- Suppose that at the points with coordinates `(π x, z, y)` in the frame `D.frameAt 1 u` a
