@@ -9,6 +9,7 @@ import Lib.Adelic.Adeles.LocalFactors
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.Witt.WittTheorem
 import Lib.General.Analysis.PackingAndSobolev
+import Lib.General.LinearAlgebra.HermiteForm
 import Lib.General.LinearAlgebra.PolarDecomposition
 import Lib.General.NumberTheory.LatticeCovolumes
 
@@ -144,8 +145,9 @@ lemma exists_isKernelExtension {A : Matrix σ P k} {x : Matrix P σ k} (h_det : 
 
 variable [HasPrimitiveRoot5040 E] {L : Matrix σ P (𝔸f E)} {H : Matrix P σ (𝔸f E)}
 
-/-- Let `E` be a CM field containing a primitive `5040`-th root of unity, and let the finite adelic
-matrix `H` have a left inverse `L`. A subspace `V` of `E^σ` of dimension `s` has a basis `y` (the
+omit [IsCMField E] [HasPrimitiveRoot5040 E] in
+/-- Let `E` be a number field and let the finite adelic matrix `H` have a left inverse `L`.
+A subspace `V` of `E^σ` of dimension `s` has a basis `y` (the
 columns of a left invertible matrix over `E`) and an `a ∈ GL_s(𝔸_f)` such that `H y a` is
 primitive: it has entries in `Ô` and a left inverse with entries in `Ô`. -/
 lemma exists_isPrimitiveMatrix_mul_finAdeleMatrix (hLH : L * H = 1) (V : Submodule E (σ → E))
@@ -157,7 +159,8 @@ lemma exists_isPrimitiveMatrix_mul_finAdeleMatrix (hLH : L * H = 1) (V : Submodu
   obtain ⟨y, ⟨l, hl⟩, hy⟩ := exists_hasLeftInv_colSpan_eq V
   have h_left : finAdeleMatrix l * L * (H * finAdeleMatrix y) = 1 := by
     simp [← L.mul_assoc, hLH, hl, ← Matrix.map_mul, Matrix.mul_assoc]
-  obtain ⟨a, -, ha⟩ := exists_preimageLattice_eq_colLattice ⟨finAdeleMatrix l * L, h_left⟩
+  obtain ⟨a, -, ha⟩ := isValuationPair_Ô.exists_isPrimitiveMatrix_mul
+    ⟨finAdeleMatrix l * L, h_left⟩
   exact ⟨y, a, ⟨l, hl⟩, hy, by rwa [← H.mul_assoc]⟩
 
 open scoped Classical in
@@ -165,7 +168,9 @@ open scoped Classical in
 basis of `V` over `E`, `a` invertible over `𝔸_f` and `H m` primitive over `Ô` (integral, with an
 integral left inverse); it exists by `exists_isPrimitiveMatrix_mul_finAdeleMatrix`. -/
 @[irreducible]
-def sublatticeBasis (hLH : L * H = 1) (V : Submodule E (σ → E)) :
+def sublatticeBasis {E P σ : Type} [Field E] [NumberField E] [IsCMField E] [Fintype P]
+    [Fintype σ] [DecidableEq σ] [HasPrimitiveRoot5040 E] {L : Matrix σ P (𝔸f E)}
+    {H : Matrix P σ (𝔸f E)} (hLH : L * H = 1) (V : Submodule E (σ → E)) :
     {m : Matrix σ (Fin (finrank E V)) (𝔸f E) //
       IsPrimitiveMatrix (Ô E) (H * m) ∧
       ∃ y : Matrix σ (Fin (finrank E V)) E, ∃ a : GL (Fin (finrank E V)) (𝔸f E),
