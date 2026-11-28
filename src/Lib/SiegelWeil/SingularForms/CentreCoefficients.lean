@@ -268,19 +268,19 @@ variable {E n n₂ p : Type*} [Field E] [CMType E] [Fintype n] [DecidableEq n]
   {W : Space E n s} {W₂ : Space E n₂ s₂} {W₀ : Space E ((p ⊕ p) ⊕ n₂) (hyperbolicSigns p ⊕ᵥ s₂)}
   (A : W.Splitting W₀ Unit) (B : W₀.Splitting W₂ p)
 
-/-- Symmetry of the adelic component `kAdelic` under matrix transposition. -/
+/-- The adelic `k`-frame of `H.symm` is the adelic `l`-frame of `H`. -/
 @[simp]
 lemma symm_kAdelic (H : W.Splitting W₂ p) : H.symm.kAdelic = H.lAdelic := rfl
 
-/-- Symmetry of the adelic component `iAdelic` under matrix transposition. -/
+/-- Exchanging the frames leaves the adelic `i`-frame unchanged. -/
 @[simp]
 lemma symm_iAdelic (H : W.Splitting W₂ p) : H.symm.iAdelic = H.iAdelic := rfl
 
-/-- Symmetry of the coordinate `lCoord` under matrix transposition. -/
+/-- The `l`-coordinate of `H.symm` is the `k`-coordinate of `H`. -/
 @[simp]
 lemma symm_lCoord (H : W.Splitting W₂ p) : H.symm.lCoord = H.kCoord := rfl
 
-/-- Symmetry of the coordinate `iCoord` under matrix transposition. -/
+/-- Exchanging the frames leaves the `i`-coordinate unchanged. -/
 @[simp]
 lemma symm_iCoord (H : W.Splitting W₂ p) : H.symm.iCoord = H.iCoord := rfl
 
