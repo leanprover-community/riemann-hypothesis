@@ -9,6 +9,7 @@ import Mathlib.RingTheory.RegularLocalRing.Defs
 import Mathlib.RingTheory.SimpleRing.Principal
 public import Lib.Speed
 import Lib.General.LinearAlgebra.MinorProducts
+import TauCeti.Analysis.Matrix.PosSemidef.Determinant
 import TauCeti.LinearAlgebra.Matrix.AbsoluteValue
 
 /-!
@@ -139,11 +140,8 @@ lemma norm_det_formGram_le (hG : G.PosSemidef) {n : ℕ} {v : Fin n → I → �
 `|det (v_i* G w_k)|² ≤ det (v_i* G v_k) det (w_i* G w_k)`. -/
 lemma norm_det_pairing_sq_le [Fintype S] [DecidableEq S] (hG : G.PosSemidef) (v w : S → I → ℂ) :
     ‖(of fun i k : S ↦ star (v i) ⬝ᵥ G *ᵥ w k).det‖ ^ 2 ≤
-      ‖(formGram G v).det‖ * ‖(formGram G w).det‖ := by
-  -- The three matrices are blocks of the Gram matrix of the union of the two families.
-  have h_pos : (formGram G (Sum.elim v w)).PosSemidef := posSemidef_formGram hG _
-  rw [← fromBlocks_toBlocks (formGram G (Sum.elim v w))] at h_pos
-  exact norm_det_sq_le_of_posSemidef h_pos
+      ‖(formGram G v).det‖ * ‖(formGram G w).det‖ :=
+  hG.norm_det_pairing_sq_le v w
 
 end FormGram
 
