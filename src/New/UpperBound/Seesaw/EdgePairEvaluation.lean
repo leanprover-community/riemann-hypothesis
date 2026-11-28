@@ -639,36 +639,31 @@ lemma GradeZeroPart.J_eq_zero_of_add_ne_zero (Z : GradeZeroPart V V'' w) {a b : 
     (hab : w a + w b ≠ 0) : V.J a b = 0 :=
   by_contra fun h_ne ↦ hab (Z.grade_add_eq_zero a b h_ne)
 
-/-- The Gram matrix pairs weight `a` only with weight `-a`, so it intertwines the projections to the
-positive and to the negative weights. -/
-lemma GradeZeroPart.proj_pos_mul_J (Z : GradeZeroPart V V'' w) :
-    (diagonal fun i : ι ↦ if 0 < w i then 1 else 0) * V.J =
-      V.J * diagonal fun i : ι ↦ if w i < 0 then 1 else 0 := by
-  ext a b
-  by_cases hab : w a + w b = 0
-  · simp [show 0 < w a ↔ w b < 0 by omega]
-  · simp [Z.J_eq_zero_of_add_ne_zero hab]
+/-- Conjugation by the Gram matrix exchanges a diagonal function of the weights with its
+reflection across zero. -/
+lemma GradeZeroPart.diagonal_eq_conj (Z : GradeZeroPart V V'' w) (f : ℤ → E) :
+    diagonal (fun i ↦ f (w i)) = V.J * diagonal (fun i ↦ f (-w i)) * V.J⁻¹ := by
+  have h : diagonal (fun i ↦ f (w i)) * V.J = V.J * diagonal (fun i ↦ f (-w i)) := by
+    ext a b
+    by_cases hab : w a + w b = 0
+    · simp [show w a = -w b by omega, mul_comm]
+    · simp [Z.J_eq_zero_of_add_ne_zero hab]
+  simp [← h, Matrix.mul_assoc]
 
-/-- The inverse of the Gram matrix of `V` vanishes at two indices of positive weight. -/
-lemma GradeZeroPart.inv_J_apply_eq_zero_of_pos (Z : GradeZeroPart V V'' w) {a b : ι} (ha : 0 < w a)
-    (hb : 0 < w b) : V.J⁻¹ a b = 0 := by
-  set P : Matrix ι ι E := diagonal fun i : ι ↦ if 0 < w i then 1 else 0 with hP
-  set Q : Matrix ι ι E := diagonal fun i : ι ↦ if w i < 0 then 1 else 0 with hQ
-  have h_conj : V.J⁻¹ * P = Q * V.J⁻¹ := calc
-    V.J⁻¹ * P = V.J⁻¹ * (P * V.J * V.J⁻¹) := by simp [Matrix.mul_assoc]
-    _ = Q * V.J⁻¹ := by simp [show P * V.J = V.J * Q from Z.proj_pos_mul_J, Matrix.mul_assoc]
-  simpa [hP, hQ, hb, ha.not_gt] using congr_fun₂ h_conj a b
+/-- The inverse Gram matrix, too, pairs only opposite weights. -/
+lemma GradeZeroPart.inv_J_apply_eq_zero_of_add_ne_zero (Z : GradeZeroPart V V'' w) {a b : ι}
+    (hab : w a + w b ≠ 0) : V.J⁻¹ a b = 0 := by
+  -- Project onto the weight of the column and take the (a, b) entry.
+  have h := congrArg (V.J⁻¹ * ·) (Z.diagonal_eq_conj (fun t ↦ if t = w b then 1 else 0))
+  simpa [← Matrix.mul_assoc, show -w a ≠ w b by omega] using congr_fun₂ h a b
 
-/-- There are as many basis indices of positive weight as of negative weight. -/
-lemma GradeZeroPart.card_pos_eq_card_neg (Z : GradeZeroPart V V'' w) :
-    Fintype.card {i : ι // 0 < w i} = Fintype.card {i : ι // w i < 0} := by
-  -- The two projections are conjugate by `V.J`, so they have the same trace.
-  set P : Matrix ι ι E := diagonal fun i : ι ↦ if 0 < w i then 1 else 0 with hP
-  set Q : Matrix ι ι E := diagonal fun i : ι ↦ if w i < 0 then 1 else 0 with hQ
-  have h_trace : trace P = trace Q := calc
-    trace P = trace (P * V.J * V.J⁻¹) := by simp [Matrix.mul_assoc]
-    _ = trace Q := by simp [show P * V.J = V.J * Q from Z.proj_pos_mul_J, trace_mul_comm _ V.J⁻¹]
-  simpa [hP, hQ, card_subtype] using h_trace
+/-- Weight multiplicities are invariant under reflection across zero. -/
+lemma GradeZeroPart.card_weight_eq_card_neg_weight (Z : GradeZeroPart V V'' w) (p : ℤ → Prop)
+    [DecidablePred p] :
+    Fintype.card {i : ι // p (w i)} = Fintype.card {i : ι // p (-w i)} := by
+  -- The traces of the conjugate projections count the indices on each side.
+  have h := congrArg trace (Z.diagonal_eq_conj (fun t ↦ if p t then 1 else 0))
+  simpa [Matrix.trace_conj V.isUnit_J, card_subtype] using h
 
 end
 
@@ -684,7 +679,8 @@ def GradeZeroPart.splitting (Z : GradeZeroPart V V'' w) :
     grind [→ Z.grade_add_eq_zero]
   gram_ll := by
     simpa [Matrix.mul_assoc, V.isHermitian_J.inv.eq, ← ext_iff, inclMatrix, Matrix.mul_apply,
-      Matrix.one_apply] using fun a ha b hb ↦ Z.inv_J_apply_eq_zero_of_pos ha hb
+      Matrix.one_apply] using fun a ha b hb ↦
+        Z.inv_J_apply_eq_zero_of_add_ne_zero (a := a) (b := b) (by omega)
   gram_lk := by
     simp [Matrix.mul_assoc, V.isHermitian_J.inv.eq, inclMatrix, ← Matrix.ext_iff, Matrix.mul_apply,
       Matrix.one_apply]
@@ -703,8 +699,8 @@ def GradeZeroPart.splitting (Z : GradeZeroPart V V'' w) :
         ← card_congr (.sigmaFiberEquiv (SignType.sign ∘ w))]
     have h_zero : Fintype.card {i : ι // w i = 0} = Fintype.card ι'' := by
       simp [card_subtype, ← Z.mem_range_index, ← card_range Z.index]
-    have h_pos_neg : Fintype.card {i : ι // 0 < w i} = Fintype.card {i : ι // w i < 0} :=
-      Z.card_pos_eq_card_neg
+    have h_pos_neg : Fintype.card {i : ι // 0 < w i} = Fintype.card {i : ι // w i < 0} := by
+      simpa using Z.card_weight_eq_card_neg_weight (0 < ·)
     omega
 
 /-- If `V''` is the weight-zero part of `V`, all weights are even and `Y'` has a string of even
