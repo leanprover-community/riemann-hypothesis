@@ -267,23 +267,30 @@ open Complex MeasureTheory Metric Module Set
 variable {E F X : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] [NormedAddCommGroup F]
   [NormedSpace ℂ F] [MeasurableSpace X] {μ : Measure X}
 
-/-- A map P between complex normed spaces that is complex differentiable at 0 and satisfies
-P(w + w) = P(w) + P(w) for all w equals its derivative at 0, so is ℂ-linear. -/
-lemma New.eq_fderiv_of_double (P : E → F) (hP : DifferentiableAt ℂ P 0)
-    (h_double : ∀ w : E, P (w + w) = P w + P w) (w : E) :
-    P w = fderiv ℂ P 0 w := by
-  -- The difference quotients `2 ^ n • (P ((2 ^ n)⁻¹ • w) - P 0)` tend to the derivative at `0`,
-  -- and by the doubling rule they are all equal to `P w`.
-  have h_zero : P 0 = 0 := by simpa using h_double 0
-  have h_half (x : E) : (2 : ℂ) • P ((2 : ℂ)⁻¹ • x) = P x := by
-    rw [two_smul, ← h_double, ← two_smul ℂ, smul_inv_smul₀ two_ne_zero]
-  have quotient_eq (n : ℕ) : (2 : ℂ) ^ n • (P (0 + ((2 : ℂ) ^ n)⁻¹ • w) - P 0) = P w := by
+/-- A map differentiable at zero agrees with its derivative if it commutes with scaling
+by a scalar of norm greater than one. -/
+lemma New.eq_fderiv_of_smul {𝕜 V W : Type*} [NontriviallyNormedField 𝕜]
+    [NormedAddCommGroup V] [NormedSpace 𝕜 V] [NormedAddCommGroup W] [NormedSpace 𝕜 W]
+    (P : V → W) (hP : DifferentiableAt 𝕜 P 0) {a : 𝕜} (ha : 1 < ‖a‖)
+    (h_scale : ∀ x, P (a • x) = a • P x) (w : V) : P w = fderiv 𝕜 P 0 w := by
+  have ha₀ : a ≠ 0 := norm_pos_iff.mp (zero_lt_one.trans ha)
+  have ha₁ : a ≠ 1 := by
+    intro h
+    simp [h] at ha
+  have h_zero : P 0 = 0 := by
+    have h : (a - 1) • P 0 = 0 := by
+      rw [sub_smul, one_smul, ← h_scale, smul_zero, sub_self]
+    exact (smul_eq_zero.mp h).resolve_left (sub_ne_zero.mpr ha₁)
+  have h_inverse (x : V) : a • P (a⁻¹ • x) = P x := by
+    rw [← h_scale, smul_inv_smul₀ ha₀]
+  -- The difference quotients along the shrinking vectors `(a ^ n)⁻¹ • w` all equal `P w`.
+  have quotient_eq (n : ℕ) : a ^ n • (P (0 + (a ^ n)⁻¹ • w) - P 0) = P w := by
     rw [zero_add, h_zero, sub_zero]
     induction n with
     | zero => simp
-    | succ n ih => rw [pow_succ, mul_inv_rev, mul_smul, mul_smul, h_half, ih]
-  have h_norm : Filter.Tendsto (fun n : ℕ ↦ ‖(2 : ℂ) ^ n‖) .atTop .atTop := by
-    simpa using tendsto_pow_atTop_atTop_of_one_lt one_lt_two
+    | succ n ih => rw [pow_succ, mul_inv_rev, mul_smul, mul_smul, h_inverse, ih]
+  have h_norm : Filter.Tendsto (fun n : ℕ ↦ ‖a ^ n‖) .atTop .atTop := by
+    simpa only [norm_pow] using tendsto_pow_atTop_atTop_of_one_lt ha
   exact tendsto_const_nhds_iff.1 ((hP.hasFDerivAt.lim w h_norm).congr quotient_eq)
 
 /-- Schwarz lemma, at the centre of a ball: if a map f between complex normed spaces is complex

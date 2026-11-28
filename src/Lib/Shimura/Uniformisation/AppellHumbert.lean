@@ -244,10 +244,10 @@ private lemma New.exists_linear_logDeriv_of_periodic {V : Type} [FinComplexSpace
     exact smul_right_injective _ (mul_ne_zero two_ne_zero (W_ne _)) (h_left.unique h_right)
   -- A map that is differentiable at `0` and commutes with doubling is linear.
   have P_lin : ∀ u : V × V, P u = fderiv ℂ P 0 u :=
-    eq_fderiv_of_double P
+    eq_fderiv_of_smul P
       (((W_an 0).differentiableAt.inv (W_ne 0)).smul
         ((W_an 0).fderiv.differentiableAt.clm_comp (differentiableAt_const _)))
-      P_double
+      (a := (2 : ℂ)) (by simp) (fun x ↦ by simpa only [two_smul] using P_double x)
   exact ⟨fderiv ℂ P 0, fun x y ↦ by simpa only [← P_lin] using hP x y⟩
 
 /-- Let `W` have no zero and a linear logarithmic derivative `T` in the second variable. A function
