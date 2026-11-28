@@ -478,7 +478,8 @@ lemma IsAdapted.omega_projOn_of_isMixedLaw
           (selfDualAddChar E (idem S.conjClosure * star b ⬝ᵥ x) : ℂ) •
             T (t.val⁻¹ᴴ *ᵥ finVec x) (V.ω g (V.projOn S f)) := by
       have h_half : half * idem S.conjClosure * star b ⬝ᵥ x +
-          half * idem S.conjClosure * star b ⬝ᵥ x = idem S.conjClosure * star b ⬝ᵥ x := by grind
+          half * idem S.conjClosure * star b ⬝ᵥ x = idem S.conjClosure * star b ⬝ᵥ x := by
+        rw [← two_mul, ← mul_assoc, ← mul_assoc, two_mul_half, one_mul]
       nth_rw 1 [← h_fix 0 0 b (by simp_all [integralBox, smul_mem_stdLattice])]
       simp [hT.apply_omega_rho_finFrameVector, finHeisenbergOp, semichar, smul_smul, idem_mul_self,
         mul_add, ← mul_assoc, h_half]
@@ -637,7 +638,7 @@ lemma IsAdapted.omega_schrodingerOp_of_isMixedLaw
           D.finFrameVector g t (x + a) (y + w) (b' + b) := by
       simp [finFrameVector, ← Sum.elim_add_add, ← mulVec_add]
     have h_idem : idem S * idem S.conjClosure = idem S := by
-      grind [idem_mul_self, idem_conjClosure_eq_add_star, idem_mul_star]
+      rw [idem_conjClosure_eq_add_star hS, mul_add, idem_mul_self, idem_mul_star hS, add_zero]
     -- By `finFrameVector_mem_integralBox` the two integrands have the same support.
     simp [schrodingerAct, h_add, h.finFrameVector_mem_integralBox, ite_and, mul_add,
       ← mul_assoc, idem_mul_self, ← AddChar.map_add_eq_mul]
