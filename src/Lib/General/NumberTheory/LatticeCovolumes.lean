@@ -2,6 +2,7 @@ module
 
 public import TauCeti.RingTheory.DedekindDomain.AdicValuation.ResidueField
 import TauCeti.Algebra.Module.ZLattice.Basic
+import TauCeti.Algebra.Module.ZLattice.Covolume
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.RingTheory.PiTensorProduct
@@ -749,9 +750,7 @@ lemma volume_fundamentalDomain_pi_basis {ι : Type*} [Fintype ι] {σ V : ι →
 
 /-- The unit square in `ℂ` has area `1`. -/
 lemma volume_fundamentalDomain_basisOneI : volume (fundamentalDomain Complex.basisOneI) = 1 := by
-  rw [measure_congr (fundamentalDomain_ae_parallelepiped Complex.basisOneI volume),
-    ← Complex.toBasis_orthonormalBasisOneI, OrthonormalBasis.coe_toBasis,
-    OrthonormalBasis.volume_parallelepiped]
+  rw [← Complex.toBasis_orthonormalBasisOneI, OrthonormalBasis.volume_fundamentalDomain]
 
 /-- Let `L` be a lattice in a real vector space with a basis `e` whose fundamental domain has
 measure `1`. If the euclidean product in the coordinates of `e` is integral on `L`, then `L` has a
