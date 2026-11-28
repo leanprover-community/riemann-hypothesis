@@ -3,14 +3,10 @@ module
 public import TauCeti.AlgebraicGeometry.RationalPoint.Image
 public import Mathlib.RingTheory.RegularLocalRing.Defs
 public import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.AlgebraicGeometry.AlgClosed.Basic
-import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.Morphisms.WeaklyEtale
-import Mathlib.AlgebraicGeometry.Sites.Fpqc
-import Mathlib.CategoryTheory.EffectiveEpi.Comp
-import Mathlib.RingTheory.Etale.Weakly
-import Mathlib.RingTheory.PicardGroup
+import TauCeti.AlgebraicGeometry.Morphisms.Flat.Basic
 import TauCeti.AlgebraicGeometry.Morphisms.Smooth.GeometricallyReduced
+import TauCeti.AlgebraicGeometry.Morphisms.Smooth.Locus.Basic
+import TauCeti.AlgebraicGeometry.Scheme.LocalSpectrum
 public import Lib.Cohomology.Etale.Basic
 public import Lib.General.Geometry.DenseComplexPoints
 public import Lib.Shimura.AbelianScheme.Basic
@@ -73,12 +69,9 @@ lemma exists_section_mem {k : Type*} {X : Scheme} [Field k] [IsAlgClosed k]
     (s : X ⟶ Spec (.of k)) [LocallyOfFiniteType s] {S : Set X} (hS : IsLocallyClosed S)
     (hS_ne : S.Nonempty) :
     ∃ x : Spec (.of k) ⟶ X, x ≫ s = 𝟙 (Spec (.of k)) ∧ x (default : Spec (.of k)) ∈ S := by
-  -- `X` is a Jacobson space, so `S` contains a closed point; over `k` a closed point is a
-  -- `k`-point.
-  have : JacobsonSpace X := LocallyOfFiniteType.jacobsonSpace s
-  obtain ⟨x, hxS, hx : IsClosed {x}⟩ := nonempty_inter_closedPoints hS_ne hS
-  exact ⟨pointOfClosedPoint s x hx, pointOfClosedPoint_comp s x hx,
-    by simpa [pointOfClosedPoint] using hxS⟩
+  -- Over an algebraically closed field, a nonempty locally closed subset contains a `k`-point.
+  simpa [Subsingleton.elim (default : Spec (.of k)) (IsLocalRing.closedPoint k)] using
+    hS.exists_rationalPoint_mem s hS_ne
 
 /-- Let `X` be a scheme over `Spec k`, locally of finite type, with `k` an algebraically closed
 field. A nonempty locally closed subset `S` of `X` contains the image of a `k`-point, that is, of a
@@ -223,10 +216,8 @@ an explicit hypothesis, from which the algebra structure is inferred. -/
 @[stacks 033B "for an étale algebra over a domain"]
 lemma isReduced_of_etale {A B : Type*} [CommRing A] [CommRing B] [IsDomain A] {alg : Algebra A B}
     (h_etale : Algebra.Etale A B) : IsReduced B := by
-  -- `B` is flat over `A`, so it embeds in `K ⊗[A] B`, which is unramified over the field `K`.
-  let K : Type _ := FractionRing A
-  have : IsReduced (K ⊗[A] B) := FormallyUnramified.isReduced_of_field K _
-  exact isReduced_of_injective _ (includeRight_injective (IsFractionRing.injective A K))
+  -- Every étale algebra is smooth, and a smooth algebra over a reduced ring is reduced.
+  exact TauCeti.isReduced_of_smooth A B
 
 /-- An abelian scheme (`New.IsAbelianScheme`: smooth, proper and divisible) over an algebraically
 closed field is integral. -/
@@ -284,7 +275,7 @@ the property `Q`.
 
 section Specialisation
 
-open AlgebraicGeometry Scheme RingHom.FaithfullyFlat Flat
+open CategoryTheory AlgebraicGeometry Scheme Flat
 
 /-- Every point of `S` specialises to the image of the closed point under some `t : Spec k ⟶ S` with
 `k` algebraically closed and `Q t`. -/
@@ -295,25 +286,16 @@ def New.Variety.AllSpecializeTo (S : Scheme)
 
 /-- For a point `s` of a scheme `Z`, the morphism from the spectrum of the stalk at `s` to `Z` is
 flat. -/
-instance {Z : Scheme} (s : Z) : Flat (fromSpecStalk Z s) := by
-  -- The stalk is a localization of the ring of an affine open `U` around `s`, and `U ⊆ Z` is open.
-  obtain ⟨U, hU, hs, -⟩ := exists_isAffineOpen_mem_and_subset (x := s) (U := ⊤) trivial
-  let : Algebra Γ(Z, U) (Z.presheaf.stalk s) := Z.presheaf.algebra_section_stalk (⟨s, hs⟩ : U)
-  have := hU.isLocalization_stalk ⟨s, hs⟩
-  have : Flat (Spec.map (Z.presheaf.germ U s hs)) :=
-    SpecMap_iff.mpr (IsLocalization.flat _ (hU.primeIdealOf ⟨s, hs⟩).asIdeal.primeCompl)
-  rw [← hU.fromSpecStalk_eq_fromSpecStalk hs, IsAffineOpen.fromSpecStalk]
-  infer_instance
+instance {Z : Scheme} (s : Z) : Flat (fromSpecStalk Z s) :=
+  -- Every stalk map of `Spec 𝒪_{Z,s} ⟶ Z` is an isomorphism, hence flat.
+  Flat.of_stalkMap _ fun _ ↦
+    RingHom.Flat.of_bijective (ConcreteCategory.bijective_of_isIso _)
 
 /-- A flat morphism of schemes is injective on stalks. -/
 lemma New.stalkMap_injective_of_flat {X Y : Scheme} (q : X ⟶ Y) [Flat q] (x : X) :
-    Function.Injective (q.stalkMap x) := by
+    Function.Injective (q.stalkMap x) :=
   -- The map of stalks is flat and local, hence faithfully flat, hence injective.
-  have h_flat : (q.stalkMap x).hom.Flat := Flat.stalkMap q x
-  algebraize [(q.stalkMap x).hom]
-  have : IsLocalHom (algebraMap (Y.presheaf.stalk (q x)) (X.presheaf.stalk x)) :=
-    inferInstanceAs (IsLocalHom (q.stalkMap x).hom)
-  exact RingHom.FaithfullyFlat.injective Module.FaithfullyFlat.of_flat_of_isLocalHom
+  (q.faithfullyFlat_stalkMap x (Flat.stalkMap q x)).injective
 
 end Specialisation
 
@@ -462,8 +444,6 @@ lemma IsSeparatingFamily.prod {S : Scheme} [IsReduced S] {A B : Over S} {V W J :
   have : IsLocallyNoetherian B.left := isLocallyNoetherian B.hom
   -- The smooth locus of `A` over `S`, with inclusion `j`, is dense.
   let j : A.hom.smoothLocus.toScheme ⟶ A.left := A.hom.smoothLocus.ι
-  have : Smooth (j ≫ A.hom) := by
-    simp [j, ← Hom.smoothLocus_eq_top_iff, ← j.preimage_smoothLocus_eq]
   have : IsDominant j := ⟨(dense_smoothLocus_of_isDenseFamily hξ A.hom).denseRange_subtypeVal⟩
   have : IsSchemeTheoreticallyDominant j := of_isDominant j
   -- Hence `A ×_S B` is reduced: the flat base change `j'` of `j` is scheme-theoretically dominant,
