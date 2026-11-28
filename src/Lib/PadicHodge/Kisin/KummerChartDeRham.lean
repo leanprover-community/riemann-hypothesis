@@ -65,6 +65,7 @@ def galMonoid : Submonoid (FrobGroup Γ) := MonoidHom.mrange (inr.comp k.subgrou
 /-- The element δ = zτ of A_inf, where z is the coordinate of the Kummer chart. -/
 def zTau : Ainf := tau * k.z
 
+/-- The value of the Frobenius iterate `k.frobE a` is given by `φ ^ a • k.E`. -/
 lemma val_frobE : (k.frobE a).val = φ ^ a • k.E := by
   rw [phi_pow_smul]
   exact k.coe_phi_pow a k.E
@@ -90,6 +91,7 @@ def zTauUnit : WittCFlatˣ :=
 
 variable {a : ℕ} {b : ℕ} (g : k.galMonoid)
 
+/-- The value of the Frobenius iterate `k.frobE a` is nonzero. -/
 @[simp high]
 lemma frobE_ne_zero : (k.frobE a).val ≠ 0 := fun h ↦ not_p_dvd_val_frobE a (by simp [h])
 
@@ -168,6 +170,7 @@ instance : OverGp k.subgroup p where
   isOpen_range :=
     ⟨Subgroup.isOpen_of_mem_nhds _ (nhds_one_le_map_nearOne Γ (nearOne_le fun g ↦ ⟨g, rfl⟩))⟩
 
+/-- The element `(k.frobE a).val` does not divide the prime `p`. -/
 lemma not_frobE_dvd_p (a : ℕ) : ¬(k.frobE a).val ∣ p := by simp [frobE_dvd_iff, NeZero.ne]
 
 lemma frobE_dvd_phi_pow_tau (h_lt : a < b) : (k.frobE a).val ∣ φ ^ b • tau := by
