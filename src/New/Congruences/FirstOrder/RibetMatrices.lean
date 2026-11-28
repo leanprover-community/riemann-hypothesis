@@ -292,13 +292,22 @@ lemma rowValue_mem_augmentationIdeal (w : ι → (MvPolynomial J O)[G]) :
     rowValue J gen w ∈ augmentationIdeal (O := O) (G := G) J := by
   simp [RingHom.mem_ker, rowValue_apply, polyChar_single]
 
+/-- A row is tied if its value acts like an element of the tie ideal in every representation. -/
+private lemma mem_tiedRows_of_polyAction_eq {r : ι → (MvPolynomial J O)[G]}
+    {a : (MvPolynomial J O)[G]} (ha : a ∈ tieIdeal u p τ φ ε ρ₀)
+    (h : ∀ x : Y, polyAction J (u x) (rowValue J gen r) = polyAction J (u x) a) :
+    r ∈ tiedRows u gen p τ φ ε ρ₀ := by
+  have h_diff : rowValue J gen r - a ∈ ⨅ x : Y, RingHom.ker (polyAction J (u x)) := by
+    simpa only [Submodule.mem_iInf, RingHom.mem_ker, map_sub, sub_eq_zero] using h
+  apply (mem_tiedRows u).2
+  simpa only [sub_add_cancel] using add_mem (ker_le_tieIdeal u h_diff) ha
+
 /-- A row whose element `∑ r i (gen i - 1)` is killed by every `u x` is tied, that is, its element
 lies in the tie ideal. -/
 lemma mem_tiedRows_of_forall_eq_zero {r : ι → (MvPolynomial J O)[G]}
     (h_zero : ∀ x : Y, polyAction J (u x) (rowValue J gen r) = 0) :
     r ∈ tiedRows u gen p τ φ ε ρ₀ :=
-  (mem_tiedRows u).2
-    (ker_le_tieIdeal u ((Submodule.mem_iInf _).2 fun x ↦ RingHom.mem_ker.2 (h_zero x)))
+  mem_tiedRows_of_polyAction_eq u (zero_mem _) (by simpa only [map_zero] using h_zero)
 
 /-- The cocycle rule. Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`, with
 `u x g - 1 = ∑ z g i (u x (gen i) - 1)` for all `g` and `x` (`AreCoordinates`). Then the row of
@@ -363,23 +372,10 @@ lemma coordRows_tau_sub_mem_tiedRows {ι : Type} [Fintype ι] {gen : ι → G} {
     coordRows J ι (z (τ i)) - (MvPolynomial.X i.1 : MvPolynomial J O) •
       aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ i)) (ε i.1) • coordRows J ι (z (φ i)) ∈
         tiedRows u gen p τ φ ε ρ₀ := by
-  have h_ker (g : G) : rowValue J gen (coordRows J ι (z g)) - (MonoidAlgebra.single g 1 - 1) ∈
-      ⨅ x : Y, RingHom.ker (polyAction J (u x)) := by
-    simp [RingHom.mem_ker, polyAction_rowValue_coordRows_of_areCoordinates u hz]
-  set c : (MvPolynomial J O)[G] := aeval (MonoidAlgebra.of (MvPolynomial J O) G (φ i)) (ε i.1)
-  have h_val : rowValue J gen (coordRows J ι (z (τ i)) -
-      (MvPolynomial.X i.1 : MvPolynomial J O) • c • coordRows J ι (z (φ i))) =
-      (MonoidAlgebra.single (τ i) 1 - 1 -
-        (MvPolynomial.X i.1 : MvPolynomial J O) • (c * (MonoidAlgebra.single (φ i) 1 - 1))) +
-      ((rowValue J gen (coordRows J ι (z (τ i))) - (MonoidAlgebra.single (τ i) 1 - 1)) -
-        (MvPolynomial.X i.1 : MvPolynomial J O) • (c *
-          (rowValue J gen (coordRows J ι (z (φ i))) - (MonoidAlgebra.single (φ i) 1 - 1)))) := by
-    simp only [map_sub, LinearMap.map_smul_of_tower, map_smul, smul_eq_mul, mul_sub, smul_sub]
-    abel
-  rw [mem_tiedRows, h_val]
-  refine add_mem (tie_mem_tieIdeal u i) (ker_le_tieIdeal u ?_)
-  exact sub_mem (h_ker (τ i))
-    (Submodule.smul_of_tower_mem _ _ (Ideal.mul_mem_left _ c (h_ker (φ i))))
+  apply mem_tiedRows_of_polyAction_eq u (tie_mem_tieIdeal u i)
+  intro x
+  simp only [map_sub, map_one, LinearMap.map_smul_of_tower, map_smul, smul_eq_mul, map_mul,
+    polyAction_rowValue_coordRows_of_areCoordinates u hz]
 
 /-- If the `z g` are coordinates of the `u · g - 1`, then the element of the row `normalizerRow`
 acts under every `u x` as `ρ₀ = e + (1 - e) (a - 1)`, `e = c₁ (γ - 1)` (`tiedNormalizer`). -/
@@ -399,18 +395,12 @@ lemma sub_one_smul_normalizerRow_mem_tiedRows {ι : Type} [Fintype ι] {gen : ι
     (hz : AreCoordinates u gen z) (γ a : G) (c₁ : O) (g : G) :
     (MonoidAlgebra.single g (1 : MvPolynomial J O) - 1) • normalizerRow z γ a c₁ ∈
       tiedRows u gen p τ φ ε (tiedNormalizer J γ a c₁) := by
-  -- The row value is `(g - 1) ρ₀` plus `g - 1` times an element that every `u x` kills.
-  set g₁ : (MvPolynomial J O)[G] := MonoidAlgebra.single g 1 - 1 with hg₁
-  have h_diff : rowValue J gen (g₁ • normalizerRow z γ a c₁) = g₁ * tiedNormalizer J γ a c₁ +
-      g₁ * (rowValue J gen (normalizerRow z γ a c₁) - tiedNormalizer J γ a c₁) := by
-    rw [map_smul, smul_eq_mul, mul_sub, add_sub_cancel]
-  have h_aug : g₁ ∈ augmentationIdeal (O := O) (G := G) J := by
-    simp [hg₁, RingHom.mem_ker, polyChar_single]
-  have h_ker : rowValue J gen (normalizerRow z γ a c₁) - tiedNormalizer J γ a c₁ ∈
-      ⨅ x : Y, RingHom.ker (polyAction J (u x)) := by
-    simp [RingHom.mem_ker, polyAction_rowValue_normalizerRow u hz]
-  rw [mem_tiedRows, h_diff]
-  exact add_mem (mul_mem_tieIdeal u h_aug) (ker_le_tieIdeal u (Ideal.mul_mem_left _ g₁ h_ker))
+  have h_aug : MonoidAlgebra.single g (1 : MvPolynomial J O) - 1 ∈
+      augmentationIdeal (O := O) (G := G) J := by
+    simp [RingHom.mem_ker, polyChar_single]
+  apply mem_tiedRows_of_polyAction_eq u (mul_mem_tieIdeal u h_aug)
+  intro x
+  simp only [map_smul, smul_eq_mul, map_mul, polyAction_rowValue_normalizerRow u hz]
 
 /-- Let `u x` (`x : Y`) be matrix representations of the group `G` over `O`, and let the generators
 `gen` with index in `W'` be the `δ w`. Suppose that the polynomial `o w * (X - 1)` kills every
