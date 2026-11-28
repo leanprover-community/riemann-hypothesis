@@ -10,7 +10,6 @@ public import Lib.Adelic.Hecke.Basic
 public import Lib.General.Topology
 public import Lib.Adelic.Adeles.Basic
 public import Lib.General.Groups.CongruenceSubgroups
-import Lib.Adelic.Adeles.AdditiveCharacter
 
 /-!
 # Adelic unitary groups over a CM field: levels, hermitian spaces, lattices and mass
