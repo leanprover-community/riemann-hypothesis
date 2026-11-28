@@ -157,7 +157,7 @@ lemma detKernel_stdEmbFin_mul [hα : α.HasWeight (fun τ : NumberField.Infinite
   -- Translating the kernel by `γ` gives the factor `∏ det γ ^ c`, which cancels it.
   have h_transl : modKernelStdSpace (stdSpace E n) α α 𝔪 Ψ Q 1 (stdEmbFin γ * g) =
       (∏ τ, Φ τ γ.val.val.det ^ c τ) *
-        modKernelStdSpace (stdSpace E n) α α 𝔪 Ψ (twoSidedSubst (fun τ ↦ γ⁻¹.1.1.map (Φ τ)) 1 Q) 1
+        modKernelStdSpace (stdSpace E n) α α 𝔪 Ψ (twoSidedSubst (fun τ ↦ γ⁻¹.1.val.map (Φ τ)) 1 Q) 1
           g := by
     simpa [Prod.mk_one_one, ← Pi.one_def] using! modKernelStdSpace_embFin_mul hα hα 𝔪 Ψ Q 1 γ 1 g
   simp only [detKernel, ← hQ]
@@ -189,7 +189,7 @@ lemma detPeriod_eq_stdClassSum_sum
   -- Translation by `liftMod y` turns the indicator of `1` into that of `y`, times the character.
   have h_move (g : Gf E n) (y : GL n 𝔪.ResidueRing) :
       detKernel n α c 𝔪 (Pi.single 1 1) (g * liftMod y) =
-        𝔪.charOfTamePart ψ y.1.det * detKernel n α c 𝔪 (fun x ↦ if y.1 = x then 1 else 0) g := by
+        𝔪.charOfTamePart ψ y.1.det * detKernel n α c 𝔪 (fun x ↦ if y.val = x then 1 else 0) g := by
     -- `↓`: the translation has to move to the datum before the kernel becomes bilinear in it
     simp +unfoldPartialApp [detKernel, ← modKernelBilin_apply, ↓modKernel_mul_stdLevel_right,
       hα.apply_det_eq_charOfTamePart hψ, -coe_units_inv, Pi.single_apply]
