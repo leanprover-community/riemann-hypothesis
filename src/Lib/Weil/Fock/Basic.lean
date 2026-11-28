@@ -116,7 +116,8 @@ def holomorphicCoord : (ι → ℂ) →L[ℝ] ι → ℂ :=
   (1 +
     mulVecBilin ℝ ℝ (posProj ε) * ((starL' ℝ).toLinearEquiv.toLinearMap - 1)).toContinuousLinearMap
 
-/-- Characterization of the holomorphic coordinate map on index components. -/
+/-- The `i`-th coordinate of `holomorphicCoord ε x` is the conjugate of `x i`
+if `ε i = 1`, and `x i` otherwise. -/
 lemma holomorphicCoord_eq : holomorphicCoord ε x = fun i : ι ↦
   if ε i = 1 then star x i else x i := by
   aesop (add simp [holomorphicCoord, posProj]) (add simp mulVec_diagonal)
