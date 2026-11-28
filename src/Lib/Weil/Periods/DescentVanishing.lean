@@ -263,6 +263,13 @@ lemma fixesLeft_thetaTerm_mul (hΓ : V.Γ.FixesLeft y) (x : Matrix m p E) :
   obtain ⟨γ, hγ, rfl⟩ := mem_ratStabilizer.mp hk
   simpa only [hγ] using D.thetaTerm_mul_ratEmbed_mul hΓ γ x h
 
+/-- The term `D.thetaTerm V a b f g x h` of the theta kernel varies continuously with `h`. -/
+@[fun_prop]
+lemma continuous_thetaTerm (x : Matrix m p E) :
+    Continuous fun h : G E t ↦ D.thetaTerm V a b f g x h := by
+  unfold thetaTerm
+  fun_prop
+
 /-- Let `y` be continuous on `U(V)(𝔸)`, and let the terms of the theta kernel at `g` be absolutely
 integrable against `y`. Then the theta lift of `y` at `radicalCenter z * g` is the sum over all
 rational frames `x` of `ψ (tr (-j β(x) z))` times the integral over `[U(V)]` of the term of `x` at
@@ -283,7 +290,7 @@ lemma integral_pairTheta_radicalCentre_mul (h_int : D.HasIntegrableTerms V a b f
       ∫ h, ∑' x : Matrix m p E, χ x * (D.thetaTerm V a b f g x h * y h) ∂V.quotMeasure :=
     (hasSum_integral_of_lintegral_tsum_lt_top
       (by simpa [← ofReal_norm, χ, Circle.norm_coe] using h_int) -- since `|χ x| = 1`
-      fun x ↦ .const_mul (by fun_prop [thetaTerm]) (χ x)).tsum_eq
+      fun x ↦ .const_mul (by fun_prop) (χ x)).tsum_eq
   simp_rw [h_expand, ← h_swap, integral_const_mul, χ]
 
 /-- Let `D` split `W`, and take the theta kernel of the datum `f` twisted by the characters `a`,
@@ -300,7 +307,7 @@ lemma centreCoeff_integral_eq_tsum (h_int : D.HasIntegrableTerms V a b f g y)
         ∫ h : G E t, D.thetaTerm V a b f g (x : Matrix m p E) h * y h ∂V.quotMeasure := by
   have h_summable :
       Summable fun x : Matrix m p E ↦ ∫ h, D.thetaTerm V a b f g x h * y h ∂V.quotMeasure :=
-    (hasSum_integral_of_lintegral_tsum_lt_top h_int (by fun_prop [thetaTerm])).summable
+    (hasSum_integral_of_lintegral_tsum_lt_top h_int (by fun_prop)).summable
   -- With the character of `j • β` from `centerCoeff`, the frequency of `x` is zero exactly when
   -- `x` has Gram matrix `β`. So the right side is the mean over `z` of a sum over all `x`.
   have h_freq (x : Matrix m p E) : -H.j • (xᴴ * V.J * x) + H.j • β = 0 ↔
@@ -310,7 +317,8 @@ lemma centreCoeff_integral_eq_tsum (h_int : D.HasIntegrableTerms V a b f g y)
   congr with z
   -- The means over `z` have the same integrand: the characters of `j β` and of `x` multiply.
   simp_rw [D.integral_pairTheta_radicalCentre_mul h_int hy, ← tsum_mul_left,
-    isDualFamily_ratMatrices.add_left, mul_assoc, mul_left_comm]
+    isDualFamily_ratMatrices.add_left]
+  exact tsum_congr fun x ↦ by ring
 
 /-- Unfolding. Let `y` be continuous on `U(V)(𝔸)` and left invariant under the rational points, and
 let the terms of the theta kernel at `g` be absolutely integrable against `y`. Let `x` be a rational
@@ -330,7 +338,7 @@ lemma centreCoeff_eq_integral_ratStabilizer (h_int : D.HasIntegrableTerms V a b 
   obtain ⟨h_integrable, -, h_sum⟩ := integral_tsum_orbit_of_lt_top_or_integrable (Γ := V.Γ)
     (μ := volume)
     (S := V.ratStabilizer x) (D := {z : Matrix m p E | zᴴ * V.J * z = xᴴ * V.J * x})
-    V.ratEmbed_injective rfl (fun z ↦ by fun_prop [thetaTerm]) (D.thetaTerm_mul_ratEmbed_mul hΓ)
+    V.ratEmbed_injective rfl (fun z ↦ by fun_prop) (D.thetaTerm_mul_ratEmbed_mul hΓ)
     rfl (gram_eq_iff_mem_orbit h_gram) (.inl h_int)
   exact ⟨h_integrable, h_sum⟩
 
@@ -567,6 +575,11 @@ lemma smul_eq_of_frameChar_eq [WeilData E] {T : Set (FinPlace E)} {x x' : Matrix
 /-- The invariant measure on `U(n₂)(𝔸) \ U(n)(𝔸)`, carried by `U(n)(𝔸)`. -/
 noncomputable abbrev blockQuotMeasure : Measure (G E (1 : n → ℤˣ)) :=
   cosetMeasure volume volume (secondBlock (E := E) o hs)
+
+/-- The block-diagonal embedding `blockEmb hs` is continuous. -/
+@[fun_prop]
+lemma continuous_blockEmb : Continuous (blockEmb (E := E) hs) :=
+  (isClosedEmbedding_blockEmb hs).continuous
 
 /-- The embedding of the second block is a closed embedding of `U(n₂)(𝔸)` in `U(n)(𝔸)`. -/
 lemma isClosedEmbedding_secondBlock : Topology.IsClosedEmbedding (secondBlock (E := E) o hs) :=
