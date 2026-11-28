@@ -266,8 +266,7 @@ open MeasureTheory ComplexConjugate Subtype LinearMap DFunLike
 namespace New.Heisenberg
 
 variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
-  (H : Heisenberg W) [MeasurableSpace W] [IsTopologicalAddGroup W] [BorelSpace W]
-  [SecondCountableTopology W] {μ : Measure W}
+  (H : Heisenberg W) [MeasurableSpace W] {μ : Measure W}
   {e : W → ℂ} [he : IsVacuum H μ e]
   {X : Type*} [NormedAddCommGroup X] [NormedSpace ℂ X]
   {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℂ Y]
@@ -275,7 +274,6 @@ variable {W : Type*} [AddCommGroup W] [TopologicalSpace W]
 /-! ### The space and its norm -/
 
 variable {H} in
-omit [IsTopologicalAddGroup W] [BorelSpace W] [SecondCountableTopology W] in
 include he in
 /-- The kernel β(y, x) e(x - y) of the reproducing identity of a vacuum e has norm at most one. -/
 lemma IsVacuum.norm_beta_mul_le_one (x y : W) : ‖H.β y x * e (x - y)‖ ≤ 1 := by
@@ -283,11 +281,12 @@ lemma IsVacuum.norm_beta_mul_le_one (x y : W) : ‖H.β y x * e (x - y)‖ ≤ 1
 
 variable {H} in
 include he in
-omit [IsTopologicalAddGroup W] [BorelSpace W] [SecondCountableTopology W] in
 /-- Multiplication by the kernel β(y, x) e(x - y) does not increase the absolute value. -/
 lemma IsVacuum.norm_mul_beta_mul_le (x y : W) (a : ℂ) : ‖a * (H.β y x * e (x - y))‖ ≤ ‖a‖ := by
   rw [norm_mul]
   exact mul_le_of_le_one_right (norm_nonneg a) (norm_beta_mul_le_one x y)
+
+variable [IsTopologicalAddGroup W] [BorelSpace W] [SecondCountableTopology W]
 
 /-- For an integrable f, the function y ↦ f(y) β(y, x) e(x - y) (f times the kernel of the
 reproducing identity) is integrable: the kernel is continuous and has norm at most one. -/
