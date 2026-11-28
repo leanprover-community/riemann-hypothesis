@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.Module.SpanRankOperations
 import Mathlib.GroupTheory.Schreier
 import Mathlib.LinearAlgebra.Span.TensorProduct
 import Mathlib.RingTheory.Etale.Weakly
@@ -628,6 +629,34 @@ lemma exists_eq_smul_normBall (hg : g ∈ B.thetaSpace χ) :
   exact G.exists_smul_thetaNorm_eq hf hf_ne le_rfl G.isAppellHumbert hf hg fun u hu ↦
     G.thetaShift_mem_normBall hu (G.mem_normBall.mpr ⟨hf, le_rfl⟩)
 
+attribute [local instance] Ideal.Quotient.field in
+omit G hf hf_ne in
+/-- A reduction map whose kernel is contained in the maximal ideal times the module
+has image dimension equal to the minimal number of generators. -/
+private lemma finrank_range_eq_spanFinrank {R k M Q : Type*} [CommRing R] [IsLocalRing R] [Field k]
+    [AddCommGroup M] [Module R M] [AddCommGroup Q] [Module k Q]
+    {P : Submodule R M} (hP : P.FG) {σ : R →+* k} [RingHomSurjective σ] (f : P →ₛₗ[σ] Q)
+    (hker : f.ker ≤ maximalIdeal R • (⊤ : Submodule R P)) :
+    finrank k f.range = P.spanFinrank := by
+  let I := maximalIdeal R • (⊤ : Submodule R P)
+  have hI : I ≤ f.ker := by
+    refine Submodule.smul_le.mpr fun a ha x _ ↦ ?_
+    change f (a • x) = 0
+    rw [map_smulₛₗ, show σ a = 0 from (ker_eq_maximalIdeal σ σ.surjective).ge ha, zero_smul]
+  -- The map out of the residue quotient is injective and has the same image as f.
+  have hinj := LinearMap.ker_eq_bot.mp (I.ker_liftQ_eq_bot f hI hker)
+  calc
+    finrank k f.range = (⊤ : Submodule R (P ⧸ I)).spanFinrank := by
+      simpa only [Module.finrank_eq_spanFinrank_of_free, Submodule.spanFinrank_top,
+        Submodule.map_top, I.range_liftQ] using
+        (Submodule.spanFinrank_map_eq_of_injective (I.liftQ f hI) hinj (p := ⊤))
+    _ = finrank (R ⧸ maximalIdeal R) (P ⧸ I) := by
+      rw [Module.finrank_eq_spanFinrank_of_free]
+      exact congrArg Cardinal.toNat (Submodule.spanRank_restrictScalars_eq
+        (R := R) (Ideal.Quotient.mk_surjective (I := maximalIdeal R))
+        (⊤ : Submodule (R ⧸ maximalIdeal R) (P ⧸ I)))
+    _ = P.spanFinrank := (spanFinrank_eq_finrank_quotient P hP).symm
+
 omit G hf hf_ne in
 /-- The reduction of a ball has the dimension of the space of theta functions.
 
@@ -648,9 +677,7 @@ lemma finrank_reduction_eq (G : HasGoodReduction B χ v r) (hf : f ∈ B.thetaSp
     {φ : v.valuationSubring →+* k} (hφ : Function.Surjective φ) {reduction : W →ₛₗ[φ] Q}
     (h_zero : ∀ w : W, reduction w = 0 ↔ B.thetaNorm v (ballMap w) < B.thetaNorm v f) :
     finrank k (span k (range reduction)) = finrank ℂ (B.thetaSpace χ) := by
-  -- The ball is finitely generated and torsion free over the valuation ring, hence free. A basis
-  -- `b` of it spans `B.thetaSpace χ` over `ℂ`, and its reduction is a basis of the image
-  -- of `reduction`.
+  -- The ball is finite and torsion free over the valuation ring, hence free.
   have h_flat : Flat v.valuationSubring ballMap.range := by
     refine Flat.flat_iff_torsion_eq_bot_of_isBezout.mpr (eq_bot_iff.mpr fun x hx ↦ ?_)
     obtain ⟨a, ha⟩ := hx
@@ -662,68 +689,39 @@ lemma finrank_reduction_eq (G : HasGoodReduction B χ v r) (hf : f ∈ B.thetaSp
   have h_surj : RingHomSurjective φ := ⟨hφ⟩
   have h_flat_ℂ : Flat v.valuationSubring ℂ :=
     IsLocalization.flat ℂ (nonZeroDivisors v.valuationSubring)
-  let b : Basis (Fin (finrank v.valuationSubring ballMap.range)) v.valuationSubring ballMap.range :=
-    finBasis v.valuationSubring ballMap.range
   have h_span : span ℂ (ballMap.range : Set (V → ℂ)) = B.thetaSpace χ := by
     refine span_eq_of_le _ (fun z hz ↦ (G.mem_normBall.mp (h_range.le hz)).left) fun g hg ↦ ?_
     -- Every theta function is a multiple of an element of the ball.
-    obtain ⟨c, z, hz, rfl, -⟩ : ∃ c : ℂ, ∃ z ∈ normBall B χ v f,
-        g = c • z ∧ B.thetaNorm v g = v c * B.thetaNorm v f :=
-      G.exists_eq_smul_normBall hf hf_ne hg
+    obtain ⟨c, z, hz, rfl, -⟩ := G.exists_eq_smul_normBall hf hf_ne hg
     exact smul_mem _ c (subset_span (h_range.ge hz))
-  -- `reduction` factors through `W ⧸ ker ballMap`, which `e` identifies with the ball; `red` is the
-  -- induced map.
+  -- Descend the reduction map to the ball.
   have h_ker : ballMap.ker ≤ reduction.ker := fun w hw ↦ by
     simp [h_zero, LinearMap.mem_ker.mp hw, G.thetaNorm_pos hf hf_ne]
-  let red : W ⧸ ballMap.ker →ₛₗ[φ] Q := ballMap.ker.liftQ reduction h_ker
-  let e : ballMap.range ≃ₗ[v.valuationSubring] W ⧸ ballMap.ker := ballMap.quotKerEquivRange.symm
-  have h_image : reduction.range = span k (range (red ∘ b.map e)) := by
-    rw [← ballMap.ker.range_liftQ reduction h_ker, LinearMap.range_eq_map, ← (b.map e).span_eq,
-      map_span, ← range_comp]
-  -- An element killed by `red` is `a • z` with `v a < 1` and `z` in the ball, so its coordinates
-  -- lie in the maximal ideal, the kernel of `φ`.
-  have h_coord (t : ballMap.range) (ht : red (e t) = 0)
-      (i : Fin (finrank v.valuationSubring ballMap.range)) :
-      φ (b.repr t i) = 0 := by
-    obtain ⟨_, w, rfl⟩ := t
-    have h_e : e ⟨ballMap w, w, rfl⟩ = ballMap.ker.mkQ w :=
-      ballMap.quotKerEquivRange_symm_apply_image w ⟨w, rfl⟩
-    -- `red (e t)` is `reduction w`, so `ballMap w` has norm less than `f`.
-    replace ht : B.thetaNorm v (ballMap w) < B.thetaNorm v f := by simpa [red, h_e, h_zero] using ht
-    obtain ⟨a, z, hz, hw, h_norm⟩ : ∃ a : ℂ, ∃ z ∈ normBall B χ v f,
-        ballMap w = a • z ∧ B.thetaNorm v (ballMap w) = v a * B.thetaNorm v f :=
+  let e := ballMap.quotKerEquivRange.symm
+  let redBall := (ballMap.ker.liftQ reduction h_ker).comp e.toLinearMap
+  have h_image : redBall.range = reduction.range := by
+    rw [LinearMap.range_comp_of_range_eq_top _ e.range, ballMap.ker.range_liftQ]
+  -- A function with zero reduction is a small scalar times a function in the ball.
+  have h_small : redBall.ker ≤ maximalIdeal v.valuationSubring •
+      (⊤ : Submodule v.valuationSubring ballMap.range) := by
+    rintro ⟨_, w, rfl⟩ ht
+    change ballMap.ker.liftQ reduction h_ker (e ⟨ballMap w, w, rfl⟩) = 0 at ht
+    rw [show e ⟨ballMap w, w, rfl⟩ = ballMap.ker.mkQ w from
+      ballMap.quotKerEquivRange_symm_apply_image w ⟨w, rfl⟩] at ht
+    have h_lt := (h_zero w).mp ht
+    obtain ⟨a, z, hz, hw, h_norm⟩ :=
       G.exists_eq_smul_normBall hf hf_ne (G.mem_normBall.mp (h_range.le ⟨w, rfl⟩)).left
-    have ha : v a < 1 := by simpa [h_norm, G.thetaNorm_pos hf hf_ne] using ht
-    have ha_red : φ ⟨a, ha.le⟩ = 0 := (ker_eq_maximalIdeal φ hφ).ge (v.mem_maximalIdeal_iff.mpr ha)
-    have h_repr : b.repr ⟨a • z, w, hw⟩ =
-        (⟨a, ha.le⟩ : v.valuationSubring) • b.repr ⟨z, h_range.ge hz⟩ :=
-      b.repr.map_smul ⟨a, ha.le⟩ ⟨z, h_range.ge hz⟩
-    simp [hw, h_repr, ha_red]
-  have h_indep : LinearIndependent k (red ∘ b.map e) := by
-    rw [Fintype.linearIndependent_iff]
-    -- As φ is onto, the coefficients are φ of the coordinates of some t in the ball.
-    have h_lift : Function.Surjective fun t : ballMap.range ↦ φ ∘ b.equivFun t :=
-      hφ.comp_left.comp b.equivFun.surjective
-    refine h_lift.forall.mpr fun t ht i ↦ h_coord t ?_ i
-    let f : ballMap.range →ₛₗ[φ] Q := red.comp e.toLinearMap
-    have h_sum_f (s : Finset (Fin (finrank v.valuationSubring ballMap.range)))
-        (g : Fin (finrank v.valuationSubring ballMap.range) → ballMap.range) :
-        f (∑ j ∈ s, g j) = ∑ j ∈ s, f (g j) := by
-      classical
-      induction s using Finset.induction_on with
-      | empty => exact LinearMap.map_zero f
-      | insert a s ha ih =>
-        rw [Finset.sum_insert ha, Finset.sum_insert ha, LinearMap.map_add, ih]
-    have h_eq : f t = ∑ j, φ (b.equivFun t j) • f (b j) := by
-      calc f t = f (∑ j, b.equivFun t j • b j) := congrArg f (b.sum_equivFun t).symm
-        _ = ∑ j, f (b.equivFun t j • b j) := h_sum_f _ _
-        _ = ∑ j, φ (b.equivFun t j) • f (b j) :=
-          Finset.sum_congr rfl fun j _ ↦ LinearMap.map_smulₛₗ f _ _
-    exact h_eq.trans ht
+    have ha : v a < 1 := by simpa [h_norm, G.thetaNorm_pos hf hf_ne] using h_lt
+    have h_factor : (⟨ballMap w, w, rfl⟩ : ballMap.range) =
+        (⟨a, ha.le⟩ : v.valuationSubring) • ⟨z, h_range.ge hz⟩ := Subtype.ext hw
+    rw [h_factor]
+    exact Submodule.smul_mem_smul (v.mem_maximalIdeal_iff.mpr ha) trivial
   -- Both sides are the rank of the ball; on the right, `ℂ` is flat over the valuation ring.
   calc
     finrank k (span k (range reduction)) = finrank v.valuationSubring ballMap.range := by
-      rw [← reduction.coe_range, span_eq, h_image, finrank_span_eq_card h_indep, Fintype.card_fin]
+      rw [← reduction.coe_range, span_eq, ← h_image,
+        finrank_range_eq_spanFinrank (Module.Finite.iff_fg.mp inferInstance) redBall h_small,
+        Module.finrank_eq_spanFinrank_of_free, Submodule.spanFinrank_top]
     _ = finrank ℂ (span ℂ (ballMap.range : Set (V → ℂ))) := by simp
     _ = finrank ℂ (B.thetaSpace χ) := by rw [h_span]
 
