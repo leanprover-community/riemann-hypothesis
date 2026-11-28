@@ -92,14 +92,19 @@ variable {n R : Type*} [Fintype n] [DecidableEq n] [CommRing R] (σ : Perm n) {O
 to e_{σ(i)}. -/
 abbrev permGL : Perm n →* GL n R := permMatrixHom.toHomUnits
 
+/-- Permutation matrices in `GL n R` belong to the integral subgroup `intGL n O`. -/
 lemma permGL_mem_intGL : permGL σ ∈ intGL n O := ⟨permGL σ, by aesop⟩
 
+/-- Moving a permutation matrix from the right of a diagonal matrix to its left
+permutes the diagonal entries: `diagGL t * permGL σ = permGL σ * diagGL (t ∘ σ)`. -/
 lemma diagGL_mul_permGL (t : n → Rˣ) (σ : Perm n) :
     diagGL t * permGL σ = permGL σ * diagGL (t ∘ σ) := by
   aesop
 
 variable {i j : n} (hij : i ≠ j) {F : Type*} [Field F] [Valued F ℤᵐ⁰]
 
+/-- Moving the permutation matrix of `σ` past the transvection at `(i, j)`
+gives the transvection at `(σ i, σ j)` with the same entry. -/
 lemma permGL_mul_transvectionGL (hij : i ≠ j) (a : R) :
     permGL σ * transvectionGL hij a = transvectionGL (σ.injective.ne hij) a * permGL σ := by
   aesop (add simp [Perm.inv_def, transvection, Matrix.single, toMatrix_mul_apply, Matrix.one_apply,
