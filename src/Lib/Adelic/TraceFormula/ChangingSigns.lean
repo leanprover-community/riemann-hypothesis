@@ -152,10 +152,15 @@ lemma exists_eigenbasis_diag_form {ν : ℚ} {β : Matrix n n E} (h : IsElliptic
     let s : GL n ℂ := diagGL fun i ↦ .mk0 (t i / c i) (by simp [hc_ne])
     refine ⟨k * s, gram_mul_of_gram_eq hd ?_, ?_⟩
     · -- entrywise `t / c̄ * (d * t / c) = t / c̄ * (c̄ * c / c) = t`
-      simp [s, signMatrix, ← mul_div_assoc, hc, mul_assoc]
+      simp only [coe_diagGL, Units.val_mk0, diagonal_conjTranspose, diagonal_mul_diagonal,
+        Pi.star_apply, star_div₀, star_intCast, Complex.star_def, ← mul_div_assoc, mul_assoc,
+        hc, signMatrix, diagonal_eq_diagonal_iff, s]
       intro i
       field [hc_ne]
-    · simp [s, ← mul_assoc g, ← hk, ← map_inv, mul_assoc]
+    · simp only [_root_.mul_inv_rev, ← map_inv, Units.val_mul, coe_diagGL, Pi.inv_apply,
+        Units.val_inv_eq_inv_val, Units.val_mk0, inv_div, coe_units_inv, mul_assoc,
+        ← mul_assoc g, ← hk, diagonal_mul_diagonal, inv_mul_cancel_left_of_invertible,
+        diagonal_eq_diagonal_iff, s]
       intro i
       field [hc_ne]
 
