@@ -777,7 +777,7 @@ lemma KeepsLineMod.residue_mul_apply_self (hg : KeepsLineMod i g) (hh : KeepsLin
   calc residueOrZero ((g * h) i i)
     _ = (g.val.map residueOrZero * h.val.map residueOrZero) i i :=
       congrFun₂ (map_residueOrZero_mul hg.v_le_one hh.v_le_one) i i
-    _ = residueOrZero (g i i) * residueOrZero (h i i) := hh.keepsLine.mul_apply_self
+    _ = residueOrZero (g i i) * residueOrZero (h i i) := hh.keepsLine.mul_apply_col i
 
 /-- An element of the stabiliser of the line of `e_i` modulo `w` is integral and keeps this line,
 with an invertible action on the quotient. -/

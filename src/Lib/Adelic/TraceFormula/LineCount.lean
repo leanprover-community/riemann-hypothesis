@@ -259,28 +259,26 @@ structure KeepsLine (i : n) (M : Matrix n n F) : Prop where
   /-- The block on the other indices is invertible. -/
   block_det_ne_zero : (M.toSquareBlockProp (· ≠ i)).det ≠ 0
 
-/-- If `KeepsLine i N`, so that the column `i` of `N` vanishes off the diagonal and its block on
-the other indices is invertible, then the diagonal entry at `i` of `M * N` is the product of those
-of `M` and `N`. -/
-lemma KeepsLine.mul_apply_self (hN : KeepsLine i N) : (M * N) i i = M i i * N i i := by
+/-- When `N` preserves the line of `e_i`, the `i`-th column of `M * N` is the `i`-th
+column of `M` multiplied by `N i i`. -/
+lemma KeepsLine.mul_apply_col (hN : KeepsLine i N) (j : n) :
+    (M * N) j i = M j i * N i i := by
   rw [Matrix.mul_apply]
-  exact Fintype.sum_eq_single i fun j hj ↦ mul_eq_zero_of_right _ (hN.col_eq_zero j hj)
+  exact Fintype.sum_eq_single i fun l hl ↦ mul_eq_zero_of_right _ (hN.col_eq_zero l hl)
 
 /-- If `M` and `N` satisfy `KeepsLine i` (their column `i` vanishes off the diagonal and their
 block on the other indices is invertible), then so does `M * N`. -/
 lemma KeepsLine.mul (hM : KeepsLine i M) (hN : KeepsLine i N) : KeepsLine i (M * N) where
-  col_eq_zero j hj := by
-    rw [Matrix.mul_apply,
-      Fintype.sum_eq_single i fun l hl ↦ mul_eq_zero_of_right _ (hN.col_eq_zero l hl),
-      hM.col_eq_zero j hj, zero_mul]
+  col_eq_zero j hj := by rw [hN.mul_apply_col, hM.col_eq_zero j hj, zero_mul]
   block_det_ne_zero := by
+    have h_cross : M.toBlock (· ≠ i) (· = i) = 0 := by
+      ext a b
+      change M a b = 0
+      simpa only [b.property] using hM.col_eq_zero a a.property
     have h_block : (M * N).toSquareBlockProp (· ≠ i) =
         M.toSquareBlockProp (· ≠ i) * N.toSquareBlockProp (· ≠ i) := by
-      ext a b
-      have h_corner : M a i * N i b = 0 := mul_eq_zero_of_left (hM.col_eq_zero a a.property) _
-      simp only [toSquareBlockProp_def, Matrix.mul_apply, of_apply]
-      rw [← sum_subtype (univ.erase i) (by simp) fun l : n ↦ M a l * N l b,
-        sum_erase univ (f := fun l : n ↦ M a l * N l b) h_corner]
+      simpa only [toSquareBlockProp, h_cross, Matrix.zero_mul, zero_add] using
+        toBlock_mul_eq_add (· ≠ i) (· = i) (· ≠ i) M N
     rw [h_block, det_mul]
     exact mul_ne_zero hM.block_det_ne_zero hN.block_det_ne_zero
 
