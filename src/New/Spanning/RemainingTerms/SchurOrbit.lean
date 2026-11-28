@@ -261,7 +261,7 @@ lemma IsLatticeTranslate.frameX₀Part_eq {p p₀ : S.G E} {q : Matrix 𝔰.κ (
           id := by
   ext a b
   obtain ⟨-, hq_eq⟩ := hq
-  have h_entry : p.1.1 (𝔰.indexX₀ a) (𝔰.besselFrame b) = p₀.1.1 (𝔰.indexX₀ a) (𝔰.besselFrame b) +
+  have h_entry : p.1.1 (𝔰.indexX₀ a) (𝔰.besselFrame b) = p₀.1.val (𝔰.indexX₀ a) (𝔰.besselFrame b) +
       S.M * ∑ l, q a l * S.frameProducts γ (initialIsotropicIndex j l).castSucc b := by
     have h_translate_entry := congrFun₂ hq_eq (.inl (.inl a)) b
     simpa [Matrix.mul_apply] using h_translate_entry
@@ -377,7 +377,7 @@ lemma HasCellRank.exists_isLatticeTranslate (h_rank : S.HasCellRank j γ) {p₀ 
       congrFun₂ h_rank.paddedLeading_mul_inv (initialIsotropicIndex j a).castSucc
         (initialIsotropicIndex j b).castSucc
   have h_eq : S.frameProducts p = S.frameProducts p₀ := hZ.trans hZ₀.symm
-  set x : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (frameMiddle p.1.1 - frameMiddle p₀.1.1).toRows₁ with hx
+  set x : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (frameMiddle p.1.1 - frameMiddle p₀.1.val).toRows₁ with hx
   rw [frameMiddle_translateByClassReps_sub h_eq, ← colLattice_smul] at h_rows
   obtain ⟨W, hW_int, hW⟩ := exists_isIntMatrix_mul_eq_of_col_mem h_rows
   have h_adelic : S.classCoordX₀ c * finAdeleMatrix x = (S.M : 𝔸f E) • (Wᴴ * finAdeleMatrix ξ) := by

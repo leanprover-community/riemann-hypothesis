@@ -234,7 +234,7 @@ lemma tsum_discriminant_inv_le_of_out_eq {c : S.Classes} {η : U (stdSpace E �
   have h_map (L : S.BoundedDiscSublattice r (S.classLatticeX₀ c)) :
       (IsLatticeOfRank r (L.val.map P) ∧ L.val.map P ≤ unimodularLattice u ∧
         discriminant r (L.val.map P) ≤ S.discriminantBound) ∧
-      S.RowVanishesModPiN u y (L.1.map P) ∧ discriminant r (L.1.map P) = discriminant r L.1 := by
+      S.RowVanishesModPiN u y (L.1.map P) ∧ discriminant r (L.1.map P) = discriminant r L.val := by
     obtain ⟨L, hL, h_le, h_small⟩ := L
     obtain ⟨h_rank, h_disc⟩ := hL.map_of_unitary hH
     obtain ⟨h_map_le, h_kills⟩ := map_le_and_rowVanishesModPiN_of_out_eq hc h_le
@@ -620,7 +620,7 @@ lemma sum_tsum_discWeightIfRowVanishes_le [Fintype S.LatticeStabilizerCoset] (u 
     {M : Submodule (Ô E) (𝔰.κ → 𝔸f E) // M ≤ saturatedLattice u.val.val_inv V ∧
       submoduleIndex M (saturatedLattice u.val.val_inv V) ≠ 0}
   let w (V : Submodule E (𝔰.κ → E)) (M : Sub V) : ℝ≥0∞ :=
-    (submoduleIndex M.1 (saturatedLattice u.1.val_inv V) : ℝ≥0∞)⁻¹ ^ (finrank E V + (2 * 𝔰.ϱ + 4))
+    (submoduleIndex M.1 (saturatedLattice u.val.val_inv V) : ℝ≥0∞)⁻¹ ^ (finrank E V + (2 * 𝔰.ϱ + 4))
   have h_span (L : S.BoundedDiscSublattice r (unimodularLattice u)) :
       ∃ (V : Submodule E (𝔰.κ → E)) (M : Sub V), M.val = L.val ∧
         ∑ φ : S.LatticeStabilizerCoset, S.discWeightIfRowVanishes u (y φ) r L.val ≤ C *
