@@ -140,6 +140,52 @@ lemma New.Period.le_of_echelon {A V ι : Type*} [CommRing A] [AddCommGroup V] [M
       ih _ (h_elim w u k h_supp hwk) (sub_mem (W.smul_mem _ hw) (W.smul_mem _ huW))
     rwa [hk, one_smul, sub_mem_iff_left _ (smul_mem _ _ huW')] at h_diff
 
+/-- Let `W` be a subspace of `ℂ_p ^ ι` stable along `F` under `a ↦ (χ(g) ^ u i • g • a i)ᵢ`. If
+`v ∈ W` has `v k ≠ 0` and every vector of `W` supported within `v` is proportional to `v`, then the
+normalised vector `w i = (v k)⁻¹ * v i` satisfies `χ(g) ^ u i • g • w i = χ(g) ^ u k • w i`
+eventually along `F` for every `i`. -/
+private lemma New.Period.eventually_cyclotomicGp_twist_of_minimal {p : ℕ} [ThePrime p]
+    {ι : Type*} [Finite ι] {F : Filter (Gp p)} (u : ι → ℤ) (W : Submodule ℂ_[p] (ι → ℂ_[p]))
+    (hW : ∀ a ∈ W, ∀ᶠ g : Gp p in F, (fun i : ι ↦ (cyclotomicGp g ^ u i).val • g • a i) ∈ W)
+    {v : ι → ℂ_[p]} (hv : v ∈ W) {k : ι} (hk : v k ≠ 0)
+    (h_prop : ∀ y ∈ W,
+      (∀ i : ι, (Pi.basisFun ℂ_[p] ι).repr v i = 0 → (Pi.basisFun ℂ_[p] ι).repr y i = 0) →
+      ∀ j : ι, (Pi.basisFun ℂ_[p] ι).repr v j • y = (Pi.basisFun ℂ_[p] ι).repr y j • v)
+    (i : ι) :
+    ∀ᶠ g : Gp p in F,
+      (cyclotomicGp g ^ u i).val • g • ((v k)⁻¹ * v i) =
+        (cyclotomicGp g ^ u k).val • ((v k)⁻¹ * v i) := by
+  let w : ι → ℂ_[p] := fun i ↦ (v k)⁻¹ * v i
+  have h_mem : w ∈ W := W.smul_mem _ hv
+  filter_upwards [hW _ h_mem] with g hg
+  -- `h_prop` for the twisted conjugate of `w`, at the coordinates `k` and `i`
+  have h_supp (j : ι) : (Pi.basisFun ℂ_[p] ι).repr v j = 0 →
+      (Pi.basisFun ℂ_[p] ι).repr (fun l ↦ (cyclotomicGp g ^ u l).val • g • w l) j = 0 := by
+    simp +contextual [w]
+  have h_coord : v k * ((cyclotomicGp g ^ u i).val • g • w i) =
+      ((cyclotomicGp g ^ u k).val • g • w k) * v i := by
+    simpa using congrFun (h_prop _ hg h_supp k) i
+  rw [← mul_right_inj' hk, h_coord]
+  simp [w, hk]
+
+/-- By Tate's vanishing theorem and Ax's theorem, if `nhds 1 ≤ F` and `x ∈ ℂ_p` satisfies
+`χ(g) ^ u • g • x = χ(g) ^ v • x` eventually along `F`, then `x` is the image of an algebraic
+element `a ∈ ℚ̄_p` that is fixed along `F` and vanishes whenever `u ≠ v`. -/
+private lemma New.Period.exists_algebraic_of_eventually_cyclotomicGp_twist {p : ℕ} [ThePrime p]
+    {F : Filter (Gp p)} (hF : nhds 1 ≤ F) {u v : ℤ} {x : ℂ_[p]}
+    (hx : ∀ᶠ g : Gp p in F,
+      (cyclotomicGp g ^ u).val • g • x = (cyclotomicGp g ^ v).val • x) :
+    ∃ a : PadicAlgCl p, x = a ∧ (u = v ∨ a = 0) ∧ ∀ᶠ g : Gp p in F, g a = a := by
+  have h_zero (huv : u ≠ v) : x = 0 := tate_eq_zero_of_cyclotomicGp_twist huv (hF hx)
+  have h_fixed : ∀ᶠ g : Gp p in F, g • x = x := by
+    by_cases huv : u = v
+    · exact hx.mono fun g hg ↦ isSMulRegular _ _ (by simpa only [huv] using hg)
+    · simp [h_zero huv]
+  obtain ⟨a, ha⟩ := exists_algebraic_of_fixed_near_one (hF h_fixed)
+  refine ⟨a, ha, (eq_or_ne u v).imp_right fun huv ↦ ?_, ?_⟩
+  · simpa only [ha, coe_eq_zero_iff] using h_zero huv
+  · simpa only [ha, algEquiv_smul_coe, coe_inj] using h_fixed
+
 /-- Let `ι` be finite and let `F` be a filter on `Gal(ℚ̄_p/ℚ_p)` with `nhds 1 ≤ F` (`hF`). Let the
 subspace `W` of `ℂ_p ^ ι` be stable along `F` under `a ↦ (χ(g) ^ u i • g • a i)ᵢ` (`hW`). Suppose
 that `W'` contains every vector `a` of `W` with coordinates in `ℚ̄_p` such that, for some `k`,
@@ -164,44 +210,19 @@ lemma New.Period.le_of_hodgeTate_stable {p : ℕ} [ThePrime p] {ι : Type*} [Fin
   have h_nonempty : Nonempty ι := (Function.ne_iff.mp hv₀).nonempty
   obtain ⟨k, h_max⟩ : ∃ k : ι, ∀ i : ι, ‖v i‖ ≤ ‖v k‖ := Finite.exists_max _
   have hk : v k ≠ 0 := fun hk_zero ↦ hv₀ <| funext fun i ↦ by simpa [hk_zero] using h_max i
-  let w : ι → ℂ_[p] := fun i ↦ (v k)⁻¹ * v i
-  have h_mem : w ∈ W := W.smul_mem _ hv
-  -- The twisted conjugate of `w` lies in `W` with the same support, so is proportional to it; the
-  -- factor is its `k`-th coordinate `χ(g) ^ u k`.
-  have h_twist (i : ι) :
-      ∀ᶠ g : Gp p in F,
-        (cyclotomicGp g ^ u i).val • g • w i = (cyclotomicGp g ^ u k).val • w i := by
-    filter_upwards [hW _ h_mem] with g hg
-    -- `h_prop` for the twisted conjugate of `w`, at the coordinates `k` and `i`
-    have h_supp (j : ι) : (Pi.basisFun ℂ_[p] ι).repr v j = 0 →
-        (Pi.basisFun ℂ_[p] ι).repr (fun l ↦ (cyclotomicGp g ^ u l).val • g • w l) j = 0 := by
-      simp +contextual [w]
-    have h_coord : v k * ((cyclotomicGp g ^ u i).val • g • w i) =
-        ((cyclotomicGp g ^ u k).val • g • w k) * v i := by
-      simpa using congrFun (h_prop _ hg h_supp k) i
-    rw [← mul_right_inj' hk, h_coord]
-    simp [w, hk]
-  -- By Tate's theorem the coordinates with `u i ≠ u k` vanish; the others are fixed, so
-  -- algebraic by Ax's theorem.
-  have h_zero (i : ι) (hi : u i ≠ u k) : w i = 0 :=
-    tate_eq_zero_of_cyclotomicGp_twist hi (hF (h_twist i))
-  have h_fixed (i : ι) : ∀ᶠ g : Gp p in F, g • w i = w i := by
-    by_cases hi : u i = u k
-    · exact (h_twist i).mono fun g hg ↦ isSMulRegular _ _ (by simpa only [hi] using hg)
-    · simp [h_zero i hi]
-  choose a ha using fun i ↦ exists_algebraic_of_fixed_near_one (hF (h_fixed i))
-  -- Restate these facts for the algebraic vector `a`.
+  have h_mem : (fun i ↦ (v k)⁻¹ * v i) ∈ W := W.smul_mem _ hv
+  -- By Tate's and Ax's theorems, each coordinate of `(v k)⁻¹ • v` is algebraic, fixed along `F`,
+  -- and supported on weight `u k`.
+  choose a ha h_weight ha_fixed using fun i ↦
+    exists_algebraic_of_eventually_cyclotomicGp_twist hF
+      (eventually_cyclotomicGp_twist_of_minimal u W hW hv hk h_prop i)
   have ha_mem : ((↑) ∘ a : ι → ℂ_[p]) ∈ W := by
     simpa only [funext ha, Function.comp_def] using h_mem
-  have ha_fixed (i : ι) : ∀ᶠ g : Gp p in F, g (a i) = a i := by
-    simpa only [ha, algEquiv_smul_coe, coe_inj] using h_fixed i
-  have h_one : a k = 1 := coe_inj.mp (by simp [← ha, w, hk, coe_one])
-  have h_norm (i : ι) : ‖a i‖ ≤ 1 := by simp [← norm_coe (a i), ← ha, w, field, h_max]
-  have h_weight (i : ι) : u i = u k ∨ a i = 0 :=
-    (eq_or_ne (u i) (u k)).imp_right fun hi ↦ by simpa only [ha, coe_eq_zero_iff] using h_zero i hi
+  have h_one : a k = 1 := coe_inj.mp (by simp [← ha, hk, coe_one])
+  have h_norm (i : ι) : ‖a i‖ ≤ 1 := by simp [← norm_coe (a i), ← ha, field, h_max]
   refine ⟨(↑) ∘ a, ⟨ha_mem, h_pure a k ha_mem h_norm h_weight h_one ha_fixed⟩, ⟨k, ?_⟩, ?_⟩
   · simp [h_one, coe_one]
-  · simp +contextual [← ha, w]
+  · simp +contextual [← ha]
 
 end Elimination
 
