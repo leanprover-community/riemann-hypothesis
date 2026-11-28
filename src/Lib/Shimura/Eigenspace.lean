@@ -451,6 +451,8 @@ lemma New.Variety.algebraMap_mem_of_isLocalization {E : Type} [Field E]
   refine A.mem_of_valuation_le_one _ (le_of_mul_le_of_one_le_left ?_ hm_unit)
   rwa [← map_mul, ← map_mul]
 
+attribute [local instance] Model.smooth Model.proper Model.projective
+
 /-- Let `X` be a Kuga–Sato tower over `R` with base `Z`, at a neat level (`hN`), with `R` mapping
 into `A` (`hR`). Let `T n` act on `V^n(Z)`, `n ≤ 2 * X.dimension`. Assume (`hT_word`) that for each
 word `L` and each `b` spanned by `GUPlus`, at all large levels the coset sum of leg pull-backs over
@@ -485,9 +487,6 @@ lemma New.Variety.Model.isNullHecke_mul_of_kills_weight {E : Type} [Field E] [CM
           z • ((L.map (T n)).prod.restrictScalars ℤ_[ℓ]).baseChange ℂ_[ℓ]) y = 0)
     (b : heckeAlgebra (Fin a) ℂ 𝔑) :
     IsNullHecke ν h (b * ∑ L ∈ c.support, ε.symm (c L) • (L.map tauHecke).prod) := by
-  have Z_smooth := X.smooth
-  have Z_proper := X.proper
-  have W_projective := X.projective
   have W_reduced := X.isReduced
   have W_smooth i := (X.covering i).smoothOfRelativeDimension_baseChange X.dimension
   have Z_charted : IsCharted X.base Ω := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
@@ -560,8 +559,6 @@ lemma New.Variety.Model.jumpsRelAt_of_isEigenQuotient {E : Type} [Field E] [CMBa
     (h_crys : ∀ [PadicPlaceEmbedding E A ℓ] (n : ℕ),
       IsCrystalline (galoisAction (.of R) Ω (decompGroup Gal(Ω/E) A) X.base n)) :
     JumpsRelAt r A OccursIn (fun τ : E →+* ℂ ↦ if algebraMap E ℂ = τ then J else 0) := by
-  have Z_smooth := X.smooth
-  have Z_proper := X.proper
   have Z_charted : IsCharted X.base Ω := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
   intro place γ s hs u hu h_jump
   -- Jumps. If `h` were no jump, some polynomial `c` with `c(θ) = 1` would have `c(T)` killing all
@@ -624,9 +621,6 @@ lemma New.Variety.Model.aeval_heckePoly_eq_zero_of_isEigenQuotient {E : Type} [F
     {s : Gal(Ω/E)} (hs : IsFrob A w.val.val.q s⁻¹) (hℓ : A.valuation ℓ = 1) :
     Polynomial.aeval (r s : Matrix (Fin N) (Fin N) (PadicAlgCl ℓ))
       (heckePoly w.val.val.q a fun j : ℕ ↦ ιℓ (θ w j)) = 0 := by
-  have Z_smooth := X.smooth
-  have Z_proper := X.proper
-  have W_projective := X.projective
   have R_noetherian : IsNoetherianRing R := isNoetherianRing M R inferInstance
   have Z_charted_int : IsCharted X.base R := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
   obtain ⟨hF_gal, hF_span, hF_hecke, -⟩ := h_eig
@@ -703,9 +697,6 @@ lemma New.Variety.Model.isKilledBy_heckePoly_of_isEigenQuotient {E : Type} [Fiel
     {s : Gal(Ω/E)} (hs : IsFrob A w.val.val.q s⁻¹) [place : PadicPlaceEmbedding E A ℓ]
     {hs' : s ∈ decompGroup Gal(Ω/E) A} {k : ℕ} (h_weil : IsWeilPair (place.toGp ⟨s, hs'⟩) k) :
     IsKilledBy (decompRep r A) ⟨s, hs'⟩ k (heckePoly w.val.val.q a fun j : ℕ ↦ ιℓ (θ w j)) := by
-  have Z_smooth := X.smooth
-  have Z_proper := X.proper
-  have W_projective := X.projective
   have W_reduced := X.isReduced
   have W_smooth i := (X.covering i).smoothOfRelativeDimension_baseChange X.dimension
   have R_noetherian : IsNoetherianRing R := isNoetherianRing M R inferInstance
@@ -757,9 +748,6 @@ lemma New.Variety.Model.exists_galois_rep {E : Type} [Field E] [CMBase E] {a d�
   -- Let `T` be the Hecke operators on the cohomology `V^n(Z)`, `n ≤ 2 * X.dimension`, and `r` the
   -- largest quotient of their sum on which `T` acts by `ιℓ ∘ θ`. Each local clause except the
   -- jumps, which come from `OccursInWeight`, is known for `V^n(Z)` and passes to this quotient.
-  have Z_smooth := X.smooth
-  have Z_proper := X.proper
-  have W_projective := X.projective
   have R_noetherian : IsNoetherianRing R := isNoetherianRing M R inferInstance
   have Z_charted_int : IsCharted X.base R := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
   have Z_charted : IsCharted X.base Ω := ⟨(hasAtlas_algPointsOf X.dimension).exists_isCharting⟩
