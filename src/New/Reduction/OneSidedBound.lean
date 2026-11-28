@@ -111,22 +111,21 @@ lemma eventually_abs_primeRemainder_exp_le (P : Parameters) {ε : ℝ} (hε : 0 
   obtain ⟨B, hB⟩ : ∃ B : ℕ, 24 / ε ≤ B := exists_nat_ge (24 / ε)
   have hd : P.d ≠ 2 := by linarith [P.sixty_four_lt_d]
   have h_cop : P.q₀.Coprime P.d := (P.coprime_q₁_d 0).coprime_mul_right
-  obtain ⟨Y, hY⟩ : ∃ Y : ℝ, ∀ y ≥ Y,
-      |primeRemainder P.d P.q₀ y| ≤ 1 / log y ^ B ∧ |primeRemainder P.d 1 y| ≤ 1 / log y ^ B :=
-    eventually_atTop.1 ((eventually_abs_primeRemainder_le hd h_cop B).and
-      (eventually_abs_primeRemainder_le hd P.d.coprime_one_left B))
-  have h_large : ∀ᶠ x : ℕ in atTop, Y ≤ (x : ℝ) ^ (ε / 12) :=
-    ((tendsto_rpow_atTop (by positivity)).comp tendsto_natCast_atTop_atTop).eventually_ge_atTop Y
-  filter_upwards [h_large, eventually_ge_atTop 1] with x hY_le hx_one l hl
+  have h_cutoff : Tendsto (fun x : ℕ ↦ (x : ℝ) ^ (ε / 12)) atTop atTop :=
+    (tendsto_rpow_atTop (by positivity)).comp tendsto_natCast_atTop_atTop
+  have h_pnt := (eventually_abs_primeRemainder_exp_le_inv_pow hd h_cop B).and
+    (eventually_abs_primeRemainder_exp_le_inv_pow hd P.d.coprime_one_left B)
+  filter_upwards [h_cutoff.eventually_forall_ge_atTop h_pnt, eventually_ge_atTop 1]
+    with x hx_bound hx_one l hl
   have hx_ge : (1 : ℝ) ≤ x := mod_cast hx_one
   have hx_pos : (0 : ℝ) < x := one_pos.trans_le hx_ge
   have h_exp : -(ε / 12 * B) ≤ -2 := by linarith [(div_le_iff₀ hε).1 hB]
-  have h_small : 1 / log (exp l) ^ B ≤ (x : ℝ) ^ (-2 : ℝ) :=
-    calc 1 / log (exp l) ^ B ≤ 1 / ((x : ℝ) ^ (ε / 12)) ^ B := by grw [log_exp, ← hl]
+  have h_small : 1 / l ^ B ≤ (x : ℝ) ^ (-2 : ℝ) :=
+    calc 1 / l ^ B ≤ 1 / ((x : ℝ) ^ (ε / 12)) ^ B := by grw [← hl]
       _ = (x : ℝ) ^ (-(ε / 12 * B)) := by
         rw [← rpow_mul_natCast hx_pos.le, rpow_neg hx_pos.le, one_div]
       _ ≤ (x : ℝ) ^ (-2 : ℝ) := rpow_le_rpow_of_exponent_le hx_ge h_exp
-  exact (hY (exp l) (by linarith [add_one_le_exp l])).imp h_small.trans' h_small.trans'
+  exact (hx_bound l hl).imp h_small.trans' h_small.trans'
 
 /-- The one-sided bound at integers. Let `q₀ = P.q₀` and `d = P.d` be the modulus and the prime of
 the parameters `P`, and let `0 < ε < 1/100`. Let
