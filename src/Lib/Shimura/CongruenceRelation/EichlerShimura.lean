@@ -204,7 +204,7 @@ lemma congruence_relation [IsProper W.hom] {g : Γ} (hg : IsFrob A (p ^ f) g) {I
     rw [hF, ← comp, ← comp, ellAdicPull_frobEnd, one_apply_eq_self]
   · -- the sum vanishes on the locus where the points `F i x` cancel; it is enough that this locus
     -- is dense
-    suffices h_dense : IsCohomDense (locConstCoeff ⟨ZMod ℓ⟩)
+    suffices h_dense : Subfunctor.IsDenseFor (locConstCoeff ⟨ZMod ℓ⟩)
       (relationLocus m fun i ↦ mapOnTests (F i)) by
       refine h_dense.isCohomEquiv.bijective_ellAdicPull.injective ((comp ..).trans ?_)
       simp [relationLocus_sum_eq_zero]

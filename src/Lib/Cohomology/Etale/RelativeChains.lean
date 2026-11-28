@@ -14,9 +14,9 @@ category C to abelian groups. For a subfunctor U of a set-valued functor V,
 `New.Variety.relFreeAb U` is the quotient ℤ[V]/ℤ[U] of free abelian groups (`New.Variety.freeAb`).
 Its Ext^n into F is the relative cohomology H^n(V, U). A map is an equivalence for F
 (`New.Variety.IsCohomEquiv`) if it is bijective on all Ext^n(·, F). A subfunctor U of Y is dense
-(`New.Variety.IsCohomDense`) if over every point h_A → Y its preimage gives an equivalence; with
-these notions the file proves vanishing for locally zero functors, transfer, excision and gluing of
-relative classes over finite covers.
+(`CategoryTheory.Subfunctor.IsDenseFor`) if over every point h_A → Y its preimage gives an
+equivalence; with these notions the file proves vanishing for locally zero functors, transfer,
+excision and gluing of relative classes over finite covers.
 
 ## Main definitions and results
 
@@ -154,9 +154,9 @@ def zeroSection (N : C ⥤ Ab) : Subfunctor (N ⋙ forget Ab) where
 /-- The subgroup of locally zero elements of N(A): the s such that the maps A → B killing s form
 a subfunctor of h_A that is dense for F. -/
 def locallyZero (F N : AbFunctor C) (A : C) : AddSubgroup (N.obj A) :=
-  AddSubgroup.ofSub {s : N.obj A | IsCohomDense F ((zeroSection N).preimage (pointMap s))}
+  AddSubgroup.ofSub {s : N.obj A | ((zeroSection N).preimage (pointMap s)).IsDenseFor F}
     -- `0` is locally zero: every map kills it.
-    ⟨0, IsCohomDense.of_top_le fun _ _ _ ↦ map_zero (N.map _).hom⟩
+    ⟨0, Subfunctor.IsDenseFor.of_top_le fun _ _ _ ↦ map_zero (N.map _).hom⟩
     -- a difference dies where both sections die, and that intersection is dense
     fun _ hs _ ht ↦ (hs.inf ht).mono fun _ _ h_both ↦ (N.map _).hom.ker.add_mem h_both.1 (by aesop)
 
@@ -173,7 +173,8 @@ theorem cohomology_eq_zero_of_locallyZero {N : AbFunctor C}
   let π : M ⟶ N := abCoker.desc (freeAb.desc (fun _ ↦ id) (by simp))
     (freeAb.hom_ext fun _ s ↦ (add_zero _).trans s.property)
   have π_surj (A : C) : Surjective (π.app A) := fun s ↦ ⟨relFreeAb.mk _ s, add_zero _⟩
-  have zero_dense : IsCohomDense F (zeroSection N) := fun A s ↦ (h_zero A s).isCohomEquiv
+  have zero_dense : (zeroSection N).IsDenseFor F :=
+    Subfunctor.isDenseFor_iff.2 fun A s ↦ (h_zero A s).isCohomEquiv
   have M_acyclic := (relFreeAb.isCohomEquiv_iff_subsingleton_rel _).1 zero_dense.isCohomEquiv n
   have M_zero (A : C) : ∀ s : M.obj A, s ∈ locallyZero F M A :=
     relFreeAb.mem_of_mk_mem _ fun s ↦ (h_zero A s).mono fun _ _ hs ↦ relFreeAb.mk_eq_zero hs
@@ -249,8 +250,8 @@ lemma exists_transfer_map {ι : Type*} [Fintype ι] {f : ι → (V' ⟶ V'')} {p
       m ≫ l = freeAb.map p ∧
       m ≫ ν = ∑ i : ι, freeAb.map (f i) ∧
       ν ≫ freeAb.map p' = card ι • l ∧
-      ∀ F : AbFunctor C, IsCohomDense F (Subfunctor.range p) →
-        IsCohomDense F (permutedPairs f p) → IsCohomEquiv F (N' := Q) l := by
+      ∀ F : AbFunctor C, (Subfunctor.range p).IsDenseFor F →
+        (permutedPairs f p).IsDenseFor F → IsCohomEquiv F (N' := Q) l := by
   -- Let `Q` be the quotient of `ℤ[V']` by the differences `[w] - [w']` over the pairs in `P`.
   -- On such a pair both `p` and `∑ i, [f i ·]` agree, so they factor through `Q`.
   let P : Subfunctor (cech p 1) := permutedPairs f p
@@ -332,7 +333,7 @@ lemma shortExact_triple (U : Subfunctor V) [Mono u] :
 /-- If U′ ≤ U are subfunctors of V and U′ is dense in U for F, then ℤ[V]/ℤ[U′] → ℤ[V]/ℤ[U] induces
 bijections on Ext^n(·, F) for all n. -/
 lemma isCohomEquiv_of_le {U' U : Subfunctor V} (h_le : U' ≤ U)
-    (h_dense : IsCohomDense F (U'.preimage U.ι)) :
+    (h_dense : (U'.preimage U.ι).IsDenseFor F) :
     IsCohomEquiv F (map (𝟙 V) h_le) := by
   -- By `shortExact_triple` for the inclusion of `U`, the kernel of the map is `ℤ[U] / ℤ[U']`, which
   -- is acyclic because `U'` is dense in `U`.
@@ -345,7 +346,7 @@ lemma isCohomEquiv_of_le {U' U : Subfunctor V} (h_le : U' ≤ U)
 
 /-- Excision: let u : V′ → V be a monomorphism, U′ = u⁻¹U, and u(V′) ∪ U dense in V for the
 coefficient F. Then ℤ[V′]/ℤ[U′] → ℤ[V]/ℤ[U] induces bijections on Ext^n(·, F) for all n. -/
-lemma excision (h : IsCohomDense F (Subfunctor.range u ⊔ U)) [m : Mono u]
+lemma excision (h : (Subfunctor.range u ⊔ U).IsDenseFor F) [m : Mono u]
     (h_pre : U' = U.preimage u) :
     IsCohomEquiv F (map u h_pre.le) := by
   -- By `shortExact_triple` the cokernel of the map is `ℤ[V] / ℤ[u(V') ∪ U]`, which is acyclic by
@@ -474,7 +475,7 @@ lemma relFreeAb.eq_zero_and_exists_glued_of_iSup {F : AbFunctor C} {d : ℕ}
 lemma relFreeAb.exists_glued_class {r : ℕ} {F : AbFunctor C} {d : ℕ} (S : Set (Subfunctor V))
     (hS : InfClosed S)
     (h_vanish : ∀ A ∈ S, ∀ n < d, Subsingleton (H (relFreeAb (U.preimage A.ι)) F n))
-    (W : Fin r → Subfunctor V) (hW : ∀ i : Fin r, W i ∈ S) (hd : IsCohomDense F (iSup W ⊔ U))
+    (W : Fin r → Subfunctor V) (hW : ∀ i : Fin r, W i ∈ S) (hd : (iSup W ⊔ U).IsDenseFor F)
     (x : ∀ i : Fin r, H (relFreeAb (U.preimage (W i).ι)) F d)
     (hx : ∀ i j : Fin r,
       H.map F (restrict U inf_le_left) d (x i) = H.map F (restrict U inf_le_right) d (x j)) :
@@ -482,7 +483,7 @@ lemma relFreeAb.exists_glued_class {r : ℕ} {F : AbFunctor C} {d : ℕ} (S : Se
   -- The classes glue on the union of the `W i`; excision and the density `hd` pass from the union
   -- to `V`.
   obtain ⟨-, z, hz⟩ := eq_zero_and_exists_glued_of_iSup U S hS h_vanish W hW x hx
-  have h_dense : IsCohomDense F (Subfunctor.range (iSup W).ι ⊔ U) := by simpa using hd
+  have h_dense : (Subfunctor.range (iSup W).ι ⊔ U).IsDenseFor F := by simpa using hd
   obtain ⟨y, rfl⟩ := (excision (iSup W).ι (U := U) h_dense rfl d).surjective z
   exact ⟨y, fun i ↦ by simpa [← H.map_comp] using hz i⟩
 

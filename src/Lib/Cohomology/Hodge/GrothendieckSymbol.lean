@@ -829,8 +829,8 @@ lemma EtaleChart.exists_section_isCohomEquiv : ∃ μ : a.coordRing ⟶ HodgeTes
   -- Read `f` as `fst ∘ μ ∘ f`, so that both sides speak of the point `μ ∘ f`.
   rw [show f = fun i ↦ fst (μ (f i)) by simp [μ_fst _], hS]
   refine ⟨fun _ _ ⟨i, hi⟩ ↦ projSpace.span_eq_top_of_isUnit i (isUnit_iff_isUnit_fst.mpr hi),
-    Iff.mpr (IsCohomEquiv.comp_iff (isCohomEquiv_of_le _ fun c y ↦
-      isCohomEquiv_someUnitLocus_of_span_eq_top ?_))
+    Iff.mpr (IsCohomEquiv.comp_iff (isCohomEquiv_of_le _ (Subfunctor.isDenseFor_iff.2 fun c y ↦
+      isCohomEquiv_someUnitLocus_of_span_eq_top ?_)))
       ?_⟩
   · -- `f` is unimodular at `y`; project from `A ⊕ M` to `A`
     apply unimodular.map c.baseProj y.property
@@ -893,7 +893,8 @@ lemma hodge_excision {u : X' ⟶ X} [Mono u] (hu_open : IsOpenSubfunctor (Subfun
     · obtain ⟨O, hO_open, hx_O, hO_le⟩ := h_cover K hK x hx
       exact ⟨O, hO_open, hx_O, le_sup_of_le_right fun c ↦ hO_le _⟩
   -- So their union is dense by Zariski descent, and `relFreeAb.excision` applies.
-  have h_dens : IsCohomDense hodgeCoeff (.range (sqZeroExt.whiskerLeft u) ⊔ U.whisker sqZeroExt) :=
+  have h_dens :
+      Subfunctor.IsDenseFor hodgeCoeff (.range (sqZeroExt.whiskerLeft u) ⊔ U.whisker sqZeroExt) :=
     hasZariskiDescent_hodgeCoeff (isZariskiLocallyTop_of_open_cover h_open)
   subst hU'
   exact excision (U := U.whisker _) ((restrictAlong _).map u) h_dens rfl

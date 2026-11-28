@@ -308,7 +308,7 @@ lemma kunneth {k : Type} [Field k] [CharZero k] {X : CommAlg k ⥤ Type 1} {d n 
   -- Zariski descent.
   let U : Subfunctor (HodgeTest.sqZeroExt ⋙ X) := V.whisker (HodgeTest.sqZeroExt (k := k))
   let N : AbFunctor (HodgeTest k) := freeAb U.toFunctor
-  have hU : IsCohomDense hodgeCoeff U := hasZariskiDescent_hodgeCoeff (hV_cover.whisker _)
+  have hU : U.IsDenseFor hodgeCoeff := hasZariskiDescent_hodgeCoeff (hV_cover.whisker _)
   -- Dévissage: a class closed in the sense of `IsClosedClass` that contains the represented
   -- functors contains `N = ℤ[U]`, as the charts from which `V` is built are represented on
   -- `HodgeTest k` (`exists_univPoint`).

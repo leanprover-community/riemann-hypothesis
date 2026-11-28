@@ -52,8 +52,8 @@ Notions from other files:
 * `New.Variety.Comparison`: a functor φ : C' → C with a map F∘φ → F'; it `IsBijective` along α :
   N' → N∘φ if Ext^n(N, F) → Ext^n(N', F') is bijective for all n. `HasUniversalPoints u`, a
   sufficient condition: the fibres of u over points are representable, with the same coefficients.
-* `New.Variety.IsCohomDense`, `New.Variety.HasZariskiDescent`: `U ⊆ Y` is dense for `F` if, for
-  every point `h_A → Y`, the inclusion of the preimage of `U` induces bijections on Ext with
+* `CategoryTheory.Subfunctor.IsDenseFor`, `New.Variety.HasZariskiDescent`: `U ⊆ Y` is dense for `F`
+  if, for every point `h_A → Y`, the inclusion of the preimage of `U` induces bijections on Ext with
   coefficients `F`; `F` has Zariski descent if every `U` that contains `Y` near each maximal ideal
   (`New.Variety.IsZariskiLocallyTop`) is dense for `F`.
 
@@ -667,12 +667,12 @@ lemma IdealFamily.bijective_toZerosCoeff (G : AbFunctor C) {ι : C ⥤ CommRingC
   simpa using h_dies d (𝟙 d) h_bot
 
 /-- Let `V` be a subfunctor of the one-point functor that is dense for `F`
-(`New.Variety.IsCohomDense`); it picks the objects `c` with `⟨⟩ ∈ V c`. A map `α : M ⟶ N` of
-functors to abelian groups that is bijective at each of these objects is an equivalence for `F`:
-`Ext^n (N, F) → Ext^n (M, F)` is bijective for all `n`. -/
-lemma IsCohomDense.isCohomEquiv_of_bijective_on {F M N : AbFunctor C} {α : M ⟶ N}
-    {V : Subfunctor (onePointFunctor C)} (h_dense : IsCohomDense F V)
-    (h_bij : ∀ c : C, ⟨⟩ ∈ V c → Bijective (α c)) :
+(`CategoryTheory.Subfunctor.IsDenseFor`); it picks the objects `c` with `⟨⟩ ∈ V c`. A map
+`α : M ⟶ N` of functors to abelian groups that is bijective at each of these objects is an
+equivalence for `F`: `Ext^n (N, F) → Ext^n (M, F)` is bijective for all `n`. -/
+lemma _root_.CategoryTheory.Subfunctor.IsDenseFor.isCohomEquiv_of_bijective_on
+    {F M N : AbFunctor C} {α : M ⟶ N} {V : Subfunctor (onePointFunctor C)}
+    (h_dense : V.IsDenseFor F) (h_bij : ∀ c : C, ⟨⟩ ∈ V c → Bijective (α c)) :
     IsCohomEquiv F α := by
   -- kernel and cokernel of `α` vanish at the objects of `V`, so they are killed by a dense sieve
   have h_ker (c : C) (s : M.obj c) (hs : α c s = 0) : s ∈ locallyZero F M c := by
@@ -794,7 +794,7 @@ category of elements of X along the projection (c, x) ↦ c. -/
 protected def TorsionCoeff.onElements : TorsionCoeff (elementsProj X ⋙ g) where
   functor := elementsProj X ⋙ M.functor
   prime_smul_eq_zero a := M.prime_smul_eq_zero a.obj
-  zariski_descent Y U hU a y := by
+  zariski_descent Y U hU := Subfunctor.isDenseFor_iff.2 fun a y ↦ by
     -- Maps out of the point `a` are maps out of `a.1` (`hasUniversalPoints_reprBy_elements`), so it
     -- suffices to show that the sieve `V` of the `f` out of `a.1` that carry `y` into `U` is dense
     -- for `M.functor`.
@@ -854,11 +854,11 @@ lemma Theory.isZariskiLocallyTop_ker_toZerosCoeff :
 
 /-- Let `Θ` be a theory and `I` a family of ideals on the category `C`. The locus `I.botLocus` of
 the objects where `I` is zero is dense for the coefficient `I.zerosCoeff Θ.functor`
-(`New.Variety.IsCohomDense`): for every object `c`, restriction from all maps out of `c` to the maps
-into that locus is bijective on `Ext^n` for all `n`. -/
-lemma Theory.isCohomDense_botLocus : IsCohomDense (I.zerosCoeff Θ.functor) I.botLocus := by
+(`CategoryTheory.Subfunctor.IsDenseFor`): for every object `c`, restriction from all maps out of `c`
+to the maps into that locus is bijective on `Ext^n` for all `n`. -/
+lemma Theory.isCohomDense_botLocus : I.botLocus.IsDenseFor (I.zerosCoeff Θ.functor) := by
   -- injectivity in degree `0` (higher degrees of the source vanish), and surjectivity
-  refine fun c y n ↦ ⟨?_, ?_⟩
+  refine Subfunctor.isDenseFor_iff.2 fun c y n ↦ ⟨?_, ?_⟩
   · cases n with
     | zero =>
       -- a class of degree `0` is `mk₀ u` for a map `u : ℤ[h_c] ⟶ I.zerosCoeff Θ.functor`; by
@@ -907,14 +907,15 @@ def Theory.onZeros : TorsionCoeff g where
   prime_smul_eq_zero c := Quot.ind fun x ↦ congrArg _ (Θ.prime_smul_eq_zero c x)
   zariski_descent Y U hU := by
     -- The locus `I.botLocus` is dense, so it suffices to work over a point `z` of it.
-    refine ((Θ.isCohomDense_botLocus I).preimage (toUnit _)).trans fun d z n ↦ ?_
+    refine ((Θ.isCohomDense_botLocus I).preimage (toUnit _)).trans
+      (Subfunctor.isDenseFor_iff.2 fun d z n ↦ ?_)
     -- There `I.toZerosCoeff Θ.functor` is bijective, so descent follows from descent for
     -- `Θ.functor`.
     have h_bij (e : C) (f : (reprBy d).obj e) : Bijective ((I.toZerosCoeff Θ.functor).app e) :=
       I.bijective_toZerosCoeff _ _ ((pointMap z).app e f).property
     exact (bijective_iff_of_comm_sq (map_push _ _) (push_bijective_of_points _ h_bij n)
         (push_bijective_of_points _ (fun e f ↦ h_bij e (Subtype.val f)) n)).1
-      (Θ.zariski_descent hU ..)
+      (Subfunctor.isDenseFor_iff.1 (Θ.zariski_descent hU) ..)
 
 /-- For a coefficient `M` along `g` (its values are killed by `ℓ`) and a functor `N` from `C` to
 abelian groups, `ℓ` kills the total cohomology `TotalH N M.functor`, the sum over `n` of
@@ -1053,7 +1054,7 @@ lemma TorsionCoeff.pullbackAlong_oneLocConst_surjective :
   -- onto.
   let I : IdealFamily (ringOf (𝟭 (TestOver A))) := IdealFamily.mk ⊥ (by simp)
   -- Where the zero ideal is everything there is no maximal ideal: the empty subfunctor is dense.
-  have h_dense : IsCohomDense M.functor (⊥ : Subfunctor (I.whisker g).topLocus.toFunctor) := by
+  have h_dense : (⊥ : Subfunctor (I.whisker g).topLocus.toFunctor).IsDenseFor M.functor := by
     refine M.zariski_descent fun c y m hm ↦ ?_
     -- `y` says that the zero ideal of the ring at `c` is the unit ideal
     exact (hm.ne_top (eq_top_mono bot_le y.property)).elim

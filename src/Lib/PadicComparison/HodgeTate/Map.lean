@@ -832,12 +832,12 @@ lemma IsChartCovered.pairRestrictBijective {n : ℕ} {X : CommAlg k ⥤ Type 1}
       exact ⟨a.locus, a.isOpenSubfunctor, ha, le_iSup locus a⟩
   -- The coefficients are additive on tests and on pairs, which gives Zariski descent; so `V`,
   -- being locally everything, is dense.
-  have dense_T : IsCohomDense genericCoeff (V.whisker genericOver) :=
+  have dense_T : (V.whisker genericOver).IsDenseFor genericCoeff :=
     hasZariskiDescent_genericOver (𝟭 _) hasPartitions_genericCoeff (V_loc.whisker _)
   let ρ : pairAlg ⋙ X ⟶ (HodgeTatePair.toTest ⋙ genericOver) ⋙ X := Functor.whiskerRight toGeneric X
   let V' : Subfunctor ((HodgeTatePair.toTest ⋙ genericOver) ⋙ X) :=
     V.whisker (HodgeTatePair.toTest ⋙ genericOver)
-  have dense_B : IsCohomDense scalarCoeff (V'.preimage ρ) :=
+  have dense_B : (V'.preimage ρ).IsDenseFor scalarCoeff :=
     (hasZariskiDescent_genericOver _ hasPartitions_scalarCoeff (V_loc.whisker _)).preimage ρ
   refine ((Comparison.of ..).isBijective_congr (p := (V.whisker genericOver).ι)
       (V'.fromPreimage_ι ρ).symm dense_T.isCohomEquiv dense_B.isCohomEquiv).2

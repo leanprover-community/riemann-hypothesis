@@ -6,6 +6,8 @@ import Mathlib.Algebra.Category.Grp.Zero
 import Mathlib.CategoryTheory.Abelian.CommSq
 import Mathlib.CategoryTheory.Limits.Types.Multicoequalizer
 import Mathlib.RingTheory.LocalProperties.Reduced
+import all TauCeti.Algebra.Homology.Ext.EquivFor
+import all TauCeti.CategoryTheory.Abelian.FunctorCohomology.Basic
 public import Lib.Cohomology.Etale.BijectiveComparisons
 
 /-!
@@ -14,17 +16,18 @@ public import Lib.Cohomology.Etale.BijectiveComparisons
 This file studies the cohomology Hⁿ(Y) = Extⁿ(ℤ[Y], F) of a set-valued functor Y on a category C
 with coefficients in a functor F : C → Ab, where ℤ[Y] = `New.Variety.freeAb` Y. A map is an
 equivalence for F (`New.Variety.IsCohomEquiv`) if it induces bijections on all Extⁿ(-, F). A
-subfunctor U of Y is dense (`New.Variety.IsCohomDense`) if, over every point h_A → Y with h_A =
-Hom(A,−), the inclusion of the preimage of U is an equivalence. The Mayer–Vietoris sequence, the
-calculus of dense subfunctors and closed classes of functors are used to cut functors into pieces.
-When ι attaches commutative rings to objects and `New.Variety.HasPartitions ι F` holds, partitions
-along idempotents are dense. Locally constant coefficients on test rings satisfy
+subfunctor U of Y is dense (`CategoryTheory.Subfunctor.IsDenseFor`) if, over every point h_A → Y
+with h_A = Hom(A,−), the inclusion of the preimage of U is an equivalence. The Mayer–Vietoris
+sequence, the calculus of dense subfunctors and closed classes of functors are used to cut functors
+into pieces. When ι attaches commutative rings to objects and `New.Variety.HasPartitions ι F` holds,
+partitions along idempotents are dense. Locally constant coefficients on test rings satisfy
 `New.Variety.HasPartitions`.
 
 ## Main definitions and results
 
 * `New.Variety.mayer_vietoris_shortExact`: 0 → ℤ[U ∩ V] → ℤ[U] ⊕ ℤ[V] → ℤ[U ∪ V] → 0 is short exact.
-* `New.Variety.IsCohomDense.isCohomEquiv`: the inclusion of a dense subfunctor is an equivalence.
+* `CategoryTheory.Subfunctor.IsDenseFor.isCohomEquiv`: the inclusion of a dense subfunctor is an
+  equivalence.
 * `New.Variety.IsClosedClass.freeAb_iSup`: if a closed class contains ℤ[V] for all V in a set of
   subfunctors closed under intersection, it contains ℤ[-] of their finite unions (Mayer–Vietoris).
 * `New.Variety.HasPartitions.isCohomDense_partition`: for an idempotent `e`, the maps that kill `e`
@@ -32,8 +35,8 @@ along idempotents are dense. Locally constant coefficients on test rings satisfy
 * `New.Variety.HasPartitions.hasZariskiDescent`: Zariski descent for rings `κ` that receive an
   injective map from `ι`, when any two elements of `κ` are comparable for divisibility after a cut
   along an idempotent of `ι`.
-* `New.Variety.IsCohomDense.isCohomEquiv_of_fromPreimage`: a map is an equivalence if it is one over
-  a dense subfunctor.
+* `CategoryTheory.Subfunctor.IsDenseFor.isCohomEquiv_of_fromPreimage`: a map is an equivalence if it
+  is one over a dense subfunctor.
 
 Notions from other files:
 * `New.Variety.freeAb`: The functor sending a set-valued functor Y to ℤ[Y], whose value at A is the
@@ -97,13 +100,44 @@ lemma isCohomEquiv_iff_range [hg : Mono g] (h : range g = U) :
     rw [← Functor.map_comp, toRange_ι]]
   exact comp_iff (of_isIso (freeAb.map (toRange g)))
 
-namespace IsCohomDense
-
 /-! ### Dense subfunctors -/
+
+/-- Density for `F` of a subfunctor `U` of `Y` (Tau Ceti's `CategoryTheory.Subfunctor.IsDenseFor`)
+can be tested on the points of `Y`: `U` is dense exactly when, for every point `y ∈ Y(A)`, the
+inclusion of the preimage of `U` under `pointMap y : h_A ⟶ Y` is an equivalence for `F`. Every
+corepresentable functor is isomorphic to some `h_A`, and equivalences pass along the isomorphism. -/
+lemma _root_.CategoryTheory.Subfunctor.isDenseFor_iff : U.IsDenseFor F ↔
+    ∀ (A : C) (y : Y A), IsCohomEquiv F (freeAb.map (U.preimage (pointMap y)).ι) := by
+  refine ⟨fun h A y ↦ ?_, fun h R _ y ↦ ?_⟩
+  · have : (reprBy A).IsCorepresentable :=
+      inferInstanceAs (uliftCoyoneda.{1}.obj _).IsCorepresentable
+    exact h (pointMap y)
+  · -- `R` is isomorphic to `h_A` for `A = R.coreprX`, by `ε`; test at the point `ε ≫ y` of `Y`
+    let ε : reprBy R.coreprX ≅ R := R.uliftCoyonedaCoreprXIso
+    have h_y := h R.coreprX (uliftCoyonedaEquiv (ε.hom ≫ y))
+    rw [show pointMap (uliftCoyonedaEquiv (ε.hom ≫ y)) = ε.hom ≫ y from
+      uliftCoyonedaEquiv.symm_apply_apply _] at h_y
+    -- the preimage of `U` under `ε ≫ y`, carried along `ε`, is the preimage of `U` under `y`
+    have h_range : range ((U.preimage (ε.hom ≫ y)).ι ≫ ε.hom) = U.preimage y := by
+      ext B x
+      refine ⟨?_, fun hx ↦ ⟨⟨ε.inv.app B x, by simpa using hx⟩, by simp⟩⟩
+      rintro ⟨⟨z, hz⟩, rfl⟩
+      exact hz
+    show IsCohomEquiv F (freeAb.map (U.preimage y).ι)
+    rw [← isCohomEquiv_iff_range h_range, Functor.map_comp]
+    exact (comp_iff h_y).2 (of_isIso _)
+
+end New.Variety
+
+namespace CategoryTheory.Subfunctor.IsDenseFor
+
+open New.Variety Limits IsCohomEquiv Comparison
+
+variable {C : Type _} [Category C] {F : AbFunctor C} {Y E : C ⥤ Type 1} {U V : Subfunctor Y}
 
 /-- If the subfunctor U of Y is dense for F, then the inclusion U → Y is an equivalence: it
 induces bijections H^n(Y,F) → H^n(U,F) for all n. -/
-lemma isCohomEquiv (h : IsCohomDense F U) : IsCohomEquiv F (freeAb.map U.ι) := by
+lemma isCohomEquiv (h : U.IsDenseFor F) : IsCohomEquiv F (freeAb.map U.ι) := by
   -- It suffices to test on the fibres over the points `y` (`isBijective_of_fibers`); such a fibre
   -- injects into the representable h_A with image the preimage of `U`.
   refine (isBijective_of_fibers (𝟙 _) .of_id_snd fun A y ↦ IsCohomEquiv.bij ?_).eqv
@@ -113,25 +147,26 @@ lemma isCohomEquiv (h : IsCohomDense F U) : IsCohomEquiv F (freeAb.map U.ι) := 
       U.preimage (pointMap y) := by
     aesop (add simp [toFunctor, fiberProd, fiberProd.snd])
   -- the projection is a monomorphism as a pullback of `U.ι`
-  exact (isCohomEquiv_iff_range (hg := isPullback_fiberProd.mono_fst_of_mono) h_range).mpr (h A y)
+  exact (isCohomEquiv_iff_range (hg := isPullback_fiberProd.mono_fst_of_mono) h_range).mpr
+    (isDenseFor_iff.1 h A y)
 
 /-- The preimage of a dense subfunctor `U` of `Y` under `p : E ⟶ Y` is dense in `E`. -/
-lemma preimage (h : IsCohomDense F U) (p : E ⟶ Y) : IsCohomDense (Y := E) F (U.preimage p) := by
+lemma preimage (h : U.IsDenseFor F) (p : E ⟶ Y) : (U.preimage p).IsDenseFor F := by
   -- over a point `y` of `E`, this is the density of `U` over the point `p y` of `Y`
-  intro A y
-  have h_point := h A (p.app A y)
+  refine isDenseFor_iff.2 fun A y ↦ ?_
+  have h_point := isDenseFor_iff.1 h A (p.app A y)
   rwa [← pointMap_comp] at h_point
 
 /-- A subfunctor U that is all of Y is dense for F. The hypothesis is stated as `⊤ ≤ U`. -/
-lemma of_top_le (h : ⊤ ≤ U) : IsCohomDense F U := by
+lemma of_top_le (h : ⊤ ≤ U) : U.IsDenseFor F := by
   obtain rfl : U = ⊤ := top_unique h
-  exact fun _ _ ↦ of_isIso (freeAb.map (ι ⊤))
+  exact isDenseFor_top Y
 
 /-- Let U, V be subfunctors of Y. If V is dense in Y for F (`h`) and U ∩ V, the preimage of U in V,
 is dense in V (`k`), then U is dense in Y. -/
-lemma trans (h : IsCohomDense F V) (k : IsCohomDense F (U.preimage V.ι)) : IsCohomDense F U := by
+lemma trans (h : V.IsDenseFor F) (k : (U.preimage V.ι).IsDenseFor F) : U.IsDenseFor F := by
   -- Over a point `y`, compare the preimages `U_y` and `V_y` in h_A through `U_y ⊓ V_y`.
-  intro A y
+  refine isDenseFor_iff.2 fun A y ↦ ?_
   let U_y : Subfunctor (reprBy A) := U.preimage (pointMap y)
   let V_y : Subfunctor (reprBy A) := V.preimage (pointMap y)
   -- `U_y ⊓ V_y ⊆ V_y` is an equivalence by `k`, and `V_y ⊆ h_A` is one by `h`.
@@ -139,7 +174,8 @@ lemma trans (h : IsCohomDense F V) (k : IsCohomDense F (U.preimage V.ι)) : IsCo
     have h_comp : IsCohomEquiv F
         (freeAb.map ((U.preimage V.ι).preimage (V.fromPreimage (pointMap y))).ι ≫
           freeAb.map V_y.ι) :=
-      (k.preimage (fromPreimage V (pointMap y))).isCohomEquiv.comp_iff.mpr (h A y)
+      (k.preimage (fromPreimage V (pointMap y))).isCohomEquiv.comp_iff.mpr
+        (isDenseFor_iff.1 h A y)
     -- the composite of the two inclusions is injective with image `U_y ⊓ V_y`
     rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
       at h_comp
@@ -149,23 +185,21 @@ lemma trans (h : IsCohomDense F V) (k : IsCohomDense F (U.preimage V.ι)) : IsCo
   rwa [← freeAb.map_comp, isCohomEquiv_iff_range (U := U_y ⊓ V_y) (by aesop (add simp toFunctor))]
 
 /-- A subfunctor that contains a dense subfunctor is dense. -/
-lemma mono (h : IsCohomDense F U) (hU : U ≤ V) : IsCohomDense F V := by
+lemma mono (h : U.IsDenseFor F) (hU : U ≤ V) : V.IsDenseFor F := by
   -- the preimage of `V` in the dense subfunctor `U` is all of `U`
   exact h.trans (of_top_le fun A x _ ↦ hU A x.prop)
 
 /-- A subfunctor W of E that contains the preimage under p : E → Y of a dense subfunctor is
 dense. -/
-lemma of_preimage_le (h : IsCohomDense F U) (p : E ⟶ Y) {W : Subfunctor E}
-    (hW : U.preimage p ≤ W) : IsCohomDense F W :=
+lemma of_preimage_le (h : U.IsDenseFor F) (p : E ⟶ Y) {W : Subfunctor E}
+    (hW : U.preimage p ≤ W) : W.IsDenseFor F :=
   (h.preimage p).mono hW
 
-lemma inf (h : IsCohomDense F U) (hV : IsCohomDense F V) : IsCohomDense F (U ⊓ V) := by
+lemma inf (h : U.IsDenseFor F) (hV : V.IsDenseFor F) : (U ⊓ V).IsDenseFor F := by
   -- in `U`, the preimage of `U ⊓ V` contains the preimage of `V`, which is dense
   exact h.trans (hV.of_preimage_le U.ι fun A x hx ↦ ⟨x.prop, hx⟩)
 
-end IsCohomDense
-
-end New.Variety
+end CategoryTheory.Subfunctor.IsDenseFor
 
 /-!
 ## Closed classes of functors
@@ -291,7 +325,7 @@ that objects can be cut along idempotents and that `F` respects products of two 
 
 section Partitions
 
-open CategoryTheory Function Comparison Ideal IsCohomDense RingHom Limits H
+open CategoryTheory Function Comparison Ideal CategoryTheory.Subfunctor.IsDenseFor RingHom Limits H
 
 -- `hF` is not used below; the lemmas that need it take it as an argument. The variable fixes the
 -- type elaborated for `elemKillingMaps`.
@@ -402,10 +436,11 @@ lemma bijective_map_prod_map_of_idempotent {B E : C} {π : A ⟶ B} {ρ : A ⟶ 
 maps out of A that kill e or kill 1 − e form a dense subfunctor of `reprBy A` for F. -/
 lemma HasPartitions.isCohomDense_partition (hF : HasPartitions ι F) (e : ι A)
     (he : IsIdempotentElem e) :
-    IsCohomDense F (elemKillingMaps e ⊔ elemKillingMaps (1 - e)) := by
+    (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).IsDenseFor F := by
   -- The preimage under a point `k` is the same subfunctor for the idempotent `ι.map k e`.
   suffices h_isCohomEquiv_of_idempotent : ∀ (A : C) (e : ι.obj A), IsIdempotentElem e →
       IsCohomEquiv F (freeAb.map (elemKillingMaps e ⊔ elemKillingMaps (1 - e)).ι) by
+    refine Subfunctor.isDenseFor_iff.2 ?_
     rintro B ⟨k⟩
     rw [preimage_pointMap_elemKillingMaps_sup e k]
     exact h_isCohomEquiv_of_idempotent B _ (he.map (ι.map k).hom)
@@ -481,13 +516,14 @@ lemma HasPartitions.hasZariskiDescent (hF : HasPartitions ι F) {κ : C ⥤ Comm
     (hη_inj : ∀ (A : C) (x : ι.obj A), η A x = 0 → x = 0)
     (h_compare : ∀ A : C, IsComparableRing (η A)) :
     HasZariskiDescent κ F := by
-  intro Y U hU A y
+  intro Y U hU
+  refine Subfunctor.isDenseFor_iff.2 fun A y ↦ ?_
   let U_y : Subfunctor (reprBy A) := U.preimage (pointMap y)
   -- The `a` in the ring `κ.obj A` such that `U_y` together with the maps that kill `a` is dense
   -- form an ideal, since density passes to intersections and larger subfunctors.
   have h_zero_top : ⊤ ≤ elemKillingMaps (0 : κ.obj A) ⊔ U_y := by aesop
   let I : Ideal (κ.obj A) :=
-    .ofLinearComb {a | IsCohomDense F (elemKillingMaps a ⊔ U_y)} ⟨0, of_top_le h_zero_top⟩
+    .ofLinearComb {a | (elemKillingMaps a ⊔ U_y).IsDenseFor F} ⟨0, of_top_le h_zero_top⟩
       fun a₁ ha₁ a₂ ha₂ c₁ c₂ ↦ (ha₁.inf ha₂).mono fun _ _ ↦ by simp +contextual [or_imp]
   -- No maximal ideal `m` contains `I`: take `g ∉ m` whose inversion puts `y` into `U`, and an
   -- idempotent `e` whose image lies outside `m` and is divisible by `g`; that image is in `I`.
@@ -504,8 +540,8 @@ lemma HasPartitions.hasZariskiDescent (hF : HasPartitions ι F) {κ : C ⥤ Comm
       refine .inr (hgU B f.down (isUnit_of_dvd_unit (map_dvd _ hg_dvd) ?_))
       simp [← η.naturality_apply, ← (sub_mem_ker_iff _).mp hf]
   -- So `elemKillingMaps 1 ⊔ U_y` is dense, and it remains to see that `U_y` is dense in it.
-  have h_one : IsCohomDense F (elemKillingMaps 1 ⊔ U_y) := (eq_top_iff_one I).mp hI
-  refine isCohomEquiv (h_one.trans ?_)
+  have h_one : (elemKillingMaps 1 ⊔ U_y).IsDenseFor F := (eq_top_iff_one I).mp hI
+  refine isCohomEquiv (h_one.trans (Subfunctor.isDenseFor_iff.2 ?_))
   rintro B ⟨f, hf | hf⟩
   · -- If `f` kills `1`, all rings under `B` are zero and both cohomology groups vanish.
     have h_zero (D : C) (x : (reprBy B).obj D) : (0 : ι.obj D) = 1 :=
@@ -535,8 +571,8 @@ lemma H.map_map (u : X ⟶ Y) (v : Y ⟶ K) (x : H (freeAb.obj K) F n) :
 
 /-- Let `W` be dense in `Y`. If `u : X ⟶ Y` restricts to an equivalence from the preimage of `W`
 to `W`, then `u` is an equivalence. -/
-lemma IsCohomDense.isCohomEquiv_of_fromPreimage {u : X ⟶ Y} (hd : IsCohomDense F W)
-    (h : IsCohomEquiv F (freeAb.map (W.fromPreimage u))) :
+lemma _root_.CategoryTheory.Subfunctor.IsDenseFor.isCohomEquiv_of_fromPreimage {u : X ⟶ Y}
+    (hd : W.IsDenseFor F) (h : IsCohomEquiv F (freeAb.map (W.fromPreimage u))) :
     IsCohomEquiv F (freeAb.map u) := by
   -- in the square from `W.preimage u` to `Y`, the way through `W` is an equivalence by `h` and
   -- `hd`, and `W.preimage u → X` is one because density passes to preimages

@@ -539,9 +539,9 @@ lemma isFiniteLerayHirsch_principal_open
   -- fibre of `Spec A`.
   let F := W.zerosCoeff (Theory.locallyConstant.onElements (X := X)).functor
   let G := Q.zerosCoeff (locConstAlong (𝟭 (TestOver A)))
-  have dense_zeros : IsCohomDense F W.botLocus :=
+  have dense_zeros : W.botLocus.IsDenseFor F :=
     Theory.locallyConstant.onElements.isCohomDense_botLocus W
-  have dense_fibre : IsCohomDense F (Q.botLocus.whisker p) :=
+  have dense_fibre : (Q.botLocus.whisker p).IsDenseFor F :=
     dense_zeros.mono fun _ _ ↦ eq_bot_mono le_sup_right
   -- Proper base change gives classes whose Leray–Hirsch map is bijective at tests killing `𝔪_A`.
   obtain ⟨ι, -, h_basis⟩ := exists_isLerayHirschBasis_of_isCohomDense

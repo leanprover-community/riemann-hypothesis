@@ -210,7 +210,8 @@ lemma DepthVanishing.subsingleton_of_isWeaklyRegular {f : ι → c.baseAlg} (l :
   -- For the coefficients `B ↦ A[1/a] ⊗ N ⊗ B` the locus of `a` is dense: they do not change
   -- from `B` to `B[1/a]`, which represents the locus over `B`.
   have isCohomDense_unitLocus (N : ModuleCat c.baseAlg) (a : c.baseAlg) :
-      IsCohomDense (coeffAway N a) ((commaUnitLocus a).whisker ψ') := by
+      ((commaUnitLocus a).whisker ψ').IsDenseFor (coeffAway N a) := by
+    refine Subfunctor.isDenseFor_iff.2 ?_
     rintro B ⟨⟨y⟩⟩
     -- the only point of `h_A` at `B` is the structure map `A → B`
     obtain rfl : y = structureMap := by ext
@@ -222,7 +223,7 @@ lemma DepthVanishing.subsingleton_of_isWeaklyRegular {f : ι → c.baseAlg} (l :
     refine span_le.2 (Set.range_subset_iff.2 fun i ↦ ?_)
     -- a power of `f i` kills `x` once `1 ⊗ x` vanishes in `A[1/f i] ⊗ HN n N`
     have h_ker : x ∈ ker (TensorProduct.mk c.baseAlg (Away (f i)) (HN n N) 1) := by
-      have V_dense : IsCohomDense (coeffAway N (f i)) (V.whisker ψ') :=
+      have V_dense : (V.whisker ψ').IsDenseFor (coeffAway N (f i)) :=
         (isCohomDense_unitLocus N (f i)).mono fun _ ↦ le_iSup (commaUnitLocus ∘ f) i _
       -- the flat base change map out of `A[1/f i] ⊗ HN n N` is injective, and its target group
       -- vanishes
@@ -313,7 +314,8 @@ rings is dense for the coefficients `(A, M) ↦ ⋀_A M`. -/
 lemma hasZariskiDescent_hodgeCoeff :
     HasZariskiDescent (HodgeTest.sqZeroExt (k := k) ⋙ forget₂ (CommAlg k) CommRingCat)
       hodgeCoeff := by
-  intro Y U hU X y
+  intro Y U hU
+  refine Subfunctor.isDenseFor_iff.2 fun X y ↦ ?_
   -- No maximal ideal holds all the elements whose inversion puts `y` into `U`, so finitely many
   -- of them generate the unit ideal of the square-zero extension.
   let G : Set (HodgeTest.sqZeroExt.obj X) :=
@@ -326,8 +328,8 @@ lemma hasZariskiDescent_hodgeCoeff :
   obtain ⟨s, hs_sub, hs_span⟩ := (span_eq_top_iff_finite _).1 h_span
   -- Their first components `X.baseProj i` define a dense subfunctor `someUnitLocus` inside the
   -- preimage of `U`.
-  have h_dense : IsCohomDense hodgeCoeff (someUnitLocus fun i : s ↦ X.baseProj i) := by
-    refine fun _ g ↦ isCohomEquiv_someUnitLocus_of_span_eq_top ?_
+  have h_dense : (someUnitLocus fun i : s ↦ X.baseProj i).IsDenseFor hodgeCoeff := by
+    refine Subfunctor.isDenseFor_iff.2 fun _ g ↦ isCohomEquiv_someUnitLocus_of_span_eq_top ?_
     rw [← map_top (X.baseProj ≫ g.down.1).hom', ← hs_span, Ideal.map_span, Set.image_eq_range]
     rfl
   exact (h_dense.mono fun X' g ⟨i, h_unit⟩ ↦

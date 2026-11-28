@@ -216,15 +216,15 @@ functor from `D` to tests over `A`. Let `M` be an `ℓ`-torsion coefficient alon
 (`New.Variety.TorsionCoeff`). It satisfies `New.Variety.IsDetectedAtPoints`: classes in
 Extⁿ(ℤ[Hom(c, g –)], M) are detected by their restrictions to the residue fields of c. Also, the
 locus of tests where the maximal ideal 𝔪_A of `A` generates the zero ideal is dense
-(`New.Variety.IsCohomDense`). Let `L` be the functor of locally constant `ℤ/ℓ`-valued functions. A
-homogeneous class of Ext(L ∘ g, M) is a pair (degree, class), and `j` is one of them. Then there is
-a set `b` of such classes with two properties: (a) `j ∈ b` if the value of `j` at the constant
-function 1 is not zero; (b) the Leray–Hirsch map of `b` is bijective at ℤ[h_c], the free abelian
-functor on h_c = Hom(c, −) (`reprBy c`), for every test `c` in which 𝔪_A generates the zero ideal;
-this is what `⟨⟩ ∈ IdealFamily.ofMaximalIdeal.botLocus c` says. -/
+(`CategoryTheory.Subfunctor.IsDenseFor`). Let `L` be the functor of locally constant `ℤ/ℓ`-valued
+functions. A homogeneous class of Ext(L ∘ g, M) is a pair (degree, class), and `j` is one of them.
+Then there is a set `b` of such classes with two properties: (a) `j ∈ b` if the value of `j` at the
+constant function 1 is not zero; (b) the Leray–Hirsch map of `b` is bijective at ℤ[h_c], the free
+abelian functor on h_c = Hom(c, −) (`reprBy c`), for every test `c` in which 𝔪_A generates the zero
+ideal; this is what `⟨⟩ ∈ IdealFamily.ofMaximalIdeal.botLocus c` says. -/
 lemma exists_isLerayHirschBasis_of_isCohomDense [InvertsPrime A ℓ] (M : TorsionCoeff g)
     (h_detect : IsDetectedAtPoints g M.functor)
-    (h_dense : IsCohomDense M.functor (IdealFamily.ofMaximalIdeal.botLocus.whisker g))
+    (h_dense : (IdealFamily.ofMaximalIdeal.botLocus.whisker g).IsDenseFor M.functor)
     (j : (n : ℕ) × H ((restrictAlong g).obj (locConstAlong (𝟭 (TestOver A)))) M.functor n) :
     ∃ b : Set (Σ n : ℕ, H (restrictAlong g (locConstAlong (𝟭 (TestOver A)))) M.functor n),
       -- (a)
@@ -379,7 +379,7 @@ lemma isDetectedAtPoints_projLine [InvertsPrime A ℓ] :
   let I : IdealFamily
       (elementsProj (MonoidalCategory.tensorObj projLine (reprBy (CommRingCat.of A)))) :=
     ⟨⊥, by simp⟩
-  have h_dense : IsCohomDense (locConstAlong (testOfPoint A projLine)) I.pullToTests.botLocus :=
+  have h_dense : I.pullToTests.botLocus.IsDenseFor (locConstAlong (testOfPoint A projLine)) :=
     .of_top_le fun _ _ _ ↦ rfl
   exact I.isDetectedAtPoints_of_proper h_line (𝟙 _) (fun _ _ ↦ bijective_id) h_dense
 

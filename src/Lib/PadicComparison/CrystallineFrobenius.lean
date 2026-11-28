@@ -658,7 +658,7 @@ private lemma sum_linearFrob_apply_eq_zero {p : ℕ} [ThePrime p] {R : CommRingC
       H (freeAb.obj (testPoints.obj Y)) (periodCoeff (p := p)) n}
     (hJ : IsPadicPeriodMap he_algebraMap (Iso.refl _) he_smul J)
     (h_zar : HasZariskiDescent PadicTest.ringFunctor (periodCoeff (p := p)))
-    (hV_dense : IsCohomDense (periodCoeff (p := p)) (V.whisker (algFunctor ⋙ restrictAlg R OC)))
+    (hV_dense : (V.whisker (algFunctor ⋙ restrictAlg R OC)).IsDenseFor (periodCoeff (p := p)))
     (C : crysClasses p πk V n → Bmax ⊗[ℤ_[p]] (ellAdicCohom (ℓ := p) R Ω n).obj ⟨Y⟩)
     (h_crys : IsCrystalline (ellAdicCohom.galoisAction R Ω Γ Y n))
     (h_fixed : ∀ {𝓕 : Filter Γ} (z : crysClasses p πk V n),
@@ -686,8 +686,8 @@ private lemma sum_linearFrob_apply_eq_zero {p : ℕ} [ThePrime p] {R : CommRingC
   let V' := V.whisker (algFunctor ⋙ restrictAlg R OC)
   -- It suffices to work on the dense set `T` of points of `W` that every `u i` sends into `V`.
   let T := ⨅ i, V'.preimage (testPoints.map (u i))
-  have hT : IsCohomDense Ψ T := InfClosed.iInf_mem (s := {U | IsCohomDense Ψ U})
-    (fun _ hU _ hU' ↦ IsCohomDense.inf hU hU') (IsCohomDense.of_top_le le_rfl)
+  have hT : T.IsDenseFor Ψ := InfClosed.iInf_mem (s := {U | Subfunctor.IsDenseFor Ψ U})
+    (fun _ hU _ hU' ↦ Subfunctor.IsDenseFor.inf hU hU') (Subfunctor.IsDenseFor.of_top_le le_rfl)
     fun _ ↦ hV_dense.preimage _
   refine (hJ.bijective W).injective ((hT.isCohomEquiv n).1 ?_)
   -- `linearFrob` acts on the fixed period `C z` as the Weil pair, giving the class `y i`, and `J`
@@ -826,7 +826,7 @@ lemma ellAdicCohom.isCrystalline_and_linearFrob_rel {p : ℕ} [ThePrime p] {R : 
   have h_zar : HasZariskiDescent _ Ψ := (hasPartitions_periodAlg (S := Amax) Bmax
     (.refl _)).hasZariskiDescent (𝟙 _) (by simp) (·.isTest.isComparableRing)
   let V' := V.whisker (algFunctor ⋙ restrictAlg R OC)
-  have hV_dense : IsCohomDense Ψ V' := h_zar (hV.1.whisker _)
+  have hV_dense : V'.IsDenseFor Ψ := h_zar (hV.1.whisker _)
   let periodEquiv (n : ℕ) :
       Bmax ⊗[ℤ_[p]] (ellAdicCohom R Ω n).obj ⟨Y⟩ ≃ₗ[Bmax] H (freeAb.obj V'.toFunctor) Ψ n :=
     .ofBijective (H.mapₗ .. ∘ₗ J n Y) ((hV_dense.isCohomEquiv n).comp ((hJ n).bijective Y))

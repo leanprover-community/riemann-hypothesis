@@ -13,6 +13,7 @@ public import Mathlib.Combinatorics.Quiver.ReflQuiver
 public import Mathlib.Topology.LocallyConstant.Algebra
 public import Mathlib.Algebra.Category.Grp.Abelian
 public import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.Basic
+public import TauCeti.CategoryTheory.Abelian.FunctorCohomology.Basic
 import Mathlib.Algebra.Category.Grp.AB
 import Mathlib.Algebra.Category.Grp.Zero
 import Mathlib.Algebra.Divisibility.Prod
@@ -46,9 +47,9 @@ congruence relations with Frobenius.
 
 * `New.Variety.H N F n = Extⁿ(N, F)` and `New.Variety.freeAb` (the functor `Y ↦ ℤ[Y]`), with
   pull-back `New.Variety.H.map` in `N` and push-forward `New.Variety.H.push` in `F`.
-* `New.Variety.IsCohomEquiv F α`: `α` is bijective on all `Extⁿ(-, F)`.
-  `New.Variety.IsCohomDense F U`: the subfunctor `U` gives such an equivalence over every point
-  `New.Variety.pointMap y`.
+* `New.Variety.IsCohomEquiv F α`: `α` is bijective on all `Extⁿ(-, F)`. Tau Ceti's
+  `CategoryTheory.Subfunctor.IsDenseFor F U`: the subfunctor `U` gives such an equivalence over
+  every map from a corepresentable functor, that is, over every point `New.Variety.pointMap y`.
 * `New.Variety.IsTest`, `New.Variety.TestRing`: test rings and their category. A test ring is
   reduced and absolutely integrally closed, and divisibility in it is total after a partition by an
   idempotent.
@@ -253,11 +254,6 @@ def _root_.CategoryTheory.Subfunctor.whisker : Subfunctor (φ ⋙ Y) where
   obj A := U (φ A)
   map f := U.map (φ.map f)
 
-/-- The subfunctor U of Y is dense for F: for every point h_A → Y, the inclusion of the preimage
-of U in h_A is an equivalence for F. -/
-def IsCohomDense : Prop :=
-  ∀ (A : C) (y : Y A), IsCohomEquiv F (freeAb.map (U.preimage (pointMap y)).ι)
-
 /-! ### Tests with rings: idempotents and Zariski descent -/
 
 /-- The map `π : A ⟶ B` cuts `A` along the element `e` of the ring `ι A`: (a) `ι π` kills `e`;
@@ -291,9 +287,9 @@ abbrev IsZariskiLocallyTop : Prop :=
     ∃ a ∉ m, ∀ (B : C) (f : A ⟶ B), IsUnit (ι.map f a) → Y.map f y ∈ U B
 
 /-- Zariski descent for `F`: a subfunctor `U` of `Y` that is locally everything
-(`New.Variety.IsZariskiLocallyTop`) is dense for `F` (`New.Variety.IsCohomDense`). -/
+(`New.Variety.IsZariskiLocallyTop`) is dense for `F` (`CategoryTheory.Subfunctor.IsDenseFor`). -/
 def HasZariskiDescent : Prop :=
-  ∀ ⦃Y : C ⥤ Type 1⦄ ⦃U : Subfunctor Y⦄, IsZariskiLocallyTop ι U → IsCohomDense F U
+  ∀ ⦃Y : C ⥤ Type 1⦄ ⦃U : Subfunctor Y⦄, IsZariskiLocallyTop ι U → U.IsDenseFor F
 
 /-- If the subfunctor `U` of `Y` is locally everything for the rings `ι A`
 (`New.Variety.IsZariskiLocallyTop`), then its restriction `U.whisker φ` along `φ : C' ⥤ C` is
@@ -449,7 +445,7 @@ abbrev IsTestCohomEquiv : Prop := IsCohomEquiv (locConstCoeff Λ) (freeAb.map (m
 
 /-- The image of u: X → Y, restricted to test rings, is cohomologically dense in Y for the
 coefficient functor of locally constant functions Spec A → Λ. -/
-abbrev HasCohomDenseImage : Prop := IsCohomDense (locConstCoeff Λ) (range (mapOnTests u))
+abbrev HasCohomDenseImage : Prop := (range (mapOnTests u)).IsDenseFor (locConstCoeff Λ)
 
 /-! ### Spaces over a ring -/
 

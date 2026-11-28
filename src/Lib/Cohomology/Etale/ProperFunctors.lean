@@ -26,15 +26,15 @@ tested on points in valuation rings of algebraically closed fields.
   `U (span {e}) ⊔ U (span {1 - e})` dense for every idempotent `e`.
 * `New.Variety.IsRelAffine.hasCohomDenseImage_of_lifts`: an affine map that is onto on such points
   has dense image.
-* `New.Variety.IsCohomDense.of_affine_cover`: `U` is dense if each such point lies in one of
-  finitely many affine subfunctors whose points in test rings belong to `U`.
+* `CategoryTheory.Subfunctor.IsDenseFor.of_affine_cover`: `U` is dense if each such point lies in
+  one of finitely many affine subfunctors whose points in test rings belong to `U`.
 * `New.Variety.IsProperOver.hasCohomDenseImage_of_surjective`: a map of proper functors, onto on
-  geometric points, has dense image (`New.Variety.IsCohomDense`) for locally constant coefficients
-  `New.Variety.locConstCoeff Λ`.
+  geometric points, has dense image (`CategoryTheory.Subfunctor.IsDenseFor`) for locally constant
+  coefficients `New.Variety.locConstCoeff Λ`.
 * A density criterion for finitely many maps `P i : Y ⟶ Z` into a proper functor:
   `New.Variety.IsProperOver.isCohomDense_of_coincidences`. It is
-  `New.Variety.IsCohomDense.of_affine_cover` for the closed loci on which prescribed pairs of the
-  maps agree.
+  `CategoryTheory.Subfunctor.IsDenseFor.of_affine_cover` for the closed loci on which prescribed
+  pairs of the maps agree.
 * `New.Variety.ellAdicCohom.transfer`: let `c : W ⟶ Y` be a Galois covering of proper schemes with
   finite group `Δ`. Then the `ℓ`-adic cohomology of `Y` embeds in that of `W` and reaches all
   `Δ`-invariant classes.
@@ -42,8 +42,8 @@ tested on points in valuation rings of algebraically closed fields.
 Notions from other files:
 * `New.Variety.IsRelAffine`: The property of a map X → Y of set-valued functors on rings that its
   pull-back along every point h_A → Y is representable, of the form h_B → h_A.
-* `New.Variety.IsCohomDense`: The subfunctor U of Y is dense for F: for every point h_A → Y, the
-  inclusion of the preimage of U in h_A is an equivalence for F.
+* `CategoryTheory.Subfunctor.IsDenseFor`: The subfunctor U of Y is dense for F: for every point
+  h_A → Y, the inclusion of the preimage of U in h_A is an equivalence for F.
 * `New.Variety.reprBy`: The functor h_A = Hom(A,−) represented by the object A.
 * `New.Variety.IsTest`: a test ring A is reduced and absolutely integrally closed, and any a, b ∈ A
   admit an idempotent e with a ∣ eb and b ∣ (1 − e)a.
@@ -100,7 +100,7 @@ private lemma map_biprod_lift_neg_biprodAddEquiv_symm {F M N N' : AbFunctor Test
 be dense in `W` for the locally constant `Λ`-valued coefficients. Then the inclusion `U ⊔ V → W`
 induces isomorphisms `Hⁿ(W) → Hⁿ(U ⊔ V)` in every degree. -/
 lemma TestCohomology.isCohomEquiv_sup_of_isCohomDense
-    (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl))
+    (h_dense : (((U ⊔ V).preimage W.ι).whisker testIncl).IsDenseFor (locConstCoeff Λ))
     (h_le : U.whisker testIncl ⊔ V.whisker testIncl ≤ W.whisker testIncl) :
     IsCohomEquiv (locConstCoeff Λ) (freeAb.map (homOfLe h_le)) := by
   have h_range : Subfunctor.range (homOfLe h_le) = ((U ⊔ V).preimage W.ι).whisker testIncl :=
@@ -124,12 +124,12 @@ private lemma TestCohomology.prod_map_homOfLe_eq_comp (hUW : U ≤ W) (hVW : V �
 /-- Mayer–Vietoris for subfunctors `U, V ≤ W` of `Y`, in the cohomology `H` of the free abelian
 functors `ℤ[−]` restricted to test rings (`testIncl`), with coefficients `locConstCoeff Λ`
 (A ↦ locally constant functions Spec A → Λ). Assume `U ⊔ V` is dense in `W` for these coefficients
-(`IsCohomDense`: for every point h_A → W on test rings, the inclusion of the preimage of `U ⊔ V`
-into h_A induces bijections on all `Ext^n(−, locConstCoeff Λ)`). If in each degree `m < n` every
-class on `U ⊓ V` is a difference of restrictions of classes on `U` and on `V`, then the restriction
-`Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` is injective. -/
+(`Subfunctor.IsDenseFor`: for every point h_A → W on test rings, the inclusion of the preimage of
+`U ⊔ V` into h_A induces bijections on all `Ext^n(−, locConstCoeff Λ)`). If in each degree `m < n`
+every class on `U ⊓ V` is a difference of restrictions of classes on `U` and on `V`, then the
+restriction `Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` is injective. -/
 lemma TestCohomology.mayer_vietoris_injective_of_sub_surjective (hUW : U ≤ W) (hVW : V ≤ W)
-    (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl)) (n : ℕ)
+    (h_dense : (((U ⊔ V).preimage W.ι).whisker testIncl).IsDenseFor (locConstCoeff Λ)) (n : ℕ)
     (h_surj : ∀ m < n, ∀ z : H (freeAb.obj (testIncl ⋙ (U ⊓ V).toFunctor)) (locConstCoeff Λ) m,
       ∃ (x : H (freeAb.obj (testIncl ⋙ U.toFunctor)) (locConstCoeff Λ) m)
         (y : H (freeAb.obj (testIncl ⋙ V.toFunctor)) (locConstCoeff Λ) m),
@@ -154,7 +154,7 @@ lemma TestCohomology.mayer_vietoris_injective_of_sub_surjective (hUW : U ≤ W) 
 locally constant `Λ`-valued coefficients: if `U ⊓ V` has points only over the zero ring, then the
 restriction `Hⁿ(W) → Hⁿ(U) × Hⁿ(V)` is bijective. -/
 lemma TestCohomology.mayer_vietoris_bijective (hUW : U ≤ W) (hVW : V ≤ W)
-    (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl)) (n : ℕ)
+    (h_dense : (((U ⊔ V).preimage W.ι).whisker testIncl).IsDenseFor (locConstCoeff Λ)) (n : ℕ)
     (h_zero : ∀ B : CommRingCat, (U ⊓ V).toFunctor.obj B → (0 : B) = 1) :
     Bijective ((map Λ (homOfLe hUW) n).prod (map Λ (homOfLe hVW) n)) := by
   have h_le : U.whisker testIncl ⊔ V.whisker testIncl ≤ W.whisker testIncl :=
@@ -177,7 +177,7 @@ every class on `T` is a difference of restrictions from `U` and `V`, and bijecti
 points only over the zero ring. The two halves are `mayer_vietoris_injective_of_sub_surjective`
 and `mayer_vietoris_bijective`. -/
 lemma TestCohomology.mayer_vietoris_injective (hUW : U ≤ W) (hVW : V ≤ W)
-    (h_dense : IsCohomDense (locConstCoeff Λ) (((U ⊔ V).preimage W.ι).whisker testIncl)) (n : ℕ)
+    (h_dense : (((U ⊔ V).preimage W.ι).whisker testIncl).IsDenseFor (locConstCoeff Λ)) (n : ℕ)
     {T : Subfunctor Y} (hT : T = U ⊓ V) :
     (∀ m < n, ∀ z : H (freeAb.obj (testIncl ⋙ T.toFunctor)) (locConstCoeff Λ) m,
         ∃ (x : H (freeAb.obj (testIncl ⋙ U.toFunctor)) (locConstCoeff Λ) m)
@@ -367,7 +367,7 @@ back along `p : Z ⟶ Y`. If `U (e) ⊔ U (1 - e)` is dense in `Y` on test rings
 two pieces is dense in `U a`, and they meet only over the zero ring. -/
 private lemma bijective_prod_map_sup_span_of_isCohomDense {U : Ideal R → Subfunctor Y}
     (hU : IsZeroLocusFamily U) {e : R}
-    (h_dense : IsCohomDense (locConstCoeff Λ) ((U (span {e}) ⊔ U (span {1 - e})).whisker testIncl))
+    (h_dense : ((U (span {e}) ⊔ U (span {1 - e})).whisker testIncl).IsDenseFor (locConstCoeff Λ))
     {Z : PointFunctor} (p : Z ⟶ Y) (a : Ideal R) (n : ℕ) :
     Bijective
       ((TestCohomology.map Λ
@@ -415,14 +415,14 @@ private lemma bijective_map_fromPreimage_or_exists_isIdempotentElem {U : Ideal R
 /-- Local-to-global principle. Let `X`, `Y` have continuous cohomology with coefficients `Λ`
 (`IsCohomContinuous`), and let the `U a ⊆ Y`, `a` an ideal of `R`, be zero loci
 (`IsZeroLocusFamily`). Assume that for every idempotent `e`, `U (e) ⊔ U (1 - e)` is dense for
-locally constant `Λ`-coefficients (`IsCohomDense`): for each point `h_A → Y` with `A` a test ring
-(`testIncl`), the inclusion of its preimage in `h_A` is a cohomology equivalence. If `u : X ⟶ Y`
-induces isomorphisms on cohomology (`IsTestCohomEquiv`) over `U a` for each proper ideal `a`
-containing `e` or `1 - e` for every idempotent `e` (each connected piece), then so does `u`. -/
+locally constant `Λ`-coefficients (`Subfunctor.IsDenseFor`): for each point `h_A → Y` with `A` a
+test ring (`testIncl`), the inclusion of its preimage in `h_A` is a cohomology equivalence. If
+`u : X ⟶ Y` induces isomorphisms on cohomology (`IsTestCohomEquiv`) over `U a` for each proper ideal
+`a` containing `e` or `1 - e` for every idempotent `e` (each connected piece), then so does `u`. -/
 lemma IsTestCohomEquiv.of_connected (hX : IsCohomContinuous Λ X)
     (hY : IsCohomContinuous Λ Y) (u : X ⟶ Y) {U : Ideal R → Subfunctor Y} (hU : IsZeroLocusFamily U)
     (h_dense : ∀ e : R, IsIdempotentElem e →
-      IsCohomDense (locConstCoeff Λ) ((U (span {e}) ⊔ U (span {1 - e})).whisker testIncl))
+      ((U (span {e}) ⊔ U (span {1 - e})).whisker testIncl).IsDenseFor (locConstCoeff Λ))
     (h_conn : ∀ a : Ideal R, a ≠ ⊤ → (∀ e : R, IsIdempotentElem e → e ∈ a ∨ 1 - e ∈ a) →
       IsTestCohomEquiv Λ (fromPreimage (U a) u)) :
     IsTestCohomEquiv Λ u := by
@@ -430,7 +430,7 @@ lemma IsTestCohomEquiv.of_connected (hX : IsCohomContinuous Λ X)
   -- from bijectivity over all `U b`, `a < b`. If `a` is not connected, an idempotent `e` splits
   -- `U a` into `U (a + (e))` and `U (a + (1 - e))`.
   -- First replace `Y` by `U ⊥`, which is all of `Y`.
-  have h_bot : IsCohomDense (locConstCoeff Λ) ((U ⊥).whisker testIncl) :=
+  have h_bot : ((U ⊥).whisker testIncl).IsDenseFor (locConstCoeff Λ) :=
     .of_top_le fun A y _ ↦ hU.mem_bot
   refine h_bot.isCohomEquiv_of_fromPreimage fun n ↦ ?_
   -- `G a = Hⁿ(U a)` and `K a = Hⁿ(u⁻¹(U a))`, with restriction maps, and `π a : G a → K a` is the
@@ -527,7 +527,7 @@ lemma IsRelAffine.hasCohomDenseImage_of_lifts {X Y : PointFunctor} {p : X ⟶ Y}
   -- over the zero locus of a proper ideal `J` that contains `e` or `1 - e` for every idempotent
   -- `e`. There every point factors through a local ring of `A`, a valuation ring, over which `p`
   -- is onto.
-  intro A y
+  refine Subfunctor.isDenseFor_iff.2 fun A y ↦ ?_
   let U : Subfunctor (reprBy A.obj) := (range p).preimage (pointMap y)
   -- The functor that `A` represents on test rings is the restriction of `reprBy A.obj`, so it
   -- suffices that `U` and `reprBy A.obj` have the same cohomology on test rings.
@@ -580,19 +580,19 @@ lemma IsRelAffine.hasCohomDenseImage_of_lifts {X Y : PointFunctor} {p : X ⟶ Y}
 inclusions are relatively representable, and let `U` be a subfunctor of the restriction
 `testIncl ⋙ Y` of `Y` to test rings. Suppose that every point of `Y` in a valuation ring of an
 algebraically closed field lies in some `V i` whose restriction to test rings is contained in `U`.
-Then `U` is dense (`IsCohomDense`) for `locConstCoeff Λ` (`A ↦` locally constant functions
+Then `U` is dense (`Subfunctor.IsDenseFor`) for `locConstCoeff Λ` (`A ↦` locally constant functions
 `Spec A → Λ`): for every point `reprBy A ⟶ Y` with `A` a test ring, the inclusion of the preimage of
 `U` into `reprBy A` is an equivalence for these coefficients. -/
-lemma IsCohomDense.of_affine_cover {Y : CommRingCat ⥤ Type 1} {Λ : Ab}
-    {U : Subfunctor (testIncl ⋙ Y)} {J : Type} [Finite J] {V : J → Subfunctor Y}
+lemma _root_.CategoryTheory.Subfunctor.IsDenseFor.of_affine_cover {Y : CommRingCat ⥤ Type 1}
+    {Λ : Ab} {U : Subfunctor (testIncl ⋙ Y)} {J : Type} [Finite J] {V : J → Subfunctor Y}
     (hV_rep : ∀ i : J, IsRelAffine (V i).ι)
     (h_cover : ∀ {K : Type} [Field K] [IsAlgClosed K] (O : ValuationSubring K) (y : Y.obj (of O)),
       ∃ i : J, (V i).whisker testIncl ≤ U ∧ y ∈ (V i).obj (of O)) :
-    IsCohomDense (Y := testIncl ⋙ Y) (locConstCoeff Λ) U := by
+    U.IsDenseFor (locConstCoeff Λ) := by
   classical
   -- Fix a point `y` over a test ring `A`. The pull-back of `V i` along `y` is represented by a ring
   -- map `φ i : A ⟶ R i`: a map `f` out of `A` carries `y` into `V i` iff it factors through `φ i`.
-  intro A y
+  refine Subfunctor.isDenseFor_iff.2 fun A y ↦ ?_
   have h_rep (i : J) : ∃ (R : CommRingCat) (φ : A.obj ⟶ R), ∀ (B : CommRingCat) (f : A.obj ⟶ B),
       Y.map f y ∈ (V i).obj B ↔ ∃ u : R ⟶ B, φ ≫ u = f := by
     obtain ⟨h_comm, h_lift⟩ := isPullback_iff.mp ((hV_rep i).isPullback (pointMap (A := A.obj) y))
@@ -611,14 +611,14 @@ lemma IsCohomDense.of_affine_cover {Y : CommRingCat ⥤ Type 1} {Λ : Ab}
     obtain ⟨i, hi_le, hi_mem⟩ := h_cover O (Y.map f y)
     obtain ⟨u, rfl⟩ := (hφ i _ f).mp hi_mem
     exact ⟨⟨ofHom (evalRingHom _ (⟨i, hi_le⟩ : I)) ≫ u⟩, rfl⟩
-  -- Density is transitive (`IsCohomDense.trans`) and Zariski local (`h_zar`), so it suffices that
-  -- points of this image carry `y` into `U` Zariski locally. Let `f : A ⟶ C` factor through
-  -- `g : ∏ R i ⟶ C`, and let `m` be a maximal ideal of `C`.
+  -- Density is transitive (`Subfunctor.IsDenseFor.trans`) and Zariski local (`h_zar`), so it
+  -- suffices that points of this image carry `y` into `U` Zariski locally. Let `f : A ⟶ C` factor
+  -- through `g : ∏ R i ⟶ C`, and let `m` be a maximal ideal of `C`.
   have h_zar : HasZariskiDescent testIncl (locConstCoeff Λ) :=
     hasPartitions_locConstCoeff.hasZariskiDescent (𝟙 _) (by simp) fun C ↦
       C.property.isComparableRing
-  refine h_dense.trans (U := U.preimage (mapOnTests (pointMap y)))
-    (h_zar fun C ⟨⟨f⟩, ⟨g⟩, hfg⟩ m hm_max ↦ ?_) A ⟨𝟙 _⟩
+  refine Subfunctor.isDenseFor_iff.1 (h_dense.trans (U := U.preimage (mapOnTests (pointMap y)))
+    (h_zar fun C ⟨⟨f⟩, ⟨g⟩, hfg⟩ m hm_max ↦ ?_)) A ⟨𝟙 _⟩
   replace hfg : π ≫ g = f := congr(($hfg).down)
   -- The idempotents `single i 1` generate the unit ideal, so the image of one of them avoids `m`.
   obtain ⟨i, hi⟩ : ∃ i : I, g.hom (single i 1) ∉ m := by
@@ -859,9 +859,9 @@ criterion), let `P i : Y ⟶ Z` be finitely many maps, and let `U` be a subfunct
 to test rings (`TestRing`, via `testIncl`). Suppose that for every point `z` of `Y` over an
 algebraically closed field, `U` contains every point `x` of `Y` over a test ring that keeps the
 coincidences of `z`: whenever `P i` and `P j` agree at `z` they agree at `x`. Then `U` is dense
-(`IsCohomDense`) for the coefficients `locConstCoeff Λ` (A ↦ locally constant functions Spec A → Λ):
-for every point h_A → Y, the inclusion of the preimage of `U` into h_A induces bijections on all
-`Ext^n(−, locConstCoeff Λ)`. -/
+(`Subfunctor.IsDenseFor`) for the coefficients `locConstCoeff Λ` (A ↦ locally constant functions
+Spec A → Λ): for every point h_A → Y, the inclusion of the preimage of `U` into h_A induces
+bijections on all `Ext^n(−, locConstCoeff Λ)`. -/
 lemma New.Variety.IsProperOver.isCohomDense_of_coincidences {Λ : Ab}
     {Y Z : CommRingCat ⥤ Type 1} {D : CommRingCat} {s : Z ⟶ reprBy D}
     (h : IsProperOver s) {U : Subfunctor (testIncl ⋙ Y)}
@@ -872,11 +872,11 @@ lemma New.Variety.IsProperOver.isCohomDense_of_coincidences {Λ : Ab}
         (∀ i j : J, (P i).app (CommRingCat.of k) z = (P j).app (CommRingCat.of k) z →
           (P i).app B.obj x = (P j).app B.obj x) →
         x ∈ U.obj B) :
-    IsCohomDense (Y := testIncl ⋙ Y) (locConstCoeff Λ) U := by
+    U.IsDenseFor (locConstCoeff Λ) := by
   -- Cover `Y` by the loci `V ε` where `P i` and `P j` agree for all `j ∈ ε i`; there are finitely
-  -- many patterns `ε`. By `IsCohomDense.of_affine_cover` it suffices that each `V ε` is relatively
-  -- affine and that each point over a valuation ring `O` of an algebraically closed field lies in
-  -- some `V ε` contained in `U`.
+  -- many patterns `ε`. By `Subfunctor.IsDenseFor.of_affine_cover` it suffices that each `V ε` is
+  -- relatively affine and that each point over a valuation ring `O` of an algebraically closed
+  -- field lies in some `V ε` contained in `U`.
   let V (ε : J → Set J) : Subfunctor Y :=
     ⟨fun A ↦ {y | ∀ i, ∀ j ∈ ε i, P i A y = P j A y},
       fun f y hy i j hij ↦ by simpa using congrArg (Z.map f) (hy i j hij)⟩
@@ -934,7 +934,7 @@ of `Δ` (`permutedPairs`) are dense, for locally constant `Λ`-valued coefficien
 lemma New.Variety.IsGaloisCovering.isCohomDense_permutedPairs {R : CommRingCat}
     [Algebra R Ω] {W Y : Over (Spec R)} {c : W ⟶ Y} {Δ : FiniteGrp.{0}} {a : Δ →* End W}
     [IsProper W.hom] (h : IsGaloisCovering c a) (Λ : Ab.{0}) :
-    IsCohomDense (locConstCoeff Λ)
+    Subfunctor.IsDenseFor (locConstCoeff Λ)
       (permutedPairs (fun g : Δ ↦ mapOnTests ((geomPoints R Ω).map (a g).asHom))
         (mapOnTests ((geomPoints R Ω).map c))) := by
   -- It suffices to treat points `x` in which the `g (x i)` keep the coincidences of the
