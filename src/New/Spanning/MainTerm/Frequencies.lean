@@ -235,19 +235,14 @@ lemma sum_weight_filter_denominator_eq_le [IsTotallyComplex E] [DecidableEq (Ide
     (X : Finset E) {𝔟 : Ideal (𝓞 E)} (h𝔟 : 𝔟 ≠ ⊥) :
     ∑ ν ∈ X with denominator ν = 𝔟, ∏ v : InfinitePlace E, (max 1 ‖Φ v ν‖)⁻¹ ^ 6 ≤
       Ideal.absNorm 𝔟 * (64 * 38) ^ Core.numInfPlaces E := by
-  obtain ⟨label, h_label⟩ : ∃ label : E → Fin (Ideal.absNorm 𝔟), ∀ ν ν' : E,
-      𝔟 ≤ denominator ν → 𝔟 ≤ denominator ν' → label ν = label ν' → IsIntegral ℤ (ν - ν') :=
-    exists_coset_label h𝔟
-  calc
-    _ = ∑ k : Fin (Ideal.absNorm 𝔟), ∑ ν ∈ {ν ∈ X | denominator ν = 𝔟} with label ν = k,
-          ∏ v : InfinitePlace E, (max 1 ‖Φ v ν‖)⁻¹ ^ 6 := by rw [sum_fiberwise]
-    _ ≤ ∑ _ : Fin (Ideal.absNorm 𝔟), (64 * 38 : ℝ) ^ Core.numInfPlaces E := by
+  obtain ⟨label, h_label⟩ := exists_coset_label h𝔟
+  calc _ = ∑ k : Fin (Ideal.absNorm 𝔟), ∑ ν ∈ {ν ∈ X | denominator ν = 𝔟} with label ν = k,
+        ∏ v : InfinitePlace E, (max 1 ‖Φ v ν‖)⁻¹ ^ 6 := by rw [sum_fiberwise]
+    _ ≤ ∑ _ : Fin (Ideal.absNorm 𝔟), (64 * 38 : ℝ) ^ Core.numInfPlaces E :=
       -- numbers with denominator `𝔟` and the same label differ by an integer
-      refine sum_le_sum fun k _ ↦ sum_coset_weight_le fun ν hν ν' hν' ↦ ?_
-      simp only [mem_filter] at hν hν'
-      obtain ⟨⟨-, h_den⟩, h_class⟩ := hν
-      obtain ⟨⟨-, h_den'⟩, h_class'⟩ := hν'
-      exact h_label ν ν' h_den.ge h_den'.ge (h_class.trans h_class'.symm)
+      sum_le_sum fun k _ ↦ sum_coset_weight_le fun ν hν ν' hν' ↦ by
+        simp only [mem_filter] at hν hν'
+        exact h_label ν ν' hν.1.2.ge hν'.1.2.ge (hν.2.trans hν'.2.symm)
     _ = _ := by simp
 
 /-- Let `E` be a totally complex number field with `f = Core.numInfPlaces E` infinite places. For a

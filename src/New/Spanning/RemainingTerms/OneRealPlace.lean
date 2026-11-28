@@ -771,22 +771,17 @@ lemma RealPlace.norm_det_subframeBlock {γ : 𝔰.G₁} {i j : ℕ} {Z : 𝔰.Fr
       exists_common_vector_of_normOnePairOccursFrom hi_le hZ hγ
     -- By Cramer's rule, as `c` is `1` at the last index, replacing the last column by the product
     -- of the block and `c` leaves the determinant unchanged.
-    have h_update :
-        ((subframeBlock hi_le Z).updateCol (last i) (Pi.single (last i) (-x 𝔰.top))).det =
-          (subframeBlock hi_le Z).det := by
-      rw [← cramer_apply, ← h_block_mulVec, cramer_eq_adjugate_mulVec, mulVec_mulVec, adjugate_mul,
-        smul_mulVec, one_mulVec, Pi.smul_apply, hc, smul_eq_mul, mul_one]
-    have h_minor :
-        ((subframeBlock hi_le Z).updateCol (last i) (Pi.single (last i) (-x 𝔰.top))).submatrix
-          castSucc castSucc = Z.submatrix (castLE hj) (castLE hj) := by
-      ext a b
-      simp
+    let M := (subframeBlock hi_le Z).updateCol (last i) (Pi.single (last i) (-x 𝔰.top))
+    have h_update : M.det = (subframeBlock hi_le Z).det := by
+      simp [M, ← cramer_apply, ← h_block_mulVec, cramer_eq_adjugate_mulVec, mulVec_mulVec,
+        adjugate_mul, smul_mulVec, one_mulVec, hc]
+    have h_minor : M.submatrix castSucc castSucc = Z.submatrix (castLE hj) (castLE hj) :=
+      Matrix.ext fun a b => by simp [M]
     rw [← h_update, det_succ_column _ (last i), sum_univ_castSucc]
-    simp [h_minor, hx]
+    simp [h_minor, hx, M]
   · obtain rfl : i = 𝔰.ϱ := hij.trans (min_eq_left h_top.le)
     obtain rfl : j = 𝔰.n := hj.antisymm h_top
-    have h_id : subframeIndex (le_refl 𝔰.ϱ) = id := funext subframeIndex_self
-    simp [subframeBlock, h_id]
+    simp [subframeBlock, show subframeIndex hi_le = id from funext subframeIndex_self]
 
 section LastColumn
 

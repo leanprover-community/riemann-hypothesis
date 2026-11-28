@@ -287,22 +287,16 @@ theorem mem_commonLink : v ∈ commonLink γ γ' ↔
     v ∈ linkedX₀ γ ∧ linkIsometry γ (v ⊕ᵥ 0) = linkIsometry γ' (v ⊕ᵥ 0) := by
   -- A pair orthogonal to `z_N` in both links is determined by its image `v` under `linkSource`.
   rw [mem_linkedX₀]
-  constructor
-  · rintro ⟨p, ⟨⟨hp, hp'⟩, hp_ker⟩, rfl⟩
-    obtain ⟨h_left, h_right⟩ := mem_ker_zRowBlockDiagonal.1 hp_ker
-    have h_source : LinearMap.funLeft E E (inl ∘ inl) p ⊕ᵥ 0 = linkSource E 𝔰 p := by
-      ext (i | i)
-      exacts [rfl, h_right.symm]
-    rw [h_source, linkIsometry_linkSource hp, linkIsometry_linkSource hp']
-    exact ⟨h_left, rfl⟩
-  · rintro ⟨hv, h_eq⟩
-    obtain ⟨p, hp, h_source⟩ := exists_mem_link_linkSource_eq γ (v ⊕ᵥ 0)
-    have h_target : linkIsometry γ (v ⊕ᵥ 0) = linkTarget E 𝔰 p := by
-      rw [← h_source, linkIsometry_linkSource hp]
-    have hp' : p ∈ link γ' := by rw [mem_link_iff_linkIsometry, h_source, ← h_eq, h_target]
-    exact ⟨p, ⟨⟨hp, hp'⟩, mem_ker_zRowBlockDiagonal.2
-      ⟨(congrFun h_target (inr ())).symm.trans hv, congrFun h_source (inr ())⟩⟩,
-      funext fun i ↦ congrFun h_source (inl i)⟩
+  refine ⟨fun ⟨p, ⟨⟨hp, hp'⟩, hker⟩, hv⟩ ↦ ?_, fun ⟨hv, h_eq⟩ ↦ ?_⟩
+  · obtain ⟨hl, hr⟩ := mem_ker_zRowBlockDiagonal.1 hker
+    have hs : v ⊕ᵥ 0 = linkSource E 𝔰 p := funext (Sum.rec (congrFun hv.symm) fun _ ↦ hr.symm)
+    rw [hs, linkIsometry_linkSource hp, linkIsometry_linkSource hp']
+    exact ⟨hl, rfl⟩
+  · obtain ⟨p, hp, hs⟩ := exists_mem_link_linkSource_eq γ (v ⊕ᵥ 0)
+    have ht : linkIsometry γ (v ⊕ᵥ 0) = linkTarget E 𝔰 p := hs ▸ linkIsometry_linkSource hp
+    exact ⟨p, ⟨⟨hp, mem_link_iff_linkIsometry.2 <| by rw [hs, ← h_eq, ht]⟩,
+      mem_ker_zRowBlockDiagonal.2 ⟨(congrFun ht (inr ())).symm.trans hv, congrFun hs (inr ())⟩⟩,
+      funext fun i ↦ congrFun hs (inl i)⟩
 
 /-- For `γ' = γ` the condition `Υ_γ v = Υ_γ' v` always holds, so `commonLink γ γ` is `X₀^γ`. -/
 theorem commonLink_self (γ : S.G E) : commonLink γ γ = linkedX₀ γ :=
