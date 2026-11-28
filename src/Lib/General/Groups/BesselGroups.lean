@@ -3,6 +3,8 @@ module
 public import Aesop.BuiltinRules
 public import Mathlib.Data.Matrix.ColumnRowPartitioned
 public import Lib.General.Groups.CongruenceSubgroups
+import TauCeti.LinearAlgebra.Matrix.LDU
+import TauCeti.LinearAlgebra.Matrix.Triangular
 
 /-!
 # Block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
@@ -219,29 +221,19 @@ attribute [simp] mem_agreeWithOneOn
 function `lev`, then `d⁻¹ * u * d` is block upper unitriangular for `lev`. -/
 lemma conj_mem_unitriangular {lev : n → α} {u d : GL n R} (hd : d.val.BlockTriangular lev)
     (hu : u ∈ unitriangular lev R) :
-    d⁻¹ * u * d ∈ unitriangular lev R := by
-  -- Compare `d⁻¹ * u * d` with `d⁻¹ * 1 * d` term by term: in a nonzero term `d⁻¹ i k * _ * d l j`
-  -- we have `lev l ≤ lev j ≤ lev i ≤ lev k`, so that `u k l` is the entry of `1`.
-  intro i j hij
-  have hd_inv : d⁻¹.val.BlockTriangular lev := (parabolic lev).inv_mem hd
-  have h_term : ∀ k l : n, d⁻¹.val i k * u.val k l * d.val l j =
-      d⁻¹.val i k * (1 : Matrix n n R) k l * d.val l j := fun k l ↦ by
-    grind [@hd_inv i k, @hd l j, hu k l, not_le]
-  calc (d⁻¹ * u * d).val i j = (d⁻¹.val * (1 : Matrix n n R) * d.val) i j := by
-        simp only [Units.val_mul, Matrix.mul_apply, Finset.sum_mul, h_term]
-    _ = (1 : Matrix n n R) i j := by simp
+    d⁻¹ * u * d ∈ unitriangular lev R := fun i j hij ↦ sub_eq_zero.mp <| by
+  -- `u - 1` vanishes on and below the block diagonal, and multiplying by the block triangular
+  -- `d⁻¹` and `d` preserves this; `d⁻¹ * (u - 1) * d = d⁻¹ * u * d - 1`.
+  have h := hd.mul_apply_eq_zero_of_le' (((parabolic lev).inv_mem hd).mul_apply_eq_zero_of_le
+    (N := u.val - 1) fun a b hab ↦ sub_eq_zero.mpr (hu a b hab)) hij
+  rwa [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, d.inv_mul] at h
 
 /-- A matrix has determinant `1` if it is block upper unitriangular for the level function `lev`,
 that is, agrees with the identity matrix at every entry (a, b) with `lev b ≤ lev a`. -/
 lemma det_eq_one_of_unitriangular {lev : n → α} {Z : Matrix n n R}
     (hZ : ∀ a b : n, lev b ≤ lev a → Z a b = (1 : Matrix n n R) a b) :
-    Z.det = 1 := by
-  -- the determinant is the product of those of the diagonal blocks, which are `1`
-  have h_tri : Z.BlockTriangular lev := fun a b hab ↦ by grind [Matrix.one_apply_ne]
-  have h_blocks : ∀ a : α, Z.toSquareBlock lev a = 1 := fun a ↦ by
-    ext x y
-    simp [toSquareBlock_def, hZ x y (by grind), Matrix.one_apply, Subtype.ext_iff]
-  simp [h_tri.det, h_blocks]
+    Z.det = 1 :=
+  (blockUnitriangular_of_apply_eq_one_apply_of_not_lt fun a b h ↦ hZ a b (not_lt.1 h)).det_eq_one
 
 /-! ### Minors, diagonal scalings, frame matrices and the unitary group -/
 
