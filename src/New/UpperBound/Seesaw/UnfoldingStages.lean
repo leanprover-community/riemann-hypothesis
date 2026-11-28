@@ -786,9 +786,9 @@ lemma integral_unfoldStageOn (ϑ : D.TameChar)
     using integral_besselGroup_unfold Y' (rankTwist (D.chainChar ϑ (k + 1))) (movedDatum ϑ ξ y k)
       (isEquivariant_unfoldStageOn ϑ t φ ξ y k hk) hz_aut hz_rapid
 
-/-- Decidable equality on the sum of `q × X_{2i+1}` and the type of pairs `(a, b)` of an index `a`
-of `Y_{2i} ⊕ Y_{2i+2}` and an index `b` of `Y_{2i+1}` whose grades have positive difference, built
-from the instances for sums, products and subtypes. -/
+/-- Decidable equality on the sum of the type of pairs `(a, b)` of an index `a` of
+`Y_{2i} ⊕ Y_{2i+2}` and an index `b` of `Y_{2i+1}` whose grades have positive difference, and of
+`q × X_{2i+1}`, built from the instances for sums, products and subtypes. -/
 noncomputable local instance instDecidableEqDoubleLiftSplitting (i : ℕ) (hi : 2 * i < 2 * D.ϱ + 1)
     {X q : Type} {s : ℕ} [Fintype X] [DecidableEq X] [Fintype q] [DecidableEq q]
     {Y : Grading (D.spaceY (2 * i + 2)) D.N X s} :

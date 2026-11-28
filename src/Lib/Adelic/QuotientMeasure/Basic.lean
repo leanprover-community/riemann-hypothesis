@@ -94,9 +94,10 @@ noncomputable abbrev chosenCutoff : X → ENNReal := Classical.epsilon (IsCutoff
 /-- The measure βμ on X for the weight β = `New.chosenCutoff ν`. When a cutoff exists
 (`New.HasCutoff`), ν is inversion invariant and μ is H-invariant, both s-finite, integrating an
 H-invariant function against it gives the integral over H\X, for every choice of cutoff. -/
-@[to_additive addOrbitMeasure /-- The measure βμ on X for the weight
-β = `New.chosenAddCutoff ν`, for an additive action of H on X; the additive version of
-`New.orbitMeasure`. -/]
+@[to_additive addOrbitMeasure /-- The measure βμ on X for the weight β = `New.chosenAddCutoff ν`,
+for an additive action of H on X. When a cutoff exists (`New.HasAddCutoff`), ν is negation
+invariant and μ is H-invariant, both s-finite, integrating an H-invariant function against it gives
+the integral over H\X, for every choice of cutoff. -/]
 noncomputable abbrev orbitMeasure : Measure X := μ.withDensity (chosenCutoff ν)
 
 /-- The hypothesis that the action of H, with measure ν, on X admits a cutoff: a measurable
