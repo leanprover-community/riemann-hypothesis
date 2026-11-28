@@ -100,17 +100,38 @@ lemma form_vectorOfLastEntry (hN : π * star ↑π = N) :
     rw [← h_coord, mulVec_mulVec, mulVec_mulVec, gram_besselLatticeBasis π N hN]
   have h_cancel : N * s = t := by
     rw [← hN, ← mul_assoc, ← Units.coe_star, ← Units.val_mul, Units.mul_inv, one_mul]
+  have h_sv : (𝔰.middleGram N).splitGram *ᵥ v =
+      (0 ⊕ᵥ ((x ⊕ᵥ fun _ : Unit ↦ N * s) ⊕ᵥ 0) : 𝔰.BesselIndex → A) := by
+    have h_fc {n l m : Type} [Fintype l] [Fintype m] (X : Matrix n m A) (u : l → A) (w : m → A) :
+        fromCols (0 : Matrix n l A) X *ᵥ (u ⊕ᵥ w) = X *ᵥ w := by
+      ext i
+      simp only [mulVec, dotProduct, Fintype.sum_sum_type, fromCols_apply_inl, fromCols_apply_inr,
+        Matrix.zero_apply, zero_mul, sum_const_zero, zero_add, elim_inr]
+    have h_u : (of fun (_ _ : Unit) ↦ -N) *ᵥ (fun _ : Unit ↦ -s) = fun _ : Unit ↦ N * s := by
+      ext ⟨⟩
+      simp only [mulVec, dotProduct, of_apply, Fintype.sum_unique, mul_neg, neg_mul, neg_neg]
+    dsimp only [v, Shape.Form.splitGram, Floors.hyperbolicGram, Shape.middleGram]
+    rw [fromBlocks_mulVec, fromBlocks_mulVec, fromBlocks_mulVec]
+    simp only [Function.comp_def, elim_inl, elim_inr, zero_mulVec, mulVec_zero, h_fc,
+      one_mulVec, h_u, add_zero, zero_add]
   constructor
   · calc star e ⬝ᵥ J *ᵥ e
       _ = star v ⬝ᵥ (𝔰.middleGram N).splitGram *ᵥ v := by
         rw [h_pair, ← star_mulVec_dotProduct, h_coord]
       _ = star x ⬝ᵥ x - star s * (N * s) := by
-        simp [v, splitGram, middleGram, mulVec, dotProduct, Matrix.one_apply, sub_eq_add_neg]
+        rw [h_sv]
+        simp only [v, dotProduct, Fintype.sum_sum_type, Pi.star_apply, elim_inl, elim_inr,
+          Pi.zero_apply, star_zero, zero_mul, sum_const_zero, zero_add, add_zero,
+          Fintype.sum_unique, star_neg, neg_mul, sub_eq_add_neg]
       _ = star x ⬝ᵥ x - (π * star π)⁻¹.val * t * star t := by
         rw [h_cancel]
         simp [s, mul_comm, mul_left_comm]
-  · rw [h_pair, ← h_cancel]
-    simp [B, v, besselLatticeBasis, splitGram, middleGram, mulVec, dotProduct, Matrix.one_apply]
+  · rw [h_pair, h_sv, ← h_cancel]
+    dsimp only [B, besselLatticeBasis, Shape.z]
+    rw [fromBlocks_conjTranspose, fromBlocks_conjTranspose, fromBlocks_conjTranspose,
+      fromBlocks_mulVec, fromBlocks_mulVec, fromBlocks_mulVec]
+    simp only [Function.comp_def, elim_inl, elim_inr, conjTranspose_one, one_mulVec,
+      conjTranspose_zero, zero_mulVec, add_zero, zero_add]
 
 /-- The vector `vectorOfLastEntry π t x` depends continuously on the pair `(t, x)`. -/
 @[fun_prop]
@@ -223,25 +244,34 @@ lemma IntegralPlace.exists_right_invariant_measure_besselH :
   have h_open : IsOpen (K : Set T.G)⁻¹ := IsOpen.inv unitaryLevel_open_compact.1
   let K₀ : TopologicalSpace.PositiveCompacts H :=
     ⟨⟨Subtype.val ⁻¹' (K : Set T.G)⁻¹, unitaryLevel_open_compact.2.inv.preimage_val h_closed⟩,
-      1, by rw [h_open.preimage_val.interior_eq]; simp⟩
+      1, by
+      rw [h_open.preimage_val.interior_eq]
+      exact Set.mem_preimage.mpr (Set.mem_inv.mpr (one_mem _))⟩
   let ν : Measure H := (haarMeasure K₀).inv
+  have hμ_haar : (haarMeasure K₀).IsHaarMeasure := isHaarMeasure_haarMeasure K₀
+  have hμ_sf : SFinite (haarMeasure K₀) :=
+    @instSFiniteOfSigmaFinite _ _ _ (@IsHaarMeasure.sigmaFinite _ _ _ _ _ hμ_haar _)
+  have hν_right : ν.IsMulRightInvariant := inferInstance
+  have : MeasurableMul H :=
+    ⟨fun c ↦ (continuous_const_mul c).measurable, fun c ↦ (continuous_mul_const c).measurable⟩
+  have hν_sf : SFinite ν := inferInstance
   let η : Measure T.G := ν.map Subtype.val
+  have hη_sf : SFinite η := Measure.instSFiniteMap ν Subtype.val
   have η_apply (S : Set T.G) : η S = ν (Subtype.val ⁻¹' S) := h_emb.map_apply ν S
   have η_box : η K = 1 :=
-    calc η K = haarMeasure K₀ (Subtype.val ⁻¹' (K : Set T.G))⁻¹ := by
-          rw [η_apply, Measure.inv_apply]
-      _ = 1 := haarMeasure_self
+    (η_apply K).trans ((Measure.inv_apply (haarMeasure K₀) _).trans haarMeasure_self)
   have η_right (s : T.G) (hs : s ∈ H) : η ∗ₘ dirac s = η := by
     have h_pres : MeasurePreserving (· * s) η η :=
       (h_emb.measurable.measurePreserving ν).of_semiconj (measurePreserving_mul_right ν ⟨s, hs⟩)
-        (fun _ ↦ rfl) (by fun_prop)
+        (fun _ ↦ rfl) (continuous_mul_const s).measurable
     rw [mconv_dirac, h_pres.map_eq]
   -- the `h` in H with `h y ∈ besselU · K` lie in one right coset of H ∩ K
   have η_le (y : T.G) : η {h : T.G | ∃ u ∈ T.besselU, u * (h * y) ∈ K} ≤ 1 := by
     rw [← η_box, η_apply, η_apply]
     exact measure_le_of_div_mem fun h ⟨u, hu, huh⟩ ↦ ⟨h, fun k ⟨w, hw, hwk⟩ ↦
       div_mem_unitaryLevel_of_besselU_mul h.prop k.prop hu hw huh hwk⟩
-  exact ⟨η, inferInstance, η_box, h_emb.ae_map_iff.mpr (by simp), η_right, η_le⟩
+  exact ⟨η, hη_sf, η_box, h_emb.ae_map_iff.mpr (Filter.Eventually.of_forall fun x ↦ x.2),
+    η_right, η_le⟩
 
 /-- Let `N` in `P.integers` be self-conjugate and let the rank `𝔰.k` of X₀ be `|ι| + 2 m + 1`. Then
 the middle block `latticeMiddleGram 𝔰 N` has an integral hyperbolic basis in which the coordinate
@@ -268,16 +298,98 @@ lemma IntegralPlace.exists_isIntMatrix_hyperbolicBasis {N : A} (hN : N ∈ P.int
   have E_form : Eᴴ * latticeMiddleGram 𝔰 N * E = planeSumGram (hyperbolicGram (Fin m) 1) := by
     have h_ne (i : SplitIndex m ι) : (f i : 𝔰.κ) ≠ 𝔰.k₀ := (f i).prop.symm
     have h_trace : P.element + star P.element = 1 := P.element_add_star
-    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix]
-    -- each entry reduces to `hc_norm`, `h_trace` or `hN_star`
-    simp [← Matrix.ext_iff, Matrix.mul_apply, C, latticeMiddleGram, diagonal, h_ne,
-      Subtype.val_inj, fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
-      conjTranspose_fromCols_eq_fromRows_conjTranspose, Matrix.one_apply]
-    grind
+    have h_el : star P.element = 1 - P.element := eq_sub_of_add_eq' h_trace
+    let incl := ![inl 𝔰.k₀, inr ()] ⊕ᵥ fun i ↦ inl (f i)
+    have h_sub : (latticeMiddleGram 𝔰 N).submatrix incl incl =
+        fromBlocks !![0, -1; -1, -N] 0 0 1 := by
+      ext (a | a) (b | b)
+      · fin_cases a <;> fin_cases b <;>
+          simp [incl, latticeMiddleGram, Filling.scaleAt]
+      · fin_cases a <;>
+          simp [incl, latticeMiddleGram, Filling.scaleAt, h_ne b, (h_ne b).symm]
+      · fin_cases b <;>
+          simp [incl, latticeMiddleGram, Filling.scaleAt, h_ne a]
+      · by_cases hab : a = b
+        · subst hab; simp [incl, latticeMiddleGram, Filling.scaleAt, h_ne]
+        · have hne : (f a : 𝔰.κ) ≠ f b := Subtype.val_injective.ne (f.injective.ne hab)
+          simp [incl, latticeMiddleGram, Filling.scaleAt, hab, hne]
+    change (inclMatrix A incl * fromBlocks !![-1, -N * P.element; 0, 1] 0 0 C)ᴴ *
+        latticeMiddleGram 𝔰 N *
+        (inclMatrix A incl * fromBlocks !![-1, -N * P.element; 0, 1] 0 0 C) =
+      planeSumGram (hyperbolicGram (Fin m) 1)
+    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix, h_sub, fromBlocks_conjTranspose,
+      fromBlocks_multiply, fromBlocks_multiply]
+    simp only [Matrix.zero_mul, Matrix.mul_zero, add_zero, zero_add, Matrix.mul_one,
+      conjTranspose_zero]
+    rw [planeSumGram]
+    congr 1
+    · ext i j
+      fin_cases i <;> fin_cases j <;>
+        simp only [neg_mul, Fin.zero_eta, Fin.mk_one, Fin.isValue, Matrix.mul_apply,
+          conjTranspose_apply, of_apply, cons_val', cons_val_zero, cons_val_one,
+          cons_val_fin_one, Fin.sum_univ_two, star_neg, star_mul', hN_star, h_el,
+          star_one, star_zero, zero_mul, one_mul, mul_zero, mul_one, add_zero, zero_add,
+          sum_neg_distrib, mul_neg, neg_zero, neg_neg]
+      ring
+    · have h_cr {X Y : Matrix (Fin m) (Fin m) A} :
+          fromCols (0 : Matrix (Fin m) ι A) X * fromRows (0 : Matrix ι (Fin m) A) Y = X * Y := by
+        ext i j
+        simp only [Matrix.mul_apply, Fintype.sum_sum_type, fromCols_apply_inl, fromCols_apply_inr,
+          fromRows_apply_inl, fromRows_apply_inr, Matrix.zero_apply, zero_mul,
+          Finset.sum_const_zero, zero_add]
+      have h_cb {X Y : Matrix (Fin m) (Fin m) A} {D : Matrix ι ι A} :
+          fromCols (0 : Matrix (Fin m) ι A) X * fromBlocks D 0 0 Y = fromCols 0 (X * Y) := by
+        ext i (j | j) <;>
+          simp only [Matrix.mul_apply, Fintype.sum_sum_type, fromCols_apply_inl, fromCols_apply_inr,
+            fromBlocks_apply₁₁, fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂,
+            Matrix.zero_apply, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, zero_add]
+      have h_br {X Y : Matrix (Fin m) (Fin m) A} {D : Matrix ι ι A} :
+          fromBlocks D 0 0 X * fromRows (0 : Matrix ι (Fin m) A) Y = fromRows 0 (X * Y) := by
+        ext (i | i) j <;>
+          simp only [Matrix.mul_apply, Fintype.sum_sum_type, fromRows_apply_inl, fromRows_apply_inr,
+            fromBlocks_apply₁₁, fromBlocks_apply₁₂, fromBlocks_apply₂₁, fromBlocks_apply₂₂,
+            Matrix.zero_apply, zero_mul, mul_zero, Finset.sum_const_zero, add_zero, zero_add]
+      have h_rc {X Y : Matrix (Fin m) (Fin m) A} :
+          fromRows (0 : Matrix ι (Fin m) A) X * fromCols (0 : Matrix (Fin m) ι A) Y =
+            fromBlocks 0 0 0 (X * Y) := by
+        ext (i | i) (j | j) <;>
+          simp only [Matrix.mul_apply, fromRows_apply_inl, fromRows_apply_inr, fromCols_apply_inl,
+            fromCols_apply_inr, fromBlocks_apply₁₁, fromBlocks_apply₁₂, fromBlocks_apply₂₁,
+            fromBlocks_apply₂₂, Matrix.zero_apply, zero_mul, mul_zero, Finset.sum_const_zero]
+      have h_ca {X Y : Matrix (Fin m) (Fin m) A} :
+          fromCols (0 : Matrix (Fin m) ι A) X + fromCols 0 Y = fromCols 0 (X + Y) := by
+        ext i (j | j) <;>
+          simp only [Matrix.add_apply, fromCols_apply_inl, fromCols_apply_inr, Matrix.zero_apply,
+            add_zero]
+      have h_ra {X Y : Matrix (Fin m) (Fin m) A} :
+          fromRows (0 : Matrix ι (Fin m) A) X + fromRows 0 Y = fromRows 0 (X + Y) := by
+        ext (i | i) j <;>
+          simp only [Matrix.add_apply, fromRows_apply_inl, fromRows_apply_inr, Matrix.zero_apply,
+            add_zero]
+      rw [show C = fromBlocks 1 (fromCols 0 (P.element • 1)) (fromRows 0 (c • 1))
+            (fromBlocks 1 0 0 ((-star P.element * c) • 1)) from rfl,
+        fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
+        conjTranspose_fromCols_eq_fromRows_conjTranspose, fromBlocks_multiply,
+        fromBlocks_conjTranspose, hyperbolicGram]
+      simp only [conjTranspose_one, conjTranspose_zero, conjTranspose_smul, star_neg, star_mul',
+        star_star, Matrix.one_mul, Matrix.mul_one, h_cr, h_cb, h_br, h_rc, fromBlocks_multiply,
+        Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add, smul_mul_assoc, mul_smul_comm,
+        smul_smul, h_ca, h_ra, fromBlocks_add, ← add_smul]
+      congr 1
+      · rw [mul_comm c (star c), hc_norm, neg_one_smul, add_neg_cancel]
+      · conv_rhs => rw [← one_smul A (1 : Matrix (Fin m) (Fin m) A)]
+        congr 2
+        linear_combination h_trace - star P.element * hc_norm
+      · conv_rhs => rw [← one_smul A (1 : Matrix (Fin m) (Fin m) A)]
+        congr 2
+        linear_combination h_trace - P.element * hc_norm
+      · conv_rhs => rw [← zero_smul A (1 : Matrix (Fin m) (Fin m) A)]
+        congr 2
+        linear_combination (star P.element * P.element) * hc_norm
   obtain ⟨V, hV, hV_eq⟩ : ∃ V ∈ intGL 𝔰.MiddleIndex P.integers, V.val = latticeMiddleGram 𝔰 N :=
     (isUnimodular_latticeMiddleGram 𝔰 ⟨hN, hN_star⟩).2
   have h_det : P.modulus (latticeMiddleGram 𝔰 N).det = 1 := by rw [← hV_eq, modulus_det_eq_one hV]
-  refine ⟨⟨E, E_form, by lia, h_det⟩, E_int, ?_⟩
+  refine ⟨⟨E, E_form, by simp only [hm], h_det⟩, E_int, ?_⟩
   simp [E, funext_iff, Matrix.mul_apply, inclMatrix, Matrix.one_apply]
 
 omit [IsHermitianUnit T.splitGram] in
@@ -415,8 +527,46 @@ lemma IntegralPlace.exists_measure_floorGroup_top (hT : IsUnimodular P.integers 
   let Φ (p : (A × (FloorPairs 𝔰.top m ⊕ ι ⊕ FloorPairs 𝔰.top m → A)) × skewAdjoint A) : T.G :=
     topEichler hu_dual hu_last (φ p)
   have φ_last (t : A) (w) (a : skewAdjoint A) : φ ((t, w), a) 𝔰.z = t := by
-    simp [φ, Matrix.mul_apply, mulVec, dotProduct, HyperbolicBasis.floorBasis, inclMatrix,
-      flatChart, Matrix.one_apply, hB_last]
+    dsimp only [φ, HyperbolicBasis.floorBasis]
+    rw [← mulVec_mulVec, ← mulVec_mulVec]
+    let S : Type := {i : Fin 𝔰.ϱ // (𝔰.top : ℕ) ≤ i}
+    let incl : 𝔰.MiddleIndex ⊕ S ⊕ S → 𝔰.BesselIndex :=
+      inr ∘ inl ⊕ᵥ Sum.map (↑) (inr ∘ (↑))
+    let order : Fin 2 ⊕ FloorPairs 𝔰.top m ⊕ ι ⊕ FloorPairs 𝔰.top m →
+        (Fin 2 ⊕ SplitIndex m ι) ⊕ S ⊕ S :=
+      inl ∘ inl ⊕ᵥ
+        (Sum.map (inr ∘ inl) inl ⊕ᵥ (inl ∘ inr ∘ inr ∘ inl ⊕ᵥ Sum.map (inr ∘ inr ∘ inr) inr))
+    have h1 (x : 𝔰.MiddleIndex ⊕ S ⊕ S → A) :
+        (inclMatrix A incl *ᵥ x) 𝔰.z = x (inl (inr ())) := by
+      simp only [mulVec, dotProduct, inclMatrix, submatrix_apply, Matrix.one_apply, id_eq]
+      refine (Finset.sum_eq_single (inl (inr ())) ?_ (by simp)).trans ?_
+      · rintro ((k | ⟨⟩) | s | s) _ hx
+        · simp [Shape.z, incl]
+        · exact absurd rfl hx
+        · simp [Shape.z, incl]
+        · simp [Shape.z, incl]
+      · simp only [Shape.z, incl, elim_inl, Function.comp_apply, ↓reduceIte, one_mul]
+    have h2 (x : (Fin 2 ⊕ SplitIndex m ι) ⊕ S ⊕ S → A) :
+        (B.basisMatrix.fromBlocks 0 0 (diagonal 1) *ᵥ x) (inl (inr ())) = x (inl (inl 1)) := by
+      rw [mulVec, dotProduct, Fintype.sum_sum_type]
+      simp only [fromBlocks_apply₁₁, fromBlocks_apply₁₂, Matrix.zero_apply, zero_mul,
+        Finset.sum_const_zero, add_zero, hB_last, Pi.single_apply, ite_mul, one_mul,
+        Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
+    have h3 (x : Fin 2 ⊕ FloorPairs 𝔰.top m ⊕ ι ⊕ FloorPairs 𝔰.top m → A) :
+        (inclMatrix A order *ᵥ x) (inl (inl 1)) = x (inl 1) := by
+      simp only [mulVec, dotProduct, inclMatrix, submatrix_apply, Matrix.one_apply, id_eq]
+      refine (Finset.sum_eq_single (inl 1) ?_ (by simp)).trans ?_
+      · rintro (k | (k | k) | k | (k | k)) _ hx
+        · have hk : (1 : Fin 2) ≠ k := fun h ↦ hx (congrArg inl h.symm)
+          simp [order, hk]
+        · simp [order]
+        · simp [order]
+        · simp [order]
+        · simp [order]
+        · simp [order]
+      · simp only [order, elim_inl, Function.comp_apply, ↓reduceIte, one_mul]
+    rw [h1, h2, h3]
+    simp [flatChart]
   have Φ_meas : Measurable Φ := (measurable_topEichler hu_dual hu_last).comp (by fun_prop)
   have Φ_orbit (t : A) (w) (a : skewAdjoint A) (ht : IsUnit t) :
       orbitPoint 𝔰.top (Φ ((t, w), a)) = φ ((t, w), a) := by
@@ -437,18 +587,24 @@ lemma IntegralPlace.exists_measure_floorGroup_top (hT : IsUnimodular P.integers 
     have φ_int : φ ((t, w), a) ∈ intVectors P.integers 𝔰.BesselIndex :=
       (isIntMatrix_floorBasis hB _).mulVec (flatChart_mem_intVectors hJ hβ ha ht ht_inv hw)
     exact topEichler_mem_unitaryLevel_one hT hu hu_dual hu_last φ_int ht_inv (φ_last t w a)
-  refine ⟨(volume.prod P.skewMeasure).map Φ, inferInstance, ?_, ?_, ?_⟩
+  have : SFinite P.skewMeasure := inferInstance
+  refine ⟨(volume.prod P.skewMeasure).map Φ,
+    Measure.instSFiniteMap (volume.prod P.skewMeasure) Φ, ?_, ?_, ?_⟩
   · refine (ae_map_iff Φ_meas.aemeasurable measurableSet_floorGroup).2 (.of_forall fun p ↦ ?_)
     exact topEichler_mem_floorGroup hu_dual hu_last fun i hi ↦ B.floorBasis_mulVec_eq_zero _ hi
   · have h_chart : B.floorQuadricMeasure 𝔰.top = (volume.prod P.skewMeasure).map φ :=
       Measure.map_map (by fun_prop) (by fun_prop)
-    rw [Measure.map_map (by fun_prop) Φ_meas, h_chart]
+    rw [Measure.map_map (continuous_orbitPoint (b := 𝔰.top)).measurable Φ_meas, h_chart]
     -- the first coordinate is almost always a unit
     refine map_congr ?_
     filter_upwards [quasiMeasurePreserving_fst.ae (quasiMeasurePreserving_fst.ae ae_isUnit)]
       with ⟨⟨t, w⟩, a⟩ ht using Φ_orbit t w a ht
-  · grw [← le_map_apply Φ_meas.aemeasurable, ← Φ_box]
-    simp [volume_eq_prod, isOpen_isCompact_volume_intVectors, data_normalised]
+  · refine (?_ : volume P.intUnits ≤ (volume.prod P.skewMeasure)
+        ((intUnits ×ˢ SetLike.coe (intVectors P.integers _)) ×ˢ
+          {a : skewAdjoint A | a.val ∈ P.integers})).trans
+        ((measure_mono Φ_box).trans (le_map_apply Φ_meas.aemeasurable _))
+    simp only [prod_prod, volume_eq_prod, isOpen_isCompact_volume_intVectors, data_normalised,
+      mul_one, le_rfl]
 
 
 /-- At the finite place `P`, let `N` be in `P.integers` with `star N = N`, let `g` be a unit of `A`
@@ -590,9 +746,12 @@ lemma mem_of_mem_productDifferences {c : A} (hc : c ∈ F.productDifferences) : 
         F.levelUnit * star b ⬝ᵥ T.splitGram *ᵥ d := by
     have h_star : star F.levelUnit⁻¹.val = F.levelUnit⁻¹.val := by
       simp [← inverse_star_unit, F.star_levelUnit]
+    have h_u : F.levelUnit.val * F.levelUnit⁻¹.val = 1 := Units.mul_inv F.levelUnit
     simp only [b, d, mulVec_sub, mulVec_smul, star_smul, star_sub, h_star, smul_sub,
       dotProduct_sub, sub_dotProduct, dotProduct_smul, smul_dotProduct, smul_eq_mul]
-    grind [F.levelUnit.mul_inv]
+    linear_combination (F.levelUnit⁻¹.val * (star z.1 ⬝ᵥ T.splitGram *ᵥ z'.1 -
+      star z.1 ⬝ᵥ T.splitGram *ᵥ z'.2 - star z.2 ⬝ᵥ T.splitGram *ᵥ z'.1 +
+      star z.2 ⬝ᵥ T.splitGram *ᵥ z'.2)) * h_u
   rw [h_gap]
   exact sub_mem (add_mem (h.star_dotProduct_splitGram_mulVec_mem hz_int hz'_cong)
     (h.star_dotProduct_splitGram_mulVec_mem hz_cong hz'_int))
@@ -619,7 +778,7 @@ lemma exists_intGL_mulVec_mem_commonVectors {x y u k : T.G}
     (.trans .inl σ.toEmbedding)
   let Y : Matrix F.FreeIndex (Fin d) A := V.val.submatrix id (σ ∘ inr)
   have h_zero (a : Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ ⊕ Fin 𝔰.ϱ) (j : Fin d) : (C * Y) a j = 0 :=
-    h_clear a (σ (inr j)) (by simp)
+    h_clear a (σ (inr j)) (fun ⟨x, hx⟩ ↦ Sum.inl_ne_inr (σ.injective hx))
   have h_orth : v * Y = 0 := ext fun a ↦ h_zero (inl a)
   -- `u⁻¹` fixes the columns of `N Y`: off the first rows it is the identity except in the last
   -- columns (`apply_inr_of_mem_besselU`), and these meet the last rows of `N Y`, which vanish
@@ -636,12 +795,21 @@ lemma exists_intGL_mulVec_mem_commonVectors {x y u k : T.G}
   have h_act : (x * (y⁻¹ * u * y * k))⁻¹.val.val * (F.orthonormalPart * Y) = k⁻¹.val.val * W := by
     rw [Matrix.mul_assoc, Matrix.sub_mul, Matrix.one_mul, sub_eq_zero] at h_fix
     calc
-      _ = (k⁻¹ * y⁻¹).val.val * (u⁻¹.val.val * (N * Y)) := by simp [N, Matrix.mul_assoc]
+      _ = (k⁻¹ * y⁻¹).val.val * (u⁻¹.val.val * (N * Y)) := by
+        simp only [N, _root_.mul_inv_rev, inv_inv, Subgroup.coe_mul, InvMemClass.coe_inv,
+          Units.val_mul, Matrix.mul_assoc]
       _ = (k⁻¹ * y⁻¹).val.val * (N * Y) := by rw [h_fix]
-      _ = k⁻¹.val.val * W := by simp [N, W, Matrix.mul_assoc]
+      _ = k⁻¹.val.val * W := by
+        simp only [N, W, Subgroup.coe_mul, InvMemClass.coe_inv, Units.val_mul, Matrix.mul_assoc]
+        rw [← Matrix.mul_assoc _ y.val.val, ← Units.val_mul, inv_mul_cancel, Units.val_one,
+          Matrix.one_mul]
+  have h_orth_int : IsIntMatrix integers F.orthonormalPart := by
+    rintro (i | (i | i)) j
+    · exact zero_mem _
+    · exact h.isIntMatrix_basisMatrix i (inr (inr (inl (F.freeIndex j))))
+    · exact zero_mem _
   have h_int : IsIntMatrix integers W :=
-    (inv_mem hx).1.isIntMatrix.mul (by simp [Matrix.mul_apply, h.isIntMatrix_basisMatrix _, Y,
-      hV.isIntMatrix _, IsIntMatrix, mul_mem, sum_mem])
+    (inv_mem hx).1.isIntMatrix.mul (h_orth_int.mul fun i j ↦ hV.isIntMatrix i (σ (inr j)))
   have h_cong : IsIntMatrix integers (F.levelUnit⁻¹.val • (W - k⁻¹.val.val * W)) := by
     simpa [← smul_neg, Matrix.sub_mul, Units.smul_def] using ((inv_mem hk).2.mul h_int).neg
   refine ⟨V, hV, fun t ht ↦ ⟨?_, ?_⟩⟩
@@ -669,8 +837,9 @@ lemma exists_isCommonBound {α : Aˣ} (hα : α.val ∈ integers) {S : Size T}
   obtain ⟨_, ⟨y, n, hn, rfl⟩, k, hk, rfl⟩ := Set.mem_mul.1 hz
   have σ : SplitIndex 𝔰.ϱ (Fin 𝔰.ϱ) ⊕ Fin (F.volumeExponent + (m + 5)) ≃ F.FreeIndex :=
     equivOfCardEq <| by
-      simp only [volumeExponent, Fintype.card_sum, Fintype.card_fin]
-      lia
+      simp only [volumeExponent, blockRank, Fintype.card_sum, Fintype.card_fin]
+      rw [Shape.n] at hm h_card ⊢
+      omega
   obtain ⟨V, hV, h_common⟩ : ∃ V ∈ intGL F.FreeIndex P.integers,
       ∀ t ∈ intVectors P.integers (Fin (F.volumeExponent + (m + 5))),
         V.val.submatrix id (σ ∘ inr) *ᵥ t ∈ F.commonVectors x (y⁻¹ * n * y * k) v :=
@@ -679,7 +848,9 @@ lemma exists_isCommonBound {α : Aˣ} (hα : α.val ∈ integers) {S : Size T}
   have h_adj (u : F.FreeIndex → A) (t : Fin (F.volumeExponent + (m + 5)) → A) :
       star u ⬝ᵥ Y *ᵥ t = star (Yᴴ *ᵥ u) ⬝ᵥ t := by
     simp [star_mulVec, dotProduct_mulVec]
-  refine ⟨fun u ↦ P.contentIndex 0 (Yᴴ *ᵥ u), by fun_prop, fun u ↦ le_iInf fun h_unit ↦ ?_,
+  refine ⟨fun u ↦ P.contentIndex 0 (Yᴴ *ᵥ u),
+    measurable_contentIndex.comp (continuous_const.matrix_mulVec continuous_id).measurable,
+    fun u ↦ le_iInf fun h_unit ↦ ?_,
     fun u ↦ le_iInf fun _ ↦ measure_mono fun c hc i ↦ ?_, fun j ↦ ?_⟩
   · -- if `t` is the content of `Yᴴ u`, the products of `u` with common vectors fill
     -- `star t • integers`
@@ -703,9 +874,14 @@ lemma exists_isCommonBound {α : Aˣ} (hα : α.val ∈ integers) {S : Size T}
     calc
       _ ≤ idealZeta P.integers m * (P.modulus (α ^ j).val)⁻¹ ^ (3 * 𝔰.ϱ + (m + 5)) :=
         lintegral_contentIndex_pow_le h.idealZeta_le_two σ 0 (α ^ j) hV
-          ⟨by simp +arith, Fintype.card_fin _, by lia⟩
+          ⟨by simp only [Fintype.card_sum, Fintype.card_fin]; omega, Fintype.card_fin _, by lia⟩
       _ ≤ (2 / P.modulus α) ^ (99 * 𝔰.n * (j + 1)) :=
-        h.idealZeta_mul_inv_modulus_pow_le hα (by rw [Shape.n] at hm ⊢; nlinarith)
+        h.idealZeta_mul_inv_modulus_pow_le hα (by
+          have h1 : 3 * 𝔰.ϱ + (m + 5) ≤ 99 * 𝔰.n := by rw [Shape.n] at hm ⊢; omega
+          calc j * (3 * 𝔰.ϱ + (m + 5)) + 1
+            _ ≤ j * (99 * 𝔰.n) + 99 * 𝔰.n :=
+              Nat.add_le_add (Nat.mul_le_mul_left j h1) (by rw [Shape.n]; omega)
+            _ = 99 * 𝔰.n * (j + 1) := by ring)
 
 /-- The gauge of scale `α` at a large lattice datum, for an integral self-conjugate unit `α` of `A`:
 a number `x` has size `j` if `α ^ j * x` is integral, and the field `loss` is `2 / P.modulus α`. -/
@@ -717,24 +893,36 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
   loss := 2 / P.modulus α
   mul_mem_ofSize hx hy := by
     simpa only [Set.mem_ofPred_eq, pow_add, mul_mul_mul_comm] using integers.mul_mem hx hy
-  sum_mem_ofSize := by simp_all [pow_succ', mul_assoc, mul_sum, mul_mem, sum_mem]
+  sum_mem_ofSize _ hf := by
+    simpa only [Set.mem_ofPred_eq, pow_succ', mul_assoc, mul_sum] using
+      sum_mem fun a _ ↦ mul_mem hα (hf a)
   neg_mem_iff_and_star_mem_iff := by
              refine ⟨by simp, fun hx ↦ ?_, fun hx ↦ ?_⟩ <;> simpa [sα] using isAdelic.1.1 hx
-  zero_one_mem_ofSize := by simp [pow_mem hα]
-  splitGram_and_inv_mem := by
-          simp [hα, h.integral_data.1.isIntMatrix _,
-            h.integral_data.1.isUnit_det_and_isIntMatrix_inv.2 _, mul_mem]
+  zero_one_mem_ofSize j :=
+    ⟨by simpa only [Set.mem_ofPred_eq, mul_zero] using zero_mem _,
+      by simpa only [Set.mem_ofPred_eq, mul_one] using pow_mem hα j⟩
+  splitGram_and_inv_mem :=
+    ⟨fun i j ↦ by
+      simpa only [Set.mem_ofPred_eq, pow_one] using mul_mem hα (h.integral_data.1.isIntMatrix i j),
+     fun i j ↦ by
+      simpa only [Set.mem_ofPred_eq, pow_one] using
+        mul_mem hα (h.integral_data.1.isUnit_det_and_isIntMatrix_inv.2 i j)⟩
   isCompact_ofSize j := isCompact_O.preimage_smul (α ^ j)
   two_le_loss := two_le_two_div_modulus hα
   loss_ne_top := by simp [div_eq_top]
   pairs_le := h.zeta_le_and_le_card.2.1
-  one_le_kernelBound := by simp [data_normalised]
-  levelUnit_mem_ofSize := by simp [hα, h.integral_data, mul_mem]
-  hasMatrixSize_basisMatrix := by simp [hα, h.integral_data.2.1 _, Size.HasMatrixSize, mul_mem]
-  traceOne_div_mem_ofSize := by simp [hα, data_normalised, mul_mem]
-  hasMatrixSize_boxSet := by
-          simp_all [h.volume_le_and_boxSet_closePairs_positions_eq, unitaryLevel, mem_intGL,
-            -Sum.forall, Size.HasMatrixSize, mul_mem]
+  one_le_kernelBound := le_of_eq data_normalised.2.2.2.1.symm
+  levelUnit_mem_ofSize := by
+    simpa only [Set.mem_ofPred_eq, pow_one] using mul_mem hα h.integral_data.2.2.1
+  hasMatrixSize_basisMatrix i j := by
+    simpa only [Size.HasMatrixSize, Set.mem_ofPred_eq, pow_one] using
+      mul_mem hα (h.integral_data.2.1 i j)
+  traceOne_div_mem_ofSize := by
+    simp only [Set.mem_ofPred_eq, pow_one, mul_mem, hα, data_normalised]
+  hasMatrixSize_boxSet g hg i j := by
+    rw [h.volume_le_and_boxSet_closePairs_positions_eq.2.1] at hg
+    simpa only [Size.HasMatrixSize, Set.mem_ofPred_eq, pow_one] using
+      mul_mem hα (hg.1.isIntMatrix i j)
   mem_vecsOfSize_of_mem_closePairs ω₁ ω₂ hω := by
     rw [closePairs_eq] at hω
     exact ⟨fun i ↦ mul_mem (pow_mem hα 1) (hω.1 i), fun i ↦ mul_mem (pow_mem hα 1) (hω.2 i)⟩
@@ -751,19 +939,23 @@ def gauge (α : Aˣ := 1) (hα : α.val ∈ integers := by simp)
     ring
   modulus_le j u hu := (inv_modulus_pow_le α j).trans'
          (by simpa [mul_comm] using modulus_le_one (α ^ j * u) hu)
-  volume_ofSize_le j := (volume_setOf_mul_mem (α ^ j)).trans_le <| (inv_modulus_pow_le α j).trans <|
-    by
-           bound [one_le_two.trans (two_le_two_div_modulus hα)]
+  volume_ofSize_le j := (volume_setOf_mul_mem (α ^ j)).trans_le <|
+    (inv_modulus_pow_le α j).trans <|
+      pow_le_pow_right₀ (one_le_two.trans (two_le_two_div_modulus hα)) (Nat.le_succ j)
   two_mul_blockRank_le := by
     obtain ⟨-, hm, h_rank⟩ := h.zeta_le_and_le_card
     simp only [blockRank]
-    lia
+    rw [Shape.n] at hm h_rank
+    omega
   exists_blockKernel := by
-                 obtain ⟨l, h_sfinite, h_dis, h_mass⟩ :=
-                   h.exists_kernel_isDisintegration_coordinateBox_le
-                 exact ⟨l, h_sfinite, h_dis, fun β j ↦
-                   (h_mass β (α ^ j)).trans
-                     (h.idealZeta_mul_inv_modulus_pow_le hα (by simp only [blockRank]; nlinarith))⟩
+    obtain ⟨l, h_sfinite, h_dis, h_mass⟩ := h.exists_kernel_isDisintegration_coordinateBox_le
+    exact ⟨l, h_sfinite, h_dis, fun β j ↦
+      (h_mass β (α ^ j)).trans (h.idealZeta_mul_inv_modulus_pow_le hα (by
+        simp only [blockRank]
+        calc j * (2 * m + 3) + 1
+          _ ≤ j * (2 * m + 4) + (2 * m + 4) :=
+            Nat.add_le_add (Nat.mul_le_mul_left j (by omega)) (by omega)
+          _ = (2 * (m + 1) + 2) * (j + 1) := by ring))⟩
   exists_commonBound _ hx _ hz := h.exists_isCommonBound hα (fun _ ↦ rfl) hx hz
 
 include h in
@@ -784,7 +976,15 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
     MulAction.surjective g _
   have h_int : (∀ i, g⁻¹.val * v i ∈ integers) ↔ w ∈ intVectors integers 𝔰.BesselIndex := by
     rw [← inv_smul_smul g w, hw]
-    simp [inclMatrix_val_mulVec, dite_mem, intVectors, Units.smul_def]
+    constructor
+    · intro hv i
+      simp only [Pi.smul_apply, Units.smul_def, smul_eq_mul, inclMatrix_val_mulVec]
+      split_ifs with hi
+      · exact hv ⟨i, hi⟩
+      · rw [mul_zero]; exact zero_mem _
+    · intro hw' ⟨i, hi⟩
+      simpa only [Pi.smul_apply, Units.smul_def, smul_eq_mul, inclMatrix_val_mulVec, hi,
+        ↓reduceDIte] using hw' i
   obtain ⟨hg_mem, hg_star⟩ := hg
   have h_form (hw_int : w ∈ intVectors integers 𝔰.BesselIndex) :
       P.element * g * star w ⬝ᵥ T.splitGram *ᵥ w ∈ integers :=
@@ -794,13 +994,17 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
   constructor
   · -- In the gauge of scale `1`, the column of `e*_a` gives `w` and `(β - τ h(v, v)) / g`.
     rintro ⟨u, hu, -, h_cong⟩
-    obtain ⟨hw_int, hβ⟩ := h.gauge.mem_vecsOfSize_and_mem_ofSize_of_heisenbergElem (i := 0) (u := g)
-      (t := (v, β)) ⟨u, hS hu, fun i ↦ by simpa [Units.smul_def] using h_cong i (eStar a)⟩
+    let G := h.gauge 1 (by simp only [Units.val_one, one_mem])
+      (by simp only [Units.val_one, star_one])
+    obtain ⟨hw_int, hβ⟩ := G.mem_vecsOfSize_and_mem_ofSize_of_heisenbergElem (i := 0) (u := g)
+      (t := (v, β)) ⟨u, hS hu, fun i ↦ by
+        simpa only [G, gauge, Size.HasMatrixSize, Set.mem_ofPred_eq, pow_zero, one_mul,
+          Units.smul_def, Matrix.smul_apply, Pi.smul_apply] using h_cong i (eStar a)⟩
     rw [← hw] at hw_int hβ
     replace hw_int : w ∈ intVectors integers 𝔰.BesselIndex := fun i ↦ by
-      simpa [Units.smul_def] using hw_int i
+      simpa [G, Units.smul_def] using hw_int i
     replace hβ : g⁻¹.val * (β : A) - P.element * g * star w ⬝ᵥ T.splitGram *ᵥ w ∈ integers := by
-      simpa [Units.smul_def, mulVec_smul, hg_star, mul_sub, mul_left_comm, mul_assoc] using hβ
+      simpa [G, Units.smul_def, mulVec_smul, hg_star, mul_sub, mul_left_comm, mul_assoc] using hβ
     exact ⟨hw_int, by simpa using add_mem hβ (h_form hw_int)⟩
   · -- Take `u = 1`: with `e = e_a`, the Eichler map minus `1`, divided by `g`, is
     -- `(w - s e) h(e, ·) - e h(w, ·)` with `s` integral.
@@ -813,7 +1017,8 @@ lemma exists_mul_heisenbergElem_mem_unitaryLevel_iff
     have hws : w - s • e ∈ intVectors integers 𝔰.BesselIndex :=
       fun i ↦ sub_mem (hw_int i) (mul_mem hs (he i))
     have h_param : P.element * star (g • w) ⬝ᵥ T.splitGram *ᵥ (g • w) - (β : A) = g * s := by
-      simp [s, Units.smul_def, mulVec_smul, hg_star, mul_sub, mul_left_comm, mul_assoc]
+      simp only [s, Units.smul_def, mulVec_smul, star_smul, hg_star, smul_dotProduct,
+        dotProduct_smul, smul_eq_mul, mul_sub, mul_left_comm, mul_assoc, Units.mul_inv_cancel_left]
     have h_eichler : eichlerMap T.splitGram e (-(g • w)) (g * s) - 1 =
         g • (vecMulVec (w - s • e) (star e ᵥ* T.splitGram) -
           vecMulVec e (star w ᵥ* T.splitGram)) := by
@@ -851,7 +1056,8 @@ theorem heisenbergMeasure_eq_floorModulus (hg : g.val ∈ integers ∧ star g.va
   -- each coordinate of floor above `a` contributes `modulus g`, and `β` contributes
   -- `modulus g ^ (1 / 2)`
   rw [heisenbergMeasure, dite_eq_left a.is_lt,
-    map_apply (by fun_prop) measurableSet_exists_mul_mem_level, h_chart, prod_prod,
+    map_apply continuous_heisenbergElem.measurable measurableSet_exists_mul_mem_level, h_chart,
+    prod_prod,
     skewMeasure_setOf_mul_mem g⁻¹ h_star, volume_pi_pi, prod_const, Finset.card_univ,
     card_subtype_succ_le_floorOf_eq]
   simp [floorModulus, inv_rpow]
@@ -899,34 +1105,37 @@ theorem groupMeasure_boxSet_le : F.groupMeasure F.boxSet ≤ ENNReal.ofReal (1 +
   -- scale `1` every `ofSize j` is `P.integers`, of volume `1`.
   have h_floor (l : Fin 𝔰.n) : F.FloorMassLe l (idealZeta P.integers m) 1 := by
     -- Solve the equation in a block. The other coordinates are free in `P.integers`.
+    let G := h.gauge 1 (by simp only [Units.val_one, one_mem])
+      (by simp only [Units.val_one, star_one])
     obtain ⟨q, _, h_dis, h_mass⟩ := h.exists_kernel_isDisintegration_coordinateBox_le
     obtain ⟨blk', blk, h_inj⟩ : ∃ blk' blk : Fin F.blockRank → ι,
-        Function.Injective (F.freeIndex ⊕ᵥ (blk' ⊕ᵥ blk)) := h.gauge.exists_blocks
+        Function.Injective (F.freeIndex ⊕ᵥ (blk' ⊕ᵥ blk)) := G.exists_blocks
     have h_blocks : Function.Injective (blk' ⊕ᵥ blk) := h_inj.comp inr_injective
     have h_blk : Function.Injective blk := h_blocks.comp inr_injective
     -- `mid` places the orthonormal indices among the indices of the hyperbolic form
     let mid : ι → FloorPairs l (m + 1) ⊕ ι ⊕ FloorPairs l (m + 1) := inr ∘ inl
     have h_mid : Function.Injective mid := inr_injective.comp inl_injective
-    refine h.gauge.floorMassLe_one_of_le l fun β ↦ ?_
+    refine G.floorMassLe_one_of_le l fun β ↦ ?_
     have h_solved : IsSolvedIn (inr ∘ mid ∘ blk)
         (quadricMeasure (hyperbolicGram (FloorPairs l (m + 1)) (1 : Matrix ι ι A)) β) P.integers
         (idealZeta P.integers m) := by
       refine h_dis.isSolvedIn_quadricMeasure (h_mass := fun b ↦ by simpa using h_mass b 1)
         (hT := ?_) (h_inj := h_mid.comp h_blk) (h_orth := ?_) β
-      · simp [fromBlocks_conjTranspose, conjTranspose_fromRows_eq_fromCols_conjTranspose,
-          conjTranspose_fromCols_eq_fromRows_conjTranspose]
+      · simp only [hyperbolicGram, fromBlocks_conjTranspose, conjTranspose_zero,
+          conjTranspose_fromRows_eq_fromCols_conjTranspose,
+          conjTranspose_fromCols_eq_fromRows_conjTranspose, conjTranspose_one]
       · rintro i (k | k | k) <;> simp [mid, Matrix.one_apply]
     have h_disjoint : Function.Injective ((inr ∘ mid ∘ blk') ⊕ᵥ (inr ∘ mid ∘ blk) :
         Fin F.blockRank ⊕ Fin F.blockRank →
           Fin 2 ⊕ FloorPairs l (m + 1) ⊕ ι ⊕ FloorPairs l (m + 1)) := by
       simpa only [comp_elim] using inr_injective.comp (h_mid.comp h_blocks)
-    simpa [SemilocalField.volume_O, volume_coordinateBox, Size.vecsOfSize, -Sum.forall,
+    simpa [G, SemilocalField.volume_O, volume_coordinateBox, Size.vecsOfSize, -Sum.forall,
       Set.univ_inter] using!
       h_solved.setLIntegral_le isOpen_O.measurableSet h_disjoint measurable_one
   calc F.groupMeasure F.boxSet
     _ ≤ F.quotientMeasureFrom 0 {g : T.G | F.IsNear (𝔰.ϱ + 2) (g * 1)} := by
       simpa [h.boxSet_eq, floorModulus, IsNear, partialGroupMeasure_zero_eq] using
-        (h.ascConv_mconv_unitaryLevel_coset (g := 1) (c := 1) (by simp)).le
+        (h.ascConv_mconv_unitaryLevel_coset (g := 1) (c := 1) ⟨one_mem _, star_one _⟩).le
     _ ≤ idealZeta P.integers m ^ 𝔰.n := F.quotientMeasureFrom_isNear_le h_floor 0 1
     _ ≤ ENNReal.ofReal (1 + 2⁻¹ ^ 𝔰.n) := h.zeta_le_and_le_card.1
 
@@ -934,8 +1143,11 @@ theorem groupMeasure_boxSet_le : F.groupMeasure F.boxSet ≤ ENNReal.ofReal (1 +
 the product of its masses for `σ` and `θ`. -/
 lemma mul_le_mconv_boxSet (σ θ : Measure T.G) [SFinite θ] :
     σ F.boxSet * θ F.boxSet ≤ (σ ∗ₘ θ) F.boxSet := by
-  grw [← prod_prod, mconv, ← le_map_apply (by fun_prop), boxSet_eq]
-  exact measure_mono fun z ⟨hz₁, hz₂⟩ ↦ mul_mem hz₁ hz₂
+  rw [← prod_prod, mconv]
+  refine (measure_mono (s := F.boxSet ×ˢ F.boxSet) fun z hz ↦ ?_).trans
+    (le_map_apply continuous_mul.measurable.aemeasurable _)
+  rw [boxSet_eq] at hz ⊢
+  exact mul_mem hz.1 hz.2
 
 /-- Let `F` be a large lattice datum. The measure `weylLaw l` is the image of `modulus c ^ d dc`
 under `c ↦ (floorWeyl l c)⁻¹`, for a natural number `d` depending on the floor `l`. It gives the box
@@ -955,11 +1167,13 @@ lemma volume_intUnits_le_weylLaw_boxSet (l : ℕ) : volume P.intUnits ≤ weylLa
   let d : ℕ := 𝔰.k + 1 + 2 * (𝔰.ϱ - (l + 1))
   calc volume P.intUnits
     _ ≤ ∫⁻ c in P.intUnits, P.modulus c ^ d := by
-      grw [← meas_le_lintegral₀ (by fun_prop) (h_density d), restrict_eq_self _ subset_rfl]
+      rw [← restrict_eq_self _ subset_rfl]
+      exact meas_le_lintegral₀ (by fun_prop) (h_density d)
     _ ≤ volume.withDensity (fun c : A ↦ P.modulus c ^ d) P.intUnits := withDensity_apply_le _ _
     _ ≤ volume.withDensity (fun c : A ↦ P.modulus c ^ d)
           ((fun c : A ↦ (floorWeyl (T := T) l c)⁻¹) ⁻¹' F.boxSet) := measure_mono h_mem
-    _ ≤ weylLaw l F.boxSet := le_map_apply (by fun_prop) _
+    _ ≤ weylLaw l F.boxSet :=
+      le_map_apply (continuous_inv.measurable.comp (measurable_floorWeyl (T := T))).aemeasurable _
 
 /-- Let `F` be a large lattice datum at a finite place. Let `l + i = 𝔰.ϱ`. The measure
 `F.partialGroupMeasure l (i + 2)` convolves the Heisenberg and floor measures of the `i + 2` floors
@@ -973,17 +1187,36 @@ theorem le_partialGroupMeasure_boxSet (i l : ℕ) (hl : l + i = 𝔰.ϱ) :
     obtain rfl : l = 𝔰.ϱ := hl
     obtain ⟨h_theta, -, h_norm, -⟩ := h.volume_le_and_boxSet_closePairs_positions_eq
     simp [descConv, floorMeasure]
-    grw [← h.mul_le_mconv_boxSet]
-    simpa [h_norm] using h_theta
+    calc volume P.intUnits
+      _ = 1 * volume P.intUnits := (one_mul _).symm
+      _ ≤ F.measureH F.boxSet * F.topFloorMeasure F.boxSet := by
+        rw [h_norm]; exact mul_le_mul' le_rfl h_theta
+      _ ≤ (F.measureH ∗ₘ F.topFloorMeasure) F.boxSet := h.mul_le_mconv_boxSet _ _
   | succ i ih =>
+    have hl_lt : l < 𝔰.ϱ := by omega
     have h_eta : heisenbergMeasure l F.boxSet = 1 := by
       simpa [floorModulus, ← h.boxSet_eq] using
-        h.heisenbergMeasure_eq_floorModulus (g := 1) (by simp) ⟨l, by lia⟩ bot_le
-    rw [pow_succ]
-    grw [ih (l + 1) (by lia), h.volume_intUnits_le_weylLaw_boxSet l]
-    rw [← one_mul (weylLaw l F.boxSet), ← mul_one (weylLaw l F.boxSet), ← h_eta]
-    grw [h.mul_le_mconv_boxSet, h.mul_le_mconv_boxSet, h.mul_le_mconv_boxSet]
-    simp [descConv, floorMeasure, show l < 𝔰.ϱ by lia]
+        h.heisenbergMeasure_eq_floorModulus (g := 1) ⟨one_mem _, star_one _⟩ ⟨l, hl_lt⟩ bot_le
+    calc volume P.intUnits ^ (i + 1 + 1)
+      _ = volume P.intUnits ^ (i + 1) * volume P.intUnits := pow_succ _ (i + 1)
+      _ ≤ F.partialGroupMeasure (l + 1) (i + 2) F.boxSet * weylLaw l F.boxSet :=
+        mul_le_mul' (ih (l + 1) (by omega)) (h.volume_intUnits_le_weylLaw_boxSet l)
+      _ = F.partialGroupMeasure (l + 1) (i + 2) F.boxSet *
+            (1 * (weylLaw l F.boxSet * 1)) := by rw [one_mul, mul_one]
+      _ = F.partialGroupMeasure (l + 1) (i + 2) F.boxSet *
+            (heisenbergMeasure l F.boxSet *
+              (weylLaw l F.boxSet * heisenbergMeasure l F.boxSet)) := by rw [h_eta]
+      _ ≤ F.partialGroupMeasure (l + 1) (i + 2) F.boxSet *
+            (heisenbergMeasure l F.boxSet *
+              (weylLaw l ∗ₘ heisenbergMeasure l) F.boxSet) :=
+        mul_le_mul' le_rfl (mul_le_mul' le_rfl (h.mul_le_mconv_boxSet _ _))
+      _ ≤ F.partialGroupMeasure (l + 1) (i + 2) F.boxSet *
+            (heisenbergMeasure l ∗ₘ (weylLaw l ∗ₘ heisenbergMeasure l)) F.boxSet :=
+        mul_le_mul' le_rfl (h.mul_le_mconv_boxSet _ _)
+      _ ≤ F.partialGroupMeasure l (i + 1 + 2) F.boxSet := by
+        simpa only [partialGroupMeasure, descConv, floorMeasure, hl_lt, ↓reduceIte] using
+          h.mul_le_mconv_boxSet (F.partialGroupMeasure (l + 1) (i + 2))
+            (heisenbergMeasure l ∗ₘ (weylLaw l ∗ₘ heisenbergMeasure l))
 
 /-- For a large lattice datum, `F.groupMeasure` is a Haar measure. -/
 instance isHaarMeasure_groupMeasure : F.groupMeasure.IsHaarMeasure := by
@@ -992,16 +1225,20 @@ instance isHaarMeasure_groupMeasure : F.groupMeasure.IsHaarMeasure := by
     h.unimodular
   obtain ⟨d, hd⟩ : ∃ d : ℝ≥0∞, F.groupMeasure = d • ν :=
     exists_eq_smul_haar ν F.isMulRightInvariant_groupMeasure
-  have hd_zero : d ≠ 0 := fun h_zero ↦ by simp [h_zero, partialGroupMeasure_ne_zero] at hd
+  have hd_zero : d ≠ 0 := fun h_zero ↦ by
+    simp only [h_zero, zero_smul, partialGroupMeasure_ne_zero] at hd
   -- `d` is finite because the box has finite mass for `F.groupMeasure` and non-zero mass for `ν`
   have hd_top : d ≠ ∞ := by
     rintro rfl
     have h_box : ν F.boxSet ≠ 0 := by
       rw [boxSet_eq]
       exact unitaryLevel_open_compact.1.measure_ne_zero ν ⟨1, one_mem _⟩
-    simpa [hd, h_box] using h.groupMeasure_boxSet_le
+    have h_le := h.groupMeasure_boxSet_le
+    rw [hd, smul_apply, smul_eq_mul, ENNReal.top_mul h_box, top_le_iff] at h_le
+    exact ENNReal.ofReal_ne_top h_le
   rw [hd]
-  exact .smul _ hd_zero hd_top
+  have h_smul : MeasurableConstSMul T.G T.G := ⟨fun c ↦ (continuous_const_mul c).measurable⟩
+  exact @Measure.IsHaarMeasure.smul _ _ _ _ ν hν_haar h_smul d hd_zero hd_top
 
 end IntegralPlace.IsLargeLatticeData
 
