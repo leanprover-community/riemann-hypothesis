@@ -356,8 +356,14 @@ lemma smul_grothendieckSymbol_eq_fractionClass (hf : U ≤ unimodularLocus f)
   -- Read `a • H.map _ _ d` as a pull-back along the comparison given by the action of `a`.
   -- `pull_cocycleClass` reduces the claim to the witnesses, the cocycles and the points.
   unfold grothendieckSymbol
-  -- (`erw`: the scalar action matches `smul_eq_push` only after unfolding instances)
-  erw [smul_eq_push, ← pull_id_eq_push, ← map_pull_eq_pull_map rfl, H.map_id]
+  let actHom : hodgeCoeff (k := k) ⟶ hodgeCoeff := (CoeffAction.act a).asHom
+  let actC : Comparison (hodgeCoeff (k := k)) hodgeCoeff := { functor := 𝟭 _, coeffHom := actHom }
+  rw [smul_eq_push, ← pull_id_eq_push]
+  refine (map_pull_eq_pull_map (c := actC) (a' := 𝟙 _)
+    (a := relFreeAb.map (U := unimodular.whisker sqZeroExt) (pointMap ⟨g⟩) hg)
+    (α := relFreeAb.map (U := unimodular.whisker sqZeroExt) (pointMap ⟨g⟩) hg)
+    (b := 𝟙 _) rfl d symbolClass).symm.trans ?_
+  rw [H.map_id]
   refine pull_cocycleClass exists_jouanolouRel_of_unimodular
     (exists_jouanolouRel_of_le_unimodularLocus hf) _ (pointMap ⟨g⟩) w hw
     (fun C t ↦ ?_) fun _ _ ↦ rfl
@@ -696,7 +702,11 @@ lemma snocRel.exists_detTensor_boundary_eq
         ((a * A.det) • volumeForm.app c (.of v)) ⊗ₜ[ℤ] FreeAddCommGroup.of x := by
     have h_sum := congrArg (fun r ↦ (r • volumeForm.app c (.of v)) ⊗ₜ[ℤ] FreeAddCommGroup.of x)
       h_laplace
-    conv in (boundary ..).app _ _ => erw [sum_app_apply]
+    have h_bd : (boundary (snocRel k d) d).app c (.of ⟨((v, x), l), hl⟩) =
+        ∑ j : Fin (d + 1), ((-1) ^ (j : ℕ) •
+          freeAb.map (reindexWitness (snocRel k d) j.succAbove)).app c (.of ⟨((v, x), l), hl⟩) :=
+      sum_app_apply
+    rw [h_bd]
     -- (`using!` sees through the match in `detTensor` on the reindexed points.)
     simpa [detTensor, A, sum_smul, sum_tmul, pow_add, mul_zsmul, -zsmul_eq_mul] using! h_sum
   rw [h_boundary]
@@ -872,9 +882,9 @@ lemma EtaleChart.symbolClass_eq_of_cutsOutLocus {f g : Fin d → a.coordRing}
   -- induced by the tuples `μ ∘ f` and `μ ∘ g`.
   obtain ⟨h_le, h_bij⟩ := h_eqv hf.preimage_fieldLocus_not
   apply (h_bij d).injective
-  erw [← H.map_comp, ← H.map_comp]
-  refine (symbolClass_transformation (f := μ ∘ f) (g := μ ∘ g) (fun _ _ ↦ rfl) (fun _ _ ↦ rfl)
-    (by simp [comp_def, μ_fst _]) M M 1 hf_eq h_leibniz (by simp)).trans (one_smul ..)
+  refine (H.map_comp ..).symm.trans ((symbolClass_transformation (f := μ ∘ f) (g := μ ∘ g)
+    (fun _ _ ↦ rfl) (fun _ _ ↦ rfl) (by simp [comp_def, μ_fst _]) M M 1 hf_eq h_leibniz
+    (by simp)).trans ((one_smul ..).trans (H.map_comp ..)))
 
 /-- Excision. Let `u : X' ⟶ X` be injective on points with open image, and let every point in a
 field outside the image lie in an open subfunctor contained in `U`. Then pull-back along `u`
