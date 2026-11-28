@@ -93,6 +93,7 @@ abbrev DoubleCosets : Type _ := DoubleCoset.Quotient (Γ : Set G) K
 
 variable {π Γ K H} {Δ : Type*} [Group Δ]
 
+/-- A vector `v` lies in the level space of `(K, χ)` iff `π k v = χ k • v` for all `k ∈ K`. -/
 @[simp]
 lemma mem_levelSpace {χ : K →* A} {v : W} : v ∈ levelSpace π K χ ↔ ∀ k : K, π k v = χ k • v :=
   .rfl
@@ -105,6 +106,8 @@ lemma map_mem_levelSpace_of_commute {χ : K →* A} {v : W} {a : W →ₗ[A] W}
   intro k
   rw [show π k (a v) = a (π k v) from LinearMap.congr_fun (h_comm k).eq v, hv k, map_smul]
 
+/-- An element `γ` lies in the class automorphism set `classAut Γ K g` iff `γ ∈ Γ` and
+`g⁻¹ * γ * g ∈ K`. -/
 @[simp]
 lemma mem_classAut {g γ : G} : γ ∈ classAut Γ K g ↔ γ ∈ Γ ∧ g⁻¹ * γ * g ∈ K := by simp [classAut]
 
