@@ -2,11 +2,11 @@ module
 
 public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 import Mathlib.CategoryTheory.Sites.LocalSite
+import TauCeti.AlgebraicGeometry.RationalPoint.Image
 public import Lib.Cohomology.Etale.EllAdicCohomology
 public import Lib.Cohomology.Etale.RelativeChains
 public import Lib.Cohomology.ProperBaseChange.PlaceSpace
 import Lib.Cohomology.Etale.DenseSubfunctors
-import Lib.General.Geometry.GeometricPoints
 import Lib.General.Geometry.PointsOfProperSchemes
 
 /-!
