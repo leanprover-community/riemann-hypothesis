@@ -232,6 +232,19 @@ abbrev TriangleForm : Type :=
 abbrev triangleRep : Representation ℂ (Gf D.E (D.GridIndex z 0 n)) (D.TriangleForm z i n) :=
   formRep (D.gridSpace i z 0 n) (typeKernel (D.gridParam z i 0 n) (D.gridSigns z i 0 n))
 
+/-- Finite data for an edge from a node in column `n` to a node in column `n'`. -/
+abbrev EdgeDatum (n' : ℕ) : Type :=
+  Matrix (D.GridIndex z 0 n') (D.GridIndex z 0 n) (triangleModulus z ϑ).ResidueRing → ℂ
+
+/-- The theta lift from the node `(i, n)` to the node `(i, n + 1)` with an arbitrary finite datum
+`Ψ`; `triangleLift` is the case of the point datum `pointDatum`. -/
+abbrev triangleDatumLift (Ψ : D.EdgeDatum z ϑ n (n + 1)) :
+    D.TriangleForm z i n →ₗ[ℂ] D.TriangleForm z i (n + 1) :=
+  modLift (D.gridSpace i z 0 n) (D.gridSpace i z 0 (n + 1)) (gridChar ϑ (!z) (n + i))
+    (D.gridHarmonic i false (!z) (n + i) z 0 n 0 (n + 1)) Ψ
+    (typeKernel (D.gridParam z i 0 n) (D.gridSigns z i 0 n))
+    (typeKernel (D.gridParam z i 0 (n + 1)) (D.gridSigns z i 0 (n + 1)))
+
 /-- The theta lift from the forms at position `(i, n)` of the triangle to those at `(i, n + 1)`,
 for the twist `ϑ`. It adds the block `n + i + 1`. Its character `gridChar ϑ (!z) (n + i)` is the
 character `liftChar` of index `n + i + 1`, twisted by `ϑ ^ (n + i + 1)` if `z` is false, times a
@@ -239,11 +252,7 @@ power of `upsilonU1`. Its polynomial at infinity `gridHarmonic` is the joint har
 weights of this character and the parameters of the two nodes, not negated (flag `false`). Its
 finite datum is the point datum `New.Exchange.pointDatum` modulo `New.Data.triangleModulus`. -/
 def triangleLift : D.TriangleForm z i n →ₗ[ℂ] D.TriangleForm z i (n + 1) :=
-  modLift (D.gridSpace i z 0 n) (D.gridSpace i z 0 (n + 1)) (D.gridChar ϑ (!z) (n + i))
-    (D.gridHarmonic i false (!z) (n + i) z 0 n 0 (n + 1))
-    (pointDatum (triangleModulus z ϑ).ResidueRing)
-    (typeKernel (D.gridParam z i 0 n) (D.gridSigns z i 0 n))
-    (typeKernel (D.gridParam z i 0 (n + 1)) (D.gridSigns z i 0 (n + 1)))
+  D.triangleDatumLift z ϑ i n (pointDatum (triangleModulus z ϑ).ResidueRing)
 
 /-- For each `i`, the linear isometric isomorphism from forms at `(0, 0)` to forms at `(i, 0)`,
 composed of `i` passages `New.formNegEquiv` to the opposite hermitian space. -/
@@ -550,10 +559,6 @@ abbrev leftPairChar (M : Type) [Fintype M] : AutChar D.E :=
 abbrev EdgePoly (n' : ℕ) : Type :=
   MvPolynomial (NumberField.InfinitePlace D.E × D.GridIndex z 0 n' × D.GridIndex z 0 n) ℂ
 
-/-- Finite data for an edge from a node in column `n` to a node in column `n'`. -/
-abbrev EdgeDatum (n' : ℕ) : Type :=
-  Matrix (D.GridIndex z 0 n') (D.GridIndex z 0 n) (triangleModulus z ϑ).ResidueRing → ℂ
-
 /-- The polynomial `Φ` makes an edge (`IsEdgeFamily`) along the left pair, from the node
 `(i + 1, n)` to the node `(i, n + 1)`, with the characters `leftPairChar` of row `i`. -/
 abbrev IsLeftPair (Φ : D.EdgePoly z n (n + 1)) : Prop :=
@@ -582,15 +587,6 @@ abbrev triangleReversedLift (Φ : D.EdgePoly z (n + 1) n) (Ψ : D.EdgeDatum z ϑ
   modTransposedLift (D.gridSpace i z 0 (n + 1)) (D.gridSpace (i + 1) z 0 n) (D.leftPairChar z ϑ i) Φ
     Ψ
     (typeKernel (D.gridParam z (i + 1) 0 n) (D.gridSigns z (i + 1) 0 n))
-    (typeKernel (D.gridParam z i 0 (n + 1)) (D.gridSigns z i 0 (n + 1)))
-
-/-- The theta lift from the node `(i, n)` to the node `(i, n + 1)` with an arbitrary finite datum
-`Ψ`; `triangleLift` is the case of the point datum `pointDatum`. -/
-abbrev triangleDatumLift (Ψ : D.EdgeDatum z ϑ n (n + 1)) :
-    D.TriangleForm z i n →ₗ[ℂ] D.TriangleForm z i (n + 1) :=
-  modLift (D.gridSpace i z 0 n) (D.gridSpace i z 0 (n + 1)) (gridChar ϑ (!z) (n + i))
-    (D.gridHarmonic i false (!z) (n + i) z 0 n 0 (n + 1)) Ψ
-    (typeKernel (D.gridParam z i 0 n) (D.gridSigns z i 0 n))
     (typeKernel (D.gridParam z i 0 (n + 1)) (D.gridSigns z i 0 (n + 1)))
 
 lemma triangleLift_eq_triangleDatumLift :
