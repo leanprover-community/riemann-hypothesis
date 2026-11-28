@@ -156,6 +156,18 @@ lemma EtaleChart.exists_chart_near_diagonal (a : EtaleChart d X) :
     rw [← hχ]
     exact ((a.prod a).mem_locus_away e χ).mpr h_unit
 
+/-- Restricting a relative Hodge class from a subfunctor `W₂` to `W₁ ≤ W₂` preserves its
+local-symbol description at a point of `W₁`. -/
+private lemma IsLocalSymbol.restrict {U W₁ W₂ : Subfunctor X} (hW : W₁ ≤ W₂)
+    {ξ : HodgeH (relFreeAb (U.preimage W₂.ι)) d} {R : CommAlg k} {y : W₂.toFunctor.obj R}
+    {P : (K : CommAlg k) → X.obj K → Prop} {g : Fin d → R} {m : k}
+    (hξ : IsLocalSymbol ξ y (fun C q ↦ P C q.val) g m) (hy : y.val ∈ W₁.obj R) :
+    IsLocalSymbol (ξ.map (relFreeAb.restrict U hW)) ⟨y.val, hy⟩ (fun C q ↦ P C q.val) g m := by
+  obtain ⟨h_cut, h_le, h_symb⟩ := hξ
+  refine ⟨h_cut, h_le, ?_⟩
+  rw (transparency := .default) [← HodgeH.map_comp, relFreeAb.map_comp_map]
+  exact h_symb
+
 /-- Let `X` be separated (`IsSeparatedFunctor`; here it makes `offDiagonal X` open), and let `V i`
 be finitely many étale charts of `X ⊗ X` with `d + d` coordinates, such that every diagonal point
 `(z, z)` with values in a field lies in some `V i`. Suppose that on each `V i` the differences of
@@ -222,27 +234,19 @@ lemma exists_isLocalSymbol_of_charts_near_diagonal [IsSeparatedFunctor X] {r : �
         exact ⟨(V i).locus, (V i).isOpenSubfunctor, hi, le_sup_of_le_left (le_sSup ⟨i, rfl⟩)⟩
       · exact ⟨offDiagonal X, isOpenSubfunctor_offDiagonal, mem_offDiagonal_of_ne hK h_ne,
         le_sup_right⟩
-    · -- the overlap is a chart `c`; both sequences cut out the diagonal at `c.point`, so their
-      -- symbols agree there (`EtaleChart.symbolClass_eq_of_cutsOutLocus`)
+    · -- the overlap is a chart `c`; restricting `ξ i` and `ξ j` to the overlap gives two local
+      -- symbols at `c.point`, which agree there (`EtaleChart.symbolClass_eq_of_cutsOutLocus`)
       obtain ⟨c, hc⟩ := (V i).exists_locus_eq_inf (V j)
-      obtain ⟨⟨⟨χ⟩, hχ⟩, ⟨χ'⟩, hχ'⟩ := hc.le c.coordRing c.point_mem_locus
-      obtain ⟨h_cut_i, h_le, h_symb⟩ := h_local hχ
-      obtain ⟨h_cut_j, h_le', h_symb'⟩ := h_local hχ'
-      have h_cut_i' : CutsOutLocus (X ⊗ X) (fun _ p ↦ p.fst = p.snd) c.point _ := h_cut_i
-      have h_cut_j' : CutsOutLocus (X ⊗ X) (fun _ p ↦ p.fst = p.snd) c.point _ := h_cut_j
-      have h_eq := h_symb.trans
-        ((congrArg ((1 : k) • ·) (c.symbolClass_eq_of_cutsOutLocus h_cut_i' h_cut_j')).trans
-          h_symb'.symm)
-      -- a class on the overlap is determined by its value at `c.point`; on each side, restriction
-      -- to the overlap followed by that value is the value in `h_eq`
-      refine (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) hc d).injective
-        (.trans ?_ (h_eq.trans (.symm ?_)))
-      · refine (HodgeH.map_comp _ (relFreeAb.restrict _ (by simp)) (ξ i)).symm.trans ?_
-        rw [relFreeAb.map_comp_map]
-        rfl
-      · refine (HodgeH.map_comp _ (relFreeAb.restrict _ (by simp)) (ξ j)).symm.trans ?_
-        rw [relFreeAb.map_comp_map]
-        rfl
+      have hc_mem := hc.le c.coordRing c.point_mem_locus
+      obtain ⟨⟨χ⟩, hχ⟩ := hc_mem.1
+      obtain ⟨⟨χ'⟩, hχ'⟩ := hc_mem.2
+      let diag (C : CommAlg k) (p : (X ⊗ X).obj C) := p.fst = p.snd
+      obtain ⟨h_cut_i, _, h_eq_i⟩ := (h_local hχ).restrict (P := diag) inf_le_left hc_mem
+      obtain ⟨h_cut_j, _, h_eq_j⟩ := (h_local hχ').restrict (P := diag) inf_le_right hc_mem
+      exact (c.isCohomEquiv_relFreeAb_map_pointMap (offDiagonal X) hc d).injective <|
+        h_eq_i.trans <|
+          (congrArg ((1 : k) • ·) (c.symbolClass_eq_of_cutsOutLocus h_cut_i h_cut_j)).trans
+            h_eq_j.symm
   -- `δ` restricts to `ξ i` on `V i`, so it has the local description of `ξ i` there
   refine ⟨δ, fun i ↦ ⟨h_cut i, le_rfl, ?_⟩⟩
   obtain ⟨h_cut_i, h_le, h_symb⟩ := hξ i
