@@ -655,21 +655,13 @@ lemma New.toReal_inv_mul_mul_le {m ω : ℝ≥0∞} {a b c p δ : ℝ} {d : ℕ}
     (hm : m ≤ .ofReal a * ω * .ofReal b * d) :
     ((.ofReal c * ω)⁻¹ * (.ofReal p * (.ofReal δ⁻¹ * d)) * m).toReal ≤
       p * (a * b) * (d ^ 2 / (δ * c)) := by
-  have hcω_ne_zero : ENNReal.ofReal c * ω ≠ 0 :=
-    mul_ne_zero (ENNReal.ofReal_pos.2 hc).ne' hω_zero
-  have h_ne_top : (.ofReal c * ω)⁻¹ * (.ofReal p * (.ofReal δ⁻¹ * d)) *
-      (.ofReal a * ω * .ofReal b * d) ≠ ∞ :=
-    ENNReal.mul_ne_top
-      (ENNReal.mul_ne_top (ENNReal.inv_ne_top.2 hcω_ne_zero)
-        (ENNReal.mul_ne_top ofReal_ne_top (ENNReal.mul_ne_top ofReal_ne_top (natCast_ne_top d))))
-      (ENNReal.mul_ne_top (ENNReal.mul_ne_top (ENNReal.mul_ne_top ofReal_ne_top hω_top)
-        ofReal_ne_top) (natCast_ne_top d))
-  have h_le : ((.ofReal c * ω)⁻¹ * (.ofReal p * (.ofReal δ⁻¹ * d)) * m).toReal ≤
-      ((.ofReal c * ω)⁻¹ * (.ofReal p * (.ofReal δ⁻¹ * d)) *
-        (.ofReal a * ω * .ofReal b * d)).toReal :=
-    ENNReal.toReal_mono h_ne_top (mul_le_mul' le_rfl hm)
+  have h_ne_top : .ofReal a * ω * .ofReal b * d ≠ ∞ :=
+    ENNReal.mul_ne_top (ENNReal.mul_ne_top (ENNReal.mul_ne_top ofReal_ne_top hω_top)
+      ofReal_ne_top) (natCast_ne_top d)
+  rw [ENNReal.toReal_mul]
+  refine (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono h_ne_top hm)
+    ENNReal.toReal_nonneg).trans_eq ?_
   have hω_pos : 0 < ω.toReal := toReal_pos hω_zero hω_top
-  refine h_le.trans_eq ?_
   simp only [ENNReal.toReal_mul, ENNReal.toReal_inv, toReal_ofReal ha, toReal_ofReal hb,
     toReal_ofReal hc.le, toReal_ofReal hp, toReal_ofReal (inv_nonneg.2 hδ.le), toReal_natCast]
   field_simp [hc.ne', hδ.ne', hω_pos.ne']
