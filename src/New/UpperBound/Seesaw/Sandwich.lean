@@ -70,9 +70,7 @@ place `star w` too. -/
 lemma LatticeSplitsAt.conj {Y : Grading V N X s} {w : FinPlace E} {x : Gf E ι}
     (h_split : Y.LatticeSplitsAt w x) : Y.LatticeSplitsAt (star w) x := by
   have h_idem : (idem {star w} : 𝔸f E) = star (idem {w}) := by
-    rw [star_idem]
-    congr with u
-    exact eq_star_iff_eq_star.trans eq_comm
+    rw [star_idem, Set.star_preimage, Set.star_singleton]
   simpa only [LatticeSplitsAt, h_idem] using star_smul_latticePlus_le_latticeMinus h_split
 
 /-- In rational coordinates, the finite point `Y.inclXFin (scalarFin X z)` of `U(V)`, which scales
@@ -184,9 +182,7 @@ lemma latticeSplitsAt_of_generates {Y : Grading V N X s} {q : (𝔸f E)ˣ} {k : 
       ∃ c ∈ Ô E, (idem {w} : 𝔸f E) • (z - c • q.val ^ k • y) ∈ Y.latticeMinus 1) :
     Y.LatticeSplitsAt w x := by
   refine smul_le_iff_forall.2 fun z hz ↦ ?_
-  obtain ⟨c, hc, h_sub⟩ : ∃ c ∈ Ô E,
-      (idem {w} : 𝔸f E) • (q.val ^ k • z - c • q.val ^ k • y) ∈ Y.latticeMinus 1 :=
-    h_gen (q.val ^ k • z) (smul_le_iff_forall.1 h_dual z hz)
+  obtain ⟨c, hc, h_sub⟩ := h_gen (q.val ^ k • z) (smul_le_iff_forall.1 h_dual z hz)
   -- The norm `n = (q̄ q) ^ k` is a unit at `w`, so its inverse is integral there.
   let n : (𝔸f E)ˣ := (star q * q) ^ k
   have hn : idem {w} * n⁻¹.val ∈ Ô E := by
@@ -199,11 +195,8 @@ lemma latticeSplitsAt_of_generates {Y : Grading V N X s} {q : (𝔸f E)ˣ} {k : 
       (idem {w} : 𝔸f E) • (q.val ^ k • z - c • q.val ^ k • y) + (idem {w} * c) • y := by
     linear_combination (norm := module)
       (-(idem {w} * idem {w}) * h_inv - idem_mul_self (E := E) {w}) • (z - c • y)
-  have h_sub_mem : star q.val ^ k • (idem {w} : 𝔸f E) • (q.val ^ k • z - c • q.val ^ k • y) ∈
-      Y.latticeMinus x :=
-    smul_le_iff_forall.1 h_lower _ h_sub
   rw [h_eq]
-  exact add_mem ((Y.latticeMinus x).smul_mem ⟨_, hn⟩ h_sub_mem)
+  exact add_mem ((Y.latticeMinus x).smul_mem ⟨_, hn⟩ (smul_le_iff_forall.1 h_lower _ h_sub))
     ((Y.latticeMinus x).smul_mem ⟨_, mul_mem (idem_mem_Ô _) hc⟩ hy)
 
 /-- Let the lattice of `1` have the basis `gradedLatticeBasis` built from the ideles `a`, `π` and
@@ -228,10 +221,7 @@ lemma SpansLattice.hasLatticeBounds_or_latticeSplitsAt {Y : Grading V N (X ⊕ U
   -- The vector `q ^ k y` of `Λ⁺` is not in `Λ⁻`, so it generates `Λ⁺` over `Λ⁻` at some `w ∣ N`.
   have h_plus : q.val ^ k • y ∈ Y.latticePlus 1 :=
     smul_le_iff_forall.1 h_dual y (latticeMinus_le_latticePlus hy)
-  obtain ⟨hs, w, hw, h_gen⟩ : Odd s ∧ ∃ w : FinPlace E, (w ∈ P ∨ star w ∈ P) ∧
-      ∀ z ∈ Y.latticePlus 1,
-        ∃ c ∈ Ô E, (idem {w} : 𝔸f E) • (z - c • q.val ^ k • y) ∈ Y.latticeMinus 1 :=
-    hL.odd_and_exists_place_of_notMem_latticeMinus hπ h_plus hy_notMem
+  obtain ⟨hs, w, hw, h_gen⟩ := hL.odd_and_exists_place_of_notMem_latticeMinus hπ h_plus hy_notMem
   have hw_star : star w ∈ P ∨ star (star w) ∈ P := by simpa [or_comm] using hw
   have h_split : Y.LatticeSplitsAt w x :=
     latticeSplitsAt_of_generates h_lower h_dual hy (hq w hw) (hq (star w) hw_star) h_gen
@@ -247,9 +237,7 @@ lemma HasBoundedOrbit.of_forall [HasPrimitiveRoot5040 E] {Y : Grading V N X s} {
     {x : Gf E ι} (h_bounds : ∀ r ∈ Y.besselFin,
       Y.IsGraded (V.lattice (r * x)) → Y.HasLatticeBounds q k (r * x)) :
     Y.HasBoundedOrbit q k x := by
-  obtain ⟨u, hu, h_graded⟩ :
-      ∃ u : Gf E ι, ((1, u) : G E ε) ∈ Y.unipotent ∧ Y.IsGraded (V.lattice (u * x)) :=
-    Y.exists_isGraded x
+  obtain ⟨u, hu, h_graded⟩ := Y.exists_isGraded x
   have hu_bessel : u ∈ Y.besselFin := Y.unipotent_le_besselGroup hu
   exact ⟨u, hu_bessel, h_graded, h_bounds u hu_bessel h_graded⟩
 
@@ -263,10 +251,7 @@ lemma SpansLattice.hasBoundedOrbit_zero {Y : Grading V N (X ⊕ Unit) s} {a π :
     (hr : r ∈ Y.besselFin) (hx : r * x ∈ stdLevel E ι) : Y.HasBoundedOrbit q 0 x := by
   have h_lattice : V.lattice (r * x) = V.lattice 1 := (lattice_eq_iff.2 (by simpa using hx)).symm
   have h_minus : Y.latticeMinus (r * x) = Y.latticeMinus 1 := by simp [latticeMinus, h_lattice]
-  refine ⟨r, hr, ?_, ?_, ?_⟩
-  · simpa [h_lattice] using hL.isGraded
-  · simp [h_minus]
-  · simp [h_minus]
+  refine ⟨r, hr, by simpa [h_lattice] using hL.isGraded, ?_, ?_⟩ <;> simp [h_minus]
 
 end Grading
 
