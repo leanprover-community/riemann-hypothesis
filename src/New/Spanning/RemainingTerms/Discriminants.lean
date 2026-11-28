@@ -3,6 +3,8 @@ module
 import Mathlib.Algebra.Order.Star.Real
 import TauCeti.LinearAlgebra.Matrix.Range
 import TauCeti.LinearAlgebra.Submodule.Prod.Index
+public import TauCeti.LinearAlgebra.Submodule.Zeta
+import TauCeti.NumberTheory.NumberField.CMField.AdelicLattice
 import TauCeti.RingTheory.Ideal.Norm.AbsNorm
 public import Lib.SiegelWeil.Mass
 public import New.Spanning.RemainingTerms.SiegelLemma
@@ -20,8 +22,8 @@ their discriminants; and a bound for the sum of a negative power of the index ov
 of finite index.
 
 The bound for the sum over sublattices is a consequence of Hey's formula for the zeta function of a
-lattice. Here it is proved directly, by induction on the rank, over any
-commutative ring whose ideals of finite index are principal.
+lattice. Here we use Tau Ceti's bound, proved by induction on the rank over any ring whose
+left ideals of finite index are principal.
 
 The formula that compares the discriminant of `L ∩ W` with that of the dual lattice in `W^⊥` is
 `New.Filling.jacobi_perp_discriminant`, stated for Gram determinants.
@@ -39,19 +41,10 @@ section SubmoduleZeta
 
 variable {R N N' : Type*} [CommRing R] [AddCommGroup N] [Module R N] [AddCommGroup N'] [Module R N']
 
-variable (R N) in
-/-- The sum of `[N : M] ^ (-s)` over the submodules `M` of finite index in `N`. -/
-def submoduleZeta (s : ℕ) : ℝ≥0∞ :=
-  ∑' M : {M : Submodule R N // M.cardQuot ≠ 0}, (M.val.cardQuot : ℝ≥0∞)⁻¹ ^ s
-
 /-- The index of the preimage of `M` under `f` is the index of `M ⊓ range f` in the range of `f`. -/
 lemma cardQuot_comap (f : N →ₗ[R] N') (M : Submodule R N') :
     (M.comap f).cardQuot = M.toAddSubgroup.relIndex (LinearMap.range f).toAddSubgroup :=
   M.toAddSubgroup.index_comap f.toAddMonoidHom
-
-lemma submoduleZeta_anti {s t : ℕ} (hst : s ≤ t) : submoduleZeta R N t ≤ submoduleZeta R N s := by
-  refine tsum_le_tsum fun M ↦ pow_le_pow_of_le_one zero_le ?_ hst
-  exact ENNReal.inv_le_one.2 (Nat.one_le_cast.2 (Nat.pos_of_ne_zero M.property))
 
 /-- The sum of `[range f : M] ^ (-s)` over the submodules `M` of finite index in the range of a
 linear map `f` is at most the same sum over the submodules of finite index in its domain. -/
@@ -70,103 +63,8 @@ lemma tsum_relIndex_range_le_submoduleZeta (f : N →ₗ[R] N') (s : ℕ) :
     simpa [Submodule.map_comap_eq_self, h₁_le, h₂_le] using congrArg (Submodule.map f) h_comap
   calc _ = ∑' M, ((pull M).val.cardQuot : ℝ≥0∞)⁻¹ ^ s :=
         tsum_congr fun M ↦ by simp only [pull, cardQuot_comap]
-    _ ≤ submoduleZeta R N s := tsum_comp_le_tsum_of_injective h_inj fun M ↦
-      (M.val.cardQuot : ℝ≥0∞)⁻¹ ^ s
-
-/-- If `N` maps onto `N'`, then the sum of `[N' : M] ^ (-s)` over the submodules `M` of finite
-index in `N'` is at most the same sum for `N`. -/
-lemma submoduleZeta_le_of_surjective {f : N →ₗ[R] N'} (hf : Function.Surjective f) (s : ℕ) :
-    submoduleZeta R N' s ≤ submoduleZeta R N s := by
-  let pull (M : {M : Submodule R N' // M.cardQuot ≠ 0}) : {M : Submodule R N // M.cardQuot ≠ 0} :=
-    ⟨M.val.comap f,
-      (Submodule.cardQuot_comap_of_surjective hf M.val).trans_ne M.property⟩
-  have h_inj : Function.Injective pull := fun M₁ M₂ h_eq ↦
-    Subtype.ext (Submodule.comap_injective_of_surjective hf (congrArg Subtype.val h_eq))
-  calc _ = ∑' M, ((pull M).val.cardQuot : ℝ≥0∞)⁻¹ ^ s :=
-        tsum_congr fun M ↦ by simp only [pull, Submodule.cardQuot_comap_of_surjective hf]
-    _ ≤ submoduleZeta R N s :=
+    _ ≤ submoduleZeta R N s := submoduleZeta_def R N s ▸
       tsum_comp_le_tsum_of_injective h_inj fun M ↦ (M.val.cardQuot : ℝ≥0∞)⁻¹ ^ s
-
-/-- For a submodule `M` of finite index in `N`, the sum of `[N : M] ^ (-(s + 1))` over the classes
-modulo `M` is `[N : M] ^ (-s)`. -/
-lemma tsum_quotient_cardQuot_inv_pow {M : Submodule R N} (hM : M.cardQuot ≠ 0) (s : ℕ) :
-    ∑' _ : N ⧸ M, (M.cardQuot : ℝ≥0∞)⁻¹ ^ (s + 1) = (M.cardQuot : ℝ≥0∞)⁻¹ ^ s := by
-  have : Finite (N ⧸ M) := Nat.finite_of_card_ne_zero hM
-  have h_card : (ENat.card (N ⧸ M) : ℝ≥0∞) = M.cardQuot := by
-    rw [ENat.card_eq_coe_natCard, Submodule.cardQuot_apply, ENat.toENNReal_coe]
-  rw [ENNReal.tsum_const, h_card, pow_succ', ← mul_assoc,
-    ENNReal.mul_inv_cancel (Nat.cast_ne_zero.2 hM) (natCast_ne_top _), one_mul]
-
-/-- Write `ζ_X(s) = submoduleZeta R X s` for the sum of `[X : M] ^ (-s)` over the submodules `M` of
-finite index in an `R`-module `X`. If the ideals of finite index of `R` are principal, then
-`ζ_{R × N}(s + 1) ≤ ζ_R(s + 1) * ζ_N(s)`. -/
-lemma submoduleZeta_prod_le (h_principal : ∀ I : Ideal R, I.cardQuot ≠ 0 → I.IsPrincipal) (s : ℕ) :
-    submoduleZeta R (R × N) (s + 1) ≤ submoduleZeta R R (s + 1) * submoduleZeta R N s := by
-  -- A submodule `M` is determined by the ideal `I = (g)` of its first coordinates, by its
-  -- intersection `M'` with `N`, and by the class modulo `M'` of some `n` with `(g, n) ∈ M`.
-  -- There are `[N : M']` classes, and `[R × N : M] = [R : I] [N : M']`.
-  have h_generator (I : {I : Submodule R R // I.cardQuot ≠ 0}) : ∃ g : R, I.val = R ∙ g :=
-    (h_principal I.val I.property).principal
-  choose gen h_gen using h_generator
-  let Data : Type _ := Σ (_ : {I : Submodule R R // I.cardQuot ≠ 0})
-    (M' : {M' : Submodule R N // M'.cardQuot ≠ 0}), N ⧸ M'.val
-  let build : Data → Submodule R (R × N) := fun ⟨I, M', c⟩ ↦
-    R ∙ (gen I, c.out) ⊔ M'.val.map (.inr R R N)
-  let weight : Data → ℝ≥0∞ := fun ⟨I, M', _⟩ ↦
-    (I.val.cardQuot : ℝ≥0∞)⁻¹ ^ (s + 1) * (M'.val.cardQuot : ℝ≥0∞)⁻¹ ^ (s + 1)
-  have h_data (M : {M : Submodule R (R × N) // M.cardQuot ≠ 0}) :
-      ∃ d : Data, build d = M.val ∧ weight d = (M.val.cardQuot : ℝ≥0∞)⁻¹ ^ (s + 1) := by
-    have h_index : M.val.cardQuot =
-        (M.val.map (.fst R R N)).cardQuot * (M.val.comap (.inr R R N)).cardQuot :=
-      Submodule.cardQuot_eq_cardQuot_map_fst_mul_cardQuot_comap_inr M.val
-    obtain ⟨hI, hM'⟩ := mul_ne_zero_iff.1 (h_index.symm.trans_ne M.property)
-    let I : {I : Submodule R R // I.cardQuot ≠ 0} := ⟨M.val.map (.fst R R N), hI⟩
-    obtain ⟨⟨g, n⟩, hn, hg⟩ : gen I ∈ M.val.map (.fst R R N) :=
-      (h_gen I).ge (Submodule.mem_span_singleton_self _)
-    let M' : {M' : Submodule R N // M'.cardQuot ≠ 0} := ⟨M.val.comap (.inr R R N), hM'⟩
-    let c : N ⧸ M'.val := Submodule.Quotient.mk n
-    have h_congr : c.out - n ∈ M'.val := (Submodule.Quotient.eq _).1 c.out_eq
-    have h_mem : (gen I, c.out) ∈ M.val := by simpa [← hg] using M.val.add_mem hn h_congr
-    have h_span : M.val = build ⟨I, M', c⟩ :=
-      Submodule.eq_span_singleton_sup_map_inr h_mem (h_gen I)
-    refine ⟨⟨I, M', c⟩, h_span.symm, ?_⟩
-    rw [h_index, Nat.cast_mul, ENNReal.mul_inv (.inr (natCast_ne_top _)) (.inl (natCast_ne_top _)),
-      mul_pow]
-  choose data h_build h_weight using h_data
-  have h_inj : Function.Injective data := fun M₁ M₂ h_eq ↦
-    Subtype.ext (by rw [← h_build, h_eq, h_build])
-  -- Summing over the classes modulo `M'` lowers the exponent of `[N : M']` by one.
-  have h_classes (M' : {M' : Submodule R N // M'.cardQuot ≠ 0}) :
-      ∑' _ : N ⧸ M'.val, (M'.val.cardQuot : ℝ≥0∞)⁻¹ ^ (s + 1) = (M'.val.cardQuot : ℝ≥0∞)⁻¹ ^ s :=
-    tsum_quotient_cardQuot_inv_pow M'.property s
-  calc submoduleZeta R (R × N) (s + 1)
-    _ = ∑' M, weight (data M) := tsum_congr fun M ↦ (h_weight M).symm
-    _ ≤ ∑' d, weight d := tsum_comp_le_tsum_of_injective h_inj weight
-    _ = submoduleZeta R R (s + 1) * submoduleZeta R N s := by
-      simp only [Data, weight, tsum_sigma', ENNReal.tsum_mul_left, ENNReal.tsum_mul_right,
-        submoduleZeta, h_classes]
-
-/-- If the ideals of finite index of `R` are principal, then the sum of `[R ^ r : M] ^ (-(r + μ))`
-over the submodules `M` of finite index is at most the `r`th power of the sum of `[R : I] ^ (-μ)`
-over the ideals `I` of finite index. -/
-lemma submoduleZeta_pi_le (h_principal : ∀ I : Ideal R, I.cardQuot ≠ 0 → I.IsPrincipal)
-    (r μ : ℕ) : submoduleZeta R (Fin r → R) (r + μ) ≤ submoduleZeta R R μ ^ r := by
-  induction r with
-  | zero =>
-    let top : {M : Submodule R (Fin 0 → R) // M.cardQuot ≠ 0} := ⟨⊤, by simp⟩
-    rw [submoduleZeta,
-      tsum_eq_single top fun M hM ↦ absurd (Subtype.ext (Subsingleton.elim M.val top.val)) hM]
-    simp [top]
-  | succ r ih =>
-    calc submoduleZeta R (Fin (r + 1) → R) (r + 1 + μ)
-      _ ≤ submoduleZeta R (R × (Fin r → R)) (r + μ + 1) := by
-        rw [add_right_comm]
-        exact submoduleZeta_le_of_surjective (Fin.consLinearEquiv R fun _ ↦ R).surjective _
-      _ ≤ submoduleZeta R R (r + μ + 1) * submoduleZeta R (Fin r → R) (r + μ) :=
-        submoduleZeta_prod_le h_principal _
-      _ ≤ submoduleZeta R R μ * submoduleZeta R R μ ^ r :=
-        mul_le_mul' (submoduleZeta_anti (by omega)) ih
-      _ = submoduleZeta R R μ ^ (r + 1) := (pow_succ' _ r).symm
 
 end SubmoduleZeta
 
@@ -289,9 +187,8 @@ omit [IsCMField E] [HasPrimitiveRoot5040 E] in
 `𝔸f E`, then `finAdeleMatrix x * a` (with `x` read over `𝔸f E`) has a left inverse over `𝔸f E`. -/
 lemma hasLeftInv_finAdeleMatrix_mul {x : Matrix κ (Fin r) E} (hx : HasLeftInv x)
     (a : GL (Fin r) (𝔸f E)) : HasLeftInv (finAdeleMatrix x * a.val) := by
-  obtain ⟨l, hl⟩ := hx.map (algebraMap E (𝔸f E))
-  refine ⟨a⁻¹.val * l, ?_⟩
-  rw [Matrix.mul_assoc, ← Matrix.mul_assoc l, hl, Matrix.one_mul, a.inv_mul]
+  exact Matrix.exists_mul_map_mul_eq_one_of_linearIndependent_col
+    (Matrix.mulVec_injective_iff.1 hx.injective_mulVec) a
 
 /-- Let `E` be a CM field with a primitive 5040th root of unity, `𝔸f E` its finite adeles and `Ô E`
 the integral ones. Let `B`, `C` be matrices over `𝔸f E` whose columns have the same `Ô E`-span, and
@@ -342,13 +239,8 @@ omit [HasPrimitiveRoot5040 E] in
 columns of `x` are independent over `E` (`x` has a left inverse), then their Gram determinant
 `det (xᴴ * x)` for the standard hermitian form is not zero. -/
 lemma det_gram_ne_zero {x : Matrix κ (Fin r) E} (hx : HasLeftInv x) : (xᴴ * x).det ≠ 0 := by
-  -- At a complex embedding the Gram matrix of independent vectors is positive definite.
-  obtain ⟨φ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  have h_det : φ (xᴴ * x).det = ((x.map φ)ᴴ * x.map φ).det := by
-    rw [RingHom.map_det, RingHom.mapMatrix_apply, Matrix.map_mul, map_conjTranspose]
-  intro h_zero
-  rw [h_zero, map_zero] at h_det
-  exact (PosDef.conjTranspose_mul_self _ (hx.map φ).injective_mulVec).det_pos.ne h_det
+  exact NumberField.IsCMField.det_transpose_map_complexConj_mul_ne_zero
+    (Matrix.mulVec_injective_iff.1 hx.injective_mulVec)
 
 /-- Let `E` be a CM field with a primitive 5040th root of unity, `𝔸f E` its finite adeles and `Ô E`
 the integral ones. Let `L` be a lattice of rank `r` in `(𝔸f E) ^ κ`: the `Ô E`-span of the columns
@@ -686,7 +578,7 @@ lemma tsum_submoduleIndex_colLattice_inv_pow_le (B : Matrix κ (Fin r) (𝔸f E)
         submoduleIndex M (colLattice (Ô E) B) ≠ 0},
       (submoduleIndex M.val (colLattice (Ô E) B) : ℝ≥0∞)⁻¹ ^ (r + μ) ≤ idealZeta (Ô E) μ ^ r := by
   obtain ⟨f, hf⟩ := exists_range_eq_colLattice (R := Ô E) B
-  rw [← hf, show idealZeta (Ô E) μ = submoduleZeta (Ô E) (Ô E) μ from rfl]
+  rw [← hf, show idealZeta (Ô E) μ = submoduleZeta (Ô E) (Ô E) μ from (submoduleZeta_def ..).symm]
   exact (tsum_relIndex_range_le_submoduleZeta f (r + μ)).trans
     (submoduleZeta_pi_le isPrincipal_of_cardQuot_ne_zero r μ)
 
