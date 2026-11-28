@@ -640,19 +640,13 @@ lemma New.orderOf_eq_of_semiconj {E E' : Type} [Field E] [Field E'] [Algebra E E
     (hp : p.Prime) {σ : Gal(E'/E)} (hσ_pow : σ ^ p = 1) (hσ : σ ≠ 1) {q : E'[X]}
     [Fact (Irreducible q)] {g : AdjoinRoot q ≃ₐ[E] AdjoinRoot q} (hg : Semiconj (of q) σ g)
     (hg_root : g (root q) = root q) : orderOf g = p := by
-  have hp_fact : Fact p.Prime := ⟨hp⟩
-  have g_pow : g ^ p = 1 := by
-    apply coe_toAlgHom_injective
-    ext
+  have : Fact p.Prime := ⟨hp⟩
+  refine orderOf_eq_prime (coe_toAlgHom_injective ?_) fun h_one ↦ hσ ?_
+  · ext
     · simp [← coe_pow σ, ← hg.iterate_right p _, hσ_pow]
     · simp [iterate_fixed hg_root]
-  have g_ne : g ≠ 1 := by
-    intro h_one
-    apply hσ
-    ext x
-    have h_of : of q (σ x) = of q x := by simpa [h_one] using hg x
-    exact coe_injective' h_of
-  exact orderOf_eq_prime g_pow g_ne
+  · ext x
+    exact coe_injective' (by simpa [h_one] using hg x)
 
 /-- If `γ * N(γ)ᴴ = N(γ)` and `v(γ)` inverts `γ`, the same relation holds for the polynomial `N`
 up to nilpotents modulo the characteristic polynomial of `γ`. -/

@@ -353,10 +353,7 @@ lemma mem_localLevel_placesAbove_image {V : Set (FinPlace E')} {g : Gf E' n} :
   -- A unitary element is integral at `star u` iff it is integral at `u`.
   constructor
   · -- the places of `V` and the other conjugates all lie above the places below `V`
-    intro hg
-    refine ⟨fun u hu ↦ hg u (.inl ⟨u, hu, rfl⟩), ?_⟩
-    rintro u ⟨hu_below, -⟩
-    exact hg u (.inl hu_below)
+    exact fun hg ↦ ⟨fun u hu ↦ hg u (.inl ⟨u, hu, rfl⟩), fun u hu ↦ hg u (.inl hu.1)⟩
   rintro ⟨hgV, hgA⟩
   have h_fibre (u : FinPlace E') (hu : u.below E ∈ FinPlace.below E '' V) :
       g.atPlace u ∈ localIntGL n u := by
