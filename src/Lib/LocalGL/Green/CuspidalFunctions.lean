@@ -8,7 +8,7 @@ import Mathlib.Algebra.AffineMonoid.UniqueSums
 import Mathlib.Algebra.Module.StablyFree.Basic
 import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
 import Mathlib.LinearAlgebra.Eigenspace.Zero
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
+import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 import Mathlib.RingTheory.Artinian.Instances
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 public import Lib.LocalGL.Green.HallAlgebra
@@ -414,21 +414,11 @@ over 0 ≤ i < n, as an identity in any field. -/
 lemma card_GL_eq_prod {n R : Type*} [Fintype n] [DecidableEq n] [Field R] :
     Nat.card (GL n k) =
       ∏ i ∈ range (Fintype.card n), (Nat.card k ^ i * (Nat.card k ^ (i + 1) - 1) : R) := by
-  -- Mathlib gives `∏ i, (q ^ n - q ^ i)`; regroup the factors by induction on `d`.
-  suffices h_prod : ∀ d : ℕ,
-      ∏ i : Fin d, ((Fintype.card k : R) ^ d - (Fintype.card k : R) ^ (i : ℕ)) =
-      (∏ i ∈ range d, (Fintype.card k : R) ^ i) *
-        ∏ i ∈ range d, ((Fintype.card k : R) ^ (i + 1) - 1) by
-    have h_card : Nat.card (GL n k) = Nat.card (GL (Fin (card n)) k) :=
-      Nat.card_congr (Units.mapEquiv (reindexRingEquiv k (equivFin n)).toMulEquiv).toEquiv
-    rw [h_card, card_GL_field]
-    simpa [Nat.pow_le_pow_right card_pos, prod_mul_distrib] using h_prod (card n)
-  intro d
-  induction d with
-  | zero => rw [Fin.prod_univ_zero, prod_range_zero, prod_range_zero, one_mul]
-  | succ m ih =>
-    simp_all [Fin.prod_univ_succ, prod_range_succ, pow_succ, ← sub_mul, prod_mul_distrib]
-    ring
+  have h_card : Nat.card (GL n k) = Nat.card (GL (Fin (card n)) k) :=
+    Nat.card_congr (Units.mapEquiv (reindexRingEquiv k (equivFin n)).toMulEquiv).toEquiv
+  rw [h_card, TauCeti.natCard_GL_fin k]
+  push_cast [Nat.cast_sub (Nat.one_le_pow _ _ (Nat.card_pos (α := k)))]
+  rw [prod_mul_distrib, prod_pow_eq_pow_sum, sum_range_id, Nat.choose_two_right]
 
 open Classical in
 /-- Let `g` be an endomorphism of a finite space `V` and `U ≠ V` a `g`-stable subspace. The sum of
