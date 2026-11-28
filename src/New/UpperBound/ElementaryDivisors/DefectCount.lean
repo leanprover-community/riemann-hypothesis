@@ -6,6 +6,7 @@ import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.BoxIntegral.UnitPartition
 import Mathlib.Analysis.Convex.Measure
 import Mathlib.RingTheory.Etale.Weakly
+import TauCeti.LinearAlgebra.Matrix.GeneralLinearGroup.UpperTriangular.Block
 import Std.Tactic.BVDecide.Normalize.Bool
 public import New.UpperBound.ElementaryDivisors.PieriCone
 public import New.UpperBound.ElementaryDivisors.RootLemma
@@ -91,37 +92,47 @@ instance [Finite (IsLocalRing.ResidueField W)] (τ : Fin k → ℕ) :
     (parahoric (k := k) W τ).FiniteIndex :=
   finiteIndex_of_le (ker_le_comap (GeneralLinearGroup.map (IsLocalRing.residue W)) _)
 
-/-- Bound for the number of full flags over a finite field `K` with `q` elements: the index of the
-subgroup of lower triangular matrices in `GL_k(K)` is at most `∏ (q ^ (l + 1) - 1) / (q - 1)` over
-`l < k`. -/
-lemma index_borel_le [Finite K] :
-    (parabolic (R := K) (OrderDual.toDual ∘ (Fin.val : Fin k → ℕ))).index ≤
+/-- Over a finite field of order `q`, the index of the lower triangular subgroup of `GL_k`
+counts the full flags. Its factor for `l < k` is `(q ^ (l + 1) - 1) / (q - 1)`. -/
+lemma index_borel_eq [Finite K] :
+    ((parabolic (R := K) (OrderDual.toDual ∘ (Fin.val : Fin k → ℕ))).index : ℝ) =
       ∏ l : Fin k, ((Nat.card K : ℝ) ^ (l.val + 1) - 1) / (Nat.card K - 1) := by
-  -- A unit on the diagonal and `i` free entries left of it, in each row `i`, give
-  -- `∏ (q - 1) q ^ i` elements of `B`. Divide `#GL = ∏ q ^ i (q ^ (i + 1) - 1)` by this number.
-  set B : Subgroup (GL (Fin k) K) := parabolic (OrderDual.toDual ∘ (Fin.val : Fin k → ℕ))
-  let Rows : Type := ∀ i : Fin k, Kˣ × (Set.Iio i → K)
-  let low (x : Rows) : Matrix (Fin k) (Fin k) K :=
-    of fun i j ↦ if i < j then 0 else if h : j < i then (x i).2 ⟨j, h⟩ else (x i).1
-  let f (x : Rows) : B :=
-    ⟨.mkOfDetNeZero (low x) <| by
-      simp +contextual [low, BlockTriangular, det_of_isLowerTriangular, univ.prod_eq_zero_iff],
-      fun _ _ hij ↦ ite_eq_left hij⟩
-  have f_inj : f.Injective := fun x y hxy ↦ by
-    have h_low : low x = low y :=
-      congrArg (fun g : B ↦ ((g : GL (Fin k) K) : Matrix (Fin k) (Fin k) K)) hxy
-    ext i j
-    · simpa [low] using congrFun₂ h_low i i
-    · simpa [low, Set.mem_Iio.1 j.property,
-      (Set.mem_Iio.1 j.property).not_gt] using congrFun₂ h_low i j
-  have h_card : (B.index : ℝ) * Nat.card Rows ≤ Nat.card (GL (Fin k) K) :=
-    mod_cast (mul_le_mul_right (card_le_card_of_injective f f_inj) _).trans B.index_mul_card.le
-  simp [Rows, Nat.card_pi, Nat.card_units, card_GL_eq_prod, prod_range] at h_card
+  let b : Fin k → (Fin k)ᵒᵈ := OrderDual.toDual
+  let B := TauCeti.blockTriangularGroup K b
+  have hB : parabolic (R := K) (OrderDual.toDual ∘ (Fin.val : Fin k → ℕ)) = B := by
+    ext g
+    simp [B, b, parabolic, BlockTriangular]
+  -- The diagonal blocks are singletons. Below the diagonal, row `i` has `i` free entries.
+  have h_diag (i : (Fin k)ᵒᵈ) :
+      (Nat.card (GL {j : Fin k // b j = i} K) : ℝ) = Nat.card K - 1 := by
+    have h_size : Fintype.card {j : Fin k // b j = i} = 1 := by
+      rw [← Nat.card_eq_fintype_card]
+      change Nat.card {j : Fin k // j = OrderDual.ofDual i} = 1
+      exact Nat.card_unique
+    rw [card_GL_eq_prod (R := ℝ), h_size]
+    simp
+  have h_entries : Nat.card {p : Fin k × Fin k // b p.1 < b p.2} = ∑ i : Fin k, i.val := by
+    change Nat.card {p : Fin k × Fin k // p.2 < p.1} = _
+    rw [Nat.card_congr (Equiv.subtypeProdEquivSigmaSubtype (fun i j : Fin k ↦ j < i)),
+      Nat.card_sigma]
+    change (∑ i : Fin k, (Set.Iio i).ncard) = _
+    simp [← Finset.coe_Iio]
+  have h_card : (Nat.card B : ℝ) =
+      ∏ i : Fin k, ((Nat.card K : ℝ) - 1) * Nat.card K ^ i.val := by
+    rw [TauCeti.natCard_blockTriangularGroup, h_entries, Nat.cast_mul, Nat.cast_prod,
+      Nat.cast_pow, prod_mul_distrib, prod_pow_eq_pow_sum]
+    simp [h_diag]
   have hq : 1 < (Nat.card K : ℝ) := Nat.one_lt_cast.2 Finite.one_lt_card
-  refine le_of_mul_le_mul_right (h_card.trans_eq ?_)
-    (prod_pos fun i _ ↦ mul_pos (sub_pos.2 hq) (pow_pos (one_pos.trans hq) _))
+  have h_index : (B.index : ℝ) * Nat.card B = Nat.card (GL (Fin k) K) := by
+    exact_mod_cast B.index_mul_card
+  rw [h_card, card_GL_eq_prod, Fintype.card_fin, prod_range] at h_index
+  rw [hB]
+  apply mul_right_cancel₀ (b := ∏ i : Fin k, ((Nat.card K : ℝ) - 1) * Nat.card K ^ i.val)
+    (prod_pos fun i _ ↦ mul_pos (sub_pos.2 hq) (pow_pos (one_pos.trans hq) _)).ne'
+  refine h_index.trans ?_
   rw [← prod_mul_distrib]
-  exact prod_congr rfl fun i _ ↦ by field [(sub_pos.2 hq).ne']
+  simp_rw [← mul_assoc, div_mul_cancel₀ _ (sub_pos.2 hq).ne']
+  simp [mul_comm]
 
 /-- The defect of a vector `β` indexed by `(b, s) ∈ Fin k × ZMod N`, at the letter `i` along the
 root `(b, b')`, is the linear form with coefficients `T.defectWeight i b b'`, namely
@@ -889,7 +900,7 @@ lemma FrobeniusCycle.index_mul_relIndex_le (T : FrobeniusCycle N W K) (r : ℕ) 
   grw [relIndex_le_of_le_right h_levi index_ne_zero_of_finite, mul_comm, ← cast_mul,
     relIndex_mul_index h_iwahori_le, parahoric, index_comap,
     relIndex_le_of_le_right le_top index_ne_zero_of_finite, relIndex_top_right,
-    index_borel_le, T.card_residueField, cast_pow]
+    index_borel_eq, T.card_residueField, cast_pow]
 
 /-- The image of `ν` under `New.permStep` with trivial permutations, that is, the vector
 `± (P ν (b, s + 1) - ν (b, s))` with the sign `+` at even letters, has defect at most `0` along all
