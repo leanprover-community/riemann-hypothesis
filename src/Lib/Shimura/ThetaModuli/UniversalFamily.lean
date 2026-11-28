@@ -458,12 +458,12 @@ lemma exists_finite_isDenseFamily (hR_good : IsGoodOver D R) :
     D.level_ne_zero
   choose b hb h_generic using fun i : ι ↦ exists_generic_member C.scheme.hom (f i).domain.isOpen
     (f i).isConnected C.holomorphicAt_complexPoint
-  refine ⟨ι, hι, fun i ↦ (f i, b i), fun i ↦ ⟨hb i, h_generic i⟩, fun p ↦ ?_⟩
-  refine C.isSeparatingFamily.right.induction_on p isClosed_closure fun x ↦ ?_
+  refine ⟨ι, hι, fun i ↦ (f i, b i), fun i ↦ ⟨hb i, h_generic i⟩,
+    C.isSeparatingFamily.right.of_specializes fun x ↦ ?_⟩
   obtain ⟨i, a, ha, z, h_iso⟩ := h_rep (x.fst.ballPoint 0 (x.snd, 0))
   have h_pt : C.point x = C.point (f i, a.1) :=
     C.point_eq_of_isLevelIso M hR_good (z := z) ⟨h_iso.mem_level, h_iso.reflection_eq, nofun⟩
-  simpa [h_pt] using closure_mono (by simp) (h_generic i _ ha.1).mem_closure
+  exact ⟨i, h_pt.symm ▸ h_generic i _ ha.1⟩
 
 /-- Let `X` have the theta tori as fibres and `a` be a generic parameter. Let `α` be an arc whose
 generic point is the complex point at `a` and whose closed point lies over a prime good for `D`.

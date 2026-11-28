@@ -111,6 +111,18 @@ namespace New
 
 open CategoryTheory AlgebraicGeometry Limits Set Over LineBundle PointFn
 
+/-- A family of complex points is dense if each point of a dense family is a
+specialization of one of its points. -/
+lemma IsDenseFamily.of_specializes {Z W : Type} {X : Scheme}
+    {ξ : Z → (Spec (CommRingCat.of ℂ) ⟶ X)} (hξ : IsDenseFamily ξ)
+    {η : W → (Spec (CommRingCat.of ℂ) ⟶ X)}
+    (h : ∀ z, ∃ w, η w (IsLocalRing.closedPoint ℂ) ⤳ ξ z (IsLocalRing.closedPoint ℂ)) :
+    IsDenseFamily η := by
+  intro x
+  refine hξ.induction_on x isClosed_closure fun z ↦ ?_
+  obtain ⟨w, hw⟩ := h z
+  exact hw.mem_closed isClosed_closure (subset_closure (mem_range_self w))
+
 /-- A universally closed morphism `f : Y ⟶ X` is surjective if every point `ξ z` of a dense family
 of complex points of `X` lifts to a complex point `y z` of `Y`. -/
 lemma IsDenseFamily.surjective {Z : Type} {X Y : Scheme}

@@ -355,11 +355,9 @@ lemma exists_arc (C : U.GraphClosure γ ν) (z : C.scheme.left) :
     ((f k).isConnected.prod isConnected_univ)
     fun p hp ↦ C.holomorphicAt_point 0 p (Set.mem_prod.1 hp).1
   have h_dense : IsDenseFamily fun k ↦ (C.point ((f k).ballPoint 0 (b k))).left := by
-    intro w
-    refine C.isSeparatingFamily.right.induction_on w isClosed_closure fun a ↦ ?_
+    refine C.isSeparatingFamily.right.of_specializes fun a ↦ ?_
     obtain ⟨k, q, hq, z_iso, h_rel⟩ := h_meet a
-    simpa only [h_level h_rel] using
-      (hb k q hq).mem_closed isClosed_closure (subset_closure (mem_range_self k))
+    exact ⟨k, (h_level h_rel).symm ▸ hb k q hq⟩
   -- So an arc `α` starts at one of these points and has its centre at `z`.
   obtain ⟨k, V, α, h_start, rfl⟩ := New.exists_valuative_arc_of_isDenseFamily _ h_dense z
   -- The closed point of `V` is the image of the point of its residue field.
