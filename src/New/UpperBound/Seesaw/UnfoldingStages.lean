@@ -790,7 +790,7 @@ lemma integral_unfoldStageOn (ϑ : D.TameChar)
 of `Y_{2i} ⊕ Y_{2i+2}` and an index `b` of `Y_{2i+1}` whose grades have positive difference, built
 from the instances for sums, products and subtypes. -/
 noncomputable local instance instDecidableEqDoubleLiftSplitting (i : ℕ) (hi : 2 * i < 2 * D.ϱ + 1)
-    {X q : Type} {s : ℕ} [Fintype X] [DecidableEq X] [Fintype q] [DecidableEq q]
+    {X q : Type} {s : ℕ} [DecidableEq X] [DecidableEq q]
     {Y : Grading (D.spaceY (2 * i + 2)) D.N X s} :
     DecidableEq ({ i_1 : (D.Y (2 * i) ⊕ D.Y (2 * i + 2)) × D.Y (2 * i + 1) //
         0 < Sum.elim (D.gradingY (2 * i) hi.le).gradeOf Y.gradeOf i_1.1 -
