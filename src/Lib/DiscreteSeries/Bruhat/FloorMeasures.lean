@@ -505,28 +505,33 @@ lemma HyperbolicBasis.gram_floorBasis :
     conjTranspose_inclMatrix_mul_mul_inclMatrix, block]
   simp [F.gram_eq, fromBlocks_conjTranspose, fromBlocks_multiply, ← ext_iff, Matrix.one_apply]
 
-/-- Multiplication by `F.basisMatrix`, the matrix of the hyperbolic basis `F` of `V_ϱ`, preserves
-the volume of coordinate vectors. -/
-lemma HyperbolicBasis.measurePreserving_mulVec : MeasurePreserving (F.basisMatrix *ᵥ ·) := by
-  -- Reindex the columns by `e` to get a square matrix `M`. Its Gram matrix has square one.
-  let e : 𝔰.MiddleIndex ≃ Fin 2 ⊕ SplitIndex m ι := equivOfCardEq (by simp +arith [F.card_eq])
-  let M : Matrix 𝔰.MiddleIndex 𝔰.MiddleIndex A := F.basisMatrix * inclMatrix A e
+/-- A square change of coordinates preserves volume if the original form has determinant
+of modulus one and the Gram matrix of the new coordinates squares to one. -/
+lemma Place.measurePreserving_mulVec_of_gram_sq [DecidableEq n] {B : Matrix n k A}
+    {T : Matrix n n A} (h_card : card n = card k) (hT : P.modulus T.det = 1)
+    (h_gram : (Bᴴ * T * B) ^ 2 = 1) : MeasurePreserving (B *ᵥ ·) := by
+  let e : n ≃ k := equivOfCardEq h_card
+  let M : Matrix n n A := B * inclMatrix A e
   have gram_sq : (Mᴴ * T * M) ^ 2 = 1 := by
-    rw [gram_mul]
-    simp [sq, conjTranspose_inclMatrix_mul_mul_inclMatrix, F.gram_eq, ↓reindex_equiv e.symm,
-      fromBlocks_multiply,
-      fromCols_mul_fromRows, fromCols_mul_fromBlocks, fromBlocks_mul_fromRows, ← ext_iff,
-      Matrix.one_apply]
+    rw [gram_mul, conjTranspose_inclMatrix_mul_mul_inclMatrix, sq, submatrix_mul_equiv,
+      ← sq, h_gram, submatrix_one_equiv]
   have h_left : Mᴴ * T * M * (Mᴴ * T) * M = 1 := by rw [Matrix.mul_assoc _ _ M, ← sq, gram_sq]
   have h_unit : IsUnit M.det := isUnit_det_of_left_inverse h_left
   -- Taking determinants, `modulus M.det ^ 4 = 1`, since `modulus T.det = 1`.
   have h_md : P.modulus M.det = 1 := by
     have h_det : P.modulus ((Mᴴ * T * M) ^ 2).det = 1 := by simp [gram_sq]
-    simpa [F.modulus_det, ← sq, toNNReal_eq_one_iff] using congrArg ENNReal.toNNReal h_det
+    simpa [hT, ← sq, toNNReal_eq_one_iff] using congrArg ENNReal.toNNReal h_det
   have h_vol : volume.map (M *ᵥ ·) = volume := by simp [P.map_mulVec_volume _ M h_unit, h_md]
   refine ⟨by fun_prop, ?_⟩
   simpa (disch :=
     fun_prop) [← (measurePreserving_inclMatrix e).map_eq, Measure.map_map, ↓ comp_def] using h_vol
+
+/-- Multiplication by `F.basisMatrix`, the matrix of the hyperbolic basis `F` of `V_ϱ`, preserves
+the volume of coordinate vectors. -/
+lemma HyperbolicBasis.measurePreserving_mulVec : MeasurePreserving (F.basisMatrix *ᵥ ·) := by
+  apply P.measurePreserving_mulVec_of_gram_sq (by simp +arith [F.card_eq]) F.modulus_det
+  simp [F.gram_eq, sq, fromBlocks_multiply, fromCols_mul_fromRows, fromCols_mul_fromBlocks,
+    fromBlocks_mul_fromRows, ← ext_iff, Matrix.one_apply]
 
 /-- The basis `F.floorBasis b` carries the volume of its coordinates to the Haar measure of
 `V_b`. -/

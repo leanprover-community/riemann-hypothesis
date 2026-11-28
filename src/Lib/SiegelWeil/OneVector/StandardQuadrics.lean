@@ -61,38 +61,11 @@ lemma Place.isDisintegration_map_quadricMeasure {T : Matrix ι ι A}
       fun b : skewAdjoint A ↦ (P.quadricMeasure S b).map (B *ᵥ ·) := by
   have h_plane : planeSumGram S * planeSumGram S = 1 := by
     simp [fromBlocks_multiply, hS_sq, ← one_fin_two]
-  -- Reindex the columns of `B` to get a square matrix `M`. Its Gram matrix has square one.
-  let e : ι ≃ Fin 2 ⊕ κ := equivOfCardEq h_card
-  let M : Matrix ι ι A := B * inclMatrix A e
-  have gram_sq : (Mᴴ * T * M) ^ 2 = 1 := by
-    rw [gram_mul, h_gram, conjTranspose_inclMatrix_mul_mul_inclMatrix, sq, submatrix_mul_equiv,
-      h_plane, submatrix_one_equiv]
-  have h_unit : IsUnit M.det := by
-    rw [sq, ← mul_assoc] at gram_sq
-    exact isUnit_det_of_left_inverse gram_sq
-  -- Taking determinants, `modulus M.det ^ 4 = 1`; so `B` keeps the volume.
-  have h_mod : P.modulus M.det = 1 := by
-    have h_star : P.modulus (star M.det) = P.modulus M.det := (P.modulus_star_and_neg M.det).left
-    have h_pow : P.modulus M.det ^ 4 = 1 :=
-      calc
-        P.modulus M.det ^ 4 = (P.modulus (star M.det) * P.modulus T.det * P.modulus M.det) ^ 2 := by
-          rw [h_star, hT]
-          ring
-        _ = P.modulus ((Mᴴ * T * M) ^ 2).det := by
-          simp only [det_pow, det_mul, det_conjTranspose, map_pow, map_mul]
-        _ = 1 := by rw [gram_sq, det_one, map_one]
-    exact (ENNReal.pow_right_strictMono four_ne_zero).injective (h_pow.trans (one_pow 4).symm)
-  have h_vol : volume.map (B *ᵥ ·) = volume :=
-    calc
-      volume.map (B *ᵥ ·) = (volume.map (inclMatrix A e *ᵥ ·)).map (B *ᵥ ·) := by
-        rw [(measurePreserving_inclMatrix e).map_eq]
-      _ = volume.map (M *ᵥ ·) := by
-        rw [Measure.map_map (by fun_prop) (by fun_prop)]
-        simp only [M, comp_def, mulVec_mulVec]
-      _ = volume := by rw [P.map_mulVec_volume ι M h_unit, h_mod, inv_one, one_smul]
+  have h_vol : MeasurePreserving (B *ᵥ ·) :=
+    P.measurePreserving_mulVec_of_gram_sq h_card hT (by rw [h_gram, sq, h_plane])
   have h_left : planeSumGram S * (Bᴴ * T) * B = 1 := by
     rw [Matrix.mul_assoc, h_gram, h_plane]
-  rw [← h_vol]
+  rw [← h_vol.map_eq]
   exact (isDisintegration_quadricMeasure hS).map h_gram h_left
 
 end Place
