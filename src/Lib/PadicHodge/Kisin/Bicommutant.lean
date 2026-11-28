@@ -239,7 +239,7 @@ lemma smul_extendToBPlus_mem_bicommutant {m : FrobGal} {y : BPlus} {f : Ainf →
     m • c.extendToBPlus f y ∈ c.bicommutant := by
   -- Show multiplication by `m • c.extendToBPlus f y` commutes with `G` on `p ^ n * x ∈ amaxImage`,
   -- then cancel `p ^ n`.
-  refine c.mem_bicommutant_iff.2 fun G hG x => ?_
+  refine c.mem_bicommutant_iff.2 fun G hG x ↦ ?_
   obtain ⟨n, b, hb⟩ := x.exists_p_pow_mul_eq_amax
   let w : BPlus := (p : BPlus) ^ n * x
   have hw : w ∈ amaxImage := ⟨b, hb.symm⟩
@@ -247,7 +247,7 @@ lemma smul_extendToBPlus_mem_bicommutant {m : FrobGal} {y : BPlus} {f : Ainf →
     (G * .mulRight c.S w - .mulRight c.S (G w)).toAddMonoidHom.comp (m • c.extendToBPlus f)
   have h_pow : G (m • c.extendToBPlus f y * w) = m • c.extendToBPlus f y * G w :=
     sub_eq_zero.1 <| eq_zero_of_map_ainfToBPlus_eq_zero H
-      (by aesop (add simp [extendToBPlus_mem_amaxImage, smul_mem_amaxImage])) fun a => by
+      (by aesop (add simp [extendToBPlus_mem_amaxImage, smul_mem_amaxImage])) fun a ↦ by
         simpa [H, extendToBPlus_ainfToBPlus, sub_eq_zero, smul_def] using
           G.map_smul (⟨m • f a, hf a⟩ : c.S) w
   simp only [w, mul_left_comm _ ((p : BPlus) ^ n), map_p_pow_mul] at h_pow

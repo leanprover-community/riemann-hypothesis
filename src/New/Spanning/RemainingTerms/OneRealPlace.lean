@@ -90,7 +90,7 @@ lemma frameVolume_pos (γ : 𝔰.G₁) : 0 < frameVolume γ := by
     simp [(congrArg (star w ⬝ᵥ ·) (J₁_mulVec_eq_self h_ker).symm).trans
       ((U.form_mulVec_mulVec γ⁻¹ _ _).trans (form_frameCols_mulVec v)), not_lt_of_ge]
   simpa [w, inclMatrix_gram_eq_one besselFrame_injective, hv] using
-    congrArg (fun x => 𝔰.frameColsᴴ *ᵥ γ.val.val *ᵥ x) hw
+    congrArg (fun x ↦ 𝔰.frameColsᴴ *ᵥ γ.val.val *ᵥ x) hw
 
 /-- The volume does not change when the point `y` is moved by a unipotent element `γ` that fixes
 every vector of the frame. -/

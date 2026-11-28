@@ -218,11 +218,11 @@ lemma integral_mul_liftY (ϑ : D.TameChar) {j : ℕ} (hj : j < D.m) (z : D.ConjF
   have h1 : ∀ h, z h * liftY ϑ j f h =
       stdLevelIndex (levelY ϑ j) *
         (z h * formLift (thetaKernelY ϑ j) _ _ (datumY ϑ j) f h) :=
-    fun _ => mul_left_comm _ _ _
+    fun _ ↦ mul_left_comm _ _ _
   have h2 : ∀ g, transposedLiftY ϑ j z g * f g =
       stdLevelIndex (levelY ϑ j) *
         (f g * formLift (thetaKernelY ϑ j).swap _ _ (datumY ϑ j) z g) :=
-    fun _ => (mul_assoc _ _ _).trans (congrArg _ (mul_comm _ _))
+    fun _ ↦ (mul_assoc _ _ _).trans (congrArg _ (mul_comm _ _))
   simp_rw [h1, h2, integral_const_mul]
   rw [h_up.integral_mul_formLift_swap h_down]
 

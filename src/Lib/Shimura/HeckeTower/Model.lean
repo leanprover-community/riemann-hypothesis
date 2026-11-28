@@ -827,11 +827,11 @@ lemma ThetaObject.exists_apply_eq_of_torsion
   have := finite_of_card_ne_zero ((u.card_torsion hm).trans_ne (pow_ne_zero _ hm))
   exact (((Subtype.map_injective (q := (m • · = 0))
     (p := (· ∈ torsionBySet (𝓞 E) _ (span {(m : 𝓞 E)} : Ideal (𝓞 E))))
-    (fun l hl => by simp_all [← map_nsmul, cast_smul_eq_nsmul]) hf).bijective_of_nat_card_le <|
+    (fun l hl ↦ by simp_all [← map_nsmul, cast_smul_eq_nsmul]) hf).bijective_of_nat_card_le <|
     le_of_eq <| by
       rw [u.card_torsion hm, card_torsionBySet_adelicTorsion (by simpa), absNorm_span_natCast,
         finrank_fin_fun, RingOfIntegers.rank, finrank_eq_two_mul_card_infinitePlace, abelianDim]
-      ring).surjective ⟨y, hy⟩).elim fun l hl => ⟨l, congrArg Subtype.val hl⟩
+      ring).surjective ⟨y, hy⟩).elim fun l hl ↦ ⟨l, congrArg Subtype.val hl⟩
 
 end New
 

@@ -284,7 +284,7 @@ lemma tamePart_ne_one_of_invAvatar_ne_one {ℓ : ℕ} [ThePrime ℓ] {P : Parame
   -- The class of the inertial element `g` is the local Artin symbol of a unit `x` at `w'`.
   obtain ⟨x, hx, h⟩ := hA.exists_localArtin_eq_of_mem_inertiaGroup hgA
   have ha : artinMap (AbsGal D) (locIdele w' x) = g := by simp [hA.artinAt_eq_of_localArtin_eq h]
-  exact fun h_triv => h_ne <| by simp [invAvatar_eq_of_artinMap_eq ha,
+  exact fun h_triv ↦ h_ne <| by simp [invAvatar_eq_of_artinMap_eq ha,
     τ.hasWeight.charUnramifiedAt h_triv (τ.tamePart_eq_one _ (τ.star_notMem w' hw)) x hx]
 
 open IsDiscreteValuationRing in

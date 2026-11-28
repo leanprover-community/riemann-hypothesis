@@ -84,7 +84,7 @@ lemma Space.mul_coordMatrix_ne_zero (hc : c ≠ 0) (X : GL p (𝔸 E)) {M : Matr
     rw [← Matrix.map_mul, coordMatrix, _root_.mul_inv_rev, Units.val_mul, Matrix.mul_assoc]
     rfl
   refine hc (map_injective (ψ.comp toAdele).injective ?_)
-  have h_map := congrArg (fun A => u.val * (L * (Y⁻¹.val * A.map φ))) h_zero
+  have h_map := congrArg (fun A ↦ u.val * (L * (Y⁻¹.val * A.map φ))) h_zero
   simpa [Matrix.map_mul, h_coord, show (X.val.map snd)ᴴ.map φ = Y.val from rfl,
     ← Matrix.mul_assoc Y⁻¹.val, ← Matrix.mul_assoc L, ← Matrix.mul_assoc u.val,
     Units.inv_mul, Units.mul_inv, hL, Matrix.map_zero _ φ.map_zero] using h_map

@@ -516,7 +516,7 @@ lemma hasMatrixSize_mul_inv_sub_one {g x y : T.G} (hg : g ∈ F.boxSet) (hx : x 
     (hy : y ∈ Γ.positionsOfSize) :
     Γ.HasMatrixSize 14 (F.levelUnit⁻¹.val • ((g * x * (g * y)⁻¹).val.val - 1)) := by
   -- `y = M ((y - 1) / M) - (-1)` has size `3`, so `g y` has size `5` and its inverse size `9`.
-  have hy_entries : Γ.HasMatrixSize 3 y.val.val := fun a b => by
+  have hy_entries : Γ.HasMatrixSize 3 y.val.val := fun a b ↦ by
     simpa using sub_mem_ofSize (Γ.mul_mem_ofSize Γ.levelUnit_mem_ofSize (hy.2 a b))
       (Γ.neg_mem_iff_and_star_mem_iff.1.2 (HasMatrixSize.one a b))
   have hg_size := Γ.hasMatrixSize_boxSet hg
