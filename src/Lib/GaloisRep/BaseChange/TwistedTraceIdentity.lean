@@ -713,17 +713,10 @@ private lemma New.isBaseChangeMaps (μ : (𝔸f E)ˣ →* ℂˣ) [IsStep (E := E
     fun δ ↦ Subtype.ext (Units.ext (Matrix.ext fun a b ↦
       (adeleMap_algebraMap (σ : E' →+* E') ((δ : Matrix n n E') a b)).symm)),
     fun γ ↦ Subtype.ext (Units.ext (Matrix.ext fun a b ↦ by
-      have h_std : (((stdSpace E n).embFin γ : Gf E n) : Matrix n n (𝔸f E)) =
-          (γ : Matrix n n E).map (algebraMap E (𝔸f E)) := by
-        change (((stdSpace E n).ratEmbed γ).2 : Matrix n n (𝔸f E)) = _
-        dsimp only [Space.ratEmbed, Space.toRatCoords, stdSpace, G.toUnitary,
-          MonoidHom.comp_apply, MulEquiv.symm_trans_apply, MulEquiv.coe_toMonoidHom,
-          MulEquiv.coe_mk, Equiv.coe_fn_symm_mk]
-        simp only [U.map, U.conj, inv_one, one_mul, mul_one]
-        rfl
-      change algebraMap E' (𝔸f E') (algebraMap E E' ((γ : Matrix n n E) a b)) =
-        adeleMap (algebraMap E E') ((((stdSpace E n).embFin γ : Gf E n) : Matrix n n (𝔸f E)) a b)
-      rw [h_std, Matrix.map_apply, adeleMap_algebraMap])),
+      change algebraMap E' (𝔸f E') (algebraMap E E' _) =
+        adeleMap (algebraMap E E') (((stdSpace E n).embFin γ).val.val a b)
+      rw [stdSpace_embFin]
+      exact (adeleMap_algebraMap (algebraMap E E') _).symm)),
     fun γ ↦ Subtype.ext (Units.ext (Matrix.ext fun a b ↦ σ.commutes ((γ : Matrix n n E) a b))),
     fun g ↦ Subtype.ext (Units.ext (Matrix.ext fun a b ↦
       (adeleMap_adeleMap _ _ _).trans (congrArg (fun f ↦ adeleMap f _) hσ_alg))),

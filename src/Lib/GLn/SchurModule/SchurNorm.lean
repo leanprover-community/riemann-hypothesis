@@ -367,11 +367,9 @@ the embedding Φ_w chosen by the CM type applied to its entries. -/
 lemma stdSpace_ratEmbed_apply (w : NumberField.InfinitePlace E) :
     (((stdSpace E n).ratEmbed γ).1 w).val.val = (Φ w).mapMatrix γ := by
   ext i j
-  dsimp only [Space.ratEmbed, Space.toRatCoords, stdSpace, G.toUnitary,
-    MonoidHom.comp_apply, MulEquiv.symm_trans_apply, MulEquiv.coe_toMonoidHom,
-    MulEquiv.coe_mk, Equiv.coe_fn_symm_mk]
-  simp only [U.map, U.conj, RingHom.mapMatrix_apply, Matrix.map_apply, inv_one, one_mul, mul_one]
-  rfl
+  rw [← G.adeleMatrix_fst]
+  change ((1 * (γ.val.val.map toAdele) * 1 : Matrix n n (𝔸 E)) i j).1 w = _
+  simp
 
 /-- On the definite space `New.stdSpace`, γ acts by `New.weylRep` at the family of matrices
 Φ_τ(γ̄). -/
