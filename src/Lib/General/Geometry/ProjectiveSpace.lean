@@ -3,13 +3,12 @@ module
 public import Mathlib.AlgebraicGeometry.Morphisms.Proper
 public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
 import Mathlib.AlgebraicGeometry.Modules.Sheaf
-import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Proper
 import Mathlib.AlgebraicGeometry.ZariskisMainTheorem
 import Mathlib.CategoryTheory.EffectiveEpi.Comp
 import Mathlib.CategoryTheory.ExtremalEpi
 import Mathlib.RingTheory.Henselian
 import Mathlib.RingTheory.TotallySplit
-import TauCeti.RingTheory.MvPolynomial.Homogeneous
+import TauCeti.AlgebraicGeometry.ProjectiveSpectrum.Polynomial.Basic
 public import Lib.General.Geometry.LineBundles
 
 /-!
@@ -133,15 +132,9 @@ functions X_j/X_i. -/
 def ProjSpace.hyperplaneBundle (ι : Type) : LineBundle (ProjSpace ι) ι where
   opens i := basicOpen (homogeneousSubmodule ι ℤ) (MvPolynomial.X i)
   transition := coordRatio
-  cover := by
-    -- The `X i` are homogeneous and generate the ring over its degree zero part, already over `ℤ`.
-    refine iSup_basicOpen_eq_top' _ _ (⟨1, X_mem_homogeneousSubmodule ·⟩) ?_
-    rw [← adjoin_adjoin_of_tower ℤ]
-    simp
+  cover := by exact iSup_basicOpen_eq_top _ _ (MvPolynomial.irrelevant_eq_span_X ι ℤ).le
   regular := by simp [(isRegularOn_ofSection _).mono]
-  transition_self i := by
-    have h_one : coordFraction i i = 1 := by aesop
-    simp +contextual [ofSection_eq, h_one]
+  transition_self i := by simp +contextual [ofSection_eq]
 
 /-- The standard chart D₊(X_i) of projective space is affine. -/
 lemma ProjSpace.isAffineOpen_chart (i : ι) : IsAffineOpen ((hyperplaneBundle ι).opens i) :=
@@ -322,18 +315,16 @@ over the chart D₊(X_i) to `A` that sends X_j/X_i to `v j / v i`. -/
 lemma _root_.New.ProjSpace.exists_hom_mul_coordSection_eq (hi : IsUnit (v i)) :
     ∃ φ : Γ(ProjSpace ι, basicOpen (homogeneousSubmodule ι ℤ) (MvPolynomial.X i)) ⟶ A,
       ∀ j : ι, v i * φ (coordSection i j) = v j := by
-  -- Substituting `v` makes `X i` a unit, so it extends to the localization at `X i`; restrict it
-  -- to the degree-zero part, which is the ring of sections of the chart.
+  -- Substituting `v` makes `X i` a unit, so it lifts to the degree-zero localization at `X i`.
   let ev : MvPolynomial ι ℤ →+* A := eval₂Hom (castRingHom A) v
-  have h_inv : ev (X i) * (v i)⁻¹ʳ = 1 := by simp [ev, Ring.mul_inverse_cancel _ hi]
-  let ψ : HomogeneousLocalization.Away (homogeneousSubmodule ι ℤ) (X i) →+* A :=
-    (awayLift ev (X i) (.of_mul_eq_one _ h_inv)).comp (algebraMap _ (Localization.Away (X i)))
+  have hv : IsUnit (ev (X i)) := by simpa [ev] using hi
   let e := basicOpenIsoAway _ _ (X_mem_homogeneousSubmodule i) one_pos
-  refine ⟨e.inv ≫ ofHom ψ, fun j ↦ ?_⟩
-  have h_value : ψ (coordFraction i j) = ev (X j ^ 1) * (v i)⁻¹ʳ ^ 1 :=
-    awayLift_mk ev (X i) (X j ^ 1) _ h_inv 1
-  change v i * ψ (e.inv (e.hom (coordFraction i j))) = v j
-  simp [h_value, ev, mul_left_comm (v i), Ring.mul_inverse_cancel _ hi]
+  refine ⟨e.inv ≫ ofHom (Away.lift (homogeneousSubmodule ι ℤ) ev hv), fun j ↦ ?_⟩
+  change v i * Away.lift _ ev hv (e.inv (e.hom (coordFraction i j))) = v j
+  rw [show e.inv (e.hom (coordFraction i j)) = TauCeti.MvPolynomial.awayXRatio i j by simp,
+    TauCeti.MvPolynomial.awayXRatio_def, Away.lift_mk, pow_one, mul_left_comm,
+    show v i = ↑hv.unit by simp [ev], Units.mul_inv, mul_one]
+  simp [ev]
 
 /-- A vector `v` in `A ^ ι` with a unit entry `v i` is a vector of homogeneous coordinates of an
 `A`-valued point of projective space over `S` lying over any given point `b` of `S`. -/
@@ -395,20 +386,14 @@ lemma _root_.New.ProjSpace.surjective_eval₂Hom_coordFraction (i : ι) :
     Function.Surjective (eval₂Hom
       (castRingHom (HomogeneousLocalization.Away (homogeneousSubmodule ι ℤ) (MvPolynomial.X i)))
       fun j : ι ↦ coordFraction i j) := by
-  -- An element is `a / X i ^ n` with `a` homogeneous of degree `n`; it is the image of `a`.
+  have h := TauCeti.MvPolynomial.adjoin_range_awayXRatio (R := ℤ) i
+  rw [Algebra.adjoin_range_eq_range_aeval] at h
   intro x
-  obtain ⟨n, a, ha, rfl⟩ := x.mk_surjective _ (X_mem_homogeneousSubmodule i)
-  -- Compare in the full localization and clear the denominator: by homogeneity,
-  -- `X i ^ n * a (X j / X i) = a (X j)`.
-  let φ : MvPolynomial ι ℤ →+* Localization.Away (X i : MvPolynomial ι ℤ) := algebraMap _ _
-  have h_frac (j : ι) : φ (X i) * (coordFraction i j).val = φ (X j) := by simp [φ, mk_eq_mk']
-  have h_clear (f : ℤ →+* Localization.Away (X i : MvPolynomial ι ℤ)) :
-      φ (X i) ^ n * eval₂ f (fun j : ι ↦ (coordFraction i j).val) a = φ a := by
-    simp only [← IsHomogeneous.eval₂_const_mul (p := a) (n := n) (by simpa using ha), h_frac]
-    exact eval₂Hom_X f φ a
-  refine ⟨a, val_injective _ ?_⟩
-  rw [← HomogeneousLocalization.algebraMap_apply, map_eval₂Hom]
-  simpa [mk_eq_mk', eq_mk'_iff_mul_eq, mul_comm] using h_clear _
+  obtain ⟨p, rfl⟩ := (SetLike.ext_iff.1 h x).2 trivial
+  refine ⟨p, ?_⟩
+  simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, aeval_eq_eval₂Hom, coordFraction,
+    TauCeti.MvPolynomial.isLocalizationElem_X]
+  exact congrArg (eval₂Hom · _ p) (Subsingleton.elim _ _)
 
 /-- Two ring maps from the sections over the chart D₊(X_i) that agree on all X_j/X_i are equal. -/
 lemma _root_.New.ProjSpace.hom_ext_of_coordSection_eq
@@ -419,18 +404,12 @@ lemma _root_.New.ProjSpace.hom_ext_of_coordSection_eq
     CommRingCat.hom_ext_iff, ← RingHom.cancel_right (surjective_eval₂Hom_coordFraction i)]
   ext j
   · simp
-  · simpa [basicOpenIsoAway_hom] using h_coord j
+  · simpa [basicOpenIsoAway_hom, -TauCeti.MvPolynomial.isLocalizationElem_X] using h_coord j
 
 /-- Projective space with a finite index set is proper over `Spec ℤ`. -/
 lemma _root_.New.ProjSpace.isProper_specZIsTerminal_from [Finite κ] :
     IsProper (specZIsTerminal.from (ProjSpace κ)) := by
-  -- `Proj` is proper over the spectrum of the degree zero part, which is finite over `ℤ`.
-  let c : of ℤ ⟶ of (homogeneousSubmodule κ ℤ 0) := ofHom (algebraMap ℤ _)
-  have h_finite : IsFinite (Spec.map c) := (IsFinite.SpecMap_iff c).2
-    (RingHom.finite_algebraMap.2 (.of_fg (homogeneousSubmodule_fg κ ℤ 0)))
-  have : FiniteType (homogeneousSubmodule κ ℤ 0) (MvPolynomial κ ℤ) :=
-    .of_restrictScalars_finiteType ℤ _ _
-  rw [specZIsTerminal.hom_ext (specZIsTerminal.from _) (toSpecZero _ ≫ Spec.map c)]
+  rw [specZIsTerminal.hom_ext (specZIsTerminal.from _) (ProjSpace κ ↘ Spec (.of ℤ))]
   infer_instance
 
 /-- For a finite index set κ and a scheme S, the pull-back of O(1) to ℙ^κ × S is a projective
