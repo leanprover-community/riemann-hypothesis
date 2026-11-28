@@ -172,16 +172,20 @@ lemma exists_add_eq_of_interlace {N : ℕ} (hN : 0 < N)
   · obtain _ | q := q
     · simp at hq
     have hq_lt : q + 1 < N := (mem_Ioo.1 hq).2
-    have h_diff : d τ q - d τ (q + 1) = κ₀ τ (q + 1) - κ τ (q + 2) := by
+    have h_diff : d τ q - d τ (q + 1) = κ₀ τ (q + 1) - κ τ (q + 1 + 1) := by
       simp only [d, diagramWeight_eq_add_succ τ hq_lt,
         diagramWeight_eq_add_succ τ (Nat.succ_lt_succ hq_lt)]
       lia
+    have := hd τ q (by lia)
+    have := hd τ (q + 1) hq_lt
     simp only [γ, κ₁, add_tsub_cancel_right]
-    grind [hd τ q, hd τ (q + 1)]
+    omega
   · have h_diff : d τ (N - 1) = e₀ τ - e τ := by
       simp (disch := lia) [d, diagramWeight_eq_zero_of_le_succ]
+    have h_last := hd τ (N - 1) (by lia)
+    rw [Nat.sub_add_cancel hN] at h_last
     simp only [κ₁]
-    grind [hd τ (N - 1)]
+    omega
 
 end Interlacing
 
@@ -412,8 +416,15 @@ theorem exists_isLiftWeight_isHCParam :
     simp only [e, h_columns]
     -- `D.liftWeight` grows by `D.gap` from `j + 1` to `j + 2`, and half the rank by `D.t + z` in
     -- two steps.
-    simp only [gridWeight, card_gridIndex, ι]
-    cases z <;> grind
+    have h_div : (card (ι (j + 2)) + (!z).toNat) / 2 =
+        (card (ι j) + (!z).toNat) / 2 + (D.t + z.toNat) := by
+      rw [show card (ι (j + 2)) + (!z).toNat =
+        card (ι j) + (!z).toNat + 2 * (D.t + z.toNat) by simp only [ι, card_gridIndex]; ring]
+      exact Nat.add_mul_div_left _ _ two_pos
+    have h_sizes : D.k + D.t + 1 ≤ D.halfGap := D.k_add_t_add_one_le_halfGap
+    have h_gap : D.gap = 2 * D.halfGap := rfl
+    rw [gridWeight, gridWeight, h_div, D.liftWeight_succ (j + 1) τ]
+    cases z <;> simp only [Bool.toNat_true, Bool.toNat_false] <;> omega
   refine ⟨κ, e, h_up, h_next, fun j hj ↦ ?_⟩
   induction j with
   | zero => exact h_param
@@ -833,7 +844,9 @@ lemma lastPathPairing_lastPathChain_mem_smoothInvariants (S : EdgeTuple ϑ)
     have h_cont : Continuous incl := by
       change Continuous fun h : Gf D.E (D.LastPathIndex false D.m) ↦
         (G.blockEmb (s := 1) Sum.elim_one_one.symm ⟨⟨1, h⟩, 1⟩).2
-      fun_prop
+      exact continuous_snd.comp ((G.isClosedEmbedding_blockEmb (s := 1)
+        Sum.elim_one_one.symm).continuous.comp
+        ((continuous_const.prodMk continuous_id).prodMk continuous_const))
     refine Subgroup.isOpen_mono (H₁ := rightStabilizer (lastPathChain S false D.m (y false)).val ⊓
       comap incl (rightStabilizer (lastPathChain S true D.m (y true)).val)) ?_
       (.and h_open (h_open'.preimage h_cont))
