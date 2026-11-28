@@ -211,6 +211,20 @@ lemma smul_eq_self_of_mem_decompGroup_of_mem_closure (ι : Ω →+* PadicAlgCl p
 
 variable (K Γ)
 
+/-- A map `f` from a subgroup of `Gp p` to `Γ` through which the action on `Ω` is compatible with
+the embedding `ι : Ω →+* PadicAlgCl p`, i.e. `ι (f g • x) = g • ι x`, is injective. -/
+private lemma injective_of_emb_smul_eq {H : Subgroup (Gp p)} {f : H → Γ}
+    (hf : ∀ (g : H) (x : Ω), ι (f g • x) = g • ι x) : Function.Injective f := by
+  -- Two continuous automorphisms that agree on the dense image of `ι` agree.
+  intro g g' h_eq
+  have h_agree (x : Ω) : (g : Gp p) • ι x = (g' : Gp p) • ι x :=
+    calc (g : Gp p) • ι x = ι (f g • x) := (hf g x).symm
+      _ = ι (f g' • x) := by rw [h_eq]
+      _ = (g' : Gp p) • ι x := hf g' x
+  have h_agree_all : ∀ y : PadicAlgCl p, (g : Gp p) • y = (g' : Gp p) • y :=
+    (denseRange_emb_padicAlgCl ι).eq h_agree
+  exact Subtype.coe_injective (eq_of_smul_eq_smul h_agree_all)
+
 /-- Let `Ω` be `New.Ω`, the fixed algebraic closure of `ℚ`, and let `K` be a number field inside
 `Ω`, with `Γ` acting as the Galois group of `Ω/K` (`IsProGalois`). An embedding
 `ι : Ω → ℚ̄_p` that pulls the integers of `ℚ̄_p` back to the place `A` induces an open embedding `j`
@@ -234,15 +248,8 @@ lemma exists_inducesPlace [NumberField K] {ι : Ω →+* PadicAlgCl p} {A : Valu
     exists_galois_restrict Γ (U : Subgroup (Gp p)) ι hU_fixes
   have h_dec (g : (U : Subgroup (Gp p))) : f g ∈ decompGroup Γ ((intQpBar p).comap ι) :=
     decompGroup.map hf (isLocalGalois_padic.mem_decompGroup (g : Gp p))
-  -- Injective: two continuous automorphisms that agree on the dense image of `ι` agree.
-  have h_inj (g g' : (U : Subgroup (Gp p))) (h_eq : f g = f g') : g = g' := by
-    have h_agree (x : Ω) : (g : Gp p) • ι x = (g' : Gp p) • ι x :=
-      calc (g : Gp p) • ι x = ι (f g • x) := (hf g x).symm
-        _ = ι (f g' • x) := by rw [h_eq]
-        _ = (g' : Gp p) • ι x := hf g' x
-    have h_agree_all : ∀ y : PadicAlgCl p, (g : Gp p) • y = (g' : Gp p) • y :=
-      (denseRange_emb_padicAlgCl ι).eq h_agree
-    exact Subtype.coe_injective (eq_of_smul_eq_smul h_agree_all)
+  have h_inj (g g' : (U : Subgroup (Gp p))) (h_eq : f g = f g') : g = g' :=
+    injective_of_emb_smul_eq Γ ι hf h_eq
   -- Surjective: the range of `f` is closed, so it suffices that `σ` fixes every `x` fixed by it
   -- (`fixingSubgroup_fixedFieldOf`).
   have h_surj (σ : Γ) (hσ : σ ∈ decompGroup Γ ((intQpBar p).comap ι)) : σ ∈ f.range := by
