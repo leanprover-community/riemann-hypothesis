@@ -101,46 +101,52 @@ lemma cokerKerIndex_comp :
     have t_ne : (t : ℚ) ≠ 0 := fun ht0 ↦ by simp [ht0] at h_ne
     field_simp
 
-/-- For a short exact sequence `0 → A → B → C → 0` of abelian groups given by `f` and `g`, let
-q_X = #(X/lX) / #X[l] be the rational cokernel-over-kernel index of multiplication by `l` on X,
-taken to be 0 if either group is infinite. If q_A ≠ 0, meaning A/lA and A[l] are both finite, then
-q_B = q_A · q_C. -/
+/-- The cokernel-over-kernel index is multiplicative for commuting endomorphisms of a short
+exact sequence. It suffices that either outer endomorphism have finite kernel and cokernel. -/
 lemma cokerKerIndex_mul_of_exact (hf : Function.Injective f) (h_exact : Exact f g)
-    (hg : Surjective g) (hA : cokerKerIndex (l : End ℤ A) ≠ 0) :
-    cokerKerIndex (l : End ℤ B) = cokerKerIndex (l : End ℤ A) * cokerKerIndex (l : End ℤ C) := by
-  -- Multiplication by `l` on `B` factors through the range `X` of `ψ (b, a) = (l b - f a, g b)` as
-  -- `B → X → B`. The first map has the index of `l` on `A`, the second that of `l` on `C`; both
-  -- are read off from the exact sequence `A → B × A → B × C → C` by the first part of
-  -- `cokerKerIndex_comp`.
-  let ψ : B × A →ₗ[ℤ] B × C := (coprod (l : End ℤ B) (-f)).prod (g ∘ₗ fst ℤ B A)
-  have exact_left : Exact (f.prod (l : End ℤ A)) ψ := by
-    suffices h_iff : ∀ (b : B) (a : A),
-        (l • b + -f a = 0 ∧ ∃ y : A, f y = b) ↔ ∃ y : A, f y = b ∧ l • f y = f a by
+    (hg : Surjective g) {a : End ℤ A} {b : End ℤ B} {c : End ℤ C}
+    (h_comm_left : b ∘ₗ f = f ∘ₗ a) (h_comm_right : g ∘ₗ b = c ∘ₗ g)
+    (h_indices : cokerKerIndex a ≠ 0 ∨ cokerKerIndex c ≠ 0) :
+    cokerKerIndex b = cokerKerIndex a * cokerKerIndex c := by
+  -- Factor `b` through the range of ψ(x, y) = (b x - f y, g x). The two factors
+  -- have the indices of `a` and `c`, as seen from the kernel and cokernel of ψ.
+  let ψ : B × A →ₗ[ℤ] B × C := (coprod b (-f)).prod (g ∘ₗ fst ℤ B A)
+  have h_left (y : A) : b (f y) = f (a y) := DFunLike.congr_fun h_comm_left y
+  have h_right (x : B) : g (b x) = c (g x) := DFunLike.congr_fun h_comm_right x
+  have exact_left : Exact (f.prod a) ψ := by
+    suffices h_iff : ∀ (x : B) (y : A),
+        (b x + -f y = 0 ∧ ∃ z : A, f z = x) ↔ ∃ z : A, f z = x ∧ a z = y by
       simpa [Exact, ψ, h_exact _, ← hf.eq_iff] using h_iff
-    grind
-  have exact_right : Exact ψ (coprod (-g) (l : End ℤ C)) := by
-    -- If `g b = l • g x`, then `l • x - b` lies in the range of `f`; take `b' = x`.
-    have h_iff (b x : B) :
-        -g b + l • g x = 0 ↔ ∃ b' : B, (∃ a : A, l • b' + -f a = b) ∧ g b' = g x := by
-      grind [Exact, h_exact (l • x - b)]
+    intro x y
+    constructor
+    · rintro ⟨h_zero, z, rfl⟩
+      have h_eq : f (a z) = f y := sub_eq_zero.mp <| by
+        simpa [h_left, sub_eq_add_neg] using h_zero
+      exact ⟨z, rfl, hf h_eq⟩
+    · rintro ⟨z, rfl, rfl⟩
+      exact ⟨by simp [h_left], ⟨z, rfl⟩⟩
+  have exact_right : Exact ψ (coprod (-g) c) := by
+    have h_iff (x z : B) :
+        -g x + c (g z) = 0 ↔ ∃ z' : B, (∃ y : A, b z' + -f y = x) ∧ g z' = g z := by
+      grind [Exact, h_exact (b z - x)]
     simpa [Exact, ψ, hg.forall] using h_iff
-  let α : B →ₗ[ℤ] ψ.range := ψ.rangeRestrict ∘ₗ inl ℤ B A
-  let β : ψ.range →ₗ[ℤ] B := fst ℤ B C ∘ₗ ψ.range.subtype
-  have h_factor : (l : End ℤ B) = β ∘ₗ α := by aesop
-  -- Write `l = snd ∘ (f, l)` on `A`: both indices compare `B × 0` with `ker ψ` inside `B × A`.
-  have idx_α : cokerKerIndex (l : End ℤ A) = cokerKerIndex α := by
-    rw [← snd_prod f (l : End ℤ A), (cokerKerIndex_comp (f.prod (l : End ℤ A)) (snd ℤ B A)).left,
+  let i : B →ₗ[ℤ] ψ.range := ψ.rangeRestrict ∘ₗ inl ℤ B A
+  let q : ψ.range →ₗ[ℤ] B := fst ℤ B C ∘ₗ ψ.range.subtype
+  have h_factor : b = q ∘ₗ i := by aesop
+  -- The first factor has the index of a = snd ∘ (f, a).
+  have idx_i : cokerKerIndex a = cokerKerIndex i := by
+    rw [← snd_prod f a, (cokerKerIndex_comp (f.prod a) (snd ℤ B A)).left,
       (cokerKerIndex_comp (inl ℤ B A) ψ.rangeRestrict).left]
     simp_all [exact_iff, range_inl, ← ker_eq_bot, sup_comm, inf_comm, bot_inf_eq]
-  -- Write `l = coprod (-g) l ∘ inr` on `C`: both compare `0 × C` with `range ψ` in `B × C`.
-  have idx_β : cokerKerIndex (l : End ℤ C) = cokerKerIndex β := by
-    rw [← coprod_inr (-g) (l : End ℤ C),
-      (cokerKerIndex_comp (inr ℤ B C) (coprod (-g) (l : End ℤ C))).left,
+  -- The second factor has the index of c = (-g, c) ∘ inr.
+  have idx_q : cokerKerIndex c = cokerKerIndex q := by
+    rw [← coprod_inr (-g) c, (cokerKerIndex_comp (inr ℤ B C) (coprod (-g) c)).left,
       (cokerKerIndex_comp ψ.range.subtype (fst ℤ B C)).left]
     simp_all [exact_iff, range_inr, ← range_eq_top, range_coprod, sup_comm, inf_comm]
-  -- The index is multiplicative in `l = β ∘ α`, since `α` has nonzero index.
-  rw [idx_α, idx_β, h_factor]
-  exact (cokerKerIndex_comp α β).right (.inl (by rwa [← idx_α]))
+  have h_finite : cokerKerIndex i ≠ 0 ∨ cokerKerIndex q ≠ 0 := by
+    simpa [idx_i, idx_q] using h_indices
+  rw [h_factor, idx_i, idx_q]
+  exact (cokerKerIndex_comp i q).right h_finite
 
 /-- If `f : A → B` has finite kernel and cokernel, then `#(A/lA) / #A[l] = #(B/lB) / #B[l]`, each
 side read as `0` when one of its groups is infinite. -/
@@ -389,7 +395,9 @@ lemma New.Tate.index_formula {B C : Type} [AddCommGroup B] [AddCommGroup C] (s :
   have index_B :
       cokerKerIndex (l : End ℤ B) = cokerKerIndex (l : End ℤ C) * cokerKerIndex (l : End ℤ N) :=
     cokerKerIndex_mul_of_exact j _ hj (by simpa [exact_iff] using exact_j)
-      (σ - 1).surjective_rangeRestrict hC
+      (σ - 1).surjective_rangeRestrict
+      (LinearMap.ext fun x ↦ (map_nsmul j l x).symm)
+      (LinearMap.ext fun x ↦ map_nsmul (σ - 1).rangeRestrict l x) (.inl hC)
   rw [index_B, index_N, mul_left_comm, ← mul_pow, ← index_C, mul_pow_sub_one NeZero.out]
 
 end TateIndex

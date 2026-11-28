@@ -260,9 +260,12 @@ lemma New.cokerKerIndex_local_units {Γ L Ω : Type} [Group Γ] [TopologicalSpac
       cokerKerIndex, ker_pow, card_congr (red_exact.linearEquivOfSurjective red_surj).toEquiv]
     simp
   -- Split off `ℤ`, where the index is `l`.
-  rw [cokerKerIndex_mul_of_exact _ f (by simp) f.exact_subtype_ker_map f_surj
-      (by simp [idx_units, ne_of_gt]),
-    idx_units, cokerKerIndex_eq_pow_finrank.right]
+  have h_index : cokerKerIndex (l : End ℤ Y) =
+      cokerKerIndex (l : End ℤ f.ker) * cokerKerIndex (l : End ℤ ℤ) :=
+    cokerKerIndex_mul_of_exact f.ker.subtype f f.ker.subtype_injective
+      f.exact_subtype_ker_map f_surj (LinearMap.ext fun x ↦ (map_nsmul f.ker.subtype l x).symm)
+      (LinearMap.ext fun x ↦ map_nsmul f l x) (.inr cokerKerIndex_natCast_ne_zero)
+  rw [h_index, idx_units, cokerKerIndex_eq_pow_finrank.right]
   simp [mul_comm, NeZero.ne]
 
 end LocalPowerIndex
@@ -318,7 +321,9 @@ lemma card_kummer_cocycles [hLocal : IsLocalGalois Γ k A] (n : ℕ) [NeZero n] 
       cokerKerIndex (n : Module.End ℤ (DiscreteUnits Ω)) =
         cokerKerIndex (n : Module.End ℤ K) *
           cokerKerIndex (n : Module.End ℤ (Z1 (unitsModule Γ).ρ)) :=
-    cokerKerIndex_mul_of_exact K.subtype _ K.subtype_injective h_exact h_surj h_ne
+    cokerKerIndex_mul_of_exact K.subtype _ K.subtype_injective h_exact h_surj
+      (LinearMap.ext fun x ↦ (map_nsmul K.subtype n x).symm)
+      (LinearMap.ext fun x ↦ map_nsmul (unitsModule Γ).coboundary n x) (.inl h_ne)
   -- `Ωˣ` is divisible, hence so is its quotient `Z¹`; and `Ωˣ` has `n` elements killed by `n`.
   have h_div : Surjective fun x : DiscreteUnits Ω ↦ n • x := fun x ↦ x.exists_nsmul out
   have h_div' : Surjective fun f : Z1 (unitsModule Γ).ρ ↦ n • f :=
