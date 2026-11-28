@@ -260,10 +260,8 @@ lemma sum_min_ellVal_sub_le {α : intQpBar ℓ} (hα : IsUnit (1 + α)) (h : ℕ
 unity. -/
 lemma exists_isPrimitiveRoot_pow (h : ℕ) : ∃ ζ : intQpBar ℓ, IsPrimitiveRoot ζ (ℓ ^ h) := by
   have : NeZero (ℓ ^ h) := ⟨pow_ne_zero h (Fact.out : ℓ.Prime).ne_zero⟩
-  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_isPrimitiveRoot (PadicAlgCl ℓ) (ℓ ^ h)
-  -- Membership in the valuation ring is by definition the bound `‖ζ‖ ≤ 1`.
-  have h_int : ζ ∈ intQpBar ℓ := (hζ.isOfFinOrder NeZero.out).norm_eq_one.le
-  exact ⟨⟨ζ, h_int⟩, IsPrimitiveRoot.coe_submonoidClass_iff.1 hζ⟩
+  obtain ⟨ζ, hζ, h_norm⟩ := exists_isPrimitiveRoot_with_norm_eq_one (ℓ := ℓ) (ℓ ^ h)
+  exact ⟨⟨ζ, h_norm.le⟩, IsPrimitiveRoot.coe_submonoidClass_iff.1 hζ⟩
 
 /-- Averaging over the roots of unity of order `ℓ ^ h`. Let `v = ellVal` be the valuation on `ℚ̄_ℓ`
 with `v ℓ = 1` and `ρ_h = rootRadius ℓ h = 1 / φ(ℓ ^ h)`, so that there are `1 / ρ_h` such roots in

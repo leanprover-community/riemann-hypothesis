@@ -130,7 +130,8 @@ lemma frequently_lt_card_residueField (c : ℕ) :
   obtain ⟨k, hk_pos, hk⟩ : ∃ k : ℕ, 0 < k ∧ c * (d * k) + 1 < ℓ ^ k - 1 := by
     simpa only [← mul_assoc] using exists_mul_add_one_lt_pow_sub_one ℓ (c * d)
   have : NeZero k := ⟨hk_pos.ne'⟩
-  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_isPrimitiveRoot (PadicAlgCl ℓ) (ℓ ^ k - 1)
+  obtain ⟨ζ, hζ, h_norm⟩ :=
+    exists_isPrimitiveRoot_with_norm_eq_one (ℓ := ℓ) (ℓ ^ k - 1)
   have hζ_int : IsIntegral ℚ_[ℓ] ζ := Algebra.IsIntegral.isIntegral ζ
   have : IsCyclotomicExtension {ℓ ^ k - 1} ℚ_[ℓ] ℚ_[ℓ]⟮ζ⟯ :=
     hζ.intermediateField_adjoin_isCyclotomicExtension ℚ_[ℓ]
@@ -141,7 +142,7 @@ lemma frequently_lt_card_residueField (c : ℕ) :
       x ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) ↔ ‖x‖ ≤ 1 ∧ x ∈ K.toIntermediateField :=
     ⟨⟨_, K, rfl⟩, fun x ↦ Iff.rfl⟩
   have hζ_mem : ζ ∈ (O : Subalgebra ℤ_[ℓ] (PadicAlgCl ℓ)) := (hO ζ).2
-    ⟨(hζ.isOfFinOrder (NeZero.ne _)).norm_eq_one.le,
+    ⟨h_norm.le,
       (le_sup_right : ℚ_[ℓ]⟮ζ⟯ ≤ K.toIntermediateField) (mem_adjoin_simple_self _ ζ)⟩
   have h_deg : finrank ℚ_[ℓ] K ≤ d * k :=
     (finrank_sup_le _ _).trans <| Nat.mul_le_mul_left d <|

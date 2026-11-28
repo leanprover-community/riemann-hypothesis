@@ -293,6 +293,12 @@ lemma ellVal_natCast {n : ℕ} (hn : n ≠ 0) : ellVal (ℓ := ℓ) n = padicVal
 lemma ellVal_ell : ellVal (ℓ : PadicAlgCl ℓ) = 1 := by
   simp [norm_p_eq_inv, ellVal, NeZero.ne, Fact.out]
 
+/-- For each nonzero order, `ℚ̄_ℓ` has a primitive root of unity of norm `1`. -/
+lemma exists_isPrimitiveRoot_with_norm_eq_one (n : ℕ) [NeZero n] :
+    ∃ ζ : PadicAlgCl ℓ, IsPrimitiveRoot ζ n ∧ ‖ζ‖ = 1 := by
+  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_isPrimitiveRoot (PadicAlgCl ℓ) n
+  exact ⟨ζ, hζ, (hζ.isOfFinOrder (NeZero.ne n)).norm_eq_one⟩
+
 namespace CoeffRing
 
 /-! ### Coefficient rings: units, lengths, roots of unity and finite quotients -/
@@ -353,9 +359,8 @@ inside ℚ̄_ℓ) that are sufficiently large with respect to inclusion contain 
 of unity. -/
 lemma eventually_exists_isPrimitiveRoot (k : ℕ) [NeZero k] :
     ∀ᶠ O : CoeffRing ℓ in Filter.atTop, ∃ ζ : ↑O, IsPrimitiveRoot ζ k := by
-  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_isPrimitiveRoot (PadicAlgCl ℓ) k
-  -- a root of unity has norm `1`, so it lies in all large enough `O`
-  filter_upwards [eventually_mem (hζ.isOfFinOrder (NeZero.ne k)).norm_eq_one.le] with O hO
+  obtain ⟨ζ, hζ, h_norm⟩ := exists_isPrimitiveRoot_with_norm_eq_one (ℓ := ℓ) k
+  filter_upwards [eventually_mem h_norm.le] with O hO
   exact ⟨⟨ζ, hO⟩, .coe_submonoidClass_iff.1 hζ⟩
 
 /-- A coefficient ring is an ℓ-adic integer ring; its quotients by nonzero ideals are finite, as
