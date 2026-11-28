@@ -26,8 +26,10 @@ This needs Python 3.11 or newer and curl 7.71 or newer, and no credential. It fe
 cache, then Tau Ceti's, then this project's, and unpacks them. It ends with `lake build --no-build`, which must report
 that nothing needs compiling. `lake exe mathlib/cache get` fetches Mathlib alone.
 
-A change to the sources, `lakefile.toml`, `lake-manifest.json` or `lean-toolchain` gives different
-build inputs; `lake exe cache get` then says that no cache matches.
+Fetch the cache before editing `src`, `lakefile.toml`, `lake-manifest.json` or `lean-toolchain`.
+For an exact or baseline project cache, these inputs on disk must match `HEAD`, and `src`
+must contain no untracked files. If you have already edited the sources, you can build with
+`lake build`, or commit your changes locally on your topic branch and try a baseline.
 
 ## Baseline
 
@@ -181,6 +183,10 @@ compiles that module and its Tau Ceti dependencies from source. The Tau Ceti and
 together: pick the Tau Ceti tag (or cached main commit) for the new Lean release, and check that its manifest pins the
 Mathlib commit chosen here. A change of either pin changes the build inputs of every module that
 imports Tau Ceti, directly or not.
+
+If the new import is still uncommitted, run
+`LAKE_CACHE_DIR="$PWD/.lake/cache" python3 scripts/tauceti-cache-get.py` from the project root
+instead. This fetches the Tau Ceti modules imported by your working tree using the same cache directory.
 
 Tau Ceti is the one dependency from outside leanprover-community and leanprover. The
 challenge-files check trusts it by its exact address, `TRUSTED_REPOS` in

@@ -458,8 +458,6 @@ lemma linearIndependent_of_mem_fixedPeriods {c : Chart} (hc : c.IsChartOf (Γ :=
   have hp : (p : Bmax) ≠ 0 := (NeZero.of_faithfulSMul ℚ_[p] Bmax p).out
   simpa [hp, hb₀] using hb t
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- Let `A = Amax`, and let `W = WittFq c.f` be the coefficient ring of a chart `c` for `Δ`, with
 an algebra map `W → A` that agrees with `W → Ainf` after both are mapped to `Bmax` (`halg`). Let
 `T` be finite free over `ℤ_p` with a representation `ρ` of `Δ`. A `W`-submodule `D` of invariant

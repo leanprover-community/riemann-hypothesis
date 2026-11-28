@@ -39,8 +39,6 @@ namespace New
 
 open Matrix Complex Module InnerProductSpace EuclideanSpace Finset Fintype
 
-attribute [local instance low] Fintype.ofFinite
-
 section Scalars
 
 variable {R n : Type} [CommRing R] [StarRing R] [Fintype n] [DecidableEq n] (J : Matrix n n R)

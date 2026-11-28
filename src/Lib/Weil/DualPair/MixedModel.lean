@@ -373,8 +373,6 @@ lemma homTarget_zeroTerm_pairWeil (g : G E s) (g₀ : G E s₀) (m : GL p (𝔸 
 
 /-! ### The Levi and radical laws -/
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- For the Levi element g = `New.Space.Splitting.levi` (m, g₀), which has gk = km and gι = ιg₀:
 (ω_{aυ^p,b}(g,h)f)[x] = χ_T(det m)⁻¹ |det m|^(n′/2) ω_{a,b}(g₀,h) f[h⁻¹xm],
 with f[x] = `New.Space.Splitting.homSlice` x f, n′ the rank of T and χ_T(y) = b(y/ȳ)υ(y)^(−n′). -/

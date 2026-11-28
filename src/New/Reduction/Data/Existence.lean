@@ -19,7 +19,7 @@ field, the places, the scales and the primes in turn.
 
 * `New.Parameters.IsAdmissibleData`: admissible data, with explicit values of the ranks and scales
   and any `b`-places and primes that have the required properties.
-* `New.eventually_exists_data_of_isAdmissibleData`: at every large `x` such data give the ranks,
+* `New.Parameters.IsAdmissibleData.exists_hasFields`: at a large scale such data give the ranks,
   scales and tower exponent (`New.Data.HasFields`) of the data `New.Data`.
 * `New.eventually_exists_data`: admissible data exist at every large `x`.
 
@@ -796,22 +796,6 @@ lemma Parameters.IsAdmissibleData.exists_hasFields {P : Parameters} {x n m r s b
       piMBar_mul_star := h_adm.α_mul_star, piN_mul_star := h_adm.β_mul_star }
   have h_fields : D.HasFields x W m r s b := ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
   exact ⟨D, h_fields, hx₁_lower, h_log_b⟩
-
-/-- **Admissible data are fields of the data.** Let `0 < ε < 1 / 100`. For every large enough
-integer `x`, any admissible data (`Parameters.IsAdmissibleData`) at `x` and `W = x ^ (ε / 6)` give
-the ranks, scales and tower exponent of some `D : Data P` (`Data.HasFields`). This `D` has
-`x ^ (ε / 6) - 1 ≤ D.logX₁`, and `D.logB` lies in `[x ^ ε, x ^ ε + 1]`. -/
-theorem eventually_exists_data_of_isAdmissibleData (P : Parameters) {ε : ℝ} (hε : 0 < ε)
-    (hε_lt : ε < 1 / 100) :
-    ∀ᶠ x : ℕ in atTop, ∀ (m r s b : ℕ) (T : Finset (P.Φ s)) (g : Fin 2 → ℕ) (α : 𝓞 P.K) (N : ℕ)
-      (β : 𝓞 (P.E s)), P.IsAdmissibleData x ((x : ℝ) ^ (ε / 6)) m r s b T g α N β →
-      ∃ D : Data P,
-        D.HasFields x ((x : ℝ) ^ (ε / 6)) m r s b ∧
-        (x : ℝ) ^ (ε / 6) - 1 ≤ D.logX₁ ∧
-        D.logB ∈ Set.Icc ((x : ℝ) ^ ε) ((x : ℝ) ^ ε + 1) := by
-  obtain ⟨n, h_scale⟩ := P.exists_eventually_isLargeScale hε hε_lt
-  filter_upwards [h_scale] with x hx m r s b T g α N β h_adm
-  simpa only [rpow_div_six_pow_six] using h_adm.exists_hasFields hx
 
 /-- Let `W` be a large scale for `y = log x` with exponent `n`. Let the windows `[U, U + W]` with
 `W ≤ U ≤ W ^ (n + 7)` hold logarithms of primes `≡ 1` modulo the powers `(q₀ d) ^ k ≤ W ^ (n + 7)`,

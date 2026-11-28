@@ -486,7 +486,15 @@ lemma IsThetaStructure.pull_eq_of_picClass_eq (h : IsThetaStructure Lg η hN c) 
     -- The scalars agree, since each `c s` is a character of `H` and `c s (-t) = c t s`.
     have h_coeff (t : H) :
         c s t * (c 0 (s + t) * c (s + s) (-s + -t)) = c 0 t * c s (-t) := by
-      grind only [IsThetaStructure, map_add_eq_mul, add_neg_cancel]
+      have h0 (x : H) : c 0 x = 1 := by rw [← h.neg_eq_swap, neg_zero, map_zero_eq_one]
+      have hxy : c s t * c t s = 1 := by
+        rw [← h.neg_eq_swap, ← map_add_eq_mul, neg_add_cancel, map_zero_eq_one]
+      have hzz : c s s * c s s = 1 := by
+        nth_rw 2 [← h.neg_eq_swap s s]
+        rw [← map_add_eq_mul, add_neg_cancel, map_zero_eq_one]
+      rw [h0, h0]
+      simp only [map_add_eq_mul, h.neg_eq_swap]
+      linear_combination (c s s * c s s * c t s) * hxy + c t s * hzz
     simp [U_coord, smul_smul, h_coeff]
   -- Moving `T` to the right gives the scalar `b 1 s * b (-1) 0` on both sides.
   have h_transfer (s : H) (v : N'.H0 R) :

@@ -778,8 +778,6 @@ def AnalyticFamily.ballPoint {ν : ℕ} (f : AnalyticFamily D) (P : Fin ν → R
   ModuliPoint.mk f.frame (f.reflection p.1) ((f.torus p.1).realEquiv.symm ∘ p.2 + P)
     ⟨(f.torus p.1).formMatrix, (f.torus p.1).isSignedFrameFor⟩ (f.torus p.1).reflection
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.sum in
 /-- The Hecke translate of an analytic family by a similitude γ: it has the frame gγ, the same
 domain, reflections and period maps, and the matrix β and each form B are multiplied by the positive
 rational c with γᴴ(c·1)γ a unit of Ẑ, that is, by the inverse of the rational similitude factor of
