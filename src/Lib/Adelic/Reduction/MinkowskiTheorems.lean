@@ -633,17 +633,6 @@ open MeasureTheory ENNReal Set
 
 /-! ### Counting rational points -/
 
-/-- The sum over all tuples `x : n → α` of the product of the `f (x i)` is at most the product over
-`n` of the sums of `f`. -/
-lemma tsum_prod_le_prod_tsum {α : Type*} (f : α → ℝ≥0∞) :
-    ∑' x : n → α, ∏ i : n, f (x i) ≤ ∏ _ : n, tsum f := by
-  classical
-  refine tsum_le_of_sum_le' bot_le fun s ↦ ?_
-  -- a finite set of tuples lies in the product of its projections, over which the sum factors
-  have h_sub : s ⊆ piFinset (fun i ↦ s.image (eval i)) := fun x hx ↦
-    mem_piFinset.2 fun i ↦ mem_image_of_mem (eval i) hx
-  grw [h_sub, ← prod_univ_sum, sum_le_tsum]
-
 open Pointwise in
 /-- Let `box` be the set of adelic vectors with entries of size at most `1` at infinity and
 integral at the finite places, and let `t = twoAtInfinity E` be the idele that is `2` at infinity

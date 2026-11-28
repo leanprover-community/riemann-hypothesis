@@ -3,6 +3,7 @@ module
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
 import Mathlib.RingTheory.PicardGroup
 import TauCeti.LinearAlgebra.Matrix.Range
+import TauCeti.Topology.Algebra.InfiniteSum.ENNReal
 public import Lib.Adelic.Reduction.FirstMinimumShortBases
 public import Lib.Adelic.Reduction.MinkowskiTheorems
 import Lib.Adelic.Adeles.LocalFactors
@@ -679,8 +680,8 @@ lemma tsum_sublatticeDiscriminant_inv_le (u : Gf E κ) (s : ℕ) :
       grw [← ofReal_prod_of_nonneg fun i _ ↦ h_wt _, h_le]
     _ ≤ ∑' X : Fin s → L, ∏ i, ENNReal.ofReal (wt (X i)) :=
       tsum_comp_le_tsum_of_injective h_inj fun X : Fin s → L ↦ ∏ i, ENNReal.ofReal (wt (X i))
-    _ ≤ ∏ _ : Fin s, ∑' x, ENNReal.ofReal (wt x) :=
-      tsum_prod_le_prod_tsum fun x : L ↦ ENNReal.ofReal (wt x)
+    _ = ∏ _ : Fin s, ∑' x, ENNReal.ofReal (wt x) := by
+      rw [ENNReal.prod_tsum]
     _ ≤ _ := by grw [h_sum, Fin.prod_const, ← ofReal_pow (by positivity), ← pow_mul]
 
 end SiegelLemma

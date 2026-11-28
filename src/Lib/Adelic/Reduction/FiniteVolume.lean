@@ -7,6 +7,7 @@ import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Topology.Algebra.Group.Matrix
 import TauCeti.NumberTheory.NumberField.Countable
 import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Algebra.InfiniteSum.ENNReal
 import TauCeti.Topology.Instances.Matrix
 public import Lib.Adelic.Reduction.MinkowskiTheorems
 public import Lib.Adelic.Unitary.ComponentsAndBlockSums
@@ -742,7 +743,7 @@ lemma Space.lintegral_encard_ne_top {t : Type*} [Fintype t] {Ω : Set (Matrix n 
   have hω : ∑' x : n → ℤ, P x * ω x < ∞ :=
     calc
       _ ≤ (∏ _i : n, ∑' k : ℤ, q⁻¹ ^ k.natAbs) * (C₂ * R) := by
-        grw [mul_div_le, ENNReal.tsum_mul_right, tsum_prod_le_prod_tsum fun k : ℤ ↦ q⁻¹ ^ k.natAbs]
+        grw [mul_div_le, ENNReal.tsum_mul_right, ENNReal.prod_tsum]
       _ < ∞ := by simp [C₂, R, mul_lt_top_iff, Ne.lt_top, hC₁, ENNReal.pow_lt_top h_geometric]
   refine V.lintegral_ne_top_of_le_encard_profileBases (hM.mul isCompact_unitBoxGL) hω.ne fun g ↦ ?_
   obtain ⟨x, Y, hY, hx⟩ := exists_basis (V.move g).x

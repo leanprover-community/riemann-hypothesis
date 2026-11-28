@@ -7,6 +7,7 @@ import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Order.Interval.Finset.Box
 import Mathlib.Topology.Sheaves.Presheaf
 import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.Topology.Algebra.InfiniteSum.ENNReal
 import TauCeti.Topology.Instances.Matrix
 public import Lib.SiegelWeil.Formula.LagrangianZeroTerms
 import Lib.Adelic.Unitary.RationalPoints
@@ -230,6 +231,7 @@ lemma exists_siegel_set :
   simp [← inl_apply, ← ht, dyadicDiag, mul_assoc, _root_.zpow_add, ↓ ← Pi.mul_def,
     -coe_units_inv]
 
+omit [DecidableEq p] in
 /-- Let `exps : ι → p → ℕ` give a vector of exponents for each index, let `d ≠ 0` and `C ≠ ∞`, and
 suppose that, for every vector `x`, at most `C * (2 ^ d) ^ (∑ i, ∑ j, (x i + x j)) * N` indices have
 exponents `x`. Then the sum over the indices `L` of `A / ((2 ^ d) ^ ∑ i, exps L i) ^ k` is finite
@@ -255,8 +257,8 @@ lemma tsum_div_two_pow_lt_top {ι : Type*} {exps : ι → p → ℕ} {d k N : �
       exact tsum_congr fun x ↦ by rw [tsum_congr fun L ↦ by rw [L.prop], tsum_set_const]
     _ ≤ ∑' x : p → ℕ, C * N * A * ∏ i : p, ratio ^ x i := by
       grw [fibre_le, tsum_congr summand_eq]
-    _ ≤ C * N * A * ∏ _i : p, ∑' a : ℕ, ratio ^ a := by
-      grw [ENNReal.tsum_mul_left, tsum_prod_le_prod_tsum]
+    _ = C * N * A * ∏ _i : p, ∑' a : ℕ, ratio ^ a := by
+      rw [ENNReal.tsum_mul_left, ENNReal.prod_tsum]
     _ < ∞ := by
       simp [ratio, mul_lt_top_iff, hC.lt_top, div_lt_one, pow_lt_one_iff, pow_lt_pow_right₀, hk, hd]
 
