@@ -75,16 +75,20 @@ abbrev PointFn (X : Scheme) : Type 1 := ∀ A : CommRingCat, (Spec.{0} A ⟶ X) 
 
 variable {t : Y ⟶ X} {U : X.Opens} (f : PointFn X)
 
+/-- A point `t` lands in `U ⊓ V` iff it lands in both `U` and `V`. -/
 @[simp]
 lemma landsIn_inf {V : X.Opens} : LandsIn t (U ⊓ V) ↔ LandsIn t U ∧ LandsIn t V := by
   rw [LandsIn, Scheme.Hom.preimage_inf, le_inf_iff, LandsIn, LandsIn]
 
+/-- Any point `t` lands in the top open subscheme `⊤`. -/
 @[simp]
 lemma landsIn_top : LandsIn t ⊤ := le_rfl
 
+/-- A point `s` lands in the preimage open `t ⁻¹ᵁ U` iff `s ≫ t` lands in `U`. -/
 @[simp]
 lemma landsIn_preimage {s : Z ⟶ Y} : LandsIn s (t ⁻¹ᵁ U) ↔ LandsIn (s ≫ t) U := .rfl
 
+/-- If `t` lands in `U`, then its precomposition with any morphism `a ≫ t` lands in `U`. -/
 lemma LandsIn.comp (ht : LandsIn t U) (a : Z ⟶ Y) : LandsIn (Y := Z) (a ≫ t) U := by
   simpa [LandsIn] using a.preimage_mono ht
 
