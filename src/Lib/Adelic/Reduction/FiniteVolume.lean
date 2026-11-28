@@ -94,34 +94,51 @@ lemma exists_mul_twoAtInfinity_pow_mul_eq_toAdele {a : (𝔸 E)ˣ} {N : ℕ}
   simp [y, dyadicDiag, mul_assoc]
 
 open Pointwise in
-/-- For a compact set `M` of adelic `n × n` matrices and `c > 0`, the invertible matrices `A` that
-lie in `M` and whose determinant has adelic absolute value `ideleAbs A.det` at least `c` form a
-compact subset of `GL n (𝔸 E)`, where `𝔸 E` is the ring of adeles of `E`. -/
-lemma isCompact_setOf_le_ideleAbs_det {M : Set (Matrix n n (𝔸 E))} (hM : IsCompact M) {c : ℝ}
-    (hc : 0 < c) : IsCompact {A : GL n (𝔸 E) | A.val ∈ M ∧ c ≤ ideleAbs A.det} := by
-  -- Take `N` so large that Minkowski's theorem in rank one applies to `det A * 2 ^ N`. It gives a
-  -- rational `ξ ≠ 0` with `ξ / (det A * 2 ^ N)` in the unit box `B`. As `det A` is bounded, `ξ`
-  -- lies in a finite set `F`; so `(det A)⁻¹` is bounded, and then `A⁻¹` by the adjugate formula.
+/-- The ideles in a compact set `C` of adeles with adelic absolute value at least `c > 0`
+form a compact subset of the idele group. -/
+lemma isCompact_setOf_le_ideleAbs {C : Set (𝔸 E)} (hC : IsCompact C) {c : ℝ}
+    (hc : 0 < c) : IsCompact {a : (𝔸 E)ˣ | a.val ∈ C ∧ c ≤ ideleAbs a} := by
+  -- Scale by a common archimedean power of two so that Minkowski's theorem finds
+  -- a nonzero rational element in each scaled unit box. These elements form a finite set.
   obtain ⟨N, hN⟩ : ∃ N : ℕ,
       (2 * NumberField.rootDiscr E) ^ numInfPlaces E / c < (2 ^ (2 * numInfPlaces E)) ^ N :=
     pow_unbounded_of_one_lt _ (by simp [one_lt_pow₀])
   let t : 𝔸 E := (twoAtInfinity E ^ N).val
   have hB := isCompact_closedBall_prod_integral (E := E)
-  have hF := finite_setOf_toAdele_mem ((hM.image_of_continuous fun A ↦ det A * t).mul hB)
-  -- The set is closed, so it is enough to bound the pairs `(A, A⁻¹)` by a compact set.
+  have hF := finite_setOf_toAdele_mem ((hC.image_of_continuous fun a ↦ a * t).mul hB)
+  -- The inverse of `a` lies in the compact image of the box times the finite set of inverses.
+  have h_inverse := (hB.mul (hF.image (fun ξ ↦ toAdele ξ⁻¹)).isCompact).image_of_continuous
+    (fun b ↦ MulOpposite.op (t * b))
   refine (Units.isClosedEmbedding_embedProduct.isCompact_preimage
-    ((hM.prod (hB.mul (hF.image (fun ξ ↦ toAdele ξ⁻¹)).isCompact)).image_of_continuous
-      (fun (A, b) ↦ (A, MulOpposite.op ((t * b) • A.adjugate))))).of_isClosed_subset
+    (hC.prod h_inverse)).of_isClosed_subset
+    (.and hC.isClosed.preimage_of_continuous (isClosed_le continuous_const (by fun_prop))) ?_
+  rintro a ⟨ha, h_abs⟩
+  obtain ⟨ξ, hξ, b, hb, h_eq⟩ :=
+    exists_mul_twoAtInfinity_pow_mul_eq_toAdele (by grw [← h_abs, ← div_lt_iff₀' hc, hN])
+  have h_inv : a⁻¹.val = t * (b * toAdele ξ⁻¹) :=
+    Units.inv_eq_of_mul_eq_one_right
+      (by rw [← mul_assoc, ← mul_assoc, h_eq, ← map_mul, mul_inv_cancel₀ hξ, map_one])
+  exact ⟨ha, ⟨b * toAdele ξ⁻¹,
+    mul_mem_mul hb (mem_image_of_mem _ ⟨_, mem_image_of_mem _ ha, b, hb, h_eq⟩),
+    congrArg MulOpposite.op h_inv.symm⟩⟩
+
+/-- For a compact set `M` of adelic `n × n` matrices and `c > 0`, the invertible matrices `A` that
+lie in `M` and whose determinant has adelic absolute value `ideleAbs A.det` at least `c` form a
+compact subset of `GL n (𝔸 E)`, where `𝔸 E` is the ring of adeles of `E`. -/
+lemma isCompact_setOf_le_ideleAbs_det {M : Set (Matrix n n (𝔸 E))} (hM : IsCompact M) {c : ℝ}
+    (hc : 0 < c) : IsCompact {A : GL n (𝔸 E) | A.val ∈ M ∧ c ≤ ideleAbs A.det} := by
+  -- The determinants lie in a compact set of ideles, and the inverse is the adjugate
+  -- divided by the determinant.
+  have h_det := isCompact_setOf_le_ideleAbs (hM.image_of_continuous Matrix.det) hc
+  refine (Units.isClosedEmbedding_embedProduct.isCompact_preimage
+    ((hM.prod h_det).image_of_continuous
+      (fun (A, d) ↦ (A, MulOpposite.op (d⁻¹.val • A.adjugate))))).of_isClosed_subset
     (.and hM.isClosed.preimage_of_continuous (isClosed_le continuous_const (by fun_prop))) ?_
-  rintro A ⟨hA, hdet⟩
-  obtain ⟨ξ, hξ, b, hb, hbξ⟩ :=
-    exists_mul_twoAtInfinity_pow_mul_eq_toAdele (by grw [← hdet, ← div_lt_iff₀' hc, hN])
-  have h_inv : A⁻¹.val = (t * (b * toAdele ξ⁻¹)) • A.val.adjugate := by
-    rw [coe_units_inv, inv_def, ← GeneralLinearGroup.val_det_apply, Ring.inverse_unit,
-      Units.inv_eq_of_mul_eq_one_right
-        (by rw [← mul_assoc, ← mul_assoc, hbξ, ← map_mul, mul_inv_cancel₀ hξ, map_one])]
-  exact ⟨(A, b * toAdele ξ⁻¹),
-    ⟨hA, mul_mem_mul hb (mem_image_of_mem _ ⟨_, mem_image_of_mem _ hA, b, hb, hbξ⟩)⟩,
+  rintro A ⟨hA, h_abs⟩
+  let d := GeneralLinearGroup.det A
+  have h_inv : A⁻¹.val = d⁻¹.val • A.val.adjugate := by
+    rw [coe_units_inv, inv_def, ← GeneralLinearGroup.val_det_apply, Ring.inverse_unit]
+  exact ⟨(A.val, d), ⟨hA, mem_image_of_mem _ hA, h_abs⟩,
     Prod.ext rfl (congrArg MulOpposite.op h_inv.symm)⟩
 
 /-- Let `M` and `K` be compact. There is a compact set `B` of adeles such that, whenever the Gram

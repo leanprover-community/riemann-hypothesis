@@ -560,15 +560,10 @@ lemma norm_zeroTerm_vacElem_pos (g : G E s) :
 /-- The idele norm is bounded on the ideles that lie in a compact set `C` of adeles. -/
 lemma exists_ideleAbs_le_of_isCompact {F : Type} [Field F] [CMType F] {C : Set (𝔸 F)}
     (hC : IsCompact C) : ∃ R : ℝ, ∀ d : (𝔸 F)ˣ, d.val ∈ C → ideleAbs d ≤ R := by
-  -- The ideles in `C` of norm at least `1`, read as `1 × 1` matrices, form a compact set.
-  have h_compact : IsCompact {A : GL (Fin 1) (𝔸 F) |
-      A.val ∈ (fun d : 𝔸 F ↦ !![d]) '' C ∧ 1 ≤ ideleAbs A.det} :=
-    isCompact_setOf_le_ideleAbs_det (hC.image_of_continuous _) one_pos
-  obtain ⟨R, hR⟩ := (h_compact.image_of_continuous fun A ↦ ideleAbs A.det).bddAbove
-  refine ⟨max R 1, fun d hd ↦ (le_total (ideleAbs d) 1).elim le_max_of_le_right fun h_ge ↦ ?_⟩
-  have h_det : (GeneralLinearGroup.scalar (Fin 1) d).det = d := Units.ext (by simp)
-  rw [← h_det] at h_ge ⊢
-  exact le_max_of_le_left (hR ⟨.scalar (Fin 1) d, ⟨⟨d, hd, by simp [← ext_iff]⟩, h_ge⟩, rfl⟩)
+  have h_compact := isCompact_setOf_le_ideleAbs hC one_pos
+  obtain ⟨R, hR⟩ := (h_compact.image_of_continuous ideleAbs).bddAbove
+  refine ⟨max R 1, fun d hd ↦ (le_total (ideleAbs d) 1).elim le_max_of_le_right fun h_abs ↦ ?_⟩
+  exact le_max_of_le_left (hR (Set.mem_image_of_mem _ ⟨hd, h_abs⟩))
 
 /-- Let `P` and `P'` be complete splittings of `S` into `p` and `r` planes, with frames `k` and
 `k'`. Let `Z` be an adelic `r × n` matrix with `Z k' = 1`, and let `K` be a compact set in the group
