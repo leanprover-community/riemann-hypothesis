@@ -105,6 +105,30 @@ def columnDatum (χ : MulChar R ℂ) (φ : R →+* S) (w : Matrix c N S) (e : r 
   if w * map σ φ = w * inclMatrix S e then χ (submatrix σ e id).det else 0
 
 open scoped Classical in
+/-- If the columns of `z` outside the image of `e` are those of the identity, the datum on the
+selected columns is `χ z.det` when `w * z.map φ = w`, and zero otherwise. -/
+lemma columnDatum_submatrix_of_fixesColsOff (χ : MulChar R ℂ) (φ : R →+* S)
+    (w : Matrix c N S) {e : r ↪ N} {z : Matrix N N R} (hz : FixesColsOff e z) :
+    columnDatum χ φ w e (z.submatrix id e) = if w * z.map φ = w then χ z.det else 0 := by
+  obtain ⟨u, rfl⟩ : ∃ u : Matrix N r R, z = 1 + u * (inclMatrix R e)ᵀ :=
+    ⟨(z - 1) * inclMatrix R e, by
+      linear_combination (norm := noncomm_ring [Matrix.mul_assoc]) hz⟩
+  -- For `z = 1 + u * (inclMatrix R e)ᵀ`: the columns `e` and their minor on the rows `e`.
+  have h_cols : (1 + u * (inclMatrix R e)ᵀ).submatrix id e = inclMatrix R e + u := by
+    simp [← mul_inclMatrix, Matrix.add_mul, Matrix.mul_assoc, inclMatrix_transpose_mul_self]
+  have h_det : ((inclMatrix R e + u).submatrix e id).det = (1 + u * (inclMatrix R e)ᵀ).det := by
+    rw [← inclMatrix_transpose_mul, Matrix.mul_add, inclMatrix_transpose_mul_self,
+      det_one_add_mul_comm]
+  -- Both conditions on `w` say `w * u.map φ = 0`, as `(inclMatrix S e)ᵀ` cancels on the right.
+  have h_w_cols : w * (inclMatrix R e + u).map φ = w * inclMatrix S e ↔ w * u.map φ = 0 := by
+    simp [Matrix.map_add, map_inclMatrix, Matrix.mul_add]
+  have h_w_all : w * (1 + u * (inclMatrix R e)ᵀ).map φ = w ↔ w * u.map φ = 0 := by
+    simp [Matrix.map_add, map_inclMatrix, Matrix.mul_add, transpose_map, ← w.mul_assoc,
+      (mul_left_injective_of_inv _ _ (inclMatrix_transpose_mul_self e)).eq_iff'
+        (Matrix.zero_mul _)]
+  simp only [columnDatum, h_cols, h_det, h_w_cols, h_w_all]
+
+open scoped Classical in
 /-- Let H = `rowStabilizer φ w e` be the group of the invertible A that have the columns of 1 off
 the image of e and satisfy w · φ(A) = w, let F be left invariant under H, and let z be an N × N
 matrix. Then `columnDatum` of the columns e of z, times F(y) if z has the columns of 1 off e and 0
@@ -115,38 +139,18 @@ lemma columnDatum_mul_ite_eq_ite_mem_rowStabilizer (χ : MulChar R ℂ) (φ : R 
     (z : Matrix N N R) :
     columnDatum χ φ w e (z.submatrix id e) * (if FixesColsOff e z then F y else 0) =
       if ∃ Z ∈ rowStabilizer φ w e, Z.val = z then χ z.det * F (z⁻¹ * y) else 0 := by
-  -- On a matrix with the columns of `1` off `e`, the datum `columnDatum` can be read on the whole
-  -- matrix.
-  have h_datum (hz : FixesColsOff e z) :
-      columnDatum χ φ w e (z.submatrix id e) = if w * z.map φ = w then χ z.det else 0 := by
-    obtain ⟨u, rfl⟩ : ∃ u : Matrix N r R, z = 1 + u * (inclMatrix R e)ᵀ :=
-      ⟨(z - 1) * inclMatrix R e, by
-        linear_combination (norm := noncomm_ring [Matrix.mul_assoc]) hz⟩
-    -- For `z = 1 + u * (inclMatrix R e)ᵀ`: the columns `e` and their minor on the rows `e`.
-    have h_cols : (1 + u * (inclMatrix R e)ᵀ).submatrix id e = inclMatrix R e + u := by
-      simp [← mul_inclMatrix, Matrix.add_mul, Matrix.mul_assoc, inclMatrix_transpose_mul_self]
-    have h_det : ((inclMatrix R e + u).submatrix e id).det = (1 + u * (inclMatrix R e)ᵀ).det := by
-      rw [← inclMatrix_transpose_mul, Matrix.mul_add, inclMatrix_transpose_mul_self,
-        det_one_add_mul_comm]
-    -- Both conditions on `w` say `w * u.map φ = 0`, as `(inclMatrix S e)ᵀ` cancels on the right.
-    have h_w_cols : w * (inclMatrix R e + u).map φ = w * inclMatrix S e ↔ w * u.map φ = 0 := by
-      simp [Matrix.map_add, map_inclMatrix, Matrix.mul_add]
-    have h_w_all : w * (1 + u * (inclMatrix R e)ᵀ).map φ = w ↔ w * u.map φ = 0 := by
-      simp [Matrix.map_add, map_inclMatrix, Matrix.mul_add, transpose_map, ← w.mul_assoc,
-        (mul_left_injective_of_inv _ _ (inclMatrix_transpose_mul_self e)).eq_iff'
-          (Matrix.zero_mul _)]
-    simp only [columnDatum, h_cols, h_det, h_w_cols, h_w_all]
   have h_mem (Z : GL N R) :
       Z ∈ rowStabilizer φ w e ↔ FixesColsOff e Z.val ∧ w * Z.val.map φ = w := .rfl
   split_ifs with h_fixes hz hz
   · obtain ⟨Z, hZ, rfl⟩ := hz
     have hF_inv : F (Z.val⁻¹ * y) = F y := by simpa [coe_units_inv] using hF Z⁻¹ (inv_mem hZ) y
-    rw [h_datum h_fixes, ite_eq_left ((h_mem Z).1 hZ).right, hF_inv]
+    rw [columnDatum_submatrix_of_fixesColsOff χ φ w h_fixes,
+      ite_eq_left ((h_mem Z).1 hZ).right, hF_inv]
   · -- If `z` satisfies both conditions without being in the group, it is not invertible.
     have h_det (h_rows : w * z.map φ = w) : χ z.det = 0 := χ.map_nonunit fun h_unit ↦ by
       obtain ⟨Z, rfl⟩ := (isUnit_iff_isUnit_det z).2 h_unit
       exact hz ⟨Z, (h_mem Z).2 ⟨h_fixes, h_rows⟩, rfl⟩
-    simp +contextual [h_datum h_fixes, h_det]
+    simp +contextual [columnDatum_submatrix_of_fixesColsOff χ φ w h_fixes, h_det]
   · obtain ⟨Z, hZ, rfl⟩ := hz
     exact absurd ((h_mem Z).1 hZ).left h_fixes
   · exact mul_zero _
