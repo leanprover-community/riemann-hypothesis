@@ -379,7 +379,7 @@ lemma HasCellRank.exists_isLatticeTranslate (h_rank : S.HasCellRank j γ) {p₀ 
   have h_eq : S.frameProducts p = S.frameProducts p₀ := hZ.trans hZ₀.symm
   set x : Matrix 𝔰.κ (Fin (𝔰.ϱ + 1)) E := (frameMiddle p.1.1 - frameMiddle p₀.1.1).toRows₁ with hx
   rw [frameMiddle_translateByClassReps_sub h_eq, ← colLattice_smul] at h_rows
-  obtain ⟨W, hW_int, hW⟩ := exists_isIntMatrix_mul_eq_of_col_mem h_rows
+  obtain ⟨W, hW_int, hW⟩ := exists_isIntMatrix_mul_eq (colLattice_le h_rows)
   have h_adelic : S.classCoordX₀ c * finAdeleMatrix x = (S.M : 𝔸f E) • (Wᴴ * finAdeleMatrix ξ) := by
     rw [← conjTranspose_conjTranspose (S.classCoordX₀ c * finAdeleMatrix x), ← hW]
     simp [Units.smul_def, ideleM_val]

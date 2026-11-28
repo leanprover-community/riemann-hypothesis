@@ -179,16 +179,6 @@ lemma colLattice_mul (B : Matrix l m A) (C : Matrix m n A) :
     colLattice R (B * C) = (colLattice R C).map (B.mulVecLin.restrictScalars R) := by
   rw [colLattice, colLattice, ← Submodule.map_comp, mulVecLin_mul, LinearMap.restrictScalars_comp]
 
-/-- If the lattice of the columns of `C` lies in that of the columns of `B`, then `C = B U` for
-some matrix `U` with entries in `R`. -/
-lemma exists_isIntMatrix_mul_eq {B : Matrix l m A} {C : Matrix l n A}
-    (h_le : colLattice R C ≤ colLattice R B) :
-    ∃ U : Matrix m n A, IsIntMatrix R U ∧ B * U = C := by
-  classical
-  have h_col (j : n) : ∃ v ∈ intVectors R m, B *ᵥ v = C.col j := h_le (col_mem_colLattice j)
-  choose v hv_int hv using h_col
-  exact ⟨(of v)ᵀ, fun i j ↦ hv_int j i, ext_col hv⟩
-
 /-- If `U` has entries in `R`, then the lattice of the columns of `B * U` lies in that of the
 columns of `B`. -/
 lemma colLattice_mul_le (B : Matrix l m A) {U : Matrix m n A} (hU : IsIntMatrix R U) :
