@@ -126,16 +126,6 @@ lemma log_prod_unitSphereMass (i : ℕ) :
   simp (disch := positivity) only [log_div, log_mul, log_rpow, log_pow, Nat.cast_add, Nat.cast_one]
   ring
 
-/-- The product of the sphere masses `sph_{i+1}` over the infinite places is `mass_i / mass_{i+1}`
-up to a factor close to one: the logarithms differ by at most `2 / 2 ^ ϱ` for `i ≥ k`. -/
-lemma abs_log_prod_unitSphereMass_sub_le {i : ℕ} (hi : D.k ≤ i) :
-    |log (∏ v : D.Φ, D.unitSphereMass (i + 1) v) - (log (mass D.E i) - log (mass D.E (i + 1)))| ≤
-      2 / 2 ^ D.ϱ := by
-  have h_places : 8 * D.f ≤ 2 ^ D.ϱ := D.nat_le_of_hasLogBound
-  have h_rank : 4 * D.ϱ + 12 ≤ D.k := D.nat_le_of_hasLogBound
-  rw [log_prod_unitSphereMass, ← neg_sub (log (mass D.E (i + 1))), neg_sub_neg]
-  exact abs_log_mass_ratio_sub_le D.E i D.ϱ h_places (h_rank.trans hi)
-
 lemma prod_unitSphereMass_pos (l : ℕ) : 0 < ∏ v : D.Φ, D.unitSphereMass l v :=
   prod_pos fun v _ ↦ D.unitSphereMass_pos l v
 
@@ -172,8 +162,8 @@ lemma prod_frameMass_mul_le :
       log (1 + D.b⁻¹ ^ 9) - 2 * (D.f * (2 / D.N)) := by
     rw [log_prod fun i _ ↦ (D.prod_unitSphereMass_pos (i + 1)).ne',
       ← sum_Ico_sub (fun i : ℕ ↦ log (mass D.E i)) D.k_le_r, ← sum_add_distrib]
-    refine (sum_le_sum fun i hi ↦ ?_).trans D.sum_two_div_two_pow_le_log_sub
-    linarith only [le_of_abs_le (D.abs_log_prod_unitSphereMass_sub_le (mem_Ico.mp hi).1)]
+    simpa [log_prod_unitSphereMass, sub_eq_add_neg] using
+      le_of_abs_le D.abs_sum_log_mass_ratio_sub_le
   have h_ratio : D.f * log (D.N ^ D.k / (D.N ^ D.k - 1)) ≤ D.f * (2 / D.N) :=
     mul_le_mul_of_nonneg_left D.log_pow_div_pow_sub_one_le D.f.cast_nonneg
   have sphereProd_mul_mass_le :
