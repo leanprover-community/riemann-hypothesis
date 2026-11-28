@@ -97,14 +97,8 @@ to the floor or to `2ϱ` minus it) or in the middle block (level `ϱ`, floor `ϱ
 lemma floorOf_level_cases (i : 𝔰.BesselIndex) :
     (floorOf i = level i ∨ level i + floorOf i = 2 * 𝔰.ϱ) ∧ floorOf i < 𝔰.ϱ ∨
     level i = 𝔰.ϱ ∧ 𝔰.ϱ ≤ floorOf i ∧ floorOf i ≤ 𝔰.n := by
-  obtain a | (k | u) | a := i
-  · simp only [floorOf, level, elim_inl, true_or, Fin.is_lt, and_self]
-  · simp only [floorOf, level, elim_inr, elim_inl, Nat.add_eq_left, one_ne_zero,
-      false_or, add_lt_iff_neg_left, not_lt_zero, and_false, le_add_iff_nonneg_right,
-      zero_le, Std.le_refl, and_self, or_true]
-  · simp only [floorOf, level, elim_inr, elim_inl, true_or, lt_self_iff_false,
-      and_false, Std.le_refl, le_add_iff_nonneg_right, zero_le, and_self, or_true]
-  · simp only [floorOf, level, elim_inr, Fin.is_lt, and_true]; lia
+  obtain a | (k | u) | a := i <;> simp [floorOf, level]
+  omega
 
 lemma oppositeIndex_oppositeIndex (i : 𝔰.BesselIndex) : oppositeIndex (oppositeIndex i) = i := by
   obtain a | m | a := i <;> rfl
@@ -115,12 +109,7 @@ lemma floorOf_oppositeIndex (i : 𝔰.BesselIndex) : floorOf (oppositeIndex i) =
 /-- `oppositeIndex` reflects the level in `ϱ`. -/
 lemma level_oppositeIndex_add_level (i : 𝔰.BesselIndex) :
     level (oppositeIndex i) + level i = 2 * 𝔰.ϱ := by
-  obtain a | m | a := i
-  · change 2 * 𝔰.ϱ - a + a = 2 * 𝔰.ϱ
-    lia
-  · exact (two_mul 𝔰.ϱ).symm
-  · change a + (2 * 𝔰.ϱ - a) = 2 * 𝔰.ϱ
-    lia
+  obtain a | m | a := i <;> simp [oppositeIndex, level] <;> omega
 
 /-- `oppositeIndex` is an involution of the basis indices that keeps the floor `floorOf` and
 reflects the level in `ϱ`. -/
@@ -138,13 +127,14 @@ lemma splitGram_eq_ite_oppositeIndex (i j : 𝔰.BesselIndex)
     (h_pair : floorOf i < 𝔰.ϱ ∨ floorOf j < 𝔰.ϱ) :
     T.splitGram i j = if oppositeIndex i = j then 1 else 0 := by
   revert i j
-  simp only [splitGram, Sum.forall, floorOf, Fin.is_lt, or_true, forall_const,
-    add_lt_iff_neg_left, not_lt_zero, or_false, lt_self_iff_false, fromBlocks_apply₁₁,
-    Matrix.zero_apply, oppositeIndex, reduceCtorEq, ↓reduceIte, implies_true,
-    fromBlocks_apply₁₂, fromCols_apply_inl, inr.injEq, and_self,
-    fromCols_apply_inr, Matrix.one_apply, fromBlocks_apply₂₁, fromBlocks_apply₂₂,
-    fromRows_apply_inl, inl.injEq, and_true, true_and, IsEmpty.forall_iff,
-    fromRows_apply_inr]
+  simp [splitGram, Sum.forall, floorOf, oppositeIndex, Matrix.one_apply]
+
+omit [StarRing A] in
+/-- At an index of a hyperbolic pair, the coordinate of `J e`, where `J = T.splitGram`, is the
+coordinate of `e` at the other index of the pair. -/
+lemma splitGram_mulVec_apply {e : 𝔰.BesselIndex → A} (i : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ) :
+    (T.splitGram *ᵥ e) i = e (oppositeIndex i) := by
+  simp [mulVec, dotProduct, splitGram_eq_ite_oppositeIndex _ _ (.inl hi), ite_mul]
 
 open scoped Classical in
 /-- Write `e_a`, `e*_a` for the basis vectors `inl a`, `inr (inr a)`. On each floor `a < ϱ` where
@@ -235,20 +225,35 @@ lemma mem_floorGroup :
         g.val i j = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i j :=
   Iff.rfl
 
+/-- Two rows have the same dot product with a column if they agree wherever it is nonzero. -/
+private lemma dotProduct_eq_on_support {ι : Type*} [Fintype ι] {R : Type*} [Semiring R]
+    {u v w : ι → R} (h : ∀ k, w k ≠ 0 → u k = v k) : u ⬝ᵥ w = v ⬝ᵥ w := by
+  apply Finset.sum_congr rfl
+  intro k _
+  by_cases hk : w k = 0 <;> simp [hk, h]
+
+/-- Read row `i` of `J g = (g⁻¹)ᴴ J`. On a hyperbolic pair the left side picks out the opposite
+row of `g`. The right side only uses entries of the inverse column where the Gram column is nonzero. -/
+private lemma row_eq_one_of_inv_col (i k : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ)
+    (h : ∀ x, T.splitGram x k ≠ 0 → g⁻¹.val x i = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) x i) :
+    g.val (oppositeIndex i) k = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (oppositeIndex i) k := by
+  have row (M : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) :
+      (T.splitGram * M) i k = M (oppositeIndex i) k := splitGram_mulVec_apply (e := M.col k) i hi
+  have h_form : T.splitGram * g.val.val = g⁻¹.val.valᴴ * T.splitGram := by
+    simpa only [InvMemClass.coe_inv, coe_units_inv, inv_inv] using U.form_mul_inv_eq g⁻¹
+  rw [← row g.val.val, h_form]
+  trans ((1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A)ᴴ * T.splitGram) i k
+  · exact dotProduct_eq_on_support fun x hx ↦ congrArg star (h x hx)
+  · simpa using row 1
+
 /-- An element of `H_l = floorGroup l` agrees with `1` in the rows of floor below `l` that belong to
 a hyperbolic pair. -/
 lemma floorGroup_apply_row (hg : g ∈ floorGroup l) (i j : 𝔰.BesselIndex) (hi : floorOf i < l)
     (hi_pair : floorOf i < 𝔰.ϱ) :
     g.val i j = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i j := by
-  -- Read the entry `(oppositeIndex i, j)` of `gᴴ J g = J`: the column `oppositeIndex i` of `g` is
-  -- that of `1`, so the left side is `g i j`.
-  have h_isometry : (g.val.valᴴ * T.splitGram * g.val.val) (oppositeIndex i) j =
-      T.splitGram (oppositeIndex i) j := congrFun₂ (mem_unitaryGroupOf_iff.1 g.property) _ _
-  simpa only [Matrix.one_apply, apply_ite, Matrix.mul_apply, conjTranspose_apply,
-    floorOf_oppositeIndex, hi, mem_floorGroup.1 hg, star_one, star_zero, ite_mul,
-    one_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, hi_pair, true_or,
-    splitGram_eq_ite_oppositeIndex, oppositeIndex_oppositeIndex, Finset.sum_ite_eq] using
-    h_isometry
+  rw [← oppositeIndex_oppositeIndex i]
+  apply row_eq_one_of_inv_col _ _ (by rwa [floorOf_oppositeIndex])
+  exact fun x _ ↦ mem_floorGroup.1 (inv_mem hg) x _ (by rwa [floorOf_oppositeIndex])
 
 /-- An element of `H_l = floorGroup l` agrees with `1` in the rows of floor below both `l` and
 `𝔰.ϱ`, and in the columns of floor below `l`. -/
@@ -278,9 +283,7 @@ lemma mem_partialUnitriangularGroup :
 
 /-- The floor of the frame vector number `b` is `b`. -/
 lemma floorOf_besselFrame : floorOf (𝔰.besselFrame b) = b := by
-  induction b using Fin.lastCases
-  · simp only [besselFrame_top, floorOf, Fin.val_last]
-  · simp only [besselFrame_castSucc, floorOf, Fin.val_castSucc]
+  induction b using Fin.lastCases <;> simp [floorOf]
 
 attribute [grind .] mem_floorGroup mem_unipotentBelow mem_partialUnitriangularGroup
   floorOf_besselFrame
@@ -295,17 +298,8 @@ lemma orbitPoint_eq_iff : orbitPoint b g = e ↔ g *ᵥ e = Pi.single (𝔰.bess
 lemma eq_besselFrame_of_floorOf_eq {i : 𝔰.BesselIndex} (h_floor : floorOf i = b)
     (h_level : level i ≤ b) : i = 𝔰.besselFrame b := by
   revert i
-  -- In each case for `b`, compare floor and level of each kind of index with those of `f_b`.
-  induction b using Fin.lastCases
-  · simp only [Fin.val_last, level, besselFrame_top, Sum.forall, floorOf, elim_inl,
-      Fin.is_le', reduceCtorEq, imp_false, not_true_eq_false, elim_inr, inr.injEq,
-      Std.le_refl, inl.injEq, forall_const, Nat.add_eq_left, one_ne_zero,
-      tsub_le_iff_right, not_le]
-    lia
-  · simp only [Fin.val_castSucc, level, besselFrame_castSucc, Sum.forall, floorOf, elim_inl,
-      Fin.val_fin_le, inl.injEq, elim_inr, reduceCtorEq, imp_false, not_le, Fin.is_lt,
-      implies_true, true_and]
-    lia
+  induction b using Fin.lastCases <;>
+    simp [Sum.forall, floorOf, level, besselFrame_top, besselFrame_castSucc] <;> lia
 
 /-- An element `s` of `H_b = floorGroup b` lies in `Q_{b+1} = partialUnitriangularGroup (b + 1)`
 exactly when it fixes the frame vector `f_b = 𝔰.besselFrame b`, that is, when
@@ -541,33 +535,18 @@ other index of the pair. -/
 @[simp]
 lemma splitGram_col (i : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ) :
     T.splitGram.col i = Pi.single (oppositeIndex i) 1 := by
-  revert i
-  simp only [funext_iff, col_apply, Pi.single_apply, Sum.forall, floorOf, Fin.is_lt,
-    true_or, splitGram_eq_ite_oppositeIndex, oppositeIndex, reduceCtorEq, ↓reduceIte,
-    implies_true, add_lt_iff_neg_left, not_lt_zero, or_true, inr.injEq, lt_self_iff_false,
-    and_self, inl.injEq, IsEmpty.forall_iff, and_true, true_and]
-
-/-- At an index of a hyperbolic pair, the coordinate of `J e`, where `J = T.splitGram`, is the
-coordinate of `e` at the other index of the pair. -/
-lemma splitGram_mulVec_apply (i : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ) :
-    (T.splitGram *ᵥ e) i = e (oppositeIndex i) := by
-  revert i
-  simp only [splitGram, fromBlocks_mulVec, zero_mulVec, fromCols_mulVec, one_mulVec,
-    zero_add, fromRows_mulVec, add_zero, Sum.forall, floorOf, Fin.is_lt, elim_inl,
-    Function.comp_apply, oppositeIndex, imp_self, implies_true, elim_inr, Pi.add_apply,
-    Pi.zero_apply, add_lt_iff_neg_left, not_lt_zero, IsEmpty.forall_iff,
-    lt_self_iff_false, and_self]
+  ext k
+  rw [col_apply, splitGram_eq_ite_oppositeIndex _ _ (.inr hi), Pi.single_apply]
+  congr 1
+  exact propext ⟨fun h ↦ by rw [← h, oppositeIndex_oppositeIndex],
+    fun h ↦ by rw [h, oppositeIndex_oppositeIndex]⟩
 
 /-- At an index of a hyperbolic pair, the coordinate of `e J`, where `J = T.splitGram`, is the
 coordinate of `e` at the other index of the pair. -/
 lemma vecMul_splitGram_apply (i : 𝔰.BesselIndex) (hi : floorOf i < 𝔰.ϱ) :
     (e ᵥ* T.splitGram) i = e (oppositeIndex i) := by
-  revert i
-  simp only [splitGram, vecMul_fromBlocks, vecMul_zero, vecMul_fromRows, vecMul_one,
-    zero_add, vecMul_fromCols, add_zero, Sum.forall, floorOf, Fin.is_lt, elim_inl,
-    Function.comp_apply, oppositeIndex, imp_self, implies_true, elim_inr, Pi.add_apply,
-    Pi.zero_apply, add_lt_iff_neg_left, not_lt_zero, IsEmpty.forall_iff,
-    lt_self_iff_false, and_self]
+  change e ⬝ᵥ T.splitGram.col i = _
+  rw [splitGram_col _ hi, dotProduct_single, mul_one]
 
 /-- Multiplication by `T.splitGram` on either side exchanges the two coordinates of a hyperbolic
 pair. -/
@@ -580,15 +559,8 @@ pair. -/
 zero. -/
 lemma inclMatrix_val_mulVec (u : {i : 𝔰.BesselIndex // l ≤ floorOf i} → A) (i : 𝔰.BesselIndex) :
     (inclMatrix A Subtype.val *ᵥ u) i = if h : l ≤ floorOf i then u ⟨i, h⟩ else 0 := by
-  by_cases hi : l ≤ floorOf i
-  · simp only [inclMatrix, mulVec_eq_sum, transpose_submatrix, transpose_one,
-      op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply, submatrix_apply, Matrix.one_apply,
-      id_eq, Subtype.coe_eq_iff, hi, exists_true_left, smul_eq_mul, mul_ite, mul_one,
-      mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte, ↓reduceDIte]
-  · simp only [inclMatrix, mulVec_eq_sum, transpose_submatrix, transpose_one,
-      op_smul_eq_smul, Finset.sum_apply, Pi.smul_apply, submatrix_apply, id_eq, ne_eq,
-      Subtype.coe_eq_iff, hi, not_exists, IsEmpty.forall_iff, one_apply_ne, smul_eq_mul,
-      mul_zero, Finset.sum_const_zero, ↓reduceDIte]
+  by_cases hi : l ≤ floorOf i <;>
+    simp [inclMatrix, mulVec_eq_sum, Matrix.one_apply, Subtype.coe_eq_iff, hi, mul_ite]
 
 end
 
@@ -624,22 +596,17 @@ lemma floorGroup_apply_besselFrame (hσ : σ ∈ floorGroup b)
       one_apply_ne (by rintro rfl; rw [floorOf_besselFrame] at hi; exact hi.false)]
   -- Compare `σ * 1` with `σ * s` term by term: row `i` of `σ` vanishes in the columns of floor
   -- below `b`, and in the other rows the column `𝔰.besselFrame b` of `s` is that of `1`.
-  have h_term (k : 𝔰.BesselIndex) :
-      σ.val i k * (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) k (𝔰.besselFrame b) =
-        σ.val i k * s.val k (𝔰.besselFrame b) := by
-    by_cases hk : floorOf k < b
-    · rw [mem_floorGroup.1 hσ i k hk,
-        one_apply_ne (by rintro rfl; exact hi hk),
-        zero_mul, zero_mul]
-    · have hk_cases := floorOf_level_cases k
-      have := level_besselFrame b
-      rw [mem_partialUnitriangularGroup.1 hs k _ (by lia)
-        (.inl ⟨by simp only [floorOf_besselFrame, lt_add_one],
-          by simp only [level_besselFrame, lt_add_one]⟩)]
-  simpa only [coe_mul, Units.val_mul, Matrix.mul_apply, sum_sum_type, Finset.univ_unique,
-    PUnit.default_eq_unit, Finset.sum_singleton, Matrix.one_apply, mul_ite, mul_one,
-    mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte] using
-    Finset.sum_congr rfl fun k (_ : k ∈ Finset.univ) ↦ h_term k
+  conv_lhs => rw [← Matrix.mul_one σ.val.val]
+  change _ ⬝ᵥ _ = _ ⬝ᵥ _
+  rw [dotProduct_comm (σ.val.val i), dotProduct_comm (σ.val.val i)]
+  apply dotProduct_eq_on_support
+  intro k hk
+  have h_floor : b ≤ floorOf k := by
+    by_contra! h
+    exact hk (by rw [mem_floorGroup.1 hσ i k h, one_apply_ne (by rintro rfl; exact hi h)])
+  symm
+  exact mem_partialUnitriangularGroup.1 hs k _ (by grind)
+    (.inl (by simp [floorOf_besselFrame, level_besselFrame]))
 
 /-- A column of `weylOn P p` on a floor that is exchanged has its only entry in the opposite row. -/
 lemma weylOn_apply_of_swapped {p : ℕ → A} (i : 𝔰.BesselIndex) {k : 𝔰.BesselIndex}
@@ -949,13 +916,7 @@ lemma leadingMinor_frameGram_weylElem {l : ℕ} (hl : l ≤ 𝔰.ϱ) (p : ℕ �
 /-- An index has level at most `ϱ` or is some `e*_b`, of floor `b`. -/
 lemma level_le_or_exists_eq_eStar (k : 𝔰.BesselIndex) :
     level k ≤ 𝔰.ϱ ∨ ∃ b : Fin 𝔰.ϱ, k = eStar b ∧ floorOf k = b := by
-  obtain a | m | a := k
-  · simp only [level, elim_inl, Fin.is_le', reduceCtorEq, floorOf, false_and,
-      exists_false, or_false]
-  · simp only [level, elim_inr, elim_inl, Std.le_refl, inr.injEq, reduceCtorEq,
-      false_and, exists_false, or_false]
-  · simp only [level, elim_inr, tsub_le_iff_right, inr.injEq, floorOf, exists_eq_left',
-      or_true]
+  obtain a | m | a := k <;> simp [level, floorOf]
 
 /-- If the coordinates `e*_b` of `v : 𝔰.BesselIndex → A` with `b < j` vanish (`j : ℕ`), an element
 of the unitriangular group `𝒩_{<j}` of the floors below `j` keeps the coordinates of `v` of floor at
@@ -964,19 +925,11 @@ lemma unipotentBelow_mulVec_apply (hg : g ∈ unipotentBelow j)
     (hv : ∀ b : Fin 𝔰.ϱ, b < j → v (eStar b) = 0) (i : 𝔰.BesselIndex)
     (hi : j ≤ floorOf i ∨ 𝔰.ϱ < level i) :
     (g *ᵥ v) i = v i := by
-  -- Compare with `1 *ᵥ v` term by term: where row `i` of `g` may differ from `1`, `v` vanishes.
   conv_rhs => rw [← one_mulVec v]
-  refine Finset.sum_congr rfl fun k _ ↦ ?_
-  change g.val i k * v k = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) i k * v k
-  have h_key_i : 𝔰.ϱ ≤ if floorOf i < j then level i else 𝔰.ϱ := by
-    split_ifs <;> lia
-  obtain hk_le | ⟨b, rfl, hkb⟩ := level_le_or_exists_eq_eStar k
-  · have h_le : (if floorOf k < j then level k else 𝔰.ϱ) ≤
-        if floorOf i < j then level i else 𝔰.ϱ := by split_ifs <;> lia
-    rw [mem_unipotentBelow.1 hg i k h_le]
-  · by_cases hb : b < j
-    · rw [hv b hb, mul_zero, mul_zero]
-    · rw [mem_unipotentBelow.1 hg i _ (by rw [ite_eq_right (by rwa [hkb])]; exact h_key_i)]
+  apply dotProduct_eq_on_support
+  intro k hk
+  apply mem_unipotentBelow.1 hg
+  obtain hk_le | ⟨b, rfl, hkb⟩ := level_le_or_exists_eq_eStar k <;> split_ifs <;> grind
 
 /-- Let `s` lie in `Q_j`, the group of isometries that are unitriangular in the columns of floor
 and level below `j`. For `a < j`, the row `e*_a` of `s` is that of `1` outside the columns `e*_b`
@@ -984,80 +937,25 @@ with `b < a`. -/
 lemma partialUnitriangularGroup_apply_eStar (hs : s ∈ partialUnitriangularGroup j) (ha : a < j)
     (k : 𝔰.BesselIndex) (hk : ∀ b : Fin 𝔰.ϱ, b < a → k ≠ eStar b) :
     s.val (eStar a) k = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (eStar a) k := by
-  -- The row `inl a` of `J s = (s⁻¹)ᴴ J` is the row `eStar a` of `s`; the column `inl a` of
-  -- `s⁻¹ ∈ partialUnitriangularGroup j` is that of `1` at the levels `≥ a`.
-  have h_col (x : 𝔰.BesselIndex) (hx : a ≤ level x) :
-      s⁻¹.val x (inl a) = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) x (inl a) :=
-    mem_partialUnitriangularGroup.1 (inv_mem hs) x (inl a) hx (.inl ⟨ha, ha⟩)
-  have h_form : T.splitGram * s.val.val = s⁻¹.val.valᴴ * T.splitGram := by
-    simpa only [InvMemClass.coe_inv, coe_units_inv, inv_inv] using U.form_mul_inv_eq s⁻¹
-  have h_mul := congrFun₂ h_form (inl a) k
-  simp only [Matrix.mul_apply, conjTranspose_apply] at h_mul
-  have h_lhs : ∑ x : 𝔰.BesselIndex, T.splitGram (inl a) x * s.val x k = s.val (eStar a) k := by
-    rw [Fintype.sum_eq_single (eStar a) fun x hx ↦ by
-        rw [splitGram_eq_ite_oppositeIndex (inl a) x
-            (.inl (by simp only [floorOf, Fin.is_lt])),
-          oppositeIndex, ite_eq_right hx.symm, zero_mul],
-      splitGram_eq_ite_oppositeIndex (inl a) (eStar a)
-        (.inl (by simp only [floorOf, Fin.is_lt])),
-      oppositeIndex, ite_eq_left rfl, one_mul]
-  have h_row :
-      s.val (eStar a) k = ∑ x : 𝔰.BesselIndex, star (s⁻¹.val x (inl a)) * T.splitGram x k :=
-    h_lhs.symm.trans h_mul
-  rw [h_row]
-  obtain b | m | b := k
-  · have h_level : a ≤ level (eStar b : 𝔰.BesselIndex) := show (a : ℕ) ≤ 2 * 𝔰.ϱ - b by lia
-    rw [Fintype.sum_eq_single (eStar b) fun x hx ↦ by
-        rw [splitGram_eq_ite_oppositeIndex x (inl b)
-            (.inr (by simp only [floorOf, Fin.is_lt])),
-          ite_eq_right fun h_opp ↦ hx
-            (by rw [← oppositeIndex_oppositeIndex x, h_opp]; rfl),
-          mul_zero],
-      h_col _ h_level,
-      one_apply_ne (by simp only [ne_eq, reduceCtorEq, not_false_eq_true]),
-      star_zero, zero_mul,
-      one_apply_ne (by simp only [ne_eq, reduceCtorEq, not_false_eq_true])]
-  · -- Only middle indices `x` pair with a middle index, and there the column `inl a` vanishes.
-    have h_middle (m' : 𝔰.MiddleIndex) : s⁻¹.val (inr (inl m')) (inl a) = 0 :=
-      (h_col (inr (inl m')) a.is_lt.le).trans (one_apply_ne inr_ne_inl)
-    rw [one_apply_ne (by simp only [ne_eq, inr.injEq, reduceCtorEq, not_false_eq_true])]
-    refine Finset.sum_eq_zero fun x _ ↦ ?_
-    obtain a' | m' | a' := x
-    · rw [splitGram_eq_ite_oppositeIndex _ _ (.inl (by simp only [floorOf, Fin.is_lt])),
-        oppositeIndex,
-        ite_eq_right (by simp only [inr.injEq, reduceCtorEq, not_false_eq_true]),
-        mul_zero]
-    · rw [h_middle m', star_zero, zero_mul]
-    · rw [splitGram_eq_ite_oppositeIndex _ _ (.inl (by simp only [floorOf, Fin.is_lt])),
-        oppositeIndex, ite_eq_right (by simp only [reduceCtorEq, not_false_eq_true]),
-        mul_zero]
-  · have hab : a ≤ b := not_lt.1 fun hb ↦ hk b hb rfl
-    rw [Fintype.sum_eq_single (inl b) fun x hx ↦ by
-        rw [splitGram_eq_ite_oppositeIndex x (eStar b)
-            (.inr (by simp only [floorOf, Fin.is_lt])),
-          ite_eq_right fun h_opp ↦ hx
-            (by rw [← oppositeIndex_oppositeIndex x, h_opp]; rfl),
-          mul_zero],
-      h_col (inl b) hab,
-      splitGram_eq_ite_oppositeIndex (inl b) (eStar b)
-        (.inl (by simp only [floorOf, Fin.is_lt])),
-      oppositeIndex, ite_eq_left rfl, mul_one]
-    simp only [Matrix.one_apply, eq_comm, inl.injEq, inr.injEq, apply_ite star, star_one,
-      star_zero]
+  apply row_eq_one_of_inv_col (inl a) k a.is_lt
+  intro x hx
+  apply mem_partialUnitriangularGroup.1 (inv_mem hs) x (inl a) _ (.inl ⟨ha, ha⟩)
+  obtain b | m | b := x
+  · by_contra! hb
+    exact hx (by rw [splitGram_eq_ite_oppositeIndex (inl b) k (.inl b.is_lt),
+      ite_eq_right (show oppositeIndex (inl b) ≠ k from (hk b hb).symm)])
+  · exact a.is_lt.le
+  · change (a : ℕ) ≤ 2 * 𝔰.ϱ - b
+    omega
 
 /-- For `a < j`, an element `s` of `Q_j` (`partialUnitriangularGroup j`, `j : ℕ`) keeps, under `*ᵥ`,
 the coordinate `e*_a` of a `v : 𝔰.BesselIndex → A` that is a vector whose coordinates `e*_b` with
 `b < a` vanish. -/
 lemma partialUnitriangularGroup_mulVec_eStar (hs : s ∈ partialUnitriangularGroup j) (ha : a < j)
     (hv : ∀ b : Fin 𝔰.ϱ, b < a → v (eStar b) = 0) : (s.val.val *ᵥ v) (eStar a) = v (eStar a) := by
-  -- Compare with `1 *ᵥ v` term by term: the rows differ only where `v` vanishes.
   conv_rhs => rw [← one_mulVec v]
-  refine Finset.sum_congr rfl fun k _ ↦ ?_
-  change s.val (eStar a) k * v k = (1 : Matrix 𝔰.BesselIndex 𝔰.BesselIndex A) (eStar a) k * v k
-  by_cases hk : ∃ b : Fin 𝔰.ϱ, b < a ∧ k = eStar b
-  · obtain ⟨b, hb, rfl⟩ := hk
-    rw [hv b hb, mul_zero, mul_zero]
-  · rw [partialUnitriangularGroup_apply_eStar hs ha k fun b hb h_eq ↦ hk ⟨b, hb, h_eq⟩]
+  exact dotProduct_eq_on_support fun k hk ↦
+    partialUnitriangularGroup_apply_eStar hs ha k fun b hb h_eq ↦ hk (h_eq ▸ hv b hb)
 
 end New.Floors.FloorGroups
 
