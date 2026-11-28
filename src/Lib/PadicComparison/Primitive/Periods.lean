@@ -229,6 +229,47 @@ lemma IsReductionMod.comp_wittLocConstBaseChange {p : ℕ} [ThePrime p] {S : Typ
       rw [LinearMap.toAddMonoidHom_coe, h_comp]
       exact ⟨E.surjective.comp h_source.left, fun x ↦ E.map_eq_zero_iff.trans (h_source.right x)⟩)
 
+/-- `ℤ_[p]` is `p`-torsion-free and `p`-adically complete. -/
+private lemma isCompleteTorsionFree_padicInt : IsCompleteTorsionFree ℤ_[p] where
+  regular := .of_ne_zero NeZero.out
+  complete := by
+    rw [← maximalIdeal_eq_span_p]
+    infer_instance
+
+omit [Algebra Ainf S] [IsScalarTower ℤ_[p] Ainf S] in
+/-- A `p`-torsion-free `ℤ_[p]`-algebra is torsion-free over `ℤ_[p]`, since every nonzero element
+of `ℤ_[p]` divides a power of `p`. -/
+private lemma isTorsionFree_padicInt (hS : IsSMulRegular S (p : ℤ_[p])) :
+    Module.IsTorsionFree ℤ_[p] S :=
+  isTorsionFree_of_dvd_pow hS fun {t} ht ↦
+    ⟨t.valuation, (unitCoeff_spec ht).dvd.trans (Units.mul_left_dvd.mpr dvd_rfl)⟩
+
+/-- If `S` is `p`-torsion-free and `p`-complete, `N` has flat base change, and the `ℤ_p`-cohomology
+of `N` is finite over `ℤ_[p]`, then `wittLocConstToPeriodAlg S : S ⊗ W(L) → (S ⊗ W(O♭ ⊗ L))^` is
+bijective on the cohomology of `N`. -/
+private lemma wittLocConstToPeriodAlg_isBijective (hS : IsCompleteTorsionFree S)
+    {N : AbFunctor TestRing} (hN : HasFlatBaseChange N)
+    (h_finite : ∀ n : ℕ, Module.Finite ℤ_[p] (H N ellAdicCoeff n)) :
+    (ofModuleHom (Φ := asModules (wittLocConst p) ⋙ tensorWith S S) (𝟭 TestRing)
+      (wittLocConstToPeriodAlg S)).IsBijective (𝟙 N) := by
+  have : Module.IsTorsionFree ℤ_[p] S := isTorsionFree_padicInt hS.isSMulRegular_natCast
+  have h_witt (A : TestRing) : IsCompleteTorsionFree ((wittLocConst p).obj A) :=
+    isCompleteTorsionFree_wittVector (ZMod p) (locConstAlg.obj A.obj)
+  have h_period (A : TestRing) : IsCompleteTorsionFree ((oFlatLocConst ⋙ periodAlg S).obj A) :=
+    isCompleteTorsionFree_completion
+      (isSMulRegular_tensor_witt hS.regular (isPerfectTorsionFree_oFlatLocConst A))
+  have h_mod (A : TestRing) {Y : Type} [AddCommGroup Y]
+      (q : (asModules (oFlatLocConst ⋙ periodAlg S)).obj A →+ Y) (hq : IsReductionMod p q) :
+      IsReductionMod p (q ∘ (wittLocConstToPeriodAlg S).app A) :=
+    (IsReductionMod.comp_algebraMap hq).comp_wittLocConstBaseChange A
+  -- The cohomology with coefficients `ℤ_p` has finite rank, by `h_finite`.
+  have h_rank (n : ℕ) : Module.rank ℤ_[p] (H N ellAdicCoeff n) < Cardinal.aleph0 :=
+    have : Module.Finite ℤ_[p] (H N ellAdicCoeff n) := h_finite n
+    Module.rank_lt_aleph0 ℤ_[p] (H N ellAdicCoeff n)
+  exact hN.isBijective_of_isReductionMod (Θ := wittLocConst p) isCompleteTorsionFree_padicInt hS
+    h_witt irreducible_p (X := oFlatLocConst ⋙ periodAlg S) (wittLocConstToPeriodAlg S)
+    (fun n _ ↦ h_rank n) h_period h_mod
+
 /-- The primitive comparison with period coefficients. Let `p` be a prime, `(S, K)` a period ring
 pair (`S` an `A_inf`-algebra, `K` a flat `S`-algebra), `θ` an isomorphism from
 `c ↦ K ⊗ (S ⊗ W(R♭))^` to `Ψ : PadicTest ⥤ ModuleCat K`, and `α : N' ⟶ genericTest ⋙ N` the map that
@@ -251,35 +292,7 @@ lemma primitivePeriodMap_isBijective {p : ℕ} [ThePrime p] {S : Type} [CommRing
   -- `wittLocConstToPeriodAlg`, of the map induced by `primitiveMap`, and of `θ`. The second is
   -- bijective on cohomology because it is bijective modulo `p` and the cohomology is finite, the
   -- third by the hypothesis on `primitiveMap`.
-  -- `S` is torsion-free over `ℤ_[p]`: a nonzero `t = u p ^ v` divides a power of `p`.
-  have h_dvd_pow {t : ℤ_[p]} (ht : t ≠ 0) : t ∣ (p : ℤ_[p]) ^ t.valuation :=
-    (unitCoeff_spec ht).dvd.trans (Units.mul_left_dvd.mpr dvd_rfl)
-  have h_torsionFree : Module.IsTorsionFree ℤ_[p] S :=
-    isTorsionFree_of_dvd_pow hS.isSMulRegular_natCast fun ht ↦ ⟨_, h_dvd_pow ht⟩
-  have h_padic : IsCompleteTorsionFree ℤ_[p] :=
-    { regular := .of_ne_zero NeZero.out
-      complete := by
-        rw [← maximalIdeal_eq_span_p]
-        infer_instance }
-  have h_witt (A : TestRing) : IsCompleteTorsionFree ((wittLocConst p).obj A) :=
-    isCompleteTorsionFree_wittVector (ZMod p) (locConstAlg.obj A.obj)
-  have h_period (A : TestRing) : IsCompleteTorsionFree ((oFlatLocConst ⋙ periodAlg S).obj A) :=
-    isCompleteTorsionFree_completion
-      (isSMulRegular_tensor_witt hS.regular (isPerfectTorsionFree_oFlatLocConst A))
-  have h_mod (A : TestRing) {Y : Type} [AddCommGroup Y]
-      (q : (asModules (oFlatLocConst ⋙ periodAlg S)).obj A →+ Y) (hq : IsReductionMod p q) :
-      IsReductionMod p (q ∘ (wittLocConstToPeriodAlg S).app A) :=
-    (IsReductionMod.comp_algebraMap hq).comp_wittLocConstBaseChange A
-  -- The cohomology with coefficients `ℤ_p` has finite rank, by `h_finite`.
-  have h_rank (n : ℕ) : Module.rank ℤ_[p] (H N ellAdicCoeff n) < Cardinal.aleph0 :=
-    have : Module.Finite ℤ_[p] (H N ellAdicCoeff n) := h_finite n
-    Module.rank_lt_aleph0 ℤ_[p] (H N ellAdicCoeff n)
-  have h_completion :
-      (ofModuleHom (Φ := asModules (wittLocConst p) ⋙ tensorWith S S) (𝟭 TestRing)
-        (wittLocConstToPeriodAlg S)).IsBijective (𝟙 N) :=
-    hN.isBijective_of_isReductionMod (Θ := wittLocConst p) h_padic hS.isCompleteTorsionFree h_witt
-      irreducible_p (X := oFlatLocConst ⋙ periodAlg S) (wittLocConstToPeriodAlg S)
-      (fun n _ ↦ h_rank n) h_period h_mod
+  have h_completion := wittLocConstToPeriodAlg_isBijective hS.isCompleteTorsionFree hN h_finite
   have h_completion_tensor :
       CoeffCompBijective (Ψ := asModules (wittLocConst p) ⋙ tensorWith S S) (φ := 𝟭 TestRing)
         (wittLocConstToPeriodAlg S) (𝟙 N) (tensorWith K K) :=
