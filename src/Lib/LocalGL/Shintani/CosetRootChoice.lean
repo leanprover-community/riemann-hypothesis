@@ -435,38 +435,26 @@ lemma IsRootChoice.index_mul_finMean_eq_classInner [Finite Γ]
     (hg_conj : ∀ s x : E, π x = 1 → g (x * s * x⁻¹) = g s) :
     π.ker.index * finMean (fun s : E ↦ if π s = σ then conj (h s) * g s else 0) =
       classInner f f' := by
-  -- Reindex the sum over the coset by `IsRootChoice.conjRoot`; the terms do not depend on `x`.
-  have h_ker (x : π.ker) : π x = 1 := π.mem_ker.mp x.property
-  have h_sum :
-      (∑ s : E, if π s = σ then conj (h s) * g s else 0) =
-        (Nat.card (π.ker ⧸ R.rangeInKer) : ℂ) * ∑ γ : G, conj (f γ) * f' γ := by
-    rw [← sum_filter]
-    have h_bij :
-        (∑ s ∈ univ.filter (fun s : E ↦ π s = σ), conj (h s) * g s) =
-          ∑ z : (π.ker ⧸ R.rangeInKer) × G, conj (h (R.conjRoot z)) * g (R.conjRoot z) := by
-      refine (Finset.sum_nbij (fun z ↦ (R.conjRoot z : E))
-        (fun z _ ↦ mem_filter.mpr ⟨mem_univ _, (R.conjRoot z).property⟩)
-        (fun z₁ _ z₂ _ h_eq ↦ R.bijective_conjRoot.injective (Subtype.ext h_eq))
-        (fun s hs ↦ by
-          obtain ⟨z, hz⟩ := R.bijective_conjRoot.surjective ⟨s, (mem_filter.mp hs).2⟩
-          exact ⟨z, mem_univ _, congrArg Subtype.val hz⟩)
-        (fun _ _ ↦ rfl)).symm
-    rw [h_bij, Fintype.sum_prod_type]
-    have h_term (x : π.ker ⧸ R.rangeInKer) (γ : G) :
-        conj (h (R.conjRoot (x, γ))) * g (R.conjRoot (x, γ)) = conj (f γ) * f' γ := by
-      have hx := h_ker x.out
+  classical
+  have h_index : (π.ker.index : ℂ) ≠ 0 := mod_cast index_ne_zero_of_finite
+  calc
+    _ = finMean (fun s : π ⁻¹' {σ} ↦ conj (h s) * g s) := by
+      rw [finMean_eq, ← sum_filter, ← sum_subtype_eq_sum_filter, finMean_eq,
+        ← Nat.card_eq_fintype_card, ← Nat.card_eq_fintype_card, R.card_preimage_eq,
+        ← π.ker.index_mul_card, Nat.cast_mul, ← mul_div_assoc, mul_div_mul_left _ _ h_index]
+      simp only [subtype_univ]
+      congr 1
+    _ = finMean (fun z : (π.ker ⧸ R.rangeInKer) × G ↦ conj (f z.2) * f' z.2) := by
+      refine finMean_equiv (.ofBijective R.conjRoot R.bijective_conjRoot) fun ⟨x, γ⟩ ↦ ?_
+      have hx := π.mem_ker.mp x.out.property
+      change conj (h (R.conjRoot (x, γ))) * g (R.conjRoot (x, γ)) = _
       rw [IsRootChoice.conjRoot, hh_conj _ _ hx, hg_conj _ _ hx,
         hh (r γ) γ (R.map_apply γ) (R.pow_orderOf γ),
         hg (r γ) γ (R.map_apply γ) (R.pow_orderOf γ)]
-    simp only [h_term, sum_const, card_univ, nsmul_eq_mul, ← Nat.card_eq_fintype_card]
-  rw [classInner, finMean, finMean_eq, finsum_eq_sum_of_fintype, h_sum, ← π.ker.index_mul_card,
-    ← R.card_preimage_eq, ← Nat.card_eq_of_bijective _ R.bijective_conjRoot, Nat.card_prod,
-    ← Nat.card_eq_fintype_card]
-  have h_index : (π.ker.index : ℂ) ≠ 0 := mod_cast index_ne_zero_of_finite
-  have h_quot : (Nat.card (π.ker ⧸ R.rangeInKer) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Nat.card_pos.ne'
-  have h_G : (Nat.card G : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Nat.card_pos.ne'
-  push_cast
-  field_simp
+    _ = _ := by
+      rw [finMean_prod]
+      change finMean (fun _ : π.ker ⧸ R.rangeInKer ↦ classInner f f') = _
+      exact finMean_const _
 
 omit [Finite E] [Finite G] in
 /-- A choice of roots restricts to a subgroup `H` of `E` and its preimage `H₀` in `G`, if the
