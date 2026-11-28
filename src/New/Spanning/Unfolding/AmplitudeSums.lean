@@ -209,7 +209,7 @@ lemma tsum_mul_inv_pow_le_of_layers {α : Type*} {w : α → ℝ≥0∞} {u : α
         lintegral_count]
       simp only [Pi.mul_apply, Real.rpow_neg (zero_le_one.trans (hu _)), Real.rpow_natCast, inv_pow]
     _ ≤ .ofReal (K ^ d * 2) * 1 :=
-      lintegral_rpow_neg_le_of_measure_sublevel_le measurable_from_top hu hK h_vol (by linarith)
+      lintegral_rpow_neg_le_of_measure_sublevel_le hu hK h_vol (by linarith)
         (by linarith)
     _ = .ofReal (2 * K ^ d) := by rw [mul_one, mul_comm]
 

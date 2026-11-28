@@ -1,7 +1,7 @@
 module
 
 import Mathlib.Analysis.Matrix.Order
-import TauCeti.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Polar
+import TauCeti.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Polar.Basic
 public import Lib.General.LinearAlgebra.MatricesNearIdentity
 
 /-!

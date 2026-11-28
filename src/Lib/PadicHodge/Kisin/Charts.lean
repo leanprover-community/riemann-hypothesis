@@ -434,7 +434,7 @@ instance : IsHausdorff c.maxIdeal Ainf where
   haus' x hx := by
     -- The ideal `(p, z)` of `Ainf` is a pair of non-units, for which `Ainf` is complete.
     have h_haus_Ainf : IsHausdorff (span {(p : Ainf), c.seriesMap X}) Ainf :=
-      (isAdicComplete_span_pair prime_p.not_isUnit c.not_isUnit_z).toIsHausdorff
+      (isAdicComplete_span_pair Ainf.prime_p.not_isUnit c.not_isUnit_z).toIsHausdorff
     refine h_haus_Ainf.haus' x fun n ↦ ?_
     simpa [SModEq.zero, c.maxIdeal_pow_smul_top_eq_restrictScalars] using hx n
 
@@ -458,7 +458,7 @@ lemma exists_adicBasis_coord_eq_self :
     simpa [mem_singleton_iff.mp hi, Submodule.Quotient.mk_eq_zero] using h_one
   -- `z` is regular modulo `p`, because `p` is prime and does not divide `z`.
   have z_reg (a b : Ainf) (h_eq : c.z • a = (p : c.S) • b) : ∃ a' : Ainf, a = (p : c.S) • a' :=
-    (prime_p.dvd_or_dvd ⟨b, h_eq⟩).resolve_left c.not_p_dvd_z
+    (Ainf.prime_p.dvd_or_dvd ⟨b, h_eq⟩).resolve_left c.not_p_dvd_z
   -- `p` is not a zero divisor on `Ainf`.
   have hp_smul : ∀ a : Ainf, (p : c.S) • a = 0 → (p : c.S) = 0 ∨ a = 0 := by simp
   obtain ⟨d, hd⟩ : ∃ d : AdicBasis c.maxIdeal Ainf, {(1 : Ainf)} ⊆ Set.range d.b :=

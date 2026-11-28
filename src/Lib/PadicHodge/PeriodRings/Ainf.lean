@@ -1,6 +1,6 @@
 module
 
-import TauCeti.RingTheory.WittVector.ArtinSchreier
+import TauCeti.RingTheory.WittVector.ArtinSchreier.Basic
 import TauCeti.RingTheory.WittVector.Complete
 public import Mathlib.FieldTheory.IsAlgClosed.Classification
 public import Mathlib.RingTheory.WittVector.Compare
@@ -916,7 +916,7 @@ lemma dvd_of_forall_exists_sub_mem_span_pow (ha : ¬IsUnit a) (hc : ¬IsUnit c) 
     obtain ⟨b, hb⟩ : ∃ b : Ainf, δ ∣ ↑p * x + b * ↑p ^ (m + 1) := hx (m + 1)
     have h_eq : ↑p * x + b * ↑p ^ (m + 1) = ↑p * (x + b * ↑p ^ m) := by ring
     rw [h_eq] at hb
-    exact ⟨b, (prime_p.left_dvd_or_dvd_right_of_dvd_mul hb).resolve_left hδ⟩
+    exact ⟨b, (Ainf.prime_p.left_dvd_or_dvd_right_of_dvd_mul hb).resolve_left hδ⟩
   · -- `I ⊆ (p, δ)`: take `m = 1`
     intro x hx
     simpa [mem_span_pair_iff] using mem_iInf.mp hx 1
@@ -1006,7 +1006,7 @@ lemma Ainf.isAdicComplete_span_singleton (h : ¬IsUnit a) : IsAdicComplete (span
 
 /-- `A_inf` is complete and separated for the `(p, ξ)`-adic topology. -/
 instance : IsAdicComplete (span {↑p, xi}) Ainf :=
-  Ainf.isAdicComplete_span_pair prime_p.not_isUnit prime_xi.not_isUnit
+  Ainf.isAdicComplete_span_pair Ainf.prime_p.not_isUnit prime_xi.not_isUnit
 
 end ThetaKernel
 

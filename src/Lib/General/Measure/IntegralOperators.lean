@@ -25,7 +25,7 @@ for `γ ∈ Γ`, and the following.
 
 ## Main definitions and results
 
-* `New.lintegral_rpow_neg_le_of_measure_sublevel_le`: if the sublevel sets `{u ≤ R}` of a measurable
+* `New.lintegral_rpow_neg_le_of_measure_sublevel_le`: if the sublevel sets `{u ≤ R}` of a
   function `u ≥ 1` have measure at most `(K R^e)^d V`, with `K ≥ 0`, then the integral of `u^(-A)`
   has an explicit bound for `A > e d`. The measure is arbitrary, so the result also bounds sums
   (counting measure). For finite `V`, `New.integrable_rpow_neg_of_measure_sublevel_le` and
@@ -78,10 +78,10 @@ open MeasureTheory Set Real Filter
 variable {S : Type*} [MeasurableSpace S] {ν : Measure S} {u : S → ℝ} {K A c : ℝ} {e d : ℕ}
   {V : ENNReal}
 
-/-- Layer cake bound for a negative power. Let `u ≥ 1` be measurable and suppose that
+/-- Layer cake bound for a negative power. Let `u ≥ 1` and suppose that
 `ν {u ≤ R} ≤ (K R^e)^d V` for all `R ≥ 1`, where `K ≥ 0`. If `e d < A` and `A ≤ c (A - e d)`, then
 the Lebesgue integral of `u^(-A)` is at most `K^d c V`. -/
-lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
+lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le
     (hu : ∀ s : S, 1 ≤ u s) (_hK : 0 ≤ K)
     (h_vol : ∀ R ≥ (1 : ℝ), ν {s : S | u s ≤ R} ≤ ENNReal.ofReal ((K * R ^ e) ^ d) * V)
     (hA : e * d < A) (hc : A ≤ c * (A - e * d)) :
@@ -96,7 +96,7 @@ lemma New.lintegral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
       mul_comm (K ^ d)]
   calc ∫⁻ s : S, ENNReal.ofReal (u s ^ (-A)) ∂ν
       ≤ ENNReal.ofReal (A / (A - ((e * d : ℕ) : ℝ))) * (ENNReal.ofReal (K ^ d) * V) :=
-        TauCeti.lintegral_ofReal_rpow_neg_le_of_measure_le_rpow hu_meas.aemeasurable
+        TauCeti.lintegral_ofReal_rpow_neg_le_of_measure_le_rpow
           (.of_forall hu) hA_pos (by simpa using hA) h_growth
     _ ≤ ENNReal.ofReal c * (ENNReal.ofReal (K ^ d) * V) := by
         gcongr
@@ -114,7 +114,7 @@ lemma New.integrable_rpow_neg_of_measure_sublevel_le (hu_meas : Measurable u)
     Integrable (fun s : S ↦ u s ^ (-A)) ν := by
   -- The layer cake bound with `c = A / (A - e d)` is finite.
   have h_le : ∫⁻ s : S, .ofReal (u s ^ (-A)) ∂ν ≤ .ofReal (K ^ d * (A / (A - e * d))) * V :=
-    lintegral_rpow_neg_le_of_measure_sublevel_le hu_meas hu hK h_vol hA
+    lintegral_rpow_neg_le_of_measure_sublevel_le hu hK h_vol hA
       (div_mul_cancel₀ A (sub_pos.2 hA).ne').ge
   refine ⟨(hu_meas.pow_const (-A)).aestronglyMeasurable, ?_⟩
   rw [hasFiniteIntegral_iff_ofReal
@@ -135,7 +135,7 @@ lemma New.integral_rpow_neg_le_of_measure_sublevel_le (hu_meas : Measurable u)
           (hu_meas.pow_const (-A)).aestronglyMeasurable
     _ ≤ (ENNReal.ofReal (K ^ d * c) * V).toReal :=
         ENNReal.toReal_mono (by finiteness)
-          (lintegral_rpow_neg_le_of_measure_sublevel_le hu_meas hu hK h_vol hA hc)
+          (lintegral_rpow_neg_le_of_measure_sublevel_le hu hK h_vol hA hc)
     _ = K ^ d * c * V.toReal := by
         rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity)]
 

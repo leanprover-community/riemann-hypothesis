@@ -88,7 +88,7 @@ lemma mu_sq_dvd_smul_mu_sub (g : Gp p) : mu ^ 2 ∣ g • mu - (cyclotomicGp g :
   -- the divisibility modulo `(p, ξ) ^ m` for every `m`.
   have hp_not_dvd : ¬(p : Ainf) ∣ mu ^ 2 := by
     simp [Witt.p_dvd_iff, -constantCoeff_apply, constantCoeff_mu_ne_zero]
-  refine dvd_of_forall_exists_sub_mem_span_pow prime_p.not_isUnit prime_xi.not_isUnit hp_not_dvd
+  refine dvd_of_forall_exists_sub_mem_span_pow Ainf.prime_p.not_isUnit prime_xi.not_isUnit hp_not_dvd
     fun m ↦ ?_
   -- Let `u = [ε^{1/p^m}]` and let `a` be the cyclotomic character of `g` modulo `p ^ m`.
   let u : Ainf := teichmuller p ((frobeniusEquiv _ p).symm^[m] epsTilt)
