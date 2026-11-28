@@ -3,8 +3,9 @@ module
 import Mathlib.Topology.Algebra.Group.Units
 public import Lib.Adelic.Adeles.LocalFactors
 public import Lib.General.LinearAlgebra.PartnerAlgebra
+import Lib.Adelic.Unitary.ComponentsAndBlockSums
 import Lib.General.LinearAlgebra.HermiteForm
-import Lib.SiegelWeil.Tower.LineGaussSums
+import Lib.Weil.TameGaussSum
 
 /-!
 # Matched functions, sections over GL cosets and same-section pairs of matrix functions

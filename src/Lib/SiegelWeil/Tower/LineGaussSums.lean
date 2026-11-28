@@ -1,6 +1,7 @@
 module
 
 import TauCeti.Topology.Instances.Matrix
+public import Lib.Adelic.Adeles.LocalFactors
 public import Lib.SiegelWeil.SingularForms.UnimodularCoefficients
 public import Lib.Weil.MixedModel.Slices
 public import Lib.General.LinearAlgebra.PartnerAlgebra
@@ -85,36 +86,7 @@ def stdColDatum (y : Matrix n b F) : ℂ := if IsIntMatrix O y then invOnUnits �
 `s` and `x`, ordered by `e`, if that matrix lies in `GL_n(O)`, and to zero otherwise. -/
 def stdRowDatum (x : Matrix a n F) : ℂ := stdColDatum χ 1 ((s.fromRows x).submatrix e.symm id)
 
-/-- A square matrix over `F` is primitive over the compact open subring `O = SemilocalField.O` of
-`F` (integral, with an integral left inverse) if and only if it is integral and its determinant is a
-unit of `O`. -/
-lemma isPrimitiveMatrix_iff_int_and_unit_det {A : Matrix n n F} :
-    IsPrimitiveMatrix O A ↔ IsIntMatrix O A ∧ IsIntegralUnit A.det :=
-  -- The determinant of an integral left inverse inverts `A.det`; conversely, if `c * A.det = 1`,
-  -- then `c` times the adjugate is an integral left inverse.
-  ⟨fun ⟨hA, L, hL, h⟩ ↦ ⟨hA, hA.det_mem, L.det, hL.det_mem, by simp [← det_mul, h]⟩,
-    fun ⟨hA, _, c, hc, h⟩ ↦
-      ⟨hA, c • A.adjugate, hA.adjugate.smul hc, by simp [adjugate_mul, smul_smul, h]⟩⟩
-
 variable {χ : MulChar F ℂ} {s : Matrix b n F} {Ψ : Matrix n b F → ℂ}
-
-omit [Fintype b] [DecidableEq n] in
-/-- If `Ψ` is locally constant with compact support in the matrices with a left inverse, then
-`y ↦ Ψ yᵀ` is locally constant with compact support in the matrices with a right inverse. -/
-lemma _root_.Membership.mem.transpose_mem_schwartzBruhat
-    (h : Ψ ∈ schwartzBruhat {y | HasLeftInv y}) :
-    (fun y : Matrix b n F ↦ Ψ yᵀ) ∈ schwartzBruhat {x : Matrix b n F | HasLeftInv xᵀ} :=
-  schwartzBruhat.comp h transpose transpose_transpose fun _ hx ↦ hx
-
-omit [DecidableEq n] in
-/-- A locally constant function that vanishes off the primitive matrices has compact support and
-vanishes off the matrices with a left inverse. -/
-lemma schwartzBruhat.mem_of_support_isPrimitiveMatrix (h : IsLocallyConstant Ψ)
-    (hs : ∀ y : Matrix n b F, Ψ y ≠ 0 → IsPrimitiveMatrix O y) :
-    Ψ ∈ schwartzBruhat {y | HasLeftInv y} := by
-  refine ⟨h, isCompact_O.matrix.closure_of_subset fun y hy ↦ (hs y hy).1, fun y hy ↦ ?_⟩
-  obtain ⟨-, L, -, hL⟩ := hs y hy
-  exact ⟨L, hL⟩
 
 /-! ### Supports, and the identity of partners -/
 

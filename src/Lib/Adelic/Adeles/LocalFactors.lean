@@ -3,12 +3,15 @@ module
 import Mathlib.Algebra.Order.Star.Int
 public import Mathlib.Topology.Algebra.Valued.WithZeroMulInt -- shake: keep (needed public by an exposed definition)
 import TauCeti.NumberTheory.NumberField.Countable
+import TauCeti.Topology.Instances.Matrix
 public import Lib.General.Analysis.FiniteFourier
+public import Lib.General.LinearAlgebra.IntegralLattices
 public import Lib.Weil.Construction.WeilData
 import Lib.Adelic.Adeles.IdeleModulus
 import Lib.Adelic.Adeles.StrongApproximation
 import Lib.Adelic.Unitary.ComponentsAndBlockSums
 import Lib.Adelic.Unitary.CongruenceLevels
+import Lib.General.Measure.HaarModulus
 
 /-!
 # Idelic generators of ideals, semilocal fields and tame local characters
@@ -31,6 +34,8 @@ fact gives the valuation of natural numbers prime to one of valuation less than 
 * `New.schwartzBruhat`: locally constant, compactly supported complex functions that vanish outside
   a set. `New.schwartzBruhat.comp`, `New.schwartzBruhat.isLocallyConstant_curry` and
   `New.integral_mem_of_isLocallyConstant` are tools for substituting and averaging.
+* `New.schwartzBruhat.mem_of_support_isPrimitiveMatrix`: a locally constant function supported on
+  primitive matrices has compact support in the matrices with a left inverse.
 * `New.SemilocalField`: conditions on a topological ring `F` that a finite product of
   non-archimedean local fields meets, with ring of integers `O` and uniformiser `ϖ`.
 * `New.invOnUnits`, `New.TameLocalChar`: `χ⁻¹` cut off to the units of `O`, and the data showing
@@ -417,6 +422,48 @@ def HasIntegralConductor (ψ : AddChar F ℂ) : Prop :=
 end New
 
 end LocalDefs
+
+/-! ## Primitive matrices and Schwartz–Bruhat functions -/
+
+namespace New
+
+open Matrix SemilocalField schwartzBruhat
+
+variable {F : Type _} [SemilocalField F] {b n : Type} [Fintype b] [DecidableEq b]
+  [Fintype n] [DecidableEq n]
+
+/-- A square matrix over `F` is primitive over the compact open subring `O = SemilocalField.O` of
+`F` (integral, with an integral left inverse) if and only if it is integral and its determinant is a
+unit of `O`. -/
+lemma isPrimitiveMatrix_iff_int_and_unit_det {A : Matrix n n F} :
+    IsPrimitiveMatrix O A ↔ IsIntMatrix O A ∧ IsIntegralUnit A.det :=
+  -- The determinant of an integral left inverse inverts `A.det`; conversely, if `c * A.det = 1`,
+  -- then `c` times the adjugate is an integral left inverse.
+  ⟨fun ⟨hA, L, hL, h⟩ ↦ ⟨hA, hA.det_mem, L.det, hL.det_mem, by simp [← det_mul, h]⟩,
+    fun ⟨hA, _, c, hc, h⟩ ↦
+      ⟨hA, c • A.adjugate, hA.adjugate.smul hc, by simp [adjugate_mul, smul_smul, h]⟩⟩
+
+variable {Ψ : Matrix n b F → ℂ}
+
+omit [Fintype b] [DecidableEq n] in
+/-- If `Ψ` is locally constant with compact support in the matrices with a left inverse, then
+`y ↦ Ψ yᵀ` is locally constant with compact support in the matrices with a right inverse. -/
+lemma _root_.Membership.mem.transpose_mem_schwartzBruhat
+    (h : Ψ ∈ schwartzBruhat {y | HasLeftInv y}) :
+    (fun y : Matrix b n F ↦ Ψ yᵀ) ∈ schwartzBruhat {x : Matrix b n F | HasLeftInv xᵀ} :=
+  schwartzBruhat.comp h transpose transpose_transpose fun _ hx ↦ hx
+
+omit [DecidableEq n] in
+/-- A locally constant function that vanishes off the primitive matrices has compact support and
+vanishes off the matrices with a left inverse. -/
+lemma schwartzBruhat.mem_of_support_isPrimitiveMatrix (h : IsLocallyConstant Ψ)
+    (hs : ∀ y : Matrix n b F, Ψ y ≠ 0 → IsPrimitiveMatrix O y) :
+    Ψ ∈ schwartzBruhat {y | HasLeftInv y} := by
+  refine ⟨h, isCompact_O.matrix.closure_of_subset fun y hy ↦ (hs y hy).1, fun y hy ↦ ?_⟩
+  obtain ⟨-, L, -, hL⟩ := hs y hy
+  exact ⟨L, hL⟩
+
+end New
 
 /-!
 ## Finite products of completions
