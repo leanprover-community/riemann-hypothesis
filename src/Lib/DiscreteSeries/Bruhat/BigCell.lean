@@ -426,7 +426,7 @@ lemma exists_eq_mul_floorWeyl_mul_of_mem_intGL [IsHermitianUnit T.splitGram]
     refine inv_mul_mem_of_orbitPoint_eq (b := j.castSucc) hσ
       (mul_mem (heisenbergElem_mem_floorUnipotent j v).1 floorWeyl_mem_floorGroup) ?_
     funext i
-    simp only [orbitPoint, ← Subgroup.coe_inv, inv_inv]
+    simp only [orbitPoint, inv_inv]
     rw [mulVec_single_one, mulVec_single_one, col_apply, col_apply,
       Shape.besselFrame, snoc_castSucc, Subgroup.coe_mul, Units.val_mul, Matrix.mul_apply, h_cols i]
     have h_fw (k : 𝔰.BesselIndex) :
