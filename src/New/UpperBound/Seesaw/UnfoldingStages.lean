@@ -175,6 +175,130 @@ lemma arrowProduct_integrated_polyVector (P : MvPolynomial (NumberField.Infinite
   -- the two descriptions of the renamed variables of `P` and `Q` agree by definition
   rfl
 
+/-- The integral over the product of the compact quotients of U(X) and U(X') of a coefficient of an
+algebraic form times the theta function of a `New.Seesaw.tripleWeil` translate is the iterated
+integral, first over U(X') and then over U(X). -/
+lemma integral_prod_algFormCoeff_mul_theta_tripleWeil {κ : NumberField.InfinitePlace E → ℕ → ℕ}
+    {e : NumberField.InfinitePlace E → ℤ} (a b : AutChar E)
+    (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : ↥(AlgForm X κ e)) (g : G E (1 : X'' → ℤˣ))
+    (f : 𝒮 ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))) :
+    ∫ x : G E (1 : X → ℤˣ) × G E (1 : X' → ℤˣ), algFormCoeff 1 t φ x.1 *
+        θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))
+          (tripleWeil a b (x.1, x.2, g) f)
+      ∂(stdSpace E X).quotMeasure.prod (stdSpace E X').quotMeasure =
+    ∫ x : G E (1 : X → ℤˣ), algFormCoeff 1 t φ x *
+        ∫ r : G E (1 : X' → ℤˣ),
+          θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))
+            (tripleWeil a b (x, r, g) f) ∂(stdSpace E X').quotMeasure
+      ∂(stdSpace E X).quotMeasure := by
+  rw [integral_prod _ (integrable_algFormCoeff_mul_theta_tripleWeil a b t φ g f)]
+  simp [integral_const_mul]
+
+/-- The iterated integral of the theta function of the `New.Seesaw.tripleWeil` translates of a
+datum `f`, over U(X') and then over U(X) against a coefficient of an algebraic form, is a
+continuous linear functional of `f`. -/
+lemma exists_continuousLinearMap_apply_eq_integral_theta_tripleWeil
+    {κ : NumberField.InfinitePlace E → ℕ → ℕ} {e : NumberField.InfinitePlace E → ℤ}
+    (a b : AutChar E) (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : ↥(AlgForm X κ e))
+    (g : G E (1 : X'' → ℤˣ)) :
+    ∃ A : 𝒮 ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X''))) →L[ℂ] ℂ, ∀ f,
+      A f = ∫ x : G E (1 : X → ℤˣ), algFormCoeff 1 t φ x *
+          ∫ r : G E (1 : X' → ℤˣ),
+            θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))
+              (tripleWeil a b (x, r, g) f) ∂(stdSpace E X').quotMeasure
+        ∂(stdSpace E X).quotMeasure := by
+  -- By Fubini it is the integral over the product of an integrable family of bounded functionals.
+  obtain ⟨A, hA⟩ := exists_continuousLinearMap_apply_eq_integral
+    ((stdSpace E X).quotMeasure.prod (stdSpace E X').quotMeasure)
+    (fun x ↦ algFormCoeff 1 t φ x.1 •
+      θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X''))) ∘L
+        tripleWeil a b (x.1, x.2, g))
+    (integrable_algFormCoeff_mul_theta_tripleWeil a b t φ g)
+  exact ⟨A, fun f ↦ (hA f).trans (integral_prod_algFormCoeff_mul_theta_tripleWeil a b t φ g f)⟩
+
+/-- Let `z` be a constant as in `New.Seesaw.theta_arrowProduct`, so that `θ (arrowProduct f f')` is
+`z` times the product of the theta values of `f` and `f'`. Integrate the theta function of the
+`New.Seesaw.tripleWeil` translate of `arrowProduct f f'` by `(x, r, g)` over `r` in U(X'), and
+then over `x` in U(X) against the coefficient of `φ` at `t`. In the other order of integration
+this is `z` times the integral over `r` of the theta kernel of `f'` at `(r, g)` against the
+integral over `x` of the theta kernel of `f` at `(x, r)` against the coefficient: the theta lift
+of `f` followed by that of `f'`. -/
+lemma integral_theta_tripleWeil_arrowProduct {κ : NumberField.InfinitePlace E → ℕ → ℕ}
+    {e : NumberField.InfinitePlace E → ℤ} {z : ℂ}
+    (hθ : ∀ (f : 𝒮 ((stdSpace E X).hom (stdSpace E X')))
+      (f' : 𝒮 ((stdSpace E X').hom (stdSpace E X''))),
+      θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X''))) (arrowProduct f f') =
+        z * (θ ((stdSpace E X).hom (stdSpace E X')) f *
+          θ ((stdSpace E X').hom (stdSpace E X'')) f'))
+    (a b : AutChar E) (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) (φ : ↥(AlgForm X κ e))
+    (g : G E (1 : X'' → ℤˣ)) (f : 𝒮 ((stdSpace E X).hom (stdSpace E X')))
+    (f' : 𝒮 ((stdSpace E X').hom (stdSpace E X''))) :
+    ∫ x : G E (1 : X → ℤˣ), algFormCoeff 1 t φ x *
+        ∫ r : G E (1 : X' → ℤˣ),
+          θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))
+            (tripleWeil a b (x, r, g) (arrowProduct f f')) ∂(stdSpace E X').quotMeasure
+      ∂(stdSpace E X).quotMeasure =
+    z * ∫ r : G E (1 : X' → ℤˣ),
+        θ ((stdSpace E X').hom (stdSpace E X'')) (twistedPairWeil (rankTwist b) (r, g) f') *
+          ∫ x : G E (1 : X → ℤˣ),
+            θ ((stdSpace E X).hom (stdSpace E X')) (twistedPairWeil (rankTwist a) (x, r) f) *
+              algFormCoeff 1 t φ x ∂(stdSpace E X).quotMeasure
+      ∂(stdSpace E X').quotMeasure := by
+  rw [← integral_prod_algFormCoeff_mul_theta_tripleWeil,
+    integral_prod_symm _ (integrable_algFormCoeff_mul_theta_tripleWeil a b t φ g _),
+    ← integral_const_mul]
+  refine integral_congr_ae (.of_forall fun r ↦ ?_)
+  simp only [← integral_const_mul]
+  refine integral_congr_ae (.of_forall fun x ↦ ?_)
+  -- the theta kernel of the joined datum is `z` times the product of the two theta kernels
+  simp only [← arrowProduct_twistedPairWeil, hθ]
+  ring
+
+/-- Let the families `k`, `k'` compute the theta lifts of algebraic forms from `X` to `X'` and from
+`X'` to `X''` (`New.Space.IsThetaLift`) for the characters `rankTwist (a o)` and `rankTwist (b o)`.
+For polynomials `P` on `Hom(X, X')` and `Q` on `Hom(X', X'')` and every linear form `t` there is a
+linear form `t''` with the following property for all `o`, finite data `Φ`, `Φ'`, forms `φ` and
+points `g` of U(X''). Join `P ⊗ Φ` and `Q ⊗ Φ'` by `New.Seesaw.arrowProduct`, and move the result by
+`(x, r, g)` under `tripleWeil (a o) (b o)`. Integrate its theta value over `r`, and then over `x`
+against the coefficient of `φ` at `t`. The result is the coefficient of `k' o Φ' (k o Φ φ)` at
+`t''`, taken at `g`. -/
+lemma exists_integral_theta_tripleWeil_arrowProduct_eq_lift_comp
+    {κ : NumberField.InfinitePlace E → ℕ → ℕ}
+    {e e' e'' : NumberField.InfinitePlace E → ℤ} {O : Type*}
+    {k : O → ↥((stdSpace E X).hom (stdSpace E X')).finitePart →ₗ[ℂ]
+      ↥(AlgForm X κ e) →ₗ[ℂ] ↥(AlgForm X' κ e')}
+    {k' : O → ↥((stdSpace E X').hom (stdSpace E X'')).finitePart →ₗ[ℂ]
+      ↥(AlgForm X' κ e') →ₗ[ℂ] ↥(AlgForm X'' κ e'')}
+    {a b : O → AutChar E} (hk : IsThetaLift κ e e' (fun o : O ↦ rankTwist (a o)) k)
+    (hk' : IsThetaLift κ e' e'' (fun o : O ↦ rankTwist (b o)) k')
+    (P : MvPolynomial (NumberField.InfinitePlace E × X' × X) ℂ)
+    (Q : MvPolynomial (NumberField.InfinitePlace E × X'' × X') ℂ)
+    (t : (WeylIndex X κ → ℂ) →ₗ[ℂ] ℂ) :
+    ∃ t'' : (WeylIndex X'' κ → ℂ) →ₗ[ℂ] ℂ, ∀ (o : O)
+      (Φ : ↥((stdSpace E X).hom (stdSpace E X')).finitePart)
+      (Φ' : ↥((stdSpace E X').hom (stdSpace E X'')).finitePart)
+      (φ : ↥(AlgForm X κ e)) (g : G E (1 : X'' → ℤˣ)),
+      ∫ x : G E (1 : X → ℤˣ), algFormCoeff 1 t φ x *
+          ∫ r : G E (1 : X' → ℤˣ),
+            θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))
+              (tripleWeil (a o) (b o) (x, r, g)
+                (arrowProduct
+                  (integrated ((stdSpace E X).hom (stdSpace E X'))
+                    (polyVector (realSigns E (homSigns (1 : X → ℤˣ) (1 : X' → ℤˣ))) P) Φ)
+                  (integrated ((stdSpace E X').hom (stdSpace E X''))
+                    (polyVector (realSigns E (homSigns (1 : X' → ℤˣ) (1 : X'' → ℤˣ))) Q) Φ')))
+            ∂(stdSpace E X').quotMeasure
+        ∂(stdSpace E X).quotMeasure =
+      algFormCoeff 1 t'' (k' o Φ' (k o Φ φ)) g := by
+  -- In the other order of integration the inner integral is the lift by `k` of `P ⊗ Φ`, and the
+  -- outer one the lift by `k'` of `z Q ⊗ Φ'`, for the constant `z` of `theta_arrowProduct`.
+  obtain ⟨z, -, hz⟩ := theta_arrowProduct (stdSpace E X) (stdSpace E X') (stdSpace E X'')
+  obtain ⟨t', ht'⟩ := hk P t
+  obtain ⟨t'', ht''⟩ := hk' (z • Q) t'
+  refine ⟨t'', fun o Φ Φ' φ g ↦ ?_⟩
+  rw [integral_theta_tripleWeil_arrowProduct hz, ← ht'']
+  simp only [← ht', map_smul, _root_.smul_apply, smul_eq_mul, mul_assoc, integral_const_mul]
+
 /-- Write U(X) for the adelic unitary group of the standard definite space `stdSpace E X`, and
 `flipSum` for the sum X⁻ ⊕ X'' of X with its form negated and X''. Let the families `k`, `k'`
 compute the theta lifts of algebraic forms from `X` to `X'` and from `X'` to `X''` (`IsThetaLift`)
@@ -220,29 +344,16 @@ lemma integral_theta_tripleWeil_eq_lift_comp {κ : NumberField.InfinitePlace E �
   -- and the family of integrals `J u` is continuous in `u`. So it suffices to take for `u` a Fock
   -- polynomial, a sum of products `P Q`, and then the double integral is an iterated theta lift.
   intro L
-  obtain ⟨z, -, hz⟩ := theta_arrowProduct (stdSpace E X) (stdSpace E X') (stdSpace E X'')
-  let F (o : O) (φ : AlgForm X κ e) (g : G E (1 : X'' → ℤˣ))
-      (x : G E (1 : X → ℤˣ) × G E (1 : X' → ℤˣ)) :
-      𝒮 ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X''))) →L[ℂ] ℂ :=
-    algFormCoeff 1 t φ x.1 •
-      θ ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X''))) ∘L
-        tripleWeil (V'' := stdSpace E X'') (a o) (b o) (x.1, x.2, g)
-  have hF {o : O} {φ : AlgForm X κ e} {g : G E (1 : X'' → ℤˣ)}
-      (f : 𝒮 ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X'')))) :
-      Integrable (F o φ g · f) ((stdSpace E X).quotMeasure.prod (stdSpace E X').quotMeasure) :=
-    integrable_algFormCoeff_mul_theta_tripleWeil (a o) (b o) t φ g f
+  -- `A o φ g` is the double integral of the claim, a continuous linear functional of the datum.
+  choose A hA using fun (o : O) (φ : AlgForm X κ e) (g : G E (1 : X'' → ℤˣ)) ↦
+    exists_continuousLinearMap_apply_eq_integral_theta_tripleWeil (X' := X') (a o) (b o) t φ g
   let J (u : Heisenberg.IsVacuum.Model (realHeisenberg (realSigns E
         (homSigns (1 : X' → ℤˣ) (-(1 : X → ℤˣ) ⊕ᵥ (1 : X'' → ℤˣ)))))) (o : O)
       (y : TensorProduct ℂ ↥((stdSpace E X).hom (stdSpace E X')).finitePart
         ↥((stdSpace E X').hom (stdSpace E X'')).finitePart)
       (φ : AlgForm X κ e) (g : G E (1 : X'' → ℤˣ)) : ℂ :=
-    strongIntegral ((stdSpace E X).quotMeasure.prod (stdSpace E X').quotMeasure) (F o φ g)
+    A o φ g
       (integrated ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X''))) u (arrowTensor y))
-  have hJ (u) (o : O) (y) (φ : AlgForm X κ e) (g : G E (1 : X'' → ℤˣ)) : J u o y φ g =
-      ∫ x : G E (1 : X → ℤˣ) × G E (1 : X' → ℤˣ), F o φ g x
-        (integrated ((stdSpace E X').hom (flipSum (stdSpace E X) (stdSpace E X''))) u
-          (arrowTensor y)) ∂(stdSpace E X).quotMeasure.prod (stdSpace E X').quotMeasure := by
-    simp [J, strongIntegral_apply, hF]
   -- `Λ t''` is the family on the right side of the claim, a linear function of `t''`.
   let Λ := IsLinearMap.mk' (R := ℂ)
     (fun (t'' : (WeylIndex X'' κ → ℂ) →ₗ[ℂ] ℂ) (o : O) y (φ : AlgForm X κ e) ↦
@@ -251,11 +362,10 @@ lemma integral_theta_tripleWeil_eq_lift_comp {κ : NumberField.InfinitePlace E �
   suffices h_mem : ∀ u, J u ∈ Λ.range by
     obtain ⟨t'', ht''⟩ := h_mem u
     refine ⟨t'', fun o y φ g ↦ ?_⟩
-    have h_eq : J u o y φ g = algFormCoeff 1 t'' (L o y φ) g := by
-      rw [← ht'']
-      rfl
-    rw [← h_eq, hJ, integral_prod _ (hF _)]
-    simp [F, integral_const_mul]
+    rw [← hA]
+    change J u o y φ g = _
+    rw [← ht'']
+    rfl
   refine isClosed_property denseRange_polyVector
     (Λ.range.isClosed_of_finiteDimensional.preimage_of_continuous (f := J)) fun R ↦ ?_
   -- `R` is a sum of products of a polynomial on `Hom(X, X')` and one on `Hom(X', X'')`.
@@ -275,25 +385,16 @@ lemma integral_theta_tripleWeil_eq_lift_comp {κ : NumberField.InfinitePlace E �
   refine Submodule.mul_induction_on hR ?_ fun P₁ P₂ h₁ h₂ ↦ by
     simpa only [Set.mem_preimage, SetLike.mem_coe, map_add, h_add] using add_mem h₁ h₂
   rintro _ ⟨P, rfl⟩ _ ⟨Q, rfl⟩
-  obtain ⟨t', ht'⟩ := hk P t
-  obtain ⟨t'', ht''⟩ := hk' (z • Q) t'
+  obtain ⟨t'', ht''⟩ := exists_integral_theta_tripleWeil_arrowProduct_eq_lift_comp hk hk' P Q t
   use t''
   ext o y φ g
   change algFormCoeff 1 t'' (L o y φ) g = _
   induction y with
   | tmul Φ Φ' =>
-    -- Unfold the left side by `ht''` and `ht'`: both sides are iterated integrals, and by `hz`
-    -- the kernel of `P Q` is `z` times the product of the two theta kernels.
+    -- by `arrowProduct_integrated_polyVector` the datum is the join of `P ⊗ Φ` and `Q ⊗ Φ'`
     have h_lift : L o (Φ ⊗ₜ Φ') φ = k' o Φ' (k o Φ φ) := by simp [L]
-    rw [h_lift, ← ht'', hJ, integral_prod_symm _ (hF _)]
-    refine integral_congr_ae (.of_forall fun r ↦ ?_)
-    simp only [← ht', ← integral_const_mul]
-    refine integral_congr_ae (.of_forall fun x ↦ ?_)
-    simp only [F, map_smul, smul_eq_mul, mul_assoc, _root_.smul_apply,
-      ContinuousLinearMap.comp_apply]
-    have h_reorder (θQ θP c : ℂ) : z * (θQ * (θP * c)) = c * (z * (θP * θQ)) := by ring
-    rw [h_reorder, ← hz, arrowProduct_twistedPairWeil, arrowProduct_integrated_polyVector]
-    rfl
+    rw [h_lift, ← ht'', arrowProduct_integrated_polyVector]
+    exact (hA o φ g _).symm
   | add y y' ih ih' =>
     rw [map_add, LinearMap.add_apply, map_add, Pi.add_apply, ih, ih']
     simp [J]
