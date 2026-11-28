@@ -596,7 +596,7 @@ section EdgePair
 
 open Matrix Kronecker Space Fintype Function Exchange Grading Splitting
 
-variable {E ι ι' ι'' X X' X'' X₀ q : Type} [Field E] [CMType E] [WeilData E] [Fintype ι]
+variable {E ι ι' ι'' X X' X'' X₀ q : Type} [Field E] [CMType E] [Fintype ι]
   [DecidableEq ι] [Fintype ι'] [DecidableEq ι'] [Fintype ι''] [DecidableEq ι''] [Fintype X]
   [DecidableEq X] [Fintype X'] [DecidableEq X'] [Fintype X''] [DecidableEq X''] [Fintype X₀]
   [DecidableEq X₀] [Fintype q] [DecidableEq q] {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {ε'' : ι'' → ℤˣ}
@@ -620,7 +620,6 @@ structure GradeZeroPart (wt : ι → ℤ) where
   /-- The Gram matrix of `V` pairs two basis vectors only if their grades add up to zero. -/
   grade_add_eq_zero (a b : ι) : V.J a b ≠ 0 → wt a + wt b = 0
 
-omit [WeilData E] in
 /-- In rational coordinates, a pair of unitary points acts on `V ⊕ V'` by a block diagonal
 matrix. -/
 lemma ratCoordMatrix_sum (g : G E ε × G E ε') :
@@ -629,10 +628,6 @@ lemma ratCoordMatrix_sum (g : G E ε × G E ε') :
   simp [ratCoordMatrix_eq, sum, blockGL, fromBlocks_multiply]
 
 variable {w : ι → ℤ} (X'' q)
-
-section
-
-omit [WeilData E]
 
 /-- The Gram matrix of `V` vanishes at two indices whose weights are not opposite. -/
 lemma GradeZeroPart.J_eq_zero_of_add_ne_zero (Z : GradeZeroPart V V'' w) {a b : ι}
@@ -669,8 +664,6 @@ lemma GradeZeroPart.card_pos_eq_card_neg (Z : GradeZeroPart V V'' w) :
     trace P = trace (P * V.J * V.J⁻¹) := by simp [Matrix.mul_assoc]
     _ = trace Q := by simp [show P * V.J = V.J * Q from Z.proj_pos_mul_J, trace_mul_comm _ V.J⁻¹]
   simpa [hP, hQ, card_subtype] using h_trace
-
-end
 
 /-- The splitting of `V` over its weight-zero part `V''` whose isotropic frame `k` consists of the
 basis vectors of positive weight; `inclMatrix E u` has the basis vectors `e_{u j}` as columns. -/
@@ -734,12 +727,12 @@ def GradeZeroPart.hom (Z : GradeZeroPart V V'' w) (hs' : Even s') (hw : ∀ i : 
 def stackedStringMap : Matrix (ι ⊕ ι'') ι' (𝔸 E) :=
   fromRows (V.formAdjoint V' (Y.stringMap Y')) (Y'.stringMap Y'')
 
+variable [WeilData E] in
 /-- The finite part of `New.Seesaw.stackedStringMap`, in the frame coordinates of Hom(V', V⁻ ⊕ V''),
 multiplied by α⁻¹. -/
 def stackedStringMapFin : (ι ⊕ ι'') × ι' → 𝔸f E :=
   finCoord (V'.homAtPoint (flipSum V V'') (stackedStringMap Y Y' Y''))
 
-omit [WeilData E] in
 /-- The map `Y.stringMap Y'` kills `X` and has image in the string, so the groups of `X`, `X'` fix
 it. -/
 lemma inclX_mul_stringMap_mul_inclX_inv (g : G E (1 : X → ℤˣ)) (g' : G E (1 : X' → ℤˣ)) :
@@ -760,6 +753,8 @@ structure HasConsecutiveStrings (Y : Grading V N X s) (Y' : Grading V' N X' s')
   length_last : s'' = s' - 1
   /-- The gradings `Y` and `Y'` have the same constant for the generic character. -/
   c_eq : Y'.genericConst = Y.genericConst
+
+variable [WeilData E]
 
 /-- Data for two consecutive lifts Y → Y' → Y'' with consecutive strings
 (`New.Seesaw.HasConsecutiveStrings`) and `card ι + card ι''` even. It identifies the grade-zero part

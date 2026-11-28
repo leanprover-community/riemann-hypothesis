@@ -49,7 +49,7 @@ namespace New
 open Seesaw Space WeilData
 
 variable {E X X' ι ι' : Type} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype ι']
-  [DecidableEq ι'] [Fintype X] [DecidableEq X] [DecidableEq X']
+  [DecidableEq ι'] [DecidableEq X] [DecidableEq X']
   {ε : ι → ℤˣ} {ε' : ι' → ℤˣ} {s : ℕ} {N : E} {V : Space E ι ε} {V' : Space E ι' ε'}
   {Y : Grading V N X s} {Y' : Grading V' N X' (s - 1)}
 
@@ -71,7 +71,6 @@ lemma Space.Splitting.conjTranspose_isotropicBasisFin {p : Type} [Fintype p] [De
 
 namespace Grading
 
-omit [Fintype X] in
 /-- Let the bases of `V` and `V'` carry the integer grades `Y.gradeOf` and `Y'.gradeOf`, and let `W`
 map a lattice `L` into a lattice `L'`, both graded. Then the part `T` of `W` of degree `e`, whose
 entry `(p, q)` is that of `W` if the grade of `p` is that of `q` plus `e` and is `0` otherwise, also
@@ -92,7 +91,6 @@ lemma IsGraded.mulVec_mem_of_homogeneous {L : Submodule (Ô E) (ι → 𝔸f E)}
   rw [h_sum]
   exact L'.sum_mem fun d _ ↦ hL' (d + e) _ (hW _ (hL d y hy))
 
-omit [Fintype X] in
 /-- The shift `Y.stringMap Y'` from the string of basis vectors of `V` to that of `V'` is
 homogeneous of degree `-1`: its entry `(p, q)` vanishes unless the grade of `p` is one less than
 that of `q`. -/
@@ -107,7 +105,6 @@ lemma stringMap_eq_zero_of_gradeOf_ne {p : ι'} {q : ι} (h_grade : Y'.gradeOf p
     omega
   simp [stringMap, h_ne]
 
-omit [Fintype X] in
 /-- The finite part `Y.stringMapFin Y'` of the shift between the strings kills the block `X`, so it
 does not change under composition with the projection `Y.stringProj` to the span `X^⊥` of the string
 of `V`. -/
@@ -119,7 +116,6 @@ lemma stringMapFin_stringProj [Finite X] (y : ι → 𝔸f E) :
     obtain ⟨b | b, rfl⟩ := Y'.indexEquiv.surjective p <;> simp [stringMap]
   simp [stringMapFin, mulVec, dotProduct, reindex_equiv Y.indexEquiv, stringProj_apply_inr, h_inl]
 
-omit [Fintype X] in
 /-- The finite part `Y.stringMapFin Y'` of the shift between the strings takes its values in the
 span `X'^⊥` of the string of `V'`, so they are fixed by the projection `Y'.stringProj` to it. -/
 lemma stringProj_stringMapFin [Finite X] (y : ι → 𝔸f E) :
@@ -128,7 +124,6 @@ lemma stringProj_stringMapFin [Finite X] (y : ι → 𝔸f E) :
   simp [stringProj_eq_self_iff, stringMapFin, stringMap, mulVec, dotProduct,
     reindex_equiv Y.indexEquiv]
 
-omit [Fintype X] in
 /-- Let `r` be a finite point of the Bessel group of the grading `Y` of `V`, that is, `r` fixes each
 string vector of grade `≥ 0` up to vectors of higher grade. Then the matrix of `r` in rational
 coordinates does not lower grades. -/
@@ -140,7 +135,6 @@ lemma hasDegreeGe_zero_ratCoordMatrixFin [Finite X] {r : Gf E ι} (hr : r ∈ Y.
   simpa [ratCoordMatrix_inr] using
     congrArg Prod.snd (Y.hasDegreeGe_zero_of_mem_besselGroup h_mem p q h)
 
-omit [Fintype X] in
 /-- The Bessel group of a grading fixes each string vector of grade `≥ 0` up to vectors of higher
 grade. If `W` agrees with `c` times the finite part of the shift up to a matrix that does not lower
 grades, then so does `r' W r`, read in rational coordinates. Here `r ∈ Y.besselFin` and
@@ -172,7 +166,6 @@ lemma hasDegreeGe_zero_mul_mul_sub [Finite X] [Finite X'] {W : Matrix ι' ι (�
 
 variable [WeilData E]
 
-omit [Fintype X] in
 /-- Let `D` be a Witt decomposition of `Hom (V, V')` with isotropic basis `D.k` indexed by the
 entries of positive degree and with complement `V₀`. The zero term
 `D.zeroTerm : 𝒮 (Hom (V, V')) → 𝒮 V₀` averages theta functions along `D.k`, and `zeroTermFin D F` is
@@ -234,7 +227,6 @@ lemma xFin_mulVec_finCoord_homAtPoint_sub {x : G E ε} {x' : G E ε'} (M : Matri
   -- `coe_units_inv` would turn the inverse units into matrix inverses and hide the cancellations.
   simp [matrixToVec, Matrix.mul_assoc, -coe_units_inv, h_cancel]
 
-omit [Fintype X] in
 /-- Let `t` be a vector of the real Fock space of `Hom (V, V')`, let `f ∈ 𝒮 (V.hom V')` and
 `t ⊗ f = (V.hom V').integrated t f`. Translate `t ⊗ f` by adelic points `(x, x')` of `U(V) × U(V')`
 in the Weil representation twisted by the characters `μ ι`, `μ ι'` of `[U(1)]`. Let the constant
@@ -304,7 +296,6 @@ lemma exists_mapsTo_lattice_hasDegreeGe_sub_smul_stringMap [Finite X] [Finite X'
         simp [div_eq_mul_inv, mul_assoc]
       _ = 0 := by simp [h_entry, ← mul_assoc, ← star_mul]
 
-omit [Fintype X] in
 /-- The gradings `Y`, `Y'` split the bases of the Hermitian spaces `V`, `V'` (of signs `ε`, `ε'` at
 the infinite places) into blocks `X`, `X'` of grade `0` and strings of `s` and `s - 1` vectors,
 which span `X^⊥` and `X'^⊥`. The shift `sh = Y.stringMap Y'`, with finite part `Y.stringMapFin Y'`,

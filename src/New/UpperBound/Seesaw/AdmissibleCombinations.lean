@@ -289,9 +289,8 @@ lemma isHermitian_map_gradedGram_natCast (e : (X ⊕ Unit) ⊕ Fin s ≃ ι) {S 
     if b = c.rev then (if b = c then -(N : R) else 1) else 0
   simp only [h_rev, h_eq, apply_ite star, star_neg, star_natCast, star_one, star_zero]
 
-variable [Fintype X] [Fintype ι]
+variable [Fintype ι]
 
-omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`. Let `J = New.gradedGram e N` be the
 form that is the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to
 `-N` if they are equal, carried from `S` to the star ring `R` by `f`; write `π̄ = star π` and
@@ -449,7 +448,6 @@ lemma gram_gradedLatticeBasis_eq_gluedGram
 
 variable [DecidableEq ι]
 
-omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`. Let `J = New.gradedGram e N` be the
 form that is the identity on `X ⊕ Unit` and pairs string vectors `b` and `s - 1 - b` to `1`, or to
 `-N` if they are equal, carried from `S` to the star ring `R` by `f`. For units `a`, `π` and a
@@ -664,7 +662,6 @@ lemma conjTranspose_stringFrame_one_mul_self : (stringFrame s 1)ᴴ * stringFram
           have h2 : a.rev ≠ b.rev := fun h ↦ hab (Fin.rev_inj.mp h)
           simp only [h_col b hb, hab, har, h1, h2, ↓reduceIte, mul_zero, add_zero]
 
-omit [Fintype X] in
 /-- Let `e` index `X ⊕ Unit` and a string of `s` vectors by `ι`, and let `N` be a positive integer.
 Let `J` be the image under `φ` of `New.gradedGram e N`, the form that is the identity on `X ⊕ Unit`
 and pairs string vectors `b` and `s - 1 - b` to `1`, or to `-N` if they are equal. If exactly
