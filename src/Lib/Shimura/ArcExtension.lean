@@ -411,6 +411,113 @@ private lemma exists_isTranslationLift_top_of_dualLattice :
         (⊤ : Submodule O (N.H0 O)) ≤ (⊤ : Submodule O (N.H0 O)).comap Φ :=
   fun a ha ↦ (h_tors_lift a ha).right.imp fun _ hΦ ↦ ⟨hΦ, le_top⟩
 
+omit hn h_tors_lift in
+/-- Let `π : A' ⟶ A` send `s' z` to `u.expMap z`, let the theta coordinates `f` of `M` along `s'`
+have the same type `(B, χ)` as those of `N`, and let `ν^* π^* N ⊗ M ^ m` and `ν^* M ⊗ (π^* N) ^ m`
+have the same class, where `ν` is multiplication by `n` on `A'` and `m ≠ 0`. Let `Γ` be a reduced
+scheme over `A'` (by `p`) in which complex points `P z` over the points `s' z` are dense, and let
+sections `r j` of `N` have the value `γ * f z j / θ z i` at `u.expMap z` in each chart `i`. If all
+`r j` vanish at the image in `A` of a field-valued point `ζ` of `Γ`, they vanish at its translate by
+`u.expMap z₀` whenever `n • z₀ ∈ u.lattice`. -/
+private lemma val_comp_translation_eq_zero_of_val_eq_zero (π : A' ⟶ A) [IsAdditive π]
+    {f : V → κ → ℂ} {ν : A'.left ⟶ A'.left} {m : ℕ} (hm0 : m ≠ 0)
+    (h_lift : ∀ z : V, s' z ≫ π = u.expMap z)
+    (hf : HasThetaCoords u.lattice (atGeneric s') M B χ f) (hν_def : (n • 𝟙 A').left = ν)
+    (h_cls :
+      (((N.pull π.left).pull ν).mul (M.pow m)).picClass =
+        ((M.pull ν).mul ((N.pull π.left).pow m)).picClass)
+    {Γ : Scheme} {p : Γ ⟶ A'.left} {P : V → (Spec (.of ℂ) ⟶ Γ)}
+    (hP : ∀ z, P z ≫ p = atGeneric s' z) (hΓ : IsSeparatingFamily P) {γ : ℂ} {r : κ → N.H0 O}
+    (hr : ∀ (j : κ) (i : ι) (z : V), θ z i ≠ 0 →
+      (r j).val i (.of ℂ) (atGeneric u.expMap z) = γ * f z j / θ z i)
+    {z₀ : V} (h_tors : n • z₀ ∈ u.lattice) {K : Type} [Field K] (ζ : Spec (.of K) ⟶ Γ) {i : ι}
+    (hi : LandsIn (ζ ≫ p ≫ π.left) (N.opens i))
+    (h_zero : ∀ j : κ, (r j).val i (.of K) (ζ ≫ p ≫ π.left) = 0) (j : κ) (a : ι) :
+    (r j).val a (.of K) ((ζ ≫ p ≫ π.left) ≫ (translation (u.expMap z₀)).left) = 0 := by
+  wlog ha : LandsIn ((ζ ≫ p ≫ π.left) ≫ (translation (u.expMap z₀)).left) (N.opens a)
+  · exact LineBundle.H0.val_eq_zero_of_not_landsIn (r j) a _ _ ha
+  have hν (z : V) : atGeneric s' ((n : V →L[ℂ] V) z) = atGeneric s' z ≫ ν := by
+    simp [atGeneric, ← hν_def, comp_nsmul, ← comp_left]
+  have hπ (z : V) : atGeneric u.expMap z = atGeneric s' z ≫ π.left := by simp [atGeneric, ← h_lift]
+  -- `w` is a frame of the quotient of the two bundles in `h_cls`: an isomorphism between them.
+  obtain ⟨w, hw⟩ := picClass_eq_iff.mp h_cls
+  -- Both sides of `h_cls` have theta coordinates along `s'`, so `w` at `s' z` is a constant `c`
+  -- times their quotient `f (n • z) θ(z) ^ m / (θ (n • z) f(z) ^ m)` (`hw_val`).
+  have hθ := h.pull 1 hπ fun _ ↦ id
+  have hn_mem (l) (hl : l ∈ u.lattice) : (n : V →L[ℂ] V) l ∈ u.lattice := by
+    simpa only [ContinuousLinearMap.natCast_apply, nsmul_eq_mul] using nsmul_mem hl n
+  obtain ⟨-, -, c, hw_val⟩ :=
+    ((hθ.pull _ hν hn_mem).mul (hf.pow _)).riemannForm_eq_of_isFrame
+      ((hf.pull _ hν hn_mem).mul (hθ.pow _)) hw (hf.holomorphicAt hM)
+      fun l hl ↦ atGeneric_add_of_map_eq_zero s' (hs' l hl)
+  -- `T` is the translation by `s' z₀`; `T ≫ ν = ν` because `n • z₀` lies in the lattice.
+  let T : A'.left ⟶ A'.left := (translation (s' z₀)).left
+  have hTν : T ≫ ν = ν := by
+    simp [T, ← hν_def, ← comp_nsmul _, ← map_nsmul, hs' _ h_tors, ← comp_left, comp_nsmul]
+  have hT (x : V) : atGeneric s' x ≫ T = atGeneric s' (x + z₀) := by
+    simp [T, atGeneric, ← comp_left, comp_add]
+  have hTπ : π.left ≫ (translation (u.expMap z₀)).left = T ≫ π.left := by
+    simp [T, h_lift, ← comp_left, comp_add, add_comp]
+  let Q := M.mul (N.pull π.left)
+  obtain ⟨⟨b, b₁, b', i'⟩, hb⟩ := (M.mul ((M.pull T).mul (Q.pull ν))).exists_landsIn (ζ ≫ p)
+  have hr_reg (j : κ) := (LineBundle.H0.isSection_val (r j)).left
+  have hw_unit (x) := hw.isUnit_apply x (.of K)
+  obtain ⟨h_lin, h_ah, h_mem, h_lifts⟩ := hf
+  have hM_reg (i j : κ) : (M.transition i j).IsRegularOn (M.opens i) :=
+    h_lin.isRegularOn_transition i j
+  -- At `s' z` the function `φ b i j` is `(f j / f b) ^ m` times a factor that depends only on
+  -- `n • z` modulo the lattice; this factor is invariant under `T`. This gives `key` at the
+  -- points `P z`, hence on `Γ`.
+  let φ (b : κ) (i : ι) (j : κ) : PointFn A'.left :=
+    w ((i', fun _ ↦ b), b', fun _ ↦ i) * ((r j).val i ^ m).pull π.left
+  simp [IsFrame, IsSection, IsRegularOn, pow, landsIn_iInf] at hw
+  simp only [IsRegularOn] at hr_reg hM_reg
+  simp only [pow, mul_opens, pull_opens, pi_opens, inv_opens, landsIn_inf, landsIn_preimage,
+    assoc, landsIn_iInf, isUnit_iff_ne_zero] at hw_unit
+  simp only [IsHomogeneousCoords, isUnit_iff_ne_zero, ne_eq, Ring.inverse_eq_inv'] at h_lifts
+  simp only [assoc, hTπ] at ha
+  simp only [mul_opens, pull_opens, landsIn_inf, landsIn_preimage, assoc, Q] at hb
+  have key : (φ b i b * (M.transition b₁ j ^ m).pull T).pull p _ ζ =
+      (φ b₁ a j).pull (p ≫ T) _ ζ := by
+    -- Both sides are regular on the open `U` of `Γ` and agree at the `P z` in it; `ζ` is in `U`.
+    refine hΓ.pointFn_ext
+      (U := p ⁻¹ᵁ (Q.opens (b, i) ⊓ T ⁻¹ᵁ Q.opens (b₁, a) ⊓ ν ⁻¹ᵁ Q.opens (b', i'))) ?_ ?_ ?_ _ ζ
+      (by simp [Q, hi, ha, hb])
+    · simp +contextual [Q, φ, hw, hr_reg, hM_reg, IsRegularOn]
+    · simp +contextual [Q, φ, hw, hr_reg, hTν, reassoc_of% hTν, IsRegularOn]
+    · simp +contextual [Q, φ, hw_val, hr, ← assoc, hP, hT, ← hν, h.hasFieldCoords .., h_lifts,
+        ← hπ, (h.mem_thetaSpace _).2, (h_mem _).2, h_tors, h_ah.ne_zero,
+        mul_pow, div_pow, field]
+  -- At `ζ` the left side vanishes, and the right side is a unit times a power of `r j`.
+  simpa [φ, hw_unit, h_zero, ha, hb, hi, hm0, hTπ, hTν, reassoc_of% hTν] using key
+
+omit hs' hn h_tors_lift [IsPosRiemann B] [Finite ι] in
+/-- Let sections `r j` of `N` have the value `γ * f z j / θ z i` at `u.expMap z` in each chart `i`,
+where `γ ≠ 0` and `f z` are homogeneous coordinates of `s' z` for `M`. If the `r j` have no common
+zero after pull-back along a surjective `g : Y ⟶ A`, they define a morphism `e : A ⟶ A'` that sends
+`u.expMap z` to `s' z` and satisfies `[e^* M] = [N]`. -/
+lemma exists_map_of_sections {f : V → κ → ℂ}
+    (hf : ∀ z : V, M.IsHomogeneousCoords (atGeneric s' z) (f z)) {Y : Scheme} (g : Y ⟶ A.left)
+    [AlgebraicGeometry.Surjective g] {γ : ℂ} (hγ : γ ≠ 0) {r : κ → N.H0 O}
+    (hr : ∀ (j : κ) (i : ι) (z : V), θ z i ≠ 0 →
+      (r j).val i (.of ℂ) (atGeneric u.expMap z) = γ * f z j / θ z i)
+    (h_nonzero : ∀ (i : ι) (K : Type) [Field K] (t : Spec (.of K) ⟶ Y),
+      LandsIn (t ≫ g) (N.opens i) → ∃ j : κ, (r j).val i (.of K) (t ≫ g) ≠ 0) :
+    ∃ e : A ⟶ A', (∀ z : V, u.expMap z ≫ e = s' z) ∧ (M.pull e.left).picClass = N.picClass := by
+  -- The `r j` give a map `W` to projective space that pulls the hyperplane class back to `N`.
+  obtain ⟨W, hW_cls, hW⟩ :=
+    exists_picClass_eq_pull_hyperplane g (fun j ↦ LineBundle.H0.isSection_val (r j)) h_nonzero
+  have h_lifts (z : V) :
+      ((ProjSpace.hyperplaneBundle κ).pull W).IsHomogeneousCoords (atGeneric u.expMap z) (f z) := by
+    obtain ⟨i, hi⟩ := (h.hasFieldCoords z).exists_ne_zero
+    simpa [IsHomogeneousCoords, hr, hγ, hi, field] using hW i _ _
+      ((h.hasFieldCoords ..).1.2 hi.isUnit)
+  -- `u.expMap z` and `s' z` have the same coordinates `f z`, and `M` is an embedding.
+  obtain ⟨e, he, heM⟩ :=
+    (isSeparatingFamily_atGeneric_of_surjective u.surjective).exists_map_of_coords
+      (ProjSpace.isLinearSystem_hyperplaneBundle.pull W) hM h_lifts hf
+  exact ⟨e, fun z ↦ bijective_restrict_genericPt.injective (he z), by rw [heM, hW_cls]⟩
+
 /-- Assume the standing hypotheses from the section head (`h`, `IsPosRiemann B`, unit `n` with
 `h_tors_lift`, `s'` killing `u.lattice`, `A'` proper, `hM`). Let `π : A' ⟶ A` be a homomorphism that
 sends `s' z` to `u.expMap z`. Let the theta coordinates `f` of `M` along `s'` have the same type
@@ -433,13 +540,9 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
   -- The coordinates `f` of `M`, scaled by `γ`, are sections `r j` of `N`. If they have no common
   -- zero, they define a linear system on `A` that agrees with `M` on the points of the
   -- uniformisation, hence a map `e`. Common zeros are excluded on the closure `Γ` of the `s' z`.
-  have hν (z : V) : atGeneric s' ((n : V →L[ℂ] V) z) = atGeneric s' z ≫ ν := by
-    simp [atGeneric, ← hν_def, comp_nsmul, ← comp_left]
   have hπ (z : V) : atGeneric u.expMap z = atGeneric s' z ≫ π.left := by simp [atGeneric, ← h_lift]
   -- `n` is a unit of the domain `O`, so `m = n ^ 2` is not `0`
   have hm0 : m ≠ 0 := hm.symm.trans_ne (pow_ne_zero 2 fun h0 ↦ by simp [h0] at hn)
-  -- `w` is a frame of the quotient of the two bundles in `h_cls`: an isomorphism between them.
-  obtain ⟨w, hw⟩ := picClass_eq_iff.mp h_cls
   obtain ⟨Γ, p, P, _, hP, hΓ⟩ : ∃ (Γ : Scheme) (p : Γ ⟶ A'.left) (P : V → (Spec (.of ℂ) ⟶ Γ)),
       IsClosedImmersion p ∧ (∀ z, P z ≫ p = atGeneric s' z) ∧ IsSeparatingFamily P :=
     exists_reduced_closure _
@@ -457,83 +560,20 @@ lemma exists_section_of_hasThetaCoords (π : A' ⟶ A) [IsAdditive π] {f : V �
     exists_sections_of_translation_stable (N := ⊤) u h hn (fun a ha ↦ (h_tors_lift a ha).left)
       (exists_isTranslationLift_top_of_dualLattice u h_tors_lift) (by simp) hf.mem_thetaSpace
       i₀ hf_ne
-  -- Both sides of `h_cls` have theta coordinates along `s'`, so `w` at `s' z` is a constant `c`
-  -- times their quotient `f (n • z) θ(z) ^ m / (θ (n • z) f(z) ^ m)` (`hw_val`).
-  have hθ := h.pull 1 hπ fun _ ↦ id
-  have hn_mem (l) (hl : l ∈ u.lattice) : (n : V →L[ℂ] V) l ∈ u.lattice := by
-    simpa only [ContinuousLinearMap.natCast_apply, nsmul_eq_mul] using nsmul_mem hl n
-  obtain ⟨-, -, c, hw_val⟩ :=
-    ((hθ.pull _ hν hn_mem).mul (hf.pow _)).riemannForm_eq_of_isFrame
-      ((hf.pull _ hν hn_mem).mul (hθ.pow _)) hw (hf.holomorphicAt hM)
-      fun l hl ↦ atGeneric_add_of_map_eq_zero s' (hs' l hl)
   have h_nonzero (i : ι) (K : Type) [Field K] (ζ : Spec (.of K) ⟶ Γ)
       (hi : LandsIn (ζ ≫ p ≫ π.left) (N.opens i)) :
       ∃ j : κ, (r j : N.H0 O).val i (.of K) (ζ ≫ p ≫ π.left) ≠ 0 := by
     -- If all `r j` vanish at `ζ`, they vanish on its orbit, which `h_orbit` forbids.
-    by_contra h_zero
+    by_contra! h_zero
     obtain ⟨z₀, hz₀, j, a, h_ne⟩ := h_orbit K (ζ ≫ p ≫ π.left)
-    refine h_ne ?_
-    wlog ha : LandsIn ((ζ ≫ p ≫ π.left) ≫ (translation (u.expMap z₀)).left) (N.opens a)
-    · exact LineBundle.H0.val_eq_zero_of_not_landsIn (r j : N.H0 O) a _ _ ha
-    -- `T` is the translation by `s' z₀`; `T ≫ ν = ν` because `n • z₀` lies in the lattice.
-    obtain ⟨h_tors, -⟩ := h_tors_lift z₀ hz₀
-    let T : A'.left ⟶ A'.left := (translation (s' z₀)).left
-    have hTν : T ≫ ν = ν := by
-      simp [T, ← hν_def, ← comp_nsmul _, ← map_nsmul, hs' _ h_tors, ← comp_left, comp_nsmul]
-    have hT (x : V) : atGeneric s' x ≫ T = atGeneric s' (x + z₀) := by
-      simp [T, atGeneric, ← comp_left, comp_add]
-    have hTπ : π.left ≫ (translation (u.expMap z₀)).left = T ≫ π.left := by
-      simp [T, h_lift, ← comp_left, comp_add, add_comp]
-    let Q := M.mul (N.pull π.left)
-    obtain ⟨⟨b, b₁, b', i'⟩, hb⟩ := (M.mul ((M.pull T).mul (Q.pull ν))).exists_landsIn (ζ ≫ p)
-    have hr_reg (j : κ) := (LineBundle.H0.isSection_val (r j : N.H0 O)).left
-    have hw_unit (x) := hw.isUnit_apply x (.of K)
-    obtain ⟨h_lin, h_ah, h_mem, h_lifts⟩ := hf
-    have hM_reg (i j : κ) : (M.transition i j).IsRegularOn (M.opens i) :=
-      h_lin.isRegularOn_transition i j
-    -- At `s' z` the function `φ b i j` is `(f j / f b) ^ m` times a factor that depends only on
-    -- `n • z` modulo the lattice; this factor is invariant under `T`. This gives `key` at the
-    -- points `P z`, hence on `Γ`.
-    let φ (b : κ) (i : ι) (j : κ) : PointFn A'.left :=
-      w ((i', fun _ ↦ b), b', fun _ ↦ i) * ((r j : N.H0 O).val i ^ m).pull π.left
-    simp [IsFrame, IsSection, IsRegularOn, pow, landsIn_iInf] at hw
-    simp only [IsRegularOn] at hr_reg hM_reg
-    simp only [pow, mul_opens, pull_opens, pi_opens, inv_opens, landsIn_inf, landsIn_preimage,
-      assoc, landsIn_iInf, isUnit_iff_ne_zero] at hw_unit
-    simp only [IsHomogeneousCoords, isUnit_iff_ne_zero, ne_eq, Ring.inverse_eq_inv'] at h_lifts
-    push Not at h_zero
-    simp only [assoc, hTπ] at ha
-    simp only [mul_opens, pull_opens, landsIn_inf, landsIn_preimage, assoc, Q] at hb
-    have key : (φ b i b * (M.transition b₁ j ^ m).pull T).pull p _ ζ =
-        (φ b₁ a j).pull (p ≫ T) _ ζ := by
-      -- Both sides are regular on the open `U` of `Γ` and agree at the `P z` in it; `ζ` is in `U`.
-      refine hΓ.pointFn_ext
-        (U := p ⁻¹ᵁ (Q.opens (b, i) ⊓ T ⁻¹ᵁ Q.opens (b₁, a) ⊓ ν ⁻¹ᵁ Q.opens (b', i'))) ?_ ?_ ?_ _ ζ
-        (by simp [Q, hi, ha, hb])
-      · simp +contextual [Q, φ, hw, hr_reg, hM_reg, IsRegularOn]
-      · simp +contextual [Q, φ, hw, hr_reg, hTν, reassoc_of% hTν, IsRegularOn]
-      · simp +contextual [Q, φ, hw_val, hr, ← assoc, hP, hT, ← hν, h.hasFieldCoords .., h_lifts,
-          ← hπ, (h.mem_thetaSpace _).2, (h_mem _).2, h_tors, h_ah.ne_zero,
-          mul_pow, div_pow, field]
-    -- At `ζ` the left side vanishes, and the right side is a unit times a power of `r j`.
-    simpa [φ, hw_unit, h_zero, ha, hb, hi, hm0, hTπ, hTν, reassoc_of% hTν] using key
-  -- The `r j` give a map `W` to projective space that pulls the hyperplane class back to `N`.
-  obtain ⟨W, hW_cls, hW⟩ :=
-    exists_picClass_eq_pull_hyperplane (p ≫ π.left)
-      (fun j ↦ LineBundle.H0.isSection_val (r j : N.H0 O)) h_nonzero
-  have h_lifts (z : V) :
-      ((ProjSpace.hyperplaneBundle κ).pull W).IsHomogeneousCoords (atGeneric u.expMap z) (f z) := by
-    obtain ⟨i, hi⟩ := (h.hasFieldCoords z).exists_ne_zero
-    simpa [IsHomogeneousCoords, hr, hγ, hi, field] using hW i _ _
-      ((h.hasFieldCoords ..).1.2 hi.isUnit)
-  -- `u.expMap z` and `s' z` have the same coordinates `f z`, and `M` is an embedding.
+    exact h_ne (val_comp_translation_eq_zero_of_val_eq_zero u h hs' hM π hm0 h_lift hf hν_def
+      h_cls hP hΓ hr (h_tors_lift z₀ hz₀).left ζ hi h_zero j a)
+  -- The `r j` define a map `e : A ⟶ A'` through the points `s' z` that pulls `M` back to `N`.
   obtain ⟨e, he, heM⟩ :=
-    hA.exists_map_of_coords (ProjSpace.isLinearSystem_hyperplaneBundle.pull W) hM h_lifts
-      hf.hasFieldCoords
-  have he' (z : V) : u.expMap z ≫ e = s' z := bijective_restrict_genericPt.injective (he z)
-  exact ⟨e, he', by rw [heM, hW_cls],
+    exists_map_of_sections u h hM hf.hasFieldCoords (p ≫ π.left) hγ hr h_nonzero
+  exact ⟨e, he, heM,
     hA.hom_ext fun z ↦ by
-      simp only [Category.assoc, reassoc_of% (he' z), h_lift, Category.comp_id]⟩
+      simp only [Category.assoc, reassoc_of% (he z), h_lift, Category.comp_id]⟩
 
 /-- Let `u` uniformise the abelian scheme `A` over `O`, and let `N` be a projective embedding of `A`
 with theta coordinates of type `(B, χ)` along `u`, where `B` is positive. Let `n` be a unit of `O`
