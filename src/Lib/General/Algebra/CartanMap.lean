@@ -3,6 +3,9 @@ module
 import Mathlib.CategoryTheory.Shift.Basic
 import Mathlib.GroupTheory.Nilpotent
 import Mathlib.RingTheory.Coalgebra.CoassocSimps
+import TauCeti.Algebra.Module.ZMod.Extend
+import TauCeti.RepresentationTheory.GrothendieckGroup.GroupAlgebra.Universal
+import TauCeti.RepresentationTheory.Induction.Artin.Spanning
 public import Lib.ClassField.GaloisCohomology.ContinuousCocycles
 
 /-!
@@ -34,8 +37,8 @@ Notions from other files:
 
 Known result: The Cartan map has finite cokernel. It is stated for multiplicative functions with
 nonnegative rational values on finite modules killed by a prime on which one element, central modulo
-the level, fixes no nonzero vector, with projectivity read as Higman's property. It is proved using
-functions on two parallel affine hyperplanes instead of Brauer characters or Artin induction.
+the level, fixes no nonzero vector, with projectivity read as Higman's property. The reduction
+uses modular Artin induction on a finite quotient.
 Source: J.-P. Serre, Linear Representations of Finite Groups (1977), Thm 35; for the route by
 induction from cyclic subgroups in the local Euler characteristic formula, Milne, Arithmetic Duality
 Theorems, I 2.10-2.12.
@@ -89,19 +92,21 @@ structure FiniteKilledFixedInj (n : ℕ) (Q : Subgroup G) (z : G) (m : ℕ) (A :
 section FiniteKilledFixedInj
 variable {n : ℕ} {Q : Subgroup G} {z : G} {m : ℕ}
 
+private lemma FiniteKilledFixedInj.of_injective {A B : DiscreteModule R G} (ι : A.Hom B)
+    (hι : Injective ι) (hB : B.FiniteKilledFixedInj n Q z m) : A.FiniteKilledFixedInj n Q z m := by
+  obtain ⟨h_fin, h_killed, h_triv, h_inj⟩ := hB
+  refine ⟨Finite.of_injective ι hι, fun a ↦ hι ?_, fun g hg a ↦ hι ?_, fun a b hab ↦ ?_⟩
+  · simp [h_killed]
+  · simp [ι.isIntertwining, h_triv g hg]
+  · refine hι (h_inj (?_ : (B.ρ z - m) (ι a) = (B.ρ z - m) (ι b)))
+    simpa [ι.isIntertwining] using congrArg ι hab
+
 /-- Being finite, killed by `n`, fixed by `Q` and with `ρ z - m` injective passes from the middle
 term `B` of a short exact sequence `0 → A → B → M → 0` to `A`. -/
 lemma FiniteKilledFixedInj.left_of_isShortExact {A B M : DiscreteModule R G} {ι : A.Hom B}
     {π : B.Hom M} (h_exact : IsShortExact ι π) (hB : B.FiniteKilledFixedInj n Q z m) :
-    A.FiniteKilledFixedInj n Q z m := by
-  -- test the properties of `A` after the injective `ι`
-  obtain ⟨h_fin, h_killed, h_triv, h_inj⟩ := hB
-  obtain ⟨ι_inj, -, -⟩ := h_exact
-  refine ⟨of_injective ι ι_inj, fun a ↦ ι_inj ?_, fun g hg a ↦ ι_inj ?_, fun a b hab ↦ ?_⟩
-  · simp [h_killed]
-  · simp [ι.isIntertwining, h_triv g hg]
-  · refine ι_inj (h_inj (?_ : (B.ρ z - m) (ι a) = (B.ρ z - m) (ι b)))
-    simpa [ι.isIntertwining] using congrArg ι hab
+    A.FiniteKilledFixedInj n Q z m :=
+  hB.of_injective ι h_exact.1
 
 /-- Being finite, killed by `n`, fixed by `Q` and with `ρ z - m` injective passes from the middle
 term `B` of a short exact sequence `0 → A → B → M → 0` to `M`. -/
@@ -292,167 +297,27 @@ lemma isHigmanProjective_diagonalPermModule [IsTopologicalGroup G] [CompactSpace
   have h_card_ne : (Nat.card S : ZMod l) ≠ 0 := by rwa [Ne, ZMod.natCast_eq_zero_iff]
   simp [-Nat.card_eq_fintype_card, ZMod.map_smul, ← sum_smul, ← sum_div, h_trace, h_card_ne]
 
-variable (R) in
-open scoped Classical in
-/-- Let `l` be prime, `U` open normal in the compact group `G`, and suppose every commutator
-`⁅z, g⁆` lies in `U`. Then there is a normal subgroup `S` of `G ⧸ U` with the following property.
-Let `A` be finite, killed by `l` and fixed by `U`, with `ρ z - 1` injective, and let `Y` be a finite
-`(G ⧸ U) ⧸ S`-set. Then the module of functions `Y → A` with the diagonal action of `G` has the
-same properties. It satisfies Higman's criterion relative to `U` if some `a : Y → ZMod l` has
-`∑ g, a (g⁻¹ • y) = 1` for every `y`, the sum running over `(G ⧸ U) ⧸ S`. -/
-lemma exists_diagonalPermModule_isHigmanProjective (l : ℕ) [Fact l.Prime] (U : OpenNormalSubgroup G)
-    {z : G} [IsTopologicalGroup G] [CompactSpace G] (hz_central : ∀ g : G, ⁅z, g⁆ ∈ U) :
-    ∃ (S : Subgroup (G ⧸ (U : Subgroup G))) (_hS : S.Normal),
-      ∀ {A : DiscreteModule R G}, A.FiniteKilledFixedInj l U z 1 →
-      ∀ (Y : Type) [Finite Y] [MulAction ((G ⧸ (U : Subgroup G)) ⧸ S) Y],
-        (A.diagonalPermModule U S Y).FiniteKilledFixedInj l U z 1 ∧
-        ∀ a : Y → ZMod l, (∀ y : Y, ∑ g : (G ⧸ (U : Subgroup G)) ⧸ S, a (g⁻¹ • y) = 1) →
-          (A.diagonalPermModule U S Y).IsHigmanProjective U := by
-  obtain ⟨S, j, hS, hz_mem, hS_card⟩ := exists_normal_pow_mem_not_dvd_card l U hz_central
-  exact ⟨S, hS, fun hA Y _ _ ↦ ⟨hA.diagonalPermModule hz_mem Y,
-    isHigmanProjective_diagonalPermModule hA.nsmul_eq_zero hS_card⟩⟩
-
-/-- The complement of the orbit of `y` in the `Δ`-set `Y`, as a `Δ`-set. -/
-abbrev orbitCompl (Δ : Type*) {Y : Type*} [Group Δ] [MulAction Δ Y] (y : Y) : SubMulAction Δ Y :=
-  (SubMulAction.mk (orbit Δ y) fun g : Δ ↦ mem_orbit_of_mem_orbit g)ᶜ
-
-/-- Let `Δ` be a finite group and `f` a function of finite `Δ`-sets with values in `ℚ≥0` that is `1`
-on empty sets and has `f Y = f (Y ∖ Δ y) * f (Δ ⧸ Stab y)` for `y` in `Y`. If `X` has a fixed point
-`x` and `f (X × Δ ⧸ K) = 1` for all subgroups `K`, then `f (Δ ⧸ K) = 1` for all `K`. -/
-lemma eq_one_of_prod_quotient.{u, v} (Δ : Type (max u v)) {X : Type u} [Group Δ] [Finite Δ]
-    [Finite X] [MulAction Δ X] (f : ∀ (Y : Type (max u v)) [Finite Y] [MulAction Δ Y], ℚ≥0)
-    (x : MulAction.fixedPoints Δ X)
-    (h_empty : ∀ (Y : Type (max u v)) [Finite Y] [MulAction Δ Y], IsEmpty Y → f Y = 1)
-    (h_orbit : ∀ (Y : Type (max u v)) [Finite Y] [MulAction Δ Y] (y : Y),
-      f Y = f (orbitCompl Δ y) * f (Δ ⧸ stabilizer Δ y))
-    (h_prod : ∀ K : Subgroup Δ, f (X × Δ ⧸ K) = 1) :
-    ∀ K : Subgroup Δ, f (Δ ⧸ K) = 1 := by
-  -- Induction on `K`: assume the claim for all smaller subgroups.
-  refine wellFounded_lt.fix fun K ih ↦ ?_
-  -- A set over `Δ ⧸ K` has orbits `Δ ⧸ K'` with `K' ≤ K`, so `f` of it is a power of `f (Δ ⧸ K)`.
-  have mem_powers : ∀ (Y : Type (max u v)) [Finite Y] [MulAction Δ Y],
-      (Y →[Δ] Δ ⧸ K) → f Y ∈ Submonoid.powers (f (Δ ⧸ K)) := by
-    refine (measure Nat.card).wf.fix fun Y ihY _ _ p ↦ ?_
-    obtain hY | ⟨⟨y₀⟩⟩ := isEmpty_or_nonempty Y
-    · simp [h_empty Y hY]
-    -- move `y₀` to a point `y` over the base point, whose stabilizer lies in `K`
-    obtain ⟨y, hy⟩ : ∃ y : Y, p y = ⟦1⟧ :=
-      (exists_smul_eq Δ (p y₀) ⟦1⟧).elim fun g hg ↦ ⟨g • y₀, (map_smul p g y₀).trans hg⟩
-    have stab_le : stabilizer Δ y ≤ K := fun a ha ↦ by
-      simpa [hy, QuotientGroup.eq, mem_stabilizer_iff.1 ha] using (map_smul p a y).symm
-    rw [h_orbit Y y]
-    refine mul_mem (ihY _ (card_subtype_lt (x := y) fun h_compl ↦ h_compl (mem_orbit_self y))
-      ⟨fun y' ↦ p y', by simp⟩) ?_
-    obtain h_eq | h_lt := stab_le.eq_or_lt
-    · rw [h_eq]
-      exact Submonoid.mem_powers _
-    · simp [ih _ h_lt]
-  -- The orbit of `y = (x, 1)` in `X × Δ ⧸ K` is a copy of `Δ ⧸ K`, and its complement lies over
-  -- `Δ ⧸ K`. So `1 = f (Δ ⧸ K) ^ (n + 1)` for some `n`.
-  let y : X × Δ ⧸ K := (x, ⟦1⟧)
-  have h_stab : stabilizer Δ y = K :=
-    SetLike.ext fun g ↦ by simp [y, QuotientGroup.eq, x.property g]
-  obtain ⟨n, hn⟩ : ∃ n : ℕ, f (Δ ⧸ K) ^ n = f (orbitCompl Δ y) :=
-    mem_powers _ ⟨fun y' ↦ y'.val.2, by simp⟩
-  have h_pow : f (Δ ⧸ K) ^ (n + 1) = 1 := by
-    rw [pow_succ, hn, ← h_prod K, h_orbit (X × Δ ⧸ K) y, h_stab]
-  exact (pow_eq_one_iff_of_nonneg zero_le n.succ_ne_zero).1 h_pow
-
-/-- Let `A` be a discrete `G`-module, let `Δ` be a finite group acting on a finite set `Y`, and let
-the discrete group `Γ` act through `q : Γ →* Δ`. For a `Γ`-set `X`, `A.permModule X` is the
-`G × Γ`-module of functions `f : X → A` with `((g, γ) f) x = g (f (γ⁻¹ x))`. There is a short exact
-sequence of these modules from the functions on the complement `C` of the orbit of `y`, to those on
-`Y`, to those on the orbit `Δ ⧸ Stab y`. -/
-lemma exists_isShortExact_permModule (A : DiscreteModule R G) {Γ Δ Y : Type} [Group Γ]
-    [TopologicalSpace Γ] [DiscreteTopology Γ] [Group Δ] [Finite Δ] [Finite Y] [MulAction Δ Y]
-    (q : Γ →* Δ) (y : Y) :
-    let C : SubMulAction Δ Y := orbitCompl Δ y
-    let : MulAction Γ C := compHom C q
-    let : MulAction Γ Y := compHom Y q
-    let : MulAction Γ (Δ ⧸ stabilizer Δ y) := compHom (Δ ⧸ stabilizer Δ y) q
-    ∃ (ι : (A.permModule (Δ := Γ) C).Hom (A.permModule Y))
-      (π : (A.permModule (Δ := Γ) Y).Hom (A.permModule (Δ ⧸ stabilizer Δ y))),
-      IsShortExact ι π := by
+/-- If `z` is central modulo `U`, a module satisfying `FiniteKilledFixedInj l U z 1` embeds by
+constants in another such module satisfying Higman's criterion. The inclusion and quotient form
+a short exact sequence. -/
+lemma FiniteKilledFixedInj.exists_shortExact_higmanProjective [IsTopologicalGroup G]
+    [CompactSpace G] {l : ℕ} [Fact l.Prime] {U : OpenNormalSubgroup G}
+    {z : G} {A : DiscreteModule R G}
+    (hA : A.FiniteKilledFixedInj l U z 1) (hz_central : ∀ g : G, ⁅z, g⁆ ∈ U) :
+    ∃ (B C : DiscreteModule R G) (ι : A.Hom B) (π : B.Hom C),
+      IsShortExact ι π ∧ B.FiniteKilledFixedInj l U z 1 ∧ B.IsHigmanProjective U := by
   classical
-  intro C _ _ _
-  -- `Y` is the disjoint union of the orbit `Δ ⧸ Stab y` and `C`, so functions on `Y` split as
-  -- pairs; `ι` is extension by zero and `π` is restriction to the orbit
-  let e : (Δ ⧸ stabilizer Δ y) ⊕ C ≃ Y :=
-    ((orbitEquivQuotientStabilizer Δ y).symm.sumCongr (.refl C)).trans
-      (sumCompl fun x : Y ↦ x ∈ orbit Δ y)
-  let E : (Y → A) ≃ₗ[R] (Δ ⧸ stabilizer Δ y → A) × (C → A) :=
-    LinearEquiv.funCongrLeft R A e ≪≫ₗ .sumArrowLequivProdArrow _ _ R A
-  let ι : (C → A) →ₗ[R] (Y → A) := E.symm ∘ₗ .inr R (Δ ⧸ stabilizer Δ y → A) (C → A)
-  let π : (Y → A) →ₗ[R] (Δ ⧸ stabilizer Δ y → A) := .fst R (Δ ⧸ stabilizer Δ y → A) (C → A) ∘ₗ E
-  have h_exact : Exact ι π := (E.conj_symm_exact_iff_exact _ _).2 .inr_fst
-  have π_apply (v : Y → A) (d : Δ) : π v (d : Δ ⧸ stabilizer Δ y) = v (d • y) := rfl
-  have ι_orbit (w : C → A) (d : Δ) : ι w (d • y) = 0 := by
-    simp [← π_apply (ι w), h_exact.apply_apply_eq_zero]
-  have ι_compl (w : C → A) (c : C) : ι w c = w c := show ι w (e (.inr c)) = w c by simp [ι, E]
-  refine ⟨⟨ι, fun g ↦ LinearMap.ext fun w ↦ funext fun x ↦ ?_⟩,
-    ⟨π, fun g ↦ LinearMap.ext fun v ↦ funext fun δ ↦ δ.inductionOn fun d ↦ ?_⟩,
-    E.symm.injective.comp LinearMap.inr_injective, h_exact, Prod.fst_surjective.comp E.surjective⟩
-  · -- `ι` is equivariant: check at a point `x` in the orbit of `y` or outside
-    by_cases hx : x ∈ orbit Δ y
-    · obtain ⟨d, rfl⟩ := hx
-      simp [compHom_smul_def, smul_smul, ι_orbit]
-    · lift x to C using hx
-      simpa [compHom_smul_def, ι_compl] using congrArg (A.ρ g.1) (ι_compl w ((q g.2)⁻¹ • x)).symm
-  · -- `π` is equivariant: check at the coset of `d`
-    simp [π_apply, compHom_smul_def, mul_smul]
-
-/-- A permutation of an abelian group killed by `n` that preserves differences is a translation, so
-its `n`-th power is trivial. -/
-lemma perm_pow_eq_one_of_map_sub {V : Type*} [AddCommGroup V] {n : ℕ}
-    (h_killed : ∀ x : V, n • x = 0) {σ : Perm V} (hσ : ∀ x y : V, σ x - σ y = x - y) :
-    σ ^ n = 1 := by
-  have h_transl : σ = .addLeft (σ 0) :=
-    Equiv.ext fun x ↦ by simpa [sub_eq_iff_eq_add'] using hσ x 0
-  rw [h_transl]
-  simp [h_killed]
-
-/-- The sum `a ↦ ∑ g, a g` of the values of a function on a finite type. -/
-def sumValuesHom (Δ M : Type) [Fintype Δ] [AddCommGroup M] : (Δ → M) →+ M :=
-  .mk' (fun a : Δ → M ↦ ∑ g : Δ, a g) fun _ _ ↦ sum_add_distrib
-
-/-- A finite group `Δ` acts on the functions `Δ → M` by `(g • a) d = a (g⁻¹ * d)`, and this keeps
-the sum of the values. This is its action on the hyperplane of functions with the same sum as `e`,
-moved to the functions of sum zero by letting `x` stand for `e + x`. -/
-abbrev hyperplaneAction {Δ M : Type} [Group Δ] [Fintype Δ] [AddCommGroup M] (e : Δ → M) :
-    MulAction Δ (sumValuesHom Δ M).ker where
-  smul g x := ⟨fun d : Δ ↦ -e d + (e (g⁻¹ * d) + x.val (g⁻¹ * d)), by
-    have h_sum (a : Δ → M) : ∑ d : Δ, a (g⁻¹ * d) = ∑ d : Δ, a d := sum_comp (.mulLeft g⁻¹) a
-    simp [sumValuesHom, sum_add_distrib, h_sum, show ∑ d : Δ, x.val d = 0 from x.property]⟩
-  one_smul x := Subtype.ext <| funext fun d ↦
-    show -e d + (e (1⁻¹ * d) + x.val (1⁻¹ * d)) = x.val d by simp
-  mul_smul g h x := Subtype.ext <| funext fun d ↦ by
-    change -e d + (e ((g * h)⁻¹ * d) + x.val ((g * h)⁻¹ * d)) = -e d + (e (g⁻¹ * d) +
-      (-e (g⁻¹ * d) + (e (h⁻¹ * (g⁻¹ * d)) + x.val (h⁻¹ * (g⁻¹ * d)))))
-    simp [mul_assoc]
-
-/-- The value at `d` of the image of `x` under `g`, for the action on the hyperplane through `e`. -/
-lemma hyperplaneAction_toPerm_apply {Δ M : Type} [Group Δ] [Fintype Δ] [AddCommGroup M] (e : Δ → M)
-    (g : Δ) (x : (sumValuesHom Δ M).ker) (d : Δ) :
-    ((hyperplaneAction e).toPerm g x).val d = -e d + (e (g⁻¹ * d) + x.val (g⁻¹ * d)) :=
-  rfl
-
-/-- The action on the hyperplane through `e` is affine, and its linear part is the action on the
-hyperplane through `0`. -/
-lemma hyperplaneAction_toPerm_sub {Δ M : Type} [Group Δ] [Fintype Δ] [AddCommGroup M] (e : Δ → M)
-    (g : Δ) (x y : (sumValuesHom Δ M).ker) :
-    (hyperplaneAction e).toPerm g x - (hyperplaneAction e).toPerm g y =
-      (hyperplaneAction 0).toPerm g (x - y) := by
-  ext d
-  simp only [AddSubgroupClass.coe_sub, Pi.sub_apply, hyperplaneAction_toPerm_apply, Pi.zero_apply]
-  abel
-
-/-- On the hyperplane through `e`, where `y` stands for `e + y`, the sum over `Δ` of the translates
-of evaluation at `1` is constant, equal to the sum of the values of `e`. -/
-lemma sum_hyperplaneAction_toPerm_apply_one {Δ M : Type} [Group Δ] [Fintype Δ] [AddCommGroup M]
-    (e : Δ → M) (y : (sumValuesHom Δ M).ker) :
-    ∑ g : Δ, (e 1 + ((hyperplaneAction e).toPerm g⁻¹ y).val 1) = ∑ g : Δ, e g := by
-  simp only [hyperplaneAction_toPerm_apply]
-  simp [sum_add_distrib, show ∑ g : Δ, y.val g = 0 from y.property]
+  obtain ⟨S, j, hS, hz, hS_card⟩ := exists_normal_pow_mem_not_dvd_card l U hz_central
+  let Δ := (G ⧸ (U : Subgroup G)) ⧸ S
+  let B := A.diagonalPermModule U S Δ
+  let ι : A.Hom B := ⟨LinearMap.const, fun _ ↦ rfl⟩
+  let W := ι.toLinearMap.range
+  let C := B.quotient W ι.range.apply_mem_toSubmodule
+  refine ⟨B, C, ι, ⟨W.mkQ, fun _ ↦ rfl⟩,
+    ⟨const_injective, ι.toLinearMap.exact_map_mkQ_range, W.mkQ_surjective⟩,
+    hA.diagonalPermModule hz Δ, ?_⟩
+  exact isHigmanProjective_diagonalPermModule hA.nsmul_eq_zero hS_card (Pi.single (1 : Δ) 1)
+    fun y ↦ by simp [inv_mul_eq_one, Pi.single_apply]
 
 /-- A function `φ` of the modules that are finite, killed by `n` and fixed by `Q`, with `ρ z - m`
 injective, is multiplicative: `φ B = φ A * φ D` for every short exact `0 → A → B → D → 0` with `B`
@@ -481,84 +346,121 @@ lemma apply_eq_of_equiv (h_mul : IsMultiplicative φ)
     ⟨injective_of_subsingleton _, fun a ↦ by simp, u.surjective⟩
   rw [h_mul h_exact hA, h_higman (hA.left_of_isShortExact h_exact) ⟨0, fun _ ↦ rfl⟩, one_mul]
 
-/-- Let `φ` be a function of the modules that are finite, killed by the prime `l` and fixed by `U`,
-with `ρ z - 1` injective, that is multiplicative in short exact sequences and `1` on the modules
-with Higman's property relative to `U`. If `s t : G → H` agree modulo a normal subgroup `P` killed
-by `l`, then the restrictions of an `H`-module along `s` and `t` have the same `φ`. -/
-lemma apply_restrictAlong_eq_of_inv_mul_mem [Fact l.Prime] (h_mul : IsMultiplicative φ)
-    (h_higman : ∀ {B : DiscreteModule R G} (hB : B.FiniteKilledFixedInj l U z 1),
-      B.IsHigmanProjective U → φ B hB = 1)
-    {H : Type} [Group H] [TopologicalSpace H] (P : Subgroup H) [P.Normal]
-    (hP_pow : ∀ g ∈ P, g ^ l = 1) {s t : G →ₜ* H} (h_st : ∀ g : G, (t g)⁻¹ * s g ∈ P)
-    (B : DiscreteModule R H) (hs : (B.restrictAlong s).FiniteKilledFixedInj l U z 1)
-    (ht : (B.restrictAlong t).FiniteKilledFixedInj l U z 1) :
-    φ (B.restrictAlong s) hs = φ (B.restrictAlong t) ht := by
-  -- By dévissage we may assume that `P` acts trivially. With `Q = ⊥`, `z = 1` and `m = 0` only
-  -- "finite and killed by `l`" is asked of `B`.
-  have hB : B.FiniteKilledFixedInj l ⊥ 1 0 :=
-    ⟨hs.finite, hs.nsmul_eq_zero, by simp [TrivialOn], fun x y ↦ by simp⟩
-  revert hs ht
-  refine devissage_induction (pow_one l) P ⊥ (fun g hg ↦ ⟨1, by simpa using hP_pow g hg⟩)
-    ?_ ?_ B hB
-  · intro B _ hB_fixed hs ht
-    have h_action (g : G) : B.ρ (s g) = B.ρ (t g) :=
-      B.ρ.eq_iff.2 (LinearMap.ext (hB_fixed.trivialOn _ (h_st g)))
-    exact apply_eq_of_equiv h_mul h_higman (.mk 1 h_action)
-  · intro A B C ι π h_exact _ ihA ihC hs ht
-    rw [h_mul (h_exact.restrictAlong s) hs, h_mul (h_exact.restrictAlong t) ht, ihA, ihC]
-
-/-- Let `φ` be a function of the modules that are finite, killed by the prime `l` and fixed by `U`,
-with `ρ z - 1` injective, that is multiplicative in short exact sequences and `1` on the modules
-with Higman's property relative to `U`. Let `V` be a finite abelian group killed by `l` with two
-actions `α`, `β` of `(G ⧸ U) ⧸ S`, where `α` is additive and `β` is affine with linear part `α`.
-Then for a `G`-module `B` the functions `V → B` with the diagonal action of `G`
-(`diagonalPermModule`) have the same `φ` for `α` and for `β`. -/
-lemma apply_diagonalPermModule_eq_of_affine [Fact l.Prime] (h_mul : IsMultiplicative φ)
-    (h_higman : ∀ {B : DiscreteModule R G} (hB : B.FiniteKilledFixedInj l U z 1),
-      B.IsHigmanProjective U → φ B hB = 1)
-    {S : Subgroup (G ⧸ (U : Subgroup G))} [S.Normal] {V : Type} [AddCommGroup V] [Finite V]
-    (hV_killed : ∀ x : V, l • x = 0) {α β : MulAction ((G ⧸ (U : Subgroup G)) ⧸ S) V}
-    (hα_sub : ∀ (δ : (G ⧸ (U : Subgroup G)) ⧸ S) (x y : V),
-      α.toPerm δ x - α.toPerm δ y = α.toPerm δ (x - y))
-    (hβ_sub : ∀ (δ : (G ⧸ (U : Subgroup G)) ⧸ S) (x y : V),
-      β.toPerm δ x - β.toPerm δ y = α.toPerm δ (x - y))
-    (B : DiscreteModule R G)
-    (hα : (letI := α; B.diagonalPermModule U S V).FiniteKilledFixedInj l U z 1)
-    (hβ : (letI := β; B.diagonalPermModule U S V).FiniteKilledFixedInj l U z 1) :
-    φ (letI := α; B.diagonalPermModule U S V) hα =
-      φ (letI := β; B.diagonalPermModule U S V) hβ := by
-  let : TopologicalSpace (Perm V) := ⊥
-  have : DiscreteTopology (Perm V) := ⟨rfl⟩
-  -- the quotient map, and the permutations of `V` by which `G` acts
-  let q : G →* (G ⧸ (U : Subgroup G)) ⧸ S := (mk' S).comp (mk' (U : Subgroup G))
-  let a : G →* Perm V := (α.toPermHom _ V).comp q
-  let b : G →* Perm V := (β.toPermHom _ V).comp q
-  have h_cont (c : (G ⧸ (U : Subgroup G)) ⧸ S →* Perm V) : Continuous (c.comp q) :=
-    (continuous_of_discreteTopology (f := c.comp (mk' S))).comp continuous_mk
-  -- `H` consists of the pairs `(g, σ)`, `σ` an affine map of `V` with linear part `a g`
-  let H : Subgroup (G × Perm V) :=
-    { carrier := {p | ∀ x y : V, p.2 x - p.2 y = a p.1 (x - y)}
-      mul_mem' := fun hp hq x y ↦ by simp [hp _, hq _]
-      one_mem' := by simp
-      inv_mem' := fun hp x y ↦ by simp [eq_symm_apply, ← hp _] }
-  -- `a` and `b` give sections of the projection `H → G`
-  let s : G →ₜ* H := ⟨((MonoidHom.id G).prod a).codRestrict H fun g ↦ hα_sub (q g),
-    (continuous_id.prodMk (h_cont _)).subtype_mk _⟩
-  let t : G →ₜ* H := ⟨((MonoidHom.id G).prod b).codRestrict H fun g ↦ hβ_sub (q g),
-    (continuous_id.prodMk (h_cont _)).subtype_mk _⟩
-  -- they differ by the translations `(1, σ)`, which form a normal subgroup killed by `l`
-  let P : Subgroup H := ((MonoidHom.fst G (Perm V)).domRestrict H).ker
-  have hP_pow : ∀ g ∈ P, g ^ l = 1 := by
-    rintro ⟨⟨g, σ⟩, h_affine⟩ (rfl : g = 1)
-    simpa [Subtype.ext_iff] using
-      perm_pow_eq_one_of_map_sub hV_killed fun x y ↦ by simpa using h_affine x y
-  have h_st (g : G) : (t g)⁻¹ * s g ∈ P := inv_mul_cancel g
-  -- by definition the two modules are the restrictions, along `s` and `t`, of the `H`-module of
-  -- functions `V → B`
-  exact apply_restrictAlong_eq_of_inv_mul_mem h_mul h_higman P hP_pow h_st
-    ((B.permModule (Δ := Perm V) V).restrictTo H) hα hβ
-
 end Multiplicative
+
+section ArtinInduction
+
+open CategoryTheory Representation TauCeti
+open scoped MonoidAlgebra
+
+noncomputable section
+
+section HomModules
+
+variable [IsTopologicalGroup G]
+  {l : ℕ} [Fact l.Prime] {U : OpenNormalSubgroup G} {z : G}
+  {A : DiscreteModule R G} {S : Subgroup (G ⧸ (U : Subgroup G))} [S.Normal]
+
+local notation "Δ" => (G ⧸ (U : Subgroup G)) ⧸ S
+
+-- The maps from a representation of the finite quotient to `A` have the diagonal `G`-action.
+private abbrev homModule (hA : A.TrivialOn U) (M : FDRep (ZMod l) Δ) : DiscreteModule R G :=
+  let A' := QuotientGroup.lift (U : Subgroup G) A.ρ fun g hg ↦ LinearMap.ext (hA g hg)
+  let ρ : Representation R (G ⧸ (U : Subgroup G)) (M →+ A) :=
+    { toFun g :=
+        { toFun f := (A' g).toAddMonoidHom.comp (f.comp (M.ρ (mk' S g⁻¹)).toAddMonoidHom)
+          map_add' := fun f e ↦ AddMonoidHom.ext fun x ↦ by simp
+          map_smul' := fun r f ↦ AddMonoidHom.ext fun x ↦ by simp }
+      map_one' := by ext f x; simp
+      map_mul' := fun g h ↦ by ext f x; simp [mul_inv_rev] }
+  let : TopologicalSpace (M →+ A) := ⊥
+  let : DiscreteTopology (M →+ A) := ⟨rfl⟩
+  of (V := M →+ A) (ρ.comp (mk' (U : Subgroup G))) (by
+    rw [continuous_prod_of_discrete_right]
+    intro f
+    exact (continuous_of_discreteTopology (f := fun g ↦ ρ g f)).comp continuous_mk)
+
+private lemma homModule_apply (hA : A.TrivialOn U) (M : FDRep (ZMod l) Δ) (g : G)
+    (f : homModule hA M) (x : M) :
+    (homModule hA M).ρ g f x = A.ρ g (f (M.ρ (mk' S (g⁻¹ : G)) x)) := rfl
+
+-- Precomposition by an equivariant linear map is equivariant for the diagonal action.
+private def homModuleMap (hA : A.TrivialOn U) {M N : FDRep (ZMod l) Δ} (f : M ⟶ N) :
+    (homModule hA N).Hom (homModule hA M) :=
+  ⟨{ toFun x := x.comp f.hom.hom.hom.toAddMonoidHom
+     map_add' := fun _ _ ↦ rfl
+     map_smul' := fun _ _ ↦ rfl },
+   fun g ↦ LinearMap.ext fun x ↦ AddMonoidHom.ext fun m ↦ by
+     have h := congrArg (fun a : M.V ⟶ N.V ↦ a.hom.hom m) (f.comm (mk' S (g⁻¹ : G)))
+     exact congrArg (fun y ↦ A.ρ g (x y)) h.symm⟩
+
+private lemma homModule_shortExact (hA : A.TrivialOn U) {T : ShortComplex (FDRep (ZMod l) Δ)}
+    (hT : T.ShortExact) : IsShortExact (homModuleMap hA T.g) (homModuleMap hA T.f) := by
+  let F := Action.forget (FGModuleCat (ZMod l)) Δ ⋙ forget₂ _ (ModuleCat (ZMod l))
+  have h := hT.map_of_exact F
+  have hi : Injective T.f.hom.hom.hom := (ModuleCat.mono_iff_injective _).mp h.mono_f
+  have hp : Surjective T.g.hom.hom.hom := (ModuleCat.epi_iff_surjective _).mp h.epi_g
+  have hex : Function.Exact T.f.hom.hom.hom T.g.hom.hom.hom :=
+    (ShortComplex.ShortExact.moduleCat_exact_iff_function_exact _).mp h.exact
+  have killed (N : FDRep (ZMod l) Δ) (x : N) : l • x = 0 := by
+    rw [← Nat.cast_smul_eq_nsmul (ZMod l), ZMod.natCast_self, zero_smul]
+  refine ⟨fun f e he ↦ AddMonoidHom.ext (hp.forall.2 fun y ↦ DFunLike.congr_fun he y),
+    hex.compHom' (killed T.X₃), fun x ↦ ?_⟩
+  exact AddMonoidHom.exists_comp_eq_of_injective (killed T.X₂) hi x
+
+private lemma homModule_finiteKilledFixedInj (hA : A.FiniteKilledFixedInj l U z 1) {j : ℕ}
+    (hz : (z : G ⧸ (U : Subgroup G)) ^ l ^ j ∈ S) (M : FDRep (ZMod l) Δ) :
+    (homModule hA.trivialOn M).FiniteKilledFixedInj l U z 1 := by
+  let : Finite M := Module.finite_of_finite (ZMod l)
+  let : MulAction Δ M :=
+    { smul := fun g x ↦ M.ρ g x
+      one_smul := fun x ↦ LinearMap.congr_fun M.ρ.map_one x
+      mul_smul := fun g h x ↦ LinearMap.congr_fun (M.ρ.map_mul g h) x }
+  let ev : (homModule hA.trivialOn M).Hom (A.diagonalPermModule U S M) :=
+    ⟨{ toFun f := f, map_add' := fun _ _ ↦ rfl, map_smul' := fun _ _ ↦ rfl }, fun _ ↦ rfl⟩
+  exact (hA.diagonalPermModule hz M).of_injective ev DFunLike.coe_injective
+
+-- An additive map out of a permutation module is determined by its values on the basis.
+private def homModulePermEquiv (hA : A.FiniteKilledFixedInj l U z 1)
+    (Y : Type) [Finite Y] [MulAction Δ Y] :
+    (homModule hA.trivialOn (FDRep.of (ofMulAction (ZMod l) Δ Y))).ρ.Equiv
+      (A.diagonalPermModule U S Y).ρ := by
+  let : Module (ZMod l) A := AddCommGroup.zmodModule hA.nsmul_eq_zero
+  let b := MonoidAlgebra.basis Y (ZMod l)
+  let e : ((ZMod l)[Y] →+ A) →ₗ[R] (Y → A) :=
+    { toFun f y := f (b y)
+      map_add' := fun _ _ ↦ rfl
+      map_smul' := fun _ _ ↦ rfl }
+  have he : Bijective e := by
+    exact ⟨fun f g h ↦ AddMonoidHom.toZModLinearMap_injective l (b.ext fun y ↦ congrFun h y),
+      fun f ↦ ⟨(b.constr (ZMod l) f).toAddMonoidHom, funext (b.constr_basis (ZMod l) f)⟩⟩
+  refine .mk (LinearEquiv.ofBijective e he) fun g ↦ LinearMap.ext fun f ↦ funext fun y ↦ ?_
+  change (homModule hA.trivialOn (FDRep.of (ofMulAction (ZMod l) Δ Y))).ρ g f
+      (MonoidAlgebra.single y 1) = A.ρ g (f (MonoidAlgebra.single (mk' S (g⁻¹ : G) • y) 1))
+  rw [homModule_apply]
+  exact congrArg (fun v ↦ A.ρ g (f v)) (ofMulAction_single _ _ _)
+
+variable [CompactSpace G]
+
+private lemma diagonalPermModule_coprime (hA : A.FiniteKilledFixedInj l U z 1)
+    (hS : ¬ l ∣ Nat.card S) (D : Subgroup Δ) (hD : ¬ l ∣ Nat.card D) :
+    (A.diagonalPermModule U S (Δ ⧸ D)).IsHigmanProjective U := by
+  classical
+  have h_card : (Nat.card D : ZMod l) ≠ 0 := by rwa [Ne, ZMod.natCast_eq_zero_iff]
+  -- In the trace each coset occurs `#D` times, so normalize the indicator of the identity coset.
+  let a : Δ ⧸ D → ZMod l := fun x ↦ if x = ⟦1⟧ then (Nat.card D : ZMod l)⁻¹ else 0
+  refine isHigmanProjective_diagonalPermModule hA.nsmul_eq_zero hS a fun y ↦ ?_
+  have h_eq (g : Δ) : g⁻¹ • y = ⟦1⟧ ↔ (g : Δ ⧸ D) = y := by
+    rw [inv_smul_eq_iff]
+    change y = ((g * 1 : Δ) : Δ ⧸ D) ↔ _
+    rw [mul_one, eq_comm]
+  simp only [a, h_eq]
+  calc _ = ∑ p : (Δ ⧸ D) × D, if p.1 = y then (Nat.card D : ZMod l)⁻¹ else 0 :=
+        Fintype.sum_equiv D.groupEquivQuotientProdSubgroup _ _ fun _ ↦ rfl
+    _ = 1 := by simp [Fintype.sum_prod_type_right, -Nat.card_eq_fintype_card,
+      ← Nat.cast_smul_eq_nsmul (ZMod l), ← Nat.card_eq_fintype_card, h_card]
+
+end HomModules
 
 variable (R) in
 /-- Let `l` be prime, `G` a compact topological group and `U` open normal, and let every commutator
@@ -578,51 +480,60 @@ lemma IsMultiplicative.eq_one_of_eq_one_on_isHigmanProjective (l : ℕ) [Fact l.
       B.IsHigmanProjective U → φ B hB = 1) :
     φ A hA = 1 := by
   classical
-  -- Let `Δ = (G/U)/S` with `S` from `exists_normal_pow_mem_not_dvd_card`, and `f Y` be `φ` of the
-  -- `A`-valued functions on the `Δ`-set `Y`. We apply `eq_one_of_prod_quotient` to the hyperplane
-  -- `V` of functions `Δ → ZMod l` of sum zero. Functions on `V × Δ ⧸ K` have the same `φ` as
-  -- functions on the product of `Δ ⧸ K` with the hyperplane of sum `1`, which have Higman's
-  -- property.
-  obtain ⟨S, j, hS, hz_mem, hS_card⟩ := exists_normal_pow_mem_not_dvd_card l U hz_central
-  let Δ : Type := (G ⧸ (U : Subgroup G)) ⧸ S
-  let V : AddSubgroup (Δ → ZMod l) := (sumValuesHom Δ (ZMod l)).ker
-  let : MulAction Δ V := hyperplaneAction 0
-  let f (Y : Type) [Finite Y] [MulAction Δ Y] : ℚ≥0 :=
-    φ (A.diagonalPermModule U S Y) (hA.diagonalPermModule hz_mem Y)
-  have h_empty (Y : Type) [Finite Y] [MulAction Δ Y] (hY : IsEmpty Y) : f Y = 1 :=
-    h_higman _ ⟨0, by simp [funext_iff]⟩
-  have h_orbit (Y : Type) [Finite Y] [MulAction Δ Y] (y : Y) :
-      f Y = f (orbitCompl Δ y) * f (Δ ⧸ stabilizer Δ y) := by
-    obtain ⟨ι, π, h_exact⟩ := A.exists_isShortExact_permModule (mk' S) y
-    exact h_mul (h_exact.restrictAlong _) (hA.diagonalPermModule hz_mem Y)
-  have h_prod (K : Subgroup Δ) : f (V × Δ ⧸ K) = 1 := by
-    -- `C e`: the functions `V → Δ ⧸ K → A`, where `V` is read as the hyperplane through `e`
-    let B : DiscreteModule R G := A.diagonalPermModule U S (Δ ⧸ K)
-    have hB : B.FiniteKilledFixedInj l U z 1 := hA.diagonalPermModule hz_mem (Δ ⧸ K)
-    let C (e : Δ → ZMod l) : DiscreteModule R G :=
-      letI : MulAction Δ V := hyperplaneAction e; B.diagonalPermModule U S V
-    have hC (e : Δ → ZMod l) : (C e).FiniteKilledFixedInj l U z 1 :=
-      letI : MulAction Δ V := hyperplaneAction e; hB.diagonalPermModule hz_mem V
-    let e₁ : Δ → ZMod l := Pi.single 1 1
-    have hC_higman : (C e₁).IsHigmanProjective U :=
-      letI : MulAction Δ V := hyperplaneAction e₁
-      isHigmanProjective_diagonalPermModule hB.nsmul_eq_zero hS_card (fun y : V ↦ e₁ 1 + y.val 1)
-        fun y ↦ (sum_hyperplaneAction_toPerm_apply_one e₁ y).trans (by simp [e₁])
-    have hV_killed (x : V) : l • x = 0 := by simp [Subtype.ext_iff, funext_iff, ZMod.natCast_self]
-    -- curry, then pass from the hyperplane through `0` to the one through `e₁`
-    calc f (V × Δ ⧸ K) = φ (C 0) (hC 0) :=
-        apply_eq_of_equiv h_mul h_higman (.mk (.curry R A V (Δ ⧸ K)) fun _ ↦ rfl)
-      _ = φ (C e₁) (hC e₁) :=
-        apply_diagonalPermModule_eq_of_affine h_mul h_higman hV_killed
-          (hyperplaneAction_toPerm_sub 0) (hyperplaneAction_toPerm_sub e₁) B (hC 0) (hC e₁)
-      _ = 1 := h_higman (hC e₁) hC_higman
-  -- `A` is the module of functions on the point `Δ ⧸ ⊤`
-  have h_point : φ A hA = f (Δ ⧸ (⊤ : Subgroup Δ)) := by
-    have : Subsingleton (Δ ⧸ (⊤ : Subgroup Δ)) := subsingleton_quotient_top
-    let : Unique (Δ ⧸ (⊤ : Subgroup Δ)) := uniqueOfSubsingleton ⟦1⟧
-    exact apply_eq_of_equiv h_mul h_higman (.mk (LinearEquiv.funUnique _ R A).symm fun _ ↦ rfl)
-  have h_zero : (0 : V) ∈ MulAction.fixedPoints Δ V := fun g ↦
-    Subtype.ext <| funext fun d ↦ (hyperplaneAction_toPerm_apply 0 g 0 d).trans (by simp)
-  exact h_point.trans (eq_one_of_prod_quotient Δ f ⟨0, h_zero⟩ h_empty h_orbit h_prod ⊤)
+  obtain ⟨S, j, hS, hz, hS_card⟩ := exists_normal_pow_mem_not_dvd_card l U hz_central
+  let Γ₀ := (G ⧸ (U : Subgroup G)) ⧸ S
+  -- A short exact sequence with projective middle term shows that `φ` is nonzero.
+  have h_ne {B : DiscreteModule R G} (hB : B.FiniteKilledFixedInj l U z 1) : φ B hB ≠ 0 := by
+    obtain ⟨_, _, _, _, h_exact, hP, h_proj⟩ := hB.exists_shortExact_higmanProjective hz_central
+    intro h_zero
+    have h := h_mul h_exact hP
+    rw [h_higman hP h_proj, h_zero, zero_mul] at h
+    exact one_ne_zero h
+  -- On representations of the finite quotient use the invariant of the `A`-valued dual.
+  let hM (M : FDRep (ZMod l) Γ₀) := homModule_finiteKilledFixedInj hA hz M
+  let f (M : FDRep (ZMod l) Γ₀) : Additive ℚ≥0ˣ := .ofMul
+    (Units.mk0 (φ (homModule hA.trivialOn M) (hM M)) (h_ne (hM M)))
+  have hf : ∀ ⦃T : ShortComplex (FDRep (ZMod l) Γ₀)⦄, T.ShortExact →
+      f T.X₂ = f T.X₁ + f T.X₃ := by
+    intro T hT
+    apply Additive.toMul.injective
+    apply Units.ext
+    exact (h_mul (homModule_shortExact hA.trivialOn hT) (hM T.X₂)).trans (mul_comm _ _)
+  let F := liftFDRepK0 f hf
+  have h_perm (Y : Type) [Finite Y] [MulAction Γ₀ Y] :
+      (F (permK0 (ZMod l) Γ₀ Y)).toMul.val =
+        φ (A.diagonalPermModule U S Y) (hA.diagonalPermModule hz Y) := by
+    have h_eval : F (permK0 (ZMod l) Γ₀ Y) = f (FDRep.of (ofMulAction (ZMod l) Γ₀ Y)) :=
+      (congrArg F (permK0_def (ZMod l) (G := Γ₀) Y)).trans
+        (liftFDRepK0_of f hf (FDRep.of (ofMulAction (ZMod l) Γ₀ Y)))
+    rw [h_eval]
+    exact apply_eq_of_equiv h_mul h_higman (homModulePermEquiv hA Y)
+  have h_van (D : Subgroup Γ₀) (hD : ¬ l ∣ Nat.card D) :
+      F (permK0 (ZMod l) Γ₀ (Γ₀ ⧸ D)) = 0 := by
+    apply Additive.toMul.injective
+    apply Units.ext
+    rw [h_perm, h_higman _ (diagonalPermModule_coprime hA hS_card D hD)]
+    rfl
+  -- Modular Artin induction expresses `#Γ₀` times the trivial class using coset representations
+  -- of subgroups of order prime to `l`, on each of which the invariant is `1`.
+  obtain ⟨a, ha⟩ := exists_linearCombination_indK0_resK0_eq_natCard_nsmul (k := ZMod l) (G := Γ₀) l
+  have h_zero : Nat.card Γ₀ • F 1 = 0 := by
+    rw [← map_nsmul, ← ha 1]
+    simp only [Finsupp.linearCombination_apply, resK0_one, indK0_one, map_finsuppSum, map_zsmul]
+    exact Finset.sum_eq_zero fun D _ ↦ by simp only [h_van D.val D.property.2, zsmul_zero]
+  have h_pow : (F 1).toMul.val ^ Nat.card Γ₀ = 1 :=
+    congrArg (fun x : Additive ℚ≥0ˣ ↦ x.toMul.val) h_zero
+  have h_trivial : (F 1).toMul.val = 1 :=
+    (pow_eq_one_iff_of_nonneg zero_le Nat.card_pos.ne').mp h_pow
+  have h_line : permK0 (ZMod l) Γ₀ Unit = 1 := by
+    rw [permK0_of_subsingleton, exactK0_one_eq_of_trivial]
+  rw [← h_line, h_perm] at h_trivial
+  have e : A.ρ.Equiv (A.diagonalPermModule U S Unit).ρ :=
+    .mk (LinearEquiv.funUnique _ R A).symm fun _ ↦ rfl
+  exact (apply_eq_of_equiv h_mul h_higman e).trans h_trivial
+
+end
+
+end ArtinInduction
 
 end New.DiscreteModule
