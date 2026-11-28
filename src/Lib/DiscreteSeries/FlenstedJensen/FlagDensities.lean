@@ -287,15 +287,9 @@ lemma openOrbit_mem_nhds (ε : n → ℤˣ) {y : Matrix n n ℂ} (hy : y ∈ ope
   obtain ⟨ψ, -, -, chart⟩ := exists_chart_exp_lowerLiePart_mul_borel ε o
   -- Carry the chart at `1` to `g * c` by the map `A` that takes `g * c` to `1`.
   let A : Matrix n n ℂ →L[ℝ] Matrix n n ℂ := .mulLeftRight ℝ _ (g : Matrix n n ℂ)⁻¹ c⁻¹
-  have A_tendsto : Filter.Tendsto A (nhds (g * c)) (nhds 1) :=
-    A.cont.tendsto' (g * c) 1 (by simp [A, hc.2])
-  filter_upwards [A_tendsto.eventually chart] with x ⟨b, hb, _, A_x⟩
-  let u : USign ε := expU ⟨_, lowerLiePart_mem_unitaryLie ε 1 o 2⁻¹ (ψ (A x))⟩
-  refine ⟨g * u, b * c, hb.mul hc, ?_⟩
-  calc x = g * A x * c := by simp [A, mul_assoc, hc.2]
-    _ = (g * u : USign ε) * (b * c) := by
-      rw [A_x]
-      simp [u, mul_assoc]
+  filter_upwards [(A.cont.tendsto' _ 1 (by simp [A, hc.2])).eventually chart] with x ⟨b, hb, _, h⟩
+  refine ⟨g * expU ⟨_, lowerLiePart_mem_unitaryLie ε 1 o 2⁻¹ (ψ (A x))⟩, b * c, hb.mul hc, ?_⟩
+  simpa [A, mul_assoc, hc.2] using congrArg (fun m ↦ (g : Matrix n n ℂ) * m * c) h
 
 /-- Let `o` be injective and `y = Φ y * B y` for `y` in the open orbit, with `Φ y` in `U(diag ε)`
 and `B y` triangular with positive diagonal. Then at each point `y` of the orbit `Φ` has the

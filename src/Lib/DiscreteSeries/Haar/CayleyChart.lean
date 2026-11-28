@@ -204,8 +204,7 @@ theorem abs_det_skew_congruence (e : Matrix n n ℝ ≃ₗ[ℝ] V) (C : Matrix n
   have h_inj : Function.Injective ((skewOfReal (n := n)).coprod (I • skewOfReal)) := by
     refine (injective_iff_map_eq_zero _).2 fun ⟨s, s'⟩ hs ↦ ?_
     replace hs : skewOfReal s + I • skewOfReal s' = 0 := by simpa using hs
-    have hs_star : -skewOfReal s + I • skewOfReal s' = 0 := by
-      simpa using congrArg conjTranspose hs
+    have hs_star : -skewOfReal s + I • skewOfReal s' = 0 := by simpa using congrArg conjTranspose hs
     have hs_zero : skewOfReal s = 0 := by
       linear_combination (norm := module) (2⁻¹ : ℂ) • hs - (2⁻¹ : ℂ) • hs_star
     have hs'_zero : skewOfReal s' = 0 := by simpa [hs_zero] using hs
@@ -213,10 +212,10 @@ theorem abs_det_skew_congruence (e : Matrix n n ℝ ≃ₗ[ℝ] V) (C : Matrix n
       (by simpa using congrArg skewCoords hs'_zero)
   let φ : (Matrix n n ℝ × Matrix n n ℝ) ≃ₗ[ℝ] Matrix n n ℂ :=
     linearEquivOfInjective _ h_inj (by simp +arith [finrank_matrix])
-  set M : End ℝ (Matrix n n ℂ) := mulRightLinearMap n ℝ C ∘ₗ mulLeftLinearMap n ℝ Cᴴ
-  have h_conj : φ.toLinearMap ∘ₗ T.prodMap T ∘ₗ φ.symm.toLinearMap = M := by
+  have h_conj : φ.toLinearMap ∘ₗ T.prodMap T ∘ₗ φ.symm.toLinearMap =
+      mulRightLinearMap n ℝ C ∘ₗ mulLeftLinearMap n ℝ Cᴴ := by
     rw [← LinearMap.comp_assoc, LinearEquiv.comp_toLinearMap_symm_eq]
-    simp [φ, T, M, skewOfReal_skewCoords, mul_add, conjTranspose_skewOfReal, mul_assoc, add_mul,
+    simp [φ, T, skewOfReal_skewCoords, mul_add, conjTranspose_skewOfReal, mul_assoc, add_mul,
       DFunLike.ext_iff]
   -- `X ↦ Cᴴ * X * C` has real determinant `‖det Cᴴ‖ ^ (2 n) * ‖det C‖ ^ (2 n)`.
   have h_det_sq : T.det * T.det = (‖C.det‖ ^ (2 * card n)) ^ 2 := by

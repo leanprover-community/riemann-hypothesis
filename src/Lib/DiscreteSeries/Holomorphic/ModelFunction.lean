@@ -497,17 +497,14 @@ theorem USign.eq_of_analyticAt_of_eventually_eq {f f' : Matrix n n ℂ → ℂ}
     (hf : ∀ g : USign ε, AnalyticAt ℂ f g) (hf' : ∀ g : USign ε, AnalyticAt ℂ f' g)
     (h_near : ∀ᶠ g : USign ε in 𝓝 1, f g = f' g) (g : USign ε) : f g = f' g := by
   -- Restrict both functions to an analytic path from `1` to `g`.
-  obtain ⟨c, hc_zero, rfl, hc, -⟩ : ∃ c : ℝ → USign ε, c 0 = 1 ∧ c 1 = g ∧
-      (∀ t : ℝ, AnalyticAt ℝ (fun s : ℝ ↦ (c s : Matrix n n ℂ)) t) ∧
-      ∀ t : ℝ, (c t : Matrix n n ℂ) ∈ blockDiagAlg 1 :=
-    exists_analytic_path (ε' := 1) (.inl rfl) g mem_blockDiagAlg_one
+  obtain ⟨c, hc₀, rfl, hc, -⟩ := exists_analytic_path (ε' := 1) (.inl rfl) g mem_blockDiagAlg_one
   have hc_cont : Continuous c :=
     continuous_U_iff_matrix.2 (continuous_iff_continuousAt.2 fun t ↦ (hc t).continuousAt)
-  have h_comp {q : Matrix n n ℂ → ℂ} (hq : ∀ g : USign ε, AnalyticAt ℂ q g) :
-      AnalyticOnNhd ℝ (fun t : ℝ ↦ q (c t)) Set.univ :=
-    fun t _ ↦ (hq (c t)).restrictScalars.comp_of_eq (hc t) rfl
   have h_path : (fun t : ℝ ↦ f (c t)) = fun t : ℝ ↦ f' (c t) :=
-    (h_comp hf).eq_of_eventuallyEq (h_comp hf') ((hc_cont.tendsto' 0 1 hc_zero).eventually h_near)
+    AnalyticOnNhd.eq_of_eventuallyEq (z₀ := (0 : ℝ))
+      (fun t _ ↦ (hf (c t)).restrictScalars.comp_of_eq (hc t) rfl)
+      (fun t _ ↦ (hf' (c t)).restrictScalars.comp_of_eq (hc t) rfl)
+      ((hc_cont.tendsto' 0 1 hc₀).eventually h_near)
   exact congrFun h_path 1
 
 /-! ### The coefficient in the holomorphic chamber -/
