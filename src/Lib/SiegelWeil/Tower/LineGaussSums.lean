@@ -540,13 +540,12 @@ namespace New.Exchange.IsEquivariantLift
 
 open Matrix G Space.Splitting
 
-variable {E n₀ a b m p : Type} [Field E] [CMType E] [WeilData E] [Fintype a] [Fintype b]
+variable {E n₀ a b m p : Type} [Field E] [CMType E] [Fintype a] [Fintype b]
   [DecidableEq b] [Fintype m] [DecidableEq m] {μ : NumberField.InfinitePlace E → ℤ}
   {𝔠 : SplitTameChar E μ} {r : m → ℤˣ} {X : Space E m r}
   {M : Submodule ℂ (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ)}
   {𝒟 : (Matrix m b (LocProd 𝔠.ramifiedPlaces) → ℂ) →ₗ[ℂ] G E r → ℂ}
 
-omit [WeilData E] in
 /-- An element of the adelic unitary group with matrix `1 + (e C - ē C')`, where `e` is the
 idempotent of `S`, is trivial at infinity, is supported on `S ∪ S̄` and has component `1 + C`
 at `S`. -/
@@ -564,6 +563,8 @@ lemma components_of_mat_eq_one_add (g : G E r) (C C' : Matrix m m (𝔸 E))
   · -- at the places of `S` the first idempotent is `1` and the second is `0`
     aesop (add simp [atPlaces, 𝔠.star_notMem, funext_iff, star_idem, Matrix.one_apply, ext_iff.symm,
       Prod.ext_iff])
+
+variable [WeilData E]
 
 /-- Let `𝒟` be an equivariant lift on `M` and let `ν` in the unitary group have matrix
 `1 + e c k - ē B` (`e` the idempotent of `S`), so that it is `1 + c k` at `S`, with `k c = 0`.

@@ -44,8 +44,12 @@ namespace New.SiegelWeil
 
 open Matrix MeasureTheory Fintype Space Gf G WeilData NumberField Rows
 
-variable {E n m : Type} [Field E] [CMType E] [WeilData E] [Fintype n] [DecidableEq n] [Fintype m]
+variable {E n m : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] [Fintype m]
   {s : n → ℤˣ} {b : AutChar E} {A : Set (FinPlace E)} {y : G E s → ℂ}
+
+section
+
+variable [WeilData E]
 
 /-! ### Vacuum coefficients and coset representatives -/
 
@@ -70,24 +74,23 @@ of a vacuum (`New.SiegelWeil.weilMatrixCoeff_mul`). -/
 def vacuumCoeff (M : ℕ) (b : AutChar E) (g : Gf E n) : ℂ :=
   (b.val (detFin 1 g) * finMultiplier g ^ M)⁻¹
 
+end
+
 /-- For a coset `γ` of `localLevel n A`, the finite points integral at `A`, the component above
 `A` and its conjugate of a chosen element of `γ`. It represents `γ` (`mk_cosetRep`) and is
 supported on `A` and its conjugate. -/
 def cosetRep (γ : Gf E n ⧸ localLevel n A) : supportedOn n A :=
   ⟨componentOn n A γ.out, componentOn_mem_supportedOn⟩
 
-omit [WeilData E] in
 lemma mk_cosetRep (q : Gf E n ⧸ localLevel n A) :
     ((cosetRep q).val : Gf E n ⧸ localLevel n A) = q := by
   conv_rhs => rw [← q.out_eq']
   rw [QuotientGroup.eq, mem_localLevel]
   exact fun w hw ↦ by simp [cosetRep, atPlace_componentOn, hw]
 
-omit [WeilData E] in
 lemma isOpen_coe_localLevel (A : Set (FinPlace E)) : IsOpen (localLevel n A : Set (Gf E n)) :=
   Subgroup.isOpen_mono stdLevel_le_localLevel isOpen_stdLevel
 
-omit [WeilData E] in
 lemma countable_quotient_localLevel (A : Set (FinPlace E)) :
     Countable (Gf E n ⧸ localLevel n A) := by
   have := QuotientGroup.discreteTopology (isOpen_coe_localLevel (n := n) A)
@@ -99,7 +102,6 @@ def IsUnramifiedOn (b : AutChar E) (n : Type) [Fintype n] [DecidableEq n]
     (A : Set (FinPlace E)) : Prop :=
   ∀ k ∈ stdLevel E n ⊓ supportedOn n A, b.val (detFin 1 k) = 1
 
-omit [WeilData E] in
 /-- If `b` has weight `γ` at the infinite places and a tame part `ψ` (the characters of the residue
 fields through which `b` acts on integral units) that is trivial at `A` and its conjugate, then
 `b ∘ det` is trivial on the integral finite points supported there. -/
@@ -107,6 +109,10 @@ lemma _root_.New.AutChar.HasWeight.isUnramifiedOn {γ : InfinitePlace E → ℤ}
     {ψ : ∀ w : FinPlace E, MulChar (ResField w) ℂ} (hb : b.HasWeight γ ψ)
     (hψ : ∀ w ∈ A.conjClosure, ψ w = 1) : IsUnramifiedOn b n A :=
   fun _k hk ↦ hb.apply_det_eq_one_of_supportedOn hψ hk
+
+section
+
+variable [WeilData E]
 
 /-- Let `b ∘ det` be trivial on the integral points supported on `A` and its conjugate. The
 coefficient of the vacuum is invariant on both sides under these points. -/
@@ -146,7 +152,8 @@ is `0` where the terms are not summable. -/
 def rallisSeries (M : ℕ) (b : AutChar E) (A : Set (FinPlace E)) (y : G E s → ℂ) (g : G E s) : ℂ :=
   ∑' q : Gf E n ⧸ localLevel n A, vacuumCoeff M b (cosetRep q).val * y (g * (1, (cosetRep q).val))
 
-omit [WeilData E] in
+end
+
 /-- Two finite points supported on `A` and its conjugate lie in the same coset of the points
 integral at `A` exactly when they lie in the same coset of the integral points with such support. -/
 lemma mk_eq_mk_iff_of_supportedOn {u u' : Gf E n} (hu : u ∈ supportedOn n A)
@@ -155,12 +162,15 @@ lemma mk_eq_mk_iff_of_supportedOn {u u' : Gf E n} (hu : u ∈ supportedOn n A)
   rw [QuotientGroup.eq, Subgroup.mem_inf, and_iff_left (mul_mem (inv_mem hu) hu'),
     mem_stdLevel_iff_of_supportedOn (mul_mem (inv_mem hu) hu'), mem_localLevel]
 
-omit [WeilData E] in
 /-- The chosen representative of the coset of a point `u` supported on `A` and its conjugate differs
 from `u` on the right by an integral point with such support. -/
 lemma inv_mul_cosetRep_mem {u : Gf E n} (hu : u ∈ supportedOn n A) :
     u⁻¹ * (cosetRep (u : Gf E n ⧸ localLevel n A)).val ∈ stdLevel E n ⊓ supportedOn n A :=
   (mk_eq_mk_iff_of_supportedOn hu (cosetRep _).property).1 (mk_cosetRep _).symm
+
+section
+
+variable [WeilData E]
 
 /-- The terms of `rallisSeries` do not depend on the representatives. Let `b ∘ det` be trivial on
 the integral points supported on `A` and its conjugate, and let `y` be fixed by these points. The
@@ -197,13 +207,14 @@ lemma finMultiplier_cosetRep_mk {u : Gf E n} (hu : u ∈ supportedOn n A) :
     finMultiplier_mul_mul_of_mem_stdLevel (one_mem _) h_int u
   rwa [one_mul, mul_inv_cancel_left] at h_mult
 
+end
+
 /-! ### Two sets of places with disjoint supports -/
 
 section Union
 
 variable {A₁ A₂ : Set (FinPlace E)}
 
-omit [WeilData E] in
 /-- If `A₂` is disjoint from `A₁` and its conjugate, the points supported on `A₁` and its conjugate
 are trivial at `A₂`. -/
 lemma supportedOn_le_trivialOn_right (h_disj : Disjoint A₁.conjClosure A₂) :
@@ -212,7 +223,6 @@ lemma supportedOn_le_trivialOn_right (h_disj : Disjoint A₁.conjClosure A₂) :
     (fun hw₁ ↦ h_disj.notMem_of_mem_left (.inl hw₁) hw)
     (fun hw₁ ↦ h_disj.notMem_of_mem_left (.inr hw₁) hw)
 
-omit [WeilData E] in
 /-- If `A₂` is disjoint from `A₁` and its conjugate, the points supported on `A₂` and its conjugate
 are trivial at `A₁`. -/
 lemma supportedOn_le_trivialOn_left (h_disj : Disjoint A₁.conjClosure A₂) :
@@ -220,7 +230,6 @@ lemma supportedOn_le_trivialOn_left (h_disj : Disjoint A₁.conjClosure A₂) :
   mem_trivialOn.2 fun w hw ↦ mem_supportedOn.1 hg w (h_disj.notMem_of_mem_left (.inl hw))
     (h_disj.notMem_of_mem_left (.inr (by simpa)))
 
-omit [WeilData E] in
 /-- Let `A₂` be disjoint from `A₁` and its conjugate, and let `u₁`, `u₂` be supported on `A₁`, `A₂`
 and their conjugates. Then `u₁ * u₂` represents the coset of `g` at `A₁ ∪ A₂` exactly when `u₁`
 represents it at `A₁` and `u₂` represents it at `A₂`. -/
@@ -239,7 +248,6 @@ lemma mk_mul_eq_mk_iff (h_disj : Disjoint A₁.conjClosure A₂) {u₁ u₂ : Gf
   simp +contextual only [QuotientGroup.eq, mem_localLevel, Set.mem_union, or_imp, forall_and,
     h_at₁, h_at₂]
 
-omit [WeilData E] in
 /-- Let `A₂` be disjoint from `A₁` and its conjugate. The cosets at `A₁ ∪ A₂` are the products of a
 coset at `A₁` and a coset at `A₂`. -/
 lemma bijective_mk_cosetRep_mul (h_disj : Disjoint A₁.conjClosure A₂) :
@@ -254,6 +262,8 @@ lemma bijective_mk_cosetRep_mul (h_disj : Disjoint A₁.conjClosure A₂) :
   refine ⟨fun p p' h_eq ↦ ((h_iff p _).1 h_eq).trans ((h_iff p' _).1 rfl).symm, fun q ↦ ?_⟩
   induction q using QuotientGroup.induction_on with
   | H g => exact ⟨_, (h_iff _ g).2 rfl⟩
+
+variable [WeilData E]
 
 /-- For `M : ℕ` and a character `b`, `vacuumCoeff M b g = (b(det g) · finMultiplier g ^ M)⁻¹` is the
 factor by which a finite point `g` changes the matrix coefficient of a vacuum when `M` is the rank

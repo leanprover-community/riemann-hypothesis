@@ -37,27 +37,27 @@ noncomputable section
 namespace New.Exchange
 
 open Matrix NumberField MeasureTheory Measure Fock Fintype Finset Real ENNReal Space
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n] [DecidableEq n]
+variable {E : Type} [Field E] [CMType E] {n n' r r' : Type} [Fintype n] [DecidableEq n]
   [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r']
   {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s} {W' : Space E n' s'}
-  {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit) (X : V'.Splitting V Unit)
-  [IsBaseAdapted A] [IsBaseAdapted X] (μ : InfinitePlace E → ℤ)
+  {V : Space E r t} {V' : Space E r' t'}
 
 /-- The idele with archimedean component `a` and finite component `1`. -/
 abbrev realIdele (a : (InfinitePlace E → ℂ)ˣ) : (𝔸 E)ˣ :=
   a.map (MonoidHom.inl (InfinitePlace E → ℂ) (𝔸f E))
 
-omit [WeilData E] in
 /-- The idele norm of the idele with archimedean component `a` and finite component `1` is
 `∏ w, ‖a w‖ ^ 2`. -/
 lemma ideleAbs_realIdele_eq_prod (a : (InfinitePlace E → ℂ)ˣ) :
     ideleAbs (realIdele a) = ∏ w : InfinitePlace E, ‖a.val w‖ ^ 2 := by
   simp [ideleAbs]
 
-omit [WeilData E] in
 lemma continuous_ideleAbs_realIdele :
     Continuous fun a : (InfinitePlace E → ℂ)ˣ ↦ ideleAbs (realIdele a) :=
   continuous_ideleAbs.comp ((Continuous.prodMk_left (Y := 𝔸f E) 1).units_map _)
+
+variable [WeilData E] (A : W'.Splitting W Unit) (X : V'.Splitting V Unit) [IsBaseAdapted A]
+  [IsBaseAdapted X] (μ : InfinitePlace E → ℤ)
 
 /-- The integrand of the cone integral at `p = (k, a)`, with `k` in the maximal compact subgroup of
 `U(V')`: the line term `lineTermReal A X β a` of `k v`, times the character

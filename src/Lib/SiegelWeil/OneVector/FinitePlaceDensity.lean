@@ -157,9 +157,8 @@ lemma skewMeasure_setOf_mul_mem (u : Aˣ) (h : star u.val = u) :
   simpa only [preimage, mem_ofPred_eq, SetLike.mem_coe, h_part, smul_apply,
     skewMeasure_setOf_mem, smul_eq_mul, mul_one] using h_scale
 
-variable {ι κ : Type} [Fintype ι] [DecidableEq ι] [Fintype κ]
+variable {ι κ : Type} [Fintype ι] [Fintype κ]
 
-omit [DecidableEq ι] in
 /-- The lattice of integral vectors is open and compact, of volume `1`. -/
 theorem isOpen_isCompact_volume_intVectors :
     let L : Set (ι → A) := intVectors P.integers ι
@@ -179,6 +178,8 @@ theorem modulus_le_volume {u : Aˣ} {S : Set A} (h_mul_mem : ∀ r ∈ P.integer
 /-- A unit of `A` that lies in `R` has modulus at most `1`. -/
 theorem modulus_le_one (u : Aˣ) (hu_mem : u.val ∈ integers) : P.modulus u ≤ 1 := by
   simp [modulus_eq_inv_genIndex, one_le_genIndex hu_mem]
+
+variable [DecidableEq ι]
 
 /-- The principal congruence subgroups `unitaryLevel integers g J` (the `k` with `k`, `k⁻¹` and
 `g⁻¹ (k - 1)` integral) of the unitary group `U J` of the matrix `J` are open for every unit `g`,

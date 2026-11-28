@@ -58,13 +58,12 @@ open NumberField (InfinitePlace)
 
 section Frame
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r : Type} [Fintype n] [DecidableEq n]
+variable {E : Type} [Field E] [CMType E] {n n' r : Type} [Fintype n] [DecidableEq n]
   [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] {s : n → ℤˣ} {s' : n' → ℤˣ}
   {W : Space E n s} {W' : Space E n' s'} {D : W.Splitting W' r}
 
 variable {b : GL r (𝔸 E)}
 
-omit [WeilData E] in
 /-- Let `D` split `W` as `W'` plus hyperbolic planes indexed by `r`, and let it be adapted at `1`
 to `b`: at each infinite place `w` the frame `D.frameAt 1 b` of `W` has orthonormal columns (and it
 is integral at the finite places). This frame is square, so its rows are orthonormal as well. -/
@@ -74,7 +73,6 @@ lemma frameAt_real_mul_conjTranspose (h : D.IsAdapted 1 b) (w : InfinitePlace E)
   exact (mul_eq_one_comm_of_card_eq ((r ⊕ r) ⊕ n') n ℂ (by simp +arith [D.card_eq])).1
     (h_orthonormal w)
 
-omit [WeilData E] in
 /-- Let `D` split `W` as `W'` plus hyperbolic planes indexed by `r`, with an adapted frame
 `F = D.frameAt 1 b`. At an infinite place `w`, with `S` the diagonal matrix of the signs `s` of
 `W`, we have `S F = F T`, where `T` is the block diagonal matrix of the exchange of the two lines of
@@ -94,6 +92,8 @@ omit [Fintype n] in
 lemma posProj_eq : posProj s = (2⁻¹ : ℂ) • (1 + signMatrix s) := by
   rw [signMatrix_eq_posProj_sub]
   module
+
+variable [WeilData E]
 
 /-- The vector `L a + I z + K c` with coordinates `a`, `z`, `c` in the directions `L`, `I`, `K` of
 the real mixed model of a splitting `D` adapted at `1` to `b`. -/
@@ -263,7 +263,7 @@ end Frame
 
 section LinearAlgebra
 
-variable {r r' : Type} [Fintype r] [DecidableEq r] [Fintype r'] [DecidableEq r'] {t : r → ℤˣ}
+variable {r r' : Type} [DecidableEq r] [Fintype r'] [DecidableEq r'] {t : r → ℤˣ}
   {t' : r' → ℤˣ}
 
 /-- The determinant of a matrix with rows and columns indexed by `Unit ⊕ Unit`. -/
@@ -279,7 +279,6 @@ lemma units_int_mul_eq_one_iff (a b : ℤˣ) : a * b = 1 ↔ a = b := by
   revert a b
   decide
 
-omit [Fintype r] in
 /-- The diagonal projection on the indices of sign `σ` is `(1 + σ S) / 2`, with `S` the matrix of
 signs. -/
 lemma diagonal_sign_eq (t : r → ℤˣ) (σ : ℤˣ) :
@@ -291,6 +290,8 @@ lemma diagonal_sign_eq (t : r → ℤˣ) (σ : ℤˣ) :
     obtain rfl | rfl := Int.units_eq_one_or σ <;> obtain h | h := Int.units_eq_one_or (t i) <;>
       simp [signMatrix, h] <;> norm_num
   · simp [signMatrix, hij]
+
+variable [Fintype r]
 
 /-- Let `P` be unitary and carry the signs `t'` to the exchange of the two lines of a hyperbolic
 plane and the signs `t`. The principal minor on the indices of sign `σ` of the conjugate by `P` of
@@ -339,7 +340,7 @@ end LinearAlgebra
 
 section DetVector
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n r : Type} [Fintype n] [DecidableEq n]
+variable {E : Type} [Field E] [CMType E] {n r : Type} [Fintype n] [DecidableEq n]
   [Fintype r] [DecidableEq r]
 
 /-- The square matrix `u₊ F` at the infinite place `w`: the positive part of the point `u` of
@@ -373,7 +374,6 @@ def detVector (s : n → ℤˣ) (t : r → ℤˣ) (k : ℕ) (m : InfinitePlace E
 
 variable {s : n → ℤˣ} {t : r → ℤˣ}
 
-omit [WeilData E] in
 /-- The value of the determinant vector at `u`: `realVac u` times the conjugate of the product of
 the powers of the principal minors of `posCoordMatrix s t F u w` on the two blocks of signs. -/
 lemma detVector_apply (k : ℕ) (m : InfinitePlace E → ℕ) (F : InfinitePlace E → Matrix n r ℂ)
@@ -403,7 +403,7 @@ lemma detVector_apply (k : ℕ) (m : InfinitePlace E → ℕ) (F : InfinitePlace
     rfl
   simp [detVector, detPoly, polyVector_apply, eval_rename, h_minor]
 
-omit [WeilData E] [CMType E] [DecidableEq n] in
+omit [CMType E] [DecidableEq n] in
 /-- A substitution that multiplies the rows of the positive variables by a block diagonal matrix
 `g w` at each place multiplies the determinant of `detPolyMatrix` on the block of sign `σ` by the
 principal minor of `g w` on that block. -/
@@ -436,7 +436,6 @@ lemma aeval_det_detPolyMatrix (F : InfinitePlace E → Matrix n r ℂ) {g : GInf
     ← RingHom.map_det, mul_comm]
   rfl
 
-omit [WeilData E] in
 /-- Let `card n = 2 (k + q)`, with `q` the number of negative signs of `s`. A point `g` of the
 archimedean unitary group of `V` whose components are block diagonal for the signs `t`, acting in
 the real Weil representation of weight `targetWeight n μ` on the target and `0` on the source, with
@@ -498,13 +497,11 @@ end DetVector
 
 section ConeIntegral
 
-variable {E : Type} [Field E] [CMType E] [WeilData E] {n n' r r' : Type} [Fintype n]
+variable {E : Type} [Field E] [CMType E] {n n' r r' : Type} [Fintype n]
   [DecidableEq n] [Fintype n'] [DecidableEq n'] [Fintype r] [DecidableEq r] [Fintype r']
   [DecidableEq r'] {s : n → ℤˣ} {s' : n' → ℤˣ} {t : r → ℤˣ} {t' : r' → ℤˣ} {W : Space E n s}
-  {W' : Space E n' s'} {V : Space E r t} {V' : Space E r' t'} (A : W'.Splitting W Unit)
-  (X : V'.Splitting V Unit) [IsBaseAdapted A] [IsBaseAdapted X]
+  {W' : Space E n' s'} {V : Space E r t} {V' : Space E r' t'}
 
-omit [WeilData E] in
 /-- The component at an infinite place of a product of adelic matrices is the product of the
 components. -/
 lemma atRealPlace_mul {a b c : Type} [Fintype b] (M : Matrix a b (𝔸 E)) (N : Matrix b c (𝔸 E))
@@ -516,6 +513,9 @@ lemma atRealPlace_mul {a b c : Type} [Fintype b] (M : Matrix a b (𝔸 E)) (N : 
 each infinite place `w` and `0` elsewhere. -/
 def lineCoord (n r : Type) (a : InfinitePlace E → ℂ) : InfinitePlace E × LineIndex n r → ℂ :=
   fun p ↦ a p.1 * p.2.isRight.toNat
+
+variable [WeilData E] (A : W'.Splitting W Unit) (X : V'.Splitting V Unit) [IsBaseAdapted A]
+  [IsBaseAdapted X]
 
 /-- The entries at the infinite place `w` of the point `framePoint h (-x) u (-x)`, for the adapted
 frame `h` of `lineTermSplitting A X β` and `x` equal to `a` on the line and `0` elsewhere. -/
