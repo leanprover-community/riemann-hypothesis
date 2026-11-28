@@ -173,18 +173,17 @@ lemma exists_rescale_theta_eq_pow_mul_aeval (hp : chiK d p ≠ 1) :
     grind [Polynomial.natDegree_map]
   · rw [← hR.taylorVia_eq, taylorVia, taylorVia, taylorAtZero_comp_mul, rescale_map]
 
-/-- Let `d ≡ 7` modulo `8` be a prime and `p` a prime that does not split in `ℚ(√-d)`. Then
+/-- Let `d ≡ 7` modulo `8` be a prime and `p` any prime. Then
 `|π_p| |g_n| ≤ 1` for the `n`-th coefficient `g_n` of `g` and `n < q_p`. -/
-lemma norm_piPrime_mul_coeff_negLogTheta_le_one (hp : chiK d p ≠ 1) {n : ℕ}
+lemma norm_piPrime_mul_coeff_negLogTheta_le_one {n : ℕ}
     (hn : n < primeNorm d p) : ‖ιₚ (piPrime d p)‖ * ‖coeff n C.negLogTheta‖ ≤ 1 := by
   match n with
   | 0 => simp [constantCoeff_negLogTheta]
   | 1 => simp [coeff_one_negLogTheta]
   | 2 =>
-    have h_two : ‖(2 : ℂ_[p])‖ = 1 := mod_cast Nat.Coprime.norm_natCast_eq_one
-      ((Nat.coprime_primes Fact.out Nat.prime_two).2 (ne_two_of_chiK_ne_one hp)) ℂ_[p]
     have h_sqrt : ‖ιₚ (.I * √d)‖ * ‖coeff 2 C.negLogTheta‖ ≤ 1 := by
-      simpa only [norm_mul, h_two, one_mul] using C.norm_sqrt_mul_coeff_two_negLogTheta_le_one
+      rw [← norm_mul]
+      exact C.sqrt_mul_coeff_two_negLogTheta_mem_valRingCp
     exact (mul_le_mul_of_nonneg_right norm_piPrime_le_norm_sqrt_neg (norm_nonneg _)).trans h_sqrt
   | k + 3 =>
     -- Compare the coefficients of `z ^ (k + 1)` in `g'' = g''(0) + x`.
@@ -214,7 +213,7 @@ lemma norm_coeff_smul_negLogTheta_sub_rescale_le (hp : chiK d p ≠ 1) {n : ℕ}
   | 1 => simp [coeff_one_negLogTheta]
   | k + 2 =>
     have h_bound : ‖ιₚ (piPrime d p)‖ * ‖coeff (k + 2) C.negLogTheta‖ ≤ 1 :=
-      C.norm_piPrime_mul_coeff_negLogTheta_le_one hp hn
+      C.norm_piPrime_mul_coeff_negLogTheta_le_one hn
     set π : ℂ_[p] := ιₚ (piPrime d p)
     have h_factor : ‖(primeNorm d p : ℂ_[p]) - π ^ (k + 2)‖ ≤ ‖π‖ ^ 2 := by
       rw [sub_eq_add_neg]

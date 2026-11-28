@@ -37,7 +37,7 @@ modulo `8` (`PrimeSevenModEight d`). The main imported notions are the following
 * `New.CMLattice.rescale_translatedY_mem_of_mem_normPairClosure`,
   `New.CMLattice.expSubst_sub_rescale_mem`: for a limit `(δ, s)` of pairs `(α, α ᾱ)` with `α` an
   integer of `K`, the series `y(δ z)` and `exp (s g(z) - g(δ z))` lie in `𝒪[[y]]`.
-* `New.CMLattice.norm_sqrt_mul_coeff_two_negLogTheta_le_one`: `√-d g''(0)` is integral.
+* `New.CMLattice.sqrt_mul_coeff_two_negLogTheta_mem_valRingCp`: `√-d g''(0) / 2` is integral.
 * `New.CMLattice.multiSeriesRing`: for linear forms `μ_i`, the ring `𝒪[[y(μ_i z)]]` of integral
   power series in the series `y(μ_i z)`.
 * `New.CMLattice.translatedY_add_mem_multiSeriesRing`: the group law is integral.
@@ -349,12 +349,10 @@ lemma mul_coeff_two_negLogTheta_mem_valRingCp {a : ℂ} (ha : a ∈ quadInt d) :
   -- An element of `valRingCp p` is by definition one of norm at most `1`.
   rwa [h_exp_two, h_two] at h_norm
 
-/-- Let `d` be a prime that is 7 modulo 8 and `ιₚ : ℂ → ℂ_[p]` a `p`-adic place. Let `g = -log θ` be
-the negative logarithm, with `g(0) = 0`, of the Taylor series at `0` of the theta function `θ` of
-`C`, read in `ℂ_[p]`. Then, for `√-d = i √d`, the number `ιₚ(√-d) g''(0)` has norm at most `1` in
-`ℂ_[p]`; here `g''(0)` is twice the second coefficient of `g`. -/
-lemma norm_sqrt_mul_coeff_two_negLogTheta_le_one :
-    ‖ιₚ (.I * √d) * (2 * coeff 2 C.negLogTheta)‖ ≤ 1 := by
+/-- Let `d` be a prime congruent to `7` modulo `8` and `g = -log θ`. At every `p`-adic place,
+the product of `√-d` with the quadratic coefficient `g''(0) / 2` is integral. -/
+lemma sqrt_mul_coeff_two_negLogTheta_mem_valRingCp :
+    ιₚ (.I * √d) * coeff 2 C.negLogTheta ∈ valRingCp p := by
   -- The difference of the numbers `a (ā - a) g''(0) / 2` at `a = β̄` and `a = β`, with `β` the
   -- generator of the integers of `K`, is `√-d g''(0) / 2`.
   set β : ℂ := quadGen d with hβ
@@ -363,14 +361,20 @@ lemma norm_sqrt_mul_coeff_two_negLogTheta_le_one :
     rw [← map_sub, Complex.conj_conj, hβ, conj_quadGen, quadGen]
     congr 1
     ring
-  have h_half : ιₚ (.I * √d) * coeff 2 C.negLogTheta ∈ valRingCp p := by
-    rw [h_diff, sub_mul]
-    exact sub_mem
-      (C.mul_coeff_two_negLogTheta_mem_valRingCp (conj_mem_quadInt quadGen_mem_quadInt))
-      (C.mul_coeff_two_negLogTheta_mem_valRingCp quadGen_mem_quadInt)
+  rw [h_diff, sub_mul]
+  exact sub_mem
+    (C.mul_coeff_two_negLogTheta_mem_valRingCp (conj_mem_quadInt quadGen_mem_quadInt))
+    (C.mul_coeff_two_negLogTheta_mem_valRingCp quadGen_mem_quadInt)
+
+/-- Let `d` be a prime that is 7 modulo 8 and `ιₚ : ℂ → ℂ_[p]` a `p`-adic place. Let `g = -log θ` be
+the negative logarithm, with `g(0) = 0`, of the Taylor series at `0` of the theta function `θ` of
+`C`, read in `ℂ_[p]`. Then, for `√-d = i √d`, the number `ιₚ(√-d) g''(0)` has norm at most `1` in
+`ℂ_[p]`; here `g''(0)` is twice the second coefficient of `g`. -/
+lemma norm_sqrt_mul_coeff_two_negLogTheta_le_one :
+    ‖ιₚ (.I * √d) * (2 * coeff 2 C.negLogTheta)‖ ≤ 1 := by
   -- Multiply by `2`, which is integral.
   rw [mul_left_comm]
-  exact mul_mem (ofNat_mem _ 2) h_half
+  exact mul_mem (ofNat_mem _ 2) C.sqrt_mul_coeff_two_negLogTheta_mem_valRingCp
 
 end CMLattice
 
