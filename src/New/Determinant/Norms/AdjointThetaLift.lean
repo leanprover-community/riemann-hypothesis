@@ -384,6 +384,159 @@ lemma card_isUnit_submatrix {R : Type} [CommRing R] (ι : r ↪ n) :
     _ = _ := congrArg (· * _)
         (Nat.card_congr Submonoid.unitsTypeEquivIsUnitSubmonoid.toEquiv).symm
 
+/-- The block datum as a function of `n × r` matrices `x` modulo `π_M Q = O.levelModulus 1`: with
+`x_w` the reduction of `x` at `w` (`levelResidueAt`), it is `0` unless at every chosen place `x_w`
+is the inclusion matrix of `O.incl`, the embedding of the indices of `W` into those of `V`, and then
+it is `∏ ψ_w (det x'_w)` over the places `w` of the twist, with `x'_w` the block on the rows
+`O.incl` (`New.DescentPair.residueBlockDatum`). -/
+def DescentPair.blockFn (x : Matrix n r (O.levelModulus 1).ResidueRing) : ℂ :=
+  O.residueBlockDatum fun i : O.ChosenIndex ⊕ O.TwistIndex ↦ x.map (levelResidueAt i)
+
+/-- The finite datum `O.blockDatum` of the theta kernel, defined modulo `π_M² Q`, is also the datum
+given by the function `O.blockFn` modulo `π_M Q = O.levelModulus 1` and the vacuum elsewhere. -/
+lemma DescentPair.blockDatum_eq_vacuumDatum [WeilData E] :
+    O.blockDatum = vacuumDatum O.W (stdSpace E n) (O.levelModulus 1) O.blockFn := by
+  -- The two moduli have the same places, and both functions factor through the reductions there.
+  refine Subtype.ext ?_
+  unfold blockDatum vacuumDatum blockFn
+  simp only [liftFn_eq_residueDatum places_levelModulus O.residueBlockDatum, places_levelModulus]
+
+/-- For a complex multiplicative character `χ` of a finite field and a square matrix `X` over that
+field, the squared modulus of `χ(det X)` is `1` if `X` is invertible and `0` otherwise. -/
+lemma star_mulChar_det_mul_self {F : Type} [Field F] [Finite F] (χ : MulChar F ℂ)
+    (X : Matrix r r F) [Decidable (IsUnit X)] :
+    star (χ X.det) * χ X.det = if IsUnit X then 1 else 0 := by
+  rw [MulChar.star_apply', ← MulChar.mul_apply, inv_mul_cancel]
+  split_ifs with hX
+  · exact MulChar.one_apply ((isUnit_iff_isUnit_det X).1 hX)
+  · exact MulChar.map_nonunit _ (mt (isUnit_iff_isUnit_det X).2 hX)
+
+omit [DecidableEq n] in
+/-- Chinese remainder theorem for matrices: a matrix modulo `π_M Q = O.levelModulus 1` is the same
+as the family of its reductions at the chosen places and the places of `Q`. -/
+lemma DescentPair.bijective_map_levelResidueAt :
+    Bijective fun (x : Matrix n r (O.levelModulus 1).ResidueRing)
+      (i : O.ChosenIndex ⊕ O.TwistIndex) ↦
+      (x.map (levelResidueAt i) : Matrix n r (ResField (O.placeAt i))) := by
+  have h_card : Nat.card (∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i))) ≤
+      Nat.card (Matrix n r (O.levelModulus 1).ResidueRing) := by
+    simp only [Matrix, Nat.card_pi, card_ResField, Finset.prod_const, card_univ]
+    simp [O.card_levelModulus_residueRing, prod_pow]
+  exact Injective.bijective_of_nat_card_le (fun x y h ↦ (Modulus.matrix_eq_iff_map_modulusResidue_eq
+    O.apart.injective O.ideal_levelModulus_one).2 (congrFun h)) h_card
+
+/-- The squared norm of the block datum `O.blockFn`: the sum of `|O.blockFn x|²` over the `n × r`
+matrices `x` modulo the product `π_M Q = O.levelModulus 1` of the chosen places `M` and the places
+`Q` of the twist, two finite families of places that come with the pair. The function is `0` unless
+`x` is the inclusion matrix of `O.incl` at every chosen place, and is then a product over `w ∈ Q` of
+characters of the determinant of the block on the rows `O.incl`. So it counts one matrix at each
+chosen place; at `w ∈ Q`, of norm `q_w`, it counts the matrices whose block on those rows is
+invertible, the other `O.rankDiff` rows being free. The sum is thus the order of
+`O.TwistGL r = ∏_w GL_r(k_w)` times `(∏_w q_w) ^ (O.rankDiff * r)`. -/
+lemma DescentPair.blockFn_normSq : star O.blockFn ⬝ᵥ O.blockFn =
+    Nat.card (O.TwistGL r) * (∏ i : O.TwistIndex, (O.twistPlace i).q) ^ (O.rankDiff * card r) := by
+  classical
+  let e : Matrix n r (O.levelModulus 1).ResidueRing ≃ ∀ i, Matrix n r (ResField (O.placeAt i)) :=
+    Equiv.ofBijective _ O.bijective_map_levelResidueAt
+  -- The squared modulus of `O.blockFn` is a product of local indicators.
+  let ind : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i)) → ℂ
+    | .inl _ => fun X ↦ if X = inclMatrix _ O.incl then 1 else 0
+    | .inr _ => fun X ↦ if IsUnit (X.submatrix O.incl id) then 1 else 0
+  have h_sq (x : Matrix n r (O.levelModulus 1).ResidueRing) :
+      star (O.blockFn x) * O.blockFn x = ∏ i, ind i (e x i) := by
+    rw [blockFn, residueBlockDatum, prod_sum_type]
+    split_ifs with h_chosen
+    · have h_one : ∏ i, ind (.inl i) (e x (.inl i)) = 1 :=
+        Finset.prod_eq_one fun i _ ↦ ite_eq_left (h_chosen i)
+      rw [h_one, one_mul, star_prod, ← prod_mul_distrib]
+      exact Finset.prod_congr rfl fun i _ ↦ star_mulChar_det_mul_self _ _
+    · obtain ⟨i, hi⟩ : ∃ i : O.ChosenIndex, e x (.inl i) ≠ inclMatrix _ O.incl :=
+        not_forall.1 h_chosen
+      have h_zero : ∏ i, ind (.inl i) (e x (.inl i)) = 0 :=
+        prod_eq_zero (mem_univ i) (ite_eq_right hi)
+      rw [mul_zero, h_zero, zero_mul]
+  have h_chosen (i : O.ChosenIndex) : ∑ X, ind (.inl i) X = 1 := Fintype.sum_ite_eq' _ fun _ ↦ 1
+  have h_twist (i : O.TwistIndex) : ∑ X, ind (.inr i) X =
+      Nat.card (GL r (ResField (O.twistPlace i))) * (O.twistPlace i).q ^ (O.rankDiff * card r) := by
+    rw [← card_ResField, ← Nat.cast_pow, ← Nat.cast_mul, DescentPair.rankDiff,
+      ← card_isUnit_submatrix O.incl, Nat.card_eq_fintype_card, Fintype.card_subtype]
+    exact sum_boole _ _
+  calc star O.blockFn ⬝ᵥ O.blockFn
+      = ∑ x : Matrix n r (O.levelModulus 1).ResidueRing, ∏ i, ind i (e x i) :=
+        Finset.sum_congr rfl fun x _ ↦ h_sq x
+    _ = ∑ X : ∀ i, Matrix n r (ResField (O.placeAt i)), ∏ i, ind i (X i) :=
+        e.sum_comp fun X ↦ ∏ i, ind i (X i)
+    _ = ∏ i, ∑ X, ind i X := (Fintype.prod_sum ind).symm
+    _ = ∏ i : O.TwistIndex, (Nat.card (GL r (ResField (O.twistPlace i))) *
+          (O.twistPlace i).q ^ (O.rankDiff * card r) : ℂ) := by
+        simp only [prod_sum_type, h_chosen, h_twist, prod_const_one, one_mul]
+    _ = Nat.card (O.TwistGL r) * (∏ i, (O.twistPlace i).q) ^ (O.rankDiff * card r) := by
+        simp only [prod_mul_distrib, prod_pow, TwistGL, Nat.card_pi, Nat.cast_prod]
+        rfl
+
+/-- Let `x` be an `n × r` matrix modulo the product `π_M Q = O.levelModulus 1` of the chosen places
+`M` and the places `Q` of the twist, and suppose that the block datum `O.blockFn` does not vanish at
+`x`: at each chosen place `x` is the inclusion matrix of `O.incl : r ↪ n`, and at each place of the
+twist its block on those rows is invertible. Then this block is the reduction modulo `π_M Q`
+(`reductionGL`) of an integral point `k` of the finite adelic group of `W` that lies in the level
+`J_M = levelOf O.chosenPlace ⊥` of the integral points that reduce to `1` at every chosen place. -/
+lemma DescentPair.exists_reductionGL_eq_submatrix_of_blockFn_ne_zero
+    {x : Matrix n r (O.levelModulus 1).ResidueRing} (hx : O.blockFn x ≠ 0) :
+    ∃ k : stdLevel E r, k.val ∈ levelOf O.chosenPlace ⊥ ∧
+      ((O.levelModulus 1).reductionGL k).val = x.submatrix O.incl id := by
+  -- The block is `1` at the chosen places and invertible at the places of `Q`; lift this family.
+  classical
+  let block (i : O.ChosenIndex ⊕ O.TwistIndex) : Matrix r r (ResField (O.placeAt i)) :=
+    (x.map (levelResidueAt i)).submatrix O.incl id
+  rw [blockFn, residueBlockDatum, ite_ne_right_iff, prod_ne_zero_iff] at hx
+  obtain ⟨hx_chosen, hx_twist⟩ := hx
+  have h_chosen (i : O.ChosenIndex) : block (.inl i) = 1 :=
+    calc block (.inl i) = (inclMatrix _ O.incl).submatrix O.incl id :=
+          congrArg (submatrix · O.incl id) (hx_chosen i)
+      _ = 1 := by rw [← inclMatrix_transpose_mul, inclMatrix_transpose_mul_self]
+  have h_unit : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, IsUnit (block i)
+    | .inl i => by simp only [h_chosen, isUnit_one]
+    | .inr i =>
+      (isUnit_iff_isUnit_det _).2 (MulChar.apply_ne_zero_iff.1 (hx_twist i (mem_univ i)))
+  obtain ⟨k, hk⟩ : ∃ k : stdLevel E r, stdLevel.reduceFamily O.placeAt k = fun i ↦
+    (h_unit i).unit :=
+    (exists_reduceFamily_eq _).imp fun _ ↦ And.right
+  have h_reduce (i : O.ChosenIndex ⊕ O.TwistIndex) :
+      (stdLevel.reduceAt (O.placeAt i) k).val = block i := congrArg Units.val (congrFun hk i)
+  have h_one : stdLevel.reduceFamily O.chosenPlace k = 1 :=
+    funext fun i ↦ Units.ext ((h_reduce (.inl i)).trans (h_chosen i))
+  refine ⟨k, mem_levelOf.2 ⟨k.property, h_one⟩, (Modulus.matrix_eq_iff_map_modulusResidue_eq
+    O.apart.injective O.ideal_levelModulus_one).2 fun i ↦ ?_⟩
+  rw [reductionGL_map_modulusResidue, ← submatrix_map]
+  exact h_reduce i
+
+/-- Let `π_M Q = O.levelModulus 1` be the product of the chosen places and the places of the twist.
+The block datum `O.blockFn`, which on matrices modulo `π_M Q` is the indicator of the inclusion
+matrix at the chosen places times characters of the determinant of the block on the rows `O.incl` at
+the places of the twist, is sharp for the level `J_M = levelOf O.chosenPlace ⊥`, principal at the
+chosen places and maximal elsewhere. -/
+lemma DescentPair.isSharpFn_blockFn [WeilData E] :
+    IsSharpFn O.W (stdSpace E n) O.charV (O.levelModulus 1)
+    (levelOf O.chosenPlace ⊥) O.blockFn where
+  principal_le := by
+    rintro _ ⟨k, hk, rfl⟩
+    have h_all : stdLevel.reduceFamily O.placeAt k = 1 := O.ker_reductionGL_eq.le hk
+    exact mem_levelOf.2 ⟨k.property, funext fun i ↦ congrFun h_all (.inl i)⟩
+  ne_zero h := by
+    have h_normSq : star O.blockFn ⬝ᵥ O.blockFn ≠ 0 := by
+      simp [O.blockFn_normSq, prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot]
+    simp [h] at h_normSq
+  fixes k hk := by
+    -- This is the transformation law of the datum for the pair `(k, 1)`.
+    obtain ⟨hk_int, hk_one⟩ : ∃ hk_int : k ∈ stdLevel E r,
+        stdLevel.reduceFamily O.chosenPlace ⟨k, hk_int⟩ = 1 := mem_levelOf.1 hk
+    have h_law : O.pairThetaKernel.ω ((1, k), 1, 1) O.blockDatum.val = O.blockDatum.val := by
+      simpa [hk_one] using O.omega_blockDatum_eq_smul ⟨k, hk_int⟩ 1 1 (by simp [hk_one])
+    simpa [← blockDatum_eq_vacuumDatum, pairWeil_apply, Prod.mk_one_one] using h_law
+  exists_mul_eq := ⟨(inclMatrix (O.levelModulus 1).ResidueRing O.incl)ᵀ, fun x hx ↦ by
+    simpa only [inclMatrix_transpose_mul] using
+      O.exists_reductionGL_eq_submatrix_of_blockFn_ne_zero hx⟩
+
 /-- The mass `c_Ψ` of the block datum: the sum of `|O.blockFn x|²` over the `n × r` matrices `x`
 modulo `π_M Q` (`New.DescentPair.blockFn_normSq`), divided by the number of these matrices and by
 the index `∏_{w ∈ M} |GL_r(k_w)|` of the level `J_M`. -/
@@ -398,106 +551,10 @@ lemma DescentPair.isSharp_blockDatum [WeilData E]
     (hW : (∀ i j : r, O.signs i = O.signs j) ∨ Nonempty (O.levelModulus 1).places) :
     IsSharp O.charV (O.levelModulus 1).places.conjClosure O.blockDatum.val (levelOf O.chosenPlace ⊥)
       O.blockMass := by
-  classical
-  let blockFn (x : Matrix n r (O.levelModulus 1).ResidueRing) : ℂ :=
-    O.residueBlockDatum fun i : O.ChosenIndex ⊕ O.TwistIndex ↦ x.map (levelResidueAt i)
-  let e : Matrix n r (O.levelModulus 1).ResidueRing ≃ ∀ i, Matrix n r (ResField (O.placeAt i)) :=
-    Equiv.ofBijective (fun x i ↦ x.map (levelResidueAt i)) <|
-      Injective.bijective_of_nat_card_le
-        (fun _ _ h ↦ (Modulus.matrix_eq_iff_map_modulusResidue_eq
-          O.apart.injective O.ideal_levelModulus_one).2 (congrFun h)) <| by
-        simp only [Matrix, Nat.card_pi, card_ResField, Finset.prod_const, card_univ]
-        simp [O.card_levelModulus_residueRing, prod_pow]
-  let ind : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i)) → ℂ
-    | .inl _ => fun X ↦ if X = inclMatrix _ O.incl then 1 else 0
-    | .inr _ => fun X ↦ if IsUnit (X.submatrix O.incl id) then 1 else 0
-  have h_sq (x : Matrix n r (O.levelModulus 1).ResidueRing) :
-      star (blockFn x) * blockFn x = ∏ i, ind i (e x i) := by
-    dsimp only [blockFn]
-    rw [residueBlockDatum, prod_sum_type]
-    split_ifs with h_chosen
-    · have h_one : ∏ i, ind (.inl i) (e x (.inl i)) = 1 :=
-        Finset.prod_eq_one fun i _ ↦ ite_eq_left (h_chosen i)
-      rw [h_one, one_mul, star_prod, ← prod_mul_distrib]
-      refine Finset.prod_congr rfl fun i _ ↦ ?_
-      dsimp only [ind]
-      rw [MulChar.star_apply', ← MulChar.mul_apply, inv_mul_cancel]
-      split_ifs with hX
-      · exact MulChar.one_apply ((isUnit_iff_isUnit_det _).1 hX)
-      · exact MulChar.map_nonunit _ (mt (isUnit_iff_isUnit_det _).2 hX)
-    · obtain ⟨i, hi⟩ : ∃ i : O.ChosenIndex, e x (.inl i) ≠ inclMatrix _ O.incl :=
-        not_forall.1 h_chosen
-      have h_zero : ∏ i, ind (.inl i) (e x (.inl i)) = 0 :=
-        prod_eq_zero (mem_univ i) (ite_eq_right hi)
-      rw [mul_zero, h_zero, zero_mul]
-  have h_chosen (i : O.ChosenIndex) : ∑ X, ind (.inl i) X = 1 := Fintype.sum_ite_eq' _ fun _ ↦ 1
-  have h_twist (i : O.TwistIndex) : ∑ X, ind (.inr i) X =
-      Nat.card (GL r (ResField (O.twistPlace i))) * (O.twistPlace i).q ^ (O.rankDiff * card r) := by
-    rw [← card_ResField, ← Nat.cast_pow, ← Nat.cast_mul, DescentPair.rankDiff,
-      ← card_isUnit_submatrix O.incl, Nat.card_eq_fintype_card, Fintype.card_subtype]
-    exact sum_boole _ _
-  have h_normSq : star blockFn ⬝ᵥ blockFn =
-      Nat.card (O.TwistGL r) * (∏ i : O.TwistIndex, (O.twistPlace i).q) ^ (O.rankDiff * card r) :=
-    calc star blockFn ⬝ᵥ blockFn
-        = ∑ x : Matrix n r (O.levelModulus 1).ResidueRing, ∏ i, ind i (e x i) :=
-          Finset.sum_congr rfl fun x _ ↦ h_sq x
-      _ = ∑ X : ∀ i, Matrix n r (ResField (O.placeAt i)), ∏ i, ind i (X i) :=
-          e.sum_comp fun X ↦ ∏ i, ind i (X i)
-      _ = ∏ i, ∑ X, ind i X := (Fintype.prod_sum ind).symm
-      _ = ∏ i : O.TwistIndex, (Nat.card (GL r (ResField (O.twistPlace i))) *
-            (O.twistPlace i).q ^ (O.rankDiff * card r) : ℂ) := by
-          simp only [prod_sum_type, h_chosen, h_twist, prod_const_one, one_mul]
-      _ = Nat.card (O.TwistGL r) * (∏ i, (O.twistPlace i).q) ^ (O.rankDiff * card r) := by
-          simp only [prod_mul_distrib, prod_pow, TwistGL, Nat.card_pi, Nat.cast_prod]
-          rfl
-  have h_vac : O.blockDatum = vacuumDatum O.W (stdSpace E n) (O.levelModulus 1) blockFn := by
-    refine Subtype.ext ?_
-    unfold blockDatum vacuumDatum
-    dsimp only [blockFn]
-    simp only [liftFn_eq_residueDatum places_levelModulus O.residueBlockDatum, places_levelModulus]
-  have h_sharpFn : IsSharpFn O.W (stdSpace E n) O.charV (O.levelModulus 1)
-      (levelOf O.chosenPlace ⊥) blockFn :=
-    { principal_le := by
-        rintro _ ⟨k, hk, rfl⟩
-        have h_all : stdLevel.reduceFamily O.placeAt k = 1 := O.ker_reductionGL_eq.le hk
-        exact mem_levelOf.2 ⟨k.property, funext fun i ↦ congrFun h_all (.inl i)⟩
-      ne_zero := fun h ↦ by
-        have h_ne : star blockFn ⬝ᵥ blockFn ≠ 0 := by
-          simp [h_normSq, prod_eq_zero_iff, IsDedekindDomain.HeightOneSpectrum.ne_bot]
-        simp [h] at h_ne
-      fixes := fun k hk ↦ by
-        obtain ⟨hk_int, hk_one⟩ : ∃ hk_int : k ∈ stdLevel E r,
-            stdLevel.reduceFamily O.chosenPlace ⟨k, hk_int⟩ = 1 := mem_levelOf.1 hk
-        have h_law : O.pairThetaKernel.ω ((1, k), 1, 1) O.blockDatum.val = O.blockDatum.val := by
-          simpa [hk_one] using O.omega_blockDatum_eq_smul ⟨k, hk_int⟩ 1 1 (by simp [hk_one])
-        simpa [← h_vac, pairWeil_apply, Prod.mk_one_one] using h_law
-      exists_mul_eq := ⟨(inclMatrix (O.levelModulus 1).ResidueRing O.incl)ᵀ, fun x hx ↦ by
-        dsimp only [blockFn] at hx
-        rw [residueBlockDatum, ite_ne_right_iff, prod_ne_zero_iff] at hx
-        let block (i : O.ChosenIndex ⊕ O.TwistIndex) : Matrix r r (ResField (O.placeAt i)) :=
-          (x.map (levelResidueAt i)).submatrix O.incl id
-        have h_ch (i : O.ChosenIndex) : block (.inl i) = 1 := by
-          dsimp only [block]
-          rw [hx.1 i, ← inclMatrix_transpose_mul, inclMatrix_transpose_mul_self]
-        have h_unit : ∀ i, IsUnit (block i)
-          | .inl i => by simp only [h_ch, isUnit_one]
-          | .inr i => (isUnit_iff_isUnit_det _).2
-              (MulChar.apply_ne_zero_iff.1 (hx.2 i (mem_univ i)))
-        obtain ⟨k, hk⟩ : ∃ k : stdLevel E r,
-            stdLevel.reduceFamily O.placeAt k = fun i ↦ (h_unit i).unit :=
-          (exists_reduceFamily_eq _).imp fun _ ↦ And.right
-        have h_red (i) : (stdLevel.reduceAt (O.placeAt i) k).val = block i :=
-          congrArg Units.val (congrFun hk i)
-        refine ⟨k, mem_levelOf.2 ⟨k.property, funext fun i ↦ Units.ext ((h_red (.inl i)).trans
-          (h_ch i))⟩, ?_⟩
-        rw [inclMatrix_transpose_mul]
-        refine (Modulus.matrix_eq_iff_map_modulusResidue_eq
-          O.apart.injective O.ideal_levelModulus_one).2 fun i ↦ ?_
-        rw [reductionGL_map_modulusResidue, ← submatrix_map]
-        exact h_red i⟩ }
   have h_index : stdLevelIndex (levelOf (n := r) O.chosenPlace ⊥) = Nat.card (O.ChosenGL r) :=
     relIndex_levelOf.trans Subgroup.index_bot
-  simpa only [blockMass, ← h_normSq, ← h_index, h_vac] using h_sharpFn.isSharp hW
+  simpa only [blockMass, ← O.blockFn_normSq, ← h_index, blockDatum_eq_vacuumDatum] using
+    O.isSharpFn_blockFn.isSharp hW
 
 /-- The index of the level on `V`, times the sum of `|O.blockFn x|²` over the matrices `x` modulo
 `π_M Q` (`New.DescentPair.blockFn_normSq`), over the index of the level `J_M` on `W`. Divided by the
