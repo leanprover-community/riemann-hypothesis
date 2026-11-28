@@ -3,6 +3,7 @@ module
 public import Mathlib.NumberTheory.NumberField.ClassNumber
 import Mathlib.Topology.MetricSpace.Ultra.TotallySeparated
 import TauCeti.Topology.Algebra.Group.Units
+import TauCeti.RingTheory.DedekindDomain.FiniteAdeleRing.ClassGroup
 public import Lib.General.Measure.HaarModulus
 public import Lib.Adelic.Adeles.Basic
 public import Lib.General.Topology
@@ -246,16 +247,6 @@ variable {K : Type*} [Field K] [NumberField K] {R S : Set (FinPlace K)}
 attribute [-simp] WithZero.inv_exp
 attribute [local simp] WithZero.exp_neg
 
-/-- Two nonzero fractional ideals with the same exponent at every prime are equal. -/
-@[ext]
-lemma fractionalIdeal_count_ext {I J : (FractionalIdeal (nonZeroDivisors (𝓞 K)) K)ˣ}
-    (h_count : ∀ v : FinPlace K, count K v I.val = count K v J) :
-    I = J := by
-  -- A nonzero fractional ideal is the product of the primes raised to its exponents.
-  rw [Units.ext_iff, ← finprod_heightOneSpectrum_factorization' K I.ne_zero,
-    ← finprod_heightOneSpectrum_factorization' K J.ne_zero]
-  simp only [h_count]
-
 /-- The divisor map: a homomorphism `d` from the finite ideles to the nonzero fractional ideals such
 that (a) an idele `a` is integral at `w` exactly when the exponent of `w` in `d a` is nonnegative,
 (b) the kernel is the group of ideles that are units everywhere, (c) the chosen uniformiser at `w`
@@ -272,54 +263,24 @@ lemma exists_idele_divisor_hom :
         FractionalIdeal.mk0 K ⟨w.asIdeal, mem_nonZeroDivisors_of_ne_zero w.ne_bot⟩) ∧
       -- (d)
       ∀ x : Kˣ, d (principalIdele x) = toPrincipalIdeal (𝓞 K) K x := by
-  classical
-  -- The divisor of an idele `a` is the fractional ideal `∏ w ^ ord_w(a)`. The claims are
-  -- checked exponent by exponent, since the exponents determine a nonzero fractional ideal
-  -- (`fractionalIdeal_count_ext`).
-  have h_exists_divisor (a : (𝔸f K)ˣ) : ∃ I : (FractionalIdeal (nonZeroDivisors (𝓞 K)) K)ˣ,
-      ∀ w : FinPlace K, count K w I.val = -log (v (a.val w)) := by
-    refine ⟨.mk0 _ ?_, fun w ↦ count_finprod K w _ ?_⟩
-    · -- a finite product of powers of nonzero primes is nonzero
-      exact finprod_ne_zero fun w ↦ zpow_ne_zero _ (by simp [ne_bot])
-    · -- the exponent is `0` wherever `a` is a unit, so at all but finitely many places
-      exact .mono (finite_setOf_valued_val_ne_one a) fun w' (h_unit : v (a.val w') = 1) ↦ by
-        simp [h_unit]
-  choose d hd using h_exists_divisor
-  have hd_eq (a : (𝔸f K)ˣ) (I : (FractionalIdeal (nonZeroDivisors (𝓞 K)) K)ˣ) :
-      d a = I ↔ ∀ w : FinPlace K, (v (a.val w))⁻¹ = exp (count K w I.val) := by
-    simp [New.fractionalIdeal_count_ext_iff, hd, isUnit_iff.mp, ← exp_inj (M := ℤ)]
-  have hd_mul (a b : (𝔸f K)ˣ) : d (a * b) = d a * d b := by
-    simp [hd_eq, hd, count_mul, isUnit_iff.mp, mul_comm]
-  -- For `x = a / b` the order of `x` at `w` is the exponent of `w` in `(x) = (a) / (b)`.
-  have h_val_principal (x : K) (hx : x ≠ 0) (w : FinPlace K) :
-      (w.valuation K x)⁻¹ = exp (count K w (spanSingleton (nonZeroDivisors (𝓞 K)) x)) := by
-    obtain ⟨a, b, -, rfl⟩ := IsFractionRing.div_surjective (𝓞 K) x
-    obtain ⟨ha_ne, hb_ne⟩ : a ≠ 0 ∧ b ≠ 0 := by simpa using hx
-    -- `(a / b) = (b)⁻¹ (a)`
-    have h_span_eq : spanSingleton (nonZeroDivisors (𝓞 K))
-        (algebraMap (𝓞 K) K a / algebraMap (𝓞 K) K b) =
-        spanSingleton (nonZeroDivisors (𝓞 K)) (algebraMap (𝓞 K) K b)⁻¹ *
-          (Ideal.span {a} : Ideal (𝓞 K)) := by
-      rw [coeIdeal_span_singleton, ← div_spanSingleton, spanSingleton_div_spanSingleton]
-    -- the order of `a / b` is the order of `a` minus the order of `b`
-    rw [count_well_defined K w (spanSingleton_ne_zero_iff.2 hx) h_span_eq, map_div₀,
-      valuation_of_algebraMap, valuation_of_algebraMap, intValuation_if_neg w ha_ne,
-      intValuation_if_neg w hb_ne, ← exp_sub, ← exp_neg, neg_sub_neg, neg_sub]
-  -- A uniformiser at `p` gives an idele of order one at `p` and zero elsewhere.
-  have h_val_uniformizer (p w : FinPlace K) :
-      (v ((locIdele p (uniformizer p)).val w))⁻¹ = exp (if p = w then 1 else 0) := by
-    obtain rfl | h_eq := eq_or_ne p w
-    · simp [v_uniformizer]
-    · simp [locIdele_apply_of_ne h_eq.symm, h_eq]
-  refine ⟨.mk' d hd_mul, fun a w ↦ ?_, ext fun a ↦ ?_, fun p ↦ ?_, fun x ↦ ?_⟩
-  · -- (a) `v (a w) ≤ 1` exactly when its order `-log (v (a w))` is nonnegative
-    simp [hd, isUnit_iff.mp, ← exp_le_exp (G := ℤ)]
-  · -- (b) the divisor is trivial exactly when every order is `0`
-    simp [hd_eq, count_one, mem_idelesUnitOff]
-  · -- (c) the uniformiser at `p` has order `1` at `p` and `0` elsewhere
-    simpa [hd_eq, count_maximal] using h_val_uniformizer p
-  · -- (d) the orders of `x` are the exponents of the principal ideal `(x)`
-    simpa [hd_eq, principalIdele] using h_val_principal x x.ne_zero
+  refine ⟨IsDedekindDomain.FiniteAdeleRing.toFractionalIdeal, fun a w ↦ ?_, ext fun a ↦ ?_,
+    fun w ↦ ?_,
+    -- (d) principal ideles map to principal fractional ideals
+    IsDedekindDomain.FiniteAdeleRing.toFractionalIdeal_unitEmbedding⟩
+  · -- (a) `v (a w) ≤ 1` iff its order `-log (v (a w))` is nonnegative
+    simp [IsDedekindDomain.FiniteAdeleRing.count_coe_toFractionalIdeal,
+      IsDedekindDomain.FiniteAdeleRing.adicOrd_def, isUnit_iff.mp, ← exp_le_exp (G := ℤ)]
+  · -- (b) the divisor is trivial iff `a` is a unit at every finite place
+    simp [IsDedekindDomain.FiniteAdeleRing.ker_toFractionalIdeal,
+      IsDedekindDomain.FiniteAdeleRing.mem_integralUnits_iff, mem_idelesUnitOff]
+  · -- (c) the uniformiser at `w` has order `1` at `w` and `0` elsewhere
+    rw [IsDedekindDomain.FiniteAdeleRing.toFractionalIdeal_apply, finprod_eq_single _ w]
+    · simp only [IsDedekindDomain.FiniteAdeleRing.adicOrd_def, locIdele_apply_self, v_uniformizer,
+        WithZero.log_exp, neg_neg, zpow_one]
+      exact Units.ext (IsDedekindDomain.HeightOneSpectrum.coe_unitOfPrime w K)
+    · intro u hu
+      rw [IsDedekindDomain.FiniteAdeleRing.adicOrd_eq_zero_iff.2
+        (by simp [locIdele_apply_of_ne hu]), zpow_zero]
 
 /-- There is a homomorphism from the finite ideles to the class group whose kernel is generated by
 the principal ideles and the ideles that are units everywhere. -/
