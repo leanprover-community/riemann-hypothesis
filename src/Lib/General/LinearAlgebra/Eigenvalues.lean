@@ -1,6 +1,7 @@
 module
 
 import TauCeti.LinearAlgebra.Matrix.Charpoly.Roots
+import TauCeti.LinearAlgebra.Matrix.Charpoly.Newton
 public import Mathlib.RingTheory.SimpleRing.Principal
 import Mathlib.Algebra.Lie.Weights.Linear
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
@@ -74,7 +75,8 @@ lemma trace_pow_eq_sum_roots (m : ℕ) :
     (A ^ m).trace = (A.charpoly.roots.map fun a : k ↦ a ^ m).sum := by
   simpa using trace_aeval_eq_sum_roots_charpoly_of_splits (splits A.charpoly) (X ^ m)
 
-/-- Over an algebraically closed field of characteristic 0, if tr A^m = tr B^m + ∑_{e∈S} α_e^m
+omit [IsAlgClosed k] in
+/-- Over a field of characteristic 0, if tr A^m = tr B^m + ∑_{e∈S} α_e^m
 for all m ≥ 0, with S finite, then the characteristic polynomial of A is that of B times
 ∏_{e∈S} (X − α_e). -/
 lemma charpoly_eq_mul_of_trace_pow_add [CharZero k] {r ι : Type*} [Fintype r] [DecidableEq r]
@@ -82,21 +84,23 @@ lemma charpoly_eq_mul_of_trace_pow_add [CharZero k] {r ι : Type*} [Fintype r] [
     (h_trace : ∀ m : ℕ, (A ^ m).trace = (B ^ m).trace + ∑ e ∈ S, α e ^ m) :
     A.charpoly = B.charpoly * ∏ e ∈ S, (X - C (α e)) := by
   classical
-  -- The characters `m ↦ a ^ m` of `ℕ` are linearly independent (Dedekind), also over `ℕ`.
-  have h_indep : LinearIndependent ℕ fun a : k ↦ ⇑(powersHom k a) :=
-    ((linearIndependent_monoidHom _ k).comp _ (powersHom k).injective).restrict_scalars' ℕ
-  -- Hence a multiset is determined by its power sums: read the multiplicities as coefficients.
-  have eq_of_sum_pow (s t : Multiset k)
-      (hst : ∀ m : ℕ, (s.map fun a ↦ a ^ m).sum = (t.map fun a ↦ a ^ m).sum) : s = t :=
-    Multiset.toFinsupp.injective (h_indep (funext fun m ↦ by
-      simpa [Finsupp.linearCombination, Finsupp.sum, Finset.sum_multiset_map_count] using
-        hst m.toAdd))
-  have h_roots : A.charpoly.roots = B.charpoly.roots + S.val.map α := by
-    refine eq_of_sum_pow _ _ fun m ↦ ?_
-    simpa [← trace_pow_eq_sum_roots, Multiset.map_map] using h_trace m
-  -- A characteristic polynomial is monic and splits, so its roots determine its values.
-  refine Polynomial.funext fun x ↦ ?_
-  simp [eval_prod, (splits _).eval_eq_prod_roots_of_monic, charpoly_monic, h_roots]
+  -- Compare with the direct sum of B and the one-dimensional auxiliary factors.
+  let D : Matrix (r ⊕ ↥S) (r ⊕ ↥S) k := fromBlocks B 0 0 (diagonal fun e : S ↦ α e)
+  have hcard : Fintype.card n = Fintype.card (r ⊕ ↥S) := by
+    apply Nat.cast_injective (R := k)
+    simpa [Fintype.card_sum, Nat.cast_add] using h_trace 0
+  have hD : A.charpoly = D.charpoly :=
+    Matrix.charpoly_eq_of_trace_pow_eq hcard fun m _ _ ↦ by
+      change (A ^ m).trace = (fromBlocks B 0 0 (diagonal fun e : S ↦ α e) ^ m).trace
+      rw [fromBlocks_diagonal_pow, trace_fromBlocks, diagonal_pow, trace_diagonal]
+      change (A ^ m).trace = (B ^ m).trace + ∑ e : S, α e ^ m
+      rw [Finset.sum_coe_sort S (fun e ↦ α e ^ m)]
+      exact h_trace m
+  rw [hD]
+  change (fromBlocks B 0 0 (diagonal fun e : S ↦ α e)).charpoly =
+    B.charpoly * ∏ e ∈ S, (X - C (α e))
+  rw [charpoly_fromBlocks_zero₂₁, charpoly_diagonal,
+    Finset.prod_coe_sort S (fun e ↦ X - C (α e))]
 
 end New
 
