@@ -452,8 +452,6 @@ lemma liftInPairs_gluedDoubleLiftDatum (v : ∀ j : ℕ, (D.homX j).finitePart) 
   simp only [ρ.self_inv_apply, smul_smul, Units.smul_def, map_smul, gluedFactor,
     Units.val_mul, MonoidHom.coe_comp, Function.comp_apply, map_inv, k₂]
 
--- Keeps definitional checks from unfolding the finite sums.
-seal Finset.univ in
 /-- **All lifts become direct.** Let `m = 2 (ϱ + 1)` be the number of lifts, `f` the number of
 infinite places of `E` and `b` the weight of the data `D`. There is a scalar `c` with
 `‖ιₚ c‖ ≤ N ^ (m f b)` such that the following holds for all finite data `v j` of
@@ -487,10 +485,11 @@ lemma doubleLiftChain_gluedDoubleLiftDatum_eq_smul_chain : ∃ c : ℂ,
     grw [h_gluedFactor_le _ (by assumption), IsUltrametricDist.norm_natCast_le_one,
       h_upCommutationFactor_le]
     simp [h_exp, ← rpow_mul_natCast]
-  · rw [doubleLiftChain, funext (D.liftInPairs_gluedDoubleLiftDatum ϑ v)]
+  · simp only [doubleLiftChain, D.liftInPairs_gluedDoubleLiftDatum ϑ v]
+    rw [compUpTo_gluedLift_eq_smul D.formRepAtN (fun j ↦ D.liftLaw_liftAtN ϑ j (v j))
+      (D.mem_ramified_of_mem_ramifiedSourceForms h_ram) (D.ϱ + 1)]
     -- The direct lifts are the lifts `D.liftAtN ϑ j (v j) directDatum` by definition.
-    exact compUpTo_gluedLift_eq_smul D.formRepAtN (fun j ↦ D.liftLaw_liftAtN ϑ j (v j))
-      (D.mem_ramified_of_mem_ramifiedSourceForms h_ram) (D.ϱ + 1)
+    rfl
 
 end ChainAtLevel
 
