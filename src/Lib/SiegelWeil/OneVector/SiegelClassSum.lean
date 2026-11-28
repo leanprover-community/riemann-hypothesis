@@ -144,15 +144,25 @@ lemma New.SiegelWeil.zeroTerm_shearSplitting {E κ : Type} [Field E] [CMType E] 
   -- It is the integral of the Schrödinger values for the opposite splitting, which differ from
   -- those for `D` by the character.
   set D : (hyperbolicSpace E Unit).Splitting (stdSpace E Empty) Unit := hyperbolicSplitting E Unit
+  have : StarModule (𝔸 E) (𝔸 E) := ⟨fun _ _ ↦ star_mul' _ _⟩
   have h_kCoord :
       kCoord (shearSplitting β).symm = D.kCoord + star (toAdele (j⁻¹ * β.val)) • D.lCoord := by
-    simp [kCoord, lCoord, lAdelic, kAdelic, shearSplitting, D, Splitting.symm, Matrix.add_mul,
-      (hyperbolicSplitting E Unit).l.map_add, Matrix.map_smulₛₗ _ toAdele]
+    have hm : (D.l + (j⁻¹ * β.val : E) • D.k).map (toAdele (E := E)) =
+        D.l.map toAdele + toAdele (j⁻¹ * β.val) • D.k.map toAdele :=
+      Matrix.ext fun i k ↦ ((toAdele (E := E)).map_add _ _).trans
+        (congrArg _ ((toAdele (E := E)).map_mul _ _))
+    have h_l : (shearSplitting β).symm.lAdelic =
+        D.lAdelic + toAdele (j⁻¹ * β.val) • D.kAdelic := by
+      rw [lAdelic, lAdelic, kAdelic,
+        show (shearSplitting β).symm.l = D.l + (j⁻¹ * β.val : E) • D.k from rfl,
+        hm, Matrix.mul_add, Matrix.mul_smul]
+    rw [kCoord, h_l, conjTranspose_add, conjTranspose_smul, Matrix.add_mul, Matrix.smul_mul]
+    rfl
   -- The opposite splitting has the first frame `k` of `D`, so the two have the same zero term.
   have h_frame : ((shearSplitting β).symm.homSource (stdSpace E κ)).zeroTerm =
       D.homSlice (stdSpace E κ) 0 := by
     rw [homSlice_zero]
-    exact (zeroTerm_homSource_congr _ _ D.gram_kk rfl).symm
+    exact D.zeroTerm_homSource_congr (stdSpace E κ) (D' := (shearSplitting β).symm) D.gram_kk rfl
   -- Write the zero term as an integral of source terms over `x : κ → 𝔸 E`.
   have h_integral : (lagrangian (shearSplitting β)).zeroTerm (stdSpace E κ) f =
       ∫ x : κ → 𝔸 E, θ ((stdSpace E Empty).hom (stdSpace E κ))
@@ -173,8 +183,15 @@ lemma New.SiegelWeil.zeroTerm_shearSplitting {E κ : Type} [Field E] [CMType E] 
   -- The source term is the character times the value at `0` of the source term for `D`.
   have h_value : D.homSlice (stdSpace E κ) (replicateCol Unit x) f 0 = Ψ x := hf x
   rw [homSlice, h_frame, ContinuousLinearMap.comp_apply, homSlice_rho, h_kCoord]
-  simp [trace, Matrix.add_mul, Matrix.mul_assoc, h_value, ← map_mul, ← mul_assoc, mul_comm (Ψ x),
-    div_eq_inv_mul, j_ne_zero]
+  simp only [div_eq_inv_mul, trace, univ_unique, PUnit.default_eq_unit, star_toAdele, star_mul',
+    star_inv₀, star_j, inv_neg, neg_mul, map_neg, neg_smul, Matrix.mul_assoc, Matrix.add_mul,
+    coord_mul_frame, Matrix.neg_mul, smul_mul, zero_add, Matrix.mul_neg, Matrix.mul_smul,
+    Matrix.mul_one, conjTranspose_neg, conjTranspose_smul, star_star, conjTranspose_replicateCol,
+    neg_neg, stdForm_one, add_zero, smul_zero, neg_zero, Matrix.diag_apply, Matrix.smul_apply,
+    replicateRow_mul_replicateCol_apply, smul_eq_mul, sum_const, card_singleton, one_smul,
+    ← mul_assoc, ← map_mul, ne_eq, j_ne_zero, not_false_eq_true, mul_inv_cancel_right₀,
+    Matrix.mul_zero, matrixToVec_zero, Heisenberg.Rep.rho_zero_apply, map_smul, theta_apply,
+    h_value, mul_comm (Ψ x)]
 
 /-- **The Siegel–Weil formula for one vector**, for `stdSpace E κ` of rank at least 3. Let `l`, `k`
 be the standard basis of the hyperbolic plane and `j` the purely imaginary element of the Weil data.
@@ -203,8 +220,14 @@ lemma New.SiegelWeil.siegel_weil_one_vector {E κ : Type} [Field E] [CMType E] [
     obtain ⟨t, ht⟩ : ∃ t : Unit → E,
         (shearSplitting a).k.mulVecLin t = (shearSplitting b).k.mulVecLin 1 :=
       hab.ge (LinearMap.mem_range_self _ 1)
-    revert ht
-    simp +contextual [shearSplitting, hyperbolicSplitting, funext_iff, j_ne_zero]
+    have h1 : t () = 1 := by
+      simpa [shearSplitting, hyperbolicSplitting, mulVec, dotProduct] using
+        congrFun ht (Sum.inl ())
+    have h2 : j⁻¹ * (a : E) * t () = j⁻¹ * (b : E) := by
+      simpa [shearSplitting, hyperbolicSplitting, mulVec, dotProduct] using
+        congrFun ht (Sum.inr ())
+    rw [h1, mul_one] at h2
+    exact Subtype.ext (mul_left_cancel₀ (inv_ne_zero j_ne_zero) h2)
   have h_ne (β : maximalRealSubfield E) : lagrangian (shearSplitting β) ≠ lagrangian D := fun h ↦ by
     obtain ⟨t, ht⟩ : ∃ t : Unit → E, D.k.mulVecLin t = (shearSplitting β).k.mulVecLin 1 :=
       h.le (LinearMap.mem_range_self _ 1)
@@ -217,7 +240,7 @@ lemma New.SiegelWeil.siegel_weil_one_vector {E κ : Type} [Field E] [CMType E] [
       Set.range (lagrangian ∘ shearSplitting) :=
     support_subset_iff'.2 fun L hL ↦ ite_eq_left (eq_lagrangian_of_notMem_range_shear hL)
   have h_zero : (lagrangian D).zeroTerm (stdSpace E κ) f = mixedValue (stdSpace E κ) D 0 f := by
-    simp [zeroTerm_lagrangian_eq_theta, homSlice, mixedValue]
+    rw [zeroTerm_lagrangian_eq_theta, ← homSlice_zero]; rfl
   -- Split off the line of `k`.
   rw [(hSW f).2, h_terms.tsum_eq_add_tsum_ite (lagrangian D), h_zero, ← h_inj.tsum_eq h_support]
   simp only [Function.comp_apply, h_ne, ite_false]
@@ -243,17 +266,20 @@ lemma New.exists_fundamentalDomain_real {E : Type} [Field E] [CMType E] [WeilDat
   -- `selfAdjointCodifferent E 1` meets `R` in its inverse different `J`: as `E / R` is unramified,
   -- the different of `E` is the extension of that of `R`.
   let J : (FractionalIdeal (nonZeroDivisors (𝓞 R)) R)ˣ :=
-    .mk0 (differentIdeal ℤ (𝓞 R))⁻¹ (by simp [differentIdeal_ne_bot])
+    .mk0 (differentIdeal ℤ (𝓞 R))⁻¹ (inv_ne_zero (coeIdeal_ne_zero.mpr differentIdeal_ne_bot))
   have h_meet (a : R) : (ι a).2 ∈ selfAdjointCodifferent E 1 ↔ a ∈ J.val := by
     -- Both sides say that `d a` is integral, for `d` in the different of `E`, resp. of `R`.
     suffices (∀ d ∈ Ideal.map (algebraMap (𝓞 R) (𝓞 E)) (differentIdeal ℤ (𝓞 R)),
         ((d : E) : 𝔸f E) * (a : E) ∈ Ô E) ↔
         ∀ d ∈ differentIdeal ℤ (𝓞 R), (((d : R) : E) : 𝔸f E) * (a : E) ∈ Ô E by
-      simp [J, mem_inv_iff, ← algebraMap_mem_Ô, forall_ψf_mul_eq_one_iff, mul_comm a,
-        ← IsIntegralClosure.isIntegral_iff (R := ℤ),
-        ← isIntegral_algebraMap_iff (A := R) (B := E), R, mul_comm (ι a).2.val,
-          selfAdjointCodifferent,
-        differentIdeal_eq_differentIdeal_mul_differentIdeal ℤ (𝓞 R) (𝓞 E), differentIdeal_ne_bot]
+      simp only [selfAdjointCodifferent, one_mul, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
+        AddSubsemigroup.mem_mk, Set.mem_ofPred_eq, mul_comm (ι a).2.val,
+        forall_ψf_mul_eq_one_iff, differentIdeal_eq_differentIdeal_mul_differentIdeal ℤ (𝓞 R) (𝓞 E),
+        differentIdeal_eq_top, Ideal.top_mul, Units.val_mk0, ne_eq, coeIdeal_eq_zero,
+        differentIdeal_ne_bot, not_false_eq_true, mem_inv_iff, mem_coeIdeal, mul_comm a,
+        mem_one_iff, ← IsIntegralClosure.isIntegral_iff (R := ℤ),
+        ← isIntegral_algebraMap_iff (A := R) (B := E), map_mul, ← algebraMap_mem_Ô,
+        forall_exists_index, and_imp, forall_apply_eq_imp_iff₂, R, J]
       rwa [ι_snd]
     -- The condition is linear, so it may be checked on generators of the extended ideal.
     let M : Ideal (𝓞 E) := (Subalgebra.toSubmodule ⟨_, coe_mem_Ô (E := E)⟩).comap
@@ -264,8 +290,8 @@ lemma New.exists_fundamentalDomain_real {E : Type} [Field E] [CMType E] [WeilDat
   have h_span (z : selfAdjoint (𝔸f E)) : ∃ a : R, z - (ι a).2 ∈ selfAdjointCodifferent E 1 := by
     obtain ⟨a, ha⟩ := exists_sub_mem_Ô (stdLattice.traceOneAdele * z.val)
     refine ⟨Algebra.trace R E a, fun x hx ↦ ψf_eq_one_of_mem (mul_mem ?_ hx)⟩
-    simpa [← add_mul, ← map_add, sub_add_sub_comm, ← trace_maximalRealSubfield_eq_add_star, ι_snd,
-      R,
+    simpa [← add_mul, ← (algebraMap E (𝔸f E)).map_add, sub_add_sub_comm,
+      ← trace_maximalRealSubfield_eq_add_star, ι_snd, R,
       z.property.star_eq] using add_mem ha (star_mem_Ô ha)
   obtain ⟨e, he, h_re⟩ := exists_mixedEquiv_maximalRealSubfield (E := E)
   obtain ⟨Ω, hΩ, h_bdd, h_vol, h_unique⟩ :=
@@ -273,9 +299,15 @@ lemma New.exists_fundamentalDomain_real {E : Type} [Field E] [CMType E] [WeilDat
     h_span e he fun a ↦ (h_re a).trans (funext fun v ↦ (ι_fst a v).symm)
   refine ⟨Ω, hΩ, h_bdd, ?_, h_unique⟩
   -- The volume of `Ω` is `N(J) √|D_R| = |D_R|^{-1/2}`, and `|D_E| = D_R²`.
-  simp [h_vol, J, Int.norm_eq_abs, ← cast_abs, abs_discr_eq_discr_maximalRealSubfield_sq, field, R,
-    sqrt_sq_eq_abs,
-    coeIdeal_absNorm, absNorm_differentIdeal R, measureReal_def, discr_ne_zero]
+  simp only [← cast_abs, abs_discr_eq_discr_maximalRealSubfield_sq, Int.cast_pow, sqrt_sq_eq_abs,
+    measureReal_def, h_vol, Units.val_mk0, map_inv₀, coeIdeal_absNorm, absNorm_differentIdeal R,
+    cast_natAbs, Rat.cast_inv, Rat.cast_intCast, Int.cast_pos, abs_pos, ne_eq, discr_ne_zero,
+    not_false_eq_true, ENNReal.ofReal_inv_of_pos, IsTotallyReal.nrComplexPlaces_eq_zero, pow_zero,
+    one_mul, ENNReal.toReal_mul, ENNReal.toReal_inv, abs_nonneg, Int.cast_nonneg,
+    ENNReal.toReal_ofReal, ENNReal.coe_toReal, coe_sqrt, coe_nnNorm, Int.norm_eq_abs, J, R]
+  have h : ((|NumberField.discr R| : ℤ) : ℝ) ≠ 0 :=
+    Int.cast_ne_zero.mpr (abs_ne_zero.mpr (discr_ne_zero R))
+  rw [mul_left_comm, Real.mul_self_sqrt (by positivity), inv_mul_cancel₀ h]
 
 /-- An adele of the real subfield `E⁺`, given by its real components and its finite part, as a
 self-adjoint adele of `E`. -/
@@ -311,13 +343,33 @@ lemma New.exists_isAddFundamentalDomain_realAdele (E : Type) [Field E] [CMType E
     · simp [realAdele, r, conj_eq_iff_re.1 (congrFun (congrArg Prod.fst x.property.star_eq) v)]
     · simp [realAdele, r]
   let ι : R →+ (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E) :=
-    .mk' (fun a ↦ r ⟨toAdele a, (star_toAdele _).trans (by simp [star])⟩) (by simp [r, funext_iff])
+    .mk' (fun a ↦ r ⟨toAdele a, (star_toAdele _).trans (by simp [star])⟩) fun a b ↦
+      Prod.ext (funext fun v ↦ by simp [r, toAdele.map_add])
+        (Subtype.ext (by exact congrArg Prod.snd (toAdele.map_add a.1 b.1)))
   obtain ⟨Ω, hΩ, h_bdd, h_vol, h_unique⟩ :=
     exists_fundamentalDomain_real ι (fun _ _ ↦ rfl) fun _ ↦ rfl
-  have h_inj : Injective ι := by simp [Injective, ι, r]
+  have h_inj : Injective ι := fun a b h ↦
+    Subtype.ext <| (algebraMap E (𝔸f E)).injective (congrArg (fun p ↦ p.2.val) h)
   let s : R ≃+ ι.range := ι.ofInjective h_inj
   have : Countable ι.range := s.surjective.countable
   let μ : Measure ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) := volume.prod volume
+  have : SFinite (volume : Measure (selfAdjoint (𝔸f E))) := inferInstance
+  have : ContinuousAdd (selfAdjoint (𝔸f E)) :=
+    ⟨((continuous_subtypeVal.comp continuous_fst).add
+      (continuous_subtypeVal.comp continuous_snd)).subtype_mk _⟩
+  have h_mp (c : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) : MeasurePreserving (c + ·) μ μ :=
+    (measurePreserving_add_left volume c.1).prod
+      ⟨(continuous_const.add continuous_id).measurable, map_add_left_eq_self volume c.2⟩
+  have : MeasurableConstVAdd ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E))
+      ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) :=
+    ⟨fun c ↦ (continuous_const.add continuous_id).measurable⟩
+  have : MeasurableConstVAdd (↥ι.range) ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) :=
+    ⟨fun c ↦ (continuous_const.add continuous_id).measurable⟩
+  have : VAddInvariantMeasure ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E))
+      ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) μ :=
+    ⟨fun c _ hs ↦ (h_mp c).measure_preimage hs.nullMeasurableSet⟩
+  have : VAddInvariantMeasure (↥ι.range) ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) μ :=
+    ⟨fun c _ hs ↦ (h_mp c.1).measure_preimage hs.nullMeasurableSet⟩
   have h_fund : IsAddFundamentalDomain ι.range (Ω ×ˢ selfAdjointCodifferent E 1) μ :=
     .mk' (hΩ.prod (isOpen_selfAdjointCodifferent ..).measurableSet).nullMeasurableSet
       fun x ↦ s.existsUnique_congr_right.1 (h_unique x)
@@ -433,9 +485,19 @@ lemma New.SiegelWeil.siegel_weil_fourierCoeff {E κ : Type} [Field E] [CMType E]
       mixedValue (stdSpace E κ) D (replicateCol Unit x) (twist z) =
         Ψ x * stdAddChar E ((2⁻¹ : E) * (realAdele z * (star x ⬝ᵥ x - α))) := by
     rw [← hf]
-    simp [twist, homSlice_radicalElement, mul_sub, mixedValue, Circle.smul_def, trace,
-      map_sub_eq_div,
-      div_eq_inv_mul]
+    dsimp only [mixedValue, ContinuousLinearMap.comp_apply, twist]
+    rw [Circle.smul_def, map_smul, homSlice_radicalElement, map_smul, map_smul,
+      conjTranspose_zero, Matrix.mul_zero, Matrix.zero_mul]
+    have h_rho : ϱ ((stdSpace E Empty).hom (stdSpace E κ)) (matrixToVec 0)
+        (D.homSlice (stdSpace E κ) (replicateCol Unit x) f) =
+        D.homSlice (stdSpace E κ) (replicateCol Unit x) f :=
+      ((stdSpace E Empty).hom (stdSpace E κ)).heisenbergRep.rho_zero_apply _
+    rw [h_rho]
+    simp only [Circle.coe_inv, trace, univ_unique, PUnit.default_eq_unit,
+      conjTranspose_replicateCol, stdForm_one, Matrix.mul_one, Algebra.smul_mul_assoc, one_mul,
+      Matrix.diag_apply, Matrix.smul_apply, replicateRow_mul_replicateCol_apply, smul_eq_mul,
+      sum_const, card_singleton, one_smul, theta_apply, mul_sub, map_sub_eq_div, div_eq_inv_mul,
+      Circle.coe_mul]
     ring
   -- The zero term of `twist z` along the line of `β` is `P (β + z)`, as `stdAddChar(βα/2) = 1`.
   have h_term (β : R) (z : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) :
@@ -443,20 +505,51 @@ lemma New.SiegelWeil.siegel_weil_fourierCoeff {E κ : Type} [Field E] [CMType E]
     have h_shift : realAdele (s β +ᵥ z) = toAdele (β : E) + realAdele z := realAdele_add β z
     rw [hP, zeroTerm_shearSplitting (h_twist z), h_shift]
     congr with x
-    simp [mul_sub, ← map_mul, ← mul_assoc, div_eq_inv_mul, add_mul, mul_add, map_sub_eq_div,
-      map_add_eq_mul]
+    simp only [mul_sub, add_mul, ← map_mul, mul_add, ← mul_assoc, map_sub_eq_div, map_add_eq_mul,
+      stdAddChar_toAdele, one_mul, div_eq_inv_mul, Circle.coe_mul, Circle.coe_inv]
     ring
+  have h_realAdele : Continuous (realAdele (E := E)) :=
+    (continuous_pi fun v ↦
+      Complex.continuous_ofReal.comp ((continuous_apply v).comp continuous_fst)).prodMk
+      (continuous_subtypeVal.comp continuous_snd)
+  have : ContinuousSMul (𝔸 E) (Matrix Unit Unit (𝔸 E)) :=
+    ⟨continuous_pi fun _ ↦ continuous_pi fun _ ↦
+      continuous_fst.mul ((continuous_apply _).comp ((continuous_apply _).comp continuous_snd))⟩
+  have h_twist_cont : Continuous twist := by
+    have h1 : Continuous fun z : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E) ↦
+        (stdAddChar E ((2⁻¹ : E) * (realAdele z * α)))⁻¹ :=
+      (continuous_stdAddChar.comp (continuous_const.mul (h_realAdele.mul continuous_const))).inv
+    have h2 : Continuous fun z : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E) ↦
+        splitWeil (hyperbolicSpace E Unit) (stdSpace E κ)
+          (D.radicalElement 0 (realAdele z • 1), 1) f :=
+      by fun_prop
+    exact h1.smul h2
   have h_twist_int : IntegrableOn twist (Ω ×ˢ selfAdjointCodifferent E 1) μ := by
     refine IntegrableOn.mono_set ?_ (Set.prod_mono subset_closure subset_rfl)
-    exact (Continuous.continuousOn (by fun_prop [realAdele])).integrableOn_compact
+    exact h_twist_cont.continuousOn.integrableOn_compact
       (h_bdd.isCompact_closure.prod (isCompact_selfAdjointCodifferent E isUnit_one))
   obtain ⟨h_summable, hSW⟩ := siegel_weil_one_vector (E := E) h_card
   -- Unfold the integral of `P` over `R`.
   have P_meas : AEStronglyMeasurable P μ := by
     have P_eq : P = fun z ↦ (lagrangian (shearSplitting 0)).zeroTerm (stdSpace E κ) (twist z) :=
-      funext fun z ↦ by simpa only [s.map_zero, zero_vadd] using h_term 0 z
+      funext fun z ↦ by
+        have h0 := h_term 0 z
+        change P ((s 0 : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) + z) = _ at h0
+        rw [show (s 0 : (InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) = 0 from ι.map_zero,
+          zero_add] at h0
+        exact h0
     rw [P_eq]
-    exact Continuous.aestronglyMeasurable (by fun_prop [realAdele])
+    exact (((lagrangian (shearSplitting 0)).zeroTerm (stdSpace E κ)).continuous.comp
+      h_twist_cont).aestronglyMeasurable
+  have : ContinuousAdd (selfAdjoint (𝔸f E)) :=
+    ⟨((continuous_subtypeVal.comp continuous_fst).add
+      (continuous_subtypeVal.comp continuous_snd)).subtype_mk _⟩
+  have : MeasurableConstVAdd (↥ι.range) ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) :=
+    ⟨fun c ↦ (continuous_const.add continuous_id).measurable⟩
+  have : VAddInvariantMeasure (↥ι.range) ((InfinitePlace E → ℝ) × selfAdjoint (𝔸f E)) μ :=
+    ⟨fun c _ hs ↦ ((measurePreserving_add_left volume c.1.1).prod
+      ⟨(continuous_const.add continuous_id).measurable,
+        map_add_left_eq_self volume c.1.2⟩).measure_preimage hs.nullMeasurableSet⟩
   obtain ⟨P_int, P_unfold⟩ : Integrable P μ ∧ ∫ z, P z ∂μ =
       ∑' β : R, (lagrangian (shearSplitting β)).zeroTerm (stdSpace E κ)
         (∫ z in Ω ×ˢ selfAdjointCodifferent E 1, twist z ∂μ) :=
@@ -470,9 +563,12 @@ lemma New.SiegelWeil.siegel_weil_fourierCoeff {E κ : Type} [Field E] [CMType E]
         (splitWeil (hyperbolicSpace E Unit) (stdSpace E κ) (1, h) g) = σ h ξ := by
     have h_selfAdjoint : star (star ξ ⬝ᵥ ξ - α) = star ξ ⬝ᵥ ξ - α := by
       simp [hα, ← star_dotProduct]
+    have h_sub : toAdele (star ξ ⬝ᵥ ξ) - toAdele α = toAdele (star ξ ⬝ᵥ ξ - α) :=
+      (eq_sub_iff_add_eq.mpr
+        (((toAdele (E := E)).map_add (star ξ ⬝ᵥ ξ - α) α).symm.trans (by rw [sub_add_cancel]))).symm
     simp_rw [one_mulVec, mixedValue_splitWeil, ← replicateCol_mulVec, g, map_smul,
       ← (mixedValue (stdSpace E κ) D _).integral_comp_comm h_twist_int, h_twist, σ,
-      star_adeleMatrix_mulVec_dotProduct, ← map_sub, integral_const_mul]
+      star_adeleMatrix_mulVec_dotProduct, h_sub, integral_const_mul]
     rw [smul_eq_mul, mul_left_comm, h_orth (star ξ ⬝ᵥ ξ - α) h_selfAdjoint]
     simp [sub_eq_zero]
   -- So the sum of `σ h` over the rational vectors is the theta value of `ω(1, h) g`.
@@ -531,14 +627,18 @@ lemma New.SiegelWeil.exists_mixedValue_eq_gaussian_mul {E κ : Type} [Field E] [
   -- A coset comes from a translate of `ω g vacElem` with `g` adapted to `star t` for a scalar `t`,
   -- which is `u⁻¹` up to `WeilData.α` at the finite places and scales the vacuum to `γ` at
   -- infinity.
-  obtain ⟨t, ht⟩ : IsUnit ((fun w ↦ √(2 * π * (Φ w j).im)⁻¹, (WeilData.α * u⁻¹).val) : 𝔸 E) := by
-    simp [Prod.isUnit_iff, Pi.isUnit_iff, ne_of_gt, im_pos, pi_pos]
+  obtain ⟨t, ht⟩ : IsUnit ((fun w ↦ √(2 * π * (Φ w j).im)⁻¹, (WeilData.α * u⁻¹).val) : 𝔸 E) :=
+    Prod.isUnit_iff.mpr ⟨Pi.isUnit_iff.mpr fun w ↦ isUnit_iff_ne_zero.mpr <|
+      Complex.ofReal_ne_zero.mpr
+        (Real.sqrt_pos.mpr (inv_pos.mpr (by positivity [im_pos w]))).ne',
+      (WeilData.α * u⁻¹).isUnit⟩
   let D := (hyperbolicSplitting E Unit).homSource (stdSpace E κ)
-  obtain ⟨g, hg, -⟩ := D.exists_isAdapted_and_frame_eq (star t • 1)
+  let s : GL (κ × Unit) (𝔸 E) := Units.map (Matrix.scalar (κ × Unit)).toMonoidHom (star t)
+  obtain ⟨g, hg, -⟩ := D.exists_isAdapted_and_frame_eq s
   let V := (hyperbolicSpace E Unit).hom (stdSpace E κ)
   obtain ⟨c, hc, h_vac⟩ : ∃ c : ℂ, c ≠ 0 ∧ ∀ x : κ × Unit → 𝔸 E,
     Splitting.slice x (V.ω g V.vacElem) =
-      (c * (‖vacuumFn ((star t • 1)ᴴ *ᵥ x)‖ : ℂ) ^ 2) •
+      (c * (‖vacuumFn ((s : Matrix (κ × Unit) (κ × Unit) (𝔸 E))ᴴ *ᵥ x)‖ : ℂ) ^ 2) •
         ((stdSpace E Empty).hom (stdSpace E κ)).vacElem :=
     hg.slice_omega_vacElem
   refine ⟨c⁻¹ • ϱ _ (D.lAdelic *ᵥ fun i ↦ (0, -z i.1)) (ω _ g (vacElem _)), funext fun x ↦ ?_⟩
@@ -546,19 +646,44 @@ lemma New.SiegelWeil.exists_mixedValue_eq_gaussian_mul {E κ : Type} [Field E] [
   have h_source : (hyperbolicSplitting E Unit).homSlice (stdSpace E κ) x =
       D.slice (matrixToVec x) := by
     simpa using (hyperbolicSplitting E Unit).homSlice_eq_slice (stdSpace E κ) x
-  suffices h_norm : (‖vacuumFn (t • (matrixToVec x + fun i ↦ (0, -z i.1)))‖ : ℂ) ^ 2 *
+  have : StarModule (𝔸 E) (𝔸 E) := ⟨fun _ _ ↦ star_mul' _ _⟩
+  have hs : (s : Matrix (κ × Unit) (κ × Unit) (𝔸 E))ᴴ = (t : 𝔸 E) • 1 := by
+    have hval : (s : Matrix (κ × Unit) (κ × Unit) (𝔸 E)) = (star t : 𝔸 E) • 1 :=
+      Matrix.ext fun i j ↦ by
+        simp [s, Matrix.scalar_apply, Matrix.diagonal_apply, Matrix.one_apply]
+    rw [hval, conjTranspose_smul, conjTranspose_one, star_star]
+  suffices h_norm : (‖vacuumFn ((t : 𝔸 E) • (matrixToVec x + fun i ↦ (0, -z i.1)))‖ : ℂ) ^ 2 *
         ((stdSpace E Empty).hom (stdSpace E κ)).vacElem 0 =
       γ (xᵀ ()) * cosetIndicator Set.univ u z fun i ↦ (x i ()).2 by
-    simpa [h_source, D, V, h_vac, mixedValue, smul_mulVec, hc, mul_assoc] using h_norm
+    change mixedValue (stdSpace E κ) (hyperbolicSplitting E Unit) x
+        (c⁻¹ • ϱ V (D.lAdelic *ᵥ fun i ↦ (0, -z i.1)) (V.ω g V.vacElem)) =
+      γ (xᵀ ()) * cosetIndicator Set.univ u z fun i ↦ (x i ()).2
+    dsimp only [mixedValue, ContinuousLinearMap.comp_apply]
+    rw [map_smul, map_smul, h_source, D.isMixedLaw_slice.apply_rho_lAdelic_mulVec, h_vac, hs,
+      smul_mulVec, one_mulVec, map_smul, theta_apply]
+    simpa only [smul_eq_mul, inv_mul_cancel_left₀ hc, mul_assoc] using h_norm
   -- The vacuum is the indicator of `Ô` at the finite places and a Gaussian at infinity.
-  simp [ht, vacElem_apply_eq_prod_lineTheta, γ, vacuumFn, mem_integralBox, matrixToVec,
-    apply_ite norm,
-    mul_assoc, sub_eq_add_neg, mul_pow, ne_of_gt, ← ofReal_pow, ← Real.exp_natCast_mul, dotProduct,
-    sum_comm (γ := κ), sum_prod_type, Unique.forall_iff, Units.smul_def, im_pos, le_of_lt, pi_pos,
-    Complex.exp_neg, mul_add, mul_sum, norm_exp, Circle.norm_coe, funext_iff, fst_sum,
-    conj_mul']
+  have hvac0 : ((stdSpace E Empty).hom (stdSpace E κ)).vacElem 0 = 1 := by
+    rw [vacElem_apply_eq_prod_lineTheta (fun _ ↦ Subsingleton.elim _ _), univ_eq_empty,
+      Finset.prod_empty]
+  rw [hvac0, mul_one]
+  simp only [vacuumFn, ht, mul_assoc, _root_.mul_inv_rev, inv_pos, im_pos, le_of_lt, sqrt_mul,
+    sqrt_inv, pi_pos, ofReal_mul, ofReal_inv, Units.val_mul, Pi.smul_apply, Pi.add_apply,
+    matrixToVec, smul_eq_mul, mul_add, Prod.mk_mul_mk, mul_zero, mul_neg, fst_add, fst_mul,
+    Pi.mul_apply, Pi.zero_apply, add_zero, Complex.norm_mul, norm_inv, norm_real,
+    Real.norm_eq_abs, mul_pow, inv_pow, sq_abs, sq_sqrt, ofNat_pos, ne_eq, ne_of_gt,
+    not_false_eq_true, mul_inv_cancel_left₀, sum_prod_type, univ_unique, PUnit.default_eq_unit,
+    sum_singleton, sum_comm (γ := κ), ofReal_exp, ofReal_neg, ofReal_sum, ofReal_ofNat,
+    Complex.exp_neg, snd_add, snd_mul, Units.inv_mul_cancel_left, Prod.forall, Unique.forall_iff,
+    star_add, star_mul', star_neg, mul_sum, mul_ite, apply_ite norm, norm_exp, re_sum, mul_re,
+    inv_re, re_ofNat, normSq_ofNat, div_self_mul_self', ofReal_re, inv_im, im_ofNat, neg_zero,
+    zero_div, ofReal_im, sub_eq_add_neg, Circle.norm_coe, mul_one, norm_zero, ← ofReal_pow,
+    ite_pow, ← Real.exp_natCast_mul, Nat.cast_ofNat, Order.lt_two_iff, _root_.zero_le, zero_pow,
+    dotProduct, Pi.star_apply, fst_sum, fst_star, Finset.sum_apply, Complex.star_def, conj_mul',
+    transpose_apply, boxIndicator_apply, smul_add, smul_neg, mem_integralBox, idem_univ,
+    Pi.neg_apply, one_mul, γ]
   split_ifs
-  · simp [univ_eq_empty]
+  · simp [Complex.ofReal_exp]
   · simp
 
 /-- Laplace's integral for 1/Γ: for an integer k ≥ 1 and real x ≥ 0, the integral over real z of
@@ -587,7 +712,9 @@ lemma New.integral_fourierChar_mul_inv_pow {k : ℕ} (hk : 1 ≤ k) {x : ℝ} (h
   have h_norm (z : ℝ) : ‖g z‖ ≤ (1 + (2 * π * z) ^ 2)⁻¹ := calc
     ‖g z‖ = (√(1 + (2 * π * z) ^ 2) ^ (k + 1))⁻¹ := by simp [g, norm_eq_sqrt_sq_add_sq]
     _ ≤ (√(1 + (2 * π * z) ^ 2) ^ 2)⁻¹ :=
-      inv_anti₀ (by positivity) (pow_le_pow_right₀ (by simp [sq_nonneg]) (Nat.succ_le_succ hk))
+      inv_anti₀ (by positivity)
+        (pow_le_pow_right₀ (Real.one_le_sqrt.mpr (le_add_of_nonneg_right (sq_nonneg _)))
+          (Nat.succ_le_succ hk))
     _ = (1 + (2 * π * z) ^ 2)⁻¹ := by rw [Real.sq_sqrt (by positivity)]
   have g_int : Integrable g := (integrable_inv_one_add_sq.comp_mul_left' two_pi_pos.ne').mono'
     (by fun_prop) (.of_forall h_norm)
@@ -638,10 +765,19 @@ lemma New.integral_gaussian_mul_stdAddChar {E κ : Type} [Field E] [CMType E]
     ← integral_prod_mul, ← Measure.volume_eq_prod,
     ← (volume_measurePreserving_arrowProdEquivProdArrow ..).integral_comp']
   congr with x
-  simp [MeasurableEquiv.arrowProdEquivProdArrow, dotProduct, stdAddChar, realAdele, map_ofNat,
-    fourierChar, ← Complex.exp_add, ← Complex.exp_sum, mul_mul_mul_comm _ (Φ₀ _ : ℂ),
-    sum_comm (γ := κ), ← ofReal_pow, sum_mul, ← sum_neg_distrib, ← sum_add_distrib,
-    NNReal.smul_def, fst_sum, conj_mul', mul_sum, snd_sum]
+  simp only [dotProduct, Pi.star_apply, fst_sum, fst_mul, fst_star, Finset.sum_apply,
+    Pi.mul_apply, Complex.star_def, conj_mul', ← ofReal_pow, re_sum, ofReal_re, ofReal_sum,
+    ← sum_neg_distrib, stdAddChar, fourierChar, AddChar.coe_mk, mul_sum, mul_neg, realAdele,
+    fst_sub, toAdele_apply_fst, map_inv₀, map_ofNat, Pi.sub_apply, mul_re, inv_re, re_ofNat,
+    normSq_ofNat, div_self_mul_self', sub_re, ofReal_im, sub_im, im_sum, sum_const_zero, zero_sub,
+    zero_mul, neg_zero, sub_zero, inv_im, im_ofNat, zero_div, mul_im, add_zero, ne_eq,
+    OfNat.ofNat_ne_zero, not_false_eq_true, mul_inv_cancel_left₀, snd_mul, toAdele_apply_snd,
+    snd_sub, snd_sum, snd_star, Circle.coe_mul, Circle.coe_exp, ofReal_neg, ofReal_mul,
+    ofReal_ofNat, ofReal_sub, sum_mul, neg_mul, mul_mul_mul_comm _ (Φ₀ _ : ℂ), ← Complex.exp_add,
+    ← sum_add_distrib, ← Complex.exp_sum, neg_add_rev, MeasurableEquiv.arrowProdEquivProdArrow,
+    MeasurableEquiv.coe_mk, Equiv.arrowProdEquivProdArrow_apply, sum_comm (γ := κ),
+    NNReal.smul_def, real_smul, _root_.mul_eq_mul_right_iff, _root_.mul_eq_zero, ofReal_eq_zero,
+    NNReal.coe_eq_zero, Circle.coe_ne_zero, or_false]
   -- It remains to compare the exponents at each infinite place.
   refine .inl (congrArg cexp ?_)
   simp only [ofReal_pow]
@@ -737,13 +873,16 @@ lemma New.classSum_eq_mul_normDensity {E κ : Type} [Field E] [CMType E] [WeilDa
   refine ⟨fun h ↦ mod_cast σ_summable (1, h), ?_⟩
   let C : ℝ := ∏ v : InfinitePlace E, π ^ card κ / (card κ - 1)! * (Φ v α).re ^ (card κ - 1)
   -- `∫ gauss v` is `πⁿ` times Laplace's integral with `k = n - 1` at `(Φ v α).re`.
+  have : SFinite (volume : Measure (selfAdjoint (𝔸f E))) := inferInstance
   have h_real : ∫ z, P z ∂volume.prod volume = c * (C * normDensity Φ₀ α) := by
     have h_gauss (v : InfinitePlace E) : ∫ t, gauss v t =
         π ^ card κ / (card κ - 1)! * (Φ v α).re ^ (card κ - 1) * cexp (-(Φ v α).re) :=
       integral_fourierChar_mul_gaussian_pow (by omega) (hα_pos v).le
     rw [normDensity, integral_prod_mul (fun z : InfinitePlace E → ℝ ↦ ∏ v, gauss v (z v)) F,
       integral_fintype_prod_volume_eq_prod]
-    simp [h_gauss, c, C, prod_mul_distrib, ← Complex.exp_sum]
+    simp only [h_gauss, prod_mul_distrib, prod_div_distrib, prod_const, Finset.card_univ,
+      ← Complex.exp_sum, sum_neg_distrib, ofReal_sum, ofReal_mul, ofReal_div, ofReal_pow,
+      ofReal_natCast, ofReal_prod, c, C]
     ring
   have h_int : ∫ h : G E (1 : κ → ℤˣ), ∑' ξ : κ → E, (σ h.2 ξ : ℂ) ∂(stdSpace E κ).quotMeasure =
       (stdSpace E κ).quotMeasure.real Set.univ * (√√|discr E| * (C * normDensity Φ₀ α)) := by
@@ -803,8 +942,11 @@ lemma New.mass_eq_mass_succ_mul_normDensity (E : Type) [Field E] [CMType E] [Wei
     (fun h ↦ ↑(∑' x : Fin j ⊕ Unit → E,
       if star x ⬝ᵥ x = 1 then χ (↑(h⁻¹ : Gf E (Fin j ⊕ Unit)) *ᵥ fun i ↦ x i) else 0)) =
       mass E j := by
-    simpa [χ, L, normOneLatticeVectors, Function.comp_def, count, indicator, apply_ite,
-      NNReal.coe_tsum, coe_stdLattice, ← ite_and] using classSum_card_norm_one_eq_mass E j
+    simpa only [χ, L, coe_stdLattice, Gf.coe_inv, coe_units_inv, LocallyConstant.indicator_apply,
+      indicator, mem_pi, mem_univ, SetLike.mem_coe, forall_const, Sum.forall,
+      LocallyConstant.coe_one, Pi.one_apply, ← ite_and, NNReal.coe_tsum, apply_ite,
+      NNReal.coe_one, NNReal.coe_zero, normOneLatticeVectors, Function.comp_def, count,
+      Set.mem_ofPred_eq] using classSum_card_norm_one_eq_mass E j
   rw [h_classSum, show ⇑χ = L.indicator 1 from rfl] at formula
   simpa [L, classSum_stdRatPoints_eq_mass, abs_discr_eq_rootDiscr_pow, div_pow] using formula
 
@@ -833,7 +975,10 @@ lemma New.norm_sub_one_le_of_normDensity_eq {E n : Type} [Field E] [CMType E] [W
   have meas : MeasurableSet C := (isOpen_selfAdjointCodifferent E 1).measurableSet
   -- The Gauss sum bound `∫ ‖F‖ ≤ ζ(2u + 5) vol L`, where `ζ(2u + 5) ≤ 1 + 2⁻¹ ^ (u + 1)` by `hu`.
   have zeta : idealZeta (Ô E) (u + 1 + u + 4) ^ 1 ≤ .ofReal (1 + 2⁻¹ ^ (u + 1)) :=
-    idealZeta_intAdeles_pow_le (u + 1) (by grind [finrank_eq_two_mul_card_infinitePlace])
+    idealZeta_intAdeles_pow_le (u + 1) (by
+      have := finrank_eq_two_mul_card_infinitePlace E
+      have hcard : Core.numInfPlaces E = Fintype.card (InfinitePlace E) := rfl
+      omega)
   have gauss : ∫⁻ z, ‖F z‖ₑ ≤ idealZeta (Ô E) (u + 1 + u + 4) * volÔ E ^ Fintype.card n :=
     lintegral_gauss_sum_le_idealZeta (le_two_of_pow_le_ofReal zeta) (by omega) 1
   -- On `C`, of measure `1`, the character is trivial on `L`, so `F = vol L` there:
@@ -859,9 +1004,22 @@ lemma New.norm_sub_one_le_of_normDensity_eq {E n : Type} [Field E] [CMType E] [W
       _ ≤ .ofReal (1 + 2⁻¹ ^ (u + 1)) * volÔ E ^ Fintype.card n := by
         grw [gauss, ← zeta, pow_one]
   rw [main, h_compl] at h_bound
-  have rd_pos : 0 < rootDiscr E := rootDiscr_pos E
-  simpa (disch := finiteness) [rd_pos, abs_of_pos, volÔ_eq, ← ENNReal.toReal_le_toReal,
-    ENNReal.toReal_add, add_mul] using h_bound
+  have h1 : ‖((volÔ E : NNReal) : ℂ) ^ Fintype.card n‖ₑ = (volÔ E : ENNReal) ^ Fintype.card n := by
+    simp [eNorm_eq_nnNorm]
+  have htop : (volÔ E : ENNReal) ^ Fintype.card n ≠ ⊤ := ENNReal.pow_ne_top ENNReal.coe_ne_top
+  have hvol_pos : (0 : ℝ) < (volÔ E : ℝ) ^ Fintype.card n :=
+    pow_pos (by simp [volÔ_eq, rootDiscr_pos]) _
+  rw [eNorm_mul, h1] at h_bound
+  have h_le := (ENNReal.toReal_le_toReal
+    (ENNReal.add_ne_top.mpr ⟨htop, ENNReal.mul_ne_top eNorm_ne_top htop⟩)
+    (ENNReal.mul_ne_top ENNReal.ofReal_ne_top htop)).mpr h_bound
+  rw [ENNReal.toReal_add htop (ENNReal.mul_ne_top eNorm_ne_top htop),
+    ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_pow, ENNReal.coe_toReal,
+    toReal_eNorm, ENNReal.toReal_ofReal (by positivity)] at h_le
+  have h_le' : (1 + ‖x - 1‖) * (volÔ E : ℝ) ^ Fintype.card n ≤
+      (1 + (2 : ℝ)⁻¹ ^ (u + 1)) * (volÔ E : ℝ) ^ Fintype.card n := by linarith
+  have h_le'' := le_of_mul_le_mul_right h_le' hvol_pos
+  linarith [inv_pow (2 : ℝ) (u + 1)]
 
 /-- **Masses.** The logarithm of `mass_{j+1} / mass_j`, the ratio of the masses of the genera of
 `O_E^(j+1)` and `O_E^j`, is `f log (rd_E^(j+1/2) j! / (2π)^(j+1))` up to `2 / 2^u`, for
@@ -891,7 +1049,7 @@ lemma New.abs_log_mass_ratio_sub_le (E : Type) [Field E] [CMType E] [WeilData E]
       ((j + 1 / 2) * log (rootDiscr E) + log j.factorial - (j + 1) * log (2 * π)) = -log ‖x‖ := by
     have h_log := congrArg (fun z : ℂ ↦ log ‖z‖) siegel
     simp (disch := positivity) [volÔ_eq, abs_of_pos, log_mul, log_div, log_sqrt] at h_log ⊢
-    linarith
+    rw [h_log]; ring
   -- Finally `|log ‖x‖| ≤ 3 / 2 * ‖x - 1‖`, as `‖x - 1‖ ≤ 1 / 2`.
   have half : ‖x - 1‖ ≤ 1 / 2 := near.trans (by simp [field, pow_succ, one_le_pow₀])
   rw [h_diff, abs_neg]
