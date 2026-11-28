@@ -594,11 +594,7 @@ lemma Parameters.map_jet_eq_integral {V : Space (P.E s) (n' × n) (homSigns 1 1)
           exact map_jet (σ : ℂ →+* ℂ) _ _
       _ = jet ℂ Q' (V.jetSeries t F') :=
           jet_rename ((placePerm s σ).symm.prodCongr 1).toEmbedding h_rename _
-  -- The jet is `θ` of an integrated operator, and the integrands agree monomial by monomial.
-  rw [h_jet, jet_jetSeries_eq_theta, theta_integrated]
-  congr! 2 with y
-  rw [polyVector_apply, Q'.as_sum]
-  simp [monomial_eq, ← C_mul', holomorphicCoord_eq, realSigns, pairSign]
+  exact h_jet.trans (jet_jetSeries_eq_integral (V := V) F' t Q')
 
 /-- Cauchy's estimate for the jets of one finite translate `ϱ(x) ω(g) (intVacuum V)` of the integral
 vacuum `intVacuum V` of a standard space `V` (all signs `+1`, the point the identity matrix), at

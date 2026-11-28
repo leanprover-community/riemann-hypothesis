@@ -415,6 +415,16 @@ lemma iteratedDeriv_integral_exp_mul_realVac (f : 𝒮 V) (L : (InfinitePlace E 
 
 variable {f : 𝒮 V}
 
+/-- On a space with positive signs the polynomial jet is a Gaussian integral. -/
+lemma jet_jetSeries_eq_integral (f : 𝒮 V) (a : ℂ) (Q : MvPolynomial (InfinitePlace E × n) ℂ) :
+    jet ℂ Q (V.jetSeries a f) = ∫ y : InfinitePlace E × n → ℂ,
+      MvPolynomial.eval (a • star y) Q * realVac y * f (realVec y)
+        ∂normalizedVolume (InfinitePlace E × n) := by
+  rw [jet_jetSeries_eq_theta, theta_integrated]
+  congr! 2 with y
+  rw [polyVector_apply, Q.as_sum]
+  simp [MvPolynomial.monomial_eq, ← MvPolynomial.C_mul', holomorphicCoord_eq, realSigns]
+
 /-- Let `V` be a hermitian space with all signs `1` and let `f` lie in `V.finitePart`, the span of
 the translates of the vacuum under the finite Heisenberg operators. Then the Taylor series at `0` of
 `t ↦ entireTheta f (a • t • v)` is obtained by substituting `v p * X` for the variable with index
@@ -455,20 +465,12 @@ lemma taylor_line_eq_subst_jetSeries (hf : f ∈ V.finitePart) (a : ℂ)
         congrArg (fun Q ↦ jet ℂ Q (V.jetSeries a f)) (by
           simp only [linSubst, map_pow, MvPolynomial.aeval_X, Matrix.replicateCol_apply])
     _ = ∫ w, L w ^ k * g w ∂normalizedVolume (InfinitePlace E × n) := by
-      -- The jet along a polynomial `Q` is `∫ Q (a • conj w) * g w`.
-      rw [jet_jetSeries_eq_theta, theta_integrated]
+      rw [jet_jetSeries_eq_integral]
       congr 1; ext w
-      rw [polyVector_apply, mul_assoc]
-      congr 1
-      rw [hL, map_pow, map_pow]
-      congr 1
-      rw [map_sum, map_sum, mul_sum]
+      rw [mul_assoc, hL, map_pow, map_sum, mul_sum]
+      congr 2
       refine sum_congr rfl fun p _ ↦ ?_
-      simp only [MvPolynomial.smul_eq_C_mul, map_mul, MvPolynomial.aeval_C,
-        MvPolynomial.algebraMap_eq, MvPolynomial.aeval_X, MvPolynomial.eval_C,
-        MvPolynomial.eval_X, holomorphicCoord_eq, realSigns, Pi.one_apply, ↓reduceIte,
-        Pi.star_apply]
-      ring
+      simp [MvPolynomial.smul_eq_C_mul, mul_left_comm]
   rw [taylorAtZero, PowerSeries.coeff_mk, funext h_line, iteratedDeriv_integral_exp_mul_realVac,
     ← h_jet, mul_div_cancel_left₀ _ (Nat.cast_ne_zero.2 k.factorial_ne_zero)]
 
