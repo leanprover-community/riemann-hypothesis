@@ -133,12 +133,12 @@ omit [Fintype X] in
 string vector of grade `≥ 0` up to vectors of higher grade. Then the matrix of `r` in rational
 coordinates does not lower grades. -/
 lemma hasDegreeGe_zero_ratCoordMatrixFin [Finite X] {r : Gf E ι} (hr : r ∈ Y.besselFin) :
-    HasDegreeGe Y.gradeOf Y.gradeOf 0 (V.ratCoordMatrixFin r) := fun p q h ↦ by
+    HasDegreeGe Y.gradeOf Y.gradeOf 0 (V.ratCoordMatrixFin r) := by
   let := Fintype.ofFinite X
   -- This is the finite component of the same fact for the adelic point `(1, r)`.
   have h_mem : ((1, r) : G E ε) ∈ Y.besselGroup := hr
-  simpa [ratCoordMatrix_inr] using
-    congrArg Prod.snd (Y.hasDegreeGe_zero_of_mem_besselGroup h_mem p q h)
+  rw [V.ratCoordMatrixFin_snd (1, r)]
+  exact (Y.hasDegreeGe_zero_of_mem_besselGroup h_mem).map _
 
 omit [Fintype X] in
 /-- The Bessel group of a grading fixes each string vector of grade `≥ 0` up to vectors of higher
@@ -157,9 +157,12 @@ lemma hasDegreeGe_zero_mul_mul_sub [Finite X] [Finite X'] {W : Matrix ι' ι (�
   set sh : Matrix ι' ι (𝔸f E) := (Y.stringMap Y').map Prod.snd
   set A : Matrix ι ι (𝔸f E) := V.ratCoordMatrixFin r
   set A' : Matrix ι' ι' (𝔸f E) := V'.ratCoordMatrixFin r'
-  have h_fixed : HasDegreeGe Y'.gradeOf Y.gradeOf 0 (A' * (sh * A) - sh) := fun p q h ↦ by
-    simpa [ratCoordMatrix_inr, Matrix.mul_apply, Prod.snd_sum, sh, A, A'] using
-      congrArg Prod.snd (Y.hasDegreeGe_zero_mul_stringMap_mul_sub hr hr' p q h)
+  have h_fixed : HasDegreeGe Y'.gradeOf Y.gradeOf 0 (A' * (sh * A) - sh) := by
+    let fin := RingHom.snd (NumberField.InfinitePlace E → ℂ) (𝔸f E)
+    have h_finite := (Y.hasDegreeGe_zero_mul_stringMap_mul_sub hr hr').map fin
+    simp only [Matrix.map_sub fin (map_sub fin), Matrix.map_mul (f := fin),
+      MonoidHom.inr_apply, fin, ← ratCoordMatrixFin_snd] at h_finite
+    exact h_finite
   have h_split : A' * (W * A) - c • sh = A' * ((W - c • sh) * A) + c • (A' * (sh * A) - sh) := by
     simp [Matrix.sub_mul, Matrix.mul_sub, smul_sub]
   -- Degrees add under multiplication, so all three factors together have degree at least `0`.

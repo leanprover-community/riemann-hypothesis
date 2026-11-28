@@ -223,6 +223,12 @@ def HasDegreeGe {R ι ι' : Type*} [Zero R] (w' : ι' → ℤ) (w : ι → ℤ) 
     (x : Matrix ι' ι R) : Prop :=
   ∀ (b : ι') (a : ι), w' b < w a + d → x b a = 0
 
+/-- Mapping each entry by a zero-preserving map preserves the lower bound on degree. -/
+lemma HasDegreeGe.map {R R' ι ι' F : Type*} [Zero R] [Zero R'] [FunLike F R R']
+    [ZeroHomClass F R R'] {w' : ι' → ℤ} {w : ι → ℤ} {d : ℤ} {A : Matrix ι' ι R}
+    (hA : HasDegreeGe w' w d A) (f : F) : HasDegreeGe w' w d (A.map f) :=
+  fun b a h ↦ by simp [hA b a h]
+
 /-- Degree bounds add: if `x` has degree at least `d` and `y` has degree at least `d'`, then
 `x * y` has degree at least `e` for every `e ≤ d + d'`. -/
 lemma HasDegreeGe.mul {R ι κ : Type*} [CommRing R] {w'' : κ → ℤ} {w' : ι' → ℤ} {w : ι → ℤ}
