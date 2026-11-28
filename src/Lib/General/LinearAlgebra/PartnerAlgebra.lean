@@ -265,19 +265,13 @@ section Lift
 variable {R a b n : Type} [CommRing R] [Fintype n] [DecidableEq n] {F : Type} [CommRing F]
   {O : Subring F} {l m : Type} [Fintype l] [Fintype m]
 
-/-- At a matrix `M` over the subring `O`, the lift `liftIntegralFn π f` takes the value of `f` at
-the image of `M` under `π`. -/
-lemma liftIntegralFn_map_coe (π : O →+* R) (f : Matrix l m R → ℂ) (M : Matrix l m O) :
-    liftIntegralFn π f (M.map (↑)) = f (M.map π) :=
-  dite_eq_left fun i j ↦ (M i j).property
-
 /-- If the lift `liftIntegralFn π f` does not vanish at `S`, then `S` comes from a matrix `M` over
 the subring `O`, and `f` does not vanish at the image of `M` under `π`. -/
 lemma exists_map_coe_eq_of_liftIntegralFn_ne_zero {π : O →+* R} {f : Matrix l m R → ℂ}
     {S : Matrix l m F} (hS : liftIntegralFn π f S ≠ 0) :
     ∃ M : Matrix l m O, M.map (↑) = S ∧ f (M.map π) ≠ 0 := by
   have hS_int : ∀ (i : l) (j : m), S i j ∈ O := by_contra fun h_not ↦ hS (dite_eq_right h_not)
-  exact ⟨of fun i j ↦ ⟨S i j, hS_int i j⟩, rfl, by rwa [← liftIntegralFn_map_coe π f]⟩
+  exact ⟨of fun i j ↦ ⟨S i j, hS_int i j⟩, rfl, by rwa [← liftIntegralFn_map_subtype π f]⟩
 
 /-- Let `π : O → R` be a surjective local homomorphism from a subring `O` of `F`. If the image under
 `π` of a matrix `y` over `O` is the block `firstCols e k` of columns of some `k ∈ GL n R`, then `y`
@@ -334,10 +328,10 @@ lemma lift_of_reduction {e : b ⊕ a ≃ n} {χ : MulChar R ℂ} {Φ : Matrix a 
     have h_det : χ' j.val.det = χ m.val.det := by
       simpa [j, m, RingHom.map_det, ← O.subtype_apply] using hχ k.val.det (isUnits_det_units k)
     calc liftIntegralFn π Φ (invLastRows e j)
-        = Φ (invLastRows e m) := liftIntegralFn_map_coe π Φ (invLastRows e k)
+        = Φ (invLastRows e m) := liftIntegralFn_map_subtype π Φ (invLastRows e k)
       _ = χ m.val.det * Ψ (firstCols e m) := h.apply_eq m (by simp [mem_intGL])
       _ = χ' j.val.det * liftIntegralFn π Ψ (firstCols e j) :=
-        congrArg₂ (· * ·) h_det.symm (liftIntegralFn_map_coe π Ψ (firstCols e k)).symm
+        congrArg₂ (· * ·) h_det.symm (liftIntegralFn_map_subtype π Ψ (firstCols e k)).symm
 
 variable [DecidableEq a] [DecidableEq b]
 
