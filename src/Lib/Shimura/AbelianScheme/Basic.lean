@@ -187,13 +187,6 @@ instance [IsProper X.hom] [IsSeparated Y.hom] : IsProper f.1 := by
   have h_comp : IsProper (f.left ≫ Y.hom) := by rw [f.w]; infer_instance
   exact IsProper.of_comp f.left Y.hom
 
-/-- Smoothness of relative dimension `d` is stable under base change: if `f : X ⟶ S` is smooth of
-relative dimension `d`, so is the projection `X ×_S Y ⟶ Y` for any `g : Y ⟶ S`. -/
-instance {X Y S : Scheme} {d : ℕ} (f : X ⟶ S) (g : Y ⟶ S) [SmoothOfRelativeDimension d f] :
-    SmoothOfRelativeDimension d (Limits.pullback.snd f g) :=
-  (smoothOfRelativeDimension_isStableUnderBaseChange d).of_isPullback (.of_hasPullback f g)
-    inferInstance
-
 /-- The spectrum of an R-algebra B, as a scheme over Spec R. -/
 abbrev specOver (R B : Type) [CommRing.{0} R] [CommRing B] [Algebra R B] :
     Over (Spec (CommRingCat.of R)) :=

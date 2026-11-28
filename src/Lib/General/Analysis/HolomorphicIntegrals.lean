@@ -380,16 +380,6 @@ lemma New.analyticOnNhd_integral_mul_rpow {T : X → ℂ} {N : X → ℝ} {s t :
 
 end HolomorphicIntegral
 
-/-!
-## Submodules as complex normed spaces
-
-A submodule of a complex normed space is a normed space over ℂ, for the seminormed group structure
-that comes from its normed group structure.
--/
-
-noncomputable instance {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E] (V : Submodule ℂ E) :
-    @NormedSpace ℂ V _ NormedAddCommGroup.toSeminormedAddCommGroup := V.normedSpace
-
 /-! ## Analytic functions vanishing on the image of a submersion -/
 
 /-- Let E, F be complex Banach spaces, G entire on F, and f : E → F strictly differentiable at a

@@ -131,9 +131,6 @@ instance isClosed_skewAdjoint : IsClosed (skewAdjoint A : Set A) :=
 
 instance : PolishSpace (skewAdjoint A) := isClosed_skewAdjoint.polishSpace
 
-instance [LocallyCompactSpace A] : LocallyCompactSpace (skewAdjoint A) :=
-  isClosed_skewAdjoint.locallyCompactSpace
-
 end
 
 variable [P : Place A] {ι : Type} [Fintype ι] [DecidableEq ι] (u : Aˣ) (T : Matrix ι ι A)
