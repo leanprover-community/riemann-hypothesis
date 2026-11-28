@@ -14,6 +14,7 @@ import Mathlib.RingTheory.TotallySplit
 import Mathlib.RingTheory.Valuation.Integral
 import Mathlib.Topology.Sheaves.Presheaf
 import TauCeti.NumberTheory.Padics.Complex.Basic
+import TauCeti.RingTheory.AdicCompletion.Finite
 public import Lib.Speed
 
 /-!
@@ -429,11 +430,7 @@ open Quot Ideal Submodule Finsupp AdicCompletion SModEq Function Module
 
 variable {S F M : Type*} [CommRing S] [AddCommGroup F] [Module S F] [AddCommGroup M] [Module S M]
   {C : Type*} [AddCommGroup C] [Module S C] (I : Ideal S) [IsAdicComplete I C] (β : F →ₗ[S] M)
-instance [IsPrecomplete I S] [Module.Finite S M] : IsPrecomplete I M := by
-  -- `M → Ŝ ⊗ M` is onto since `S → Ŝ` is, and `Ŝ ⊗ M` maps onto the completion of the finite `M`.
-  refine of_surjective_iff.mp fun x ↦ ?_
-  simpa using (ofTensorProduct_surjective_of_finite I M).comp
-    (TensorProduct.mk_surjective S M _ (of_surjective I S)) x
+instance [IsPrecomplete I S] [Module.Finite S M] : IsPrecomplete I M := IsPrecomplete.of_finite I M
 
 /-- A module that embeds linearly in a product of copies of an `I`-adically separated module is
 `I`-adically separated. -/
