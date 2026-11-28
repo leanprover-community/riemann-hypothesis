@@ -517,45 +517,26 @@ lemma exists_specializeShallow_polyAction_X_eq_sub [NeZero N]
     have h_sum : ∑ t : Fin r × Fin (m + 1), C (T.embedding v.2 (y t).out) * T.entryCoeff hm v t =
         if T.isEven v.2 then ∑ b : Fin k, C (T.embedding v.2 (A b v.1)) * X (b, v.2)
           else -∑ b : Fin k, C (T.embedding v.2 (A v.1 b)) * X (b, v.2) := by
-      cases h_even : T.isEven v.2
-      · simp only [Bool.false_eq_true, ↓reduceIte, A_apply, ringHom_map_sum,
-          Finset.sum_mul, ← Finset.sum_neg_distrib]
-        rw [Finset.sum_comm]
+      cases h_even : T.isEven v.2 <;>
+        simp only [Bool.false_eq_true, ↓reduceIte, A_apply, ringHom_map_sum, Finset.sum_mul,
+          ← Finset.sum_neg_distrib] <;> rw [Finset.sum_comm]
+      all_goals
         refine Finset.sum_congr rfl fun t _ ↦ ?_
         simp only [entryCoeff, rootVar, h_even, Bool.false_eq_true, ↓reduceIte, mul_neg, mul_one,
           Prod.ext_iff, and_true, apply_ite (T.embedding v.2), apply_ite C, ringHom_map_zero,
-          ite_mul, zero_mul, ite_and]
-        split_ifs <;> simp
-      · simp only [↓reduceIte, A_apply, ringHom_map_sum, Finset.sum_mul]
-        rw [Finset.sum_comm]
-        refine Finset.sum_congr rfl fun t _ ↦ ?_
-        simp only [entryCoeff, rootVar, h_even, ↓reduceIte, mul_one, Prod.ext_iff, and_true,
-          apply_ite (T.embedding v.2), apply_ite C, ringHom_map_zero, ite_mul, zero_mul,
-          ite_and, Finset.sum_ite_eq, mem_univ]
+          ite_mul, zero_mul, ite_and, Finset.sum_ite_eq, mem_univ]
         split_ifs <;> simp
     rw [polyAction_X, h_matrix, h_sum]
-    cases h_even : T.isEven v.2
-    · simp only [Bool.false_eq_true, ↓reduceIte, Matrix.map_apply, Matrix.add_apply,
-        Matrix.transpose_apply, Matrix.one_apply, ringHom_map_add, add_mul, sum_add_distrib,
-        apply_ite (T.embedding v.2), apply_ite C, ringHom_map_zero, ringHom_map_one,
-        ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq', sub_neg_eq_add]
-    · simp only [↓reduceIte, Matrix.map_apply, Matrix.sub_apply, Matrix.one_apply,
-        ringHom_map_sub, sub_mul, sum_sub_distrib, apply_ite (T.embedding v.2), apply_ite C,
-        ringHom_map_zero, ringHom_map_one, ite_mul, one_mul, zero_mul, Fintype.sum_ite_eq']
+    cases h_even : T.isEven v.2 <;>
+      simp [Matrix.one_apply, apply_ite, add_mul, sub_mul, ite_mul, sum_add_distrib,
+        sum_sub_distrib]
   -- The coefficients involve only variables that are not deep.
   have h_coeff (t : Fin r × Fin (m + 1)) :
       T.specializeShallow r x (T.entryCoeff hm v t) = C (x (T.entryCoeff hm v t)) := by
     have h_zero : T.deepIndicator r (T.rootVar (entryCol hm t) (entryRow hm t) v.2) = 0 := by
       cases h_even : T.isEven v.2 <;> simp [deepIndicator, rootVar, h_even, h_row t, h_col t]
-    rw [entryCoeff, ringHom_map_mul, ringHom_map_mul, ringHom_map_mul]
-    congr 1
-    · split_ifs
-      · simp only [specializeShallow, eval₂Hom_X', h_zero, ↓reduceIte]
-      · rw [ringHom_map_zero, ringHom_map_zero, ringHom_map_zero]
-    · split_ifs
-      · rw [ringHom_map_one, ringHom_map_one, ringHom_map_one]
-      · rw [ringHom_map_neg, ringHom_map_neg, ringHom_map_neg,
-          ringHom_map_one, ringHom_map_one, ringHom_map_one]
+    simp only [entryCoeff, map_mul]
+    split_ifs <;> simp [specializeShallow, h_zero]
   have h_X : T.specializeShallow r x (X v) = X v := by simp [specializeShallow, hv]
   have h_C (a : K) : T.specializeShallow r x (C a) = C (x (C a)) := by simp [specializeShallow]
   rw [h_image, ringHom_map_sub, h_X, ringHom_map_sum, entryFormValue, dotProduct, ringHom_map_sum]
