@@ -129,20 +129,26 @@ lemma classInner_induceClassFn_of_surjective [Finite Γ] (h_surj : Surjective (�
     simp [ite_and, hχ, ← sum_filter, Fintype.card_subtype]
   have h_conj_count (s t : E) : conj (conjCount π s t) = conjCount π s t := by
     simp [conjCount]
-  simp only [classInner, finMean, induceClassFn, h_index, h_conj_count, comp_apply,
-    finsum_eq_sum_of_fintype, mul_sum, sum_div]
-  rw [sum_comm]
-  refine sum_congr rfl fun t _ ↦ ?_
-  calc ∑ s : E, conj (χ s) * ((π.ker.index : ℂ) * (conjCount π s (ρ t) * h t / Nat.card E')) /
-        Nat.card E
-      = (∑ s : E, conj (χ s) * conjCount π s (ρ t)) *
-          ((π.ker.index : ℂ) * h t / (Nat.card E' * Nat.card E)) := by
-        rw [sum_mul]
-        exact sum_congr rfl fun s _ ↦ by ring
-    _ = conj (χ (ρ t)) * h t / Nat.card E' := by
-        rw [h_count_sum, ← π.ker.index_mul_card, Nat.cast_mul]
-        have h_ker_ne : (Nat.card π.ker : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Nat.card_pos.ne'
-        field_simp [index_ne_zero_of_finite]
+  have h_kernel (t : E) :
+      (π.ker.index : ℂ) * finMean (fun s : E ↦ conj (χ s) * conjCount π s t) = conj (χ t) := by
+    rw [finMean, finsum_eq_sum_of_fintype, h_count_sum, ← mul_div_assoc, ← mul_assoc,
+      ← Nat.cast_mul, π.ker.index_mul_card,
+      mul_div_cancel_left₀ _ (Nat.cast_ne_zero.mpr Nat.card_pos.ne')]
+  have h_weight (s : E) : conj (χ s) * induceClassFn π ρ h s =
+      finMean (fun t : E' ↦ (h t * π.ker.index) * (conj (χ s) * conjCount π s (ρ t))) := by
+    simp only [induceClassFn, h_index, classInner, comp_apply, h_conj_count, ← finMean_const_mul]
+    congr 1
+    ext t
+    ac_rfl
+  calc
+    _ = finMean (fun p : E × E' ↦ (h p.2 * π.ker.index) *
+        (conj (χ p.1) * conjCount π p.1 (ρ p.2))) := by
+      simp only [classInner, h_weight, finMean_prod]
+    _ = finMean (fun p : E' × E ↦ (h p.1 * π.ker.index) *
+        (conj (χ p.2) * conjCount π p.2 (ρ p.1))) := finMean_equiv (Equiv.prodComm E' E) fun _ ↦ rfl
+    _ = _ := by
+      simp only [classInner, finMean_prod, finMean_const_mul, mul_assoc, h_kernel, comp_apply]
+      simp only [mul_comm]
 
 /-- Let `π ∘ ρ` be onto. If `h` is a `Z`-linear combination of characters of `E'`, then so is its
 induction `induceClassFn π ρ h` to `E`. -/
