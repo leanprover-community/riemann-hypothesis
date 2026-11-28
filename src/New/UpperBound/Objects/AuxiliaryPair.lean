@@ -198,6 +198,19 @@ structure DescentPair extends LevelPlaces E where
   /-- `W` has smaller rank than `V`: `r < n`. -/
   rank_lt : card r < card n
 
+variable {E r n} in
+open scoped Classical in
+/-- The point-form datum for residue matrices `X`. When `X` agrees with `Y` at the chosen places,
+it is the product of `O.tamePart w` on the determinants of the rows `e` at the twist places.
+Here `O.tamePart w` is the character of the residue field at `w`. The datum is zero otherwise. -/
+noncomputable def Rows.pointFormDatum {O : DescentPair E r n}
+    (Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (Sum.inl i)))) (e : r ↪ n)
+    (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i))) : ℂ :=
+  if ∀ i : O.ChosenIndex, X (Sum.inl i) = Y i then
+    ∏ i : O.TwistIndex, O.tamePart (O.placeAt (Sum.inr i)) ((X (Sum.inr i)).submatrix e id).det
+  else
+    0
+
 namespace DescentPair
 
 attribute [instance] hasWeight
@@ -210,15 +223,13 @@ of the other basis vectors. -/
 abbrev levelGroup : Subgroup (Gf E n) := levelOf O.placeAt
   (descentResidueLevel O.toLevelPlaces O.incl)
 
-open scoped Classical in
-/-- The block datum Ψ_bl as a function of families X of residue matrices: it is the product over
-w ∈ Q of ψ_w(det of the rows of X_w indexed by `incl`) if X_w is the inclusion matrix of `incl` at
-every w in M, else 0. -/
+/-- The block datum Ψ_bl is `Rows.pointFormDatum` with the inclusion matrices at the chosen
+places and the rows indexed by `O.incl`. -/
 def residueBlockDatum (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex,
   Matrix n r (ResField (O.placeAt i))) : ℂ :=
-  if ∀ i : O.ChosenIndex, X (Sum.inl i) = inclMatrix (ResField (O.placeAt (inl i))) O.incl then
-    ∏ i : O.TwistIndex, O.tamePart (O.placeAt (inr i)) ((X (Sum.inr i)).submatrix O.incl id).det
-  else 0
+  -- Preserve the unfolded conditional for proofs using `residueBlockDatum`.
+  delta% Rows.pointFormDatum (O := O)
+    (fun i ↦ inclMatrix (ResField (O.placeAt (inl i))) O.incl) O.incl X
 
 /-- The column numbers (τ, i) ↦ k⁺(τ, i) + k⁻(τ, n − i) of the highest weight of the forms on
 V = I_n, with n the rank of V. -/

@@ -221,20 +221,6 @@ lemma inner_pointForm (h : Gf E n)
     inner ℂ (pointForm h hY e v) φ = gramForm v (φ (h * pointLift hY e)) :=
   inner_classForm (h * (pointLift hY e : Gf E n)) φ v
 
-open scoped Classical in
-/-- The finite datum of the descent of a point form, as a function of families `X` of matrices over
-the residue fields at the places of `O`. If `X` equals `Y` at every place of `O.ChosenIndex`, it is
-the product over the places `w` of `O.TwistIndex` of `O.tamePart w` of the determinant of the rows
-`e` of `X` at `w`; otherwise it is `0`. Here `O.tamePart w` is the character of the residue field at
-`w` given by `O`. -/
-noncomputable def pointFormDatum
-    (Y : ∀ i : O.ChosenIndex, Matrix n r (ResField (O.placeAt (Sum.inl i)))) (e : r ↪ n)
-    (X : ∀ i : O.ChosenIndex ⊕ O.TwistIndex, Matrix n r (ResField (O.placeAt i))) : ℂ :=
-  if ∀ i : O.ChosenIndex, X (Sum.inl i) = Y i then
-    ∏ i : O.TwistIndex, O.tamePart (O.placeAt (Sum.inr i)) ((X (Sum.inr i)).submatrix e id).det
-  else
-    0
-
 /-- Let `Y i` be matrices of full column rank at the places of M = `O.ChosenIndex` and `e` an
 injection choosing `r` rows. Let `A = pointLift hY e` be the chosen integral element whose
 reductions have the columns `Y i` at `O.incl` over M, and unit vectors in the rows `e` over
