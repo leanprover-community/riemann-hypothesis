@@ -148,6 +148,8 @@ namespace New.Variety
 variable {E : Type} [Field E] [CMBase E] {n : Type} [Fintype n] [DecidableEq n]
   {β : Matrix n n E} (x : GL n (𝔸f E)) (z : GL n E) (J : Matrix n n ℂ)
 
+/-- `g` lies in `GUPlus E n` if and only if it lies in `GU E n`
+and every entry of `g⁻¹` lies in `Ô E`. -/
 lemma mem_GUPlus_iff {g : GL n (𝔸f E)} :
     g ∈ GUPlus E n ↔ g ∈ GU E n ∧ ∀ i j : n, (g⁻¹ : GL n (𝔸f E)) i j ∈ Ô E :=
   Iff.rfl
@@ -237,9 +239,11 @@ open Matrix Variety QuotientAddGroup
 
 variable {E n : Type} [Field E] [NumberField E] {x y : n → 𝔸f E} {h : Matrix n n (𝔸f E)}
 
+/-- Two adelic vectors have equal torsion class iff their difference has integral components. -/
 lemma torsionClass_eq_iff : torsionClass x = torsionClass y ↔ ∀ i : n, x i - y i ∈ Ô E :=
   eq_iff_sub_mem.trans (by aesop)
 
+/-- An adelic vector has vanishing torsion class iff all of its components are integral. -/
 @[simp]
 lemma torsionClass_eq_zero : torsionClass x = 0 ↔ ∀ i : n, x i ∈ Ô E :=
   torsionClass_eq_iff.trans (by simp)
