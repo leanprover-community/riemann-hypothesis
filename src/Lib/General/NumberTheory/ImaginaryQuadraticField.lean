@@ -119,6 +119,7 @@ namespace QuadField
 @[simps! coe]
 def sqrtNegD : QuadField d := AdjoinSimple.gen ℚ (I * √d)
 
+/-- The square of `sqrtNegD d` equals `-d`. -/
 @[local simp]
 lemma sqrtNegD_sq : sqrtNegD d ^ 2 = -d := by
   ext
@@ -194,6 +195,7 @@ instance : IsCMField (QuadField d) := .ofCMExtension ℚ _
 lemma coe_star_eq_conj (y : QuadField d) : ((star y : QuadField d) : ℂ) = starRingEnd ℂ (y : ℂ) :=
   map_star_complex (QuadField d).val y
 
+/-- Complex conjugation negates `sqrtNegD d`. -/
 @[simp]
 lemma star_sqrtNegD : star (sqrtNegD d) = -sqrtNegD d := by
   ext
@@ -231,6 +233,7 @@ def betaK : 𝓞 (QuadField d) where
 @[simp]
 lemma coe_betaK : (betaK d : QuadField d) = (1 + sqrtNegD d) / 2 := rfl
 
+/-- Complex conjugation acts on `betaK d` by `1 - betaK d`. -/
 @[simp]
 lemma star_betaK : star (betaK d) = 1 - betaK d := by
   suffices (1 + -sqrtNegD d) / 2 = 1 - (1 + sqrtNegD d) / 2 by simpa [RingOfIntegers.ext_iff]
