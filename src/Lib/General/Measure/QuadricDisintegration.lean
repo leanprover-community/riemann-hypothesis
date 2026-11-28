@@ -40,6 +40,22 @@ invertible matrices g with `gᴴ * T * g = T`.
 
 @[expose] public section
 
+namespace New
+
+open MeasureTheory Measure Set ENNReal
+
+/-- If the product of a measure with itself is scaled by `c ^ 2`, the measure is scaled by `c`.
+Evaluating the product on measurable squares determines each factor. -/
+lemma eq_smul_of_prod_self_eq_sq_smul {X : Type*} [MeasurableSpace X]
+    {μ ν : Measure X} [SFinite μ] [SFinite ν] {c : ℝ≥0∞}
+    (h : μ.prod μ = c ^ 2 • ν.prod ν) : μ = c • ν := by
+  refine Measure.ext fun s _ ↦ (ENNReal.pow_right_strictMono two_ne_zero).injective ?_
+  have hs := congrArg (fun ρ : Measure (X × X) ↦ ρ (s ×ˢ s)) h
+  simp only [prod_prod, smul_apply, smul_eq_mul] at hs ⊢
+  rwa [mul_pow, sq (μ s), sq (ν s)]
+
+end New
+
 namespace New.Floors
 
 /-- A choice of an element τ = `element` with τ + τ̄ = 1 in a commutative ring with involution. -/
@@ -350,11 +366,8 @@ lemma map_skewMeasure_hermitianMul (hu : star u.val = u) :
           rw [h_comm, ← Measure.map_map (by fun_prop) h_split.measurable, h_split.map_eq]
       _ = ((P.modulus u)⁻¹ • skewMeasure.prod skewMeasure).map split := by
           rw [map_mul_volume, (h_split.smul_measure _).map_eq]
-  refine Measure.ext fun S _ ↦ (ENNReal.pow_right_strictMono two_ne_zero).injective ?_
-  calc skewMeasure.map mul S ^ 2 = (P.modulus u)⁻¹ * skewMeasure S ^ 2 := by
-        rw [sq, ← prod_prod, h_prod, smul_apply, prod_prod, _root_.smul_eq_mul, sq]
-    _ = (P.modulus u ^ (-(1 / 2) : ℝ) • skewMeasure) S ^ 2 := by
-        simp [mul_pow, ← rpow_mul_natCast, rpow_neg_one]
+  apply eq_smul_of_prod_self_eq_sq_smul
+  simpa [← rpow_mul_natCast, rpow_neg_one] using h_prod
 
 /-- For a hermitian unit u, the map β ↦ skew part of τuβ (τ the trace-one element of the place, skew
 part of x being x − x̄), which equals β ↦ uβ, maps the measure ν on the skew elements to (`modulus`

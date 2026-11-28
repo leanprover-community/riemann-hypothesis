@@ -6,6 +6,7 @@ public import Lib.Weil.MixedModel.AdaptedSplitting
 import Lib.Adelic.Unitary.WeakApproximation
 import Lib.Cohomology.Etale.Basic
 import Lib.Shimura.ComplexTheta.AppellHumbertData
+import Lib.General.Measure.QuadricDisintegration
 
 /-!
 # Singular forms governed by unimodular coefficients
@@ -131,11 +132,9 @@ lemma map_conjugate_selfAdjoint {a : GL Unit (𝔸 E)}
       ENNReal.ofReal (ideleAbs ((star a).det ^ Fintype.card Unit * a.det))⁻¹ • μ.prod μ :=
     map_addHaar_eq_smul_of_semiconj _ e h_semiconj (by fun_prop)
       (volume_map_mul_mul_adele a (star a))
-  refine Measure.ext fun s _ ↦ (ENNReal.pow_right_strictMono two_ne_zero).injective ?_
-  calc μ.map conj s ^ 2 = (μ.prod μ).map (Prod.map conj conj) (s ×ˢ s) := by
-        rw [sq, ← prod_prod, map_prod_map] <;> fun_prop
-    _ = (ENNReal.ofReal (ideleAbs a.det)⁻¹ • μ) s ^ 2 := by
-      simp [h_prod, sq, mul_mul_mul_comm _ (μ _)]
+  apply eq_smul_of_prod_self_eq_sq_smul
+  rw [map_prod_map _ _ (by fun_prop) (by fun_prop), h_prod]
+  simp [sq]
 
 end LineRadical
 
