@@ -1,5 +1,6 @@
 module
 
+import TauCeti.RingTheory.LocalRing.ResidueField.RootCount
 public import Mathlib.LinearAlgebra.Matrix.Swap
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Algebra.Order.Star.Real
@@ -18,7 +19,6 @@ and w in R with w² = p. The indices s ∈ ℤ/N are called letters and are alte
 This file shows which monomials can carry the least w-adic order plus weight among all translates
 of a polynomial.
 
-* `New.stepanov_count`: Stepanov's count of zeros at the residue classes of a local ring.
 * `New.IsRealFiltration`, `New.adicFiltration`, `New.gaussFiltration`: multiplicative filtrations
   indexed by ℝ, the w-adic one, and the Gauss filtration on polynomials with weighted variables.
 * `New.FrobeniusCycle.RootAt`: a root and a letter, with the variables X_s, Y_s, the substitution
@@ -64,35 +64,6 @@ G-zips, 2021; Bombieri, Counting points on curves over finite fields, Sém. Bour
 @[expose] public section
 
 namespace New
-
-open Polynomial IsLocalRing Function in
-/-- Stepanov's count. Let `W` be a local ring with `q` residue classes and `ι : W → R` a ring map.
-If a non-zero polynomial `Φ` over `R` is divisible by `(X - ι x) ^ E` for every `x` in `W` (that
-is, `X ^ E` divides `Φ(X + ι x)`), then `E * q ≤ deg Φ`. -/
-lemma stepanov_count {R W : Type} [CommRing R] [CommRing W] [IsLocalRing W] (ι : W →+* R)
-    {Φ : R[X]} (E : ℕ) (hΦ : Φ ≠ 0) (h_zero : ∀ x : W, X ^ E ∣ taylor (ι x) Φ) :
-    E * Nat.card (ResidueField W) ≤ Φ.natDegree := by
-  -- Lift the residue classes to points `a x` of `R` with unit differences. The coprime polynomials
-  -- `(X - a x) ^ E` all divide `Φ`, hence so does their product, monic of degree `E q`.
-  cases fintypeOrInfinite (ResidueField W) with
-  | inr _ => simp only [Nat.card_eq_zero_of_infinite (α := ResidueField W), mul_zero,
-      zero_le]
-  | inl _ =>
-  have : Nontrivial R := Nontrivial.of_polynomial_ne hΦ
-  let a (x : ResidueField W) : R := ι (surjInv residue_surjective x)
-  have h_unit (x y : ResidueField W) (hxy : x ≠ y) : IsUnit (a x - a y) := by
-    rw [← map_sub]
-    exact .map ι (by simpa only [← residue_ne_zero_iff_isUnit, map_sub, surjInv_eq, ne_eq,
-      sub_eq_zero] using hxy)
-  have h_dvd : ∏ x : ResidueField W, (X - C (a x)) ^ E ∣ Φ := Fintype.prod_dvd_of_coprime
-    (fun x y hxy ↦ (isCoprime_X_sub_C_of_isUnit_sub (h_unit x y hxy)).pow)
-    fun x ↦ X_sub_C_pow_dvd_iff.2 (h_zero _)
-  have h_monic : (∏ x : ResidueField W, (X - C (a x))).Monic := monic_prod_X_sub_C a _
-  by_contra! h_lt
-  exact (h_monic.pow E).not_dvd_of_natDegree_lt hΦ
-    (by simpa only [h_monic.natDegree_pow, natDegree_finsetProd_X_sub_C_eq_card,
-      Finset.card_univ, Nat.card_eq_fintype_card] using h_lt)
-    (by rwa [← Finset.prod_pow])
 
 /-! ### Filtrations and Gauss weights -/
 
@@ -1167,7 +1138,7 @@ lemma HasBoundedIncrements.weight_zeroOrder_mul_card_le [NeZero N]
   calc weight D.zeroOrder α * D.card
       = weight D.zeroOrder α * Nat.card (IsLocalRing.ResidueField W) := by
         rw [T.card_residueField, card]
-    _ ≤ Φ.natDegree := stepanov_count _ _ Φ_ne Φ_zero
+    _ ≤ Φ.natDegree := Polynomial.mul_natCard_residueField_le_natDegree Φ_ne Φ_zero
     _ ≤ weight D.poleOrder α := Φ_deg
 
 end FrobeniusCycle.RootAt
