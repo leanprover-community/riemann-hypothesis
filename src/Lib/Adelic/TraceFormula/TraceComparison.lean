@@ -538,14 +538,6 @@ lemma frameClass_mem_signedClasses_iff {γ : U V.J} (hγ : IsEllipticSimilitude 
     ← aeval_semiconj h_conj, ← h_poly, ← mul_assoc, ← mul_assoc, ← h_form]
   exact h_pos w
 
-/-- At the infinite place `w` the frame `V.x` carries the form `V.J` to the diagonal matrix of the
-signs `s`. -/
-lemma gram_map_evalInf (w : InfinitePlace E) :
-    (V.x.map (evalInf w)).valᴴ * V.J.map (Φ w) * (V.x.map (evalInf w)).val = signMatrix s := by
-  have h_map : (V.x.valᴴ * V.J.map toAdele * V.x.val).map (evalInf w) = signMatrix s := by
-    simp [V.gram_point, stdForm, signMatrix]
-  rwa [map_conjTranspose_mul_mul (evalInf w) fun _ ↦ rfl, Matrix.map_map] at h_map
-
 /-- Let `γ` be an elliptic rational point of `V`. For a permutation `σ` take the polynomial with
 value `s (σ⁻¹ i)` at the `i`-th eigenvalue of `γ` at `w`. The `σ` for which `V.J` times this
 polynomial in `γ` is positive definite are as many as those that fix `s`. -/

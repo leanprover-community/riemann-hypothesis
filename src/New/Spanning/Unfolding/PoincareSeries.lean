@@ -149,12 +149,7 @@ Gram matrix of S over ℂ: ϱ hyperbolic pairs around the middle block `S.ratMid
 theorem gram_map_evalInf_point (X : S.Fits V l kw Y η) (v : NumberField.InfinitePlace E) :
     (GeneralLinearGroup.map (evalInf v) V.x).valᴴ * (S.ratMiddle ℂ).splitGram *
       (GeneralLinearGroup.map (evalInf v) V.x).val = signMatrix ε := by
-  have h_map : (V.x.valᴴ * V.J.map toAdele * V.x.val).map (evalInf v) =
-      (stdForm E ε).map (evalInf v) := by rw [V.gram_point]
-  have h_star : V.x.valᴴ.map (evalInf v) = (V.x.val.map (evalInf v))ᴴ :=
-    conjTranspose_map _ (by simp [Function.Semiconj])
-  simpa [X.J_eq_ratGram, stdForm, signMatrix, mul_assoc, map_splitGram_ratMiddle, h_star]
-    using h_map
+  simpa [X.J_eq_ratGram, map_splitGram_ratMiddle] using V.gram_map_evalInf v
 
 /-- The homeomorphism from G_∞ onto ∏_v G₁, g_v ↦ d_v⁻¹x_v g_v p⁻¹, with x the point of V,
 d_v = `New.Filling.basisScaleGL` and p the chosen unitary sign frame. -/

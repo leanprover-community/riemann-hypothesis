@@ -78,6 +78,15 @@ lemma conjTranspose_map_toAdele {m k : Type*} (a : Matrix m k E) :
   exact (conjTranspose_map _ fun x ↦ (star_toAdele x).symm).symm
 
 namespace Space
+/-- At the infinite place `w` the frame `V.x` carries the form `V.J` to the diagonal matrix of the
+signs `s`. -/
+lemma gram_map_evalInf {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
+    (V : Space E n s) (w : InfinitePlace E) :
+    (V.x.map (evalInf w)).valᴴ * V.J.map (Φ w) * (V.x.map (evalInf w)).val = signMatrix s := by
+  have h_map : (V.x.valᴴ * V.J.map toAdele * V.x.val).map (evalInf w) = signMatrix s := by
+    simp [V.gram_point, stdForm, signMatrix]
+  rwa [map_conjTranspose_mul_mul (evalInf w) fun _ ↦ rfl, Matrix.map_map] at h_map
+
 /-- A space `V` is a matrix `J` over `E` with an invertible adelic matrix `x` such that
 `xᴴ J x = S`, where `S = stdForm E s` is the diagonal matrix of signs and `toAdele` maps `E` to
 its adeles. Over the adeles `J = (x⁻¹)ᴴ S x⁻¹`. -/
