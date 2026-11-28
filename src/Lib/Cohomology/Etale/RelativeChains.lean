@@ -333,15 +333,15 @@ lemma shortExact_triple (U : Subfunctor V) [Mono u] :
 bijections on Ext^n(·, F) for all n. -/
 lemma isCohomEquiv_of_le {U' U : Subfunctor V} (h_le : U' ≤ U)
     (h_dense : IsCohomDense F (U'.preimage U.ι)) :
-    IsCohomEquiv F (map (𝟙 V) h_le) := by
+    IsCohomEquiv F (map (𝟙 V) (h_le.trans (Subfunctor.preimage_id U).ge)) := by
   -- By `shortExact_triple` for the inclusion of `U`, the kernel of the map is `ℤ[U] / ℤ[U']`, which
   -- is acyclic because `U'` is dense in `U`.
   have h_acyclic : ∀ n, Subsingleton (H (relFreeAb (U'.preimage U.ι)) F n) :=
     (isCohomEquiv_iff_subsingleton_rel _).1 h_dense.isCohomEquiv
   -- The third term of that sequence is `relFreeAb U`, since `U = range U.ι ⊔ U'` as `U' ≤ U`; every
-  -- goal that `convert` and `congr` leave comes down to this identity and is closed by `simp_all`.
+  -- goal that `convert` and `congr` leave comes down to this identity and is closed by `simp`.
   convert isCohomEquiv_quotient_of_acyclic (shortExact_triple U.ι U').2
-      fun n x ↦ (h_acyclic n).allEq x 0 <;> congr <;> simp_all
+      fun n x ↦ (h_acyclic n).allEq x 0 <;> congr <;> simp [h_le]
 
 /-- Excision: let u : V′ → V be a monomorphism, U′ = u⁻¹U, and u(V′) ∪ U dense in V for the
 coefficient F. Then ℤ[V′]/ℤ[U′] → ℤ[V]/ℤ[U] induces bijections on Ext^n(·, F) for all n. -/

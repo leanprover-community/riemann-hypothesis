@@ -828,10 +828,11 @@ lemma EtaleChart.exists_section_isCohomEquiv : ∃ μ : a.coordRing ⟶ HodgeTes
   refine ⟨μ, μ_fst, fun {d f S} hS ↦ ?_⟩
   -- Read `f` as `fst ∘ μ ∘ f`, so that both sides speak of the point `μ ∘ f`.
   rw [show f = fun i ↦ fst (μ (f i)) by simp [μ_fst _], hS]
-  refine ⟨fun _ _ ⟨i, hi⟩ ↦ projSpace.span_eq_top_of_isUnit i (isUnit_iff_isUnit_fst.mpr hi),
-    Iff.mpr (IsCohomEquiv.comp_iff (isCohomEquiv_of_le _ fun c y ↦
+  refine ⟨_, Iff.mpr (IsCohomEquiv.comp_iff (isCohomEquiv_of_le ?_ fun c y ↦
       isCohomEquiv_someUnitLocus_of_span_eq_top ?_))
       ?_⟩
+  · -- `f` is unimodular where some `f i` is a unit
+    exact fun _ _ ⟨i, hi⟩ ↦ projSpace.span_eq_top_of_isUnit i (isUnit_iff_isUnit_fst.mpr hi)
   · -- `f` is unimodular at `y`; project from `A ⊕ M` to `A`
     apply unimodular.map c.baseProj y.property
   · -- by `μ_surj` the range of the universal point is everything, so excision applies
