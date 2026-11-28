@@ -88,18 +88,14 @@ lemma exists_isUnit_cyclotomicChar_pow_sub_one {P : Parameters} (D : Data P) {�
     ∃ γ : AbsGal D, ∀ a ∈ Set.Ioo 0 D.t, IsUnit ((cyclotomicChar Ω ℓ γ ^ a).val - 1) := by
   -- Take `γ` in an inertia group of `ℚ` at `ℓ` whose cyclotomic character reduces to a generator
   -- `b` of `(ZMod ℓ)ˣ`.
-  obtain ⟨b, hb⟩ : ∃ b : (ZMod ℓ)ˣ, orderOf b = Nat.card (ZMod ℓ)ˣ :=
-    IsCyclic.exists_ofOrder_eq_natCard
+  obtain ⟨b, hb⟩ := IsCyclic.exists_ofOrder_eq_natCard (α := (ZMod ℓ)ˣ)
   let A : ClosurePlace := (intQpBar ℓ).comap (IsAlgClosed.lift : Ω →ₐ[ℚ] PadicAlgCl ℓ).toRingHom
   have hA : A.valuation ℓ < 1 := valuation_comap_intQpBar_lt_one _
-  obtain ⟨γ, hγ, hγb⟩ : ∃ γ ∈ inertiaGroup Gal(Ω/ℚ) A,
-      (cyclotomicChar Ω ℓ γ).val = (b : ZMod ℓ).val :=
-    exists_inertia_cyclotomicChar_eq hA (ZMod.val_coe_unit_coprime b).symm
+  obtain ⟨γ, hγ, hγb⟩ := exists_inertia_cyclotomicChar_eq hA (ZMod.val_coe_unit_coprime b).symm
   -- `E` lies in the cyclotomic field of level `D.cyclotomicConductor`, prime to `ℓ`, so `γ` fixes
   -- `E`.
-  have h_cond : D.cyclotomicConductor ≤ D.halfGap ^ 2 := D.nat_le_of_hasLogBound
   have h_coprime : ℓ.Coprime D.cyclotomicConductor :=
-    Nat.coprime_of_lt_prime (NeZero.ne _) (h_cond.trans_lt hℓ) Fact.out
+    Nat.coprime_of_lt_prime (NeZero.ne _) (D.nat_le_of_hasLogBound.trans_lt hℓ) Fact.out
   have h_fixes (x : D.E) : γ (algebraMap D.E Ω x) = algebraMap D.E Ω x :=
     D.algebraMap_mem_cycloField x
       ⟨γ, cyclotomicCharMod_eq_one_of_mem_inertiaGroup hγ (h_coprime.valuation_eq_one hA)⟩
@@ -111,8 +107,7 @@ lemma exists_isUnit_cyclotomicChar_pow_sub_one {P : Parameters} (D : Data P) {�
   have h_order : orderOf (b : ZMod ℓ) = ℓ - 1 := by
     rw [orderOf_units, hb, Nat.card_units, Nat.card_zmod]
   have ht : D.t ≤ D.halfGap ^ 2 := D.nat_le_of_hasLogBound
-  have h_ne : (b : ZMod ℓ) ^ a ≠ 1 := pow_ne_one_of_lt_orderOf ha_pos.ne' (by lia)
-  simpa [hσb, sub_eq_zero] using h_ne
+  simpa [hσb, sub_eq_zero] using pow_ne_one_of_lt_orderOf (x := (b : ZMod ℓ)) ha_pos.ne' (by lia)
 
 /-- Some element `φ` of the absolute Galois group of `D.E` has an `ℓ`-adic cyclotomic character `u`
 such that for `0 < a < D.t` the number `u ^ a - 1` divides, in `ℤ_ℓ`, the `ℓ`-part of

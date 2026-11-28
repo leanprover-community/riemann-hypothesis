@@ -250,13 +250,11 @@ lemma card_le_of_subset_placesAboveM {T : Finset (FinPlace D.E)} (hT : ↑T ⊆ 
   -- `p_i` are chosen. The `Fin 2` part of `x` says whether to conjugate.
   let place (x : Fin 2 × Sigma D.ChosenPlace) : FinPlace D.E := star^[x.1] x.2.snd.val
   have surj : Set.SurjOn place (SetLike.coe univ) T := fun v hv ↦ by
-    obtain ⟨i, hi⟩ : ∃ i : Fin 2, (D.levelPrime i : NumberField.RingOfIntegers D.E) ∈ v.asIdeal :=
-      hT hv
+    obtain ⟨i, hi⟩ : ∃ i, (D.levelPrime i : NumberField.RingOfIntegers D.E) ∈ v.asIdeal := hT hv
     by_cases hG : D.IsChosen v
     · exact ⟨⟨0, i, v, hG, hi⟩, by simp [place]⟩
     · exact ⟨⟨1, i, star v, (D.isChosen_star_iff hi).2 hG, by simpa⟩, by simp [place]⟩
-  have card_chosen (i : Fin 2) : Fintype.card (D.ChosenPlace i) = D.f := by
-    simpa using D.card_chosenPlace i
+  have card_chosen i : Fintype.card (D.ChosenPlace i) = D.f := by simpa using D.card_chosenPlace i
   have h_le : #T ≤ #(univ : Finset (Fin 2 × Sigma D.ChosenPlace)) :=
     card_le_card_of_surjOn place surj
   simpa [card_chosen, ← mul_assoc, ← two_mul] using h_le
