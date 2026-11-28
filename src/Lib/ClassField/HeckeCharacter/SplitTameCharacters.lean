@@ -398,8 +398,8 @@ lemma character_apply_of_integral (u : unitary (𝔸 E)) (hu : (u : 𝔸 E).2 �
     isUnit_iff_residueAt_ne_zero.mpr fun i ↦ (isUnit_reduceAt_unitary u hu i).ne_zero
   -- Both sides are the weight factor times the product over `S` of `ψ` at the residues of `u`.
   have hψ_off : ∀ w ∉ 𝔠.ramifiedPlaces, 𝔠.tamePart w = 1 := fun w ↦ (𝔠.ne_one_iff w).not_right.mpr
-  -- `erw`: `𝔠.semilocalChar` at `evalPlaces 𝔠.ramifiedPlaces u.2` is `localChar … 0` at the value
-  -- of the unit `⟨evalPlaces 𝔠.ramifiedPlaces u.2, h_mem⟩` only up to unfolding.
+  -- `𝔠.semilocalChar` is `localChar … 0`; evaluate it at the unit
+  -- `⟨evalPlaces 𝔠.ramifiedPlaces u.2, h_mem⟩` by `localChar_apply_of_isUnit`.
   rw [𝔠.hasWeight.apply_eq u hu, finprod_tame_eq_prod_reduceU1 _ hψ_off,
     ← 𝔠.ramifiedPlaces.prod_attach,
     localChar_apply_of_isUnit 𝔠 0 ⟨evalPlaces 𝔠.ramifiedPlaces (u : 𝔸 E).2, h_mem⟩ h_unit]

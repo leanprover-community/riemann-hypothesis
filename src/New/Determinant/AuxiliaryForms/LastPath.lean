@@ -1137,7 +1137,7 @@ theorem isProportional_lastPathPeriod (Ψ : ∀ ϑ : D.MFoldTwist, EdgeTuple ϑ 
               ((g, 1) : New.G D.E (D.gridSigns true 0 D.m D.m)))
           ∂(D.gridSpace 0 false D.m D.m).quotMeasure = γ / levelIndex ϑ false 0 D.m * I S by
       simpa [periodPairing] using h_integral
-    -- `erw`, as the grid spaces at `(m, m)` agree with those of `hc` and `hβ` by definition.
+    -- Rewrite both forms by `hc` and the integral of their pairing by `hβ`.
     rw [hc, hc, hβ _ _ _ _ (lastPathLevel ϑ false D.m)]
     -- The index at `Y^m_m` cancels, and those in the grid of the `Ỹ` do not depend on the twist.
     simp [I, γ, lastPathLevel, stdLevelIndex_levelOfSubgroup, levelIndex_eq_card_GL_untwisted,

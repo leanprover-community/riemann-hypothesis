@@ -763,7 +763,7 @@ lemma inner_lowerChainAtLevel {P : Parameters} (D : Data P) (ϑ : D.MFoldTwist)
       stdLevelIndex (D.lastLevel ϑ) * Fintype.card (WeylIndex (D.Y D.m) D.columnsY) *
         inner ℂ (u x.val) (u y.val) := by
   intro u
-  -- `erw`: the space `gridSpace 0 false 0 D.m` of the chain is `spaceY D.m` only by unfolding
+  -- The inner product of the level forms is a multiple of their Petersson product on `spaceY D.m`.
   rw [LevelForm.inner_eq_petersson (D.spaceY _) D.isHCParam_paramY]
   -- The function of the algebraic form `D.lowerChainAtLevel ϑ v` is the chain of lifts of `v`: the
   -- weights of the lifts, indices of principal levels, are the orders `D.triangleGLCard false ϑ`.
