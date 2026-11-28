@@ -141,6 +141,7 @@ variable [P : Place A] {ι : Type} [Fintype ι] [DecidableEq ι] (u : Aˣ) (T : 
 
 /-! ### Lemmas on measures, and the hyperbolic plane plus a form -/
 
+/-- The ring inverse map `inverse : A → A` is measurable. -/
 @[fun_prop]
 lemma measurable_inverse : Measurable (inverse : A → A) :=
   Units.measurableEmbedding_val.measurable_extend continuous_coe_inv.measurable measurable_const
@@ -211,6 +212,7 @@ from A^ι × A^κ to A^(ι ⊔ κ). -/
 lemma measurePreserving_sumElim : MeasurePreserving fun p : (ι → A) × (κ → A) ↦ p.1 ⊕ᵥ p.2 :=
   volume_measurePreserving_sumPiEquivProdPi_symm fun _ ↦ A
 
+/-- Combining pairs of vectors via sum elimination `p.1 ⊕ᵥ p.2` is measurable. -/
 @[fun_prop]
 lemma measurable_sumElim_pair : Measurable fun p : (ι → A) × (κ → A) ↦ p.1 ⊕ᵥ p.2 :=
   measurePreserving_sumElim.measurable
@@ -277,6 +279,7 @@ structure IsDisintegration (J : Matrix ι ι A) (l : skewAdjoint A → Measure (
       ∫⁻ x : ι → A, f (star x ⬝ᵥ J *ᵥ x, x) ∂μ =
         ∫⁻ b : skewAdjoint A, ∫⁻ x : ι → A, f (skewUnit⁻¹.val * b, x) ∂l b ∂skewMeasure
 
+/-- The modulus `P.modulus` is invariant under conjugation `star`. -/
 lemma modulus_star (x : A) : P.modulus (star x) = P.modulus x := (modulus_star_and_neg x).left
 
 /-- A matrix T over a place A whose determinant d satisfies d̄d = 1 preserves the volume of A^ι. -/
