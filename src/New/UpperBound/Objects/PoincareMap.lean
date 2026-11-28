@@ -73,8 +73,10 @@ namespace Space
 variable {E n : Type} [Field E] [CMType E] [Fintype n] [DecidableEq n] {s : n → ℤˣ}
   {V : Space E n s} {e : GInf E s → ℂ}
 
+/-- Pointwise evaluation of the sum of two automorphic forms. -/
 lemma Form.add_apply (y z : V.Form e) (x : G E s) : (y + z) x = y x + z x := rfl
 
+/-- Pointwise evaluation of the scalar multiplication of an automorphic form by a complex scalar. -/
 lemma Form.smul_apply (c : ℂ) (y : V.Form e) (x : G E s) : (c • y) x = c * y x := rfl
 
 /-- The sum of the right translates of a form `z` under the chosen representatives of
