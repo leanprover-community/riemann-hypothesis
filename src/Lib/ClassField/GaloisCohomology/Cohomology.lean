@@ -2,7 +2,7 @@ module
 
 public import TauCeti.RepresentationTheory.Homological.ContCohomology.ContinuousCohomologyIso
 public import Mathlib.Combinatorics.Quiver.ReflQuiver
-import TauCeti.RepresentationTheory.Homological.ContCohomology.Additive
+public import TauCeti.RepresentationTheory.Homological.ContCohomology.LinearComparison
 public import Lib.ClassField.GaloisCohomology.ClassCounts
 
 /-!
@@ -25,8 +25,8 @@ comparisons of explicit cocycles with Mathlib's continuous cohomology.
   `New.DiscreteModule.length_eq_length_map_π₁_add_length_inf_B1`: the counts of
   `Lib.ClassField.GaloisCohomology.ClassCounts` for the classes in `H¹(Γ, A)`.
 
-The `R`-module structure and the `R`-linearity of the comparisons are proved here because Tau Ceti
-does not provide them yet; they belong in Tau Ceti.
+The scalar action on cohomology and the linearity of the comparisons in degrees one and two come
+from Tau Ceti.
 
 ## Relation to the literature
 
@@ -63,51 +63,27 @@ def H (n : ℕ) : Type := continuousCohomology n A.toTopRep
 instance (n : ℕ) : AddCommGroup (A.H n) :=
   inferInstanceAs (AddCommGroup (continuousCohomology n A.toTopRep))
 
+local instance : SMulCommClass Γ R A where
+  smul_comm g r m := (A.ρ g).map_smul r m
+
 /-- Multiplication by `r` on `A`, as an endomorphism of the topological representation. -/
 abbrev smulMor (r : R) : A.toTopRep ⟶ A.toTopRep :=
   TauCeti.ofDiscreteModuleMap (A.smulHom r).toAddMonoidHom.toIntLinearMap
     fun g m ↦ map_smul (A.smulHom r) g m
 
-
--- This belongs in Tau Ceti: the action of `R` on cohomology through coefficient maps.
 /-- The action of `R` on `Hⁿ(Γ, A)`: `r` acts by the map induced by `m ↦ r • m`. -/
-def smulRingHom (n : ℕ) : R →+* AddMonoid.End (A.H n) where
-  toFun r := (TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) n).hom.toLinearMap.toAddMonoidHom
-  map_one' := by
-    have h : A.smulMor 1 = 𝟙 _ :=
-      TopRep.hom_ext (DFunLike.ext _ _ fun m ↦ one_smul R (m : A.V))
-    ext x
-    simp [h]
-    rfl
-  map_mul' r s := by
-    have h : A.smulMor (r * s) = A.smulMor s ≫ A.smulMor r :=
-      TopRep.hom_ext (DFunLike.ext _ _ fun m ↦ mul_smul r s (m : A.V))
-    ext x
-    simp [h, TauCeti.ContinuousCohomology.coeffMap_comp]
-    rfl
-  map_zero' := by
-    have h : A.smulMor 0 = 0 :=
-      TopRep.hom_ext (DFunLike.ext _ _ fun m ↦ zero_smul R (m : A.V))
-    have h0 := TauCeti.ContinuousCohomology.map_zero (X := A.toTopRep) (Y := A.toTopRep)
-      (ContinuousMonoidHom.id Γ) n
-    ext x
-    simp only [h, TauCeti.ContinuousCohomology.coeffMap_def]
-    exact congrArg (fun f ↦ f.hom x) h0
-  map_add' r s := by
-    have h : A.smulMor (r + s) = A.smulMor r + A.smulMor s :=
-      TopRep.hom_ext (DFunLike.ext _ _ fun m ↦ add_smul r s (m : A.V))
-    have h2 := TauCeti.ContinuousCohomology.map_add (X := A.toTopRep) (Y := A.toTopRep)
-      (ContinuousMonoidHom.id Γ) (A.smulMor r) (A.smulMor s) n
-    ext x
-    simp only [h, TauCeti.ContinuousCohomology.coeffMap_def]
-    exact congrArg (fun f ↦ f.hom x) h2
+def smulRingHom (n : ℕ) : R →+* AddMonoid.End (A.H n) :=
+  TauCeti.ContinuousCohomology.smulRingHom R Γ A n
 
--- This belongs in Tau Ceti: the `R`-module structure on the cohomology of a discrete `R`-module.
 instance (n : ℕ) : Module R (A.H n) := Module.compHom (A.H n) (A.smulRingHom n)
 
 lemma smul_def (n : ℕ) (r : R) (x : A.H n) :
-    r • x = (TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) n).hom x :=
-  rfl
+    r • x = (TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) n).hom x := by
+  have hm : A.smulMor r = TauCeti.ofDiscreteModuleSMulMap Γ A r :=
+    TopRep.hom_ext (DFunLike.ext _ _ fun m ↦ (TauCeti.ofDiscreteModuleMap_hom_apply _ _ m).trans
+      (TauCeti.ofDiscreteModuleSMulMap_hom_apply (G := Γ) (M := A) r m).symm)
+  rw [hm]
+  exact TauCeti.ContinuousCohomology.smul_def (G := Γ) (M := A) n r x
 
 /-! ### Degree zero -/
 
@@ -124,36 +100,27 @@ def zeroEquiv : A.H 0 ≃ₗ[R] A.ρ.invariants where
   map_add' x y := Subtype.ext <| congrArg Subtype.val
     (map_add (ConcreteCategory.hom (explicitH0IsoContinuousCohomology Γ A).inv) x y)
   map_smul' r x := by
+    apply Subtype.ext
+    change (((explicitH0IsoContinuousCohomology Γ A).inv (r • x : A.H 0) :
+      TauCeti.ContCohomology.H0 Γ A) : A) =
+        r • (((explicitH0IsoContinuousCohomology Γ A).inv x : TauCeti.ContCohomology.H0 Γ A) : A)
+    rw [A.smul_def 0 r x]
     obtain ⟨m, rfl⟩ : ∃ m, (explicitH0IsoContinuousCohomology Γ A).hom m = x :=
       ⟨(explicitH0IsoContinuousCohomology Γ A).inv x,
         (explicitH0IsoContinuousCohomology Γ A).inv_hom_id_apply x⟩
-    apply Subtype.ext
-    change (((explicitH0IsoContinuousCohomology Γ A).inv
-        ((TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) 0).hom
-          ((explicitH0IsoContinuousCohomology Γ A).hom m)) : TauCeti.ContCohomology.H0 Γ A) : A) =
-      r • (((explicitH0IsoContinuousCohomology Γ A).inv
-        ((explicitH0IsoContinuousCohomology Γ A).hom m) : TauCeti.ContCohomology.H0 Γ A) : A)
     rw [explicitH0Iso_coeffMap, Iso.hom_inv_id_apply, Iso.hom_inv_id_apply, coe_explicitCoeff0]
     rfl
 
 /-! ### Degree one -/
 
--- This belongs in Tau Ceti: the `R`-linear form of `explicitH1AddEquivContinuousCohomology`.
 /-- The `R`-linear map sending a continuous 1-cocycle of `A` to its class in `H¹(Γ, A)`. -/
 def π₁ : Z1 A.ρ →ₗ[R] A.H 1 where
   toFun := A.classMap
   map_add' := map_add A.classMap
   map_smul' r z := by
-    change @Eq (continuousCohomology 1 A.toTopRep : Type) (A.classMap (r • z))
-      ((TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) 1).hom (A.classMap z))
-    simp only [classMap, AddMonoidHom.coe_comp, Function.comp_apply, AddEquiv.coe_toAddMonoidHom]
-    rw [explicitH1AddEquivContinuousCohomology_coeffMap]
-    refine congrArg _ ?_
-    simp only [H1pi, QuotientAddGroup.mk'_apply, explicitCoeff1_mk]
-    refine congrArg _ (Subtype.ext ?_)
-    ext g
-    symm
-    refine (cocyclesMap1_apply Γ A.V Γ A.V (ContinuousMonoidHom.id Γ) _ _ _ _ g).trans ?_
+    let c : TauCeti.ContCohomology.Z1 Γ A := ⟨z, A.Z1_toAddSubgroup ▸ z.property⟩
+    change _ = r • explicitH1AddEquivContinuousCohomology Γ A (c : TauCeti.ContCohomology.H1 Γ A)
+    rw [← explicitH1AddEquivContinuousCohomology_smul, TauCeti.ContCohomology.H1.smul_mk]
     rfl
 
 lemma π₁_surjective : Function.Surjective A.π₁ := A.classMap_surjective
@@ -258,22 +225,14 @@ def classMap₂ : Z2 A.ρ →+ continuousCohomology 2 A.toTopRep :=
         map_zero' := rfl
         map_add' _ _ := rfl }
 
--- This belongs in Tau Ceti: the `R`-linear form of `explicitH2AddEquivContinuousCohomology`.
 /-- The `R`-linear map sending a continuous 2-cocycle of `A` to its class in `H²(Γ, A)`. -/
 def π₂ : Z2 A.ρ →ₗ[R] A.H 2 where
   toFun := A.classMap₂
   map_add' := map_add A.classMap₂
   map_smul' r z := by
-    change @Eq (continuousCohomology 2 A.toTopRep : Type) (A.classMap₂ (r • z))
-      ((TauCeti.ContinuousCohomology.coeffMap (A.smulMor r) 2).hom (A.classMap₂ z))
-    simp only [classMap₂, AddMonoidHom.coe_comp, Function.comp_apply, AddEquiv.coe_toAddMonoidHom]
-    rw [explicitH2AddEquivContinuousCohomology_coeffMap]
-    refine congrArg _ ?_
-    simp only [QuotientAddGroup.mk'_apply, explicitCoeff2_mk]
-    refine congrArg _ (Subtype.ext ?_)
-    ext ⟨g, h⟩
-    symm
-    refine (cocyclesMap2_apply Γ A.V Γ A.V (ContinuousMonoidHom.id Γ) _ _ _ _ g h).trans ?_
+    let c : TauCeti.ContCohomology.Z2 Γ A := ⟨z, A.Z2_toAddSubgroup ▸ z.property⟩
+    change _ = r • explicitH2AddEquivContinuousCohomology Γ A (c : TauCeti.ContCohomology.H2 Γ A)
+    rw [← explicitH2AddEquivContinuousCohomology_smul, TauCeti.ContCohomology.H2.smul_mk]
     rfl
 
 lemma π₂_surjective : Function.Surjective A.π₂ := by
