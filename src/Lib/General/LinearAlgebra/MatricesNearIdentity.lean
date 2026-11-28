@@ -308,20 +308,18 @@ lemma norm_entryMask_le {n : Type} [Fintype n] {X : Matrix n n ℂ} {r : n → n
 `X + star X` is positive. -/
 lemma pos_of_mem_spectrum_add_star (h_near : ‖X - 1‖ < 1) {x : ℝ}
     (hx : x ∈ spectrum ℝ (X + star X)) : 0 < x := by
-  -- For real `x ≤ 0`, up to the factor `x - 2` the matrix `x - (X + star X)` is `1 - W` with
-  -- `‖W‖ < 2 / (2 - x) ≤ 1`, hence invertible.
-  by_contra! h_nonpos
-  have h_pos : 0 < 2 - x := by linarith
-  let W : Matrix n n ℂ := (2 - x)⁻¹ • (1 - X - star (X - 1))
-  have hW : ‖W‖ < 1 := by
-    rw [norm_smul_of_nonneg (inv_pos.2 h_pos).le, inv_mul_lt_one₀ h_pos]
-    grw [norm_sub_le, norm_star, norm_sub_rev 1 X]
-    linarith
-  have h_eq : algebraMap ℝ (Matrix n n ℂ) x - (X + star X) = (x - 2) • (1 - W) := by
-    simp only [W, Algebra.algebraMap_eq_smul_one, star_sub, star_one]
-    match_scalars <;> field
-  rw [spectrum.mem_iff, h_eq] at hx
-  exact hx ((isUnit_one_sub_of_norm_lt_one hW).smul (Units.mk0 (x - 2) (by linarith)))
+  -- Subtract the scalar matrix `2` from `X + star X` and bound its spectrum by its norm.
+  have hshift : x - 2 ∈ spectrum ℝ ((X - 1) + star (X - 1)) := by
+    have h := (spectrum.add_mem_iff (r := x - 2) (s := 2) (a := X + star X)).mp
+      (by simpa using hx)
+    convert h using 2
+    simp only [← one_add_one_eq_two, map_add, map_one, star_sub, star_one]
+    abel
+  have hnorm := spectrum.norm_le_norm_of_mem hshift
+  have hlt : ‖(X - 1) + star (X - 1)‖ < 2 :=
+    (norm_add_le ..).trans_lt (by rw [norm_star]; linarith)
+  rw [Real.norm_eq_abs] at hnorm
+  linarith [neg_le_abs (x - 2)]
 
 /-- A matrix `X` at Hilbert–Schmidt distance less than `1` from the identity is accretive, that is,
 `X + Xᴴ` is positive definite. -/
