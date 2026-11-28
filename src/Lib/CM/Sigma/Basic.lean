@@ -137,10 +137,8 @@ lemma exists_riemannForm_periods_eq_sign :
 
 lemma half_mem_lattice_iff_even (m n : ℤ) :
     (m * L.ω₁ + n * L.ω₂) / 2 ∈ L.lattice ↔ Even m ∧ Even n := by
-  have split : (m * L.ω₁ + n * L.ω₂) / 2 = (m / 2 : ℚ) * L.ω₁ + (n / 2 : ℚ) * L.ω₂ := by
-    simp [field]
-  rw [split, L.mul_ω₁_add_mul_ω₂_mem_lattice]
-  simp [even_iff_two_dvd, ← Rat.den_div_intCast_eq_one_iff]
+  simpa [even_iff_two_dvd, ZMod.intCast_zmod_eq_zero_iff_dvd] using
+    L.div_mem_lattice_iff_intCast_eq_zero (N := 2) (m := m) (n := n)
 
 variable {L}
 
