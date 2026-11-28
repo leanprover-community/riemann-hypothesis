@@ -92,8 +92,7 @@ attribute [simp ←, simp] Matrix.conjTranspose_eq_transpose_of_trivial MonoidHo
   IsUnit.mul_inv_cancel GroupWithZero.dvd_iff Ring.inverse_non_unit ciSup_of_not_bddAbove tsum_empty
   inv_mul_cancel_comm mul_inv_cancel_comm Set.iInter_of_empty CharP.cast_eq_zero IsEmpty.exists_iff
   IsMin.finsetIio_eq Set.Icc_eq_empty RCLike.star_def inf_of_le_right inf_of_le_left FunLike.coe_mul
-  Nat.card_unique smul_left_inj norm_map RKHS.coe_smul tsum_comp_neg Nat.sub_self conj_trivial
-  bot_eq_zero'
+  Nat.card_unique smul_left_inj norm_map RKHS.coe_smul tsum_comp_neg conj_trivial bot_eq_zero'
 
 -- Not a `simp` lemma in Mathlib; the development uses it as one.
 attribute [simp] Representation.isTrivial_def
