@@ -269,21 +269,6 @@ private lemma apply_mem_decompGroup_iff
   rw [mem_decompGroup_iff, mem_decompGroup_iff, c.surjective.forall]
   simp [hφ]
 
-/-- For `φ` conjugation by `c` as in `New.GaloisRep.apply_mem_decompGroup_iff`: if `φ g` lies in
-the inertia group of `A`, then `g` lies in that of `A.comap c`. -/
-private lemma mem_inertiaGroup_comap_of_apply_mem_inertiaGroup
-    (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x) = c (g x)) {g : Gal(Ω/E')}
-    (hg : φ g ∈ inertiaGroup Gal(Ω/E) A) : g ∈ inertiaGroup Gal(Ω/E') (A.comap c.toRingHom) := by
-  obtain ⟨hg_dec, hg_small⟩ : φ g ∈ decompGroup Gal(Ω/E) A ∧
-      ∀ y : Ω, A.valuation y ≤ 1 → A.valuation (φ g • y - y ^ 1) < 1 := hg
-  refine ⟨(apply_mem_decompGroup_iff c hφ g).mp hg_dec, fun x hx ↦ comap_apply_lt_one_iff.mpr ?_⟩
-  have h_eq : φ g • c x - c x ^ 1 = c (g • x - x ^ 1) := by simp [hφ]
-  have hx_mem : c x ∈ A :=
-    ValuationSubring.mem_comap.mp (((A.comap c.toRingHom).valuation_le_one_iff x).mp hx)
-  change A.valuation (c (g • x - x ^ 1)) < 1
-  rw [← h_eq]
-  exact hg_small (c x) ((A.valuation_le_one_iff (c x)).mpr hx_mem)
-
 /-- For `φ` conjugation by `c`, the map `g ↦ φ g` from the decomposition group of `A.comap c` in
 `Gal(Ω/E')` to that of `A` in `Gal(Ω/E)`. -/
 private noncomputable def decompComap (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x) = c (g x)) :
@@ -360,81 +345,6 @@ private lemma PadicPlaceEmbedding.eventually_toLin'_decompRep
   rw [nearOne_eq_nhds_one (𝒥 := (L.comap c hφ).toOverGp) (L.isOpenEmbedding_comp c hφ)]
   exact (continuousAt_subtypeVal.eventually_mem hS).mono (toLin'_decompRep_comp_of_mem h_comm)
 
-/-- Let `P' * P = 1` and `r' g * P = P * r (φ g)` on a neighbourhood `S` of `1`. If `r'` is
-potentially crystalline on the decomposition group of `A.comap c` along `L.comap c hφ`, then `r`
-is potentially crystalline on that of `A` along `L`. -/
-private lemma PadicPlaceEmbedding.isPotentiallyCrystalline_decompRep_of_comap
-    (L : PadicPlaceEmbedding E A ℓ) (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x) = c (g x))
-    (hS : S ∈ 𝓝 1) (h_comm : ∀ g ∈ S, (r' g).val * P = P * (r (φ g)).val) (hP : P' * P = 1)
-    (h_r' : IsPotentiallyCrystalline (𝒥 := (L.comap c hφ).toOverGp)
-      (decompRep r' (A.comap c.toRingHom))) :
-    IsPotentiallyCrystalline (𝒥 := L.toOverGp) (decompRep r A) := by
-  -- `P` embeds `decompRep (r ∘ φ)` in `decompRep r'` near `1`; then read back along
-  -- `decompComap c hφ`.
-  let _ : PadicPlaceEmbedding E' (A.comap c.toRingHom) ℓ := L.comap c hφ
-  rw [IsPotentiallyCrystalline, ← L.map_nearOne_comap c hφ,
-    ← isAdmissible_comp_iff (decompComap c hφ) (L.comap c hφ).isOpen_range]
-  exact .of_jointly_injective le_rfl (fun _ ↦ h_r') (fun _ ↦ P.toLin'.restrictScalars ℤ_[ℓ])
-    (fun _ ↦ L.eventually_toLin'_decompRep c hφ hS h_comm)
-    (fun x hx ↦ eq_zero_of_mulVec_eq_zero_of_mul_eq_one hP (hx ()))
-
-/-- With `P`, `P'` and `S` as in `isPotentiallyCrystalline_decompRep_of_comap`, let `s ∈ S` lie in
-the decomposition group of `A.comap c`. If `Q` kills the Weil pair `(j' s, k)` on `r'` along
-`L.comap c hφ` (map `j'`), then `Q` kills the Weil pair `(j (φ s), k)` on `r` along `L`
-(map `j`). -/
-private lemma PadicPlaceEmbedding.isKilledBy_decompRep_of_comap
-    (L : PadicPlaceEmbedding E A ℓ) (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x) = c (g x))
-    (hS : S ∈ 𝓝 1) (h_comm : ∀ g ∈ S, (r' g).val * P = P * (r (φ g)).val) (hP : P' * P = 1)
-    {s : decompGroup Gal(Ω/E') (A.comap c.toRingHom)} (hs : (s : Gal(Ω/E')) ∈ S) {k : ℕ}
-    (hk : IsWeilPair ((L.comap c hφ).toGp s) k) {Q : Polynomial (PadicAlgCl ℓ)}
-    (h_r' : IsKilledBy (𝒥 := (L.comap c hφ).toOverGp) (decompRep r' (A.comap c.toRingHom)) s k Q) :
-    IsKilledBy (𝒥 := L.toOverGp) (decompRep r A) (decompComap c hφ s) k Q := by
-  let _ : PadicPlaceEmbedding E' (A.comap c.toRingHom) ℓ := L.comap c hφ
-  let f : (m → PadicAlgCl ℓ) →ₗ[ℤ_[ℓ]] (m' → PadicAlgCl ℓ) := P.toLin'.restrictScalars ℤ_[ℓ]
-  -- `f` is equivariant near `1` and at `s`, and commutes with scalars.
-  have h_f_near : ∀ᶠ g in nearOne (decompGroup Gal(Ω/E') (A.comap c.toRingHom))
-      (𝒥 := (L.comap c hφ).toOverGp) ⊔ pure s, ∀ x : m → PadicAlgCl ℓ,
-        f (decompRep (r.comp φ) (A.comap c.toRingHom) g x) =
-          decompRep r' (A.comap c.toRingHom) g (f x) :=
-    Filter.eventually_sup.mpr ⟨L.eventually_toLin'_decompRep c hφ hS h_comm,
-      Filter.eventually_pure.mpr (toLin'_decompRep_comp_of_mem h_comm s hs)⟩
-  -- `f` is injective, as `P` has the left inverse `P'`.
-  have h_f_inj (x : m → PadicAlgCl ℓ) (hx : ∀ _ : Unit, f x = 0) : x = 0 :=
-    eq_zero_of_mulVec_eq_zero_of_mul_eq_one hP (hx ())
-  -- Apply `IsKilledBy.of_jointly_injective` to the family `f` with one member.
-  have h_killed : IsKilledBy (decompRep (r.comp φ) (A.comap c.toRingHom)) s k Q :=
-    .of_jointly_injective hk (fun _ ↦ f) (fun _ ↦ h_f_near) h_f_inj le_rfl (fun _ ↦ h_r')
-      Q.map_id (fun _ a x ↦ by simp [f])
-  -- `decompRep (r ∘ φ)` is `decompRep r` read along `decompComap c hφ`.
-  simp only [IsPotentiallyCrystalline, IsKilledBy, linearFrob, Dpcris, ← L.map_nearOne_comap c hφ]
-  exact h_killed
-
-/-- With `P`, `P'` and `S` as in `isPotentiallyCrystalline_decompRep_of_comap`, and also
-`P * P' = 1`: the multiplicity of the Hodge–Tate jump `u` at `γ` is the same for `r'` along
-`L.comap c hφ` and for `r` along `L`. -/
-private lemma PadicPlaceEmbedding.jump_decompRep_comap
-    (L : PadicPlaceEmbedding E A ℓ) (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x) = c (g x))
-    (hS : S ∈ 𝓝 1) (h_comm : ∀ g ∈ S, (r' g).val * P = P * (r (φ g)).val) (hP : P' * P = 1)
-    (hP' : P * P' = 1) (γ : PadicAlgCl ℓ →ₐ[ℤ_[ℓ]] ℂ_[ℓ]) (u : ℤ) :
-    jump (𝒥 := (L.comap c hφ).toOverGp) (decompRep r' (A.comap c.toRingHom)) γ u =
-      jump (𝒥 := L.toOverGp) (decompRep r A) γ u := by
-  -- `P` is an isomorphism from `decompRep (r ∘ φ)` to `decompRep r'` near `1`.
-  let _ : PadicPlaceEmbedding E' (A.comap c.toRingHom) ℓ := L.comap c hφ
-  let b := Pi.basisFun (PadicAlgCl ℓ) m
-  have h_jump_r' : jump (decompRep r' (A.comap c.toRingHom)) γ u =
-      jump (decompRep (r.comp φ) (A.comap c.toRingHom)) γ u :=
-    jump_baseChange (φ := 1) _ b (b.map (toLin'OfInv hP hP'))
-      (fun a ↦ (b.map_apply (toLin'OfInv hP hP') a).symm)
-      (L.eventually_toLin'_decompRep c hφ hS h_comm)
-  -- Jumps are defined near `1`, and `decompComap c hφ` carries the elements near `1` to those
-  -- near `1`.
-  have h_maps : hodgeTateMaps (𝒥 := (L.comap c hφ).toOverGp)
-      (decompRep (r.comp φ) (A.comap c.toRingHom)) γ u = hodgeTateMaps (decompRep r A) γ u := by
-    simp [hodgeTateMaps, ← L.map_nearOne_comap c hφ]
-    -- the two sides agree once `decompComap c hφ` is unfolded
-    rfl
-  exact h_jump_r'.trans (LinearEquiv.finrank_eq (.ofEq _ _ h_maps))
-
 omit [ThePrime ℓ] in
 /-- If `ℓ` is a unit at `A`, it is a unit at `A.comap c`, for an automorphism `c` of `Ω`. -/
 private lemma valuation_comap_eq_one (hℓ : A.valuation ℓ = 1) :
@@ -454,15 +364,24 @@ lemma isFiniteTypeAt_of_retract (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x)
   · -- Away from `ℓ`: `r (φ g) = P' r'(g) P = 1` for `g` in `S` and in inertia near `1`.
     rw [← map_one φ, ← hφ_open.map_nhds_eq]
     refine (h_inertia_r' (valuation_comap_eq_one c hℓ)).mp (.mono hS fun g hg h_triv hI ↦ ?_)
-    have h_r'_one : r' g = 1 := h_triv (mem_inertiaGroup_comap_of_apply_mem_inertiaGroup c hφ hI)
+    -- `φ g` lies in the inertia group of `A`, so `g` lies in that of `A.comap c`
+    have h_r'_one : r' g = 1 := h_triv ⟨(apply_mem_decompGroup_iff c hφ g).mp hI.1, fun x hx ↦
+      comap_apply_lt_one_iff.mpr <| by
+        simpa [hφ] using hI.2 (c x) (isEquiv_comap.le_one_iff_le_one.mp hx)⟩
     refine Units.ext ?_
     calc (r (φ g)).val = P' * P * (r (φ g)).val := by rw [hP, Matrix.one_mul]
       _ = P' * ((r' g).val * P) := by rw [Matrix.mul_assoc, h_comm g hg]
       _ = 1 := by rw [h_r'_one, Units.val_one, Matrix.one_mul, hP]
-  · -- Above `ℓ`: read `r'` along the local datum `L.comap c hφ` at `A.comap c`.
+  · -- Above `ℓ`: read `r'` along the local datum `L.comap c hφ` at `A.comap c`. There `P` embeds
+    -- `decompRep (r ∘ φ)` in `decompRep r'` near `1`; then read back along `decompComap c hφ`.
     intro L
     let _ : PadicPlaceEmbedding E' (A.comap ↑c) ℓ := L.comap c hφ
-    exact L.isPotentiallyCrystalline_decompRep_of_comap c hφ hS h_comm hP h_potCrys_r'
+    rw [IsPotentiallyCrystalline, ← L.map_nearOne_comap c hφ,
+      ← isAdmissible_comp_iff (decompComap c hφ) (L.comap c hφ).isOpen_range]
+    exact .of_jointly_injective (𝒥 := (L.comap c hφ).toOverGp) le_rfl (fun _ ↦ h_potCrys_r')
+      (fun _ ↦ P.toLin'.restrictScalars ℤ_[ℓ])
+      (fun _ ↦ L.eventually_toLin'_decompRep c hφ hS h_comm)
+      (fun x hx ↦ eq_zero_of_mulVec_eq_zero_of_mul_eq_one hP (hx ()))
 
 /-- Let `φ`, `P`, `P'` and `S` be as in `New.GaloisRep.isFiniteTypeAt_of_retract`, without asking
 `φ` to be open, let also `P * P' = 1`, and let `i : E → E'` satisfy `c (i x) = x` on `E`. If the
@@ -483,8 +402,22 @@ lemma jumpsRelAt_of_retract [PadicIso ℓ] (i : E →+* E')
     RingHom.ext fun x ↦ by simp [hi x]
   have h_r' : R ((J ((ιg.comp ((L.e.comp ↑c).comp (algebraMap E' Ω))).comp i)).count u)
       (jump (decompRep r' (A.comap ↑c)) γ u) := h_jumps (L := L') hg u
+  -- `P` is an isomorphism from `decompRep (r ∘ φ)` to `decompRep r'` near `1`.
+  let b := Pi.basisFun (PadicAlgCl ℓ) m
+  have h_jump_r' : jump (decompRep r' (A.comap ↑c)) γ u =
+      jump (decompRep (r.comp φ) (A.comap ↑c)) γ u :=
+    jump_baseChange (φ := 1) _ b (b.map (toLin'OfInv hP hP_right))
+      (fun a ↦ (b.map_apply (toLin'OfInv hP hP_right) a).symm)
+      (L.eventually_toLin'_decompRep c hφ hS h_comm)
+  -- Jumps are defined near `1`, and `decompComap c hφ` carries the elements near `1` to those
+  -- near `1`.
+  have h_maps : hodgeTateMaps (decompRep (r.comp φ) (A.comap ↑c)) γ u =
+      hodgeTateMaps (decompRep r A) γ u := by
+    simp only [hodgeTateMaps, ← L.map_nearOne_comap c hφ]
+    -- the two sides agree once `decompComap c hφ` is unfolded
+    rfl
   have h_jump : jump (decompRep r' (A.comap ↑c)) γ u = jump (decompRep r A) γ u :=
-    L.jump_decompRep_comap c hφ hS h_comm hP hP_right γ u
+    h_jump_r'.trans (LinearEquiv.finrank_eq (.ofEq _ _ h_maps))
   rwa [RingHom.comp_assoc, h_emb, h_jump] at h_r'
 
 /-- Let `φ`, `P`, `P'` and `S` be as in `New.GaloisRep.isFiniteTypeAt_of_retract`, without asking
@@ -505,9 +438,26 @@ lemma polyKillsAt_of_retract (hφ : ∀ (g : Gal(Ω/E')) (x : Ω), φ g (c x) = 
             Matrix.mul_zero]
   · -- Above `ℓ`: `Q` kills `s` on `r'` along `L.comap c hφ`, hence `φ s` on `r` along `L`.
     intro L hφs k hk
-    let L' : PadicPlaceEmbedding E' (A.comap ↑c) ℓ := L.comap c hφ
-    have hk' : IsWeilPair (L'.toGp ⟨s, (apply_mem_decompGroup_iff c hφ s).mp hφs⟩) k := hk
-    exact L.isKilledBy_decompRep_of_comap c hφ hS h_comm hP hs hk' (h_kills_above hk')
+    let _ : PadicPlaceEmbedding E' (A.comap c.toRingHom) ℓ := L.comap c hφ
+    let s' : decompGroup Gal(Ω/E') (A.comap c.toRingHom) :=
+      ⟨s, (apply_mem_decompGroup_iff c hφ s).mp hφs⟩
+    have hk' : IsWeilPair ((L.comap c hφ).toGp s') k := hk
+    let f : (m → PadicAlgCl ℓ) →ₗ[ℤ_[ℓ]] (m' → PadicAlgCl ℓ) := P.toLin'.restrictScalars ℤ_[ℓ]
+    -- `f` is equivariant near `1` and at `s`, and commutes with scalars.
+    have h_f_near : ∀ᶠ g in nearOne (decompGroup Gal(Ω/E') (A.comap c.toRingHom)) ⊔ pure s',
+        ∀ x : m → PadicAlgCl ℓ, f (decompRep (r.comp φ) (A.comap c.toRingHom) g x) =
+          decompRep r' (A.comap c.toRingHom) g (f x) :=
+      Filter.eventually_sup.mpr ⟨L.eventually_toLin'_decompRep c hφ hS h_comm,
+        Filter.eventually_pure.mpr (toLin'_decompRep_comp_of_mem h_comm s' hs)⟩
+    -- Apply `IsKilledBy.of_jointly_injective` to the family `f` with one member, which is
+    -- injective as `P` has the left inverse `P'`.
+    have h_killed : IsKilledBy (decompRep (r.comp φ) (A.comap c.toRingHom)) s' k Q :=
+      .of_jointly_injective hk' (fun _ ↦ f) (fun _ ↦ h_f_near)
+        (fun x hx ↦ eq_zero_of_mulVec_eq_zero_of_mul_eq_one hP (hx ())) le_rfl
+        (fun _ ↦ h_kills_above (L := L.comap c hφ) hk') Q.map_id (fun _ a x ↦ by simp [f])
+    -- `decompRep (r ∘ φ)` is `decompRep r` read along `decompComap c hφ`.
+    simp only [IsPotentiallyCrystalline, IsKilledBy, linearFrob, Dpcris, ← L.map_nearOne_comap c hφ]
+    exact h_killed
 
 end New.GaloisRep
 
