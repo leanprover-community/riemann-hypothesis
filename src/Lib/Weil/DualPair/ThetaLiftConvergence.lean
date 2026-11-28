@@ -80,14 +80,14 @@ lemma exists_norm_le_of_isCompact {K : Set (G E s × G E t)} (hK : IsCompact K) 
   ContRepresentation.exists_norm_le_of_isCompact (π := .ofMonoidHom Θ.ω)
     (fun _ ↦ Θ.continuous.comp₂ continuous_id continuous_const) hK
 
-/-- One step of reduction: for `g` an adelic point of the unitary group of `V`, there is an
-archimedean point `y` with operator norm at most `2` at every infinite place such that the height of
-`g (y,1)⁻¹` is at most half the height of `g`, or at most `2`. Height is 1/λ, where λ is the first
-minimum, cut off at 1, of `V` moved by `g`. -/
-theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G E t) :
-    ∃ y : GInf E t, (∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2) ∧
-      V.height (g * (y, 1)⁻¹) ≤ max (V.height g / 2) 2 := by
-  -- The point `y` doubles the lattice vectors of length below `1` and at most halves the others.
+/-- There is an archimedean unitary element `y` of operator norm at most `2` at each place such
+that moving from `g` to `g (y, 1)⁻¹` doubles the coordinates of every lattice vector of length
+below `1` at `g`. These vectors span a totally isotropic subspace, so a single dilation works for
+all of them. -/
+private lemma exists_short_vector_dilation (V : Space E n' t) (g : G E t) :
+    ∃ y : GInf E t, (∀ w : InfinitePlace E, ‖((y w : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2) ∧
+      ∀ ξ ∈ (V.move g).baseLattice, ‖(V.move g).archCoords ξ‖ < 1 →
+        (V.move (g * (y⁻¹, 1))).archCoords ξ = (2 : ℂ) • (V.move g).archCoords ξ := by
   let W : Space E n' t := V.move g
   -- The lattice vectors of length below `1` are orthogonal to one another, so they span an
   -- isotropic space.
@@ -108,8 +108,29 @@ theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G 
   have y_norm (w : InfinitePlace E) : ‖((y w : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2 := by
     grw [norm_le_norm_add_const_of_dist_le (y_near w), (IsStarProjection.one _).norm_le,
       one_add_one_eq_two]
-  -- At `g y⁻¹` the lattice is no larger, and a vector has at least half its length at `g`, and
-  -- twice it if that is below `1`.
+  let W' : Space E n' t := V.move (g * (y⁻¹, 1))
+  refine ⟨y, y_norm, fun ξ hξ hξ_short ↦ ?_⟩
+  have h_vec : W'.vecAtPoint ξ = adeleMatrix ((y, 1) : G E t) *ᵥ W.vecAtPoint ξ := by
+    simp [W, W', vecAtPoint_move, adeleMatrix_mul]
+  ext ⟨w, i⟩
+  calc W'.archCoords ξ (w, i) = evalInf w ((adeleMatrix ((y, 1) : G E t) *ᵥ W.vecAtPoint ξ) i) :=
+      congrArg (fun v : n' → 𝔸 E ↦ evalInf w (v i)) h_vec
+    _ = (((y w : GL n' ℂ) : Matrix n' n' ℂ) * A w) i ⟨ξ, hξ, hξ_short⟩ :=
+      (evalInf w).map_mulVec _ _ i
+    _ = ((2 : ℂ) • W.archCoords ξ) (w, i) := by
+      rw [y_dil]
+      rfl
+
+/-- One step of reduction: for `g` an adelic point of the unitary group of `V`, there is an
+archimedean point `y` with operator norm at most `2` at every infinite place such that the height of
+`g (y,1)⁻¹` is at most half the height of `g`, or at most `2`. Height is 1/λ, where λ is the first
+minimum, cut off at 1, of `V` moved by `g`. -/
+theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G E t) :
+    ∃ y : GInf E t, (∀ τ : InfinitePlace E, ‖((y τ : GL n' ℂ) : Matrix n' n' ℂ)‖ ≤ 2) ∧
+      V.height (g * (y, 1)⁻¹) ≤ max (V.height g / 2) 2 := by
+  obtain ⟨y, y_norm, h_double⟩ := exists_short_vector_dilation V g
+  let W : Space E n' t := V.move g
+  -- At `g y⁻¹` the lattice is no larger, and every vector keeps at least half its length at `g`.
   let W' : Space E n' t := V.move (g * (y⁻¹, 1))
   have h_half (ξ : n' → E) : (ξ ∈ W'.baseLattice → ξ ∈ W.baseLattice) ∧
       ‖W.archCoords ξ‖ ≤ 2 * ‖W'.archCoords ξ‖ := by
@@ -122,25 +143,13 @@ theorem _root_.New.Space.exists_height_mul_inv_le_max (V : Space E n' t) (g : G 
       simp [W, W', -inv_mk, vecAtPoint_move, adeleMatrix]
     simpa [ite_mem, Matrix.one_apply] using
       W.mem_and_norm_le_of_vecAtPoint ξ W' ξ (adeleMatrix (y⁻¹, 1)) 1 h_norm h_crd
-  have h_double (ξ : n' → E) (hξ : ξ ∈ W.baseLattice) (hξ_short : ‖W.archCoords ξ‖ < 1) :
-      W'.archCoords ξ = (2 : ℂ) • W.archCoords ξ := by
-    have h_vec : W'.vecAtPoint ξ = adeleMatrix ((y, 1) : G E t) *ᵥ W.vecAtPoint ξ := by
-      simp [W, W', vecAtPoint_move, adeleMatrix_mul]
-    ext ⟨w, i⟩
-    calc W'.archCoords ξ (w, i) = evalInf w ((adeleMatrix ((y, 1) : G E t) *ᵥ W.vecAtPoint ξ) i) :=
-        congrArg (fun v : n' → 𝔸 E ↦ evalInf w (v i)) h_vec
-      _ = (((y w : GL n' ℂ) : Matrix n' n' ℂ) * A w) i ⟨ξ, hξ, hξ_short⟩ :=
-        (evalInf w).map_mulVec _ _ i
-      _ = ((2 : ℂ) • W.archCoords ξ) (w, i) := by
-        rw [y_dil]
-        rfl
   have h_min : min (2 * W.firstMinimum) 2⁻¹ ≤ W'.firstMinimum := by
     refine le_firstMinimum_iff.mpr ⟨min_le_of_right_le (by norm_num), fun ξ hξ hξ_ne ↦ ?_⟩
     obtain ⟨h_lattice, h_le⟩ := h_half ξ
     by_cases hξ_short : ‖W.archCoords ξ‖ < 1
     · -- A short vector has twice its length at `g y⁻¹`.
       have h_norm_eq : ‖W'.archCoords ξ‖ = 2 * ‖W.archCoords ξ‖ := by
-        simp [h_double ξ (h_lattice hξ) hξ_short, norm_smul]
+        simpa [norm_smul] using congrArg norm (h_double ξ (h_lattice hξ) hξ_short)
       exact min_le_of_left_le (by linarith [firstMinimum_le (h_lattice hξ) hξ_ne])
     · -- A long vector keeps at least half its length.
       exact min_le_of_right_le (by linarith)
