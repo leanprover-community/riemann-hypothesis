@@ -86,9 +86,10 @@ variable {R X X' ι ι' : Type*} {s s' : ℕ} [CommRing R]
   {E : Type*} [Field E] [CMType E] [Fintype ι] [DecidableEq ι] [Fintype X] [DecidableEq X]
   (e' : X' ⊕ Fin s' ≃ ι') (e : X ⊕ Fin s ≃ ι) {ε : ι → ℤˣ} {N : E} (V : Space E ι ε)
 
+omit [CommRing R] in
 /-- The block diagonal matrix with block A from X to X' and block B from string to string,
 reindexed along e and e'. -/
-abbrev gradedBlocks (A : Matrix X' X R) (B : Matrix (Fin s') (Fin s) R) : Matrix ι' ι R :=
+abbrev gradedBlocks [Zero R] (A : Matrix X' X R) (B : Matrix (Fin s') (Fin s) R) : Matrix ι' ι R :=
   (fromBlocks (α := R) A 0 0 B).submatrix e'.symm e.symm
 
 /-- The Gram matrix of X plus a string of length s: identity on X; string vectors a, b with
@@ -225,7 +226,8 @@ def HasDegreeGe {R ι ι' : Type*} [Zero R] (w' : ι' → ℤ) (w : ι → ℤ) 
 
 /-- Degree bounds add: if `x` has degree at least `d` and `y` has degree at least `d'`, then
 `x * y` has degree at least `e` for every `e ≤ d + d'`. -/
-lemma HasDegreeGe.mul {R ι κ : Type*} [CommRing R] {w'' : κ → ℤ} {w' : ι' → ℤ} {w : ι → ℤ}
+lemma HasDegreeGe.mul {R ι κ : Type*} [NonUnitalNonAssocSemiring R]
+    {w'' : κ → ℤ} {w' : ι' → ℤ} {w : ι → ℤ}
     {d d' : ℤ} {y : Matrix ι' ι R} {x : Matrix κ ι' R} (hx : HasDegreeGe w'' w' d x)
     (hy : HasDegreeGe w' w d' y) {e : ℤ} (he : e ≤ d + d') :
     HasDegreeGe w'' w e (x * y) := by
