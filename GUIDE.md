@@ -41,6 +41,16 @@ with the valuation estimate in `exists_colengthDvd_gaugeLe_compositeLift`.
 [`ShortAndEnough`](src/New/Reduction/ShortAndEnough.lean) uses the resulting sublattice
 to bound the index in Theorem A(b).
 
+For the count of lattices of corank `l` in the spanning argument, start with
+[`SiegelLemma`](src/New/Spanning/RemainingTerms/SiegelLemma.lean). For a subspace `V`,
+`sublatticeBasis` chooses a matrix `m` such that `u⁻¹ m` is integral with an integral left inverse.
+In [`LatticesOfCorank`](src/New/Spanning/RemainingTerms/LatticesOfCorank.lean),
+`encard_rowVanishesModPiN_le` uses this primitivity to count stabilizer cosets whose row vanishes
+modulo `S.piN` on a lattice with basis `m A`. The determinant index of `A` is the index `i` of
+the lattice in its saturation. At most `i (N ^ f) ^ l` cosets contribute, where `f` is the number
+of infinite places. In `exists_sum_discWeightIfRowVanishes_le`, each contributes `(d i) ^ (-k)`,
+where `d` is the discriminant of the saturation and `k` is the ambient rank.
+
 `Lib` proves parts of several standard theories, often in a weaker form that suffices here and with its own definitions. For example, Galois representations match the Hecke polynomials for most Frobenii only, up to each η > 0 (`GaloisRep.Attached`), local polynomials only kill and need not be characteristic, and no Weil–Deligne representation is built. Each has an overview in the head of the file that holds the theorem named here: class field theory and duality, `artin_reciprocity`; ℓ-adic and Hodge cohomology, `Variety.ellAdicCohom.woods_hole`; odd classes over cyclotomic fields, `exists_length_shaOdd_le`; Galois representations of eigenforms, `GaloisRep.sphericalCompat_std`; p-adic comparison, `Variety.ellAdicCohom.isCrystalline_and_linearFrob_rel`; p-adic Hodge theory, `GaloisRep.local_clauses_of_trace_limit`; Kisin modules, `Lift.KummerChart.JumpLattice.frame_theorem`; Shimura varieties, `Variety.Model.exists_galois_rep`. Other inputs: the Siegel–Weil and Rallis formulas in `Lib/SiegelWeil`, a simple trace formula in `Lib/Adelic/TraceFormula`, a Chowla–Selberg formula in `Lib/CM/ChowlaSelberg`, primes in progressions in `Lib/Analytic/PrimeNumberTheorem`, and the choice of d, a zero-density count from Pólya–Vinogradov, in `Lib/Analytic/QuadraticTwist`.
 
 ## 2. Glossary
