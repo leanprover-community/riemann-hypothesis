@@ -269,10 +269,7 @@ lemma IsAdmissible.of_retraction (hF : nearOne Γ ≤ F) (hA : ∀ i : κ, IsAdm
   -- Coordinates in bases of fixed elements turn `pi Φ` into an equivariant injection `Θ` into a
   -- free module; its range is saturated because `pi Φ` has a retraction, so
   -- `le_of_fixed_mem_of_saturated` applies.
-  have h_bases (i : κ) : ∃ s : Set (fixedPeriods (τ i) Bmax F),
-      ∃ v : Basis s Bmax (Bmax ⊗[ℤ_[p]] S i), ∀ j : s, v j ∈ fixedPeriods (τ i) Bmax F :=
-    (hA i).exists_basis hF
-  choose s v hv using h_bases
+  choose s v hv using fun i ↦ (hA i).exists_basis hF
   let Θ : Bmax ⊗[ℤ_[p]] T' →ₗ[Bmax] (Σ i : κ, s i) →₀ Bmax :=
     (Pi.basis v).repr.toLinearMap ∘ₗ pi Φ
   have Θ_inj : Injective Θ := by simp [Θ, hΨ.injective]
@@ -281,28 +278,19 @@ lemma IsAdmissible.of_retraction (hF : nearOne Γ ≤ F) (hA : ∀ i : κ, IsAdm
     filter_upwards [eventually_all.mpr hΦ, eventually_all.mpr fun i ↦
       eventually_tensorAction_eq (hv i) ((v i).repr (Φ i x))] with g h_eq h_coef
     ext ⟨i, l⟩
-    have h_coef_l :
-        (v i).repr (tensorAction Bmax (toGp g) (τ i g)
-            (linearCombination Bmax (v i) ((v i).repr (Φ i x)))) l =
-          (v i).repr (linearCombination Bmax (v i) (toGp g • (v i).repr (Φ i x))) l :=
-      DFunLike.congr_fun (congrArg (v i).repr (h_coef i)) l
-    simpa [Θ, h_eq] using h_coef_l
-  -- The range of `Θ` is the kernel of a linear map, so it is saturated.
-  have h_sat : ∀ b ≠ (0 : Bmax), ∀ w : (Σ i : κ, s i) →₀ Bmax,
-      b • w ∈ Submodule.map Θ ⊤ → w ∈ Submodule.map Θ ⊤ := by
+    simpa [Θ, h_eq] using DFunLike.congr_fun (congrArg (v i).repr (h_coef i)) l
+  apply top_unique
+  apply (map_le_map_iff_of_injective Θ_inj ⊤ _).mp
+  apply le_of_fixed_mem_of_saturated hF
+  · -- The range is saturated because the retraction exhibits it as a kernel.
     simp_all [Θ, range_comp, range_eq_ker_of_leftInverse hΨ]
-  have h_stable : ∀ w ∈ Submodule.map Θ ⊤, ∀ᶠ g : Γ in F, toGp g • w ∈ Submodule.map Θ ⊤ := by
+  · -- The range is stable under `Γ` along `F`, since `Θ` is eventually equivariant.
     rintro _ ⟨y, -, rfl⟩
     filter_upwards [Θ_smul y] with g hg using ⟨_, trivial, hg⟩
-  have h_fixed : ∀ w ∈ Submodule.map Θ ⊤, (∀ᶠ g : Γ in F, toGp g • w = w) →
-      w ∈ Submodule.map Θ (span Bmax (fixedPeriods ρ' Bmax F)) := by
+  · -- A vector of the range fixed along `F` comes from a fixed vector, since `Θ` is injective.
     rintro _ ⟨y, -, rfl⟩ h_fix
-    have hy_fixed : y ∈ fixedPeriods ρ' Bmax F := by
-      filter_upwards [Θ_smul y, h_fix] with g hg hg_fix using Θ_inj (hg.trans hg_fix)
-    exact ⟨y, subset_span hy_fixed, rfl⟩
-  have h_le : Submodule.map Θ ⊤ ≤ Submodule.map Θ (span Bmax (fixedPeriods ρ' Bmax F)) :=
-    le_of_fixed_mem_of_saturated hF h_sat h_stable h_fixed
-  exact top_unique ((map_le_map_iff_of_injective Θ_inj ⊤ _).mp h_le)
+    refine ⟨y, subset_span ?_, rfl⟩
+    filter_upwards [Θ_smul y, h_fix] with g hg hg_fix using Θ_inj (hg.trans hg_fix)
 
 include hF hA hf hi in
 /-- Let `Γ` come with a homomorphism `j : Γ → Gp p` of open image (`OverGp`), and let every set in
