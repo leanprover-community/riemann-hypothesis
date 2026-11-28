@@ -7,6 +7,7 @@ import Mathlib.NumberTheory.LSeries.SumCoeff
 import Mathlib.RingTheory.PiTensorProduct
 import Mathlib.Tactic.PNatToNat
 import Mathlib.Topology.Separation.CompletelyRegular
+import TauCeti.MeasureTheory.Integral.Bochner.PowerTail
 import TauCeti.NumberTheory.DirichletCharacter.Conductor
 public import Lib.Analytic.DirichletTheta
 public import Lib.General.NumberTheory.ImaginaryQuadraticField
@@ -597,31 +598,21 @@ lemma sum_integral_norm_thetaSeries_div_le (j : Fin 2) {δ : ℝ} (hδ : 0 < δ)
   obtain ⟨C, hC⟩ := sum_sq_thetaSeries_jacobiSym_le j hδ
   refine ⟨√C / δ, fun T hT α hα ↦ ?_⟩
   let θ (v : ℕ) : ℝ → ℂ := thetaSeries j fun n : ℕ ↦ α n * J(-v | ordCompl[2] n)
-  have h_int (v : ℕ) : IntegrableOn (fun u ↦ ‖θ v u‖ / u) (Set.Ioi T⁻¹) :=
-    integrableOn_norm_thetaSeries_div (norm_mul_jacobiSym_le_one hα v) (inv_pos.2 hT)
-  have h_mean (u : ℝ) (hu : T⁻¹ < u) :
-      ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖θ v u‖ ≤ √C * T ^ 2 * u ^ (-δ) := by
-    have hu_pos : 0 < u := (inv_pos.2 hT).trans hu
-    calc ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖θ v u‖
-      _ ≤ √(T ^ 2 * (C * (T ^ 2 * u ^ (-2 * δ)))) := by
-        grw [le_sqrt_of_sq_le sq_sum_le_card_mul_sum_sq, Nat.card_Ioc, Nat.sub_zero,
-          floor_le (sq_nonneg T), hC T hT u hu.le α hα]
-      _ = √C * T ^ 2 * u ^ (-δ) := by
-        rw [mul_left_comm, sqrt_mul' _ (by positivity), mul_assoc]
-        rw [show T ^ 2 * (T ^ 2 * u ^ (-2 * δ)) = (T ^ 2 * u ^ (-δ)) ^ 2 by
-          simp [field, mul_pow, ← rpow_mul_natCast hu_pos.le, mul_comm δ], sqrt_sq (by positivity)]
+  have h_bound : ∀ᵐ u ∂volume.restrict (Set.Ioi T⁻¹),
+      ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖θ v u‖ ^ 2 ≤ (C * T ^ 2) * u ^ (-2 * δ) :=
+    ae_restrict_of_forall_mem measurableSet_Ioi fun u hu ↦ by
+      simpa only [θ, mul_assoc] using hC T hT u hu.le α hα
+  have h_card : √(↑(#(Ioc 0 ⌊T ^ 2⌋₊)) : ℝ) ≤ T := by
+    rw [Nat.card_Ioc, Nat.sub_zero]
+    exact (sqrt_le_sqrt (floor_le (sq_nonneg T))).trans_eq (sqrt_sq hT.le)
   calc ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ∫ u : ℝ in Set.Ioi T⁻¹, ‖θ v u‖ / u
-    _ = ∫ u : ℝ in Set.Ioi T⁻¹, ∑ v ∈ Ioc 0 ⌊T ^ 2⌋₊, ‖θ v u‖ / u :=
-      (integral_finsetSum _ fun v _ ↦ h_int v).symm
-    _ ≤ ∫ u : ℝ in Set.Ioi T⁻¹, √C * T ^ 2 * u ^ (-δ - 1) := by
-      refine setIntegral_mono_on (integrable_finsetSum _ fun v _ ↦ h_int v)
-        ((integrableOn_Ioi_rpow_of_lt (by linarith) (inv_pos.2 hT)).const_mul _) measurableSet_Ioi
-        fun u (hu : T⁻¹ < u) ↦ ?_
-      have hu_pos : 0 < u := (inv_pos.2 hT).trans hu
-      grw [← sum_div, h_mean u hu, rpow_sub_one hu_pos.ne', mul_div_assoc]
+      ≤ √(↑(#(Ioc 0 ⌊T ^ 2⌋₊)) : ℝ) * √(C * T ^ 2) * (T⁻¹) ^ (-δ) / δ :=
+        MeasureTheory.sum_setIntegral_norm_div_le_of_sum_sq_le (inv_pos.2 hT) hδ h_bound
+    _ ≤ T * √(C * T ^ 2) * (T⁻¹) ^ (-δ) / δ := by gcongr
     _ = √C / δ * T ^ (2 + δ) := by
-      rw [integral_const_mul, integral_Ioi_rpow_of_lt (by linarith) (inv_pos.2 hT)]
-      simp [field, inv_rpow hT.le, rpow_neg hT.le, rpow_add hT]
+      rw [sqrt_mul' _ (sq_nonneg T), sqrt_sq hT.le, inv_rpow hT.le, rpow_neg hT.le, inv_inv,
+        rpow_add hT, rpow_two]
+      ring
 
 /-- For `δ, T > 0` and `|αₙ| ≤ 1`, the sum over `v ≤ T²` of `thetaTailIntegral` (the integral over
 `u > 1 / T` of `|θ_c(u)| + |θ_{μc}(u)|` against `du / u`) for the coefficients `cₙ = αₙ (-v/n°)` is
