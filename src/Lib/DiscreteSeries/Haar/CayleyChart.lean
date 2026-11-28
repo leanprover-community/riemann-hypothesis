@@ -258,8 +258,10 @@ instance : (volume (α := V × W)).IsAddHaarMeasure :=
 matrices over V is so for the sum of q over the entries, with exponent a n m. -/
 instance {m : Type} [Fintype m] :
     HasGaussianIntegral (V := Matrix m n V) (a * card n * card m) fun x : Matrix m n V ↦
-      ∑ i : m, ∑ j : n, q (x i j) :=
-  h_gauss.pi.pi
+      ∑ i : m, ∑ j : n, q (x i j) where
+  integral_exp_eq ht := by
+    rw [volume_matrix_eq_pi]
+    exact HasGaussianIntegral.integral_exp_eq (V := m → n → V) ht
 
 /-! ### The scalar circle, and volumes normalised by a Gaussian -/
 

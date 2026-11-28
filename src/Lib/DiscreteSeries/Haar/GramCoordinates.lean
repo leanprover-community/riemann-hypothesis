@@ -77,8 +77,9 @@ theorem measurePreserving_joinCols [Fintype ι] [Fintype n] [Fintype n₁] [Fint
 
 /-- Placing one complex matrix above another preserves Lebesgue measure. -/
 theorem measurePreserving_fromRows {l m k : Type} [Fintype l] [Fintype m] [Fintype k] :
-    MeasurePreserving fun p : Matrix l k ℂ × Matrix m k ℂ ↦ fromRows p.1 p.2 :=
-  volume_measurePreserving_sumPiEquivProdPi_symm fun _ ↦ k → ℂ
+    MeasurePreserving fun p : Matrix l k ℂ × Matrix m k ℂ ↦ fromRows p.1 p.2 := by
+  simp only [Measure.volume_eq_prod, volume_matrix_eq_pi]
+  exact volume_measurePreserving_sumPiEquivProdPi_symm fun _ ↦ k → ℂ
 
 /-- Left multiplication by a matrix acts on each of two groups of columns separately. -/
 theorem mul_joinCols {l : Type} [Fintype ι] (e : n₁ ⊕ n₂ ≃ n) (A : Matrix l ι ℂ)
@@ -97,7 +98,8 @@ theorem toCol_apply {κ R : Type} [TopologicalSpace R] (v : κ → R) (i : κ) (
 /-- Reading a vector as a matrix with one column (`toCol`) preserves volume. -/
 theorem measurePreserving_toCol (κ R : Type) [Fintype κ] [TopologicalSpace R] [MeasureSpace R]
     [SigmaFinite (volume : Measure R)] : MeasurePreserving (toCol κ R) :=
-  volume_preserving_pi fun _ ↦ (volume_preserving_funUnique Unit R).symm
+  (Matrix.volume_preserving_ofMeasurableEquiv κ Unit R).comp
+    (volume_preserving_pi fun _ ↦ (volume_preserving_funUnique Unit R).symm)
 
 /-- A vector and a real number as a one-column matrix and a one-by-one matrix. -/
 def toCorner (κ : Type) : ((κ → ℂ) × ℝ) ≃ₜ Matrix κ Unit ℂ × Matrix Unit Unit ℝ :=
@@ -142,7 +144,8 @@ theorem mul_joinCol {l : Type} [Fintype ι] (e : n₁ ⊕ Unit ≃ n) (A : Matri
 theorem volume_eq_dirac_of_isEmpty [Fintype ι] [Fintype n] {R : Type} [MeasureSpace R]
     [SigmaFinite (volume : Measure R)] [IsEmpty n] (Y : Matrix ι n R) : volume = dirac Y := by
   refine ext_iff_singleton.2 fun Z ↦ ?_
-  rw [Subsingleton.eq_univ_of_nonempty (Set.singleton_nonempty Z), measure_univ (μ := dirac Y)]
+  rw [Subsingleton.eq_univ_of_nonempty (Set.singleton_nonempty Z), measure_univ (μ := dirac Y),
+    volume_matrix_eq_pi]
   exact (pi_univ _).trans (Finset.prod_eq_one fun _ _ ↦ pi_empty_univ _)
 
 /-- The conjugate transpose preserves Lebesgue measure on complex matrices. -/

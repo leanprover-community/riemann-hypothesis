@@ -453,8 +453,10 @@ instance isCovolOneLattice_ratVectors : IsCovolOneLattice (ratVectors E n) := by
 a lattice of covolume one in the adelic `m × n` matrices. -/
 instance isCovolOneLattice_ratMatrices [Fintype m] : IsCovolOneLattice (ratMatrices E m n) := by
   obtain ⟨R, -, h_dom⟩ := exists_hasFundDomain_toAdele (E := E)
-  -- a matrix is by definition a family of rows, so the power is taken twice
-  exact h_dom.pi.pi.isCovolOneLattice
+  -- a matrix is a family of rows, and its volume is the product volume, so the power is taken twice
+  apply HasFundDomain.isCovolOneLattice (f := (toAdele (E := E)).toAddMonoidHom.mapMatrix)
+  rw [HasFundDomain, volume_matrix_eq_pi]
+  exact h_dom.pi.pi
 
 /-- An injective additive map `f` into a Hausdorff topological group, with discrete image, sends
 only finitely many points into a given compact set. -/

@@ -5,6 +5,7 @@ public import Mathlib.Analysis.CStarAlgebra.Classes
 public import TauCeti.Data.Matrix.Countable
 public import TauCeti.LinearAlgebra.Matrix.IndefiniteUnitaryGroup
 public import TauCeti.MeasureTheory.Constructions.Polish.Units
+public import TauCeti.MeasureTheory.Measure.Lebesgue.Matrix
 public import TauCeti.Topology.Instances.Matrix
 public import TauCeti.Topology.MetricSpace.Polish.Matrix
 import Mathlib.Topology.Algebra.Group.Matrix
@@ -26,9 +27,10 @@ integrability.
   bound on the entries of a unitary matrix, the complex unitary group of the identity matrix is
   compact.
 
-The file also supplies the measure space structure on matrices with its additive Haar measure, the
-Polish instance on unitary groups and the Borel instance on complex ones, and local compactness of
-unitary groups. The Polish, countability, local compactness and Borel instances on matrices and
+The volume on matrices is Tau Ceti's `Matrix.instMeasureSpace`. The file shows that it is the
+product volume on the entries (`New.volume_matrix_eq_pi`) and an additive Haar measure, and supplies
+the Polish instance on unitary groups and the Borel instance on complex ones, and local compactness
+of unitary groups. The Polish, countability, local compactness and Borel instances on matrices and
 units come from Mathlib and Tau Ceti.
 -/
 
@@ -114,9 +116,12 @@ section Matrices
 
 variable {m n R S : Type*} [DecidableEq n]
 
-/-- The product measure on matrices, over Mathlib's `σ`-algebra `Matrix.instMeasurableSpace`. -/
-instance [Fintype m] [Fintype n] [MeasureSpace R] : MeasureSpace (Matrix m n R) where
-  volume := (volume : Measure (m → n → R))
+omit [DecidableEq n] in
+/-- Tau Ceti's volume on matrices is the product volume on their entries, since
+`Matrix.ofMeasurableEquiv` is the identity. -/
+lemma volume_matrix_eq_pi [Fintype m] [Fintype n] [MeasureSpace R] :
+    (volume : Measure (Matrix m n R)) = (volume : Measure (m → n → R)) :=
+  Measure.map_id
 
 /-! ### Special matrices -/
 
@@ -437,12 +442,12 @@ instance U.borelSpace {J : Matrix n n ℂ} : BorelSpace (U J) := inferInstance
 variable {A : Type*} [Fintype m] [AddGroup A] [TopologicalSpace A] [MeasureSpace A]
   [(volume (α := A)).IsAddHaarMeasure] [SigmaFinite (volume (α := A))] [MeasurableAdd A]
 
-instance : SigmaFinite (volume (α := Matrix m n A)) := Measure.pi.sigmaFinite _
-
 /-- The product measure on functions from `n` to `A` is an additive Haar measure. -/
 instance isAddHaarMeasure_pi : (volume (α := n → A)).IsAddHaarMeasure where
 
-instance : (volume (α := Matrix m n A)).IsAddHaarMeasure := isAddHaarMeasure_pi
+instance : (volume (α := Matrix m n A)).IsAddHaarMeasure := by
+  rw [volume_matrix_eq_pi]
+  exact isAddHaarMeasure_pi
 
 end Topology
 
