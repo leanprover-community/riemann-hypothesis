@@ -247,11 +247,6 @@ theorem quadricMeasure_coordinateBox_le {μ : ℕ} (hμ : idealZeta P.integers �
   -- Moving the first block along `star r` moves the value of the form by `δ⁻¹ x`.
   let y (x : skewAdjoint A) : A := P.element * P.skewUnit⁻¹.val * x.val * c⁻¹.val
   let e (x : skewAdjoint A) : σ → A := star (y x) • star r
-  have hδ : star P.skewUnit⁻¹.val = -P.skewUnit⁻¹.val := by
-    have h1 : P.skewUnit.val * P.skewUnit⁻¹.val = 1 := Units.mul_inv _
-    have h2 := congrArg star h1
-    rw [star_mul, P.star_skewUnit, star_one] at h2
-    linear_combination (-P.skewUnit⁻¹.val) * h2 + (-star P.skewUnit⁻¹.val) * h1
   have h_e (x : skewAdjoint A) :
       star (e x) ⬝ᵥ v + star v ⬝ᵥ e x = P.skewUnit⁻¹.val * x.val := by
     have h_star : star (e x) = y x • r := by
@@ -264,7 +259,8 @@ theorem quadricMeasure_coordinateBox_le {μ : ℕ} (hμ : idealZeta P.integers �
     have h_conj : star v ⬝ᵥ e x = star (y x * c) := by
       rw [dotProduct_smul, star_dotProduct_star, hrv, smul_eq_mul]
       exact (star_mul' _ _).symm
-    rw [h_star, smul_dotProduct, hrv, smul_eq_mul, h_conj, hy, star_mul, star_mul, hδ, hx]
+    rw [h_star, smul_dotProduct, hrv, smul_eq_mul, h_conj, hy, star_mul, star_mul,
+      P.star_skewUnit_inv, hx]
     linear_combination (P.skewUnit⁻¹.val * x.val) * P.element_add_star
   have h_mem (s : A) (w₁ : σ → A) : (![s, ↑t] ⊕ᵥ (w₁ ⊕ᵥ w')) ∈ S ↔
       (u.val * s ∈ P.integers ∧ u.val * t ∈ P.integers) ∧ (∀ j, u.val * w₁ j ∈ P.integers) ∧
