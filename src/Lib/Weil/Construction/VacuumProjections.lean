@@ -372,12 +372,8 @@ lemma finHeisenbergOp_comm (x y : n → 𝔸f E) (f : 𝒮 V) :
 @[local simp] lemma finHeisenbergOp_add {x y : n → 𝔸f E} (hx : x ∈ stdLattice E n)
     (hy : y ∈ stdLattice E n) (f : 𝒮 V) :
     V.finHeisenbergOp (x + y) f = V.finHeisenbergOp x (V.finHeisenbergOp y f) := by
-  -- The scalar of `finHeisenbergOp_finHeisenbergOp` is a value of `selfDualAddChar` at an integral
-  -- adele, hence `1`.
-  have h_scalar : selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x) = 1 :=
-    selfDualAddChar_eq_one_of_mem (mul_mem (star_mem_Ô traceOneAdele_mem)
-      (star_dotProduct_mem hx hy))
-  rw [finHeisenbergOp_finHeisenbergOp, h_scalar, one_smul]
+  -- On the standard lattice the scalar in the multiplication law is trivial.
+  rw [finHeisenbergOp_finHeisenbergOp, selfDualAddChar_traceOne_dotProduct_eq_one hx hy, one_smul]
 
 /-- If `L (finHeisenbergOp (idem S.conjClosure • y) f)` is a constant `c` for `y` in the standard
 lattice, then `L (projOn S f) = c`, as the standard lattice has measure `1` for

@@ -276,12 +276,8 @@ lemma semichar_finiteImage_add {E n : Type} [Field E] [CMType E] [WeilData E] [F
       semichar (finiteImage γ) * semichar (finiteImage γ') *
         exp (Real.pi * I * ratRiemannForm γ γ') := by
   -- For integral `x`, `x'` the factor `ψ₀ (c̄₀ x'* x)` in the law `semichar_add` is `1`.
-  have h_int : star traceOneAdele * star (finiteImage γ') ⬝ᵥ finiteImage γ ∈ Ô E :=
-    mul_mem (star_mem_Ô traceOneAdele_mem)
-      (star_dotProduct_mem (mem_idealLattice.1 hγ) (mem_idealLattice.1 hγ'))
-  have h_one :
-      selfDualAddChar E (star traceOneAdele * star (finiteImage γ') ⬝ᵥ finiteImage γ) = 1 :=
-    selfDualAddChar_eq_one_of_mem h_int
+  have h_one := selfDualAddChar_traceOne_dotProduct_eq_one
+    (mem_idealLattice.1 hγ) (mem_idealLattice.1 hγ')
   -- The finite cocycle is by definition `ψ₀ (x'* x / 2)`; the product formula evaluates it.
   have h_cocycle : (finHeisenberg E n).β (finiteImage γ) (finiteImage γ') =
       exp (Real.pi * I * ratRiemannForm γ γ') :=

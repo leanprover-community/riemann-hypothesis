@@ -346,18 +346,21 @@ lemma semichar_add (x y : ι → 𝔸f E) :
   -- `traceOneAdele + star traceOneAdele = 1`.
   grind [star_half, star_dotProduct, star_neg, star_mul']
 
+/-- The trace-one correction in `semichar_add` is trivial on the standard lattice. -/
+lemma selfDualAddChar_traceOne_dotProduct_eq_one {x y : ι → 𝔸f E}
+    (hx : x ∈ stdLattice E ι) (hy : y ∈ stdLattice E ι) :
+    selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x) = 1 :=
+  selfDualAddChar_eq_one_of_mem
+    (mul_mem (star_mem_Ô traceOneAdele_mem) (star_dotProduct_mem hx hy))
+
 /-- For `y` in the lattice `New.stdLattice E ι` and any `x`,
 `finVac x * finVac y * β x y = finVac (x + y)`, where `β` is the bicharacter of
 `New.stdLattice.finHeisenberg`. -/
 lemma finVac_add {y : ι → 𝔸f E} (x : ι → 𝔸f E) (hy : y ∈ stdLattice E ι) :
     finVac x * finVac y * (finHeisenberg E ι).β x y = finVac (x + y) := by
   by_cases hx : x ∈ stdLattice E ι
-  · -- On the lattice the factor in `semichar_add` is `selfDualAddChar E` of an integral element,
-    -- hence `1`.
-    have h_one : selfDualAddChar E (star traceOneAdele * star y ⬝ᵥ x) = 1 :=
-      selfDualAddChar_eq_one_of_mem (mul_mem (star_mem_Ô traceOneAdele_mem)
-        (star_dotProduct_mem hx hy))
-    simp [finVac_of_mem, hx, hy, add_mem hx hy, semichar_add, h_one]
+  · simp [finVac_of_mem, hx, hy, add_mem hx hy, semichar_add,
+      selfDualAddChar_traceOne_dotProduct_eq_one hx hy]
   · have h_add : x + y ∉ stdLattice E ι := mt (add_mem_cancel_right hy).1 hx
     rw [finVac_of_notMem hx, finVac_of_notMem h_add, zero_mul, zero_mul]
 
